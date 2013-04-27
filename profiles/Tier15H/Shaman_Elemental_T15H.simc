@@ -5,7 +5,7 @@ level=90
 race=orc
 role=spell
 position=back
-professions=enchanting=600/engineering=600
+professions=blacksmithing=600/engineering=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Wa!...2.2
 glyphs=chain_lightning
 spec=elemental
@@ -80,37 +80,37 @@ actions.aoe+=/thunderstorm,if=mana.pct_nonproc<80
 actions.aoe+=/chain_lightning,if=mana.pct_nonproc>10
 actions.aoe+=/lightning_bolt
 
-head=headpiece_of_the_witch_doctor,id=96696,gems=sinister_primal_320haste_180crit,reforge=spi_mastery
-neck=necklace_of_the_terracotta_invoker,id=96708,gems=160int_60hit
-shoulders=shoulderwraps_of_the_witch_doctor,id=96698,gems=160int_320haste_120haste,enchant=200int_100crit,reforge=crit_mastery
-back=black_night_thundercloak,id=95013,gems=320haste_60haste,enchant=180int,reforge=spi_haste
-chest=chains_of_counted_souls,id=95035,gems=160int_160int_160int_180int,enchant=80all
-wrists=veincover_bracers,id=96489,enchant=180int,reforge=spi_mastery
-hands=gloves_of_the_witch_doctor,id=96695,gems=160int_60int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
-waist=longdraw_chain_belt,id=94999,gems=80int_160spi_80int_160spi_160int_120int
-legs=kilt_of_the_witch_doctor,id=96697,gems=320haste_80int_160spi_120int,enchant=285int_165spi,reforge=crit_mastery
-feet=worldmote_sabatons,id=95008,gems=320haste_80int_160spi_120int,enchant=140mastery,reforge=spi_haste
-finger1=radens_evolving_signet,id=95018,gems=160int,enchant=160int,reforge=spi_mastery
-finger2=roshaks_remembrance,id=96529,gems=160int,enchant=160int,reforge=crit_haste
-trinket1=chayes_essence_of_brilliance,id=96516,reforge=crit_haste
-trinket2=wushoolays_final_choice,id=96413,reforge=hit_haste
-main_hand=athame_of_the_sanguine_ritual,id=96518,gems=160int_160int_60int,enchant=jade_spirit
-off_hand=leishens_orb_of_command,id=96562,gems=80int_160hit_60int,enchant=165int,reforge=crit_mastery
+head=clearmind_helm,id=96881,gems=sinister_primal_80int_160hit_180int
+neck=horridons_tusk_fragment,id=96774
+shoulders=shoulderwraps_of_the_witch_doctor,id=96698,gems=80int_160haste_320haste_120haste,enchant=200int_100crit,reforge=crit_mastery
+back=deadly_glare_cape,id=96857,gems=80int_160haste_60int,enchant=180int,reforge=crit_mastery
+chest=hauberk_of_the_witch_doctor,id=96694,gems=80int_160haste_80int_320haste_80int_160hit_180int,enchant=80all,reforge=spi_haste
+wrists=loaridden_bracers,id=96789,suffix=339,gems=320haste,enchant=180int
+hands=gloves_of_the_witch_doctor,id=96695,gems=80int_160haste_320haste_60int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
+waist=longdraw_chain_belt,id=94999,gems=80int_160hit_80int_160hit_160int_120int
+legs=kilt_of_the_witch_doctor,id=96697,gems=320haste_80int_160hit_120int,enchant=285int_165spi,reforge=crit_mastery
+feet=worldmote_sabatons,id=95008,gems=320haste_80int_160hit_120int,enchant=140mastery,reforge=crit_mastery
+finger1=radens_evolving_signet,id=95018,gems=80int_160hit_60int,reforge=haste_mastery
+finger2=roshaks_remembrance,id=96901,gems=320haste,reforge=crit_haste
+trinket1=breath_of_the_hydra,id=96827
+trinket2=wushoolays_final_choice,id=96785,reforge=hit_mastery
+main_hand=athame_of_the_sanguine_ritual,id=96890,gems=80int_160haste_320haste_60int,enchant=jade_spirit
+off_hand=leishens_orb_of_command,id=96934,gems=80int_160haste_60int,enchant=165int,reforge=crit_mastery
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=26339
-# gear_intellect=20114
-# gear_spirit=3276
-# gear_spell_power=10078
-# gear_hit_rating=1857
-# gear_crit_rating=4876
-# gear_haste_rating=12056
-# gear_mastery_rating=6270
-# gear_armor=27650
+# gear_stamina=26740
+# gear_intellect=19485
+# gear_spirit=2923
+# gear_spell_power=10655
+# gear_hit_rating=2172
+# gear_crit_rating=3800
+# gear_haste_rating=12469
+# gear_mastery_rating=9251
+# gear_armor=27670
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
 # hands=gloves_of_the_witch_doctor,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3002min_5576max,enchant=jade_spirit
+# main_hand=athame_of_the_sanguine_ritual,heroic=1,weapon=dagger_1.80speed_3175min_5897max,enchant=jade_spirit

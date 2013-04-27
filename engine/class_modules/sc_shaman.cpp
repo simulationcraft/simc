@@ -5472,20 +5472,24 @@ void shaman_t::init_actions()
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>1&!buff.ascendance.up" );
 
     // AoE
+	aoe -> add_action( this, "Fire Nova", "if=active_flame_shock>=4" );
     aoe -> add_action( this, "Magma Totem", "if=active_enemies>5&!totem.fire.active" );
     aoe -> add_action( this, "Searing Totem", "if=active_enemies<=5&!totem.fire.active" );
-    aoe -> add_action( this, "Fire Nova", "if=(active_enemies<=5&active_flame_shock=active_enemies)|active_flame_shock>=5" );
     aoe -> add_action( this, "Lava Lash", "if=dot.flame_shock.ticking" );
-    aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=active_enemies>2&buff.maelstrom_weapon.react>=3" );
+    aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=active_enemies>=2&buff.maelstrom_weapon.react>=3" );
     aoe -> add_action( this, "Unleash Elements" );
     aoe -> add_action( this, "Flame Shock", "cycle_targets=1,if=!ticking" );
     aoe -> add_action( this, find_class_spell( "Ascendance" ), "stormblast" );
+	aoe -> add_action( this, "Fire Nova", "if=active_flame_shock>=3" );
+	aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=active_enemies>=2&buff.maelstrom_weapon.react>=1" );
     aoe -> add_action( this, "Stormstrike" );
     aoe -> add_action( this, "Primal Strike" );
     aoe -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react=5&cooldown.chain_lightning.remains>=2" );
+	aoe -> add_action( this, "Earth Shock", "if=active_enemies<4" );
     aoe -> add_action( this, "Feral Spirit" );
-    aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=active_enemies>2&buff.maelstrom_weapon.react>1" );
-    aoe -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>1&!buff.ascendance.up" );
+	aoe -> add_action( this, "Earth Elemental Totem", "if=!active&cooldown.fire_elemental_totem.remains>=50" );
+	aoe -> add_action( this, "Spiritwalker's Grace", "moving=1" );
+    aoe -> add_action( this, "Fire Nova", "if=active_flame_shock>=1" );
   }
   else if ( specialization() == SHAMAN_ELEMENTAL && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
   {

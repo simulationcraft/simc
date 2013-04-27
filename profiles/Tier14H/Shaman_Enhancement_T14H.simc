@@ -74,19 +74,23 @@ actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendanc
 
 # Multi target action priority list
 
-actions.aoe=magma_totem,if=active_enemies>5&!totem.fire.active
+actions.aoe=fire_nova,if=active_flame_shock>=4
+actions.aoe+=/magma_totem,if=active_enemies>5&!totem.fire.active
 actions.aoe+=/searing_totem,if=active_enemies<=5&!totem.fire.active
-actions.aoe+=/fire_nova,if=(active_enemies<=5&active_flame_shock=active_enemies)|active_flame_shock>=5
 actions.aoe+=/lava_lash,if=dot.flame_shock.ticking
-actions.aoe+=/chain_lightning,if=active_enemies>2&buff.maelstrom_weapon.react>=3
+actions.aoe+=/chain_lightning,if=active_enemies>=2&buff.maelstrom_weapon.react>=3
 actions.aoe+=/unleash_elements
 actions.aoe+=/flame_shock,cycle_targets=1,if=!ticking
 actions.aoe+=/stormblast
+actions.aoe+=/fire_nova,if=active_flame_shock>=3
+actions.aoe+=/chain_lightning,if=active_enemies>=2&buff.maelstrom_weapon.react>=1
 actions.aoe+=/stormstrike
 actions.aoe+=/lightning_bolt,if=buff.maelstrom_weapon.react=5&cooldown.chain_lightning.remains>=2
+actions.aoe+=/earth_shock,if=active_enemies<4
 actions.aoe+=/feral_spirit
-actions.aoe+=/chain_lightning,if=active_enemies>2&buff.maelstrom_weapon.react>1
-actions.aoe+=/lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.up
+actions.aoe+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50
+actions.aoe+=/spiritwalkers_grace,moving=1
+actions.aoe+=/fire_nova,if=active_flame_shock>=1
 
 head=firebirds_helmet,id=87136,gems=agile_primal_80agi_160hit_180agi,reforge=exp_haste
 neck=pheromonecoated_choker,id=89917,reforge=mastery_exp
