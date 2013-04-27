@@ -1291,11 +1291,14 @@ struct arcane_brilliance_t : public mage_spell_t
 
 struct arcane_explosion_t : public mage_spell_t
 {
+  rng_t *arcane_explosion_charge_rng;
   arcane_explosion_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_explosion", p, p -> find_class_spell( "Arcane Explosion" ) )
+    mage_spell_t( "arcane_explosion", p, p -> find_class_spell( "Arcane Explosion" ) ),
+  arcane_explosion_charge_rng(nullptr)
   {
     parse_options( NULL, options_str );
     aoe = -1;
+    arcane_explosion_charge_rng = sim -> get_rng("arcane_explosion_charge");
   }
 
   virtual void execute()
@@ -1303,7 +1306,15 @@ struct arcane_explosion_t : public mage_spell_t
     mage_spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
-      p() -> buffs.arcane_charge -> trigger();
+    {
+      if ( arcane_explosion_charge_rng -> roll ( p() -> find_class_spell( "Arcane Explosion") -> effectN(2).percent() ) )
+      {
+        p() -> buffs.arcane_charge -> trigger();
+      }
+      else p() -> buffs.arcane_charge -> refresh();
+    }
+    
+    
   }
 };
 
@@ -3891,8 +3902,8 @@ void mage_t::init_actions()
           action_list_str += init_use_item_actions( ",if=cooldown.alter_time_activate.remains>45|target.time_to_die<25" );
 
         //decide between single_target and aoe rotation
-        action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
-        action_list_str += "/run_action_list,name=single_target,if=active_enemies<5";
+        action_list_str += "/run_action_list,name=aoe,if=active_enemies>=6";
+        action_list_str += "/run_action_list,name=single_target,if=active_enemies<6";
 
         st_list_str += "/arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2";
         st_list_str += "/arcane_missiles,if=buff.alter_time.up";
@@ -3901,7 +3912,7 @@ void mage_t::init_actions()
 
       st_list_str += "/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)";
 
-      if ( talents.nether_tempest -> ok() )   st_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
+      if ( talents.nether_tempest -> ok() )   st_list_str += "/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6";
       else if ( talents.living_bomb -> ok() ) st_list_str += "/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
       else if ( talents.frost_bomb -> ok() )  st_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
 
@@ -3921,7 +3932,7 @@ void mage_t::init_actions()
 
       aoe_list_str = "/flamestrike";
 
-      if ( talents.nether_tempest -> ok() )   aoe_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
+      if ( talents.nether_tempest -> ok() )   aoe_list_str += "/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6";
       else if ( talents.living_bomb -> ok() ) aoe_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
       else if ( talents.frost_bomb -> ok() )  aoe_list_str += "/frost_bomb,if=!ticking&target.time_to_die>cast_time+tick_time";
 

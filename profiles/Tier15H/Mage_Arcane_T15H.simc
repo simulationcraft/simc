@@ -43,11 +43,11 @@ actions+=/jade_serpent_potion,if=buff.alter_time.down&(buff.arcane_power.up|targ
 actions+=/use_item,name=gloves_of_the_chromatic_hydra,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/alter_time,if=buff.alter_time.down&buff.arcane_power.up
 actions+=/use_item,name=gloves_of_the_chromatic_hydra,if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.rune_of_power.remains>20
-actions+=/run_action_list,name=aoe,if=active_enemies>=5
-actions+=/run_action_list,name=single_target,if=active_enemies<5
+actions+=/run_action_list,name=aoe,if=active_enemies>=6
+actions+=/run_action_list,name=single_target,if=active_enemies<6
 
 actions.aoe=flamestrike
-actions.aoe+=/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6
+actions.aoe+=/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6
 actions.aoe+=/arcane_barrage,if=buff.arcane_charge.stack>=4
 actions.aoe+=/arcane_explosion
 
@@ -55,7 +55,7 @@ actions.single_target=arcane_barrage,if=buff.alter_time.up&buff.alter_time.remai
 actions.single_target+=/arcane_missiles,if=buff.alter_time.up
 actions.single_target+=/arcane_blast,if=buff.alter_time.up
 actions.single_target+=/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)
-actions.single_target+=/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6
+actions.single_target+=/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6
 actions.single_target+=/arcane_barrage,if=buff.arcane_charge.stack>=4&mana.pct<95
 actions.single_target+=/presence_of_mind
 actions.single_target+=/arcane_blast
