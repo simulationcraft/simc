@@ -81,7 +81,6 @@ actions.aoe+=/stormblast
 actions.aoe+=/fire_nova,if=active_flame_shock>=3
 actions.aoe+=/chain_lightning,if=active_enemies>=2&buff.maelstrom_weapon.react>=1
 actions.aoe+=/stormstrike
-actions.aoe+=/lightning_bolt,if=buff.maelstrom_weapon.react=5&cooldown.chain_lightning.remains>=2
 actions.aoe+=/earth_shock,if=active_enemies<4
 actions.aoe+=/feral_spirit
 actions.aoe+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50
