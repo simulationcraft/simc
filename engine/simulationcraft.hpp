@@ -1839,7 +1839,7 @@ protected:
   timespan_t iteration_uptime_sum;
   unsigned int up_count, down_count, start_count, refresh_count;
   int trigger_attempts, trigger_successes;
-  int iteration_max_stack;
+  int simulation_max_stack;
 
   // report data
 public:

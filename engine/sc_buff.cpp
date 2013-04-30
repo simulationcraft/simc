@@ -140,7 +140,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   refresh_count(),
   trigger_attempts(),
   trigger_successes(),
-  iteration_max_stack( 0 ),
+  simulation_max_stack( 0 ),
   benefit_pct(),
   trigger_pct(),
   avg_start(),
@@ -283,10 +283,8 @@ void buff_t::datacollection_begin()
   start_count = 0;
   refresh_count = 0;
 
-  for ( int i = 0; i <= iteration_max_stack; i++ )
+  for ( int i = 0; i <= simulation_max_stack; i++ )
     stack_uptime[ i ] -> datacollection_begin();
-
-  iteration_max_stack = 0;
 }
 
 // buff_t::datacollection_end ==========================================================
@@ -297,7 +295,7 @@ void buff_t::datacollection_end()
 
   uptime_pct.add( time != timespan_t::zero() ? 100.0 * iteration_uptime_sum / time : 0 );
 
-  for ( int i = 0; i <= iteration_max_stack; i++ )
+  for ( int i = 0; i <= simulation_max_stack; i++ )
     stack_uptime[ i ] -> datacollection_end( time );
 
   double benefit = up_count > 0 ? 100.0 * up_count / ( up_count + down_count ) : 0;
@@ -693,8 +691,8 @@ void buff_t::bump( int stacks, double value )
       }
     }
 
-    if ( current_stack > iteration_max_stack )
-      iteration_max_stack = current_stack;
+    if ( current_stack > simulation_max_stack )
+      simulation_max_stack = current_stack;
   }
 
   if ( player ) player -> trigger_ready();
@@ -856,9 +854,14 @@ void buff_t::merge( const buff_t& other )
     assert( 0 );
   }
 #endif
-
+  
+  double uptime_mean = 0;
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
+  {
     stack_uptime[ i ] -> merge ( *( other.stack_uptime[ i ] ) );
+    uptime_mean += stack_uptime[ i ] -> uptime_sum.mean;
+  }
+  assert( uptime_pct.mean == uptime_mean );
 }
 
 // buff_t::analyze ==========================================================
