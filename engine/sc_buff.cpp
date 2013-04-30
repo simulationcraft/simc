@@ -855,13 +855,8 @@ void buff_t::merge( const buff_t& other )
   }
 #endif
   
-  double uptime_mean = 0;
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
-  {
     stack_uptime[ i ] -> merge ( *( other.stack_uptime[ i ] ) );
-    uptime_mean += stack_uptime[ i ] -> uptime_sum.mean;
-  }
-  assert( uptime_pct.mean == uptime_mean );
 }
 
 // buff_t::analyze ==========================================================
