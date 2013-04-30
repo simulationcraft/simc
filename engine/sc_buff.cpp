@@ -728,6 +728,10 @@ void buff_t::expire()
 {
   if ( current_stack <= 0 ) return;
   event_t::cancel( expiration );
+
+  assert( as<std::size_t>( current_stack ) < stack_uptime.size() );
+  stack_uptime[ current_stack ] -> update( false, sim -> current_time );
+
   current_stack = 0;
   current_value = 0;
   aura_loss();
@@ -760,9 +764,6 @@ void buff_t::expire()
     {
       constant = false;
     }
-
-  for ( size_t i = 0; i < stack_uptime.size(); i++ )
-    stack_uptime[ i ] -> update( false, sim -> current_time );
 
   if ( reactable && player && player -> ready_type == READY_TRIGGER )
   {
