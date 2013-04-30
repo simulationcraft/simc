@@ -666,15 +666,15 @@ void buff_t::bump( int stacks, double value )
 
     int before_stack = current_stack;
 
-    if ( stacks > 0 )
-      stack_uptime[ current_stack ] -> update( false, sim -> current_time );
-
     current_stack += stacks;
     if ( current_stack > max_stack() )
       current_stack = max_stack();
 
-    if ( stacks > 0 )
+    if ( before_stack != current_stack )
+    {
+      stack_uptime[ before_stack ] -> update( false, sim -> current_time );
       stack_uptime[ current_stack ] -> update( true, sim -> current_time );
+    }
 
     aura_gain();
 
