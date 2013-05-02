@@ -479,10 +479,12 @@ double stdnormal_inv( double );
 
 
 // Hookup rng containers for SimulationCraft
-#if defined(SC_USE_SSE2)
-typedef rng::distribution_t<rng::rng_engine_mt_sse2_t> rng_t;
-#else
+
+// 2013/05/02: Disable sse2-rng for now to check if it causes crashes on windows release.
+//#if defined(SC_USE_SSE2)
+//typedef rng::distribution_t<rng::rng_engine_mt_sse2_t> rng_t;
+//#else
 typedef rng::distribution_t<rng::rng_engine_mt_t> rng_t;
-#endif
+//#endif
 
 #endif // SC_RNG_HPP
