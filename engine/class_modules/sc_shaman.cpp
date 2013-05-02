@@ -1578,11 +1578,10 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
   struct improved_lava_lash_t : public shaman_spell_t
   {
     rng_t* imp_ll_rng;
-    shaman_spell_t* proxy_flame_shock;
 
     improved_lava_lash_t( shaman_t* p ) :
       shaman_spell_t( "improved_lava_lash", p ),
-      imp_ll_rng( 0 ), proxy_flame_shock( 0 )
+      imp_ll_rng( 0 )
     {
       aoe = 4;
       may_miss = may_crit = false;
@@ -1592,20 +1591,6 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
       dual = true;
 
       imp_ll_rng = sim -> get_rng( "improved_ll" );
-
-      proxy_flame_shock = static_cast< shaman_spell_t* >( p -> create_action( "flame_shock", "") );
-      proxy_flame_shock -> base_dd_min = proxy_flame_shock -> base_dd_max = 0;
-      proxy_flame_shock -> direct_power_mod = 0;
-      proxy_flame_shock -> background = true;
-      proxy_flame_shock -> callbacks = false;
-      proxy_flame_shock -> proc = true;
-      proxy_flame_shock -> may_proc_eoe = false;
-      proxy_flame_shock -> may_miss = false;
-      proxy_flame_shock -> may_crit = false;
-      proxy_flame_shock -> base_costs[ RESOURCE_MANA ] = 0;
-      proxy_flame_shock -> cooldown = p -> get_cooldown( "proxy_flame_shock" );
-      proxy_flame_shock -> dual = true;
-      proxy_flame_shock -> init();
     }
 
     // Exclude targets with your flame shock on
@@ -1624,7 +1609,10 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
         if ( sim -> actor_list[ i ] == target )
           continue;
 
-        if ( td( sim -> actor_list[ i ] ) -> dot.flame_shock -> ticking )
+        dot_t* target_dot = td( target ) -> dot.flame_shock;
+        dot_t* spread_dot = td( sim -> actor_list[ i ] ) -> dot.flame_shock;
+
+        if ( spread_dot -> remains() >= target_dot -> remains() )
           continue;
 
         tl.push_back( sim -> actor_list[ i ] );
@@ -1658,11 +1646,9 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
                        target -> name(),
                        state -> target -> name() );
 
-      if ( proxy_flame_shock )
-      {
-        proxy_flame_shock -> target = state -> target;
-        proxy_flame_shock -> execute();
-      }
+      dot_t* dot = td( target ) -> dot.flame_shock;
+      if ( dot -> ticking ) 
+        dot -> copy( state -> target );
     }
   };
 
