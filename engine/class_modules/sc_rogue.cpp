@@ -2932,6 +2932,23 @@ void rogue_t::init_actions()
     return;
   }
 
+  // Note, this only looks at static stats
+  stat_e highest_rune_stat = STAT_NONE;
+  if ( find_item( "rune_of_reorigination" ) )
+  {
+    if ( gear.get_stat( STAT_CRIT_RATING ) >= gear.get_stat( STAT_HASTE_RATING ) )
+    {
+      if ( gear.get_stat( STAT_CRIT_RATING ) >= gear.get_stat( STAT_MASTERY_RATING ) )
+        highest_rune_stat = STAT_CRIT_RATING;
+      else
+        highest_rune_stat = STAT_MASTERY_RATING;
+    }
+    else if ( gear.get_stat( STAT_HASTE_RATING ) >= gear.get_stat( STAT_MASTERY_RATING ) )
+      highest_rune_stat = STAT_HASTE_RATING;
+    else
+      highest_rune_stat = STAT_MASTERY_RATING;
+  }
+
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
   action_priority_list_t* def       = get_action_priority_list( "default"   );
 
@@ -3118,7 +3135,10 @@ void rogue_t::init_actions()
 
     // Rotation
     def -> add_action( "run_action_list,name=generator,if=talent.anticipation.enabled&anticipation_charges<4&buff.slice_and_dice.up&dot.rupture.remains>2&(buff.slice_and_dice.remains<6|dot.rupture.remains<4)" );
-    def -> add_action( "run_action_list,name=finisher,if=combo_points=5" );
+    if ( highest_rune_stat != STAT_MASTERY_RATING )
+      def -> add_action( "run_action_list,name=finisher,if=combo_points=5" );
+    else
+      def -> add_action( "run_action_list,name=finisher,if=combo_points=5|(buff.rune_of_reorigination.react&combo_points>=4)" );
     def -> add_action( "run_action_list,name=generator,if=combo_points<4|energy>80|talent.anticipation.enabled" );
     def -> add_action( "run_action_list,name=pool" );
 
@@ -3132,7 +3152,10 @@ void rogue_t::init_actions()
 
     // Combo point finishers
     action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
-    finisher -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<4" );
+    if ( highest_rune_stat != STAT_MASTERY_RATING )
+      finisher -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<4" );
+    else
+      finisher -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<4|(buff.rune_of_reorigination.react&buff.slice_and_dice.remains<25)" );
     finisher -> add_action( this, "Rupture", "if=remains<4" );
     finisher -> add_action( this, "Eviscerate" );
     finisher -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
