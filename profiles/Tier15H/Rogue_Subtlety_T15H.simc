@@ -34,7 +34,7 @@ actions+=/auto_attack
 actions+=/kick
 actions+=/use_item,slot=hands,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
-actions+=/shadow_blades,if=buff.rune_of_reorigination.down
+actions+=/shadow_blades
 actions+=/premeditation,if=combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)
 actions+=/pool_resource,for_next=1
 actions+=/ambush,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<3)
@@ -44,7 +44,7 @@ actions+=/pool_resource,for_next=1,extra_amount=45
 actions+=/vanish,if=energy>=45&energy<=75&combo_points<=3&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
 actions+=/marked_for_death,if=talent.marked_for_death.enabled&combo_points=0
 actions+=/run_action_list,name=generator,if=talent.anticipation.enabled&anticipation_charges<4&buff.slice_and_dice.up&dot.rupture.remains>2&(buff.slice_and_dice.remains<6|dot.rupture.remains<4)
-actions+=/run_action_list,name=finisher,if=combo_points=5|(buff.rune_of_reorigination.react&combo_points>=4)
+actions+=/run_action_list,name=finisher,if=combo_points=5
 actions+=/run_action_list,name=generator,if=combo_points<4|energy>80|talent.anticipation.enabled
 actions+=/run_action_list,name=pool
 
@@ -58,8 +58,8 @@ actions.generator+=/run_action_list,name=pool
 
 # Combo point finishers
 
-actions.finisher=slice_and_dice,if=buff.slice_and_dice.remains<4|(buff.rune_of_reorigination.react&buff.slice_and_dice.remains<25)
-actions.finisher+=/rupture,if=ticks_remain<2|(buff.rune_of_reorigination.react&ticks_remain<7)
+actions.finisher=slice_and_dice,if=buff.slice_and_dice.remains<4
+actions.finisher+=/rupture,if=ticks_remain<2
 actions.finisher+=/eviscerate
 actions.finisher+=/run_action_list,name=pool
 
@@ -67,40 +67,40 @@ actions.finisher+=/run_action_list,name=pool
 
 actions.pool=preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
 
-head=ninetailed_helmet,id=96681,gems=capacitive_primal_80agi_160mastery_180crit,reforge=hit_mastery
-neck=quadrahead_brooch,id=96815,gems=80agi_160crit_60crit,reforge=hit_haste
-shoulders=ninetailed_spaulders,id=96683,gems=160agi_80agi_160mastery_120haste,enchant=200agi_100crit,reforge=hit_mastery
-back=pinionfeather_greatcloak,id=96833,gems=80agi_160hit_60agi,enchant=180crit
+head=ninetailed_helmet,id=96681,gems=capacitive_primal_80agi_160haste_180crit,reforge=hit_crit
+neck=quadrahead_brooch,id=96815,gems=80agi_160haste_60crit,reforge=hit_haste
+shoulders=ninetailed_spaulders,id=96683,gems=160agi_80agi_160haste_120haste,enchant=200agi_100crit,reforge=hit_haste
+back=grey_wind_mistcloak,id=95015,gems=80agi_160haste_60agi,enchant=180crit
 chest=chestguard_of_coruscating_blades,id=95033,gems=160agi_160agi_160agi_180agi,enchant=80all
-wrists=bindings_of_multiplicative_strikes,id=96764,enchant=180agi
-hands=ninetailed_gloves,id=96680,gems=160agi_60agi,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=exp_mastery
-waist=strap_of_murderous_strikes,id=94998,gems=80agi_160hit_80agi_160hit_320agi_120agi
-legs=ninetailed_legguards,id=96682,gems=80agi_160mastery_80agi_160hit_120agi,enchant=285agi_165crit
-feet=twisttoe_tabi,id=95007,gems=80agi_160mastery_80agi_160hit_120agi,enchant=140agi,reforge=exp_mastery
+wrists=bracers_of_the_midnight_comet,id=96912,suffix=340,gems=80agi_160haste_60agi,enchant=180agi
+hands=ninetailed_gloves,id=96680,gems=160agi_60agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=exp_haste
+waist=strap_of_murderous_strikes,id=94998,gems=80agi_160hit_80agi_160hit_320agi_120agi,reforge=crit_haste
+legs=ninetailed_legguards,id=96682,gems=80agi_160haste_80agi_160hit_120agi,enchant=285agi_165crit
+feet=twisttoe_tabi,id=95007,gems=80agi_160haste_80agi_160hit_120agi,enchant=140agi,reforge=exp_mastery
 finger1=radens_swift_seal,id=95021,gems=80agi_160hit_60agi,reforge=hit_mastery
-finger2=goresoaked_gear,id=96885,gems=80agi_160mastery_60crit,reforge=haste_mastery
-trinket1=renatakis_soul_charm,id=96741,reforge=exp_mastery
-trinket2=rune_of_reorigination,id=96918
-main_hand=fyns_flickering_dagger,id=96976,gems=80agi_160mastery_320agi_60agi,enchant=dancing_steel,reforge=exp_mastery
-off_hand=fyns_flickering_dagger,id=96976,gems=80agi_160mastery_160agi_60agi,enchant=dancing_steel,reforge=exp_crit
+finger2=goresoaked_gear,id=96885,gems=80agi_160haste_60crit,reforge=crit_mastery
+trinket1=bad_juju,id=96781,reforge=mastery_haste
+trinket2=renatakis_soul_charm,id=96741,reforge=exp_haste
+main_hand=fyns_flickering_dagger,id=96976,gems=80agi_160haste_320agi_60agi,enchant=dancing_steel,reforge=exp_mastery
+off_hand=fyns_flickering_dagger,id=96976,gems=80agi_160haste_160agi_60agi,enchant=dancing_steel,reforge=exp_mastery
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=22212
+# gear_agility=20520
 # gear_stamina=26221
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2552
-# gear_hit_rating=2831
-# gear_crit_rating=7102
-# gear_haste_rating=7144
-# gear_mastery_rating=7156
+# gear_hit_rating=2671
+# gear_crit_rating=5841
+# gear_haste_rating=12536
+# gear_mastery_rating=4740
 # gear_armor=20265
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
 # hands=ninetailed_gloves,heroic=1,addon=synapse_springs_mark_ii
-# trinket2=rune_of_reorigination,heroic=1
+# trinket1=bad_juju,heroic=1
 # main_hand=fyns_flickering_dagger,heroic=1,weapon=dagger_1.80speed_6350min_11794max,enchant=dancing_steel
 # off_hand=fyns_flickering_dagger,heroic=1,weapon=dagger_1.80speed_6350min_11794max,enchant=dancing_steel
 # These values represent the avg HAT donor interval of the raid.
