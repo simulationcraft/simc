@@ -480,12 +480,22 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
       if ( a.isReadable() )
         AppDataDir = s.first();
     }
-    QStringList t = QStandardPaths::standardLocations( QStandardPaths::TempLocation );
-    if ( ! t.empty() )
+    s = QStandardPaths::standardLocations( QStandardPaths::CacheLocation );
+    if ( ! s.empty() )
     {
       QDir a( s.first() );
       if ( a.isReadable() )
-        TmpDir = t.first();
+        TmpDir = s.first();
+    }
+    else
+    {
+      s = QStandardPaths::standardLocations( QStandardPaths::TempLocation );
+      if ( ! s.empty() )
+      {
+        QDir a( s.first() );
+        if ( a.isReadable() )
+          TmpDir = s.first();
+      }
     }
   #endif
 #endif

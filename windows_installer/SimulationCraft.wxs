@@ -55,6 +55,12 @@
 		<File Id='Qt5WebKitWidgets.dll' Name='Qt5WebKitWidgets.dll' DiskId='2' Source='Qt5WebKitWidgets.dll' />
 		<File Id='Qt5Widgets.dll' Name='Qt5Widgets.dll' DiskId='2' Source='Qt5Widgets.dll' />
       </Component>
+       <Directory Id='platforms' Name='platforms' >
+      <Component Id='GUI_DLLs_platforms' Guid='0DCCC0EC-6C18-4264-8716-A99F4A7D75B1'>
+		<File Id='qminimal.dll' Name='qminimal.dll' DiskId='2' Source='platforms\qminimal.dll' />
+		<File Id='qwindows.dll' Name='qwindows.dll' DiskId='2' Source='platforms\qwindows.dll' />
+		</Component>
+		</Directory>
 
 	</Directory>
     </Directory>
@@ -95,6 +101,7 @@
 		<ComponentRef Id='GUIExecutable' />
 		<ComponentRef Id="appdatafolder"/>
 		<ComponentRef Id='GUI_DLLs' />
+		<ComponentRef Id='GUI_DLLs_platforms' />
 		<ComponentRef Id='ProgramMenuDir' />
 		<ComponentRef Id='webcacheDir' />
 	</Feature>
