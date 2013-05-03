@@ -3121,7 +3121,10 @@ void rogue_t::init_actions()
         def -> add_action( racial_actions[ i ] + ",if=buff.shadow_dance.up" );
     }
 
-    def -> add_action( this, "Shadow Blades" );
+    if ( highest_rune_stat != STAT_MASTERY_RATING )
+      def -> add_action( this, "Shadow Blades" );
+    else
+      def -> add_action( this, "Shadow Blades", "if=buff.rune_of_reorigination.down" );
 
     // Shadow Dancing and Vanishing and Marking for the Deathing
     def -> add_action( this, "Premeditation", "if=combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)" );
@@ -3153,10 +3156,15 @@ void rogue_t::init_actions()
     // Combo point finishers
     action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
     if ( highest_rune_stat != STAT_MASTERY_RATING )
+    {
       finisher -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<4" );
+      finisher -> add_action( this, "Rupture", "if=ticks_remain<2" );
+    }
     else
+    {
       finisher -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<4|(buff.rune_of_reorigination.react&buff.slice_and_dice.remains<25)" );
-    finisher -> add_action( this, "Rupture", "if=remains<4" );
+      finisher -> add_action( this, "Rupture", "if=ticks_remain<2|(buff.rune_of_reorigination.react&ticks_remain<7)" );
+    }
     finisher -> add_action( this, "Eviscerate" );
     finisher -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
 

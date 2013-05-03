@@ -34,7 +34,7 @@ actions+=/auto_attack
 actions+=/kick
 actions+=/use_item,slot=hands,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
-actions+=/shadow_blades
+actions+=/shadow_blades,if=buff.rune_of_reorigination.down
 actions+=/premeditation,if=combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)
 actions+=/pool_resource,for_next=1
 actions+=/ambush,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<3)
@@ -59,7 +59,7 @@ actions.generator+=/run_action_list,name=pool
 # Combo point finishers
 
 actions.finisher=slice_and_dice,if=buff.slice_and_dice.remains<4|(buff.rune_of_reorigination.react&buff.slice_and_dice.remains<25)
-actions.finisher+=/rupture,if=remains<4
+actions.finisher+=/rupture,if=ticks_remain<2|(buff.rune_of_reorigination.react&ticks_remain<7)
 actions.finisher+=/eviscerate
 actions.finisher+=/run_action_list,name=pool
 
