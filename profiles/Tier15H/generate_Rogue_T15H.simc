@@ -68,9 +68,9 @@ position=back
 professions=jewelcrafting=600/engineering=600
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#cb!200002
 head=ninetailed_helmet,id=96681,gems=capacitive_primal_80agi_160mastery_180crit,reforge=hit_mastery
-neck=quadrahead_brooch,id=96815,gems=160agi,reforge=hit_haste
+neck=quadrahead_brooch,id=96815,gems=80agi_160crit_60crit,reforge=hit_haste
 shoulders=ninetailed_spaulders,id=96683,gems=160agi_80agi_160mastery_120haste,enchant=200agi_100crit,reforge=hit_mastery
-back=pinionfeather_greatcloak,id=96833,gems=160agi,enchant=180crit
+back=pinionfeather_greatcloak,id=96833,gems=80agi_160hit_60agi,enchant=180crit
 chest=chestguard_of_coruscating_blades,id=95033,gems=160agi_160agi_160agi_180agi,enchant=80all
 wrists=bindings_of_multiplicative_strikes,id=96764,enchant=180agi
 hands=ninetailed_gloves,id=96680,gems=160agi_60agi,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=exp_mastery
