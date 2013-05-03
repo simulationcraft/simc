@@ -2344,6 +2344,7 @@ void monk_t::init_base()
 
   resources.base[  RESOURCE_CHI  ] = 4 + talent.ascension -> effectN( 1 ).base_value();
   resources.base[ RESOURCE_ENERGY ] = 100;
+  resources.base_multiplier[ RESOURCE_MANA ] *= 1.0 + talent.ascension -> effectN( 2 ).percent();
 
   base_chi_regen_per_second = 0;
   base_energy_regen_per_second = 10.0;
