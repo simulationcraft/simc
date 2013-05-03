@@ -13,5 +13,3 @@ call candle -dprofiles=profiles SimulationCraft.wxs profiles.wxs
 
 :: link everything together into SimulationCraft.msi
 call light -ext WixUIExtension -out SimulationCraft.msi SimulationCraft.wixobj profiles.wixobj
-
-pause
