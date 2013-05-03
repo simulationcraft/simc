@@ -960,7 +960,8 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::assess_damage( type, s );
 
-    trigger_blackout_kick_dot( this, s -> target, s -> result_amount * data().effectN( 2 ).percent( ) );
+    if ( p() -> specialization() == MONK_WINDWALKER )
+      trigger_blackout_kick_dot( this, s -> target, s -> result_amount * data().effectN( 2 ).percent( ) );
   }
 
   virtual double cost()
@@ -2660,8 +2661,11 @@ void monk_t::init_actions()
       break;
 
     case MONK_MISTWEAVER:
+      def -> add_action( "auto_attack" );
       def -> add_action( this, "Mana Tea", "if=buff.mana_tea.react>=2&mana.pct<=90" );
       def -> add_talent( this, "Chi Wave" );
+      def -> add_talent( this, "Chi Brew", "if=buff.tiger_power.up" );
+      def -> add_action( this, "Blackout Kick", "if=buff.muscle_memory.up&buff.tiger_power.up" );
       def -> add_action( this, "Tiger Palm", "if=buff.muscle_memory.up" );
       def -> add_action( this, "Jab" );
       def -> add_action( this, "Mana Tea" );
