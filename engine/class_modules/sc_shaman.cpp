@@ -1612,7 +1612,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
         dot_t* target_dot = td( target ) -> dot.flame_shock;
         dot_t* spread_dot = td( sim -> actor_list[ i ] ) -> dot.flame_shock;
 
-        if ( spread_dot -> remains() >= target_dot -> remains() )
+        if ( spread_dot -> remains() > target_dot -> remains() )
           continue;
 
         tl.push_back( sim -> actor_list[ i ] );
@@ -1629,7 +1629,25 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
       // target list until it's at aoe amount
       while ( total_targets > static_cast< size_t >( aoe ) )
       {
-        target_cache.erase( target_cache.begin() + static_cast< size_t >( imp_ll_rng -> range( 0, target_cache.size() ) ) );
+        bool removed = false;
+
+        // Remove targets that have a flame shock first
+        // TODO: The flame shocked targets should be randomly removed too, but 
+        // this will have to do for now
+        for ( size_t i = 0; i < target_cache.size(); i++ )
+        {
+          if ( td( target_cache[ i ] ) -> dot.flame_shock -> ticking )
+          {
+            target_cache.erase( target_cache.begin() + i );
+            removed = true;
+            break;
+          }
+        }
+
+        // There's no flame shocked targets to remove, eliminate a random target
+        if ( ! removed )
+          target_cache.erase( target_cache.begin() + static_cast< size_t >( imp_ll_rng -> range( 0, target_cache.size() ) ) );
+
         total_targets--;
       }
 
