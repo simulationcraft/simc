@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
 
-  <Product Name='SimulationCraft' Id='FEE57B01-3249-4049-8C34-2B8ABC0340BC' UpgradeCode='43C8B3C9-44BC-4BD8-94E6-DBA81C3C5A50'
+  <Product Name="SimulationCraft $(var.prod_ver)" Id="*" UpgradeCode='43C8B3C9-44BC-4BD8-94E6-DBA81C3C5A50'
     Language='1033' Codepage='1252' Version='3.2.0.8' Manufacturer='code.google.com/p/simulationcraft'>
 
     <Package Id='*' Keywords='Installer' Description="SimulationCraft 1.0 Installer"
@@ -12,11 +12,12 @@
 
 <Directory Id='TARGETDIR' Name='SourceDir'>
   <Directory Id='ProgramFilesFolder' Name='PFiles'>
-    <Directory Id='INSTALLDIR' Name='SimulationCraft'>
+    <Directory Id='ManufacturerDir' Name='SimulationCraft'>
+     <Directory Id='INSTALLDIR' Name='$(var.prod_ver)'>
 
       <Component Id='GUIExecutable' Guid='00EA0A22-CD7A-4FA5-B2B1-59694C33671E'>
 		<File Id='SimulationCraftEXE' Name='SimulationCraft.exe' DiskId='1' Source='SimulationCraft.exe' KeyPath='yes'>
-		  <Shortcut Id="SimulationCraftICON" Directory="ProgramMenuDir" Name="SimulationCraft" WorkingDirectory='INSTALLDIR' Icon="SimulationCraft.ico" IconIndex="0" Advertise="yes" />
+		  <Shortcut Id="SimulationCraftICON" Directory="ProgramMenuDir" Name="SimulationCraft $(var.prod_ver)" WorkingDirectory='INSTALLDIR' Icon="SimulationCraft.ico" IconIndex="0" Advertise="yes" />
 		</File>
 		<File Id='Examples.simc' Name='Examples.simc' DiskId='1' Source='Examples.simc' />
 		<File Id='Legend.html' Name='Legend.html' DiskId='1' Source='Legend.html' />
@@ -56,6 +57,7 @@
       </Component>
 
 	</Directory>
+    </Directory>
   </Directory>
 
   <Directory Id="LocalAppDataFolder" Name="AppData">
