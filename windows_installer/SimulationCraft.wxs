@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+
+  <Product Name='SimulationCraft' Id='FEE57B01-3249-4049-8C34-2B8ABC0340BC' UpgradeCode='43C8B3C9-44BC-4BD8-94E6-DBA81C3C5A50'
+    Language='1033' Codepage='1252' Version='3.2.0.8' Manufacturer='code.google.com/p/simulationcraft'>
+
+    <Package Id='*' Keywords='Installer' Description="SimulationCraft 1.0 Installer"
+      InstallerVersion='100' Languages='1033' Compressed='yes' SummaryCodepage='1252' />
+
+ <Media Id='1' Cabinet='SimulationCraft.cab' EmbedCab='yes' />
+ <Media Id='2' Cabinet='QT_DLLs.cab' EmbedCab='yes' />
+
+<Directory Id='TARGETDIR' Name='SourceDir'>
+  <Directory Id='ProgramFilesFolder' Name='PFiles'>
+    <Directory Id='INSTALLDIR' Name='SimulationCraft'>
+
+      <Component Id='GUIExecutable' Guid='00EA0A22-CD7A-4FA5-B2B1-59694C33671E'>
+		<File Id='SimulationCraftEXE' Name='SimulationCraft.exe' DiskId='1' Source='SimulationCraft.exe' KeyPath='yes'>
+		  <Shortcut Id="SimulationCraftICON" Directory="ProgramMenuDir" Name="SimulationCraft" WorkingDirectory='INSTALLDIR' Icon="SimulationCraft.ico" IconIndex="0" Advertise="yes" />
+		</File>
+		<File Id='Examples.simc' Name='Examples.simc' DiskId='1' Source='Examples.simc' />
+		<File Id='Legend.html' Name='Legend.html' DiskId='1' Source='Legend.html' />
+		<File Id='READ_ME_FIRST.txt' Name='READ_ME_FIRST.txt' DiskId='1' Source='READ_ME_FIRST.txt' />
+		<File Id='Welcome.html' Name='Welcome.html' DiskId='1' Source='Welcome.html' />
+		<File Id='Welcome.png' Name='Welcome.png' DiskId='1' Source='Welcome.png' />
+      </Component>
+
+	  <Component Id='CLIExecutable' Guid='59B91DB7-E01F-413C-A248-BF841CB50056'>
+		<File Id='simcEXE' Name='simc.exe' DiskId='1' Source='simc.exe' />
+      </Component>
+
+	  <Component Id='GUI_DLLs' Guid='42DC9638-8CF6-40CC-BC8E-7C79A0E720FF'>
+		<File Id='D3DCompiler_43.dll' Name='D3DCompiler_43.dll' DiskId='2' Source='D3DCompiler_43.dll' />
+		<File Id='icudt49.dll' Name='icudt49.dll' DiskId='2' Source='icudt49.dll' />
+		<File Id='icuin49.dll' Name='icuin49.dll' DiskId='2' Source='icuin49.dll' />
+		<File Id='icuuc49.dll' Name='icuuc49.dll' DiskId='2' Source='icuuc49.dll' />
+		<File Id='libEGL.dll' Name='libEGL.dll' DiskId='2' Source='libEGL.dll' />
+		<File Id='libgcc_s_sjlj1.dll' Name='libgcc_s_sjlj-1.dll' DiskId='2' Source='libgcc_s_sjlj-1.dll' />
+		<File Id='libGLESv2.dll' Name='libGLESv2.dll' DiskId='2' Source='libGLESv2.dll' />
+		<File Id='libstdc6.dll' Name='libstdc++-6.dll' DiskId='2' Source='libstdc++-6.dll' />
+		<File Id='libwinpthread1.dll' Name='libwinpthread-1.dll' DiskId='2' Source='libwinpthread-1.dll' />
+		<File Id='Qt5Core.dll' Name='Qt5Core.dll' DiskId='2' Source='Qt5Core.dll' />
+		<File Id='Qt5Gui.dll' Name='Qt5Gui.dll' DiskId='2' Source='Qt5Gui.dll' />
+		<File Id='Qt5Multimedia.dll' Name='Qt5Multimedia.dll' DiskId='2' Source='Qt5Multimedia.dll' />
+		<File Id='Qt5MultimediaWidgets.dll' Name='Qt5MultimediaWidgets.dll' DiskId='2' Source='Qt5MultimediaWidgets.dll' />
+		<File Id='Qt5Network.dll' Name='Qt5Network.dll' DiskId='2' Source='Qt5Network.dll' />
+		<File Id='Qt5OpenGL.dll' Name='Qt5OpenGL.dll' DiskId='2' Source='Qt5OpenGL.dll' />
+		<File Id='Qt5PrintSupport.dll' Name='Qt5PrintSupport.dll' DiskId='2' Source='Qt5PrintSupport.dll' />
+		<File Id='Qt5Qml.dll' Name='Qt5Qml.dll' DiskId='2' Source='Qt5Qml.dll' />
+		<File Id='Qt5Quick.dll' Name='Qt5Quick.dll' DiskId='2' Source='Qt5Quick.dll' />
+		<File Id='Qt5Sql.dll' Name='Qt5Sql.dll' DiskId='2' Source='Qt5Sql.dll' />
+		<File Id='Qt5V8.dll' Name='Qt5V8.dll' DiskId='2' Source='Qt5V8.dll' />
+		<File Id='Qt5WebKit.dll' Name='Qt5WebKit.dll' DiskId='2' Source='Qt5WebKit.dll' />
+		<File Id='Qt5WebKitWidgets.dll' Name='Qt5WebKitWidgets.dll' DiskId='2' Source='Qt5WebKitWidgets.dll' />
+		<File Id='Qt5Widgets.dll' Name='Qt5Widgets.dll' DiskId='2' Source='Qt5Widgets.dll' />
+      </Component>
+
+	</Directory>
+  </Directory>
+
+  <Directory Id="LocalAppDataFolder" Name="AppData">
+    <Directory Id="simcAppData" Name="SimulationCraft">
+      <Component Id="appdatafolder" Guid="E38956EE-3618-4311-BCB0-7026CEA73413"
+        SharedDllRefCount="no" NeverOverwrite="no" Permanent="yes" Transitive="no"
+        Win64="no" Location="either">
+        <CreateFolder/>
+        <RemoveFolder Id='simcAppData' On='uninstall' />
+	<RegistryValue Root='HKCU' Key='Software\[ProductName]' Type='string' Value='' KeyPath='yes' />
+      </Component>
+      <Directory Id="webcache" Name="webcache">
+        <Component Id="webcacheDir" Guid="D96C397B-6723-4E20-AC55-A8D7A65A3680">
+	  <RemoveFolder Id='webcache' On='uninstall' />
+	<RegistryValue Root='HKCU' Key='Software\[ProductName]' Type='string' Value='' KeyPath='yes' />
+        </Component>
+      </Directory>
+    </Directory>
+  </Directory>
+
+  <Directory Id="ProgramMenuFolder" Name="Programs">
+    <Directory Id="ProgramMenuDir" Name="SimulationCraft">
+      <Component Id="ProgramMenuDir" Guid="A4562C36-AC93-4FD8-9738-16015B8E29B8">
+        <RemoveFolder Id='ProgramMenuDir' On='uninstall' />
+        <RegistryValue Root='HKCU' Key='Software\[ProductName]' Type='string' Value='' KeyPath='yes' />
+      </Component>
+    </Directory>
+  </Directory>
+
+</Directory>
+
+  <Feature Id='Complete' Title='SimulationCraft' Description='The complete package.'
+      Display='expand' Level='1' ConfigurableDirectory='INSTALLDIR'>
+	<Feature Id='GUIProgram' Title='Graphical User Interface' Description='The Graphical User Interface.' Level='1'>
+		<ComponentRef Id='GUIExecutable' />
+		<ComponentRef Id="appdatafolder"/>
+		<ComponentRef Id='GUI_DLLs' />
+		<ComponentRef Id='ProgramMenuDir' />
+		<ComponentRef Id='webcacheDir' />
+	</Feature>
+    <Feature Id='Profiles' Title='Sample Profiles' Description='Sample Profiles, some of them aspiring to be Best in Slot.' Level='1'>
+        <ComponentGroupRef Id='Profiles' />
+	</Feature>
+	<Feature Id='CLIProgram' Title='Command Line Interface' Description='The Command Line Interface.' Level='10'>
+		<ComponentRef Id='CLIExecutable' />
+		
+    </Feature>
+  </Feature>
+
+    <UIRef Id="WixUI_Mondo" />
+    <UIRef Id="WixUI_ErrorProgressText" />
+    <WixVariable Id="WixUILicenseRtf" Value="GPL3.rtf" />
+    <WixVariable Id="WixUIDialogBmp" Value="background.bmp" />
+    <WixVariable Id="WixUIBannerBmp" Value="banner.bmp" />
+
+  <Icon Id="SimulationCraft.ico" SourceFile="Simcraft2.ico" />
+
+  </Product>
+</Wix>
