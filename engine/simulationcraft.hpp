@@ -5502,8 +5502,8 @@ struct proxy_t
 };
 void set_proxy( const std::string& type, const std::string& host, const unsigned port );
 
-void cache_load();
-void cache_save();
+void cache_load( const char* file_name );
+void cache_save( const char* file_name );
 bool clear_cache( sim_t*, const std::string& name, const std::string& value );
 
 bool get( std::string& result, const std::string& url, cache::behavior_e b,

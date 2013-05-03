@@ -90,7 +90,7 @@ int sim_t::main( const std::vector<std::string>& args )
 {
   sim_signal_handler_t handler( this );
 
-  http::cache_load();
+  http::cache_load( "simc_cache.dat" );
   dbc::init();
   module_t::init();
 
@@ -172,7 +172,7 @@ int sim_t::main( const std::vector<std::string>& args )
     fclose( output_file );
   output_file = 0;
 
-  http::cache_save();
+  http::cache_save( "simc_cache.dat" );
   dbc::de_init();
 
   return canceled;

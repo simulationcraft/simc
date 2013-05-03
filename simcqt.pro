@@ -4,6 +4,7 @@ QT += core gui network webkit
 #CONFIG += paperdoll
 #CONFIG += openssl
 #CONFIG += qt5
+#CONFIG += to_install // GUI will be installed, use default AppData & Temp location for files created
 
 contains ( QT_MAJOR_VERSION , 5 ) {
 QT += widgets webkitwidgets
@@ -146,6 +147,10 @@ CONFIG(openssl) {
   DEFINES += SC_USE_OPENSSL
   INCLUDEPATH += $$OPENSSL_INCLUDES
   LIBS += -L$$OPENSSL_LIBS -lssleay32
+}
+
+CONFIG(to_install) {
+  DEFINES += SC_TO_INSTALL
 }
 
 

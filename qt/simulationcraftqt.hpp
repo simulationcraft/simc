@@ -367,6 +367,9 @@ public:
   int simResults;
 //  QStringList resultsHtml;
 
+  QString AppDataDir;
+  QString TmpDir;
+
   QString cmdLineText;
   QString logFileText;
   QString resultsFileText;
@@ -507,7 +510,7 @@ public:
     setPage( page );
     page -> setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
 
-    QDir dir( QDir::currentPath() + QDir::separator() + "webcache" );
+    QDir dir( mainWindow -> TmpDir + QDir::separator() + "simc_webcache" );
     if ( ! dir.exists() ) dir.mkpath(".");
 
     QNetworkDiskCache *diskCache = new QNetworkDiskCache( this );

@@ -12,6 +12,9 @@
 #ifdef Q_WS_MAC
 #include <CoreFoundation/CoreFoundation.h>
 #endif
+#if QT_VERSION_5
+#include <QStandardPaths>
+#endif
 
 namespace { // UNNAMED NAMESPACE
 
@@ -359,9 +362,9 @@ void SC_MainWindow::updateSimProgress()
 
 void SC_MainWindow::loadHistory()
 {
-  http::cache_load();
+  http::cache_load( ( TmpDir.toStdString() + "/" + "simc_cache.dat" ).c_str() );
 
-  QFile file( SIMC_HISTORY_FILE );
+  QFile file( AppDataDir + "/" + SIMC_HISTORY_FILE );
   if ( file.open( QIODevice::ReadOnly ) )
   {
     QDataStream in( &file );
@@ -403,9 +406,9 @@ void SC_MainWindow::loadHistory()
 void SC_MainWindow::saveHistory()
 {
   charDevCookies -> save();
-  http::cache_save();
+  http::cache_save( ( TmpDir.toStdString() + "/" + "simc_cache.dat" ).c_str() );
 
-  QFile file( SIMC_HISTORY_FILE );
+  QFile file( AppDataDir + "/" + SIMC_HISTORY_FILE );
   if ( file.open( QIODevice::WriteOnly ) )
   {
     optionsHistory.add( encodeOptions() );
@@ -458,14 +461,38 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   : QWidget( parent ),
     historyWidth( 0 ), historyHeight( 0 ), historyMaximized( 1 ),
     visibleWebView( 0 ), sim( 0 ), simPhase( "%p%" ), simProgress( 100 ), simResults( 0 ),
-#ifndef Q_WS_MAC
-    logFileText( "log.txt" ),
-    resultsFileText( "results.html" )
-#else
-    logFileText( QDir::currentPath() + QDir::separator() + "log.txt" ),
-    resultsFileText( QDir::currentPath() + QDir::separator() + "results.html" )
-#endif
+    AppDataDir( "." ), TmpDir( "." )
 {
+
+#ifdef SC_TO_INSTALL // GUI will be installed, use default AppData & Temp location for files created
+  #ifdef Q_WS_MAC
+    AppDataDir = TmpDir = QDir::currentPath();
+  #endif
+  #ifdef Q_OS_WIN32
+    AppDataDir = TmpDir = QDir::home().absolutePath();
+  #endif
+
+  #if QT_VERSION_5
+    QStringList s = QStandardPaths::standardLocations( QStandardPaths::DataLocation );
+    if ( ! s.empty() )
+    {
+      QDir a( s.first() );
+      if ( a.isReadable() )
+        AppDataDir = s.first();
+    }
+    QStringList t = QStandardPaths::standardLocations( QStandardPaths::TempLocation );
+    if ( ! t.empty() )
+    {
+      QDir a( s.first() );
+      if ( a.isReadable() )
+        TmpDir = t.first();
+    }
+  #endif
+#endif
+
+  logFileText =  AppDataDir + "/" + "log.txt";
+  resultsFileText =  AppDataDir + "/" + "results.html";
+
   mainTab = new SC_MainTabWidget( this );
   createWelcomeTab();
   createOptionsTab();
@@ -1305,7 +1332,7 @@ sim_t* SC_MainWindow::initSim()
   if ( ! sim )
   {
     sim = new sim_t();
-    sim -> output_file = fopen( SIMC_LOG_FILE, "w" );
+    sim -> output_file = fopen( (AppDataDir.toStdString() + "/" + SIMC_LOG_FILE ).c_str(), "w" );
     sim -> report_progress = 0;
 #if SC_USE_PTR
     sim -> parse_option( "ptr", ( ( choice.version -> currentIndex() == 1 ) ? "1" : "0" ) );
@@ -1324,7 +1351,7 @@ void SC_MainWindow::deleteSim( SC_PlainTextEdit* append_error_message )
     sim = 0;
 
     QString contents;
-    QFile logFile( SIMC_LOG_FILE );
+    QFile logFile( AppDataDir + "/" + SIMC_LOG_FILE );
     if ( logFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
       contents = QString::fromUtf8( logFile.readAll() );
@@ -2131,15 +2158,15 @@ void SC_MainWindow::armoryRegionChanged( const QString& region )
 void SimulateThread::run()
 {
   QByteArray utf8_profile = options.toUtf8();
-  QFile file( "simc_gui.simc" );
+  QFile file( mainWindow -> AppDataDir + "/" + "simc_gui.simc" );
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
     file.write( utf8_profile );
     file.close();
   }
 
-  sim -> html_file_str = "simc_report.html";
-  sim -> xml_file_str  = "simc_report.xml";
+  sim -> html_file_str = mainWindow -> AppDataDir.toStdString() + "/" + "simc_report.html";
+  sim -> xml_file_str  = mainWindow -> AppDataDir.toStdString() + "/" + "simc_report.xml";
 
   sim_control_t description;
 

@@ -48,7 +48,7 @@ int main( int argc, char *argv[] )
 
   if ( updater )
   {
-    updater->checkForUpdates();
+    updater -> checkForUpdates();
   }
 #endif /* SIMC_NO_AUTOUPDATE */
 

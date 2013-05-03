@@ -21,8 +21,6 @@ namespace { // UNNAMED NAMESPACE ==========================================
 
 static const bool HTTP_CACHE_DEBUG = false;
 
-static const char* const url_cache_file = "simc_cache.dat";
-
 static mutex_t cache_mutex;
 
 static const unsigned int NETBUFSIZE = 1 << 15;
@@ -539,13 +537,13 @@ void put( std::ostream& os, const char* s )
 { os.write( s, strlen( s ) + 1 ); }
 }
 
-void http::cache_load()
+void http::cache_load( const char* file_name )
 {
   auto_lock_t lock( cache_mutex );
 
   try
   {
-    std::ifstream file( url_cache_file, std::ios::binary );
+    std::ifstream file( file_name, std::ios::binary );
     if ( !file ) return;
     file.exceptions( std::ios::eofbit | std::ios::failbit | std::ios::badbit );
     file.unsetf( std::ios::skipws );
@@ -581,13 +579,13 @@ void http::cache_load()
 
 // http::cache_save =========================================================
 
-void http::cache_save()
+void http::cache_save( const char* file_name )
 {
   auto_lock_t lock( cache_mutex );
 
   try
   {
-    std::ofstream file( url_cache_file, std::ios::binary );
+    std::ofstream file( file_name, std::ios::binary );
     if ( ! file ) return;
     file.exceptions( std::ios::eofbit | std::ios::failbit | std::ios::badbit );
 
@@ -693,6 +691,9 @@ uint32_t spell_id_t::get_school_mask( school_e x ) { return 0; }
 
 int main( int argc, char* argv[] )
 {
+
+  const char* const url_cache_file = "simc_cache.dat";
+
   if ( argc > 1 )
   {
     for ( int i = 1; i < argc; ++i )
@@ -700,7 +701,7 @@ int main( int argc, char* argv[] )
       if ( !strcmp( argv[ i ], "--dump" ) )
       {
         url_db.clear();
-        http::cache_load();
+        http::cache_load( url_cache_file );
 
         for ( auto& i : url_db )
         {
