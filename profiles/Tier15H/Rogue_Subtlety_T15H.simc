@@ -67,40 +67,39 @@ actions.finisher+=/run_action_list,name=pool
 
 actions.pool=preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
 
-head=lightningeye_hood,id=96742,gems=capacitive_primal_80agi_160crit_180agi
-neck=quadrahead_brooch,id=96815,gems=80agi_160crit_60crit,reforge=hit_haste
-shoulders=ninetailed_spaulders,id=96683,gems=160agi_80agi_160crit_120haste,enchant=200agi_100crit,reforge=hit_mastery
-back=pinionfeather_greatcloak,id=96833,gems=80agi_160hit_60agi,enchant=180hit
-chest=ninetailed_tunic,id=96679,gems=160agi_80agi_160crit_80agi_160hit_180agi,enchant=80all,reforge=exp_haste
+head=ninetailed_helmet,id=96681,gems=capacitive_primal_80agi_160mastery_180crit,reforge=hit_mastery
+neck=quadrahead_brooch,id=96815,gems=160agi,reforge=hit_haste
+shoulders=ninetailed_spaulders,id=96683,gems=160agi_80agi_160mastery_120haste,enchant=200agi_100crit,reforge=hit_mastery
+back=pinionfeather_greatcloak,id=96833,gems=160agi,enchant=180crit
+chest=chestguard_of_coruscating_blades,id=95033,gems=160agi_160agi_160agi_180agi,enchant=80all
 wrists=bindings_of_multiplicative_strikes,id=96764,enchant=180agi
-hands=ninetailed_gloves,id=96680,gems=160agi_60agi,enchant=170str,addon=synapse_springs_mark_ii,reforge=exp_haste
+hands=ninetailed_gloves,id=96680,gems=160agi_60agi,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=exp_mastery
 waist=strap_of_murderous_strikes,id=94998,gems=80agi_160hit_80agi_160hit_320agi_120agi
-legs=ninetailed_legguards,id=96682,gems=80agi_160crit_80agi_160hit_120agi,enchant=285agi_165crit
-feet=twisttoe_tabi,id=95007,gems=80agi_160crit_80agi_160hit_120agi,enchant=140agi,reforge=exp_crit
-finger1=radens_swift_seal,id=95021,gems=80agi_160hit_60agi,reforge=hit_crit
-finger2=goresoaked_gear,id=96885,gems=80agi_160crit_60crit
-trinket1=bad_juju,id=96781
+legs=ninetailed_legguards,id=96682,gems=80agi_160mastery_80agi_160hit_120agi,enchant=285agi_165crit
+feet=twisttoe_tabi,id=95007,gems=80agi_160mastery_80agi_160hit_120agi,enchant=140agi,reforge=exp_mastery
+finger1=radens_swift_seal,id=95021,gems=80agi_160hit_60agi,reforge=hit_mastery
+finger2=goresoaked_gear,id=96885,gems=80agi_160mastery_60crit,reforge=haste_mastery
+trinket1=renatakis_soul_charm,id=96741,reforge=exp_mastery
 trinket2=rune_of_reorigination,id=96918
-main_hand=fyns_flickering_dagger,id=96976,gems=80agi_160crit_320agi_60agi,enchant=dancing_steel
-off_hand=fyns_flickering_dagger,id=96976,gems=80agi_160haste_160agi_60agi,enchant=dancing_steel
+main_hand=fyns_flickering_dagger,id=96976,gems=80agi_160mastery_320agi_60agi,enchant=dancing_steel,reforge=exp_mastery
+off_hand=fyns_flickering_dagger,id=96976,gems=80agi_160mastery_160agi_60agi,enchant=dancing_steel,reforge=exp_crit
 
 # Gear Summary
-# gear_strength=250
-# gear_agility=22232
+# gear_strength=80
+# gear_agility=22312
 # gear_stamina=26221
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2482
-# gear_hit_rating=2539
-# gear_crit_rating=7225
-# gear_haste_rating=7162
-# gear_mastery_rating=7309
-# gear_armor=20255
+# gear_expertise_rating=2552
+# gear_hit_rating=2671
+# gear_crit_rating=6882
+# gear_haste_rating=7144
+# gear_mastery_rating=7156
+# gear_armor=20265
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
 # hands=ninetailed_gloves,heroic=1,addon=synapse_springs_mark_ii
-# trinket1=bad_juju,heroic=1
 # trinket2=rune_of_reorigination,heroic=1
 # main_hand=fyns_flickering_dagger,heroic=1,weapon=dagger_1.80speed_6350min_11794max,enchant=dancing_steel
 # off_hand=fyns_flickering_dagger,heroic=1,weapon=dagger_1.80speed_6350min_11794max,enchant=dancing_steel
