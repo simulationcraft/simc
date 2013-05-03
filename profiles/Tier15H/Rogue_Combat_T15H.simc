@@ -62,38 +62,38 @@ actions.finisher=rupture,if=ticks_remain<2&target.time_to_die>=26
 actions.finisher+=/eviscerate
 
 head=ninetailed_helmet,id=96681,gems=capacitive_primal_320haste_180crit,reforge=hit_mastery
-neck=talisman_of_living_poison,id=96762,reforge=exp_mastery
+neck=quadrahead_brooch,id=96815,gems=320haste_60crit,reforge=hit_haste
 shoulders=ninetailed_spaulders,id=96683,gems=80agi_160haste_320haste_120haste,enchant=200agi_100crit,reforge=hit_haste
-back=grey_wind_mistcloak,id=95015,gems=320haste_60haste,enchant=180hit,reforge=crit_mastery
-chest=ninetailed_tunic,id=96679,gems=80agi_160haste_320haste_160haste_160hit_180agi,enchant=80all,reforge=exp_haste
-wrists=bindings_of_multiplicative_strikes,id=96764,gems=320haste,enchant=180agi,reforge=crit_mastery
-hands=grips_of_vampiric_cruelty,id=96796,gems=160haste_160hit_320haste_60agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=hit_mastery
-waist=featherflight_belt,id=96837,gems=80agi_160haste_320haste_320haste_120haste,reforge=exp_mastery
+back=grey_wind_mistcloak,id=95015,gems=320haste_60haste,enchant=180crit,reforge=crit_exp
+chest=chestguard_of_coruscating_blades,id=95033,gems=80agi_160haste_80agi_160haste_80agi_160haste_180agi,enchant=80all,reforge=crit_mastery
+wrists=bracers_of_the_midnight_comet,id=96912,suffix=340,gems=320haste_320haste_60agi,enchant=180agi
+hands=ninetailed_gloves,id=96680,gems=80agi_160haste_320haste_60agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=exp_haste
+waist=strap_of_murderous_strikes,id=94998,gems=160haste_160hit_160haste_160hit_320haste_120agi,reforge=crit_haste
 legs=ninetailed_legguards,id=96682,gems=320haste_160haste_160hit_120agi,enchant=285agi_165crit
-feet=twisttoe_tabi,id=95007,gems=320haste_160haste_160hit_120agi,enchant=175haste
+feet=twisttoe_tabi,id=95007,gems=320haste_160haste_160hit_120agi,enchant=140agi,reforge=exp_mastery
 finger1=radens_swift_seal,id=95021,gems=160haste_160hit_60agi,reforge=hit_mastery
 finger2=goresoaked_gear,id=96885,gems=320haste_60crit,reforge=crit_mastery
-trinket1=talisman_of_bloodlust,id=96864
+trinket1=renatakis_soul_charm,id=96741,reforge=exp_haste
 trinket2=bad_juju,id=96781,reforge=mastery_haste
 main_hand=wulai_bladed_fan_of_the_consorts,id=96907,gems=80agi_160haste_320haste_60agi,enchant=dancing_steel,reforge=crit_mastery
 off_hand=fyns_flickering_dagger,id=96976,gems=320haste_320haste_60agi,enchant=dancing_steel,reforge=exp_mastery
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=19466
-# gear_stamina=26263
+# gear_agility=18060
+# gear_stamina=26301
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2530
-# gear_hit_rating=2975
-# gear_crit_rating=3142
-# gear_haste_rating=17056
-# gear_mastery_rating=5858
-# gear_armor=20244
+# gear_expertise_rating=2542
+# gear_hit_rating=2671
+# gear_crit_rating=5011
+# gear_haste_rating=17221
+# gear_mastery_rating=5606
+# gear_armor=20265
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
-# hands=grips_of_vampiric_cruelty,heroic=1,addon=synapse_springs_mark_ii
+# hands=ninetailed_gloves,heroic=1,addon=synapse_springs_mark_ii
 # trinket2=bad_juju,heroic=1
 # main_hand=wulai_bladed_fan_of_the_consorts,heroic=1,weapon=fist_2.60speed_9172min_17035max,enchant=dancing_steel
 # off_hand=fyns_flickering_dagger,heroic=1,weapon=dagger_1.80speed_6350min_11794max,enchant=dancing_steel
