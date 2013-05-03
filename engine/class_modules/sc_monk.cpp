@@ -2548,6 +2548,35 @@ void monk_t::init_actions()
       }
       break;
     case MONK_MISTWEAVER:
+      if ( sim -> allow_flasks )
+      {
+        // Flask
+        if ( level >= 85 )
+          precombat += "flask,type=spring_blossoms";
+        else if ( level > 80 )
+          precombat += "flask,type=draconic_mind";
+      }
+
+      if ( sim -> allow_food )
+      {
+        // Food
+        if ( level >= 85 )
+          precombat += "/food,type=mogu_fish_stew";
+        else if ( level > 80 )
+          precombat += "/food,type=seafood_magnifique_feast";
+      }
+
+      precombat += "/stance,choose=wise_serpent";
+      precombat += "/snapshot_stats";
+
+      if ( sim -> allow_potions )
+      {
+        // Prepotion
+        if ( level >= 85 )
+          precombat += "/jade_serpent_potion";
+        else if ( level > 80 )
+          precombat += "/volcanic_potion";
+      }
       break;
     default: break;
     }
@@ -2631,6 +2660,11 @@ void monk_t::init_actions()
       break;
 
     case MONK_MISTWEAVER:
+      def -> add_action( this, "Mana Tea", "if=buff.mana_tea.react>=2&mana.pct<=90" );
+      def -> add_talent( this, "Chi Wave" );
+      def -> add_action( this, "Tiger Palm", "if=buff.muscle_memory.up" );
+      def -> add_action( this, "Jab" );
+      def -> add_action( this, "Mana Tea" );
       break;
 
     default:
