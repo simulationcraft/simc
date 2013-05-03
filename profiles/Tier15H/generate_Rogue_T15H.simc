@@ -15,7 +15,7 @@ glyphs=vendetta
 head=ninetailed_helmet,id=96681,gems=capacitive_primal_80agi_160mastery_180crit,reforge=hit_mastery
 neck=quadrahead_brooch,id=96815,gems=80agi_160mastery_60crit,reforge=hit_haste
 shoulders=ninetailed_spaulders,id=96683,gems=160agi_80agi_160mastery_120haste,enchant=200agi_100crit,reforge=hit_haste
-back=grey_wind_mistcloak,id=95015,gems=80agi_160mastery_60agi,enchant=180crit,reforge=crit_mastery
+back=grey_wind_mistcloak,id=95015,gems=80agi_160mastery_60haste,enchant=180crit,reforge=crit_mastery
 chest=chestguard_of_coruscating_blades,id=95033,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=crit_mastery
 wrists=bracers_of_the_midnight_comet,id=96912,suffix=340,gems=80agi_160mastery_60agi,enchant=180agi
 hands=ninetailed_gloves,id=96680,gems=160agi_60agi,enchant=170haste,reforge=exp_haste,addon=synapse_springs_mark_ii
@@ -70,7 +70,7 @@ talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specif
 head=ninetailed_helmet,id=96681,gems=capacitive_primal_80agi_160haste_180crit,reforge=hit_crit
 neck=quadrahead_brooch,id=96815,gems=80agi_160haste_60crit,reforge=hit_haste
 shoulders=ninetailed_spaulders,id=96683,gems=160agi_80agi_160haste_120haste,enchant=200agi_100crit,reforge=hit_haste
-back=grey_wind_mistcloak,id=95015,gems=80agi_160haste_60agi,enchant=180crit
+back=grey_wind_mistcloak,id=95015,gems=80agi_160haste_60haste,enchant=180crit
 chest=chestguard_of_coruscating_blades,id=95033,gems=160agi_160agi_160agi_180agi,enchant=80all
 wrists=bracers_of_the_midnight_comet,id=96912,suffix=340,gems=80agi_160haste_60agi,enchant=180agi
 hands=ninetailed_gloves,id=96680,gems=160agi_60agi,enchant=170haste,reforge=exp_haste,addon=synapse_springs_mark_ii
