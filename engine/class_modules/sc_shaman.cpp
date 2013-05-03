@@ -1666,7 +1666,11 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
 
       dot_t* dot = td( target ) -> dot.flame_shock;
       if ( dot -> ticking ) 
+      {
+        if ( ! td( state -> target ) -> dot.flame_shock -> ticking )
+          p() -> active_flame_shocks++;
         dot -> copy( state -> target );
+      }
     }
   };
 
