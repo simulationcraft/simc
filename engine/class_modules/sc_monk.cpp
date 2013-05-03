@@ -2866,10 +2866,10 @@ double monk_t::composite_attack_haste()
 {
   double h = base_t::composite_attack_haste();
 
-  if ( _active_stance == WISE_SERPENT )
+  if ( current_stance() == WISE_SERPENT )
   {
     h *= 1.0 + current.haste_rating / rating.attack_haste;
-    h /= 1.0 + current.haste_rating * ( 1 + active_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / rating.attack_haste;
+    h /= 1.0 + current.haste_rating * ( 1 + static_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / rating.attack_haste;
   }
 
   return h;
@@ -2881,10 +2881,10 @@ double monk_t::composite_spell_haste()
 {
   double h = base_t::composite_spell_haste();
 
-  if ( _active_stance == WISE_SERPENT )
+  if ( current_stance() == WISE_SERPENT )
   {
     h *= 1.0 + current.haste_rating / rating.spell_haste;
-    h /= 1.0 + current.haste_rating * ( 1 + active_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / rating.spell_haste;
+    h /= 1.0 + current.haste_rating * ( 1 + static_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / rating.spell_haste;
   }
 
   return h;
@@ -2951,8 +2951,8 @@ double monk_t::composite_attack_expertise( weapon_t* weapon )
 
 double monk_t::composite_attack_power()
 {
-  if ( _active_stance == WISE_SERPENT )
-    return monk_t::composite_spell_power( SCHOOL_MAX ) * active_stance_data( WISE_SERPENT ).effectN( 2 ).percent();
+  if ( current_stance() == WISE_SERPENT )
+    return monk_t::composite_spell_power( SCHOOL_MAX ) * static_stance_data( WISE_SERPENT ).effectN( 2 ).percent();
 
   return base_t::composite_attack_power();
 }
