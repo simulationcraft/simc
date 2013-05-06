@@ -2531,7 +2531,7 @@ public:
   int threads;
   std::vector<sim_t*> children; // Manual delete!
   int thread_index;
-  virtual void run();
+  virtual void run() __attribute__((force_align_arg_pointer));
 
   // Spell database access
   spell_data_expr_t* spell_query;
