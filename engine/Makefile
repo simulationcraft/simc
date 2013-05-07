@@ -41,6 +41,9 @@ BITS       = 32
 ifneq (${LTO},)
 OPTS += -flto
 endif
+ifneq (${MARCH_NATIVE},)
+OPTS += -march=native
+endif
 
 -include ../build.conf
 
