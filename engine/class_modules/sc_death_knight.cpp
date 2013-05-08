@@ -534,7 +534,24 @@ static int use_rune( death_knight_t* p, rune_type rt, bool use[ RUNE_SLOT_MAX ] 
   // 4) Choose paired death rune of rune_type
   else if ( r && ! use[ r -> paired_rune -> slot_number ] && r -> paired_rune -> is_ready() && r -> paired_rune -> is_death() )
     return r -> paired_rune -> slot_number;
-  // 5) Choose the first death rune of any type, in the order b > u > f
+  // 5) If the ability uses a death rune, use custom order of f > b > u to pick
+  // the death rune
+  else if ( rt == RUNE_TYPE_DEATH )
+  {
+    if ( ! use[ 2 ] && p -> _runes.slot[ 2 ].is_ready() && p -> _runes.slot[ 2 ].is_death() )
+      return 2;
+    else if ( ! use[ 3 ] && p -> _runes.slot[ 3 ].is_ready() && p -> _runes.slot[ 3 ].is_death() )
+      return 3;
+    else if ( ! use[ 0 ] && p -> _runes.slot[ 0 ].is_ready() && p -> _runes.slot[ 0 ].is_death() )
+      return 0;
+    else if ( ! use[ 1 ] && p -> _runes.slot[ 1 ].is_ready() && p -> _runes.slot[ 1 ].is_death() )
+      return 1;
+    else if ( ! use[ 4 ] && p -> _runes.slot[ 4 ].is_ready() && p -> _runes.slot[ 4 ].is_death() )
+      return 4;
+    else if ( ! use[ 5 ] && p -> _runes.slot[ 5 ].is_ready() && p -> _runes.slot[ 5 ].is_death() )
+      return 5;
+  }
+  // 6) Choose the first death rune of any type, in the order b > u > f
   else
   {
     if ( ! use[ 0 ] && p -> _runes.slot[ 0 ].is_ready() && p -> _runes.slot[ 0 ].is_death() )
@@ -551,7 +568,7 @@ static int use_rune( death_knight_t* p, rune_type rt, bool use[ RUNE_SLOT_MAX ] 
       return 3;
   }
 
-  // 6) No rune found
+  // 7) No rune found
   return -1;
 }
 
