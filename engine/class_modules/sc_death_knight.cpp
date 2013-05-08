@@ -1,4 +1,4 @@
-// ==========================================================================
+// =========================================================================u
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
@@ -786,134 +786,151 @@ namespace pets {
 // Dancing Rune Weapon
 // ==========================================================================
 
-struct dancing_rune_weapon_pet_t : public pet_t
+struct dancing_rune_weapon_td_t : public actor_pair_t
 {
-  dot_t* dots_drw_blood_plague;
-  dot_t* dots_drw_frost_fever;
+  dot_t* dots_blood_plague;
+  dot_t* dots_frost_fever;
+  dot_t* dots_soul_reaper;
 
-  int drw_diseases( player_t* /* t */ )
+  int diseases() const
   {
-    int drw_disease_count = 0;
-    if ( dots_drw_blood_plague -> ticking ) drw_disease_count++;
-    if ( dots_drw_frost_fever  -> ticking ) drw_disease_count++;
-    return drw_disease_count;
+    int disease_count = 0;
+    if ( dots_blood_plague -> ticking ) disease_count++;
+    if ( dots_frost_fever  -> ticking ) disease_count++;
+    return disease_count;
   }
 
+  dancing_rune_weapon_td_t( player_t* target, dancing_rune_weapon_pet_t* drw );
+};
+
+struct dancing_rune_weapon_pet_t : public pet_t
+{
   struct drw_spell_t : public spell_t
   {
     drw_spell_t( const std::string& n, dancing_rune_weapon_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
       spell_t( n, p, s )
-    { }
+    {
+      background                   = true;
+      base_spell_power_multiplier  = 0;
+      base_attack_power_multiplier = 1;
+    }
 
-    virtual bool ready() { return false; }
+    dancing_rune_weapon_td_t* td( player_t* t = 0 )
+    { return p() -> get_target_data( t ? t : target ); }
 
     dancing_rune_weapon_pet_t* p() const
     { return static_cast<dancing_rune_weapon_pet_t*>( player ); }
-  };
 
-  struct drw_blood_boil_t : public drw_spell_t
-  {
-    drw_blood_boil_t( dancing_rune_weapon_pet_t* p ) :
-      drw_spell_t( "blood_boil", p, p -> find_class_spell( "Blood Boil" ) )
-    {
-      background       = true;
-      trigger_gcd      = timespan_t::zero();
-      aoe              = -1;
-      may_crit         = true;
-      direct_power_mod = 0.08;  // CHECK-ME
-    }
-
-    virtual void execute()
-    {
-      base_dd_adder = ( p() -> drw_diseases( target ) ? 95 : 0 );
-      direct_power_mod  = 0.08 + ( p() -> drw_diseases( target ) ? 0.035 : 0 );
-
-      drw_spell_t::execute();
-    }
-  };
-
-  struct drw_blood_plague_t : public drw_spell_t
-  {
-    drw_blood_plague_t( dancing_rune_weapon_pet_t* p ) :
-      drw_spell_t( "blood_plague", p, p -> find_spell( 59879 ) )  // Also check spell id 55078
-    {
-      background         = true;
-      base_tick_time     = timespan_t::from_seconds( 3.0 );
-      num_ticks          = 7;
-      direct_power_mod   = 0.055 * 1.15; // CHECK-ME etc
-      may_miss           = false;
-      hasted_ticks       = false;
-    }
-  };
-
-  struct drw_death_coil_t : public drw_spell_t
-  {
-    drw_death_coil_t( dancing_rune_weapon_pet_t* p ) :
-      drw_spell_t( "death_coil", p, p -> find_class_spell( "Death Coil" ) )
-    {
-      background  = true;
-      trigger_gcd = timespan_t::zero();
-      direct_power_mod = 0.23;
-      base_dd_min      = data().effectN( 1 ).min( p ); // Values are saved in a not automatically parsed sub-effect
-      base_dd_max      = data().effectN( 1 ).max( p );
-    }
+    death_knight_t* o() const
+    { return static_cast< death_knight_t* >( player -> cast_pet() -> owner ); } 
   };
 
   struct drw_melee_attack_t : public melee_attack_t
   {
     drw_melee_attack_t( const std::string& n, dancing_rune_weapon_pet_t* p, const spell_data_t* s = spell_data_t::nil() ) :
       melee_attack_t( n, p, s )
-    { }
+    {
+      background = true;
+      special    = true;
+      may_crit   = true;
+    }
 
-    virtual bool ready() { return false; }
+    dancing_rune_weapon_td_t* td( player_t* t = 0 )
+    { return p() -> get_target_data( t ? t : target ); }
 
     dancing_rune_weapon_pet_t* p() const
     { return static_cast<dancing_rune_weapon_pet_t*>( player ); }
+
+    death_knight_t* o() const
+    { return static_cast< death_knight_t* >( player -> cast_pet() -> owner ); } 
   };
 
-  struct drw_death_strike_t : public drw_melee_attack_t
+  struct drw_blood_plague_t : public drw_spell_t
   {
-    drw_death_strike_t( dancing_rune_weapon_pet_t* p ) :
-      drw_melee_attack_t( "death_strike", p, p -> find_class_spell( "Death Strike" ) )
+    drw_blood_plague_t( dancing_rune_weapon_pet_t* p ) :
+      drw_spell_t( "blood_plague", p, p -> owner -> find_spell( 55078 ) )  // Also check spell id 55078
     {
-      background  = true;
-      trigger_gcd = timespan_t::zero();
-
-      special = true;
+      tick_may_crit    = true;
+      tick_power_mod   = data().extra_coeff();
+      dot_behavior     = DOT_REFRESH;
+      may_miss         = false;
+      may_crit         = false;
+      hasted_ticks     = false;
     }
+
+    virtual double composite_crit()
+    { return action_t::composite_crit() + player -> cache.attack_crit(); }
   };
 
   struct drw_frost_fever_t : public drw_spell_t
   {
     drw_frost_fever_t( dancing_rune_weapon_pet_t* p ) :
-      drw_spell_t( "frost_fever", p, p -> find_spell( 55095 ) )
+      drw_spell_t( "frost_fever", p, p -> owner -> find_spell( 55095 ) )
     {
-      background        = true;
-      trigger_gcd       = timespan_t::zero();
-      base_tick_time    = timespan_t::from_seconds( 3.0 );
-      hasted_ticks      = false;
-      may_miss          = false;
-      num_ticks         = 7;
-      direct_power_mod *= 0.055 * 1.15;
+      hasted_ticks     = false;
+      may_miss         = false;
+      may_crit         = false;
+      tick_may_crit    = true;
+      dot_behavior     = DOT_REFRESH;
+      tick_power_mod   = data().extra_coeff();
+    }
+  };
+
+  struct drw_blood_boil_t : public drw_spell_t
+  {
+    drw_blood_boil_t( dancing_rune_weapon_pet_t* p ) :
+      drw_spell_t( "blood_boil", p, p -> owner -> find_class_spell( "Blood Boil" ) )
+    {
+      aoe              = -1;
+      may_crit         = true;
+      direct_power_mod = data().extra_coeff();
+    }
+
+    double composite_target_multiplier( player_t* t )
+    {
+      double m = drw_spell_t::composite_target_multiplier( t );
+
+      // Apparently inherits damage bonus from owner's diseases ...
+      if ( o() -> get_target_data( t ) -> diseases() > 0 )
+        m *= 1.50; // hardcoded into tooltip, 18/12/2012
+
+      return m;
+    }
+  };
+
+  struct drw_death_coil_t : public drw_spell_t
+  {
+    drw_death_coil_t( dancing_rune_weapon_pet_t* p ) :
+      drw_spell_t( "death_coil", p, p -> owner -> find_class_spell( "Death Coil" ) )
+    {
+      direct_power_mod = 0.514;
+    }
+  };
+
+  struct drw_death_strike_t : public drw_melee_attack_t
+  {
+    drw_death_strike_t( dancing_rune_weapon_pet_t* p ) :
+      drw_melee_attack_t( "death_strike", p, p -> owner -> find_class_spell( "Death Strike" ) )
+    {
+      weapon = &( p -> main_hand_weapon );
     }
   };
 
   struct drw_heart_strike_t : public drw_melee_attack_t
   {
     drw_heart_strike_t( dancing_rune_weapon_pet_t* p ) :
-      drw_melee_attack_t( "heart_strike", p, p -> find_spell( "Heart Strike" ) )
+      drw_melee_attack_t( "heart_strike", p, p -> owner -> find_spell( 55050 ) )
     {
-      background          = true;
-      aoe                 = 3;
+      weapon = &( p -> main_hand_weapon );
+      aoe = 3;
       base_add_multiplier = 0.75;
-      trigger_gcd         = timespan_t::zero();
     }
 
     virtual double composite_target_multiplier( player_t* t )
     {
       double ctm = drw_melee_attack_t::composite_target_multiplier( t );
 
-      ctm *= 1 + p() -> drw_diseases( t ) * data().effectN( 3 ).percent();
+      ctm *= 1.0 + td( t ) -> diseases() * data().effectN( 3 ).percent();
 
       return ctm;
     }
@@ -922,21 +939,18 @@ struct dancing_rune_weapon_pet_t : public pet_t
   struct drw_icy_touch_t : public drw_spell_t
   {
     drw_icy_touch_t( dancing_rune_weapon_pet_t* p ) :
-      drw_spell_t( "icy_touch", p, p -> find_class_spell( "Icy Touch" ) )
+      drw_spell_t( "icy_touch", p, p -> owner -> find_class_spell( "Icy Touch" ) )
     {
-      background       = true;
-      trigger_gcd      = timespan_t::zero();
-      direct_power_mod = 0.2;
+      direct_power_mod = 0.319;
     }
 
-    virtual void execute()
+    virtual void impact( action_state_t* s )
     {
-      drw_spell_t::execute();
+      drw_spell_t::impact( s );
 
-      if ( result_is_hit( execute_state -> result ) )
+      if ( result_is_hit( s -> result ) )
       {
-        if ( ! p() -> drw_frost_fever )
-          p() -> drw_frost_fever = new drw_frost_fever_t( p() );
+        p() -> drw_frost_fever -> target = s -> target;
         p() -> drw_frost_fever -> execute();
       }
     }
@@ -945,34 +959,126 @@ struct dancing_rune_weapon_pet_t : public pet_t
   struct drw_pestilence_t : public drw_spell_t
   {
     drw_pestilence_t( dancing_rune_weapon_pet_t* p ) :
-      drw_spell_t( "pestilence", p, p -> find_class_spell( "Pestilence" ) )
+      drw_spell_t( "pestilence", p, p -> owner -> find_class_spell( "Pestilence" ) )
     {
-      trigger_gcd = timespan_t::zero();
-      background = true;
+      aoe = -1;
+    }
+
+    virtual void impact( action_state_t* s )
+    {
+      drw_spell_t::impact( s );
+
+      // Doesn't affect the original target
+      if ( s -> target == target )
+        return;
+
+      if ( result_is_hit( s -> result ) )
+      {
+        if ( td( target ) -> dots_blood_plague -> ticking )
+        {
+          p() -> drw_blood_plague -> target = s -> target;
+          p() -> drw_blood_plague -> execute();
+        }
+
+        if ( td( target ) -> dots_frost_fever -> ticking )
+        {
+          p() -> drw_frost_fever -> target = s -> target;
+          p() -> drw_frost_fever -> execute();
+        }
+      }
+    }
+  };
+
+  struct drw_outbreak_t : public drw_spell_t
+  {
+    drw_outbreak_t( dancing_rune_weapon_pet_t* p ):
+      drw_spell_t( "outbreak", p, p -> owner -> find_class_spell( "Outbreak" ) )
+    {
+      may_crit = false;
+    }
+
+    virtual void execute()
+    {
+      drw_spell_t::execute();
+
+      if ( result_is_hit( execute_state -> result ) )
+      {
+        p() -> drw_blood_plague -> target = target;
+        p() -> drw_blood_plague -> execute();
+
+        p() -> drw_frost_fever -> target = target;
+        p() -> drw_frost_fever -> execute();
+      }
     }
   };
 
   struct drw_plague_strike_t : public drw_melee_attack_t
   {
     drw_plague_strike_t( dancing_rune_weapon_pet_t* p ) :
-      drw_melee_attack_t( "plague_strike", p, p -> find_class_spell( "Plague Strike" ) )
+      drw_melee_attack_t( "plague_strike", p, p -> owner -> find_class_spell( "Plague Strike" ) )
     {
-      background       = true;
-      trigger_gcd      = timespan_t::zero();
-      may_crit         = true;
-      special          = true;
+      weapon = &( p -> main_hand_weapon );
     }
 
-    virtual void execute()
+    virtual void impact( action_state_t* s )
     {
-      drw_melee_attack_t::execute();
+      drw_melee_attack_t::impact( s );
 
-      if ( result_is_hit( execute_state -> result ) )
+      if ( result_is_hit( s -> result ) )
       {
-        if ( ! p() -> drw_blood_plague )
-          p() -> drw_blood_plague = new drw_blood_plague_t( p() );
+        p() -> drw_blood_plague -> target = s->target;
         p() -> drw_blood_plague -> execute();
       }
+    }
+  };
+
+  struct drw_soul_reaper_t : public drw_melee_attack_t
+  {
+    struct soul_reaper_dot_t : public drw_melee_attack_t 
+    {
+      soul_reaper_dot_t( dancing_rune_weapon_pet_t* p ) :
+        drw_melee_attack_t( "soul_reaper_execute", p, p -> find_spell( 114867 ) )
+      {
+        may_miss = false;
+        weapon_multiplier = 0;
+        direct_power_mod = data().extra_coeff();
+      }
+
+      virtual void init()
+      {
+        drw_melee_attack_t::init();
+        stats = p() -> get_stats( name(), this );
+      }
+    };
+
+    soul_reaper_dot_t* soul_reaper_dot;
+
+    drw_soul_reaper_t( dancing_rune_weapon_pet_t* p ) :
+      drw_melee_attack_t( "soul_reaper", p, p -> owner -> find_spell( 114866 ) ),
+      soul_reaper_dot( 0 )
+    {
+      weapon = &( p -> main_hand_weapon );
+
+      dynamic_tick_action = true;
+      tick_action = new soul_reaper_dot_t( p );
+      add_child( tick_action );
+    }
+
+    void init()
+    {
+      drw_melee_attack_t::init();
+
+      snapshot_flags |= STATE_MUL_TA;
+    }
+
+    void tick( dot_t* dot )
+    {
+      int pct = 35;
+      if ( o() -> set_bonus.tier15_4pc_melee() )
+        pct = o() -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).base_value();
+
+      if ( dot -> state -> target -> health_percentage() <= pct )
+        drw_melee_attack_t::tick( dot );
     }
   };
 
@@ -981,85 +1087,88 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_melee_t( dancing_rune_weapon_pet_t* p ) :
       drw_melee_attack_t( "drw_melee", p )
     {
-      weapon            = &( p -> owner -> main_hand_weapon );
+      weapon            = &( p -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
-      base_dd_min       = 2; // FIXME: Should these be set?
-      base_dd_max       = 322;
-      may_crit          = true;
-      background        = true;
-      repeating         = true;
-      weapon_power_mod *= 2.0; //Attack power scaling is unaffected by the DRW 50% penalty.
-    }
-
-    virtual bool ready()
-    {
-      return melee_attack_t::ready();
+      special           = false;
     }
   };
 
-  double snapshot_spell_crit, snapshot_attack_crit, haste_snapshot, speed_snapshot;
-  spell_t*  drw_blood_boil;
-  spell_t*  drw_blood_plague;
-  spell_t*  drw_death_coil;
+  target_specific_t<dancing_rune_weapon_td_t*> target_data;
+
+  spell_t*        drw_blood_plague;
+  spell_t*        drw_frost_fever;
+
+  spell_t*        drw_blood_boil;
+  spell_t*        drw_death_coil;
+  spell_t*        drw_icy_touch;
+  spell_t*        drw_outbreak;
+  spell_t*        drw_pestilence;
+
   melee_attack_t* drw_death_strike;
-  spell_t*  drw_frost_fever;
   melee_attack_t* drw_heart_strike;
-  spell_t*  drw_icy_touch;
-  spell_t*  drw_pestilence;
   melee_attack_t* drw_plague_strike;
+  melee_attack_t* drw_soul_reaper;
   melee_attack_t* drw_melee;
 
   dancing_rune_weapon_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "dancing_rune_weapon", true ),
-    dots_drw_blood_plague( 0 ), dots_drw_frost_fever( 0 ),
-    snapshot_spell_crit( 0.0 ), snapshot_attack_crit( 0.0 ),
-    haste_snapshot( 1.0 ), speed_snapshot( 1.0 ), drw_blood_boil( 0 ), drw_blood_plague( 0 ),
-    drw_death_coil( 0 ), drw_death_strike( 0 ), drw_frost_fever( 0 ),
-    drw_heart_strike( 0 ), drw_icy_touch( 0 ), drw_pestilence( 0 ),
-    drw_plague_strike( 0 ), drw_melee( 0 )
+    pet_t( sim, owner, "dancing_rune_weapon", true )
   {
-    dots_drw_blood_plague  = sim -> target -> get_dot( "blood_plague", this );
-    dots_drw_frost_fever   = sim -> target -> get_dot( "frost_fever",  this );
+    main_hand_weapon.type       = WEAPON_BEAST_2H;
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 3.0;
+    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 3.0;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 3.5 );
 
-    main_hand_weapon.type       = WEAPON_SWORD_2H;
-    main_hand_weapon.min_dmg    = 685; // FIXME: Should these be hardcoded?
-    main_hand_weapon.max_dmg    = 975;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 3.3 );
+    owner_coeff.ap_from_ap = 1.0;
   }
 
-  virtual void init_base()
+  death_knight_t* o() const
+  { return static_cast< death_knight_t* >( owner ); } 
+
+  dancing_rune_weapon_td_t* td( player_t* t = 0 )
+  { return get_target_data( t ? t : target ); }
+
+  virtual dancing_rune_weapon_td_t* get_target_data( player_t* target )
   {
-    // Everything stays at zero.
-    // DRW uses a snapshot of the DKs stats when summoned.
-    drw_blood_boil    = new drw_blood_boil_t   ( this );
-    drw_blood_plague  = new drw_blood_plague_t ( this );
-    drw_death_coil    = new drw_death_coil_t   ( this );
-    drw_death_strike  = new drw_death_strike_t ( this );
+    dancing_rune_weapon_td_t*& td = target_data[ target ];
+    if ( ! td )
+      td = new dancing_rune_weapon_td_t( target, this );
+    return td;
+  }
+
+  virtual void init_spells()
+  {
+    pet_t::init_spells();
+
     drw_frost_fever   = new drw_frost_fever_t  ( this );
-    drw_heart_strike  = new drw_heart_strike_t ( this );
+    drw_blood_plague  = new drw_blood_plague_t ( this );
+
+    drw_blood_boil    = new drw_blood_boil_t   ( this );
+    drw_death_coil    = new drw_death_coil_t   ( this );
     drw_icy_touch     = new drw_icy_touch_t    ( this );
+    drw_outbreak      = new drw_outbreak_t     ( this );
     drw_pestilence    = new drw_pestilence_t   ( this );
+    
+    drw_death_strike  = new drw_death_strike_t ( this );
+    drw_heart_strike  = new drw_heart_strike_t ( this );
     drw_plague_strike = new drw_plague_strike_t( this );
+    drw_soul_reaper   = new drw_soul_reaper_t  ( this );
     drw_melee         = new drw_melee_t        ( this );
   }
 
-  virtual double composite_attack_crit()  { return snapshot_attack_crit; }
-  virtual double composite_attack_haste() { return haste_snapshot; }
-  virtual double composite_attack_speed() { return speed_snapshot; }
-  virtual double composite_attack_power() { return current.attack_power; }
-  virtual double composite_spell_crit()   { return snapshot_spell_crit;  }
-
-  virtual void summon( timespan_t duration=timespan_t::zero() )
+  void summon( timespan_t duration = timespan_t::zero() )
   {
     pet_t::summon( duration );
-    snapshot_spell_crit  = owner -> cache.spell_crit();
-    snapshot_attack_crit = owner -> cache.attack_crit();
-    haste_snapshot       = owner -> cache.attack_haste();
-    speed_snapshot       = owner -> cache.attack_speed();
-    current.attack_power = owner -> cache.attack_power() * owner -> composite_attack_power_multiplier();
     drw_melee -> schedule_execute();
   }
 };
+
+dancing_rune_weapon_td_t::dancing_rune_weapon_td_t( player_t* target, dancing_rune_weapon_pet_t* drw ) :
+  actor_pair_t( target, drw )
+{
+  dots_blood_plague    = target -> get_dot( "blood_plague",        drw );
+  dots_frost_fever     = target -> get_dot( "frost_fever",         drw );
+  dots_soul_reaper     = target -> get_dot( "soul_reaper_execute", drw );
+}
 
 struct death_knight_pet_t : public pet_t
 {
@@ -1104,6 +1213,8 @@ struct army_ghoul_pet_t : public death_knight_pet_t
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 
     action_list_str = "snapshot_stats/auto_attack/claw";
+
+
   }
 
   struct army_ghoul_pet_melee_attack_t : public melee_attack_t
@@ -1237,23 +1348,16 @@ struct bloodworms_pet_t : public death_knight_pet_t
     melee( NULL )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 20;
-    main_hand_weapon.max_dmg    = 20;
+    main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.55;
+    main_hand_weapon.max_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.55;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+
+    owner_coeff.ap_from_ap = 0.385;
   }
 
   virtual void init_base()
   {
     pet_t::init_base();
-
-    // Stolen from Priest's Shadowfiend
-    base.attribute[ ATTR_STRENGTH  ] = 145;
-    base.attribute[ ATTR_AGILITY   ] =  38;
-    base.attribute[ ATTR_STAMINA   ] = 190;
-    base.attribute[ ATTR_INTELLECT ] = 133;
-
-    //health_per_stamina = 7.5;
-    //mana_per_intellect = 5;
 
     melee = new melee_t( this );
   }
@@ -2002,8 +2106,7 @@ struct melee_t : public death_knight_melee_attack_t
       if ( p() -> spec.killing_machine -> ok() )
         p() -> buffs.killing_machine -> trigger( 1, buff_t::DEFAULT_VALUE(), weapon -> proc_chance_on_swing( 6 ) );
 
-      death_knight_td_t* td = cast_td( s -> target );
-      if ( td -> dots_blood_plague && td -> dots_blood_plague -> ticking )
+      if ( cast_td( s -> target ) -> dots_blood_plague -> ticking )
         p() -> buffs.crimson_scourge -> trigger();
     }
   }
@@ -2370,6 +2473,9 @@ struct soul_reaper_t : public death_knight_melee_attack_t
       p() -> procs.sr_killing_machine -> occur();
       p() -> buffs.killing_machine -> expire();
     }
+
+    if ( p() -> buffs.dancing_rune_weapon -> check() )
+      p() -> pets.dancing_rune_weapon -> drw_soul_reaper -> execute();
   }
 
   void tick( dot_t* dot )
@@ -2912,9 +3018,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       if ( p() -> buffs.dancing_rune_weapon -> check() )
-      {
         p() -> pets.dancing_rune_weapon -> drw_heart_strike -> execute();
-      }
     }
   }
 
@@ -2922,7 +3026,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
   {
     double ctm = death_knight_melee_attack_t::composite_target_multiplier( t );
 
-    ctm *= 1 + cast_td() -> diseases() * data().effectN( 3 ).percent();
+    ctm *= 1.0 + cast_td( t ) -> diseases() * data().effectN( 3 ).percent();
 
     return ctm;
   }
@@ -3283,6 +3387,9 @@ struct outbreak_t : public death_knight_spell_t
       p() -> active_spells.frost_fever -> target = target;
       p() -> active_spells.frost_fever -> execute();
     }
+
+    if ( p() -> buffs.dancing_rune_weapon -> check() )
+      p() -> pets.dancing_rune_weapon -> drw_outbreak -> execute();
   }
 };
 
@@ -3587,39 +3694,17 @@ struct raise_dead_t : public death_knight_spell_t
 
 // Rune Strike ==============================================================
 
-struct rune_strike_offhand_t : public death_knight_melee_attack_t
-{
-  rune_strike_offhand_t( death_knight_t* p ) :
-    death_knight_melee_attack_t( "rune_strike_offhand", p, p -> find_spell( 66217 ) )
-  {
-    background       = true;
-    weapon           = &( p -> off_hand_weapon );
-    special          = true;
-
-    direct_power_mod = 0.15;
-    may_dodge = may_block = may_parry = false;
-  }
-};
-
 struct rune_strike_t : public death_knight_melee_attack_t
 {
-  melee_attack_t* oh_attack;
-
   rune_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "rune_strike", p, p -> find_class_spell( "Rune Strike" ) ),
-    oh_attack( 0 )
+    death_knight_melee_attack_t( "rune_strike", p, p -> find_specialization_spell( "Rune Strike" ) )
   {
     parse_options( NULL, options_str );
 
     special          = true;
-
-    direct_power_mod = 0.15;
     may_dodge = may_block = may_parry = false;
 
     weapon = &( p -> main_hand_weapon );
-
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
-      oh_attack = new rune_strike_offhand_t( p );
   }
 
   virtual void execute()
@@ -4196,11 +4281,11 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
 void death_knight_t::create_pets()
 {
   pets.bloodworms           = create_pet( "bloodworms" );
-  pets.dancing_rune_weapon  = new pets::dancing_rune_weapon_pet_t ( sim, this );
   pets.gargoyle             = create_pet( "gargoyle" );
   pets.ghoul_pet            = create_pet( "ghoul_pet" );
   pets.ghoul_guardian       = create_pet( "ghoul_guardian" );
 
+  pets.dancing_rune_weapon  = new pets::dancing_rune_weapon_pet_t ( sim, this );
   for ( int i = 0; i < 8; i++ )
     pets.army_ghoul[ i ] = new pets::army_ghoul_pet_t( sim, this );
 
@@ -4510,10 +4595,12 @@ void death_knight_t::init_actions()
           action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
       }
       action_list_str += "/auto_attack";
+      action_list_str += "/dancing_rune_weapon";
       action_list_str += "/raise_dead,if=time>=10";
       action_list_str += "/outbreak,if=(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2)|(!dot.blood_plague.ticking&!dot.frost_fever.ticking)";
       action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
       action_list_str += "/icy_touch,if=!dot.frost_fever.ticking";
+      action_list_str += "/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35";
       if ( talent.blood_tap -> ok() )
         action_list_str += "/blood_tap,if=(unholy=0&frost>=1)|(unholy>=1&frost=0)|(death=1)";
       action_list_str += "/death_strike";
