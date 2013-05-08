@@ -138,7 +138,6 @@ public:
     buff_t* antimagic_shell;
     buff_t* blood_charge;
     buff_t* blood_presence;
-    buff_t* bloodworms;
     buff_t* bone_shield;
     buff_t* crimson_scourge;
     buff_t* dancing_rune_weapon;
@@ -215,11 +214,11 @@ public:
     const spell_data_t* plate_specialization;
 
     // Blood
+    const spell_data_t* blood_parasite;
     const spell_data_t* blood_rites;
     const spell_data_t* veteran_of_the_third_war;
     const spell_data_t* scent_of_blood;
     const spell_data_t* improved_blood_presence;
-    const spell_data_t* blood_parasite;
     const spell_data_t* scarlet_fever;
     const spell_data_t* crimson_scourge;
 
@@ -267,6 +266,7 @@ public:
   // Spells
   struct spells_t
   {
+    const spell_data_t* blood_parasite;
   } spell;
 
   // Glyphs
@@ -284,7 +284,7 @@ public:
   {
     std::array< pet_t*, 8 > army_ghoul;
     std::array< pet_t*, 10 > fallen_zandalari;
-    pet_t* bloodworms;
+    std::array< pet_t*, 10 > bloodworms;
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon;
     pet_t* ghoul_pet;
     pet_t* ghoul_guardian;
@@ -294,6 +294,7 @@ public:
   // Procs
   struct procs_t
   {
+    proc_t* blood_parasite;
     proc_t* runic_empowerment;
     proc_t* runic_empowerment_wasted;
     proc_t* oblit_killing_machine;
@@ -306,6 +307,7 @@ public:
   struct rngs_t
   {
     rng_t* blood_caked_blade;
+    rng_t* blood_parasite;
     rng_t* blood_tap;
     rng_t* plague_leech;
     rng_t* rime;
@@ -1356,6 +1358,16 @@ struct bloodworms_pet_t : public death_knight_pet_t
       background  = true;
       repeating   = true;
     }
+
+    void init()
+    {
+      melee_attack_t::init();
+
+      death_knight_t* o = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
+
+      if ( player != o -> pets.bloodworms[ 0 ] )
+        stats = o -> pets.bloodworms[ 0 ] -> get_stats( name_str );
+    }
   };
 
   melee_t* melee;
@@ -1960,6 +1972,32 @@ static void trigger_t15_2pc_melee( death_knight_melee_attack_t* attack )
   }
 }
 
+static void trigger_bloodworms( death_knight_melee_attack_t* attack )
+{
+  if ( attack -> player -> specialization() != DEATH_KNIGHT_BLOOD )
+    return;
+
+
+  death_knight_t* p = debug_cast< death_knight_t* >( attack -> player );
+
+  if ( p -> rng.blood_parasite -> roll( p -> spec.blood_parasite -> proc_chance() ) )
+  {
+    p -> procs.blood_parasite -> occur();
+    size_t i;
+
+    for ( i = 0; i < p -> pets.bloodworms.size(); i++ )
+    {
+      if ( ! p -> pets.bloodworms[ i ] -> is_sleeping() )
+        continue;
+
+      p -> pets.bloodworms[ i ] -> summon( p -> spell.blood_parasite -> duration() );
+      break;
+    }
+
+    assert( i < p -> pets.bloodworms.size() );
+  }
+}
+
 // ==========================================================================
 // Death Knight Attack Methods
 // ==========================================================================
@@ -1982,7 +2020,7 @@ void death_knight_melee_attack_t::execute()
 
   if ( ! proc && result_is_hit( execute_state -> result ) )
   {
-    p() -> buffs.bloodworms -> trigger();
+    trigger_bloodworms( this );
     if ( dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) )
     {
       p() -> buffs.rune_of_cinderglacier -> decrement();
@@ -4297,7 +4335,6 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
 
 void death_knight_t::create_pets()
 {
-  pets.bloodworms           = create_pet( "bloodworms" );
   pets.gargoyle             = create_pet( "gargoyle" );
   pets.ghoul_pet            = create_pet( "ghoul_pet" );
   pets.ghoul_guardian       = create_pet( "ghoul_guardian" );
@@ -4308,6 +4345,9 @@ void death_knight_t::create_pets()
 
   for ( int i = 0; i < 10; i++ )
     pets.fallen_zandalari[ i ] = new pets::fallen_zandalari_t( this );
+
+  for ( int i = 0; i < 10; i++ )
+    pets.bloodworms[ i ] = new pets::bloodworms_pet_t( sim, this );
 }
 
 // death_knight_t::create_pet ===============================================
@@ -4320,7 +4360,6 @@ pet_t* death_knight_t::create_pet( const std::string& pet_name,
   if ( p ) return p;
 
   if ( pet_name == "army_of_the_dead"         ) return new pets::army_ghoul_pet_t ( sim, this );
-  if ( pet_name == "bloodworms"               ) return new pets::bloodworms_pet_t ( sim, this );
   if ( pet_name == "gargoyle"                 ) return new pets::gargoyle_pet_t   ( sim, this );
   if ( pet_name == "ghoul_pet"                ) return new pets::ghoul_pet_t      ( sim, this, "ghoul", false );
   if ( pet_name == "ghoul_guardian"           ) return new pets::ghoul_pet_t      ( sim, this, "ghoul", true );
@@ -4360,6 +4399,7 @@ void death_knight_t::init_rng()
   player_t::init_rng();
 
   rng.blood_caked_blade = get_rng( "blood_caked_blade" );
+  rng.blood_parasite   = get_rng( "blood_parasite"   );
   rng.blood_tap         = get_rng( "blood_tap"         );
   rng.plague_leech      = get_rng( "plague_leech"      );
   rng.rime              = get_rng( "rime"              );
@@ -4420,6 +4460,7 @@ void death_knight_t::init_spells()
   spec.plate_specialization = find_specialization_spell( "Plate Specialization" );
 
   // Blood
+  spec.blood_parasite             = find_specialization_spell( "Blood Parasite" );
   spec.blood_rites                = find_specialization_spell( "Blood Rites" );
   spec.veteran_of_the_third_war   = find_specialization_spell( "Veteran of the Third War" );
   spec.scent_of_blood             = find_specialization_spell( "Scent of Blood" );
@@ -4468,9 +4509,13 @@ void death_knight_t::init_spells()
   glyph.outbreak                  = find_glyph_spell( "Glyph of Outbreak" );
   glyph.shifting_presences        = find_glyph_spell( "Glyph of Shifting Presences" );
 
+  // Generic spells
+  spell.blood_parasite           = find_spell( 50452 );
+
   // Active Spells
   active_spells.blood_plague = new blood_plague_t( this );
   active_spells.frost_fever = new frost_fever_t( this );
+
 
   // Tier Bonuses
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
@@ -5113,25 +5158,6 @@ void death_knight_t::create_buffs()
                               .default_value( find_class_spell( "Unholy Presence" ) -> effectN( 1 ).percent() +
                                               spec.improved_unholy_presence -> effectN( 1 ).percent() )
                               .add_invalidate( CACHE_HASTE );
-
-  struct bloodworms_buff_t : public buff_t
-  {
-    death_knight_t* dk;
-    bloodworms_buff_t( death_knight_t* p ) :
-      buff_t( buff_creator_t( p, "bloodworms" ).max_stack( 1 ).duration( timespan_t::from_seconds( 19.99 ) ).cd( timespan_t::zero() ).chance( 0.0 ) ),
-      dk( p ) {}
-    virtual void start( int stacks, double value, timespan_t duration = timespan_t::min() )
-    {
-      buff_t::start( stacks, value, duration );
-      dk -> pets.bloodworms -> summon();
-    }
-    virtual void expire_override()
-    {
-      buff_t::expire_override();
-      //if ( ! dk -> pets.bloodworms -> current.sleeping ) dk -> pets.bloodworms -> dismiss();
-    }
-  };
-  buffs.bloodworms = new bloodworms_buff_t( this );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -5178,6 +5204,7 @@ void death_knight_t::init_procs()
 {
   player_t::init_procs();
 
+  procs.blood_parasite           = get_proc( "blood_parasite"              );
   procs.runic_empowerment        = get_proc( "runic_empowerment"            );
   procs.runic_empowerment_wasted = get_proc( "runic_empowerment_wasted"     );
   procs.oblit_killing_machine    = get_proc( "oblit_killing_machine"        );
