@@ -48,9 +48,7 @@ del /q platforms
 
 :: Copying new dlls
 
-:: Those are apparently no longer needed with Qt5
-:: xcopy /I %qt_dir%\plugins\imageformats imageformats
-
+xcopy /I %qt_dir%\plugins\imageformats imageformats
 xcopy %qt_dir%\bin\phonon5.dll
 xcopy %qt_dir%\bin\Qt5Core.dll
 xcopy %qt_dir%\bin\Qt5OpenGL.dll
