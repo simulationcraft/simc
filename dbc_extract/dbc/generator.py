@@ -1106,6 +1106,7 @@ class SpellDataGenerator(DataGenerator):
           ( 66188, 0 ), # Death Strike off-hand
           ( 113516, 0, True ), # Symbiosis Wild Mushroom: Plague
           ( 52212, 0, False ), # Death and Decay false positive for activatable
+          ( 81277, 5 ), ( 81280, 5 ) # Bloodworms heal / burst
         ),  
         
         # Shaman:
