@@ -2649,7 +2649,7 @@ struct blood_tap_t : public death_knight_spell_t
 struct bone_shield_t : public death_knight_spell_t
 {
   bone_shield_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "bone_shield", p, p -> find_class_spell( "Bone Shield" ) )
+    death_knight_spell_t( "bone_shield", p, p -> find_specialization_spell( "Bone Shield" ) )
   {
     parse_options( NULL, options_str );
 
@@ -5335,6 +5335,9 @@ double death_knight_t::composite_player_multiplier( school_e school )
 
   if ( dbc::is_school( school, SCHOOL_FROST ) )
     m *= 1.0 + mastery.frozen_heart -> effectN( 1 ).mastery_value() * cache.mastery();
+
+  if ( glyph.dancing_rune_weapon -> ok() && buffs.dancing_rune_weapon -> check() )
+    m *= 1.0 + glyph.dancing_rune_weapon -> effectN( 2 ).percent();
 
   return m;
 }
