@@ -386,7 +386,7 @@ class CombatRatingsDataGenerator(DataGenerator):
     _combat_rating_ids = [ 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 17, 18, 19, 23, 25, 26 ] 
     def __init__(self, options):
         # Hardcode these, as we need two different kinds of databases for output, using the same combat rating ids
-        self._dbc = [ 'gtCombatRatings', 'gtOCTClassCombatRatingScalar' ]
+        self._dbc = [ 'gtCombatRatings' ]
 
         DataGenerator.__init__(self, options)
 
@@ -414,30 +414,30 @@ class CombatRatingsDataGenerator(DataGenerator):
         
         s += '};\n\n'
 
-        db = self._gtoctclasscombatratingscalar_db
-        s += '// Combat Rating scalar multipliers for classes, wow build %d\n' % self._options.build
-        s += 'static double __%s%s%s[][%d] = {\n' % ( 
-            self._options.prefix and ('%s_' % self._options.prefix) or '',
-            re.sub(r'([A-Z]+)', r'_\1', self._dbc[1]).lower(), 
-            self._options.suffix and ('_%s' % self._options.suffix) or '',
-            len(self._class_names))
-        for i in xrange(0, len(CombatRatingsDataGenerator._combat_rating_ids)):
-            id = CombatRatingsDataGenerator._combat_rating_ids[i]
-            s += '  // %s rating class scalar multipliers\n' % CombatRatingsDataGenerator._combat_ratings[i]
-            s += '  { \n'
-            s += '    %20.15f, %20.15f, %20.15f, %20.15f, %20.15f,\n' % (
-                0.0, db[id * 10 + 1].gt_value, db[id * 10 + 2].gt_value, db[id * 10 + 3].gt_value,
-                db[id * 10 + 4].gt_value)
-
-            s += '    %20.15f, %20.15f, %20.15f, %20.15f, %20.15f,\n' % (
-                db[id * 10 + 5].gt_value, db[id * 10 + 6].gt_value, db[id * 10 + 7].gt_value,
-                db[id * 10 + 8].gt_value, db[id * 10 + 9].gt_value )
-
-            s += '    %20.15f, %20.15f\n' % ( db[i * 10 + 10].gt_value, db[i * 10 + 11].gt_value )
-
-            s += '  },\n'
-        
-        s += '};\n\n'
+#        db = self._gtoctclasscombatratingscalar_db
+#        s += '// Combat Rating scalar multipliers for classes, wow build %d\n' % self._options.build
+#        s += 'static double __%s%s%s[][%d] = {\n' % ( 
+#            self._options.prefix and ('%s_' % self._options.prefix) or '',
+#            re.sub(r'([A-Z]+)', r'_\1', self._dbc[1]).lower(), 
+#            self._options.suffix and ('_%s' % self._options.suffix) or '',
+#            len(self._class_names))
+#        for i in xrange(0, len(CombatRatingsDataGenerator._combat_rating_ids)):
+#            id = CombatRatingsDataGenerator._combat_rating_ids[i]
+#            s += '  // %s rating class scalar multipliers\n' % CombatRatingsDataGenerator._combat_ratings[i]
+#            s += '  { \n'
+#            s += '    %20.15f, %20.15f, %20.15f, %20.15f, %20.15f,\n' % (
+#                0.0, db[id * 10 + 1].gt_value, db[id * 10 + 2].gt_value, db[id * 10 + 3].gt_value,
+#                db[id * 10 + 4].gt_value)
+#
+#            s += '    %20.15f, %20.15f, %20.15f, %20.15f, %20.15f,\n' % (
+#                db[id * 10 + 5].gt_value, db[id * 10 + 6].gt_value, db[id * 10 + 7].gt_value,
+#                db[id * 10 + 8].gt_value, db[id * 10 + 9].gt_value )
+#
+#            s += '    %20.15f, %20.15f\n' % ( db[i * 10 + 10].gt_value, db[i * 10 + 11].gt_value )
+#
+#            s += '  },\n'
+#        
+#       s += '};\n\n'
 
         return s
 
@@ -1106,7 +1106,7 @@ class SpellDataGenerator(DataGenerator):
           ( 66188, 0 ), # Death Strike off-hand
           ( 113516, 0, True ), # Symbiosis Wild Mushroom: Plague
           ( 52212, 0, False ), # Death and Decay false positive for activatable
-          ( 81277, 5 ), ( 81280, 5 ) # Bloodworms heal / burst
+          ( 81277, 5 ), ( 81280, 5 ), ( 50453, 5 ) # Bloodworms heal / burst
         ),  
         
         # Shaman:
