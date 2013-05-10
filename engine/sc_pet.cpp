@@ -29,6 +29,10 @@ void pet_t::init_pet_t_()
 
   owner -> pet_list.push_back( this );
 
+  // Pets have inherent 5% critical strike chance if not overridden.
+  base.spell_crit  = 0.05;
+  base.attack_crit = 0.05;
+
   stamina_per_owner = 0.75;
   intellect_per_owner = 0.30;
 
@@ -70,7 +74,7 @@ pet_t::pet_t( sim_t*             s,
 
 double pet_t::composite_attribute( attribute_e attr )
 {
-  double a = current.stats.attribute[ attr ];
+  double a = current.attribute[ attr ];
 
   switch ( attr )
   {
@@ -89,14 +93,9 @@ double pet_t::composite_attribute( attribute_e attr )
 
 // pet_t::init_base =========================================================
 
-void pet_t::init_base_stats()
+void pet_t::init_base()
 {
   //mp5_per_spirit = dbc.mp5_per_spirit( pet_type, level );
-
-  // Pets have inherent 5% critical strike chance if not overridden.
-  base.spell_crit  = 0.05;
-  base.attack_crit = 0.05;
-
 }
 
 // pet_t::init_target =======================================================
@@ -115,7 +114,7 @@ void pet_t::reset()
 {
   base_t::reset();
 
-  expiration = nullptr;
+  expiration = 0;
 }
 
 // pet_t::summon ============================================================

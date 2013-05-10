@@ -251,7 +251,7 @@ public:
 
   // Character Definition
   virtual void      init_spells();
-  virtual void      init_base_stats();
+  virtual void      init_base();
   virtual void      init_scaling();
   virtual void      create_buffs();
   virtual void      init_gains();
@@ -376,8 +376,10 @@ struct warlock_pet_t : public pet_t
   const spell_data_t* supremacy;
 
   warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
-  virtual void init_base_stats();
+  virtual void init_base();
   virtual void init_actions();
+  virtual void init_spell();
+  virtual void init_attack();
   virtual timespan_t available();
   virtual void schedule_ready( timespan_t delta_time=timespan_t::zero(),
                                bool   waiting=false );
@@ -876,13 +878,9 @@ struct wild_firebolt_t : public warlock_pet_spell_t
          && p() -> o() -> spec.molten_core -> ok()
          && p() -> o() -> rngs.molten_core -> roll( 0.08 ) )
       p() -> o() -> buffs.molten_core -> trigger();
-  }
 
-  virtual void execute()
-  {
-    warlock_pet_spell_t::execute();
 
-    if ( player -> resources.current[ RESOURCE_ENERGY ] <= 0 )
+    if ( player -> resources.current[ RESOURCE_ENERGY ] == 0 )
     {
       p() -> dismiss();
       return;
@@ -906,23 +904,19 @@ warlock_pet_t::warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& p
   supremacy = find_spell( 115578 );
 }
 
-void warlock_pet_t::init_base_stats()
+void warlock_pet_t::init_base()
 {
-  pet_t::init_base_stats();
+  pet_t::init_base();
 
   resources.base[ RESOURCE_ENERGY ] = 200;
   base_energy_regen_per_second = 10;
 
   // We only care about intellect - no other primary attribute affects anything interesting
-  base.stats.attribute[ ATTR_INTELLECT ] = util::ability_rank( owner -> level, 74, 90, 72, 89, 71, 88, 70, 87, 69, 85, 0, 1 );
+  base.attribute[ ATTR_INTELLECT ] = util::ability_rank( owner -> level, 74, 90, 72, 89, 71, 88, 70, 87, 69, 85, 0, 1 );
   // We don't have the data below level 85, so let's make a rough estimate
-  if ( base.stats.attribute[ ATTR_INTELLECT ] == 0 )
-    base.stats.attribute[ ATTR_INTELLECT ] = floor( 0.81 * owner -> level );
+  if ( base.attribute[ ATTR_INTELLECT ] == 0 ) base.attribute[ ATTR_INTELLECT ] = floor( 0.81 * owner -> level );
 
-  if ( owner -> race == RACE_ORC )
-    initial.spell_power_multiplier *= 1.0 + owner -> find_spell( 20575 ) -> effectN( 1 ).percent();
-
-  base.spell_power_per_intellect = 1;
+  initial.spell_power_per_intellect = 1;
 
   intellect_per_owner = 0;
   stamina_per_owner = 0;
@@ -934,9 +928,6 @@ void warlock_pet_t::init_base_stats()
   main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = dmg;
 
   main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-
-  if ( owner -> race == RACE_ORC )
-    base.attack_power_multiplier *= 1.0 + owner -> find_spell( 20575 ) -> effectN( 1 ).percent();
 }
 
 void warlock_pet_t::init_actions()
@@ -954,6 +945,22 @@ void warlock_pet_t::init_actions()
   if ( summon_stats )
     for ( size_t i = 0; i < action_list.size(); ++i )
       summon_stats -> add_child( action_list[ i ] -> stats );
+}
+
+void warlock_pet_t::init_spell()
+{
+  pet_t::init_spell();
+
+  if ( owner -> race == RACE_ORC )
+    initial.spell_power_multiplier *= 1.0 + owner -> find_spell( 20575 ) -> effectN( 1 ).percent();
+}
+
+void warlock_pet_t::init_attack()
+{
+  pet_t::init_attack();
+
+  if ( owner -> race == RACE_ORC )
+    initial.attack_power_multiplier *= 1.0 + owner -> find_spell( 20575 ) -> effectN( 1 ).percent();
 }
 
 timespan_t warlock_pet_t::available()
@@ -1019,9 +1026,9 @@ struct felguard_pet_t : public warlock_pet_t
     action_list_str = "legion_strike";
   }
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
-    warlock_pet_t::init_base_stats();
+    warlock_pet_t::init_base();
 
     melee_attack = new warlock_pet_melee_t( this );
     special_action = new felstorm_t( this );
@@ -1044,9 +1051,9 @@ struct felhunter_pet_t : public warlock_pet_t
     action_list_str = "shadow_bite";
   }
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
-    warlock_pet_t::init_base_stats();
+    warlock_pet_t::init_base();
 
     melee_attack = new warlock_pet_melee_t( this );
   }
@@ -1069,9 +1076,9 @@ struct succubus_pet_t : public warlock_pet_t
     owner_coeff.ap_from_sp = 1.667;
   }
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
-    warlock_pet_t::init_base_stats();
+    warlock_pet_t::init_base();
 
     main_hand_weapon.swing_time = timespan_t::from_seconds( 3.0 );
     melee_attack = new warlock_pet_melee_t( this );
@@ -1095,9 +1102,9 @@ struct voidwalker_pet_t : public warlock_pet_t
     action_list_str = "torment";
   }
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
-    warlock_pet_t::init_base_stats();
+    warlock_pet_t::init_base();
 
     melee_attack = new warlock_pet_melee_t( this );
   }
@@ -1120,9 +1127,9 @@ struct infernal_pet_t : public warlock_pet_t
     owner_coeff.ap_from_sp = 0.5;
   }
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
-    warlock_pet_t::init_base_stats();
+    warlock_pet_t::init_base();
 
     melee_attack = new warlock_pet_melee_t( this );
   }
@@ -1142,9 +1149,9 @@ struct doomguard_pet_t : public warlock_pet_t
     warlock_pet_t( sim, owner, "doomguard", PET_DOOMGUARD, true )
   { }
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
-    warlock_pet_t::init_base_stats();
+    warlock_pet_t::init_base();
 
     action_list_str = "doom_bolt";
   }
@@ -1175,9 +1182,9 @@ struct wild_imp_pet_t : public warlock_pet_t
     swarm_stats = owner -> get_stats( "firebolt" );
   }
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
-    warlock_pet_t::init_base_stats();
+    warlock_pet_t::init_base();
 
     action_list_str = "firebolt";
 
@@ -1254,9 +1261,9 @@ struct wrathguard_pet_t : public warlock_pet_t
     owner_coeff.ap_from_sp = 2.333; // FIXME: Retest this later
   }
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
-    warlock_pet_t::init_base_stats();
+    warlock_pet_t::init_base();
 
     main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * 0.667; // FIXME: Retest this later
     off_hand_weapon = main_hand_weapon;
@@ -1282,9 +1289,9 @@ struct observer_pet_t : public warlock_pet_t
     action_list_str = "tongue_lash";
   }
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
-    warlock_pet_t::init_base_stats();
+    warlock_pet_t::init_base();
 
     melee_attack = new warlock_pet_melee_t( this );
   }
@@ -1307,9 +1314,9 @@ struct shivarra_pet_t : public warlock_pet_t
     owner_coeff.ap_from_sp = 1.111;
   }
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
-    warlock_pet_t::init_base_stats();
+    warlock_pet_t::init_base();
 
     main_hand_weapon.swing_time = timespan_t::from_seconds( 3.0 );
     main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = main_hand_weapon.damage = main_hand_weapon.damage * 0.667;
@@ -1336,9 +1343,9 @@ struct voidlord_pet_t : public warlock_pet_t
     action_list_str = "torment";
   }
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
-    warlock_pet_t::init_base_stats();
+    warlock_pet_t::init_base();
 
     melee_attack = new warlock_pet_melee_t( this );
   }
@@ -1361,9 +1368,9 @@ struct abyssal_pet_t : public warlock_pet_t
     owner_coeff.ap_from_sp = 0.5;
   }
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
-    warlock_pet_t::init_base_stats();
+    warlock_pet_t::init_base();
 
     melee_attack = new warlock_pet_melee_t( this );
   }
@@ -4328,9 +4335,9 @@ double warlock_t::composite_mastery()
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     if ( buffs.dark_soul -> up() )
-      m += spec.dark_soul -> effectN( 1 ).average( this ) * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() ) / current_rating().mastery;
+      m += spec.dark_soul -> effectN( 1 ).average( this ) * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() ) / rating.mastery;
     else if ( buffs.dark_soul -> cooldown -> up() )
-      m += spec.dark_soul -> effectN( 1 ).average( this ) * glyphs.dark_soul -> effectN( 1 ).percent() / current_rating().mastery;
+      m += spec.dark_soul -> effectN( 1 ).average( this ) * glyphs.dark_soul -> effectN( 1 ).percent() / rating.mastery;
   }
 
   return m;
@@ -4670,15 +4677,15 @@ void warlock_t::init_spells()
 }
 
 
-void warlock_t::init_base_stats()
+void warlock_t::init_base()
 {
-  player_t::init_base_stats();
+  player_t::init_base();
 
-  base.stats.attack_power += -10;
-  base.attack_power_per_strength = 2.0;
-  base.spell_power_per_intellect = 1.0;
+  base.attack_power = -10;
+  initial.attack_power_per_strength = 2.0;
+  initial.spell_power_per_intellect = 1.0;
 
-  base.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spec.fel_armor -> effectN( 1 ).percent();
+  initial.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spec.fel_armor -> effectN( 1 ).percent();
 
   // If we don't have base mp5 defined for this level in extra_data.inc, approximate:
   if ( base.mana_regen_per_second == 0 ) base.mana_regen_per_second = resources.base[ RESOURCE_MANA ] * 0.01;

@@ -257,7 +257,7 @@ public:
   // Character Definition
   virtual void      init_spells();
   virtual void      init_defense();
-  virtual void      init_base_stats();
+  virtual void      init_base();
   virtual void      init_scaling();
   virtual void      create_buffs();
   virtual void      init_gains();
@@ -2498,8 +2498,8 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
     double   ap_scale = data().effectN( 2 ).percent();
     double stam_scale = data().effectN( 3 ).percent();
 
-    dmg+= std::max( ap_scale * ( p.cache.attack_power() - p.current.stats.attribute[ ATTR_STRENGTH ] * 2 ),
-                    p.current.stats.attribute[ ATTR_STAMINA ] * stam_scale )
+    dmg+= std::max( ap_scale * ( p.cache.attack_power() - p.current.attribute[ ATTR_STRENGTH ] * 2 ),
+                    p.current.attribute[ ATTR_STAMINA ] * stam_scale )
           * rage_cost / 60;
 
     dmg *= 1.0 + p.sets -> set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent();
@@ -2941,7 +2941,7 @@ void warrior_t::init_defense()
 {
   player_t::init_defense();
 
-  initial.parry_rating_per_strength = initial_rating().parry / 95116;
+  initial.parry_rating_per_strength = rating.parry / 95116;
 
   if ( specialization() == WARRIOR_PROTECTION )
     vengeance_init();
@@ -2949,24 +2949,25 @@ void warrior_t::init_defense()
 
 // warrior_t::init_base =====================================================
 
-void warrior_t::init_base_stats()
+void warrior_t::init_base()
 {
-  player_t::init_base_stats();
+  player_t::init_base();
 
   resources.base[ RESOURCE_RAGE ] = 100.0;
   if ( glyphs.unending_rage -> ok() )
     resources.base[ RESOURCE_RAGE ] += glyphs.unending_rage -> effectN( 1 ).resource( RESOURCE_RAGE );
 
-  base.attack_power_per_strength = 2.0;
-  base.attack_power_per_agility  = 0.0;
+  initial.attack_power_per_strength = 2.0;
+  initial.attack_power_per_agility  = 0.0;
 
-  base.stats.attack_power = level * 2 + 60;
+  base.attack_power = level * 2 + 60;
 
   // FIXME! Level-specific!
   base.miss  = 0.060;
   base.dodge = 0.0501;  //90
   base.parry = 0.030; //90
   base.block = 0.030; // 90
+
   base.block_reduction = 0.3;
 
   // updated from http://sacredduty.net/2012/09/14/avoidance-diminishing-returns-in-mop-followup/
@@ -2978,8 +2979,8 @@ void warrior_t::init_base_stats()
 
   if ( spec.unwavering_sentinel -> ok() )
   {
-    base.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spec.unwavering_sentinel -> effectN( 1 ).percent();
-    base.armor_multiplier *= 1.0 + spec.unwavering_sentinel -> effectN( 3 ).percent();
+    initial.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spec.unwavering_sentinel -> effectN( 1 ).percent();
+    initial.armor_multiplier *= 1.0 + spec.unwavering_sentinel -> effectN( 3 ).percent();
   }
 
   base_gcd = timespan_t::from_seconds( 1.5 );
@@ -3474,19 +3475,13 @@ double warrior_t::composite_tank_block()
   if ( buff.shield_block -> up() )
     return 1.0;
 
+  // first add mastery block to current.block so we can have DR on it.
+  current.block += cache.mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
 
-  double block_by_rating = current.stats.block_rating / current_rating().block;
+  double b = player_t::composite_tank_block();
 
-  // add mastery block to block_by_rating so we can have DR on it.
-  block_by_rating += cache.mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
-
-  double b = initial.block;
-
-  if ( block_by_rating > 0 ) // Formula taken from player_t::composite_tank_block
-  {
-    //the block by rating gets rounded because that's how blizzard rolls...
-    b += 1/ ( 1 / diminished_block_cap + diminished_kfactor / ( util::round( 12800 * block_by_rating ) / 12800 ) );
-  }
+  // and remove it again
+  current.block -= cache.mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
 
   b += spec.bastion_of_defense -> effectN( 1 ).percent();
 
@@ -3530,9 +3525,9 @@ double warrior_t::composite_tank_dodge()
 
 double warrior_t::composite_attack_haste()
 {
-  double h = player_t::composite_attack_haste() / ( 1.0 / ( 1.0 + current.stats.haste_rating / current_rating().attack_haste ) );
+  double h = player_t::composite_attack_haste() / attack_haste;
 
-  h *= 1.0 / ( 1.0 + current.stats.haste_rating * 1.5 / current_rating().attack_haste ); //This +50% hidden buff was introduced in 5.2
+  h *= 1.0 / ( 1.0 + current.haste_rating * 1.5 / rating.attack_haste ); //This +50% hidden buff was introduced in 5.2
 
   return h;
 }

@@ -56,6 +56,7 @@ void gear_stats_t::add_stat( stat_e stat,
   case STAT_WEAPON_OFFHAND_SPEED:  weapon_offhand_speed  += value; break;
 
   case STAT_ARMOR:             armor          += value; break;
+  case STAT_BONUS_ARMOR:       bonus_armor    += value; break;
   case STAT_DODGE_RATING:      dodge_rating   += value; break;
   case STAT_PARRY_RATING:      parry_rating   += value; break;
 
@@ -122,6 +123,7 @@ void gear_stats_t::set_stat( stat_e stat,
   case STAT_WEAPON_OFFHAND_SPEED:  weapon_offhand_speed  = value; break;
 
   case STAT_ARMOR:             armor          = value; break;
+  case STAT_BONUS_ARMOR:       bonus_armor    = value; break;
   case STAT_DODGE_RATING:      dodge_rating   = value; break;
   case STAT_PARRY_RATING:      parry_rating   = value; break;
 
@@ -187,6 +189,7 @@ double gear_stats_t::get_stat( stat_e stat ) const
   case STAT_WEAPON_OFFHAND_SPEED:  return weapon_offhand_speed;
 
   case STAT_ARMOR:             return armor;
+  case STAT_BONUS_ARMOR:       return bonus_armor;
   case STAT_DODGE_RATING:      return dodge_rating;
   case STAT_PARRY_RATING:      return parry_rating;
 
@@ -204,16 +207,21 @@ double gear_stats_t::get_stat( stat_e stat ) const
   return 0;
 }
 
-std::string gear_stats_t::to_string()
+// gear_stats_t::print ======================================================
+
+void gear_stats_t::print( FILE* file )
 {
-  std::ostringstream s;
-  for ( stat_e i = STAT_STRENGTH; i < STAT_MAX; i++ )
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    if ( i > 0 )
-      s << " ";
-    s << util::stat_type_abbrev( i ) << "=" << get_stat( i );
+    double value = get_stat( i );
+
+    if ( value != 0 )
+    {
+      util::fprintf( file, " %s=%.*f", util::stat_type_abbrev( i ),
+                     ( ( ( value - ( int ) value ) > 0 ) ? 3 : 0 ), value );
+    }
   }
-  return s.str();
+  util::fprintf( file, "\n" );
 }
 
 // gear_stats_t::stat_mod ===================================================

@@ -380,7 +380,7 @@ enum dot_behavior_e { DOT_CLIP, DOT_REFRESH, DOT_EXTEND };
 
 enum attribute_e { ATTRIBUTE_NONE=0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTRIBUTE_MAX };
 
-enum base_stat_e { BASE_STAT_NONE = 0, BASE_STAT_STRENGTH, BASE_STAT_AGILITY, BASE_STAT_STAMINA, BASE_STAT_INTELLECT, BASE_STAT_SPIRIT,
+enum base_stat_e { BASE_STAT_STRENGTH=0, BASE_STAT_AGILITY, BASE_STAT_STAMINA, BASE_STAT_INTELLECT, BASE_STAT_SPIRIT,
                    BASE_STAT_HEALTH, BASE_STAT_MANA,
                    BASE_STAT_MELEE_CRIT_PER_AGI, BASE_STAT_SPELL_CRIT_PER_INT,
                    BASE_STAT_DODGE_PER_AGI,
@@ -695,7 +695,7 @@ enum stat_e
   STAT_HIT_RATING, STAT_HIT_RATING2,STAT_CRIT_RATING, STAT_HASTE_RATING,STAT_MASTERY_RATING,
   STAT_WEAPON_DPS, STAT_WEAPON_SPEED,
   STAT_WEAPON_OFFHAND_DPS, STAT_WEAPON_OFFHAND_SPEED,
-  STAT_ARMOR, STAT_RESILIENCE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING,
+  STAT_ARMOR, STAT_BONUS_ARMOR, STAT_RESILIENCE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING,
   STAT_BLOCK_RATING, STAT_PVP_POWER,
   STAT_ALL,
   STAT_MAX
@@ -740,23 +740,6 @@ check( INTELLECT );
 check( SPIRIT );
 #undef check
 
-inline cache_e cache_from_stat( stat_e st )
-{
-  switch ( st )
-  {
-  case STAT_STRENGTH: case STAT_AGILITY: case STAT_STAMINA: case STAT_INTELLECT: case STAT_SPIRIT:
-    return static_cast<cache_e>( st );
-  case STAT_SPELL_POWER: return CACHE_SPELL_POWER;
-  case STAT_ATTACK_POWER: return CACHE_ATTACK_POWER;
-  case STAT_EXPERTISE_RATING: case STAT_EXPERTISE_RATING2: return CACHE_EXP;
-  case STAT_HIT_RATING: case STAT_HIT_RATING2: return CACHE_HIT;
-  case STAT_CRIT_RATING: return CACHE_CRIT;
-  case STAT_HASTE_RATING: return CACHE_HASTE;
-  case STAT_MASTERY_RATING: return CACHE_MASTERY;
-  default: break;
-  }
-  return CACHE_NONE;
-}
 enum elixir_e
 {
   ELIXIR_NONE=0,
@@ -1526,6 +1509,7 @@ struct gear_stats_t
   double weapon_offhand_dps;
   double weapon_offhand_speed;
   double armor;
+  double bonus_armor;
   double dodge_rating;
   double parry_rating;
   double block_rating;
@@ -1534,50 +1518,19 @@ struct gear_stats_t
   double pvp_power;
 
   gear_stats_t() :
-    attribute(), resource(),
     spell_power( 0.0 ), attack_power( 0.0 ), expertise_rating( 0.0 ), expertise_rating2( 0.0 ),
     hit_rating( 0.0 ), hit_rating2( 0.0 ), crit_rating( 0.0 ), haste_rating( 0.0 ), weapon_dps( 0.0 ), weapon_speed( 0.0 ),
-    weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), dodge_rating( 0.0 ),
+    weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), bonus_armor( 0.0 ), dodge_rating( 0.0 ),
     parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 ), resilience_rating( 0.0 ), pvp_power( 0.0 )
-  { }
-
-  friend gear_stats_t operator+( const gear_stats_t& left, const gear_stats_t& right )
   {
-    gear_stats_t a = gear_stats_t( left);
-    a += right;
-    return a;
-  }
-
-  gear_stats_t& operator+=( const gear_stats_t& right )
-  {
-    spell_power += right.spell_power;
-    attack_power += right.attack_power;
-    expertise_rating += right.expertise_rating;
-    expertise_rating2 += right.expertise_rating2;
-    hit_rating += right.hit_rating;
-    hit_rating2 += right.hit_rating2;
-    crit_rating += right.crit_rating;
-    haste_rating += right.haste_rating;
-    weapon_dps += right.weapon_dps;
-    weapon_speed += right.weapon_speed;
-    weapon_offhand_dps += right.weapon_offhand_dps;
-    weapon_offhand_speed += right.weapon_offhand_speed;
-    armor += right.armor;
-    dodge_rating += right.dodge_rating;
-    parry_rating += right.parry_rating;
-    block_rating += right.block_rating;
-    mastery_rating += right.mastery_rating;
-    resilience_rating += right.resilience_rating;
-    pvp_power += right.pvp_power;
-    range::transform ( attribute, right.attribute, attribute.begin(), std::plus<int>());
-    range::transform ( resource, right.resource, resource.begin(), std::plus<int>());
-    return *this;
+    range::fill( attribute, 0 );
+    range::fill( resource, 0 );
   }
 
   void   add_stat( stat_e stat, double value );
   void   set_stat( stat_e stat, double value );
   double get_stat( stat_e stat ) const;
-  std::string to_string();
+  void   print( FILE* );
   static double stat_mod( stat_e stat );
 };
 
@@ -3029,7 +2982,6 @@ struct item_t
   bool parse_options();
 
   bool is_matching_type();
-  bool is_valid_type();
 
   unsigned item_level();
   unsigned upgrade_level();
@@ -3301,6 +3253,7 @@ struct player_t : public noncopyable
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
   timespan_t  gcd_ready, base_gcd, started_waiting;
+  rating_t    rating;
   std::vector<pet_t*> pet_list;
   int         invert_scaling;
   timespan_t  reaction_offset, reaction_mean, reaction_stddev, reaction_nu;
@@ -3408,46 +3361,38 @@ public:
   // Profs
   std::array<int,PROFESSION_MAX> profession;
 
+  // Haste
+  double spell_haste, attack_haste;
+
   struct base_initial_current_t
   {
     base_initial_current_t();
-    std::string to_string();
-    gear_stats_t stats;
 
-    double mana_regen_per_second;
+    std::array<double,ATTRIBUTE_MAX> attribute;
+    double mastery, mastery_rating, haste_rating;
+    double spell_hit, spell_crit, mana_regen_per_second;
+    double attack_power, attack_hit, attack_expertise, attack_crit;
+    double armor, bonus_armor, miss, dodge, parry, block, block_reduction;
 
+    std::array<double,SCHOOL_MAX> resource_reduction;
+    std::array<double,SCHOOL_MAX + 1> spell_power;
     double spell_power_per_intellect, spell_crit_per_intellect;
     double attack_power_per_strength, attack_power_per_agility, attack_crit_per_agility;
     double dodge_per_agility, parry_rating_per_strength;
     double mana_regen_per_spirit, mana_regen_from_spirit_multiplier, health_per_stamina;
-    std::array<double,SCHOOL_MAX> resource_reduction;
-    double miss, dodge, parry, block;
-    double spell_crit, attack_crit, block_reduction, mastery;
     double skill, distance;
-    double armor_coeff;
   private:
     friend struct player_t;
     bool sleeping;
-    rating_t    rating;
   public:
 
     std::array<double,ATTRIBUTE_MAX> attribute_multiplier;
     double spell_power_multiplier, attack_power_multiplier, armor_multiplier;
     position_e position;
-  }
-  base, // Base values, from some database or overridden by user
-  initial, // Base + Gear + Global Enchants
-  current; // Current values, reset to initial before every iteration
-
-  double current_stat( stat_e st ) const
-  { return current.stats.get_stat( st ); }
-
-  const rating_t& current_rating() const
-  { return current.rating; }
-  const rating_t& initial_rating() const
-  { return initial.rating; }
+  } base, initial, current;
 
   // Spell Mechanics
+  double mana_regen_base;
   double base_energy_regen_per_second;
   double base_focus_regen_per_second;
   double base_chi_regen_per_second;
@@ -3456,6 +3401,9 @@ public:
   // Defense Mechanics
   event_t* target_auto_attack;
   double diminished_dodge_cap, diminished_parry_cap, diminished_block_cap, diminished_kfactor;
+  double armor_coeff;
+  double half_resistance_rating;
+  std::array< int, SCHOOL_MAX > spell_resistance;
 
   // Weapons
   weapon_t main_hand_weapon;
@@ -3700,8 +3648,7 @@ public:
   // Gear
   std::string items_str, meta_gem_str;
   std::vector<item_t> items;
-  gear_stats_t gear, enchant, temporary;
-  gear_stats_t total_gear; // composite of gear, enchant and for non-pets sim -> enchant
+  gear_stats_t stats, initial_stats, gear, enchant, temporary;
   set_bonus_t set_bonus;
   set_bonus_array_t* sets;
   meta_gem_e meta_gem;
@@ -3853,9 +3800,25 @@ public:
 
   virtual void init();
   virtual void override_talent( std::string override_str );
+  virtual void init_talents();
+  virtual void init_glyphs();
+  virtual void init_base() = 0;
+  virtual void init_items();
   virtual void init_meta_gem( gear_stats_t& );
+  virtual void init_core();
+  virtual void init_position();
+  virtual void init_race();
+  virtual void init_racials();
   virtual bool weapon_racial( weapon_t* );
+  virtual void init_spell();
+  virtual void init_attack();
+  virtual void init_defense();
+  virtual void init_weapon( weapon_t& );
+  virtual void init_unique_gear();
+  virtual void init_enchant();
   virtual void init_resources( bool force = false );
+  virtual void init_professions();
+  virtual void init_professions_bonus();
   virtual std::string init_use_item_actions( const std::string& append = std::string() );
   virtual std::string init_use_profession_actions( const std::string& append = std::string() );
   virtual std::string init_use_racial_actions( const std::string& append = std::string() );
@@ -3866,41 +3829,25 @@ public:
   bool add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
   std::string include_default_on_use_items( player_t&, const std::string& exclude_effects );
   std::string include_specific_on_use_item( player_t&, const std::string& effect_names, const std::string& options );
-
-
-
-  virtual void init_target();
-  void init_character_properties();
-    virtual void init_race();
-    virtual void init_talents();
-    virtual void init_glyphs();
-    virtual void replace_spells();
-    virtual void init_position();
-    virtual void init_professions();
-  virtual void init_spells();
-  virtual void init_items();
-    virtual void init_weapon( weapon_t& );
-  virtual void init_base_stats();
-  virtual void init_initial_stats();
-
-  virtual void init_defense();
-  virtual void create_buffs();
-  virtual void init_unique_gear();
-  virtual void init_enchant();
-  virtual void init_scaling();
   virtual void init_actions() {}
+  virtual void init_rating();
+  virtual void init_scaling();
+  virtual void init_spells();
   virtual void init_gains();
   virtual void init_procs();
   virtual void init_uptimes();
   virtual void init_benefits();
   virtual void init_rng();
   virtual void init_stats();
+  virtual void init_values();
+  virtual void init_target();
   virtual void register_callbacks() {}
 
 private:
   void _init_actions();
 
 public:
+  virtual void create_buffs();
 
   virtual void reset();
   virtual void combat_begin();
@@ -3932,6 +3879,7 @@ public:
 
   virtual double composite_armor()                ;
   virtual double composite_armor_multiplier()     ;
+  virtual double composite_spell_resistance( school_e school );
   virtual double composite_tank_miss( school_e school );
   virtual double composite_tank_dodge()           ;
   virtual double composite_tank_parry()           ;
@@ -4065,8 +4013,6 @@ public:
   virtual void stat_gain( stat_e stat, double amount, gain_t* g=0, action_t* a=0, bool temporary=false );
   virtual void stat_loss( stat_e stat, double amount, gain_t* g=0, action_t* a=0, bool temporary=false );
 
-  virtual void modify_current_rating( base_stat_e stat, double amount );
-
   virtual void cost_reduction_gain( school_e school, double amount, gain_t* g=0, action_t* a=0 );
   virtual void cost_reduction_loss( school_e school, double amount, action_t* a=0 );
 
@@ -4088,6 +4034,7 @@ public:
   void create_talents_armory();
   void create_talents_wowhead();
 
+  void replace_spells();
 
   const spell_data_t* find_glyph( const std::string& name ) const;
   const spell_data_t* find_racial_spell( const std::string& name, const std::string& token = std::string(), race_e s = RACE_NONE ) const;
@@ -4115,6 +4062,8 @@ public:
   virtual pet_t*    find_pet  ( const std::string& name );
 
   virtual int decode_set( item_t& item ) { ( void )item; assert( item.name() ); return SET_NONE; }
+
+  void recalculate_haste();
 
   virtual void armory_extensions( const std::string& /* region */, const std::string& /* server */, const std::string& /* character */,
                                   cache::behavior_e /* behavior */=cache::players() )
@@ -4227,7 +4176,7 @@ public:
   pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian=false );
   pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_e pt, bool guardian=false );
 
-  virtual void init_base_stats();
+  virtual void init_base();
   virtual void init_target();
   virtual void reset();
   virtual void summon( timespan_t duration=timespan_t::zero() );
@@ -5010,8 +4959,7 @@ public:
   action_t* current_action;
   action_state_t* state;
   event_t* tick_event;
-  int num_ticks, current_tick, added_ticks;
-  bool ticking;
+  int num_ticks, current_tick, added_ticks, ticking;
   timespan_t added_seconds;
   timespan_t ready;
   timespan_t miss_time;

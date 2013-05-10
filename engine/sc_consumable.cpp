@@ -311,13 +311,13 @@ struct food_t : public action_t
     switch ( type )
     {
     case FOOD_FORTUNE_COOKIE:
-      if ( p -> current.stats.dodge_rating > 0 )
+      if ( p -> stats.dodge_rating > 0 )
       {
         p -> stat_gain( STAT_DODGE_RATING, 90 * food_stat_multiplier );
       }
-      else if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_INTELLECT ] )
+      else if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_INTELLECT ] )
       {
-        if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
+        if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_AGILITY ] )
         {
           p -> stat_gain( STAT_STRENGTH, 90 * food_stat_multiplier );
         }
@@ -326,7 +326,7 @@ struct food_t : public action_t
           p -> stat_gain( STAT_AGILITY, 90 * food_stat_multiplier );
         }
       }
-      else if ( p -> current.stats.attribute[ ATTR_INTELLECT ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
+      else if ( p -> stats.attribute[ ATTR_INTELLECT ] >= p -> stats.attribute[ ATTR_AGILITY ] )
       {
         p -> stat_gain( STAT_INTELLECT, 90 * food_stat_multiplier, gain, this );
       }
@@ -337,13 +337,13 @@ struct food_t : public action_t
       stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
       break;
     case FOOD_SEAFOOD_MAGNIFIQUE_FEAST:
-      if ( p -> current.stats.dodge_rating > 0 )
+      if ( p -> stats.dodge_rating > 0 )
       {
         p -> stat_gain( STAT_DODGE_RATING, 90 * food_stat_multiplier );
       }
-      else if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_INTELLECT ] )
+      else if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_INTELLECT ] )
       {
-        if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
+        if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_AGILITY ] )
         {
           p -> stat_gain( STAT_STRENGTH, 90 * food_stat_multiplier );
         }
@@ -352,7 +352,7 @@ struct food_t : public action_t
           p -> stat_gain( STAT_AGILITY, 90 * food_stat_multiplier );
         }
       }
-      else if ( p -> current.stats.attribute[ ATTR_INTELLECT ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
+      else if ( p -> stats.attribute[ ATTR_INTELLECT ] >= p -> stats.attribute[ ATTR_AGILITY ] )
       {
         p -> stat_gain( STAT_INTELLECT, 90 * food_stat_multiplier, gain, this );
       }
@@ -379,13 +379,13 @@ struct food_t : public action_t
     case FOOD_GREAT_PANDAREN_BANQUET:
       if ( gain_amount <= 0.0 ) gain_amount = 275;
 
-      if ( p -> current.stats.dodge_rating > 0 )
+      if ( p -> stats.dodge_rating > 0 )
       {
         p -> stat_gain( STAT_DODGE_RATING, gain_amount * food_stat_multiplier );
       }
-      else if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_INTELLECT ] )
+      else if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_INTELLECT ] )
       {
-        if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
+        if ( p -> stats.attribute[ ATTR_STRENGTH ] >= p -> stats.attribute[ ATTR_AGILITY ] )
         {
           p -> stat_gain( STAT_STRENGTH, gain_amount * food_stat_multiplier );
         }
@@ -394,7 +394,7 @@ struct food_t : public action_t
           p -> stat_gain( STAT_AGILITY, gain_amount * food_stat_multiplier );
         }
       }
-      else if ( p -> current.stats.attribute[ ATTR_INTELLECT ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
+      else if ( p -> stats.attribute[ ATTR_INTELLECT ] >= p -> stats.attribute[ ATTR_AGILITY ] )
       {
         p -> stat_gain( STAT_INTELLECT, gain_amount * food_stat_multiplier, gain, this );
       }

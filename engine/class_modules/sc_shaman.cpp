@@ -380,7 +380,7 @@ public:
 
   // Character Definition
   virtual void      init_spells();
-  virtual void      init_base_stats();
+  virtual void      init_base();
   virtual void      init_scaling();
   virtual void      create_buffs();
   virtual void      init_gains();
@@ -1006,9 +1006,9 @@ struct feral_spirit_pet_t : public pet_t
 
   shaman_t* o() { return static_cast<shaman_t*>( owner ); }
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
-    pet_t::init_base_stats();
+    pet_t::init_base();
 
     melee = new melee_t( this );
   }
@@ -1130,9 +1130,9 @@ struct earth_elemental_pet_t : public pet_t
   shaman_t* o() { return static_cast< shaman_t* >( owner ); }
   //timespan_t available() { return sim -> max_time; }
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
-    pet_t::init_base_stats();
+    pet_t::init_base();
 
     // Approximated from lvl 85, 86 Earth Elementals
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -1355,9 +1355,9 @@ struct fire_elemental_t : public pet_t
     command = owner -> find_spell( 65222 );
   }
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
-    pet_t::init_base_stats();
+    pet_t::init_base();
 
     resources.base[ RESOURCE_HEALTH ] = 32268; // Level 85 value
     resources.base[ RESOURCE_MANA   ] = 8908; // Level 85 value
@@ -4291,9 +4291,9 @@ struct stormlash_totem_t : public shaman_totem_pet_t
     aggregate( 0 )
   { }
 
-  void init_actions()
+  void init_spell()
   {
-    shaman_totem_pet_t::init_actions();
+    shaman_totem_pet_t::init_spell();
 
     aggregate = new stormlash_aggregate_t( this );
   }
@@ -5067,20 +5067,21 @@ void shaman_t::init_spells()
 
 // shaman_t::init_base ======================================================
 
-void shaman_t::init_base_stats()
+void shaman_t::init_base()
 {
-  player_t::init_base_stats();
+  player_t::init_base();
 
-  base.stats.attack_power = ( level * 2 ) - 30;
-  base.attack_power_per_strength = 1.0;
-  base.attack_power_per_agility  = 2.0;
-  base.spell_power_per_intellect = 1.0;
+  base.attack_power = ( level * 2 ) - 30;
+  initial.attack_power_per_strength = 1.0;
+  initial.attack_power_per_agility  = 2.0;
+  initial.spell_power_per_intellect = 1.0;
 
   resources.initial_multiplier[ RESOURCE_MANA ] = 1.0 + spec.spiritual_insight -> effectN( 1 ).percent();
   base.mana_regen_per_second *= 1.0 + spec.spiritual_insight -> effectN( 1 ).percent();
 
-  base.distance = ( specialization() == SHAMAN_ENHANCEMENT ) ? 3 : 30;
-  base.mana_regen_from_spirit_multiplier = spec.meditation -> effectN( 1 ).percent();
+  current.distance = ( specialization() == SHAMAN_ENHANCEMENT ) ? 3 : 30;
+  initial.distance = current.distance;
+  initial.mana_regen_from_spirit_multiplier = spec.meditation -> effectN( 1 ).percent();
 
   diminished_kfactor    = 0.009880;
   diminished_dodge_cap = 0.006870;
@@ -5669,11 +5670,11 @@ double shaman_t::matching_gear_multiplier( attribute_e attr )
 
 double shaman_t::composite_spell_haste()
 {
-  double h = player_t::composite_spell_haste() / ( 1.0 / ( 1.0 + current.stats.haste_rating / current_rating().spell_haste ) );
+  double h = player_t::composite_spell_haste() / spell_haste;
   double hm = 1.0;
   if ( buff.flurry -> up() )
     hm *= 1.0 + constant.flurry_rating_multiplier;
-  h *= 1.0 / ( 1.0 + current.stats.haste_rating * hm / current_rating().spell_haste );
+  h *= 1.0 / ( 1.0 + current.haste_rating * hm / rating.spell_haste );
 
   if ( talent.ancestral_swiftness -> ok() )
     h *= constant.haste_spell_ancestral_swiftness;
@@ -5693,7 +5694,7 @@ double shaman_t::composite_spell_hit()
   double hit = player_t::composite_spell_hit();
 
   hit += ( spec.elemental_precision -> ok() *
-           ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) ) / current_rating().spell_hit;
+           ( spirit() - base.attribute[ ATTR_SPIRIT ] ) ) / rating.spell_hit;
 
   return hit;
 }
@@ -5705,7 +5706,7 @@ double shaman_t::composite_attack_hit()
   double hit = player_t::composite_attack_hit();
 
   hit += ( spec.elemental_precision -> ok() *
-           ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) ) / current_rating().attack_hit;
+           ( spirit() - base.attribute[ ATTR_SPIRIT ] ) ) / rating.attack_hit;
 
   return hit;
 }
@@ -5714,11 +5715,11 @@ double shaman_t::composite_attack_hit()
 
 double shaman_t::composite_attack_haste()
 {
-  double h = player_t::composite_attack_haste() / ( 1.0 / ( 1.0 + current.stats.haste_rating / current_rating().attack_haste ) );
+  double h = player_t::composite_attack_haste() / attack_haste;
   double hm = 1.0;
   if ( buff.flurry -> up() )
     hm *= 1.0 + constant.flurry_rating_multiplier;
-  h *= 1.0 / ( 1.0 + current.stats.haste_rating * hm / current_rating().attack_haste );
+  h *= 1.0 / ( 1.0 + current.haste_rating * hm / rating.attack_haste );
 
   if ( buff.elemental_mastery -> up() )
     h *= constant.haste_elemental_mastery;

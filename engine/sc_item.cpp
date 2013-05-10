@@ -899,16 +899,6 @@ bool item_t::is_matching_type()
   return util::matching_armor_type( player -> type ) == parsed.data.item_subclass;
 }
 
-// item_t::is_valid_type =================================================
-
-bool item_t::is_valid_type()
-{
-  if ( ! util::is_match_slot( slot ) )
-    return true;
-
-  return util::matching_armor_type( player -> type ) >= parsed.data.item_subclass;
-}
-
 // item_t::decode_armor_type ================================================
 
 bool item_t::decode_armor_type()
@@ -973,6 +963,9 @@ bool item_t::decode_stats()
                        player -> name(), tokens[ i ].full.c_str(), slot_name() );
         return false;
       }
+
+      if ( s == STAT_ARMOR && ! util::is_match_slot( slot ) && slot != SLOT_BACK && slot != SLOT_OFF_HAND )
+        s = STAT_BONUS_ARMOR;
 
       if ( s != STAT_ARMOR )
       {

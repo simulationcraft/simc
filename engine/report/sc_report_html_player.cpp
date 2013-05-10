@@ -689,7 +689,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
         util::inverse_tokenize( util::attribute_type_string( i ) ).c_str(),
         a -> buffed.attribute[ i ],
         a -> get_attribute( i ),
-        a -> total_gear.attribute[ i ] );
+        a -> stats.attribute[ i ] );
       j++;
     }
     for ( resource_e i = RESOURCE_NONE; ++i < RESOURCE_MAX; )
@@ -720,7 +720,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       a -> buffed.spell_power,
       a -> composite_spell_power( SCHOOL_MAX ) * a -> composite_spell_power_multiplier(),
-      a -> total_gear.spell_power );
+      a -> stats.spell_power );
     j++;
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
@@ -732,7 +732,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * a -> buffed.spell_hit,
       100 * a -> composite_spell_hit(),
-      a -> total_gear.hit_rating  );
+      a -> stats.hit_rating  );
     j++;
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
@@ -744,7 +744,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * a -> buffed.spell_crit,
       100 * a -> composite_spell_crit(),
-      a -> total_gear.crit_rating );
+      a -> stats.crit_rating );
     j++;
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
@@ -756,7 +756,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * ( 1 / a -> buffed.spell_haste - 1 ),
       100 * ( 1 / a -> composite_spell_speed() - 1 ),
-      a -> total_gear.haste_rating );
+      a -> stats.haste_rating );
     j++;
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
@@ -779,7 +779,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       a -> buffed.attack_power,
       a -> composite_attack_power() * a -> composite_attack_power_multiplier(),
-      a -> total_gear.attack_power );
+      a -> stats.attack_power );
     j++;
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
@@ -791,7 +791,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * a -> buffed.attack_hit,
       100 * a -> composite_attack_hit(),
-      a -> total_gear.hit_rating );
+      a -> stats.hit_rating );
     j++;
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
@@ -803,7 +803,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * a -> buffed.attack_crit,
       100 * a -> composite_attack_crit(),
-      a -> total_gear.crit_rating );
+      a -> stats.crit_rating );
     j++;
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
@@ -815,7 +815,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * ( 1 / a -> buffed.attack_haste - 1 ),
       100 * ( 1 / a -> composite_attack_haste() - 1 ),
-      a -> total_gear.haste_rating );
+      a -> stats.haste_rating );
     j++;
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
@@ -827,7 +827,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * ( 1 / a -> buffed.attack_speed - 1 ),
       100 * ( 1 / a -> composite_attack_speed() - 1 ),
-      a -> total_gear.haste_rating );
+      a -> stats.haste_rating );
     j++;
     if ( a -> dual_wield() )
     {
@@ -843,7 +843,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
         100 * a -> buffed.oh_attack_expertise,
         100 * a -> composite_attack_expertise( &( a -> main_hand_weapon ) ),
         100 * a -> composite_attack_expertise( &( a -> off_hand_weapon ) ),
-        a -> total_gear.expertise_rating );
+        a -> stats.expertise_rating );
     }
     else
     {
@@ -857,7 +857,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
         ( j % 2 == 1 ) ? " class=\"odd\"" : "",
         100 * a -> buffed.mh_attack_expertise,
         100 * a -> composite_attack_expertise( &( a -> main_hand_weapon ) ),
-        a -> total_gear.expertise_rating );
+        a -> stats.expertise_rating );
     }
     j++;
     os.printf(
@@ -870,7 +870,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       a -> buffed.armor,
       a -> composite_armor(),
-      a -> total_gear.armor );
+      ( a -> stats.armor + a -> stats.bonus_armor ) );
     j++;
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
@@ -894,7 +894,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * a -> buffed.dodge,
       100 * ( a -> composite_tank_dodge() ),
-      a -> total_gear.dodge_rating );
+      a -> stats.dodge_rating );
     j++;
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
@@ -906,7 +906,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * a -> buffed.parry,
       100 * ( a -> composite_tank_parry() ),
-      a -> total_gear.parry_rating );
+      a -> stats.parry_rating );
     j++;
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
@@ -918,7 +918,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * a -> buffed.block,
       100 * a -> composite_tank_block(),
-      a -> total_gear.block_rating );
+      a -> stats.block_rating );
     j++;
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
@@ -943,7 +943,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100.0 * mv * a -> buffed.mastery,
       100.0 * mv * a -> composite_mastery(),
-      a -> total_gear.mastery_rating );
+      a -> stats.mastery_rating );
     j++;
 
     os << "\t\t\t\t\t\t\t\t</table>\n"

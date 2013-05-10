@@ -143,7 +143,7 @@ class tooltip_parser_t
     else if ( ( player && effect.type() == E_SCHOOL_DAMAGE && ( spell.get_school_type() & SCHOOL_MAGIC_MASK ) != 0 ) ||
               ( player && effect.type() == E_HEAL ) )
     {
-      double power = effect.coeff() * player -> initial.stats.spell_power;
+      double power = effect.coeff() * player -> initial_stats.spell_power;
       s_min += power;
       s_max += power;
       show_scale_factor = false;

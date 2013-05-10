@@ -10,20 +10,18 @@
 # Override MODULE on the cmd-line invocation if you want to build a custom named executable, e.g. 'simc64'
 # Override OBJ_DIR if you want your object files built somewhere other than the local directory
 
-
-# Detect operating system
 FLAVOR     =
 ifeq (${OS},Windows_NT)
-  OS         = WINDOWS
+OS         = WINDOWS
 endif
 
 ifeq (${OS},)
-  ifdef SystemRoot
-    OS         = WINDOWS
-  else
-    OS         = UNIX
-    FLAVOR     = $(shell uname)
-  endif
+ifdef SystemRoot
+OS         = WINDOWS
+else
+OS         = UNIX
+FLAVOR     = $(shell uname)
+endif
 endif
 
 
@@ -31,68 +29,62 @@ OPENSSL_PATH =
 
 CXX        = g++
 CPP_FLAGS  = -Wall -Woverloaded-virtual -W -I.
-OPTS       = -O3 -fomit-frame-pointer
-BITS       = 32
-
 ifneq (${NO_DEBUG},)
-  CPP_FLAGS += -DNDEBUG
+CPP_FLAGS += -DNDEBUG
 endif
 ifneq (${C++11},)
-  CPP_FLAGS += -std=c++0x
+CPP_FLAGS += -std=c++0x
 endif
+OPTS       = -O3 -fomit-frame-pointer -ffast-math -msse2 -mfpmath=sse
+BITS       = 32
+
 ifneq (${LTO},)
-  OPTS += -flto
+OPTS += -flto
 endif
 ifneq (${MARCH_NATIVE},)
-  OPTS += -march=native
-endif
-ifneq (${FFAST-MATH},)
-  # Force on SSE2 to avoid problems with older GCC versions
-  OPTS += -ffast-math -msse2 -mfpmath=sse
+OPTS += -march=native
 endif
 
-# Include build setting from user configuration file
 -include ../build.conf
 
 ifeq (64,${BITS})
-  CPP_FLAGS += -m64
-  LINK_FLAGS+= -m64
+CPP_FLAGS += -m64
+LINK_FLAGS+= -m64
 endif
 
 # Any UNIX platform
 ifeq (UNIX,${OS})
-  LINK_LIBS += -lpthread
-  AR         = ar
-  COPY       = cp
-  REMOVE     = rm -f
-  PATHSEP    = /
-  ifneq (64,${BITS})
-    ifeq (i386,${HOSTTYPE})
-      CPP_FLAGS  += -malign-double
-    endif
-    ifeq (i686,${HOSTTYPE})
-      CPP_FLAGS  += -malign-double
-    endif
-  endif
+LINK_LIBS += -lpthread
+AR         = ar
+COPY       = cp
+REMOVE     = rm -f
+PATHSEP    = /
+ifneq (64,${BITS})
+ifeq (i386,${HOSTTYPE})
+CPP_FLAGS  += -malign-double
+endif
+ifeq (i686,${HOSTTYPE})
+CPP_FLAGS  += -malign-double
+endif
+endif
 endif
 
 # Windows platform with MinGW32
 ifeq (WINDOWS,${OS})
-  MODULE_EXT = .exe
-  CPP_FLAGS += -DUNICODE
-  LINK_LIBS  = -lws2_32 -lwininet
-  ifeq (${NO_STATIC},)
-    LINK_FLAGS += -static
-  endif
-  COPY       = copy
-  REMOVE     = del /f
-  PATHSEP    = \\
-  AR         = ar
-  
-  # MinGW W32
-  ifeq (32,${BITS})
-    CPP_FLAGS += -malign-double
-  endif
+MODULE_EXT = .exe
+CPP_FLAGS += -DUNICODE
+LINK_LIBS  = -lws2_32 -lwininet
+ifeq (${NO_STATIC},)
+LINK_FLAGS += -static
+endif
+COPY       = copy
+REMOVE     = del /f
+PATHSEP    = \\
+AR         = ar
+# MinGW W32
+ifeq (32,${BITS})
+CPP_FLAGS += -malign-double
+endif
 endif
 
 MODULE     = simc$(MODULE_EXT)

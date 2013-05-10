@@ -271,10 +271,6 @@ template <typename Range, typename Out, typename F>
 inline Out transform( Range& r, Out o, F f )
 { return std::transform( range::begin( r ), range::end( r ), o, f ); }
 
-template <typename Range, typename Range2, typename Out, typename F>
-inline Out transform( Range& r, Range2& r2, Out o, F f )
-{ return std::transform( range::begin( r ), range::end( r ), range::begin( r2 ), o, f ); }
-
 template <typename Range, typename F>
 inline typename range::traits<Range>::iterator transform_self( Range& r, F f )
 { return std::transform( range::begin( r ), range::end( r ), range::begin( r ), f ); }

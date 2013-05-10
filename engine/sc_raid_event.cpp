@@ -249,7 +249,7 @@ struct movement_event_t : public raid_event_t
         double my_move_distance = move_distance;
         if ( move_to >= -1 )
         {
-          double new_distance = ( move_to < 0 ) ? p -> current.distance : move_to;
+          double new_distance = ( move_to < 0 ) ? p -> initial.distance : move_to;
           if ( ! my_move_distance )
             my_move_distance = fabs( new_distance - p -> current.distance );
           p -> current.distance = new_distance;

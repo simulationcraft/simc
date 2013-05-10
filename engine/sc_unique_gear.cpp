@@ -246,9 +246,9 @@ void synapse_springs( item_t* item )
 
   for ( unsigned i = 0; i < sizeof_array( attr ); ++i )
   {
-    if ( p -> current.stats.attribute[ attr[ i ] ] > max_value )
+    if ( p -> current.attribute[ attr[ i ] ] > max_value )
     {
-      max_value = p -> current.stats.attribute[ attr[ i ] ];
+      max_value = p -> current.attribute[ attr[ i ] ];
       max_stat = stat_from_attr( attr[ i ] );
     }
   }
@@ -282,9 +282,9 @@ void synapse_springs_2( item_t* item )
 
   for ( unsigned i = 0; i < sizeof_array( attr ); ++i )
   {
-    if ( p -> current.stats.attribute[ attr[ i ] ] > max_value )
+    if ( p -> current.attribute[ attr[ i ] ] > max_value )
     {
-      max_value = p -> current.stats.attribute[ attr[ i ] ];
+      max_value = p -> current.attribute[ attr[ i ] ];
       max_stat = stat_from_attr( attr[ i ] );
     }
   }
@@ -1124,10 +1124,10 @@ void apparatus_of_khazgoroth( item_t* item )
         {
           // Highest of Crits/Master/haste is chosen
           blessing_of_khazgoroth -> stats.push_back( stat_buff_t::buff_stat_t( STAT_CRIT_RATING, amount ) );
-          if ( a -> player -> current.stats.haste_rating   > a -> player -> current.stats.crit_rating ||
-               a -> player -> current.stats.mastery_rating > a -> player -> current.stats.crit_rating )
+          if ( a -> player -> stats.haste_rating   > a -> player -> stats.crit_rating ||
+               a -> player -> stats.mastery_rating > a -> player -> stats.crit_rating )
           {
-            if ( a -> player -> current.stats.mastery_rating > a -> player -> current.stats.haste_rating )
+            if ( a -> player -> stats.mastery_rating > a -> player -> stats.haste_rating )
             {
 
               blessing_of_khazgoroth -> stats.push_back( stat_buff_t::buff_stat_t( STAT_MASTERY_RATING, amount ) );
@@ -1254,14 +1254,14 @@ void matrix_restabilizer( item_t* item )
     {
       player_t* p = a -> player;
 
-      if ( p -> current.stats.crit_rating > p -> current.stats.haste_rating )
+      if ( p -> stats.crit_rating > p -> stats.haste_rating )
       {
-        if ( p -> current.stats.crit_rating > p -> current.stats.mastery_rating )
+        if ( p -> stats.crit_rating > p -> stats.mastery_rating )
           buff_matrix_restabilizer_crit -> trigger();
         else
           buff_matrix_restabilizer_mastery -> trigger();
       }
-      else if ( p -> current.stats.haste_rating > p -> current.stats.mastery_rating )
+      else if ( p -> stats.haste_rating > p -> stats.mastery_rating )
         buff_matrix_restabilizer_haste -> trigger();
       else
         buff_matrix_restabilizer_mastery -> trigger();
@@ -2331,9 +2331,9 @@ void rune_of_reorigination( item_t* item )
     virtual void execute( action_t* action, action_state_t* /* state */ )
     {
       player_t* p = action -> player;
-      double chr = p -> current.stats.haste_rating;
-      double ccr = p -> current.stats.crit_rating;
-      double cmr = p -> current.stats.mastery_rating;
+      double chr = p -> stats.haste_rating;
+      double ccr = p -> stats.crit_rating;
+      double cmr = p -> stats.mastery_rating;
       if ( p -> sim -> debug )
         p -> sim -> output( "%s rune_of_reorigination procs crit=%.0f haste=%.0f mastery=%.0f",
                             p -> name(), ccr, chr, cmr );

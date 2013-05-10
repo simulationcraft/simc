@@ -1304,6 +1304,7 @@ const char* util::stat_type_string( stat_e stat )
   case STAT_WEAPON_OFFHAND_SPEED:  return "weapon_offhand_speed";
 
   case STAT_ARMOR:             return "armor";
+  case STAT_BONUS_ARMOR:       return "bonus_armor";
   case STAT_RESILIENCE_RATING: return "resilience_rating";
   case STAT_DODGE_RATING:      return "dodge_rating";
   case STAT_PARRY_RATING:      return "parry_rating";
@@ -1363,6 +1364,7 @@ const char* util::stat_type_abbrev( stat_e stat )
   case STAT_WEAPON_OFFHAND_SPEED:  return "WOHspeed";
 
   case STAT_ARMOR:             return "Armor";
+  case STAT_BONUS_ARMOR:       return "BArmor";
   case STAT_RESILIENCE_RATING: return "Resil";
   case STAT_DODGE_RATING:      return "Dodge";
   case STAT_PARRY_RATING:      return "Parry";
@@ -1411,6 +1413,7 @@ const char* util::stat_type_wowhead( stat_e stat )
   case STAT_WEAPON_SPEED: return "__speed";
 
   case STAT_ARMOR:             return "armor";
+  case STAT_BONUS_ARMOR:       return "__armor"; // FIXME! Does wowhead distinguish "bonus" armor?
   case STAT_RESILIENCE_RATING: return "resilRating";
   case STAT_DODGE_RATING:      return "dodgeRating";
   case STAT_PARRY_RATING:      return "parryRating";
@@ -1745,7 +1748,7 @@ stat_e util::translate_item_mod( int item_mod )
   case ITEM_MOD_RANGED_ATTACK_POWER: return STAT_ATTACK_POWER;
   case ITEM_MOD_SPELL_POWER:         return STAT_SPELL_POWER;
   case ITEM_MOD_MASTERY_RATING:      return STAT_MASTERY_RATING;
-  case ITEM_MOD_EXTRA_ARMOR:         return STAT_ARMOR;
+  case ITEM_MOD_EXTRA_ARMOR:         return STAT_BONUS_ARMOR;
   case ITEM_MOD_RESILIENCE_RATING:   return STAT_RESILIENCE_RATING;
   case ITEM_MOD_PVP_POWER:           return STAT_PVP_POWER;
   default:                           return STAT_NONE;
@@ -1771,7 +1774,7 @@ int util::translate_stat( stat_e stat )
   case STAT_ATTACK_POWER:      return ITEM_MOD_ATTACK_POWER;
   case STAT_SPELL_POWER:       return ITEM_MOD_SPELL_POWER;
   case STAT_MASTERY_RATING:    return ITEM_MOD_MASTERY_RATING;
-  case STAT_ARMOR:       return ITEM_MOD_EXTRA_ARMOR;
+  case STAT_BONUS_ARMOR:       return ITEM_MOD_EXTRA_ARMOR;
   case STAT_RESILIENCE_RATING: return ITEM_MOD_RESILIENCE_RATING;
   case STAT_PVP_POWER:         return ITEM_MOD_PVP_POWER;
   default:                     return ITEM_MOD_NONE;
@@ -2692,6 +2695,7 @@ void util::fuzzy_stats( std::string&       encoding_str,
   stat_search( encoding_str, splits, STAT_MASTERY_RATING,   "mastery rating" );
   stat_search( encoding_str, splits, STAT_MASTERY_RATING,   "mastery" );
 
+  stat_search( encoding_str, splits, STAT_BONUS_ARMOR,      "armor !penetration" );
   stat_search( encoding_str, splits, STAT_DODGE_RATING,     "dodge rating" );
   stat_search( encoding_str, splits, STAT_PARRY_RATING,     "parry rating" );
   stat_search( encoding_str, splits, STAT_BLOCK_RATING,     "block_rating" );

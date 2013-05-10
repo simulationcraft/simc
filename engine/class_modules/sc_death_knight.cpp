@@ -358,7 +358,7 @@ public:
   virtual void      init_enchant();
   virtual void      init_rng();
   virtual void      init_defense();
-  virtual void      init_base_stats();
+  virtual void      init_base();
   virtual void      init_scaling();
   virtual void      create_buffs();
   virtual void      init_gains();
@@ -1302,9 +1302,9 @@ struct army_ghoul_pet_t : public death_knight_pet_t
     }
   };
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
-    initial.stats.attack_power = -20;
+    base.attack_power = -20;
 
     // Ghouls don't appear to gain any crit from agi, they may also just have none
     // initial_attack_crit_per_agility = rating_t::interpolate( level, 0.01/25.0, 0.01/40.0, 0.01/83.3 );
@@ -1384,9 +1384,9 @@ struct bloodworms_pet_t : public death_knight_pet_t
     owner_coeff.ap_from_ap = 0.385;
   }
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
-    pet_t::init_base_stats();
+    pet_t::init_base();
 
     melee = new melee_t( this );
   }
@@ -1476,7 +1476,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
     death_knight_pet_t( sim, owner, "gargoyle", true )
   { }
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
     action_list_str = "travel/gargoyle_strike";
 
@@ -1620,11 +1620,11 @@ struct ghoul_pet_t : public death_knight_pet_t
     }
   };
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
     //assert( owner -> specialization() != SPEC_NONE ); // Is there a reason for this?
 
-    initial.stats.attack_power = -20;
+    base.attack_power = -20;
 
     resources.base[ RESOURCE_ENERGY ] = 100;
     base_energy_regen_per_second  = 10;
@@ -1726,7 +1726,7 @@ struct fallen_zandalari_t : public death_knight_pet_t
     }
   };
 
-  virtual void init_base_stats()
+  virtual void init_base()
   {
     resources.base[ RESOURCE_ENERGY ] = 100;
     base_energy_regen_per_second  = 10;
@@ -4415,7 +4415,7 @@ void death_knight_t::init_defense()
 {
   player_t::init_defense();
 
-  initial.parry_rating_per_strength = initial_rating().parry / 95116;
+  initial.parry_rating_per_strength =rating.parry/95116;
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
     vengeance_init();
@@ -4423,21 +4423,21 @@ void death_knight_t::init_defense()
 
 // death_knight_t::init_base ================================================
 
-void death_knight_t::init_base_stats()
+void death_knight_t::init_base()
 {
-  player_t::init_base_stats();
+  player_t::init_base();
 
-  base.attribute_multiplier[ ATTR_STRENGTH ] *= 1.0 + spec.unholy_might -> effectN( 1 ).percent();
-  base.attribute_multiplier[ ATTR_STAMINA ]  *= 1.0 + spec.veteran_of_the_third_war -> effectN( 1 ).percent();
+  initial.attribute_multiplier[ ATTR_STRENGTH ] *= 1.0 + spec.unholy_might -> effectN( 1 ).percent();
+  initial.attribute_multiplier[ ATTR_STAMINA ]  *= 1.0 + spec.veteran_of_the_third_war -> effectN( 1 ).percent();
 
-  base.stats.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
-
+  base.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
   base.dodge = spec.veteran_of_the_third_war -> effectN( 2 ).percent();
+
   base.miss    = 0.060;
   base.parry   = 0.030; //90
   base.block   = 0.030; // 90
 
-  base.attack_power_per_strength = 2.0;
+  initial.attack_power_per_strength = 2.0;
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
 

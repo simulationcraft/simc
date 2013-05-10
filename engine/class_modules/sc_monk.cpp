@@ -256,9 +256,10 @@ public:
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual void      init_spells();
-  virtual void      init_base_stats();
+  virtual void      init_base();
   virtual void      init_scaling();
   virtual void      create_buffs();
+  virtual void      init_values();
   virtual void      init_gains();
   virtual void      init_rng();
   virtual void      init_procs();
@@ -2332,13 +2333,13 @@ void monk_t::init_spells()
 
 // monk_t::init_base ========================================================
 
-void monk_t::init_base_stats()
+void monk_t::init_base()
 {
-  base_t::init_base_stats();
+  base_t::init_base();
 
   int tree = specialization();
 
-  base.distance = ( tree == MONK_MISTWEAVER ) ? 40 : 3;
+  initial.distance = ( tree == MONK_MISTWEAVER ) ? 40 : 3;
 
   base_gcd = timespan_t::from_seconds( 1.0 );
 
@@ -2349,13 +2350,9 @@ void monk_t::init_base_stats()
   base_chi_regen_per_second = 0;
   base_energy_regen_per_second = 10.0;
 
-  base.stats.attack_power = level * 2.0;
-  base.attack_power_per_strength = 1.0;
-  base.attack_power_per_agility  = 2.0;
-
-  // Mistweaver
-  if ( spec.mana_meditation -> ok() )
-    initial.mana_regen_from_spirit_multiplier = spec.mana_meditation -> effectN( 1 ).percent();
+  base.attack_power = level * 2.0;
+  initial.attack_power_per_strength = 1.0;
+  initial.attack_power_per_agility  = 2.0;
 
   // FIXME! Level-specific!
   base.miss  = 0.060;
@@ -2683,6 +2680,17 @@ void monk_t::init_actions()
   base_t::init_actions();
 }
 
+// monk_t::init_values ====================================================
+
+void monk_t::init_values()
+{
+  base_t::init_values();
+
+  // Mistweaver
+  if ( spec.mana_meditation -> ok() )
+    initial.mana_regen_from_spirit_multiplier = spec.mana_meditation -> effectN( 1 ).percent();
+}
+
 // monk_t::reset ==================================================
 
 void monk_t::reset()
@@ -2860,8 +2868,8 @@ double monk_t::composite_attack_haste()
 
   if ( current_stance() == WISE_SERPENT )
   {
-    h *= 1.0 + current.stats.haste_rating / current_rating().attack_haste;
-    h /= 1.0 + current.stats.haste_rating * ( 1 + static_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / current_rating().attack_haste;
+    h *= 1.0 + current.haste_rating / rating.attack_haste;
+    h /= 1.0 + current.haste_rating * ( 1 + static_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / rating.attack_haste;
   }
 
   return h;
@@ -2875,8 +2883,8 @@ double monk_t::composite_spell_haste()
 
   if ( current_stance() == WISE_SERPENT )
   {
-    h *= 1.0 + current.stats.haste_rating / current_rating().spell_haste;
-    h /= 1.0 + current.stats.haste_rating * ( 1 + static_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / current_rating().spell_haste;
+    h *= 1.0 + current.haste_rating / rating.spell_haste;
+    h /= 1.0 + current.haste_rating * ( 1 + static_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / rating.spell_haste;
   }
 
   return h;
@@ -2912,7 +2920,7 @@ double monk_t::composite_attack_hit()
 {
   double ah = base_t::composite_attack_hit();
 
-  ah += ( ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * active_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / current_rating().attack_hit;
+  ah += ( ( cache.spirit() - base.attribute[ ATTR_SPIRIT ] ) * active_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / rating.attack_hit;
 
   return ah;
 }
@@ -2923,7 +2931,7 @@ double monk_t::composite_spell_hit()
 {
   double sh = base_t::composite_spell_hit();
 
-  sh += ( ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * active_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / current_rating().spell_hit;
+  sh += ( ( cache.spirit() - base.attribute[ ATTR_SPIRIT ] ) * active_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / rating.spell_hit;
 
   return sh;
 }
@@ -2934,7 +2942,7 @@ double monk_t::composite_attack_expertise( weapon_t* weapon )
 {
   double e = base_t::composite_attack_expertise( weapon );
 
-  e += ( ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * active_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / current_rating().expertise;
+  e += ( ( cache.spirit() - base.attribute[ ATTR_SPIRIT ] ) * active_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / rating.expertise;
 
   return e;
 }

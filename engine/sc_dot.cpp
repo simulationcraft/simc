@@ -41,7 +41,7 @@ struct dot_tick_event_t : public event_t
       assert(0);
     }
 
-    dot -> tick_event = nullptr;
+    dot -> tick_event = 0;
     dot -> current_tick++;
 
     if ( dot -> current_action -> player -> current.skill < 1.0 &&
@@ -83,8 +83,8 @@ struct dot_tick_event_t : public event_t
 } // end anonymous namespace
 
 dot_t::dot_t( const std::string& n, player_t* t, player_t* s ) :
-  sim( *( t -> sim ) ), target( t ), source( s ), current_action( 0 ), state( 0 ), tick_event( nullptr ),
-  num_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( false ),
+  sim( *( t -> sim ) ), target( t ), source( s ), current_action( 0 ), state( 0 ), tick_event( 0 ),
+  num_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( 0 ),
   added_seconds( timespan_t::zero() ), ready( timespan_t::min() ),
   miss_time( timespan_t::min() ),time_to_tick( timespan_t::zero() ),
   name_str( n ), tick_amount( 0.0 )
@@ -110,9 +110,7 @@ bool dot_t::is_higher_priority_action_available()
 void dot_t::last_tick()
 {
   time_to_tick = timespan_t::zero();
-
   ticking = false;
-  event_t::cancel( tick_event );
 
   if ( sim.debug )
     sim.output( "%s fades from %s", name(), state -> target -> name() );
@@ -144,6 +142,7 @@ void dot_t::cancel()
     return;
 
   last_tick();
+  event_t::cancel( tick_event );
   reset();
 }
 
@@ -157,11 +156,7 @@ void dot_t::extend_duration( int extra_ticks, bool cap, uint32_t state_flags )
   if ( state_flags == ( uint32_t ) -1 ) state_flags = current_action -> snapshot_flags;
 
   // Make sure this DoT is still ticking......
-  if ( !tick_event )
-  {
-    sim.output( "foo" );
-  }
-  assert( tick_event && "dot_t::extend_duration: ticking==true but tick_event=nullptr" );
+  assert( tick_event );
 
   if ( sim.log )
     sim.output( "%s extends duration of %s on %s, adding %d tick(s), totalling %d ticks, and snapshotting with %#.x",
@@ -304,12 +299,12 @@ void dot_t::refresh_duration( uint32_t state_flags )
 void dot_t::reset()
 {
   event_t::cancel( tick_event );
-  current_tick = 0;
-  added_ticks = 0;
-  ticking = false;
-  added_seconds = timespan_t::zero();
-  ready = timespan_t::min();
-  miss_time = timespan_t::min();
+  current_tick=0;
+  added_ticks=0;
+  ticking=0;
+  added_seconds=timespan_t::zero();
+  ready=timespan_t::min();
+  miss_time=timespan_t::min();
   tick_amount = 0.0;
   if ( state )
     action_state_t::release( state );
@@ -340,7 +335,7 @@ void dot_t::schedule_tick()
 
   tick_event = new ( sim ) dot_tick_event_t( this, time_to_tick );
 
-  ticking = true;
+  ticking = 1;
 
   if ( current_action -> channeled )
   {

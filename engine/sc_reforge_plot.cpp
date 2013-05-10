@@ -77,7 +77,7 @@ void reforge_plot_t::generate_stat_mods( std::vector<std::vector<int> > &stat_mo
       player_t* p = sim -> player_no_pet_list[ i ];
       if ( p -> quiet )
         continue;
-      if ( p -> current.stats.get_stat( stat_indices[ cur_mod_stat ] ) - sum < 0 )
+      if ( p -> stats.get_stat( stat_indices[ cur_mod_stat ] ) - sum < 0 )
         return;
     }
 
@@ -96,7 +96,7 @@ void reforge_plot_t::generate_stat_mods( std::vector<std::vector<int> > &stat_mo
       player_t* p = sim -> player_no_pet_list[ i ];
       if ( p -> quiet )
         continue;
-      if ( p -> current.stats.get_stat( stat_indices[ cur_mod_stat ] ) + mod_amount < 0 )
+      if ( p -> stats.get_stat( stat_indices[ cur_mod_stat ] ) + mod_amount < 0 )
       {
         negative_stat = true;
         break;
