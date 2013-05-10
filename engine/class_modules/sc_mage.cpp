@@ -260,7 +260,7 @@ public:
 
   // Character Definition
   virtual void      init_spells();
-  virtual void      init_base();
+  virtual void      init_base_stats();
   virtual void      init_scaling();
   virtual void      create_buffs();
   virtual void      init_gains();
@@ -3619,14 +3619,14 @@ void mage_t::init_spells()
 
 // mage_t::init_base ========================================================
 
-void mage_t::init_base()
+void mage_t::init_base_stats()
 {
-  player_t::init_base();
+  player_t::init_base_stats();
 
-  initial.spell_power_per_intellect = 1.0;
+  base.spell_power_per_intellect = 1.0;
 
-  base.attack_power = -10;
-  initial.attack_power_per_strength = 1.0;
+  base.stats.attack_power = -10;
+  base.attack_power_per_strength = 1.0;
 
   diminished_kfactor    = 0.009830;
   diminished_dodge_cap = 0.006650;
@@ -3966,8 +3966,6 @@ void mage_t::init_actions()
         if ( race == RACE_ORC )                 action_list_str += "/blood_fury,if=buff.alter_time.down&(cooldown.alter_time_activate.remains>30|target.time_to_die<18)";
         else if ( race == RACE_TROLL )          action_list_str += "/berserking,if=buff.alter_time.down&target.time_to_die<18";
       }
-      else
-        init_racials();
 
       if ( sim -> allow_potions && level > 87 )
         action_list_str += "/jade_serpent_potion,if=buff.alter_time.down&target.time_to_die<45";

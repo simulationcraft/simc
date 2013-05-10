@@ -371,7 +371,7 @@ public:
 
   // Character Definition
   virtual void      init_spells();
-  virtual void      init_base();
+  virtual void      init_base_stats();
   virtual void      create_buffs();
   virtual void      init_scaling();
   virtual void      init_gains();
@@ -520,9 +520,9 @@ struct symbiosis_feral_spirit_t : public pet_t
 
   druid_t* o() { return static_cast<druid_t*>( owner ); }
 
-  virtual void init_base()
+  virtual void init_base_stats()
   {
-    pet_t::init_base();
+    pet_t::init_base_stats();
 
     melee = new melee_t( this );
   }
@@ -574,9 +574,9 @@ struct symbiosis_mirror_image_t : public pet_t
     action_list_str = "wrath";
   }
 
-  virtual void init_base()
+  virtual void init_base_stats()
   {
-    pet_t::init_base();
+    pet_t::init_base_stats();
   }
 
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
@@ -636,14 +636,14 @@ struct treants_balance_t : public pet_t
     action_list_str = "wrath";
   }
 
-  virtual void init_base()
+  virtual void init_base_stats()
   {
-    pet_t::init_base();
+    pet_t::init_base_stats();
 
     resources.base[ RESOURCE_HEALTH ] = 9999; // Level 85 value
     resources.base[ RESOURCE_MANA   ] = 0;
 
-    base.attribute[ ATTR_INTELLECT ] = 0;
+    initial.stats.attribute[ ATTR_INTELLECT ] = 0;
     initial.spell_power_per_intellect = 0;
     intellect_per_owner = 0;
     stamina_per_owner = 0;
@@ -708,9 +708,9 @@ struct treants_feral_t : public pet_t
     owner_coeff.ap_from_ap = 1.0;
   }
 
-  virtual void init_base()
+  virtual void init_base_stats()
   {
-    pet_t::init_base();
+    pet_t::init_base_stats();
 
     resources.base[ RESOURCE_HEALTH ] = 9999; // Level 85 value
     resources.base[ RESOURCE_MANA   ] = 0;
@@ -5224,14 +5224,14 @@ void druid_t::init_spells()
 
 // druid_t::init_base =======================================================
 
-void druid_t::init_base()
+void druid_t::init_base_stats()
 {
-  player_t::init_base();
+  player_t::init_base_stats();
 
-  base.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
+  base.stats.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
 
-  initial.attack_power_per_strength = 1.0;
-  initial.spell_power_per_intellect = 1.0;
+  base.attack_power_per_strength = 1.0;
+  base.spell_power_per_intellect = 1.0;
 
   diminished_kfactor    = 0.009720;
   diminished_dodge_cap = 0.008555;
@@ -6078,8 +6078,8 @@ double druid_t::composite_attack_haste()
 
   if ( buff.bear_form -> up() )
   {
-    h *= 1.0 + current.haste_rating / rating.attack_haste;
-    h /= 1.0 + current.haste_rating * ( 1 + spell.bear_form -> effectN( 4 ).percent() ) / rating.attack_haste;
+    h *= 1.0 + current.stats.haste_rating / current_rating().attack_haste;
+    h /= 1.0 + current.stats.haste_rating * ( 1 + spell.bear_form -> effectN( 4 ).percent() ) / current_rating().attack_haste;
   }
 
   return h;
@@ -6092,7 +6092,7 @@ double druid_t::composite_attack_crit()
   double c = player_t::composite_attack_crit();
 
   if ( buff.bear_form -> up() )
-    c += stats.crit_rating * spell.bear_form -> effectN( 4 ).percent() / rating.attack_crit;
+    c += current.stats.get_stat( STAT_CRIT_RATING ) * spell.bear_form -> effectN( 4 ).percent() / current_rating().attack_crit;
 
   return c;
 }
@@ -6190,7 +6190,7 @@ double druid_t::composite_attack_hit()
 {
   double hit = player_t::composite_attack_hit();
 
-  hit += ( cache.spirit() - base.attribute[ ATTR_SPIRIT ] ) * ( spec.balance_of_power -> effectN( 1 ).percent() ) / rating.spell_hit;
+  hit += ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * ( spec.balance_of_power -> effectN( 1 ).percent() ) / current_rating().spell_hit;
 
   hit += buff.heart_of_the_wild -> attack_hit_expertise();
 
@@ -6214,7 +6214,7 @@ double druid_t::composite_spell_hit()
 {
   double hit = player_t::composite_spell_hit();
 
-  hit += ( cache.spirit() - base.attribute[ ATTR_SPIRIT ] ) * ( spec.balance_of_power -> effectN( 1 ).percent() ) / rating.spell_hit;
+  hit += ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * ( spec.balance_of_power -> effectN( 1 ).percent() ) / current_rating().spell_hit;
 
   hit += buff.heart_of_the_wild -> spell_hit();
 
@@ -6229,8 +6229,8 @@ double druid_t::composite_spell_haste()
 
   if ( buff.bear_form -> up() )
   {
-    h *= 1.0 + current.haste_rating / rating.spell_haste;
-    h /= 1.0 + current.haste_rating * ( 1 + spell.bear_form -> effectN( 4 ).percent() ) / rating.spell_haste;
+    h *= 1.0 + current.stats.haste_rating / current_rating().spell_haste;
+    h /= 1.0 + current.stats.haste_rating * ( 1 + spell.bear_form -> effectN( 4 ).percent() ) / current_rating().spell_haste;
   }
 
   return h;
@@ -6243,7 +6243,7 @@ double druid_t::composite_spell_crit()
   double c = player_t::composite_spell_crit();
 
   if ( buff.bear_form -> up() )
-    c += current.spell_crit * spell.bear_form -> effectN( 4 ).percent() / rating.spell_crit;
+    c += current.stats.crit_rating * spell.bear_form -> effectN( 4 ).percent() / current_rating().spell_crit;
 
   return c;
 }

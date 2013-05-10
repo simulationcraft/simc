@@ -307,10 +307,9 @@ public:
   }
 
   // Function Definitions
-  virtual void      init_base();
+  virtual void      init_base_stats();
   virtual void      init_spells();
   virtual void      create_buffs();
-  virtual void      init_values();
   virtual void      init_actions();
   virtual void      init_rng();
   virtual void      init_scaling();
@@ -389,9 +388,9 @@ struct priest_pet_t : public pet_t
     std::array<double,ATTRIBUTE_MAX> stats;
   };
 
-  virtual void init_base()
+  virtual void init_base_stats()
   {
-    pet_t::init_base();
+    pet_t::init_base_stats();
 
     owner_coeff.ap_from_sp = 1.0;
     owner_coeff.sp_from_sp = 1.0;
@@ -414,7 +413,7 @@ struct priest_pet_t : public pet_t
       if ( pet_base_stats[ i ].level <= level )
         break;
     }
-    base.attribute = pet_base_stats[ i ].stats;
+    base.stats.attribute = pet_base_stats[ i ].stats;
   }
 
   virtual void schedule_ready( timespan_t delta_time, bool waiting )
@@ -479,17 +478,7 @@ struct base_fiend_pet_t : public priest_pet_t
 
   virtual double mana_return_percent() const = 0;
 
-  virtual void init_actions()
-  {
-    if ( action_list_str.empty() )
-    {
-      action_list_str += "/snapshot_stats";
-      action_list_str += "/shadowcrawl";
-      action_list_str += "/wait_for_shadowcrawl";
-    }
-
-    priest_pet_t::init_actions();
-  }
+  virtual void init_actions();
 
   virtual void create_buffs()
   {
@@ -533,7 +522,6 @@ struct base_fiend_pet_t : public priest_pet_t
     }
   }
 
-  virtual void init_base();
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str );
 };
@@ -792,11 +780,18 @@ struct lightwell_renew_t : public heal_t
 // Pet Shadowfiend/Mindbender Base
 // ==========================================================================
 
-void base_fiend_pet_t::init_base()
+void base_fiend_pet_t::init_actions()
 {
-  priest_pet_t::init_base();
-
   main_hand_attack = new actions::fiend_melee_t( *this );
+
+  if ( action_list_str.empty() )
+  {
+    action_list_str += "/snapshot_stats";
+    action_list_str += "/shadowcrawl";
+    action_list_str += "/wait_for_shadowcrawl";
+  }
+
+  priest_pet_t::init_actions();
 }
 
 action_t* base_fiend_pet_t::create_action( const std::string& name,
@@ -4849,7 +4844,7 @@ double priest_t::composite_spell_hit()
   double hit = base_t::composite_spell_hit();
 
   hit += specs.divine_fury -> effectN( 1 ).percent();
-  hit += ( ( cache.spirit() - base.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / rating.spell_hit;
+  hit += ( ( cache.spirit() - base.stats.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / current_rating().spell_hit;
 
   return hit;
 }
@@ -4860,7 +4855,7 @@ double priest_t::composite_attack_hit()
 {
   double hit = base_t::composite_attack_hit();
 
-  hit += ( ( cache.spirit() - base.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / rating.spell_hit;
+  hit += ( ( cache.spirit() - base.stats.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / current_rating().spell_hit;
 
   return hit;
 }
@@ -5046,17 +5041,22 @@ void priest_t::create_pets()
 
 // priest_t::init_base ======================================================
 
-void priest_t::init_base()
+void priest_t::init_base_stats()
 {
-  base_t::init_base();
+  base_t::init_base_stats();
 
-  base.attack_power = 0.0;
+  base.stats.attack_power = 0.0;
 
   if ( specs.shadow_orbs -> ok() )
     resources.base[ RESOURCE_SHADOW_ORB ] = 3.0;
 
-  initial.attack_power_per_strength = 1.0;
-  initial.spell_power_per_intellect = 1.0;
+  base.attack_power_per_strength = 1.0;
+  base.spell_power_per_intellect = 1.0;
+
+  // Discipline/Holy
+  base.mana_regen_from_spirit_multiplier = specs.meditation_disc -> ok() ?
+                                              specs.meditation_disc -> effectN( 1 ).percent() :
+                                              specs.meditation_holy -> effectN( 1 ).percent();
 
   diminished_kfactor   = 0.009830;
   diminished_dodge_cap = 0.006650;
@@ -5627,18 +5627,6 @@ void priest_t::init_rng()
   rngs.mastery_extra_tick  = get_rng( "shadowy_recall_extra_tick" );
   rngs.shadowy_apparitions = get_rng( "shadowy_apparitions" );
   rngs.chakra_chastise_smite = get_rng( "chakra_chastise_smite" );
-}
-
-// priest_t::init_values ====================================================
-
-void priest_t::init_values()
-{
-  base_t::init_values();
-
-  // Discipline/Holy
-  initial.mana_regen_from_spirit_multiplier = specs.meditation_disc -> ok() ?
-                                              specs.meditation_disc -> effectN( 1 ).percent() :
-                                              specs.meditation_holy -> effectN( 1 ).percent();
 }
 
 // priest_t::reset ==========================================================

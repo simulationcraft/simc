@@ -236,7 +236,7 @@ public:
   }
 
   virtual void      init_defense();
-  virtual void      init_base();
+  virtual void      init_base_stats();
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_scaling();
@@ -338,9 +338,9 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
   paladin_t* o()
   { return debug_cast<paladin_t*>( owner ); }
 
-  virtual void init_base()
+  virtual void init_base_stats()
   {
-    pet_t::init_base();
+    pet_t::init_base_stats();
     melee = new melee_t( this );
   }
 
@@ -2731,7 +2731,7 @@ void paladin_t::init_defense()
 
   player_t::init_defense();
 
-  initial.parry_rating_per_strength = rating.parry / 95116;
+  initial.parry_rating_per_strength = initial_rating().parry / 95116;
 
   if ( passives.vengeance -> ok() )
     vengeance_init();
@@ -2739,14 +2739,14 @@ void paladin_t::init_defense()
 
 // paladin_t::init_base =====================================================
 
-void paladin_t::init_base()
+void paladin_t::init_base_stats()
 {
-  player_t::init_base();
+  player_t::init_base_stats();
 
-  initial.attack_power_per_strength = 2.0;
-  initial.spell_power_per_intellect = 1.0;
+  base.attack_power_per_strength = 2.0;
+  base.spell_power_per_intellect = 1.0;
 
-  base.attack_power = level * 3;
+  base.stats.attack_power = level * 3;
 
   resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
 
@@ -2766,8 +2766,8 @@ void paladin_t::init_base()
   switch ( specialization() )
   {
   case PALADIN_HOLY:
-    base.attack_hit += 0; // TODO spirit -> hit talents.enlightened_judgments
-    base.spell_hit  += 0; // TODO spirit -> hit talents.enlightened_judgments
+    //base.attack_hit += 0; // TODO spirit -> hit talents.enlightened_judgments
+    //base.spell_hit  += 0; // TODO spirit -> hit talents.enlightened_judgments
     break;
   default:
     break;

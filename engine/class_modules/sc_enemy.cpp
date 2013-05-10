@@ -319,7 +319,8 @@ struct enemy_t : public player_t
   { return RESOURCE_MANA; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
-  virtual void init_base();
+  virtual void init_base_stats();
+  virtual void init_defense();
   virtual void create_buffs();
   virtual void init_resources( bool force=false );
   virtual void init_target();
@@ -391,9 +392,9 @@ struct heal_enemy_t : public enemy_t
 
     resources.current[ RESOURCE_HEALTH ] = resources.base[ RESOURCE_HEALTH ] / 10;
   }
-  virtual void init_base()
+  virtual void init_base_stats()
   {
-    enemy_t::init_base();
+    enemy_t::init_base_stats();
 
     htps.change_mode( false );
 
@@ -419,8 +420,10 @@ action_t* enemy_t::create_action( const std::string& name,
 
 // enemy_t::init_base =======================================================
 
-void enemy_t::init_base()
+void enemy_t::init_base_stats()
 {
+  player_t::init_base_stats();
+
   level = sim -> max_player_level + 3;
 
   if ( sim -> target_level >= 0 )
@@ -434,9 +437,22 @@ void enemy_t::init_base()
 
   base.attack_crit = 0.05;
 
-  if ( initial.armor <= 0 )
+  initial_health = ( sim -> overrides.target_health ) ? sim -> overrides.target_health : fixed_health;
+
+  if ( ( initial_health_percentage < 1   ) ||
+       ( initial_health_percentage > 100 ) )
   {
-    double& a = initial.armor;
+    initial_health_percentage = 100.0;
+  }
+}
+
+void enemy_t::init_defense()
+{
+  player_t::init_defense();
+
+  if ( ( gear.armor + enchant.armor ) <= 0 )
+  {
+    double& a = initial.stats.armor;
 
     switch ( level )
     {
@@ -458,15 +474,6 @@ void enemy_t::init_base()
         a = ( int ) floor ( ( level / 80.0 ) * 9729 ); // Need a better value here.
       break;
     }
-  }
-  base.armor = initial.armor;
-
-  initial_health = ( sim -> overrides.target_health ) ? sim -> overrides.target_health : fixed_health;
-
-  if ( ( initial_health_percentage < 1   ) ||
-       ( initial_health_percentage > 100 ) )
-  {
-    initial_health_percentage = 100.0;
   }
 }
 

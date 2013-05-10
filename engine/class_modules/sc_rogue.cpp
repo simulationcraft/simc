@@ -285,7 +285,7 @@ struct rogue_t : public player_t
 
   // Character Definition
   virtual void      init_spells();
-  virtual void      init_base();
+  virtual void      init_base_stats();
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_rng();
@@ -3270,13 +3270,13 @@ expr_t* rogue_t::create_expression( action_t* a, const std::string& name_str )
 
 // rogue_t::init_base =======================================================
 
-void rogue_t::init_base()
+void rogue_t::init_base_stats()
 {
-  player_t::init_base();
+  player_t::init_base_stats();
 
-  base.attack_power = ( level * 2 );
-  initial.attack_power_per_strength = 1.0;
-  initial.attack_power_per_agility  = 2.0;
+  base.stats.attack_power = ( level * 2 );
+  base.attack_power_per_strength = 1.0;
+  base.attack_power_per_agility  = 2.0;
 
   resources.base[ RESOURCE_ENERGY ] = 100;
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
