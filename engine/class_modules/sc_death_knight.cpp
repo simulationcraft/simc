@@ -173,6 +173,7 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* bone_shield_icd;
   } cooldown;
 
   // Diseases
@@ -366,6 +367,9 @@ public:
     base.distance = 0;
 
     blood_parasite_burst_chance = 0.1;
+
+    cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
+    cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.0 );
   }
 
   // Character Definition
@@ -2767,7 +2771,7 @@ struct bone_shield_t : public death_knight_spell_t
       cooldown -> duration -= pre_cast;
       p() -> buffs.bone_shield -> buff_duration -= pre_cast;
 
-      p() -> buffs.bone_shield -> trigger( 1, 0.0 ); // FIXME
+      p() -> buffs.bone_shield -> trigger( p() -> buffs.bone_shield -> max_stack(), 0.0 ); // FIXME
       death_knight_spell_t::execute();
 
       cooldown -> duration += pre_cast;
@@ -2775,7 +2779,7 @@ struct bone_shield_t : public death_knight_spell_t
     }
     else
     {
-      p() -> buffs.bone_shield -> trigger( 1, 0.0 ); // FIXME
+      p() -> buffs.bone_shield -> trigger( p() -> buffs.bone_shield -> max_stack(), 0.0 ); // FIXME
       death_knight_spell_t::execute();
     }
   }
@@ -2914,10 +2918,23 @@ struct death_coil_t : public death_knight_spell_t
 
 // Death Strike =============================================================
 
+struct death_strike_offhand_t : public death_knight_melee_attack_t
+{
+  death_strike_offhand_t( death_knight_t* p ) :
+    death_knight_melee_attack_t( "death_strike_offhand", p, p -> find_spell( 66188 ) )
+  {
+    background       = true;
+    weapon           = &( p -> off_hand_weapon );
+  }
+};
+
 struct death_strike_t : public death_knight_melee_attack_t
 {
+  death_strike_offhand_t* oh_attack;
+  
   death_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "death_strike", p, p -> find_specialization_spell( "Death Strike" ) )
+    death_knight_melee_attack_t( "death_strike", p, p -> find_class_spell( "Death Strike" ) ),
+    oh_attack( 0 )
   {
     parse_options( NULL, options_str );
     special = true;
@@ -2930,11 +2947,20 @@ struct death_strike_t : public death_knight_melee_attack_t
       convert_runes = 1.0;
 
     weapon = &( p -> main_hand_weapon );
+
+    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+    {
+      if ( p -> spec.threat_of_thassarian -> ok() )
+        oh_attack = new death_strike_offhand_t( p );
+    }
   }
 
   virtual void execute()
   {
     death_knight_melee_attack_t::execute();
+
+    if ( oh_attack )
+      oh_attack -> execute();
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_death_strike -> execute();
@@ -4508,7 +4534,7 @@ void death_knight_t::init_base_stats()
   base.dodge = spec.veteran_of_the_third_war -> effectN( 2 ).percent();
   base.miss    = 0.060;
   base.parry   = 0.030; //90
-  base.block   = 0.030; // 90
+  base.block   = 0.000; // 90
 
   base.attack_power_per_strength = 2.0;
 
@@ -4719,6 +4745,9 @@ void death_knight_t::init_actions()
           precombat_list += "/golemblood_potion";
       }
 
+      if ( level >= 87 )
+        precombat_list += "/bone_shield";
+
       action_list_str += init_use_item_actions( ",if=time>=10" );
       action_list_str += init_use_profession_actions();
       action_list_str += init_use_racial_actions( ",if=time>=10" );
@@ -4730,6 +4759,8 @@ void death_knight_t::init_actions()
           action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
       }
       action_list_str += "/auto_attack";
+      if ( level >= 87 )
+        action_list_str += "/bone_shield,if=buff.bone_shield.down";
       action_list_str += "/dancing_rune_weapon";
       action_list_str += "/raise_dead,if=time>=10";
       action_list_str += "/outbreak,if=(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2)|(!dot.blood_plague.ticking&!dot.frost_fever.ticking)";
@@ -5247,7 +5278,8 @@ void death_knight_t::create_buffs()
                               .chance( find_talent_spell( "Blood Tap" ) -> ok() );
   buffs.blood_presence      = buff_creator_t( this, "blood_presence", find_class_spell( "Blood Presence" ) )
                               .add_invalidate( CACHE_STAMINA );
-  buffs.bone_shield         = buff_creator_t( this, "bone_shield", find_specialization_spell( "Bone Shield" ) );
+  buffs.bone_shield         = buff_creator_t( this, "bone_shield", find_specialization_spell( "Bone Shield" ) )
+                              .cd( timespan_t::zero() );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" ).spell( find_spell( 81141 ) )
                               .chance( spec.crimson_scourge -> proc_chance() );
   buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_class_spell( "Dancing Rune Weapon" ) )
@@ -5378,6 +5410,16 @@ void death_knight_t::assess_damage( school_e     school,
                                     action_state_t* s )
 {
   player_t::assess_damage( school, dtype, s );
+
+  // Bone shield will only decrement, if someone did damage to the dk
+  if ( s -> result_amount > 0 )
+  {
+    if ( cooldown.bone_shield_icd -> up() )
+    {
+      buffs.bone_shield -> decrement();
+      cooldown.bone_shield_icd -> start();
+    }
+  }
 }
 
 // death_knight_t::assess_damage ==============================================
@@ -5387,14 +5429,17 @@ void death_knight_t::target_mitigation( school_e school, dmg_e type, action_stat
   if ( buffs.blood_presence -> check() )
     state -> result_amount *= 1.0 + buffs.blood_presence -> data().effectN( 7 ).percent();
 
-  if ( runeforge.rune_of_spellshattering -> check() )
+  if ( school != SCHOOL_PHYSICAL && runeforge.rune_of_spellshattering -> check() )
     state -> result_amount *= 1.0 + runeforge.rune_of_spellshattering -> data().effectN( 1 ).percent();
 
-  if ( runeforge.rune_of_spellbreaking -> check() )
+  if ( school != SCHOOL_PHYSICAL && runeforge.rune_of_spellbreaking -> check() )
     state -> result_amount *= 1.0 + runeforge.rune_of_spellbreaking -> data().effectN( 1 ).percent();
 
-  if ( runeforge.rune_of_spellbreaking_oh -> check() )
+  if ( school != SCHOOL_PHYSICAL && runeforge.rune_of_spellbreaking_oh -> check() )
     state -> result_amount *= 1.0 + runeforge.rune_of_spellbreaking_oh -> data().effectN( 1 ).percent();
+
+  if ( buffs.bone_shield -> up() )
+    state -> result_amount *= 1.0 + buffs.bone_shield -> data().effectN( 1 ).percent();
 
   player_t::target_mitigation( school, type, state );
 }
