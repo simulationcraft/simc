@@ -232,7 +232,7 @@ public:
 
     beacon_target = 0;
 
-    initial.distance = ( specialization() == PALADIN_HOLY ) ? 30 : 3;
+    base.distance = ( specialization() == PALADIN_HOLY ) ? 30 : 3;
   }
 
   virtual void      init_defense();

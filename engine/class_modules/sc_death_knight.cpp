@@ -350,7 +350,7 @@ public:
     _runes( runes_t() )
   {
     range::fill( pets.army_ghoul, nullptr );
-    initial.distance = 0;
+    base.distance = 0;
 
     blood_parasite_burst_chance = 0.1;
   }

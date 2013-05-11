@@ -255,7 +255,7 @@ public:
     cooldowns.incanters_ward = get_cooldown( "incanters_ward" );
 
     // Options
-    initial.distance = 40;
+    base.distance = 40;
   }
 
   // Character Definition

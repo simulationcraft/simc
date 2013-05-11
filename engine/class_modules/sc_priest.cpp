@@ -298,7 +298,7 @@ public:
     autoUnshift( true ),
     glyphs( glyphs_t() )
   {
-    initial.distance = 27.0;
+    base.distance = 27.0;
 
     create_cooldowns();
     create_gains();
@@ -379,7 +379,7 @@ struct priest_pet_t : public pet_t
     pet_t( sim, &owner, pet_name, pt, guardian )
   {
     base.position = POSITION_BACK;
-    initial.distance = 3;
+    base.distance = 3;
   }
 
   struct _stat_list_t

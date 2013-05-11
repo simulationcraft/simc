@@ -251,7 +251,7 @@ public:
 
     initial_rage = 0;
 
-    initial.distance = 3.0;
+    base.distance = 3.0;
   }
 
   // Character Definition

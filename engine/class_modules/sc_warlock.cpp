@@ -344,8 +344,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   shard_react( timespan_t::zero() ),
   nightfall_chance( 0 )
 {
-  current.distance = 40;
-  initial.distance = 40;
+  base.distance = 40;
 
   cooldowns.infernal       = get_cooldown ( "summon_infernal" );
   cooldowns.doomguard      = get_cooldown ( "summon_doomguard" );

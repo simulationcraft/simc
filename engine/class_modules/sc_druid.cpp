@@ -366,7 +366,7 @@ public:
 
     equipped_weapon_dps = 0;
 
-    initial.distance = ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) ? 3 : 30;
+    base.distance = ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) ? 3 : 30;
   }
 
   // Character Definition

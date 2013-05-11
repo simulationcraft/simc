@@ -283,7 +283,7 @@ public:
     cooldowns.viper_venom    = get_cooldown( "viper_venom" );
 
     summon_pet_str = "";
-    initial.distance = 40;
+    base.distance = 40;
     base_gcd = timespan_t::from_seconds( 1.0 );
   }
 

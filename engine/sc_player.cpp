@@ -8633,7 +8633,7 @@ void player_t::create_options()
     opt_func( "role", parse_role_string ),
     opt_string( "target", target_str ),
     opt_float( "skill", base.skill ),
-    opt_float( "distance", current.distance ),
+    opt_float( "distance", base.distance ),
     opt_string( "position", position_str ),
     opt_string( "professions", professions_str ),
     opt_string( "actions", action_list_str ),
