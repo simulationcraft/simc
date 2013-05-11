@@ -5176,9 +5176,17 @@ void player_t::assess_damage( school_e school,
    * std::vector<absorb_buff_t*> absorb_buff_list; is a dynamic vector, which contains
    * the currently active absorb buffs of a player.
    */
-  while ( s -> result_amount > 0 && ! absorb_buff_list.empty() )
+  size_t offset = 0;
+
+  while ( offset < absorb_buff_list.size() && s -> result_amount > 0 && ! absorb_buff_list.empty() )
   {
-    absorb_buff_t* ab = absorb_buff_list[ 0 ];
+    absorb_buff_t* ab = absorb_buff_list[ offset ];
+
+    if ( school != SCHOOL_NONE && ! dbc::is_school( school, ab -> absorb_school ) )
+    {
+      offset++;
+      continue;
+    }
 
     // Don't be too paranoid about inactive absorb buffs in the list. Just expire them
     if ( ab -> up() )

@@ -155,6 +155,8 @@ public:
     buff_t* sudden_doom;
     buff_t* tier13_4pc_melee;
     buff_t* unholy_presence;
+    
+    absorb_buff_t* blood_shield;
   } buffs;
 
   struct runeforge_t
@@ -262,6 +264,7 @@ public:
   // Mastery
   struct mastery_t
   {
+    const spell_data_t* blood_shield;
     const spell_data_t* frozen_heart;
     const spell_data_t* dreadblade;
   } mastery;
@@ -2999,6 +3002,23 @@ struct death_strike_t : public death_knight_melee_attack_t
     heal -> execute();
   }
 
+  void trigger_blood_shield()
+  {
+    if ( p() -> specialization() != DEATH_KNIGHT_BLOOD )
+      return;
+
+    double amount = p() -> buffs.blood_shield -> current_value + 
+                    heal -> base_dd_min * p() -> cache.mastery() * p() -> mastery.blood_shield -> effectN( 1 ).mastery_value();
+
+    if ( sim -> debug )
+      sim -> output( "%s Blood Shield buff trigger, old_value=%f added_value=%f new_value=%f",
+                     player -> name(), p() -> buffs.blood_shield -> current_value,
+                     heal -> base_dd_min * p() -> cache.mastery() * p() -> mastery.blood_shield -> effectN( 1 ).mastery_value(),
+                     amount );
+
+    p() -> buffs.blood_shield -> trigger( 1, amount );
+  }
+
   virtual void execute()
   {
     death_knight_melee_attack_t::execute();
@@ -3010,6 +3030,7 @@ struct death_strike_t : public death_knight_melee_attack_t
       p() -> pets.dancing_rune_weapon -> drw_death_strike -> execute();
 
     trigger_death_strike_heal();
+    trigger_blood_shield();
   }
 };
 
@@ -4633,6 +4654,7 @@ void death_knight_t::init_spells()
   spec.ebon_plaguebringer         = find_specialization_spell( "Ebon Plaguebringer" );
   spec.improved_unholy_presence   = find_specialization_spell( "Improved Unholy Presence" );
 
+  mastery.blood_shield            = find_mastery_spell( DEATH_KNIGHT_BLOOD );
   mastery.frozen_heart            = find_mastery_spell( DEATH_KNIGHT_FROST );
   mastery.dreadblade              = find_mastery_spell( DEATH_KNIGHT_UNHOLY );
 
@@ -5318,6 +5340,9 @@ void death_knight_t::create_buffs()
   // buff_t( player, id, name, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
   // buff_t( player, name, spellname, chance=-1, cd=-1, quiet=false, reverse=false, activated=true )
 
+  buffs.blood_shield        = absorb_buff_creator_t( this, "blood_shield", find_spell( 77535 ) )
+                              .school( SCHOOL_PHYSICAL );
+
   buffs.antimagic_shell     = buff_creator_t( this, "antimagic_shell", find_class_spell( "Anti-Magic Shell" ) )
                               .cd( timespan_t::zero() );
   buffs.blood_charge        = buff_creator_t( this, "blood_charge", find_spell( 114851 ) )
@@ -5457,15 +5482,6 @@ void death_knight_t::assess_damage( school_e     school,
                                     dmg_e        dtype,
                                     action_state_t* s )
 {
-  if ( s -> result_amount > 0 )
-  {
-    incoming_damage.push_back( std::make_pair<timespan_t, double>( sim -> current_time, s -> result_amount ) );
-
-    while ( incoming_damage.size() > 0 && 
-            sim -> current_time - incoming_damage.front().first > timespan_t::from_seconds( 5.0 ) )
-      incoming_damage.erase( incoming_damage.begin() );
-  }
-
   player_t::assess_damage( school, dtype, s );
 
   // Bone shield will only decrement, if someone did damage to the dk
@@ -5476,7 +5492,14 @@ void death_knight_t::assess_damage( school_e     school,
       buffs.bone_shield -> decrement();
       cooldown.bone_shield_icd -> start();
     }
+
+    incoming_damage.push_back( std::make_pair<timespan_t, double>( sim -> current_time, s -> result_amount ) );
+
+    while ( incoming_damage.size() > 0 && 
+            sim -> current_time - incoming_damage.front().first > timespan_t::from_seconds( 5.0 ) )
+      incoming_damage.erase( incoming_damage.begin() );
   }
+
 }
 
 // death_knight_t::assess_damage ==============================================

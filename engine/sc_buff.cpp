@@ -1411,7 +1411,9 @@ debuff_t::debuff_t( const buff_creator_basics_t& params ) :
 
 
 absorb_buff_t::absorb_buff_t( const absorb_buff_creator_t& params ) :
-  buff_t( params ), absorb_source( params._absorb_source )
+  buff_t( params ),
+  absorb_school( params._absorb_school ),
+  absorb_source( params._absorb_source )
 {
   assert( player && "Absorb Buffs only supported for player!" );
 

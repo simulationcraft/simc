@@ -1722,18 +1722,24 @@ public:
 struct absorb_buff_creator_t : public buff_creator_helper_t<absorb_buff_creator_t>
 {
 private:
+  school_e _absorb_school;
   stats_t* _absorb_source;
   friend struct ::absorb_buff_t;
 public:
   absorb_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
     base_t( q, name, s ),
+    _absorb_school( SCHOOL_CHAOS ),
     _absorb_source( 0 ) {}
   absorb_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
     base_t( sim, name, s ),
+    _absorb_school( SCHOOL_CHAOS ),
     _absorb_source( 0 ) {}
 
   bufftype& source( stats_t* s )
   { _absorb_source=s; return *this; }
+
+  bufftype& school( school_e school )
+  { _absorb_school = school; return *this; }
 
   operator absorb_buff_t* () const;
 };
@@ -1941,6 +1947,7 @@ protected:
 
 struct absorb_buff_t : public buff_t
 {
+  school_e absorb_school;
   stats_t* absorb_source;
 
 protected:
