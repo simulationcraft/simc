@@ -2351,7 +2351,7 @@ class SpellListGenerator(SpellDataGenerator):
         # Make sure rune cost makes sense, even if the rune cost id is valid
         if spell.id_rune_cost > 0:
             src = self._spellrunecost_db[spell.id_rune_cost]
-            if src.rune_cost_1 == 0 and src.rune_cost_2 == 0 and src.rune_cost_3 == 0:
+            if src.rune_cost_1 == 0 and src.rune_cost_2 == 0 and src.rune_cost_3 == 0 and src.rune_cost_4 == 0:
                 self.debug( "Spell id %u (%s) has no sensible rune cost" % ( spell.id, spell.name ) )
                 return False
 

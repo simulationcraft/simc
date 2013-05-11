@@ -468,7 +468,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Death Knight
   {
-    // General tree, 25 abilities
+    // General tree, 26 abilities
     {
        48707, // Anti-Magic Shell
        42650, // Army of the Dead
@@ -486,6 +486,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        48792, // Icebound Fortitude
        45477, // Icy Touch
        47528, // Mind Freeze
+       73975, // Necrotic Strike
        77575, // Outbreak
         3714, // Path of Frost
        50842, // Pestilence

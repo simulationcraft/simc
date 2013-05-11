@@ -1,4 +1,4 @@
-// =========================================================================u
+// ==========================================================================
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
@@ -929,6 +929,15 @@ struct dancing_rune_weapon_pet_t : public pet_t
     }
   };
 
+  struct drw_death_siphon_t : public drw_spell_t
+  {
+    drw_death_siphon_t( dancing_rune_weapon_pet_t* p ) :
+      drw_spell_t( "death_siphon", p, p -> owner -> find_spell( 108196 ) )
+    {
+      direct_power_mod = data().extra_coeff();
+    }
+  };
+
   struct drw_death_strike_t : public drw_melee_attack_t
   {
     drw_death_strike_t( dancing_rune_weapon_pet_t* p ) :
@@ -1104,6 +1113,13 @@ struct dancing_rune_weapon_pet_t : public pet_t
     }
   };
 
+  struct drw_necrotic_strike_t : public drw_melee_attack_t
+  {
+    drw_necrotic_strike_t( dancing_rune_weapon_pet_t* p ) :
+      drw_melee_attack_t( "necrotic_strike", p, p -> owner -> find_class_spell( "Necrotic Strike" ) )
+    { weapon = &( p -> main_hand_weapon ); }
+  };
+
   struct drw_melee_t : public drw_melee_attack_t
   {
     drw_melee_t( dancing_rune_weapon_pet_t* p ) :
@@ -1122,12 +1138,14 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
   spell_t*        drw_blood_boil;
   spell_t*        drw_death_coil;
+  spell_t*        drw_death_siphon;
   spell_t*        drw_icy_touch;
   spell_t*        drw_outbreak;
   spell_t*        drw_pestilence;
 
   melee_attack_t* drw_death_strike;
   melee_attack_t* drw_heart_strike;
+  melee_attack_t* drw_necrotic_strike;
   melee_attack_t* drw_plague_strike;
   melee_attack_t* drw_soul_reaper;
   melee_attack_t* drw_melee;
@@ -1170,12 +1188,14 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
     drw_blood_boil    = new drw_blood_boil_t   ( this );
     drw_death_coil    = new drw_death_coil_t   ( this );
+    drw_death_siphon  = new drw_death_siphon_t ( this );
     drw_icy_touch     = new drw_icy_touch_t    ( this );
     drw_outbreak      = new drw_outbreak_t     ( this );
     drw_pestilence    = new drw_pestilence_t   ( this );
     
     drw_death_strike  = new drw_death_strike_t ( this );
     drw_heart_strike  = new drw_heart_strike_t ( this );
+    drw_necrotic_strike = new drw_necrotic_strike_t( this );
     drw_plague_strike = new drw_plague_strike_t( this );
     drw_soul_reaper   = new drw_soul_reaper_t  ( this );
     drw_melee         = new drw_melee_t        ( this );
@@ -2623,6 +2643,13 @@ struct death_siphon_t : public death_knight_spell_t
     }
   }
 
+  void impact( action_state_t* s )
+  {
+    death_knight_spell_t::impact( s );
+
+    if ( p() -> buffs.dancing_rune_weapon -> check() )
+      p() -> pets.dancing_rune_weapon -> drw_death_siphon -> execute();
+  }
 };
 
 // Blood Tap ================================================================
@@ -2873,27 +2900,15 @@ struct death_coil_t : public death_knight_spell_t
 
 // Death Strike =============================================================
 
-struct death_strike_offhand_t : public death_knight_melee_attack_t
-{
-  death_strike_offhand_t( death_knight_t* p ) :
-    death_knight_melee_attack_t( "death_strike_offhand", p, p -> find_spell( 66188 ) )
-  {
-    background       = true;
-    weapon           = &( p -> off_hand_weapon );
-  }
-};
-
 struct death_strike_t : public death_knight_melee_attack_t
 {
-  death_strike_offhand_t* oh_attack;
-
   death_strike_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_melee_attack_t( "death_strike", p, p -> find_class_spell( "Death Strike" ) ),
-    oh_attack( 0 )
+    death_knight_melee_attack_t( "death_strike", p, p -> find_specialization_spell( "Death Strike" ) )
   {
     parse_options( NULL, options_str );
     special = true;
     may_parry = false;
+    base_multiplier = 1.0 + p -> spec.blood_rites -> effectN( 2 ).percent();
 
     always_consume = true; // Death Strike always consumes runes, even if doesn't hit
 
@@ -3111,7 +3126,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
     special = true;
 
     aoe = 3;
-    base_add_multiplier *= 0.75;
+    base_add_multiplier = 0.75;
   }
 
   void execute()
@@ -3322,8 +3337,9 @@ struct necrotic_strike_t : public death_knight_melee_attack_t
   {
     parse_options( NULL, options_str );
 
-    special = true;
+    weapon = &( p -> main_hand_weapon );
 
+    special = true;
   }
 
   virtual void impact( action_state_t* s )
@@ -3332,6 +3348,9 @@ struct necrotic_strike_t : public death_knight_melee_attack_t
 
     if ( ! sim -> overrides.slowed_casting && result_is_hit( s -> result ) )
       s -> target -> debuffs.slowed_casting -> trigger();
+
+    if ( p() -> buffs.dancing_rune_weapon -> check() )
+      p() -> pets.dancing_rune_weapon -> drw_necrotic_strike -> execute();
   }
 };
 
@@ -3810,13 +3829,6 @@ struct rune_strike_t : public death_knight_melee_attack_t
     weapon = &( p -> main_hand_weapon );
   }
 
-  virtual void execute()
-  {
-    death_knight_melee_attack_t::execute();
-
-    p() -> buffs.rune_strike -> expire();
-  }
-
   virtual void impact( action_state_t* s )
   {
     death_knight_melee_attack_t::impact( s );
@@ -3828,14 +3840,6 @@ struct rune_strike_t : public death_knight_melee_attack_t
       if ( p() -> buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> cache.attack_haste() ) ) )
         p() -> buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
     }
-  }
-
-  virtual bool ready()
-  {
-    if ( ! p() -> buffs.blood_presence -> check() || p() -> buffs.rune_strike -> check() )
-      return false;
-
-    return death_knight_melee_attack_t::ready();
   }
 };
 
@@ -5190,12 +5194,6 @@ void death_knight_t::create_buffs()
                               .max_stack( ( set_bonus.tier13_2pc_melee() ) ? 2 : 1 )
                               .cd( timespan_t::zero() )
                               .chance( spec.rime -> ok() );
-  buffs.rune_strike         = buff_creator_t( this, "runestrike", find_class_spell( "Rune Strike" ) )
-                              .max_stack( 1 )
-                              .duration( timespan_t::from_seconds( 10.0 ) )
-                              .cd( timespan_t::zero() )
-                              .chance( 1.0 )
-                              .quiet( true );
   //buffs.runic_corruption    = buff_creator_t( this, "runic_corruption", find_spell( 51460 ) )
   //                            .chance( talent.runic_corruption -> proc_chance() );
   buffs.runic_corruption    = new runic_corruption_buff_t( this );
@@ -5308,10 +5306,7 @@ void death_knight_t::assess_damage( school_e     school,
                                     action_state_t* s )
 {
   if ( buffs.blood_presence -> check() )
-    s -> result_amount *= 1.0 - dbc.spell( 61261 ) -> effectN( 1 ).percent();
-
-  if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
-    buffs.rune_strike -> trigger();
+    s -> result_amount *= 1.0 + buffs.blood_presence -> data().effectN( 7 ).percent();
 
   player_t::assess_damage( school, dtype, s );
 }
@@ -5323,7 +5318,7 @@ double death_knight_t::composite_armor_multiplier()
   double a = player_t::composite_armor_multiplier();
 
   if ( buffs.blood_presence -> check() )
-    a += buffs.blood_presence -> data().effectN( 1 ).percent();
+    a += buffs.blood_presence -> data().effectN( 3 ).percent();
 
   return a;
 }
@@ -5342,7 +5337,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr )
 
   if ( attr == ATTR_STAMINA )
     if ( buffs.blood_presence -> check() )
-      m *= 1.0 + buffs.blood_presence -> data().effectN( 3 ).percent();
+      m *= 1.0 + buffs.blood_presence -> data().effectN( 6 ).percent();
 
   return m;
 }
