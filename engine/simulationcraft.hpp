@@ -4725,15 +4725,7 @@ public:
   virtual double composite_haste() { return 1.0; }
   virtual double composite_attack_power() { return base_attack_power + player -> cache.attack_power(); }
   virtual double composite_spell_power()
-  {
-    /*if ( fabs( player -> cache.spell_power( school ) - player -> composite_spell_power( school ) ) > 0.000001 )
-        {
-          sim->errorf( "%s action %s cached sp: %.16f not equal to comp sp: %.16f \n",
-              player->name(), name(), player -> cache.spell_power( school ), player -> composite_spell_power( school ) );
-          assert( false );
-        }*/
-    return base_spell_power + player -> cache.spell_power( school );
-  }
+  { return base_spell_power + player -> cache.spell_power( school ); }
   virtual double composite_target_crit( player_t* /* target */ );
   virtual double composite_target_multiplier( player_t* target ) { return target -> composite_player_vulnerability( school ); }
 

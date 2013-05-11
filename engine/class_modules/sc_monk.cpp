@@ -2353,6 +2353,8 @@ void monk_t::init_base_stats()
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility  = 2.0;
 
+  base.spell_power_per_intellect = 1.0;
+
   // Mistweaver
   if ( spec.mana_meditation -> ok() )
     initial.mana_regen_from_spirit_multiplier = spec.mana_meditation -> effectN( 1 ).percent();
@@ -2944,7 +2946,7 @@ double monk_t::composite_melee_expertise( weapon_t* weapon )
 double monk_t::composite_melee_attack_power()
 {
   if ( current_stance() == WISE_SERPENT )
-    return monk_t::composite_spell_power( SCHOOL_MAX ) * static_stance_data( WISE_SERPENT ).effectN( 2 ).percent();
+    return composite_spell_power( SCHOOL_MAX ) * static_stance_data( WISE_SERPENT ).effectN( 2 ).percent();
 
   return base_t::composite_melee_attack_power();
 }
