@@ -278,6 +278,7 @@ public:
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   double stagger_pct();
+  virtual void invalidate_cache( cache_e );
 
   stance_e current_stance() const
   { return _active_stance; }
@@ -2408,13 +2409,13 @@ void monk_t::create_buffs()
   // Brewmaster
   buff.elusive_brew_stacks    = buff_creator_t( this, "elusive_brew_stacks"    ).spell( find_spell( 128939 ) );
   buff.elusive_brew_activated = buff_creator_t( this, "elusive_brew_activated" ).spell( spec.elusive_brew )
-                                /* .add_invalidate( CACHE_DODGE ) */;
+                                .add_invalidate( CACHE_DODGE );
   buff.guard                  = absorb_buff_creator_t( this, "guard", find_class_spell( "Guard" ) )
                                 .source( get_stats( "guard" ) )
                                 .cd( timespan_t::zero() );
   buff.power_guard            = buff_creator_t( this, "power_guard"            ).spell( spec.brewmaster_training -> effectN( 1 ).trigger() );
   buff.shuffle                = buff_creator_t( this, "shuffle"                ).spell( find_spell( 115307 ) )
-                                /* .add_invalidate( CACHE_PARRY ) */;
+                                .add_invalidate( CACHE_PARRY );
 
   // Mistweaver
   buff.mana_tea          = buff_creator_t( this, "mana_tea"            ).spell( find_spell( 115867 ) );
@@ -2975,6 +2976,15 @@ double monk_t::composite_tank_dodge()
   return d;
 }
 
+void monk_t::invalidate_cache( cache_e c )
+{
+  base_t::invalidate_cache( c );
+
+  if ( ( c == CACHE_SPELL_POWER || c == CACHE_INTELLECT ) && current_stance() == WISE_SERPENT )
+  {
+    cache.valid[ CACHE_ATTACK_POWER ] = false;
+  }
+}
 // monk_t::create_options =================================================
 
 void monk_t::create_options()
