@@ -2669,32 +2669,39 @@ struct soul_reaper_t : public death_knight_melee_attack_t
 
 // Death Siphon =============================================================
 
+struct death_siphon_heal_t : public death_knight_heal_t
+{
+  death_siphon_heal_t( death_knight_t* p ) :
+    death_knight_heal_t( "death_siphon_heal", p, p -> find_spell( 116783 ) )
+  {
+    background = true;
+    may_crit = true;
+    target = p;
+  }
+};
+
 struct death_siphon_t : public death_knight_spell_t
 {
+  death_siphon_heal_t* heal;
+
   death_siphon_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "death_siphon", p, p -> find_talent_spell( "Death Siphon" ) )
+    death_knight_spell_t( "death_siphon", p, p -> find_talent_spell( "Death Siphon" ) ),
+    heal( new death_siphon_heal_t( p ) )
   {
     parse_options( NULL, options_str );
 
     direct_power_mod = data().extra_coeff();
   }
 
-  virtual void assess_damage( dmg_e type,
-                              action_state_t* s )
-  {
-    base_t::assess_damage( type, s );
-
-    if ( s -> result_amount > 0.0 && result_is_hit( s -> result ) )
-    {
-      double a = s -> result_amount * data().effectN( 2 ).percent();
-
-      p() -> resource_gain( RESOURCE_HEALTH, a, p() -> gains.hp_death_siphon );
-    }
-  }
-
   void impact( action_state_t* s )
   {
     death_knight_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      heal -> base_dd_min = heal -> base_dd_max = s -> result_amount * data().effectN( 2 ).percent();
+      heal -> schedule_execute();
+    }
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_death_siphon -> execute();
@@ -3030,7 +3037,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     heal_amount *= 1.0 + p() -> buffs.scent_of_blood -> check() * p() -> buffs.scent_of_blood -> data().effectN( 1 ).percent();
 
     heal -> base_dd_min = heal -> base_dd_max = heal_amount;
-    heal -> execute();
+    heal -> schedule_execute();
   }
 
   void trigger_blood_shield()
@@ -4931,6 +4938,7 @@ void death_knight_t::init_actions()
       if ( talent.blood_tap -> ok() )
         action_list_str += "/blood_tap,if=(unholy=0&frost>=1)|(unholy>=1&frost=0)|(death=1)";
       action_list_str += "/death_strike";
+      action_list_str += "/death_siphon,if=health.pct<90";
       action_list_str += "/blood_boil,if=buff.crimson_scourge.up";
       action_list_str += "/heart_strike,if=(blood=1&blood.cooldown_remains<1)|blood=2";
       action_list_str += "/rune_strike,if=runic_power>=40";

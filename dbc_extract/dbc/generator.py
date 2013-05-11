@@ -1109,6 +1109,7 @@ class SpellDataGenerator(DataGenerator):
           ( 81277, 5 ), ( 81280, 5 ), ( 50453, 5 ), # Bloodworms heal / burst
           ( 45470, 0 ), # Death Strike heal
           ( 77535, 0 ), # Blood Shield
+          ( 116783, 0 ), # Death Siphon heal
         ),  
         
         # Shaman:
