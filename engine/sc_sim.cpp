@@ -1093,10 +1093,16 @@ void sim_t::reset()
     player_t* t = target_list[ i ];
     t -> reset();
   }
-  for ( size_t i = 0; i < player_list.size(); ++i )
+  for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
   {
-    player_t* p = player_list[ i ];
-    p -> reset();
+    player_t& p = *player_no_pet_list[ i ];
+    p.reset();
+    // Make sure to reset pets after owner, or otherwards they may access uninitialized things from the owner
+    for ( size_t j = 0; j < p.pet_list.size(); ++j )
+    {
+      pet_t& pet = *p.pet_list[ j ];
+      pet.reset();
+    }
   }
   raid_event_t::reset( this );
 }
@@ -2216,7 +2222,6 @@ void sim_t::create_options()
     opt_float( "default_enchant_spell_power", enchant.spell_power ),
     opt_float( "default_enchant_attack_power", enchant.attack_power ),
     opt_float( "default_enchant_expertise_rating", enchant.expertise_rating ),
-    opt_float( "default_enchant_armor", enchant.bonus_armor ),
     opt_float( "default_enchant_dodge_rating", enchant.dodge_rating ),
     opt_float( "default_enchant_parry_rating", enchant.parry_rating ),
     opt_float( "default_enchant_block_rating", enchant.block_rating ),

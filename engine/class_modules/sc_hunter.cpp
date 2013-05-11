@@ -289,9 +289,8 @@ public:
 
   // Character Definition
   virtual void      init_spells();
-  virtual void      init_base();
+  virtual void      init_base_stats();
   virtual void      create_buffs();
-  virtual void      init_values();
   virtual void      init_gains();
   virtual void      init_position();
   virtual void      init_procs();
@@ -642,17 +641,15 @@ public:
     return NULL;
   }
 
-  virtual void init_base()
+  virtual void init_base_stats()
   {
-    base_t::init_base();
+    base_t::init_base_stats();
 
-    base.attribute[ ATTR_STRENGTH  ] = rating_t::interpolate( level, 0, 162, 331, 476 );
-    base.attribute[ ATTR_AGILITY   ] = rating_t::interpolate( level, 0, 54, 113, 438 );
-    base.attribute[ ATTR_STAMINA   ] = rating_t::interpolate( level, 0, 307, 361 ); // stamina is different for every pet type
-    base.attribute[ ATTR_INTELLECT ] = 100; // FIXME: is 61 at lvl 75. Use /script print(UnitStats("pet",x)); 1=str,2=agi,3=stam,4=int,5=spi
-    base.attribute[ ATTR_SPIRIT    ] = 100; // FIXME: is 101 at lvl 75. Values are equal for a cat and a gorilla.
-
-    base.attack_crit = 0.05; // Assume 5% base crit as for most other pets. 19/10/2011
+    base.stats.attribute[ ATTR_STRENGTH  ] = rating_t::interpolate( level, 0, 162, 331, 476 );
+    base.stats.attribute[ ATTR_AGILITY   ] = rating_t::interpolate( level, 0, 54, 113, 438 );
+    base.stats.attribute[ ATTR_STAMINA   ] = rating_t::interpolate( level, 0, 307, 361 ); // stamina is different for every pet type
+    base.stats.attribute[ ATTR_INTELLECT ] = 100; // FIXME: is 61 at lvl 75. Use /script print(UnitStats("pet",x)); 1=str,2=agi,3=stam,4=int,5=spi
+    base.stats.attribute[ ATTR_SPIRIT    ] = 100; // FIXME: is 101 at lvl 75. Values are equal for a cat and a gorilla.
 
     resources.base[ RESOURCE_HEALTH ] = rating_t::interpolate( level, 0, 4253, 6373 );
     resources.base[ RESOURCE_FOCUS ] = 100 + o() -> specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
@@ -1598,9 +1595,9 @@ struct dire_critter_t : public hunter_pet_t
     owner_coeff.ap_from_ap = 1.0;
   }
 
-  virtual void init_base()
+  virtual void init_base_stats()
   {
-    hunter_pet_t::init_base();
+    hunter_pet_t::init_base_stats();
 
     // FIXME numbers are from treant. correct them.
     resources.base[ RESOURCE_HEALTH ] = 9999; // Level 85 value
@@ -1636,9 +1633,9 @@ struct tier15_thunderhawk_t : public hunter_pet_t
   {
   }
 
-  virtual void init_base()
+  virtual void init_base_stats()
   {
-    hunter_pet_t::init_base();
+    hunter_pet_t::init_base_stats();
 
     action_list_str = "lightning_blast";
   }
@@ -3811,14 +3808,14 @@ void hunter_t::init_spells()
 
 // hunter_t::init_base ======================================================
 
-void hunter_t::init_base()
+void hunter_t::init_base_stats()
 {
-  player_t::init_base();
+  player_t::init_base_stats();
 
-  base.attack_power = level * 2;
+  base.stats.attack_power = level * 2;
 
-  initial.attack_power_per_strength = 0.0; // Prevents scaling from strength. Will need to separate melee and ranged AP if this is needed in the future.
-  initial.attack_power_per_agility  = 2.0;
+  base.attack_power_per_strength = 0.0; // Prevents scaling from strength. Will need to separate melee and ranged AP if this is needed in the future.
+  base.attack_power_per_agility  = 2.0;
 
   base_focus_regen_per_second = 4;
   if ( set_bonus.pvp_4pc_melee() )
@@ -3826,6 +3823,14 @@ void hunter_t::init_base()
 
 
   resources.base[ RESOURCE_FOCUS ] = 100 + specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
+
+
+  // hardcoded in tooltip but the tooltip lies 18 Aug 2021
+  cooldowns.viper_venom -> duration = timespan_t::from_seconds( 2.5 );
+
+  // Orc racial
+  if ( race == RACE_ORC )
+    pet_multiplier *= 1.0 +  find_racial_spell( "Command" ) -> effectN( 1 ).percent();
 
   diminished_kfactor    = 0.009880;
   diminished_dodge_cap = 0.006870;
@@ -3873,20 +3878,6 @@ void hunter_t::create_buffs()
                                       .add_invalidate( CACHE_ATTACK_HASTE );
 }
 
-// hunter_t::init_values ====================================================
-
-void hunter_t::init_values()
-{
-  player_t::init_values();
-
-  // hardcoded in tooltip but the tooltip lies 18 Aug 2021
-  cooldowns.viper_venom -> duration = timespan_t::from_seconds( 2.5 );
-
-  // Orc racial
-  if ( race == RACE_ORC )
-    pet_multiplier *= 1.0 +  find_racial_spell( "Command" ) -> effectN( 1 ).percent();
-}
-
 // hunter_t::init_gains =====================================================
 
 void hunter_t::init_gains()
@@ -3911,18 +3902,19 @@ void hunter_t::init_position()
 {
   player_t::init_position();
 
-  if ( position() == POSITION_FRONT )
+  if ( base.position == POSITION_FRONT )
   {
     base.position = POSITION_RANGED_FRONT;
-    position_str = util::position_type_string( position() );
+    position_str = util::position_type_string( base.position );
   }
-  else if ( position() == POSITION_BACK )
+  else if ( initial.position == POSITION_BACK )
   {
     base.position = POSITION_RANGED_BACK;
-    position_str = util::position_type_string( position() );
+    position_str = util::position_type_string( base.position );
   }
 
-  initial.position = base.position;
+  if ( sim -> debug )
+    sim -> output( "%s: Position adjusted to %s", name(), position_str.c_str() );
 }
 
 // hunter_t::init_procs =====================================================
@@ -4282,7 +4274,7 @@ void hunter_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
 
-  periodicity *= 1.0 + current.haste_rating / rating.attack_haste;
+  periodicity *= 1.0 + current.stats.haste_rating / current_rating().attack_haste;
   if ( buffs.rapid_fire -> check() && specs.rapid_recuperation -> ok() )
   {
     // 2/4 focus per sec
