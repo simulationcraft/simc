@@ -5496,7 +5496,7 @@ void death_knight_t::assess_damage( school_e     school,
       buffs.bone_shield -> decrement();
       cooldown.bone_shield_icd -> start();
 
-      if ( set_bonus.tier15_4pc_tank() )
+      if ( set_bonus.tier15_4pc_tank() && buffs.bone_shield -> check() )
       {
         resource_gain( RESOURCE_RUNIC_POWER,
             spell.t15_4pc_tank -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
