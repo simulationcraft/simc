@@ -206,6 +206,7 @@ public:
 
   // Options
   std::string unholy_frenzy_target_str;
+  double      blood_parasite_burst_chance;
 
   // Specialization
   struct specialization_t
@@ -350,6 +351,8 @@ public:
   {
     range::fill( pets.army_ghoul, nullptr );
     initial.distance = 0;
+
+    blood_parasite_burst_chance = 0.1;
   }
 
   // Character Definition
@@ -1158,6 +1161,10 @@ struct dancing_rune_weapon_pet_t : public pet_t
   {
     pet_t::init_spells();
 
+    // Kludge of the century to get pointless initialization warnings to 
+    // go away.
+    type = DEATH_KNIGHT; _spec = DEATH_KNIGHT_BLOOD;
+
     drw_frost_fever   = new drw_frost_fever_t  ( this );
     drw_blood_plague  = new drw_blood_plague_t ( this );
 
@@ -1172,6 +1179,8 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_plague_strike = new drw_plague_strike_t( this );
     drw_soul_reaper   = new drw_soul_reaper_t  ( this );
     drw_melee         = new drw_melee_t        ( this );
+
+    type = PLAYER_GUARDIAN; _spec = SPEC_NONE;
   }
 
   void summon( timespan_t duration = timespan_t::zero() )
@@ -1347,6 +1356,19 @@ struct bloodworms_pet_t : public death_knight_pet_t
   // FIXME: Level 80/85 values
   struct melee_t : public melee_attack_t
   {
+    struct blood_burst_event_t : public event_t
+    {
+      blood_burst_event_t( bloodworms_pet_t* p, timespan_t delta_time ) :
+        event_t( p, "blood_burst" )
+      { sim.add_event( this, delta_time ); }
+
+      void execute()
+      {
+        if ( ! player -> is_sleeping() )
+          player -> cast_pet() -> dismiss();
+      }
+    };
+
     melee_t( player_t* player ) :
       melee_attack_t( "bloodworm_melee", player )
     {
@@ -1368,9 +1390,28 @@ struct bloodworms_pet_t : public death_knight_pet_t
       if ( player != o -> pets.bloodworms[ 0 ] )
         stats = o -> pets.bloodworms[ 0 ] -> get_stats( name_str );
     }
+
+    void impact( action_state_t* s )
+    {
+      melee_attack_t::impact( s );
+
+      if ( result_is_hit( s -> result ) )
+      {
+        death_knight_t* o = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
+        p() -> blood_gorged -> trigger();
+        // TODO: Healing, real formula etc etc etc
+        if ( p() -> blood_burst -> roll( o -> blood_parasite_burst_chance * p() -> blood_gorged -> check() ) )
+          new ( *sim ) blood_burst_event_t( p(), timespan_t::zero() );
+      }
+    }
+
+    bloodworms_pet_t* p() const
+    { return debug_cast< bloodworms_pet_t* >( player ); }
   };
 
   melee_t* melee;
+  buff_t* blood_gorged;
+  rng_t*  blood_burst;
 
   bloodworms_pet_t( sim_t* sim, death_knight_t* owner ) :
     death_knight_pet_t( sim, owner, "bloodworms", true /*guardian*/ ),
@@ -1389,6 +1430,21 @@ struct bloodworms_pet_t : public death_knight_pet_t
     pet_t::init_base();
 
     melee = new melee_t( this );
+  }
+
+  void create_buffs()
+  {
+    pet_t::create_buffs();
+
+    blood_gorged = buff_creator_t( this, "blood_gorged", find_spell( 81277 ) )
+                   .chance( 1 );
+  }
+
+  void init_rng()
+  {
+    pet_t::init_rng();
+
+    blood_burst = get_rng( "blood_burst" );
   }
 
   virtual void summon( timespan_t duration=timespan_t::zero() )
@@ -5407,6 +5463,7 @@ void death_knight_t::create_options()
   option_t death_knight_options[] =
   {
     opt_string( "unholy_frenzy_target", unholy_frenzy_target_str ),
+    opt_float( "blood_parasite_burst_chance", blood_parasite_burst_chance ),
     opt_null()
   };
 
