@@ -4514,7 +4514,7 @@ void death_knight_t::init_defense()
 {
   player_t::init_defense();
 
-  initial.parry_rating_per_strength = initial_rating().parry / 95116;
+  initial.parry_rating_per_strength = .7; // FIXME: How much this is in reality?
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
     vengeance_init();
@@ -5568,6 +5568,8 @@ double death_knight_t::composite_melee_speed()
 double death_knight_t::composite_tank_crit( school_e school )
 {
   double c = player_t::composite_tank_crit( school );
+
+  c += spec.improved_blood_presence -> effectN( 3 ).percent();
 
   return c;
 }
