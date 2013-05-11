@@ -3050,7 +3050,8 @@ void warrior_t::create_buffs()
   buff.taste_for_blood = buff_creator_t( this, "taste_for_blood" )
                          .spell( find_spell( 60503 ) );
 
-  buff.shield_block     = buff_creator_t( this, "shield_block" ).spell( find_spell( 132404 ) );
+  buff.shield_block     = buff_creator_t( this, "shield_block" ).spell( find_spell( 132404 ) )
+                          .add_invalidate( CACHE_BLOCK );
   buff.shield_wall      = buff_creator_t( this, "shield_wall", find_class_spell( "Shield Wall" ) )
                           .default_value( find_class_spell( "Shield Wall" )-> effectN( 1 ).percent() )
                           .cd( timespan_t::zero() );

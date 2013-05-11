@@ -650,8 +650,7 @@ player_t::player_t( sim_t*             s,
   // Resources
   resources( resources_t() ),
   // Consumables
-  elixir_guardian( ELIXIR_NONE ),
-  elixir_battle( ELIXIR_NONE ),
+  active_elixir(),
   flask( FLASK_NONE ),
   food( FOOD_NONE ),
   // Events
@@ -4256,8 +4255,7 @@ void player_t::reset()
   off_hand_weapon.buff_value = 0;
   off_hand_weapon.bonus_dmg  = 0;
 
-  elixir_battle   = ELIXIR_NONE;
-  elixir_guardian = ELIXIR_NONE;
+  active_elixir.battle = active_elixir.guardian = false;
   flask           = FLASK_NONE;
   food            = FOOD_NONE;
 

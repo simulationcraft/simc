@@ -753,27 +753,6 @@ inline cache_e cache_from_stat( stat_e st )
   }
   return CACHE_NONE;
 }
-enum elixir_e
-{
-  ELIXIR_NONE=0,
-  ELIXIR_ADEPT,
-  ELIXIR_BATTLE,
-  ELIXIR_DRAENIC_WISDOM,
-  ELIXIR_FEL_STRENGTH,
-  ELIXIR_GREATER_ARCANE,
-  ELIXIR_GUARDIAN,
-  ELIXIR_MAJOR_AGILITY,
-  ELIXIR_MAJOR_FIRE_POWER,
-  ELIXIR_MAJOR_FROST_POWER,
-  ELIXIR_MAJOR_MAGEBLOOD,
-  ELIXIR_MAJOR_SHADOW_POWER,
-  ELIXIR_MAJOR_STRENGTH,
-  ELIXIR_MASTERY,
-  ELIXIR_MONGOOSE,
-  ELIXIR_ONSLAUGHT,
-  ELIXIR_SAGES,
-  ELIXIR_MAX
-};
 
 enum flask_e
 {
@@ -1189,7 +1168,6 @@ double interpolate( int level, double val_60, double val_70, double val_80, doub
 const char* attribute_type_string     ( attribute_e type );
 const char* dmg_type_string           ( dmg_e type );
 const char* dot_behavior_type_string  ( dot_behavior_e t );
-const char* elixir_type_string        ( elixir_e type );
 const char* flask_type_string         ( flask_e type );
 const char* food_type_string          ( food_e type );
 const char* gem_type_string           ( gem_e type );
@@ -1228,7 +1206,6 @@ const char* item_quality_string       ( int item_quality );
 
 attribute_e parse_attribute_type ( const std::string& name );
 dmg_e parse_dmg_type             ( const std::string& name );
-elixir_e parse_elixir_type       ( const std::string& name );
 flask_e parse_flask_type         ( const std::string& name );
 food_e parse_food_type           ( const std::string& name );
 gem_e parse_gem_type             ( const std::string& name );
@@ -3568,8 +3545,9 @@ public:
 
   // Consumables
   std::string flask_str, elixirs_str, food_str;
-  int elixir_guardian;
-  int elixir_battle;
+  struct {
+  bool guardian, battle;
+  } active_elixir;
   int flask;
   int food;
 

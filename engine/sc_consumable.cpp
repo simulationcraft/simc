@@ -7,6 +7,28 @@
 
 namespace { // UNNAMED NAMESPACE
 
+enum elixir_type_e
+{
+  ELIXIR_GUARDIAN,
+  ELIXIR_BATTLE
+};
+
+struct elixir_data_t
+{
+  std::string name;
+  elixir_type_e type;
+  stat_e st;
+  int stat_amount;
+  int mixology_stat_amount;
+};
+
+static const elixir_data_t elixir_data[] =
+{
+  // mop
+  { "mantid", ELIXIR_GUARDIAN, STAT_ARMOR, 2250, 2250 },
+  { "mad_hozen", ELIXIR_BATTLE, STAT_CRIT_RATING, 750, 750 },
+};
+
 struct flask_data_t
 {
   flask_e ft;
@@ -236,8 +258,101 @@ struct flask_t : public action_t
   {
     return ( player -> sim -> allow_flasks            &&
              player -> flask           ==  FLASK_NONE &&
-             player -> elixir_guardian == ELIXIR_NONE &&
-             player -> elixir_battle   == ELIXIR_NONE );
+             !player -> active_elixir.guardian &&
+             !player -> active_elixir.battle );
+  }
+};
+
+struct elixir_t : public action_t
+{
+  gain_t* gain;
+  const elixir_data_t* data;
+  stat_buff_t* buff;
+
+  elixir_t( player_t* p, const std::string& options_str ) :
+    action_t( ACTION_USE, "elixir", p ),
+    gain( p -> get_gain( "elixir" ) ),
+    data( nullptr ),
+    buff( nullptr )
+  {
+    std::string type_str;
+
+    option_t options[] =
+    {
+      opt_string( "type", type_str ),
+      opt_null()
+    };
+    parse_options( options, options_str );
+
+    trigger_gcd = timespan_t::zero();
+    harmful = false;
+
+    for ( size_t i = 0; i < sizeof_array( elixir_data ); ++i )
+    {
+      const elixir_data_t& d = elixir_data[ i ];
+      if ( d.name == type_str )
+      {
+        data = &d;
+        break;
+      }
+    }
+    if ( ! data )
+    {
+      sim -> errorf( "Player %s attempting to use unsupported elixir '%s'.\n",
+                     player -> name(), type_str.c_str() );
+      background = true;
+    }
+    else
+    {
+      double amount = ( player  -> profession[ PROF_ALCHEMY ] > 50 ) ? data -> mixology_stat_amount : data -> stat_amount;
+      buff = stat_buff_creator_t( player, data -> name + "_elixir" )
+             .duration( timespan_t::from_seconds( 60 * 60 ) ) // 1hr
+             .add_stat( data -> st, amount );
+    }
+  }
+
+  virtual void execute()
+  {
+    player_t& p = *player;
+
+    assert( buff );
+
+    buff -> trigger();
+
+    if ( data -> st == STAT_STAMINA )
+    {
+      // Cap Health for stamina elixir if used outside of combat
+      if ( ! p.in_combat )
+      {
+        p.resource_gain( RESOURCE_HEALTH,
+                           p.resources.max[ RESOURCE_HEALTH ] - p.resources.current[ RESOURCE_HEALTH ] );
+      }
+    }
+
+    if ( data -> type == ELIXIR_BATTLE )
+      p.active_elixir.battle = true;
+    else
+      p.active_elixir.guardian = true;
+
+    if ( sim -> log ) sim -> output( "%s uses elixir %s", p.name(), data -> name.c_str() );
+
+  }
+  virtual bool ready()
+  {
+    if ( ! player -> sim -> allow_flasks )
+      return false;
+    if ( player -> flask !=  FLASK_NONE )
+      return false;
+
+    assert( data );
+
+    if ( data -> type == ELIXIR_BATTLE && player -> active_elixir.battle )
+      return false;
+
+    if ( data -> type == ELIXIR_GUARDIAN && player -> active_elixir.guardian )
+      return false;
+
+    return true;
   }
 };
 
@@ -657,6 +772,7 @@ action_t* consumable::create_action( player_t*          p,
 {
   if ( name == "dark_rune"            ) return new    dark_rune_t( p, options_str );
   if ( name == "flask"                ) return new        flask_t( p, options_str );
+  if ( name == "elixir"               ) return new       elixir_t( p, options_str );
   if ( name == "food"                 ) return new         food_t( p, options_str );
   if ( name == "health_stone"         ) return new health_stone_t( p, options_str );
   if ( name == "mana_potion"          ) return new  mana_potion_t( p, options_str );
