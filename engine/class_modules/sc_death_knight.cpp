@@ -146,8 +146,6 @@ public:
     buff_t* killing_machine;
     buff_t* pillar_of_frost;
     buff_t* rime;
-    buff_t* rune_of_cinderglacier;
-    buff_t* rune_of_the_fallen_crusader;
     buff_t* rune_strike;
     buff_t* runic_corruption;
     buff_t* scent_of_blood;
@@ -156,6 +154,21 @@ public:
     buff_t* tier13_4pc_melee;
     buff_t* unholy_presence;
   } buffs;
+
+  struct runeforge_t
+  {
+    buff_t* rune_of_cinderglacier;
+    buff_t* rune_of_the_fallen_crusader;
+    buff_t* rune_of_the_stoneskin_gargoyle;
+    buff_t* rune_of_the_nerubian_carapace;
+    buff_t* rune_of_the_nerubian_carapace_oh;
+    buff_t* rune_of_spellshattering;
+    buff_t* rune_of_spellbreaking;
+    buff_t* rune_of_spellbreaking_oh;
+    buff_t* rune_of_swordshattering;
+    buff_t* rune_of_swordbreaking;
+    buff_t* rune_of_swordbreaking_oh;
+  } runeforge;
 
   // Cooldowns
   struct cooldowns_t
@@ -380,6 +393,7 @@ public:
   virtual void      reset();
   virtual void      arise();
   virtual void      assess_damage( school_e, dmg_e, action_state_t* );
+  virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   virtual void      combat_begin();
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -1955,7 +1969,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
     if ( dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) )
     {
       if ( ! proc )
-        m *= 1.0 + p() -> buffs.rune_of_cinderglacier -> value();
+        m *= 1.0 + p() -> runeforge.rune_of_cinderglacier -> value();
     }
 
     return m;
@@ -1995,7 +2009,7 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
     if ( dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) )
     {
       if ( ! proc )
-        m *= 1.0 + p() -> buffs.rune_of_cinderglacier -> value();
+        m *= 1.0 + p() -> runeforge.rune_of_cinderglacier -> value();
     }
 
     return m;
@@ -2099,7 +2113,7 @@ void death_knight_melee_attack_t::execute()
     trigger_bloodworms( this );
     if ( dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) )
     {
-      p() -> buffs.rune_of_cinderglacier -> decrement();
+      p() -> runeforge.rune_of_cinderglacier -> decrement();
     }
   }
 
@@ -2148,7 +2162,7 @@ void death_knight_spell_t::execute()
   {
     if ( dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) )
     {
-      p() -> buffs.rune_of_cinderglacier -> decrement();
+      p() -> runeforge.rune_of_cinderglacier -> decrement();
     }
   }
 }
@@ -5110,15 +5124,45 @@ void death_knight_t::init_enchant()
     }
   };
 
-  buffs.rune_of_cinderglacier       = buff_creator_t( this, "rune_of_cinderglacier", find_spell( 53386 ) )
+  runeforge.rune_of_cinderglacier       = buff_creator_t( this, "rune_of_cinderglacier", find_spell( 53386 ) )
                                       .default_value( find_spell( 53386 ) -> effectN( 1 ).percent() );
-  buffs.rune_of_the_fallen_crusader = buff_creator_t( this, "rune_of_the_fallen_crusader" ).max_stack( 1 )
+  runeforge.rune_of_the_fallen_crusader = buff_creator_t( this, "rune_of_the_fallen_crusader" ).max_stack( 1 )
                                       .duration( timespan_t::from_seconds( 15.0 ) )
                                       .add_invalidate( CACHE_STRENGTH );
 
+  runeforge.rune_of_the_stoneskin_gargoyle = buff_creator_t( this, "rune_of_the_stoneskin_gargoyle", find_spell( 62157 ) )
+                                         .quiet( true )
+                                         .chance( 0 );
+  runeforge.rune_of_the_nerubian_carapace = buff_creator_t( this, "rune_of_the_nerubian_carapace", find_spell( 70163 ) )
+                                           .quiet( true )
+                                           .chance( 0 );
+  runeforge.rune_of_the_nerubian_carapace_oh = buff_creator_t( this, "rune_of_the_nerubian_carapace_oh", find_spell( 70163 ) )
+                                           .quiet( true )
+                                           .chance( 0 );
+
+  runeforge.rune_of_spellshattering = buff_creator_t( this, "rune_of_spellshattering", find_spell( 53362 ) )
+                                  .quiet( true )
+                                  .chance( 0 );
+  runeforge.rune_of_spellbreaking = buff_creator_t( this, "rune_of_spellbreaking", find_spell( 54449 ) )
+                                  .quiet( true )
+                                  .chance( 0 );
+  runeforge.rune_of_spellbreaking_oh = buff_creator_t( this, "rune_of_spellbreaking_oh", find_spell( 54449 ) )
+                                  .quiet( true )
+                                  .chance( 0 );
+
+  runeforge.rune_of_swordshattering = buff_creator_t( this, "rune_of_swordshattering", find_spell( 53387 ) )
+                                  .quiet( true )
+                                  .chance( 0 );
+  runeforge.rune_of_swordbreaking = buff_creator_t( this, "rune_of_swordbreaking", find_spell( 54448 ) )
+                                  .quiet( true )
+                                  .chance( 0 );
+  runeforge.rune_of_swordbreaking_oh = buff_creator_t( this, "rune_of_swordbreaking_oh", find_spell( 54448 ) )
+                                  .quiet( true )
+                                  .chance( 0 );
+
   if ( mh_enchant == "rune_of_the_fallen_crusader" )
   {
-    callbacks.register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_MAIN_HAND, buffs.rune_of_the_fallen_crusader ) );
+    callbacks.register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_MAIN_HAND, runeforge.rune_of_the_fallen_crusader ) );
   }
   else if ( mh_enchant == "rune_of_razorice" )
   {
@@ -5126,12 +5170,12 @@ void death_knight_t::init_enchant()
   }
   else if ( mh_enchant == "rune_of_cinderglacier" )
   {
-    callbacks.register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_MAIN_HAND, buffs.rune_of_cinderglacier ) );
+    callbacks.register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_MAIN_HAND, runeforge.rune_of_cinderglacier ) );
   }
 
   if ( oh_enchant == "rune_of_the_fallen_crusader" )
   {
-    callbacks.register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_OFF_HAND, buffs.rune_of_the_fallen_crusader ) );
+    callbacks.register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_OFF_HAND, runeforge.rune_of_the_fallen_crusader ) );
   }
   else if ( oh_enchant == "rune_of_razorice" )
   {
@@ -5139,8 +5183,35 @@ void death_knight_t::init_enchant()
   }
   else if ( oh_enchant == "rune_of_cinderglacier" )
   {
-    callbacks.register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_OFF_HAND, buffs.rune_of_cinderglacier ) );
+    callbacks.register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_OFF_HAND, runeforge.rune_of_cinderglacier ) );
   }
+
+  if ( mh_enchant == "rune_of_the_stoneskin_gargoyle" )
+    runeforge.rune_of_the_stoneskin_gargoyle -> default_chance = 1.0;
+
+  if ( mh_enchant == "rune_of_the_nerubian_carapace" )
+    runeforge.rune_of_the_nerubian_carapace -> default_chance = 1.0;
+  
+  if ( oh_enchant == "rune_of_the_nerubian_carapace" )
+    runeforge.rune_of_the_nerubian_carapace_oh -> default_chance = 1.0;
+
+  if ( mh_enchant == "rune_of_spellshattering" )
+    runeforge.rune_of_spellshattering -> default_chance = 1.0;
+
+  if ( mh_enchant == "rune_of_swordshattering" )
+    runeforge.rune_of_swordshattering -> default_chance = 1.0;
+
+  if ( mh_enchant == "rune_of_spellbreaking" )
+    runeforge.rune_of_spellbreaking -> default_chance = 1.0;
+
+  if ( oh_enchant == "rune_of_spellbreaking" )
+    runeforge.rune_of_spellbreaking_oh -> default_chance = 1.0;
+
+  if ( mh_enchant == "rune_of_swordbreaking" )
+    runeforge.rune_of_swordbreaking -> default_chance = 1.0;
+
+  if ( oh_enchant == "rune_of_swordbreaking" )
+    runeforge.rune_of_swordbreaking_oh -> default_chance = 1.0;
 }
 
 // death_knight_t::init_scaling =============================================
@@ -5179,7 +5250,8 @@ void death_knight_t::create_buffs()
   buffs.bone_shield         = buff_creator_t( this, "bone_shield", find_specialization_spell( "Bone Shield" ) );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" ).spell( find_spell( 81141 ) )
                               .chance( spec.crimson_scourge -> proc_chance() );
-  buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_class_spell( "Dancing Rune Weapon" ) );
+  buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_class_spell( "Dancing Rune Weapon" ) )
+                              .add_invalidate( CACHE_PARRY );
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) );
   buffs.frost_presence      = buff_creator_t( this, "frost_presence", find_class_spell( "Frost Presence" ) )
                               .default_value( find_class_spell( "Frost Presence" ) -> effectN( 1 ).percent() );
@@ -5305,20 +5377,46 @@ void death_knight_t::assess_damage( school_e     school,
                                     dmg_e        dtype,
                                     action_state_t* s )
 {
-  if ( buffs.blood_presence -> check() )
-    s -> result_amount *= 1.0 + buffs.blood_presence -> data().effectN( 7 ).percent();
-
   player_t::assess_damage( school, dtype, s );
+}
+
+// death_knight_t::assess_damage ==============================================
+
+void death_knight_t::target_mitigation( school_e school, dmg_e type, action_state_t* state )
+{
+  if ( buffs.blood_presence -> check() )
+    state -> result_amount *= 1.0 + buffs.blood_presence -> data().effectN( 7 ).percent();
+
+  if ( runeforge.rune_of_spellshattering -> check() )
+    state -> result_amount *= 1.0 + runeforge.rune_of_spellshattering -> data().effectN( 1 ).percent();
+
+  if ( runeforge.rune_of_spellbreaking -> check() )
+    state -> result_amount *= 1.0 + runeforge.rune_of_spellbreaking -> data().effectN( 1 ).percent();
+
+  if ( runeforge.rune_of_spellbreaking_oh -> check() )
+    state -> result_amount *= 1.0 + runeforge.rune_of_spellbreaking_oh -> data().effectN( 1 ).percent();
+
+  player_t::target_mitigation( school, type, state );
 }
 
 // death_knight_t::composite_armor_multiplier ===============================
 
+// TODO: Are armor multipliers really calculated as flat bonuses?
 double death_knight_t::composite_armor_multiplier()
 {
   double a = player_t::composite_armor_multiplier();
 
   if ( buffs.blood_presence -> check() )
     a += buffs.blood_presence -> data().effectN( 3 ).percent();
+
+  if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
+    a += runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 1 ).percent();
+
+  if ( runeforge.rune_of_the_nerubian_carapace -> check() )
+    a += runeforge.rune_of_the_nerubian_carapace -> data().effectN( 1 ).percent();
+
+  if ( runeforge.rune_of_the_nerubian_carapace_oh -> check() )
+    a += runeforge.rune_of_the_nerubian_carapace_oh -> data().effectN( 1 ).percent();
 
   return a;
 }
@@ -5331,13 +5429,24 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr )
 
   if ( attr == ATTR_STRENGTH )
   {
-    m *= 1.0 + buffs.rune_of_the_fallen_crusader -> value();
+    m *= 1.0 + runeforge.rune_of_the_fallen_crusader -> value();
     m *= 1.0 + buffs.pillar_of_frost -> value();
   }
 
   if ( attr == ATTR_STAMINA )
+  {
     if ( buffs.blood_presence -> check() )
       m *= 1.0 + buffs.blood_presence -> data().effectN( 6 ).percent();
+
+    if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
+      m *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 2 ).percent();
+
+    if ( runeforge.rune_of_the_nerubian_carapace -> check() )
+      m *= 1.0 + runeforge.rune_of_the_nerubian_carapace -> data().effectN( 2 ).percent();
+
+    if ( runeforge.rune_of_the_nerubian_carapace_oh -> check() )
+      m *= 1.0 + runeforge.rune_of_the_nerubian_carapace_oh -> data().effectN( 2 ).percent();
+  }
 
   return m;
 }
@@ -5367,6 +5476,15 @@ double death_knight_t::composite_tank_parry()
 
   if ( buffs.dancing_rune_weapon -> up() )
     parry += 0.20;
+
+  if ( runeforge.rune_of_swordshattering -> check() )
+    parry += runeforge.rune_of_swordshattering -> data().effectN( 1 ).percent();
+
+  if ( runeforge.rune_of_swordbreaking -> check() )
+    parry += runeforge.rune_of_swordbreaking -> data().effectN( 1 ).percent();
+
+  if ( runeforge.rune_of_swordbreaking_oh -> check() )
+    parry += runeforge.rune_of_swordbreaking_oh -> data().effectN( 1 ).percent();
 
   return parry;
 }
@@ -5720,6 +5838,16 @@ void death_knight_t::arise()
 
   if ( specialization() == DEATH_KNIGHT_FROST  && ! sim -> overrides.attack_speed ) sim -> auras.attack_speed -> trigger();
   if ( specialization() == DEATH_KNIGHT_UNHOLY && ! sim -> overrides.attack_speed ) sim -> auras.attack_speed -> trigger();
+
+  runeforge.rune_of_the_stoneskin_gargoyle -> trigger();
+  runeforge.rune_of_the_nerubian_carapace -> trigger();
+  runeforge.rune_of_the_nerubian_carapace_oh -> trigger();
+  runeforge.rune_of_swordshattering -> trigger();
+  runeforge.rune_of_swordbreaking -> trigger();
+  runeforge.rune_of_swordbreaking_oh -> trigger();
+  runeforge.rune_of_spellshattering -> trigger();
+  runeforge.rune_of_spellbreaking -> trigger();
+  runeforge.rune_of_spellbreaking_oh -> trigger();
 }
 
 // DEATH_KNIGHT MODULE INTERFACE ================================================
