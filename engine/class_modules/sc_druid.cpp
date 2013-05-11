@@ -385,11 +385,11 @@ public:
   virtual void      regen( timespan_t periodicity );
   virtual timespan_t available();
   virtual double    composite_armor_multiplier();
-  virtual double    composite_attack_haste();
-  virtual double    composite_attack_hit();
-  virtual double    composite_attack_expertise( weapon_t* );
-  virtual double    composite_attack_crit();
-  virtual double    composite_attack_power();
+  virtual double    composite_melee_haste();
+  virtual double    composite_melee_hit();
+  virtual double    composite_melee_expertise( weapon_t* );
+  virtual double    composite_melee_crit();
+  virtual double    composite_melee_attack_power();
   virtual double    composite_player_multiplier( school_e school );
   virtual double    composite_player_td_multiplier( school_e, action_t* );
   virtual double    composite_player_heal_multiplier( school_e school );
@@ -2161,7 +2161,7 @@ struct frenzied_regeneration_t : public bear_attack_t
     {
       // Heal: ( ( AP / 1000 )^2 - AP / 1000 ) / 10
       // => AP*AP / 10000000 - AP / 10000
-      double attack_power = p() -> composite_attack_power() * p() -> composite_attack_power_multiplier();
+      double attack_power = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
       double health_gain = ( data().effectN( 2 ).base_value() * attack_power * attack_power / 10000000.0 -
                              data().effectN( 3 ).base_value() * attack_power / 10000.0 );
       double health_pct_gain = resource_consumed / maximum_rage_cost;
@@ -6060,9 +6060,9 @@ double druid_t::composite_armor_multiplier()
 
 // druid_t::composite_attack_power ==========================================
 
-double druid_t::composite_attack_power()
+double druid_t::composite_melee_attack_power()
 {
-  double ap = player_t::composite_attack_power();
+  double ap = player_t::composite_melee_attack_power();
 
   if ( buff.bear_form -> check() || buff.cat_form  -> check() )
     ap += 2.0 * ( cache.agility() - 10.0 );
@@ -6072,9 +6072,9 @@ double druid_t::composite_attack_power()
 
 // druid_t::composite_attack_haste ==========================================
 
-double druid_t::composite_attack_haste()
+double druid_t::composite_melee_haste()
 {
-  double h = player_t::composite_attack_haste();
+  double h = player_t::composite_melee_haste();
 
   if ( buff.bear_form -> up() )
   {
@@ -6087,9 +6087,9 @@ double druid_t::composite_attack_haste()
 
 // druid_t::composite_attack_crit ===========================================
 
-double druid_t::composite_attack_crit()
+double druid_t::composite_melee_crit()
 {
-  double c = player_t::composite_attack_crit();
+  double c = player_t::composite_melee_crit();
 
   if ( buff.bear_form -> up() )
     c += current.stats.get_stat( STAT_CRIT_RATING ) * spell.bear_form -> effectN( 4 ).percent() / current_rating().attack_crit;
@@ -6186,9 +6186,9 @@ double druid_t::composite_player_heal_multiplier( school_e school )
 
 // druid_t::composite_attack_hit ============================================
 
-double druid_t::composite_attack_hit()
+double druid_t::composite_melee_hit()
 {
-  double hit = player_t::composite_attack_hit();
+  double hit = player_t::composite_melee_hit();
 
   hit += ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * ( spec.balance_of_power -> effectN( 1 ).percent() ) / current_rating().spell_hit;
 
@@ -6199,9 +6199,9 @@ double druid_t::composite_attack_hit()
 
 // druid_t::composite_attack_expertise =====================================
 
-double druid_t::composite_attack_expertise( weapon_t* w )
+double druid_t::composite_melee_expertise( weapon_t* w )
 {
-  double exp = player_t::composite_attack_expertise( w );
+  double exp = player_t::composite_melee_expertise( w );
 
   exp += buff.heart_of_the_wild -> attack_hit_expertise();
 

@@ -1145,6 +1145,8 @@ double dbc_t::resource_base( player_e t, unsigned level ) const
 #endif
 }
 
+/* Mana regen per spirit
+ */
 double dbc_t::regen_spirit( player_e t, unsigned level ) const
 {
   uint32_t class_id = util::class_id( t );
@@ -1163,24 +1165,6 @@ double dbc_t::regen_spirit( player_e t, unsigned level ) const
 double dbc_t::regen_spirit( pet_e t, unsigned level ) const
 {
   return regen_spirit( util::pet_class_type( t ), level );
-}
-
-double dbc_t::mp5_per_spirit( player_e t, unsigned level ) const
-{
-  uint32_t class_id = util::class_id( t );
-
-  assert( class_id < MAX_CLASS && level > 0 && level <= MAX_LEVEL );
-#if SC_USE_PTR
-  return ptr ? __ptr_gt_regen_mpper_spt[ class_id ][ level - 1 ]
-             : __gt_regen_mpper_spt[ class_id ][ level - 1 ];
-#else
-  return __gt_regen_mpper_spt[ class_id ][ level - 1 ];
-#endif
-}
-
-double dbc_t::mp5_per_spirit( pet_e t, unsigned level ) const
-{
-  return mp5_per_spirit( util::pet_class_type( t ), level );
 }
 
 double dbc_t::health_per_stamina( unsigned level ) const

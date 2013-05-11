@@ -308,7 +308,7 @@ struct rogue_t : public player_t
   virtual void      copy_from( player_t* source );
 
   virtual double    composite_attribute_multiplier( attribute_e attr );
-  virtual double    composite_attack_speed();
+  virtual double    composite_melee_speed();
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual double    composite_attack_power_multiplier();
   virtual double    composite_player_multiplier( school_e school );
@@ -2856,9 +2856,9 @@ double rogue_t::composite_attribute_multiplier( attribute_e attr )
 
 // rogue_t::composite_attack_speed ==========================================
 
-double rogue_t::composite_attack_speed()
+double rogue_t::composite_melee_speed()
 {
-  double h = player_t::composite_attack_speed();
+  double h = player_t::composite_melee_speed();
 
   if ( buffs.slice_and_dice -> check() )
     h *= 1.0 / ( 1.0 + buffs.slice_and_dice -> value() );

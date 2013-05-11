@@ -241,16 +241,16 @@ public:
 
   // Character Definition
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual double    composite_attack_speed();
+  virtual double    composite_melee_speed();
   virtual double    energy_regen_per_second();
-  virtual double    composite_attack_haste();
+  virtual double    composite_melee_haste();
   virtual double    composite_spell_haste();
   virtual double    composite_player_multiplier( school_e school );
   virtual double    composite_player_heal_multiplier( school_e school );
   virtual double    composite_spell_hit();
-  virtual double    composite_attack_hit();
-  virtual double    composite_attack_expertise( weapon_t* weapon );
-  virtual double    composite_attack_power();
+  virtual double    composite_melee_hit();
+  virtual double    composite_melee_expertise( weapon_t* weapon );
+  virtual double    composite_melee_attack_power();
   virtual double    composite_tank_parry();
   virtual double    composite_tank_dodge();
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
@@ -2839,9 +2839,9 @@ int monk_t::decode_set( item_t& item )
 
 // monk_t::composite_attack_speed
 
-double monk_t::composite_attack_speed()
+double monk_t::composite_melee_speed()
 {
-  double cas = base_t::composite_attack_speed();
+  double cas = base_t::composite_melee_speed();
 
   if ( ! dual_wield() )
     cas *= 1.0 / ( 1.0 + spec.way_of_the_monk -> effectN( 2 ).percent() );
@@ -2854,9 +2854,9 @@ double monk_t::composite_attack_speed()
 
 // monk_t::composite_attack_haste
 
-double monk_t::composite_attack_haste()
+double monk_t::composite_melee_haste()
 {
-  double h = base_t::composite_attack_haste();
+  double h = base_t::composite_melee_haste();
 
   if ( current_stance() == WISE_SERPENT )
   {
@@ -2908,9 +2908,9 @@ double monk_t::composite_player_heal_multiplier( school_e school )
 
 // monk_t::composite_attack_hit
 
-double monk_t::composite_attack_hit()
+double monk_t::composite_melee_hit()
 {
-  double ah = base_t::composite_attack_hit();
+  double ah = base_t::composite_melee_hit();
 
   ah += ( ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * active_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / current_rating().attack_hit;
 
@@ -2930,9 +2930,9 @@ double monk_t::composite_spell_hit()
 
 // monk_t::composite_attack_expertise
 
-double monk_t::composite_attack_expertise( weapon_t* weapon )
+double monk_t::composite_melee_expertise( weapon_t* weapon )
 {
-  double e = base_t::composite_attack_expertise( weapon );
+  double e = base_t::composite_melee_expertise( weapon );
 
   e += ( ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * active_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / current_rating().expertise;
 
@@ -2941,12 +2941,12 @@ double monk_t::composite_attack_expertise( weapon_t* weapon )
 
 // monk_t::composite_attack_power
 
-double monk_t::composite_attack_power()
+double monk_t::composite_melee_attack_power()
 {
   if ( current_stance() == WISE_SERPENT )
     return monk_t::composite_spell_power( SCHOOL_MAX ) * static_stance_data( WISE_SERPENT ).effectN( 2 ).percent();
 
-  return base_t::composite_attack_power();
+  return base_t::composite_melee_attack_power();
 }
 
 // monk_t::composite_tank_parry

@@ -778,7 +778,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       a -> buffed.attack_power,
-      a -> composite_attack_power() * a -> composite_attack_power_multiplier(),
+      a -> composite_melee_attack_power() * a -> composite_attack_power_multiplier(),
       a -> total_gear.attack_power );
     j++;
     os.printf(
@@ -790,7 +790,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * a -> buffed.attack_hit,
-      100 * a -> composite_attack_hit(),
+      100 * a -> composite_melee_hit(),
       a -> total_gear.hit_rating );
     j++;
     os.printf(
@@ -802,7 +802,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * a -> buffed.attack_crit,
-      100 * a -> composite_attack_crit(),
+      100 * a -> composite_melee_crit(),
       a -> total_gear.crit_rating );
     j++;
     os.printf(
@@ -814,7 +814,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * ( 1 / a -> buffed.attack_haste - 1 ),
-      100 * ( 1 / a -> composite_attack_haste() - 1 ),
+      100 * ( 1 / a -> composite_melee_haste() - 1 ),
       a -> total_gear.haste_rating );
     j++;
     os.printf(
@@ -826,7 +826,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * ( 1 / a -> buffed.attack_speed - 1 ),
-      100 * ( 1 / a -> composite_attack_speed() - 1 ),
+      100 * ( 1 / a -> composite_melee_speed() - 1 ),
       a -> total_gear.haste_rating );
     j++;
     if ( a -> dual_wield() )
@@ -841,8 +841,8 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
         ( j % 2 == 1 ) ? " class=\"odd\"" : "",
         100 * a -> buffed.mh_attack_expertise,
         100 * a -> buffed.oh_attack_expertise,
-        100 * a -> composite_attack_expertise( &( a -> main_hand_weapon ) ),
-        100 * a -> composite_attack_expertise( &( a -> off_hand_weapon ) ),
+        100 * a -> composite_melee_expertise( &( a -> main_hand_weapon ) ),
+        100 * a -> composite_melee_expertise( &( a -> off_hand_weapon ) ),
         a -> total_gear.expertise_rating );
     }
     else
@@ -856,7 +856,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
         "\t\t\t\t\t\t\t\t\t</tr>\n",
         ( j % 2 == 1 ) ? " class=\"odd\"" : "",
         100 * a -> buffed.mh_attack_expertise,
-        100 * a -> composite_attack_expertise( &( a -> main_hand_weapon ) ),
+        100 * a -> composite_melee_expertise( &( a -> main_hand_weapon ) ),
         a -> total_gear.expertise_rating );
     }
     j++;

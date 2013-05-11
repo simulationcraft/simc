@@ -246,7 +246,7 @@ public:
   virtual void      reset();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual double    composite_attribute_multiplier( attribute_e attr );
-  virtual double    composite_attack_crit();
+  virtual double    composite_melee_crit();
   virtual double    composite_spell_crit();
   virtual double    composite_player_multiplier( school_e school );
   virtual double    composite_spell_power( school_e school );
@@ -470,7 +470,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
       timespan_t t = action_t::gcd();
       if ( t == timespan_t::zero() ) return timespan_t::zero();
 
-      t *= p()->composite_attack_haste();
+      t *= p()->composite_melee_haste();
       if ( t < min_gcd ) t = min_gcd;
 
       return t;
@@ -3515,9 +3515,9 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr )
 
 // paladin_t::composite_attack_crit ===================================
 
-double paladin_t::composite_attack_crit()
+double paladin_t::composite_melee_crit()
 {
-  double m = player_t::composite_attack_crit();
+  double m = player_t::composite_melee_crit();
 
   if ( buffs.inquisition -> check() )
   {

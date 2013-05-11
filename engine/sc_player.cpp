@@ -1183,24 +1183,25 @@ void player_t::init_base_stats()
 
   if ( ! is_enemy() )
   {
-    base.stats.attribute[ STAT_STRENGTH ]  = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_STRENGTH );
-    base.stats.attribute[ STAT_AGILITY ]   = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_AGILITY );
-    base.stats.attribute[ STAT_STAMINA ]   = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_STAMINA );
-    base.stats.attribute[ STAT_INTELLECT ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_INTELLECT );
-    base.stats.attribute[ STAT_SPIRIT ]    = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_SPIRIT );
+    base.stats.attribute[ STAT_STRENGTH ]  = dbc.race_base( race ).strength + dbc.attribute_base( type, level ).strength;
+    base.stats.attribute[ STAT_AGILITY ]   = dbc.race_base( race ).agility + dbc.attribute_base( type, level ).agility;
+    base.stats.attribute[ STAT_STAMINA ]   = dbc.race_base( race ).stamina + dbc.attribute_base( type, level ).stamina;
+    base.stats.attribute[ STAT_INTELLECT ] = dbc.race_base( race ).intellect + dbc.attribute_base( type, level ).intellect;
+    base.stats.attribute[ STAT_SPIRIT ]    = dbc.race_base( race ).spirit + dbc.attribute_base( type, level ).spirit;
+    if ( race == RACE_HUMAN ) base.stats.attribute[ STAT_SPIRIT ] *= 1.03;
 
-    base.spell_crit               = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_SPELL_CRIT );
-    base.attack_crit              = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MELEE_CRIT );
-    base.spell_crit_per_intellect = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_SPELL_CRIT_PER_INT );
-    base.attack_crit_per_agility  = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MELEE_CRIT_PER_AGI );
+    base.spell_crit               = dbc.spell_crit_base( type, level );
+    base.attack_crit              = dbc.melee_crit_base( type, level );
+    base.spell_crit_per_intellect = dbc.spell_crit_scaling( type, level );
+    base.attack_crit_per_agility  = dbc.melee_crit_scaling( type, level );
     base.mastery = 8.0;
 
-    resources.base[ RESOURCE_HEALTH ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_HEALTH );
-    resources.base[ RESOURCE_MANA   ] = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MANA );
+    resources.base[ RESOURCE_HEALTH ] = dbc.health_base( type, level );
+    resources.base[ RESOURCE_MANA   ] = dbc.resource_base( type, level );
 
-    base.mana_regen_per_second = rating_t::get_attribute_base( sim, dbc, level, type, race, BASE_STAT_MP5 ) / 5.0;
+    base.mana_regen_per_second = dbc.regen_base( type, level ) / 5.0;
+    base.mana_regen_per_spirit = dbc.regen_spirit( type, level );
     base.health_per_stamina    = dbc.health_per_stamina( level );
-    base.mana_regen_per_spirit = dbc.mp5_per_spirit( type, level );
     base.dodge_per_agility     = dbc.dodge_scaling( type, level );
   }
 
@@ -2831,7 +2832,7 @@ double player_t::mana_regen_per_second()
 
 // player_t::composite_attack_haste =========================================
 
-double player_t::composite_attack_haste()
+double player_t::composite_melee_haste()
 {
   double h = 1.0 / ( 1.0 + std::max( 0.0, current.stats.haste_rating ) / current.rating.attack_haste );
 
@@ -2861,9 +2862,9 @@ double player_t::composite_attack_haste()
 
 // player_t::composite_attack_speed =========================================
 
-double player_t::composite_attack_speed()
+double player_t::composite_melee_speed()
 {
-  double h = composite_attack_haste();
+  double h = composite_melee_haste();
 
   if ( race == RACE_GOBLIN )
   {
@@ -2878,7 +2879,7 @@ double player_t::composite_attack_speed()
 
 // player_t::composite_attack_power =========================================
 
-double player_t::composite_attack_power()
+double player_t::composite_melee_attack_power()
 {
   double ap = current.stats.attack_power;
 
@@ -2905,7 +2906,7 @@ double player_t::composite_attack_power_multiplier()
 
 // player_t::composite_attack_crit ==========================================
 
-double player_t::composite_attack_crit()
+double player_t::composite_melee_crit()
 {
   double ac = current.attack_crit + current.stats.crit_rating / current.rating.attack_crit;
 
@@ -2923,7 +2924,7 @@ double player_t::composite_attack_crit()
 
 // player_t::composite_attack_expertise =====================================
 
-double player_t::composite_attack_expertise( weapon_t* weapon )
+double player_t::composite_melee_expertise( weapon_t* weapon )
 {
   double e = current.stats.expertise_rating / current.rating.expertise;
 
@@ -2935,7 +2936,7 @@ double player_t::composite_attack_expertise( weapon_t* weapon )
 
 // player_t::composite_attack_hit ===========================================
 
-double player_t::composite_attack_hit()
+double player_t::composite_melee_hit()
 {
   double ah = current.stats.hit_rating / current.rating.attack_hit;
 
@@ -3184,7 +3185,7 @@ double player_t::composite_spell_hit()
   if ( buffs.heroic_presence && buffs.heroic_presence -> up() )
     sh += 0.01;
 
-  sh += composite_attack_expertise();
+  sh += composite_melee_expertise();
 
   return sh;
 }
@@ -3483,9 +3484,9 @@ double player_t::cache_t::attack_power()
   if ( ! active || ! valid[ CACHE_ATTACK_POWER ] )
   {
     valid[ CACHE_ATTACK_POWER ] = true;
-    _attack_power = player -> composite_attack_power();
+    _attack_power = player -> composite_melee_attack_power();
   }
-  else assert( _attack_power == player -> composite_attack_power() );
+  else assert( _attack_power == player -> composite_melee_attack_power() );
   return _attack_power;
 }
 
@@ -3496,9 +3497,9 @@ double player_t::cache_t::attack_expertise()
   if ( ! active || ! valid[ CACHE_ATTACK_EXP ] )
   {
     valid[ CACHE_ATTACK_EXP ] = true;
-    _attack_expertise = player -> composite_attack_expertise();
+    _attack_expertise = player -> composite_melee_expertise();
   }
-  else assert( _attack_expertise == player -> composite_attack_expertise() );
+  else assert( _attack_expertise == player -> composite_melee_expertise() );
   return _attack_expertise;
 }
 
@@ -3509,11 +3510,11 @@ double player_t::cache_t::attack_hit()
   if ( ! active || ! valid[ CACHE_ATTACK_HIT ] )
   {
     valid[ CACHE_ATTACK_HIT ] = true;
-    _attack_hit = player -> composite_attack_hit();
+    _attack_hit = player -> composite_melee_hit();
   }
   else
     {
-    if ( _attack_hit != player -> composite_attack_hit() )
+    if ( _attack_hit != player -> composite_melee_hit() )
     {
       assert( false );
     }
@@ -3529,9 +3530,9 @@ double player_t::cache_t::attack_crit()
   if ( ! active || ! valid[ CACHE_ATTACK_CRIT ] )
   {
     valid[ CACHE_ATTACK_CRIT ] = true;
-    _attack_crit = player -> composite_attack_crit();
+    _attack_crit = player -> composite_melee_crit();
   }
-  else assert( _attack_crit == player -> composite_attack_crit() );
+  else assert( _attack_crit == player -> composite_melee_crit() );
   return _attack_crit;
 }
 
@@ -3542,9 +3543,9 @@ double player_t::cache_t::attack_haste()
   if ( ! active || ! valid[ CACHE_ATTACK_HASTE ] )
   {
     valid[ CACHE_ATTACK_HASTE ] = true;
-    _attack_haste = player -> composite_attack_haste();
+    _attack_haste = player -> composite_melee_haste();
   }
-  else assert( _attack_haste == player -> composite_attack_haste() );
+  else assert( _attack_haste == player -> composite_melee_haste() );
   return _attack_haste;
 }
 
@@ -3555,9 +3556,9 @@ double player_t::cache_t::attack_speed()
   if ( ! active || ! valid[ CACHE_ATTACK_SPEED ] )
   {
     valid[ CACHE_ATTACK_SPEED ] = true;
-    _attack_speed = player -> composite_attack_speed();
+    _attack_speed = player -> composite_melee_speed();
   }
-  else assert( _attack_speed == player -> composite_attack_speed() );
+  else assert( _attack_speed == player -> composite_melee_speed() );
   return _attack_speed;
 }
 
@@ -3611,6 +3612,61 @@ double player_t::cache_t::spell_speed()
   }
   else assert( _spell_speed == player -> composite_spell_speed() );
   return _spell_speed;
+}
+
+double player_t::cache_t::dodge()
+{
+  if ( ! active || ! valid[ CACHE_DODGE ] )
+  {
+    valid[ CACHE_DODGE ] = true;
+    _dodge = player -> composite_tank_dodge();
+  }
+  else assert( _dodge == player -> composite_tank_dodge() );
+  return _dodge;
+}
+
+double player_t::cache_t::parry()
+{
+  if ( ! active || ! valid[ CACHE_PARRY ] )
+  {
+    valid[ CACHE_PARRY ] = true;
+    _parry = player -> composite_tank_parry();
+  }
+  else assert( _parry == player -> composite_tank_parry() );
+  return _parry;
+}
+
+double player_t::cache_t::block()
+{
+  if ( ! active || ! valid[ CACHE_BLOCK ] )
+  {
+    valid[ CACHE_BLOCK ] = true;
+    _block = player -> composite_tank_block();
+  }
+  else assert( _block == player -> composite_tank_block() );
+  return _block;
+}
+
+double player_t::cache_t::crit_block()
+{
+  if ( ! active || ! valid[ CACHE_CRIT_BLOCK ] )
+  {
+    valid[ CACHE_CRIT_BLOCK ] = true;
+    _crit_block = player -> composite_tank_crit_block();
+  }
+  else assert( _crit_block == player -> composite_tank_crit_block() );
+  return _crit_block;
+}
+
+double player_t::cache_t::armor()
+{
+  if ( ! active || ! valid[ CACHE_ARMOR ] )
+  {
+    valid[ CACHE_ARMOR ] = true;
+    _armor = player -> composite_armor();
+  }
+  else assert( _armor == player -> composite_armor() );
+  return _armor;
 }
 
 // player_t::cache_t::mastery =================================================
@@ -3671,9 +3727,6 @@ void player_t::invalidate_cache( cache_e c )
     cache.valid[ CACHE_ATTACK_POWER ] = false;
     cache.valid[ CACHE_ATTACK_CRIT  ] = false;
     break;
-  case CACHE_STAMINA:
-    cache.valid[ CACHE_STAMINA ] = false;
-    break;
   case CACHE_INTELLECT:
     cache.valid[ CACHE_INTELLECT  ] = false;
     cache.valid[ CACHE_SPELL_CRIT ] = false;
@@ -3687,35 +3740,17 @@ void player_t::invalidate_cache( cache_e c )
   case CACHE_SPELL_POWER:
     range::fill( cache.spell_power_valid, false );
     break;
-  case CACHE_ATTACK_POWER:
-    cache.valid[ CACHE_ATTACK_POWER ] = false;
-    break;
   case CACHE_EXP:
     cache.valid[ CACHE_ATTACK_EXP ] = false;
     cache.valid[ CACHE_SPELL_HIT  ] = false;
-    break;
-  case CACHE_ATTACK_EXP:
-    cache.valid[ CACHE_ATTACK_EXP ] = false;
     break;
   case CACHE_HIT:
     cache.valid[ CACHE_ATTACK_HIT ] = false;
     cache.valid[ CACHE_SPELL_HIT  ] = false;
     break;
-  case CACHE_ATTACK_HIT:
-    cache.valid[ CACHE_ATTACK_HIT ] = false;
-    break;
-  case CACHE_SPELL_HIT:
-    cache.valid[ CACHE_SPELL_HIT ] = false;
-    break;
   case CACHE_CRIT:
     cache.valid[ CACHE_ATTACK_CRIT ] = false;
     cache.valid[ CACHE_SPELL_CRIT  ] = false;
-    break;
-  case CACHE_ATTACK_CRIT:
-    cache.valid[ CACHE_ATTACK_CRIT ] = false;
-    break;
-  case CACHE_SPELL_CRIT:
-    cache.valid[ CACHE_SPELL_CRIT ] = false;
     break;
   case CACHE_HASTE:
     cache.valid[ CACHE_ATTACK_HASTE ] = false;
@@ -3735,12 +3770,6 @@ void player_t::invalidate_cache( cache_e c )
     cache.valid[ CACHE_ATTACK_SPEED ] = false;
     cache.valid[ CACHE_SPELL_SPEED  ] = false;
     break;
-  case CACHE_ATTACK_SPEED:
-    cache.valid[ CACHE_ATTACK_SPEED ] = false;
-    break;
-  case CACHE_SPELL_SPEED:
-    cache.valid[ CACHE_SPELL_SPEED ] = false;
-    break;
   case CACHE_MASTERY:
     cache.valid[ CACHE_MASTERY ] = false;
     range::fill( cache.player_mult_valid, false );
@@ -3752,7 +3781,9 @@ void player_t::invalidate_cache( cache_e c )
   case CACHE_PLAYER_HEAL_MULTIPLIER:
     range::fill( cache.player_heal_mult_valid, false );
     break;
-  default: assert( 0 );
+  default:
+    cache.valid[ c ] = false; // Invalidates only its own cache.
+    break;
   }
 }
 
@@ -5052,10 +5083,10 @@ void player_t::stat_loss( stat_e    stat,
 /* Adjusts the current rating -> % modifer of a stat
  * Invalidates corresponding cache
  */
-void player_t::modify_current_rating( base_stat_e stat, double amount )
+void player_t::modify_current_rating( rating_e r, double amount )
 {
-  // adjust current.rating
-  // invalidate corresponding cache
+  current.rating.get( r ) += amount;
+  invalidate_cache( cache_from_rating( r ) );
 }
 // player_t::cost_reduction_gain ============================================
 
@@ -6165,8 +6196,8 @@ struct snapshot_stats_t : public action_t
     p -> buffed.resource     = p -> resources.max;
 
     p -> buffed.spell_haste  = p -> composite_spell_speed();
-    p -> buffed.attack_haste = p -> composite_attack_haste();
-    p -> buffed.attack_speed = p -> composite_attack_speed();
+    p -> buffed.attack_haste = p -> composite_melee_haste();
+    p -> buffed.attack_speed = p -> composite_melee_speed();
     p -> buffed.mastery      = p -> composite_mastery();
 
     p -> buffed.spell_power  = util::round( p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
@@ -6174,11 +6205,11 @@ struct snapshot_stats_t : public action_t
     p -> buffed.spell_crit   = p -> composite_spell_crit();
     p -> buffed.manareg_per_second          = p -> mana_regen_per_second();
 
-    p -> buffed.attack_power = p -> composite_attack_power() * p -> composite_attack_power_multiplier();
-    p -> buffed.attack_hit   = p -> composite_attack_hit();
-    p -> buffed.mh_attack_expertise = p -> composite_attack_expertise( &( p -> main_hand_weapon ) );
-    p -> buffed.oh_attack_expertise = p -> composite_attack_expertise( &( p -> off_hand_weapon ) );
-    p -> buffed.attack_crit  = p -> composite_attack_crit();
+    p -> buffed.attack_power = p -> composite_melee_attack_power() * p -> composite_attack_power_multiplier();
+    p -> buffed.attack_hit   = p -> composite_melee_hit();
+    p -> buffed.mh_attack_expertise = p -> composite_melee_expertise( &( p -> main_hand_weapon ) );
+    p -> buffed.oh_attack_expertise = p -> composite_melee_expertise( &( p -> off_hand_weapon ) );
+    p -> buffed.attack_crit  = p -> composite_melee_crit();
 
     p -> buffed.armor        = p -> composite_armor();
     p -> buffed.miss         = p -> composite_tank_miss( SCHOOL_PHYSICAL );
@@ -6224,12 +6255,12 @@ struct snapshot_stats_t : public action_t
       if ( chance < 0 ) attack_hit_extra = -chance * p -> current_rating().attack_hit;
       if ( p -> position() != POSITION_FRONT  )
       {
-        chance = attack -> dodge_chance( p -> composite_attack_expertise(), delta_level );
+        chance = attack -> dodge_chance( p -> composite_melee_expertise(), delta_level );
         if ( chance < 0 ) expertise_extra = -chance * p -> current_rating().expertise;
       }
       else if ( p ->position() == POSITION_FRONT )
       {
-        chance = attack -> parry_chance( p -> composite_attack_expertise(), delta_level );
+        chance = attack -> parry_chance( p -> composite_melee_expertise(), delta_level );
         if ( chance < 0 ) expertise_extra = -chance * p -> current_rating().expertise;
       }
     }
@@ -7607,9 +7638,9 @@ expr_t* player_t::create_expression( action_t* a,
   if ( name_str == "in_combat" )
     return make_ref_expr( "in_combat", in_combat );
   if ( name_str == "attack_haste" )
-    return make_mem_fn_expr( name_str, *this, &player_t::composite_attack_haste );
+    return make_mem_fn_expr( name_str, *this, &player_t::composite_melee_haste );
   if ( name_str == "attack_speed" )
-    return make_mem_fn_expr( name_str, *this, &player_t::composite_attack_speed );
+    return make_mem_fn_expr( name_str, *this, &player_t::composite_melee_speed );
   if ( name_str == "spell_haste" )
     return make_mem_fn_expr( name_str, *this, &player_t::composite_spell_speed );
   if ( name_str == "time_to_die" )
@@ -7975,7 +8006,7 @@ expr_t* player_t::create_expression( action_t* a,
           player_expr_t( name, p ) {}
         virtual double evaluate()
         {
-          return player.composite_attack_power() * player.composite_attack_power_multiplier();
+          return player.composite_melee_attack_power() * player.composite_attack_power_multiplier();
         }
       };
       return new ap_expr_t( name_str, *this );

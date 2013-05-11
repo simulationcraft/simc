@@ -368,9 +368,9 @@ public:
   virtual void      init_procs();
   virtual void      init_resources( bool force );
   virtual double    composite_armor_multiplier();
-  virtual double    composite_attack_speed();
-  virtual double    composite_attack_haste();
-  virtual double    composite_attack_hit();
+  virtual double    composite_melee_speed();
+  virtual double    composite_melee_haste();
+  virtual double    composite_melee_hit();
   virtual double    composite_attribute_multiplier( attribute_e attr );
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual double    composite_tank_parry();
@@ -4432,9 +4432,9 @@ pet_t* death_knight_t::create_pet( const std::string& pet_name,
 
 // death_knight_t::composite_attack_haste() =================================
 
-double death_knight_t::composite_attack_haste()
+double death_knight_t::composite_melee_haste()
 {
-  double haste = player_t::composite_attack_haste();
+  double haste = player_t::composite_melee_haste();
 
   haste *= 1.0 / ( 1.0 + buffs.unholy_presence -> value() );
 
@@ -4443,9 +4443,9 @@ double death_knight_t::composite_attack_haste()
 
 // death_knight_t::composite_attack_hit() ===================================
 
-double death_knight_t::composite_attack_hit()
+double death_knight_t::composite_melee_hit()
 {
-  double hit = player_t::composite_attack_hit();
+  double hit = player_t::composite_melee_hit();
 
   // Factor in the hit from NoCS here so it shows up in the report, to match the character sheet
   if ( main_hand_weapon.group() == WEAPON_1H || off_hand_weapon.group() == WEAPON_1H )
@@ -5407,9 +5407,9 @@ double death_knight_t::composite_player_multiplier( school_e school )
 
 // death_knight_t::composite_attack_speed() ====================
 
-double death_knight_t::composite_attack_speed()
+double death_knight_t::composite_melee_speed()
 {
-  double haste = player_t::composite_attack_speed();
+  double haste = player_t::composite_melee_speed();
 
   haste *= 1.0 / ( 1.0 + spec.icy_talons -> effectN( 1 ).percent() );
 
@@ -5694,7 +5694,7 @@ double death_knight_t::runes_cooldown_time( dk_rune_t* rune )
 {
   double result_num;
 
-  double runes_per_second = 1.0 / 10.0 / composite_attack_haste();
+  double runes_per_second = 1.0 / 10.0 / composite_melee_haste();
   // Unholy Presence's 10% (or, talented, 15%) increase is factored in elsewhere as melee haste.
   result_num = ( 1.0 - rune -> value ) / runes_per_second;
 

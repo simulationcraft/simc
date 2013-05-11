@@ -330,7 +330,7 @@ public:
   virtual double    composite_spell_speed();
   virtual double    composite_spell_power_multiplier();
   virtual double    composite_spell_hit();
-  virtual double    composite_attack_hit();
+  virtual double    composite_melee_hit();
   virtual double    composite_player_multiplier( school_e school );
   virtual double    composite_player_heal_multiplier( school_e school );
   virtual double    composite_movement_speed();
@@ -4851,9 +4851,9 @@ double priest_t::composite_spell_hit()
 
 // priest_t::composite_attack_hit ============================================
 
-double priest_t::composite_attack_hit()
+double priest_t::composite_melee_hit()
 {
-  double hit = base_t::composite_attack_hit();
+  double hit = base_t::composite_melee_hit();
 
   hit += ( ( cache.spirit() - base.stats.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / current_rating().spell_hit;
 

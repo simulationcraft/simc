@@ -300,8 +300,8 @@ public:
   virtual void      combat_begin();
   virtual void      reset();
   virtual double    composite_attack_power_multiplier();
-  virtual double    composite_attack_haste();
-  virtual double    composite_attack_speed();
+  virtual double    composite_melee_haste();
+  virtual double    composite_melee_speed();
   virtual double    ranged_haste_multiplier();
   virtual double    ranged_speed_multiplier();
   virtual double    composite_player_multiplier( school_e school );
@@ -449,17 +449,17 @@ public:
     return m;
   }
 
-  virtual double composite_attack_haste()
+  virtual double composite_melee_haste()
   {
-    double ah = base_t::composite_attack_haste();
+    double ah = base_t::composite_melee_haste();
     // remove the portions of speed that were ranged only.
     ah /= o() -> ranged_haste_multiplier();
     return ah;
   }
 
-  virtual double composite_attack_speed()
+  virtual double composite_melee_speed()
   {
-    double ah = base_t::composite_attack_speed();
+    double ah = base_t::composite_melee_speed();
     // remove the portions of speed that were ranged only.
     ah /= o() -> ranged_haste_multiplier();
     ah /= o() -> ranged_speed_multiplier();
@@ -738,9 +738,9 @@ public:
     return mult;
   }
 
-  virtual double composite_attack_crit()
+  virtual double composite_melee_crit()
   {
-    double ac = base_t::composite_attack_crit();
+    double ac = base_t::composite_melee_crit();
     ac += specs.spiked_collar -> effectN( 3 ).percent();
     return ac;
   }
@@ -750,9 +750,9 @@ public:
     return o() -> focus_regen_per_second() * 1.25;
   }
 
-  virtual double composite_attack_speed()
+  virtual double composite_melee_speed()
   {
-    double ah = base_t::composite_attack_speed();
+    double ah = base_t::composite_melee_speed();
 
     ah *= 1.0 / ( 1.0 + o() -> specs.frenzy -> effectN( 1 ).percent() * buffs.frenzy -> stack() );
     ah *= 1.0 / ( 1.0 + specs.spiked_collar -> effectN( 2 ).percent() );
@@ -3011,7 +3011,7 @@ struct dire_beast_t : public hunter_spell_t
     // attack speeds.  This is not quite perfect but more accurate
     // than plateaus.
     const timespan_t base_duration = timespan_t::from_seconds( 15.0 );
-    const timespan_t swing_time = beast -> main_hand_weapon.swing_time * beast -> composite_attack_speed();
+    const timespan_t swing_time = beast -> main_hand_weapon.swing_time * beast -> composite_melee_speed();
     double partial_attacks_per_summon = base_duration / swing_time;
     double base_attacks_per_summon = floor( partial_attacks_per_summon - 0.5 ); // 8.4 -> 7, 8.5 -> 8, 8.6 -> 8, etc
 
@@ -4204,17 +4204,17 @@ double hunter_t::composite_attack_power_multiplier()
 
 // Haste and speed buff computations =========================================
 
-double hunter_t::composite_attack_haste()
+double hunter_t::composite_melee_haste()
 {
-  double h = player_t::composite_attack_haste();
+  double h = player_t::composite_melee_haste();
   h *= 1.0 / ( 1.0 + buffs.tier13_4pc -> up() * buffs.tier13_4pc -> data().effectN( 1 ).percent() );
   h *= ranged_haste_multiplier();
   return h;
 }
 
-double hunter_t::composite_attack_speed()
+double hunter_t::composite_melee_speed()
 {
-  double h = player_t::composite_attack_speed();
+  double h = player_t::composite_melee_speed();
   h *= ranged_speed_multiplier();
   return h;
 }

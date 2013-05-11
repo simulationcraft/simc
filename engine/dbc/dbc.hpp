@@ -832,8 +832,6 @@ public:
   double dodge_scaling( pet_e t, unsigned level ) const;
   double regen_spirit( player_e t, unsigned level ) const;
   double regen_spirit( pet_e t, unsigned level ) const;
-  double mp5_per_spirit( player_e t, unsigned level ) const;
-  double mp5_per_spirit( pet_e t, unsigned level ) const;
   double health_per_stamina( unsigned level ) const;
   double item_socket_cost( unsigned ilevel ) const;
 

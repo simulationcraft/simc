@@ -355,19 +355,19 @@ void print_xml_player_stats( xml_writer_t & writer, player_t * p )
   print_xml_player_attribute( writer, "manareg_per_second",
                               p -> mana_regen_per_second(), 0, p -> buffed.manareg_per_second );
   print_xml_player_attribute( writer, "attackpower",
-                              p -> composite_attack_power() * p -> composite_attack_power_multiplier(), p -> total_gear.attack_power, p -> buffed.attack_power );
+                              p -> composite_melee_attack_power() * p -> composite_attack_power_multiplier(), p -> total_gear.attack_power, p -> buffed.attack_power );
   print_xml_player_attribute( writer, "attackhit",
-                              100 * p -> composite_attack_hit(), p -> total_gear.hit_rating, 100 * p -> buffed.attack_hit );
+                              100 * p -> composite_melee_hit(), p -> total_gear.hit_rating, 100 * p -> buffed.attack_hit );
   print_xml_player_attribute( writer, "attackcrit",
-                              100 * p -> composite_attack_crit(), p -> total_gear.crit_rating, 100 * p -> buffed.attack_crit );
+                              100 * p -> composite_melee_crit(), p -> total_gear.crit_rating, 100 * p -> buffed.attack_crit );
   print_xml_player_attribute( writer, "expertise",
-                              100 * p -> composite_attack_expertise( &( p -> main_hand_weapon ) ), p -> total_gear.expertise_rating, 100 * p -> buffed.mh_attack_expertise );
+                              100 * p -> composite_melee_expertise( &( p -> main_hand_weapon ) ), p -> total_gear.expertise_rating, 100 * p -> buffed.mh_attack_expertise );
   print_xml_player_attribute( writer, "expertise_oh",
-                              100 * p -> composite_attack_expertise( &( p -> off_hand_weapon ) ), p -> total_gear.expertise_rating, 100 * p -> buffed.oh_attack_expertise );
+                              100 * p -> composite_melee_expertise( &( p -> off_hand_weapon ) ), p -> total_gear.expertise_rating, 100 * p -> buffed.oh_attack_expertise );
   print_xml_player_attribute( writer, "attackhaste",
-                              100 * ( 1 / p -> composite_attack_haste() - 1 ), p -> total_gear.haste_rating, 100 * ( 1 / p -> buffed.attack_haste - 1 ) );
+                              100 * ( 1 / p -> composite_melee_haste() - 1 ), p -> total_gear.haste_rating, 100 * ( 1 / p -> buffed.attack_haste - 1 ) );
   print_xml_player_attribute( writer, "attackspeed",
-                              100 * ( 1 / p -> composite_attack_speed() - 1 ), p -> total_gear.haste_rating, 100 * ( 1 / p -> buffed.attack_speed - 1 ) );
+                              100 * ( 1 / p -> composite_melee_speed() - 1 ), p -> total_gear.haste_rating, 100 * ( 1 / p -> buffed.attack_speed - 1 ) );
   print_xml_player_attribute( writer, "armor",
                               p -> composite_armor(), p -> total_gear.armor, p -> buffed.armor );
   print_xml_player_attribute( writer, "miss",

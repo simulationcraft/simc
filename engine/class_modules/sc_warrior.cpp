@@ -271,8 +271,8 @@ public:
   virtual double    composite_tank_crit_block();
   virtual double    composite_tank_crit( school_e school );
   virtual double    composite_tank_dodge();
-  virtual double    composite_attack_haste();
-  virtual double    composite_attack_speed();
+  virtual double    composite_melee_haste();
+  virtual double    composite_melee_speed();
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
   virtual void      create_options();
@@ -3528,9 +3528,9 @@ double warrior_t::composite_tank_dodge()
 
 // warrior_t::composite_attack_haste =========================================
 
-double warrior_t::composite_attack_haste()
+double warrior_t::composite_melee_haste()
 {
-  double h = player_t::composite_attack_haste() / ( 1.0 / ( 1.0 + current.stats.haste_rating / current_rating().attack_haste ) );
+  double h = player_t::composite_melee_haste() / ( 1.0 / ( 1.0 + current.stats.haste_rating / current_rating().attack_haste ) );
 
   h *= 1.0 / ( 1.0 + current.stats.haste_rating * 1.5 / current_rating().attack_haste ); //This +50% hidden buff was introduced in 5.2
 
@@ -3539,9 +3539,9 @@ double warrior_t::composite_attack_haste()
 
 // warrior_t::composite_attack_speed ========================================
 
-double warrior_t::composite_attack_speed()
+double warrior_t::composite_melee_speed()
 {
-  double s = player_t::composite_attack_speed();
+  double s = player_t::composite_melee_speed();
 
   if ( buff.flurry -> up() )
     s *= 1.0 / ( 1.0 + buff.flurry -> data().effectN( 1 ).percent() );

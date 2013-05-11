@@ -258,7 +258,7 @@ double pet_t::pet_crit()
                    owner -> cache.spell_crit() );
 }
 
-double pet_t::composite_attack_power()
+double pet_t::composite_melee_attack_power()
 {
   double ap = 0;
   if ( owner_coeff.ap_from_ap > 0.0 )

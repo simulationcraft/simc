@@ -389,9 +389,9 @@ public:
   virtual void      init_actions();
   virtual void      moving();
   virtual void      invalidate_cache( cache_e c );
-  virtual double    composite_attack_hit();
-  virtual double    composite_attack_haste();
-  virtual double    composite_attack_speed();
+  virtual double    composite_melee_hit();
+  virtual double    composite_melee_haste();
+  virtual double    composite_melee_speed();
   virtual double    composite_spell_haste();
   virtual double    composite_spell_hit();
   virtual double    composite_spell_power( school_e school );
@@ -5700,9 +5700,9 @@ double shaman_t::composite_spell_hit()
 
 // shaman_t::composite_attack_hit ============================================
 
-double shaman_t::composite_attack_hit()
+double shaman_t::composite_melee_hit()
 {
-  double hit = player_t::composite_attack_hit();
+  double hit = player_t::composite_melee_hit();
 
   hit += ( spec.elemental_precision -> ok() *
            ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) ) / current_rating().attack_hit;
@@ -5712,9 +5712,9 @@ double shaman_t::composite_attack_hit()
 
 // shaman_t::composite_attack_haste =========================================
 
-double shaman_t::composite_attack_haste()
+double shaman_t::composite_melee_haste()
 {
-  double h = player_t::composite_attack_haste() / ( 1.0 / ( 1.0 + current.stats.haste_rating / current_rating().attack_haste ) );
+  double h = player_t::composite_melee_haste() / ( 1.0 / ( 1.0 + current.stats.haste_rating / current_rating().attack_haste ) );
   double hm = 1.0;
   if ( buff.flurry -> up() )
     hm *= 1.0 + constant.flurry_rating_multiplier;
@@ -5734,9 +5734,9 @@ double shaman_t::composite_attack_haste()
 
 // shaman_t::composite_attack_speed =========================================
 
-double shaman_t::composite_attack_speed()
+double shaman_t::composite_melee_speed()
 {
-  double speed = player_t::composite_attack_speed();
+  double speed = player_t::composite_melee_speed();
 
   if ( buff.flurry -> up() )
     speed *= constant.attack_speed_flurry;

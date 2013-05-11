@@ -163,8 +163,8 @@ result_e attack_t::calculate_result( action_state_t* s )
   int delta_level = s -> target -> level - player -> level;
 
   double miss     = may_miss ? ( miss_chance( composite_hit(), delta_level ) + s -> target -> composite_tank_miss( school ) ) : 0;
-  double dodge    = may_dodge ? ( dodge_chance( composite_expertise(), delta_level ) + s -> target -> composite_tank_dodge() ) : 0;
-  double parry    = may_parry && player -> position() == POSITION_FRONT ? ( parry_chance( composite_expertise(), delta_level ) + s -> target -> composite_tank_parry() ) : 0;
+  double dodge    = may_dodge ? ( dodge_chance( composite_expertise(), delta_level ) + s -> target -> cache.dodge() ) : 0;
+  double parry    = may_parry && player -> position() == POSITION_FRONT ? ( parry_chance( composite_expertise(), delta_level ) + s -> target -> cache.parry() ) : 0;
   double crit     = may_crit ? ( crit_chance( s -> composite_crit() + s -> target -> composite_tank_crit( school ), delta_level ) ) : 0;
 
   // Specials are 2-roll calculations, so only pass crit chance to
@@ -204,9 +204,9 @@ result_e attack_t::calculate_result( action_state_t* s )
 
   if ( result == RESULT_HIT && may_block && ( player -> position() == POSITION_FRONT ) ) // Blocks are on their own roll
   {
-    double block_total = block_chance( delta_level ) + s -> target -> composite_tank_block();
+    double block_total = block_chance( delta_level ) + s -> target -> cache.block();
 
-    double crit_block = crit_block_chance( delta_level ) + s -> target -> composite_tank_crit_block();
+    double crit_block = crit_block_chance( delta_level ) + s -> target -> cache.crit_block();
 
     // FIXME: pure assumption on how crit block is handled, needs testing!
     if ( rng_result -> roll( block_total ) )

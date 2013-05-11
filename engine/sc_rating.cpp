@@ -33,6 +33,7 @@ void rating_t::init( sim_t* sim, dbc_t& dbc, int level, player_e type )
     parry             = max;
     block             = max;
     mastery           = max;
+    pvp_power         = max;
   }
   else
   {
@@ -50,6 +51,7 @@ void rating_t::init( sim_t* sim, dbc_t& dbc, int level, player_e type )
     parry             = dbc.combat_rating( RATING_PARRY,        level );
     block             = dbc.combat_rating( RATING_BLOCK,        level );
     mastery           = dbc.combat_rating( RATING_MASTERY,      level ) / 100;
+    pvp_power         = dbc.combat_rating( RATING_PVP_POWER,    level );
   }
 }
 
@@ -98,33 +100,4 @@ double rating_t::interpolate( int    level,
   }
   assert( 0 );
   return 0;
-}
-
-// rating_t::get_attribute_base =============================================
-
-double rating_t::get_attribute_base( sim_t* /* sim */, dbc_t& dbc, int level, player_e class_type, race_e race, base_stat_e stat )
-{
-  double res                       = 0.0;
-
-  switch ( stat )
-  {
-  case BASE_STAT_STRENGTH:           res = dbc.race_base( race ).strength + dbc.attribute_base( class_type, level ).strength; break;
-  case BASE_STAT_AGILITY:            res = dbc.race_base( race ).agility + dbc.attribute_base( class_type, level ).agility; break;
-  case BASE_STAT_STAMINA:            res = dbc.race_base( race ).stamina + dbc.attribute_base( class_type, level ).stamina; break;
-  case BASE_STAT_INTELLECT:          res = dbc.race_base( race ).intellect + dbc.attribute_base( class_type, level ).intellect; break;
-  case BASE_STAT_SPIRIT:             res = dbc.race_base( race ).spirit + dbc.attribute_base( class_type, level ).spirit;
-                                     if ( race == RACE_HUMAN ) res *= 1.03; break;
-  case BASE_STAT_HEALTH:             res = dbc.health_base( class_type, level ); break;
-  case BASE_STAT_MANA:               res = dbc.resource_base( class_type, level ); break;
-  case BASE_STAT_MELEE_CRIT_PER_AGI: res = dbc.melee_crit_scaling( class_type, level ); break;
-  case BASE_STAT_SPELL_CRIT_PER_INT: res = dbc.spell_crit_scaling( class_type, level ); break;
-  case BASE_STAT_DODGE_PER_AGI:      res = dbc.dodge_scaling( class_type, level ); break;
-  case BASE_STAT_MELEE_CRIT:         res = dbc.melee_crit_base( class_type, level ); break;
-  case BASE_STAT_SPELL_CRIT:         res = dbc.spell_crit_base( class_type, level ); break;
-  case BASE_STAT_MP5:                res = dbc.regen_base( class_type, level ); break;
-  case BASE_STAT_SPI_REGEN:          res = dbc.regen_spirit( class_type, level ); break;
-  default: break;
-  }
-
-  return res;
 }

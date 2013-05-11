@@ -380,13 +380,6 @@ enum dot_behavior_e { DOT_CLIP, DOT_REFRESH, DOT_EXTEND };
 
 enum attribute_e { ATTRIBUTE_NONE=0, ATTR_STRENGTH, ATTR_AGILITY, ATTR_STAMINA, ATTR_INTELLECT, ATTR_SPIRIT, ATTRIBUTE_MAX };
 
-enum base_stat_e { BASE_STAT_NONE = 0, BASE_STAT_STRENGTH, BASE_STAT_AGILITY, BASE_STAT_STAMINA, BASE_STAT_INTELLECT, BASE_STAT_SPIRIT,
-                   BASE_STAT_HEALTH, BASE_STAT_MANA,
-                   BASE_STAT_MELEE_CRIT_PER_AGI, BASE_STAT_SPELL_CRIT_PER_INT,
-                   BASE_STAT_DODGE_PER_AGI,
-                   BASE_STAT_MELEE_CRIT, BASE_STAT_SPELL_CRIT, BASE_STAT_MP5, BASE_STAT_SPI_REGEN, BASE_STAT_MAX
-                 };
-
 enum resource_e
 {
   RESOURCE_NONE = 0,
@@ -726,6 +719,7 @@ enum cache_e
   CACHE_HASTE, CACHE_ATTACK_HASTE, CACHE_SPELL_HASTE,
   CACHE_SPEED, CACHE_ATTACK_SPEED, CACHE_SPELL_SPEED,
   CACHE_MASTERY,
+  CACHE_DODGE,CACHE_PARRY,CACHE_BLOCK, CACHE_CRIT_BLOCK, CACHE_ARMOR,
   CACHE_PLAYER_DAMAGE_MULTIPLIER,
   CACHE_PLAYER_HEAL_MULTIPLIER,
   CACHE_MAX
@@ -921,27 +915,6 @@ enum power_e
   POWER_MAX           = 16,
   POWER_NONE          = 0xFFFFFFFF, // None.
   POWER_OFFSET        = 2,
-};
-
-enum rating_e
-{
-  RATING_DODGE = 0,
-  RATING_PARRY,
-  RATING_BLOCK,
-  RATING_MELEE_HIT,
-  RATING_RANGED_HIT,
-  RATING_SPELL_HIT,
-  RATING_MELEE_CRIT,
-  RATING_RANGED_CRIT,
-  RATING_SPELL_CRIT,
-  RATING_PVP_RESILIENCE,
-  RATING_MELEE_HASTE,
-  RATING_RANGED_HASTE,
-  RATING_SPELL_HASTE,
-  RATING_EXPERTISE,
-  RATING_MASTERY,
-  RATING_PVP_POWER,
-  RATING_MAX
 };
 
 // New stuff
@@ -2841,6 +2814,51 @@ struct event_t
 
 // Gear Rating Conversions ==================================================
 
+enum rating_e
+{
+  RATING_DODGE = 0,
+  RATING_PARRY,
+  RATING_BLOCK,
+  RATING_MELEE_HIT,
+  RATING_RANGED_HIT,
+  RATING_SPELL_HIT,
+  RATING_MELEE_CRIT,
+  RATING_RANGED_CRIT,
+  RATING_SPELL_CRIT,
+  RATING_PVP_RESILIENCE,
+  RATING_MELEE_HASTE,
+  RATING_RANGED_HASTE,
+  RATING_SPELL_HASTE,
+  RATING_EXPERTISE,
+  RATING_MASTERY,
+  RATING_PVP_POWER,
+  RATING_MAX
+};
+
+inline cache_e cache_from_rating( rating_e r )
+{
+  switch ( r )
+  {
+  case RATING_SPELL_HASTE: return CACHE_SPELL_HASTE;
+  case RATING_SPELL_HIT: return CACHE_SPELL_HIT;
+  case RATING_SPELL_CRIT: return CACHE_SPELL_CRIT;
+  case RATING_MELEE_HASTE: return CACHE_ATTACK_HASTE;
+  case RATING_MELEE_HIT: return CACHE_ATTACK_HIT;
+  case RATING_MELEE_CRIT: return CACHE_ATTACK_CRIT;
+  case RATING_RANGED_HASTE: return CACHE_ATTACK_HASTE;
+  case RATING_RANGED_HIT: return CACHE_ATTACK_HIT;
+  case RATING_RANGED_CRIT: return CACHE_ATTACK_CRIT;
+  case RATING_EXPERTISE: return CACHE_EXP;
+  case RATING_DODGE: return CACHE_DODGE;
+  case RATING_PARRY: return CACHE_PARRY;
+  case RATING_BLOCK: return CACHE_BLOCK;
+  case RATING_MASTERY: return CACHE_MASTERY;
+  case RATING_PVP_POWER: return CACHE_NONE;
+  default: break;
+  }
+  assert( false ); return CACHE_NONE;
+}
+
 struct rating_t
 {
   double  spell_haste,  spell_hit,  spell_crit;
@@ -2849,12 +2867,33 @@ struct rating_t
   double expertise;
   double dodge, parry, block;
   double mastery;
+  double pvp_power;
 
-  rating_t() { memset( ( void* ) this, 0x0, sizeof( rating_t ) ); }
-
+  double& get( rating_e r )
+  {
+    switch ( r )
+    {
+    case RATING_SPELL_HASTE: return spell_haste;
+    case RATING_SPELL_HIT: return spell_hit;
+    case RATING_SPELL_CRIT: return spell_crit;
+    case RATING_MELEE_HASTE: return attack_haste;
+    case RATING_MELEE_HIT: return attack_hit;
+    case RATING_MELEE_CRIT: return attack_crit;
+    case RATING_RANGED_HASTE: return ranged_haste;
+    case RATING_RANGED_HIT: return ranged_hit;
+    case RATING_RANGED_CRIT: return ranged_crit;
+    case RATING_EXPERTISE: return expertise;
+    case RATING_DODGE: return dodge;
+    case RATING_PARRY: return parry;
+    case RATING_BLOCK: return block;
+    case RATING_MASTERY: return mastery;
+    case RATING_PVP_POWER: return pvp_power;
+    default: break;
+    }
+    assert( false ); return mastery;
+  }
   void init( sim_t*, dbc_t& pData, int level, player_e type );
   static double interpolate( int level, double val_60, double val_70, double val_80, double val_85 = -1 );
-  static double get_attribute_base( sim_t*, dbc_t& pData, int level, player_e class_type, race_e race, base_stat_e stat_e );
 };
 
 // Weapon ===================================================================
@@ -3913,13 +3952,14 @@ public:
   virtual double energy_regen_per_second();
   virtual double focus_regen_per_second();
   virtual double mana_regen_per_second();
-  virtual double composite_attack_haste();
-  virtual double composite_attack_speed();
-  virtual double composite_attack_power();
-  virtual double composite_attack_hit();
-  virtual double composite_attack_crit();
-  virtual double composite_attack_crit_multiplier() { return 1.0; }
-  virtual double composite_attack_expertise( weapon_t* w=0 );
+
+  virtual double composite_melee_haste();
+  virtual double composite_melee_speed();
+  virtual double composite_melee_attack_power();
+  virtual double composite_melee_hit();
+  virtual double composite_melee_crit();
+  virtual double composite_melee_crit_multiplier() { return 1.0; }
+  virtual double composite_melee_expertise( weapon_t* w=0 );
 
   virtual double composite_spell_haste();//This is the subset of the old_spell_haste that applies to RPPM
   virtual double composite_spell_speed();//This is the old spell_haste and incorporates everything that buffs cast speed
@@ -3982,6 +4022,7 @@ public:
     double _attack_crit, _spell_crit;
     double _attack_haste, _spell_haste;
     double _attack_speed, _spell_speed;
+    double _dodge,_parry,_block,_crit_block,_armor;
     double _mastery;
     double _player_mult[SCHOOL_MAX+1], _player_heal_mult[SCHOOL_MAX+1];
     bool active;
@@ -4004,6 +4045,11 @@ public:
     double spell_crit();
     double spell_haste();
     double spell_speed();
+    double dodge();
+    double parry();
+    double block();
+    double crit_block();
+    double armor();
     double mastery();
     double player_multiplier( school_e );
     double player_heal_multiplier( school_e );
@@ -4014,17 +4060,22 @@ public:
     double intellect() { return player -> intellect(); }
     double spirit()    { return player -> spirit();    }
     double spell_power( school_e s ) { return player -> composite_spell_power( s ); }
-    double attack_power()            { return player -> composite_attack_power();   }
-    double attack_expertise() { return player -> composite_attack_expertise(); }
-    double attack_hit()       { return player -> composite_attack_hit();       }
-    double attack_crit()      { return player -> composite_attack_crit();      }
-    double attack_haste()     { return player -> composite_attack_haste();     }
-    double attack_speed()     { return player -> composite_attack_speed();     }
-    double spell_hit()        { return player -> composite_spell_hit();        }
-    double spell_crit()       { return player -> composite_spell_hit();        }
-    double spell_haste()      { return player -> composite_spell_hit();        }
-    double spell_speed()      { return player -> composite_spell_hit();        }
-    double mastery()          { return player -> composite_mastery();          }
+    double attack_power()            { return player -> composite_melee_attack_power();   }
+    double attack_expertise() { return player -> composite_melee_expertise(); }
+    double attack_hit()       { return player -> composite_melee_hit();       }
+    double attack_crit()      { return player -> composite_melee_crit();      }
+    double attack_haste()     { return player -> composite_melee_haste();     }
+    double attack_speed()     { return player -> composite_melee_speed();     }
+    double spell_hit()        { return player -> composite_spell_hit();       }
+    double spell_crit()       { return player -> composite_spell_crit();      }
+    double spell_haste()      { return player -> composite_spell_haste();     }
+    double spell_speed()      { return player -> composite_spell_speed();     }
+    double dodge()            { return player -> composite_tank_dodge();      }
+    double parry()            { return player -> composite_tank_parry();      }
+    double block()            { return player -> composite_tank_block();      }
+    double crit_block()       { return player -> composite_tank_crit_block(); }
+    double armor()            { return player -> composite_armor();           }
+    double mastery()          { return player -> composite_mastery();         }
 #endif
   } cache;
 
@@ -4065,7 +4116,7 @@ public:
   virtual void stat_gain( stat_e stat, double amount, gain_t* g=0, action_t* a=0, bool temporary=false );
   virtual void stat_loss( stat_e stat, double amount, gain_t* g=0, action_t* a=0, bool temporary=false );
 
-  virtual void modify_current_rating( base_stat_e stat, double amount );
+  virtual void modify_current_rating( rating_e stat, double amount );
 
   virtual void cost_reduction_gain( school_e school, double amount, gain_t* g=0, action_t* a=0 );
   virtual void cost_reduction_loss( school_e school, double amount, action_t* a=0 );
@@ -4246,24 +4297,24 @@ public:
 
   double hit_exp();
 
-  virtual double composite_attack_expertise( weapon_t* )
+  virtual double composite_melee_expertise( weapon_t* )
   { return hit_exp(); }
-  virtual double composite_attack_hit()
+  virtual double composite_melee_hit()
   { return hit_exp(); }
   virtual double composite_spell_hit()
   { return hit_exp() * 2.0; }
 
   double pet_crit();
 
-  virtual double composite_attack_crit()
+  virtual double composite_melee_crit()
   { return pet_crit(); }
   virtual double composite_spell_crit()
   { return pet_crit(); }
 
-  virtual double composite_attack_speed()
+  virtual double composite_melee_speed()
   { return owner -> cache.attack_speed(); }
 
-  virtual double composite_attack_haste()
+  virtual double composite_melee_haste()
   { return owner -> cache.attack_haste(); }
 
   virtual double composite_spell_haste()
@@ -4272,33 +4323,22 @@ public:
   virtual double composite_spell_speed()
   { return owner -> cache.spell_speed(); }
 
-  virtual double composite_attack_power();
+  virtual double composite_melee_attack_power();
 
   virtual double composite_spell_power( school_e school );
 
   // Assuming diminishing returns are transfered to the pet as well
   virtual double composite_tank_dodge()
-  { return owner -> composite_tank_dodge(); }
+  { return owner -> cache.dodge(); }
 
   virtual double composite_tank_parry()
-  { return owner -> composite_tank_parry(); }
+  { return owner -> cache.parry(); }
 
   // Influenced by coefficients [ 0, 1 ]
   virtual double composite_armor()
-  { return owner -> composite_armor() * owner_coeff.armor; }
+  { return owner -> cache.armor() * owner_coeff.armor; }
 
   virtual void init_resources( bool force );
-
-  virtual void invalidate_cache( cache_e c )
-  {
-    base_t::invalidate_cache( c );
-
-    if ( c == CACHE_SPELL_POWER && owner_coeff.ap_from_sp > 0 )
-      base_t::invalidate_cache( CACHE_ATTACK_POWER );
-
-    if ( c == CACHE_ATTACK_POWER && owner_coeff.sp_from_ap > 0 )
-      base_t::invalidate_cache( CACHE_SPELL_POWER );
-  }
 };
 
 
@@ -4521,7 +4561,7 @@ struct action_t : public noncopyable
 
   virtual double calculate_weapon_damage( double attack_power );
   virtual double target_armor( player_t* t )
-  { return t -> composite_armor(); }
+  { return t -> cache.armor(); }
   virtual void   consume_resource();
   virtual resource_e current_resource()
   { return resource_current; }
@@ -4801,7 +4841,7 @@ struct attack_t : public action_t
   { return action_t::composite_crit() + player -> cache.attack_crit(); }
 
   virtual double composite_crit_multiplier()
-  { return action_t::composite_crit_multiplier() * player -> composite_attack_crit_multiplier(); }
+  { return action_t::composite_crit_multiplier() * player -> composite_melee_crit_multiplier(); }
 
   virtual double composite_haste()
   { return action_t::composite_haste() * player -> cache.attack_haste(); }

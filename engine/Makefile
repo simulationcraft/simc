@@ -32,7 +32,6 @@ OPENSSL_PATH =
 CXX        = g++
 CPP_FLAGS  = -Wall -Woverloaded-virtual -W -I.
 OPTS       = -O3 -fomit-frame-pointer
-BITS       = 32
 
 ifneq (${NO_DEBUG},)
   CPP_FLAGS += -DNDEBUG
@@ -54,9 +53,11 @@ endif
 # Include build setting from user configuration file
 -include ../build.conf
 
+ifeq (32,${BITS})
+  OPTS += -m32
+endif
 ifeq (64,${BITS})
-  CPP_FLAGS += -m64
-  LINK_FLAGS+= -m64
+  OPTS += -m64
 endif
 
 # Any UNIX platform
