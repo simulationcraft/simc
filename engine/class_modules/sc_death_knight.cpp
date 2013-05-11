@@ -155,6 +155,7 @@ public:
     buff_t* sudden_doom;
     buff_t* tier13_4pc_melee;
     buff_t* unholy_presence;
+    buff_t* vampiric_blood;
     
     absorb_buff_t* blood_shield;
   } buffs;
@@ -2029,6 +2030,17 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
   virtual bool   ready();
 };
 
+struct death_knight_heal_t : public death_knight_action_t<heal_t>
+{
+  death_knight_heal_t( const std::string& n, death_knight_t* p,
+                       const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( n, p, s )
+  {
+    base_attack_power_multiplier = 1;
+    base_spell_power_multiplier = 0;
+  }
+};
+
 // Count Runes ==============================================================
 
 // currently not used. but useful. commenting out to get rid of compile warning
@@ -3000,6 +3012,11 @@ struct death_strike_t : public death_knight_melee_attack_t
     heal_amount = std::max( p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent(),
                             heal_amount * data().effectN( 1 ).chain_multiplier() / 100.0 );
 
+    // Note that the Scent of Blood bonus is calculated here, so we can get 
+    // it to Blood Shield. Apparently any other healing bonus that the DKs get 
+    // does not affect the size of the blood shield
+    heal_amount *= 1.0 + p() -> buffs.scent_of_blood -> check() * p() -> buffs.scent_of_blood -> data().effectN( 1 ).percent();
+
     heal -> base_dd_min = heal -> base_dd_max = heal_amount;
     heal -> execute();
   }
@@ -3033,6 +3050,8 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     trigger_death_strike_heal();
     trigger_blood_shield();
+
+    p() -> buffs.scent_of_blood -> expire();
   }
 };
 
@@ -4292,6 +4311,10 @@ void runic_corruption_regen_t::execute()
   regen_buff -> regen_event = new ( sim ) runic_corruption_regen_t( p, buff );
 }
 
+struct vampiric_blood_buff_t : public buff_t
+{
+};
+
 } // UNNAMED NAMESPACE
 
 // ==========================================================================
@@ -5504,7 +5527,7 @@ void death_knight_t::assess_damage( school_e     school,
       }
     }
 
-    incoming_damage.push_back( std::make_pair<timespan_t, double>( sim -> current_time, s -> result_amount ) );
+    incoming_damage.push_back( std::pair<timespan_t, double>( sim -> current_time, s -> result_amount ) );
 
     while ( incoming_damage.size() > 0 && 
             sim -> current_time - incoming_damage.front().first > timespan_t::from_seconds( 5.0 ) )
