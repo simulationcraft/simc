@@ -128,6 +128,8 @@ enum death_knight_presence { PRESENCE_BLOOD=1, PRESENCE_FROST, PRESENCE_UNHOLY=4
 struct death_knight_t : public player_t
 {
 public:
+  // Track healing for Death Strike
+  std::vector<std::pair<timespan_t, double> > incoming_damage;
 
   // Active
   int       active_presence;
@@ -2928,13 +2930,25 @@ struct death_strike_offhand_t : public death_knight_melee_attack_t
   }
 };
 
+struct death_strike_heal_t : public heal_t
+{
+  death_strike_heal_t( death_knight_t* p ) :
+    heal_t( "death_strike_heal", p, p -> find_spell( 45470 ) )
+  {
+    may_crit   = false;
+    background = true;
+    target     = p;
+  }
+};
+
 struct death_strike_t : public death_knight_melee_attack_t
 {
   death_strike_offhand_t* oh_attack;
+  death_strike_heal_t* heal;
   
   death_strike_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "death_strike", p, p -> find_class_spell( "Death Strike" ) ),
-    oh_attack( 0 )
+    oh_attack( 0 ), heal( new death_strike_heal_t( p ) )
   {
     parse_options( NULL, options_str );
     special = true;
@@ -2955,6 +2969,36 @@ struct death_strike_t : public death_knight_melee_attack_t
     }
   }
 
+  void trigger_death_strike_heal()
+  {
+    if ( p() -> incoming_damage.size() > 0 )
+    {
+      std::vector< std::pair< timespan_t, double > >::iterator i = p() -> incoming_damage.begin();
+      while ( i != p() -> incoming_damage.end() &&
+              sim -> current_time - (*i).first > timespan_t::from_seconds( 5.0 ) )
+      {
+        i++;
+      }
+
+      p() -> incoming_damage.erase( p() -> incoming_damage.begin(), i );
+    }
+
+    double heal_amount = 0;
+    for ( size_t i = 0; i < p() -> incoming_damage.size(); i++ )
+      heal_amount += p() -> incoming_damage[ i ].second;
+
+    if ( sim -> debug )
+      sim -> output( "%s Death Strike heal, incoming_damage=%f incoming_heal=%f min_heal=%f", p() -> name(), heal_amount,
+          heal_amount * data().effectN( 1 ).chain_multiplier() / 100.0, 
+          p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent() );
+
+    heal_amount = std::max( p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent(),
+                            heal_amount * data().effectN( 1 ).chain_multiplier() / 100.0 );
+
+    heal -> base_dd_min = heal -> base_dd_max = heal_amount;
+    heal -> execute();
+  }
+
   virtual void execute()
   {
     death_knight_melee_attack_t::execute();
@@ -2964,6 +3008,8 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_death_strike -> execute();
+
+    trigger_death_strike_heal();
   }
 };
 
@@ -5391,6 +5437,8 @@ void death_knight_t::reset()
   rng.t15_2pc_melee -> reset();
 
   _runes.reset();
+
+  incoming_damage.clear();
 }
 
 // death_knight_t::combat_begin =============================================
@@ -5409,6 +5457,15 @@ void death_knight_t::assess_damage( school_e     school,
                                     dmg_e        dtype,
                                     action_state_t* s )
 {
+  if ( s -> result_amount > 0 )
+  {
+    incoming_damage.push_back( std::make_pair<timespan_t, double>( sim -> current_time, s -> result_amount ) );
+
+    while ( incoming_damage.size() > 0 && 
+            sim -> current_time - incoming_damage.front().first > timespan_t::from_seconds( 5.0 ) )
+      incoming_damage.erase( incoming_damage.begin() );
+  }
+
   player_t::assess_damage( school, dtype, s );
 
   // Bone shield will only decrement, if someone did damage to the dk
