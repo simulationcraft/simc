@@ -2893,6 +2893,7 @@ struct death_strike_t : public death_knight_melee_attack_t
   {
     parse_options( NULL, options_str );
     special = true;
+    may_parry = false;
 
     always_consume = true; // Death Strike always consumes runes, even if doesn't hit
 
@@ -2900,20 +2901,11 @@ struct death_strike_t : public death_knight_melee_attack_t
       convert_runes = 1.0;
 
     weapon = &( p -> main_hand_weapon );
-
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
-    {
-      if ( p -> spec.threat_of_thassarian -> ok() )
-        oh_attack = new death_strike_offhand_t( p );
-    }
   }
 
   virtual void execute()
   {
     death_knight_melee_attack_t::execute();
-
-    if ( oh_attack )
-      oh_attack -> execute();
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_death_strike -> execute();
@@ -5317,9 +5309,6 @@ void death_knight_t::assess_damage( school_e     school,
 {
   if ( buffs.blood_presence -> check() )
     s -> result_amount *= 1.0 - dbc.spell( 61261 ) -> effectN( 1 ).percent();
-
-  if ( s -> result != RESULT_MISS )
-    buffs.scent_of_blood -> trigger();
 
   if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
     buffs.rune_strike -> trigger();
