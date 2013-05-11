@@ -1444,11 +1444,33 @@ struct bloodworms_pet_t : public death_knight_pet_t
 
       if ( result_is_hit( s -> result ) )
       {
-        death_knight_t* o = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
-        p() -> blood_gorged -> trigger();
-        // TODO: Healing, real formula etc etc etc
-        if ( p() -> blood_burst -> roll( o -> blood_parasite_burst_chance * p() -> blood_gorged -> check() ) )
-          new ( *sim ) blood_burst_event_t( p(), timespan_t::zero() );
+        if ( p() -> blood_gorged -> check() > 0 )
+        {
+          death_knight_t* o = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
+
+          double base_proc_chance = pow( p() -> blood_gorged -> check() + 1, 3.0 );
+          double multiplier = 0;
+          if ( o -> health_percentage() >= 100 && p() -> blood_gorged -> check() >= 5 )
+            multiplier = 0.5;
+          else if ( o -> health_percentage() > 60 )
+            multiplier = 1.0;
+          else if ( o -> health_percentage() > 30 && o -> health_percentage() <= 60 )
+            multiplier = 1.5;
+          else
+            multiplier = 2.0;
+
+          if ( sim -> debug )
+            sim -> output( "%s-%s burst chance, base=%f multiplier=%f total=%f",
+                          o -> name(), player -> name(), base_proc_chance, multiplier, base_proc_chance * multiplier );
+
+          // TODO: Healing
+          if ( base_proc_chance * multiplier > p() -> blood_burst -> range( 0, 999 ) )
+            new ( *sim ) blood_burst_event_t( p(), timespan_t::zero() );
+          else
+            p() -> blood_gorged -> trigger();
+        }
+        else
+          p() -> blood_gorged -> trigger();
       }
     }
 
@@ -2101,7 +2123,6 @@ static void trigger_bloodworms( death_knight_melee_attack_t* attack )
 {
   if ( attack -> player -> specialization() != DEATH_KNIGHT_BLOOD )
     return;
-
 
   death_knight_t* p = debug_cast< death_knight_t* >( attack -> player );
 
