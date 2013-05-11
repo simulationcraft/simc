@@ -4335,19 +4335,26 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
 
 void death_knight_t::create_pets()
 {
-  pets.gargoyle             = create_pet( "gargoyle" );
-  pets.ghoul_pet            = create_pet( "ghoul_pet" );
-  pets.ghoul_guardian       = create_pet( "ghoul_guardian" );
+  if ( specialization() == DEATH_KNIGHT_UNHOLY )
+  {
+    pets.gargoyle             = create_pet( "gargoyle" );
+    pets.ghoul_pet            = create_pet( "ghoul_pet" );
+  }
+  else
+    pets.ghoul_guardian       = create_pet( "ghoul_guardian" );
 
-  pets.dancing_rune_weapon  = new pets::dancing_rune_weapon_pet_t ( sim, this );
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
+  {
+    pets.dancing_rune_weapon  = new pets::dancing_rune_weapon_pet_t ( sim, this );
+    for ( int i = 0; i < 10; i++ )
+      pets.bloodworms[ i ] = new pets::bloodworms_pet_t( sim, this );
+  }
+
   for ( int i = 0; i < 8; i++ )
     pets.army_ghoul[ i ] = new pets::army_ghoul_pet_t( sim, this );
 
   for ( int i = 0; i < 10; i++ )
     pets.fallen_zandalari[ i ] = new pets::fallen_zandalari_t( this );
-
-  for ( int i = 0; i < 10; i++ )
-    pets.bloodworms[ i ] = new pets::bloodworms_pet_t( sim, this );
 }
 
 // death_knight_t::create_pet ===============================================
@@ -5117,7 +5124,7 @@ void death_knight_t::create_buffs()
                               .chance( find_talent_spell( "Blood Tap" ) -> ok() );
   buffs.blood_presence      = buff_creator_t( this, "blood_presence", find_class_spell( "Blood Presence" ) )
                               .add_invalidate( CACHE_STAMINA );
-  buffs.bone_shield         = buff_creator_t( this, "bone_shield", find_class_spell( "Bone Shield" ) );
+  buffs.bone_shield         = buff_creator_t( this, "bone_shield", find_specialization_spell( "Bone Shield" ) );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" ).spell( find_spell( 81141 ) )
                               .chance( spec.crimson_scourge -> proc_chance() );
   buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_class_spell( "Dancing Rune Weapon" ) );

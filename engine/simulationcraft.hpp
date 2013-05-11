@@ -2531,7 +2531,7 @@ public:
   int threads;
   std::vector<sim_t*> children; // Manual delete!
   int thread_index;
-#ifdef SC_GCC
+#if SC_GCC >= 424 && ! SC_CLANG
   virtual void run() __attribute__((force_align_arg_pointer));
 #else
   virtual void run();
