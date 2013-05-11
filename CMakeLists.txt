@@ -46,7 +46,6 @@ SET(SIMC_ENGINE_SOURCE
   "engine/sc_player.cpp"
   "engine/sc_plot.cpp"
   "engine/sc_raid_event.cpp"
-  "engine/sc_rating.cpp"
   "engine/sc_reforge_plot.cpp"
   "engine/sc_rng.cpp"
   "engine/sc_scaling.cpp"

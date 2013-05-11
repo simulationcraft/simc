@@ -20,7 +20,6 @@
     <ClCompile Include="engine\sc_player.cpp" />
     <ClCompile Include="engine\sc_plot.cpp" />
     <ClCompile Include="engine\sc_raid_event.cpp" />
-    <ClCompile Include="engine\sc_rating.cpp" />
     <ClCompile Include="engine\sc_reforge_plot.cpp" />
     <ClCompile Include="engine\sc_rng.cpp" />
     <ClCompile Include="engine\sc_scaling.cpp" />

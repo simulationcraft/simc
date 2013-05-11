@@ -204,44 +204,51 @@ bool util::str_in_str_ci( const std::string& l,
   return std::search( l.begin(), l.end(), r.begin(), r.end(), pred_ci ) != l.end();
 }
 
-// ability_rank =====================================================
+// rating_t::interpolate ====================================================
 
-double util::ability_rank( int    player_level,
-                           double ability_value,
-                           int    ability_level, ... )
+double util::interpolate( int    level,
+                              double val_60,
+                              double val_70,
+                              double val_80,
+                              double val_85 )
 {
-  va_list vap;
-  va_start( vap, ability_level );
-
-  while ( player_level < ability_level )
+  if ( val_85 < 0 ) val_85 = val_80; // TODO
+  if ( level <= 60 )
   {
-    ability_value = va_arg( vap, double );
-    ability_level = va_arg( vap, int );
+    return val_60;
   }
-
-  va_end( vap );
-
-  return ability_value;
-}
-
-// ability_rank =====================================================
-
-int util::ability_rank( int player_level,
-                        int ability_value,
-                        int ability_level, ... )
-{
-  va_list vap;
-  va_start( vap, ability_level );
-
-  while ( player_level < ability_level )
+  else if ( level == 70 )
   {
-    ability_value = va_arg( vap, int );
-    ability_level = va_arg( vap, int );
+    return val_70;
   }
-
-  va_end( vap );
-
-  return ability_value;
+  else if ( level == 80 )
+  {
+    return val_80;
+  }
+  else if ( level >= 85 )
+  {
+    return val_85;
+  }
+  else if ( level < 70 )
+  {
+    // Assume linear progression for now.
+    double adjust = ( level - 60 ) / 10.0;
+    return val_60 + adjust * ( val_70 - val_60 );
+  }
+  else if ( level < 80 )
+  {
+    // Assume linear progression for now.
+    double adjust = ( level - 70 ) / 10.0;
+    return val_70 + adjust * ( val_80 - val_70 );
+  }
+  else // ( level < 85 )
+  {
+    // Assume linear progression for now.
+    double adjust = ( level - 80 ) / 5.0;
+    return val_80 + adjust * ( val_85 - val_80 );
+  }
+  assert( 0 );
+  return 0;
 }
 
 // dot_behavior_type_string =========================================

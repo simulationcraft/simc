@@ -394,10 +394,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_rating.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\engine\interfaces\sc_rawr.cpp"
 			>
 		</File>

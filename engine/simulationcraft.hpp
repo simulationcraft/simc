@@ -1180,8 +1180,9 @@ namespace util
 double wall_time();
 double  cpu_time();
 
-double ability_rank( int player_level, double ability_value, int ability_level, ... );
-int    ability_rank( int player_level, int    ability_value, int ability_level, ... );
+template <typename T>
+T ability_rank( int player_level, T ability_value, int ability_level, ... );
+double interpolate( int level, double val_60, double val_70, double val_80, double val_85 = -1 );
 
 const char* attribute_type_string     ( attribute_e type );
 const char* dmg_type_string           ( dmg_e type );
@@ -2854,6 +2855,7 @@ inline cache_e cache_from_rating( rating_e r )
   case RATING_BLOCK: return CACHE_BLOCK;
   case RATING_MASTERY: return CACHE_MASTERY;
   case RATING_PVP_POWER: return CACHE_NONE;
+  case RATING_PVP_RESILIENCE: return CACHE_NONE;
   default: break;
   }
   assert( false ); return CACHE_NONE;
@@ -2867,7 +2869,7 @@ struct rating_t
   double expertise;
   double dodge, parry, block;
   double mastery;
-  double pvp_power;
+  double pvp_resilience, pvp_power;
 
   double& get( rating_e r )
   {
@@ -2888,12 +2890,43 @@ struct rating_t
     case RATING_BLOCK: return block;
     case RATING_MASTERY: return mastery;
     case RATING_PVP_POWER: return pvp_power;
+    case RATING_PVP_RESILIENCE: return pvp_resilience;
     default: break;
     }
     assert( false ); return mastery;
   }
-  void init( sim_t*, dbc_t& pData, int level, player_e type );
-  static double interpolate( int level, double val_60, double val_70, double val_80, double val_85 = -1 );
+
+  rating_t()
+  {
+    // Initialize all ratings to a very high number
+    double max = +1.0E+50;
+    for( rating_e i = static_cast<rating_e>( 0 ); i < RATING_MAX; ++i )
+    {
+      get( i ) = max;
+    }
+  }
+
+  void init( dbc_t& dbc, int level )
+  {
+    // Read ratings from DBC
+    for( rating_e i = static_cast<rating_e>( 0 ); i < RATING_MAX; ++i )
+    {
+      get( i ) = dbc.combat_rating( i,  level );
+      if ( i == RATING_MASTERY )
+        get( i ) /= 100.0;
+    }
+  }
+
+  std::string to_string()
+  {
+    std::ostringstream s;
+    for( rating_e i = static_cast<rating_e>( 0 ); i < RATING_MAX; ++i )
+    {
+      if ( i > 0 ) s << " ";
+      s << util::cache_type_string( cache_from_rating( i ) ) << "=" << get( i ); // hacky
+    }
+    return s.str();
+  }
 };
 
 // Weapon ===================================================================
@@ -5899,6 +5932,26 @@ T util::str_to_num ( const std::string& text )
   std::istringstream ss( text );
   T result;
   return ss >> result ? result : T();
+}
+
+// ability_rank =====================================================
+template <typename T>
+T util::ability_rank( int player_level,
+                      T   ability_value,
+                      int ability_level, ... )
+{
+  va_list vap;
+  va_start( vap, ability_level );
+
+  while ( player_level < ability_level )
+  {
+    ability_value = va_arg( vap, T );
+    ability_level = va_arg( vap, int );
+  }
+
+  va_end( vap );
+
+  return ability_value;
 }
 
 // NEW ITEM STUFF REMOVED IN r<xxxx>

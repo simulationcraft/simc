@@ -1172,7 +1172,11 @@ void player_t::init_base_stats()
   }
 #endif
 
-  base.rating.init( sim, dbc, level, type );
+  if ( ! is_enemy() )
+    base.rating.init( dbc, level );
+
+  if ( sim -> debug )
+    sim -> output( "%s: Base Ratings initialized: %s", name(), base.rating.to_string().c_str() );
 
   scale_challenge_mode( *this, base.rating ); // needs initialzied base.rating
 

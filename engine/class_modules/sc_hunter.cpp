@@ -645,13 +645,13 @@ public:
   {
     base_t::init_base_stats();
 
-    base.stats.attribute[ ATTR_STRENGTH  ] = rating_t::interpolate( level, 0, 162, 331, 476 );
-    base.stats.attribute[ ATTR_AGILITY   ] = rating_t::interpolate( level, 0, 54, 113, 438 );
-    base.stats.attribute[ ATTR_STAMINA   ] = rating_t::interpolate( level, 0, 307, 361 ); // stamina is different for every pet type
+    base.stats.attribute[ ATTR_STRENGTH  ] = util::interpolate( level, 0, 162, 331, 476 );
+    base.stats.attribute[ ATTR_AGILITY   ] = util::interpolate( level, 0, 54, 113, 438 );
+    base.stats.attribute[ ATTR_STAMINA   ] = util::interpolate( level, 0, 307, 361 ); // stamina is different for every pet type
     base.stats.attribute[ ATTR_INTELLECT ] = 100; // FIXME: is 61 at lvl 75. Use /script print(UnitStats("pet",x)); 1=str,2=agi,3=stam,4=int,5=spi
     base.stats.attribute[ ATTR_SPIRIT    ] = 100; // FIXME: is 101 at lvl 75. Values are equal for a cat and a gorilla.
 
-    resources.base[ RESOURCE_HEALTH ] = rating_t::interpolate( level, 0, 4253, 6373 );
+    resources.base[ RESOURCE_HEALTH ] = util::interpolate( level, 0, 4253, 6373 );
     resources.base[ RESOURCE_FOCUS ] = 100 + o() -> specs.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS );
 
     base_gcd = timespan_t::from_seconds( 1.20 );

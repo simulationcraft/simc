@@ -88,7 +88,6 @@ SOURCES += engine/sc_pet.cpp
 SOURCES += engine/sc_player.cpp
 SOURCES += engine/sc_plot.cpp
 SOURCES += engine/sc_raid_event.cpp
-SOURCES += engine/sc_rating.cpp
 SOURCES += engine/sc_reforge_plot.cpp
 SOURCES += engine/sc_rng.cpp
 SOURCES += engine/sc_scaling.cpp

@@ -129,7 +129,6 @@ SRC = \
 	sc_player.cpp \
 	sc_plot.cpp \
 	sc_raid_event.cpp \
-	sc_rating.cpp \
 	sc_reforge_plot.cpp \
 	sc_rng.cpp \
 	sc_scaling.cpp \
