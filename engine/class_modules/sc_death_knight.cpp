@@ -220,6 +220,7 @@ public:
     gain_t* blood_tap_unholy;
     gain_t* plague_leech;
     gain_t* hp_death_siphon;
+    gain_t* t15_4pc_tank;
   } gains;
 
   // Options
@@ -287,6 +288,7 @@ public:
   struct spells_t
   {
     const spell_data_t* blood_parasite;
+    const spell_data_t* t15_4pc_tank;
   } spell;
 
   // Glyphs
@@ -4185,10 +4187,10 @@ struct antimagic_shell_t : public death_knight_spell_t
 
     parse_options( options, options_str );
 
-    if ( interval < data().duration().total_seconds() )
+    if ( interval < data().cooldown().total_seconds() )
     {
-      sim -> errorf( "%s minimum interval for Anti-Magic Shell is %.3f seconds.", p -> name(), data().duration().total_seconds() );
-      interval = data().duration().total_seconds();
+      sim -> errorf( "%s minimum interval for Anti-Magic Shell is %.3f seconds.", p -> name(), data().cooldown().total_seconds() );
+      interval = data().cooldown().total_seconds();
     }
 
     // Less than a second standard deviation is translated to a percent of
@@ -4678,6 +4680,7 @@ void death_knight_t::init_spells()
 
   // Generic spells
   spell.blood_parasite           = find_spell( 50452 );
+  spell.t15_4pc_tank             = find_spell( 138214 );
 
   // Active Spells
   active_spells.blood_plague = new blood_plague_t( this );
@@ -5424,6 +5427,7 @@ void death_knight_t::init_gains()
   // gains.blood_tap_blood                  = get_gain( "blood_tap_blood"            );
   //gains.blood_tap_blood          -> type = ( resource_e ) RESOURCE_RUNE_BLOOD   ;
   gains.hp_death_siphon                  = get_gain( "hp_death_siphon"            );
+  gains.t15_4pc_tank                     = get_gain( "t15_4pc_tank"               );
 }
 
 // death_knight_t::init_procs ===============================================
@@ -5491,6 +5495,13 @@ void death_knight_t::assess_damage( school_e     school,
     {
       buffs.bone_shield -> decrement();
       cooldown.bone_shield_icd -> start();
+
+      if ( set_bonus.tier15_4pc_tank() )
+      {
+        resource_gain( RESOURCE_RUNIC_POWER,
+            spell.t15_4pc_tank -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+            gains.t15_4pc_tank );
+      }
     }
 
     incoming_damage.push_back( std::make_pair<timespan_t, double>( sim -> current_time, s -> result_amount ) );
