@@ -747,6 +747,8 @@ inline cache_e cache_from_stat( stat_e st )
   case STAT_CRIT_RATING: return CACHE_CRIT;
   case STAT_HASTE_RATING: return CACHE_HASTE;
   case STAT_MASTERY_RATING: return CACHE_MASTERY;
+  case STAT_DODGE_RATING: return CACHE_DODGE;
+  case STAT_PARRY_RATING: return CACHE_PARRY;
   default: break;
   }
   return CACHE_NONE;
