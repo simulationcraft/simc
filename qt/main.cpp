@@ -53,8 +53,8 @@ int main( int argc, char *argv[] )
 #endif /* SIMC_NO_AUTOUPDATE */
 
 #ifdef Q_WS_MAC
-  QDir::home().mkpath( "Library/Application Support/simcqt" );
-  QDir::setCurrent( QDir::home().absoluteFilePath( "Library/Application Support/simcqt" ) );
+  QDir::home().mkpath( "Library/Application Support/SimulationCraft" );
+  QDir::setCurrent( QDir::home().absoluteFilePath( "Library/Application Support/SimulationCraft" ) );
 #endif
 
   // Setup search paths for resources
