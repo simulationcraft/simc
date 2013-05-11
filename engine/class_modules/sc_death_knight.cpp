@@ -300,6 +300,7 @@ public:
     const spell_data_t* enduring_infection;
     const spell_data_t* outbreak;
     const spell_data_t* shifting_presences;
+    const spell_data_t* vampiric_blood;
   } glyph;
 
   // Pets and Guardians
@@ -2039,6 +2040,17 @@ struct death_knight_heal_t : public death_knight_action_t<heal_t>
     base_attack_power_multiplier = 1;
     base_spell_power_multiplier = 0;
   }
+
+  double composite_da_multiplier()
+  {
+    double m = base_t::composite_da_multiplier();
+
+    if ( p() -> buffs.vampiric_blood -> check() )
+      m *= 1.0 + p() -> buffs.vampiric_blood -> data().effectN( 1 ).percent() +
+                 p() -> glyph.vampiric_blood -> effectN( 1 ).percent();
+
+    return m;
+  }
 };
 
 // Count Runes ==============================================================
@@ -2947,10 +2959,10 @@ struct death_strike_offhand_t : public death_knight_melee_attack_t
   }
 };
 
-struct death_strike_heal_t : public heal_t
+struct death_strike_heal_t : public death_knight_heal_t
 {
   death_strike_heal_t( death_knight_t* p ) :
-    heal_t( "death_strike_heal", p, p -> find_spell( 45470 ) )
+    death_knight_heal_t( "death_strike_heal", p, p -> find_spell( 45470 ) )
   {
     may_crit   = false;
     background = true;
@@ -4244,6 +4256,27 @@ struct antimagic_shell_t : public death_knight_spell_t
   }
 };
 
+// Vampiric Blood ===========================================================
+
+struct vampiric_blood_t : public death_knight_spell_t
+{
+  vampiric_blood_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "vampiric_blood", p, p -> find_specialization_spell( "Vampiric Blood" ) )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+    base_dd_min = base_dd_max = 0;
+  }
+
+  void execute()
+  {
+    death_knight_spell_t::execute();
+
+    p() -> buffs.vampiric_blood -> trigger();
+  }
+};
+
 struct runic_corruption_regen_t : public event_t
 {
   buff_t* buff;
@@ -4313,6 +4346,36 @@ void runic_corruption_regen_t::execute()
 
 struct vampiric_blood_buff_t : public buff_t
 {
+  int health_gain;
+
+  vampiric_blood_buff_t( death_knight_t* p ) :
+    buff_t( buff_creator_t( p, "vampiric_blood", p -> find_specialization_spell( "Vampiric Blood" ) ) ),
+    health_gain ( 0 )
+  { }
+
+  void execute( int stacks = 1, double value = buff_t::DEFAULT_VALUE(), timespan_t duration = timespan_t::min() )
+  {
+    buff_t::execute( stacks, value, duration );
+
+    death_knight_t* p = debug_cast< death_knight_t* >( player );
+    if ( ! p -> glyph.vampiric_blood -> ok() )
+    {
+      health_gain = ( int ) floor( player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent() );
+      player -> stat_gain( STAT_MAX_HEALTH, health_gain );
+      player -> stat_gain( STAT_HEALTH, health_gain );
+    }
+  }
+
+  void expire_override()
+  {
+    buff_t::expire_override();
+
+    if ( health_gain > 0 )
+    {
+      player -> stat_loss( STAT_MAX_HEALTH, health_gain );
+      player -> stat_loss( STAT_HEALTH, health_gain );
+    }
+  }
 };
 
 } // UNNAMED NAMESPACE
@@ -4341,6 +4404,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "dancing_rune_weapon"      ) return new dancing_rune_weapon_t      ( this, options_str );
   if ( name == "heart_strike"             ) return new heart_strike_t             ( this, options_str );
   if ( name == "pestilence"               ) return new pestilence_t               ( this, options_str );
+  if ( name == "vampiric_blood"           ) return new vampiric_blood_t           ( this, options_str );
 
   // Frost Actions
   if ( name == "empower_rune_weapon"      ) return new empower_rune_weapon_t      ( this, options_str );
@@ -4700,6 +4764,7 @@ void death_knight_t::init_spells()
   glyph.enduring_infection        = find_glyph_spell( "Glyph of Enduring Infection" );
   glyph.outbreak                  = find_glyph_spell( "Glyph of Outbreak" );
   glyph.shifting_presences        = find_glyph_spell( "Glyph of Shifting Presences" );
+  glyph.vampiric_blood            = find_glyph_spell( "Glyph of Vampiric Blood" );
 
   // Generic spells
   spell.blood_parasite           = find_spell( 50452 );
@@ -4853,6 +4918,8 @@ void death_knight_t::init_actions()
           action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
       }
       action_list_str += "/auto_attack";
+      if ( level >= 76 )
+        action_list_str += "/vampiric_blood,if=health<30000";
       if ( level >= 87 )
         action_list_str += "/bone_shield,if=buff.bone_shield.down";
       action_list_str += "/dancing_rune_weapon";
@@ -5412,6 +5479,7 @@ void death_knight_t::create_buffs()
                               .default_value( find_class_spell( "Unholy Presence" ) -> effectN( 1 ).percent() +
                                               spec.improved_unholy_presence -> effectN( 1 ).percent() )
                               .add_invalidate( CACHE_HASTE );
+  buffs.vampiric_blood      = new vampiric_blood_buff_t( this );
 }
 
 // death_knight_t::init_gains ===============================================
