@@ -3768,9 +3768,6 @@ void mage_t::init_actions()
     std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
     std::string& st_list_str = get_action_priority_list( "single_target" ) -> action_list_str;
 
-    std::string item_actions = init_use_item_actions();
-    std::string profession_actions = init_use_profession_actions();
-
     if ( level >= 80 )
     {
       if ( sim -> allow_flasks )

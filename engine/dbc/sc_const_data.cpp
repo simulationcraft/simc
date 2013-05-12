@@ -2066,8 +2066,6 @@ unsigned dbc_t::talent_ability_id( player_e c, const char* spell_name, bool name
 unsigned dbc_t::class_ability_id( player_e c, specialization_e spec_id, const char* spell_name ) const
 {
   uint32_t cid = util::class_id( c );
-  unsigned class_idx = -1;
-  unsigned spec_index = -1;
   unsigned spell_id;
 
   assert( spell_name && spell_name[ 0 ] );
@@ -2077,6 +2075,9 @@ unsigned dbc_t::class_ability_id( player_e c, specialization_e spec_id, const ch
 
   if ( spec_id != SPEC_NONE )
   {
+    unsigned class_idx = -1;
+    unsigned spec_index = -1;
+
     if ( ! spec_idx( spec_id, class_idx, spec_index ) )
       return 0;
 
@@ -2170,7 +2171,6 @@ unsigned dbc_t::class_ability_id( player_e c, specialization_e spec_id, const ch
 unsigned dbc_t::pet_ability_id( player_e c, const char* spell_name ) const
 {
   uint32_t cid = util::class_id( c );
-  unsigned spell_id;
 
   assert( spell_name && spell_name[ 0 ] );
 
@@ -2179,6 +2179,7 @@ unsigned dbc_t::pet_ability_id( player_e c, const char* spell_name ) const
 
   for ( unsigned n = 0; n < class_ability_size(); n++ )
   {
+    unsigned spell_id;
     if ( ! ( spell_id = pet_ability( cid, n ) ) )
       break;
 
@@ -2260,7 +2261,6 @@ unsigned dbc_t::specialization_ability_id( specialization_e spec_id, const char*
 {
   unsigned class_idx = -1;
   unsigned spec_index = -1;
-  unsigned spell_id;
 
   assert( spell_name && spell_name[ 0 ] );
 
@@ -2271,6 +2271,7 @@ unsigned dbc_t::specialization_ability_id( specialization_e spec_id, const char*
 
   for ( unsigned n = 0; n < specialization_ability_size(); n++ )
   {
+    unsigned spell_id;
     if ( ! ( spell_id = specialization_ability( class_idx, spec_index, n ) ) )
       break;
 

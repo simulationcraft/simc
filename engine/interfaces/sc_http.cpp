@@ -691,9 +691,6 @@ uint32_t spell_id_t::get_school_mask( school_e x ) { return 0; }
 
 int main( int argc, char* argv[] )
 {
-
-  const char* const url_cache_file = "simc_cache.dat";
-
   if ( argc > 1 )
   {
     for ( int i = 1; i < argc; ++i )
@@ -701,6 +698,7 @@ int main( int argc, char* argv[] )
       if ( !strcmp( argv[ i ], "--dump" ) )
       {
         url_db.clear();
+        const char* const url_cache_file = "simc_cache.dat";
         http::cache_load( url_cache_file );
 
         for ( auto& i : url_db )

@@ -25,12 +25,10 @@ struct player_gcd_event_t : public event_t
 
   virtual void execute()
   {
-    action_t* a = 0;
-
     for ( std::vector<action_t*>::const_iterator i = player -> active_off_gcd_list -> off_gcd_actions.begin();
           i < player -> active_off_gcd_list -> off_gcd_actions.end(); ++i )
     {
-      a = *i;
+      action_t* a = *i;
       if ( a -> ready() )
       {
         action_priority_list_t* alist = player -> active_action_list;

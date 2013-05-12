@@ -234,6 +234,7 @@ public:
     mastery( mastery_spells_t() ),
     glyph( glyphs_t() ),
     cooldowns( cooldowns_t() ),
+    passives( passives_t() ),
     user_options( options_t() )
   {
 
@@ -2499,9 +2500,6 @@ void monk_t::init_actions()
     action_priority_list_t* pre = get_action_priority_list( "precombat" );
     action_priority_list_t* def       = get_action_priority_list( "default"   );
 
-    std::vector<std::string> item_actions = get_item_actions();
-    std::vector<std::string> profession_actions = get_profession_actions();
-    std::vector<std::string> racial_actions = get_racial_actions();
     // Precombat
     switch ( specialization() )
     {

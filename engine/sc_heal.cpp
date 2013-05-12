@@ -125,14 +125,13 @@ void heal_t::assess_damage( dmg_e heal_type,
 
 player_t* heal_t::find_greatest_difference_player()
 {
-  double diff=0;
-  double max=0;
+  double max = 0;
   player_t* max_player = player;
   for ( size_t i = 0; i < sim -> player_list.size(); ++i )
   {
     player_t* p = sim -> player_list[ i ];
     // No love for pets right now
-    diff = p -> is_pet() ? 0 : p -> resources.max[ RESOURCE_HEALTH ] - p -> resources.current[ RESOURCE_HEALTH ];
+    double diff = p -> is_pet() ? 0 : p -> resources.max[ RESOURCE_HEALTH ] - p -> resources.current[ RESOURCE_HEALTH ];
     if ( diff > max )
     {
       max = diff;

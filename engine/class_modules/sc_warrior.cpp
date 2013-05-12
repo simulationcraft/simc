@@ -3636,7 +3636,7 @@ void warrior_t::assess_damage( school_e school,
 
   if ( s -> result == RESULT_PARRY )
   {
-    warrior_t* p = ( warrior_t* ) s -> target;
+    warrior_t* p = debug_cast< warrior_t* >( s -> target );
     if ( p -> glyphs.hold_the_line -> ok() )
       buff.glyph_hold_the_line -> trigger();
 

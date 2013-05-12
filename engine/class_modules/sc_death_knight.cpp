@@ -366,10 +366,17 @@ public:
     player_t( sim, DEATH_KNIGHT, name, r ),
     active_presence(),
     buffs( buffs_t() ),
+    runeforge( runeforge_t() ),
     active_spells( active_spells_t() ),
     gains( gains_t() ),
+    spec( specialization_t() ),
+    mastery( mastery_t() ),
+    talent( talents_t() ),
+    spell( spells_t() ),
+    glyph( glyphs_t() ),
     pets( pets_t() ),
     procs( procs_t() ),
+    rng( rngs_t() ),
     _runes( runes_t() )
   {
     range::fill( pets.army_ghoul, nullptr );
@@ -1178,7 +1185,14 @@ struct dancing_rune_weapon_pet_t : public pet_t
   melee_attack_t* drw_melee;
 
   dancing_rune_weapon_pet_t( sim_t* sim, player_t* owner ) :
-    pet_t( sim, owner, "dancing_rune_weapon", true )
+    pet_t( sim, owner, "dancing_rune_weapon", true ),
+    drw_blood_plague( nullptr ), drw_frost_fever( nullptr ),
+    drw_blood_boil( nullptr ), drw_death_coil( nullptr ),
+    drw_death_siphon( nullptr ), drw_icy_touch( nullptr ),
+    drw_outbreak( nullptr ), drw_pestilence( nullptr ),
+    drw_death_strike( nullptr ), drw_heart_strike( nullptr ),
+    drw_necrotic_strike( nullptr ), drw_plague_strike( nullptr ),
+    drw_soul_reaper( nullptr ), drw_melee( nullptr )
   {
     main_hand_weapon.type       = WEAPON_BEAST_2H;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 3.0;
@@ -1484,7 +1498,7 @@ struct bloodworms_pet_t : public death_knight_pet_t
 
   bloodworms_pet_t( sim_t* sim, death_knight_t* owner ) :
     death_knight_pet_t( sim, owner, "bloodworms", true /*guardian*/ ),
-    melee( NULL )
+    melee( nullptr ), blood_gorged( nullptr ), blood_burst( nullptr )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.55;

@@ -360,14 +360,11 @@ int main( int /*argc*/, char** /*argv*/ )
     sample_data_t exgauss_data = sample_data_t( false );
     exgauss_data.reserve( as<size_t>( n ) );
 
-    double average = 0;
     for ( uint64_t i = 0; i < n; i++ )
     {
       double result = 0.1 + rng.exgauss( 0.3,0.06,0.25 );
-      average += result;
       exgauss_data.add( result );
     }
-    average /= n;
     int64_t elapsed_cpu = milliseconds() - start_time;
 
     exgauss_data.analyze();

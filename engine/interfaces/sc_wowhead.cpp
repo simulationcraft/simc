@@ -180,11 +180,10 @@ bool wowhead::download_item_data( item_t&            item,
     if ( item.parsed.data.item_subclass < 0 ) item.parsed.data.item_subclass = 0;
 
     // Todo binding type, needs htmlTooltip parsing
-
-    int minDmg, maxDmg;
-    double speed, dps;
     if ( item.parsed.data.item_class == ITEM_CLASS_WEAPON )
     {
+      int minDmg, maxDmg;
+      double speed, dps;
       if ( ! js::get_value( dps, jsonequip, "dps" ) ) throw( "dps" );
       if ( ! js::get_value( speed, jsonequip, "speed" ) ) throw( "weapon speed" );
       if ( ! js::get_value( minDmg, jsonequip, "dmgmin1" ) ) throw( "weapon minimum damage" );

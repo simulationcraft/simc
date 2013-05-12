@@ -266,7 +266,13 @@ struct rogue_t : public player_t
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
+    spec( spec_t() ),
+    spell( spells_t() ),
+    talent( talents_t() ),
+    mastery( masteries_t() ),
+    glyph( glyphs_t() ),
     procs( procs_t() ),
+    rng( rngs_t() ),
     tot_target( 0 ),
     virtual_hat_callback( 0 ),
     tricks_of_the_trade_target_str( "" ),
@@ -2701,7 +2707,6 @@ void combo_points_t::add( int num, const char* action )
   int actual_num = clamp( num, 0, max_combo_points - count );
   int overflow   = num - actual_num;
   int anticipation_num = 0;
-  int anticipation_overflow = 0;
 
   // Premeditation cancel on any added combo points, even if they are
   // already full
@@ -2726,6 +2731,7 @@ void combo_points_t::add( int num, const char* action )
     // Anticipation
     if ( p -> talent.anticipation -> ok() )
     {
+      int anticipation_overflow = 0;
       anticipation_num = clamp( overflow, 0, max_combo_points - anticipation_charges );
       anticipation_overflow = overflow - anticipation_num;
 

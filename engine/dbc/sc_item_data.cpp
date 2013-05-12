@@ -348,7 +348,6 @@ uint32_t item_database::weapon_dmg_max( item_t& item )
 bool item_database::parse_gems( item_t& item )
 {
   bool match = true;
-  std::vector<std::string> stats;
 
   for ( size_t i = 0; i < sizeof_array( item.parsed.gem_id ); i++ )
   {

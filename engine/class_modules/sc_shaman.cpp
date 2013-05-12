@@ -334,6 +334,7 @@ public:
     pet_earth_elemental( nullptr ),
     guardian_earth_elemental( nullptr ),
     totems(),
+    constant(),
     buff(),
     cooldown(),
     gain(),

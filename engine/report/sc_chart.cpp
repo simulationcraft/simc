@@ -556,14 +556,6 @@ private:
     return s;
   }
 
-  std::string text_scaling()
-  {
-    if ( _text_scaling.max <= _text_scaling.min )
-      return "chds=a" + amp;
-    else
-      return "chds=" + util::to_string( _text_scaling.min ) + "," + util::to_string( _text_scaling.max ) + amp;
-  }
-
 public:
   sc_chart( std::string name, chart::chart_e t, int style, int num_axes = -1 ) :
     _name( name ), _type( t ), print_style( style ), _size(), _num_axes(), _text_scaling()
@@ -602,7 +594,6 @@ public:
     s += size();
     s += grid();
     s += axis_style();
-    //s += text_scaling();
 
     return s;
   }
@@ -852,8 +843,7 @@ size_t chart::raid_gear( std::vector<std::string>& images,
 
   std::string s;
   char buffer[ 1024 ];
-  bool first;
-
+  
   std::vector<player_t*> player_list = sim -> players_by_dps;
   static const size_t max_players = MAX_PLAYERS_PER_CHART;
 
@@ -873,7 +863,7 @@ size_t chart::raid_gear( std::vector<std::string>& images,
     s += "chbh=15";
     s += amp;
     s += "chd=t:";
-    first = true;
+    bool first = true;
     for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
       if ( stat_color( i ).empty() )
@@ -1437,7 +1427,6 @@ std::string chart::scaling_dps( player_t* p )
 
   double step = p -> sim -> plot -> dps_plot_step;
   int range = p -> sim -> plot -> dps_plot_points / 2;
-  const int start = 0;  // start and end only used for dps_plot_positive
   const int end = 2 * range;
   size_t num_points = 1 + 2 * range;
 
@@ -1477,6 +1466,7 @@ std::string chart::scaling_dps( player_t* p )
   }
   else
   {
+    const int start = 0;  // start and end only used for dps_plot_positive
     snprintf( buffer, sizeof( buffer ), "chxl=0:|0|%%2b%.0f|%%2b%.0f|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( start + ( 1.0/4 )*end )*step, ( start + ( 2.0/4 )*end )*step, ( start + ( 3.0/4 )*end )*step, ( start + end )*step, min_dps, p -> dps.mean, max_dps ); s += buffer;
   }
   s += amp;
