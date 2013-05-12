@@ -429,6 +429,7 @@ public:
   virtual double    runes_cooldown_all( rune_type rt, bool include_death, int position );
   virtual double    runes_cooldown_time( dk_rune_t* r );
   virtual bool      runes_depleted( rune_type rt, int position );
+  virtual void invalidate_cache( cache_e );
 
   virtual ~death_knight_t();
 
@@ -5801,6 +5802,19 @@ double death_knight_t::composite_tank_crit( school_e school )
   c += spec.improved_blood_presence -> effectN( 3 ).percent();
 
   return c;
+}
+
+void death_knight_t::invalidate_cache( cache_e c )
+{
+  player_t::invalidate_cache( c );
+
+  switch ( c )
+  {
+  case CACHE_MASTERY:
+      player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    break;
+  default: break;
+  }
 }
 
 // death_knight_t::primary_role =============================================

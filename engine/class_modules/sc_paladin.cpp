@@ -3687,9 +3687,12 @@ void paladin_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
 
-  if ( c == CACHE_STRENGTH ||
-       c == CACHE_ATTACK_POWER )
+  if ( ( passives.sword_of_light -> ok() || passives.guarded_by_the_light -> ok() )
+       && ( c == CACHE_STRENGTH || c == CACHE_ATTACK_POWER )
+     )
+  {
     player_t::invalidate_cache( CACHE_SPELL_POWER );
+  }
 }
 
 // paladin_t::matching_gear_multiplier ======================================

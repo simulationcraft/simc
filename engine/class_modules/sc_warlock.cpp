@@ -272,6 +272,7 @@ public:
   virtual role_e primary_role()     { return ROLE_SPELL; }
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual double composite_player_multiplier( school_e school );
+  virtual void invalidate_cache( cache_e );
   virtual double composite_spell_crit();
   virtual double composite_spell_haste();
   virtual double composite_mastery();
@@ -4315,6 +4316,22 @@ double warlock_t::composite_player_multiplier( school_e school )
   return m;
 }
 
+
+void warlock_t::invalidate_cache( cache_e c )
+{
+  player_t::invalidate_cache( c );
+
+  switch ( c )
+  {
+  case CACHE_MASTERY:
+    if ( mastery_spells.master_demonologist -> ok() )
+    {
+      player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    }
+    break;
+  default: break;
+  }
+}
 
 double warlock_t::composite_spell_crit()
 {

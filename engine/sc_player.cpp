@@ -3736,78 +3736,68 @@ void player_t::invalidate_cache( cache_e c )
 
   if ( sim -> log ) sim -> output( "%s invalidates %s", name(), util::cache_type_string( c ) );
 
+  // Special linked invalidations
   switch ( c )
   {
   case CACHE_STRENGTH:
-    cache.valid[ CACHE_STRENGTH     ] = false;
-    cache.valid[ CACHE_ATTACK_POWER ] = false;
+    if ( current.attack_power_per_strength > 0 )
+      invalidate_cache( CACHE_ATTACK_POWER );
     if ( current.parry_rating_per_strength > 0 )
-      cache.valid[ CACHE_PARRY        ] = false;
-    break;
+      invalidate_cache( CACHE_PARRY );
   case CACHE_AGILITY:
-    cache.valid[ CACHE_AGILITY      ] = false;
-    cache.valid[ CACHE_ATTACK_POWER ] = false;
-    cache.valid[ CACHE_ATTACK_CRIT  ] = false;
+    if ( current.attack_power_per_agility > 0 )
+      invalidate_cache( CACHE_ATTACK_POWER );
+    if ( current.attack_crit_per_agility > 0 )
+      invalidate_cache( CACHE_ATTACK_CRIT );
     if ( current.dodge_per_agility > 0 )
-      cache.valid[ CACHE_DODGE        ] = false;
+      invalidate_cache( CACHE_DODGE );
     break;
   case CACHE_INTELLECT:
-    cache.valid[ CACHE_INTELLECT  ] = false;
-    cache.valid[ CACHE_SPELL_CRIT ] = false;
-    range::fill( cache.spell_power_valid, false );
+    if ( current.spell_crit_per_intellect > 0 )
+      invalidate_cache( CACHE_SPELL_CRIT );
+    if ( current.spell_power_per_intellect > 0 )
+      invalidate_cache( CACHE_SPELL_POWER );
     break;
-  case CACHE_SPIRIT:
-    cache.valid[ CACHE_SPIRIT     ] = false;
-    cache.valid[ CACHE_SPELL_HIT  ] = false;
-    cache.valid[ CACHE_ATTACK_HIT ] = false;
+  case CACHE_ATTACK_HASTE:
+    invalidate_cache( CACHE_ATTACK_SPEED );
     break;
+  case CACHE_SPELL_HASTE:
+    invalidate_cache( CACHE_SPELL_SPEED );
+    break;
+  default: break;
+  }
+
+  // Normal invalidation of the corresponding Cache
+  switch ( c )
+  {
   case CACHE_SPELL_POWER:
     range::fill( cache.spell_power_valid, false );
     break;
   case CACHE_EXP:
-    cache.valid[ CACHE_ATTACK_EXP ] = false;
-    cache.valid[ CACHE_SPELL_HIT  ] = false;
+    invalidate_cache( CACHE_ATTACK_EXP );
+    invalidate_cache( CACHE_SPELL_HIT  );
     break;
   case CACHE_HIT:
-    cache.valid[ CACHE_ATTACK_HIT ] = false;
-    cache.valid[ CACHE_SPELL_HIT  ] = false;
+    invalidate_cache( CACHE_ATTACK_HIT );
+    invalidate_cache( CACHE_SPELL_HIT  );
     break;
   case CACHE_CRIT:
-    cache.valid[ CACHE_ATTACK_CRIT ] = false;
-    cache.valid[ CACHE_SPELL_CRIT  ] = false;
+    invalidate_cache( CACHE_ATTACK_CRIT );
+    invalidate_cache( CACHE_SPELL_CRIT  );
     break;
   case CACHE_HASTE:
-    cache.valid[ CACHE_ATTACK_HASTE ] = false;
-    cache.valid[ CACHE_ATTACK_SPEED ] = false;
-    cache.valid[ CACHE_SPELL_HASTE  ] = false;
-    cache.valid[ CACHE_SPELL_SPEED  ] = false;
-    break;
-  case CACHE_ATTACK_HASTE:
-    cache.valid[ CACHE_ATTACK_HASTE ] = false;
-    cache.valid[ CACHE_ATTACK_SPEED ] = false;
-    break;
-  case CACHE_SPELL_HASTE:
-    cache.valid[ CACHE_SPELL_HASTE ] = false;
-    cache.valid[ CACHE_SPELL_SPEED ] = false;
+    invalidate_cache( CACHE_ATTACK_HASTE );
+    invalidate_cache( CACHE_SPELL_HASTE  );
     break;
   case CACHE_SPEED:
-    cache.valid[ CACHE_ATTACK_SPEED ] = false;
-    cache.valid[ CACHE_SPELL_SPEED  ] = false;
-    break;
-  case CACHE_MASTERY:
-    cache.valid[ CACHE_MASTERY ] = false;
-    range::fill( cache.player_mult_valid, false );
-    range::fill( cache.player_heal_mult_valid, false );
+    invalidate_cache( CACHE_ATTACK_SPEED );
+    invalidate_cache( CACHE_SPELL_SPEED  );
     break;
   case CACHE_PLAYER_DAMAGE_MULTIPLIER:
     range::fill( cache.player_mult_valid, false );
     break;
   case CACHE_PLAYER_HEAL_MULTIPLIER:
     range::fill( cache.player_heal_mult_valid, false );
-    break;
-  case CACHE_BLOCK:
-    cache.valid[ CACHE_BLOCK ] = false;
-    cache.valid[ CACHE_CRIT_BLOCK ] = false;
     break;
   default:
     cache.valid[ c ] = false; // Invalidates only its own cache.

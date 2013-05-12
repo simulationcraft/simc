@@ -3559,9 +3559,10 @@ void warrior_t::invalidate_cache( cache_e c )
 
   if ( c == CACHE_MASTERY && mastery.critical_block -> ok() )
   {
-    cache.valid[ CACHE_BLOCK ] = false;
-    cache.valid[ CACHE_CRIT_BLOCK ] = false;
+    player_t::invalidate_cache( CACHE_BLOCK );
+    player_t::invalidate_cache( CACHE_CRIT_BLOCK );
   }
+
 }
 
 // warrior_t::regen =========================================================

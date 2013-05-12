@@ -389,7 +389,6 @@ public:
   virtual double    composite_melee_hit();
   virtual double    composite_melee_expertise( weapon_t* );
   virtual double    composite_melee_crit();
-  virtual double    composite_melee_attack_power();
   virtual double    composite_player_multiplier( school_e school );
   virtual double    composite_player_td_multiplier( school_e, action_t* );
   virtual double    composite_player_heal_multiplier( school_e school );
@@ -4810,6 +4809,8 @@ public:
 
     if ( druid.specialization() == DRUID_GUARDIAN )
       druid.vengeance_stop();
+
+    druid.current.attack_power_per_agility -= 2.0;
   }
 
   virtual void start( int stacks, double value, timespan_t duration )
@@ -4831,6 +4832,8 @@ public:
 
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
+
+    druid.current.attack_power_per_agility += 2.0;
   }
 };
 
@@ -4861,6 +4864,8 @@ struct cat_form_t : public druid_buff_t< buff_t >
     druid.main_hand_weapon = druid.caster_form_weapon;
 
     sim -> auras.critical_strike -> decrement();
+
+    druid.current.attack_power_per_agility -= 2.0;
   }
 
   virtual void start( int stacks, double value, timespan_t duration )
@@ -4874,6 +4879,8 @@ struct cat_form_t : public druid_buff_t< buff_t >
 
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
+
+    druid.current.attack_power_per_agility += 2.0;
   }
 };
 
@@ -6036,6 +6043,9 @@ void druid_t::invalidate_cache( cache_e c )
     case CACHE_INTELLECT:
       player_t::invalidate_cache( CACHE_AGILITY );
       break;
+    case CACHE_MASTERY:
+        player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      break;
     default: break;
   }
 }
@@ -6057,18 +6067,6 @@ double druid_t::composite_armor_multiplier()
       a += buff.bear_form -> data().effectN( 3 ).percent();
   }
   return a;
-}
-
-// druid_t::composite_attack_power ==========================================
-
-double druid_t::composite_melee_attack_power()
-{
-  double ap = player_t::composite_melee_attack_power();
-
-  if ( buff.bear_form -> check() || buff.cat_form  -> check() )
-    ap += 2.0 * ( cache.agility() - 10.0 );
-
-  return floor( ap );
 }
 
 // druid_t::composite_attack_haste ==========================================

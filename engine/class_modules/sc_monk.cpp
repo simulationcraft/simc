@@ -2921,7 +2921,8 @@ double monk_t::composite_melee_hit()
 {
   double ah = base_t::composite_melee_hit();
 
-  ah += ( ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * active_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / current_rating().attack_hit;
+  if ( current_stance() == WISE_SERPENT )
+    ah += ( ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * static_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / current_rating().attack_hit;
 
   return ah;
 }
@@ -2932,7 +2933,8 @@ double monk_t::composite_spell_hit()
 {
   double sh = base_t::composite_spell_hit();
 
-  sh += ( ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * active_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / current_rating().spell_hit;
+  if ( current_stance() == WISE_SERPENT )
+    sh += ( ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * static_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / current_rating().spell_hit;
 
   return sh;
 }
@@ -2943,7 +2945,8 @@ double monk_t::composite_melee_expertise( weapon_t* weapon )
 {
   double e = base_t::composite_melee_expertise( weapon );
 
-  e += ( ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * active_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / current_rating().expertise;
+  if ( current_stance() == WISE_SERPENT )
+    e += ( ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * static_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / current_rating().expertise;
 
   return e;
 }
@@ -2986,11 +2989,23 @@ void monk_t::invalidate_cache( cache_e c )
 {
   base_t::invalidate_cache( c );
 
-  if ( ( c == CACHE_SPELL_POWER || c == CACHE_INTELLECT ) && current_stance() == WISE_SERPENT )
+  switch ( c )
   {
-    cache.valid[ CACHE_ATTACK_POWER ] = false;
+  case CACHE_SPELL_POWER:
+    if ( current_stance() == WISE_SERPENT )
+      player_t::invalidate_cache( CACHE_ATTACK_POWER );
+    break;
+  case CACHE_SPIRIT:
+    if ( current_stance() == WISE_SERPENT )
+    {
+      player_t::invalidate_cache( CACHE_HIT );
+      player_t::invalidate_cache( CACHE_ATTACK_EXP );
+    }
+    break;
+  default: break;
   }
 }
+
 // monk_t::create_options =================================================
 
 void monk_t::create_options()

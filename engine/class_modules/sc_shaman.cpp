@@ -5818,11 +5818,28 @@ void shaman_t::invalidate_cache( cache_e c )
 {
   player_t::invalidate_cache( c );
 
-  if ( specialization() == SHAMAN_ENHANCEMENT )
-    if ( c == CACHE_AGILITY ||
-         c == CACHE_STRENGTH ||
-         c == CACHE_ATTACK_POWER )
+  switch ( c )
+  {
+  case CACHE_AGILITY:
+  case CACHE_STRENGTH:
+  case CACHE_ATTACK_POWER:
+    if ( specialization() == SHAMAN_ENHANCEMENT )
       player_t::invalidate_cache( CACHE_SPELL_POWER );
+    break;
+  case CACHE_SPIRIT:
+    if ( spec.elemental_precision -> ok() )
+    {
+      player_t::invalidate_cache( CACHE_HIT );
+    }
+    break;
+  case CACHE_MASTERY:
+    if ( mastery.enhanced_elements -> ok() )
+    {
+      player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    }
+    break;
+  default: break;
+  }
 }
 
 // shaman_t::regen  =========================================================

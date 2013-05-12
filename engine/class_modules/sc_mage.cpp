@@ -277,6 +277,7 @@ public:
   virtual role_e primary_role() { return ROLE_SPELL; }
   virtual double    mana_regen_per_second();
   virtual double    composite_player_multiplier( school_e school );
+  virtual void invalidate_cache( cache_e );
   virtual double    composite_spell_crit();
   virtual double    composite_spell_haste();
   virtual double    matching_gear_multiplier( attribute_e attr );
@@ -4152,6 +4153,22 @@ double mage_t::composite_player_multiplier( school_e school )
     cache.player_mult_valid[ school ] = false;
 
   return m;
+}
+
+void mage_t::invalidate_cache( cache_e c )
+{
+  player_t::invalidate_cache( c );
+
+  switch ( c )
+  {
+  case CACHE_MASTERY:
+    if ( spec.mana_adept -> ok() )
+    {
+      player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    }
+    break;
+  default: break;
+  }
 }
 
 // mage_t::composite_spell_crit =============================================

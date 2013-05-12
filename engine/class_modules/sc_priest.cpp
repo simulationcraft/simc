@@ -338,6 +338,7 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   virtual void pre_analyze_hook();
+  virtual void invalidate_cache( cache_e );
 
   target_specific_t<priest_td_t*> target_data;
 
@@ -4847,7 +4848,9 @@ double priest_t::composite_spell_hit()
   double hit = base_t::composite_spell_hit();
 
   hit += specs.divine_fury -> effectN( 1 ).percent();
-  hit += ( ( cache.spirit() - base.stats.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / current_rating().spell_hit;
+
+  if ( specs.spiritual_precision -> ok() )
+    hit += ( ( cache.spirit() - base.stats.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / current_rating().spell_hit;
 
   return hit;
 }
@@ -4858,7 +4861,8 @@ double priest_t::composite_melee_hit()
 {
   double hit = base_t::composite_melee_hit();
 
-  hit += ( ( cache.spirit() - base.stats.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / current_rating().spell_hit;
+  if ( specs.spiritual_precision -> ok() )
+    hit += ( ( cache.spirit() - base.stats.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / current_rating().spell_hit;
 
   return hit;
 }
@@ -4919,6 +4923,15 @@ double priest_t::composite_movement_speed()
     speed *= 1.0 + buffs.inner_will -> data().effectN( 2 ).percent() + glyphs.inner_sanctum -> effectN( 2 ).percent();
 
   return speed;
+}
+
+
+void priest_t::invalidate_cache( cache_e c )
+{
+  base_t::invalidate_cache( c );
+
+  if ( c == CACHE_SPIRIT && specs.spiritual_precision -> ok() )
+    player_t::invalidate_cache( CACHE_HIT );
 }
 
 // priest_t::composite_attribute_multiplier =================================

@@ -306,6 +306,7 @@ public:
   virtual double    ranged_speed_multiplier();
   virtual double    composite_player_multiplier( school_e school );
   virtual double    matching_gear_multiplier( attribute_e attr );
+  virtual void      invalidate_cache( cache_e );
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
@@ -4258,6 +4259,22 @@ double hunter_t::composite_player_multiplier( school_e school )
     m *= 1.0 + buffs.beast_within -> data().effectN( 2 ).percent();
 
   return m;
+}
+
+void hunter_t::invalidate_cache( cache_e c )
+{
+  player_t::invalidate_cache( c );
+
+  switch ( c )
+  {
+  case CACHE_MASTERY:
+    if ( mastery.essence_of_the_viper -> ok() )
+    {
+      player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    }
+    break;
+  default: break;
+  }
 }
 
 // hunter_t::matching_gear_multiplier =======================================
