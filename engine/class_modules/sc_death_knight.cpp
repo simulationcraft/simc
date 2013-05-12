@@ -1452,11 +1452,11 @@ struct bloodworms_pet_t : public death_knight_pet_t
           double multiplier = 0;
           if ( o -> health_percentage() >= 100 && p() -> blood_gorged -> check() >= 5 )
             multiplier = 0.5;
-          else if ( o -> health_percentage() > 60 )
+          else if ( o -> health_percentage() > 60 && o -> health_percentage() < 100 )
             multiplier = 1.0;
           else if ( o -> health_percentage() > 30 && o -> health_percentage() <= 60 )
             multiplier = 1.5;
-          else
+          else if ( o -> health_percentage() <= 30 )
             multiplier = 2.0;
 
           if ( sim -> debug )
