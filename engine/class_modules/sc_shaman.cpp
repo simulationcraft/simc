@@ -766,9 +766,9 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
     if ( overload_spell )
     {
-      double overload_chance = p() -> cache.mastery() *
-        p() -> mastery.elemental_overload -> effectN( 1 ).mastery_value() *
-        overload_chance_multiplier;
+      double overload_chance = 0.0;
+      if ( p() -> mastery.elemental_overload -> ok() )
+        overload_chance += p() -> cache.mastery_value() * overload_chance_multiplier;
 
       if ( overload_chance && p() -> rng.elemental_overload -> roll( overload_chance ) )
       {
@@ -896,9 +896,12 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
 
   virtual double deep_healing( const action_state_t* s )
   {
+    if ( ! p() -> mastery.deep_healing -> ok() )
+      return 0.0;
+
     double hpp = ( 1.0 - s -> target -> health_percentage() / 100.0 );
 
-    return 1.0 + hpp * p() -> cache.mastery() * p() -> mastery.deep_healing -> effectN( 1 ).mastery_value();
+    return 1.0 + hpp * p() -> cache.mastery_value();
   }
 };
 
@@ -980,8 +983,8 @@ struct feral_spirit_pet_t : public pet_t
     {
       double m = melee_attack_t::composite_da_multiplier();
 
-      if ( p() -> o() -> specialization() == SHAMAN_ENHANCEMENT )
-        m *= 1.0 + p() -> o() -> cache.mastery() * p() -> o() -> mastery.enhanced_elements -> effectN( 1 ).mastery_value();
+      if ( p() -> o() -> mastery.enhanced_elements -> ok() )
+        m *= 1.0 + p() -> o() -> cache.mastery_value();
 
       return m;
     }
@@ -1203,8 +1206,8 @@ struct fire_elemental_t : public pet_t
     {
       double m = spell_t::composite_da_multiplier();
 
-      if ( p -> o() -> specialization() == SHAMAN_ENHANCEMENT )
-        m *= 1.0 + p -> o() -> cache.mastery() * p -> o() -> mastery.enhanced_elements -> effectN( 1 ).mastery_value();
+      if ( p -> o() -> mastery.enhanced_elements -> ok() )
+        m *= 1.0 + p -> o() -> cache.mastery_value();
 
       return m;
     }
@@ -1213,8 +1216,8 @@ struct fire_elemental_t : public pet_t
     {
       double m = spell_t::composite_ta_multiplier();
 
-      if ( p -> o() -> specialization() == SHAMAN_ENHANCEMENT )
-        m *= 1.0 + p -> o() -> cache.mastery() * p -> o() -> mastery.enhanced_elements -> effectN( 1 ).mastery_value();
+      if ( p -> o() -> mastery.enhanced_elements -> ok() )
+        m *= 1.0 + p -> o() -> cache.mastery_value();
 
       return m;
     }
@@ -1313,8 +1316,8 @@ struct fire_elemental_t : public pet_t
       double m = melee_attack_t::composite_da_multiplier();
 
       fire_elemental_t* p = static_cast< fire_elemental_t* >( player );
-      if ( p -> o() -> specialization() == SHAMAN_ENHANCEMENT )
-        m *= 1.0 + p -> o() -> cache.mastery() * p -> o() -> mastery.enhanced_elements -> effectN( 1 ).mastery_value();
+      if ( p -> o() -> mastery.enhanced_elements -> ok() )
+        m *= 1.0 + p -> o() -> cache.mastery_value();
 
       return m;
     }
@@ -5787,11 +5790,12 @@ double shaman_t::composite_player_multiplier( school_e school )
       m *= 1.0 + off_hand_weapon.buff_value;
   }
 
-  if ( dbc::is_school( school, SCHOOL_FIRE   ) ||
+  if ( mastery.enhanced_elements -> ok() &&
+      ( dbc::is_school( school, SCHOOL_FIRE   ) ||
        dbc::is_school( school, SCHOOL_FROST  ) ||
-       dbc::is_school( school, SCHOOL_NATURE ) )
+       dbc::is_school( school, SCHOOL_NATURE ) ) )
   {
-    m *= 1.0 + cache.mastery() * mastery.enhanced_elements -> effectN( 1 ).mastery_value();
+    m *= 1.0 + cache.mastery_value();
   }
 
   return m;

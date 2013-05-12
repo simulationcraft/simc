@@ -699,6 +699,7 @@ player_t::player_t( sim_t*             s,
   rngs( rngs_t() ),
   uptimes( uptimes_t() ),
   active_during_iteration( false ),
+  _mastery( spelleffect_data_t::nil() ),
   event_stopwatch( STOPWATCH_THREAD ),
   cache( this )
 {
@@ -2223,6 +2224,13 @@ void player_t::init_spells()
 {
   if ( sim -> debug )
     sim -> output( "Initializing spells for player (%s)", name() );
+
+  if ( ! is_enemy() )
+  {
+    const spell_data_t* s = find_mastery_spell( specialization() );
+    if ( s -> ok() )
+      _mastery = &(s -> effectN( 1 ));
+  }
 }
 
 // player_t::init_gains =====================================================
@@ -3197,7 +3205,7 @@ double player_t::composite_spell_hit()
 
 double player_t::composite_mastery()
 {
-  double m = util::round( current.mastery + current.stats.mastery_rating / current.rating.mastery, 2 );
+  double m = current.mastery + current.stats.mastery_rating / current.rating.mastery;
 
   if ( ! is_pet() && ! is_enemy() && sim -> auras.mastery -> check() )
     m += sim -> auras.mastery -> value() / current.rating.mastery;
@@ -3587,7 +3595,14 @@ double player_t::cache_t::spell_crit()
     valid[ CACHE_SPELL_CRIT ] = true;
     _spell_crit = player -> composite_spell_crit();
   }
-  else assert( _spell_crit == player -> composite_spell_crit() );
+  else
+  {
+    if ( _spell_crit != player -> composite_spell_crit() )
+    {
+      player -> sim -> errorf( "foo" );
+    }
+    //assert( _spell_crit == player -> composite_spell_crit() );
+  }
   return _spell_crit;
 }
 
@@ -3672,17 +3687,19 @@ double player_t::cache_t::armor()
   return _armor;
 }
 
-// player_t::cache_t::mastery =================================================
-
-double player_t::cache_t::mastery()
+/* This is composite_mastery * specialization_mastery_coefficient !
+ *
+ * If you need the pure mastery value, use player_t::composite_mastery
+ */
+double player_t::cache_t::mastery_value()
 {
   if ( ! active || ! valid[ CACHE_MASTERY ] )
   {
     valid[ CACHE_MASTERY ] = true;
-    _mastery = player -> composite_mastery();
+    _mastery_value = player -> composite_mastery_value();
   }
-  else assert( _mastery == player -> composite_mastery() );
-  return _mastery;
+  else assert( _mastery_value == player -> composite_mastery_value() );
+  return _mastery_value;
 }
 
 // player_t::cache_t::mastery =================================================
@@ -3724,13 +3741,15 @@ void player_t::invalidate_cache( cache_e c )
   case CACHE_STRENGTH:
     cache.valid[ CACHE_STRENGTH     ] = false;
     cache.valid[ CACHE_ATTACK_POWER ] = false;
-    cache.valid[ CACHE_PARRY        ] = cache.valid[ CACHE_PARRY ] && current.parry_rating_per_strength == 0;
+    if ( current.parry_rating_per_strength > 0 )
+      cache.valid[ CACHE_PARRY        ] = false;
     break;
   case CACHE_AGILITY:
     cache.valid[ CACHE_AGILITY      ] = false;
     cache.valid[ CACHE_ATTACK_POWER ] = false;
     cache.valid[ CACHE_ATTACK_CRIT  ] = false;
-    cache.valid[ CACHE_DODGE        ] = cache.valid[ CACHE_DODGE ] && current.dodge_per_agility == 0;
+    if ( current.dodge_per_agility > 0 )
+      cache.valid[ CACHE_DODGE        ] = false;
     break;
   case CACHE_INTELLECT:
     cache.valid[ CACHE_INTELLECT  ] = false;
@@ -3785,6 +3804,10 @@ void player_t::invalidate_cache( cache_e c )
     break;
   case CACHE_PLAYER_HEAL_MULTIPLIER:
     range::fill( cache.player_heal_mult_valid, false );
+    break;
+  case CACHE_BLOCK:
+    cache.valid[ CACHE_BLOCK ] = false;
+    cache.valid[ CACHE_CRIT_BLOCK ] = false;
     break;
   default:
     cache.valid[ c ] = false; // Invalidates only its own cache.

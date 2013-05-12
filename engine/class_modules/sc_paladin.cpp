@@ -270,7 +270,6 @@ public:
   virtual void      combat_begin();
 
   int               holy_power_stacks();
-  template <int effect_num>
   double            get_divine_bulwark();
   double            get_hand_of_light();
   double            jotp_haste();
@@ -2209,8 +2208,7 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 
     // FIXME: This should stack when the buff is present already
 
-    double bubble_value = p() -> passives.illuminated_healing -> effectN( 2 ).base_value() / 10000.0
-                          * p() -> cache.mastery()
+    double bubble_value = p() -> cache.mastery_value()
                           * s -> result_amount;
 
     p() -> active_illuminated_healing -> base_dd_min = p() -> active_illuminated_healing -> base_dd_max = bubble_value;
@@ -3477,6 +3475,12 @@ void paladin_t::init_spells()
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
+
+  // Holy Mastery uses effect#2 by default
+  if ( specialization() == PALADIN_HOLY )
+  {
+    _mastery = &find_mastery_spell( specialization() ) -> effectN( 2 );
+  }
 }
 
 // paladin_t::primary_role ==================================================
@@ -3618,7 +3622,7 @@ double paladin_t::composite_tank_block()
 {
   double b = player_t::composite_tank_block();
 
-  b += get_divine_bulwark<1>();
+  b += get_divine_bulwark();
 
   b += passives.guarded_by_the_light -> effectN( 6 ).percent();
 
@@ -3652,7 +3656,7 @@ void paladin_t::target_mitigation( school_e school,
   player_t::target_mitigation( school, dt, s );
 
   if ( buffs.shield_of_the_righteous -> check() )
-  { s -> result_amount *= 1.0 + buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() + get_divine_bulwark<4>(); }
+  { s -> result_amount *= 1.0 + buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() - get_divine_bulwark(); }
 
   s -> result_amount *= 1.0 + passives.sanctuary -> effectN( 1 ).percent();
 
@@ -3865,14 +3869,13 @@ int paladin_t::holy_power_stacks()
 }
 
 // paladin_t::get_divine_bulwark ============================================
-template <int effect_num>
 double paladin_t::get_divine_bulwark()
 {
   if ( ! passives.divine_bulwark -> ok() )
     return 0.0;
 
   // block rating, 2.25% per point of mastery
-  return cache.mastery() * ( passives.divine_bulwark -> effectN( effect_num ).coeff() / 100.0 );
+  return cache.mastery_value();
 }
 
 // paladin_t::get_hand_of_light =============================================
@@ -3881,7 +3884,7 @@ double paladin_t::get_hand_of_light()
 {
   if ( specialization() != PALADIN_RETRIBUTION ) return 0.0;
 
-  return cache.mastery() * ( passives.hand_of_light -> effectN( 1 ).coeff() / 100.0 );
+  return cache.mastery_value();
 }
 
 // player_t::create_expression ==============================================

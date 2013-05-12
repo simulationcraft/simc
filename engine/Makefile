@@ -33,6 +33,8 @@ CXX        = g++
 CPP_FLAGS  = -Wall -Woverloaded-virtual -W -I.
 OPTS       = -O3 -fomit-frame-pointer
 
+FFAST-MATH = 1
+
 ifneq (${NO_DEBUG},)
   CPP_FLAGS += -DNDEBUG
 endif

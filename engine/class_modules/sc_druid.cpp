@@ -1961,8 +1961,8 @@ struct thrash_cat_t : public cat_attack_t
   {
     double m = cat_attack_t::composite_da_multiplier();
 
-    if ( p() -> buff.cat_form -> up() )
-      m *= 1.0 + p() -> mastery.razor_claws -> effectN( 1 ).mastery_value() * p() -> composite_mastery();
+    if ( p() -> buff.cat_form -> up() && p() -> mastery.razor_claws -> ok() )
+      m *= 1.0 + p() -> cache.mastery_value();
 
     return m;
   }
@@ -2601,7 +2601,7 @@ public:
     }
 
     if ( base_dd_min > 0 && ! background )
-      p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> effectN( 1 ).mastery_value() * p() -> cache.mastery() );
+      p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> ok() ? p() -> cache.mastery_value() : 0.0);
   }
 
   virtual timespan_t execute_time()
@@ -2631,7 +2631,8 @@ public:
     if ( p() -> buff.natures_swiftness -> check() && base_execute_time > timespan_t::zero() )
       adm += p() -> talent.natures_swiftness -> effectN( 2 ).percent();
 
-    adm += p() -> mastery.harmony -> effectN( 1 ).mastery_value() * p() -> cache.mastery();
+    if ( p() -> mastery.harmony -> ok() )
+    adm += p() -> cache.mastery_value();
 
     return adm;
   }
@@ -6121,7 +6122,7 @@ double druid_t::composite_player_multiplier( school_e school )
       if ( buff.eclipse_lunar -> up() || buff.eclipse_solar -> up() )
       {
         m *= 1.0 + ( buff.eclipse_lunar -> data().effectN( 1 ).percent()
-                     + cache.mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
+                     + ( mastery.total_eclipse -> ok() ? cache.mastery_value() : 0.0 ) );
       }
     }
     else if ( dbc::is_school( school, SCHOOL_ARCANE ) )
@@ -6129,7 +6130,7 @@ double druid_t::composite_player_multiplier( school_e school )
       if ( buff.eclipse_lunar -> up() )
       {
         m *= 1.0 + ( buff.eclipse_lunar -> data().effectN( 1 ).percent()
-                     + cache.mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
+                     + ( mastery.total_eclipse -> ok() ? cache.mastery_value() : 0.0 ) );
       }
     }
     else if ( dbc::is_school( school, SCHOOL_NATURE ) )
@@ -6137,7 +6138,7 @@ double druid_t::composite_player_multiplier( school_e school )
       if ( buff.eclipse_solar -> up() )
       {
         m *= 1.0 + ( buff.eclipse_solar -> data().effectN( 1 ).percent()
-                     + cache.mastery() * mastery.total_eclipse -> effectN( 1 ).mastery_value() );
+                     + ( mastery.total_eclipse -> ok() ? cache.mastery_value() : 0.0 ) );
       }
     }
 
@@ -6162,8 +6163,8 @@ double druid_t::composite_player_td_multiplier( school_e school, action_t* a )
 {
   double m = player_t::composite_player_td_multiplier( school, a );
 
-  if ( school == SCHOOL_PHYSICAL && buff.cat_form -> up() )
-    m *= 1.0 + mastery.razor_claws -> effectN( 1 ).mastery_value() * composite_mastery();
+  if ( school == SCHOOL_PHYSICAL && mastery.razor_claws -> ok() && buff.cat_form -> up() )
+    m *= 1.0 + cache.mastery_value();
 
   return m;
 }

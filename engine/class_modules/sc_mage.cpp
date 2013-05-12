@@ -442,7 +442,8 @@ struct water_elemental_pet_t : public pet_t
   {
     double m = pet_t::composite_player_multiplier( school );
 
-    m *= 1.0 + o() -> spec.frostburn -> effectN( 3 ).mastery_value() * o() -> cache.mastery();
+    if ( o() -> spec.frostburn -> ok() )
+      m *= 1.0 + o() -> cache.mastery_value();
 
     if ( o() -> buffs.invokers_energy -> up() )
     {
@@ -1040,8 +1041,8 @@ public:
   {
     double am = spell_t::action_multiplier();
 
-    if ( frozen )
-      am *= 1.0 + p() -> spec.frostburn -> effectN( 1 ).mastery_value() * p() -> cache.mastery();
+    if ( frozen && 1.0 + p() -> spec.frostburn -> ok() )
+      am *= 1.0 + p() -> cache.mastery_value();
 
     return am;
   }
@@ -1164,7 +1165,7 @@ void mage_spell_t::trigger_ignite( action_state_t* state )
 {
   mage_t& p = *this -> p();
   if ( ! p.active_ignite ) return;
-  double amount = state -> result_amount * p.spec.ignite -> effectN( 1 ).mastery_value() * p.cache.mastery();
+  double amount = state -> result_amount * p.cache.mastery_value();
   p.active_ignite -> trigger( state -> target, amount );
 }
 
@@ -4144,8 +4145,11 @@ double mage_t::composite_player_multiplier( school_e school )
     m *= 1.0 + buffs.incanters_absorption -> value() * buffs.incanters_absorption -> data().effectN( 1 ).percent();
   }
 
-  double mana_pct = resources.pct( RESOURCE_MANA );
-  m *= 1.0 + mana_pct * spec.mana_adept -> effectN( 1 ).mastery_value() * cache.mastery();
+  if ( spec.mana_adept -> ok() )
+  {
+    double mana_pct = resources.pct( RESOURCE_MANA );
+    m *= 1.0 + mana_pct * cache.mastery_value();
+  }
 
   if ( specialization() == MAGE_ARCANE )
     cache.player_mult_valid[ school ] = false;

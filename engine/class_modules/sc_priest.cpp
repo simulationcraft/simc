@@ -974,9 +974,12 @@ public:
 
   virtual double action_multiplier()
   {
-    return base_t::action_multiplier() *
-           ( 1.0 + ( priest.cache.mastery() *
-                     priest.mastery_spells.shield_discipline -> effectN( 1 ).coeff() / 100.0 ) );
+    double am = base_t::action_multiplier();
+
+    if ( priest.mastery_spells.shield_discipline -> ok())
+      am +=1.0 + priest.cache.mastery_value();
+
+    return am;
   }
 };
 
@@ -1188,7 +1191,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     ignite::trigger_pct_based(
       p.active_spells.echo_of_light, // ignite spell
       s -> target, // target
-      s -> result_amount * p.cache.mastery() * p.mastery_spells.echo_of_light -> effectN( 1 ).mastery_value() ); // ignite damage
+      s -> result_amount * p.cache.mastery_value() ); // ignite damage
   }
 
   void trigger_grace( player_t* t )
@@ -5696,7 +5699,7 @@ void priest_t::target_mitigation( school_e school,
  */
 double priest_t::shadowy_recall_chance()
 {
-  return mastery_spells.shadowy_recall -> effectN( 1 ).mastery_value() * cache.mastery();
+  return mastery_spells.shadowy_recall -> ok() ? cache.mastery_value() : 0.0;
 }
 
 // priest_t::create_options =================================================

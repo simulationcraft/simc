@@ -1591,7 +1591,8 @@ struct gargoyle_pet_t : public death_knight_pet_t
       double m = spell_t::composite_da_multiplier();
 
       death_knight_t* dk = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
-      m *= 1.0 + dk -> mastery.dreadblade -> effectN( 1 ).mastery_value() * dk -> cache.mastery();
+      if ( dk -> mastery.dreadblade -> ok() )
+        m *= 1.0 + dk -> cache.mastery_value();
 
       return m;
     }
@@ -2654,7 +2655,8 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::composite_ta_multiplier();
 
-    m *= 1.0 + p() -> mastery.dreadblade -> effectN( 1 ).mastery_value() * p() -> cache.mastery();
+    if ( p() -> mastery.dreadblade -> ok() )
+      m *= 1.0 + p() -> cache.mastery_value();
 
     return m;
   }
@@ -3066,13 +3068,15 @@ struct death_strike_t : public death_knight_melee_attack_t
     if ( p() -> specialization() != DEATH_KNIGHT_BLOOD )
       return;
 
-    double amount = p() -> buffs.blood_shield -> current_value + 
-                    heal -> base_dd_min * p() -> cache.mastery() * p() -> mastery.blood_shield -> effectN( 1 ).mastery_value();
+    double amount = p() -> buffs.blood_shield -> current_value;
+
+    if ( p() -> mastery.blood_shield -> ok() )
+      amount += heal -> base_dd_min * p() -> cache.mastery_value();
 
     if ( sim -> debug )
       sim -> output( "%s Blood Shield buff trigger, old_value=%f added_value=%f new_value=%f",
                      player -> name(), p() -> buffs.blood_shield -> current_value,
-                     heal -> base_dd_min * p() -> cache.mastery() * p() -> mastery.blood_shield -> effectN( 1 ).mastery_value(),
+                     heal -> base_dd_min * p() -> cache.mastery_value(),
                      amount );
 
     p() -> buffs.blood_shield -> trigger( 1, amount );
@@ -5751,11 +5755,11 @@ double death_knight_t::composite_player_multiplier( school_e school )
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( dbc::is_school( school, SCHOOL_SHADOW ) )
-    m *= 1.0 + mastery.dreadblade -> effectN( 1 ).mastery_value() * cache.mastery();
+  if ( mastery.dreadblade -> ok() && dbc::is_school( school, SCHOOL_SHADOW )  )
+    m *= 1.0 + cache.mastery_value();
 
-  if ( dbc::is_school( school, SCHOOL_FROST ) )
-    m *= 1.0 + mastery.frozen_heart -> effectN( 1 ).mastery_value() * cache.mastery();
+  if ( mastery.frozen_heart -> ok() && dbc::is_school( school, SCHOOL_FROST )  )
+    m *= 1.0 + cache.mastery_value();
 
   if ( glyph.dancing_rune_weapon -> ok() && buffs.dancing_rune_weapon -> check() )
     m *= 1.0 + glyph.dancing_rune_weapon -> effectN( 2 ).percent();

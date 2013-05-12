@@ -749,6 +749,7 @@ inline cache_e cache_from_stat( stat_e st )
   case STAT_MASTERY_RATING: return CACHE_MASTERY;
   case STAT_DODGE_RATING: return CACHE_DODGE;
   case STAT_PARRY_RATING: return CACHE_PARRY;
+  case STAT_BLOCK_RATING: return CACHE_BLOCK;
   default: break;
   }
   return CACHE_NONE;
@@ -3901,6 +3902,7 @@ public:
   } uptimes;
 
   bool active_during_iteration;
+  const spelleffect_data_t* _mastery; // = find_mastery_spell( specialization() ) -> effectN( 1 );
 
   stopwatch_t event_stopwatch;
 
@@ -3988,7 +3990,7 @@ public:
   virtual double composite_spell_crit_multiplier() { return 1.0; }
   virtual double composite_spell_hit();
   virtual double composite_mastery();
-  virtual double composite_mastery_value() { return composite_mastery() * mastery_coefficient(); }
+  virtual double composite_mastery_value() { return util::round( composite_mastery() * mastery_coefficient(), 2); }
 
   virtual double composite_armor()                ;
   virtual double composite_armor_multiplier()     ;
@@ -4028,7 +4030,7 @@ public:
   double stamina()   { return get_attribute( ATTR_STAMINA ); }
   double intellect() { return get_attribute( ATTR_INTELLECT ); }
   double spirit()    { return get_attribute( ATTR_SPIRIT ); }
-  double mastery_coefficient() { return find_mastery_spell( specialization() ) -> effectN( 1 ).mastery_value(); }
+  double mastery_coefficient() { return _mastery -> mastery_value(); }
 
   struct cache_t
   {
@@ -4043,7 +4045,7 @@ public:
     double _attack_haste, _spell_haste;
     double _attack_speed, _spell_speed;
     double _dodge,_parry,_block,_crit_block,_armor;
-    double _mastery;
+    double _mastery_value;
     double _player_mult[SCHOOL_MAX+1], _player_heal_mult[SCHOOL_MAX+1];
     bool active;
     void invalidate();
@@ -4070,7 +4072,7 @@ public:
     double block();
     double crit_block();
     double armor();
-    double mastery();
+    double mastery_value();
     double player_multiplier( school_e );
     double player_heal_multiplier( school_e );
 #else
@@ -4095,7 +4097,7 @@ public:
     double block()            { return player -> composite_tank_block();      }
     double crit_block()       { return player -> composite_tank_crit_block(); }
     double armor()            { return player -> composite_armor();           }
-    double mastery()          { return player -> composite_mastery();         }
+    double mastery_value()    { return player -> composite_mastery_value();   }
 #endif
   } cache;
 

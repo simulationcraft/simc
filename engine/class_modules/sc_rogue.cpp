@@ -481,8 +481,8 @@ struct rogue_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::composite_da_multiplier();
 
-    if ( requires_combo_points )
-      m *= 1.0 + p() -> cache.mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
+    if ( requires_combo_points && p() -> mastery.executioner -> ok() )
+      m *= 1.0 + p() -> cache.mastery_value();
 
     return m;
   }
@@ -491,8 +491,8 @@ struct rogue_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::composite_ta_multiplier();
 
-    if ( requires_combo_points )
-      m *= 1.0 + p() -> cache.mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
+    if ( requires_combo_points && p() -> mastery.executioner -> ok() )
+      m *= 1.0 + p() -> cache.mastery_value();
 
     return m;
   }
@@ -687,7 +687,7 @@ static void trigger_main_gauche( rogue_attack_t* a )
   if ( ! p -> mastery.main_gauche -> ok() )
     return;
 
-  double chance = p -> cache.mastery() * p -> mastery.main_gauche -> effectN( 1 ).mastery_value();
+  double chance = p -> cache.mastery_value();
 
   if ( p -> rng.main_gauche -> roll( chance ) )
   {
@@ -1313,7 +1313,8 @@ struct envenom_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_da_multiplier();
 
-    m *= 1.0 + p() -> cache.mastery() * p() -> mastery.potent_poisons -> effectN( 1 ).mastery_value();
+    if ( p() -> mastery.potent_poisons -> ok() )
+      m *= 1.0 + p() -> cache.mastery_value();
 
     return m;
   }
@@ -1325,7 +1326,8 @@ struct envenom_t : public rogue_attack_t
     if ( p() -> spec.cut_to_the_chase -> ok() && p() -> buffs.slice_and_dice -> check() )
     {
       double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
-      snd *= 1.0 + p() -> cache.mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
+      if ( p() -> mastery.executioner -> ok() )
+        snd *= 1.0 + p() -> cache.mastery_value();
       timespan_t snd_duration = 3 * 6 * p() -> buffs.slice_and_dice -> period;
 
       p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
@@ -1371,7 +1373,8 @@ struct eviscerate_t : public rogue_attack_t
     if ( p() -> spec.cut_to_the_chase -> ok() && p() -> buffs.slice_and_dice -> check() )
     {
       double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
-      snd *= 1.0 + p() -> cache.mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
+      if ( p() -> mastery.executioner -> ok() )
+        snd *= 1.0 + p() -> cache.mastery_value();
       timespan_t snd_duration = 3 * 6 * p() -> buffs.slice_and_dice -> period;
 
       p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
@@ -2024,7 +2027,8 @@ struct slice_and_dice_t : public rogue_attack_t
     rogue_attack_t::execute();
 
     double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
-    snd *= 1.0 + p() -> cache.mastery() * p() -> mastery.executioner -> effectN( 1 ).mastery_value();
+    if ( p() -> mastery.executioner -> ok() )
+      snd *= 1.0 + p() -> cache.mastery_value();
     timespan_t snd_duration = 3 * ( action_cp + 1 ) * p() -> buffs.slice_and_dice -> period;
 
     if ( p() -> set_bonus.tier15_2pc_melee() )
@@ -2310,7 +2314,7 @@ struct rogue_poison_t : public actions::rogue_attack_t
     double m = rogue_attack_t::action_da_multiplier();
 
     if ( p() -> mastery.potent_poisons -> ok() )
-      m *= 1.0 + p() -> cache.mastery() * p() -> mastery.potent_poisons -> effectN( 1 ).mastery_value();
+      m *= 1.0 + p() -> cache.mastery_value();
 
     return m;
   }
@@ -2320,7 +2324,7 @@ struct rogue_poison_t : public actions::rogue_attack_t
     double m = rogue_attack_t::action_ta_multiplier();
 
     if ( p() -> mastery.potent_poisons -> ok() )
-      m *= 1.0 + p() -> cache.mastery() * p() -> mastery.potent_poisons -> effectN( 1 ).mastery_value();
+      m *= 1.0 + p() -> cache.mastery_value();
 
     return m;
   }

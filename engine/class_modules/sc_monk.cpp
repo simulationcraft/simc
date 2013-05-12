@@ -1530,7 +1530,8 @@ struct tigereye_brew_t : public monk_spell_t
   {
     double v = p() -> buff.tigereye_brew_use -> data().effectN( 1 ).percent();
 
-    v += p() -> mastery.bottled_fury -> effectN( 3 ).mastery_value() * p() -> cache.mastery();
+    if ( p() -> mastery.bottled_fury -> ok() )
+      v += p() -> cache.mastery_value();
 
     return v;
   }
@@ -2329,6 +2330,13 @@ void monk_t::init_spells()
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
+
+
+  // Holy Mastery uses effect#2 by default
+  if ( specialization() == MONK_WINDWALKER )
+  {
+    _mastery = &find_mastery_spell( specialization() ) -> effectN( 3 );
+  }
 }
 
 // monk_t::init_base ========================================================

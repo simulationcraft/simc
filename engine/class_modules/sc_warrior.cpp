@@ -277,6 +277,7 @@ public:
   virtual void      regen( timespan_t periodicity );
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_e type, bool save_html );
+  virtual void invalidate_cache( cache_e );
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       decode_set( item_t& );
@@ -421,8 +422,8 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
       if ( p -> buff.enrage -> up() )
       {
         am *= 1.0 + p -> buff.enrage -> data().effectN( 2 ).percent();
-        if ( p -> specialization() == WARRIOR_FURY )
-          am *= 1.0 + p -> cache.mastery() * p -> mastery.unshackled_fury -> effectN( 1 ).mastery_value();
+        if ( p -> mastery.unshackled_fury -> ok() )
+          am *= 1.0 + p -> cache.mastery_value();
       }
     }
 
@@ -595,7 +596,7 @@ static void trigger_strikes_of_opportunity( warrior_attack_t* a )
   if ( p -> cooldown.strikes_of_opportunity -> down() )
     return;
 
-  double chance = p -> cache.mastery() * p -> mastery.strikes_of_opportunity -> effectN( 2 ).percent() / 100.0;
+  double chance = p -> cache.mastery_value();
 
   if ( ! p -> rng.strikes_of_opportunity -> roll( chance ) )
     return;
@@ -3479,7 +3480,8 @@ double warrior_t::composite_tank_block()
   double block_by_rating = current.stats.block_rating / current_rating().block;
 
   // add mastery block to block_by_rating so we can have DR on it.
-  block_by_rating += cache.mastery() * mastery.critical_block -> effectN( 2 ).mastery_value();
+  if ( mastery.critical_block -> ok() )
+    block_by_rating += cache.mastery_value();
 
   double b = initial.block;
 
@@ -3500,7 +3502,8 @@ double warrior_t::composite_tank_crit_block()
 {
   double b = player_t::composite_tank_crit_block();
 
-  b += composite_mastery() * mastery.critical_block -> effectN( 1 ).mastery_value();
+  if ( mastery.critical_block -> ok() )
+    b += cache.mastery_value();
 
   return b;
 }
@@ -3548,6 +3551,17 @@ double warrior_t::composite_melee_speed()
     s *= 1.0 / ( 1.0 + buff.flurry -> data().effectN( 1 ).percent() );
 
   return s;
+}
+
+void warrior_t::invalidate_cache( cache_e c )
+{
+  player_t::invalidate_cache( c );
+
+  if ( c == CACHE_MASTERY && mastery.critical_block -> ok() )
+  {
+    cache.valid[ CACHE_BLOCK ] = false;
+    cache.valid[ CACHE_CRIT_BLOCK ] = false;
+  }
 }
 
 // warrior_t::regen =========================================================

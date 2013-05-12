@@ -344,7 +344,7 @@ public:
   {
     double pm = pet_multiplier;
     if ( mastery.master_of_beasts -> ok() )
-      pm *= 1.0 + mastery.master_of_beasts -> effectN( 1 ).mastery_value() * cache.mastery();
+      pm *= 1.0 + cache.mastery_value();
     return pm;
   }
 };
@@ -1718,7 +1718,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     if ( ! can_trigger_wild_quiver )
       return;
 
-    double chance = multiplier * p() -> cache.mastery() * p() -> mastery.wild_quiver -> effectN( 1 ).mastery_value();
+    double chance = p() -> mastery.wild_quiver -> ok() ? multiplier * p() -> cache.mastery_value() : 0.0;
     if ( wild_quiver -> roll( chance ) )
     {
       p() -> active.wild_quiver_shot -> execute();
@@ -2587,7 +2587,8 @@ struct serpent_sting_spread_t : public serpent_sting_t
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
-    am /= 1.0 + p() -> mastery.essence_of_the_viper -> effectN( 1 ).mastery_value() * p() -> cache.mastery();
+    if ( p() -> mastery.essence_of_the_viper -> ok() )
+      am /= 1.0 + p() -> cache.mastery_value();
 
     return am;
   }
@@ -4244,12 +4245,13 @@ double hunter_t::composite_player_multiplier( school_e school )
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( dbc::is_school( school, SCHOOL_NATURE ) ||
+  if ( mastery.essence_of_the_viper -> ok() &&
+      ( dbc::is_school( school, SCHOOL_NATURE ) ||
        dbc::is_school( school, SCHOOL_ARCANE ) ||
        dbc::is_school( school, SCHOOL_SHADOW ) ||
-       dbc::is_school( school, SCHOOL_FIRE   ) )
+       dbc::is_school( school, SCHOOL_FIRE   ) ) )
   {
-    m *= 1.0 + mastery.essence_of_the_viper -> effectN( 1 ).mastery_value() * cache.mastery();
+    m *= 1.0 + cache.mastery_value();
   }
 
   if ( buffs.beast_within -> up() )
