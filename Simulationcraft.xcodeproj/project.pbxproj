@@ -132,7 +132,6 @@
 		6E392F841396A0AD00649B6A /* sc_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618D0139677F0006B7A89 /* sc_player.cpp */; };
 		6E392F851396A0AD00649B6A /* sc_plot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618D1139677F0006B7A89 /* sc_plot.cpp */; };
 		6E392F861396A0AD00649B6A /* sc_raid_event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618D3139677F0006B7A89 /* sc_raid_event.cpp */; };
-		6E392F871396A0AD00649B6A /* sc_rating.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618D4139677F0006B7A89 /* sc_rating.cpp */; };
 		6E392F891396A0AD00649B6A /* sc_reforge_plot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618D6139677F0006B7A89 /* sc_reforge_plot.cpp */; };
 		6E392F8B1396A0AD00649B6A /* sc_rng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618D8139677F0006B7A89 /* sc_rng.cpp */; };
 		6E392F8C1396A0AD00649B6A /* sc_scaling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618DA139677F0006B7A89 /* sc_scaling.cpp */; };
@@ -306,7 +305,6 @@
 		6EC61909139677F0006B7A89 /* sc_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618D0139677F0006B7A89 /* sc_player.cpp */; };
 		6EC6190A139677F0006B7A89 /* sc_plot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618D1139677F0006B7A89 /* sc_plot.cpp */; };
 		6EC6190C139677F0006B7A89 /* sc_raid_event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618D3139677F0006B7A89 /* sc_raid_event.cpp */; };
-		6EC6190D139677F0006B7A89 /* sc_rating.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618D4139677F0006B7A89 /* sc_rating.cpp */; };
 		6EC6190F139677F0006B7A89 /* sc_reforge_plot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618D6139677F0006B7A89 /* sc_reforge_plot.cpp */; };
 		6EC61911139677F0006B7A89 /* sc_rng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618D8139677F0006B7A89 /* sc_rng.cpp */; };
 		6EC61913139677F0006B7A89 /* sc_scaling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618DA139677F0006B7A89 /* sc_scaling.cpp */; };
@@ -338,7 +336,6 @@
 		6EEAC3D3171C8A98003F8BF1 /* sc_player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618D0139677F0006B7A89 /* sc_player.cpp */; };
 		6EEAC3D4171C8A98003F8BF1 /* sc_plot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618D1139677F0006B7A89 /* sc_plot.cpp */; };
 		6EEAC3D5171C8A98003F8BF1 /* sc_raid_event.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618D3139677F0006B7A89 /* sc_raid_event.cpp */; };
-		6EEAC3D6171C8A98003F8BF1 /* sc_rating.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618D4139677F0006B7A89 /* sc_rating.cpp */; };
 		6EEAC3D7171C8A98003F8BF1 /* sc_reforge_plot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618D6139677F0006B7A89 /* sc_reforge_plot.cpp */; };
 		6EEAC3D8171C8A98003F8BF1 /* sc_rng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618D8139677F0006B7A89 /* sc_rng.cpp */; };
 		6EEAC3D9171C8A98003F8BF1 /* sc_scaling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618DA139677F0006B7A89 /* sc_scaling.cpp */; };
@@ -1294,7 +1291,6 @@
 		6EC618D0139677F0006B7A89 /* sc_player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_player.cpp; path = engine/sc_player.cpp; sourceTree = "<group>"; };
 		6EC618D1139677F0006B7A89 /* sc_plot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_plot.cpp; path = engine/sc_plot.cpp; sourceTree = "<group>"; };
 		6EC618D3139677F0006B7A89 /* sc_raid_event.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_raid_event.cpp; path = engine/sc_raid_event.cpp; sourceTree = "<group>"; };
-		6EC618D4139677F0006B7A89 /* sc_rating.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_rating.cpp; path = engine/sc_rating.cpp; sourceTree = "<group>"; };
 		6EC618D6139677F0006B7A89 /* sc_reforge_plot.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_reforge_plot.cpp; path = engine/sc_reforge_plot.cpp; sourceTree = "<group>"; };
 		6EC618D8139677F0006B7A89 /* sc_rng.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_rng.cpp; path = engine/sc_rng.cpp; sourceTree = "<group>"; };
 		6EC618DA139677F0006B7A89 /* sc_scaling.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_scaling.cpp; path = engine/sc_scaling.cpp; sourceTree = "<group>"; };
@@ -1821,7 +1817,6 @@
 				6EC618D0139677F0006B7A89 /* sc_player.cpp */,
 				6EC618D1139677F0006B7A89 /* sc_plot.cpp */,
 				6EC618D3139677F0006B7A89 /* sc_raid_event.cpp */,
-				6EC618D4139677F0006B7A89 /* sc_rating.cpp */,
 				6EC618D6139677F0006B7A89 /* sc_reforge_plot.cpp */,
 				6EC618D8139677F0006B7A89 /* sc_rng.cpp */,
 				6EC618DA139677F0006B7A89 /* sc_scaling.cpp */,
@@ -2220,7 +2215,6 @@
 				6E392F841396A0AD00649B6A /* sc_player.cpp in Sources */,
 				6E392F851396A0AD00649B6A /* sc_plot.cpp in Sources */,
 				6E392F861396A0AD00649B6A /* sc_raid_event.cpp in Sources */,
-				6E392F871396A0AD00649B6A /* sc_rating.cpp in Sources */,
 				6E392F891396A0AD00649B6A /* sc_reforge_plot.cpp in Sources */,
 				6E392F8B1396A0AD00649B6A /* sc_rng.cpp in Sources */,
 				6E392F8C1396A0AD00649B6A /* sc_scaling.cpp in Sources */,
@@ -2293,7 +2287,6 @@
 				6EC61909139677F0006B7A89 /* sc_player.cpp in Sources */,
 				6EC6190A139677F0006B7A89 /* sc_plot.cpp in Sources */,
 				6EC6190C139677F0006B7A89 /* sc_raid_event.cpp in Sources */,
-				6EC6190D139677F0006B7A89 /* sc_rating.cpp in Sources */,
 				6EC6190F139677F0006B7A89 /* sc_reforge_plot.cpp in Sources */,
 				6EC61911139677F0006B7A89 /* sc_rng.cpp in Sources */,
 				6EC61913139677F0006B7A89 /* sc_scaling.cpp in Sources */,
@@ -2365,7 +2358,6 @@
 				6EEAC3D3171C8A98003F8BF1 /* sc_player.cpp in Sources */,
 				6EEAC3D4171C8A98003F8BF1 /* sc_plot.cpp in Sources */,
 				6EEAC3D5171C8A98003F8BF1 /* sc_raid_event.cpp in Sources */,
-				6EEAC3D6171C8A98003F8BF1 /* sc_rating.cpp in Sources */,
 				6EEAC3D7171C8A98003F8BF1 /* sc_reforge_plot.cpp in Sources */,
 				6EEAC3D8171C8A98003F8BF1 /* sc_rng.cpp in Sources */,
 				6EEAC3D9171C8A98003F8BF1 /* sc_scaling.cpp in Sources */,
@@ -2445,6 +2437,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_FAST_MATH = YES;
 				GCC_FAST_OBJC_DISPATCH = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -2468,6 +2461,7 @@
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DSIMC_NO_AUTOUPDATE",
+					"-DSC_TO_INSTALL",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				QT_DEFINES = "-DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_SHARED -D__APPLE__ -D__GNUC__";
@@ -2489,6 +2483,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_FAST_MATH = YES;
 				GCC_FAST_OBJC_DISPATCH = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
@@ -2510,6 +2505,7 @@
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
 					"-DSIMC_NO_AUTOUPDATE",
+					"-DSC_TO_INSTALL",
 				);
 				OTHER_LDFLAGS = "-headerpad_max_install_names";
 				PRODUCT_NAME = "$(TARGET_NAME)";
