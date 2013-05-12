@@ -4141,7 +4141,8 @@ struct earth_elemental_totem_spell_t : public shaman_totem_t
   {
     shaman_totem_t::execute();
 
-    p() -> cooldown.elemental_totem -> start( totem_duration );
+    p() -> cooldown.elemental_totem -> duration = data().duration();
+    p() -> cooldown.elemental_totem -> start();
   }
 
   bool ready()
@@ -4187,7 +4188,8 @@ struct fire_elemental_totem_spell_t : public shaman_totem_t
   {
     shaman_totem_t::execute();
 
-    p() -> cooldown.elemental_totem -> start( totem_duration );
+    p() -> cooldown.elemental_totem -> duration = data().duration();
+    p() -> cooldown.elemental_totem -> start();
   }
 
   bool ready()
