@@ -3724,13 +3724,13 @@ void player_t::invalidate_cache( cache_e c )
   case CACHE_STRENGTH:
     cache.valid[ CACHE_STRENGTH     ] = false;
     cache.valid[ CACHE_ATTACK_POWER ] = false;
-    cache.valid[ CACHE_PARRY        ] = ! current.parry_rating_per_strength > 0;
+    cache.valid[ CACHE_PARRY        ] = cache.valid[ CACHE_PARRY ] && current.parry_rating_per_strength == 0;
     break;
   case CACHE_AGILITY:
     cache.valid[ CACHE_AGILITY      ] = false;
     cache.valid[ CACHE_ATTACK_POWER ] = false;
     cache.valid[ CACHE_ATTACK_CRIT  ] = false;
-    cache.valid[ CACHE_DODGE        ] = ! current.dodge_per_agility > 0;
+    cache.valid[ CACHE_DODGE        ] = cache.valid[ CACHE_DODGE ] && current.dodge_per_agility == 0;
     break;
   case CACHE_INTELLECT:
     cache.valid[ CACHE_INTELLECT  ] = false;
