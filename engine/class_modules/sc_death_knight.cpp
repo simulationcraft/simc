@@ -145,6 +145,7 @@ public:
     buff_t* dancing_rune_weapon;
     buff_t* dark_transformation;
     buff_t* frost_presence;
+    buff_t* icebound_fortitude;
     buff_t* killing_machine;
     buff_t* pillar_of_frost;
     buff_t* rime;
@@ -242,6 +243,7 @@ public:
     const spell_data_t* improved_blood_presence;
     const spell_data_t* scarlet_fever;
     const spell_data_t* crimson_scourge;
+    const spell_data_t* sanguine_fortitude;
 
     // Frost
     const spell_data_t* blood_of_the_north;
@@ -298,6 +300,7 @@ public:
     const spell_data_t* chains_of_ice;
     const spell_data_t* dancing_rune_weapon;
     const spell_data_t* enduring_infection;
+    const spell_data_t* icebound_fortitude;
     const spell_data_t* outbreak;
     const spell_data_t* shifting_presences;
     const spell_data_t* vampiric_blood;
@@ -1415,6 +1418,32 @@ struct army_ghoul_pet_t : public death_knight_pet_t
 // ==========================================================================
 struct bloodworms_pet_t : public death_knight_pet_t
 {
+  // FIXME: Verify heal amounts, currently uses 15% owner max hp * stacks * 25%
+  struct blood_burst_t : public heal_t
+  {
+    blood_burst_t( bloodworms_pet_t* p ) :
+      heal_t( "blood_burst", p, p -> owner -> find_spell( 81280 ) )
+    {
+      background = true;
+      aoe = -1;
+    }
+
+    double base_da_min( const action_state_t* )
+    {
+      death_knight_t* o = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
+      return o -> resources.max[ RESOURCE_HEALTH ] * 0.15 * p() -> blood_gorged -> check() * 0.25;
+    }
+
+    double base_da_max( const action_state_t* )
+    {
+      death_knight_t* o = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
+      return o -> resources.max[ RESOURCE_HEALTH ] * 0.15 * p() -> blood_gorged -> check() * 0.25;
+    }
+
+    bloodworms_pet_t* p() const
+    { return debug_cast< bloodworms_pet_t* >( player ); }
+  };
+
   // FIXME: Level 80/85 values
   struct melee_t : public melee_attack_t
   {
@@ -1426,13 +1455,15 @@ struct bloodworms_pet_t : public death_knight_pet_t
 
       void execute()
       {
+        bloodworms_pet_t* p = debug_cast< bloodworms_pet_t* >( player );
+        p -> blood_burst -> execute();
         if ( ! player -> is_sleeping() )
           player -> cast_pet() -> dismiss();
       }
     };
 
     melee_t( player_t* player ) :
-      melee_attack_t( "bloodworm_melee", player )
+      melee_attack_t( "melee", player )
     {
       school          = SCHOOL_PHYSICAL;
       weapon = &( player -> main_hand_weapon );
@@ -1478,8 +1509,7 @@ struct bloodworms_pet_t : public death_knight_pet_t
             sim -> output( "%s-%s burst chance, base=%f multiplier=%f total=%f",
                           o -> name(), player -> name(), base_proc_chance, multiplier, base_proc_chance * multiplier );
 
-          // TODO: Healing
-          if ( base_proc_chance * multiplier > p() -> blood_burst -> range( 0, 999 ) )
+          if ( base_proc_chance * multiplier > p() -> rng_blood_burst -> range( 0, 999 ) )
             new ( *sim ) blood_burst_event_t( p(), timespan_t::zero() );
           else
             p() -> blood_gorged -> trigger();
@@ -1495,11 +1525,12 @@ struct bloodworms_pet_t : public death_knight_pet_t
 
   melee_t* melee;
   buff_t* blood_gorged;
-  rng_t*  blood_burst;
+  blood_burst_t* blood_burst;
+  rng_t*  rng_blood_burst;
 
   bloodworms_pet_t( sim_t* sim, death_knight_t* owner ) :
     death_knight_pet_t( sim, owner, "bloodworms", true /*guardian*/ ),
-    melee( nullptr ), blood_gorged( nullptr ), blood_burst( nullptr )
+    melee( nullptr ), blood_gorged( nullptr ), blood_burst( nullptr ), rng_blood_burst( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.55;
@@ -1509,11 +1540,12 @@ struct bloodworms_pet_t : public death_knight_pet_t
     owner_coeff.ap_from_ap = 0.385;
   }
 
-  virtual void init_base_stats()
+  void init_spells()
   {
-    pet_t::init_base_stats();
+    pet_t::init_spells();
 
     melee = new melee_t( this );
+    blood_burst = new blood_burst_t( this );
   }
 
   void create_buffs()
@@ -1528,7 +1560,7 @@ struct bloodworms_pet_t : public death_knight_pet_t
   {
     pet_t::init_rng();
 
-    blood_burst = get_rng( "blood_burst" );
+    rng_blood_burst = get_rng( "blood_burst" );
   }
 
   virtual void summon( timespan_t duration=timespan_t::zero() )
@@ -4324,6 +4356,33 @@ struct vampiric_blood_t : public death_knight_spell_t
   }
 };
 
+// Icebound Fortitude =========================================================
+
+struct icebound_fortitude_t : public death_knight_spell_t
+{
+  icebound_fortitude_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_spell_t( "icebound_fortitude", p, p -> find_class_spell( "Icebound Fortitude" ) ) 
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+
+    cooldown -> duration = data().duration() * ( 1.0 + p -> glyph.icebound_fortitude -> effectN( 1 ).percent() );
+    if ( p -> spec.sanguine_fortitude -> ok() )
+      base_costs[ RESOURCE_RUNIC_POWER ] = 0;
+  }
+
+  void execute()
+  {
+    death_knight_spell_t::execute();
+
+    p() -> buffs.icebound_fortitude -> trigger();
+  }
+};
+
+
+// Buffs ======================================================================
+
 struct runic_corruption_regen_t : public event_t
 {
   buff_t* buff;
@@ -4443,6 +4502,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "frost_presence"           ) return new frost_presence_t           ( this, options_str );
   if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
   if ( name == "plague_leech"             ) return new plague_leech_t             ( this, options_str );
+  if ( name == "icebound_fortitude"       ) return new icebound_fortitude_t       ( this, options_str );
 
   // Blood Actions
   if ( name == "blood_boil"               ) return new blood_boil_t               ( this, options_str );
@@ -4770,6 +4830,7 @@ void death_knight_t::init_spells()
   spec.blood_parasite             = find_specialization_spell( "Blood Parasite" );
   spec.scarlet_fever              = find_specialization_spell( "Scarlet Fever" );
   spec.crimson_scourge            = find_specialization_spell( "Crimson Scourge" );
+  spec.sanguine_fortitude         = find_specialization_spell( "Sanguine Fortitude" );
 
   // Frost
   spec.blood_of_the_north         = find_specialization_spell( "Blood of the North" );
@@ -4809,6 +4870,7 @@ void death_knight_t::init_spells()
   glyph.chains_of_ice             = find_glyph_spell( "Glyph of Chains of Ice" );
   glyph.dancing_rune_weapon       = find_glyph_spell( "Glyph of Dancing Rune Weapon" );
   glyph.enduring_infection        = find_glyph_spell( "Glyph of Enduring Infection" );
+  glyph.icebound_fortitude        = find_glyph_spell( "Glyph of Icebound Fortitude" );
   glyph.outbreak                  = find_glyph_spell( "Glyph of Outbreak" );
   glyph.shifting_presences        = find_glyph_spell( "Glyph of Shifting Presences" );
   glyph.vampiric_blood            = find_glyph_spell( "Glyph of Vampiric Blood" );
@@ -4969,6 +5031,8 @@ void death_knight_t::init_actions()
         action_list_str += "/vampiric_blood,if=health<30000";
       if ( level >= 87 )
         action_list_str += "/bone_shield,if=buff.bone_shield.down";
+      if ( level >= 62 )
+        action_list_str += "/icebound_fortitude,if=health.pct<50";
       action_list_str += "/dancing_rune_weapon";
       action_list_str += "/raise_dead,if=time>=10";
       action_list_str += "/outbreak,if=(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2)|(!dot.blood_plague.ticking&!dot.frost_fever.ticking)";
@@ -5499,6 +5563,9 @@ void death_knight_t::create_buffs()
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) );
   buffs.frost_presence      = buff_creator_t( this, "frost_presence", find_class_spell( "Frost Presence" ) )
                               .default_value( find_class_spell( "Frost Presence" ) -> effectN( 1 ).percent() );
+  buffs.icebound_fortitude  = buff_creator_t( this, "icebound_fortitude", find_class_spell( "Icebound Fortitude" ) )
+                              .duration( find_class_spell( "Icebound Fortitude" ) -> duration() *
+                                         ( 1.0 + glyph.icebound_fortitude -> effectN( 2 ).percent() ) );
   buffs.killing_machine     = buff_creator_t( this, "killing_machine", find_spell( 51124 ) )
                               .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() )
                               .chance( find_specialization_spell( "Killing Machine" ) -> proc_chance() ); // PPM based!
@@ -5670,6 +5737,9 @@ void death_knight_t::target_mitigation( school_e school, dmg_e type, action_stat
 
   if ( buffs.bone_shield -> up() )
     state -> result_amount *= 1.0 + buffs.bone_shield -> data().effectN( 1 ).percent();
+
+  if ( buffs.icebound_fortitude -> up() )
+    state -> result_amount *= 1.0 + buffs.icebound_fortitude -> data().effectN( 3 ).percent() + spec.sanguine_fortitude -> effectN( 1 ).percent();
 
   player_t::target_mitigation( school, type, state );
 }
