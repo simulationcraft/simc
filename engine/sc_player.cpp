@@ -3396,8 +3396,8 @@ double player_t::composite_ranged_attack_player_vulnerability()
   return 1.0;
 }
 
-// player_t::cache_t::invalidate  =============================================
-
+/* Invalidate ALL stats
+ */
 void player_t::cache_t::invalidate()
 {
   if ( ! active ) return;
@@ -3406,6 +3406,22 @@ void player_t::cache_t::invalidate()
   range::fill( spell_power_valid, false );
   range::fill( player_mult_valid, false );
   range::fill( player_heal_mult_valid, false );
+}
+
+/* Helper function to access attribute cache functions by attribute-enumeration
+ */
+double player_t::cache_t::get_attribute( attribute_e a )
+{
+  switch ( a )
+  {
+  case ATTR_STRENGTH: return strength();
+  case ATTR_AGILITY: return agility();
+  case ATTR_STAMINA: return stamina();
+  case ATTR_INTELLECT: return intellect();
+  case ATTR_SPIRIT: return spirit();
+  default: assert( false ); break;
+  }
+  return 0.0;
 }
 
 #ifdef SC_STAT_CACHE
@@ -6220,27 +6236,27 @@ struct snapshot_stats_t : public action_t
 
     p -> buffed.resource     = p -> resources.max;
 
-    p -> buffed.spell_haste  = p -> composite_spell_speed();
-    p -> buffed.attack_haste = p -> composite_melee_haste();
-    p -> buffed.attack_speed = p -> composite_melee_speed();
+    p -> buffed.spell_haste  = p -> cache.spell_speed();
+    p -> buffed.attack_haste = p -> cache.attack_haste();
+    p -> buffed.attack_speed = p -> cache.attack_speed();
     p -> buffed.mastery      = p -> composite_mastery();
 
-    p -> buffed.spell_power  = util::round( p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
-    p -> buffed.spell_hit    = p -> composite_spell_hit();
-    p -> buffed.spell_crit   = p -> composite_spell_crit();
+    p -> buffed.spell_power  = util::round( p -> cache.spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
+    p -> buffed.spell_hit    = p -> cache.spell_hit();
+    p -> buffed.spell_crit   = p -> cache.spell_crit();
     p -> buffed.manareg_per_second          = p -> mana_regen_per_second();
 
-    p -> buffed.attack_power = p -> composite_melee_attack_power() * p -> composite_attack_power_multiplier();
-    p -> buffed.attack_hit   = p -> composite_melee_hit();
+    p -> buffed.attack_power = p -> cache.attack_power() * p -> composite_attack_power_multiplier();
+    p -> buffed.attack_hit   = p -> cache.attack_hit();
     p -> buffed.mh_attack_expertise = p -> composite_melee_expertise( &( p -> main_hand_weapon ) );
     p -> buffed.oh_attack_expertise = p -> composite_melee_expertise( &( p -> off_hand_weapon ) );
-    p -> buffed.attack_crit  = p -> composite_melee_crit();
+    p -> buffed.attack_crit  = p -> cache.attack_crit();
 
     p -> buffed.armor        = p -> composite_armor();
     p -> buffed.miss         = p -> composite_tank_miss( SCHOOL_PHYSICAL );
-    p -> buffed.dodge        = p -> composite_tank_dodge();
-    p -> buffed.parry        = p -> composite_tank_parry();
-    p -> buffed.block        = p -> composite_tank_block();
+    p -> buffed.dodge        = p -> cache.dodge();
+    p -> buffed.parry        = p -> cache.parry();
+    p -> buffed.block        = p -> cache.block();
     p -> buffed.crit         = p -> composite_tank_crit( SCHOOL_PHYSICAL );
 
     role_e role = p -> primary_role();
@@ -6280,12 +6296,12 @@ struct snapshot_stats_t : public action_t
       if ( chance < 0 ) attack_hit_extra = -chance * p -> current_rating().attack_hit;
       if ( p -> position() != POSITION_FRONT  )
       {
-        chance = attack -> dodge_chance( p -> composite_melee_expertise(), delta_level );
+        chance = attack -> dodge_chance( p -> cache.attack_expertise(), delta_level );
         if ( chance < 0 ) expertise_extra = -chance * p -> current_rating().expertise;
       }
       else if ( p ->position() == POSITION_FRONT )
       {
-        chance = attack -> parry_chance( p -> composite_melee_expertise(), delta_level );
+        chance = attack -> parry_chance( p -> cache.attack_expertise(), delta_level );
         if ( chance < 0 ) expertise_extra = -chance * p -> current_rating().expertise;
       }
     }
@@ -7663,11 +7679,11 @@ expr_t* player_t::create_expression( action_t* a,
   if ( name_str == "in_combat" )
     return make_ref_expr( "in_combat", in_combat );
   if ( name_str == "attack_haste" )
-    return make_mem_fn_expr( name_str, *this, &player_t::composite_melee_haste );
+    return make_mem_fn_expr( name_str, this-> cache, &player_t::cache_t::attack_haste );
   if ( name_str == "attack_speed" )
-    return make_mem_fn_expr( name_str, *this, &player_t::composite_melee_speed );
+    return make_mem_fn_expr( name_str, this -> cache, &player_t::cache_t::attack_speed );
   if ( name_str == "spell_haste" )
-    return make_mem_fn_expr( name_str, *this, &player_t::composite_spell_speed );
+    return make_mem_fn_expr( name_str, this-> cache, &player_t::cache_t::spell_speed );
   if ( name_str == "time_to_die" )
     return make_mem_fn_expr( name_str, *this, &player_t::time_to_die );
 
@@ -7703,7 +7719,7 @@ expr_t* player_t::create_expression( action_t* a,
                                 ( 1 << POSITION_BACK ) | ( 1 << POSITION_RANGED_BACK ) );
 
   if ( name_str == "mastery_value" )
-    return  make_mem_fn_expr( name_str, *this, &player_t::composite_mastery_value );
+    return  make_mem_fn_expr( name_str, this-> cache, &player_t::cache_t::mastery_value );
 
   if ( expr_t* q = create_resource_expression( name_str ) )
     return q;
@@ -8004,7 +8020,7 @@ expr_t* player_t::create_expression( action_t* a,
         attr_expr_t( const std::string& name, player_t& p, attribute_e a ) :
           player_expr_t( name, p ), attr( a ) {}
         virtual double evaluate()
-        { return player.get_attribute( attr ); }
+        { return player.cache.get_attribute( attr ); }
       };
       return new attr_expr_t( name_str, *this, static_cast<attribute_e>( stat ) );
     }
@@ -8017,7 +8033,7 @@ expr_t* player_t::create_expression( action_t* a,
           player_expr_t( name, p ) {}
         virtual double evaluate()
         {
-          return player.composite_spell_power( SCHOOL_MAX ) * player.composite_spell_power_multiplier();
+          return player.cache.spell_power( SCHOOL_MAX ) * player.composite_spell_power_multiplier();
         }
       };
       return new sp_expr_t( name_str, *this );
@@ -8031,7 +8047,7 @@ expr_t* player_t::create_expression( action_t* a,
           player_expr_t( name, p ) {}
         virtual double evaluate()
         {
-          return player.composite_melee_attack_power() * player.composite_attack_power_multiplier();
+          return player.cache.attack_power() * player.composite_attack_power_multiplier();
         }
       };
       return new ap_expr_t( name_str, *this );

@@ -4032,11 +4032,35 @@ public:
   double spirit()    { return get_attribute( ATTR_SPIRIT ); }
   double mastery_coefficient() { return _mastery -> mastery_value(); }
 
+  /* The Cache system increases simulation performance by moving the calculation point
+   * from call-time to modification-time of a stat. Because a stat is called much more
+   * often than it is changed, this reduces costly and unnecessary floating-point operations.
+   *
+   * When a stat is accessed, its 'valid'-state is checked:
+   *   If its true, the cached value is accessed.
+   *   If it is false, the stat value is recalculated and written to the cache.
+   *
+   * To indicate when a stat gets modified, it needs to be 'invalidated'. Every time a stat
+   * is invalidated, its 'valid'-state gets set to false.
+   */
+
+  /* - To invalidate a stat, use player_t::invalidate_cache( cache_e )
+   * - using player_t::stat_gain/loss automatically invalidates the corresponding cache
+   * - Same goes for stat_buff_t, which work through player_t::stat_gain/loss
+   * - Buffs with effects in a composite_ function need invalidates added to their buff_creator
+   *
+   * To create invalidation chains ( eg. Priest: Spirit invalidates Hit ) override the
+   * virtual player_t::invalidate_cache( cache_e ) function.
+   *
+   */
   struct cache_t
   {
     player_t* player;
+    // 'valid'-states
     std::array<bool,CACHE_MAX> valid;
     std::array<bool,SCHOOL_MAX+1> spell_power_valid, player_mult_valid, player_heal_mult_valid;
+  private:
+    // cached values
     double _strength, _agility, _stamina, _intellect, _spirit;
     double _spell_power[SCHOOL_MAX+1], _attack_power;
     double _attack_expertise;
@@ -4047,10 +4071,13 @@ public:
     double _dodge,_parry,_block,_crit_block,_armor;
     double _mastery_value;
     double _player_mult[SCHOOL_MAX+1], _player_heal_mult[SCHOOL_MAX+1];
-    bool active;
+  public:
+    bool active; // runtime active-flag
     void invalidate();
+    double get_attribute( attribute_e );
     cache_t( player_t* p ) : player( p ), active( false ) { invalidate(); }
 #ifdef SC_STAT_CACHE
+    // Cache stat functions
     double strength();
     double agility();
     double stamina();
@@ -4076,6 +4103,7 @@ public:
     double player_multiplier( school_e );
     double player_heal_multiplier( school_e );
 #else
+    // Passthrough cache stat functions for inactive cache
     double strength()  { return player -> strength();  }
     double agility()   { return player -> agility();   }
     double stamina()   { return player -> stamina();   }
@@ -4917,30 +4945,10 @@ struct spell_base_t : public action_t
   virtual void   schedule_execute( action_state_t* execute_state = 0 );
 
   virtual double composite_crit()
-  {
-    /*if ( fabs( player -> cache.spell_crit() - player -> composite_spell_crit() ) > 0.000001 )
-    {
-      sim->errorf( "%s action %s cached sc: %.16f not equal to comp sc: %.16f \n"
-                  " cached int: %.16f comp int: %.16f\n"
-                  " current sc: %.16f"
-                   ,
-          player->name(), name(), player -> cache.spell_crit(), player -> composite_spell_crit(),
-          player -> cache.intellect(), player -> intellect(),
-          player -> current.spell_crit );
-      assert( false );
-    }*/
-    return action_t::composite_crit() + player -> cache.spell_crit();
-  }
+  { return action_t::composite_crit() + player -> cache.spell_crit(); }
+
   virtual double composite_haste()
-  {
-    /*if ( fabs( player -> cache.spell_haste() - player -> composite_spell_haste() ) > 0.000001 )
-        {
-          sim->errorf( "%s action %s cached sh: %.16f not equal to comp sh: %.16f \n",
-              player->name(), name(), player -> cache.spell_haste(), player -> composite_spell_haste() );
-          assert( false );
-        }*/
-    return action_t::composite_haste() * player -> cache.spell_speed();
-  }
+  { return action_t::composite_haste() * player -> cache.spell_speed(); }
 
   virtual double composite_crit_multiplier()
   { return action_t::composite_crit_multiplier() * player -> composite_spell_crit_multiplier(); }
