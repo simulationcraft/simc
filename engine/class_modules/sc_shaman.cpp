@@ -186,6 +186,7 @@ public:
     proc_t* swings_reset_oh;
     proc_t* t15_2pc_melee;
     proc_t* wasted_t15_2pc_melee;
+    proc_t* wasted_lava_surge;
     proc_t* wasted_ls;
     proc_t* wasted_ls_shock_cd;
     proc_t* wasted_mw;
@@ -3237,7 +3238,12 @@ struct lava_burst_t : public shaman_spell_t
       return;
 
     if ( p() -> buff.lava_surge -> check() )
+    {
+      if ( time_to_execute != timespan_t::zero() )
+        p() -> proc.wasted_lava_surge -> occur();
+
       p() -> buff.lava_surge -> expire();
+    }
   }
 
   virtual timespan_t execute_time()
@@ -3725,6 +3731,9 @@ struct flame_shock_t : public shaman_spell_t
 
     if ( p() -> rng.lava_surge -> roll ( p() -> spec.lava_surge -> proc_chance() ) )
     {
+      if ( p() -> buff.lava_surge -> check() )
+        p() -> proc.wasted_lava_surge -> occur();
+
       p() -> proc.lava_surge -> occur();
       p() -> cooldown.lava_burst -> reset( true );
       p() -> buff.lava_surge -> trigger();
@@ -5241,6 +5250,7 @@ void shaman_t::init_procs()
   proc.uf_wasted          = get_proc( "uf_wasted"               );
   proc.t15_2pc_melee      = get_proc( "t15_2pc_melee"           );
   proc.wasted_t15_2pc_melee = get_proc( "wasted_t15_2pc_melee"  );
+  proc.wasted_lava_surge  = get_proc( "wasted_lava_surge"       );
   proc.wasted_ls          = get_proc( "wasted_lightning_shield" );
   proc.wasted_ls_shock_cd = get_proc( "wasted_lightning_shield_shock_cd" );
   proc.wasted_mw          = get_proc( "wasted_maelstrom_weapon" );
