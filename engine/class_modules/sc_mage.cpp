@@ -1417,16 +1417,6 @@ struct arcane_power_t : public mage_spell_t
 
     p() -> buffs.arcane_power -> trigger( 1, data().effectN( 1 ).percent() );
   }
-
-  virtual bool ready()
-  {
-    // FIXME: Is this still true?
-    // Can't trigger AP if PoM is up
-    if ( p() -> buffs.presence_of_mind -> check() )
-      return false;
-
-    return mage_spell_t::ready();
-  }
 };
 
 // Blink Spell ==============================================================
@@ -2847,15 +2837,6 @@ struct presence_of_mind_t : public mage_spell_t
     mage_spell_t::execute();
 
     p() -> buffs.presence_of_mind -> trigger();
-  }
-
-  virtual bool ready()
-  {
-    // Can't use PoM while AP is up
-    if ( p() -> buffs.arcane_power -> check() )
-      return false;
-
-    return mage_spell_t::ready();
   }
 };
 
