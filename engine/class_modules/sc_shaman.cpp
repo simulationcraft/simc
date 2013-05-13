@@ -3727,6 +3727,7 @@ struct flame_shock_t : public shaman_spell_t
     {
       p() -> proc.lava_surge -> occur();
       p() -> cooldown.lava_burst -> reset( true );
+      p() -> buff.lava_surge -> trigger();
     }
   }
 
