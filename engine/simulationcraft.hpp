@@ -2965,6 +2965,7 @@ struct special_effect_t
   bool proc_delay;
   bool unique;
   unsigned spell_id, aura_spell_id;
+  action_t* execute_action; // Allows custom action to be executed on use
 
   special_effect_t() :
     trigger_type( PROC_NONE ), trigger_mask( 0 ), stat( STAT_NONE ), school( SCHOOL_NONE ),
@@ -2973,11 +2974,11 @@ struct special_effect_t
     tick( timespan_t::zero() ), cost_reduction( false ),
     no_refresh( false ), chance_to_discharge( false ), override_result_es_mask( 0 ),
     result_es_mask( 0 ), reverse( false ), aoe( 0 ), proc_delay( false ), unique( false ),
-    spell_id( 0 ), aura_spell_id( 0 )
+    spell_id( 0 ), aura_spell_id( 0 ), execute_action( nullptr )
   { }
 
   std::string to_string();
-  bool active() { return stat != STAT_NONE || school != SCHOOL_NONE; }
+  bool active() { return stat != STAT_NONE || school != SCHOOL_NONE || execute_action; }
   void clear()
   {
     name_str.clear(); trigger_type = PROC_NONE; trigger_mask = 0; stat = STAT_NONE;

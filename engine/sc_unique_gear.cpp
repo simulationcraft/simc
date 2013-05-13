@@ -227,6 +227,58 @@ public:
 };
 
 namespace enchants {
+
+struct synapse_spring_action_t : public action_t
+{
+  double _stat_amount;
+  timespan_t _duration;
+  timespan_t _cd;
+  stat_buff_t* buff;
+
+
+  synapse_spring_action_t( player_t* p, const std::string& n, double stat_amount, timespan_t duration, timespan_t cd ) :
+    action_t( ACTION_USE, n, p ),
+    _stat_amount( stat_amount ),
+    _duration( duration ),
+    _cd( cd ),
+    buff( nullptr )
+  {
+
+    buff = dynamic_cast<stat_buff_t*>( buff_t::find( player, n, player ) );
+    if ( ! buff )
+      buff = stat_buff_creator_t( player, n )
+             .duration( _duration )
+             .cd( _cd );
+
+    background = true;
+  }
+
+  virtual void execute()
+  {
+    static const attribute_e attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT };
+
+    stat_e max_stat = STAT_INTELLECT;
+    double max_value = -1;
+
+    for ( unsigned i = 0; i < sizeof_array( attr ); ++i )
+    {
+      if ( player -> current.stats.attribute[ attr[ i ] ] > max_value )
+      {
+        max_value = player -> current.stats.attribute[ attr[ i ] ];
+        max_stat = stat_from_attr( attr[ i ] );
+      }
+    }
+
+    assert( buff );
+    buff -> stats.clear(); // clear previous stat
+    buff -> stats.push_back( stat_buff_t::buff_stat_t( max_stat, _stat_amount ) ); // add new max stat
+    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
+    buff -> trigger();
+
+
+    update_ready();
+  }
+};
 // synapse_springs =================================================
 
 void synapse_springs( item_t* item )
@@ -235,29 +287,13 @@ void synapse_springs( item_t* item )
 
   if ( p -> profession[ PROF_ENGINEERING ] < 425 )
   {
-    item -> sim -> errorf( "Player %s attempting to use synapse springs without 425 in engineering.\n", p -> name() );
+    item -> sim -> errorf( "Player %s attempting to use synapse springs mk 2 without 500 in engineering.\n", p -> name() );
     return;
   }
 
-  static const attribute_e attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT };
-
-  stat_e max_stat = STAT_INTELLECT;
-  double max_value = -1;
-
-  for ( unsigned i = 0; i < sizeof_array( attr ); ++i )
-  {
-    if ( p -> current.stats.attribute[ attr[ i ] ] > max_value )
-    {
-      max_value = p -> current.stats.attribute[ attr[ i ] ];
-      max_stat = stat_from_attr( attr[ i ] );
-    }
-  }
-
   item -> parsed.use.name_str = "synapse_springs";
-  item -> parsed.use.stat = max_stat;
-  item -> parsed.use.stat_amount = 480.0;
-  item -> parsed.use.duration = timespan_t::from_seconds( 10.0 );
   item -> parsed.use.cooldown = timespan_t::from_seconds( 60.0 );
+  item -> parsed.use.execute_action = new synapse_spring_action_t( p, "synapse_springs", 480.0, timespan_t::from_seconds( 10.0 ), timespan_t::from_seconds( 60.0 ) );
 }
 
 // synapse_springs_2 =================================================
@@ -275,25 +311,13 @@ void synapse_springs_2( item_t* item )
     return;
   }
 
-  static const attribute_e attr[] = { ATTR_STRENGTH, ATTR_AGILITY, ATTR_INTELLECT };
-
-  stat_e max_stat = STAT_INTELLECT;
-  double max_value = -1;
-
-  for ( unsigned i = 0; i < sizeof_array( attr ); ++i )
-  {
-    if ( p -> current.stats.attribute[ attr[ i ] ] > max_value )
-    {
-      max_value = p -> current.stats.attribute[ attr[ i ] ];
-      max_stat = stat_from_attr( attr[ i ] );
-    }
-  }
-
   item -> parsed.use.name_str = "synapse_springs_2";
-  item -> parsed.use.stat = max_stat;
-  item -> parsed.use.stat_amount = spell1 -> effectN( 1 ).base_value();
-  item -> parsed.use.duration = spell2 -> duration();
   item -> parsed.use.cooldown = spell1 -> cooldown();
+  item -> parsed.use.execute_action = new synapse_spring_action_t( p,
+                                                           "synapse_springs_2",
+                                                           spell1 -> effectN( 1 ).base_value(),
+                                                           spell2 -> duration(),
+                                                           spell1 -> cooldown() );
 }
 
 // phase_fingers =================================================

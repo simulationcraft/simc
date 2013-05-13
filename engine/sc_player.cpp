@@ -6463,7 +6463,7 @@ struct use_item_t : public action_t
     if ( ! item -> parsed.use.active() )
     {
       sim -> errorf( "Player %s attempting 'use_item' action with item '%s' which has no 'use=' encoding.\n", player -> name(), item -> name() );
-      item = 0;
+      item = nullptr;
       return;
     }
 
@@ -6521,6 +6521,10 @@ struct use_item_t : public action_t
                .chance( e.proc_chance )
                .reverse( e.reverse )
                .add_stat( e.stat, e.stat_amount );
+    }
+    else if ( e.execute_action )
+    {
+      assert( player == e.execute_action -> player ); // check if the action is from the same player. Might be overly strict
     }
     else assert( false );
 
@@ -6582,6 +6586,10 @@ struct use_item_t : public action_t
       if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), use_name.c_str() );
       buff -> trigger();
       lockout( buff -> buff_duration );
+    }
+    else if ( action_t* a = item -> parsed.use.execute_action )
+    {
+      a -> execute();
     }
     else assert( false );
 
