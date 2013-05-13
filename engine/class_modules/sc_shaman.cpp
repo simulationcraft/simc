@@ -5154,7 +5154,8 @@ void shaman_t::create_buffs()
   buff.elemental_focus         = buff_creator_t( this, "elemental_focus",   spec.elemental_focus -> effectN( 1 ).trigger() )
                                  .activated( false );
   buff.lava_surge              = buff_creator_t( this, "lava_surge",        spec.lava_surge )
-                                 .activated( false );
+                                 .activated( false )
+                                 .chance( 1.0 ); // Proc chance is handled externally
   buff.lightning_shield        = buff_creator_t( this, "lightning_shield", find_class_spell( "Lightning Shield" ) )
                                  .max_stack( ( specialization() == SHAMAN_ELEMENTAL )
                                              ? static_cast< int >( spec.rolling_thunder -> effectN( 1 ).base_value() )
