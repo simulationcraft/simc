@@ -78,6 +78,9 @@ void action_state_t::copy_state( const action_state_t* o )
 
   target_da_multiplier = o -> target_da_multiplier;
   target_ta_multiplier = o -> target_ta_multiplier;
+
+  target_mitigation_da_multiplier = o -> target_mitigation_da_multiplier;
+  target_mitigation_ta_multiplier = o -> target_mitigation_ta_multiplier;
 }
 
 action_state_t::action_state_t( action_t* a, player_t* t ) :
@@ -86,7 +89,8 @@ action_state_t::action_state_t( action_t* a, player_t* t ) :
   haste( 0 ), crit( 0 ), target_crit( 0 ),
   attack_power( 0 ), spell_power( 0 ),
   da_multiplier( 1.0 ), ta_multiplier( 1.0 ),
-  target_da_multiplier( 1.0 ), target_ta_multiplier( 1.0 )
+  target_da_multiplier( 1.0 ), target_ta_multiplier( 1.0 ),
+  target_mitigation_da_multiplier( 1.0 ), target_mitigation_ta_multiplier( 1.0 )
 {
   assert( target );
 }
@@ -121,6 +125,9 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
   s << " ta_mul=" << ta_multiplier;
   s << " tgt_da_mul=" << target_da_multiplier;
   s << " tgt_ta_mul=" << target_ta_multiplier;
+
+  s << " tgt_mitg_da_mul=" << target_mitigation_da_multiplier;
+  s << " tgt_mitg_ta_mul=" << target_mitigation_ta_multiplier;
 
   s.precision( ss );
 

@@ -755,6 +755,18 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * ( 1 / a -> buffed.spell_haste - 1 ),
+      100 * ( 1 / a -> composite_spell_haste() - 1 ),
+      a -> total_gear.haste_rating );
+    j++;
+    os.printf(
+      "\t\t\t\t\t\t\t\t\t<tr%s>\n"
+      "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Spell Speed</th>\n"
+      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+      "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
+      "\t\t\t\t\t\t\t\t\t</tr>\n",
+      ( j % 2 == 1 ) ? " class=\"odd\"" : "",
+      100 * ( 1 / a -> buffed.spell_speed - 1 ),
       100 * ( 1 / a -> composite_spell_speed() - 1 ),
       a -> total_gear.haste_rating );
     j++;
@@ -932,7 +944,6 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       100 * a -> composite_tank_crit( SCHOOL_PHYSICAL ),
       0.0 );
     j++;
-    double mv = a -> find_mastery_spell( a -> specialization() ) -> effectN( 1 ).mastery_value();
     os.printf(
       "\t\t\t\t\t\t\t\t\t<tr%s>\n"
       "\t\t\t\t\t\t\t\t\t\t<th class=\"left\">Mastery</th>\n"
@@ -941,8 +952,8 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100.0 * mv * a -> buffed.mastery,
-      100.0 * mv * a -> composite_mastery(),
+      100.0 * a -> buffed.mastery_value,
+      100.0 * a -> cache.mastery_value(),
       a -> total_gear.mastery_rating );
     j++;
 

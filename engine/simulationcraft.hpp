@@ -917,6 +917,9 @@ enum snapshot_state_e
   STATE_USER_2        = 0x001000,
   STATE_USER_3        = 0x002000,
   STATE_USER_4        = 0x004000,
+
+  STATE_TGT_MITG_DA   = 0x008000,
+  STATE_TGT_MITG_TA   = 0x010000,
 };
 
 enum ready_e
@@ -3660,8 +3663,8 @@ public:
     double spell_power, spell_hit, spell_crit, manareg_per_second;
     double attack_power,  attack_hit,  mh_attack_expertise,  oh_attack_expertise, attack_crit;
     double armor, miss, crit, dodge, parry, block;
-    double spell_haste, attack_haste, attack_speed;
-    double mastery;
+    double spell_haste, spell_speed, attack_haste, attack_speed;
+    double mastery_value;
   } buffed;
 
   auto_dispose< std::vector<buff_t*> > buff_list;
@@ -3991,7 +3994,7 @@ public:
   virtual double composite_spell_crit_multiplier() { return 1.0; }
   virtual double composite_spell_hit();
   virtual double composite_mastery();
-  virtual double composite_mastery_value() { return util::round( composite_mastery() * mastery_coefficient(), 2); }
+  virtual double composite_mastery_value();
 
   virtual double composite_armor()                ;
   virtual double composite_armor_multiplier()     ;
@@ -4017,6 +4020,8 @@ public:
   virtual double composite_player_th_multiplier( school_e school );
 
   virtual double composite_player_absorb_multiplier( school_e school );
+
+  virtual double composite_mitigation_multiplier( school_e );
 
   virtual double composite_movement_speed();
 
@@ -4053,6 +4058,7 @@ public:
    * To create invalidation chains ( eg. Priest: Spirit invalidates Hit ) override the
    * virtual player_t::invalidate_cache( cache_e ) function.
    *
+   * Attention: player_t::invalidate_cache( cache_e ) is recursive and may call itself again.
    */
   struct cache_t
   {
@@ -4766,6 +4772,10 @@ public:
            player -> composite_player_td_multiplier( school, this );
   }
 
+
+  virtual double composite_target_mitigation( player_t* t, school_e s )
+  { return t -> composite_mitigation_multiplier( s ); }
+
   event_t* start_action_execute_event( timespan_t time, action_state_t* execute_state = 0 );
 
 private:
@@ -4797,6 +4807,9 @@ struct action_state_t : public noncopyable
   double          ta_multiplier;
   double          target_da_multiplier;
   double          target_ta_multiplier;
+  // Target mitigation multipliers
+  double          target_mitigation_da_multiplier;
+  double          target_mitigation_ta_multiplier;
 
   static void release( action_state_t*& s ) { s -> action -> release_state( s ); s = 0; }
 
@@ -4826,6 +4839,12 @@ struct action_state_t : public noncopyable
 
   virtual double composite_ta_multiplier()
   { return ta_multiplier * target_ta_multiplier; }
+
+  virtual double composite_target_mitigation_da_multiplier()
+  { return target_mitigation_da_multiplier; }
+
+  virtual double composite_target_mitigation_ta_multiplier()
+  { return target_mitigation_ta_multiplier; }
 };
 
 struct heal_state_t : public action_state_t

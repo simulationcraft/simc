@@ -3205,7 +3205,7 @@ double player_t::composite_spell_hit()
 
 double player_t::composite_mastery()
 {
-  double m = current.mastery + current.stats.mastery_rating / current.rating.mastery;
+  double m = util::round( current.mastery + current.stats.mastery_rating / current.rating.mastery, 2);
 
   if ( ! is_pet() && ! is_enemy() && sim -> auras.mastery -> check() )
     m += sim -> auras.mastery -> value() / current.rating.mastery;
@@ -3394,6 +3394,16 @@ double player_t::composite_ranged_attack_player_vulnerability()
     return 1.0 + debuffs.ranged_vulnerability -> value();
 
   return 1.0;
+}
+
+double player_t::composite_mitigation_multiplier( school_e /* school */ )
+{
+  return 1.0;
+}
+
+double player_t::composite_mastery_value()
+{
+  return composite_mastery() * mastery_coefficient();
 }
 
 /* Invalidate ALL stats
@@ -6236,10 +6246,11 @@ struct snapshot_stats_t : public action_t
 
     p -> buffed.resource     = p -> resources.max;
 
-    p -> buffed.spell_haste  = p -> cache.spell_speed();
+    p -> buffed.spell_haste  = p -> cache.spell_haste();
+    p -> buffed.spell_speed  = p -> cache.spell_speed();
     p -> buffed.attack_haste = p -> cache.attack_haste();
     p -> buffed.attack_speed = p -> cache.attack_speed();
-    p -> buffed.mastery      = p -> composite_mastery();
+    p -> buffed.mastery_value = p -> cache.mastery_value();
 
     p -> buffed.spell_power  = util::round( p -> cache.spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
     p -> buffed.spell_hit    = p -> cache.spell_hit();

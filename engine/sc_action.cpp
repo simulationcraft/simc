@@ -2081,6 +2081,12 @@ void action_t::snapshot_internal( action_state_t* state, uint32_t flags, dmg_e r
 
   if ( flags & STATE_TGT_CRIT )
     state -> target_crit = composite_target_crit( state -> target ) * composite_crit_multiplier();
+
+  if ( flags & STATE_TGT_MITG_DA )
+    state -> target_mitigation_da_multiplier = composite_target_mitigation( state -> target, school );
+
+  if ( flags & STATE_TGT_MITG_TA )
+    state -> target_mitigation_ta_multiplier = composite_target_mitigation( state -> target, school );
 }
 
 void action_t::consolidate_snapshot_flags()

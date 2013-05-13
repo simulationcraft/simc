@@ -273,7 +273,6 @@ void print_text_buffs( FILE* file, player_t::report_information_t& ri )
 
 void print_text_core_stats( FILE* file, player_t* p )
 {
-  double mv = p -> find_mastery_spell( p -> specialization() ) -> effectN( 1 ).mastery_value();
   util::fprintf( file,
                  "  Core Stats:    strength=%.0f|%.0f(%.0f)  agility=%.0f|%.0f(%.0f)  stamina=%.0f|%.0f(%.0f)  intellect=%.0f|%.0f(%.0f)  spirit=%.0f|%.0f(%.0f)  mastery=%.2f%%|%.2f%%(%.0f)  health=%.0f|%.0f  mana=%.0f|%.0f\n",
                  p -> buffed.attribute[ ATTR_STRENGTH  ], p -> strength(),  p -> total_gear.get_stat( STAT_STRENGTH  ),
@@ -281,7 +280,7 @@ void print_text_core_stats( FILE* file, player_t* p )
                  p -> buffed.attribute[ ATTR_STAMINA   ], p -> stamina(),   p -> total_gear.get_stat( STAT_STAMINA   ),
                  p -> buffed.attribute[ ATTR_INTELLECT ], p -> intellect(), p -> total_gear.get_stat( STAT_INTELLECT ),
                  p -> buffed.attribute[ ATTR_SPIRIT    ], p -> spirit(),    p -> total_gear.get_stat( STAT_SPIRIT    ),
-                 100.0 * mv * p -> buffed.mastery , 100.0 * mv * p -> composite_mastery(), p -> total_gear.get_stat( STAT_MASTERY_RATING ),
+                 100.0 * p -> buffed.mastery_value , 100.0 * p -> composite_mastery(), p -> total_gear.get_stat( STAT_MASTERY_RATING ),
                  p -> buffed.resource[ RESOURCE_HEALTH ], p -> resources.max[ RESOURCE_HEALTH ],
                  p -> buffed.resource[ RESOURCE_MANA   ], p -> resources.max[ RESOURCE_MANA   ] );
 }
@@ -291,11 +290,12 @@ void print_text_core_stats( FILE* file, player_t* p )
 void print_text_spell_stats( FILE* file, player_t* p )
 {
   util::fprintf( file,
-                 "  Spell Stats:   power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  manareg=%.0f|%.0f(%d)\n",
+                 "  Spell Stats:   power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  speed=%.2f%%|%.2f%%(%.0f)  manareg=%.0f|%.0f(%d)\n",
                  p -> buffed.spell_power, p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(), p -> total_gear.spell_power,
                  100 * p -> buffed.spell_hit,          100 * p -> composite_spell_hit(),          p -> total_gear.hit_rating,
                  100 * p -> buffed.spell_crit,         100 * p -> composite_spell_crit(),         p -> total_gear.crit_rating,
                  100 * ( 1 / p -> buffed.spell_haste - 1 ), 100 * ( 1 / p -> composite_spell_speed() - 1 ), p -> total_gear.haste_rating,
+                 100 * ( 1 / p -> buffed.spell_speed - 1 ), 100 * ( 1 / p -> cache.spell_speed() - 1 ), p -> total_gear.haste_rating,
                  p -> buffed.manareg_per_second, p -> mana_regen_per_second(), 0 );
 }
 
