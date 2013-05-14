@@ -4380,6 +4380,23 @@ struct icebound_fortitude_t : public death_knight_spell_t
   }
 };
 
+// Rune Tap
+
+struct rune_tap_t : public death_knight_heal_t
+{
+  rune_tap_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_heal_t( "rune_tap", p, p -> find_specialization_spell( "Rune Tap" ) )
+  {
+    parse_options( NULL, options_str );
+  }
+
+  double base_da_min( const action_state_t* )
+  { return p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent(); }
+
+  double base_da_max( const action_state_t* )
+  { return p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent(); }
+
+};
 
 // Buffs ======================================================================
 
@@ -4511,6 +4528,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   if ( name == "dancing_rune_weapon"      ) return new dancing_rune_weapon_t      ( this, options_str );
   if ( name == "heart_strike"             ) return new heart_strike_t             ( this, options_str );
   if ( name == "pestilence"               ) return new pestilence_t               ( this, options_str );
+  if ( name == "rune_tap"                 ) return new rune_tap_t                 ( this, options_str );
   if ( name == "vampiric_blood"           ) return new vampiric_blood_t           ( this, options_str );
 
   // Frost Actions
@@ -5033,6 +5051,8 @@ void death_knight_t::init_actions()
         action_list_str += "/bone_shield,if=buff.bone_shield.down";
       if ( level >= 62 )
         action_list_str += "/icebound_fortitude,if=health.pct<50";
+      if ( level >= 64 )
+        action_list_str += "/rune_tap,if=health_pct<90";
       action_list_str += "/dancing_rune_weapon";
       action_list_str += "/raise_dead,if=time>=10";
       action_list_str += "/outbreak,if=(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2)|(!dot.blood_plague.ticking&!dot.frost_fever.ticking)";
