@@ -56,7 +56,8 @@ struct druid_td_t : public actor_pair_t
   {
     buff_t* lifebloom;
   } buffs;
-
+  
+  int lacerate_stack;
   combo_points_t combo_points;
 
   druid_td_t( player_t& target, druid_t& source );
@@ -72,7 +73,10 @@ struct druid_td_t : public actor_pair_t
   }
 
   void reset()
-  { combo_points.clear(); }
+  {
+    lacerate_stack = 0;
+    combo_points.clear();
+  }
 };
 
 struct druid_t : public player_t
@@ -97,34 +101,43 @@ public:
   // Buffs
   struct buffs_t
   {
-    buff_t* berserk;
+    // General
     buff_t* cat_form;
-    buff_t* celestial_alignment;
-    buff_t* chosen_of_elune;
     buff_t* dream_of_cenarius_damage;
     buff_t* dream_of_cenarius_heal;
-    buff_t* eclipse_lunar;
-    buff_t* eclipse_solar;
-    buff_t* enrage;
     buff_t* frenzied_regeneration;
-    buff_t* king_of_the_jungle;
-    buff_t* lacerate;
-    buff_t* lunar_shower;
-    buff_t* moonkin_form;
-    buff_t* natures_grace;
     buff_t* natures_swiftness;
     buff_t* natures_vigil;
     buff_t* omen_of_clarity;
+    buff_t* stealthed;
+    buff_t* symbiosis;
+
+    // Balance
+    buff_t* celestial_alignment;
+    buff_t* chosen_of_elune;
+    buff_t* eclipse_lunar;
+    buff_t* eclipse_solar;
+    buff_t* lunar_shower;
+    buff_t* moonkin_form;
+    buff_t* natures_grace;
+    buff_t* shooting_stars;
+    buff_t* starfall;
+
+    // Feral
+    buff_t* berserk;
+    buff_t* king_of_the_jungle;
     buff_t* predatory_swiftness;
     buff_t* savage_roar;
-    buff_t* shooting_stars;
-    buff_t* soul_of_the_forest;
-    buff_t* starfall;
-    buff_t* stealthed;
-    buff_t* survival_instincts;
-    buff_t* symbiosis;
     buff_t* tigers_fury;
     buff_t* tier15_4pc_melee;
+
+    // Guardian
+    buff_t* enrage;
+    buff_t* lacerate;
+    buff_t* survival_instincts;
+
+    // Restoration
+    buff_t* soul_of_the_forest;
 
     // NYI / Needs checking
     buff_t* barkskin;
@@ -2192,23 +2205,27 @@ struct lacerate_t : public bear_attack_t
   {
     bear_attack_t::execute();
 
-    if ( p() -> buff.son_of_ursoc -> check() )
+    if ( p() -> buff.son_of_ursoc -> check() || p() -> buff.berserk -> check() )
       cooldown -> reset( false );
   }
 
   virtual void impact( action_state_t* state )
   {
-    bear_attack_t::impact( state );
-
     if ( result_is_hit( state -> result ) )
+    {
+      if ( td( state -> target ) -> lacerate_stack < 3 )
+        td( state -> target ) -> lacerate_stack++;
       p() -> buff.lacerate -> trigger();
+    }
+
+    bear_attack_t::impact( state );
   }
 
   virtual double action_ta_multiplier()
   {
     double tm = bear_attack_t::action_ta_multiplier();
 
-    tm *= 1.0 + p() -> buff.lacerate -> check();
+    tm *= td( target ) -> lacerate_stack;
 
     return tm;
   }
@@ -2224,8 +2241,9 @@ struct lacerate_t : public bear_attack_t
   virtual void last_tick( dot_t* d )
   {
     bear_attack_t::last_tick( d );
-
+    
     p() -> buff.lacerate -> expire();
+    td( target ) -> lacerate_stack = 0;
   }
 
   virtual bool ready()
@@ -5272,7 +5290,6 @@ void druid_t::create_buffs()
   buff.berserk               = buff_creator_t( this, "berserk", spell_data_t::nil() );
   buff.cat_form              = new cat_form_t( *this );
   buff.frenzied_regeneration = buff_creator_t( this, "frenzied_regeneration", find_class_spell( "Frenzied Regeneration" ) );
-  buff.lacerate              = buff_creator_t( this, "lacerate" , find_class_spell( "Lacerate" ) );
   buff.moonkin_form          = new moonkin_form_t( *this );
   buff.omen_of_clarity       = buff_creator_t( this, "omen_of_clarity", spec.omen_of_clarity -> effectN( 1 ).trigger() )
                                .chance( spec.omen_of_clarity -> ok() ? find_spell( 113043 ) -> proc_chance() : 0.0 );
@@ -5355,8 +5372,9 @@ void druid_t::create_buffs()
 
   // Guardian
   buff.enrage                = buff_creator_t( this, "enrage" , find_specialization_spell( "Enrage" ) );
-  buff.survival_instincts    = buff_creator_t( this, "survival_instincts", spell.survival_instincts );
+  buff.lacerate              = buff_creator_t( this, "lacerate" , find_class_spell( "Lacerate" ) );
   buff.savage_defense    = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() );
+  buff.survival_instincts    = buff_creator_t( this, "survival_instincts", spell.survival_instincts );
 
   // Restoration
 
@@ -5851,23 +5869,27 @@ void druid_t::init_actions()
       action_list_str += "/skull_bash_bear";
       action_list_str += init_use_item_actions();
       action_list_str += init_use_profession_actions();
+      action_list_str += "/healing_touch,if=buff.natures_swiftness.up";
+      add_action("Renewal", "if=health.pct<50");
       action_list_str += "/survival_instincts"; // PH
       action_list_str += "/barkskin,if=buff.survival_instincts.down"; // PH
       action_list_str += "/savage_defense";
+      action_list_str += "/natures_vigil,if=buff.son_of_ursoc.up|cooldown.incarnation.remains";
       action_list_str += "/thrash_bear,if=debuff.weakened_blows.remains<3";
-      action_list_str += "/natures_vigil,if=buff.berserk.up";
       action_list_str += "/maul,if=rage>=90";
       action_list_str += "/lacerate,if=dot.lacerate.ticking&dot.lacerate.remains<3&(buff.son_of_ursoc.up|buff.berserk.up)";
       action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
       action_list_str += "/thrash_bear,if=dot.thrash_bear.remains<3&(buff.son_of_ursoc.up|buff.berserk.up)";
       action_list_str += "/mangle_bear";
-      action_list_str += "/wait,sec=0.1,if=cooldown.mangle_bear.remains<=0.5";
+      action_list_str += "/wait,sec=cooldown.mangle_bear.remains,if=cooldown.mangle_bear.remains<=0.5";
+      action_list_str += "/natures_swiftness,if=talent.natures_swiftness.enabled&health.pct<60";
+      add_action("Cenarion Ward", "if=health.pct<70");
       action_list_str += "/berserk";
-      action_list_str += "/incarnation,if=talent.incarnation.enabled&buff.natures_vigil.up";
+      action_list_str += "/incarnation,if=talent.incarnation.enabled";
       action_list_str += "/lacerate,if=dot.lacerate.remains<3|buff.lacerate.stack<3";
       action_list_str += "/thrash_bear,if=dot.thrash_bear.remains<2";
       action_list_str += "/lacerate";
-      // action_list_str += "/faerie_fire"; don't do this because FF is bugged and resets swing timer, 1/15/2013
+      action_list_str += "/faerie_fire,if=dot.thrash_bear.remains>6";
       action_list_str += "/thrash_bear";
     }
     else if ( specialization() == DRUID_RESTORATION && primary_role() == ROLE_HEAL )
@@ -6625,6 +6647,7 @@ void druid_t::assess_heal( school_e school,
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
   : actor_pair_t( &target, &source ),
+    lacerate_stack( 1 ),
     dots( dots_t() ),
     buffs( buffs_t() ),
     combo_points( source, target )
