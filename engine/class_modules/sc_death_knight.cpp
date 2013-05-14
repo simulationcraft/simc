@@ -157,6 +157,8 @@ public:
     buff_t* tier13_4pc_melee;
     buff_t* unholy_presence;
     buff_t* vampiric_blood;
+    buff_t* will_of_the_necropolis_dr;
+    buff_t* will_of_the_necropolis_rt;
     
     absorb_buff_t* blood_shield;
   } buffs;
@@ -244,6 +246,7 @@ public:
     const spell_data_t* scarlet_fever;
     const spell_data_t* crimson_scourge;
     const spell_data_t* sanguine_fortitude;
+    const spell_data_t* will_of_the_necropolis;
 
     // Frost
     const spell_data_t* blood_of_the_north;
@@ -4396,6 +4399,32 @@ struct rune_tap_t : public death_knight_heal_t
   double base_da_max( const action_state_t* )
   { return p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent(); }
 
+  void consume_resource()
+  {
+    if ( p() -> buffs.will_of_the_necropolis_rt -> check() )
+      return;
+
+    death_knight_heal_t::consume_resource();
+  }
+
+  double cost()
+  {
+    if ( p() -> buffs.will_of_the_necropolis_rt -> check() )
+      return 0;
+    return death_knight_heal_t::cost();
+  }
+
+  bool ready()
+  {
+    if ( p() -> buffs.will_of_the_necropolis_rt-> check() )
+    {
+      cost_blood = 0;
+      bool r = death_knight_heal_t::ready();
+      cost_blood  = 1;
+      return r;
+    }
+    return death_knight_heal_t::ready();
+  }
 };
 
 // Buffs ======================================================================
@@ -4849,6 +4878,7 @@ void death_knight_t::init_spells()
   spec.scarlet_fever              = find_specialization_spell( "Scarlet Fever" );
   spec.crimson_scourge            = find_specialization_spell( "Crimson Scourge" );
   spec.sanguine_fortitude         = find_specialization_spell( "Sanguine Fortitude" );
+  spec.will_of_the_necropolis     = find_specialization_spell( "Will of the Necropolis" );
 
   // Frost
   spec.blood_of_the_north         = find_specialization_spell( "Blood of the North" );
@@ -5615,6 +5645,10 @@ void death_knight_t::create_buffs()
                                               spec.improved_unholy_presence -> effectN( 1 ).percent() )
                               .add_invalidate( CACHE_HASTE );
   buffs.vampiric_blood      = new vampiric_blood_buff_t( this );
+  buffs.will_of_the_necropolis_dr = buff_creator_t( this, "will_of_the_necropolis_dr", find_spell( 81162 ) )
+                                    .cd( timespan_t::from_seconds( 45 ) );
+  buffs.will_of_the_necropolis_rt = buff_creator_t( this, "will_of_the_necropolish_bt", find_spell( 96171 ) )
+                                    .cd( timespan_t::from_seconds( 45 ) );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -5712,6 +5746,8 @@ void death_knight_t::assess_damage( school_e     school,
                                     dmg_e        dtype,
                                     action_state_t* s )
 {
+  double health_pct = health_percentage();
+
   player_t::assess_damage( school, dtype, s );
 
   // Bone shield will only decrement, if someone did damage to the dk
@@ -5737,6 +5773,11 @@ void death_knight_t::assess_damage( school_e     school,
       incoming_damage.erase( incoming_damage.begin() );
   }
 
+  if ( health_pct >= 35 && health_percentage() < 35 )
+  {
+    buffs.will_of_the_necropolis_dr -> trigger();
+    buffs.will_of_the_necropolis_rt -> trigger();
+  }
 }
 
 // death_knight_t::assess_damage ==============================================
@@ -5760,6 +5801,9 @@ void death_knight_t::target_mitigation( school_e school, dmg_e type, action_stat
 
   if ( buffs.icebound_fortitude -> up() )
     state -> result_amount *= 1.0 + buffs.icebound_fortitude -> data().effectN( 3 ).percent() + spec.sanguine_fortitude -> effectN( 1 ).percent();
+
+  if ( buffs.will_of_the_necropolis_dr -> up() )
+    state -> result_amount *= 1.0 + spec.will_of_the_necropolis -> effectN( 1 ).percent();
 
   player_t::target_mitigation( school, type, state );
 }
