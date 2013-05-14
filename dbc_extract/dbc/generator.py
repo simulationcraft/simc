@@ -1110,6 +1110,7 @@ class SpellDataGenerator(DataGenerator):
           ( 45470, 0 ), # Death Strike heal
           ( 77535, 0 ), # Blood Shield
           ( 116783, 0 ), # Death Siphon heal
+          ( 96171, 0 ), # Will of the Necropolish Rune Tap buff
         ),  
         
         # Shaman:

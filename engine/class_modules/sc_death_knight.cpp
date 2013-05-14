@@ -5082,7 +5082,7 @@ void death_knight_t::init_actions()
       if ( level >= 62 )
         action_list_str += "/icebound_fortitude,if=health.pct<50";
       if ( level >= 64 )
-        action_list_str += "/rune_tap,if=health_pct<90";
+        action_list_str += "/rune_tap,if=health.pct<90";
       action_list_str += "/dancing_rune_weapon";
       action_list_str += "/raise_dead,if=time>=10";
       action_list_str += "/outbreak,if=(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2)|(!dot.blood_plague.ticking&!dot.frost_fever.ticking)";
