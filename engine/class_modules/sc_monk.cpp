@@ -491,11 +491,11 @@ public:
 
   virtual resource_e current_resource()
   {
-    if ( p() -> active_stance_data( FIERCE_TIGER ).ok() && ab::data().powerN( POWER_MONK_ENERGY ).aura_id() == 103985 )
+    if ( this -> data().powerN( POWER_MONK_ENERGY ).aura_id() == 103985 && p() -> current_stance() == FIERCE_TIGER )
     {
       return RESOURCE_ENERGY;
     }
-    if ( p() -> active_stance_data( WISE_SERPENT ).ok() && ab::data().powerN( POWER_MANA ).aura_id() == 115070 )
+    if ( this -> data().powerN( POWER_MANA ).aura_id() == 115070 && p() -> current_stance() == WISE_SERPENT )
     {
       return RESOURCE_MANA;
     }
@@ -686,14 +686,6 @@ struct jab_t : public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
 
     base_multiplier = 1.5; // hardcoded into tooltip
-  }
-
-  virtual resource_e current_resource()
-  {
-    if ( p() -> current_stance() == FIERCE_TIGER )
-      return RESOURCE_ENERGY;
-
-    return monk_melee_attack_t::current_resource();
   }
 
   double combo_breaker_chance()
