@@ -102,6 +102,8 @@ public:
   struct buffs_t
   {
     // General
+    buff_t* barkskin;
+    buff_t* bear_form;
     buff_t* cat_form;
     buff_t* dream_of_cenarius_damage;
     buff_t* dream_of_cenarius_heal;
@@ -134,6 +136,9 @@ public:
     // Guardian
     buff_t* enrage;
     buff_t* lacerate;
+    buff_t* might_of_ursoc;
+    buff_t* savage_defense;
+    buff_t* son_of_ursoc;
     buff_t* survival_instincts;
     buff_t* tier15_2pc_tank;
 
@@ -141,14 +146,10 @@ public:
     buff_t* soul_of_the_forest;
 
     // NYI / Needs checking
-    buff_t* barkskin;
-    buff_t* bear_form;
     buff_t* glyph_of_innervate;
     buff_t* harmony;
     buff_t* revitalize;
-    buff_t* savage_defense;
     buff_t* wild_mushroom;
-    buff_t* son_of_ursoc;
     buff_t* tree_of_life;
     heart_of_the_wild_buff_t* heart_of_the_wild;
   } buff;
@@ -170,6 +171,8 @@ public:
   struct gains_t
   {
     // DONE
+    gain_t* bear_form;
+    gain_t* eclipse;
     gain_t* energy_refund;
     gain_t* enrage;
     gain_t* frenzied_regeneration;
@@ -179,11 +182,9 @@ public:
     gain_t* primal_fury;
     gain_t* soul_of_the_forest;
     gain_t* tigers_fury;
-    gain_t* eclipse;
 
     // NYI / Needs checking
     gain_t* bear_melee;
-    gain_t* bear_form;
     gain_t* glyph_of_innervate;
     gain_t* glyph_ferocious_bite;
     gain_t* mangle;
@@ -206,6 +207,7 @@ public:
     // NYI / Needs checking
     const spell_data_t* innervate;
     const spell_data_t* lifebloom;
+    const spell_data_t* might_of_ursoc;
     const spell_data_t* regrowth;
     const spell_data_t* rejuvenation;
     const spell_data_t* savagery;
@@ -2304,6 +2306,7 @@ struct skull_bash_bear_t : public bear_attack_t
   {
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
     special = false;
+    use_off_gcd = true;
 
     cooldown -> duration += player -> glyph.skull_bash -> effectN( 1 ).time_value();
   }
@@ -2438,6 +2441,31 @@ struct savage_defense_t : public bear_attack_t
     {
       p() -> buff.savage_defense -> trigger();
     }
+  }
+};
+
+// Might of Ursoc ==========================================================
+
+struct might_of_ursoc_t : public bear_attack_t
+{
+  might_of_ursoc_t( druid_t* player, const std::string& options_str ) :
+    bear_attack_t( "might_of_ursoc", player, player -> find_class_spell( "Might of Ursoc" ), options_str )
+  {
+    parse_options( NULL, options_str );
+    cooldown -> duration = data().cooldown();
+    cooldown -> duration += player -> glyph.might_of_ursoc -> effectN( 2 ).time_value();
+    harmful = false;
+    special = false;
+    use_off_gcd = true;
+  }
+
+  virtual void execute()
+  {
+    bear_attack_t::execute();
+    
+    if ( ! p() -> buff.bear_form -> check() )
+      p() -> buff.bear_form -> start();
+    p() -> buff.might_of_ursoc -> trigger();
   }
 };
 
@@ -3091,6 +3119,7 @@ struct frenzied_regeneration_t : public druid_heal_t
 
     harmful = false;
     special = false;
+    use_off_gcd = true;
 
     if ( p -> glyph.frenzied_regeneration -> ok() )
       base_costs[ RESOURCE_RAGE ] = p -> glyph.frenzied_regeneration -> effectN( 3 ).resource( RESOURCE_RAGE );
@@ -3380,6 +3409,7 @@ struct barkskin_t : public druid_spell_t
     druid_spell_t( "barkskin", player, player -> find_class_spell( "Barkskin" ), options_str )
   {
     harmful = false;
+    use_off_gcd = true;
   }
 
   virtual void execute()
@@ -4973,6 +5003,36 @@ struct innervate_t : public buff_t
   }
 };
 
+// Might of Ursoc Buff ======================================================
+
+struct might_of_ursoc_t : public buff_t
+{
+  double percent_gain;
+  int health_gain;
+
+  might_of_ursoc_t( druid_t* p, const uint32_t id, const std::string& /* n */ ) :
+    buff_t( buff_creator_t( p, "might_of_ursoc", p -> find_spell( id ) ) ),
+    health_gain( 0 )
+  {
+    percent_gain = data().effectN( 1 ).percent() + p -> glyph.might_of_ursoc -> effectN( 1 ).percent();
+  }
+
+  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
+  {
+    health_gain = ( int ) floor( player -> resources.max[ RESOURCE_HEALTH ] * percent_gain );
+    player -> stat_gain( STAT_MAX_HEALTH, health_gain );
+
+    return buff_t::trigger( stacks, value, chance, duration );
+  }
+
+  virtual void expire_override()
+  {
+    player -> stat_loss( STAT_MAX_HEALTH, health_gain );
+
+    buff_t::expire_override();
+  }
+};
+
 } // end namespace buffs
 
 
@@ -5047,6 +5107,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "mangle_cat"             ) return new             mangle_cat_t( this, options_str );
   if ( name == "mark_of_the_wild"       ) return new       mark_of_the_wild_t( this, options_str );
   if ( name == "maul"                   ) return new                   maul_t( this, options_str );
+  if ( name == "might_of_ursoc"         ) return new         might_of_ursoc_t( this, options_str );
   if ( name == "mirror_images"          ) return new    mirror_images_spell_t( this, options_str );
   if ( name == "moonfire"               ) return new               moonfire_t( this, options_str );
   if ( name == "moonkin_form"           ) return new           moonkin_form_t( this, options_str );
@@ -5232,6 +5293,7 @@ void druid_t::init_spells()
   glyph.innervate             = find_glyph_spell( "Glyph of Innervate" );
   glyph.lifebloom             = find_glyph_spell( "Glyph of Lifebloom" );
   glyph.maul                  = find_glyph_spell( "Glyph of Maul" );
+  glyph.might_of_ursoc        = find_glyph_spell( "Glyph of Might of Ursoc" );
   glyph.moonbeast             = find_glyph_spell( "Glyph of the Moonbeast" );
   glyph.regrowth              = find_glyph_spell( "Glyph of Regrowth" );
   glyph.rejuvenation          = find_glyph_spell( "Glyph of Rejuvenation" );
@@ -5382,6 +5444,8 @@ void druid_t::create_buffs()
   // Guardian
   buff.enrage                = buff_creator_t( this, "enrage" , find_specialization_spell( "Enrage" ) );
   buff.lacerate              = buff_creator_t( this, "lacerate" , find_class_spell( "Lacerate" ) );
+  //buff.might_of_ursoc        = buff_creator_t( this, "might_of_ursoc", find_class_spell( "Might of Ursoc" ) );
+  buff.might_of_ursoc        = new might_of_ursoc_t( this, 106922, "might_of_ursoc" );
   buff.savage_defense        = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() );
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", spell.survival_instincts );
   buff.tier15_2pc_tank       = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138217 ) );
@@ -5880,7 +5944,10 @@ void druid_t::init_actions()
       action_list_str += init_use_item_actions();
       action_list_str += init_use_profession_actions();
       action_list_str += "/healing_touch,if=buff.natures_swiftness.up";
-      add_action("Renewal", "if=health.pct<50");
+      add_action( "Frenzied Regeneration", "if=health.pct<50&(buff.savage_defense.remains>6|rage>=80)" );
+      add_action( "Renewal", "if=health.pct<50" );
+      add_action( "Might of Ursoc", "if=health.pct<20" );
+      add_action( "Frenzied Regeneration", "if=health.pct<40" );
       action_list_str += "/survival_instincts"; // PH
       action_list_str += "/barkskin,if=buff.survival_instincts.down"; // PH
       action_list_str += "/savage_defense";
