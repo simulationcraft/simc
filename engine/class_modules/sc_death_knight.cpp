@@ -229,7 +229,6 @@ public:
 
   // Options
   std::string unholy_frenzy_target_str;
-  double      blood_parasite_burst_chance;
 
   // Specialization
   struct specialization_t
@@ -388,8 +387,6 @@ public:
     range::fill( pets.army_ghoul, nullptr );
     base.distance = 0;
 
-    blood_parasite_burst_chance = 0.1;
-
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.0 );
   }
@@ -408,7 +405,6 @@ public:
   virtual double    composite_armor_multiplier();
   virtual double    composite_melee_speed();
   virtual double    composite_melee_haste();
-  virtual double    composite_melee_hit();
   virtual double    composite_attribute_multiplier( attribute_e attr );
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual double    composite_tank_parry();
@@ -1254,6 +1250,16 @@ struct dancing_rune_weapon_pet_t : public pet_t
   {
     pet_t::summon( duration );
     drw_melee -> schedule_execute();
+  }
+
+  double composite_player_multiplier( school_e school )
+  {
+    double m = pet_t::composite_player_multiplier( school );
+
+    if ( o() -> glyph.dancing_rune_weapon -> ok() )
+      m *= 1.0 + o() -> glyph.dancing_rune_weapon -> effectN( 2 ).percent();
+
+    return m;
   }
 };
 
@@ -2226,6 +2232,9 @@ void death_knight_melee_attack_t::execute()
   if ( ! result_is_hit( execute_state -> result ) && ! always_consume && resource_consumed > 0 )
     p() -> resource_gain( RESOURCE_RUNIC_POWER, resource_consumed * RUNIC_POWER_REFUND, p() -> gains.power_refund );
 
+  if ( result_is_hit( execute_state -> result ) && cast_td( execute_state -> target ) -> dots_blood_plague -> ticking )
+    p() -> buffs.crimson_scourge -> trigger();
+
   trigger_t15_2pc_melee( this );
 }
 
@@ -2356,9 +2365,6 @@ struct melee_t : public death_knight_melee_attack_t
       // Killing Machine is 6 PPM
       if ( p() -> spec.killing_machine -> ok() )
         p() -> buffs.killing_machine -> trigger( 1, buff_t::DEFAULT_VALUE(), weapon -> proc_chance_on_swing( 6 ) );
-
-      if ( cast_td( s -> target ) -> dots_blood_plague -> ticking )
-        p() -> buffs.crimson_scourge -> trigger();
     }
   }
 };
@@ -4769,10 +4775,9 @@ pet_t* death_knight_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  if ( pet_name == "army_of_the_dead"         ) return new pets::army_ghoul_pet_t ( sim, this );
-  if ( pet_name == "gargoyle"                 ) return new pets::gargoyle_pet_t   ( sim, this );
-  if ( pet_name == "ghoul_pet"                ) return new pets::ghoul_pet_t      ( sim, this, "ghoul", false );
-  if ( pet_name == "ghoul_guardian"           ) return new pets::ghoul_pet_t      ( sim, this, "ghoul", true );
+  if ( pet_name == "gargoyle"       ) return new pets::gargoyle_pet_t( sim, this );
+  if ( pet_name == "ghoul_pet"      ) return new pets::ghoul_pet_t   ( sim, this, "ghoul", false );
+  if ( pet_name == "ghoul_guardian" ) return new pets::ghoul_pet_t   ( sim, this, "ghoul", true );
 
   return 0;
 }
@@ -4786,20 +4791,6 @@ double death_knight_t::composite_melee_haste()
   haste *= 1.0 / ( 1.0 + buffs.unholy_presence -> value() );
 
   return haste;
-}
-
-// death_knight_t::composite_attack_hit() ===================================
-
-double death_knight_t::composite_melee_hit()
-{
-  double hit = player_t::composite_melee_hit();
-
-  // Factor in the hit from NoCS here so it shows up in the report, to match the character sheet
-  if ( main_hand_weapon.group() == WEAPON_1H || off_hand_weapon.group() == WEAPON_1H )
-  {
-  }
-
-  return hit;
 }
 
 // death_knight_t::init_rng =================================================
@@ -4831,11 +4822,12 @@ void death_knight_t::init_base_stats()
   base.stats.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
 
   // Level 90 values, horribly off for anything else
-  base.dodge   = 0.0301 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
+  base.dodge   = 0.0300 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
   base.miss    = 0.0600;
   base.parry   = 0.0300;
   base.block   = 0.0000;
   base.parry_rating_per_strength = dbc.combat_rating( RATING_PARRY, level ) / 952.0 / 100.0;
+  base.dodge_per_agility = 1 / 10000.0 / 100.0;
 
   base.attack_power_per_strength = 2.0;
 
@@ -5611,7 +5603,7 @@ void death_knight_t::create_buffs()
                               .cd( timespan_t::zero() );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" ).spell( find_spell( 81141 ) )
                               .chance( spec.crimson_scourge -> proc_chance() );
-  buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_class_spell( "Dancing Rune Weapon" ) )
+  buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_spell( 81256 ) )
                               .add_invalidate( CACHE_PARRY );
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) );
   buffs.frost_presence      = buff_creator_t( this, "frost_presence", find_class_spell( "Frost Presence" ) )
@@ -5783,7 +5775,7 @@ void death_knight_t::assess_damage( school_e     school,
   }
 }
 
-// death_knight_t::assess_damage ==============================================
+// death_knight_t::target_mitigation ==========================================
 
 void death_knight_t::target_mitigation( school_e school, dmg_e type, action_state_t* state )
 {
@@ -5813,7 +5805,6 @@ void death_knight_t::target_mitigation( school_e school, dmg_e type, action_stat
 
 // death_knight_t::composite_armor_multiplier ===============================
 
-// TODO: Are armor multipliers really calculated as flat bonuses?
 double death_knight_t::composite_armor_multiplier()
 {
   double a = player_t::composite_armor_multiplier();
@@ -5844,8 +5835,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr )
     m *= 1.0 + runeforge.rune_of_the_fallen_crusader -> value();
     m *= 1.0 + buffs.pillar_of_frost -> value();
   }
-
-  if ( attr == ATTR_STAMINA )
+  else if ( attr == ATTR_STAMINA )
   {
     if ( buffs.blood_presence -> check() )
       m *= 1.0 + buffs.blood_presence -> data().effectN( 6 ).percent();
@@ -5887,7 +5877,7 @@ double death_knight_t::composite_tank_parry()
   double parry = player_t::composite_tank_parry();
 
   if ( buffs.dancing_rune_weapon -> up() )
-    parry += 0.20;
+    parry += buffs.dancing_rune_weapon -> data().effectN( 1 ).percent();
 
   if ( runeforge.rune_of_swordshattering -> check() )
     parry += runeforge.rune_of_swordshattering -> data().effectN( 1 ).percent();
@@ -5912,9 +5902,6 @@ double death_knight_t::composite_player_multiplier( school_e school )
 
   if ( mastery.frozen_heart -> ok() && dbc::is_school( school, SCHOOL_FROST )  )
     m *= 1.0 + cache.mastery_value();
-
-  if ( glyph.dancing_rune_weapon -> ok() && buffs.dancing_rune_weapon -> check() )
-    m *= 1.0 + glyph.dancing_rune_weapon -> effectN( 2 ).percent();
 
   return m;
 }
@@ -5992,7 +5979,6 @@ void death_knight_t::create_options()
   option_t death_knight_options[] =
   {
     opt_string( "unholy_frenzy_target", unholy_frenzy_target_str ),
-    opt_float( "blood_parasite_burst_chance", blood_parasite_burst_chance ),
     opt_null()
   };
 
