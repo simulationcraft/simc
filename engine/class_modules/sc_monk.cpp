@@ -1352,7 +1352,6 @@ struct auto_attack_t : public monk_melee_attack_t
     };
     parse_options( options, options_str );
 
-    assert( player -> main_hand_weapon.type != WEAPON_NONE );
     p() -> main_hand_attack = new melee_t( "melee_main_hand", player, sync_weapons );
     p() -> main_hand_attack -> weapon = &( player -> main_hand_weapon );
     p() -> main_hand_attack -> base_execute_time = player -> main_hand_weapon.swing_time;
