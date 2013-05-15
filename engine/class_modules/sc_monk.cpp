@@ -3134,7 +3134,7 @@ void monk_t::apl_combat_mistweaver()
   def -> add_action( this, "Mana Tea", "if=buff.mana_tea.react>=2&mana.pct<=90" );
   def -> add_talent( this, "Chi Wave" );
   def -> add_talent( this, "Chi Brew", "if=buff.tiger_power.up" );
-  def -> add_action( this, "Blackout Kick", "if=buff.muscle_memory.up&buff.tiger_power.up" );
+  def -> add_action( this, "Blackout Kick", "if=buff.muscle_memory.up&buff.tiger_power.up&buff.serpents_zeal.down" );
   def -> add_action( this, "Tiger Palm", "if=buff.muscle_memory.up" );
   def -> add_action( this, "Jab" );
   def -> add_action( this, "Mana Tea" );
