@@ -5972,20 +5972,18 @@ void druid_t::reset()
 
 void druid_t::regen( timespan_t periodicity )
 {
-  resource_e resource_type = primary_resource();
-
-  if ( resource_type == RESOURCE_MANA )
-  {
-    if ( buff.glyph_of_innervate -> check() )
-      resource_gain( RESOURCE_MANA, buff.glyph_of_innervate -> value() * periodicity.total_seconds(), gain.glyph_of_innervate );
-  }
-  else if ( resource_type == RESOURCE_RAGE )
-  {
-    if ( buff.enrage -> up() )
-      resource_gain( RESOURCE_RAGE, 1.0 * periodicity.total_seconds(), gain.enrage );
-  }
+  if ( buff.glyph_of_innervate -> check() )
+    resource_gain( RESOURCE_MANA, buff.glyph_of_innervate -> value() * periodicity.total_seconds(), gain.glyph_of_innervate );
+  if ( buff.enrage -> up() )
+    resource_gain( RESOURCE_RAGE, 1.0 * periodicity.total_seconds(), gain.enrage );
 
   player_t::regen( periodicity );
+
+  // player_t::regen() only regens your primary resource, so we need to account for that here
+  if ( primary_resource() != RESOURCE_MANA && mana_regen_per_second() )
+    resource_gain( RESOURCE_MANA, mana_regen_per_second() * periodicity.total_seconds(), gains.mp5_regen );
+  if ( primary_resource() != RESOURCE_ENERGY && energy_regen_per_second() )
+    resource_gain( RESOURCE_ENERGY, energy_regen_per_second() * periodicity.total_seconds(), gains.energy_regen );
 }
 
 // druid_t::available =======================================================
