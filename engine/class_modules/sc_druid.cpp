@@ -2136,63 +2136,6 @@ struct feral_charge_bear_t : public bear_attack_t
   }
 };
 
-// Frenzied Regeneration ====================================================
-
-struct frenzied_regeneration_t : public bear_attack_t
-{
-  double maximum_rage_cost;
-
-  frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
-    bear_attack_t( p, p -> find_class_spell( "Frenzied Regeneration" ), options_str ),
-    maximum_rage_cost( 0.0 )
-  {
-    harmful = false;
-    special = false;
-
-    if ( p -> glyph.frenzied_regeneration -> ok() )
-      base_costs[ RESOURCE_RAGE ] = p -> glyph.frenzied_regeneration -> effectN( 3 ).resource( RESOURCE_RAGE );
-    else
-      base_costs[ RESOURCE_RAGE ] = 0;
-
-    maximum_rage_cost = data().effectN( 1 ).base_value();
-  }
-
-  virtual double cost()
-  {
-    if ( ! p() -> glyph.frenzied_regeneration -> ok() )
-      base_costs[ RESOURCE_RAGE ] = std::min( p() -> resources.current[ RESOURCE_RAGE ],
-                                              maximum_rage_cost );
-
-    return bear_attack_t::cost();
-  }
-
-  virtual void execute()
-  {
-    bear_attack_t::execute();
-
-    if ( ! p() -> glyph.frenzied_regeneration -> ok() )
-    {
-      // Heal: ( ( AP / 1000 )^2 - AP / 1000 ) / 10
-      // => AP*AP / 10000000 - AP / 10000
-      double attack_power = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
-      double health_gain = ( data().effectN( 2 ).base_value() * attack_power * attack_power / 10000000.0 -
-                             data().effectN( 3 ).base_value() * attack_power / 10000.0 );
-      double health_pct_gain = resource_consumed / maximum_rage_cost;
-      double actual_gain = std::max( health_pct_gain * health_gain,
-                                     p() -> composite_attribute( ATTR_STAMINA ) * 2.5 );
-      if ( p() -> buff.tier15_2pc_tank -> up() )
-        actual_gain *= 1.0 + p() -> buff.tier15_2pc_tank -> stack() * p() -> buff.tier15_2pc_tank -> data().effectN( 1 ).percent();
-      p() -> resource_gain( RESOURCE_HEALTH,
-                            actual_gain,
-                            p() -> gain.frenzied_regeneration );
-
-      p() -> buff.tier15_2pc_tank -> expire();
-    }
-    else
-      p() -> buff.frenzied_regeneration -> trigger();
-  }
-};
-
 // Lacerate =================================================================
 
 struct lacerate_t : public bear_attack_t
@@ -3131,6 +3074,62 @@ struct wild_growth_t : public druid_heal_t
 
     // Reset AoE
     aoe = save;
+  }
+};
+
+// Frenzied Regeneration ====================================================
+
+struct frenzied_regeneration_t : public druid_heal_t
+{
+  double maximum_rage_cost;
+
+  frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
+    druid_heal_t( p, p -> find_class_spell( "Frenzied Regeneration" ), options_str ),
+    maximum_rage_cost( 0.0 )
+  {
+    base_dd_min = base_dd_max = direct_power_mod = 0.0;
+
+    harmful = false;
+    special = false;
+
+    if ( p -> glyph.frenzied_regeneration -> ok() )
+      base_costs[ RESOURCE_RAGE ] = p -> glyph.frenzied_regeneration -> effectN( 3 ).resource( RESOURCE_RAGE );
+    else
+      base_costs[ RESOURCE_RAGE ] = 0;
+
+    maximum_rage_cost = data().effectN( 1 ).base_value();
+  }
+
+  virtual double cost()
+  {
+    if ( ! p() -> glyph.frenzied_regeneration -> ok() )
+      base_costs[ RESOURCE_RAGE ] = std::min( p() -> resources.current[ RESOURCE_RAGE ],
+                                              maximum_rage_cost );
+
+    return druid_heal_t::cost();
+  }
+
+  virtual void execute()
+  {
+    druid_heal_t::execute();
+
+    if ( p() -> glyph.frenzied_regeneration -> ok() )
+      p() -> buff.frenzied_regeneration -> trigger();
+    else
+    {
+      // max(2.2*(AP - 2*Agi), 2.5*Sta)
+      double ap              = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
+      double agility         = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
+      double stamina         = p() -> composite_attribute( ATTR_STAMINA ) * p() -> composite_attribute_multiplier( ATTR_STAMINA );
+      double health_restored = std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
+                               * ( resource_consumed / maximum_rage_cost )
+                               * ( 1.0 + p() -> buff.tier15_2pc_tank -> stack() * p() -> buff.tier15_2pc_tank -> data().effectN( 1 ).percent() );
+      p() -> resource_gain( RESOURCE_HEALTH,
+                            health_restored,
+                            p() -> gain.frenzied_regeneration );
+
+      p() -> buff.tier15_2pc_tank -> expire();
+    }
   }
 };
 
@@ -5557,7 +5556,7 @@ void druid_t::init_actions()
       precombat_list += "/cat_form";
       precombat_list += "/savage_roar";
     }
-    else if ( ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
+    else if ( primary_role() == ROLE_TANK )
       precombat_list += "/bear_form";
     else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
     {
@@ -5581,7 +5580,7 @@ void druid_t::init_actions()
       if ( sim -> allow_potions )
       {
         // Prepotion
-        if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+        if ( ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) && ( primary_role() == ROLE_ATTACK || primary_role() == ROLE_TANK ) )
           precombat_list += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
         else
           precombat_list += ( level > 85 ) ? "/jade_serpent_potion" : "/volcanic_potion";
