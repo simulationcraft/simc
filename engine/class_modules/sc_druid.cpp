@@ -5262,6 +5262,11 @@ void druid_t::init_base_stats()
 
   base.attack_power_per_strength = 1.0;
   base.spell_power_per_intellect = 1.0;
+  
+  // FIXME! Level-specific?
+  base.miss  = 0.060;
+  base.dodge = 0.030;
+  base.parry = 0.000;
 
   diminished_kfactor   = 1.222;
   diminished_dodge_cap = 1.502;
