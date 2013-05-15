@@ -6082,9 +6082,13 @@ double druid_t::composite_armor_multiplier()
     // TODO: http://mop.wowhead.com/spell=5487 spell tooltip => +120% armor
     // But the actual spell data suggests +65% armor
     if ( spec.thick_hide -> ok() )
-      a += spec.thick_hide -> effectN( 2 ).percent();
+      a *= 1.0 + spec.thick_hide -> effectN( 2 ).percent();
     else
-      a += buff.bear_form -> data().effectN( 3 ).percent();
+      a *= 1.0 + buff.bear_form -> data().effectN( 3 ).percent();
+
+    // Mastery: Nature's Guardian
+    if ( mastery.natures_guardian -> ok() )
+      a *= 1.0 + cache.mastery_value();
   }
   return a;
 }
@@ -6629,6 +6633,14 @@ void druid_t::assess_damage( school_e school,
 
   if ( buff.survival_instincts -> up() )
     s -> result_amount *= 1.0 + buff.survival_instincts -> value();
+
+  if ( spec.thick_hide -> ok() )
+  {
+    if ( school == SCHOOL_PHYSICAL )
+      s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 5 ).percent();
+    else if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
+      s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 3 ).percent();
+  }
 
   // Call here to benefit from -10% physical damage before SD is taken into account
   player_t::assess_damage( school, dtype, s );
