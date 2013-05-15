@@ -265,7 +265,6 @@ public:
   virtual void      init_gains();
   virtual void      init_rng();
   virtual void      init_procs();
-  virtual void      init_actions();
   virtual void      init_defense();
   virtual void      regen( timespan_t periodicity );
   virtual void      init_resources( bool force=false );
@@ -280,6 +279,14 @@ public:
   virtual void      combat_begin();
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
+
+  void apl_pre_brewmaster();
+  void apl_pre_windwalker();
+  void apl_pre_mistweaver();
+  void apl_combat_brewmaster();
+  void apl_combat_windwalker();
+  void apl_combat_mistweaver();
+  virtual void      init_actions();
   double stagger_pct();
   virtual void invalidate_cache( cache_e );
 
@@ -2164,6 +2171,7 @@ using namespace heals;
 using namespace absorbs;
 
 } // end namespace actions;
+
 struct power_strikes_event_t : public event_t
 {
   power_strikes_event_t( monk_t* player, timespan_t tick_time ) :
@@ -2319,7 +2327,7 @@ void monk_t::init_spells()
   passives.tier15_2pc = find_spell( 138311 );
   passives.swift_reflexes = find_spell( 124334 );
 
-  //GLYPHS
+  // GLYPHS
   glyph.fortifying_brew = find_glyph( "Glyph of Fortifying Brew" );
 
   //MASTERY
@@ -2351,9 +2359,7 @@ void monk_t::init_base_stats()
 {
   base_t::init_base_stats();
 
-  int tree = specialization();
-
-  base.distance = ( tree == MONK_MISTWEAVER ) ? 40 : 3;
+  base.distance = ( specialization() == MONK_MISTWEAVER ) ? 40 : 3;
 
   base_gcd = timespan_t::from_seconds( 1.0 );
 
@@ -2367,7 +2373,6 @@ void monk_t::init_base_stats()
   base.stats.attack_power = level * 2.0;
   base.attack_power_per_strength = 1.0;
   base.attack_power_per_agility  = 2.0;
-
   base.spell_power_per_intellect = 1.0;
 
   // Mistweaver
@@ -2417,18 +2422,20 @@ void monk_t::create_buffs()
   buff.power_strikes     = buff_creator_t( this, "power_strikes"       ).spell( find_spell( 129914 ) );
   buff.tiger_strikes     = haste_buff_creator_t( this, "tiger_strikes" ).spell( find_spell( 120273 ) )
                            .chance( find_spell( 120272 ) -> proc_chance() );
-  buff.tiger_power       = buff_creator_t( this, "tiger_power"         , find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() );
+  buff.tiger_power       = buff_creator_t( this, "tiger_power" )
+                           .spell( find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() );
   buff.zen_sphere        = buff_creator_t( this, "zen_sphere" , talent.zen_sphere );
 
   // Brewmaster
   buff.elusive_brew_stacks    = buff_creator_t( this, "elusive_brew_stacks"    ).spell( find_spell( 128939 ) );
   buff.elusive_brew_activated = buff_creator_t( this, "elusive_brew_activated" ).spell( spec.elusive_brew )
                                 .add_invalidate( CACHE_DODGE );
-  buff.guard                  = absorb_buff_creator_t( this, "guard", find_class_spell( "Guard" ) )
+  buff.guard                  = absorb_buff_creator_t( this, "guard" ).spell( find_class_spell( "Guard" ) )
                                 .source( get_stats( "guard" ) )
                                 .cd( timespan_t::zero() );
-  buff.power_guard            = buff_creator_t( this, "power_guard"            ).spell( spec.brewmaster_training -> effectN( 1 ).trigger() );
-  buff.shuffle                = buff_creator_t( this, "shuffle"                ).spell( find_spell( 115307 ) )
+  buff.power_guard            = buff_creator_t( this, "power_guard" )
+                                .spell( spec.brewmaster_training -> effectN( 1 ).trigger() );
+  buff.shuffle                = buff_creator_t( this, "shuffle" ).spell( find_spell( 115307 ) )
                                 .add_invalidate( CACHE_PARRY );
 
   // Mistweaver
@@ -2441,7 +2448,7 @@ void monk_t::create_buffs()
   buff.chi_sphere        = buff_creator_t( this, "chi_sphere"          ).max_stack( 5 );
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok"   ).spell( find_spell( 116768 ) );
   buff.combo_breaker_tp  = buff_creator_t( this, "combo_breaker_tp"    ).spell( find_spell( 118864 ) );
-  buff.energizing_brew   = buff_creator_t( this, "energizing_brew", find_class_spell( "Energizing Brew" ) );
+  buff.energizing_brew   = buff_creator_t( this, "energizing_brew" ).spell( find_class_spell( "Energizing Brew" ) );
   buff.energizing_brew -> buff_duration += sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //verify working
   buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"       ).spell( find_spell( 125195 ) );
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use"   ).spell( find_spell( 116740 ) ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -2485,216 +2492,6 @@ void monk_t::init_procs()
   proc.mana_tea         = get_proc( "mana_tea"   );
   proc.tier15_2pc_melee = get_proc( "tier15_2pc" );
   proc.tier15_4pc_melee = get_proc( "tier15_4pc" );
-}
-
-// monk_t::init_actions =====================================================
-
-void monk_t::init_actions()
-{
-  if ( ! action_list_str.empty() )
-    {
-      player_t::init_actions();
-      return;
-    }
-    clear_action_priority_lists();
-
-    std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
-    std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
-    std::string& st_list_str = get_action_priority_list( "single_target" ) -> action_list_str;
-
-    action_priority_list_t* pre = get_action_priority_list( "precombat" );
-    action_priority_list_t* def       = get_action_priority_list( "default"   );
-
-    // Precombat
-    switch ( specialization() )
-    {
-
-    case MONK_BREWMASTER:
-      // Flask
-      if ( sim -> allow_flasks && level >= 80 )
-      {
-        if ( level >= 85 )
-          pre -> add_action( "flask,type=earth" );
-        else
-          pre -> add_action( "flask,type=steelskin" );
-      }
-
-      // Food
-      if ( sim -> allow_food && level >= 80 )
-      {
-        if ( level >= 85 )
-          pre -> add_action( "/food,type=great_pandaren_banquet" );
-        else
-          pre -> add_action( "/food,type=great_pandaren_banquet" ); // FIXME
-      }
-
-      pre -> add_action( "stance,choose=sturdy_ox" );
-      pre -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-
-      // Potion
-      if ( sim -> allow_potions && level >= 80)
-      {
-        if ( level >= 85 )
-          pre -> add_action( "mountains_potion" );
-        else
-          pre -> add_action( "mountains_potion" ); // FIXME
-      }
-      break;
-    case MONK_WINDWALKER:
-      if ( sim -> allow_flasks )
-      {
-        // Flask
-        precombat += "flask,type=spring_blossoms";
-      }
-
-      if ( sim -> allow_food )
-      {
-        // Food
-        precombat += "/food,type=sea_mist_rice_noodles";
-      }
-
-      precombat += "/stance,choose=fierce_tiger";
-      precombat += "/snapshot_stats";
-
-      if ( sim -> allow_potions )
-      {
-        // Prepotion
-        if ( level >= 85 )
-          precombat += "/virmens_bite_potion";
-        else if ( level > 80 )
-          precombat += "/tolvir_potion";
-      }
-      break;
-    case MONK_MISTWEAVER:
-      if ( sim -> allow_flasks )
-      {
-        // Flask
-        if ( level >= 85 )
-          precombat += "flask,type=spring_blossoms";
-        else if ( level > 80 )
-          precombat += "flask,type=draconic_mind";
-      }
-
-      if ( sim -> allow_food )
-      {
-        // Food
-        if ( level >= 85 )
-          precombat += "/food,type=mogu_fish_stew";
-        else if ( level > 80 )
-          precombat += "/food,type=seafood_magnifique_feast";
-      }
-
-      precombat += "/stance,choose=wise_serpent";
-      precombat += "/snapshot_stats";
-
-      if ( sim -> allow_potions )
-      {
-        // Prepotion
-        if ( level >= 85 )
-          precombat += "/jade_serpent_potion";
-        else if ( level > 80 )
-          precombat += "/volcanic_potion";
-      }
-      break;
-    default: break;
-    }
-
-
-    // Combat
-    switch ( specialization() )
-    {
-
-    case MONK_BREWMASTER:
-      def -> add_action( "auto_attack" );
-      def -> add_action( this, "Fortifying Brew", "if=health.pct<40" );
-
-      def -> add_action( "mountains_potion,if=health.pct<35&buff.mountains_potion.down" );
-      def -> add_action( this, "Elusive Brew", "if=buff.elusive_brew_stacks.react>=6" );
-      def -> add_action( this, "Keg Smash" );
-      def -> add_action( this, "Breath of Fire", "if=target.debuff.dizzying_haze.up" );
-      def -> add_action( this, "Guard" );
-      def -> add_talent( this, "Chi Burst" );
-      def -> add_action( this, "Jab", "if=energy.pct>40" );
-      break;
-
-    case MONK_WINDWALKER:
-
-      action_list_str += "/auto_attack";
-      action_list_str += "/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4";
-
-      if ( sim -> allow_potions )
-      {
-        if ( level >= 85 )
-          action_list_str += "/virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60";
-      }
-
-      // PROFS/RACIALS
-      action_list_str += init_use_profession_actions();
-
-      // USE ITEM (engineering etc)
-      for ( int i = items.size() - 1; i >= 0; i-- )
-      {
-        if ( items[ i ].parsed.use.active() )
-        {
-          action_list_str += "/use_item,name=";
-          action_list_str += items[ i ].name();
-        }
-      }
-
-      action_list_str += init_use_racial_actions();
-      action_list_str += "/chi_brew,if=talent.chi_brew.enabled&chi=0";
-      action_list_str += "/tiger_palm,if=buff.tiger_power.remains<=3";
-      if ( find_item( "rune_of_reorigination" ) )
-      {
-        action_list_str+= "/tigereye_brew,line_cd=15,if=buff.rune_of_reorigination.react&(buff.rune_of_reorigination.remains<=1|(buff.tigereye_brew_use.down&cooldown.rising_sun_kick.remains=0&chi>=2&target.debuff.rising_sun_kick.remains&buff.tiger_power.remains))";
-        action_list_str+= "/tigereye_brew,if=!buff.tigereye_brew_use.up&(buff.tigereye_brew.react>19|target.time_to_die<20)";
-      }
-      else
-      {
-        action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&cooldown.rising_sun_kick.remains=0&chi>=2&target.debuff.rising_sun_kick.remains&buff.tiger_power.remains";
-      }
-      action_list_str += "/energizing_brew,if=energy.time_to_max>5";
-      action_list_str += "/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains";
-      action_list_str  += "/tiger_palm,if=buff.tiger_power.down&target.debuff.rising_sun_kick.remains>1&energy.time_to_max>1";
-
-      action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
-      action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
-      action_list_str += "/run_action_list,name=single_target,if=active_enemies<5";
-      //aoe
-
-      aoe_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
-      aoe_list_str += "/rising_sun_kick,if=chi=4";
-      aoe_list_str += "/spinning_crane_kick";
-
-      //st
-      st_list_str += "/rising_sun_kick";
-      st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>4&buff.tiger_power.remains>4";
-      st_list_str += "/chi_wave,if=talent.chi_wave.enabled&energy.time_to_max>2";
-      st_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
-      st_list_str += "/tiger_palm,if=(buff.combo_breaker_tp.react&energy.time_to_max>=2)|(buff.combo_breaker_tp.remains<=2&buff.combo_breaker_tp.react)";
-      st_list_str += "/jab,if=talent.ascension.enabled&chi<=3";
-      st_list_str += "/jab,if=!talent.ascension.enabled&chi<=2";
-      st_list_str += "/blackout_kick,if=(energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40";
-      break;
-
-    case MONK_MISTWEAVER:
-      def -> add_action( "auto_attack" );
-      def -> add_action( this, "Mana Tea", "if=buff.mana_tea.react>=2&mana.pct<=90" );
-      def -> add_talent( this, "Chi Wave" );
-      def -> add_talent( this, "Chi Brew", "if=buff.tiger_power.up" );
-      def -> add_action( this, "Blackout Kick", "if=buff.muscle_memory.up&buff.tiger_power.up" );
-      def -> add_action( this, "Tiger Palm", "if=buff.muscle_memory.up" );
-      def -> add_action( this, "Jab" );
-      def -> add_action( this, "Mana Tea" );
-      break;
-
-    default:
-      add_action( "Jab" );
-      break;
-  }
-  action_list_default = 1;
-
-  base_t::init_actions();
 }
 
 // monk_t::reset ==================================================
@@ -3136,6 +2933,259 @@ void monk_t::assess_damage( school_e school,
   buff.elusive_brew_activated -> up();
 
   base_t::assess_damage( school, dtype, s );
+}
+
+// Mistweaver Pre-Combat Action Priority List
+
+void monk_t::apl_pre_brewmaster()
+{
+  action_priority_list_t* pre = get_action_priority_list( "precombat" );
+
+  // Flask
+  if ( sim -> allow_flasks && level >= 80 )
+  {
+    if ( level >= 85 )
+      pre -> add_action( "flask,type=earth" );
+    else
+      pre -> add_action( "flask,type=steelskin" );
+  }
+
+  // Food
+  if ( sim -> allow_food && level >= 80 )
+  {
+    if ( level >= 85 )
+      pre -> add_action( "/food,type=great_pandaren_banquet" );
+    else
+      pre -> add_action( "/food,type=great_pandaren_banquet" ); // FIXME
+  }
+
+  pre -> add_action( "stance,choose=sturdy_ox" );
+  pre -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+
+  // Potion
+  if ( sim -> allow_potions && level >= 80)
+  {
+    if ( level >= 85 )
+      pre -> add_action( "mountains_potion" );
+    else
+      pre -> add_action( "mountains_potion" ); // FIXME
+  }
+}
+
+// Mistweaver Pre-Combat Action Priority List
+
+void monk_t::apl_pre_windwalker()
+{
+  std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
+
+  if ( sim -> allow_flasks )
+  {
+    // Flask
+    precombat += "flask,type=spring_blossoms";
+  }
+
+  if ( sim -> allow_food )
+  {
+    // Food
+    precombat += "/food,type=sea_mist_rice_noodles";
+  }
+
+  precombat += "/stance,choose=fierce_tiger";
+  precombat += "/snapshot_stats";
+
+  if ( sim -> allow_potions )
+  {
+    // Prepotion
+    if ( level >= 85 )
+      precombat += "/virmens_bite_potion";
+    else if ( level > 80 )
+      precombat += "/tolvir_potion";
+  }
+}
+
+// Mistweaver Pre-Combat Action Priority List
+
+void monk_t::apl_pre_mistweaver()
+{
+  std::string& precombat = get_action_priority_list( "precombat" ) -> action_list_str;
+
+  if ( sim -> allow_flasks )
+  {
+    // Flask
+    if ( level >= 85 )
+      precombat += "flask,type=spring_blossoms";
+    else if ( level > 80 )
+      precombat += "flask,type=draconic_mind";
+  }
+
+  if ( sim -> allow_food )
+  {
+    // Food
+    if ( level >= 85 )
+      precombat += "/food,type=mogu_fish_stew";
+    else if ( level > 80 )
+      precombat += "/food,type=seafood_magnifique_feast";
+  }
+
+  precombat += "/stance,choose=wise_serpent";
+  precombat += "/snapshot_stats";
+
+  if ( sim -> allow_potions )
+  {
+    // Prepotion
+    if ( level >= 85 )
+      precombat += "/jade_serpent_potion";
+    else if ( level > 80 )
+      precombat += "/volcanic_potion";
+  }
+}
+
+// Brewmaster Combat Action Priority List
+
+void monk_t::apl_combat_brewmaster()
+{
+  action_priority_list_t* def       = get_action_priority_list( "default"   );
+
+  def -> add_action( "auto_attack" );
+  def -> add_action( this, "Fortifying Brew", "if=health.pct<40" );
+
+  def -> add_action( "mountains_potion,if=health.pct<35&buff.mountains_potion.down" );
+  def -> add_action( this, "Elusive Brew", "if=buff.elusive_brew_stacks.react>=6" );
+  def -> add_action( this, "Keg Smash" );
+  def -> add_action( this, "Breath of Fire", "if=target.debuff.dizzying_haze.up" );
+  def -> add_action( this, "Guard" );
+  def -> add_talent( this, "Chi Burst" );
+  def -> add_action( this, "Jab", "if=energy.pct>40" );
+}
+
+// Windwalker Combat Action Priority List
+
+void monk_t::apl_combat_windwalker()
+{
+  std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
+  std::string& st_list_str = get_action_priority_list( "single_target" ) -> action_list_str;
+
+  action_list_str += "/auto_attack";
+  action_list_str += "/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4";
+
+  if ( sim -> allow_potions )
+  {
+    if ( level >= 85 )
+      action_list_str += "/virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+  }
+
+  // PROFS/RACIALS
+  action_list_str += init_use_profession_actions();
+
+  // USE ITEM (engineering etc)
+  for ( int i = items.size() - 1; i >= 0; i-- )
+  {
+    if ( items[ i ].parsed.use.active() )
+    {
+      action_list_str += "/use_item,name=";
+      action_list_str += items[ i ].name();
+    }
+  }
+
+  action_list_str += init_use_racial_actions();
+  action_list_str += "/chi_brew,if=talent.chi_brew.enabled&chi=0";
+  action_list_str += "/tiger_palm,if=buff.tiger_power.remains<=3";
+  if ( find_item( "rune_of_reorigination" ) )
+  {
+    action_list_str+= "/tigereye_brew,line_cd=15,if=buff.rune_of_reorigination.react&(buff.rune_of_reorigination.remains<=1|(buff.tigereye_brew_use.down&cooldown.rising_sun_kick.remains=0&chi>=2&target.debuff.rising_sun_kick.remains&buff.tiger_power.remains))";
+    action_list_str+= "/tigereye_brew,if=!buff.tigereye_brew_use.up&(buff.tigereye_brew.react>19|target.time_to_die<20)";
+  }
+  else
+  {
+    action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&cooldown.rising_sun_kick.remains=0&chi>=2&target.debuff.rising_sun_kick.remains&buff.tiger_power.remains";
+  }
+  action_list_str += "/energizing_brew,if=energy.time_to_max>5";
+  action_list_str += "/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains";
+  action_list_str  += "/tiger_palm,if=buff.tiger_power.down&target.debuff.rising_sun_kick.remains>1&energy.time_to_max>1";
+
+  action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
+  action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
+  action_list_str += "/run_action_list,name=single_target,if=active_enemies<5";
+  //aoe
+
+  aoe_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
+  aoe_list_str += "/rising_sun_kick,if=chi=4";
+  aoe_list_str += "/spinning_crane_kick";
+
+  //st
+  st_list_str += "/rising_sun_kick";
+  st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>4&buff.tiger_power.remains>4";
+  st_list_str += "/chi_wave,if=talent.chi_wave.enabled&energy.time_to_max>2";
+  st_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
+  st_list_str += "/tiger_palm,if=(buff.combo_breaker_tp.react&energy.time_to_max>=2)|(buff.combo_breaker_tp.remains<=2&buff.combo_breaker_tp.react)";
+  st_list_str += "/jab,if=talent.ascension.enabled&chi<=3";
+  st_list_str += "/jab,if=!talent.ascension.enabled&chi<=2";
+  st_list_str += "/blackout_kick,if=(energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40";
+}
+
+// Mistweaver Combat Action Priority List
+
+void monk_t::apl_combat_mistweaver()
+{
+  action_priority_list_t* def       = get_action_priority_list( "default"   );
+
+  def -> add_action( "auto_attack" );
+  def -> add_action( this, "Mana Tea", "if=buff.mana_tea.react>=2&mana.pct<=90" );
+  def -> add_talent( this, "Chi Wave" );
+  def -> add_talent( this, "Chi Brew", "if=buff.tiger_power.up" );
+  def -> add_action( this, "Blackout Kick", "if=buff.muscle_memory.up&buff.tiger_power.up" );
+  def -> add_action( this, "Tiger Palm", "if=buff.muscle_memory.up" );
+  def -> add_action( this, "Jab" );
+  def -> add_action( this, "Mana Tea" );
+}
+
+// monk_t::init_actions =====================================================
+
+void monk_t::init_actions()
+{
+  if ( ! action_list_str.empty() )
+    {
+      player_t::init_actions();
+      return;
+    }
+    clear_action_priority_lists();
+
+    // Precombat
+    switch ( specialization() )
+    {
+
+    case MONK_BREWMASTER:
+      apl_pre_brewmaster();
+      break;
+    case MONK_WINDWALKER:
+      apl_pre_windwalker();
+      break;
+    case MONK_MISTWEAVER:
+      apl_pre_mistweaver();
+      break;
+    default: break;
+    }
+
+    // Combat
+    switch ( specialization() )
+    {
+
+    case MONK_BREWMASTER:
+      apl_combat_brewmaster();
+      break;
+    case MONK_WINDWALKER:
+      apl_combat_windwalker();
+      break;
+    case MONK_MISTWEAVER:
+      apl_combat_mistweaver();
+      break;
+    default:
+      add_action( "Jab" );
+      break;
+  }
+  action_list_default = 1;
+
+  base_t::init_actions();
 }
 
 double monk_t::stagger_pct()
