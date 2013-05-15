@@ -135,6 +135,7 @@ public:
     buff_t* enrage;
     buff_t* lacerate;
     buff_t* survival_instincts;
+    buff_t* tier15_2pc_tank;
 
     // Restoration
     buff_t* soul_of_the_forest;
@@ -2179,9 +2180,13 @@ struct frenzied_regeneration_t : public bear_attack_t
       double health_pct_gain = resource_consumed / maximum_rage_cost;
       double actual_gain = std::max( health_pct_gain * health_gain,
                                      p() -> composite_attribute( ATTR_STAMINA ) * 2.5 );
+      if ( p() -> buff.tier15_2pc_tank -> up() )
+        actual_gain *= 1.0 + p() -> buff.tier15_2pc_tank -> stack() * p() -> buff.tier15_2pc_tank -> data().effectN( 1 ).percent();
       p() -> resource_gain( RESOURCE_HEALTH,
                             actual_gain,
                             p() -> gain.frenzied_regeneration );
+
+      p() -> buff.tier15_2pc_tank -> expire();
     }
     else
       p() -> buff.frenzied_regeneration -> trigger();
@@ -5373,8 +5378,9 @@ void druid_t::create_buffs()
   // Guardian
   buff.enrage                = buff_creator_t( this, "enrage" , find_specialization_spell( "Enrage" ) );
   buff.lacerate              = buff_creator_t( this, "lacerate" , find_class_spell( "Lacerate" ) );
-  buff.savage_defense    = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() );
+  buff.savage_defense        = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() );
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", spell.survival_instincts );
+  buff.tier15_2pc_tank       = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138217 ) );
 
   // Restoration
 
@@ -6628,6 +6634,9 @@ void druid_t::assess_damage( school_e school,
                              dmg_e    dtype,
                              action_state_t* s )
 {
+  if ( set_bonus.tier15_2pc_tank() && s -> result == RESULT_DODGE && buff.savage_defense -> check() )
+    buff.tier15_2pc_tank -> trigger();
+
   if ( buff.barkskin -> up() )
     s -> result_amount *= 1.0 + buff.barkskin -> value();
 
