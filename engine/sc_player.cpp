@@ -1201,6 +1201,8 @@ void player_t::init_base_stats()
     base.mastery = 8.0;
 
     resources.base[ RESOURCE_HEALTH ] = dbc.health_base( type, level );
+    if ( race == RACE_TAUREN )
+      resources.base[ RESOURCE_HEALTH ] *= 1.0 + find_spell( 20550 ) -> effectN( 1 ).percent();
     resources.base[ RESOURCE_MANA   ] = dbc.resource_base( type, level );
 
     base.mana_regen_per_second = dbc.regen_base( type, level ) / 5.0;
