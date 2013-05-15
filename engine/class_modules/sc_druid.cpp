@@ -5263,9 +5263,9 @@ void druid_t::init_base_stats()
   base.attack_power_per_strength = 1.0;
   base.spell_power_per_intellect = 1.0;
 
-  diminished_kfactor    = 0.009720;
-  diminished_dodge_cap = 0.008555;
-  diminished_parry_cap = 0.008555;
+  diminished_kfactor   = 1.222;
+  diminished_dodge_cap = 1.502;
+  diminished_parry_cap = 0.008555; // ???
 
   resources.base[ RESOURCE_ENERGY ] = 100;
   resources.base[ RESOURCE_RAGE   ] = 100;
