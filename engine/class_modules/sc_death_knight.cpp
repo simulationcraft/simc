@@ -1450,6 +1450,16 @@ struct bloodworms_pet_t : public death_knight_pet_t
 
     bloodworms_pet_t* p() const
     { return debug_cast< bloodworms_pet_t* >( player ); }
+
+    void init()
+    {
+      heal_t::init();
+
+      death_knight_t* o = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
+
+      if ( player != o -> pets.bloodworms[ 0 ] )
+        stats = o -> pets.bloodworms[ 0 ] -> get_stats( name_str );
+    }
   };
 
   // FIXME: Level 80/85 values
