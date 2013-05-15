@@ -3057,7 +3057,7 @@ double player_t::composite_tank_parry()
 
   if ( current.parry_rating_per_strength > 0 )
   {
-    p += base.stats.attribute[ ATTR_STRENGTH ] / current.parry_rating_per_strength / current.rating.parry;
+    p += base.stats.attribute[ ATTR_STRENGTH ] * current.parry_rating_per_strength / current.rating.parry;
   }
 
   if ( parry_by_strength > 0 || parry_by_parry_rating > 0 )

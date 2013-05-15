@@ -4835,6 +4835,7 @@ void death_knight_t::init_base_stats()
   base.miss    = 0.0600;
   base.parry   = 0.0300;
   base.block   = 0.0000;
+  base.parry_rating_per_strength = dbc.combat_rating( RATING_PARRY, level ) / 952.0 / 100.0;
 
   base.attack_power_per_strength = 2.0;
 
@@ -4843,11 +4844,10 @@ void death_knight_t::init_base_stats()
   base_gcd = timespan_t::from_seconds( 1.0 );
 
   // Horribly off, what are the new values?
-  diminished_kfactor   = 0.009560;
-  diminished_dodge_cap = 0.01523660;
-  diminished_parry_cap = 0.01523660;
+  diminished_kfactor   = 0.956;
+  diminished_dodge_cap = 0.906425;
+  diminished_parry_cap = 2.37186;
 
-  initial.parry_rating_per_strength = 0.9306;
 
   if ( specialization() == DEATH_KNIGHT_BLOOD )
     vengeance_init();
