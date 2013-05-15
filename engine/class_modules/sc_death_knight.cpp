@@ -399,7 +399,6 @@ public:
   virtual void      init_actions();
   virtual void      init_enchant();
   virtual void      init_rng();
-  virtual void      init_defense();
   virtual void      init_base_stats();
   virtual void      init_scaling();
   virtual void      create_buffs();
@@ -3956,6 +3955,8 @@ struct presence_t : public death_knight_spell_t
     case PRESENCE_FROST:  p() -> buffs.frost_presence  -> trigger(); break;
     case PRESENCE_UNHOLY: p() -> buffs.unholy_presence -> trigger(); break;
     }
+
+    p() -> recalculate_resource_max( RESOURCE_HEALTH );
   }
 
   virtual bool ready()
@@ -4818,18 +4819,6 @@ void death_knight_t::init_rng()
   rng.t15_2pc_melee     = new real_ppm_t( "t15_2pc_melee", *this, 1.0 );
 }
 
-// death_knight_t::init_defense =============================================
-
-void death_knight_t::init_defense()
-{
-  player_t::init_defense();
-
-  initial.parry_rating_per_strength = .7; // FIXME: How much this is in reality?
-
-  if ( specialization() == DEATH_KNIGHT_BLOOD )
-    vengeance_init();
-}
-
 // death_knight_t::init_base ================================================
 
 void death_knight_t::init_base_stats()
@@ -4841,10 +4830,11 @@ void death_knight_t::init_base_stats()
 
   base.stats.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
 
-  base.dodge = spec.veteran_of_the_third_war -> effectN( 2 ).percent();
-  base.miss    = 0.060;
-  base.parry   = 0.030; //90
-  base.block   = 0.000; // 90
+  // Level 90 values, horribly off for anything else
+  base.dodge   = 0.0301 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
+  base.miss    = 0.0600;
+  base.parry   = 0.0300;
+  base.block   = 0.0000;
 
   base.attack_power_per_strength = 2.0;
 
@@ -4852,9 +4842,15 @@ void death_knight_t::init_base_stats()
 
   base_gcd = timespan_t::from_seconds( 1.0 );
 
-  diminished_kfactor    = 0.009560;
+  // Horribly off, what are the new values?
+  diminished_kfactor   = 0.009560;
   diminished_dodge_cap = 0.01523660;
   diminished_parry_cap = 0.01523660;
+
+  initial.parry_rating_per_strength = 0.9306;
+
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
+    vengeance_init();
 }
 
 // death_knight_t::init_spells ==============================================
@@ -5092,7 +5088,9 @@ void death_knight_t::init_actions()
       if ( talent.blood_tap -> ok() )
         action_list_str += "/blood_tap,if=(unholy=0&frost>=1)|(unholy>=1&frost=0)|(death=1)";
       action_list_str += "/death_strike";
-      action_list_str += "/death_siphon,if=health.pct<90";
+      //action_list_str += "/death_siphon,if=health.pct<90";
+      action_list_str += "/death_siphon,if=enabled&hit_damage>action.necrotic_strike.hit_damage";
+      action_list_str += "/necrotic_strike,if=!talent.death_siphon.enabled|hit_damage>action.death_siphon.hit_damage";
       action_list_str += "/blood_boil,if=buff.crimson_scourge.up";
       action_list_str += "/heart_strike,if=(blood=1&blood.cooldown_remains<1)|blood=2";
       action_list_str += "/rune_strike,if=runic_power>=40";
@@ -5582,7 +5580,12 @@ void death_knight_t::init_scaling()
   }
 
   if ( primary_role() == ROLE_TANK )
+  {
     scales_with[ STAT_PARRY_RATING ] = true;
+    scales_with[ STAT_DODGE_RATING ] = true;
+    scales_with[ STAT_AGILITY      ] = false; // Yes yes on paper this isnt really true.
+    scales_with[ STAT_BLOCK_RATING ] = false;
+  }
 }
 
 // death_knight_t::init_buffs ===============================================
@@ -5816,16 +5819,16 @@ double death_knight_t::composite_armor_multiplier()
   double a = player_t::composite_armor_multiplier();
 
   if ( buffs.blood_presence -> check() )
-    a += buffs.blood_presence -> data().effectN( 3 ).percent();
+    a *= 1.0 + buffs.blood_presence -> data().effectN( 3 ).percent();
 
   if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
-    a += runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 1 ).percent();
+    a *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 1 ).percent();
 
   if ( runeforge.rune_of_the_nerubian_carapace -> check() )
-    a += runeforge.rune_of_the_nerubian_carapace -> data().effectN( 1 ).percent();
+    a *= 1.0 + runeforge.rune_of_the_nerubian_carapace -> data().effectN( 1 ).percent();
 
   if ( runeforge.rune_of_the_nerubian_carapace_oh -> check() )
-    a += runeforge.rune_of_the_nerubian_carapace_oh -> data().effectN( 1 ).percent();
+    a *= 1.0 + runeforge.rune_of_the_nerubian_carapace_oh -> data().effectN( 1 ).percent();
 
   return a;
 }
