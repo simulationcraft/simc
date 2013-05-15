@@ -28,7 +28,7 @@
   Check damage values of Jab, TP, BoK, SCK, etc.
 
   BREWMASTER:
-  Add Swift Reflexes
+  - Swift Reflexes strike back
 
 */
 #include "simulationcraft.hpp"
@@ -176,6 +176,7 @@ public:
     const spell_data_t* brewing_elusive_brew;
     const spell_data_t* brewmaster_training;
     const spell_data_t* elusive_brew;
+    const spell_data_t* desperate_measures;
 
     // Mistweaver
     const spell_data_t* brewing_mana_tea;
@@ -211,6 +212,7 @@ public:
   struct passives_t
   {
     const spell_data_t* tier15_2pc;
+    const spell_data_t* swift_reflexes;
   } passives;
 
   // Options
@@ -793,6 +795,15 @@ struct expel_harm_t : public monk_melee_attack_t
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc_melee -> occur();
     }
+  }
+
+
+  virtual void update_ready( timespan_t cd )
+  {
+    if ( p() -> spec.desperate_measures -> ok() && p() -> health_percentage() <= 35.0 )
+      cd = timespan_t::zero();
+
+    monk_melee_attack_t::update_ready( cd );
   }
 };
 
@@ -2290,6 +2301,7 @@ void monk_t::init_spells()
   spec.brewmaster_training        = find_specialization_spell( "Brewmaster Training" );
   spec.brewing_elusive_brew       = find_specialization_spell( "Brewing: Elusive Brew" );
   spec.elusive_brew               = find_specialization_spell( "Elusive Brew" );
+  spec.desperate_measures         = find_specialization_spell( "Desperate Measures" );
 
   // Mistweaver Passives
   spec.brewing_mana_tea           = find_specialization_spell( "Brewing: Mana Tea" );
@@ -2305,6 +2317,7 @@ void monk_t::init_spells()
   //SPELLS
   active_actions.blackout_kick_dot = new actions::dot_blackout_kick_t( this );
   passives.tier15_2pc = find_spell( 138311 );
+  passives.swift_reflexes = find_spell( 124334 );
 
   //GLYPHS
   glyph.fortifying_brew = find_glyph( "Glyph of Fortifying Brew" );
@@ -2961,6 +2974,8 @@ double monk_t::composite_tank_parry()
 
   if ( buff.shuffle -> check() )
   { p += buff.shuffle -> data().effectN( 1 ).percent(); }
+
+  p += passives.swift_reflexes -> effectN( 2 ).percent();
 
   return p;
 }

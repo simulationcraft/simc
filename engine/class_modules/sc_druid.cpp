@@ -6670,9 +6670,9 @@ void druid_t::assess_heal( school_e school,
 
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
   : actor_pair_t( &target, &source ),
-    lacerate_stack( 1 ),
     dots( dots_t() ),
     buffs( buffs_t() ),
+    lacerate_stack( 1 ),
     combo_points( source, target )
 {
   dots.lacerate     = target.get_dot( "lacerate",     &source );
