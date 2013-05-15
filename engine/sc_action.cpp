@@ -1662,10 +1662,16 @@ expr_t* action_t::create_expression( const std::string& name_str )
     {
       action.snapshot_state( state, amount_type );
       state -> result = result_type;
+      state -> target = action.target;
       if ( amount_type == DMG_OVER_TIME || amount_type == HEAL_OVER_TIME )
         return action.calculate_tick_amount( state );
       else
-        return action.calculate_direct_amount( state, 0 );
+      {
+        state -> result_amount = action.calculate_direct_amount( state, 0 );
+        if ( amount_type == DMG_DIRECT )
+          state -> target -> target_mitigation( action.school, amount_type, state );
+        return state -> result_amount;
+      }
     }
   };
 
