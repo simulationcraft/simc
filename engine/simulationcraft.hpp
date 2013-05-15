@@ -4040,7 +4040,8 @@ public:
 
   /* The Cache system increases simulation performance by moving the calculation point
    * from call-time to modification-time of a stat. Because a stat is called much more
-   * often than it is changed, this reduces costly and unnecessary floating-point operations.
+   * often than it is changed, this reduces costly and unnecessary repetition of floating-point
+   * operations.
    *
    * When a stat is accessed, its 'valid'-state is checked:
    *   If its true, the cached value is accessed.
@@ -4052,7 +4053,7 @@ public:
 
   /* - To invalidate a stat, use player_t::invalidate_cache( cache_e )
    * - using player_t::stat_gain/loss automatically invalidates the corresponding cache
-   * - Same goes for stat_buff_t, which work through player_t::stat_gain/loss
+   * - Same goes for stat_buff_t, which works through player_t::stat_gain/loss
    * - Buffs with effects in a composite_ function need invalidates added to their buff_creator
    *
    * To create invalidation chains ( eg. Priest: Spirit invalidates Hit ) override the
