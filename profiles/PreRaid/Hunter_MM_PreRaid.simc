@@ -4,7 +4,7 @@ hunter="Hunter_MM_PreRaid"
 level=90
 race=orc
 role=attack
-position=back
+position=ranged_back
 professions=blacksmithing=600/enchanting=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...100
 spec=marksmanship

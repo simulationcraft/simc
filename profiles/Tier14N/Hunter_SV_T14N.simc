@@ -4,7 +4,7 @@ hunter="Hunter_SV_T14N"
 level=90
 race=tauren
 role=attack
-position=back
+position=ranged_back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Yb!...100
 spec=survival
 

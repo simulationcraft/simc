@@ -43,8 +43,8 @@ actions+=/jade_serpent_potion,if=buff.alter_time.down&(buff.arcane_power.up|targ
 actions+=/use_item,name=flashfrozen_resin_globule,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/alter_time,if=buff.alter_time.down&buff.arcane_power.up
 actions+=/use_item,name=flashfrozen_resin_globule,if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.rune_of_power.remains>20
-actions+=/run_action_list,name=aoe,if=active_enemies>=5
-actions+=/run_action_list,name=single_target,if=active_enemies<5
+actions+=/run_action_list,name=aoe,if=active_enemies>=6
+actions+=/run_action_list,name=single_target,if=active_enemies<6
 
 actions.aoe=flamestrike
 actions.aoe+=/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3

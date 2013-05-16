@@ -126,6 +126,8 @@ main_hand=inscribed_tiger_staff,id=79343,enchant=dancing_steel,reforge=crit_exp
 # gear_haste_rating=503
 # gear_mastery_rating=6254
 # gear_armor=16081
+# gear_resilience_rating=1640
+# gear_pvp_power=1640
 # meta_gem=agile_primal
 # pvp_2pc_melee=1
 # hands=greyshadow_gloves,addon=synapse_springs_mark_ii

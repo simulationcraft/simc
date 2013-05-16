@@ -45,7 +45,7 @@ actions+=/immolate,cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<
 actions+=/immolate,cycle_targets=1,if=ticks_remain<cast_time&target.time_to_die>=5&miss_react
 actions+=/conflagrate,if=charges=2&buff.havoc.stack=0
 actions+=/rain_of_fire,if=!ticking&!in_flight
-actions+=/chaos_bolt,if=ember_react&target.health.pct>20&(buff.backdraft.stack<3|level<86)&(burning_ember>(4.5-active_enemies)|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time))
+actions+=/chaos_bolt,if=ember_react&target.health.pct>20&(buff.backdraft.stack<3|level<86|(active_enemies>1&action.incinerate.cast_time<1))&(burning_ember>(4.5-active_enemies)|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time))
 actions+=/chaos_bolt,if=ember_react&target.health.pct>20&(buff.havoc.stack=3&buff.havoc.remains>cast_time)
 actions+=/conflagrate
 actions+=/incinerate

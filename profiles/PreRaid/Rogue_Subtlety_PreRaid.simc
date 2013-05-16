@@ -58,7 +58,7 @@ actions.generator+=/run_action_list,name=pool
 # Combo point finishers
 
 actions.finisher=slice_and_dice,if=buff.slice_and_dice.remains<4
-actions.finisher+=/rupture,if=remains<4
+actions.finisher+=/rupture,if=ticks_remain<2
 actions.finisher+=/eviscerate
 actions.finisher+=/run_action_list,name=pool
 

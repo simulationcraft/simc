@@ -8550,7 +8550,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
     profile_str += "\n# Gear Summary" + term;
     for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
-      double value = initial.stats.get_stat( i );
+      double value = total_gear.get_stat( i );
       if ( value != 0 )
       {
         profile_str += "# gear_";

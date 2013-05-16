@@ -4,7 +4,7 @@ hunter="Hunter_BM_T15H"
 level=90
 race=orc
 role=attack
-position=back
+position=ranged_back
 professions=jewelcrafting=600/leatherworking=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Ya!...100
 spec=beast_mastery
