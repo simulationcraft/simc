@@ -88,27 +88,32 @@ std::string get_cache_directory()
 {
   std::string s = ".";
 
+  const char* env; // store desired environemental variable in here. getenv returns a null pointer if specified
+  // environemental variable cannot be found.
 #ifdef __linux__
-  s = getenv( "XDG_CACHE_HOME" );
-  if ( s.empty() )
+  env = getenv( "XDG_CACHE_HOME" );
+  if ( ! env )
   {
-    s = getenv( "HOME" );
-    if ( ! s.empty() )
-      s += "/.cache";
+    env = getenv( "HOME" );
+    if ( env )
+      s = std::string( env ) + "/.cache";
     else
       s = "/tmp"; // back out
   }
+  else
+    s = std::string( env );
 #endif
 #ifdef _WIN32
-  s = getenv( "TMP" );
-  if ( s.empty() )
+  env = getenv( "TMP" );
+  if ( !env )
   {
-    s = getenv( "TEMP" );
-    if ( s.empty() )
+    env = getenv( "TEMP" );
+    if ( ! env )
     {
-      s = getenv( "HOME" );
+      env = getenv( "HOME" );
     }
   }
+  s = std::string( env );
 #endif
 
   return s;
