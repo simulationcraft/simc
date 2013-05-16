@@ -82,6 +82,38 @@ static bool need_to_save_profiles( sim_t* sim )
   return false;
 }
 
+/* Obtain a platform specific place to store the http cache file
+ */
+std::string get_cache_directory()
+{
+  std::string s = ".";
+
+#ifdef __linux__
+  s = getenv( "XDG_CACHE_HOME" );
+  if ( s.empty() )
+  {
+    s = getenv( "HOME" );
+    if ( ! s.empty() )
+      s += "/.cache";
+    else
+      s = "/tmp"; // back out
+  }
+#endif
+#ifdef _WIN32
+  s = getenv( "TMP" );
+  if ( s.empty() )
+  {
+    s = getenv( "TEMP" );
+    if ( s.empty() )
+    {
+      s = getenv( "HOME" );
+    }
+  }
+#endif
+
+  return s;
+}
+
 } // anonymous namespace ====================================================
 
 // sim_t::main ==============================================================
@@ -90,32 +122,9 @@ int sim_t::main( const std::vector<std::string>& args )
 {
   sim_signal_handler_t handler( this );
 
-  std::string cache_directory = ".";
-#ifdef __linux__
-  cache_directory = getenv( "XDG_CACHE_HOME" );
-  if ( cache_directory.empty() )
-  {
-    cache_directory = getenv( "HOME" );
-    if ( ! cache_directory.empty() )
-      cache_directory += "/.cache";
-    else
-      cache_directory = "/tmp"; // back out
-  }
-#endif
-#ifdef _WIN32
-  cache_directory = getenv( "TMP" );
-  if ( cache_directory.empty() )
-  {
-    cache_directory = getenv( "TEMP" );
-    if ( cache_directory.empty() )
-    {
-      cache_directory = getenv( "HOME" );
-      if ( cache_directory.empty() )
-        cache_directory = "."; // back out
-    }
-  }
-#endif
-  http::cache_load( ( cache_directory + "/simc_cache.dat" ).c_str() );
+  std::string cache_directory = get_cache_directory();
+
+  http::cache_load( ( cache_directory + DIRECTORY_DELIMITER + "simc_cache.dat" ).c_str() );
   dbc::init();
   module_t::init();
 
@@ -197,7 +206,7 @@ int sim_t::main( const std::vector<std::string>& args )
     fclose( output_file );
   output_file = 0;
 
-  http::cache_save( ( cache_directory + "/simc_cache.dat" ).c_str() );
+  http::cache_save( ( cache_directory + DIRECTORY_DELIMITER + "simc_cache.dat" ).c_str() );
   dbc::de_init();
 
   return canceled;
