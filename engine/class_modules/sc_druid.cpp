@@ -141,6 +141,7 @@ public:
     buff_t* son_of_ursoc;
     buff_t* survival_instincts;
     buff_t* tier15_2pc_tank;
+    buff_t* tooth_and_claw;
 
     // Restoration
     buff_t* soul_of_the_forest;
@@ -237,6 +238,7 @@ public:
     proc_t* combo_points_wasted;
     proc_t* shooting_stars_wasted;
     proc_t* tier15_2pc_melee;
+    proc_t* tooth_and_claw;
   } proc;
 
   // Random Number Generation
@@ -246,6 +248,7 @@ public:
     rng_t* mangle;
     rng_t* revitalize;
     rng_t* tier15_2pc_melee;
+    rng_t* tooth_and_claw;
   } rng;
 
   // Class Specializations
@@ -275,6 +278,7 @@ public:
 
     // Guardian
     const spell_data_t* thick_hide;
+    const spell_data_t* tooth_and_claw;
 
     // Restoration
     const spell_data_t* living_seed;
@@ -425,9 +429,9 @@ public:
   virtual void      create_pets();
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource();
-  virtual role_e primary_role();
-  virtual void    assess_damage( school_e school, dmg_e, action_state_t* );
-  virtual void assess_heal( school_e, dmg_e, heal_state_t* );
+  virtual role_e    primary_role();
+  virtual void      assess_damage( school_e school, dmg_e, action_state_t* );
+  virtual void      assess_heal( school_e, dmg_e, heal_state_t* );
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_e type=SAVE_ALL, bool save_html=false );
 
@@ -2066,7 +2070,7 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 
   void trigger_rage_gain()
   {
-    p() -> resource_gain( RESOURCE_RAGE, 16.0, p() -> gain.bear_melee );
+    p() -> resource_gain( RESOURCE_RAGE, 10.85, p() -> gain.bear_melee );
   }
 }; // end druid_bear_attack_t
 
@@ -2096,11 +2100,17 @@ struct bear_melee_t : public bear_attack_t
   {
     bear_attack_t::impact( state );
 
-    if ( state -> result != RESULT_MISS )
+    if ( result_is_hit( state -> result ) )
+    {
       trigger_rage_gain();
+      if ( p() -> rng.tooth_and_claw -> roll( p() -> spec.tooth_and_claw -> proc_chance() ) )
+      {
+        p() -> buff.tooth_and_claw -> trigger();
+        p() -> proc.tooth_and_claw -> occur();
+      }
+    }
 
-    if ( ( p() -> specialization() == DRUID_FERAL || p() -> specialization() == DRUID_GUARDIAN ) &&
-         state -> result == RESULT_CRIT )
+    if ( p() -> spell.primal_fury -> ok() && state -> result == RESULT_CRIT )
     {
       p() -> resource_gain( RESOURCE_RAGE,
                             p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
@@ -2276,6 +2286,33 @@ struct maul_t : public bear_attack_t
 
     if ( p() -> buff.son_of_ursoc -> check() )
       cooldown -> reset( false );
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    bear_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) && p() -> buff.tooth_and_claw -> up() )
+    {
+      // max(2.2*(AP - 2*Agi), 2.5*Sta)*0.4
+      double ap         = player -> composite_melee_attack_power() * player -> composite_attack_power_multiplier();
+      double agility    = player -> composite_attribute( ATTR_AGILITY ) * player -> composite_attribute_multiplier( ATTR_AGILITY );
+      double stamina    = player -> composite_attribute( ATTR_STAMINA ) * player -> composite_attribute_multiplier( ATTR_STAMINA );
+      double absorb_amount =  floor(
+                             std::max( ( ap - 2 * agility ) * 2.2, stamina * 2.5 )
+                             * 0.4
+                           );
+
+      if ( sim -> debug )
+        sim -> output( "%s Tooth and Claw debuff trigger: old_value=%f added_value=%f new_value=%f",
+                        player -> name(),
+                        target -> debuffs.tooth_and_claw_absorb -> current_value,
+                        absorb_amount,
+                        absorb_amount + target -> debuffs.tooth_and_claw_absorb -> current_value );
+
+      target -> debuffs.tooth_and_claw_absorb -> trigger( 1, absorb_amount + target -> debuffs.tooth_and_claw_absorb -> current_value );
+      p() -> buff.tooth_and_claw -> expire();
+    }
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -5225,6 +5262,7 @@ void druid_t::init_spells()
   // Guardian
   spec.leader_of_the_pack     = find_specialization_spell( "Leader of the Pack" );
   spec.thick_hide             = find_specialization_spell( "Thick Hide" );
+  spec.tooth_and_claw         = find_specialization_spell( "Tooth and Claw" );
 
   // Restoration
   spec.living_seed            = find_specialization_spell( "Living Seed" );
@@ -5449,6 +5487,7 @@ void druid_t::create_buffs()
   buff.savage_defense        = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() );
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", spell.survival_instincts );
   buff.tier15_2pc_tank       = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138217 ) );
+  buff.tooth_and_claw        = buff_creator_t( this, "tooth_and_claw", find_spell( 135286 ) );
 
   // Restoration
 
@@ -5535,6 +5574,7 @@ void druid_t::init_procs()
   proc.combo_points_wasted      = get_proc( "combo_points_wasted" );
   proc.shooting_stars_wasted    = get_proc( "Shooting Stars overflow (buff already up)" );
   proc.tier15_2pc_melee         = get_proc( "tier15_2pc_melee"       );
+  proc.tooth_and_claw           = get_proc( "tooth_and_claw"         );
 }
 
 // druid_t::init_benefits ===================================================
@@ -5554,6 +5594,7 @@ void druid_t::init_rng()
   rng.mangle           = get_rng( "mangle"           );
   rng.revitalize       = get_rng( "revitalize"       );
   rng.tier15_2pc_melee = get_rng( "tier15_2pc_melee" );
+  rng.tooth_and_claw   = get_rng( "tooth_and_claw"   );
 }
 
 // druid_t::init_actions ====================================================
@@ -5953,7 +5994,7 @@ void druid_t::init_actions()
       action_list_str += "/savage_defense";
       action_list_str += "/natures_vigil,if=buff.son_of_ursoc.up|cooldown.incarnation.remains";
       action_list_str += "/thrash_bear,if=debuff.weakened_blows.remains<3";
-      action_list_str += "/maul,if=rage>=90";
+      action_list_str += "/maul,if=rage>=80&buff.tooth_and_claw.react";
       action_list_str += "/lacerate,if=dot.lacerate.ticking&dot.lacerate.remains<3&(buff.son_of_ursoc.up|buff.berserk.up)";
       action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
       action_list_str += "/thrash_bear,if=dot.thrash_bear.remains<3&(buff.son_of_ursoc.up|buff.berserk.up)";
@@ -6844,7 +6885,11 @@ struct druid_module_t : public module_t
     for ( unsigned int i = 0; i < sim -> actor_list.size(); i++ )
     {
       player_t* p = sim -> actor_list[ i ];
-      p -> buffs.innervate = new buffs::innervate_t( p );
+      p -> buffs.innervate               = new buffs::innervate_t( p );
+      p -> debuffs.tooth_and_claw_absorb = buff_creator_t( p, "tooth_and_claw_absorb", p -> find_spell( 135601 ) )
+                                           .duration( timespan_t::from_seconds( 15.0 ) )
+                                           .chance( 1.0 )
+                                           .cd( timespan_t::zero() );
     }
   }
   virtual void combat_begin( sim_t* ) const {}
