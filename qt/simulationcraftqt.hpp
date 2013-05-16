@@ -513,10 +513,21 @@ public:
     QDir dir( mainWindow -> TmpDir + QDir::separator() + "simc_webcache" );
     if ( ! dir.exists() ) dir.mkpath(".");
 
-    QNetworkDiskCache *diskCache = new QNetworkDiskCache( this );
-    diskCache->setCacheDirectory( dir.absolutePath() ); 
-    QString test = diskCache->cacheDirectory();
-    page->networkAccessManager()->setCache( diskCache );
+    QFileInfo fi( dir.absolutePath() );
+
+    if ( fi.isDir() && fi.isWritable() )
+    {
+      QNetworkDiskCache* diskCache = new QNetworkDiskCache( this );
+      diskCache -> setCacheDirectory( dir.absolutePath() );
+      QString test = diskCache -> cacheDirectory();
+      page -> networkAccessManager()->setCache( diskCache );
+    }
+    else
+    {
+     qDebug() << "Can't write webcache! sucks";
+    }
+
+
   }
   virtual ~SC_WebView() {}
 
