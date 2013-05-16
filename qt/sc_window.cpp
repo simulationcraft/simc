@@ -9,7 +9,7 @@
 #include "simcpaperdoll.hpp"
 #endif
 #include <QtWebKit/QtWebKit>
-#ifdef Q_WS_MAC
+#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 #if QT_VERSION_5
@@ -465,7 +465,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 {
 
 #ifdef SC_TO_INSTALL // GUI will be installed, use default AppData & Temp location for files created
-  #ifdef Q_WS_MAC
+  #if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
     AppDataDir = TmpDir = QDir::currentPath();
   #endif
   #ifdef Q_OS_WIN32
@@ -576,7 +576,7 @@ void SC_MainWindow::createWelcomeTab()
 {
   QString welcomeFile = QDir::currentPath() + "/Welcome.html";
 
-#ifdef Q_WS_MAC
+#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
   CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "Welcome" ), CFSTR( "html" ), 0 );
   if ( fileRef )
   {
@@ -915,7 +915,7 @@ void SC_MainWindow::createBestInSlotTab()
   }
 
 // Scan all subfolders in /profiles/ and create a list
-#ifndef Q_WS_MAC
+#if ! defined( Q_WS_MAC ) && ! defined( Q_OS_MAC )
   QDir tdir = QString( "profiles" );
 #else
   CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "profiles" ), 0, 0 );
@@ -937,12 +937,12 @@ void SC_MainWindow::createBestInSlotTab()
   // Main loop through all subfolders of ./profiles/
   for ( int i=0; i < tnumProfiles; i++ )
   {
-#ifndef Q_WS_MAC
+#if ! defined( Q_WS_MAC ) && ! defined( Q_OS_MAC )
     QDir dir = QString( "profiles/" + tprofileList[ i ] );
 #else
     CFURLRef fileRef = CFBundleCopyResourceURL( CFBundleGetMainBundle(),
                        CFStringCreateWithCString( NULL,
-                           tprofileList[ i ].toAscii().constData(),
+                           tprofileList[ i ].toUtf8().constData(),
                            kCFStringEncodingUTF8 ),
                        0,
                        CFSTR( "profiles" ) );
@@ -1141,7 +1141,7 @@ void SC_MainWindow::createResultsTab()
 {
   QString s = "<div align=center><h1>Understanding SimulationCraft Output!</h1>If you are seeing this text, then Legend.html was unable to load.</div>";
   QString legendFile = "Legend.html";
-#ifdef Q_WS_MAC
+#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
   CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "Legend" ), CFSTR( "html" ), 0 );
   if ( fileRef )
   {

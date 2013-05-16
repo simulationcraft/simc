@@ -39,7 +39,7 @@ int main( int argc, char *argv[] )
   myappTranslator.load( QString( "sc_" ) + QLocale::system().name(), path_to_locale );
   a.installTranslator( &myappTranslator );
 
-#ifdef Q_WS_MAC
+#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
 
   CocoaInitializer cocoaInitializer;
   updater = new SparkleAutoUpdater( "http://simc.rungie.com/simcqt/update.xml" );
@@ -52,7 +52,7 @@ int main( int argc, char *argv[] )
   }
 #endif /* SIMC_NO_AUTOUPDATE */
 
-#ifdef Q_WS_MAC
+#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
   QDir::home().mkpath( "Library/Application Support/SimulationCraft" );
   QDir::setCurrent( QDir::home().absoluteFilePath( "Library/Application Support/SimulationCraft" ) );
 #endif
