@@ -464,14 +464,38 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
     AppDataDir( "." ), TmpDir( "." )
 {
 
+#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
+  QDir::home().mkpath( "Library/Application Support/SimulationCraft" );
+  AppDataDir = TmpDir = QDir::home().absoluteFilePath( "Library/Application Support/SimulationCraft" ) );
+#endif
 #ifdef SC_TO_INSTALL // GUI will be installed, use default AppData & Temp location for files created
-  #if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
-    AppDataDir = TmpDir = QDir::currentPath();
-  #endif
   #ifdef Q_OS_WIN32
-    AppDataDir = TmpDir = QDir::home().absolutePath();
+  QDir::home().mkpath( "SimulationCraft" );
+    AppDataDir = TmpDir = QDir::home().absoluteFilePath( "SimulationCraft");
   #endif
+#endif
 
+#if QT_VERSION_5
+  QStringList s = QStandardPaths::standardLocations( QStandardPaths::CacheLocation );
+  if ( ! s.empty() )
+  {
+    QDir a( s.first() );
+    if ( a.isReadable() )
+      TmpDir = s.first();
+  }
+  else
+  {
+    s = QStandardPaths::standardLocations( QStandardPaths::TempLocation );
+    if ( ! s.empty() )
+    {
+      QDir a( s.first() );
+      if ( a.isReadable() )
+        TmpDir = s.first();
+    }
+  }
+#endif
+
+#ifdef SC_TO_INSTALL // GUI will be installed, use default AppData location for files created
   #if QT_VERSION_5
     QStringList s = QStandardPaths::standardLocations( QStandardPaths::DataLocation );
     if ( ! s.empty() )
@@ -479,23 +503,6 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
       QDir a( s.first() );
       if ( a.isReadable() )
         AppDataDir = s.first();
-    }
-    s = QStandardPaths::standardLocations( QStandardPaths::CacheLocation );
-    if ( ! s.empty() )
-    {
-      QDir a( s.first() );
-      if ( a.isReadable() )
-        TmpDir = s.first();
-    }
-    else
-    {
-      s = QStandardPaths::standardLocations( QStandardPaths::TempLocation );
-      if ( ! s.empty() )
-      {
-        QDir a( s.first() );
-        if ( a.isReadable() )
-          TmpDir = s.first();
-      }
     }
   #endif
 #endif

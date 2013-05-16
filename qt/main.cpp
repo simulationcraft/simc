@@ -52,11 +52,6 @@ int main( int argc, char *argv[] )
   }
 #endif /* SIMC_NO_AUTOUPDATE */
 
-#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
-  QDir::home().mkpath( "Library/Application Support/SimulationCraft" );
-  QDir::setCurrent( QDir::home().absoluteFilePath( "Library/Application Support/SimulationCraft" ) );
-#endif
-
   // Setup search paths for resources
   {
     QString appDirPath = a.applicationDirPath();

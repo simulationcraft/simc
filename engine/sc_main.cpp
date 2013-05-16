@@ -90,7 +90,11 @@ int sim_t::main( const std::vector<std::string>& args )
 {
   sim_signal_handler_t handler( this );
 
-  http::cache_load( "simc_cache.dat" );
+  std::string cache_directory = "./";
+#ifdef __linux__
+  cache_directory = "$XDG_CACHE_HOME/";
+#endif
+  http::cache_load( ( cache_directory + "simc_cache.dat" ).c_str() );
   dbc::init();
   module_t::init();
 
@@ -172,7 +176,7 @@ int sim_t::main( const std::vector<std::string>& args )
     fclose( output_file );
   output_file = 0;
 
-  http::cache_save( "simc_cache.dat" );
+  http::cache_save( ( cache_directory + "simc_cache.dat" ).c_str() );
   dbc::de_init();
 
   return canceled;
