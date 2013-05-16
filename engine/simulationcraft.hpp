@@ -3860,6 +3860,7 @@ public:
 
     // Class specific "general" debuffs
     debuff_t* shattering_throw;
+    debuff_t* tooth_and_claw_absorb;
   } debuffs;
 
   struct gains_t
