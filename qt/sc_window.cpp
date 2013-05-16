@@ -497,12 +497,12 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 
 #ifdef SC_TO_INSTALL // GUI will be installed, use default AppData location for files created
   #if QT_VERSION_5
-    QStringList s = QStandardPaths::standardLocations( QStandardPaths::DataLocation );
-    if ( ! s.empty() )
+    QStringList z = QStandardPaths::standardLocations( QStandardPaths::DataLocation );
+    if ( ! z.empty() )
     {
-      QDir a( s.first() );
+      QDir a( z.first() );
       if ( a.isReadable() )
-        AppDataDir = s.first();
+        AppDataDir = z.first();
     }
   #endif
 #endif
