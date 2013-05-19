@@ -4894,7 +4894,7 @@ void warlock_t::init_actions()
     if ( specialization() == WARLOCK_DEMONOLOGY )
     {
       if ( spec.imp_swarm -> ok() )
-        action_list_str += "/imp_swarm,sync=dark_soul";
+        action_list_str += "/imp_swarm,if=buff.dark_soul.up|(cooldown.dark_soul.remains>(120%(1%spell_haste)))|time_to_die<32";
     }
 
     add_action( spec.dark_soul );
@@ -4913,7 +4913,7 @@ void warlock_t::init_actions()
     {
     case WARLOCK_AFFLICTION:  multidot_max = 3; break;
     case WARLOCK_DESTRUCTION: multidot_max = 3; break;
-    case WARLOCK_DEMONOLOGY:  multidot_max = 3; break;
+    case WARLOCK_DEMONOLOGY:  multidot_max = 4; break;
     default: break;
     }
 
@@ -5033,13 +5033,13 @@ void warlock_t::init_actions()
 
     case WARLOCK_DEMONOLOGY:
 
+      add_action( "Metamorphosis",         "if=buff.perfect_aim.react&active_enemies>1" );
+      add_action( spec.doom,               "cycle_targets=1,if=buff.metamorphosis.up&buff.perfect_aim.react&(crit_pct<100|ticks_remain<=add_ticks)" );
+
       add_action( spec.touch_of_chaos,     "cycle_targets=1,if=buff.metamorphosis.up&dot.corruption.ticking&dot.corruption.remains<1.5" );
 
       if ( find_item( "unerring_vision_of_leishen" ) )
       {
-        add_action( spec.doom,               "cycle_targets=1,if=buff.metamorphosis.up&buff.perfect_aim.react&(crit_pct<100|ticks_remain<=add_ticks)" );
-        add_action( "Corruption",            "line_cd=5,cycle_targets=1,if=buff.perfect_aim.react" );
-        add_action( "Hand of Gul'dan",       "if=buff.perfect_aim.react&buff.perfect_aim.remains>travel_time" );
         add_action( "Soul Fire",             "if=buff.metamorphosis.up&buff.molten_core.react&(buff.perfect_aim.react&buff.perfect_aim.remains>cast_time)" );
         add_action( spec.doom,               "cycle_targets=1,if=buff.metamorphosis.up&(ticks_remain<=1|(ticks_remain+1<n_ticks&buff.dark_soul.up))&target.time_to_die>=30&miss_react&dot.doom.crit_pct<100" );
         add_action( spec.touch_of_chaos,     "cycle_targets=1,if=buff.metamorphosis.up&dot.corruption.ticking&dot.corruption.remains<20&dot.corruption.crit_pct<100" );
@@ -5054,6 +5054,11 @@ void warlock_t::init_actions()
 
       add_action( "Soul Fire",             "if=buff.metamorphosis.up&buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)" );
       add_action( spec.touch_of_chaos,     "if=buff.metamorphosis.up" );
+      if ( find_item( "unerring_vision_of_leishen" ) )
+      {
+        add_action( "Corruption",            "cycle_targets=1,if=buff.perfect_aim.react&(crit_pct<100|ticks_remain<=add_ticks)" );
+        add_action( "Hand of Gul'dan",       "if=buff.perfect_aim.react&buff.perfect_aim.remains>travel_time" );
+      }
       add_action( "Corruption",            "cycle_targets=1,if=!ticking&target.time_to_die>=6&miss_react" );
       if ( find_item( "unerring_vision_of_leishen" ) )
         add_action( "Metamorphosis",         "if=(buff.dark_soul.up&demonic_fury%32>buff.dark_soul.remains)|(dot.corruption.remains<5&dot.corruption.crit_pct<100)|!dot.doom.ticking|demonic_fury>=950|demonic_fury%32>target.time_to_die|buff.perfect_aim.react" );
