@@ -561,7 +561,10 @@ struct mirror_image_pet_t : public pet_t
                                    const std::string& options_str )
   {
     if ( name == "arcane_blast" ) return new arcane_blast_t( this, options_str );
-    if ( name == "fire_blast"   ) return new   fire_blast_t( this, options_str );
+    if ( ! dbc.ptr )
+    {
+      if ( name == "fire_blast"   ) return new   fire_blast_t( this, options_str );
+    }
     if ( name == "fireball"     ) return new     fireball_t( this, options_str );
     if ( name == "frostbolt"    ) return new    frostbolt_t( this, options_str );
 
@@ -586,8 +589,13 @@ struct mirror_image_pet_t : public pet_t
     }
     else
     {
-      action_list_str = "fire_blast";
-      action_list_str += "/frostbolt";
+      if ( ! dbc.ptr )
+      {
+        action_list_str = "fire_blast";
+        action_list_str += "/frostbolt";
+      }
+      else
+        action_list_str = "frostbolt";
     }
 
     pet_t::init_actions();
