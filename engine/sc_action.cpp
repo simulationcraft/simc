@@ -939,7 +939,7 @@ void action_t::execute()
 
   if ( &data() == &spell_data_not_found_t::singleton )
   {
-    sim -> errorf( "Player %s could not find spell data for action %s", player -> name(), name() );
+    sim -> errorf( "Player %s could not find spell data for action %s\n", player -> name(), name() );
     sim -> cancel();
   }
 

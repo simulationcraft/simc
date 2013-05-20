@@ -864,7 +864,11 @@ public:
 
   void apply_exotic_beast_cd()
   {
-    ab::cooldown -> duration *= 1.0 + o() -> specs.exotic_beasts -> effectN( 2 ).percent();
+    if ( ! ab::player -> dbc.ptr ) 
+      ab::cooldown -> duration *= 1.0 + o() -> specs.exotic_beasts -> effectN( 2 ).percent();
+    // PTR build 16924 lacks effect #2 for some reason, so hardcode the bonus
+    else
+      ab::cooldown -> duration *= 0.7;
   }
 };
 

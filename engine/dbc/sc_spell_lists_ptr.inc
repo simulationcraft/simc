@@ -865,7 +865,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       126892, // Zen Pilgrimage
            0,
     },
-    // Brewmaster tree, 10 abilities
+    // Brewmaster tree, 11 abilities
     {
       115213, // Avert Harm
       115181, // Breath of Fire
@@ -873,6 +873,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       115180, // Dizzying Haze
       115308, // Elusive Brew
       115295, // Guard
+      108557, // Jab
       121253, // Keg Smash
       119582, // Purifying Brew
       115069, // Stance of the Sturdy Ox (Brewmaster Stance)
