@@ -238,7 +238,6 @@
     <ClCompile Include="engine\sc_thread.cpp" />
     <ClCompile Include="engine\sc_unique_gear.cpp" />
     <ClCompile Include="engine\sc_util.cpp" />
-    <ClCompile Include="engine\sc_weapon.cpp" />
     <ClCompile Include="engine\interfaces\sc_wowhead.cpp" />
     <ClCompile Include="engine\interfaces\sc_xml.cpp" />
     <ClCompile Include="engine\class_modules\sc_death_knight.cpp" />

@@ -144,7 +144,6 @@ SRC = \
 	sc_thread.cpp \
 	sc_unique_gear.cpp \
 	sc_util.cpp \
-	sc_weapon.cpp \
 	report$(PATHSEP)sc_report.hpp \
 	report$(PATHSEP)sc_chart.cpp \
 	report$(PATHSEP)sc_report_html_player.cpp \

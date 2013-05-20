@@ -225,7 +225,6 @@
     <ClCompile Include="engine\sc_util.cpp" />
     <ClCompile Include="engine\class_modules\sc_warlock.cpp" />
     <ClCompile Include="engine\class_modules\sc_warrior.cpp" />
-    <ClCompile Include="engine\sc_weapon.cpp" />
     <ClCompile Include="qt\sc_window.cpp" />
     <ClCompile Include="qt\sc_import.cpp" />
     <ClCompile Include="engine\interfaces\sc_wowhead.cpp" />

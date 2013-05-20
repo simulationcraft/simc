@@ -2933,14 +2933,62 @@ struct weapon_t
   double buff_value;
   double bonus_dmg;
 
-  weapon_e group();
-  timespan_t normalized_weapon_speed();
-  double proc_chance_on_swing( double PPM, timespan_t adjusted_swing_time=timespan_t::zero() );
-
   weapon_t( weapon_e t    = WEAPON_NONE,
-            double d      = 0,
+            double d      = 0.0,
             timespan_t st = timespan_t::from_seconds( 2.0 ),
-            school_e s    = SCHOOL_PHYSICAL );
+            school_e s    = SCHOOL_PHYSICAL ) :
+  type( t ),
+  school( s ),
+  damage( d ),
+  dps( d / st.total_seconds() ),
+  min_dmg( d ),
+  max_dmg( d ),
+  swing_time( st ),
+  slot( SLOT_INVALID ),
+  buff_type( 0 ),
+  buff_value( 0.0 ),
+  bonus_dmg( 0.0 )
+  {}
+
+  weapon_e group()
+  {
+    if ( type <= WEAPON_SMALL )
+      return WEAPON_SMALL;
+
+    if ( type <= WEAPON_1H )
+      return WEAPON_1H;
+
+    if ( type <= WEAPON_2H )
+      return WEAPON_2H;
+
+    if ( type <= WEAPON_RANGED )
+      return WEAPON_RANGED;
+
+      return WEAPON_NONE;
+  }
+
+  timespan_t normalized_weapon_speed()
+  {
+    weapon_e g = group();
+
+    if ( g == WEAPON_SMALL  ) return timespan_t::from_seconds( 1.7 );
+    if ( g == WEAPON_1H     ) return timespan_t::from_seconds( 2.4 );
+    if ( g == WEAPON_2H     ) return timespan_t::from_seconds( 3.3 );
+    if ( g == WEAPON_RANGED ) return timespan_t::from_seconds( 2.8 );
+
+    assert( false );
+    return timespan_t::zero();
+  }
+
+  double proc_chance_on_swing( double PPM, timespan_t adjusted_swing_time=timespan_t::zero() )
+  {
+    if ( adjusted_swing_time == timespan_t::zero() ) adjusted_swing_time = swing_time;
+
+    timespan_t time_to_proc = timespan_t::from_seconds( 60.0 ) / PPM;
+    double proc_chance = adjusted_swing_time / time_to_proc;
+
+    return proc_chance;
+  }
 };
 
 // Special Effect ===========================================================

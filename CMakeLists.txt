@@ -59,8 +59,6 @@ SET(SIMC_ENGINE_SOURCE
   "engine/sc_thread.cpp"
   "engine/sc_unique_gear.cpp"
   "engine/sc_util.cpp"
-  "engine/sc_weapon.cpp"
-  "engine/sc_weapon.cpp"
   "engine/class_modules/sc_death_knight.cpp"
   "engine/class_modules/sc_druid.cpp"
   "engine/class_modules/sc_enemy.cpp"

@@ -33,7 +33,6 @@
     <ClCompile Include="engine\sc_thread.cpp" />
     <ClCompile Include="engine\sc_unique_gear.cpp" />
     <ClCompile Include="engine\sc_util.cpp" />
-    <ClCompile Include="engine\sc_weapon.cpp" />
     <ClCompile Include="engine\interfaces\sc_bcp_api.cpp">
       <Filter>Interfaces</Filter>
     </ClCompile>

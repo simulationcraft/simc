@@ -205,9 +205,6 @@
     <ClCompile Include="engine\class_modules\sc_warrior.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="engine\sc_weapon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="qt\sc_window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

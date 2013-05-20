@@ -101,7 +101,6 @@ SOURCES += engine/sc_stats.cpp
 SOURCES += engine/sc_thread.cpp
 SOURCES += engine/sc_unique_gear.cpp
 SOURCES += engine/sc_util.cpp
-SOURCES += engine/sc_weapon.cpp
 SOURCES += engine/report/sc_report_html_player.cpp
 SOURCES += engine/report/sc_report_html_sim.cpp
 SOURCES += engine/report/sc_report_text.cpp

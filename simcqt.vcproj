@@ -822,10 +822,6 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_weapon.cpp"
-				>
-			</File>
-			<File
 				RelativePath="qt\sc_window.cpp"
 				>
 			</File>

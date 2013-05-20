@@ -538,10 +538,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\engine\sc_weapon.cpp"
-			>
-		</File>
-		<File
 			RelativePath=".\engine\interfaces\sc_wowhead.cpp"
 			>
 		</File>
