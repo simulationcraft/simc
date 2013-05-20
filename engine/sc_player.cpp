@@ -1331,6 +1331,14 @@ void player_t::init_items()
     slots[ i ] = ! util::is_match_slot( i );
 
   unsigned num_ilvl_items = 0;
+  // Accumulator for the stats given by items. Stats from items cannot directly
+  // be added to ``gear'', as it would cause stat values specified on the
+  // command line (with options such as gear_intellect=x) to be added to the
+  // values given by items (instead of overriding them).
+  // After the loop (and the meta-gem initialization), the stats accumulated
+  // from items are added into ``gear'', provided that there is no
+  // command line option override.
+  gear_stats_t item_stats;
   for ( size_t i = 0; i < items.size(); i++ )
   {
     item_t& item = items[ i ];
@@ -1364,7 +1372,8 @@ void player_t::init_items()
 
     slots[ item.slot ] = item.is_matching_type();
 
-    gear += item.stats;
+    item_stats += item.stats;
+
   }
 
   if ( num_ilvl_items > 1 )
@@ -1390,7 +1399,16 @@ void player_t::init_items()
     break;
   }
 
-  init_meta_gem( gear );
+  init_meta_gem( item_stats );
+
+  // Adding stats from items into ``gear''. If for a given stat,
+  // the value in gear is different than 0, it means that this stat
+  // value was overridden by a command line option.
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+  {
+    if ( gear.get_stat( i ) == 0 )
+      gear.add_stat( i, item_stats.get_stat( i ) );
+  }
 
   if ( sim -> debug )
   {
