@@ -863,7 +863,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       126892, // Zen Pilgrimage
            0,
     },
-    // Brewmaster tree, 11 abilities
+    // Brewmaster tree, 12 abilities
     {
       115213, // Avert Harm
       115181, // Breath of Fire
@@ -871,6 +871,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
       115180, // Dizzying Haze
       115308, // Elusive Brew
       115295, // Guard
+      108557, // Jab
       121253, // Keg Smash
       137562, // Nimble Brew
       119582, // Purifying Brew
