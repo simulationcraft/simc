@@ -2749,46 +2749,42 @@ struct molten_armor_t : public mage_spell_t
 //FIXME_cleave: take actual distances between main_target and cleave_target into account
 struct nether_tempest_cleave_t: public mage_spell_t
 {
-  player_t *main_target;
-  rng_t *nether_tempest_target_rng;
+  player_t* main_target;
+  rng_t* rng;
 
-  nether_tempest_cleave_t(mage_t* p) :
-  mage_spell_t("nether_tempest_cleave", p, p -> find_spell(114954)),
-  main_target(nullptr),
-  nether_tempest_target_rng(nullptr)
+  nether_tempest_cleave_t( mage_t* p ) :
+    mage_spell_t("nether_tempest_cleave", p, p -> find_spell(114954) ),
+    main_target( nullptr ),
+    rng( p -> get_rng( "nether_tempest_cleave_target" ) )
   {
-    aoe=-1;//select one randomly from all but the main_target
     background = true;
-    nether_tempest_target_rng = sim -> get_rng( "nether_tempest_cleave_target" );
   }
 
   virtual resource_e current_resource()
   { return RESOURCE_NONE; }
 
-
-  std::vector< player_t* >& target_list()
+  virtual void execute()
   {
+    assert( main_target ); // main target needs to be set to parent actions target
+    target = main_target;
 
-    std::vector< player_t* >& targets = spell_t::target_list();
+    available_targets( target_cache ); // Build target cache
 
-    //erase main_target
-    std::vector<player_t*>::iterator current_target = std::find( targets.begin(), targets.end(), main_target );
-    assert( current_target != targets.end() );
-    target_cache.erase( current_target );
-
-
-    // Select one random target
-    while ( target_cache.size() >1 )
+    // obtain random target until it is not equal to main target
+    while ( target_cache.size() > 1 && target == main_target )
     {
-      target_cache.erase( target_cache.begin() + static_cast< size_t >( nether_tempest_target_rng -> range( 0, target_cache.size() ) ) );
+      // Randomly select target index
+      unsigned t = static_cast<unsigned>( rng -> range( 0, target_cache.size() ) );
+      if ( t >= target_cache.size() ) --t; // dsfmt range should not give a value actually equal to max, but be paranoid
+      target = target_cache[ t ];
     }
 
-    return target_cache;
+    mage_spell_t::execute();
   }
 
   virtual timespan_t travel_time()
   {
-    return timespan_t::from_seconds( travel_speed ); //assuming 1 yard to the cleave target
+    return timespan_t::from_seconds( travel_speed ); // assuming 1 yard to the cleave target
   }
 
 };
