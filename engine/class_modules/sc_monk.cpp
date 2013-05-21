@@ -1392,12 +1392,20 @@ struct auto_attack_t : public monk_melee_attack_t
 struct keg_smash_t : public monk_melee_attack_t
 {
   const spell_data_t* chi_generation;
+  bool apply_dizzying_haze;
 
   keg_smash_t( monk_t& p, const std::string& options_str ) :
     monk_melee_attack_t( "keg_smash", &p, p.find_class_spell( "Keg Smash" ) ),
-    chi_generation( p.find_spell( 127796 ) )
+    chi_generation( p.find_spell( 127796 ) ),
+    apply_dizzying_haze( false )
   {
-    parse_options( nullptr, options_str );
+    option_t options[] =
+    {
+      opt_bool( "dizzying_haze", apply_dizzying_haze ),
+      opt_null()
+    };
+    parse_options( options, options_str );
+
     stancemask = STURDY_OX;
     aoe = -1;
     mh = &( player -> main_hand_weapon ) ;
@@ -1422,7 +1430,9 @@ struct keg_smash_t : public monk_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> buff.dizzying_haze -> trigger();
+      if ( apply_dizzying_haze )
+        td( s -> target ) -> buff.dizzying_haze -> trigger();
+
       if ( ! sim -> overrides.weakened_blows )
         s -> target -> debuffs.weakened_blows -> trigger();
     }
