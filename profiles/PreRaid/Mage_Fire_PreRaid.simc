@@ -44,9 +44,9 @@ actions+=/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+actio
 actions+=/berserking,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/presence_of_mind,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/jade_serpent_potion,sync=alter_time_activate,if=buff.alter_time.down
-actions+=/use_item,name=flashfrozen_resin_globule,sync=alter_time_activate
+actions+=/use_item,slot=trinket2,sync=alter_time_activate
 actions+=/alter_time,if=buff.alter_time.down&buff.pyroblast.react
-actions+=/use_item,name=flashfrozen_resin_globule,if=cooldown.alter_time_activate.remains>40|target.time_to_die<12
+actions+=/use_item,slot=trinket2,if=cooldown.alter_time_activate.remains>40|target.time_to_die<12
 actions+=/presence_of_mind,if=cooldown.alter_time_activate.remains>60|target.time_to_die<5
 actions+=/flamestrike,if=active_enemies>=5
 actions+=/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up

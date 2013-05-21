@@ -36,7 +36,7 @@ actions+=/dark_soul
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/felguard:felstorm
 actions+=/wrathguard:wrathstorm
-actions+=/run_action_list,name=aoe,if=active_enemies>3
+actions+=/run_action_list,name=aoe,if=active_enemies>4
 actions+=/summon_doomguard
 actions+=/touch_of_chaos,cycle_targets=1,if=buff.metamorphosis.up&dot.corruption.ticking&dot.corruption.remains<1.5
 actions+=/doom,cycle_targets=1,if=buff.metamorphosis.up&(ticks_remain<=1|(ticks_remain+1<n_ticks&buff.dark_soul.up))&target.time_to_die>=30&miss_react

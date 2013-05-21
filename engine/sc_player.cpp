@@ -1918,8 +1918,8 @@ std::string player_t::init_use_item_actions( const std::string& append )
     if ( items[ i ].slot == SLOT_HANDS ) continue;
     if ( items[ i ].parsed.use.active() )
     {
-      buffer += "/use_item,name=";
-      buffer += items[ i ].name();
+      buffer += "/use_item,slot=";
+      buffer += items[ i ].slot_name();
       if ( ! append.empty() )
       {
         buffer += append;
@@ -1928,8 +1928,8 @@ std::string player_t::init_use_item_actions( const std::string& append )
   }
   if ( items[ SLOT_HANDS ].parsed.use.active() )
   {
-    buffer += "/use_item,name=";
-    buffer += items[ SLOT_HANDS ].name();
+    buffer += "/use_item,slot=";
+    buffer += items[ SLOT_HANDS ].slot_name();
     if ( ! append.empty() )
     {
       buffer += append;

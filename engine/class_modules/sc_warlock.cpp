@@ -4922,12 +4922,14 @@ void warlock_t::init_actions()
     add_action( "Summon Doomguard" );
     add_action( "Summon Infernal", "", "aoe" );
 
+    bool has_unerring_vision_of_leishen = find_item( "unerring_vision_of_leishen" );
+
     switch ( specialization() )
     {
 
     case WARLOCK_AFFLICTION:
       add_action( "Soul Swap",             "cycle_targets=1,if=buff.soulburn.up" );
-      if ( find_item( "unerring_vision_of_leishen" ) )
+      if ( has_unerring_vision_of_leishen )
       {
         add_action( "Soulburn",              "line_cd=5,if=buff.perfect_aim.react" );
         add_action( "Soulburn",              "if=(buff.dark_soul.up|trinket.proc.intellect.react)&(dot.agony.ticks_remain<=action.agony.add_ticks%2|dot.corruption.ticks_remain<=action.corruption.add_ticks%2|dot.unstable_affliction.ticks_remain<=action.unstable_affliction.add_ticks%2)&shard_react&(dot.unstable_affliction.crit_pct<100&dot.corruption.crit_pct<100&dot.agony.crit_pct<100)" );
@@ -4939,7 +4941,7 @@ void warlock_t::init_actions()
         add_action( "Soulburn",              "if=(dot.unstable_affliction.ticks_remain<=1|dot.corruption.ticks_remain<=1|dot.agony.ticks_remain<=1)&shard_react&target.health.pct<=20" );
       }
       add_action( "Haunt",                 "if=!in_flight_to_target&remains<cast_time+travel_time+tick_time&shard_react&target.health.pct<=20" );
-      if ( find_item( "unerring_vision_of_leishen" ) )
+      if ( has_unerring_vision_of_leishen )
         add_action( "Soulburn",              "if=stat.spell_power>dot.unstable_affliction.spell_power&dot.unstable_affliction.ticks_remain<=action.unstable_affliction.add_ticks%2&shard_react&target.health.pct<=20&(dot.unstable_affliction.crit_pct<100&dot.corruption.crit_pct<100&dot.agony.crit_pct<100)" );
       else
         add_action( "Soulburn",              "if=stat.spell_power>dot.unstable_affliction.spell_power&dot.unstable_affliction.ticks_remain<=action.unstable_affliction.add_ticks%2&shard_react&target.health.pct<=20" );
@@ -4997,7 +4999,7 @@ void warlock_t::init_actions()
     case WARLOCK_DESTRUCTION:
       add_action( "Rain of Fire",          "if=!ticking&!in_flight&active_enemies>1" );
       add_action( "Havoc",                 "target=2,if=active_enemies>1" );
-      if ( find_item( "unerring_vision_of_leishen" ) )
+      if ( has_unerring_vision_of_leishen )
         add_action( "Shadowburn",            "if=ember_react&(burning_ember>3.5|mana.pct<=20|buff.dark_soul.up|target.time_to_die<20|buff.havoc.stack>=1|(trinket.has_proc.intellect&trinket.proc.intellect.react)|buff.perfect_aim.react)" );
       else
         add_action( "Shadowburn",            "if=ember_react&(burning_ember>3.5|mana.pct<=20|buff.dark_soul.up|target.time_to_die<20|buff.havoc.stack>=1|(trinket.has_proc.intellect&trinket.proc.intellect.react))" );
@@ -5032,13 +5034,14 @@ void warlock_t::init_actions()
       break;
 
     case WARLOCK_DEMONOLOGY:
-
-      add_action( "Metamorphosis",         "if=buff.perfect_aim.react&active_enemies>1" );
-      add_action( spec.doom,               "cycle_targets=1,if=buff.metamorphosis.up&buff.perfect_aim.react&(crit_pct<100|ticks_remain<=add_ticks)" );
-
+      if ( has_unerring_vision_of_leishen )
+      {
+        add_action( "Metamorphosis",         "if=buff.perfect_aim.react&active_enemies>1" );
+        add_action( spec.doom,               "cycle_targets=1,if=buff.metamorphosis.up&buff.perfect_aim.react&(crit_pct<100|ticks_remain<=add_ticks)" );
+      }
       add_action( spec.touch_of_chaos,     "cycle_targets=1,if=buff.metamorphosis.up&dot.corruption.ticking&dot.corruption.remains<1.5" );
 
-      if ( find_item( "unerring_vision_of_leishen" ) )
+      if ( has_unerring_vision_of_leishen )
       {
         add_action( "Soul Fire",             "if=buff.metamorphosis.up&buff.molten_core.react&(buff.perfect_aim.react&buff.perfect_aim.remains>cast_time)" );
         add_action( spec.doom,               "cycle_targets=1,if=buff.metamorphosis.up&(ticks_remain<=1|(ticks_remain+1<n_ticks&buff.dark_soul.up))&target.time_to_die>=30&miss_react&dot.doom.crit_pct<100" );
@@ -5054,13 +5057,13 @@ void warlock_t::init_actions()
 
       add_action( "Soul Fire",             "if=buff.metamorphosis.up&buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)" );
       add_action( spec.touch_of_chaos,     "if=buff.metamorphosis.up" );
-      if ( find_item( "unerring_vision_of_leishen" ) )
+      if ( has_unerring_vision_of_leishen )
       {
         add_action( "Corruption",            "cycle_targets=1,if=buff.perfect_aim.react&(crit_pct<100|ticks_remain<=add_ticks)" );
         add_action( "Hand of Gul'dan",       "if=buff.perfect_aim.react&buff.perfect_aim.remains>travel_time" );
       }
       add_action( "Corruption",            "cycle_targets=1,if=!ticking&target.time_to_die>=6&miss_react" );
-      if ( find_item( "unerring_vision_of_leishen" ) )
+      if ( has_unerring_vision_of_leishen )
         add_action( "Metamorphosis",         "if=(buff.dark_soul.up&demonic_fury%32>buff.dark_soul.remains)|(dot.corruption.remains<5&dot.corruption.crit_pct<100)|!dot.doom.ticking|demonic_fury>=950|demonic_fury%32>target.time_to_die|buff.perfect_aim.react" );
       else
         add_action( "Metamorphosis",         "if=(buff.dark_soul.up&demonic_fury%32>buff.dark_soul.remains)|dot.corruption.remains<5|!dot.doom.ticking|demonic_fury>=950|demonic_fury%32>target.time_to_die" );

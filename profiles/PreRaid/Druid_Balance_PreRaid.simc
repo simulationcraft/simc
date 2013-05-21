@@ -32,7 +32,7 @@ actions=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40|buff.
 actions+=/starfall,if=!buff.starfall.up
 actions+=/treants,if=talent.force_of_nature.enabled
 actions+=/berserking,if=buff.celestial_alignment.up
-actions+=/use_item,name=flashfrozen_rosin_globule,if=buff.celestial_alignment.up|cooldown.celestial_alignment.remains>30
+actions+=/use_item,slot=trinket2,if=buff.celestial_alignment.up|cooldown.celestial_alignment.remains>30
 actions+=/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
 actions+=/natures_swiftness,if=talent.natures_swiftness.enabled&talent.dream_of_cenarius.enabled
 actions+=/healing_touch,if=talent.dream_of_cenarius.enabled&!buff.dream_of_cenarius_damage.up&mana.pct>25

@@ -40,9 +40,9 @@ actions+=/mana_gem,if=mana.pct<80&buff.alter_time.down
 actions+=/arcane_power,if=(buff.rune_of_power.remains>=buff.arcane_power.duration&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5,moving=0
 actions+=/berserking,if=buff.alter_time.down&(buff.arcane_power.up|target.time_to_die<18)
 actions+=/jade_serpent_potion,if=buff.alter_time.down&(buff.arcane_power.up|target.time_to_die<50)
-actions+=/use_item,name=flashfrozen_resin_globule,sync=alter_time_activate,if=buff.alter_time.down
+actions+=/use_item,slot=trinket2,sync=alter_time_activate,if=buff.alter_time.down
 actions+=/alter_time,if=buff.alter_time.down&buff.arcane_power.up
-actions+=/use_item,name=flashfrozen_resin_globule,if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.rune_of_power.remains>20
+actions+=/use_item,slot=trinket2,if=(cooldown.alter_time_activate.remains>45|target.time_to_die<25)&buff.rune_of_power.remains>20
 actions+=/run_action_list,name=aoe,if=active_enemies>=6
 actions+=/run_action_list,name=single_target,if=active_enemies<6
 
