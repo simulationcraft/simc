@@ -2479,7 +2479,7 @@ struct living_bomb_explosion_t : public mage_spell_t
   living_bomb_explosion_t( mage_t* p ) :
     mage_spell_t( "living_bomb_explosion", p, p -> find_spell( p -> talents.living_bomb -> effectN( 2 ).base_value() ) )
   {
-    aoe = 3;
+    aoe = -1;
     background = true;
   }
 
@@ -2498,6 +2498,7 @@ struct living_bomb_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     dot_behavior = DOT_REFRESH;
+    hasted_ticks = true;
 
     trigger_gcd = timespan_t::from_seconds( 1.0 );
 
