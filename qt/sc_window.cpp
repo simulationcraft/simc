@@ -466,7 +466,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 
 #if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
   QDir::home().mkpath( "Library/Application Support/SimulationCraft" );
-  AppDataDir = TmpDir = QDir::home().absoluteFilePath( "Library/Application Support/SimulationCraft" ) );
+  AppDataDir = TmpDir = QDir::home().absoluteFilePath( "Library/Application Support/SimulationCraft" );
 #endif
 #ifdef SC_TO_INSTALL // GUI will be installed, use default AppData & Temp location for files created
   #ifdef Q_OS_WIN32
