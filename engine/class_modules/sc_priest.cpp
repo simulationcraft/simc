@@ -2998,14 +2998,13 @@ struct holy_fire_t : public priest_spell_t
 
     range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
 
-
   }
 
   virtual void execute()
   {
-    if ( priest.talents.power_word_solace -> ok() )
+    if ( priest.talents.power_word_solace -> ok() && sim -> log )
     {
-      sim -> errorf( "Player %s: Power Word: Solace overrides Holy Fire if the talent is picked.\n"
+      sim -> output( "Player %s: Power Word: Solace overrides Holy Fire if the talent is picked.\n"
                      "Please use it instead of Holy Fire.\n", priest.name() );
       background = true;
     }
