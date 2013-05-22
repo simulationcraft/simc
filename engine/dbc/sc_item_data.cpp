@@ -82,34 +82,34 @@ int item_database::scaled_stat( const item_data_t& item, const dbc_t& dbc, size_
     return item.stat_val[ idx ];
 
   int slot_type = random_suffix_type( &item );
-  double item_budget = 0, orig_budget = 0;
+  double item_budget = 0/*, orig_budget = 0*/;
 
   if ( slot_type != -1 && item.quality > 0 )
   {
     const random_prop_data_t& ilevel_data = dbc.random_property( new_ilevel );
-    const random_prop_data_t& orig_data = dbc.random_property( item.level );
+    //const random_prop_data_t& orig_data = dbc.random_property( item.level );
 
     if ( item.quality == 4 )
     {
       item_budget = ilevel_data.p_epic[ slot_type ];
-      orig_budget = orig_data.p_epic[ slot_type ];
+      //orig_budget = orig_data.p_epic[ slot_type ];
     }
     else if ( item.quality == 3 )
     {
       item_budget = ilevel_data.p_rare[ slot_type ];
-      orig_budget = orig_data.p_rare[ slot_type ];
+      //orig_budget = orig_data.p_rare[ slot_type ];
     }
     else
     {
       item_budget = ilevel_data.p_uncommon[ slot_type ];
-      orig_budget = orig_data.p_uncommon[ slot_type ];
+      //orig_budget = orig_data.p_uncommon[ slot_type ];
     }
   }
 
   // Precise stat scaling formula for ilevel increase, stats should be
   // spot on.
-  if ( item.stat_alloc[ idx ] > 0 && orig_budget > 0 && item_budget > 0 )
-    return static_cast<int>( util::round( ( item.stat_alloc[ idx ] / 10000.0 ) * item_budget - item.stat_socket_mul[ idx ] * dbc.item_socket_cost( new_ilevel ) * ( item_budget / orig_budget ) ) );
+  if ( item.stat_alloc[ idx ] > 0 /* && orig_budget > 0 */ && item_budget > 0 )
+    return static_cast<int>( util::round( ( item.stat_alloc[ idx ] / 10000.0 ) * item_budget - item.stat_socket_mul[ idx ] * dbc.item_socket_cost( new_ilevel ) /* * ( item_budget / orig_budget ) */ ) );
   // TODO(?): Should we warn the user that we are using an approximation of
   // the upgraded stats, and that certain stats may be off by one?
   else
