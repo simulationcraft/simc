@@ -500,7 +500,7 @@ public:
 
   virtual resource_e current_resource()
   {
-    if ( this -> data().powerN( POWER_MONK_ENERGY ).aura_id() == 103985 && p() -> current_stance() == FIERCE_TIGER )
+    if ( this -> data().powerN( POWER_ENERGY ).aura_id() == 103985 && p() -> current_stance() == FIERCE_TIGER )
     {
       return RESOURCE_ENERGY;
     }
