@@ -1675,27 +1675,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
     owner_coeff.sp_from_ap = 0.7;
   }
 
-  double composite_spell_speed()
-  {
-    if ( ! dbc.ptr )
-    {
-      double h = 1.0;
-
-      if ( owner -> buffs.bloodlust -> up() )
-        h *= 1.0 / ( 1.0 + owner -> buffs.bloodlust -> data().effectN( 1 ).percent() );
-
-      if ( owner -> buffs.berserking -> up() )
-        h *= 1.0 / ( 1.0 + owner -> buffs.berserking -> data().effectN( 1 ).percent() );
-
-      if ( sim -> auras.spell_haste -> check() )
-        h *= 1.0 / ( 1.0 + sim -> auras.spell_haste -> value() );
-
-      return h;
-    }
-    else
-      return death_knight_pet_t::composite_spell_speed();
-  }
-
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
   {

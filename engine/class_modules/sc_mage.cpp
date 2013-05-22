@@ -561,10 +561,6 @@ struct mirror_image_pet_t : public pet_t
                                    const std::string& options_str )
   {
     if ( name == "arcane_blast" ) return new arcane_blast_t( this, options_str );
-    if ( ! dbc.ptr )
-    {
-      if ( name == "fire_blast"   ) return new   fire_blast_t( this, options_str );
-    }
     if ( name == "fireball"     ) return new     fireball_t( this, options_str );
     if ( name == "frostbolt"    ) return new    frostbolt_t( this, options_str );
 
@@ -589,13 +585,7 @@ struct mirror_image_pet_t : public pet_t
     }
     else
     {
-      if ( ! dbc.ptr )
-      {
-        action_list_str = "fire_blast";
-        action_list_str += "/frostbolt";
-      }
-      else
-        action_list_str = "frostbolt";
+      action_list_str = "frostbolt";
     }
 
     pet_t::init_actions();
@@ -3575,7 +3565,7 @@ void mage_t::init_spells()
   spec.ignite                = find_mastery_spell( MAGE_FIRE );
   spec.mana_adept            = find_mastery_spell( MAGE_ARCANE );
 
-  spells.stolen_time         = spell_data_t::find( 105791, "Stolen Time", dbc.ptr );
+  spells.stolen_time         = spell_data_t::find( 105791, "Stolen Time" );
 
   if ( spec.ignite -> ok() )
     active_ignite = new ignite_t( this );

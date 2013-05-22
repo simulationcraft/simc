@@ -292,7 +292,6 @@ public:
     const spell_data_t* telluric_currents;
     const spell_data_t* thunder;
     const spell_data_t* thunderstorm;
-    const spell_data_t* unleashed_lightning;
     const spell_data_t* water_shield;
     const spell_data_t* lightning_shield;
   } glyph;
@@ -3265,8 +3264,6 @@ struct lightning_bolt_t : public shaman_spell_t
     stormlash_da_multiplier = 2.0;
     base_multiplier   += player -> spec.shamanism -> effectN( 1 ).percent();
     base_execute_time += player -> spec.shamanism -> effectN( 3 ).time_value();
-    if ( ! player -> dbc.ptr )
-      base_execute_time *= 1.0 + player -> glyph.unleashed_lightning -> effectN( 2 ).percent();
     overload_spell     = new lightning_bolt_overload_t( player );
     add_child( overload_spell );
   }
@@ -3336,14 +3333,7 @@ struct lightning_bolt_t : public shaman_spell_t
   }
 
   virtual bool usable_moving()
-  {
-    if ( p() -> dbc.ptr )
-      return true;
-    else if ( p() -> glyph.unleashed_lightning -> ok() )
-      return true;
-
-    return shaman_spell_t::usable_moving();
-  }
+  { return true; }
 };
 
 // Elemental Blast Spell ====================================================
@@ -4274,7 +4264,7 @@ struct searing_totem_t : public shaman_totem_pet_t
   searing_totem_t( shaman_t* p ) :
     shaman_totem_pet_t( p, "searing_totem", TOTEM_FIRE )
   {
-    pulse_amplitude = p -> dbc.ptr ? p -> find_spell( 3606 ) -> cast_time( p -> level ) : timespan_t::from_seconds( 1.6 );
+    pulse_amplitude = p -> find_spell( 3606 ) -> cast_time( p -> level );
   }
 
   void init_spells()
@@ -5062,10 +5052,8 @@ void shaman_t::init_spells()
   glyph.telluric_currents            = find_glyph_spell( "Glyph of Telluric Currents" );
   glyph.thunder                      = find_glyph_spell( "Glyph of Thunder" );
   glyph.thunderstorm                 = find_glyph_spell( "Glyph of Thunderstorm" );
-  glyph.unleashed_lightning          = find_glyph_spell( "Glyph of Unleashed Lightning" );
   glyph.water_shield                 = find_glyph_spell( "Glyph of Water Shield" );
-  if ( dbc.ptr )
-    glyph.lightning_shield           =  find_glyph_spell( "Glyph of Lightning Shield" );
+  glyph.lightning_shield             = find_glyph_spell( "Glyph of Lightning Shield" );
 
   // Misc spells
   spell.ancestral_swiftness          = find_spell( 121617 );
@@ -5574,10 +5562,10 @@ void shaman_t::init_actions()
     single -> add_action( this, "Earth Elemental Totem", "if=!active&cooldown.fire_elemental_totem.remains>=60" );
     single -> add_action( this, "Searing Totem", "if=cooldown.fire_elemental_totem.remains>20&!totem.fire.active",
                           "Keep Searing Totem up, unless Fire Elemental Totem is coming off cooldown in the next 20 seconds" );
-    single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=glyph.unleashed_lightning.enabled&((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))|(buff.raid_movement.duration>=action.unleash_elements.gcd+action.earth_shock.gcd)" );
-    single -> add_action( this, "Unleash Elements", "moving=1,if=!glyph.unleashed_lightning.enabled" );
-    single -> add_action( this, "Earth Shock", "moving=1,if=!glyph.unleashed_lightning.enabled&dot.flame_shock.remains>cooldown",
-                          "Use Earth Shock when moving if Glyph of Unleashed Lightning is not equipped and there's at least shock cooldown time of Flame Shock duration left" );
+    single -> add_action( this, "Spiritwalker's Grace", "moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))|(buff.raid_movement.duration>=action.unleash_elements.gcd+action.earth_shock.gcd)" );
+//  single -> add_action( this, "Unleash Elements", "moving=1,if=!glyph.unleashed_lightning.enabled" );
+//  single -> add_action( this, "Earth Shock", "moving=1,if=!glyph.unleashed_lightning.enabled&dot.flame_shock.remains>cooldown",
+//                        "Use Earth Shock when moving if Glyph of Unleashed Lightning is not equipped and there's at least shock cooldown time of Flame Shock duration left" );
     single -> add_action( this, "Lightning Bolt" );
 
     // AoE
@@ -5617,7 +5605,7 @@ void shaman_t::init_actions()
     def -> add_talent( this, "Primal Strike" );
     def -> add_action( this, "Flame Shock", "if=!ticking|ticks_remain<2|((buff.bloodlust.react|buff.elemental_mastery.up)&ticks_remain<3)" );
     def -> add_action( this, "Earth Shock" );
-    def -> add_action( this, "Lightning Bolt", "moving=1,if=glyph.unleashed_lightning.enabled" );
+    def -> add_action( this, "Lightning Bolt", "moving=1" );
   }
 
   action_list_default = 1;
@@ -5648,8 +5636,7 @@ void shaman_t::moving()
       // 2) The profile is casting Lava Burst (without Lava Surge)
       // 3) The profile is casting Chain Lightning
       // 4) The profile is casting Elemental Blast
-      if ( ( ! glyph.unleashed_lightning -> ok() && executing -> id == 403 ) ||
-           ( executing -> id == 51505 ) ||
+      if ( ( executing -> id == 51505 ) ||
            ( executing -> id == 421 ) ||
            ( executing -> id == 117014 ) )
       {
@@ -5818,7 +5805,7 @@ void shaman_t::target_mitigation( school_e school, dmg_e type, action_state_t* s
 {
   player_t::target_mitigation( school, type, state );
 
-  if ( dbc.ptr && buff.lightning_shield -> check() )
+  if ( buff.lightning_shield -> check() )
   {
     state -> result_amount *= 1.0 + glyph.lightning_shield -> effectN( 1 ).percent();
   }
