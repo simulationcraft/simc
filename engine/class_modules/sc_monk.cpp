@@ -221,6 +221,10 @@ public:
     int initial_chi;
   } user_options;
 
+private:
+  target_specific_t<monk_td_t*> target_data;
+public:
+
   monk_t( sim_t* sim, const std::string& name, race_e r ) :
     player_t( sim, MONK, name, r ),
     _active_stance( FIERCE_TIGER ),
@@ -242,7 +246,7 @@ public:
 
   }
 
-  // Character Definition
+  // player_t overrides
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual double    composite_melee_speed();
   virtual double    energy_regen_per_second();
@@ -279,28 +283,8 @@ public:
   virtual void      combat_begin();
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
-
-  void apl_pre_brewmaster();
-  void apl_pre_windwalker();
-  void apl_pre_mistweaver();
-  void apl_combat_brewmaster();
-  void apl_combat_windwalker();
-  void apl_combat_mistweaver();
-  virtual void      init_actions();
-  double stagger_pct();
   virtual void invalidate_cache( cache_e );
-
-  stance_e current_stance() const
-  { return _active_stance; }
-  bool switch_to_stance( stance_e );
-  void stance_invalidates( stance_e );
-  const spell_data_t& static_stance_data( stance_e );
-  const spell_data_t& active_stance_data( stance_e );
-
-private:
-  target_specific_t<monk_td_t*> target_data;
-public:
-
+  virtual void      init_actions();
   virtual monk_td_t* get_target_data( player_t* target )
   {
     monk_td_t*& td = target_data[ target ];
@@ -310,6 +294,24 @@ public:
     }
     return td;
   }
+
+  // Monk specific
+  void apl_pre_brewmaster();
+  void apl_pre_windwalker();
+  void apl_pre_mistweaver();
+  void apl_combat_brewmaster();
+  void apl_combat_windwalker();
+  void apl_combat_mistweaver();
+  double stagger_pct();
+
+  // Stance
+  stance_e current_stance() const
+  { return _active_stance; }
+  bool switch_to_stance( stance_e );
+  void stance_invalidates( stance_e );
+  const spell_data_t& static_stance_data( stance_e );
+  const spell_data_t& active_stance_data( stance_e );
+
 };
 
 // ==========================================================================
