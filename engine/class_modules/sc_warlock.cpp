@@ -4954,7 +4954,7 @@ void warlock_t::init_actions()
         add_action( "Haunt",               "if=!in_flight_to_target&remains<cast_time+travel_time+tick_time&(soul_shard>2|cooldown.dark_soul.remains>35|(soul_shard>1&cooldown.dark_soul.remains<cast_time))&shard_react" );
         add_action( "Corruption",          "cycle_targets=1,if=remains<gcd&remains<cooldown.dark_soul.remains&miss_react" );
         add_action( "Unstable Affliction", "cycle_targets=1,if=remains<gcd+cast_time&remains<cooldown.dark_soul.remains&miss_react" );
-        if ( find_item( "unerring_vision_of_leishen" ) )
+        if ( has_unerring_vision_of_leishen )
         {
           add_action( "Agony",               "cycle_targets=1,if=ticks_remain<=2&remains+2<cooldown.dark_soul.remains&miss_react&dot.agony.crit_pct<100" );
           add_action( "Corruption",          "cycle_targets=1,if=ticks_remain<=2&remains<cooldown.dark_soul.remains&miss_react&dot.corruption.crit_pct<100" );
