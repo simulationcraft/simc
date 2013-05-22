@@ -142,7 +142,6 @@
 		6E392F961396A0AD00649B6A /* sc_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618E5139677F0006B7A89 /* sc_thread.cpp */; };
 		6E392F971396A0AD00649B6A /* sc_unique_gear.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618E6139677F0006B7A89 /* sc_unique_gear.cpp */; };
 		6E392F981396A0AD00649B6A /* sc_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618E7139677F0006B7A89 /* sc_util.cpp */; };
-		6E392F991396A0AD00649B6A /* sc_weapon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618EA139677F0006B7A89 /* sc_weapon.cpp */; };
 		6E41F18115C68CF9002B6836 /* sc_cooldown.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E41F17E15C68CDF002B6836 /* sc_cooldown.cpp */; };
 		6E41F18215C68D01002B6836 /* sc_cooldown.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E41F17E15C68CDF002B6836 /* sc_cooldown.cpp */; };
 		6E6C54D41396A64100407A6A /* Legend.html in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D31396A63000407A6A /* Legend.html */; };
@@ -315,7 +314,6 @@
 		6EC6191E139677F0006B7A89 /* sc_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618E5139677F0006B7A89 /* sc_thread.cpp */; };
 		6EC6191F139677F0006B7A89 /* sc_unique_gear.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618E6139677F0006B7A89 /* sc_unique_gear.cpp */; };
 		6EC61920139677F0006B7A89 /* sc_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618E7139677F0006B7A89 /* sc_util.cpp */; };
-		6EC61923139677F0006B7A89 /* sc_weapon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618EA139677F0006B7A89 /* sc_weapon.cpp */; };
 		6EC6192A13967824006B7A89 /* sc_main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC6192913967824006B7A89 /* sc_main.cpp */; };
 		6ED45882143E4DD700ED36C5 /* sc_dot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ED45881143E4DD700ED36C5 /* sc_dot.cpp */; };
 		6ED45883143E4DD700ED36C5 /* sc_dot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ED45881143E4DD700ED36C5 /* sc_dot.cpp */; };
@@ -346,7 +344,6 @@
 		6EEAC3DE171C8A98003F8BF1 /* sc_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618E5139677F0006B7A89 /* sc_thread.cpp */; };
 		6EEAC3DF171C8A98003F8BF1 /* sc_unique_gear.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618E6139677F0006B7A89 /* sc_unique_gear.cpp */; };
 		6EEAC3E0171C8A98003F8BF1 /* sc_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618E7139677F0006B7A89 /* sc_util.cpp */; };
-		6EEAC3E1171C8A98003F8BF1 /* sc_weapon.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618EA139677F0006B7A89 /* sc_weapon.cpp */; };
 		6EEAC3E2171C8A98003F8BF1 /* sc_window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC6192C13967883006B7A89 /* sc_window.cpp */; };
 		6EEAC3E3171C8A98003F8BF1 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC6192B13967883006B7A89 /* main.cpp */; };
 		6EEAC3E4171C8A98003F8BF1 /* sc_dot.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6ED45881143E4DD700ED36C5 /* sc_dot.cpp */; };
@@ -1301,7 +1298,6 @@
 		6EC618E5139677F0006B7A89 /* sc_thread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_thread.cpp; path = engine/sc_thread.cpp; sourceTree = "<group>"; };
 		6EC618E6139677F0006B7A89 /* sc_unique_gear.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_unique_gear.cpp; path = engine/sc_unique_gear.cpp; sourceTree = "<group>"; };
 		6EC618E7139677F0006B7A89 /* sc_util.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_util.cpp; path = engine/sc_util.cpp; sourceTree = "<group>"; };
-		6EC618EA139677F0006B7A89 /* sc_weapon.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_weapon.cpp; path = engine/sc_weapon.cpp; sourceTree = "<group>"; };
 		6EC6192913967824006B7A89 /* sc_main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_main.cpp; path = engine/sc_main.cpp; sourceTree = "<group>"; };
 		6EC6192B13967883006B7A89 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = qt/main.cpp; sourceTree = "<group>"; };
 		6EC6192C13967883006B7A89 /* sc_window.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_window.cpp; path = qt/sc_window.cpp; sourceTree = "<group>"; };
@@ -1828,7 +1824,6 @@
 				6EC618E5139677F0006B7A89 /* sc_thread.cpp */,
 				6EC618E6139677F0006B7A89 /* sc_unique_gear.cpp */,
 				6EC618E7139677F0006B7A89 /* sc_util.cpp */,
-				6EC618EA139677F0006B7A89 /* sc_weapon.cpp */,
 			);
 			name = Core;
 			sourceTree = "<group>";
@@ -2225,7 +2220,6 @@
 				6E392F961396A0AD00649B6A /* sc_thread.cpp in Sources */,
 				6E392F971396A0AD00649B6A /* sc_unique_gear.cpp in Sources */,
 				6E392F981396A0AD00649B6A /* sc_util.cpp in Sources */,
-				6E392F991396A0AD00649B6A /* sc_weapon.cpp in Sources */,
 				6E392F621396A09700649B6A /* sc_window.cpp in Sources */,
 				6E392F611396A09700649B6A /* main.cpp in Sources */,
 				6ED45883143E4DD700ED36C5 /* sc_dot.cpp in Sources */,
@@ -2297,7 +2291,6 @@
 				6EC6191E139677F0006B7A89 /* sc_thread.cpp in Sources */,
 				6EC6191F139677F0006B7A89 /* sc_unique_gear.cpp in Sources */,
 				6EC61920139677F0006B7A89 /* sc_util.cpp in Sources */,
-				6EC61923139677F0006B7A89 /* sc_weapon.cpp in Sources */,
 				6EC6192A13967824006B7A89 /* sc_main.cpp in Sources */,
 				6ED45882143E4DD700ED36C5 /* sc_dot.cpp in Sources */,
 				6EB654BF1562E39500583BF3 /* sc_const_data.cpp in Sources */,
@@ -2368,7 +2361,6 @@
 				6EEAC3DE171C8A98003F8BF1 /* sc_thread.cpp in Sources */,
 				6EEAC3DF171C8A98003F8BF1 /* sc_unique_gear.cpp in Sources */,
 				6EEAC3E0171C8A98003F8BF1 /* sc_util.cpp in Sources */,
-				6EEAC3E1171C8A98003F8BF1 /* sc_weapon.cpp in Sources */,
 				6EEAC3E2171C8A98003F8BF1 /* sc_window.cpp in Sources */,
 				6EEAC3E3171C8A98003F8BF1 /* main.cpp in Sources */,
 				6EEAC3E4171C8A98003F8BF1 /* sc_dot.cpp in Sources */,
