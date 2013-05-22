@@ -2117,7 +2117,12 @@ struct corruption_t : public warlock_spell_t
     }
 
     if ( p() -> glyphs.siphon_life -> ok() )
-      p() -> resource_gain( RESOURCE_HEALTH, d -> state -> result_amount * p() -> glyphs.siphon_life -> effectN( 1 ).percent(), p() -> gains.siphon_life );
+    {
+      if ( d -> state -> result_amount > 0 )
+        p() -> resource_gain( RESOURCE_HEALTH,
+                              player -> resources.max[ RESOURCE_HEALTH ] * p() -> glyphs.siphon_life -> effectN( 1 ).percent() / 100.0,
+                              p() -> gains.siphon_life );
+    }
   }
 
   virtual double action_multiplier()
