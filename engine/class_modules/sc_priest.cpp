@@ -5400,7 +5400,7 @@ void priest_t::apl_shadow()
     def -> add_action( racial_actions[ i ] );
 
   def -> add_action( this, "Devouring Plague", "if=shadow_orb=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)" );
-  if ( find_item( "unerring_vision_of_leishen" ) )
+  if ( find_item( "unerring_vision_of_lei_shen" ) )
   {
     def -> add_action( this, "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=8,if=miss_react&buff.perfect_aim.react&crit_pct<100" );
   }

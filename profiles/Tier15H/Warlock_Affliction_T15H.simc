@@ -50,12 +50,12 @@ actions+=/agony,cycle_targets=1,if=remains<gcd&remains+2<cooldown.dark_soul.rema
 actions+=/haunt,if=!in_flight_to_target&remains<cast_time+travel_time+tick_time&(soul_shard>2|cooldown.dark_soul.remains>35|(soul_shard>1&cooldown.dark_soul.remains<cast_time))&shard_react
 actions+=/corruption,cycle_targets=1,if=remains<gcd&remains<cooldown.dark_soul.remains&miss_react
 actions+=/unstable_affliction,cycle_targets=1,if=remains<gcd+cast_time&remains<cooldown.dark_soul.remains&miss_react
-actions+=/agony,cycle_targets=1,if=ticks_remain<=2&remains+2<cooldown.dark_soul.remains&miss_react&dot.agony.crit_pct<100
-actions+=/corruption,cycle_targets=1,if=ticks_remain<=2&remains<cooldown.dark_soul.remains&miss_react&dot.corruption.crit_pct<100
-actions+=/unstable_affliction,cycle_targets=1,if=(remains-cast_time)%(duration%current_ticks)<=2&remains<cooldown.dark_soul.remains&miss_react&dot.unstable_affliction.crit_pct<100
-actions+=/agony,cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&remains+2<cooldown.dark_soul.remains&miss_react&dot.agony.crit_pct<100
-actions+=/corruption,cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&remains<cooldown.dark_soul.remains&miss_react&dot.corruption.crit_pct<100
-actions+=/unstable_affliction,cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&remains<cooldown.dark_soul.remains&miss_react&dot.unstable_affliction.crit_pct<100
+actions+=/agony,cycle_targets=1,if=ticks_remain<=2&remains+2<cooldown.dark_soul.remains&miss_react
+actions+=/corruption,cycle_targets=1,if=ticks_remain<=2&remains<cooldown.dark_soul.remains&miss_react
+actions+=/unstable_affliction,cycle_targets=1,if=(remains-cast_time)%(duration%current_ticks)<=2&remains<cooldown.dark_soul.remains&miss_react
+actions+=/agony,cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&remains+2<cooldown.dark_soul.remains&miss_react
+actions+=/corruption,cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&remains<cooldown.dark_soul.remains&miss_react
+actions+=/unstable_affliction,cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&remains<cooldown.dark_soul.remains&miss_react
 actions+=/life_tap,if=buff.dark_soul.down&buff.bloodlust.down&mana.pct<50
 actions+=/malefic_grasp,chain=1,interrupt_if=cooldown.dark_soul.remains=0|target.health.pct<=20
 actions+=/life_tap,moving=1,if=mana.pct<80&mana.pct<target.health.pct
@@ -84,7 +84,7 @@ feet=starwalker_sandals,id=95004,gems=320haste_160haste_160hit_120int,enchant=14
 finger1=radens_summoning_band,id=95019,gems=160haste_160hit_60int,reforge=hit_mastery
 finger2=roshaks_remembrance,id=96901,gems=160haste_160hit_60haste,reforge=crit_haste
 trinket1=wushoolays_final_choice,id=96785,reforge=hit_haste
-trinket2=unerring_vision_of_leishen,id=96930
+trinket2=unerring_vision_of_lei_shen,id=96930
 main_hand=suenwo_spire_of_the_falling_sun,id=96911,gems=80int_160haste_320haste_60int,enchant=jade_spirit
 
 # Gear Summary
@@ -103,6 +103,6 @@ main_hand=suenwo_spire_of_the_falling_sun,id=96911,gems=80int_160haste_320haste_
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
 # back=red_sky_cloudcloak,heroic=1,enchant=lightweave_embroidery_3
-# trinket2=unerring_vision_of_leishen,heroic=1
+# trinket2=unerring_vision_of_lei_shen,heroic=1
 # main_hand=suenwo_spire_of_the_falling_sun,heroic=1,weapon=staff_3.30speed_8970min_13455max,enchant=jade_spirit
 default_pet=felhunter

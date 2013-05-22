@@ -9,7 +9,7 @@ spec=balance
 talents=010203
 glyphs=moonbeast
 head=cover_of_the_haunted_forest,id=95246,gems=burning_primal_320crit_180crit,reforge=spi_crit
-neck=soul_prism_of_leishen,id=94994,gems=160spi_160crit_160haste_160spi_120spi,reforge=spi_crit
+neck=soul_prism_of_lei_shen,id=94994,gems=160spi_160crit_160haste_160spi_120spi,reforge=spi_crit
 shoulders=shoulderwraps_of_the_haunted_forest,id=95249,gems=80int_160crit_320crit_120haste,enchant=200int_100crit
 back=constantly_accelerating_cloak,id=94960,gems=80int_160haste_60int,enchant=180int,reforge=haste_crit
 chest=robes_of_the_haunted_forest,id=95243,gems=80int_160crit_320crit_160haste_160spi_180int,enchant=200spi
@@ -23,7 +23,7 @@ finger2=jinrokhs_dreamshard,id=94738,reforge=hit_haste
 trinket1=chayes_essence_of_brilliance,id=94531
 trinket2=breath_of_the_hydra,id=94521,reforge=haste_crit
 main_hand=torall_rod_of_the_shattered_throne,id=94988,gems=80int_160crit_320haste_60int,enchant=jade_spirit,reforge=haste_crit
-off_hand=leishens_orb_of_command,id=95473,gems=80int_160crit_60int,enchant=165int
+off_hand=lei_shens_orb_of_command,id=95473,gems=80int_160crit_60int,enchant=165int
 save=Druid_Balance_T15N.simc
 
 

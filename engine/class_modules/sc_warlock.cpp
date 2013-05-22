@@ -4922,7 +4922,7 @@ void warlock_t::init_actions()
     add_action( "Summon Doomguard" );
     add_action( "Summon Infernal", "", "aoe" );
 
-    bool has_unerring_vision_of_leishen = find_item( "unerring_vision_of_leishen" );
+    bool has_unerring_vision_of_leishen = find_item( "unerring_vision_of_lei_shen" );
 
     switch ( specialization() )
     {
@@ -5003,9 +5003,9 @@ void warlock_t::init_actions()
         add_action( "Shadowburn",            "if=ember_react&(burning_ember>3.5|mana.pct<=20|buff.dark_soul.up|target.time_to_die<20|buff.havoc.stack>=1|(trinket.has_proc.intellect&trinket.proc.intellect.react)|buff.perfect_aim.react)" );
       else
         add_action( "Shadowburn",            "if=ember_react&(burning_ember>3.5|mana.pct<=20|buff.dark_soul.up|target.time_to_die<20|buff.havoc.stack>=1|(trinket.has_proc.intellect&trinket.proc.intellect.react))" );
-      if ( find_item( "unerring_vision_of_leishen" ) )
+      if ( has_unerring_vision_of_leishen )
         add_action( "Chaos Bolt",            "if=ember_react&target.health.pct>20&buff.perfect_aim.react&buff.perfect_aim.remains>cast_time" );
-      if ( spec.pandemic -> ok() && find_item( "unerring_vision_of_leishen" ) )
+      if ( spec.pandemic -> ok() && has_unerring_vision_of_leishen )
         add_action( "Immolate",              "cycle_targets=1,if=target.time_to_die>=5&miss_react&buff.perfect_aim.remains>cast_time&buff.perfect_aim.react&crit_pct<100" );
       if ( spec.pandemic -> ok() )
       {

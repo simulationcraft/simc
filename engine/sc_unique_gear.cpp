@@ -2600,7 +2600,7 @@ void unique_gear::init( player_t* p )
     if ( ! strcmp( item.name(), "jikuns_rising_winds"                 ) ) jikuns_rising_winds               ( &item );
     if ( ! strcmp( item.name(), "rune_of_reorigination"               ) ) rune_of_reorigination             ( &item );
     if ( ! strcmp( item.name(), "spark_of_zandalar"                   ) ) spark_of_zandalar                 ( &item );
-    if ( ! strcmp( item.name(), "unerring_vision_of_leishen"          ) ) unerring_vision_of_leishen        ( &item );
+    if ( ! strcmp( item.name(), "unerring_vision_of_lei_shen"         ) ) unerring_vision_of_leishen        ( &item );
 
   }
 }

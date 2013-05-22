@@ -25,6 +25,6 @@ finger2=roshaks_remembrance,id=95512,gems=80int_160spi_60haste
 trinket1=breath_of_the_hydra,id=94521
 trinket2=chayes_essence_of_brilliance,id=94531,reforge=crit_haste
 main_hand=venomlords_totemic_wand,id=94755,gems=80int_160spi_160int_60int,enchant=jade_spirit
-off_hand=leishens_orb_of_command,id=95473,gems=80int_160haste_60int,enchant=165int
+off_hand=lei_shens_orb_of_command,id=95473,gems=80int_160haste_60int,enchant=165int
 initial_shadow_orbs=3
 save=Priest_Shadow_T15N.simc

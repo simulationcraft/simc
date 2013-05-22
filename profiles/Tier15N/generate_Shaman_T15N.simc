@@ -12,7 +12,7 @@ position=back
 talents=000303
 glyphs=chain_lightning
 head=clearmind_helm,id=94949,gems=burning_primal_80int_160spi_180int
-neck=soul_prism_of_leishen,id=94994,gems=80int_160spi_80int_160spi_120spi,reforge=spi_mastery
+neck=soul_prism_of_lei_shen,id=94994,gems=80int_160spi_80int_160spi_120spi,reforge=spi_mastery
 shoulders=shoulderwraps_of_the_witch_doctor,id=95324,gems=160int_80int_160haste_120haste,enchant=200int_100crit,reforge=crit_mastery
 back=constantly_accelerating_cloak,id=94960,gems=160int_60int,enchant=180int
 chest=hauberk_of_the_witch_doctor,id=95320,gems=160int_80int_160haste_80int_160spi_180int,enchant=80all,reforge=spi_haste
@@ -26,7 +26,7 @@ finger2=petrified_eye_of_the_basilisk,id=95514,reforge=spi_haste
 trinket1=chayes_essence_of_brilliance,id=94531,reforge=crit_haste
 trinket2=breath_of_the_hydra,id=94521
 main_hand=torall_rod_of_the_shattered_throne,id=94988,gems=160int_160int_60int,enchant=jade_spirit
-off_hand=leishens_orb_of_command,id=95473,gems=160int_60int,enchant=165int,reforge=crit_mastery
+off_hand=lei_shens_orb_of_command,id=95473,gems=160int_60int,enchant=165int,reforge=crit_mastery
 save=Shaman_Elemental_T15N.simc
 
 # Enhancement

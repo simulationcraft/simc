@@ -60,7 +60,7 @@ role=attack
 position=back
 professions=blacksmithing=600/engineering=600
 talents=200010
-head=doomed_crown_of_leishen,id=96922,gems=capacitive_primal_160str_180str,reforge=hit_haste
+head=doomed_crown_of_lei_shen,id=96922,gems=capacitive_primal_160str_180str,reforge=hit_haste
 neck=necklace_of_the_terracotta_vanquisher,id=97093,gems=160str_60exp,reforge=hit_haste
 shoulders=pauldrons_of_the_allconsuming_maw,id=96573,gems=160str_80str_160mastery_120crit,enchant=200str_100crit,reforge=exp_haste
 back=yellow_dawn_lightningcloak,id=95017,gems=80str_160mastery_60haste,enchant=180crit,reforge=crit_mastery

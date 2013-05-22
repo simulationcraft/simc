@@ -72,9 +72,9 @@ feet=damrens_frozen_footguards,id=94968,gems=160int_60haste,enchant=140mastery
 finger1=eye_of_oondasta,id=95164,reforge=mastery_hit
 finger2=roshaks_remembrance,id=95512,gems=80int_160hit_60haste,reforge=crit_hit
 trinket1=chayes_essence_of_brilliance,id=94531,reforge=crit_haste
-trinket2=unerring_vision_of_leishen,id=95814
+trinket2=unerring_vision_of_lei_shen,id=95814
 main_hand=nadagasts_exsanguinator,id=95506,gems=80int_160crit_160int_60int,enchant=jade_spirit,reforge=crit_haste
-off_hand=leishens_orb_of_command,id=95473,gems=160int_60int,enchant=165int
+off_hand=lei_shens_orb_of_command,id=95473,gems=160int_60int,enchant=165int
 
 # Gear Summary
 # gear_strength=80
@@ -91,6 +91,6 @@ off_hand=leishens_orb_of_command,id=95473,gems=160int_60int,enchant=165int
 # meta_gem=burning_primal
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
-# trinket2=unerring_vision_of_leishen
+# trinket2=unerring_vision_of_lei_shen
 # main_hand=nadagasts_exsanguinator,weapon=dagger_1.80speed_2660min_4940max,enchant=jade_spirit
 default_pet=felhunter

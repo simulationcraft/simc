@@ -44,7 +44,7 @@ feet=sandals_of_arcane_fury,id=94799,gems=80int_160crit_60hit,enchant=140mastery
 finger1=eye_of_oondasta,id=95164,reforge=haste_crit
 finger2=roshaks_remembrance,id=95512,gems=80int_160hit_60haste,reforge=mastery_hit
 trinket1=chayes_essence_of_brilliance,id=94531
-trinket2=unerring_vision_of_leishen,id=95814
+trinket2=unerring_vision_of_lei_shen,id=95814
 main_hand=nadagasts_exsanguinator,id=95506,gems=80int_160crit_160int_60int,enchant=jade_spirit,reforge=hit_haste
 off_hand=fetish_of_the_hydra,id=94796,gems=80int_160hit_60int,enchant=165int,reforge=crit_exp
 save=Warlock_Demonology_T15N.simc
@@ -68,7 +68,7 @@ feet=damrens_frozen_footguards,id=94968,gems=160int_60haste,enchant=140mastery
 finger1=eye_of_oondasta,id=95164,reforge=mastery_hit
 finger2=roshaks_remembrance,id=95512,gems=80int_160hit_60haste,reforge=crit_hit
 trinket1=chayes_essence_of_brilliance,id=94531,reforge=crit_haste
-trinket2=unerring_vision_of_leishen,id=95814
+trinket2=unerring_vision_of_lei_shen,id=95814
 main_hand=nadagasts_exsanguinator,id=95506,gems=80int_160crit_160int_60int,enchant=jade_spirit,reforge=crit_haste
-off_hand=leishens_orb_of_command,id=95473,gems=160int_60int,enchant=165int
+off_hand=lei_shens_orb_of_command,id=95473,gems=160int_60int,enchant=165int
 save=Warlock_Destruction_T15N.simc
