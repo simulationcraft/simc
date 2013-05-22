@@ -1408,7 +1408,12 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
 
     if ( atonement )
-      atonement -> trigger( s -> result_amount, direct_tick ? DMG_OVER_TIME : type, s -> result );
+      trigger_atonment( type, s );
+  }
+
+  virtual void trigger_atonment( dmg_e type, action_state_t* s )
+  {
+    atonement -> trigger( s -> result_amount, direct_tick ? DMG_OVER_TIME : type, s -> result );
   }
 
   void generate_shadow_orb( gain_t* g, unsigned number = 1 )
@@ -3126,12 +3131,29 @@ struct penance_t : public priest_spell_t
 
 struct smite_t : public priest_spell_t
 {
-  bool glyph_benefit;
+  struct state_t : public action_state_t
+  {
+    bool glyph_benefit;
+    state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
+      glyph_benefit( false ) { }
+
+    std::ostringstream& debug_str( std::ostringstream& s )
+    { action_state_t::debug_str( s ) << " glyph_benefit=" << std::boolalpha << glyph_benefit; return s; }
+
+    void initialize()
+    { action_state_t::initialize(); glyph_benefit = false; }
+
+    void copy_state( const action_state_t* o )
+    {
+      action_state_t::copy_state( o );
+      glyph_benefit = static_cast<const state_t&>( *o ).glyph_benefit;
+    }
+  };
+
   cooldown_t* hw_chastise;
 
   smite_t( priest_t& p, const std::string& options_str ) :
     priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) ),
-    glyph_benefit( false ),
     hw_chastise( p.get_cooldown( "holy_word_chastise" ) )
   {
     parse_options( nullptr, options_str );
@@ -3145,7 +3167,6 @@ struct smite_t : public priest_spell_t
   virtual void execute()
   {
     priest.buffs.holy_evangelism -> up();
-    priest.benefits.smites_with_glyph_increase -> update( glyph_benefit );
 
     priest_spell_t::execute();
 
@@ -3163,21 +3184,58 @@ struct smite_t : public priest_spell_t
     }
   }
 
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    priest_spell_t::update_ready( cd_duration );
+    assert( execute_state );
+    priest.benefits.smites_with_glyph_increase -> update( static_cast<const state_t*>( execute_state ) -> glyph_benefit );
+  }
+
+  /* Check if Holy Fire or PW: Solace is up
+   */
+  bool glyph_benefit( player_t* t )
+  {
+    bool glyph_benefit;
+
+    if ( priest.talents.power_word_solace )
+      glyph_benefit = priest.glyphs.smite -> ok() && td( t ).dots.power_word_solace -> ticking;
+    else
+      glyph_benefit = priest.glyphs.smite -> ok() && td( t ).dots.holy_fire -> ticking;
+
+    return glyph_benefit;
+  }
+
   virtual double composite_target_multiplier( player_t* target )
   {
     double m = priest_spell_t::composite_target_multiplier( target );
 
-    bool glyph_benefit;
-
-    if ( priest.talents.power_word_solace )
-      glyph_benefit = priest.glyphs.smite -> ok() && td( target ).dots.power_word_solace -> ticking;
-    else
-      glyph_benefit = priest.glyphs.smite -> ok() && td( target ).dots.holy_fire -> ticking;
-
-    if ( glyph_benefit )
+    if ( glyph_benefit( target ) )
       m *= 1.0 + priest.glyphs.smite -> effectN( 1 ).percent();
 
     return m;
+  }
+
+  virtual action_state_t* new_state()
+  { return new state_t( this, target ); }
+
+  virtual void snapshot_state( action_state_t* s, dmg_e type )
+  {
+    state_t& state = static_cast<state_t&>( *s );
+
+    state.glyph_benefit = glyph_benefit( s -> target );
+
+    priest_spell_t::snapshot_state( s, type );
+  }
+
+  virtual void trigger_atonment( dmg_e type, action_state_t* s )
+  {
+    double atonement_dmg = s -> result_amount; // Normal dmg
+
+    // If HF/PW:S was up, remove the extra damage from glyph
+    if ( static_cast<const state_t*>( s ) -> glyph_benefit )
+      atonement_dmg /= 1.0 + priest.glyphs.smite -> effectN( 1 ).percent();
+
+    atonement -> trigger( atonement_dmg, direct_tick ? DMG_OVER_TIME : type, s -> result );
   }
 
   virtual double action_multiplier()
