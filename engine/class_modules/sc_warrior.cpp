@@ -2171,9 +2171,9 @@ struct whirlwind_t : public warrior_attack_t
       add_child( oh_attack );
     }
     
-    if ( p -> specialization() == WARRIOR_ARMS )
+    if ( p -> spec.seasoned_soldier -> ok() )
     {
-      base_costs[ current_resource() ] = 20; //5.2 hotfix
+      base_costs[ current_resource() ] += p -> spec.seasoned_soldier -> effectN( 2 ).resource( current_resource() );
     }
     
     aoe =-1;
