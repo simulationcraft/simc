@@ -1858,6 +1858,11 @@ struct shield_slam_t : public warrior_attack_t
     rage_gain = data().effectN( 3 ).resource( RESOURCE_RAGE );
 
     stats -> add_child( player -> get_stats( "shield_slam_combust" ) );
+
+    // Assumption: player level stays constant
+    // Values taken from tooltip: 2013/05/22
+    direct_power_mod = ( std::max( p -> level, 85 ) * 0.75 ) + ( std::max( p -> level, 80 ) * 0.4 ) + 0.35;
+    direct_power_mod /= 100.0; // assumption, not clear from tooltip
   }
 
   virtual double action_multiplier()
