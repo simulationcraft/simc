@@ -2426,6 +2426,14 @@ struct immolate_t : public warlock_spell_t
     warlock_spell_t::tick( d );
 
     if ( d -> state -> result == RESULT_CRIT ) trigger_ember_gain( p(), 0.1, p() -> gains.immolate, 1.0 );
+
+    if ( p() -> glyphs.siphon_life -> ok() )
+    {
+      if ( d -> state -> result_amount > 0 )
+        p() -> resource_gain( RESOURCE_HEALTH,
+                              player -> resources.max[ RESOURCE_HEALTH ] * p() -> glyphs.siphon_life -> effectN( 1 ).percent() / 100.0,
+                              p() -> gains.siphon_life );
+    }
   }
 };
 
