@@ -143,8 +143,6 @@ public:
     const spell_data_t* thrill_of_the_hunt;
 
     const spell_data_t* a_murder_of_crows;
-	// TODO 5.3 blink strike will be retired. In 5.2 blink_strikes is PTR-only
-	const spell_data_t* blink_strike;
     const spell_data_t* blink_strikes;
     const spell_data_t* lynx_rush;
 
@@ -511,7 +509,6 @@ public:
   struct actives_t
   {
     action_t* kill_command;
-    action_t* blink_strike;
     action_t* lynx_rush;
     attack_t* beast_cleave;
   } active;
@@ -861,15 +858,6 @@ public:
 
   hunter_main_pet_td_t* cast_td( player_t* t = 0 )
   { return p() -> get_target_data( t ? t : ab::target ); }
-
-  void apply_exotic_beast_cd()
-  {
-    if ( ! ab::player -> dbc.ptr ) 
-      ab::cooldown -> duration *= 1.0 + o() -> specs.exotic_beasts -> effectN( 2 ).percent();
-    // PTR build 16924 lacks effect #2 for some reason, so hardcode the bonus
-    else
-      ab::cooldown -> duration *= 0.7;
-  }
 };
 
 // ==========================================================================
@@ -1006,7 +994,6 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     // hardcoded into tooltip
     direct_power_mod = 0.168;
 
-	  // Appears in 5.3
 	  if ( o() -> talents.blink_strikes -> ok() )
 		  base_multiplier *= 1.0 + o() -> find_spell( "blink_strikes" ) -> effectN( 1 ).percent(); 
 
@@ -1095,7 +1082,6 @@ struct monstrous_bite_t : public hunter_main_pet_attack_t
   {
     parse_options( NULL, options_str );
     auto_cast = true;
-    apply_exotic_beast_cd();
     school = SCHOOL_PHYSICAL;
     stats -> school = SCHOOL_PHYSICAL;
   }
@@ -1161,26 +1147,6 @@ struct lynx_rush_t : public hunter_main_pet_attack_t
   }
 };
 
-// Blink Strike (pet) =======================================================
-
-struct blink_strike_t : public hunter_main_pet_attack_t
-{
-  blink_strike_t( hunter_main_pet_t* p ) :
-    hunter_main_pet_attack_t( "blink_strike", p, p -> find_spell( 130393 ) )
-  {
-    background = true;
-    proc = true;
-
-    special = false;
-    weapon = &( player -> main_hand_weapon );
-    base_execute_time = weapon -> swing_time;
-    school = SCHOOL_PHYSICAL;
-    background        = true;
-    repeating         = false;
-  }
-
-};
-
 // Kill Command (pet) =======================================================
 
 struct kill_command_t : public hunter_main_pet_attack_t
@@ -1214,7 +1180,6 @@ struct hunter_main_pet_spell_t : public hunter_main_pet_action_t<spell_t>
                            const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s )
   {
-    apply_exotic_beast_cd();
   }
 };
 
@@ -1523,7 +1488,6 @@ void hunter_main_pet_t::init_spells()
 
   // ferocity
   active.kill_command = new actions::kill_command_t( this );
-  active.blink_strike = new actions::blink_strike_t( this );
   active.lynx_rush    = new actions::lynx_rush_t( this );
 
   specs.rabid= spell_data_t::not_found();
@@ -3210,45 +3174,6 @@ struct hunters_mark_t : public hunter_spell_t
   }
 };
 
-// Blink Strike =============================================================
-
-struct blink_strike_t : public hunter_spell_t
-{
-  blink_strike_t( hunter_t* player, const std::string& options_str ) :
-    hunter_spell_t( "blink_strike", player, player -> talents.blink_strike )
-  {
-    parse_options( NULL, options_str );
-
-    base_spell_power_multiplier    = 0.0;
-    base_attack_power_multiplier   = 1.0;
-
-    harmful = false;
-
-    for ( size_t i = 0, pets = p() -> pet_list.size(); i < pets; ++i )
-    {
-      pet_t* pet = p() -> pet_list[ i ];
-      stats -> add_child( pet -> get_stats( "blink_strike" ) );
-    }
-  }
-
-  virtual void execute()
-  {
-    hunter_spell_t::execute();
-
-    if ( p() -> active.pet )
-    {
-      // teleport the pet to the target
-      p() -> active.pet -> current.distance = 0;
-      p() -> active.pet -> active.blink_strike -> execute();
-    }
-  }
-
-  virtual bool ready()
-  {
-    return p() -> active.pet && hunter_spell_t::ready();
-  }
-};
-
 // Lynx Rush ==============================================================
 
 struct lynx_rush_t : public hunter_spell_t
@@ -3451,7 +3376,6 @@ struct readiness_t : public hunter_spell_t
       "fervor",
       "dire_beast",
       "a_murder_of_crows",
-      "blink_strike",
       "lynx_rush",
       "glaive_toss",
       "powershot",
@@ -3607,7 +3531,6 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "fervor"                ) return new                 fervor_t( this, options_str );
   if ( name == "focus_fire"            ) return new             focus_fire_t( this, options_str );
   if ( name == "hunters_mark"          ) return new           hunters_mark_t( this, options_str );
-  if ( name == "blink_strike"          ) return new           blink_strike_t( this, options_str );
   if ( name == "lynx_rush"             ) return new              lynx_rush_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
   if ( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
@@ -3708,8 +3631,6 @@ void hunter_t::init_spells()
   talents.thrill_of_the_hunt                = find_talent_spell( "Thrill of the Hunt" );
 
   talents.a_murder_of_crows                 = find_talent_spell( "A Murder of Crows" );
-  // TODO blink_strike is replaced by blink_strikes in 5.3
-  talents.blink_strike                      = find_talent_spell( "Blink Strike" );
   talents.blink_strikes                     = find_talent_spell( "Blink Strikes" );
   talents.lynx_rush                         = find_talent_spell( "Lynx Rush" );
 
@@ -4047,7 +3968,6 @@ void hunter_t::init_actions()
       action_list_str += "/dire_beast,if=enabled&focus<=90";
       action_list_str += "/barrage,if=enabled";
       action_list_str += "/powershot,if=enabled";
-      action_list_str += "/blink_strike,if=enabled";
       action_list_str += "/readiness,wait_for_rapid_fire=1";
       action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
       action_list_str += "/focus_fire,five_stacks=1,if=!ticking&!buff.beast_within.up";
@@ -4065,7 +3985,6 @@ void hunter_t::init_actions()
       action_list_str += init_use_racial_actions();
 
       action_list_str += "/powershot,if=enabled";
-      action_list_str += "/blink_strike,if=enabled";
       action_list_str += "/lynx_rush,if=enabled&!dot.lynx_rush.ticking";
 
       action_list_str += "/multi_shot,if=active_enemies>5";
@@ -4128,7 +4047,6 @@ void hunter_t::init_actions()
     case HUNTER_SURVIVAL:
       action_list_str += "/fervor,if=enabled&focus<=50";
       action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
-      action_list_str += "/blink_strike,if=enabled";
       action_list_str += "/lynx_rush,if=enabled&!dot.lynx_rush.ticking";
 
       action_list_str += "/explosive_shot,if=buff.lock_and_load.react";

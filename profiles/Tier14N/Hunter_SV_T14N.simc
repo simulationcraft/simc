@@ -32,7 +32,6 @@ actions+=/auto_shot
 actions+=/explosive_trap,if=active_enemies>1
 actions+=/fervor,if=enabled&focus<=50
 actions+=/a_murder_of_crows,if=enabled&!ticking
-actions+=/blink_strike,if=enabled
 actions+=/lynx_rush,if=enabled&!dot.lynx_rush.ticking
 actions+=/explosive_shot,if=buff.lock_and_load.react
 actions+=/glaive_toss,if=enabled

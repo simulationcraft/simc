@@ -33,7 +33,6 @@ actions+=/auto_shot
 actions+=/explosive_trap,if=active_enemies>1
 actions+=/blood_fury
 actions+=/powershot,if=enabled
-actions+=/blink_strike,if=enabled
 actions+=/lynx_rush,if=enabled&!dot.lynx_rush.ticking
 actions+=/multi_shot,if=active_enemies>5
 actions+=/steady_shot,if=active_enemies>5
