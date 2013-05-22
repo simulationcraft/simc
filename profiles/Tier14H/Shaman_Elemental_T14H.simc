@@ -62,10 +62,7 @@ actions.single+=/flame_shock,if=time>60&remains<=buff.ascendance.duration&cooldo
 actions.single+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=60
 # Keep Searing Totem up, unless Fire Elemental Totem is coming off cooldown in the next 20 seconds
 actions.single+=/searing_totem,if=cooldown.fire_elemental_totem.remains>20&!totem.fire.active
-actions.single+=/spiritwalkers_grace,moving=1,if=glyph.unleashed_lightning.enabled&((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))|(buff.raid_movement.duration>=action.unleash_elements.gcd+action.earth_shock.gcd)
-actions.single+=/unleash_elements,moving=1,if=!glyph.unleashed_lightning.enabled
-# Use Earth Shock when moving if Glyph of Unleashed Lightning is not equipped and there's at least shock cooldown time of Flame Shock duration left
-actions.single+=/earth_shock,moving=1,if=!glyph.unleashed_lightning.enabled&dot.flame_shock.remains>cooldown
+actions.single+=/spiritwalkers_grace,moving=1,if=((talent.elemental_blast.enabled&cooldown.elemental_blast.remains=0)|(cooldown.lava_burst.remains=0&!buff.lava_surge.react))|(buff.raid_movement.duration>=action.unleash_elements.gcd+action.earth_shock.gcd)
 actions.single+=/lightning_bolt
 
 # Multi target action priority list
