@@ -2127,7 +2127,8 @@ std::string chart::gear_weights_wowupgrade( player_t* p )
 {
   char buffer[ 1024 ];
 
-  std::string url = "http://wowupgrade.com/#import=fSimulationCraft;p" + util::urlencode( p -> name_str );
+  std::string formatted_name = p -> name_str;
+  std::string url = "http://wowupgrade.com/#import=fSimulationCraft;p" + util::urlencode( formatted_name );
 
   uint32_t c, spec;
   p -> dbc.spec_idx( p -> specialization(), c, spec );
