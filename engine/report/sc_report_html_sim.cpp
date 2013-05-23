@@ -4201,7 +4201,7 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
     print_html_contents( os, sim );
   }
 
-  if ( num_players > 1 || sim -> report_raid_summary )
+  if ( num_players > 1 || sim -> report_raid_summary || ! sim -> raid_events_str.empty() )
   {
     print_html_raid_summary( os, sim, sim -> report_information );
     print_html_scale_factors( os, sim );

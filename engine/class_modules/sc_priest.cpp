@@ -5411,14 +5411,19 @@ void priest_t::apl_default()
   action_priority_list_t* def = get_action_priority_list( "default" );
 
   // DEFAULT
-  if ( sim -> allow_potions ) def -> add_action( "mana_potion,if=mana.pct<=75" );
-  def -> add_action( "Shadowfiend", ",if=mana.pct<50" );
-  def -> add_action( "Hymn of Hope", ",if=pet.shadowfiend.active&time>200" );
+  if ( sim -> allow_potions )
+    def -> add_action( "mana_potion,if=mana.pct<=75" );
+
+  if ( find_class_spell( "Shadowfiend" ) -> ok() )
+  {
+    def -> add_action( this, "Shadowfiend", ",if=mana.pct<50" );
+    def -> add_action( this, "Hymn of Hope", ",if=pet.shadowfiend.active&time>200" );
+  }
   if ( race == RACE_TROLL )  def -> add_action( "berserking" );
   if ( race == RACE_BLOOD_ELF ) def -> add_action( "arcane_torrent,if=mana.pct<=90" );
-  def -> add_action( "Holy Fire" );
-  def -> add_action( "Shadow Word: Pain",",if=remains<tick_time|!ticking" );
-  def -> add_action( "Smite" );
+  def -> add_action( this, "Holy Fire" );
+  def -> add_action( this, "Shadow Word: Pain",",if=remains<tick_time|!ticking" );
+  def -> add_action( this, "Smite" );
 }
 
 // Shadow Combat Action Priority List
