@@ -314,6 +314,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
       base_execute_time = weapon -> swing_time;
       background = true;
       repeating  = true;
+      may_crit = true;
       trigger_gcd = timespan_t::zero();
       owner = p -> o();
     }

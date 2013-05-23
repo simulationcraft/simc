@@ -1640,11 +1640,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
       spell_t( "gargoyle_strike", pet, pet -> find_pet_spell( "Gargoyle Strike" ) )
     {
       harmful            = true;
-      // The gargoyle seems to have a ~600ms delay between CAST_START events,
-      // if calculated with a initial cast time of 2.0, hasted by the DK's
-      // spell haste
-      ability_lag        = timespan_t::from_seconds( 0.4 );
-      ability_lag_stddev = timespan_t::from_seconds( 0.065 );
       trigger_gcd        = timespan_t::from_seconds( 1.5 );
       may_crit           = true;
       min_gcd            = timespan_t::from_seconds( 1.5 ); // issue961
