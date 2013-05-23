@@ -856,7 +856,7 @@ void SC_MainWindow::createImportTab()
   battleNetView -> setUrl( QUrl( "http://us.battle.net/wow/en" ) );
   importTab -> addTab( battleNetView, tr( "Battle.Net" ) );
 
-  charDevCookies = new PersistentCookieJar( "chardev.cookies" );
+  charDevCookies = new PersistentCookieJar( AppDataDir.toStdString() + "/" + "chardev.cookies" );
   charDevCookies -> load();
   charDevView = new SC_WebView( this );
   charDevView -> page() -> networkAccessManager() -> setCookieJar( charDevCookies );
@@ -1684,7 +1684,6 @@ QString SC_MainWindow::mergeOptions()
 
   options += "reforge_plot_amount=" + choice.reforgeplot_amount -> currentText() + "\n";
   options += "reforge_plot_step=" + choice.reforgeplot_step -> currentText() + "\n";
-  options += "reforge_plot_output_file=reforge_plot.csv\n"; // This should be set in the gui if possible
 
   if ( choice.statistics_level->currentIndex() >= 0 )
   {
@@ -2184,6 +2183,7 @@ void SimulateThread::run()
 
   sim -> html_file_str = mainWindow -> AppDataDir.toStdString() + "/" + "simc_report.html";
   sim -> xml_file_str  = mainWindow -> AppDataDir.toStdString() + "/" + "simc_report.xml";
+  sim -> reforge_plot_output_file_str = mainWindow -> AppDataDir.toStdString() + "/" + "reforge_plot.csv";
 
   sim_control_t description;
 
