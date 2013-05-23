@@ -856,7 +856,7 @@ void SC_MainWindow::createImportTab()
   battleNetView -> setUrl( QUrl( "http://us.battle.net/wow/en" ) );
   importTab -> addTab( battleNetView, tr( "Battle.Net" ) );
 
-  charDevCookies = new PersistentCookieJar( AppDataDir.toStdString() + "/" + "chardev.cookies" );
+  charDevCookies = new PersistentCookieJar( ( AppDataDir + QDir::separator() + "chardev.cookies" ).toStdString().c_str() );
   charDevCookies -> load();
   charDevView = new SC_WebView( this );
   charDevView -> page() -> networkAccessManager() -> setCookieJar( charDevCookies );
@@ -2174,16 +2174,16 @@ void SC_MainWindow::armoryRegionChanged( const QString& region )
 void SimulateThread::run()
 {
   QByteArray utf8_profile = options.toUtf8();
-  QFile file( mainWindow -> AppDataDir + "/" + "simc_gui.simc" );
+  QFile file( mainWindow -> AppDataDir + QDir::separator () + "simc_gui.simc" );
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
     file.write( utf8_profile );
     file.close();
   }
 
-  sim -> html_file_str = mainWindow -> AppDataDir.toStdString() + "/" + "simc_report.html";
-  sim -> xml_file_str  = mainWindow -> AppDataDir.toStdString() + "/" + "simc_report.xml";
-  sim -> reforge_plot_output_file_str = mainWindow -> AppDataDir.toStdString() + "/" + "reforge_plot.csv";
+  sim -> html_file_str = ( mainWindow -> AppDataDir + QDir::separator() + "simc_report.html" ).toStdString();
+  sim -> xml_file_str  = ( mainWindow -> AppDataDir + QDir::separator() + "simc_report.xml" ).toStdString();
+  sim -> reforge_plot_output_file_str = ( mainWindow -> AppDataDir + QDir::separator() + "reforge_plot.csv" ).toStdString();
 
   sim_control_t description;
 
