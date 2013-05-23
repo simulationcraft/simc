@@ -288,16 +288,6 @@ void dbc::apply_hotfixes()
 
   spell_data_t* s;
 
-  // 03/01/2012 Critical Mass - nerf reverted. It's back to 30%. http://us.battle.net/wow/en/forum/topic/7923993861?page=100#2000
-  s = spell_data_t::find( 117216, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 30;
-
-  // 03/01/2012 Pyroblast - direct damage reduced 10%. http://us.battle.net/wow/en/forum/topic/7923993861?page=100#2000
-  // 03/06/2012 Pyroblast has its direct damage reduced by 10%. http://eu.battle.net/wow/en/blog/7537112/52_The_Thunder_King_Patch_Notes-06_03_2013#class_mage
-  s = spell_data_t::find( 11366, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.9800000429; // == 2.2000000477 * 0.9
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 1.9800000429;  // == 2.2000000477 * 0.9
-
   // Paladin
   // Build Last Checked: 16309
   // Description: Seal of Truth should be replacing Seal of Command but is missing its ReplaceId value
@@ -387,32 +377,6 @@ void dbc::apply_hotfixes()
   // 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
   s = spell_data_t::find( 103985, false ); // Stance of the Fierce Tiger
   const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 10;
-
-
-  // Mage
-  // Nether Tempest +40% on 12. March 2013 http://us.battle.net/wow/en/forum/topic/8197590653#1
-  s = spell_data_t::find( 114923, false ); //main target
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.3122000068; // == 0.2230000049 * 1.4
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.2435999930; // == 0.1739999950 * 1.4
-  
-  s = spell_data_t::find( 114954, false ); //off target
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.1568000049; // == 0.1120000035 * 1.4
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.1217999965; // == 0.0869999975 * 1.4
-  
-  
-  // Living Bomb +40% on 12. March 2013 http://us.battle.net/wow/en/forum/topic/8197590653#1
-  s = spell_data_t::find( 44457, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.4662000060; // == 0.3330000043 * 1.4
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.3639999867; // == 0.2599999905 * 1.4
-  s = spell_data_t::find( 44461, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.8760000468; // == 1.3400000334 * 1.4
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 1.4629999399; // == 1.0449999571 * 1.4
-  // Frost Bomb +40% on 12. March 2013 http://us.battle.net/wow/en/forum/topic/8197590653#1
-  s = spell_data_t::find( 113092, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 4.4198000907; // == 3.1570000648 * 1.4
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 3.4467998504; // == 2.4619998932 * 1.4
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg = 2.2105999946; // == 1.5789999962 * 1.4
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff = 1.7233999252; // == 1.2309999466 * 1.4
 
 
   // Misc
