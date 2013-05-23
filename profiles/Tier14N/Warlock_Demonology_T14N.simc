@@ -6,6 +6,7 @@ race=dwarf
 role=spell
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!2.0.1.
+glyphs=siphon_life
 spec=demonology
 
 # This default action priority list is automatically created based on your character.

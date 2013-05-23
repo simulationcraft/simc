@@ -8,6 +8,7 @@ race=dwarf
 spec=affliction
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!..0.2.
 talent_override=grimoire_of_service,if=active_enemies>3
+glyphs=siphon_life
 head=hood_of_the_crimson_wake,id=94959,gems=burning_primal_160haste_160hit_180int
 neck=necklace_of_the_terracotta_invoker,id=95203,gems=80int_160haste_60hit,reforge=hit_mastery
 shoulders=mantle_of_the_thousandfold_hells,id=95329,gems=80int_160haste_320haste_120haste,enchant=200int_100crit,reforge=crit_mastery
@@ -31,6 +32,7 @@ level=90
 race=dwarf
 spec=demonology
 talents=101020
+glyphs=siphon_life
 head=hood_of_the_crimson_wake,id=94959,gems=burning_primal_80int_160hit_180int,reforge=haste_crit
 neck=necklace_of_the_terracotta_invoker,id=95203,gems=160int_60hit,reforge=hit_crit
 shoulders=mantle_of_the_thousandfold_hells,id=95329,gems=160int_80int_160crit_120haste,enchant=200int_100crit,reforge=haste_mastery

@@ -8,6 +8,7 @@ position=back
 professions=herbalism=600/tailoring=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!..0.21
 talent_override=grimoire_of_service,if=active_enemies>3
+glyphs=siphon_life
 spec=affliction
 
 # This default action priority list is automatically created based on your character.

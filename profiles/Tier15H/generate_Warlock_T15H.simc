@@ -58,7 +58,7 @@ race=orc
 spec=destruction
 professions=tailoring=600/herbalism=600
 talents=001022
-glyphs=conflagrate/siphon_life
+glyphs=conflagrate
 head=hood_of_the_crimson_wake,id=96887,gems=sinister_primal_160haste_160hit_180int
 neck=megaeras_shining_eye,id=96825,reforge=crit_haste
 shoulders=mantle_of_the_thousandfold_hells,id=96729,gems=80int_160haste_320haste_120haste,enchant=200int_100crit,reforge=crit_mastery

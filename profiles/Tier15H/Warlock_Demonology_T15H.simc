@@ -7,7 +7,7 @@ role=spell
 position=back
 professions=herbalism=600/tailoring=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!0.0.21
-glyphs=imp_swarm/everlasting_affliction
+glyphs=imp_swarm/everlasting_affliction/siphon_life
 spec=demonology
 
 # This default action priority list is automatically created based on your character.
