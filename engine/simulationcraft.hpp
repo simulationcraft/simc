@@ -82,7 +82,7 @@
 #endif
 
 // C++11 workarounds for older compiler versions.
-#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || ! __GXX_EXPERIMENTAL_CXX0X__ || SC_GCC < 460 ) && ( ! defined( SC_VS ) || SC_VS < 10 )
+#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || ! __GXX_EXPERIMENTAL_CXX0X__ || SC_GCC < 40600 ) && ( ! defined( SC_VS ) || SC_VS < 10 )
 namespace std {
 class nullptr_t
 {
