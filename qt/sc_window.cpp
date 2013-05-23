@@ -631,7 +631,7 @@ void SC_MainWindow::createGlobalsTab()
 #if SC_BETA
   globalsLayout_left -> addRow(       tr(  "Version" ),        choice.version = createChoice( 3, "Live", "Beta", "Both" ) );
 #else
-#if SC_PTR
+#if SC_USE_PTR
   globalsLayout_left -> addRow(        tr( "Version" ),        choice.version = createChoice( 3, "Live", "PTR", "Both" ) );
 #else
   globalsLayout_left -> addRow(        tr( "Version" ),        choice.version = createChoice( 1, "Live" ) );
