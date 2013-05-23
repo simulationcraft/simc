@@ -64,10 +64,10 @@
 
 // Simplified access to compiler version
 #if defined( __GNUC__ )
-#  define SC_GCC ( __GNUC__ * 100 + __GNUC_MINOR__ )
+#  define SC_GCC ( __GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__ )
 #endif
 #if defined( __clang__ )
-#  define SC_CLANG ( __clang_major__ * 100 + __clang_minor__ )
+#  define SC_CLANG ( __clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__ )
 #endif
 #if defined( _MSC_VER )
 #  define SC_VS ( _MSC_VER / 100 - 6 )
@@ -77,12 +77,12 @@
 #endif
 
 // Workaround for LLVM/Clang 3.2+ using glibc headers.
-#if defined( SC_CLANG ) && SC_CLANG >= 302
+#if defined( SC_CLANG ) && SC_CLANG >= 30200
 # define __extern_always_inline extern __always_inline __attribute__(( __gnu_inline__ ))
 #endif
 
 // C++11 workarounds for older compiler versions.
-#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || ! __GXX_EXPERIMENTAL_CXX0X__ || SC_GCC < 406 ) && ( ! defined( SC_VS ) || SC_VS < 10 )
+#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || ! __GXX_EXPERIMENTAL_CXX0X__ || SC_GCC < 460 ) && ( ! defined( SC_VS ) || SC_VS < 10 )
 namespace std {
 class nullptr_t
 {
@@ -2542,11 +2542,8 @@ public:
   int threads;
   std::vector<sim_t*> children; // Manual delete!
   int thread_index;
-#if SC_GCC >= 424 && ! SC_CLANG
-  virtual void run() __attribute__((force_align_arg_pointer));
-#else
+
   virtual void run();
-#endif
 
   // Spell database access
   spell_data_expr_t* spell_query;

@@ -60,6 +60,9 @@ class sc_thread_t::native_t
 {
   HANDLE handle;
 
+#if SC_GCC >= 40204 && ! defined( SC_CLANG )
+  __attribute__((force_align_arg_pointer))
+#endif
   static unsigned WINAPI execute( LPVOID t )
   {
     static_cast<sc_thread_t*>( t ) -> run();
