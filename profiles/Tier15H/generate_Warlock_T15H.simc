@@ -8,6 +8,7 @@ race=troll
 spec=affliction
 professions=herbalism=600/tailoring=600
 talents=001032
+glyphs=siphon_life
 talent_override=grimoire_of_service,if=active_enemies>3
 head=hood_of_the_crimson_wake,id=96887,gems=sinister_primal_160haste_160hit_180int
 neck=megaeras_shining_eye,id=96825,reforge=crit_haste
@@ -32,7 +33,7 @@ race=troll
 spec=demonology
 professions=herbalism=600/tailoring=600
 talents=101032
-glyphs=imp_swarm/everlasting_affliction
+glyphs=imp_swarm/everlasting_affliction/siphon_life
 main_hand=suenwo_spire_of_the_falling_sun,id=96911,gems=80int_160mastery_320haste_60int,enchant=jade_spirit
 back=red_sky_cloudcloak,id=95014,gems=320haste_60haste,enchant=lightweave_embroidery_3,reforge=haste_exp
 trinket2=breath_of_the_hydra,id=96827
@@ -57,7 +58,7 @@ race=orc
 spec=destruction
 professions=tailoring=600/herbalism=600
 talents=001022
-glyphs=conflagrate
+glyphs=conflagrate/siphon_life
 head=hood_of_the_crimson_wake,id=96887,gems=sinister_primal_160haste_160hit_180int
 neck=megaeras_shining_eye,id=96825,reforge=crit_haste
 shoulders=mantle_of_the_thousandfold_hells,id=96729,gems=80int_160haste_320haste_120haste,enchant=200int_100crit,reforge=crit_mastery
