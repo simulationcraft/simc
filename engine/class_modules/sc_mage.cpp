@@ -2761,8 +2761,11 @@ struct nether_tempest_cleave_t: public mage_spell_t
 
     available_targets( target_cache ); // Build target cache
 
+    if ( target_cache.size() <= 1 )
+      return; // single target; back out completely
+
     // obtain random target until it is not equal to main target
-    while ( target_cache.size() > 1 && target == main_target )
+    while ( target == main_target )
     {
       // Randomly select target index
       unsigned t = static_cast<unsigned>( rng -> range( 0, target_cache.size() ) );
