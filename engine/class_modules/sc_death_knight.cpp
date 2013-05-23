@@ -1644,6 +1644,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
       may_crit           = true;
       min_gcd            = timespan_t::from_seconds( 1.5 ); // issue961
       school             = SCHOOL_SHADOWSTORM;
+      auto_cast          = true;
     }
 
     double composite_da_multiplier()
