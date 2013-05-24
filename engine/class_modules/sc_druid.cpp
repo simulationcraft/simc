@@ -6184,6 +6184,10 @@ void druid_t::invalidate_cache( cache_e c )
     case CACHE_MASTERY:
         player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
       break;
+    case CACHE_SPIRIT:
+      if ( spec.balance_of_power -> ok() )
+        player_t::invalidate_cache( CACHE_HIT );
+      break;
     default: break;
   }
 }
@@ -6331,7 +6335,8 @@ double druid_t::composite_melee_hit()
 {
   double hit = player_t::composite_melee_hit();
 
-  hit += ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * ( spec.balance_of_power -> effectN( 1 ).percent() ) / current_rating().spell_hit;
+  if ( spec.balance_of_power -> ok() )
+    hit += ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * ( spec.balance_of_power -> effectN( 1 ).percent() ) / current_rating().spell_hit;
 
   hit += buff.heart_of_the_wild -> attack_hit_expertise();
 
@@ -6355,7 +6360,8 @@ double druid_t::composite_spell_hit()
 {
   double hit = player_t::composite_spell_hit();
 
-  hit += ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * ( spec.balance_of_power -> effectN( 1 ).percent() ) / current_rating().spell_hit;
+  if ( spec.balance_of_power -> ok() )
+    hit += ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) * ( spec.balance_of_power -> effectN( 1 ).percent() ) / current_rating().spell_hit;
 
   hit += buff.heart_of_the_wild -> spell_hit();
 
