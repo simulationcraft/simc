@@ -100,25 +100,32 @@ const OptionEntry scalingOptions[] =
   { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
   { "Analyze Off-hand Weapon Speed",    "wohspeed", "Calculate scale factors for Off-hand Weapon Speed"    },
   { "Analyze Armor",                    "armor",    "Calculate scale factors for Armor"                    },
+  { "Analyze Dodge Rating",             "dodge",    "Calculate scale factors for Dodge Rating"             },
+  { "Analyze Parry Rating",             "parry",    "Calculate scale factors for Parry Rating"             },
+  { "Analyze Block Rating",             "blockr",   "Calculate scale factors for Block Rating"             },
   { "Analyze Latency",                  "",         "Calculate scale factors for Latency"                  },
   { NULL, NULL, NULL }
 };
 
 const OptionEntry plotOptions[] =
 {
-  { "Plot DPS per Strength",                 "str",     "Generate DPS curve for Strength"                 },
-  { "Plot DPS per Agility",                  "agi",     "Generate DPS curve for Agility"                  },
-  { "Plot DPS per Stamina",                  "sta",     "Generate DPS curve for Stamina"                  },
-  { "Plot DPS per Intellect",                "int",     "Generate DPS curve for Intellect"                },
-  { "Plot DPS per Spirit",                   "spi",     "Generate DPS curve for Spirit"                   },
-  { "Plot DPS per Spell Power",              "sp",      "Generate DPS curve for Spell Power"              },
-  { "Plot DPS per Attack Power",             "ap",      "Generate DPS curve for Attack Power"             },
-  { "Plot DPS per Expertise Rating",         "exp",     "Generate DPS curve for Expertise Rating"         },
-  { "Plot DPS per Hit Rating",               "hit",     "Generate DPS curve for Hit Rating"               },
-  { "Plot DPS per Crit Rating",              "crit",    "Generate DPS curve for Crit Rating"              },
-  { "Plot DPS per Haste Rating",             "haste",   "Generate DPS curve for Haste Rating"             },
-  { "Plot DPS per Mastery Rating",           "mastery", "Generate DPS curve for Mastery Rating"           },
-  { "Plot DPS per Weapon DPS",               "wdps",    "Generate DPS curve for Weapon DPS"               },
+  { "Plot Scaling per Strength",         "str",     "Generate Scaling curve for Strength"         },
+  { "Plot Scaling per Agility",          "agi",     "Generate Scaling curve for Agility"          },
+  { "Plot Scaling per Stamina",          "sta",     "Generate Scaling curve for Stamina"          },
+  { "Plot Scaling per Intellect",        "int",     "Generate Scaling curve for Intellect"        },
+  { "Plot Scaling per Spirit",           "spi",     "Generate Scaling curve for Spirit"           },
+  { "Plot Scaling per Spell Power",      "sp",      "Generate Scaling curve for Spell Power"      },
+  { "Plot Scaling per Attack Power",     "ap",      "Generate Scaling curve for Attack Power"     },
+  { "Plot Scaling per Expertise Rating", "exp",     "Generate Scaling curve for Expertise Rating" },
+  { "Plot Scaling per Hit Rating",       "hit",     "Generate Scaling curve for Hit Rating"       },
+  { "Plot Scaling per Crit Rating",      "crit",    "Generate Scaling curve for Crit Rating"      },
+  { "Plot Scaling per Haste Rating",     "haste",   "Generate Scaling curve for Haste Rating"     },
+  { "Plot Scaling per Mastery Rating",   "mastery", "Generate Scaling curve for Mastery Rating"   },
+  { "Plot Scaling per Weapon DPS",       "wdps",    "Generate Scaling curve for Weapon DPS"       },
+  { "Plot Scaling per Armor",            "armor",   "Generate Scaling curve for Armor"            },
+  { "Plot Scaling per Dodge Rating",     "dodge",   "Generate Scaling curve for Dodge Rating"     },
+  { "Plot Scaling per Parry Rating",     "parry",   "Generate Scaling curve for Parry Rating"     },
+  { "Plot Scaling per Block Rating",     "blockr",  "Generate Scaling curve for Block Rating"     },
   { NULL, NULL, NULL }
 };
 
@@ -130,6 +137,9 @@ const OptionEntry reforgePlotOptions[] =
   { "Plot Reforge Options for Crit Rating",      "crit",    "Generate reforge plot data for Crit Rating"      },
   { "Plot Reforge Options for Haste Rating",     "haste",   "Generate reforge plot data for Haste Rating"     },
   { "Plot Reforge Options for Mastery Rating",   "mastery", "Generate reforge plot data for Mastery Rating"   },
+  { "Plot Reforge Options for Dodge Rating",     "dodge",   "Generate reforge plot data for Dodge Rating"     },
+  { "Plot Reforge Options for Parry Rating",     "parry",   "Generate reforge plot data for Parry Rating"     },
+  { "Plot Reforge Options for Block Rating",     "blockr",  "Generate reforge plot data for Block Rating"     },
 
   { "Plot Reforge Options for Strength",         "str",     "Generate reforge plot data for Intellect"        },
   { "Plot Reforge Options for Agility",          "agi",     "Generate reforge plot data for Agility"          },
@@ -137,6 +147,7 @@ const OptionEntry reforgePlotOptions[] =
   { "Plot Reforge Options for Intellect",        "int",     "Generate reforge plot data for Intellect"        },
   { NULL, NULL, NULL }
 };
+const int reforgePlotOption_cut = 9; // separate between secondary and primary stats
 
 const QString defaultSimulateText( "# Profile will be downloaded into a new tab.\n"
                                    "#\n"
@@ -818,7 +829,7 @@ void SC_MainWindow::createReforgePlotsTab()
 
   reforgeplotsButtonGroup = new SC_ReforgeButtonGroup( this );
   reforgeplotsButtonGroup -> setExclusive( false );
-  for ( int i = 0; i < 6 && reforgePlotOptions[ i ].label; i++ )
+  for ( int i = 0; i < reforgePlotOption_cut && reforgePlotOptions[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( reforgePlotOptions[ i ].label );
     checkBox -> setToolTip( reforgePlotOptions[ i ].tooltip );
@@ -831,7 +842,7 @@ void SC_MainWindow::createReforgePlotsTab()
   messageText = new QLabel( "\n" + tr( "Primary Stats" ) );
   reforgePlotsLayout -> addRow( messageText );
 
-  for ( int i = 6; reforgePlotOptions[ i ].label; i++ )
+  for ( int i = reforgePlotOption_cut; reforgePlotOptions[ i ].label; i++ )
   {
     QCheckBox* checkBox = new QCheckBox( reforgePlotOptions[ i ].label );
     checkBox -> setToolTip( reforgePlotOptions[ i ].tooltip );

@@ -14,7 +14,21 @@
 
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 
-#if defined(__SSE2__) || ( defined(_MSC_VER) && ( defined(_M_X64) || ( defined(_M_IX86_FP) && _M_IX86_FP >= 2 ) ) )
+// Simplified access to compiler version
+#if defined( __GNUC__ )
+#  define SC_GCC ( __GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__ )
+#endif
+#if defined( __clang__ )
+#  define SC_CLANG ( __clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__ )
+#endif
+#if defined( _MSC_VER )
+#  define SC_VS ( _MSC_VER / 100 - 6 )
+#  if SC_VS < 9
+#    error "Visual Studio 8 ( 2005 ) or lower not supported"
+#  endif
+#endif
+
+#if defined(__SSE2__) || ( defined( SC_VS ) && ( defined(_M_X64) || ( defined(_M_IX86_FP) && _M_IX86_FP >= 2 ) ) )
 #  define SC_USE_SSE2
 #endif
 
@@ -24,9 +38,7 @@
 
 #if defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32 )
 #  define SC_WINDOWS
-#  if defined(_MSC_VER)
-#    define SC_MSC
-#  elif defined( __MINGW__ ) || defined( __MINGW32__ )
+#  if defined( __MINGW__ ) || defined( __MINGW32__ )
 #    define SC_MINGW
 #  endif
 #  if defined(SC_USE_SSE2)
@@ -60,20 +72,6 @@
 #  endif
 #  define DIRECTORY_DELIMITER "/"
 #  define SC_SIGACTION
-#endif
-
-// Simplified access to compiler version
-#if defined( __GNUC__ )
-#  define SC_GCC ( __GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__ )
-#endif
-#if defined( __clang__ )
-#  define SC_CLANG ( __clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__ )
-#endif
-#if defined( _MSC_VER )
-#  define SC_VS ( _MSC_VER / 100 - 6 )
-#  if SC_VS < 9
-#    error "Visual Studio 8 ( 2005 ) or lower not supported"
-#  endif
 #endif
 
 // Workaround for LLVM/Clang 3.2+ using glibc headers.
@@ -134,13 +132,13 @@ typedef SSIZE_T ssize_t;
 #include <typeinfo>
 #include <vector>
 
-#if _MSC_VER || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
+#if defined( SC_VS ) || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
 // Use C++11
 #include <array>
 #include <memory>
 #include <type_traits>
 #include <unordered_map>
-#if ( _MSC_VER && _MSC_VER < 1600 )
+#if ( defined( SC_VS ) && SC_VS < 10 )
 namespace std {using namespace tr1; }
 #endif
 #else
