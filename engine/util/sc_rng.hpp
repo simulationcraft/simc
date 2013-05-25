@@ -356,7 +356,7 @@ public:
   }
 
   // Seed rng generator
-  void seed( uint32_t value = static_cast<uint32_t>( std::time( nullptr ) ) )
+  void seed( uint32_t value = static_cast<uint32_t>( std::time( NULL ) ) )
   { engine -> seed( value ); }
 
   // obtain a random value from the rng generator

@@ -194,7 +194,7 @@ namespace std {using namespace tr1; }
 #include "sc_sample_data.hpp"
 
 // Random Number Generators
-#include "sc_rng.hpp"
+#include "util/sc_rng.hpp"
 
 // Forward Declarations =====================================================
 

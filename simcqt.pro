@@ -54,7 +54,7 @@ HEADERS += engine/simulationcraft.hpp
 HEADERS += engine/sc_generic.hpp
 HEADERS += engine/sc_timespan.hpp
 HEADERS += engine/sc_sample_data.hpp
-HEADERS += engine/sc_rng.hpp
+HEADERS += engine/util/sc_rng.hpp
 HEADERS += engine/dbc/data_enums.hh
 HEADERS += engine/dbc/data_definitions.hh
 HEADERS += engine/dbc/specialization.hpp
@@ -65,7 +65,7 @@ HEADERS += engine/utf8/checked.h
 HEADERS += engine/utf8/unchecked.h
 
 SOURCES += engine/sc_io.cpp
-SOURCES += engine/sc_rng.cpp
+SOURCES += engine/util/sc_rng.cpp
 SOURCES += engine/sc_thread.cpp
 SOURCES += engine/sc_util.cpp
 SOURCES += engine/action/sc_absorb.cpp
