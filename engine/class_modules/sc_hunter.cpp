@@ -993,10 +993,6 @@ struct basic_attack_t : public hunter_main_pet_attack_t
 
     // hardcoded into tooltip
     direct_power_mod = 0.168;
-
-	  if ( o() -> talents.blink_strikes -> ok() )
-		  base_multiplier *= 1.0 + o() -> find_spell( "blink_strikes" ) -> effectN( 1 ).percent(); 
-
     base_multiplier *= 1.0 + p -> specs.spiked_collar -> effectN( 1 ).percent();
     rng_invigoration = player -> get_rng( "invigoration" );
     chance_invigoration = p -> find_spell( 53397 ) -> proc_chance();
@@ -1049,6 +1045,9 @@ struct basic_attack_t : public hunter_main_pet_attack_t
   virtual double action_multiplier()
   {
     double am = hunter_main_pet_attack_t::action_multiplier();
+
+    if ( o() -> talents.blink_strikes -> ok() && p() == o() -> active.pet )
+		  am *= 1.0 + o() -> talents.blink_strikes -> effectN( 1 ).percent(); 
 
     if ( use_wild_hunt() )
     {
