@@ -1,18 +1,18 @@
 TEMPLATE = app
-TARGET = SimulationCraft
-QT += core gui network webkit
-#CONFIG += paperdoll
-#CONFIG += openssl
-#CONFIG += qt5
-#CONFIG += to_install // GUI will be installed, use default AppData & Temp location for files created
 
-contains ( QT_MAJOR_VERSION , 5 ) {
-QT += widgets webkitwidgets
-DEFINES += QT_VERSION_5
+CONFIG(qt) {
+  TARGET = SimulationCraft
+
+  QT += core gui network webkit
+
+  contains ( QT_MAJOR_VERSION , 5 ) {
+    QT += widgets webkitwidgets
+    DEFINES += QT_VERSION_5
+  }
 }
-
-exists( build.conf ) {
-  include( build.conf )
+CONFIG(console) {
+  TARGET = simc
+  CONFIG+=staticlib
 }
 
 QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
@@ -21,10 +21,6 @@ QMAKE_CXXFLAGS += $$OPTS
 win32 {
   LIBS += -lwininet -lshell32
   RC_FILE += simcqt.rc
-
-  # OpenSSL stuff:
-  OPENSSL_INCLUDES = C:/OpenSSL-Win32/include
-  OPENSSL_LIBS = C:/OpenSSL-Win32/lib
 }
 
 macx {
@@ -67,40 +63,38 @@ HEADERS += engine/utf8.h
 HEADERS += engine/utf8/core.h
 HEADERS += engine/utf8/checked.h
 HEADERS += engine/utf8/unchecked.h
-HEADERS += qt/sc_autoupdate.h
-HEADERS += qt/simulationcraftqt.hpp
 
-SOURCES += engine/sc_action.cpp
-SOURCES += engine/sc_action_state.cpp
-SOURCES += engine/sc_attack.cpp
-SOURCES += engine/sc_buff.cpp
-SOURCES += engine/sc_consumable.cpp
-SOURCES += engine/sc_cooldown.cpp
-SOURCES += engine/sc_dot.cpp
-SOURCES += engine/sc_event.cpp
-SOURCES += engine/sc_expressions.cpp
-SOURCES += engine/sc_gear_stats.cpp
-SOURCES += engine/sc_heal.cpp
 SOURCES += engine/sc_io.cpp
-SOURCES += engine/sc_item.cpp
-SOURCES += engine/sc_option.cpp
-SOURCES += engine/sc_pet.cpp
-SOURCES += engine/sc_player.cpp
-SOURCES += engine/sc_plot.cpp
-SOURCES += engine/sc_raid_event.cpp
-SOURCES += engine/sc_reforge_plot.cpp
 SOURCES += engine/sc_rng.cpp
-SOURCES += engine/sc_scaling.cpp
-SOURCES += engine/sc_sequence.cpp
-SOURCES += engine/sc_set_bonus.cpp
-SOURCES += engine/sc_sim.cpp
-SOURCES += engine/sc_spell_base.cpp
-SOURCES += engine/sc_harmful_spell.cpp
-SOURCES += engine/sc_absorb.cpp
-SOURCES += engine/sc_stats.cpp
 SOURCES += engine/sc_thread.cpp
-SOURCES += engine/sc_unique_gear.cpp
 SOURCES += engine/sc_util.cpp
+SOURCES += engine/action/sc_absorb.cpp
+SOURCES += engine/action/sc_action_state.cpp
+SOURCES += engine/action/sc_action.cpp
+SOURCES += engine/action/sc_attack.cpp
+SOURCES += engine/action/sc_dot.cpp
+SOURCES += engine/action/sc_harmful_spell.cpp
+SOURCES += engine/action/sc_heal.cpp
+SOURCES += engine/action/sc_sequence.cpp
+SOURCES += engine/action/sc_spell_base.cpp
+SOURCES += engine/action/sc_stats.cpp
+SOURCES += engine/buff/sc_buff.cpp
+SOURCES += engine/player/sc_consumable.cpp
+SOURCES += engine/player/sc_item.cpp
+SOURCES += engine/player/sc_pet.cpp
+SOURCES += engine/player/sc_player.cpp
+SOURCES += engine/player/sc_set_bonus.cpp
+SOURCES += engine/player/sc_unique_gear.cpp
+SOURCES += engine/sim/sc_cooldown.cpp
+SOURCES += engine/sim/sc_event.cpp
+SOURCES += engine/sim/sc_expressions.cpp
+SOURCES += engine/sim/sc_gear_stats.cpp
+SOURCES += engine/sim/sc_option.cpp
+SOURCES += engine/sim/sc_plot.cpp
+SOURCES += engine/sim/sc_raid_event.cpp
+SOURCES += engine/sim/sc_reforge_plot.cpp
+SOURCES += engine/sim/sc_scaling.cpp
+SOURCES += engine/sim/sc_sim.cpp
 SOURCES += engine/report/sc_report_html_player.cpp
 SOURCES += engine/report/sc_report_html_sim.cpp
 SOURCES += engine/report/sc_report_text.cpp
@@ -131,14 +125,25 @@ SOURCES += engine/class_modules/sc_rogue.cpp
 SOURCES += engine/class_modules/sc_shaman.cpp
 SOURCES += engine/class_modules/sc_warlock.cpp
 SOURCES += engine/class_modules/sc_warrior.cpp
-SOURCES += qt/main.cpp
-SOURCES += qt/sc_window.cpp
-SOURCES += qt/sc_import.cpp
 
-CONFIG(paperdoll) {
-  DEFINES += SC_PAPERDOLL
-  HEADERS += qt/simcpaperdoll.hpp
-  SOURCES += qt/simcpaperdoll.cc
+CONFIG(console) {
+  SOURCES += engine/sc_main.cpp
+}
+
+# GUI files
+CONFIG(qt) {
+  HEADERS += qt/sc_autoupdate.h
+  HEADERS += qt/simulationcraftqt.hpp
+  SOURCES += qt/main.cpp
+  SOURCES += qt/sc_window.cpp
+  SOURCES += qt/sc_import.cpp
+  
+  
+  CONFIG(paperdoll) {
+    DEFINES += SC_PAPERDOLL
+    HEADERS += qt/simcpaperdoll.hpp
+    SOURCES += qt/simcpaperdoll.cc
+  }
 }
 
 CONFIG(openssl) {
@@ -151,43 +156,41 @@ CONFIG(to_install) {
   DEFINES += SC_TO_INSTALL
 }
 
-
 # deployment for linux
 unix:!mac {
-DISTFILES += CHANGES \
-    COPYING
+  DISTFILES += CHANGES \
+               COPYING
 
-# Disable strip
-QMAKE_STRIP=echo
+  # Disable strip
+  QMAKE_STRIP=echo
 
-isEmpty(PREFIX):PREFIX = ~
-isEmpty(INSTALLPATH):INSTALLPATH = $$PREFIX/SimulationCraft
-SHAREDIR = ~/.local/share
-INSTALLS += target \
-            profiles \
-            data \
-            icon \
-            locale
+  isEmpty(PREFIX):PREFIX = ~
+  isEmpty(INSTALLPATH):INSTALLPATH = $$PREFIX/SimulationCraft
+  SHAREDIR = ~/.local/share
+  INSTALLS += target \
+              profiles \
+              data \
+              icon \
+              locale
 
-target.path = $$INSTALLPATH
+  target.path = $$INSTALLPATH
 
-profiles.path = $$INSTALLPATH/profiles
-profiles.files += profiles/*
-profiles.commands = @echo Installing profiles to $$INSTALLPATH/profiles
+  profiles.path = $$INSTALLPATH/profiles
+  profiles.files += profiles/*
+  profiles.commands = @echo Installing profiles to $$INSTALLPATH/profiles
 
-data.path = $$INSTALLPATH
-data.files += Welcome.html
-data.files += Welcome.png
-data.files += Legend.html
-data.files += READ_ME_FIRST.txt
-data.commands = @echo Installing global files to $$INSTALLPATH
+  data.path = $$INSTALLPATH
+  data.files += Welcome.html
+  data.files += Welcome.png
+  data.files += Legend.html
+  data.files += READ_ME_FIRST.txt
+  data.commands = @echo Installing global files to $$INSTALLPATH
 
-icon.path = $$INSTALLPATH
-icon.files = debian/simulationcraft.xpm
-icon.commands = @echo Installing icon to $$INSTALLPATH
+  icon.path = $$INSTALLPATH
+  icon.files = debian/simulationcraft.xpm
+  icon.commands = @echo Installing icon to $$INSTALLPATH
 
-locale.path = $$INSTALLPATH/locale
-locale.files += locale/*
-locale.commands = @echo Installing localizations to $$INSTALLPATH/locale
-
+  locale.path = $$INSTALLPATH/locale
+  locale.files += locale/*
+  locale.commands = @echo Installing localizations to $$INSTALLPATH/locale
 }

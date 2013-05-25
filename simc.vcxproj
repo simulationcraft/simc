@@ -185,59 +185,59 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="engine\sc_action.cpp" />
-    <ClCompile Include="engine\sc_action_state.cpp" />
-    <ClCompile Include="engine\sc_attack.cpp" />
-    <ClCompile Include="engine\interfaces\sc_bcp_api.cpp" />
-    <ClCompile Include="engine\sc_buff.cpp" />
-    <ClCompile Include="engine\interfaces\sc_chardev.cpp" />
-    <ClCompile Include="engine\report\sc_chart.cpp" />
-    <ClCompile Include="engine\dbc\sc_const_data.cpp" />
-    <ClCompile Include="engine\sc_consumable.cpp" />
-    <ClCompile Include="engine\sc_cooldown.cpp" />
-    <ClCompile Include="engine\dbc\sc_data.cpp" />
-    <ClCompile Include="engine\sc_dot.cpp" />
-    <ClCompile Include="engine\sc_event.cpp" />
-    <ClCompile Include="engine\sc_expressions.cpp" />
-    <ClCompile Include="engine\sc_gear_stats.cpp" />
-    <ClCompile Include="engine\sc_heal.cpp" />
-    <ClCompile Include="engine\interfaces\sc_http.cpp" />
     <ClCompile Include="engine\sc_io.cpp" />
-    <ClCompile Include="engine\sc_item.cpp" />
-    <ClCompile Include="engine\dbc\sc_item_data.cpp" />
-    <ClCompile Include="engine\interfaces\sc_js.cpp" />
     <ClCompile Include="engine\sc_main.cpp">
+    <ClCompile Include="engine\sc_rng.cpp" />
+    <ClCompile Include="engine\sc_thread.cpp" />
+    <ClCompile Include="engine\sc_util.cpp" />
+    <ClCompile Include="engine\action\sc_absorb.cpp" />
+    <ClCompile Include="engine\action\sc_action_state.cpp" />
+    <ClCompile Include="engine\action\sc_action.cpp" />
+    <ClCompile Include="engine\action\sc_attack.cpp" />
+    <ClCompile Include="engine\action\sc_dot.cpp" />
+    <ClCompile Include="engine\action\sc_harmful_spell.cpp" />
+    <ClCompile Include="engine\action\sc_heal.cpp" />
+    <ClCompile Include="engine\action\sc_sequence.cpp" />
+    <ClCompile Include="engine\action\sc_spell_base.cpp" />
+    <ClCompile Include="engine\action\sc_stats.cpp" />
+    <ClCompile Include="engine\buff\sc_buff.cpp" />
+    <ClCompile Include="engine\player\sc_consumable.cpp" />
+    <ClCompile Include="engine\player\sc_item.cpp" />
+    <ClCompile Include="engine\player\sc_pet.cpp" />
+    <ClCompile Include="engine\player\sc_player.cpp" />
+    <ClCompile Include="engine\player\sc_set_bonus.cpp" />
+    <ClCompile Include="engine\player\sc_unique_gear.cpp" />
+    <ClCompile Include="engine\sim\sc_cooldown.cpp" />
+    <ClCompile Include="engine\sim\sc_event.cpp" />
+    <ClCompile Include="engine\sim\sc_expressions.cpp" />
+    <ClCompile Include="engine\sim\sc_gear_stats.cpp" />
+    <ClCompile Include="engine\sim\sc_option.cpp" />
+    <ClCompile Include="engine\sim\sc_plot.cpp" />
+    <ClCompile Include="engine\sim\sc_raid_event.cpp" />
+    <ClCompile Include="engine\sim\sc_reforge_plot.cpp" />
+    <ClCompile Include="engine\sim\sc_scaling.cpp" />
+    <ClCompile Include="engine\sim\sc_sim.cpp" />
+    <ClCompile Include="engine\report\sc_chart.cpp" />
+    <ClCompile Include="engine\report\sc_report_html_player.cpp" />
+    <ClCompile Include="engine\report\sc_report_html_sim.cpp" />
+    <ClCompile Include="engine\report\sc_report_text.cpp" />
+    <ClCompile Include="engine\report\sc_report_xml.cpp" />
+    <ClCompile Include="engine\report\sc_report.cpp" />
+    <ClCompile Include="engine\dbc\sc_const_data.cpp" />
+    <ClCompile Include="engine\dbc\sc_data.cpp" />
+    <ClCompile Include="engine\dbc\sc_item_data.cpp" />
+    <ClCompile Include="engine\dbc\sc_spell_data.cpp" />
+    <ClCompile Include="engine\dbc\sc_spell_info.cpp" />
+    <ClCompile Include="engine\interfaces\sc_bcp_api.cpp" />
+    <ClCompile Include="engine\interfaces\sc_chardev.cpp" />
+    <ClCompile Include="engine\interfaces\sc_http.cpp" />
+    <ClCompile Include="engine\interfaces\sc_js.cpp" />
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="engine\sc_option.cpp" />
-    <ClCompile Include="engine\sc_pet.cpp" />
-    <ClCompile Include="engine\sc_player.cpp" />
-    <ClCompile Include="engine\sc_plot.cpp" />
-    <ClCompile Include="engine\sc_raid_event.cpp" />
     <ClCompile Include="engine\interfaces\sc_rawr.cpp" />
-    <ClCompile Include="engine\sc_reforge_plot.cpp" />
-    <ClCompile Include="engine\report\sc_report.cpp" />
-    <ClCompile Include="engine\report\sc_report_html_player.cpp" />
-    <ClCompile Include="engine\report\sc_report_html_sim.cpp" />
-    <ClCompile Include="engine\report\sc_report_text.cpp" />
-    <ClCompile Include="engine\report\sc_report_xml.cpp" />
-    <ClCompile Include="engine\sc_rng.cpp" />
-    <ClCompile Include="engine\sc_scaling.cpp" />
-    <ClCompile Include="engine\sc_sequence.cpp" />
-    <ClCompile Include="engine\sc_set_bonus.cpp" />
-    <ClCompile Include="engine\sc_sim.cpp" />
-    <ClCompile Include="engine\sc_spell_base.cpp" />
-    <ClCompile Include="engine\sc_harmful_spell.cpp" />
-    <ClCompile Include="engine\sc_absorb.cpp" />
-    <ClCompile Include="engine\dbc\sc_spell_data.cpp" />
-    <ClCompile Include="engine\dbc\sc_spell_info.cpp" />
-    <ClCompile Include="engine\sc_stats.cpp" />
-    <ClCompile Include="engine\sc_thread.cpp" />
-    <ClCompile Include="engine\sc_unique_gear.cpp" />
-    <ClCompile Include="engine\sc_util.cpp" />
     <ClCompile Include="engine\interfaces\sc_wowhead.cpp" />
     <ClCompile Include="engine\interfaces\sc_xml.cpp" />
     <ClCompile Include="engine\class_modules\sc_death_knight.cpp" />
@@ -254,43 +254,33 @@
     <ClCompile Include="engine\class_modules\sc_warrior.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="engine\dbc\dbc.hpp" />
-    <ClInclude Include="engine\report\sc_report.hpp" />
     <ClInclude Include="engine\simulationcraft.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="engine\dbc\data_definitions.hh" />
-    <None Include="engine\dbc\data_enums.hh" />
-    <None Include="engine\dbc\specialization.hpp" />
-    <None Include="engine\sc_generic.hpp" />
-    <None Include="engine\sc_timespan.hpp" />
-    <None Include="engine\sc_sample_data.hpp" />
-    <None Include="engine\sc_rng.hpp" />
-    <None Include="engine\utf8.h" />
-    <None Include="engine\utf8\checked.h" />
-    <None Include="engine\utf8\core.h" />
-    <None Include="engine\utf8\unchecked.h" />
-    <None Include="engine\dbc\sc_extra_data.inc" />
-    <None Include="engine\dbc\sc_extra_data_ptr.inc" />
-    <None Include="engine\dbc\sc_item_data.inc" />
-    <None Include="engine\dbc\sc_item_data_ptr.inc" />
-    <None Include="engine\dbc\sc_scale_data.inc">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="engine\dbc\sc_scale_data_ptr.inc">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="engine\dbc\sc_spec_list.inc" />
-    <None Include="engine\dbc\sc_spell_data.inc">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="engine\dbc\sc_spell_data_ptr.inc">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="engine\dbc\sc_spell_lists.inc" />
-    <None Include="engine\dbc\sc_spell_lists_ptr.inc" />
-    <None Include="engine\dbc\sc_talent_data.inc" />
-    <None Include="engine\dbc\sc_talent_data_ptr.inc" />
+    <ClInclude Include="engine\sc_generic.hpp" />
+    <ClInclude Include="engine\sc_timespan.hpp" />
+    <ClInclude Include="engine\sc_sample_data.hpp" />
+    <ClInclude Include="engine\sc_rng.hpp" />
+    <ClInclude Include="engine\dbc\dbc.hpp" />
+    <ClInclude Include="engine\dbc\data_enums.hh" />
+    <ClInclude Include="engine\dbc\data_definitions.hh" />
+    <ClInclude Include="engine\dbc\specialization.hpp" />
+    <ClInclude Include="engine\report\sc_report.hpp" />
+    <ClInclude Include="engine\utf8.h" />
+    <ClInclude Include="engine\utf8\checked.h" />
+    <ClInclude Include="engine\utf8\core.h" />
+    <ClInclude Include="engine\utf8\unchecked.h" />
+    <ClInclude Include="engine\dbc\sc_item_data.inc" />
+    <ClInclude Include="engine\dbc\sc_extra_data.inc" />
+    <ClInclude Include="engine\dbc\sc_extra_data_ptr.inc" />
+    <ClInclude Include="engine\dbc\sc_item_data_ptr.inc" />
+    <ClInclude Include="engine\dbc\sc_scale_data.inc" />
+    <ClInclude Include="engine\dbc\sc_scale_data_ptr.inc" />
+    <ClInclude Include="engine\dbc\sc_spec_list.inc" />
+    <ClInclude Include="engine\dbc\sc_spell_data.inc" />
+    <ClInclude Include="engine\dbc\sc_spell_data_ptr.inc" />
+    <ClInclude Include="engine\dbc\sc_spell_lists.inc" />
+    <ClInclude Include="engine\dbc\sc_spell_lists_ptr.inc" />
+    <ClInclude Include="engine\dbc\sc_talent_data.inc" />
+    <ClInclude Include="engine\dbc\sc_talent_data_ptr.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
