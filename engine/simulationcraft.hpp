@@ -4348,7 +4348,8 @@ public:
   bool is_enemy() const { return _is_enemy( type ); }
   static bool _is_enemy( player_e t ) { return t == ENEMY || t == ENEMY_ADD; }
   bool is_add() { return type == ENEMY_ADD; }
-  bool is_sleeping() const { return current.sleeping; }
+  static bool _is_sleeping( const player_t* t ) { return t -> current.sleeping; }
+  bool is_sleeping() const { return _is_sleeping( this ); }
 
   pet_t* cast_pet() { return debug_cast<pet_t*>( this ); }
 

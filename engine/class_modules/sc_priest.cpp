@@ -250,7 +250,6 @@ public:
   // Options
   int initial_shadow_orbs;
   std::string atonement_target_str;
-  std::vector<player_t*> party_list;
   bool autoUnshift; // Shift automatically out of stance/form
 
   // Glyphs
@@ -313,7 +312,6 @@ public:
   virtual void      init_rng();
   virtual void      init_scaling();
   virtual void      reset();
-  virtual void      init_party();
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_e=SAVE_ALL, bool save_html=false );
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -1374,41 +1372,43 @@ struct priest_spell_t : public priest_action_t<spell_t>
   {
     base_t::assess_damage( type, s );
 
-    if ( aoe == 0 && priest.buffs.vampiric_embrace -> up() && result_is_hit( s -> result ) )
-    {
-      double a = s -> result_amount * ( priest.buffs.vampiric_embrace -> data().effectN( 1 ).percent() + priest.glyphs.vampiric_embrace -> effectN( 2 ).percent() ) ;
-
-      // Split amongst number of people in raid.
-      a /= 1.0 + priest.party_list.size();
-
-      // Priest Heal
-      priest.resource_gain( RESOURCE_HEALTH, a, player -> gains.vampiric_embrace );
-
-      // Pet Heal
-      // Pet's get a full share without counting against the number in the raid.
-      for ( size_t i = 0; i < player -> pet_list.size(); ++i )
-      {
-        pet_t* r = player -> pet_list[ i ];
-        r -> resource_gain( RESOURCE_HEALTH, a, r -> gains.vampiric_embrace );
-      }
-
-      // Party Heal
-      for ( size_t i = 0; i < priest.party_list.size(); i++ )
-      {
-        player_t* q = priest.party_list[ i ];
-
-        q -> resource_gain( RESOURCE_HEALTH, a, q -> gains.vampiric_embrace );
-
-        for ( size_t j = 0; j < player -> pet_list.size(); ++j )
-        {
-          pet_t* r = player -> pet_list[ j ];
-          r -> resource_gain( RESOURCE_HEALTH, a, r -> gains.vampiric_embrace );
-        }
-      }
-    }
+    if ( aoe == 0 && result_is_hit( s -> result ) && priest.buffs.vampiric_embrace -> up() )
+      trigger_vampiric_embrace( s );
 
     if ( atonement )
       trigger_atonment( type, s );
+  }
+
+  /* Based on previous implementation ( pets don't count but get full heal )
+   * and http://www.wowhead.com/spell=15286#comments:id=1796701
+   * Last checked 2013/05/25
+   */
+  virtual void trigger_vampiric_embrace( action_state_t* s )
+  {
+    double amount = s -> result_amount;
+    amount *= ( priest.buffs.vampiric_embrace -> data().effectN( 1 ).percent() + priest.glyphs.vampiric_embrace -> effectN( 2 ).percent() ) ;
+
+    // Get all non-pet, non-sleeping players
+    std::vector<player_t*> ally_list;;
+    range::remove_copy_if( sim -> player_no_pet_list, back_inserter( ally_list ), player_t::_is_sleeping );
+
+    // Split amongst number of people in raid.
+    // Pet's get a full share without counting against the number in the raid.
+    // Amount is split up evenly, no smart heal mechanic involved
+    amount /= 1.0 + ally_list.size();
+
+    for ( size_t i = 0; i < ally_list.size(); ++i )
+    {
+      player_t& q = *ally_list[ i ];
+
+      q.resource_gain( RESOURCE_HEALTH, amount, q.gains.vampiric_embrace );
+
+      for ( size_t j = 0; j < q.pet_list.size(); ++j )
+      {
+        pet_t& r = *q.pet_list[ j ];
+        r.resource_gain( RESOURCE_HEALTH, amount, r.gains.vampiric_embrace );
+      }
+    }
   }
 
   virtual void trigger_atonment( dmg_e type, action_state_t* s )
@@ -5776,23 +5776,6 @@ void priest_t::init_actions()
 
 // priest_t::init_party =====================================================
 
-void priest_t::init_party()
-{
-  party_list.clear();
-
-  if ( party == 0 )
-    return;
-
-  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
-  {
-    player_t* p = sim -> player_list[ i ];
-    if ( ( p != this ) && ( ! p -> quiet ) && ( ! p -> is_pet() ) )
-    {
-      party_list.push_back( p );
-    }
-  }
-}
-
 // priest_t::init_rng ====================================================
 
 void priest_t::init_rng()
@@ -5814,8 +5797,6 @@ void priest_t::reset()
   {
     shadowy_apparitions.reset();
   }
-
-  init_party();
 }
 
 /* Copy stats from the trigger spell to the atonement spell
