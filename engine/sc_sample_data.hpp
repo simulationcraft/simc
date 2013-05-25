@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <numeric>
+#include "sc_generic.hpp"
 
 // Statistical Sample Data Container
 
@@ -408,6 +409,8 @@ inline Range& sliding_window_average( Range& r, Out out )
   sliding_window_average<HW>( range::begin( r ), range::end( r ), out );
   return r;
 }
+
+#include "sc_timespan.hpp" // remove dependency
 
 // generic Timeline class
 template <typename T>

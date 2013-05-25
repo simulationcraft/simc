@@ -524,7 +524,7 @@
 				>
 			</File>
 			<File
-				RelativePath="engine\sc_rng.cpp"
+				RelativePath="engine\rng.cpp"
 				>
 			</File>
 			<File
@@ -890,7 +890,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\engine\sc_rng.hpp"
+				RelativePath=".\engine\util\rng.hpp"
 				>
 			</File>
 			<File

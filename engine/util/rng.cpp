@@ -4,11 +4,11 @@
 // ==========================================================================
 
 #if defined(UNIT_TEST) && ( __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || ( defined(_MSC_VER) && _MSC_VER >= 1700 ) )
-#define SC_CXX11_RNG
+#define RNG_CXX11
 // Order-of-inclusion bug under MSVC: Include <random> early.
 #include <random>
 #endif
-#include "sc_rng.hpp"
+#include "rng.hpp"
 
 #ifndef M_PI
 #define M_PI ( 3.14159265358979323846 )
@@ -196,6 +196,8 @@ double rng::stdnormal_inv( double p )
 #ifdef UNIT_TEST
 // Code to test functionality and performance of our RNG implementations
 
+#include <iostream>
+#include <iomanip>
 #include "sc_sample_data.hpp"
 
 namespace { // anonymous namespace ==========================================
@@ -223,7 +225,7 @@ public:
 // C++ 11 Mersenne Twister Random Number Generator
 // ==========================================================================
 
-#ifdef SC_CXX11_RNG
+#ifdef RNG_CXX11
 /*
  * This integrates a C++11 random number generator into our native rng_t concept
  * The advantage of this container is the extremely small code, with nearly no
@@ -249,7 +251,7 @@ public:
   void seed( uint32_t start ) { engine.seed( start ); }
   double operator()() { return dist( engine ); }
 };
-#endif // END SC_CXX11_RNG
+#endif // END RNG_CXX11
 
 int64_t milliseconds()
 {
@@ -311,14 +313,14 @@ int main( int /*argc*/, char** /*argv*/ )
   TEST_ONE( rng_engine_std_t );
   TEST_ONE( rng_engine_mt_t );
 
-#ifdef SC_USE_SSE2
+#ifdef RNG_USE_SSE2
   TEST_ONE( rng_engine_mt_sse2_t );
 #endif
 
-#ifdef SC_CXX11_RNG
+#ifdef RNG_CXX11
   TEST_ONE( rng_engine_mt_cxx11_hack_t );
   TEST_ONE( rng_engine_mt_cxx11_t );
-#endif // END C++0X
+#endif // END RNG_CXX11
 
 
 #define MONTE_CARLO( t ) monte_carlo<t>( n, #t )
@@ -327,7 +329,12 @@ int main( int /*argc*/, char** /*argv*/ )
 
   n /= 10;
 
-  rng_t rng;
+#ifdef RNG_USE_SSE2
+  distribution_t<rng_engine_mt_sse2_t> rng;
+#else
+  distribution_t<rng_engine_mt_t> rng;
+#endif
+
 
   // double gauss
   {
@@ -341,20 +348,6 @@ int main( int /*argc*/, char** /*argv*/ )
 
     std::cout << n << " calls to gauss(0,1): average = " << std::setprecision( 8 ) << average
               << ", time = " << elapsed_cpu << " ms\n\n";
-  }
-
-  // timespan_t gauss
-  {
-    int64_t start_time = milliseconds();
-
-    double average = 0;
-    for ( uint64_t i = 0; i < n; i++ )
-      average += rng.gauss( timespan_t::from_millis( 700 ), timespan_t::from_millis( 1000 ) ).total_seconds();
-    average /= n;
-    int64_t elapsed_cpu = milliseconds() - start_time;
-
-    std::cout << n << " calls to gauss( timespan_t::from_millis( 700 ), timespan_t::from_millis( 1000 ) ): "
-              "average = " << std::setprecision( 8 ) << average << " time = " << elapsed_cpu << " ms\n\n";
   }
 
   // double exgauss
@@ -381,28 +374,6 @@ int main( int /*argc*/, char** /*argv*/ )
                  "95thpct = " << exgauss_data.percentile( 0.95 ) << ", "
                  "0.9999 quantille = " << exgauss_data.percentile( 0.9999 ) << ", "
                  "min = " << exgauss_data.min << ", max = " << exgauss_data.max << "\n\n";
-  }
-
-  // timespan_t exgauss
-  {
-    static const timespan_t mean = timespan_t::from_millis( 300 );
-    static const timespan_t stddev = timespan_t::from_millis( 60 );
-    static const timespan_t nu = timespan_t::from_millis( 250 );
-
-    int64_t start_time = milliseconds();
-
-    double average = 0;
-    for ( uint64_t i = 0; i < n; i++ )
-    {
-      double result = ( timespan_t::from_millis( 100 ) + rng.exgauss( mean, stddev, nu ) ).total_seconds();
-      average += result;
-    }
-    average /= n;
-    int64_t elapsed_cpu = milliseconds() - start_time;
-
-    std::cout << n << " calls to timespan_t::from_millis( 100 ) + exgauss( timespan_t::from_millis( 300 ), timespan_t::from_millis( 60 ), timespan_t::from_millis( 250 ) ): "
-                 "average = " << average << ", "
-                 "time = " << elapsed_cpu << " ms\n\n";
   }
 
   // exponential

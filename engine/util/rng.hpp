@@ -3,12 +3,11 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#ifndef SC_RNG_HPP
-#define SC_RNG_HPP
+#ifndef RNG_HPP
+#define RNG_HPP
 
 // Pseudo-Random Number Generation ==========================================
 
-#include "sc_timespan.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cmath>
@@ -17,10 +16,34 @@
 #include <limits>
 #include <string>
 
-#if ( _MSC_VER && _MSC_VER < 1600 )
-#  include "../vs/stdint.h"
+
+#include <stdint.h>
+
+#if defined(__SSE2__) || ( defined( SC_VS ) && ( defined(_M_X64) || ( defined(_M_IX86_FP) && _M_IX86_FP >= 2 ) ) )
+#  define RNG_USE_SSE2
+#endif
+
+#if defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32 )
+#  if defined(RNG_USE_SSE2)
+#    if defined( __MINGW__ ) || defined( __MINGW32__ )
+       // <HACK> Include these headers (in this order) to avoid
+       // an order-of-inclusion bug with MinGW headers.
+#      include <stdlib.h>
+       // Workaround MinGW header bug: http://sourceforge.net/tracker/?func=detail&atid=102435&aid=2962480&group_id=2435
+       extern "C" {
+#        include <emmintrin.h>
+       }
+#      include <malloc.h>
+       // </HACK>
+#    else
+#      include <emmintrin.h>
+#    endif
+#  endif
 #else
-#  include <stdint.h>
+#  if defined(RNG_USE_SSE2)
+#    include <emmintrin.h>
+#    include <mm_malloc.h>
+#  endif
 #endif
 
 namespace rng {
@@ -57,7 +80,7 @@ public:
   /** 128-bit data structure */
   union w128_t
   {
-#ifdef SC_USE_SSE2
+#ifdef RNG_USE_SSE2
     __m128i si;
     __m128d sd;
 #endif
@@ -233,7 +256,7 @@ public:
   { return dsfmt_genrand_close_open( &dsfmt_global_data ) - 1.0; }
 
 
-#ifdef SC_USE_SSE2
+#ifdef RNG_USE_SSE2
   // Hack to get proper alignment for rng_base_t<rng_engine_mt_sse2_t>:
   // 32-bit libraries typically align malloc chunks to sizeof(double) == 8.
   // This object needs to be aligned to sizeof(__m128d) == 16.
@@ -274,7 +297,7 @@ public:
 // SFMT Random Number Generator - SSE2 optimizations
 // ==========================================================================
 
-#if defined(SC_USE_SSE2)
+#if defined(RNG_USE_SSE2)
 class rng_engine_mt_sse2_t : public rng_engine_mt_base_t<rng_engine_mt_sse2_t>
 {
 public:
@@ -449,28 +472,6 @@ public:
   { return std::max( 0.0, gauss( gauss_mean, gauss_stddev ) + exponential( exp_nu ) ); }
 
 
-  timespan_t range( timespan_t min, timespan_t max )
-  {
-    return timespan_t::from_native( range( static_cast<double>( timespan_t::to_native( min ) ),
-                                           static_cast<double>( timespan_t::to_native( max ) ) ) );
-  }
-
-  timespan_t gauss( timespan_t mean, timespan_t stddev )
-  {
-    return timespan_t::from_native( gauss( static_cast<double>( timespan_t::to_native( mean ) ),
-                                           static_cast<double>( timespan_t::to_native( stddev ) ) ) );
-  }
-
-  timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
-  {
-    return timespan_t::from_native(
-             exgauss( static_cast<double>( timespan_t::to_native( mean   ) ),
-                      static_cast<double>( timespan_t::to_native( stddev ) ),
-                      static_cast<double>( timespan_t::to_native( nu ) )
-                    )
-           );
-  }
-
 };
 
 double stdnormal_cdf( double );
@@ -478,12 +479,5 @@ double stdnormal_inv( double );
 } // end namespace rng
 
 
-// Hookup rng containers for SimulationCraft
 
-#if defined(SC_USE_SSE2)
-typedef rng::distribution_t<rng::rng_engine_mt_sse2_t> rng_t;
-#else
-typedef rng::distribution_t<rng::rng_engine_mt_t> rng_t;
-#endif
-
-#endif // SC_RNG_HPP
+#endif // RNG_HPP

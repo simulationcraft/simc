@@ -115,8 +115,8 @@ SRC = \
 	sc_main.cpp \
 	sc_thread.cpp \
 	sc_util.cpp \
-	util$(PATHSEP)sc_rng.hpp \
-	util$(PATHSEP)sc_rng.cpp \
+	util$(PATHSEP)rng.hpp \
+	util$(PATHSEP)rng.cpp \
 	sim$(PATHSEP)sc_cooldown.cpp \
 	sim$(PATHSEP)sc_event.cpp \
 	sim$(PATHSEP)sc_expressions.cpp \
@@ -212,7 +212,7 @@ sc_http$(MODULE_EXT): interfaces$(PATHSEP)sc_http.cpp sc_util.cpp
 	-@echo [$@] Linking
 	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
-sc_rng$(MODULE_EXT): util$(PATHSEP)sc_rng.cpp
+sc_rng$(MODULE_EXT): util$(PATHSEP)rng.cpp
 	-@echo [$@] Linking
 	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 

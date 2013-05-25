@@ -194,7 +194,54 @@ namespace std {using namespace tr1; }
 #include "sc_sample_data.hpp"
 
 // Random Number Generators
-#include "util/sc_rng.hpp"
+#include "util/rng.hpp"
+
+/* Derived SimulationCraft RNG Distribution class with some timespan_t helper function
+ */
+template <typename RNG_GENERATOR>
+class sc_distribution_t : public rng::distribution_t<RNG_GENERATOR>
+{
+public:
+  typedef rng::distribution_t<RNG_GENERATOR> base_t;
+  sc_distribution_t() : base_t() {}
+
+  // Make sure base functions aren't hidden, because overload resolution does not search for them
+  using base_t::range;
+  using base_t::gauss;
+  using base_t::exgauss;
+
+  timespan_t range( timespan_t min, timespan_t max )
+  {
+    return timespan_t::from_native( range( static_cast<double>( timespan_t::to_native( min ) ),
+                                           static_cast<double>( timespan_t::to_native( max ) ) ) );
+  }
+
+  timespan_t gauss( timespan_t mean, timespan_t stddev )
+  {
+    return timespan_t::from_native( gauss( static_cast<double>( timespan_t::to_native( mean ) ),
+                                           static_cast<double>( timespan_t::to_native( stddev ) ) ) );
+  }
+
+  timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
+  {
+    return timespan_t::from_native(
+        exgauss( static_cast<double>( timespan_t::to_native( mean   ) ),
+                      static_cast<double>( timespan_t::to_native( stddev ) ),
+                      static_cast<double>( timespan_t::to_native( nu ) )
+                    )
+           );
+  }
+
+};
+
+// Hookup rng containers for easy use in SimulationCraft
+
+#if defined(RNG_USE_SSE2)
+typedef sc_distribution_t<rng::rng_engine_mt_sse2_t> rng_t;
+#else
+typedef sc_distribution_t<rng::rng_engine_mt_t> rng_t;
+#endif
+
 
 // Forward Declarations =====================================================
 

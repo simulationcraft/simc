@@ -227,7 +227,7 @@
   <ItemGroup>
     <ClCompile Include="engine\sc_io.cpp" />
     <ClCompile Include="engine\sc_main.cpp">
-    <ClCompile Include="engine\util\sc_rng.cpp" />
+    <ClCompile Include="engine\util\rng.cpp" />
     <ClCompile Include="engine\sc_thread.cpp" />
     <ClCompile Include="engine\sc_util.cpp" />
     <ClCompile Include="engine\action\sc_absorb.cpp" />
@@ -298,7 +298,7 @@
     <ClInclude Include="engine\sc_generic.hpp" />
     <ClInclude Include="engine\sc_timespan.hpp" />
     <ClInclude Include="engine\sc_sample_data.hpp" />
-    <ClInclude Include="engine\util\sc_rng.hpp" />
+    <ClInclude Include="engine\util\rng.hpp" />
     <ClInclude Include="engine\dbc\dbc.hpp" />
     <ClInclude Include="engine\dbc\data_enums.hh" />
     <ClInclude Include="engine\dbc\data_definitions.hh" />
