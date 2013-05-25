@@ -112,38 +112,38 @@ SRC = \
 	sc_sample_data.hpp \
 	sc_rng.hpp \
 	utf8.h \
-	sc_action_state.cpp \
-	sc_action.cpp \
-	sc_attack.cpp \
-	sc_buff.cpp \
-	sc_consumable.cpp \
-	sc_cooldown.cpp \
-	sc_dot.cpp \
-	sc_expressions.cpp \
-	sc_event.cpp \
-	sc_gear_stats.cpp \
-	sc_heal.cpp \
 	sc_io.cpp \
-	sc_item.cpp \
 	sc_main.cpp \
-	sc_option.cpp \
-	sc_pet.cpp \
-	sc_player.cpp \
-	sc_plot.cpp \
-	sc_raid_event.cpp \
-	sc_reforge_plot.cpp \
 	sc_rng.cpp \
-	sc_scaling.cpp \
-	sc_sequence.cpp \
-	sc_set_bonus.cpp \
-	sc_sim.cpp \
-	sc_spell_base.cpp \
-	sc_harmful_spell.cpp \
-	sc_absorb.cpp \
-	sc_stats.cpp \
 	sc_thread.cpp \
-	sc_unique_gear.cpp \
 	sc_util.cpp \
+	sim$(PATHSEP)sc_cooldown.cpp \
+	sim$(PATHSEP)sc_event.cpp \
+	sim$(PATHSEP)sc_expressions.cpp \
+	sim$(PATHSEP)sc_gear_stats.cpp \
+	sim$(PATHSEP)sc_option.cpp \
+	sim$(PATHSEP)sc_plot.cpp \
+	sim$(PATHSEP)sc_raid_event.cpp \
+	sim$(PATHSEP)sc_reforge_plot.cpp \
+	sim$(PATHSEP)sc_scaling.cpp \
+	sim$(PATHSEP)sc_sim.cpp \
+	buff$(PATHSEP)sc_buff.cpp \
+	player$(PATHSEP)sc_consumable.cpp \
+	player$(PATHSEP)sc_item.cpp \
+	player$(PATHSEP)sc_pet.cpp \
+	player$(PATHSEP)sc_player.cpp \
+	player$(PATHSEP)sc_set_bonus.cpp \
+	player$(PATHSEP)sc_unique_gear.cpp \
+	action$(PATHSEP)sc_absorb.cpp \
+	action$(PATHSEP)sc_action_state.cpp \
+	action$(PATHSEP)sc_action.cpp \
+	action$(PATHSEP)sc_attack.cpp \
+	action$(PATHSEP)sc_dot.cpp \
+	action$(PATHSEP)sc_harmful_spell.cpp \
+	action$(PATHSEP)sc_heal.cpp \
+	action$(PATHSEP)sc_sequence.cpp \
+	action$(PATHSEP)sc_spell_base.cpp \
+	action$(PATHSEP)sc_stats.cpp \
 	report$(PATHSEP)sc_report.hpp \
 	report$(PATHSEP)sc_chart.cpp \
 	report$(PATHSEP)sc_report_html_player.cpp \
