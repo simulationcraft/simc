@@ -109,12 +109,13 @@ SRC = \
 	simulationcraft.hpp \
 	sc_generic.hpp \
 	sc_timespan.hpp \
-	sc_sample_data.hpp \
 	utf8.h \
 	sc_io.cpp \
 	sc_main.cpp \
 	sc_thread.cpp \
 	sc_util.cpp \
+	util$(PATHSEP)sample_data.hpp \
+	util$(PATHSEP)timeline.hpp \
 	util$(PATHSEP)rng.hpp \
 	util$(PATHSEP)rng.cpp \
 	sim$(PATHSEP)sc_cooldown.cpp \
@@ -212,9 +213,17 @@ sc_http$(MODULE_EXT): interfaces$(PATHSEP)sc_http.cpp sc_util.cpp
 	-@echo [$@] Linking
 	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
-sc_rng$(MODULE_EXT): util$(PATHSEP)rng.cpp
+rng$(MODULE_EXT): util$(PATHSEP)rng.cpp
 	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
+	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
+	
+timeline$(MODULE_EXT): util$(PATHSEP)timeline.cpp
+	-@echo [$@] Linking
+	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
+
+sample_data$(MODULE_EXT): util$(PATHSEP)sample_data.cpp
+	-@echo [$@] Linking
+	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
 sc_expressions$(MODULE_EXT): sc_expressions.cpp sc_util.cpp
 	-@echo [$@] Linking

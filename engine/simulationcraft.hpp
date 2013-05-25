@@ -191,7 +191,25 @@ namespace std {using namespace tr1; }
 #include "sc_generic.hpp"
 
 // Sample Data
-#include "sc_sample_data.hpp"
+#include "util/sample_data.hpp"
+
+// Timeline
+#include "util/timeline.hpp"
+
+/* SimulationCraft timeline:
+ * - data_type is double
+ * - timespan_t add helper function
+ */
+struct sc_timeline_t : public tl::timeline_t<double>
+{
+  typedef tl::timeline_t<double> base_t;
+  using base_t::add;
+
+  // Add 'value' at the corresponding time
+  void add( timespan_t current_time, double value )
+  { base_t::add( static_cast<size_t>( current_time.total_millis() / 1000 ), value ); }
+
+};
 
 // Random Number Generators
 #include "util/rng.hpp"
@@ -1868,7 +1886,7 @@ public:
   rng_t* rng;
   cooldown_t* cooldown;
   std::vector<cache_e> invalidate_list;
-  timeline_t<double> uptime_array;
+  sc_timeline_t uptime_array;
 
   // static values
 private: // private because changing max_stacks requires resizing some stack-dependant vectors
@@ -3463,7 +3481,7 @@ struct player_t : public noncopyable
 private:
   class vengeance_t
   {
-    timeline_t<double> timeline_;
+    sc_timeline_t timeline_;
     event_t* event; // pointer to collection event so we can cancel it at the end of combat.
 
   public:
@@ -3487,14 +3505,14 @@ private:
     void merge( const vengeance_t& other )
     { timeline_.merge( other.timeline_ ); }
 
-    const timeline_t<double>& timeline() const { return timeline_; }
+    const sc_timeline_t& timeline() const { return timeline_; }
   } vengeance;
 public:
   void vengeance_init() { vengeance.init( *this ); }
   void vengeance_start() { vengeance.start( *this ); }
   void vengeance_stop() { vengeance.stop(); }
   bool vengeance_is_started() const { return vengeance.is_started(); }
-  const timeline_t<double>& vengeance_timeline() const { return vengeance.timeline(); }
+  const sc_timeline_t& vengeance_timeline() const { return vengeance.timeline(); }
 
   // Latency
   timespan_t  world_lag, world_lag_stddev;
@@ -3771,7 +3789,7 @@ public:
   struct resource_timeline_t
   {
     resource_e type;
-    timeline_t<double> timeline;
+    sc_timeline_t timeline;
 
     resource_timeline_t( resource_e t = RESOURCE_NONE ) : type( t ) {}
   };
@@ -3789,7 +3807,7 @@ public:
   sample_data_t dpse;
   sample_data_t dtps;
   sample_data_t dmg_taken;
-  timeline_t<double> timeline_dmg;
+  sc_timeline_t timeline_dmg;
   std::vector<double> dps_convergence_error;
   double dps_convergence;
 
@@ -4574,7 +4592,7 @@ public:
   std::vector<stats_results_t> direct_results;
   std::vector<stats_results_t>   tick_results;
 
-  timeline_t<double> timeline_amount;
+  sc_timeline_t timeline_amount;
 
   // Reporting only
   std::array<double,RESOURCE_MAX> resource_portion, apr, rpe;

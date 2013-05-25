@@ -929,7 +929,7 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
 
       // Create Stats Timeline Chart
       s -> timeline_amount.resize( max_buckets );
-      timeline_t<double> timeline_aps;
+      sc_timeline_t timeline_aps;
       s -> timeline_amount.build_derivative_timeline( timeline_aps );
       s -> timeline_aps_chart = chart::timeline( p, timeline_aps.data(), s -> name_str + ' ' + stat_type_letter( s -> type ) + "PS", s -> portion_aps.mean );
       s -> aps_distribution_chart = chart::distribution( p -> sim -> print_styles, s -> portion_aps.distribution, s -> name_str + ( s -> type == STATS_DMG ? " DPS" : " HPS" ),
@@ -950,7 +950,7 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
   util::urlencode( encoded_name );
 
   {
-    timeline_t<double> timeline_dps;
+    sc_timeline_t timeline_dps;
     p -> timeline_dmg.build_derivative_timeline( timeline_dps );
     ri.timeline_dps_chart = chart::timeline( p, timeline_dps.data(), encoded_name + " DPS", p -> dps.mean );
   }
