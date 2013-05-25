@@ -279,6 +279,7 @@ public:
   double            get_hand_of_light();
   double            jotp_haste();
   void trigger_grand_crusader();
+  void apl_prot();
 
   target_specific_t<paladin_td_t*> target_data;
 
@@ -3011,10 +3012,85 @@ void paladin_t::create_buffs()
                                  .chance( find_spell( 138164 ) -> effectN( 1 ).percent() );
 }
 
+// Protection Combat Action Priority List
+
+void paladin_t::apl_prot()
+{
+  //precombat first
+  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
+
+  //Flask
+  if ( sim -> allow_flasks && level >= 80 )
+  {
+    std::string flask_action = "flask,type=";
+    flask_action += (level > 85) ? "earth" : "steelskin";
+    precombat -> add_action( flask_action );
+  }
+
+  // Food
+  if (sim -> allow_food && level >= 80 )
+  {
+    std::string food_action = "food,type=";
+      food_action += ( level > 85 ) ? "chun_tian_spring_rolls" : "seafood_magnifique_feast";
+      precombat -> add_action( food_action );
+  }
+
+  precombat -> add_action( this, "Blessing of Kings", "if=(!aura.str_agi_int.up)&(aura.mastery.up)" );
+  precombat -> add_action( this, "Blessing of Might", "if=!aura.mastery.up" );
+  precombat -> add_action( this, "Seal of Insight");
+
+  // Snapshot stats
+  precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
+
+  // Pre-potting (disabled for now)
+  /*
+  if (sim -> allow_potions && level >= 80 )
+    precombat -> add_action( ( level > 85 ) ? "mogu_power_potion" : "golemblood_potion" );
+
+  */
+
+  // action priority list
+  action_priority_list_t* def = get_action_priority_list( "default" );
+
+  // potion placeholder; need to think about realistic conditions
+  // def -> add_action( "potion_of_the_mountains,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60" );
+
+  def -> add_action( "/auto_attack" );
+
+  int num_items = ( int ) items.size();
+  for ( int i=0; i < num_items; i++ )
+  {
+    if ( items[ i ].parsed.use.active() )
+    {
+      def -> add_action ( "/use_item,name=" + items[ i ].name_str );
+    }
+  }
+
+  std::vector<std::string> profession_actions = get_profession_actions(); 
+  for ( size_t i=0; i < profession_actions.size(); i++ )
+    def -> add_action( profession_actions[ i ] );
+
+  std::vector<std::string> racial_actions = get_racial_actions();
+  for ( size_t i=0; i< racial_actions.size(); i++ )
+    def -> add_action( racial_actions[ i ] );
+
+  def -> add_action( this, "Avenging Wrath" );
+  def -> add_action( this, "Guardian of Ancient Kings", "if=health.pct<=30" );
+  def -> add_action( this, "Shield of the Righteous", "if=holy_power>=3" );
+  def -> add_action( this, "Hammer of the Righteous", "if=target.debuff.weakened_blows.down" );
+  def -> add_action( this, "Crusader Strike" );
+  def -> add_action( this, "Judgment" );
+  def -> add_action( this, "Avenger's Shield" );
+  def -> add_action( this, "Hammer of Wrath" );
+  def -> add_action( this, "Holy Wrath" );
+  def -> add_action( this, "Consecration", "if=target.debuff.flying.down&!ticking" );
+}
+
 // paladin_t::init_actions ==================================================
 
 void paladin_t::init_actions()
 {
+  // sanity check - Holy not implemented yet
   if ( specialization() != PALADIN_RETRIBUTION && specialization() != PALADIN_PROTECTION )
   {
     if ( ! quiet )
@@ -3024,6 +3100,7 @@ void paladin_t::init_actions()
     return;
   }
 
+  // sanity check - can't do anything w/o main hand weapon equipped
   if ( main_hand_weapon.type == WEAPON_NONE )
   {
     if ( !quiet )
@@ -3035,6 +3112,7 @@ void paladin_t::init_actions()
   active_hand_of_light_proc          = new attacks::hand_of_light_proc_t         ( this );
   ancient_fury_explosion             = new spells::ancient_fury_t               ( this );
 
+  // create action priority lists
   if ( action_list_str.empty() )
   {
     clear_action_priority_lists();
@@ -3303,51 +3381,10 @@ void paladin_t::init_actions()
         action_list_str += "/holy_prism";
     }
     break;
+    // for prot, call subroutine
     case PALADIN_PROTECTION:
-    {
-      if ( level > 75 )
-      {
-        if ( level > 80 )
-        {
-          action_list_str = "flask,type=steelskin/food,type=beer_basted_crocolisk";
-          action_list_str += "/earthen_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
-        }
-        else
-        {
-          action_list_str = "flask,type=stoneblood/food,type=dragonfin_filet";
-          action_list_str += "/indestructible_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
-        }
-        action_list_str += "/seal_of_truth";
-      }
-      else
-      {
-        action_list_str = "seal_of_truth";
-      }
-      action_list_str += "/snapshot_stats";
-      action_list_str += "/auto_attack";
-      int num_items = ( int ) items.size();
-      for ( int i=0; i < num_items; i++ )
-      {
-        if ( items[ i ].parsed.use.active() )
-        {
-          action_list_str += "/use_item,name=";
-          action_list_str += items[ i ].name();
-        }
-      }
-      action_list_str += init_use_profession_actions();
-      action_list_str += init_use_racial_actions();
-      action_list_str += "/avenging_wrath";
-      action_list_str += "/guardian_of_ancient_kings,if=health.pct<=30";
-      action_list_str += "/shield_of_the_righteous,if=holy_power>=3";
-      action_list_str += "/crusader_strike";
-      action_list_str += "/hammer_of_the_righteous,if=target.debuff.weakened_blows.down";
-      action_list_str += "/judgment";
-      action_list_str += "/avengers_shield";
-      action_list_str += "/hammer_of_wrath";
-      action_list_str += "/holy_wrath";
-      action_list_str += "/consecration,if=target.debuff.flying.down&!ticking";
-    }
-    break;
+		apl_prot(); // PROT
+		break;
     case PALADIN_HOLY:
     {
 #if 0
