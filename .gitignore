@@ -45,5 +45,6 @@ simcqt.pro.user
 nppBackup
 build.conf
 /simc.vcxproj.user
-/simc10.opensdf
+*.opensdf
+*.vcxproj.user
 .gdbinit
