@@ -3809,6 +3809,7 @@ public:
   sample_data_t dtps;
   sample_data_t dmg_taken;
   sc_timeline_t timeline_dmg;
+  sc_timeline_t timeline_dmg_taken;
   std::vector<double> dps_convergence_error;
   double dps_convergence;
 

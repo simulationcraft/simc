@@ -1761,6 +1761,12 @@ void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t*
     os.printf( fmt, ri.scaling_dps_chart.c_str() );
   }
 
+  std::string timeline_dmg_takenchart = chart::timeline( p, p -> timeline_dmg_taken.data(), "dmg_taken", 0, "ff0000", static_cast<size_t>( p -> fight_length.max ) );
+  if ( ! timeline_dmg_takenchart.empty() )
+  {
+    os << "<img src=\"" << timeline_dmg_takenchart << "\" alt=\"Damage Taken Timeline Chart\" />\n";
+  }
+
   os << "\t\t\t\t\t\t</div>\n"
      << "\t\t\t\t\t\t<div class=\"charts\">\n";
 

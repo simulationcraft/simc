@@ -1064,6 +1064,9 @@ void player_t::init()
     else
       get_action_priority_list( it -> first ) -> action_list_str = it -> second;
   }
+
+  size_t size = static_cast<size_t>( sim -> max_time.total_seconds() * ( 1.0 + sim -> vary_combat_length ) );
+  timeline_dmg_taken.init( size * 2 + 3 );
 }
 
 /* Determine Spec, Talents, Professions, Glyphs
@@ -4163,6 +4166,7 @@ void player_t::merge( player_t& other )
   dtps.merge( other.dtps );
   dpse.merge( other.dpse );
   dmg_taken.merge( other.dmg_taken );
+  timeline_dmg_taken.merge( other.timeline_dmg_taken );
 
   heal.merge( other.heal );
   compound_heal.merge( other.compound_heal );
@@ -5271,6 +5275,7 @@ void player_t::assess_damage( school_e school,
   } // end of absorb list loop
 
   iteration_dmg_taken += s -> result_amount;
+  timeline_dmg_taken.add( sim -> current_time, s -> result_amount );
 
 
   double actual_amount = 0;
@@ -8990,6 +8995,7 @@ void player_t::analyze( sim_t& s )
   dpse.analyze();
 
   dmg_taken.analyze();
+  timeline_dmg_taken.adjust( s.divisor_timeline );
   dtps.analyze();
 
   heal.analyze();
