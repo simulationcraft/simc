@@ -9142,7 +9142,7 @@ const sample_data_t& player_t::scales_over()
   if ( so == "raid_dps"       ) return sim -> raid_dps;
   if ( so == "raid_hps"       ) return sim -> raid_hps;
 
-  player_t* q = 0;
+  player_t* q = nullptr;
   if ( ! sim -> scaling -> scale_over_player.empty() )
     q = sim -> find_player( sim -> scaling -> scale_over_player );
   if ( !q )
@@ -9161,6 +9161,9 @@ const sample_data_t& player_t::scales_over()
 
   if ( so == "htps" )
     return q -> htps;
+
+  if ( so == "deaths" )
+    return q -> deaths;
 
   if ( q -> primary_role() == ROLE_HEAL || so =="hps" )
     return q -> hps;
