@@ -3731,6 +3731,9 @@ void paladin_t::invalidate_cache( cache_e c )
   {
     player_t::invalidate_cache( CACHE_SPELL_POWER );
   }
+
+  if ( c == CACHE_MASTERY && passives.divine_bulwark -> ok() )
+    player_t::invalidate_cache( CACHE_BLOCK );
 }
 
 // paladin_t::matching_gear_multiplier ======================================

@@ -813,6 +813,7 @@ inline cache_e cache_from_stat( stat_e st )
   case STAT_DODGE_RATING: return CACHE_DODGE;
   case STAT_PARRY_RATING: return CACHE_PARRY;
   case STAT_BLOCK_RATING: return CACHE_BLOCK;
+  case STAT_ARMOR: return CACHE_ARMOR;
   default: break;
   }
   return CACHE_NONE;

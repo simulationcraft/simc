@@ -3860,7 +3860,8 @@ struct warrior_module_t : public module_t
       player_t* p = sim -> actor_list[ i ];
       p -> debuffs.shattering_throw = buff_creator_t( p, "shattering_throw", p -> find_spell( 64382 ) )
                                       .default_value( std::fabs( p -> find_spell( 64382 ) -> effectN( 2 ).percent() ) )
-                                      .cd( timespan_t::zero() );
+                                      .cd( timespan_t::zero() )
+                                      .add_invalidate( CACHE_ARMOR );
       p -> buffs.skull_banner = buff_creator_t( p, "skull_banner", p -> find_spell( 114207 ) )
                                 .cd( timespan_t::zero() )
                                 .default_value( p -> find_spell( 114206 ) -> effectN( 1 ).percent() )

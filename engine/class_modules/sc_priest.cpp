@@ -248,9 +248,13 @@ public:
   } pets;
 
   // Options
-  int initial_shadow_orbs;
-  std::string atonement_target_str;
-  bool autoUnshift; // Shift automatically out of stance/form
+  struct priest_options_t
+  {
+    int initial_shadow_orbs;
+    std::string atonement_target_str;
+    bool autoUnshift; // Shift automatically out of stance/form
+    priest_options_t() : initial_shadow_orbs( 0 ), autoUnshift( true ) {}
+  } options;
 
   // Glyphs
   struct glyphs_t
@@ -293,8 +297,7 @@ public:
     active_spells( active_spells_t() ),
     rngs( rngs_t() ),
     pets( pets_t() ),
-    initial_shadow_orbs( 0 ),
-    autoUnshift( true ),
+    options( priest_options_t() ),
     glyphs( glyphs_t() )
   {
     base.distance = 27.0;
@@ -868,7 +871,7 @@ public:
     ab::weapon_multiplier = 0.0;
 
 
-    can_cancel_shadowform = p.autoUnshift;
+    can_cancel_shadowform = p.options.autoUnshift;
     castable_in_shadowform = true;
   }
 
@@ -1273,8 +1276,8 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
       snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
 
-      if ( ! p.atonement_target_str.empty() )
-        target = sim -> find_player( p.atonement_target_str );
+      if ( ! p.options.atonement_target_str.empty() )
+        target = sim -> find_player( p.options.atonement_target_str );
     }
 
     void trigger( double damage, dmg_e dmg_type, result_e result )
@@ -4116,7 +4119,9 @@ struct holy_word_t : public priest_spell_t
   }
 };
 
-// Lightwell Spell ==========================================================
+/* Lightwell Spell
+ * Create only if ( p.pets.lightwell )
+ */
 
 struct lightwell_t : public priest_spell_t
 {
@@ -4699,6 +4704,8 @@ void priest_t::shadowy_apparitions_t::tidy_up( actions::spells::shadowy_appariti
   apparitions_free.push_back( &s );
 }
 
+/* Add new "free" shadowy apparitions
+ */
 void priest_t::shadowy_apparitions_t::add_more( size_t num )
 {
   for ( size_t i = 0; i < num; i++ )
@@ -4812,13 +4819,18 @@ void priest_t::create_procs()
   procs.t15_2pc_caster_vampiric_touch    = get_proc( "Tier15 2pc caster Vampiric Touch Extra Tick"    );
 }
 
+/* Construct priest benefits
+ *
+ */
 void priest_t::create_benefits()
 {
   benefits.smites_with_glyph_increase = get_benefit( "Smites increased by Holy Fire" );
 }
 
-// priest_t::primary_role ===================================================
-
+/* Define the acting role of the priest
+ * If base_t::primary_role() has a valid role defined, use it,
+ * otherwise select spec-based default.
+ */
 role_e priest_t::primary_role()
 {
   switch ( base_t::primary_role() )
@@ -4843,8 +4855,8 @@ void priest_t::combat_begin()
 {
   base_t::combat_begin();
 
-  if ( initial_shadow_orbs > 0 )
-    resources.current[ RESOURCE_SHADOW_ORB ] = std::min( ( double ) initial_shadow_orbs, resources.base[ RESOURCE_SHADOW_ORB ] );
+  if ( options.initial_shadow_orbs > 0 )
+    resources.current[ RESOURCE_SHADOW_ORB ] = std::min( as<double>( options.initial_shadow_orbs ), resources.base[ RESOURCE_SHADOW_ORB ] );
 }
 
 // priest_t::composite_armor ================================================
@@ -4853,13 +4865,13 @@ double priest_t::composite_armor()
 {
   double a = base_t::composite_armor();
 
-  if ( buffs.inner_fire -> up() )
+  if ( buffs.inner_fire -> check() )
   {
     a *= 1.0 + buffs.inner_fire -> data().effectN( 1 ).percent();
     a *= 1.0 + glyphs.inner_fire -> effectN( 1 ).percent();
   }
 
-  return floor( a );
+  return std::floor( a );
 }
 
 // priest_t::composite_spell_haste ==========================================
@@ -4935,7 +4947,7 @@ double priest_t::composite_player_multiplier( school_e school )
 {
   double m = base_t::composite_player_multiplier( school );
 
-  if ( dbc::is_school( SCHOOL_SHADOW, school ) )
+  if ( specs.shadowform -> ok() && dbc::is_school( SCHOOL_SHADOW, school ) )
   {
     m *= 1.0 + buffs.shadowform -> check() * specs.shadowform -> effectN( 2 ).percent();
   }
@@ -5077,13 +5089,15 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "guardian_spirit"        ) return new guardian_spirit_t       ( *this, options_str );
   if ( name == "heal"                   ) return new _heal_t                 ( *this, options_str );
   if ( name == "holy_word"              ) return new holy_word_t             ( *this, options_str );
-  if ( name == "lightwell"              ) return new lightwell_t             ( *this, options_str );
   if ( name == "penance_heal"           ) return new penance_heal_t          ( *this, options_str );
   if ( name == "power_word_shield"      ) return new power_word_shield_t     ( *this, options_str );
   if ( name == "prayer_of_healing"      ) return new prayer_of_healing_t     ( *this, options_str );
   if ( name == "prayer_of_mending"      ) return new prayer_of_mending_t     ( *this, options_str );
   if ( name == "renew"                  ) return new renew_t                 ( *this, options_str );
   if ( name == "cascade_heal"           ) return new cascade_heal_t          ( *this, options_str );
+
+  if ( find_class_spell( "Lightwell" ) -> ok() )
+    if ( name == "lightwell"              ) return new lightwell_t             ( *this, options_str );
 
   return base_t::create_action( name, options_str );
 }
@@ -5114,7 +5128,9 @@ void priest_t::create_pets()
 
   pets.shadowfiend      = create_pet( "shadowfiend" );
   pets.mindbender       = create_pet( "mindbender"  );
-  pets.lightwell        = create_pet( "lightwell"   );
+
+  if( find_class_spell( "Lightwell" ) -> ok() )
+    pets.lightwell        = create_pet( "lightwell"   );
 }
 
 // priest_t::init_base ======================================================
@@ -5153,7 +5169,7 @@ void priest_t::init_scaling()
     scales_with[ STAT_STAMINA ] = true;
 
   // Disc/Holy are hitcapped vs. raid bosses by Divine Fury
-  if ( specs.divine_fury -> ok() )
+  if ( specs.divine_fury -> ok() && ( target -> level - level ) <= 3 )
     scales_with[ STAT_HIT_RATING ] = false;
 
   // For a Shadow Priest Spirit is the same as Hit Rating so invert it.
@@ -5182,20 +5198,23 @@ void priest_t::init_spells()
   talents.void_tendrils               = find_talent_spell( "Void Tendrils" );
   talents.psyfiend                    = find_talent_spell( "Psyfiend" );
   talents.dominate_mind               = find_talent_spell( "Dominate Mind" );
+
   talents.body_and_soul               = find_talent_spell( "Body and Soul" );
   talents.angelic_feather             = find_talent_spell( "Angelic Feather" );
   talents.phantasm                    = find_talent_spell( "Phantasm" );
+
   talents.from_darkness_comes_light   = find_talent_spell( "From Darkness, Comes Light" );
   talents.mindbender                  = find_talent_spell( "Mindbender" );
-
   talents.power_word_solace           = find_talent_spell( "Solace and Insanity" );
 
   talents.desperate_prayer            = find_talent_spell( "Desperate Prayer" );
   talents.spectral_guise              = find_talent_spell( "Spectral Guise" );
   talents.angelic_bulwark             = find_talent_spell( "Angelic Bulwark" );
+
   talents.twist_of_fate               = find_talent_spell( "Twist of Fate" );
   talents.power_infusion              = find_talent_spell( "Power Infusion" );
   talents.divine_insight              = find_talent_spell( "Divine Insight" );
+
   talents.cascade                     = find_talent_spell( "Cascade" );
   talents.divine_star                 = find_talent_spell( "Divine Star" );
   talents.halo                        = find_talent_spell( "Halo" );
@@ -5774,8 +5793,6 @@ void priest_t::init_actions()
   base_t::init_actions();
 }
 
-// priest_t::init_party =====================================================
-
 // priest_t::init_rng ====================================================
 
 void priest_t::init_rng()
@@ -5848,7 +5865,6 @@ void priest_t::target_mitigation( school_e school,
 }
 
 /* Helper function to get the shadowy recall proc chance
- *
  */
 double priest_t::shadowy_recall_chance()
 {
@@ -5863,14 +5879,14 @@ void priest_t::create_options()
 
   option_t priest_options[] =
   {
-    opt_string( "atonement_target", atonement_target_str ),
+    opt_string( "atonement_target", options.atonement_target_str ),
     opt_deprecated( "double_dot", "action_list=double_dot" ),
-    opt_int( "initial_shadow_orbs", initial_shadow_orbs ),
-    opt_bool( "autounshift", autoUnshift ),
+    opt_int( "initial_shadow_orbs", options.initial_shadow_orbs ),
+    opt_bool( "autounshift", options.autoUnshift ),
     opt_null()
   };
 
-  option_t::copy( options, priest_options );
+  option_t::copy( base_t::options, priest_options );
 }
 
 // priest_t::create_profile =================================================
@@ -5881,13 +5897,16 @@ bool priest_t::create_profile( std::string& profile_str, save_e type, bool save_
 
   if ( type == SAVE_ALL )
   {
-    if ( ! atonement_target_str.empty() )
-      profile_str += "atonement_target=" + atonement_target_str + "\n";
+    if ( ! options.autoUnshift )
+      profile_str += "autounshift=" + util::to_string( options.autoUnshift ) + "\n";
 
-    if ( initial_shadow_orbs != 0 )
+    if ( ! options.atonement_target_str.empty() )
+      profile_str += "atonement_target=" + options.atonement_target_str + "\n";
+
+    if ( options.initial_shadow_orbs != 0 )
     {
       profile_str += "initial_shadow_orbs=";
-      profile_str += util::to_string( initial_shadow_orbs );
+      profile_str += util::to_string( options.initial_shadow_orbs );
       profile_str += "\n";
     }
   }
@@ -5903,9 +5922,7 @@ void priest_t::copy_from( player_t* source )
 
   priest_t* source_p = debug_cast<priest_t*>( source );
 
-  atonement_target_str = source_p -> atonement_target_str;
-  initial_shadow_orbs  = source_p -> initial_shadow_orbs;
-  autoUnshift          = source_p -> autoUnshift;
+  options = source_p -> options;
 }
 
 // priest_t::decode_set =====================================================

@@ -894,7 +894,8 @@ static bool init_debuffs( sim_t* sim )
                                            .default_value( std::fabs( p -> find_spell( 115804 ) -> effectN( 1 ).percent() ) );
 
     p -> debuffs.weakened_armor          = buff_creator_t( p, "weakened_armor", p -> find_spell( 113746 ) )
-                                           .default_value( std::fabs( p -> find_spell( 113746 ) -> effectN( 1 ).percent() ) );
+                                           .default_value( std::fabs( p -> find_spell( 113746 ) -> effectN( 1 ).percent() ) )
+                                           .add_invalidate( CACHE_ARMOR );
 
     p -> debuffs.weakened_blows          = buff_creator_t( p, "weakened_blows", p -> find_spell( 115798 ) )
                                            .default_value( std::fabs( p -> find_spell( 115798 ) -> effectN( 1 ).percent() ) )
