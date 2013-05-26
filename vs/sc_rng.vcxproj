@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\engine\sc_rng.cpp">
+    <ClCompile Include="..\engine\util\rng.cpp">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);UNIT_TEST</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);UNIT_TEST</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions);UNIT_TEST</PreprocessorDefinitions>
@@ -27,13 +27,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\engine\sc_rng.hpp" />
+    <ClInclude Include="..\engine\util\rng.hpp" />
     <ClInclude Include="..\engine\simulationcraft.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4C7D8805-E08F-4198-A469-3245DEBBA6EB}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>sc_rng</RootNamespace>
+    <RootNamespace>rng</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

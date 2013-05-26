@@ -199,7 +199,7 @@ double rng::stdnormal_inv( double p )
 
 #include <iostream>
 #include <iomanip>
-#include "sc_sample_data.hpp"
+#include "sample_data.hpp"
 
 namespace { // anonymous namespace ==========================================
 
