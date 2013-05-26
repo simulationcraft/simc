@@ -2,7 +2,6 @@
 // Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
-#include "simulationcraft.hpp"
 
 #if defined(UNIT_TEST) && ( __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || ( defined(_MSC_VER) && _MSC_VER >= 1700 ) )
 #define RNG_CXX11
@@ -326,7 +325,11 @@ int main( int /*argc*/, char** /*argv*/ )
 
 #define MONTE_CARLO( t ) monte_carlo<t>( n, #t )
 
+#if defined( RNG_USE_SSE2 )
   MONTE_CARLO( rng_engine_mt_sse2_t );
+#else
+  MONTE_CARLO( rng_engine_mt_t );
+#endif
 
   n /= 10;
 

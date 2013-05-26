@@ -11,16 +11,11 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\engine\sc_rng.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClInclude Include="..\engine\sc_generic.hpp" />
+    <ClInclude Include="..\engine\util\rng.hpp" />
+    <ClInclude Include="..\engine\util\sample_data.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\engine\sc_rng.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\engine\simulationcraft.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClCompile Include="..\engine\util\rng.cpp" />
   </ItemGroup>
 </Project>

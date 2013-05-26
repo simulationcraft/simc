@@ -227,7 +227,9 @@
   <ItemGroup>
     <ClCompile Include="engine\sc_io.cpp" />
     <ClCompile Include="engine\sc_main.cpp" />
-    <ClCompile Include="engine\util\rng.cpp" />
+    <ClCompile Include="engine\util\rng.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="engine\sc_thread.cpp" />
     <ClCompile Include="engine\sc_util.cpp" />
     <ClCompile Include="engine\action\sc_absorb.cpp" />
@@ -271,7 +273,7 @@
     <ClCompile Include="engine\interfaces\sc_bcp_api.cpp" />
     <ClCompile Include="engine\interfaces\sc_chardev.cpp" />
     <ClCompile Include="engine\interfaces\sc_http.cpp" />
-    <ClCompile Include="engine\interfaces\sc_js.cpp" >
+    <ClCompile Include="engine\interfaces\sc_js.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

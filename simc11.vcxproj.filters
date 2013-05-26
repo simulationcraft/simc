@@ -1,37 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="engine\sc_action.cpp" />
-    <ClCompile Include="engine\sc_action_state.cpp" />
-    <ClCompile Include="engine\sc_attack.cpp" />
-    <ClCompile Include="engine\sc_buff.cpp" />
-    <ClCompile Include="engine\sc_consumable.cpp" />
-    <ClCompile Include="engine\sc_cooldown.cpp" />
-    <ClCompile Include="engine\sc_dot.cpp" />
-    <ClCompile Include="engine\sc_event.cpp" />
-    <ClCompile Include="engine\sc_expressions.cpp" />
-    <ClCompile Include="engine\sc_gear_stats.cpp" />
-    <ClCompile Include="engine\sc_heal.cpp" />
     <ClCompile Include="engine\sc_io.cpp" />
-    <ClCompile Include="engine\sc_item.cpp" />
     <ClCompile Include="engine\sc_main.cpp" />
-    <ClCompile Include="engine\sc_option.cpp" />
-    <ClCompile Include="engine\sc_pet.cpp" />
-    <ClCompile Include="engine\sc_player.cpp" />
-    <ClCompile Include="engine\sc_plot.cpp" />
-    <ClCompile Include="engine\sc_raid_event.cpp" />
-    <ClCompile Include="engine\sc_reforge_plot.cpp" />
-    <ClCompile Include="engine\sc_rng.cpp" />
-    <ClCompile Include="engine\sc_scaling.cpp" />
-    <ClCompile Include="engine\sc_sequence.cpp" />
-    <ClCompile Include="engine\sc_set_bonus.cpp" />
-    <ClCompile Include="engine\sc_sim.cpp" />
-    <ClCompile Include="engine\sc_spell_base.cpp" />
-    <ClCompile Include="engine\sc_harmful_spell.cpp" />
-    <ClCompile Include="engine\sc_absorb.cpp" />
-    <ClCompile Include="engine\sc_stats.cpp" />
     <ClCompile Include="engine\sc_thread.cpp" />
-    <ClCompile Include="engine\sc_unique_gear.cpp" />
     <ClCompile Include="engine\sc_util.cpp" />
     <ClCompile Include="engine\interfaces\sc_bcp_api.cpp">
       <Filter>Interfaces</Filter>
@@ -123,13 +95,40 @@
     <ClCompile Include="engine\report\sc_chart.cpp">
       <Filter>Report</Filter>
     </ClCompile>
+    <ClCompile Include="engine\util\rng.cpp" />
+    <ClCompile Include="engine\action\sc_absorb.cpp" />
+    <ClCompile Include="engine\action\sc_action_state.cpp" />
+    <ClCompile Include="engine\action\sc_action.cpp" />
+    <ClCompile Include="engine\action\sc_attack.cpp" />
+    <ClCompile Include="engine\action\sc_dot.cpp" />
+    <ClCompile Include="engine\action\sc_harmful_spell.cpp" />
+    <ClCompile Include="engine\action\sc_heal.cpp" />
+    <ClCompile Include="engine\action\sc_sequence.cpp" />
+    <ClCompile Include="engine\action\sc_spell_base.cpp" />
+    <ClCompile Include="engine\action\sc_stats.cpp" />
+    <ClCompile Include="engine\buff\sc_buff.cpp" />
+    <ClCompile Include="engine\player\sc_consumable.cpp" />
+    <ClCompile Include="engine\player\sc_item.cpp" />
+    <ClCompile Include="engine\player\sc_pet.cpp" />
+    <ClCompile Include="engine\player\sc_player.cpp" />
+    <ClCompile Include="engine\player\sc_set_bonus.cpp" />
+    <ClCompile Include="engine\player\sc_unique_gear.cpp" />
+    <ClCompile Include="engine\sim\sc_cooldown.cpp" />
+    <ClCompile Include="engine\sim\sc_event.cpp" />
+    <ClCompile Include="engine\sim\sc_expressions.cpp" />
+    <ClCompile Include="engine\sim\sc_gear_stats.cpp" />
+    <ClCompile Include="engine\sim\sc_option.cpp" />
+    <ClCompile Include="engine\sim\sc_plot.cpp" />
+    <ClCompile Include="engine\sim\sc_raid_event.cpp" />
+    <ClCompile Include="engine\sim\sc_reforge_plot.cpp" />
+    <ClCompile Include="engine\sim\sc_scaling.cpp" />
+    <ClCompile Include="engine\sim\sc_sim.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="engine\simulationcraft.hpp" />
     <ClInclude Include="engine\sc_generic.hpp" />
     <ClInclude Include="engine\sc_timespan.hpp" />
     <ClInclude Include="engine\sc_sample_data.hpp" />
-    <ClInclude Include="engine\sc_rng.hpp" />
     <ClInclude Include="engine\dbc\data_definitions.hh">
       <Filter>DBC</Filter>
     </ClInclude>
@@ -196,6 +195,7 @@
     <ClInclude Include="engine\utf8\unchecked.h">
       <Filter>UTF-8</Filter>
     </ClInclude>
+    <ClInclude Include="engine\util\rng.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Interfaces">

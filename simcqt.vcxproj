@@ -167,7 +167,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="engine\sc_io.cpp" />
-    <ClCompile Include="engine\util\rng.cpp" />
+    <ClCompile Include="engine\util\rng.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="engine\sc_thread.cpp" />
     <ClCompile Include="engine\sc_util.cpp" />
     <ClCompile Include="engine\action\sc_absorb.cpp" />
