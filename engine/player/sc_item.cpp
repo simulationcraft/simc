@@ -981,7 +981,7 @@ bool item_t::decode_stats()
         stat++;
       }
       else
-        parsed.armor = as<int>( tokens[ i ].value );
+        parsed.armor = static_cast<int>( tokens[ i ].value );
     }
   }
 
@@ -1163,7 +1163,7 @@ bool item_t::decode_random_suffix()
       if ( sim -> debug )
         sim -> output( "random_suffix: stat=%d (%s) stat_amount=%f", stat.stat, util::stat_type_abbrev( stat.stat ), stat_amount );
 
-      stat.value = as<int>( stat_amount );
+      stat.value = static_cast<int>( stat_amount );
       parsed.suffix_stats.push_back( stat );
       base_stats.add_stat( stat.stat, static_cast< int >( stat_amount ) );
       stats.add_stat( stat.stat, static_cast< int >( stat_amount ) );
@@ -1650,11 +1650,11 @@ bool item_t::decode_special( special_effect_t& effect,
     }
     else if ( t.name == "spell" )
     {
-      effect.spell_id = as<int>( t.value );
+      effect.spell_id = static_cast<int>( t.value );
     }
     else if ( t.name == "auraspell" )
     {
-      effect.aura_spell_id = as<int>( t.value );
+      effect.aura_spell_id = static_cast<int>( t.value );
     }
     else if ( t.full == "ondamage" )
     {
@@ -2098,7 +2098,7 @@ std::vector<stat_pair_t> item_t::str_to_stat_pair( const std::string& stat_str )
   {
     stat_e s = STAT_NONE;
     if ( ( s = util::parse_stat_type( tokens[ i ].name ) ) != STAT_NONE && tokens[ i ].value != 0 )
-      stats.push_back( stat_pair_t( s, as<int>( tokens[ i ].value ) ) );
+      stats.push_back( stat_pair_t( s, static_cast<int>( tokens[ i ].value ) ) );
   }
 
   return stats;
