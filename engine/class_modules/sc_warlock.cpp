@@ -4884,7 +4884,7 @@ void warlock_t::init_actions()
     add_action( "Curse of the Elements", "if=debuff.magic_vulnerability.down" );
 
     // Usable Item
-    for ( int i = items.size() - 1; i >= 0; i-- )
+    for ( size_t i = items.size() - 1; i >= 0; i-- )
     {
       if ( items[ i ].parsed.use.active() )
       {

@@ -981,7 +981,7 @@ bool item_t::decode_stats()
         stat++;
       }
       else
-        parsed.armor = tokens[ i ].value;
+        parsed.armor = as<int>( tokens[ i ].value );
     }
   }
 
@@ -1163,7 +1163,7 @@ bool item_t::decode_random_suffix()
       if ( sim -> debug )
         sim -> output( "random_suffix: stat=%d (%s) stat_amount=%f", stat.stat, util::stat_type_abbrev( stat.stat ), stat_amount );
 
-      stat.value = stat_amount;
+      stat.value = as<int>( stat_amount );
       parsed.suffix_stats.push_back( stat );
       base_stats.add_stat( stat.stat, static_cast< int >( stat_amount ) );
       stats.add_stat( stat.stat, static_cast< int >( stat_amount ) );
@@ -1650,11 +1650,11 @@ bool item_t::decode_special( special_effect_t& effect,
     }
     else if ( t.name == "spell" )
     {
-      effect.spell_id = t.value;
+      effect.spell_id = as<int>( t.value );
     }
     else if ( t.name == "auraspell" )
     {
-      effect.aura_spell_id = t.value;
+      effect.aura_spell_id = as<int>( t.value );
     }
     else if ( t.full == "ondamage" )
     {
@@ -2049,7 +2049,7 @@ bool item_t::decode_weapon()
 
     parsed.data.item_class = ITEM_CLASS_WEAPON;
     parsed.data.item_subclass = util::translate_weapon( w -> type );
-    parsed.data.delay = w -> swing_time.total_millis();
+    parsed.data.delay = static_cast<double>( w -> swing_time.total_millis() );
     if ( dps_set && min_set )
       parsed.data.dmg_range = 2 - 2 * w -> min_dmg / ( w -> dps * parsed.data.delay );
 
@@ -2098,7 +2098,7 @@ std::vector<stat_pair_t> item_t::str_to_stat_pair( const std::string& stat_str )
   {
     stat_e s = STAT_NONE;
     if ( ( s = util::parse_stat_type( tokens[ i ].name ) ) != STAT_NONE && tokens[ i ].value != 0 )
-      stats.push_back( stat_pair_t( s, tokens[ i ].value ) );
+      stats.push_back( stat_pair_t( s, as<int>( tokens[ i ].value ) ) );
   }
 
   return stats;

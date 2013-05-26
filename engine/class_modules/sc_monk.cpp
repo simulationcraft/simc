@@ -1307,7 +1307,8 @@ struct melee_t : public monk_melee_attack_t
   void trigger_elusive_brew()
   {
     // Formula taken from http://www.wowhead.com/spell=128938  2013/04/15
-    double expected_stacks, low, high, low_chance;
+    double expected_stacks, low_chance;
+	int low, high;
 
     // Calculate expected #stacks
     if ( weapon -> group() == WEAPON_1H || weapon -> group() == WEAPON_SMALL )
@@ -1317,8 +1318,8 @@ struct melee_t : public monk_melee_attack_t
     expected_stacks = clamp( expected_stacks, 1.0, 3.0 );
 
     // Low and High together need to achieve expected_stacks through rng
-    low = util::floor( expected_stacks );
-    high = util::ceil( expected_stacks );
+    low = as<int>( util::floor( expected_stacks ) );
+    high = as<int>( util::ceil( expected_stacks ) );
 
     // Solve low * low_chance + high * ( 1 - low_chance ) = expected_stacks
     if ( high > low )

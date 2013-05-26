@@ -9,12 +9,32 @@
 #define SC_PAPERDOLL
 #endif
 
+#include "simulationcraft.hpp"
+#include "simulationcraftqt.hpp"
+
 #include <QSortFilterProxyModel>
 #include <QAbstractListModel>
+#ifdef QT_VERSION_5
+#include <QtWidgets/QtWidgets>
+#include <QtWidgets/QStyledItemDelegate>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QFormLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QListView>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QAbstractButton>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QButtonGroup>
+#else
 #include <QStyledItemDelegate>
 #include <QCheckBox>
 #include <QComboBox>
-#include <QPainter>
 #include <QGridLayout>
 #include <QFormLayout>
 #include <QHBoxLayout>
@@ -25,14 +45,14 @@
 #include <QTabWidget>
 #include <QGroupBox>
 #include <QAbstractButton>
+#include <QPushButton>
+#include <QButtonGroup>
+#endif
+#include <QPainter>
 #include <QPaintEvent>
 #include <QMetaType>
-#include <QButtonGroup>
-#include <QPushButton>
 
 #include <vector>
-#include "simulationcraft.hpp"
-#include "simulationcraftqt.hpp"
 
 class Paperdoll;
 class EnchantDataModel;

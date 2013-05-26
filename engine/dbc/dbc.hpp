@@ -420,7 +420,7 @@ public:
   { return ok() ? _tooltip : ""; }
 
   // Helper functions
-  unsigned effect_count() const
+  size_t effect_count() const
   { assert( _effects ); return _effects -> size(); }
 
   bool found() const

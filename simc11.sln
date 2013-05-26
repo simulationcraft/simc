@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sc_rng", "vs\sc_rng.vcxproj
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simcqt", "simcqt.vcxproj", "{8B5B7EB0-9B3B-3682-B018-64769C525784}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simcqt11", "simcqt11.vcxproj", "{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -36,6 +38,12 @@ Global
 		{8B5B7EB0-9B3B-3682-B018-64769C525784}.Release|Win32.Build.0 = Release|Win32
 		{8B5B7EB0-9B3B-3682-B018-64769C525784}.Release|x64.ActiveCfg = Release|Win32
 		{8B5B7EB0-9B3B-3682-B018-64769C525784}.Release|x64.Build.0 = Release|Win32
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug|Win32.ActiveCfg = Debug|x64
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug|x64.ActiveCfg = Debug|x64
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Debug|x64.Build.0 = Debug|x64
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Release|Win32.ActiveCfg = Release|x64
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Release|x64.ActiveCfg = Release|x64
+		{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
