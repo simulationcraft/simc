@@ -1325,7 +1325,7 @@ double crit_multiplier( meta_gem_e gem );
 double stat_itemization_weight( stat_e s );
 std::vector<std::string> string_split( const std::string& str, const std::string& delim );
 size_t string_split_allow_quotes( std::vector<std::string>& results, const std::string& str, const char* delim );
-int string_split( const std::string& str, const char* delim, const char* format, ... );
+size_t string_split( const std::string& str, const char* delim, const char* format, ... );
 void string_strip_quotes( std::string& str );
 std::string& replace_all( std::string& s, const std::string&, const std::string& );
 std::string& erase_all( std::string& s, const std::string& from );

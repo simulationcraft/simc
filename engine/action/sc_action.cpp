@@ -895,7 +895,7 @@ std::vector< player_t* >& action_t::target_list()
   // A very simple target list for aoe spells, pick any and all targets, up to
   // aoe amount, or if aoe == -1, pick all (enemy) targets
 
-  int total_targets = available_targets( target_cache );
+  int total_targets = as<int>( available_targets( target_cache ) );
 
   if ( total_targets > aoe )
   {
@@ -910,13 +910,13 @@ std::vector< player_t* >& action_t::target_list()
 
 player_t* action_t::find_target_by_number( int number )
 {
-  int total_targets = available_targets( target_cache );
+  size_t total_targets = available_targets( target_cache );
 
-  for ( int i=0, j=1; i < total_targets; i++ )
+  for ( size_t i = 0, j = 1; i < total_targets; i++ )
   {
     player_t* t = target_cache[ i ];
 
-    int n = ( t == player -> target ) ? 1 : ++j;
+    int n = ( t == player -> target ) ? 1 : as<int>( ++j );
 
     if ( n == number )
       return t;
@@ -975,7 +975,7 @@ void action_t::execute()
       s -> result = calculate_result( s );
 
       if ( result_is_hit( s -> result ) )
-        s -> result_amount = calculate_direct_amount( s, t + 1 );
+        s -> result_amount = calculate_direct_amount( s, as<int>( t + 1 ) );
 
       if ( split_aoe_damage )
         s -> result_amount /= targets;

@@ -2082,7 +2082,7 @@ int util::parse_item_quality( const std::string& quality )
 
 // string_split =====================================================
 
-int util::string_split( const std::string& str,
+size_t util::string_split( const std::string& str,
                         const char*        delim,
                         const char*        format, ... )
 {
@@ -2374,7 +2374,7 @@ std::string util::decode_html( const std::string& input )
     }
     else
     {
-      int i = sizeof_array( html_named_character_map );
+      int i = as<int>( sizeof_array( html_named_character_map ) );
       while ( --i >= 0 )
       {
         if ( ! input.compare( pos + 1, end - ( pos + 1 ), html_named_character_map[ i ].encoded ) )

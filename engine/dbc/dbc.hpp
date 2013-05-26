@@ -445,7 +445,7 @@ public:
   { return _id != 0; }
 
   // Composite functions
-  const spelleffect_data_t& effectN( unsigned idx ) const
+  const spelleffect_data_t& effectN( size_t idx ) const
   {
     assert( _effects );
     assert( idx > 0 && "effect index must not be zero or less" );
