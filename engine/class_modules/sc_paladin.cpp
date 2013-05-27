@@ -660,23 +660,10 @@ struct crusader_strike_t : public paladin_melee_attack_t
     // multiplier modification for T13 Retribution 2-piece bonus
     base_multiplier *= 1.0 + ( ( p -> set_bonus.tier13_2pc_melee() ) ? p -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() : 0.0 );
 
-    //grab Sword of Light spell info for cost reduction.  probably unnecessary? (see GbtL implementation in cost() )
-    sword_of_light = p -> find_specialization_spell( "Sword of Light" );
-
-    // Funky code for Guarded by the Light.  Will consolidate with cost() code tomorrow
-    for ( size_t i = 0; data()._power && i < data()._power -> size(); i++ )
-    {
-      const spellpower_data_t* pd = (*data()._power)[ i ];
-
-      if ( pd -> _cost > 0 )
-        base_costs[ pd -> resource() ] = pd -> cost();
-      else
-        base_costs[ pd -> resource() ] = floor( pd -> cost() * player -> resources.base[ pd -> resource() ] );
-
-      // Guarded by the Light hidden effect reduces CS cost from 9k to 1.8k mana
-      base_costs[ pd -> resource() ] *= 1.0 + p -> passives.guarded_by_the_light -> effectN( 7 ).percent();
-    }
-
+    // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
+    base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
+                                       +  p -> passives.sword_of_light -> effectN( 4 ).percent();
+    base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
   }
 
   virtual double action_multiplier()
@@ -691,20 +678,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
     return am;
   }
-
-  virtual double cost()
-  {
-    double c = paladin_melee_attack_t::cost();
-
-    // Sword of Light and Guarded by the Light have hidden effects that reduce CS cost by 80%
-    if ( p() -> specialization() == PALADIN_RETRIBUTION )
-      c *= 1.0 + sword_of_light -> effectN( 4 ).percent();
-   /* if ( p() -> specialization() == PALADIN_PROTECTION )
-      c *= 1.0 + p() -> passives.guarded_by_the_light -> effectN( 7 ).percent(); */
-    
-    return c;
-  }
-
+  
   virtual void update_ready( timespan_t cd_duration )
   {
     // reduce cooldown if Sanctity of Battle present
@@ -844,6 +818,8 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
 
   virtual void impact( action_state_t* s)
   {
+    paladin_melee_attack_t::impact( s );
+
     // Everything hit by Hammer of the Righteous AoE triggers Weakened Blows
       if ( ! sim -> overrides.weakened_blows )
         target -> debuffs.weakened_blows -> trigger();
@@ -1351,15 +1327,11 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
   {
     parse_options( NULL, options_str );
 
-    //SotR subject to all types of avoidance and mitigation
-    may_parry = true;
-    may_dodge = true;
-    may_block = true;
-
     // Triggers all seals
     trigger_seal = true;
 
-    // not on GCD
+    // not on GCD, usable off-GCD
+    trigger_gcd = timespan_t::zero();
     use_off_gcd = true;
     
     // no weapon scaling
@@ -1396,14 +1368,13 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
   }
 
   virtual bool ready()
-  {
-    //only usable if shield is equipped in off-hand
-    if ( p() -> items[ SLOT_OFF_HAND ].parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD )
-    {
+  {  
+    //only usable if shield is equipped in off-hand    
+    if ( p() -> has_shield_equipped() )
       return paladin_melee_attack_t::ready();
-    }
     else
       return false;
+
   }
 
   //todo: Alabaster Shield damage buff
@@ -1649,11 +1620,9 @@ struct avengers_shield_t : public paladin_spell_t
 
   virtual bool ready()
   {
-    //only usable if shield is equipped in off-hand
-    if ( p() -> items[ SLOT_OFF_HAND ].parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD )
-    {
+    //only usable if shield is equipped in off-hand       
+    if ( p() -> has_shield_equipped() )
       return paladin_spell_t::ready();
-    }
     else
       return false;
   }

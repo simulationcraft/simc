@@ -3882,6 +3882,7 @@ public:
   meta_gem_e meta_gem;
   bool matching_gear;
   cooldown_t item_cooldown;
+  //bool has_shield_equipped;
 
   // Scale Factors
   gear_stats_t scaling;
@@ -4370,6 +4371,8 @@ public:
   item_t*   find_item( const std::string& );
   action_t* find_action( const std::string& );
   bool      dual_wield() { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
+  bool      has_shield_equipped() { return  items[ SLOT_OFF_HAND ].parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD ? true : false; }
+
 
   action_priority_list_t* find_action_priority_list( const std::string& name );
   void                    clear_action_priority_lists() const;
