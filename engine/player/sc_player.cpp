@@ -2250,13 +2250,13 @@ void player_t::init_spells()
   if ( sim -> debug )
     sim -> output( "Initializing spells for player (%s)", name() );
 
+  racials.quickness = find_racial_spell( "Quickness" );
+
   if ( ! is_enemy() )
   {
     const spell_data_t* s = find_mastery_spell( specialization() );
     if ( s -> ok() )
       _mastery = &(s -> effectN( 1 ));
-
-    racials.quickness = find_racial_spell( "Quickness" );
   }
 }
 
