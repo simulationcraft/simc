@@ -263,9 +263,9 @@ public:
   virtual double    composite_spell_power( school_e school );
   virtual double    composite_spell_power_multiplier();
   virtual double    composite_spell_speed();
-  virtual double    composite_tank_block();
-  virtual double    composite_tank_crit();
-  virtual double    composite_tank_dodge();
+  virtual double    composite_block();
+  virtual double    composite_crit_avoidance();
+  virtual double    composite_dodge();
   virtual void      assess_damage( school_e, dmg_e, action_state_t* );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   virtual void      invalidate_cache( cache_e );
@@ -3895,9 +3895,9 @@ double paladin_t::composite_spell_speed()
 
 // paladin_t::composite_tank_block ==========================================
 
-double paladin_t::composite_tank_block()
+double paladin_t::composite_block()
 {
-  double b = player_t::composite_tank_block();
+  double b = player_t::composite_block();
 
   b += get_divine_bulwark();
 
@@ -3906,18 +3906,18 @@ double paladin_t::composite_tank_block()
   return b;
 }
 
-double paladin_t::composite_tank_crit()
+double paladin_t::composite_crit_avoidance()
 {
-  double c = player_t::composite_tank_crit();
+  double c = player_t::composite_crit_avoidance();
 
   c += passives.guarded_by_the_light -> effectN( 5 ).percent();
 
   return c;
 }
 
-double paladin_t::composite_tank_dodge()
+double paladin_t::composite_dodge()
 {
-  double d = player_t::composite_tank_dodge();
+  double d = player_t::composite_dodge();
 
   d += passives.sanctuary -> effectN( 3 ).percent();
 

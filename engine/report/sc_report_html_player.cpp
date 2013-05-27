@@ -905,7 +905,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * a -> buffed.dodge,
-      100 * ( a -> composite_tank_dodge() ),
+      100 * ( a -> composite_dodge() ),
       a -> initial.stats.dodge_rating );
     j++;
     os.printf(
@@ -917,7 +917,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * a -> buffed.parry,
-      100 * ( a -> composite_tank_parry() ),
+      100 * ( a -> composite_parry() ),
       a -> initial.stats.parry_rating );
     j++;
     os.printf(
@@ -929,7 +929,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * a -> buffed.block,
-      100 * a -> composite_tank_block(),
+      100 * a -> composite_block(),
       a -> initial.stats.block_rating );
     j++;
     os.printf(

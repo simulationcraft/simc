@@ -325,7 +325,7 @@ struct enemy_t : public player_t
   virtual void init_resources( bool force=false );
   virtual void init_target();
   virtual void init_actions();
-  virtual double composite_tank_block();
+  virtual double composite_block();
   virtual double resource_loss( resource_e, double, gain_t*, action_t* );
   virtual void create_options();
   virtual pet_t* create_pet( const std::string& add_name, const std::string& pet_type = std::string() );
@@ -575,9 +575,9 @@ void enemy_t::init_actions()
 
 // enemy_t::composite_tank_block ============================================
 
-double enemy_t::composite_tank_block()
+double enemy_t::composite_block()
 {
-  double b = player_t::composite_tank_block();
+  double b = player_t::composite_block();
 
   b += 0.05;
 

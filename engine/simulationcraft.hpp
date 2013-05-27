@@ -4115,13 +4115,13 @@ public:
 
   virtual double composite_armor();
   virtual double composite_armor_multiplier();
-  virtual double composite_tank_miss();
-  virtual double composite_tank_dodge();
-  virtual double composite_tank_parry();
-  virtual double composite_tank_block();
-  virtual double composite_tank_block_reduction();
-  virtual double composite_tank_crit_block();
-  virtual double composite_tank_crit();
+  virtual double composite_miss();
+  virtual double composite_dodge();
+  virtual double composite_parry();
+  virtual double composite_block();
+  virtual double composite_block_reduction();
+  virtual double composite_crit_block();
+  virtual double composite_crit_avoidance();
 
   virtual double composite_attack_power_multiplier();
   virtual double composite_spell_power_multiplier();
@@ -4247,12 +4247,12 @@ public:
     double spell_crit()       { return player -> composite_spell_crit();      }
     double spell_haste()      { return player -> composite_spell_haste();     }
     double spell_speed()      { return player -> composite_spell_speed();     }
-    double dodge()            { return player -> composite_tank_dodge();      }
-    double parry()            { return player -> composite_tank_parry();      }
-    double block()            { return player -> composite_tank_block();      }
-    double crit_block()       { return player -> composite_tank_crit_block(); }
-    double crit_avoidance()   { return player -> composite_tank_crit();       }
-    double miss()             { return player -> composite_tank_miss();       }
+    double dodge()            { return player -> composite_dodge();      }
+    double parry()            { return player -> composite_parry();      }
+    double block()            { return player -> composite_block();      }
+    double crit_block()       { return player -> composite_crit_block(); }
+    double crit_avoidance()   { return player -> composite_crit_avoidance();       }
+    double miss()             { return player -> composite_miss();       }
     double armor()            { return player -> composite_armor();           }
     double mastery_value()    { return player -> composite_mastery_value();   }
 #endif
@@ -4508,10 +4508,10 @@ public:
   virtual double composite_spell_power( school_e school );
 
   // Assuming diminishing returns are transfered to the pet as well
-  virtual double composite_tank_dodge()
+  virtual double composite_dodge()
   { return owner -> cache.dodge(); }
 
-  virtual double composite_tank_parry()
+  virtual double composite_parry()
   { return owner -> cache.parry(); }
 
   // Influenced by coefficients [ 0, 1 ]

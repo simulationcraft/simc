@@ -258,9 +258,9 @@ public:
   virtual double    composite_melee_hit();
   virtual double    composite_melee_expertise( weapon_t* weapon );
   virtual double    composite_melee_attack_power();
-  virtual double    composite_tank_parry();
-  virtual double    composite_tank_dodge();
-  virtual double    composite_tank_crit();
+  virtual double    composite_parry();
+  virtual double    composite_dodge();
+  virtual double    composite_crit_avoidance();
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual void      init_spells();
@@ -2780,9 +2780,9 @@ double monk_t::composite_melee_attack_power()
 
 // monk_t::composite_tank_parry
 
-double monk_t::composite_tank_parry()
+double monk_t::composite_parry()
 {
-  double p = base_t::composite_tank_parry();
+  double p = base_t::composite_parry();
 
   if ( buff.shuffle -> check() )
   { p += buff.shuffle -> data().effectN( 1 ).percent(); }
@@ -2794,9 +2794,9 @@ double monk_t::composite_tank_parry()
 
 // monk_t::composite_tank_dodge
 
-double monk_t::composite_tank_dodge()
+double monk_t::composite_dodge()
 {
-  double d = base_t::composite_tank_dodge();
+  double d = base_t::composite_dodge();
 
   if ( buff.elusive_brew_activated -> check() )
   { d += buff.elusive_brew_activated -> current_value * buff.elusive_brew_activated -> data().effectN( 1 ).percent(); }
@@ -2804,9 +2804,9 @@ double monk_t::composite_tank_dodge()
   return d;
 }
 
-double monk_t::composite_tank_crit()
+double monk_t::composite_crit_avoidance()
 {
-  double c = base_t::composite_tank_crit();
+  double c = base_t::composite_crit_avoidance();
 
   c += active_stance_data( STURDY_OX ).effectN( 5 ).percent();
 

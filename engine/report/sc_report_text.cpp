@@ -336,7 +336,7 @@ void print_text_defense_stats( FILE* file, player_t* p )
                  100 * p -> buffed.miss,  100 * ( p -> cache.miss() ),
                  100 * p -> buffed.dodge, 100 * ( p -> cache.dodge() ), p -> initial.stats.dodge_rating,
                  100 * p -> buffed.parry, 100 * ( p -> cache.parry() ), p -> initial.stats.parry_rating,
-                 100 * p -> buffed.block, 100 * p -> composite_tank_block(), p -> initial.stats.block_rating,
+                 100 * p -> buffed.block, 100 * p -> composite_block(), p -> initial.stats.block_rating,
                  100 * p -> buffed.crit,  100 * p -> cache.crit_avoidance() );
 }
 

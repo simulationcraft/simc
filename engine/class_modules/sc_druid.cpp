@@ -419,10 +419,10 @@ public:
   virtual double    composite_attribute( attribute_e attr );
   virtual double    composite_attribute_multiplier( attribute_e attr );
   virtual double    matching_gear_multiplier( attribute_e attr );
-  virtual double    composite_tank_parry() { return 0; }
-  virtual double    composite_tank_block() { return 0; }
-  virtual double    composite_tank_crit();
-  virtual double    composite_tank_dodge();
+  virtual double    composite_parry() { return 0; }
+  virtual double    composite_block() { return 0; }
+  virtual double    composite_crit_avoidance();
+  virtual double    composite_dodge();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
@@ -6494,9 +6494,9 @@ double druid_t::matching_gear_multiplier( attribute_e attr )
 
 // druid_t::composite_tank_crit =============================================
 
-double druid_t::composite_tank_crit()
+double druid_t::composite_crit_avoidance()
 {
-  double c = player_t::composite_tank_crit();
+  double c = player_t::composite_crit_avoidance();
 
   c += spec.thick_hide -> effectN( 1 ).percent();
 
@@ -6505,9 +6505,9 @@ double druid_t::composite_tank_crit()
 
 // druid_t::composite_tank_dodge =============================================
 
-double druid_t::composite_tank_dodge()
+double druid_t::composite_dodge()
 {
-  double d = player_t::composite_tank_dodge();
+  double d = player_t::composite_dodge();
 
   if ( buff.savage_defense -> up() )
   {

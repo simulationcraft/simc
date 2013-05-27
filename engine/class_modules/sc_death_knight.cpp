@@ -407,9 +407,9 @@ public:
   virtual double    composite_melee_haste();
   virtual double    composite_attribute_multiplier( attribute_e attr );
   virtual double    matching_gear_multiplier( attribute_e attr );
-  virtual double    composite_tank_parry();
+  virtual double    composite_parry();
   virtual double    composite_player_multiplier( school_e school );
-  virtual double    composite_tank_crit();
+  virtual double    composite_crit_avoidance();
   virtual void      regen( timespan_t periodicity );
   virtual void      reset();
   virtual void      arise();
@@ -5857,9 +5857,9 @@ double death_knight_t::matching_gear_multiplier( attribute_e attr )
 
 // death_knight_t::composite_tank_parry =====================================
 
-double death_knight_t::composite_tank_parry()
+double death_knight_t::composite_parry()
 {
-  double parry = player_t::composite_tank_parry();
+  double parry = player_t::composite_parry();
 
   if ( buffs.dancing_rune_weapon -> up() )
     parry += buffs.dancing_rune_weapon -> data().effectN( 1 ).percent();
@@ -5904,9 +5904,9 @@ double death_knight_t::composite_melee_speed()
 
 // death_knight_t::composite_tank_crit ======================================
 
-double death_knight_t::composite_tank_crit()
+double death_knight_t::composite_crit_avoidance()
 {
-  double c = player_t::composite_tank_crit();
+  double c = player_t::composite_crit_avoidance();
 
   c += spec.improved_blood_presence -> effectN( 3 ).percent();
 

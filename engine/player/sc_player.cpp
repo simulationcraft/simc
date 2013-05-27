@@ -3017,7 +3017,7 @@ double player_t::composite_armor_multiplier()
 
 // player_t::composite_tank_miss ============================================
 
-double player_t::composite_tank_miss()
+double player_t::composite_miss()
 {
   double m = current.miss;
 
@@ -3028,7 +3028,7 @@ double player_t::composite_tank_miss()
 
 // player_t::composite_tank_block ===========================================
 
-double player_t::composite_tank_block()
+double player_t::composite_block()
 {
   double block_by_rating = current.stats.block_rating / current.rating.block;
 
@@ -3045,7 +3045,7 @@ double player_t::composite_tank_block()
 
 // player_t::composite_tank_dodge ===========================================
 
-double player_t::composite_tank_dodge()
+double player_t::composite_dodge()
 {
   double dodge_by_dodge_rating = current.stats.dodge_rating / current.rating.dodge;
   double dodge_by_agility = ( cache.agility() - base.stats.attribute[ ATTR_AGILITY ] ) * current.dodge_per_agility;
@@ -3066,7 +3066,7 @@ double player_t::composite_tank_dodge()
 
 // player_t::composite_tank_parry ===========================================
 
-double player_t::composite_tank_parry()
+double player_t::composite_parry()
 {
 
   //changed it to match the typical formulation
@@ -3093,7 +3093,7 @@ double player_t::composite_tank_parry()
 
 // player_t::composite_tank_block_reduction =================================
 
-double player_t::composite_tank_block_reduction()
+double player_t::composite_block_reduction()
 {
   double b = current.block_reduction;
 
@@ -3108,14 +3108,14 @@ double player_t::composite_tank_block_reduction()
 
 // player_t::composite_tank_crit_block ======================================
 
-double player_t::composite_tank_crit_block()
+double player_t::composite_crit_block()
 {
   return 0;
 }
 
 // player_t::composite_tank_crit ============================================
 
-double player_t::composite_tank_crit()
+double player_t::composite_crit_avoidance()
 {
   return 0;
 }
@@ -3687,9 +3687,9 @@ double player_t::cache_t::dodge()
   if ( ! active || ! valid[ CACHE_DODGE ] )
   {
     valid[ CACHE_DODGE ] = true;
-    _dodge = player -> composite_tank_dodge();
+    _dodge = player -> composite_dodge();
   }
-  else assert( _dodge == player -> composite_tank_dodge() );
+  else assert( _dodge == player -> composite_dodge() );
   return _dodge;
 }
 
@@ -3698,9 +3698,9 @@ double player_t::cache_t::parry()
   if ( ! active || ! valid[ CACHE_PARRY ] )
   {
     valid[ CACHE_PARRY ] = true;
-    _parry = player -> composite_tank_parry();
+    _parry = player -> composite_parry();
   }
-  else assert( _parry == player -> composite_tank_parry() );
+  else assert( _parry == player -> composite_parry() );
   return _parry;
 }
 
@@ -3709,9 +3709,9 @@ double player_t::cache_t::block()
   if ( ! active || ! valid[ CACHE_BLOCK ] )
   {
     valid[ CACHE_BLOCK ] = true;
-    _block = player -> composite_tank_block();
+    _block = player -> composite_block();
   }
-  else assert( _block == player -> composite_tank_block() );
+  else assert( _block == player -> composite_block() );
   return _block;
 }
 
@@ -3720,9 +3720,9 @@ double player_t::cache_t::crit_block()
   if ( ! active || ! valid[ CACHE_CRIT_BLOCK ] )
   {
     valid[ CACHE_CRIT_BLOCK ] = true;
-    _crit_block = player -> composite_tank_crit_block();
+    _crit_block = player -> composite_crit_block();
   }
-  else assert( _crit_block == player -> composite_tank_crit_block() );
+  else assert( _crit_block == player -> composite_crit_block() );
   return _crit_block;
 }
 
@@ -3731,9 +3731,9 @@ double player_t::cache_t::crit_avoidance()
   if ( ! active || ! valid[ CACHE_CRIT_AVOIDANCE ] )
   {
     valid[ CACHE_CRIT_AVOIDANCE ] = true;
-    _crit_avoidance = player -> composite_tank_crit();
+    _crit_avoidance = player -> composite_crit_avoidance();
   }
-  else assert( _crit_avoidance == player -> composite_tank_crit() );
+  else assert( _crit_avoidance == player -> composite_crit_avoidance() );
   return _crit_avoidance;
 }
 
@@ -3742,9 +3742,9 @@ double player_t::cache_t::miss()
   if ( ! active || ! valid[ CACHE_MISS ] )
   {
     valid[ CACHE_MISS ] = true;
-    _miss = player -> composite_tank_miss();
+    _miss = player -> composite_miss();
   }
-  else assert( _miss == player -> composite_tank_miss() );
+  else assert( _miss == player -> composite_miss() );
   return _miss;
 }
 
@@ -5352,13 +5352,13 @@ void player_t::target_mitigation( school_e school,
 
   if ( s -> result == RESULT_BLOCK )
   {
-    s -> result_amount *= ( 1 - composite_tank_block_reduction() );
+    s -> result_amount *= ( 1 - composite_block_reduction() );
     if ( s -> result_amount <= 0 ) return;
   }
 
   if ( s -> result == RESULT_CRIT_BLOCK )
   {
-    s -> result_amount *= ( 1 - 2 * composite_tank_block_reduction() );
+    s -> result_amount *= ( 1 - 2 * composite_block_reduction() );
     if ( s -> result_amount <= 0 ) return;
   }
 
@@ -6323,7 +6323,7 @@ struct snapshot_stats_t : public action_t
     p -> buffed.attack_crit  = p -> cache.attack_crit();
 
     p -> buffed.armor        = p -> composite_armor();
-    p -> buffed.miss         = p -> composite_tank_miss();
+    p -> buffed.miss         = p -> composite_miss();
     p -> buffed.dodge        = p -> cache.dodge();
     p -> buffed.parry        = p -> cache.parry();
     p -> buffed.block        = p -> cache.block();

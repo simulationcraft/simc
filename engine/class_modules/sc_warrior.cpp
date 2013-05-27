@@ -267,10 +267,10 @@ public:
   virtual void      combat_begin();
   virtual double    composite_player_multiplier( school_e school );
   virtual double    matching_gear_multiplier( attribute_e attr );
-  virtual double    composite_tank_block();
-  virtual double    composite_tank_crit_block();
-  virtual double    composite_tank_crit();
-  virtual double    composite_tank_dodge();
+  virtual double    composite_block();
+  virtual double    composite_crit_block();
+  virtual double    composite_crit_avoidance();
+  virtual double    composite_dodge();
   virtual double    composite_melee_haste();
   virtual double    composite_melee_speed();
   virtual void      reset();
@@ -3475,7 +3475,7 @@ double warrior_t::matching_gear_multiplier( attribute_e attr )
 
 // warrior_t::composite_tank_block ==========================================
 
-double warrior_t::composite_tank_block()
+double warrior_t::composite_block()
 {
   // Only process everything else if were not getting a for sure block
   if ( buff.shield_block -> up() )
@@ -3503,9 +3503,9 @@ double warrior_t::composite_tank_block()
 
 // warrior_t::composite_tank_crit_block =====================================
 
-double warrior_t::composite_tank_crit_block()
+double warrior_t::composite_crit_block()
 {
-  double b = player_t::composite_tank_crit_block();
+  double b = player_t::composite_crit_block();
 
   if ( mastery.critical_block -> ok() )
     b += cache.mastery_value();
@@ -3515,9 +3515,9 @@ double warrior_t::composite_tank_crit_block()
 
 // warrior_t::composite_tank_crit ===========================================
 
-double warrior_t::composite_tank_crit()
+double warrior_t::composite_crit_avoidance()
 {
-  double c = player_t::composite_tank_crit();
+  double c = player_t::composite_crit_avoidance();
 
   c += spec.unwavering_sentinel -> effectN( 4 ).percent();
 
@@ -3526,9 +3526,9 @@ double warrior_t::composite_tank_crit()
 
 // warrior_t::composite_tank_dodge ===========================================
 
-double warrior_t::composite_tank_dodge()
+double warrior_t::composite_dodge()
 {
-  double d = player_t::composite_tank_dodge();
+  double d = player_t::composite_dodge();
 
   d += spec.bastion_of_defense -> effectN( 3 ).percent();
 
