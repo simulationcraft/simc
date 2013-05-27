@@ -6,7 +6,7 @@ mage=Mage_Arcane_T15N
 level=90
 race=night_elf
 spec=arcane
-talents=100012
+talents=100022
 glyphs=mana_gem/mirror_image/arcane_power
 head=hood_of_the_crimson_wake,id=94959,gems=burning_primal_160haste_160hit_180int
 neck=necklace_of_the_terracotta_invoker,id=95203,gems=320mastery,reforge=hit_mastery
@@ -54,7 +54,7 @@ mage=Mage_Frost_T15N
 level=90
 race=night_elf
 spec=frost
-talents=100012
+talents=100022
 glyphs=evocation/icy_veins/ice_lance
 head=hood_of_the_chromatic_hydra,id=95261,gems=burning_primal_80int_160haste_180crit,reforge=hit_crit
 neck=necklace_of_the_terracotta_invoker,id=95203,gems=160int_60hit,reforge=hit_crit

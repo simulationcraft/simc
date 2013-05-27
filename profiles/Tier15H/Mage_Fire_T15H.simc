@@ -6,7 +6,7 @@ race=troll
 role=spell
 position=back
 professions=blacksmithing=600/engineering=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...01
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...11
 glyphs=combustion/counterspell
 spec=fire
 
@@ -51,7 +51,7 @@ actions+=/presence_of_mind,if=cooldown.alter_time_activate.remains>60|target.tim
 actions+=/flamestrike,if=active_enemies>=5
 actions+=/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up
 actions+=/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down
-actions+=/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6
+actions+=/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
 actions+=/fireball
 actions+=/scorch,moving=1
 

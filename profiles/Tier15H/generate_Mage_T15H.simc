@@ -7,7 +7,7 @@ level=90
 race=troll
 spec=arcane
 professions=engineering=600/tailoring=600
-talents=100012
+talents=100022
 glyphs=mana_gem/mirror_image/arcane_power
 head=hood_of_the_crimson_wake,id=96887,gems=sinister_primal_160haste_160hit_180int
 neck=megaeras_shining_eye,id=96825,reforge=hit_haste
@@ -32,7 +32,7 @@ level=90
 race=troll
 spec=fire
 professions=blacksmithing=600/engineering=600
-talents=100012
+talents=100022
 glyphs=combustion/counterspell
 head=flamecasters_burning_crown,id=96771,gems=sinister_primal_160crit_160hit_180int,reforge=haste_mastery
 neck=megaeras_shining_eye,id=96825,reforge=hit_mastery
@@ -57,7 +57,7 @@ level=90
 race=troll
 spec=frost
 professions=tailoring=600/blacksmithing=600
-talents=100012
+talents=100022
 glyphs=evocation/icy_veins/ice_lance
 head=hood_of_the_chromatic_hydra,id=96635,gems=sinister_primal_320haste_180crit,reforge=hit_mastery
 neck=megaeras_shining_eye,id=96825,reforge=hit_haste
