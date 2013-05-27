@@ -698,6 +698,7 @@ player_t::player_t( sim_t*             s,
   procs( procs_t() ),
   rngs( rngs_t() ),
   uptimes( uptimes_t() ),
+  racials( racials_t() ),
   active_during_iteration( false ),
   _mastery( spelleffect_data_t::nil() ),
   event_stopwatch( STOPWATCH_THREAD ),
@@ -2254,6 +2255,8 @@ void player_t::init_spells()
     const spell_data_t* s = find_mastery_spell( specialization() );
     if ( s -> ok() )
       _mastery = &(s -> effectN( 1 ));
+
+    racials.quickness = find_racial_spell( "Quickness" );
   }
 }
 
@@ -3014,16 +3017,11 @@ double player_t::composite_armor_multiplier()
 
 // player_t::composite_tank_miss ============================================
 
-double player_t::composite_tank_miss( school_e school )
+double player_t::composite_tank_miss()
 {
   double m = current.miss;
 
-  if ( school == SCHOOL_PHYSICAL && race == RACE_NIGHT_ELF ) // Quickness
-  {
-    m += 0.02;
-  }
-
-  m = clamp( m, 0.0, 1.0 );
+  assert( m >= 0.0 && m <= 1.0 );
 
   return m;
 }
@@ -3060,6 +3058,8 @@ double player_t::composite_tank_dodge()
   {
     d += 1 / ( 1 / diminished_dodge_cap + diminished_kfactor / ( dodge_by_dodge_rating + dodge_by_agility ) );
   }
+
+  d += racials.quickness -> effectN( 1 ).percent();
 
   return d;
 }
@@ -3115,7 +3115,7 @@ double player_t::composite_tank_crit_block()
 
 // player_t::composite_tank_crit ============================================
 
-double player_t::composite_tank_crit( school_e /* school */ )
+double player_t::composite_tank_crit()
 {
   return 0;
 }
@@ -6301,11 +6301,11 @@ struct snapshot_stats_t : public action_t
     p -> buffed.attack_crit  = p -> cache.attack_crit();
 
     p -> buffed.armor        = p -> composite_armor();
-    p -> buffed.miss         = p -> composite_tank_miss( SCHOOL_PHYSICAL );
+    p -> buffed.miss         = p -> composite_tank_miss();
     p -> buffed.dodge        = p -> cache.dodge();
     p -> buffed.parry        = p -> cache.parry();
     p -> buffed.block        = p -> cache.block();
-    p -> buffed.crit         = p -> composite_tank_crit( SCHOOL_PHYSICAL );
+    p -> buffed.crit         = p -> composite_tank_crit();
 
     role_e role = p -> primary_role();
     int delta_level = sim -> target -> level - p -> level;

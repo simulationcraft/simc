@@ -269,7 +269,7 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual double    composite_tank_block();
   virtual double    composite_tank_crit_block();
-  virtual double    composite_tank_crit( school_e school );
+  virtual double    composite_tank_crit();
   virtual double    composite_tank_dodge();
   virtual double    composite_melee_haste();
   virtual double    composite_melee_speed();
@@ -3515,9 +3515,9 @@ double warrior_t::composite_tank_crit_block()
 
 // warrior_t::composite_tank_crit ===========================================
 
-double warrior_t::composite_tank_crit( const school_e school )
+double warrior_t::composite_tank_crit()
 {
-  double c = player_t::composite_tank_crit( school );
+  double c = player_t::composite_tank_crit();
 
   c += spec.unwavering_sentinel -> effectN( 4 ).percent();
 

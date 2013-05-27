@@ -260,6 +260,7 @@ public:
   virtual double    composite_melee_attack_power();
   virtual double    composite_tank_parry();
   virtual double    composite_tank_dodge();
+  virtual double    composite_tank_crit();
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual void      init_spells();
@@ -2801,6 +2802,15 @@ double monk_t::composite_tank_dodge()
   { d += buff.elusive_brew_activated -> current_value * buff.elusive_brew_activated -> data().effectN( 1 ).percent(); }
 
   return d;
+}
+
+double monk_t::composite_tank_crit()
+{
+  double c = base_t::composite_tank_crit();
+
+  c += active_stance_data( STURDY_OX ).effectN( 5 ).percent();
+
+  return c;
 }
 
 void monk_t::invalidate_cache( cache_e c )

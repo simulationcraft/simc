@@ -264,7 +264,7 @@ public:
   virtual double    composite_spell_power_multiplier();
   virtual double    composite_spell_speed();
   virtual double    composite_tank_block();
-  virtual double    composite_tank_crit( school_e );
+  virtual double    composite_tank_crit();
   virtual double    composite_tank_dodge();
   virtual void      assess_damage( school_e, dmg_e, action_state_t* );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
@@ -3906,9 +3906,9 @@ double paladin_t::composite_tank_block()
   return b;
 }
 
-double paladin_t::composite_tank_crit( school_e s )
+double paladin_t::composite_tank_crit()
 {
-  double c = player_t::composite_tank_crit( s );
+  double c = player_t::composite_tank_crit();
 
   c += passives.guarded_by_the_light -> effectN( 5 ).percent();
 

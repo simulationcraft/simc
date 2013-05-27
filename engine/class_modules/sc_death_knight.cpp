@@ -409,7 +409,7 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual double    composite_tank_parry();
   virtual double    composite_player_multiplier( school_e school );
-  virtual double    composite_tank_crit( school_e school );
+  virtual double    composite_tank_crit();
   virtual void      regen( timespan_t periodicity );
   virtual void      reset();
   virtual void      arise();
@@ -5904,9 +5904,9 @@ double death_knight_t::composite_melee_speed()
 
 // death_knight_t::composite_tank_crit ======================================
 
-double death_knight_t::composite_tank_crit( school_e school )
+double death_knight_t::composite_tank_crit()
 {
-  double c = player_t::composite_tank_crit( school );
+  double c = player_t::composite_tank_crit();
 
   c += spec.improved_blood_presence -> effectN( 3 ).percent();
 

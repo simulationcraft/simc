@@ -4016,6 +4016,11 @@ public:
     uptime_t* primary_resource_cap;
   } uptimes;
 
+  struct racials_t
+  {
+    const spell_data_t* quickness;
+  } racials;
+
   bool active_during_iteration;
   const spelleffect_data_t* _mastery; // = find_mastery_spell( specialization() ) -> effectN( 1 );
 
@@ -4107,15 +4112,15 @@ public:
   virtual double composite_mastery();
   virtual double composite_mastery_value();
 
-  virtual double composite_armor()                ;
-  virtual double composite_armor_multiplier()     ;
-  virtual double composite_tank_miss( school_e school );
-  virtual double composite_tank_dodge()           ;
-  virtual double composite_tank_parry()           ;
-  virtual double composite_tank_block()           ;
-  virtual double composite_tank_block_reduction() ;
-  virtual double composite_tank_crit_block()           ;
-  virtual double composite_tank_crit( school_e school );
+  virtual double composite_armor();
+  virtual double composite_armor_multiplier();
+  virtual double composite_tank_miss();
+  virtual double composite_tank_dodge();
+  virtual double composite_tank_parry();
+  virtual double composite_tank_block();
+  virtual double composite_tank_block_reduction();
+  virtual double composite_tank_crit_block();
+  virtual double composite_tank_crit();
 
   virtual double composite_attack_power_multiplier();
   virtual double composite_spell_power_multiplier();

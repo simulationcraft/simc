@@ -421,7 +421,7 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual double    composite_tank_parry() { return 0; }
   virtual double    composite_tank_block() { return 0; }
-  virtual double    composite_tank_crit( school_e school );
+  virtual double    composite_tank_crit();
   virtual double    composite_tank_dodge();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -6494,12 +6494,11 @@ double druid_t::matching_gear_multiplier( attribute_e attr )
 
 // druid_t::composite_tank_crit =============================================
 
-double druid_t::composite_tank_crit( school_e school )
+double druid_t::composite_tank_crit()
 {
-  double c = player_t::composite_tank_crit( school );
+  double c = player_t::composite_tank_crit();
 
-  if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
-    c += spec.thick_hide -> effectN( 1 ).percent();
+  c += spec.thick_hide -> effectN( 1 ).percent();
 
   return c;
 }

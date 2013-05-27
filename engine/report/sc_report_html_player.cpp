@@ -893,7 +893,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * a -> buffed.miss,
-      100 * ( a -> composite_tank_miss( SCHOOL_PHYSICAL ) ),
+      100 * ( a -> composite_tank_miss() ),
       0.0  );
     j++;
     os.printf(
@@ -941,7 +941,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
       100 * a -> buffed.crit,
-      100 * a -> composite_tank_crit( SCHOOL_PHYSICAL ),
+      100 * a -> composite_tank_crit(),
       0.0 );
     j++;
     os.printf(
