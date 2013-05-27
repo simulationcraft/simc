@@ -162,10 +162,10 @@ result_e attack_t::calculate_result( action_state_t* s )
 
   int delta_level = s -> target -> level - player -> level;
 
-  double miss     = may_miss ? ( miss_chance( composite_hit(), delta_level ) + s -> target -> composite_tank_miss() ) : 0;
+  double miss     = may_miss ? ( miss_chance( composite_hit(), delta_level ) + s -> target -> cache.miss() ) : 0;
   double dodge    = may_dodge ? ( dodge_chance( composite_expertise(), delta_level ) + s -> target -> cache.dodge() ) : 0;
   double parry    = may_parry && player -> position() == POSITION_FRONT ? ( parry_chance( composite_expertise(), delta_level ) + s -> target -> cache.parry() ) : 0;
-  double crit     = may_crit ? ( crit_chance( s -> composite_crit() + s -> target -> composite_tank_crit(), delta_level ) ) : 0;
+  double crit     = may_crit ? ( crit_chance( s -> composite_crit() + s -> target -> cache.crit_avoidance(), delta_level ) ) : 0;
 
   // Specials are 2-roll calculations, so only pass crit chance to
   // build_table for non-special attacks

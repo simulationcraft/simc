@@ -333,11 +333,11 @@ void print_text_defense_stats( FILE* file, player_t* p )
   util::fprintf( file,
                  "  Defense Stats: armor=%.0f|%.0f(%.0f) miss=%.2f%%|%.2f%%  dodge=%.2f%%|%.2f%%(%.0f)  parry=%.2f%%|%.2f%%(%.0f)  block=%.2f%%|%.2f%%(%.0f) crit=%.2f%%|%.2f%%\n",
                  p -> buffed.armor,       p -> composite_armor(), p -> initial.stats.armor,
-                 100 * p -> buffed.miss,  100 * ( p -> composite_tank_miss() ),
-                 100 * p -> buffed.dodge, 100 * ( p -> composite_tank_dodge() ), p -> initial.stats.dodge_rating,
-                 100 * p -> buffed.parry, 100 * ( p -> composite_tank_parry() ), p -> initial.stats.parry_rating,
+                 100 * p -> buffed.miss,  100 * ( p -> cache.miss() ),
+                 100 * p -> buffed.dodge, 100 * ( p -> cache.dodge() ), p -> initial.stats.dodge_rating,
+                 100 * p -> buffed.parry, 100 * ( p -> cache.parry() ), p -> initial.stats.parry_rating,
                  100 * p -> buffed.block, 100 * p -> composite_tank_block(), p -> initial.stats.block_rating,
-                 100 * p -> buffed.crit,  100 * p -> composite_tank_crit() );
+                 100 * p -> buffed.crit,  100 * p -> cache.crit_avoidance() );
 }
 
 void print_text_gains( FILE* file, gain_t* g, int max_length )

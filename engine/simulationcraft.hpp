@@ -783,6 +783,7 @@ enum cache_e
   CACHE_SPEED, CACHE_ATTACK_SPEED, CACHE_SPELL_SPEED,
   CACHE_MASTERY,
   CACHE_DODGE,CACHE_PARRY,CACHE_BLOCK, CACHE_CRIT_BLOCK, CACHE_ARMOR,
+  CACHE_CRIT_AVOIDANCE, CACHE_MISS,
   CACHE_PLAYER_DAMAGE_MULTIPLIER,
   CACHE_PLAYER_HEAL_MULTIPLIER,
   CACHE_MAX
@@ -4193,7 +4194,7 @@ public:
     double _attack_haste, _spell_haste;
     double _attack_speed, _spell_speed;
     double _dodge,_parry,_block,_crit_block,_armor;
-    double _mastery_value;
+    double _mastery_value, _crit_avoidance, _miss;
     double _player_mult[SCHOOL_MAX+1], _player_heal_mult[SCHOOL_MAX+1];
   public:
     bool active; // runtime active-flag
@@ -4222,6 +4223,8 @@ public:
     double parry();
     double block();
     double crit_block();
+    double crit_avoidance();
+    double miss();
     double armor();
     double mastery_value();
     double player_multiplier( school_e );
@@ -4248,6 +4251,8 @@ public:
     double parry()            { return player -> composite_tank_parry();      }
     double block()            { return player -> composite_tank_block();      }
     double crit_block()       { return player -> composite_tank_crit_block(); }
+    double crit_avoidance()   { return player -> composite_tank_crit();       }
+    double miss()             { return player -> composite_tank_miss();       }
     double armor()            { return player -> composite_armor();           }
     double mastery_value()    { return player -> composite_mastery_value();   }
 #endif

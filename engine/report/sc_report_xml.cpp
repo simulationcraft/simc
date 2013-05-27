@@ -371,9 +371,9 @@ void print_xml_player_stats( xml_writer_t & writer, player_t * p )
   print_xml_player_attribute( writer, "attackspeed",
                               100 * ( 1 / p -> cache.attack_speed() - 1 ), p -> initial.stats.haste_rating, 100 * ( 1 / p -> buffed.attack_speed - 1 ) );
   print_xml_player_attribute( writer, "armor",
-                              p -> composite_armor(), p -> initial.stats.armor, p -> buffed.armor );
+                              p -> cache.armor(), p -> initial.stats.armor, p -> buffed.armor );
   print_xml_player_attribute( writer, "miss",
-                              100 * ( p -> composite_tank_miss() ), 0, 100 * p -> buffed.miss );
+                              100 * ( p -> cache.miss() ), 0, 100 * p -> buffed.miss );
   print_xml_player_attribute( writer, "dodge",
                               100 * ( p -> cache.dodge() ), p -> initial.stats.dodge_rating, 100 * p -> buffed.dodge );
   print_xml_player_attribute( writer, "parry",
@@ -381,7 +381,7 @@ void print_xml_player_stats( xml_writer_t & writer, player_t * p )
   print_xml_player_attribute( writer, "block",
                               100 * p -> cache.block(), p -> initial.stats.block_rating, 100 * p -> buffed.block );
   print_xml_player_attribute( writer, "tank_crit",
-                              100 * p -> composite_tank_crit(), 0, 100 * p -> buffed.crit );
+                              100 * p -> cache.crit_avoidance(), 0, 100 * p -> buffed.crit );
 
   writer.begin_tag( "resource" );
   writer.print_attribute( "name", "health" );

@@ -3726,6 +3726,28 @@ double player_t::cache_t::crit_block()
   return _crit_block;
 }
 
+double player_t::cache_t::crit_avoidance()
+{
+  if ( ! active || ! valid[ CACHE_CRIT_AVOIDANCE ] )
+  {
+    valid[ CACHE_CRIT_AVOIDANCE ] = true;
+    _crit_avoidance = player -> composite_tank_crit();
+  }
+  else assert( _crit_avoidance == player -> composite_tank_crit() );
+  return _crit_avoidance;
+}
+
+double player_t::cache_t::miss()
+{
+  if ( ! active || ! valid[ CACHE_MISS ] )
+  {
+    valid[ CACHE_MISS ] = true;
+    _miss = player -> composite_tank_miss();
+  }
+  else assert( _miss == player -> composite_tank_miss() );
+  return _miss;
+}
+
 double player_t::cache_t::armor()
 {
   if ( ! active || ! valid[ CACHE_ARMOR ] )
@@ -6305,7 +6327,7 @@ struct snapshot_stats_t : public action_t
     p -> buffed.dodge        = p -> cache.dodge();
     p -> buffed.parry        = p -> cache.parry();
     p -> buffed.block        = p -> cache.block();
-    p -> buffed.crit         = p -> composite_tank_crit();
+    p -> buffed.crit         = p -> cache.crit_avoidance();
 
     role_e role = p -> primary_role();
     int delta_level = sim -> target -> level - p -> level;

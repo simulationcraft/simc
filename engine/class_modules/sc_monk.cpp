@@ -3242,6 +3242,7 @@ void monk_t::stance_invalidates( stance_e stance )
     break;
   case STURDY_OX:
     invalidate_cache( CACHE_STAMINA );
+    invalidate_cache( CACHE_CRIT_AVOIDANCE );
     break;
   case WISE_SERPENT:
     invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
