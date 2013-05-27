@@ -1327,6 +1327,12 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
   {
     parse_options( NULL, options_str );
 
+    if ( ! p -> has_shield_equipped() )
+    {
+      sim -> errorf( "%s: %s only usable with shield equiped in offhand\n", p -> name(), name() );
+      background = true;
+    }
+
     // Triggers all seals
     trigger_seal = true;
 
@@ -1365,16 +1371,6 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     }
     
     paladin_melee_attack_t::update_ready( cd_duration );
-  }
-
-  virtual bool ready()
-  {  
-    //only usable if shield is equipped in off-hand    
-    if ( p() -> has_shield_equipped() )
-      return paladin_melee_attack_t::ready();
-    else
-      return false;
-
   }
 
   //todo: Alabaster Shield damage buff
@@ -1545,6 +1541,12 @@ struct avengers_shield_t : public paladin_spell_t
   {
     parse_options( NULL, options_str );
 
+    if ( ! p -> has_shield_equipped() )
+    {
+      sim -> errorf( "%s: %s only usable with shield equiped in offhand\n", p -> name(), name() );
+      background = true;
+    }
+
     // hits 1 target if FS glyphed, 3 otherwise
     aoe = ( p -> glyphs.focused_shield -> ok() ) ? 1 : 3;
     may_crit     = true;
@@ -1617,16 +1619,6 @@ struct avengers_shield_t : public paladin_spell_t
       p() -> buffs.grand_crusader -> expire();
     }
   }
-
-  virtual bool ready()
-  {
-    //only usable if shield is equipped in off-hand       
-    if ( p() -> has_shield_equipped() )
-      return paladin_spell_t::ready();
-    else
-      return false;
-  }
-
 };
 
 // Avenging Wrath ===========================================================
