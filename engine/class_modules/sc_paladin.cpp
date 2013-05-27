@@ -46,7 +46,7 @@ struct paladin_t : public player_t
 public:
 
   // Active
-  seal_e active_seal;
+  seal_e    active_seal;
   heal_t*   active_beacon_of_light;
   heal_t*   active_enlightened_judgments;
   action_t* active_hand_of_light_proc;
@@ -84,6 +84,7 @@ public:
     buff_t* glyph_of_word_of_glory;
     buff_t* tier15_2pc_melee;
     buff_t* tier15_4pc_melee;
+    buff_t* shield_of_glory;
     buff_t* shield_of_the_righteous;
   } buffs;
 
@@ -113,11 +114,13 @@ public:
     gain_t* hp_pursuit_of_justice;
     gain_t* hp_tower_of_radiance;
     gain_t* hp_judgment;
+    //todo: add divine protection (T15 prot 4pc)
   } gains;
 
   // Cooldowns
   struct cooldowns_t
   {
+    // these seem to be required to get Art of War and Grand Crusader procs working
     cooldown_t* avengers_shield;
     cooldown_t* exorcism;
   } cooldowns;
@@ -125,24 +128,24 @@ public:
   // Passives
   struct passives_t
   {
-    const spell_data_t* boundless_conviction;
-    const spell_data_t* divine_bulwark;
     const spell_data_t* ancient_fury;
     const spell_data_t* ancient_power;
+    const spell_data_t* boundless_conviction;
+    const spell_data_t* divine_bulwark;
+    const spell_data_t* grand_crusader;
+    const spell_data_t* guarded_by_the_light;
     const spell_data_t* hand_of_light;
     const spell_data_t* illuminated_healing;
     const spell_data_t* judgments_of_the_bold;
     const spell_data_t* judgments_of_the_wise;
     const spell_data_t* plate_specialization;
-    const spell_data_t* guarded_by_the_light;
+    const spell_data_t* sanctity_of_battle;
+    const spell_data_t* sanctuary;
+    const spell_data_t* seal_of_insight;
     const spell_data_t* sword_of_light;
     const spell_data_t* sword_of_light_value;
-    const spell_data_t* vengeance;
     const spell_data_t* the_art_of_war;
-    const spell_data_t* sanctity_of_battle;
-    const spell_data_t* seal_of_insight;
-    const spell_data_t* sanctuary;
-    const spell_data_t* grand_crusader;
+    const spell_data_t* vengeance;
   } passives;
 
   // Pets
@@ -170,6 +173,7 @@ public:
   struct talents_t
   {
     const spell_data_t* divine_purpose;
+    //todo: Sacred Shield, Holy Avenger, Sanctified Wrath
   } talents;
 
   // Glyphs
@@ -179,12 +183,14 @@ public:
     const spell_data_t* divine_protection;
     const spell_data_t* divine_storm;
     const spell_data_t* double_jeopardy;
+    const spell_data_t* focused_shield;
     const spell_data_t* harsh_words;
     const spell_data_t* immediate_truth;
     const spell_data_t* inquisition;
     const spell_data_t* mass_exorcism;
     const spell_data_t* templars_verdict;
     const spell_data_t* word_of_glory;
+    //todo: battle healer, alabaster shield, focused wrath, final wrath
   } glyphs;
 
   player_t* beacon_target;
@@ -234,7 +240,7 @@ public:
 
     cooldowns.avengers_shield = get_cooldown( "avengers_shield" );
     cooldowns.exorcism = get_cooldown( "exorcism" );
-
+    
     beacon_target = 0;
 
     base.distance = ( specialization() == PALADIN_HOLY ) ? 30 : 3;
@@ -274,12 +280,13 @@ public:
   virtual void      create_pets   ();
   virtual void      combat_begin();
 
-  int               holy_power_stacks();
-  double            get_divine_bulwark();
-  double            get_hand_of_light();
-  double            jotp_haste();
-  void trigger_grand_crusader();
-  void apl_prot();
+  int     holy_power_stacks();
+  double  get_divine_bulwark();
+  double  get_hand_of_light();
+  double  jotp_haste();
+  void    trigger_grand_crusader();
+  void    generate_action_prio_list_prot();
+  void    generate_action_prio_list_ret();
 
   target_specific_t<paladin_td_t*> target_data;
 
@@ -430,12 +437,17 @@ namespace attacks {
 
 struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
 {
+  // booleans to allow individual control of seal proc triggers
   bool trigger_seal;
   bool trigger_seal_of_righteousness;
   bool trigger_seal_of_justice;
-  bool trigger_seal_of_justice_aoe;
+  bool trigger_seal_of_truth;
+  bool trigger_seal_of_justice_aoe; // probably not needed anymore, this change was reverted
+
+  // spell cooldown reduction flags
   bool sanctity_of_battle;  //separated from use_spell_haste because sanctity is now on melee haste
   bool use_spell_haste; // Some attacks (censure) use spell haste. sigh.
+
   bool use2hspec;
 
   paladin_melee_attack_t( const std::string& n, paladin_t* p,
@@ -445,6 +457,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
     trigger_seal( false ),
     trigger_seal_of_righteousness( false ),
     trigger_seal_of_justice( false ),
+    trigger_seal_of_truth( false ),
     trigger_seal_of_justice_aoe( false ),
     sanctity_of_battle( false ),
     use_spell_haste( false ),
@@ -513,7 +526,8 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
       }
 
       if ( trigger_seal || ( trigger_seal_of_righteousness && ( p() -> active_seal == SEAL_OF_RIGHTEOUSNESS ) )
-                        || ( trigger_seal_of_justice && ( p() -> active_seal == SEAL_OF_JUSTICE ) ) )
+                        || ( trigger_seal_of_justice && ( p() -> active_seal == SEAL_OF_JUSTICE ) ) 
+                        || ( trigger_seal_of_truth && ( p() -> active_seal == SEAL_OF_TRUTH ) ) )
       {
         switch ( p() -> active_seal )
         {
@@ -580,12 +594,15 @@ struct melee_t : public paladin_melee_attack_t
     paladin_melee_attack_t::execute();
     if ( result_is_hit( execute_state -> result ) )
     {
+      // Check for Art of War procs
       if ( p() -> passives.the_art_of_war -> ok() && sim -> roll( p() -> passives.the_art_of_war -> proc_chance() ) )
       {
+        // if Exorcism was already off-cooldown, count the proc as wasted
         if ( p() -> cooldowns.exorcism -> remains() <= timespan_t::zero() )
         {
           p() -> procs.wasted_art_of_war -> occur();
         }
+        // trigger proc, reset Exorcism cooldown
         p() -> procs.the_art_of_war -> occur();
         p() -> cooldowns.exorcism -> reset( true );
       }
@@ -604,6 +621,7 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
     assert( p -> main_hand_weapon.type != WEAPON_NONE );
     p -> main_hand_attack = new melee_t( p );
 
+    // does not incur a GCD
     trigger_gcd = timespan_t::zero();
 
     parse_options( NULL, options_str );
@@ -621,51 +639,6 @@ struct auto_melee_attack_t : public paladin_melee_attack_t
   }
 };
 
-// Avengers Shield ==========================================================
-
-struct avengers_shield_t : public paladin_melee_attack_t
-{
-  avengers_shield_t( paladin_t* p, const std::string& options_str )
-    : paladin_melee_attack_t( "avengers_shield", p, p -> find_class_spell( "Avenger's Shield" ) )
-  {
-    parse_options( NULL, options_str );
-
-    trigger_seal = false;
-    aoe          = 3;
-    may_parry    = false;
-    may_dodge    = false;
-    may_block    = false;
-
-    cooldown = p -> cooldowns.avengers_shield;
-    cooldown -> duration = data().cooldown();
-
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 0.0;
-
-    base_spell_power_multiplier  = direct_power_mod;
-    base_attack_power_multiplier = data().extra_coeff();
-    direct_power_mod = 1.0;
-  }
-
-  virtual void execute()
-  {
-    paladin_melee_attack_t::execute();
-
-    if ( p() -> buffs.grand_crusader -> up() )
-    {
-      int g = 1;
-      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_grand_crusader );
-      if ( p() -> buffs.holy_avenger -> check() )
-      {
-        p() -> resource_gain( RESOURCE_HOLY_POWER,
-                              p() -> buffs.holy_avenger -> value() - g,
-                              p() -> gains.hp_holy_avenger );
-      }
-      p() -> buffs.grand_crusader -> expire();
-    }
-  }
-};
-
 // Crusader Strike ==========================================================
 
 struct crusader_strike_t : public paladin_melee_attack_t
@@ -677,13 +650,20 @@ struct crusader_strike_t : public paladin_melee_attack_t
       sword_of_light( p -> find_specialization_spell( "Sword of Light" ) )
   {
     parse_options( NULL, options_str );
+
+    // CS triggers all seals
     trigger_seal = true;
+
+    // Sanctity of Battle reduces melee GCD
     sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
 
+    // multiplier modification for T13 Retribution 2-piece bonus
     base_multiplier *= 1.0 + ( ( p -> set_bonus.tier13_2pc_melee() ) ? p -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() : 0.0 );
+
+    //grab Sword of Light spell info for cost reduction.  probably unnecessary? (see GbtL implementation in cost() )
     sword_of_light = p -> find_specialization_spell( "Sword of Light" );
 
-
+    // Funky code for Guarded by the Light.  Will consolidate with cost() code tomorrow
     for ( size_t i = 0; data()._power && i < data()._power -> size(); i++ )
     {
       const spellpower_data_t* pd = (*data()._power)[ i ];
@@ -693,6 +673,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
       else
         base_costs[ pd -> resource() ] = floor( pd -> cost() * player -> resources.base[ pd -> resource() ] );
 
+      // Guarded by the Light hidden effect reduces CS cost from 9k to 1.8k mana
       base_costs[ pd -> resource() ] *= 1.0 + p -> passives.guarded_by_the_light -> effectN( 7 ).percent();
     }
 
@@ -702,6 +683,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
+    // Holy Avenger buffs CS damage by 30% while active
     if ( p() -> buffs.holy_avenger -> check() )
     {
       am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
@@ -713,16 +695,24 @@ struct crusader_strike_t : public paladin_melee_attack_t
   virtual double cost()
   {
     double c = paladin_melee_attack_t::cost();
-    c *= 1.0 + sword_of_light -> effectN( 4 ).percent();
+
+    // Sword of Light and Guarded by the Light have hidden effects that reduce CS cost by 80%
+    if ( p() -> specialization() == PALADIN_RETRIBUTION )
+      c *= 1.0 + sword_of_light -> effectN( 4 ).percent();
+   /* if ( p() -> specialization() == PALADIN_PROTECTION )
+      c *= 1.0 + p() -> passives.guarded_by_the_light -> effectN( 7 ).percent(); */
+    
     return c;
   }
 
   virtual void update_ready( timespan_t cd_duration )
   {
+    // reduce cooldown if Sanctity of Battle present
     if ( p() -> passives.sanctity_of_battle -> ok() )
     {
       cd_duration = cooldown -> duration * p() -> cache.attack_haste();
     }
+    
     paladin_melee_attack_t::update_ready( cd_duration );
   }
 
@@ -730,18 +720,27 @@ struct crusader_strike_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( s );
 
+    // Special things that happen when CS connects
     if ( result_is_hit( s -> result ) )
     {
-      int g = 1;
-      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike );
+      // Holy Power gains, only relevant if CS connects
+      int g = 1; // default is a gain of 1 Holy Power
+      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_crusader_strike ); // apply gain, record as due to CS
+
+      // If Holy Avenger active, grant 2 more
       if ( p() -> buffs.holy_avenger -> check() )
       {
+        //apply gain, record as due to Holy Avenger
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
       }
 
+      // Trigger Hand of Light procs
       trigger_hand_of_light( s );
+
+      // Trigger Grand Crusader procs
       p() -> trigger_grand_crusader();
 
+      // Check for T15 Ret 4-piece bonus proc
       if ( p() -> set_bonus.tier15_4pc_melee() )
         p() -> buffs.tier15_4pc_melee -> trigger();
 
@@ -818,26 +817,40 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
   hammer_of_the_righteous_aoe_t( paladin_t* p )
     : paladin_melee_attack_t( "hammer_of_the_righteous_aoe", p, p -> find_spell( 88263 ), false )
   {
+    // AoE effect always hits if single-target attack succeeds
+    // Doesn't proc seals or Grand Crusader
     may_dodge = false;
     may_parry = false;
     may_miss  = false;
     background = true;
     aoe       = -1;
-    sanctity_of_battle = ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_PROTECTION )
-                         && p -> passives.sanctity_of_battle -> ok();
+    trigger_gcd = timespan_t::zero(); // doesn't incur GCD (HotR does that already)
 
+    // Non-weapon-based AP/SP scaling, zero now, but has been non-zero in past iterations
     direct_power_mod = data().extra_coeff();
   }
   virtual double action_multiplier()
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
+    // Holy Avenger buffs HotR damage by 30% while active
     if ( p() -> buffs.holy_avenger -> check() )
     {
       am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
     }
 
     return am;
+  }
+
+  virtual void impact( action_state_t* s)
+  {
+    // Everything hit by Hammer of the Righteous AoE triggers Weakened Blows
+      if ( ! sim -> overrides.weakened_blows )
+        target -> debuffs.weakened_blows -> trigger();
+      
+      // Trigger Hand of Light procs
+      trigger_hand_of_light( s );
+
   }
 };
 
@@ -851,19 +864,23 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   {
     parse_options( NULL, options_str );
 
+    // link with Crusader Strike's cooldown
     cooldown = p -> get_cooldown( "crusader_strike" );
     cooldown -> duration = data().cooldown();
 
-    sanctity_of_battle = ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_PROTECTION )
-                         && p -> passives.sanctity_of_battle -> ok();
-    trigger_seal_of_righteousness = true;
-    trigger_seal_of_justice = true;
+    // Sanctity of Battle reduces melee GCD
+    sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
 
+    // HotR triggers all seals
+    trigger_seal = true; 
+
+    // Implement AoE proc
     add_child( proc );
   }
 
   virtual void update_ready( timespan_t cd_duration )
   {
+    // reduce cooldown if Sanctity of Battle present
     if ( p() -> passives.sanctity_of_battle -> ok() )
     {
       cd_duration = cooldown -> duration * p() -> cache.attack_haste();
@@ -875,6 +892,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
+    // Holy Avenger buffs HotR damage by 30% while active
     if ( p() -> buffs.holy_avenger -> check() )
     {
       am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
@@ -887,18 +905,27 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( s );
 
+    // Special things that happen when HotR connects
     if ( result_is_hit( s -> result ) )
     {
+      // Trigger AoE proc
       proc -> execute();
 
-      int g = 1;
-      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_hammer_of_the_righteous );
+      // Holy Power gains, only relevant if CS connects
+      int g = 1; // default is a gain of 1 Holy Power
+      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_hammer_of_the_righteous ); // apply gain, record as due to CS
+     
+      // If Holy Avenger active, grant 2 more
       if ( p() -> buffs.holy_avenger -> check() )
       {
+        //apply gain, record as due to Holy Avenger
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
       }
-
+      
+      // Trigger Hand of Light procs
       trigger_hand_of_light( s );
+
+      // Trigger Grand Crusader procs
       p() -> trigger_grand_crusader();
 
       // Mists of Pandaria: Hammer of the Righteous triggers Weakened Blows
@@ -1171,11 +1198,11 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
   }
 };
 
-// judgment ================================================================
+// Judgment ================================================================
 
 struct judgment_t : public paladin_melee_attack_t
 {
-  double cooldown_mult;
+  double cooldown_mult; // used to handle Sanctified Wrath cooldown reduction
 
   judgment_t( paladin_t* p, const std::string& options_str )
     : paladin_melee_attack_t( "judgment", p, p -> find_spell( "Judgment" ), true ),
@@ -1183,22 +1210,30 @@ struct judgment_t : public paladin_melee_attack_t
   {
     parse_options( NULL, options_str );
 
+    // Sanctity of Battle reduces melee GCD
     sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
 
+    // Spell database info jumbled, re-arrange to make correct
     base_spell_power_multiplier  = direct_power_mod;
     base_attack_power_multiplier = data().extra_coeff();
     direct_power_mod             = 1.0;
+
+    // Special melee attack that can only miss
     may_glance                   = false;
     may_block                    = false;
     may_parry                    = false;
     may_dodge                    = false;
-    trigger_seal                 = true;
 
+    // Only triggers Seal of Truth
+    trigger_seal_of_truth        = true;
+
+    // define cooldown multiplier for use with Sanctified Wrath talent for protection only
     if ( ( p -> specialization() == PALADIN_PROTECTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
     {
       cooldown_mult = p -> find_talent_spell( "Sanctified Wrath" ) -> effectN( 1 ).percent();
     }
 
+    // damage multiplier from T14 Retribution 4-piece bonus
     base_multiplier *= 1.0 + p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
   }
 
@@ -1206,34 +1241,52 @@ struct judgment_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::execute();
 
+    // Special things that happen when Judgment succeeds
     if ( result_is_hit( execute_state -> result ) )
     {
+      // +1 Holy Power for Ret
       if ( p() -> passives.judgments_of_the_bold -> ok() )
       {
+        // apply gain, attribute gain to Judgments of the Bold
         p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgments_of_the_bold );
-        if ( p() -> buffs.holy_avenger -> check() )
-        {
-          p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - 1, p() -> gains.hp_holy_avenger );
-        }
+
       }
+      // +1 Holy Power for Prot
       else if ( p() -> passives.judgments_of_the_wise -> ok() )
       {
+        // apply gain, attribute gain to Judgments of the Wise
         p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgments_of_the_wise );
+      }
+
+      // Holy Avenger adds 2 more Holy Power if active
+      if ( p() -> buffs.holy_avenger -> check() )
+      {
+       //apply gain, attribute to Holy Avenger
+        p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - 1, p() -> gains.hp_holy_avenger );
       }
     }
   }
 
+  // Special things that happen when Judgment damages target
   virtual void impact( action_state_t* s )
   {
     paladin_melee_attack_t::impact( s );
 
-    if ( p() -> buffs.double_jeopardy -> check() )
-      p() -> buffs.double_jeopardy -> expire();
-    else
+    // Glyph of Double Jeopardy handling ===========================================================
+    // original implementation was incorrect - would only grant benefit ~ half the time.
+    // proper implemenation: buff granted on every J, target set to new value each time.
+    // action_multiplier() gets called before impact(), so we can just set the buff parameters here 
+    // and let action_multiplier() take care of figuring out if we should get a damage boost or not.
+
+    // if the glyph is present, trigger the buff and store the target information
+    if ( p() -> glyphs.double_jeopardy -> ok() )
+    {
       p() -> buffs.double_jeopardy -> trigger();
+      p() -> last_judgement_target = s -> target;
+    }
+    // end Double Jeopardy ==========================================================================
 
-    p() -> last_judgement_target = s -> target;
-
+    // Physical Vulnerability debuff
     if ( ! sim -> overrides.physical_vulnerability && p() -> passives.judgments_of_the_bold -> ok() )
       s -> target -> debuffs.physical_vulnerability -> trigger();
   }
@@ -1241,12 +1294,18 @@ struct judgment_t : public paladin_melee_attack_t
   virtual double action_multiplier()
   {
     double am = paladin_melee_attack_t::action_multiplier();
-
+    
+    // Holy Avenger buffs J damage by 30% while active
     if ( p() -> buffs.holy_avenger -> check() )
     {
       am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
     }
-    if ( target != p() -> last_judgement_target && p() -> buffs.double_jeopardy -> check() )
+
+    // Double Jeopardy damage boost, only if we hit a different target with it
+    // this gets called before impact(), so last_judgment_target won't be updated until after this resolves
+    if (  p() -> glyphs.double_jeopardy -> ok()              // glyph equipped
+              && target != p() -> last_judgement_target      // current target is different than last_j_target
+              && p() -> buffs.double_jeopardy -> check() )   // double_jeopardy buff is still active
     {
       am *= 1.0 + p() -> buffs.double_jeopardy -> value();
     }
@@ -1254,14 +1313,18 @@ struct judgment_t : public paladin_melee_attack_t
     return am;
   }
 
+  // Cooldown reduction effects
   virtual void update_ready( timespan_t cd_duration )
   {
     cd_duration = cooldown -> duration;
 
+    // Sanctity of Battle
     if ( p() -> passives.sanctity_of_battle -> ok() )
     {
       cd_duration *= p() -> cache.attack_haste();
     }
+
+    // Reduction during AW - does nothing if Sanctified Wrath not talented
     if ( p() -> buffs.avenging_wrath -> up() )
     {
       cd_duration *= cooldown_mult;
@@ -1272,13 +1335,14 @@ struct judgment_t : public paladin_melee_attack_t
 
   virtual bool ready()
   {
+    // Only usable if a seal is active
     if ( p() -> active_seal == SEAL_NONE ) return false;
 
     return paladin_melee_attack_t::ready();
   }
 };
 
-// Shield of Righteousness ==================================================
+// Shield of the Righteous ==================================================
 
 struct shield_of_the_righteous_t : public paladin_melee_attack_t
 {
@@ -1287,30 +1351,62 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
   {
     parse_options( NULL, options_str );
 
-    may_parry = false;
-    may_dodge = false;
-    may_block = false;
+    //SotR subject to all types of avoidance and mitigation
+    may_parry = true;
+    may_dodge = true;
+    may_block = true;
 
-    weapon = &( p -> main_hand_weapon );
+    // Triggers all seals
+    trigger_seal = true;
+
+    // not on GCD
+    use_off_gcd = true;
+    
+    // no weapon scaling
     weapon_multiplier = 0.0;
 
-    direct_power_mod = data().extra_coeff();
+    //set AP scaling coefficient, set direct power mod equal to 1 (defaults to 0)
+    base_attack_power_multiplier = data().extra_coeff();
+    direct_power_mod = 1;
   }
 
   virtual void execute()
   {
     paladin_melee_attack_t::execute();
 
-    p() -> buffs.shield_of_the_righteous -> trigger();
+    //Buff granted regardless of combat roll result 
+    //Duration is additive on refresh, stats not recalculated
+    if ( p() -> buffs.shield_of_the_righteous -> check() )
+    {
+      p() -> buffs.shield_of_the_righteous -> extend_duration( p(), timespan_t::from_seconds( p() -> find_class_spell( "Shield of the Righteous" ) -> _duration) );
+    }
+    else
+      p() -> buffs.shield_of_the_righteous -> trigger();
+  }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    // reduce cooldown if Sanctity of Battle present
+    if ( p() -> passives.sanctity_of_battle -> ok() )
+    {
+      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
+    }
+    
+    paladin_melee_attack_t::update_ready( cd_duration );
   }
 
   virtual bool ready()
   {
-    if ( p() -> main_hand_weapon.group() == WEAPON_2H )
+    //only usable if shield is equipped in off-hand
+    if ( p() -> items[ SLOT_OFF_HAND ].parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD )
+    {
+      return paladin_melee_attack_t::ready();
+    }
+    else
       return false;
-
-    return paladin_melee_attack_t::ready();
   }
+
+  //todo: Alabaster Shield damage buff
 };
 
 // Templar's Verdict ========================================================
@@ -1449,7 +1545,7 @@ struct ancient_fury_t : public paladin_spell_t
   }
 };
 
-// Ardent Defender
+// Ardent Defender ===========================================================
 
 struct ardent_defender_t : public paladin_spell_t
 {
@@ -1467,6 +1563,101 @@ struct ardent_defender_t : public paladin_spell_t
 
     p() -> buffs.ardent_defender -> trigger();
   }
+};
+
+// Avengers Shield ==========================================================
+
+struct avengers_shield_t : public paladin_spell_t
+{
+  avengers_shield_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "avengers_shield", p, p -> find_class_spell( "Avenger's Shield" ) )
+  {
+    parse_options( NULL, options_str );
+
+    // hits 1 target if FS glyphed, 3 otherwise
+    aoe = ( p -> glyphs.focused_shield -> ok() ) ? 1 : 3;
+    may_crit     = true;
+    
+    // no weapon multiplier
+    weapon_multiplier = 0.0;
+
+    // link needed for trigger_grand_crusader
+    cooldown = p -> cooldowns.avengers_shield;
+    cooldown -> duration = data().cooldown();
+    
+    //AS spell data is weird - direct_power_mod holds the SP scaling, extra_coeff() the AP scaling
+    base_spell_power_multiplier  = direct_power_mod;
+    base_attack_power_multiplier = data().extra_coeff();
+    direct_power_mod = 1.0; // reset direct power coefficient to 1 (see action_t::calculate_direct_amount in sc_action.cpp)
+  }
+
+  // Multiplicative damage effects
+  virtual double action_multiplier()
+  {
+    double am = paladin_spell_t::action_multiplier();
+
+    //Holy Avenger buffs damage iff Grand Crusader is active
+    if ( p() -> buffs.holy_avenger -> check() && p() -> buffs.grand_crusader -> check() )
+    {
+      am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
+    }
+
+    //Focused Shield gives another multiplicative factor of 1.3 (tested 5/26/2013, multiplicative with HA)
+    if ( p() -> glyphs.focused_shield -> ok() )
+    {
+      am *= 1.0 + p() -> glyphs.focused_shield -> effectN( 2 ).percent();
+    }
+
+    return am;
+  }
+
+  //Sanctity of Battle reduces cooldown
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    if ( p() -> passives.sanctity_of_battle -> ok() )
+    {
+      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
+    }
+    paladin_spell_t::update_ready( cd_duration );
+  }
+
+  virtual void execute()
+  {
+    paladin_spell_t::execute();
+
+    //Holy Power gains - only if Grand Crusader is active
+    if ( p() -> buffs.grand_crusader -> up() )
+    {
+      //base gain is 1 Holy Power
+      int g = 1;
+      //apply gain, attribute to Grand Crusader
+      p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_grand_crusader );
+
+      //Holy Avenger adds another 2 Holy Power
+      if ( p() -> buffs.holy_avenger -> check() )
+      {
+        //apply gain, attribute to Holy Avenger
+        p() -> resource_gain( RESOURCE_HOLY_POWER,
+                              p() -> buffs.holy_avenger -> value() - g,
+                              p() -> gains.hp_holy_avenger );
+      }
+
+      //Remove Grand Crsuader buff
+      p() -> buffs.grand_crusader -> expire();
+    }
+  }
+
+  virtual bool ready()
+  {
+    //only usable if shield is equipped in off-hand
+    if ( p() -> items[ SLOT_OFF_HAND ].parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD )
+    {
+      return paladin_spell_t::ready();
+    }
+    else
+      return false;
+  }
+
 };
 
 // Avenging Wrath ===========================================================
@@ -1570,10 +1761,13 @@ struct consecration_tick_t : public paladin_spell_t
     background  = true;
     may_crit    = true;
     may_miss    = true;
-    hasted_ticks = false;
+    hasted_ticks = false;  // fixed 1s tick interval
+
+    // Spell data jumbled, re-arrange modifiers appropriately
     base_spell_power_multiplier  = direct_power_mod;
     base_attack_power_multiplier = data().extra_coeff();
     direct_power_mod             = 1.0;
+    weapon_multiplier            = 0;
   }
 };
 
@@ -1586,7 +1780,7 @@ struct consecration_t : public paladin_spell_t
 
     hasted_ticks   = false;
     may_miss       = false;
-    num_ticks      = 10;
+    num_ticks      = 9;
     base_tick_time = timespan_t::from_seconds( 1.0 );
 
     tick_action = new consecration_tick_t( p );
@@ -1875,7 +2069,30 @@ struct holy_wrath_t : public paladin_spell_t
 
     // aoe = -1; FIXME disabled until we have meteor support
     may_crit   = true;
-    direct_power_mod = 0.61;
+
+    // no weapon component
+    weapon_multiplier = 0;
+
+    //Holy Wrath is an oddball - spell database entry doesn't properly contain damage details
+    //Tooltip formula is wrong as well.  We're gong to hardcode it here based on empirical testing
+    //see http://maintankadin.failsafedesign.com/forum/viewtopic.php?p=743800#p743800
+
+    base_dd_min = 4300; // fixed base damage (no range)
+    base_dd_max = 4300;
+    base_attack_power_multiplier = 0.91; // 0.91 AP scaling
+    base_spell_power_multiplier = 0;     // no SP scaling
+    direct_power_mod = 1; 
+
+  }
+
+  //Sanctity of Battle reduces cooldown
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    if ( p() -> passives.sanctity_of_battle -> ok() )
+    {
+      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
+    }
+    paladin_spell_t::update_ready( cd_duration );
   }
 };
 
@@ -2239,18 +2456,25 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     proc( p -> get_proc( name_str ) )
   {
     background  = true;
-    paladin_heal_t::proc        = true;
+    paladin_heal_t::proc = true;
     trigger_gcd = timespan_t::zero();
+    may_crit = false; //cannot crit
 
+    // spell database info is mostly in effects
     direct_power_mod             = 1.0;
-    base_attack_power_multiplier = 0.15;
-    base_spell_power_multiplier  = 0.15;
+    base_attack_power_multiplier = data().effectN( 1 ).percent();
+    base_spell_power_multiplier  = data().effectN( 1 ).percent();
 
-    weapon            = &( p -> main_hand_weapon );
+    // needed for weapon speed, I assume
+    weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
 
+    // regen is 4% mana
     proc_regen  = data().effectN( 1 ).trigger() ? data().effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_MANA ) : 0.0;
-    proc_chance = ppm_proc_chance( data().effectN( 1 ).base_value() );
+
+    // proc chance is now 20 PPM, spell database info still says 15.  
+    // Best guess is that the 4th effect describes the additional 5 PPM.
+    proc_chance = ppm_proc_chance( data().effectN( 1 ).base_value() + data().effectN(4).base_value() );
 
     target = player;
   }
@@ -2589,10 +2813,13 @@ struct word_of_glory_t : public paladin_heal_t
 
     paladin_heal_t::execute();
 
+    // Glyph of Word of Glory handling
     if ( p() -> spells.glyph_of_word_of_glory_damage -> ok() )
     {
       p() -> buffs.glyph_of_word_of_glory -> trigger( 1, p() -> spells.glyph_of_word_of_glory_damage -> effectN( 1 ).percent() * hopo );
     }
+
+    // Shield of Glory (Tier 15 protection 2-piece bonus)
   }
 };
 
@@ -3000,6 +3227,7 @@ void paladin_t::create_buffs()
   buffs.grand_crusader = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() ).chance( passives.grand_crusader -> proc_chance() );
   buffs.shield_of_the_righteous = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
   buffs.ardent_defender = buff_creator_t( this, "ardent_defender" ).spell( find_specialization_spell( "Ardent Defender" ) );
+  buffs.shield_of_glory = buff_creator_t( this, "shield_of_glory" ).spell( find_spell( 138242 ) );
 
   // Ret
   buffs.ancient_power          = buff_creator_t( this, "ancient_power", passives.ancient_power ).add_invalidate( CACHE_STRENGTH );
@@ -3014,7 +3242,7 @@ void paladin_t::create_buffs()
 
 // Protection Combat Action Priority List
 
-void paladin_t::apl_prot()
+void paladin_t::generate_action_prio_list_prot()
 {
   //precombat first
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
@@ -3084,6 +3312,11 @@ void paladin_t::apl_prot()
   def -> add_action( this, "Hammer of Wrath" );
   def -> add_action( this, "Holy Wrath" );
   def -> add_action( this, "Consecration", "if=target.debuff.flying.down&!ticking" );
+}
+
+void paladin_t::generate_action_prio_list_ret()
+{
+  // placeholder, eventually going to move the monstrosity in init_actions() into here.
 }
 
 // paladin_t::init_actions ==================================================
@@ -3383,8 +3616,8 @@ void paladin_t::init_actions()
     break;
     // for prot, call subroutine
     case PALADIN_PROTECTION:
-		apl_prot(); // PROT
-		break;
+		  generate_action_prio_list_prot(); // PROT
+		  break;
     case PALADIN_HOLY:
     {
 #if 0
@@ -3484,6 +3717,7 @@ void paladin_t::init_spells()
   glyphs.double_jeopardy          = find_glyph_spell( "Glyph of Double Jeopardy" );
   glyphs.mass_exorcism            = find_glyph_spell( "Glyph of Mass Exorcism" );
   glyphs.templars_verdict         = find_glyph_spell( "Glyph of Templar's Verdict" );
+  glyphs.focused_shield           = find_glyph_spell( "Glyph of Focused Shield" );
   glyphs.harsh_words              = find_glyph_spell( "Glyph of Harsh Words" );
   glyphs.immediate_truth          = find_glyph_spell( "Glyph of Immediate Truth" );
   glyphs.inquisition              = find_glyph_spell( "Glyph of Inquisition"     );
@@ -3810,6 +4044,8 @@ void paladin_t::assess_damage( school_e school,
     return;
   }
 
+  // the rest of these buffs could probably be moved to paladin_t::target_mitigation().  
+  // It looks like the order of operations is still correct this way, but it's far more confusing.
   if ( buffs.gotak_prot -> up() )
     s -> result_amount *= 1.0 + dbc.spell( 86657 ) -> effectN( 2 ).percent(); // Value of the buff is stored in another spell
 

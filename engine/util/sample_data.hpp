@@ -9,7 +9,7 @@
 #include <vector>
 #include <numeric>
 #include <limits>
-#include "sc_generic.hpp"
+#include "../sc_generic.hpp"
 
 // Statistical Sample Data Container
 
