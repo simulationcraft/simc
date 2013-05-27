@@ -489,7 +489,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
       timespan_t t = action_t::gcd();
       if ( t == timespan_t::zero() ) return timespan_t::zero();
 
-      t *= p()->composite_melee_haste();
+      t *= p() -> cache.attack_haste();
       if ( t < min_gcd ) t = min_gcd;
 
       return t;
