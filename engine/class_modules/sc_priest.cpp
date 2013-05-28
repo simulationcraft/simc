@@ -96,7 +96,7 @@ public:
 
     const spell_data_t* from_darkness_comes_light;
     const spell_data_t* mindbender;
-    const spell_data_t* power_word_solace;
+    const spell_data_t* solace_and_insanity;
 
     const spell_data_t* desperate_prayer;
     const spell_data_t* spectral_guise;
@@ -2647,7 +2647,7 @@ struct mind_flay_mastery_t : public priest_procced_mastery_spell_t
 
     if ( insanity )
     {
-      if ( priest.talents.power_word_solace -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
+      if ( priest.talents.solace_and_insanity -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
       {
         const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( t ).dots.devouring_plague_tick -> state );
         m *= 1.0 + dp_state -> orbs_used / 3.0;
@@ -2707,7 +2707,7 @@ struct mind_flay_insanity_t : public mind_flay_base_t<true>
   {
     double m = priest_spell_t::composite_target_multiplier( t );
 
-    if ( priest.talents.power_word_solace -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
+    if ( priest.talents.solace_and_insanity -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
     {
       const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( t ).dots.devouring_plague_tick -> state );
       m *= 1.0 + dp_state -> orbs_used / 3.0;
@@ -2718,7 +2718,7 @@ struct mind_flay_insanity_t : public mind_flay_base_t<true>
 
   virtual bool ready()
   {
-    if ( !priest.talents.power_word_solace -> ok() || ! td( target ).dots.devouring_plague_tick -> ticking )
+    if ( !priest.talents.solace_and_insanity -> ok() || ! td( target ).dots.devouring_plague_tick -> ticking )
       return false;
 
     return base_t::ready();
@@ -2936,110 +2936,76 @@ struct vampiric_touch_t : public priest_spell_t
   }
 };
 
+struct holy_fire_base_t : public priest_spell_t
+{
+  holy_fire_base_t( const std::string& name, priest_t& p, const spell_data_t* sd ) :
+      priest_spell_t( name, p, sd )
+    {
+      can_cancel_shadowform = false; // FIXME: check in 5.2+
+      castable_in_shadowform = false;
+
+      can_trigger_atonement = true; // FIXME: check in 5.2+
+
+      range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
+    }
+
+    virtual void execute()
+    {
+      priest.buffs.holy_evangelism -> up();
+
+      priest_spell_t::execute();
+
+      priest.buffs.holy_evangelism -> trigger();
+    }
+
+    virtual double action_multiplier()
+    {
+      double m = priest_spell_t::action_multiplier();
+
+      m *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 1 ).percent() );
+
+      return m;
+    }
+
+    virtual double cost()
+    {
+      double c = priest_spell_t::cost();
+
+      if ( priest.buffs.chakra_chastise -> check() )
+        c *= 1.0 + priest.buffs.chakra_chastise -> data().effectN( 3 ).percent();
+
+      c *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 2 ).percent() );
+
+      return c;
+    }
+};
 // Power Word: Solace Spell ==========================================================
 
-struct power_word_solace_t : public priest_spell_t
+struct power_word_solace_t : public holy_fire_base_t
 {
   power_word_solace_t( priest_t& p, const std::string& options_str ) :
-    priest_spell_t( "power_word_solace", p, p.talents.power_word_solace  )
+    holy_fire_base_t( "power_word_solace", p, p.find_spell( p.talents.solace_and_insanity -> effectN( 1 ).base_value() ) )
   {
     parse_options( nullptr, options_str );
-
-    can_cancel_shadowform = false; // FIXME: check in 5.2+
-    castable_in_shadowform = false;
-
-    can_trigger_atonement = true; // FIXME: check in 5.2+
-
-    range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
-  }
-
-  virtual void execute()
-  {
-    priest.buffs.holy_evangelism -> up();
-
-    priest_spell_t::execute();
-
-    priest.buffs.holy_evangelism -> trigger();
-  }
-
-  virtual double action_multiplier()
-  {
-    double m = priest_spell_t::action_multiplier();
-
-    m *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 1 ).percent() );
-
-    return m;
-  }
-
-  virtual double cost()
-  {
-    double c = priest_spell_t::cost();
-
-    if ( priest.buffs.chakra_chastise -> check() )
-      c *= 1.0 + priest.buffs.chakra_chastise -> data().effectN( 3 ).percent();
-
-    c *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 2 ).percent() );
-
-    return c;
   }
 
   virtual void impact( action_state_t* s )
   {
     priest_spell_t::impact( s );
 
-    double amount = data().effectN( 2 ).percent() / 100.0 * priest.resources.max[ RESOURCE_MANA ];
+    double amount = data().effectN( 3 ).percent() / 100.0 * priest.resources.max[ RESOURCE_MANA ];
     priest.resource_gain( RESOURCE_MANA, amount, priest.gains.power_word_solace );
   }
 };
 
 // Holy Fire Spell ==========================================================
 
-struct holy_fire_t : public priest_spell_t
+struct holy_fire_t : public holy_fire_base_t
 {
   holy_fire_t( priest_t& player, const std::string& options_str ) :
-    priest_spell_t( "holy_fire", player, player.find_class_spell( "Holy Fire" ) )
+    holy_fire_base_t( "holy_fire", player, player.find_class_spell( "Holy Fire" ) )
   {
     parse_options( nullptr, options_str );
-
-    can_trigger_atonement = true;
-    castable_in_shadowform = false;
-
-    range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
-
-  }
-
-  virtual void execute()
-  {
-    if ( priest.talents.power_word_solace -> ok() && sim -> log )
-    {
-      sim -> output( "Player %s: Power Word: Solace overrides Holy Fire if the talent is picked.\n"
-                     "Please use it instead of Holy Fire.\n", priest.name() );
-      background = true;
-    }
-    priest.buffs.holy_evangelism -> up();
-    priest_spell_t::execute();
-    priest.buffs.holy_evangelism -> trigger();
-  }
-
-  virtual double action_multiplier()
-  {
-    double m = priest_spell_t::action_multiplier();
-
-    m *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 1 ).percent() );
-
-    return m;
-  }
-
-  virtual double cost()
-  {
-    double c = priest_spell_t::cost();
-
-    if ( priest.buffs.chakra_chastise -> check() )
-      c *= 1.0 + priest.buffs.chakra_chastise -> data().effectN( 3 ).percent();
-
-    c *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 2 ).percent() );
-
-    return c;
   }
 };
 
@@ -3200,7 +3166,7 @@ struct smite_t : public priest_spell_t
   {
     bool glyph_benefit;
 
-    if ( priest.talents.power_word_solace -> ok() )
+    if ( priest.talents.solace_and_insanity -> ok() )
       glyph_benefit = priest.glyphs.smite -> ok() && td( t ).dots.power_word_solace -> ticking;
     else
       glyph_benefit = priest.glyphs.smite -> ok() && td( t ).dots.holy_fire -> ticking;
@@ -5057,7 +5023,6 @@ action_t* priest_t::create_action( const std::string& name,
 
   // Damage
   if ( name == "devouring_plague"       ) return new devouring_plague_t      ( *this, options_str );
-  if ( name == "holy_fire"              ) return new holy_fire_t             ( *this, options_str );
   if ( name == "mind_blast"             ) return new mind_blast_t            ( *this, options_str );
   if ( name == "mind_flay"              ) return new mind_flay_base_t<>      ( *this, options_str );
   if ( name == "mind_flay_insanity"     ) return new mind_flay_insanity_t    ( *this, options_str );
@@ -5074,8 +5039,14 @@ action_t* priest_t::create_action( const std::string& name,
     else
       return new summon_shadowfiend_t   ( *this, options_str );
   }
+  if ( ( name == "holy_fire" ) || ( name == "power_word_solace" ) )
+  {
+    if ( talents.solace_and_insanity -> ok() )
+      return new power_word_solace_t ( *this, options_str );
+    else
+      return new holy_fire_t  ( *this, options_str );
+  }
   if ( name == "vampiric_touch"         ) return new vampiric_touch_t        ( *this, options_str );
-  if ( name == "power_word_solace"      ) return new power_word_solace_t     ( *this, options_str );
   if ( name == "cascade_damage"         ) return new cascade_damage_t        ( *this, options_str );
   if ( name == "halo"                   ) return new halo_t                  ( *this, options_str );
   if ( name == "divine_star"            ) return new divine_star_t           ( *this, options_str );
@@ -5205,7 +5176,7 @@ void priest_t::init_spells()
 
   talents.from_darkness_comes_light   = find_talent_spell( "From Darkness, Comes Light" );
   talents.mindbender                  = find_talent_spell( "Mindbender" );
-  talents.power_word_solace           = find_talent_spell( "Solace and Insanity" );
+  talents.solace_and_insanity           = find_talent_spell( "Solace and Insanity" );
 
   talents.desperate_prayer            = find_talent_spell( "Desperate Prayer" );
   talents.spectral_guise              = find_talent_spell( "Spectral Guise" );
@@ -5635,8 +5606,10 @@ void priest_t::apl_disc_dmg()
 
   if ( find_class_spell( "Holy Fire" ) -> ok() )
   {
-    def -> add_action( "power_word_solace,if=talent.power_word_solace.enabled" );
-    def -> add_action( "holy_fire,if=!talent.power_word_solace.enabled" );
+    if ( talents.solace_and_insanity -> ok() ) // This is just for a nice-looking action list. Both strings resolve to the correct current action
+      def -> add_action( "power_word_solace" );
+    else
+      def -> add_action( "holy_fire" );
   }
 
   def -> add_action( "halo,if=talent.halo.enabled&active_enemies>3" );
@@ -5744,8 +5717,10 @@ void priest_t::apl_holy_dmg()
 
   if ( find_class_spell( "Holy Fire" ) -> ok() )
   {
-    def -> add_action( "power_word_solace,if=talent.power_word_solace.enabled" );
-    def -> add_action( "holy_fire,if=!talent.power_word_solace.enabled" );
+    if ( talents.solace_and_insanity -> ok() ) // This is just for a nice-looking action list. Both strings resolve to the correct current action
+      def -> add_action( "power_word_solace" );
+    else
+      def -> add_action( "holy_fire" );
   }
 
   def -> add_action( this, "Shadow Word: Pain", "if=remains<tick_time|!ticking" );
