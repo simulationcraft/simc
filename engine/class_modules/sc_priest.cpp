@@ -3200,7 +3200,7 @@ struct smite_t : public priest_spell_t
   {
     bool glyph_benefit;
 
-    if ( priest.talents.power_word_solace )
+    if ( priest.talents.power_word_solace -> ok() )
       glyph_benefit = priest.glyphs.smite -> ok() && td( t ).dots.power_word_solace -> ticking;
     else
       glyph_benefit = priest.glyphs.smite -> ok() && td( t ).dots.holy_fire -> ticking;
