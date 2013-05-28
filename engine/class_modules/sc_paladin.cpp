@@ -822,7 +822,7 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
 
     // Everything hit by Hammer of the Righteous AoE triggers Weakened Blows
       if ( ! sim -> overrides.weakened_blows )
-        target -> debuffs.weakened_blows -> trigger();
+        s -> target -> debuffs.weakened_blows -> trigger();
       
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
@@ -3622,8 +3622,8 @@ void paladin_t::init_actions()
     break;
     // for prot, call subroutine
     case PALADIN_PROTECTION:
-		  generate_action_prio_list_prot(); // PROT
-		  break;
+      generate_action_prio_list_prot(); // PROT
+      break;
     case PALADIN_HOLY:
     {
 #if 0
