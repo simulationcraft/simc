@@ -923,38 +923,52 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   {
     parse_options( NULL, options_str );
 
+    // Sanctity of Battle reduces melee GCD
     sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
+
+    // Cannot be parried or blocked, but can be dodged
     may_parry    = false;
     may_block    = false;
 
+    // no weapon multiplier
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
 
+    // shift coefficients around for formula consistency
     base_spell_power_multiplier  = direct_power_mod;
     base_attack_power_multiplier = data().extra_coeff();
     direct_power_mod             = 1.0;
 
+    // define cooldown multiplier for use with Sanctified Wrath talent for retribution only
     if ( ( p -> specialization() == PALADIN_RETRIBUTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
     {
       cooldown_mult = p -> find_talent_spell( "Sanctified Wrath" ) -> effectN( 1 ).percent();
     }
   }
 
+  // Special things that happen with Hammer of Wrath damages target
   virtual void impact( action_state_t* s )
   {
     paladin_melee_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
+      // if Ret spec, grant Holy Power
       if ( p() -> passives.sword_of_light -> ok() )
       {
-        int g = 1;
+        int g = 1; // base gain is 1 Holy Power
+       //apply gain, attribute to Hammer of Wrath
         p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_hammer_of_wrath );
+
+        // Holy Avenger adds 2 more Holy Power if active
         if ( p() -> buffs.holy_avenger -> check() )
         {
+       //apply gain, attribute to Holy Avenger
           p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
         }
       }
+      
+      // Trigger Hand of Light procs
       trigger_hand_of_light( s );
     }
   }
@@ -962,7 +976,8 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   virtual double action_multiplier()
   {
     double am = paladin_melee_attack_t::action_multiplier();
-
+    
+    // Holy Avenger buffs CS damage by 30% while active
     if ( p() -> buffs.holy_avenger -> check() )
     {
       am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
@@ -974,21 +989,25 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   virtual void update_ready( timespan_t cd_override )
   {
     cd_override = cooldown -> duration;
-
+    
+    // Reduction during AW - does nothing if Sanctified Wrath not talented
     if ( p() -> buffs.avenging_wrath -> up() )
     {
       cd_override *= cooldown_mult;
     }
+
+    // reduce cooldown if Sanctity of Battle present
     if ( p() -> passives.sanctity_of_battle -> ok() )
     {
       cd_override *= p() -> cache.attack_haste();
     }
-    paladin_melee_attack_t::update_ready( cd_override );
 
+    paladin_melee_attack_t::update_ready( cd_override );
   }
 
   virtual bool ready()
   {
+    // not available if target is above 20% health unless Sword of Light present and Avenging Wrath up
     if ( target -> health_percentage() > 20 && ! ( p() -> passives.sword_of_light -> ok() && p() -> buffs.avenging_wrath -> check() ) )
       return false;
 
@@ -1044,18 +1063,29 @@ struct paladin_seal_t : public paladin_melee_attack_t
     parse_options( NULL, options_str );
 
     harmful    = false;
+    resource_current = RESOURCE_MANA;
+    // all seals cost 16.4% of base mana
     base_costs[ current_resource() ]  = p -> resources.base[ current_resource() ] * 0.164;
   }
 
-  virtual resource_e current_resource()
-  { return RESOURCE_MANA; }
+  // current_resource() returns none since we're not passing the constructor spell information
+ // virtual resource_e current_resource()
+  //{ return RESOURCE_MANA; }
 
   virtual void execute()
   {
     if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
     consume_resource();
     seal_e seal_orig = p() -> active_seal;
-    p() -> active_seal = seal_type;
+    if ( p() -> specialization() == PALADIN_PROTECTION && seal_type == SEAL_OF_JUSTICE )
+    {
+      sim -> errorf( "Protection attempted to cast Seal of Justice, defaulting to no seal" );
+      p() -> active_seal = SEAL_NONE;
+    }
+    else
+      p() -> active_seal = seal_type; // set the new seal
+
+    // if we've swapped to or from Seal of Insight, we'll need to refresh spell haste cache
     if ( seal_orig != seal_type )
       if ( seal_orig == SEAL_OF_INSIGHT ||
            seal_type == SEAL_OF_INSIGHT )
@@ -1129,17 +1159,18 @@ struct seal_of_righteousness_proc_t : public paladin_melee_attack_t
     paladin_melee_attack_t( "seal_of_righteousness_proc", p, p -> find_spell( p -> find_class_spell( "Seal of Righteousness" ) -> ok() ? 101423 : 0 ) )
   {
     background  = true;
-    may_crit    = true;
     proc        = true;
     trigger_gcd = timespan_t::zero();
 
     weapon      = &( p -> main_hand_weapon );
     aoe         = -1;
 
+    // T14 Retribution 4-piece increases seal damage
     base_multiplier *= 1.0 + p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
   }
 };
 
+// Seal of Truth ============================================================
 
 struct seal_of_truth_proc_t : public paladin_melee_attack_t
 {
@@ -1148,28 +1179,39 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
   {
     background  = true;
     proc        = true;
+    // automatically connects when triggered
     may_block   = false;
     may_glance  = false;
     may_miss    = false;
     may_dodge   = false;
     may_parry   = false;
+    trigger_gcd = timespan_t::zero();
 
-    weapon                 = &( p -> main_hand_weapon );
+    weapon      = &( p -> main_hand_weapon );
 
     if ( data().ok() )
     {
+      // proc info stored in spell 42463. 
+      // Note that effect #2 is a lie, SoT uses unnormalized weapon speed, so we leave that as default (false)
       const spell_data_t* s = p -> find_spell( 42463 );
       if ( s && s -> ok() )
       {
+        // Undocumented in spell info: proc is 80% smaller for protection
         weapon_multiplier      = s -> effectN( 1 ).percent();
+        if ( p -> specialization() == PALADIN_PROTECTION )
+        {
+          weapon_multiplier /= 5;
+        }
       }
     }
 
+    // Glyph of Immediate Truth increases direct damage
     if ( p -> glyphs.immediate_truth -> ok() )
     {
       base_multiplier *= 1.0 + p -> glyphs.immediate_truth -> effectN( 1 ).percent();
     }
 
+    // Retribution T14 4-piece boosts seal damage
     base_multiplier *= 1.0 + p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
   }
 };
@@ -2907,11 +2949,14 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
 
 void paladin_t::trigger_grand_crusader()
 {
+  // escape if we don't have Grand Crusader
   if ( ! passives.grand_crusader -> ok() )
     return;
 
+  // attempt to proc the buff, returns true if successful
   if ( buffs.grand_crusader -> trigger() )
   {
+    // reset AS cooldown
     cooldowns.avengers_shield -> reset( true );
   }
 }
@@ -2924,7 +2969,7 @@ void paladin_t::init_defense()
 
   player_t::init_defense();
 
-  initial.parry_rating_per_strength = initial_rating().parry / 95116;
+  initial.parry_rating_per_strength = initial_rating().parry / 95115.8596; // exact value given by Blizzard
 
   if ( passives.vengeance -> ok() )
     vengeance_init();
@@ -2950,7 +2995,7 @@ void paladin_t::init_base_stats()
   base.block   = 0.030;  // 90
 
   //based on http://sacredduty.net/2012/09/14/avoidance-diminishing-returns-in-mop-followup/
-  diminished_kfactor    = 0.885;
+  diminished_kfactor    = 0.886;
 
   diminished_parry_cap = 2.37186;
   diminished_block_cap = 1.5037594692967;
@@ -3743,10 +3788,12 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr )
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
+  // Ancient Power buffs STR
   if ( attr == ATTR_STRENGTH && buffs.ancient_power -> check() )
   {
     m *= 1.0 + buffs.ancient_power -> stack() * passives.ancient_power -> effectN( 1 ).percent();
   }
+  // Guarded by the Light buffs STA
   if ( attr == ATTR_STAMINA )
   {
     m *= 1.0 + passives.guarded_by_the_light -> effectN( 2 ).percent();
@@ -3790,8 +3837,10 @@ double paladin_t::composite_player_multiplier( school_e school )
   double m = player_t::composite_player_multiplier( school );
 
   // These affect all damage done by the paladin
+  // Avenging Wrath buffs everything
   m *= 1.0 + buffs.avenging_wrath -> value();
 
+  // Inquisition buffs holy damage only
   if ( dbc::is_school( school, SCHOOL_HOLY ) )
   {
     if ( buffs.inquisition -> up() )
@@ -3802,9 +3851,11 @@ double paladin_t::composite_player_multiplier( school_e school )
     m *= 1.0 + buffs.tier15_2pc_melee -> value();
   }
 
+  // Divine Shield reduces everything
   if ( buffs.divine_shield -> up() )
     m *= 1.0 + buffs.divine_shield -> data().effectN( 1 ).percent();
 
+  // Glyph of Word of Glory buffs everything
   if ( buffs.glyph_of_word_of_glory -> check() )
     m *= 1.0 + buffs.glyph_of_word_of_glory -> value();
 
@@ -3816,6 +3867,8 @@ double paladin_t::composite_player_multiplier( school_e school )
 double paladin_t::composite_spell_power( school_e school )
 {
   double sp = player_t::composite_spell_power( school );
+  
+  // For Protection and Retribution, SP is fixed to AP/2 by passives
   switch ( specialization() )
   {
   case PALADIN_PROTECTION:
@@ -3858,10 +3911,23 @@ double paladin_t::composite_spell_speed()
 
 double paladin_t::composite_block()
 {
-  double b = player_t::composite_block();
+  // need to reproduce most of player_t::composite_block() because mastery -> block conversion is affected by DR
+  // could modify player_t::composite_block() to take one argument if willing to change references in all other files
+  double block_by_rating = current.stats.block_rating / current_rating().block;
 
-  b += get_divine_bulwark();
+  // add block from Divine Bulwark
+  block_by_rating += get_divine_bulwark();
 
+  double b = current.block;
+
+  // calculate diminishing returns and add to b
+  if ( block_by_rating > 0 )
+  {
+    //the block by rating gets rounded because that's how blizzard rolls...
+    b += 1/ ( 1 / diminished_block_cap + diminished_kfactor / ( util::round( 12800 * block_by_rating ) / 12800 ) );
+  }
+
+  // Guarded by the Light block not affected by diminishing returns
   b += passives.guarded_by_the_light -> effectN( 6 ).percent();
 
   return b;
@@ -3871,6 +3937,7 @@ double paladin_t::composite_crit_avoidance()
 {
   double c = player_t::composite_crit_avoidance();
 
+  // Guarded by the Light grants -6% crit chance
   c += passives.guarded_by_the_light -> effectN( 5 ).percent();
 
   return c;
@@ -3880,6 +3947,7 @@ double paladin_t::composite_dodge()
 {
   double d = player_t::composite_dodge();
 
+  // add Sanctuary dodge
   d += passives.sanctuary -> effectN( 3 ).percent();
 
   return d;
@@ -3892,12 +3960,38 @@ void paladin_t::target_mitigation( school_e school,
                                   action_state_t* s )
 {
   player_t::target_mitigation( school, dt, s );
+  
+  // various mitigation effects, Ardent Defender goes last due to absorb/heal mechanics
+  // Guardian of Ancient Kings
+  if ( buffs.gotak_prot -> up() )
+    s -> result_amount *= 1.0 + dbc.spell( 86657 ) -> effectN( 2 ).percent(); // Value of the buff is stored in another spell
 
+  // Divine Protection
+  if ( buffs.divine_protection -> up() )
+  {
+    if ( util::school_type_component( school, SCHOOL_MAGIC ) )
+    {
+      s -> result_amount *= 1.0 + buffs.divine_protection -> data().effectN( 1 ).percent() * ( 1.0 + glyphs.divine_protection -> effectN( 1 ).percent() );
+    }
+    else
+    {
+      s -> result_amount *= 1.0 + buffs.divine_protection -> data().effectN( 2 ).percent() + glyphs.divine_protection -> effectN( 2 ).percent();
+    }
+  }
+
+  // Glyph of Templar's Verdict
+  if ( buffs.glyph_templars_verdict -> check() )
+  {
+    s -> result_amount *= 1.0 + buffs.glyph_templars_verdict -> value();
+  }
+
+  // Shield of the Righteous
   if ( buffs.shield_of_the_righteous -> check() )
   { s -> result_amount *= 1.0 + buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() - get_divine_bulwark(); }
 
   s -> result_amount *= 1.0 + passives.sanctuary -> effectN( 1 ).percent();
 
+  // Ardent Defender
   if ( buffs.ardent_defender -> check() )
   {
     s -> result_amount *= 1.0 - buffs.ardent_defender -> data().effectN( 1 ).percent();
@@ -4003,28 +4097,6 @@ void paladin_t::assess_damage( school_e school,
     // Return out, as you don't get to benefit from anything else
     player_t::assess_damage( school, dtype, s );
     return;
-  }
-
-  // the rest of these buffs could probably be moved to paladin_t::target_mitigation().  
-  // It looks like the order of operations is still correct this way, but it's far more confusing.
-  if ( buffs.gotak_prot -> up() )
-    s -> result_amount *= 1.0 + dbc.spell( 86657 ) -> effectN( 2 ).percent(); // Value of the buff is stored in another spell
-
-  if ( buffs.divine_protection -> up() )
-  {
-    if ( util::school_type_component( school, SCHOOL_MAGIC ) )
-    {
-      s -> result_amount *= 1.0 + buffs.divine_protection -> data().effectN( 1 ).percent() * ( 1.0 + glyphs.divine_protection -> effectN( 1 ).percent() );
-    }
-    else
-    {
-      s -> result_amount *= 1.0 + buffs.divine_protection -> data().effectN( 2 ).percent() + glyphs.divine_protection -> effectN( 2 ).percent();
-    }
-  }
-
-  if ( buffs.glyph_templars_verdict -> check() )
-  {
-    s -> result_amount *= 1.0 + buffs.glyph_templars_verdict -> value();
   }
 
   if ( s -> result == RESULT_PARRY )
