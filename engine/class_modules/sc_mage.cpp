@@ -1040,7 +1040,7 @@ public:
   {
     double am = spell_t::action_multiplier();
 
-    if ( frozen && 1.0 + p() -> spec.frostburn -> ok() )
+    if ( frozen && p() -> spec.frostburn -> ok() )
       am *= 1.0 + p() -> cache.mastery_value();
 
     return am;
