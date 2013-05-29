@@ -2499,6 +2499,21 @@ struct blood_boil_t : public death_knight_spell_t
     }
   }
 
+  virtual void consume_resource()
+  {
+    if ( p() -> buffs.crimson_scourge -> check() )
+      return;
+
+    death_knight_spell_t::consume_resource();
+  }
+
+  virtual double cost()
+  {
+    if ( p() -> buffs.crimson_scourge -> check() )
+      return 0;
+    return death_knight_spell_t::cost();
+  }
+
   virtual void execute()
   {
     death_knight_spell_t::execute();
@@ -2953,6 +2968,29 @@ struct death_and_decay_t : public death_knight_spell_t
     hasted_ticks     = false;
   }
 
+  virtual void consume_resource()
+  {
+    if ( p() -> buffs.crimson_scourge -> check() )
+      return;
+
+    death_knight_spell_t::consume_resource();
+  }
+
+  virtual double cost()
+  {
+    if ( p() -> buffs.crimson_scourge -> check() )
+      return 0;
+    return death_knight_spell_t::cost();
+  }
+
+  virtual void execute()
+  {
+    death_knight_spell_t::execute();
+
+    if ( p() -> buffs.crimson_scourge -> up() )
+      p() -> buffs.crimson_scourge -> expire();
+  }
+
   virtual void impact( action_state_t* s )
   {
     if ( s -> target -> debuffs.flying -> check() )
@@ -2963,6 +3001,17 @@ struct death_and_decay_t : public death_knight_spell_t
     {
       death_knight_spell_t::impact( s );
     }
+  }
+
+  virtual bool ready()
+  {
+    if ( ! spell_t::ready() )
+      return false;
+
+    if ( p() -> buffs.crimson_scourge -> check() )
+      return group_runes( p(), 0, 0, 0, 0, use );
+    else
+      return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
   }
 };
 
