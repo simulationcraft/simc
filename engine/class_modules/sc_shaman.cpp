@@ -84,6 +84,7 @@ public:
   timespan_t uf_expiration_delay_stddev;
   double     eoe_proc_chance;
   int        aggregate_stormlash;
+  int        scale_lava_surge;
 
   // Active
   action_t* active_lightning_charge;
@@ -323,7 +324,7 @@ public:
     ls_reset( timespan_t::zero() ), active_flame_shocks( 0 ),
     wf_delay( timespan_t::from_seconds( 0.95 ) ), wf_delay_stddev( timespan_t::from_seconds( 0.25 ) ),
     uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
-    eoe_proc_chance( 0 ), aggregate_stormlash( 0 ),
+    eoe_proc_chance( 0 ), aggregate_stormlash( 0 ), scale_lava_surge( 0 ),
     active_lightning_charge( nullptr ),
     action_ancestral_awakening( nullptr ),
     action_improved_lava_lash( nullptr ),
@@ -3719,7 +3720,13 @@ struct flame_shock_t : public shaman_spell_t
   {
     shaman_spell_t::tick( d );
 
-    if ( p() -> rng.lava_surge -> roll ( p() -> spec.lava_surge -> proc_chance() ) )
+    bool proc = false;
+    if ( p() -> scale_lava_surge )
+      proc = d -> state -> result == RESULT_CRIT;
+    else
+      proc = p() -> rng.lava_surge -> roll ( p() -> spec.lava_surge -> proc_chance() );
+
+    if ( proc )
     {
       if ( p() -> buff.lava_surge -> check() )
         p() -> proc.wasted_lava_surge -> occur();
@@ -4813,6 +4820,7 @@ void shaman_t::create_options()
     opt_timespan( "uf_expiration_delay_stddev", uf_expiration_delay_stddev ),
     opt_float( "eoe_proc_chance",               eoe_proc_chance ),
     opt_bool( "aggregate_stormlash",            aggregate_stormlash ),
+    opt_bool( "what_if_lava_surge_scaled_with_crit", scale_lava_surge ),
     opt_null()
   };
 
