@@ -2437,12 +2437,10 @@ struct devouring_plague_t : public priest_spell_t
   struct devouring_plague_dot_t : public priest_spell_t
   {
     devouring_plague_mastery_t* proc_spell;
-    double special_tick_dmg;
 
     devouring_plague_dot_t( priest_t& p, priest_spell_t* pa ) :
       priest_spell_t( "devouring_plague_tick", p, p.find_class_spell( "Devouring Plague" ) ),
-      proc_spell( nullptr ),
-      special_tick_dmg( 0.0 )
+      proc_spell( nullptr )
     {
       parse_effect_data( data().effectN( 5 ) );
 
@@ -2464,20 +2462,7 @@ struct devouring_plague_t : public priest_spell_t
     {
       priest_spell_t::reset();
 
-      special_tick_dmg = 0;
-    }
-
-    virtual double calculate_tick_amount( action_state_t* state )
-    {
-      double m = state -> ta_multiplier;
-      double tgt_m = state -> target_ta_multiplier;
-      state -> ta_multiplier = 1.0;
-      state -> target_ta_multiplier = 1.0;
-      special_tick_dmg = action_t::calculate_tick_amount( state );
-      state -> ta_multiplier = m;
-      state -> target_ta_multiplier = tgt_m;
-
-      return action_t::calculate_tick_amount( state );
+      base_ta_adder = 0;
     }
 
     virtual action_state_t* new_state()
@@ -2533,6 +2518,8 @@ struct devouring_plague_t : public priest_spell_t
 
       dot_t* dot = get_dot();
       base_ta_adder = saved_impact_dmg / dot -> ticks();
+      if ( sim -> debug && base_ta_adder > 0.0 )
+        sim -> output( "%s DP still ticking. Added %.2f damage / %.2f per tick to new dot", player -> name(), saved_impact_dmg, base_ta_adder );
     }
 
     virtual void tick( dot_t* d )
@@ -2604,11 +2591,15 @@ struct devouring_plague_t : public priest_spell_t
     dot_t* dot = dot_spell -> get_dot( t );
 
     double new_total_ignite_dmg = 0;
-    assert( dot_spell -> num_ticks > 0 );
 
     if ( dot -> ticking )
     {
-      new_total_ignite_dmg += dot_spell -> special_tick_dmg * dot -> ticks();
+      const devouring_plague_state_t& state = static_cast<const devouring_plague_state_t&>( *dot -> state );
+      // Take the old damage without the orb multiplier
+      new_total_ignite_dmg += state.result_amount / state.orbs_used * dot -> ticks();
+
+      if ( sim -> debug )
+        sim -> output( "%s DP still ticking. Added %.2f damage to new dot", player -> name(), new_total_ignite_dmg );
     }
 
 

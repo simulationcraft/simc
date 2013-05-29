@@ -108,7 +108,7 @@ struct action_execute_event_t : public event_t
     if ( ! player -> channeling )
     {
       if ( player -> readying )
-        fprintf( sim.output_file, "Danger Will Robinson!  Danger!  action %s player %s\n",
+        sim.output( "Danger Will Robinson!  Danger!  action %s player %s\n",
                  action -> name(), player -> name() );
 
       player -> schedule_ready( timespan_t::zero() );
