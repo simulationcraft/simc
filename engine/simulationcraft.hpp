@@ -1265,6 +1265,7 @@ const char* slot_type_string          ( slot_e type );
 const char* stat_type_string          ( stat_e type );
 const char* stat_type_abbrev          ( stat_e type );
 const char* stat_type_wowhead         ( stat_e type );
+const char* stat_type_gem             ( stat_e type );
 resource_e translate_power_type  ( power_e );
 const char* weapon_type_string        ( weapon_e type );
 const char* weapon_class_string       ( int class_ );
@@ -1292,6 +1293,7 @@ set_e parse_set_bonus            ( const std::string& name );
 slot_e parse_slot_type           ( const std::string& name );
 stat_e parse_stat_type           ( const std::string& name );
 stat_e parse_reforge_type        ( const std::string& name );
+stat_e parse_gem_stat            ( const std::string& name );
 
 item_subclass_armor parse_armor_type( const std::string& name );
 weapon_e parse_weapon_type       ( const std::string& name );
@@ -1333,7 +1335,7 @@ std::string& erase_all( std::string& s, const std::string& from );
 
 template <typename T>
 std::string to_string( const T& t )
-{ std::ostringstream s; s << t; return s.str(); }
+{ std::stringstream s; s << t; return s.str(); }
 
 std::string to_string( double f );
 std::string to_string( double f, int precision );

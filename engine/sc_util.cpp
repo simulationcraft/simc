@@ -590,6 +590,12 @@ gem_e util::parse_gem_type( const std::string& name )
   return parse_enum<gem_e,GEM_NONE,GEM_MAX,gem_type_string>( name );
 }
 
+// parse_gem_stat ===================================================
+
+stat_e util::parse_gem_stat( const std::string& name )
+{
+  return parse_enum<stat_e,STAT_NONE,STAT_MAX,stat_type_gem>( name );
+}
 // meta_gem_type_string =============================================
 
 const char* util::meta_gem_type_string( meta_gem_e type )
@@ -1429,6 +1435,32 @@ const char* util::stat_type_wowhead( stat_e stat )
   }
 }
 
+// stat_type_blizzard ================================================
+
+const char* util::stat_type_gem( stat_e stat )
+{
+  switch ( stat )
+  {
+    case STAT_STRENGTH:  return "Strength";
+    case STAT_AGILITY:   return "Agility";
+    case STAT_STAMINA:   return "Stamina";
+    case STAT_INTELLECT: return "Intellect";
+
+    case STAT_HIT_RATING: return "Hit";
+    case STAT_EXPERTISE_RATING: return "Expertise";
+    case STAT_CRIT_RATING: return "Critical Strike";
+    case STAT_HASTE_RATING: return "Haste";
+    case STAT_MASTERY_RATING: return "Mastery";
+
+    case STAT_DODGE_RATING: return "Dodge";
+    case STAT_PARRY_RATING: return "Parry";
+
+    case STAT_PVP_POWER: return "PvP Power";
+
+    default: return "unknown";
+  }
+}
+
 // parse_stat_type ==================================================
 
 stat_e util::parse_stat_type( const std::string& name )
@@ -1458,6 +1490,7 @@ stat_e util::parse_stat_type( const std::string& name )
   if ( name == "spi"            ) return STAT_SPIRIT;
   if ( str_compare_ci( name, "__wpds"   ) ) return STAT_WEAPON_DPS;
   if ( str_compare_ci( name, "__wspeed" ) ) return STAT_WEAPON_SPEED;
+
 
   return STAT_NONE;
 }
