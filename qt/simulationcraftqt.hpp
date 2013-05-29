@@ -510,7 +510,8 @@ public:
     setPage( page );
     page -> setLinkDelegationPolicy( QWebPage::DelegateExternalLinks );
 
-    QDir dir( mainWindow -> TmpDir + QDir::separator() + "simc_webcache" );
+    // Add QT Major Version to avoid "mysterious" problems resulting in qBadAlloc. Qt4 and Qt5 webcache do not like each other
+    QDir dir( mainWindow -> TmpDir + QDir::separator() + "simc_webcache_qt" + std::string( QT_VERSION_STR ).substr( 0, 3 ).c_str() );
     if ( ! dir.exists() ) dir.mkpath(".");
 
     QFileInfo fi( dir.absolutePath() );
