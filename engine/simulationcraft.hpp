@@ -2477,8 +2477,7 @@ public:
 
   // Timing Wheel Event Management
   event_t* recycled_event_list;
-  struct timing_wheel_slice_t { event_t* start; event_t* end; };
-  std::vector<timing_wheel_slice_t> timing_wheel; // This should be a vector of forward_list's
+  std::vector<event_t*> timing_wheel; // This should be a vector of forward_list's
   int    wheel_seconds, wheel_size, wheel_mask, wheel_shift;
   unsigned timing_slice;
   double wheel_granularity;

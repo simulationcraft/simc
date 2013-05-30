@@ -932,18 +932,10 @@ void sim_t::add_event( event_t* e,
   uint32_t slice = ( uint32_t ) ( e -> time.total_seconds() * wheel_granularity ) & wheel_mask;
 #endif
 
-  event_t** prev;
-#if 0 // defined( SC_USE_INTEGER_TIME )
-  /* Time granularity is smaller than timing wheel granularity
-   * This means we can just append to the end of the timing wheel slice
-   */
-  prev = &( timing_wheel[ slice ].end );
-#else
   // Insert event into the event list at the appropriate time
-  prev = &( timing_wheel[ slice ].start );
+  event_t** prev = &( timing_wheel[ slice ] );
   while ( ( *prev ) && ( *prev ) -> time <= e -> time ) // Find position in the list
   { prev = &( ( *prev ) -> next ); }
-#endif
   // insert event
   e -> next = *prev;
   *prev = e;
@@ -976,7 +968,7 @@ event_t* sim_t::next_event()
 
   while ( true )
   {
-    event_t*& event_list = timing_wheel[ timing_slice ].start;
+    event_t*& event_list = timing_wheel[ timing_slice ];
     if ( event_list )
     {
       event_t* e = event_list;
@@ -984,10 +976,6 @@ event_t* sim_t::next_event()
       events_remaining--;
       events_processed++;
       return e;
-    }
-    else if ( event_t*& e = timing_wheel[ timing_slice ].end )
-    {
-      e = nullptr; // clear end
     }
 
     timing_slice++;
@@ -1009,14 +997,13 @@ void sim_t::flush_events()
 
   for ( size_t i = 0; i < timing_wheel.size(); ++i )
   {
-    while ( event_t* e = timing_wheel[ i ].start )
+    while ( event_t* e = timing_wheel[ i ] )
     {
-      timing_wheel[ i ].start = e -> next;
+      timing_wheel[ i ] = e -> next;
       event_t* null_e = e; // necessary evil
       event_t::cancel( null_e );
       event_t::recycle( e );
     }
-    timing_wheel[ i ].end = nullptr;
   }
 
   events_remaining = 0;
