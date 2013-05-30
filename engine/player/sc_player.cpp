@@ -2827,7 +2827,7 @@ void player_t::create_buffs()
   // Infinite-Stacking Buffs and De-Buffs
 
   buffs.stunned        = buff_creator_t( this, "stunned" ).max_stack( 1 );
-  debuffs.bleeding     = buff_creator_t( this, "bleeding" ).max_stack( 999 );
+  debuffs.bleeding     = buff_creator_t( this, "bleeding" ).max_stack( 1 );
   debuffs.casting      = buff_creator_t( this, "casting" ).max_stack( 1 ).quiet( 1 );
   debuffs.invulnerable = buff_creator_t( this, "invulnerable" ).max_stack( 1 );
   debuffs.vulnerable   = buff_creator_t( this, "vulnerable" ).max_stack( 1 );

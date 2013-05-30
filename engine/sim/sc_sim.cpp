@@ -1161,7 +1161,7 @@ void sim_t::combat_begin()
     if ( overrides.physical_vulnerability ) t -> debuffs.physical_vulnerability -> override();
     if ( overrides.weakened_armor         ) t -> debuffs.weakened_armor         -> override( 3 );
     if ( overrides.weakened_blows         ) t -> debuffs.weakened_blows         -> override();
-    if ( overrides.bleeding               ) t -> debuffs.bleeding               -> override();
+    if ( overrides.bleeding               ) t -> debuffs.bleeding               -> override( 1, 1.0 );
   }
 
   for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )

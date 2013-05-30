@@ -1075,7 +1075,11 @@ void action_t::tick( dot_t* d )
 void action_t::last_tick( dot_t* d )
 {
   if ( school == SCHOOL_PHYSICAL )
-    d -> state -> target -> debuffs.bleeding -> decrement();
+  {
+    buff_t* b = d -> state -> target -> debuffs.bleeding;
+    if( b -> current_value > 0 ) b -> current_value -= 1.0;
+    if( b -> current_value == 0 ) b -> expire();
+  }
 }
 
 // action_t::assess_damage ==================================================
@@ -2221,9 +2225,12 @@ void action_t::trigger_dot( action_state_t* s )
   {
     if ( school == SCHOOL_PHYSICAL )
     {
-      buff_t& b = *s -> target -> debuffs.bleeding;
-      b.increment();
-      assert( b.check() < b.max_stack() && "bleeding debuff shouldn't ever hit stack cap" );
+      buff_t* b = s -> target -> debuffs.bleeding;
+      if( b -> current_value > 0 )
+      {
+	b -> current_value += 1.0;
+      }
+      else b -> start( 1, 1.0 );
     }
 
     dot -> schedule_tick();
