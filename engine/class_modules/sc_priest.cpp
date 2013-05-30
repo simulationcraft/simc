@@ -2425,7 +2425,7 @@ struct devouring_plague_state_t : public action_state_t
   void copy_state(const action_state_t* o )
   {
     action_state_t::copy_state( o );
-    const devouring_plague_state_t* dps_t = debug_cast<const devouring_plague_state_t*>( o );
+    const devouring_plague_state_t* dps_t = static_cast<const devouring_plague_state_t*>( o );
     orbs_used = dps_t -> orbs_used;
   }
 };
@@ -2459,24 +2459,10 @@ struct devouring_plague_t : public priest_spell_t
     }
 
     virtual void reset()
-    {
-      priest_spell_t::reset();
-
-      base_ta_adder = 0;
-    }
+    { priest_spell_t::reset(); base_ta_adder = 0; }
 
     virtual action_state_t* new_state()
-    {
-      return new devouring_plague_state_t( this, target );
-    }
-
-    virtual void init()
-    {
-      priest_spell_t::init();
-
-      // Override snapshot flags
-      snapshot_flags |= STATE_USER_1;
-    }
+    { return new devouring_plague_state_t( this, target ); }
 
     virtual action_state_t* get_state( const action_state_t* s = nullptr )
     {
@@ -2493,10 +2479,9 @@ struct devouring_plague_t : public priest_spell_t
 
     virtual void snapshot_state( action_state_t* state, dmg_e type )
     {
-      devouring_plague_state_t* dps_t = static_cast<devouring_plague_state_t*>( state );
+      devouring_plague_state_t& dp_state = static_cast<devouring_plague_state_t&>( *state );
 
-      if ( snapshot_flags & STATE_USER_1 )
-        dps_t -> orbs_used = as<int>( priest.resources.current[ current_resource() ] );
+      dp_state.orbs_used = as<int>( priest.resources.current[ current_resource() ] );
 
       priest_spell_t::snapshot_state( state, type );
     }
@@ -2512,28 +2497,31 @@ struct devouring_plague_t : public priest_spell_t
 
     virtual void impact( action_state_t* s )
     {
-      double saved_impact_dmg = s -> result_amount;
+      double saved_impact_dmg = s -> result_amount; // catch previous remaining dp damage
       s -> result_amount = 0;
       priest_spell_t::impact( s );
 
-      dot_t* dot = get_dot();
-      base_ta_adder = saved_impact_dmg / dot -> ticks();
-      if ( sim -> debug && base_ta_adder > 0.0 )
-        sim -> output( "%s DP still ticking. Added %.2f damage / %.2f per tick to new dot", player -> name(), saved_impact_dmg, base_ta_adder );
+      if ( saved_impact_dmg > 0.0 )
+      {
+        dot_t* dot = get_dot();
+        base_ta_adder = saved_impact_dmg / dot -> ticks();
+        if ( sim -> debug )
+          sim -> output( "%s DP still ticking. Added %.2f damage / %.2f per tick to new dot", player -> name(), saved_impact_dmg, base_ta_adder );
+      }
     }
 
     virtual void tick( dot_t* d )
     {
       priest_spell_t::tick( d );
 
-      devouring_plague_state_t* dps_state = debug_cast<devouring_plague_state_t*>( d -> state );
+      const devouring_plague_state_t& dp_state = static_cast<const devouring_plague_state_t&>( *d -> state );
 
-      double a = data().effectN( 3 ).percent() / 100.0 * dps_state -> orbs_used * priest.resources.max[ RESOURCE_HEALTH ];
+      double a = data().effectN( 3 ).percent() / 100.0 * dp_state.orbs_used * priest.resources.max[ RESOURCE_HEALTH ];
       priest.resource_gain( RESOURCE_HEALTH, a, priest.gains.devouring_plague_health );
 
-      if ( proc_spell && dps_state -> orbs_used && priest.rngs.mastery_extra_tick -> roll( priest.shadowy_recall_chance() ) )
+      if ( proc_spell && dp_state.orbs_used && priest.rngs.mastery_extra_tick -> roll( priest.shadowy_recall_chance() ) )
       {
-        proc_spell -> orbs_used = dps_state -> orbs_used;
+        proc_spell -> orbs_used = dp_state.orbs_used;
         proc_spell -> schedule_execute();
       }
     }
@@ -2590,16 +2578,16 @@ struct devouring_plague_t : public priest_spell_t
   {
     dot_t* dot = dot_spell -> get_dot( t );
 
-    double new_total_ignite_dmg = 0;
+    double previous_dp_dmg = 0;
 
     if ( dot -> ticking )
     {
       const devouring_plague_state_t& state = static_cast<const devouring_plague_state_t&>( *dot -> state );
       // Take the old damage without the orb multiplier
-      new_total_ignite_dmg += state.result_amount / state.orbs_used * dot -> ticks();
+      previous_dp_dmg += state.result_amount / state.orbs_used * dot -> ticks();
 
       if ( sim -> debug )
-        sim -> output( "%s DP still ticking. Added %.2f damage to new dot", player -> name(), new_total_ignite_dmg );
+        sim -> output( "%s DP still ticking. Added %.2f damage to new dot", player -> name(), previous_dp_dmg );
     }
 
 
@@ -2609,7 +2597,7 @@ struct devouring_plague_t : public priest_spell_t
     s -> target = t;
     dot_spell -> snapshot_state( s, DMG_OVER_TIME );
     s -> result = RESULT_HIT;
-    s -> result_amount = new_total_ignite_dmg;
+    s -> result_amount = previous_dp_dmg; // pass the old remaining dp damage to the dot_spell state, which will be catched in its impact method.
     dot_spell -> schedule_travel( s );
     dot_spell -> stats -> add_execute( timespan_t::zero(), s -> target );
   }
