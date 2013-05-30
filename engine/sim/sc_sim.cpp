@@ -932,7 +932,7 @@ void sim_t::add_event( event_t* e,
 #endif
 
   event_t** prev;
-#ifdef SC_USE_INTEGER_TIME
+#if 0 // defined( SC_USE_INTEGER_TIME )
   /* Time granularity is smaller than timing wheel granularity
    * This means we can just append to the end of the timing wheel slice
    */
