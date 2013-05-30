@@ -4023,6 +4023,7 @@ public:
   struct racials_t
   {
     const spell_data_t* quickness;
+    const spell_data_t* command;
   } racials;
 
   bool active_during_iteration;

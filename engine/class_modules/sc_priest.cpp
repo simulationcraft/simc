@@ -281,7 +281,7 @@ public:
     const spell_data_t* vampiric_embrace;
   } glyphs;
 
-  priest_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
+  priest_t( sim_t* sim, const std::string& name, race_e r ) :
     player_t( sim, PRIEST, name, r ),
     // initialize containers. For POD containers this sets all elements to 0.
     // use eg. buffs( buffs_t() ) instead of buffs() to help certain old compilers circumvent their bugs
@@ -366,7 +366,6 @@ public:
 
 private:
   // Construction helper functions for priest_t members
-  //static void create_buffs();
   void create_cooldowns();
   void create_gains();
   void create_procs();
@@ -441,8 +440,7 @@ struct priest_pet_t : public pet_t
     double m = pet_t::composite_player_multiplier( school );
 
     // Orc racial
-    if ( owner -> race == RACE_ORC )
-      m *= 1.0 + find_spell( 21563 ) -> effectN( 1 ).percent();
+    m *= 1.0 + o().racials.command -> effectN( 1 ).percent();
 
     return m;
   }
@@ -450,8 +448,8 @@ struct priest_pet_t : public pet_t
   virtual resource_e primary_resource()
   { return RESOURCE_ENERGY; }
 
-  priest_t* o() const
-  { return static_cast<priest_t*>( owner ); }
+  priest_t& o() const
+  { return static_cast<priest_t&>( *owner ); }
 };
 
 /* Abstract base class for Shadowfiend and Mindbender
@@ -502,9 +500,9 @@ struct base_fiend_pet_t : public priest_pet_t
     priest_pet_t::init_gains();
 
     if      ( pet_type == PET_SHADOWFIEND )
-      gains.fiend = o() -> gains.shadowfiend;
+      gains.fiend = o().gains.shadowfiend;
     else if ( pet_type == PET_MINDBENDER  )
-      gains.fiend = o() -> gains.mindbender;
+      gains.fiend = o().gains.mindbender;
     else
       gains.fiend = get_gain( "basefiend" );
   }
@@ -611,7 +609,7 @@ public:
 
   virtual void summon( timespan_t duration )
   {
-    charges = 10 + o() -> glyphs.lightwell -> effectN( 1 ).base_value();
+    charges = 10 + o().glyphs.lightwell -> effectN( 1 ).base_value();
 
     priest_pet_t::summon( duration );
   }
@@ -737,9 +735,9 @@ struct fiend_melee_t : public priest_pet_melee_t
 
     if ( result_is_hit( s -> result ) )
     {
-      p().o() -> resource_gain( RESOURCE_MANA, p().o() -> resources.max[ RESOURCE_MANA ] *
-                                p().mana_return_percent(),
-                                p().gains.fiend );
+      p().o().resource_gain( RESOURCE_MANA,
+                             p().o().resources.max[ RESOURCE_MANA ] * p().mana_return_percent(),
+                             p().gains.fiend );
     }
   }
 };
@@ -5134,7 +5132,7 @@ void priest_t::init_scaling()
   //   }
   // }
 
-  if ( specialization() == PRIEST_SHADOW )
+  if ( specs.spiritual_precision -> ok() )
     scales_with[ STAT_SPIRIT ] = false;
 }
 
@@ -5155,7 +5153,7 @@ void priest_t::init_spells()
 
   talents.from_darkness_comes_light   = find_talent_spell( "From Darkness, Comes Light" );
   talents.mindbender                  = find_talent_spell( "Mindbender" );
-  talents.solace_and_insanity           = find_talent_spell( "Solace and Insanity" );
+  talents.solace_and_insanity         = find_talent_spell( "Solace and Insanity" );
 
   talents.desperate_prayer            = find_talent_spell( "Desperate Prayer" );
   talents.spectral_guise              = find_talent_spell( "Spectral Guise" );
@@ -5789,7 +5787,8 @@ void priest_t::fixup_atonement_stats( const std::string& trigger_spell_name,
   }
 }
 
-// Fixup Atonement Stats HPE, HPET and HPR
+/* Fixup Atonement Stats HPE, HPET and HPR
+ */
 
 void priest_t::pre_analyze_hook()
 {

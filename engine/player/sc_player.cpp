@@ -2251,6 +2251,7 @@ void player_t::init_spells()
     sim -> output( "Initializing spells for player (%s)", name() );
 
   racials.quickness = find_racial_spell( "Quickness" );
+  racials.command   = find_racial_spell( "Command" );
 
   if ( ! is_enemy() )
   {
