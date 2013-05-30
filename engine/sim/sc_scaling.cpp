@@ -231,7 +231,7 @@ void scaling_t::analyze_stats()
     if ( is_scaling_stat( sim, i ) && ( stats.get_stat( i ) != 0 ) )
       stats_to_scale.push_back( i );
 
-  num_scaling_stats = remaining_scaling_stats = stats_to_scale.size();
+  num_scaling_stats = remaining_scaling_stats = as<int>( stats_to_scale.size() );
 
   if ( ! num_scaling_stats ) return; // No Stats to scale
 

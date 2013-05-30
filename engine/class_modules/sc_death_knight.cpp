@@ -362,7 +362,7 @@ public:
       slot[2].paired_rune = &slot[ 3 ]; slot[ 3 ].paired_rune = &slot[ 2 ];
       slot[4].paired_rune = &slot[ 5 ]; slot[ 5 ].paired_rune = &slot[ 4 ];
       // give each rune a slot number
-      for ( size_t i = 0; i < slot.size(); ++i ) { slot[ i ].slot_number = i; }
+      for ( size_t i = 0; i < slot.size(); ++i ) { slot[ i ].slot_number = static_cast<int>( i ); }
     }
     void reset() { for ( size_t i = 0; i < slot.size(); ++i ) slot[ i ].reset(); }
   } _runes;

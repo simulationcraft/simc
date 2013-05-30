@@ -1,5 +1,5 @@
 // ==========================================================================
-// Dedmonwakeen's Raid DPS/doublePS Simulator.
+// Dedmonwakeen's Raid DPS/TPS Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 

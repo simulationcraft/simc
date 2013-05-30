@@ -481,7 +481,7 @@ bool translate_talents( const std::string& talent_str, std::string& translated_t
   if ( ! ( talent_str.length() % 3 == 0 ) )
     return false;
 
-  for ( unsigned int i = 0, l = talent_str.length() / 3; i < l; ++i )
+  for ( size_t i = 0, l = talent_str.length() / 3; i < l; ++i )
   {
     int32_t talents = 0;
     std::istringstream ( talent_str.substr( 3 * i, 3 ) ) >> talents;

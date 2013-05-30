@@ -218,7 +218,7 @@ void reforge_plot_t::analyze_stats()
         tmp.append( n_spaces, ' ' );
     }
 
-    current_stat_combo = i;
+    current_stat_combo = as<int>( i );
     current_reforge_sim -> execute();
 
     for ( size_t k = 0; k < num_players; k++ )

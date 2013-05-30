@@ -30,7 +30,7 @@ struct token_t
 
 // parse_tokens =============================================================
 
-int parse_tokens( std::vector<token_t>& tokens,
+size_t parse_tokens( std::vector<token_t>& tokens,
                   const std::string&    encoded_str )
 {
   std::vector<std::string> splits = util::string_split( encoded_str, "_" );
@@ -203,7 +203,7 @@ std::string item_t::to_string()
 
   if ( parsed.reforged_from != STAT_NONE && parsed.reforged_to != STAT_NONE )
   {
-    int idx_from = 0;
+    size_t idx_from = 0;
     for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
     {
       if ( parsed.data.stat_type_e[ i ] == util::translate_stat( parsed.reforged_from ) )
@@ -236,7 +236,7 @@ std::string item_t::to_string()
         << util::stat_type_abbrev( util::translate_item_mod( parsed.data.stat_type_e[ i ] ) )
         << ", ";
     }
-    long x = s.tellp(); s.seekp( x - 2 );
+    std::streampos x = s.tellp(); s.seekp( x - std::streamoff( 2 ) );
     s << " }";
   }
 
@@ -250,7 +250,7 @@ std::string item_t::to_string()
         << " " << util::stat_type_abbrev( parsed.suffix_stats[ i ].stat ) << ", ";
     }
 
-    long x = s.tellp(); s.seekp( x - 2 );
+    std::streampos x = s.tellp(); s.seekp( x - std::streamoff( 2 ) );
     s << " }";
   }
 
@@ -264,7 +264,7 @@ std::string item_t::to_string()
         << " " << util::stat_type_abbrev( parsed.gem_stats[ i ].stat ) << ", ";
     }
 
-    long x = s.tellp(); s.seekp( x - 2 );
+    std::streampos x = s.tellp(); s.seekp( x - std::streamoff( 2 ) );
     s << " }";
   }
 
@@ -291,7 +291,7 @@ std::string item_t::to_string()
         << util::stat_type_abbrev( parsed.enchant_stats[ i ].stat ) << ", ";
     }
 
-    long x = s.tellp(); s.seekp( x - 2 );
+    std::streampos x = s.tellp(); s.seekp( x - std::streamoff( 2 ) );
     s << " }";
   }
   else if ( ! parsed.enchant.name_str.empty() )
@@ -343,7 +343,7 @@ std::string item_t::to_string()
       s << "/" << parsed.data.id_spell[ i ] << ", ";
     }
 
-    long x = s.tellp(); s.seekp( x - 2 );
+    std::streampos x = s.tellp(); s.seekp( x - std::streamoff( 2 ) );
     s << " }";
   }
 
@@ -961,10 +961,10 @@ bool item_t::decode_stats()
     range::fill( parsed.data.stat_alloc, 0 );
 
     std::vector<token_t> tokens;
-    int num_tokens = parse_tokens( tokens, option_stats_str );
-    int stat = 0;
+    size_t num_tokens = parse_tokens( tokens, option_stats_str );
+    size_t stat = 0;
 
-    for ( int i = 0; i < num_tokens && stat < ( int ) sizeof_array( parsed.data.stat_val ); i++ )
+    for ( size_t i = 0; i < num_tokens && stat < sizeof_array( parsed.data.stat_val ); i++ )
     {
       stat_e s = util::parse_stat_type( tokens[ i ].name );
       if ( s == STAT_NONE )
@@ -1020,9 +1020,9 @@ bool item_t::decode_reforge()
     parsed.reforged_from = parsed.reforged_to = STAT_NONE;
 
     std::vector<token_t> tokens;
-    int num_tokens = parse_tokens( tokens, option_reforge_str );
+    size_t num_tokens = parse_tokens( tokens, option_reforge_str );
 
-    if ( num_tokens <= 0 )
+    if ( num_tokens == 0 )
       return true;
 
     if ( num_tokens != 2 )
@@ -1133,12 +1133,12 @@ bool item_t::decode_random_suffix()
     {
       if ( enchant_data.ench_type[ j ] != ITEM_ENCHANTMENT_STAT ) continue;
 
-      stat_pair_t stat = item_database::item_enchantment_effect_stats( enchant_data, j );
+      stat_pair_t stat = item_database::item_enchantment_effect_stats( enchant_data, as<int>( j ) );
       if ( stat.stat == STAT_NONE )
         continue;
 
       bool has_stat = false;
-      int free_idx = 0;
+      size_t free_idx = 0;
 
       for ( size_t k = 0; k < sizeof_array( parsed.data.stat_val ); k++ )
       {
@@ -1194,17 +1194,17 @@ bool item_t::decode_gems()
     parsed.gem_stats.clear();
 
     std::vector<token_t> tokens;
-    int num_tokens = parse_tokens( tokens, option_gems_str );
+    size_t num_tokens = parse_tokens( tokens, option_gems_str );
 
     std::string meta_prefix, meta_suffix;
 
-    for ( int i = 0; i < num_tokens; i++ )
+    for ( size_t i = 0; i < num_tokens; i++ )
     {
       token_t& t = tokens[ i ];
       stat_e s;
 
       if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
-        parsed.gem_stats.push_back( stat_pair_t( s, t.value ) );
+        parsed.gem_stats.push_back( stat_pair_t( s, static_cast<int>( t.value ) ) );
       else if ( is_meta_prefix( t.name ) )
         meta_prefix = t.name;
       else if ( is_meta_suffix( t.name ) )
@@ -1447,11 +1447,11 @@ bool item_t::decode_special( special_effect_t& effect,
 
   std::vector<token_t> tokens;
 
-  int num_tokens = parse_tokens( tokens, encoding );
+  size_t num_tokens = parse_tokens( tokens, encoding );
 
   effect.encoding_str = encoding;
 
-  for ( int i = 0; i < num_tokens; i++ )
+  for ( size_t i = 0; i < num_tokens; i++ )
   {
     token_t& t = tokens[ i ];
     stat_e s;
@@ -1971,11 +1971,11 @@ bool item_t::decode_weapon()
   else
   {
     std::vector<token_t> tokens;
-    int num_tokens = parse_tokens( tokens, option_weapon_str );
+    size_t num_tokens = parse_tokens( tokens, option_weapon_str );
 
     bool dps_set = false, dmg_set = false, min_set = false, max_set = false;
 
-    for ( int i = 0; i < num_tokens; i++ )
+    for ( size_t i = 0; i < num_tokens; i++ )
     {
       token_t& t = tokens[ i ];
       weapon_e type;

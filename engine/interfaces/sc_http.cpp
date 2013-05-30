@@ -599,7 +599,7 @@ void http::cache_save( const char* file_name )
       cache::put( file, p -> first );
       cache::put( file, p -> second.last_modified_header );
 
-      uint32_t size = p -> second.result.size();
+      uint32_t size = as<uint32_t>( p -> second.result.size() );
       file.write( reinterpret_cast<const char*>( &size ), sizeof( size ) );
       file.write( p -> second.result.data(), size );
     }

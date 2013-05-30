@@ -630,7 +630,7 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t* sim, sim_t::rep
 
 // print_html_raid_imagemaps ==================================================
 
-void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, int num, bool dps )
+void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, size_t num, bool dps )
 {
   std::vector<player_t*> player_list = ( dps ) ? sim -> players_by_dps : sim -> players_by_hps;
   size_t start = num * MAX_PLAYERS_PER_CHART;
@@ -657,9 +657,9 @@ void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, int num, 
   os << "];\n";
 
   char imgid[32];
-  util::snprintf( imgid, sizeof( imgid ), "%sIMG%d", ( dps ) ? "DPS" : "HPS", num );
+  util::snprintf( imgid, sizeof( imgid ), "%sIMG%u", ( dps ) ? "DPS" : "HPS", as<unsigned>( num ) );
   char mapid[32];
-  util::snprintf( mapid, sizeof( mapid ), "%sMAP%d", ( dps ) ? "DPS" : "HPS", num );
+  util::snprintf( mapid, sizeof( mapid ), "%sMAP%u", ( dps ) ? "DPS" : "HPS", as<unsigned>( num ) );
 
   os.printf(
     "\t\t\tu = document.getElementById('%s').src;\n"
@@ -4207,10 +4207,12 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
     print_html_scale_factors( os, sim );
   }
 
+  int k = 0;
   // Report Players
   for ( size_t i = 0; i < num_players; ++i )
   {
-    report::print_html_player( os, sim -> players_by_name[ i ], i );
+    report::print_html_player( os, sim -> players_by_name[ i ], k );
+    ++k;
 
     // Pets
     if ( sim -> report_pets_separately )
@@ -4236,7 +4238,8 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
   {
     for ( size_t i = 0; i < sim -> targets_by_name.size(); ++i )
     {
-      report::print_html_player( os, sim -> targets_by_name[ i ], i );
+      report::print_html_player( os, sim -> targets_by_name[ i ], k );
+      ++k;
 
       // Pets
       if ( sim -> report_pets_separately )

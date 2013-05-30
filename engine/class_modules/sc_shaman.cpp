@@ -1651,7 +1651,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
 
         // There's no flame shocked targets to remove, eliminate a random target
         if ( ! removed )
-          target_cache.erase( target_cache.begin() + static_cast< size_t >( imp_ll_rng -> range( 0, target_cache.size() ) ) );
+          target_cache.erase( target_cache.begin() + static_cast< size_t >( imp_ll_rng -> range( 0, as<double>( target_cache.size() ) ) ) );
 
         total_targets--;
       }

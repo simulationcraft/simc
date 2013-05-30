@@ -642,7 +642,7 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, int p
 
   // Set up chart
   sc_chart chart( std::string( player_names_non_ascii ? "\xE4\xB8\x80" : "" ) + "Player Waiting Time", HORIZONTAL_BAR, print_styles );
-  chart.set_height( waiting_list.size() * 30 + 30 );
+  chart.set_height( as<unsigned>( waiting_list.size() ) * 30 + 30 );
 
   std::ostringstream s;
   s.setf( std::ios_base::fixed ); // Set fixed flag for floating point numbers
@@ -757,7 +757,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
 
     std::string chart_name = first ? ( std::string( player_names_non_ascii ? "\xE4\xB8\x80" : "" ) + std::string( dps ? "DPS" : "HPS" ) + " Ranking" ) : "";
     sc_chart chart( chart_name, HORIZONTAL_BAR, sim -> print_styles );
-    chart.set_height( num_players * 20 + ( first ? 20 : 0 ) );
+    chart.set_height( as<unsigned>( num_players ) * 20 + ( first ? 20 : 0 ) );
 
     s = chart.create();
     s += "chbh=15";
@@ -851,7 +851,7 @@ size_t chart::raid_gear( std::vector<std::string>& images,
   {
     if ( num_players > max_players ) num_players = max_players;
 
-    int height = num_players * 20 + 30;
+    unsigned height = as<unsigned>( num_players ) * 20 + 30;
 
     if ( num_players <= 12 ) height += 70;
 
@@ -894,7 +894,7 @@ size_t chart::raid_gear( std::vector<std::string>& images,
     s += "chxt=y";
     s += amp;
     s += "chxl=0:";
-    for ( int i = num_players-1; i >= 0; i-- )
+    for ( size_t i = 0; i < num_players; ++i )
     {
       std::string formatted_name = player_list[ i ] -> name_str;
       util::urlencode( formatted_name );
@@ -983,7 +983,7 @@ size_t chart::raid_dpet( std::vector<std::string>& images,
     if ( num_stats > max_actions_per_chart ) num_stats = max_actions_per_chart;
 
     s = get_chart_base_url();
-    s += chart_size( 500, num_stats * 15 + ( chart == 0 ? 20 : -10 ) ); // Set chart size
+    s += chart_size( 500, as<unsigned>( num_stats ) * 15 + ( chart == 0 ? 20 : -10 ) ); // Set chart size
     s += "cht=bhg";
     s += amp;
     if ( ! ( sim -> print_styles == 1 ) )
@@ -1344,7 +1344,7 @@ std::string chart::scale_factors( player_t* p )
   util::urlencode( formatted_name );
 
   sc_chart chart( "Scale Factors|" + formatted_name, HORIZONTAL_BAR, p -> sim -> print_styles );
-  chart.set_height( num_scaling_stats * 30 + 60 );
+  chart.set_height( static_cast<unsigned>( num_scaling_stats ) * 30 + 60 );
 
   std::string s = chart.create();
 
@@ -1868,7 +1868,7 @@ std::string chart::timeline_dps_error( player_t* p )
   {
     unsigned j = ( int ) ( ( max_buckets / 5 ) * i );
     if ( !j ) continue;
-    if ( j >= max_buckets ) j = max_buckets - 1;
+    if ( j >= max_buckets ) j = as<unsigned>( max_buckets - 1 );
     if ( i > 1 ) s += "|";
     snprintf( buffer, sizeof( buffer ), "t%.1f,FFFFFF,0,%d,10", p -> dps_convergence_error[ j ], int( j / increment ) ); s += buffer;
 
@@ -1895,7 +1895,7 @@ std::string chart::distribution( int print_style,
   if ( ! max_buckets )
     return std::string();
 
-  int count_max = *range::max_element( dist_data );
+  size_t count_max = *range::max_element( dist_data );
 
   char buffer[ 1024 ];
 
@@ -1910,7 +1910,7 @@ std::string chart::distribution( int print_style,
     snprintf( buffer, sizeof( buffer ), "%s%u", ( i?",":"" ), as<unsigned>( dist_data[ i ] ) ); s += buffer;
   }
   s += amp;
-  snprintf( buffer, sizeof( buffer ), "chds=0,%d", count_max ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chds=0,%u", as<unsigned>( count_max ) ); s += buffer;
   s += amp;
   s += "chbh=5";
   s += amp;

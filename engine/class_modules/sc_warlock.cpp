@@ -3671,7 +3671,7 @@ struct immolation_aura_t : public warlock_spell_t
   virtual void impact( action_state_t* s )
   {
     dot_t* d = get_dot();
-    bool add_ticks = ( d -> ticking > 0 ) ? true : false;
+    bool add_ticks = d -> ticking;
     int remaining_ticks = d -> num_ticks - d -> current_tick;
 
     warlock_spell_t::impact( s );
@@ -3817,9 +3817,9 @@ struct soul_swap_t : public warlock_spell_t
       p() -> soul_swap_state.target              = target;
 
       p() -> soul_swap_state.agony               = td( target ) -> dots_agony -> ticking ? td( target ) -> agony_stack : 0;
-      p() -> soul_swap_state.corruption          = td( target ) -> dots_corruption -> ticking > 0;
-      p() -> soul_swap_state.unstable_affliction = td( target ) -> dots_unstable_affliction -> ticking > 0;
-      p() -> soul_swap_state.seed_of_corruption  = td( target ) -> dots_seed_of_corruption -> ticking > 0;
+      p() -> soul_swap_state.corruption          = td( target ) -> dots_corruption -> ticking;
+      p() -> soul_swap_state.unstable_affliction = td( target ) -> dots_unstable_affliction -> ticking;
+      p() -> soul_swap_state.seed_of_corruption  = td( target ) -> dots_seed_of_corruption -> ticking;
 
       if ( ! p() -> glyphs.soul_swap -> ok() )
       {

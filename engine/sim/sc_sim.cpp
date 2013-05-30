@@ -1670,7 +1670,7 @@ bool progress_bar_t::update( bool finished )
   if ( pct <= 0 ) return false;
   if ( finished ) pct = 1.0;
 
-  int prev_size = status.size();
+  size_t prev_size = status.size();
 
   status = "[";
   status.insert( 1, steps, '.' );
@@ -1703,8 +1703,7 @@ bool progress_bar_t::update( bool finished )
     status += buffer;
   }
 
-  int diff = prev_size - status.size();
-  if ( diff > 0 ) status.insert( status.end(), diff, ' ' );
+  if ( prev_size > status.size()  ) status.insert( status.end(), ( prev_size - status.size() ), ' ' );
 
   return true;
 }

@@ -1557,7 +1557,7 @@ struct dire_critter_t : public hunter_pet_t
     }
   };
 
-  dire_critter_t( hunter_t& owner, int index ) :
+  dire_critter_t( hunter_t& owner, size_t index ) :
     hunter_pet_t( *owner.sim, owner, std::string( "dire_beast_" ) + util::to_string( index ), PET_HUNTER, true /*GUARDIAN*/ )
   {
     owner_coeff.ap_from_ap = 1.0;

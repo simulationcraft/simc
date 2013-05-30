@@ -3102,7 +3102,7 @@ void monk_t::apl_combat_windwalker()
   action_list_str += init_use_profession_actions();
 
   // USE ITEM (engineering etc)
-  for ( int i = items.size() - 1; i >= 0; i-- )
+  for ( size_t i = 0, end = items.size(); i < end; ++i )
   {
     if ( items[ i ].parsed.use.active() )
     {

@@ -3334,7 +3334,7 @@ public:
   void datacollection_begin()
   { iteration_count = 0; }
   void datacollection_end()
-  { count.add( iteration_count ); }
+  { count.add( static_cast<double>( iteration_count ) ); }
 
   const char* name() const
   { return name_str.c_str(); }
@@ -3446,7 +3446,8 @@ struct player_t : public noncopyable
   sim_t* sim;
   player_e type;
   std::string name_str;
-  int         index, actor_index;
+  int index;
+  size_t actor_index;
   // (static) attributes - things which should not change during combat
   race_e       race;
   role_e       role;

@@ -416,7 +416,7 @@ struct priest_pet_t : public pet_t
     assert( pet_base_stats[ 0 ].level <= 1 );
 
     // Loop from end to beginning to get the data for the highest available level equal or lower than the player level
-    int i = sizeof_array( pet_base_stats );
+    int i = as<int>( sizeof_array( pet_base_stats ) );
     while ( --i > 0 )
     {
       if ( pet_base_stats[ i ].level <= level )

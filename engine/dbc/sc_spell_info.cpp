@@ -636,8 +636,8 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
         s << ", ";
       }
     }
-    long x = s.tellp();
-    s.seekp( x - 2 );
+    std::streampos x = s.tellp();
+    s.seekp( x - std::streamoff( 2 ) );
     s << std::endl;
   }
 

@@ -13,7 +13,7 @@ namespace { // UNNAMED NAMESPACE ==========================================
 double mean_damage( std::vector<stats_t::stats_results_t> result )
 {
   double mean = 0;
-  int count = 0;
+  size_t count = 0;
 
   for ( size_t i = 0; i < result.size(); i++ )
   {
@@ -1995,7 +1995,7 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
 
     if ( ! b -> constant && ! b -> overridden && b -> sim -> buff_uptime_timeline )
     {
-      std::string uptime_chart = chart::timeline( b -> player, b -> uptime_array.data(), "Average Uptime", 0, "ff0000", b -> sim -> simulation_length.max() );
+      std::string uptime_chart = chart::timeline( b -> player, b -> uptime_array.data(), "Average Uptime", 0, "ff0000", static_cast<size_t>( b -> sim -> simulation_length.max() ) );
       if ( ! uptime_chart.empty() )
       {
         os << "\t\t\t\t\t\t\t\t<tr><td colspan=\"7\" class=\"filler\"><img src=\"" << uptime_chart << "\" alt=\"Average Uptime Timeline Chart\" />\n</td></tr>\n";
@@ -2387,7 +2387,7 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
             pet -> dps.mean(),
             pet -> dpse.mean() );
         }
-        print_html_action_damage( os, s, p, i );
+        print_html_action_damage( os, s, p, j );
       }
     }
   }

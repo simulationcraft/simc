@@ -2768,7 +2768,7 @@ struct nether_tempest_cleave_t: public mage_spell_t
     while ( target == main_target )
     {
       // Randomly select target index
-      unsigned t = static_cast<unsigned>( rng -> range( 0, target_cache.size() ) );
+      unsigned t = static_cast<unsigned>( rng -> range( 0, as<double>( target_cache.size() ) ) );
       if ( t >= target_cache.size() ) --t; // dsfmt range should not give a value actually equal to max, but be paranoid
       target = target_cache[ t ];
     }

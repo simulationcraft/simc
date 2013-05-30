@@ -7075,7 +7075,7 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
     case '0':
     case '1':
     case '2':
-      talent_points.select_row_col( i, t_str[ i ] - '0' );
+      talent_points.select_row_col( static_cast<int>( i ), t_str[ i ] - '0' );
       break;
     default:
       sim -> errorf( "Player %s has malformed talent string '%s': talent list has invalid character '%c'.\n",
@@ -8963,7 +8963,7 @@ void player_convergence( int convergence_scale,
       if ( convergence_min > i_dps ) convergence_min = i_dps;
       if ( convergence_max < i_dps ) convergence_max = i_dps;
     }
-    convergence_iterations = ( dps.data().size() + convergence_scale - 1 ) / convergence_scale;
+    convergence_iterations = ( as<int>( dps.data().size() ) + convergence_scale - 1 ) / convergence_scale;
     convergence_dps /= convergence_iterations;
 
     dps_convergence_error.assign( dps.data().size(), 0 );
