@@ -1,5 +1,5 @@
 // ==========================================================================
-// Dedmonwakeen's Raid DPS/TPS Simulator.
+// Dedmonwakeen's Raid DPS/doublePS Simulator.
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
@@ -11,53 +11,125 @@
 #include <limits>
 #include "../sc_generic.hpp"
 
-// Statistical Sample Data Container
-
-class sample_data_t
+/* Simplest Samplest Data container. Only tracks sum and count
+ *
+ */
+class simple_sample_data_t
 {
+protected:
+  double _sum;
+  size_t _count;
+  static double nan() { return std::numeric_limits<double>::quiet_NaN(); }
+
+public:
+
+  void add( double x )
+  { _sum += x; ++_count; }
+
+  double mean() const
+  { return _count ? _sum / _count : nan(); }
+
+  double pretty_mean() const
+  { return _count ? _sum / _count : 0.0; }
+
+  double sum() const
+  { return _sum; }
+
+  size_t count() const
+  { return _count; }
+
+  void merge( const simple_sample_data_t& other )
+  {
+    _count += other._count;
+    _sum  += other._sum;
+  }
+};
+
+/* Second simplest Samplest Data container. Tracks sum, count as well as min/max
+ *
+ */
+class simple_sample_data_with_min_max_t : public simple_sample_data_t
+{
+private:
+  typedef simple_sample_data_t base_t;
+
+protected:
+  bool _found;
+  double _min, _max;
+  void set_min( double x ) { _min = x; _found = true; }
+  void set_max( double x ) { _max = x; _found = true; }
+
+public:
+  simple_sample_data_with_min_max_t() :
+    base_t(), _found( false ),
+    _min( std::numeric_limits<double>::infinity() ), _max( -std::numeric_limits<double>::infinity() ) {}
+
+  void add( double x )
+  {
+    base_t::add( x );
+
+    if ( x < _min )
+      set_min( x );
+    if ( x > _max )
+      set_max( x );
+  }
+
+  bool found_min_max() const
+  { return _found; }
+  double min() const
+  { return _found ? _min : base_t::nan(); }
+  double max() const
+  { return _found ? _max : base_t::nan(); }
+
+  void merge( const simple_sample_data_with_min_max_t& other )
+  {
+    base_t::merge( other );
+
+    if ( other.found_min_max() )
+    {
+      if ( other._min < _min )
+      {
+        set_min( other._min );
+      }
+      if ( other._max > _max )
+      {
+        set_max( other._max );
+      }
+    }
+  }
+};
+
+/* Extensive sample_data container with two runtime dependent modes:
+ * - simple: Only offers sum, count
+ *  - simple & min_max : sum, count, min/max
+ *  -!simple: saves data and offers variation, distribution, etc.
+ */
+class extended_sample_data_t : public simple_sample_data_with_min_max_t
+{
+  typedef simple_sample_data_with_min_max_t base_t;
 public:
   std::string name_str;
 
-  // Analyzed Results
-  double sum;
-  double min;
-  double max;
-
-  double mean;
+  double _mean;
   double variance;
   double std_dev;
   double mean_std_dev;
-  std::vector<int> distribution;
+  std::vector<size_t> distribution;
   bool simple;
   bool min_max;
 private:
   std::vector<double> _data;
   std::vector<double*> _sorted_data; // extra sequence so we can keep the original, unsorted order ( for example to do regression on it )
-  size_t count;
   bool is_sorted;
 public:
-  sample_data_t( bool s = true, bool mm = false ) :
-    sum( 0 ),
-    min( d_max() ),
-    max( d_min() ),
-    mean( 0 ),
-    variance( 0 ),
-    std_dev( 0 ),
-    mean_std_dev( 0 ),
-    simple( s ), min_max( mm ), count( 0 ),
-    is_sorted( false )
-  {}
-
-  sample_data_t( const std::string& n, bool s = true, bool mm = false ) :
+  extended_sample_data_t( const std::string& n, bool s = true, bool mm = false ) :
+    base_t(),
     name_str( n ),
-    sum( 0 ),
-    min( d_max() ),
-    max( d_min() ),
-    mean( 0 ),
+    _mean( 0 ),
     variance( 0 ),
     std_dev( 0 ),
     mean_std_dev( 0 ),
-    simple( s ), min_max( mm ), count( 0 ),
+    simple( s ), min_max( mm ),
     is_sorted( false )
   {}
 
@@ -75,20 +147,11 @@ public:
   { if ( ! simple ) _data.reserve( capacity ); }
 
   // Add a sample
-  void add( double x )
+  void add( const double& x )
   {
     if ( simple )
     {
-      if ( min_max )
-      {
-        if ( x < min )
-          min = x;
-        if ( x > max )
-          max = x;
-      }
-
-      sum += x;
-      ++count;
+      base_t::add( x );
     }
     else
     {
@@ -103,7 +166,7 @@ public:
   size_t size() const
   {
     if ( simple )
-      return count;
+      return base_t::count();
 
     return _data.size();
   }
@@ -130,11 +193,7 @@ public:
   void analyze_basics()
   {
     if ( simple )
-    {
-      if ( count > 0 )
-        mean = sum / count;
       return;
-    }
 
     size_t sample_size = data().size();
     if ( sample_size == 0 )
@@ -142,26 +201,29 @@ public:
 
     if ( sorted() )
     {
-      min = *_sorted_data.front();
-      max = *_sorted_data.back();
-      sum = std::accumulate( data().begin(), data().end(), 0.0 );
+      base_t::set_min( *_sorted_data.front() );
+      base_t::set_max( *_sorted_data.back() );
+      base_t::_sum = std::accumulate( data().begin(), data().end(), 0.0 );
     }
     else
     {
       // Calculate Sum, Mean, Min, Max
-      sum = min = max = data()[ 0 ];
+      double min, max;
+      base_t::_sum = min = max = data()[ 0 ];
 
       for ( size_t i = 1; i < sample_size; i++ )
       {
-        double i_data = data()[ i ];
-        sum  += i_data;
-        if ( i_data < min ) min = i_data;
-        if ( i_data > max ) max = i_data;
+        base_t::_sum  += data()[ i ];
+        if ( data()[ i ] < min ) min = data()[ i ];
+        if ( data()[ i ] > max ) max = data()[ i ];
       }
     }
 
-    mean = sum / sample_size;
+    _mean = base_t::_sum / sample_size;
   }
+
+  double mean() const
+  { return simple ? base_t::mean() : _mean; }
 
   /* Analyze Variance: Variance, Stddev and Stddev of the mean
    *
@@ -180,7 +242,7 @@ public:
     variance = 0;
     for ( size_t i = 0; i < sample_size; i++ )
     {
-      double delta = data()[ i ] - mean;
+      double delta = data()[ i ] - mean();
       variance += delta * delta;
     }
 
@@ -232,14 +294,14 @@ public:
     if ( data().empty() )
       return;
 
-    if ( max > min )
+    if ( base_t::max() > base_t::min() )
     {
-      double range = max - min + 2;
+      double range = base_t::max() - base_t::min() + 2;
 
       distribution.assign( num_buckets, 0 );
       for ( size_t i = 0; i < data().size(); i++ )
       {
-        size_t index = static_cast<size_t>( num_buckets * ( data()[ i ] - min + 1 ) / range );
+        size_t index = static_cast<size_t>( num_buckets * ( data()[ i ] - base_t::min() + 1 ) / range );
         assert( index < distribution.size() );
         distribution[ index ]++;
       }
@@ -247,7 +309,7 @@ public:
   }
 
   void clear()
-  { count = 0; sum = 0; _sorted_data.clear(); _data.clear(); distribution.clear();  }
+  { base_t::_count = 0; base_t::_sum = 0.0; _sorted_data.clear(); _data.clear(); distribution.clear();  }
 
   // Access functions
 
@@ -272,35 +334,23 @@ public:
   const std::vector<double>& data() const { return _data; }
   const std::vector<double*>& sorted_data() const { return _sorted_data; }
 
-  void merge( const sample_data_t& other )
+  void merge( const extended_sample_data_t& other )
   {
     assert( simple == other.simple );
 
     if ( simple )
     {
-      count += other.count;
-      sum += other.sum;
-
-      if ( min_max )
-      {
-        if ( other.min < min ) min = other.min;
-        if ( other.max > max ) max = other.max;
-      }
+      base_t::merge( other );
     }
     else
       _data.insert( _data.end(), other._data.begin(), other._data.end() );
   }
 
-private:
-  // Some numeric_limits helper functions
-  static double d_min() { return -std::numeric_limits<double>::infinity(); }
-  static double d_max() { return  std::numeric_limits<double>::infinity(); }
-
 }; // sample_data_t
 
 /* Requires: Analyzed mean & stddev
  */
-inline double covariance( const sample_data_t& x, const sample_data_t& y )
+inline double covariance( const extended_sample_data_t& x, const extended_sample_data_t& y )
 {
   if ( x.simple || y.simple )
     return 0;
@@ -312,7 +362,7 @@ inline double covariance( const sample_data_t& x, const sample_data_t& y )
 
   for ( size_t i = 0; i < x.data().size(); i++ )
   {
-    corr += ( x.data()[ i ] - x.mean ) * ( y.data()[ i ] - y.mean );
+    corr += ( x.data()[ i ] - x.mean() ) * ( y.data()[ i ] - y.mean() );
   }
   if ( x.data().size() > 1 )
     corr /= ( x.data().size() - 1 );
@@ -322,6 +372,7 @@ inline double covariance( const sample_data_t& x, const sample_data_t& y )
 
   return corr;
 }
+
 
 
 #endif // SAMPLE_DATA_HPP

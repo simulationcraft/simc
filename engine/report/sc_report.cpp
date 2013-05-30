@@ -16,7 +16,7 @@ struct buff_is_dynamic
 {
   bool operator() ( const buff_t* b ) const
   {
-    if ( ! b -> quiet && b -> avg_start.sum && ! b -> constant )
+    if ( ! b -> quiet && b -> avg_start.sum() && ! b -> constant )
       return false;
 
     return true;
@@ -27,7 +27,7 @@ struct buff_is_constant
 {
   bool operator() ( const buff_t* b ) const
   {
-    if ( ! b -> quiet && b -> avg_start.sum && b -> constant )
+    if ( ! b -> quiet && b -> avg_start.sum() && b -> constant )
       return false;
 
     return true;
@@ -62,7 +62,7 @@ size_t player_chart_length( player_t* p )
   if ( pet_t* is_pet = dynamic_cast<pet_t*>( p ) )
     p = is_pet -> owner;
 
-  return static_cast<size_t>( p -> fight_length.max );
+  return static_cast<size_t>( p -> fight_length.max() );
 }
 
 char stat_type_letter( stats_e type )
@@ -544,7 +544,7 @@ void report::print_suite( sim_t* sim )
   report::print_profiles( sim );
 }
 
-void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sample_data_t& data, const std::string& name )
+void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, extended_sample_data_t& data, const std::string& name )
 {
   // Print Statistics of a Sample Data Container
 
@@ -594,7 +594,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">Mean</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
-      data.mean );
+      data.mean() );
 
     if ( !data.simple || data.min_max )
     {
@@ -611,7 +611,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">Minimum</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
-        data.min );
+        data.min() );
 
       ++i;
       os << "\t\t\t\t\t\t\t\t<tr";
@@ -625,7 +625,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">Maximum</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
-        data.max );
+        data.max() );
 
       ++i;
       os << "\t\t\t\t\t\t\t\t<tr";
@@ -639,7 +639,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">Spread ( max - min )</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
-        data.max - data.min );
+        data.max() - data.min() );
 
       ++i;
       os << "\t\t\t\t\t\t\t\t<tr";
@@ -653,7 +653,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
         "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
-        data.mean ? ( ( data.max - data.min ) / 2 ) * 100 / data.mean : 0 );
+        data.mean() ? ( ( data.max() - data.min() ) / 2 ) * 100 / data.mean() : 0 );
 
       if ( !data.simple )
       {
@@ -755,8 +755,8 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
           "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
           "\t\t\t\t\t\t\t\t</tr>\n",
           sim -> confidence * 100.0,
-          data.mean - mean_error,
-          data.mean + mean_error );
+          data.mean() - mean_error,
+          data.mean() + mean_error );
 
         ++i;
         os << "\t\t\t\t\t\t\t\t<tr";
@@ -771,8 +771,8 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
           "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
           "\t\t\t\t\t\t\t\t</tr>\n",
           sim -> confidence * 100.0,
-          data.mean ? 100 - mean_error * 100 / data.mean : 0,
-          data.mean ? 100 + mean_error * 100 / data.mean : 0 );
+          data.mean() ? 100 - mean_error * 100 / data.mean() : 0,
+          data.mean() ? 100 + mean_error * 100 / data.mean() : 0 );
 
 
 
@@ -793,7 +793,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
           "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% Error</td>\n"
           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
           "\t\t\t\t\t\t\t\t</tr>\n",
-          ( int ) ( data.mean ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.01 * data.mean * 0.01 * data.mean ) ) ) : 0 ) );
+          ( int ) ( data.mean() ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.01 * data.mean() * 0.01 * data.mean() ) ) ) : 0 ) );
 
         ++i;
         os << "\t\t\t\t\t\t\t\t<tr";
@@ -807,7 +807,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
           "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% Error</td>\n"
           "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
           "\t\t\t\t\t\t\t\t</tr>\n",
-          ( int ) ( data.mean ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.001 * data.mean * 0.001 * data.mean ) ) ) : 0 ) );
+          ( int ) ( data.mean() ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.001 * data.mean() * 0.001 * data.mean() ) ) ) : 0 ) );
 
         ++i;
         os << "\t\t\t\t\t\t\t\t<tr";
@@ -857,7 +857,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
 
   if ( ! data.simple )
   {
-    std::string dist_chart = chart::distribution( sim -> print_styles, data.distribution, name, data.mean, data.min, data.max );
+    std::string dist_chart = chart::distribution( sim -> print_styles, data.distribution, name, data.mean(), data.min(), data.max() );
 
     os.printf(
       "\t\t\t\t\t<img src=\"%s\" alt=\"Distribution Chart\" />\n",
@@ -929,9 +929,9 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
       s -> timeline_amount.resize( max_buckets );
       sc_timeline_t timeline_aps;
       s -> timeline_amount.build_derivative_timeline( timeline_aps );
-      s -> timeline_aps_chart = chart::timeline( p, timeline_aps.data(), s -> name_str + ' ' + stat_type_letter( s -> type ) + "PS", s -> portion_aps.mean );
+      s -> timeline_aps_chart = chart::timeline( p, timeline_aps.data(), s -> name_str + ' ' + stat_type_letter( s -> type ) + "PS", s -> portion_aps.mean() );
       s -> aps_distribution_chart = chart::distribution( p -> sim -> print_styles, s -> portion_aps.distribution, s -> name_str + ( s -> type == STATS_DMG ? " DPS" : " HPS" ),
-                                                         s -> portion_aps.mean, s -> portion_aps.min, s -> portion_aps.max );
+                                                         s -> portion_aps.mean(), s -> portion_aps.min(), s -> portion_aps.max() );
     }
   }
   // End Stats Charts
@@ -950,7 +950,7 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
   {
     sc_timeline_t timeline_dps;
     p -> timeline_dmg.build_derivative_timeline( timeline_dps );
-    ri.timeline_dps_chart = chart::timeline( p, timeline_dps.data(), encoded_name + " DPS", p -> dps.mean );
+    ri.timeline_dps_chart = chart::timeline( p, timeline_dps.data(), encoded_name + " DPS", p -> dps.mean() );
   }
 
   ri.timeline_dps_error_chart = chart::timeline_dps_error( p );
@@ -960,24 +960,24 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
   {
     ri.distribution_dps_chart = chart::distribution( p -> sim -> print_styles,
                                                      p -> hps.distribution, encoded_name + " HPS",
-                                                     p -> hps.mean,
-                                                     p -> hps.min,
-                                                     p -> hps.max );
+                                                     p -> hps.mean(),
+                                                     p -> hps.min(),
+                                                     p -> hps.max() );
   }
   else
   {
     ri.distribution_dps_chart = chart::distribution( p -> sim -> print_styles,
                                                      p -> dps.distribution, encoded_name + " DPS",
-                                                     p -> dps.mean,
-                                                     p -> dps.min,
-                                                     p -> dps.max );
+                                                     p -> dps.mean(),
+                                                     p -> dps.min(),
+                                                     p -> dps.max() );
   }
 
   ri.distribution_deaths_chart = chart::distribution( p -> sim -> print_styles,
                                                       p -> deaths.distribution, encoded_name + " Death",
-                                                      p -> deaths.mean,
-                                                      p -> deaths.min,
-                                                      p -> deaths.max );
+                                                      p -> deaths.mean(),
+                                                      p -> deaths.min(),
+                                                      p -> deaths.max() );
 
   // Resource Charts
   for ( size_t i = 0; i < p -> resource_timeline_count; ++i )
@@ -1027,9 +1027,9 @@ void report::generate_sim_report_information( sim_t* s , sim_t::report_informati
   chart::raid_gear    ( ri.gear_charts, s, s -> print_styles );
   ri.timeline_chart = chart::distribution( s -> print_styles,
                                            s -> simulation_length.distribution, "Timeline",
-                                           s -> simulation_length.mean,
-                                           s -> simulation_length.min,
-                                           s -> simulation_length.max );
+                                           s -> simulation_length.mean(),
+                                           s -> simulation_length.min(),
+                                           s -> simulation_length.max() );
 
   ri.charts_generated = true;
 }

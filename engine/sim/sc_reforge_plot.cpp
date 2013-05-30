@@ -230,7 +230,7 @@ void reforge_plot_t::analyze_stats()
         plot_data_t& data = delta_result[ stat_mods[ i ].size() ];
         player_t* delta_p = current_reforge_sim -> find_player( p -> name() );
 
-        data.value = delta_p -> scales_over().mean;
+        data.value = delta_p -> scales_over().mean();
         data.error = delta_p -> scales_over().mean_std_dev * current_reforge_sim -> confidence_estimator;
 
         p -> reforge_plot_data.push_back( delta_result );

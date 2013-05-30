@@ -1631,15 +1631,13 @@ private:
   timespan_t last_start;
   timespan_t iteration_uptime_sum;
 public:
-  sample_data_t uptime_sum;
+  simple_sample_data_t uptime_sum;
 
-  uptime_common_t( int statistics_level, int iterations ) :
+  uptime_common_t() :
     last_start( timespan_t::min() ),
     iteration_uptime_sum( timespan_t::zero() ),
-    uptime_sum( statistics_level < 6 )
-  {
-    uptime_sum.reserve( iterations );
-  }
+    uptime_sum()
+  { }
   void update( bool is_up, timespan_t current_time )
   {
     if ( is_up )
@@ -1658,7 +1656,6 @@ public:
   void datacollection_end( timespan_t t )
   { uptime_sum.add( t != timespan_t::zero() ? iteration_uptime_sum / t : 0.0 ); }
   void reset() { last_start = timespan_t::min(); }
-  void analyze() { uptime_sum.analyze_all(); }
   void merge( const uptime_common_t& other )
   { uptime_sum.merge( other.uptime_sum ); }
 };
@@ -1667,8 +1664,8 @@ struct uptime_t : public uptime_common_t
 {
   std::string name_str;
 
-  uptime_t(  int statistics_level, int iterations , const std::string& n ) :
-    uptime_common_t(  statistics_level, iterations  ), name_str( n )
+  uptime_t(const std::string& n ) :
+    uptime_common_t(), name_str( n )
   {}
 
   const char* name() const
@@ -1677,8 +1674,8 @@ struct uptime_t : public uptime_common_t
 
 struct buff_uptime_t : public uptime_common_t
 {
-  buff_uptime_t(  int statistics_level, int iterations  ) :
-    uptime_common_t(  statistics_level, iterations  ) {}
+  buff_uptime_t() :
+    uptime_common_t() {}
 };
 
 // Buff Creation ====================================================================
@@ -1920,9 +1917,9 @@ protected:
 
   // report data
 public:
-  sample_data_t benefit_pct,trigger_pct;
-  sample_data_t avg_start, avg_refresh;
-  sample_data_t uptime_pct, start_intervals, trigger_intervals;
+  simple_sample_data_t benefit_pct,trigger_pct;
+  simple_sample_data_t avg_start, avg_refresh;
+  simple_sample_data_t uptime_pct, start_intervals, trigger_intervals;
   auto_dispose< std::vector<buff_uptime_t*> > stack_uptime;
 
   virtual ~buff_t() {}
@@ -2554,7 +2551,8 @@ public:
   timespan_t elapsed_cpu;
   timespan_t elapsed_time;
   double     iteration_dmg, iteration_heal;
-  sample_data_t raid_dps, total_dmg, raid_hps, total_heal, simulation_length;
+  simple_sample_data_t raid_dps, total_dmg, raid_hps, total_heal;
+  extended_sample_data_t simulation_length;
   int        report_progress;
   int        bloodlust_percent;
   timespan_t bloodlust_time;
@@ -3265,7 +3263,7 @@ struct benefit_t : public noncopyable
 private:
   int up, down;
 public:
-  sample_data_t ratio;
+  simple_sample_data_t ratio;
   const std::string name_str;
 
   explicit benefit_t( const std::string& n ) :
@@ -3278,8 +3276,6 @@ public:
   { up = down = 0; }
   void datacollection_end()
   { ratio.add( up != 0 ? 100.0 * up / ( down + up ) : 0.0 ); }
-  void analyze()
-  { ratio.analyze_all(); }
   void merge( const benefit_t& other )
   { ratio.merge( other.ratio ); }
 
@@ -3293,20 +3289,20 @@ struct proc_t : public noncopyable
 {
 private:
   sim_t& sim;
-  unsigned int iteration_count; // track number of procs during the current iteration
+  size_t iteration_count; // track number of procs during the current iteration
   timespan_t last_proc; // track time of the last proc
 public:
   const std::string name_str;
-  sample_data_t interval_sum;
-  sample_data_t count;
+  simple_sample_data_t interval_sum;
+  simple_sample_data_t count;
 
   proc_t( sim_t& s, const std::string& n ) :
     sim( s ),
     iteration_count(),
     last_proc( timespan_t::min() ),
     name_str( n ),
-    interval_sum( s.statistics_level < 6 ),
-    count( s.statistics_level < 8 )
+    interval_sum(),
+    count()
   {}
 
   void occur()
@@ -3318,10 +3314,10 @@ public:
       reset();
     }
     if ( sim.debug )
-      sim.output( "[PROC] %s: iteration_count=%d count.sum=%.0f last_proc=%f",
+      sim.output( "[PROC] %s: iteration_count=%u count.sum=%u last_proc=%f",
                   name(),
-                  iteration_count,
-                  count.sum,
+                  static_cast<unsigned>( iteration_count ),
+                  static_cast<unsigned>( count.sum() ),
                   last_proc.total_seconds() );
 
     last_proc = sim.current_time;
@@ -3340,12 +3336,6 @@ public:
   { iteration_count = 0; }
   void datacollection_end()
   { count.add( iteration_count ); }
-
-  void analyze()
-  {
-    count.analyze_all();
-    interval_sum.analyze_all();
-  }
 
   const char* name() const
   { return name_str.c_str(); }
@@ -3647,10 +3637,10 @@ public:
     std::array<double,RESOURCE_MAX> base, initial, max, current,
                                     base_multiplier, initial_multiplier;
     std::array<int, RESOURCE_MAX> infinite_resource;
-    std::vector<sample_data_t> combat_end_resource;
+    std::vector<simple_sample_data_with_min_max_t > combat_end_resource;
 
     resources_t() :
-      combat_end_resource( RESOURCE_MAX, sample_data_t( true, true ) )
+      combat_end_resource( RESOURCE_MAX, simple_sample_data_with_min_max_t() )
     {
       range::fill( base, 0.0 );
       range::fill( initial, 0.0 );
@@ -3759,12 +3749,13 @@ public:
   int       quiet;
   action_t* last_foreground_action;
   timespan_t iteration_fight_length,arise_time;
-  sample_data_t fight_length, waiting_time, executed_foreground_actions;
+  extended_sample_data_t fight_length;
+  simple_sample_data_t waiting_time, executed_foreground_actions;
   timespan_t iteration_waiting_time;
   int       iteration_executed_foreground_actions;
   std::array< double, RESOURCE_MAX > resource_lost, resource_gained;
   double    rps_gain, rps_loss;
-  sample_data_t deaths;
+  extended_sample_data_t deaths;
   double    deaths_error;
 
   // Buffed snapshot_stats (for reporting)
@@ -3806,12 +3797,12 @@ public:
   // Damage
   double iteration_dmg, iteration_dmg_taken; // temporary accumulators
   double dps_error, dpr, dtps_error;
-  sample_data_t dmg;
-  sample_data_t compound_dmg;
-  sample_data_t dps;
-  sample_data_t dpse;
-  sample_data_t dtps;
-  sample_data_t dmg_taken;
+  extended_sample_data_t dmg;
+  extended_sample_data_t compound_dmg;
+  extended_sample_data_t dps;
+  extended_sample_data_t dpse;
+  extended_sample_data_t dtps;
+  extended_sample_data_t dmg_taken;
   sc_timeline_t timeline_dmg;
   sc_timeline_t timeline_dmg_taken;
   std::vector<double> dps_convergence_error;
@@ -3820,12 +3811,12 @@ public:
   // Heal
   double iteration_heal,iteration_heal_taken; // temporary accumulators
   double hps_error,hpr;
-  sample_data_t heal;
-  sample_data_t compound_heal;
-  sample_data_t hps;
-  sample_data_t hpse;
-  sample_data_t htps;
-  sample_data_t heal_taken;
+  extended_sample_data_t heal;
+  extended_sample_data_t compound_heal;
+  extended_sample_data_t hps;
+  extended_sample_data_t hpse;
+  extended_sample_data_t htps;
+  extended_sample_data_t heal_taken;
 
   struct report_information_t
   {
@@ -4417,7 +4408,7 @@ public:
 
   virtual void analyze( sim_t& );
 
-  const sample_data_t& scales_over();
+  const extended_sample_data_t& scales_over();
 
   void change_position( position_e );
   position_e position() const
@@ -4581,22 +4572,23 @@ public:
   bool quiet;
   bool background;
 
-  sample_data_t num_executes, num_ticks, num_refreshes, num_direct_results, num_tick_results;
+  simple_sample_data_t num_executes, num_ticks, num_refreshes, num_direct_results, num_tick_results;
   unsigned int iteration_num_executes, iteration_num_ticks, iteration_num_refreshes;
   // Variables used both during combat and for reporting
-  sample_data_t total_execute_time, total_tick_time;
+  simple_sample_data_t total_execute_time, total_tick_time;
   timespan_t iteration_total_execute_time, iteration_total_tick_time;
   double portion_amount;
-  sample_data_t total_intervals;
+  simple_sample_data_t total_intervals;
   timespan_t last_execute;
-  sample_data_t actual_amount, total_amount, portion_aps, portion_apse;
+  extended_sample_data_t actual_amount, total_amount, portion_aps, portion_apse;
   std::vector<stats_t*> children;
 
   struct stats_results_t
   {
   public:
-    sample_data_t actual_amount, total_amount,fight_actual_amount, fight_total_amount,avg_actual_amount, overkill_pct;
-    sample_data_t count;
+    simple_sample_data_with_min_max_t actual_amount,avg_actual_amount;
+    simple_sample_data_t total_amount,fight_actual_amount, fight_total_amount, overkill_pct;
+    simple_sample_data_t count;
     double pct;
   private:
     int iteration_count;
@@ -4604,7 +4596,7 @@ public:
     friend struct stats_t;
   public:
 
-    stats_results_t( int statistics_level, int data_points );
+    stats_results_t();
     void analyze( double num_results );
     void merge( const stats_results_t& other );
     void datacollection_begin();

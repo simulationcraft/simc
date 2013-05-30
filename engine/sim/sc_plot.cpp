@@ -160,12 +160,12 @@ void plot_t::analyze_stats()
         {
           player_t* delta_p = delta_sim -> find_player( p -> name() );
 
-          data.value = delta_p -> scales_over().mean;
+          data.value = delta_p -> scales_over().mean();
           data.error = delta_p -> scales_over().mean_std_dev * delta_sim -> confidence_estimator;
         }
         else
         {
-          data.value = p -> scales_over().mean;
+          data.value = p -> scales_over().mean();
           data.error = p -> scales_over().mean_std_dev * sim -> confidence_estimator;
         }
         data.plot_step = j * dps_plot_step;

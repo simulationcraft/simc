@@ -19,7 +19,7 @@ void simplify_html( std::string& buffer )
 
 void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe, int max_dpet, int max_dpr, int max_pdps )
 {
-  if ( s -> num_executes.mean == 0 && s -> total_amount.mean == 0 ) return;
+  if ( s -> num_executes.sum() == 0 && s -> total_amount.sum() == 0 ) return;
 
   if ( max_name_length == 0 ) max_name_length = 20;
 
@@ -27,8 +27,8 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe
                  "    %-*s  Count=%5.1f|%6.2fsec  DPE=%*.0f|%2.0f%%  DPET=%*.0f  DPR=%*.1f  pDPS=%*.0f",
                  max_name_length,
                  s -> name_str.c_str(),
-                 s -> num_executes.mean,
-                 s -> total_intervals.mean,
+                 s -> num_executes.mean(),
+                 s -> total_intervals.pretty_mean(),
                  max_dpe,
                  s -> ape,
                  s -> portion_amount * 100.0,
@@ -37,77 +37,77 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe
                  ( max_dpr + 2 ),
                  s -> apr[ s -> player -> primary_resource() ],
                  max_pdps,
-                 s -> portion_aps.mean );
+                 s -> portion_aps.mean() );
 
-  if ( s -> num_direct_results.mean > 0 )
+  if ( s -> num_direct_results.mean() > 0 )
   {
     util::fprintf( file, "  Miss=%.2f%%", s -> direct_results[ RESULT_MISS ].pct );
   }
 
-  if ( s -> direct_results[ RESULT_HIT ].actual_amount.mean > 0 )
+  if ( s -> direct_results[ RESULT_HIT ].actual_amount.sum() > 0 )
   {
     util::fprintf( file, "  Hit=%4.0f|%4.0f|%4.0f",
-                   s -> direct_results[ RESULT_HIT ].actual_amount.mean,
-                   s -> direct_results[ RESULT_HIT ].actual_amount.min,
-                   s -> direct_results[ RESULT_HIT ].actual_amount.max );
+                   s -> direct_results[ RESULT_HIT ].actual_amount.mean(),
+                   s -> direct_results[ RESULT_HIT ].actual_amount.min(),
+                   s -> direct_results[ RESULT_HIT ].actual_amount.max() );
   }
-  if ( s -> direct_results[ RESULT_CRIT ].actual_amount.mean > 0 )
+  if ( s -> direct_results[ RESULT_CRIT ].actual_amount.sum() > 0 )
   {
     util::fprintf( file,
                    "  Crit=%5.0f|%5.0f|%5.0f|%.1f%%",
-                   s -> direct_results[ RESULT_CRIT ].actual_amount.mean,
-                   s -> direct_results[ RESULT_CRIT ].actual_amount.min,
-                   s -> direct_results[ RESULT_CRIT ].actual_amount.max,
+                   s -> direct_results[ RESULT_CRIT ].actual_amount.mean(),
+                   s -> direct_results[ RESULT_CRIT ].actual_amount.min(),
+                   s -> direct_results[ RESULT_CRIT ].actual_amount.max(),
                    s -> direct_results[ RESULT_CRIT ].pct );
   }
-  if ( s -> direct_results[ RESULT_GLANCE ].actual_amount.mean > 0 )
+  if ( s -> direct_results[ RESULT_GLANCE ].actual_amount.sum() > 0 )
   {
     util::fprintf( file,
                    "  Glance=%4.0f|%.1f%%",
-                   s -> direct_results[ RESULT_GLANCE ].actual_amount.mean,
+                   s -> direct_results[ RESULT_GLANCE ].actual_amount.pretty_mean(),
                    s -> direct_results[ RESULT_GLANCE ].pct );
   }
-  if ( s -> direct_results[ RESULT_DODGE ].count.mean > 0 )
+  if ( s -> direct_results[ RESULT_DODGE ].count.sum() > 0 )
   {
     util::fprintf( file,
                    "  Dodge=%.1f%%",
                    s -> direct_results[ RESULT_DODGE ].pct );
   }
-  if ( s -> direct_results[ RESULT_PARRY ].count.mean > 0 )
+  if ( s -> direct_results[ RESULT_PARRY ].count.sum() > 0 )
   {
     util::fprintf( file,
                    "  Parry=%.1f%%",
                    s -> direct_results[ RESULT_PARRY ].pct );
   }
 
-  if ( s -> num_ticks.mean > 0 ) util::fprintf( file, "  TickCount=%.0f", s -> num_ticks.mean );
+  if ( s -> num_ticks.sum() > 0 ) util::fprintf( file, "  TickCount=%.0f", s -> num_ticks.mean() );
 
-  if ( s -> tick_results[ RESULT_HIT ].actual_amount.mean > 0 || s -> tick_results[ RESULT_CRIT ].actual_amount.mean > 0 )
+  if ( s -> tick_results[ RESULT_HIT ].actual_amount.sum() > 0 || s -> tick_results[ RESULT_CRIT ].actual_amount.sum() > 0 )
   {
     util::fprintf( file, "  MissTick=%.1f%%", s -> tick_results[ RESULT_MISS ].pct );
   }
 
-  if ( s -> tick_results[ RESULT_HIT ].avg_actual_amount.mean > 0 )
+  if ( s -> tick_results[ RESULT_HIT ].avg_actual_amount.sum() > 0 )
   {
     util::fprintf( file,
                    "  Tick=%.0f|%.0f|%.0f",
-                   s -> tick_results[ RESULT_HIT ].actual_amount.mean,
-                   s -> tick_results[ RESULT_HIT ].actual_amount.min,
-                   s -> tick_results[ RESULT_HIT ].actual_amount.max );
+                   s -> tick_results[ RESULT_HIT ].actual_amount.mean(),
+                   s -> tick_results[ RESULT_HIT ].actual_amount.min(),
+                   s -> tick_results[ RESULT_HIT ].actual_amount.max() );
   }
-  if ( s -> tick_results[ RESULT_CRIT ].avg_actual_amount.mean > 0 )
+  if ( s -> tick_results[ RESULT_CRIT ].avg_actual_amount.sum() > 0 )
   {
     util::fprintf( file,
                    "  CritTick=%.0f|%.0f|%.0f|%.1f%%",
-                   s -> tick_results[ RESULT_CRIT ].actual_amount.mean,
-                   s -> tick_results[ RESULT_CRIT ].actual_amount.min,
-                   s -> tick_results[ RESULT_CRIT ].actual_amount.max,
+                   s -> tick_results[ RESULT_CRIT ].actual_amount.mean(),
+                   s -> tick_results[ RESULT_CRIT ].actual_amount.min(),
+                   s -> tick_results[ RESULT_CRIT ].actual_amount.max(),
                    s -> tick_results[ RESULT_CRIT ].pct );
   }
 
-  if ( s -> total_tick_time.sum > 0.0 )
+  if ( s -> total_tick_time.sum() > 0.0 )
   {
-    util::fprintf( file, "  UpTime=%.1f%%", 100.0 * s -> total_tick_time.mean / s -> player -> fight_length.mean  );
+    util::fprintf( file, "  UpTime=%.1f%%", 100.0 * s -> total_tick_time.mean() / s -> player -> fight_length.mean()  );
   }
 
   util::fprintf( file, "\n" );
@@ -152,7 +152,7 @@ void print_text_actions( FILE* file, player_t* p )
   for ( size_t i = 0; i < tmp_stats_list.size(); ++i )
   {
     stats_t* s = tmp_stats_list[ i ];
-    if ( s -> total_amount.mean > 0 )
+    if ( s -> total_amount.mean() > 0 )
     {
       if ( max_length < ( int ) s -> name_str.length() )
         max_length = ( int ) s -> name_str.length();
@@ -166,15 +166,15 @@ void print_text_actions( FILE* file, player_t* p )
       if ( max_dpr < util::numDigits( static_cast<int32_t>( s -> apr[ s -> player -> primary_resource() ] ) ) )
         max_dpr = util::numDigits( static_cast<int32_t>( s -> apr[ s -> player -> primary_resource() ] ) );
 
-      if ( max_pdps < util::numDigits( static_cast<int32_t>( s -> portion_aps.mean ) ) )
-        max_pdps = util::numDigits( static_cast<int32_t>( s -> portion_aps.mean ) );
+      if ( max_pdps < util::numDigits( static_cast<int32_t>( s -> portion_aps.mean() ) ) )
+        max_pdps = util::numDigits( static_cast<int32_t>( s -> portion_aps.mean() ) );
     }
   }
 
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
     stats_t* s = p -> stats_list[ i ];
-    if ( s -> num_executes.mean > 1 || s -> compound_amount > 0 )
+    if ( s -> num_executes.mean() > 1 || s -> compound_amount > 0 )
     {
       print_text_action( file, s, max_length, max_dpe, max_dpet, max_dpr, max_pdps );
     }
@@ -187,11 +187,11 @@ void print_text_actions( FILE* file, player_t* p )
     for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
     {
       stats_t* s = pet -> stats_list[ i ];
-      if ( s -> num_executes.mean > 1 || s -> compound_amount > 0 )
+      if ( s -> num_executes.mean() > 1 || s -> compound_amount > 0 )
       {
         if ( first )
         {
-          util::fprintf( file, "   %s  (DPS=%.1f)\n", pet -> name_str.c_str(), pet -> dps.mean );
+          util::fprintf( file, "   %s  (DPS=%.1f)\n", pet -> name_str.c_str(), pet -> dps.mean() );
           first = false;
         }
         print_text_action( file, s, max_length, max_dpe, max_dpet, max_dpr, max_pdps );
@@ -259,11 +259,11 @@ void print_text_buffs( FILE* file, player_t::report_information_t& ri )
       full_name = b -> name_str;
 
     util::fprintf( file, "    %-*s : start=%4.1f refresh=%5.1f interval=%5.1f trigger=%5.1f uptime=%2.0f%%",
-                   max_length, full_name.c_str(), b -> avg_start.mean, b -> avg_refresh.mean,
-                   b -> start_intervals.mean, b -> trigger_intervals.mean, b -> uptime_pct.mean );
+                   max_length, full_name.c_str(), b -> avg_start.mean(), b -> avg_refresh.mean(),
+                   b -> start_intervals.pretty_mean(), b -> trigger_intervals.pretty_mean(), b -> uptime_pct.pretty_mean() );
 
-    if ( b -> benefit_pct.mean > 0 && b -> benefit_pct.mean < 100 )
-      util::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct.mean );
+    if ( b -> benefit_pct.sum() > 0 && b -> benefit_pct.mean() < 100 )
+      util::fprintf( file, "  benefit=%2.0f%%", b -> benefit_pct.mean() );
 
     util::fprintf( file, "\n" );
   }
@@ -389,7 +389,7 @@ void print_text_pet_gains( FILE* file, player_t* p )
   for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
     pet_t* pet = p -> pet_list[ i ];
-    if ( pet -> dmg.mean <= 0 ) continue;
+    if ( pet -> dmg.mean() <= 0 ) continue;
 
     int max_length = 0;
     for ( size_t i = 0; i < pet -> gain_list.size(); ++i )
@@ -426,11 +426,11 @@ void print_text_procs( FILE* file, player_t* p )
   for ( size_t i = 0; i < p -> proc_list.size(); ++i )
   {
     proc_t* proc = p -> proc_list[ i ];
-    if ( proc -> count.mean > 0 )
+    if ( proc -> count.sum() > 0 )
     {
       if ( first ) util::fprintf( file, "  Procs:\n" ); first = false;
       util::fprintf( file, "    %5.1f | %6.2fsec : %s\n",
-                     proc -> count.mean, proc -> interval_sum.mean, proc -> name() );
+                     proc -> count.mean(), proc -> interval_sum.pretty_mean(), proc -> name() );
     }
   }
 }
@@ -444,10 +444,10 @@ void print_text_uptime( FILE* file, player_t* p )
   for ( size_t j = 0; j < p -> benefit_list.size(); ++j )
   {
     benefit_t* u = p -> benefit_list[ j ];
-    if ( u -> ratio.mean > 0 )
+    if ( u -> ratio.mean() > 0 )
     {
       if ( first ) util::fprintf( file, "  Benefits:\n" ); first = false;
-      util::fprintf( file, "    %5.1f%% : %-30s\n", u -> ratio.mean, u -> name() );
+      util::fprintf( file, "    %5.1f%% : %-30s\n", u -> ratio.mean(), u -> name() );
     }
   }
 
@@ -455,10 +455,10 @@ void print_text_uptime( FILE* file, player_t* p )
   for ( size_t j = 0; j < p -> uptime_list.size(); ++j )
   {
     uptime_t* u = p -> uptime_list[ j ];
-    if ( u -> uptime_sum.mean > 0 )
+    if ( u -> uptime_sum.mean() > 0 )
     {
       if ( first ) util::fprintf( file, "  Up-Times:\n" ); first = false;
-      util::fprintf( file, "    %5.1f%% : %-30s\n", u -> uptime_sum.mean * 100.0, u -> name() );
+      util::fprintf( file, "    %5.1f%% : %-30s\n", u -> uptime_sum.mean() * 100.0, u -> name() );
     }
   }
 }
@@ -477,10 +477,10 @@ void print_text_waiting( FILE* file, sim_t* sim )
     if ( p -> quiet )
       continue;
 
-    if ( p -> waiting_time.mean )
+    if ( p -> waiting_time.mean() )
     {
       nobody_waits = false;
-      util::fprintf( file, "    %4.1f%% : %s\n", 100.0 * p -> waiting_time.mean / p -> fight_length.mean,  p -> name() );
+      util::fprintf( file, "    %4.1f%% : %s\n", 100.0 * p -> waiting_time.mean() / p -> fight_length.mean(),  p -> name() );
     }
   }
 
@@ -503,10 +503,10 @@ void print_text_performance( FILE* file, sim_t* sim )
                  ( long ) sim -> total_events_processed,
                  ( long ) sim -> max_events_remaining,
                  sim -> target -> resources.base[ RESOURCE_HEALTH ],
-                 sim -> iterations * sim -> simulation_length.mean,
+                 sim -> iterations * sim -> simulation_length.mean(),
                  sim -> elapsed_cpu.total_seconds(),
                  sim -> elapsed_time.total_seconds(),
-                 sim -> iterations * sim -> simulation_length.mean / sim -> elapsed_cpu.total_seconds() );
+                 sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu.total_seconds() );
 }
 
 // print_text_scale_factors =================================================
@@ -667,7 +667,7 @@ void print_text_reference_dps( FILE* file, sim_t* sim )
   }
 
   util::fprintf( file, "  %-*s", max_length, ref_p -> name() );
-  util::fprintf( file, "  %.0f", ref_p -> dps.mean );
+  util::fprintf( file, "  %.0f", ref_p -> dps.mean() );
 
   if ( sim -> scaling -> has_scale_factors() )
   {
@@ -690,9 +690,9 @@ void print_text_reference_dps( FILE* file, sim_t* sim )
     {
       util::fprintf( file, "  %-*s", max_length, p -> name() );
 
-      bool over = ( p -> dps.mean > ref_p -> dps.mean );
+      bool over = ( p -> dps.mean() > ref_p -> dps.mean() );
 
-      double ratio = 100.0 * fabs( p -> dps.mean - ref_p -> dps.mean ) / ref_p -> dps.mean;
+      double ratio = 100.0 * fabs( p -> dps.mean() - ref_p -> dps.mean() ) / ref_p -> dps.mean();
 
       util::fprintf( file, "  %c%.0f%%", ( over ? '+' : '-' ), ratio );
 
@@ -727,7 +727,7 @@ void print_text_hat_donors( FILE* file, sim_t* sim )
   for ( int i=0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
-    if ( p -> procs.hat_donor -> count.mean )
+    if ( p -> procs.hat_donor -> count.mean() )
       hat_donors.push_back( p );
   }
 
@@ -742,7 +742,7 @@ void print_text_hat_donors( FILE* file, sim_t* sim )
     {
       player_t* p = hat_donors[ i ];
       proc_t* proc = p -> procs.hat_donor;
-      util::fprintf( file, "  %.2fsec | %.3fcps : %s\n", proc -> interval_sum.mean, ( 1.0 / proc -> interval_sum.mean ), p -> name() );
+      util::fprintf( file, "  %.2fsec | %.3fcps : %s\n", proc -> interval_sum.mean(), ( 1.0 / proc -> interval_sum.mean() ), p -> name() );
     }
   }
 }
@@ -776,18 +776,18 @@ void print_text_player( FILE* file, player_t* p )
                  dbc::specialization_string( p -> specialization() ).c_str(), p -> level );
 
   util::fprintf( file, "  DPS: %.1f  DPS-Error=%.1f/%.1f%% HPS: %.1f HPS-Error=%.1f/%.1f%% DPS-Range=%.0f/%.1f%%  DPS-Convergence=%.1f%%",
-                 p -> dps.mean,
-                 p -> dps_error, p -> dps.mean ? p -> dps_error * 100 / p -> dps.mean : 0,
-                 p -> hps.mean,
-                 p -> hps_error, p -> hps.mean ? p -> hps_error * 100 / p -> hps.mean : 0,
-                 ( p -> dps.max - p -> dps.min ) / 2.0 , p -> dps.mean ? ( ( p -> dps.max - p -> dps.min ) / 2 ) * 100 / p -> dps.mean : 0,
+                 p -> dps.mean(),
+                 p -> dps_error, p -> dps.mean() ? p -> dps_error * 100 / p -> dps.mean() : 0,
+                 p -> hps.mean(),
+                 p -> hps_error, p -> hps.mean() ? p -> hps_error * 100 / p -> hps.mean() : 0,
+                 ( p -> dps.max() - p -> dps.min() ) / 2.0 , p -> dps.mean() ? ( ( p -> dps.max() - p -> dps.min() ) / 2 ) * 100 / p -> dps.mean() : 0,
                  p -> dps_convergence * 100 );
 
   if ( p -> rps_loss > 0 )
   {
     util::fprintf( file, "  DPR=%.1f  RPS-Out=%.1f RPS-In=%.1f  Resource=(%s) Waiting=%.1f ApM=%.1f",
                    p -> dpr, p -> rps_loss, p -> rps_gain,
-                   util::resource_type_string( p -> primary_resource() ), 100.0 * p -> waiting_time.mean / p -> fight_length.mean, 60.0 * p -> executed_foreground_actions.mean / p -> fight_length.mean  );
+                   util::resource_type_string( p -> primary_resource() ), 100.0 * p -> waiting_time.mean() / p -> fight_length.mean(), 60.0 * p -> executed_foreground_actions.mean() / p -> fight_length.mean()  );
   }
 
   util::fprintf( file, "\n" );
@@ -816,7 +816,7 @@ namespace report {
 
 void print_text( FILE* file, sim_t* sim, bool detail )
 {
-  if ( sim -> simulation_length.mean == 0 ) return;
+  if ( sim -> simulation_length.mean() == 0 ) return;
 
 #if SC_BETA
   util::fprintf( file, "\n" );
@@ -842,23 +842,23 @@ void print_text( FILE* file, sim_t* sim, bool detail )
   if ( detail )
   {
     util::fprintf( file, "\nDPS Ranking:\n" );
-    util::fprintf( file, "%7.0f 100.0%%  Raid\n", sim -> raid_dps.mean );
+    util::fprintf( file, "%7.0f 100.0%%  Raid\n", sim -> raid_dps.mean() );
     for ( int i=0; i < num_players; i++ )
     {
       player_t* p = sim -> players_by_dps[ i ];
-      if ( p -> dps.mean <= 0 ) continue;
-      util::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> dps.mean, sim -> raid_dps.mean ? 100 * p -> dpse.mean / sim -> raid_dps.mean : 0, p -> name() );
+      if ( p -> dps.mean() <= 0 ) continue;
+      util::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> dps.mean(), sim -> raid_dps.mean() ? 100 * p -> dpse.mean() / sim -> raid_dps.mean() : 0, p -> name() );
     }
 
     if ( ! sim -> players_by_hps.empty() )
     {
       util::fprintf( file, "\nHPS Ranking:\n" );
-      util::fprintf( file, "%7.0f 100.0%%  Raid\n", sim -> raid_hps.mean );
+      util::fprintf( file, "%7.0f 100.0%%  Raid\n", sim -> raid_hps.mean() );
       for ( size_t i=0; i < sim -> players_by_hps.size(); i++ )
       {
         player_t* p = sim -> players_by_hps[ i ];
-        if ( p -> hps.mean <= 0 ) continue;
-        util::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> hps.mean, sim -> raid_hps.mean ? 100 * p -> hpse.mean / sim -> raid_hps.mean : 0, p -> name() );
+        if ( p -> hps.mean() <= 0 ) continue;
+        util::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> hps.mean(), sim -> raid_hps.mean() ? 100 * p -> hpse.mean() / sim -> raid_hps.mean() : 0, p -> name() );
       }
     }
   }

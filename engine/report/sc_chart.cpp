@@ -407,7 +407,7 @@ struct compare_downtime
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    return l -> waiting_time.mean > r -> waiting_time.mean;
+    return l -> waiting_time.mean() > r -> waiting_time.mean();
   }
 };
 
@@ -416,7 +416,7 @@ struct filter_non_performing_players
   bool dps;
   filter_non_performing_players( bool dps_ ) : dps( dps_ ) {}
   bool operator()( player_t* p ) const
-  { if ( dps ) { if ( p -> dps.mean<=0 ) return true;} else if ( p -> hps.mean<=0 ) return true; return false; }
+  { if ( dps ) { if ( p -> dps.mean() <= 0 ) return true;} else if ( p -> hps.mean() <= 0 ) return true; return false; }
 };
 
 struct compare_dpet
@@ -435,7 +435,7 @@ struct filter_stats_dpet
   {
     if ( st->quiet ) return true;
     if ( st->apet <= 0 ) return true;
-    if ( st -> num_refreshes.mean > 4 * st -> num_executes.mean ) return true;
+    if ( st -> num_refreshes.mean() > 4 * st -> num_executes.mean() ) return true;
     if ( player_is_healer != ( st->type != STATS_DMG ) ) return true;
 
     return false;
@@ -446,7 +446,7 @@ struct compare_amount
 {
   bool operator()( const stats_t* l, const stats_t* r ) const
   {
-    return l -> actual_amount.mean > r -> actual_amount.mean;
+    return l -> actual_amount.mean() > r -> actual_amount.mean();
   }
 };
 
@@ -616,7 +616,7 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, int p
   for ( size_t i = 0; i < players_by_name.size(); i++ )
   {
     player_t* p = players_by_name[ i ];
-    if ( ( p -> waiting_time.mean / p -> fight_length.mean ) > 0.01 )
+    if ( ( p -> waiting_time.mean() / p -> fight_length.mean() ) > 0.01 )
     {
       waiting_list.push_back( p );
     }
@@ -656,7 +656,7 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, int p
   for ( size_t i = 0; i < waiting_list.size(); i++ )
   {
     player_t* p = waiting_list[ i ];
-    double waiting = 100.0 * p -> waiting_time.mean / p -> fight_length.mean;
+    double waiting = 100.0 * p -> waiting_time.mean() / p -> fight_length.mean();
     if ( waiting > max_waiting ) max_waiting = waiting;
     s << ( i?"|":"" );
     s << std::setprecision( 2 ) << waiting;
@@ -685,7 +685,7 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, int p
     std::string formatted_name = p -> name_str;
     util::urlencode( formatted_name );
 
-    double waiting_pct = ( 100.0 * p -> waiting_time.mean / p -> fight_length.mean );
+    double waiting_pct = ( 100.0 * p -> waiting_time.mean() / p -> fight_length.mean() );
 
     s << ( i?"|":"" )  << "t++" << std::setprecision( p -> sim -> report_precision / 2 ) << waiting_pct; // Insert waiting percent
 
@@ -718,9 +718,9 @@ size_t chart::raid_aps( std::vector<std::string>& images,
 
   double max_aps = 0;
   if ( dps )
-    max_aps = players_by_aps[ 0 ] -> dps.mean;
+    max_aps = players_by_aps[ 0 ] -> dps.mean();
   else
-    max_aps = players_by_aps[ 0 ] -> hps.mean;
+    max_aps = players_by_aps[ 0 ] -> hps.mean();
 
   std::string s = std::string();
   char buffer[ 1024 ];
@@ -767,7 +767,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
     for ( size_t i = 0; i < num_players; i++ )
     {
       player_t* p = player_list[ i ];
-      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), dps ? p -> dps.mean : p -> hps.mean ); s += buffer;
+      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), dps ? p -> dps.mean() : p -> hps.mean() ); s += buffer;
     }
     s += amp;
     snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_aps * 2.5 ); s += buffer;
@@ -785,7 +785,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
       player_t* p = player_list[ i ];
       std::string formatted_name = p -> name_str;
       util::urlencode( formatted_name );
-      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), dps ? p -> dps.mean : p -> hps.mean, formatted_name.c_str(), get_color( p ).c_str(), ( int )i ); s += buffer;
+      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), dps ? p -> dps.mean() : p -> hps.mean(), formatted_name.c_str(), get_color( p ).c_str(), ( int )i ); s += buffer;
     }
     s += amp;
 
@@ -1106,7 +1106,7 @@ std::string chart::aps_portion(  player_t* p )
   {
     stats_t* st = p -> stats_list[ i ];
     if ( st -> quiet ) continue;
-    if ( st -> actual_amount.mean <= 0 ) continue;
+    if ( st -> actual_amount.mean() <= 0 ) continue;
     if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
     stats_list.push_back( st );
   }
@@ -1118,7 +1118,7 @@ std::string chart::aps_portion(  player_t* p )
     {
       stats_t* st = pet -> stats_list[ j ];
       if ( st -> quiet ) continue;
-      if ( st -> actual_amount.mean <= 0 ) continue;
+      if ( st -> actual_amount.mean() <= 0 ) continue;
       if ( ( p -> primary_role() == ROLE_HEAL ) != ( st -> type != STATS_DMG ) ) continue;
       stats_list.push_back( st );
     }
@@ -1142,7 +1142,7 @@ std::string chart::aps_portion(  player_t* p )
   for ( int i=0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), 100.0 * st -> actual_amount.mean / ( ( p -> primary_role() == ROLE_HEAL ) ? p -> heal.mean : p -> dmg.mean ) ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), 100.0 * st -> actual_amount.mean() / ( ( p -> primary_role() == ROLE_HEAL ) ? p -> heal.mean() : p -> dmg.mean() ) ); s += buffer;
   }
   s += amp;
   s += "chds=0,100";
@@ -1190,7 +1190,7 @@ std::string chart::time_spent( player_t* p )
   range::remove_copy_if( p -> stats_list, back_inserter( filtered_waiting_stats ), filter_waiting_stats() );
 
   size_t num_stats = filtered_waiting_stats.size();
-  if ( num_stats == 0 && p -> waiting_time.mean == 0 )
+  if ( num_stats == 0 && p -> waiting_time.mean() == 0 )
     return std::string();
 
   range::sort( filtered_waiting_stats, compare_stats_time() );
@@ -1207,11 +1207,11 @@ std::string chart::time_spent( player_t* p )
   s += "chd=t:";
   for ( size_t i = 0; i < num_stats; i++ )
   {
-    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( i?",":"" ), 100.0 * filtered_waiting_stats[ i ] -> total_time.total_seconds() / p -> fight_length.mean ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( i?",":"" ), 100.0 * filtered_waiting_stats[ i ] -> total_time.total_seconds() / p -> fight_length.mean() ); s += buffer;
   }
-  if ( p -> waiting_time.mean > 0 )
+  if ( p -> waiting_time.mean() > 0 )
   {
-    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( num_stats > 0 ? ",":"" ), 100.0 * p -> waiting_time.mean / p -> fight_length.mean ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( num_stats > 0 ? ",":"" ), 100.0 * p -> waiting_time.mean() / p -> fight_length.mean() ); s += buffer;
   }
   s += amp;
   s += "chds=0,100";
@@ -1231,7 +1231,7 @@ std::string chart::time_spent( player_t* p )
     }
     s += school;
   }
-  if ( p -> waiting_time.mean > 0 )
+  if ( p -> waiting_time.mean() > 0 )
   {
     if ( num_stats > 0 ) s += ",";
     s += p -> sim -> print_styles == 1 ? "EEEEE2" : "ffffff";
@@ -1245,11 +1245,11 @@ std::string chart::time_spent( player_t* p )
     s += st -> name_str.c_str();
     snprintf( buffer, sizeof( buffer ), " %.1fs", st -> total_time.total_seconds() ); s += buffer;
   }
-  if ( p -> waiting_time.mean > 0 )
+  if ( p -> waiting_time.mean() > 0 )
   {
     if ( num_stats > 0 )s += "|";
     s += "waiting";
-    snprintf( buffer, sizeof( buffer ), " %.1fs", p -> waiting_time.mean ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), " %.1fs", p -> waiting_time.mean() ); s += buffer;
   }
   s += amp;
 
@@ -1462,15 +1462,15 @@ std::string chart::scaling_dps( player_t* p )
   s += amp;
   if ( ! p -> sim -> plot -> dps_plot_positive )
   {
-    snprintf( buffer, sizeof( buffer ), "chxl=0:|%.0f|%.0f|0|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( -range*step ), ( -range*step )/2, ( +range*step )/2, ( +range*step ), min_dps, p -> dps.mean, max_dps ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "chxl=0:|%.0f|%.0f|0|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( -range*step ), ( -range*step )/2, ( +range*step )/2, ( +range*step ), min_dps, p -> dps.mean(), max_dps ); s += buffer;
   }
   else
   {
     const int start = 0;  // start and end only used for dps_plot_positive
-    snprintf( buffer, sizeof( buffer ), "chxl=0:|0|%%2b%.0f|%%2b%.0f|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( start + ( 1.0/4 )*end )*step, ( start + ( 2.0/4 )*end )*step, ( start + ( 3.0/4 )*end )*step, ( start + end )*step, min_dps, p -> dps.mean, max_dps ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "chxl=0:|0|%%2b%.0f|%%2b%.0f|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( start + ( 1.0/4 )*end )*step, ( start + ( 2.0/4 )*end )*step, ( start + ( 3.0/4 )*end )*step, ( start + end )*step, min_dps, p -> dps.mean(), max_dps ); s += buffer;
   }
   s += amp;
-  snprintf( buffer, sizeof( buffer ), "chxp=0,0,24.5,50,74.5,100|1,1,%.0f,100", 100.0 * ( p -> dps.mean - min_dps ) / ( max_dps - min_dps ) ); s += buffer;
+  snprintf( buffer, sizeof( buffer ), "chxp=0,0,24.5,50,74.5,100|1,1,%.0f,100", 100.0 * ( p -> dps.mean() - min_dps ) / ( max_dps - min_dps ) ); s += buffer;
   s += amp;
   s += "chdl=";
   first = true;
@@ -1886,7 +1886,7 @@ std::string chart::timeline_dps_error( player_t* p )
 // chart::distribution_dps ==================================================
 
 std::string chart::distribution( int print_style,
-                                 std::vector<int>& dist_data,
+                                 std::vector<size_t>& dist_data,
                                  const std::string& distribution_name,
                                  double avg, double min, double max )
 {
@@ -1907,7 +1907,7 @@ std::string chart::distribution( int print_style,
   s += "chd=t:";
   for ( int i=0; i < max_buckets; i++ )
   {
-    snprintf( buffer, sizeof( buffer ), "%s%d", ( i?",":"" ), dist_data[ i ] ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%u", ( i?",":"" ), as<unsigned>( dist_data[ i ] ) ); s += buffer;
   }
   s += amp;
   snprintf( buffer, sizeof( buffer ), "chds=0,%d", count_max ); s += buffer;
@@ -2466,5 +2466,5 @@ std::string chart::resource_color( int type )
  */
 std::string chart::dps_error( player_t& p )
 {
-  return chart::normal_distribution( p.dps.mean, p.dps.mean_std_dev, p.sim -> confidence, p.sim -> confidence_estimator, p.sim -> print_styles );
+  return chart::normal_distribution( p.dps.mean(), p.dps.mean_std_dev, p.sim -> confidence, p.sim -> confidence_estimator, p.sim -> print_styles );
 }

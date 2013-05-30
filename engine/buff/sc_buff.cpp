@@ -237,9 +237,6 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
 
   if ( player && ! player -> cache.active ) requires_invalidation = false;
 
-  uptime_pct.reserve( sim -> iterations );
-  benefit_pct.reserve( sim -> iterations );
-
   if ( sim -> buff_uptime_timeline )
   {
     int size = ( int ) ( sim -> max_time.total_seconds() * ( 1.0 + sim -> vary_combat_length ) );
@@ -260,8 +257,8 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   }
 
   // Keep non hidden reported numbers clean
-  start_intervals.mean = 0;
-  trigger_intervals.mean = 0;
+  //start_intervals.mean = 0;
+  // trigger_intervals.mean = 0;
 
   stack_occurrence.resize( _max_stack + 1 );
   stack_react_time.resize( _max_stack + 1 );
@@ -269,7 +266,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
 
   if ( as<int>( stack_uptime.size() ) < _max_stack )
     for ( int i = as<int>( stack_uptime.size() ); i <= _max_stack; ++i )
-      stack_uptime.push_back( new buff_uptime_t( sim -> statistics_level, sim -> iterations ) );
+      stack_uptime.push_back( new buff_uptime_t() );
 }
 
 // buff_t::datacollection_begin ==========================================================
@@ -863,18 +860,9 @@ void buff_t::merge( const buff_t& other )
 
 void buff_t::analyze()
 {
-  start_intervals.analyze_all();
-  trigger_intervals.analyze_all();
-  avg_start.analyze_all();
-  avg_refresh.analyze_all();
-  uptime_pct.analyze_all();
-  benefit_pct.analyze_all();
-  trigger_pct.analyze_all();
+
   if ( sim -> buff_uptime_timeline )
     uptime_array.adjust( sim -> divisor_timeline );
-
-  for ( size_t i = 0; i < stack_uptime.size(); i++ )
-    stack_uptime[ i ] -> analyze();
 }
 
 // buff_t::find =============================================================

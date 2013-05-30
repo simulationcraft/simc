@@ -840,7 +840,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   plot( new plot_t( this ) ),
   reforge_plot( new reforge_plot_t( this ) ),
   elapsed_cpu( timespan_t::zero() ), elapsed_time( timespan_t::zero() ), iteration_dmg( 0 ), iteration_heal( 0 ),
-  raid_dps( std::string( "Raid Damage Per Second" ) ), total_dmg(), raid_hps( std::string( "Raid Healing Per Second" ) ), total_heal(), simulation_length( false ),
+  raid_dps(), total_dmg(), raid_hps(), total_heal(),
+  simulation_length( "Simulation Length", false ),
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( 5.0 ) ),
   output_file( stdout ),
@@ -1575,10 +1576,7 @@ bool sim_t::init()
   if ( report_precision < 0 ) report_precision = 4;
 
   iteration_timeline.reserve( iterations );
-  raid_dps.reserve( iterations );
-  total_dmg.reserve( iterations );
-  raid_hps.reserve( iterations );
-  total_heal.reserve( iterations );
+
   simulation_length.reserve( iterations );
 
   initialized = true;
@@ -1592,7 +1590,7 @@ struct compare_dps
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    return l -> dps.mean > r -> dps.mean;
+    return l -> dps.mean() > r -> dps.mean();
   }
 };
 
@@ -1602,7 +1600,7 @@ struct compare_hps
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    return l -> hps.mean > r -> hps.mean;
+    return l -> hps.mean() > r -> hps.mean();
   }
 };
 
@@ -1630,10 +1628,10 @@ struct compare_name
 void sim_t::analyze()
 {
   simulation_length.analyze_all();
-  if ( simulation_length.mean == 0 ) return;
+  if ( simulation_length.mean() == 0 ) return;
 
   // divisor_timeline is necessary because not all iterations go the same length of time
-  int max_buckets = ( int ) simulation_length.max + 1;
+  int max_buckets = ( int ) simulation_length.max() + 1;
   divisor_timeline.assign( max_buckets, 0 );
 
   size_t num_timelines = iteration_timeline.size();
@@ -1647,11 +1645,6 @@ void sim_t::analyze()
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> analyze();
-
-  total_dmg.analyze_all();
-  raid_dps.analyze_all();
-  total_heal.analyze_all();
-  raid_hps.analyze_all();
 
   confidence_estimator = rng::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
 

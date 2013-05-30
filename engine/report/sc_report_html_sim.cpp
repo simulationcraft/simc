@@ -203,9 +203,9 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
              "\t\t\t\t\t\t\t\t<th>Fight Length:</th>\n"
              "\t\t\t\t\t\t\t\t<td>%.0f - %.0f ( %.1f )</td>\n"
              "\t\t\t\t\t\t\t</tr>\n",
-             sim -> simulation_length.min,
-             sim -> simulation_length.max,
-             sim -> simulation_length.mean );
+             sim -> simulation_length.min(),
+             sim -> simulation_length.max(),
+             sim -> simulation_length.mean() );
 
   os << "\t\t\t\t\t\t\t<tr class=\"left\">\n"
      << "\t\t\t\t\t\t\t\t<th><h2>Performance:</h2></th>\n"
@@ -231,7 +231,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
     "\t\t\t\t\t\t\t\t<th>Sim Seconds:</th>\n"
     "\t\t\t\t\t\t\t\t<td>%.0f</td>\n"
     "\t\t\t\t\t\t\t</tr>\n",
-    sim -> iterations * sim -> simulation_length.mean );
+    sim -> iterations * sim -> simulation_length.mean() );
   os.printf(
     "\t\t\t\t\t\t\t<tr class=\"left\">\n"
     "\t\t\t\t\t\t\t\t<th>CPU Seconds:</th>\n"
@@ -249,7 +249,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
     "\t\t\t\t\t\t\t\t<th>Speed Up:</th>\n"
     "\t\t\t\t\t\t\t\t<td>%.0f</td>\n"
     "\t\t\t\t\t\t\t</tr>\n",
-    sim -> iterations * sim -> simulation_length.mean / sim -> elapsed_cpu.total_seconds() );
+    sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu.total_seconds() );
 
   os << "\t\t\t\t\t\t\t<tr class=\"left\">\n"
      << "\t\t\t\t\t\t\t\t<th><h2>Settings:</h2></th>\n"
@@ -349,7 +349,7 @@ double aggregate_damage( const std::vector<stats_t::stats_results_t>& result )
   double total = 0;
   for ( size_t i = 0; i < result.size(); i++ )
   {
-    total  += result[ i ].fight_actual_amount.mean;
+    total  += result[ i ].fight_actual_amount.mean();
   }
   return total;
 }
@@ -379,7 +379,7 @@ int find_id( stats_t* s )
 
 void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, player_t* p, int j, sim_t* sim )
 {
-  if ( s -> num_executes.mean == 0 && s -> compound_amount == 0 && !sim -> debug )
+  if ( s -> num_executes.mean() == 0 && s -> compound_amount == 0 && !sim -> debug )
     return;
 
   os << "\t\t\t<tr";
@@ -420,19 +420,19 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
       s -> name_str.c_str(), "",
       id,
       direct_total,
-      direct_total / s -> player -> fight_length.mean,
-      s -> num_direct_results.mean / ( s -> player -> fight_length.mean / 60.0 ),
-      s -> direct_results[ RESULT_HIT  ].actual_amount.mean,
-      s -> direct_results[ RESULT_CRIT ].actual_amount.mean,
-      s -> num_executes.mean,
-      s -> num_direct_results.mean,
+      direct_total / s -> player -> fight_length.mean(),
+      s -> num_direct_results.mean() / ( s -> player -> fight_length.mean() / 60.0 ),
+      s -> direct_results[ RESULT_HIT  ].actual_amount.mean(),
+      s -> direct_results[ RESULT_CRIT ].actual_amount.mean(),
+      s -> num_executes.mean(),
+      s -> num_direct_results.mean(),
       s -> direct_results[ RESULT_CRIT ].pct,
       s -> direct_results[ RESULT_MISS ].pct + s -> direct_results[ RESULT_DODGE  ].pct + s -> direct_results[ RESULT_PARRY  ].pct,
       s -> direct_results[ RESULT_GLANCE ].pct,
       s -> direct_results[ RESULT_BLOCK  ].pct,
-      s -> total_intervals.mean,
-      s -> total_amount.mean,
-      s -> player -> fight_length.mean );
+      s -> total_intervals.mean(),
+      s -> total_amount.mean(),
+      s -> player -> fight_length.mean() );
 
   if ( tick_total > 0.0 )
     os.printf(
@@ -443,18 +443,18 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
       -id,
       tick_total,
       tick_total / sim -> max_time.total_seconds(),
-      s -> num_ticks.mean / sim -> max_time.total_minutes(),
-      s -> tick_results[ RESULT_HIT  ].actual_amount.mean,
-      s -> tick_results[ RESULT_CRIT ].actual_amount.mean,
-      s -> num_executes.mean,
-      s -> num_ticks.mean,
+      s -> num_ticks.mean() / sim -> max_time.total_minutes(),
+      s -> tick_results[ RESULT_HIT  ].actual_amount.mean(),
+      s -> tick_results[ RESULT_CRIT ].actual_amount.mean(),
+      s -> num_executes.mean(),
+      s -> num_ticks.mean(),
       s -> tick_results[ RESULT_CRIT ].pct,
       s -> tick_results[ RESULT_MISS ].pct + s -> tick_results[ RESULT_DODGE  ].pct + s -> tick_results[ RESULT_PARRY  ].pct,
       s -> tick_results[ RESULT_GLANCE ].pct,
       s -> tick_results[ RESULT_BLOCK  ].pct,
-      s -> total_intervals.mean,
-      s -> total_amount.mean,
-      s -> player -> fight_length.mean );
+      s -> total_intervals.mean(),
+      s -> total_amount.mean(),
+      s -> player -> fight_length.mean() );
 
   for ( size_t i = 0, num_children = s -> children.size(); i < num_children; i++ )
   {
@@ -535,18 +535,18 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t* sim, sim_t::rep
 
   os.printf(
     "\t\t\t\t<li><b>Raid Damage:</b> %.0f</li>\n",
-    sim -> total_dmg.mean );
+    sim -> total_dmg.mean() );
   os.printf(
     "\t\t\t\t<li><b>Raid DPS:</b> %.0f</li>\n",
-    sim -> raid_dps.mean );
-  if ( sim -> total_heal.mean > 0 )
+    sim -> raid_dps.mean() );
+  if ( sim -> total_heal.mean() > 0 )
   {
     os.printf(
       "\t\t\t\t<li><b>Raid Heal:</b> %.0f</li>\n",
-      sim -> total_heal.mean );
+      sim -> total_heal.mean() );
     os.printf(
       "\t\t\t\t<li><b>Raid HPS:</b> %.0f</li>\n",
-      sim -> raid_hps.mean );
+      sim -> raid_hps.mean() );
   }
   os << "\t\t\t</ul><p>&nbsp;</p>\n";
 
@@ -614,7 +614,7 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t* sim, sim_t::rep
         "\t\t\t\t\t\t<li>%s: %.1f / %.1f%%</li>\n",
         util::encode_html( p -> name() ).c_str(),
         range,
-        p -> dps.mean ? ( range * 100 / p -> dps.mean ) : 0 );
+        p -> dps.mean() ? ( range * 100 / p -> dps.mean() ) : 0 );
     }
     os << "\t\t\t\t\t</ul>\n";
   }
@@ -639,7 +639,7 @@ void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, int num, 
   for ( size_t i = 0; i < player_list.size(); i++ )
   {
     player_t* p = player_list[ i ];
-    if ( ( dps ? p -> dps.mean : p -> hps.mean ) <= 0 )
+    if ( ( dps ? p -> dps.mean() : p -> hps.mean() ) <= 0 )
     {
       player_list.resize( i );
       break;
@@ -4274,7 +4274,7 @@ namespace report {
 
 void print_html( sim_t* sim )
 {
-  if ( sim -> simulation_length.mean == 0 ) return;
+  if ( sim -> simulation_length.mean() == 0 ) return;
   if ( sim -> html_file_str.empty() ) return;
 
 

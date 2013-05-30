@@ -663,25 +663,32 @@ player_t::player_t( sim_t*             s,
   // Reporting
   quiet( 0 ), last_foreground_action( 0 ),
   iteration_fight_length( timespan_t::zero() ), arise_time( timespan_t::min() ),
-  fight_length( s -> statistics_level < 2, true ), waiting_time( true ), executed_foreground_actions( s -> statistics_level < 3 ),
+  fight_length( name_str + " Fight Length", s -> statistics_level < 2, true ),
+  waiting_time(), executed_foreground_actions(),
   iteration_waiting_time( timespan_t::zero() ), iteration_executed_foreground_actions( 0 ),
   rps_gain( 0 ), rps_loss( 0 ),
-  deaths( false ), deaths_error( 0 ),
+  deaths( name_str + " Deaths", false ), deaths_error( 0 ),
   buffed( buffed_stats_t() ),
   resource_timeline_count( 0 ),
   // Damage
   iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
   dps_error( 0 ), dpr( 0 ), dtps_error( 0 ),
-  dmg( s -> statistics_level < 2 ), compound_dmg( s -> statistics_level < 2 ),
-  dps( name_str + " Damage Per Second", s -> statistics_level < 1 ), dpse( s -> statistics_level < 2 ),
-  dtps( name_str + " Damage Taken Per Second", s -> statistics_level < 2 ), dmg_taken( s -> statistics_level < 2 ),
+  dmg( name_str + " Damage", s -> statistics_level < 2 ),
+  compound_dmg( name_str + " Total Damage", s -> statistics_level < 2 ),
+  dps( name_str + " Damage Per Second", s -> statistics_level < 1 ),
+  dpse( name_str + " Damage per Second (effective)", s -> statistics_level < 2 ),
+  dtps( name_str + " Damage Taken Per Second", s -> statistics_level < 2 ),
+  dmg_taken( name_str + " Damage Taken", s -> statistics_level < 2 ),
   dps_convergence( 0 ),
   // Heal
   iteration_heal( 0 ),iteration_heal_taken( 0 ),
   hps_error( 0 ), hpr( 0 ),
-  heal( s -> statistics_level < 2 ), compound_heal( s -> statistics_level < 2 ),
-  hps( name_str + " Healing Per Second", s -> statistics_level < 1 ), hpse( s -> statistics_level < 2 ),
-  htps( name_str + " Healing taken Per Second", s -> statistics_level < 2 ), heal_taken( s -> statistics_level < 2 ),
+  heal( name_str + " Heal", s -> statistics_level < 2 ),
+  compound_heal( name_str + " Total Heal", s -> statistics_level < 2 ),
+  hps( name_str + " Healing Per Second", s -> statistics_level < 1 ),
+  hpse( name_str + " Healing per Second (effective)", s -> statistics_level < 2 ),
+  htps( name_str + " Healing taken Per Second", s -> statistics_level < 2 ),
+  heal_taken( name_str + " Healing Taken", s -> statistics_level < 2 ),
   report_information( report_information_t() ),
   // Gear
   sets( nullptr ),
@@ -2344,13 +2351,7 @@ void player_t::init_stats()
   range::fill( resource_lost, 0.0 );
   range::fill( resource_gained, 0.0 );
 
-
-  for ( size_t i = 0; i < resources.combat_end_resource.size(); ++i )
-    resources.combat_end_resource[ i ].reserve( sim -> iterations );
-
   fight_length.reserve( sim -> iterations );
-  waiting_time.reserve( sim -> iterations );
-  executed_foreground_actions.reserve( sim -> iterations );
 
   dmg.reserve( sim -> iterations );
   compound_dmg.reserve( sim -> iterations );
@@ -5893,7 +5894,7 @@ uptime_t* player_t::get_uptime( const std::string& name )
 
   if ( !u )
   {
-    u = new uptime_t(  sim -> statistics_level, sim -> iterations , name );
+    u = new uptime_t(  name );
 
     uptime_list.push_back( u );
   }
@@ -8940,7 +8941,7 @@ struct compare_stats_name
 
 void player_convergence( int convergence_scale,
                          double confidence_estimator,
-                         sample_data_t& dps,
+                         extended_sample_data_t& dps,
                          std::vector<double>& dps_convergence_error,
                          double dps_error,
                          double& dps_convergence )
@@ -9012,8 +9013,6 @@ void player_t::analyze( sim_t& s )
   deaths.analyze_all();
 
   fight_length.analyze_all();
-  waiting_time.analyze_all();
-  executed_foreground_actions.analyze_all();
 
   dmg.analyze_all();
   compound_dmg.analyze_all();
@@ -9040,25 +9039,19 @@ void player_t::analyze( sim_t& s )
   for ( size_t i = 0; i <  buff_list.size(); ++i )
     buff_list[ i ] -> analyze();
 
-  for ( size_t i = 0; i < benefit_list.size(); ++i )
-    benefit_list[ i ] -> analyze();
-
-  for ( size_t i = 0; i < uptime_list.size(); ++i )
-    uptime_list[ i ] -> analyze();
-
   range::sort(  stats_list, compare_stats_name() );
 
   if (  quiet ) return;
-  if (  fight_length.mean == 0 ) return;
+  if (  fight_length.mean() == 0 ) return;
 
   // Pet Chart Adjustment ===================================================
-  size_t max_buckets = static_cast<size_t>(  fight_length.max );
+  size_t max_buckets = static_cast<size_t>(  fight_length.max() );
 
   // Make the pet graphs the same length as owner's
   if (  is_pet() )
   {
     player_t* o =  cast_pet() -> owner;
-    max_buckets = static_cast<size_t>( o -> fight_length.max );
+    max_buckets = static_cast<size_t>( o -> fight_length.max() );
   }
 
   // Stats Analysis =========================================================
@@ -9084,9 +9077,9 @@ void player_t::analyze( sim_t& s )
       s -> analyze();
 
       if ( s -> type == STATS_DMG )
-        s -> portion_amount =  compound_dmg.mean ? s -> actual_amount.mean /  compound_dmg.mean : 0 ;
+        s -> portion_amount =  compound_dmg.mean() ? s -> actual_amount.mean() /  compound_dmg.mean() : 0 ;
       else
-        s -> portion_amount =  compound_heal.mean ? s -> actual_amount.mean /  compound_heal.mean : 0;
+        s -> portion_amount =  compound_heal.mean() ? s -> actual_amount.mean() /  compound_heal.mean() : 0;
     }
   }
 
@@ -9116,15 +9109,11 @@ void player_t::analyze( sim_t& s )
   }
 
   double rl = resource_lost[  primary_resource() ];
-  dpr = ( rl > 0 ) ? (  dmg.mean / rl ) : -1.0;
-  hpr = ( rl > 0 ) ? (  heal.mean / rl ) : -1.0;
+  dpr = ( rl > 0 ) ? (  dmg.mean() / rl ) : -1.0;
+  hpr = ( rl > 0 ) ? (  heal.mean() / rl ) : -1.0;
 
-  rps_loss = resource_lost  [  primary_resource() ] /  fight_length.mean;
-  rps_gain = resource_gained[  primary_resource() ] /  fight_length.mean;
-
-
-  for ( size_t i = 0; i < resources.combat_end_resource.size(); ++i )
-    resources.combat_end_resource[ i ].analyze_all();
+  rps_loss = resource_lost  [  primary_resource() ] /  fight_length.mean();
+  rps_gain = resource_gained[  primary_resource() ] /  fight_length.mean();
 
   for ( size_t i = 0; i < gain_list.size(); ++i )
     gain_list[ i ] -> analyze( s );
@@ -9135,11 +9124,6 @@ void player_t::analyze( sim_t& s )
     for ( size_t i = 0; i < pet -> gain_list.size(); ++i )
       pet -> gain_list[ i ] -> analyze( s );
   }
-
-  // Procs ==================================================================
-
-  for ( size_t i = 0; i < proc_list.size(); ++i )
-    proc_list[ i ] -> analyze();
 
   // Damage Timelines =======================================================
 
@@ -9167,12 +9151,9 @@ void player_t::analyze( sim_t& s )
 // Return sample_data reference over which this player gets scaled ( scale factors, reforge plots, etc. )
 // By default this will be his personal dps or hps
 
-const sample_data_t& player_t::scales_over()
+const extended_sample_data_t& player_t::scales_over()
 {
   const std::string& so = sim -> scaling -> scale_over;
-
-  if ( so == "raid_dps"       ) return sim -> raid_dps;
-  if ( so == "raid_hps"       ) return sim -> raid_hps;
 
   player_t* q = nullptr;
   if ( ! sim -> scaling -> scale_over_player.empty() )

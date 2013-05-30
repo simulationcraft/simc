@@ -311,8 +311,8 @@ void scaling_t::analyze_stats()
 
       if ( divisor < 0.0 ) divisor += ref_p -> over_cap[ stat ];
 
-      double delta_score = delta_p -> scales_over().mean;
-      double   ref_score = ref_p -> scales_over().mean;
+      double delta_score = delta_p -> scales_over().mean();
+      double   ref_score = ref_p -> scales_over().mean();
 
       double delta_error = delta_p -> scales_over().mean_std_dev * delta_sim -> confidence_estimator;
       double   ref_error = ref_p -> scales_over().mean_std_dev * ref_sim -> confidence_estimator;
@@ -399,7 +399,7 @@ void scaling_t::analyze_ability_stats( stat_e stat, double delta, player_t* p, p
     stats_t* ref_s = ref_p -> find_stats( s -> name_str );
     stats_t* delta_s = delta_p -> find_stats( s -> name_str );
     assert( ref_s && delta_s );
-    double score = ( delta_s -> portion_aps.mean - ref_s -> portion_aps.mean ) / delta;
+    double score = ( delta_s -> portion_aps.mean() - ref_s -> portion_aps.mean() ) / delta;
     s -> scaling.set_stat( stat, score );
     double x = p -> sim -> confidence_estimator;
     double error = fabs( sqrt ( delta_s -> portion_aps.mean_std_dev * x * delta_s -> portion_aps.mean_std_dev * x + ref_s -> portion_aps.mean_std_dev * x * ref_s -> portion_aps.mean_std_dev * x ) / delta );
@@ -448,8 +448,8 @@ void scaling_t::analyze_lag()
     // Calculate DPS difference per millisecond of lag
     double divisor = ( double ) ( delta_sim -> gcd_lag - ref_sim -> gcd_lag ).total_millis();
 
-    double delta_score = delta_p -> scales_over().mean;
-    double   ref_score = ref_p -> scales_over().mean;
+    double delta_score = delta_p -> scales_over().mean();
+    double   ref_score = ref_p -> scales_over().mean();
 
     double delta_error = delta_p -> scales_over().mean_std_dev * delta_sim -> confidence_estimator;
     double ref_error = ref_p -> scales_over().mean_std_dev * ref_sim -> confidence_estimator;

@@ -26,14 +26,14 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   iteration_total_execute_time( timespan_t::zero() ),
   iteration_total_tick_time( timespan_t::zero() ),
   portion_amount( 0 ),
-  total_intervals( p -> sim -> statistics_level < 7 ),
+  total_intervals(),
   last_execute( timespan_t::min() ),
-  actual_amount( p -> sim -> statistics_level < 3 ),
-  total_amount( p -> sim -> statistics_level < 3 ),
-  portion_aps( p -> sim -> statistics_level < 3 ),
-  portion_apse( p -> sim -> statistics_level < 3 ),
-  direct_results( RESULT_MAX, stats_results_t( sim.statistics_level, sim.iterations ) ),
-  tick_results( RESULT_MAX, stats_results_t( sim.statistics_level, sim.iterations ) ),
+  actual_amount( name_str + " Actual Amount", p -> sim -> statistics_level < 3 ),
+  total_amount( name_str + " Total Amount", p -> sim -> statistics_level < 3 ),
+  portion_aps( name_str + " Portion APS", p -> sim -> statistics_level < 3 ),
+  portion_apse( name_str + " Portion APSe", p -> sim -> statistics_level < 3 ),
+  direct_results( RESULT_MAX ),
+  tick_results( RESULT_MAX ),
   // Reporting only
   resource_portion(), apr(), rpe(),
   rpe_sum( 0 ), compound_amount( 0 ), overkill_pct( 0 ),
@@ -217,13 +217,10 @@ void stats_t::analyze()
     if ( ! a.background ) background = false;
   }
 
-  num_direct_results.analyze_all();
-  num_tick_results.analyze_all();
-
   for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
-    direct_results[ i ].analyze( num_direct_results.mean );
-    tick_results[ i ].analyze( num_tick_results.mean );
+    direct_results[ i ].analyze( num_direct_results.mean() );
+    tick_results[ i ].analyze( num_tick_results.mean() );
   }
 
   portion_aps.analyze_all();
@@ -231,13 +228,9 @@ void stats_t::analyze()
 
   resource_gain.analyze( sim );
 
-  num_executes.analyze_all();
-  num_ticks.analyze_all();
-  num_refreshes.analyze_all();
-
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
-    rpe[ i ] = num_executes.mean ? resource_gain.actual[ i ] / num_executes.mean : -1;
+    rpe[ i ] = num_executes.mean() ? resource_gain.actual[ i ] / num_executes.mean() : -1;
     rpe_sum += rpe[ i ];
 
     double resource_total = player -> resource_lost [ i ] / sim.iterations;
@@ -245,14 +238,10 @@ void stats_t::analyze()
     resource_portion[ i ] = ( resource_total > 0 ) ? ( resource_gain.actual[ i ] / resource_total ) : 0;
   }
 
-  total_intervals.analyze_all();
-
-  total_execute_time.analyze_all();
-  total_tick_time.analyze_all();
   total_amount.analyze_all();
   actual_amount.analyze_all();
 
-  compound_amount = actual_amount.mean;
+  compound_amount = actual_amount.count() ? actual_amount.mean() : 0.0;
 
   for ( size_t i = 0; i < children.size(); i++ )
   {
@@ -262,13 +251,13 @@ void stats_t::analyze()
 
   if ( compound_amount > 0 )
   {
-    overkill_pct = total_amount.mean ? 100.0 * ( total_amount.mean - actual_amount.mean ) / total_amount.mean : 0;
-    ape  = ( num_executes.mean > 0 ) ? ( compound_amount / num_executes.mean ) : 0;
+    overkill_pct = total_amount.mean() ? 100.0 * ( total_amount.mean() - actual_amount.mean() ) / total_amount.mean() : 0;
+    ape  = ( num_executes.mean() > 0 ) ? ( compound_amount / num_executes.mean() ) : 0;
 
-    total_time = timespan_t::from_seconds( total_execute_time.mean + total_tick_time.mean );
+    total_time = timespan_t::from_seconds( total_execute_time.mean() + total_tick_time.mean() );
     aps  = ( total_time > timespan_t::zero() ) ? ( compound_amount / total_time.total_seconds() ) : 0;
 
-    total_time = timespan_t::from_seconds( total_execute_time.mean + ( channeled ? total_tick_time.mean : 0 ) );
+    total_time = timespan_t::from_seconds( total_execute_time.mean() + ( channeled ? total_tick_time.mean() : 0 ) );
     apet = ( total_time > timespan_t::zero() ) ? ( compound_amount / total_time.total_seconds() ) : 0;
 
     for ( size_t i = 0; i < RESOURCE_MAX; i++ )
@@ -276,41 +265,31 @@ void stats_t::analyze()
   }
   else
   {
-    total_time = timespan_t::from_seconds( total_execute_time.mean + ( channeled ? total_tick_time.mean : 0 ) );
+    total_time = timespan_t::from_seconds( total_execute_time.mean() + ( channeled ? total_tick_time.mean() : 0 ) );
   }
 
-  ttpt = num_ticks.mean ? total_tick_time.mean / num_ticks.mean : 0.0;
-  etpe = num_executes.mean ? ( total_execute_time.mean + ( channeled ? total_tick_time.mean : 0.0 ) ) / num_executes.mean : 0.0;
+  ttpt = num_ticks.mean() ? total_tick_time.mean() / num_ticks.mean() : 0.0;
+  etpe = num_executes.mean() ? ( total_execute_time.mean() + ( channeled ? total_tick_time.mean() : 0.0 ) ) / num_executes.mean() : 0.0;
 
   timeline_amount.adjust( sim.divisor_timeline );
 }
 
 // stats_results_t::merge ===========================================================
 
-stats_t::stats_results_t::stats_results_t( int statistics_level, int data_points ) :
-  actual_amount( statistics_level < 8, true ),
+stats_t::stats_results_t::stats_results_t() :
+  actual_amount(),
+  avg_actual_amount(),
   total_amount(),
   fight_actual_amount(),
   fight_total_amount(),
-  avg_actual_amount( statistics_level < 8, true ),
-  overkill_pct( statistics_level < 6 ),
-  count( statistics_level < 8 ),
+  overkill_pct(),
+  count(),
   pct( 0 ),
   iteration_count( 0 ),
   iteration_actual_amount( 0 ),
   iteration_total_amount( 0 )
 {
-  // Keep non hidden reported numbers clean
-  count.mean = 0;
-  actual_amount.mean = 0; actual_amount.max=0;
-  //avg_actual_amount.mean = 0;
 
-  actual_amount.reserve( data_points );
-  total_amount.reserve( data_points );
-  fight_actual_amount.reserve( data_points );
-  fight_total_amount.reserve( data_points );
-  count.reserve( data_points );
-  avg_actual_amount.reserve( data_points );
 }
 
 // stats_results_t::merge ===========================================================
@@ -347,14 +326,7 @@ void stats_t::stats_results_t::datacollection_end()
 
 void stats_t::stats_results_t::analyze( double num_results )
 {
-  count.analyze_all();
-  avg_actual_amount.analyze_all();
-  pct = num_results ? ( 100.0 * count.mean / num_results ) : 0.0;
-  fight_total_amount.analyze_all();
-  fight_actual_amount.analyze_all();
-  actual_amount.analyze_all();
-  total_amount.analyze_all();
-  overkill_pct.analyze_all();
+  pct = num_results ? ( 100.0 * count.mean() / num_results ) : 0.0;
 }
 // stats_t::merge ===========================================================
 
