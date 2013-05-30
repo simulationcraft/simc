@@ -74,7 +74,7 @@ public:
     buff_t* divine_purpose;
     buff_t* divine_shield;
     buff_t* double_jeopardy;
-    buff_t* gotak_prot;
+    buff_t* guardian_of_ancient_kings_prot;
     buff_t* grand_crusader;
     buff_t* glyph_templars_verdict;
     buff_t* holy_avenger;
@@ -428,6 +428,24 @@ public:
   }
 
 };
+
+// ===============================================================================================================
+// To keep consistency throughout the ability damage definitions, I'm keeping to the following conventions.
+// The damage formula in action_t::calculate_direct_amount in sc_action.cpp is as follows:
+// da_multiplier * ( weapon_multiplier * ( avg_range( base_dd_min, base_dd_max) + base_dd_adder
+//                                         + avg_range( weapon->min_dmg, weapon->max_dmg)
+//                                         + weapon -> bonus_damage
+//                                         + weapon_speed * attack_power / 14 )
+//                   + direct_power_mod * ( base_attack_power_multiplier * attack_power
+//                                          + base_spell_power_multiplier * spell_power )
+//                  )
+// The convention we're sticking to is as follows:
+// - for spells that scale with ONLY attack_power or spell_power, the scaling coefficient goes
+//   in direct_power_mod and base_X_power_multiplier is set to 0 or 1 accordingly
+//
+// - for spells that scale with both SP and AP differently (Judgment, Avenger's Shield), we set
+//   direct_power_mod equal to 1.0 and put the appropriate scaling factors in base_X_power_multiplier
+// ================================================================================================================
 
 namespace attacks {
 
@@ -934,10 +952,9 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
 
-    // shift coefficients around for formula consistency
-    base_spell_power_multiplier  = direct_power_mod;
+    // HoW scales with SP, not AP; flip base multipliers (direct_power_mod is correct @ 1.61)
+    base_spell_power_multiplier  = 1.0;
     base_attack_power_multiplier = data().extra_coeff();
-    direct_power_mod             = 1.0;
 
     // define cooldown multiplier for use with Sanctified Wrath talent for retribution only
     if ( ( p -> specialization() == PALADIN_RETRIBUTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
@@ -1067,11 +1084,7 @@ struct paladin_seal_t : public paladin_melee_attack_t
     // all seals cost 16.4% of base mana
     base_costs[ current_resource() ]  = p -> resources.base[ current_resource() ] * 0.164;
   }
-
-  // current_resource() returns none since we're not passing the constructor spell information
- // virtual resource_e current_resource()
-  //{ return RESOURCE_MANA; }
-
+  
   virtual void execute()
   {
     if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
@@ -1385,9 +1398,8 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     // no weapon scaling
     weapon_multiplier = 0.0;
 
-    //set AP scaling coefficient, set direct power mod equal to 1 (defaults to 0)
-    base_attack_power_multiplier = data().extra_coeff();
-    direct_power_mod = 1;
+    //set AP scaling coefficient
+    direct_power_mod = data().extra_coeff();
   }
 
   virtual void execute()
@@ -1432,6 +1444,7 @@ struct templars_verdict_t : public paladin_melee_attack_t
 
   virtual void execute ()
   {
+    // T15 Retribution 4-piece proc turns damage from physical into Holy damage
     school = p() -> buffs.tier15_4pc_melee -> up() ? SCHOOL_HOLY : SCHOOL_PHYSICAL;
 
     paladin_melee_attack_t::execute();
@@ -1444,6 +1457,8 @@ struct templars_verdict_t : public paladin_melee_attack_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_hand_of_light( s );
+      
+      // Remove T15 Retribution 4-piece effect
       p() -> buffs.tier15_4pc_melee -> expire();
     }
   }
@@ -1452,10 +1467,12 @@ struct templars_verdict_t : public paladin_melee_attack_t
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
+    // Tier 13 Retribution 4-piece boosts damage
     if ( p() -> set_bonus.tier13_4pc_melee() )
     {
       am *= 1.0 + p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent();
     }
+    // Tier 14 Retribution 2-piece boosts damage
     if ( p() -> set_bonus.tier14_2pc_melee() )
     {
       am *= 1.0 + p() -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
@@ -1763,13 +1780,11 @@ struct consecration_tick_t : public paladin_spell_t
     direct_tick = true;
     background  = true;
     may_crit    = true;
-    may_miss    = true;
-    hasted_ticks = false;  // fixed 1s tick interval
 
     // Spell data jumbled, re-arrange modifiers appropriately
-    base_spell_power_multiplier  = direct_power_mod;
-    base_attack_power_multiplier = data().extra_coeff();
-    direct_power_mod             = 1.0;
+    base_spell_power_multiplier  = 0;
+    base_attack_power_multiplier = 1.0;
+    direct_power_mod             = data().extra_coeff();
     weapon_multiplier            = 0;
   }
 };
@@ -1783,8 +1798,6 @@ struct consecration_t : public paladin_spell_t
 
     hasted_ticks   = false;
     may_miss       = false;
-    num_ticks      = 9;
-    base_tick_time = timespan_t::from_seconds( 1.0 );
 
     tick_action = new consecration_tick_t( p );
   }
@@ -2005,7 +2018,7 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
     if ( p() -> specialization() == PALADIN_RETRIBUTION )
       p() -> guardian_of_ancient_kings -> summon( p() -> spells.guardian_of_ancient_kings_ret -> duration() );
     else if ( p() -> specialization() == PALADIN_PROTECTION )
-      p() -> buffs.gotak_prot -> trigger();
+      p() -> buffs.guardian_of_ancient_kings_prot -> trigger();
   }
 };
 
@@ -2079,12 +2092,11 @@ struct holy_wrath_t : public paladin_spell_t
     //Holy Wrath is an oddball - spell database entry doesn't properly contain damage details
     //Tooltip formula is wrong as well.  We're gong to hardcode it here based on empirical testing
     //see http://maintankadin.failsafedesign.com/forum/viewtopic.php?p=743800#p743800
-
     base_dd_min = 4300; // fixed base damage (no range)
     base_dd_max = 4300;
-    base_attack_power_multiplier = 0.91; // 0.91 AP scaling
-    base_spell_power_multiplier = 0;     // no SP scaling
-    direct_power_mod = 1; 
+    base_attack_power_multiplier =1; 
+    base_spell_power_multiplier = 0;  // no SP scaling
+    direct_power_mod =  0.91;         // 0.91 AP scaling
 
   }
 
@@ -2109,10 +2121,11 @@ struct holy_prism_t : public paladin_spell_t
     parse_options( NULL, options_str );
     school=SCHOOL_HOLY;
     may_crit=true;
+    may_miss=false;
+    // this updates the spell coefficients appropriately for single-target damage
     parse_effect_data( p -> find_spell( 114852 ) -> effectN( 1 ) );
-    base_spell_power_multiplier = 1.0;
-    base_attack_power_multiplier = 0.0;
-    direct_power_mod= p->find_spell( 114852 ) -> effectN( 1 ).coeff();
+
+    // todo: code AoE heal, insert as proc on HPr damage.
   }
 };
 
@@ -2125,12 +2138,11 @@ struct holy_prism_aoe_t : public paladin_spell_t
   {
     parse_options( NULL, options_str );
     may_crit=true;
+    may_miss=false;
     school=SCHOOL_HOLY;
-    parse_effect_data( p -> find_spell( 114871 ) -> effectN( 2 ) );
-    base_spell_power_multiplier = 1.0;
-    base_attack_power_multiplier = 0.0;
-    direct_power_mod= p->find_spell( 114871 ) -> effectN( 2 ).coeff();
     aoe=5;
+
+    // todo: code single-target heal, turn this into a proc.
   }
 };
 
@@ -2221,10 +2233,10 @@ struct lights_hammer_t : public paladin_spell_t
     : paladin_spell_t( "lights_hammer", p, p -> find_talent_spell( "Light's Hammer" ) ),
       travel_time_( timespan_t::from_seconds( 1.5 ) )
   {
-    // 114158: Talent spell
+    // 114158: Talent spell, cooldown
     // 114918: Periodic 2s dummy, no duration!
     // 114919: Damage/Scale data
-    // 122773: 17.5s duration, 1.5s for hammer to land = 16s aoe dot
+    // 122773: 15.5s duration, 1.5s for hammer to land = 14s aoe dot
     parse_options( NULL, options_str );
     may_miss = false;
 
@@ -2232,6 +2244,7 @@ struct lights_hammer_t : public paladin_spell_t
 
     base_tick_time = p -> find_spell( 114918 ) -> effectN( 1 ).period();
     num_ticks      = ( int ) ( ( p -> find_spell( 122773 ) -> duration() - travel_time_ ) / base_tick_time );
+    cooldown -> duration = p -> find_spell( 114158 ) -> cooldown();
     hasted_ticks   = false;
 
     dynamic_tick_action = true;
@@ -2298,17 +2311,19 @@ struct seal_of_truth_dot_t : public paladin_spell_t
   {
     background       = true;
     proc             = true;
-    hasted_ticks     = true;
     tick_may_crit    = true;
-    may_crit         = false;
-    may_miss         = true;
-    dot_behavior     = DOT_REFRESH;
 
 
     base_spell_power_multiplier  = tick_power_mod;
     base_attack_power_multiplier = data().extra_coeff();
     tick_power_mod               = 1.0;
+    //Undocumented: 80% weaker for protection
+    if ( p -> specialization() == PALADIN_PROTECTION )
+    {
+      tick_power_mod /= 5;
+    }
 
+    // Glyph of Immediate Truth reduces DoT damage
     if ( p -> glyphs.immediate_truth -> ok() )
     {
       base_multiplier *= 1.0 + p -> glyphs.immediate_truth -> effectN( 2 ).percent();
@@ -3229,11 +3244,11 @@ void paladin_t::create_buffs()
   buffs.infusion_of_light      = buff_creator_t( this, "infusion_of_light", find_class_spell( "Infusion of Light" ) );
 
   // Prot
-  buffs.gotak_prot             = buff_creator_t( this, "guardian_of_the_ancient_kings", find_class_spell( "Guardian of Ancient Kings", std::string(), PALADIN_PROTECTION ) );
-  buffs.grand_crusader = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() ).chance( passives.grand_crusader -> proc_chance() );
-  buffs.shield_of_the_righteous = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
-  buffs.ardent_defender = buff_creator_t( this, "ardent_defender" ).spell( find_specialization_spell( "Ardent Defender" ) );
-  buffs.shield_of_glory = buff_creator_t( this, "shield_of_glory" ).spell( find_spell( 138242 ) );
+  buffs.guardian_of_ancient_kings_prot = buff_creator_t( this, "guardian_of_the_ancient_kings", find_class_spell( "Guardian of Ancient Kings", std::string(), PALADIN_PROTECTION ) );
+  buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() ).chance( passives.grand_crusader -> proc_chance() );
+  buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
+  buffs.ardent_defender                = buff_creator_t( this, "ardent_defender" ).spell( find_specialization_spell( "Ardent Defender" ) );
+  buffs.shield_of_glory                = buff_creator_t( this, "shield_of_glory" ).spell( find_spell( 138242 ) );
 
   // Ret
   buffs.ancient_power          = buff_creator_t( this, "ancient_power", passives.ancient_power ).add_invalidate( CACHE_STRENGTH );
@@ -3963,7 +3978,7 @@ void paladin_t::target_mitigation( school_e school,
   
   // various mitigation effects, Ardent Defender goes last due to absorb/heal mechanics
   // Guardian of Ancient Kings
-  if ( buffs.gotak_prot -> up() )
+  if ( buffs.guardian_of_ancient_kings_prot -> up() )
     s -> result_amount *= 1.0 + dbc.spell( 86657 ) -> effectN( 2 ).percent(); // Value of the buff is stored in another spell
 
   // Divine Protection
