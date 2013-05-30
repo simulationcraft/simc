@@ -6,6 +6,8 @@
 #ifndef SAMPLE_DATA_HPP
 #define SAMPLE_DATA_HPP
 
+#define SAMPLE_DATA_NO_NAN
+
 #include <vector>
 #include <numeric>
 #include <limits>
@@ -19,9 +21,16 @@ class simple_sample_data_t
 protected:
   double _sum;
   size_t _count;
-  static double nan() { return std::numeric_limits<double>::quiet_NaN(); }
+  static double nan() {
+#if defined (SAMPLE_DATA_NO_NAN)
+    return 0.0;
+#else
+    return std::numeric_limits<double>::quiet_NaN();
+#endif
+  }
 
 public:
+  simple_sample_data_t() : _sum( 0.0 ), _count( 0 ) {}
 
   void add( double x )
   { _sum += x; ++_count; }
