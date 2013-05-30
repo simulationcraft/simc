@@ -217,8 +217,8 @@ void stats_t::analyze()
     if ( ! a.background ) background = false;
   }
 
-  num_direct_results.analyze();
-  num_tick_results.analyze();
+  num_direct_results.analyze_all();
+  num_tick_results.analyze_all();
 
   for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
   {
@@ -226,14 +226,14 @@ void stats_t::analyze()
     tick_results[ i ].analyze( num_tick_results.mean );
   }
 
-  portion_aps.analyze();
-  portion_apse.analyze();
+  portion_aps.analyze_all();
+  portion_apse.analyze_all();
 
   resource_gain.analyze( sim );
 
-  num_executes.analyze();
-  num_ticks.analyze();
-  num_refreshes.analyze();
+  num_executes.analyze_all();
+  num_ticks.analyze_all();
+  num_refreshes.analyze_all();
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
@@ -245,12 +245,12 @@ void stats_t::analyze()
     resource_portion[ i ] = ( resource_total > 0 ) ? ( resource_gain.actual[ i ] / resource_total ) : 0;
   }
 
-  total_intervals.analyze();
+  total_intervals.analyze_all();
 
-  total_execute_time.analyze();
-  total_tick_time.analyze();
-  total_amount.analyze();
-  actual_amount.analyze();
+  total_execute_time.analyze_all();
+  total_tick_time.analyze_all();
+  total_amount.analyze_all();
+  actual_amount.analyze_all();
 
   compound_amount = actual_amount.mean;
 
@@ -347,14 +347,14 @@ void stats_t::stats_results_t::datacollection_end()
 
 void stats_t::stats_results_t::analyze( double num_results )
 {
-  count.analyze();
-  avg_actual_amount.analyze();
+  count.analyze_all();
+  avg_actual_amount.analyze_all();
   pct = num_results ? ( 100.0 * count.mean / num_results ) : 0.0;
-  fight_total_amount.analyze();
-  fight_actual_amount.analyze();
-  actual_amount.analyze();
-  total_amount.analyze();
-  overkill_pct.analyze();
+  fight_total_amount.analyze_all();
+  fight_actual_amount.analyze_all();
+  actual_amount.analyze_all();
+  total_amount.analyze_all();
+  overkill_pct.analyze_all();
 }
 // stats_t::merge ===========================================================
 

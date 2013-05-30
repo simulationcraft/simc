@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!-- 
+This file includes all SimulationCraft GUI files
+- cpp files
+- moc'd header files
+- INCLUDING qt/main.cpp
+
+Requires Precompiled Header enabled for simulationcraft.hpp
+-->
+
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\qt\main.cpp" />
+    <ClCompile Include="..\qt\sc_window.cpp" />
+    <ClCompile Include="..\qt\sc_import.cpp" />
+    <ClCompile Include="..\qt\simcpaperdoll.cc" >
+      <ExcludedFromBuild Condition="'$(Configuration)'=='Release'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="$(IntDir)\moc_simulationcraftqt.cpp">
+      <PrecompiledHeader />
+    </ClCompile>
+    <ClCompile Include="$(IntDir)\moc_simcpaperdoll.cpp">
+      <PrecompiledHeader />
+      <ExcludedFromBuild Condition="'$(Configuration)'=='Release'">true</ExcludedFromBuild>
+    </ClCompile>
+  </ItemGroup>
+  
+  <!-- Icon -->
+  <ItemGroup>
+    <ResourceCompile Include="..\simcqt.rc" />
+  </ItemGroup>
+  
+  <!-- Moc'ing Header files include Qt Classes -->
+  <ItemGroup>
+    <CustomBuild Include="..\engine\simulationcraft.hpp" />
+    <CustomBuild Condition="'$(Configuration)'=='Debug'" Include="..\qt\simcpaperdoll.hpp">
+      <AdditionalInputs Condition="'$(Configuration)'=='Debug'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message Condition="'$(Configuration)'=='Debug'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)'=='Debug'">$(IntDir)\moc_%(Filename).cpp</Outputs>
+      <Command Condition="'$(Configuration)'=='Debug'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(IntDir)\moc_%(Filename).cpp" "-fsimulationcraft.hpp" "-f..\qt\simcpaperdoll.hpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWebKit" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include" "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\mkspecs\default" "-I$(SolutionDir)\." "-I$(SolutionDir)vs" "-I$(SolutionDir)engine" "-I." "-I." "-I."</Command>
+    </CustomBuild>
+
+    <CustomBuild Include="..\qt\simulationcraftqt.hpp">
+      <AdditionalInputs>$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <Message>Moc%27ing %(Identity)...</Message>
+      <Command>$(QTDIR)\bin\moc.exe  -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DQT_DLL -DQT_WEBKIT_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_THREAD_SUPPORT -I"$(QTDIR)\include\QtCore" -I"$(QTDIR)\include\QtGui" -I"$(QTDIR)\include\QtWebKit" -I"$(QTDIR)\include\QtWidgets" -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\include\ActiveQt" -I"debug" -I$(QTDIR)\mkspecs\default -DWIN32 ..\qt\simulationcraftqt.hpp -o $(IntDir)\moc_simulationcraftqt.cpp
+</Command>
+      <AdditionalInputs>Rem;..\qt\simulationcraftqt.hpp;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+      </CustomBuild>
+  </ItemGroup>
+
+</Project>

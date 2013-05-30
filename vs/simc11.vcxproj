@@ -52,27 +52,27 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="vs\OutputDirectories.props" />
-    <Import Project="vs\PrecompiledHeaders.props" />
-    <Import Project="vs\CommonIncludeDirectories.props" />
+    <Import Project="OutputDirectories.props" />
+    <Import Project="PrecompiledHeaders.props" />
+    <Import Project="CommonIncludeDirectories.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="vs\OutputDirectories.props" />
-    <Import Project="vs\PrecompiledHeaders.props" />
-    <Import Project="vs\CommonIncludeDirectories.props" />
+    <Import Project="OutputDirectories.props" />
+    <Import Project="PrecompiledHeaders.props" />
+    <Import Project="CommonIncludeDirectories.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="vs\OutputDirectories.props" />
-    <Import Project="vs\PrecompiledHeaders.props" />
-    <Import Project="vs\CommonIncludeDirectories.props" />
+    <Import Project="OutputDirectories.props" />
+    <Import Project="PrecompiledHeaders.props" />
+    <Import Project="CommonIncludeDirectories.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="vs\OutputDirectories.props" />
-    <Import Project="vs\PrecompiledHeaders.props" />
-    <Import Project="vs\CommonIncludeDirectories.props" />
+    <Import Project="OutputDirectories.props" />
+    <Import Project="PrecompiledHeaders.props" />
+    <Import Project="CommonIncludeDirectories.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -97,6 +97,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <IntDir>$(SolutionDir)int\$(PlatformShortName)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <RunCodeAnalysis>false</RunCodeAnalysis>
@@ -146,7 +147,6 @@
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <DisableSpecificWarnings>4005;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <PrecompiledHeaderFile>simulationcraft.hpp</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>$(SolutionDir)engine;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <EnablePREfast>false</EnablePREfast>
@@ -159,7 +159,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <Profile>false</Profile>
-      
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -225,105 +224,9 @@
       <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
+  <Import Project="simc_engine.props" />
   <ItemGroup>
-    <ClCompile Include="engine\sc_io.cpp" />
-    <ClCompile Include="engine\sc_main.cpp" />
-    <ClCompile Include="engine\util\rng.cpp">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="engine\sc_thread.cpp" />
-    <ClCompile Include="engine\sc_util.cpp" />
-    <ClCompile Include="engine\action\sc_absorb.cpp" />
-    <ClCompile Include="engine\action\sc_action_state.cpp" />
-    <ClCompile Include="engine\action\sc_action.cpp" />
-    <ClCompile Include="engine\action\sc_attack.cpp" />
-    <ClCompile Include="engine\action\sc_dot.cpp" />
-    <ClCompile Include="engine\action\sc_harmful_spell.cpp" />
-    <ClCompile Include="engine\action\sc_heal.cpp" />
-    <ClCompile Include="engine\action\sc_sequence.cpp" />
-    <ClCompile Include="engine\action\sc_spell_base.cpp" />
-    <ClCompile Include="engine\action\sc_stats.cpp" />
-    <ClCompile Include="engine\buff\sc_buff.cpp" />
-    <ClCompile Include="engine\player\sc_consumable.cpp" />
-    <ClCompile Include="engine\player\sc_item.cpp" />
-    <ClCompile Include="engine\player\sc_pet.cpp" />
-    <ClCompile Include="engine\player\sc_player.cpp" />
-    <ClCompile Include="engine\player\sc_set_bonus.cpp" />
-    <ClCompile Include="engine\player\sc_unique_gear.cpp" />
-    <ClCompile Include="engine\sim\sc_cooldown.cpp" />
-    <ClCompile Include="engine\sim\sc_event.cpp" />
-    <ClCompile Include="engine\sim\sc_expressions.cpp" />
-    <ClCompile Include="engine\sim\sc_gear_stats.cpp" />
-    <ClCompile Include="engine\sim\sc_option.cpp" />
-    <ClCompile Include="engine\sim\sc_plot.cpp" />
-    <ClCompile Include="engine\sim\sc_raid_event.cpp" />
-    <ClCompile Include="engine\sim\sc_reforge_plot.cpp" />
-    <ClCompile Include="engine\sim\sc_scaling.cpp" />
-    <ClCompile Include="engine\sim\sc_sim.cpp" />
-    <ClCompile Include="engine\report\sc_chart.cpp" />
-    <ClCompile Include="engine\report\sc_report_html_player.cpp" />
-    <ClCompile Include="engine\report\sc_report_html_sim.cpp" />
-    <ClCompile Include="engine\report\sc_report_text.cpp" />
-    <ClCompile Include="engine\report\sc_report_xml.cpp" />
-    <ClCompile Include="engine\report\sc_report.cpp" />
-    <ClCompile Include="engine\dbc\sc_const_data.cpp" />
-    <ClCompile Include="engine\dbc\sc_data.cpp" />
-    <ClCompile Include="engine\dbc\sc_item_data.cpp" />
-    <ClCompile Include="engine\dbc\sc_spell_data.cpp" />
-    <ClCompile Include="engine\dbc\sc_spell_info.cpp" />
-    <ClCompile Include="engine\interfaces\sc_bcp_api.cpp" />
-    <ClCompile Include="engine\interfaces\sc_chardev.cpp" />
-    <ClCompile Include="engine\interfaces\sc_http.cpp" />
-    <ClCompile Include="engine\interfaces\sc_js.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="engine\interfaces\sc_rawr.cpp" />
-    <ClCompile Include="engine\interfaces\sc_wowhead.cpp" />
-    <ClCompile Include="engine\interfaces\sc_xml.cpp" />
-    <ClCompile Include="engine\class_modules\sc_death_knight.cpp" />
-    <ClCompile Include="engine\class_modules\sc_druid.cpp" />
-    <ClCompile Include="engine\class_modules\sc_enemy.cpp" />
-    <ClCompile Include="engine\class_modules\sc_hunter.cpp" />
-    <ClCompile Include="engine\class_modules\sc_mage.cpp" />
-    <ClCompile Include="engine\class_modules\sc_monk.cpp" />
-    <ClCompile Include="engine\class_modules\sc_paladin.cpp" />
-    <ClCompile Include="engine\class_modules\sc_priest.cpp" />
-    <ClCompile Include="engine\class_modules\sc_rogue.cpp" />
-    <ClCompile Include="engine\class_modules\sc_shaman.cpp" />
-    <ClCompile Include="engine\class_modules\sc_warlock.cpp" />
-    <ClCompile Include="engine\class_modules\sc_warrior.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="engine\simulationcraft.hpp" />
-    <ClInclude Include="engine\sc_generic.hpp" />
-    <ClInclude Include="engine\sc_timespan.hpp" />
-    <ClInclude Include="engine\sc_sample_data.hpp" />
-    <ClInclude Include="engine\util\rng.hpp" />
-    <ClInclude Include="engine\dbc\dbc.hpp" />
-    <ClInclude Include="engine\dbc\data_enums.hh" />
-    <ClInclude Include="engine\dbc\data_definitions.hh" />
-    <ClInclude Include="engine\dbc\specialization.hpp" />
-    <ClInclude Include="engine\report\sc_report.hpp" />
-    <ClInclude Include="engine\utf8.h" />
-    <ClInclude Include="engine\utf8\checked.h" />
-    <ClInclude Include="engine\utf8\core.h" />
-    <ClInclude Include="engine\utf8\unchecked.h" />
-    <ClInclude Include="engine\dbc\sc_item_data.inc" />
-    <ClInclude Include="engine\dbc\sc_extra_data.inc" />
-    <ClInclude Include="engine\dbc\sc_extra_data_ptr.inc" />
-    <ClInclude Include="engine\dbc\sc_item_data_ptr.inc" />
-    <ClInclude Include="engine\dbc\sc_scale_data.inc" />
-    <ClInclude Include="engine\dbc\sc_scale_data_ptr.inc" />
-    <ClInclude Include="engine\dbc\sc_spec_list.inc" />
-    <ClInclude Include="engine\dbc\sc_spell_data.inc" />
-    <ClInclude Include="engine\dbc\sc_spell_data_ptr.inc" />
-    <ClInclude Include="engine\dbc\sc_spell_lists.inc" />
-    <ClInclude Include="engine\dbc\sc_spell_lists_ptr.inc" />
-    <ClInclude Include="engine\dbc\sc_talent_data.inc" />
-    <ClInclude Include="engine\dbc\sc_talent_data_ptr.inc" />
+    <ClCompile Include="..\engine\sc_main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -368,7 +368,7 @@ int main( int /*argc*/, char** /*argv*/ )
     }
     int64_t elapsed_cpu = milliseconds() - start_time;
 
-    exgauss_data.analyze();
+    exgauss_data.analyze_all();
 
     std::cout.precision( 8 );
     std::cout << n << " calls to 0.1 + exgauss(0.3,0.06,0.25): "

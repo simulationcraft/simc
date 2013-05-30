@@ -1658,7 +1658,7 @@ public:
   void datacollection_end( timespan_t t )
   { uptime_sum.add( t != timespan_t::zero() ? iteration_uptime_sum / t : 0.0 ); }
   void reset() { last_start = timespan_t::min(); }
-  void analyze() { uptime_sum.analyze(); }
+  void analyze() { uptime_sum.analyze_all(); }
   void merge( const uptime_common_t& other )
   { uptime_sum.merge( other.uptime_sum ); }
 };
@@ -2480,7 +2480,8 @@ public:
 
   // Timing Wheel Event Management
   event_t* recycled_event_list;
-  std::vector<event_t*> timing_wheel; // This should be a vector of forward_list's
+  struct timing_wheel_slice_t { event_t* start; event_t* end; };
+  std::vector<timing_wheel_slice_t> timing_wheel; // This should be a vector of forward_list's
   int    wheel_seconds, wheel_size, wheel_mask, wheel_shift;
   unsigned timing_slice;
   double wheel_granularity;
@@ -3278,7 +3279,7 @@ public:
   void datacollection_end()
   { ratio.add( up != 0 ? 100.0 * up / ( down + up ) : 0.0 ); }
   void analyze()
-  { ratio.analyze(); }
+  { ratio.analyze_all(); }
   void merge( const benefit_t& other )
   { ratio.merge( other.ratio ); }
 
@@ -3342,8 +3343,8 @@ public:
 
   void analyze()
   {
-    count.analyze();
-    interval_sum.analyze();
+    count.analyze_all();
+    interval_sum.analyze_all();
   }
 
   const char* name() const

@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2012 for Windows Desktop
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simc", "simc11.vcxproj", "{D963926C-4A85-4600-8626-51FA12FDF5C1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simc", "vs\simc11.vcxproj", "{D963926C-4A85-4600-8626-51FA12FDF5C1}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sc_rng", "vs\sc_rng.vcxproj", "{4C7D8805-E08F-4198-A469-3245DEBBA6EB}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simcqt", "simcqt.vcxproj", "{8B5B7EB0-9B3B-3682-B018-64769C525784}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simcqt", "vs\simcqt10.vcxproj", "{8B5B7EB0-9B3B-3682-B018-64769C525784}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simcqt11", "simcqt11.vcxproj", "{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "simcqt11", "vs\simcqt11.vcxproj", "{A4EECBB3-65A3-40BD-AD41-ED02BF5A3A97}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

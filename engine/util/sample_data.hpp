@@ -33,13 +33,8 @@ public:
 private:
   std::vector<double> _data;
   std::vector<double*> _sorted_data; // extra sequence so we can keep the original, unsorted order ( for example to do regression on it )
-  unsigned int count;
-
-  bool analyzed_basics;
-  bool analyzed_variance;
-  bool created_dist;
+  size_t count;
   bool is_sorted;
-
 public:
   sample_data_t( bool s = true, bool mm = false ) :
     sum( 0 ),
@@ -50,8 +45,7 @@ public:
     std_dev( 0 ),
     mean_std_dev( 0 ),
     simple( s ), min_max( mm ), count( 0 ),
-    analyzed_basics( false ), analyzed_variance( false ),
-    created_dist( false ), is_sorted( false )
+    is_sorted( false )
   {}
 
   sample_data_t( const std::string& n, bool s = true, bool mm = false ) :
@@ -64,8 +58,7 @@ public:
     std_dev( 0 ),
     mean_std_dev( 0 ),
     simple( s ), min_max( mm ), count( 0 ),
-    analyzed_basics( false ), analyzed_variance( false ),
-    created_dist( false ), is_sorted( false )
+    is_sorted( false )
   {}
 
   void change_mode( bool simple )
@@ -100,37 +93,33 @@ public:
     else
     {
       _data.push_back( x );
+      is_sorted = false;
     }
-
-    analyzed_basics = analyzed_variance = created_dist = is_sorted = false;
   }
 
-  bool basics_analyzed() const { return analyzed_basics; }
-  bool variance_analyzed() const { return analyzed_variance; }
-  bool distribution_created() const { return created_dist; }
-  bool sorted() const { return is_sorted; }
-  unsigned int size() const { if ( simple ) return count; return ( unsigned int ) _data.size(); }
+  bool sorted() const
+  { return is_sorted; }
+
+  size_t size() const
+  {
+    if ( simple )
+      return count;
+
+    return _data.size();
+  }
 
   // Analyze collected data
-  void analyze( bool calc_basics = true,
-                bool calc_variance = true,
-                bool s = true,
-                bool create_dist = true )
+  void analyze_all()
   {
     // Sort Data
-    if ( s )
-      sort();
+    sort();
 
-    if ( calc_basics )
-      analyze_basics();
+    analyze_basics();
 
     // Calculate Variance
-    if ( calc_variance )
-      analyze_variance();
+    analyze_variance();
 
-
-    if ( create_dist )
-      create_distribution();
+    create_distribution();
   }
 
   /*
@@ -140,10 +129,6 @@ public:
    */
   void analyze_basics()
   {
-    if ( analyzed_basics )
-      return;
-    analyzed_basics = true;
-
     if ( simple )
     {
       if ( count > 0 )
@@ -178,25 +163,14 @@ public:
     mean = sum / sample_size;
   }
 
-  /*
-   *  Analyze Variance: Variance, Stddev and Stddev of the mean
+  /* Analyze Variance: Variance, Stddev and Stddev of the mean
+   *
+   * Requires: Analyzed Mean
    */
   void analyze_variance()
   {
-    // Generic programming trick: Bring std::sqrt into scope with a
-    // using declaration, so that the unqualified call to
-    // sqrt( variance ) below will resolve to std::sqrt for primitive
-    // types and an associated sqrt( some_user_defined_type ) for
-    // user-defined types.
-
-    if ( analyzed_variance )
-      return;
-    analyzed_variance = true;
-
     if ( simple )
       return;
-
-    analyze_basics();
 
     size_t sample_size = data().size();
 
@@ -215,14 +189,16 @@ public:
       variance /= ( sample_size - 1 );
     }
 
-    std_dev = sqrt( variance );
+    std_dev = std::sqrt( variance );
 
     // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
     if ( sample_size > 1 )
     {
-      mean_std_dev = sqrt( variance / sample_size );
+      mean_std_dev = std::sqrt( variance / sample_size );
     }
   }
+
+private:
   struct sorter
   {
     bool operator()( const double* a, const double* b ) const
@@ -230,11 +206,11 @@ public:
       return *a < *b;
     }
   };
-
+public:
   // sort data
   void sort()
   {
-    if ( ! is_sorted )
+    if ( ! is_sorted && !simple )
     {
       _sorted_data.resize( _data.size() );
       for ( size_t i = 0; i < _data.size(); ++i )
@@ -244,19 +220,13 @@ public:
     }
   }
 
-  /*
-   *  Create distribution of the data
+  /* Create distribution of the data
+   *
+   * Requires: Min, Max analyzed
    */
   void create_distribution( unsigned int num_buckets = 50 )
   {
-    if ( created_dist )
-      return;
-    created_dist = true;
-
     if ( simple )
-      return;
-
-    if ( !basics_analyzed() )
       return;
 
     if ( data().empty() )
@@ -282,7 +252,7 @@ public:
   // Access functions
 
   // calculate percentile
-  double percentile( double x ) const
+  double percentile( double x )
   {
     assert( x >= 0 && x <= 1.0 );
 
@@ -293,7 +263,7 @@ public:
       return 0;
 
     if ( !is_sorted )
-      return 0;
+      sort();
 
     // Should be improved to use linear interpolation
     return *( sorted_data()[ ( int ) ( x * ( sorted_data().size() - 1 ) ) ] );
@@ -328,18 +298,14 @@ private:
 
 }; // sample_data_t
 
+/* Requires: Analyzed mean & stddev
+ */
 inline double covariance( const sample_data_t& x, const sample_data_t& y )
 {
   if ( x.simple || y.simple )
     return 0;
 
   if ( x.data().size() != y.data().size() )
-    return 0;
-
-  if ( ! x.basics_analyzed() || ! y.basics_analyzed() )
-    return 0;
-
-  if ( ! x.variance_analyzed() || ! y.variance_analyzed() )
     return 0;
 
   double corr = 0;

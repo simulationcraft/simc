@@ -554,8 +554,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
     "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n",
     name.c_str() );
 
-  if ( data.basics_analyzed() )
-  {
+
     int i = 0;
 
     os << "\t\t\t\t\t\t\t<table class=\"details\">\n";
@@ -656,7 +655,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
         "\t\t\t\t\t\t\t\t</tr>\n",
         data.mean ? ( ( data.max - data.min ) / 2 ) * 100 / data.mean : 0 );
 
-      if ( !data.simple && data.variance_analyzed() )
+      if ( !data.simple )
       {
         ++i;
         os << "\t\t\t\t\t\t\t\t<tr";
@@ -854,10 +853,9 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, sam
       }
     }
 
-  }
   os << "\t\t\t\t\t\t\t\t</table>\n";
 
-  if ( data.distribution_created() )
+  if ( ! data.simple )
   {
     std::string dist_chart = chart::distribution( sim -> print_styles, data.distribution, name, data.mean, data.min, data.max );
 

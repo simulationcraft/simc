@@ -9006,28 +9006,28 @@ void player_t::analyze( sim_t& s )
 
   // sample_data_t::analyze(calc_basics,calc_variance,sort )
 
-  deaths.analyze();
+  deaths.analyze_all();
 
-  fight_length.analyze();
-  waiting_time.analyze();
-  executed_foreground_actions.analyze();
+  fight_length.analyze_all();
+  waiting_time.analyze_all();
+  executed_foreground_actions.analyze_all();
 
-  dmg.analyze();
-  compound_dmg.analyze();
-  dps.analyze();
-  dpse.analyze();
+  dmg.analyze_all();
+  compound_dmg.analyze_all();
+  dps.analyze_all();
+  dpse.analyze_all();
 
-  dmg_taken.analyze();
+  dmg_taken.analyze_all();
   timeline_dmg_taken.adjust( s.divisor_timeline );
-  dtps.analyze();
+  dtps.analyze_all();
 
-  heal.analyze();
-  compound_heal.analyze();
-  hps.analyze();
-  hpse.analyze();
+  heal.analyze_all();
+  compound_heal.analyze_all();
+  hps.analyze_all();
+  hpse.analyze_all();
 
-  heal_taken.analyze();
-  htps.analyze();
+  heal_taken.analyze_all();
+  htps.analyze_all();
 
   deaths_error =  deaths.mean_std_dev * s.confidence_estimator;
   dps_error =  dps.mean_std_dev * s.confidence_estimator;
@@ -9121,7 +9121,7 @@ void player_t::analyze( sim_t& s )
 
 
   for ( size_t i = 0; i < resources.combat_end_resource.size(); ++i )
-    resources.combat_end_resource[ i ].analyze();
+    resources.combat_end_resource[ i ].analyze_all();
 
   for ( size_t i = 0; i < gain_list.size(); ++i )
     gain_list[ i ] -> analyze( s );

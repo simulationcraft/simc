@@ -863,13 +863,13 @@ void buff_t::merge( const buff_t& other )
 
 void buff_t::analyze()
 {
-  start_intervals.analyze();
-  trigger_intervals.analyze();
-  avg_start.analyze();
-  avg_refresh.analyze();
-  uptime_pct.analyze();
-  benefit_pct.analyze();
-  trigger_pct.analyze();
+  start_intervals.analyze_all();
+  trigger_intervals.analyze_all();
+  avg_start.analyze_all();
+  avg_refresh.analyze_all();
+  uptime_pct.analyze_all();
+  benefit_pct.analyze_all();
+  trigger_pct.analyze_all();
   if ( sim -> buff_uptime_timeline )
     uptime_array.adjust( sim -> divisor_timeline );
 

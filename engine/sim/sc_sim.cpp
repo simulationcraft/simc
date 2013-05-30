@@ -931,10 +931,18 @@ void sim_t::add_event( event_t* e,
   uint32_t slice = ( uint32_t ) ( e -> time.total_seconds() * wheel_granularity ) & wheel_mask;
 #endif
 
+  event_t** prev;
+#ifdef SC_USE_INTEGER_TIME
+  /* Time granularity is smaller than timing wheel granularity
+   * This means we can just append to the end of the timing wheel slice
+   */
+  prev = &( timing_wheel[ slice ].end );
+#else
   // Insert event into the event list at the appropriate time
-  event_t** prev = &( timing_wheel[ slice ] );
+  prev = &( timing_wheel[ slice ].start );
   while ( ( *prev ) && ( *prev ) -> time <= e -> time ) // Find position in the list
   { prev = &( ( *prev ) -> next ); }
+#endif
   // insert event
   e -> next = *prev;
   *prev = e;
@@ -967,7 +975,7 @@ event_t* sim_t::next_event()
 
   while ( true )
   {
-    event_t*& event_list = timing_wheel[ timing_slice ];
+    event_t*& event_list = timing_wheel[ timing_slice ].start;
     if ( event_list )
     {
       event_t* e = event_list;
@@ -975,6 +983,10 @@ event_t* sim_t::next_event()
       events_remaining--;
       events_processed++;
       return e;
+    }
+    else if ( event_t*& e = timing_wheel[ timing_slice ].end )
+    {
+      e = nullptr; // clear end
     }
 
     timing_slice++;
@@ -996,13 +1008,14 @@ void sim_t::flush_events()
 
   for ( size_t i = 0; i < timing_wheel.size(); ++i )
   {
-    while ( event_t* e = timing_wheel[ i ] )
+    while ( event_t* e = timing_wheel[ i ].start )
     {
-      timing_wheel[ i ] = e -> next;
+      timing_wheel[ i ].start = e -> next;
       event_t* null_e = e; // necessary evil
       event_t::cancel( null_e );
       event_t::recycle( e );
     }
+    timing_wheel[ i ].end = nullptr;
   }
 
   events_remaining = 0;
@@ -1616,7 +1629,7 @@ struct compare_name
 
 void sim_t::analyze()
 {
-  simulation_length.analyze( true, true, true, true );
+  simulation_length.analyze_all();
   if ( simulation_length.mean == 0 ) return;
 
   // divisor_timeline is necessary because not all iterations go the same length of time
@@ -1635,10 +1648,10 @@ void sim_t::analyze()
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> analyze();
 
-  total_dmg.analyze();
-  raid_dps.analyze();
-  total_heal.analyze();
-  raid_hps.analyze();
+  total_dmg.analyze_all();
+  raid_dps.analyze_all();
+  total_heal.analyze_all();
+  raid_hps.analyze_all();
 
   confidence_estimator = rng::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
 
