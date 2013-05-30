@@ -741,12 +741,15 @@ player_t::player_t( sim_t*             s,
   range::fill( scales_with, false );
   range::fill( over_cap, 0 );
 
-  items.resize( SLOT_MAX );
-  for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
+  if ( ! is_pet() )
   {
-    items[ i ].slot = i;
-    items[ i ].sim = sim;
-    items[ i ].player = this;
+    items.resize( SLOT_MAX );
+    for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
+    {
+      items[ i ].slot = i;
+      items[ i ].sim = sim;
+      items[ i ].player = this;
+    }
   }
 
   main_hand_weapon.slot = SLOT_MAIN_HAND;
@@ -2712,114 +2715,114 @@ void player_t::create_buffs()
   if ( sim -> debug )
     sim -> output( "Creating buffs for player (%s)", name() );
 
-  if ( ! is_enemy() )
+  if ( ! is_enemy() && type != PLAYER_GUARDIAN )
   {
-    buffs.berserking                = haste_buff_creator_t( this, "berserking", find_spell( 26297 ) ).add_invalidate( CACHE_HASTE );
-    buffs.body_and_soul             = buff_creator_t( this, "body_and_soul" )
-                                      .max_stack( 1 )
-                                      .duration( timespan_t::from_seconds( 4.0 ) );
-    buffs.grace                     = buff_creator_t( this,  "grace" )
-                                      .max_stack( 3 )
-                                      .duration( timespan_t::from_seconds( 15.0 ) );
-    buffs.heroic_presence           = buff_creator_t( this, "heroic_presence" ).max_stack( 1 ).add_invalidate( CACHE_HIT );
-    buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );
-    buffs.stoneform                 = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
+    if ( type != PLAYER_PET )
+    {
+      // Racials
+      buffs.berserking                = haste_buff_creator_t( this, "berserking", find_spell( 26297 ) ).add_invalidate( CACHE_HASTE );
+      buffs.heroic_presence           = buff_creator_t( this, "heroic_presence" ).max_stack( 1 ).add_invalidate( CACHE_HIT );
+      buffs.stoneform                 = buff_creator_t( this, "stoneform", find_spell( 65116 ) );
+      buffs.blood_fury                = stat_buff_creator_t( this, "blood_fury" )
+                                        .spell( find_racial_spell( "Blood Fury" ) )
+                                        .add_invalidate( CACHE_SPELL_POWER )
+                                        .add_invalidate( CACHE_ATTACK_POWER );
+      buffs.fortitude                 = buff_creator_t( this, "fortitude", find_spell( 137593 ) ).add_invalidate( CACHE_STAMINA ).activated( false );
 
-    buffs.blood_fury                = stat_buff_creator_t( this, "blood_fury" )
-                                      .spell( find_racial_spell( "Blood Fury" ) )
-                                      .add_invalidate( CACHE_SPELL_POWER )
-                                      .add_invalidate( CACHE_ATTACK_POWER );
+      // Legendary meta haste buff
+      buffs.tempus_repit              = buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).add_invalidate( CACHE_HASTE ).activated( false );
+
+      // Profession buffs
+      double lb_amount = 0.0;
+      if      ( profession[ PROF_HERBALISM ] >= 600 )
+        lb_amount = 2880;
+      else if ( profession[ PROF_HERBALISM ] >= 525 )
+        lb_amount = 480;
+      else if ( profession[ PROF_HERBALISM ] >= 450 )
+        lb_amount = 240;
+      else if ( profession[ PROF_HERBALISM ] >= 375 )
+        lb_amount = 120;
+      else if ( profession[ PROF_HERBALISM ] >= 300 )
+        lb_amount = 70;
+      else if ( profession[ PROF_HERBALISM ] >= 225 )
+        lb_amount = 55;
+      else if ( profession[ PROF_HERBALISM ] >= 150 )
+        lb_amount = 35;
+      else if ( profession[ PROF_HERBALISM ] >= 75 )
+        lb_amount = 15;
+      else if ( profession[ PROF_HERBALISM ] >= 1 )
+        lb_amount = 5;
+
+      buffs.lifeblood = stat_buff_creator_t( this, "lifeblood" )
+                        .max_stack( 1 )
+                        .duration( timespan_t::from_seconds( 20.0 ) )
+                        .add_stat( STAT_HASTE_RATING, lb_amount );
+
+      // Vengeance
+      buffs.vengeance = buff_creator_t( this, "vengeance" )
+                        .max_stack( 1 )
+                        .duration( timespan_t::from_seconds( 20.0 ) )
+                        .default_value( 0 )
+                        .add_invalidate( CACHE_ATTACK_POWER );
+
+      // Potions
+      struct potion_buff_creator : public stat_buff_creator_t
+      {
+        potion_buff_creator( player_t* p,
+                            const std::string& n,
+                            timespan_t cd = timespan_t::from_seconds( 60.0 ) ) :
+          stat_buff_creator_t ( p,  n )
+        {
+          max_stack( 1 );
+          this -> cd( cd );
+          // Kludge of the century, version 2
+          chance( p -> sim -> allow_potions );
+        }
+      };
+
+      // Cataclysm
+      potion_buffs.speed      = potion_buff_creator( this, "speed_potion" )
+                                .duration( timespan_t::from_seconds( 15.0 ) )
+                                .add_stat( STAT_HASTE_RATING, 500.0 );
+      potion_buffs.volcanic   = potion_buff_creator( this, "volcanic_potion" )
+                                .duration( timespan_t::from_seconds( 25.0 ) )
+                                .add_stat( STAT_INTELLECT, 1200.0 );
+      potion_buffs.earthen    = potion_buff_creator( this, "earthen_potion" )
+                                .duration( timespan_t::from_seconds( 25.0 ) )
+                                .add_stat( STAT_ARMOR, 4800.0 );
+      potion_buffs.golemblood = potion_buff_creator( this, "golemblood_potion" )
+                                .duration( timespan_t::from_seconds( 25.0 ) )
+                                .add_stat( STAT_STRENGTH, 1200.0 );
+      potion_buffs.tolvir     = potion_buff_creator( this, "tolvir_potion" )
+                                .duration( timespan_t::from_seconds( 25.0 ) )
+                                .add_stat( STAT_AGILITY, 1200.0 );
+
+      // MoP
+      potion_buffs.jade_serpent = potion_buff_creator( this, "jade_serpent_potion" )
+                                  .spell( find_spell( 105702 ) );
+      potion_buffs.mountains    = potion_buff_creator( this, "mountains_potion" )
+                                  .spell( find_spell( 105698 ) );
+      potion_buffs.mogu_power   = potion_buff_creator( this, "mogu_power_potion" )
+                                  .spell( find_spell( 105706 ) );
+      potion_buffs.virmens_bite = potion_buff_creator( this, "virmens_bite_potion" )
+                                  .spell( find_spell( 105697 ) );
+    }
+
+    buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );
+
 
     buffs.stormlash                 = new stormlash_buff_t( this, find_spell( 120687 ) );
-
-    buffs.tempus_repit              = buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).add_invalidate( CACHE_HASTE ).activated( false );
-
-    buffs.fortitude                 = buff_creator_t( this, "fortitude", find_spell( 137593 ) ).add_invalidate( CACHE_STAMINA ).activated( false );
-
-    double lb_amount = 0.0;
-    if      ( profession[ PROF_HERBALISM ] >= 600 )
-      lb_amount = 2880;
-    else if ( profession[ PROF_HERBALISM ] >= 525 )
-      lb_amount = 480;
-    else if ( profession[ PROF_HERBALISM ] >= 450 )
-      lb_amount = 240;
-    else if ( profession[ PROF_HERBALISM ] >= 375 )
-      lb_amount = 120;
-    else if ( profession[ PROF_HERBALISM ] >= 300 )
-      lb_amount = 70;
-    else if ( profession[ PROF_HERBALISM ] >= 225 )
-      lb_amount = 55;
-    else if ( profession[ PROF_HERBALISM ] >= 150 )
-      lb_amount = 35;
-    else if ( profession[ PROF_HERBALISM ] >= 75 )
-      lb_amount = 15;
-    else if ( profession[ PROF_HERBALISM ] >= 1 )
-      lb_amount = 5;
-
-    buffs.lifeblood = stat_buff_creator_t( this, "lifeblood" )
-                      .max_stack( 1 )
-                      .duration( timespan_t::from_seconds( 20.0 ) )
-                      .add_stat( STAT_HASTE_RATING, lb_amount );
-
-    buffs.vengeance = buff_creator_t( this, "vengeance" )
-                      .max_stack( 1 )
-                      .duration( timespan_t::from_seconds( 20.0 ) )
-                      .default_value( 0 )
-                      .add_invalidate( CACHE_ATTACK_POWER );
-
-    // Potions
-    struct potion_buff_creator : public stat_buff_creator_t
-    {
-      potion_buff_creator( player_t* p,
-                           const std::string& n,
-                           timespan_t cd = timespan_t::from_seconds( 60.0 ) ) :
-        stat_buff_creator_t ( p,  n )
-      {
-        max_stack( 1 );
-        this -> cd( cd );
-        // Kludge of the century, version 2
-        chance( p -> sim -> allow_potions );
-      }
-    };
-
-    // Cataclysm
-    potion_buffs.speed      = potion_buff_creator( this, "speed_potion" )
-                              .duration( timespan_t::from_seconds( 15.0 ) )
-                              .add_stat( STAT_HASTE_RATING, 500.0 );
-
-    potion_buffs.volcanic   = potion_buff_creator( this, "volcanic_potion" )
-                              .duration( timespan_t::from_seconds( 25.0 ) )
-                              .add_stat( STAT_INTELLECT, 1200.0 );
-
-    potion_buffs.earthen    = potion_buff_creator( this, "earthen_potion" )
-                              .duration( timespan_t::from_seconds( 25.0 ) )
-                              .add_stat( STAT_ARMOR, 4800.0 );
-
-    potion_buffs.golemblood = potion_buff_creator( this, "golemblood_potion" )
-                              .duration( timespan_t::from_seconds( 25.0 ) )
-                              .add_stat( STAT_STRENGTH, 1200.0 );
-
-    potion_buffs.tolvir     = potion_buff_creator( this, "tolvir_potion" )
-                              .duration( timespan_t::from_seconds( 25.0 ) )
-                              .add_stat( STAT_AGILITY, 1200.0 );
-
-    // MoP
-    potion_buffs.jade_serpent = potion_buff_creator( this, "jade_serpent_potion" )
-                                .spell( find_spell( 105702 ) );
-
-    potion_buffs.mountains    = potion_buff_creator( this, "mountains_potion" )
-                                .spell( find_spell( 105698 ) );
-
-    potion_buffs.mogu_power   = potion_buff_creator( this, "mogu_power_potion" )
-                                .spell( find_spell( 105706 ) );
-
-    potion_buffs.virmens_bite = potion_buff_creator( this, "virmens_bite_potion" )
-                                .spell( find_spell( 105697 ) );
   }
+
+  buffs.body_and_soul             = buff_creator_t( this, "body_and_soul" )
+                                    .max_stack( 1 )
+                                    .duration( timespan_t::from_seconds( 4.0 ) );
+  buffs.grace                     = buff_creator_t( this,  "grace" )
+                                    .max_stack( 3 )
+                                    .duration( timespan_t::from_seconds( 15.0 ) );
 
   buffs.raid_movement = buff_creator_t( this, "raid_movement" ).max_stack( 1 );
   buffs.self_movement = buff_creator_t( this, "self_movement" ).max_stack( 1 );
-
 
   // Infinite-Stacking Buffs and De-Buffs
 
