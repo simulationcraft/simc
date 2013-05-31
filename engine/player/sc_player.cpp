@@ -8564,7 +8564,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
     }
   }
 
-  if ( stype == SAVE_ALL || stype == SAVE_GEAR )
+  if ( ( stype == SAVE_ALL || stype == SAVE_GEAR ) && ! items.empty() )
   {
     profile_str += "\n";
     const slot_e SLOT_OUT_ORDER[] =

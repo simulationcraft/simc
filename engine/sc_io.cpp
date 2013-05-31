@@ -143,7 +143,11 @@ void ofstream::open( const char* name, openmode mode )
   // std::fstream in MinGW.
   std::ofstream::open( io::widen( name ).c_str(), mode );
 #elif defined( SC_MINGW )
-  assert ( ! util::contains_non_ascii( name ) && "MinGW cannot open files containing unicode" );
+  if ( util::contains_non_ascii( name ) )
+  {
+    assert( false && "File Names with non-ascii characters cannot be opened when built with MinGW." );
+    return;
+  }
   std::ofstream::open( name, mode );
 #else
   std::ofstream::open( name, mode );
@@ -152,6 +156,13 @@ void ofstream::open( const char* name, openmode mode )
 
 void ofstream::open( sim_t* sim, const std::string& filename, openmode mode )
 {
+#if defined( SC_MINGW )
+  if ( util::contains_non_ascii( filename ) )
+  {
+    sim -> errorf( "Failed to open output file containing non-ascii characters.'%s'.", filename.c_str() );
+    return;
+  }
+#endif
   open( filename, mode );
 
   if ( fail() )
@@ -176,7 +187,11 @@ void ifstream::open( const char* name, openmode mode )
   // std::fstream in MinGW.
   std::ifstream::open( io::widen( name ).c_str(), mode );
 #elif defined( SC_MINGW )
-  assert ( ! util::contains_non_ascii( name ) && "MinGW cannot open files containing unicode" );
+  if ( util::contains_non_ascii( name ) )
+  {
+    assert( false && "File Names with non-ascii characters cannot be opened when built with MinGW." );
+    return;
+  }
   std::ifstream::open( name, mode );
 #else
   std::ifstream::open( name, mode );
