@@ -198,7 +198,6 @@ double rng::stdnormal_inv( double p )
 
 #include <iostream>
 #include <iomanip>
-#include "sample_data.hpp"
 
 namespace { // anonymous namespace ==========================================
 
@@ -358,26 +357,14 @@ int main( int /*argc*/, char** /*argv*/ )
   {
     int64_t start_time = milliseconds();
 
-    sample_data_t exgauss_data = sample_data_t( false );
-    exgauss_data.reserve( as<size_t>( n ) );
-
+    double average = 0;
     for ( uint64_t i = 0; i < n; i++ )
-    {
-      double result = 0.1 + rng.exgauss( 0.3,0.06,0.25 );
-      exgauss_data.add( result );
-    }
+      average += 0.1 + rng.exgauss( 0.3,0.06,0.25 );
+    average /= n;
     int64_t elapsed_cpu = milliseconds() - start_time;
 
-    exgauss_data.analyze_all();
-
-    std::cout.precision( 8 );
-    std::cout << n << " calls to 0.1 + exgauss(0.3,0.06,0.25): "
-                 "time = " << elapsed_cpu << " ms\n"
-                 "exgauss sd: mean = " << exgauss_data.mean << ", "
-                 "5thpct = " << exgauss_data.percentile( 0.05 ) << ", "
-                 "95thpct = " << exgauss_data.percentile( 0.95 ) << ", "
-                 "0.9999 quantille = " << exgauss_data.percentile( 0.9999 ) << ", "
-                 "min = " << exgauss_data.min << ", max = " << exgauss_data.max << "\n\n";
+    std::cout << n << " calls to 0.1 + rng.exgauss( 0.3,0.06,0.25 );: average = " << std::setprecision( 8 ) << average
+              << ", time = " << elapsed_cpu << " ms\n\n";
   }
 
   // exponential

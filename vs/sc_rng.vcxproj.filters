@@ -11,9 +11,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\engine\sc_generic.hpp" />
     <ClInclude Include="..\engine\util\rng.hpp" />
-    <ClInclude Include="..\engine\util\sample_data.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\engine\util\rng.cpp" />

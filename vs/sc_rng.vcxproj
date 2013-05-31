@@ -27,9 +27,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\engine\sc_generic.hpp" />
     <ClInclude Include="..\engine\util\rng.hpp" />
-    <ClInclude Include="..\engine\util\sample_data.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{4C7D8805-E08F-4198-A469-3245DEBBA6EB}</ProjectGuid>
