@@ -4003,6 +4003,7 @@ public:
   struct procs_t
   {
     proc_t* hat_donor;
+    proc_t* parry_haste;
   } procs;
 
   struct rngs_t
