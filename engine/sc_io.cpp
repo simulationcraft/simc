@@ -142,7 +142,9 @@ void ofstream::open( const char* name, openmode mode )
   // no way to open a file with a Unicode filename using
   // std::fstream in MinGW.
   std::ofstream::open( io::widen( name ).c_str(), mode );
-// FIXME: #elif SC_MINGW
+#elif defined( SC_MINGW )
+  assert ( ! util::contains_non_ascii( name ) && "MinGW cannot open files containing unicode" );
+  std::ofstream::open( name, mode );
 #else
   std::ofstream::open( name, mode );
 #endif
@@ -173,7 +175,9 @@ void ifstream::open( const char* name, openmode mode )
   // no way to open a file with a Unicode filename using
   // std::fstream in MinGW.
   std::ifstream::open( io::widen( name ).c_str(), mode );
-// FIXME: #elif SC_MINGW
+#elif defined( SC_MINGW )
+  assert ( ! util::contains_non_ascii( name ) && "MinGW cannot open files containing unicode" );
+  std::ifstream::open( name, mode );
 #else
   std::ifstream::open( name, mode );
 #endif
