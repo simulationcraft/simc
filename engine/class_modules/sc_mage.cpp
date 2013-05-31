@@ -346,7 +346,7 @@ struct water_elemental_pet_t : public pet_t
 
   struct mini_waterbolt_t : public spell_t
   {
-    mini_waterbolt_t( water_elemental_pet_t* p, bool bolt_two = false ) :
+    mini_waterbolt_t( water_elemental_pet_t* p , int bolt_count = 1) :
       spell_t( "mini_waterbolt", p, p -> find_spell( 131581 ) )
     {
       may_crit = true;
@@ -354,10 +354,11 @@ struct water_elemental_pet_t : public pet_t
       dual = true;
       base_costs[ RESOURCE_MANA ] = 0;
 
-      if ( ! bolt_two )
-      {
-        execute_action = new mini_waterbolt_t( p, true );
-      }
+    if ( bolt_count < 3 )
+    {
+      execute_action = new mini_waterbolt_t( p, bolt_count+1 );
+    }
+
     }
 
     virtual timespan_t execute_time()
@@ -378,17 +379,26 @@ struct water_elemental_pet_t : public pet_t
       add_child( mini_waterbolt );
     }
 
+	virtual void impact( action_state_t* s )
+	  {
+		water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
+
+		if ( p -> o() -> glyphs.icy_veins -> ok() && p -> o() -> buffs.icy_veins -> up() )
+		  return;
+
+		spell_t::impact(s);
+	  
+	  }
+
     void execute()
     {
-      spell_t::execute();
+		spell_t::execute();
 
-      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
-      if ( result_is_hit( execute_state -> result ) &&
-           p -> o() -> glyphs.icy_veins -> ok() &&
-           p -> o() -> buffs.icy_veins -> up() )
-      {
-        mini_waterbolt -> schedule_execute( mini_waterbolt -> get_state( execute_state ) );
-      }
+		water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
+		if ( p -> o() -> glyphs.icy_veins -> ok() && p -> o() -> buffs.icy_veins -> up() )
+		{
+			mini_waterbolt -> schedule_execute( mini_waterbolt -> get_state( execute_state ) );
+		}
     }
 
     virtual double action_multiplier()
@@ -1950,7 +1960,7 @@ struct frost_bomb_t : public mage_spell_t
 
 struct mini_frostbolt_t : public mage_spell_t
 {
-  mini_frostbolt_t( mage_t* p, bool bolt_two = false ) :
+  mini_frostbolt_t( mage_t* p, int bolt_count = 1 ) :
     mage_spell_t( "mini_frostbolt", p, p -> find_spell( 131079 ) )
   {
     background = true;
@@ -1960,10 +1970,11 @@ struct mini_frostbolt_t : public mage_spell_t
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
-    if ( ! bolt_two )
+    if ( bolt_count < 3 )
     {
-      execute_action = new mini_frostbolt_t( p, true );
+      execute_action = new mini_frostbolt_t( p, bolt_count+1 );
     }
+	 
   }
 
   virtual timespan_t execute_time()
@@ -2016,7 +2027,10 @@ struct frostbolt_t : public mage_spell_t
 
   virtual void impact( action_state_t* s )
   {
-    mage_spell_t::impact( s );
+    // TO CHECK : does mini FB apply FB debuff ? prolly yes
+	if ( !p() -> glyphs.icy_veins -> ok() || !p() -> buffs.icy_veins -> up() ) {
+		mage_spell_t::impact( s );
+	}
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2048,7 +2062,7 @@ struct frostbolt_t : public mage_spell_t
 
 struct mini_frostfire_bolt_t : public mage_spell_t
 {
-  mini_frostfire_bolt_t( mage_t* p, bool bolt_two = false ) :
+  mini_frostfire_bolt_t( mage_t* p , int bolt_count=1) :
     mage_spell_t( "mini_frostfire_bolt", p, p -> find_spell( 131081 ) )
   {
     background = true;
@@ -2058,10 +2072,11 @@ struct mini_frostfire_bolt_t : public mage_spell_t
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
 
-    if ( ! bolt_two )
+    if ( bolt_count < 3 )
     {
-      execute_action = new mini_frostfire_bolt_t( p, true );
+      execute_action = new mini_frostfire_bolt_t( p, bolt_count+1 );
     }
+	  
   }
 
   virtual timespan_t execute_time()
@@ -2141,7 +2156,12 @@ struct frostfire_bolt_t : public mage_spell_t
 
   virtual void impact( action_state_t* s )
   {
-    mage_spell_t::impact( s );
+    if ( p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> up() )
+    {
+		return;
+	}
+	
+	mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2259,32 +2279,36 @@ struct ice_floes_t : public mage_spell_t
   }
 };
 
-// Ice Lance Spell ==========================================================
+// Mini Ice Lance Spell ==========================================================
 
 struct mini_ice_lance_t : public mage_spell_t
 {
-  mini_ice_lance_t( mage_t* p, bool lance_two = false ) :
+
+  mini_ice_lance_t( mage_t* p , int bolt_count=1) :
     mage_spell_t( "mini_ice_lance", p, p -> find_spell( 131080 ) )
   {
     background = true;
     dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
-
-    if ( ! lance_two )
+	
+    if ( bolt_count < 3 )
     {
-      execute_action = new mini_ice_lance_t( p, true );
-    }
+      execute_action = new mini_ice_lance_t( p, bolt_count+1 );
+    }	
   }
 
   virtual timespan_t execute_time()
   { return timespan_t::from_seconds( 0.25 ); }
+
 };
+
+// Ice Lance Spell ==========================================================
 
 struct ice_lance_t : public mage_spell_t
 {
   double fof_multiplier;
   mini_ice_lance_t* mini_ice_lance;
-
+  
   ice_lance_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
     fof_multiplier( 0 ),
@@ -2299,23 +2323,31 @@ struct ice_lance_t : public mage_spell_t
 
     fof_multiplier = p -> find_specialization_spell( "Fingers of Frost" ) -> ok() ? p -> find_spell( 44544 ) -> effectN( 2 ).percent() : 0.0;
 
-    add_child( mini_ice_lance );
+   add_child( mini_ice_lance );
 
   }
 
+	virtual void impact( action_state_t* s )
+	{
+		if ( p() -> glyphs.icy_veins -> ok() &&
+			 p() -> buffs.icy_veins -> up() )
+		{
+			return;
+		}
+		mage_spell_t::impact(s);
+	}
+  
   virtual void execute()
   {
     // Ice Lance treats the target as frozen with FoF up
     frozen = p() -> buffs.fingers_of_frost -> check() > 0;
 
-    mage_spell_t::execute();
+	mage_spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) &&
-         p() -> glyphs.icy_veins -> ok() &&
-         p() -> buffs.icy_veins -> up() )
+    if ( p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> up() )
     {
-      mini_ice_lance -> schedule_execute( mini_ice_lance -> get_state( execute_state ) );
-    }
+		mini_ice_lance -> schedule_execute( mini_ice_lance -> get_state( execute_state ) );
+	}
 
     p() -> buffs.fingers_of_frost -> decrement();
   }
@@ -4404,3 +4436,4 @@ const module_t* module_t::mage()
   static mage_module_t m;
   return &m;
 }
+ 
