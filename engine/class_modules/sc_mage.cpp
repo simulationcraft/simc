@@ -2600,6 +2600,8 @@ struct living_bomb_explosion_t : public mage_spell_t
   {
     aoe = -1;
     background = true;
+	
+	base_multiplier *= 4;
   }
 
   virtual resource_e current_resource()
