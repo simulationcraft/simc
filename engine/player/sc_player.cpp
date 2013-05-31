@@ -3650,14 +3650,7 @@ double player_t::cache_t::spell_crit()
     valid[ CACHE_SPELL_CRIT ] = true;
     _spell_crit = player -> composite_spell_crit();
   }
-  else
-  {
-    if ( _spell_crit != player -> composite_spell_crit() )
-    {
-      player -> sim -> errorf( "foo" );
-    }
-    //assert( _spell_crit == player -> composite_spell_crit() );
-  }
+  else assert( _spell_crit == player -> composite_spell_crit() );
   return _spell_crit;
 }
 
