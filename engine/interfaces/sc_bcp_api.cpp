@@ -13,7 +13,7 @@ namespace { // UNNAMED NAMESPACE
 
 struct player_spec_t
 {
-  std::string region, server, name, url, origin, talent_spec;
+  std::string region, server, name, url, local_json, origin, talent_spec;
 };
 
 // download_id ==============================================================
@@ -256,14 +256,15 @@ player_t* parse_player( sim_t*             sim,
 
   std::string result;
 
-  if ( 0 == player.url.compare(0,7, "http://") || 0 == player.url.compare(0,8, "https://") )
+  if ( player.local_json.empty() )
   {
     if ( ! http::get( result, player.url, caching ) )
       return 0;
   }
   else
   {
-    std::ifstream ifs(player.url.c_str());
+    io::ifstream ifs;
+    ifs.open( player.local_json );
     result.assign( (std::istreambuf_iterator<char>(ifs) ),
         (std::istreambuf_iterator<char>()    ) );
   }
@@ -731,11 +732,9 @@ player_t* bcp_api::from_local_json( sim_t*             sim,
 
   player_spec_t player;
 
-  player.url = file_path;
+  player.local_json = file_path;
   player.origin = file_path;
 
-//  player.region = region;
-//  player.server = server;
   player.name = name;
   player.talent_spec = talents;
 

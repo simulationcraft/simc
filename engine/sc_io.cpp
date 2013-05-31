@@ -161,6 +161,37 @@ void ofstream::open( sim_t* sim, const std::string& filename, openmode mode )
   exceptions( failbit | badbit );
 }
 
+void ifstream::open( const char* name, openmode mode )
+{
+#ifdef _MSC_VER
+  // This is intentionally "_MSC_VER" instead of "SC_WINDOWS".
+  // MS's c++ std library provides
+  //   std::fstream::open( const wchar_t*, openmode )
+  // as an extension to open files with Unicode names.
+  // The MinGW c++ std library does not. Since neither
+  // library will accept UTF-8 encoded names, there is
+  // no way to open a file with a Unicode filename using
+  // std::fstream in MinGW.
+  std::ifstream::open( io::widen( name ).c_str(), mode );
+// FIXME: #elif SC_MINGW
+#else
+  std::ifstream::open( name, mode );
+#endif
+}
+
+void ifstream::open( sim_t* sim, const std::string& filename, openmode mode )
+{
+  open( filename, mode );
+
+  if ( fail() )
+  {
+    sim -> errorf( "Failed to open input file '%s'.", filename.c_str() );
+    return;
+  }
+
+  exceptions( failbit | badbit );
+}
+
 #ifdef SC_WINDOWS
 utf8_args::utf8_args( int, char** )
 {

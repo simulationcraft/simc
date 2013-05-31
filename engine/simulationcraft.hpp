@@ -1448,6 +1448,15 @@ public:
   { return open( filename.c_str(), mode ); }
 };
 
+class ifstream : public std::ifstream
+{
+public:
+  void open( sim_t* sim, const std::string& filename, openmode mode = in );
+  void open( const char* filename, openmode mode = in );
+  void open( const std::string& filename, openmode mode = in )
+  { return open( filename.c_str(), mode ); }
+};
+
 class utf8_args : public std::vector<std::string>
 {
 public:

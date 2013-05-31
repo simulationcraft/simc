@@ -543,7 +543,8 @@ void http::cache_load( const char* file_name )
 
   try
   {
-    std::ifstream file( file_name, std::ios::binary );
+    io::ifstream file;
+    file.open( file_name, std::ios::binary );
     if ( !file ) return;
     file.exceptions( std::ios::eofbit | std::ios::failbit | std::ios::badbit );
     file.unsetf( std::ios::skipws );
@@ -585,7 +586,8 @@ void http::cache_save( const char* file_name )
 
   try
   {
-    std::ofstream file( file_name, std::ios::binary );
+    io::ofstream file;
+    file.open( file_name, std::ios::binary );
     if ( ! file ) return;
     file.exceptions( std::ios::eofbit | std::ios::failbit | std::ios::badbit );
 
@@ -627,7 +629,8 @@ bool http::get( std::string&       result,
 
   if ( HTTP_CACHE_DEBUG )
   {
-    std::ofstream http_log( "simc_http_log.txt", std::ios::app );
+    io::ofstream http_log;
+    http_log.open( "simc_http_log.txt", std::ios::app );
     std::ostream::sentry s( http_log );
     if ( s )
     {
@@ -665,7 +668,8 @@ bool http::get( std::string&       result,
 
     if ( HTTP_CACHE_DEBUG && entry.modified < entry.validated )
     {
-      std::ofstream http_log( "simc_http_log.txt", std::ios::app );
+      io::ofstream http_log;
+      http_log.open( "simc_http_log.txt", std::ios::app );
       http_log << cache::era() << ": Unmodified (" << entry.modified << ", " << entry.validated << ")\n";
     }
 
