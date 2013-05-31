@@ -327,6 +327,7 @@ public:
     proc_t* runic_empowerment;
     proc_t* runic_empowerment_wasted;
     proc_t* oblit_killing_machine;
+    proc_t* parry_haste;
     proc_t* fs_killing_machine;
     proc_t* sr_killing_machine;
     proc_t* t15_2pc_melee;
@@ -5729,6 +5730,7 @@ void death_knight_t::init_procs()
   procs.runic_empowerment        = get_proc( "runic_empowerment"            );
   procs.runic_empowerment_wasted = get_proc( "runic_empowerment_wasted"     );
   procs.oblit_killing_machine    = get_proc( "oblit_killing_machine"        );
+  procs.parry_haste              = get_proc( "parry_haste"                  );
   procs.sr_killing_machine       = get_proc( "sr_killing_machine"           );
   procs.fs_killing_machine       = get_proc( "frost_strike_killing_machine" );
   procs.t15_2pc_melee            = get_proc( "t15_2pc_melee"                );
@@ -5806,6 +5808,47 @@ void death_knight_t::assess_damage( school_e     school,
   {
     buffs.will_of_the_necropolis_dr -> trigger();
     buffs.will_of_the_necropolis_rt -> trigger();
+  }
+
+  // Parry haste
+  if ( s -> result == RESULT_PARRY )
+  {
+    if ( main_hand_attack && main_hand_attack -> execute_event )
+    {
+      // Parry haste mechanics:  When parrying an attack, the game subtracts 40% of the player's base swing timer
+      // from the time remaining on the current swing timer.  However, this effect cannot reduce the current swing 
+      // timer to less than 20% of the base value.  The game uses hasted values.  To illustrate that, two examples:
+      // base weapon speed: 2.6, 30% haste, thus base swing timer is 2.6/1.3=2.0 seconds
+      // 1) if we parry when the current swing timer has 1.8 seconds remaining, then it gets reduced by 40% of 2.0, or 0.8 seconds,
+      //    and the current swing timer becomes 1.0 seconds.
+      // 2) if we parry when the current swing timer has 1.0 second remaining the game tries to subtract 0.8 seconds, but hits the 
+      //    minimum value (20% of 2.0, or 0.4 seconds.  The current swing timer becomes 0.4 seconds.
+      // Thus, the result is that the current swing timer becomes max(current_swing_timer-0.4*base_swing_timer,0.2*base_swing_timer)
+
+      // the reschedule_execute(x) function we call to perform this tries to reschedule the effect such that it occurs at
+      // (sim->current_time + x).  Thus we need to give it the difference between sim->current_time and the new target of execute_event->occurs().
+      // That value is simply the remaining time on the current swing timer.
+
+      // first, we need the hasted base swing timer, swing_time
+      timespan_t swing_time = main_hand_attack -> time_to_execute;
+
+      // and we also need the time remaining on the current swing timer
+      timespan_t current_swing_timer = main_hand_attack -> execute_event -> occurs() - sim-> current_time;
+
+      // next, check that the current swing timer is longer than 0.2*swing_time - if not we do nothing
+      if ( current_swing_timer > 0.20 * swing_time )
+      {
+        // now we apply parry-hasting.  Subtract 40% of base swing timer from current swing timer
+        current_swing_timer -= 0.40 * swing_time;
+
+        // enforce 20% base swing timer minimum
+        current_swing_timer = std::max( current_swing_timer, 0.20 * swing_time );
+
+        // now reschedule the event and log a parry haste
+        main_hand_attack -> reschedule_execute( current_swing_timer );
+        procs.parry_haste -> occur();
+      }
+    }
   }
 }
 
