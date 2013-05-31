@@ -77,6 +77,7 @@ public:
     buff_t* guardian_of_ancient_kings_prot;
     buff_t* grand_crusader;
     buff_t* glyph_templars_verdict;
+    buff_t* hand_of_purity;
     buff_t* holy_avenger;
     buff_t* infusion_of_light;
     buff_t* inquisition;
@@ -166,7 +167,7 @@ public:
   {
     const spell_data_t* guardian_of_ancient_kings_ret;
     const spell_data_t* holy_light;
-    const spell_data_t* glyph_of_word_of_glory_damage;
+    const spell_data_t* glyph_of_word_of_glory;
   } spells;
 
   // Talents
@@ -2022,6 +2023,27 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
   }
 };
 
+// Hand of Purity ==========================================================
+
+struct hand_of_purity_t : public paladin_spell_t
+{
+  hand_of_purity_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "hand_of_purity", p, p -> find_talent_spell( "Hand of Purity") )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+    may_miss = false; //probably redundant with harmul=false?
+  }
+
+  virtual void execute()
+  {
+    paladin_spell_t::execute();
+
+    p() -> buffs.hand_of_purity -> trigger();
+  }
+};
+
 // Holy Shock ===============================================================
 
 // TODO: fix the fugly hack
@@ -2255,6 +2277,9 @@ struct lights_hammer_t : public paladin_spell_t
   { return travel_time_; }
 };
 
+// Sacred Shield 30s buff
+
+
 // Word of Glory Damage Spell ======================================================
 
 struct word_of_glory_damage_t : public paladin_spell_t
@@ -2264,10 +2289,16 @@ struct word_of_glory_damage_t : public paladin_spell_t
                      ( p -> find_class_spell( "Word of Glory" ) -> ok() && p -> glyphs.harsh_words -> ok() ) ? p -> find_spell( 130552 ) : spell_data_t::not_found() )
   {
     parse_options( NULL, options_str );
-    trigger_gcd = timespan_t::from_seconds( 1.5 );
     resource_consumed = RESOURCE_HOLY_POWER;
     resource_current = RESOURCE_HOLY_POWER;
     base_costs[RESOURCE_HOLY_POWER] = 1;
+    if ( p -> specialization() == PALADIN_PROTECTION )
+    {
+      use_off_gcd = true;
+    }
+    else
+      trigger_gcd = timespan_t::from_seconds( 1.5 ); // not sure why, but trigger_gcd defaults to zero for WoG when loaded from spell db
+
   }
 
   virtual double action_multiplier()
@@ -2295,9 +2326,9 @@ struct word_of_glory_damage_t : public paladin_spell_t
 
     paladin_spell_t::execute();
 
-    if ( p() -> spells.glyph_of_word_of_glory_damage -> ok() )
+    if ( p() -> spells.glyph_of_word_of_glory -> ok() )
     {
-      p() -> buffs.glyph_of_word_of_glory -> trigger( 1, p() -> spells.glyph_of_word_of_glory_damage -> effectN( 1 ).percent() * hopo );
+      p() -> buffs.glyph_of_word_of_glory -> trigger( 1, p() -> spells.glyph_of_word_of_glory -> effectN( 1 ).percent() * hopo );
     }
   }
 };
@@ -2579,6 +2610,26 @@ struct divine_light_t : public paladin_heal_t
   }
 };
 
+// Eternal Flame HoT ========================================================
+// placeholder for now until EF is properly implemented
+struct eternal_flame_tick_t : public paladin_heal_t
+{
+  eternal_flame_tick_t( paladin_t* p) 
+    : paladin_heal_t( "eternal_flame_tick", p, p-> find_class_spell( "Eternal Flame") )
+  {
+    //check spell data
+    background = true;
+    direct_tick = true;
+    may_miss = false;
+
+  }
+
+};
+
+// Eternal Flame Direct Heal ================================================
+// technically the same as Word of Glory heal, but here for consistency in action priority list
+// have to decide whether to simply alias or create a new class for this
+
 // Flash of Light Spell =====================================================
 
 struct flash_of_light_t : public paladin_heal_t
@@ -2794,6 +2845,9 @@ struct light_of_dawn_t : public paladin_heal_t
   }
 };
 
+// Sacred Shield ============================================================
+// placeholder for now, will be implemented as a spell which applies a HoT that heals for 0 and applies a new absorb bubble on each tick.
+
 // Word of Glory Spell ======================================================
 
 struct word_of_glory_t : public paladin_heal_t
@@ -2802,18 +2856,21 @@ struct word_of_glory_t : public paladin_heal_t
     paladin_heal_t( "word_of_glory", p, p -> find_class_spell( "Word of Glory" ) )
   {
     parse_options( NULL, options_str );
-
-    base_attack_power_multiplier = 0.198;
-    base_spell_power_multiplier  = direct_power_mod;
-    direct_power_mod = 1.0;
+    
+    // spell data for heal is stored in id 130551, this imports everything properly
+    parse_effect_data( p -> find_spell( 130551 ) -> effectN( 1 ) );
 
     // Hot is built into the spell, but only becomes active with the glyph
-    base_td = 0;
-    base_tick_time = timespan_t::zero();
-    num_ticks = 0;
+    // not sure why these next 3 lines exist, they're default values with or without parse_effect present.
+    //base_td = 0;
+    //base_tick_time = timespan_t::zero();
+    //num_ticks = 0;
 
     if ( p -> passives.guarded_by_the_light -> ok() )
+    {
       trigger_gcd = timespan_t::zero();
+      use_off_gcd = true;
+    }
   }
 
   virtual double action_multiplier()
@@ -2832,9 +2889,9 @@ struct word_of_glory_t : public paladin_heal_t
     paladin_heal_t::execute();
 
     // Glyph of Word of Glory handling
-    if ( p() -> spells.glyph_of_word_of_glory_damage -> ok() )
+    if ( p() -> spells.glyph_of_word_of_glory -> ok() )
     {
-      p() -> buffs.glyph_of_word_of_glory -> trigger( 1, p() -> spells.glyph_of_word_of_glory_damage -> effectN( 1 ).percent() * hopo );
+      p() -> buffs.glyph_of_word_of_glory -> trigger( 1, p() -> spells.glyph_of_word_of_glory -> effectN( 1 ).percent() * hopo );
     }
 
     // Shield of Glory (Tier 15 protection 2-piece bonus)
@@ -2921,6 +2978,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "execution_sentence"        ) return new execution_sentence_t       ( this, options_str );
   if ( name == "exorcism"                  ) return new exorcism_t                 ( this, options_str );
   if ( name == "fist_of_justice"           ) return new fist_of_justice_t          ( this, options_str );
+  if ( name == "hand_of_purity"            ) return new hand_of_purity_t           ( this, options_str );
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
   if ( name == "hammer_of_wrath"           ) return new hammer_of_wrath_t          ( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
@@ -3217,7 +3275,7 @@ void paladin_t::create_buffs()
                                        .duration( find_spell( glyphs.templars_verdict -> effectN( 1 ).trigger_spell_id() ) -> duration() )
                                        .default_value( find_spell( glyphs.templars_verdict -> effectN( 1 ).trigger_spell_id() ) -> effectN( 1 ).percent() );
 
-  buffs.glyph_of_word_of_glory = buff_creator_t( this, "glyph_word_of_glory", spells.glyph_of_word_of_glory_damage ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.glyph_of_word_of_glory = buff_creator_t( this, "glyph_word_of_glory", spells.glyph_of_word_of_glory ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Talents
   buffs.divine_purpose         = buff_creator_t( this, "divine_purpose", find_talent_spell( "Divine Purpose" ) )
@@ -3237,6 +3295,7 @@ void paladin_t::create_buffs()
   buffs.divine_shield          = buff_creator_t( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                                  .cd( timespan_t::zero() ) // Let the ability handle the CD
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.hand_of_purity         = buff_creator_t( this, "hand_of_purity", find_talent_spell( "Hand of Purity" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
 
   // Holy
   buffs.daybreak               = buff_creator_t( this, "daybreak", find_class_spell( "Daybreak" ) );
@@ -3744,7 +3803,7 @@ void paladin_t::init_spells()
   glyphs.inquisition              = find_glyph_spell( "Glyph of Inquisition"     );
   glyphs.word_of_glory            = find_glyph_spell( "Glyph of Word of Glory"   );
 
-  spells.glyph_of_word_of_glory_damage = glyphs.word_of_glory -> ok() ? find_spell( 115522 ) : spell_data_t::not_found();
+  spells.glyph_of_word_of_glory = glyphs.word_of_glory -> ok() ? find_spell( 115522 ) : spell_data_t::not_found();
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
@@ -3980,6 +4039,19 @@ void paladin_t::target_mitigation( school_e school,
   // Guardian of Ancient Kings
   if ( buffs.guardian_of_ancient_kings_prot -> up() )
     s -> result_amount *= 1.0 + dbc.spell( 86657 ) -> effectN( 2 ).percent(); // Value of the buff is stored in another spell
+  
+  // Hand of Purity
+  if ( buffs.hand_of_purity -> up() )
+  {
+    if ( s -> result_type == DMG_OVER_TIME )
+    {
+      s -> result_amount *= 1.0 - buffs.hand_of_purity -> data().effectN( 1 ).percent(); // for some reason, the DoT reduction is stored as +0.7
+    }
+    else
+    {
+      s -> result_amount *= 1.0 + buffs.hand_of_purity -> data().effectN( 2 ).percent();
+    }
+  }
 
   // Divine Protection
   if ( buffs.divine_protection -> up() )
