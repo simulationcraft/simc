@@ -374,6 +374,8 @@ bool parse_armory( sim_t*             sim,
         p = chardev::download_player( sim, player_name, stuff.cache );
       else if ( name == "wowreforge" )
         p = wowreforge::download_player( sim, player_name, stuff.cache );
+      else if ( name == "local_json" )
+        p = bcp_api::from_local_json( sim, player_name, stuff.server, description );
       else
         p = bcp_api::download_player( sim, stuff.region, stuff.server,
                                       player_name, description, stuff.cache );
@@ -2194,6 +2196,7 @@ void sim_t::create_options()
     opt_func( "chardev", parse_armory ),
     opt_func( "mopdev", parse_armory ),
     opt_func( "mophead", parse_armory ),
+    opt_func( "local_json", parse_armory ),
     opt_func( "rawr", parse_rawr ),
     opt_func( "wowreforge", parse_armory ),
     opt_func( "http_clear_cache", http::clear_cache ),

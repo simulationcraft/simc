@@ -5735,6 +5735,12 @@ player_t* download_player( sim_t*,
                            const std::string& talents=std::string( "active" ),
                            cache::behavior_e b=cache::players() );
 
+player_t* from_local_json( sim_t*,
+                            const std::string&,
+                            const std::string&,
+                            const std::string&
+                            );
+
 bool download_item( item_t&, cache::behavior_e b = cache::items() );
 
 bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,

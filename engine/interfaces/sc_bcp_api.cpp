@@ -255,8 +255,19 @@ player_t* parse_player( sim_t*             sim,
   sim -> current_slot = 0;
 
   std::string result;
-  if ( ! http::get( result, player.url, caching ) )
-    return 0;
+
+  if ( 0 == player.url.compare(0,7, "http://") || 0 == player.url.compare(0,8, "https://") )
+  {
+    if ( ! http::get( result, player.url, caching ) )
+      return 0;
+  }
+  else
+  {
+    std::ifstream ifs(player.url.c_str());
+    result.assign( (std::istreambuf_iterator<char>(ifs) ),
+        (std::istreambuf_iterator<char>()    ) );
+  }
+
   // if ( sim -> debug ) util::fprintf( sim -> output_file, "%s\n%s\n", url.c_str(), result.c_str() );
   js_node_t* profile = js::create( sim, result );
   if ( ! profile )
@@ -706,6 +717,29 @@ player_t* bcp_api::download_player( sim_t*             sim,
   player.talent_spec = talents;
 
   return parse_player( sim, player, caching );
+}
+
+// bcp_api::from_local_json =============================================================
+
+player_t* bcp_api::from_local_json( sim_t*             sim,
+                                    const std::string& name,
+                                    const std::string& file_path,
+                                    const std::string& talents
+                                    )
+{
+  sim -> current_name = name;
+
+  player_spec_t player;
+
+  player.url = file_path;
+  player.origin = file_path;
+
+//  player.region = region;
+//  player.server = server;
+  player.name = name;
+  player.talent_spec = talents;
+
+  return parse_player( sim, player, cache::ANY );
 }
 
 // bcp_api::download_item() =================================================
