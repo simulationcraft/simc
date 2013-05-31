@@ -233,6 +233,8 @@ public:
 
   double mean() const
   { return simple ? base_t::mean() : _mean; }
+  double pretty_mean() const
+  { return simple ? base_t::pretty_mean() : _mean; }
 
   /* Analyze Variance: Variance, Stddev and Stddev of the mean
    *

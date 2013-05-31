@@ -1964,7 +1964,7 @@ struct mini_frostbolt_t : public mage_spell_t
     mage_spell_t( "mini_frostbolt", p, p -> find_spell( 131079 ) )
   {
     background = true;
-    dual = true;
+    //dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
 
     if ( p -> set_bonus.pvp_4pc_caster() )
@@ -1983,6 +1983,24 @@ struct mini_frostbolt_t : public mage_spell_t
 
 struct frostbolt_t : public mage_spell_t
 {
+  struct state_t : public action_state_t
+  {
+    bool mini_version;
+    state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
+        mini_version( false ) { }
+
+    std::ostringstream& debug_str( std::ostringstream& s )
+    { action_state_t::debug_str( s ) << " mini_version=" << std::boolalpha << mini_version; return s; }
+
+    void initialize()
+    { action_state_t::initialize(); mini_version = false; }
+
+    void copy_state( const action_state_t* o )
+    {
+      action_state_t::copy_state( o );
+      mini_version = static_cast<const state_t&>( *o ).mini_version;
+    }
+  };
   mini_frostbolt_t* mini_frostbolt;
 
   frostbolt_t( mage_t* p, const std::string& options_str ) :
@@ -1996,6 +2014,18 @@ struct frostbolt_t : public mage_spell_t
 
     add_child( mini_frostbolt );
   }
+
+  virtual void snapshot_state( action_state_t* s, dmg_e type )
+  {
+    state_t& state = static_cast<state_t&>( *s );
+
+    state.mini_version = p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> check();
+
+    mage_spell_t::snapshot_state( s, type );
+  }
+
+  virtual action_state_t* new_state()
+  { return new state_t( this, target ); }
 
   virtual void execute()
   {
@@ -2028,9 +2058,10 @@ struct frostbolt_t : public mage_spell_t
   virtual void impact( action_state_t* s )
   {
     // TO CHECK : does mini FB apply FB debuff ? prolly yes
-	if ( !p() -> glyphs.icy_veins -> ok() || !p() -> buffs.icy_veins -> up() ) {
-		mage_spell_t::impact( s );
-	}
+    if ( !static_cast<const state_t&>( *s ).mini_version ) // Bail out if mini spells get casted
+    { mage_spell_t::impact( s ); }
+
+		
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2066,7 +2097,7 @@ struct mini_frostfire_bolt_t : public mage_spell_t
     mage_spell_t( "mini_frostfire_bolt", p, p -> find_spell( 131081 ) )
   {
     background = true;
-    dual = true;
+    //dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
 
     if ( p -> set_bonus.pvp_4pc_caster() )
@@ -2091,6 +2122,24 @@ struct mini_frostfire_bolt_t : public mage_spell_t
 
 struct frostfire_bolt_t : public mage_spell_t
 {
+  struct state_t : public action_state_t
+  {
+    bool mini_version;
+    state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
+        mini_version( false ) { }
+
+    std::ostringstream& debug_str( std::ostringstream& s )
+    { action_state_t::debug_str( s ) << " mini_version=" << std::boolalpha << mini_version; return s; }
+
+    void initialize()
+    { action_state_t::initialize(); mini_version = false; }
+
+    void copy_state( const action_state_t* o )
+    {
+      action_state_t::copy_state( o );
+      mini_version = static_cast<const state_t&>( *o ).mini_version;
+    }
+  };
   mini_frostfire_bolt_t* mini_frostfire_bolt;
 
   frostfire_bolt_t( mage_t* p, const std::string& options_str ) :
@@ -2107,6 +2156,18 @@ struct frostfire_bolt_t : public mage_spell_t
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
   }
+
+  virtual void snapshot_state( action_state_t* s, dmg_e type )
+  {
+    state_t& state = static_cast<state_t&>( *s );
+
+    state.mini_version = p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> check();
+
+    mage_spell_t::snapshot_state( s, type );
+  }
+
+  virtual action_state_t* new_state()
+  { return new state_t( this, target ); }
 
   virtual double cost()
   {
@@ -2156,12 +2217,10 @@ struct frostfire_bolt_t : public mage_spell_t
 
   virtual void impact( action_state_t* s )
   {
-    if ( p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> up() )
-    {
-		return;
-	}
-	
-	mage_spell_t::impact( s );
+    if ( static_cast<const state_t&>( *s ).mini_version ) // Bail out if mini spells get casted
+    { return; }
+
+    mage_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2288,7 +2347,7 @@ struct mini_ice_lance_t : public mage_spell_t
     mage_spell_t( "mini_ice_lance", p, p -> find_spell( 131080 ) )
   {
     background = true;
-    dual = true;
+    //dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
 	
     if ( bolt_count < 3 )
@@ -2306,6 +2365,24 @@ struct mini_ice_lance_t : public mage_spell_t
 
 struct ice_lance_t : public mage_spell_t
 {
+  struct state_t : public action_state_t
+  {
+    bool mini_version;
+    state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
+        mini_version( false ) { }
+
+    std::ostringstream& debug_str( std::ostringstream& s )
+    { action_state_t::debug_str( s ) << " mini_version=" << std::boolalpha << mini_version; return s; }
+
+    void initialize()
+    { action_state_t::initialize(); mini_version = false; }
+
+    void copy_state( const action_state_t* o )
+    {
+      action_state_t::copy_state( o );
+      mini_version = static_cast<const state_t&>( *o ).mini_version;
+    }
+  };
   double fof_multiplier;
   mini_ice_lance_t* mini_ice_lance;
   
@@ -2327,29 +2404,39 @@ struct ice_lance_t : public mage_spell_t
 
   }
 
-	virtual void impact( action_state_t* s )
-	{
-		if ( p() -> glyphs.icy_veins -> ok() &&
-			 p() -> buffs.icy_veins -> up() )
-		{
-			return;
-		}
-		mage_spell_t::impact(s);
-	}
-  
+  virtual action_state_t* new_state()
+  { return new state_t( this, target ); }
+
   virtual void execute()
   {
     // Ice Lance treats the target as frozen with FoF up
     frozen = p() -> buffs.fingers_of_frost -> check() > 0;
 
-	mage_spell_t::execute();
+    mage_spell_t::execute();
 
     if ( p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> up() )
     {
 		mini_ice_lance -> schedule_execute( mini_ice_lance -> get_state( execute_state ) );
-	}
+	  }
 
     p() -> buffs.fingers_of_frost -> decrement();
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    if ( static_cast<const state_t&>( *s ).mini_version ) // Bail out if mini spells get casted
+    { return; }
+
+    mage_spell_t::impact( s );
+  }
+
+  virtual void snapshot_state( action_state_t* s, dmg_e type )
+  {
+    state_t& state = static_cast<state_t&>( *s );
+
+    state.mini_version = p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> check();
+
+    mage_spell_t::snapshot_state( s, type );
   }
 
   virtual double action_multiplier()
