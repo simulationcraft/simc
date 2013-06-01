@@ -191,7 +191,7 @@ void reforge_plot_t::analyze_stats()
     current_reforge_sim = new sim_t( sim );
     if ( reforge_plot_iterations > 0 )
       current_reforge_sim -> iterations = reforge_plot_iterations;
-    
+
     std::string& tmp = current_reforge_sim -> sim_phase_str;
     for ( size_t j = 0; j < stat_mods[ i ].size(); j++ )
     {
@@ -275,7 +275,7 @@ void reforge_plot_t::analyze()
 
     util::fprintf( file, "%s Reforge Plot Results:\n", p -> name_str.c_str() );
 
-    for ( int i=0; i < ( int ) reforge_plot_stat_indices.size(); i++ )
+    for ( int i = 0; i < ( int ) reforge_plot_stat_indices.size(); i++ )
     {
       util::fprintf( file, "%s, ",
                      util::stat_type_string( reforge_plot_stat_indices[ i ] ) );

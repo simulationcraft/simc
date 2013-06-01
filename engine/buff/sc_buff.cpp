@@ -72,33 +72,33 @@ stat_e translate_stat_buff_misc_number( const spelleffect_data_t& ed )
   {
     switch ( ed.misc_value1() )
     {
-    case 0:
-      return STAT_STRENGTH;
-    case 1:
-      return STAT_AGILITY;
-    case 2:
-      return STAT_STAMINA; // guessed
-    case 3:
-      return STAT_INTELLECT;
-    case 4:
-      return STAT_SPIRIT; // guessed
+      case 0:
+        return STAT_STRENGTH;
+      case 1:
+        return STAT_AGILITY;
+      case 2:
+        return STAT_STAMINA; // guessed
+      case 3:
+        return STAT_INTELLECT;
+      case 4:
+        return STAT_SPIRIT; // guessed
 
-    default: break;
+      default: break;
     }
   }
   if ( ed.subtype() == A_MOD_RATING )
   {
     switch ( ed.misc_value1() )
     {
-    case 3355443:
-    case 33554432:
-      return STAT_MASTERY_RATING;
-    case 1792:
-      return STAT_CRIT_RATING;
-    case 917504:
-    case 393216: // melee and ranged haste
-      return STAT_HASTE_RATING;
-    default: break;
+      case 3355443:
+      case 33554432:
+        return STAT_MASTERY_RATING;
+      case 1792:
+        return STAT_CRIT_RATING;
+      case 917504:
+      case 393216: // melee and ranged haste
+        return STAT_HASTE_RATING;
+      default: break;
     }
   }
   else if ( ed.subtype() == A_MOD_RESISTANCE )
@@ -677,7 +677,7 @@ void buff_t::bump( int stacks, double value )
     {
       timespan_t total_reaction_time = ( player ? ( player -> total_reaction_time() ) : sim -> reaction_time );
       timespan_t react = sim -> current_time + total_reaction_time;
-      for ( int i = before_stack+1; i <= current_stack; i++ )
+      for ( int i = before_stack + 1; i <= current_stack; i++ )
       {
         stack_occurrence[ i ] = sim -> current_time;
         stack_react_time[ i ] = react;
@@ -851,7 +851,7 @@ void buff_t::merge( const buff_t& other )
     assert( 0 );
   }
 #endif
-  
+
   for ( size_t i = 0; i < stack_uptime.size(); i++ )
     stack_uptime[ i ] -> merge ( *( other.stack_uptime[ i ] ) );
 }
@@ -1078,7 +1078,7 @@ void buff_t::invalidate_cache()
 {
   if ( player )
   {
-    for ( int i=as<int>( invalidate_list.size() ) - 1; i >= 0; i-- )
+    for ( int i = as<int>( invalidate_list.size() ) - 1; i >= 0; i-- )
       player -> invalidate_cache( invalidate_list[ i ] );
   }
   else // It is an aura...  Ouch.
@@ -1086,7 +1086,7 @@ void buff_t::invalidate_cache()
     for ( int i = as<int>( sim -> player_no_pet_list.size() ) - 1; i >= 0; i-- )
     {
       player_t* p = sim -> player_no_pet_list[ i ];
-      for ( int i= as<int>( invalidate_list.size() ) - 1; i >= 0; i-- )
+      for ( int i = as<int>( invalidate_list.size() ) - 1; i >= 0; i-- )
         p -> invalidate_cache( invalidate_list[ i ] );
     }
   }
@@ -1217,7 +1217,7 @@ cost_reduction_buff_t::cost_reduction_buff_t( const cost_reduction_buff_creator_
 
 // cost_reduction_buff_t::bump ==============================================
 
-void cost_reduction_buff_t::bump( int stacks,double value )
+void cost_reduction_buff_t::bump( int stacks, double value )
 {
   if ( value > 0 )
   {
@@ -1345,18 +1345,18 @@ tick_buff_t::tick_buff_t( const tick_buff_creator_t& params ) :
 
     switch ( e.subtype() )
     {
-    case A_PERIODIC_ENERGIZE:
-    case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
-    case A_PERIODIC_HEALTH_FUNNEL:
-    case A_PERIODIC_MANA_LEECH:
-    case A_PERIODIC_DAMAGE_PERCENT:
-    case A_PERIODIC_DUMMY:
-    case A_PERIODIC_TRIGGER_SPELL:
-    {
-      period = e.period();
-      break;
-    }
-    default: break;
+      case A_PERIODIC_ENERGIZE:
+      case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
+      case A_PERIODIC_HEALTH_FUNNEL:
+      case A_PERIODIC_MANA_LEECH:
+      case A_PERIODIC_DAMAGE_PERCENT:
+      case A_PERIODIC_DUMMY:
+      case A_PERIODIC_TRIGGER_SPELL:
+      {
+        period = e.period();
+        break;
+      }
+      default: break;
     }
   }
 }

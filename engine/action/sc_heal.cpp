@@ -145,7 +145,7 @@ player_t* heal_t::find_greatest_difference_player()
 
 player_t* heal_t::find_lowest_player()
 {
-  double min=1.0;
+  double min = 1.0;
   player_t* max_player = player;
 
   for ( size_t i = 0; i < sim -> player_no_pet_list.size(); ++i ) // check players only

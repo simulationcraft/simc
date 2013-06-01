@@ -86,7 +86,7 @@ struct auto_attack_t : public attack_t
     if ( aoe_tanks == 1 )
       p -> main_hand_attack -> aoe = -1;
     else
-      p->main_hand_attack->aoe=aoe_tanks;
+      p->main_hand_attack->aoe = aoe_tanks;
 
     p -> main_hand_attack -> base_dd_max = p -> main_hand_attack -> base_dd_min;
     if ( p -> main_hand_attack -> base_execute_time < timespan_t::from_seconds( 0.01 ) )
@@ -322,7 +322,7 @@ struct enemy_t : public player_t
   virtual void init_base_stats();
   virtual void init_defense();
   virtual void create_buffs();
-  virtual void init_resources( bool force=false );
+  virtual void init_resources( bool force = false );
   virtual void init_target();
   virtual void init_actions();
   virtual double composite_block();
@@ -456,23 +456,23 @@ void enemy_t::init_defense()
 
     switch ( level )
     {
-    case 80: a = 9616; break;
-    case 81: a = 10034; break;
-    case 82: a = 10338; break;
-    case 83: a = 10643; break;
-    case 84: a = 10880; break;
-    case 85: a = 11092; break;
-    case 86: a = 11387; break;
-    case 87: a = 11682; break;
-    case 88: a = 11977; break;
-    case 89: a = 17960; break;
-    case 90: a = 19680; break;
-    case 91: a = 21400; break; // TO-DO: Confirm.
-    case 92: a = 23115; break; // TO-DO: Confirm.
-    case 93: a = 24835; break;
-    default: if ( level < 80 )
-        a = ( int ) floor ( ( level / 80.0 ) * 9729 ); // Need a better value here.
-      break;
+      case 80: a = 9616; break;
+      case 81: a = 10034; break;
+      case 82: a = 10338; break;
+      case 83: a = 10643; break;
+      case 84: a = 10880; break;
+      case 85: a = 11092; break;
+      case 86: a = 11387; break;
+      case 87: a = 11682; break;
+      case 88: a = 11977; break;
+      case 89: a = 17960; break;
+      case 90: a = 19680; break;
+      case 91: a = 21400; break; // TO-DO: Confirm.
+      case 92: a = 23115; break; // TO-DO: Confirm.
+      case 93: a = 24835; break;
+      default: if ( level < 80 )
+          a = ( int ) floor ( ( level / 80.0 ) * 9729 ); // Need a better value here.
+        break;
     }
   }
 }
@@ -484,7 +484,7 @@ void enemy_t::create_buffs()
   player_t::create_buffs();
 
   for ( unsigned int i = 1; i <= 10; ++ i )
-    buffs_health_decades.push_back( buff_creator_t( this, "Health Decade (" + util::to_string( ( i - 1 )* 10 ) + " - " + util::to_string( i * 10 ) + ")" ) );
+    buffs_health_decades.push_back( buff_creator_t( this, "Health Decade (" + util::to_string( ( i - 1 ) * 10 ) + " - " + util::to_string( i * 10 ) + ")" ) );
 }
 
 // enemy_t::init_resources ==================================================
@@ -641,7 +641,7 @@ pet_t* enemy_t::create_pet( const std::string& add_name, const std::string& /* p
 
 void enemy_t::create_pets()
 {
-  for ( int i=0; i < sim -> target_adds; i++ )
+  for ( int i = 0; i < sim -> target_adds; i++ )
   {
     create_pet( "add" + util::to_string( i ) );
   }

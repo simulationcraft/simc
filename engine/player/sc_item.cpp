@@ -31,7 +31,7 @@ struct token_t
 // parse_tokens =============================================================
 
 size_t parse_tokens( std::vector<token_t>& tokens,
-                  const std::string&    encoded_str )
+                     const std::string&    encoded_str )
 {
   std::vector<std::string> splits = util::string_split( encoded_str, "_" );
 
@@ -40,7 +40,7 @@ size_t parse_tokens( std::vector<token_t>& tokens,
   {
     token_t& t = tokens[ i ];
     t.full = splits[ i ];
-    int index=0;
+    int index = 0;
     while ( t.full[ index ] != '\0' &&
             t.full[ index ] != '%'  &&
             ! isalpha( static_cast<unsigned char>( t.full[ index ] ) ) ) index++;
@@ -68,8 +68,8 @@ bool is_meta_prefix( const std::string& option_name )
   {
     const char* meta_gem_name = util::meta_gem_type_string( i );
 
-    for ( int j=0; tolower( meta_gem_name[ j ] ) == tolower( option_name[ j ] ); j++ )
-      if ( option_name[ j+1 ] == '\0' )
+    for ( int j = 0; tolower( meta_gem_name[ j ] ) == tolower( option_name[ j ] ); j++ )
+      if ( option_name[ j + 1 ] == '\0' )
         return true;
   }
 
@@ -88,7 +88,7 @@ bool is_meta_suffix( const std::string& option_name )
     if ( ! s ) continue;
     s++;
 
-    for ( int j=0; tolower( s[ j ] ) == tolower( option_name[ j ] ); j++ )
+    for ( int j = 0; tolower( s[ j ] ) == tolower( option_name[ j ] ); j++ )
       if ( option_name[ j ] == '\0' )
         return true;
   }
@@ -739,8 +739,8 @@ std::string item_t::encoded_weapon()
     return str;
 
   double speed     = parsed.data.delay / 1000.0;
-  // Note the use of item_database::weapon_dmg_min( item_t& ) here, it's used 
-  // insted of the weapon_dmg_min( item_data_t*, dbc_t&, unsigned ) variant, 
+  // Note the use of item_database::weapon_dmg_min( item_t& ) here, it's used
+  // insted of the weapon_dmg_min( item_data_t*, dbc_t&, unsigned ) variant,
   // since we want the normal weapon stats of the item in the encoded option
   // string.
   unsigned min_dam = item_database::weapon_dmg_min( &parsed.data, player -> dbc );
@@ -1322,13 +1322,13 @@ bool item_t::decode_proc_spell( special_effect_t& effect )
 
   if ( driver_spell == spell_data_t::nil() )
   {
-    sim -> errorf( "Player %s unable to find the proc driver spell %u for item '%s' in slot %s", 
-        player -> name(), driver_id, name(), slot_name() );
+    sim -> errorf( "Player %s unable to find the proc driver spell %u for item '%s' in slot %s",
+                   player -> name(), driver_id, name(), slot_name() );
     return false;
   }
 
   // Driver has the proc chance defined, typically. Use the id-based proc chance
-  // only if there's no proc chance or rppm defined for the special effect 
+  // only if there's no proc chance or rppm defined for the special effect
   // already
   if ( effect.proc_chance == 0 && effect.ppm == 0 )
     effect.proc_chance = driver_spell -> proc_chance();
@@ -1341,11 +1341,11 @@ bool item_t::decode_proc_spell( special_effect_t& effect )
       break;
   }
 
-  // There is no proc that the driver spell casts, so bail out early here 
+  // There is no proc that the driver spell casts, so bail out early here
   // as we don't know what to do with the spell anyhow.
   //
   // TODO: This actually needs a differentiation between not found, and no
-  // trigger spell defined. One case _MUST_ fail, the other should bail out 
+  // trigger spell defined. One case _MUST_ fail, the other should bail out
   // early
   if ( proc_spell == spell_data_t::nil() )
     return true;
@@ -1353,14 +1353,14 @@ bool item_t::decode_proc_spell( special_effect_t& effect )
   if ( item_level() == 0 )
   {
     sim -> errorf( "Player %s unable to compute proc attributes, no ilevel defined for item '%s' in slot %s",
-        player -> name(), name(), slot_name() );
+                   player -> name(), name(), slot_name() );
     return false;
   }
 
   if ( effect.duration == timespan_t::zero() )
     effect.duration = proc_spell -> duration();
 
-  // Figure out the amplitude of the ticking effect from the proc spell, if 
+  // Figure out the amplitude of the ticking effect from the proc spell, if
   // there's no user specified tick time
   if ( effect.tick == timespan_t::zero() )
   {
@@ -1390,7 +1390,7 @@ bool item_t::decode_proc_spell( special_effect_t& effect )
     if ( proc_spell == spell_data_t::nil() )
     {
       sim -> errorf( "Player %s unable to find aura spell %u for item '%s' in slot %s",
-          player -> name(), effect.aura_spell_id, name(), slot_name() );
+                     player -> name(), effect.aura_spell_id, name(), slot_name() );
       return false;
     }
   }
@@ -1399,7 +1399,7 @@ bool item_t::decode_proc_spell( special_effect_t& effect )
   if ( effect.max_stacks == 0 )
     effect.max_stacks = proc_spell -> max_stacks();
 
-  // Finally, compute the stats of the proc based on the spell data we have, 
+  // Finally, compute the stats of the proc based on the spell data we have,
   // since the user has not defined the stats of the item in the equip=
   // or use= string
 
@@ -2064,7 +2064,7 @@ bool item_t::decode_weapon()
 
     // Approximate gear upgrades for user given strings too. Data source based
     // weapon stats will automatically be handled by the upgraded ilevel for
-    // the item. 
+    // the item.
     w -> max_dmg *= item_database::approx_scale_coefficient( parsed.data.level, item_level() );
     w -> min_dmg *= item_database::approx_scale_coefficient( parsed.data.level, item_level() );
   }
@@ -2322,9 +2322,9 @@ bool item_t::parse_reforge_id()
   if ( target == 0 ) target = 56;
   else if ( target <= start ) return false;
 
-  for ( int i=0; reforge_stats[ i ] != STAT_NONE; i++ )
+  for ( int i = 0; reforge_stats[ i ] != STAT_NONE; i++ )
   {
-    for ( int j=0; reforge_stats[ j ] != STAT_NONE; j++ )
+    for ( int j = 0; reforge_stats[ j ] != STAT_NONE; j++ )
     {
       if ( i == j ) continue;
       if ( ++start == target )

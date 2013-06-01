@@ -346,7 +346,7 @@ struct water_elemental_pet_t : public pet_t
 
   struct mini_waterbolt_t : public spell_t
   {
-    mini_waterbolt_t( water_elemental_pet_t* p , int bolt_count = 1) :
+    mini_waterbolt_t( water_elemental_pet_t* p , int bolt_count = 1 ) :
       spell_t( "mini_waterbolt", p, p -> find_spell( 131581 ) )
     {
       may_crit = true;
@@ -354,10 +354,10 @@ struct water_elemental_pet_t : public pet_t
       dual = true;
       base_costs[ RESOURCE_MANA ] = 0;
 
-    if ( bolt_count < 3 )
-    {
-      execute_action = new mini_waterbolt_t( p, bolt_count+1 );
-    }
+      if ( bolt_count < 3 )
+      {
+        execute_action = new mini_waterbolt_t( p, bolt_count + 1 );
+      }
 
     }
 
@@ -379,26 +379,26 @@ struct water_elemental_pet_t : public pet_t
       add_child( mini_waterbolt );
     }
 
-	virtual void impact( action_state_t* s )
-	  {
-		water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
+    virtual void impact( action_state_t* s )
+    {
+      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
 
-		if ( p -> o() -> glyphs.icy_veins -> ok() && p -> o() -> buffs.icy_veins -> up() )
-		  return;
+      if ( p -> o() -> glyphs.icy_veins -> ok() && p -> o() -> buffs.icy_veins -> up() )
+        return;
 
-		spell_t::impact(s);
-	  
-	  }
+      spell_t::impact( s );
+
+    }
 
     void execute()
     {
-		spell_t::execute();
+      spell_t::execute();
 
-		water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
-		if ( p -> o() -> glyphs.icy_veins -> ok() && p -> o() -> buffs.icy_veins -> up() )
-		{
-			mini_waterbolt -> schedule_execute( mini_waterbolt -> get_state( execute_state ) );
-		}
+      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
+      if ( p -> o() -> glyphs.icy_veins -> ok() && p -> o() -> buffs.icy_veins -> up() )
+      {
+        mini_waterbolt -> schedule_execute( mini_waterbolt -> get_state( execute_state ) );
+      }
     }
 
     virtual double action_multiplier()
@@ -1304,11 +1304,11 @@ struct arcane_explosion_t : public mage_spell_t
   rng_t *arcane_explosion_charge_rng;
   arcane_explosion_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "arcane_explosion", p, p -> find_class_spell( "Arcane Explosion" ) ),
-  arcane_explosion_charge_rng(nullptr)
+    arcane_explosion_charge_rng( nullptr )
   {
     parse_options( NULL, options_str );
     aoe = -1;
-    arcane_explosion_charge_rng = sim -> get_rng("arcane_explosion_charge");
+    arcane_explosion_charge_rng = sim -> get_rng( "arcane_explosion_charge" );
   }
 
   virtual void execute()
@@ -1317,14 +1317,12 @@ struct arcane_explosion_t : public mage_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( arcane_explosion_charge_rng -> roll ( p() -> find_class_spell( "Arcane Explosion") -> effectN(2).percent() ) )
+      if ( arcane_explosion_charge_rng -> roll ( p() -> find_class_spell( "Arcane Explosion" ) -> effectN( 2 ).percent() ) )
       {
         p() -> buffs.arcane_charge -> trigger();
       }
       else p() -> buffs.arcane_charge -> refresh();
     }
-    
-    
   }
 };
 
@@ -1570,7 +1568,7 @@ struct combustion_t : public mage_spell_t
     dot_t* ignite_dot     = this_td -> dots.ignite;
     dot_t* combustion_dot = this_td -> dots.combustion;
 
-    if( ignite_dot -> ticking )
+    if ( ignite_dot -> ticking )
     {
       mage_spell_t::trigger_dot( s );
 
@@ -1972,9 +1970,8 @@ struct mini_frostbolt_t : public mage_spell_t
 
     if ( bolt_count < 3 )
     {
-      execute_action = new mini_frostbolt_t( p, bolt_count+1 );
+      execute_action = new mini_frostbolt_t( p, bolt_count + 1 );
     }
-	 
   }
 
   virtual timespan_t execute_time()
@@ -1987,7 +1984,7 @@ struct frostbolt_t : public mage_spell_t
   {
     bool mini_version;
     state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
-        mini_version( false ) { }
+      mini_version( false ) { }
 
     std::ostringstream& debug_str( std::ostringstream& s )
     { action_state_t::debug_str( s ) << " mini_version=" << std::boolalpha << mini_version; return s; }
@@ -2061,8 +2058,6 @@ struct frostbolt_t : public mage_spell_t
     if ( !static_cast<const state_t&>( *s ).mini_version ) // Bail out if mini spells get casted
     { mage_spell_t::impact( s ); }
 
-		
-
     if ( result_is_hit( s -> result ) )
     {
       td( s -> target ) -> debuffs.frostbolt -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
@@ -2093,7 +2088,7 @@ struct frostbolt_t : public mage_spell_t
 
 struct mini_frostfire_bolt_t : public mage_spell_t
 {
-  mini_frostfire_bolt_t( mage_t* p , int bolt_count=1) :
+  mini_frostfire_bolt_t( mage_t* p , int bolt_count = 1 ) :
     mage_spell_t( "mini_frostfire_bolt", p, p -> find_spell( 131081 ) )
   {
     background = true;
@@ -2105,9 +2100,8 @@ struct mini_frostfire_bolt_t : public mage_spell_t
 
     if ( bolt_count < 3 )
     {
-      execute_action = new mini_frostfire_bolt_t( p, bolt_count+1 );
+      execute_action = new mini_frostfire_bolt_t( p, bolt_count + 1 );
     }
-	  
   }
 
   virtual timespan_t execute_time()
@@ -2126,7 +2120,7 @@ struct frostfire_bolt_t : public mage_spell_t
   {
     bool mini_version;
     state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
-        mini_version( false ) { }
+      mini_version( false ) { }
 
     std::ostringstream& debug_str( std::ostringstream& s )
     { action_state_t::debug_str( s ) << " mini_version=" << std::boolalpha << mini_version; return s; }
@@ -2343,17 +2337,17 @@ struct ice_floes_t : public mage_spell_t
 struct mini_ice_lance_t : public mage_spell_t
 {
 
-  mini_ice_lance_t( mage_t* p , int bolt_count=1) :
+  mini_ice_lance_t( mage_t* p , int bolt_count = 1 ) :
     mage_spell_t( "mini_ice_lance", p, p -> find_spell( 131080 ) )
   {
     background = true;
     //dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
-	
+
     if ( bolt_count < 3 )
     {
-      execute_action = new mini_ice_lance_t( p, bolt_count+1 );
-    }	
+      execute_action = new mini_ice_lance_t( p, bolt_count + 1 );
+    }
   }
 
   virtual timespan_t execute_time()
@@ -2369,7 +2363,7 @@ struct ice_lance_t : public mage_spell_t
   {
     bool mini_version;
     state_t( action_t* a, player_t* t ) : action_state_t( a, t ),
-        mini_version( false ) { }
+      mini_version( false ) { }
 
     std::ostringstream& debug_str( std::ostringstream& s )
     { action_state_t::debug_str( s ) << " mini_version=" << std::boolalpha << mini_version; return s; }
@@ -2385,7 +2379,7 @@ struct ice_lance_t : public mage_spell_t
   };
   double fof_multiplier;
   mini_ice_lance_t* mini_ice_lance;
-  
+
   ice_lance_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "ice_lance", p, p -> find_class_spell( "Ice Lance" ) ),
     fof_multiplier( 0 ),
@@ -2400,8 +2394,7 @@ struct ice_lance_t : public mage_spell_t
 
     fof_multiplier = p -> find_specialization_spell( "Fingers of Frost" ) -> ok() ? p -> find_spell( 44544 ) -> effectN( 2 ).percent() : 0.0;
 
-   add_child( mini_ice_lance );
-
+    add_child( mini_ice_lance );
   }
 
   virtual action_state_t* new_state()
@@ -2416,8 +2409,8 @@ struct ice_lance_t : public mage_spell_t
 
     if ( p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> up() )
     {
-		mini_ice_lance -> schedule_execute( mini_ice_lance -> get_state( execute_state ) );
-	  }
+      mini_ice_lance -> schedule_execute( mini_ice_lance -> get_state( execute_state ) );
+    }
 
     p() -> buffs.fingers_of_frost -> decrement();
   }
@@ -2564,7 +2557,7 @@ struct inferno_blast_t : public mage_spell_t
           pyroblast_dot -> copy( t );
         }
 
-        if( --spread_remaining == 0 )
+        if ( --spread_remaining == 0 )
           break;
       }
 
@@ -2600,8 +2593,8 @@ struct living_bomb_explosion_t : public mage_spell_t
   {
     aoe = -1;
     background = true;
-	
-	base_multiplier *= 4;
+
+    base_multiplier *= 4;
   }
 
   virtual resource_e current_resource()
@@ -2680,7 +2673,7 @@ struct living_bomb_t : public mage_spell_t
   {
     mage_t& p = *this -> p();
 
-    assert( p.active_living_bomb_targets <= 3 && p.active_living_bomb_targets >=0 );
+    assert( p.active_living_bomb_targets <= 3 && p.active_living_bomb_targets >= 0 );
 
     if ( p.active_living_bomb_targets == 3 )
     {
@@ -2865,7 +2858,7 @@ struct nether_tempest_cleave_t: public mage_spell_t
   rng_t* rng;
 
   nether_tempest_cleave_t( mage_t* p ) :
-    mage_spell_t("nether_tempest_cleave", p, p -> find_spell(114954) ),
+    mage_spell_t( "nether_tempest_cleave", p, p -> find_spell( 114954 ) ),
     main_target( nullptr ),
     rng( p -> get_rng( "nether_tempest_cleave_target" ) )
   {
@@ -2912,11 +2905,11 @@ struct nether_tempest_t : public mage_spell_t
 
   nether_tempest_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "nether_tempest", p, p -> talents.nether_tempest ),
-  add_cleave(nullptr)
+    add_cleave( nullptr )
   {
     parse_options( NULL, options_str );
-    add_cleave = new nether_tempest_cleave_t(p);
-    add_child(add_cleave);
+    add_cleave = new nether_tempest_cleave_t( p );
+    add_child( add_cleave );
   }
 
   virtual void impact( action_state_t* s )
@@ -3948,7 +3941,7 @@ void mage_t::init_actions()
     }
 
     if ( level >= 85 )
-      action_list_str +="/time_warp,if=target.health.pct<25|time>5";
+      action_list_str += "/time_warp,if=target.health.pct<25|time>5";
 
     // Spec-specific actions
 
@@ -4073,10 +4066,10 @@ void mage_t::init_actions()
       action_list_str += "/mirror_image";
 
       action_list_str += "/combustion,if=target.time_to_die<22";
-	  action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((3*action.pyroblast.crit_damage)*mastery_value*0.5)";
-	  action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.alter_time.down&buff.pyroblast.down";
+      action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((3*action.pyroblast.crit_damage)*mastery_value*0.5)";
+      action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.alter_time.down&buff.pyroblast.down";
       if ( talents.presence_of_mind -> ok() )
-		  action_list_str += "&buff.presence_of_mind.down";
+        action_list_str += "&buff.presence_of_mind.down";
 
       if ( race == RACE_ORC )
       {
@@ -4104,15 +4097,15 @@ void mage_t::init_actions()
           action_list_str += ",sync=alter_time_activate,if=buff.alter_time.down";
       }
 
-	  action_list_str += init_use_item_actions( ",sync=alter_time_activate" );
+      action_list_str += init_use_item_actions( ",sync=alter_time_activate" );
       action_list_str += init_use_profession_actions( level >= 87 ? ",sync=alter_time_activate,if=buff.alter_time.down" : "" );
       if ( level >= 87 )
         action_list_str += "/alter_time,if=buff.alter_time.down&buff.pyroblast.react";
-	  action_list_str += init_use_item_actions( ",if=cooldown.alter_time_activate.remains>40|target.time_to_die<12" );
+      action_list_str += init_use_item_actions( ",if=cooldown.alter_time_activate.remains>40|target.time_to_die<12" );
 
-	  if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=cooldown.alter_time_activate.remains>60|target.time_to_die<5";
+      if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=cooldown.alter_time_activate.remains>60|target.time_to_die<5";
 
-	  action_list_str += "/flamestrike,if=active_enemies>=5";
+      action_list_str += "/flamestrike,if=active_enemies>=5";
       action_list_str += "/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up";
       action_list_str += "/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down";
 
@@ -4261,13 +4254,13 @@ void mage_t::invalidate_cache( cache_e c )
 
   switch ( c )
   {
-  case CACHE_MASTERY:
-    if ( spec.mana_adept -> ok() )
-    {
-      player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    }
-    break;
-  default: break;
+    case CACHE_MASTERY:
+      if ( spec.mana_adept -> ok() )
+      {
+        player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      }
+      break;
+    default: break;
   }
 }
 
@@ -4525,4 +4518,4 @@ const module_t* module_t::mage()
   static mage_module_t m;
   return &m;
 }
- 
+

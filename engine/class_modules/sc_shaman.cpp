@@ -38,8 +38,8 @@ namespace { // UNNAMED NAMESPACE
 
 struct shaman_t;
 
-enum totem_e { TOTEM_NONE=0, TOTEM_AIR, TOTEM_EARTH, TOTEM_FIRE, TOTEM_WATER, TOTEM_MAX };
-enum imbue_e { IMBUE_NONE=0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE, EARTHLIVING_IMBUE };
+enum totem_e { TOTEM_NONE = 0, TOTEM_AIR, TOTEM_EARTH, TOTEM_FIRE, TOTEM_WATER, TOTEM_MAX };
+enum imbue_e { IMBUE_NONE = 0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE, EARTHLIVING_IMBUE };
 
 struct shaman_melee_attack_t;
 struct shaman_spell_t;
@@ -448,7 +448,7 @@ struct shaman_action_state_t : public heal_state_t
 
   std::ostringstream& debug_str( std::ostringstream& s )
   { heal_state_t::debug_str( s ) << " eoe=" << eoe_proc; return s; }
-  
+
   void initialize()
   { heal_state_t::initialize(); eoe_proc = false; }
 
@@ -1637,7 +1637,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
         bool removed = false;
 
         // Remove targets that have a flame shock first
-        // TODO: The flame shocked targets should be randomly removed too, but 
+        // TODO: The flame shocked targets should be randomly removed too, but
         // this will have to do for now
         for ( size_t i = 0; i < target_cache.size(); i++ )
         {
@@ -1659,7 +1659,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
       return target_cache;
     }
 
-    // A simple impact method that triggers the proxy flame shock application 
+    // A simple impact method that triggers the proxy flame shock application
     // on the selected target of the lava lash spread driver
     void impact( action_state_t* state )
     {
@@ -1670,7 +1670,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
                        state -> target -> name() );
 
       dot_t* dot = td( target ) -> dot.flame_shock;
-      if ( dot -> ticking ) 
+      if ( dot -> ticking )
       {
         if ( ! td( state -> target ) -> dot.flame_shock -> ticking )
           p() -> active_flame_shocks++;
@@ -2438,7 +2438,7 @@ struct melee_t : public shaman_melee_attack_t
     if ( first )
     {
       first = false;
-      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, timespan_t::from_seconds( 0.01 ) ) : t/2 ) : timespan_t::from_seconds( 0.01 );
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::from_seconds( 0.01 ) ) : t / 2 ) : timespan_t::from_seconds( 0.01 );
     }
 
     if ( swing_timer_variance > 0 )
@@ -3074,7 +3074,7 @@ struct fire_nova_t : public shaman_spell_t
     impact_action = new fire_nova_explosion_t( player );
   }
 
-  // Override assess_damage, as fire_nova_explosion is going to do all the 
+  // Override assess_damage, as fire_nova_explosion is going to do all the
   // damage for us.
   void assess_damage( dmg_e type, action_state_t* s )
   { if ( s -> result_amount > 0 ) shaman_spell_t::assess_damage( type, s ); }
@@ -5119,22 +5119,22 @@ void shaman_t::init_scaling()
 
   switch ( specialization() )
   {
-  case SHAMAN_ENHANCEMENT:
-    scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = true;
-    scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors != 0;
-    scales_with[ STAT_HIT_RATING2           ] = true;
-    scales_with[ STAT_SPIRIT                ] = false;
-    scales_with[ STAT_SPELL_POWER           ] = false;
-    scales_with[ STAT_INTELLECT             ] = false;
-    break;
-  case SHAMAN_ELEMENTAL:
-    scales_with[ STAT_SPIRIT                ] = false;
-    break;
-  case SHAMAN_RESTORATION:
-    scales_with[ STAT_MASTERY_RATING ] = false;
-    break;
-  default:
-    break;
+    case SHAMAN_ENHANCEMENT:
+      scales_with[ STAT_WEAPON_OFFHAND_DPS    ] = true;
+      scales_with[ STAT_WEAPON_OFFHAND_SPEED  ] = sim -> weapon_speed_scale_factors != 0;
+      scales_with[ STAT_HIT_RATING2           ] = true;
+      scales_with[ STAT_SPIRIT                ] = false;
+      scales_with[ STAT_SPELL_POWER           ] = false;
+      scales_with[ STAT_INTELLECT             ] = false;
+      break;
+    case SHAMAN_ELEMENTAL:
+      scales_with[ STAT_SPIRIT                ] = false;
+      break;
+    case SHAMAN_RESTORATION:
+      scales_with[ STAT_MASTERY_RATING ] = false;
+      break;
+    default:
+      break;
   }
 }
 
@@ -5799,9 +5799,9 @@ double shaman_t::composite_player_multiplier( school_e school )
   }
 
   if ( mastery.enhanced_elements -> ok() &&
-      ( dbc::is_school( school, SCHOOL_FIRE   ) ||
-       dbc::is_school( school, SCHOOL_FROST  ) ||
-       dbc::is_school( school, SCHOOL_NATURE ) ) )
+       ( dbc::is_school( school, SCHOOL_FIRE   ) ||
+         dbc::is_school( school, SCHOOL_FROST  ) ||
+         dbc::is_school( school, SCHOOL_NATURE ) ) )
   {
     m *= 1.0 + cache.mastery_value();
   }
@@ -5827,25 +5827,25 @@ void shaman_t::invalidate_cache( cache_e c )
 
   switch ( c )
   {
-  case CACHE_AGILITY:
-  case CACHE_STRENGTH:
-  case CACHE_ATTACK_POWER:
-    if ( specialization() == SHAMAN_ENHANCEMENT )
-      player_t::invalidate_cache( CACHE_SPELL_POWER );
-    break;
-  case CACHE_SPIRIT:
-    if ( spec.elemental_precision -> ok() )
-    {
-      player_t::invalidate_cache( CACHE_HIT );
-    }
-    break;
-  case CACHE_MASTERY:
-    if ( mastery.enhanced_elements -> ok() )
-    {
-      player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    }
-    break;
-  default: break;
+    case CACHE_AGILITY:
+    case CACHE_STRENGTH:
+    case CACHE_ATTACK_POWER:
+      if ( specialization() == SHAMAN_ENHANCEMENT )
+        player_t::invalidate_cache( CACHE_SPELL_POWER );
+      break;
+    case CACHE_SPIRIT:
+      if ( spec.elemental_precision -> ok() )
+      {
+        player_t::invalidate_cache( CACHE_HIT );
+      }
+      break;
+    case CACHE_MASTERY:
+      if ( mastery.enhanced_elements -> ok() )
+      {
+        player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      }
+      break;
+    default: break;
   }
 }
 

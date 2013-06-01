@@ -316,7 +316,7 @@ public:
   virtual void      init_scaling();
   virtual void      reset();
   virtual void      create_options();
-  virtual bool      create_profile( std::string& profile_str, save_e=SAVE_ALL, bool save_html=false );
+  virtual bool      create_profile( std::string& profile_str, save_e = SAVE_ALL, bool save_html = false );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
@@ -394,7 +394,7 @@ struct priest_pet_t : public pet_t
   struct _stat_list_t
   {
     int level;
-    std::array<double,ATTRIBUTE_MAX> stats;
+    std::array<double, ATTRIBUTE_MAX> stats;
   };
 
   virtual void init_base_stats()
@@ -984,8 +984,8 @@ public:
   {
     double am = base_t::action_multiplier();
 
-    if ( priest.mastery_spells.shield_discipline -> ok())
-      am +=1.0 + priest.cache.mastery_value();
+    if ( priest.mastery_spells.shield_discipline -> ok() )
+      am += 1.0 + priest.cache.mastery_value();
 
     return am;
   }
@@ -2345,7 +2345,7 @@ struct shadow_word_death_t : public priest_spell_t
   {
     s -> result_amount = floor( s -> result_amount );
 
-    bool over_20 = (s -> target -> health_percentage() >= 20.0 );
+    bool over_20 = ( s -> target -> health_percentage() >= 20.0 );
     if ( backlash && over_20 )
     {
       backlash -> spellpower = s -> composite_spell_power();
@@ -2420,7 +2420,7 @@ struct devouring_plague_state_t : public action_state_t
   void initialize()
   { action_state_t::initialize(); orbs_used = 0; }
 
-  void copy_state(const action_state_t* o )
+  void copy_state( const action_state_t* o )
   {
     action_state_t::copy_state( o );
     const devouring_plague_state_t* dps_t = static_cast<const devouring_plague_state_t*>( o );
@@ -2916,45 +2916,45 @@ struct vampiric_touch_t : public priest_spell_t
 struct holy_fire_base_t : public priest_spell_t
 {
   holy_fire_base_t( const std::string& name, priest_t& p, const spell_data_t* sd ) :
-      priest_spell_t( name, p, sd )
-    {
-      can_cancel_shadowform = false; // FIXME: check in 5.2+
-      castable_in_shadowform = false;
+    priest_spell_t( name, p, sd )
+  {
+    can_cancel_shadowform = false; // FIXME: check in 5.2+
+    castable_in_shadowform = false;
 
-      can_trigger_atonement = true; // FIXME: check in 5.2+
+    can_trigger_atonement = true; // FIXME: check in 5.2+
 
-      range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
-    }
+    range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
+  }
 
-    virtual void execute()
-    {
-      priest.buffs.holy_evangelism -> up();
+  virtual void execute()
+  {
+    priest.buffs.holy_evangelism -> up();
 
-      priest_spell_t::execute();
+    priest_spell_t::execute();
 
-      priest.buffs.holy_evangelism -> trigger();
-    }
+    priest.buffs.holy_evangelism -> trigger();
+  }
 
-    virtual double action_multiplier()
-    {
-      double m = priest_spell_t::action_multiplier();
+  virtual double action_multiplier()
+  {
+    double m = priest_spell_t::action_multiplier();
 
-      m *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 1 ).percent() );
+    m *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 1 ).percent() );
 
-      return m;
-    }
+    return m;
+  }
 
-    virtual double cost()
-    {
-      double c = priest_spell_t::cost();
+  virtual double cost()
+  {
+    double c = priest_spell_t::cost();
 
-      if ( priest.buffs.chakra_chastise -> check() )
-        c *= 1.0 + priest.buffs.chakra_chastise -> data().effectN( 3 ).percent();
+    if ( priest.buffs.chakra_chastise -> check() )
+      c *= 1.0 + priest.buffs.chakra_chastise -> data().effectN( 3 ).percent();
 
-      c *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 2 ).percent() );
+    c *= 1.0 + ( priest.buffs.holy_evangelism -> check() * priest.buffs.holy_evangelism -> data().effectN( 2 ).percent() );
 
-      return c;
-    }
+    return c;
+  }
 };
 // Power Word: Solace Spell ==========================================================
 
@@ -4778,15 +4778,15 @@ role_e priest_t::primary_role()
 {
   switch ( base_t::primary_role() )
   {
-  case ROLE_HEAL:
-    return ROLE_HEAL;
-  case ROLE_DPS:
-  case ROLE_SPELL:
-    return ROLE_SPELL;
-  default:
-    if ( specialization() == PRIEST_DISCIPLINE || specialization() == PRIEST_HOLY )
+    case ROLE_HEAL:
       return ROLE_HEAL;
-    break;
+    case ROLE_DPS:
+    case ROLE_SPELL:
+      return ROLE_SPELL;
+    default:
+      if ( specialization() == PRIEST_DISCIPLINE || specialization() == PRIEST_HOLY )
+        return ROLE_HEAL;
+      break;
   }
 
   return ROLE_SPELL;
@@ -5077,7 +5077,7 @@ void priest_t::create_pets()
   pets.shadowfiend      = create_pet( "shadowfiend" );
   pets.mindbender       = create_pet( "mindbender"  );
 
-  if( find_class_spell( "Lightwell" ) -> ok() )
+  if ( find_class_spell( "Lightwell" ) -> ok() )
     pets.lightwell        = create_pet( "lightwell"   );
 }
 
@@ -5097,8 +5097,8 @@ void priest_t::init_base_stats()
 
   // Discipline/Holy
   base.mana_regen_from_spirit_multiplier = specs.meditation_disc -> ok() ?
-                                              specs.meditation_disc -> effectN( 1 ).percent() :
-                                              specs.meditation_holy -> effectN( 1 ).percent();
+      specs.meditation_disc -> effectN( 1 ).percent() :
+      specs.meditation_holy -> effectN( 1 ).percent();
 
   diminished_kfactor   = 0.009830;
   diminished_dodge_cap = 0.006650;
@@ -5389,7 +5389,7 @@ void priest_t::apl_default()
   if ( race == RACE_TROLL )  def -> add_action( "berserking" );
   if ( race == RACE_BLOOD_ELF ) def -> add_action( "arcane_torrent,if=mana.pct<=90" );
   def -> add_action( this, "Holy Fire" );
-  def -> add_action( this, "Shadow Word: Pain",",if=remains<tick_time|!ticking" );
+  def -> add_action( this, "Shadow Word: Pain", ",if=remains<tick_time|!ticking" );
   def -> add_action( this, "Smite" );
 }
 
@@ -5501,7 +5501,7 @@ void priest_t::apl_disc_heal()
     def -> add_action( a );
   }
 
-  def -> add_action( this, "Hymn of Hope", "if=mana.pct<60" + std::string( (level>=42) ? "&(pet.mindbender.active|pet.shadowfiend.active)" : "" ) );
+  def -> add_action( this, "Hymn of Hope", "if=mana.pct<60" + std::string( ( level >= 42 ) ? "&(pet.mindbender.active|pet.shadowfiend.active)" : "" ) );
 
 
   if ( race != RACE_BLOOD_ELF )
@@ -5563,7 +5563,7 @@ void priest_t::apl_disc_dmg()
   {
     std::string a = ",if=mana.pct<55";
     if ( level >= 42 )
-     a += "&target.time_to_die>30&(pet.mindbender.active|pet.shadowfiend.active)";
+      a += "&target.time_to_die>30&(pet.mindbender.active|pet.shadowfiend.active)";
     def -> add_action( "hymn_of_hope" + a );
 
   }
@@ -5626,7 +5626,7 @@ void priest_t::apl_holy_heal()
   std::string fiend_cond = ",if=mana.pct<30";
   if ( find_class_spell( "Shadowfiend" ) -> ok() )
     fiend_cond = ",if=(pet.mindbender.active|pet.shadowfiend.active)&mana.pct<=20";
-  def -> add_action( this, "Hymn of Hope",fiend_cond );
+  def -> add_action( this, "Hymn of Hope", fiend_cond );
 
   std::string racial_condition;
   if ( race == RACE_BLOOD_ELF )
@@ -5720,24 +5720,24 @@ void priest_t::init_actions()
 
   switch ( specialization() )
   {
-  case PRIEST_SHADOW:
-    apl_shadow(); // SHADOW
-    break;
-  case PRIEST_DISCIPLINE:
-    if ( primary_role() != ROLE_HEAL )
-      apl_disc_dmg();  // DISCIPLINE DAMAGE
-    else
-      apl_disc_heal(); // DISCIPLINE HEAL
-    break;
-  case PRIEST_HOLY:
-    if ( primary_role() != ROLE_HEAL )
-      apl_holy_dmg();  // HOLY DAMAGE
-    else
-      apl_holy_heal(); // HOLY HEAL
-    break;
-  default:
-    apl_default(); // DEFAULT
-    break;
+    case PRIEST_SHADOW:
+      apl_shadow(); // SHADOW
+      break;
+    case PRIEST_DISCIPLINE:
+      if ( primary_role() != ROLE_HEAL )
+        apl_disc_dmg();  // DISCIPLINE DAMAGE
+      else
+        apl_disc_heal(); // DISCIPLINE HEAL
+      break;
+    case PRIEST_HOLY:
+      if ( primary_role() != ROLE_HEAL )
+        apl_holy_dmg();  // HOLY DAMAGE
+      else
+        apl_holy_heal(); // HOLY HEAL
+      break;
+    default:
+      apl_default(); // DEFAULT
+      break;
   }
 
   action_list_default = 1;

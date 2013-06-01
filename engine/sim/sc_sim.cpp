@@ -534,7 +534,7 @@ static bool parse_fight_style( sim_t*             sim,
   {
     sim -> fight_style = "HecticAddCleave";
 
-    sim -> raid_events_str +="/adds,count=5,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.075 ) ) + ",duration=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.75 ) ); //P1
+    sim -> raid_events_str += "/adds,count=5,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.075 ) ) + ",duration=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.75 ) ); //P1
     sim -> raid_events_str += "/movement,players_only=1,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.05 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.075 ) ) + ",duration=" + util::to_string( int( sim -> max_time.total_seconds() * 0.008 ) ) + ",last=" + util::to_string( int( sim -> max_time.total_seconds() * 0.75 ) ); //move to new position of adds
     sim -> raid_events_str += "/movement,players_only=1,first=" + util::to_string( int( sim -> max_time.total_seconds() * 0.03 ) ) + ",cooldown=" + util::to_string( int( sim -> max_time.total_seconds() * 0.03 ) ) + ",duration=" + util::to_string( std::max( int( sim -> max_time.total_seconds() * 0.003 ), 1 ) ); //move out of stuff
 
@@ -849,7 +849,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   output_file( stdout ),
   debug_exp( 0 ),
   // Report
-  report_precision( 2 ),report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ),
+  report_precision( 2 ), report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ),
   report_rng( 0 ), hosted_html( 0 ), print_styles( false ), report_overheal( 0 ),
   save_raid_summary( 0 ), save_gear_comments( 0 ), statistics_level( 1 ), separate_stats_by_actions( 0 ), report_raid_summary( 0 ), buff_uptime_timeline( 0 ),
   event_stopwatch( STOPWATCH_THREAD ), monitor_cpu( 0 ),
@@ -1679,7 +1679,7 @@ bool progress_bar_t::update( bool finished )
   status += "]";
 
   int length = ( int ) ( steps * pct + 0.5 );
-  for ( int i=1; i < length+1; i++ ) status[ i ] = '=';
+  for ( int i = 1; i < length + 1; i++ ) status[ i ] = '=';
   if ( length > 0 ) status[ length ] = '>';
 
   double current_time = util::wall_time() - start_time;
@@ -1718,7 +1718,7 @@ bool sim_t::iterate()
 
   progress_bar.init();
 
-  for ( int i=0; i < iterations; i++ )
+  for ( int i = 0; i < iterations; i++ )
   {
     if ( canceled )
     {
@@ -2046,7 +2046,7 @@ void sim_t::print_options()
   int num_options = ( int ) options.size();
 
   util::fprintf( output_file, "\nSimulation Engine:\n" );
-  for ( int i=0; i < num_options; i++ ) options[ i ].print( output_file );
+  for ( int i = 0; i < num_options; i++ ) options[ i ].print( output_file );
 
   for ( size_t i = 0; i < player_list.size(); ++i )
   {
@@ -2054,7 +2054,7 @@ void sim_t::print_options()
     num_options = ( int ) p -> options.size();
 
     util::fprintf( output_file, "\nPlayer: %s (%s)\n", p -> name(), util::player_type_string( p -> type ) );
-    for ( int i=0; i < num_options; i++ ) p -> options[ i ].print( output_file );
+    for ( int i = 0; i < num_options; i++ ) p -> options[ i ].print( output_file );
   }
 
   util::fprintf( output_file, "\n" );
@@ -2278,7 +2278,7 @@ bool sim_t::setup( sim_control_t* c )
   if ( ! parent ) cache::advance_era();
 
   // Global Options
-  for ( size_t i=0; i < control -> options.size(); i++ )
+  for ( size_t i = 0; i < control -> options.size(); i++ )
   {
     option_tuple_t& o = control -> options[ i ];
     if ( o.scope != "global" ) continue;
@@ -2295,13 +2295,13 @@ bool sim_t::setup( sim_control_t* c )
   // xyz = control -> combat.xyz;
 
   // Players
-  for ( size_t i=0; i < control -> players.size(); i++ )
+  for ( size_t i = 0; i < control -> players.size(); i++ )
   {
     player_t::create( this, control -> players[ i ] );
   }
 
   // Player Options
-  for ( size_t i=0; i < control -> options.size(); i++ )
+  for ( size_t i = 0; i < control -> options.size(); i++ )
   {
     option_tuple_t& o = control -> options[ i ];
     if ( o.scope == "global" ) continue;
@@ -2366,7 +2366,7 @@ void sim_t::cancel()
 
   if ( current_iteration >= 0 )
   {
-    errorf( "Simulation has been canceled after %d iterations! (thread=%d)\n", current_iteration+1, thread_index );
+    errorf( "Simulation has been canceled after %d iterations! (thread=%d)\n", current_iteration + 1, thread_index );
   }
   else
   {

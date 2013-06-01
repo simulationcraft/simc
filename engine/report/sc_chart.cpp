@@ -21,21 +21,21 @@ std::string chart_type( chart::chart_e t )
 {
   switch ( t )
   {
-  case chart::HORIZONTAL_BAR_STACKED:
-    return std::string( "cht=bhs" ) + amp;
-  case chart::HORIZONTAL_BAR:
-    return std::string( "cht=bhg" ) + amp;
-  case chart::VERTICAL_BAR:
-    return std::string( "cht=bvs" ) + amp;
-  case chart::PIE:
-    return std::string( "cht=p" ) + amp;
-  case chart::LINE:
-    return std::string( "cht=lc" ) + amp;
-  case chart::XY_LINE:
-    return std::string( "cht=lxy" ) + amp;
-  default:
-    assert( false );
-    return std::string();
+    case chart::HORIZONTAL_BAR_STACKED:
+      return std::string( "cht=bhs" ) + amp;
+    case chart::HORIZONTAL_BAR:
+      return std::string( "cht=bhg" ) + amp;
+    case chart::VERTICAL_BAR:
+      return std::string( "cht=bvs" ) + amp;
+    case chart::PIE:
+      return std::string( "cht=p" ) + amp;
+    case chart::LINE:
+      return std::string( "cht=lc" ) + amp;
+    case chart::XY_LINE:
+      return std::string( "cht=lxy" ) + amp;
+    default:
+      assert( false );
+      return std::string();
   }
 }
 
@@ -52,24 +52,24 @@ std::string fill_chart( fill_area_e fa, fill_e ft, const std::string& color )
 
   switch ( fa )
   {
-  case FILL_BACKGROUND:
-    s += "bg";
-    break;
-  default:
-    assert( false );
-    break;
+    case FILL_BACKGROUND:
+      s += "bg";
+      break;
+    default:
+      assert( false );
+      break;
   }
 
   s += ',';
 
   switch ( ft )
   {
-  case FILL_SOLID:
-    s += 's';
-    break;
-  default:
-    assert( false );
-    break;
+    case FILL_SOLID:
+      s += 's';
+      break;
+    default:
+      assert( false );
+      break;
   }
 
   s += ',';
@@ -185,22 +185,22 @@ std::string class_color( player_e type )
 {
   switch ( type )
   {
-  case PLAYER_NONE:  return color::grey;
-  case DEATH_KNIGHT: return color::red;
-  case DRUID:        return color::orange;
-  case HUNTER:       return color::hunter_green;
-  case MAGE:         return color::light_blue;
-  case MONK:         return color::jade_green;
-  case PALADIN:      return color::pink;
-  case PRIEST:       return color::white;
-  case ROGUE:        return color::yellow;
-  case SHAMAN:       return color::blue;
-  case WARLOCK:      return color::purple;
-  case WARRIOR:      return color::tan;
-  case ENEMY:        return color::grey;
-  case ENEMY_ADD:    return color::grey;
-  case HEALING_ENEMY:    return color::grey;
-  default: assert( 0 ); return std::string();
+    case PLAYER_NONE:  return color::grey;
+    case DEATH_KNIGHT: return color::red;
+    case DRUID:        return color::orange;
+    case HUNTER:       return color::hunter_green;
+    case MAGE:         return color::light_blue;
+    case MONK:         return color::jade_green;
+    case PALADIN:      return color::pink;
+    case PRIEST:       return color::white;
+    case ROGUE:        return color::yellow;
+    case SHAMAN:       return color::blue;
+    case WARLOCK:      return color::purple;
+    case WARRIOR:      return color::tan;
+    case ENEMY:        return color::grey;
+    case ENEMY_ADD:    return color::grey;
+    case HEALING_ENEMY:    return color::grey;
+    default: assert( 0 ); return std::string();
   }
 }
 
@@ -213,10 +213,10 @@ std::string class_color( player_e type, int print_style )
   {
     switch ( type )
     {
-    case MAGE:         return color::darker_blue;
-    case PRIEST:       return color::darker_silver;
-    case ROGUE:        return color::darker_yellow;
-    default: break;
+      case MAGE:         return color::darker_blue;
+      case PRIEST:       return color::darker_silver;
+      case ROGUE:        return color::darker_yellow;
+      default: break;
     }
   }
   return class_color( type );
@@ -264,63 +264,63 @@ std::string school_color( school_e type )
 {
   switch ( type )
   {
-    // -- Single Schools
-    // Doesn't use the same colors as the blizzard ingame UI, as they are ugly
-  case SCHOOL_NONE:         return color::white;
-  case SCHOOL_PHYSICAL:     return color::tan;
-  case SCHOOL_HOLY:         return color::from_pct( 1.0, 0.9, 0.5 );
-  case SCHOOL_FIRE:         return color::red;
-  case SCHOOL_NATURE:       return color::green;
-  case SCHOOL_FROST:        return color::blue;
-  case SCHOOL_SHADOW:       return color::purple;
-  case SCHOOL_ARCANE:       return color::light_blue;
-    // -- Physical and a Magical
-  case SCHOOL_FLAMESTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_FIRE ) );
-  case SCHOOL_FROSTSTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_FROST ) );
-  case SCHOOL_SPELLSTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_ARCANE ) );
-  case SCHOOL_STORMSTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_NATURE ) );
-  case SCHOOL_SHADOWSTRIKE: return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_SHADOW ) );
-  case SCHOOL_HOLYSTRIKE:   return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_HOLY ) );
-    // -- Two Magical Schools
-  case SCHOOL_FROSTFIRE:    return color::mix( school_color( SCHOOL_FROST ), school_color( SCHOOL_FIRE ) );
-  case SCHOOL_SPELLFIRE:    return color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_FIRE ) );
-  case SCHOOL_FIRESTORM:    return color::mix( school_color( SCHOOL_FIRE ), school_color( SCHOOL_NATURE ) );
-  case SCHOOL_SHADOWFLAME:  return color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_FIRE ) );
-  case SCHOOL_HOLYFIRE:     return color::mix( school_color( SCHOOL_HOLY ), school_color( SCHOOL_FIRE ) );
-  case SCHOOL_SPELLFROST:   return color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_FROST ) );
-  case SCHOOL_FROSTSTORM:   return color::mix( school_color( SCHOOL_FROST ), school_color( SCHOOL_NATURE ) );
-  case SCHOOL_SHADOWFROST:  return color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_FROST ) );
-  case SCHOOL_HOLYFROST:    return color::mix( school_color( SCHOOL_HOLY ), school_color( SCHOOL_FROST ) );
-  case SCHOOL_SPELLSTORM:   return color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_NATURE ) );
-  case SCHOOL_SPELLSHADOW:  return color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_SHADOW ) );
-  case SCHOOL_DIVINE:       return color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_HOLY ) );
-  case SCHOOL_SHADOWSTORM:  return color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_NATURE ) );
-  case SCHOOL_HOLYSTORM:    return color::mix( school_color( SCHOOL_HOLY ), school_color( SCHOOL_NATURE ) );
-  case SCHOOL_SHADOWLIGHT:  return color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_HOLY ) );
-    //-- Three or more schools
-  case SCHOOL_ELEMENTAL:    return color::mix_multiple( school_color( SCHOOL_FIRE ) +
-                                                        school_color( SCHOOL_FROST ) +
-                                                        school_color( SCHOOL_NATURE ) );
-  case SCHOOL_CHROMATIC:    return color::mix_multiple( school_color( SCHOOL_FIRE ) +
-                                                        school_color( SCHOOL_FROST ) +
-                                                        school_color( SCHOOL_ARCANE ) +
-                                                        school_color( SCHOOL_NATURE ) +
-                                                        school_color( SCHOOL_SHADOW ) );
-  case SCHOOL_MAGIC:    return color::mix_multiple( school_color( SCHOOL_FIRE ) +
-                                                    school_color( SCHOOL_FROST ) +
-                                                    school_color( SCHOOL_ARCANE ) +
-                                                    school_color( SCHOOL_NATURE ) +
-                                                    school_color( SCHOOL_SHADOW ) +
-                                                    school_color( SCHOOL_HOLY ) );
-  case SCHOOL_CHAOS:    return color::mix_multiple( school_color( SCHOOL_PHYSICAL ) +
-                                                    school_color( SCHOOL_FIRE ) +
-                                                    school_color( SCHOOL_FROST ) +
-                                                    school_color( SCHOOL_ARCANE ) +
-                                                    school_color( SCHOOL_NATURE ) +
-                                                    school_color( SCHOOL_SHADOW ) +
-                                                    school_color( SCHOOL_HOLY ) );
+      // -- Single Schools
+      // Doesn't use the same colors as the blizzard ingame UI, as they are ugly
+    case SCHOOL_NONE:         return color::white;
+    case SCHOOL_PHYSICAL:     return color::tan;
+    case SCHOOL_HOLY:         return color::from_pct( 1.0, 0.9, 0.5 );
+    case SCHOOL_FIRE:         return color::red;
+    case SCHOOL_NATURE:       return color::green;
+    case SCHOOL_FROST:        return color::blue;
+    case SCHOOL_SHADOW:       return color::purple;
+    case SCHOOL_ARCANE:       return color::light_blue;
+      // -- Physical and a Magical
+    case SCHOOL_FLAMESTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_FIRE ) );
+    case SCHOOL_FROSTSTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_FROST ) );
+    case SCHOOL_SPELLSTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_ARCANE ) );
+    case SCHOOL_STORMSTRIKE:  return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_NATURE ) );
+    case SCHOOL_SHADOWSTRIKE: return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_SHADOW ) );
+    case SCHOOL_HOLYSTRIKE:   return color::mix( school_color( SCHOOL_PHYSICAL ), school_color( SCHOOL_HOLY ) );
+      // -- Two Magical Schools
+    case SCHOOL_FROSTFIRE:    return color::mix( school_color( SCHOOL_FROST ), school_color( SCHOOL_FIRE ) );
+    case SCHOOL_SPELLFIRE:    return color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_FIRE ) );
+    case SCHOOL_FIRESTORM:    return color::mix( school_color( SCHOOL_FIRE ), school_color( SCHOOL_NATURE ) );
+    case SCHOOL_SHADOWFLAME:  return color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_FIRE ) );
+    case SCHOOL_HOLYFIRE:     return color::mix( school_color( SCHOOL_HOLY ), school_color( SCHOOL_FIRE ) );
+    case SCHOOL_SPELLFROST:   return color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_FROST ) );
+    case SCHOOL_FROSTSTORM:   return color::mix( school_color( SCHOOL_FROST ), school_color( SCHOOL_NATURE ) );
+    case SCHOOL_SHADOWFROST:  return color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_FROST ) );
+    case SCHOOL_HOLYFROST:    return color::mix( school_color( SCHOOL_HOLY ), school_color( SCHOOL_FROST ) );
+    case SCHOOL_SPELLSTORM:   return color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_NATURE ) );
+    case SCHOOL_SPELLSHADOW:  return color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_SHADOW ) );
+    case SCHOOL_DIVINE:       return color::mix( school_color( SCHOOL_ARCANE ), school_color( SCHOOL_HOLY ) );
+    case SCHOOL_SHADOWSTORM:  return color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_NATURE ) );
+    case SCHOOL_HOLYSTORM:    return color::mix( school_color( SCHOOL_HOLY ), school_color( SCHOOL_NATURE ) );
+    case SCHOOL_SHADOWLIGHT:  return color::mix( school_color( SCHOOL_SHADOW ), school_color( SCHOOL_HOLY ) );
+      //-- Three or more schools
+    case SCHOOL_ELEMENTAL:    return color::mix_multiple( school_color( SCHOOL_FIRE ) +
+                                       school_color( SCHOOL_FROST ) +
+                                       school_color( SCHOOL_NATURE ) );
+    case SCHOOL_CHROMATIC:    return color::mix_multiple( school_color( SCHOOL_FIRE ) +
+                                       school_color( SCHOOL_FROST ) +
+                                       school_color( SCHOOL_ARCANE ) +
+                                       school_color( SCHOOL_NATURE ) +
+                                       school_color( SCHOOL_SHADOW ) );
+    case SCHOOL_MAGIC:    return color::mix_multiple( school_color( SCHOOL_FIRE ) +
+                                   school_color( SCHOOL_FROST ) +
+                                   school_color( SCHOOL_ARCANE ) +
+                                   school_color( SCHOOL_NATURE ) +
+                                   school_color( SCHOOL_SHADOW ) +
+                                   school_color( SCHOOL_HOLY ) );
+    case SCHOOL_CHAOS:    return color::mix_multiple( school_color( SCHOOL_PHYSICAL ) +
+                                   school_color( SCHOOL_FIRE ) +
+                                   school_color( SCHOOL_FROST ) +
+                                   school_color( SCHOOL_ARCANE ) +
+                                   school_color( SCHOOL_NATURE ) +
+                                   school_color( SCHOOL_SHADOW ) +
+                                   school_color( SCHOOL_HOLY ) );
 
-  default: return std::string();
+    default: return std::string();
   }
 }
 
@@ -328,18 +328,18 @@ std::string stat_color( stat_e type )
 {
   switch ( type )
   {
-  case STAT_STRENGTH:                 return class_color( WARRIOR );
-  case STAT_AGILITY:                  return class_color( HUNTER );
-  case STAT_INTELLECT:                return class_color( MAGE );
-  case STAT_SPIRIT:                   return color::darker_silver;
-  case STAT_ATTACK_POWER:             return class_color( ROGUE );
-  case STAT_SPELL_POWER:              return class_color( WARLOCK );
-  case STAT_HIT_RATING:               return class_color( DEATH_KNIGHT );
-  case STAT_CRIT_RATING:              return class_color( PALADIN );
-  case STAT_HASTE_RATING:             return class_color( SHAMAN );
-  case STAT_MASTERY_RATING:           return class_color( ROGUE );
-  case STAT_EXPERTISE_RATING:         return color::mix( color::red, color::tan );
-  default:                            return std::string();
+    case STAT_STRENGTH:                 return class_color( WARRIOR );
+    case STAT_AGILITY:                  return class_color( HUNTER );
+    case STAT_INTELLECT:                return class_color( MAGE );
+    case STAT_SPIRIT:                   return color::darker_silver;
+    case STAT_ATTACK_POWER:             return class_color( ROGUE );
+    case STAT_SPELL_POWER:              return class_color( WARLOCK );
+    case STAT_HIT_RATING:               return class_color( DEATH_KNIGHT );
+    case STAT_CRIT_RATING:              return class_color( PALADIN );
+    case STAT_HASTE_RATING:             return class_color( SHAMAN );
+    case STAT_MASTERY_RATING:           return class_color( ROGUE );
+    case STAT_EXPERTISE_RATING:         return color::mix( color::red, color::tan );
+    default:                            return std::string();
   }
 }
 
@@ -381,8 +381,8 @@ std::vector<double> ternary_coords( std::vector<plot_data_t> xyz )
 {
   std::vector<double> result;
   result.resize( 2 );
-  result[0] = xyz[ 2 ].value/2.0 + xyz[ 1 ].value;
-  result[1] = xyz[ 2 ].value/2.0 * sqrt( 3.0 );
+  result[0] = xyz[ 2 ].value / 2.0 + xyz[ 1 ].value;
+  result[1] = xyz[ 2 ].value / 2.0 * sqrt( 3.0 );
   return result;
 }
 
@@ -488,9 +488,9 @@ private:
   std::string _name;
   chart::chart_e _type;
   int print_style;
-  struct{unsigned width,height; } _size;
+  struct {unsigned width, height; } _size;
   unsigned _num_axes;
-  struct{double min,max; } _text_scaling;
+  struct {double min, max; } _text_scaling;
 
   std::string type()
   {
@@ -559,7 +559,7 @@ private:
 public:
   sc_chart( std::string name, chart::chart_e t, int style, int num_axes = -1 ) :
     _name( name ), _type( t ), print_style( style ), _size(), _num_axes(), _text_scaling()
-{
+  {
     _size.width = 550; _size.height = 250;
     if ( num_axes < 0 )
     {
@@ -570,7 +570,7 @@ public:
     }
     else
       _num_axes = as<unsigned>( num_axes );
-}
+  }
   /* You should not modify the width, to keep the html report properly formated!
    */
   void set_width( unsigned width )
@@ -652,13 +652,13 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, int p
 
   // Fill in data
   s << "chd=t:";
-  double max_waiting=0;
+  double max_waiting = 0;
   for ( size_t i = 0; i < waiting_list.size(); i++ )
   {
     player_t* p = waiting_list[ i ];
     double waiting = 100.0 * p -> waiting_time.mean() / p -> fight_length.mean();
     if ( waiting > max_waiting ) max_waiting = waiting;
-    s << ( i?"|":"" );
+    s << ( i ? "|" : "" );
     s << std::setprecision( 2 ) << waiting;
   }
   s << amp;
@@ -687,7 +687,7 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, int p
 
     double waiting_pct = ( 100.0 * p -> waiting_time.mean() / p -> fight_length.mean() );
 
-    s << ( i?"|":"" )  << "t++" << std::setprecision( p -> sim -> report_precision / 2 ) << waiting_pct; // Insert waiting percent
+    s << ( i ? "|" : "" )  << "t++" << std::setprecision( p -> sim -> report_precision / 2 ) << waiting_pct; // Insert waiting percent
 
     s << "%++" << formatted_name.c_str(); // Insert player name
 
@@ -767,7 +767,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
     for ( size_t i = 0; i < num_players; i++ )
     {
       player_t* p = player_list[ i ];
-      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), dps ? p -> collected_data.dps.mean() : p -> collected_data.hps.mean() ); s += buffer;
+      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i ? "|" : "" ), dps ? p -> collected_data.dps.mean() : p -> collected_data.hps.mean() ); s += buffer;
     }
     s += amp;
     snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_aps * 2.5 ); s += buffer;
@@ -785,7 +785,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
       player_t* p = player_list[ i ];
       std::string formatted_name = p -> name_str;
       util::urlencode( formatted_name );
-      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), dps ? p -> collected_data.dps.mean() : p -> collected_data.hps.mean(), formatted_name.c_str(), get_color( p ).c_str(), ( int )i ); s += buffer;
+      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i ? "|" : "" ), dps ? p -> collected_data.dps.mean() : p -> collected_data.hps.mean(), formatted_name.c_str(), get_color( p ).c_str(), ( int )i ); s += buffer;
     }
     s += amp;
 
@@ -818,7 +818,7 @@ size_t chart::raid_gear( std::vector<std::string>& images,
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     data_points[ i ].reserve( num_players );
-    for ( size_t j=0; j < num_players; j++ )
+    for ( size_t j = 0; j < num_players; j++ )
     {
       player_t* p = sim -> players_by_dps[ j ];
 
@@ -827,10 +827,10 @@ size_t chart::raid_gear( std::vector<std::string>& images,
     }
   }
 
-  double max_total=0;
-  for ( size_t i=0; i < num_players; i++ )
+  double max_total = 0;
+  for ( size_t i = 0; i < num_players; i++ )
   {
-    double total=0;
+    double total = 0;
     for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
       if ( stat_color( j ).empty() )
@@ -843,7 +843,7 @@ size_t chart::raid_gear( std::vector<std::string>& images,
 
   std::string s;
   char buffer[ 1024 ];
-  
+
   std::vector<player_t*> player_list = sim -> players_by_dps;
   static const size_t max_players = MAX_PLAYERS_PER_CHART;
 
@@ -871,9 +871,9 @@ size_t chart::raid_gear( std::vector<std::string>& images,
 
       if ( ! first ) s += "|";
       first = false;
-      for ( size_t j=0; j < num_players; j++ )
+      for ( size_t j = 0; j < num_players; j++ )
       {
-        snprintf( buffer, sizeof( buffer ), "%s%.0f", ( j?",":"" ), data_points[ i ][ j ] ); s += buffer;
+        snprintf( buffer, sizeof( buffer ), "%s%.0f", ( j ? "," : "" ), data_points[ i ][ j ] ); s += buffer;
       }
     }
     s += amp;
@@ -996,7 +996,7 @@ size_t chart::raid_dpet( std::vector<std::string>& images,
     for ( size_t i = 0; i < num_stats; i++ )
     {
       stats_t* st = stats_list[ i ];
-      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), st -> apet ); s += buffer;
+      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i ? "|" : "" ), st -> apet ); s += buffer;
     }
     s += amp;
     snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_dpet * 2.5 ); s += buffer;
@@ -1015,16 +1015,16 @@ size_t chart::raid_dpet( std::vector<std::string>& images,
       std::string formatted_name = st -> player -> name_str;
       util::urlencode( formatted_name );
 
-      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s+(%s),%s,%d,0,10", ( i?"|":"" ),
+      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s+(%s),%s,%d,0,10", ( i ? "|" : "" ),
                 st -> apet, st -> name_str.c_str(), formatted_name.c_str(), get_color( st -> player ).c_str(), ( int )i ); s += buffer;
     }
     s += amp;
-    if ( chart==0 )
+    if ( chart == 0 )
     {
       s += chart_title( "Raid Damage Per Execute Time" ); // Set chart title
     }
 
-    s += chart_title_formatting(chart_bg_color( sim -> print_styles ), 18 );
+    s += chart_title_formatting( chart_bg_color( sim -> print_styles ), 18 );
 
     images.push_back( s );
 
@@ -1060,18 +1060,18 @@ std::string chart::action_dpet(  player_t* p )
 
   std::string s = chart.create();
   s += "chd=t:";
-  double max_apet=0;
-  for ( int i=0; i < num_stats; i++ )
+  double max_apet = 0;
+  for ( int i = 0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?"|":"" ), st -> apet ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i ? "|" : "" ), st -> apet ); s += buffer;
     if ( st -> apet > max_apet ) max_apet = st -> apet;
   }
   s += amp;
   snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_apet * 2 ); s += buffer;
   s += amp;
   s += "chco=";
-  for ( int i=0; i < num_stats; i++ )
+  for ( int i = 0; i < num_stats; i++ )
   {
     if ( i ) s += ",";
 
@@ -1086,10 +1086,10 @@ std::string chart::action_dpet(  player_t* p )
   }
   s += amp;
   s += "chm=";
-  for ( int i=0; i < num_stats; i++ )
+  for ( int i = 0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i?"|":"" ), st -> apet, st -> name_str.c_str(), school_color( st -> school ).c_str(), i ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i ? "|" : "" ), st -> apet, st -> name_str.c_str(), school_color( st -> school ).c_str(), i ); s += buffer;
   }
   s += amp;
 
@@ -1139,10 +1139,10 @@ std::string chart::aps_portion(  player_t* p )
 
   std::string s = chart.create();
   s += "chd=t:";
-  for ( int i=0; i < num_stats; i++ )
+  for ( int i = 0; i < num_stats; i++ )
   {
     stats_t* st = stats_list[ i ];
-    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i?",":"" ), 100.0 * st -> actual_amount.mean() / ( ( p -> primary_role() == ROLE_HEAL ) ? p -> collected_data.heal.mean() : p -> collected_data.dmg.mean() ) ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i ? "," : "" ), 100.0 * st -> actual_amount.mean() / ( ( p -> primary_role() == ROLE_HEAL ) ? p -> collected_data.heal.mean() : p -> collected_data.dmg.mean() ) ); s += buffer;
   }
   s += amp;
   s += "chds=0,100";
@@ -1150,7 +1150,7 @@ std::string chart::aps_portion(  player_t* p )
   s += "chdls=ffffff";
   s += amp;
   s += "chco=";
-  for ( int i=0; i < num_stats; i++ )
+  for ( int i = 0; i < num_stats; i++ )
   {
     if ( i ) s += ",";
 
@@ -1165,7 +1165,7 @@ std::string chart::aps_portion(  player_t* p )
   }
   s += amp;
   s += "chl=";
-  for ( int i=0; i < num_stats; i++ )
+  for ( int i = 0; i < num_stats; i++ )
   {
     if ( i ) s += "|";
     if ( stats_list[ i ] -> player -> type == PLAYER_PET || stats_list[ i ] -> player -> type == PLAYER_GUARDIAN )
@@ -1207,11 +1207,11 @@ std::string chart::time_spent( player_t* p )
   s += "chd=t:";
   for ( size_t i = 0; i < num_stats; i++ )
   {
-    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( i?",":"" ), 100.0 * filtered_waiting_stats[ i ] -> total_time.total_seconds() / p -> fight_length.mean() ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( i ? "," : "" ), 100.0 * filtered_waiting_stats[ i ] -> total_time.total_seconds() / p -> fight_length.mean() ); s += buffer;
   }
   if ( p -> waiting_time.mean() > 0 )
   {
-    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( num_stats > 0 ? ",":"" ), 100.0 * p -> waiting_time.mean() / p -> fight_length.mean() ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( num_stats > 0 ? "," : "" ), 100.0 * p -> waiting_time.mean() / p -> fight_length.mean() ); s += buffer;
   }
   s += amp;
   s += "chds=0,100";
@@ -1293,10 +1293,10 @@ std::string chart::gains( player_t* p, resource_e type )
 
   // Insert Chart Data
   s << "chd=t:";
-  for ( int i=0; i < num_gains; i++ )
+  for ( int i = 0; i < num_gains; i++ )
   {
     gain_t* g = gains_list[ i ];
-    s << ( i?",":"" );
+    s << ( i ? "," : "" );
     s << std::setprecision( p -> sim -> report_precision / 2 ) << 100.0 * ( g -> actual[ type ] / total_gain );
   }
   s << "&amp;";
@@ -1312,7 +1312,7 @@ std::string chart::gains( player_t* p, resource_e type )
 
   // Labels
   s << "chl=";
-  for ( int i=0; i < num_gains; i++ )
+  for ( int i = 0; i < num_gains; i++ )
   {
     if ( i ) s << "|";
     s << gains_list[ i ] -> name();
@@ -1352,7 +1352,7 @@ std::string chart::scale_factors( player_t* p )
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] );
-    snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i ? "," : "" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "|";
 
@@ -1360,14 +1360,14 @@ std::string chart::scale_factors( player_t* p )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] ) - fabs( p -> scaling_error.get_stat( scaling_stats[ i ] ) );
 
-    snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i ? "," : "" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += "|";
   for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] ) + fabs( p -> scaling_error.get_stat( scaling_stats[ i ] ) );
 
-    snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i?",":"" ), p -> sim -> report_precision, factor ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.*f", ( i ? "," : "" ), p -> sim -> report_precision, factor ); s += buffer;
   }
   s += amp;
   s += "chco=";
@@ -1379,7 +1379,7 @@ std::string chart::scale_factors( player_t* p )
   {
     double factor = p -> scaling.get_stat( scaling_stats[ i ] );
     const char* name = util::stat_type_abbrev( scaling_stats[ i ] );
-    snprintf( buffer, sizeof( buffer ), "%st++++%.*f++%s,%s,0,%d,15,0.1,%s", ( i?"|":"" ),
+    snprintf( buffer, sizeof( buffer ), "%st++++%.*f++%s,%s,0,%d,15,0.1,%s", ( i ? "|" : "" ),
               p -> sim -> report_precision, factor, name, get_color( p ).c_str(),
               ( int )i, factor > 0 ? "e" : "s" /* If scale factor is positive, position the text right of the bar, otherwise at the base */
             ); s += buffer;
@@ -1441,7 +1441,7 @@ std::string chart::scaling_dps( player_t* p )
   std::string s = chart.create();
 
   s += "chd=t:";
-  bool first=true;
+  bool first = true;
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
     if ( stat_color( i ).empty() ) continue;
@@ -1449,9 +1449,9 @@ std::string chart::scaling_dps( player_t* p )
     size_t size = pd.size();
     if ( size != num_points ) continue;
     if ( ! first ) s += "|";
-    for ( size_t j=0; j < size; j++ )
+    for ( size_t j = 0; j < size; j++ )
     {
-      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( j?",":"" ), pd[ j ].value ); s += buffer;
+      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( j ? "," : "" ), pd[ j ].value ); s += buffer;
     }
     first = false;
   }
@@ -1462,12 +1462,12 @@ std::string chart::scaling_dps( player_t* p )
   s += amp;
   if ( ! p -> sim -> plot -> dps_plot_positive )
   {
-    snprintf( buffer, sizeof( buffer ), "chxl=0:|%.0f|%.0f|0|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( -range*step ), ( -range*step )/2, ( +range*step )/2, ( +range*step ), min_dps, p -> collected_data.dps.mean(), max_dps ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "chxl=0:|%.0f|%.0f|0|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( -range * step ), ( -range * step ) / 2, ( +range * step ) / 2, ( +range * step ), min_dps, p -> collected_data.dps.mean(), max_dps ); s += buffer;
   }
   else
   {
     const int start = 0;  // start and end only used for dps_plot_positive
-    snprintf( buffer, sizeof( buffer ), "chxl=0:|0|%%2b%.0f|%%2b%.0f|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( start + ( 1.0/4 )*end )*step, ( start + ( 2.0/4 )*end )*step, ( start + ( 3.0/4 )*end )*step, ( start + end )*step, min_dps, p -> collected_data.dps.mean(), max_dps ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "chxl=0:|0|%%2b%.0f|%%2b%.0f|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( start + ( 1.0 / 4 )*end )*step, ( start + ( 2.0 / 4 )*end )*step, ( start + ( 3.0 / 4 )*end )*step, ( start + end )*step, min_dps, p -> collected_data.dps.mean(), max_dps ); s += buffer;
   }
   s += amp;
   snprintf( buffer, sizeof( buffer ), "chxp=0,0,24.5,50,74.5,100|1,1,%.0f,100", 100.0 * ( p -> collected_data.dps.mean() - min_dps ) / ( max_dps - min_dps ) ); s += buffer;
@@ -1561,7 +1561,7 @@ std::string chart::reforge_dps( player_t* p )
 
     // X series
     s << "chd=t2:";
-    for ( int i=0; i < num_points; i++ )
+    for ( int i = 0; i < num_points; i++ )
     {
       s << static_cast< int >( pd[ i ][ 0 ].value );
       if ( i < num_points - 1 )
@@ -1570,7 +1570,7 @@ std::string chart::reforge_dps( player_t* p )
 
     // Y series
     s << "|";
-    for ( int i=0; i < num_points; i++ )
+    for ( int i = 0; i < num_points; i++ )
     {
       s << static_cast< int >( pd[ i ][ 2 ].value );
       if ( i < num_points - 1 )
@@ -1579,7 +1579,7 @@ std::string chart::reforge_dps( player_t* p )
 
     // Min Y series
     s << "|-1|";
-    for ( int i=0; i < num_points; i++ )
+    for ( int i = 0; i < num_points; i++ )
     {
       s << static_cast< int >( pd[ i ][ 2 ].value - pd[ i ][ 2 ].error / 2 );
       if ( i < num_points - 1 )
@@ -1588,7 +1588,7 @@ std::string chart::reforge_dps( player_t* p )
 
     // Max Y series
     s << "|-1|";
-    for ( int i=0; i < num_points; i++ )
+    for ( int i = 0; i < num_points; i++ )
     {
       s << static_cast< int >( pd[ i ][ 2 ].value + pd[ i ][ 2 ].error / 2 );
       if ( i < num_points - 1 )
@@ -1659,11 +1659,11 @@ std::string chart::reforge_dps( player_t* p )
 
     std::vector<std::vector<double> > triangle_points;
     std::vector< std::string > colors;
-    for ( int i=0; i < ( int ) pd.size(); i++ )
+    for ( int i = 0; i < ( int ) pd.size(); i++ )
     {
       std::vector<plot_data_t> scaled_dps = pd[ i ];
       int ref_plot_amount = p -> sim -> reforge_plot -> reforge_plot_amount;
-      for ( int j=0; j < 3; j++ )
+      for ( int j = 0; j < 3; j++ )
         scaled_dps[ j ].value = ( scaled_dps[ j ].value + ref_plot_amount ) / ( 3. * ref_plot_amount );
       triangle_points.push_back( ternary_coords( scaled_dps ) );
       colors.push_back( color_temperature_gradient( pd[ i ][ 3 ].value, min_dps, dps_range ) );
@@ -1697,11 +1697,11 @@ std::string chart::reforge_dps( player_t* p )
     s << "' />";
     s << "\n";
     s << "<input type='hidden' name='chco' value='";
-    for ( int i=0; i < ( int ) colors.size(); i++ )
+    for ( int i = 0; i < ( int ) colors.size(); i++ )
     {
       s << colors[ i ];
       if ( i < ( int ) colors.size() - 1 )
-        s<< "|";
+        s << "|";
     }
     s << "' />\n";
     s << "<input type='hidden' name='chds' value='-0.1,1.1,-0.1,0.95' />";
@@ -1839,7 +1839,7 @@ std::string chart::timeline_dps_error( player_t* p )
     increment = ( ( int ) floor( max_buckets / ( double ) max_points ) ) + 1;
   }
 
-  double dps_max_error= *std::max_element( p -> dps_convergence_error.begin() + min_data_number, p -> dps_convergence_error.end() );
+  double dps_max_error = *std::max_element( p -> dps_convergence_error.begin() + min_data_number, p -> dps_convergence_error.end() );
   double dps_range  = 60.0;
   double dps_adjust = dps_range / dps_max_error;
 
@@ -1905,9 +1905,9 @@ std::string chart::distribution( int print_style,
   std::string s = chart.create();
 
   s += "chd=t:";
-  for ( int i=0; i < max_buckets; i++ )
+  for ( int i = 0; i < max_buckets; i++ )
   {
-    snprintf( buffer, sizeof( buffer ), "%s%u", ( i?",":"" ), as<unsigned>( dist_data[ i ] ) ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%u", ( i ? "," : "" ), as<unsigned>( dist_data[ i ] ) ); s += buffer;
   }
   s += amp;
   snprintf( buffer, sizeof( buffer ), "chds=0,%u", as<unsigned>( count_max ) ); s += buffer;
@@ -1935,43 +1935,43 @@ std::string chart::gear_weights_lootrank( player_t* p )
 
   switch ( p -> type )
   {
-  case DEATH_KNIGHT: s += "Cla=2048"; break;
-  case DRUID:        s += "Cla=1024"; break;
-  case HUNTER:       s += "Cla=4";    break;
-  case MAGE:         s += "Cla=128";  break;
-  case MONK:         s += "Cla=4096"; break;
-  case PALADIN:      s += "Cla=2";    break;
-  case PRIEST:       s += "Cla=16";   break;
-  case ROGUE:        s += "Cla=8";    break;
-  case SHAMAN:       s += "Cla=64";   break;
-  case WARLOCK:      s += "Cla=256";  break;
-  case WARRIOR:      s += "Cla=1";    break;
-  default: p -> sim -> errorf( "%s", util::player_type_string( p -> type ) ); assert( 0 ); break;
+    case DEATH_KNIGHT: s += "Cla=2048"; break;
+    case DRUID:        s += "Cla=1024"; break;
+    case HUNTER:       s += "Cla=4";    break;
+    case MAGE:         s += "Cla=128";  break;
+    case MONK:         s += "Cla=4096"; break;
+    case PALADIN:      s += "Cla=2";    break;
+    case PRIEST:       s += "Cla=16";   break;
+    case ROGUE:        s += "Cla=8";    break;
+    case SHAMAN:       s += "Cla=64";   break;
+    case WARLOCK:      s += "Cla=256";  break;
+    case WARRIOR:      s += "Cla=1";    break;
+    default: p -> sim -> errorf( "%s", util::player_type_string( p -> type ) ); assert( 0 ); break;
   }
 
   switch ( p -> type )
   {
-  case WARRIOR:
-  case PALADIN:
-  case DEATH_KNIGHT:
-    s += "&Art=1";
-    break;
-  case HUNTER:
-  case SHAMAN:
-    s += "&Art=2";
-    break;
-  case DRUID:
-  case ROGUE:
-  case MONK:
-    s += "&Art=4";
-    break;
-  case MAGE:
-  case PRIEST:
-  case WARLOCK:
-    s += "&Art=8";
-    break;
-  default:
-    break;
+    case WARRIOR:
+    case PALADIN:
+    case DEATH_KNIGHT:
+      s += "&Art=1";
+      break;
+    case HUNTER:
+    case SHAMAN:
+      s += "&Art=2";
+      break;
+    case DRUID:
+    case ROGUE:
+    case MONK:
+      s += "&Art=4";
+      break;
+    case MAGE:
+    case PRIEST:
+    case WARLOCK:
+      s += "&Art=8";
+      break;
+    default:
+      break;
   }
 
   /* FIXME: Commenting this out since this won't currently work the way we handle pandaren, and we don't currently care what faction people are anyway
@@ -2006,26 +2006,26 @@ std::string chart::gear_weights_lootrank( player_t* p )
     const char* name;
     switch ( i )
     {
-    case STAT_STRENGTH:                 name = "Str";  break;
-    case STAT_AGILITY:                  name = "Agi";  break;
-    case STAT_STAMINA:                  name = "Sta";  break;
-    case STAT_INTELLECT:                name = "Int";  break;
-    case STAT_SPIRIT:                   name = "Spi";  break;
-    case STAT_SPELL_POWER:              name = "spd";  break;
-    case STAT_ATTACK_POWER:             name = "map";  break;
-    case STAT_EXPERTISE_RATING:         name = "Exp";  break;
-    case STAT_HIT_RATING:               name = "mhit"; break;
-    case STAT_CRIT_RATING:              name = "mcr";  break;
-    case STAT_HASTE_RATING:             name = "mh";   break;
-    case STAT_MASTERY_RATING:           name = "Mr";   break;
-    case STAT_ARMOR:                    name = "Arm";  break;
-    case STAT_WEAPON_DPS:
-      if ( HUNTER == p -> type ) name = "rdps"; else name = "dps";  break;
-    case STAT_WEAPON_OFFHAND_DPS:       name = "odps"; break;
-    case STAT_WEAPON_SPEED:
-      if ( HUNTER == p -> type ) name = "rsp"; else name = "msp"; break;
-    case STAT_WEAPON_OFFHAND_SPEED:     name = "osp"; break;
-    default: name = 0; break;
+      case STAT_STRENGTH:                 name = "Str";  break;
+      case STAT_AGILITY:                  name = "Agi";  break;
+      case STAT_STAMINA:                  name = "Sta";  break;
+      case STAT_INTELLECT:                name = "Int";  break;
+      case STAT_SPIRIT:                   name = "Spi";  break;
+      case STAT_SPELL_POWER:              name = "spd";  break;
+      case STAT_ATTACK_POWER:             name = "map";  break;
+      case STAT_EXPERTISE_RATING:         name = "Exp";  break;
+      case STAT_HIT_RATING:               name = "mhit"; break;
+      case STAT_CRIT_RATING:              name = "mcr";  break;
+      case STAT_HASTE_RATING:             name = "mh";   break;
+      case STAT_MASTERY_RATING:           name = "Mr";   break;
+      case STAT_ARMOR:                    name = "Arm";  break;
+      case STAT_WEAPON_DPS:
+        if ( HUNTER == p -> type ) name = "rdps"; else name = "dps";  break;
+      case STAT_WEAPON_OFFHAND_DPS:       name = "odps"; break;
+      case STAT_WEAPON_SPEED:
+        if ( HUNTER == p -> type ) name = "rsp"; else name = "msp"; break;
+      case STAT_WEAPON_OFFHAND_SPEED:     name = "osp"; break;
+      default: name = 0; break;
     }
 
     if ( name )
@@ -2038,61 +2038,61 @@ std::string chart::gear_weights_lootrank( player_t* p )
   // Set the trinket style choice
   switch ( p -> specialization() )
   {
-  case DEATH_KNIGHT_BLOOD:
-  case DRUID_GUARDIAN:
-  case MONK_BREWMASTER:
-  case PALADIN_PROTECTION:
-  case WARRIOR_PROTECTION:
-    // Tank
-    s += "&TF=1";
-    break;
+    case DEATH_KNIGHT_BLOOD:
+    case DRUID_GUARDIAN:
+    case MONK_BREWMASTER:
+    case PALADIN_PROTECTION:
+    case WARRIOR_PROTECTION:
+      // Tank
+      s += "&TF=1";
+      break;
 
-  case DEATH_KNIGHT_FROST:
-  case DEATH_KNIGHT_UNHOLY:
-  case DRUID_FERAL:
-  case MONK_WINDWALKER:
-  case PALADIN_RETRIBUTION:
-  case ROGUE_ASSASSINATION:
-  case ROGUE_COMBAT:
-  case ROGUE_SUBTLETY:
-  case SHAMAN_ENHANCEMENT:
-  case WARRIOR_ARMS:
-  case WARRIOR_FURY:
-    // Melee DPS
-    s += "&TF=2";
-    break;
+    case DEATH_KNIGHT_FROST:
+    case DEATH_KNIGHT_UNHOLY:
+    case DRUID_FERAL:
+    case MONK_WINDWALKER:
+    case PALADIN_RETRIBUTION:
+    case ROGUE_ASSASSINATION:
+    case ROGUE_COMBAT:
+    case ROGUE_SUBTLETY:
+    case SHAMAN_ENHANCEMENT:
+    case WARRIOR_ARMS:
+    case WARRIOR_FURY:
+      // Melee DPS
+      s += "&TF=2";
+      break;
 
-  case HUNTER_BEAST_MASTERY:
-  case HUNTER_MARKSMANSHIP:
-  case HUNTER_SURVIVAL:
-    // Ranged DPS
-    s += "&TF=4";
-    break;
+    case HUNTER_BEAST_MASTERY:
+    case HUNTER_MARKSMANSHIP:
+    case HUNTER_SURVIVAL:
+      // Ranged DPS
+      s += "&TF=4";
+      break;
 
-  case DRUID_BALANCE:
-  case MAGE_ARCANE:
-  case MAGE_FIRE:
-  case MAGE_FROST:
-  case PRIEST_SHADOW:
-  case SHAMAN_ELEMENTAL:
-  case WARLOCK_AFFLICTION:
-  case WARLOCK_DEMONOLOGY:
-  case WARLOCK_DESTRUCTION:
-    // Caster DPS
-    s += "&TF=8";
-    break;
+    case DRUID_BALANCE:
+    case MAGE_ARCANE:
+    case MAGE_FIRE:
+    case MAGE_FROST:
+    case PRIEST_SHADOW:
+    case SHAMAN_ELEMENTAL:
+    case WARLOCK_AFFLICTION:
+    case WARLOCK_DEMONOLOGY:
+    case WARLOCK_DESTRUCTION:
+      // Caster DPS
+      s += "&TF=8";
+      break;
 
-    // Healer
-  case DRUID_RESTORATION:
-  case MONK_MISTWEAVER:
-  case PALADIN_HOLY:
-  case PRIEST_DISCIPLINE:
-  case PRIEST_HOLY:
-  case SHAMAN_RESTORATION:
-    s += "&TF=16";
-    break;
+      // Healer
+    case DRUID_RESTORATION:
+    case MONK_MISTWEAVER:
+    case PALADIN_HOLY:
+    case PRIEST_DISCIPLINE:
+    case PRIEST_HOLY:
+    case SHAMAN_RESTORATION:
+      s += "&TF=16";
+      break;
 
-  default: break;
+    default: break;
   }
 
   s += "&Gem=3"; // FIXME: Remove this when epic gems become available
@@ -2176,25 +2176,25 @@ std::string chart::gear_weights_wowupgrade( player_t* p )
 std::string chart::gear_weights_wowhead( player_t* p, bool hit_expertise )
 {
   char buffer[ 1024 ];
-  bool first=true;
+  bool first = true;
 
   // FIXME: switch back to www.wowhead.com once MoP ( including monks ) goes live
   std::string s = "http://mop.wowhead.com/?items&amp;filter=";
 
   switch ( p -> type )
   {
-  case DEATH_KNIGHT: s += "ub=6;";  break;
-  case DRUID:        s += "ub=11;"; break;
-  case HUNTER:       s += "ub=3;";  break;
-  case MAGE:         s += "ub=8;";  break;
-  case PALADIN:      s += "ub=2;";  break;
-  case PRIEST:       s += "ub=5;";  break;
-  case ROGUE:        s += "ub=4;";  break;
-  case SHAMAN:       s += "ub=7;";  break;
-  case WARLOCK:      s += "ub=9;";  break;
-  case WARRIOR:      s += "ub=1;";  break;
-  case MONK:         s += "ub=10;"; break;
-  default: assert( 0 ); break;
+    case DEATH_KNIGHT: s += "ub=6;";  break;
+    case DRUID:        s += "ub=11;"; break;
+    case HUNTER:       s += "ub=3;";  break;
+    case MAGE:         s += "ub=8;";  break;
+    case PALADIN:      s += "ub=2;";  break;
+    case PRIEST:       s += "ub=5;";  break;
+    case ROGUE:        s += "ub=4;";  break;
+    case SHAMAN:       s += "ub=7;";  break;
+    case WARLOCK:      s += "ub=9;";  break;
+    case WARRIOR:      s += "ub=1;";  break;
+    case MONK:         s += "ub=10;"; break;
+    default: assert( 0 ); break;
   }
 
   // Restrict wowhead to rare gems. When epic gems become available:"gm=4;gb=1;"
@@ -2223,27 +2223,27 @@ std::string chart::gear_weights_wowhead( player_t* p, bool hit_expertise )
     double value = positive_normalizing_value ? p -> scaling.get_stat( i ) : -p -> scaling.get_stat( i );
     if ( value == 0 ) continue;
 
-    int id=0;
+    int id = 0;
     switch ( i )
     {
-    case STAT_STRENGTH:                 id = 20;  break;
-    case STAT_AGILITY:                  id = 21;  break;
-    case STAT_STAMINA:                  id = 22;  break;
-    case STAT_INTELLECT:                id = 23;  break;
-    case STAT_SPIRIT:                   id = 24;  break;
-    case STAT_SPELL_POWER:              id = 123; break;
-    case STAT_ATTACK_POWER:             id = 77;  break;
-    case STAT_EXPERTISE_RATING:         id = 117; break;
-    case STAT_HIT_RATING:               id = 119; break;
-    case STAT_CRIT_RATING:              id = 96;  break;
-    case STAT_DODGE_RATING:             id = 45;  break;
-    case STAT_PARRY_RATING:             id = 46;  break;
-    case STAT_HASTE_RATING:             id = 103; break;
-    case STAT_ARMOR:                    id = 41;  break;
-    case STAT_MASTERY_RATING:           id = 170; break;
-    case STAT_WEAPON_DPS:
-      if ( HUNTER == p -> type ) id = 138; else id = 32;  break;
-    default: break;
+      case STAT_STRENGTH:                 id = 20;  break;
+      case STAT_AGILITY:                  id = 21;  break;
+      case STAT_STAMINA:                  id = 22;  break;
+      case STAT_INTELLECT:                id = 23;  break;
+      case STAT_SPIRIT:                   id = 24;  break;
+      case STAT_SPELL_POWER:              id = 123; break;
+      case STAT_ATTACK_POWER:             id = 77;  break;
+      case STAT_EXPERTISE_RATING:         id = 117; break;
+      case STAT_HIT_RATING:               id = 119; break;
+      case STAT_CRIT_RATING:              id = 96;  break;
+      case STAT_DODGE_RATING:             id = 45;  break;
+      case STAT_PARRY_RATING:             id = 46;  break;
+      case STAT_HASTE_RATING:             id = 103; break;
+      case STAT_ARMOR:                    id = 41;  break;
+      case STAT_MASTERY_RATING:           id = 170; break;
+      case STAT_WEAPON_DPS:
+        if ( HUNTER == p -> type ) id = 138; else id = 32;  break;
+      default: break;
     }
     if ( !hit_expertise && ( i == STAT_HIT_RATING || i == STAT_EXPERTISE_RATING ) )
     {
@@ -2347,25 +2347,25 @@ std::string chart::gear_weights_pawn( player_t* p,
       if ( stat == STAT_HIT_RATING || stat == STAT_EXPERTISE_RATING )
         value = 0;
 
-    const char* name=0;
+    const char* name = 0;
     switch ( stat )
     {
-    case STAT_STRENGTH:                 name = "Strength";         if ( value*20 > maxR ) maxR = value*20; break;
-    case STAT_AGILITY:                  name = "Agility";          if ( value*20 > maxR ) maxR = value*20; break;
-    case STAT_STAMINA:                  name = "Stamina";          if ( value*20 > maxB ) maxB = value*20; break;
-    case STAT_INTELLECT:                name = "Intellect";        if ( value*20 > maxY ) maxY = value*20; break;
-    case STAT_SPIRIT:                   name = "Spirit";           if ( value*20 > maxB ) maxB = value*20; break;
-    case STAT_SPELL_POWER:              name = "SpellDamage";      if ( value*20 > maxR ) maxR = value*20; break;
-    case STAT_ATTACK_POWER:             name = "Ap";               if ( value*20 > maxR ) maxR = value*20; break;
-    case STAT_EXPERTISE_RATING:         name = "ExpertiseRating";  if ( value*20 > maxR ) maxR = value*20; break;
-    case STAT_HIT_RATING:               name = "HitRating";        if ( value*20 > maxY ) maxY = value*20; break;
-    case STAT_CRIT_RATING:              name = "CritRating";       if ( value*20 > maxY ) maxY = value*20; break;
-    case STAT_HASTE_RATING:             name = "HasteRating";      if ( value*20 > maxY ) maxY = value*20; break;
-    case STAT_MASTERY_RATING:           name = "MasteryRating";    if ( value*20 > maxY ) maxY = value*20; break;
-    case STAT_ARMOR:                    name = "Armor";            break;
-    case STAT_WEAPON_DPS:
-      if ( HUNTER == p -> type ) name = "RangedDps"; else name = "MeleeDps";  break;
-    default: break;
+      case STAT_STRENGTH:                 name = "Strength";         if ( value*20 > maxR ) maxR = value*20; break;
+      case STAT_AGILITY:                  name = "Agility";          if ( value*20 > maxR ) maxR = value*20; break;
+      case STAT_STAMINA:                  name = "Stamina";          if ( value*20 > maxB ) maxB = value*20; break;
+      case STAT_INTELLECT:                name = "Intellect";        if ( value*20 > maxY ) maxY = value*20; break;
+      case STAT_SPIRIT:                   name = "Spirit";           if ( value*20 > maxB ) maxB = value*20; break;
+      case STAT_SPELL_POWER:              name = "SpellDamage";      if ( value*20 > maxR ) maxR = value*20; break;
+      case STAT_ATTACK_POWER:             name = "Ap";               if ( value*20 > maxR ) maxR = value*20; break;
+      case STAT_EXPERTISE_RATING:         name = "ExpertiseRating";  if ( value*20 > maxR ) maxR = value*20; break;
+      case STAT_HIT_RATING:               name = "HitRating";        if ( value*20 > maxY ) maxY = value*20; break;
+      case STAT_CRIT_RATING:              name = "CritRating";       if ( value*20 > maxY ) maxY = value*20; break;
+      case STAT_HASTE_RATING:             name = "HasteRating";      if ( value*20 > maxY ) maxY = value*20; break;
+      case STAT_MASTERY_RATING:           name = "MasteryRating";    if ( value*20 > maxY ) maxY = value*20; break;
+      case STAT_ARMOR:                    name = "Armor";            break;
+      case STAT_WEAPON_DPS:
+        if ( HUNTER == p -> type ) name = "RangedDps"; else name = "MeleeDps";  break;
+      default: break;
     }
 
     if ( name )
@@ -2423,7 +2423,7 @@ std::string chart::normal_distribution( double mean, double std_dev, double conf
   s << amp;
 
   // create tolerance interval limiters
-  s << "chm=B,C6D9FD,0," << std::max( 4 * std_dev - std_dev * tolerance_interval, 0.0 ) * 100.0 / std_dev << ":" << floor( std::min( 4 * std_dev + std_dev * tolerance_interval, 8* std_dev ) * 100.0 / std_dev ) << ",0";
+  s << "chm=B,C6D9FD,0," << std::max( 4 * std_dev - std_dev * tolerance_interval, 0.0 ) * 100.0 / std_dev << ":" << floor( std::min( 4 * std_dev + std_dev * tolerance_interval, 8 * std_dev ) * 100.0 / std_dev ) << ",0";
 
   return s.str();
 }
@@ -2434,30 +2434,30 @@ std::string chart::resource_color( int type )
 {
   switch ( type )
   {
-  case RESOURCE_HEALTH:
-  case RESOURCE_RUNE_UNHOLY:   return class_color( HUNTER );
+    case RESOURCE_HEALTH:
+    case RESOURCE_RUNE_UNHOLY:   return class_color( HUNTER );
 
-  case RESOURCE_RUNE_FROST:
-  case RESOURCE_MANA:          return class_color( SHAMAN );
+    case RESOURCE_RUNE_FROST:
+    case RESOURCE_MANA:          return class_color( SHAMAN );
 
-  case RESOURCE_ENERGY:
-  case RESOURCE_FOCUS:         return class_color( ROGUE );
+    case RESOURCE_ENERGY:
+    case RESOURCE_FOCUS:         return class_color( ROGUE );
 
-  case RESOURCE_RAGE:
-  case RESOURCE_RUNIC_POWER:
-  case RESOURCE_RUNE:
-  case RESOURCE_RUNE_BLOOD:    return class_color( DEATH_KNIGHT );
+    case RESOURCE_RAGE:
+    case RESOURCE_RUNIC_POWER:
+    case RESOURCE_RUNE:
+    case RESOURCE_RUNE_BLOOD:    return class_color( DEATH_KNIGHT );
 
-  case RESOURCE_HOLY_POWER:    return class_color( PALADIN );
+    case RESOURCE_HOLY_POWER:    return class_color( PALADIN );
 
-  case RESOURCE_SOUL_SHARD:
-  case RESOURCE_BURNING_EMBER:
-  case RESOURCE_DEMONIC_FURY:  return class_color( WARLOCK );
+    case RESOURCE_SOUL_SHARD:
+    case RESOURCE_BURNING_EMBER:
+    case RESOURCE_DEMONIC_FURY:  return class_color( WARLOCK );
 
-  case RESOURCE_CHI:           return class_color( MONK );
+    case RESOURCE_CHI:           return class_color( MONK );
 
-  case RESOURCE_NONE:
-  default:                   return "000000";
+    case RESOURCE_NONE:
+    default:                   return "000000";
   }
 }
 

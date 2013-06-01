@@ -65,7 +65,7 @@ void print_html_contents( report::sc_html_stream& os, sim_t* sim )
 
   int pi = 0;    // player counter
   int ab = 0;    // auras and debuffs link added yet?
-  for ( int i=0; i < n; i++ )
+  for ( int i = 0; i < n; i++ )
   {
     int cs;    // column size
     if ( i == 0 )
@@ -649,7 +649,7 @@ void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, size_t nu
   if ( end > player_list.size() ) end = player_list.size();
 
   os << "\t\t\tn = [";
-  for ( int i = ( int )end-1; i >= ( int )start; i-- )
+  for ( int i = ( int )end - 1; i >= ( int )start; i-- )
   {
     os << "\"player" << player_list[i] -> index << "\"";
     if ( i != ( int )start ) os << ", ";
@@ -3942,11 +3942,11 @@ void print_html_masthead( report::sc_html_stream& os, sim_t* sim )
     ( sim -> hosted_html ) ? "http://www.simulationcraft.org/" : "http://code.google.com/p/simulationcraft/",
     SC_VERSION, sim -> dbc.wow_version(), ( sim -> dbc.ptr ?
 #if SC_BETA
-    "BETA"
+        "BETA"
 #else
-    "PTR"
+        "PTR"
 #endif
-    : "Live" ), sim -> dbc.build_level() );
+        : "Live" ), sim -> dbc.build_level() );
 
   time_t rawtime;
   time( &rawtime );
@@ -3989,7 +3989,7 @@ void print_html_errors( report::sc_html_stream& os, sim_t* sim )
   {
     os << "\t\t<pre style=\"color: black; background-color: white; font-weight: bold;\">\n";
     size_t num_errors = sim -> error_list.size();
-    for ( size_t i=0; i < num_errors; i++ )
+    for ( size_t i = 0; i < num_errors; i++ )
       os <<  sim -> error_list[ i ] << "\n";
 
     os << "\t\t</pre>\n\n";

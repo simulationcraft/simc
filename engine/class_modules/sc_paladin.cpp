@@ -18,7 +18,7 @@ struct paladin_t;
 
 enum seal_e
 {
-  SEAL_NONE=0,
+  SEAL_NONE = 0,
   SEAL_OF_JUSTICE,
   SEAL_OF_INSIGHT,
   SEAL_OF_RIGHTEOUSNESS,
@@ -242,7 +242,7 @@ public:
 
     cooldowns.avengers_shield = get_cooldown( "avengers_shield" );
     cooldowns.exorcism = get_cooldown( "exorcism" );
-    
+
     beacon_target = 0;
 
     base.distance = ( specialization() == PALADIN_HOLY ) ? 30 : 3;
@@ -376,7 +376,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
     schedule_ready();
   }
 
-  virtual void schedule_ready( timespan_t delta_time=timespan_t::zero(), bool waiting=false )
+  virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
   {
     pet_t::schedule_ready( delta_time, waiting );
     if ( ! melee -> execute_event ) melee -> execute();
@@ -535,20 +535,20 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
       {
         switch ( p() -> active_seal )
         {
-        case SEAL_OF_JUSTICE:
-          p() -> active_seal_of_justice_proc       -> execute();
-          break;
-        case SEAL_OF_INSIGHT:
-          p() -> active_seal_of_insight_proc       -> execute();
-          break;
-        case SEAL_OF_RIGHTEOUSNESS:
-          p() -> active_seal_of_righteousness_proc -> execute();
-          break;
-        case SEAL_OF_TRUTH:
-          p() -> active_censure                    -> execute();
-          if ( td() -> debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
-          break;
-        default: break;
+          case SEAL_OF_JUSTICE:
+            p() -> active_seal_of_justice_proc       -> execute();
+            break;
+          case SEAL_OF_INSIGHT:
+            p() -> active_seal_of_insight_proc       -> execute();
+            break;
+          case SEAL_OF_RIGHTEOUSNESS:
+            p() -> active_seal_of_righteousness_proc -> execute();
+            break;
+          case SEAL_OF_TRUTH:
+            p() -> active_censure                    -> execute();
+            if ( td() -> debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
+            break;
+          default: break;
         }
       }
       if ( trigger_seal_of_justice_aoe && ( p() -> active_seal == SEAL_OF_JUSTICE ) )
@@ -682,7 +682,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
     return am;
   }
-  
+
   virtual void update_ready( timespan_t cd_duration )
   {
     // reduce cooldown if Sanctity of Battle present
@@ -690,7 +690,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
     {
       cd_duration = cooldown -> duration * p() -> cache.attack_haste();
     }
-    
+
     paladin_melee_attack_t::update_ready( cd_duration );
   }
 
@@ -820,16 +820,16 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     return am;
   }
 
-  virtual void impact( action_state_t* s)
+  virtual void impact( action_state_t* s )
   {
     paladin_melee_attack_t::impact( s );
 
     // Everything hit by Hammer of the Righteous AoE triggers Weakened Blows
-      if ( ! sim -> overrides.weakened_blows )
-        s -> target -> debuffs.weakened_blows -> trigger();
-      
-      // Trigger Hand of Light procs
-      trigger_hand_of_light( s );
+    if ( ! sim -> overrides.weakened_blows )
+      s -> target -> debuffs.weakened_blows -> trigger();
+
+    // Trigger Hand of Light procs
+    trigger_hand_of_light( s );
 
   }
 };
@@ -852,7 +852,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
 
     // HotR triggers all seals
-    trigger_seal = true; 
+    trigger_seal = true;
 
     // Implement AoE proc
     add_child( proc );
@@ -894,14 +894,14 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       // Holy Power gains, only relevant if CS connects
       int g = 1; // default is a gain of 1 Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_hammer_of_the_righteous ); // apply gain, record as due to CS
-     
+
       // If Holy Avenger active, grant 2 more
       if ( p() -> buffs.holy_avenger -> check() )
       {
         //apply gain, record as due to Holy Avenger
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
       }
-      
+
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
 
@@ -960,17 +960,17 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       if ( p() -> passives.sword_of_light -> ok() )
       {
         int g = 1; // base gain is 1 Holy Power
-       //apply gain, attribute to Hammer of Wrath
+        //apply gain, attribute to Hammer of Wrath
         p() -> resource_gain( RESOURCE_HOLY_POWER, g, p() -> gains.hp_hammer_of_wrath );
 
         // Holy Avenger adds 2 more Holy Power if active
         if ( p() -> buffs.holy_avenger -> check() )
         {
-       //apply gain, attribute to Holy Avenger
+          //apply gain, attribute to Holy Avenger
           p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
         }
       }
-      
+
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
     }
@@ -979,7 +979,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   virtual double action_multiplier()
   {
     double am = paladin_melee_attack_t::action_multiplier();
-    
+
     // Holy Avenger buffs CS damage by 30% while active
     if ( p() -> buffs.holy_avenger -> check() )
     {
@@ -992,7 +992,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   virtual void update_ready( timespan_t cd_override )
   {
     cd_override = cooldown -> duration;
-    
+
     // Reduction during AW - does nothing if Sanctified Wrath not talented
     if ( p() -> buffs.avenging_wrath -> up() )
     {
@@ -1070,7 +1070,7 @@ struct paladin_seal_t : public paladin_melee_attack_t
     // all seals cost 16.4% of base mana
     base_costs[ current_resource() ]  = p -> resources.base[ current_resource() ] * 0.164;
   }
-  
+
   virtual void execute()
   {
     if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
@@ -1190,7 +1190,7 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
 
     if ( data().ok() )
     {
-      // proc info stored in spell 42463. 
+      // proc info stored in spell 42463.
       // Note that effect #2 is a lie, SoT uses unnormalized weapon speed, so we leave that as default (false)
       const spell_data_t* s = p -> find_spell( 42463 );
       if ( s && s -> ok() )
@@ -1278,7 +1278,7 @@ struct judgment_t : public paladin_melee_attack_t
       // Holy Avenger adds 2 more Holy Power if active
       if ( p() -> buffs.holy_avenger -> check() )
       {
-       //apply gain, attribute to Holy Avenger
+        //apply gain, attribute to Holy Avenger
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - 1, p() -> gains.hp_holy_avenger );
       }
     }
@@ -1292,7 +1292,7 @@ struct judgment_t : public paladin_melee_attack_t
     // Glyph of Double Jeopardy handling ===========================================================
     // original implementation was incorrect - would only grant benefit ~ half the time.
     // proper implemenation: buff granted on every J, target set to new value each time.
-    // action_multiplier() gets called before impact(), so we can just set the buff parameters here 
+    // action_multiplier() gets called before impact(), so we can just set the buff parameters here
     // and let action_multiplier() take care of figuring out if we should get a damage boost or not.
 
     // if the glyph is present, trigger the buff and store the target information
@@ -1311,7 +1311,7 @@ struct judgment_t : public paladin_melee_attack_t
   virtual double action_multiplier()
   {
     double am = paladin_melee_attack_t::action_multiplier();
-    
+
     // Holy Avenger buffs J damage by 30% while active
     if ( p() -> buffs.holy_avenger -> check() )
     {
@@ -1321,8 +1321,8 @@ struct judgment_t : public paladin_melee_attack_t
     // Double Jeopardy damage boost, only if we hit a different target with it
     // this gets called before impact(), so last_judgment_target won't be updated until after this resolves
     if (  p() -> glyphs.double_jeopardy -> ok()              // glyph equipped
-              && target != p() -> last_judgement_target      // current target is different than last_j_target
-              && p() -> buffs.double_jeopardy -> check() )   // double_jeopardy buff is still active
+          && target != p() -> last_judgement_target      // current target is different than last_j_target
+          && p() -> buffs.double_jeopardy -> check() )   // double_jeopardy buff is still active
     {
       am *= 1.0 + p() -> buffs.double_jeopardy -> value();
     }
@@ -1380,7 +1380,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     // not on GCD, usable off-GCD
     trigger_gcd = timespan_t::zero();
     use_off_gcd = true;
-    
+
     // no weapon scaling
     weapon_multiplier = 0.0;
 
@@ -1392,11 +1392,11 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::execute();
 
-    //Buff granted regardless of combat roll result 
+    //Buff granted regardless of combat roll result
     //Duration is additive on refresh, stats not recalculated
     if ( p() -> buffs.shield_of_the_righteous -> check() )
     {
-      p() -> buffs.shield_of_the_righteous -> extend_duration( p(), timespan_t::from_seconds( p() -> find_class_spell( "Shield of the Righteous" ) -> _duration) );
+      p() -> buffs.shield_of_the_righteous -> extend_duration( p(), timespan_t::from_seconds( p() -> find_class_spell( "Shield of the Righteous" ) -> _duration ) );
     }
     else
       p() -> buffs.shield_of_the_righteous -> trigger();
@@ -1409,7 +1409,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     {
       cd_duration = cooldown -> duration * p() -> cache.attack_haste();
     }
-    
+
     paladin_melee_attack_t::update_ready( cd_duration );
   }
 
@@ -1443,7 +1443,7 @@ struct templars_verdict_t : public paladin_melee_attack_t
     if ( result_is_hit( s -> result ) )
     {
       trigger_hand_of_light( s );
-      
+
       // Remove T15 Retribution 4-piece effect
       p() -> buffs.tier15_4pc_melee -> expire();
     }
@@ -1595,14 +1595,14 @@ struct avengers_shield_t : public paladin_spell_t
     // hits 1 target if FS glyphed, 3 otherwise
     aoe = ( p -> glyphs.focused_shield -> ok() ) ? 1 : 3;
     may_crit     = true;
-    
+
     // no weapon multiplier
     weapon_multiplier = 0.0;
 
     // link needed for trigger_grand_crusader
     cooldown = p -> cooldowns.avengers_shield;
     cooldown -> duration = data().cooldown();
-    
+
     //AS spell data is weird - direct_power_mod holds the SP scaling, extra_coeff() the AP scaling
     base_spell_power_multiplier  = direct_power_mod;
     base_attack_power_multiplier = data().extra_coeff();
@@ -1876,7 +1876,7 @@ struct divine_shield_t : public paladin_spell_t
 
 struct execution_sentence_t : public paladin_spell_t
 {
-  std::array<double,11> tick_multiplier;
+  std::array<double, 11> tick_multiplier;
 
   execution_sentence_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "execution_sentence", p, p -> find_talent_spell( "Execution Sentence" ) ),
@@ -1898,7 +1898,7 @@ struct execution_sentence_t : public paladin_spell_t
     if ( data().ok() )
     {
       parse_effect_data( ( p -> find_spell( 114916 ) -> effectN( 1 ) ) );
-      tick_power_mod = p -> find_spell( 114916 ) -> effectN( 2 ).base_value()/1000.0 * 0.0374151195;
+      tick_power_mod = p -> find_spell( 114916 ) -> effectN( 2 ).base_value() / 1000.0 * 0.0374151195;
     }
 
     assert( as<unsigned>( num_ticks ) < sizeof_array( tick_multiplier ) );
@@ -2013,7 +2013,7 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
 struct hand_of_purity_t : public paladin_spell_t
 {
   hand_of_purity_t( paladin_t* p, const std::string& options_str ) :
-    paladin_spell_t( "hand_of_purity", p, p -> find_talent_spell( "Hand of Purity") )
+    paladin_spell_t( "hand_of_purity", p, p -> find_talent_spell( "Hand of Purity" ) )
   {
     parse_options( NULL, options_str );
 
@@ -2101,7 +2101,7 @@ struct holy_wrath_t : public paladin_spell_t
     //see http://maintankadin.failsafedesign.com/forum/viewtopic.php?p=743800#p743800
     base_dd_min = 4300; // fixed base damage (no range)
     base_dd_max = 4300;
-    base_attack_power_multiplier =1; 
+    base_attack_power_multiplier = 1;
     base_spell_power_multiplier = 0;  // no SP scaling
     direct_power_mod =  0.91;         // 0.91 AP scaling
 
@@ -2126,9 +2126,9 @@ struct holy_prism_t : public paladin_spell_t
     : paladin_spell_t( "holy_prism", p, p->find_spell( 114852 ) )
   {
     parse_options( NULL, options_str );
-    school=SCHOOL_HOLY;
-    may_crit=true;
-    may_miss=false;
+    school = SCHOOL_HOLY;
+    may_crit = true;
+    may_miss = false;
     // this updates the spell coefficients appropriately for single-target damage
     parse_effect_data( p -> find_spell( 114852 ) -> effectN( 1 ) );
 
@@ -2144,10 +2144,10 @@ struct holy_prism_aoe_t : public paladin_spell_t
     : paladin_spell_t( "holy_prism_aoe", p, p->find_spell( 114871 ) )
   {
     parse_options( NULL, options_str );
-    may_crit=true;
-    may_miss=false;
-    school=SCHOOL_HOLY;
-    aoe=5;
+    may_crit = true;
+    may_miss = false;
+    school = SCHOOL_HOLY;
+    aoe = 5;
 
     // todo: code single-target heal, turn this into a proc.
   }
@@ -2211,7 +2211,7 @@ struct inquisition_t : public paladin_spell_t
       duration += carryover;
     }
 
-    duration += base_duration * ( p() -> holy_power_stacks() <=3 ? p() -> holy_power_stacks() - 1: 2 );
+    duration += base_duration * ( p() -> holy_power_stacks() <= 3 ? p() -> holy_power_stacks() - 1 : 2 );
     p() -> buffs.inquisition -> trigger( 1, multiplier, -1.0, duration );
 
     paladin_spell_t::execute();
@@ -2290,7 +2290,7 @@ struct word_of_glory_damage_t : public paladin_spell_t
   {
     double am = paladin_spell_t::action_multiplier();
 
-    am *= ( p() -> holy_power_stacks() <=3 ? p() -> holy_power_stacks() : 3 );
+    am *= ( p() -> holy_power_stacks() <= 3 ? p() -> holy_power_stacks() : 3 );
 
     return am;
   }
@@ -2299,15 +2299,15 @@ struct word_of_glory_damage_t : public paladin_spell_t
   {
     if ( p() -> buffs.divine_purpose -> check() )
       return 0.0;
-    else if ( ( p() -> holy_power_stacks() <=3 ? p() -> holy_power_stacks() : 3 ) > 1 )
-      return ( double )( p() -> holy_power_stacks() <=3 ? p() -> holy_power_stacks() : 3 );
+    else if ( ( p() -> holy_power_stacks() <= 3 ? p() -> holy_power_stacks() : 3 ) > 1 )
+      return ( double )( p() -> holy_power_stacks() <= 3 ? p() -> holy_power_stacks() : 3 );
     else
       return 1.0;
   }
 
   virtual void execute()
   {
-    double hopo = ( p() -> holy_power_stacks() <=3 ? p() -> holy_power_stacks() : 3 );
+    double hopo = ( p() -> holy_power_stacks() <= 3 ? p() -> holy_power_stacks() : 3 );
 
     paladin_spell_t::execute();
 
@@ -2322,8 +2322,8 @@ struct word_of_glory_damage_t : public paladin_spell_t
 // Censure is the debuff applied by Seal of Truth, and it's an oddball.  The dot ticks are really melee attacks, believe it or not.
 // They cannot miss/dodge/parry (though the application of the debuff can do all of those things, and often shows up in WoL reports
 // as such) and use melee crit.  However, the tick interval also scales with spell haste like a normal DoT.  What a mess.
-// 
-// The easiest solution here is to treat it like a spell, since that way it gets all of the spell-like properties it ought to.  However, 
+//
+// The easiest solution here is to treat it like a spell, since that way it gets all of the spell-like properties it ought to.  However,
 // we need to tweak it to use melee crit, which we do in impact() by setting the action_state_t -> crit variable accordingly.
 //
 // The way this works is that censure_t represents a spell attack proc which is made every time we succeed with a qualifying melee attack.
@@ -2367,7 +2367,7 @@ struct censure_t : public paladin_spell_t
       // if the application hits, apply/refresh the censure debuff; this will also increment stacks
       td( s -> target ) -> debuffs_censure -> trigger();
       // cheesy hack to make Censure use melee crit rather than spell crit
-      s -> crit = p() -> composite_melee_crit(); 
+      s -> crit = p() -> composite_melee_crit();
     }
 
     paladin_spell_t::impact( s );
@@ -2520,9 +2520,9 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     // regen is 4% mana
     proc_regen  = data().effectN( 1 ).trigger() ? data().effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_MANA ) : 0.0;
 
-    // proc chance is now 20 PPM, spell database info still says 15.  
+    // proc chance is now 20 PPM, spell database info still says 15.
     // Best guess is that the 4th effect describes the additional 5 PPM.
-    proc_chance = ppm_proc_chance( data().effectN( 1 ).base_value() + data().effectN(4).base_value() );
+    proc_chance = ppm_proc_chance( data().effectN( 1 ).base_value() + data().effectN( 4 ).base_value() );
 
     target = player;
   }
@@ -2616,10 +2616,10 @@ struct divine_light_t : public paladin_heal_t
 struct eternal_flame_t : public paladin_heal_t
 {
   eternal_flame_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "eternal_flame", p, p -> find_talent_spell( "Eternal Flame" ) ) 
+    paladin_heal_t( "eternal_flame", p, p -> find_talent_spell( "Eternal Flame" ) )
   {
     parse_options( NULL, options_str );
-    
+
     // remove =GCD constraints for prot
     if ( p -> passives.guarded_by_the_light -> ok() )
     {
@@ -2633,7 +2633,7 @@ struct eternal_flame_t : public paladin_heal_t
     double am = paladin_heal_t::action_multiplier();
 
     am *= std::min( 3, p() -> holy_power_stacks() ); // can't consume more than 3 holy power
-        
+
     if ( target == player )
     {
       am *= 1.0 + p() -> talents.eternal_flame -> effectN( 3 ).percent(); // twice as effective when used on self
@@ -2891,8 +2891,8 @@ struct word_of_glory_t : public paladin_heal_t
     parse_effect_data( p -> find_spell( 130551 ) -> effectN( 1 ) );
 
     // temporary section for testing find_class_spell; intermittantly returning spell_data_t::not_found() with WoG on x64 VS11
-    const spell_data_t* test = p->find_spell(85673);
-    const spell_data_t* test2 = p->find_class_spell("Word of Glory");
+    const spell_data_t* test = p->find_spell( 85673 );
+    const spell_data_t* test2 = p->find_class_spell( "Word of Glory" );
     //assert( test2 -> ok() );
 
     // remove =GCD constraints for prot
@@ -3108,12 +3108,12 @@ void paladin_t::init_base_stats()
 
   switch ( specialization() )
   {
-  case PALADIN_HOLY:
-    //base.attack_hit += 0; // TODO spirit -> hit talents.enlightened_judgments
-    //base.spell_hit  += 0; // TODO spirit -> hit talents.enlightened_judgments
-    break;
-  default:
-    break;
+    case PALADIN_HOLY:
+      //base.attack_hit += 0; // TODO spirit -> hit talents.enlightened_judgments
+      //base.spell_hit  += 0; // TODO spirit -> hit talents.enlightened_judgments
+      break;
+    default:
+      break;
   }
 }
 
@@ -3362,21 +3362,21 @@ void paladin_t::generate_action_prio_list_prot()
   if ( sim -> allow_flasks && level >= 80 )
   {
     std::string flask_action = "flask,type=";
-    flask_action += (level > 85) ? "earth" : "steelskin";
+    flask_action += ( level > 85 ) ? "earth" : "steelskin";
     precombat -> add_action( flask_action );
   }
 
   // Food
-  if (sim -> allow_food && level >= 80 )
+  if ( sim -> allow_food && level >= 80 )
   {
     std::string food_action = "food,type=";
-      food_action += ( level > 85 ) ? "chun_tian_spring_rolls" : "seafood_magnifique_feast";
-      precombat -> add_action( food_action );
+    food_action += ( level > 85 ) ? "chun_tian_spring_rolls" : "seafood_magnifique_feast";
+    precombat -> add_action( food_action );
   }
 
   precombat -> add_action( this, "Blessing of Kings", "if=(!aura.str_agi_int.up)&(aura.mastery.up)" );
   precombat -> add_action( this, "Blessing of Might", "if=!aura.mastery.up" );
-  precombat -> add_action( this, "Seal of Insight");
+  precombat -> add_action( this, "Seal of Insight" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -3397,7 +3397,7 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_action( "/auto_attack" );
 
   int num_items = ( int ) items.size();
-  for ( int i=0; i < num_items; i++ )
+  for ( int i = 0; i < num_items; i++ )
   {
     if ( items[ i ].parsed.use.active() )
     {
@@ -3405,12 +3405,12 @@ void paladin_t::generate_action_prio_list_prot()
     }
   }
 
-  std::vector<std::string> profession_actions = get_profession_actions(); 
-  for ( size_t i=0; i < profession_actions.size(); i++ )
+  std::vector<std::string> profession_actions = get_profession_actions();
+  for ( size_t i = 0; i < profession_actions.size(); i++ )
     def -> add_action( profession_actions[ i ] );
 
   std::vector<std::string> racial_actions = get_racial_actions();
-  for ( size_t i=0; i< racial_actions.size(); i++ )
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] );
 
   def -> add_action( this, "Avenging Wrath" );
@@ -3465,316 +3465,316 @@ void paladin_t::init_actions()
 
     switch ( specialization() )
     {
-    case PALADIN_RETRIBUTION:
-    {
-      if ( level > 85 )
+      case PALADIN_RETRIBUTION:
       {
-        if ( sim -> allow_flasks )
-          precombat_list += "/flask,type=winters_bite";
-        if ( sim -> allow_food )
-          precombat_list += "/food,type=black_pepper_ribs_and_shrimp";
-      }
-      else if ( level >= 80 )
-      {
-        if ( sim -> allow_flasks )
-          precombat_list += "/flask,type=titanic_strength";
-        if ( sim -> allow_food )
-          precombat_list += "/food,type=beer_basted_crocolisk";
-      }
+        if ( level > 85 )
+        {
+          if ( sim -> allow_flasks )
+            precombat_list += "/flask,type=winters_bite";
+          if ( sim -> allow_food )
+            precombat_list += "/food,type=black_pepper_ribs_and_shrimp";
+        }
+        else if ( level >= 80 )
+        {
+          if ( sim -> allow_flasks )
+            precombat_list += "/flask,type=titanic_strength";
+          if ( sim -> allow_food )
+            precombat_list += "/food,type=beer_basted_crocolisk";
+        }
 
-      if ( find_class_spell( "Blessing of Kings" ) -> ok() )
-        precombat_list += "/blessing_of_kings,if=!aura.str_agi_int.up";
-      if ( find_class_spell( "Blessing of Might" ) -> ok() )
-      {
-        precombat_list += "/blessing_of_might,if=!aura.mastery.up";
         if ( find_class_spell( "Blessing of Kings" ) -> ok() )
-          precombat_list += "&!aura.str_agi_int.up";
-      }
-
-      if ( find_class_spell( "Seal of Truth" ) -> ok() )
-      {
-        if ( find_class_spell( "Seal of Righteousness" ) -> ok() )
+          precombat_list += "/blessing_of_kings,if=!aura.str_agi_int.up";
+        if ( find_class_spell( "Blessing of Might" ) -> ok() )
         {
-          precombat_list += "/seal_of_righteousness,if=active_enemies>=4";
-          precombat_list += "/seal_of_truth,if=active_enemies<4";
+          precombat_list += "/blessing_of_might,if=!aura.mastery.up";
+          if ( find_class_spell( "Blessing of Kings" ) -> ok() )
+            precombat_list += "&!aura.str_agi_int.up";
         }
-        else
+
+        if ( find_class_spell( "Seal of Truth" ) -> ok() )
         {
-          precombat_list += "/seal_of_truth";
-        }
-      }
-
-      precombat_list += "/snapshot_stats";
-
-      if ( sim -> allow_potions )
-      {
-        if ( level > 85 )
-        {
-          precombat_list += "/mogu_power_potion";
-        }
-        else if ( level >= 80 )
-        {
-          precombat_list += "/golemblood_potion";
-        }
-      }
-
-      if ( find_class_spell( "Rebuke" ) -> ok() )
-        action_list_str = "/rebuke";
-
-      if ( sim -> allow_potions )
-      {
-        if ( level > 85 )
-        {
-          action_list_str += "/mogu_power_potion,if=(buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40)";
-        }
-        else if ( level >= 80 )
-        {
-          action_list_str += "/golemblood_potion,if=buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40";
-        }
-      }
-
-      // This should<tm> get Censure up before the auto attack lands
-      action_list_str += "/auto_attack";
-
-      /*if ( find_class_spell( "Judgment" ) -> ok() && find_specialization_spell( "Judgments of the Bold" ) -> ok() )
-      {
-        action_list_str += "/judgment,if=!target.debuff.physical_vulnerability.up|target.debuff.physical_vulnerability.remains<6";
-      }*/
-
-      if ( find_class_spell( "Inquisition" ) -> ok() && find_talent_spell( "Divine Purpose" ) -> ok() )
-      {
-        action_list_str += "/inquisition,if=buff.inquisition.down&(holy_power>=1|buff.divine_purpose.react)";
-      }
-
-      if ( find_class_spell( "Inquisition" ) -> ok() )
-      {
-        action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|target.time_to_die<holy_power*10";
-        if ( find_talent_spell( "Divine Purpose" ) -> ok() )
-          action_list_str += "|buff.divine_purpose.react)";
-        else
-          action_list_str += ")";
-      }
-
-      if ( find_class_spell( "Avenging Wrath" ) -> ok() )
-      {
-        action_list_str += "/avenging_wrath,if=buff.inquisition.up";
-        if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() & !( find_talent_spell( "Sanctified Wrath" ) -> ok() ) )
-          action_list_str += "&(cooldown.guardian_of_ancient_kings.remains<291)";
-
-        /*int num_items = ( int ) items.size();
-        int j = 0;
-        for ( int i=0; i < num_items; i++ )
-        {
-          if ( ( items[ i ].name_str() == "lei_shens_final_orders" ) ||
-               ( items[ i ].name_str() == "darkmist_vortex"        ) )
+          if ( find_class_spell( "Seal of Righteousness" ) -> ok() )
           {
-            if ( j == 0 )
-            {
-              action_list_str += "&(";
-            }
-            else
-            {
-              action_list_str += "|";
-            }
-            action_list_str += "buff.";
-            action_list_str += items[ i ].name_str();
-            action_list_str += ".up";
-            j++;
-          }
-        }
-        if ( j > 0 )
-        {
-          action_list_str += ")";
-        }*/
-      }
-
-      if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
-      {
-        action_list_str += "/guardian_of_ancient_kings";
-
-        if ( find_class_spell( "Avenging Wrath" ) -> ok() & !( find_talent_spell( "Sanctified Wrath" ) -> ok() ) )
-        {
-          action_list_str += ",if=cooldown.avenging_wrath.remains<10";
-        }
-        if ( find_class_spell( "Avenging Wrath" ) -> ok() & find_talent_spell( "Sanctified Wrath" ) -> ok() )
-        {
-          action_list_str += ",if=buff.avenging_wrath.up";
-        }
-      }
-
-      if ( find_talent_spell( "Holy Avenger" ) -> ok() )
-      {
-        action_list_str += "/holy_avenger,if=buff.inquisition.up";
-        if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
-          action_list_str += "&(cooldown.guardian_of_ancient_kings.remains<289)";
-        action_list_str += "&holy_power<=2";
-      }
-
-      int num_items = ( int ) items.size();
-      for ( int i=0; i < num_items; i++ )
-      {
-        if ( items[ i ].parsed.use.active() )
-        {
-          action_list_str += "/use_item,name=";
-          action_list_str += items[ i ].name();
-          if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
-          {
-            action_list_str += ",if=buff.inquisition.up";
+            precombat_list += "/seal_of_righteousness,if=active_enemies>=4";
+            precombat_list += "/seal_of_truth,if=active_enemies<4";
           }
           else
           {
-            action_list_str += ",if=buff.inquisition.up&time>=14";
+            precombat_list += "/seal_of_truth";
           }
         }
-      }
-      action_list_str += init_use_profession_actions();
-      action_list_str += init_use_racial_actions();
 
-      if ( find_talent_spell( "Execution Sentence" ) -> ok() )
-      {
-        if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
-        {
-          action_list_str += "/execution_sentence,if=buff.inquisition.up";
-        }
-        else
-        {
-          action_list_str += "/execution_sentence,if=buff.inquisition.up&time>=15";
-        }
-      }
+        precombat_list += "/snapshot_stats";
 
-      if ( find_talent_spell( "Light's Hammer" ) -> ok() )
-      {
-        if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
+        if ( sim -> allow_potions )
         {
-          action_list_str += "/lights_hammer,if=buff.inquisition.up";
+          if ( level > 85 )
+          {
+            precombat_list += "/mogu_power_potion";
+          }
+          else if ( level >= 80 )
+          {
+            precombat_list += "/golemblood_potion";
+          }
         }
-        else
-        {
-          action_list_str += "/lights_hammer,if=buff.inquisition.up&time>=15";
-        }
-      }
 
-      if ( find_class_spell( "Divine Storm" ) -> ok() )
-      {
-        action_list_str += "/divine_storm,if=active_enemies>=2&(holy_power=5";
-        if ( find_talent_spell( "Divine Purpose" ) -> ok() )
+        if ( find_class_spell( "Rebuke" ) -> ok() )
+          action_list_str = "/rebuke";
+
+        if ( sim -> allow_potions )
         {
-          action_list_str += "|buff.divine_purpose.react";
+          if ( level > 85 )
+          {
+            action_list_str += "/mogu_power_potion,if=(buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40)";
+          }
+          else if ( level >= 80 )
+          {
+            action_list_str += "/golemblood_potion,if=buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40";
+          }
         }
+
+        // This should<tm> get Censure up before the auto attack lands
+        action_list_str += "/auto_attack";
+
+        /*if ( find_class_spell( "Judgment" ) -> ok() && find_specialization_spell( "Judgments of the Bold" ) -> ok() )
+        {
+          action_list_str += "/judgment,if=!target.debuff.physical_vulnerability.up|target.debuff.physical_vulnerability.remains<6";
+        }*/
+
+        if ( find_class_spell( "Inquisition" ) -> ok() && find_talent_spell( "Divine Purpose" ) -> ok() )
+        {
+          action_list_str += "/inquisition,if=buff.inquisition.down&(holy_power>=1|buff.divine_purpose.react)";
+        }
+
+        if ( find_class_spell( "Inquisition" ) -> ok() )
+        {
+          action_list_str += "/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|target.time_to_die<holy_power*10";
+          if ( find_talent_spell( "Divine Purpose" ) -> ok() )
+            action_list_str += "|buff.divine_purpose.react)";
+          else
+            action_list_str += ")";
+        }
+
+        if ( find_class_spell( "Avenging Wrath" ) -> ok() )
+        {
+          action_list_str += "/avenging_wrath,if=buff.inquisition.up";
+          if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() & !( find_talent_spell( "Sanctified Wrath" ) -> ok() ) )
+            action_list_str += "&(cooldown.guardian_of_ancient_kings.remains<291)";
+
+          /*int num_items = ( int ) items.size();
+          int j = 0;
+          for ( int i=0; i < num_items; i++ )
+          {
+            if ( ( items[ i ].name_str() == "lei_shens_final_orders" ) ||
+                 ( items[ i ].name_str() == "darkmist_vortex"        ) )
+            {
+              if ( j == 0 )
+              {
+                action_list_str += "&(";
+              }
+              else
+              {
+                action_list_str += "|";
+              }
+              action_list_str += "buff.";
+              action_list_str += items[ i ].name_str();
+              action_list_str += ".up";
+              j++;
+            }
+          }
+          if ( j > 0 )
+          {
+            action_list_str += ")";
+          }*/
+        }
+
+        if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
+        {
+          action_list_str += "/guardian_of_ancient_kings";
+
+          if ( find_class_spell( "Avenging Wrath" ) -> ok() & !( find_talent_spell( "Sanctified Wrath" ) -> ok() ) )
+          {
+            action_list_str += ",if=cooldown.avenging_wrath.remains<10";
+          }
+          if ( find_class_spell( "Avenging Wrath" ) -> ok() & find_talent_spell( "Sanctified Wrath" ) -> ok() )
+          {
+            action_list_str += ",if=buff.avenging_wrath.up";
+          }
+        }
+
         if ( find_talent_spell( "Holy Avenger" ) -> ok() )
         {
-          action_list_str +="|(buff.holy_avenger.up&holy_power>=3)";
+          action_list_str += "/holy_avenger,if=buff.inquisition.up";
+          if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
+            action_list_str += "&(cooldown.guardian_of_ancient_kings.remains<289)";
+          action_list_str += "&holy_power<=2";
         }
-        action_list_str += ")";
-      }
 
-      if ( find_class_spell( "Templar's Verdict" ) -> ok() )
-      {
-        action_list_str += "/templars_verdict,if=holy_power=5";
-        if ( find_talent_spell( "Divine Purpose" ) -> ok() )
+        int num_items = ( int ) items.size();
+        for ( int i = 0; i < num_items; i++ )
         {
-          action_list_str += "|buff.divine_purpose.react";
+          if ( items[ i ].parsed.use.active() )
+          {
+            action_list_str += "/use_item,name=";
+            action_list_str += items[ i ].name();
+            if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
+            {
+              action_list_str += ",if=buff.inquisition.up";
+            }
+            else
+            {
+              action_list_str += ",if=buff.inquisition.up&time>=14";
+            }
+          }
         }
-        if ( find_talent_spell( "Holy Avenger" ) -> ok() )
+        action_list_str += init_use_profession_actions();
+        action_list_str += init_use_racial_actions();
+
+        if ( find_talent_spell( "Execution Sentence" ) -> ok() )
         {
-          action_list_str +="|(buff.holy_avenger.up&holy_power>=3)";
+          if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
+          {
+            action_list_str += "/execution_sentence,if=buff.inquisition.up";
+          }
+          else
+          {
+            action_list_str += "/execution_sentence,if=buff.inquisition.up&time>=15";
+          }
         }
+
+        if ( find_talent_spell( "Light's Hammer" ) -> ok() )
+        {
+          if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
+          {
+            action_list_str += "/lights_hammer,if=buff.inquisition.up";
+          }
+          else
+          {
+            action_list_str += "/lights_hammer,if=buff.inquisition.up&time>=15";
+          }
+        }
+
+        if ( find_class_spell( "Divine Storm" ) -> ok() )
+        {
+          action_list_str += "/divine_storm,if=active_enemies>=2&(holy_power=5";
+          if ( find_talent_spell( "Divine Purpose" ) -> ok() )
+          {
+            action_list_str += "|buff.divine_purpose.react";
+          }
+          if ( find_talent_spell( "Holy Avenger" ) -> ok() )
+          {
+            action_list_str += "|(buff.holy_avenger.up&holy_power>=3)";
+          }
+          action_list_str += ")";
+        }
+
+        if ( find_class_spell( "Templar's Verdict" ) -> ok() )
+        {
+          action_list_str += "/templars_verdict,if=holy_power=5";
+          if ( find_talent_spell( "Divine Purpose" ) -> ok() )
+          {
+            action_list_str += "|buff.divine_purpose.react";
+          }
+          if ( find_talent_spell( "Holy Avenger" ) -> ok() )
+          {
+            action_list_str += "|(buff.holy_avenger.up&holy_power>=3)";
+          }
+        }
+
+        if ( find_class_spell( "Hammer of Wrath" ) -> ok() )
+        {
+          action_list_str += "/hammer_of_wrath";
+          action_list_str += "/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=";
+          if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
+            action_list_str += "0.2";
+          else
+            action_list_str += "0.1";
+        }
+
+        if ( find_class_spell( "Exorcism" ) -> ok() )
+        {
+          action_list_str += "/exorcism";
+          action_list_str += "/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2";
+        }
+
+        if ( find_class_spell( "Judgment" ) -> ok() )
+          action_list_str += "/judgment,if=!(set_bonus.tier15_4pc_melee)&(target.health.pct<=20|buff.avenging_wrath.up)&active_enemies<2";
+
+        if ( find_class_spell( "Hammer of the Righteous" ) -> ok() )
+          action_list_str += "/hammer_of_the_righteous,if=active_enemies>=4";
+
+        if ( find_class_spell( "Crusader Strike" ) -> ok() )
+        {
+          action_list_str += "/crusader_strike";
+          action_list_str += "/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2";
+        }
+
+        if ( find_class_spell( "Judgment" ) -> ok() )
+        {
+          action_list_str += "/judgment,target=2,if=active_enemies>=2&buff.glyph_double_jeopardy.up";
+          action_list_str += "/judgment";
+        }
+
+        if ( find_class_spell( "Divine Storm" ) -> ok() )
+          action_list_str += "/divine_storm,if=active_enemies>=2&buff.inquisition.remains>4";
+
+        if ( find_class_spell( "Templar's Verdict" ) -> ok() )
+          action_list_str += "/templars_verdict,if=buff.inquisition.remains>4";
+
+        if ( find_talent_spell( "Holy Prism" ) -> ok() )
+          action_list_str += "/holy_prism";
       }
-
-      if ( find_class_spell( "Hammer of Wrath" ) -> ok() )
-      {
-        action_list_str += "/hammer_of_wrath";
-        action_list_str += "/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=";
-        if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
-          action_list_str += "0.2";
-        else
-          action_list_str += "0.1";
-      }
-
-      if ( find_class_spell( "Exorcism" ) -> ok() )
-      {
-        action_list_str += "/exorcism";
-        action_list_str += "/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2";
-      }
-
-      if ( find_class_spell( "Judgment" ) -> ok() )
-        action_list_str += "/judgment,if=!(set_bonus.tier15_4pc_melee)&(target.health.pct<=20|buff.avenging_wrath.up)&active_enemies<2";
-
-      if ( find_class_spell( "Hammer of the Righteous" ) -> ok() )
-        action_list_str += "/hammer_of_the_righteous,if=active_enemies>=4";
-
-      if ( find_class_spell( "Crusader Strike" ) -> ok() )
-      {
-        action_list_str += "/crusader_strike";
-        action_list_str += "/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2";
-      }
-
-      if ( find_class_spell( "Judgment" ) -> ok() )
-      {
-        action_list_str += "/judgment,target=2,if=active_enemies>=2&buff.glyph_double_jeopardy.up";
-        action_list_str += "/judgment";
-      }
-
-      if ( find_class_spell( "Divine Storm" ) -> ok() )
-        action_list_str += "/divine_storm,if=active_enemies>=2&buff.inquisition.remains>4";
-
-      if ( find_class_spell( "Templar's Verdict" ) -> ok() )
-        action_list_str += "/templars_verdict,if=buff.inquisition.remains>4";
-
-      if ( find_talent_spell( "Holy Prism" ) -> ok() )
-        action_list_str += "/holy_prism";
-    }
-    break;
-    // for prot, call subroutine
-    case PALADIN_PROTECTION:
-      generate_action_prio_list_prot(); // PROT
       break;
-    case PALADIN_HOLY:
-    {
+      // for prot, call subroutine
+      case PALADIN_PROTECTION:
+        generate_action_prio_list_prot(); // PROT
+        break;
+      case PALADIN_HOLY:
+      {
 #if 0
-      if ( level > 80 )
-      {
-        action_list_str = "flask,type=draconic_mind/food,type=severed_sagefish_head";
-        action_list_str += "/volcanic_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
-      }
-      else
-      {
-        action_list_str = "flask,type=stoneblood/food,type=dragonfin_filet";
-        action_list_str += "/indestructible_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
-      }
-      action_list_str += "/seal_of_insight";
-      action_list_str += "/snapshot_stats";
-      action_list_str += "/auto_attack";
-      int num_items = ( int ) items.size();
-      for ( int i=0; i < num_items; i++ )
-      {
-        if ( items[ i ].use.active() )
+        if ( level > 80 )
         {
-          action_list_str += "/use_item,name=";
-          action_list_str += items[ i ].name();
+          action_list_str = "flask,type=draconic_mind/food,type=severed_sagefish_head";
+          action_list_str += "/volcanic_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
         }
-      }
-      action_list_str += init_use_profession_actions();
-      action_list_str += init_use_racial_actions();
-      action_list_str += "/avenging_wrath";
-      action_list_str += "/judgment,if=buff.judgments_of_the_pure.remains<10";
-      action_list_str += "/word_of_glory,if=holy_power>2";
-      action_list_str += "/holy_shock_heal";
-      action_list_str += "/divine_light,if=mana_pct>75";
-      action_list_str += "/divine_plea,if=mana_pct<75";
-      action_list_str += "/holy_light";
+        else
+        {
+          action_list_str = "flask,type=stoneblood/food,type=dragonfin_filet";
+          action_list_str += "/indestructible_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+        }
+        action_list_str += "/seal_of_insight";
+        action_list_str += "/snapshot_stats";
+        action_list_str += "/auto_attack";
+        int num_items = ( int ) items.size();
+        for ( int i = 0; i < num_items; i++ )
+        {
+          if ( items[ i ].use.active() )
+          {
+            action_list_str += "/use_item,name=";
+            action_list_str += items[ i ].name();
+          }
+        }
+        action_list_str += init_use_profession_actions();
+        action_list_str += init_use_racial_actions();
+        action_list_str += "/avenging_wrath";
+        action_list_str += "/judgment,if=buff.judgments_of_the_pure.remains<10";
+        action_list_str += "/word_of_glory,if=holy_power>2";
+        action_list_str += "/holy_shock_heal";
+        action_list_str += "/divine_light,if=mana_pct>75";
+        action_list_str += "/divine_plea,if=mana_pct<75";
+        action_list_str += "/holy_light";
 #endif
-    }
-    break;
-    default:
-      if ( level > 80 )
-      {
-        action_list_str = "flask,type=draconic_mind/food,type=severed_sagefish_head";
-        action_list_str += "/volcanic_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
       }
-      action_list_str += "/snapshot_stats";
-      action_list_str += "/auto_attack";
       break;
+      default:
+        if ( level > 80 )
+        {
+          action_list_str = "flask,type=draconic_mind/food,type=severed_sagefish_head";
+          action_list_str += "/volcanic_potion,if=!in_combat|buff.bloodlust.react|target.time_to_die<=60";
+        }
+        action_list_str += "/snapshot_stats";
+        action_list_str += "/auto_attack";
+        break;
     }
     action_list_default = 1;
   }
@@ -3973,18 +3973,18 @@ double paladin_t::composite_player_multiplier( school_e school )
 double paladin_t::composite_spell_power( school_e school )
 {
   double sp = player_t::composite_spell_power( school );
-  
+
   // For Protection and Retribution, SP is fixed to AP/2 by passives
   switch ( specialization() )
   {
-  case PALADIN_PROTECTION:
-    sp = passives.guarded_by_the_light -> effectN( 1 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
-    break;
-  case PALADIN_RETRIBUTION:
-    sp = passives.sword_of_light -> effectN( 1 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
-    break;
-  default:
-    break;
+    case PALADIN_PROTECTION:
+      sp = passives.guarded_by_the_light -> effectN( 1 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
+      break;
+    case PALADIN_RETRIBUTION:
+      sp = passives.sword_of_light -> effectN( 1 ).percent() * cache.attack_power() * composite_attack_power_multiplier();
+      break;
+    default:
+      break;
   }
   return sp;
 }
@@ -4030,7 +4030,7 @@ double paladin_t::composite_block()
   if ( block_by_rating > 0 )
   {
     //the block by rating gets rounded because that's how blizzard rolls...
-    b += 1/ ( 1 / diminished_block_cap + diminished_kfactor / ( util::round( 12800 * block_by_rating ) / 12800 ) );
+    b += 1 / ( 1 / diminished_block_cap + diminished_kfactor / ( util::round( 12800 * block_by_rating ) / 12800 ) );
   }
 
   // Guarded by the Light block not affected by diminishing returns
@@ -4062,16 +4062,16 @@ double paladin_t::composite_dodge()
 // paladin_t::target_mitigation ==============================================
 
 void paladin_t::target_mitigation( school_e school,
-                                  dmg_e    dt,
-                                  action_state_t* s )
+                                   dmg_e    dt,
+                                   action_state_t* s )
 {
   player_t::target_mitigation( school, dt, s );
-  
+
   // various mitigation effects, Ardent Defender goes last due to absorb/heal mechanics
   // Guardian of Ancient Kings
   if ( buffs.guardian_of_ancient_kings_prot -> up() )
     s -> result_amount *= 1.0 + dbc.spell( 86657 ) -> effectN( 2 ).percent(); // Value of the buff is stored in another spell
-  
+
   // Hand of Purity
   if ( buffs.hand_of_purity -> up() )
   {
@@ -4152,20 +4152,20 @@ double paladin_t::matching_gear_multiplier( attribute_e attr )
 
   switch ( specialization() )
   {
-  case PALADIN_PROTECTION:
-    if ( attr == ATTR_STAMINA )
-      return mult;
-    break;
-  case PALADIN_RETRIBUTION:
-    if ( attr == ATTR_STRENGTH )
-      return mult;
-    break;
-  case PALADIN_HOLY:
-    if ( attr == ATTR_INTELLECT )
-      return mult;
-    break;
-  default:
-    break;
+    case PALADIN_PROTECTION:
+      if ( attr == ATTR_STAMINA )
+        return mult;
+      break;
+    case PALADIN_RETRIBUTION:
+      if ( attr == ATTR_STRENGTH )
+        return mult;
+      break;
+    case PALADIN_HOLY:
+      if ( attr == ATTR_INTELLECT )
+        return mult;
+      break;
+    default:
+      break;
   }
   return 0.0;
 }

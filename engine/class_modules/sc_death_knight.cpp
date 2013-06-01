@@ -19,7 +19,7 @@ struct dancing_rune_weapon_pet_t;
 
 enum rune_type
 {
-  RUNE_TYPE_NONE=0, RUNE_TYPE_BLOOD, RUNE_TYPE_FROST, RUNE_TYPE_UNHOLY, RUNE_TYPE_DEATH, RUNE_TYPE_WASDEATH=8
+  RUNE_TYPE_NONE = 0, RUNE_TYPE_BLOOD, RUNE_TYPE_FROST, RUNE_TYPE_UNHOLY, RUNE_TYPE_DEATH, RUNE_TYPE_WASDEATH = 8
 };
 
 const char * const rune_symbols = "!bfu!!";
@@ -123,7 +123,7 @@ struct death_knight_td_t : public actor_pair_t
   death_knight_td_t( player_t* target, death_knight_t* death_knight );
 };
 
-enum death_knight_presence { PRESENCE_BLOOD=1, PRESENCE_FROST, PRESENCE_UNHOLY=4 };
+enum death_knight_presence { PRESENCE_BLOOD = 1, PRESENCE_FROST, PRESENCE_UNHOLY = 4 };
 
 struct death_knight_t : public player_t
 {
@@ -159,7 +159,7 @@ public:
     buff_t* vampiric_blood;
     buff_t* will_of_the_necropolis_dr;
     buff_t* will_of_the_necropolis_rt;
-    
+
     absorb_buff_t* blood_shield;
   } buffs;
 
@@ -349,7 +349,7 @@ public:
   // Runes
   struct runes_t
   {
-    std::array<dk_rune_t,RUNE_SLOT_MAX> slot;
+    std::array<dk_rune_t, RUNE_SLOT_MAX> slot;
 
     runes_t()
     {
@@ -880,7 +880,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     { return static_cast<dancing_rune_weapon_pet_t*>( player ); }
 
     death_knight_t* o() const
-    { return static_cast< death_knight_t* >( player -> cast_pet() -> owner ); } 
+    { return static_cast< death_knight_t* >( player -> cast_pet() -> owner ); }
   };
 
   struct drw_melee_attack_t : public melee_attack_t
@@ -900,7 +900,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     { return static_cast<dancing_rune_weapon_pet_t*>( player ); }
 
     death_knight_t* o() const
-    { return static_cast< death_knight_t* >( player -> cast_pet() -> owner ); } 
+    { return static_cast< death_knight_t* >( player -> cast_pet() -> owner ); }
   };
 
   struct drw_blood_plague_t : public drw_spell_t
@@ -1101,7 +1101,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
 
   struct drw_soul_reaper_t : public drw_melee_attack_t
   {
-    struct soul_reaper_dot_t : public drw_melee_attack_t 
+    struct soul_reaper_dot_t : public drw_melee_attack_t
     {
       soul_reaper_dot_t( dancing_rune_weapon_pet_t* p ) :
         drw_melee_attack_t( "soul_reaper_execute", p, p -> find_spell( 114867 ) )
@@ -1205,7 +1205,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   }
 
   death_knight_t* o() const
-  { return static_cast< death_knight_t* >( owner ); } 
+  { return static_cast< death_knight_t* >( owner ); }
 
   dancing_rune_weapon_td_t* td( player_t* t = 0 )
   { return get_target_data( t ? t : target ); }
@@ -1222,7 +1222,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
   {
     pet_t::init_spells();
 
-    // Kludge of the century to get pointless initialization warnings to 
+    // Kludge of the century to get pointless initialization warnings to
     // go away.
     type = DEATH_KNIGHT; _spec = DEATH_KNIGHT_BLOOD;
 
@@ -1235,7 +1235,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_icy_touch     = new drw_icy_touch_t    ( this );
     drw_outbreak      = new drw_outbreak_t     ( this );
     drw_pestilence    = new drw_pestilence_t   ( this );
-    
+
     drw_death_strike  = new drw_death_strike_t ( this );
     drw_heart_strike  = new drw_heart_strike_t ( this );
     drw_necrotic_strike = new drw_necrotic_strike_t( this );
@@ -1525,7 +1525,7 @@ struct bloodworms_pet_t : public death_knight_pet_t
 
           if ( sim -> debug )
             sim -> output( "%s-%s burst chance, base=%f multiplier=%f total=%f",
-                          o -> name(), player -> name(), base_proc_chance, multiplier, base_proc_chance * multiplier );
+                           o -> name(), player -> name(), base_proc_chance, multiplier, base_proc_chance * multiplier );
 
           if ( base_proc_chance * multiplier > p() -> rng_blood_burst -> range( 0, 999 ) )
             new ( *sim ) blood_burst_event_t( p(), timespan_t::zero() );
@@ -1581,7 +1581,7 @@ struct bloodworms_pet_t : public death_knight_pet_t
     rng_blood_burst = get_rng( "blood_burst" );
   }
 
-  virtual void summon( timespan_t duration=timespan_t::zero() )
+  virtual void summon( timespan_t duration = timespan_t::zero() )
   {
     pet_t::summon( duration );
     melee -> schedule_execute();
@@ -2304,7 +2304,7 @@ struct melee_t : public death_knight_melee_attack_t
     timespan_t t = death_knight_melee_attack_t::execute_time();
     if ( ! player -> in_combat )
     {
-      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, timespan_t::from_seconds( 0.2 ) ) : t/2 ) : timespan_t::from_seconds( 0.01 );
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::from_seconds( 0.2 ) ) : t / 2 ) : timespan_t::from_seconds( 0.01 );
     }
     return t;
   }
@@ -2485,8 +2485,8 @@ struct blood_boil_t : public death_knight_spell_t
 
     if ( p -> talent.roiling_blood -> ok() )
     {
-      // Make up a dummy pestilence action that consumes no runes, gives no 
-      // runic power, and converts no runes. It is also prohibited to proc 
+      // Make up a dummy pestilence action that consumes no runes, gives no
+      // runic power, and converts no runes. It is also prohibited to proc
       // anything by default. It will however show in the reports.
       proxy_pestilence = static_cast< death_knight_spell_t* >( p -> create_action( "pestilence", std::string() ) );
       proxy_pestilence -> cost_blood = 0;
@@ -3093,7 +3093,7 @@ struct death_strike_t : public death_knight_melee_attack_t
 {
   death_strike_offhand_t* oh_attack;
   death_strike_heal_t* heal;
-  
+
   death_strike_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_melee_attack_t( "death_strike", p, p -> find_class_spell( "Death Strike" ) ),
     oh_attack( 0 ), heal( new death_strike_heal_t( p ) )
@@ -3123,7 +3123,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     {
       std::vector< std::pair< timespan_t, double > >::iterator i = p() -> incoming_damage.begin();
       while ( i != p() -> incoming_damage.end() &&
-              sim -> current_time - (*i).first > timespan_t::from_seconds( 5.0 ) )
+              sim -> current_time - ( *i ).first > timespan_t::from_seconds( 5.0 ) )
       {
         i++;
       }
@@ -3137,14 +3137,14 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     if ( sim -> debug )
       sim -> output( "%s Death Strike heal, incoming_damage=%f incoming_heal=%f min_heal=%f", p() -> name(), heal_amount,
-          heal_amount * data().effectN( 1 ).chain_multiplier() / 100.0, 
-          p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent() );
+                     heal_amount * data().effectN( 1 ).chain_multiplier() / 100.0,
+                     p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent() );
 
     heal_amount = std::max( p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent(),
                             heal_amount * data().effectN( 1 ).chain_multiplier() / 100.0 );
 
-    // Note that the Scent of Blood bonus is calculated here, so we can get 
-    // it to Blood Shield. Apparently any other healing bonus that the DKs get 
+    // Note that the Scent of Blood bonus is calculated here, so we can get
+    // it to Blood Shield. Apparently any other healing bonus that the DKs get
     // does not affect the size of the blood shield
     heal_amount *= 1.0 + p() -> buffs.scent_of_blood -> check() * p() -> buffs.scent_of_blood -> data().effectN( 1 ).percent();
 
@@ -3982,18 +3982,18 @@ struct presence_t : public death_knight_spell_t
 
     switch ( p() -> active_presence )
     {
-    case PRESENCE_BLOOD:  p() -> buffs.blood_presence  -> expire(); break;
-    case PRESENCE_FROST:  p() -> buffs.frost_presence  -> expire(); break;
-    case PRESENCE_UNHOLY: p() -> buffs.unholy_presence -> expire(); break;
+      case PRESENCE_BLOOD:  p() -> buffs.blood_presence  -> expire(); break;
+      case PRESENCE_FROST:  p() -> buffs.frost_presence  -> expire(); break;
+      case PRESENCE_UNHOLY: p() -> buffs.unholy_presence -> expire(); break;
     }
 
     p() -> active_presence = switch_to_presence;
 
     switch ( p() -> active_presence )
     {
-    case PRESENCE_BLOOD:  p() -> buffs.blood_presence  -> trigger(); break;
-    case PRESENCE_FROST:  p() -> buffs.frost_presence  -> trigger(); break;
-    case PRESENCE_UNHOLY: p() -> buffs.unholy_presence -> trigger(); break;
+      case PRESENCE_BLOOD:  p() -> buffs.blood_presence  -> trigger(); break;
+      case PRESENCE_FROST:  p() -> buffs.frost_presence  -> trigger(); break;
+      case PRESENCE_UNHOLY: p() -> buffs.unholy_presence -> trigger(); break;
     }
 
     p() -> recalculate_resource_max( RESOURCE_HEALTH );
@@ -4405,7 +4405,7 @@ struct vampiric_blood_t : public death_knight_spell_t
 struct icebound_fortitude_t : public death_knight_spell_t
 {
   icebound_fortitude_t( death_knight_t* p, const std::string& options_str ) :
-    death_knight_spell_t( "icebound_fortitude", p, p -> find_class_spell( "Icebound Fortitude" ) ) 
+    death_knight_spell_t( "icebound_fortitude", p, p -> find_class_spell( "Icebound Fortitude" ) )
   {
     parse_options( NULL, options_str );
 
@@ -4647,20 +4647,20 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
     bool include_death = true; // whether to include death runes
     switch ( splits[ 1 ][0] )
     {
-    case 'B': include_death = false;
-    case 'b': rt = RUNE_TYPE_BLOOD; break;
-    case 'U': include_death = false;
-    case 'u': rt = RUNE_TYPE_UNHOLY; break;
-    case 'F': include_death = false;
-    case 'f': rt = RUNE_TYPE_FROST; break;
-    case 'D': include_death = false;
-    case 'd': rt = RUNE_TYPE_DEATH; break;
+      case 'B': include_death = false;
+      case 'b': rt = RUNE_TYPE_BLOOD; break;
+      case 'U': include_death = false;
+      case 'u': rt = RUNE_TYPE_UNHOLY; break;
+      case 'F': include_death = false;
+      case 'f': rt = RUNE_TYPE_FROST; break;
+      case 'D': include_death = false;
+      case 'd': rt = RUNE_TYPE_DEATH; break;
     }
     int position = 0; // any
-    switch ( splits[1][splits[1].size()-1] )
+    switch ( splits[1][splits[1].size() - 1] )
     {
-    case '1': position = 1; break;
-    case '2': position = 2; break;
+      case '1': position = 1; break;
+      case '2': position = 2; break;
     }
 
     int act = 0;
@@ -4688,10 +4688,10 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
       {
         switch ( myaction )
         {
-        case 0: return dk -> runes_count( r, include_death, position );
-        case 1: return dk -> runes_cooldown_any( r, include_death, position );
-        case 2: return dk -> runes_cooldown_all( r, include_death, position );
-        case 3: return dk -> runes_depleted( r, position );
+          case 0: return dk -> runes_count( r, include_death, position );
+          case 1: return dk -> runes_cooldown_any( r, include_death, position );
+          case 2: return dk -> runes_cooldown_all( r, include_death, position );
+          case 3: return dk -> runes_depleted( r, position );
         }
         return 0.0;
       }
@@ -5073,95 +5073,245 @@ void death_knight_t::init_actions()
 
     switch ( specialization() )
     {
-    case DEATH_KNIGHT_BLOOD:
-    {
-      if ( sim -> allow_potions )
+      case DEATH_KNIGHT_BLOOD:
       {
-        if ( level > 85 )
-          precombat_list += "/mogu_power_potion";
-        else if ( level >= 80 )
-          precombat_list += "/golemblood_potion";
+        if ( sim -> allow_potions )
+        {
+          if ( level > 85 )
+            precombat_list += "/mogu_power_potion";
+          else if ( level >= 80 )
+            precombat_list += "/golemblood_potion";
+        }
+
+        if ( level >= 87 )
+          precombat_list += "/bone_shield";
+
+        action_list_str += init_use_item_actions( ",if=time>=10" );
+        action_list_str += init_use_profession_actions();
+        action_list_str += init_use_racial_actions( ",if=time>=10" );
+        if ( sim -> allow_potions )
+        {
+          if ( level > 85 )
+            action_list_str += "/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+          else if ( level >= 80 )
+            action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+        }
+        action_list_str += "/auto_attack";
+        if ( level >= 76 )
+          action_list_str += "/vampiric_blood,if=health<30000";
+        if ( level >= 87 )
+          action_list_str += "/bone_shield,if=buff.bone_shield.down";
+        if ( level >= 62 )
+          action_list_str += "/icebound_fortitude,if=health.pct<50";
+        if ( level >= 64 )
+          action_list_str += "/rune_tap,if=health.pct<90";
+        action_list_str += "/dancing_rune_weapon";
+        action_list_str += "/raise_dead,if=time>=10";
+        action_list_str += "/outbreak,if=(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2)|(!dot.blood_plague.ticking&!dot.frost_fever.ticking)";
+        action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
+        action_list_str += "/icy_touch,if=!dot.frost_fever.ticking";
+        action_list_str += "/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35";
+        if ( talent.blood_tap -> ok() )
+          action_list_str += "/blood_tap,if=(unholy=0&frost>=1)|(unholy>=1&frost=0)|(death=1)";
+        action_list_str += "/death_strike";
+        //action_list_str += "/death_siphon,if=health.pct<90";
+        action_list_str += "/death_siphon,if=enabled&hit_damage>action.necrotic_strike.hit_damage";
+        action_list_str += "/necrotic_strike,if=!talent.death_siphon.enabled|hit_damage>action.death_siphon.hit_damage";
+        action_list_str += "/blood_boil,if=buff.crimson_scourge.up";
+        action_list_str += "/heart_strike,if=(blood=1&blood.cooldown_remains<1)|blood=2";
+        action_list_str += "/rune_strike,if=runic_power>=40";
+        action_list_str += "/horn_of_winter";
+        action_list_str += "/empower_rune_weapon,if=blood=0&unholy=0&frost=0";
+        break;
       }
-
-      if ( level >= 87 )
-        precombat_list += "/bone_shield";
-
-      action_list_str += init_use_item_actions( ",if=time>=10" );
-      action_list_str += init_use_profession_actions();
-      action_list_str += init_use_racial_actions( ",if=time>=10" );
-      if ( sim -> allow_potions )
+      case DEATH_KNIGHT_FROST:
       {
-        if ( level > 85 )
-          action_list_str += "/mogu_power_potion,if=buff.bloodlust.react|target.time_to_die<=60";
-        else if ( level >= 80 )
-          action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
-      }
-      action_list_str += "/auto_attack";
-      if ( level >= 76 )
-        action_list_str += "/vampiric_blood,if=health<30000";
-      if ( level >= 87 )
-        action_list_str += "/bone_shield,if=buff.bone_shield.down";
-      if ( level >= 62 )
-        action_list_str += "/icebound_fortitude,if=health.pct<50";
-      if ( level >= 64 )
-        action_list_str += "/rune_tap,if=health.pct<90";
-      action_list_str += "/dancing_rune_weapon";
-      action_list_str += "/raise_dead,if=time>=10";
-      action_list_str += "/outbreak,if=(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2)|(!dot.blood_plague.ticking&!dot.frost_fever.ticking)";
-      action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
-      action_list_str += "/icy_touch,if=!dot.frost_fever.ticking";
-      action_list_str += "/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35";
-      if ( talent.blood_tap -> ok() )
-        action_list_str += "/blood_tap,if=(unholy=0&frost>=1)|(unholy>=1&frost=0)|(death=1)";
-      action_list_str += "/death_strike";
-      //action_list_str += "/death_siphon,if=health.pct<90";
-      action_list_str += "/death_siphon,if=enabled&hit_damage>action.necrotic_strike.hit_damage";
-      action_list_str += "/necrotic_strike,if=!talent.death_siphon.enabled|hit_damage>action.death_siphon.hit_damage";
-      action_list_str += "/blood_boil,if=buff.crimson_scourge.up";
-      action_list_str += "/heart_strike,if=(blood=1&blood.cooldown_remains<1)|blood=2";
-      action_list_str += "/rune_strike,if=runic_power>=40";
-      action_list_str += "/horn_of_winter";
-      action_list_str += "/empower_rune_weapon,if=blood=0&unholy=0&frost=0";
-      break;
-    }
-    case DEATH_KNIGHT_FROST:
-    {
-      // Frost specific precombat stuff
-      if ( level >= 68 ) precombat_list += "/pillar_of_frost";
-      if ( level >= 56 ) precombat_list += "/raise_dead";
+        // Frost specific precombat stuff
+        if ( level >= 68 ) precombat_list += "/pillar_of_frost";
+        if ( level >= 56 ) precombat_list += "/raise_dead";
 
-      if ( level >= 68 ) action_list_str += "/pillar_of_frost";
-
-      if ( sim -> allow_potions )
-      {
-        if ( level > 85 ) action_list_str += "/mogu_power_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)";
-        else if ( level >= 80 ) action_list_str += "/golemblood_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)";
-      }
-
-      if ( level > 75 && main_hand_weapon.group() != WEAPON_2H )
-      {
-        action_list_str += "/empower_rune_weapon,if=target.time_to_die<=60";
+        if ( level >= 68 ) action_list_str += "/pillar_of_frost";
 
         if ( sim -> allow_potions )
-          action_list_str += "&(buff.mogu_power_potion.up|buff.golemblood_potion.up)";
+        {
+          if ( level > 85 ) action_list_str += "/mogu_power_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)";
+          else if ( level >= 80 ) action_list_str += "/golemblood_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)";
+        }
+
+        if ( level > 75 && main_hand_weapon.group() != WEAPON_2H )
+        {
+          action_list_str += "/empower_rune_weapon,if=target.time_to_die<=60";
+
+          if ( sim -> allow_potions )
+            action_list_str += "&(buff.mogu_power_potion.up|buff.golemblood_potion.up)";
+        }
+
+        action_list_str += init_use_item_actions( ",if=buff.pillar_of_frost.up" );
+        action_list_str += init_use_profession_actions();
+        action_list_str += init_use_racial_actions();
+
+        if ( level >= 56 ) action_list_str += "/raise_dead";
+
+        //decide between single_target and aoe rotation
+        action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
+        action_list_str += "/run_action_list,name=single_target,if=active_enemies<5";
+
+        if ( main_hand_weapon.group() == WEAPON_2H )
+        {
+          // Diseases for free
+          st_list_str += "/plague_leech,if=talent.plague_leech.enabled&(dot.blood_plague.remains<1|dot.frost_fever.remains<1)";
+          if ( level >= 82 ) st_list_str += "/outbreak,if=!dot.frost_fever.ticking|!dot.blood_plague.ticking";
+          st_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(!dot.frost_fever.ticking|!dot.blood_plague.ticking)";
+
+          // Soul Reaper
+          if ( level >= 87 )
+          {
+            st_list_str += "/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct;
+            st_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)";
+          }
+
+          // Diseases for runes
+          st_list_str += "/howling_blast,if=!dot.frost_fever.ticking";
+          st_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
+
+          // Rime
+          st_list_str += "/howling_blast,if=buff.rime.react";
+
+          // Killing Machine
+          if ( level >= 61 ) st_list_str += "/obliterate,if=buff.killing_machine.react";
+          st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.killing_machine.react";
+
+          // Don't waste Runic Power
+          st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>76";
+          st_list_str += "/frost_strike,if=runic_power>76";
+
+          // Keep runes on cooldown
+          if ( level >= 61 ) st_list_str += "/obliterate,if=blood=2|frost=2|unholy=2";
+
+          // Refresh diseases
+          st_list_str += "/plague_leech,if=talent.plague_leech.enabled&(dot.blood_plague.remains<3|dot.frost_fever.remains<3)";
+          if ( level >= 82 ) st_list_str += "/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3";
+          st_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)";
+
+          // Regenerate resources
+          st_list_str += "/frost_strike,if=talent.runic_empowerment.enabled&frost=0";
+          st_list_str += "/frost_strike,if=talent.blood_tap.enabled&buff.blood_charge.stack<=10";
+          st_list_str += "/horn_of_winter";
+          st_list_str += "/frost_strike,if=talent.runic_corruption.enabled&buff.runic_corruption.down";
+
+          // Normal stuff
+          if ( level >= 61 ) st_list_str += "/obliterate";
+          if ( level >= 75 )
+          {
+            st_list_str += "/empower_rune_weapon,if=target.time_to_die<=60";
+            if ( sim -> allow_potions )
+              st_list_str += "&(buff.mogu_power_potion.up|buff.golemblood_potion.up)";
+          }
+          st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>=20";
+          st_list_str += "/frost_strike";
+
+          // Better than waiting
+          st_list_str += "/plague_leech,if=talent.plague_leech.enabled";
+          if ( level >= 75 ) st_list_str += "/empower_rune_weapon";
+        }
+        else
+        {
+          st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&(runic_power>76|(runic_power>=20&buff.killing_machine.react))";
+
+          // Killing Machine / Very High RP
+          st_list_str += "/frost_strike,if=buff.killing_machine.react|runic_power>88";
+
+          // Diseases for free
+          st_list_str += "/plague_leech,if=talent.plague_leech.enabled&(dot.blood_plague.remains<3|dot.frost_fever.remains<3|cooldown.outbreak.remains<1)";
+          if ( level >= 82 ) st_list_str += "/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3";
+          st_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)";
+
+          // Soul Reaper
+          if ( level >= 87 )
+          {
+            st_list_str += "/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct;
+            st_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)";
+          }
+
+          // Diseases for runes
+          st_list_str += "/howling_blast,if=!dot.frost_fever.ticking";
+          st_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
+
+          // Rime
+          st_list_str += "/howling_blast,if=buff.rime.react";
+
+          // Don't waste Runic Power
+          st_list_str += "/frost_strike,if=runic_power>76";
+
+          // Keep Runes on Cooldown
+          if ( level >= 61 ) st_list_str += "/obliterate,if=unholy>1";
+          st_list_str += "/howling_blast,if=death>1|frost>1";
+
+          // Generate Runic Power or Runes
+          st_list_str += "/horn_of_winter";
+          if ( level >= 61 ) st_list_str += "/obliterate,if=unholy>0";
+          st_list_str += "/howling_blast";
+          st_list_str += "/frost_strike,if=talent.runic_empowerment.enabled&(frost=0|blood=0)";
+          st_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)>" + soul_reaper_pct + "|buff.blood_charge.stack>=8)";
+          st_list_str += "/frost_strike,if=talent.runic_corruption.enabled&buff.runic_corruption.down";
+          if ( level >= 60 ) st_list_str += "/death_and_decay";
+
+          // Better than waiting
+          st_list_str += "/frost_strike,if=runic_power>=40";
+          if ( level >= 75 ) st_list_str += "/empower_rune_weapon";
+        }
+
+        //AoE
+        aoe_list_str = "/unholy_blight,if=talent.unholy_blight.enabled";
+        aoe_list_str += "/pestilence,if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28";
+        aoe_list_str += "/pestilence,if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28";
+        aoe_list_str += "/howling_blast";
+        aoe_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10";
+        aoe_list_str += "/frost_strike,if=runic_power>76";
+        aoe_list_str += "/death_and_decay,if=unholy=1";
+        aoe_list_str += "/plague_strike,if=unholy=2";
+        aoe_list_str += "/blood_tap,if=talent.blood_tap.enabled";
+        aoe_list_str += "/frost_strike";
+        aoe_list_str += "/horn_of_winter";
+        aoe_list_str += "/plague_leech,if=talent.plague_leech.enabled&unholy=1";
+        aoe_list_str += "/plague_strike,if=unholy=1";
+        aoe_list_str += "/empower_rune_weapon";
+
+        if ( race == RACE_GOBLIN ) action_list_str += "/rocket_barrage";
+        break;
       }
-
-      action_list_str += init_use_item_actions( ",if=buff.pillar_of_frost.up" );
-      action_list_str += init_use_profession_actions();
-      action_list_str += init_use_racial_actions();
-
-      if ( level >= 56 ) action_list_str += "/raise_dead";
-
-      //decide between single_target and aoe rotation
-      action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
-      action_list_str += "/run_action_list,name=single_target,if=active_enemies<5";
-
-      if ( main_hand_weapon.group() == WEAPON_2H )
+      case DEATH_KNIGHT_UNHOLY:
       {
+        precombat_list += "/raise_dead";
+
+        action_list_str += init_use_profession_actions();
+        action_list_str += init_use_racial_actions( ",if=time>=2" );
+
+        if ( sim -> allow_potions )
+        {
+          if ( level > 85 )
+            action_list_str += "/mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
+          else if ( level >= 80 )
+            action_list_str += "/golemblood_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
+        }
+
+        if ( level >= 66 ) action_list_str += "/unholy_frenzy,if=time>=4";
+        action_list_str += init_use_item_actions( ",if=time>=4" );
+
+        //decide between single_target and aoe rotation
+        action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
+        action_list_str += "/run_action_list,name=single_target,if=active_enemies<5";
+
+        // Disease Gaming
+
+        if ( level >= 82 ) st_list_str += "/outbreak,if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)";
+        st_list_str += "/plague_strike,if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)";
+
+        st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>=32";
+
         // Diseases for free
-        st_list_str += "/plague_leech,if=talent.plague_leech.enabled&(dot.blood_plague.remains<1|dot.frost_fever.remains<1)";
-        if ( level >= 82 ) st_list_str += "/outbreak,if=!dot.frost_fever.ticking|!dot.blood_plague.ticking";
-        st_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(!dot.frost_fever.ticking|!dot.blood_plague.ticking)";
+        st_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)";
+        if ( level >= 82 ) st_list_str += "/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3";
 
         // Soul Reaper
         if ( level >= 87 )
@@ -5170,214 +5320,64 @@ void death_knight_t::init_actions()
           st_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)";
         }
 
-        // Diseases for runes
-        st_list_str += "/howling_blast,if=!dot.frost_fever.ticking";
-        st_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
+        // Diseases for Runes
+        st_list_str += "/plague_strike,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking";
 
-        // Rime
-        st_list_str += "/howling_blast,if=buff.rime.react";
+        // GCD Cooldowns
+        if ( level >= 74 ) st_list_str += "/summon_gargoyle";
+        if ( level >= 70 ) st_list_str += "/dark_transformation";
+        st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.shadow_infusion.stack=5";
 
-        // Killing Machine
-        if ( level >= 61 ) st_list_str += "/obliterate,if=buff.killing_machine.react";
-        st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.killing_machine.react";
+        // Don't waste runic power
+        st_list_str += "/death_coil,if=runic_power>90";
 
-        // Don't waste Runic Power
-        st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>76";
-        st_list_str += "/frost_strike,if=runic_power>76";
-
-        // Keep runes on cooldown
-        if ( level >= 61 ) st_list_str += "/obliterate,if=blood=2|frost=2|unholy=2";
-
-        // Refresh diseases
-        st_list_str += "/plague_leech,if=talent.plague_leech.enabled&(dot.blood_plague.remains<3|dot.frost_fever.remains<3)";
-        if ( level >= 82 ) st_list_str += "/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3";
-        st_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)";
-
-        // Regenerate resources
-        st_list_str += "/frost_strike,if=talent.runic_empowerment.enabled&frost=0";
-        st_list_str += "/frost_strike,if=talent.blood_tap.enabled&buff.blood_charge.stack<=10";
-        st_list_str += "/horn_of_winter";
-        st_list_str += "/frost_strike,if=talent.runic_corruption.enabled&buff.runic_corruption.down";
+        // Get runes on cooldown
+        if ( level >= 60 ) st_list_str += "/death_and_decay,if=unholy=2";
+        st_list_str += "/blood_tap,if=talent.blood_tap.enabled&unholy=2&cooldown.death_and_decay.remains=0";
+        if ( level >= 58 ) st_list_str += "/scourge_strike,if=unholy=2";
+        if ( level >= 64 ) st_list_str += "/festering_strike,if=blood=2&frost=2";
 
         // Normal stuff
-        if ( level >= 61 ) st_list_str += "/obliterate";
-        if ( level >= 75 )
-        {
-          st_list_str += "/empower_rune_weapon,if=target.time_to_die<=60";
-          if ( sim -> allow_potions )
-            st_list_str += "&(buff.mogu_power_potion.up|buff.golemblood_potion.up)";
-        }
-        st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>=20";
-        st_list_str += "/frost_strike";
-
-        // Better than waiting
-        st_list_str += "/plague_leech,if=talent.plague_leech.enabled";
-        if ( level >= 75 ) st_list_str += "/empower_rune_weapon";
-      }
-      else
-      {
-        st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&(runic_power>76|(runic_power>=20&buff.killing_machine.react))";
-
-        // Killing Machine / Very High RP
-        st_list_str += "/frost_strike,if=buff.killing_machine.react|runic_power>88";
-
-        // Diseases for free
-        st_list_str += "/plague_leech,if=talent.plague_leech.enabled&(dot.blood_plague.remains<3|dot.frost_fever.remains<3|cooldown.outbreak.remains<1)";
-        if ( level >= 82 ) st_list_str += "/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3";
-        st_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)";
-
-        // Soul Reaper
-        if ( level >= 87 )
-        {
-          st_list_str += "/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct;
-          st_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)";
-        }
-
-        // Diseases for runes
-        st_list_str += "/howling_blast,if=!dot.frost_fever.ticking";
-        st_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
-
-        // Rime
-        st_list_str += "/howling_blast,if=buff.rime.react";
-
-        // Don't waste Runic Power
-        st_list_str += "/frost_strike,if=runic_power>76";
-
-        // Keep Runes on Cooldown
-        if ( level >= 61 ) st_list_str += "/obliterate,if=unholy>1";
-        st_list_str += "/howling_blast,if=death>1|frost>1";
-
-        // Generate Runic Power or Runes
-        st_list_str += "/horn_of_winter";
-        if ( level >= 61 ) st_list_str += "/obliterate,if=unholy>0";
-        st_list_str += "/howling_blast";
-        st_list_str += "/frost_strike,if=talent.runic_empowerment.enabled&(frost=0|blood=0)";
-        st_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)>" + soul_reaper_pct + "|buff.blood_charge.stack>=8)";
-        st_list_str += "/frost_strike,if=talent.runic_corruption.enabled&buff.runic_corruption.down";
         if ( level >= 60 ) st_list_str += "/death_and_decay";
+        st_list_str += "/blood_tap,if=talent.blood_tap.enabled&cooldown.death_and_decay.remains=0";
+        st_list_str += "/death_coil,if=buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)";
+        if ( level >= 58 ) st_list_str += "/scourge_strike";
+        st_list_str += "/plague_leech,if=talent.plague_leech.enabled&cooldown.outbreak.remains<1";
+        if ( level >= 64 ) st_list_str += "/festering_strike";
+        st_list_str += "/horn_of_winter";
+        st_list_str += "/death_coil,if=buff.dark_transformation.down|(cooldown.summon_gargoyle.remains>8&buff.dark_transformation.remains>8)";
 
-        // Better than waiting
-        st_list_str += "/frost_strike,if=runic_power>=40";
+        // Less waiting
+        st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>=8";
         if ( level >= 75 ) st_list_str += "/empower_rune_weapon";
+
+        //AoE
+        aoe_list_str = "/unholy_blight,if=talent.unholy_blight.enabled";
+        aoe_list_str += "/plague_strike,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking";
+        aoe_list_str += "/pestilence,if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28";
+        aoe_list_str += "/pestilence,if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28";
+        if ( level >= 74 ) aoe_list_str += "/summon_gargoyle";
+        if ( level >= 70 ) aoe_list_str += "/dark_transformation";
+        aoe_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.shadow_infusion.stack=5";
+        aoe_list_str += "/blood_boil,if=blood=2|death=2";
+        aoe_list_str += "/death_and_decay,if=unholy=1";
+        aoe_list_str += "/soul_reaper,if=unholy=2&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct;
+        aoe_list_str += "/scourge_strike,if=unholy=2";
+        aoe_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10";
+        aoe_list_str += "/death_coil,if=runic_power>90|buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)";
+        aoe_list_str += "/blood_boil";
+        aoe_list_str += "/icy_touch";
+        aoe_list_str += "/soul_reaper,if=unholy=1&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct;
+        aoe_list_str += "/scourge_strike,if=unholy=1";
+        aoe_list_str += "/death_coil";
+        aoe_list_str += "/blood_tap,if=talent.blood_tap.enabled";
+        aoe_list_str += "/plague_leech,if=talent.plague_leech.enabled&unholy=1";
+        aoe_list_str += "/horn_of_winter";
+        aoe_list_str += "/empower_rune_weapon";
+
+        break;
       }
-
-      //AoE
-      aoe_list_str="/unholy_blight,if=talent.unholy_blight.enabled";
-      aoe_list_str+="/pestilence,if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28";
-      aoe_list_str+="/pestilence,if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28";
-      aoe_list_str+="/howling_blast";
-      aoe_list_str+="/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10";
-      aoe_list_str+="/frost_strike,if=runic_power>76";
-      aoe_list_str+="/death_and_decay,if=unholy=1";
-      aoe_list_str+="/plague_strike,if=unholy=2";
-      aoe_list_str+="/blood_tap,if=talent.blood_tap.enabled";
-      aoe_list_str+="/frost_strike";
-      aoe_list_str+="/horn_of_winter";
-      aoe_list_str+="/plague_leech,if=talent.plague_leech.enabled&unholy=1";
-      aoe_list_str+="/plague_strike,if=unholy=1";
-      aoe_list_str+="/empower_rune_weapon";
-
-      if ( race == RACE_GOBLIN ) action_list_str += "/rocket_barrage";
-      break;
-    }
-    case DEATH_KNIGHT_UNHOLY:
-    {
-      precombat_list += "/raise_dead";
-
-      action_list_str += init_use_profession_actions();
-      action_list_str += init_use_racial_actions( ",if=time>=2" );
-
-      if ( sim -> allow_potions )
-      {
-        if ( level > 85 )
-          action_list_str += "/mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
-        else if ( level >= 80 )
-          action_list_str += "/golemblood_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
-      }
-
-      if ( level >= 66 ) action_list_str += "/unholy_frenzy,if=time>=4";
-      action_list_str += init_use_item_actions( ",if=time>=4" );
-
-      //decide between single_target and aoe rotation
-      action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
-      action_list_str += "/run_action_list,name=single_target,if=active_enemies<5";
-
-      // Disease Gaming
-
-      if ( level >= 82 ) st_list_str += "/outbreak,if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)";
-      st_list_str += "/plague_strike,if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)";
-
-      st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>=32";
-
-      // Diseases for free
-      st_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)";
-      if ( level >= 82 ) st_list_str += "/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3";
-
-      // Soul Reaper
-      if ( level >= 87 )
-      {
-        st_list_str += "/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct;
-        st_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)";
-      }
-
-      // Diseases for Runes
-      st_list_str += "/plague_strike,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking";
-
-      // GCD Cooldowns
-      if ( level >= 74 ) st_list_str += "/summon_gargoyle";
-      if ( level >= 70 ) st_list_str += "/dark_transformation";
-      st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.shadow_infusion.stack=5";
-
-      // Don't waste runic power
-      st_list_str += "/death_coil,if=runic_power>90";
-
-      // Get runes on cooldown
-      if ( level >= 60 ) st_list_str += "/death_and_decay,if=unholy=2";
-      st_list_str += "/blood_tap,if=talent.blood_tap.enabled&unholy=2&cooldown.death_and_decay.remains=0";
-      if ( level >= 58 ) st_list_str += "/scourge_strike,if=unholy=2";
-      if ( level >= 64 ) st_list_str += "/festering_strike,if=blood=2&frost=2";
-
-      // Normal stuff
-      if ( level >= 60 ) st_list_str += "/death_and_decay";
-      st_list_str += "/blood_tap,if=talent.blood_tap.enabled&cooldown.death_and_decay.remains=0";
-      st_list_str += "/death_coil,if=buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)";
-      if ( level >= 58 ) st_list_str += "/scourge_strike";
-      st_list_str += "/plague_leech,if=talent.plague_leech.enabled&cooldown.outbreak.remains<1";
-      if ( level >= 64 ) st_list_str += "/festering_strike";
-      st_list_str += "/horn_of_winter";
-      st_list_str += "/death_coil,if=buff.dark_transformation.down|(cooldown.summon_gargoyle.remains>8&buff.dark_transformation.remains>8)";
-
-      // Less waiting
-      st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>=8";
-      if ( level >= 75 ) st_list_str += "/empower_rune_weapon";
-
-      //AoE
-      aoe_list_str="/unholy_blight,if=talent.unholy_blight.enabled";
-      aoe_list_str+="/plague_strike,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking";
-      aoe_list_str+="/pestilence,if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28";
-      aoe_list_str+="/pestilence,if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28";
-      if ( level >= 74 ) aoe_list_str+= "/summon_gargoyle";
-      if ( level >= 70 ) aoe_list_str+= "/dark_transformation";
-      aoe_list_str+="/blood_tap,if=talent.blood_tap.enabled&buff.shadow_infusion.stack=5";
-      aoe_list_str+="/blood_boil,if=blood=2|death=2";
-      aoe_list_str+="/death_and_decay,if=unholy=1";
-      aoe_list_str+="/soul_reaper,if=unholy=2&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct;
-      aoe_list_str+="/scourge_strike,if=unholy=2";
-      aoe_list_str+="/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10";
-      aoe_list_str+="/death_coil,if=runic_power>90|buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)";
-      aoe_list_str+="/blood_boil";
-      aoe_list_str+="/icy_touch";
-      aoe_list_str+="/soul_reaper,if=unholy=1&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct;
-      aoe_list_str+="/scourge_strike,if=unholy=1";
-      aoe_list_str+="/death_coil";
-      aoe_list_str+="/blood_tap,if=talent.blood_tap.enabled";
-      aoe_list_str+="/plague_leech,if=talent.plague_leech.enabled&unholy=1";
-      aoe_list_str+="/horn_of_winter";
-      aoe_list_str+="/empower_rune_weapon";
-
-      break;
-    }
-    default: break;
+      default: break;
     }
 
     action_list_default = 1;
@@ -5503,40 +5503,40 @@ void death_knight_t::init_enchant()
   };
 
   runeforge.rune_of_cinderglacier       = buff_creator_t( this, "rune_of_cinderglacier", find_spell( 53386 ) )
-                                      .default_value( find_spell( 53386 ) -> effectN( 1 ).percent() );
+                                          .default_value( find_spell( 53386 ) -> effectN( 1 ).percent() );
   runeforge.rune_of_the_fallen_crusader = buff_creator_t( this, "rune_of_the_fallen_crusader" ).max_stack( 1 )
-                                      .duration( timespan_t::from_seconds( 15.0 ) )
-                                      .add_invalidate( CACHE_STRENGTH );
+                                          .duration( timespan_t::from_seconds( 15.0 ) )
+                                          .add_invalidate( CACHE_STRENGTH );
 
   runeforge.rune_of_the_stoneskin_gargoyle = buff_creator_t( this, "rune_of_the_stoneskin_gargoyle", find_spell( 62157 ) )
-                                         .quiet( true )
-                                         .chance( 0 );
+                                             .quiet( true )
+                                             .chance( 0 );
   runeforge.rune_of_the_nerubian_carapace = buff_creator_t( this, "rune_of_the_nerubian_carapace", find_spell( 70163 ) )
                                            .quiet( true )
                                            .chance( 0 );
   runeforge.rune_of_the_nerubian_carapace_oh = buff_creator_t( this, "rune_of_the_nerubian_carapace_oh", find_spell( 70163 ) )
-                                           .quiet( true )
-                                           .chance( 0 );
+                                               .quiet( true )
+                                               .chance( 0 );
 
   runeforge.rune_of_spellshattering = buff_creator_t( this, "rune_of_spellshattering", find_spell( 53362 ) )
-                                  .quiet( true )
-                                  .chance( 0 );
+                                      .quiet( true )
+                                      .chance( 0 );
   runeforge.rune_of_spellbreaking = buff_creator_t( this, "rune_of_spellbreaking", find_spell( 54449 ) )
-                                  .quiet( true )
-                                  .chance( 0 );
+                                    .quiet( true )
+                                    .chance( 0 );
   runeforge.rune_of_spellbreaking_oh = buff_creator_t( this, "rune_of_spellbreaking_oh", find_spell( 54449 ) )
-                                  .quiet( true )
-                                  .chance( 0 );
+                                       .quiet( true )
+                                       .chance( 0 );
 
   runeforge.rune_of_swordshattering = buff_creator_t( this, "rune_of_swordshattering", find_spell( 53387 ) )
-                                  .quiet( true )
-                                  .chance( 0 );
+                                      .quiet( true )
+                                      .chance( 0 );
   runeforge.rune_of_swordbreaking = buff_creator_t( this, "rune_of_swordbreaking", find_spell( 54448 ) )
-                                  .quiet( true )
-                                  .chance( 0 );
+                                    .quiet( true )
+                                    .chance( 0 );
   runeforge.rune_of_swordbreaking_oh = buff_creator_t( this, "rune_of_swordbreaking_oh", find_spell( 54448 ) )
-                                  .quiet( true )
-                                  .chance( 0 );
+                                       .quiet( true )
+                                       .chance( 0 );
 
   if ( mh_enchant == "rune_of_the_fallen_crusader" )
   {
@@ -5569,7 +5569,7 @@ void death_knight_t::init_enchant()
 
   if ( mh_enchant == "rune_of_the_nerubian_carapace" )
     runeforge.rune_of_the_nerubian_carapace -> default_chance = 1.0;
-  
+
   if ( oh_enchant == "rune_of_the_nerubian_carapace" )
     runeforge.rune_of_the_nerubian_carapace_oh -> default_chance = 1.0;
 
@@ -5790,14 +5790,14 @@ void death_knight_t::assess_damage( school_e     school,
       if ( set_bonus.tier15_4pc_tank() && buffs.bone_shield -> check() )
       {
         resource_gain( RESOURCE_RUNIC_POWER,
-            spell.t15_4pc_tank -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
-            gains.t15_4pc_tank );
+                       spell.t15_4pc_tank -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+                       gains.t15_4pc_tank );
       }
     }
 
     incoming_damage.push_back( std::pair<timespan_t, double>( sim -> current_time, s -> result_amount ) );
 
-    while ( incoming_damage.size() > 0 && 
+    while ( incoming_damage.size() > 0 &&
             sim -> current_time - incoming_damage.front().first > timespan_t::from_seconds( 5.0 ) )
       incoming_damage.erase( incoming_damage.begin() );
   }
@@ -5968,10 +5968,10 @@ void death_knight_t::invalidate_cache( cache_e c )
 
   switch ( c )
   {
-  case CACHE_MASTERY:
+    case CACHE_MASTERY:
       player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    break;
-  default: break;
+      break;
+    default: break;
   }
 }
 
@@ -6101,7 +6101,7 @@ void death_knight_t::trigger_runic_empowerment()
     return;
 
   int depleted_runes[RUNE_SLOT_MAX];
-  int num_depleted=0;
+  int num_depleted = 0;
 
   // Find fully depleted runes, i.e., both runes are on CD
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
@@ -6113,11 +6113,11 @@ void death_knight_t::trigger_runic_empowerment()
     int rune_to_regen = depleted_runes[ ( int ) ( sim -> default_rng() -> real() * num_depleted * 0.9999 ) ];
     dk_rune_t* regen_rune = &_runes.slot[rune_to_regen];
     regen_rune -> fill_rune();
-    if      ( regen_rune -> is_blood()  ) gains.runic_empowerment_blood  -> add ( RESOURCE_RUNE_BLOOD, 1,0 );
-    else if ( regen_rune -> is_unholy() ) gains.runic_empowerment_unholy -> add ( RESOURCE_RUNE_UNHOLY, 1,0 );
-    else if ( regen_rune -> is_frost()  ) gains.runic_empowerment_frost  -> add ( RESOURCE_RUNE_FROST, 1,0 );
+    if      ( regen_rune -> is_blood()  ) gains.runic_empowerment_blood  -> add ( RESOURCE_RUNE_BLOOD, 1, 0 );
+    else if ( regen_rune -> is_unholy() ) gains.runic_empowerment_unholy -> add ( RESOURCE_RUNE_UNHOLY, 1, 0 );
+    else if ( regen_rune -> is_frost()  ) gains.runic_empowerment_frost  -> add ( RESOURCE_RUNE_FROST, 1, 0 );
 
-    gains.runic_empowerment -> add ( RESOURCE_RUNE, 1,0 );
+    gains.runic_empowerment -> add ( RESOURCE_RUNE, 1, 0 );
     if ( sim -> log ) sim -> output( "runic empowerment regen'd rune %d", rune_to_regen );
     procs.runic_empowerment -> occur();
 
@@ -6127,7 +6127,7 @@ void death_knight_t::trigger_runic_empowerment()
   {
     // If there were no available runes to refresh
     procs.runic_empowerment_wasted -> occur();
-    gains.runic_empowerment -> add ( RESOURCE_RUNE, 0,1 );
+    gains.runic_empowerment -> add ( RESOURCE_RUNE, 0, 1 );
   }
 }
 
@@ -6141,7 +6141,7 @@ int death_knight_t::runes_count( rune_type rt, bool include_death, int position 
   // positional checks first
   if ( position > 0 && ( rt == RUNE_TYPE_BLOOD || rt == RUNE_TYPE_FROST || rt == RUNE_TYPE_UNHOLY ) )
   {
-    dk_rune_t* r = &_runes.slot[( ( rt-1 )*2 ) + ( position - 1 ) ];
+    dk_rune_t* r = &_runes.slot[( ( rt - 1 ) * 2 ) + ( position - 1 ) ];
     if ( r -> is_ready() )
       result = 1;
   }
@@ -6218,7 +6218,7 @@ double death_knight_t::runes_cooldown_all( rune_type rt, bool include_death, int
   // find all matching runes. total the pairs. Return the highest number.
 
   double max = 0;
-  for ( int i = 0; i < RUNE_SLOT_MAX; i+=2 )
+  for ( int i = 0; i < RUNE_SLOT_MAX; i += 2 )
   {
     double total = 0;
     dk_rune_t* r = &_runes.slot[i];

@@ -11,8 +11,8 @@ static std::string source_str( wowhead::wowhead_e source )
 {
   switch ( source )
   {
-  case wowhead::PTR:  return "ptr";
-  default:   return "www";
+    case wowhead::PTR:  return "ptr";
+    default:   return "www";
   }
 }
 
@@ -20,8 +20,8 @@ static std::string source_desc_str( wowhead::wowhead_e source )
 {
   switch ( source )
   {
-  case wowhead::PTR:  return "PTR";
-  default:   return "Live";
+    case wowhead::PTR:  return "PTR";
+    default:   return "Live";
   }
 }
 

@@ -73,10 +73,10 @@ static char parse_token( std::string&            token_str,
         c = input[ index++ ];
         switch ( c )
         {
-        case 'n': c = '\n'; break;
-        case 'r': c = '\r'; break;
-        case 't': c = '\t'; break;
-        case '\0': return c;
+          case 'n': c = '\n'; break;
+          case 'r': c = '\r'; break;
+          case 't': c = '\t'; break;
+          case '\0': return c;
         }
       }
       token_str += c;
@@ -147,7 +147,7 @@ static void parse_value( sim_t*                  sim,
   }
   else if ( token_type == '[' )
   {
-    int  array_index=-1;
+    int  array_index = -1;
 
     while ( ! sim -> canceled )
     {
@@ -260,7 +260,7 @@ js_node_t* js::create( sim_t* sim, const std::string& input )
 
   js_node_t* root = new js_node_t( "root" );
 
-  std::string::size_type index=0;
+  std::string::size_type index = 0;
 
   std::string token_str;
   char token_type = parse_token( token_str, input, index );
@@ -292,7 +292,7 @@ js_node_t* js::get_child( js_node_t*         root,
                           const std::string& name_str )
 {
   int num_children = ( int ) root -> children.size();
-  for ( int i=0; i < num_children; i++ )
+  for ( int i = 0; i < num_children; i++ )
   {
     js_node_t* node = root -> children[ i ];
     if ( name_str == node -> name() ) return node;
@@ -384,7 +384,7 @@ int js::get_value( std::vector<std::string>& value,
   if ( node -> children.empty() ) return 0;
   size_t size = node -> children.size();
   value.resize( size );
-  for ( size_t i=0; i < size; i++ )
+  for ( size_t i = 0; i < size; i++ )
   {
     value[ i ] = node -> children[ i ] -> value;
   }
@@ -420,9 +420,9 @@ void js::print( js_node_t* root,
   util::fprintf( file, "\n" );
 
   int num_children = ( int ) root -> children.size();
-  for ( int i=0; i < num_children; i++ )
+  for ( int i = 0; i < num_children; i++ )
   {
-    print( root -> children[ i ], file, spacing+2 );
+    print( root -> children[ i ], file, spacing + 2 );
   }
 }
 

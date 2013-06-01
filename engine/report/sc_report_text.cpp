@@ -144,7 +144,7 @@ void print_text_actions( FILE* file, player_t* p )
 
   util::fprintf( file, "  Actions:\n" );
 
-  int max_length=0;
+  int max_length = 0;
   int max_dpe = 0, max_dpet = 0, max_dpr = 0, max_pdps = 0;
   std::vector<stats_t*> tmp_stats_list = p -> stats_list;
   for ( size_t i = 0; i < p -> pet_list.size(); ++i )
@@ -218,7 +218,7 @@ void print_text_buffs( FILE* file, player_processed_report_information_t& ri )
     {
       if ( ! first )
         util::fprintf( file, "\n" );
-      first=false;
+      first = false;
       util::fprintf( file, "  Constant Buffs:" );
       prefix = ' ';
       total_length = 0;
@@ -439,7 +439,7 @@ void print_text_procs( FILE* file, player_t* p )
 
 void print_text_uptime( FILE* file, player_t* p )
 {
-  bool first=true;
+  bool first = true;
 
   for ( size_t j = 0; j < p -> benefit_list.size(); ++j )
   {
@@ -451,7 +451,7 @@ void print_text_uptime( FILE* file, player_t* p )
     }
   }
 
-  first=true;
+  first = true;
   for ( size_t j = 0; j < p -> uptime_list.size(); ++j )
   {
     uptime_t* u = p -> uptime_list[ j ];
@@ -518,16 +518,16 @@ void print_text_scale_factors( FILE* file, sim_t* sim )
   util::fprintf( file, "\nScale Factors:\n" );
 
   int num_players = ( int ) sim -> players_by_name.size();
-  int max_length=0;
+  int max_length = 0;
 
-  for ( int i=0; i < num_players; i++ )
+  for ( int i = 0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
     int length = ( int ) strlen( p -> name() );
     if ( length > max_length ) max_length = length;
   }
 
-  for ( int i=0; i < num_players; i++ )
+  for ( int i = 0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
 
@@ -633,7 +633,7 @@ void print_text_dps_plots( FILE* file, player_t* p )
       size_t num_points = pd.size();
       for ( size_t j = 0; j < num_points; j++ )
       {
-        util::fprintf( file, "%s%.0f", ( j?"|":"" ), pd[ j ].value );
+        util::fprintf( file, "%s%.0f", ( j ? "|" : "" ), pd[ j ].value );
       }
       util::fprintf( file, "\n" );
     }
@@ -657,9 +657,9 @@ void print_text_reference_dps( FILE* file, sim_t* sim )
   }
 
   int num_players = ( int ) sim -> players_by_dps.size();
-  int max_length=0;
+  int max_length = 0;
 
-  for ( int i=0; i < num_players; i++ )
+  for ( int i = 0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_dps[ i ];
     int length = ( int ) strlen( p -> name() );
@@ -682,7 +682,7 @@ void print_text_reference_dps( FILE* file, sim_t* sim )
 
   util::fprintf( file, "\n" );
 
-  for ( int i=0; i < num_players; i++ )
+  for ( int i = 0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_dps[ i ];
 
@@ -724,7 +724,7 @@ void print_text_hat_donors( FILE* file, sim_t* sim )
   std::vector<player_t*> hat_donors;
 
   int num_players = ( int ) sim -> players_by_name.size();
-  for ( int i=0; i < num_players; i++ )
+  for ( int i = 0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
     if ( p -> procs.hat_donor -> count.mean() )
@@ -738,7 +738,7 @@ void print_text_hat_donors( FILE* file, sim_t* sim )
 
     util::fprintf( file, "\nHonor Among Thieves Donor Report:\n" );
 
-    for ( int i=0; i < num_donors; i++ )
+    for ( int i = 0; i < num_donors; i++ )
     {
       player_t* p = hat_donors[ i ];
       proc_t* proc = p -> procs.hat_donor;
@@ -782,7 +782,7 @@ void print_text_player( FILE* file, player_t* p )
   util::fprintf( file, "  DPS: %.1f  DPS-Error=%.1f/%.1f%% HPS: %.1f HPS-Error=%.1f/%.1f%% DPS-Range=%.0f/%.1f%%  DPS-Convergence=%.1f%%",
                  p -> collected_data.dps.mean(),
                  dps_error, cd.dps.mean() ? dps_error * 100 / cd.dps.mean() : 0,
-                     cd.hps.mean(),
+                 cd.hps.mean(),
                  hps_error, cd.hps.mean() ? hps_error * 100 / cd.hps.mean() : 0,
                  ( cd.dps.max() - cd.dps.min() ) / 2.0 , cd.dps.mean() ? ( ( cd.dps.max() - cd.dps.min() ) / 2 ) * 100 / cd.dps.mean() : 0,
                  p -> dps_convergence * 100 );
@@ -796,7 +796,7 @@ void print_text_player( FILE* file, player_t* p )
 
   util::fprintf( file, "\n" );
   if ( ! p -> origin_str.empty() )  util::fprintf( file, "  Origin: %s\n", p -> origin_str.c_str() );
-  if ( ! p -> talents_str.empty() ) util::fprintf( file, "  Talents: %s\n",p -> talents_str.c_str() );
+  if ( ! p -> talents_str.empty() ) util::fprintf( file, "  Talents: %s\n", p -> talents_str.c_str() );
   print_text_core_stats   ( file, p );
   print_text_spell_stats  ( file, p );
   print_text_attack_stats ( file, p );
@@ -847,7 +847,7 @@ void print_text( FILE* file, sim_t* sim, bool detail )
   {
     util::fprintf( file, "\nDPS Ranking:\n" );
     util::fprintf( file, "%7.0f 100.0%%  Raid\n", sim -> raid_dps.mean() );
-    for ( int i=0; i < num_players; i++ )
+    for ( int i = 0; i < num_players; i++ )
     {
       player_t* p = sim -> players_by_dps[ i ];
       if ( p -> collected_data.dps.mean() <= 0 ) continue;
@@ -858,7 +858,7 @@ void print_text( FILE* file, sim_t* sim, bool detail )
     {
       util::fprintf( file, "\nHPS Ranking:\n" );
       util::fprintf( file, "%7.0f 100.0%%  Raid\n", sim -> raid_hps.mean() );
-      for ( size_t i=0; i < sim -> players_by_hps.size(); i++ )
+      for ( size_t i = 0; i < sim -> players_by_hps.size(); i++ )
       {
         player_t* p = sim -> players_by_hps[ i ];
         if ( p -> collected_data.hps.mean() <= 0 ) continue;
@@ -868,7 +868,7 @@ void print_text( FILE* file, sim_t* sim, bool detail )
   }
 
   // Report Players
-  for ( int i=0; i < num_players; i++ )
+  for ( int i = 0; i < num_players; i++ )
   {
     print_text_player( file, sim -> players_by_name[ i ] );
 
@@ -890,7 +890,7 @@ void print_text( FILE* file, sim_t* sim, bool detail )
   {
     util::fprintf( file, "\n\n *** Targets *** \n\n" );
 
-    for ( int i=0; i < ( int ) sim -> targets_by_name.size(); i++ )
+    for ( int i = 0; i < ( int ) sim -> targets_by_name.size(); i++ )
     {
       print_text_player( file, sim -> targets_by_name[ i ] );
 

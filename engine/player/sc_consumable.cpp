@@ -223,7 +223,7 @@ struct flask_t : public action_t
         boost_stat = STAT_INTELLECT;
       }
 
-      double amount = util::ability_rank( p.level, 320,86, 80,81, 40,71,  24,61,  0,0 );
+      double amount = util::ability_rank( p.level, 320, 86, 80, 81, 40, 71,  24, 61,  0, 0 );
 
       p.stat_gain( boost_stat, amount, gain, this );
     }
@@ -325,7 +325,7 @@ struct elixir_t : public action_t
       if ( ! p.in_combat )
       {
         p.resource_gain( RESOURCE_HEALTH,
-                           p.resources.max[ RESOURCE_HEALTH ] - p.resources.current[ RESOURCE_HEALTH ] );
+                         p.resources.max[ RESOURCE_HEALTH ] - p.resources.current[ RESOURCE_HEALTH ] );
       }
     }
 
@@ -425,101 +425,101 @@ struct food_t : public action_t
 
     switch ( type )
     {
-    case FOOD_FORTUNE_COOKIE:
-      if ( p -> current.stats.dodge_rating > 0 )
-      {
-        p -> stat_gain( STAT_DODGE_RATING, 90 * food_stat_multiplier );
-      }
-      else if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_INTELLECT ] )
-      {
-        if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
+      case FOOD_FORTUNE_COOKIE:
+        if ( p -> current.stats.dodge_rating > 0 )
         {
-          p -> stat_gain( STAT_STRENGTH, 90 * food_stat_multiplier );
+          p -> stat_gain( STAT_DODGE_RATING, 90 * food_stat_multiplier );
+        }
+        else if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_INTELLECT ] )
+        {
+          if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
+          {
+            p -> stat_gain( STAT_STRENGTH, 90 * food_stat_multiplier );
+          }
+          else
+          {
+            p -> stat_gain( STAT_AGILITY, 90 * food_stat_multiplier );
+          }
+        }
+        else if ( p -> current.stats.attribute[ ATTR_INTELLECT ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
+        {
+          p -> stat_gain( STAT_INTELLECT, 90 * food_stat_multiplier, gain, this );
         }
         else
         {
           p -> stat_gain( STAT_AGILITY, 90 * food_stat_multiplier );
         }
-      }
-      else if ( p -> current.stats.attribute[ ATTR_INTELLECT ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
-      {
-        p -> stat_gain( STAT_INTELLECT, 90 * food_stat_multiplier, gain, this );
-      }
-      else
-      {
-        p -> stat_gain( STAT_AGILITY, 90 * food_stat_multiplier );
-      }
-      stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
-      break;
-    case FOOD_SEAFOOD_MAGNIFIQUE_FEAST:
-      if ( p -> current.stats.dodge_rating > 0 )
-      {
-        p -> stat_gain( STAT_DODGE_RATING, 90 * food_stat_multiplier );
-      }
-      else if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_INTELLECT ] )
-      {
-        if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
+        stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
+        break;
+      case FOOD_SEAFOOD_MAGNIFIQUE_FEAST:
+        if ( p -> current.stats.dodge_rating > 0 )
         {
-          p -> stat_gain( STAT_STRENGTH, 90 * food_stat_multiplier );
+          p -> stat_gain( STAT_DODGE_RATING, 90 * food_stat_multiplier );
+        }
+        else if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_INTELLECT ] )
+        {
+          if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
+          {
+            p -> stat_gain( STAT_STRENGTH, 90 * food_stat_multiplier );
+          }
+          else
+          {
+            p -> stat_gain( STAT_AGILITY, 90 * food_stat_multiplier );
+          }
+        }
+        else if ( p -> current.stats.attribute[ ATTR_INTELLECT ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
+        {
+          p -> stat_gain( STAT_INTELLECT, 90 * food_stat_multiplier, gain, this );
         }
         else
         {
           p -> stat_gain( STAT_AGILITY, 90 * food_stat_multiplier );
         }
-      }
-      else if ( p -> current.stats.attribute[ ATTR_INTELLECT ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
-      {
-        p -> stat_gain( STAT_INTELLECT, 90 * food_stat_multiplier, gain, this );
-      }
-      else
-      {
-        p -> stat_gain( STAT_AGILITY, 90 * food_stat_multiplier );
-      }
-      stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
-      break;
-    case FOOD_BANQUET_OF_THE_BREW:
-    case FOOD_BANQUET_OF_THE_GRILL:
-    case FOOD_BANQUET_OF_THE_OVEN:
-    case FOOD_BANQUET_OF_THE_POT:
-    case FOOD_BANQUET_OF_THE_STEAMER:
-    case FOOD_BANQUET_OF_THE_WOK:
-    case FOOD_GREAT_BANQUET_OF_THE_BREW:
-    case FOOD_GREAT_BANQUET_OF_THE_GRILL:
-    case FOOD_GREAT_BANQUET_OF_THE_OVEN:
-    case FOOD_GREAT_BANQUET_OF_THE_POT:
-    case FOOD_GREAT_BANQUET_OF_THE_STEAMER:
-    case FOOD_GREAT_BANQUET_OF_THE_WOK:
-      if ( gain_amount <= 0.0 ) gain_amount = 250;
-    case FOOD_PANDAREN_BANQUET:
-    case FOOD_GREAT_PANDAREN_BANQUET:
-      if ( gain_amount <= 0.0 ) gain_amount = 275;
+        stamina = 90 * food_stat_multiplier; p -> stat_gain( STAT_STAMINA, stamina );
+        break;
+      case FOOD_BANQUET_OF_THE_BREW:
+      case FOOD_BANQUET_OF_THE_GRILL:
+      case FOOD_BANQUET_OF_THE_OVEN:
+      case FOOD_BANQUET_OF_THE_POT:
+      case FOOD_BANQUET_OF_THE_STEAMER:
+      case FOOD_BANQUET_OF_THE_WOK:
+      case FOOD_GREAT_BANQUET_OF_THE_BREW:
+      case FOOD_GREAT_BANQUET_OF_THE_GRILL:
+      case FOOD_GREAT_BANQUET_OF_THE_OVEN:
+      case FOOD_GREAT_BANQUET_OF_THE_POT:
+      case FOOD_GREAT_BANQUET_OF_THE_STEAMER:
+      case FOOD_GREAT_BANQUET_OF_THE_WOK:
+        if ( gain_amount <= 0.0 ) gain_amount = 250;
+      case FOOD_PANDAREN_BANQUET:
+      case FOOD_GREAT_PANDAREN_BANQUET:
+        if ( gain_amount <= 0.0 ) gain_amount = 275;
 
-      if ( p -> current.stats.dodge_rating > 0 )
-      {
-        p -> stat_gain( STAT_DODGE_RATING, gain_amount * food_stat_multiplier );
-      }
-      else if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_INTELLECT ] )
-      {
-        if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
+        if ( p -> current.stats.dodge_rating > 0 )
         {
-          p -> stat_gain( STAT_STRENGTH, gain_amount * food_stat_multiplier );
+          p -> stat_gain( STAT_DODGE_RATING, gain_amount * food_stat_multiplier );
+        }
+        else if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_INTELLECT ] )
+        {
+          if ( p -> current.stats.attribute[ ATTR_STRENGTH ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
+          {
+            p -> stat_gain( STAT_STRENGTH, gain_amount * food_stat_multiplier );
+          }
+          else
+          {
+            p -> stat_gain( STAT_AGILITY, gain_amount * food_stat_multiplier );
+          }
+        }
+        else if ( p -> current.stats.attribute[ ATTR_INTELLECT ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
+        {
+          p -> stat_gain( STAT_INTELLECT, gain_amount * food_stat_multiplier, gain, this );
         }
         else
         {
           p -> stat_gain( STAT_AGILITY, gain_amount * food_stat_multiplier );
         }
-      }
-      else if ( p -> current.stats.attribute[ ATTR_INTELLECT ] >= p -> current.stats.attribute[ ATTR_AGILITY ] )
-      {
-        p -> stat_gain( STAT_INTELLECT, gain_amount * food_stat_multiplier, gain, this );
-      }
-      else
-      {
-        p -> stat_gain( STAT_AGILITY, gain_amount * food_stat_multiplier );
-      }
-      break;
+        break;
 
-    default: break;
+      default: break;
     }
     // Cap Health for food if used outside of combat
     if ( ! player -> in_combat )
@@ -567,7 +567,7 @@ struct mana_potion_t : public action_t
     if ( min > max ) std::swap( min, max );
 
     if ( max <= 0 )
-      min = max = util::ability_rank( player -> level,  30001,86, 10000,85, 4300,80,  2400,68,  1800,0 );
+      min = max = util::ability_rank( player -> level,  30001, 86, 10000, 85, 4300, 80,  2400, 68,  1800, 0 );
 
     assert( max > 0 );
 

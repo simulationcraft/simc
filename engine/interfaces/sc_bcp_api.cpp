@@ -106,11 +106,11 @@ bool parse_talents( player_t*  p,
     unsigned sid;
     switch ( stag )
     {
-    case 'a': sid = 0; break;
-    case 'Z': sid = 1; break;
-    case 'b': sid = 2; break;
-    case 'Y': sid = 3; break;
-    default:  sid = 99; break;
+      case 'a': sid = 0; break;
+      case 'Z': sid = 1; break;
+      case 'b': sid = 2; break;
+      case 'Y': sid = 3; break;
+      default:  sid = 99; break;
     }
     p -> _spec = p -> dbc.spec_by_idx( p -> type, sid );
   }
@@ -122,17 +122,17 @@ bool parse_talents( player_t*  p,
   {
     switch ( talent_encoding[ i ] )
     {
-    case '.':
-      talent_encoding[ i ] = '0';
-      break;
-    case '0':
-    case '1':
-    case '2':
-      talent_encoding[ i ] += 1;
-      break;
-    default:
-      p -> sim -> errorf( "BCP API: Invalid character '%c' in talent encoding for player %s.\n", talent_encoding[ i ], p -> name() );
-      return false;
+      case '.':
+        talent_encoding[ i ] = '0';
+        break;
+      case '0':
+      case '1':
+      case '2':
+        talent_encoding[ i ] += 1;
+        break;
+      default:
+        p -> sim -> errorf( "BCP API: Invalid character '%c' in talent encoding for player %s.\n", talent_encoding[ i ], p -> name() );
+        return false;
     }
   }
 
@@ -265,8 +265,8 @@ player_t* parse_player( sim_t*             sim,
   {
     io::ifstream ifs;
     ifs.open( player.local_json );
-    result.assign( (std::istreambuf_iterator<char>(ifs) ),
-        (std::istreambuf_iterator<char>()    ) );
+    result.assign( ( std::istreambuf_iterator<char>( ifs ) ),
+                   ( std::istreambuf_iterator<char>()    ) );
   }
 
   // if ( sim -> debug ) util::fprintf( sim -> output_file, "%s\n%s\n", url.c_str(), result.c_str() );
@@ -726,7 +726,7 @@ player_t* bcp_api::from_local_json( sim_t*             sim,
                                     const std::string& name,
                                     const std::string& file_path,
                                     const std::string& talents
-                                    )
+                                  )
 {
   sim -> current_name = name;
 

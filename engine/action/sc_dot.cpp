@@ -38,7 +38,7 @@ struct dot_tick_event_t : public event_t
       sim.errorf( "Player %s has corrupt tick (%d of %d) event on action %s!\n",
                   player -> name(), dot -> current_tick, dot -> num_ticks, dot -> name() );
       sim.cancel();
-      assert(0);
+      assert( 0 );
     }
 
     dot -> tick_event = nullptr;
@@ -62,11 +62,11 @@ struct dot_tick_event_t : public event_t
     {
       expr_t* expr = dot -> current_action -> interrupt_if_expr;
       if ( dot -> current_tick == dot -> num_ticks
-        || ( dot -> current_action -> channeled
-          && dot -> ticks() > 0
-          && dot -> current_action -> player -> gcd_ready <= sim.current_time
-          && ( dot -> current_action -> interrupt || ( expr && expr -> success() ) )
-          && dot -> is_higher_priority_action_available() ) )
+           || ( dot -> current_action -> channeled
+                && dot -> ticks() > 0
+                && dot -> current_action -> player -> gcd_ready <= sim.current_time
+                && ( dot -> current_action -> interrupt || ( expr && expr -> success() ) )
+                && dot -> is_higher_priority_action_available() ) )
       {
         // cancel dot
         dot -> last_tick();
@@ -86,7 +86,7 @@ dot_t::dot_t( const std::string& n, player_t* t, player_t* s ) :
   sim( *( t -> sim ) ), target( t ), source( s ), current_action( 0 ), state( 0 ), tick_event( nullptr ),
   num_ticks( 0 ), current_tick( 0 ), added_ticks( 0 ), ticking( false ),
   added_seconds( timespan_t::zero() ), ready( timespan_t::min() ),
-  miss_time( timespan_t::min() ),time_to_tick( timespan_t::zero() ),
+  miss_time( timespan_t::min() ), time_to_tick( timespan_t::zero() ),
   name_str( n ), tick_amount( 0.0 )
 {}
 
@@ -154,7 +154,7 @@ void dot_t::extend_duration( int extra_ticks, bool cap, uint32_t state_flags )
   if ( ! ticking )
     return;
 
-  if ( state_flags == ( uint32_t ) -1 ) state_flags = current_action -> snapshot_flags;
+  if ( state_flags == ( uint32_t ) - 1 ) state_flags = current_action -> snapshot_flags;
 
   // Make sure this DoT is still ticking......
   if ( !tick_event )
@@ -195,7 +195,7 @@ void dot_t::extend_duration_seconds( timespan_t extra_seconds, uint32_t state_fl
   if ( ! ticking )
     return;
 
-  if ( state_flags == ( uint32_t ) -1 ) state_flags = current_action -> snapshot_flags;
+  if ( state_flags == ( uint32_t ) - 1 ) state_flags = current_action -> snapshot_flags;
 
   // Make sure this DoT is still ticking......
   assert( tick_event );
@@ -271,7 +271,7 @@ void dot_t::refresh_duration( uint32_t state_flags )
   if ( ! ticking )
     return;
 
-  if ( state_flags == ( uint32_t ) -1 ) state_flags = current_action -> snapshot_flags;
+  if ( state_flags == ( uint32_t ) - 1 ) state_flags = current_action -> snapshot_flags;
 
   // Make sure this DoT is still ticking......
   assert( tick_event );
@@ -345,15 +345,15 @@ void dot_t::schedule_tick()
   if ( current_action -> channeled )
   {
     // FIXME: Find some way to make this more realistic - the actor shouldn't have to recast quite this early
-	// Response: "Have to"?  It might be good to recast early - since the GCD will end sooner. Depends on the situation. -ersimont
+    // Response: "Have to"?  It might be good to recast early - since the GCD will end sooner. Depends on the situation. -ersimont
     expr_t* expr = current_action -> early_chain_if_expr;
     if ( ( ( current_action -> chain && current_tick + 1 == num_ticks )
-        || ( current_tick > 0
-          && expr
-          && expr -> success()
-          && current_action -> player -> gcd_ready <= sim.current_time ) )
-      && current_action -> ready()
-      && !is_higher_priority_action_available() )
+           || ( current_tick > 0
+                && expr
+                && expr -> success()
+                && current_action -> player -> gcd_ready <= sim.current_time ) )
+         && current_action -> ready()
+         && !is_higher_priority_action_available() )
     {
       // FIXME: We can probably use "source" instead of "action->player"
 
@@ -397,7 +397,7 @@ void dot_t::copy( player_t* other_target )
 
   dot_t* other_dot = current_action -> get_dot( other_target );
 
-  if( ! other_dot -> state ) other_dot -> state = current_action -> get_state();
+  if ( ! other_dot -> state ) other_dot -> state = current_action -> get_state();
 
   other_dot -> state -> copy_state( state );
   other_dot -> state -> target = other_target;
@@ -405,7 +405,7 @@ void dot_t::copy( player_t* other_target )
   other_dot -> current_tick = current_tick;
   other_dot -> num_ticks = num_ticks;
   other_dot -> tick_amount = tick_amount;
-  if( ! other_dot -> ticking ) other_dot -> schedule_tick();
+  if ( ! other_dot -> ticking ) other_dot -> schedule_tick();
   other_dot -> recalculate_ready();
 }
 

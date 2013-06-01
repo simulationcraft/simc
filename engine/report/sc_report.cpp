@@ -69,15 +69,15 @@ char stat_type_letter( stats_e type )
 {
   switch ( type )
   {
-  case STATS_ABSORB:
-    return 'A';
-  case STATS_DMG:
-    return 'D';
-  case STATS_HEAL:
-    return 'H';
-  case STATS_NEUTRAL:
-  default:
-    return 'X';
+    case STATS_ABSORB:
+      return 'A';
+    case STATS_DMG:
+      return 'D';
+    case STATS_HEAL:
+      return 'H';
+    case STATS_NEUTRAL:
+    default:
+      return 'X';
   }
 }
 
@@ -200,118 +200,118 @@ std::string tooltip_parser_t::parse()
       std::string replacement_text;
       switch ( *pos )
       {
-      case 'd':
-      {
-        ++pos;
-        timespan_t d = spell -> duration();
-        if ( d < timespan_t::from_seconds( 1 ) )
+        case 'd':
         {
-          replacement_text = util::to_string( d.total_millis() );
-          replacement_text += " milliseconds";
+          ++pos;
+          timespan_t d = spell -> duration();
+          if ( d < timespan_t::from_seconds( 1 ) )
+          {
+            replacement_text = util::to_string( d.total_millis() );
+            replacement_text += " milliseconds";
+          }
+          else if ( d > timespan_t::from_seconds( 1 ) )
+          {
+            replacement_text = util::to_string( d.total_seconds() );
+            replacement_text += " seconds";
+          }
+          else
+            replacement_text = "1 second";
+          break;
         }
-        else if ( d > timespan_t::from_seconds( 1 ) )
+
+        case 'h':
         {
-          replacement_text = util::to_string( d.total_seconds() );
-          replacement_text += " seconds";
+          ++pos;
+          replacement_text = util::to_string( 100 * spell -> proc_chance() );
+          break;
         }
-        else
-          replacement_text = "1 second";
-        break;
-      }
 
-      case 'h':
-      {
-        ++pos;
-        replacement_text = util::to_string( 100 * spell -> proc_chance() );
-        break;
-      }
-
-      case 'm':
-      {
-        ++pos;
-        replacement_text = util::to_string( spell -> effectN( parse_effect_number() ).base_value() );
-        break;
-      }
-
-      case 's':
-        replacement_text = parse_scaling( *spell );
-        break;
-
-      case 't':
-      {
-        ++pos;
-        replacement_text = util::to_string( spell -> effectN( parse_effect_number() ).period().total_seconds() );
-        break;
-      }
-
-      case 'u':
-      {
-        ++pos;
-        replacement_text = util::to_string( spell -> max_stacks() );
-        break;
-      }
-
-      case '?':
-      {
-        ++pos;
-        if ( pos == text.end() || *pos != 's' )
-          throw error();
-        ++pos;
-        spell = parse_spell();
-        bool has_spell = false;
-        if ( player )
+        case 'm':
         {
-          has_spell = player -> find_class_spell( spell -> name_cstr() ) -> ok();
-          if ( ! has_spell )
-            has_spell = player -> find_glyph_spell( spell -> name_cstr() ) -> ok();
+          ++pos;
+          replacement_text = util::to_string( spell -> effectN( parse_effect_number() ).base_value() );
+          break;
         }
-        replacement_text = has_spell ? "true" : "false";
-        break;
-      }
 
-      case '*':
-      {
-        ++pos;
-        unsigned m = parse_unsigned();
+        case 's':
+          replacement_text = parse_scaling( *spell );
+          break;
 
-        if ( pos == text.end() || *pos != ';' )
+        case 't':
+        {
+          ++pos;
+          replacement_text = util::to_string( spell -> effectN( parse_effect_number() ).period().total_seconds() );
+          break;
+        }
+
+        case 'u':
+        {
+          ++pos;
+          replacement_text = util::to_string( spell -> max_stacks() );
+          break;
+        }
+
+        case '?':
+        {
+          ++pos;
+          if ( pos == text.end() || *pos != 's' )
+            throw error();
+          ++pos;
+          spell = parse_spell();
+          bool has_spell = false;
+          if ( player )
+          {
+            has_spell = player -> find_class_spell( spell -> name_cstr() ) -> ok();
+            if ( ! has_spell )
+              has_spell = player -> find_glyph_spell( spell -> name_cstr() ) -> ok();
+          }
+          replacement_text = has_spell ? "true" : "false";
+          break;
+        }
+
+        case '*':
+        {
+          ++pos;
+          unsigned m = parse_unsigned();
+
+          if ( pos == text.end() || *pos != ';' )
+            throw error();
+          ++pos;
+
+          replacement_text = parse_scaling( *spell, m );
+          break;
+        }
+
+        case '/':
+        {
+          ++pos;
+          unsigned m = parse_unsigned();
+
+          if ( pos == text.end() || *pos != ';' )
+            throw error();
+          ++pos;
+
+          replacement_text = parse_scaling( *spell, 1.0 / m );
+          break;
+        }
+
+        case '@':
+        {
+          ++pos;
+          if ( text.compare( pos - text.begin(), 9, "spelldesc" ) )
+            throw error();
+          pos += 9;
+
+          spell = parse_spell();
+          if ( ! spell )
+            throw error();
+          assert( player );
+          replacement_text = pretty_spell_text( *spell, spell -> desc(), *player );
+          break;
+        }
+
+        default:
           throw error();
-        ++pos;
-
-        replacement_text = parse_scaling( *spell, m );
-        break;
-      }
-
-      case '/':
-      {
-        ++pos;
-        unsigned m = parse_unsigned();
-
-        if ( pos == text.end() || *pos != ';' )
-          throw error();
-        ++pos;
-
-        replacement_text = parse_scaling( *spell, 1.0 / m );
-        break;
-      }
-
-      case '@':
-      {
-        ++pos;
-        if ( text.compare( pos - text.begin(), 9, "spelldesc" ) )
-          throw error();
-        pos += 9;
-
-        spell = parse_spell();
-        if ( ! spell )
-          throw error();
-        assert( player );
-        replacement_text = pretty_spell_text( *spell, spell -> desc(), *player );
-        break;
-      }
-
-      default:
-        throw error();
       }
 
       if ( PARSE_DEBUG )
@@ -555,20 +555,49 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
     name.c_str() );
 
 
-    int i = 0;
+  int i = 0;
 
-    os << "\t\t\t\t\t\t\t<table class=\"details\">\n";
+  os << "\t\t\t\t\t\t\t<table class=\"details\">\n";
 
-    os << "\t\t\t\t\t\t\t\t<tr";
-    if ( !( i & 1 ) )
-    {
-      os << " class=\"odd\"";
-    }
-    os << ">\n";
-    os << "\t\t\t\t\t\t\t\t\t<th class=\"left\"><b>Sample Data</b></td>\n"
-       << "\t\t\t\t\t\t\t\t\t<th class=\"right\">" << data.name_str << "</td>\n"
-       << "\t\t\t\t\t\t\t\t</tr>\n";
+  os << "\t\t\t\t\t\t\t\t<tr";
+  if ( !( i & 1 ) )
+  {
+    os << " class=\"odd\"";
+  }
+  os << ">\n";
+  os << "\t\t\t\t\t\t\t\t\t<th class=\"left\"><b>Sample Data</b></td>\n"
+     << "\t\t\t\t\t\t\t\t\t<th class=\"right\">" << data.name_str << "</td>\n"
+     << "\t\t\t\t\t\t\t\t</tr>\n";
 
+  ++i;
+  os << "\t\t\t\t\t\t\t\t<tr";
+  if ( !( i & 1 ) )
+  {
+    os << " class=\"odd\"";
+  }
+  os << ">\n";
+  os.printf(
+    "\t\t\t\t\t\t\t\t\t<td class=\"left\">Count</td>\n"
+    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%d</td>\n"
+    "\t\t\t\t\t\t\t\t</tr>\n",
+    data.size() );
+
+  ++i;
+  os << "\t\t\t\t\t\t\t\t<tr";
+  if ( !( i & 1 ) )
+  {
+    os << " class=\"odd\"";
+  }
+  os << ">\n";
+  os.printf(
+    "\t\t\t\t\t\t\t\t<tr>\n"
+    "\t\t\t\t\t\t\t\t\t<td class=\"left\">Mean</td>\n"
+    "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+    "\t\t\t\t\t\t\t\t</tr>\n",
+    data.mean() );
+
+  if ( !data.simple || data.min_max )
+  {
     ++i;
     os << "\t\t\t\t\t\t\t\t<tr";
     if ( !( i & 1 ) )
@@ -576,11 +605,13 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
       os << " class=\"odd\"";
     }
     os << ">\n";
+
     os.printf(
-      "\t\t\t\t\t\t\t\t\t<td class=\"left\">Count</td>\n"
-      "\t\t\t\t\t\t\t\t\t<td class=\"right\">%d</td>\n"
+      "\t\t\t\t\t\t\t\t<tr>\n"
+      "\t\t\t\t\t\t\t\t\t<td class=\"left\">Minimum</td>\n"
+      "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
-      data.size() );
+      data.min() );
 
     ++i;
     os << "\t\t\t\t\t\t\t\t<tr";
@@ -591,12 +622,40 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
     os << ">\n";
     os.printf(
       "\t\t\t\t\t\t\t\t<tr>\n"
-      "\t\t\t\t\t\t\t\t\t<td class=\"left\">Mean</td>\n"
+      "\t\t\t\t\t\t\t\t\t<td class=\"left\">Maximum</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
-      data.mean() );
+      data.max() );
 
-    if ( !data.simple || data.min_max )
+    ++i;
+    os << "\t\t\t\t\t\t\t\t<tr";
+    if ( !( i & 1 ) )
+    {
+      os << " class=\"odd\"";
+    }
+    os << ">\n";
+    os.printf(
+      "\t\t\t\t\t\t\t\t<tr>\n"
+      "\t\t\t\t\t\t\t\t\t<td class=\"left\">Spread ( max - min )</td>\n"
+      "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+      "\t\t\t\t\t\t\t\t</tr>\n",
+      data.max() - data.min() );
+
+    ++i;
+    os << "\t\t\t\t\t\t\t\t<tr";
+    if ( !( i & 1 ) )
+    {
+      os << " class=\"odd\"";
+    }
+    os << ">\n";
+    os.printf(
+      "\t\t\t\t\t\t\t\t<tr>\n"
+      "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
+      "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+      "\t\t\t\t\t\t\t\t</tr>\n",
+      data.mean() ? ( ( data.max() - data.min() ) / 2 ) * 100 / data.mean() : 0 );
+
+    if ( !data.simple )
     {
       ++i;
       os << "\t\t\t\t\t\t\t\t<tr";
@@ -605,13 +664,12 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
         os << " class=\"odd\"";
       }
       os << ">\n";
-
       os.printf(
         "\t\t\t\t\t\t\t\t<tr>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"left\">Minimum</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
-        data.min() );
+        data.std_dev );
 
       ++i;
       os << "\t\t\t\t\t\t\t\t<tr";
@@ -622,10 +680,10 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
       os << ">\n";
       os.printf(
         "\t\t\t\t\t\t\t\t<tr>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"left\">Maximum</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"left\">5th Percentile</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
-        data.max() );
+        data.percentile( 0.05 ) );
 
       ++i;
       os << "\t\t\t\t\t\t\t\t<tr";
@@ -636,10 +694,10 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
       os << ">\n";
       os.printf(
         "\t\t\t\t\t\t\t\t<tr>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"left\">Spread ( max - min )</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"left\">95th Percentile</td>\n"
         "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
-        data.max() - data.min() );
+        data.percentile( 0.95 ) );
 
       ++i;
       os << "\t\t\t\t\t\t\t\t<tr";
@@ -650,208 +708,150 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
       os << ">\n";
       os.printf(
         "\t\t\t\t\t\t\t\t<tr>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
-        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"left\">( 95th Percentile - 5th Percentile )</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
         "\t\t\t\t\t\t\t\t</tr>\n",
-        data.mean() ? ( ( data.max() - data.min() ) / 2 ) * 100 / data.mean() : 0 );
+        data.percentile( 0.95 ) - data.percentile( 0.05 ) );
 
-      if ( !data.simple )
+      ++i;
+      os << "\t\t\t\t\t\t\t\t<tr";
+      if ( !( i & 1 ) )
       {
-        ++i;
-        os << "\t\t\t\t\t\t\t\t<tr";
-        if ( !( i & 1 ) )
-        {
-          os << " class=\"odd\"";
-        }
-        os << ">\n";
-        os.printf(
-          "\t\t\t\t\t\t\t\t<tr>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
-          "\t\t\t\t\t\t\t\t</tr>\n",
-          data.std_dev );
-
-        ++i;
-        os << "\t\t\t\t\t\t\t\t<tr";
-        if ( !( i & 1 ) )
-        {
-          os << " class=\"odd\"";
-        }
-        os << ">\n";
-        os.printf(
-          "\t\t\t\t\t\t\t\t<tr>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"left\">5th Percentile</td>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-          "\t\t\t\t\t\t\t\t</tr>\n",
-          data.percentile( 0.05 ) );
-
-        ++i;
-        os << "\t\t\t\t\t\t\t\t<tr";
-        if ( !( i & 1 ) )
-        {
-          os << " class=\"odd\"";
-        }
-        os << ">\n";
-        os.printf(
-          "\t\t\t\t\t\t\t\t<tr>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"left\">95th Percentile</td>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-          "\t\t\t\t\t\t\t\t</tr>\n",
-          data.percentile( 0.95 ) );
-
-        ++i;
-        os << "\t\t\t\t\t\t\t\t<tr";
-        if ( !( i & 1 ) )
-        {
-          os << " class=\"odd\"";
-        }
-        os << ">\n";
-        os.printf(
-          "\t\t\t\t\t\t\t\t<tr>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"left\">( 95th Percentile - 5th Percentile )</td>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
-          "\t\t\t\t\t\t\t\t</tr>\n",
-          data.percentile( 0.95 ) - data.percentile( 0.05 ) );
-
-        ++i;
-        os << "\t\t\t\t\t\t\t\t<tr";
-        if ( !( i & 1 ) )
-        {
-          os << " class=\"odd\"";
-        }
-        os << ">\n";
-        os.printf(
-          "\t\t\t\t\t\t\t\t<tr>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Mean Distribution</b></td>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
-          "\t\t\t\t\t\t\t\t</tr>\n" );
-
-        ++i;
-        os << "\t\t\t\t\t\t\t\t<tr";
-        if ( !( i & 1 ) )
-        {
-          os << " class=\"odd\"";
-        }
-        os << ">\n";
-        os.printf(
-          "\t\t\t\t\t\t\t\t<tr>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
-          "\t\t\t\t\t\t\t\t</tr>\n",
-          data.mean_std_dev );
-
-        ++i;
-        double mean_error = data.mean_std_dev * sim -> confidence_estimator;
-        ++i;
-        os << "\t\t\t\t\t\t\t\t<tr";
-        if ( !( i & 1 ) )
-        {
-          os << " class=\"odd\"";
-        }
-        os << ">\n";
-        os.printf(
-          "\t\t\t\t\t\t\t\t<tr>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"left\">%.2f%% Confidence Intervall</td>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
-          "\t\t\t\t\t\t\t\t</tr>\n",
-          sim -> confidence * 100.0,
-          data.mean() - mean_error,
-          data.mean() + mean_error );
-
-        ++i;
-        os << "\t\t\t\t\t\t\t\t<tr";
-        if ( !( i & 1 ) )
-        {
-          os << " class=\"odd\"";
-        }
-        os << ">\n";
-        os.printf(
-          "\t\t\t\t\t\t\t\t<tr>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized %.2f%% Confidence Intervall</td>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
-          "\t\t\t\t\t\t\t\t</tr>\n",
-          sim -> confidence * 100.0,
-          data.mean() ? 100 - mean_error * 100 / data.mean() : 0,
-          data.mean() ? 100 + mean_error * 100 / data.mean() : 0 );
-
-
-
-        ++i;
-        os << "\t\t\t\t\t\t\t\t<tr";
-        if ( !( i & 1 ) )
-        {
-          os << " class=\"odd\"";
-        }
-        os << ">\n";
-        os << "\t\t\t\t\t\t\t\t<tr>\n"
-           << "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Approx. Iterations needed for ( always use n>=50 )</b></td>\n"
-           << "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
-           << "\t\t\t\t\t\t\t\t</tr>\n";
-
-        os.printf(
-          "\t\t\t\t\t\t\t\t<tr>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% Error</td>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-          "\t\t\t\t\t\t\t\t</tr>\n",
-          ( int ) ( data.mean() ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.01 * data.mean() * 0.01 * data.mean() ) ) ) : 0 ) );
-
-        ++i;
-        os << "\t\t\t\t\t\t\t\t<tr";
-        if ( !( i & 1 ) )
-        {
-          os << " class=\"odd\"";
-        }
-        os << ">\n";
-        os.printf(
-          "\t\t\t\t\t\t\t\t<tr>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% Error</td>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-          "\t\t\t\t\t\t\t\t</tr>\n",
-          ( int ) ( data.mean() ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.001 * data.mean() * 0.001 * data.mean() ) ) ) : 0 ) );
-
-        ++i;
-        os << "\t\t\t\t\t\t\t\t<tr";
-        if ( !( i & 1 ) )
-        {
-          os << " class=\"odd\"";
-        }
-        os << ">\n";
-        os.printf(
-          "\t\t\t\t\t\t\t\t<tr>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 Scale Factor Error with Delta=300</td>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-          "\t\t\t\t\t\t\t\t</tr>\n",
-          ( int ) ( 2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 30 * 30 ) ) );
-
-        ++i;
-        os << "\t\t\t\t\t\t\t\t<tr";
-        if ( !( i & 1 ) )
-        {
-          os << " class=\"odd\"";
-        }
-        os << ">\n";
-        os.printf(
-          "\t\t\t\t\t\t\t\t<tr>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.05 Scale Factor Error with Delta=300</td>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-          "\t\t\t\t\t\t\t\t</tr>\n",
-          ( int ) ( 2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 15 * 15 ) ) );
-
-        ++i;
-        os << "\t\t\t\t\t\t\t\t<tr";
-        if ( !( i & 1 ) )
-        {
-          os << " class=\"odd\"";
-        }
-        os << ">\n";
-        os.printf(
-          "\t\t\t\t\t\t\t\t<tr>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 Scale Factor Error with Delta=300</td>\n"
-          "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
-          "\t\t\t\t\t\t\t\t</tr>\n",
-          ( int ) (  2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 3 * 3 ) ) );
+        os << " class=\"odd\"";
       }
+      os << ">\n";
+      os.printf(
+        "\t\t\t\t\t\t\t\t<tr>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Mean Distribution</b></td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
+        "\t\t\t\t\t\t\t\t</tr>\n" );
+
+      ++i;
+      os << "\t\t\t\t\t\t\t\t<tr";
+      if ( !( i & 1 ) )
+      {
+        os << " class=\"odd\"";
+      }
+      os << ">\n";
+      os.printf(
+        "\t\t\t\t\t\t\t\t<tr>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
+        "\t\t\t\t\t\t\t\t</tr>\n",
+        data.mean_std_dev );
+
+      ++i;
+      double mean_error = data.mean_std_dev * sim -> confidence_estimator;
+      ++i;
+      os << "\t\t\t\t\t\t\t\t<tr";
+      if ( !( i & 1 ) )
+      {
+        os << " class=\"odd\"";
+      }
+      os << ">\n";
+      os.printf(
+        "\t\t\t\t\t\t\t\t<tr>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"left\">%.2f%% Confidence Intervall</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
+        "\t\t\t\t\t\t\t\t</tr>\n",
+        sim -> confidence * 100.0,
+        data.mean() - mean_error,
+        data.mean() + mean_error );
+
+      ++i;
+      os << "\t\t\t\t\t\t\t\t<tr";
+      if ( !( i & 1 ) )
+      {
+        os << " class=\"odd\"";
+      }
+      os << ">\n";
+      os.printf(
+        "\t\t\t\t\t\t\t\t<tr>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized %.2f%% Confidence Intervall</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
+        "\t\t\t\t\t\t\t\t</tr>\n",
+        sim -> confidence * 100.0,
+        data.mean() ? 100 - mean_error * 100 / data.mean() : 0,
+        data.mean() ? 100 + mean_error * 100 / data.mean() : 0 );
+
+
+
+      ++i;
+      os << "\t\t\t\t\t\t\t\t<tr";
+      if ( !( i & 1 ) )
+      {
+        os << " class=\"odd\"";
+      }
+      os << ">\n";
+      os << "\t\t\t\t\t\t\t\t<tr>\n"
+         << "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Approx. Iterations needed for ( always use n>=50 )</b></td>\n"
+         << "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
+         << "\t\t\t\t\t\t\t\t</tr>\n";
+
+      os.printf(
+        "\t\t\t\t\t\t\t\t<tr>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% Error</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+        "\t\t\t\t\t\t\t\t</tr>\n",
+        ( int ) ( data.mean() ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.01 * data.mean() * 0.01 * data.mean() ) ) ) : 0 ) );
+
+      ++i;
+      os << "\t\t\t\t\t\t\t\t<tr";
+      if ( !( i & 1 ) )
+      {
+        os << " class=\"odd\"";
+      }
+      os << ">\n";
+      os.printf(
+        "\t\t\t\t\t\t\t\t<tr>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% Error</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+        "\t\t\t\t\t\t\t\t</tr>\n",
+        ( int ) ( data.mean() ? ( ( mean_error * mean_error * ( ( float ) data.size() ) / ( 0.001 * data.mean() * 0.001 * data.mean() ) ) ) : 0 ) );
+
+      ++i;
+      os << "\t\t\t\t\t\t\t\t<tr";
+      if ( !( i & 1 ) )
+      {
+        os << " class=\"odd\"";
+      }
+      os << ">\n";
+      os.printf(
+        "\t\t\t\t\t\t\t\t<tr>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 Scale Factor Error with Delta=300</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+        "\t\t\t\t\t\t\t\t</tr>\n",
+        ( int ) ( 2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 30 * 30 ) ) );
+
+      ++i;
+      os << "\t\t\t\t\t\t\t\t<tr";
+      if ( !( i & 1 ) )
+      {
+        os << " class=\"odd\"";
+      }
+      os << ">\n";
+      os.printf(
+        "\t\t\t\t\t\t\t\t<tr>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.05 Scale Factor Error with Delta=300</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+        "\t\t\t\t\t\t\t\t</tr>\n",
+        ( int ) ( 2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 15 * 15 ) ) );
+
+      ++i;
+      os << "\t\t\t\t\t\t\t\t<tr";
+      if ( !( i & 1 ) )
+      {
+        os << " class=\"odd\"";
+      }
+      os << ">\n";
+      os.printf(
+        "\t\t\t\t\t\t\t\t<tr>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 Scale Factor Error with Delta=300</td>\n"
+        "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
+        "\t\t\t\t\t\t\t\t</tr>\n",
+        ( int ) (  2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 3 * 3 ) ) );
     }
+  }
 
   os << "\t\t\t\t\t\t\t\t</table>\n";
 

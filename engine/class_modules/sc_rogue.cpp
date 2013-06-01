@@ -310,7 +310,7 @@ struct rogue_t : public player_t
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
   virtual role_e primary_role()  { return ROLE_ATTACK; }
-  virtual bool      create_profile( std::string& profile_str, save_e=SAVE_ALL, bool save_html=false );
+  virtual bool      create_profile( std::string& profile_str, save_e = SAVE_ALL, bool save_html = false );
   virtual void      copy_from( player_t* source );
 
   virtual double    composite_attribute_multiplier( attribute_e attr );
@@ -374,8 +374,8 @@ struct rogue_attack_t : public melee_attack_t
   int              combo_points_spent;
 
   rogue_attack_t( const std::string& token, rogue_t* p,
-                        const spell_data_t* s = spell_data_t::nil(),
-                        const std::string& options = std::string() ) :
+                  const spell_data_t* s = spell_data_t::nil(),
+                  const std::string& options = std::string() ) :
     melee_attack_t( token, p, s ),
     requires_stealth( false ), requires_position( POSITION_NONE ),
     requires_combo_points( false ), adds_combo_points( 0 ),
@@ -396,11 +396,11 @@ struct rogue_attack_t : public melee_attack_t
 
       switch ( effect.type() )
       {
-      case E_ADD_COMBO_POINTS:
-        adds_combo_points = effect.base_value();
-        break;
-      default:
-        break;
+        case E_ADD_COMBO_POINTS:
+          adds_combo_points = effect.base_value();
+          break;
+        default:
+          break;
       }
 
       if ( effect.type() == E_APPLY_AURA && effect.subtype() == A_PERIODIC_DAMAGE )
@@ -1079,7 +1079,7 @@ struct melee_t : public rogue_attack_t
     if ( first )
     {
       first = false;
-      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, timespan_t::from_seconds( 0.01 ) ) : t/2 ) : timespan_t::from_seconds( 0.01 );
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::from_seconds( 0.01 ) ) : t / 2 ) : timespan_t::from_seconds( 0.01 );
     }
     return t;
   }
@@ -1851,7 +1851,7 @@ struct revealing_strike_t : public rogue_attack_t
 struct rupture_t : public rogue_attack_t
 {
   double combo_point_tick_power_mod[ combo_points_t::max_combo_points ];
-  
+
   rupture_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "rupture", p, p -> find_class_spell( "Rupture" ), options_str )
   {
@@ -3645,7 +3645,7 @@ void rogue_t::reset()
 {
   player_t::reset();
 
-  for ( size_t i=0; i < sim -> actor_list.size(); i++ )
+  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     rogue_td_t* td = target_data[ sim -> actor_list[ i ] ];
     if ( td ) td -> reset();

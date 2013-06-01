@@ -156,56 +156,56 @@ int item_database::random_suffix_type( const item_data_t* item )
 {
   switch ( item -> item_class )
   {
-  case ITEM_CLASS_WEAPON:
-    switch ( item -> item_subclass )
-    {
-    case ITEM_SUBCLASS_WEAPON_AXE2:
-    case ITEM_SUBCLASS_WEAPON_MACE2:
-    case ITEM_SUBCLASS_WEAPON_POLEARM:
-    case ITEM_SUBCLASS_WEAPON_SWORD2:
-    case ITEM_SUBCLASS_WEAPON_STAFF:
-    case ITEM_SUBCLASS_WEAPON_GUN:
-    case ITEM_SUBCLASS_WEAPON_BOW:
-    case ITEM_SUBCLASS_WEAPON_CROSSBOW:
-      return 0;
+    case ITEM_CLASS_WEAPON:
+      switch ( item -> item_subclass )
+      {
+        case ITEM_SUBCLASS_WEAPON_AXE2:
+        case ITEM_SUBCLASS_WEAPON_MACE2:
+        case ITEM_SUBCLASS_WEAPON_POLEARM:
+        case ITEM_SUBCLASS_WEAPON_SWORD2:
+        case ITEM_SUBCLASS_WEAPON_STAFF:
+        case ITEM_SUBCLASS_WEAPON_GUN:
+        case ITEM_SUBCLASS_WEAPON_BOW:
+        case ITEM_SUBCLASS_WEAPON_CROSSBOW:
+          return 0;
 
-    case ITEM_SUBCLASS_WEAPON_THROWN:
-      return 4;
-    default:
-      return 3;
-    }
-    break;
-  case ITEM_CLASS_ARMOR:
-    switch ( item -> inventory_type )
-    {
-    case INVTYPE_HEAD:
-    case INVTYPE_CHEST:
-    case INVTYPE_LEGS:
-    case INVTYPE_ROBE:
-      return 0;
+        case ITEM_SUBCLASS_WEAPON_THROWN:
+          return 4;
+        default:
+          return 3;
+      }
+      break;
+    case ITEM_CLASS_ARMOR:
+      switch ( item -> inventory_type )
+      {
+        case INVTYPE_HEAD:
+        case INVTYPE_CHEST:
+        case INVTYPE_LEGS:
+        case INVTYPE_ROBE:
+          return 0;
 
-    case INVTYPE_SHOULDERS:
-    case INVTYPE_WAIST:
-    case INVTYPE_FEET:
-    case INVTYPE_HANDS:
-    case INVTYPE_TRINKET:
-      return 1;
+        case INVTYPE_SHOULDERS:
+        case INVTYPE_WAIST:
+        case INVTYPE_FEET:
+        case INVTYPE_HANDS:
+        case INVTYPE_TRINKET:
+          return 1;
 
-    case INVTYPE_NECK:
-    case INVTYPE_WEAPONOFFHAND:
-    case INVTYPE_HOLDABLE:
-    case INVTYPE_FINGER:
-    case INVTYPE_CLOAK:
-    case INVTYPE_WRISTS:
-    case INVTYPE_SHIELD:
-      return 2;
+        case INVTYPE_NECK:
+        case INVTYPE_WEAPONOFFHAND:
+        case INVTYPE_HOLDABLE:
+        case INVTYPE_FINGER:
+        case INVTYPE_CLOAK:
+        case INVTYPE_WRISTS:
+        case INVTYPE_SHIELD:
+          return 2;
 
+        default:
+          return -1;
+      }
+      break;
     default:
       return -1;
-    }
-    break;
-  default:
-    return -1;
   }
 
   return -1;
@@ -217,55 +217,55 @@ int item_database::random_suffix_type( item_t& item )
   {
     switch ( w -> type )
     {
-      // Two-hand weapons use the first point allocation budget
-    case WEAPON_AXE_2H:
-    case WEAPON_MACE_2H:
-    case WEAPON_POLEARM:
-    case WEAPON_SWORD_2H:
-    case WEAPON_STAFF:
-    case WEAPON_BOW:
-    case WEAPON_CROSSBOW:
-    case WEAPON_GUN:
-      return 0;
+        // Two-hand weapons use the first point allocation budget
+      case WEAPON_AXE_2H:
+      case WEAPON_MACE_2H:
+      case WEAPON_POLEARM:
+      case WEAPON_SWORD_2H:
+      case WEAPON_STAFF:
+      case WEAPON_BOW:
+      case WEAPON_CROSSBOW:
+      case WEAPON_GUN:
+        return 0;
 
-      // Various ranged types use the fifth point allocation budget
-    case WEAPON_THROWN:
-      return 4;
+        // Various ranged types use the fifth point allocation budget
+      case WEAPON_THROWN:
+        return 4;
 
-      // One-hand/Off-hand/Main-hand weapons use the fourth point allocation budget
-    default:
-      return 3;
+        // One-hand/Off-hand/Main-hand weapons use the fourth point allocation budget
+      default:
+        return 3;
     }
   }
 
   // Armor handling goes by slot
   switch ( item.slot )
   {
-  case SLOT_HEAD:
-  case SLOT_CHEST:
-  case SLOT_LEGS:
-    return 0;
+    case SLOT_HEAD:
+    case SLOT_CHEST:
+    case SLOT_LEGS:
+      return 0;
 
-  case SLOT_SHOULDERS:
-  case SLOT_WAIST:
-  case SLOT_FEET:
-  case SLOT_HANDS:
-  case SLOT_TRINKET_1:
-  case SLOT_TRINKET_2:
-    return 1;
+    case SLOT_SHOULDERS:
+    case SLOT_WAIST:
+    case SLOT_FEET:
+    case SLOT_HANDS:
+    case SLOT_TRINKET_1:
+    case SLOT_TRINKET_2:
+      return 1;
 
-  case SLOT_NECK:
-  case SLOT_WRISTS:
-  case SLOT_FINGER_1:
-  case SLOT_FINGER_2:
-  case SLOT_OFF_HAND: // Shields, off hand items
-  case SLOT_BACK:
-    return 2;
+    case SLOT_NECK:
+    case SLOT_WRISTS:
+    case SLOT_FINGER_1:
+    case SLOT_FINGER_2:
+    case SLOT_OFF_HAND: // Shields, off hand items
+    case SLOT_BACK:
+      return 2;
 
-    // Ranged non-weapons are relics, which do not have a point allocation
-  case SLOT_TABARD:
-  default:
-    return -1;
+      // Ranged non-weapons are relics, which do not have a point allocation
+    case SLOT_TABARD:
+    default:
+      return -1;
   }
 }
 
@@ -288,25 +288,25 @@ uint32_t item_database::armor_value( const item_data_t* item, const dbc_t& dbc, 
 
   switch ( item -> inventory_type )
   {
-  case INVTYPE_HEAD:
-  case INVTYPE_SHOULDERS:
-  case INVTYPE_CHEST:
-  case INVTYPE_WAIST:
-  case INVTYPE_LEGS:
-  case INVTYPE_FEET:
-  case INVTYPE_WRISTS:
-  case INVTYPE_HANDS:
-  case INVTYPE_CLOAK:
-  case INVTYPE_ROBE:
-  {
-    total_armor = dbc.item_armor_total( ilevel ).armor_type[ item -> item_subclass - 1 ];
-    m_quality   = dbc.item_armor_quality( ilevel ).values[ item -> quality ];
-    unsigned invtype = item -> inventory_type;
-    if ( invtype == INVTYPE_ROBE ) invtype = INVTYPE_CHEST;
-    m_invtype = dbc.item_armor_inv_type( invtype ).armor_type[ item -> item_subclass - 1 ];
-    break;
-  }
-  default: return 0;
+    case INVTYPE_HEAD:
+    case INVTYPE_SHOULDERS:
+    case INVTYPE_CHEST:
+    case INVTYPE_WAIST:
+    case INVTYPE_LEGS:
+    case INVTYPE_FEET:
+    case INVTYPE_WRISTS:
+    case INVTYPE_HANDS:
+    case INVTYPE_CLOAK:
+    case INVTYPE_ROBE:
+    {
+      total_armor = dbc.item_armor_total( ilevel ).armor_type[ item -> item_subclass - 1 ];
+      m_quality   = dbc.item_armor_quality( ilevel ).values[ item -> quality ];
+      unsigned invtype = item -> inventory_type;
+      if ( invtype == INVTYPE_ROBE ) invtype = INVTYPE_CHEST;
+      m_invtype = dbc.item_armor_inv_type( invtype ).armor_type[ item -> item_subclass - 1 ];
+      break;
+    }
+    default: return 0;
   }
 
   return ( uint32_t ) floor( total_armor * m_quality * m_invtype + 0.5 );

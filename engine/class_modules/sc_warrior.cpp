@@ -25,7 +25,7 @@ namespace { // UNNAMED NAMESPACE
 
 struct warrior_t;
 
-enum warrior_stance { STANCE_BATTLE=1, STANCE_BERSERKER, STANCE_DEFENSE=4 };
+enum warrior_stance { STANCE_BATTLE = 1, STANCE_BERSERKER, STANCE_DEFENSE = 4 };
 
 struct warrior_td_t : public actor_pair_t
 {
@@ -324,7 +324,7 @@ public:
   warrior_action_t( const std::string& n, warrior_t* player,
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
-    stancemask( STANCE_BATTLE|STANCE_BERSERKER|STANCE_DEFENSE )
+    stancemask( STANCE_BATTLE | STANCE_BERSERKER | STANCE_DEFENSE )
   {
     ab::may_crit   = true;
   }
@@ -412,7 +412,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     warrior_t* p = cast();
 
-    if ( ( weapon &&  weapon -> group() == WEAPON_2H && this -> id != 115767) || this -> id == 137597 ) //hack to let Deep wounds *not* and the Meta GEM benefit from seasoned soldier
+    if ( ( weapon &&  weapon -> group() == WEAPON_2H && this -> id != 115767 ) || this -> id == 137597 ) //hack to let Deep wounds *not* and the Meta GEM benefit from seasoned soldier
       am *= 1.0 + p -> spec.seasoned_soldier -> effectN( 1 ).percent();
 
     // --- Enrages ---
@@ -427,7 +427,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     }
 
     // --- Passive Talents ---
-    if ( ( p -> spec.single_minded_fury -> ok() && p -> dual_wield() && this -> id != 115767)  || this -> id == 137597  ) //hack to let Deep wounds *not* and the Meta GEM benefit from SMF
+    if ( ( p -> spec.single_minded_fury -> ok() && p -> dual_wield() && this -> id != 115767 )  || this -> id == 137597  ) //hack to let Deep wounds *not* and the Meta GEM benefit from SMF
 
     {
       if (  p -> main_hand_weapon .group() == WEAPON_1H &&
@@ -1139,7 +1139,7 @@ struct cleave_t : public warrior_attack_t
       c += p -> buff.glyph_incite -> data().effectN( 1 ).resource( RESOURCE_RAGE );
 
     if ( p -> buff.ultimatum -> check() )
-      c*= 1+ p->buff.ultimatum -> data().effectN( 1 ).percent();
+      c *= 1 + p->buff.ultimatum -> data().effectN( 1 ).percent();
 
     return c;
   }
@@ -1233,7 +1233,7 @@ struct demoralizing_shout : public warrior_attack_t
     warrior_attack_t( "demoralizing_shout", p, p -> find_class_spell( "Demoralizing Shout" ) )
   {
     parse_options( NULL, options_str );
-    harmful=false;
+    harmful = false;
     use_off_gcd = true;
   }
 
@@ -1391,7 +1391,7 @@ struct heroic_strike_t : public warrior_attack_t
       c += p -> buff.glyph_incite -> data().effectN( 1 ).resource( RESOURCE_RAGE );
 
     if ( p -> buff.ultimatum -> check() )
-      c*= 1+ p -> buff.ultimatum -> data().effectN( 1 ).percent();
+      c *= 1 + p -> buff.ultimatum -> data().effectN( 1 ).percent();
 
     return c;
   }
@@ -1472,7 +1472,7 @@ struct impending_victory_heal_t : public heal_t
     {
       pct_heal *= ( 1 + p -> buff.tier15_2pc_tank -> value() ) * ( 1 + p -> glyphs.victory_rush -> effectN( 1 ).percent() );
     }
-    return player -> resources.max[ RESOURCE_HEALTH ]* pct_heal;
+    return player -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
   }
 
   virtual resource_e current_resource() { return RESOURCE_NONE; }
@@ -2017,24 +2017,24 @@ struct thunder_clap_t : public warrior_attack_t
     if ( p -> glyphs.resonating_power -> ok() )
     {
       cooldown -> duration = data().cooldown();
-      cooldown -> duration *=1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
+      cooldown -> duration *= 1 + p -> glyphs.resonating_power -> effectN( 2 ).percent();
     }
-     
+
     // TC can trigger procs from either weapon, even though it doesn't need a weapon
     proc_ignores_slot = true;
   }
-  
+
   virtual double action_multiplier()
   {
     double am = warrior_attack_t::action_multiplier();
-    
+
     warrior_t* p = cast();
-    
+
     if ( p -> glyphs.resonating_power -> ok() )
     {
       am *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
     }
-    
+
     return am;
   }
   virtual void impact( action_state_t* s )
@@ -2127,7 +2127,7 @@ struct whirlwind_attack_t : public warrior_attack_t
     may_miss = may_dodge = may_parry = false;
     background = true;
     base_costs[ RESOURCE_RAGE ] = 0;
-    aoe=-1;
+    aoe = -1;
   }
 
   virtual double action_multiplier()
@@ -2169,13 +2169,13 @@ struct whirlwind_t : public warrior_attack_t
       oh_attack -> weapon = &( p -> off_hand_weapon );
       add_child( oh_attack );
     }
-    
+
     if ( p -> spec.seasoned_soldier -> ok() )
     {
       base_costs[ current_resource() ] += p -> spec.seasoned_soldier -> effectN( 2 ).resource( current_resource() );
     }
-    
-    aoe =-1;
+
+    aoe = -1;
   }
 
   virtual void execute()
@@ -2503,9 +2503,9 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
     double   ap_scale = data().effectN( 2 ).percent();
     double stam_scale = data().effectN( 3 ).percent();
 
-    dmg+= std::max( ap_scale * ( p.cache.attack_power() - p.current.stats.attribute[ ATTR_STRENGTH ] * 2 ),
-                    p.current.stats.attribute[ ATTR_STAMINA ] * stam_scale )
-          * rage_cost / 60;
+    dmg += std::max( ap_scale * ( p.cache.attack_power() - p.current.stats.attribute[ ATTR_STRENGTH ] * 2 ),
+                     p.current.stats.attribute[ ATTR_STAMINA ] * stam_scale )
+           * rage_cost / 60;
 
     dmg *= 1.0 + p.sets -> set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent();
 
@@ -2681,17 +2681,17 @@ struct stance_t : public warrior_spell_t
 
     switch ( p -> active_stance )
     {
-    case STANCE_BATTLE:     p -> buff.battle_stance    -> expire(); break;
-    case STANCE_BERSERKER:  p -> buff.berserker_stance -> expire(); break;
-    case STANCE_DEFENSE:    p -> buff.defensive_stance -> expire(); break;
+      case STANCE_BATTLE:     p -> buff.battle_stance    -> expire(); break;
+      case STANCE_BERSERKER:  p -> buff.berserker_stance -> expire(); break;
+      case STANCE_DEFENSE:    p -> buff.defensive_stance -> expire(); break;
     }
     p -> active_stance = switch_to_stance;
 
     switch ( p -> active_stance )
     {
-    case STANCE_BATTLE:     p -> buff.battle_stance    -> trigger(); break;
-    case STANCE_BERSERKER:  p -> buff.berserker_stance -> trigger(); break;
-    case STANCE_DEFENSE:    p -> buff.defensive_stance -> trigger(); break;
+      case STANCE_BATTLE:     p -> buff.battle_stance    -> trigger(); break;
+      case STANCE_BERSERKER:  p -> buff.berserker_stance -> trigger(); break;
+      case STANCE_DEFENSE:    p -> buff.defensive_stance -> trigger(); break;
     }
 
     consume_resource();
@@ -3136,17 +3136,17 @@ void warrior_t::init_rng()
   //Lookup rppm value according to spec
   switch ( specialization() )
   {
-  case WARRIOR_ARMS:
-    rppm = 1.6;
-    break;
-  case WARRIOR_FURY:
-    rppm = 0.6;
-    break;
-  case WARRIOR_PROTECTION:
-    rppm = 1;
-    break;
-  default: rppm = 0.0;
-    break;
+    case WARRIOR_ARMS:
+      rppm = 1.6;
+      break;
+    case WARRIOR_FURY:
+      rppm = 0.6;
+      break;
+    case WARRIOR_PROTECTION:
+      rppm = 1;
+      break;
+    default: rppm = 0.0;
+      break;
   }
   rng.t15_2pc_melee = new real_ppm_t( "t15_2pc_melee", *this, rppm );
 }
@@ -3169,48 +3169,48 @@ void warrior_t::init_actions()
 
     std::string& precombat_list = get_action_priority_list( "precombat" ) -> action_list_str;
 
-    
+
     std::string& st_list_str = get_action_priority_list( "single_target" ) -> action_list_str;
     std::string& two_list_str = get_action_priority_list( "two_targets" ) -> action_list_str;
     std::string& three_list_str = get_action_priority_list( "three_targets" ) -> action_list_str;
     std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
-    
+
     switch ( specialization() )
     {
-    case WARRIOR_FURY:
-    case WARRIOR_ARMS:
-      if ( sim -> allow_flasks )
-      {
-        // Flask
-        if ( level > 85 )
-          precombat_list += "/flask,type=winters_bite";
-      }
+      case WARRIOR_FURY:
+      case WARRIOR_ARMS:
+        if ( sim -> allow_flasks )
+        {
+          // Flask
+          if ( level > 85 )
+            precombat_list += "/flask,type=winters_bite";
+        }
 
-      if ( sim -> allow_food )
-      {
-        // Food
-        if ( level > 85 )
-          precombat_list += "/food,type=black_pepper_ribs_and_shrimp";
-      }
+        if ( sim -> allow_food )
+        {
+          // Food
+          if ( level > 85 )
+            precombat_list += "/food,type=black_pepper_ribs_and_shrimp";
+        }
 
-      break;
+        break;
 
-    case WARRIOR_PROTECTION:
-      if ( sim -> allow_flasks )
-      {
-        // Flask
-        if ( level >= 85 )
-          precombat_list += "/flask,type=earth";
-      }
+      case WARRIOR_PROTECTION:
+        if ( sim -> allow_flasks )
+        {
+          // Flask
+          if ( level >= 85 )
+            precombat_list += "/flask,type=earth";
+        }
 
-      if ( sim -> allow_food )
-      {
-        // Food
-        if ( level >= 80 )
-          precombat_list += "/food,type=great_pandaren_banquet";
-      }
+        if ( sim -> allow_food )
+        {
+          // Food
+          if ( level >= 80 )
+            precombat_list += "/food,type=great_pandaren_banquet";
+        }
 
-    break; default: break;
+      break; default: break;
     }
 
     precombat_list += "/snapshot_stats";
@@ -3264,7 +3264,7 @@ void warrior_t::init_actions()
     action_list_str += init_use_racial_actions();
 
     bool smf =  ( main_hand_weapon.group() == WEAPON_1H && off_hand_weapon.group() == WEAPON_1H );
-      
+
     // Arms
     if ( specialization() == WARRIOR_ARMS )
     {
@@ -3321,7 +3321,7 @@ void warrior_t::init_actions()
       action_list_str += "/run_action_list,name=two_targets,if=active_enemies=2";
       action_list_str += "/run_action_list,name=three_targets,if=active_enemies=3";
       action_list_str += "/run_action_list,name=aoe,if=active_enemies>3";
-      
+
       //Single target
 
       st_list_str = "/heroic_strike,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=110";
@@ -3341,12 +3341,12 @@ void warrior_t::init_actions()
       st_list_str += smf ? "/wild_strike" : "/whirlwind";
       st_list_str += ",if=debuff.colossus_smash.up&target.health.pct>=20";
       st_list_str += "/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20";
-      st_list_str += smf ? "/wild_strike" : "/whirlwind"; 
+      st_list_str += smf ? "/wild_strike" : "/whirlwind";
       st_list_str += ",if=cooldown.colossus_smash.remains>=2&rage>=80&target.health.pct>=20";
       st_list_str += "/battle_shout,if=rage<70";
 
       //Two targets
-      
+
       two_list_str = "/cleave,if=rage>=110";
       two_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&buff.bloodbath.up)";
       two_list_str += "/shockwave,if=talent.shockwave.enabled";
@@ -3361,24 +3361,24 @@ void warrior_t::init_actions()
       two_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
       two_list_str += "/battle_shout,if=rage<70";
       two_list_str += "/heroic_throw";
-      
+
       //Three targets
-      
+
       three_list_str = "/cleave,if=rage>=110";
       three_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&buff.bloodbath.up)";
       three_list_str += "/shockwave,if=talent.shockwave.enabled";
       three_list_str += "/bladestorm,if=talent.bladestorm.enabled";
       three_list_str += "/raging_blow,if=buff.raging_blow.remains<=2|buff.meat_cleaver.react=2";
-      three_list_str += "/whirlwind";      
+      three_list_str += "/whirlwind";
       three_list_str += "/bloodthirst";
       three_list_str += "/wait,sec=cooldown.bloodthirst.remains,if=cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains";
       three_list_str += "/colossus_smash";
-      three_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";      
+      three_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
       three_list_str += "/raging_blow,if=buff.raging_blow.stack=2|(buff.raging_blow.up&(debuff.colossus_smash.up|cooldown.colossus_smash.remains>=3|buff.raging_blow.remains<=3))";
       three_list_str += "/battle_shout,if=rage<70";
       three_list_str += "/heroic_throw";
 
-       //Aoe
+      //Aoe
       aoe_list_str += "/cleave,if=rage>110";
       aoe_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&buff.bloodbath.up)";
       aoe_list_str += "/shockwave,if=talent.shockwave.enabled";
@@ -3389,7 +3389,7 @@ void warrior_t::init_actions()
       aoe_list_str += "/whirlwind";
       aoe_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
       aoe_list_str += "/battle_shout,if=rage<70";
-     
+
     }
     // Protection
     else if ( specialization() == WARRIOR_PROTECTION )
@@ -3491,7 +3491,7 @@ double warrior_t::composite_block()
   if ( block_by_rating > 0 ) // Formula taken from player_t::composite_tank_block
   {
     //the block by rating gets rounded because that's how blizzard rolls...
-    b += 1/ ( 1 / diminished_block_cap + diminished_kfactor / ( util::round( 12800 * block_by_rating ) / 12800 ) );
+    b += 1 / ( 1 / diminished_block_cap + diminished_kfactor / ( util::round( 12800 * block_by_rating ) / 12800 ) );
   }
 
   b += spec.bastion_of_defense -> effectN( 1 ).percent();

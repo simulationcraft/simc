@@ -56,7 +56,7 @@ struct druid_td_t : public actor_pair_t
   {
     buff_t* lifebloom;
   } buffs;
-  
+
   int lacerate_stack;
   combo_points_t combo_points;
 
@@ -433,7 +433,7 @@ public:
   virtual void      assess_damage( school_e school, dmg_e, action_state_t* );
   virtual void      assess_heal( school_e, dmg_e, heal_state_t* );
   virtual void      create_options();
-  virtual bool      create_profile( std::string& profile_str, save_e type=SAVE_ALL, bool save_html=false );
+  virtual bool      create_profile( std::string& profile_str, save_e type = SAVE_ALL, bool save_html = false );
 
   target_specific_t<druid_td_t*> target_data;
 
@@ -685,7 +685,7 @@ struct treants_balance_t : public pet_t
 
     return pet_t::create_action( name, options_str );
   }
-  virtual void summon( timespan_t duration=timespan_t::zero() )
+  virtual void summon( timespan_t duration = timespan_t::zero() )
   {
     pet_t::summon( duration );
   }
@@ -761,7 +761,7 @@ struct treants_feral_t : public pet_t
 
     return pet_t::create_action( name, options_str );
   }
-  virtual void summon( timespan_t duration=timespan_t::zero() )
+  virtual void summon( timespan_t duration = timespan_t::zero() )
   {
     pet_t::summon( duration );
     // Treants cast on the target will instantly perform a melee before
@@ -782,11 +782,11 @@ private:
     {
       switch ( p.specialization() )
       {
-      case DRUID_BALANCE:     id = 108291; break;
-      case DRUID_FERAL:       id = 108292; break;
-      case DRUID_GUARDIAN:    id = 108293; break;
-      case DRUID_RESTORATION: id = 108294; break;
-      default: break;
+        case DRUID_BALANCE:     id = 108291; break;
+        case DRUID_FERAL:       id = 108292; break;
+        case DRUID_GUARDIAN:    id = 108293; break;
+        case DRUID_RESTORATION: id = 108294; break;
+        default: break;
       }
     }
     return p.find_spell( id );
@@ -821,16 +821,16 @@ public:
     double m;
     switch ( player -> specialization() )
     {
-    case DRUID_FERAL:
-    case DRUID_RESTORATION:
-      m = data().effectN( 4 ).percent();
-      break;
-    case DRUID_GUARDIAN:
-      m = data().effectN( 5 ).percent();
-      break;
-    case DRUID_BALANCE:
-    default:
-      return 0.0;
+      case DRUID_FERAL:
+      case DRUID_RESTORATION:
+        m = data().effectN( 4 ).percent();
+        break;
+      case DRUID_GUARDIAN:
+        m = data().effectN( 5 ).percent();
+        break;
+      case DRUID_BALANCE:
+      default:
+        return 0.0;
     }
 
     return m;
@@ -843,14 +843,14 @@ public:
     double m;
     switch ( player -> specialization() )
     {
-    case DRUID_FERAL:
-    case DRUID_GUARDIAN:
-    case DRUID_BALANCE:
-      m = data().effectN( 2 ).percent();
-      break;
-    case DRUID_RESTORATION:
-    default:
-      return 0.0;
+      case DRUID_FERAL:
+      case DRUID_GUARDIAN:
+      case DRUID_BALANCE:
+        m = data().effectN( 2 ).percent();
+        break;
+      case DRUID_RESTORATION:
+      default:
+        return 0.0;
     }
 
     return m;
@@ -863,18 +863,18 @@ public:
     druid_t& p = this -> p();
     switch ( p.specialization() )
     {
-    case DRUID_FERAL:
-      if ( ! p.buff.bear_form -> check() ) return 0.0;
-      break;
-    case DRUID_GUARDIAN:
-      if ( ! p.buff.cat_form  -> check() ) return 0.0;
-      break;
-    case DRUID_BALANCE:
-    case DRUID_RESTORATION:
-      if ( ! p.buff.bear_form -> check() && ! p.buff.cat_form -> check() ) return 0.0;
-      break;
-    default:
-      return 0.0;
+      case DRUID_FERAL:
+        if ( ! p.buff.bear_form -> check() ) return 0.0;
+        break;
+      case DRUID_GUARDIAN:
+        if ( ! p.buff.cat_form  -> check() ) return 0.0;
+        break;
+      case DRUID_BALANCE:
+      case DRUID_RESTORATION:
+        if ( ! p.buff.bear_form -> check() && ! p.buff.cat_form -> check() ) return 0.0;
+        break;
+      default:
+        return 0.0;
     }
     return 0.15;
   }
@@ -885,12 +885,12 @@ public:
 
     switch ( player -> specialization() )
     {
-    case DRUID_FERAL:
-    case DRUID_GUARDIAN:
-    case DRUID_RESTORATION:
-      return 0.15;
-    default:
-      return 0.0;
+      case DRUID_FERAL:
+      case DRUID_GUARDIAN:
+      case DRUID_RESTORATION:
+        return 0.15;
+      default:
+        return 0.0;
     }
   }
 
@@ -901,21 +901,21 @@ public:
     druid_t& p = this -> p();
     switch ( p.specialization() )
     {
-    case DRUID_FERAL:
-      if ( p.buff.bear_form -> check() )
-        return 0.5;
-      break;
-    case DRUID_GUARDIAN:
-      if ( p.buff.cat_form -> check() )
-        return 1.1;
-      break;
-    case DRUID_BALANCE:
-    case DRUID_RESTORATION:
-      if ( p.buff.cat_form -> check() || p.buff.cat_form -> check() )
-        return 1.1;
-      break;
-    default:
-      break;
+      case DRUID_FERAL:
+        if ( p.buff.bear_form -> check() )
+          return 0.5;
+        break;
+      case DRUID_GUARDIAN:
+        if ( p.buff.cat_form -> check() )
+          return 1.1;
+        break;
+      case DRUID_BALANCE:
+      case DRUID_RESTORATION:
+        if ( p.buff.cat_form -> check() || p.buff.cat_form -> check() )
+          return 1.1;
+        break;
+      default:
+        break;
     }
 
     return 0.0;
@@ -1921,7 +1921,7 @@ struct swipe_cat_t : public cat_attack_t
     aoe     = -1;
     special = true;
   }
-  
+
   virtual void execute()
   {
     cat_attack_t::execute();
@@ -2201,7 +2201,7 @@ struct lacerate_t : public bear_attack_t
   virtual void last_tick( dot_t* d )
   {
     bear_attack_t::last_tick( d );
-    
+
     p() -> buff.lacerate -> expire();
     td( target ) -> lacerate_stack = 0;
   }
@@ -2299,16 +2299,16 @@ struct maul_t : public bear_attack_t
       double agility    = player -> composite_attribute( ATTR_AGILITY ) * player -> composite_attribute_multiplier( ATTR_AGILITY );
       double stamina    = player -> composite_attribute( ATTR_STAMINA ) * player -> composite_attribute_multiplier( ATTR_STAMINA );
       double absorb_amount =  floor(
-                             std::max( ( ap - 2 * agility ) * 2.2, stamina * 2.5 )
-                             * 0.4
-                           );
+                                std::max( ( ap - 2 * agility ) * 2.2, stamina * 2.5 )
+                                * 0.4
+                              );
 
       if ( sim -> debug )
         sim -> output( "%s Tooth and Claw debuff trigger: old_value=%f added_value=%f new_value=%f",
-                        player -> name(),
-                        target -> debuffs.tooth_and_claw_absorb -> current_value,
-                        absorb_amount,
-                        absorb_amount + target -> debuffs.tooth_and_claw_absorb -> current_value );
+                       player -> name(),
+                       target -> debuffs.tooth_and_claw_absorb -> current_value,
+                       absorb_amount,
+                       absorb_amount + target -> debuffs.tooth_and_claw_absorb -> current_value );
 
       target -> debuffs.tooth_and_claw_absorb -> trigger( 1, absorb_amount + target -> debuffs.tooth_and_claw_absorb -> current_value );
       p() -> buff.tooth_and_claw -> expire();
@@ -2499,7 +2499,7 @@ struct might_of_ursoc_t : public bear_attack_t
   virtual void execute()
   {
     bear_attack_t::execute();
-    
+
     if ( ! p() -> buff.bear_form -> check() )
       p() -> buff.bear_form -> start();
     p() -> buff.might_of_ursoc -> trigger();
@@ -2631,7 +2631,7 @@ public:
     }
 
     if ( base_dd_min > 0 && ! background )
-      p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> ok() ? p() -> cache.mastery_value() : 0.0);
+      p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> ok() ? p() -> cache.mastery_value() : 0.0 );
   }
 
   virtual timespan_t execute_time()
@@ -2662,7 +2662,7 @@ public:
       adm += p() -> talent.natures_swiftness -> effectN( 2 ).percent();
 
     if ( p() -> mastery.harmony -> ok() )
-    adm += p() -> cache.mastery_value();
+      adm += p() -> cache.mastery_value();
 
     return adm;
   }
@@ -3526,7 +3526,7 @@ struct cat_form_t : public druid_spell_t
 
     if ( ! player -> cat_melee_attack )
     {
-   	  player -> init_beast_weapon( player -> cat_weapon, 1.0 );
+      player -> init_beast_weapon( player -> cat_weapon, 1.0 );
       player -> cat_melee_attack = new cat_attacks::cat_melee_t( player );
     }
   }
@@ -3805,19 +3805,19 @@ struct incarnation_t : public druid_spell_t
 
     switch ( p() -> specialization() )
     {
-    case DRUID_BALANCE:
-      p() -> buff.chosen_of_elune -> trigger();
-      break;
-    case DRUID_FERAL:
-      p() -> buff.king_of_the_jungle -> trigger();
-      break;
-    case DRUID_GUARDIAN:
-      p() -> buff.son_of_ursoc -> trigger();
-      break;
-    case DRUID_RESTORATION:
-      p() -> buff.tree_of_life -> trigger();
-      break;
-    default: break;
+      case DRUID_BALANCE:
+        p() -> buff.chosen_of_elune -> trigger();
+        break;
+      case DRUID_FERAL:
+        p() -> buff.king_of_the_jungle -> trigger();
+        break;
+      case DRUID_GUARDIAN:
+        p() -> buff.son_of_ursoc -> trigger();
+        break;
+      case DRUID_RESTORATION:
+        p() -> buff.tree_of_life -> trigger();
+        break;
+      default: break;
     }
 
     if ( p() -> buff.bear_form -> check() )
@@ -4825,7 +4825,7 @@ protected:
     {
       new_attack -> base_execute_time = new_weapon.swing_time;
       new_attack -> execute_event = new_attack -> start_action_execute_event(
-   	    druid.main_hand_attack -> execute_event -> remains() );
+                                      druid.main_hand_attack -> execute_event -> remains() );
       druid.main_hand_attack -> cancel();
     }
     new_attack -> weapon = &new_weapon;
@@ -5362,7 +5362,7 @@ void druid_t::init_base_stats()
 
   base.attack_power_per_strength = 1.0;
   base.spell_power_per_intellect = 1.0;
-  
+
   // FIXME! Level-specific?
   base.miss  = 0.060;
   base.dodge = 0.030;
@@ -5460,7 +5460,7 @@ void druid_t::create_buffs()
                                .cd( timespan_t::zero() );
 
   stat_buff_creator_t ng = stat_buff_creator_t( this, "natures_grace" )
-                               .spell( find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() );
+                           .spell( find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() );
   if ( set_bonus.tier15_4pc_caster() )
   {
     ng.add_stat( STAT_CRIT_RATING, sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).base_value() )
@@ -6001,7 +6001,7 @@ void druid_t::init_actions()
       action_list_str += "/mangle_bear";
       action_list_str += "/wait,sec=cooldown.mangle_bear.remains,if=cooldown.mangle_bear.remains<=0.5";
       action_list_str += "/natures_swiftness,if=talent.natures_swiftness.enabled&health.pct<60";
-      add_action("Cenarion Ward", "if=health.pct<70");
+      add_action( "Cenarion Ward", "if=health.pct<70" );
       action_list_str += "/berserk";
       action_list_str += "/incarnation,if=talent.incarnation.enabled";
       action_list_str += "/lacerate,if=dot.lacerate.remains<3|buff.lacerate.stack<3";
@@ -6079,7 +6079,7 @@ void druid_t::reset()
   main_hand_attack = 0;
   main_hand_weapon = caster_form_weapon;
 
-  for ( size_t i=0; i < sim -> actor_list.size(); i++ )
+  for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     druid_td_t* td = target_data[ sim -> actor_list[ i ] ];
     if ( td ) td -> reset();
@@ -6182,7 +6182,7 @@ void druid_t::invalidate_cache( cache_e c )
       player_t::invalidate_cache( CACHE_AGILITY );
       break;
     case CACHE_MASTERY:
-        player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
       break;
     case CACHE_SPIRIT:
       if ( spec.balance_of_power -> ok() )
@@ -6403,12 +6403,12 @@ double druid_t::composite_spell_power( school_e school )
 
   switch ( school )
   {
-  case SCHOOL_NATURE:
-    if ( spec.nurturing_instinct -> ok() )
-      p += spec.nurturing_instinct -> effectN( 1 ).percent() * player_t::composite_attribute( ATTR_AGILITY );
-    break;
-  default:
-    break;
+    case SCHOOL_NATURE:
+      if ( spec.nurturing_instinct -> ok() )
+        p += spec.nurturing_instinct -> effectN( 1 ).percent() * player_t::composite_attribute( ATTR_AGILITY );
+      break;
+    default:
+      break;
   }
 
   return p;
@@ -6422,12 +6422,12 @@ double druid_t::composite_attribute( attribute_e attr )
 
   switch ( attr )
   {
-  case ATTR_AGILITY:
-    if ( spec.killer_instinct -> ok() && ( buff.bear_form -> up() || buff.cat_form -> up() ) )
-      a += spec.killer_instinct -> effectN( 1 ).percent() * player_t::composite_attribute( ATTR_INTELLECT );
-    break;
-  default:
-    break;
+    case ATTR_AGILITY:
+      if ( spec.killer_instinct -> ok() && ( buff.bear_form -> up() || buff.cat_form -> up() ) )
+        a += spec.killer_instinct -> effectN( 1 ).percent() * player_t::composite_attribute( ATTR_INTELLECT );
+      break;
+    default:
+      break;
   }
 
   return a;
@@ -6446,23 +6446,23 @@ double druid_t::composite_attribute_multiplier( attribute_e attr )
 
   switch ( attr )
   {
-  case ATTR_STAMINA:
-    if ( buff.bear_form -> check() )
-      m *= 1.0 + spell.bear_form -> effectN( 2 ).percent();
-    if ( talent.heart_of_the_wild -> ok() )
-      m *= 1.0 + spell.heart_of_the_wild -> effectN( 1 ).percent();
-    break;
-  case ATTR_AGILITY:
-    if ( talent.heart_of_the_wild -> ok() )
-      m *= 1.0 + spell.heart_of_the_wild -> effectN( 1 ).percent();
-    m *= 1.0 + buff.heart_of_the_wild -> agility_multiplier();
-    break;
-  case ATTR_INTELLECT:
-    if ( talent.heart_of_the_wild -> ok() )
-      m *= 1.0 + spell.heart_of_the_wild -> effectN( 1 ).percent();
-    break;
-  default:
-    break;
+    case ATTR_STAMINA:
+      if ( buff.bear_form -> check() )
+        m *= 1.0 + spell.bear_form -> effectN( 2 ).percent();
+      if ( talent.heart_of_the_wild -> ok() )
+        m *= 1.0 + spell.heart_of_the_wild -> effectN( 1 ).percent();
+      break;
+    case ATTR_AGILITY:
+      if ( talent.heart_of_the_wild -> ok() )
+        m *= 1.0 + spell.heart_of_the_wild -> effectN( 1 ).percent();
+      m *= 1.0 + buff.heart_of_the_wild -> agility_multiplier();
+      break;
+    case ATTR_INTELLECT:
+      if ( talent.heart_of_the_wild -> ok() )
+        m *= 1.0 + spell.heart_of_the_wild -> effectN( 1 ).percent();
+      break;
+    default:
+      break;
   }
 
   return m;
@@ -6476,17 +6476,17 @@ double druid_t::matching_gear_multiplier( attribute_e attr )
 
   switch ( attr )
   {
-  case ATTR_AGILITY:
-    idx = 1;
-    break;
-  case ATTR_INTELLECT:
-    idx = 2;
-    break;
-  case ATTR_STAMINA:
-    idx = 3;
-    break;
-  default:
-    return 0;
+    case ATTR_AGILITY:
+      idx = 1;
+      break;
+    case ATTR_INTELLECT:
+      idx = 2;
+      break;
+    case ATTR_STAMINA:
+      idx = 3;
+      break;
+    default:
+      return 0;
   }
 
   return spec.leather_specialization -> effectN( idx ).percent();

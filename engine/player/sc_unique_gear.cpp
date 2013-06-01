@@ -73,7 +73,7 @@ struct discharge_attack_t : public attack_t
     may_miss = ( data.override_result_es_mask & RESULT_MISS_MASK ) ? ( data.result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
     may_dodge = ( data.school == SCHOOL_PHYSICAL ) && ( ( data.override_result_es_mask & RESULT_DODGE_MASK ) ? ( data.result_es_mask & RESULT_DODGE_MASK ) : may_dodge );
     may_parry = ( data.school == SCHOOL_PHYSICAL ) && ( ( data.override_result_es_mask & RESULT_PARRY_MASK ) ? ( data.result_es_mask & RESULT_PARRY_MASK ) : may_parry )
-                && ( p -> position() == POSITION_FRONT || p ->position()== POSITION_RANGED_FRONT );
+                && ( p -> position() == POSITION_FRONT || p ->position() == POSITION_RANGED_FRONT );
     may_block = ( data.school == SCHOOL_PHYSICAL ) && ( ( data.override_result_es_mask & RESULT_BLOCK_MASK ) ? ( data.result_es_mask & RESULT_BLOCK_MASK ) : may_block )
                 && ( p -> position() == POSITION_FRONT || p -> position() == POSITION_RANGED_FRONT );
     may_glance = false;
@@ -200,10 +200,10 @@ struct weapon_proc_callback_t : public proc_callback_t<action_state_t>
 
 // Weapon Buff Proc Callback ================================================
 
-struct weapon_buff_proc_callback_t : public buff_proc_callback_t<buff_t,action_state_t>
+struct weapon_buff_proc_callback_t : public buff_proc_callback_t<buff_t, action_state_t>
 {
 public:
-  typedef buff_proc_callback_t<buff_t,action_state_t> base_t;
+  typedef buff_proc_callback_t<buff_t, action_state_t> base_t;
   weapon_t* weapon;
   bool all_damage;
 
@@ -314,10 +314,10 @@ void synapse_springs_2( item_t* item )
   item -> parsed.use.name_str = "synapse_springs_2";
   item -> parsed.use.cooldown = spell1 -> cooldown();
   item -> parsed.use.execute_action = new synapse_spring_action_t( p,
-                                                           "synapse_springs_2",
-                                                           spell1 -> effectN( 1 ).base_value(),
-                                                           spell2 -> duration(),
-                                                           spell1 -> cooldown() );
+      "synapse_springs_2",
+      spell1 -> effectN( 1 ).base_value(),
+      spell2 -> duration(),
+      spell1 -> cooldown() );
 }
 
 // phase_fingers =================================================
@@ -392,7 +392,7 @@ void hurricane( player_t* p, const std::string& mh_enchant, const std::string& o
 {
   if ( mh_enchant == "hurricane" || oh_enchant == "hurricane" )
   {
-    stat_buff_t *mh_buff=0, *oh_buff=0;
+    stat_buff_t *mh_buff = 0, *oh_buff = 0;
     if ( mh_enchant == "hurricane" )
     {
       mh_buff = stat_buff_creator_t( p, "hurricane_mh" )
@@ -628,11 +628,11 @@ struct windsong_callback_t : public action_callback_t
       int p_type = ( int ) ( a -> sim -> default_rng() -> real() * 3.0 );
       switch ( p_type )
       {
-      case 0: buff = haste_buff; break;
-      case 1: buff = crit_buff; break;
-      case 2:
-      default:
-        buff = mastery_buff; break;
+        case 0: buff = haste_buff; break;
+        case 1: buff = crit_buff; break;
+        case 2:
+        default:
+          buff = mastery_buff; break;
       }
 
       buff -> trigger( 1, 0 );
@@ -913,16 +913,16 @@ void sinister_primal( player_t* p )
 
         switch ( listener -> specialization() )
         {
-        case MAGE_ARCANE:         return base_ppm * 0.761;
-        case MAGE_FIRE:           return base_ppm * 0.705;
-        case MAGE_FROST:          return base_ppm * 1.387;
-        case WARLOCK_DEMONOLOGY:  return base_ppm * 0.598;
-        case WARLOCK_AFFLICTION:  return base_ppm * 0.625;
-        case WARLOCK_DESTRUCTION: return base_ppm * 0.509;
-        case SHAMAN_ELEMENTAL:    return base_ppm * 1.891;
-        case DRUID_BALANCE:       return base_ppm * 1.872;
-        case PRIEST_SHADOW:       return base_ppm * 0.933;
-        default:                  return base_ppm;
+          case MAGE_ARCANE:         return base_ppm * 0.761;
+          case MAGE_FIRE:           return base_ppm * 0.705;
+          case MAGE_FROST:          return base_ppm * 1.387;
+          case WARLOCK_DEMONOLOGY:  return base_ppm * 0.598;
+          case WARLOCK_AFFLICTION:  return base_ppm * 0.625;
+          case WARLOCK_DESTRUCTION: return base_ppm * 0.509;
+          case SHAMAN_ELEMENTAL:    return base_ppm * 1.891;
+          case DRUID_BALANCE:       return base_ppm * 1.872;
+          case PRIEST_SHADOW:       return base_ppm * 0.933;
+          default:                  return base_ppm;
         }
       }
     };
@@ -978,33 +978,33 @@ void capacitive_primal( player_t* p )
 
         switch ( listener -> specialization() )
         {
-        case ROGUE_ASSASSINATION:  return base_ppm * 1.789;
-        case ROGUE_COMBAT:         return base_ppm * 1.136;
-        case ROGUE_SUBTLETY:       return base_ppm * 1.114;
-        case DRUID_FERAL:          return base_ppm * 1.721;
-        case MONK_WINDWALKER:      return base_ppm * 1.087;
-        case HUNTER_BEAST_MASTERY: return base_ppm * 0.950;
-        case HUNTER_MARKSMANSHIP:  return base_ppm * 1.107;
-        case HUNTER_SURVIVAL:      return base_ppm * 0.950;
-        case SHAMAN_ENHANCEMENT:   return base_ppm * 0.809;
-        case DEATH_KNIGHT_UNHOLY:  return base_ppm * 0.838;
-        case WARRIOR_ARMS:         return base_ppm * 1.339;
-        case PALADIN_RETRIBUTION:  return base_ppm * 1.295;
-        default:                   return base_ppm;
-        case DEATH_KNIGHT_FROST:
-        {
-          if ( listener -> main_hand_weapon.group() == WEAPON_2H )
-            return base_ppm * 1.532;
-          else
-            return base_ppm * 1.134;
-        }
-        case WARRIOR_FURY:
-        {
-          if ( listener -> main_hand_weapon.group() == WEAPON_2H )
-            return base_ppm * 1.257;
-          else
-            return base_ppm * 1.152;
-        }
+          case ROGUE_ASSASSINATION:  return base_ppm * 1.789;
+          case ROGUE_COMBAT:         return base_ppm * 1.136;
+          case ROGUE_SUBTLETY:       return base_ppm * 1.114;
+          case DRUID_FERAL:          return base_ppm * 1.721;
+          case MONK_WINDWALKER:      return base_ppm * 1.087;
+          case HUNTER_BEAST_MASTERY: return base_ppm * 0.950;
+          case HUNTER_MARKSMANSHIP:  return base_ppm * 1.107;
+          case HUNTER_SURVIVAL:      return base_ppm * 0.950;
+          case SHAMAN_ENHANCEMENT:   return base_ppm * 0.809;
+          case DEATH_KNIGHT_UNHOLY:  return base_ppm * 0.838;
+          case WARRIOR_ARMS:         return base_ppm * 1.339;
+          case PALADIN_RETRIBUTION:  return base_ppm * 1.295;
+          default:                   return base_ppm;
+          case DEATH_KNIGHT_FROST:
+          {
+            if ( listener -> main_hand_weapon.group() == WEAPON_2H )
+              return base_ppm * 1.532;
+            else
+              return base_ppm * 1.134;
+          }
+          case WARRIOR_FURY:
+          {
+            if ( listener -> main_hand_weapon.group() == WEAPON_2H )
+              return base_ppm * 1.257;
+            else
+              return base_ppm * 1.152;
+          }
         }
       }
     };
@@ -1887,7 +1887,7 @@ void gurthalak( item_t* item )
       slot( slot )
     {
       // Init different spells/dots to act like multiple tentacles up at once
-      for ( int i=0; i <= 9; i++ )
+      for ( int i = 0; i <= 9; i++ )
       {
         std::string spell_name = "gurthalak_voice_of_the_deeps" + util::to_string( i );
         spell[ i ] = new gurthalak_t( p, tick_damage, spell_name.c_str()  );
@@ -1914,7 +1914,7 @@ void gurthalak( item_t* item )
         // Try and find a non-ticking dot slot to use, if all are taken, use the one that's closest to expiring
         // This is needed for when we're DWing gurth
         int dot_slot = 0;
-        for ( int i=0; i <= 9; i++ )
+        for ( int i = 0; i <= 9; i++ )
         {
           if ( ! dot_gurth[ i ] -> ticking )
           {
@@ -3137,7 +3137,7 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
 
   else if ( name == "wushoolays_final_choice"             ) e = "OnSpellDamage_"     + std::string( thunderforged ? ( heroic ? "1592" : "1410" ) : ( heroic ? "1505" : lfr ? "1107" : "1333" ) ) + "Int_0.588RPPM_10Stack_20Dur_2Tick_22Cd";
   else if ( name == "breath_of_the_hydra"                 ) e = "OnSpellTickDamage_" + std::string( thunderforged ? ( heroic ? "8753" : "7754" ) : ( heroic ? "8279" : lfr ? "6088" : "7333" ) ) + "Int_0.525RPPM_20Dur";
-  else if ( name == "chayes_essence_of_brilliance"        ) e = "OnHarmfulSpellCrit_"+ std::string( thunderforged ? ( heroic ? "8753" : "7754" ) : ( heroic ? "8279" : lfr ? "6088" : "7333" ) ) + "Int_0.809RPPMSpellCrit_10Dur";
+  else if ( name == "chayes_essence_of_brilliance"        ) e = "OnHarmfulSpellCrit_" + std::string( thunderforged ? ( heroic ? "8753" : "7754" ) : ( heroic ? "8279" : lfr ? "6088" : "7333" ) ) + "Int_0.809RPPMSpellCrit_10Dur";
 
   else if ( name == "brutal_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Str_15%_15Dur_75Cd";
   else if ( name == "vicious_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Agi_15%_20Dur_105Cd";

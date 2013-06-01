@@ -21,7 +21,7 @@
    - Uplift
    - Life Cocoon
    - Teachings of the Monastery
-    * SCK healing 
+    * SCK healing
     * CJL damage increase
     * BoK's cleave effect
    - Non-glyphed Mana Tea
@@ -41,7 +41,7 @@ namespace { // UNNAMED NAMESPACE
 
 struct monk_t;
 
-enum stance_e { STURDY_OX=1, FIERCE_TIGER, WISE_SERPENT=4 };
+enum stance_e { STURDY_OX = 1, FIERCE_TIGER, WISE_SERPENT = 4 };
 
 struct monk_td_t : public actor_pair_t
 {
@@ -272,7 +272,7 @@ public:
   virtual void      init_procs();
   virtual void      init_defense();
   virtual void      regen( timespan_t periodicity );
-  virtual void      init_resources( bool force=false );
+  virtual void      init_resources( bool force = false );
   virtual void      reset();
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual int       decode_set( item_t& );
@@ -479,7 +479,7 @@ public:
   monk_action_t( const std::string& n, monk_t* player,
                  const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
-    stancemask( STURDY_OX|FIERCE_TIGER|WISE_SERPENT )
+    stancemask( STURDY_OX | FIERCE_TIGER | WISE_SERPENT )
   {
     ab::may_crit   = true;
   }
@@ -690,7 +690,7 @@ struct jab_t : public monk_melee_attack_t
     monk_melee_attack_t( "jab", p, p -> find_class_spell( "Jab" ) )
   {
     parse_options( nullptr, options_str );
-    stancemask = STURDY_OX|FIERCE_TIGER|WISE_SERPENT;
+    stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT;
 
     base_dd_min = base_dd_max = direct_power_mod = 0.0; // deactivate parsed spelleffect1
 
@@ -770,7 +770,7 @@ struct expel_harm_t : public monk_melee_attack_t
     monk_melee_attack_t( "expel_harm", p, p -> find_class_spell( "Expel Harm" ) )
   {
     parse_options( nullptr, options_str );
-    stancemask = STURDY_OX|FIERCE_TIGER;
+    stancemask = STURDY_OX | FIERCE_TIGER;
 
     base_dd_min = base_dd_max = direct_power_mod = 0.0; // deactivate parsed spelleffect1
 
@@ -827,7 +827,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     monk_melee_attack_t( "tiger_palm", p, p -> find_class_spell( "Tiger Palm" ) )
   {
     parse_options( nullptr, options_str );
-    stancemask = STURDY_OX|FIERCE_TIGER|WISE_SERPENT;
+    stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT;
     base_dd_min = base_dd_max = direct_power_mod = 0.0;//  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
@@ -836,7 +836,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     if ( p -> spec.brewmaster_training -> ok() )
       base_costs[ RESOURCE_CHI ] = 0.0;
   }
-  
+
   virtual double action_multiplier()
   {
     double m = monk_melee_attack_t::action_multiplier();
@@ -959,7 +959,7 @@ struct blackout_kick_t : public monk_melee_attack_t
       p() -> buff.muscle_memory -> decrement();
     }
   }
-  
+
   virtual double action_multiplier()
   {
     double m = monk_melee_attack_t::action_multiplier();
@@ -1079,7 +1079,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     parse_options( nullptr, options_str );
 
-    stancemask = STURDY_OX|FIERCE_TIGER;
+    stancemask = STURDY_OX | FIERCE_TIGER;
 
     may_crit = false;
     tick_zero = true;
@@ -1241,7 +1241,7 @@ struct melee_t : public monk_melee_attack_t
     timespan_t t = monk_melee_attack_t::execute_time();
     if ( ! player -> in_combat )
     {
-      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t/2, timespan_t::from_seconds( 0.2 ) ) : t/2 ) : timespan_t::from_seconds( 0.01 );
+      return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::from_seconds( 0.2 ) ) : t / 2 ) : timespan_t::from_seconds( 0.01 );
     }
     return t;
   }
@@ -1309,7 +1309,7 @@ struct melee_t : public monk_melee_attack_t
   {
     // Formula taken from http://www.wowhead.com/spell=128938  2013/04/15
     double expected_stacks, low_chance;
-	int low, high;
+    int low, high;
 
     // Calculate expected #stacks
     if ( weapon -> group() == WEAPON_1H || weapon -> group() == WEAPON_SMALL )
@@ -1511,10 +1511,10 @@ struct stance_t : public monk_spell_t
       else
         throw std::string( "no stance specified" );
     }
-    catch ( const std::string& s)
+    catch ( const std::string& s )
     {
       sim -> errorf( "%s: %s %s, using Stance of Fierce Tiger\n",
-                      p -> name(), name(), s.c_str() );
+                     p -> name(), name(), s.c_str() );
     }
 
     harmful = false;
@@ -2033,7 +2033,7 @@ struct monk_heal_t : public monk_action_t<heal_t>
    - find out if direct tick or tick zero applies
 */
 
-struct zen_sphere_t : public monk_heal_t 
+struct zen_sphere_t : public monk_heal_t
 {
   spells::monk_spell_t* zen_sphere_damage;
 
@@ -2129,7 +2129,7 @@ namespace absorbs {
 struct monk_absorb_t : public monk_action_t<absorb_t>
 {
   monk_absorb_t( const std::string& n, monk_t& player,
-                const spell_data_t* s = spell_data_t::nil() ) :
+                 const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, &player, s )
   {
   }
@@ -2458,7 +2458,7 @@ void monk_t::create_buffs()
   buff.muscle_memory     = buff_creator_t( this, "muscle_memory"       ).spell( find_spell( 139597 ) );
   buff.serpents_zeal     = buff_creator_t( this, "serpents_zeal"       ).spell( find_spell( 127722 ) );
   buff.vital_mists       = buff_creator_t( this, "vital_mists"         ).spell( find_spell( 118674 ) );
-  
+
   // Windwalker
   buff.chi_sphere        = buff_creator_t( this, "chi_sphere"          ).max_stack( 5 );
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok"   ).spell( find_spell( 116768 ) );
@@ -2474,7 +2474,7 @@ void monk_t::create_buffs()
 void monk_t::init_gains()
 {
   base_t::init_gains();
-  
+
   gain.avoided_chi           = get_gain( "chi_from_avoided_attacks" );
   gain.chi                   = get_gain( "chi"                      );
   gain.chi_brew              = get_gain( "chi_from_chi_brew"        );
@@ -2563,20 +2563,20 @@ double monk_t::matching_gear_multiplier( attribute_e attr )
 {
   switch ( specialization() )
   {
-  case MONK_MISTWEAVER:
-    if ( attr == ATTR_INTELLECT )
-      return spec.leather_specialization -> effectN( 1 ).percent();
-    break;
-  case MONK_WINDWALKER:
-    if ( attr == ATTR_AGILITY )
-      return spec.leather_specialization -> effectN( 1 ).percent();
-    break;
-  case MONK_BREWMASTER:
-    if ( attr == ATTR_STAMINA )
-      return spec.leather_specialization -> effectN( 1 ).percent();
-    break;
-  default:
-    break;
+    case MONK_MISTWEAVER:
+      if ( attr == ATTR_INTELLECT )
+        return spec.leather_specialization -> effectN( 1 ).percent();
+      break;
+    case MONK_WINDWALKER:
+      if ( attr == ATTR_AGILITY )
+        return spec.leather_specialization -> effectN( 1 ).percent();
+      break;
+    case MONK_BREWMASTER:
+      if ( attr == ATTR_STAMINA )
+        return spec.leather_specialization -> effectN( 1 ).percent();
+      break;
+    default:
+      break;
   }
 
   return 0.0;
@@ -2819,18 +2819,18 @@ void monk_t::invalidate_cache( cache_e c )
 
   switch ( c )
   {
-  case CACHE_SPELL_POWER:
-    if ( current_stance() == WISE_SERPENT )
-      player_t::invalidate_cache( CACHE_ATTACK_POWER );
-    break;
-  case CACHE_SPIRIT:
-    if ( current_stance() == WISE_SERPENT )
-    {
-      player_t::invalidate_cache( CACHE_HIT );
-      player_t::invalidate_cache( CACHE_ATTACK_EXP );
-    }
-    break;
-  default: break;
+    case CACHE_SPELL_POWER:
+      if ( current_stance() == WISE_SERPENT )
+        player_t::invalidate_cache( CACHE_ATTACK_POWER );
+      break;
+    case CACHE_SPIRIT:
+      if ( current_stance() == WISE_SERPENT )
+      {
+        player_t::invalidate_cache( CACHE_HIT );
+        player_t::invalidate_cache( CACHE_ATTACK_EXP );
+      }
+      break;
+    default: break;
   }
 }
 
@@ -2937,8 +2937,8 @@ void monk_t::combat_begin()
 }
 
 void monk_t::target_mitigation( school_e school,
-                                  dmg_e    dt,
-                                  action_state_t* s )
+                                dmg_e    dt,
+                                action_state_t* s )
 {
   base_t::target_mitigation( school, dt, s );
 
@@ -2955,7 +2955,7 @@ void monk_t::assess_damage( school_e school,
   buff.shuffle -> up();
   buff.fortifying_brew -> up();
   buff.elusive_brew_activated -> up();
-  
+
   base_t::assess_damage( school, dtype, s );
 }
 
@@ -2987,7 +2987,7 @@ void monk_t::apl_pre_brewmaster()
   pre -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   // Potion
-  if ( sim -> allow_potions && level >= 80)
+  if ( sim -> allow_potions && level >= 80 )
   {
     if ( level >= 85 )
       pre -> add_action( "mountains_potion" );
@@ -3116,8 +3116,8 @@ void monk_t::apl_combat_windwalker()
   action_list_str += "/tiger_palm,if=buff.tiger_power.remains<=3";
   if ( find_item( "rune_of_reorigination" ) )
   {
-    action_list_str+= "/tigereye_brew,line_cd=15,if=buff.rune_of_reorigination.react&(buff.rune_of_reorigination.remains<=1|(buff.tigereye_brew_use.down&cooldown.rising_sun_kick.remains=0&chi>=2&target.debuff.rising_sun_kick.remains&buff.tiger_power.remains))";
-    action_list_str+= "/tigereye_brew,if=!buff.tigereye_brew_use.up&(buff.tigereye_brew.react>19|target.time_to_die<20)";
+    action_list_str += "/tigereye_brew,line_cd=15,if=buff.rune_of_reorigination.react&(buff.rune_of_reorigination.remains<=1|(buff.tigereye_brew_use.down&cooldown.rising_sun_kick.remains=0&chi>=2&target.debuff.rising_sun_kick.remains&buff.tiger_power.remains))";
+    action_list_str += "/tigereye_brew,if=!buff.tigereye_brew_use.up&(buff.tigereye_brew.react>19|target.time_to_die<20)";
   }
   else
   {
@@ -3168,15 +3168,15 @@ void monk_t::apl_combat_mistweaver()
 void monk_t::init_actions()
 {
   if ( ! action_list_str.empty() )
-    {
-      player_t::init_actions();
-      return;
-    }
-    clear_action_priority_lists();
+  {
+    player_t::init_actions();
+    return;
+  }
+  clear_action_priority_lists();
 
-    // Precombat
-    switch ( specialization() )
-    {
+  // Precombat
+  switch ( specialization() )
+  {
 
     case MONK_BREWMASTER:
       apl_pre_brewmaster();
@@ -3188,11 +3188,11 @@ void monk_t::init_actions()
       apl_pre_mistweaver();
       break;
     default: break;
-    }
+  }
 
-    // Combat
-    switch ( specialization() )
-    {
+  // Combat
+  switch ( specialization() )
+  {
 
     case MONK_BREWMASTER:
       apl_combat_brewmaster();
@@ -3234,23 +3234,23 @@ double monk_t::stagger_pct()
  */
 void monk_t::stance_invalidates( stance_e stance )
 {
-  switch( stance )
+  switch ( stance )
   {
-  case FIERCE_TIGER:
-    invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    invalidate_cache( CACHE_ATTACK_SPEED );
-    break;
-  case STURDY_OX:
-    invalidate_cache( CACHE_STAMINA );
-    invalidate_cache( CACHE_CRIT_AVOIDANCE );
-    break;
-  case WISE_SERPENT:
-    invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
-    invalidate_cache( CACHE_HIT );
-    invalidate_cache( CACHE_EXP );
-    invalidate_cache( CACHE_HASTE );
-    invalidate_cache( CACHE_ATTACK_POWER );
-    break;
+    case FIERCE_TIGER:
+      invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      invalidate_cache( CACHE_ATTACK_SPEED );
+      break;
+    case STURDY_OX:
+      invalidate_cache( CACHE_STAMINA );
+      invalidate_cache( CACHE_CRIT_AVOIDANCE );
+      break;
+    case WISE_SERPENT:
+      invalidate_cache( CACHE_PLAYER_HEAL_MULTIPLIER );
+      invalidate_cache( CACHE_HIT );
+      invalidate_cache( CACHE_EXP );
+      invalidate_cache( CACHE_HASTE );
+      invalidate_cache( CACHE_ATTACK_POWER );
+      break;
   }
 }
 
@@ -3278,12 +3278,12 @@ inline const spell_data_t& monk_t::static_stance_data( stance_e stance )
 {
   switch ( stance )
   {
-  case FIERCE_TIGER:
-    return *stance_data.fierce_tiger;
-  case STURDY_OX:
-    return *stance_data.sturdy_ox;
-  case WISE_SERPENT:
-    return *stance_data.wise_serpent;
+    case FIERCE_TIGER:
+      return *stance_data.fierce_tiger;
+    case STURDY_OX:
+      return *stance_data.sturdy_ox;
+    case WISE_SERPENT:
+      return *stance_data.wise_serpent;
   }
 
   assert( false );

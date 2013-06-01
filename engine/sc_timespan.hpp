@@ -99,15 +99,15 @@ public:
   time_t total_millis() const  { return native_to_milli ( time ); }
 
   template <typename Rep>
-  static typename enable_if<std::is_arithmetic<Rep>::value,timespan_t>::type
+  static typename enable_if<std::is_arithmetic<Rep>::value, timespan_t>::type
   from_millis ( Rep millis )  { return timespan_t( milli_to_native ( millis ) ); }
 
   template <typename Rep>
-  static typename enable_if<std::is_arithmetic<Rep>::value,timespan_t>::type
+  static typename enable_if<std::is_arithmetic<Rep>::value, timespan_t>::type
   from_seconds( Rep seconds ) { return timespan_t( second_to_native( seconds ) ); }
 
   template <typename Rep>
-  static typename enable_if<std::is_arithmetic<Rep>::value,timespan_t>::type
+  static typename enable_if<std::is_arithmetic<Rep>::value, timespan_t>::type
   from_minutes( Rep minutes ) { return timespan_t( minute_to_native( minutes ) ); }
 
   bool operator==( timespan_t right ) const { return time == right.time; }
@@ -134,7 +134,7 @@ public:
   }
 
   template <typename Rep>
-  typename enable_if<std::is_arithmetic<Rep>::value,timespan_t&>::type
+  typename enable_if<std::is_arithmetic<Rep>::value, timespan_t&>::type
   operator*=( Rep right )
   {
     time = static_cast<time_t>( time * right );
@@ -142,7 +142,7 @@ public:
   }
 
   template <typename Rep>
-  typename enable_if<std::is_arithmetic<Rep>::value,timespan_t&>::type
+  typename enable_if<std::is_arithmetic<Rep>::value, timespan_t&>::type
   operator/=( Rep right )
   {
     time = static_cast<time_t>( time / right );
@@ -169,17 +169,17 @@ public:
   }
 
   template <typename Rep>
-  friend typename enable_if<std::is_arithmetic<Rep>::value,timespan_t>::type
+  friend typename enable_if<std::is_arithmetic<Rep>::value, timespan_t>::type
   operator*( timespan_t left, Rep right )
   { return timespan_t( left.time * right ); }
 
   template <typename Rep>
-  friend typename enable_if<std::is_arithmetic<Rep>::value,timespan_t>::type
+  friend typename enable_if<std::is_arithmetic<Rep>::value, timespan_t>::type
   operator*( Rep left, timespan_t right )
   { return timespan_t( left * right.time ); }
 
   template <typename Rep>
-  friend typename enable_if<std::is_arithmetic<Rep>::value,timespan_t>::type
+  friend typename enable_if<std::is_arithmetic<Rep>::value, timespan_t>::type
   operator/( timespan_t left, Rep right )
   { return timespan_t( left.time / right ); }
 

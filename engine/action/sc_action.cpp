@@ -109,7 +109,7 @@ struct action_execute_event_t : public event_t
     {
       if ( player -> readying )
         sim.output( "Danger Will Robinson!  Danger!  action %s player %s\n",
-                 action -> name(), player -> name() );
+                    action -> name(), player -> name() );
 
       player -> schedule_ready( timespan_t::zero() );
     }
@@ -285,7 +285,7 @@ action_t::action_t( action_e       ty,
   dot_behavior                   = DOT_CLIP;
   trigger_gcd                    = player -> base_gcd;
   range                          = -1.0;
-  weapon_power_mod               = 1.0/14.0;
+  weapon_power_mod               = 1.0 / 14.0;
 
 
   base_dd_min                    = 0.0;
@@ -470,82 +470,82 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
 
   switch ( spelleffect_data.type() )
   {
-    // Direct Damage
-  case E_HEAL:
-  case E_SCHOOL_DAMAGE:
-  case E_HEALTH_LEECH:
-    direct_power_mod = spelleffect_data.coeff();
-    base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
-    base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
-    break;
-
-  case E_NORMALIZED_WEAPON_DMG:
-    normalize_weapon_speed = true;
-  case E_WEAPON_DAMAGE:
-    base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
-    base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
-    weapon = &( player -> main_hand_weapon );
-    break;
-
-  case E_WEAPON_PERCENT_DAMAGE:
-    weapon = &( player -> main_hand_weapon );
-    weapon_multiplier = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
-    break;
-
-    // Dot
-  case E_PERSISTENT_AREA_AURA:
-  case E_APPLY_AURA:
-    switch ( spelleffect_data.subtype() )
-    {
-    case A_PERIODIC_DAMAGE:
-    case A_PERIODIC_LEECH:
-    case A_PERIODIC_HEAL:
-      tick_power_mod   = spelleffect_data.coeff();
-      base_td          = player -> dbc.effect_average( spelleffect_data.id(), player -> level );
-    case A_PERIODIC_ENERGIZE:
-    case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
-    case A_PERIODIC_HEALTH_FUNNEL:
-    case A_PERIODIC_MANA_LEECH:
-    case A_PERIODIC_DAMAGE_PERCENT:
-    case A_PERIODIC_DUMMY:
-    case A_PERIODIC_TRIGGER_SPELL:
-      if ( spelleffect_data.period() > timespan_t::zero() )
-      {
-        base_tick_time   = spelleffect_data.period();
-        num_ticks        = ( int ) ( spelleffect_data.spell() -> duration() / base_tick_time );
-      }
-      break;
-    case A_SCHOOL_ABSORB:
+      // Direct Damage
+    case E_HEAL:
+    case E_SCHOOL_DAMAGE:
+    case E_HEALTH_LEECH:
       direct_power_mod = spelleffect_data.coeff();
       base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
       base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
       break;
-    case A_ADD_FLAT_MODIFIER:
-      switch ( spelleffect_data.misc_value1() )
-      case E_APPLY_AURA:
+
+    case E_NORMALIZED_WEAPON_DMG:
+      normalize_weapon_speed = true;
+    case E_WEAPON_DAMAGE:
+      base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
+      base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
+      weapon = &( player -> main_hand_weapon );
+      break;
+
+    case E_WEAPON_PERCENT_DAMAGE:
+      weapon = &( player -> main_hand_weapon );
+      weapon_multiplier = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
+      break;
+
+      // Dot
+    case E_PERSISTENT_AREA_AURA:
+    case E_APPLY_AURA:
       switch ( spelleffect_data.subtype() )
       {
-      case P_CRIT:
-        base_crit += 0.01 * spelleffect_data.base_value();
-        break;
-      case P_COOLDOWN:
-        cooldown -> duration += spelleffect_data.time_value();
-        break;
-      default: break;
-      }
-      break;
-    case A_ADD_PCT_MODIFIER:
-      switch ( spelleffect_data.misc_value1() )
-      {
-      case P_RESOURCE_COST:
-        base_costs[ player -> primary_resource() ] *= 1 + 0.01 * spelleffect_data.base_value();
-        break;
+        case A_PERIODIC_DAMAGE:
+        case A_PERIODIC_LEECH:
+        case A_PERIODIC_HEAL:
+          tick_power_mod   = spelleffect_data.coeff();
+          base_td          = player -> dbc.effect_average( spelleffect_data.id(), player -> level );
+        case A_PERIODIC_ENERGIZE:
+        case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
+        case A_PERIODIC_HEALTH_FUNNEL:
+        case A_PERIODIC_MANA_LEECH:
+        case A_PERIODIC_DAMAGE_PERCENT:
+        case A_PERIODIC_DUMMY:
+        case A_PERIODIC_TRIGGER_SPELL:
+          if ( spelleffect_data.period() > timespan_t::zero() )
+          {
+            base_tick_time   = spelleffect_data.period();
+            num_ticks        = ( int ) ( spelleffect_data.spell() -> duration() / base_tick_time );
+          }
+          break;
+        case A_SCHOOL_ABSORB:
+          direct_power_mod = spelleffect_data.coeff();
+          base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
+          base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
+          break;
+        case A_ADD_FLAT_MODIFIER:
+          switch ( spelleffect_data.misc_value1() )
+          case E_APPLY_AURA:
+          switch ( spelleffect_data.subtype() )
+          {
+            case P_CRIT:
+              base_crit += 0.01 * spelleffect_data.base_value();
+              break;
+            case P_COOLDOWN:
+              cooldown -> duration += spelleffect_data.time_value();
+              break;
+            default: break;
+          }
+          break;
+        case A_ADD_PCT_MODIFIER:
+          switch ( spelleffect_data.misc_value1() )
+          {
+            case P_RESOURCE_COST:
+              base_costs[ player -> primary_resource() ] *= 1 + 0.01 * spelleffect_data.base_value();
+              break;
+          }
+          break;
+        default: break;
       }
       break;
     default: break;
-    }
-    break;
-  default: break;
   }
 }
 
@@ -744,7 +744,7 @@ double action_t::calculate_tick_amount( action_state_t* state )
   if ( sim -> debug )
   {
     sim -> output( "%s amount for %s on %s: ta=%.0f i_ta=%.0f b_ta=%.0f bonus_ta=%.0f mod=%.2f power=%.0f mult=%.2f",
-                   player -> name(), name(), target -> name(), amount, 
+                   player -> name(), name(), target -> name(), amount,
                    init_tick_amount, base_ta( state ), bonus_ta( state ),
                    tick_power_coefficient( state ), state -> composite_power(),
                    state -> composite_ta_multiplier() );
@@ -1077,8 +1077,8 @@ void action_t::last_tick( dot_t* d )
   if ( school == SCHOOL_PHYSICAL )
   {
     buff_t* b = d -> state -> target -> debuffs.bleeding;
-    if( b -> current_value > 0 ) b -> current_value -= 1.0;
-    if( b -> current_value == 0 ) b -> expire();
+    if ( b -> current_value > 0 ) b -> current_value -= 1.0;
+    if ( b -> current_value == 0 ) b -> expire();
   }
 }
 
@@ -1988,13 +1988,13 @@ double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, time
 
   switch ( scales_with )
   {
-  case RPPM_ATTACK_CRIT:
-    coeff *= 1.0 + player -> cache.attack_crit();
-    break;
-  case RPPM_SPELL_CRIT:
-    coeff *= 1.0 + player -> cache.spell_crit();
-    break;
-  default: break;
+    case RPPM_ATTACK_CRIT:
+      coeff *= 1.0 + player -> cache.attack_crit();
+      break;
+    case RPPM_SPELL_CRIT:
+      coeff *= 1.0 + player -> cache.spell_crit();
+      break;
+    default: break;
   }
 
   double old_rppm_chance = ( PPM * ( seconds / 60.0 ) ) * coeff;
@@ -2226,9 +2226,9 @@ void action_t::trigger_dot( action_state_t* s )
     if ( school == SCHOOL_PHYSICAL )
     {
       buff_t* b = s -> target -> debuffs.bleeding;
-      if( b -> current_value > 0 )
+      if ( b -> current_value > 0 )
       {
-	b -> current_value += 1.0;
+        b -> current_value += 1.0;
       }
       else b -> start( 1, 1.0 );
     }

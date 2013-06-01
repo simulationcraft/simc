@@ -50,14 +50,14 @@ expr_t* select_unary( const std::string& name, token_e op, expr_t* input )
 {
   switch ( op )
   {
-  case TOK_PLUS:  return new expr_unary_t<unary::plus> ( name, input );
-  case TOK_MINUS: return new expr_unary_t<unary::minus>( name, input );
-  case TOK_NOT:   return new expr_unary_t<unary::lnot> ( name, input );
-  case TOK_ABS:   return new expr_unary_t<unary::abs>  ( name, input );
-  case TOK_FLOOR: return new expr_unary_t<unary::floor>( name, input );
-  case TOK_CEIL:  return new expr_unary_t<unary::ceil> ( name, input );
+    case TOK_PLUS:  return new expr_unary_t<unary::plus> ( name, input );
+    case TOK_MINUS: return new expr_unary_t<unary::minus>( name, input );
+    case TOK_NOT:   return new expr_unary_t<unary::lnot> ( name, input );
+    case TOK_ABS:   return new expr_unary_t<unary::abs>  ( name, input );
+    case TOK_FLOOR: return new expr_unary_t<unary::floor>( name, input );
+    case TOK_CEIL:  return new expr_unary_t<unary::ceil> ( name, input );
 
-  default: assert( false ); return 0; // throw?
+    default: assert( false ); return 0; // throw?
   }
 }
 
@@ -118,22 +118,22 @@ expr_t* select_binary( const std::string& name, token_e op, expr_t* left, expr_t
 {
   switch ( op )
   {
-  case TOK_AND:   return new logical_and_t                     ( name, left, right );
-  case TOK_OR:    return new logical_or_t                      ( name, left, right );
+    case TOK_AND:   return new logical_and_t                     ( name, left, right );
+    case TOK_OR:    return new logical_or_t                      ( name, left, right );
 
-  case TOK_ADD:   return new expr_binary_t<std::plus>          ( name, left, right );
-  case TOK_SUB:   return new expr_binary_t<std::minus>         ( name, left, right );
-  case TOK_MULT:  return new expr_binary_t<std::multiplies>    ( name, left, right );
-  case TOK_DIV:   return new expr_binary_t<std::divides>       ( name, left, right );
+    case TOK_ADD:   return new expr_binary_t<std::plus>          ( name, left, right );
+    case TOK_SUB:   return new expr_binary_t<std::minus>         ( name, left, right );
+    case TOK_MULT:  return new expr_binary_t<std::multiplies>    ( name, left, right );
+    case TOK_DIV:   return new expr_binary_t<std::divides>       ( name, left, right );
 
-  case TOK_EQ:    return new expr_binary_t<std::equal_to>      ( name, left, right );
-  case TOK_NOTEQ: return new expr_binary_t<std::not_equal_to>  ( name, left, right );
-  case TOK_LT:    return new expr_binary_t<std::less>          ( name, left, right );
-  case TOK_LTEQ:  return new expr_binary_t<std::less_equal>    ( name, left, right );
-  case TOK_GT:    return new expr_binary_t<std::greater>       ( name, left, right );
-  case TOK_GTEQ:  return new expr_binary_t<std::greater_equal> ( name, left, right );
+    case TOK_EQ:    return new expr_binary_t<std::equal_to>      ( name, left, right );
+    case TOK_NOTEQ: return new expr_binary_t<std::not_equal_to>  ( name, left, right );
+    case TOK_LT:    return new expr_binary_t<std::less>          ( name, left, right );
+    case TOK_LTEQ:  return new expr_binary_t<std::less_equal>    ( name, left, right );
+    case TOK_GT:    return new expr_binary_t<std::greater>       ( name, left, right );
+    case TOK_GTEQ:  return new expr_binary_t<std::greater_equal> ( name, left, right );
 
-  default: assert( false ); return 0; // throw?
+    default: assert( false ); return 0; // throw?
   }
 }
 
@@ -145,41 +145,41 @@ int expression_t::precedence( token_e expr_token_type )
 {
   switch ( expr_token_type )
   {
-  case TOK_FLOOR:
-  case TOK_CEIL:
-    return 6;
+    case TOK_FLOOR:
+    case TOK_CEIL:
+      return 6;
 
-  case TOK_NOT:
-  case TOK_PLUS:
-  case TOK_MINUS:
-  case TOK_ABS:
-    return 5;
+    case TOK_NOT:
+    case TOK_PLUS:
+    case TOK_MINUS:
+    case TOK_ABS:
+      return 5;
 
-  case TOK_MULT:
-  case TOK_DIV:
-    return 4;
+    case TOK_MULT:
+    case TOK_DIV:
+      return 4;
 
-  case TOK_ADD:
-  case TOK_SUB:
-    return 3;
+    case TOK_ADD:
+    case TOK_SUB:
+      return 3;
 
-  case TOK_EQ:
-  case TOK_NOTEQ:
-  case TOK_LT:
-  case TOK_LTEQ:
-  case TOK_GT:
-  case TOK_GTEQ:
-  case TOK_IN:
-  case TOK_NOTIN:
-    return 2;
+    case TOK_EQ:
+    case TOK_NOTEQ:
+    case TOK_LT:
+    case TOK_LTEQ:
+    case TOK_GT:
+    case TOK_GTEQ:
+    case TOK_IN:
+    case TOK_NOTIN:
+      return 2;
 
-  case TOK_AND:
-  case TOK_OR:
-    return 1;
+    case TOK_AND:
+    case TOK_OR:
+      return 1;
 
-  default:
-    assert( false );
-    return 0;
+    default:
+      assert( false );
+      return 0;
   }
 }
 
@@ -189,15 +189,15 @@ bool expression_t::is_unary( token_e expr_token_type )
 {
   switch ( expr_token_type )
   {
-  case TOK_NOT:
-  case TOK_PLUS:
-  case TOK_MINUS:
-  case TOK_ABS:
-  case TOK_FLOOR:
-  case TOK_CEIL:
-    return true;
-  default:
-    return false;
+    case TOK_NOT:
+    case TOK_PLUS:
+    case TOK_MINUS:
+    case TOK_ABS:
+    case TOK_FLOOR:
+    case TOK_CEIL:
+      return true;
+    default:
+      return false;
   }
 }
 
@@ -207,23 +207,23 @@ bool expression_t::is_binary( token_e expr_token_type )
 {
   switch ( expr_token_type )
   {
-  case TOK_MULT:
-  case TOK_DIV:
-  case TOK_ADD:
-  case TOK_SUB:
-  case TOK_EQ:
-  case TOK_NOTEQ:
-  case TOK_LT:
-  case TOK_LTEQ:
-  case TOK_GT:
-  case TOK_GTEQ:
-  case TOK_AND:
-  case TOK_OR:
-  case TOK_IN:
-  case TOK_NOTIN:
-    return true;
-  default:
-    return false;
+    case TOK_MULT:
+    case TOK_DIV:
+    case TOK_ADD:
+    case TOK_SUB:
+    case TOK_EQ:
+    case TOK_NOTEQ:
+    case TOK_LT:
+    case TOK_LTEQ:
+    case TOK_GT:
+    case TOK_GTEQ:
+    case TOK_AND:
+    case TOK_OR:
+    case TOK_IN:
+    case TOK_NOTIN:
+      return true;
+    default:
+      return false;
   }
 }
 
@@ -335,7 +335,7 @@ expression_t::parse_tokens( action_t* action,
   std::vector<expr_token_t> tokens;
 
   expr_token_t token;
-  int current_index=0;
+  int current_index = 0;
   token_e t = TOK_UNKNOWN;
 
   while ( ( token.type = next_token( action, expr_str, current_index, token.label, t ) ) != TOK_UNKNOWN )
@@ -353,7 +353,7 @@ void expression_t::print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
 {
   sim_t::output( sim, "tokens:" );
   size_t num_tokens = tokens.size();
-  for ( size_t i=0; i < num_tokens; i++ )
+  for ( size_t i = 0; i < num_tokens; i++ )
   {
     expr_token_t& t = tokens[ i ];
     sim_t::output( sim, "%2d  '%s'", t.type, t.label.c_str() );
@@ -365,16 +365,16 @@ void expression_t::print_tokens( std::vector<expr_token_t>& tokens, sim_t* sim )
 void expression_t::convert_to_unary( std::vector<expr_token_t>& tokens )
 {
   size_t num_tokens = tokens.size();
-  for ( size_t i=0; i < num_tokens; i++ )
+  for ( size_t i = 0; i < num_tokens; i++ )
   {
     expr_token_t& t = tokens[ i ];
 
     bool left_side = false;
 
     if ( i > 0 )
-      if ( tokens[ i-1 ].type == TOK_NUM ||
-           tokens[ i-1 ].type == TOK_STR ||
-           tokens[ i-1 ].type == TOK_RPAR )
+      if ( tokens[ i - 1 ].type == TOK_NUM ||
+           tokens[ i - 1 ].type == TOK_STR ||
+           tokens[ i - 1 ].type == TOK_RPAR )
         left_side = true;
 
     if ( ! left_side && ( t.type == TOK_ADD || t.type == TOK_SUB ) )
@@ -392,7 +392,7 @@ bool expression_t::convert_to_rpn( std::vector<expr_token_t>& tokens )
   std::vector<expr_token_t> rpn, stack;
 
   size_t num_tokens = tokens.size();
-  for ( size_t i=0; i < num_tokens; i++ )
+  for ( size_t i = 0; i < num_tokens; i++ )
   {
     expr_token_t& t = tokens[ i ];
 
@@ -458,9 +458,9 @@ static expr_t* build_expression_tree( action_t* action,
   auto_dispose< std::vector<expr_t*> > stack;
 
   size_t num_tokens = tokens.size();
-  for ( size_t i=0; i < num_tokens; i++ )
+  for ( size_t i = 0; i < num_tokens; i++ )
   {
-    expr_token_t& t= tokens[ i ];
+    expr_token_t& t = tokens[ i ];
 
     if ( t.type == TOK_NUM )
     {
@@ -593,7 +593,7 @@ int main( int argc, char** argv )
 {
   uint64_t n_evals = 1;
 
-  for ( int i=1; i < argc; i++ )
+  for ( int i = 1; i < argc; i++ )
   {
     if ( util::str_compare_ci( argv[ i ], "-n" ) )
     {

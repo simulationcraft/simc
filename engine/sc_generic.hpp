@@ -31,10 +31,10 @@ namespace std {using namespace tr1; }
 
 // Type traits and metaprogramming tools ====================================
 
-template <bool Condition,typename T>
+template <bool Condition, typename T>
 struct enable_if { typedef T type; };
 template <typename T>
-struct enable_if<false,T> {};
+struct enable_if<false, T> {};
 
 template <typename T>
 struct iterator_type
@@ -67,12 +67,12 @@ template <typename T>
 struct is_iterable_enum : public std::is_enum<T> {};
 
 template <typename T>
-inline typename enable_if<is_iterable_enum<T>::value,T&>::type
+inline typename enable_if<is_iterable_enum<T>::value, T&>::type
 operator -- ( T& s )
 { return s = static_cast<T>( s - 1 ); }
 
 template <typename T>
-inline typename enable_if<is_iterable_enum<T>::value,T>::type
+inline typename enable_if<is_iterable_enum<T>::value, T>::type
 operator -- ( T& s, int )
 {
   T tmp = s;
@@ -81,12 +81,12 @@ operator -- ( T& s, int )
 }
 
 template <typename T>
-inline typename enable_if<is_iterable_enum<T>::value,T&>::type
+inline typename enable_if<is_iterable_enum<T>::value, T&>::type
 operator ++ ( T& s )
 { return s = static_cast<T>( s + 1 ); }
 
 template <typename T>
-inline typename enable_if<is_iterable_enum<T>::value,T>::type
+inline typename enable_if<is_iterable_enum<T>::value, T>::type
 operator ++ ( T& s, int )
 {
   T tmp = s;
@@ -101,7 +101,7 @@ inline std::size_t sizeof_array( const T ( & )[N] )
 { return N; }
 
 template <typename T, std::size_t N>
-inline std::size_t sizeof_array( const std::array<T,N>& )
+inline std::size_t sizeof_array( const std::array<T, N>& )
 { return N; }
 
 class noncopyable
@@ -184,19 +184,19 @@ struct traits<T[N]>
 };
 
 template <typename T>
-struct traits< std::pair<T,T> >
+struct traits< std::pair<T, T> >
 {
   typedef T iterator;
-  static iterator begin( const std::pair<T,T>& t ) { return t.first; }
-  static iterator end( const std::pair<T,T>& t ) { return t.second; }
+  static iterator begin( const std::pair<T, T>& t ) { return t.first; }
+  static iterator end( const std::pair<T, T>& t ) { return t.second; }
 };
 
 template <typename T>
-struct traits< const std::pair<T,T> >
+struct traits< const std::pair<T, T> >
 {
   typedef T iterator;
-  static iterator begin( const std::pair<T,T>& t ) { return t.first; }
-  static iterator end( const std::pair<T,T>& t ) { return t.second; }
+  static iterator begin( const std::pair<T, T>& t ) { return t.first; }
+  static iterator end( const std::pair<T, T>& t ) { return t.second; }
 };
 
 template <typename T>

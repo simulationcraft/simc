@@ -45,7 +45,7 @@ public:
 
   bool ready() { return file != NULL; }
 
-  int printf( const char *format, ... ) const PRINTF_ATTRIBUTE( 2,3 )
+  int printf( const char *format, ... ) const PRINTF_ATTRIBUTE( 2, 3 )
   {
     va_list fmtargs;
     va_start( fmtargs, format );
@@ -198,7 +198,7 @@ void print_xml_errors( sim_t* sim, xml_writer_t & writer )
   if ( num_errors > 0 )
   {
     writer.begin_tag( "errors" );
-    for ( size_t i=0; i < num_errors; i++ )
+    for ( size_t i = 0; i < num_errors; i++ )
     {
       writer.begin_tag( "error" );
       writer.print_attribute( "message", sim -> error_list[ i ] );
@@ -491,7 +491,7 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
         writer.begin_tag( "direct_results" );
         writer.print_attribute( "count", util::to_string( s -> num_direct_results.mean() ) );
 
-        for ( result_e i=RESULT_MAX; --i >= RESULT_NONE; )
+        for ( result_e i = RESULT_MAX; --i >= RESULT_NONE; )
         {
           if ( s -> direct_results[ i ].count.mean() )
           {
@@ -724,7 +724,7 @@ void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player
   }
 
   size_t num_scaling_stats = p -> scaling_stats.size();
-  for ( size_t i=0; i < num_scaling_stats; i++ )
+  for ( size_t i = 0; i < num_scaling_stats; i++ )
   {
     writer.begin_tag( "scaling_stat" );
     writer.print_attribute( "name", util::stat_type_abbrev( p -> scaling_stats[ i ] ) );
@@ -821,7 +821,7 @@ void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p )
       writer.begin_tag( "dps" );
       writer.print_attribute( "stat", util::stat_type_abbrev( i ) );
       size_t num_points = pd.size();
-      for ( size_t j=0; j < num_points; j++ )
+      for ( size_t j = 0; j < num_points; j++ )
       {
         writer.print_tag( "value", util::to_string( pd[ j ].value, 0 ) );
       }
@@ -948,7 +948,7 @@ void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer )
   std::vector<player_t*> hat_donors;
 
   int num_players = ( int ) sim -> players_by_name.size();
-  for ( int i=0; i < num_players; i++ )
+  for ( int i = 0; i < num_players; i++ )
   {
     player_t* p = sim -> players_by_name[ i ];
     if ( p -> procs.hat_donor -> count.mean() )
@@ -962,7 +962,7 @@ void print_xml_hat_donors( sim_t* sim, xml_writer_t & writer )
 
     writer.begin_tag( "honor_among_thieves" );
 
-    for ( int i=0; i < num_donors; i++ )
+    for ( int i = 0; i < num_donors; i++ )
     {
       writer.begin_tag( "donors" );
       player_t* p = hat_donors[ i ];
@@ -1074,7 +1074,7 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_t::report_informa
   size_t count = ri.dps_charts.size();
   writer.begin_tag( "charts" );
   writer.print_attribute( "max_players_per_chart", util::to_string( MAX_PLAYERS_PER_CHART ) );
-  for ( size_t i=0; i < count; i++ )
+  for ( size_t i = 0; i < count; i++ )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "dps" );
@@ -1082,7 +1082,7 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_t::report_informa
     writer.end_tag( "chart" );
   }
   count = ri.hps_charts.size();
-  for ( size_t i=0; i < count; i++ )
+  for ( size_t i = 0; i < count; i++ )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "hps" );
@@ -1090,7 +1090,7 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_t::report_informa
     writer.end_tag( "chart" );
   }
   count = ri.gear_charts.size();
-  for ( size_t i=0; i < count; i++ )
+  for ( size_t i = 0; i < count; i++ )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "gear" );
@@ -1098,7 +1098,7 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_t::report_informa
     writer.end_tag( "chart" );
   }
   count = ri.dpet_charts.size();
-  for ( size_t i=0; i < count; i++ )
+  for ( size_t i = 0; i < count; i++ )
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "dpet" );

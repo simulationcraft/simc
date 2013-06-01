@@ -260,21 +260,21 @@ std::ostringstream& spell_info::effect_to_str( sim_t*                    sim,
     // Put some nice handling on some effect types
     switch ( e -> type() )
     {
-    case E_SCHOOL_DAMAGE:
-      s << ": " << util::school_type_string( spell -> get_school_type() );
-      break;
-    case E_TRIGGER_SPELL:
-    case E_TRIGGER_SPELL_WITH_VALUE:
-      if ( e -> trigger_spell_id() )
-      {
-        if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
-          s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
-        else
-          s << ": (" << e -> trigger_spell_id() << ")";
-      }
-      break;
-    default:
-      break;
+      case E_SCHOOL_DAMAGE:
+        s << ": " << util::school_type_string( spell -> get_school_type() );
+        break;
+      case E_TRIGGER_SPELL:
+      case E_TRIGGER_SPELL_WITH_VALUE:
+        if ( e -> trigger_spell_id() )
+        {
+          if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+            s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+          else
+            s << ": (" << e -> trigger_spell_id() << ")";
+        }
+        break;
+      default:
+        break;
     }
   }
   else
@@ -289,50 +289,50 @@ std::ostringstream& spell_info::effect_to_str( sim_t*                    sim,
       s << " | " << _effect_subtype_strings[ e -> subtype() ];
       switch ( e -> subtype() )
       {
-      case A_PERIODIC_DAMAGE:
-        s << ": " << util::school_type_string( spell -> get_school_type() );
-        if ( e -> period() != timespan_t::zero() )
-          s << " every " << e -> period().total_seconds() << " seconds";
-        break;
-      case A_PERIODIC_ENERGIZE:
-      case A_PERIODIC_DUMMY:
-        if ( e -> period() != timespan_t::zero() )
-          s << ": every " << e -> period().total_seconds() << " seconds";
-        break;
-      case A_PROC_TRIGGER_SPELL:
-        if ( e -> trigger_spell_id() )
-        {
-          if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+        case A_PERIODIC_DAMAGE:
+          s << ": " << util::school_type_string( spell -> get_school_type() );
+          if ( e -> period() != timespan_t::zero() )
+            s << " every " << e -> period().total_seconds() << " seconds";
+          break;
+        case A_PERIODIC_ENERGIZE:
+        case A_PERIODIC_DUMMY:
+          if ( e -> period() != timespan_t::zero() )
+            s << ": every " << e -> period().total_seconds() << " seconds";
+          break;
+        case A_PROC_TRIGGER_SPELL:
+          if ( e -> trigger_spell_id() )
           {
-            s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+            if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+            {
+              s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+            }
+            else
+            {
+              s << ": (" << e -> trigger_spell_id() << ")";
+            }
           }
-          else
+          break;
+        case A_PERIODIC_TRIGGER_SPELL:
+          if ( e -> trigger_spell_id() )
           {
-            s << ": (" << e -> trigger_spell_id() << ")";
+            if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+            {
+              s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+              if ( e -> period() != timespan_t::zero() )
+                s << " every " << e -> period().total_seconds() << " seconds";
+            }
+            else
+              s << ": (" << e -> trigger_spell_id() << ")";
           }
-        }
-        break;
-      case A_PERIODIC_TRIGGER_SPELL:
-        if ( e -> trigger_spell_id() )
-        {
-          if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
-          {
-            s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
-            if ( e -> period() != timespan_t::zero() )
-              s << " every " << e -> period().total_seconds() << " seconds";
-          }
-          else
-            s << ": (" << e -> trigger_spell_id() << ")";
-        }
-        break;
-      case A_ADD_FLAT_MODIFIER:
-      case A_ADD_PCT_MODIFIER:
-        if ( e -> misc_value1() < static_cast< int >( sizeof( _property_type_strings ) / sizeof( const char* ) ) &&
-             _property_type_strings[ e -> misc_value1() ] != 0 )
-          s << ": " << _property_type_strings[ e -> misc_value1() ];
-        break;
-      default:
-        break;
+          break;
+        case A_ADD_FLAT_MODIFIER:
+        case A_ADD_PCT_MODIFIER:
+          if ( e -> misc_value1() < static_cast< int >( sizeof( _property_type_strings ) / sizeof( const char* ) ) &&
+               _property_type_strings[ e -> misc_value1() ] != 0 )
+            s << ": " << _property_type_strings[ e -> misc_value1() ];
+          break;
+        default:
+          break;
       }
     }
     else
@@ -754,20 +754,20 @@ void spell_info::effect_to_xml( sim_t*                    sim,
     // Put some nice handling on some effect types
     switch ( e -> type() )
     {
-    case E_SCHOOL_DAMAGE:
-      node -> add_parm( "school", spell -> get_school_type() );
-      node -> add_parm( "school_text", util::school_type_string( spell -> get_school_type() ) );
-      break;
-    case E_TRIGGER_SPELL:
-    case E_TRIGGER_SPELL_WITH_VALUE:
-      if ( e -> trigger_spell_id() )
-      {
-        if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
-          node -> add_parm( "trigger_spell_name", sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
-      }
-      break;
-    default:
-      break;
+      case E_SCHOOL_DAMAGE:
+        node -> add_parm( "school", spell -> get_school_type() );
+        node -> add_parm( "school_text", util::school_type_string( spell -> get_school_type() ) );
+        break;
+      case E_TRIGGER_SPELL:
+      case E_TRIGGER_SPELL_WITH_VALUE:
+        if ( e -> trigger_spell_id() )
+        {
+          if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+            node -> add_parm( "trigger_spell_name", sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
+        }
+        break;
+      default:
+        break;
     }
   }
   else
@@ -783,46 +783,46 @@ void spell_info::effect_to_xml( sim_t*                    sim,
       node -> add_parm( "sub_type_text", _effect_subtype_strings[ e -> subtype() ] );
       switch ( e -> subtype() )
       {
-      case A_PERIODIC_DAMAGE:
-        node -> add_parm( "school", spell -> get_school_type() );
-        node -> add_parm( "school_text", util::school_type_string( spell -> get_school_type() ) );
-        if ( e -> period() != timespan_t::zero() )
-          node -> add_parm( "period", e -> period().total_seconds() );
-        break;
-      case A_PERIODIC_ENERGIZE:
-      case A_PERIODIC_DUMMY:
-        if ( e -> period() != timespan_t::zero() )
-          node -> add_parm( "period", e -> period().total_seconds() );
-        break;
-      case A_PROC_TRIGGER_SPELL:
-        if ( e -> trigger_spell_id() )
-        {
-          if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
-            node -> add_parm( "trigger_spell_name", sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
-        }
-        break;
-      case A_PERIODIC_TRIGGER_SPELL:
-        if ( e -> trigger_spell_id() )
-        {
-          if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+        case A_PERIODIC_DAMAGE:
+          node -> add_parm( "school", spell -> get_school_type() );
+          node -> add_parm( "school_text", util::school_type_string( spell -> get_school_type() ) );
+          if ( e -> period() != timespan_t::zero() )
+            node -> add_parm( "period", e -> period().total_seconds() );
+          break;
+        case A_PERIODIC_ENERGIZE:
+        case A_PERIODIC_DUMMY:
+          if ( e -> period() != timespan_t::zero() )
+            node -> add_parm( "period", e -> period().total_seconds() );
+          break;
+        case A_PROC_TRIGGER_SPELL:
+          if ( e -> trigger_spell_id() )
           {
-            node -> add_parm( "trigger_spell_name", sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
-            if ( e -> period() != timespan_t::zero() )
-              node -> add_parm( "period", e -> period().total_seconds() );
+            if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+              node -> add_parm( "trigger_spell_name", sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
           }
-        }
-        break;
-      case A_ADD_FLAT_MODIFIER:
-      case A_ADD_PCT_MODIFIER:
-        if ( e -> misc_value1() < static_cast< int >( sizeof( _property_type_strings ) / sizeof( const char* ) ) &&
-             _property_type_strings[ e -> misc_value1() ] != 0 )
-        {
-          node -> add_parm( "modifier", e -> misc_value1() );
-          node -> add_parm( "modifier_text", _property_type_strings[ e -> misc_value1() ] );
-        }
-        break;
-      default:
-        break;
+          break;
+        case A_PERIODIC_TRIGGER_SPELL:
+          if ( e -> trigger_spell_id() )
+          {
+            if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+            {
+              node -> add_parm( "trigger_spell_name", sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
+              if ( e -> period() != timespan_t::zero() )
+                node -> add_parm( "period", e -> period().total_seconds() );
+            }
+          }
+          break;
+        case A_ADD_FLAT_MODIFIER:
+        case A_ADD_PCT_MODIFIER:
+          if ( e -> misc_value1() < static_cast< int >( sizeof( _property_type_strings ) / sizeof( const char* ) ) &&
+               _property_type_strings[ e -> misc_value1() ] != 0 )
+          {
+            node -> add_parm( "modifier", e -> misc_value1() );
+            node -> add_parm( "modifier_text", _property_type_strings[ e -> misc_value1() ] );
+          }
+          break;
+        default:
+          break;
       }
     }
     else

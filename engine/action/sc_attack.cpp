@@ -81,8 +81,8 @@ double attack_t::crit_block_chance( int /* delta_level */ )
 
 // attack_t::build_table ====================================================
 
-void attack_t::build_table( std::array<double,RESULT_MAX>& chances,
-                            std::array<result_e,RESULT_MAX>& results,
+void attack_t::build_table( std::array<double, RESULT_MAX>& chances,
+                            std::array<result_e, RESULT_MAX>& results,
                             double miss_chance, double dodge_chance,
                             double parry_chance, double glance_chance,
                             double crit_chance )

@@ -37,7 +37,7 @@ void action_t::release_state( action_state_t* s )
   state_cache.push_back( s );
 }
 
-// Initialize contains all variables that must be reset every time a new 
+// Initialize contains all variables that must be reset every time a new
 // state object is retrieved using get_state()
 void action_state_t::initialize()
 {
@@ -64,8 +64,8 @@ void action_state_t::copy_state( const action_state_t* o )
 #endif
 
   target = o -> target; assert( target );
-  result_type = o -> result_type; 
-  result = o -> result; 
+  result_type = o -> result_type;
+  result = o -> result;
   result_amount = o -> result_amount;
   haste = o -> haste;
   crit = o -> crit;

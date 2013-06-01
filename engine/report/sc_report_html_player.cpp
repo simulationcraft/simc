@@ -475,7 +475,7 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">base_dd_min:</span>%.2f</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">base_dd_max:</span>%.2f</li>\n"
           "\t\t\t\t\t\t\t\t\t\t</ul>\n",
-          a -> may_crit?"true":"false",
+          a -> may_crit ? "true" : "false",
           a -> direct_power_mod,
           a -> base_dd_min,
           a -> base_dd_max );
@@ -494,13 +494,13 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">hasted_ticks:</span>%s</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">dot_behavior:</span>%s</li>\n"
           "\t\t\t\t\t\t\t\t\t\t</ul>\n",
-          a -> tick_may_crit?"true":"false",
-          a -> tick_zero?"true":"false",
+          a -> tick_may_crit ? "true" : "false",
+          a -> tick_zero ? "true" : "false",
           a -> tick_power_mod,
           a -> base_td,
           a -> num_ticks,
           a -> base_tick_time.total_seconds(),
-          a -> hasted_ticks?"true":"false",
+          a -> hasted_ticks ? "true" : "false",
           util::dot_behavior_type_string( a -> dot_behavior ) );
       }
       // Extra Reporting for DKs
@@ -685,7 +685,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
         "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
         "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
         "\t\t\t\t\t\t\t\t\t</tr>\n",
-        ( j%2 == 1 ) ? " class=\"odd\"" : "",
+        ( j % 2 == 1 ) ? " class=\"odd\"" : "",
         util::inverse_tokenize( util::attribute_type_string( i ) ).c_str(),
         a -> buffed.attribute[ i ],
         a -> get_attribute( i ),
@@ -702,7 +702,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
           "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
           "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
           "\t\t\t\t\t\t\t\t\t</tr>\n",
-          ( j%2 == 1 ) ? " class=\"odd\"" : "",
+          ( j % 2 == 1 ) ? " class=\"odd\"" : "",
           util::inverse_tokenize( util::resource_type_string( i ) ).c_str(),
           a -> buffed.resource[ i ],
           a -> resources.max[ i ],
@@ -1395,11 +1395,11 @@ void print_html_player_statistics( report::sc_html_stream& os, player_t* p, play
   // Statistics & Data Analysis
 
   os << "\t\t\t\t\t<div class=\"player-section gains\">\n"
-        "\t\t\t\t\t\t<h3 class=\"toggle\">Statistics & Data Analysis</h3>\n"
-        "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
-        "\t\t\t\t\t\t\t<table class=\"sc\">\n"
-        "\t\t\t\t\t\t\t\t<tr>\n"
-        "\t\t\t\t\t\t\t\t<td>\n";
+     "\t\t\t\t\t\t<h3 class=\"toggle\">Statistics & Data Analysis</h3>\n"
+     "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
+     "\t\t\t\t\t\t\t<table class=\"sc\">\n"
+     "\t\t\t\t\t\t\t\t<tr>\n"
+     "\t\t\t\t\t\t\t\t<td>\n";
 
   report::print_html_sample_data( os, p -> sim, p -> fight_length, "Fight Length" );
   report::print_html_sample_data( os, p -> sim, p -> collected_data.dps, "DPS" );
@@ -1418,10 +1418,10 @@ void print_html_player_statistics( report::sc_html_stream& os, player_t* p, play
     os << "<img src=\"" << ri.dps_error_chart << "\" alt=\"DPS Error Chart\" />\n";
 
   os << "\t\t\t\t\t\t\t\t</td>\n"
-        "\t\t\t\t\t\t\t\t</tr>\n"
-        "\t\t\t\t\t\t\t</table>\n"
-        "\t\t\t\t\t\t</div>\n"
-        "\t\t\t\t\t</div>\n";
+     "\t\t\t\t\t\t\t\t</tr>\n"
+     "\t\t\t\t\t\t\t</table>\n"
+     "\t\t\t\t\t\t</div>\n"
+     "\t\t\t\t\t</div>\n";
 }
 
 void print_html_gain( report::sc_html_stream& os, gain_t* g, std::array<double, RESOURCE_MAX>& total_gains, int& j, bool report_overflow = true )
@@ -1513,7 +1513,7 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
   for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
     pet_t* pet = p -> pet_list[ i ];
-    bool first=true;
+    bool first = true;
 
     for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
     {
@@ -1678,7 +1678,7 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
   {
     // hack hack. don't display RESOURCE_RUNE_<TYPE> yet. only shown in tabular data.  WiP
     if ( j == RESOURCE_RUNE_BLOOD || j == RESOURCE_RUNE_UNHOLY || j == RESOURCE_RUNE_FROST ) continue;
-    double total_gain=0;
+    double total_gain = 0;
     for ( size_t i = 0; i < p -> gain_list.size(); ++i )
     {
       gain_t* g = p -> gain_list[ i ];
@@ -1941,7 +1941,7 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
 
     os << "\t\t\t\t\t\t\t\t\t<h4>Stack Uptimes</h4>\n"
        << "\t\t\t\t\t\t\t\t\t<ul>\n";
-    for ( unsigned int j= 0; j < b -> stack_uptime.size(); j++ )
+    for ( unsigned int j = 0; j < b -> stack_uptime.size(); j++ )
     {
       double uptime = b -> stack_uptime[ j ] -> uptime_sum.mean();
       if ( uptime > 0 )
@@ -2369,7 +2369,7 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
   for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
     pet_t* pet = p -> pet_list[ i ];
-    bool first=true;
+    bool first = true;
 
     for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
     {
@@ -2642,7 +2642,7 @@ void print_html_player_deaths( report::sc_html_stream& os, player_t* p, player_p
 
 // print_html_player_ ========================================================
 
-void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* p, int j=0 )
+void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* p, int j = 0 )
 {
   report::generate_player_charts( p, p -> report_information );
   report::generate_player_buff_lists( p, p -> report_information );
@@ -2689,7 +2689,7 @@ void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* p, in
 
 namespace report {
 
-void print_html_player( report::sc_html_stream& os, player_t* p, int j=0 )
+void print_html_player( report::sc_html_stream& os, player_t* p, int j = 0 )
 {
   print_html_player_( os, p -> sim, p, j );
 }

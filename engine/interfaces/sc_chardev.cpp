@@ -28,24 +28,24 @@ const char* translate_slot( int slot )
 {
   switch ( slot )
   {
-  case SLOT_HEAD:      return "0";
-  case SLOT_NECK:      return "1";
-  case SLOT_SHOULDERS: return "2";
-  case SLOT_BACK:      return "3";
-  case SLOT_CHEST:     return "4";
-  case SLOT_SHIRT:     return "5";
-  case SLOT_TABARD:    return "6";
-  case SLOT_WRISTS:    return "7";
-  case SLOT_HANDS:     return "8";
-  case SLOT_WAIST:     return "9";
-  case SLOT_LEGS:      return "10";
-  case SLOT_FEET:      return "11";
-  case SLOT_FINGER_1:  return "12";
-  case SLOT_FINGER_2:  return "13";
-  case SLOT_TRINKET_1: return "14";
-  case SLOT_TRINKET_2: return "15";
-  case SLOT_MAIN_HAND: return "16";
-  case SLOT_OFF_HAND:  return "17";
+    case SLOT_HEAD:      return "0";
+    case SLOT_NECK:      return "1";
+    case SLOT_SHOULDERS: return "2";
+    case SLOT_BACK:      return "3";
+    case SLOT_CHEST:     return "4";
+    case SLOT_SHIRT:     return "5";
+    case SLOT_TABARD:    return "6";
+    case SLOT_WRISTS:    return "7";
+    case SLOT_HANDS:     return "8";
+    case SLOT_WAIST:     return "9";
+    case SLOT_LEGS:      return "10";
+    case SLOT_FEET:      return "11";
+    case SLOT_FINGER_1:  return "12";
+    case SLOT_FINGER_2:  return "13";
+    case SLOT_TRINKET_1: return "14";
+    case SLOT_TRINKET_2: return "15";
+    case SLOT_MAIN_HAND: return "16";
+    case SLOT_OFF_HAND:  return "17";
   }
 
   return "unknown";
@@ -235,7 +235,7 @@ player_t* chardev::download_player( sim_t* sim,
   p -> glyphs_str = "";
   std::vector<js_node_t*> glyph_nodes;
   int num_glyphs = js::get_children( glyph_nodes, glyphs_root );
-  for ( int i=0; i < num_glyphs; i++ )
+  for ( int i = 0; i < num_glyphs; i++ )
   {
     std::string glyph_name;
     if ( js::get_value( glyph_name, glyph_nodes[ i ], "2/1" ) )
@@ -252,7 +252,7 @@ player_t* chardev::download_player( sim_t* sim,
   {
     std::vector<js_node_t*> skill_nodes;
     int num_skills = js::get_children( skill_nodes, professions_root );
-    for ( int i=0; i < num_skills; i++ )
+    for ( int i = 0; i < num_skills; i++ )
     {
       int skill_id;
       std::string skill_level;

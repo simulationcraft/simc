@@ -184,7 +184,7 @@ expr_data_e parse_data_type( const std::string& name )
       return map[ i ].type;
   }
 
-  return ( expr_data_e )-1;
+  return ( expr_data_e ) - 1;
 }
 
 unsigned class_str_to_mask( const std::string& str )
@@ -291,138 +291,138 @@ struct spell_list_expr_t : public spell_data_expr_t
     // result_spell_list accordingly
     switch ( data_type )
     {
-    case DATA_SPELL:
-    {
-      for ( const spell_data_t* spell = spell_data_t::list( sim -> dbc.ptr ); spell -> id(); spell++ )
-        result_spell_list.push_back( spell -> id() );
-      break;
-    }
-    case DATA_TALENT:
-    {
-      for ( const talent_data_t* talent = talent_data_t::list( sim -> dbc.ptr ); talent -> id(); talent++ )
-        result_spell_list.push_back( talent -> id() );
-      break;
-    }
-    case DATA_EFFECT:
-    {
-      for ( const spelleffect_data_t* effect = spelleffect_data_t::list( sim -> dbc.ptr ); effect -> id(); effect++ )
-        result_spell_list.push_back( effect -> id() );
-      break;
-    }
-    case DATA_TALENT_SPELL:
-    {
-      for ( const talent_data_t* talent = talent_data_t::list( sim -> dbc.ptr ); talent -> id(); talent++ )
+      case DATA_SPELL:
       {
-        if ( ! talent -> spell_id() )
-          continue;
-        result_spell_list.push_back( talent -> spell_id() );
+        for ( const spell_data_t* spell = spell_data_t::list( sim -> dbc.ptr ); spell -> id(); spell++ )
+          result_spell_list.push_back( spell -> id() );
+        break;
       }
-      break;
-    }
-    case DATA_CLASS_SPELL:
-    {
-      for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class(); cls++ )
+      case DATA_TALENT:
       {
-        for ( unsigned tree = 0; tree < sim -> dbc.class_ability_tree_size(); tree++ )
+        for ( const talent_data_t* talent = talent_data_t::list( sim -> dbc.ptr ); talent -> id(); talent++ )
+          result_spell_list.push_back( talent -> id() );
+        break;
+      }
+      case DATA_EFFECT:
+      {
+        for ( const spelleffect_data_t* effect = spelleffect_data_t::list( sim -> dbc.ptr ); effect -> id(); effect++ )
+          result_spell_list.push_back( effect -> id() );
+        break;
+      }
+      case DATA_TALENT_SPELL:
+      {
+        for ( const talent_data_t* talent = talent_data_t::list( sim -> dbc.ptr ); talent -> id(); talent++ )
         {
-          for ( unsigned n = 0; n < sim -> dbc.class_ability_size(); n++ )
+          if ( ! talent -> spell_id() )
+            continue;
+          result_spell_list.push_back( talent -> spell_id() );
+        }
+        break;
+      }
+      case DATA_CLASS_SPELL:
+      {
+        for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class(); cls++ )
+        {
+          for ( unsigned tree = 0; tree < sim -> dbc.class_ability_tree_size(); tree++ )
           {
-            if ( ! ( spell_id = sim -> dbc.class_ability( cls, tree, n ) ) )
-              continue;
+            for ( unsigned n = 0; n < sim -> dbc.class_ability_size(); n++ )
+            {
+              if ( ! ( spell_id = sim -> dbc.class_ability( cls, tree, n ) ) )
+                continue;
 
-            result_spell_list.push_back( spell_id );
+              result_spell_list.push_back( spell_id );
+            }
           }
         }
+        break;
       }
-      break;
-    }
-    case DATA_RACIAL_SPELL:
-    {
-      for ( unsigned race = 0; race < sim -> dbc.race_ability_tree_size(); race++ )
+      case DATA_RACIAL_SPELL:
       {
-        for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class()-1; cls++ )
+        for ( unsigned race = 0; race < sim -> dbc.race_ability_tree_size(); race++ )
         {
-          for ( unsigned n = 0; n < sim -> dbc.race_ability_size(); n++ )
+          for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class() - 1; cls++ )
           {
-            if ( ! ( spell_id = sim -> dbc.race_ability( race, cls, n ) ) )
-              continue;
+            for ( unsigned n = 0; n < sim -> dbc.race_ability_size(); n++ )
+            {
+              if ( ! ( spell_id = sim -> dbc.race_ability( race, cls, n ) ) )
+                continue;
 
-            result_spell_list.push_back( spell_id );
+              result_spell_list.push_back( spell_id );
+            }
           }
         }
+        break;
       }
-      break;
-    }
-    case DATA_MASTERY_SPELL:
-    {
-      for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class(); cls++ )
+      case DATA_MASTERY_SPELL:
       {
-        for ( unsigned tree = 0; tree < sim -> dbc.specialization_max_per_class(); tree++ )
+        for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class(); cls++ )
         {
-          for ( unsigned n = 0; n < sim -> dbc.mastery_ability_size(); n++ )
+          for ( unsigned tree = 0; tree < sim -> dbc.specialization_max_per_class(); tree++ )
           {
-            if ( ! ( spell_id = sim -> dbc.mastery_ability( cls, tree, n ) ) )
-              continue;
+            for ( unsigned n = 0; n < sim -> dbc.mastery_ability_size(); n++ )
+            {
+              if ( ! ( spell_id = sim -> dbc.mastery_ability( cls, tree, n ) ) )
+                continue;
 
-            result_spell_list.push_back( spell_id );
+              result_spell_list.push_back( spell_id );
+            }
           }
         }
+        break;
       }
-      break;
-    }
-    case DATA_SPECIALIZATION_SPELL:
-    {
-      for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class(); cls++ )
+      case DATA_SPECIALIZATION_SPELL:
       {
-        for ( unsigned tree = 0; tree < sim -> dbc.specialization_max_per_class(); tree++ )
+        for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class(); cls++ )
         {
-          for ( unsigned n = 0; n < sim -> dbc.specialization_ability_size(); n++ )
+          for ( unsigned tree = 0; tree < sim -> dbc.specialization_max_per_class(); tree++ )
           {
-            if ( ! ( spell_id = sim -> dbc.specialization_ability( cls, tree, n ) ) )
-              continue;
+            for ( unsigned n = 0; n < sim -> dbc.specialization_ability_size(); n++ )
+            {
+              if ( ! ( spell_id = sim -> dbc.specialization_ability( cls, tree, n ) ) )
+                continue;
 
-            result_spell_list.push_back( spell_id );
+              result_spell_list.push_back( spell_id );
+            }
           }
         }
+        break;
       }
-      break;
-    }
-    case DATA_GLYPH_SPELL:
-    {
-      for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class(); cls++ )
+      case DATA_GLYPH_SPELL:
       {
-        for ( unsigned type = 0; type < GLYPH_MAX; type++ )
+        for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class(); cls++ )
         {
-          for ( unsigned n = 0; n < sim -> dbc.glyph_spell_size(); n++ )
+          for ( unsigned type = 0; type < GLYPH_MAX; type++ )
           {
-            if ( ! ( spell_id = sim -> dbc.glyph_spell( cls, type, n ) ) )
-              continue;
+            for ( unsigned n = 0; n < sim -> dbc.glyph_spell_size(); n++ )
+            {
+              if ( ! ( spell_id = sim -> dbc.glyph_spell( cls, type, n ) ) )
+                continue;
 
-            result_spell_list.push_back( spell_id );
+              result_spell_list.push_back( spell_id );
+            }
           }
         }
+        break;
       }
-      break;
-    }
-    case DATA_SET_BONUS_SPELL:
-    {
-      for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class(); cls++ )
+      case DATA_SET_BONUS_SPELL:
       {
-        for ( unsigned tier = 0; tier < N_TIER; tier++ )
+        for ( unsigned cls = 0; cls < sim -> dbc.specialization_max_class(); cls++ )
         {
-          for ( unsigned n = 0; n < sim -> dbc.set_bonus_spell_size(); n++ )
+          for ( unsigned tier = 0; tier < N_TIER; tier++ )
           {
-            if ( ! ( spell_id = sim -> dbc.set_bonus_spell( cls, tier, n ) ) )
-              continue;
+            for ( unsigned n = 0; n < sim -> dbc.set_bonus_spell_size(); n++ )
+            {
+              if ( ! ( spell_id = sim -> dbc.set_bonus_spell( cls, tier, n ) ) )
+                continue;
 
-            result_spell_list.push_back( spell_id );
+              result_spell_list.push_back( spell_id );
+            }
           }
         }
+        break;
       }
-      break;
-    }
-    default:
-      return TOK_UNKNOWN;
+      default:
+        return TOK_UNKNOWN;
     }
 
     result_spell_list.resize( range::unique( range::sort( result_spell_list ) ) - result_spell_list.begin() );
@@ -515,22 +515,22 @@ struct sd_expr_binary_t : public spell_list_expr_t
 
       switch ( operation )
       {
-      case TOK_EQ:    result_spell_list = *left == *right; break;
-      case TOK_NOTEQ: result_spell_list = *left != *right; break;
-      case TOK_OR:    result_spell_list = *left | *right; break;
-      case TOK_AND:   result_spell_list = *left & *right; break;
-      case TOK_SUB:   result_spell_list = *left - *right; break;
-      case TOK_LT:    result_spell_list = *left < *right; break;
-      case TOK_LTEQ:  result_spell_list = *left <= *right; break;
-      case TOK_GT:    result_spell_list = *left > *right; break;
-      case TOK_GTEQ:  result_spell_list = *left >= *right; break;
-      case TOK_IN:    result_spell_list = left -> in( *right ); break;
-      case TOK_NOTIN: result_spell_list = left -> not_in( *right ); break;
-      default:
-        sim -> errorf( "Unsupported spell query operator %d", operation );
-        result_spell_list = std::vector<uint32_t>();
-        result_tok = TOK_UNKNOWN;
-        break;
+        case TOK_EQ:    result_spell_list = *left == *right; break;
+        case TOK_NOTEQ: result_spell_list = *left != *right; break;
+        case TOK_OR:    result_spell_list = *left | *right; break;
+        case TOK_AND:   result_spell_list = *left & *right; break;
+        case TOK_SUB:   result_spell_list = *left - *right; break;
+        case TOK_LT:    result_spell_list = *left < *right; break;
+        case TOK_LTEQ:  result_spell_list = *left <= *right; break;
+        case TOK_GT:    result_spell_list = *left > *right; break;
+        case TOK_GTEQ:  result_spell_list = *left >= *right; break;
+        case TOK_IN:    result_spell_list = left -> in( *right ); break;
+        case TOK_NOTIN: result_spell_list = left -> not_in( *right ); break;
+        default:
+          sim -> errorf( "Unsupported spell query operator %d", operation );
+          result_spell_list = std::vector<uint32_t>();
+          result_tok = TOK_UNKNOWN;
+          break;
       }
     }
 
@@ -571,21 +571,21 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
       {
         switch ( fields[ i ].type )
         {
-        case SD_TYPE_INT:
-        case SD_TYPE_UNSIGNED:
-          offset += sizeof( int );
-          break;
-        case SD_TYPE_DOUBLE:
-          offset += sizeof( double );
-          break;
-        case SD_TYPE_STR:
-          offset += sizeof( const char* );
-          break;
-        default:
-          sim -> errorf( "Unknown field type %d for %s.",
-                         fields[ i ].type,
-                         fields[ i ].name.c_str() );
-          break;
+          case SD_TYPE_INT:
+          case SD_TYPE_UNSIGNED:
+            offset += sizeof( int );
+            break;
+          case SD_TYPE_DOUBLE:
+            offset += sizeof( double );
+            break;
+          case SD_TYPE_STR:
+            offset += sizeof( const char* );
+            break;
+          default:
+            sim -> errorf( "Unknown field type %d for %s.",
+                           fields[ i ].type,
+                           fields[ i ].name.c_str() );
+            break;
         }
 
         continue;
@@ -600,72 +600,72 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
   {
     switch ( field_type )
     {
-    case SD_TYPE_INT:
-    {
-      int int_v  = *reinterpret_cast< const int* >( data + offset );
-      int oint_v = static_cast<int>( other.result_num );
-      switch ( t )
+      case SD_TYPE_INT:
       {
-      case TOK_LT:     return int_v <  oint_v;
-      case TOK_LTEQ:   return int_v <= oint_v;
-      case TOK_GT:     return int_v >  oint_v;
-      case TOK_GTEQ:   return int_v >= oint_v;
-      case TOK_EQ:     return int_v == oint_v;
-      case TOK_NOTEQ:  return int_v != oint_v;
-      default:         return false;
+        int int_v  = *reinterpret_cast< const int* >( data + offset );
+        int oint_v = static_cast<int>( other.result_num );
+        switch ( t )
+        {
+          case TOK_LT:     return int_v <  oint_v;
+          case TOK_LTEQ:   return int_v <= oint_v;
+          case TOK_GT:     return int_v >  oint_v;
+          case TOK_GTEQ:   return int_v >= oint_v;
+          case TOK_EQ:     return int_v == oint_v;
+          case TOK_NOTEQ:  return int_v != oint_v;
+          default:         return false;
+        }
+        break;
       }
-      break;
-    }
-    case SD_TYPE_UNSIGNED:
-    {
-      unsigned unsigned_v  = *reinterpret_cast< const unsigned* >( data + offset );
-      unsigned ounsigned_v = static_cast<unsigned>( other.result_num );
-      switch ( t )
+      case SD_TYPE_UNSIGNED:
       {
-      case TOK_LT:     return unsigned_v <  ounsigned_v;
-      case TOK_LTEQ:   return unsigned_v <= ounsigned_v;
-      case TOK_GT:     return unsigned_v >  ounsigned_v;
-      case TOK_GTEQ:   return unsigned_v >= ounsigned_v;
-      case TOK_EQ:     return unsigned_v == ounsigned_v;
-      case TOK_NOTEQ:  return unsigned_v != ounsigned_v;
-      default:         return false;
+        unsigned unsigned_v  = *reinterpret_cast< const unsigned* >( data + offset );
+        unsigned ounsigned_v = static_cast<unsigned>( other.result_num );
+        switch ( t )
+        {
+          case TOK_LT:     return unsigned_v <  ounsigned_v;
+          case TOK_LTEQ:   return unsigned_v <= ounsigned_v;
+          case TOK_GT:     return unsigned_v >  ounsigned_v;
+          case TOK_GTEQ:   return unsigned_v >= ounsigned_v;
+          case TOK_EQ:     return unsigned_v == ounsigned_v;
+          case TOK_NOTEQ:  return unsigned_v != ounsigned_v;
+          default:         return false;
+        }
+        break;
       }
-      break;
-    }
-    case SD_TYPE_DOUBLE:
-    {
-      double double_v = *reinterpret_cast<const double*>( data + offset );
-      switch ( t )
+      case SD_TYPE_DOUBLE:
       {
-      case TOK_LT:     return double_v <  other.result_num;
-      case TOK_LTEQ:   return double_v <= other.result_num;
-      case TOK_GT:     return double_v >  other.result_num;
-      case TOK_GTEQ:   return double_v >= other.result_num;
-      case TOK_EQ:     return double_v == other.result_num;
-      case TOK_NOTEQ:  return double_v != other.result_num;
-      default:         return false;
+        double double_v = *reinterpret_cast<const double*>( data + offset );
+        switch ( t )
+        {
+          case TOK_LT:     return double_v <  other.result_num;
+          case TOK_LTEQ:   return double_v <= other.result_num;
+          case TOK_GT:     return double_v >  other.result_num;
+          case TOK_GTEQ:   return double_v >= other.result_num;
+          case TOK_EQ:     return double_v == other.result_num;
+          case TOK_NOTEQ:  return double_v != other.result_num;
+          default:         return false;
+        }
+        break;
       }
-      break;
-    }
-    case SD_TYPE_STR:
-    {
-      const char* c_str = *reinterpret_cast<const char* const*>( data + offset );
-      std::string string_v = c_str ? c_str : "";
-      util::tokenize( string_v );
-      const std::string& ostring_v = other.result_str;
+      case SD_TYPE_STR:
+      {
+        const char* c_str = *reinterpret_cast<const char * const*>( data + offset );
+        std::string string_v = c_str ? c_str : "";
+        util::tokenize( string_v );
+        const std::string& ostring_v = other.result_str;
 
-      switch ( t )
-      {
-      case TOK_EQ:    return util::str_compare_ci( string_v, ostring_v );
-      case TOK_NOTEQ: return ! util::str_compare_ci( string_v, ostring_v );
-      case TOK_IN:    return util::str_in_str_ci( string_v, ostring_v );
-      case TOK_NOTIN: return ! util::str_in_str_ci( string_v, ostring_v );
-      default:        return false;
+        switch ( t )
+        {
+          case TOK_EQ:    return util::str_compare_ci( string_v, ostring_v );
+          case TOK_NOTEQ: return ! util::str_compare_ci( string_v, ostring_v );
+          case TOK_IN:    return util::str_in_str_ci( string_v, ostring_v );
+          case TOK_NOTIN: return ! util::str_in_str_ci( string_v, ostring_v );
+          default:        return false;
+        }
+        break;
       }
-      break;
-    }
-    default:
-      break;
+      default:
+        break;
     }
     return false;
   }
@@ -1220,7 +1220,7 @@ spell_data_expr_t* build_expression_tree( sim_t* sim,
   auto_dispose< std::vector<spell_data_expr_t*> > stack;
 
   size_t num_tokens = tokens.size();
-  for ( size_t i=0; i < num_tokens; i++ )
+  for ( size_t i = 0; i < num_tokens; i++ )
   {
     const expr_token_t& t = tokens[ i ];
 
@@ -1271,13 +1271,13 @@ spell_data_expr_t* spell_data_expr_t::create_spell_expression( sim_t* sim, const
   if ( splits.size() == 1 )
   {
     // No split, access raw list or create a normal expression
-    if ( data_type == ( expr_data_e )-1 )
+    if ( data_type == ( expr_data_e ) - 1 )
       return new spell_data_expr_t( sim, name_str, name_str );
     else
       return new spell_list_expr_t( sim, splits[ 0 ], data_type );
   }
 
-  if ( data_type == ( expr_data_e )-1 )
+  if ( data_type == ( expr_data_e ) - 1 )
     return 0;
 
   // Effect handling, set flag and remove effect keyword from tokens

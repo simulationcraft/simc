@@ -114,7 +114,7 @@ void stats_t::add_result( double act_amount,
 // stats_t::add_execute =====================================================
 
 void stats_t::add_execute( timespan_t time,
-			                     player_t* /* target */ )
+                           player_t* /* target */ )
 {
   iteration_num_executes++;
   iteration_total_execute_time += time;
@@ -130,7 +130,7 @@ void stats_t::add_execute( timespan_t time,
 // stats_t::add_tick ========================================================
 
 void stats_t::add_tick( timespan_t time,
-			                  player_t* /* target */ )
+                        player_t* /* target */ )
 {
   iteration_num_ticks++;
   iteration_total_tick_time += time;

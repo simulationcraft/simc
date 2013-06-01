@@ -17,7 +17,7 @@ namespace pets {
 struct hunter_main_pet_t;
 }
 
-enum aspect_type { ASPECT_NONE=0, ASPECT_HAWK, ASPECT_MAX };
+enum aspect_type { ASPECT_NONE = 0, ASPECT_HAWK, ASPECT_MAX };
 
 struct hunter_td_t : public actor_pair_t
 {
@@ -45,7 +45,7 @@ public:
 
   // Secondary pets
   // need an extra beast for readiness
-  std::array<pet_t*,2>  pet_dire_beasts;
+  std::array<pet_t*, 2>  pet_dire_beasts;
   // Tier 15 2-piece bonus: need 10 slots (just to be safe) because each
   // Steady Shot or Cobra Shot can trigger a Thunderhawk, which stays
   // for 10 seconds.
@@ -312,7 +312,7 @@ public:
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource() { return RESOURCE_FOCUS; }
   virtual role_e primary_role() { return ROLE_ATTACK; }
-  virtual bool      create_profile( std::string& profile_str, save_e=SAVE_ALL, bool save_html=false );
+  virtual bool      create_profile( std::string& profile_str, save_e = SAVE_ALL, bool save_html = false );
   virtual void      copy_from( player_t* source );
   virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c, cache::behavior_e );
   virtual void      moving();
@@ -600,41 +600,41 @@ public:
   {
     switch ( pet_type )
     {
-    case PET_CARRION_BIRD: return "demoralizing_screech";
-    case PET_CAT:          return "roar_of_courage";
-    case PET_CORE_HOUND:   return "";
-    case PET_DEVILSAUR:    return "furious_howl/monstrous_bite";
-    case PET_HYENA:        return "cackling_howl";
-    case PET_MOTH:         return "";
-    case PET_RAPTOR:       return "tear_armor";
-    case PET_SPIRIT_BEAST: return "roar_of_courage";
-    case PET_TALLSTRIDER:  return "";
-    case PET_WASP:         return "";
-    case PET_WOLF:         return "furious_howl";
-    case PET_BEAR:         return "";
-    case PET_BOAR:         return "";
-    case PET_CRAB:         return "";
-    case PET_CROCOLISK:    return "";
-    case PET_GORILLA:      return "";
-    case PET_RHINO:        return "";
-    case PET_SCORPID:      return "";
-    case PET_SHALE_SPIDER: return "";
-    case PET_TURTLE:       return "";
-    case PET_WARP_STALKER: return "";
-    case PET_WORM:         return "";
-    case PET_BAT:          return "";
-    case PET_BIRD_OF_PREY: return "";
-    case PET_CHIMERA:      return "froststorm_breath";
-    case PET_DRAGONHAWK:   return "lightning_breath";
-    case PET_NETHER_RAY:   return "";
-    case PET_RAVAGER:      return "ravage";
-    case PET_SERPENT:      return "corrosive_spit";
-    case PET_SILITHID:     return "qiraji_fortitude";
-    case PET_SPIDER:       return "";
-    case PET_SPOREBAT:     return "";
-    case PET_WIND_SERPENT: return "lightning_breath";
-    case PET_FOX:          return "tailspin";
-    default: break;
+      case PET_CARRION_BIRD: return "demoralizing_screech";
+      case PET_CAT:          return "roar_of_courage";
+      case PET_CORE_HOUND:   return "";
+      case PET_DEVILSAUR:    return "furious_howl/monstrous_bite";
+      case PET_HYENA:        return "cackling_howl";
+      case PET_MOTH:         return "";
+      case PET_RAPTOR:       return "tear_armor";
+      case PET_SPIRIT_BEAST: return "roar_of_courage";
+      case PET_TALLSTRIDER:  return "";
+      case PET_WASP:         return "";
+      case PET_WOLF:         return "furious_howl";
+      case PET_BEAR:         return "";
+      case PET_BOAR:         return "";
+      case PET_CRAB:         return "";
+      case PET_CROCOLISK:    return "";
+      case PET_GORILLA:      return "";
+      case PET_RHINO:        return "";
+      case PET_SCORPID:      return "";
+      case PET_SHALE_SPIDER: return "";
+      case PET_TURTLE:       return "";
+      case PET_WARP_STALKER: return "";
+      case PET_WORM:         return "";
+      case PET_BAT:          return "";
+      case PET_BIRD_OF_PREY: return "";
+      case PET_CHIMERA:      return "froststorm_breath";
+      case PET_DRAGONHAWK:   return "lightning_breath";
+      case PET_NETHER_RAY:   return "";
+      case PET_RAVAGER:      return "ravage";
+      case PET_SERPENT:      return "corrosive_spit";
+      case PET_SILITHID:     return "qiraji_fortitude";
+      case PET_SPIDER:       return "";
+      case PET_SPOREBAT:     return "";
+      case PET_WIND_SERPENT: return "lightning_breath";
+      case PET_FOX:          return "tailspin";
+      default: break;
     }
     return NULL;
   }
@@ -760,7 +760,7 @@ public:
     return ah;
   }
 
-  virtual void summon( timespan_t duration=timespan_t::zero() )
+  virtual void summon( timespan_t duration = timespan_t::zero() )
   {
     base_t::summon( duration );
 
@@ -832,10 +832,10 @@ namespace actions {
 
 // Template for common hunter main pet action code. See priest_action_t.
 template <class Base>
-struct hunter_main_pet_action_t : public hunter_pet_action_t<hunter_main_pet_t,Base>
+struct hunter_main_pet_action_t : public hunter_pet_action_t<hunter_main_pet_t, Base>
 {
 private:
-  typedef hunter_pet_action_t<hunter_main_pet_t,Base> ab;
+  typedef hunter_pet_action_t<hunter_main_pet_t, Base> ab;
 public:
   typedef hunter_main_pet_action_t base_t;
 
@@ -869,10 +869,10 @@ struct hunter_main_pet_attack_t : public hunter_main_pet_action_t<melee_attack_t
   hunter_main_pet_attack_t( const std::string& n, hunter_main_pet_t* player,
                             const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s )
-	{
-		special = true;
-		may_crit = true;
-	}
+  {
+    special = true;
+    may_crit = true;
+  }
 };
 
 // Beast Cleave
@@ -1047,7 +1047,7 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     double am = hunter_main_pet_attack_t::action_multiplier();
 
     if ( o() -> talents.blink_strikes -> ok() && p() == o() -> active.pet )
-		  am *= 1.0 + o() -> talents.blink_strikes -> effectN( 1 ).percent(); 
+      am *= 1.0 + o() -> talents.blink_strikes -> effectN( 1 ).percent();
 
     if ( use_wild_hunt() )
     {
@@ -1489,20 +1489,20 @@ void hunter_main_pet_t::init_spells()
   active.kill_command = new actions::kill_command_t( this );
   active.lynx_rush    = new actions::lynx_rush_t( this );
 
-  specs.rabid= spell_data_t::not_found();
-  specs.hearth_of_the_phoenix= spell_data_t::not_found();
-  specs.spiked_collar= spell_data_t::not_found();
+  specs.rabid = spell_data_t::not_found();
+  specs.hearth_of_the_phoenix = spell_data_t::not_found();
+  specs.spiked_collar = spell_data_t::not_found();
   // tenacity
-  specs.last_stand= spell_data_t::not_found();
-  specs.charge= spell_data_t::not_found();
-  specs.thunderstomp= spell_data_t::not_found();
-  specs.blood_of_the_rhino= spell_data_t::not_found();
-  specs.great_stamina= spell_data_t::not_found();
+  specs.last_stand = spell_data_t::not_found();
+  specs.charge = spell_data_t::not_found();
+  specs.thunderstomp = spell_data_t::not_found();
+  specs.blood_of_the_rhino = spell_data_t::not_found();
+  specs.great_stamina = spell_data_t::not_found();
   // cunning
-  specs.roar_of_sacrifice= spell_data_t::not_found();
-  specs.bullhead= spell_data_t::not_found();
-  specs.cornered= spell_data_t::not_found();
-  specs.boars_speed= spell_data_t::not_found();
+  specs.roar_of_sacrifice = spell_data_t::not_found();
+  specs.bullhead = spell_data_t::not_found();
+  specs.cornered = spell_data_t::not_found();
+  specs.boars_speed = spell_data_t::not_found();
 
   specs.dash = spell_data_t::not_found(); // ferocity, cunning
 
@@ -1520,7 +1520,7 @@ void hunter_main_pet_t::init_spells()
 
 struct dire_critter_t : public hunter_pet_t
 {
-  struct melee_t : public hunter_pet_action_t<dire_critter_t,melee_attack_t>
+  struct melee_t : public hunter_pet_action_t<dire_critter_t, melee_attack_t>
   {
     int focus_gain;
 
@@ -1581,7 +1581,7 @@ struct dire_critter_t : public hunter_pet_t
     main_hand_attack = new melee_t( *this );
   }
 
-  virtual void summon( timespan_t duration=timespan_t::zero() )
+  virtual void summon( timespan_t duration = timespan_t::zero() )
   {
     hunter_pet_t::summon( duration );
 
@@ -1608,7 +1608,7 @@ struct tier15_thunderhawk_t : public hunter_pet_t
     action_list_str = "lightning_blast";
   }
 
-  struct lightning_blast_t : public hunter_pet_action_t<tier15_thunderhawk_t,spell_t>
+  struct lightning_blast_t : public hunter_pet_action_t<tier15_thunderhawk_t, spell_t>
   {
     lightning_blast_t( tier15_thunderhawk_t& p ):
       base_t( "lightning_blast", p, p.find_spell( 138374 ) )
@@ -1777,7 +1777,7 @@ struct piercing_shots_t : public ignite::pct_based_action_t< attack_t >
 
 struct ranged_t : public hunter_ranged_attack_t
 {
-  ranged_t( hunter_t* player, const char* name="ranged", const spell_data_t* s = spell_data_t::nil() ) :
+  ranged_t( hunter_t* player, const char* name = "ranged", const spell_data_t* s = spell_data_t::nil() ) :
     hunter_ranged_attack_t( name, player, s )
   {
     school = SCHOOL_PHYSICAL;
@@ -3361,8 +3361,8 @@ struct readiness_t : public hunter_spell_t
       "traps",
       "kill_command",
       "bestial_wrath",
-	  "intimidation",
-	  "black_arrow",
+      "intimidation",
+      "black_arrow",
       "explosive_shot",
       "chimera_shot",
       "kill_shot",
@@ -3942,146 +3942,146 @@ void hunter_t::init_actions()
 
     switch ( specialization() )
     {
-      // BEAST MASTERY
-    case HUNTER_BEAST_MASTERY:
-      action_list_str += "/focus_fire,five_stacks=1";
-      action_list_str += "/serpent_sting,if=!ticking";
+        // BEAST MASTERY
+      case HUNTER_BEAST_MASTERY:
+        action_list_str += "/focus_fire,five_stacks=1";
+        action_list_str += "/serpent_sting,if=!ticking";
 
-      action_list_str += init_use_racial_actions();
-      action_list_str += "/fervor,if=enabled&!ticking&focus<=65";
-      action_list_str += "/bestial_wrath,if=focus>60&!buff.beast_within.up";
+        action_list_str += init_use_racial_actions();
+        action_list_str += "/fervor,if=enabled&!ticking&focus<=65";
+        action_list_str += "/bestial_wrath,if=focus>60&!buff.beast_within.up";
 
-      action_list_str += "/multi_shot,if=active_enemies>5";
-      action_list_str += "/cobra_shot,if=active_enemies>5";
+        action_list_str += "/multi_shot,if=active_enemies>5";
+        action_list_str += "/cobra_shot,if=active_enemies>5";
 
-      action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
-      if ( level >= 87 )
-        action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25";
+        action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
+        if ( level >= 87 )
+          action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25";
 
-      action_list_str += "/kill_shot";
-      action_list_str += "/kill_command";
+        action_list_str += "/kill_shot";
+        action_list_str += "/kill_command";
 
-      action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
-      action_list_str += "/glaive_toss,if=enabled";
-      action_list_str += "/lynx_rush,if=enabled&!dot.lynx_rush.ticking";
-      action_list_str += "/dire_beast,if=enabled&focus<=90";
-      action_list_str += "/barrage,if=enabled";
-      action_list_str += "/powershot,if=enabled";
-      action_list_str += "/readiness,wait_for_rapid_fire=1";
-      action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
-      action_list_str += "/focus_fire,five_stacks=1,if=!ticking&!buff.beast_within.up";
-      action_list_str += "/cobra_shot,if=dot.serpent_sting.remains<6";
-      action_list_str += "/arcane_shot,if=focus>=61|buff.beast_within.up";
+        action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
+        action_list_str += "/glaive_toss,if=enabled";
+        action_list_str += "/lynx_rush,if=enabled&!dot.lynx_rush.ticking";
+        action_list_str += "/dire_beast,if=enabled&focus<=90";
+        action_list_str += "/barrage,if=enabled";
+        action_list_str += "/powershot,if=enabled";
+        action_list_str += "/readiness,wait_for_rapid_fire=1";
+        action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
+        action_list_str += "/focus_fire,five_stacks=1,if=!ticking&!buff.beast_within.up";
+        action_list_str += "/cobra_shot,if=dot.serpent_sting.remains<6";
+        action_list_str += "/arcane_shot,if=focus>=61|buff.beast_within.up";
 
-      if ( level >= 81 )
-        action_list_str += "/cobra_shot";
-      else
-        action_list_str += "/steady_shot";
-      break;
-
-      // MARKSMANSHIP
-    case HUNTER_MARKSMANSHIP:
-      action_list_str += init_use_racial_actions();
-
-      action_list_str += "/powershot,if=enabled";
-      action_list_str += "/lynx_rush,if=enabled&!dot.lynx_rush.ticking";
-
-      action_list_str += "/multi_shot,if=active_enemies>5";
-      action_list_str += "/steady_shot,if=active_enemies>5";
-      action_list_str += "/fervor,if=enabled&focus<=50";
-
-      action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
-      if ( level >= 87 )
-        action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25";
-      action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
-      action_list_str += "/dire_beast,if=enabled";
-
-      action_list_str += "/run_action_list,name=careful_aim,if=target.health.pct>";
-      action_list_str += util::to_string( dbc.spell( 34483 ) -> effectN( 2 ).base_value() );
-      {
-        // sub-action list for the CA phase. The action above here are also included
-        std::string& CA_actions = get_action_priority_list( "careful_aim" ) -> action_list_str;
-        CA_actions += "/serpent_sting,if=!ticking";
-        CA_actions += "/chimera_shot";
-        CA_actions += "/readiness";
-        CA_actions += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<6";
-        CA_actions += "/aimed_shot";
-        CA_actions += "/steady_shot";
-      }
-
-      // actions for outside the CA phase
-      action_list_str += "/glaive_toss,if=enabled";
-      action_list_str += "/barrage,if=enabled";
-      action_list_str += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<=5";
-      action_list_str += "/serpent_sting,if=!ticking";
-      action_list_str += "/chimera_shot";
-      action_list_str += "/readiness";
-      action_list_str += "/steady_shot,if=buff.steady_focus.remains<(action.steady_shot.cast_time+1)&!in_flight";
-      action_list_str += "/kill_shot";
-      action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
-
-      action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
-
-      if ( set_bonus.tier13_4pc_melee() )
-      {
-        action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=4)&(!buff.rapid_fire.up&!buff.bloodlust.react&!buff.berserking.up&!buff.tier13_4pc.react&cooldown.buff_tier13_4pc.remains<=0)";
-        action_list_str += "/aimed_shot,if=(cooldown.chimera_shot.remains>5|focus>=80)&(buff.bloodlust.react|buff.tier13_4pc.react|cooldown.buff_tier13_4pc.remains>0)|buff.rapid_fire.up";
-      }
-      else
-      {
-        action_list_str += "/aimed_shot,if=buff.rapid_fire.up|buff.bloodlust.react";
-        if ( race == RACE_TROLL )
-          action_list_str += "|buff.berserking.up";
-        action_list_str += "/arcane_shot,if=focus>=60|(focus>=43&(cooldown.chimera_shot.remains>=action.steady_shot.cast_time))&(!buff.rapid_fire.up&!buff.bloodlust.react";
-        if ( race == RACE_TROLL )
-          action_list_str += "&!buff.berserking.up)";
+        if ( level >= 81 )
+          action_list_str += "/cobra_shot";
         else
-          action_list_str += ")";
-      }
+          action_list_str += "/steady_shot";
+        break;
 
-      action_list_str += "/steady_shot";
-      break;
+        // MARKSMANSHIP
+      case HUNTER_MARKSMANSHIP:
+        action_list_str += init_use_racial_actions();
 
-      // SURVIVAL
-    case HUNTER_SURVIVAL:
-      action_list_str += "/fervor,if=enabled&focus<=50";
-      action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
-      action_list_str += "/lynx_rush,if=enabled&!dot.lynx_rush.ticking";
+        action_list_str += "/powershot,if=enabled";
+        action_list_str += "/lynx_rush,if=enabled&!dot.lynx_rush.ticking";
 
-      action_list_str += "/explosive_shot,if=buff.lock_and_load.react";
+        action_list_str += "/multi_shot,if=active_enemies>5";
+        action_list_str += "/steady_shot,if=active_enemies>5";
+        action_list_str += "/fervor,if=enabled&focus<=50";
 
-      action_list_str += "/glaive_toss,if=enabled";
-      action_list_str += "/powershot,if=enabled";
-      action_list_str += "/barrage,if=enabled";
+        action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
+        if ( level >= 87 )
+          action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25";
+        action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
+        action_list_str += "/dire_beast,if=enabled";
 
-      action_list_str += "/multi_shot,if=active_enemies>3";
-      action_list_str += "/cobra_shot,if=active_enemies>3";
-      action_list_str += "/serpent_sting,if=!ticking&target.time_to_die>=10";
-      action_list_str += "/explosive_shot,if=cooldown_react";
+        action_list_str += "/run_action_list,name=careful_aim,if=target.health.pct>";
+        action_list_str += util::to_string( dbc.spell( 34483 ) -> effectN( 2 ).base_value() );
+        {
+          // sub-action list for the CA phase. The action above here are also included
+          std::string& CA_actions = get_action_priority_list( "careful_aim" ) -> action_list_str;
+          CA_actions += "/serpent_sting,if=!ticking";
+          CA_actions += "/chimera_shot";
+          CA_actions += "/readiness";
+          CA_actions += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<6";
+          CA_actions += "/aimed_shot";
+          CA_actions += "/steady_shot";
+        }
 
-      action_list_str += "/kill_shot";
-      action_list_str += "/black_arrow,if=!ticking&target.time_to_die>=8";
+        // actions for outside the CA phase
+        action_list_str += "/glaive_toss,if=enabled";
+        action_list_str += "/barrage,if=enabled";
+        action_list_str += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<=5";
+        action_list_str += "/serpent_sting,if=!ticking";
+        action_list_str += "/chimera_shot";
+        action_list_str += "/readiness";
+        action_list_str += "/steady_shot,if=buff.steady_focus.remains<(action.steady_shot.cast_time+1)&!in_flight";
+        action_list_str += "/kill_shot";
+        action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
 
-      action_list_str += "/multi_shot,if=buff.thrill_of_the_hunt.react&dot.serpent_sting.remains<2";
-      action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
+        action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
 
-      action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
-      action_list_str += "/dire_beast,if=enabled";
-      if ( level >= 87 )
-        action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25";
+        if ( set_bonus.tier13_4pc_melee() )
+        {
+          action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=4)&(!buff.rapid_fire.up&!buff.bloodlust.react&!buff.berserking.up&!buff.tier13_4pc.react&cooldown.buff_tier13_4pc.remains<=0)";
+          action_list_str += "/aimed_shot,if=(cooldown.chimera_shot.remains>5|focus>=80)&(buff.bloodlust.react|buff.tier13_4pc.react|cooldown.buff_tier13_4pc.remains>0)|buff.rapid_fire.up";
+        }
+        else
+        {
+          action_list_str += "/aimed_shot,if=buff.rapid_fire.up|buff.bloodlust.react";
+          if ( race == RACE_TROLL )
+            action_list_str += "|buff.berserking.up";
+          action_list_str += "/arcane_shot,if=focus>=60|(focus>=43&(cooldown.chimera_shot.remains>=action.steady_shot.cast_time))&(!buff.rapid_fire.up&!buff.bloodlust.react";
+          if ( race == RACE_TROLL )
+            action_list_str += "&!buff.berserking.up)";
+          else
+            action_list_str += ")";
+        }
 
-      action_list_str += "/readiness,wait_for_rapid_fire=1";
-      action_list_str += "/cobra_shot,if=dot.serpent_sting.remains<6";
-      action_list_str += "/arcane_shot,if=focus>=67";
-
-      if ( find_class_spell( "Cobra Shot" ) )
-        action_list_str += "/cobra_shot";
-      else if ( find_class_spell( "Steady Shot" ) )
         action_list_str += "/steady_shot";
-      break;
+        break;
 
-      // DEFAULT
-    default: break;
+        // SURVIVAL
+      case HUNTER_SURVIVAL:
+        action_list_str += "/fervor,if=enabled&focus<=50";
+        action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
+        action_list_str += "/lynx_rush,if=enabled&!dot.lynx_rush.ticking";
+
+        action_list_str += "/explosive_shot,if=buff.lock_and_load.react";
+
+        action_list_str += "/glaive_toss,if=enabled";
+        action_list_str += "/powershot,if=enabled";
+        action_list_str += "/barrage,if=enabled";
+
+        action_list_str += "/multi_shot,if=active_enemies>3";
+        action_list_str += "/cobra_shot,if=active_enemies>3";
+        action_list_str += "/serpent_sting,if=!ticking&target.time_to_die>=10";
+        action_list_str += "/explosive_shot,if=cooldown_react";
+
+        action_list_str += "/kill_shot";
+        action_list_str += "/black_arrow,if=!ticking&target.time_to_die>=8";
+
+        action_list_str += "/multi_shot,if=buff.thrill_of_the_hunt.react&dot.serpent_sting.remains<2";
+        action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
+
+        action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
+        action_list_str += "/dire_beast,if=enabled";
+        if ( level >= 87 )
+          action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25";
+
+        action_list_str += "/readiness,wait_for_rapid_fire=1";
+        action_list_str += "/cobra_shot,if=dot.serpent_sting.remains<6";
+        action_list_str += "/arcane_shot,if=focus>=67";
+
+        if ( find_class_spell( "Cobra Shot" ) )
+          action_list_str += "/cobra_shot";
+        else if ( find_class_spell( "Steady Shot" ) )
+          action_list_str += "/steady_shot";
+        break;
+
+        // DEFAULT
+      default: break;
     }
 
     if ( summon_pet_str.empty() )
@@ -4168,10 +4168,10 @@ double hunter_t::composite_player_multiplier( school_e school )
   double m = player_t::composite_player_multiplier( school );
 
   if ( mastery.essence_of_the_viper -> ok() &&
-      ( dbc::is_school( school, SCHOOL_NATURE ) ||
-       dbc::is_school( school, SCHOOL_ARCANE ) ||
-       dbc::is_school( school, SCHOOL_SHADOW ) ||
-       dbc::is_school( school, SCHOOL_FIRE   ) ) )
+       ( dbc::is_school( school, SCHOOL_NATURE ) ||
+         dbc::is_school( school, SCHOOL_ARCANE ) ||
+         dbc::is_school( school, SCHOOL_SHADOW ) ||
+         dbc::is_school( school, SCHOOL_FIRE   ) ) )
   {
     m *= 1.0 + cache.mastery_value();
   }
@@ -4188,13 +4188,13 @@ void hunter_t::invalidate_cache( cache_e c )
 
   switch ( c )
   {
-  case CACHE_MASTERY:
-    if ( mastery.essence_of_the_viper -> ok() )
-    {
-      player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    }
-    break;
-  default: break;
+    case CACHE_MASTERY:
+      if ( mastery.essence_of_the_viper -> ok() )
+      {
+        player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+      }
+      break;
+    default: break;
   }
 }
 
@@ -4253,8 +4253,8 @@ bool hunter_t::create_profile( std::string& profile_str, save_e stype, bool save
 
     if ( pet -> talents_str.empty() )
     {
-      for ( int j=0; j < MAX_TALENT_TREES; j++ )
-        for ( int k=0; k < ( int ) pet -> talent_trees[ j ].size(); k++ )
+      for ( int j = 0; j < MAX_TALENT_TREES; j++ )
+        for ( int k = 0; k < ( int ) pet -> talent_trees[ j ].size(); k++ )
           pet -> talents_str += ( char ) ( pet -> talent_trees[ j ][ k ] -> ok() + ( int ) '0' );
     }
 
@@ -4331,7 +4331,7 @@ void hunter_t::armory_extensions( const std::string& /* region */,
   if ( xml_t::get_value( cdata_str, pet_script_xml, "cdata" ) )
   {
     std::string::size_type pos = cdata_str.find( '{' );
-    if ( pos != std::string::npos ) cdata_str.erase( 0, pos+1 );
+    if ( pos != std::string::npos ) cdata_str.erase( 0, pos + 1 );
     pos = cdata_str.rfind( '}' );
     if ( pos != std::string::npos ) cdata_str.erase( pos );
 
@@ -4348,7 +4348,7 @@ void hunter_t::armory_extensions( const std::string& /* region */,
 
     std::vector<js_node_t*> pet_records;
     int num_pets = js_t::get_children( pet_records, pet_js );
-    for ( int i=0; i < num_pets; i++ )
+    for ( int i = 0; i < num_pets; i++ )
     {
       std::string pet_name, pet_talents;
       int pet_level, pet_family;
@@ -4363,7 +4363,7 @@ void hunter_t::armory_extensions( const std::string& /* region */,
       }
 
       // Pets can have spaces in names, replace with underscore ..
-      for ( unsigned j=0; j < pet_name.length(); j++ )
+      for ( unsigned j = 0; j < pet_name.length(); j++ )
       {
         if ( pet_name[ j ] == ' ' )
           pet_name[ j ] = '_';
@@ -4397,9 +4397,9 @@ void hunter_t::armory_extensions( const std::string& /* region */,
       pet -> parse_talents_armory( pet_talents );
 
       pet -> talents_str.clear();
-      for ( int j=0; j < MAX_TALENT_TREES; j++ )
+      for ( int j = 0; j < MAX_TALENT_TREES; j++ )
       {
-        for ( int k=0; k < ( int ) pet -> talent_trees[ j ].size(); k++ )
+        for ( int k = 0; k < ( int ) pet -> talent_trees[ j ].size(); k++ )
         {
           pet -> talents_str += ( char ) ( pet -> talent_trees[ j ][ k ] -> ok() + ( int ) '0' );
         }

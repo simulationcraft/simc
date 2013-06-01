@@ -75,15 +75,15 @@ void option_t::print( FILE* file, bool print_if_zero )
     if ( print_if_zero || ! v.empty() )
     {
       util::fprintf( file, "%s=", name );
-      for ( unsigned i=0; i < v.size(); i++ )
-        util::fprintf( file, "%s%s", ( i?" ":"" ), v[ i ].c_str() );
+      for ( unsigned i = 0; i < v.size(); i++ )
+        util::fprintf( file, "%s%s", ( i ? " " : "" ), v[ i ].c_str() );
       util::fprintf( file, "\n" );
     }
   }
   else if ( type == MAP )
   {
-    const std::map<std::string,std::string>& m = *static_cast<std::map<std::string,std::string>*>( data.address );
-    for ( std::map<std::string,std::string>::const_iterator it = m.begin(), end = m.end(); it != end; ++it )
+    const std::map<std::string, std::string>& m = *static_cast<std::map<std::string, std::string>*>( data.address );
+    for ( std::map<std::string, std::string>::const_iterator it = m.begin(), end = m.end(); it != end; ++it )
       util::fprintf( file, "%s%s=%s\n", name, it->first.c_str(), it->second.c_str() );
   }
 }
@@ -109,59 +109,59 @@ bool option_t::parse( sim_t*             sim,
   {
     switch ( type )
     {
-    case STRING: *static_cast<std::string*>( data.address ) = v;                        break;
-    case APPEND: *static_cast<std::string*>( data.address ) += v;                       break;
-    case INT:    *static_cast<int*>( data.address )      = strtol( v.c_str(), 0, 10 );  break;
-    case UINT:   *static_cast<unsigned*>( data.address ) = strtoul( v.c_str(), 0, 10 ); break;
-    case FLT:    *static_cast<double*>( data.address )   = atof( v.c_str() );           break;
-    case TIMESPAN:*( reinterpret_cast<timespan_t*>( data.address ) ) = timespan_t::from_seconds( atof( v.c_str() ) ); break;
-    case INT_BOOL:
-      *( ( int* ) data.address ) = atoi( v.c_str() ) ? 1 : 0;
-      if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );
-      break;
-    case BOOL:
-      *static_cast<bool*>( data.address ) = atoi( v.c_str() ) != 0;
-      if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );
-      break;
-    case LIST:
-      ( ( std::vector<std::string>* ) data.address ) -> push_back( v );
-      break;
-    case FUNC:
-      return ( *data.func )( sim, n, v );
+      case STRING: *static_cast<std::string*>( data.address ) = v;                        break;
+      case APPEND: *static_cast<std::string*>( data.address ) += v;                       break;
+      case INT:    *static_cast<int*>( data.address )      = strtol( v.c_str(), 0, 10 );  break;
+      case UINT:   *static_cast<unsigned*>( data.address ) = strtoul( v.c_str(), 0, 10 ); break;
+      case FLT:    *static_cast<double*>( data.address )   = atof( v.c_str() );           break;
+      case TIMESPAN:*( reinterpret_cast<timespan_t*>( data.address ) ) = timespan_t::from_seconds( atof( v.c_str() ) ); break;
+      case INT_BOOL:
+        *( ( int* ) data.address ) = atoi( v.c_str() ) ? 1 : 0;
+        if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );
+        break;
+      case BOOL:
+        *static_cast<bool*>( data.address ) = atoi( v.c_str() ) != 0;
+        if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );
+        break;
+      case LIST:
+        ( ( std::vector<std::string>* ) data.address ) -> push_back( v );
+        break;
+      case FUNC:
+        return ( *data.func )( sim, n, v );
 #if 0
 // TO-DO: Re-enable at some point
-    case TALENT_RANK:
-      return ( ( struct talent_t * ) data.address )->set_rank( atoi( v.c_str() ), true );
-    case SPELL_ENABLED:
-      return ( ( struct spell_id_t * ) data.address )->enable( atoi( v.c_str() ) != 0 );
+      case TALENT_RANK:
+        return ( ( struct talent_t * ) data.address )->set_rank( atoi( v.c_str() ), true );
+      case SPELL_ENABLED:
+        return ( ( struct spell_id_t * ) data.address )->enable( atoi( v.c_str() ) != 0 );
 #endif
-    case DEPRECATED:
-      sim -> errorf( "Option '%s' has been deprecated.\n", name );
-      if ( data.cstr ) sim -> errorf( "Please use option '%s' instead.\n", data.cstr );
-      sim -> cancel();
-      break;
-    default:
-      assert( 0 );
-      return false;
+      case DEPRECATED:
+        sim -> errorf( "Option '%s' has been deprecated.\n", name );
+        if ( data.cstr ) sim -> errorf( "Please use option '%s' instead.\n", data.cstr );
+        sim -> cancel();
+        break;
+      default:
+        assert( 0 );
+        return false;
     }
     return true;
   }
   else if ( type == MAP )
   {
     std::string::size_type last = n.size() - 1;
-    bool append=false;
+    bool append = false;
     if ( n[ last ] == '+' )
     {
-      append=true;
+      append = true;
       --last;
     }
     std::string::size_type dot = n.rfind( ".", last );
     if ( dot != std::string::npos )
     {
-      if ( name == n.substr( 0, dot+1 ) )
+      if ( name == n.substr( 0, dot + 1 ) )
       {
-        std::map<std::string,std::string>* m = ( std::map<std::string,std::string>* ) data.address;
-        std::string& value = ( *m )[ n.substr( dot+1, last-dot ) ];
+        std::map<std::string, std::string>* m = ( std::map<std::string, std::string>* ) data.address;
+        std::string& value = ( *m )[ n.substr( dot + 1, last - dot ) ];
         value = append ? ( value + v ) : v;
         return true;
       }
@@ -180,7 +180,7 @@ bool option_t::parse( sim_t*                 sim,
 {
   size_t num_options = options.size();
 
-  for ( size_t i=0; i < num_options; i++ )
+  for ( size_t i = 0; i < num_options; i++ )
     if ( options[ i ].parse( sim, name, value ) )
       return true;
 
@@ -388,7 +388,7 @@ bool option_db_t::parse_token( const std::string& token )
 
   std::string name( token, 0, cut_pt ), value( token, cut_pt + 1, token.npos );
 
-  std::string::size_type start=0;
+  std::string::size_type start = 0;
   while ( ( start = value.find( "$(", start ) ) != std::string::npos )
   {
     std::string::size_type end = value.find( ')', start );
@@ -399,12 +399,12 @@ bool option_db_t::parse_token( const std::string& token )
     }
 
     value.replace( start, ( end - start ) + 1,
-                   var_map[ value.substr( start+2, ( end - start ) - 2 ) ] );
+                   var_map[ value.substr( start + 2, ( end - start ) - 2 ) ] );
   }
 
   if ( name.size() >= 1 && name[ 0 ] == '$' )
   {
-    if ( name.size() < 3 || name[ 1 ] != '(' || name[ name.size()-1 ] != ')' )
+    if ( name.size() < 3 || name[ 1 ] != '(' || name[ name.size() - 1 ] != ')' )
     {
       printf( "Variable syntax error: %s\n", token.c_str() );
       return false;
@@ -450,7 +450,7 @@ option_db_t::option_db_t()
   // This makes baby pandas cry.
 
   auto_path = ".";
- 
+
   // If the CLI is made in /engine we need to go up a directory
   // but if it's in the root then we don't, so supply both possible paths
   for ( int j = 0; j < 2; j++ )

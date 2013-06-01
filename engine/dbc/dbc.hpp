@@ -70,17 +70,17 @@ public:
   {
     switch ( type() )
     {
-    case POWER_MANA:
-    case POWER_SOUL_SHARDS:
-      return 100.0;
-    case POWER_RAGE:
-    case POWER_RUNIC_POWER:
-    case POWER_BURNING_EMBER:
-      return 10.0;
-    case POWER_DEMONIC_FURY:
-      return percentage ? 0.1 : 1.0;  // X% of 1000 ("base" demonic fury) is X divided by 0.1
-    default:
-      return 1.0;
+      case POWER_MANA:
+      case POWER_SOUL_SHARDS:
+        return 100.0;
+      case POWER_RAGE:
+      case POWER_RUNIC_POWER:
+      case POWER_BURNING_EMBER:
+        return 10.0;
+      case POWER_DEMONIC_FURY:
+        return percentage ? 0.1 : 1.0;  // X% of 1000 ("base" demonic fury) is X divided by 0.1
+      default:
+        return 1.0;
     }
   }
 
@@ -189,13 +189,13 @@ public:
   {
     switch ( resource_type )
     {
-    case RESOURCE_RUNIC_POWER:
-    case RESOURCE_RAGE:
-      return base_value() * ( 1 / 10.0 );
-    case RESOURCE_MANA:
-      return base_value() * ( 1 / 100.0 );
-    default:
-      return base_value();
+      case RESOURCE_RUNIC_POWER:
+      case RESOURCE_RAGE:
+        return base_value() * ( 1 / 10.0 );
+      case RESOURCE_MANA:
+        return base_value() * ( 1 / 100.0 );
+      default:
+        return base_value();
     }
   }
 
@@ -244,11 +244,11 @@ public:
   int die_sides() const
   { return _die_sides; }
 
-  double average( const player_t* p, unsigned level=0 ) const;
-  double delta( const player_t* p, unsigned level=0 ) const;
-  double bonus( const player_t* p, unsigned level=0 ) const;
-  double min( const player_t* p, unsigned level=0 ) const;
-  double max( const player_t* p, unsigned level=0 ) const;
+  double average( const player_t* p, unsigned level = 0 ) const;
+  double delta( const player_t* p, unsigned level = 0 ) const;
+  double bonus( const player_t* p, unsigned level = 0 ) const;
+  double min( const player_t* p, unsigned level = 0 ) const;
+  double max( const player_t* p, unsigned level = 0 ) const;
 
   bool override( const std::string& field, double value );
 
@@ -486,22 +486,22 @@ public:
   {
     switch ( _scaling_type )
     {
-    case -4: return PLAYER_SPECIAL_SCALE4;
-    case -3: return PLAYER_SPECIAL_SCALE3;
-    case -2: return PLAYER_SPECIAL_SCALE2;
-    case -1: return PLAYER_SPECIAL_SCALE;
-    case 1:  return WARRIOR;
-    case 2:  return PALADIN;
-    case 3:  return HUNTER;
-    case 4:  return ROGUE;
-    case 5:  return PRIEST;
-    case 6:  return DEATH_KNIGHT;
-    case 7:  return SHAMAN;
-    case 8:  return MAGE;
-    case 9:  return WARLOCK;
-    case 10: return MONK;
-    case 11: return DRUID;
-    default: break;
+      case -4: return PLAYER_SPECIAL_SCALE4;
+      case -3: return PLAYER_SPECIAL_SCALE3;
+      case -2: return PLAYER_SPECIAL_SCALE2;
+      case -1: return PLAYER_SPECIAL_SCALE;
+      case 1:  return WARRIOR;
+      case 2:  return PALADIN;
+      case 3:  return HUNTER;
+      case 4:  return ROGUE;
+      case 5:  return PRIEST;
+      case 6:  return DEATH_KNIGHT;
+      case 7:  return SHAMAN;
+      case 8:  return MAGE;
+      case 9:  return WARLOCK;
+      case 10: return MONK;
+      case 11: return DRUID;
+      default: break;
     }
 
     return PLAYER_NONE;

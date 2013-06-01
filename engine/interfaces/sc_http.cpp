@@ -337,8 +337,8 @@ static std::string build_request( const url_t&       url,
   }
 
   request << url.path << " HTTP/1.0\r\n"
-             "User-Agent: Firefox/3.0\r\n"
-             "Accept: */*\r\n";
+          "User-Agent: Firefox/3.0\r\n"
+          "Accept: */*\r\n";
 
   if ( ! use_proxy )
     request << "Host: " << url.host << "\r\n";
@@ -349,7 +349,7 @@ static std::string build_request( const url_t&       url,
     request << "If-Modified-Since: " << last_modified << "\r\n";
 
   request << "Connection: close\r\n"
-             "\r\n";
+          "\r\n";
 
   return request.str();
 }
@@ -365,7 +365,7 @@ static bool download( url_cache_entry_t& entry,
   if ( ! initialized )
   {
     WSADATA wsa_data;
-    WSAStartup( MAKEWORD( 2,2 ), &wsa_data );
+    WSAStartup( MAKEWORD( 2, 2 ), &wsa_data );
     initialized = true;
   }
 

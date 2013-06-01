@@ -27,7 +27,7 @@ std::string action_dpet        ( player_t* );
 std::string aps_portion        ( player_t* );
 std::string time_spent         ( player_t* );
 std::string gains              ( player_t*, resource_e );
-std::string timeline           ( player_t*, const std::vector<double>&, const std::string&, double avg=0, std::string color="FDD017", size_t max_length = 0 );
+std::string timeline           ( player_t*, const std::vector<double>&, const std::string&, double avg = 0, std::string color = "FDD017", size_t max_length = 0 );
 std::string timeline_dps_error ( player_t* );
 std::string scale_factors      ( player_t* );
 std::string scaling_dps        ( player_t* );
@@ -79,20 +79,20 @@ struct sc_html_stream : public indented_stream
   {
     switch ( level() )
     {
-    case  0: return "";
-    case  1: return "\t";
-    case  2: return "\t\t";
-    case  3: return "\t\t\t";
-    case  4: return "\t\t\t\t";
-    case  5: return "\t\t\t\t\t";
-    case  6: return "\t\t\t\t\t\t";
-    case  7: return "\t\t\t\t\t\t\t";
-    case  8: return "\t\t\t\t\t\t\t\t";
-    case  9: return "\t\t\t\t\t\t\t\t\t";
-    case 10: return "\t\t\t\t\t\t\t\t\t\t";
-    case 11: return "\t\t\t\t\t\t\t\t\t\t\t";
-    case 12: return "\t\t\t\t\t\t\t\t\t\t\t\t";
-    default: assert( 0 ); return NULL;
+      case  0: return "";
+      case  1: return "\t";
+      case  2: return "\t\t";
+      case  3: return "\t\t\t";
+      case  4: return "\t\t\t\t";
+      case  5: return "\t\t\t\t\t";
+      case  6: return "\t\t\t\t\t\t";
+      case  7: return "\t\t\t\t\t\t\t";
+      case  8: return "\t\t\t\t\t\t\t\t";
+      case  9: return "\t\t\t\t\t\t\t\t\t";
+      case 10: return "\t\t\t\t\t\t\t\t\t\t";
+      case 11: return "\t\t\t\t\t\t\t\t\t\t\t";
+      case 12: return "\t\t\t\t\t\t\t\t\t\t\t\t";
+      default: assert( 0 ); return NULL;
     }
   }
 };
@@ -142,20 +142,20 @@ struct tabs_t
   {
     switch ( level )
     {
-    case  0: return "";
-    case  1: return "\t";
-    case  2: return "\t\t";
-    case  3: return "\t\t\t";
-    case  4: return "\t\t\t\t";
-    case  5: return "\t\t\t\t\t";
-    case  6: return "\t\t\t\t\t\t";
-    case  7: return "\t\t\t\t\t\t\t";
-    case  8: return "\t\t\t\t\t\t\t\t";
-    case  9: return "\t\t\t\t\t\t\t\t\t";
-    case 10: return "\t\t\t\t\t\t\t\t\t\t";
-    case 11: return "\t\t\t\t\t\t\t\t\t\t\t";
-    case 12: return "\t\t\t\t\t\t\t\t\t\t\t\t";
-    default: assert( 0 ); return NULL;
+      case  0: return "";
+      case  1: return "\t";
+      case  2: return "\t\t";
+      case  3: return "\t\t\t";
+      case  4: return "\t\t\t\t";
+      case  5: return "\t\t\t\t\t";
+      case  6: return "\t\t\t\t\t\t";
+      case  7: return "\t\t\t\t\t\t\t";
+      case  8: return "\t\t\t\t\t\t\t\t";
+      case  9: return "\t\t\t\t\t\t\t\t\t";
+      case 10: return "\t\t\t\t\t\t\t\t\t\t";
+      case 11: return "\t\t\t\t\t\t\t\t\t\t\t";
+      case 12: return "\t\t\t\t\t\t\t\t\t\t\t\t";
+      default: assert( 0 ); return NULL;
     }
   }
 };

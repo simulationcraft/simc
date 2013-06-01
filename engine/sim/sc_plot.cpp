@@ -127,7 +127,7 @@ void plot_t::analyze_stats()
     {
       if ( sim -> canceled ) break;
 
-      sim_t* delta_sim=0;
+      sim_t* delta_sim = 0;
 
       if ( j != 0 )
       {
