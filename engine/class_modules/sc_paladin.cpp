@@ -175,6 +175,10 @@ public:
   {
     const spell_data_t* divine_purpose;
     const spell_data_t* eternal_flame;
+    const spell_data_t* sacred_shield;
+    const spell_data_t* holy_prism;
+    const spell_data_t* lights_hammer;
+    const spell_data_t* execution_sentence;
     //todo: Sacred Shield, Holy Avenger, Sanctified Wrath
   } talents;
 
@@ -290,6 +294,7 @@ public:
   void    generate_action_prio_list_prot();
   void    generate_action_prio_list_ret();
   void    generate_action_prio_list_holy();
+  void    validate_action_priority_list();
 
   target_specific_t<paladin_td_t*> target_data;
 
@@ -1907,6 +1912,10 @@ struct execution_sentence_t : public paladin_spell_t
     for ( int i = 1; i < num_ticks; ++i )
       tick_multiplier[ i ] = tick_multiplier[ i - 1 ] * 1.1;
     tick_multiplier[ 10 ] = tick_multiplier[ 9 ] * 5;
+
+    // disable if not talented
+    if ( ! ( p -> talents.execution_sentence -> ok() ) )
+      background = true;
   }
 
   double composite_target_multiplier( player_t* target )
@@ -2119,7 +2128,7 @@ struct holy_wrath_t : public paladin_spell_t
   }
 };
 
-//Holy Prism ===============================================================
+// Holy Prism ===============================================================
 
 struct holy_prism_t : public paladin_spell_t
 {
@@ -2133,11 +2142,15 @@ struct holy_prism_t : public paladin_spell_t
     // this updates the spell coefficients appropriately for single-target damage
     parse_effect_data( p -> find_spell( 114852 ) -> effectN( 1 ) );
 
+    // disable if not talented
+    if ( ! ( p -> talents.holy_prism -> ok() ) )
+      background = true;
+
     // todo: code AoE heal, insert as proc on HPr damage.
   }
 };
 
-//Holy Prism AOE===============================================================
+// Holy Prism AOE===============================================================
 
 struct holy_prism_aoe_t : public paladin_spell_t
 {
@@ -2149,6 +2162,10 @@ struct holy_prism_aoe_t : public paladin_spell_t
     may_miss = false;
     school = SCHOOL_HOLY;
     aoe = 5;
+
+    // disable if not talented
+    if ( ! ( p -> talents.holy_prism -> ok() ) )
+      background = true;
 
     // todo: code single-target heal, turn this into a proc.
   }
@@ -2257,6 +2274,10 @@ struct lights_hammer_t : public paladin_spell_t
 
     dynamic_tick_action = true;
     tick_action = new lights_hammer_tick_t( p, p -> find_spell( 114919 ) );
+
+    // disable if not talented
+    if ( ! ( p -> talents.lights_hammer -> ok() ) )
+      background = true;
   }
 
   virtual timespan_t travel_time()
@@ -3662,6 +3683,12 @@ void paladin_t::generate_action_prio_list_ret()
 
   if ( find_talent_spell( "Holy Prism" ) -> ok() )
     action_list_str += "/holy_prism";
+
+  // store action_list_str in action_priority_list so it can be validated
+  get_action_priority_list( "default" ) -> action_list_str = action_list_str;
+  // clear action_list_str to avoid an assert error in player_t::init_actions()
+  action_list_str.clear();
+
 }
 
 
@@ -3741,6 +3768,154 @@ void paladin_t::generate_action_prio_list_holy()
   
 }
 
+void paladin_t::validate_action_priority_list()
+{
+
+  for ( size_t alist = 0; alist < action_priority_list.size(); alist++ )
+  {
+    action_priority_list_t* a = action_priority_list[ alist ];
+
+    // Convert old style action list to new style, all lines are without comments
+    // stolen from player_t::init_actions() in sc_player.cpp
+    if ( ! action_priority_list[ alist ] -> action_list_str.empty() )
+    {
+      // convert old string style to vectorized format
+      std::vector<std::string> splits = util::string_split( action_priority_list[ alist ] -> action_list_str, "/" );
+      for ( size_t i = 0; i < splits.size(); i++ )
+        action_priority_list[ alist ] -> action_list.push_back( action_priority_t( splits[ i ], "" ) );
+
+      // set action_list_str to empty to avoid assert() error in player_t::init_actions()
+      action_priority_list[ alist ] -> action_list_str.clear();
+
+    }
+
+    for ( size_t i = 0; i < a -> action_list.size(); i++ )
+    {
+      std::string& action_str = a -> action_list[ i ].action_;
+      std::size_t found;
+      std::string check_ability;
+      std::string replacement = "";
+
+      // Check for EF/WoG mistakes
+      if ( talents.eternal_flame -> ok() )
+      {
+        // check for usage of WoG when EF is talented
+        check_ability = "word_of_glory";
+        found = action_str.find( check_ability.c_str() );
+        if ( found != std::string::npos )
+        {
+          sim -> errorf( "Action priority list contains Word of Glory instead of Eternal Flame, automatically replacing WoG with EF\n" );
+          action_str.replace( found, check_ability.length(), "eternal_flame" );
+        }
+      }
+      else
+      {
+        // check for usage of EF when not talented
+        check_ability = "eternal_flame";
+        found = action_str.find( check_ability.c_str() );
+        if ( found != std::string::npos )
+        {
+          sim -> errorf( "Action priority list contains Eternal Flame without talent, automatically replacing with Word of Glory\n" );
+          action_str.replace( found,  check_ability.length(), "word_of_glory" );
+        }
+      }
+
+      // Check for usage of level 90 talents without talent present
+      if ( ! talents.holy_prism -> ok() )
+      {
+        check_ability = "holy_prism";
+        found = action_str.find( check_ability.c_str() );
+        if ( found != std::string::npos )
+        {
+          if ( talents.lights_hammer -> ok() )
+          {
+            replacement = "Light's Hammer";
+            action_str.replace( found, check_ability.length(), "lights_hammer" );
+          }
+          else if ( talents.execution_sentence -> ok() )
+          {
+            replacement = "Execution Sentence";
+            action_str.replace( found, check_ability.length(), "execution_sentence" );
+          }
+          else
+          {
+            // this part is handled in the constructor
+            replacement = "nothing";
+          }
+
+          sim -> errorf( "Action priority list contains %s without talent, automatically replacing with %s.", "Holy Prism", replacement.c_str() );
+          
+        }
+      }
+      if ( ! talents.lights_hammer -> ok() )
+      {
+        check_ability = "lights_hammer";
+        found = action_str.find( check_ability.c_str() );
+        if ( found != std::string::npos )
+        {
+          if ( talents.holy_prism -> ok() )
+          {
+            replacement = "Holy Prism";
+            action_str.replace( found, check_ability.length(), "holy_prism" );
+          }
+          else if ( talents.execution_sentence -> ok() )
+          {
+            replacement = "Execution Sentence";
+            action_str.replace( found, check_ability.length(), "execution_sentence" );
+          }
+          else
+          {
+            // this part is handled in the constructor
+            replacement = "nothing";
+          }
+
+          sim -> errorf( "Action priority list contains %s without talent, automatically replacing with %s.", "Light's Hammer", replacement.c_str() );
+          
+        }
+      }
+      if ( ! talents.execution_sentence -> ok() )
+      {
+        check_ability = "execution_sentence";
+        found = action_str.find( check_ability.c_str() );
+        if ( found != std::string::npos )
+        {
+          if ( talents.holy_prism -> ok() )
+          {
+            replacement = "Holy Prism";
+            action_str.replace( found, check_ability.length(), "holy_prism" );
+          }
+          else if ( talents.execution_sentence -> ok() )
+          {
+            replacement = "Light's Hammer";
+            action_str.replace( found, check_ability.length(), "lights_hammer" );
+          }
+          else
+          {
+            // this part is handled in the constructor
+            replacement = "nothing";
+          }
+
+          sim -> errorf( "Action priority list contains %s without talent, automatically replacing with %s.", "Execution Sentence", replacement.c_str() );
+          
+        }
+      }
+
+      // check for Sacred Shield usage without talent
+      if ( ! talents.sacred_shield -> ok() )
+      {
+        check_ability = "sacred_shield";
+        found = action_str.find( check_ability.c_str() );
+        if ( found != std::string::npos )
+        {
+          sim -> errorf( "Action priority list contains %s without talent, ignoring", "Sacred Shield" );
+        }
+      }
+
+      // repeat for Fist of Justice / Hammer of Justice
+    }
+  }
+}
+
 // paladin_t::init_actions ==================================================
 
 void paladin_t::init_actions()
@@ -3796,6 +3971,17 @@ void paladin_t::init_actions()
     }
     action_list_default = 1;
   }
+  else
+  {
+    // if an apl is provided (i.e. from a simc file), set it as the default so it can be validated
+    // precombat APL is automatically stored in the new format elsewhere, no need to fix that
+    get_action_priority_list( "default" ) -> action_list_str = action_list_str;
+    // clear action_list_str to avoid an assert error in player_t::init_actions()
+    action_list_str.clear();
+  }
+  
+
+  validate_action_priority_list(); // this checks for conflicts and cleans up APL accordingly
 
   player_t::init_actions();
 }
@@ -3807,6 +3993,10 @@ void paladin_t::init_spells()
   // Talents
   talents.divine_purpose          = find_talent_spell( "Divine Purpose" );
   talents.eternal_flame           = find_talent_spell( "Eternal Flame" );
+  talents.sacred_shield           = find_talent_spell( "Sacred Shield" );
+  talents.holy_prism              = find_talent_spell( "Holy Prism" );
+  talents.lights_hammer           = find_talent_spell( "Light's Hammer" );
+  talents.execution_sentence      = find_talent_spell( "Execution Sentence" );
 
   // Spells
   spells.guardian_of_ancient_kings_ret = find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION );
