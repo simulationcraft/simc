@@ -280,7 +280,8 @@ action_t::action_t( action_e       ty,
   time_to_execute( timespan_t::zero() ),
   time_to_travel( timespan_t::zero() ),
   total_executions(),
-  line_cooldown( cooldown_t( "line_cd", *p ) )
+  line_cooldown( cooldown_t( "line_cd", *p ) ),
+  procs_courageous_primal_diamond( true )
 {
   dot_behavior                   = DOT_CLIP;
   trigger_gcd                    = player -> base_gcd;
@@ -630,6 +631,10 @@ double action_t::cost()
   double c = base_costs[ cr ];
 
   c -= player -> current.resource_reduction[ school ];
+
+  if ( cr == RESOURCE_MANA && player -> buffs.courageous_primal_diamond_lucidity -> check() )
+    c = 0;
+
   if ( c < 0 ) c = 0;
 
   if ( sim -> debug ) sim -> output( "action_t::cost: %s %.2f %.2f %s", name(), base_costs[ cr ], c, util::resource_type_string( cr ) );
@@ -840,16 +845,18 @@ double action_t::calculate_direct_amount( action_state_t* state, int chain_targe
 
 void action_t::consume_resource()
 {
-  if ( current_resource() == RESOURCE_NONE || base_costs[ current_resource() ] == 0 || proc ) return;
+  resource_e cr = current_resource();
+
+  if ( cr == RESOURCE_NONE || base_costs[ cr ] == 0 || proc ) return;
 
   resource_consumed = cost();
 
-  player -> resource_loss( current_resource(), resource_consumed, 0, this );
+  player -> resource_loss( cr, resource_consumed, 0, this );
 
   if ( sim -> log )
     sim -> output( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
-                   resource_consumed, util::resource_type_string( current_resource() ),
-                   name(), player -> resources.current[ current_resource() ] );
+                   resource_consumed, util::resource_type_string( cr ),
+                   name(), player -> resources.current[ cr ] );
 
   stats -> consume_resource( current_resource(), resource_consumed );
 }

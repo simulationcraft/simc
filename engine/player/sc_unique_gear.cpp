@@ -1020,6 +1020,39 @@ void capacitive_primal( player_t* p )
   }
 }
 
+void courageous_primal_diamond( player_t* p )
+{
+  if ( p -> meta_gem == META_COURAGEOUS_PRIMAL )
+  {
+    struct courageous_primal_diamond_proc_t : public buff_proc_callback_t<buff_t>
+    {
+      courageous_primal_diamond_proc_t( player_t* p, const special_effect_t& data ) :
+        buff_proc_callback_t<buff_t>( p, data, p -> buffs.courageous_primal_diamond_lucidity )
+      { }
+
+      void execute( action_t* action, action_state_t* call_data )
+      {
+        if ( action -> procs_courageous_primal_diamond )
+        {
+          if ( listener -> sim -> debug )
+            listener -> sim -> output( "%s procs %s from action %s.",
+                                       listener -> name(), buff -> name(), action -> name() );
+
+          buff_proc_callback_t<buff_t>::execute( action, call_data );
+        }
+      }
+    };
+
+    special_effect_t data;
+    data.name_str = "courageous_primal_diamond_lucidity";
+    data.ppm      = -1.4; // Real PPM
+
+    courageous_primal_diamond_proc_t* cb = new courageous_primal_diamond_proc_t( p, data );
+    p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+    p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
+  }
+}
+
 void meta_gems( player_t* p, weapon_t* mhw, weapon_t* ohw )
 {
   // Special Meta Gem "Enchants"
@@ -1028,6 +1061,7 @@ void meta_gems( player_t* p, weapon_t* mhw, weapon_t* ohw )
   sinister_primal( p );
   capacitive_primal( p );
   indomitable_primal( p );
+  courageous_primal_diamond( p );
 }
 
 } // end meta_gems namespace

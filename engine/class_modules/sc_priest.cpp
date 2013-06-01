@@ -2921,6 +2921,8 @@ struct holy_fire_base_t : public priest_spell_t
     can_cancel_shadowform = false; // FIXME: check in 5.2+
     castable_in_shadowform = false;
 
+    procs_courageous_primal_diamond = false;
+
     can_trigger_atonement = true; // FIXME: check in 5.2+
 
     range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
@@ -3103,6 +3105,8 @@ struct smite_t : public priest_spell_t
     hw_chastise( p.get_cooldown( "holy_word_chastise" ) )
   {
     parse_options( nullptr, options_str );
+
+    procs_courageous_primal_diamond = false;
 
     can_trigger_atonement = true;
     castable_in_shadowform = false;

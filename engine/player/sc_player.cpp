@@ -562,14 +562,14 @@ player_t::player_t( sim_t*             s,
 
   // dynamic stuff
   target( 0 ),
-  active_pets( 0 ),
   initialized( 0 ), potion_used( false ),
 
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str(),
   gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::min() ),
-  pet_list( 0 ), invert_scaling( 0 ),
-  reaction_offset( timespan_t::from_seconds( 0.1 ) ), reaction_mean( timespan_t::from_seconds( 0.3 ) ), reaction_stddev( timespan_t::zero() ), reaction_nu( timespan_t::from_seconds( 0.25 ) ),
+  pet_list(), active_pets(), invert_scaling( 0 ),
   avg_ilvl( 0 ),
+  // Reaction
+  reaction_offset( timespan_t::from_seconds( 0.1 ) ), reaction_mean( timespan_t::from_seconds( 0.3 ) ), reaction_stddev( timespan_t::zero() ), reaction_nu( timespan_t::from_seconds( 0.25 ) ),
   // Latency
   world_lag( timespan_t::from_seconds( 0.1 ) ), world_lag_stddev( timespan_t::min() ),
   brain_lag( timespan_t::zero() ), brain_lag_stddev( timespan_t::min() ),
@@ -2726,13 +2726,16 @@ void player_t::create_buffs()
 
     buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );
 
-
     buffs.stormlash                 = new stormlash_buff_t( this, find_spell( 120687 ) );
   }
+
+  buffs.courageous_primal_diamond_lucidity = buff_creator_t( this, "lucidity" )
+                                             .spell( find_spell( 137288 ) );
 
   buffs.body_and_soul             = buff_creator_t( this, "body_and_soul" )
                                     .max_stack( 1 )
                                     .duration( timespan_t::from_seconds( 4.0 ) );
+
   buffs.grace                     = buff_creator_t( this,  "grace" )
                                     .max_stack( 3 )
                                     .duration( timespan_t::from_seconds( 15.0 ) );

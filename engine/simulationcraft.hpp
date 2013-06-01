@@ -4007,7 +4007,7 @@ public:
 
   // Heal
   double iteration_heal, iteration_heal_taken; // temporary accumulators
-  double hps_error, hpr;
+  double hpr;
 
 
   player_processed_report_information_t report_information;
@@ -4073,6 +4073,7 @@ public:
     haste_buff_t* unholy_frenzy;
 
     // Legendary meta stuff
+    buff_t* courageous_primal_diamond_lucidity;
     buff_t* tempus_repit;
     buff_t* fortitude;
   } buffs;
@@ -4766,6 +4767,9 @@ struct action_t : public noncopyable
   int64_t total_executions;
   cooldown_t line_cooldown;
   const action_priority_t* signature;
+
+  // special item flags
+  bool procs_courageous_primal_diamond;
 
   action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
