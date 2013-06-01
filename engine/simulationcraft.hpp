@@ -3748,11 +3748,11 @@ struct player_t : public actor_t
   int          party, member;
   int          ready_type;
   specialization_e  _spec;
-  bool         bugs, scale_player;
+  bool         bugs; // If true, include known InGame mechanics which are probably the cause of a bug and not inteded
+  bool scale_player;
 
   // dynamic attributes - things which change during combat
   player_t*   target;
-  int         active_pets;
   int         initialized;
   bool        potion_used;
 
@@ -3761,9 +3761,10 @@ struct player_t : public actor_t
   std::string race_str, professions_str, position_str;
   timespan_t  gcd_ready, base_gcd, started_waiting;
   std::vector<pet_t*> pet_list;
-  int         invert_scaling;
-  timespan_t  reaction_offset, reaction_mean, reaction_stddev, reaction_nu;
+  std::vector<pet_t*> active_pets;
   std::vector<absorb_buff_t*> absorb_buff_list;
+
+  int         invert_scaling;
   double      avg_ilvl;
 
 private:
@@ -3775,6 +3776,8 @@ public:
   bool vengeance_is_started() const { return vengeance.is_started(); }
   const sc_timeline_t& vengeance_timeline() const { return vengeance.timeline(); }
 
+  // Reaction
+  timespan_t  reaction_offset, reaction_mean, reaction_stddev, reaction_nu;
   // Latency
   timespan_t  world_lag, world_lag_stddev;
   timespan_t  brain_lag, brain_lag_stddev;
@@ -3881,7 +3884,6 @@ public:
   timespan_t last_cast;
 
   // Defense Mechanics
-  event_t* target_auto_attack;
   double diminished_dodge_cap, diminished_parry_cap, diminished_block_cap, diminished_kfactor;
 
   // Weapons

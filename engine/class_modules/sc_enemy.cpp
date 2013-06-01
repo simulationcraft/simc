@@ -694,7 +694,7 @@ expr_t* enemy_t::create_expression( action_t* action,
                                     const std::string& name_str )
 {
   if ( name_str == "adds" )
-    return make_ref_expr( name_str, active_pets );
+    return make_ref_expr( name_str, active_pets.size() );
 
   // override enemy health.pct expression
   if ( name_str == "health.pct" )

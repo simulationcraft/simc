@@ -584,7 +584,6 @@ player_t::player_t( sim_t*             s,
   base_energy_regen_per_second( 0 ), base_focus_regen_per_second( 0 ), base_chi_regen_per_second( 0 ),
   last_cast( timespan_t::zero() ),
   // Defense Mechanics
-  target_auto_attack( 0 ),
   diminished_dodge_cap( 0 ), diminished_parry_cap( 0 ), diminished_block_cap( 0 ), diminished_kfactor( 0 ),
   // Attacks
   main_hand_attack( 0 ), off_hand_attack( 0 ),
