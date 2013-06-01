@@ -92,18 +92,18 @@ void event_t::reschedule( timespan_t new_time )
 void event_t::cancel( event_t*& e )
 {
   if ( ! e ) return;
-  if ( e -> player && ! e -> canceled )
+
+  if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> player && ! e -> canceled )
   {
-    e -> player -> events--;
-#ifndef NDEBUG
-    if ( e -> player -> events < 0 )
+    e -> player -> event_counter--;
+    if ( e -> player -> event_counter < 0 )
     {
       e -> sim.errorf( "event_t::cancel assertion error: e -> player -> events < 0, event %s from %s.\n",
                        e -> name, e -> player -> name() );
       assert( 0 );
     }
-#endif
   }
+
   e -> canceled = true;
   e = 0;
 }
@@ -113,10 +113,10 @@ void event_t::cancel( event_t*& e )
 void event_t::early( event_t*& e )
 {
   if ( ! e ) return;
-  if ( e -> player && ! e -> canceled )
+  if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> player && ! e -> canceled )
   {
-    e -> player -> events--;
-    assert( e -> player -> events >= 0 );
+    e -> player -> event_counter--;
+    assert( e -> player -> event_counter >= 0 );
   }
   e -> canceled = true;
   e -> execute();

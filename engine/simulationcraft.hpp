@@ -3708,16 +3708,37 @@ struct player_collected_data_t
   void analyze( sim_t& );
 };
 
+// Actor
+
+struct actor_t : public noncopyable
+{
+#ifndef NDEBUG
+  static const bool ACTOR_EVENT_BOOKKEEPING = true;
+#else
+  static const bool ACTOR_EVENT_BOOKKEEPING = false;
+#endif
+
+  sim_t* sim; // owner
+  std::string name_str;
+  int event_counter; // safety counter. Shall never be less than zero
+
+  actor_t( sim_t* s, const std::string& name ) :
+    sim( s ), name_str( name ),
+    event_counter( 0 )
+  {
+
+  }
+  virtual ~ actor_t() { }
+};
+
 // Player ===================================================================
 
-struct player_t : public noncopyable
+struct player_t : public actor_t
 {
   static const int default_level = 90;
 
   // static values
-  sim_t* sim;
   player_e type;
-  std::string name_str;
   int index;
   size_t actor_index;
   // (static) attributes - things which should not change during combat
@@ -3758,8 +3779,6 @@ public:
   timespan_t  world_lag, world_lag_stddev;
   timespan_t  brain_lag, brain_lag_stddev;
   bool        world_lag_override, world_lag_stddev_override;
-
-  int    events;
 
   // Data access
   dbc_t       dbc;

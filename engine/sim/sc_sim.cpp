@@ -944,12 +944,13 @@ void sim_t::add_event( event_t* e,
 
   events_remaining++;
   if ( events_remaining > max_events_remaining ) max_events_remaining = events_remaining;
-  if ( e -> player ) e -> player -> events++;
+  if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> player ) e -> player -> event_counter++;
+
 
   if ( debug )
   {
     output( "Add Event: %s %.2f %.2f %d %s", e -> name, e -> time.total_seconds(), e -> reschedule_time.total_seconds(), e -> id, e -> player ? e -> player -> name() : "" );
-    if ( e -> player ) output( "Actor %s has %d scheduled events", e -> player -> name(), e -> player -> events );
+    if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> player ) output( "Actor %s has %d scheduled events", e -> player -> name(), e -> player -> event_counter );
   }
 }
 
@@ -1028,11 +1029,11 @@ void sim_t::combat( int iteration )
   {
     current_time = e -> time;
 
-    // Perform actor event bookkeeping first
-    if ( e -> player && ! e -> canceled )
+    if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> player && ! e -> canceled )
     {
-      e -> player -> events--;
-      if ( e -> player -> events < 0 )
+      // Perform actor event bookkeeping first
+      e -> player -> event_counter--;
+      if ( e -> player -> event_counter < 0 )
       {
         errorf( "sim_t::combat assertion error! canceling event %s leaves negative event count for user %s.\n", e -> name, e -> player -> name() );
         assert( 0 );

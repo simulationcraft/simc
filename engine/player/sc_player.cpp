@@ -545,9 +545,8 @@ player_t::player_t( sim_t*             s,
                     player_e           t,
                     const std::string& n,
                     race_e             r ) :
-  sim( s ),
+  actor_t( s, n ),
   type( t ),
-  name_str( n ),
 
   index( -1 ),
 
@@ -575,7 +574,6 @@ player_t::player_t( sim_t*             s,
   world_lag( timespan_t::from_seconds( 0.1 ) ), world_lag_stddev( timespan_t::min() ),
   brain_lag( timespan_t::zero() ), brain_lag_stddev( timespan_t::min() ),
   world_lag_override( false ), world_lag_stddev_override( false ),
-  events( 0 ),
   dbc( s -> dbc ),
   talent_points(),
   glyph_list(),
@@ -3840,8 +3838,6 @@ void player_t::reset()
 
   last_cast = timespan_t::zero();
   gcd_ready = timespan_t::zero();
-
-  events = 0;
 
   cache.invalidate();
 
