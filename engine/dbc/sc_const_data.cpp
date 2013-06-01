@@ -335,6 +335,11 @@ void dbc::apply_hotfixes()
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 1500;
   }
 
+  // 2013/5/23: Elemental Overload version of Lava Burst should now properly
+  // deal 75% of the damage dealt by the Lava Burst that activated it.
+  // m_avg: 0.85 -> 1.06219
+  const spelleffect_data_t& lvb = spell_data_t::find( 51505, false ) -> effectN( 1 );
+  const_cast<spelleffect_data_t&>( spell_data_t::find( 77451, false ) -> effectN( 1 ) )._m_avg = lvb._m_avg * 0.75;
 
   // Warlock
 
