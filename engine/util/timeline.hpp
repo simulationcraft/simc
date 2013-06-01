@@ -105,7 +105,7 @@ public:
     }
   }
 
-  T average( size_t start, size_t length )
+  T average( size_t start, size_t length ) const
   {
     T average = T();
     if ( length == 0 )

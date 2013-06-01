@@ -3690,12 +3690,22 @@ struct player_collected_data_t
   // Tank
   extended_sample_data_t deaths;
 
+  struct resource_timeline_t
+  {
+    resource_e type;
+    sc_timeline_t timeline;
+
+    resource_timeline_t( resource_e t = RESOURCE_NONE ) : type( t ) {}
+  };
+  // Druid requires 4 resource timelines health/mana/energy/rage
+  std::vector<resource_timeline_t> resource_timelines;
+
   std::vector<simple_sample_data_with_min_max_t > combat_end_resource;
 
   player_collected_data_t( const std::string& player_name, sim_t& );
   void reserve_memory( size_t );
   void merge( const player_collected_data_t& );
-  void analyze();
+  void analyze( sim_t& );
 };
 
 // Player ===================================================================
@@ -3903,6 +3913,7 @@ public:
   event_t*  off_gcd;
   bool      in_combat;
   bool      action_queued;
+  action_t* last_foreground_action;
 
   // Delay time used by "cast_delay" expression to determine when an action
   // can be used at minimum after a spell cast has finished, including GCD
@@ -3931,7 +3942,6 @@ public:
 
   // Reporting
   int       quiet;
-  action_t* last_foreground_action;
   timespan_t iteration_fight_length,arise_time;
   timespan_t iteration_waiting_time;
   int       iteration_executed_foreground_actions;
@@ -3962,20 +3972,8 @@ public:
   std::array< std::vector<plot_data_t>, STAT_MAX > dps_plot_data;
   std::vector<std::vector<plot_data_t> > reforge_plot_data;
 
-  struct resource_timeline_t
-  {
-    resource_e type;
-    sc_timeline_t timeline;
-
-    resource_timeline_t( resource_e t = RESOURCE_NONE ) : type( t ) {}
-  };
-
   // All Data collected during / end of combat
   player_collected_data_t collected_data;
-
-  // Druid requires 4 resource timelines health/mana/energy/rage
-  std::array<resource_timeline_t, 4> resource_timelines;
-  size_t resource_timeline_count;
 
   // Damage
   double iteration_dmg, iteration_dmg_taken; // temporary accumulators

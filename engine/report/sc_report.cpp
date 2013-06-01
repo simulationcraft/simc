@@ -982,14 +982,14 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
                                                       cd.deaths.max() );
 
   // Resource Charts
-  for ( size_t i = 0; i < p -> resource_timeline_count; ++i )
+  for ( size_t i = 0; i < cd.resource_timelines.size(); ++i )
   {
-    resource_e rt = p -> resource_timelines[ i ].type;
+    resource_e rt = cd.resource_timelines[ i ].type;
     ri.timeline_resource_chart[ rt ] =
       chart::timeline( p,
-                       p -> resource_timelines[ i ].timeline.data(),
+                       cd.resource_timelines[ i ].timeline.data(),
                        encoded_name + ' ' + util::inverse_tokenize( util::resource_type_string( rt ) ),
-                       p -> resource_timelines[ i ].timeline.average( 0, max_buckets ),
+                       cd.resource_timelines[ i ].timeline.average( 0, max_buckets ),
                        chart::resource_color( rt ),
                        max_buckets );
     ri.gains_chart[ rt ] = chart::gains( p, rt );

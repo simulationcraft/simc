@@ -598,19 +598,19 @@ player_t::player_t( sim_t*             s,
   food( FOOD_NONE ),
   // Events
   executing( 0 ), channeling( 0 ), readying( 0 ), off_gcd( 0 ), in_combat( false ), action_queued( false ),
+  last_foreground_action( 0 ),
   cast_delay_reaction( timespan_t::zero() ), cast_delay_occurred( timespan_t::zero() ),
   // Actions
   action_list_default( 0 ),
   precombat_action_list( 0 ), active_action_list( 0 ), active_off_gcd_list( 0 ), restore_action_list( 0 ),
   no_action_list_provided(),
   // Reporting
-  quiet( 0 ), last_foreground_action( 0 ),
+  quiet( 0 ),
   iteration_fight_length( timespan_t::zero() ), arise_time( timespan_t::min() ),
   iteration_waiting_time( timespan_t::zero() ), iteration_executed_foreground_actions( 0 ),
   rps_gain( 0 ), rps_loss( 0 ),
   buffed( buffed_stats_t() ),
   collected_data( player_collected_data_t( name_str, *sim ) ),
-  resource_timeline_count( 0 ),
   // Damage
   iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
   dpr( 0 ),
@@ -1725,7 +1725,8 @@ void player_t::init_resources( bool force )
 
   resources.current = resources.max = resources.initial;
 
-  if ( resource_timeline_count == 0 )
+  // Only collect pet resource timelines if they get reported separately
+  if ( ( ! is_pet() || sim -> report_pets_separately ) && collected_data.resource_timelines.size() == 0 )
   {
     int size = ( int ) ( sim -> max_time.total_seconds() * ( 1.0 + sim -> vary_combat_length ) );
     if ( size <= 0 ) size = 600; // Default to 10 minutes
@@ -1736,11 +1737,9 @@ void player_t::init_resources( bool force )
     {
       if ( resources.max[ i ] > 0 )
       {
-        // If you trigger this assert, resource_timelines needs to be bigger.
-        assert( resource_timeline_count < resource_timelines.size() );
-        resource_timelines[ resource_timeline_count ].type = i;
-        resource_timelines[ resource_timeline_count ].timeline.init( size );
-        ++resource_timeline_count;
+        collected_data.resource_timelines.push_back( player_collected_data_t::resource_timeline_t( i ) );
+        player_collected_data_t::resource_timeline_t& new_tl = collected_data.resource_timelines.back();
+        new_tl.timeline.init( size );
       }
     }
   }
@@ -3747,15 +3746,6 @@ void player_t::merge( player_t& other )
 
   timeline_dmg_taken.merge( other.timeline_dmg_taken );
 
-  assert( resource_timeline_count == other.resource_timeline_count );
-  for ( size_t i = 0; i < resource_timeline_count; ++i )
-  {
-    assert( resource_timelines[ i ].type == other.resource_timelines[ i ].type );
-    assert( resource_timelines[ i ].type != RESOURCE_NONE );
-
-    resource_timelines[ i ].timeline.merge ( other.resource_timelines[ i ].timeline );
-  }
-
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
   {
     resource_lost  [ i ] += other.resource_lost  [ i ];
@@ -4307,10 +4297,10 @@ void player_t::regen( timespan_t periodicity )
 
 void player_t::collect_resource_timeline_information()
 {
-  for ( size_t j = 0; j < resource_timeline_count; ++j )
+  for ( size_t j = 0, size = collected_data.resource_timelines.size(); j < size; ++j )
   {
-    resource_timelines[ j ].timeline.add( sim -> current_time,
-                                          resources.current[ resource_timelines[ j ].type ] );
+    collected_data.resource_timelines[ j ].timeline.add( sim -> current_time,
+                                          resources.current[ collected_data.resource_timelines[ j ].type ] );
   }
 }
 
@@ -8338,7 +8328,7 @@ void player_t::analyze( sim_t& s )
 
   // sample_data_t::analyze(calc_basics,calc_variance,sort )
 
-  collected_data.analyze();
+  collected_data.analyze( s );
   timeline_dmg_taken.adjust( s.divisor_timeline );
 
   for ( size_t i = 0; i <  buff_list.size(); ++i )
@@ -8402,10 +8392,6 @@ void player_t::analyze( sim_t& s )
   vengeance.adjust( s.divisor_timeline );
 
   // Resources & Gains ======================================================
-  for ( size_t i = 0; i <  resource_timeline_count; ++i )
-  {
-    resource_timelines[ i ].timeline.adjust( s.divisor_timeline );
-  }
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
   {
@@ -9233,10 +9219,9 @@ player_collected_data_t::player_collected_data_t( const std::string& player_name
   htps( player_name + " Healing taken Per Second", s.statistics_level < 2 ),
   heal_taken( player_name + " Healing Taken", s.statistics_level < 2 ),
   deaths( player_name + " Deaths", s.statistics_level < 2 ),
+  resource_timelines(),
   combat_end_resource( RESOURCE_MAX )
-{
-
-}
+{ }
 
 void player_collected_data_t::reserve_memory( size_t n )
 {
@@ -9276,9 +9261,19 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
   heal_taken.merge( other.heal_taken );
   // Tank
   deaths.merge( other.deaths );
+
+  assert( resource_timelines.size() == other.resource_timelines.size() );
+  for ( size_t i = 0; i < resource_timelines.size(); ++i )
+  {
+    assert( resource_timelines[ i ].type == other.resource_timelines[ i ].type );
+    assert( resource_timelines[ i ].type != RESOURCE_NONE );
+
+    resource_timelines[ i ].timeline.merge ( other.resource_timelines[ i ].timeline );
+  }
+
 }
 
-void player_collected_data_t::analyze()
+void player_collected_data_t::analyze( sim_t& s )
 {
   fight_length.analyze_all();
   // DMG
@@ -9297,4 +9292,10 @@ void player_collected_data_t::analyze()
   htps.analyze_all();
   // Tank
   deaths.analyze_all();
+
+  for ( size_t i = 0; i <  resource_timelines.size(); ++i )
+  {
+    resource_timelines[ i ].timeline.adjust( s.divisor_timeline );
+  }
+
 }
