@@ -2893,6 +2893,7 @@ struct word_of_glory_t : public paladin_heal_t
     // temporary section for testing find_class_spell; intermittantly returning spell_data_t::not_found() with WoG on x64 VS11
     const spell_data_t* test = p->find_spell(85673);
     const spell_data_t* test2 = p->find_class_spell("Word of Glory");
+    //assert( test2 -> ok() );
 
     // remove =GCD constraints for prot
     if ( p -> passives.guarded_by_the_light -> ok() )

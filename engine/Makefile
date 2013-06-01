@@ -31,9 +31,9 @@ OPENSSL_PATH =
 
 CXX        = g++
 CPP_FLAGS  = -Wall -Woverloaded-virtual -W -I.
-OPTS       = -O3 -fomit-frame-pointer
-
-FFAST-MATH = 1
+OPTS       = -O3
+# Force on SSE2 to avoid problems with older GCC versions
+OPTS += -msse2 -mfpmath=sse
 
 ifneq (${NO_DEBUG},)
   CPP_FLAGS += -DNDEBUG
@@ -48,8 +48,7 @@ ifneq (${MARCH_NATIVE},)
   OPTS += -march=native
 endif
 ifneq (${FFAST-MATH},)
-  # Force on SSE2 to avoid problems with older GCC versions
-  OPTS += -ffast-math -msse2 -mfpmath=sse
+  OPTS += -ffast-math
 endif
 
 # Include build setting from user configuration file
@@ -201,6 +200,16 @@ SRC_OBJ	:= $(SRC_CPP:%.cpp=$(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT))
 .PHONY:	all mostlyclean clean
 
 all: $(MODULE)
+
+debug:OPTS += -g -fno-omit-frame-pointer -O2
+debug: $(MODULE)
+
+release:CPP_FLAGS += -DNDEBUG
+release: $(MODULE)
+	
+optimized:CPP_FLAGS += -DNDEBUG -std=c++0x
+optimized:OPTS += -march=native -ffast-math -fomit-frame-pointer
+optimized: $(MODULE)
 
 install: all
 	$(COPY) $(MODULE) ..
