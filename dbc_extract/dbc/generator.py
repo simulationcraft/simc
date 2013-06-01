@@ -1048,6 +1048,8 @@ class SpellDataGenerator(DataGenerator):
          84745,  84746,             # Shallow Insight, Moderate Insight
          138537,                    # Death Knight Tier15 2PC melee pet special attack
          137597,                    # Legendary meta gem Lightning Strike
+         137323, 137288, 137247,    # Healer legendary meta
+         137331, 137326, 
         ),
         
         # Warrior:
