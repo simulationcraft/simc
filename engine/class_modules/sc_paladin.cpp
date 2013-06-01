@@ -30,10 +30,11 @@ struct paladin_td_t : public actor_pair_t
 {
   struct dots_t
   {
-    dot_t* word_of_glory;
-    dot_t* holy_radiance;
     dot_t* censure;
+    dot_t* eternal_flame;
     dot_t* execution_sentence;
+    dot_t* holy_radiance;
+    dot_t* word_of_glory; // leftover, can probably be removed
   } dots;
 
   buff_t* debuffs_censure;
@@ -48,6 +49,7 @@ public:
   // Active
   seal_e    active_seal;
   heal_t*   active_beacon_of_light;
+  action_t* active_censure;  // this is the Censure dot application
   heal_t*   active_enlightened_judgments;
   action_t* active_hand_of_light_proc;
   absorb_t* active_illuminated_healing;
@@ -56,7 +58,6 @@ public:
   action_t* active_seal_of_justice_proc;
   action_t* active_seal_of_justice_aoe_proc;
   action_t* active_seal_of_righteousness_proc;
-  action_t* active_seal_of_truth_dot;
   action_t* active_seal_of_truth_proc;
   action_t* ancient_fury_explosion;
   player_t* last_judgement_target;
@@ -173,6 +174,7 @@ public:
   struct talents_t
   {
     const spell_data_t* divine_purpose;
+    const spell_data_t* eternal_flame;
     //todo: Sacred Shield, Holy Avenger, Sanctified Wrath
   } talents;
 
@@ -223,6 +225,7 @@ public:
     extra_regen_percent( 0.0 )
   {
     active_beacon_of_light             = 0;
+    active_censure                     = 0;
     active_enlightened_judgments       = 0;
     active_hand_of_light_proc          = 0;
     active_illuminated_healing         = 0;
@@ -233,7 +236,6 @@ public:
     active_seal_of_insight_proc        = 0;
     active_seal_of_righteousness_proc  = 0;
     active_seal_of_truth_proc          = 0;
-    active_seal_of_truth_dot           = 0;
     ancient_fury_explosion             = 0;
     bok_up                             = false;
     bom_up                             = false;
@@ -463,8 +465,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
   bool trigger_seal_of_justice_aoe; // probably not needed anymore, this change was reverted
 
   // spell cooldown reduction flags
-  bool sanctity_of_battle;  //separated from use_spell_haste because sanctity is now on melee haste
-  bool use_spell_haste; // Some attacks (censure) use spell haste. sigh.
+  bool sanctity_of_battle;  //reduces some spell cooldowns/gcds by melee haste
 
   bool use2hspec;
 
@@ -478,31 +479,16 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
     trigger_seal_of_truth( false ),
     trigger_seal_of_justice_aoe( false ),
     sanctity_of_battle( false ),
-    use_spell_haste( false ),
     use2hspec( u2h )
   {
     may_crit = true;
     special = true;
   }
 
-  virtual double composite_haste()
-  {
-    return use_spell_haste ? p() -> cache.spell_speed() : base_t::composite_haste();
-  }
-
   virtual timespan_t gcd()
   {
-    if ( use_spell_haste )
-    {
-      timespan_t t = action_t::gcd();
-      if ( t == timespan_t::zero() ) return timespan_t::zero();
 
-      t *= composite_haste();
-      if ( t < min_gcd ) t = min_gcd;
-
-      return t;
-    }
-    else if ( sanctity_of_battle )
+    if ( sanctity_of_battle )
     {
       timespan_t t = action_t::gcd();
       if ( t == timespan_t::zero() ) return timespan_t::zero();
@@ -559,7 +545,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
           p() -> active_seal_of_righteousness_proc -> execute();
           break;
         case SEAL_OF_TRUTH:
-          p() -> active_seal_of_truth_dot -> execute();
+          p() -> active_censure                    -> execute();
           if ( td() -> debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
           break;
         default: break;
@@ -2332,21 +2318,28 @@ struct word_of_glory_damage_t : public paladin_spell_t
   }
 };
 
-// Seal of Truth ============================================================
+//Censure  ============================================================
+// Censure is the debuff applied by Seal of Truth, and it's an oddball.  The dot ticks are really melee attacks, believe it or not.
+// They cannot miss/dodge/parry (though the application of the debuff can do all of those things, and often shows up in WoL reports
+// as such) and use melee crit.  However, the tick interval also scales with spell haste like a normal DoT.  What a mess.
+// 
+// The easiest solution here is to treat it like a spell, since that way it gets all of the spell-like properties it ought to.  However, 
+// we need to tweak it to use melee crit, which we do in impact() by setting the action_state_t -> crit variable accordingly.
+//
+// The way this works is that censure_t represents a spell attack proc which is made every time we succeed with a qualifying melee attack.
+// That spell attack proc does 0 damage and applies the censure dot, which is defined in the dots_t structure.  The dot takes care of the
+// tick damage, but since we don't support stackable dots, we have to handle the stacking in the player -> debuff_censure variable and use
+// that value as an action multiplier to scale the damage.  Got all that?
 
-struct seal_of_truth_dot_t : public paladin_spell_t
+struct censure_t : public paladin_spell_t
 {
-  seal_of_truth_dot_t( paladin_t* p ) :
+  censure_t( paladin_t* p ) :
     paladin_spell_t( "censure", p, p -> find_spell( p -> find_class_spell( "Seal of Truth" ) -> ok() ? 31803 : 0 ) )
   {
     background       = true;
     proc             = true;
     tick_may_crit    = true;
 
-
-    base_spell_power_multiplier  = tick_power_mod;
-    base_attack_power_multiplier = data().extra_coeff();
-    tick_power_mod               = 1.0;
     //Undocumented: 80% weaker for protection
     if ( p -> specialization() == PALADIN_PROTECTION )
     {
@@ -2363,7 +2356,7 @@ struct seal_of_truth_dot_t : public paladin_spell_t
   virtual void init()
   {
     paladin_spell_t::init();
-
+    // snapshot haste when we apply the debuff, this modifies the tick interval dynamically on every refresh
     snapshot_flags |= STATE_HASTE;
   }
 
@@ -2371,7 +2364,10 @@ struct seal_of_truth_dot_t : public paladin_spell_t
   {
     if ( result_is_hit( s -> result ) )
     {
+      // if the application hits, apply/refresh the censure debuff; this will also increment stacks
       td( s -> target ) -> debuffs_censure -> trigger();
+      // cheesy hack to make Censure use melee crit rather than spell crit
+      s -> crit = p() -> composite_melee_crit(); 
     }
 
     paladin_spell_t::impact( s );
@@ -2379,6 +2375,8 @@ struct seal_of_truth_dot_t : public paladin_spell_t
 
   virtual double composite_target_multiplier( player_t* t )
   {
+    // since we don't support stacking debuffs, we handle the stack size locally in debuffs_censure
+    // and apply the stack size as an action multiplier
     double am = paladin_spell_t::composite_target_multiplier( t );
 
     am *= td( t ) -> debuffs_censure -> stack();
@@ -2388,6 +2386,8 @@ struct seal_of_truth_dot_t : public paladin_spell_t
 
   virtual void last_tick( dot_t* d )
   {
+    // if this is the last tick, expire the debuff locally
+    // (this shouldn't happen ... ever? ... under normal operation)
     td( d -> state -> target ) -> debuffs_censure -> expire();
 
     paladin_spell_t::last_tick( d );
@@ -2609,25 +2609,54 @@ struct divine_light_t : public paladin_heal_t
   }
 };
 
-// Eternal Flame HoT ========================================================
-// placeholder for now until EF is properly implemented
-struct eternal_flame_tick_t : public paladin_heal_t
-{
-  eternal_flame_tick_t( paladin_t* p) 
-    : paladin_heal_t( "eternal_flame_tick", p, p-> find_class_spell( "Eternal Flame") )
-  {
-    //check spell data
-    background = true;
-    direct_tick = true;
-    may_miss = false;
 
+// Eternal Flame  ================================================
+// contains all information for both the heal and the HoT component
+
+struct eternal_flame_t : public paladin_heal_t
+{
+  eternal_flame_t( paladin_t* p, const std::string& options_str ) :
+    paladin_heal_t( "eternal_flame", p, p -> find_talent_spell( "Eternal Flame" ) ) 
+  {
+    parse_options( NULL, options_str );
+    
+    // remove =GCD constraints for prot
+    if ( p -> passives.guarded_by_the_light -> ok() )
+    {
+      trigger_gcd = timespan_t::zero();
+      use_off_gcd = true;
+    }
   }
 
-};
+  virtual double action_multiplier()
+  {
+    double am = paladin_heal_t::action_multiplier();
 
-// Eternal Flame Direct Heal ================================================
-// technically the same as Word of Glory heal, but here for consistency in action priority list
-// have to decide whether to simply alias or create a new class for this
+    am *= std::min( 3, p() -> holy_power_stacks() ); // can't consume more than 3 holy power
+        
+    if ( target == player )
+    {
+      am *= 1.0 + p() -> talents.eternal_flame -> effectN( 3 ).percent(); // twice as effective when used on self
+    }
+
+    return am;
+  }
+
+  virtual void execute()
+  {
+    double hopo = std::min( 3, p() -> holy_power_stacks() ); // can't consume more than 3 holy power
+
+    paladin_heal_t::execute();
+
+    // Glyph of Word of Glory handling
+    if ( p() -> spells.glyph_of_word_of_glory -> ok() )
+    {
+      p() -> buffs.glyph_of_word_of_glory -> trigger( 1, p() -> spells.glyph_of_word_of_glory -> effectN( 1 ).percent() * hopo );
+    }
+
+    // Shield of Glory (Tier 15 protection 2-piece bonus)
+  }
+};
 
 // Flash of Light Spell =====================================================
 
@@ -2851,20 +2880,21 @@ struct light_of_dawn_t : public paladin_heal_t
 
 struct word_of_glory_t : public paladin_heal_t
 {
+  // find_class_spell("Word of Glory") returns spellid 85673, which is a stub that points to 130551 for heal and 130552 for harsh words.
+  // We'll call that to get spell cooldown, resource cost, and other information and then parse_effect_data on 130551 to get healing coefficients
   word_of_glory_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "word_of_glory", p, p -> find_class_spell( "Word of Glory" ) )
+    paladin_heal_t( "word_of_glory", p, p -> find_spell( 85673 ) ) // alternative:  find_class_spell("Word of Glory") seems broken at the moment.
   {
     parse_options( NULL, options_str );
-    
-    // spell data for heal is stored in id 130551, this imports everything properly
+
+    // healing coefficients stored in 130551
     parse_effect_data( p -> find_spell( 130551 ) -> effectN( 1 ) );
 
-    // Hot is built into the spell, but only becomes active with the glyph
-    // not sure why these next 3 lines exist, they're default values with or without parse_effect present.
-    //base_td = 0;
-    //base_tick_time = timespan_t::zero();
-    //num_ticks = 0;
+    // temporary section for testing find_class_spell; intermittantly returning spell_data_t::not_found() with WoG on x64 VS11
+    const spell_data_t* test = p->find_spell(85673);
+    const spell_data_t* test2 = p->find_class_spell("Word of Glory");
 
+    // remove =GCD constraints for prot
     if ( p -> passives.guarded_by_the_light -> ok() )
     {
       trigger_gcd = timespan_t::zero();
@@ -2876,14 +2906,14 @@ struct word_of_glory_t : public paladin_heal_t
   {
     double am = paladin_heal_t::action_multiplier();
 
-    am *= p() -> holy_power_stacks();
+    am *= std::min( 3, p() -> holy_power_stacks() ); // can't consume more than 3 Holy Power
 
     return am;
   }
 
   virtual void execute()
   {
-    double hopo = p() -> holy_power_stacks();
+    double hopo = std::min( 3, p() -> holy_power_stacks() ); //can't consume more than 3 Holy Power
 
     paladin_heal_t::execute();
 
@@ -2945,10 +2975,11 @@ struct illuminated_healing_t : public paladin_absorb_t
 paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   actor_pair_t( target, paladin )
 {
-  dots.word_of_glory      = target -> get_dot( "word_of_glory",      paladin );
+  dots.eternal_flame      = target -> get_dot( "eternal_flame",      paladin );
   dots.holy_radiance      = target -> get_dot( "holy_radiance",      paladin );
   dots.censure            = target -> get_dot( "censure",            paladin );
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
+  dots.word_of_glory      = target -> get_dot( "word_of_glory",      paladin ); // leftover, can probably be removed
 
   debuffs_censure = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
 }
@@ -3007,8 +3038,9 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
                                                active_seal_of_righteousness_proc = new seal_of_righteousness_proc_t ( this ); return a; }
   if ( name == "seal_of_truth"             ) { a = new paladin_seal_t( this, "seal_of_truth",         SEAL_OF_TRUTH,         options_str );
                                                active_seal_of_truth_proc         = new seal_of_truth_proc_t         ( this );
-                                               active_seal_of_truth_dot          = new seal_of_truth_dot_t          ( this ); return a; }
+                                               active_censure                    = new censure_t                    ( this ); return a; }
 
+  if ( name == "eternal_flame"             ) return new eternal_flame_t            ( this, options_str );
   if ( name == "word_of_glory"             ) return new word_of_glory_t            ( this, options_str );
   if ( name == "word_of_glory_damage"      ) return new word_of_glory_damage_t     ( this, options_str );
   if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
@@ -3755,6 +3787,7 @@ void paladin_t::init_spells()
 
   // Talents
   talents.divine_purpose          = find_talent_spell( "Divine Purpose" );
+  talents.eternal_flame           = find_talent_spell( "Eternal Flame" );
 
   // Spells
   spells.guardian_of_ancient_kings_ret = find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION );
