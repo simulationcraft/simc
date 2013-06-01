@@ -535,63 +535,6 @@ void stormlash_buff_t::expire_override()
   stormlash_cb -> deactivate();
 }
 
-/*
- * Initialize Vengeance Timeline
- *
- * Needs to be called during player initialization.
- * The reason to separate it out like this is that we want dynamic memory allocation
- * during the initialization phase, and not during simulation.
- */
-
-void player_t::vengeance_t::init( player_t& p )
-{
-  if ( is_initialized() )
-    return;
-
-  int size = static_cast<int>( p.sim -> max_time.total_seconds() * ( 1.0 + p.sim -> vary_combat_length ) );
-  timeline_.init( size * 2 + 3 );
-}
-
-/* Start Vengeance
- *
- * Call in combat_begin() when it is active during the whole fight,
- * otherwise in a action/buff ( like Druid Bear Form )
- */
-
-void player_t::vengeance_t::start( player_t& p )
-{
-  if ( ! is_initialized() )
-    init( p );
-
-  assert( ! is_started() );
-
-  struct collect_event_t : public event_t
-  {
-    collect_event_t( player_t* p ) : event_t( p, "vengeance_timeline_collect_event_t" )
-    {
-      sim.add_event( this, timespan_t::from_seconds( 1 ) );
-    }
-
-    virtual void execute()
-    {
-      assert( player -> vengeance.event == this );
-      player -> vengeance.timeline_.add( sim.current_time, player -> buffs.vengeance -> value() );
-      player -> vengeance.event = new ( sim ) collect_event_t( player );
-    }
-  };
-
-  event = new ( *p.sim ) collect_event_t( &p ); // start timeline
-}
-
-/* Stop Vengeance
- *
- * Is automatically called in player_t::demise()
- * If you have dynamic vengeance activation ( like Druid Bear Form ), call it in the buff expiration/etc.
- */
-
-void player_t::vengeance_t::stop()
-{ event_t::cancel( event ); }
-
 // ==========================================================================
 // Player
 // ==========================================================================
@@ -669,27 +612,17 @@ player_t::player_t( sim_t*             s,
   rps_gain( 0 ), rps_loss( 0 ),
   deaths( name_str + " Deaths", false ), deaths_error( 0 ),
   buffed( buffed_stats_t() ),
+  collected_data( player_collected_data_t( name_str, *sim ) ),
   resource_timeline_count( 0 ),
   // Damage
   iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
-  dps_error( 0 ), dpr( 0 ), dtps_error( 0 ),
-  dmg( name_str + " Damage", s -> statistics_level < 2 ),
-  compound_dmg( name_str + " Total Damage", s -> statistics_level < 2 ),
-  dps( name_str + " Damage Per Second", s -> statistics_level < 1 ),
-  dpse( name_str + " Damage per Second (effective)", s -> statistics_level < 2 ),
-  dtps( name_str + " Damage Taken Per Second", s -> statistics_level < 2 ),
-  dmg_taken( name_str + " Damage Taken", s -> statistics_level < 2 ),
+  dpr( 0 ),
   dps_convergence( 0 ),
   // Heal
   iteration_heal( 0 ),iteration_heal_taken( 0 ),
-  hps_error( 0 ), hpr( 0 ),
-  heal( name_str + " Heal", s -> statistics_level < 2 ),
-  compound_heal( name_str + " Total Heal", s -> statistics_level < 2 ),
-  hps( name_str + " Healing Per Second", s -> statistics_level < 1 ),
-  hpse( name_str + " Healing per Second (effective)", s -> statistics_level < 2 ),
-  htps( name_str + " Healing taken Per Second", s -> statistics_level < 2 ),
-  heal_taken( name_str + " Healing Taken", s -> statistics_level < 2 ),
-  report_information( report_information_t() ),
+  hpr( 0 ),
+
+  report_information( player_processed_report_information_t() ),
   // Gear
   sets( nullptr ),
   meta_gem( META_GEM_NONE ), matching_gear( false ),
@@ -1253,7 +1186,7 @@ void player_t::init_base_stats()
 
   // Collect DTPS data for tanks even for statistics_level == 1
   if ( sim -> statistics_level >= 1 && role == ROLE_TANK )
-    dtps.change_mode( false );
+    collected_data.dtps.change_mode( false );
 
   if ( sim -> debug )
     sim -> output( "%s: Generic Base Stats: %s", name(), base.to_string().c_str() );
@@ -2354,17 +2287,8 @@ void player_t::init_stats()
 
   fight_length.reserve( sim -> iterations );
 
-  dmg.reserve( sim -> iterations );
-  compound_dmg.reserve( sim -> iterations );
-  dps.reserve( sim -> iterations );
-  dpse.reserve( sim -> iterations );
-  dtps.reserve( sim -> iterations );
+  collected_data.reserve_memory( sim -> iterations );
 
-  heal.reserve( sim -> iterations );
-  compound_heal.reserve( sim -> iterations );
-  hps.reserve( sim -> iterations );
-  hpse.reserve( sim -> iterations );
-  htps.reserve( sim -> iterations );
 }
 
 // player_t::init_scaling ===================================================
@@ -3436,368 +3360,7 @@ double player_t::composite_mastery_value()
   return composite_mastery() * mastery_coefficient();
 }
 
-/* Invalidate ALL stats
- */
-void player_t::cache_t::invalidate()
-{
-  if ( ! active ) return;
-
-  range::fill( valid, false );
-  range::fill( spell_power_valid, false );
-  range::fill( player_mult_valid, false );
-  range::fill( player_heal_mult_valid, false );
-}
-
-/* Helper function to access attribute cache functions by attribute-enumeration
- */
-double player_t::cache_t::get_attribute( attribute_e a )
-{
-  switch ( a )
-  {
-  case ATTR_STRENGTH: return strength();
-  case ATTR_AGILITY: return agility();
-  case ATTR_STAMINA: return stamina();
-  case ATTR_INTELLECT: return intellect();
-  case ATTR_SPIRIT: return spirit();
-  default: assert( false ); break;
-  }
-  return 0.0;
-}
-
 #ifdef SC_STAT_CACHE
-
-// player_t::cache_t::strength ================================================
-
-double player_t::cache_t::strength()
-{
-  if ( ! active || ! valid[ CACHE_STRENGTH ] )
-  {
-    valid[ CACHE_STRENGTH ] = true;
-    _strength = player -> strength();
-  }
-  else assert( _strength == player -> strength() );
-  return _strength;
-}
-
-// player_t::cache_t::agiity ==================================================
-
-double player_t::cache_t::agility()
-{
-  if ( ! active || ! valid[ CACHE_AGILITY ] )
-  {
-    valid[ CACHE_AGILITY ] = true;
-    _agility = player -> agility();
-  }
-  else assert( _agility == player -> agility() );
-  return _agility;
-}
-
-// player_t::cache_t::stamina =================================================
-
-double player_t::cache_t::stamina()
-{
-  if ( ! active || ! valid[ CACHE_STAMINA ] )
-  {
-    valid[ CACHE_STAMINA ] = true;
-    _stamina = player -> stamina();
-  }
-  else assert( _stamina == player -> stamina() );
-  return _stamina;
-}
-
-// player_t::cache_t::intellect ===============================================
-
-double player_t::cache_t::intellect()
-{
-  if ( ! active || ! valid[ CACHE_INTELLECT ] )
-  {
-    valid[ CACHE_INTELLECT ] = true;
-    _intellect = player -> intellect();
-  }
-  else assert( _intellect == player -> intellect() );
-  return _intellect;
-}
-
-// player_t::cache_t::spirit ==================================================
-
-double player_t::cache_t::spirit()
-{
-  if ( ! active || ! valid[ CACHE_SPIRIT ] )
-  {
-    valid[ CACHE_SPIRIT ] = true;
-    _spirit = player -> spirit();
-  }
-  else assert( _spirit == player -> spirit() );
-  return _spirit;
-}
-
-// player_t::cache_t::spell_power =============================================
-
-double player_t::cache_t::spell_power( school_e s )
-{
-  if ( ! active || ! spell_power_valid[ s ] )
-  {
-    spell_power_valid[ s ] = true;
-    _spell_power[ s ] = player -> composite_spell_power( s );
-  }
-  else assert( _spell_power[ s ] == player -> composite_spell_power( s ) );
-  return _spell_power[ s ];
-}
-
-// player_t::cache_t::attack_power ============================================
-
-double player_t::cache_t::attack_power()
-{
-  if ( ! active || ! valid[ CACHE_ATTACK_POWER ] )
-  {
-    valid[ CACHE_ATTACK_POWER ] = true;
-    _attack_power = player -> composite_melee_attack_power();
-  }
-  else assert( _attack_power == player -> composite_melee_attack_power() );
-  return _attack_power;
-}
-
-// player_t::cache_t::attack_expertise ========================================
-
-double player_t::cache_t::attack_expertise()
-{
-  if ( ! active || ! valid[ CACHE_ATTACK_EXP ] )
-  {
-    valid[ CACHE_ATTACK_EXP ] = true;
-    _attack_expertise = player -> composite_melee_expertise();
-  }
-  else assert( _attack_expertise == player -> composite_melee_expertise() );
-  return _attack_expertise;
-}
-
-// player_t::cache_t::attack_hit ==============================================
-
-double player_t::cache_t::attack_hit()
-{
-  if ( ! active || ! valid[ CACHE_ATTACK_HIT ] )
-  {
-    valid[ CACHE_ATTACK_HIT ] = true;
-    _attack_hit = player -> composite_melee_hit();
-  }
-  else
-    {
-    if ( _attack_hit != player -> composite_melee_hit() )
-    {
-      assert( false );
-    }
-    // assert( _attack_hit == player -> composite_attack_hit() );
-    }
-  return _attack_hit;
-}
-
-// player_t::cache_t::attack_crit =============================================
-
-double player_t::cache_t::attack_crit()
-{
-  if ( ! active || ! valid[ CACHE_ATTACK_CRIT ] )
-  {
-    valid[ CACHE_ATTACK_CRIT ] = true;
-    _attack_crit = player -> composite_melee_crit();
-  }
-  else assert( _attack_crit == player -> composite_melee_crit() );
-  return _attack_crit;
-}
-
-// player_t::cache_t::attack_haste ============================================
-
-double player_t::cache_t::attack_haste()
-{
-  if ( ! active || ! valid[ CACHE_ATTACK_HASTE ] )
-  {
-    valid[ CACHE_ATTACK_HASTE ] = true;
-    _attack_haste = player -> composite_melee_haste();
-  }
-  else assert( _attack_haste == player -> composite_melee_haste() );
-  return _attack_haste;
-}
-
-// player_t::cache_t::attack_speed ============================================
-
-double player_t::cache_t::attack_speed()
-{
-  if ( ! active || ! valid[ CACHE_ATTACK_SPEED ] )
-  {
-    valid[ CACHE_ATTACK_SPEED ] = true;
-    _attack_speed = player -> composite_melee_speed();
-  }
-  else assert( _attack_speed == player -> composite_melee_speed() );
-  return _attack_speed;
-}
-
-// player_t::cache_t::spell_hit ===============================================
-
-double player_t::cache_t::spell_hit()
-{
-  if ( ! active || ! valid[ CACHE_SPELL_HIT ] )
-  {
-    valid[ CACHE_SPELL_HIT ] = true;
-    _spell_hit = player -> composite_spell_hit();
-  }
-  else assert( _spell_hit == player -> composite_spell_hit() );
-  return _spell_hit;
-}
-
-// player_t::cache_t::spell_crit ==============================================
-
-double player_t::cache_t::spell_crit()
-{
-  if ( ! active || ! valid[ CACHE_SPELL_CRIT ] )
-  {
-    valid[ CACHE_SPELL_CRIT ] = true;
-    _spell_crit = player -> composite_spell_crit();
-  }
-  else assert( _spell_crit == player -> composite_spell_crit() );
-  return _spell_crit;
-}
-
-// player_t::cache_t::spell_haste =============================================
-
-double player_t::cache_t::spell_haste()
-{
-  if ( ! active || ! valid[ CACHE_SPELL_HASTE ] )
-  {
-    valid[ CACHE_SPELL_HASTE ] = true;
-    _spell_haste = player -> composite_spell_haste();
-  }
-  else assert( _spell_haste == player -> composite_spell_haste() );
-  return _spell_haste;
-}
-
-// player_t::cache_t::spell_speed =============================================
-
-double player_t::cache_t::spell_speed()
-{
-  if ( ! active || ! valid[ CACHE_SPELL_SPEED ] )
-  {
-    valid[ CACHE_SPELL_SPEED ] = true;
-    _spell_speed = player -> composite_spell_speed();
-  }
-  else assert( _spell_speed == player -> composite_spell_speed() );
-  return _spell_speed;
-}
-
-double player_t::cache_t::dodge()
-{
-  if ( ! active || ! valid[ CACHE_DODGE ] )
-  {
-    valid[ CACHE_DODGE ] = true;
-    _dodge = player -> composite_dodge();
-  }
-  else assert( _dodge == player -> composite_dodge() );
-  return _dodge;
-}
-
-double player_t::cache_t::parry()
-{
-  if ( ! active || ! valid[ CACHE_PARRY ] )
-  {
-    valid[ CACHE_PARRY ] = true;
-    _parry = player -> composite_parry();
-  }
-  else assert( _parry == player -> composite_parry() );
-  return _parry;
-}
-
-double player_t::cache_t::block()
-{
-  if ( ! active || ! valid[ CACHE_BLOCK ] )
-  {
-    valid[ CACHE_BLOCK ] = true;
-    _block = player -> composite_block();
-  }
-  else assert( _block == player -> composite_block() );
-  return _block;
-}
-
-double player_t::cache_t::crit_block()
-{
-  if ( ! active || ! valid[ CACHE_CRIT_BLOCK ] )
-  {
-    valid[ CACHE_CRIT_BLOCK ] = true;
-    _crit_block = player -> composite_crit_block();
-  }
-  else assert( _crit_block == player -> composite_crit_block() );
-  return _crit_block;
-}
-
-double player_t::cache_t::crit_avoidance()
-{
-  if ( ! active || ! valid[ CACHE_CRIT_AVOIDANCE ] )
-  {
-    valid[ CACHE_CRIT_AVOIDANCE ] = true;
-    _crit_avoidance = player -> composite_crit_avoidance();
-  }
-  else assert( _crit_avoidance == player -> composite_crit_avoidance() );
-  return _crit_avoidance;
-}
-
-double player_t::cache_t::miss()
-{
-  if ( ! active || ! valid[ CACHE_MISS ] )
-  {
-    valid[ CACHE_MISS ] = true;
-    _miss = player -> composite_miss();
-  }
-  else assert( _miss == player -> composite_miss() );
-  return _miss;
-}
-
-double player_t::cache_t::armor()
-{
-  if ( ! active || ! valid[ CACHE_ARMOR ] )
-  {
-    valid[ CACHE_ARMOR ] = true;
-    _armor = player -> composite_armor();
-  }
-  else assert( _armor == player -> composite_armor() );
-  return _armor;
-}
-
-/* This is composite_mastery * specialization_mastery_coefficient !
- *
- * If you need the pure mastery value, use player_t::composite_mastery
- */
-double player_t::cache_t::mastery_value()
-{
-  if ( ! active || ! valid[ CACHE_MASTERY ] )
-  {
-    valid[ CACHE_MASTERY ] = true;
-    _mastery_value = player -> composite_mastery_value();
-  }
-  else assert( _mastery_value == player -> composite_mastery_value() );
-  return _mastery_value;
-}
-
-// player_t::cache_t::mastery =================================================
-
-double player_t::cache_t::player_multiplier( school_e s )
-{
-  if ( ! active || ! player_mult_valid[ s ] )
-  {
-    player_mult_valid[ s ] = true;
-    _player_mult[ s ] = player -> composite_player_multiplier( s );
-  }
-  else assert( _player_mult[ s ] == player -> composite_player_multiplier( s ) );
-  return _player_mult[ s ];
-}
-
-// player_t::cache_t::mastery =================================================
-
-double player_t::cache_t::player_heal_multiplier( school_e s )
-{
-  if ( ! active || ! player_heal_mult_valid[ s ] )
-  {
-    player_heal_mult_valid[ s ] = true;
-    _player_heal_mult[ s ] = player -> composite_player_heal_multiplier( s );
-  }
-  else assert( _player_heal_mult[ s ] == player -> composite_player_heal_multiplier( s ) );
-  return _player_heal_mult[ s ];
-}
 
 // player_t::invalidate_cache =================================================
 
@@ -3877,6 +3440,15 @@ void player_t::invalidate_cache( cache_e c )
 }
 
 #endif
+
+void player_t::sequence_add( const action_t* a, const player_t* target, const timespan_t& ts )
+{
+  if ( a -> marker )
+    // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
+    if ( ( a -> sim -> iterations <= 1 && a -> sim -> current_iteration == 0 ) ||
+         ( a -> sim -> iterations > 1 && a -> sim -> current_iteration == 1 ) )
+      report_information.action_sequence.push_back( new player_processed_report_information_t::action_sequence_data_t( a, target, ts, this ) );
+};
 
 // player_t::combat_begin ===================================================
 
@@ -4005,39 +3577,39 @@ void player_t::datacollection_end()
     stats_list[ i ] -> datacollection_end();
 
   // DMG
-  dmg.add( iteration_dmg );
+  collected_data.dmg.add( iteration_dmg );
   if ( ! is_enemy() && ! is_add() )
     sim -> iteration_dmg += iteration_dmg;
   for ( size_t i = 0; i < pet_list.size(); ++i )
   {
     iteration_dmg += pet_list[ i ] -> iteration_dmg;
   }
-  compound_dmg.add( iteration_dmg );
+  collected_data.compound_dmg.add( iteration_dmg );
 
-  dps.add( iteration_fight_length != timespan_t::zero() ? iteration_dmg / iteration_fight_length.total_seconds() : 0 );
-  dpse.add( sim -> current_time != timespan_t::zero() ? iteration_dmg / sim -> current_time.total_seconds() : 0 );
+  collected_data.dps.add( iteration_fight_length != timespan_t::zero() ? iteration_dmg / iteration_fight_length.total_seconds() : 0 );
+  collected_data.dpse.add( sim -> current_time != timespan_t::zero() ? iteration_dmg / sim -> current_time.total_seconds() : 0 );
 
   if ( sim -> debug )
     sim -> output( "Data collection ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time.total_seconds(), iteration_fight_length.total_seconds() );
 
   // Heal
-  heal.add( iteration_heal );
+  collected_data.heal.add( iteration_heal );
   if ( ! is_enemy() && ! is_add() )
     sim -> iteration_heal += iteration_heal;
   for ( size_t i = 0; i < pet_list.size(); ++i )
   {
     iteration_heal += pet_list[ i ] -> iteration_heal;
   }
-  compound_heal.add( iteration_heal );
+  collected_data.compound_heal.add( iteration_heal );
 
-  hps.add( iteration_fight_length != timespan_t::zero() ? iteration_heal / iteration_fight_length.total_seconds() : 0 );
-  hpse.add( sim -> current_time != timespan_t::zero() ? iteration_heal / sim -> current_time.total_seconds() : 0 );
+  collected_data.hps.add( iteration_fight_length != timespan_t::zero() ? iteration_heal / iteration_fight_length.total_seconds() : 0 );
+  collected_data.hpse.add( sim -> current_time != timespan_t::zero() ? iteration_heal / sim -> current_time.total_seconds() : 0 );
 
-  dmg_taken.add( iteration_dmg_taken );
-  dtps.add( iteration_fight_length != timespan_t::zero() ? iteration_dmg_taken / iteration_fight_length.total_seconds() : 0 );
+  collected_data.dmg_taken.add( iteration_dmg_taken );
+  collected_data.dtps.add( iteration_fight_length != timespan_t::zero() ? iteration_dmg_taken / iteration_fight_length.total_seconds() : 0 );
 
-  heal_taken.add( iteration_heal_taken );
-  htps.add( iteration_fight_length != timespan_t::zero() ? iteration_heal_taken / iteration_fight_length.total_seconds() : 0 );
+  collected_data.heal_taken.add( iteration_heal_taken );
+  collected_data.htps.add( iteration_fight_length != timespan_t::zero() ? iteration_heal_taken / iteration_fight_length.total_seconds() : 0 );
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> datacollection_end();
@@ -4181,20 +3753,9 @@ void player_t::merge( player_t& other )
   waiting_time.merge( other.waiting_time );
   executed_foreground_actions.merge( other.executed_foreground_actions );
 
-  dmg.merge( other.dmg );
-  compound_dmg.merge( other.compound_dmg );
-  dps.merge( other.dps );
-  dtps.merge( other.dtps );
-  dpse.merge( other.dpse );
-  dmg_taken.merge( other.dmg_taken );
-  timeline_dmg_taken.merge( other.timeline_dmg_taken );
+  collected_data.merge( other.collected_data );
 
-  heal.merge( other.heal );
-  compound_heal.merge( other.compound_heal );
-  hps.merge( other.hps );
-  htps.merge( other.htps );
-  hpse.merge( other.hpse );
-  heal_taken.merge( other.heal_taken );
+  timeline_dmg_taken.merge( other.timeline_dmg_taken );
 
   deaths.merge( other.deaths );
 
@@ -4303,16 +3864,16 @@ void player_t::reset()
   gcd_ready = timespan_t::zero();
 
   events = 0;
-  
+
   cache.invalidate();
 
   // Reset current stats to initial stats
   current = initial;
-  
+
   current.sleeping = true;
 
   change_position( initial.position );
-  
+
   if ( sim -> debug )
   {
     sim -> output( "%s current stats ( reset to initial ): %s", name(), current.to_string().c_str() );
@@ -5258,12 +4819,12 @@ void player_t::assess_damage( school_e school,
       if ( main_hand_attack && main_hand_attack -> execute_event )
       {
         // Parry haste mechanics:  When parrying an attack, the game subtracts 40% of the player's base swing timer
-        // from the time remaining on the current swing timer.  However, this effect cannot reduce the current swing 
+        // from the time remaining on the current swing timer.  However, this effect cannot reduce the current swing
         // timer to less than 20% of the base value.  The game uses hasted values.  To illustrate that, two examples:
         // base weapon speed: 2.6, 30% haste, thus base swing timer is 2.6/1.3=2.0 seconds
         // 1) if we parry when the current swing timer has 1.8 seconds remaining, then it gets reduced by 40% of 2.0, or 0.8 seconds,
         //    and the current swing timer becomes 1.0 seconds.
-        // 2) if we parry when the current swing timer has 1.0 second remaining the game tries to subtract 0.8 seconds, but hits the 
+        // 2) if we parry when the current swing timer has 1.0 second remaining the game tries to subtract 0.8 seconds, but hits the
         //    minimum value (20% of 2.0, or 0.4 seconds.  The current swing timer becomes 0.4 seconds.
         // Thus, the result is that the current swing timer becomes max(current_swing_timer-0.4*base_swing_timer,0.2*base_swing_timer)
 
@@ -5478,261 +5039,6 @@ void player_t::dismiss_pet( const std::string& pet_name )
     }
   }
   assert( 0 );
-}
-
-// player_t::register_resource_gain_callback ================================
-
-void player_t::callbacks_t::register_resource_gain_callback( resource_e resource_type,
-                                                             action_callback_t* cb )
-{
-  resource_gain[ resource_type ].push_back( cb );
-}
-
-// player_t::register_resource_loss_callback ================================
-
-void player_t::callbacks_t::register_resource_loss_callback( resource_e resource_type,
-                                                             action_callback_t* cb )
-{
-  resource_loss[ resource_type ].push_back( cb );
-}
-
-// player_t::register_attack_callback =======================================
-
-void player_t::callbacks_t::register_attack_callback( int64_t mask,
-                                                      action_callback_t* cb )
-{
-  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
-  {
-    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
-    {
-      attack[ i ].push_back( cb );
-    }
-  }
-}
-
-// player_t::register_spell_callback ========================================
-
-void player_t::callbacks_t::register_spell_callback( int64_t mask,
-                                                     action_callback_t* cb )
-{
-  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
-  {
-    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
-    {
-      spell[ i ].push_back( cb );
-      heal[ i ].push_back( cb );
-    }
-  }
-}
-
-// player_t::register_tick_callback =========================================
-
-void player_t::callbacks_t::register_tick_callback( int64_t mask,
-                                                    action_callback_t* cb )
-{
-  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
-  {
-    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
-    {
-      tick[ i ].push_back( cb );
-    }
-  }
-}
-
-// player_t::register_heal_callback =========================================
-
-void player_t::callbacks_t::register_heal_callback( int64_t mask,
-                                                    action_callback_t* cb )
-{
-  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
-  {
-    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
-    {
-      heal[ i ].push_back( cb );
-    }
-  }
-}
-
-// player_t::register_absorb_callback =========================================
-
-void player_t::callbacks_t::register_absorb_callback( int64_t mask,
-                                                      action_callback_t* cb )
-{
-  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
-  {
-    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
-    {
-      absorb[ i ].push_back( cb );
-    }
-  }
-}
-
-// player_t::register_harmful_spell_callback ================================
-
-void player_t::callbacks_t::register_harmful_spell_callback( int64_t mask,
-                                                             action_callback_t* cb )
-{
-  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
-  {
-    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
-    {
-      harmful_spell[ i ].push_back( cb );
-    }
-  }
-}
-
-
-// player_t::register_direct_harmful_spell_callback ================================
-
-void player_t::callbacks_t::register_direct_harmful_spell_callback( int64_t mask,
-                                                                    action_callback_t* cb )
-{
-  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
-  {
-    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
-    {
-      direct_harmful_spell[ i ].push_back( cb );
-    }
-  }
-}
-
-// player_t::register_tick_damage_callback ==================================
-
-void player_t::callbacks_t::register_tick_damage_callback( int64_t mask,
-                                                           action_callback_t* cb )
-{
-  for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
-  {
-    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
-    {
-      tick_damage[ i ].push_back( cb );
-    }
-  }
-}
-
-// player_t::register_direct_damage_callback ================================
-
-void player_t::callbacks_t::register_direct_damage_callback( int64_t mask,
-                                                             action_callback_t* cb )
-{
-  for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
-  {
-    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
-    {
-      direct_damage[ i ].push_back( cb );
-    }
-  }
-}
-
-// player_t::register_direct_crit_callback ================================
-
-void player_t::callbacks_t::register_direct_crit_callback( int64_t mask,
-                                                           action_callback_t* cb )
-{
-  for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
-  {
-    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
-    {
-      direct_crit[ i ].push_back( cb );
-    }
-  }
-}
-
-// player_t::register_spell_tick_damage_callback ==================================
-
-void player_t::callbacks_t::register_spell_tick_damage_callback( int64_t mask,
-                                                                 action_callback_t* cb )
-{
-  for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
-  {
-    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
-    {
-      spell_tick_damage[ i ].push_back( cb );
-    }
-  }
-}
-
-// player_t::register_spell_direct_damage_callback ================================
-
-void player_t::callbacks_t::register_spell_direct_damage_callback( int64_t mask,
-                                                                   action_callback_t* cb )
-{
-  for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
-  {
-    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
-    {
-      spell_direct_damage[ i ].push_back( cb );
-    }
-  }
-}
-
-
-// player_t::register_tick_heal_callback ====================================
-
-void player_t::callbacks_t::register_tick_heal_callback( int64_t mask,
-                                                         action_callback_t* cb )
-{
-  for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
-  {
-    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
-    {
-      tick_heal[ i ].push_back( cb );
-    }
-  }
-}
-
-// player_t::register_direct_heal_callback ==================================
-
-void player_t::callbacks_t::register_direct_heal_callback( int64_t mask,
-                                                           action_callback_t* cb )
-{
-  for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
-  {
-    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
-    {
-      direct_heal[ i ].push_back( cb );
-    }
-  }
-}
-
-// player_t::callbacks_t::register_incoming_attack_callback ==================================
-
-void player_t::callbacks_t::register_incoming_attack_callback( int64_t mask,
-                                                               action_callback_t* cb )
-{
-  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
-  {
-    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
-    {
-      incoming_attack[ i ].push_back( cb );
-    }
-  }
-}
-
-void player_t::callbacks_t::reset()
-{
-  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-  {
-    action_callback_t::reset( resource_gain[ i ] );
-    action_callback_t::reset( resource_loss[ i ] );
-  }
-  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
-  {
-    action_callback_t::reset( attack[ i ] );
-    action_callback_t::reset( spell [ i ] );
-    action_callback_t::reset( harmful_spell [ i ] );
-    action_callback_t::reset( heal [ i ] );
-    action_callback_t::reset( absorb [ i ] );
-    action_callback_t::reset( tick  [ i ] );
-  }
-  for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
-  {
-    action_callback_t::reset( tick_damage  [ i ] );
-    action_callback_t::reset( direct_damage[ i ] );
-    action_callback_t::reset( direct_crit  [ i ] );
-    action_callback_t::reset( spell_tick_damage  [ i ] );
-    action_callback_t::reset( spell_direct_damage[ i ] );
-  }
 }
 
 // player_t::recent_cast ====================================================
@@ -6491,7 +5797,7 @@ struct wait_until_ready_t : public wait_fixed_t
     for ( size_t i = 0; i < player -> action_list.size(); ++i )
     {
       action_t* a = player -> action_list[ i ];
-	  if ( a == this ) 
+	  if ( a == this )
 		  break;
       if ( a -> background ) continue;
 
@@ -7796,11 +7102,11 @@ expr_t* player_t::create_expression( action_t* a,
   if ( name_str == "in_combat" )
     return make_ref_expr( "in_combat", in_combat );
   if ( name_str == "attack_haste" )
-    return make_mem_fn_expr( name_str, this-> cache, &player_t::cache_t::attack_haste );
+    return make_mem_fn_expr( name_str, this-> cache, &player_stat_cache_t::attack_haste );
   if ( name_str == "attack_speed" )
-    return make_mem_fn_expr( name_str, this -> cache, &player_t::cache_t::attack_speed );
+    return make_mem_fn_expr( name_str, this -> cache, &player_stat_cache_t::attack_speed );
   if ( name_str == "spell_haste" )
-    return make_mem_fn_expr( name_str, this-> cache, &player_t::cache_t::spell_speed );
+    return make_mem_fn_expr( name_str, this-> cache, &player_stat_cache_t::spell_speed );
   if ( name_str == "time_to_die" )
     return make_mem_fn_expr( name_str, *this, &player_t::time_to_die );
 
@@ -7836,7 +7142,7 @@ expr_t* player_t::create_expression( action_t* a,
                                 ( 1 << POSITION_BACK ) | ( 1 << POSITION_RANGED_BACK ) );
 
   if ( name_str == "mastery_value" )
-    return  make_mem_fn_expr( name_str, this-> cache, &player_t::cache_t::mastery_value );
+    return  make_mem_fn_expr( name_str, this-> cache, &player_stat_cache_t::mastery_value );
 
   if ( expr_t* q = create_resource_expression( name_str ) )
     return q;
@@ -7930,7 +7236,7 @@ expr_t* player_t::create_expression( action_t* a,
 
           if ( bexpr1 )
             result = bexpr1 -> eval();
-          
+
           if ( bexpr2 )
           {
             double b2result = bexpr2 -> eval();
@@ -9048,27 +8354,10 @@ void player_t::analyze( sim_t& s )
 
   fight_length.analyze_all();
 
-  dmg.analyze_all();
-  compound_dmg.analyze_all();
-  dps.analyze_all();
-  dpse.analyze_all();
-
-  dmg_taken.analyze_all();
+  collected_data.analyze();
   timeline_dmg_taken.adjust( s.divisor_timeline );
-  dtps.analyze_all();
-
-  heal.analyze_all();
-  compound_heal.analyze_all();
-  hps.analyze_all();
-  hpse.analyze_all();
-
-  heal_taken.analyze_all();
-  htps.analyze_all();
 
   deaths_error =  deaths.mean_std_dev * s.confidence_estimator;
-  dps_error =  dps.mean_std_dev * s.confidence_estimator;
-  dtps_error =  dtps.mean_std_dev * s.confidence_estimator;
-  hps_error =  hps.mean_std_dev * s.confidence_estimator;
 
   for ( size_t i = 0; i <  buff_list.size(); ++i )
     buff_list[ i ] -> analyze();
@@ -9111,9 +8400,9 @@ void player_t::analyze( sim_t& s )
       s -> analyze();
 
       if ( s -> type == STATS_DMG )
-        s -> portion_amount =  compound_dmg.mean() ? s -> actual_amount.mean() /  compound_dmg.mean() : 0 ;
+        s -> portion_amount =  collected_data.compound_dmg.mean() ? s -> actual_amount.mean() /  collected_data.compound_dmg.mean() : 0 ;
       else
-        s -> portion_amount =  compound_heal.mean() ? s -> actual_amount.mean() /  compound_heal.mean() : 0;
+        s -> portion_amount =  collected_data.compound_heal.mean() ? s -> actual_amount.mean() /  collected_data.compound_heal.mean() : 0;
     }
   }
 
@@ -9143,8 +8432,8 @@ void player_t::analyze( sim_t& s )
   }
 
   double rl = resource_lost[  primary_resource() ];
-  dpr = ( rl > 0 ) ? (  dmg.mean() / rl ) : -1.0;
-  hpr = ( rl > 0 ) ? (  heal.mean() / rl ) : -1.0;
+  dpr = ( rl > 0 ) ? (  collected_data.dmg.mean() / rl ) : -1.0;
+  hpr = ( rl > 0 ) ? (  collected_data.heal.mean() / rl ) : -1.0;
 
   rps_loss = resource_lost  [  primary_resource() ] /  fight_length.mean();
   rps_gain = resource_gained[  primary_resource() ] /  fight_length.mean();
@@ -9178,7 +8467,7 @@ void player_t::analyze( sim_t& s )
 
   // Error Convergence ======================================================
   player_convergence( s.convergence_scale, s.confidence_estimator,
-                      dps,  dps_convergence_error,  dps_error,  dps_convergence );
+      collected_data.dps,  dps_convergence_error,  sim_t::distribution_mean_error( s, collected_data.dps ),  dps_convergence );
 
 }
 
@@ -9195,30 +8484,30 @@ const extended_sample_data_t& player_t::scales_over()
   if ( !q )
     q = this;
 
-  if ( so == "dmg_taken"      ) return q -> dmg_taken;
+  if ( so == "dmg_taken"      ) return q -> collected_data.dmg_taken;
 
   if ( so == "dps" )
-    return q -> dps;
+    return q -> collected_data.dps;
 
   if ( so == "dpse" )
-    return q -> dpse;
+    return q -> collected_data.dpse;
 
   if ( so == "hpse" )
-    return q -> hpse;
+    return q -> collected_data.hpse;
 
   if ( so == "htps" )
-    return q -> htps;
+    return q -> collected_data.htps;
 
   if ( so == "deaths" )
     return q -> deaths;
 
   if ( q -> primary_role() == ROLE_HEAL || so =="hps" )
-    return q -> hps;
+    return q -> collected_data.hps;
 
   if ( q -> primary_role() == ROLE_TANK || so =="dtps" )
-    return q -> dtps;
+    return q -> collected_data.dtps;
 
-  return q -> dps;
+  return q -> collected_data.dps;
 }
 
 // Change the player position ( fron/back, etc. ) and update attack hit table
@@ -9249,3 +8538,769 @@ std::string player_t::talent_points_t::to_string() const
   return ss.str();
 }
 
+// Player Callbacks
+
+
+// player_t::register_resource_gain_callback ================================
+
+void player_callbacks_t::register_resource_gain_callback( resource_e resource_type,
+                                                             action_callback_t* cb )
+{
+  resource_gain[ resource_type ].push_back( cb );
+}
+
+// player_t::register_resource_loss_callback ================================
+
+void player_callbacks_t::register_resource_loss_callback( resource_e resource_type,
+                                                             action_callback_t* cb )
+{
+  resource_loss[ resource_type ].push_back( cb );
+}
+
+// player_t::register_attack_callback =======================================
+
+void player_callbacks_t::register_attack_callback( int64_t mask,
+                                                      action_callback_t* cb )
+{
+  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
+  {
+    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      attack[ i ].push_back( cb );
+    }
+  }
+}
+
+// player_t::register_spell_callback ========================================
+
+void player_callbacks_t::register_spell_callback( int64_t mask,
+                                                     action_callback_t* cb )
+{
+  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
+  {
+    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      spell[ i ].push_back( cb );
+      heal[ i ].push_back( cb );
+    }
+  }
+}
+
+// player_t::register_tick_callback =========================================
+
+void player_callbacks_t::register_tick_callback( int64_t mask,
+                                                    action_callback_t* cb )
+{
+  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
+  {
+    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      tick[ i ].push_back( cb );
+    }
+  }
+}
+
+// player_t::register_heal_callback =========================================
+
+void player_callbacks_t::register_heal_callback( int64_t mask,
+                                                    action_callback_t* cb )
+{
+  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
+  {
+    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      heal[ i ].push_back( cb );
+    }
+  }
+}
+
+// player_t::register_absorb_callback =========================================
+
+void player_callbacks_t::register_absorb_callback( int64_t mask,
+                                                      action_callback_t* cb )
+{
+  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
+  {
+    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      absorb[ i ].push_back( cb );
+    }
+  }
+}
+
+// player_t::register_harmful_spell_callback ================================
+
+void player_callbacks_t::register_harmful_spell_callback( int64_t mask,
+                                                             action_callback_t* cb )
+{
+  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
+  {
+    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      harmful_spell[ i ].push_back( cb );
+    }
+  }
+}
+
+
+// player_t::register_direct_harmful_spell_callback ================================
+
+void player_callbacks_t::register_direct_harmful_spell_callback( int64_t mask,
+                                                                    action_callback_t* cb )
+{
+  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
+  {
+    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      direct_harmful_spell[ i ].push_back( cb );
+    }
+  }
+}
+
+// player_t::register_tick_damage_callback ==================================
+
+void player_callbacks_t::register_tick_damage_callback( int64_t mask,
+                                                           action_callback_t* cb )
+{
+  for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
+  {
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      tick_damage[ i ].push_back( cb );
+    }
+  }
+}
+
+// player_t::register_direct_damage_callback ================================
+
+void player_callbacks_t::register_direct_damage_callback( int64_t mask,
+                                                             action_callback_t* cb )
+{
+  for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
+  {
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      direct_damage[ i ].push_back( cb );
+    }
+  }
+}
+
+// player_t::register_direct_crit_callback ================================
+
+void player_callbacks_t::register_direct_crit_callback( int64_t mask,
+                                                           action_callback_t* cb )
+{
+  for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
+  {
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      direct_crit[ i ].push_back( cb );
+    }
+  }
+}
+
+// player_t::register_spell_tick_damage_callback ==================================
+
+void player_callbacks_t::register_spell_tick_damage_callback( int64_t mask,
+                                                                 action_callback_t* cb )
+{
+  for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
+  {
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      spell_tick_damage[ i ].push_back( cb );
+    }
+  }
+}
+
+// player_t::register_spell_direct_damage_callback ================================
+
+void player_callbacks_t::register_spell_direct_damage_callback( int64_t mask,
+                                                                   action_callback_t* cb )
+{
+  for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
+  {
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      spell_direct_damage[ i ].push_back( cb );
+    }
+  }
+}
+
+
+// player_t::register_tick_heal_callback ====================================
+
+void player_callbacks_t::register_tick_heal_callback( int64_t mask,
+                                                         action_callback_t* cb )
+{
+  for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
+  {
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      tick_heal[ i ].push_back( cb );
+    }
+  }
+}
+
+// player_t::register_direct_heal_callback ==================================
+
+void player_callbacks_t::register_direct_heal_callback( int64_t mask,
+                                                           action_callback_t* cb )
+{
+  for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
+  {
+    if ( mask < 0 || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      direct_heal[ i ].push_back( cb );
+    }
+  }
+}
+
+// player_callbacks_t::register_incoming_attack_callback ==================================
+
+void player_callbacks_t::register_incoming_attack_callback( int64_t mask,
+                                                               action_callback_t* cb )
+{
+  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
+  {
+    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
+    {
+      incoming_attack[ i ].push_back( cb );
+    }
+  }
+}
+
+void player_callbacks_t::reset()
+{
+  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+  {
+    action_callback_t::reset( resource_gain[ i ] );
+    action_callback_t::reset( resource_loss[ i ] );
+  }
+  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
+  {
+    action_callback_t::reset( attack[ i ] );
+    action_callback_t::reset( spell [ i ] );
+    action_callback_t::reset( harmful_spell [ i ] );
+    action_callback_t::reset( heal [ i ] );
+    action_callback_t::reset( absorb [ i ] );
+    action_callback_t::reset( tick  [ i ] );
+  }
+  for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
+  {
+    action_callback_t::reset( tick_damage  [ i ] );
+    action_callback_t::reset( direct_damage[ i ] );
+    action_callback_t::reset( direct_crit  [ i ] );
+    action_callback_t::reset( spell_tick_damage  [ i ] );
+    action_callback_t::reset( spell_direct_damage[ i ] );
+  }
+}
+
+
+/* Invalidate ALL stats
+ */
+void player_stat_cache_t::invalidate()
+{
+  if ( ! active ) return;
+
+  range::fill( valid, false );
+  range::fill( spell_power_valid, false );
+  range::fill( player_mult_valid, false );
+  range::fill( player_heal_mult_valid, false );
+}
+
+/* Helper function to access attribute cache functions by attribute-enumeration
+ */
+double player_stat_cache_t::get_attribute( attribute_e a )
+{
+  switch ( a )
+  {
+  case ATTR_STRENGTH: return strength();
+  case ATTR_AGILITY: return agility();
+  case ATTR_STAMINA: return stamina();
+  case ATTR_INTELLECT: return intellect();
+  case ATTR_SPIRIT: return spirit();
+  default: assert( false ); break;
+  }
+  return 0.0;
+}
+
+#ifdef SC_STAT_CACHE
+
+// player_stat_cache_t::strength ================================================
+
+double player_stat_cache_t::strength()
+{
+  if ( ! active || ! valid[ CACHE_STRENGTH ] )
+  {
+    valid[ CACHE_STRENGTH ] = true;
+    _strength = player -> strength();
+  }
+  else assert( _strength == player -> strength() );
+  return _strength;
+}
+
+// player_stat_cache_t::agiity ==================================================
+
+double player_stat_cache_t::agility()
+{
+  if ( ! active || ! valid[ CACHE_AGILITY ] )
+  {
+    valid[ CACHE_AGILITY ] = true;
+    _agility = player -> agility();
+  }
+  else assert( _agility == player -> agility() );
+  return _agility;
+}
+
+// player_stat_cache_t::stamina =================================================
+
+double player_stat_cache_t::stamina()
+{
+  if ( ! active || ! valid[ CACHE_STAMINA ] )
+  {
+    valid[ CACHE_STAMINA ] = true;
+    _stamina = player -> stamina();
+  }
+  else assert( _stamina == player -> stamina() );
+  return _stamina;
+}
+
+// player_stat_cache_t::intellect ===============================================
+
+double player_stat_cache_t::intellect()
+{
+  if ( ! active || ! valid[ CACHE_INTELLECT ] )
+  {
+    valid[ CACHE_INTELLECT ] = true;
+    _intellect = player -> intellect();
+  }
+  else assert( _intellect == player -> intellect() );
+  return _intellect;
+}
+
+// player_stat_cache_t::spirit ==================================================
+
+double player_stat_cache_t::spirit()
+{
+  if ( ! active || ! valid[ CACHE_SPIRIT ] )
+  {
+    valid[ CACHE_SPIRIT ] = true;
+    _spirit = player -> spirit();
+  }
+  else assert( _spirit == player -> spirit() );
+  return _spirit;
+}
+
+// player_stat_cache_t::spell_power =============================================
+
+double player_stat_cache_t::spell_power( school_e s )
+{
+  if ( ! active || ! spell_power_valid[ s ] )
+  {
+    spell_power_valid[ s ] = true;
+    _spell_power[ s ] = player -> composite_spell_power( s );
+  }
+  else assert( _spell_power[ s ] == player -> composite_spell_power( s ) );
+  return _spell_power[ s ];
+}
+
+// player_stat_cache_t::attack_power ============================================
+
+double player_stat_cache_t::attack_power()
+{
+  if ( ! active || ! valid[ CACHE_ATTACK_POWER ] )
+  {
+    valid[ CACHE_ATTACK_POWER ] = true;
+    _attack_power = player -> composite_melee_attack_power();
+  }
+  else assert( _attack_power == player -> composite_melee_attack_power() );
+  return _attack_power;
+}
+
+// player_stat_cache_t::attack_expertise ========================================
+
+double player_stat_cache_t::attack_expertise()
+{
+  if ( ! active || ! valid[ CACHE_ATTACK_EXP ] )
+  {
+    valid[ CACHE_ATTACK_EXP ] = true;
+    _attack_expertise = player -> composite_melee_expertise();
+  }
+  else assert( _attack_expertise == player -> composite_melee_expertise() );
+  return _attack_expertise;
+}
+
+// player_stat_cache_t::attack_hit ==============================================
+
+double player_stat_cache_t::attack_hit()
+{
+  if ( ! active || ! valid[ CACHE_ATTACK_HIT ] )
+  {
+    valid[ CACHE_ATTACK_HIT ] = true;
+    _attack_hit = player -> composite_melee_hit();
+  }
+  else
+    {
+    if ( _attack_hit != player -> composite_melee_hit() )
+    {
+      assert( false );
+    }
+    // assert( _attack_hit == player -> composite_attack_hit() );
+    }
+  return _attack_hit;
+}
+
+// player_stat_cache_t::attack_crit =============================================
+
+double player_stat_cache_t::attack_crit()
+{
+  if ( ! active || ! valid[ CACHE_ATTACK_CRIT ] )
+  {
+    valid[ CACHE_ATTACK_CRIT ] = true;
+    _attack_crit = player -> composite_melee_crit();
+  }
+  else assert( _attack_crit == player -> composite_melee_crit() );
+  return _attack_crit;
+}
+
+// player_stat_cache_t::attack_haste ============================================
+
+double player_stat_cache_t::attack_haste()
+{
+  if ( ! active || ! valid[ CACHE_ATTACK_HASTE ] )
+  {
+    valid[ CACHE_ATTACK_HASTE ] = true;
+    _attack_haste = player -> composite_melee_haste();
+  }
+  else assert( _attack_haste == player -> composite_melee_haste() );
+  return _attack_haste;
+}
+
+// player_stat_cache_t::attack_speed ============================================
+
+double player_stat_cache_t::attack_speed()
+{
+  if ( ! active || ! valid[ CACHE_ATTACK_SPEED ] )
+  {
+    valid[ CACHE_ATTACK_SPEED ] = true;
+    _attack_speed = player -> composite_melee_speed();
+  }
+  else assert( _attack_speed == player -> composite_melee_speed() );
+  return _attack_speed;
+}
+
+// player_stat_cache_t::spell_hit ===============================================
+
+double player_stat_cache_t::spell_hit()
+{
+  if ( ! active || ! valid[ CACHE_SPELL_HIT ] )
+  {
+    valid[ CACHE_SPELL_HIT ] = true;
+    _spell_hit = player -> composite_spell_hit();
+  }
+  else assert( _spell_hit == player -> composite_spell_hit() );
+  return _spell_hit;
+}
+
+// player_stat_cache_t::spell_crit ==============================================
+
+double player_stat_cache_t::spell_crit()
+{
+  if ( ! active || ! valid[ CACHE_SPELL_CRIT ] )
+  {
+    valid[ CACHE_SPELL_CRIT ] = true;
+    _spell_crit = player -> composite_spell_crit();
+  }
+  else assert( _spell_crit == player -> composite_spell_crit() );
+  return _spell_crit;
+}
+
+// player_stat_cache_t::spell_haste =============================================
+
+double player_stat_cache_t::spell_haste()
+{
+  if ( ! active || ! valid[ CACHE_SPELL_HASTE ] )
+  {
+    valid[ CACHE_SPELL_HASTE ] = true;
+    _spell_haste = player -> composite_spell_haste();
+  }
+  else assert( _spell_haste == player -> composite_spell_haste() );
+  return _spell_haste;
+}
+
+// player_stat_cache_t::spell_speed =============================================
+
+double player_stat_cache_t::spell_speed()
+{
+  if ( ! active || ! valid[ CACHE_SPELL_SPEED ] )
+  {
+    valid[ CACHE_SPELL_SPEED ] = true;
+    _spell_speed = player -> composite_spell_speed();
+  }
+  else assert( _spell_speed == player -> composite_spell_speed() );
+  return _spell_speed;
+}
+
+double player_stat_cache_t::dodge()
+{
+  if ( ! active || ! valid[ CACHE_DODGE ] )
+  {
+    valid[ CACHE_DODGE ] = true;
+    _dodge = player -> composite_dodge();
+  }
+  else assert( _dodge == player -> composite_dodge() );
+  return _dodge;
+}
+
+double player_stat_cache_t::parry()
+{
+  if ( ! active || ! valid[ CACHE_PARRY ] )
+  {
+    valid[ CACHE_PARRY ] = true;
+    _parry = player -> composite_parry();
+  }
+  else assert( _parry == player -> composite_parry() );
+  return _parry;
+}
+
+double player_stat_cache_t::block()
+{
+  if ( ! active || ! valid[ CACHE_BLOCK ] )
+  {
+    valid[ CACHE_BLOCK ] = true;
+    _block = player -> composite_block();
+  }
+  else assert( _block == player -> composite_block() );
+  return _block;
+}
+
+double player_stat_cache_t::crit_block()
+{
+  if ( ! active || ! valid[ CACHE_CRIT_BLOCK ] )
+  {
+    valid[ CACHE_CRIT_BLOCK ] = true;
+    _crit_block = player -> composite_crit_block();
+  }
+  else assert( _crit_block == player -> composite_crit_block() );
+  return _crit_block;
+}
+
+double player_stat_cache_t::crit_avoidance()
+{
+  if ( ! active || ! valid[ CACHE_CRIT_AVOIDANCE ] )
+  {
+    valid[ CACHE_CRIT_AVOIDANCE ] = true;
+    _crit_avoidance = player -> composite_crit_avoidance();
+  }
+  else assert( _crit_avoidance == player -> composite_crit_avoidance() );
+  return _crit_avoidance;
+}
+
+double player_stat_cache_t::miss()
+{
+  if ( ! active || ! valid[ CACHE_MISS ] )
+  {
+    valid[ CACHE_MISS ] = true;
+    _miss = player -> composite_miss();
+  }
+  else assert( _miss == player -> composite_miss() );
+  return _miss;
+}
+
+double player_stat_cache_t::armor()
+{
+  if ( ! active || ! valid[ CACHE_ARMOR ] )
+  {
+    valid[ CACHE_ARMOR ] = true;
+    _armor = player -> composite_armor();
+  }
+  else assert( _armor == player -> composite_armor() );
+  return _armor;
+}
+
+/* This is composite_mastery * specialization_mastery_coefficient !
+ *
+ * If you need the pure mastery value, use player_t::composite_mastery
+ */
+double player_stat_cache_t::mastery_value()
+{
+  if ( ! active || ! valid[ CACHE_MASTERY ] )
+  {
+    valid[ CACHE_MASTERY ] = true;
+    _mastery_value = player -> composite_mastery_value();
+  }
+  else assert( _mastery_value == player -> composite_mastery_value() );
+  return _mastery_value;
+}
+
+// player_stat_cache_t::mastery =================================================
+
+double player_stat_cache_t::player_multiplier( school_e s )
+{
+  if ( ! active || ! player_mult_valid[ s ] )
+  {
+    player_mult_valid[ s ] = true;
+    _player_mult[ s ] = player -> composite_player_multiplier( s );
+  }
+  else assert( _player_mult[ s ] == player -> composite_player_multiplier( s ) );
+  return _player_mult[ s ];
+}
+
+// player_stat_cache_t::mastery =================================================
+
+double player_stat_cache_t::player_heal_multiplier( school_e s )
+{
+  if ( ! active || ! player_heal_mult_valid[ s ] )
+  {
+    player_heal_mult_valid[ s ] = true;
+    _player_heal_mult[ s ] = player -> composite_player_heal_multiplier( s );
+  }
+  else assert( _player_heal_mult[ s ] == player -> composite_player_heal_multiplier( s ) );
+  return _player_heal_mult[ s ];
+}
+
+#endif
+
+/*
+ * Initialize Vengeance Timeline
+ *
+ * Needs to be called during player initialization.
+ * The reason to separate it out like this is that we want dynamic memory allocation
+ * during the initialization phase, and not during simulation.
+ */
+
+void player_vengeance_t::init( player_t& p )
+{
+  if ( is_initialized() )
+    return;
+
+  int size = static_cast<int>( p.sim -> max_time.total_seconds() * ( 1.0 + p.sim -> vary_combat_length ) );
+  timeline_.init( size * 2 + 3 );
+}
+
+/* Start Vengeance
+ *
+ * Call in combat_begin() when it is active during the whole fight,
+ * otherwise in a action/buff ( like Druid Bear Form )
+ */
+
+void player_vengeance_t::start( player_t& p )
+{
+  if ( ! is_initialized() )
+    init( p );
+
+  assert( ! is_started() );
+
+  struct collect_event_t : public event_t
+  {
+    player_vengeance_t& vengeance;
+    collect_event_t( player_t* p, player_vengeance_t& v ) : event_t( p, "vengeance_timeline_collect_event_t" ),
+        vengeance( v )
+    {
+      sim.add_event( this, timespan_t::from_seconds( 1 ) );
+    }
+
+    virtual void execute()
+    {
+      assert( vengeance.event == this );
+      vengeance.timeline_.add( sim.current_time, player -> buffs.vengeance -> value() );
+      vengeance.event = new ( sim ) collect_event_t( player, vengeance );
+    }
+  };
+
+  event = new ( *p.sim ) collect_event_t( &p, *this ); // start timeline
+}
+
+/* Stop Vengeance
+ *
+ * Is automatically called in player_t::demise()
+ * If you have dynamic vengeance activation ( like Druid Bear Form ), call it in the buff expiration/etc.
+ */
+
+void player_vengeance_t::stop()
+{ event_t::cancel( event ); }
+
+player_processed_report_information_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p ) :
+  action( a ), target( t ), time( ts )
+{
+  for ( size_t i = 0; i < p -> buff_list.size(); ++i )
+    if ( p -> buff_list[ i ] -> check() && ! p -> buff_list[ i ] -> quiet )
+      buff_list.push_back( p -> buff_list[ i ] );
+
+  range::fill( resource_snapshot, -1 );
+
+  for ( resource_e i = RESOURCE_HEALTH; i < RESOURCE_MAX; ++i )
+    if ( p -> resources.max[ i ] > 0.0 )
+      resource_snapshot[ i ] = p -> resources.current[ i ];
+}
+
+player_collected_data_t::player_collected_data_t( const std::string& player_name, sim_t& s ) :
+      dmg( player_name + " Damage", s.statistics_level < 2 ),
+      compound_dmg( player_name + " Total Damage", s.statistics_level < 2 ),
+      dps( player_name + " Damage Per Second", s.statistics_level < 1 ),
+      dpse( player_name + " Damage per Second (effective)", s.statistics_level < 2 ),
+      dtps( player_name + " Damage Taken Per Second", s.statistics_level < 2 ),
+      dmg_taken( player_name + " Damage Taken", s.statistics_level < 2 ),
+      heal( player_name + " Heal", s.statistics_level < 2 ),
+      compound_heal( player_name + " Total Heal", s.statistics_level < 2 ),
+      hps( player_name + " Healing Per Second", s.statistics_level < 1 ),
+      hpse( player_name + " Healing per Second (effective)", s.statistics_level < 2 ),
+      htps( player_name + " Healing taken Per Second", s.statistics_level < 2 ),
+      heal_taken( player_name + " Healing Taken", s.statistics_level < 2 )
+{
+
+}
+
+void player_collected_data_t::reserve_memory( size_t n )
+{
+  // DMG
+  dmg.reserve( n );
+  compound_dmg.reserve( n );
+  dps.reserve( n );
+  dpse.reserve( n );
+  dtps.reserve( n );
+  // HEAL
+  heal.reserve( n );
+  compound_heal.reserve( n );
+  hps.reserve( n );
+  hpse.reserve( n );
+  htps.reserve( n );
+}
+
+void player_collected_data_t::merge( const player_collected_data_t& other )
+{
+  // DMG
+  dmg.merge( other.dmg );
+  compound_dmg.merge( other.compound_dmg );
+  dps.merge( other.dps );
+  dtps.merge( other.dtps );
+  dpse.merge( other.dpse );
+  dmg_taken.merge( other.dmg_taken );
+  // HEAL
+  heal.merge( other.heal );
+  compound_heal.merge( other.compound_heal );
+  hps.merge( other.hps );
+  htps.merge( other.htps );
+  hpse.merge( other.hpse );
+  heal_taken.merge( other.heal_taken );
+}
+
+void player_collected_data_t::analyze()
+{
+  // DMG
+  dmg.analyze_all();
+  compound_dmg.analyze_all();
+  dps.analyze_all();
+  dpse.analyze_all();
+  dmg_taken.analyze_all();
+  dtps.analyze_all();
+  // Heal
+  heal.analyze_all();
+  compound_heal.analyze_all();
+  hps.analyze_all();
+  hpse.analyze_all();
+  heal_taken.analyze_all();
+  htps.analyze_all();
+
+}

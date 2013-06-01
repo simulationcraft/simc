@@ -1016,7 +1016,7 @@ void print_html_talents( report::sc_html_stream& os, player_t* p )
 
 // print_html_player_scale_factors ==========================================
 
-void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, player_t* p, player_t::report_information_t& ri )
+void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, player_t* p, player_processed_report_information_t& ri )
 {
 
   if ( !p -> is_pet() )
@@ -1311,7 +1311,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
 
     for ( size_t i = 0; i < p -> report_information.action_sequence.size(); ++i )
     {
-      player_t::report_information_t::action_sequence_data_t* data = p -> report_information.action_sequence[ i ];
+      player_processed_report_information_t::action_sequence_data_t* data = p -> report_information.action_sequence[ i ];
       if ( ! data -> action -> harmful ) continue;
       bool found = false;
       for ( size_t j = 0; j < targets.size(); ++j )
@@ -1346,7 +1346,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
 
     for ( size_t i = 0; i < p -> report_information.action_sequence.size(); ++i )
     {
-      player_t::report_information_t::action_sequence_data_t* data = p -> report_information.action_sequence[ i ];
+      player_processed_report_information_t::action_sequence_data_t* data = p -> report_information.action_sequence[ i ];
 
       std::string targetname = ( data -> action -> harmful ) ? data -> target -> name() : "none";
       os.printf(
@@ -1390,7 +1390,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
 
 // print_html_player_statistics =============================================
 
-void print_html_player_statistics( report::sc_html_stream& os, player_t* p, player_t::report_information_t& ri )
+void print_html_player_statistics( report::sc_html_stream& os, player_t* p, player_processed_report_information_t& ri )
 {
   // Statistics & Data Analysis
 
@@ -1402,14 +1402,14 @@ void print_html_player_statistics( report::sc_html_stream& os, player_t* p, play
         "\t\t\t\t\t\t\t\t<td>\n";
 
   report::print_html_sample_data( os, p -> sim, p -> fight_length, "Fight Length" );
-  report::print_html_sample_data( os, p -> sim, p -> dps, "DPS" );
-  report::print_html_sample_data( os, p -> sim, p -> dpse, "DPS(e)" );
-  report::print_html_sample_data( os, p -> sim, p -> dmg, "Damage" );
-  report::print_html_sample_data( os, p -> sim, p -> dtps, "DTPS" );
-  report::print_html_sample_data( os, p -> sim, p -> hps, "HPS" );
-  report::print_html_sample_data( os, p -> sim, p -> hpse, "HPS(e)" );
-  report::print_html_sample_data( os, p -> sim, p -> heal, "Heal" );
-  report::print_html_sample_data( os, p -> sim, p -> htps, "HTPS" );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.dps, "DPS" );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.dpse, "DPS(e)" );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.dmg, "Damage" );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.dtps, "DTPS" );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.hps, "HPS" );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.hpse, "HPS(e)" );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.heal, "Heal" );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.htps, "HTPS" );
 
   if ( ! ri.timeline_dps_error_chart.empty() )
     os << "<img src=\"" << ri.timeline_dps_error_chart << "\" alt=\"Timeline DPS Error Chart\" />\n";
@@ -1468,7 +1468,7 @@ void get_total_player_gains( player_t& p, std::array<double, RESOURCE_MAX>& tota
 }
 // print_html_player_resources ==============================================
 
-void print_html_player_resources( report::sc_html_stream& os, player_t* p, player_t::report_information_t& ri )
+void print_html_player_resources( report::sc_html_stream& os, player_t* p, player_processed_report_information_t& ri )
 {
   os.set_level( 4 );
 
@@ -1721,7 +1721,7 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
 
 // print_html_player_charts =================================================
 
-void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t* p, player_t::report_information_t& ri )
+void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t* p, player_processed_report_information_t& ri )
 {
   size_t num_players = sim -> players_by_name.size();
 
@@ -2009,7 +2009,7 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
 
 // print_html_player_buffs ==================================================
 
-void print_html_player_buffs( report::sc_html_stream& os, player_t* p, player_t::report_information_t& ri )
+void print_html_player_buffs( report::sc_html_stream& os, player_t* p, player_processed_report_information_t& ri )
 {
   // Buff Section
   os << "\t\t\t\t<div class=\"player-section buffs\">\n"
@@ -2095,14 +2095,14 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
   }
 
   const std::string n = util::encode_html( p -> name() );
-  if ( p -> dps.mean() >= p -> hps.mean() )
+  if ( p -> collected_data.dps.mean() >= p -> collected_data.hps.mean() )
     os.printf( "\">%s&nbsp;:&nbsp;%.0f dps</h2>\n",
                n.c_str(),
-               p -> dps.mean() );
+               p -> collected_data.dps.mean() );
   else
     os.printf( "\">%s&nbsp;:&nbsp;%.0f hps</h2>\n",
                n.c_str(),
-               p -> hps.mean() );
+               p -> collected_data.hps.mean() );
 
   os << "\t\t\t<div class=\"toggle-content";
   if ( num_players > 1 )
@@ -2150,6 +2150,7 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
 
 void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim, player_t* p )
 {
+  const player_collected_data_t& cd = p -> collected_data;
 
   // Main player table
   os << "\t\t\t\t<div class=\"player-section results-spec-gear mt\">\n";
@@ -2165,14 +2166,14 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
      << "\t\t\t\t\t\t<table class=\"sc\">\n"
      << "\t\t\t\t\t\t\t<tr>\n";
   // Damage
-  if ( p -> dps.mean() > 0 )
+  if ( cd.dps.mean() > 0 )
     os << "\t\t\t\t\t\t\t\t<th><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpse\" class=\"help\">DPS(e)</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">DPS Error</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">DPS Range</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpr\" class=\"help\">DPR</a></th>\n";
   // Heal
-  if ( p -> hps.mean() > 0 )
+  if ( cd.hps.mean() > 0 )
     os << "\t\t\t\t\t\t\t\t<th><a href=\"#help-dps\" class=\"help\">HPS</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpse\" class=\"help\">HPS(e)</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">HPS Error</a></th>\n"
@@ -2190,39 +2191,41 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
      << "\t\t\t\t\t\t\t<tr>\n";
 
   // Damage
-  if ( p -> dps.mean() > 0 )
+  if ( cd.dps.mean() > 0 )
   {
-    double range = ( p -> dps.percentile( 0.95 ) - p -> dps.percentile( 0.05 ) ) / 2;
+    double range = ( p -> collected_data.dps.percentile( 0.95 ) - p -> collected_data.dps.percentile( 0.05 ) ) / 2;
+    double dps_error = sim_t::distribution_mean_error( *sim, p -> collected_data.dps );
     os.printf(
       "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
       "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
       "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
       "\t\t\t\t\t\t\t\t<td>%.0f / %.1f%%</td>\n"
       "\t\t\t\t\t\t\t\t<td>%.1f</td>\n",
-      p -> dps.mean(),
-      p -> dpse.mean(),
-      p -> dps_error,
-      p -> dps.mean() ? p -> dps_error * 100 / p -> dps.mean() : 0,
+      cd.dps.mean(),
+      cd.dpse.mean(),
+      dps_error,
+      cd.dps.mean() ? dps_error * 100 / cd.dps.mean() : 0,
       range,
-      p -> dps.mean() ? range / p -> dps.mean() * 100.0 : 0,
+      cd.dps.mean() ? range / cd.dps.mean() * 100.0 : 0,
       p -> dpr );
   }
   // Heal
-  if ( p -> hps.mean() > 0 )
+  if ( cd.hps.mean() > 0 )
   {
-    double range = ( p -> hps.percentile( 0.95 ) - p -> hps.percentile( 0.05 ) ) / 2;
+    double range = ( cd.hps.percentile( 0.95 ) - cd.hps.percentile( 0.05 ) ) / 2;
+    double hps_error = sim_t::distribution_mean_error( *sim, p -> collected_data.hps );
     os.printf(
       "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
       "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
       "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
       "\t\t\t\t\t\t\t\t<td>%.0f / %.1f%%</td>\n"
       "\t\t\t\t\t\t\t\t<td>%.1f</td>\n",
-      p -> hps.mean(),
-      p -> hpse.mean(),
-      p -> hps_error,
-      p -> hps.mean() ? p -> hps_error * 100 / p -> hps.mean() : 0,
+      cd.hps.mean(),
+      cd.hpse.mean(),
+      hps_error,
+      cd.hps.mean() ? hps_error * 100 / cd.hps.mean() : 0,
       range,
-      p -> hps.mean() ? range / p -> hps.mean() * 100.0 : 0,
+      cd.hps.mean() ? range / cd.hps.mean() * 100.0 : 0,
       p -> hpr );
   }
   os.printf(
@@ -2348,7 +2351,7 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
 
   os << "\t\t\t\t\t\t\t<tr>\n"
      << "\t\t\t\t\t\t\t\t<th class=\"left small\">" << util::encode_html( p -> name() ) << "</th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"right small\">" << util::to_string( p -> dps.mean(), 0 ) << "</th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"right small\">" << util::to_string( p -> collected_data.dps.mean(), 0 ) << "</th>\n"
      << "\t\t\t\t\t\t\t\t<td colspan=\"19\" class=\"filler\"></td>\n"
      << "\t\t\t\t\t\t\t</tr>\n";
 
@@ -2384,8 +2387,8 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
             "\t\t\t\t\t\t\t\t<td colspan=\"18\" class=\"filler\"></td>\n"
             "\t\t\t\t\t\t\t</tr>\n",
             pet -> name_str.c_str(),
-            pet -> dps.mean(),
-            pet -> dpse.mean() );
+            pet -> collected_data.dps.mean(),
+            pet -> collected_data.dpse.mean() );
         }
         print_html_action_damage( os, s, p, j );
       }
@@ -2573,7 +2576,7 @@ void print_html_player_procs( report::sc_html_stream& os, std::vector<proc_t*> p
 
 // print_html_player_deaths ========================================================
 
-void print_html_player_deaths( report::sc_html_stream& os, player_t* p, player_t::report_information_t& ri )
+void print_html_player_deaths( report::sc_html_stream& os, player_t* p, player_processed_report_information_t& ri )
 {
   // Death Analysis
 
@@ -2623,7 +2626,7 @@ void print_html_player_deaths( report::sc_html_stream& os, player_t* p, player_t
 
     os << "\t\t\t\t\t\t\t\t<tr>\n"
        << "\t\t\t\t\t\t\t\t\t<td class=\"left\">dmg taken</td>\n"
-       << "\t\t\t\t\t\t\t\t\t<td class=\"right\">" << p -> dmg_taken.mean() << "</td>\n"
+       << "\t\t\t\t\t\t\t\t\t<td class=\"right\">" << p -> collected_data.dmg_taken.mean() << "</td>\n"
        << "\t\t\t\t\t\t\t\t</tr>\n";
 
     os << "\t\t\t\t\t\t\t\t</table>\n";

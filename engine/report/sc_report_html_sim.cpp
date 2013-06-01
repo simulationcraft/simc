@@ -609,12 +609,12 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t* sim, sim_t::rep
     for ( size_t i = 0; i < sim -> players_by_name.size(); i++ )
     {
       player_t* p = sim -> players_by_name[ i ];
-      double range = ( p -> dps.percentile( 0.95 ) - p -> dps.percentile( 0.05 ) ) / 2.0;
+      double range = ( p -> collected_data.dps.percentile( 0.95 ) - p -> collected_data.dps.percentile( 0.05 ) ) / 2.0;
       os.printf(
         "\t\t\t\t\t\t<li>%s: %.1f / %.1f%%</li>\n",
         util::encode_html( p -> name() ).c_str(),
         range,
-        p -> dps.mean() ? ( range * 100 / p -> dps.mean() ) : 0 );
+        p -> collected_data.dps.mean() ? ( range * 100 / p -> collected_data.dps.mean() ) : 0 );
     }
     os << "\t\t\t\t\t</ul>\n";
   }
@@ -639,7 +639,7 @@ void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, size_t nu
   for ( size_t i = 0; i < player_list.size(); i++ )
   {
     player_t* p = player_list[ i ];
-    if ( ( dps ? p -> dps.mean() : p -> hps.mean() ) <= 0 )
+    if ( ( dps ? p -> collected_data.dps.mean() : p -> collected_data.hps.mean() ) <= 0 )
     {
       player_list.resize( i );
       break;

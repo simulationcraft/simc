@@ -32,7 +32,7 @@ std::string timeline_dps_error ( player_t* );
 std::string scale_factors      ( player_t* );
 std::string scaling_dps        ( player_t* );
 std::string reforge_dps        ( player_t* );
-std::string distribution       ( int /*print_style*/, std::vector<size_t>& /*dist_data*/, const std::string&, double, double, double );
+std::string distribution       ( int /*print_style*/, const std::vector<size_t>& /*dist_data*/, const std::string&, double, double, double );
 std::string normal_distribution(  double mean, double std_dev, double confidence, double tolerance_interval = 0, int print_styles = 0  );
 std::string dps_error( player_t& );
 
@@ -98,8 +98,8 @@ struct sc_html_stream : public indented_stream
 };
 
 
-void generate_player_charts         ( player_t*, player_t::report_information_t& );
-void generate_player_buff_lists     ( player_t*, player_t::report_information_t& );
+void generate_player_charts         ( player_t*, player_processed_report_information_t& );
+void generate_player_buff_lists     ( player_t*, player_processed_report_information_t& );
 void generate_sim_report_information( sim_t*,       sim_t::report_information_t& );
 
 void print_html_sample_data ( report::sc_html_stream&, sim_t*, extended_sample_data_t&, const std::string& name );

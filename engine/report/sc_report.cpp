@@ -868,7 +868,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
 
 }
 
-void report::generate_player_buff_lists( player_t*  p, player_t::report_information_t& ri )
+void report::generate_player_buff_lists( player_t*  p, player_processed_report_information_t& ri )
 {
   if ( ri.buff_lists_generated )
     return;
@@ -898,10 +898,12 @@ void report::generate_player_buff_lists( player_t*  p, player_t::report_informat
   ri.buff_lists_generated = true;
 }
 
-void report::generate_player_charts( player_t* p, player_t::report_information_t& ri )
+void report::generate_player_charts( player_t* p, player_processed_report_information_t& ri )
 {
   if ( ri.charts_generated )
     return;
+
+  const player_collected_data_t& cd = p -> collected_data;
 
   // Pet Chart Adjustment ===================================================
   size_t max_buckets = player_chart_length( p );
@@ -950,7 +952,7 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
   {
     sc_timeline_t timeline_dps;
     p -> timeline_dmg.build_derivative_timeline( timeline_dps );
-    ri.timeline_dps_chart = chart::timeline( p, timeline_dps.data(), encoded_name + " DPS", p -> dps.mean() );
+    ri.timeline_dps_chart = chart::timeline( p, timeline_dps.data(), encoded_name + " DPS", cd.dps.mean() );
   }
 
   ri.timeline_dps_error_chart = chart::timeline_dps_error( p );
@@ -959,18 +961,18 @@ void report::generate_player_charts( player_t* p, player_t::report_information_t
   if ( p -> primary_role() == ROLE_HEAL )
   {
     ri.distribution_dps_chart = chart::distribution( p -> sim -> print_styles,
-                                                     p -> hps.distribution, encoded_name + " HPS",
-                                                     p -> hps.mean(),
-                                                     p -> hps.min(),
-                                                     p -> hps.max() );
+                                                     cd.hps.distribution, encoded_name + " HPS",
+                                                     cd.hps.mean(),
+                                                     cd.hps.min(),
+                                                     cd.hps.max() );
   }
   else
   {
     ri.distribution_dps_chart = chart::distribution( p -> sim -> print_styles,
-                                                     p -> dps.distribution, encoded_name + " DPS",
-                                                     p -> dps.mean(),
-                                                     p -> dps.min(),
-                                                     p -> dps.max() );
+                                                     cd.dps.distribution, encoded_name + " DPS",
+                                                     cd.dps.mean(),
+                                                     cd.dps.min(),
+                                                     cd.dps.max() );
   }
 
   ri.distribution_deaths_chart = chart::distribution( p -> sim -> print_styles,

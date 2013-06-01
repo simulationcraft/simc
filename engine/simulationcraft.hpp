@@ -2665,6 +2665,9 @@ public:
 
   virtual void output(         const char* format, ... ) PRINTF_ATTRIBUTE( 2,3 );
   static  void output( sim_t*, const char* format, ... ) PRINTF_ATTRIBUTE( 2,3 );
+
+  static double distribution_mean_error( const sim_t& s, const extended_sample_data_t& sd )
+  { return s.confidence_estimator * sd.mean_std_dev; }
 };
 
 // Module ===================================================================
@@ -3445,6 +3448,249 @@ private:
   { return timespan_t::from_seconds( -60 * 60 ); }
 };
 
+// Player Callbacks
+struct player_callbacks_t
+{
+  std::vector<action_callback_t*> all_callbacks;
+  std::array< std::vector<action_callback_t*>, RESULT_MAX > attack;
+  std::array< std::vector<action_callback_t*>, RESULT_MAX > spell;
+  std::array< std::vector<action_callback_t*>, RESULT_MAX > harmful_spell;
+  std::array< std::vector<action_callback_t*>, RESULT_MAX > direct_harmful_spell;
+  std::array< std::vector<action_callback_t*>, RESULT_MAX > heal;
+  std::array< std::vector<action_callback_t*>, RESULT_MAX > absorb;
+  std::array< std::vector<action_callback_t*>, RESULT_MAX > tick;
+
+  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > direct_damage;
+  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > direct_crit;
+  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > tick_damage;
+  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > spell_direct_damage;
+  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > spell_tick_damage;
+  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > direct_heal;
+  std::array< std::vector<action_callback_t*>, SCHOOL_MAX > tick_heal;
+
+  std::array< std::vector<action_callback_t*>, RESOURCE_MAX > resource_gain;
+  std::array< std::vector<action_callback_t*>, RESOURCE_MAX > resource_loss;
+
+  std::array< std::vector<action_callback_t*>, RESULT_MAX > incoming_attack;
+
+  virtual ~player_callbacks_t()
+  { range::sort( all_callbacks ); dispose( all_callbacks.begin(), range::unique( all_callbacks ) ); }
+
+  void reset();
+
+  void register_resource_gain_callback       ( resource_e,     action_callback_t*      );
+  void register_resource_loss_callback       ( resource_e,     action_callback_t*      );
+  void register_attack_callback              ( int64_t result_mask, action_callback_t* );
+  void register_spell_callback               ( int64_t result_mask, action_callback_t* );
+  void register_tick_callback                ( int64_t result_mask, action_callback_t* );
+  void register_heal_callback                ( int64_t result_mask, action_callback_t* );
+  void register_absorb_callback              ( int64_t result_mask, action_callback_t* );
+  void register_harmful_spell_callback       ( int64_t result_mask, action_callback_t* );
+  void register_direct_harmful_spell_callback( int64_t result_mask, action_callback_t* );
+  void register_tick_damage_callback         ( int64_t result_mask, action_callback_t* );
+  void register_direct_damage_callback       ( int64_t result_mask, action_callback_t* );
+  void register_direct_crit_callback         ( int64_t result_mask, action_callback_t* );
+  void register_spell_tick_damage_callback   ( int64_t result_mask, action_callback_t* );
+  void register_spell_direct_damage_callback ( int64_t result_mask, action_callback_t* );
+  void register_tick_heal_callback           ( int64_t result_mask, action_callback_t* );
+  void register_direct_heal_callback         ( int64_t result_mask, action_callback_t* );
+  void register_incoming_attack_callback     ( int64_t result_mask, action_callback_t* );
+};
+/* The Cache system increases simulation performance by moving the calculation point
+ * from call-time to modification-time of a stat. Because a stat is called much more
+ * often than it is changed, this reduces costly and unnecessary repetition of floating-point
+ * operations.
+ *
+ * When a stat is accessed, its 'valid'-state is checked:
+ *   If its true, the cached value is accessed.
+ *   If it is false, the stat value is recalculated and written to the cache.
+ *
+ * To indicate when a stat gets modified, it needs to be 'invalidated'. Every time a stat
+ * is invalidated, its 'valid'-state gets set to false.
+ */
+
+/* - To invalidate a stat, use player_t::invalidate_cache( cache_e )
+ * - using player_t::stat_gain/loss automatically invalidates the corresponding cache
+ * - Same goes for stat_buff_t, which works through player_t::stat_gain/loss
+ * - Buffs with effects in a composite_ function need invalidates added to their buff_creator
+ *
+ * To create invalidation chains ( eg. Priest: Spirit invalidates Hit ) override the
+ * virtual player_t::invalidate_cache( cache_e ) function.
+ *
+ * Attention: player_t::invalidate_cache( cache_e ) is recursive and may call itself again.
+ */
+struct player_stat_cache_t
+{
+  player_t* player;
+  // 'valid'-states
+  std::array<bool,CACHE_MAX> valid;
+  std::array<bool,SCHOOL_MAX+1> spell_power_valid, player_mult_valid, player_heal_mult_valid;
+private:
+  // cached values
+  double _strength, _agility, _stamina, _intellect, _spirit;
+  double _spell_power[SCHOOL_MAX+1], _attack_power;
+  double _attack_expertise;
+  double _attack_hit, _spell_hit;
+  double _attack_crit, _spell_crit;
+  double _attack_haste, _spell_haste;
+  double _attack_speed, _spell_speed;
+  double _dodge,_parry,_block,_crit_block,_armor;
+  double _mastery_value, _crit_avoidance, _miss;
+  double _player_mult[SCHOOL_MAX+1], _player_heal_mult[SCHOOL_MAX+1];
+public:
+  bool active; // runtime active-flag
+  void invalidate();
+  double get_attribute( attribute_e );
+  player_stat_cache_t( player_t* p ) : player( p ), active( false ) { invalidate(); }
+#ifdef SC_STAT_CACHE
+  // Cache stat functions
+  double strength();
+  double agility();
+  double stamina();
+  double intellect();
+  double spirit();
+  double spell_power( school_e );
+  double attack_power();
+  double attack_expertise();
+  double attack_hit();
+  double attack_crit();
+  double attack_haste();
+  double attack_speed();
+  double spell_hit();
+  double spell_crit();
+  double spell_haste();
+  double spell_speed();
+  double dodge();
+  double parry();
+  double block();
+  double crit_block();
+  double crit_avoidance();
+  double miss();
+  double armor();
+  double mastery_value();
+  double player_multiplier( school_e );
+  double player_heal_multiplier( school_e );
+#else
+  // Passthrough cache stat functions for inactive cache
+  double strength()  { return player -> strength();  }
+  double agility()   { return player -> agility();   }
+  double stamina()   { return player -> stamina();   }
+  double intellect() { return player -> intellect(); }
+  double spirit()    { return player -> spirit();    }
+  double spell_power( school_e s ) { return player -> composite_spell_power( s ); }
+  double attack_power()            { return player -> composite_melee_attack_power();   }
+  double attack_expertise() { return player -> composite_melee_expertise(); }
+  double attack_hit()       { return player -> composite_melee_hit();       }
+  double attack_crit()      { return player -> composite_melee_crit();      }
+  double attack_haste()     { return player -> composite_melee_haste();     }
+  double attack_speed()     { return player -> composite_melee_speed();     }
+  double spell_hit()        { return player -> composite_spell_hit();       }
+  double spell_crit()       { return player -> composite_spell_crit();      }
+  double spell_haste()      { return player -> composite_spell_haste();     }
+  double spell_speed()      { return player -> composite_spell_speed();     }
+  double dodge()            { return player -> composite_dodge();      }
+  double parry()            { return player -> composite_parry();      }
+  double block()            { return player -> composite_block();      }
+  double crit_block()       { return player -> composite_crit_block(); }
+  double crit_avoidance()   { return player -> composite_crit_avoidance();       }
+  double miss()             { return player -> composite_miss();       }
+  double armor()            { return player -> composite_armor();           }
+  double mastery_value()    { return player -> composite_mastery_value();   }
+#endif
+};
+
+// Player Vengeance
+
+struct player_vengeance_t
+{
+private:
+  sc_timeline_t timeline_;
+  event_t* event; // pointer to collection event so we can cancel it at the end of combat.
+
+public:
+  player_vengeance_t() : event( nullptr ) {}
+
+  void init( player_t& p );
+  void start( player_t& p );
+  void stop();
+
+  bool is_initialized() const
+  { return ! timeline_.data().empty(); }
+  bool is_started() const
+  { return event != 0; }
+
+  void adjust( const std::vector<int>& divisor_timeline )
+  {
+    if ( timeline_.data().size() > 0 )
+      timeline_.adjust( divisor_timeline );
+  }
+
+  void merge( const player_vengeance_t& other )
+  { timeline_.merge( other.timeline_ ); }
+
+  const sc_timeline_t& timeline() const { return timeline_; }
+};
+
+struct player_processed_report_information_t
+{
+  struct action_sequence_data_t
+  {
+    const action_t* action;
+    const player_t* target;
+    const timespan_t time;
+    std::vector<buff_t*> buff_list;
+    std::array<double,RESOURCE_MAX> resource_snapshot;
+
+    action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p );
+  };
+
+  bool charts_generated, buff_lists_generated;
+  auto_dispose< std::vector<action_sequence_data_t*> > action_sequence;
+  std::string action_dpet_chart, action_dmg_chart, time_spent_chart;
+  std::array<std::string, RESOURCE_MAX> timeline_resource_chart, gains_chart;
+  std::string timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;
+  std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
+  std::string reforge_dps_chart, dps_error_chart, distribution_deaths_chart;
+  std::string gear_weights_lootrank_link, gear_weights_wowhead_std_link, gear_weights_wowhead_alt_link, gear_weights_wowreforge_link, gear_weights_wowupgrade_link;
+  std::string gear_weights_pawn_std_string, gear_weights_pawn_alt_string;
+  std::string save_str;
+  std::string save_gear_str;
+  std::string save_talents_str;
+  std::string save_actions_str;
+  std::string comment_str;
+  std::string thumbnail_url;
+  std::string html_profile_str;
+  std::vector<buff_t*> buff_list, dynamic_buffs, constant_buffs;
+
+  player_processed_report_information_t() : charts_generated(), buff_lists_generated() {}
+};
+
+/* Contains any data collected during / at the end of combat
+ * Mostly statistical data collection, represented as sample data containers
+ */
+struct player_collected_data_t
+{
+  // DMG
+  extended_sample_data_t dmg;
+  extended_sample_data_t compound_dmg;
+  extended_sample_data_t dps;
+  extended_sample_data_t dpse;
+  extended_sample_data_t dtps;
+  extended_sample_data_t dmg_taken;
+  //Heal
+  extended_sample_data_t heal;
+  extended_sample_data_t compound_heal;
+  extended_sample_data_t hps;
+  extended_sample_data_t hpse;
+  extended_sample_data_t htps;
+  extended_sample_data_t heal_taken;
+
+  player_collected_data_t( const std::string& player_name, sim_t& );
+  void reserve_memory( size_t );
+  void merge( const player_collected_data_t& );
+  void analyze();
+};
+
 // Player ===================================================================
 
 struct player_t : public noncopyable
@@ -3483,34 +3729,7 @@ struct player_t : public noncopyable
   double      avg_ilvl;
 
 private:
-  class vengeance_t
-  {
-    sc_timeline_t timeline_;
-    event_t* event; // pointer to collection event so we can cancel it at the end of combat.
-
-  public:
-    vengeance_t() : event( 0 ) {}
-
-    void init( player_t& p );
-    void start( player_t& p );
-    void stop();
-
-    bool is_initialized() const
-    { return ! timeline_.data().empty(); }
-    bool is_started() const
-    { return event != 0; }
-
-    void adjust( const std::vector<int>& divisor_timeline )
-    {
-      if ( timeline_.data().size() > 0 )
-        timeline_.adjust( divisor_timeline );
-    }
-
-    void merge( const vengeance_t& other )
-    { timeline_.merge( other.timeline_ ); }
-
-    const sc_timeline_t& timeline() const { return timeline_; }
-  } vengeance;
+  player_vengeance_t vengeance;
 public:
   void vengeance_init() { vengeance.init( *this ); }
   void vengeance_start() { vengeance.start( *this ); }
@@ -3614,9 +3833,6 @@ public:
   initial, // Base + Gear + Global Enchants
   current; // Current values, reset to initial before every iteration
 
-  double current_stat( stat_e st ) const
-  { return current.stats.get_stat( st ); }
-
   const rating_t& current_rating() const
   { return current.rating; }
   const rating_t& initial_rating() const
@@ -3689,53 +3905,7 @@ public:
   timespan_t cast_delay_occurred;
 
   // Callbacks
-  struct callbacks_t
-  {
-    std::vector<action_callback_t*> all_callbacks;
-    std::array< std::vector<action_callback_t*>, RESULT_MAX > attack;
-    std::array< std::vector<action_callback_t*>, RESULT_MAX > spell;
-    std::array< std::vector<action_callback_t*>, RESULT_MAX > harmful_spell;
-    std::array< std::vector<action_callback_t*>, RESULT_MAX > direct_harmful_spell;
-    std::array< std::vector<action_callback_t*>, RESULT_MAX > heal;
-    std::array< std::vector<action_callback_t*>, RESULT_MAX > absorb;
-    std::array< std::vector<action_callback_t*>, RESULT_MAX > tick;
-
-    std::array< std::vector<action_callback_t*>, SCHOOL_MAX > direct_damage;
-    std::array< std::vector<action_callback_t*>, SCHOOL_MAX > direct_crit;
-    std::array< std::vector<action_callback_t*>, SCHOOL_MAX > tick_damage;
-    std::array< std::vector<action_callback_t*>, SCHOOL_MAX > spell_direct_damage;
-    std::array< std::vector<action_callback_t*>, SCHOOL_MAX > spell_tick_damage;
-    std::array< std::vector<action_callback_t*>, SCHOOL_MAX > direct_heal;
-    std::array< std::vector<action_callback_t*>, SCHOOL_MAX > tick_heal;
-
-    std::array< std::vector<action_callback_t*>, RESOURCE_MAX > resource_gain;
-    std::array< std::vector<action_callback_t*>, RESOURCE_MAX > resource_loss;
-
-    std::array< std::vector<action_callback_t*>, RESULT_MAX > incoming_attack;
-
-    virtual ~callbacks_t()
-    { range::sort( all_callbacks ); dispose( all_callbacks.begin(), range::unique( all_callbacks ) ); }
-
-    void reset();
-
-    void register_resource_gain_callback       ( resource_e,     action_callback_t*      );
-    void register_resource_loss_callback       ( resource_e,     action_callback_t*      );
-    void register_attack_callback              ( int64_t result_mask, action_callback_t* );
-    void register_spell_callback               ( int64_t result_mask, action_callback_t* );
-    void register_tick_callback                ( int64_t result_mask, action_callback_t* );
-    void register_heal_callback                ( int64_t result_mask, action_callback_t* );
-    void register_absorb_callback              ( int64_t result_mask, action_callback_t* );
-    void register_harmful_spell_callback       ( int64_t result_mask, action_callback_t* );
-    void register_direct_harmful_spell_callback( int64_t result_mask, action_callback_t* );
-    void register_tick_damage_callback         ( int64_t result_mask, action_callback_t* );
-    void register_direct_damage_callback       ( int64_t result_mask, action_callback_t* );
-    void register_direct_crit_callback         ( int64_t result_mask, action_callback_t* );
-    void register_spell_tick_damage_callback   ( int64_t result_mask, action_callback_t* );
-    void register_spell_direct_damage_callback ( int64_t result_mask, action_callback_t* );
-    void register_tick_heal_callback           ( int64_t result_mask, action_callback_t* );
-    void register_direct_heal_callback         ( int64_t result_mask, action_callback_t* );
-    void register_incoming_attack_callback     ( int64_t result_mask, action_callback_t* );
-  } callbacks;
+  player_callbacks_t callbacks;
 
   // Action Priority List
   auto_dispose< std::vector<action_t*> > action_list;
@@ -3799,19 +3969,17 @@ public:
     resource_timeline_t( resource_e t = RESOURCE_NONE ) : type( t ) {}
   };
 
+  // All Data collected during / end of combat
+  player_collected_data_t collected_data;
+
   // Druid requires 4 resource timelines health/mana/energy/rage
   std::array<resource_timeline_t,4> resource_timelines;
   size_t resource_timeline_count;
 
   // Damage
   double iteration_dmg, iteration_dmg_taken; // temporary accumulators
-  double dps_error, dpr, dtps_error;
-  extended_sample_data_t dmg;
-  extended_sample_data_t compound_dmg;
-  extended_sample_data_t dps;
-  extended_sample_data_t dpse;
-  extended_sample_data_t dtps;
-  extended_sample_data_t dmg_taken;
+  double dpr;
+
   sc_timeline_t timeline_dmg;
   sc_timeline_t timeline_dmg_taken;
   std::vector<double> dps_convergence_error;
@@ -3820,58 +3988,9 @@ public:
   // Heal
   double iteration_heal,iteration_heal_taken; // temporary accumulators
   double hps_error,hpr;
-  extended_sample_data_t heal;
-  extended_sample_data_t compound_heal;
-  extended_sample_data_t hps;
-  extended_sample_data_t hpse;
-  extended_sample_data_t htps;
-  extended_sample_data_t heal_taken;
 
-  struct report_information_t
-  {
-    struct action_sequence_data_t
-    {
-      const action_t* action;
-      const player_t* target;
-      const timespan_t time;
-      std::vector<buff_t*> buff_list;
-      std::array<double,RESOURCE_MAX> resource_snapshot;
 
-      action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p ) :
-        action( a ), target( t ), time( ts )
-      {
-        for ( size_t i = 0; i < p -> buff_list.size(); ++i )
-          if ( p -> buff_list[ i ] -> check() && ! p -> buff_list[ i ] -> quiet )
-            buff_list.push_back( p -> buff_list[ i ] );
-
-        range::fill( resource_snapshot, -1 );
-
-        for ( resource_e i = RESOURCE_HEALTH; i < RESOURCE_MAX; ++i )
-          if ( p -> resources.max[ i ] > 0.0 )
-            resource_snapshot[ i ] = p -> resources.current[ i ];
-      }
-    };
-
-    bool charts_generated, buff_lists_generated;
-    auto_dispose< std::vector<action_sequence_data_t*> > action_sequence;
-    std::string action_dpet_chart, action_dmg_chart, time_spent_chart;
-    std::array<std::string, RESOURCE_MAX> timeline_resource_chart, gains_chart;
-    std::string timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;
-    std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
-    std::string reforge_dps_chart, dps_error_chart, distribution_deaths_chart;
-    std::string gear_weights_lootrank_link, gear_weights_wowhead_std_link, gear_weights_wowhead_alt_link, gear_weights_wowreforge_link, gear_weights_wowupgrade_link;
-    std::string gear_weights_pawn_std_string, gear_weights_pawn_alt_string;
-    std::string save_str;
-    std::string save_gear_str;
-    std::string save_talents_str;
-    std::string save_actions_str;
-    std::string comment_str;
-    std::string thumbnail_url;
-    std::string html_profile_str;
-    std::vector<buff_t*> buff_list, dynamic_buffs, constant_buffs;
-
-    report_information_t() : charts_generated(), buff_lists_generated() {}
-  } report_information;
+  player_processed_report_information_t report_information;
 
   void sequence_add( const action_t* a, const player_t* target, const timespan_t& ts );
 
@@ -4161,109 +4280,8 @@ public:
   double spirit()    { return get_attribute( ATTR_SPIRIT ); }
   double mastery_coefficient() { return _mastery -> mastery_value(); }
 
-  /* The Cache system increases simulation performance by moving the calculation point
-   * from call-time to modification-time of a stat. Because a stat is called much more
-   * often than it is changed, this reduces costly and unnecessary repetition of floating-point
-   * operations.
-   *
-   * When a stat is accessed, its 'valid'-state is checked:
-   *   If its true, the cached value is accessed.
-   *   If it is false, the stat value is recalculated and written to the cache.
-   *
-   * To indicate when a stat gets modified, it needs to be 'invalidated'. Every time a stat
-   * is invalidated, its 'valid'-state gets set to false.
-   */
-
-  /* - To invalidate a stat, use player_t::invalidate_cache( cache_e )
-   * - using player_t::stat_gain/loss automatically invalidates the corresponding cache
-   * - Same goes for stat_buff_t, which works through player_t::stat_gain/loss
-   * - Buffs with effects in a composite_ function need invalidates added to their buff_creator
-   *
-   * To create invalidation chains ( eg. Priest: Spirit invalidates Hit ) override the
-   * virtual player_t::invalidate_cache( cache_e ) function.
-   *
-   * Attention: player_t::invalidate_cache( cache_e ) is recursive and may call itself again.
-   */
-  struct cache_t
-  {
-    player_t* player;
-    // 'valid'-states
-    std::array<bool,CACHE_MAX> valid;
-    std::array<bool,SCHOOL_MAX+1> spell_power_valid, player_mult_valid, player_heal_mult_valid;
-  private:
-    // cached values
-    double _strength, _agility, _stamina, _intellect, _spirit;
-    double _spell_power[SCHOOL_MAX+1], _attack_power;
-    double _attack_expertise;
-    double _attack_hit, _spell_hit;
-    double _attack_crit, _spell_crit;
-    double _attack_haste, _spell_haste;
-    double _attack_speed, _spell_speed;
-    double _dodge,_parry,_block,_crit_block,_armor;
-    double _mastery_value, _crit_avoidance, _miss;
-    double _player_mult[SCHOOL_MAX+1], _player_heal_mult[SCHOOL_MAX+1];
-  public:
-    bool active; // runtime active-flag
-    void invalidate();
-    double get_attribute( attribute_e );
-    cache_t( player_t* p ) : player( p ), active( false ) { invalidate(); }
-#ifdef SC_STAT_CACHE
-    // Cache stat functions
-    double strength();
-    double agility();
-    double stamina();
-    double intellect();
-    double spirit();
-    double spell_power( school_e );
-    double attack_power();
-    double attack_expertise();
-    double attack_hit();
-    double attack_crit();
-    double attack_haste();
-    double attack_speed();
-    double spell_hit();
-    double spell_crit();
-    double spell_haste();
-    double spell_speed();
-    double dodge();
-    double parry();
-    double block();
-    double crit_block();
-    double crit_avoidance();
-    double miss();
-    double armor();
-    double mastery_value();
-    double player_multiplier( school_e );
-    double player_heal_multiplier( school_e );
-#else
-    // Passthrough cache stat functions for inactive cache
-    double strength()  { return player -> strength();  }
-    double agility()   { return player -> agility();   }
-    double stamina()   { return player -> stamina();   }
-    double intellect() { return player -> intellect(); }
-    double spirit()    { return player -> spirit();    }
-    double spell_power( school_e s ) { return player -> composite_spell_power( s ); }
-    double attack_power()            { return player -> composite_melee_attack_power();   }
-    double attack_expertise() { return player -> composite_melee_expertise(); }
-    double attack_hit()       { return player -> composite_melee_hit();       }
-    double attack_crit()      { return player -> composite_melee_crit();      }
-    double attack_haste()     { return player -> composite_melee_haste();     }
-    double attack_speed()     { return player -> composite_melee_speed();     }
-    double spell_hit()        { return player -> composite_spell_hit();       }
-    double spell_crit()       { return player -> composite_spell_crit();      }
-    double spell_haste()      { return player -> composite_spell_haste();     }
-    double spell_speed()      { return player -> composite_spell_speed();     }
-    double dodge()            { return player -> composite_dodge();      }
-    double parry()            { return player -> composite_parry();      }
-    double block()            { return player -> composite_block();      }
-    double crit_block()       { return player -> composite_crit_block(); }
-    double crit_avoidance()   { return player -> composite_crit_avoidance();       }
-    double miss()             { return player -> composite_miss();       }
-    double armor()            { return player -> composite_armor();           }
-    double mastery_value()    { return player -> composite_mastery_value();   }
-#endif
-  } cache;
-
+  // Stat Caching
+  player_stat_cache_t cache;
 #ifdef SC_STAT_CACHE
   virtual void invalidate_cache( cache_e c );
 #else
@@ -6060,15 +6078,6 @@ inline tick_buff_creator_t::operator tick_buff_t* () const
 inline buff_creator_t::operator debuff_t* () const
 { return new debuff_t( *this ); }
 
-
-inline void player_t::sequence_add( const action_t* a, const player_t* target, const timespan_t& ts )
-{
-  if ( a -> marker )
-    // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
-    if ( ( a -> sim -> iterations <= 1 && a -> sim -> current_iteration == 0 ) ||
-         ( a -> sim -> iterations > 1 && a -> sim -> current_iteration == 1 ) )
-      report_information.action_sequence.push_back( new report_information_t::action_sequence_data_t( a, target, ts, this ) );
-};
 
 /* Simple String to Number function, using stringstream
  * This will NOT translate all numbers in the string to a number,

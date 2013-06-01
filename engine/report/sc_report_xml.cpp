@@ -188,9 +188,9 @@ void print_xml_player_buffs( xml_writer_t & writer, player_t * p );
 void print_xml_player_uptime( xml_writer_t & writer, player_t * p );
 void print_xml_player_procs( xml_writer_t & writer, player_t * p );
 void print_xml_player_gains( xml_writer_t & writer, player_t * p );
-void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player_t::report_information_t& );
+void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player_processed_report_information_t& );
 void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p );
-void print_xml_player_charts( xml_writer_t & writer, player_t::report_information_t& );
+void print_xml_player_charts( xml_writer_t & writer, player_processed_report_information_t& );
 
 void print_xml_errors( sim_t* sim, xml_writer_t & writer )
 {
@@ -273,6 +273,9 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
 {
   report::generate_player_charts( p, p->report_information );
 
+  const player_collected_data_t& cd = p -> collected_data;
+  double dps_error = sim_t::distribution_mean_error( *sim, cd.dps );
+
   writer.begin_tag( "player" );
   writer.print_attribute( "name", p -> name() );
   if ( owner )
@@ -289,10 +292,10 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
   writer.print_tag( "primary_role", util::role_type_string( p -> primary_role() ) );
   writer.print_tag( "position", p -> position_str );
   writer.begin_tag( "dps" );
-  writer.print_attribute( "value", util::to_string( p -> dps.mean() ) );
-  writer.print_attribute( "effective", util::to_string( p -> dpse.mean() ) );
-  writer.print_attribute( "error", util::to_string( p -> dps_error ) );
-  writer.print_attribute( "range", util::to_string( ( p -> dps.max() - p -> dps.min() ) / 2.0 ) );
+  writer.print_attribute( "value", util::to_string( cd.dps.mean() ) );
+  writer.print_attribute( "effective", util::to_string( cd.dps.mean() ) );
+  writer.print_attribute( "error", util::to_string( dps_error ) );
+  writer.print_attribute( "range", util::to_string( ( cd.dps.max() - cd.dps.min() ) / 2.0 ) );
   writer.print_attribute( "convergence", util::to_string( p -> dps_convergence ) );
   writer.end_tag( "dps" );
 
@@ -689,7 +692,7 @@ void print_xml_player_gains( xml_writer_t & writer, player_t * p )
   writer.end_tag( "gains" );
 }
 
-void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player_t::report_information_t& ri )
+void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player_processed_report_information_t& ri )
 {
   if ( ! p -> sim -> scaling -> has_scale_factors() ) return;
 
@@ -829,7 +832,7 @@ void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p )
   writer.end_tag( "dps_plot_data" );
 }
 
-void print_xml_player_charts( xml_writer_t & writer, player_t::report_information_t& ri )
+void print_xml_player_charts( xml_writer_t & writer, player_processed_report_information_t& ri )
 {
   writer.begin_tag( "charts" );
 
@@ -1122,7 +1125,7 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_t::report_informa
     writer.begin_tag( "player" );
     writer.print_attribute( "name", p -> name() );
     writer.print_attribute( "index", util::to_string( i ) );
-    writer.print_attribute( "dps", util::to_string( p -> dps.mean() ) );
+    writer.print_attribute( "dps", util::to_string( p -> collected_data.dps.mean() ) );
     writer.end_tag( "player" );
   }
   writer.end_tag( "player_by_dps" );
@@ -1135,7 +1138,7 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_t::report_informa
     writer.begin_tag( "player" );
     writer.print_attribute( "name", p -> name() );
     writer.print_attribute( "index", util::to_string( i ) );
-    writer.print_attribute( "hps", util::to_string( p -> hps.mean() ) );
+    writer.print_attribute( "hps", util::to_string( p -> collected_data.hps.mean() ) );
     writer.end_tag( "player" );
   }
   writer.end_tag( "player_by_hps" );

@@ -191,7 +191,7 @@ void print_text_actions( FILE* file, player_t* p )
       {
         if ( first )
         {
-          util::fprintf( file, "   %s  (DPS=%.1f)\n", pet -> name_str.c_str(), pet -> dps.mean() );
+          util::fprintf( file, "   %s  (DPS=%.1f)\n", pet -> name_str.c_str(), pet -> collected_data.dps.mean() );
           first = false;
         }
         print_text_action( file, s, max_length, max_dpe, max_dpet, max_dpr, max_pdps );
@@ -203,7 +203,7 @@ void print_text_actions( FILE* file, player_t* p )
 // print_text_buffs =========================================================
 
 
-void print_text_buffs( FILE* file, player_t::report_information_t& ri )
+void print_text_buffs( FILE* file, player_processed_report_information_t& ri )
 {
   bool first = true;
   char prefix = ' ';
@@ -389,7 +389,7 @@ void print_text_pet_gains( FILE* file, player_t* p )
   for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
     pet_t* pet = p -> pet_list[ i ];
-    if ( pet -> dmg.mean() <= 0 ) continue;
+    if ( pet -> collected_data.dmg.mean() <= 0 ) continue;
 
     int max_length = 0;
     for ( size_t i = 0; i < pet -> gain_list.size(); ++i )
@@ -558,7 +558,7 @@ void print_text_scale_factors( FILE* file, sim_t* sim )
 
 // print_text_scale_factors =================================================
 
-void print_text_scale_factors( FILE* file, player_t* p, player_t::report_information_t& ri )
+void print_text_scale_factors( FILE* file, player_t* p, player_processed_report_information_t& ri )
 {
   if ( ! p -> sim -> scaling -> has_scale_factors() ) return;
 
@@ -667,7 +667,7 @@ void print_text_reference_dps( FILE* file, sim_t* sim )
   }
 
   util::fprintf( file, "  %-*s", max_length, ref_p -> name() );
-  util::fprintf( file, "  %.0f", ref_p -> dps.mean() );
+  util::fprintf( file, "  %.0f", ref_p -> collected_data.dps.mean() );
 
   if ( sim -> scaling -> has_scale_factors() )
   {
@@ -690,9 +690,9 @@ void print_text_reference_dps( FILE* file, sim_t* sim )
     {
       util::fprintf( file, "  %-*s", max_length, p -> name() );
 
-      bool over = ( p -> dps.mean() > ref_p -> dps.mean() );
+      bool over = ( p -> collected_data.dps.mean() > ref_p -> collected_data.dps.mean() );
 
-      double ratio = 100.0 * fabs( p -> dps.mean() - ref_p -> dps.mean() ) / ref_p -> dps.mean();
+      double ratio = 100.0 * fabs( p -> collected_data.dps.mean() - ref_p -> collected_data.dps.mean() ) / ref_p -> collected_data.dps.mean();
 
       util::fprintf( file, "  %c%.0f%%", ( over ? '+' : '-' ), ratio );
 
@@ -769,18 +769,22 @@ void print_text_player( FILE* file, player_t* p )
 {
   report::generate_player_buff_lists( p, p->report_information );
 
+  const player_collected_data_t& cd = p -> collected_data;
+
   util::fprintf( file, "\n%s: %s %s %s %s %d\n",
                  p -> is_enemy() ? "Target" : p -> is_add() ? "Add" : "Player",
                  p -> name(), p -> race_str.c_str(),
                  util::player_type_string( p -> type ),
                  dbc::specialization_string( p -> specialization() ).c_str(), p -> level );
 
+  double dps_error = sim_t::distribution_mean_error( *p -> sim, p -> collected_data.dps );
+  double hps_error = sim_t::distribution_mean_error( *p -> sim, p -> collected_data.hps );
   util::fprintf( file, "  DPS: %.1f  DPS-Error=%.1f/%.1f%% HPS: %.1f HPS-Error=%.1f/%.1f%% DPS-Range=%.0f/%.1f%%  DPS-Convergence=%.1f%%",
-                 p -> dps.mean(),
-                 p -> dps_error, p -> dps.mean() ? p -> dps_error * 100 / p -> dps.mean() : 0,
-                 p -> hps.mean(),
-                 p -> hps_error, p -> hps.mean() ? p -> hps_error * 100 / p -> hps.mean() : 0,
-                 ( p -> dps.max() - p -> dps.min() ) / 2.0 , p -> dps.mean() ? ( ( p -> dps.max() - p -> dps.min() ) / 2 ) * 100 / p -> dps.mean() : 0,
+                 p -> collected_data.dps.mean(),
+                 dps_error, cd.dps.mean() ? dps_error * 100 / cd.dps.mean() : 0,
+                     cd.hps.mean(),
+                 hps_error, cd.hps.mean() ? hps_error * 100 / cd.hps.mean() : 0,
+                 ( cd.dps.max() - cd.dps.min() ) / 2.0 , cd.dps.mean() ? ( ( cd.dps.max() - cd.dps.min() ) / 2 ) * 100 / cd.dps.mean() : 0,
                  p -> dps_convergence * 100 );
 
   if ( p -> rps_loss > 0 )
@@ -846,8 +850,8 @@ void print_text( FILE* file, sim_t* sim, bool detail )
     for ( int i=0; i < num_players; i++ )
     {
       player_t* p = sim -> players_by_dps[ i ];
-      if ( p -> dps.mean() <= 0 ) continue;
-      util::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> dps.mean(), sim -> raid_dps.mean() ? 100 * p -> dpse.mean() / sim -> raid_dps.mean() : 0, p -> name() );
+      if ( p -> collected_data.dps.mean() <= 0 ) continue;
+      util::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> collected_data.dps.mean(), sim -> raid_dps.mean() ? 100 * p -> collected_data.dpse.mean() / sim -> raid_dps.mean() : 0, p -> name() );
     }
 
     if ( ! sim -> players_by_hps.empty() )
@@ -857,8 +861,8 @@ void print_text( FILE* file, sim_t* sim, bool detail )
       for ( size_t i=0; i < sim -> players_by_hps.size(); i++ )
       {
         player_t* p = sim -> players_by_hps[ i ];
-        if ( p -> hps.mean() <= 0 ) continue;
-        util::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> hps.mean(), sim -> raid_hps.mean() ? 100 * p -> hpse.mean() / sim -> raid_hps.mean() : 0, p -> name() );
+        if ( p -> collected_data.hps.mean() <= 0 ) continue;
+        util::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> collected_data.hps.mean(), sim -> raid_hps.mean() ? 100 * p -> collected_data.hpse.mean() / sim -> raid_hps.mean() : 0, p -> name() );
       }
     }
   }

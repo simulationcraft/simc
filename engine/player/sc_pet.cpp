@@ -40,7 +40,7 @@ void pet_t::init_pet_t_()
   // Set pet dps data collection to level 2 or higher, so our 32bit GUI users can at least
   // do scale factor simulations with default settings.
   if ( sim -> statistics_level < 2 )
-    dps.change_mode( true );
+    collected_data.dps.change_mode( true );
 }
 
 pet_t::pet_t( sim_t*             s,

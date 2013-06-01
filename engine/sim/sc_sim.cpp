@@ -1579,7 +1579,7 @@ struct compare_dps
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    return l -> dps.mean() > r -> dps.mean();
+    return l -> collected_data.dps.mean() > r -> collected_data.dps.mean();
   }
 };
 
@@ -1589,7 +1589,7 @@ struct compare_hps
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    return l -> hps.mean() > r -> hps.mean();
+    return l -> collected_data.hps.mean() > r -> collected_data.hps.mean();
   }
 };
 

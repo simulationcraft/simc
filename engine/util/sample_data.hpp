@@ -325,7 +325,7 @@ public:
   // Access functions
 
   // calculate percentile
-  double percentile( double x )
+  double percentile( double x ) const
   {
     assert( x >= 0 && x <= 1.0 );
 
@@ -336,7 +336,7 @@ public:
       return 0;
 
     if ( !is_sorted )
-      sort();
+      return base_t::nan();
 
     // Should be improved to use linear interpolation
     return *( sorted_data()[ ( int ) ( x * ( sorted_data().size() - 1 ) ) ] );
@@ -355,6 +355,15 @@ public:
     }
     else
       _data.insert( _data.end(), other._data.begin(), other._data.end() );
+  }
+
+  std::ostringstream& data_str( std::ostringstream& s )
+  {
+    s << "Sample_Data: Name: \"" << name_str << "\" count: " << count() << "\n";
+    for ( size_t i = 0, size = data().size(); i < size; ++i )
+    { if ( i > 0 ) s << " "; s << data()[ i ]; }
+    s << "\n";
+    return s;
   }
 
 }; // sample_data_t
