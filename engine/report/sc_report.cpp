@@ -62,7 +62,7 @@ size_t player_chart_length( player_t* p )
   if ( pet_t* is_pet = dynamic_cast<pet_t*>( p ) )
     p = is_pet -> owner;
 
-  return static_cast<size_t>( p -> fight_length.max() );
+  return static_cast<size_t>( p -> collected_data.fight_length.max() );
 }
 
 char stat_type_letter( stats_e type )
@@ -596,7 +596,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
     "\t\t\t\t\t\t\t\t</tr>\n",
     data.mean() );
 
-  if ( !data.simple || data.min_max )
+  if ( !data.simple )
   {
     ++i;
     os << "\t\t\t\t\t\t\t\t<tr";
@@ -976,10 +976,10 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
   }
 
   ri.distribution_deaths_chart = chart::distribution( p -> sim -> print_styles,
-                                                      p -> deaths.distribution, encoded_name + " Death",
-                                                      p -> deaths.mean(),
-                                                      p -> deaths.min(),
-                                                      p -> deaths.max() );
+                                                      cd.deaths.distribution, encoded_name + " Death",
+                                                      cd.deaths.mean(),
+                                                      cd.deaths.min(),
+                                                      cd.deaths.max() );
 
   // Resource Charts
   for ( size_t i = 0; i < p -> resource_timeline_count; ++i )

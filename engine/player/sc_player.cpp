@@ -606,11 +606,8 @@ player_t::player_t( sim_t*             s,
   // Reporting
   quiet( 0 ), last_foreground_action( 0 ),
   iteration_fight_length( timespan_t::zero() ), arise_time( timespan_t::min() ),
-  fight_length( name_str + " Fight Length", s -> statistics_level < 2, true ),
-  waiting_time(), executed_foreground_actions(),
   iteration_waiting_time( timespan_t::zero() ), iteration_executed_foreground_actions( 0 ),
   rps_gain( 0 ), rps_loss( 0 ),
-  deaths( name_str + " Deaths", false ), deaths_error( 0 ),
   buffed( buffed_stats_t() ),
   collected_data( player_collected_data_t( name_str, *sim ) ),
   resource_timeline_count( 0 ),
@@ -2285,10 +2282,7 @@ void player_t::init_stats()
   range::fill( resource_lost, 0.0 );
   range::fill( resource_gained, 0.0 );
 
-  fight_length.reserve( sim -> iterations );
-
   collected_data.reserve_memory( sim -> iterations );
-
 }
 
 // player_t::init_scaling ===================================================
@@ -3568,10 +3562,10 @@ void player_t::datacollection_end()
   double w_time = iteration_waiting_time.total_seconds();
   assert( iteration_fight_length <= sim -> current_time );
 
-  fight_length.add( f_length );
-  waiting_time.add( w_time );
+  collected_data.fight_length.add( f_length );
+  collected_data.waiting_time.add( w_time );
 
-  executed_foreground_actions.add( iteration_executed_foreground_actions );
+  collected_data.executed_foreground_actions.add( iteration_executed_foreground_actions );
 
   for ( size_t i = 0; i < stats_list.size(); ++i )
     stats_list[ i ] -> datacollection_end();
@@ -3624,7 +3618,7 @@ void player_t::datacollection_end()
     proc_list[ i ] -> datacollection_end();
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
-    resources.combat_end_resource[ i ].add( resources.current[ i ] );
+    collected_data.combat_end_resource[ i ].add( resources.current[ i ] );
 
 }
 
@@ -3749,15 +3743,9 @@ void merge( player_t& left, player_t& right )
 
 void player_t::merge( player_t& other )
 {
-  fight_length.merge( other.fight_length );
-  waiting_time.merge( other.waiting_time );
-  executed_foreground_actions.merge( other.executed_foreground_actions );
-
   collected_data.merge( other.collected_data );
 
   timeline_dmg_taken.merge( other.timeline_dmg_taken );
-
-  deaths.merge( other.deaths );
 
   assert( resource_timeline_count == other.resource_timeline_count );
   for ( size_t i = 0; i < resource_timeline_count; ++i )
@@ -4931,7 +4919,7 @@ void player_t::assess_damage( school_e school,
     {
       if ( ! current.sleeping )
       {
-        deaths.add( sim -> current_time.total_seconds() );
+        collected_data.deaths.add( sim -> current_time.total_seconds() );
       }
       if ( sim -> log ) sim -> output( "%s has died.", name() );
       demise();
@@ -8350,14 +8338,8 @@ void player_t::analyze( sim_t& s )
 
   // sample_data_t::analyze(calc_basics,calc_variance,sort )
 
-  deaths.analyze_all();
-
-  fight_length.analyze_all();
-
   collected_data.analyze();
   timeline_dmg_taken.adjust( s.divisor_timeline );
-
-  deaths_error =  deaths.mean_std_dev * s.confidence_estimator;
 
   for ( size_t i = 0; i <  buff_list.size(); ++i )
     buff_list[ i ] -> analyze();
@@ -8365,16 +8347,16 @@ void player_t::analyze( sim_t& s )
   range::sort(  stats_list, compare_stats_name() );
 
   if (  quiet ) return;
-  if (  fight_length.mean() == 0 ) return;
+  if (  collected_data.fight_length.mean() == 0 ) return;
 
   // Pet Chart Adjustment ===================================================
-  size_t max_buckets = static_cast<size_t>(  fight_length.max() );
+  size_t max_buckets = static_cast<size_t>(  collected_data.fight_length.max() );
 
   // Make the pet graphs the same length as owner's
   if (  is_pet() )
   {
     player_t* o =  cast_pet() -> owner;
-    max_buckets = static_cast<size_t>( o -> fight_length.max() );
+    max_buckets = static_cast<size_t>( o -> collected_data.fight_length.max() );
   }
 
   // Stats Analysis =========================================================
@@ -8435,8 +8417,8 @@ void player_t::analyze( sim_t& s )
   dpr = ( rl > 0 ) ? (  collected_data.dmg.mean() / rl ) : -1.0;
   hpr = ( rl > 0 ) ? (  collected_data.heal.mean() / rl ) : -1.0;
 
-  rps_loss = resource_lost  [  primary_resource() ] /  fight_length.mean();
-  rps_gain = resource_gained[  primary_resource() ] /  fight_length.mean();
+  rps_loss = resource_lost  [  primary_resource() ] /  collected_data.fight_length.mean();
+  rps_gain = resource_gained[  primary_resource() ] /  collected_data.fight_length.mean();
 
   for ( size_t i = 0; i < gain_list.size(); ++i )
     gain_list[ i ] -> analyze( s );
@@ -8499,7 +8481,7 @@ const extended_sample_data_t& player_t::scales_over()
     return q -> collected_data.htps;
 
   if ( so == "deaths" )
-    return q -> deaths;
+    return q -> collected_data.deaths;
 
   if ( q -> primary_role() == ROLE_HEAL || so == "hps" )
     return q -> collected_data.hps;
@@ -9236,6 +9218,8 @@ player_processed_report_information_t::action_sequence_data_t::action_sequence_d
 }
 
 player_collected_data_t::player_collected_data_t( const std::string& player_name, sim_t& s ) :
+  fight_length( player_name + " Fight Length", s.statistics_level < 2 ),
+  waiting_time(), executed_foreground_actions(),
   dmg( player_name + " Damage", s.statistics_level < 2 ),
   compound_dmg( player_name + " Total Damage", s.statistics_level < 2 ),
   dps( player_name + " Damage Per Second", s.statistics_level < 1 ),
@@ -9247,13 +9231,16 @@ player_collected_data_t::player_collected_data_t( const std::string& player_name
   hps( player_name + " Healing Per Second", s.statistics_level < 1 ),
   hpse( player_name + " Healing per Second (effective)", s.statistics_level < 2 ),
   htps( player_name + " Healing taken Per Second", s.statistics_level < 2 ),
-  heal_taken( player_name + " Healing Taken", s.statistics_level < 2 )
+  heal_taken( player_name + " Healing Taken", s.statistics_level < 2 ),
+  deaths( player_name + " Deaths", s.statistics_level < 2 ),
+  combat_end_resource( RESOURCE_MAX )
 {
 
 }
 
 void player_collected_data_t::reserve_memory( size_t n )
 {
+  fight_length.reserve( n );
   // DMG
   dmg.reserve( n );
   compound_dmg.reserve( n );
@@ -9270,6 +9257,9 @@ void player_collected_data_t::reserve_memory( size_t n )
 
 void player_collected_data_t::merge( const player_collected_data_t& other )
 {
+  fight_length.merge( other.fight_length );
+  waiting_time.merge( other.waiting_time );
+  executed_foreground_actions.merge( other.executed_foreground_actions );
   // DMG
   dmg.merge( other.dmg );
   compound_dmg.merge( other.compound_dmg );
@@ -9284,10 +9274,13 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
   htps.merge( other.htps );
   hpse.merge( other.hpse );
   heal_taken.merge( other.heal_taken );
+  // Tank
+  deaths.merge( other.deaths );
 }
 
 void player_collected_data_t::analyze()
 {
+  fight_length.analyze_all();
   // DMG
   dmg.analyze_all();
   compound_dmg.analyze_all();
@@ -9302,5 +9295,6 @@ void player_collected_data_t::analyze()
   hpse.analyze_all();
   heal_taken.analyze_all();
   htps.analyze_all();
-
+  // Tank
+  deaths.analyze_all();
 }

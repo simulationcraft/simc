@@ -125,20 +125,19 @@ public:
   double mean_std_dev;
   std::vector<size_t> distribution;
   bool simple;
-  bool min_max;
 private:
   std::vector<double> _data;
   std::vector<double*> _sorted_data; // extra sequence so we can keep the original, unsorted order ( for example to do regression on it )
   bool is_sorted;
 public:
-  extended_sample_data_t( const std::string& n, bool s = true, bool mm = false ) :
+  extended_sample_data_t( const std::string& n, bool s = true ) :
     base_t(),
     name_str( n ),
     _mean( 0 ),
     variance( 0 ),
     std_dev( 0 ),
     mean_std_dev( 0 ),
-    simple( s ), min_max( mm ),
+    simple( s ),
     is_sorted( false )
   {}
 

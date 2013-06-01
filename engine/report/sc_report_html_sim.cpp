@@ -420,8 +420,8 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
       s -> name_str.c_str(), "",
       id,
       direct_total,
-      direct_total / s -> player -> fight_length.mean(),
-      s -> num_direct_results.mean() / ( s -> player -> fight_length.mean() / 60.0 ),
+      direct_total / s -> player -> collected_data.fight_length.mean(),
+      s -> num_direct_results.mean() / ( s -> player -> collected_data.fight_length.mean() / 60.0 ),
       s -> direct_results[ RESULT_HIT  ].actual_amount.mean(),
       s -> direct_results[ RESULT_CRIT ].actual_amount.mean(),
       s -> num_executes.mean(),
@@ -432,7 +432,7 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
       s -> direct_results[ RESULT_BLOCK  ].pct,
       s -> total_intervals.mean(),
       s -> total_amount.mean(),
-      s -> player -> fight_length.mean() );
+      s -> player -> collected_data.fight_length.mean() );
 
   if ( tick_total > 0.0 )
     os.printf(
@@ -454,7 +454,7 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
       s -> tick_results[ RESULT_BLOCK  ].pct,
       s -> total_intervals.mean(),
       s -> total_amount.mean(),
-      s -> player -> fight_length.mean() );
+      s -> player -> collected_data.fight_length.mean() );
 
   for ( size_t i = 0, num_children = s -> children.size(); i < num_children; i++ )
   {

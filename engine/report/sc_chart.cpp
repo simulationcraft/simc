@@ -407,7 +407,7 @@ struct compare_downtime
 {
   bool operator()( player_t* l, player_t* r ) const
   {
-    return l -> waiting_time.mean() > r -> waiting_time.mean();
+    return l -> collected_data.waiting_time.mean() > r -> collected_data.waiting_time.mean();
   }
 };
 
@@ -616,7 +616,7 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, int p
   for ( size_t i = 0; i < players_by_name.size(); i++ )
   {
     player_t* p = players_by_name[ i ];
-    if ( ( p -> waiting_time.mean() / p -> fight_length.mean() ) > 0.01 )
+    if ( ( p -> collected_data.waiting_time.mean() / p -> collected_data.fight_length.mean() ) > 0.01 )
     {
       waiting_list.push_back( p );
     }
@@ -656,7 +656,7 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, int p
   for ( size_t i = 0; i < waiting_list.size(); i++ )
   {
     player_t* p = waiting_list[ i ];
-    double waiting = 100.0 * p -> waiting_time.mean() / p -> fight_length.mean();
+    double waiting = 100.0 * p -> collected_data.waiting_time.mean() / p -> collected_data.fight_length.mean();
     if ( waiting > max_waiting ) max_waiting = waiting;
     s << ( i ? "|" : "" );
     s << std::setprecision( 2 ) << waiting;
@@ -685,7 +685,7 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, int p
     std::string formatted_name = p -> name_str;
     util::urlencode( formatted_name );
 
-    double waiting_pct = ( 100.0 * p -> waiting_time.mean() / p -> fight_length.mean() );
+    double waiting_pct = ( 100.0 * p -> collected_data.waiting_time.mean() / p -> collected_data.fight_length.mean() );
 
     s << ( i ? "|" : "" )  << "t++" << std::setprecision( p -> sim -> report_precision / 2 ) << waiting_pct; // Insert waiting percent
 
@@ -1190,7 +1190,7 @@ std::string chart::time_spent( player_t* p )
   range::remove_copy_if( p -> stats_list, back_inserter( filtered_waiting_stats ), filter_waiting_stats() );
 
   size_t num_stats = filtered_waiting_stats.size();
-  if ( num_stats == 0 && p -> waiting_time.mean() == 0 )
+  if ( num_stats == 0 && p -> collected_data.waiting_time.mean() == 0 )
     return std::string();
 
   range::sort( filtered_waiting_stats, compare_stats_time() );
@@ -1207,11 +1207,13 @@ std::string chart::time_spent( player_t* p )
   s += "chd=t:";
   for ( size_t i = 0; i < num_stats; i++ )
   {
-    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( i ? "," : "" ), 100.0 * filtered_waiting_stats[ i ] -> total_time.total_seconds() / p -> fight_length.mean() ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( i ? "," : "" ), 100.0 * filtered_waiting_stats[ i ] -> total_time.total_seconds() / p -> collected_data.fight_length.mean() ); s += buffer;
+
   }
-  if ( p -> waiting_time.mean() > 0 )
+  if ( p -> collected_data.waiting_time.mean() > 0 )
   {
-    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( num_stats > 0 ? "," : "" ), 100.0 * p -> waiting_time.mean() / p -> fight_length.mean() ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "%s%.1f", ( num_stats > 0 ? "," : "" ), 100.0 * p -> collected_data.waiting_time.mean() / p -> collected_data.fight_length.mean() ); s += buffer;
+
   }
   s += amp;
   s += "chds=0,100";
@@ -1231,7 +1233,7 @@ std::string chart::time_spent( player_t* p )
     }
     s += school;
   }
-  if ( p -> waiting_time.mean() > 0 )
+  if ( p -> collected_data.waiting_time.mean() > 0 )
   {
     if ( num_stats > 0 ) s += ",";
     s += p -> sim -> print_styles == 1 ? "EEEEE2" : "ffffff";
@@ -1245,11 +1247,11 @@ std::string chart::time_spent( player_t* p )
     s += st -> name_str.c_str();
     snprintf( buffer, sizeof( buffer ), " %.1fs", st -> total_time.total_seconds() ); s += buffer;
   }
-  if ( p -> waiting_time.mean() > 0 )
+  if ( p -> collected_data.waiting_time.mean() > 0 )
   {
     if ( num_stats > 0 )s += "|";
     s += "waiting";
-    snprintf( buffer, sizeof( buffer ), " %.1fs", p -> waiting_time.mean() ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), " %.1fs", p -> collected_data.waiting_time.mean() ); s += buffer;
   }
   s += amp;
 

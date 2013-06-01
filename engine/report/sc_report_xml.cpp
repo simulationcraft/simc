@@ -310,12 +310,12 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
   }
 
   writer.begin_tag( "waiting_time" );
-  writer.print_attribute( "pct", util::to_string( p -> fight_length.mean() ? 100.0 * p -> waiting_time.mean() / p -> fight_length.mean() : 0 ) );
+  writer.print_attribute( "pct", util::to_string( cd.fight_length.mean() ? 100.0 * cd.waiting_time.mean() / cd.fight_length.mean() : 0 ) );
   writer.end_tag( "waiting_time" );
   writer.begin_tag( "active_time" );
-  writer.print_attribute( "pct", util::to_string( sim -> simulation_length.mean() ? p -> fight_length.mean() / sim -> simulation_length.mean() * 100.0 : 0 ) );
+  writer.print_attribute( "pct", util::to_string( sim -> simulation_length.mean() ? cd.fight_length.mean() / sim -> simulation_length.mean() * 100.0 : 0 ) );
   writer.end_tag( "active_time" );
-  writer.print_tag( "apm", util::to_string( p -> fight_length.mean() ? 60.0 * p -> executed_foreground_actions.mean() / p -> fight_length.mean() : 0 ) );
+  writer.print_tag( "apm", util::to_string( cd.fight_length.mean() ? 60.0 * cd.executed_foreground_actions.mean() / cd.fight_length.mean() : 0 ) );
 
   if ( ! p -> origin_str.empty() )
     writer.print_tag( "origin", p -> origin_str );

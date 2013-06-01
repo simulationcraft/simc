@@ -107,7 +107,7 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe
 
   if ( s -> total_tick_time.sum() > 0.0 )
   {
-    util::fprintf( file, "  UpTime=%.1f%%", 100.0 * s -> total_tick_time.mean() / s -> player -> fight_length.mean()  );
+    util::fprintf( file, "  UpTime=%.1f%%", 100.0 * s -> total_tick_time.mean() / s -> player -> collected_data.fight_length.mean()  );
   }
 
   util::fprintf( file, "\n" );
@@ -477,10 +477,10 @@ void print_text_waiting( FILE* file, sim_t* sim )
     if ( p -> quiet )
       continue;
 
-    if ( p -> waiting_time.mean() )
+    if ( p -> collected_data.waiting_time.mean() )
     {
       nobody_waits = false;
-      util::fprintf( file, "    %4.1f%% : %s\n", 100.0 * p -> waiting_time.mean() / p -> fight_length.mean(),  p -> name() );
+      util::fprintf( file, "    %4.1f%% : %s\n", 100.0 * p -> collected_data.waiting_time.mean() / p -> collected_data.fight_length.mean(),  p -> name() );
     }
   }
 
@@ -791,7 +791,9 @@ void print_text_player( FILE* file, player_t* p )
   {
     util::fprintf( file, "  DPR=%.1f  RPS-Out=%.1f RPS-In=%.1f  Resource=(%s) Waiting=%.1f ApM=%.1f",
                    p -> dpr, p -> rps_loss, p -> rps_gain,
-                   util::resource_type_string( p -> primary_resource() ), 100.0 * p -> waiting_time.mean() / p -> fight_length.mean(), 60.0 * p -> executed_foreground_actions.mean() / p -> fight_length.mean()  );
+                   util::resource_type_string( p -> primary_resource() ),
+                   100.0 * p -> collected_data.waiting_time.mean() / p -> collected_data.fight_length.mean(),
+                   60.0 * p -> collected_data.executed_foreground_actions.mean() / p -> collected_data.fight_length.mean()  );
   }
 
   util::fprintf( file, "\n" );

@@ -3670,6 +3670,9 @@ struct player_processed_report_information_t
  */
 struct player_collected_data_t
 {
+  extended_sample_data_t fight_length;
+  simple_sample_data_t waiting_time, executed_foreground_actions;
+
   // DMG
   extended_sample_data_t dmg;
   extended_sample_data_t compound_dmg;
@@ -3677,13 +3680,17 @@ struct player_collected_data_t
   extended_sample_data_t dpse;
   extended_sample_data_t dtps;
   extended_sample_data_t dmg_taken;
-  //Heal
+  // Heal
   extended_sample_data_t heal;
   extended_sample_data_t compound_heal;
   extended_sample_data_t hps;
   extended_sample_data_t hpse;
   extended_sample_data_t htps;
   extended_sample_data_t heal_taken;
+  // Tank
+  extended_sample_data_t deaths;
+
+  std::vector<simple_sample_data_with_min_max_t > combat_end_resource;
 
   player_collected_data_t( const std::string& player_name, sim_t& );
   void reserve_memory( size_t );
@@ -3862,10 +3869,8 @@ public:
     std::array<double, RESOURCE_MAX> base, initial, max, current,
         base_multiplier, initial_multiplier;
     std::array<int, RESOURCE_MAX> infinite_resource;
-    std::vector<simple_sample_data_with_min_max_t > combat_end_resource;
 
-    resources_t() :
-      combat_end_resource( RESOURCE_MAX, simple_sample_data_with_min_max_t() )
+    resources_t()
     {
       range::fill( base, 0.0 );
       range::fill( initial, 0.0 );
@@ -3927,15 +3932,11 @@ public:
   // Reporting
   int       quiet;
   action_t* last_foreground_action;
-  timespan_t iteration_fight_length, arise_time;
-  extended_sample_data_t fight_length;
-  simple_sample_data_t waiting_time, executed_foreground_actions;
+  timespan_t iteration_fight_length,arise_time;
   timespan_t iteration_waiting_time;
   int       iteration_executed_foreground_actions;
   std::array< double, RESOURCE_MAX > resource_lost, resource_gained;
   double    rps_gain, rps_loss;
-  extended_sample_data_t deaths;
-  double    deaths_error;
 
   // Buffed snapshot_stats (for reporting)
   struct buffed_stats_t

@@ -131,7 +131,7 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
     s -> tick_results[ RESULT_MISS ].pct +
     s -> tick_results[ RESULT_DODGE ].pct +
     s -> tick_results[ RESULT_PARRY ].pct,
-    100 * s -> total_tick_time.mean() / p -> fight_length.mean() );
+    100 * s -> total_tick_time.mean() / p -> collected_data.fight_length.mean() );
 
   if ( p -> sim -> report_details )
   {
@@ -638,7 +638,7 @@ void print_html_gear ( report::sc_html_stream& os, player_t* p )
 
 void print_html_profile ( report::sc_html_stream& os, player_t* a )
 {
-  if ( a -> fight_length.mean() > 0 )
+  if ( a -> collected_data.fight_length.mean() > 0 )
   {
     std::string profile_str;
     a -> create_profile( profile_str, SAVE_ALL );
@@ -661,7 +661,7 @@ void print_html_profile ( report::sc_html_stream& os, player_t* a )
 
 void print_html_stats ( report::sc_html_stream& os, player_t* a )
 {
-  if ( a -> fight_length.mean() > 0 )
+  if ( a -> collected_data.fight_length.mean() > 0 )
   {
     int j = 1;
 
@@ -968,7 +968,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
 
 void print_html_talents( report::sc_html_stream& os, player_t* p )
 {
-  if ( p -> fight_length.mean() > 0 )
+  if ( p -> collected_data.fight_length.mean() > 0 )
   {
     os << "\t\t\t\t\t\t<div class=\"player-section talents\">\n"
        << "\t\t\t\t\t\t\t<h3 class=\"toggle\">Talents</h3>\n"
@@ -1401,7 +1401,7 @@ void print_html_player_statistics( report::sc_html_stream& os, player_t* p, play
      "\t\t\t\t\t\t\t\t<tr>\n"
      "\t\t\t\t\t\t\t\t<td>\n";
 
-  report::print_html_sample_data( os, p -> sim, p -> fight_length, "Fight Length" );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.fight_length, "Fight Length" );
   report::print_html_sample_data( os, p -> sim, p -> collected_data.dps, "DPS" );
   report::print_html_sample_data( os, p -> sim, p -> collected_data.dpse, "DPS(e)" );
   report::print_html_sample_data( os, p -> sim, p -> collected_data.dmg, "Damage" );
@@ -1565,7 +1565,7 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
     for ( size_t i = 0; i < p -> pet_list.size(); ++i )
     {
       pet_t* pet = p -> pet_list[ i ];
-      if ( pet -> fight_length.mean() <= 0 ) continue;
+      if ( pet -> collected_data.fight_length.mean() <= 0 ) continue;
       bool first = true;
       std::array<double, RESOURCE_MAX> total_pet_gains = std::array<double, RESOURCE_MAX>();
       get_total_player_gains( *pet, total_pet_gains );
@@ -1614,8 +1614,8 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
   int j = 0;
   for ( resource_e rt = RESOURCE_NONE; rt < RESOURCE_MAX; ++rt )
   {
-    double rps_gain = p -> resource_gained[ rt ] / p -> fight_length.mean();
-    double rps_loss = p -> resource_lost[ rt ] / p -> fight_length.mean();
+    double rps_gain = p -> resource_gained[ rt ] / p -> collected_data.fight_length.mean();
+    double rps_loss = p -> resource_lost[ rt ] / p -> collected_data.fight_length.mean();
     if ( rps_gain <= 0 && rps_loss <= 0 )
       continue;
 
@@ -1662,9 +1662,9 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
     os << ">\n";
     ++os;
     os.tabs() << "<td class=\"left\">" << util::inverse_tokenize( util::resource_type_string( rt ) ) << "</td>\n";
-    os.tabs() << "<td class=\"right\">" << p -> resources.combat_end_resource[ rt ].mean() << "</td>\n";
-    os.tabs() << "<td class=\"right\">" << p -> resources.combat_end_resource[ rt ].min() << "</td>\n";
-    os.tabs() << "<td class=\"right\">" << p -> resources.combat_end_resource[ rt ].max() << "</td>\n";
+    os.tabs() << "<td class=\"right\">" << p -> collected_data.combat_end_resource[ rt ].mean() << "</td>\n";
+    os.tabs() << "<td class=\"right\">" << p -> collected_data.combat_end_resource[ rt ].min() << "</td>\n";
+    os.tabs() << "<td class=\"right\">" << p -> collected_data.combat_end_resource[ rt ].max() << "</td>\n";
     --os;
     os.tabs() << "</tr>\n";
   }
@@ -1762,7 +1762,7 @@ void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t*
 
   sc_timeline_t timeline_dps_taken;
   p -> timeline_dmg_taken.build_derivative_timeline( timeline_dps_taken );
-  std::string timeline_dps_takenchart = chart::timeline( p, timeline_dps_taken.data(), "dps_taken", timeline_dps_taken.average( 0, static_cast<size_t>( p -> fight_length.max() ) ), "FDD017", static_cast<size_t>( p -> fight_length.max() ) );
+  std::string timeline_dps_takenchart = chart::timeline( p, timeline_dps_taken.data(), "dps_taken", timeline_dps_taken.average( 0, static_cast<size_t>( p -> collected_data.fight_length.max() ) ), "FDD017", static_cast<size_t>( p -> collected_data.fight_length.max() ) );
   if ( ! timeline_dps_takenchart.empty() )
   {
     os << "<img src=\"" << timeline_dps_takenchart << "\" alt=\"DPS Taken Timeline Chart\" />\n";
@@ -1822,7 +1822,7 @@ void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t*
     os.printf( fmt, ri.timeline_dps_chart.c_str() );
   }
 
-  std::string vengeance_timeline_chart = chart::timeline( p, p -> vengeance_timeline().data(), "vengeance", 0, "ff0000", static_cast<size_t>( p -> fight_length.max() ) );
+  std::string vengeance_timeline_chart = chart::timeline( p, p -> vengeance_timeline().data(), "vengeance", 0, "ff0000", static_cast<size_t>( p -> collected_data.fight_length.max() ) );
   if ( ! vengeance_timeline_chart.empty() )
   {
     os << "<img src=\"" << vengeance_timeline_chart << "\" alt=\"Vengeance Timeline Chart\" />\n";
@@ -2241,9 +2241,9 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
     p -> rps_loss,
     p -> rps_gain,
     util::inverse_tokenize( util::resource_type_string( p -> primary_resource() ) ).c_str(),
-    p -> fight_length.mean() ? 100.0 * p -> waiting_time.mean() / p -> fight_length.mean() : 0,
-    p -> fight_length.mean() ? 60.0 * p -> executed_foreground_actions.mean() / p -> fight_length.mean() : 0,
-    sim -> simulation_length.mean() ? p -> fight_length.mean() / sim -> simulation_length.mean() * 100.0 : 0,
+    cd.fight_length.mean() ? 100.0 * cd.waiting_time.mean() / cd.fight_length.mean() : 0,
+    cd.fight_length.mean() ? 60.0 * cd.executed_foreground_actions.mean() / cd.fight_length.mean() : 0,
+    sim -> simulation_length.mean() ? cd.fight_length.mean() / sim -> simulation_length.mean() * 100.0 : 0,
     p -> initial.skill * 100.0 );
 
   // Spec and gear
@@ -2580,7 +2580,9 @@ void print_html_player_deaths( report::sc_html_stream& os, player_t* p, player_p
 {
   // Death Analysis
 
-  if ( p -> deaths.size() > 0 )
+  const extended_sample_data_t& deaths = p -> collected_data.deaths;
+
+  if ( deaths.size() > 0 )
   {
     std::string distribution_deaths_str                = "";
     if ( ! ri.distribution_deaths_chart.empty() )
@@ -2599,29 +2601,29 @@ void print_html_player_deaths( report::sc_html_stream& os, player_t* p, player_p
 
     os << "\t\t\t\t\t\t\t\t<tr>\n"
        << "\t\t\t\t\t\t\t\t\t<td class=\"left\">death count</td>\n"
-       << "\t\t\t\t\t\t\t\t\t<td class=\"right\">" << p -> deaths.size() << "</td>\n"
+       << "\t\t\t\t\t\t\t\t\t<td class=\"right\">" << deaths.size() << "</td>\n"
        << "\t\t\t\t\t\t\t\t</tr>\n";
 
     os << "\t\t\t\t\t\t\t\t<tr>\n"
        << "\t\t\t\t\t\t\t\t\t<td class=\"left\">death count pct</td>\n"
        << "\t\t\t\t\t\t\t\t\t<td class=\"right\">"
-       << ( double ) p -> deaths.size() / p -> sim -> iterations * 100
+       << ( double ) deaths.size() / p -> sim -> iterations * 100
        << "</td>\n"
        << "\t\t\t\t\t\t\t\t</tr>\n";
 
     os << "\t\t\t\t\t\t\t\t<tr>\n"
        << "\t\t\t\t\t\t\t\t\t<td class=\"left\">avg death time</td>\n"
-       << "\t\t\t\t\t\t\t\t\t<td class=\"right\">" << p -> deaths.mean() << "</td>\n"
+       << "\t\t\t\t\t\t\t\t\t<td class=\"right\">" << deaths.mean() << "</td>\n"
        << "\t\t\t\t\t\t\t\t</tr>\n";
 
     os << "\t\t\t\t\t\t\t\t<tr>\n"
        << "\t\t\t\t\t\t\t\t\t<td class=\"left\">min death time</td>\n"
-       << "\t\t\t\t\t\t\t\t\t<td class=\"right\">" << p -> deaths.min() << "</td>\n"
+       << "\t\t\t\t\t\t\t\t\t<td class=\"right\">" << deaths.min() << "</td>\n"
        << "\t\t\t\t\t\t\t\t</tr>\n";
 
     os << "\t\t\t\t\t\t\t\t<tr>\n"
        << "\t\t\t\t\t\t\t\t\t<td class=\"left\">max death time</td>\n"
-       << "\t\t\t\t\t\t\t\t\t<td class=\"right\">" << p -> deaths.max() << "</td>\n"
+       << "\t\t\t\t\t\t\t\t\t<td class=\"right\">" << deaths.max() << "</td>\n"
        << "\t\t\t\t\t\t\t\t</tr>\n";
 
     os << "\t\t\t\t\t\t\t\t<tr>\n"
