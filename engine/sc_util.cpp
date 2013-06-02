@@ -156,7 +156,6 @@ static stopwatch_t wall_sw( STOPWATCH_WALL );
 static stopwatch_t  cpu_sw( STOPWATCH_CPU  );
 
 double util::wall_time() { return wall_sw.elapsed(); }
-double util:: cpu_time() { return  cpu_sw.elapsed(); }
 
 // str_compare_ci ===================================================
 
@@ -546,21 +545,6 @@ const char* util::attribute_type_string( attribute_e type )
 attribute_e util::parse_attribute_type( const std::string& name )
 {
   return parse_enum<attribute_e, ATTRIBUTE_NONE, ATTRIBUTE_MAX, attribute_type_string>( name );
-}
-
-// dmg_type_string ==================================================
-
-const char* util::dmg_type_string( dmg_e type )
-{
-  switch ( type )
-  {
-    case DMG_DIRECT:    return "hit";
-    case DMG_OVER_TIME: return "tick";
-    case HEAL_DIRECT:   return "heal";
-    case HEAL_OVER_TIME:return "hot";
-    case ABSORB:        return "absorb";
-    default:            return "unknown";
-  }
 }
 
 // gem_type_string ==================================================
@@ -1693,27 +1677,6 @@ unsigned util::pet_id( pet_e p )
   }
 
   return 0;
-}
-
-// class_id_string ==================================================
-
-const char* util::class_id_string( player_e type )
-{
-  switch ( type )
-  {
-    case WARRIOR:      return  "1";
-    case PALADIN:      return  "2";
-    case HUNTER:       return  "3";
-    case ROGUE:        return  "4";
-    case PRIEST:       return  "5";
-    case DEATH_KNIGHT: return  "6";
-    case SHAMAN:       return  "7";
-    case MAGE:         return  "8";
-    case WARLOCK:      return  "9";
-    case MONK:         return "10";
-    case DRUID:        return "11";
-    default:           return "0";
-  }
 }
 
 // translate_class_id ===============================================

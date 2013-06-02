@@ -1248,15 +1248,6 @@ unsigned dbc_t::num_tiers() const
 #endif
 }
 
-unsigned dbc_t::first_tier() const
-{
-#if SC_USE_PTR
-  return ptr ? PTR_TIER_BONUSES_TIER_BASE : TIER_BONUSES_TIER_BASE;
-#else
-  return TIER_BONUSES_TIER_BASE;
-#endif
-}
-
 unsigned dbc_t::class_ability_tree_size() const
 {
 #if SC_USE_PTR
@@ -2259,22 +2250,6 @@ bool dbc_t::ability_specialization( uint32_t spell_id, std::vector<specializatio
   return ! spec_list.empty();
 }
 
-int dbc_t::class_ability_tree( player_e c, uint32_t spell_id ) const
-{
-  uint32_t cid = util::class_id( c );
-
-  for ( unsigned tree = 0; tree < class_ability_tree_size(); tree++ )
-  {
-    for ( unsigned n = 0; n < class_ability_size(); n++ )
-    {
-      if ( class_ability( cid, tree, n ) == spell_id )
-        return tree;
-    }
-  }
-
-  return -1;
-}
-
 unsigned dbc_t::glyph_spell_id( player_e c, const char* spell_name ) const
 {
   unsigned cid = util::class_id( c );
@@ -2323,7 +2298,6 @@ unsigned dbc_t::mastery_ability_id( specialization_e spec, const char* spell_nam
 {
   unsigned class_idx = -1;
   unsigned spec_index = -1;
-  uint32_t spell_id;
 
   assert( spell_name && spell_name[ 0 ] );
 
@@ -2332,6 +2306,8 @@ unsigned dbc_t::mastery_ability_id( specialization_e spec, const char* spell_nam
 
   if ( spec == SPEC_NONE )
     return 0;
+
+  uint32_t spell_id;
 
   for ( unsigned n = 0; n < mastery_ability_size(); n++ )
   {

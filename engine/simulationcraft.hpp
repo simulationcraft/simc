@@ -1222,14 +1222,12 @@ struct stopwatch_t
 namespace util
 {
 double wall_time();
-double  cpu_time();
 
 template <typename T>
 T ability_rank( int player_level, T ability_value, int ability_level, ... );
 double interpolate( int level, double val_60, double val_70, double val_80, double val_85 = -1 );
 
 const char* attribute_type_string     ( attribute_e type );
-const char* dmg_type_string           ( dmg_e type );
 const char* dot_behavior_type_string  ( dot_behavior_e t );
 const char* flask_type_string         ( flask_e type );
 const char* food_type_string          ( food_e type );
@@ -2858,7 +2856,6 @@ struct event_t
   virtual ~event_t() {}
 
   static void cancel( event_t*& e );
-  static void early ( event_t*& e );
 
   static void* allocate( std::size_t size, sim_t& );
   static void  recycle( event_t* );
@@ -4443,8 +4440,6 @@ public:
 
   /* New stuff */
   virtual double composite_player_vulnerability( school_e );
-  virtual double composite_spell_crit_vulnerability();
-  virtual double composite_attack_crit_vulnerability();
   virtual double composite_ranged_attack_player_vulnerability();
 
   virtual void activate_action_list( action_priority_list_t* a, bool off_gcd = false );
@@ -4802,9 +4797,7 @@ struct action_t : public noncopyable
   virtual void   reset();
   virtual void   cancel();
   virtual void   interrupt_action();
-  void   check_talent( int talent_rank );
   void   check_spec( specialization_e );
-  void   check_race( race_e );
   void   check_spell( const spell_data_t* );
   const char* name() const { return name_str.c_str(); }
 

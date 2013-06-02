@@ -146,7 +146,7 @@ action_priority_t* action_priority_list_t::add_action( const player_t* p,
                                                        const std::string& action_name,
                                                        const std::string& action_options,
                                                        const std::string& comment )
-{ 
+{
   if ( ! s || ! s -> ok() || ! s -> is_level( p -> level ) ) return 0;
 
   std::string str = action_name;
@@ -1584,38 +1584,6 @@ void action_t::interrupt_action()
   event_t::cancel( execute_event );
 
   player -> debuffs.casting -> expire();
-}
-
-// action_t::check_talent ===================================================
-
-void action_t::check_talent( int talent_rank )
-{
-  if ( talent_rank != 0 ) return;
-
-  if ( player -> is_pet() )
-  {
-    pet_t* p = player -> cast_pet();
-    sim -> errorf( "Player %s has pet %s attempting to execute action %s without the required talent.\n",
-                   p -> owner -> name(), p -> name(), name() );
-  }
-  else
-  {
-    sim -> errorf( "Player %s attempting to execute action %s without the required talent.\n", player -> name(), name() );
-  }
-
-  background = true; // prevent action from being executed
-}
-
-// action_t::check_race =====================================================
-
-void action_t::check_race( race_e race )
-{
-  if ( player -> race != race )
-  {
-    sim -> errorf( "Player %s attempting to execute action %s while not being a %s.\n", player -> name(), name(), util::race_type_string( race ) );
-
-    background = true; // prevent action from being executed
-  }
 }
 
 // action_t::check_spec =====================================================

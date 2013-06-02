@@ -885,7 +885,6 @@ public:
 
   // Derived data access
   unsigned num_tiers() const;
-  unsigned first_tier() const;
 
   unsigned class_ability( unsigned class_id, unsigned tree_id, unsigned n ) const;
   unsigned pet_ability( unsigned class_id, unsigned n ) const;
@@ -936,7 +935,6 @@ public:
   unsigned glyph_spell_id( player_e c, const char* spell_name ) const;
   unsigned set_bonus_spell_id( player_e c, const char* spell_name, int tier = -1 ) const;
 
-  int      class_ability_tree( player_e c, uint32_t spell_id ) const;
   specialization_e class_ability_specialization( const player_e c, uint32_t spell_id ) const;
 
   bool     is_class_ability( uint32_t spell_id ) const;

@@ -3299,20 +3299,6 @@ double player_t::composite_attribute_multiplier( attribute_e attr )
   return m;
 }
 
-// player_t::composite_vulnerability ========================================
-
-double player_t::composite_spell_crit_vulnerability()
-{
-  return 0.0;
-}
-
-// player_t::composite_attack_crit_vulnerability ========================================
-
-double player_t::composite_attack_crit_vulnerability()
-{
-  return 0.0;
-}
-
 // player_t::composite_player_vulnerability =================================
 
 double player_t::composite_player_vulnerability( school_e school )
