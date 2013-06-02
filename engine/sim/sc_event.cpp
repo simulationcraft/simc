@@ -107,18 +107,3 @@ void event_t::cancel( event_t*& e )
   e -> canceled = true;
   e = 0;
 }
-
-// event_t::early ===========================================================
-
-void event_t::early( event_t*& e )
-{
-  if ( ! e ) return;
-  if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> player && ! e -> canceled )
-  {
-    e -> player -> event_counter--;
-    assert( e -> player -> event_counter >= 0 );
-  }
-  e -> canceled = true;
-  e -> execute();
-  e = 0;
-}
