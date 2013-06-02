@@ -613,29 +613,6 @@ struct symbiosis_mirror_image_t : public pet_t
 
 struct treants_balance_t : public pet_t
 {
-  struct melee_t : public melee_attack_t
-  {
-    melee_t( treants_balance_t* player ) :
-      melee_attack_t( "treant_melee", player )
-    {
-      if ( player -> o() -> pet_treants[ 0 ] )
-        stats = player -> o() -> pet_treants[ 0 ] -> get_stats( "treant_melee" );
-
-      weapon = &( player -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
-      base_dd_min = base_dd_max = 1;
-      school = SCHOOL_PHYSICAL;
-
-      trigger_gcd = timespan_t::zero();
-
-      background = true;
-      repeating  = false;
-      special    = false;
-      may_glance = true;
-      may_crit   = true;
-    }
-  };
-
   struct wrath_t : public spell_t
   {
     wrath_t( treants_balance_t* player ) :
@@ -643,13 +620,14 @@ struct treants_balance_t : public pet_t
     {
       if ( player -> o() -> pet_treants[ 0 ] )
         stats = player -> o() -> pet_treants[ 0 ] -> get_stats( "wrath" );
+      may_crit = true;
     }
   };
 
   druid_t* o() { return static_cast< druid_t* >( owner ); }
 
   treants_balance_t( sim_t* sim, druid_t* owner ) :
-    pet_t( sim, owner, "treant", false /*GUARDIAN*/ )
+    pet_t( sim, owner, "treant", true /*GUARDIAN*/ )
   {
     owner_coeff.sp_from_sp = 1.0;
     action_list_str = "wrath";
@@ -666,14 +644,6 @@ struct treants_balance_t : public pet_t
     initial.spell_power_per_intellect = 0;
     intellect_per_owner = 0;
     stamina_per_owner = 0;
-
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 580;
-    main_hand_weapon.max_dmg    = 580;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.65 );
-
-    main_hand_attack = new melee_t( this );
   }
 
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
@@ -684,10 +654,6 @@ struct treants_balance_t : public pet_t
     if ( name == "wrath"  ) return new wrath_t( this );
 
     return pet_t::create_action( name, options_str );
-  }
-  virtual void summon( timespan_t duration = timespan_t::zero() )
-  {
-    pet_t::summon( duration );
   }
 };
 
@@ -721,7 +687,7 @@ struct treants_feral_t : public pet_t
   druid_t* o() { return static_cast< druid_t* >( owner ); }
 
   treants_feral_t( sim_t* sim, druid_t* owner ) :
-    pet_t( sim, owner, "treant", false /*GUARDIAN*/ )
+    pet_t( sim, owner, "treant", true /*GUARDIAN*/ )
   {
     // FIX ME
     owner_coeff.ap_from_ap = 1.0;
@@ -4641,6 +4607,8 @@ struct treants_spell_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
+    cooldown -> charges = 3;
+    cooldown -> duration = timespan_t::from_seconds( 20.0 );
   }
 
   virtual void execute()
@@ -4651,7 +4619,11 @@ struct treants_spell_t : public druid_spell_t
     {
       for ( int i = 0; i < 3; i++ )
       {
+        if ( ! p() -> pet_treants[ i ] -> is_sleeping() )
+          continue;
+
         p() -> pet_treants[ i ] -> summon( p() -> talent.force_of_nature -> duration() );
+        break;
       }
     }
   }
