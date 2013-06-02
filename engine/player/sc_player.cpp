@@ -5773,7 +5773,8 @@ struct wait_until_ready_t : public wait_fixed_t
     for ( size_t i = 0; i < player -> action_list.size(); ++i )
     {
       action_t* a = player -> action_list[ i ];
-      if ( ! a || ( a == this ) )
+      assert( a );
+      if ( a == this )
         break;
       if ( a -> background ) continue;
 

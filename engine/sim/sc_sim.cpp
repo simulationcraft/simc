@@ -1791,11 +1791,8 @@ void sim_t::merge()
   for ( size_t i = 0; i < children.size(); i++ )
   {
     sim_t* child = children[ i ];
-	if ( child )
-	{
-      child -> wait();
-      delete child;
-	}
+    child -> wait();
+    delete child;
   }
 
   children.clear();
@@ -1827,11 +1824,13 @@ void sim_t::partition()
   iterations /= threads;
 
   int num_children = threads - 1;
-  children.resize( num_children );
 
   for ( int i = 0; i < num_children; i++ )
   {
-    sim_t* child = children[ i ] = new sim_t( this, i + 1 );
+    sim_t* child = new sim_t( this, i + 1 );
+    assert( child );
+    children.push_back( child );
+
     child -> iterations /= threads;
     if ( remainder )
     {
