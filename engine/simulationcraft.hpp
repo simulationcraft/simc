@@ -93,12 +93,6 @@ public:
 #define nullptr ( std::nullptr_t() )
 #endif
 
-// Workaround for including ssize_t when compiling via MSVC
-#if defined( SC_VS )
-#  include "../vs/basetsd.h"
-typedef SSIZE_T ssize_t;
-#endif
-
 #if defined( SC_VS ) && SC_VS < 10
 #  include "../vs/stdint.h"
 #else
