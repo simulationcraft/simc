@@ -3125,7 +3125,7 @@ struct death_strike_t : public death_knight_melee_attack_t
       while ( i != p() -> incoming_damage.end() &&
               sim -> current_time - ( *i ).first > timespan_t::from_seconds( 5.0 ) )
       {
-        i++;
+        ++i;
       }
 
       p() -> incoming_damage.erase( p() -> incoming_damage.begin(), i );

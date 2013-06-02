@@ -2852,6 +2852,7 @@ struct lay_on_hands_t : public paladin_heal_t
 
   }
 
+  // This is never called
   virtual double calculate_direct_damage( result_e, int, double, double, double, player_t* )
   {
     return player -> resources.max[ RESOURCE_HEALTH ];

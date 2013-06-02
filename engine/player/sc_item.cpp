@@ -1104,7 +1104,6 @@ bool item_t::decode_random_suffix()
                    name(), parsed.suffix_id, item_level(), parsed.data.quality, f );
   }
 
-  std::vector<std::string> stat_list;
   for ( size_t i = 0; i < sizeof_array( suffix_data.enchant_id ); i++ )
   {
     unsigned enchant_id;

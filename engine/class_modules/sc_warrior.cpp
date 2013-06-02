@@ -988,6 +988,7 @@ struct bloodthirst_heal_t : public heal_t
     target = p;
   }
 
+  // This is never called
   virtual double calculate_direct_damage( result_e, int, double, double, double, player_t* )
   {
     return player -> resources.max[ RESOURCE_HEALTH ] * 0.01;
@@ -1464,6 +1465,8 @@ struct impending_victory_heal_t : public heal_t
     background = true;
     target = p;
   }
+
+  // This is never called
   virtual double calculate_direct_damage( result_e, int, double, double, double, player_t* )
   {
     warrior_t *p = debug_cast<warrior_t*>( player );
@@ -2068,6 +2071,7 @@ struct victory_rush_heal_t : public heal_t
     target = p;
   }
 
+  // This is never called
   virtual double calculate_direct_damage( result_e, int, double, double, double, player_t* )
   {
     warrior_t *p = debug_cast<warrior_t*>( player );
@@ -2490,6 +2494,7 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
   /* stripped down version to calculate s-> result_amount,
    * i.e., how big our shield is, Formula: max(ap_scale*(AP-Str*2), Sta*stam_scale)*RAGE/60
    */
+  // This is never called
   virtual double calculate_direct_damage( result_e /*r*/, int /*chain_target*/, double ap, double sp, double multiplier, player_t* /*t*/ )
   {
     double dmg = sim -> averaged_range( base_dd_min, base_dd_max );

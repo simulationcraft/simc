@@ -33,6 +33,9 @@ using namespace rng;
 
 double rng::stdnormal_cdf( double u )
 {
+  if ( u == std::numeric_limits<double>::infinity() )
+    return ( u < 0 ? 0.0 : 1.0 );
+
   static const double a[5] =
   {
     1.161110663653770e-002, 3.951404679838207e-001, 2.846603853776254e+001,
@@ -67,9 +70,6 @@ double rng::stdnormal_cdf( double u )
   };
 
   double y, z;
-
-  if ( u == std::numeric_limits<double>::infinity() )
-    return ( u < 0 ? 0.0 : 1.0 );
 
   y = fabs( u );
 
@@ -127,6 +127,18 @@ double rng::stdnormal_cdf( double u )
 
 double rng::stdnormal_inv( double p )
 {
+  if ( p > 1.0 || p < 0.0 )
+  {
+    assert( false );
+    return 0;
+  }
+
+  if ( p == 0.0 )
+    return - std::numeric_limits<double>::infinity();
+
+  if ( p == 1.0 )
+    return std::numeric_limits<double>::infinity();
+
   static const double a[6] =
   {
     -3.969683028665376e+01,  2.209460984245205e+02,
@@ -152,18 +164,6 @@ double rng::stdnormal_inv( double p )
   };
 
   double q, t, u;
-
-  if ( p > 1.0 || p < 0.0 )
-  {
-    assert( false );
-    return 0;
-  }
-
-  if ( p == 0.0 )
-    return - std::numeric_limits<double>::infinity();
-
-  if ( p == 1.0 )
-    return std::numeric_limits<double>::infinity();
 
   q = std::min( p, 1 - p );
 
