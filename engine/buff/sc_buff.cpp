@@ -736,20 +736,20 @@ void buff_t::expire()
     iteration_uptime_sum += sim -> current_time - last_start;
     if ( ! constant && ! overridden && sim -> buff_uptime_timeline )
     {
-      time_t start_sec = last_start.total_millis() / 1000;
-      time_t end_sec = sim -> current_time.total_millis() / 1000;
+      timespan_t start_time = timespan_t::from_seconds( last_start.total_millis() / 1000 ) ;
+      timespan_t end_time = timespan_t::from_seconds( sim -> current_time.total_millis() / 1000 );
       double begin_uptime = ( 1000 - last_start.total_millis() % 1000 ) / 1000.0;
-      double end_uptime = sim -> current_time.total_seconds() - end_sec;
+      double end_uptime = ( sim -> current_time.total_millis() % 1000 ) / 1000.0;
 
       if ( unlikely( last_start.total_millis() % 1000 == 0 ) )
         begin_uptime = 1.0;
 
-      uptime_array.add( start_sec, begin_uptime );
-      for ( time_t i = start_sec + 1; i < end_sec; i++ )
+      uptime_array.add( start_time, begin_uptime );
+      for ( timespan_t i = start_time + timespan_t::from_millis( 1000 ); i < end_time; i = i + timespan_t::from_millis( 1000 ) )
         uptime_array.add( i, 1 );
 
       if ( end_uptime != 0 )
-        uptime_array.add( end_sec, end_uptime );
+        uptime_array.add( end_time, end_uptime );
     }
   }
 
