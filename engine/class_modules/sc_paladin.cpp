@@ -1523,8 +1523,6 @@ public:
     double c = ( this -> current_resource() == RESOURCE_HOLY_POWER ) ? this -> cost() : -1.0;
 
     ab::execute();
-
-    paladin_t& p = *this -> p();
         
     // Unbreakable Spirit reduces the cooldowns of several spells based on Holy Power usage.
     // trigger_unbreakable_spirit( );

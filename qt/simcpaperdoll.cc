@@ -681,7 +681,7 @@ ItemDataListModel::ItemDataListModel( QObject* parent ) :
 int
 ItemDataListModel::rowCount( const QModelIndex& /* parent */ ) const
 {
-  return dbc::n_items( false );
+  return static_cast<int> ( dbc::n_items( false ) );
 }
 
 QVariant
@@ -1290,7 +1290,7 @@ EnchantDataModel::EnchantDataModel( PaperdollProfile* profile, QObject* parent )
 int
 EnchantDataModel::rowCount( const QModelIndex& ) const
 {
-  return m_enchants.size();
+  return static_cast<int>( m_enchants.size() );
 }
 
 QVariant

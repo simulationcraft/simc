@@ -427,15 +427,18 @@ bool item_database::parse_item_spell_enchant( item_t& item,
       const spell_data_t* es = item.player -> dbc.spell( item_enchant.ench_prop[ i ] );
 
       // Handle All stats enchants
-      for ( size_t i = 0; i < es -> _effects -> size(); i++ )
+      if ( es )
       {
-        // All stats is indicated by a misc value of -1
-        if ( es -> effectN( i + 1 ).type() == E_APPLY_AURA &&
-             es -> effectN( i + 1 ).subtype() == A_MOD_STAT &&
-             es -> effectN( i + 1 ).misc_value1() == -1 )
+        for ( size_t i = 0; i < es -> _effects -> size(); i++ )
         {
-          stats.push_back( stat_pair_t( STAT_ALL, es -> effectN( i + 1 ).base_value() ) );
-          break;
+          // All stats is indicated by a misc value of -1
+          if ( es -> effectN( i + 1 ).type() == E_APPLY_AURA &&
+               es -> effectN( i + 1 ).subtype() == A_MOD_STAT &&
+               es -> effectN( i + 1 ).misc_value1() == -1 )
+          {
+            stats.push_back( stat_pair_t( STAT_ALL, es -> effectN( i + 1 ).base_value() ) );
+            break;
+          }
         }
       }
 

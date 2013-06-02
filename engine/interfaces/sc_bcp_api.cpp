@@ -745,7 +745,7 @@ player_t* bcp_api::from_local_json( sim_t*             sim,
 
 bool bcp_api::download_item( item_t& item, cache::behavior_e caching )
 {
-  bool ret = download_item_data( item, caching );
+  bool ret = download_item_data( item, caching ) != NULL;
   if ( ret )
     item.source_str = "Blizzard";
   return ret;

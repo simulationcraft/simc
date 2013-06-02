@@ -329,12 +329,10 @@ public:
     action_ancestral_awakening( nullptr ),
     action_improved_lava_lash( nullptr ),
     action_lightning_strike( nullptr ),
-    pet_feral_spirit(),
     pet_fire_elemental( nullptr ),
     guardian_fire_elemental( nullptr ),
     pet_earth_elemental( nullptr ),
     guardian_earth_elemental( nullptr ),
-    totems(),
     constant(),
     buff(),
     cooldown(),
@@ -352,6 +350,9 @@ public:
 
     action_improved_lava_lash = 0;
     action_lightning_strike = 0;
+
+    // Totem tracking
+    for ( int i = 0; i < 2; i++ ) pet_feral_spirit[ i ] = 0;
 
     // Totem tracking
     for ( int i = 0; i < TOTEM_MAX; i++ ) totems[ i ] = 0;

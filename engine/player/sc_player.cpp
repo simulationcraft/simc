@@ -661,7 +661,7 @@ player_t::player_t( sim_t*             s,
 
   if ( ! is_pet() && sim -> stat_cache != -1 )
   {
-    cache.active = sim -> stat_cache;
+    cache.active = sim -> stat_cache != 0;
   }
   if ( is_pet() ) current.skill = 1.0;
 
@@ -5773,7 +5773,7 @@ struct wait_until_ready_t : public wait_fixed_t
     for ( size_t i = 0; i < player -> action_list.size(); ++i )
     {
       action_t* a = player -> action_list[ i ];
-      if ( a == this )
+      if ( ! a || ( a == this ) )
         break;
       if ( a -> background ) continue;
 

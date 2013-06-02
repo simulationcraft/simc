@@ -128,6 +128,7 @@ static bool download( url_cache_entry_t& entry,
     char chars[ NETBUFSIZE ];
     wchar_t wchars[ ( NETBUFSIZE + 1 ) / 2 ];
   } buffer;
+  buffer.chars[ 0 ] = '\0';
   DWORD amount = sizeof( buffer );
   if ( ! HttpQueryInfoA( hFile, HTTP_QUERY_STATUS_CODE, buffer.chars, &amount, 0 ) )
     return false;

@@ -62,6 +62,9 @@ size_t player_chart_length( player_t* p )
   if ( pet_t* is_pet = dynamic_cast<pet_t*>( p ) )
     p = is_pet -> owner;
 
+  if ( ! p )
+    return 0;
+
   return static_cast<size_t>( p -> collected_data.fight_length.max() );
 }
 

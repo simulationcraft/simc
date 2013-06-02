@@ -1791,8 +1791,11 @@ void sim_t::merge()
   for ( size_t i = 0; i < children.size(); i++ )
   {
     sim_t* child = children[ i ];
-    child -> wait();
-    delete child;
+	if ( child )
+	{
+      child -> wait();
+      delete child;
+	}
   }
 
   children.clear();

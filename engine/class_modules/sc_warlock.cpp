@@ -4935,7 +4935,7 @@ void warlock_t::init_actions()
     add_action( "Summon Doomguard" );
     add_action( "Summon Infernal", "", "aoe" );
 
-    bool has_unerring_vision_of_leishen = find_item( "unerring_vision_of_lei_shen" );
+    bool has_unerring_vision_of_leishen = find_item( "unerring_vision_of_lei_shen" ) != NULL;
 
     switch ( specialization() )
     {
