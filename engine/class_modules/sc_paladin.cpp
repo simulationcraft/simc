@@ -552,7 +552,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
 
     base_t::execute();
 
-    trigger_divine_purpose( c );
+    base_t::trigger_divine_purpose( c );
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -1530,7 +1530,7 @@ public:
     // trigger_unbreakable_spirit( );
 
     // trigger/consume divine purpose buff
-    trigger_divine_purpose( c );    
+    base_t::trigger_divine_purpose( c );    
 
   }
 
