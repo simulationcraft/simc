@@ -124,7 +124,10 @@ public:
   {
     // these seem to be required to get Art of War and Grand Crusader procs working
     cooldown_t* avengers_shield;
+    cooldown_t* divine_protection;
+    cooldown_t* divine_shield;
     cooldown_t* exorcism;
+    cooldown_t* lay_on_hands;
   } cooldowns;
 
   // Passives
@@ -174,6 +177,9 @@ public:
   struct talents_t
   {
     const spell_data_t* divine_purpose;
+    const spell_data_t* hand_of_purity;
+    const spell_data_t* unbreakable_spirit;
+    const spell_data_t* clemency;
     const spell_data_t* eternal_flame;
     const spell_data_t* sacred_shield;
     const spell_data_t* holy_prism;
@@ -245,7 +251,10 @@ public:
     bom_up                             = false;
 
     cooldowns.avengers_shield = get_cooldown( "avengers_shield" );
+    cooldowns.divine_protection = get_cooldown( "divine_protection" );
+    cooldowns.divine_shield = get_cooldown( "divine_shield" );
     cooldowns.exorcism = get_cooldown( "exorcism" );
+    cooldowns.lay_on_hands = get_cooldown( "lay_on_hands" );
 
     beacon_target = 0;
 
@@ -414,25 +423,54 @@ public:
   {
     if ( ab::current_resource() == RESOURCE_HOLY_POWER )
     {
+      // check for divine purpose - if active, return a resource cost of 0
       if ( p() -> buffs.divine_purpose -> check() )
       {
         return 0.0;
       }
+      // otherwise return a value equal to our current holy power, 
+      // lower-bounded by the ability's base cost, upper-bounded by 3
       return std::max( ab::base_costs[ RESOURCE_HOLY_POWER ], std::min( 3.0, p() -> resources.current[ RESOURCE_HOLY_POWER ] ) );
     }
 
     return ab::cost();
   }
 
-  // trigger_hand_of_light ====================================================
-
-  void trigger_hand_of_light( action_state_t* s )
+  // hand of light handling 
+    void trigger_hand_of_light( action_state_t* s )
   {
     if ( p() -> passives.hand_of_light -> ok() )
     {
       p() -> active_hand_of_light_proc -> base_dd_max = p() -> active_hand_of_light_proc-> base_dd_min = s -> result_amount;
       p() -> active_hand_of_light_proc -> execute();
     }
+  }
+
+  // divine purpose handling 
+  void trigger_divine_purpose( double c )
+  {
+    // if divine purpose is talented
+    if ( p() -> talents.divine_purpose -> ok() )
+    {
+      // if we didn't consume a proc, the cost c will be > 0
+      if ( c > 0.0 )
+      {
+        // chance to proc the buff, needs to be scaled by holy power spent
+        p() -> buffs.divine_purpose -> trigger( 1, 
+                                                p() -> buffs.divine_purpose -> default_value, 
+                                                p() -> buffs.divine_purpose -> default_chance * c / 3 );
+      }
+      // if we did consume a proc
+      else if ( c == 0.0 )
+      {
+        // get id of the buff corresponding to the current proc
+        p() -> buffs.divine_purpose -> expire();
+        
+        // and then try for a new proc
+        p() -> buffs.divine_purpose -> trigger();
+      }
+    }
+
   }
 
 };
@@ -514,19 +552,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
 
     base_t::execute();
 
-    if ( p() -> talents.divine_purpose -> ok() )
-    {
-      if ( c > 0.0 )
-      {
-        p() -> buffs.divine_purpose -> trigger();
-      }
-      else if ( c == 0.0 )
-      {
-        p() -> buffs.divine_purpose -> expire();
-        //p() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
-        p() -> buffs.divine_purpose -> trigger();
-      }
-    }
+    trigger_divine_purpose( c );
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -1499,20 +1525,13 @@ public:
     ab::execute();
 
     paladin_t& p = *this -> p();
+        
+    // Unbreakable Spirit reduces the cooldowns of several spells based on Holy Power usage.
+    // trigger_unbreakable_spirit( );
 
-    if ( p.talents.divine_purpose -> ok() )
-    {
-      if ( c > 0.0 )
-      {
-        p.buffs.divine_purpose -> trigger();
-      }
-      else if ( c == 0.0 )
-      {
-        p.buffs.divine_purpose -> expire();
-        // p() -> resource_gain( RESOURCE_HOLY_POWER, 3, p() -> gains.hp_divine_purpose );
-        p.buffs.divine_purpose -> trigger();
-      }
-    }
+    // trigger/consume divine purpose buff
+    trigger_divine_purpose( c );    
+
   }
 
 };
@@ -1837,6 +1856,10 @@ struct divine_protection_t : public paladin_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
+    
+    // link needed for unbreakable spirit talent
+    cooldown = p -> cooldowns.divine_protection;
+    cooldown -> duration = data().cooldown();
   }
 
   virtual void execute()
@@ -1857,6 +1880,10 @@ struct divine_shield_t : public paladin_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
+    
+    // link needed for unbreakable spirit talent
+    cooldown = p -> cooldowns.divine_shield;
+    cooldown -> duration = data().cooldown();
   }
 
   virtual void execute()
@@ -2029,6 +2056,10 @@ struct hand_of_purity_t : public paladin_spell_t
 
     harmful = false;
     may_miss = false; //probably redundant with harmul=false?
+
+    // disable if not talented
+    if ( ! ( p -> talents.hand_of_purity -> ok() ) )
+      background = true;
   }
 
   virtual void execute()
@@ -2312,19 +2343,10 @@ struct word_of_glory_damage_t : public paladin_spell_t
   {
     double am = paladin_spell_t::action_multiplier();
 
-    am *= ( p() -> holy_power_stacks() <= 3 ? p() -> holy_power_stacks() : 3 );
+    // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3 
+    am *= ( ( p() -> holy_power_stacks() <= 3  && ! p() -> buffs.divine_purpose -> check() ) ? p() -> holy_power_stacks() : 3 );
 
     return am;
-  }
-
-  virtual double cost()
-  {
-    if ( p() -> buffs.divine_purpose -> check() )
-      return 0.0;
-    else if ( ( p() -> holy_power_stacks() <= 3 ? p() -> holy_power_stacks() : 3 ) > 1 )
-      return ( double )( p() -> holy_power_stacks() <= 3 ? p() -> holy_power_stacks() : 3 );
-    else
-      return 1.0;
   }
 
   virtual void execute()
@@ -2654,7 +2676,8 @@ struct eternal_flame_t : public paladin_heal_t
   {
     double am = paladin_heal_t::action_multiplier();
 
-    am *= std::min( 3, p() -> holy_power_stacks() ); // can't consume more than 3 holy power
+    // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3 
+    am *= ( ( p() -> holy_power_stacks() <= 3  && ! p() -> buffs.divine_purpose -> check() ) ? p() -> holy_power_stacks() : 3 );
 
     if ( target == player )
     {
@@ -2849,6 +2872,10 @@ struct lay_on_hands_t : public paladin_heal_t
     paladin_heal_t( "lay_on_hands", p, p -> find_class_spell( "Lay on Hands" ) )
   {
     parse_options( NULL, options_str );
+    
+    // link needed for unbreakable spirit talent
+    cooldown = p -> cooldowns.lay_on_hands;
+    cooldown -> duration = data().cooldown();
 
   }
 
@@ -2926,7 +2953,8 @@ struct word_of_glory_t : public paladin_heal_t
   {
     double am = paladin_heal_t::action_multiplier();
 
-    am *= std::min( 3, p() -> holy_power_stacks() ); // can't consume more than 3 Holy Power
+    // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3 
+    am *= ( ( p() -> holy_power_stacks() <= 3  && ! p() -> buffs.divine_purpose -> check() ) ? p() -> holy_power_stacks() : 3 );
 
     return am;
   }
@@ -3912,6 +3940,17 @@ void paladin_t::validate_action_priority_list()
         }
       }
 
+      // check for Hand of Purity usage without talent
+      if ( ! talents.hand_of_purity -> ok() )
+      {
+        check_ability = "hand_of_purity";
+        found = action_str.find( check_ability.c_str() );
+        if ( found != std::string::npos )
+        {
+          sim -> errorf( "Action priority list contains %s without talent, ignoring", "Hand of Purity" );
+        }
+      }
+
       // repeat for Fist of Justice / Hammer of Justice
     }
   }
@@ -3993,6 +4032,9 @@ void paladin_t::init_spells()
 
   // Talents
   talents.divine_purpose          = find_talent_spell( "Divine Purpose" );
+  talents.hand_of_purity          = find_talent_spell( "Hand of Purity" );
+  talents.unbreakable_spirit      = find_talent_spell( "Unbreakable Spirit" );
+  talents.clemency                = find_talent_spell( "Clemency" );
   talents.eternal_flame           = find_talent_spell( "Eternal Flame" );
   talents.sacred_shield           = find_talent_spell( "Sacred Shield" );
   talents.holy_prism              = find_talent_spell( "Holy Prism" );
