@@ -15,7 +15,8 @@ spell_base_t::spell_base_t( action_e at,
                             const std::string& token,
                             player_t* p,
                             const spell_data_t* s ) :
-  action_t( at, token, p, s )
+  action_t( at, token, p, s ),
+  procs_courageous_primal_diamond( true )
 {
   base_spell_power_multiplier = 1.0;
 

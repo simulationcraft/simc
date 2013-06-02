@@ -4762,8 +4762,6 @@ struct action_t : public noncopyable
   cooldown_t line_cooldown;
   const action_priority_t* signature;
 
-  // special item flags
-  bool procs_courageous_primal_diamond;
 
   action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
@@ -5123,6 +5121,9 @@ struct ranged_attack_t : public attack_t
 
 struct spell_base_t : public action_t
 {
+  // special item flags
+  bool procs_courageous_primal_diamond;
+
   spell_base_t( action_e at, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Spell Base Overrides
@@ -5155,6 +5156,7 @@ public:
   virtual void   assess_damage( dmg_e, action_state_t* );
   virtual void   execute();
   virtual double miss_chance( double hit, int delta_level );
+  virtual void   init();
 
   virtual double composite_hit()
   { return action_t::composite_hit() + player -> cache.spell_hit(); }

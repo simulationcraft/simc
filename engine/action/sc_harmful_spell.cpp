@@ -83,3 +83,12 @@ void spell_t::execute()
     }
   }
 }
+
+void spell_t::init()
+{
+  spell_base_t::init();
+
+  if ( harmful )
+    procs_courageous_primal_diamond = false;
+
+}

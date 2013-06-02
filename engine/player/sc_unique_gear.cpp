@@ -1032,11 +1032,12 @@ void courageous_primal_diamond( player_t* p )
 
       void execute( action_t* action, action_state_t* call_data )
       {
-        if ( action -> procs_courageous_primal_diamond )
+        spell_base_t* spell = debug_cast<spell_base_t*>( action );
+        if ( spell -> procs_courageous_primal_diamond )
         {
           if ( listener -> sim -> debug )
             listener -> sim -> output( "%s procs %s from action %s.",
-                                       listener -> name(), buff -> name(), action -> name() );
+                                       listener -> name(), buff -> name(), spell -> name() );
 
           buff_proc_callback_t<buff_t>::execute( action, call_data );
         }
@@ -1048,8 +1049,7 @@ void courageous_primal_diamond( player_t* p )
     data.ppm      = -1.4; // Real PPM
 
     courageous_primal_diamond_proc_t* cb = new courageous_primal_diamond_proc_t( p, data );
-    p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
-    p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
+    p -> callbacks.register_spell_callback( RESULT_ALL_MASK, cb );
   }
 }
 

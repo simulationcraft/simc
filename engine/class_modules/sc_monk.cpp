@@ -692,8 +692,6 @@ struct jab_t : public monk_melee_attack_t
     parse_options( nullptr, options_str );
     stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT;
 
-    procs_courageous_primal_diamond = false;
-
     base_dd_min = base_dd_max = direct_power_mod = 0.0; // deactivate parsed spelleffect1
 
     mh = &( player -> main_hand_weapon );
@@ -835,8 +833,6 @@ struct tiger_palm_t : public monk_melee_attack_t
     oh = &( player -> off_hand_weapon ) ;
     base_multiplier = 3.0; // hardcoded into tooltip
 
-    procs_courageous_primal_diamond = false;
-
     if ( p -> spec.brewmaster_training -> ok() )
       base_costs[ RESOURCE_CHI ] = 0.0;
   }
@@ -937,8 +933,6 @@ struct blackout_kick_t : public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier = 8.0 * 0.89; // hardcoded into tooltip
-
-    procs_courageous_primal_diamond = false;
   }
 
   virtual void impact( action_state_t* s )

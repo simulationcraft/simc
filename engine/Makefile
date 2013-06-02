@@ -68,14 +68,12 @@ ifeq (UNIX,${OS})
   COPY       = cp
   REMOVE     = rm -f
   PATHSEP    = /
-  ifneq (64,${BITS})
     ifeq (i386,${HOSTTYPE})
-      CPP_FLAGS  += -malign-double
+        optimized::CPP_FLAGS  += -malign-double
     endif
     ifeq (i686,${HOSTTYPE})
-      CPP_FLAGS  += -malign-double
+        optimized::CPP_FLAGS  += -malign-double
     endif
-  endif
 endif
 
 # Windows platform with MinGW32
@@ -91,10 +89,7 @@ ifeq (WINDOWS,${OS})
   PATHSEP    = \\
   AR         = ar
   
-  # MinGW W32
-  ifeq (32,${BITS})
-    CPP_FLAGS += -malign-double
-  endif
+  optimized::CPP_FLAGS += -malign-double
 endif
 
 MODULE     = simc$(MODULE_EXT)
@@ -244,7 +239,7 @@ $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
 
 %.s: %.cpp $(SRC_H)
 	-@echo [$(MODULE)] Compiling $(notdir $<)
-	@$(CXX) $(CPP_FLAGS) $(OPTS) -S $< -o $@
+	$(CXX) $(CPP_FLAGS) $(OPTS) -S $< -o $@
 
 
 mostlyclean:

@@ -280,8 +280,7 @@ action_t::action_t( action_e       ty,
   time_to_execute( timespan_t::zero() ),
   time_to_travel( timespan_t::zero() ),
   total_executions(),
-  line_cooldown( cooldown_t( "line_cd", *p ) ),
-  procs_courageous_primal_diamond( true )
+  line_cooldown( cooldown_t( "line_cd", *p ) )
 {
   dot_behavior                   = DOT_CLIP;
   trigger_gcd                    = player -> base_gcd;
