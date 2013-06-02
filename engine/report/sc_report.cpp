@@ -64,6 +64,8 @@ size_t player_chart_length( player_t* p )
 
   assert( p );
 
+  if ( ! p ) return 0; // For release builds.
+
   return static_cast<size_t>( p -> collected_data.fight_length.max() );
 }
 

@@ -5774,6 +5774,8 @@ struct wait_until_ready_t : public wait_fixed_t
     {
       action_t* a = player -> action_list[ i ];
       assert( a );
+      if ( a == NULL ) // For release builds.
+        break;
       if ( a == this )
         break;
       if ( a -> background ) continue;

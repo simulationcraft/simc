@@ -1859,6 +1859,8 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
 {
   std::string buff_name;
   assert( b );
+  if ( ! b ) return; // For release builds. 
+
   if ( b -> player && b -> player -> is_pet() )
   {
     buff_name += b -> player -> name_str + '-';
