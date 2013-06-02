@@ -2151,7 +2151,7 @@ class expr_t
   std::string name_;
 
 protected:
-  template <typename T> static double coerce( T t ) { return t; }
+  template <typename T> static double coerce( T t ) { return static_cast<double>( t ); }
   static double coerce( timespan_t t ) { return t.total_seconds(); }
 
   virtual double evaluate() = 0;
