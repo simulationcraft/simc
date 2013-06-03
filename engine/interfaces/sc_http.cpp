@@ -535,7 +535,7 @@ void put( std::ostream& os, const std::string& s )
 { os.write( s.c_str(), s.size() + 1 ); }
 
 void put( std::ostream& os, const char* s )
-{ os.write( s, strlen( s ) + 1 ); }
+{ os.write( s, std::strlen( s ) + 1 ); }
 }
 
 void http::cache_load( const char* file_name )

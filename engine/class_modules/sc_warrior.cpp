@@ -988,8 +988,7 @@ struct bloodthirst_heal_t : public heal_t
     target = p;
   }
 
-  // This is never called
-  virtual double calculate_direct_damage( result_e, int, double, double, double, player_t* )
+  virtual double calculate_direct_damage( action_state_t*, int /* chain_targets */ )
   {
     return player -> resources.max[ RESOURCE_HEALTH ] * 0.01;
   }
@@ -1466,10 +1465,9 @@ struct impending_victory_heal_t : public heal_t
     target = p;
   }
 
-  // This is never called
-  virtual double calculate_direct_damage( result_e, int, double, double, double, player_t* )
+  virtual double calculate_direct_damage( action_state_t*, int /* chain_targets */ )
   {
-    warrior_t *p = debug_cast<warrior_t*>( player );
+    warrior_t* p = static_cast<warrior_t*>( player );
     double pct_heal = 0.15;
     if ( p -> buff.tier15_2pc_tank -> up() )
     {
@@ -2071,10 +2069,9 @@ struct victory_rush_heal_t : public heal_t
     target = p;
   }
 
-  // This is never called
-  virtual double calculate_direct_damage( result_e, int, double, double, double, player_t* )
+  virtual double calculate_direct_damage( action_state_t*, int /* chain_targets */ )
   {
-    warrior_t *p = debug_cast<warrior_t*>( player );
+    warrior_t *p = static_cast<warrior_t*>( player );
 
     return player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() * ( 1 + p -> glyphs.victory_rush -> effectN( 1 ).percent() );
   }
@@ -2494,14 +2491,11 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
   /* stripped down version to calculate s-> result_amount,
    * i.e., how big our shield is, Formula: max(ap_scale*(AP-Str*2), Sta*stam_scale)*RAGE/60
    */
-  // This is never called
-  virtual double calculate_direct_damage( result_e /*r*/, int /*chain_target*/, double ap, double sp, double multiplier, player_t* /*t*/ )
+  virtual double calculate_direct_damage( action_state_t*, int /* chain_targets */ )
   {
     double dmg = sim -> averaged_range( base_dd_min, base_dd_max );
 
     if ( round_base_dmg ) dmg = floor( dmg + 0.5 );
-
-    double base_direct_dmg = dmg;
 
     warrior_t& p = *cast();
 
@@ -2518,9 +2512,8 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
 
     if ( sim -> debug )
     {
-      sim -> output( "%s dmg for %s: dd=%.0f i_dd=%.0f w_dd=0.0 b_dd=%.0f mod=%.2f power=%.0f mult=%.2f w_mult=%.2f",
-                     player -> name(), name(), dmg, dmg, base_direct_dmg, direct_power_mod,
-                     ( ap + sp ), multiplier, weapon_multiplier );
+      sim -> output( "%s dmg for %s: dd=%.0f",
+                     player -> name(), name(), dmg );
     }
 
     return dmg;

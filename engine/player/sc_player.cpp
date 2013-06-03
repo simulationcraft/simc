@@ -3636,8 +3636,10 @@ bool compare( const buff_t* a, const buff_t* b )
   return a -> source -> index < b -> source -> index;
 }
 
+#ifndef NDEBUG
 const char* source_name( const buff_t& b )
 { return b.source ? b.source -> name() : "(none)"; }
+#endif
 
 // Sort buff_list and check for uniqueness
 void prepare( player_t& p )

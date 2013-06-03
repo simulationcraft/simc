@@ -2877,8 +2877,7 @@ struct lay_on_hands_t : public paladin_heal_t
 
   }
 
-  // This is never called
-  virtual double calculate_direct_damage( result_e, int, double, double, double, player_t* )
+  virtual double calculate_direct_damage( action_state_t*, int /* chain_targets */ )
   {
     return player -> resources.max[ RESOURCE_HEALTH ];
   }
