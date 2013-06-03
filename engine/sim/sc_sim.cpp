@@ -1831,17 +1831,19 @@ void sim_t::partition()
   for ( int i = 0; i < num_children; i++ )
   {
     sim_t* child = new sim_t( this, i + 1 );
-    assert( child );
-    children.push_back( child );
-
-    child -> iterations /= threads;
-    if ( remainder )
+    if( child )
     {
-      child -> iterations += 1;
-      remainder--;
-    }
+      children.push_back( child );
 
-    child -> report_progress = 0;
+      child -> iterations /= threads;
+      if ( remainder )
+      {
+        child -> iterations += 1;
+        remainder--;
+      }
+
+      child -> report_progress = 0;
+    }
   }
 
   for ( int i = 0; i < num_children; i++ )
