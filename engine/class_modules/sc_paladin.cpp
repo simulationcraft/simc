@@ -437,12 +437,63 @@ public:
   }
 
   // hand of light handling 
-    void trigger_hand_of_light( action_state_t* s )
+  void trigger_hand_of_light( action_state_t* s )
   {
     if ( p() -> passives.hand_of_light -> ok() )
     {
       p() -> active_hand_of_light_proc -> base_dd_max = p() -> active_hand_of_light_proc-> base_dd_min = s -> result_amount;
       p() -> active_hand_of_light_proc -> execute();
+    }
+  }
+
+  // unbreakable spirit handling
+  void trigger_unbreakable_spirit( double c )
+  {
+    // if unbreakable spirit is talented
+    if ( p() -> talents.unbreakable_spirit -> ok() )
+    {
+      // reduce cooldowns by 1% per holy power spent - divine purpose procs count as 3. Cannot reduce to less than 50% of base.
+      double reduction_percent = ( c == 0 ) ? 0.03 : c/100;
+
+      // if Divine Protection is already on cooldown
+      if ( p() -> cooldowns.divine_protection -> down() )
+      {
+        // and the cooldown is greater than 50% of the base value
+        if ( p() -> cooldowns.divine_protection -> reduced_cooldown() > 0.5 * p() -> cooldowns.divine_protection -> duration )
+        {
+          // we want to subtract reduction_percent*duration from the current cooldown
+          p() -> cooldowns.divine_protection -> ready -= p() -> cooldowns.divine_protection -> duration * reduction_percent;
+
+          // check to enforce bounds - in case we're at 51% remaining and try to subtract 2+%
+          if ( p() -> cooldowns.divine_protection -> reduced_cooldown() < 0.5 * p() -> cooldowns.divine_protection -> duration )
+          {
+            // clamp the value at 50%
+            p() -> cooldowns.divine_protection -> ready = p() -> cooldowns.divine_protection -> last_start + p() -> cooldowns.divine_protection -> duration / 2;
+          }
+        }
+      }
+
+      // same thing for Divine Shield and LoH, sparsely commented (see above)
+      if ( p() -> cooldowns.divine_shield -> down() )
+      {
+        if ( p() -> cooldowns.divine_shield -> reduced_cooldown() > 0.5 * p() -> cooldowns.divine_shield -> duration )
+        {
+          p() -> cooldowns.divine_shield -> ready -= p() -> cooldowns.divine_shield -> duration * reduction_percent;
+
+          if ( p() -> cooldowns.divine_shield -> reduced_cooldown() < 0.5 * p() -> cooldowns.divine_shield -> duration )
+            p() -> cooldowns.divine_shield -> ready = p() -> cooldowns.divine_shield -> last_start + p() -> cooldowns.divine_shield -> duration / 2;
+        }
+      }
+      if ( p() -> cooldowns.lay_on_hands -> down() )
+      {
+        if ( p() -> cooldowns.lay_on_hands -> reduced_cooldown()  > 0.5 * p() -> cooldowns.lay_on_hands -> duration )
+        {
+          p() -> cooldowns.lay_on_hands -> ready -= p() -> cooldowns.lay_on_hands -> duration * reduction_percent;
+
+          if ( p() -> cooldowns.lay_on_hands -> reduced_cooldown() < 0.5 * p() -> cooldowns.lay_on_hands -> duration )
+            p() -> cooldowns.lay_on_hands -> ready = p() -> cooldowns.lay_on_hands -> last_start + p() -> cooldowns.lay_on_hands -> duration / 2;
+        }
+      }
     }
   }
 
@@ -552,7 +603,15 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
 
     base_t::execute();
 
-    base_t::trigger_divine_purpose( c );
+    // if the ability uses Holy Power, apply Unbreakable Spirit and handle Divine Purpose
+    if ( c >= 0 )
+    {
+      // Unbreakable Spirit reduces the cooldowns of several spells based on Holy Power usage.
+      base_t::trigger_unbreakable_spirit( c );
+
+      // trigger/consume divine purpose buff
+      base_t::trigger_divine_purpose( c );    
+    }
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -1514,7 +1573,7 @@ public:
 
   paladin_spell_base_t( const std::string& n, paladin_t* player,
                         const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s )
+                        ab( n, player, s )
   {
   }
 
@@ -1523,15 +1582,17 @@ public:
     double c = ( this -> current_resource() == RESOURCE_HOLY_POWER ) ? this -> cost() : -1.0;
 
     ab::execute();
-        
-    // Unbreakable Spirit reduces the cooldowns of several spells based on Holy Power usage.
-    // trigger_unbreakable_spirit( );
 
-    // trigger/consume divine purpose buff
-    base_t::trigger_divine_purpose( c );    
+    // if the ability uses Holy Power, apply Unbreakable Spirit and handle Divine Purpose
+    if ( c >= 0 )
+    {
+      // Unbreakable Spirit reduces the cooldowns of several spells based on Holy Power usage.
+      base_t::trigger_unbreakable_spirit( c );
 
+      // trigger/consume divine purpose buff
+      base_t::trigger_divine_purpose( c );    
+    }
   }
-
 };
 
 namespace spells {

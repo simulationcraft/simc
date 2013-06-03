@@ -64,7 +64,8 @@ cooldown_t::cooldown_t( const std::string& n, player_t& p ) :
   charges( 1 ),
   current_charge( 1 ),
   recharge_event( nullptr ),
-  ready_trigger_event( nullptr )
+  ready_trigger_event( nullptr ),
+  last_start( timespan_t::zero() )
 {}
 
 cooldown_t::cooldown_t( const std::string& n, sim_t& s ) :
@@ -77,7 +78,8 @@ cooldown_t::cooldown_t( const std::string& n, sim_t& s ) :
   charges( 1 ),
   current_charge( 1 ),
   recharge_event( nullptr ),
-  ready_trigger_event( nullptr )
+  ready_trigger_event( nullptr ),
+  last_start( timespan_t::zero() )
 {}
 
 void cooldown_t::adjust( timespan_t amount )
@@ -95,6 +97,8 @@ void cooldown_t::reset( bool require_reaction )
 {
   bool was_down = down();
   ready = ready_init();
+  if ( last_start > sim.current_time)
+    last_start = timespan_t::zero();
   current_charge = charges;
   if ( require_reaction && player )
   {
@@ -133,6 +137,7 @@ void cooldown_t::start( timespan_t override, timespan_t delay )
     else
     {
       ready = sim.current_time + override + delay;
+      last_start = sim.current_time;
     }
     assert( player );
     if ( player -> ready_type == READY_TRIGGER )

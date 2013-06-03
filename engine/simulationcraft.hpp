@@ -3412,6 +3412,7 @@ struct cooldown_t
   int current_charge;
   event_t* recharge_event;
   event_t* ready_trigger_event;
+  timespan_t last_start;
 
   cooldown_t( const std::string& name, player_t& );
   cooldown_t( const std::string& name, sim_t& );
@@ -3433,6 +3434,9 @@ struct cooldown_t
 
   const char* name() const
   { return name_str.c_str(); }
+
+  timespan_t reduced_cooldown() const
+  { return ready - last_start; }
 
 private:
   static timespan_t ready_init()
