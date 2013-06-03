@@ -118,6 +118,7 @@ struct gem_property_data_t {
   unsigned id;
   unsigned enchant_id;
   unsigned color;
+  unsigned min_ilevel;
 };
 
 #ifdef __OpenBSD__

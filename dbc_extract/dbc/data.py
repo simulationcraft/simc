@@ -140,7 +140,7 @@ _DBC_FIELDS = {
           'id', 'ofs_data_file', 'f1', 'f3'
     ],
     'GemProperties.dbc' : [
-          ( 'id', '%5u' ), ( 'id_enchant', '%5u' ), 'unk_3', 'unk_4', ( 'color', '%3u' ), 'unk_6'
+          ( 'id', '%5u' ), ( 'id_enchant', '%5u' ), 'unk_3', 'unk_4', ( 'color', '%3u' ), ( 'min_ilevel', '%4u' )
     ],
     'GlyphProperties.dbc' : [
           'id',      ( 'id_spell', '%5u' ),  'flags',      'unk_3'

@@ -3164,15 +3164,14 @@ class GemPropertyDataGenerator(DataGenerator):
             self._options.prefix and ('%s_' % self._options.prefix) or '',
             self._options.suffix and ('_%s' % self._options.suffix) or '' )
 
-        for id in ids:
+        for id in ids + [ 0 ]:
             data = self._gemproperties_db[id]
             if data.color == 0:
                 continue;
 
-            fields = data.field('id', 'id_enchant', 'color')
+            fields = data.field('id', 'id_enchant', 'color', 'min_ilevel')
             s += '  { %s },\n' % (', '.join(fields))
 
-        s += '  { %s }\n' % ( ', '.join([ '0', '0', '0' ]) )
         s += '};\n\n'
 
         return s
