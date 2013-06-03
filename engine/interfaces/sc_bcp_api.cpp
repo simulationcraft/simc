@@ -610,7 +610,7 @@ std::vector<stat_pair_t> parse_gem_stats( const std::string& bonus )
   in >> amount;
   in >> stat;
 
-  stat_e st = util::parse_stat_type( stat );
+  stat_e st = util::parse_gem_stat( stat );
   if ( st != STAT_NONE )
     stats.push_back( stat_pair_t( st, amount ) );
 
@@ -863,6 +863,8 @@ gem_e bcp_api::parse_gem( item_t& item, unsigned gem_id, cache::behavior_e cachi
   js_node_t* js = download_id( item.sim, region, gem_id, caching );
   if ( ! js )
     return GEM_NONE;
+
+  if ( item.sim -> debug ) js::print( js, item.sim -> output_file );
 
   std::string type_str;
   if ( ! js::get_value( type_str, js, "gemInfo/type/type" ) )
