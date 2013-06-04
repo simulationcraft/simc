@@ -1505,6 +1505,9 @@ public:
   {
     if ( aoe == 2 && p() -> buffs.havoc -> check() && target != p() -> havoc_target )
     {
+      if ( ! target_cache.is_valid )
+        available_targets( target_cache.list );
+
       havoc_targets.clear();
       size_t num_targets = (aoe == 0 ) ? 1 : aoe;
       for ( size_t i = 0; i < target_cache.list.size() && i < num_targets; i++ )

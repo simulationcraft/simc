@@ -975,7 +975,7 @@ void action_t::execute()
   {
     std::vector< player_t* >& tl = target_list();
 
-    size_t num_targets = (aoe == 0 ) ? 1 : aoe;
+    size_t num_targets = ( aoe < 0 ) ? tl.size() : aoe;
     for ( size_t t = 0, max_targets = tl.size(); t < num_targets && t < max_targets; t++ )
     {
       action_state_t* s = get_state( pre_execute_state );
@@ -1370,7 +1370,7 @@ bool action_t::ready()
     bool found_ready = false;
 
     std::vector< player_t* >& tl = target_list();
-    size_t num_targets = (aoe == 0 ) ? 1 : aoe;
+    size_t num_targets = tl.size();
 
     if ( ( max_cycle_targets > 0 ) && ( ( size_t ) max_cycle_targets < num_targets ) )
       num_targets = max_cycle_targets;
