@@ -1298,7 +1298,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
     os << "\t\t\t\t\t\t\t\t</table>\n";
   }
 
-  if ( ! p -> report_information.action_sequence.empty() )
+  if ( ! p -> collected_data.action_sequence.empty() )
   {
     os << "\t\t\t\t\t\t\t\t<div class=\"subsection subsection-small\">\n"
        << "\t\t\t\t\t\t\t\t\t<h4>Sample Sequence</h4>\n"
@@ -1309,9 +1309,9 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
     targets.push_back( "none" );
     targets.push_back( p -> target -> name() );
 
-    for ( size_t i = 0; i < p -> report_information.action_sequence.size(); ++i )
+    for ( size_t i = 0; i < p -> collected_data.action_sequence.size(); ++i )
     {
-      player_processed_report_information_t::action_sequence_data_t* data = p -> report_information.action_sequence[ i ];
+      player_collected_data_t::action_sequence_data_t* data = p -> collected_data.action_sequence[ i ];
       if ( ! data -> action -> harmful ) continue;
       bool found = false;
       for ( size_t j = 0; j < targets.size(); ++j )
@@ -1344,9 +1344,9 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
 
     os << "\t\t\t\t\t\t\t\t\t\t</style>\n";
 
-    for ( size_t i = 0; i < p -> report_information.action_sequence.size(); ++i )
+    for ( size_t i = 0; i < p -> collected_data.action_sequence.size(); ++i )
     {
-      player_processed_report_information_t::action_sequence_data_t* data = p -> report_information.action_sequence[ i ];
+      player_collected_data_t::action_sequence_data_t* data = p -> collected_data.action_sequence[ i ];
 
       std::string targetname = ( data -> action -> harmful ) ? data -> target -> name() : "none";
       os.printf(
@@ -1761,7 +1761,7 @@ void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t*
   }
 
   sc_timeline_t timeline_dps_taken;
-  p -> timeline_dmg_taken.build_derivative_timeline( timeline_dps_taken );
+  p -> collected_data.timeline_dmg_taken.build_derivative_timeline( timeline_dps_taken );
   std::string timeline_dps_takenchart = chart::timeline( p, timeline_dps_taken.data(), "dps_taken", timeline_dps_taken.average( 0, static_cast<size_t>( p -> collected_data.fight_length.max() ) ), "FDD017", static_cast<size_t>( p -> collected_data.fight_length.max() ) );
   if ( ! timeline_dps_takenchart.empty() )
   {

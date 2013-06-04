@@ -827,7 +827,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   talent_format( TALENT_FORMAT_UNCHANGED ),
   auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ),
   target_death( 0 ), target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ),
-  healer_sim( false ), tank_sim( false ), challenge_mode( false ), scale_to_itemlevel ( -1 ),
+  challenge_mode( false ), scale_to_itemlevel ( -1 ),
   active_enemies( 0 ), active_allies( 0 ),
   deterministic_rng( false ),
   separated_rng( false ), average_range( true ), average_gauss( false ),
@@ -1527,22 +1527,18 @@ bool sim_t::init()
         ++tanks;
     }
     if ( healers > 0 )
-      healer_sim = true;
-    if ( tanks > 0 )
-      tank_sim = true;
+      heal_target = module_t::heal_enemy() -> create_player( this, "Healing Target" );
+
+    (void)tanks;
   }
 
-  if ( healer_sim )
-    heal_target = module_t::heal_enemy() -> create_player( this, "Healing Target" );
 
 
   if ( max_player_level < 0 )
   {
-    for ( size_t i = 0; i < player_list.size(); ++i )
+    for ( size_t i = 0; i < player_no_pet_list.size(); ++i )
     {
-      player_t* p = player_list[ i ];
-      if ( p -> is_enemy() || p -> is_add() )
-        continue;
+      player_t* p = player_no_pet_list[ i ];
       if ( max_player_level < p -> level )
         max_player_level = p -> level;
     }
@@ -1563,7 +1559,7 @@ bool sim_t::init()
     }
   }
 
-  if ( report_precision < 0 ) report_precision = 4;
+  if ( report_precision < 0 ) report_precision = 2;
 
   iteration_timeline.reserve( iterations );
 

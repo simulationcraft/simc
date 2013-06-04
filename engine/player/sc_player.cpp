@@ -608,6 +608,7 @@ player_t::player_t( sim_t*             s,
   rps_gain( 0 ), rps_loss( 0 ),
   buffed( buffed_stats_t() ),
   collected_data( player_collected_data_t( name_str, *sim ) ),
+  vengeance( collected_data.vengeance_timeline ),
   // Damage
   iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
   dpr( 0 ),
@@ -1004,7 +1005,7 @@ void player_t::init()
   }
 
   size_t size = static_cast<size_t>( sim -> max_time.total_seconds() * ( 1.0 + sim -> vary_combat_length ) );
-  timeline_dmg_taken.init( size * 2 + 3 );
+  collected_data.timeline_dmg_taken.init( size * 2 + 3 );
 }
 
 /* Determine Spec, Talents, Professions, Glyphs
@@ -2278,7 +2279,7 @@ void player_t::init_stats()
   range::fill( resource_lost, 0.0 );
   range::fill( resource_gained, 0.0 );
 
-  collected_data.reserve_memory( sim -> iterations );
+  collected_data.reserve_memory( *this );
 }
 
 // player_t::init_scaling ===================================================
@@ -2620,8 +2621,8 @@ void player_t::_init_actions()
 
 
   int capacity = std::max( 1200, static_cast<int>( sim -> max_time.total_seconds() / 2.0 ) );
-  report_information.action_sequence.reserve( capacity );
-  report_information.action_sequence.clear();
+  collected_data.action_sequence.reserve( capacity );
+  collected_data.action_sequence.clear();
 }
 
 // player_t::create_buffs =====================================================
@@ -3426,7 +3427,7 @@ void player_t::sequence_add( const action_t* a, const player_t* target, const ti
     // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
     if ( ( a -> sim -> iterations <= 1 && a -> sim -> current_iteration == 0 ) ||
          ( a -> sim -> iterations > 1 && a -> sim -> current_iteration == 1 ) )
-      report_information.action_sequence.push_back( new player_processed_report_information_t::action_sequence_data_t( a, target, ts, this ) );
+      collected_data.action_sequence.push_back( new player_collected_data_t::action_sequence_data_t( a, target, ts, this ) );
 };
 
 // player_t::combat_begin ===================================================
@@ -3531,7 +3532,7 @@ void player_t::datacollection_end()
     return;
 
   if ( sim -> debug )
-    sim -> output( "Data collection ends for player %s", name() );
+    sim -> output( "Data collection ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time.total_seconds(), iteration_fight_length.total_seconds() );
 
   for ( size_t i = 0; i < pet_list.size(); ++i )
     pet_list[ i ] -> datacollection_end();
@@ -3543,52 +3544,17 @@ void player_t::datacollection_end()
     iteration_fight_length += sim -> current_time - arise_time;
     arise_time = sim -> current_time;
   }
-  double f_length = iteration_fight_length.total_seconds();
-  double w_time = iteration_waiting_time.total_seconds();
-  assert( iteration_fight_length <= sim -> current_time );
-
-  collected_data.fight_length.add( f_length );
-  collected_data.waiting_time.add( w_time );
-
-  collected_data.executed_foreground_actions.add( iteration_executed_foreground_actions );
 
   for ( size_t i = 0; i < stats_list.size(); ++i )
     stats_list[ i ] -> datacollection_end();
 
-  // DMG
-  collected_data.dmg.add( iteration_dmg );
   if ( ! is_enemy() && ! is_add() )
+  {
     sim -> iteration_dmg += iteration_dmg;
-  for ( size_t i = 0; i < pet_list.size(); ++i )
-  {
-    iteration_dmg += pet_list[ i ] -> iteration_dmg;
-  }
-  collected_data.compound_dmg.add( iteration_dmg );
-
-  collected_data.dps.add( iteration_fight_length != timespan_t::zero() ? iteration_dmg / iteration_fight_length.total_seconds() : 0 );
-  collected_data.dpse.add( sim -> current_time != timespan_t::zero() ? iteration_dmg / sim -> current_time.total_seconds() : 0 );
-
-  if ( sim -> debug )
-    sim -> output( "Data collection ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time.total_seconds(), iteration_fight_length.total_seconds() );
-
-  // Heal
-  collected_data.heal.add( iteration_heal );
-  if ( ! is_enemy() && ! is_add() )
     sim -> iteration_heal += iteration_heal;
-  for ( size_t i = 0; i < pet_list.size(); ++i )
-  {
-    iteration_heal += pet_list[ i ] -> iteration_heal;
   }
-  collected_data.compound_heal.add( iteration_heal );
 
-  collected_data.hps.add( iteration_fight_length != timespan_t::zero() ? iteration_heal / iteration_fight_length.total_seconds() : 0 );
-  collected_data.hpse.add( sim -> current_time != timespan_t::zero() ? iteration_heal / sim -> current_time.total_seconds() : 0 );
-
-  collected_data.dmg_taken.add( iteration_dmg_taken );
-  collected_data.dtps.add( iteration_fight_length != timespan_t::zero() ? iteration_dmg_taken / iteration_fight_length.total_seconds() : 0 );
-
-  collected_data.heal_taken.add( iteration_heal_taken );
-  collected_data.htps.add( iteration_fight_length != timespan_t::zero() ? iteration_heal_taken / iteration_fight_length.total_seconds() : 0 );
+  collected_data.collect_data( *this );
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> datacollection_end();
@@ -3601,10 +3567,6 @@ void player_t::datacollection_end()
 
   for ( size_t i = 0; i < proc_list.size(); ++i )
     proc_list[ i ] -> datacollection_end();
-
-  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
-    collected_data.combat_end_resource[ i ].add( resources.current[ i ] );
-
 }
 
 // player_t::merge ==========================================================
@@ -3731,8 +3693,6 @@ void merge( player_t& left, player_t& right )
 void player_t::merge( player_t& other )
 {
   collected_data.merge( other.collected_data );
-
-  timeline_dmg_taken.merge( other.timeline_dmg_taken );
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
   {
@@ -4861,7 +4821,7 @@ void player_t::assess_damage( school_e school,
   } // end of absorb list loop
 
   iteration_dmg_taken += s -> result_amount;
-  timeline_dmg_taken.add( sim -> current_time, s -> result_amount );
+  collected_data.timeline_dmg_taken.add( sim -> current_time, s -> result_amount );
 
 
   double actual_amount = 0;
@@ -8319,8 +8279,7 @@ void player_t::analyze( sim_t& s )
 
   // sample_data_t::analyze(calc_basics,calc_variance,sort )
 
-  collected_data.analyze( s );
-  timeline_dmg_taken.adjust( s.divisor_timeline );
+  collected_data.analyze( *this );
 
   for ( size_t i = 0; i <  buff_list.size(); ++i )
     buff_list[ i ] -> analyze();
@@ -8409,7 +8368,7 @@ void player_t::analyze( sim_t& s )
 
   // Damage Timelines =======================================================
 
-  timeline_dmg.init( max_buckets );
+  collected_data.timeline_dmg.init( max_buckets );
   for ( size_t i = 0, is_hps = ( primary_role() == ROLE_HEAL ); i < num_stats; i++ )
   {
     stats_t* s = tmp_stats_list[ i ];
@@ -8417,7 +8376,7 @@ void player_t::analyze( sim_t& s )
     {
       size_t j_max = std::min( max_buckets, s -> timeline_amount.data().size() );
       for ( size_t j = 0; j < j_max; j++ )
-        timeline_dmg.add( j, s -> timeline_amount.data()[ j ] );
+        collected_data.timeline_dmg.add( j, s -> timeline_amount.data()[ j ] );
     }
   }
 
@@ -9180,7 +9139,7 @@ void player_vengeance_t::start( player_t& p )
 void player_vengeance_t::stop()
 { event_t::cancel( event ); }
 
-player_processed_report_information_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p ) :
+player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p ) :
   action( a ), target( t ), time( ts )
 {
   for ( size_t i = 0; i < p -> buff_list.size(); ++i )
@@ -9203,6 +9162,7 @@ player_collected_data_t::player_collected_data_t( const std::string& player_name
   dpse( player_name + " Damage per Second (effective)", s.statistics_level < 2 ),
   dtps( player_name + " Damage Taken Per Second", s.statistics_level < 2 ),
   dmg_taken( player_name + " Damage Taken", s.statistics_level < 2 ),
+  timeline_dmg(),
   heal( player_name + " Heal", s.statistics_level < 2 ),
   compound_heal( player_name + " Total Heal", s.statistics_level < 2 ),
   hps( player_name + " Healing Per Second", s.statistics_level < 1 ),
@@ -9214,21 +9174,21 @@ player_collected_data_t::player_collected_data_t( const std::string& player_name
   combat_end_resource( RESOURCE_MAX )
 { }
 
-void player_collected_data_t::reserve_memory( size_t n )
+void player_collected_data_t::reserve_memory( const player_t& p )
 {
-  fight_length.reserve( n );
+  fight_length.reserve( p.sim -> iterations );
   // DMG
-  dmg.reserve( n );
-  compound_dmg.reserve( n );
-  dps.reserve( n );
-  dpse.reserve( n );
-  dtps.reserve( n );
+  dmg.reserve( p.sim -> iterations );
+  compound_dmg.reserve( p.sim -> iterations );
+  dps.reserve( p.sim -> iterations );
+  dpse.reserve( p.sim -> iterations );
+  dtps.reserve( p.sim -> iterations );
   // HEAL
-  heal.reserve( n );
-  compound_heal.reserve( n );
-  hps.reserve( n );
-  hpse.reserve( n );
-  htps.reserve( n );
+  heal.reserve( p.sim -> iterations );
+  compound_heal.reserve( p.sim -> iterations );
+  hps.reserve( p.sim -> iterations );
+  hpse.reserve( p.sim -> iterations );
+  htps.reserve( p.sim -> iterations );
 }
 
 void player_collected_data_t::merge( const player_collected_data_t& other )
@@ -9252,6 +9212,7 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
   heal_taken.merge( other.heal_taken );
   // Tank
   deaths.merge( other.deaths );
+  timeline_dmg_taken.merge( other.timeline_dmg_taken );
 
   assert( resource_timelines.size() == other.resource_timelines.size() );
   for ( size_t i = 0; i < resource_timelines.size(); ++i )
@@ -9264,7 +9225,7 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
 
 }
 
-void player_collected_data_t::analyze( sim_t& s )
+void player_collected_data_t::analyze( const player_t& p )
 {
   fight_length.analyze_all();
   // DMG
@@ -9274,6 +9235,7 @@ void player_collected_data_t::analyze( sim_t& s )
   dpse.analyze_all();
   dmg_taken.analyze_all();
   dtps.analyze_all();
+  timeline_dmg_taken.adjust( p.sim -> divisor_timeline );
   // Heal
   heal.analyze_all();
   compound_heal.analyze_all();
@@ -9286,7 +9248,55 @@ void player_collected_data_t::analyze( sim_t& s )
 
   for ( size_t i = 0; i <  resource_timelines.size(); ++i )
   {
-    resource_timelines[ i ].timeline.adjust( s.divisor_timeline );
+    resource_timelines[ i ].timeline.adjust( p.sim -> divisor_timeline );
   }
 
+}
+
+
+void player_collected_data_t::collect_data( const player_t& p )
+{
+
+  double f_length = p.iteration_fight_length.total_seconds();
+  double sim_length = p.sim -> current_time.total_seconds();
+  double w_time = p.iteration_waiting_time.total_seconds();
+  assert( p.iteration_fight_length <= p.sim -> current_time );
+
+  fight_length.add( f_length );
+  waiting_time.add( w_time );
+
+  executed_foreground_actions.add( p.iteration_executed_foreground_actions );
+
+
+  // Player only dmg/heal
+  dmg.add( p.iteration_dmg );
+  heal.add( p.iteration_heal );
+
+  double total_iteration_dmg = p.iteration_dmg; // player + pet dmg
+  for ( size_t i = 0; i < p.pet_list.size(); ++i )
+  {
+    total_iteration_dmg += p.pet_list[ i ] -> iteration_dmg;
+  }
+  double total_iteration_heal = p.iteration_heal; // player + pet heal
+  for ( size_t i = 0; i < p.pet_list.size(); ++i )
+  {
+    total_iteration_heal += p.pet_list[ i ] -> iteration_heal;
+  }
+
+  compound_dmg.add( total_iteration_dmg );
+  dps.add( f_length ? total_iteration_dmg / f_length : 0 );
+  dpse.add( sim_length ? total_iteration_dmg / sim_length : 0 );
+
+  compound_heal.add( total_iteration_heal );
+  hps.add( f_length ? total_iteration_heal / f_length : 0 );
+  hpse.add( sim_length ? total_iteration_heal / sim_length : 0 );
+
+  dmg_taken.add( p.iteration_dmg_taken );
+  dtps.add( f_length ? p.iteration_dmg_taken / f_length : 0 );
+
+  heal_taken.add( p.iteration_heal_taken );
+  htps.add( f_length ? p.iteration_heal_taken / f_length : 0 );
+
+  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+    combat_end_resource[ i ].add( p.resources.current[ i ] );
 }

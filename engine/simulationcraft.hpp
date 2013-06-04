@@ -2441,10 +2441,6 @@ struct sim_t : private sc_thread_t
   // Default stat enchants
   gear_stats_t enchant;
 
-  // Simulation characteristics
-  bool healer_sim;
-  bool tank_sim;
-
   bool challenge_mode; // if active, players will get scaled down to 463 and set bonusses are deactivated
   int scale_to_itemlevel; //itemlevel to scale to. if -1, we don't scale down
 
@@ -3599,11 +3595,12 @@ public:
 struct player_vengeance_t
 {
 private:
-  sc_timeline_t timeline_;
+  sc_timeline_t& timeline_; // reference to collected_data.vengeance_timeline
   event_t* event; // pointer to collection event so we can cancel it at the end of combat.
 
 public:
-  player_vengeance_t() : event( nullptr ) {}
+  player_vengeance_t( sc_timeline_t& vengeance_tl ) :
+    timeline_( vengeance_tl ), event( nullptr ) {}
 
   void init( player_t& p );
   void start( player_t& p );
@@ -3628,19 +3625,7 @@ public:
 
 struct player_processed_report_information_t
 {
-  struct action_sequence_data_t
-  {
-    const action_t* action;
-    const player_t* target;
-    const timespan_t time;
-    std::vector<buff_t*> buff_list;
-    std::array<double, RESOURCE_MAX> resource_snapshot;
-
-    action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p );
-  };
-
   bool charts_generated, buff_lists_generated;
-  auto_dispose< std::vector<action_sequence_data_t*> > action_sequence;
   std::string action_dpet_chart, action_dmg_chart, time_spent_chart;
   std::array<std::string, RESOURCE_MAX> timeline_resource_chart, gains_chart;
   std::string timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;
@@ -3675,6 +3660,8 @@ struct player_collected_data_t
   extended_sample_data_t dpse;
   extended_sample_data_t dtps;
   extended_sample_data_t dmg_taken;
+  sc_timeline_t timeline_dmg;
+  sc_timeline_t timeline_dmg_taken;
   // Heal
   extended_sample_data_t heal;
   extended_sample_data_t compound_heal;
@@ -3684,6 +3671,7 @@ struct player_collected_data_t
   extended_sample_data_t heal_taken;
   // Tank
   extended_sample_data_t deaths;
+  sc_timeline_t vengeance_timeline;
 
   struct resource_timeline_t
   {
@@ -3697,10 +3685,23 @@ struct player_collected_data_t
 
   std::vector<simple_sample_data_with_min_max_t > combat_end_resource;
 
+  struct action_sequence_data_t
+  {
+    const action_t* action;
+    const player_t* target;
+    const timespan_t time;
+    std::vector<buff_t*> buff_list;
+    std::array<double, RESOURCE_MAX> resource_snapshot;
+
+    action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p );
+  };
+  auto_dispose< std::vector<action_sequence_data_t*> > action_sequence;
+
   player_collected_data_t( const std::string& player_name, sim_t& );
-  void reserve_memory( size_t );
+  void reserve_memory( const player_t& );
   void merge( const player_collected_data_t& );
-  void analyze( sim_t& );
+  void analyze( const player_t& );
+  void collect_data( const player_t& );
 };
 
 // Actor
@@ -3761,15 +3762,6 @@ struct player_t : public actor_t
 
   int         invert_scaling;
   double      avg_ilvl;
-
-private:
-  player_vengeance_t vengeance;
-public:
-  void vengeance_init() { vengeance.init( *this ); }
-  void vengeance_start() { vengeance.start( *this ); }
-  void vengeance_stop() { vengeance.stop(); }
-  bool vengeance_is_started() const { return vengeance.is_started(); }
-  const sc_timeline_t& vengeance_timeline() const { return vengeance.timeline(); }
 
   // Reaction
   timespan_t  reaction_offset, reaction_mean, reaction_stddev, reaction_nu;
@@ -3991,12 +3983,19 @@ public:
   // All Data collected during / end of combat
   player_collected_data_t collected_data;
 
+private:
+  player_vengeance_t vengeance;
+public:
+  void vengeance_init() { vengeance.init( *this ); }
+  void vengeance_start() { vengeance.start( *this ); }
+  void vengeance_stop() { vengeance.stop(); }
+  bool vengeance_is_started() const { return vengeance.is_started(); }
+  const sc_timeline_t& vengeance_timeline() const { return vengeance.timeline(); }
+
   // Damage
   double iteration_dmg, iteration_dmg_taken; // temporary accumulators
   double dpr;
 
-  sc_timeline_t timeline_dmg;
-  sc_timeline_t timeline_dmg_taken;
   std::vector<double> dps_convergence_error;
   double dps_convergence;
 
