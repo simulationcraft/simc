@@ -448,46 +448,6 @@ public:
     }
   }
 
-  // unbreakable spirit handling
-  void trigger_unbreakable_spirit( double c )
-  {
-    // if unbreakable spirit is talented
-    if ( ! p() -> talents.unbreakable_spirit -> ok() ) return;
-
-    // reduce cooldowns by 1% per holy power spent - divine purpose procs count as 3. Cannot reduce to less than 50% of base.
-    double reduction_percent = ( c == 0 ) ? 0.03 : c/100;
-
-    // perform the reduction
-    base_t::unbreakable_spirit_reduce_cooldown( p() -> cooldowns.divine_protection, reduction_percent );
-
-    // perform the reduction
-    base_t::unbreakable_spirit_reduce_cooldown( p() -> cooldowns.divine_shield, reduction_percent );
-    
-    // perform the reduction
-    base_t::unbreakable_spirit_reduce_cooldown( p() -> cooldowns.lay_on_hands, reduction_percent );
-  }
-
-  void unbreakable_spirit_reduce_cooldown( cooldown_t* cd, double rp )
-  {
-    // if the ability is already on cooldown
-    if ( cd -> down() )
-    {
-      // and the cooldown is greater than 50% of the base value
-      if ( cd -> reduced_cooldown()  > 0.5 * cd -> duration )
-      {
-        // we want to subtract reduction_percent*duration from the current cooldown
-        cd -> ready -= cd -> duration * rp;
-
-        // check to enforce bounds - in case we're at 51% remaining and try to subtract 2+%
-        if ( cd -> reduced_cooldown() < 0.5 * cd -> duration )
-        {
-          // clamp the value at 50%
-          cd -> ready = cd -> last_start + cd -> duration / 2;
-        }
-      }
-    }
-  }
-
   // divine purpose handling 
   void trigger_divine_purpose( double c )
   {
@@ -515,6 +475,34 @@ public:
     // if the buff is up at this point, we had a new proc - record for output
     if ( p() -> buffs.divine_purpose -> check() )
       p() -> procs.divine_purpose -> occur();
+  }
+
+  // unbreakable spirit handling
+  void trigger_unbreakable_spirit( double c )
+  {
+    // if unbreakable spirit is talented
+    if ( ! p() -> talents.unbreakable_spirit -> ok() ) return;
+
+    // reduce cooldowns by 1% per holy power spent - divine purpose procs count as 3.
+    double reduction_percent = ( c == 0 ) ? 0.03 : c/100;
+
+    // perform the reduction
+    unbreakable_spirit_reduce_cooldown( p() -> cooldowns.divine_protection, reduction_percent );
+    unbreakable_spirit_reduce_cooldown( p() -> cooldowns.divine_shield,     reduction_percent );
+    unbreakable_spirit_reduce_cooldown( p() -> cooldowns.lay_on_hands,      reduction_percent );
+  }
+
+private:
+  void unbreakable_spirit_reduce_cooldown( cooldown_t* cd, double rp )
+  {
+    if ( cd -> down() ) // if the ability is already on cooldown
+    {
+      /* we want to subtract reduction_percent * base duration from the current cooldown
+       * and limit it to the first 50% of the base cooldown
+       */
+      cd -> ready = std::max( cd -> last_start + cd -> duration / 2,
+                              cd -> ready - cd -> duration * rp );
+    }
   }
 };
 
