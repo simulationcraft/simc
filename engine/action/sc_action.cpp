@@ -913,7 +913,10 @@ std::vector< player_t* >& action_t::target_list()
 {
   // Check if target cache is still valid. If not, recalculate it
   if ( ! target_cache.is_valid )
+  {
     available_targets( target_cache.list );
+    target_cache.is_valid = true;
+  }
 
   return target_cache.list;
 }
