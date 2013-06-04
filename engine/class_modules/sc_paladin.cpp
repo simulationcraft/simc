@@ -2495,15 +2495,18 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
   {
     may_crit          = true;
     tick_may_crit     = true;
+    benefits_from_seal_of_insight = true;
 
     weapon_multiplier = 0.0;
   }
+
+  bool benefits_from_seal_of_insight;
 
   virtual double action_multiplier()
   {
     double am = base_t::action_multiplier();
 
-    if ( p() -> active_seal == SEAL_OF_INSIGHT )
+    if ( p() -> active_seal == SEAL_OF_INSIGHT && benefits_from_seal_of_insight )
       am *= 1.0 + p() -> passives.seal_of_insight -> effectN( 2 ).percent();
 
     return am;
@@ -3036,31 +3039,34 @@ struct sacred_shield_t : public paladin_heal_t
   {
     parse_options( NULL, options_str );
     may_crit = false;
+    benefits_from_seal_of_insight = false;
 
-    //tick_action = new absorbs::sacred_shield_tick_t( p );
-
-    // treat this as a HoT that ticks for zero, but spawns an absorb bubble on each tick() call
+    // treat this as a HoT that spawns an absorb bubble on each tick() call rather than healing
     base_td = 342.5; // in effectN( 1 ), but not sure how to extract yet
     tick_power_mod = 1.17; // in tooltip, hardcoding
-
-    //// check for enemy target; if so, self-target
-    //if ( target -> is_enemy() )
-    //{
-    //  target = p;
-    //}
   }
+
+  //virtual void assess_damage( dmg_e type, action_state_t* s )
+  //{
+  //  // empty, to disable the heal
+  //}
   
   virtual void tick( dot_t* d )
   {
-    paladin_heal_t::tick( d );
-
+    // Kludge to swap the heal for an absorb
+    // calculate the tick amount
+    double ss_tick_amount = calculate_tick_amount( d -> state);
+    
     // if an existing absorb bubble is still hanging around, kill it
     td( d -> state -> target ) -> buffs.sacred_shield_tick -> expire();
 
-    // trigger a new 6-second absorb bubble
-    td( d -> state -> target ) -> buffs.sacred_shield_tick -> trigger( 1, d -> state -> result_amount );
+    // trigger a new 6-second absorb bubble with the absorb amount we stored earlier
+    td( d -> state -> target ) -> buffs.sacred_shield_tick -> trigger( 1, ss_tick_amount );
+
+    // note that we don't call paladin_heal_t::tick( d ) so that the heal doesn't happen
   }
 };
+
 
 } // end namespace heals
 
@@ -3089,24 +3095,6 @@ struct illuminated_healing_t : public paladin_absorb_t
     proc = true;
     trigger_gcd = timespan_t::zero();
   }
-};
-
-// Sacred Shield Absorb Bubble ====================================================
-struct sacred_shield_tick_t : public paladin_absorb_t
-{
-  sacred_shield_tick_t( paladin_t* p) :
-    paladin_absorb_t( "sacred_shield_tick", p, p -> find_spell( 65148 ) )
-  {
-    // spell database seems unable to find this one?
-    //background = true;
-    //proc = true;
-    trigger_gcd = timespan_t::zero();
-  }
-
-  //virtual void impact( action_state_t* s )
-  //{
-  //  //td( s -> target ).buffs.sacred_shield_tick -> trigger(1, s-> result_amount );
-  //}
 };
 
 } // end namespace absorbs
@@ -3561,7 +3549,6 @@ void paladin_t::generate_action_prio_list_prot()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] );
   
-  def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<5" );
   def -> add_action( this, "Avenging Wrath" );
   def -> add_action( this, "Guardian of Ancient Kings", "if=health.pct<=30" );
   def -> add_action( this, "Shield of the Righteous", "if=holy_power>=3" );
@@ -3569,9 +3556,11 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_action( this, "Crusader Strike" );
   def -> add_action( this, "Judgment" );
   def -> add_action( this, "Avenger's Shield" );
+  def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<5" );
   def -> add_action( this, "Hammer of Wrath" );
   def -> add_action( this, "Holy Wrath" );
   def -> add_action( this, "Consecration", "if=target.debuff.flying.down&!ticking" );
+  def -> add_talent( this, "Sacred Shield" );
 }
 
 void paladin_t::generate_action_prio_list_ret()
