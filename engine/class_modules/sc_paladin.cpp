@@ -37,7 +37,12 @@ struct paladin_td_t : public actor_pair_t
     dot_t* word_of_glory; // leftover, can probably be removed
   } dots;
 
-  buff_t* debuffs_censure;
+  struct buffs_t
+  {
+    buff_t* debuffs_censure;
+   // buff_t* sacred_shield;
+    absorb_buff_t* sacred_shield_tick;
+  } buffs;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
 };
@@ -84,7 +89,6 @@ public:
     buff_t* infusion_of_light;
     buff_t* inquisition;
     buff_t* judgments_of_the_wise;
-    buff_t* sacred_shield;
     buff_t* shield_of_glory;
     buff_t* shield_of_the_righteous;
     buff_t* tier15_2pc_melee;
@@ -617,7 +621,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
             break;
           case SEAL_OF_TRUTH:
             p() -> active_censure                    -> execute();
-            if ( td() -> debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
+            if ( td() -> buffs.debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
             break;
           default: break;
         }
@@ -2445,7 +2449,7 @@ struct censure_t : public paladin_spell_t
     if ( result_is_hit( s -> result ) )
     {
       // if the application hits, apply/refresh the censure debuff; this will also increment stacks
-      td( s -> target ) -> debuffs_censure -> trigger();
+      td( s -> target ) -> buffs.debuffs_censure -> trigger();
       // cheesy hack to make Censure use melee crit rather than spell crit
       s -> crit = p() -> composite_melee_crit();
     }
@@ -2455,11 +2459,11 @@ struct censure_t : public paladin_spell_t
 
   virtual double composite_target_multiplier( player_t* t )
   {
-    // since we don't support stacking debuffs, we handle the stack size locally in debuffs_censure
+    // since we don't support stacking debuffs, we handle the stack size in paladin_td buffs.debuffs_censure
     // and apply the stack size as an action multiplier
     double am = paladin_spell_t::composite_target_multiplier( t );
 
-    am *= td( t ) -> debuffs_censure -> stack();
+    am *= td( t ) -> buffs.debuffs_censure -> stack();
 
     return am;
   }
@@ -2468,7 +2472,7 @@ struct censure_t : public paladin_spell_t
   {
     // if this is the last tick, expire the debuff locally
     // (this shouldn't happen ... ever? ... under normal operation)
-    td( d -> state -> target ) -> debuffs_censure -> expire();
+    td( d -> state -> target ) -> buffs.debuffs_censure -> expire();
 
     paladin_spell_t::last_tick( d );
   }
@@ -2500,7 +2504,7 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
     double am = base_t::action_multiplier();
 
     if ( p() -> active_seal == SEAL_OF_INSIGHT )
-      am *= 1.0 + data().effectN( 2 ).percent();
+      am *= 1.0 + p() -> passives.seal_of_insight -> effectN( 2 ).percent();
 
     return am;
   }
@@ -3023,6 +3027,41 @@ struct beacon_of_light_heal_t : public heal_t
   }
 };
 
+// Sacred Shield ===================================================================
+
+struct sacred_shield_t : public paladin_heal_t
+{
+  sacred_shield_t( paladin_t* p, const std::string& options_str ) : 
+    paladin_heal_t( "sacred_shield", p, p -> find_talent_spell( "Sacred Shield") )
+  {
+    parse_options( NULL, options_str );
+    may_crit = false;
+
+    //tick_action = new absorbs::sacred_shield_tick_t( p );
+
+    // treat this as a HoT that ticks for zero, but spawns an absorb bubble on each tick() call
+    base_td = 342.5; // in effectN( 1 ), but not sure how to extract yet
+    tick_power_mod = 1.17; // in tooltip, hardcoding
+
+    //// check for enemy target; if so, self-target
+    //if ( target -> is_enemy() )
+    //{
+    //  target = p;
+    //}
+  }
+  
+  virtual void tick( dot_t* d )
+  {
+    paladin_heal_t::tick( d );
+
+    // if an existing absorb bubble is still hanging around, kill it
+    td( d -> state -> target ) -> buffs.sacred_shield_tick -> expire();
+
+    // trigger a new 6-second absorb bubble
+    td( d -> state -> target ) -> buffs.sacred_shield_tick -> trigger( 1, d -> state -> result_amount );
+  }
+};
+
 } // end namespace heals
 
 
@@ -3052,29 +3091,22 @@ struct illuminated_healing_t : public paladin_absorb_t
   }
 };
 
-// Sacred Shield Bubble ============================================================
+// Sacred Shield Absorb Bubble ====================================================
 struct sacred_shield_tick_t : public paladin_absorb_t
 {
   sacred_shield_tick_t( paladin_t* p) :
     paladin_absorb_t( "sacred_shield_tick", p, p -> find_spell( 65148 ) )
   {
     // spell database seems unable to find this one?
-    background = true;
-    proc = true;
+    //background = true;
+    //proc = true;
     trigger_gcd = timespan_t::zero();
   }
-};
 
-// Sacred Shield ===================================================================
-struct sacred_shield_t : public paladin_absorb_t
-{
-  sacred_shield_t( paladin_t* p, const std::string& options_str ) : 
-    paladin_absorb_t( "sacred_shield", p, p -> find_talent_spell( "Sacred Shield") )
-  {
-    parse_options( NULL, options_str );
-    may_miss = false;
-    tick_action = new sacred_shield_tick_t( p );
-  }
+  //virtual void impact( action_state_t* s )
+  //{
+  //  //td( s -> target ).buffs.sacred_shield_tick -> trigger(1, s-> result_amount );
+  //}
 };
 
 } // end namespace absorbs
@@ -3092,7 +3124,11 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
   dots.word_of_glory      = target -> get_dot( "word_of_glory",      paladin ); // leftover, can probably be removed
 
-  debuffs_censure = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
+  buffs.debuffs_censure    = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
+  //buffs.sacred_shield      = buff_creator_t( *this, "sacred_shield", paladin -> find_class_spell( "Sacred Shield" ) );
+  buffs.sacred_shield_tick = absorb_buff_creator_t( *this, "sacred_shield_tick", paladin -> find_spell( 65148 ) )
+                             .source( paladin -> get_stats( "sacred_shield" ) )
+                             .cd( timespan_t::zero() ); 
 }
 
 // paladin_t::create_action =================================================
@@ -3134,7 +3170,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "light_of_dawn"             ) return new light_of_dawn_t            ( this, options_str );
   if ( name == "lights_hammer"             ) return new lights_hammer_t            ( this, options_str );
   if ( name == "rebuke"                    ) return new rebuke_t                   ( this, options_str );
-  if ( name == "sacred_shield"             ) return new sacred_shield_t            ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
@@ -3154,6 +3189,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
 
   if ( name == "eternal_flame"             ) return new eternal_flame_t            ( this, options_str );
   if ( name == "word_of_glory"             ) return new word_of_glory_t            ( this, options_str );
+  if ( name == "sacred_shield"             ) return new sacred_shield_t            ( this, options_str );
   if ( name == "word_of_glory_damage"      ) return new word_of_glory_damage_t     ( this, options_str );
   if ( name == "holy_light"                ) return new holy_light_t               ( this, options_str );
   if ( name == "flash_of_light"            ) return new flash_of_light_t           ( this, options_str );
@@ -3424,8 +3460,7 @@ void paladin_t::create_buffs()
   buffs.divine_purpose         = buff_creator_t( this, "divine_purpose", find_talent_spell( "Divine Purpose" ) )
                                  .duration( find_spell( find_talent_spell( "Divine Purpose" ) -> effectN( 1 ).trigger_spell_id() ) -> duration() );
   buffs.holy_avenger           = buff_creator_t( this, "holy_avenger", find_talent_spell( "Holy Avenger" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
-  buffs.sacred_shield          = buff_creator_t( this, "sacred_shield", find_talent_spell( "Sacred Shield" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
-
+  
   // General
   buffs.avenging_wrath         = buff_creator_t( this, "avenging_wrath", find_class_spell( "Avenging Wrath" ) )
                                  .cd( timespan_t::zero() ) // Let the ability handle the CD
@@ -3525,7 +3560,8 @@ void paladin_t::generate_action_prio_list_prot()
   std::vector<std::string> racial_actions = get_racial_actions();
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] );
-
+  
+  def -> add_action( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<5" );
   def -> add_action( this, "Avenging Wrath" );
   def -> add_action( this, "Guardian of Ancient Kings", "if=health.pct<=30" );
   def -> add_action( this, "Shield of the Righteous", "if=holy_power>=3" );
