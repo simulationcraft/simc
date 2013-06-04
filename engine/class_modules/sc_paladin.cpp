@@ -78,16 +78,17 @@ public:
     buff_t* guardian_of_ancient_kings_prot;
     buff_t* grand_crusader;
     buff_t* glyph_templars_verdict;
+    buff_t* glyph_of_word_of_glory;
     buff_t* hand_of_purity;
     buff_t* holy_avenger;
     buff_t* infusion_of_light;
     buff_t* inquisition;
     buff_t* judgments_of_the_wise;
-    buff_t* glyph_of_word_of_glory;
-    buff_t* tier15_2pc_melee;
-    buff_t* tier15_4pc_melee;
+    buff_t* sacred_shield;
     buff_t* shield_of_glory;
     buff_t* shield_of_the_righteous;
+    buff_t* tier15_2pc_melee;
+    buff_t* tier15_4pc_melee;
   } buffs;
 
   // Gains
@@ -159,6 +160,7 @@ public:
   // Procs
   struct procs_t
   {
+    proc_t* divine_purpose;
     proc_t* eternal_glory;
     proc_t* judgments_of_the_bold;
     proc_t* the_art_of_war;
@@ -450,48 +452,37 @@ public:
   void trigger_unbreakable_spirit( double c )
   {
     // if unbreakable spirit is talented
-    if ( p() -> talents.unbreakable_spirit -> ok() )
+    if ( ! p() -> talents.unbreakable_spirit -> ok() ) return;
+
+    // reduce cooldowns by 1% per holy power spent - divine purpose procs count as 3. Cannot reduce to less than 50% of base.
+    double reduction_percent = ( c == 0 ) ? 0.03 : c/100;
+
+    // perform the reduction
+    base_t::unbreakable_spirit_reduce_cooldown( p() -> cooldowns.divine_protection, reduction_percent );
+
+    // perform the reduction
+    base_t::unbreakable_spirit_reduce_cooldown( p() -> cooldowns.divine_shield, reduction_percent );
+    
+    // perform the reduction
+    base_t::unbreakable_spirit_reduce_cooldown( p() -> cooldowns.lay_on_hands, reduction_percent );
+  }
+
+  void unbreakable_spirit_reduce_cooldown( cooldown_t* cd, double rp )
+  {
+    // if the ability is already on cooldown
+    if ( cd -> down() )
     {
-      // reduce cooldowns by 1% per holy power spent - divine purpose procs count as 3. Cannot reduce to less than 50% of base.
-      double reduction_percent = ( c == 0 ) ? 0.03 : c/100;
-
-      // if Divine Protection is already on cooldown
-      if ( p() -> cooldowns.divine_protection -> down() )
+      // and the cooldown is greater than 50% of the base value
+      if ( cd -> reduced_cooldown()  > 0.5 * cd -> duration )
       {
-        // and the cooldown is greater than 50% of the base value
-        if ( p() -> cooldowns.divine_protection -> reduced_cooldown() > 0.5 * p() -> cooldowns.divine_protection -> duration )
+        // we want to subtract reduction_percent*duration from the current cooldown
+        cd -> ready -= cd -> duration * rp;
+
+        // check to enforce bounds - in case we're at 51% remaining and try to subtract 2+%
+        if ( cd -> reduced_cooldown() < 0.5 * cd -> duration )
         {
-          // we want to subtract reduction_percent*duration from the current cooldown
-          p() -> cooldowns.divine_protection -> ready -= p() -> cooldowns.divine_protection -> duration * reduction_percent;
-
-          // check to enforce bounds - in case we're at 51% remaining and try to subtract 2+%
-          if ( p() -> cooldowns.divine_protection -> reduced_cooldown() < 0.5 * p() -> cooldowns.divine_protection -> duration )
-          {
-            // clamp the value at 50%
-            p() -> cooldowns.divine_protection -> ready = p() -> cooldowns.divine_protection -> last_start + p() -> cooldowns.divine_protection -> duration / 2;
-          }
-        }
-      }
-
-      // same thing for Divine Shield and LoH, sparsely commented (see above)
-      if ( p() -> cooldowns.divine_shield -> down() )
-      {
-        if ( p() -> cooldowns.divine_shield -> reduced_cooldown() > 0.5 * p() -> cooldowns.divine_shield -> duration )
-        {
-          p() -> cooldowns.divine_shield -> ready -= p() -> cooldowns.divine_shield -> duration * reduction_percent;
-
-          if ( p() -> cooldowns.divine_shield -> reduced_cooldown() < 0.5 * p() -> cooldowns.divine_shield -> duration )
-            p() -> cooldowns.divine_shield -> ready = p() -> cooldowns.divine_shield -> last_start + p() -> cooldowns.divine_shield -> duration / 2;
-        }
-      }
-      if ( p() -> cooldowns.lay_on_hands -> down() )
-      {
-        if ( p() -> cooldowns.lay_on_hands -> reduced_cooldown()  > 0.5 * p() -> cooldowns.lay_on_hands -> duration )
-        {
-          p() -> cooldowns.lay_on_hands -> ready -= p() -> cooldowns.lay_on_hands -> duration * reduction_percent;
-
-          if ( p() -> cooldowns.lay_on_hands -> reduced_cooldown() < 0.5 * p() -> cooldowns.lay_on_hands -> duration )
-            p() -> cooldowns.lay_on_hands -> ready = p() -> cooldowns.lay_on_hands -> last_start + p() -> cooldowns.lay_on_hands -> duration / 2;
+          // clamp the value at 50%
+          cd -> ready = cd -> last_start + cd -> duration / 2;
         }
       }
     }
@@ -501,29 +492,30 @@ public:
   void trigger_divine_purpose( double c )
   {
     // if divine purpose is talented
-    if ( p() -> talents.divine_purpose -> ok() )
+    if ( ! p() -> talents.divine_purpose -> ok() ) return;
+
+    // if we didn't consume a proc, the cost c will be > 0
+    if ( c > 0.0 )
     {
-      // if we didn't consume a proc, the cost c will be > 0
-      if ( c > 0.0 )
-      {
-        // chance to proc the buff, needs to be scaled by holy power spent
-        p() -> buffs.divine_purpose -> trigger( 1, 
-                                                p() -> buffs.divine_purpose -> default_value, 
-                                                p() -> buffs.divine_purpose -> default_chance * c / 3 );
-      }
-      // if we did consume a proc
-      else if ( c == 0.0 )
-      {
-        // get id of the buff corresponding to the current proc
-        p() -> buffs.divine_purpose -> expire();
-        
-        // and then try for a new proc
-        p() -> buffs.divine_purpose -> trigger();
-      }
+      // chance to proc the buff, needs to be scaled by holy power spent
+      p() -> buffs.divine_purpose -> trigger( 1, 
+        p() -> buffs.divine_purpose -> default_value, 
+        p() -> buffs.divine_purpose -> default_chance * c / 3 );
+    }
+    // if we did consume a proc
+    else if ( c == 0.0 )
+    {
+      // get id of the buff corresponding to the current proc
+      p() -> buffs.divine_purpose -> expire();
+
+      // and then try for a new proc
+      p() -> buffs.divine_purpose -> trigger();
     }
 
+    // if the buff is up at this point, we had a new proc - record for output
+    if ( p() -> buffs.divine_purpose -> check() )
+      p() -> procs.divine_purpose -> occur();
   }
-
 };
 
 // ===============================================================================================================
@@ -2374,9 +2366,6 @@ struct lights_hammer_t : public paladin_spell_t
   { return travel_time_; }
 };
 
-// Sacred Shield 30s buff
-
-
 // Word of Glory Damage Spell ======================================================
 
 struct word_of_glory_damage_t : public paladin_spell_t
@@ -2981,9 +2970,6 @@ struct light_of_dawn_t : public paladin_heal_t
   }
 };
 
-// Sacred Shield ============================================================
-// placeholder for now, will be implemented as a spell which applies a HoT that heals for 0 and applies a new absorb bubble on each tick.
-
 // Word of Glory Spell ======================================================
 
 struct word_of_glory_t : public paladin_heal_t
@@ -3051,6 +3037,11 @@ struct beacon_of_light_heal_t : public heal_t
 
 } // end namespace heals
 
+
+// ==========================================================================
+// Paladin Absorbs
+// ==========================================================================
+
 namespace absorbs {
 
 struct paladin_absorb_t : public paladin_spell_base_t< absorb_t >
@@ -3061,6 +3052,7 @@ struct paladin_absorb_t : public paladin_spell_base_t< absorb_t >
   { }
 };
 
+// Illuminated Healing ============================================================
 struct illuminated_healing_t : public paladin_absorb_t
 {
   illuminated_healing_t( paladin_t* p ) :
@@ -3069,6 +3061,31 @@ struct illuminated_healing_t : public paladin_absorb_t
     background = true;
     proc = true;
     trigger_gcd = timespan_t::zero();
+  }
+};
+
+// Sacred Shield Bubble ============================================================
+struct sacred_shield_tick_t : public paladin_absorb_t
+{
+  sacred_shield_tick_t( paladin_t* p) :
+    paladin_absorb_t( "sacred_shield_tick", p, p -> find_spell( 65148 ) )
+  {
+    // spell database seems unable to find this one?
+    background = true;
+    proc = true;
+    trigger_gcd = timespan_t::zero();
+  }
+};
+
+// Sacred Shield ===================================================================
+struct sacred_shield_t : public paladin_absorb_t
+{
+  sacred_shield_t( paladin_t* p, const std::string& options_str ) : 
+    paladin_absorb_t( "sacred_shield", p, p -> find_talent_spell( "Sacred Shield") )
+  {
+    parse_options( NULL, options_str );
+    may_miss = false;
+    tick_action = new sacred_shield_tick_t( p );
   }
 };
 
@@ -3129,6 +3146,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "light_of_dawn"             ) return new light_of_dawn_t            ( this, options_str );
   if ( name == "lights_hammer"             ) return new lights_hammer_t            ( this, options_str );
   if ( name == "rebuke"                    ) return new rebuke_t                   ( this, options_str );
+  if ( name == "sacred_shield"             ) return new sacred_shield_t            ( this, options_str );
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
@@ -3272,6 +3290,7 @@ void paladin_t::init_procs()
 {
   player_t::init_procs();
 
+  procs.divine_purpose           = get_proc( "divine_purpose"                 );
   procs.eternal_glory            = get_proc( "eternal_glory"                  );
   procs.judgments_of_the_bold    = get_proc( "judgments_of_the_bold"          );
   procs.the_art_of_war           = get_proc( "the_art_of_war"                 );
@@ -3417,6 +3436,7 @@ void paladin_t::create_buffs()
   buffs.divine_purpose         = buff_creator_t( this, "divine_purpose", find_talent_spell( "Divine Purpose" ) )
                                  .duration( find_spell( find_talent_spell( "Divine Purpose" ) -> effectN( 1 ).trigger_spell_id() ) -> duration() );
   buffs.holy_avenger           = buff_creator_t( this, "holy_avenger", find_talent_spell( "Holy Avenger" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
+  buffs.sacred_shield          = buff_creator_t( this, "sacred_shield", find_talent_spell( "Sacred Shield" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
 
   // General
   buffs.avenging_wrath         = buff_creator_t( this, "avenging_wrath", find_class_spell( "Avenging Wrath" ) )
