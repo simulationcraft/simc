@@ -3561,7 +3561,7 @@ void paladin_t::generate_action_prio_list_prot()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] );
   
-  def -> add_action( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<5" );
+  def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<5" );
   def -> add_action( this, "Avenging Wrath" );
   def -> add_action( this, "Guardian of Ancient Kings", "if=health.pct<=30" );
   def -> add_action( this, "Shield of the Righteous", "if=holy_power>=3" );

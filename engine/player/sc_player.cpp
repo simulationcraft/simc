@@ -4796,7 +4796,7 @@ void player_t::assess_damage( school_e school,
   {
     absorb_buff_t* ab = absorb_buff_list[ offset ];
 
-    if ( school != SCHOOL_NONE && ! dbc::is_school( school, ab -> absorb_school ) )
+    if ( school != SCHOOL_NONE && ! dbc::is_school( ab -> absorb_school, school ) )
     {
       offset++;
       continue;
