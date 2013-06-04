@@ -178,6 +178,71 @@ struct spell_nuke_t : public spell_t
 
 };
 
+// Spell Nuke ===============================================================
+
+struct spell_dot_t : public spell_t
+{
+  spell_dot_t( player_t* p, const std::string& options_str ) :
+    spell_t( "spell_dot", p, spell_data_t::nil() )
+  {
+    school = SCHOOL_FIRE;
+    base_tick_time = timespan_t::from_seconds( 1.0 );
+    num_ticks = 10;
+    base_td = 50000;
+
+    cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
+
+    int aoe_tanks = 0;
+    option_t options[] =
+    {
+      opt_float( "damage", base_td ),
+      opt_timespan( "tick_time", base_tick_time ),
+      opt_int( "num_ticks", num_ticks ),
+      opt_timespan( "cooldown",     cooldown -> duration ),
+      opt_bool( "aoe_tanks", aoe_tanks ),
+      opt_null()
+    };
+    parse_options( options, options_str );
+
+    if ( base_tick_time < timespan_t::zero() ) // User input sanity check
+      base_execute_time = timespan_t::from_seconds( 1.0 );
+
+    stats = player -> get_stats( name_str + "_" + target -> name(), this );
+    name_str = name_str + "_" + target -> name();
+
+    tick_may_crit = false; // FIXME: should ticks crit or not?
+    may_crit = false;
+    if ( aoe_tanks == 1 )
+      aoe = -1;
+  }
+
+  virtual size_t available_targets( std::vector< player_t* >& tl )
+  {
+    // TODO: This does not work for heals at all, as it presumes enemies in the
+    // actor list.
+
+    tl.clear();
+    tl.push_back( target );
+    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+    {
+      //only add non heal_target tanks to this list for now
+      if ( !sim -> actor_list[ i ] -> is_sleeping() &&
+           !sim -> actor_list[ i ] -> is_enemy() &&
+           sim -> actor_list[ i ] -> primary_role() == ROLE_TANK &&
+           sim -> actor_list[ i ] != target &&
+           sim -> actor_list[ i ] != sim -> heal_target )
+        tl.push_back( sim -> actor_list[ i ] );
+    }
+    //if we have no target (no tank), add the healing target as substitute
+    if ( tl.empty() )
+    {
+      tl.push_back( sim->heal_target );
+    }
+    return tl.size();
+  }
+
+};
+
 // Spell AoE ================================================================
 
 struct spell_aoe_t : public spell_t
@@ -287,6 +352,7 @@ static action_t* enemy_create_action( player_t* p, const std::string& name, cons
 {
   if ( name == "auto_attack" ) return new auto_attack_t( p, options_str );
   if ( name == "spell_nuke"  ) return new  spell_nuke_t( p, options_str );
+  if ( name == "spell_dot"   ) return new   spell_dot_t( p, options_str );
   if ( name == "spell_aoe"   ) return new   spell_aoe_t( p, options_str );
   if ( name == "summon_add"  ) return new  summon_add_t( p, options_str );
 
@@ -325,6 +391,7 @@ struct enemy_t : public player_t
   virtual void init_resources( bool force = false );
   virtual void init_target();
   virtual void init_actions();
+  virtual void init_stats();
   virtual double composite_block();
   virtual double resource_loss( resource_e, double, gain_t*, action_t* );
   virtual void create_options();
@@ -545,7 +612,8 @@ void enemy_t::init_actions()
       if ( ! target -> is_enemy() )
       {
         action_list_str += "/auto_attack,damage=" + util::to_string( 700000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
-        action_list_str += "/spell_nuke,damage=" + util::to_string( 60000 * level_mult ) + ",cooldown=4,attack_speed=2,aoe_tanks=1";
+        action_list_str += "/spell_dot,damage=" + util::to_string( 100000 * level_mult ) + ",tick_time=2,num_ticks=10,cooldown=40,aoe_tanks=1,if=!ticking";
+        action_list_str += "/spell_nuke,damage=" + util::to_string( 15000 * level_mult ) + ",cooldown=4,attack_speed=2,aoe_tanks=1";
       }
       else if ( sim -> heal_target && this != sim -> heal_target )
       {
@@ -559,6 +627,14 @@ void enemy_t::init_actions()
     }
   }
   player_t::init_actions();
+}
+
+/* Hack to get this executed after player_t::_init_actions.
+ * Notice the difference between init_actions and _init_actions
+ */
+void enemy_t::init_stats()
+{
+  player_t::init_stats();
 
   // Small hack to increase waiting time for target without any actions
   for ( size_t i = 0; i < action_list.size(); ++i )
