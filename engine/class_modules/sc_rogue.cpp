@@ -3121,7 +3121,7 @@ void rogue_t::init_actions()
       def -> add_action( item_actions[ i ] + ",if=buff.shadow_dance.up" );
 
     for ( size_t i = 0; i < profession_actions.size(); i++ )
-      def -> add_action( profession_actions[ i ] + ",if=buff.shadow_dance,up" );
+      def -> add_action( profession_actions[ i ] + ",if=buff.shadow_dance.up" );
 
     for ( size_t i = 0; i < racial_actions.size(); i++ )
     {

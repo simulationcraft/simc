@@ -14,35 +14,35 @@
 # Detect operating system
 FLAVOR     =
 ifeq (${OS},Windows_NT)
-  OS         = WINDOWS
+OS         = WINDOWS
 endif
 
 ifeq (${OS},)
-  ifdef SystemRoot
-    OS         = WINDOWS
-  else
-    OS         = UNIX
-    FLAVOR     = $(shell uname)
-  endif
+ifdef SystemRoot
+OS         = WINDOWS
+else
+OS         = UNIX
+FLAVOR     = $(shell uname)
+endif
 endif
 
 
 OPENSSL_PATH =
 
-CXX        = g++
+CXX        = clang++
 CPP_FLAGS  = -Wall -Woverloaded-virtual -W -I.
-OPTS       = -O3
+OPTS       = -O4
 # Force on SSE2 to avoid problems with older GCC versions
-OPTS += -msse2 -mfpmath=sse
+OPTS += -msse2 -mavx
 
 ifneq (${NO_DEBUG},)
-  CPP_FLAGS += -DNDEBUG
+CPP_FLAGS += -DNDEBUG
 endif
 ifneq (${C++11},)
-  CPP_FLAGS += -std=c++0x
+CPP_FLAGS += -std=c++0x
 endif
 ifneq (${LTO},)
-  OPTS += -flto
+OPTS += -flto
 endif
 ifneq (${MARCH_NATIVE},)
   OPTS += -march=native
@@ -63,32 +63,32 @@ endif
 
 # Any UNIX platform
 ifeq (UNIX,${OS})
-  LINK_LIBS += -lpthread
-  AR         = ar
-  COPY       = cp
-  REMOVE     = rm -f
-  PATHSEP    = /
-    ifeq (i386,${HOSTTYPE})
+LINK_LIBS += -lpthread
+AR         = ar
+COPY       = cp
+REMOVE     = rm -f
+PATHSEP    = /
+ifeq (i386,${HOSTTYPE})
         optimized::CPP_FLAGS  += -malign-double
-    endif
-    ifeq (i686,${HOSTTYPE})
+endif
+ifeq (i686,${HOSTTYPE})
         optimized::CPP_FLAGS  += -malign-double
-    endif
+endif
 endif
 
 # Windows platform with MinGW32
 ifeq (WINDOWS,${OS})
-  MODULE_EXT = .exe
-  CPP_FLAGS += -DUNICODE
-  LINK_LIBS  = -lws2_32 -lwininet
-  ifeq (${NO_STATIC},)
-    LINK_FLAGS += -static
-  endif
-  COPY       = copy
-  REMOVE     = del /f
-  PATHSEP    = \\
-  AR         = ar
-  
+MODULE_EXT = .exe
+CPP_FLAGS += -DUNICODE
+LINK_LIBS  = -lws2_32 -lwininet
+ifeq (${NO_STATIC},)
+LINK_FLAGS += -static
+endif
+COPY       = copy
+REMOVE     = del /f
+PATHSEP    = \\
+AR         = ar
+
   optimized::CPP_FLAGS += -malign-double
 endif
 
@@ -201,8 +201,8 @@ debug: $(MODULE)
 
 release:CPP_FLAGS += -DNDEBUG
 release: $(MODULE)
-	
-optimized:CPP_FLAGS += -DNDEBUG -std=c++0x
+
+optimized:CPP_FLAGS += -DNDEBUG
 optimized:OPTS += -march=native -ffast-math -fomit-frame-pointer
 optimized: $(MODULE)
 
@@ -220,7 +220,7 @@ sc_http$(MODULE_EXT): interfaces$(PATHSEP)sc_http.cpp sc_util.cpp
 rng$(MODULE_EXT): util$(PATHSEP)rng.cpp
 	-@echo [$@] Linking
 	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
-	
+
 timeline$(MODULE_EXT): util$(PATHSEP)timeline.cpp
 	-@echo [$@] Linking
 	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
