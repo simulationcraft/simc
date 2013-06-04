@@ -4014,7 +4014,10 @@ void player_t::arise()
   arise_time = sim -> current_time;
 
   if ( unlikely( is_enemy() ) )
+  {
     sim -> active_enemies++;
+    sim -> target_non_sleeping_list.push_back( this );
+  }
   else
   {
     sim -> active_allies++;
@@ -4050,13 +4053,14 @@ void player_t::demise()
   }
 
   if ( unlikely( is_enemy() ) )
+  {
     sim -> active_enemies--;
+    sim -> target_non_sleeping_list.find_and_erase_unordered( this );
+  }
   else
   {
     sim -> active_allies--;
-    std::vector<player_t*>::iterator it = range::find( sim -> player_non_sleeping_list, this );
-    assert( it != sim -> player_non_sleeping_list.end() );
-    sim -> player_non_sleeping_list.erase( it );
+    sim -> player_non_sleeping_list.find_and_erase_unordered( this );
   }
 
   event_t::cancel( off_gcd );

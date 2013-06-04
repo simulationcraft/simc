@@ -9,11 +9,21 @@
 // Heal
 // ==========================================================================
 
-// ==========================================================================
-// Created by philoptik@gmail.com
-//
-// heal_target is set to player for now.
-// ==========================================================================
+namespace { // anonymous namespace
+
+struct aoe_player_list_callback_t : public callback_t
+{
+  action_t* action;
+  aoe_player_list_callback_t( action_t* a ) : callback_t(), action( a ) {}
+
+  virtual void execute()
+  {
+    // Invalidate target cache
+    action -> target_cache.is_valid = false;
+  }
+};
+
+} // end anonymous namespace
 
 // heal_t::heal_t ======== Heal Constructor ===================
 
@@ -34,6 +44,12 @@ heal_t::heal_t( const std::string&  token,
   tick_may_crit     = true;
 
   stats -> type = STATS_HEAL;
+}
+
+void heal_t::init_target_cache()
+{
+  target_cache.callback = new aoe_player_list_callback_t( this );
+  sim -> player_non_sleeping_list.register_callback( target_cache.callback );
 }
 
 // heal_t::parse_effect_data ===========================
@@ -202,11 +218,11 @@ size_t heal_t::available_targets( std::vector< player_t* >& tl )
   tl.clear();
   tl.push_back( target );
 
-  for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+  for ( size_t i = 0, actors = sim -> player_non_sleeping_list.size(); i < actors; i++ )
   {
-    player_t* t = sim -> actor_list[ i ];
+    player_t* t = sim -> player_non_sleeping_list[ i ];
 
-    if ( ! t -> is_sleeping() && ! t -> is_enemy() && ( t != target ) )
+    if ( t != target )
       if ( ! group_only || ( t -> party == target -> party ) )
         tl.push_back( t );
   }

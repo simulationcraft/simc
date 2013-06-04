@@ -1629,7 +1629,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
 
     std::vector< player_t* >& target_list()
     {
-      size_t total_targets = available_targets( target_cache );
+      size_t total_targets = available_targets( target_cache.list );
 
       // Reduce targets to aoe amount by removing random entries from the
       // target list until it's at aoe amount
@@ -1640,11 +1640,11 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
         // Remove targets that have a flame shock first
         // TODO: The flame shocked targets should be randomly removed too, but
         // this will have to do for now
-        for ( size_t i = 0; i < target_cache.size(); i++ )
+        for ( size_t i = 0; i < target_cache.list.size(); i++ )
         {
-          if ( td( target_cache[ i ] ) -> dot.flame_shock -> ticking )
+          if ( td( target_cache.list[ i ] ) -> dot.flame_shock -> ticking )
           {
-            target_cache.erase( target_cache.begin() + i );
+            target_cache.list.erase( target_cache.list.begin() + i );
             removed = true;
             break;
           }
@@ -1652,12 +1652,12 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
 
         // There's no flame shocked targets to remove, eliminate a random target
         if ( ! removed )
-          target_cache.erase( target_cache.begin() + static_cast< size_t >( imp_ll_rng -> range( 0, as<double>( target_cache.size() ) ) ) );
+          target_cache.list.erase( target_cache.list.begin() + static_cast< size_t >( imp_ll_rng -> range( 0, as<double>( target_cache.list.size() ) ) ) );
 
         total_targets--;
       }
 
-      return target_cache;
+      return target_cache.list;
     }
 
     // A simple impact method that triggers the proxy flame shock application
@@ -1721,7 +1721,7 @@ static bool trigger_lightning_strike( const action_state_t* s )
     double composite_da_multiplier()
     {
       double m = shaman_spell_t::composite_da_multiplier();
-      m *= 1 / static_cast< double >( target_cache.size() );
+      m *= 1 / static_cast< double >( target_cache.list.size() );
       return m;
     }
   };
@@ -3099,19 +3099,19 @@ struct fire_nova_t : public shaman_spell_t
   // Fire nova is emitted on all targets with a flame shock from us .. so
   std::vector< player_t* >& target_list()
   {
-    target_cache.clear();
+    target_cache.list.clear();
 
-    for ( size_t i = 0; i < sim -> actor_list.size(); ++i )
+    for ( size_t i = 0; i < sim -> target_non_sleeping_list.size(); ++i )
     {
-      player_t* e = sim -> actor_list[ i ];
-      if ( e -> is_sleeping() || ! e -> is_enemy() )
+      player_t* e = sim -> target_non_sleeping_list[ i ];
+      if ( ! e -> is_enemy() )
         continue;
 
       if ( td( e ) -> dot.flame_shock -> ticking )
-        target_cache.push_back( e );
+        target_cache.list.push_back( e );
     }
 
-    return target_cache;
+    return target_cache.list;
   }
 };
 

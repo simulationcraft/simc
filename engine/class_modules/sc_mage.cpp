@@ -2873,18 +2873,18 @@ struct nether_tempest_cleave_t: public mage_spell_t
     assert( main_target ); // main target needs to be set to parent actions target
     target = main_target;
 
-    available_targets( target_cache ); // Build target cache
+    std::vector< player_t* >& tl = target_list();
 
-    if ( target_cache.size() <= 1 )
+    if ( tl.size() <= 1 )
       return; // single target; back out completely
 
     // obtain random target until it is not equal to main target
     while ( target == main_target )
     {
       // Randomly select target index
-      unsigned t = static_cast<unsigned>( rng -> range( 0, as<double>( target_cache.size() ) ) );
-      if ( t >= target_cache.size() ) --t; // dsfmt range should not give a value actually equal to max, but be paranoid
-      target = target_cache[ t ];
+      unsigned t = static_cast<unsigned>( rng -> range( 0, as<double>( tl.size() ) ) );
+      if ( t >= tl.size() ) --t; // dsfmt range should not give a value actually equal to max, but be paranoid
+      target = tl[ t ];
     }
 
     mage_spell_t::execute();

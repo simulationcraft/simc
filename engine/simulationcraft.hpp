@@ -2379,6 +2379,80 @@ struct progress_bar_t
   bool update( bool finished = false );
 };
 
+/* The simplest form of a callback
+ * pure virtual class which requires one to override execute function
+ * static trigger for a vector of callbacks to trigger them.
+ *
+ * NO AUTMATED MEMORY MANAGMENT!
+ */
+struct callback_t
+{
+  virtual void execute() = 0;
+  static void trigger( const std::vector<callback_t*>& v )
+  {
+    for( size_t i = 0, size = v.size(); i < size; ++i )
+      v[ i ] -> execute();
+  }
+  virtual ~callback_t() {}
+};
+
+/* Encapsulated Vector
+ * const read access
+ * Modifying the vector triggers registered callbacks
+ */
+template <typename T>
+struct vector_with_callback
+{
+private:
+  std::vector<T> _data;
+  std::vector<callback_t*> _callbacks ;
+public:
+  /* Register your custom callback, which will be called when the vector is modified
+   */
+  void register_callback( callback_t* c )
+  { _callbacks.push_back( c ); }
+
+  void trigger_callbacks() const
+  { callback_t::trigger( _callbacks ); }
+
+  void push_back( T x )
+  { _data.push_back( x ); trigger_callbacks(); }
+
+  void find_and_erase( T x )
+  {
+    typename std::vector<T>::iterator it = range::find( _data, x );
+    if ( it != _data.end() )
+      erase( it );
+  }
+
+  void find_and_erase_unordered( T x )
+  {
+    typename std::vector<T>::iterator it = range::find( _data, x );
+    if ( it != _data.end() )
+      erase_unordered( it );
+  }
+
+  // Warning: If you directly modify the vector, you need to trigger callbacks manually!
+  std::vector<T>& data()
+  { return _data; }
+
+  player_t* operator[]( size_t i ) const
+  { return _data[ i ]; }
+
+  size_t size() const
+  { return _data.size(); }
+
+  bool empty() const
+  { return _data.empty(); }
+
+private:
+  void erase_unordered( typename std::vector<T>::iterator it )
+  { ::erase_unordered( _data, it ); trigger_callbacks(); }
+
+  void erase( typename std::vector<T>::iterator it )
+  { _data.erase( it ); trigger_callbacks(); }
+};
+
 // Simulation Engine ========================================================
 
 struct sim_t : private sc_thread_t
@@ -2388,10 +2462,11 @@ struct sim_t : private sc_thread_t
   bool initialized;
   player_t*   target;
   player_t*   heal_target;
-  std::vector<player_t*> target_list;
-  std::vector<player_t*> player_list;
-  std::vector<player_t*> player_no_pet_list;
-  std::vector<player_t*> player_non_sleeping_list;
+  vector_with_callback<player_t*> target_list;
+  vector_with_callback<player_t*> target_non_sleeping_list;
+  vector_with_callback<player_t*> player_list;
+  vector_with_callback<player_t*> player_no_pet_list;
+  vector_with_callback<player_t*> player_non_sleeping_list;
   player_t*   active_player;
   int         num_players;
   int         num_enemies;
@@ -4687,7 +4762,22 @@ struct action_t : public noncopyable
   std::string name_str;
   player_t* const player;
   player_t* target;
-  std::vector< player_t* > target_cache;
+
+  /* Target Cache System
+   * - list: contains the cached target pointers
+   * - callback: unique_Ptr to callback
+   * - is_valid: gets invalidated by the callback from the target list source.
+   *  When the target list is requested in action_t::target_list(), it gets recalculated if
+   *  flag is false, otherwise cached version is used
+   */
+  struct target_cache_t {
+    std::vector< player_t* > list;
+    callback_t* callback;
+    bool is_valid;
+    target_cache_t() : callback( nullptr ),is_valid( false ) {}
+    ~target_cache_t() { delete callback; }
+  } target_cache;
+
   school_e school;
 
   uint32_t id;
@@ -4797,6 +4887,7 @@ struct action_t : public noncopyable
   virtual bool   usable_moving();
   virtual bool   ready();
   virtual void   init();
+  virtual void   init_target_cache();
   virtual void   reset();
   virtual void   cancel();
   virtual void   interrupt_action();
@@ -5172,6 +5263,7 @@ public:
 
   virtual void assess_damage( dmg_e, action_state_t* );
   virtual size_t available_targets( std::vector< player_t* >& );
+  virtual void init_target_cache();
   virtual double calculate_direct_amount( action_state_t* state, int chain_target );
   virtual void execute();
   player_t* find_greatest_difference_player();
@@ -5208,6 +5300,7 @@ struct absorb_t : public spell_base_t
   virtual void execute();
   virtual void assess_damage( dmg_e, action_state_t* );
   virtual void impact( action_state_t* );
+  virtual void init_target_cache();
   virtual size_t available_targets( std::vector< player_t* >& );
   virtual int num_targets();
 

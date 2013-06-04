@@ -770,12 +770,11 @@ struct regen_event_t : public event_t
 
   virtual void execute()
   {
-    for ( size_t i = 0, actors = sim.actor_list.size(); i < actors; i++ )
+    // targets do not get any resource regen for performance reasons
+    for ( size_t i = 0, actors = sim.player_non_sleeping_list.size(); i < actors; i++ )
     {
-      player_t* p = sim.actor_list[ i ];
-      if ( p -> is_sleeping() ) continue;
+      player_t* p = sim.player_non_sleeping_list[ i ];
       if ( p -> primary_resource() == RESOURCE_NONE ) continue;
-
       p -> regen( sim.regen_periodicity );
     }
 
@@ -797,7 +796,11 @@ sim_t::sim_t( sim_t* p, int index ) :
   initialized( false ),
   target( NULL ),
   heal_target( NULL ),
-  target_list( 0 ),
+  target_list(),
+  target_non_sleeping_list(),
+  player_list(),
+  player_no_pet_list(),
+  player_non_sleeping_list(),
   active_player( 0 ),
   num_players( 0 ),
   num_enemies( 0 ),
@@ -1504,7 +1507,7 @@ bool sim_t::init()
 
   if ( !target_list.empty() )
   {
-    target = target_list.front();
+    target = target_list.data().front();
   }
   else if ( ! main_target_str.empty() )
   {

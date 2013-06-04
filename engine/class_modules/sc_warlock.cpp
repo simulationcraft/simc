@@ -1505,13 +1505,12 @@ public:
   {
     if ( aoe == 2 && p() -> buffs.havoc -> check() && target != p() -> havoc_target )
     {
-      std::vector< player_t* >& targets = spell_t::target_list();
-
       havoc_targets.clear();
-      for ( size_t i = 0; i < targets.size(); i++ )
+      size_t num_targets = (aoe == 0 ) ? 1 : aoe;
+      for ( size_t i = 0; i < target_cache.list.size() && i < num_targets; i++ )
       {
-        if ( targets[ i ] == target || targets[ i ] == p() -> havoc_target )
-          havoc_targets.push_back( targets[ i ] );
+        if ( target_cache.list[ i ] == target || target_cache.list[ i ] == p() -> havoc_target )
+          havoc_targets.push_back( target_cache.list[ i ] );
       }
       return havoc_targets;
     }

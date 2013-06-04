@@ -1391,7 +1391,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     // Get all non-pet, non-sleeping players
     std::vector<player_t*> ally_list;;
-    range::remove_copy_if( sim -> player_no_pet_list, back_inserter( ally_list ), player_t::_is_sleeping );
+    range::remove_copy_if( sim -> player_no_pet_list.data(), back_inserter( ally_list ), player_t::_is_sleeping );
 
     // Split amongst number of people in raid.
     // Pet's get a full share without counting against the number in the raid.
@@ -3563,9 +3563,9 @@ struct binding_heal_t : public priest_heal_t
   {
     priest_heal_t::init();
 
-    target_cache.clear();
-    target_cache.push_back( target );
-    target_cache.push_back( player );
+    target_cache.list.clear();
+    target_cache.list.push_back( target );
+    target_cache.list.push_back( player );
   }
 
   virtual size_t available_targets( std::vector< player_t* >& tl )

@@ -126,6 +126,18 @@ struct action_execute_event_t : public event_t
 
 };
 
+struct aoe_target_list_callback_t : public callback_t
+{
+  action_t* action;
+  aoe_target_list_callback_t( action_t* a ) : callback_t(), action( a ) {}
+
+  virtual void execute()
+  {
+    // Invalidate target cache
+    action -> target_cache.is_valid = false;
+  }
+};
+
 } // end anonymous namespace
 
 
@@ -229,6 +241,7 @@ action_t::action_t( action_e       ty,
   name_str( token ),
   player( p ),
   target( p -> target ),
+  target_cache(),
   school( SCHOOL_NONE ),
   id(),
   result(),
@@ -883,11 +896,11 @@ size_t action_t::available_targets( std::vector< player_t* >& tl )
   tl.clear();
   tl.push_back( target );
 
-  for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+  for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
   {
-    player_t* t = sim -> actor_list[ i ];
+    player_t* t = sim -> target_non_sleeping_list[ i ];
 
-    if ( ! t -> is_sleeping() && t -> is_enemy() && ( t != target ) )
+    if ( t -> is_enemy() && ( t != target ) )
       tl.push_back( t );
   }
 
@@ -898,29 +911,21 @@ size_t action_t::available_targets( std::vector< player_t* >& tl )
 
 std::vector< player_t* >& action_t::target_list()
 {
-  // A very simple target list for aoe spells, pick any and all targets, up to
-  // aoe amount, or if aoe == -1, pick all (enemy) targets
+  // Check if target cache is still valid. If not, recalculate it
+  if ( ! target_cache.is_valid )
+    available_targets( target_cache.list );
 
-  int total_targets = as<int>( available_targets( target_cache ) );
-
-  if ( total_targets > aoe )
-  {
-    if ( aoe == 0 )
-      target_cache.resize( 1 );
-    else if ( aoe > 0 )
-      target_cache.resize( aoe );
-  }
-
-  return target_cache;
+  return target_cache.list;
 }
 
 player_t* action_t::find_target_by_number( int number )
 {
-  size_t total_targets = available_targets( target_cache );
+  std::vector< player_t* >& tl = target_list();
+  size_t total_targets = tl.size();
 
   for ( size_t i = 0, j = 1; i < total_targets; i++ )
   {
-    player_t* t = target_cache[ i ];
+    player_t* t = tl[ i ];
 
     int n = ( t == player -> target ) ? 1 : as<int>( ++j );
 
@@ -970,11 +975,9 @@ void action_t::execute()
   {
     std::vector< player_t* >& tl = target_list();
 
-    for ( size_t t = 0, targets = tl.size(); t < targets; t++ )
+    size_t num_targets = (aoe == 0 ) ? 1 : aoe;
+    for ( size_t t = 0, max_targets = tl.size(); t < num_targets && t < max_targets; t++ )
     {
-      if ( tl[ t ] -> is_sleeping() )
-        continue;
-
       action_state_t* s = get_state( pre_execute_state );
       s -> target = tl[ t ];
       if ( ! pre_execute_state ) snapshot_state( s, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
@@ -984,7 +987,7 @@ void action_t::execute()
         s -> result_amount = calculate_direct_amount( s, as<int>( t + 1 ) );
 
       if ( split_aoe_damage )
-        s -> result_amount /= targets;
+        s -> result_amount /= num_targets;
 
       if ( ! split_aoe_damage && tl.size() > static_cast< size_t >( sim -> max_aoe_enemies ) )
         s -> result_amount *= sim -> max_aoe_enemies / static_cast< double >( tl.size() );
@@ -1366,14 +1369,15 @@ bool action_t::ready()
     cycle_targets = 0;
     bool found_ready = false;
 
-    size_t total_targets = available_targets( target_cache );
+    std::vector< player_t* >& tl = target_list();
+    size_t num_targets = (aoe == 0 ) ? 1 : aoe;
 
-    if ( ( max_cycle_targets > 0 ) && ( ( size_t ) max_cycle_targets < total_targets ) )
-      total_targets = max_cycle_targets;
+    if ( ( max_cycle_targets > 0 ) && ( ( size_t ) max_cycle_targets < num_targets ) )
+      num_targets = max_cycle_targets;
 
-    for ( size_t i = 0; i < total_targets; i++ )
+    for ( size_t i = 0; i < num_targets; i++ )
     {
-      target = target_cache[ i ];
+      target = tl[ i ];
       if ( ready() )
       {
         found_ready = true;
@@ -1509,6 +1513,14 @@ void action_t::init()
     player -> find_action_priority_list( action_list ) -> foreground_action_list.push_back( this );
 
   initialized = true;
+
+  init_target_cache();
+}
+
+void action_t::init_target_cache()
+{
+  target_cache.callback = new aoe_target_list_callback_t( this );
+  sim -> target_non_sleeping_list.register_callback( target_cache.callback );
 }
 
 // action_t::reset ==========================================================
