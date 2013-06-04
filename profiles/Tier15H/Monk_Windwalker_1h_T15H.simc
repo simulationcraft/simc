@@ -86,8 +86,8 @@ off_hand=hand_of_the_dark_animus,id=96886,weapon=mace_2.6speed_9172min_17036max,
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
-# hands=gloves_of_cushioned_air,heroic=1,addon=synapse_springs_mark_ii
-# trinket1=rune_of_reorigination,heroic=1
-# trinket2=bad_juju,heroic=1
-# main_hand=hand_of_the_dark_animus,heroic=1,weapon=mace_2.60speed_9172min_17035max,enchant=dancing_steel
-# off_hand=hand_of_the_dark_animus,heroic=1,weapon=mace_2.6speed_9172min_17036max,enchant=dancing_steel
+# hands=gloves_of_cushioned_air,heroic=1,thunderforged=1,addon=synapse_springs_mark_ii
+# trinket1=rune_of_reorigination,heroic=1,thunderforged=1
+# trinket2=bad_juju,heroic=1,thunderforged=1
+# main_hand=hand_of_the_dark_animus,heroic=1,thunderforged=1,weapon=mace_2.60speed_9172min_17035max,enchant=dancing_steel
+# off_hand=hand_of_the_dark_animus,heroic=1,thunderforged=1,weapon=mace_2.6speed_9172min_17036max,enchant=dancing_steel

@@ -85,7 +85,7 @@ main_hand=darkwood_spiritstaff,id=96978,gems=320crit_320crit_60agi,enchant=danci
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
-# hands=grips_of_vampiric_cruelty,heroic=1,addon=synapse_springs_mark_ii
-# trinket1=rune_of_reorigination,heroic=1
-# trinket2=bad_juju,heroic=1
-# main_hand=darkwood_spiritstaff,heroic=1,weapon=staff_3.30speed_17940min_26910max,enchant=dancing_steel
+# hands=grips_of_vampiric_cruelty,heroic=1,thunderforged=1,addon=synapse_springs_mark_ii
+# trinket1=rune_of_reorigination,heroic=1,thunderforged=1
+# trinket2=bad_juju,heroic=1,thunderforged=1
+# main_hand=darkwood_spiritstaff,heroic=1,thunderforged=1,weapon=staff_3.30speed_17940min_26910max,enchant=dancing_steel

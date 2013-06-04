@@ -132,5 +132,5 @@ off_hand=uroe_harbinger_of_terror,id=96925,gems=320mastery_320mastery,enchant=da
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
 # hands=gauntlets_of_the_last_mogu,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=uroe_harbinger_of_terror,heroic=1,weapon=axe2h_3.60speed_19571min_29357max,enchant=dancing_steel
-# off_hand=uroe_harbinger_of_terror,heroic=1,weapon=axe2h_3.60speed_19571min_29357max,enchant=dancing_steel
+# main_hand=uroe_harbinger_of_terror,heroic=1,thunderforged=1,weapon=axe2h_3.60speed_19571min_29357max,enchant=dancing_steel
+# off_hand=uroe_harbinger_of_terror,heroic=1,thunderforged=1,weapon=axe2h_3.60speed_19571min_29357max,enchant=dancing_steel

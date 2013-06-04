@@ -88,4 +88,4 @@ off_hand=fetish_of_the_hydra,id=96826,gems=160crit_160hit_60int,enchant=165int,r
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
 # hands=gloves_of_the_chromatic_hydra,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=nadagasts_exsanguinator,heroic=1,weapon=dagger_1.80speed_3175min_5897max,enchant=jade_spirit
+# main_hand=nadagasts_exsanguinator,heroic=1,thunderforged=1,weapon=dagger_1.80speed_3175min_5897max,enchant=jade_spirit

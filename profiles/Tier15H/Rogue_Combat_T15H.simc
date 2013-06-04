@@ -94,6 +94,6 @@ off_hand=fyns_flickering_dagger,id=96976,gems=320haste_320haste_60agi,enchant=da
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
 # hands=ninetailed_gloves,heroic=1,addon=synapse_springs_mark_ii
-# trinket2=bad_juju,heroic=1
-# main_hand=wulai_bladed_fan_of_the_consorts,heroic=1,weapon=fist_2.60speed_9172min_17035max,enchant=dancing_steel
-# off_hand=fyns_flickering_dagger,heroic=1,weapon=dagger_1.80speed_6350min_11794max,enchant=dancing_steel
+# trinket2=bad_juju,heroic=1,thunderforged=1
+# main_hand=wulai_bladed_fan_of_the_consorts,heroic=1,thunderforged=1,weapon=fist_2.60speed_9172min_17035max,enchant=dancing_steel
+# off_hand=fyns_flickering_dagger,heroic=1,thunderforged=1,weapon=dagger_1.80speed_6350min_11794max,enchant=dancing_steel

@@ -39,8 +39,7 @@ actions+=/power_infusion,if=talent.power_infusion.enabled
 actions+=/archangel,if=buff.holy_evangelism.react=5
 actions+=/penance
 actions+=/shadow_word_death
-actions+=/power_word_solace,if=talent.power_word_solace.enabled
-actions+=/holy_fire,if=!talent.power_word_solace.enabled
+actions+=/power_word_solace
 actions+=/halo,if=talent.halo.enabled&active_enemies>3
 actions+=/divine_star,if=talent.divine_star.enabled&active_enemies>2
 actions+=/cascade_damage,if=talent.cascade.enabled&active_enemies>3

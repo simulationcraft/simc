@@ -21,9 +21,10 @@ spec=retribution
 actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 actions.precombat+=/blessing_of_kings,if=!aura.str_agi_int.up
-actions.precombat+=/blessing_of_might,if=!aura.mastery.up&!aura.str_agi_int.up
-actions.precombat+=/seal_of_righteousness,if=active_enemies>=4
+actions.precombat+=/blessing_of_might,if=!aura.mastery.up
 actions.precombat+=/seal_of_truth,if=active_enemies<4
+actions.precombat+=/seal_of_righteousness,if=active_enemies>=4
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/mogu_power_potion
 
@@ -83,6 +84,6 @@ main_hand=greatsword_of_frozen_hells,id=96991,gems=320haste_320haste_60str,encha
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
-# hands=reinbinders_fists,heroic=1,addon=synapse_springs_mark_ii
-# trinket1=spark_of_zandalar,heroic=1
-# main_hand=greatsword_of_frozen_hells,heroic=1,weapon=sword2h_3.60speed_19571min_29357max,enchant=dancing_steel
+# hands=reinbinders_fists,heroic=1,thunderforged=1,addon=synapse_springs_mark_ii
+# trinket1=spark_of_zandalar,heroic=1,thunderforged=1
+# main_hand=greatsword_of_frozen_hells,heroic=1,thunderforged=1,weapon=sword2h_3.60speed_19571min_29357max,enchant=dancing_steel
