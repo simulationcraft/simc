@@ -1067,6 +1067,7 @@ class SpellDataGenerator(DataGenerator):
             ( 42463, 0, False ),    # Seal of Truth damage id not directly activatable
             ( 114852, 0, False ),   # Holy Prism false positives for activated
             ( 114871, 0, False ),
+            ( 65148, 0, False ),    # Sacred Shield absorb tick
             ( 136494, 0, False ),   # World of Glory false positive for activated
         ),  
         
