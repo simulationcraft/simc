@@ -70,6 +70,7 @@ public:
   // Buffs
   struct buffs_t
   {
+    buff_t* alabaster_shield;
     buff_t* ancient_power;
     buff_t* ardent_defender;
     buff_t* avenging_wrath;
@@ -174,6 +175,7 @@ public:
   // Spells
   struct spells_t
   {
+    const spell_data_t* alabaster_shield;
     const spell_data_t* guardian_of_ancient_kings_ret;
     const spell_data_t* holy_light;
     const spell_data_t* glyph_of_word_of_glory;
@@ -197,18 +199,21 @@ public:
   // Glyphs
   struct glyphs_t
   {
+    const spell_data_t* alabaster_shield;
+    const spell_data_t* battle_healer;
     const spell_data_t* blessed_life;
     const spell_data_t* divine_protection;
     const spell_data_t* divine_storm;
     const spell_data_t* double_jeopardy;
+    const spell_data_t* final_wrath;
     const spell_data_t* focused_shield;
+    const spell_data_t* focused_wrath;
     const spell_data_t* harsh_words;
     const spell_data_t* immediate_truth;
     const spell_data_t* inquisition;
     const spell_data_t* mass_exorcism;
     const spell_data_t* templars_verdict;
     const spell_data_t* word_of_glory;
-    //todo: battle healer, alabaster shield, focused wrath, final wrath
   } glyphs;
 
   player_t* beacon_target;
@@ -1475,6 +1480,9 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     }
     else
       p() -> buffs.shield_of_the_righteous -> trigger();
+
+    // clear any Alabaster Shield stacks we may have
+    p() -> buffs.alabaster_shield -> expire();
   }
 
   virtual void update_ready( timespan_t cd_duration )
@@ -1487,8 +1495,16 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
     paladin_melee_attack_t::update_ready( cd_duration );
   }
+    
+  virtual double action_multiplier()
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
 
-  //todo: Alabaster Shield damage buff
+    // Alabaster Shield bonus
+    am *= 1.0 + p() -> buffs.alabaster_shield -> stack() * p() -> spells.alabaster_shield -> effectN( 1 ).percent();
+
+    return am;
+  }
 };
 
 // Templar's Verdict ========================================================
@@ -2174,8 +2190,11 @@ struct holy_wrath_t : public paladin_spell_t
   {
     parse_options( NULL, options_str );
 
-    // aoe = -1; FIXME disabled until we have meteor support
+    if ( ! p -> glyphs.focused_wrath -> ok() ) 
+      aoe = -1;
+
     may_crit   = true;
+    split_aoe_damage = true;
 
     // no weapon component
     weapon_multiplier = 0;
@@ -2199,6 +2218,18 @@ struct holy_wrath_t : public paladin_spell_t
       cd_duration = cooldown -> duration * p() -> cache.attack_haste();
     }
     paladin_spell_t::update_ready( cd_duration );
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = paladin_spell_t::action_multiplier();
+
+    if ( p() -> glyphs.final_wrath -> ok() && target -> health_percentage() < 20 )
+    {
+      am *= 1.0 + p() -> glyphs.final_wrath -> effectN( 1 ).percent();
+    }
+
+    return am;
   }
 };
 
@@ -3044,13 +3075,12 @@ struct sacred_shield_t : public paladin_heal_t
     // treat this as a HoT that spawns an absorb bubble on each tick() call rather than healing
     base_td = 342.5; // in effectN( 1 ), but not sure how to extract yet
     tick_power_mod = 1.17; // in tooltip, hardcoding
+    
+    // disable if not talented
+    if ( ! ( p -> talents.sacred_shield -> ok() ) )
+      background = true;
   }
 
-  //virtual void assess_damage( dmg_e type, action_state_t* s )
-  //{
-  //  // empty, to disable the heal
-  //}
-  
   virtual void tick( dot_t* d )
   {
     // Kludge to swap the heal for an absorb
@@ -3433,6 +3463,8 @@ void paladin_t::create_buffs()
   player_t::create_buffs();
 
   // Glyphs
+  buffs.alabaster_shield       = buff_creator_t( this, "glyph_alabaster_shield", find_spell(121467) ) // alabaster shield glyph spell contains no useful data
+                                 .cd( timespan_t::zero() );
   buffs.blessed_life           = buff_creator_t( this, "glyph_blessed_life", glyphs.blessed_life )
                                  .cd( timespan_t::from_seconds( glyphs.blessed_life -> effectN( 2 ).base_value() ) );
   buffs.double_jeopardy        = buff_creator_t( this, "glyph_double_jeopardy", glyphs.double_jeopardy )
@@ -4134,6 +4166,7 @@ void paladin_t::init_spells()
 
   // Spells
   spells.guardian_of_ancient_kings_ret = find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION );
+  spells.holy_light                    = find_specialization_spell( "Holy Light" );
 
   // Masteries
   passives.divine_bulwark         = find_mastery_spell( PALADIN_PROTECTION );
@@ -4165,19 +4198,26 @@ void paladin_t::init_spells()
   passives.the_art_of_war         = find_specialization_spell( "The Art of War" );
 
   // Glyphs
+  glyphs.alabaster_shield         = find_glyph_spell( "Glyph of the Alabaster Shield" );
+  glyphs.battle_healer            = find_glyph_spell( "Glyph of the Battle Healer" );
   glyphs.blessed_life             = find_glyph_spell( "Glyph of Blessed Life" );
   glyphs.divine_protection        = find_glyph_spell( "Glyph of Divine Protection" );
   glyphs.divine_storm             = find_glyph_spell( "Glyph of Divine Storm" );
   glyphs.double_jeopardy          = find_glyph_spell( "Glyph of Double Jeopardy" );
   glyphs.mass_exorcism            = find_glyph_spell( "Glyph of Mass Exorcism" );
   glyphs.templars_verdict         = find_glyph_spell( "Glyph of Templar's Verdict" );
+  glyphs.final_wrath              = find_glyph_spell( "Glyph of Final Wrath" );
+  glyphs.focused_wrath            = find_glyph_spell( "Glyph of Focused Wrath" );
   glyphs.focused_shield           = find_glyph_spell( "Glyph of Focused Shield" );
   glyphs.harsh_words              = find_glyph_spell( "Glyph of Harsh Words" );
   glyphs.immediate_truth          = find_glyph_spell( "Glyph of Immediate Truth" );
   glyphs.inquisition              = find_glyph_spell( "Glyph of Inquisition"     );
   glyphs.word_of_glory            = find_glyph_spell( "Glyph of Word of Glory"   );
 
-  spells.glyph_of_word_of_glory = glyphs.word_of_glory -> ok() ? find_spell( 115522 ) : spell_data_t::not_found();
+  // more spells, these need the glyph check to be present before they can be executed
+  spells.alabaster_shield              = glyphs.alabaster_shield -> ok() ? find_spell( 121467 ) : spell_data_t::not_found(); // this is the spell containing Alabaster Shield's effects
+  spells.glyph_of_word_of_glory        = glyphs.word_of_glory -> ok() ? find_spell( 115522 ) : spell_data_t::not_found();
+
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
@@ -4558,6 +4598,13 @@ void paladin_t::assess_damage( school_e school,
     // Return out, as you don't get to benefit from anything else
     player_t::assess_damage( school, dtype, s );
     return;
+  }
+
+  // On a block event, trigger Alabaster Shield
+  if ( s -> result == RESULT_BLOCK )
+  {
+    if ( glyphs.alabaster_shield -> ok() )
+      buffs.alabaster_shield -> trigger();
   }
 
   // Also trigger Grand Crusader on an avoidance event
