@@ -11,6 +11,7 @@
 #include <vector>
 #include <numeric>
 #include <limits>
+#include <sstream>
 #include "../sc_generic.hpp"
 
 /* Simplest Samplest Data container. Only tracks sum and count
@@ -234,6 +235,8 @@ public:
   { return simple ? base_t::mean() : _mean; }
   double pretty_mean() const
   { return simple ? base_t::pretty_mean() : _mean; }
+  size_t count() const
+  { return simple ? base_t::count() : data().size(); }
 
   /* Analyze Variance: Variance, Stddev and Stddev of the mean
    *
@@ -358,7 +361,8 @@ public:
 
   std::ostringstream& data_str( std::ostringstream& s )
   {
-    s << "Sample_Data: Name: \"" << name_str << "\" count: " << count() << "\n";
+    s << "Sample_Data: Name: \"" << name_str << "\" count: " << count();
+    s << " mean: " << mean() << " variance: " << variance << " mean_std_dev: " << mean_std_dev << "\n";
     for ( size_t i = 0, size = data().size(); i < size; ++i )
     { if ( i > 0 ) s << " "; s << data()[ i ]; }
     s << "\n";
