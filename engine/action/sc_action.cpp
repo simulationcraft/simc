@@ -983,6 +983,7 @@ void action_t::execute()
     {
       action_state_t* s = get_state( pre_execute_state );
       s -> target = tl[ t ];
+      //assert( !s -> target -> is_sleeping() );
       if ( ! pre_execute_state ) snapshot_state( s, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
       s -> result = calculate_result( s );
 

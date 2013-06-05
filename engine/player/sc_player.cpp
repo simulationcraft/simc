@@ -74,6 +74,28 @@ struct player_ready_event_t : public event_t
   }
 };
 
+/* Event which will demise the player
+ * - Reason for it are that we need to finish the current action ( eg. a dot tick ) without
+ * killing off target dependent things ( eg. dot state ).
+ */
+struct demise_event_t : public event_t
+{
+  demise_event_t( player_t* p,
+                        timespan_t delta_time = timespan_t::zero() /* Instantly kill the player */ ) :
+    event_t( p, "Player-Demise" )
+  {
+    if ( sim.debug )
+      sim.output( "New Player-Demise Event: %s", p -> name() );
+
+    sim.add_event( this, delta_time );
+  }
+
+  virtual void execute()
+  {
+    player -> demise();
+  }
+};
+
 
 
 // has_foreground_actions ===================================================
@@ -4862,7 +4884,7 @@ void player_t::assess_damage( school_e school,
         collected_data.deaths.add( sim -> current_time.total_seconds() );
       }
       if ( sim -> log ) sim -> output( "%s has died.", name() );
-      demise();
+      new ( *sim ) demise_event_t( this );
     }
   }
 

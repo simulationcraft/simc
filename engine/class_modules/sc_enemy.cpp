@@ -216,6 +216,12 @@ struct spell_dot_t : public spell_t
       aoe = -1;
   }
 
+  virtual void execute()
+  {
+    target_cache.is_valid = false;
+    spell_t::execute();
+  }
+
   virtual size_t available_targets( std::vector< player_t* >& tl )
   {
     // TODO: This does not work for heals at all, as it presumes enemies in the
@@ -677,8 +683,7 @@ double enemy_t::resource_loss( resource_e resource_type,
 
   if ( pre_health < 10 && pre_health > post_health && post_health >= 0 )
   {
-    if ( static_cast<unsigned int>( post_health + 1 ) < buffs_health_decades.size() )
-      buffs_health_decades.at( post_health + 1 ) -> expire();
+    buffs_health_decades.at( post_health + 1 ) -> expire();
     buffs_health_decades.at( post_health ) -> trigger();
   }
 

@@ -2934,9 +2934,13 @@ struct event_t
 
   static void* operator new( std::size_t size, sim_t& sim ) { return allocate( size, sim ); }
 
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) && ( defined(SC_GCC) && SC_GCC >= 40400 || defined(SC_CLANG) && SC_CLANG >= 30000 ) // Improved compile-time diagnostics.
+  static void* operator new( std::size_t ) throw() = delete; // DO NOT USE
+#else
   static void* operator new( std::size_t ) throw() { std::terminate(); return nullptr; } // DO NOT USE
-  static void  operator delete( void* ) { std::terminate(); } // DO NOT USE
+#endif
   static void  operator delete( void*, sim_t& ) { std::terminate(); } // DO NOT USE
+  static void  operator delete( void* ) { std::terminate(); } // DO NOT USE
 };
 
 // Gear Rating Conversions ==================================================

@@ -745,10 +745,10 @@ struct resource_timeline_collect_event_t : public event_t
 
   virtual void execute()
   {
-    for ( size_t i = 0, actors = sim.actor_list.size(); i < actors; i++ )
+    // Assumptions: Enemies do not have primary resource regeneration
+    for ( size_t i = 0, actors = sim.player_non_sleeping_list.size(); i < actors; i++ )
     {
-      player_t* p = sim.actor_list[ i ];
-      if ( p -> is_sleeping() ) continue;
+      player_t* p = sim.player_non_sleeping_list[ i ];
       if ( p -> primary_resource() == RESOURCE_NONE ) continue;
 
       p -> collect_resource_timeline_information();

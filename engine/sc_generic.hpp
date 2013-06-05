@@ -104,17 +104,26 @@ template <typename T, std::size_t N>
 inline std::size_t sizeof_array( const std::array<T, N>& )
 { return N; }
 
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) && ( defined(SC_GCC) && SC_GCC >= 40400 || defined(SC_CLANG) && SC_CLANG >= 30000 ) // Improved compile-time diagnostics.
 class noncopyable
 {
 public:
-  noncopyable() {} // = default
-  // noncopyable( noncopyable&& ) = default;
-  // noncopyable& operator = ( noncopyable&& ) = default;
-private:
-  noncopyable( const noncopyable& ); // = delete
-  noncopyable& operator = ( const noncopyable& ); // = delete
+  noncopyable() = default;
+  noncopyable( noncopyable&& ) = default;
+  noncopyable& operator = ( noncopyable&& ) = default;
+  noncopyable( const noncopyable& ) = delete;
+  noncopyable& operator = ( const noncopyable& ) = delete;
 };
-
+#else
+class noncopyable
+{
+public:
+  noncopyable() {}
+private:
+  noncopyable( const noncopyable& );
+  noncopyable& operator = ( const noncopyable& );
+};
+#endif
 class nonmoveable : public noncopyable
 {
 private:

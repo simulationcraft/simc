@@ -5597,7 +5597,7 @@ void priest_t::apl_disc_dmg()
   def -> add_action( "divine_star,if=talent.divine_star.enabled&active_enemies>2" );
   def -> add_action( "cascade_damage,if=talent.cascade.enabled&active_enemies>3" );
   def -> add_action( this, "Smite", "if=glyph.smite.enabled&dot.power_word_solace.remains>cast_time" );
-  def -> add_action( this, "Smite", "if=!talent.twist_of_fate.enabled&mana.pct>65" );
+  def -> add_action( this, "Smite", "if=!talent.twist_of_fate.enabled&mana.pct>15" );
   def -> add_action( this, "Smite", "if=talent.twist_of_fate.enabled&target.health.pct<20&mana.pct>target.health.pct" );
 }
 
