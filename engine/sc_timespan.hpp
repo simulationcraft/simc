@@ -14,7 +14,7 @@
 #include <numeric>
 #include <limits>
 
-#if _MSC_VER || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
+#if ! defined(__APPLE__) && ! defined(__MACH__) && ( _MSC_VER || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) )
 // Use C++11
 #include <type_traits>
 #if ( _MSC_VER && _MSC_VER < 1600 )

@@ -15,7 +15,7 @@
 #include <cassert>
 
 #include <cmath>
-#if _MSC_VER || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__)
+#if ! defined(__APPLE__) && ! defined(__MACH__) && ( _MSC_VER || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) )
 // Use C++11
 #include <array>
 #include <type_traits>
