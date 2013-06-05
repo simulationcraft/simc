@@ -691,8 +691,8 @@ bool http::get( std::string&       result,
 
 #include <iostream>
 
-std::string& armory_t::format( std::string& name, int ) { return name; }
-uint32_t spell_id_t::get_school_mask( school_e x ) { return 0; }
+uint32_t dbc::get_school_mask( school_e ) { return 0; }
+int sim_t::errorf( const char*, ... ) { return 0; }
 
 int main( int argc, char* argv[] )
 {

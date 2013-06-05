@@ -213,26 +213,6 @@ $(MODULE): $(SRC_OBJ)
 	-@echo [$(MODULE)] Linking $@
 	@$(CXX) $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
-sc_http$(MODULE_EXT): interfaces$(PATHSEP)sc_http.cpp sc_util.cpp
-	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
-
-rng$(MODULE_EXT): util$(PATHSEP)rng.cpp
-	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
-	
-timeline$(MODULE_EXT): util$(PATHSEP)timeline.cpp
-	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
-
-sample_data$(MODULE_EXT): util$(PATHSEP)sample_data.cpp
-	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
-
-sc_expressions$(MODULE_EXT): sc_expressions.cpp sc_util.cpp
-	-@echo [$@] Linking
-	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
-
 $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
 	-@echo [$(MODULE)] Compiling $(notdir $<)
 	@$(CXX) $(CPP_FLAGS) $(OPTS) -c $< -o $@
@@ -241,7 +221,7 @@ $(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT): %.cpp $(SRC_H)
 	-@echo [$(MODULE)] Compiling $(notdir $<)
 	$(CXX) $(CPP_FLAGS) $(OPTS) -S $< -o $@
 
-
+# cleanup targets
 mostlyclean:
 	-@echo [$(MODULE)] Cleaning intermediate files
 	@$(REMOVE) $(SRC_OBJ)
@@ -249,6 +229,27 @@ mostlyclean:
 clean: mostlyclean
 	-@echo [$(MODULE)] Cleaning target files
 	@$(REMOVE) $(MODULE) sc_http$(MODULE_EXT)
+
+# Unit Tests
+sc_http$(MODULE_EXT): interfaces$(PATHSEP)sc_http.cpp sc_io.cpp sc_thread.cpp sc_util.cpp
+	-@echo [$@] Linking
+	$(CXX) $(CPP_FLAGS) -std=c++0x -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
+
+rng$(MODULE_EXT): util$(PATHSEP)rng.cpp
+	-@echo [$@] Linking
+	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
+	
+timeline$(MODULE_EXT): util$(PATHSEP)timeline.hpp util$(PATHSEP)timeline.cpp
+	-@echo [$@] Linking
+	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
+
+sample_data$(MODULE_EXT): util$(PATHSEP)sample_data.hpp util$(PATHSEP)sample_data.cpp
+	-@echo [$@] Linking
+	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
+
+sc_expressions$(MODULE_EXT): sim$(PATHSEP)sc_expressions.cpp sc_util.cpp
+	-@echo [$@] Linking
+	$(CXX) $(CPP_FLAGS) -DUNIT_TEST $(OPTS) $(LINK_FLAGS) $^ $(LINK_LIBS) -o $@
 
 # Deprecated targets
 

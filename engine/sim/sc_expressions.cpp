@@ -539,6 +539,8 @@ expr_t* expr_t::parse( action_t* action,
 
 #ifdef UNIT_TEST
 
+uint32_t dbc::get_school_mask( school_e ) { return 0; }
+
 namespace {
 expr_t* parse_expression( const char* arg )
 {
@@ -567,8 +569,6 @@ void time_test( expr_t* expr, uint64_t n )
   printf( "evaluate: %f in %.4f seconds\n", value, ( stop - start ) / 1000.0 );
 }
 }
-
-unsigned spell_data_t::get_school_mask( school_e ) { return 0; }
 
 void sim_t::cancel() {}
 

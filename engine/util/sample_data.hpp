@@ -111,8 +111,7 @@ public:
 
 /* Extensive sample_data container with two runtime dependent modes:
  * - simple: Only offers sum, count
- *  - simple & min_max : sum, count, min/max
- *  -!simple: saves data and offers variation, distribution, etc.
+ *  -!simple: saves data and offers variance, percentiles, distribution, etc.
  */
 class extended_sample_data_t : public simple_sample_data_with_min_max_t
 {
