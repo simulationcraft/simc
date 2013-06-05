@@ -652,13 +652,10 @@ void buff_t::bump( int stacks, double value )
 
   if ( max_stack() < 0 )
   {
-    if ( requires_invalidation ) invalidate_cache();
     current_stack += stacks;
   }
   else if ( current_stack < max_stack() )
   {
-    if ( requires_invalidation ) invalidate_cache();
-
     int before_stack = current_stack;
 
     current_stack += stacks;
@@ -1079,7 +1076,9 @@ void buff_t::invalidate_cache()
   if ( player )
   {
     for ( int i = as<int>( invalidate_list.size() ) - 1; i >= 0; i-- )
+    {
       player -> invalidate_cache( invalidate_list[ i ] );
+    }
   }
   else // It is an aura...  Ouch.
   {
