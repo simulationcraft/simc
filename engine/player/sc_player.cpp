@@ -4807,6 +4807,9 @@ void player_t::assess_damage( school_e school,
 
   target_mitigation( school, type, s );
 
+  // store post-mitigation, pre-absorb value
+  s -> result_postmit_preabsorb = s -> result_amount;
+
   /* ABSORB BUFFS
    *
    * std::vector<absorb_buff_t*> absorb_buff_list; is a dynamic vector, which contains

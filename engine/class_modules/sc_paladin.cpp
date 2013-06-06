@@ -90,7 +90,7 @@ public:
     buff_t* infusion_of_light;
     buff_t* inquisition;
     buff_t* judgments_of_the_wise;
-    buff_t* shield_of_glory;
+    buff_t* shield_of_glory; // t15_2pc_tank
     buff_t* shield_of_the_righteous;
     buff_t* tier15_2pc_melee;
     buff_t* tier15_4pc_melee;
@@ -122,7 +122,7 @@ public:
     gain_t* hp_pursuit_of_justice;
     gain_t* hp_tower_of_radiance;
     gain_t* hp_judgment;
-    //todo: add divine protection (T15 prot 4pc)
+    gain_t* hp_t15_4pc_tank;
   } gains;
 
   // Cooldowns
@@ -184,16 +184,17 @@ public:
   // Talents
   struct talents_t
   {
-    const spell_data_t* divine_purpose;
     const spell_data_t* hand_of_purity;
     const spell_data_t* unbreakable_spirit;
     const spell_data_t* clemency;
     const spell_data_t* eternal_flame;
     const spell_data_t* sacred_shield;
+    const spell_data_t* holy_avenger;
+    const spell_data_t* sanctified_wrath;
+    const spell_data_t* divine_purpose;    
     const spell_data_t* holy_prism;
     const spell_data_t* lights_hammer;
     const spell_data_t* execution_sentence;
-    //todo: Sacred Shield, Holy Avenger, Sanctified Wrath
   } talents;
 
   // Glyphs
@@ -1651,6 +1652,8 @@ struct ardent_defender_t : public paladin_spell_t
     parse_options( nullptr, options_str );
 
     harmful = false;
+    if ( p -> set_bonus.tier14_2pc_tank() )
+      cooldown -> duration += p -> sets -> set( SET_T14_2PC_TANK ) -> effectN( 1 ).time_value();
   }
 
   virtual void execute()
@@ -3026,6 +3029,10 @@ struct word_of_glory_t : public paladin_heal_t
     // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3 
     am *= ( ( p() -> holy_power_stacks() <= 3  && ! p() -> buffs.divine_purpose -> check() ) ? p() -> holy_power_stacks() : 3 );
 
+    // T14 protection 4-piece bonus
+    if ( p() -> set_bonus.tier14_4pc_tank() )
+      am *= (1.0 + p() -> sets -> set( SET_T14_4PC_TANK ) -> effectN( 1 ).percent() );
+
     return am;
   }
 
@@ -3042,6 +3049,8 @@ struct word_of_glory_t : public paladin_heal_t
     }
 
     // Shield of Glory (Tier 15 protection 2-piece bonus)
+    if ( p() -> set_bonus.tier15_2pc_tank() )
+      p() -> buffs.shield_of_glory -> trigger();
   }
 };
 
@@ -3159,6 +3168,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   using namespace absorbs;
 
   if ( name == "auto_attack"               ) return new auto_melee_attack_t        ( this, options_str );
+  if ( name == "ardent_defender"           ) return new ardent_defender_t          ( this, options_str );
   if ( name == "avengers_shield"           ) return new avengers_shield_t          ( this, options_str );
   if ( name == "avenging_wrath"            ) return new avenging_wrath_t           ( this, options_str );
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
@@ -3324,6 +3334,7 @@ void paladin_t::init_gains()
   gains.hp_pursuit_of_justice       = get_gain( "holy_power_pursuit_of_justice" );
   gains.hp_tower_of_radiance        = get_gain( "holy_power_tower_of_radiance" );
   gains.hp_judgment                 = get_gain( "holy_power_judgment" );
+  gains.hp_t15_4pc_tank             = get_gain( "holy_power_t15_4pc_tank" );
 }
 
 // paladin_t::init_procs ====================================================
@@ -4154,12 +4165,14 @@ void paladin_t::init_spells()
   player_t::init_spells();
 
   // Talents
-  talents.divine_purpose          = find_talent_spell( "Divine Purpose" );
   talents.hand_of_purity          = find_talent_spell( "Hand of Purity" );
   talents.unbreakable_spirit      = find_talent_spell( "Unbreakable Spirit" );
   talents.clemency                = find_talent_spell( "Clemency" );
   talents.eternal_flame           = find_talent_spell( "Eternal Flame" );
   talents.sacred_shield           = find_talent_spell( "Sacred Shield" );
+  talents.holy_avenger            = find_talent_spell( "Holy Avenger" );
+  talents.sanctified_wrath        = find_talent_spell( "Sanctified Wrath" );
+  talents.divine_purpose          = find_talent_spell( "Divine Purpose" );
   talents.holy_prism              = find_talent_spell( "Holy Prism" );
   talents.lights_hammer           = find_talent_spell( "Light's Hammer" );
   talents.execution_sentence      = find_talent_spell( "Execution Sentence" );
@@ -4488,7 +4501,7 @@ void paladin_t::target_mitigation( school_e school,
 
   // Shield of the Righteous
   if ( buffs.shield_of_the_righteous -> check() )
-  { s -> result_amount *= 1.0 + buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() - get_divine_bulwark(); }
+  { s -> result_amount *= 1.0 + ( buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() - get_divine_bulwark() ) * (1.0 + sets -> set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent() ); }
 
   s -> result_amount *= 1.0 + passives.sanctuary -> effectN( 1 ).percent();
 
@@ -4614,6 +4627,16 @@ void paladin_t::assess_damage( school_e school,
   }
 
   player_t::assess_damage( school, dtype, s );
+
+  // T15 4-piece tank
+  if ( set_bonus.tier15_4pc_tank() && buffs.divine_protection -> check() )
+  {
+    // compare damage to player health to find HP gain
+    int8_t hp_gain = std::floor( s -> result_postmit_preabsorb / resources.max[ RESOURCE_HEALTH ] * 5 );
+
+    // add that much Holy Power
+    resource_gain( RESOURCE_HOLY_POWER, hp_gain, gains.hp_t15_4pc_tank );
+  }
 }
 
 // paladin_t::create_options ================================================
