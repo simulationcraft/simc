@@ -2676,13 +2676,16 @@ void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* p, in
 
   print_html_player_action_priority_list( os, sim, p );
 
-  print_html_stats( os, p );
+  if ( ! p -> is_pet() )
+  {
+    print_html_stats( os, p );
 
-  print_html_gear( os, p );
+    print_html_gear( os, p );
 
-  print_html_talents( os, p );
+    print_html_talents( os, p );
 
-  print_html_profile( os, p );
+    print_html_profile( os, p );
+  }
 
   // print_html_player_gear_weights( os, p, p -> report_information );
 
