@@ -4632,7 +4632,7 @@ void paladin_t::assess_damage( school_e school,
   if ( set_bonus.tier15_4pc_tank() && buffs.divine_protection -> check() )
   {
     // compare damage to player health to find HP gain
-    int8_t hp_gain = std::floor( s -> result_postmit_preabsorb / resources.max[ RESOURCE_HEALTH ] * 5 );
+    int8_t hp_gain = std::floor( s -> result_mitigated / resources.max[ RESOURCE_HEALTH ] * 5 );
 
     // add that much Holy Power
     resource_gain( RESOURCE_HOLY_POWER, hp_gain, gains.hp_t15_4pc_tank );

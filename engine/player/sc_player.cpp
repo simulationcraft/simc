@@ -4808,7 +4808,7 @@ void player_t::assess_damage( school_e school,
   target_mitigation( school, type, s );
 
   // store post-mitigation, pre-absorb value
-  s -> result_postmit_preabsorb = s -> result_amount;
+  s -> result_mitigated = s -> result_amount;
 
   /* ABSORB BUFFS
    *

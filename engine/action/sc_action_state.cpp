@@ -43,6 +43,7 @@ void action_state_t::initialize()
 {
   result = RESULT_NONE;
   result_amount = 0;
+  result_mitigated = 0;
 }
 /*
 void action_state_t::copy_state( const action_state_t* o )

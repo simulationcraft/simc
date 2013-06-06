@@ -5054,7 +5054,7 @@ struct action_state_t : public noncopyable
   dmg_e           result_type;
   result_e        result;
   double          result_amount;
-  double          result_postmit_preabsorb;
+  double          result_mitigated;
   // Snapshotted stats during execution
   double          haste;
   double          crit;
