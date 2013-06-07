@@ -798,6 +798,9 @@ double action_t::calculate_direct_amount( action_state_t* state, int chain_targe
 
   double init_direct_amount = amount;
 
+  // Record initial amount to state
+  state -> result_raw = amount;
+
   if ( state -> result == RESULT_GLANCE )
   {
     double delta_skill = ( state -> target -> level - player -> level ) * 5.0;
@@ -849,6 +852,9 @@ double action_t::calculate_direct_amount( action_state_t* state, int chain_targe
                    player -> name(), name(), amount, init_direct_amount, weapon_amount, base_direct_amount, direct_power_coefficient( state ),
                    state -> composite_power(), state -> composite_da_multiplier(), weapon_multiplier );
   }
+
+  // Record total amount to state
+  state -> result_total = amount;
 
   return amount;
 }
@@ -1160,6 +1166,9 @@ void action_t::assess_damage( dmg_e    type,
   } // END Vengeance
 
   s -> target -> assess_damage( school, type, s );
+
+  if ( sim -> debug )
+    s -> debug();
 
   if ( type == DMG_DIRECT )
   {

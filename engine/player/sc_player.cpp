@@ -4849,6 +4849,8 @@ void player_t::assess_damage( school_e school,
     assert( absorb_buff_list.empty() || absorb_buff_list[ 0 ] != ab );
   } // end of absorb list loop
 
+  s -> result_absorbed = s -> result_amount;
+
   iteration_dmg_taken += s -> result_amount;
   collected_data.timeline_dmg_taken.add( sim -> current_time, s -> result_amount );
 

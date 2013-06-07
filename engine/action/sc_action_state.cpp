@@ -42,8 +42,7 @@ void action_t::release_state( action_state_t* s )
 void action_state_t::initialize()
 {
   result = RESULT_NONE;
-  result_amount = 0;
-  result_mitigated = 0;
+  result_raw = result_total = result_mitigated = result_absorbed = result_amount = 0;
 }
 /*
 void action_state_t::copy_state( const action_state_t* o )
@@ -67,6 +66,10 @@ void action_state_t::copy_state( const action_state_t* o )
   target = o -> target; assert( target );
   result_type = o -> result_type;
   result = o -> result;
+  result_raw = o -> result_raw;
+  result_total = o -> result_total;
+  result_mitigated = o -> result_mitigated;
+  result_absorbed = o -> result_absorbed;
   result_amount = o -> result_amount;
   haste = o -> haste;
   crit = o -> crit;
@@ -86,7 +89,9 @@ void action_state_t::copy_state( const action_state_t* o )
 
 action_state_t::action_state_t( action_t* a, player_t* t ) :
   action( a ), target( t ),
-  result_type( RESULT_TYPE_NONE ), result( RESULT_NONE ), result_amount( 0 ),
+  result_type( RESULT_TYPE_NONE ), result( RESULT_NONE ),
+  result_raw( 0 ), result_total( 0 ), result_mitigated( 0 ), 
+  result_absorbed( 0 ), result_amount( 0 ),
   haste( 0 ), crit( 0 ), target_crit( 0 ),
   attack_power( 0 ), spell_power( 0 ),
   da_multiplier( 1.0 ), ta_multiplier( 1.0 ),
@@ -113,7 +118,11 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
 
   s << std::dec;
 
-  s << " amount=" << result_amount;
+  s << " raw_amount=" << result_raw;
+  s << " total_amount=" << result_total;
+  s << " mitigated_amount=" << result_mitigated;
+  s << " absorbed_amount=" << result_absorbed;
+  s << " actual_amount=" << result_amount;
   s << " ap=" << attack_power;
   s << " sp=" << spell_power;
 
