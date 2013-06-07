@@ -32,8 +32,11 @@ OPENSSL_PATH =
 CXX        = g++
 CPP_FLAGS  = -Wall -Woverloaded-virtual -W -I.
 OPTS       = -O3
+
+ifeq (${CXX},g++)
 # Force on SSE2 to avoid problems with older GCC versions
 OPTS += -msse2 -mfpmath=sse
+endif
 
 ifneq (${NO_DEBUG},)
   CPP_FLAGS += -DNDEBUG
@@ -196,7 +199,7 @@ SRC_OBJ	:= $(SRC_CPP:%.cpp=$(OBJ_DIR)$(PATHSEP)%.$(OBJ_EXT))
 
 all: $(MODULE)
 
-debug:OPTS += -g -fno-omit-frame-pointer -O2
+debug:OPTS += -g -fno-omit-frame-pointer -O0
 debug: $(MODULE)
 
 release:CPP_FLAGS += -DNDEBUG

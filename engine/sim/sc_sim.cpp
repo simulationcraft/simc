@@ -1853,7 +1853,7 @@ void sim_t::partition()
 
 bool sim_t::execute()
 {
-  int64_t start_cpu_time = util::milliseconds();
+  double start_cpu_time = util::cpu_time();
   double start_time = util::wall_time();
 
   partition();
@@ -1861,7 +1861,7 @@ bool sim_t::execute()
   merge();
   analyze();
 
-  elapsed_cpu = timespan_t::from_millis( ( util::milliseconds() - start_cpu_time ) );
+  elapsed_cpu = timespan_t::from_seconds( ( util::cpu_time() - start_cpu_time ) );
   elapsed_time = timespan_t::from_seconds( util::wall_time() - start_time );
 
   return true;

@@ -118,7 +118,7 @@ void stopwatch_t::now( int64_t* now_sec,
   else if ( type == STOPWATCH_CPU )
   {
     *now_sec  = 0;
-    *now_usec = int64_t( ( clock() * 1e6 ) / CLOCKS_PER_SEC );
+    *now_usec = int64_t( clock() ) * 1e6 / CLOCKS_PER_SEC;
   }
   else
   {
@@ -156,6 +156,7 @@ static stopwatch_t wall_sw( STOPWATCH_WALL );
 static stopwatch_t  cpu_sw( STOPWATCH_CPU  );
 
 double util::wall_time() { return wall_sw.elapsed(); }
+double util::cpu_time() { return cpu_sw.elapsed(); }
 
 // str_compare_ci ===================================================
 

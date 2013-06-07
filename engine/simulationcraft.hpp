@@ -1222,6 +1222,7 @@ struct stopwatch_t
 namespace util
 {
 double wall_time();
+double cpu_time();
 
 template <typename T>
 T ability_rank( int player_level, T ability_value, int ability_level, ... );
