@@ -610,6 +610,14 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     return a;
   }
 
+  virtual void init()
+  {
+    base_t::init();
+
+    if ( ! base_t::weapon && player -> weapon_racial( mh ) )
+      base_attack_expertise += 0.01;
+  }
+
   // Special Monk Attack Weapon damage collection, if the pointers mh or oh are set, instead of the classical action_t::weapon
   // Damage is divided instead of multiplied by the weapon speed, AP portion is not multiplied by weapon speed.
   // Both MH and OH are directly weaved into one damage number
