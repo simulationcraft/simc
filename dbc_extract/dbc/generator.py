@@ -1809,8 +1809,9 @@ class SpellDataGenerator(DataGenerator):
         
         # Items with a spell identifier as "stats"
         for iid, data in self._item_sparse_db.iteritems():
-            # Allow trinkets to bypass ilevel checking
-            if data.inv_type != 12 and (data.ilevel < self._options.min_ilevel or data.ilevel > self._options.max_ilevel):
+            # Allow trinkets, weapons, 2hweapons to bypass ilevel checking
+            if data.inv_type not in [ 12, 13, 15, 17, 21, 22, 26 ] and \
+               (data.ilevel < self._options.min_ilevel or data.ilevel > self._options.max_ilevel):
                 continue
             
             filter_list = { }
@@ -1818,6 +1819,20 @@ class SpellDataGenerator(DataGenerator):
                 sid = getattr(data, 'id_spell_%d' % stat_id)
                 if sid > 0:
                     self.process_spell(sid, ids, 0, 0)
+                
+                # The spell is a valid spell that we want, kludge in the on-use
+                # cooldown if the spell is of on-use type in the item. This 
+                # should work as long as there are no two on-use effects (unlikely)
+                # or Blizzard does not decide to reduce the on-use cooldown 
+                # based on item type (lfr, normal, heroic, etc.)
+                stype = getattr(data, 'trg_spell_%d' % stat_id)
+                if ids.get(sid) and stype == 0 and getattr(data, 'cd_spell_%d' % stat_id) > 0:
+                    # Put in the new cooldown to the spell id data that is 
+                    # passed to generate()
+                    if ids[sid].get('cooldown'):
+                        self.debug('Spell id %d already has a cooldown set' % sid)
+                    else:
+                        ids[sid]['cooldown'] = getattr(data, 'cd_spell_%d' % stat_id)
         
         # Last, get the explicitly defined spells in _spell_id_list on a class basis and the 
         # generic spells from SpellDataGenerator._spell_id_list[0]
@@ -1910,7 +1925,11 @@ class SpellDataGenerator(DataGenerator):
             fields += self._spelllevels_db[spell.id_levels].field('base_level', 'max_level')
             fields += self._spellrange_db[self._spellmisc_db[spell.id_misc].id_range].field('min_range')
             fields += self._spellrange_db[self._spellmisc_db[spell.id_misc].id_range].field('max_range')
-            fields += self._spellcooldowns_db[spell.id_cooldowns].field('cooldown_duration', 'gcd_cooldown')
+            if ids.get(id, { }).get('cooldown') == None:
+                fields += self._spellcooldowns_db[spell.id_cooldowns].field('cooldown_duration', 'gcd_cooldown')
+            else:
+                fields += [ '%7u' % ids[id]['cooldown'], '%4u' % 0 ]
+
             fields += self._spellcategories_db[spell.id_categories].field('category')
             fields += self._spellduration_db[self._spellmisc_db[spell.id_misc].id_duration].field('duration_1')
             fields += _rune_cost(self, None, self._spellrunecost_db[spell.id_rune_cost], '%#.4x'),
