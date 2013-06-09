@@ -637,7 +637,7 @@ struct treants_balance_t : public pet_t
   {
     pet_t::init_base_stats();
 
-    resources.base[ RESOURCE_HEALTH ] = 9999; // Level 85 value
+    resources.base[ RESOURCE_HEALTH ] = owner -> resources.max[ RESOURCE_HEALTH ] * 0.4;
     resources.base[ RESOURCE_MANA   ] = 0;
 
     initial.stats.attribute[ ATTR_INTELLECT ] = 0;
@@ -681,6 +681,8 @@ struct treants_feral_t : public pet_t
       special    = false;
       may_glance = true;
       may_crit   = true;
+
+      use_off_gcd = true;
     }
   };
 
@@ -690,23 +692,21 @@ struct treants_feral_t : public pet_t
     pet_t( sim, owner, "treant", true /*GUARDIAN*/ )
   {
     // FIX ME
-    owner_coeff.ap_from_ap = 1.0;
+    owner_coeff.ap_from_ap = 1.6;
   }
 
   virtual void init_base_stats()
   {
     pet_t::init_base_stats();
 
-    resources.base[ RESOURCE_HEALTH ] = 9999; // Level 85 value
+    resources.base[ RESOURCE_HEALTH ] = owner -> resources.max[ RESOURCE_HEALTH ] * 0.4;
     resources.base[ RESOURCE_MANA   ] = 0;
 
-    stamina_per_owner = 0;
+    stamina_per_owner = 0.0;
 
     main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.min_dmg    = 580;
-    main_hand_weapon.max_dmg    = 580;
-    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 1.65 );
+    main_hand_weapon.damage     = owner -> find_class_spell( "Force of Nature" ) -> effectN( 1 ).base_value();
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
 
     main_hand_attack = new melee_t( this );
   }
