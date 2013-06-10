@@ -5335,7 +5335,7 @@ void death_knight_t::init_actions()
         if ( level >= 60 ) st_list_str += "/death_and_decay,if=unholy=2";
         st_list_str += "/blood_tap,if=talent.blood_tap.enabled&unholy=2&cooldown.death_and_decay.remains=0";
         if ( level >= 58 ) st_list_str += "/scourge_strike,if=unholy=2";
-        if ( level >= 64 ) st_list_str += "/festering_strike,if=blood=2&frost=2";
+        if ( level >= 64 ) st_list_str += "/festering_strike,if=blood=2|frost=2";
 
         // Normal stuff
         if ( level >= 60 ) st_list_str += "/death_and_decay";
