@@ -176,7 +176,8 @@ getPaperdollPixmap( const QString& name, bool draw_border, QSize s )
 
 PaperdollProfile::PaperdollProfile() :
   QObject(),
-  m_class( PLAYER_NONE ), m_race( RACE_NONE ), m_currentSlot( SLOT_INVALID )
+  m_class( PLAYER_NONE ), m_race( RACE_NONE ), m_currentSlot( SLOT_INVALID ),
+  m_spec( SPEC_NONE )
 {
   m_professions[ 0 ] = m_professions[ 1 ] = PROFESSION_NONE;
 
@@ -235,6 +236,9 @@ PaperdollProfile::setClass( int player_class )
   for ( slot_e t = SLOT_INVALID; t < SLOT_MAX; ++t )
     validateSlot( t );
 
+  // Reset Player spec choice
+  m_spec = SPEC_NONE;
+
   emit classChanged( m_class );
   emit profileChanged();
 }
@@ -260,10 +264,23 @@ PaperdollProfile::setProfession( int profession, int type )
 
   m_professions[ profession ] = ( profession_e ) type;
 
-  for ( slot_e t = SLOT_INVALID; t < SLOT_MAX; t=(slot_e)((int)t+1) )
+  for ( slot_e t = SLOT_INVALID; t < SLOT_MAX; ++t )
     validateSlot( t );
 
   emit professionChanged( m_professions[ profession ] );
+  emit profileChanged();
+}
+
+void
+PaperdollProfile::setSpec( int player_spec )
+{
+  assert( player_spec <= dbc::specialization_max_per_class() );
+  m_spec = dbc::spec_by_idx( m_class, player_spec );
+
+  for ( slot_e t = SLOT_INVALID; t < SLOT_MAX; ++t )
+    validateSlot( t );
+
+  emit specChanged( m_spec );
   emit profileChanged();
 }
 
@@ -1529,6 +1546,12 @@ PaperdollRaceButton::PaperdollRaceButton( PaperdollProfile* profile, race_e t, Q
   m_icon = getPaperdollPixmap( QString( "race_%1" ).arg( util::race_type_string( t ) ), true );
 }
 
+PaperdollSpecButton::PaperdollSpecButton( PaperdollProfile* profile, specialization_e s, QWidget* parent ) :
+  PaperdollBasicButton( profile, parent ), m_spec( s )
+{
+  set_spec( s );
+}
+
 PaperdollProfessionButton::PaperdollProfessionButton( PaperdollProfile* profile, profession_e t, QWidget* parent ) :
 PaperdollBasicButton( profile, parent ), m_type( t )
 {
@@ -1658,6 +1681,70 @@ PaperdollRaceButtonGroup::classSelected( player_e t )
   }
 }
 
+PaperdollSpecButtonGroup::PaperdollSpecButtonGroup( PaperdollProfile* profile, QWidget* parent ) :
+    QGroupBox( "Select character specialization", parent ), m_profile( profile ), m_specButtons( dbc::specialization_max_per_class() )
+{
+    m_specButtonGroupLayout = new QHBoxLayout();
+    m_specButtonGroupLayout -> setAlignment( Qt::AlignHCenter | Qt::AlignTop );
+    m_specButtonGroupLayout -> setSpacing( 2 );
+    m_specButtonGroupLayout -> setContentsMargins( 1, 1, 1, 1 );
+
+    m_specButtonGroup = new QButtonGroup();
+
+
+    setLayout( m_specButtonGroupLayout );
+    setCheckable( false );
+    setFlat( true );
+    setAlignment( Qt::AlignHCenter );
+
+  QObject::connect( m_specButtonGroup, SIGNAL( buttonClicked( int ) ),
+                    profile,           SLOT( setSpec( int ) ) );
+
+  QObject::connect( profile,            SIGNAL( classChanged( player_e ) ),
+                    this,               SLOT( classSelected( player_e ) ) );
+}
+
+void
+PaperdollSpecButtonGroup::classSelected( player_e t )
+{
+  assert( t < PLAYER_PET && t > PLAYER_NONE );
+
+  // Hide all previous spec buttons
+  for( size_t i = 0; i < m_specButtons.size(); ++i )
+  {
+      PaperdollSpecButton* b =  m_specButtons[ i ];
+      if ( b )
+      {
+        b -> setEnabled( false ); // FIXME: Doesn't work
+        b -> repaint();
+        b -> hide();
+      }
+  }
+
+  // update ( or initially add ) new spec buttons
+  for ( unsigned i = 0; i < dbc::specialization_max_per_class(); ++i )
+  {
+   specialization_e s = dbc::spec_by_idx( t, i );
+   if ( s != SPEC_NONE )
+   {
+
+    PaperdollSpecButton*& tmp = m_specButtons[ i ];
+    if ( !tmp )
+    {
+     tmp = new PaperdollSpecButton( m_profile, s , this );
+
+        m_specButtonGroup -> addButton( tmp, i );
+        m_specButtonGroupLayout -> addWidget( tmp );
+    }
+    else
+    {
+        tmp -> set_spec( s );
+    }
+    tmp -> show();
+   }
+  }
+}
+
 PaperdollProfessionButtonGroup::PaperdollProfessionButtonGroup( PaperdollProfile* profile, QWidget* parent ) :
   QGroupBox( "Select character professions", parent )
 {
@@ -1755,7 +1842,8 @@ Paperdoll::Paperdoll( SC_MainWindow* mw, PaperdollProfile* profile, QWidget* par
   m_classGroup = new PaperdollClassButtonGroup( profile, this );
   m_raceGroup = new PaperdollRaceButtonGroup( profile, this );
   m_professionGroup = new PaperdollProfessionButtonGroup( profile, this );
-  current_dps = new QLabel();
+  m_specGroup = new PaperdollSpecButtonGroup( profile, this );
+  current_dps = new QLabel( this );
 
   m_layout -> addWidget( m_slotWidgets[ SLOT_HEAD ],      0, 0, Qt::AlignLeft | Qt::AlignTop );
   m_layout -> addWidget( m_slotWidgets[ SLOT_NECK ],      1, 0, Qt::AlignLeft | Qt::AlignTop );
@@ -1784,6 +1872,7 @@ Paperdoll::Paperdoll( SC_MainWindow* mw, PaperdollProfile* profile, QWidget* par
   m_baseSelectorLayout -> addWidget( m_classGroup, Qt::AlignLeft | Qt::AlignTop );
   m_baseSelectorLayout -> addWidget( m_raceGroup, Qt::AlignLeft | Qt::AlignTop );
   m_baseSelectorLayout -> addWidget( m_professionGroup, Qt::AlignLeft | Qt::AlignTop );
+  m_baseSelectorLayout -> addWidget( m_specGroup, Qt::AlignLeft | Qt::AlignTop );
   m_baseSelectorLayout -> addWidget ( current_dps, Qt::AlignCenter | Qt::AlignTop );
 
   setLayout( m_layout );
@@ -1796,10 +1885,12 @@ Paperdoll::sizeHint() const
   return QSize( 400, 616 );
 }
 
-void Paperdoll::setCurrentDPS( double dps, double error )
+void Paperdoll::setCurrentDPS( const std::string& n, double dps, double error )
 {
-    std::string dps_str = "DPS = " + util::to_string( dps ) + " Error = +- " + util::to_string( error );
-    current_dps -> setText( dps_str.c_str() );
+    current_metric.name = QString::fromStdString( n );
+    current_metric.value = dps;
+    current_metric.error = error;
+    current_dps -> setText( current_metric.name + " " + QString::fromStdString( util::to_string( current_metric.value ) ) + " +-" + QString::fromStdString( util::to_string( current_metric.error ) ) );
 }
 
 const int ItemFilterProxyModel::professionIds[ PROFESSION_MAX ] = {

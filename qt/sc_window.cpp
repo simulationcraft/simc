@@ -474,7 +474,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
     visibleWebView( 0 ), sim( 0 ), simPhase( "%p%" ), simProgress( 100 ), simResults( 0 ),
     AppDataDir( "." ), TmpDir( "." )
 {
-
+    setAttribute(Qt::WA_AlwaysShowToolTips);
 #if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
   QDir::home().mkpath( "Library/Application Support/SimulationCraft" );
   AppDataDir = TmpDir = QDir::home().absoluteFilePath( "Library/Application Support/SimulationCraft" );
@@ -1506,6 +1506,8 @@ void SC_MainWindow::start_paperdoll_sim()
   {
     player -> role = util::parse_role_type( choice.default_role -> currentText().toUtf8().constData() );
 
+    player -> _spec = profile -> currentSpec();
+
     player -> professions_str += std::string( util::profession_type_string( profile -> currentProfession( 0 ) ) ) + "/" + util::profession_type_string( profile -> currentProfession( 1 ) ) ;
 
     for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
@@ -1515,11 +1517,11 @@ void SC_MainWindow::start_paperdoll_sim()
       {
         player -> items.push_back( item_t( player, std::string() ) );
 
-        item_database::load_item_from_data( player -> items.back(), profile_item, 0 ); // Hook up upgrade level from paperdoll once that's implemented
+        item_database::load_item_from_data( player -> items.back() ); // Hook up upgrade level from paperdoll once that's implemented
       }
     }
 
-    paperdoll -> setCurrentDPS( 0, 0 );
+    paperdoll -> setCurrentDPS( "", 0, 0 );
 
     paperdollThread -> start( sim, player, get_globalSettings() );
 
@@ -2358,7 +2360,8 @@ void PaperdollThread::run()
     {
       sim -> current_iteration = 0;
       sim -> execute();
-      mainWindow -> paperdoll -> setCurrentDPS( player-> dps.mean, ( player-> dps.mean_std_dev * sim -> confidence_estimator ) );
+      const extended_sample_data_t& s = player -> scales_over();
+      mainWindow -> paperdoll -> setCurrentDPS( s.name_str, s.mean(), sim_t::distribution_mean_error( *sim, s ) );
     }
   }
 }

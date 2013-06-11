@@ -2134,7 +2134,6 @@ void sim_t::create_options()
     opt_bool( "debug", debug ),
     opt_string( "html", html_file_str ),
     opt_bool( "hosted_html", hosted_html ),
-    opt_int( "print_styles", print_styles ),
     opt_string( "xml", xml_file_str ),
     opt_string( "xml_style", xml_stylesheet_file_str ),
     opt_bool( "log", log ),
@@ -2238,6 +2237,7 @@ void sim_t::create_options()
     opt_float( "default_enchant_focus", enchant.resource[ RESOURCE_FOCUS  ] ),
     opt_float( "default_enchant_runic", enchant.resource[ RESOURCE_RUNIC_POWER  ] ),
     // Report
+    opt_int( "print_styles", print_styles ),
     opt_int( "report_precision", report_precision ),
     opt_bool( "report_pets_separately", report_pets_separately ),
     opt_bool( "report_targets", report_targets ),

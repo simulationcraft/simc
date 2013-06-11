@@ -107,6 +107,7 @@ public:
   inline slot_e          currentSlot( void ) const     { return m_currentSlot; }
   inline player_e        currentClass( void ) const { return m_class; }
   inline race_e          currentRace( void ) const { return m_race; }
+  inline specialization_e currentSpec( void ) const { return m_spec; }
   inline profession_e    currentProfession( unsigned p ) const { assert( p < 2 ); return m_professions[ p ]; }
 
 public slots:
@@ -117,6 +118,7 @@ public slots:
   void setClass( int );
   void setRace( int );
   void setProfession( int, int );
+  void setSpec( int );
 
   void validateSlot( slot_e t );
   bool clearSlot( slot_e t );
@@ -129,6 +131,7 @@ signals:
   void classChanged( player_e );
   void raceChanged( race_e );
   void professionChanged( profession_e );
+  void specChanged( specialization_e );
 
   void profileChanged();
 
@@ -140,6 +143,7 @@ private:
   const item_data_t* m_slotItem[ SLOT_MAX ]; // Currently selected item in a slot
   unsigned           m_slotSuffix[ SLOT_MAX ];
   EnchantData        m_slotEnchant[ SLOT_MAX ]; // Currently selected enchants in a slot;
+  specialization_e m_spec;
 };
 
 class ItemFilterProxyModel : public QSortFilterProxyModel
@@ -381,6 +385,20 @@ protected:
   profession_e   m_type;
 };
 
+class PaperdollSpecButton : public PaperdollBasicButton
+{
+public:
+  PaperdollSpecButton( PaperdollProfile*, specialization_e, QWidget* = 0 );
+  void set_spec( specialization_e s )
+  {
+      m_spec = s;
+      setStatusTip( QString::fromStdString( dbc::specialization_string( s ) ) );
+      m_icon = getPaperdollPixmap( QString( "spec_%1" ).arg( dbc::specialization_string( s ).c_str() ), true );
+  }
+protected:
+  specialization_e m_spec;
+};
+
 class PaperdollClassButtonGroup : public QGroupBox
 {
   Q_OBJECT
@@ -416,6 +434,20 @@ private:
   PaperdollRaceButton*  m_raceButtons[ 15 ];
 };
 
+class PaperdollSpecButtonGroup : public QGroupBox
+{
+  Q_OBJECT
+public:
+  PaperdollSpecButtonGroup( PaperdollProfile*, QWidget* = 0 );
+public slots:
+  void classSelected( player_e );
+private:
+  PaperdollProfile*     m_profile;
+  QButtonGroup*         m_specButtonGroup;
+  QHBoxLayout*          m_specButtonGroupLayout;
+  std::vector<PaperdollSpecButton*>  m_specButtons;
+};
+
 class PaperdollProfessionButtonGroup : public QGroupBox
 {
   Q_OBJECT
@@ -439,7 +471,7 @@ class Paperdoll : public QWidget
 public:
   Paperdoll( SC_MainWindow*, PaperdollProfile*, QWidget* = 0 );
   QSize sizeHint() const;
-  void setCurrentDPS( double, double );
+  void setCurrentDPS( const std::string&, double, double );
 protected:
 private:
   QGridLayout*         m_layout;
@@ -447,9 +479,15 @@ private:
   PaperdollClassButtonGroup* m_classGroup;
   PaperdollRaceButtonGroup*  m_raceGroup;
   PaperdollProfessionButtonGroup* m_professionGroup;
+  PaperdollSpecButtonGroup* m_specGroup;
   PaperdollSlotButton* m_slotWidgets[ SLOT_MAX ];
   PaperdollProfile*    m_profile;
   SC_MainWindow* mainWindow;
+
+  struct metric_t{
+    QString name;
+    double value, error;
+  } current_metric;
   QLabel* current_dps;
 };
 

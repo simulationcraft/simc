@@ -761,6 +761,22 @@ double dbc::fmt_value( double v, effect_type_t type, effect_subtype_t sub_type )
   return v;
 }
 
+unsigned dbc::specialization_max_per_class()
+{
+  return MAX_SPECS_PER_CLASS;
+}
+
+specialization_e dbc::spec_by_idx( const player_e c, unsigned idx )
+{
+  int cid = util::class_id( c );
+
+  if ( ( cid <= 0 ) || ( cid >= static_cast<int>( MAX_SPEC_CLASS ) ) || ( idx >= MAX_SPECS_PER_CLASS ) )
+  {
+    return SPEC_NONE;
+  }
+  return __class_spec_id[ cid ][ idx ];
+}
+
 const std::string& dbc::get_token( unsigned int id_spell )
 {
   return tokens.get( id_spell );
@@ -2481,15 +2497,7 @@ bool dbc_t::spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& s
 }
 
 specialization_e dbc_t::spec_by_idx( const player_e c, unsigned idx ) const
-{
-  int cid = util::class_id( c );
-
-  if ( ( cid <= 0 ) || ( cid >= static_cast<int>( specialization_max_class() ) ) || ( idx >= MAX_SPECS_PER_CLASS ) )
-  {
-    return SPEC_NONE;
-  }
-  return __class_spec_id[ cid ][ idx ];
-}
+{ return dbc::spec_by_idx( c, idx ); }
 
 // DBC
 
