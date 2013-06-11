@@ -291,9 +291,10 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
       ( double )sim -> queue_gcd_reduction.total_millis() );
   }
 
-  os << "\t\t\t\t\t\t</table>\n";
-  report::print_html_sample_data( os, sim, sim -> simulation_length, "Simulation Length" );
+  int sd_counter = 0;
+  report::print_html_sample_data( os, sim, sim -> simulation_length, "Simulation Length", sd_counter );
 
+  os << "\t\t\t\t\t\t</table>\n";
 
   // Left side charts: dps, gear, timeline, raid events
 
@@ -1196,7 +1197,7 @@ void print_html_styles( report::sc_html_stream& os, sim_t* sim )
        << "\t\t\ttable.sc th.right, table.sc td.right, table.sc tr.right th, table.sc tr.right td {text-align: right;padding-right: 4px; }\n"
        << "\t\t\ttable.sc th.small {padding: 2px 2px 3px 2px;font-size: 11px; }\n"
        << "\t\t\ttable.sc td.small {padding: 2px 2px 3px 2px;font-size: 11px; }\n"
-       << "\t\t\ttable.sc tr.details td {padding: 0 0 15px 15px;text-align: left;background-color: #fff;font-size: 11px; }\n"
+       << "\t\t\ttable.sc tr.details td {padding: 0 0 15px 15px; 0px;margin: 5px 0 10px 0;text-align: left;background-color: #eee;font-size: 11px; }\n"
        << "\t\t\ttable.sc tr.details td ul {padding: 0;margin: 4px 0 8px 0; }\n"
        << "\t\t\ttable.sc tr.details td ul li {clear: both;padding: 2px;list-style-type: none; }\n"
        << "\t\t\ttable.sc tr.details td ul li span.label {display: block;padding: 2px;float: left;width: 145px;margin-right: 4px;background: #f3f3f3; }\n"
@@ -1207,6 +1208,10 @@ void print_html_styles( report::sc_html_stream& os, sim_t* sim )
        << "\t\t\ttable.sc tr.details td div.float ul {margin: 0 0 12px 0; }\n"
        << "\t\t\ttable.sc td.filler {background-color: #ccc; }\n"
        << "\t\t\ttable.sc .dynamic-buffs tr.details td ul li span.label {width: 120px; }\n"
+       << "\t\t\ttr.details td table.details {padding: 0px;margin: 5px 0 10px 0; background-color: #eee;}\n"
+       << "\t\t\ttr.details td table.details tr.odd td {background-color: #f3f3f3; }\n"
+       << "\t\t\ttr.details td table.details tr td {padding: 0 0 15px 15px; }\n"
+       << "\t\t\ttr.details td table.details tr td.right {text-align: right; }\n"
        << "\t\t</style>\n";
   }
   else if ( sim -> print_styles == 2 )

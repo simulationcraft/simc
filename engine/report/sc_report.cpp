@@ -548,17 +548,25 @@ void report::print_suite( sim_t* sim )
   report::print_profiles( sim );
 }
 
-void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, extended_sample_data_t& data, const std::string& name )
+void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, extended_sample_data_t& data, const std::string& name, int& td_counter )
 {
   // Print Statistics of a Sample Data Container
-
-  os.printf(
-    "\t\t\t\t\t<div>\n"
-    "\t\t\t\t\t\t<h3 class=\"toggle\">%s</h3>\n"
-    "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n",
+  os << "\t\t\t\t\t\t\t<tr";
+  if ( td_counter & 1 )
+  {
+    os << " class=\"odd\"";
+  }
+  td_counter++;
+  os << ">\n";
+      os << "\t\t\t\t\t\t\t\t<td class=\"left small\">";
+      os.printf( "<a class=\"toggle-details\">%s</a></td>\n",
     name.c_str() );
 
+  os << "\t\t\t\t\t\t\t\t</tr>\n";
 
+      os << "\t\t\t\t\t\t\t<tr class=\"details hide\">\n";
+
+      os << "\t\t\t\t\t\t\t\t<td colspan=\"21\" class=\"filler\">\n";
   int i = 0;
 
   os << "\t\t\t\t\t\t\t<table class=\"details\">\n";
@@ -594,7 +602,6 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
   }
   os << ">\n";
   os.printf(
-    "\t\t\t\t\t\t\t\t<tr>\n"
     "\t\t\t\t\t\t\t\t\t<td class=\"left\">Mean</td>\n"
     "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
     "\t\t\t\t\t\t\t\t</tr>\n",
@@ -610,7 +617,6 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
   os << ">\n";
 
   os.printf(
-    "\t\t\t\t\t\t\t\t<tr>\n"
     "\t\t\t\t\t\t\t\t\t<td class=\"left\">Minimum</td>\n"
     "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
     "\t\t\t\t\t\t\t\t</tr>\n",
@@ -624,7 +630,6 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
   }
   os << ">\n";
   os.printf(
-    "\t\t\t\t\t\t\t\t<tr>\n"
     "\t\t\t\t\t\t\t\t\t<td class=\"left\">Maximum</td>\n"
     "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
     "\t\t\t\t\t\t\t\t</tr>\n",
@@ -638,7 +643,6 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
   }
   os << ">\n";
   os.printf(
-    "\t\t\t\t\t\t\t\t<tr>\n"
     "\t\t\t\t\t\t\t\t\t<td class=\"left\">Spread ( max - min )</td>\n"
     "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
     "\t\t\t\t\t\t\t\t</tr>\n",
@@ -652,7 +656,6 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
   }
   os << ">\n";
   os.printf(
-    "\t\t\t\t\t\t\t\t<tr>\n"
     "\t\t\t\t\t\t\t\t\t<td class=\"left\">Range [ ( max - min ) / 2 * 100%% ]</td>\n"
     "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f%%</td>\n"
     "\t\t\t\t\t\t\t\t</tr>\n",
@@ -668,7 +671,6 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
     }
     os << ">\n";
     os.printf(
-      "\t\t\t\t\t\t\t\t<tr>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
@@ -682,7 +684,6 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
     }
     os << ">\n";
     os.printf(
-      "\t\t\t\t\t\t\t\t<tr>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">5th Percentile</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
@@ -696,7 +697,6 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
     }
     os << ">\n";
     os.printf(
-      "\t\t\t\t\t\t\t\t<tr>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">95th Percentile</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
@@ -710,7 +710,6 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
     }
     os << ">\n";
     os.printf(
-      "\t\t\t\t\t\t\t\t<tr>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">( 95th Percentile - 5th Percentile )</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.2f</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
@@ -724,7 +723,6 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
     }
     os << ">\n";
     os.printf(
-      "\t\t\t\t\t\t\t\t<tr>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Mean Distribution</b></td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n" );
@@ -737,7 +735,6 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
     }
     os << ">\n";
     os.printf(
-      "\t\t\t\t\t\t\t\t<tr>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">Standard Deviation</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%.4f</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
@@ -753,7 +750,6 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
     }
     os << ">\n";
     os.printf(
-      "\t\t\t\t\t\t\t\t<tr>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">%.2f%% Confidence Intervall</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f - %.2f )</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
@@ -769,7 +765,6 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
     }
     os << ">\n";
     os.printf(
-      "\t\t\t\t\t\t\t\t<tr>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">Normalized %.2f%% Confidence Intervall</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">( %.2f%% - %.2f%% )</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
@@ -785,14 +780,18 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
     {
       os << " class=\"odd\"";
     }
-    os << ">\n";
-    os << "\t\t\t\t\t\t\t\t<tr>\n"
+    os << ">\n"
        << "\t\t\t\t\t\t\t\t\t<td class=\"left\"><b>Approx. Iterations needed for ( always use n>=50 )</b></td>\n"
        << "\t\t\t\t\t\t\t\t\t<td class=\"right\"></td>\n"
        << "\t\t\t\t\t\t\t\t</tr>\n";
 
+    ++i;
+    os << "\t\t\t\t\t\t\t\t<tr";
+    if ( !( i & 1 ) )
+    {
+      os << " class=\"odd\"";
+    }
     os.printf(
-      "\t\t\t\t\t\t\t\t<tr>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% Error</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
@@ -806,7 +805,6 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
     }
     os << ">\n";
     os.printf(
-      "\t\t\t\t\t\t\t\t<tr>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1%% Error</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
@@ -820,7 +818,6 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
     }
     os << ">\n";
     os.printf(
-      "\t\t\t\t\t\t\t\t<tr>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.1 Scale Factor Error with Delta=300</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
@@ -834,7 +831,6 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
     }
     os << ">\n";
     os.printf(
-      "\t\t\t\t\t\t\t\t<tr>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.05 Scale Factor Error with Delta=300</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
@@ -848,7 +844,6 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
     }
     os << ">\n";
     os.printf(
-      "\t\t\t\t\t\t\t\t<tr>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">0.01 Scale Factor Error with Delta=300</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
       "\t\t\t\t\t\t\t\t</tr>\n",
@@ -866,9 +861,10 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
       "\t\t\t\t\t<img src=\"%s\" alt=\"Distribution Chart\" />\n",
       dist_chart.c_str() );
   }
-  os <<  "\t\t\t\t\t\t</div>\n"
-     <<  "\t\t\t\t\t</div>\n";
 
+
+  os << "\t\t\t\t\t\t\t\t</td>\n"
+     << "\t\t\t\t\t\t\t</tr>\n";
 }
 
 void report::generate_player_buff_lists( player_t*  p, player_processed_report_information_t& ri )

@@ -146,7 +146,7 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
       aps_distribution_str = "<img src=\"" + s -> aps_distribution_chart + "\" alt=\"" + ( s -> type == STATS_DMG ? "DPS" : "HPS" ) + " Distribution Chart\" />\n";
     }
     os << "\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
-       << "\t\t\t\t\t\t\t\t<td colspan=\"20\" class=\"filler\">\n";
+       << "\t\t\t\t\t\t\t\t<td colspan=\"21\" class=\"filler\">\n";
 
     // Stat Details
     os.printf(
@@ -196,15 +196,19 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
       s -> overkill_pct,
       s -> aps,
       s -> apet );
-    os << "\t\t\t\t\t\t\t\t\t\t</tr>\n"
-       << "\t\t\t\t\t\t\t\t\t</table>\n";
+    os << "\t\t\t\t\t\t\t\t\t\t</tr>\n";
+    os << "\t\t\t\t\t\t\t\t\t</table>\n";
     if ( ! s -> portion_aps.simple || ! s -> portion_apse.simple || ! s -> actual_amount.simple )
     {
-      report::print_html_sample_data( os, p -> sim, s -> actual_amount, "Actual Amount" );
+      os << "\t\t\t\t\t\t\t\t\t<table class=\"details\">\n";
+      int sd_counter = 0;
+      report::print_html_sample_data( os, p -> sim, s -> actual_amount, "Actual Amount", sd_counter );
 
-      report::print_html_sample_data( os, p -> sim, s -> portion_aps, "portion Amount per Second ( pAPS )" );
+      report::print_html_sample_data( os, p -> sim, s -> portion_aps, "portion Amount per Second ( pAPS )", sd_counter );
 
-      report::print_html_sample_data( os, p -> sim, s -> portion_apse, "portion Effective Amount per Second ( pAPSe )" );
+      report::print_html_sample_data( os, p -> sim, s -> portion_apse, "portion Effective Amount per Second ( pAPSe )", sd_counter );
+
+      os << "\t\t\t\t\t\t\t\t\t</table>\n";
 
       if ( ! s -> portion_aps.simple && p -> sim -> scaling -> has_scale_factors() )
       {
@@ -277,16 +281,18 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Amount</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Overkill %</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t</tr>\n";
+      int k = 0;
       for ( result_e i = RESULT_MAX; --i >= RESULT_NONE; )
       {
         if ( s -> direct_results[ i ].count.mean() )
         {
           os << "\t\t\t\t\t\t\t\t\t\t<tr";
 
-          if ( i & 1 )
+          if ( k & 1 )
           {
             os << " class=\"odd\"";
           }
+          k++;
           os << ">\n";
 
           os.printf(
@@ -337,15 +343,17 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Amount</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Overkill %</th>\n"
          << "\t\t\t\t\t\t\t\t\t\t</tr>\n";
+      int k = 0;
       for ( result_e i = RESULT_MAX; --i >= RESULT_NONE; )
       {
         if ( s -> tick_results[ i ].count.mean() )
         {
           os << "\t\t\t\t\t\t\t\t\t\t<tr";
-          if ( i & 1 )
+          if ( k & 1 )
           {
             os << " class=\"odd\"";
           }
+          k++;
           os << ">\n";
           os.printf(
             "\t\t\t\t\t\t\t\t\t\t\t<td class=\"left small\">%s</td>\n"
@@ -557,7 +565,7 @@ int print_html_action_resource( report::sc_html_stream& os, stats_t* s, int j )
     if ( s -> resource_gain.actual[ i ] > 0 )
     {
       os << "\t\t\t\t\t\t\t<tr";
-      if ( !( j & 1 ) )
+      if ( j & 1 )
       {
         os << " class=\"odd\"";
       }
@@ -1397,20 +1405,21 @@ void print_html_player_statistics( report::sc_html_stream& os, player_t* p, play
   os << "\t\t\t\t\t<div class=\"player-section gains\">\n"
      "\t\t\t\t\t\t<h3 class=\"toggle\">Statistics & Data Analysis</h3>\n"
      "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n"
-     "\t\t\t\t\t\t\t<table class=\"sc\">\n"
-     "\t\t\t\t\t\t\t\t<tr>\n"
-     "\t\t\t\t\t\t\t\t<td>\n";
+     "\t\t\t\t\t\t\t<table class=\"sc\">\n";
 
-  report::print_html_sample_data( os, p -> sim, p -> collected_data.fight_length, "Fight Length" );
-  report::print_html_sample_data( os, p -> sim, p -> collected_data.dps, "DPS" );
-  report::print_html_sample_data( os, p -> sim, p -> collected_data.dpse, "DPS(e)" );
-  report::print_html_sample_data( os, p -> sim, p -> collected_data.dmg, "Damage" );
-  report::print_html_sample_data( os, p -> sim, p -> collected_data.dtps, "DTPS" );
-  report::print_html_sample_data( os, p -> sim, p -> collected_data.hps, "HPS" );
-  report::print_html_sample_data( os, p -> sim, p -> collected_data.hpse, "HPS(e)" );
-  report::print_html_sample_data( os, p -> sim, p -> collected_data.heal, "Heal" );
-  report::print_html_sample_data( os, p -> sim, p -> collected_data.htps, "HTPS" );
+  int sd_counter = 0;
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.fight_length, "Fight Length", sd_counter );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.dps, "DPS", sd_counter );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.dpse, "DPS(e)", sd_counter );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.dmg, "Damage", sd_counter );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.dtps, "DTPS", sd_counter );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.hps, "HPS", sd_counter );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.hpse, "HPS(e)", sd_counter );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.heal, "Heal", sd_counter );
+  report::print_html_sample_data( os, p -> sim, p -> collected_data.htps, "HTPS", sd_counter );
 
+  os << "\t\t\t\t\t\t\t\t<tr>\n"
+  "\t\t\t\t\t\t\t\t<td>\n";
   if ( ! ri.timeline_dps_error_chart.empty() )
     os << "<img src=\"" << ri.timeline_dps_error_chart << "\" alt=\"Timeline DPS Error Chart\" />\n";
 
@@ -1432,7 +1441,7 @@ void print_html_gain( report::sc_html_stream& os, gain_t* g, std::array<double, 
     {
       double overflow_pct = 100.0 * g -> overflow[ i ] / ( g -> actual[ i ] + g -> overflow[ i ] );
       os.tabs() << "<tr";
-      if ( !( j & 1 ) )
+      if ( j & 1 )
       {
         os << " class=\"odd\"";
       }
@@ -1620,7 +1629,7 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
       continue;
 
     os.tabs() << "<tr";
-    if ( !( j & 1 ) )
+    if ( j & 1 )
     {
       os << " class=\"odd\"";
     }
@@ -1654,7 +1663,7 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
       continue;
 
     os.tabs() << "<tr";
-    if ( !( j & 1 ) )
+    if ( j & 1 )
     {
       os << " class=\"odd\"";
     }
