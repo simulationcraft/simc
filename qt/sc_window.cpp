@@ -25,144 +25,10 @@ const char* SIMC_LOG_FILE = "simc_log.txt";
 // Utilities
 // ==========================================================================
 
-struct OptionEntry
-{
-  const char* label;
-  const char* option;
-  const char* tooltip;
-};
-
-const OptionEntry buffOptions[] =
-{
-  { "Toggle All Buffs",             "",                                 "Toggle all buffs on/off"                         },
-  { "Attack Power Multiplier",      "override.attack_power_multiplier", "+10% Attack Power Multiplier"                    },
-  { "Attack Speed",                 "override.attack_speed",            "+10% Melee and Ranged Attack Speed"              },
-  { "Spell Power Multiplier",       "override.spell_power_multiplier",  "+10% Spell Power Multiplier"                     },
-  { "Spell Haste",                  "override.spell_haste",             "+5% Spell Haste"                                 },
-
-  { "Critical Strike",              "override.critical_strike",         "+5% Melee/Ranged/Spell Critical Strike Chance"   },
-  { "Mastery",                      "override.mastery",                 "+5 Mastery"                                      },
-
-  { "Stamina",                      "override.stamina",                 "+10% Stamina"                                    },
-  { "Strength, Agility, Intellect", "override.str_agi_int",             "+5% Strength, Agility, Intellect"                },
-
-  { "Bloodlust",                    "override.bloodlust",               "Ancient Hysteria\nBloodlust\nHeroism\nTime Warp" },
-  { "Skull Banner",                 "override.skull_banner",            "Crit Banner" },
-  { "Stormlash Totem",              "override.stormlash",               "Stormlash Totem" },
-  { NULL, NULL, NULL }
-};
-
-const OptionEntry itemSourceOptions[] =
-{
-  { "Local Item Database", "local",   "Use Simulationcraft item database" },
-  { "Blizzard API",        "bcpapi",  "Remote Blizzard Community Platform API source" },
-  { "Wowhead.com",         "wowhead", "Remote Wowhead.com item data source" },
-  { "Wowhead.com (PTR)",   "ptrhead", "Remote Wowhead.com PTR item data source" },
-};
-
-const OptionEntry debuffOptions[] =
-{
-  { "Toggle All Debuffs",     "",                                "Toggle all debuffs on/off"      },
-
-  { "Bleeding",               "override.bleeding",               "Rip\nRupture\nPiercing Shots"   },
-
-  { "Physical Vulnerability", "override.physical_vulnerability", "Physical Vulnerability (+4%)"   },
-  { "Ranged Vulnerability",   "override.ranged_vulnerability",   "Ranged Vulnerability (+5%)"     },
-  { "Magic Vulnerability",    "override.magic_vulnerability",    "Magic Vulnerability (+5%)"      },
-
-  { "Weakened Armor",         "override.weakened_armor",         "Weakened Armor (-4% per stack)" },
-  { "Weakened Blows",         "override.weakened_blows",         "Weakened Blows (-10%)"          },
-
-  { NULL, NULL, NULL }
-};
-
-const OptionEntry scalingOptions[] =
-{
-  { "Analyze All Stats",                "",         "Scale factors are necessary for gear ranking.\nThey only require an additional simulation for each RELEVANT stat." },
-  {
-    "Use Positive Deltas Only",         "",         "Normally Hit/Expertise use negative scale factors to show DPS lost by reducing that stat.\n"
-    "This option forces a positive scale delta, which is useful for classes with soft caps."
-  },
-  { "Analyze Strength",                 "str",      "Calculate scale factors for Strength"                 },
-  { "Analyze Agility",                  "agi",      "Calculate scale factors for Agility"                  },
-  { "Analyze Stamina",                  "sta",      "Calculate scale factors for Stamina"                  },
-  { "Analyze Intellect",                "int",      "Calculate scale factors for Intellect"                },
-  { "Analyze Spirit",                   "spi",      "Calculate scale factors for Spirit"                   },
-  { "Analyze Spell Power",              "sp",       "Calculate scale factors for Spell Power"              },
-  { "Analyze Attack Power",             "ap",       "Calculate scale factors for Attack Power"             },
-  { "Analyze Expertise Rating",         "exp",      "Calculate scale factors for Expertise Rating"         },
-  { "Analyze Hit Rating",               "hit",      "Calculate scale factors for Hit Rating"               },
-  { "Analyze Crit Rating",              "crit",     "Calculate scale factors for Crit Rating"              },
-  { "Analyze Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
-  { "Analyze Mastery Rating",           "mastery",  "Calculate scale factors for Mastery Rating"           },
-  { "Analyze Weapon DPS",               "wdps",     "Calculate scale factors for Weapon DPS"               },
-  { "Analyze Weapon Speed",             "wspeed",   "Calculate scale factors for Weapon Speed"             },
-  { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
-  { "Analyze Off-hand Weapon Speed",    "wohspeed", "Calculate scale factors for Off-hand Weapon Speed"    },
-  { "Analyze Armor",                    "armor",    "Calculate scale factors for Armor"                    },
-  { "Analyze Dodge Rating",             "dodge",    "Calculate scale factors for Dodge Rating"             },
-  { "Analyze Parry Rating",             "parry",    "Calculate scale factors for Parry Rating"             },
-  { "Analyze Block Rating",             "blockr",   "Calculate scale factors for Block Rating"             },
-  { "Analyze Latency",                  "",         "Calculate scale factors for Latency"                  },
-  { NULL, NULL, NULL }
-};
-
-const OptionEntry plotOptions[] =
-{
-  { "Plot Scaling per Strength",         "str",     "Generate Scaling curve for Strength"         },
-  { "Plot Scaling per Agility",          "agi",     "Generate Scaling curve for Agility"          },
-  { "Plot Scaling per Stamina",          "sta",     "Generate Scaling curve for Stamina"          },
-  { "Plot Scaling per Intellect",        "int",     "Generate Scaling curve for Intellect"        },
-  { "Plot Scaling per Spirit",           "spi",     "Generate Scaling curve for Spirit"           },
-  { "Plot Scaling per Spell Power",      "sp",      "Generate Scaling curve for Spell Power"      },
-  { "Plot Scaling per Attack Power",     "ap",      "Generate Scaling curve for Attack Power"     },
-  { "Plot Scaling per Expertise Rating", "exp",     "Generate Scaling curve for Expertise Rating" },
-  { "Plot Scaling per Hit Rating",       "hit",     "Generate Scaling curve for Hit Rating"       },
-  { "Plot Scaling per Crit Rating",      "crit",    "Generate Scaling curve for Crit Rating"      },
-  { "Plot Scaling per Haste Rating",     "haste",   "Generate Scaling curve for Haste Rating"     },
-  { "Plot Scaling per Mastery Rating",   "mastery", "Generate Scaling curve for Mastery Rating"   },
-  { "Plot Scaling per Weapon DPS",       "wdps",    "Generate Scaling curve for Weapon DPS"       },
-  { "Plot Scaling per Armor",            "armor",   "Generate Scaling curve for Armor"            },
-  { "Plot Scaling per Dodge Rating",     "dodge",   "Generate Scaling curve for Dodge Rating"     },
-  { "Plot Scaling per Parry Rating",     "parry",   "Generate Scaling curve for Parry Rating"     },
-  { "Plot Scaling per Block Rating",     "blockr",  "Generate Scaling curve for Block Rating"     },
-  { NULL, NULL, NULL }
-};
-
-const OptionEntry reforgePlotOptions[] =
-{
-  { "Plot Reforge Options for Spirit",           "spi",     "Generate reforge plot data for Spirit"           },
-  { "Plot Reforge Options for Expertise Rating", "exp",     "Generate reforge plot data for Expertise Rating" },
-  { "Plot Reforge Options for Hit Rating",       "hit",     "Generate reforge plot data for Hit Rating"       },
-  { "Plot Reforge Options for Crit Rating",      "crit",    "Generate reforge plot data for Crit Rating"      },
-  { "Plot Reforge Options for Haste Rating",     "haste",   "Generate reforge plot data for Haste Rating"     },
-  { "Plot Reforge Options for Mastery Rating",   "mastery", "Generate reforge plot data for Mastery Rating"   },
-  { "Plot Reforge Options for Dodge Rating",     "dodge",   "Generate reforge plot data for Dodge Rating"     },
-  { "Plot Reforge Options for Parry Rating",     "parry",   "Generate reforge plot data for Parry Rating"     },
-  { "Plot Reforge Options for Block Rating",     "blockr",  "Generate reforge plot data for Block Rating"     },
-
-  { "Plot Reforge Options for Strength",         "str",     "Generate reforge plot data for Intellect"        },
-  { "Plot Reforge Options for Agility",          "agi",     "Generate reforge plot data for Agility"          },
-  { "Plot Reforge Options for Stamina",          "sta",     "Generate reforge plot data for Stamina"          },
-  { "Plot Reforge Options for Intellect",        "int",     "Generate reforge plot data for Intellect"        },
-  { NULL, NULL, NULL }
-};
-const int reforgePlotOption_cut = 9; // separate between secondary and primary stats
 
 const QString defaultSimulateText( "# Profile will be downloaded into a new tab.\n"
                                    "#\n"
                                    "# Clicking Simulate will create a simc_gui.simc profile for review.\n" );
-
-QComboBox* createChoice( int count, ... )
-{
-  QComboBox* choice = new QComboBox();
-  va_list vap;
-  va_start( vap, count );
-  for ( int i = 0; i < count; i++ )
-    choice -> addItem( va_arg( vap, char* ) );
-  va_end( vap );
-  return choice;
-}
 
 } // UNNAMED NAMESPACE
 
@@ -170,190 +36,18 @@ QComboBox* createChoice( int count, ... )
 // SC_MainWindow
 // ==========================================================================
 
-// Decode all options/setting from a string ( loaded from the history ).
-// Decode / Encode order needs to be equal!
-
-void SC_MainWindow::decodeOptions( QString encoding )
-{
-  int i = 0;
-  QStringList tokens = encoding.split( ' ' );
-
-  if ( i < tokens.count() )
-    choice.version -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.iterations -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.fight_length -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.fight_variance -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.fight_style -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.target_race -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.num_target -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.player_skill -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.threads -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.armory_region -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.armory_spec -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.default_role -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.world_lag -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.target_level -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.aura_delay -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.report_pets -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.print_style -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.statistics_level -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.deterministic_rng -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.center_scale_delta -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.scale_over -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.challenge_mode -> setCurrentIndex( tokens[ i++ ].toInt() );
-
-  QList<QAbstractButton*>        buff_buttons =        buffsButtonGroup -> buttons();
-  QList<QAbstractButton*>      debuff_buttons =      debuffsButtonGroup -> buttons();
-  QList<QAbstractButton*>     scaling_buttons =      scalingButtonGroup -> buttons();
-  QList<QAbstractButton*>        plot_buttons =        plotsButtonGroup -> buttons();
-  QList<QAbstractButton*> reforgeplot_buttons = reforgeplotsButtonGroup -> buttons();
-
-  for ( ; i < tokens.count(); i++ )
-  {
-    QStringList opt_tokens = tokens[ i ].split( ':' );
-
-    const OptionEntry* options=0;
-    QList<QAbstractButton*>* buttons=0;
-
-    if (      ! opt_tokens[ 0 ].compare( "buff"           ) ) { options = buffOptions;        buttons = &buff_buttons;        }
-    else if ( ! opt_tokens[ 0 ].compare( "debuff"         ) ) { options = debuffOptions;      buttons = &debuff_buttons;      }
-    else if ( ! opt_tokens[ 0 ].compare( "scaling"        ) ) { options = scalingOptions;     buttons = &scaling_buttons;     }
-    else if ( ! opt_tokens[ 0 ].compare( "plots"          ) ) { options = plotOptions;        buttons = &plot_buttons;        }
-    else if ( ! opt_tokens[ 0 ].compare( "reforge_plots"  ) ) { options = reforgePlotOptions; buttons = &reforgeplot_buttons; }
-    else if ( ! opt_tokens[ 0 ].compare( "item_db_source" ) )
-    {
-      QStringList item_db_list = opt_tokens[ 1 ].split( '/' );
-
-      for ( int opt = item_db_list.size(); --opt >= 0; )
-      {
-        for ( int source = 0; source < itemDbOrder -> count(); source++ )
-        {
-          if ( ! item_db_list[ opt ].compare( itemDbOrder -> item( source ) -> data( Qt::UserRole ).toString() ) )
-          {
-            itemDbOrder -> insertItem( 0, itemDbOrder -> takeItem( source ) );
-            break;
-          }
-        }
-      }
-    }
-    if ( ! options ) continue;
-
-    QStringList opt_value = opt_tokens[ 1 ].split( '=' );
-    for ( int opt=0; options[ opt ].label; opt++ )
-    {
-      if ( ! opt_value[ 0 ].compare( options[ opt ].option ) )
-      {
-        buttons -> at( opt )->setChecked( 1 == opt_value[ 1 ].toInt() );
-        break;
-      }
-    }
-  }
-}
-
-// Encode all options/setting into a string ( to be able to save it to the history )
-// Decode / Encode order needs to be equal!
-
-QString SC_MainWindow::encodeOptions()
-{
-  QString encoded;
-  QTextStream ss( &encoded );
-
-  ss << choice.version -> currentIndex();
-  ss << ' ' << choice.iterations -> currentIndex();
-  ss << ' ' << choice.fight_length -> currentIndex();
-  ss << ' ' << choice.fight_variance -> currentIndex();
-  ss << ' ' << choice.fight_style -> currentIndex();
-  ss << ' ' << choice.target_race -> currentIndex();
-  ss << ' ' << choice.num_target -> currentIndex();
-  ss << ' ' << choice.player_skill -> currentIndex();
-  ss << ' ' << choice.threads -> currentIndex();
-  ss << ' ' << choice.armory_region -> currentIndex();
-  ss << ' ' << choice.armory_spec -> currentIndex();
-  ss << ' ' << choice.default_role -> currentIndex();
-  ss << ' ' << choice.world_lag -> currentIndex();
-  ss << ' ' << choice.target_level -> currentIndex();
-  ss << ' ' << choice.aura_delay -> currentIndex();
-  ss << ' ' << choice.report_pets -> currentIndex();
-  ss << ' ' << choice.print_style -> currentIndex();
-  ss << ' ' << choice.statistics_level -> currentIndex();
-  ss << ' ' << choice.deterministic_rng -> currentIndex();
-  ss << ' ' << choice.center_scale_delta -> currentIndex();
-  ss << ' ' << choice.scale_over -> currentIndex();
-  ss << ' ' << choice.challenge_mode -> currentIndex();
-
-  QList<QAbstractButton*> buttons = buffsButtonGroup -> buttons();
-  for ( int i = 1; buffOptions[ i ].label; i++ )
-  {
-    ss << " buff:" << buffOptions[ i ].option << '='
-       << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
-  }
-
-  buttons = debuffsButtonGroup -> buttons();
-  for ( int i = 1; debuffOptions[ i ].label; i++ )
-  {
-    ss << " debuff:" << debuffOptions[ i ].option << '='
-       << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
-  }
-
-  buttons = scalingButtonGroup -> buttons();
-  for ( int i = 2; scalingOptions[ i ].label; i++ )
-  {
-    ss << " scaling:" << scalingOptions[ i ].option << '='
-       << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
-  }
-
-  buttons = plotsButtonGroup -> buttons();
-  for ( int i = 0; plotOptions[ i ].label; i++ )
-  {
-    ss << " plots:" << plotOptions[ i ].option << '='
-       << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
-  }
-
-  buttons = reforgeplotsButtonGroup -> buttons();
-  for ( int i = 0; reforgePlotOptions[ i ].label; i++ )
-  {
-    ss << " reforge_plots:" << reforgePlotOptions[ i ].option << '='
-       << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
-  }
-
-  if ( itemDbOrder -> count() > 0 )
-  {
-    ss << " item_db_source:";
-    for ( int i = 0; i < itemDbOrder -> count(); i++ )
-    {
-      QListWidgetItem *it = itemDbOrder -> item( i );
-      ss << it -> data( Qt::UserRole ).toString();
-      if ( i < itemDbOrder -> count() - 1 )
-        ss << '/';
-    }
-  }
-
-  return encoded;
-}
-
 void SC_MainWindow::updateSimProgress()
 {
+  sim_t* sim = 0;
+
+#ifdef SC_PAPERDOLL
+  // If we're in the paperdoll tab, check progress on the current sim running
+  if ( mainTab -> currentTab() == TAB_PAPERDOLL )
+      sim = paperdoll_sim ? paperdoll_sim : SC_MainWindow::sim;
+  else
+#endif
+      sim = SC_MainWindow::sim;
+
   if ( sim )
   {
     simProgress = static_cast<int>( 100.0 * sim -> progress( simPhase ) );
@@ -406,7 +100,7 @@ void SC_MainWindow::loadHistory()
     for ( int i = 0, count = SimulateTextHistory_Title.count(); i < count; i++ )
       simulateTab -> add_Text( SimulateTextHistory_Content.at( i ), SimulateTextHistory_Title.at( i ) );
 
-    decodeOptions( optionsHistory.backwards() );
+    optionsTab -> decodeOptions( optionsHistory.backwards() );
 
     QString s = overridesTextHistory.backwards();
     if ( ! s.isEmpty() )
@@ -422,7 +116,7 @@ void SC_MainWindow::saveHistory()
   QFile file( AppDataDir + "/" + SIMC_HISTORY_FILE );
   if ( file.open( QIODevice::WriteOnly ) )
   {
-    optionsHistory.add( encodeOptions() );
+    optionsHistory.add( optionsTab -> encodeOptions() );
 
     QStringList importHistory;
     int count = historyList -> count();
@@ -471,7 +165,7 @@ void SC_MainWindow::saveHistory()
 SC_MainWindow::SC_MainWindow( QWidget *parent )
   : QWidget( parent ),
     historyWidth( 0 ), historyHeight( 0 ), historyMaximized( 1 ),
-    visibleWebView( 0 ), sim( 0 ), simPhase( "%p%" ), simProgress( 100 ), simResults( 0 ),
+    visibleWebView( 0 ), sim( 0 ), paperdoll_sim( 0 ), simPhase( "%p%" ), simProgress( 100 ), simResults( 0 ),
     AppDataDir( "." ), TmpDir( "." )
 {
     setAttribute(Qt::WA_AlwaysShowToolTips);
@@ -521,7 +215,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   logFileText =  AppDataDir + "/" + "log.txt";
   resultsFileText =  AppDataDir + "/" + "results.html";
 
-  mainTab = new SC_MainTabWidget( this );
+  mainTab = new SC_MainTab( this );
   createWelcomeTab();
   createOptionsTab();
   createImportTab();
@@ -551,13 +245,13 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   connect(   importThread, SIGNAL( finished() ), this, SLOT(  importFinished() ) );
 
   simulateThread = new SimulateThread( this );
-  connect( simulateThread, SIGNAL( finished() ), this, SLOT( simulateFinished() ) );
+  connect( simulateThread, SIGNAL( simulationFinished( sim_t* ) ), this, SLOT( simulateFinished( sim_t* ) ) );
 
 #ifdef SC_PAPERDOLL
   paperdollThread = new PaperdollThread( this );
   connect( paperdollThread, SIGNAL( finished() ), this, SLOT( paperdollFinished() ) );
 
-  QObject::connect( paperdollProfile, SIGNAL( profileChanged() ), this,    SLOT( start_paperdoll_sim() ) );
+  QObject::connect( paperdollProfile, SIGNAL( profileChanged() ), this,    SLOT( start_intermediate_paperdoll_sim() ) );
 #endif
 
   setAcceptDrops( true );
@@ -592,275 +286,39 @@ void SC_MainWindow::createCmdLine()
 
 void SC_MainWindow::createWelcomeTab()
 {
-  QString welcomeFile = QDir::currentPath() + "/Welcome.html";
-
-#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
-  CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "Welcome" ), CFSTR( "html" ), 0 );
-  if ( fileRef )
-  {
-    CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
-    welcomeFile         = CFStringGetCStringPtr( macPath, CFStringGetSystemEncoding() );
-
-    CFRelease( fileRef );
-    CFRelease( macPath );
-  }
-#endif
-
-  QWebView* welcomeBanner = new QWebView();
-  welcomeBanner -> setUrl( "file:///" + welcomeFile );
-  mainTab -> addTab( welcomeBanner, tr( "Welcome" ) );
+  mainTab -> addTab( new SC_WelcomeTabWidget( this ), tr( "Welcome" ) );
 }
 
 void SC_MainWindow::createOptionsTab()
 {
-  optionsTab = new QTabWidget();
+  optionsTab = new SC_OptionsTab( this );
   mainTab -> addTab( optionsTab, tr( "Options" ) );
 
-  createGlobalsTab();
-  createBuffsDebuffsTab();
-  createScalingTab();
-  createPlotsTab();
-  createReforgePlotsTab();
-
-  QAbstractButton* allBuffs   =   buffsButtonGroup -> buttons().at( 0 );
-  QAbstractButton* allDebuffs = debuffsButtonGroup -> buttons().at( 0 );
-  QAbstractButton* allScaling = scalingButtonGroup -> buttons().at( 0 );
-
-  connect( choice.armory_region, SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
-
-  connect( allBuffs,   SIGNAL( toggled( bool ) ), this, SLOT( allBuffsChanged( bool ) )   );
-  connect( allDebuffs, SIGNAL( toggled( bool ) ), this, SLOT( allDebuffsChanged( bool ) ) );
-  connect( allScaling, SIGNAL( toggled( bool ) ), this, SLOT( allScalingChanged( bool ) ) );
+  connect( optionsTab -> choice.armory_region, SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
 }
 
-void SC_MainWindow::createGlobalsTab()
+SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ) :
+    QWebView( parent )
 {
+  QString welcomeFile = QDir::currentPath() + "/Welcome.html";
 
-  // Create left side global options
-  QFormLayout* globalsLayout_left = new QFormLayout();
-  globalsLayout_left -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-#if SC_BETA
-  globalsLayout_left -> addRow(       tr(  "Version" ),        choice.version = createChoice( 3, "Live", "Beta", "Both" ) );
-#else
-#if SC_USE_PTR
-  globalsLayout_left -> addRow(        tr( "Version" ),        choice.version = createChoice( 3, "Live", "PTR", "Both" ) );
-#else
-  globalsLayout_left -> addRow(        tr( "Version" ),        choice.version = createChoice( 1, "Live" ) );
+#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
+CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "Welcome" ), CFSTR( "html" ), 0 );
+if ( fileRef )
+{
+CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
+welcomeFile         = CFStringGetCStringPtr( macPath, CFStringGetSystemEncoding() );
+
+CFRelease( fileRef );
+CFRelease( macPath );
+}
 #endif
-#endif
-  globalsLayout_left -> addRow( tr(    "Iterations" ),     choice.iterations = createChoice( 5, "100", "1000", "10000", "25000", "50000" ) );
-  globalsLayout_left -> addRow( tr(     "World Lag" ),      choice.world_lag = createChoice( 3, "Low", "Medium", "High" ) );
-  globalsLayout_left -> addRow( tr(  "Length (sec)" ),   choice.fight_length = createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) );
-  globalsLayout_left -> addRow( tr(   "Vary Length" ), choice.fight_variance = createChoice( 3, "0%", "10%", "20%" ) );
-  globalsLayout_left -> addRow( tr(   "Fight Style" ),    choice.fight_style = createChoice( 7, "Patchwerk", "HecticAddCleave", "HelterSkelter", "Ultraxion", "LightMovement", "HeavyMovement", "RaidDummy" ) );
-  globalsLayout_left -> addRow( tr(  "Target Level" ),   choice.target_level = createChoice( 4, "Raid Boss", "5-man heroic", "5-man normal", "Max Player Level" ) );
-  globalsLayout_left -> addRow( tr(   "Target Race" ),    choice.target_race = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
-  globalsLayout_left -> addRow( tr(   "Num Enemies" ),     choice.num_target = createChoice( 8, "1", "2", "3", "4", "5", "6", "7", "8" ) );
-  globalsLayout_left -> addRow( tr( "Challenge Mode" ),   choice.challenge_mode = createChoice( 2, "Disabled","Enabled" ) );
-  globalsLayout_left -> addRow( tr(  "Player Skill" ),   choice.player_skill = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
-  globalsLayout_left -> addRow( tr(       "Threads" ),        choice.threads = createChoice( 4, "1", "2", "4", "8" ) );
-  globalsLayout_left -> addRow( tr( "Armory Region" ),  choice.armory_region = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
-  globalsLayout_left -> addRow( tr(   "Armory Spec" ),    choice.armory_spec = createChoice( 2, "active", "inactive" ) );
-  globalsLayout_left -> addRow( tr(  "Default Role" ),   choice.default_role = createChoice( 4, "auto", "dps", "heal", "tank" ) );
-  choice.iterations -> setCurrentIndex( 1 );
-  choice.fight_length -> setCurrentIndex( 7 );
-  choice.fight_variance -> setCurrentIndex( 2 );
-
-  QGroupBox* globalsGroupBox_left = new QGroupBox( tr( "Basic Options" ) );
-  globalsGroupBox_left -> setLayout( globalsLayout_left );
-
-
-  // Create right side of global options
-  QFormLayout* globalsLayout_right = new QFormLayout();
-  globalsLayout_right -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  globalsLayout_right -> addRow( tr( "Aura Delay" ),               choice.aura_delay = createChoice( 3, "400ms", "500ms", "600ms" ) );
-  globalsLayout_right -> addRow( tr( "Generate Debug" ),                choice.debug = createChoice( 3, "None", "Log Only", "Gory Details" ) );
-  globalsLayout_right -> addRow( tr( "Report Pets Separately" ),  choice.report_pets = createChoice( 2, "Yes", "No" ) );
-  globalsLayout_right -> addRow( tr( "Report Print Style" ),      choice.print_style = createChoice( 3, "MoP", "White", "Classic" ) );
-  globalsLayout_right -> addRow( tr( "Statistics Level" ),   choice.statistics_level = createChoice( 4, "0", "1", "2", "3" ) );
-  globalsLayout_right -> addRow( tr( "Deterministic RNG" ), choice.deterministic_rng = createChoice( 2, "Yes", "No" ) );
-  choice.aura_delay -> setCurrentIndex( 1 );
-  choice.report_pets -> setCurrentIndex( 1 );
-  choice.statistics_level -> setCurrentIndex( 1 );
-  choice.deterministic_rng -> setCurrentIndex( 1 );
-
-  createItemDataSourceSelector( globalsLayout_right );
-
-  QGroupBox* globalsGroupBox_right = new QGroupBox( tr( "Advanced Options" ) );
-  globalsGroupBox_right -> setLayout( globalsLayout_right );
-
-  QHBoxLayout* globalsLayout = new QHBoxLayout();
-  globalsLayout -> addWidget( globalsGroupBox_left, 2 );
-  globalsLayout -> addWidget( globalsGroupBox_right, 1 );
-
-  QGroupBox* globalsGroupBox = new QGroupBox();
-  globalsGroupBox -> setLayout( globalsLayout );
-
-  optionsTab -> addTab( globalsGroupBox, tr( "Globals" ) );
-
-}
-
-void SC_MainWindow::createBuffsDebuffsTab()
-{
-  // Buffs
-  QVBoxLayout* buffsLayout = new QVBoxLayout(); // Buff Layout
-  buffsButtonGroup = new QButtonGroup();
-  buffsButtonGroup -> setExclusive( false );
-  for ( int i = 0; buffOptions[ i ].label; ++i )
-  {
-    QCheckBox* checkBox = new QCheckBox( buffOptions[ i ].label );
-
-    if ( i > 0 ) checkBox -> setChecked( true );
-    checkBox -> setToolTip( buffOptions[ i ].tooltip );
-    buffsButtonGroup -> addButton( checkBox );
-    buffsLayout -> addWidget( checkBox );
-  }
-  buffsLayout -> addStretch( 1 );
-
-  QGroupBox* buffsGroupBox = new QGroupBox( tr( "Buffs" ) ); // Buff Widget
-  buffsGroupBox -> setLayout( buffsLayout );
-
-  // Debuffs
-  QVBoxLayout* debuffsLayout = new QVBoxLayout(); // Debuff Layout
-  debuffsButtonGroup = new QButtonGroup();
-  debuffsButtonGroup -> setExclusive( false );
-  for ( int i = 0; debuffOptions[ i ].label; ++i )
-  {
-    QCheckBox* checkBox = new QCheckBox( debuffOptions[ i ].label );
-
-    if ( i > 0 ) checkBox -> setChecked( true );
-    checkBox -> setToolTip( debuffOptions[ i ].tooltip );
-    debuffsButtonGroup -> addButton( checkBox );
-    debuffsLayout -> addWidget( checkBox );
-  }
-  debuffsLayout -> addStretch( 1 );
-
-  QGroupBox* debuffsGroupBox = new QGroupBox( tr( "Debuffs" ) ); // Debuff Widget
-  debuffsGroupBox -> setLayout( debuffsLayout );
-
-  // Combined Buff/Debuff Layout & Widget
-  QHBoxLayout* buff_debuffLayout = new QHBoxLayout();
-  buff_debuffLayout -> addWidget( buffsGroupBox, 1 );
-  buff_debuffLayout -> addWidget( debuffsGroupBox, 1 );
-
-  QGroupBox* buff_debuffGroupBox = new QGroupBox();
-  buff_debuffGroupBox -> setLayout( buff_debuffLayout );
-
-  // Add Widget as Buffs/Debuffs tab
-  optionsTab -> addTab( buff_debuffGroupBox, tr( "Buffs / Debuffs" ) );
-}
-
-void SC_MainWindow::createScalingTab()
-{
-  QVBoxLayout* scalingLayout = new QVBoxLayout();
-  scalingButtonGroup = new QButtonGroup();
-  scalingButtonGroup -> setExclusive( false );
-  for ( int i = 0; scalingOptions[ i ].label; i++ )
-  {
-    QCheckBox* checkBox = new QCheckBox( scalingOptions[ i ].label );
-
-    checkBox -> setToolTip( scalingOptions[ i ].tooltip );
-    scalingButtonGroup -> addButton( checkBox );
-    scalingLayout -> addWidget( checkBox );
-  }
-  //scalingLayout->addStretch( 1 );
-  QGroupBox* scalingGroupBox = new QGroupBox();
-  scalingGroupBox -> setLayout( scalingLayout );
-
-  QFormLayout* scalingLayout2 = new QFormLayout();
-  scalingLayout2 -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-  scalingLayout2 -> addRow( tr( "Center Scale Delta" ),  choice.center_scale_delta = createChoice( 2, "Yes", "No" ) );
-  scalingLayout2 -> addRow( tr( "Scale Over" ),  choice.scale_over = createChoice( 7, "default", "dps", "hps", "dtps", "htps", "raid_dps", "raid_hps" ) );
-
-  choice.center_scale_delta -> setCurrentIndex( 1 );
-
-  scalingLayout -> addLayout( scalingLayout2 );
-
-  optionsTab -> addTab( scalingGroupBox, tr ( "Scaling" ) );
-}
-
-void SC_MainWindow::createPlotsTab()
-{
-  QFormLayout* plotsLayout = new QFormLayout();
-  plotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-
-  // Create Combo Boxes
-  choice.plots_points = createChoice( 4, "20", "30", "40", "50" );
-  plotsLayout -> addRow( tr( "Number of Plot Points" ), choice.plots_points );
-
-  choice.plots_step = createChoice( 6, "25", "50", "100", "200", "250", "500" );
-  choice.plots_step -> setCurrentIndex( 2 );
-  plotsLayout -> addRow( tr( "Plot Step Amount" ), choice.plots_step );
-
-  plotsButtonGroup = new QButtonGroup();
-  plotsButtonGroup -> setExclusive( false );
-  for ( int i = 0; plotOptions[ i ].label; i++ )
-  {
-    QCheckBox* checkBox = new QCheckBox( plotOptions[ i ].label );
-    checkBox -> setToolTip( plotOptions[ i ].tooltip );
-    plotsButtonGroup -> addButton( checkBox );
-    plotsLayout -> addWidget( checkBox );
-  }
-  QGroupBox* plotsGroupBox = new QGroupBox();
-  plotsGroupBox -> setLayout( plotsLayout );
-
-  optionsTab -> addTab( plotsGroupBox, "Plots" );
-}
-
-void SC_MainWindow::createReforgePlotsTab()
-{
-  QFormLayout* reforgePlotsLayout = new QFormLayout();
-  reforgePlotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
-
-  // Create Combo Boxes
-  choice.reforgeplot_amount = createChoice( 10, "100", "200", "250", "500", "750", "1000", "1500", "2000", "3000", "5000" );
-  choice.reforgeplot_amount -> setCurrentIndex( 1 );
-  reforgePlotsLayout -> addRow( tr( "Reforge Amount" ), choice.reforgeplot_amount );
-
-  choice.reforgeplot_step = createChoice( 6, "25", "50", "100", "200", "250", "500" );
-  choice.reforgeplot_step -> setCurrentIndex( 1 );
-  reforgePlotsLayout -> addRow( tr( "Step Amount" ), choice.reforgeplot_step );
-
-  QLabel* messageText = new QLabel( tr( "A maximum of three stats may be ran at once.\n" ) );
-  reforgePlotsLayout -> addRow( messageText );
-
-  messageText = new QLabel( "Secondary Stats" );
-  reforgePlotsLayout -> addRow( messageText );
-
-  reforgeplotsButtonGroup = new SC_ReforgeButtonGroup( this );
-  reforgeplotsButtonGroup -> setExclusive( false );
-  for ( int i = 0; i < reforgePlotOption_cut && reforgePlotOptions[ i ].label; i++ )
-  {
-    QCheckBox* checkBox = new QCheckBox( reforgePlotOptions[ i ].label );
-    checkBox -> setToolTip( reforgePlotOptions[ i ].tooltip );
-    reforgeplotsButtonGroup -> addButton( checkBox );
-    reforgePlotsLayout -> addWidget( checkBox );
-    QObject::connect( checkBox, SIGNAL( stateChanged( int ) ),
-                      reforgeplotsButtonGroup, SLOT( setSelected( int ) ) );
-  }
-
-  messageText = new QLabel( "\n" + tr( "Primary Stats" ) );
-  reforgePlotsLayout -> addRow( messageText );
-
-  for ( int i = reforgePlotOption_cut; reforgePlotOptions[ i ].label; i++ )
-  {
-    QCheckBox* checkBox = new QCheckBox( reforgePlotOptions[ i ].label );
-    checkBox -> setToolTip( reforgePlotOptions[ i ].tooltip );
-    reforgeplotsButtonGroup -> addButton( checkBox );
-    reforgePlotsLayout -> addWidget( checkBox );
-    QObject::connect( checkBox, SIGNAL( stateChanged( int ) ),
-                      reforgeplotsButtonGroup, SLOT( setSelected( int ) ) );
-  }
-
-  QGroupBox* reforgeplotsGroupBox = new QGroupBox();
-  reforgeplotsGroupBox -> setLayout( reforgePlotsLayout );
-
-  optionsTab -> addTab( reforgeplotsGroupBox, tr( "Reforge Plots" ) );
+  setUrl( "file:///" + welcomeFile );
 }
 
 void SC_MainWindow::createImportTab()
 {
-  importTab = new SC_ImportTabWidget( this );
+  importTab = new SC_ImportTab( this );
   mainTab -> addTab( importTab, tr( "Import" ) );
 
   battleNetView = new SC_WebView( this );
@@ -1114,7 +572,7 @@ void SC_MainWindow::createCustomTab()
 
 void SC_MainWindow::createSimulateTab()
 {
-  simulateTab = new SC_SimulateTabWidget( mainTab );
+  simulateTab = new SC_SimulateTab( mainTab );
   simulateTab -> setTabsClosable( true );
   simulateTab -> setMovable( true );
   simulateTab -> add_Text( defaultSimulateText, "Simulate!" );
@@ -1199,105 +657,11 @@ void SC_MainWindow::createSiteTab()
 
 void SC_MainWindow::createToolTips()
 {
-  choice.version -> setToolTip( tr( "Live: Use mechanics on Live servers. ( WoW Build %1 )" ).arg( dbc::build_level( false ) ) +"\n" +
-#if SC_BETA
-                                tr( "Beta:  Use mechanics on Beta servers. ( WoW Build %1 )" ).arg( dbc::build_level( true ) ) +"\n" +
-                                tr( "Both: Create Evil Twin with Beta mechanics" ) );
-#else
-                                tr( "PTR:  Use mechanics on PTR servers. ( WoW Build %1 )" ).arg( dbc::build_level( true ) ) +"\n" +
-                                tr( "Both: Create Evil Twin with PTR mechanics" ) );
-#endif
-
-  choice.iterations -> setToolTip( tr( "%1:   Fast and Rough" ).arg( 100 ) +"\n" +
-                                   tr( "%1:  Sufficient for DPS Analysis" ).arg( 1000 ) +"\n" +
-                                   tr( "%1: Recommended for Scale Factor Generation" ).arg( 10000 ) +"\n" +
-                                   tr( "%1: Use if %2 isn't enough for Scale Factors" ).arg( 25000 ).arg( 10000 ) +"\n" +
-                                   tr( "%1: If you're patient" ).arg( 100 ) );
-
-  choice.fight_length -> setToolTip( tr( "For custom fight lengths use max_time=seconds." ) );
-
-  choice.fight_variance -> setToolTip( tr( "Varying the fight length over a given spectrum improves\n"
-                                           "the analysis of trinkets and abilities with long cooldowns." ) );
-
-  choice.fight_style -> setToolTip( tr( "Patchwerk: Tank-n-Spank" ) +"\n" +
-                                    tr( "HecticAddCleave:\n"
-                                        "    Heavy Movement, Frequent Add Spawns" ) +"\n" +
-                                    tr( "HelterSkelter:\n"
-                                        "    Movement, Stuns, Interrupts,\n"
-                                        "    Target-Switching (every 2min)" ) +"\n" +
-                                    tr( "Ultraxion:\n"
-                                        "    Periodic Stuns, Raid Damage" ) +"\n" +
-                                    tr( "LightMovement:\n"
-                                        "    %1s Movement, %2s CD,\n"
-                                        "    %3% into the fight until %4% before the end" ).arg( 7 ).arg( 85 ).arg( 10 ).arg( 20 ) +"\n" +
-                                    tr( "HeavyMovement:\n"
-                                        "    %1s Movement, %2s CD,\n"
-                                        "    beginning %3s into the fight" ).arg( 4 ).arg( 10 ).arg( 10 ) );
-
-  choice.target_race -> setToolTip( tr( "Race of the target and any adds." ) );
-
-  choice.challenge_mode -> setToolTip( tr( "Enables/Disables the challenge mode setting, downscaling items to level 463.\n"
-                                           "Stats won't be exact, but very close.") );
-
-  choice.num_target -> setToolTip( tr( "Number of enemies." ) );
-
-  choice.target_level -> setToolTip( tr( "Level of the target and any adds." ) );
-
-  choice.player_skill -> setToolTip( tr( "Elite:       No mistakes.  No cheating either." ) +"\n" +
-                                     tr( "Fire-is-Hot: Frequent DoT-clipping and skipping high-priority abilities." ) );
-
-  choice.threads -> setToolTip( tr( "Match the number of CPUs for optimal performance.\n"
-                                    "Most modern desktops have at least two CPU cores." ) );
-
-  choice.armory_region -> setToolTip( tr( "United States, Europe, Taiwan, China, Korea" ) );
-
-  choice.armory_spec -> setToolTip( tr( "Controls which Talent/Glyph specification is used when importing profiles from the Armory." ) );
-
-  choice.default_role -> setToolTip( tr( "Specify the character role during import to ensure correct action priority list." ) );
-
-  choice.report_pets -> setToolTip( tr( "Specify if pets get reported separately in detail." ) );
-
-  choice.print_style -> setToolTip( tr( "Specify html report print style." ) );
-
-
-  choice.statistics_level -> setToolTip( tr( "Determines how much detailed statistical information besides count & mean will be collected during simulation.\n"
-                                             " Higher Statistics Level require more memory." ) +"\n" +
-                                         tr( " Level %1: Only Simulation Length data is collected." ).arg( 0 ) +"\n" +
-                                         tr( " Level %1: DPS/HPS data is collected. *default*" ).arg( 1 ) +"\n" +
-                                         tr( " Level %1: Player Fight Length, Death Time, DPS(e), HPS(e), DTPS, HTPS, DMG, HEAL data is collected." ).arg( 2 ) +"\n" +
-                                         tr( " Level %1: Ability Amount and  portion APS is collected." ).arg( 3 ) );
-
-  choice.debug -> setToolTip( tr( "When a log is generated, only one iteration is used.\n"
-                                  "Gory details are very gory.  No documentation will be forthcoming.\n"
-                                  "Due to the forced single iteration, no scale factor calculation." ) );
-
-
-  choice.deterministic_rng -> setToolTip( tr( "Deterministic Random Number Generator creates all random numbers with a given, constant seed.\n"
-                                              "This allows to better observe marginal changes which aren't influenced by rng, \n"
-                                              " or check for other influences without having to reduce statistic noise" ) );
-
-  choice.world_lag -> setToolTip( tr( "World Lag is the equivalent of the 'world lag' shown in the WoW Client.\n"
-                                      "It is currently used to extend the cooldown duration of user executable abilities "
-                                      " that have a cooldown.\n"
-                                      "Each setting adds an amount of 'lag' with a default standard deviation of 10%:" ) +"\n" +
-                                  tr( "    'Low'   : %1ms" ).arg( 100 ) +"\n" +
-                                  tr( "    'Medium': %1ms" ).arg( 300 ) +"\n" +
-                                  tr( "    'High'  : %1ms" ).arg( 500 ) );
-
-  choice.aura_delay -> setToolTip( tr( "Aura Lag represents the server latency which occurs when buffs are applied.\n"
-                                       "This value is given by Blizzard server reaction time and not influenced by your latency.\n"
-                                       "Each setting adds an amount of 'lag' with a default standard deviation of 10%:\n" ) );
 
   backButton -> setToolTip( tr( "Backwards" ) );
   forwardButton -> setToolTip( tr( "Forwards" ) );
 
-  choice.plots_points -> setToolTip( tr( "The number of points that will appear on the graph" ) );
-  choice.plots_step -> setToolTip( tr( "The delta between two points of the graph.\n"
-                                       "The deltas on the horizontal axis will be within the [-points * steps / 2 ; +points * steps / 2] interval" ) );
-
-  choice.reforgeplot_amount -> setToolTip( tr( "The maximum amount to reforge per stat." ) );
-  choice.reforgeplot_step -> setToolTip( tr( "The stat difference between two points.\n"
-                                             "It's NOT the number of steps: a lower value will generate more points!" ) );
+  optionsTab -> createToolTips();
 }
 
 #ifdef SC_PAPERDOLL
@@ -1320,28 +684,6 @@ void SC_MainWindow::createPaperdoll()
 }
 #endif
 
-void SC_MainWindow::createItemDataSourceSelector( QFormLayout* layout )
-{
-  itemDbOrder = new QListWidget( this );
-  itemDbOrder -> setDragDropMode( QAbstractItemView::InternalMove );
-  itemDbOrder -> setResizeMode( QListView::Fixed );
-  itemDbOrder -> setSelectionRectVisible( false );
-  itemDbOrder -> setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
-  itemDbOrder -> setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-
-  for ( unsigned i = 0; i < sizeof_array( itemSourceOptions ); ++i )
-  {
-    QListWidgetItem* item = new QListWidgetItem( itemSourceOptions[ i ].label );
-    item -> setData( Qt::UserRole, QVariant( itemSourceOptions[ i ].option ) );
-    item -> setToolTip( itemSourceOptions[ i ].tooltip );
-    itemDbOrder -> addItem( item );
-  }
-
-  itemDbOrder -> setFixedHeight( ( itemDbOrder -> model() -> rowCount() + 1 ) * itemDbOrder -> sizeHintForRow( 0 ) );
-
-  layout->addRow( "Item Source Order", itemDbOrder );
-}
-
 void SC_MainWindow::updateVisibleWebView( SC_WebView* wv )
 {
   assert( wv );
@@ -1357,26 +699,22 @@ void SC_MainWindow::updateVisibleWebView( SC_WebView* wv )
 
 sim_t* SC_MainWindow::initSim()
 {
-  if ( ! sim )
-  {
-    sim = new sim_t();
+  sim_t* sim = new sim_t();
     sim -> output_file = fopen( (AppDataDir.toStdString() + "/" + SIMC_LOG_FILE ).c_str(), "w" );
     sim -> report_progress = 0;
 #if SC_USE_PTR
-    sim -> parse_option( "ptr", ( ( choice.version -> currentIndex() == 1 ) ? "1" : "0" ) );
+    sim -> parse_option( "ptr", ( ( optionsTab -> choice.version -> currentIndex() == 1 ) ? "1" : "0" ) );
 #endif
-    sim -> parse_option( "debug", ( ( choice.debug -> currentIndex() == 2 ) ? "1" : "0" ) );
-  }
+    sim -> parse_option( "debug", ( ( optionsTab -> choice.debug -> currentIndex() == 2 ) ? "1" : "0" ) );
   return sim;
 }
 
-void SC_MainWindow::deleteSim( SC_PlainTextEdit* append_error_message )
+void SC_MainWindow::deleteSim( sim_t* sim, SC_PlainTextEdit* append_error_message )
 {
   if ( sim )
   {
     fclose( sim -> output_file );
     delete sim;
-    sim = 0;
 
     QString contents;
     QFile logFile( AppDataDir + "/" + SIMC_LOG_FILE );
@@ -1408,7 +746,8 @@ void SC_MainWindow::startImport( int tab, const QString& url )
   }
   simProgress = 0;
   mainButton -> setText( "Cancel!" );
-  importThread -> start( initSim(), tab, url, get_db_order() );
+  sim = initSim();
+  importThread -> start( sim, tab, url, optionsTab -> get_db_order() );
   simulateTab -> add_Text( defaultSimulateText, QString() );
   mainTab -> setCurrentTab( TAB_SIMULATE );
   timer -> start( 500 );
@@ -1444,7 +783,7 @@ void SC_MainWindow::importFinished()
       historyList -> sortItems();
     }
 
-    deleteSim();
+    deleteSim( sim ); sim = 0;
   }
   else
   {
@@ -1452,7 +791,7 @@ void SC_MainWindow::importFinished()
 
     simulateTab -> append_Text( "# Unable to generate profile from: " + importThread -> url + "\n" );
 
-    deleteSim( simulateTab -> current_Text() );
+    deleteSim( sim, simulateTab -> current_Text() ); sim = 0;
 
     simulateTab -> current_Text() -> resetformat(); // Reset font
   }
@@ -1468,7 +807,7 @@ void SC_MainWindow::startSim()
     sim -> cancel();
     return;
   }
-  optionsHistory.add( encodeOptions() );
+  optionsHistory.add( optionsTab -> encodeOptions() );
   optionsHistory.current_index = 0;
   if ( simulateTab -> current_Text() -> toPlainText() != defaultSimulateText )
   {
@@ -1478,7 +817,8 @@ void SC_MainWindow::startSim()
   simulateCmdLineHistory.add( cmdLine -> text() );
   simProgress = 0;
   mainButton -> setText( "Cancel!" );
-  simulateThread -> start( initSim(), mergeOptions() );
+  sim = initSim();
+  simulateThread -> start( sim, optionsTab -> mergeOptions() );
   // simulateText -> setPlainText( defaultSimulateText() );
   cmdLineText = "";
   cmdLine -> setText( cmdLineText );
@@ -1486,287 +826,109 @@ void SC_MainWindow::startSim()
 }
 
 #ifdef SC_PAPERDOLL
-void SC_MainWindow::start_paperdoll_sim()
+
+player_t* SC_MainWindow::init_paperdoll_sim( sim_t*& sim )
 {
-  if ( sim )
-  {
-    sim -> cancel();
-    paperdollThread -> wait( 100 );
-    deleteSim();
-  }
 
+    sim = initSim();
 
-  sim = initSim();
+    PaperdollProfile* profile = paperdollProfile;
+    const module_t* module = module_t::get( profile -> currentClass() );
+    player_t* player = module ? module -> create_player( sim, "Paperdoll Player", profile -> currentRace() ) : NULL;
 
-  PaperdollProfile* profile = paperdollProfile;
-  const module_t* module = module_t::get( profile -> currentClass() );
-  player_t* player = module ? module -> create_player( sim, "Paperdoll Player", profile -> currentRace() ) : NULL;
-
-  if ( player )
-  {
-    player -> role = util::parse_role_type( choice.default_role -> currentText().toUtf8().constData() );
-
-    player -> _spec = profile -> currentSpec();
-
-    player -> professions_str += std::string( util::profession_type_string( profile -> currentProfession( 0 ) ) ) + "/" + util::profession_type_string( profile -> currentProfession( 1 ) ) ;
-
-    for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
+    if ( player )
     {
-      const item_data_t* profile_item = profile -> slotItem( i );
-      if ( profile_item )
-      {
-        player -> items.push_back( item_t( player, std::string() ) );
+      player -> role = util::parse_role_type( optionsTab -> choice.default_role -> currentText().toUtf8().constData() );
 
-        item_database::load_item_from_data( player -> items.back() ); // Hook up upgrade level from paperdoll once that's implemented
+      player -> _spec = profile -> currentSpec();
+
+      profession_e p1 = profile -> currentProfession( 0 );
+      profession_e p2 = profile -> currentProfession( 1 );
+      player -> professions_str = std::string();
+      if ( p1 != PROFESSION_NONE )
+        player -> professions_str += std::string( util::profession_type_string( p1 ) );
+      if ( p1 != PROFESSION_NONE && p2 != PROFESSION_NONE )
+        player -> professions_str += "/";
+      if ( p2 != PROFESSION_NONE )
+        player -> professions_str += util::profession_type_string( p2 );
+
+      for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
+      {
+        const item_data_t* profile_item = profile -> slotItem( i );
+
+        if ( profile_item )
+        {
+            player -> items.push_back( item_t( player, std::string() ) );
+            item_t& item = player -> items.back();
+            item.options_str += "id=" + util::to_string( profile_item -> id );
+        }
       }
     }
+    return player;
+}
 
+void SC_MainWindow::start_intermediate_paperdoll_sim()
+{
+    if ( paperdoll_sim )
+    {
+      paperdoll_sim -> cancel();
+      paperdollThread -> wait( 100 );
+      deleteSim( paperdoll_sim );
+    }
+
+    player_t* player = init_paperdoll_sim( paperdoll_sim );
+
+    if ( player )
+    {
     paperdoll -> setCurrentDPS( "", 0, 0 );
 
-    paperdollThread -> start( sim, player, get_globalSettings() );
+    paperdollThread -> start( paperdoll_sim, player, optionsTab -> get_globalSettings() );
 
+    timer -> start( 100 );
     simProgress = 0;
   }
 }
+
+void SC_MainWindow::start_paperdoll_sim()
+{
+    if ( sim )
+    {
+      return;
+    }
+    if ( paperdoll_sim )
+    {
+      paperdoll_sim -> cancel();
+      paperdollThread -> wait( 1000 );
+      deleteSim( paperdoll_sim ); paperdoll_sim = 0;
+    }
+
+    player_t* player = init_paperdoll_sim( sim );
+
+    if ( player )
+    {
+
+
+        optionsHistory.add( optionsTab -> encodeOptions() );
+        optionsHistory.current_index = 0;
+        if ( simulateTab -> current_Text() -> toPlainText() != defaultSimulateText )
+        {
+          //simulateTextHistory.add( simulateText -> toPlainText() );
+        }
+        overridesTextHistory.add( overridesText -> toPlainText() );
+        simulateCmdLineHistory.add( cmdLine -> text() );
+        simProgress = 0;
+        mainButton -> setText( "Cancel!" );
+        simulateThread -> start( sim, optionsTab -> get_globalSettings() );
+        // simulateText -> setPlainText( defaultSimulateText() );
+        cmdLineText = "";
+        cmdLine -> setText( cmdLineText );
+        timer -> start( 100 );
+        simProgress = 0;
+    }
+}
 #endif
 
-QString SC_MainWindow::get_db_order() const
-{
-  QString options;
-
-  assert( itemDbOrder -> count() > 0 );
-
-  for ( int i = 0; i < itemDbOrder -> count(); i++ )
-  {
-    QListWidgetItem *it = itemDbOrder -> item( i );
-    options += it -> data( Qt::UserRole ).toString();
-    if ( i < itemDbOrder -> count() - 1 )
-      options += '/';
-  }
-
-  return options;
-}
-
-QString SC_MainWindow::get_globalSettings()
-{
-  QString options = "";
-
-#if SC_USE_PTR
-  options += "ptr=";
-  options += ( ( choice.version->currentIndex() == 1 ) ? "1" : "0" );
-  options += "\n";
-#endif
-  options += "item_db_source=" + get_db_order() + '\n';
-  options += "iterations=" + choice.iterations->currentText() + "\n";
-  if ( choice.iterations->currentText() == "10000" )
-  {
-    options += "dps_plot_iterations=1000\n";
-  }
-
-  const char *world_lag[] = { "0.1", "0.3", "0.5" };
-  options += "default_world_lag=";
-  options += world_lag[ choice.world_lag->currentIndex() ];
-  options += "\n";
-
-
-  const char *auradelay[] = { "0.4", "0.5", "0.6" };
-  options += "default_aura_delay=";
-  options += auradelay[ choice.aura_delay->currentIndex() ];
-  options += "\n";
-
-  options += "max_time=" + choice.fight_length->currentText() + "\n";
-
-  options += "vary_combat_length=";
-  const char *variance[] = { "0.0", "0.1", "0.2" };
-  options += variance[ choice.fight_variance->currentIndex() ];
-  options += "\n";
-
-  options += "fight_style=" + choice.fight_style->currentText() + "\n";
-
-  if ( choice.challenge_mode -> currentIndex() > 0 )
-    options += "challenge_mode=1\n";
-
-  static const char* const targetlevel[] = { "3", "2", "1", "0" };
-  options += "target_level+=";
-  options += targetlevel[ choice.target_level -> currentIndex() ];
-  options += "\n";
-
-  options += "target_race=" + choice.target_race->currentText() + "\n";
-
-  options += "default_skill=";
-  const char *skill[] = { "1.0", "0.9", "0.75", "0.50" };
-  options += skill[ choice.player_skill->currentIndex() ];
-  options += "\n";
-
-  options += "optimal_raid=0\n";
-  QList<QAbstractButton*> buttons = buffsButtonGroup->buttons();
-  for ( int i=1; buffOptions[ i ].label; i++ )
-  {
-    options += buffOptions[ i ].option;
-    options += "=";
-    options += buttons.at( i )->isChecked() ? "1" : "0";
-    options += "\n";
-  }
-  buttons = debuffsButtonGroup->buttons();
-  for ( int i=1; debuffOptions[ i ].label; i++ )
-  {
-    options += debuffOptions[ i ].option;
-    options += "=";
-    options += buttons.at( i )->isChecked() ? "1" : "0";
-    options += "\n";
-  }
-
-  if ( choice.deterministic_rng->currentIndex() == 0 )
-  {
-    options += "deterministic_rng=1\n";
-  }
-
-  return options;
-}
-
-QString SC_MainWindow::mergeOptions()
-{
-  QString options = "### Begin GUI options ###\n";
-
-  options += get_globalSettings();
-  options += "threads=" + choice.threads->currentText() + "\n";
-
-  QList<QAbstractButton*> buttons = scalingButtonGroup->buttons();
-  for ( int i=2; scalingOptions[ i ].label; i++ )
-  {
-    if ( buttons.at( i )->isChecked() )
-    {
-      options += "calculate_scale_factors=1\n";
-      break;
-    }
-  }
-
-  if ( buttons.at( 1 )->isChecked() ) options += "positive_scale_delta=1\n";
-  if ( buttons.at( buttons.size() - 1 )->isChecked() ) options += "scale_lag=1\n";
-  if ( buttons.at( 15 )->isChecked() || buttons.at( 17 )->isChecked() ) options += "weapon_speed_scale_factors=1\n";
-
-  options += "scale_only=none";
-  for ( int i=2; scalingOptions[ i ].label; i++ )
-  {
-    if ( buttons.at( i )->isChecked() )
-    {
-      options += ",";
-      options += scalingOptions[ i ].option;
-    }
-  }
-  options += "\n";
-
-  if ( choice.center_scale_delta->currentIndex() == 0 )
-  {
-    options += "center_scale_delta=1\n";
-  }
-
-  if ( choice.scale_over -> currentIndex() != 0 )
-  {
-    options += "scale_over=";
-    options +=  choice.scale_over -> currentText();
-    options += "\n";
-  }
-
-  options += "dps_plot_stat=none";
-  buttons = plotsButtonGroup->buttons();
-  for ( int i=0; plotOptions[ i ].label; i++ )
-  {
-    if ( buttons.at( i )->isChecked() )
-    {
-      options += ",";
-      options += plotOptions[ i ].option;
-    }
-  }
-  options += "\n";
-
-  options += "dps_plot_points=" + choice.plots_points -> currentText() + "\n";
-  options += "dps_plot_step=" + choice.plots_step -> currentText() + "\n";
-
-  options += "reforge_plot_stat=none";
-  buttons = reforgeplotsButtonGroup->buttons();
-  for ( int i=0; reforgePlotOptions[ i ].label; i++ )
-  {
-    if ( buttons.at( i )->isChecked() )
-    {
-      options += ",";
-      options += reforgePlotOptions[ i ].option;
-    }
-  }
-  options += "\n";
-
-  options += "reforge_plot_amount=" + choice.reforgeplot_amount -> currentText() + "\n";
-  options += "reforge_plot_step=" + choice.reforgeplot_step -> currentText() + "\n";
-
-  if ( choice.statistics_level->currentIndex() >= 0 )
-  {
-    options += "statistics_level=" + choice.statistics_level->currentText() + "\n";
-  }
-
-  if ( choice.report_pets->currentIndex() != 1 )
-  {
-    options += "report_pets_separately=1\n";
-  }
-
-  if ( choice.print_style -> currentIndex() != 0 )
-  {
-    options += "print_styles=";
-    options += util::to_string( choice.print_style -> currentIndex() ).c_str();
-    options += "\n";
-  }
-  options += "### End GUI options ###\n"
-
-             "### Begin simulateText ###\n";
-  options += simulateTab -> current_Text() -> toPlainText();
-  options += "\n"
-             "### End simulateText ###\n";
-
-  if ( choice.num_target -> currentIndex() >= 1 )
-  {
-    options += "### Begin enemies ###\n";
-    for ( int i = 1; i <= choice.num_target -> currentIndex() + 1; ++i )
-    {
-      options += "enemy=enemy";
-      options += QString::number( i );
-      options += "\n";
-    }
-    options += "### End enemies ###\n";
-  }
-
-  options += "### Begin overrides ###\n";
-  options += overridesText->toPlainText();
-  options += "\n";
-  options += "### End overrides ###\n"
-
-             "### Begin command line ###\n";
-  options += cmdLine->text();
-  options += "\n"
-             "### End command line ###\n"
-
-             "### Begin final options ###\n";
-#if SC_USE_PTR
-  if ( choice.version->currentIndex() == 2 )
-  {
-    options += "ptr=1\n";
-    options += "copy=EvilTwinPTR\n";
-    options += "ptr=0\n";
-  }
-#endif
-
-  if ( choice.debug->currentIndex() != 0 )
-  {
-    options += "log=1\n";
-    options += "scale_only=none\n";
-    options += "dps_plot_stat=none\n";
-  }
-  options += "### End final options ###\n"
-
-             "### END ###";
-
-  return options;
-}
-
-void SC_MainWindow::simulateFinished()
+void SC_MainWindow::simulateFinished( sim_t* sim )
 {
   timer -> stop();
   simPhase = "%p%";
@@ -1774,7 +936,8 @@ void SC_MainWindow::simulateFinished()
   progressBar -> setFormat( simPhase.c_str() );
   progressBar -> setValue( simProgress );
   QFile file( sim -> html_file_str.c_str() );
-  deleteSim();
+  bool sim_was_debug = sim -> debug;
+  deleteSim( sim ); SC_MainWindow::sim = 0;
   if ( ! simulateThread -> success )
   {
     logText -> setformat_error();
@@ -1791,7 +954,7 @@ void SC_MainWindow::simulateFinished()
     resultsTab -> addTab( resultsView, resultsName );
     resultsTab -> setCurrentWidget( resultsView );
     resultsView->setFocus();
-    mainTab->setCurrentTab( choice.debug->currentIndex() ? TAB_LOG : TAB_RESULTS );
+    mainTab -> setCurrentTab( sim_was_debug ? TAB_LOG : TAB_RESULTS );
   }
   else
   {
@@ -1810,8 +973,6 @@ void SC_MainWindow::paperdollFinished()
   simProgress = 100;
   progressBar -> setFormat( simPhase.c_str() );
   progressBar -> setValue( simProgress );
-
-  assert(  sim );
 
   simProgress = 100;
 
@@ -1880,7 +1041,7 @@ void SC_MainWindow::cmdLineTextEdited( const QString& s )
   case TAB_SITE:      cmdLineText = s; break;
   case TAB_LOG:       logFileText = s; break;
   case TAB_RESULTS:   resultsFileText = s; break;
-  case TAB_IMPORT:    break;
+  default:  break;
   }
 }
 
@@ -1931,6 +1092,9 @@ void SC_MainWindow::mainButtonClicked( bool /* checked */ )
     break;
   case TAB_LOG: saveLog(); break;
   case TAB_RESULTS: saveResults(); break;
+#ifdef SC_PAPERDOLL
+  case TAB_PAPERDOLL: start_paperdoll_sim(); break;
+#endif
   }
 }
 
@@ -1958,7 +1122,7 @@ void SC_MainWindow::backButtonClicked( bool /* checked */ )
   {
     switch ( mainTab -> currentTab() )
     {
-    case TAB_OPTIONS:   decodeOptions( optionsHistory.backwards() ); break;
+    case TAB_OPTIONS:   optionsTab -> decodeOptions( optionsHistory.backwards() ); break;
     case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.backwards() ); overridesText->setFocus(); break;
     default:            break;
     }
@@ -1977,7 +1141,7 @@ void SC_MainWindow::forwardButtonClicked( bool /* checked */ )
     switch ( mainTab->currentIndex() )
     {
     case TAB_WELCOME:   break;
-    case TAB_OPTIONS:   decodeOptions( optionsHistory.forwards() ); break;
+    case TAB_OPTIONS:   optionsTab -> decodeOptions( optionsHistory.forwards() ); break;
     case TAB_IMPORT:    break;
     case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.forwards() ); overridesText->setFocus(); break;
     case TAB_LOG:       break;
@@ -2016,10 +1180,13 @@ void SC_MainWindow::mainTabChanged( int index )
   visibleWebView = 0;
   switch ( index )
   {
-  case TAB_WELCOME:   cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
-  case TAB_OPTIONS:   cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
-  case TAB_SIMULATE:  cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
-  case TAB_OVERRIDES: cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
+  case TAB_WELCOME:
+  case TAB_OPTIONS:
+  case TAB_SIMULATE:
+  case TAB_OVERRIDES:
+#ifdef SC_PAPERDOLL
+  case TAB_PAPERDOLL:
+#endif
   case TAB_HELP:      cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
   case TAB_LOG:       cmdLine->setText( logFileText ); mainButton->setText( "Save!" ); break;
   case TAB_IMPORT:
@@ -2035,10 +1202,6 @@ void SC_MainWindow::mainTabChanged( int index )
     mainButton->setText( sim ? "Cancel!" : "Simulate!" );
     updateVisibleWebView( siteView );
     break;
-#ifdef SC_PAPERDOLL
-  case TAB_PAPERDOLL:
-    break;
-#endif
   default: assert( 0 );
   }
   if ( visibleWebView )
@@ -2144,36 +1307,6 @@ void SC_MainWindow::bisDoubleClicked( QTreeWidgetItem* item, int /* col */ )
   simulateTab -> current_Text() -> setFocus();
 }
 
-void SC_MainWindow::allBuffsChanged( bool checked )
-{
-  QList<QAbstractButton*> buttons = buffsButtonGroup -> buttons();
-  int count = buttons.count();
-  for ( int i = 1; i < count; i++ )
-  {
-    buttons.at( i ) -> setChecked( checked );
-  }
-}
-
-void SC_MainWindow::allDebuffsChanged( bool checked )
-{
-  QList<QAbstractButton*> buttons = debuffsButtonGroup->buttons();
-  int count = buttons.count();
-  for ( int i = 1; i < count; i++ )
-  {
-    buttons.at( i ) -> setChecked( checked );
-  }
-}
-
-void SC_MainWindow::allScalingChanged( bool checked )
-{
-  QList<QAbstractButton*> buttons = scalingButtonGroup->buttons();
-  int count = buttons.count();
-  for ( int i=2; i < count - 1; i++ )
-  {
-    buttons.at( i ) -> setChecked( checked );
-  }
-}
-
 void SC_MainWindow::armoryRegionChanged( const QString& region )
 {
   battleNetView -> stop();
@@ -2227,7 +1360,7 @@ void SimulateThread::run()
 
 void SC_CommandLine::keyPressEvent( QKeyEvent* e )
 {
-  int k = e->key();
+  int k = e -> key();
   if ( k != Qt::Key_Up && k != Qt::Key_Down )
   {
     QLineEdit::keyPressEvent( e );
@@ -2235,16 +1368,9 @@ void SC_CommandLine::keyPressEvent( QKeyEvent* e )
   }
   switch ( mainWindow -> mainTab -> currentTab() )
   {
-  case TAB_WELCOME:
-  case TAB_OPTIONS:
-  case TAB_SIMULATE:
-  case TAB_HELP:
-  case TAB_SITE:
   case TAB_OVERRIDES:
     mainWindow->cmdLineText = mainWindow->simulateCmdLineHistory.next( k );
     setText( mainWindow->cmdLineText );
-    break;
-  case TAB_IMPORT:
     break;
   case TAB_LOG:
     mainWindow->logFileText = mainWindow->logCmdLineHistory.next( k );
@@ -2254,6 +1380,7 @@ void SC_CommandLine::keyPressEvent( QKeyEvent* e )
     mainWindow -> resultsFileText = mainWindow-> resultsCmdLineHistory.next( k );
     setText( mainWindow -> resultsFileText );
     break;
+  default: break;
   }
 }
 

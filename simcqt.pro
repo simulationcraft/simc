@@ -65,7 +65,8 @@ HEADERS += engine/utf8/core.h
 HEADERS += engine/utf8/checked.h
 HEADERS += engine/utf8/unchecked.h
 
-SOURCES += engine/sc_io.cpp
+SOURCES += engine/sc_io.cpp \
+    qt/sc_options_tab.cpp
 SOURCES += engine/util/rng.cpp
 SOURCES += engine/sc_thread.cpp
 SOURCES += engine/sc_util.cpp

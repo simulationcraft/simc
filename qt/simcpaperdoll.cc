@@ -274,7 +274,7 @@ PaperdollProfile::setProfession( int profession, int type )
 void
 PaperdollProfile::setSpec( int player_spec )
 {
-  assert( player_spec <= dbc::specialization_max_per_class() );
+  assert( player_spec <= (int) dbc::specialization_max_per_class() );
   m_spec = dbc::spec_by_idx( m_class, player_spec );
 
   for ( slot_e t = SLOT_INVALID; t < SLOT_MAX; ++t )

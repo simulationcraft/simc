@@ -185,10 +185,10 @@ public slots:
 // ============================================================================
 
 template <typename E>
-class SC_enumeratedTabWidget : public QTabWidget
+class SC_enumeratedTab : public QTabWidget
 {
 public:
-  SC_enumeratedTabWidget( QWidget* parent = 0 ) :
+  SC_enumeratedTab( QWidget* parent = 0 ) :
     QTabWidget( parent )
   {
 
@@ -205,27 +205,108 @@ public:
 // SC_MainTabWidget
 // ============================================================================
 
-class SC_MainTabWidget : public SC_enumeratedTabWidget<main_tabs_e>
+class SC_MainTab : public SC_enumeratedTab<main_tabs_e>
 {
   Q_OBJECT
 public:
-  SC_MainTabWidget( QWidget* parent = 0 ) :
-    SC_enumeratedTabWidget<main_tabs_e>( parent )
+  SC_MainTab( QWidget* parent = 0 ) :
+    SC_enumeratedTab<main_tabs_e>( parent )
   {
 
   }
 };
 
 // ============================================================================
+// SC_WelcomeTabWidget
+// ============================================================================
+
+class SC_WelcomeTabWidget : public QWebView
+{
+    Q_OBJECT
+public:
+    SC_WelcomeTabWidget( SC_MainWindow* parent = nullptr );
+};
+
+// ============================================================================
+// SC_OptionsTabWidget
+// ============================================================================
+class SC_OptionsTab : public QTabWidget
+{
+    Q_OBJECT
+public:
+    SC_OptionsTab( SC_MainWindow* parent );
+
+    void    decodeOptions( QString );
+    QString encodeOptions();
+    QString get_db_order() const;
+    QString get_globalSettings();
+    QString mergeOptions();
+
+    void createToolTips();
+    QListWidget* itemDbOrder;
+    struct choices_t
+    {
+      // options
+      QComboBox* version;
+      QComboBox* world_lag;
+      QComboBox* aura_delay;
+      QComboBox* iterations;
+      QComboBox* fight_length;
+      QComboBox* fight_variance;
+      QComboBox* fight_style;
+      QComboBox* target_level;
+      QComboBox* target_race;
+      QComboBox* num_target;
+      QComboBox* player_skill;
+      QComboBox* threads;
+      QComboBox* armory_region;
+      QComboBox* armory_spec;
+      QComboBox* default_role;
+      QComboBox* debug;
+      QComboBox* report_pets;
+      QComboBox* print_style;
+      QComboBox* statistics_level;
+      QComboBox* deterministic_rng;
+      QComboBox* center_scale_delta;
+      QComboBox* challenge_mode;
+      // scaling
+      QComboBox* scale_over;
+      QComboBox* plots_points;
+      QComboBox* plots_step;
+      QComboBox* reforgeplot_amount;
+      QComboBox* reforgeplot_step;
+    } choice;
+
+    QButtonGroup* buffsButtonGroup;
+    QButtonGroup* debuffsButtonGroup;
+    QButtonGroup* scalingButtonGroup;
+    QButtonGroup* plotsButtonGroup;
+    SC_ReforgeButtonGroup* reforgeplotsButtonGroup;
+protected:
+    SC_MainWindow* mainWindow;
+    void createGlobalsTab();
+    void createBuffsDebuffsTab();
+    void createScalingTab();
+    void createPlotsTab();
+    void createReforgePlotsTab();
+    void createItemDataSourceSelector( QFormLayout* );
+
+private slots:
+    void allBuffsChanged( bool checked );
+    void allDebuffsChanged( bool checked );
+    void allScalingChanged( bool checked );
+
+};
+// ============================================================================
 // SC_ImportTabWidget
 // ============================================================================
 
-class SC_ImportTabWidget : public SC_enumeratedTabWidget<import_tabs_e>
+class SC_ImportTab : public SC_enumeratedTab<import_tabs_e>
 {
   Q_OBJECT
 public:
-  SC_ImportTabWidget( QWidget* parent = 0 ) :
-    SC_enumeratedTabWidget<import_tabs_e>( parent )
+  SC_ImportTab( QWidget* parent = 0 ) :
+    SC_enumeratedTab<import_tabs_e>( parent )
   {
   }
 };
@@ -234,11 +315,11 @@ public:
 // SC_SimulateTabWidget
 // ============================================================================
 
-class SC_SimulateTabWidget : public QTabWidget
+class SC_SimulateTab : public QTabWidget
 {
   Q_OBJECT
 public:
-  SC_SimulateTabWidget( QWidget* parent = nullptr ) :
+  SC_SimulateTab( QWidget* parent = nullptr ) :
     QTabWidget( parent )
   {
   }
@@ -283,10 +364,10 @@ public:
   QWidget* customGearTab;
   QWidget* customTalentsTab;
   QWidget* customGlyphsTab;
-  SC_MainTabWidget* mainTab;
-  QTabWidget* optionsTab;
-  SC_ImportTabWidget* importTab;
-  SC_SimulateTabWidget* simulateTab;
+  SC_MainTab* mainTab;
+  SC_OptionsTab* optionsTab;
+  SC_ImportTab* importTab;
+  SC_SimulateTab* simulateTab;
   QTabWidget* resultsTab;
   QTabWidget* createCustomProfileDock;
 #ifdef SC_PAPERDOLL
@@ -294,45 +375,8 @@ public:
   Paperdoll* paperdoll;
   PaperdollProfile* paperdollProfile;
 #endif
-  struct choices_t
-  {
-    // options
-    QComboBox* version;
-    QComboBox* world_lag;
-    QComboBox* aura_delay;
-    QComboBox* iterations;
-    QComboBox* fight_length;
-    QComboBox* fight_variance;
-    QComboBox* fight_style;
-    QComboBox* target_level;
-    QComboBox* target_race;
-    QComboBox* num_target;
-    QComboBox* player_skill;
-    QComboBox* threads;
-    QComboBox* armory_region;
-    QComboBox* armory_spec;
-    QComboBox* default_role;
-    QComboBox* debug;
-    QComboBox* report_pets;
-    QComboBox* print_style;
-    QComboBox* statistics_level;
-    QComboBox* deterministic_rng;
-    QComboBox* center_scale_delta;
-    QComboBox* challenge_mode;
-    // scaling
-    QComboBox* scale_over;
-    QComboBox* plots_points;
-    QComboBox* plots_step;
-    QComboBox* reforgeplot_amount;
-    QComboBox* reforgeplot_step;
-  } choice;
 
-  QListWidget* itemDbOrder;
-  QButtonGroup* buffsButtonGroup;
-  QButtonGroup* debuffsButtonGroup;
-  QButtonGroup* scalingButtonGroup;
-  QButtonGroup* plotsButtonGroup;
-  SC_ReforgeButtonGroup* reforgeplotsButtonGroup;
+
   SC_WebView* battleNetView;
   SC_WebView* charDevView;
   SC_WebView* siteView;
@@ -362,6 +406,7 @@ public:
 #endif
 
   sim_t* sim;
+  sim_t* paperdoll_sim;
   std::string simPhase;
   int simProgress;
   int simResults;
@@ -383,16 +428,10 @@ public:
   void    startImport( int tab, const QString& url );
   void    startSim();
   sim_t*  initSim();
-  void    deleteSim( SC_PlainTextEdit* append_error_message = 0 );
-  QString get_globalSettings();
-  QString get_db_order() const;
-  QString mergeOptions();
+  void    deleteSim( sim_t* sim, SC_PlainTextEdit* append_error_message = 0 );
 
   void saveLog();
   void saveResults();
-
-  void    decodeOptions( QString );
-  QString encodeOptions();
 
   void loadHistory();
   void saveHistory();
@@ -400,11 +439,6 @@ public:
   void createCmdLine();
   void createWelcomeTab();
   void createOptionsTab();
-  void createGlobalsTab();
-  void createBuffsDebuffsTab();
-  void createScalingTab();
-  void createPlotsTab();
-  void createReforgePlotsTab();
   void createImportTab();
   void createRawrTab();
   void createBestInSlotTab();
@@ -419,7 +453,6 @@ public:
 #ifdef SC_PAPERDOLL
   void createPaperdoll();
 #endif
-  void createItemDataSourceSelector( QFormLayout* );
   void updateVisibleWebView( SC_WebView* );
 
 protected:
@@ -427,9 +460,11 @@ protected:
 
 private slots:
   void importFinished();
-  void simulateFinished();
+  void simulateFinished( sim_t* );
 #ifdef SC_PAPERDOLL
   void paperdollFinished();
+  player_t* init_paperdoll_sim( sim_t*& );
+  void start_intermediate_paperdoll_sim();
   void start_paperdoll_sim();
 #endif
   void updateSimProgress();
@@ -446,9 +481,6 @@ private slots:
   void rawrButtonClicked( bool checked=false );
   void historyDoubleClicked( QListWidgetItem* item );
   void bisDoubleClicked( QTreeWidgetItem* item, int col );
-  void allBuffsChanged( bool checked );
-  void allDebuffsChanged( bool checked );
-  void allScalingChanged( bool checked );
   void armoryRegionChanged( const QString& region );
 
 public:
@@ -566,6 +598,7 @@ private slots:
 // ============================================================================
 // SimulateThread
 // ============================================================================
+
 class SimulateThread : public QThread
 {
   Q_OBJECT
@@ -578,7 +611,16 @@ public:
 
   void start( sim_t* s, const QString& o ) { sim=s; options=o; success=false; QThread::start(); }
   virtual void run();
-  SimulateThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 ) {}
+  SimulateThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 )
+  {
+      connect( this, SIGNAL( finished() ), this, SLOT( sim_finished() ) );
+  }
+private slots:
+  void sim_finished()
+  { emit simulationFinished( sim ); }
+
+signals:
+  void simulationFinished( sim_t* s );
 };
 
 class ImportThread : public QThread
