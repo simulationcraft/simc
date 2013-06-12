@@ -323,12 +323,19 @@ void dbc::apply_hotfixes()
 
   // Hunter Hotfixes, June 11 2013 - 10% to arcane, steady, cobra.
   s = spell_data_t::find( 3044, false ); // arcane
+  assert( s -> effectN( 1 )._m_avg == 1.8500000238 && "DBC Hotfix out of date!" );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.85 * 1.10;
+  assert( s -> effectN( 2 )._base_value == 100 && "DBC Hotfix out of date!"  );
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 100 * 1.10;
+
   s = spell_data_t::find( 77767, false ); // cobra
+  assert( s -> effectN( 2 )._base_value == 70 && "DBC Hotfix out of date!"  );
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 70 * 1.10;
+
   s = spell_data_t::find( 56641, false ); // steady
+  assert( s -> effectN( 1 )._m_avg == 1.9199999571 && "DBC Hotfix out of date!"  );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.92 * 1.10;
+  assert( s -> effectN( 2 )._base_value == 60 && "DBC Hotfix out of date!"  );
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 60 * 1.10;
 
   // Rogue

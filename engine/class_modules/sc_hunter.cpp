@@ -877,7 +877,10 @@ struct hunter_main_pet_attack_t : public hunter_main_pet_action_t<melee_attack_t
   virtual bool ready()
   {
     // Stampede pets don't use abilities or spells
-    return ! p() -> buffs.stampede->up() && hunter_main_pet_action_t<melee_attack_t>::ready();
+    if ( p() -> buffs.stampede -> check() )
+      return false;
+
+    return base_t::ready();
   }
 
 };
@@ -1191,7 +1194,10 @@ struct hunter_main_pet_spell_t : public hunter_main_pet_action_t<spell_t>
   virtual bool ready()
   {
     // Stampede pets don't use abilities or spells
-    return ! p() -> buffs.stampede->up() && hunter_main_pet_action_t<spell_t>::ready();
+    if ( p() -> buffs.stampede -> check() )
+      return false;
+
+    return base_t::ready();
   }
 };
 
