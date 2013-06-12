@@ -873,6 +873,13 @@ struct hunter_main_pet_attack_t : public hunter_main_pet_action_t<melee_attack_t
     special = true;
     may_crit = true;
   }
+
+  virtual bool ready()
+  {
+    // Stampede pets don't use abilities or spells
+    return ! p() -> buffs.stampede->up() && hunter_main_pet_action_t<melee_attack_t>::ready();
+  }
+
 };
 
 // Beast Cleave
@@ -1179,6 +1186,12 @@ struct hunter_main_pet_spell_t : public hunter_main_pet_action_t<spell_t>
                            const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s )
   {
+  }
+
+  virtual bool ready()
+  {
+    // Stampede pets don't use abilities or spells
+    return ! p() -> buffs.stampede->up() && hunter_main_pet_action_t<spell_t>::ready();
   }
 };
 

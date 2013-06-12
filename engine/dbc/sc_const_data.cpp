@@ -321,8 +321,17 @@ void dbc::apply_hotfixes()
     s -> _desc = "$@spelldesc64901";
   }
 
-  // Rogue
+  // Hunter Hotfixes, June 11 2013 - 10% to arcane, steady, cobra.
+  s = spell_data_t::find( 3044, false ); // arcane
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.85 * 1.10;
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 100 * 1.10;
+  s = spell_data_t::find( 77767, false ); // cobra
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 70 * 1.10;
+  s = spell_data_t::find( 56641, false ); // steady
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.92 * 1.10;
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 60 * 1.10;
 
+  // Rogue
 
   // Shaman
 
