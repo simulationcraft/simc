@@ -178,7 +178,7 @@ struct spell_nuke_t : public spell_t
 
 };
 
-// Spell Nuke ===============================================================
+// Spell DoT ===============================================================
 
 struct spell_dot_t : public spell_t
 {
@@ -619,7 +619,7 @@ void enemy_t::init_actions()
       {
         action_list_str += "/auto_attack,damage=" + util::to_string( 700000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
         action_list_str += "/spell_dot,damage=" + util::to_string( 100000 * level_mult ) + ",tick_time=2,num_ticks=10,cooldown=40,aoe_tanks=1,if=!ticking";
-        action_list_str += "/spell_nuke,damage=" + util::to_string( 15000 * level_mult ) + ",cooldown=4,attack_speed=2,aoe_tanks=1";
+        action_list_str += "/spell_nuke,damage=" + util::to_string( 400000 * level_mult ) + ",cooldown=4,attack_speed=2,aoe_tanks=1";
       }
       else if ( sim -> heal_target && this != sim -> heal_target )
       {

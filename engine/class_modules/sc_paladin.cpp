@@ -66,6 +66,7 @@ public:
   action_t* active_seal_of_truth_proc;
   action_t* ancient_fury_explosion;
   player_t* last_judgement_target;
+  action_t* active_battle_healer_proc;
 
   // Buffs
   struct buffs_t
@@ -258,6 +259,7 @@ public:
     active_seal_of_insight_proc        = 0;
     active_seal_of_righteousness_proc  = 0;
     active_seal_of_truth_proc          = 0;
+    active_battle_healer_proc          = 0;
     ancient_fury_explosion             = 0;
     bok_up                             = false;
     bom_up                             = false;
@@ -548,6 +550,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
   bool trigger_seal_of_justice;
   bool trigger_seal_of_truth;
   bool trigger_seal_of_justice_aoe; // probably not needed anymore, this change was reverted
+  bool trigger_battle_healer; 
 
   // spell cooldown reduction flags
   bool sanctity_of_battle;  //reduces some spell cooldowns/gcds by melee haste
@@ -563,6 +566,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
     trigger_seal_of_justice( false ),
     trigger_seal_of_truth( false ),
     trigger_seal_of_justice_aoe( false ),
+    trigger_battle_healer( false ),
     sanctity_of_battle( false ),
     use2hspec( u2h )
   {
@@ -635,6 +639,16 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
       if ( trigger_seal_of_justice_aoe && ( p() -> active_seal == SEAL_OF_JUSTICE ) )
         p() -> active_seal_of_justice_aoe_proc -> execute();
 
+      // battle healer
+      if ( trigger_battle_healer )
+      {
+        // set the heal size to be fixed based on the result of the actoin
+        p() -> active_battle_healer_proc -> base_dd_min = execute_state -> result_amount;
+        p() -> active_battle_healer_proc -> base_dd_max = execute_state -> result_amount;
+        
+        // execute the heal - this also checks 
+        p() -> active_battle_healer_proc -> execute();
+      }
     }
   }
 
@@ -659,13 +673,14 @@ struct melee_t : public paladin_melee_attack_t
     paladin_melee_attack_t( "melee", p, spell_data_t::nil(), true )
   {
     school = SCHOOL_PHYSICAL;
-    special           = false;
-    trigger_seal      = true;
-    background        = true;
-    repeating         = true;
-    trigger_gcd       = timespan_t::zero();
-    weapon            = &( p -> main_hand_weapon );
-    base_execute_time = p -> main_hand_weapon.swing_time;
+    special               = false;
+    trigger_seal          = true;
+    background            = true;
+    repeating             = true;
+    trigger_gcd           = timespan_t::zero();
+    weapon                = &( p -> main_hand_weapon );
+    base_execute_time     = p -> main_hand_weapon.swing_time;
+    trigger_battle_healer = ( sim -> player_no_pet_list.size() > 1 );
   }
 
   virtual timespan_t execute_time()
@@ -738,6 +753,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
     // CS triggers all seals
     trigger_seal = true;
+    trigger_battle_healer = ( sim -> player_no_pet_list.size() > 1 );
 
     // Sanctity of Battle reduces melee GCD
     sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
@@ -884,6 +900,7 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     background = true;
     aoe       = -1;
     trigger_gcd = timespan_t::zero(); // doesn't incur GCD (HotR does that already)
+    trigger_battle_healer = ( sim -> player_no_pet_list.size() > 1 );
 
     // Non-weapon-based AP/SP scaling, zero now, but has been non-zero in past iterations
     direct_power_mod = data().extra_coeff();
@@ -934,6 +951,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
     // HotR triggers all seals
     trigger_seal = true;
+    trigger_battle_healer = ( sim -> player_no_pet_list.size() > 1 );
 
     // Implement AoE proc
     add_child( proc );
@@ -1457,6 +1475,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
     // Triggers all seals
     trigger_seal = true;
+    trigger_battle_healer = ( sim -> player_no_pet_list.size() > 1 );
 
     // not on GCD, usable off-GCD
     trigger_gcd = timespan_t::zero();
@@ -2665,6 +2684,51 @@ struct seal_of_insight_proc_t : public paladin_heal_t
   }
 };
 
+// Battle Healer ============================================================
+struct battle_healer_proc_t : public paladin_heal_t
+{
+  battle_healer_proc_t( paladin_t* p ) :
+    paladin_heal_t( "battle_healer_heal", p, p -> find_spell( 119477 ) )
+  {
+    background = true;
+    paladin_heal_t::proc = true;
+    trigger_gcd = timespan_t::zero();
+    may_crit = false;
+    benefits_from_seal_of_insight = false;
+    base_multiplier = p -> find_spell( 119477 ) -> effectN( 1 ).percent();
+  }
+
+  virtual void execute()
+  {
+    // smart heal, ignoring range for the time being
+    double player_pct_health = 100; 
+    int player_id = -1;
+    // for each player on the list
+    for ( int i = 0; i < sim -> player_no_pet_list.size(); i++ )
+    {
+      // as long as they aren't the paladin
+      if ( player != sim -> player_no_pet_list[ i ] )
+      {
+        // check their health against the current lowest
+        if ( sim -> player_no_pet_list[ i ] -> health_percentage() < player_pct_health )
+        {
+          // if this player is lower, make them the current lowest and store their id for later
+          player_pct_health = sim -> player_no_pet_list[ i ] -> health_percentage();;
+          player_id = i;
+        }
+      }
+    }
+    // now we have the id and health of the lowest player that isn't us
+    // if that player exists, player_id will be >-1, so we heal them
+    if ( player_id > -1 )
+    {
+      target = p() -> sim -> player_no_pet_list[ player_id ];
+      paladin_heal_t::execute();
+    }
+  }
+
+};
+
 // Beacon of Light ==========================================================
 
 struct beacon_of_light_t : public paladin_heal_t
@@ -3202,7 +3266,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
   if ( name == "holy_prism_aoe"            ) return new holy_prism_aoe_t           ( this, options_str );
-
+  
   action_t* a = 0;
   if ( name == "seal_of_justice"           ) { a = new paladin_seal_t( this, "seal_of_justice",       SEAL_OF_JUSTICE,       options_str );
                                                active_seal_of_justice_proc       = new seal_of_justice_proc_t       ( this );
@@ -3593,17 +3657,22 @@ void paladin_t::generate_action_prio_list_prot()
     def -> add_action( racial_actions[ i ] );
   
   def -> add_action( this, "Avenging Wrath" );
+  def -> add_talent( this, "Holy Avenger" );
   def -> add_action( this, "Guardian of Ancient Kings", "if=health.pct<=30" );
+  def -> add_action( this, "Divine Protection", "if=target.debuff.casting.react" );
   def -> add_action( this, "Shield of the Righteous", "if=holy_power>=3" );
   def -> add_action( this, "Hammer of the Righteous", "if=target.debuff.weakened_blows.down" );
   def -> add_action( this, "Crusader Strike" );
-  def -> add_action( this, "Judgment" );
-  def -> add_action( this, "Avenger's Shield" );
-  def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<5" );
-  def -> add_action( this, "Hammer of Wrath" );
-  def -> add_action( this, "Holy Wrath" );
-  def -> add_action( this, "Consecration", "if=target.debuff.flying.down&!ticking" );
-  def -> add_talent( this, "Sacred Shield" );
+  def -> add_action( this, "Judgment", "if=cooldown.crusader_strike.remains>=0.5" );
+  def -> add_action( this, "Avenger's Shield", "if=cooldown.crusader_strike.remains>=0.5" );
+  def -> add_talent( this, "Sacred Shield", "if=(target.dot.sacred_shield.remains<5)&(cooldown.crusader_strike.remains>=0.5)" );
+  def -> add_action( this, "Hammer of Wrath", "if=cooldown.crusader_strike.remains>=0.5" );
+  def -> add_talent( this, "Execution Sentence", "if=cooldown.crusader_strike.remains>=0.5" );
+  def -> add_talent( this, "Light's Hammer", "if=cooldown.crusader_strike.remains>=0.5" );
+  def -> add_talent( this, "Holy Prism", "if=cooldown.crusader_strike.remains>=0.5" );
+  def -> add_action( this, "Holy Wrath", "if=cooldown.crusader_strike.remains>=0.5" );
+  def -> add_action( this, "Consecration", "if=(target.debuff.flying.down&!ticking)&(cooldown.crusader_strike.remains>=0.5)" );
+  def -> add_talent( this, "Sacred Shield", "if=cooldown.crusader_strike.remains>=0.5" );
 }
 
 void paladin_t::generate_action_prio_list_ret()
@@ -3955,8 +4024,11 @@ void paladin_t::validate_action_priority_list()
     for ( size_t i = 0; i < a -> action_list.size(); i++ )
     {
       std::string& action_str = a -> action_list[ i ].action_;
-      std::size_t found;
+      std::size_t found_position;
+      bool found_ability = false;
+      bool found_talent_str = false;
       std::string check_ability;
+      std::string talent_check_str = "";
       std::string replacement = "";
 
       // Check for EF/WoG mistakes
@@ -3964,22 +4036,24 @@ void paladin_t::validate_action_priority_list()
       {
         // check for usage of WoG when EF is talented
         check_ability = "word_of_glory";
-        found = action_str.find( check_ability.c_str() );
-        if ( found != std::string::npos )
+        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) ); 
+        if ( found_ability )
         {
+          found_position= action_str.find( check_ability.c_str() );
           sim -> errorf( "Action priority list contains Word of Glory instead of Eternal Flame, automatically replacing WoG with EF\n" );
-          action_str.replace( found, check_ability.length(), "eternal_flame" );
+          action_str.replace( found_position, check_ability.length(), "eternal_flame" );
         }
       }
       else
       {
         // check for usage of EF when not talented
         check_ability = "eternal_flame";
-        found = action_str.find( check_ability.c_str() );
-        if ( found != std::string::npos )
+        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) ); 
+        if ( found_ability )
         {
+          found_position= action_str.find( check_ability.c_str() );
           sim -> errorf( "Action priority list contains Eternal Flame without talent, automatically replacing with Word of Glory\n" );
-          action_str.replace( found,  check_ability.length(), "word_of_glory" );
+          action_str.replace( found_position,  check_ability.length(), "word_of_glory" );
         }
       }
 
@@ -3987,18 +4061,21 @@ void paladin_t::validate_action_priority_list()
       if ( ! talents.holy_prism -> ok() )
       {
         check_ability = "holy_prism";
-        found = action_str.find( check_ability.c_str() );
-        if ( found != std::string::npos )
+        talent_check_str = "talent." + check_ability + ".enabled";
+        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) ); 
+        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) ); 
+        if ( found_ability && ! found_talent_str )
         {
+          found_position= action_str.find( check_ability.c_str() );
           if ( talents.lights_hammer -> ok() )
           {
             replacement = "Light's Hammer";
-            action_str.replace( found, check_ability.length(), "lights_hammer" );
+            action_str.replace( found_position, check_ability.length(), "lights_hammer" );
           }
           else if ( talents.execution_sentence -> ok() )
           {
             replacement = "Execution Sentence";
-            action_str.replace( found, check_ability.length(), "execution_sentence" );
+            action_str.replace( found_position, check_ability.length(), "execution_sentence" );
           }
           else
           {
@@ -4013,18 +4090,21 @@ void paladin_t::validate_action_priority_list()
       if ( ! talents.lights_hammer -> ok() )
       {
         check_ability = "lights_hammer";
-        found = action_str.find( check_ability.c_str() );
-        if ( found != std::string::npos )
+        talent_check_str = "talent." + check_ability + ".enabled";
+        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) ); 
+        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) ); 
+        if ( found_ability && ! found_talent_str )
         {
+          found_position= action_str.find( check_ability.c_str() );
           if ( talents.holy_prism -> ok() )
           {
             replacement = "Holy Prism";
-            action_str.replace( found, check_ability.length(), "holy_prism" );
+            action_str.replace( found_position, check_ability.length(), "holy_prism" );
           }
           else if ( talents.execution_sentence -> ok() )
           {
             replacement = "Execution Sentence";
-            action_str.replace( found, check_ability.length(), "execution_sentence" );
+            action_str.replace( found_position, check_ability.length(), "execution_sentence" );
           }
           else
           {
@@ -4039,18 +4119,21 @@ void paladin_t::validate_action_priority_list()
       if ( ! talents.execution_sentence -> ok() )
       {
         check_ability = "execution_sentence";
-        found = action_str.find( check_ability.c_str() );
-        if ( found != std::string::npos )
+        talent_check_str = "talent." + check_ability + ".enabled";
+        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) ); 
+        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) ); 
+        if ( found_ability && ! found_talent_str )
         {
+          found_position= action_str.find( check_ability.c_str() );
           if ( talents.holy_prism -> ok() )
           {
             replacement = "Holy Prism";
-            action_str.replace( found, check_ability.length(), "holy_prism" );
+            action_str.replace( found_position, check_ability.length(), "holy_prism" );
           }
-          else if ( talents.execution_sentence -> ok() )
+          else if ( talents.lights_hammer -> ok() )
           {
             replacement = "Light's Hammer";
-            action_str.replace( found, check_ability.length(), "lights_hammer" );
+            action_str.replace( found_position, check_ability.length(), "lights_hammer" );
           }
           else
           {
@@ -4067,8 +4150,10 @@ void paladin_t::validate_action_priority_list()
       if ( ! talents.sacred_shield -> ok() )
       {
         check_ability = "sacred_shield";
-        found = action_str.find( check_ability.c_str() );
-        if ( found != std::string::npos )
+        talent_check_str = "talent." + check_ability + ".enabled";
+        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) ); 
+        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) ); 
+        if ( found_ability && ! found_talent_str )
         {
           sim -> errorf( "Action priority list contains %s without talent, ignoring", "Sacred Shield" );
         }
@@ -4078,8 +4163,10 @@ void paladin_t::validate_action_priority_list()
       if ( ! talents.hand_of_purity -> ok() )
       {
         check_ability = "hand_of_purity";
-        found = action_str.find( check_ability.c_str() );
-        if ( found != std::string::npos )
+        talent_check_str = "talent." + check_ability + ".enabled";
+        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) ); 
+        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) ); 
+        if ( found_ability && ! found_talent_str )
         {
           sim -> errorf( "Action priority list contains %s without talent, ignoring", "Hand of Purity" );
         }
@@ -4226,6 +4313,9 @@ void paladin_t::init_spells()
   glyphs.immediate_truth          = find_glyph_spell( "Glyph of Immediate Truth" );
   glyphs.inquisition              = find_glyph_spell( "Glyph of Inquisition"     );
   glyphs.word_of_glory            = find_glyph_spell( "Glyph of Word of Glory"   );
+
+  if ( glyphs.battle_healer -> ok() )
+      active_battle_healer_proc = new heals::battle_healer_proc_t( this );
 
   // more spells, these need the glyph check to be present before they can be executed
   spells.alabaster_shield              = glyphs.alabaster_shield -> ok() ? find_spell( 121467 ) : spell_data_t::not_found(); // this is the spell containing Alabaster Shield's effects
