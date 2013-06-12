@@ -791,6 +791,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
     {
       os << " class=\"odd\"";
     }
+    os << ">\n";
     os.printf(
       "\t\t\t\t\t\t\t\t\t<td class=\"left\">1%% Error</td>\n"
       "\t\t\t\t\t\t\t\t\t<td class=\"right\">%i</td>\n"
