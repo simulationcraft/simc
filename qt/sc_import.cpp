@@ -65,7 +65,7 @@ void ImportThread::importBattleNet()
   {
     // Windows 7 64bit somehow cannot handle straight toStdString() conversion, so
     // do it in a silly way as a workaround for now.
-    std::string talents = mainWindow -> optionsTab -> choice.armory_spec -> currentText().toUtf8().constData(),
+    std::string talents = active_spec.toStdString(),
                 cpp_r   = region.toUtf8().constData(),
                 cpp_s   = server.toUtf8().constData(),
                 cpp_c   = character.toUtf8().constData();
@@ -109,7 +109,7 @@ void ImportThread::run()
 
   if ( player )
   {
-    player -> role = util::parse_role_type( mainWindow -> optionsTab -> choice.default_role -> currentText().toUtf8().constData() );
+    player -> role = util::parse_role_type( m_role.toStdString() );
 
     if ( sim->init() )
     {

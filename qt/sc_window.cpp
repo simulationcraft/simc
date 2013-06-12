@@ -251,7 +251,8 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   paperdollThread = new PaperdollThread( this );
   connect( paperdollThread, SIGNAL( finished() ), this, SLOT( paperdollFinished() ) );
 
-  QObject::connect( paperdollProfile, SIGNAL( profileChanged() ), this,    SLOT( start_intermediate_paperdoll_sim() ) );
+  connect( paperdollProfile,    SIGNAL( profileChanged() ), this, SLOT( start_intermediate_paperdoll_sim() ) );
+  connect( optionsTab,          SIGNAL( optionsChanged() ), this, SLOT( start_intermediate_paperdoll_sim() ) );
 #endif
 
   setAcceptDrops( true );
@@ -294,7 +295,7 @@ void SC_MainWindow::createOptionsTab()
   optionsTab = new SC_OptionsTab( this );
   mainTab -> addTab( optionsTab, tr( "Options" ) );
 
-  connect( optionsTab -> choice.armory_region, SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
+  connect( optionsTab, SIGNAL( armory_region_changed(const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
 }
 
 SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ) :
@@ -747,7 +748,7 @@ void SC_MainWindow::startImport( int tab, const QString& url )
   simProgress = 0;
   mainButton -> setText( "Cancel!" );
   sim = initSim();
-  importThread -> start( sim, tab, url, optionsTab -> get_db_order() );
+  importThread -> start( sim, tab, url, optionsTab -> get_db_order(), optionsTab -> get_active_spec(), optionsTab -> get_player_role() );
   simulateTab -> add_Text( defaultSimulateText, QString() );
   mainTab -> setCurrentTab( TAB_SIMULATE );
   timer -> start( 500 );

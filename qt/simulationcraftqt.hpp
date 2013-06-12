@@ -241,6 +241,8 @@ public:
     QString get_db_order() const;
     QString get_globalSettings();
     QString mergeOptions();
+    QString get_active_spec();
+    QString get_player_role();
 
     void createToolTips();
     QListWidget* itemDbOrder;
@@ -295,6 +297,10 @@ private slots:
     void allBuffsChanged( bool checked );
     void allDebuffsChanged( bool checked );
     void allScalingChanged( bool checked );
+    void _optionsChanged();
+signals:
+    void armory_region_changed( const QString& );
+    void optionsChanged(); // FIXME: hookup to everything
 
 };
 // ============================================================================
@@ -634,14 +640,16 @@ public:
   QString url;
   QString profile;
   QString item_db_sources;
+  QString active_spec;
+  QString m_role;
   player_t* player;
 
   void importBattleNet();
   void importCharDev();
   void importRawr();
 
-  void start( sim_t* s, int t, const QString& u, const QString& sources )
-  { sim=s; tab=t; url=u; profile=""; item_db_sources = sources; player=0; QThread::start(); }
+  void start( sim_t* s, int t, const QString& u, const QString& sources, const QString& spec, const QString& role )
+  { sim=s; tab=t; url=u; profile=""; item_db_sources = sources; player=0; active_spec = spec; m_role = role;QThread::start(); }
   virtual void run();
   ImportThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 ), player( 0 ) {}
 };

@@ -162,6 +162,44 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
     connect( allBuffs,   SIGNAL( toggled( bool ) ), this, SLOT( allBuffsChanged( bool ) )   );
     connect( allDebuffs, SIGNAL( toggled( bool ) ), this, SLOT( allDebuffsChanged( bool ) ) );
     connect( allScaling, SIGNAL( toggled( bool ) ), this, SLOT( allScalingChanged( bool ) ) );
+
+    connect( choice.armory_region, SIGNAL( currentIndexChanged( const QString& ) ), this, SIGNAL( armory_region_changed( const QString& ) ) );
+
+    connect( choice.armory_region,      SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.armory_spec,        SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.aura_delay,         SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.center_scale_delta, SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.challenge_mode,     SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.debug,              SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.default_role,       SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.deterministic_rng,  SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.fight_length,       SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.fight_style,        SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.fight_variance,     SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.iterations,         SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.num_target,         SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.player_skill,       SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.plots_points,       SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.plots_step,         SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.print_style,        SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.reforgeplot_amount, SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.reforgeplot_step,   SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.report_pets,        SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.scale_over,         SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.statistics_level,   SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.target_level,       SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.target_race,        SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.threads,            SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.version,            SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+    connect( choice.world_lag,          SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+
+    connect( buffsButtonGroup,          SIGNAL( buttonClicked(int) ), this, SLOT( _optionsChanged() ) );
+    connect( debuffsButtonGroup,        SIGNAL( buttonClicked(int) ), this, SLOT( _optionsChanged() ) );
+    connect( scalingButtonGroup,        SIGNAL( buttonClicked(int) ), this, SLOT( _optionsChanged() ) );
+    connect( plotsButtonGroup,          SIGNAL( buttonClicked(int) ), this, SLOT( _optionsChanged() ) );
+    connect( reforgeplotsButtonGroup,   SIGNAL( buttonClicked(int) ), this, SLOT( _optionsChanged() ) );
+
+    connect( itemDbOrder,               SIGNAL( itemSelectionChanged() ), this, SLOT( _optionsChanged() ) );
 }
 
 void SC_OptionsTab::createGlobalsTab()
@@ -753,12 +791,12 @@ QString SC_OptionsTab::mergeOptions()
   QString options = "### Begin GUI options ###\n";
 
   options += get_globalSettings();
-  options += "threads=" + choice.threads->currentText() + "\n";
+  options += "threads=" + choice.threads -> currentText() + "\n";
 
-  QList<QAbstractButton*> buttons = scalingButtonGroup->buttons();
-  for ( int i=2; scalingOptions[ i ].label; i++ )
+  QList<QAbstractButton*> buttons = scalingButtonGroup -> buttons();
+  for ( int i = 2; i < buttons.size(); i++ )
   {
-    if ( buttons.at( i )->isChecked() )
+    if ( buttons.at( i ) -> isChecked() )
     {
       options += "calculate_scale_factors=1\n";
       break;
@@ -772,7 +810,7 @@ QString SC_OptionsTab::mergeOptions()
   options += "scale_only=none";
   for ( int i=2; scalingOptions[ i ].label; i++ )
   {
-    if ( buttons.at( i )->isChecked() )
+    if ( buttons.at( i ) -> isChecked() )
     {
       options += ",";
       options += scalingOptions[ i ].option;
@@ -890,6 +928,16 @@ QString SC_OptionsTab::mergeOptions()
   return options;
 }
 
+QString SC_OptionsTab::get_active_spec()
+{
+    return choice.armory_spec -> currentText();
+}
+
+QString SC_OptionsTab::get_player_role()
+{
+    return choice.default_role -> currentText();
+}
+
 void SC_OptionsTab::createItemDataSourceSelector( QFormLayout* layout )
 {
   itemDbOrder = new QListWidget( this );
@@ -963,3 +1011,9 @@ void SC_OptionsTab::allScalingChanged( bool checked )
   }
 }
 
+void SC_OptionsTab::_optionsChanged()
+{
+    // Maybe hook up history save, depending on IO cost.
+
+    emit optionsChanged();
+}
