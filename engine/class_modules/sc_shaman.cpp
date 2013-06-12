@@ -1938,7 +1938,7 @@ struct lightning_charge_t : public shaman_spell_t
 
   double composite_target_crit( player_t* target )
   {
-    double c = spell_t::composite_target_crit( target );
+    double c = shaman_spell_t::composite_target_crit( target );
 
     if ( td( target ) -> debuff.stormstrike -> up() )
     {
@@ -2834,6 +2834,9 @@ struct bloodlust_t : public shaman_spell_t
 
   virtual bool ready()
   {
+    if ( sim -> overrides.bloodlust )
+      return false;
+
     if ( p() -> buffs.exhaustion -> check() )
       return false;
 
@@ -2873,7 +2876,7 @@ struct chain_lightning_t : public shaman_spell_t
 
   double composite_target_crit( player_t* target )
   {
-    double c = spell_t::composite_target_crit( target );
+    double c = shaman_spell_t::composite_target_crit( target );
 
     if ( td( target ) -> debuff.stormstrike -> up() )
     {
@@ -3291,7 +3294,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
   virtual double composite_target_crit( player_t* target )
   {
-    double c = spell_t::composite_target_crit( target );
+    double c = shaman_spell_t::composite_target_crit( target );
 
     if ( td( target ) -> debuff.stormstrike -> up() )
     {
@@ -3434,6 +3437,19 @@ struct elemental_blast_t : public shaman_spell_t
       m += p() -> spec.spiritual_insight -> effectN( 3 ).percent();
 
     return m;
+  }
+
+  virtual double composite_target_crit( player_t* target )
+  {
+    double c = shaman_spell_t::composite_target_crit( target );
+
+    if ( maybe_ptr( player -> dbc.ptr ) && td( target ) -> debuff.stormstrike -> up() )
+    {
+      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
+      c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+    }
+
+    return c;
   }
 };
 
