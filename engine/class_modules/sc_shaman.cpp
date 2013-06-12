@@ -100,6 +100,7 @@ public:
   pet_t* guardian_fire_elemental;
   pet_t* pet_earth_elemental;
   pet_t* guardian_earth_elemental;
+  pet_t* guardian_lightning_elemental[5];
 
   // Totems
   shaman_totem_pet_t* totems[ TOTEM_MAX ];
@@ -129,6 +130,7 @@ public:
     buff_t* shamanistic_rage;
     buff_t* spiritwalkers_grace;
     buff_t* tier16_2pc_melee;
+    buff_t* tier16_2pc_caster;
     buff_t* unleash_flame;
     buff_t* unleashed_fury_wf;
     buff_t* tidal_waves;
@@ -187,6 +189,7 @@ public:
     proc_t* swings_reset_mh;
     proc_t* swings_reset_oh;
     proc_t* t15_2pc_melee;
+    proc_t* t16_4pc_caster;
     proc_t* t16_4pc_melee;
     proc_t* wasted_t15_2pc_melee;
     proc_t* wasted_lava_surge;
@@ -218,6 +221,7 @@ public:
     rng_t* static_shock;
     rng_t* t15_2pc_caster;
     rng_t* t16_2pc_melee;
+    rng_t* t16_4pc_caster;
     rng_t* t16_4pc_melee;
     rng_t* windfury_delay;
     rng_t* windfury_weapon;
@@ -360,8 +364,8 @@ public:
     action_improved_lava_lash = 0;
     action_lightning_strike = 0;
 
-    // Totem tracking
     for ( int i = 0; i < 2; i++ ) pet_feral_spirit[ i ] = 0;
+    range::fill( guardian_lightning_elemental, 0 );
 
     // Totem tracking
     for ( int i = 0; i < TOTEM_MAX; i++ ) totems[ i ] = 0;
@@ -1429,6 +1433,23 @@ struct fire_elemental_t : public pet_t
   }
 };
 
+// TODO: Orc racial, nuke
+
+struct lightning_elemental_t : public pet_t
+{
+  lightning_elemental_t( shaman_t* owner ) :
+    pet_t( owner -> sim, owner, "lightning_elemental", true /*GUARDIAN*/ )
+  { stamina_per_owner      = 1.0; }
+
+  void init_base_stats()
+  {
+    pet_t::init_base_stats();
+    owner_coeff.sp_from_sp = 1.0;
+  }
+
+  resource_e primary_resource() { return RESOURCE_MANA; }
+};
+
 // ==========================================================================
 // Shaman Ability Triggers
 // ==========================================================================
@@ -1793,6 +1814,30 @@ static bool trigger_tier16_2pc_melee( const action_state_t* s )
     default:
       assert( false );
       break;
+  }
+
+  return true;
+}
+
+// trigger_tier16_4pc_caster ==================================================
+
+static bool trigger_tier16_4pc_caster( const action_state_t* s )
+{
+  shaman_t* p = debug_cast< shaman_t* >( s -> action -> player );
+
+  if ( ! p -> rng.t16_4pc_caster -> roll( p -> sets -> set( SET_T16_4PC_CASTER ) -> proc_chance() ) )
+    return false;
+
+  for ( size_t i = 0; i < sizeof_array( p -> guardian_lightning_elemental ); i++ )
+  {
+    pet_t* pet = p -> guardian_lightning_elemental[ i ];
+
+    if ( ! pet -> is_sleeping() )
+      continue;
+
+    pet -> summon( p -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).trigger() -> duration() );
+    p -> proc.t16_4pc_caster -> occur();
+    break;
   }
 
   return true;
@@ -2951,6 +2996,10 @@ struct chain_lightning_t : public shaman_spell_t
 
     if ( result_is_hit( state -> result ) )
       trigger_lightning_strike( state );
+
+    // TODO: Overloads proc too? Per jump or per cast proc chance?
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      trigger_tier16_4pc_caster( state );
   }
 
   bool ready()
@@ -3389,6 +3438,10 @@ struct lightning_bolt_t : public shaman_spell_t
 
     if ( result_is_hit( state -> result ) )
       trigger_lightning_strike( state );
+
+    // TODO: Overloads proc too?
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      trigger_tier16_4pc_caster( state );
   }
 
   virtual bool usable_moving()
@@ -3713,6 +3766,9 @@ struct earth_shock_t : public shaman_spell_t
         p() -> active_lightning_charge -> execute();
         new ( *p() -> sim ) lightning_charge_delay_t( p(), p() -> buff.lightning_shield, consuming_stacks, consume_threshold );
         p() -> proc.fulmination[ consuming_stacks ] -> occur();
+
+        p() -> buff.tier16_2pc_caster -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
+                                                  consuming_stacks * p() -> buff.tier16_2pc_caster -> data().duration() );
       }
     }
   }
@@ -4998,6 +5054,12 @@ void shaman_t::create_pets()
   pet_earth_elemental      = create_pet( "earth_elemental_pet"      );
   guardian_earth_elemental = create_pet( "earth_elemental_guardian" );
 
+  if ( maybe_ptr( dbc.ptr ) )
+  {
+    for ( size_t i = 0; i < sizeof_array( guardian_lightning_elemental ); i++ )
+      guardian_lightning_elemental[ i ] = new lightning_elemental_t( this );
+  }
+
   create_pet( "earth_elemental_totem" );
   create_pet( "fire_elemental_totem"  );
   create_pet( "magma_totem"           );
@@ -5306,6 +5368,9 @@ void shaman_t::create_buffs()
   buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
   buff.tier16_2pc_melee         = buff_creator_t( this, "tier16_2pc_melee", sets -> set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )
                                   .chance( static_cast< double >( maybe_ptr( dbc.ptr ) && set_bonus.tier16_2pc_melee() ) );
+  buff.tier16_2pc_caster        = buff_creator_t( this, "tier16_2pc_caster", sets -> set( SET_T16_2PC_CASTER ) -> effectN( 1 ).trigger() )
+                                  .chance( static_cast< double >( maybe_ptr( dbc.ptr ) && set_bonus.tier16_2pc_caster() ) )
+                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
 // shaman_t::init_gains =====================================================
@@ -5344,6 +5409,7 @@ void shaman_t::init_procs()
   proc.uf_elemental_blast = get_proc( "uf_elemental_blast"      );
   proc.uf_wasted          = get_proc( "uf_wasted"               );
   proc.t15_2pc_melee      = get_proc( "t15_2pc_melee"           );
+  proc.t16_4pc_caster     = get_proc( "t16_4pc_caster"          );
   proc.t16_4pc_melee      = get_proc( "t16_4pc_melee"           );
   proc.wasted_t15_2pc_melee = get_proc( "wasted_t15_2pc_melee"  );
   proc.wasted_lava_surge  = get_proc( "wasted_lava_surge"       );
@@ -5379,6 +5445,7 @@ void shaman_t::init_rng()
   rng.static_shock         = get_rng( "static_shock"         );
   rng.t15_2pc_caster       = get_rng( "t15_2pc_caster"       );
   rng.t16_2pc_melee        = get_rng( "t16_2pc_melee"        );
+  rng.t16_4pc_caster       = get_rng( "t16_4pc_caster"       );
   rng.t16_4pc_melee        = get_rng( "t16_4pc_melee"        );
   rng.windfury_delay       = get_rng( "windfury_delay"       );
   rng.windfury_weapon      = get_rng( "windfury_weapon"      );
@@ -5906,6 +5973,11 @@ double shaman_t::composite_player_multiplier( school_e school )
   {
     m *= 1.0 + cache.mastery_value();
   }
+
+  // TODO: Spell data
+  if ( buff.tier16_2pc_caster -> up() && ( dbc::is_school( school, SCHOOL_FIRE ) 
+        || dbc::is_school( school, SCHOOL_NATURE ) ) )
+    m *= 1.0 + 0.04;
 
   return m;
 }
