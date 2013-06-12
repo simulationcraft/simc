@@ -1039,7 +1039,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
       os << "\t\t\t\t\t\t<table class=\"sc mt\">\n";
 
       os << "\t\t\t\t\t\t\t<tr>\n"
-         << "\t\t\t\t\t\t\t\t<th colspan=\"" << util::to_string( 1 + colspan ) << "\"><a href=\"#help-scale-factors\" class=\"help\">Scale Factors for " << p -> scales_over().name_str << "</a></th>\n"
+         << "\t\t\t\t\t\t\t\t<th colspan=\"" << util::to_string( 1 + colspan ) << "\"><a href=\"#help-scale-factors\" class=\"help\">Scale Factors for " << p -> scales_over().name << "</a></th>\n"
          << "\t\t\t\t\t\t\t</tr>\n";
 
       os << "\t\t\t\t\t\t\t<tr>\n"

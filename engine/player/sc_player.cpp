@@ -8423,7 +8423,7 @@ void player_t::analyze( sim_t& s )
 // Return sample_data reference over which this player gets scaled ( scale factors, reforge plots, etc. )
 // By default this will be his personal dps or hps
 
-const extended_sample_data_t& player_t::scales_over()
+player_t::scales_over_t player_t::scales_over()
 {
   const std::string& so = sim -> scaling -> scale_over;
 

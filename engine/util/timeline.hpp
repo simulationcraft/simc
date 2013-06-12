@@ -119,7 +119,7 @@ public:
   }
   T average() const
   {
-    average( 0, data().size() );
+    return average( 0, data().size() );
   }
 
   // Merge with other timeline

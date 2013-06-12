@@ -311,11 +311,11 @@ void scaling_t::analyze_stats()
 
       if ( divisor < 0.0 ) divisor += ref_p -> over_cap[ stat ];
 
-      double delta_score = delta_p -> scales_over().mean();
-      double   ref_score = ref_p -> scales_over().mean();
+      double delta_score = delta_p -> scales_over().value;
+      double   ref_score = ref_p -> scales_over().value;
 
-      double delta_error = delta_p -> scales_over().mean_std_dev * delta_sim -> confidence_estimator;
-      double   ref_error = ref_p -> scales_over().mean_std_dev * ref_sim -> confidence_estimator;
+      double delta_error = delta_p -> scales_over().stddev * delta_sim -> confidence_estimator;
+      double   ref_error = ref_p -> scales_over().stddev * ref_sim -> confidence_estimator;
 
       p -> scaling_delta_dps.set_stat( stat, delta_score );
 
@@ -448,11 +448,11 @@ void scaling_t::analyze_lag()
     // Calculate DPS difference per millisecond of lag
     double divisor = ( double ) ( delta_sim -> gcd_lag - ref_sim -> gcd_lag ).total_millis();
 
-    double delta_score = delta_p -> scales_over().mean();
-    double   ref_score = ref_p -> scales_over().mean();
+    double delta_score = delta_p -> scales_over().value;
+    double   ref_score = ref_p -> scales_over().value;
 
-    double delta_error = delta_p -> scales_over().mean_std_dev * delta_sim -> confidence_estimator;
-    double ref_error = ref_p -> scales_over().mean_std_dev * ref_sim -> confidence_estimator;
+    double delta_error = delta_p -> scales_over().stddev * delta_sim -> confidence_estimator;
+    double ref_error = ref_p -> scales_over().stddev * ref_sim -> confidence_estimator;
     double error = sqrt ( delta_error * delta_error + ref_error * ref_error );
 
     double score = ( delta_score - ref_score ) / divisor;

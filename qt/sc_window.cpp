@@ -1488,8 +1488,8 @@ void PaperdollThread::run()
     {
       sim -> current_iteration = 0;
       sim -> execute();
-      const extended_sample_data_t& s = player -> scales_over();
-      mainWindow -> paperdoll -> setCurrentDPS( s.name_str, s.mean(), sim_t::distribution_mean_error( *sim, s ) );
+      player_t::scales_over_t s = player -> scales_over();
+      mainWindow -> paperdoll -> setCurrentDPS( s.name, s.value, s.stddev * sim -> confidence_estimator );
     }
   }
 }

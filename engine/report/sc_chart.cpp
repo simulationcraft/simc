@@ -1342,7 +1342,7 @@ std::string chart::scale_factors( player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string formatted_name = p -> scales_over().name_str;
+  std::string formatted_name = p -> scales_over().name;
   util::urlencode( formatted_name );
 
   sc_chart chart( "Scale Factors|" + formatted_name, HORIZONTAL_BAR, p -> sim -> print_styles );
@@ -1434,7 +1434,7 @@ std::string chart::scaling_dps( player_t* p )
 
   char buffer[ 1024 ];
 
-  std::string formatted_name = p -> scales_over().name_str;
+  std::string formatted_name = p -> scales_over().name;
   util::urlencode( formatted_name );
 
   sc_chart chart( "DPS Scaling|" + formatted_name, LINE, p -> sim -> print_styles );
@@ -1553,7 +1553,7 @@ std::string chart::reforge_dps( player_t* p )
     int ysteps = 5;
     double ystep_amount = max_ydelta / ysteps;
 
-    std::string formatted_name = p -> scales_over().name_str;
+    std::string formatted_name = p -> scales_over().name;
     util::urlencode( formatted_name );
 
     sc_chart chart( "Reforge Scaling|" + formatted_name, XY_LINE, p -> sim -> print_styles );
