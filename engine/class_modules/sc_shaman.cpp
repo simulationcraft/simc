@@ -39,7 +39,7 @@ namespace { // UNNAMED NAMESPACE
 struct shaman_t;
 
 enum totem_e { TOTEM_NONE = 0, TOTEM_AIR, TOTEM_EARTH, TOTEM_FIRE, TOTEM_WATER, TOTEM_MAX };
-enum imbue_e { IMBUE_NONE = 0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE, EARTHLIVING_IMBUE };
+enum imbue_e { IMBUE_NONE = 0, FLAMETONGUE_IMBUE, WINDFURY_IMBUE, FROSTBRAND_IMBUE, EARTHLIVING_IMBUE };
 
 struct shaman_melee_attack_t;
 struct shaman_spell_t;
@@ -128,6 +128,7 @@ public:
     buff_t* searing_flames;
     buff_t* shamanistic_rage;
     buff_t* spiritwalkers_grace;
+    buff_t* tier16_2pc_melee;
     buff_t* unleash_flame;
     buff_t* unleashed_fury_wf;
     buff_t* tidal_waves;
@@ -186,6 +187,7 @@ public:
     proc_t* swings_reset_mh;
     proc_t* swings_reset_oh;
     proc_t* t15_2pc_melee;
+    proc_t* t16_4pc_melee;
     proc_t* wasted_t15_2pc_melee;
     proc_t* wasted_lava_surge;
     proc_t* wasted_ls;
@@ -215,6 +217,8 @@ public:
     rng_t* searing_flames;
     rng_t* static_shock;
     rng_t* t15_2pc_caster;
+    rng_t* t16_2pc_melee;
+    rng_t* t16_4pc_melee;
     rng_t* windfury_delay;
     rng_t* windfury_weapon;
   } rng;
@@ -319,6 +323,11 @@ public:
   shaman_spell_t*  flametongue_mh;
   shaman_spell_t*  flametongue_oh;
 
+  // Tier16 random imbues
+  shaman_melee_attack_t *t16_mh_windfury, *t16_oh_windfury;
+  shaman_spell_t *t16_mh_flametongue, *t16_oh_flametongue;
+  // TODO: Frostbrand
+
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, SHAMAN, name, r ),
     ls_reset( timespan_t::zero() ), active_flame_shocks( 0 ),
@@ -379,6 +388,9 @@ public:
     windfury_oh    = 0;
     flametongue_mh = 0;
     flametongue_oh = 0;
+
+    t16_mh_windfury = t16_oh_windfury = 0;
+    t16_mh_flametongue = t16_oh_flametongue = 0;
   }
 
   // Character Definition
@@ -1747,6 +1759,45 @@ static bool trigger_lightning_strike( const action_state_t* s )
   return false;
 }
 
+// trigger_tier16_2pc_melee ===================================================
+
+static bool trigger_tier16_2pc_melee( const action_state_t* s )
+{
+  shaman_t* p = debug_cast< shaman_t* >( s -> action -> player );
+
+  if ( ! s -> action -> weapon )
+    return false;
+
+  if ( ! p -> rng.t16_2pc_melee -> roll( p -> buff.tier16_2pc_melee -> data().proc_chance() ) )
+    return false;
+
+  switch ( static_cast< int >( p -> rng.t16_2pc_melee -> range( 0, 3 ) ) )
+  {
+    // Windfury
+    case 0:
+      if ( s -> action -> weapon -> slot == SLOT_MAIN_HAND )
+          p -> t16_mh_windfury -> execute();
+      else
+          p -> t16_oh_windfury -> execute();
+      break;
+    // Flametongue
+    case 1:
+      if ( s -> action -> weapon -> slot == SLOT_MAIN_HAND )
+          p -> t16_mh_flametongue -> execute();
+      else
+          p -> t16_oh_flametongue -> execute();
+      break;
+    // TODO: Frostbrand
+    case 2:
+      break;
+    default:
+      assert( false );
+      break;
+  }
+
+  return true;
+}
+
 // ==========================================================================
 // Shaman Secondary Spells / Attacks
 // ==========================================================================
@@ -2401,6 +2452,9 @@ void shaman_melee_attack_t::impact( action_state_t* state )
 
   if ( state -> result == RESULT_CRIT )
     p() -> buff.flurry -> trigger( p() -> buff.flurry -> data().initial_stacks() );
+
+  if ( p() -> buff.tier16_2pc_melee -> up() )
+    trigger_tier16_2pc_melee( state );
 }
 
 // Melee Attack =============================================================
@@ -3567,6 +3621,8 @@ struct unleash_elements_t : public shaman_spell_t
       else if ( p() -> off_hand_weapon.buff_type == WINDFURY_IMBUE )
         p() -> buff.unleash_wind -> trigger( p() -> buff.unleash_wind -> data().initial_stacks() );
     }
+
+    p() -> buff.tier16_2pc_melee -> trigger();
   }
 };
 
@@ -3677,8 +3733,11 @@ struct earth_shock_t : public shaman_spell_t
 
 struct flame_shock_t : public shaman_spell_t
 {
+  cooldown_t* cd_lava_lash;
+
   flame_shock_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( player, player -> find_class_spell( "Flame Shock" ), options_str )
+    shaman_spell_t( player, player -> find_class_spell( "Flame Shock" ), options_str ),
+    cd_lava_lash( player -> get_cooldown( "lava_lash" ) )
   {
     tick_may_crit         = true;
     dot_behavior          = DOT_REFRESH;
@@ -3751,6 +3810,13 @@ struct flame_shock_t : public shaman_spell_t
       p() -> proc.lava_surge -> occur();
       p() -> cooldown.lava_burst -> reset( true );
       p() -> buff.lava_surge -> trigger();
+    }
+
+    if ( p() -> rng.t16_4pc_melee -> roll( p() -> sets -> set( SET_T16_4PC_MELEE ) -> proc_chance() ) )
+    {
+      p() -> proc.t16_4pc_melee -> occur();
+      p() -> buff.searing_flames -> trigger( 5 );
+      cd_lava_lash -> reset( true );
     }
   }
 
@@ -5011,6 +5077,7 @@ void shaman_t::init_spells()
     { 105780, 105816, 105866, 105872,     0,     0, 105764, 105876 }, // Tier13
     { 123123, 123124, 123132, 123133,     0,     0, 123134, 123135 }, // Tier14
     { 138145, 138144, 138136, 138141,     0,     0, 138303, 138305 }, // Tier15
+    { 144998, 145003, 144962, 144966,     0,     0, 145378, 145380 }, // Tier16
   };
   sets = new set_bonus_array_t( this, set_bonuses );
 
@@ -5090,6 +5157,19 @@ void shaman_t::init_spells()
   // Constants
   constant.haste_attack_ancestral_swiftness = 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 2 ).percent() );
   constant.haste_spell_ancestral_swiftness  = 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 1 ).percent() );
+
+  // Tier16 2PC Enhancement bonus actions, these need to bypass imbue checks
+  // presumably, so we cannot just re-use our actual imbued ones
+  if ( maybe_ptr( dbc.ptr ) && set_bonus.tier16_2pc_melee() )
+  {
+    t16_mh_windfury = new windfury_weapon_melee_attack_t( "t16_windfury_mh", this, &( main_hand_weapon ) );
+    t16_oh_windfury = new windfury_weapon_melee_attack_t( "t16_windfury_oh", this, &( off_hand_weapon ) );
+
+    t16_mh_flametongue = new flametongue_weapon_spell_t( "t16_flametongue_mh", this, &( main_hand_weapon ) );
+    t16_oh_flametongue = new flametongue_weapon_spell_t( "t16_flametongue_oh", this, &( off_hand_weapon ) );
+
+    // TODO: Frostbrand
+  }
 
   player_t::init_spells();
 }
@@ -5224,7 +5304,8 @@ void shaman_t::create_buffs()
                                  .add_stat( STAT_AGILITY, find_spell( 118522 ) -> effectN( 4 ).average( this ) );
   buff.tier13_2pc_caster        = stat_buff_creator_t( this, "tier13_2pc_caster", find_spell( 105779 ) );
   buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
-
+  buff.tier16_2pc_melee         = buff_creator_t( this, "tier16_2pc_melee", sets -> set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )
+                                  .chance( static_cast< double >( maybe_ptr( dbc.ptr ) && set_bonus.tier16_2pc_melee() ) );
 }
 
 // shaman_t::init_gains =====================================================
@@ -5263,6 +5344,7 @@ void shaman_t::init_procs()
   proc.uf_elemental_blast = get_proc( "uf_elemental_blast"      );
   proc.uf_wasted          = get_proc( "uf_wasted"               );
   proc.t15_2pc_melee      = get_proc( "t15_2pc_melee"           );
+  proc.t16_4pc_melee      = get_proc( "t16_4pc_melee"           );
   proc.wasted_t15_2pc_melee = get_proc( "wasted_t15_2pc_melee"  );
   proc.wasted_lava_surge  = get_proc( "wasted_lava_surge"       );
   proc.wasted_ls          = get_proc( "wasted_lightning_shield" );
@@ -5296,6 +5378,8 @@ void shaman_t::init_rng()
   rng.searing_flames       = get_rng( "searing_flames"       );
   rng.static_shock         = get_rng( "static_shock"         );
   rng.t15_2pc_caster       = get_rng( "t15_2pc_caster"       );
+  rng.t16_2pc_melee        = get_rng( "t16_2pc_melee"        );
+  rng.t16_4pc_melee        = get_rng( "t16_4pc_melee"        );
   rng.windfury_delay       = get_rng( "windfury_delay"       );
   rng.windfury_weapon      = get_rng( "windfury_weapon"      );
 }
