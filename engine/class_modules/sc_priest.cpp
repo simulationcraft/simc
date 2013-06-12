@@ -81,6 +81,9 @@ public:
     buff_t* shadowform;
     buff_t* vampiric_embrace;
     buff_t* surge_of_darkness;
+
+    // Set Bonus
+    buff_t* empowered_shadows; // t16 4pc caster
   } buffs;
 
   // Talents
@@ -1884,6 +1887,9 @@ struct priest_procced_mastery_spell_t : public priest_spell_t
     background              = true;
     proc                    = true;
     base_execute_time       = timespan_t::zero();
+
+    if ( priest.dbc.ptr )
+      crit_bonus_multiplier *= 1.0 + priest.sets -> set( SET_T16_2PC_CASTER ) -> effectN( 1 ).percent();
   }
 
 
@@ -2026,6 +2032,12 @@ struct mind_blast_t : public priest_spell_t
       cd_duration = cooldown -> duration * composite_haste();
     }
     priest_spell_t::update_ready( cd_duration );
+
+    if ( priest.buffs.empowered_shadows )
+    {
+      priest.buffs.empowered_shadows -> up(); // benefit tracking
+      priest.buffs.empowered_shadows -> expire();
+    }
   }
 
   virtual timespan_t execute_time()
@@ -2045,6 +2057,16 @@ struct mind_blast_t : public priest_spell_t
     priest_spell_t::reset();
 
     casted_with_divine_insight = false;
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = priest_spell_t::action_multiplier();
+
+    if ( priest.buffs.empowered_shadows && priest.buffs.empowered_shadows -> check() )
+      am *= 1.0 + priest.buffs.empowered_shadows -> data().effectN( 1 ).percent() * priest.buffs.empowered_shadows -> check();
+
+    return am;
   }
 };
 
@@ -2117,6 +2139,17 @@ struct mind_spike_t : public priest_spell_t
     casted_with_surge_of_darkness = false;
   }
 
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    priest_spell_t::update_ready( cd_duration );
+
+    if ( priest.buffs.empowered_shadows )
+    {
+      priest.buffs.empowered_shadows -> up(); // benefit tracking
+      priest.buffs.empowered_shadows -> expire();
+    }
+  }
+
   virtual void impact( action_state_t* s )
   {
     priest_spell_t::impact( s );
@@ -2173,6 +2206,9 @@ struct mind_spike_t : public priest_spell_t
     {
       d *= 1.0 + priest.active_spells.surge_of_darkness -> effectN( 4 ).percent();
     }
+
+    if ( priest.buffs.empowered_shadows && priest.buffs.empowered_shadows -> check() )
+      d *= 1.0 + priest.buffs.empowered_shadows -> data().effectN( 1 ).percent() * priest.buffs.empowered_shadows -> check();
 
     return d;
   }
@@ -2341,6 +2377,17 @@ struct shadow_word_death_t : public priest_spell_t
     }
   }
 
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    priest_spell_t::update_ready( cd_duration );
+
+    if ( priest.buffs.empowered_shadows )
+    {
+      priest.buffs.empowered_shadows -> up(); // benefit tracking
+      priest.buffs.empowered_shadows -> expire();
+    }
+  }
+
   virtual void impact( action_state_t* s )
   {
     s -> result_amount = floor( s -> result_amount );
@@ -2362,6 +2409,16 @@ struct shadow_word_death_t : public priest_spell_t
     }
 
     priest_spell_t::impact( s );
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = priest_spell_t::action_multiplier();
+
+    if ( priest.buffs.empowered_shadows && priest.buffs.empowered_shadows -> check() )
+      am *= 1.0 + priest.buffs.empowered_shadows -> data().effectN( 1 ).percent() * priest.buffs.empowered_shadows -> check();
+
+    return am;
   }
 
   virtual bool ready()
@@ -2558,6 +2615,9 @@ struct devouring_plague_t : public priest_spell_t
                      name(), player -> resources.current[ current_resource() ] );
 
     stats -> consume_resource( current_resource(), resource_consumed );
+
+    if ( priest.buffs.empowered_shadows )
+      priest.buffs.empowered_shadows -> trigger( as<int>( resource_consumed ) );
   }
 
   virtual double action_da_multiplier()
@@ -5246,6 +5306,7 @@ void priest_t::init_spells()
     { 105843, 105844,     0,     0,     0,     0, 105827, 105832 }, // Tier13
     { 123114, 123115,     0,     0,     0,     0, 123111, 123113 }, // Tier14
     { 138156, 138158,     0,     0,     0,     0, 138293, 138301 }, // Tier15
+    { 145174, 145179,     0,     0,     0,     0, 145306, 145334 }, // Tier15
   };
   sets = new set_bonus_array_t( this, set_bonuses );
 }
@@ -5341,6 +5402,12 @@ void priest_t::create_buffs()
 
   buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", active_spells.surge_of_darkness )
                                            .chance( active_spells.surge_of_darkness -> ok() ? 0.15 : 0.0 ); // hardcoded into tooltip, 3/12/2012
+
+  if ( dbc.ptr )
+    buffs.empowered_shadows = buff_creator_t( this, "empowered_shadows" )
+                              .spell( sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).trigger() )
+                              .chance( sets -> has_set_bonus( SET_T16_4PC_CASTER ) ? 1.0 : 0.0 )
+                              /* FIXME: Check whether it's 20% dmg increase per stack ( as in the tooltip ), or 50% dmg increase ( effetN(1) data ). */;
 }
 
 // ALL Spec Pre-Combat Action Priority List
@@ -5814,7 +5881,7 @@ void priest_t::target_mitigation( school_e school,
 {
   base_t::target_mitigation( school, dt, s );
 
-  if ( buffs.shadowform -> check() )
+  if ( buffs.shadowform -> check() && ! dbc.ptr /* http://www.mmo-champion.com/content/3274-Patch-5-4-PTR-Build-17056 */ )
   { s -> result_amount *= 1.0 + buffs.shadowform -> data().effectN( 3 ).percent(); }
 
   if ( buffs.inner_fire -> check() && glyphs.inner_sanctum -> ok() && ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK ) )
