@@ -84,6 +84,8 @@ public:
 
     // Set Bonus
     buff_t* empowered_shadows; // t16 4pc caster
+    buff_t* absolution; // t16 4pc heal holy word
+    buff_t* resolute_spirit; // t16 4pc heal spirit shell
   } buffs;
 
   // Talents
@@ -2035,7 +2037,7 @@ struct mind_blast_t : public priest_spell_t
     }
     priest_spell_t::update_ready( cd_duration );
 
-    if ( priest.buffs.empowered_shadows )
+    if ( priest.dbc.ptr )
     {
       priest.buffs.empowered_shadows -> up(); // benefit tracking
       priest.buffs.empowered_shadows -> expire();
@@ -2065,7 +2067,7 @@ struct mind_blast_t : public priest_spell_t
   {
     double am = priest_spell_t::action_multiplier();
 
-    if ( priest.buffs.empowered_shadows && priest.buffs.empowered_shadows -> check() )
+    if ( priest.dbc.ptr && priest.buffs.empowered_shadows -> check() )
       am *= 1.0 + priest.buffs.empowered_shadows -> data().effectN( 1 ).percent() * priest.buffs.empowered_shadows -> check();
 
     return am;
@@ -2145,7 +2147,7 @@ struct mind_spike_t : public priest_spell_t
   {
     priest_spell_t::update_ready( cd_duration );
 
-    if ( priest.buffs.empowered_shadows )
+    if ( priest.dbc.ptr )
     {
       priest.buffs.empowered_shadows -> up(); // benefit tracking
       priest.buffs.empowered_shadows -> expire();
@@ -2209,7 +2211,7 @@ struct mind_spike_t : public priest_spell_t
       d *= 1.0 + priest.active_spells.surge_of_darkness -> effectN( 4 ).percent();
     }
 
-    if ( priest.buffs.empowered_shadows && priest.buffs.empowered_shadows -> check() )
+    if ( priest.dbc.ptr && priest.buffs.empowered_shadows -> check() )
       d *= 1.0 + priest.buffs.empowered_shadows -> data().effectN( 1 ).percent() * priest.buffs.empowered_shadows -> check();
 
     return d;
@@ -2383,7 +2385,7 @@ struct shadow_word_death_t : public priest_spell_t
   {
     priest_spell_t::update_ready( cd_duration );
 
-    if ( priest.buffs.empowered_shadows )
+    if ( priest.dbc.ptr )
     {
       priest.buffs.empowered_shadows -> up(); // benefit tracking
       priest.buffs.empowered_shadows -> expire();
@@ -2417,7 +2419,7 @@ struct shadow_word_death_t : public priest_spell_t
   {
     double am = priest_spell_t::action_multiplier();
 
-    if ( priest.buffs.empowered_shadows && priest.buffs.empowered_shadows -> check() )
+    if ( priest.dbc.ptr && priest.buffs.empowered_shadows -> check() )
       am *= 1.0 + priest.buffs.empowered_shadows -> data().effectN( 1 ).percent() * priest.buffs.empowered_shadows -> check();
 
     return am;
@@ -2618,7 +2620,7 @@ struct devouring_plague_t : public priest_spell_t
 
     stats -> consume_resource( current_resource(), resource_consumed );
 
-    if ( priest.buffs.empowered_shadows )
+    if ( priest.dbc.ptr )
       priest.buffs.empowered_shadows -> trigger( as<int>( resource_consumed ) );
   }
 
@@ -3671,6 +3673,9 @@ struct circle_of_healing_t : public priest_heal_t
     target = find_lowest_player();
 
     priest_heal_t::execute();
+
+    if ( priest.dbc.ptr )
+      priest.buffs.absolution -> trigger();
   }
 
   virtual double action_multiplier()
@@ -3960,6 +3965,10 @@ struct holy_word_sanctuary_t : public priest_heal_t
       if ( priest.buffs.chakra_sanctuary -> up() )
         am *= 1.0 + priest.buffs.chakra_sanctuary -> data().effectN( 1 ).percent();
 
+      // Assume that the spell data from the buff ( 15% ) is correct, not the one in the triggering spell ( 50% )
+      if ( priest.dbc.ptr )
+        am *= 1.0 + priest.buffs.absolution -> check() * priest.buffs.absolution -> data().effectN( 1 ).percent();
+
       return am;
     }
   };
@@ -3978,6 +3987,14 @@ struct holy_word_sanctuary_t : public priest_heal_t
 
     // Needs testing
     cooldown -> duration *= 1.0 + p.set_bonus.tier13_4pc_heal() * -0.2;
+  }
+
+  virtual void execute()
+  {
+    priest_heal_t::execute();
+
+    if ( priest.dbc.ptr )
+      priest.buffs.absolution -> expire();
   }
 
   virtual bool ready()
@@ -4029,6 +4046,25 @@ struct holy_word_chastise_t : public priest_spell_t
     castable_in_shadowform = false;
   }
 
+  virtual void execute()
+  {
+    priest_spell_t::execute();
+
+    if ( priest.dbc.ptr )
+      priest.buffs.absolution -> expire();
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = priest_spell_t::action_multiplier();
+
+    // Assume that the spell data from the buff ( 15% ) is correct, not the one in the triggering spell ( 50% )
+    if ( priest.dbc.ptr )
+      am *= 1.0 + priest.buffs.absolution -> check() * priest.buffs.absolution -> data().effectN( 1 ).percent();
+
+    return am;
+  }
+
   virtual bool ready()
   {
     if ( priest.buffs.chakra_sanctuary -> check() )
@@ -4054,6 +4090,25 @@ struct holy_word_serenity_t : public priest_heal_t
 
     // Needs testing
     cooldown -> duration = data().cooldown() * ( 1.0 + p.set_bonus.tier13_4pc_heal() * -0.2 );
+  }
+
+  virtual void execute()
+  {
+    priest_heal_t::execute();
+
+    if ( priest.dbc.ptr )
+      priest.buffs.absolution -> expire();
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = priest_heal_t::action_multiplier();
+
+    // Assume that the spell data from the buff ( 15% ) is correct, not the one in the triggering spell ( 50% )
+    if ( priest.dbc.ptr )
+      am *= 1.0 + priest.buffs.absolution -> check() * priest.buffs.absolution -> data().effectN( 1 ).percent();
+
+    return am;
   }
 
   virtual void impact( action_state_t* s )
@@ -4417,6 +4472,14 @@ struct prayer_of_mending_t : public priest_heal_t
     castable_in_shadowform = p.glyphs.dark_binding -> ok();
   }
 
+  virtual void execute()
+  {
+    priest_heal_t::execute();
+
+    if ( priest.dbc.ptr )
+      priest.buffs.absolution -> trigger();
+  }
+
   virtual double action_multiplier()
   {
     double am = priest_heal_t::action_multiplier();
@@ -4630,6 +4693,24 @@ struct divine_insight_shadow_t : public priest_buff_t<buff_t>
   }
 };
 
+struct spirit_shell_t : public priest_buff_t<buff_t>
+{
+  spirit_shell_t( priest_t& p ) :
+    base_t( p, buff_creator_t( &p, "spirit_shell" ).spell( p.find_class_spell( "Spirit Shell" ) ).cd( timespan_t::zero() ) )
+  { }
+
+  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
+  {
+    bool success = base_t::trigger( stacks, value, chance, duration );
+
+    if ( success )
+    {
+      priest.buffs.resolute_spirit -> trigger();
+    }
+
+    return success;
+  }
+};
 } // end namespace buffs
 
 
@@ -4904,6 +4985,11 @@ double priest_t::composite_spell_haste()
 
   if ( buffs.power_infusion -> check() )
     h /= 1.0 + buffs.power_infusion -> data().effectN( 1 ).percent();
+
+  if ( dbc.ptr && buffs.resolute_spirit -> check() )
+  {
+    h /= 1.0 + buffs.resolute_spirit -> data().effectN( 1 ).percent(); // FIXME: check whether to use set bonus data ( 10% ) or buff data ( 15% ). 2013/06/13
+  }
 
   return h;
 }
@@ -5395,9 +5481,7 @@ void priest_t::create_buffs()
   buffs.inner_will = buff_creator_t( this, "inner_will" )
                      .spell( find_class_spell( "Inner Will" ) );
 
-  buffs.spirit_shell = buff_creator_t( this, "spirit_shell" )
-                       .spell( find_class_spell( "Spirit Shell" ) )
-                       .cd( timespan_t::zero() );
+  buffs.spirit_shell = new buffs::spirit_shell_t( *this );
 
   // Holy
   buffs.chakra_chastise = buff_creator_t( this, "chakra_chastise" )
@@ -5439,9 +5523,20 @@ void priest_t::create_buffs()
                                            .chance( active_spells.surge_of_darkness -> ok() ? 0.15 : 0.0 ); // hardcoded into tooltip, 3/12/2012
 
   if ( dbc.ptr )
+  {
     buffs.empowered_shadows = buff_creator_t( this, "empowered_shadows" )
                               .spell( sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).trigger() )
                               .chance( sets -> has_set_bonus( SET_T16_4PC_CASTER ) ? 1.0 : 0.0 );
+
+    buffs.absolution = buff_creator_t( this, "absolution" )
+                       .spell( find_spell( 145336 ) )
+                       .chance( sets -> has_set_bonus( SET_T16_4PC_HEAL ) ? 1.0 : 0.0 );
+
+    buffs.resolute_spirit = stat_buff_creator_t( this, "resolute_spirit" )
+                       .spell( find_spell( 145374 ) )
+                       .chance( sets -> has_set_bonus( SET_T16_4PC_HEAL ) ? 1.0 : 0.0 )
+                       .add_invalidate( CACHE_HASTE );
+  }
 }
 
 // ALL Spec Pre-Combat Action Priority List
