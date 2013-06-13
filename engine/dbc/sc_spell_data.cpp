@@ -73,6 +73,7 @@ static const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_UNSIGNED, ""              }, // Class (spell_class_expr_t)
   { SD_TYPE_UNSIGNED, ""              }, // Race (spell_race_expr_t)
   { SD_TYPE_INT,      "scaling"       },
+  { SD_TYPE_UNSIGNED, "max_scaling_level" },
   { SD_TYPE_DOUBLE,   "extra_coeff"   },
   { SD_TYPE_UNSIGNED, "level"         },
   { SD_TYPE_UNSIGNED, "max_level"     },
