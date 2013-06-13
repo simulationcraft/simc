@@ -13,7 +13,7 @@ namespace { // UNNAMED NAMESPACE
 // Forward declarations
 
 struct paladin_t;
-namespace heals {
+namespace spells {
 struct battle_healer_proc_t;
 }
 
@@ -78,7 +78,7 @@ public:
 
   struct active_actions_t
   {
-    heals::battle_healer_proc_t* battle_healer_proc;
+    spells::battle_healer_proc_t* battle_healer_proc;
   } active;
 
   // Buffs
@@ -577,6 +577,94 @@ struct paladin_spell_t : public paladin_spell_base_t<spell_t>
                    const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
   {
+  }
+};
+
+struct paladin_heal_t : public paladin_spell_base_t<heal_t>
+{
+  paladin_heal_t( const std::string& n, paladin_t* p,
+                  const spell_data_t* s = spell_data_t::nil() ) :
+    base_t( n, p, s )
+  {
+    may_crit          = true;
+    tick_may_crit     = true;
+    benefits_from_seal_of_insight = true;
+
+    weapon_multiplier = 0.0;
+  }
+
+  bool benefits_from_seal_of_insight;
+
+  virtual double action_multiplier()
+  {
+    double am = base_t::action_multiplier();
+
+    if ( p() -> active_seal == SEAL_OF_INSIGHT && benefits_from_seal_of_insight )
+      am *= 1.0 + p() -> passives.seal_of_insight -> effectN( 2 ).percent();
+
+    return am;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    base_t::impact( s );
+
+    trigger_illuminated_healing( s );
+
+    if ( s -> target != p() -> beacon_target )
+      trigger_beacon_of_light( s );
+  }
+
+  void trigger_beacon_of_light( action_state_t* s )
+  {
+    if ( ! p() -> beacon_target )
+      return;
+
+    if ( ! p() -> beacon_target -> buffs.beacon_of_light -> up() )
+      return;
+
+    if ( proc )
+      return;
+
+    assert( p() -> active_beacon_of_light );
+
+    p() -> active_beacon_of_light -> target = p() -> beacon_target;
+
+
+    p() -> active_beacon_of_light -> base_dd_min = s -> result_amount * p() -> beacon_target -> buffs.beacon_of_light -> data().effectN( 1 ).percent();
+    p() -> active_beacon_of_light -> base_dd_max = s -> result_amount * p() -> beacon_target -> buffs.beacon_of_light -> data().effectN( 1 ).percent();
+
+    // Holy light heals for 100% instead of 50%
+    if ( data().id() == p() -> spells.holy_light -> id() )
+    {
+      p() -> active_beacon_of_light -> base_dd_min *= 2.0;
+      p() -> active_beacon_of_light -> base_dd_max *= 2.0;
+    }
+
+    p() -> active_beacon_of_light -> execute();
+  };
+
+  void trigger_illuminated_healing( action_state_t* s )
+  {
+    if ( s -> result_amount <= 0 )
+      return;
+
+    if ( proc )
+      return;
+
+    if ( ! p() -> passives.illuminated_healing -> ok() )
+      return;
+
+    // FIXME: Each player can have their own bubble, so this should probably be a vector as well
+    assert( p() -> active_illuminated_healing );
+
+    // FIXME: This should stack when the buff is present already
+
+    double bubble_value = p() -> cache.mastery_value()
+                          * s -> result_amount;
+
+    p() -> active_illuminated_healing -> base_dd_min = p() -> active_illuminated_healing -> base_dd_max = bubble_value;
+    p() -> active_illuminated_healing -> execute();
   }
 };
 
@@ -1206,46 +1294,113 @@ struct holy_wrath_t : public paladin_spell_t
   }
 };
 
-// Holy Prism ===============================================================
+// Holy Prism AOE (damage) ==================================================
+// This is the aoe damage proc that triggers when holy_prism_heal is cast.
 
-struct holy_prism_t : public paladin_spell_t
+struct holy_prism_aoe_damage_t : public paladin_spell_t
 {
-  holy_prism_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "holy_prism", p, p->find_spell( 114852 ) )
+  holy_prism_aoe_damage_t( paladin_t* p )
+    : paladin_spell_t( "holy_prism_aoe_damage", p, p->find_spell( 114871 ) )
   {
-    parse_options( NULL, options_str );
-    school = SCHOOL_HOLY;
+    background = true;
+    may_crit = true;
+    may_miss = false;
+    aoe = 5;
+
+  }
+};
+
+// Holy Prism AOE (heal) ====================================================
+// This is the aoe healing proc that triggers when holy_prism_damage is cast
+
+struct holy_prism_aoe_heal_t : public paladin_heal_t
+{
+  holy_prism_aoe_heal_t( paladin_t* p) 
+    : paladin_heal_t( "holy_prism_aoe_heal", p, p->find_spell( 114871 ) )
+  {
+    background = true;
+    aoe=5;
+  }
+
+};
+
+// Holy Prism (damage) ========================================================
+// This is the damage version of the spell; for the heal version, see holy_prism_heal_t
+
+struct holy_prism_damage_t : public paladin_spell_t
+{
+  holy_prism_damage_t( paladin_t* p )
+    : paladin_spell_t( "holy_prism_damage", p, p->find_spell( 114852 ) )
+  {
+    background = true;
     may_crit = true;
     may_miss = false;
     // this updates the spell coefficients appropriately for single-target damage
     parse_effect_data( p -> find_spell( 114852 ) -> effectN( 1 ) );
-
-    // disable if not talented
-    if ( ! ( p -> talents.holy_prism -> ok() ) )
-      background = true;
-
+    
     // todo: code AoE heal, insert as proc on HPr damage.
+    impact_action = new holy_prism_aoe_heal_t( p );
   }
 };
 
-// Holy Prism AOE===============================================================
 
-struct holy_prism_aoe_t : public paladin_spell_t
+// Holy Prism (heal) ========================================================
+// This is the healing version of the spell; for the damage version, see spells::holy_prism_damage_t
+
+struct holy_prism_heal_t : public paladin_heal_t
 {
-  holy_prism_aoe_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "holy_prism_aoe", p, p->find_spell( 114871 ) )
+  holy_prism_heal_t( paladin_t* p ) :
+    paladin_heal_t( "holy_prism_heal", p, p -> find_spell( 114871 ) )
+  {
+    background = true;
+   
+    // update spell coefficients appropriately for single-target healing
+    parse_effect_data( p -> find_spell( 114871 ) -> effectN( 1 ) );
+
+    // on impact, trigger a holy_prism_aoe cast
+    impact_action = new spells::holy_prism_aoe_damage_t( p );
+  }
+
+};
+
+// Holy Prism ===============================================================
+// This is the base spell, it chooses the effects to trigger based on the target
+
+struct holy_prism_t : public paladin_spell_t
+{
+  holy_prism_damage_t* damage;
+  holy_prism_heal_t* heal;
+
+  holy_prism_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "holy_prism", p, p->find_spell( 114165) )
   {
     parse_options( NULL, options_str );
-    may_crit = true;
-    may_miss = false;
-    school = SCHOOL_HOLY;
-    aoe = 5;
+
+    // create the damage and healing spell effects, designate them as children for reporting
+    damage = new holy_prism_damage_t( p );
+    add_child( damage );
+    heal = new holy_prism_heal_t( p );
+    add_child( heal );
 
     // disable if not talented
     if ( ! ( p -> talents.holy_prism -> ok() ) )
       background = true;
+  }
 
-    // todo: code single-target heal, turn this into a proc.
+  virtual void execute() 
+  {
+    if ( target -> is_enemy() )
+    {
+      // damage enemy
+      damage -> target = target;
+      damage -> schedule_execute();
+    }
+    else
+    {
+      // heal friendly
+      heal -> target = target;
+      heal -> schedule_execute();
+    }
   }
 };
 
@@ -1482,106 +1637,15 @@ struct censure_t : public paladin_spell_t
   }
 };
 
-} // end namespace spells
+//} // end namespace spells
 
 
 // ==========================================================================
 // Paladin Heals
 // ==========================================================================
 
-namespace heals {
+//namespace heals {
 
-// ==========================================================================
-// Paladin Heals
-// ==========================================================================
-
-struct paladin_heal_t : public paladin_spell_base_t<heal_t>
-{
-  paladin_heal_t( const std::string& n, paladin_t* p,
-                  const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( n, p, s )
-  {
-    may_crit          = true;
-    tick_may_crit     = true;
-    benefits_from_seal_of_insight = true;
-
-    weapon_multiplier = 0.0;
-  }
-
-  bool benefits_from_seal_of_insight;
-
-  virtual double action_multiplier()
-  {
-    double am = base_t::action_multiplier();
-
-    if ( p() -> active_seal == SEAL_OF_INSIGHT && benefits_from_seal_of_insight )
-      am *= 1.0 + p() -> passives.seal_of_insight -> effectN( 2 ).percent();
-
-    return am;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    base_t::impact( s );
-
-    trigger_illuminated_healing( s );
-
-    if ( s -> target != p() -> beacon_target )
-      trigger_beacon_of_light( s );
-  }
-
-  void trigger_beacon_of_light( action_state_t* s )
-  {
-    if ( ! p() -> beacon_target )
-      return;
-
-    if ( ! p() -> beacon_target -> buffs.beacon_of_light -> up() )
-      return;
-
-    if ( proc )
-      return;
-
-    assert( p() -> active_beacon_of_light );
-
-    p() -> active_beacon_of_light -> target = p() -> beacon_target;
-
-
-    p() -> active_beacon_of_light -> base_dd_min = s -> result_amount * p() -> beacon_target -> buffs.beacon_of_light -> data().effectN( 1 ).percent();
-    p() -> active_beacon_of_light -> base_dd_max = s -> result_amount * p() -> beacon_target -> buffs.beacon_of_light -> data().effectN( 1 ).percent();
-
-    // Holy light heals for 100% instead of 50%
-    if ( data().id() == p() -> spells.holy_light -> id() )
-    {
-      p() -> active_beacon_of_light -> base_dd_min *= 2.0;
-      p() -> active_beacon_of_light -> base_dd_max *= 2.0;
-    }
-
-    p() -> active_beacon_of_light -> execute();
-  };
-
-  void trigger_illuminated_healing( action_state_t* s )
-  {
-    if ( s -> result_amount <= 0 )
-      return;
-
-    if ( proc )
-      return;
-
-    if ( ! p() -> passives.illuminated_healing -> ok() )
-      return;
-
-    // FIXME: Each player can have their own bubble, so this should probably be a vector as well
-    assert( p() -> active_illuminated_healing );
-
-    // FIXME: This should stack when the buff is present already
-
-    double bubble_value = p() -> cache.mastery_value()
-                          * s -> result_amount;
-
-    p() -> active_illuminated_healing -> base_dd_min = p() -> active_illuminated_healing -> base_dd_max = bubble_value;
-    p() -> active_illuminated_healing -> execute();
-  }
-};
 
 // Seal of Insight ==========================================================
 
@@ -3250,7 +3314,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
 {
   using namespace attacks;
   using namespace spells;
-  using namespace heals;
   using namespace absorbs;
 
   if ( name == "auto_attack"               ) return new auto_melee_attack_t        ( this, options_str );
@@ -3287,7 +3350,6 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
-  if ( name == "holy_prism_aoe"            ) return new holy_prism_aoe_t           ( this, options_str );
   
   action_t* a = 0;
   if ( name == "seal_of_justice"           ) { a = new paladin_seal_t( this, "seal_of_justice",       SEAL_OF_JUSTICE,       options_str );
@@ -4167,7 +4229,7 @@ void paladin_t::validate_action_priority_list()
           
         }
       }
-
+      
       // check for Sacred Shield usage without talent
       if ( ! talents.sacred_shield -> ok() )
       {
@@ -4337,7 +4399,7 @@ void paladin_t::init_spells()
   glyphs.word_of_glory            = find_glyph_spell( "Glyph of Word of Glory"   );
 
   if ( glyphs.battle_healer -> ok() )
-      active.battle_healer_proc = new heals::battle_healer_proc_t( this );
+      active.battle_healer_proc = new spells::battle_healer_proc_t( this );
 
   // more spells, these need the glyph check to be present before they can be executed
   spells.alabaster_shield              = glyphs.alabaster_shield -> ok() ? find_spell( 121467 ) : spell_data_t::not_found(); // this is the spell containing Alabaster Shield's effects
@@ -4356,7 +4418,7 @@ void paladin_t::init_spells()
   }
 
   if ( find_class_spell( "Beacon of Light" ) -> ok() )
-    active_beacon_of_light = new heals::beacon_of_light_heal_t( this );
+    active_beacon_of_light = new spells::beacon_of_light_heal_t( this );
 
   if ( passives.illuminated_healing -> ok() )
     active_illuminated_healing = new absorbs::illuminated_healing_t( this );
@@ -4744,7 +4806,7 @@ void paladin_t::assess_damage( school_e school,
   if ( set_bonus.tier15_4pc_tank() && buffs.divine_protection -> check() )
   {
     // compare damage to player health to find HP gain
-    int8_t hp_gain = std::floor( s -> result_mitigated / resources.max[ RESOURCE_HEALTH ] * 5 );
+    double hp_gain = std::floor( s -> result_mitigated / resources.max[ RESOURCE_HEALTH ] * 5 );
 
     // add that much Holy Power
     resource_gain( RESOURCE_HOLY_POWER, hp_gain, gains.hp_t15_4pc_tank );
