@@ -110,6 +110,11 @@ _DIFF_DATA = {
             ( ( 'flags_16467', '%d' ), _ADD_FIELD, 'flags_15668' ),
         ]
     },
+    17056: {
+        'SpellItemEnchantment.dbc' : [
+            ( ( 'unk_17056_1', '%d' ), _ADD_FIELD, 'unk_15464_5' ),
+        ]
+    },
 }
 
 # Base DBC/DB2 fields, works for 15464, as that's our first DBC/DB2 data version
@@ -404,7 +409,7 @@ _DBC_FIELDS = {
           ( 'id_property_1', '%5u' ), ( 'id_property_2', '%5u' ), ( 'id_property_3', '%5u' ), 
             'ofs_desc', 'id_aura', ( 'slot', '%2u' ), ( 'id_gem', '%5u' ), 'enchantment_condition', 
           ( 'req_skill', '%4u' ), ( 'req_skill_value', '%3u' ), 'unk_1', 'unk_15464_1', 'unk_2', 
-          'unk_15464_2', 'unk_15464_3', 'unk_15464_4', 'unk_15464_5'
+          ( 'unk_15464_2', '%d' ), 'unk_15464_3', ( 'unk_15464_4', '%f' ), 'unk_15464_5'
     ],    
     'SpellLevels.dbc' : [
           'id', ( 'base_level', '%3u' ), ( 'max_level', '%2u' ), 'spell_level'

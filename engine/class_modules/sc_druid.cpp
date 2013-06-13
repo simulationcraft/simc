@@ -4097,6 +4097,8 @@ struct druids_swiftness_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
+    if ( maybe_ptr( player -> dbc.ptr ) && player -> specialization() != DRUID_RESTORATION )
+      background = true;
   }
 
   virtual void execute()
@@ -5249,7 +5251,7 @@ void druid_t::init_spells()
   talent.displacer_beast    = find_talent_spell( "Displacer Beast" );
   talent.wild_charge        = find_talent_spell( "Wild Charge" );
 
-  talent.natures_swiftness  = find_talent_spell( "Nature's Swiftness" );
+  talent.natures_swiftness  = maybe_ptr( dbc.ptr ) ? find_specialization_spell( "Nature's Swiftness" ) : find_talent_spell( "Nature's Swiftness" );
   talent.renewal            = find_talent_spell( "Renewal" );
   talent.cenarion_ward      = find_talent_spell( "Cenarion Ward" );
 
@@ -6261,7 +6263,7 @@ double druid_t::composite_player_multiplier( school_e school )
     if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) )
     {
       if ( buff.moonkin_form -> check() )
-        m *= 1.0 + spell.moonkin_form -> effectN( 3 ).percent();
+        m *= 1.0 + spell.moonkin_form -> effectN( maybe_ptr( dbc.ptr ) ? 2 : 3 ).percent();
 
       // BUG? Incarnation won't apply during CA!
       if ( buff.chosen_of_elune -> up() &&

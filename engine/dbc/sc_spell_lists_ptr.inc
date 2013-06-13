@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 16965
+// Class based active abilities, wow build 17056
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -236,8 +236,8 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
     // Marksmanship tree, 3 abilities
     {
        19434, // Aimed Shot
-      109248, // Binding Shot
        53209, // Chimera Shot
+       34490, // Silencing Shot
            0,
     },
     // Survival tree, 3 abilities
@@ -704,7 +704,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Warlock
   {
-    // General tree, 37 abilities
+    // General tree, 38 abilities
     {
          710, // Banish
          172, // Corruption
@@ -723,6 +723,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       111896, // Grimoire: Succubus (Summon)
       111895, // Grimoire: Voidwalker (Summon)
          755, // Health Funnel
+        5484, // Howl of Terror
         1454, // Life Tap
       114790, // Seed of Corruption (Soulburn)
          686, // Shadow Bolt
@@ -865,7 +866,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       126892, // Zen Pilgrimage
            0,
     },
-    // Brewmaster tree, 11 abilities
+    // Brewmaster tree, 10 abilities
     {
       115213, // Avert Harm
       115181, // Breath of Fire
@@ -873,7 +874,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       115180, // Dizzying Haze
       115308, // Elusive Brew
       115295, // Guard
-      108557, // Jab
       121253, // Keg Smash
       119582, // Purifying Brew
       115069, // Stance of the Sturdy Ox (Brewmaster Stance)
@@ -1005,16 +1005,18 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        61336, // Survival Instincts
            0,
     },
-    // Restoration tree, 9 abilities
+    // Restoration tree, 11 abilities
     {
+      145518, // Genesis
       102342, // Ironbark
        33763, // Lifebloom
        88423, // Nature's Cure
+      132158, // Nature's Swiftness
        50464, // Nourish
         8936, // Regrowth
        18562, // Swiftmend
        48438, // Wild Growth
-       88747, // Wild Mushroom
+      145205, // Wild Mushroom
       102791, // Wild Mushroom: Bloom
            0,
     },
@@ -1029,7 +1031,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (26)
 
-// Talent tree specialization abilities, wow build 16965
+// Talent tree specialization abilities, wow build 17056
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1225,7 +1227,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
     // Specialization abilities for Marksmanship
     {
        19434, // Aimed Shot
-      109248, // Binding Shot
        35110, // Bombardment
        34483, // Careful Aim
        53209, // Chimera Shot
@@ -1235,6 +1236,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        76659, // Mastery: Wild Quiver
        53238, // Piercing Shots
        53232, // Rapid Recuperation
+       34490, // Silencing Shot
        53224, // Steady Focus
       136311, // Wild Quiver
       143392, // Wild Quiver
@@ -1838,6 +1840,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
     },
     // Specialization abilities for Restoration
     {
+      145518, // Genesis
       137012, // Hotfix Passive
       102342, // Ironbark
       108299, // Killer Instinct
@@ -1851,6 +1854,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        17073, // Naturalist
        88423, // Nature's Cure
        84736, // Nature's Focus
+      132158, // Nature's Swiftness
        50464, // Nourish
       113043, // Omen of Clarity
         8936, // Regrowth
@@ -1858,8 +1862,8 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        33886, // Swift Rejuvenation
        18562, // Swiftmend
        48438, // Wild Growth
-       88747, // Wild Mushroom
       138611, // Wild Mushroom
+      145205, // Wild Mushroom
       102791, // Wild Mushroom: Bloom
            0,
     },
@@ -1868,7 +1872,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 16965
+// Class mastery abilities, wow build 17056
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2091,7 +2095,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 16965
+// Racial abilities, wow build 17056
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2804,7 +2808,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 16965
+// Glyph spells for classes, wow build 17056
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2900,7 +2904,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        93466, // Glyph of Protector of the Innocent
        54925, // Glyph of Rebuke
        54926, // Glyph of Templar's Verdict
-       54931, // Glyph of Turn Evil
+       54931, // Glyph of Turn Evil [Needs redesign]
        54936, // Glyph of Word of Glory
        63222, // Glyph of the Alabaster Shield
       119477, // Glyph of the Battle Healer
@@ -3382,7 +3386,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 16965
+// Tier item set bonuses for class, wow build 17056
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
