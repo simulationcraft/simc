@@ -59,6 +59,7 @@ struct shaman_td_t : public actor_pair_t
   {
     buff_t* stormstrike;
     buff_t* unleashed_fury;
+    buff_t* t16_2pc_caster;
   } debuff;
 
   struct heals
@@ -454,6 +455,8 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
 
   debuff.stormstrike    = buff_creator_t( *this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) );
   debuff.unleashed_fury = buff_creator_t( *this, "unleashed_fury_ft", p -> find_spell( 118470 ) );
+  debuff.t16_2pc_caster = buff_creator_t( *this, "tier16_2pc_caster", p -> sets -> set( SET_T16_2PC_CASTER ) -> effectN( 1 ).trigger() )
+                                  .chance( static_cast< double >( maybe_ptr( p -> dbc.ptr ) && p -> set_bonus.tier16_2pc_caster() ) );
 }
 
 struct shaman_action_state_t : public heal_state_t
@@ -821,6 +824,17 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       return true;
 
     return base_t::usable_moving();
+  }
+
+  virtual double composite_target_multiplier( player_t* target )
+  {
+    double m = base_t::composite_target_multiplier( target );
+
+    if ( td( target ) -> debuff.t16_2pc_caster -> up() && ( dbc::is_school( school, SCHOOL_FIRE ) 
+          || dbc::is_school( school, SCHOOL_NATURE ) ) )
+      m *= 1.0 + td( target ) -> debuff.t16_2pc_caster -> data().effectN( 1 ).percent();
+
+    return m;
   }
 
   virtual double composite_da_multiplier()
@@ -3750,8 +3764,9 @@ struct earth_shock_t : public shaman_spell_t
         new ( *p() -> sim ) lightning_charge_delay_t( p(), p() -> buff.lightning_shield, consuming_stacks, consume_threshold );
         p() -> proc.fulmination[ consuming_stacks ] -> occur();
 
-        p() -> buff.tier16_2pc_caster -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
-                                                  ( consuming_stacks + 1 ) * p() -> buff.tier16_2pc_caster -> data().duration() );
+        shaman_td_t* tdata = td( execute_state -> target );
+        tdata -> debuff.t16_2pc_caster -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
+            consuming_stacks * tdata -> debuff.t16_2pc_caster -> data().duration() );
       }
     }
   }
@@ -5347,9 +5362,6 @@ void shaman_t::create_buffs()
   buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
   buff.tier16_2pc_melee         = buff_creator_t( this, "tier16_2pc_melee", sets -> set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )
                                   .chance( static_cast< double >( maybe_ptr( dbc.ptr ) && set_bonus.tier16_2pc_melee() ) );
-  buff.tier16_2pc_caster        = buff_creator_t( this, "tier16_2pc_caster", sets -> set( SET_T16_2PC_CASTER ) -> effectN( 1 ).trigger() )
-                                  .chance( static_cast< double >( maybe_ptr( dbc.ptr ) && set_bonus.tier16_2pc_caster() ) )
-                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
 // shaman_t::init_gains =====================================================
@@ -5953,11 +5965,6 @@ double shaman_t::composite_player_multiplier( school_e school )
   {
     m *= 1.0 + cache.mastery_value();
   }
-
-  // TODO: Spell data
-  if ( buff.tier16_2pc_caster -> up() && ( dbc::is_school( school, SCHOOL_FIRE ) 
-        || dbc::is_school( school, SCHOOL_NATURE ) ) )
-    m *= 1.0 + buff.tier16_2pc_caster -> data().effectN( 1 ).percent();
 
   return m;
 }
