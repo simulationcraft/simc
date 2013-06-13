@@ -1087,6 +1087,7 @@ class SpellDataGenerator(DataGenerator):
             ( 113780, 0, False ),   # Deadly Poison damage is not directly activatable
             ( 89775, 0, False ),    # Hemorrhage damage is not directy activatable
             ( 86392, 0, False ),    # Main Gauche false positive for activatable
+            ( 145211, 0 ),          # Subtlety Tier16 4PC proc
         ),  
         
         # Priest:

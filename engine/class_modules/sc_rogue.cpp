@@ -81,6 +81,9 @@ struct rogue_td_t : public actor_pair_t
 
 struct rogue_t : public player_t
 {
+  // T16 driver
+  int t16_bs_driver;
+
   // Premeditation
   event_t* event_premeditation;
 
@@ -114,7 +117,9 @@ struct rogue_t : public player_t
     buff_t* shadow_dance;
     buff_t* shallow_insight;
     buff_t* shiv;
+    buff_t* sleight_of_hand;
     buff_t* stealthed;
+    buff_t* t16_2pc_melee;
     buff_t* tier13_2pc;
     buff_t* tot_trigger;
     buff_t* vanish;
@@ -128,6 +133,7 @@ struct rogue_t : public player_t
     stat_buff_t* fof_p1; // Phase 1
     stat_buff_t* fof_p2;
     stat_buff_t* fof_p3;
+    stat_buff_t* toxicologist;
   } buffs;
 
   // Cooldowns
@@ -230,6 +236,7 @@ struct rogue_t : public player_t
     proc_t* honor_among_thieves;
     proc_t* seal_fate;
     proc_t* no_revealing_strike;
+    proc_t* t16_2pc_melee;
   } procs;
 
   // Random Number Generation
@@ -652,6 +659,9 @@ void trigger_seal_fate( rogue_attack_t* a )
 
   p -> cooldowns.seal_fate -> start( timespan_t::from_millis( 1 ) );
   p -> procs.seal_fate -> occur();
+
+  if ( p -> buffs.t16_2pc_melee -> trigger() )
+    p -> procs.t16_2pc_melee -> occur();
 }
 
 // trigger_main_gauche ======================================================
@@ -876,6 +886,10 @@ void rogue_attack_t::impact( action_state_t* state )
 
     if ( p() -> buffs.blade_flurry -> up() )
       trigger_blade_flurry( state );
+
+    // Prevent poisons from proccing it
+    if ( ! proc && cast_td( state -> target ) -> debuffs.vendetta -> up() )
+      p() -> buffs.toxicologist -> trigger();
   }
 }
 
@@ -1186,7 +1200,19 @@ struct ambush_t : public rogue_attack_t
     if ( p() -> buffs.shadow_dance -> check() )
       c += p() -> spec.shadow_dance -> effectN( 2 ).base_value();
 
+    // PTR 17056 claims the energy cost for subtlety is reduced by 3 per stack
+    // TODO: Correct spell data, if it's possible to do
+    c -= 3 * p() -> buffs.t16_2pc_melee -> stack();
+
     return c;
+  }
+
+  void execute()
+  {
+    rogue_attack_t::execute();
+
+    p() -> buffs.t16_2pc_melee -> expire();
+    p() -> buffs.sleight_of_hand -> expire();
   }
 
   void impact( action_state_t* state )
@@ -1200,6 +1226,23 @@ struct ambush_t : public rogue_attack_t
       td -> debuffs.find_weakness -> trigger();
     }
   }
+
+  bool ready()
+  {
+    bool rd;
+
+    if ( p() -> buffs.sleight_of_hand -> check() )
+    {
+      // Sigh ....
+      requires_stealth = false;
+      rd = rogue_attack_t::ready();
+      requires_stealth = true;
+    }
+    else
+      rd = rogue_attack_t::ready();
+
+    return rd;
+  }
 };
 
 // Backstab =================================================================
@@ -1211,6 +1254,34 @@ struct backstab_t : public rogue_attack_t
   {
     requires_weapon   = WEAPON_DAGGER;
     requires_position = POSITION_BACK;
+  }
+
+  virtual double cost()
+  {
+    double c = rogue_attack_t::cost();
+    // PTR 17056 claims the energy cost for subtlety is reduced by 3 per stack
+    // TODO: Correct spell data, if it's possible to do
+    c -= 3 * p() -> buffs.t16_2pc_melee -> stack();
+
+    return c;
+  }
+
+  void execute()
+  {
+    rogue_attack_t::execute();
+
+    p() -> buffs.t16_2pc_melee -> expire();
+
+    if ( result_is_hit( execute_state -> result ) && p() -> set_bonus.tier16_4pc_melee() )
+    {
+      p() -> t16_bs_driver++;
+
+      if ( p() -> t16_bs_driver == p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 3 ).base_value() )
+      {
+        p() -> buffs.sleight_of_hand -> trigger();
+        p() -> t16_bs_driver = 0;
+      }
+    }
   }
 
   double composite_da_multiplier()
@@ -1263,14 +1334,25 @@ struct dispatch_t : public rogue_attack_t
     if ( p() -> buffs.blindside -> check() )
       return 0;
     else
-      return rogue_attack_t::cost();
+    {
+      double c = rogue_attack_t::cost();
+      // PTR 17056 claims the energy cost for assassination is reduced by 20
+      // TODO: Correct spell data, if it's possible to do
+      if ( p() -> buffs.t16_2pc_melee -> up() )
+        c -= 20; // This is actually 20 per stack, but only 1 stack can be up for assassination
+
+      return c;
+    }
   }
 
   void execute()
   {
     rogue_attack_t::execute();
 
-    p() -> buffs.blindside -> expire();
+    if ( p() -> buffs.blindside -> check() )
+      p() -> buffs.blindside -> expire();
+    else
+      p() -> buffs.t16_2pc_melee -> expire();
   }
 
   bool ready()
@@ -1604,6 +1686,15 @@ struct killing_spree_tick_t : public rogue_attack_t
     may_crit    = true;
     direct_tick = true;
   }
+
+  double composite_da_multiplier()
+  {
+    double m = rogue_attack_t::composite_da_multiplier();
+
+    m *= 1.0 + p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent();
+
+    return m;
+  }
 };
 
 struct killing_spree_t : public rogue_attack_t
@@ -1715,9 +1806,22 @@ struct mutilate_t : public rogue_attack_t
     add_child( oh_strike );
   }
 
+  virtual double cost()
+  {
+    double c = rogue_attack_t::cost();
+    // PTR 17056 claims the energy cost for assassination is reduced by 20
+    // TODO: Correct spell data, if it's possible to do
+    if ( p() -> buffs.t16_2pc_melee -> up() )
+      c -= 20; // This is actually 20 per stack but only one stack can be up for assassination
+
+    return c;
+  }
+
   virtual void execute()
   {
     rogue_attack_t::execute();
+
+    p() -> buffs.t16_2pc_melee -> expire();
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -1973,6 +2077,17 @@ struct sinister_strike_t : public rogue_attack_t
     return t;
   }
 
+  virtual double cost()
+  {
+    double c = rogue_attack_t::cost();
+    // PTR 17056 claims the energy cost for combat is reduced by 10
+    // TODO: Correct spell data, if it's possible to do
+    if ( p() -> buffs.t16_2pc_melee -> up() )
+      c -= 10; // This is actually 10 per stack but only one stack can be up for combat
+
+    return c;
+  }
+
   double composite_da_multiplier()
   {
     double m = rogue_attack_t::composite_da_multiplier();
@@ -1983,6 +2098,13 @@ struct sinister_strike_t : public rogue_attack_t
     m *= 1.0 + p() -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
 
     return m;
+  }
+
+  virtual void execute()
+  {
+    rogue_attack_t::execute();
+
+    p() -> buffs.t16_2pc_melee -> expire();
   }
 
   virtual void impact( action_state_t* state )
@@ -1998,6 +2120,8 @@ struct sinister_strike_t : public rogue_attack_t
            p() -> rng.revealing_strike -> roll( td -> dots.revealing_strike -> current_action -> data().proc_chance() ) )
       {
         td -> combo_points.add( 1, "sinister_strike" );
+        if ( p() -> buffs.t16_2pc_melee -> trigger() )
+          p() -> procs.t16_2pc_melee -> occur();
       }
     }
   }
@@ -3372,6 +3496,7 @@ void rogue_t::init_spells()
     {     0,     0, 105849, 105865,     0,     0,     0,     0 }, // Tier13
     {     0,     0, 123116, 123122,     0,     0,     0,     0 }, // Tier14
     {     0,     0, 138148, 138150,     0,     0,     0,     0 }, // Tier15
+    {     0,     0, 145185, 145210,     0,     0,     0,     0 }, // Tier16
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -3403,6 +3528,7 @@ void rogue_t::init_procs()
   procs.honor_among_thieves      = get_proc( "honor_among_thieves" );
   procs.seal_fate                = get_proc( "seal_fate"           );
   procs.no_revealing_strike      = get_proc( "no_revealing_strike" );
+  procs.t16_2pc_melee            = get_proc( "t16_2pc_melee"       );
 }
 
 // rogue_t::init_rng ========================================================
@@ -3492,11 +3618,17 @@ void rogue_t::create_buffs()
                              .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.recuperate         = buff_creator_t( this, "recuperate" );
   buffs.shiv               = buff_creator_t( this, "shiv" );
+  buffs.sleight_of_hand    = buff_creator_t( this, "sleight_of_hand", find_spell( 145211 ) )
+                             .chance( set_bonus.tier16_4pc_melee() );
   buffs.stealthed          = buff_creator_t( this, "stealthed" ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.t16_2pc_melee      = buff_creator_t( this, "silent_blades", find_spell( 145193 ) )
+                             .chance( set_bonus.tier16_2pc_melee() );
   buffs.tier13_2pc         = buff_creator_t( this, "tier13_2pc", spell.tier13_2pc )
                              .chance( set_bonus.tier13_2pc_melee() ? 1.0 : 0 );
   buffs.tot_trigger        = buff_creator_t( this, "tricks_of_the_trade_trigger", find_spell( 57934 ) )
                              .activated( true );
+  buffs.toxicologist       = stat_buff_creator_t( this, "toxicologist", find_spell( 145249 ) )
+                             .chance( set_bonus.tier16_4pc_melee() );
   buffs.vanish             = buff_creator_t( this, "vanish" )
                              .duration( timespan_t::from_seconds( 3.0 ) )
                              .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -3564,6 +3696,9 @@ struct honor_among_thieves_callback_t : public action_callback_t
     rogue -> procs.honor_among_thieves -> occur();
 
     rogue -> cooldowns.honor_among_thieves -> start( timespan_t::from_seconds( 2.0 ) );
+
+    if ( rogue -> buffs.t16_2pc_melee -> trigger() )
+      rogue -> procs.t16_2pc_melee -> occur();
   }
 };
 
@@ -3652,6 +3787,8 @@ void rogue_t::reset()
   }
 
   event_t::cancel( event_premeditation );
+
+  t16_bs_driver = 0;
 }
 
 // rogue_t::arise ===========================================================
