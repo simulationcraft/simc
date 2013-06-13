@@ -158,6 +158,7 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* celestial_alignment;
     cooldown_t* lotp;
     cooldown_t* natures_swiftness;
     cooldown_t* mangle_bear;
@@ -370,15 +371,16 @@ public:
     default_initial_eclipse = -75;
     preplant_mushrooms = true;
 
-    cooldown.lotp              = get_cooldown( "lotp"              );
-    cooldown.natures_swiftness = get_cooldown( "natures_swiftness" );
-    cooldown.mangle_bear       = get_cooldown( "mangle_bear"       );
-    cooldown.pvp_4pc_melee     = get_cooldown( "pvp_4pc_melee"     );
+    cooldown.celestial_alignment = get_cooldown( "celestial_alignment" );
+    cooldown.lotp                = get_cooldown( "lotp"                );
+    cooldown.natures_swiftness   = get_cooldown( "natures_swiftness"   );
+    cooldown.mangle_bear         = get_cooldown( "mangle_bear"         );
+    cooldown.pvp_4pc_melee       = get_cooldown( "pvp_4pc_melee"       );
     cooldown.pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
-    cooldown.revitalize        = get_cooldown( "revitalize"        );
-    cooldown.starfall          = get_cooldown( "starfall"          );
-    cooldown.starsurge         = get_cooldown( "starsurge"         );
-    cooldown.swiftmend         = get_cooldown( "swiftmend"         );
+    cooldown.revitalize          = get_cooldown( "revitalize"          );
+    cooldown.starfall            = get_cooldown( "starfall"            );
+    cooldown.starsurge           = get_cooldown( "starsurge"           );
+    cooldown.swiftmend           = get_cooldown( "swiftmend"           );
 
 
     cat_melee_attack = 0;
@@ -3300,6 +3302,8 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
                           p() -> gain.eclipse );
 
     p() -> buff.natures_grace -> trigger();
+    // TODO: Does activating CA reduce the cooldown too?
+    p() -> cooldown.celestial_alignment -> ready -= timespan_t::from_seconds( p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).base_value() );
   }
 }; // end druid_spell_t
 
@@ -4620,12 +4624,13 @@ struct treants_spell_t : public druid_spell_t
     {
       for ( int i = 0; i < 3; i++ )
       {
-        if ( ! p() -> pet_treants[ i ] -> is_sleeping() )
-          continue;
-
-        p() -> pet_treants[ i ] -> summon( p() -> talent.force_of_nature -> duration() );
-        break;
+        if ( p() -> pet_treants[ i ] -> is_sleeping() )
+          p() -> pet_treants[ i ] -> summon( p() -> talent.force_of_nature -> duration() );
+          return;
       }
+
+      p() -> sim -> errorf( "Player %s ran out of treants.\n", p() -> name() );
+      assert( false ); // Will only get here if there are no available treants
     }
   }
 };
