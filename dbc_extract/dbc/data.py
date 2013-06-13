@@ -430,7 +430,7 @@ _DBC_FIELDS = {
     ],
     'SpellScaling.dbc' : [
           'id',                      ( 'cast_min', '%5d' ),           ( 'cast_max', '%5d' ),       ( 'cast_div', '%2u' ),     ( 'id_class', '%2d' ),
-        ( 'c_scaling', '%13.10f' ),  ( 'c_scaling_threshold', '%2u' ),    'unk_15464_1',               'unk_15464_2'
+        ( 'c_scaling', '%13.10f' ),  ( 'c_scaling_threshold', '%2u' ), ( 'max_scaling_level', '%2u' ),               'unk_15464_2'
           
     ],
     'SpellTargetRestrictions.dbc' : [

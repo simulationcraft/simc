@@ -287,7 +287,8 @@ public:
   unsigned    _school;             // Spell school mask
   unsigned    _class_mask;         // Class mask for spell
   unsigned    _race_mask;          // Racial mask for the spell
-  int         _scaling_type;       // Array index for gtSpellScaling.dbc. -1 means the last sub-array, 0 disabled
+  int         _scaling_type;       // Array index for gtSpellScaling.dbc. -1 means the first non-class-specific sub array, and so on, 0 disabled
+  unsigned    _max_scaling_level;  // Max scaling level(?), 0 == no restrictions, otherwise min( player_level, max_scaling_level )
   double      _extra_coeff;        // An "extra" coefficient (used for some spells to indicate AP based coefficient)
   // SpellLevels.dbc
   unsigned    _spell_level;        // Spell learned on level. NOTE: Only accurate for "class abilities"
@@ -508,6 +509,9 @@ public:
 
     return PLAYER_NONE;
   }
+
+  unsigned max_scaling_level() const
+  { return _max_scaling_level; }
 
   timespan_t cast_time( uint32_t level ) const
   {

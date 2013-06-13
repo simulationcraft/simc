@@ -1852,7 +1852,10 @@ double dbc_t::effect_average( unsigned effect_id, unsigned level ) const
 
   if ( e -> m_average() != 0 && e -> _spell -> scaling_class() != 0 )
   {
-    double m_scale = spell_scaling( e -> _spell -> scaling_class(), level );
+    unsigned scaling_level = level;
+    if ( e -> _spell -> max_scaling_level() > 0 )
+      scaling_level = std::min( scaling_level, e -> _spell -> max_scaling_level() );
+    double m_scale = spell_scaling( e -> _spell -> scaling_class(), scaling_level );
 
     assert( m_scale != 0 );
 
@@ -1882,7 +1885,10 @@ double dbc_t::effect_delta( unsigned effect_id, unsigned level ) const
 
   if ( e -> m_delta() != 0 && e -> _spell -> scaling_class() != 0 )
   {
-    double m_scale = spell_scaling( e -> _spell -> scaling_class(), level );
+    unsigned scaling_level = level;
+    if ( e -> _spell -> max_scaling_level() > 0 )
+      scaling_level = std::min( scaling_level, e -> _spell -> max_scaling_level() );
+    double m_scale = spell_scaling( e -> _spell -> scaling_class(), scaling_level );
 
     assert( m_scale != 0 );
 
@@ -1905,7 +1911,10 @@ double dbc_t::effect_bonus( unsigned effect_id, unsigned level ) const
 
   if ( e -> m_unk() != 0 && e -> _spell -> scaling_class() != 0 )
   {
-    double m_scale = spell_scaling( e -> _spell -> scaling_class(), level );
+    unsigned scaling_level = level;
+    if ( e -> _spell -> max_scaling_level() > 0 )
+      scaling_level = std::min( scaling_level, e -> _spell -> max_scaling_level() );
+    double m_scale = spell_scaling( e -> _spell -> scaling_class(), scaling_level );
 
     assert( m_scale != 0 );
 
