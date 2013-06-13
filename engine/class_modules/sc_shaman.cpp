@@ -189,6 +189,7 @@ public:
     proc_t* swings_reset_mh;
     proc_t* swings_reset_oh;
     proc_t* t15_2pc_melee;
+    proc_t* t16_2pc_melee;
     proc_t* t16_4pc_caster;
     proc_t* t16_4pc_melee;
     proc_t* wasted_t15_2pc_melee;
@@ -328,9 +329,9 @@ public:
   shaman_spell_t*  flametongue_oh;
 
   // Tier16 random imbues
-  shaman_melee_attack_t *t16_mh_windfury, *t16_oh_windfury;
-  shaman_spell_t *t16_mh_flametongue, *t16_oh_flametongue;
-  // TODO: Frostbrand
+  action_t* t16_wind;
+  action_t* t16_flame;
+  action_t* t16_frost;
 
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, SHAMAN, name, r ),
@@ -393,8 +394,9 @@ public:
     flametongue_mh = 0;
     flametongue_oh = 0;
 
-    t16_mh_windfury = t16_oh_windfury = 0;
-    t16_mh_flametongue = t16_oh_flametongue = 0;
+    t16_wind = 0;
+    t16_flame = 0;
+    t16_frost = 0;
   }
 
   // Character Definition
@@ -1792,24 +1794,21 @@ static bool trigger_tier16_2pc_melee( const action_state_t* s )
   if ( ! p -> rng.t16_2pc_melee -> roll( p -> buff.tier16_2pc_melee -> data().proc_chance() ) )
     return false;
 
+  p -> proc.t16_2pc_melee -> occur();
+
   switch ( static_cast< int >( p -> rng.t16_2pc_melee -> range( 0, 3 ) ) )
   {
     // Windfury
     case 0:
-      if ( s -> action -> weapon -> slot == SLOT_MAIN_HAND )
-          p -> t16_mh_windfury -> execute();
-      else
-          p -> t16_oh_windfury -> execute();
+      p -> t16_wind -> execute();
       break;
     // Flametongue
     case 1:
-      if ( s -> action -> weapon -> slot == SLOT_MAIN_HAND )
-          p -> t16_mh_flametongue -> execute();
-      else
-          p -> t16_oh_flametongue -> execute();
+      p -> t16_flame -> execute();
       break;
-    // TODO: Frostbrand
+    // Frostbrand
     case 2:
+      p -> t16_frost -> execute();
       break;
     default:
       assert( false );
@@ -2060,10 +2059,11 @@ struct lightning_charge_t : public shaman_spell_t
   }
 };
 
+// TODO: Does unleash flame benefit from Unleash Flame +firedamage bonus?
 struct unleash_flame_t : public shaman_spell_t
 {
-  unleash_flame_t( shaman_t* player ) :
-    shaman_spell_t( "unleash_flame", player, player -> dbc.spell( 73683 ) )
+  unleash_flame_t( const std::string& name, shaman_t* player ) :
+    shaman_spell_t( name, player, player -> dbc.spell( 73683 ) )
   {
     harmful              = true;
     background           = true;
@@ -2075,23 +2075,24 @@ struct unleash_flame_t : public shaman_spell_t
 
   virtual void execute()
   {
-    if ( p() -> main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-    {
-      shaman_spell_t::execute();
-    }
-    else if ( p() -> off_hand_weapon.type != WEAPON_NONE &&
-              p() -> off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-    {
-      shaman_spell_t::execute();
-    }
+    shaman_spell_t::execute();
+    p() -> buff.unleash_flame -> trigger();
+    if ( result_is_hit( execute_state -> result ) && p() -> talent.unleashed_fury -> ok() )
+      td( execute_state -> target ) -> debuff.unleashed_fury -> trigger();
   }
+};
 
-  void impact( action_state_t* state )
+struct unleash_frost_t : public shaman_spell_t
+{
+  unleash_frost_t( const std::string& name, shaman_t* player ) :
+    shaman_spell_t( name, player, player -> dbc.spell( 73682 ) )
   {
-    shaman_spell_t::impact( state );
+    harmful              = true;
+    background           = true;
+    //proc                 = true;
 
-    if ( result_is_hit( state -> result ) && p() -> talent.unleashed_fury -> ok() )
-      td( state -> target ) -> debuff.unleashed_fury -> trigger();
+    // Don't cooldown here, unleash elements ability will handle it
+    cooldown -> duration = timespan_t::zero();
   }
 };
 
@@ -2187,30 +2188,26 @@ struct windfury_weapon_melee_attack_t : public shaman_melee_attack_t
 
 struct unleash_wind_t : public shaman_melee_attack_t
 {
-  unleash_wind_t( shaman_t* player ) :
-    shaman_melee_attack_t( "unleash_wind", player, player -> dbc.spell( 73681 ) )
+  unleash_wind_t( const std::string& name, shaman_t* player ) :
+    shaman_melee_attack_t( name, player, player -> dbc.spell( 73681 ) )
   {
     background = true;
     may_proc_primal_wisdom = may_dodge = may_parry = false;
 
+    // Unleash wind implicitly uses main hand weapon of the player to perform
+    // the damaging attack
+ 
+    weapon = &( player -> main_hand_weapon );
     // Don't cooldown here, unleash elements will handle it
     cooldown -> duration = timespan_t::zero();
   }
 
   void execute()
   {
-    // Figure out weapons
-    if ( p() -> main_hand_weapon.buff_type == WINDFURY_IMBUE )
-    {
-      weapon = &( p() -> main_hand_weapon );
-      shaman_melee_attack_t::execute();
-    }
-    else if ( p() -> off_hand_weapon.type != WEAPON_NONE &&
-              p() -> off_hand_weapon.buff_type == WINDFURY_IMBUE )
-    {
-      weapon = &( p() -> off_hand_weapon );
-      shaman_melee_attack_t::execute();
-    }
+    shaman_melee_attack_t::execute();
+    p() -> buff.unleash_wind -> trigger( p() -> buff.unleash_wind -> data().initial_stacks() );
+    if ( result_is_hit( execute_state -> result ) && p() -> talent.unleashed_fury -> ok() )
+      p() -> buff.unleashed_fury_wf -> trigger();
   }
 };
 
@@ -3643,8 +3640,8 @@ struct unleash_elements_t : public shaman_spell_t
     may_crit    = false;
     may_miss    = false;
 
-    wind        = new unleash_wind_t( player );
-    flame       = new unleash_flame_t( player );
+    wind = new unleash_wind_t( "unleash_wind", player );
+    flame = new unleash_flame_t( "unleash_flame", player );
 
     add_child( wind );
     add_child( flame );
@@ -3654,26 +3651,12 @@ struct unleash_elements_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    wind  -> execute();
-    flame -> execute();
-
-    // You get the buffs, regardless of hit/miss
-    if ( p() -> main_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-      p() -> buff.unleash_flame -> trigger();
-    else if ( p() -> main_hand_weapon.buff_type == WINDFURY_IMBUE )
-    {
-      p() -> buff.unleash_wind -> trigger( p() -> buff.unleash_wind -> data().initial_stacks() );
-      if ( p() -> talent.unleashed_fury -> ok() )
-        p() -> buff.unleashed_fury_wf -> trigger();
-    }
-
-    if ( p() -> off_hand_weapon.type != WEAPON_NONE )
-    {
-      if ( p() -> off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
-        p() -> buff.unleash_flame -> trigger();
-      else if ( p() -> off_hand_weapon.buff_type == WINDFURY_IMBUE )
-        p() -> buff.unleash_wind -> trigger( p() -> buff.unleash_wind -> data().initial_stacks() );
-    }
+    if ( player -> main_hand_weapon.buff_type == WINDFURY_IMBUE ||
+         player -> off_hand_weapon.buff_type == WINDFURY_IMBUE )
+      wind -> execute();
+    if ( player -> main_hand_weapon.buff_type == FLAMETONGUE_IMBUE ||
+         player -> off_hand_weapon.buff_type == FLAMETONGUE_IMBUE )
+      flame -> execute();
 
     p() -> buff.tier16_2pc_melee -> trigger();
   }
@@ -5224,13 +5207,9 @@ void shaman_t::init_spells()
   // presumably, so we cannot just re-use our actual imbued ones
   if ( maybe_ptr( dbc.ptr ) && set_bonus.tier16_2pc_melee() )
   {
-    t16_mh_windfury = new windfury_weapon_melee_attack_t( "t16_windfury_mh", this, &( main_hand_weapon ) );
-    t16_oh_windfury = new windfury_weapon_melee_attack_t( "t16_windfury_oh", this, &( off_hand_weapon ) );
-
-    t16_mh_flametongue = new flametongue_weapon_spell_t( "t16_flametongue_mh", this, &( main_hand_weapon ) );
-    t16_oh_flametongue = new flametongue_weapon_spell_t( "t16_flametongue_oh", this, &( off_hand_weapon ) );
-
-    // TODO: Frostbrand
+    t16_wind = new unleash_wind_t( "t16_unleash_wind", this );
+    t16_flame = new unleash_flame_t( "t16_unleash_flame", this );
+    t16_frost = new unleash_frost_t( "t16_unleash_frost", this );
   }
 
   player_t::init_spells();
@@ -5409,6 +5388,7 @@ void shaman_t::init_procs()
   proc.uf_elemental_blast = get_proc( "uf_elemental_blast"      );
   proc.uf_wasted          = get_proc( "uf_wasted"               );
   proc.t15_2pc_melee      = get_proc( "t15_2pc_melee"           );
+  proc.t16_2pc_melee      = get_proc( "t16_2pc_melee"           );
   proc.t16_4pc_caster     = get_proc( "t16_4pc_caster"          );
   proc.t16_4pc_melee      = get_proc( "t16_4pc_melee"           );
   proc.wasted_t15_2pc_melee = get_proc( "wasted_t15_2pc_melee"  );
