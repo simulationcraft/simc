@@ -17,7 +17,7 @@ static_assert( 0 , "dbc.hpp included into a file where SIMULATIONCRAFT_H is not 
 #include "data_definitions.hh"
 #include "data_enums.hh"
 
-// FIXME! This is a generated header.  Be nice if it was not seperate.
+// This is a automatically generated header.
 #include "specialization.hpp"
 
 static const unsigned NUM_SPELL_FLAGS = 12;

@@ -14,8 +14,6 @@ namespace io { // ===========================================================
 
 namespace { // anonymous namespace ==========================================
 
-static const uint32_t invalid_character_replacement = '?';
-
 std::wstring widen( const char* first, const char* last )
 {
   std::wstring result;
@@ -55,6 +53,9 @@ std::wstring widen( const std::string& str )
 // Latin-1 which is a subset of Unicode.
 
 #if 0
+
+static const uint32_t invalid_character_replacement = '?';
+
 std::string latin1_to_utf8( const std::string& str )
 {
   std::string result;

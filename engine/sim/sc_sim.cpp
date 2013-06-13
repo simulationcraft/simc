@@ -2475,8 +2475,6 @@ int sim_t::errorf( const char* format, ... )
   return retcode;
 }
 
-// FIXME! I am not sure if I want these here.
-
 // sim_t::output ============================================================
 
 void sim_t::output( const char* format, ... )

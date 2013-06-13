@@ -2702,7 +2702,7 @@ struct mind_flay_base_t : public priest_spell_t
   mind_flay_mastery_t<insanity>* proc_spell;
 
   mind_flay_base_t( priest_t& p, const std::string& options_str, const std::string& name = "mind_flay" ) :
-    priest_spell_t( name, p, p.find_class_spell( insanity ? "Mind Flay (Insanity)" : "Mind Flay" ) ), // FIXME: adjust once spell data is available
+    priest_spell_t( name, p, p.find_class_spell( insanity ? "Mind Flay (Insanity)" : "Mind Flay" ) ),
     proc_spell( nullptr )
   {
     parse_options( nullptr, options_str );
@@ -2978,12 +2978,9 @@ struct holy_fire_base_t : public priest_spell_t
   holy_fire_base_t( const std::string& name, priest_t& p, const spell_data_t* sd ) :
     priest_spell_t( name, p, sd )
   {
-    can_cancel_shadowform = false; // FIXME: check in 5.2+
-    castable_in_shadowform = false;
-
     procs_courageous_primal_diamond = false;
 
-    can_trigger_atonement = true; // FIXME: check in 5.2+
+    can_trigger_atonement = true;
 
     range += priest.glyphs.holy_fire -> effectN( 1 ).base_value();
   }
@@ -3615,7 +3612,6 @@ struct binding_heal_t : public priest_heal_t
   {
     parse_options( nullptr, options_str );
 
-    // FIXME: Should heal target & caster.
     aoe = 2;
   }
 
