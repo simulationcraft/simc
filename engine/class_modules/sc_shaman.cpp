@@ -3751,7 +3751,7 @@ struct earth_shock_t : public shaman_spell_t
         p() -> proc.fulmination[ consuming_stacks ] -> occur();
 
         p() -> buff.tier16_2pc_caster -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0,
-                                                  consuming_stacks * p() -> buff.tier16_2pc_caster -> data().duration() );
+                                                  ( consuming_stacks + 1 ) * p() -> buff.tier16_2pc_caster -> data().duration() );
       }
     }
   }
@@ -5957,7 +5957,7 @@ double shaman_t::composite_player_multiplier( school_e school )
   // TODO: Spell data
   if ( buff.tier16_2pc_caster -> up() && ( dbc::is_school( school, SCHOOL_FIRE ) 
         || dbc::is_school( school, SCHOOL_NATURE ) ) )
-    m *= 1.0 + 0.04;
+    m *= 1.0 + buff.tier16_2pc_caster -> data().effectN( 1 ).percent();
 
   return m;
 }
