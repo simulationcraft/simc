@@ -1,65 +1,74 @@
 #!./simc 
 
 paladin="Paladin_Protection_T15N"
-origin="http://us.battle.net/wow/en/character/Tichondrius/Theck/advanced"
-thumbnail="http://us.battle.net/static-render/us/tichondrius/254/122269438-avatar.jpg"
 level=90
-race=human
+race=blood_elf
 role=tank
-position=back
-professions=engineering=600/enchanting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#bZ!202201
-glyphs=alabaster_shield/divine_protection/battle_healer/bladed_judgment/righteous_retreat/falling_avenger
+position=front
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bZ!202101
+glyphs=focused_shield/alabaster_shield/battle_healer
 spec=protection
 
-head=lightning_emperors_faceguard,id=95292,gems=austere_primal_160haste_120sta_180parry
-neck=strikers_battletags,id=95142,reforge=mastery_exp
-shoulders=lightning_emperors_shoulderguards,id=95294,gems=160exp_120sta_160haste_120sta_120parry,enchant=300sta_100dodge
-back=spikeshard_greatcloak,id=95114,enchant=200sta,addon=goblin_glider,reforge=mastery_hit
-chest=lightning_emperors_battleplate,id=95280,gems=160exp_120sta_160haste_120sta_240sta_180str,enchant=300sta
-wrists=shellcoated_wristplates,id=94771,enchant=170mastery,reforge=dodge_exp
-hands=pathogenic_gauntlets,id=94938,gems=160exp_120sta_240sta_120str,enchant=150sta,addon=synapse_springs_mark_ii,reforge=hit_exp
-waist=waistplate_of_overwhelming_assault,id=86955,upgrade=2,gems=160haste_120sta_240sta_160exp_160hit_120haste,addon=nitro_boosts,reforge=mastery_exp
-legs=legplates_of_whipping_ionization,id=94985,gems=160exp_120sta_160exp_120sta_160exp_120sta_270sta,enchant=430sta_165dodge,reforge=dodge_exp
-feet=impaling_treads,id=86979,upgrade=2,gems=160haste_120sta_60hit,enchant=150sta,reforge=haste_exp
-finger1=band_of_the_shadopan_assault,id=95140,enchant=240sta,reforge=crit_hit
-finger2=jinrokhs_soulcrystal,id=96749,enchant=240sta,reforge=exp_haste
-trinket1=jade_warlord_figurine,id=86046
-trinket2=laochins_liquid_courage,id=89079,upgrade=2
-main_hand=dotharak_the_swordbreaker,id=95502,gems=160haste_120sta_240sta_60str,enchant=colossus,reforge=mastery_exp
-off_hand=ultimate_protection_of_the_emperor,id=95472,gems=160exp_120sta_60str,enchant=170parry,reforge=parry_exp
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=earth
+actions.precombat+=/food,type=chun_tian_spring_rolls
+actions.precombat+=/blessing_of_kings,if=(!aura.str_agi_int.up)&(aura.mastery.up)
+actions.precombat+=/blessing_of_might,if=!aura.mastery.up
+actions.precombat+=/seal_of_insight
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+
+# Executed every time the actor is available.
+
+actions=/auto_attack
+actions+=//use_item,name=jade_warlord_figurine
+actions+=/arcane_torrent
+actions+=/avenging_wrath
+actions+=/guardian_of_ancient_kings,if=health.pct<=30
+actions+=/shield_of_the_righteous,if=holy_power>=3
+actions+=/hammer_of_the_righteous,if=target.debuff.weakened_blows.down
+actions+=/crusader_strike
+actions+=/judgment
+actions+=/avengers_shield
+actions+=/hammer_of_wrath
+actions+=/holy_wrath
+actions+=/consecration,if=target.debuff.flying.down&!ticking
+
+head=lightning_emperors_faceguard,id=95292,stats=4861armor_1318str_2338sta_629exp_1104mastery,gems=austere_primal_320haste_180parry,reforge=mastery_haste
+neck=necklace_of_the_terracotta_vanquisher,id=95205,stats=788str_1302sta_581hit_468mastery,gems=160exp_160haste_60exp,reforge=hit_haste
+shoulders=lightning_emperors_shoulderguards,id=95294,stats=4487armor_998str_1736sta_692hit_692mastery,gems=160exp_160haste_320haste_120parry,enchant=180sta_80dodge,reforge=hit_haste
+back=spikeshard_greatcloak,id=95114,stats=1237armor_868str_1302sta_621haste_508mastery,enchant=200sta,reforge=mastery_exp
+chest=lightning_emperors_battleplate,id=95280,stats=5982armor_1318str_2338sta_791haste_994exp,gems=160exp_160haste_320haste_160haste_120sta_180str,enchant=300sta
+wrists=caustic_spike_bracers,id=94820,stats=2617armor_788str_1302sta_858haste,gems=320haste_60str,enchant=170mastery
+hands=lightning_emperors_handguards,id=95291,stats=3739armor_1078str_1736sta_848dodge_538exp,gems=160exp_160haste_60dodge,enchant=150sta,reforge=dodge_haste
+waist=cloudbreaker_greatbelt,id=94726,stats=3365armor_998str_1736sta_672haste_703mastery,gems=320haste_320haste_320haste,reforge=mastery_exp
+legs=lightning_emperors_legguards,id=95293,stats=5234armor_1398str_2338sta_1103parry_742hit,gems=320haste_160haste_120sta_180sta,enchant=250sta_100dodge,reforge=parry_haste
+feet=haunted_steel_treads,id=94265,stats=4113armor_998str_1736sta_748haste_597mastery,gems=160exp_160haste_160exp_160haste_120mastery,enchant=150sta,reforge=mastery_exp
+finger1=band_of_the_scaled_tyrant,id=95513,stats=788str_1302sta_478hit_565haste,gems=160exp_160haste_60haste,reforge=hit_exp
+finger2=durumus_severed_tentacle,id=95511,stats=788str_1302sta_534dodge_532hit,gems=160exp_160haste_60dodge,reforge=dodge_haste
+trinket1=soul_barrier,id=94528,stats=2201sta
+trinket2=jade_warlord_figurine,id=86046,stats=1619sta
+main_hand=worldbreakers_stormscythe,id=94722,stats=588str_1002sta_462hit_309exp,weapon=axe_2.6speed_7684min_14272max,gems=160haste_120sta_60str,enchant=windsong,reforge=hit_haste
+off_hand=greatshield_of_the_gloaming,id=94945,stats=19188armor_788str_1302sta_548dodge_524mastery,gems=160exp_160haste_60str,enchant=170parry,reforge=dodge_haste
 
 # Gear Summary
-# gear_strength=14207
-# gear_stamina=31354
-# gear_expertise_rating=5291
-# gear_hit_rating=2570
-# gear_crit_rating=281
-# gear_haste_rating=5921
-# gear_mastery_rating=4470
-# gear_armor=54711
-# gear_dodge_rating=1985
-# gear_parry_rating=1272
+# gear_strength=13862
+# gear_stamina=28686
+# gear_expertise_rating=4883
+# gear_hit_rating=2604
+# gear_haste_rating=11140
+# gear_mastery_rating=3723
+# gear_armor=54823
+# gear_dodge_rating=1459
+# gear_parry_rating=1132
 # meta_gem=austere_primal
 # tier15_2pc_tank=1
-# back=spikeshard_greatcloak,addon=goblin_glider
-# hands=pathogenic_gauntlets,addon=synapse_springs_mark_ii
-# waist=waistplate_of_overwhelming_assault,heroic=1,addon=nitro_boosts
-# main_hand=dotharak_the_swordbreaker,weapon=sword_2.60speed_7684min_14271max,enchant=colossus
-
-
-#in optimal_raid=1, it is on by default, thus no TC is executed
-override.weakened_blows=0
-
-
-###Healer
-Priest_Holy_T14H.simc scale_player=0 target=Paladin_Protection_T15N
-Priest_Disc_T14H.simc scale_player=0 target=Paladin_Protection_T15N
-
-
-
-###Handy override command. It will give you scale factors for the defensive stats
-#calculate_scale_factors=1 iterations=25000 scale_over=dtps scale_only=hit_rating,expertise_rating,haste_rating,parry_rating,dodge_rating,mastery_rating,strength,armor
-
-###Handy reforge command
-#reforge_plot_stat=dodge,parry reforge_plot_amount=1000 reforge_plot_step=200
+# tier15_4pc_tank=1
+# main_hand=worldbreakers_stormscythe,weapon=axe_2.6speed_7684min_14272max,enchant=windsong

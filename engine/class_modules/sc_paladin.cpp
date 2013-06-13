@@ -1590,16 +1590,16 @@ struct seal_of_insight_proc_t : public paladin_heal_t
   double proc_regen;
   double proc_chance;
   rng_t* rng;
-  proc_t* proc;
+  proc_t* proc_tracker;
 
   seal_of_insight_proc_t( paladin_t* p ) :
     paladin_heal_t( "seal_of_insight_proc", p, p -> find_class_spell( "Seal of Insight" ) ),
     proc_regen( 0.0 ), proc_chance( 0.0 ),
     rng( p -> get_rng( name_str ) ),
-    proc( p -> get_proc( name_str ) )
+    proc_tracker( p -> get_proc( name_str ) )
   {
     background  = true;
-    paladin_heal_t::proc = true;
+    proc = true;
     trigger_gcd = timespan_t::zero();
     may_crit = false; //cannot crit
 
@@ -1626,7 +1626,7 @@ struct seal_of_insight_proc_t : public paladin_heal_t
   {
     if ( rng -> roll( proc_chance ) )
     {
-      proc -> occur();
+      proc_tracker -> occur();
       paladin_heal_t::execute();
       p() -> resource_gain( RESOURCE_MANA,
                             p() -> resources.base[ RESOURCE_MANA ] * proc_regen,
@@ -1643,7 +1643,7 @@ struct seal_of_insight_proc_t : public paladin_heal_t
 struct battle_healer_proc_t : public paladin_heal_t
 {
   battle_healer_proc_t( paladin_t* p ) :
-    paladin_heal_t( "battle_healer_heal", p, p -> find_spell( 119477 ) )
+    paladin_heal_t( "battle_healer_proc", p, p -> find_spell( 119477 ) )
   {
     background = true;
     proc = true;

@@ -30,12 +30,12 @@ save=Paladin_Retribution_T15H.simc
 
 
 paladin="Paladin_Protection_T15H"
-talents=313212
 level=90
 race=blood_elf
 spec=protection
 role=tank
 position=front
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!202101
 professions=Blacksmithing=600/Enchanting=600
 glyphs=focused_shield/alabaster_shield/battle_healer
 legs=lightning_emperors_legguards,id=96667,stats=5438armor_1599str_2639sta_1251parry_853hit,gems=320haste_160haste_120sta_180sta,enchant=430sta_165dodge,reforge=parry_haste
@@ -54,5 +54,5 @@ trinket1=soul_barrier,id=96927,stats=2628sta
 trinket2=laochins_liquid_courage,id=89079,stats=1619sta
 back=tigerclaw_cape,id=98147,stats=1525armor_1716str_2694sta_918crit_918haste_918mastery,gems=320haste,enchant=200sta,reforge=crit_exp
 off_hand=greatshield_of_the_gloaming,id=96884,stats=20279armor_957str_1555sta_658dodge_637mastery,gems=320haste,enchant=170parry,reforge=dodge_haste
-save=Paladin_Protection_T15H.simc
+save=profiles\Tier15H\Paladin_Protection_T15H.simc
 

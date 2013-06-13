@@ -49,4 +49,4 @@ trinket1=soul_barrier,id=94528,stats=2201sta
 trinket2=jade_warlord_figurine,id=86046,stats=1619sta
 back=spikeshard_greatcloak,id=95114,stats=1237armor_868str_1302sta_621haste_508mastery,enchant=200sta,reforge=mastery_exp
 off_hand=greatshield_of_the_gloaming,id=94945,stats=19188armor_788str_1302sta_548dodge_524mastery,gems=160exp_160haste_60str,enchant=170parry,reforge=dodge_haste
-save=Paladin_Protection_T15N.simc
+save=profiles\Tier15N\Paladin_Protection_T15N.simc
