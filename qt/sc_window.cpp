@@ -377,11 +377,11 @@ void SC_MainWindow::createBestInSlotTab()
   bisTree -> setColumnCount( 1 );
   bisTree -> setHeaderLabels( headerLabels );
 
-  const int TIER_MAX=2;
+  const int TIER_MAX=3;
 #if SC_BETA == 1
   const char* tierNames[] = { "" }; // For the beta include ALL profiles
 #else
-  const char* tierNames[] = { "T14", "T15" };
+  const char* tierNames[] = { "T14", "T15", "T16" };
 #endif
   QTreeWidgetItem* playerItems[ PLAYER_MAX ];
   range::fill( playerItems, 0 );
