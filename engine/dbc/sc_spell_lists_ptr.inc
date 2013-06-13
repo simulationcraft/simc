@@ -3382,7 +3382,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 };
 
 #define PTR_TIER_BONUSES_SIZE (8)
-#define PTR_TIER_BONUSES_MAX_TIER (4)
+#define PTR_TIER_BONUSES_MAX_TIER (5)
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
@@ -3417,6 +3417,14 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
       138126, // Battleplate of the Last Mogu - 4 Piece Bonus (Item - Warrior T15 DPS 4P Bonus)
       138280, // Plate of the Last Mogu - 2 Piece Bonus (Item - Warrior T15 Protection 2P Bonus)
       138281, // Plate of the Last Mogu - 4 Piece Bonus (Item - Warrior T15 Protection 4P Bonus)
+          0,
+    },
+    // Tier 16 bonuses (4 spells)
+    {
+      144436, // T16 PH - Warrior DPS - 2 Piece Bonus (Item - Warrior T16 DPS 2P Bonus)
+      144441, // T16 PH - Warrior DPS - 4 Piece Bonus (Item - Warrior T16 DPS 4P Bonus)
+      144502, // T16 PH - Warrior Tank - 4 Piece Bonus (Item - Warrior T16 Protection 4P Bonus)
+      144503, // T16 PH - Warrior Tank - 2 Piece Bonus (Item - Warrior T16 Protection 2P Bonus)
           0,
     },
     {
@@ -3455,6 +3463,16 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
       138292, // Vestments of the Lightning Emperor - 4 Piece Bonus (Item - Paladin T15 Holy 4P Bonus)
           0,
     },
+    // Tier 16 bonuses (6 spells)
+    {
+      144566, // T16 PH - Paladin Protection - 2 Piece Bonus (Item - Paladin T16 Protection 2P Bonus)
+      144580, // T16 PH - Paladin Protection - 4 Piece Bonus (Item - Paladin T16 Protection 4P Bonus)
+      144586, // T16 PH - Paladin Retribution - 2 Piece Bonus (Item - Paladin T16 Retribution 2P Bonus)
+      144593, // T16 PH - Paladin Retribution - 4 Piece Bonus (Item - Paladin T16 Retribution 4P Bonus)
+      144613, // T16 PH - Paladin Holy - 4 Piece Bonus (Item - Paladin T16 Holy 4P Bonus)
+      144624, // T16 PH - Paladin Holy - 2 Piece Bonus (Unyielding Faith)
+          0,
+    },
     {
           0,
     },
@@ -3479,6 +3497,12 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
       138367, // Battlegear of the Saurok Stalker - 4 Piece Bonus (Item - Hunter T15 4P Bonus)
           0,
     },
+    // Tier 16 bonuses (2 spells)
+    {
+      144637, // T16 PH - Hunter - 2 Piece Bonus (Item - Hunter T16 2P Bonus)
+      144641, // T16 PH - Hunter - 4 Piece Bonus (Item - Hunter T16 4P Bonus)
+          0,
+    },
     {
           0,
     },
@@ -3501,6 +3525,12 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     {
       138148, // Nine-Tail Battlegear - 2 Piece Bonus (Item - Rogue T15 2P Bonus)
       138150, // Nine-Tail Battlegear - 4 Piece Bonus (Item - Rogue T15 4P Bonus)
+          0,
+    },
+    // Tier 16 bonuses (2 spells)
+    {
+      145185, // T16 PH - Rogue - 2 Piece Bonus (Item - Rogue T16 2P Bonus)
+      145210, // T16 PH - Rogue - 4 Piece Bonus (Item - Rogue T16 4P Bonus)
           0,
     },
     {
@@ -3533,6 +3563,14 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
       138301, // Vestments of the Exorcist - 4 Piece Bonus (Item - Priest T15 Healer 4P Bonus)
           0,
     },
+    // Tier 16 bonuses (4 spells)
+    {
+      145174, // T16 PH - Priest Shadow - 2 Piece Bonus (Item - Priest T16 Shadow 2P Bonus)
+      145179, // T16 PH - Priest Shadow - 4 Piece Bonus (Item - Priest T16 Shadow 4P Bonus)
+      145306, // T16 PH - Priest Healer - 2 Piece Bonus (Item - Priest T16 2P Bonus)
+      145334, // T16 PH - Priest Healer - 4 Piece Bonus (Item - Priest T16 4P Bonus)
+          0,
+    },
     {
           0,
     },
@@ -3561,6 +3599,14 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
       138197, // Plate of the All-Consuming Maw - 4 Piece Bonus (Item - Death Knight T15 Blood 4P Bonus)
       138343, // Battleplate of the All-Consuming Maw - 2 Piece Bonus (Item - Death Knight T15 DPS 2P Bonus)
       138347, // Battleplate of the All-Consuming Maw - 4 Piece Bonus (Item - Death Knight T15 DPS 4P Bonus)
+          0,
+    },
+    // Tier 16 bonuses (4 spells)
+    {
+      144899, // T16 PH - Death Knight DPS - 2 Piece Bonus (Item - Death Knight T16 DPS 2P Bonus)
+      144907, // T16 PH - Death Knight DPS - 4 Piece Bonus (Item - Death Knight T16 DPS 4P Bonus)
+      144934, // T16 PH - Death Knight Tank - 4 Piece Bonus (Item - Death Knight T16 Blood 2P Bonus)
+      144950, // T16 PH - Death Knight Tank - 2 Piece Bonus (Item - Death Knight T16 Blood 4P Bonus)
           0,
     },
     {
@@ -3599,6 +3645,16 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
       138305, // Vestments of the Witch Doctor - 4 Piece Bonus (Item - Shaman T15 Restoration 4P Bonus)
           0,
     },
+    // Tier 16 bonuses (6 spells)
+    {
+      144962, // T16 PH - Shaman Enhancement - 2 Piece Bonus (Item - Shaman T16 Enhancement 2P Bonus)
+      144966, // T16 PH - Shaman Enhancement - 4 Piece Bonus (Item - Shaman T16 Enhancement 4P Bonus)
+      144998, // T16 PH - Shaman Elemental - 2 Piece Bonus (Item - Shaman T16 Elemental 2P Bonus)
+      145003, // T16 PH - Shaman Elemental - 4 Piece Bonus (Item - Shaman T16 Elemental 4P Bonus)
+      145378, // T16 PH - Shaman Restoration - 2 Piece Bonus (Item - Shaman T16 Restoration 2P Bonus)
+      145380, // T16 PH - Shaman Restoration - 4 Piece Bonus (Item - Shaman T16 Restoration 4P Bonus)
+          0,
+    },
     {
           0,
     },
@@ -3623,6 +3679,12 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
       138376, // Regalia of the Chromatic Hydra - 4 Piece Bonus (Item - Mage T15 4P Bonus)
           0,
     },
+    // Tier 16 bonuses (2 spells)
+    {
+      145251, // T16 PH - Mage - 2 Piece Bonus (Item - Mage T16 2P Bonus)
+      145257, // T16 PH - Mage - 4 Piece Bonus (Item - Mage T16 4P Bonus)
+          0,
+    },
     {
           0,
     },
@@ -3645,6 +3707,12 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     {
       138129, // Regalia of the Thousandfold Hells - 2 Piece Bonus (Item - Warlock T15 DPS 2P Bonus)
       138134, // Regalia of the Thousandfold Hells - 4 Piece Bonus (Item - Warlock T15 DPS 4P Bonus)
+          0,
+    },
+    // Tier 16 bonuses (2 spells)
+    {
+      145072, // T16 PH - Warlock - 2 Piece Bonus (Item - Warlock T16 2P Bonus)
+      145091, // T16 PH - Warlock - 4 Piece Bonus (Item - Warlock T16 4P Bonus)
           0,
     },
     {
@@ -3674,6 +3742,16 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
       138289, // Fire-Charm Vestments - 4 Piece Bonus (Item - Monk T15 Mistweaver 4P Bonus)
       138290, // Fire-Charm Vestments - 2 Piece Bonus (Item - Monk T15 Mistweaver 2P Bonus)
       138315, // Fire-Charm Battlegear - 4 Piece Bonus (Item - Monk T15 Windwalker 4P Bonus)
+          0,
+    },
+    // Tier 16 bonuses (6 spells)
+    {
+      145004, // T16 PH - Monk Windwalker - 2 Piece Bonus (Item - Monk T16 Windwalker 2P Bonus)
+      145022, // T16 PH - Monk Windwalker - 4 Piece Bonus (Item - Monk T16 Windwalker 4P Bonus)
+      145049, // T16 PH - Monk Brewmaster - 2 Piece Bonus (Item - Monk T16 Brewmaster 2P Bonus)
+      145055, // T16 PH - Monk Brewmaster - 4 Piece Bonus (Item - Monk T16 Brewmaster 4P Bonus)
+      145439, // T16 PH - Monk Mistweaver - 2 Piece Bonus (Item - Monk T16 Mistweaver 2P Bonus)
+      145449, // T16 PH - Monk Mistweaver - 4 Piece Bonus (Item - Monk T16 Mistweaver 4P Bonus)
           0,
     },
     {
@@ -3713,6 +3791,17 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
       138350, // Regalia of the Haunted Forest - 4 Piece Bonus (Item - Druid T15 Balance 4P Bonus)
       138352, // Battlegear of the Haunted Forest - 2 Piece Bonus (Item - Druid T15 Feral 2P Bonus)
       138357, // Battlegear of the Haunted Forest - 4 Piece Bonus (Item - Druid T15 Feral 4P Bonus)
+    },
+    // Tier 16 bonuses (8 spells)
+    {
+      144756, // T16 PH - Druid Balance - 4 Piece Bonus (Item - Druid T16 Balance 4P Bonus)
+      144767, // T16 PH - Druid Balance - 2 Piece Bonus (Item - Druid T16 Balance 2P Bonus)
+      144841, // T16 PH - Druid Feral - 4 Piece Bonus (Item - Druid T16 Feral 4P Bonus)
+      144864, // T16 PH - Druid Feral - 2 Piece Bonus (Item - Druid T16 Feral 2P Bonus)
+      144869, // T16 PH - Druid Restoration - 2 Piece Bonus (Item - Druid T16 Restoration 2P Bonus)
+      144875, // T16 PH - Druid Restoration - 4 Piece Bonus (Item - Druid T16 Restoration 4P Bonus)
+      144879, // T16 PH - Druid Guardian - 2 Piece Bonus (Item - Druid T16 Guardian 2P Bonus)
+      144887, // T16 PH - Druid Guardian - 4 Piece Bonus (Item - Druid T16 Guardian 4P Bonus)
     },
     {
           0,
