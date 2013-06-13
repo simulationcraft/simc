@@ -88,6 +88,7 @@ static const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_UNSIGNED, "max_stack"     },
   { SD_TYPE_UNSIGNED, "proc_chance"   },
   { SD_TYPE_UNSIGNED, "initial_stack" },
+  { SD_TYPE_UNSIGNED, ""              }, // Proc flags, no support for now
   { SD_TYPE_UNSIGNED, "equip_class"   },
   { SD_TYPE_UNSIGNED, "equip_imask"   },
   { SD_TYPE_UNSIGNED, "equip_scmask"  },
@@ -97,7 +98,9 @@ static const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_DOUBLE,   "m_scaling"     },
   { SD_TYPE_UNSIGNED, "scaling_level" },
   { SD_TYPE_UNSIGNED, "replace_spellid" },
-  { SD_TYPE_UNSIGNED, ""              }, // Attributes, 0..9, not done for now
+  { SD_TYPE_UNSIGNED, ""              }, // Attributes, 0..11, not done for now
+  { SD_TYPE_UNSIGNED, ""              },
+  { SD_TYPE_UNSIGNED, ""              },
   { SD_TYPE_UNSIGNED, ""              },
   { SD_TYPE_UNSIGNED, ""              },
   { SD_TYPE_UNSIGNED, ""              },
