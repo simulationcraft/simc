@@ -4626,8 +4626,10 @@ struct treants_spell_t : public druid_spell_t
       for ( int i = 0; i < 3; i++ )
       {
         if ( p() -> pet_treants[ i ] -> is_sleeping() )
+        {
           p() -> pet_treants[ i ] -> summon( p() -> talent.force_of_nature -> duration() );
           return;
+        }
       }
 
       p() -> sim -> errorf( "Player %s ran out of treants.\n", p() -> name() );
