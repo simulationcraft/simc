@@ -333,6 +333,8 @@ public:
   virtual double    composite_spell_speed();
   virtual double    composite_spell_power_multiplier();
   virtual double    composite_spell_hit();
+  virtual double    composite_spell_crit();
+  virtual double    composite_melee_crit();
   virtual double    composite_melee_hit();
   virtual double    composite_player_multiplier( school_e school );
   virtual double    composite_player_heal_multiplier( school_e school );
@@ -3876,6 +3878,15 @@ struct greater_heal_t : public priest_heal_t
     return cc;
   }
 
+  virtual double action_multiplier()
+  {
+    double am = priest_heal_t::action_multiplier();
+
+    am *= 1.0 + priest.sets -> set( SET_T16_2PC_HEAL ) -> effectN( 1 ).percent() * priest.buffs.serendipity -> check();
+
+    return am;
+  }
+
   virtual double cost()
   {
     double c = priest_heal_t::cost();
@@ -4340,6 +4351,8 @@ struct prayer_of_healing_t : public priest_heal_t
     if ( priest.buffs.chakra_sanctuary -> up() )
       am *= 1.0 + priest.buffs.chakra_sanctuary -> data().effectN( 1 ).percent();
 
+    am *= 1.0 + priest.sets -> set( SET_T16_2PC_HEAL ) -> effectN( 1 ).percent() * priest.buffs.serendipity -> check();
+
     return am;
   }
 
@@ -4563,6 +4576,12 @@ struct archangel_t : public priest_buff_t<buff_t>
     base_t( p, buff_creator_t( &p, "archangel" ).spell( p.specs.archangel ).max_stack( 5 ) )
   {
     default_value = data().effectN( 1 ).percent();
+
+    if ( priest.sets -> has_set_bonus( SET_T16_2PC_HEAL ) )
+    {
+      add_invalidate( CACHE_CRIT );
+
+    }
   }
 
   virtual bool trigger( int stacks, double /* value */, double chance, timespan_t duration )
@@ -4930,6 +4949,26 @@ double priest_t::composite_spell_hit()
     hit += ( ( cache.spirit() - base.stats.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / current_rating().spell_hit;
 
   return hit;
+}
+
+double priest_t::composite_spell_crit()
+{
+  double csc = base_t::composite_spell_crit();
+
+  if ( buffs.archangel -> check() )
+    csc *= 1.0 + sets -> set( SET_T16_2PC_HEAL ) -> effectN( 2 ).percent();
+
+  return csc;
+}
+
+double priest_t::composite_melee_crit()
+{
+  double cmc = base_t::composite_melee_crit();
+
+  if ( buffs.archangel -> check() )
+    cmc *= 1.0 + sets -> set( SET_T16_2PC_HEAL ) -> effectN( 2 ).percent();
+
+  return cmc;
 }
 
 // priest_t::composite_attack_hit ============================================
@@ -5402,8 +5441,7 @@ void priest_t::create_buffs()
   if ( dbc.ptr )
     buffs.empowered_shadows = buff_creator_t( this, "empowered_shadows" )
                               .spell( sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).trigger() )
-                              .chance( sets -> has_set_bonus( SET_T16_4PC_CASTER ) ? 1.0 : 0.0 )
-                              /* FIXME: Check whether it's 20% dmg increase per stack ( as in the tooltip ), or 50% dmg increase ( effetN(1) data ). */;
+                              .chance( sets -> has_set_bonus( SET_T16_4PC_CASTER ) ? 1.0 : 0.0 );
 }
 
 // ALL Spec Pre-Combat Action Priority List

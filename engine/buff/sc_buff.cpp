@@ -232,7 +232,6 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
     activated = params._activated != 0;
 
   invalidate_list = params._invalidate_list;
-
   requires_invalidation = ! invalidate_list.empty();
 
   if ( player && ! player -> cache.active ) requires_invalidation = false;
@@ -267,6 +266,15 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   if ( as<int>( stack_uptime.size() ) < _max_stack )
     for ( int i = as<int>( stack_uptime.size() ); i <= _max_stack; ++i )
       stack_uptime.push_back( new buff_uptime_t() );
+}
+
+void buff_t::add_invalidate( cache_e c )
+{
+  if ( range::find( invalidate_list, c ) == invalidate_list.end() ) // avoid duplication
+  {
+    invalidate_list.push_back( c );
+    requires_invalidation = true;
+  }
 }
 
 // buff_t::datacollection_begin ==========================================================
@@ -1282,7 +1290,7 @@ void cost_reduction_buff_t::refresh( int        stacks,
 haste_buff_t::haste_buff_t( const haste_buff_creator_t& params ) :
   buff_t( params )
 {
-  invalidate_list.push_back( CACHE_HASTE );
+  add_invalidate( CACHE_HASTE );
   requires_invalidation = true;
 }
 

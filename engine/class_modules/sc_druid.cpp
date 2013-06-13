@@ -767,11 +767,10 @@ public:
     buff_t( buff_creator_t( &p, "heart_of_the_wild" )
             .spell( select_spell( p ) ) )
   {
-    invalidate_list.push_back( CACHE_AGILITY );
-    invalidate_list.push_back( CACHE_HIT );
-    invalidate_list.push_back( CACHE_EXP );
-    invalidate_list.push_back( CACHE_PLAYER_HEAL_MULTIPLIER );
-    requires_invalidation = true;
+    add_invalidate( CACHE_AGILITY );
+    add_invalidate( CACHE_HIT );
+    add_invalidate( CACHE_EXP );
+    add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
   }
 
   bool heals_are_free()
@@ -4852,14 +4851,13 @@ public:
     // HOTW will require invalidation of hit
     if ( druid.talent.heart_of_the_wild -> ok() )
     {
-      invalidate_list.push_back( CACHE_HIT );
-      invalidate_list.push_back( CACHE_EXP );
+      add_invalidate( CACHE_HIT );
+      add_invalidate( CACHE_EXP );
     }
-    invalidate_list.push_back( CACHE_AGILITY );
-    invalidate_list.push_back( CACHE_ATTACK_POWER );
-    invalidate_list.push_back( CACHE_HASTE );
-    invalidate_list.push_back( CACHE_CRIT );
-    requires_invalidation = true;
+    add_invalidate( CACHE_AGILITY );
+    add_invalidate( CACHE_ATTACK_POWER );
+    add_invalidate( CACHE_HASTE );
+    add_invalidate( CACHE_CRIT );
   }
 
   virtual void expire_override()
@@ -4911,13 +4909,12 @@ struct cat_form_t : public druid_buff_t< buff_t >
     // change shapeshift forms during HoTW, that affects the stats
     if ( druid.talent.heart_of_the_wild -> ok() )
     {
-      invalidate_list.push_back( CACHE_HIT );
-      invalidate_list.push_back( CACHE_EXP );
+      add_invalidate( CACHE_HIT );
+      add_invalidate( CACHE_EXP );
     }
-    invalidate_list.push_back( CACHE_AGILITY );
-    invalidate_list.push_back( CACHE_ATTACK_POWER );
-    invalidate_list.push_back( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    requires_invalidation = true;
+    add_invalidate( CACHE_AGILITY );
+    add_invalidate( CACHE_ATTACK_POWER );
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   virtual void expire_override()

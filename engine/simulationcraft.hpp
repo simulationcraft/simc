@@ -1888,12 +1888,12 @@ public:
   event_t* delay;
   rng_t* rng;
   cooldown_t* cooldown;
-  std::vector<cache_e> invalidate_list;
   sc_timeline_t uptime_array;
 
   // static values
 private: // private because changing max_stacks requires resizing some stack-dependant vectors
   int _max_stack;
+  std::vector<cache_e> invalidate_list;
 public:
   double default_value;
   bool activated, reactable;
@@ -1967,6 +1967,7 @@ public:
   virtual void datacollection_begin();
   virtual void datacollection_end();
 
+  void add_invalidate( cache_e );
 #ifdef SC_STAT_CACHE
   virtual void invalidate_cache();
 #else

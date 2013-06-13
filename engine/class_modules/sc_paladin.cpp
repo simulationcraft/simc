@@ -2288,7 +2288,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
         p() -> active_seal_of_justice_aoe_proc -> execute();
 
       // battle healer
-      if ( trigger_battle_healer )
+      if ( trigger_battle_healer && p() -> active.battle_healer_proc )
       {
         p() -> active.battle_healer_proc -> trigger( *execute_state );
       }
