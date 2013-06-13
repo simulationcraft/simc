@@ -105,8 +105,7 @@ public:
     buff_t* barkskin;
     buff_t* bear_form;
     buff_t* cat_form;
-    buff_t* dream_of_cenarius_damage;
-    buff_t* dream_of_cenarius_heal;
+    buff_t* dream_of_cenarius;
     buff_t* frenzied_regeneration;
     buff_t* natures_swiftness;
     buff_t* natures_vigil;
@@ -132,6 +131,7 @@ public:
     buff_t* savage_roar;
     buff_t* tigers_fury;
     buff_t* tier15_4pc_melee;
+    buff_t* feral_fury;
 
     // Guardian
     buff_t* enrage;
@@ -663,39 +663,42 @@ struct treants_balance_t : public pet_t
 
 struct treants_feral_t : public pet_t
 {
+  melee_attack_t* melee;
+
   struct melee_t : public melee_attack_t
   {
-    melee_t( treants_feral_t* player ) :
-      melee_attack_t( "treant_melee", player )
+    druid_t* owner;
+
+    melee_t( treants_feral_t* p )
+      : melee_attack_t( "melee", p, spell_data_t::nil() ), owner( 0 )
     {
-      if ( player -> o() -> pet_treants[ 0 ] )
-        stats = player -> o() -> pet_treants[ 0 ] -> get_stats( "treant_melee" );
-
-      weapon = &( player -> main_hand_weapon );
-      base_execute_time = weapon -> swing_time;
-      base_dd_min = base_dd_max = 1;
       school = SCHOOL_PHYSICAL;
-
-      trigger_gcd = timespan_t::zero();
-
+      weapon = &( p -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
       background = true;
       repeating  = true;
-      special    = false;
-      may_glance = true;
       may_crit   = true;
+      trigger_gcd = timespan_t::zero();
+      owner = p -> o();
 
-      use_off_gcd = true;
+      may_glance = true;
+      special    = false;
     }
   };
-
-  druid_t* o() { return static_cast< druid_t* >( owner ); }
-
-  treants_feral_t( sim_t* sim, druid_t* owner ) :
-    pet_t( sim, owner, "treant", true /*GUARDIAN*/ )
+  
+  treants_feral_t( sim_t* sim, druid_t* p ) :
+    pet_t( sim, p, "treant", true ), melee( 0 )
   {
-    // FIX ME
-    owner_coeff.ap_from_ap = 1.6;
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+    main_hand_weapon.min_dmg    = owner -> find_class_spell( "Force of Nature" ) -> effectN( 1 ).base_value();
+    main_hand_weapon.max_dmg    = owner -> find_class_spell( "Force of Nature" ) -> effectN( 1 ).base_value();
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    owner_coeff.ap_from_ap      = 2.0 * 1.2;
   }
+
+  druid_t* o() 
+  { return static_cast< druid_t* >( owner ); }
 
   virtual void init_base_stats()
   {
@@ -703,38 +706,21 @@ struct treants_feral_t : public pet_t
 
     resources.base[ RESOURCE_HEALTH ] = owner -> resources.max[ RESOURCE_HEALTH ] * 0.4;
     resources.base[ RESOURCE_MANA   ] = 0;
-
     stamina_per_owner = 0.0;
 
-    main_hand_weapon.type       = WEAPON_BEAST;
-    main_hand_weapon.damage     = owner -> find_class_spell( "Force of Nature" ) -> effectN( 1 ).base_value();
-    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-
-    main_hand_attack = new melee_t( this );
+    melee = new melee_t( this );
   }
 
-  void init_actions()
-  {
-    action_list_str = "auto_attack";
-
-    pet_t::init_actions();
-  }
-
-  virtual resource_e primary_resource() { return RESOURCE_MANA; }
-
-  virtual action_t* create_action( const std::string& name,
-                                   const std::string& options_str )
-  {
-    if ( name == "auto_attack"  ) return new melee_t( this );
-
-    return pet_t::create_action( name, options_str );
-  }
   virtual void summon( timespan_t duration = timespan_t::zero() )
   {
     pet_t::summon( duration );
-    // Treants cast on the target will instantly perform a melee before
-    // starting to cast wrath
-    main_hand_attack -> execute();
+    schedule_ready();
+  }
+
+  virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
+  {
+    pet_t::schedule_ready( delta_time, waiting );
+    if ( ! melee -> execute_event ) melee -> execute();
   }
 };
 
@@ -910,11 +896,11 @@ public:
 
   druid_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 
-  void trigger_omen_of_clarity()
+  bool trigger_omen_of_clarity()
   {
-    if ( ab::proc ) return;
+    if ( ab::proc ) return false;
 
-    p() -> buff.omen_of_clarity -> trigger();
+    return p() -> buff.omen_of_clarity -> trigger();
   }
 };
 
@@ -942,9 +928,9 @@ public:
 
     if ( this -> special && this -> harmful )
     {
-      if ( this -> p() -> buff.dream_of_cenarius_damage -> check() )
+      if ( ! p() -> dbc.ptr && this -> p() -> buff.dream_of_cenarius -> check() )
       {
-        m *= 1.0 + this -> p() -> buff.dream_of_cenarius_damage -> data().effectN( 1 ).percent();
+        m *= 1.0 + this -> p() -> buff.dream_of_cenarius -> data().effectN( 1 ).percent();
       }
     }
 
@@ -957,9 +943,9 @@ public:
 
     if ( this -> special && this -> harmful )
     {
-      if ( this -> p() -> buff.dream_of_cenarius_damage -> check() )
+      if ( ! p() -> dbc.ptr && this -> p() -> buff.dream_of_cenarius -> check() )
       {
-        m *= 1.0 + this -> p() -> buff.dream_of_cenarius_damage -> data().effectN( 2 ).percent();
+        m *= 1.0 + this -> p() -> buff.dream_of_cenarius -> data().effectN( 2 ).percent();
       }
     }
 
@@ -970,11 +956,11 @@ public:
   {
     ab::execute();
 
-    if ( this -> special && this -> harmful )
+    if ( ! p() -> dbc.ptr && this -> special && this -> harmful )
     {
-      if ( this -> p() -> buff.dream_of_cenarius_damage -> up() )
+      if ( this -> p() -> buff.dream_of_cenarius -> up() )
       {
-        this -> p() -> buff.dream_of_cenarius_damage -> decrement();
+        this -> p() -> buff.dream_of_cenarius -> decrement();
       }
     }
   }
@@ -1302,8 +1288,8 @@ struct cat_melee_t : public cat_attack_t
   {
     cat_attack_t::impact( state );
 
-    if ( result_is_hit( state -> result ) )
-      trigger_omen_of_clarity();
+    if ( result_is_hit( state -> result ) && trigger_omen_of_clarity() && p() -> set_bonus.tier16_2pc_melee() )
+      p() -> buff.feral_fury -> trigger();
   }
 };
 
@@ -1395,7 +1381,8 @@ struct ferocious_bite_t : public cat_attack_t
 
     cat_attack_t::execute();
 
-    p() -> buff.tier15_4pc_melee -> decrement();
+    if ( p() -> buff.tier15_4pc_melee -> up() )
+      p() -> buff.tier15_4pc_melee -> decrement();
 
     max_excess_energy = 25.0;
   }
@@ -1461,8 +1448,8 @@ struct ferocious_bite_t : public cat_attack_t
     if ( t -> debuffs.bleeding -> check() )
       tc += data().effectN( 2 ).percent();
 
-    if ( p() -> buff.tier15_4pc_melee -> up() )
-      tc += 0.40;
+    if ( p() -> buff.tier15_4pc_melee -> check() )
+      tc += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
 
     return tc;
   }
@@ -1507,7 +1494,10 @@ struct mangle_cat_t : public cat_attack_t
   {
     cat_attack_t::execute();
 
-    p() -> buff.tier15_4pc_melee -> decrement();
+    p() -> buff.feral_fury -> up();
+
+    if ( p() -> buff.tier15_4pc_melee -> up() )
+      p() -> buff.tier15_4pc_melee -> decrement();
   }
 
   virtual void impact( action_state_t* state )
@@ -1521,10 +1511,20 @@ struct mangle_cat_t : public cat_attack_t
   {
     double tc = cat_attack_t::composite_target_crit( t );
 
-    if ( p() -> buff.tier15_4pc_melee -> up() )
-      tc += 0.40;
+    if ( p() -> buff.tier15_4pc_melee -> check() )
+      tc += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
 
     return tc;
+  }
+  
+  double composite_da_multiplier()
+  {
+    double m = cat_attack_t::composite_da_multiplier();
+
+    if ( p() -> buff.feral_fury -> check() )
+      m *= 1.0 + p() -> buff.feral_fury -> data().effectN( 1 ).percent();
+
+    return m;
   }
 
   virtual bool ready()
@@ -1643,10 +1643,20 @@ struct ravage_t : public cat_attack_t
     if ( target && ( target -> is_enemy() || target -> is_add() ) && ( target -> health_percentage() > extra_crit_threshold ) )
       tc += extra_crit_amount;
 
-    if ( p() -> buff.tier15_4pc_melee -> up() )
-      tc += 0.40;
+    if ( p() -> buff.tier15_4pc_melee -> check() )
+      tc += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
 
     return tc;
+  }
+  
+  double composite_da_multiplier()
+  {
+    double m = cat_attack_t::composite_da_multiplier();
+
+    if ( p() -> buff.feral_fury -> check() )
+      m *= 1.0 + p() -> buff.feral_fury -> data().effectN( 1 ).percent();
+
+    return m;
   }
 
   virtual void impact( action_state_t* state )
@@ -1673,8 +1683,11 @@ struct ravage_t : public cat_attack_t
   virtual void execute()
   {
     cat_attack_t::execute();
-
-    p() -> buff.tier15_4pc_melee -> decrement();
+    
+    p() -> buff.feral_fury -> up();
+    
+    if ( p() -> buff.tier15_4pc_melee -> up() )
+      p() -> buff.tier15_4pc_melee -> decrement();
   }
 };
 
@@ -1698,6 +1711,24 @@ struct rip_t : public cat_attack_t
       num_ticks += ( int ) (  player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value() / base_tick_time );
   }
 
+  virtual double action_ta_multiplier()
+  {
+    double adm = base_t::action_ta_multiplier();
+
+    if ( p() -> dbc.ptr && p() -> buff.dream_of_cenarius -> check() )
+      adm *= 1.0 + p() -> buff.dream_of_cenarius -> data().effectN( 1 ).percent();
+
+    return adm;
+  }
+
+  virtual void execute()
+  {
+    druid_attack_t::execute();
+
+    if ( p() -> dbc.ptr && p() -> buff.dream_of_cenarius -> up() )
+      p() -> buff.dream_of_cenarius -> decrement();
+  }
+
   double tick_power_coefficient( const action_state_t* state )
   { return cat_state( state ) -> cp * ap_per_point; }
 };
@@ -1707,10 +1738,12 @@ struct rip_t : public cat_attack_t
 struct savage_roar_t : public cat_attack_t
 {
   timespan_t base_buff_duration;
+  timespan_t seconds_per_combo;
 
   savage_roar_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( p, p -> find_class_spell( "Savage Roar" ), options_str ),
-    base_buff_duration( data().duration() ) // Base duration is 12, glyphed or not, it just adds 6s per cp used.
+    base_buff_duration( data().duration() ), // Base duration is 12
+    seconds_per_combo( timespan_t::from_seconds( 6.0 ) ) // plus 6s per cp used.
   {
     may_miss              = false;
     harmful               = false;
@@ -1734,7 +1767,7 @@ struct savage_roar_t : public cat_attack_t
       carryover -= base_tick_time * result;
       duration += carryover;
     }
-    duration += timespan_t::from_seconds( 6.0 ) * td( state -> target ) -> combo_points.get();
+    duration += seconds_per_combo * td( state -> target ) -> combo_points.get();
 
 
     p() -> buff.savage_roar -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
@@ -1742,16 +1775,21 @@ struct savage_roar_t : public cat_attack_t
 
   virtual bool ready()
   {
-    if ( ! p() -> glyph.savagery -> ok() )
-    {
-      return cat_attack_t::ready();
-    }
+    if ( base_buff_duration + seconds_per_combo * td( target ) -> combo_points.get() > p() -> buff.savage_roar -> remains() )
+      if ( ! p() -> glyph.savagery -> ok() )
+      {
+        return cat_attack_t::ready();
+      }
+      else
+      {
+        requires_combo_points = false;
+        bool glyphed_ready = cat_attack_t::ready();
+        requires_combo_points = true;
+        return glyphed_ready;
+      }
     else
     {
-      requires_combo_points = false;
-      bool glyphed_ready = cat_attack_t::ready();
-      requires_combo_points = true;
-      return glyphed_ready;
+      return false;
     }
   }
 };
@@ -1815,7 +1853,10 @@ struct shred_t : public cat_attack_t
   {
     cat_attack_t::execute();
 
-    p() -> buff.tier15_4pc_melee -> decrement();
+    p() -> buff.feral_fury -> up();
+    
+    if ( p() -> buff.tier15_4pc_melee -> up() )
+      p() -> buff.tier15_4pc_melee -> decrement();
   }
 
   virtual void impact( action_state_t* state )
@@ -1839,10 +1880,20 @@ struct shred_t : public cat_attack_t
   {
     double tc = cat_attack_t::composite_target_crit( t );
 
-    if ( p() -> buff.tier15_4pc_melee -> up() )
-      tc += 0.40;
+    if ( p() -> buff.tier15_4pc_melee -> check() )
+      tc += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
 
     return tc;
+  }
+  
+  double composite_da_multiplier()
+  {
+    double m = cat_attack_t::composite_da_multiplier();
+
+    if ( p() -> buff.feral_fury -> check() )
+      m *= 1.0 + p() -> buff.feral_fury -> data().effectN( 1 ).percent();
+
+    return m;
   }
 
   virtual bool ready()
@@ -1893,7 +1944,8 @@ struct swipe_cat_t : public cat_attack_t
   {
     cat_attack_t::execute();
 
-    p() -> buff.tier15_4pc_melee -> decrement();
+    if ( p() -> buff.tier15_4pc_melee -> up() )
+      p() -> buff.tier15_4pc_melee -> decrement();
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -1910,8 +1962,8 @@ struct swipe_cat_t : public cat_attack_t
   {
     double tc = cat_attack_t::composite_target_crit( t );
 
-    if ( p() -> buff.tier15_4pc_melee -> up() )
-      tc += 0.40;
+    if ( p() -> buff.tier15_4pc_melee -> check() )
+      tc += p() -> buff.tier15_4pc_melee -> data().effectN( 1 ).percent();
 
     return tc;
   }
@@ -1991,6 +2043,8 @@ struct tigers_fury_t : public cat_attack_t
       p() -> buff.omen_of_clarity -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
     if ( p() -> set_bonus.tier15_4pc_melee() )
       p() -> buff.tier15_4pc_melee -> trigger( 3 );
+    if ( p() -> set_bonus.tier16_4pc_melee() )
+      td( target ) -> combo_points.add( 5, &name_str );
   }
 
   virtual bool ready()
@@ -2623,13 +2677,13 @@ public:
     double adm = base_t::action_da_multiplier();
 
     if ( p() -> buff.tree_of_life -> up() )
-      adm += p() -> buff.tree_of_life -> data().effectN( 1 ).percent();
+      adm *= 1.0 + p() -> buff.tree_of_life -> data().effectN( 1 ).percent();
 
     if ( p() -> buff.natures_swiftness -> check() && base_execute_time > timespan_t::zero() )
-      adm += p() -> talent.natures_swiftness -> effectN( 2 ).percent();
+      adm *= 1.0 + p() -> talent.natures_swiftness -> effectN( 2 ).percent();
 
     if ( p() -> mastery.harmony -> ok() )
-      adm += p() -> cache.mastery_value();
+      adm *= 1.0 + p() -> cache.mastery_value();
 
     return adm;
   }
@@ -2736,7 +2790,23 @@ struct healing_touch_t : public druid_heal_t
 
     return druid_heal_t::cost();
   }
+  
+  virtual double action_da_multiplier()
+  {
+    double adm = base_t::action_da_multiplier();
 
+    if ( p() -> talent.dream_of_cenarius -> ok() )
+    {
+      if ( p() -> specialization() == DRUID_BALANCE )
+        adm *= 1.0 + p() -> talent.dream_of_cenarius -> effectN( 1 ).percent();
+      else if ( p() -> specialization() == DRUID_FERAL )
+        adm *= 1.0 + p() -> talent.dream_of_cenarius -> effectN( 2 ).percent();
+      else if ( p() -> specialization() == DRUID_GUARDIAN )
+        adm *= 1.0 + p() -> talent.dream_of_cenarius -> effectN( 3 ).percent();
+    }
+
+    return adm;
+  }
 
   virtual timespan_t execute_time()
   {
@@ -2764,7 +2834,10 @@ struct healing_touch_t : public druid_heal_t
     druid_heal_t::execute();
 
     p() -> buff.predatory_swiftness -> expire();
-    p() -> buff.dream_of_cenarius_damage -> trigger( 2 );
+    if ( p() -> dbc.ptr )
+      p() -> buff.dream_of_cenarius -> trigger();
+    else
+      p() -> buff.dream_of_cenarius -> trigger( 2 );
   }
 
   virtual void schedule_execute( action_state_t* state = 0 )
@@ -2920,7 +2993,8 @@ struct nourish_t : public druid_heal_t
   virtual void execute()
   {
     druid_heal_t::execute();
-    p() -> buff.dream_of_cenarius_damage -> trigger( 2 );
+    if ( ! p() -> dbc.ptr )
+      p() -> buff.dream_of_cenarius -> trigger( 2 );
   }
 };
 
@@ -2970,7 +3044,8 @@ struct regrowth_t : public druid_heal_t
   {
     druid_heal_t::execute();
 
-    p() -> buff.dream_of_cenarius_damage -> trigger( 2 );
+    if ( ! p() -> dbc.ptr )
+      p() -> buff.dream_of_cenarius -> trigger( 2 );
   }
 
   virtual timespan_t execute_time()
@@ -3953,22 +4028,24 @@ struct moonfire_t : public druid_spell_t
     {
       double m = druid_spell_t::action_ta_multiplier();
 
-      if ( p() -> buff.dream_of_cenarius_damage -> check() )
-        m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 4 ).percent();
+      if ( ! p() -> dbc.ptr && p() -> buff.dream_of_cenarius -> check() )
+        m *= 1.0 + p() -> buff.dream_of_cenarius -> data().effectN( 4 ).percent();
 
       return m;
     }
 
     virtual void execute()
     {
-      p() -> buff.dream_of_cenarius_damage -> up();
+      if ( ! p() -> dbc.ptr )
+        p() -> buff.dream_of_cenarius -> up();
       druid_spell_t::execute();
     }
 
     virtual void impact( action_state_t* s )
     {
       druid_spell_t::impact( s );
-      p() -> buff.dream_of_cenarius_damage -> decrement();
+      if ( ! p() -> dbc.ptr )
+        p() -> buff.dream_of_cenarius -> decrement();
     }
   };
 
@@ -3995,9 +4072,9 @@ struct moonfire_t : public druid_spell_t
 
     m *= 1.0 + ( p() -> buff.lunar_shower -> data().effectN( 1 ).percent() * p() -> buff.lunar_shower -> check() );
 
-    if ( p() -> buff.dream_of_cenarius_damage -> check() )
+    if ( ! p() -> dbc.ptr && p() -> buff.dream_of_cenarius -> check() )
     {
-      m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 3 ).percent();
+      m *= 1.0 + p() -> buff.dream_of_cenarius -> data().effectN( 3 ).percent();
     }
 
     return m;
@@ -4007,9 +4084,9 @@ struct moonfire_t : public druid_spell_t
   {
     double m = druid_spell_t::action_ta_multiplier();
 
-    if ( p() -> buff.dream_of_cenarius_damage -> check() )
+    if ( ! p() -> dbc.ptr && p() -> buff.dream_of_cenarius -> check() )
     {
-      m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 4 ).percent();
+      m *= 1.0 + p() -> buff.dream_of_cenarius -> data().effectN( 4 ).percent();
     }
 
     return m;
@@ -4023,7 +4100,8 @@ struct moonfire_t : public druid_spell_t
 
   virtual void execute()
   {
-    p() -> buff.dream_of_cenarius_damage -> up();
+    if ( ! p() -> dbc.ptr )
+      p() -> buff.dream_of_cenarius -> up();
     p() -> buff.lunar_shower -> up();
 
     druid_spell_t::execute();
@@ -4050,7 +4128,8 @@ struct moonfire_t : public druid_spell_t
     }
     druid_spell_t::impact( s );
 
-    p() -> buff.dream_of_cenarius_damage -> decrement();
+    if ( ! p() -> dbc.ptr )
+      p() -> buff.dream_of_cenarius -> decrement();
   }
 
   virtual double cost_reduction()
@@ -4415,22 +4494,24 @@ struct sunfire_t : public druid_spell_t
     {
       double m = druid_spell_t::action_ta_multiplier();
 
-      if ( p() -> buff.dream_of_cenarius_damage -> check() )
-        m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 4 ).percent();
+      if ( ! p() -> dbc.ptr && p() -> buff.dream_of_cenarius -> check() )
+        m *= 1.0 + p() -> buff.dream_of_cenarius -> data().effectN( 4 ).percent();
 
       return m;
     }
 
     virtual void execute()
     {
-      p() -> buff.dream_of_cenarius_damage -> up();
+      if ( ! p() -> dbc.ptr )
+        p() -> buff.dream_of_cenarius -> up();
       druid_spell_t::execute();
     }
 
     virtual void impact( action_state_t* s )
     {
       druid_spell_t::impact( s );
-      p() -> buff.dream_of_cenarius_damage -> decrement();
+      if ( ! p() -> dbc.ptr )
+        p() -> buff.dream_of_cenarius -> decrement();
     }
   };
   action_t* moonfire;
@@ -4456,9 +4537,9 @@ struct sunfire_t : public druid_spell_t
 
     m *= 1.0 + ( p() -> buff.lunar_shower -> data().effectN( 1 ).percent() * p() -> buff.lunar_shower -> check() );
 
-    if ( p() -> buff.dream_of_cenarius_damage -> check() )
+    if ( ! p() -> dbc.ptr && p() -> buff.dream_of_cenarius -> check() )
     {
-      m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 3 ).percent();
+      m *= 1.0 + p() -> buff.dream_of_cenarius -> data().effectN( 3 ).percent();
     }
 
     return m;
@@ -4468,9 +4549,9 @@ struct sunfire_t : public druid_spell_t
   {
     double m = druid_spell_t::action_ta_multiplier();
 
-    if ( p() -> buff.dream_of_cenarius_damage -> check() )
+    if ( ! p() -> dbc.ptr && p() -> buff.dream_of_cenarius -> check() )
     {
-      m *= 1.0 + p() -> buff.dream_of_cenarius_damage -> data().effectN( 4 ).percent();
+      m *= 1.0 + p() -> buff.dream_of_cenarius -> data().effectN( 4 ).percent();
     }
 
     return m;
@@ -4485,7 +4566,8 @@ struct sunfire_t : public druid_spell_t
 
   virtual void execute()
   {
-    p() -> buff.dream_of_cenarius_damage -> up();
+    if ( ! p() -> dbc.ptr )
+      p() -> buff.dream_of_cenarius -> up();
     p() -> buff.lunar_shower -> up();
 
     druid_spell_t::execute();
@@ -4511,7 +4593,8 @@ struct sunfire_t : public druid_spell_t
     }
     druid_spell_t::impact( s );
 
-    p() -> buff.dream_of_cenarius_damage -> decrement();
+    if ( ! p() -> dbc.ptr )
+      p() -> buff.dream_of_cenarius -> decrement();
   }
 
   virtual double cost_reduction()
@@ -5414,10 +5497,30 @@ void druid_t::create_buffs()
                             .duration( talent.incarnation -> duration() )
                             .chance( talent.incarnation -> ok() ?  ( specialization() == DRUID_RESTORATION ) : 0.0 );
 
-  buff.dream_of_cenarius_damage = buff_creator_t( this, "dream_of_cenarius_damage", talent.dream_of_cenarius -> ok() ? find_spell( 108381 ) : spell_data_t::not_found() )
-                                  .max_stack( 2 );
-  buff.dream_of_cenarius_heal   = buff_creator_t( this, "dream_of_cenarius_heal",   talent.dream_of_cenarius -> ok() ? find_spell( 108382 ) : spell_data_t::not_found() )
-                                  .max_stack( 2 );
+  // Dream of Cenarius
+  if ( talent.dream_of_cenarius -> ok() )
+  {
+    if ( dbc.ptr )
+    {
+      if ( specialization() == DRUID_BALANCE )
+        buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145151 ) );
+      else if ( specialization() == DRUID_FERAL )
+        buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145152 ) );
+      else if ( specialization() == DRUID_GUARDIAN )
+        buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145162 ) );
+      else
+        buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", spell_data_t::not_found() );
+    }
+    else
+    {
+      buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 108381 ) )
+                               .max_stack( 2 );
+    }
+  }
+  else
+  {
+    buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", spell_data_t::not_found() );
+  }
 
   buff.natures_vigil      = buff_creator_t( this, "natures_vigil", talent.natures_vigil -> ok() ? find_spell( 124974 ) : spell_data_t::not_found() )
                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -5455,8 +5558,8 @@ void druid_t::create_buffs()
                                .default_value( find_spell( 62071 ) -> effectN( 1 ).percent() )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
-  buff.tier15_4pc_melee      = buff_creator_t( this, "tier15_4pc_melee", spell_data_t::nil() )
-                               .max_stack( 3 );
+  buff.tier15_4pc_melee      = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138358 ) );
+  buff.feral_fury            = buff_creator_t( this, "feral_fury", find_spell( 144865 ) ); // tier15_2pc_melee
 
   // Guardian
   buff.enrage                = buff_creator_t( this, "enrage" , find_specialization_spell( "Enrage" ) );
@@ -5625,7 +5728,7 @@ void druid_t::init_actions()
 
     if ( level >= 90 )
     {
-      precombat_list += "/healing_touch,if=!buff.dream_of_cenarius_damage.up&talent.dream_of_cenarius.enabled";
+      precombat_list += "/healing_touch,if=!buff.dream_of_cenarius.up&talent.dream_of_cenarius.enabled";
     }
 
     // Symbiosis
@@ -5709,10 +5812,10 @@ void druid_t::init_actions()
         action_list_str += "/skull_bash_cat";
         action_list_str += init_use_racial_actions();
         action_list_str += init_use_profession_actions();
-        action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius_damage.down";
+        action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius.down";
         action_list_str += "/savage_roar,if=buff.savage_roar.down";
         action_list_str += "/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3";
-        action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius_damage.stack<2";
+        action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius.stack<2";
         if ( talent.natures_swiftness -> ok() )
           action_list_str += "/healing_touch,if=buff.natures_swiftness.up";
         if ( talent.incarnation -> ok() )
@@ -5728,19 +5831,19 @@ void druid_t::init_actions()
         action_list_str += "/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&target.health.pct<25";
         if ( hasRune )
         {
-          action_list_str += "/virmens_bite_potion,if=(combo_points>=5&target.health.pct<=25&buff.rune_of_reorigination.up&buff.dream_of_cenarius_damage.up)|target.time_to_die<=40";
-          action_list_str += "/natures_swiftness,if=enabled&combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&buff.rune_of_reorigination.up&target.time_to_die>30";
-          action_list_str += "/rip,line_cd=30,if=combo_points>=5&target.health.pct<=25&buff.virmens_bite_potion.up&buff.dream_of_cenarius_damage.up&buff.rune_of_reorigination.up&target.time_to_die>30";
+          action_list_str += "/virmens_bite_potion,if=(combo_points>=5&target.health.pct<=25&buff.rune_of_reorigination.up&buff.dream_of_cenarius.up)|target.time_to_die<=40";
+          action_list_str += "/natures_swiftness,if=enabled&combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius.down&buff.predatory_swiftness.down&buff.rune_of_reorigination.up&target.time_to_die>30";
+          action_list_str += "/rip,line_cd=30,if=combo_points>=5&target.health.pct<=25&buff.virmens_bite_potion.up&buff.dream_of_cenarius.up&buff.rune_of_reorigination.up&target.time_to_die>30";
         }
         else
         {
-          action_list_str += "/virmens_bite_potion,if=(combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius_damage.up)|target.time_to_die<=40";
+          action_list_str += "/virmens_bite_potion,if=(combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius.up)|target.time_to_die<=40";
           if ( talent.natures_swiftness -> ok() )
-            action_list_str += "/natures_swiftness,if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25";
-          action_list_str += "/rip,line_cd=30,if=combo_points>=5&buff.virmens_bite_potion.up&buff.dream_of_cenarius_damage.up&target.health.pct<=25&target.time_to_die>30";
+            action_list_str += "/natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25";
+          action_list_str += "/rip,line_cd=30,if=combo_points>=5&buff.virmens_bite_potion.up&buff.dream_of_cenarius.up&target.health.pct<=25&target.time_to_die>30";
         }
         if ( hasRune )
-          action_list_str += "/natures_swiftness,if=enabled&buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25";
+          action_list_str += "/natures_swiftness,if=enabled&buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25";
         action_list_str += "/pool_resource,wait=0.25,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))";
         action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25";
         if ( hasRune )
@@ -5749,10 +5852,10 @@ void druid_t::init_actions()
             action_list_str += "/natures_swiftness,if=combo_points>=5&buff.rune_of_reorigination.react&buff.rune_of_reorigination.remains>1";
           action_list_str += "/rip,if=combo_points>=5&buff.rune_of_reorigination.react";
         }
-        action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&buff.dream_of_cenarius_damage.up";
-        // action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<6.0&buff.dream_of_cenarius_damage.up&dot.rip.multiplier<=tick_multiplier";
+        action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&buff.dream_of_cenarius.up";
+        // action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<6.0&buff.dream_of_cenarius.up&dot.rip.multiplier<=tick_multiplier";
         if ( talent.natures_swiftness -> ok() )
-          action_list_str += "/natures_swiftness,if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)";
+          action_list_str += "/natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)";
         action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)";
         action_list_str += "/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains";
         action_list_str += "/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains";
@@ -5763,7 +5866,7 @@ void druid_t::init_actions()
           action_list_str += "/rake,if=buff.rune_of_reorigination.react";//&$(rake_ratio)>=1";
           // action_list_str += "/rake,if=buff.rune_of_reorigination.react&dot.rake.remains<9&(buff.rune_of_reorigination.remains<=1.5)";
         }
-        action_list_str += "/rake,if=dot.rake.remains<9&buff.dream_of_cenarius_damage.up"; // threshold is more aggressive (to 9 from 6) to account for lack of clipping otherwise
+        action_list_str += "/rake,if=dot.rake.remains<9&buff.dream_of_cenarius.up"; // threshold is more aggressive (to 9 from 6) to account for lack of clipping otherwise
         // action_list_str += "/rake,if=dot.rake.remains<3&tick_multiplier%dot.rake.multiplier>1.12";
         action_list_str += "/rake,if=dot.rake.remains<3";
         action_list_str += "/pool_resource,wait=0.25,for_next=1";
@@ -5868,7 +5971,7 @@ void druid_t::init_actions()
       aoe_list += "/auto_attack";
       if ( talent.dream_of_cenarius -> ok() )
       {
-        aoe_list += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius_damage.down";
+        aoe_list += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius.down";
         if ( talent.natures_swiftness -> ok() )
           aoe_list += "/healing_touch,if=buff.natures_swiftness.up";
       }
@@ -5885,7 +5988,7 @@ void druid_t::init_actions()
         {
           aoe_list += "/healing_touch,if=buff.rune_of_reorigination.remains<3&buff.predatory_swiftness.up";
           if ( talent.natures_swiftness -> ok() )
-            aoe_list += "/natures_swiftness,if=buff.rune_of_reorigination.remains<3&buff.predatory_swiftness.down&buff.dream_of_cenarius_damage.down";
+            aoe_list += "/natures_swiftness,if=buff.rune_of_reorigination.remains<3&buff.predatory_swiftness.down&buff.dream_of_cenarius.down";
           aoe_list += "/pool_resource,wait=0.1,for_next=1";
           if ( talent.natures_swiftness -> ok() )
             aoe_list += "/thrash_cat,if=buff.rune_of_reorigination.up&(dot.thrash_cat.multiplier<=tick_multiplier|buff.predatory_swiftness.up|cooldown.natures_swiftness.remains=0)";
@@ -5902,7 +6005,7 @@ void druid_t::init_actions()
       {
         aoe_list += "/healing_touch,if=buff.predatory_swiftness.up&(dot.thrash_cat.remains<5|(buff.tigers_fury.remains>1&dot.thrash_cat.remains<9&energy>=40))";
         if ( talent.natures_swiftness -> ok() )
-          aoe_list += "/natures_swiftness,if=buff.predatory_swiftness.down&buff.dream_of_cenarius_damage.down&(dot.thrash_cat.remains<5|(buff.tigers_fury.remains>1&dot.thrash_cat.remains<9&energy>=40))";
+          aoe_list += "/natures_swiftness,if=buff.predatory_swiftness.down&buff.dream_of_cenarius.down&(dot.thrash_cat.remains<5|(buff.tigers_fury.remains>1&dot.thrash_cat.remains<9&energy>=40))";
       }
       aoe_list += "/thrash_cat,if=buff.tigers_fury.up&dot.thrash_cat.remains<9";
       aoe_list += "/pool_resource,wait=0.1,for_next=1";
@@ -5931,7 +6034,7 @@ void druid_t::init_actions()
       action_list_str += init_use_profession_actions( ",if=buff.celestial_alignment.up|cooldown.celestial_alignment.remains>30" );
       action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
       action_list_str += "/natures_swiftness,if=talent.natures_swiftness.enabled&talent.dream_of_cenarius.enabled";
-      action_list_str += "/healing_touch,if=talent.dream_of_cenarius.enabled&!buff.dream_of_cenarius_damage.up&mana.pct>25";
+      action_list_str += "/healing_touch,if=talent.dream_of_cenarius.enabled&!buff.dream_of_cenarius.up&mana.pct>25";
       action_list_str += "/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)";
       action_list_str += "/celestial_alignment,if=(!buff.lunar_eclipse.up&!buff.solar_eclipse.up)&(buff.chosen_of_elune.up|!talent.incarnation.enabled|cooldown.incarnation.remains>10)";
       action_list_str += "/natures_vigil,if=talent.natures_vigil.enabled";
