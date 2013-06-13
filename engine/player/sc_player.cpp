@@ -4810,6 +4810,18 @@ void player_t::assess_damage( school_e school,
   // store post-mitigation, pre-absorb value
   s -> result_mitigated = s -> result_amount;
 
+  if ( buffs.hand_of_sacrifice -> check() )
+  {
+    // figure out how much damage gets redirected
+    double redirected_damage = s -> result_amount * ( buffs.hand_of_sacrifice -> data().effectN( 1 ).percent() );
+    
+    // apply that damage to the source paladin
+    // need reia's fix here
+    
+    // mitigate that amount from the target
+    s -> result_amount -= redirected_damage;
+  }
+
   /* ABSORB BUFFS
    *
    * std::vector<absorb_buff_t*> absorb_buff_list; is a dynamic vector, which contains

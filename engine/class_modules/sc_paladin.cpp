@@ -77,6 +77,7 @@ public:
   struct active_actions_t
   {
     battle_healer_proc_t* battle_healer_proc;
+//    hand_of_sacrifice_redirect_t* hand_of_sacrifice_redirect;
   } active;
 
   // Buffs
@@ -1497,6 +1498,56 @@ struct hand_of_purity_t : public paladin_spell_t
 
     p() -> buffs.hand_of_purity -> trigger();
   }
+};
+
+// Hand of Sacrifice ========================================================
+
+struct hand_of_sacrifice_redirect_t : public paladin_spell_t 
+{
+  hand_of_sacrifice_redirect_t( paladin_t* p ) :
+    paladin_spell_t( "hand_of_sacrifice_redirect", p, p -> find_class_spell( "Hand of Sacrifice" ) )
+  {
+    background = true;
+    trigger_gcd = timespan_t::zero();
+    may_crit = false;
+    may_miss = false;
+    base_multiplier = data().effectN( 1 ).percent();
+    target = p;
+  }
+
+  void trigger( const action_state_t& s )
+  {   
+    // set the redirect amount based on the result of the action
+    base_dd_min = s.result_amount;
+    base_dd_max = s.result_amount;
+
+    execute();
+  }
+
+};
+
+struct hand_of_sacrifice_t : public paladin_spell_t
+{
+  hand_of_sacrifice_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "hand_of_sacrifice", p, p-> find_class_spell( "Hand of Sacrifice" ) )
+  {
+    parse_options( NULL, options_str );
+
+    harmful = false;
+    may_miss = false; 
+//    p -> active.hand_of_sacrifice_redirect = new hand_of_sacrifice_redirect_t( p );
+    
+    if ( p -> talents.clemency -> ok() )
+      cooldown -> charges = 2;
+  }
+
+  virtual void execute()
+  {
+    paladin_spell_t::execute();
+    
+     target -> buffs.hand_of_sacrifice -> trigger();
+  }
+
 };
 
 // Holy Avenger =============================================================
@@ -3312,6 +3363,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "exorcism"                  ) return new exorcism_t                 ( this, options_str );
   if ( name == "fist_of_justice"           ) return new fist_of_justice_t          ( this, options_str );
   if ( name == "hand_of_purity"            ) return new hand_of_purity_t           ( this, options_str );
+  if ( name == "hand_of_sacrifice"         ) return new hand_of_sacrifice_t        ( this, options_str );
   if ( name == "hammer_of_justice"         ) return new hammer_of_justice_t        ( this, options_str );
   if ( name == "hammer_of_wrath"           ) return new hammer_of_wrath_t          ( this, options_str );
   if ( name == "hammer_of_the_righteous"   ) return new hammer_of_the_righteous_t  ( this, options_str );
@@ -4656,7 +4708,7 @@ void paladin_t::target_mitigation( school_e school,
   { s -> result_amount *= 1.0 + ( buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() - get_divine_bulwark() ) * (1.0 + sets -> set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent() ); }
 
   s -> result_amount *= 1.0 + passives.sanctuary -> effectN( 1 ).percent();
-
+  
   // Ardent Defender
   if ( buffs.ardent_defender -> check() )
   {
@@ -4932,6 +4984,7 @@ struct paladin_module_t : public module_t
       player_t* p = sim -> actor_list[i];
       p -> buffs.beacon_of_light          = buff_creator_t( p, "beacon_of_light", p -> find_spell( 53563 ) );
       p -> buffs.illuminated_healing      = buff_creator_t( p, "illuminated_healing", p -> find_spell( 86273 ) );
+      p -> buffs.hand_of_sacrifice        = buff_creator_t( p, "hand_of_sacrifice", p -> find_spell( 6940 ) );
       p -> debuffs.forbearance            = buff_creator_t( p, "forbearance", p -> find_spell( 25771 ) );
     }
   }

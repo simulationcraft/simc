@@ -4126,6 +4126,7 @@ public:
     buff_t* exhaustion;
     buff_t* grace;
     buff_t* guardian_spirit;
+    buff_t* hand_of_sacrifice;
     buff_t* heroic_presence;
     buff_t* hymn_of_hope;
     buff_t* illuminated_healing;
