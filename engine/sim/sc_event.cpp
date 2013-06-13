@@ -30,6 +30,10 @@ void* event_t::allocate( std::size_t size, sim_t& sim )
     {
       throw std::bad_alloc();
     }
+    else
+    {
+      sim.all_events_ever_created.push_back( e );
+    }
   }
 
   return e;

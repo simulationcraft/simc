@@ -2556,6 +2556,7 @@ public:
   unsigned timing_slice;
   double wheel_granularity;
   timespan_t wheel_time;
+  std::vector<event_t*> all_events_ever_created;
 
   // Raid Events
   auto_dispose< std::vector<raid_event_t*> > raid_events;

@@ -995,22 +995,50 @@ event_t* sim_t::next_event()
   return 0;
 }
 
-// sim_t::flush_events ======================================================
+namespace {
+/* This basically does the exact same thing as std::set_difference
+ * std::set_difference( from.begin(),from.end(), exluding.begin(), exluding.end(), back_inserter( out ) );
+ */
+void set_difference( const std::vector<event_t*>& from, event_t* exluding, std::vector<event_t*>& out )
+{
+  for( size_t i = 0, size = from.size(); i < size; ++i )
+  {
+    event_t* e = from[ i ];
+    bool found = false;
+    for( event_t* re = exluding; re; re = re -> next )
+    {
+      if ( e == re )
+      {
+        found = true;
+        break;
+      }
+    }
+    if ( ! found )
+      out.push_back( e );
+  }
+}
+} // end unnamed namespace
 
 void sim_t::flush_events()
 {
   if ( debug ) output( "Flush Events" );
 
-  for ( size_t i = 0; i < timing_wheel.size(); ++i )
+  /* Instead of iterating over the whole timing wheel,
+   * we directly flush the remaining active events == ( all_events_ever_created - recycled_events )
+   */
+  std::vector<event_t*> events_to_flush;
+  set_difference( all_events_ever_created, recycled_event_list, events_to_flush );
+
+  for( size_t i = 0, size = events_to_flush.size(); i < size; ++i )
   {
-    while ( event_t* e = timing_wheel[ i ] )
-    {
-      timing_wheel[ i ] = e -> next;
-      event_t* null_e = e; // necessary evil
-      event_t::cancel( null_e );
-      event_t::recycle( e );
-    }
+    event_t* e = events_to_flush[ i ];
+    event_t* null_e = e; // necessary evil
+    event_t::cancel( null_e );
+    event_t::recycle( e );
   }
+
+  // Clear Timing Wheel
+  timing_wheel.assign( timing_wheel.size(), nullptr );
 
   events_remaining = 0;
   events_processed = 0;
