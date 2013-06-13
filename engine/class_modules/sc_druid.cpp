@@ -2756,7 +2756,7 @@ struct healing_touch_t : public druid_heal_t
     if ( state -> result == RESULT_CRIT )
       trigger_living_seed( state );
 
-    p() -> cooldown.swiftmend -> ready -= timespan_t::from_seconds( p() -> glyph.healing_touch -> effectN( 1 ).base_value() );
+    p() -> cooldown.swiftmend -> adjust( timespan_t::from_seconds( - p() -> glyph.healing_touch -> effectN( 1 ).base_value() ) );
   }
 
   virtual void execute()
@@ -3303,7 +3303,8 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
     p() -> buff.natures_grace -> trigger();
     // TODO: Does activating CA reduce the cooldown too?
-    p() -> cooldown.celestial_alignment -> ready -= timespan_t::from_seconds( p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).base_value() );
+    if ( p() -> set_bonus.tier16_4pc_caster() )
+      p() -> cooldown.celestial_alignment -> adjust( timespan_t::from_seconds( - p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).base_value() ) );
   }
 }; // end druid_spell_t
 
