@@ -1125,6 +1125,7 @@ class SpellDataGenerator(DataGenerator):
           ( 121617, 0 ),                                # Ancestral Swiftness 5% haste passive
           ( 25504, 0, False ), ( 33750, 0, False ),     # Windfury passives are not directly activatable
           ( 8034, 0, False ),                           # Frostbrand false positive for activatable
+          ( 145002, 0, False ),                         # Lightning Elemental nuke
         ),
         
         # Mage:

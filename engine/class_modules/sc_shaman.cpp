@@ -101,7 +101,7 @@ public:
   pet_t* guardian_fire_elemental;
   pet_t* pet_earth_elemental;
   pet_t* guardian_earth_elemental;
-  pet_t* guardian_lightning_elemental[5];
+  pet_t* guardian_lightning_elemental[10];
 
   // Totems
   shaman_totem_pet_t* totems[ TOTEM_MAX ];
@@ -1449,10 +1449,32 @@ struct fire_elemental_t : public pet_t
   }
 };
 
-// TODO: Orc racial, nuke
+// TODO: Orc racial
 
 struct lightning_elemental_t : public pet_t
 {
+  struct lightning_blast_t : public spell_t
+  {
+    lightning_blast_t( player_t* p ) :
+      spell_t( "lightning_blast", p, p -> find_spell( 145002 ) )
+    {
+      base_costs[ RESOURCE_MANA ] = 0;
+      may_crit = true;
+    }
+
+    double composite_haste()
+    { return 1.0; }
+
+    void init()
+    {
+      spell_t::init();
+
+      shaman_t* s = debug_cast< shaman_t* >( player -> cast_pet() -> owner );
+      if ( player != s -> guardian_lightning_elemental[ 0 ] )
+        stats = s -> guardian_lightning_elemental[ 0 ] -> get_stats( name() );
+    }
+  };
+
   lightning_elemental_t( shaman_t* owner ) :
     pet_t( owner -> sim, owner, "lightning_elemental", true /*GUARDIAN*/ )
   { stamina_per_owner      = 1.0; }
@@ -1463,7 +1485,21 @@ struct lightning_elemental_t : public pet_t
     owner_coeff.sp_from_sp = 1.0;
   }
 
-  resource_e primary_resource() { return RESOURCE_MANA; }
+  action_t* create_action( const std::string& name, const std::string& options_str )
+  {
+    if ( name == "lightning_blast" ) return new lightning_blast_t( this );
+    return pet_t::create_action( name, options_str );
+  }
+
+  void init_actions()
+  {
+    action_list_str = "lightning_blast";
+
+    pet_t::init_actions();
+  }
+
+  resource_e primary_resource()
+  { return RESOURCE_MANA; }
 };
 
 // ==========================================================================
