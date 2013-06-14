@@ -331,6 +331,7 @@ public:
   const char* _desc_vars;          // Spell description variable stringblock, if present
   // SpellIcon.dbc
   const char* _icon;
+  const char* _active_icon;
   const char* _rank_str;
 
   // Pointers for runtime linking

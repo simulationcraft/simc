@@ -1909,7 +1909,7 @@ class SpellDataGenerator(DataGenerator):
                 powers.add( power )
 
             if index % 20 == 0:
-              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, Class,  Race,Sca,MSL,ExtraCoeff,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration,  RCost, RPG,Stac, PCh,PCr, ProcFlags,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10,     Attr11,     Attr12 }, Description, Tooltip, Description Variable, Icon, Effect1, Effect2, Effect3 },\n'
+              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, Class,  Race,Sca,MSL,ExtraCoeff,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration,  RCost, RPG,Stac, PCh,PCr, ProcFlags,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10,     Attr11,     Attr12 }, Description, Tooltip, Description Variable, Icon, ActiveIcon, Effect1, Effect2, Effect3 },\n'
             
             fields = spell.field('name', 'id') 
             fields += [ '%#.2x' % 0 ]
@@ -1969,8 +1969,12 @@ class SpellDataGenerator(DataGenerator):
                 fields += self._spelldescriptionvariables_db[spell.id_desc_var].field('var')
             else:
                 fields += [ '0' ]
-            if spell.id_icon and self._spellicon_db.get(self._spellmisc_db[spell.id_misc].id_icon):
+            if spell.id_misc and self._spellicon_db.get(self._spellmisc_db[spell.id_misc].id_icon):
                 fields += self._spellicon_db[self._spellmisc_db[spell.id_misc].id_icon].field('name')
+            else:
+                fields += [ '0' ]
+            if spell.id_misc and self._spellicon_db.get(self._spellmisc_db[spell.id_misc].id_active_icon):
+                fields += self._spellicon_db[self._spellmisc_db[spell.id_misc].id_active_icon].field('name')
             else:
                 fields += [ '0' ]
             fields += spell.field('rank')
