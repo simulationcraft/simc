@@ -3,8 +3,10 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 /*
-  To Do:
-  Add healing holy prism, aoe healing holy prism, stay of execution, light's hammer healing
+  TODO: 
+  T16 4-piece bonuses
+  Selfless Healer?
+  Sacred Shield proxy buff for APL trickery
 */
 #include "simulationcraft.hpp"
 
@@ -37,6 +39,7 @@ struct paladin_td_t : public actor_pair_t
     dot_t* censure;
     dot_t* eternal_flame;
     dot_t* execution_sentence;
+    dot_t* stay_of_execution;
     dot_t* holy_radiance;
     dot_t* word_of_glory; // leftover, can probably be removed
   } dots;
@@ -88,6 +91,7 @@ public:
     buff_t* ancient_power;
     buff_t* ardent_defender;
     buff_t* avenging_wrath;
+    buff_t* bastion_of_glory;
     buff_t* blessed_life;
     buff_t* daybreak;
     buff_t* divine_plea;
@@ -106,6 +110,7 @@ public:
     buff_t* judgments_of_the_wise;
     buff_t* shield_of_glory; // t15_2pc_tank
     buff_t* shield_of_the_righteous;
+    buff_t* warrior_of_the_light; // t16_2pc_melee
     buff_t* tier15_2pc_melee;
     buff_t* tier15_4pc_melee;
   } buffs;
@@ -137,6 +142,7 @@ public:
     gain_t* hp_tower_of_radiance;
     gain_t* hp_judgment;
     gain_t* hp_t15_4pc_tank;
+    gain_t* hp_t16_2pc_tank;
   } gains;
 
   // Cooldowns
@@ -1319,9 +1325,58 @@ struct eternal_flame_t : public paladin_heal_t
 
 // Execution Sentence =======================================================
 
+// this is really two components: Execution Sentence is the damage portion, Stay of Execution the heal
+// it operates based on smart targeting - if the target is an enemy, Execution Sentence does its thing
+// if the target is friendly, Execution Sentence calls Stay of Execution
+struct stay_of_execution_t : public paladin_heal_t
+{
+  std::array<double, 11> soe_tick_multiplier;
+  
+  stay_of_execution_t( paladin_t* p, const std::string& options_str )
+    : paladin_heal_t( "stay_of_execution", p, p -> find_talent_spell( "Execution Sentence" ) ),
+      soe_tick_multiplier()
+  {
+    parse_options( NULL, options_str );
+    hasted_ticks   = false;
+    travel_speed   = 0;
+    tick_may_crit  = 1;
+    benefits_from_seal_of_insight = false;
+    background = true;
+
+    // Where the 0.0374151195 comes from
+    // The whole dots scales with data().effectN( 2 ).base_value()/1000 * SP
+    // Tick 1-9 grow exponentionally by 10% each time, 10th deals 5x the
+    // damage of the 9th.
+    // 1.1 + 1.1^2 + ... + 1.1^9 + 1.1^9 * 5 = 26.727163056
+    // 1 / 26,727163056 = 0.0374151195, which is the factor to get from the
+    // whole spells SP scaling to the base scaling of the 0th tick
+    // 1st tick is already 0th * 1.1!
+    if ( data().ok() )
+    {
+      parse_effect_data( ( p -> find_spell( 114916 ) -> effectN( 1 ) ) );
+      tick_power_mod = p -> find_spell( 114916 ) -> effectN( 2 ).base_value() / 1000.0 * 0.0374151195;
+    }
+
+    assert( as<unsigned>( num_ticks ) < sizeof_array( soe_tick_multiplier ) );
+    soe_tick_multiplier[ 0 ] = 1.0;
+    for ( int i = 1; i < num_ticks; ++i )
+      soe_tick_multiplier[ i ] = soe_tick_multiplier[ i - 1 ] * 1.1;
+    soe_tick_multiplier[ 10 ] = soe_tick_multiplier[ 9 ] * 5;
+
+  }
+
+  double composite_target_multiplier( player_t* target )
+  {
+    double m = paladin_heal_t::composite_target_multiplier( target );
+    m *= soe_tick_multiplier[ td( target ) -> dots.stay_of_execution -> current_tick ];
+    return m;
+  }
+};
+
 struct execution_sentence_t : public paladin_spell_t
 {
   std::array<double, 11> tick_multiplier;
+  stay_of_execution_t* stay_of_execution;
 
   execution_sentence_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "execution_sentence", p, p -> find_talent_spell( "Execution Sentence" ) ),
@@ -1352,6 +1407,9 @@ struct execution_sentence_t : public paladin_spell_t
       tick_multiplier[ i ] = tick_multiplier[ i - 1 ] * 1.1;
     tick_multiplier[ 10 ] = tick_multiplier[ 9 ] * 5;
 
+    stay_of_execution = new stay_of_execution_t( p, options_str );
+    add_child( stay_of_execution );
+
     // disable if not talented
     if ( ! ( p -> talents.execution_sentence -> ok() ) )
       background = true;
@@ -1362,6 +1420,18 @@ struct execution_sentence_t : public paladin_spell_t
     double m = paladin_spell_t::composite_target_multiplier( target );
     m *= tick_multiplier[ td( target ) -> dots.execution_sentence -> current_tick ];
     return m;
+  }
+
+  virtual void execute()
+  {
+    if (target -> is_enemy() )
+    {
+      paladin_spell_t::execute();
+    }
+    else
+    {
+      stay_of_execution -> schedule_execute();
+    }
   }
 };
 
@@ -2018,21 +2088,36 @@ struct lay_on_hands_t : public paladin_heal_t
 
 // Light's Hammer ===========================================================
 
-struct lights_hammer_tick_t : public paladin_spell_t
+struct lights_hammer_damage_tick_t : public paladin_spell_t
 {
-  lights_hammer_tick_t( paladin_t* p, const spell_data_t* s )
-    : paladin_spell_t( "lights_hammer_tick", p, s )
+  lights_hammer_damage_tick_t( paladin_t* p )
+    : paladin_spell_t( "lights_hammer_damage_tick", p, p -> find_spell( 114919 ) )
   {
-    dual = true;
+    //dual = true;
     background = true;
     aoe = -1;
     may_crit = true;
   }
 };
 
+struct lights_hammer_heal_tick_t : public paladin_heal_t
+{
+  lights_hammer_heal_tick_t( paladin_t* p )
+    : paladin_heal_t( "lights_hammer_heal_tick", p, p -> find_spell( 114919 ) )
+  {
+    dual = true;
+    background = true;
+    aoe = -1;
+    may_crit = true;
+    benefits_from_seal_of_insight = false;
+  }
+};
+
 struct lights_hammer_t : public paladin_spell_t
 {
   const timespan_t travel_time_;
+  lights_hammer_heal_tick_t* lh_heal_tick;
+  lights_hammer_damage_tick_t* lh_damage_tick;
 
   lights_hammer_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "lights_hammer", p, p -> find_talent_spell( "Light's Hammer" ) ),
@@ -2053,7 +2138,11 @@ struct lights_hammer_t : public paladin_spell_t
     hasted_ticks   = false;
 
     dynamic_tick_action = true;
-    tick_action = new lights_hammer_tick_t( p, p -> find_spell( 114919 ) );
+    //tick_action = new lights_hammer_tick_t( p, p -> find_spell( 114919 ) );
+    lh_heal_tick = new lights_hammer_heal_tick_t( p );
+    lh_damage_tick = new lights_hammer_damage_tick_t( p );
+    add_child( lh_heal_tick );
+    add_child( lh_damage_tick );
 
     // disable if not talented
     if ( ! ( p -> talents.lights_hammer -> ok() ) )
@@ -2062,6 +2151,15 @@ struct lights_hammer_t : public paladin_spell_t
 
   virtual timespan_t travel_time()
   { return travel_time_; }
+
+  virtual void tick( dot_t* d )
+  {
+    // trigger healing and damage ticks
+    lh_heal_tick -> schedule_execute();
+    lh_damage_tick -> schedule_execute();
+
+    paladin_spell_t::tick( d );
+  }
 };
 
 // Light of Dawn ============================================================
@@ -2178,7 +2276,7 @@ struct seal_of_insight_proc_t : public paladin_heal_t
   }
 };
 
-// Word of Glory Spell ======================================================
+// Word of Glory  ======================================================
 
 struct word_of_glory_t : public paladin_heal_t
 {
@@ -2210,7 +2308,13 @@ struct word_of_glory_t : public paladin_heal_t
 
     // T14 protection 4-piece bonus
     if ( p() -> set_bonus.tier14_4pc_tank() )
-      am *= (1.0 + p() -> sets -> set( SET_T14_4PC_TANK ) -> effectN( 1 ).percent() );
+      am *= ( 1.0 + p() -> sets -> set( SET_T14_4PC_TANK ) -> effectN( 1 ).percent() );
+
+    if ( p() -> buffs.bastion_of_glory -> up() )
+    {
+      // grant 10% extra healing per stack of BoG; can't expire() BoG here because it's needed in execute()
+      am *= ( 1.0 + p() -> buffs.bastion_of_glory -> stack() * ( p() -> buffs.bastion_of_glory -> data().effectN( 1 ).percent() + p() -> get_divine_bulwark() ) );
+    }
 
     return am;
   }
@@ -2230,10 +2334,19 @@ struct word_of_glory_t : public paladin_heal_t
     // Shield of Glory (Tier 15 protection 2-piece bonus)
     if ( p() -> set_bonus.tier15_2pc_tank() )
       p() -> buffs.shield_of_glory -> trigger();
+
+    // T16 2-piece tank bonus grants HP for each stack of BoG used      
+    if ( p() -> set_bonus.tier16_2pc_tank() )
+    {
+      // add that much Holy Power
+      p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.bastion_of_glory -> stack() , p() -> gains.hp_t16_2pc_tank );
+    }
+    // consume BoG stacks
+    p() -> buffs.bastion_of_glory -> expire();
   }
 };
 
-// Word of Glory Damage Spell ======================================================
+// Word of Glory Damage ( Harsh Words ) ======================================================
 
 struct word_of_glory_damage_t : public paladin_spell_t
 {
@@ -2446,6 +2559,9 @@ struct melee_t : public paladin_melee_attack_t
         // trigger proc, reset Exorcism cooldown
         p() -> procs.the_art_of_war -> occur();
         p() -> cooldowns.exorcism -> reset( true );
+        // activate T16 2-piece bonus
+        if ( p() -> set_bonus.tier16_2pc_melee() )
+          p() -> buffs.warrior_of_the_light -> trigger();
       }
     }
   }
@@ -3239,6 +3355,9 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     }
     else
       p() -> buffs.shield_of_the_righteous -> trigger();
+    
+    // Add stack of Bastion of Glory
+    p() -> buffs.bastion_of_glory -> trigger();
 
     // clear any Alabaster Shield stacks we may have
     p() -> buffs.alabaster_shield -> expire();
@@ -3408,6 +3527,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   dots.holy_radiance      = target -> get_dot( "holy_radiance",      paladin );
   dots.censure            = target -> get_dot( "censure",            paladin );
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
+  dots.stay_of_execution  = target -> get_dot( "stay_of_execution",  paladin );
   dots.word_of_glory      = target -> get_dot( "word_of_glory",      paladin ); // leftover, can probably be removed
 
   buffs.debuffs_censure    = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
@@ -3589,6 +3709,7 @@ void paladin_t::init_gains()
   gains.hp_tower_of_radiance        = get_gain( "holy_power_tower_of_radiance" );
   gains.hp_judgment                 = get_gain( "holy_power_judgment" );
   gains.hp_t15_4pc_tank             = get_gain( "holy_power_t15_4pc_tank" );
+  gains.hp_t16_2pc_tank             = get_gain( "holy_power_t16_2pc_tank" );
 }
 
 // paladin_t::init_procs ====================================================
@@ -3730,6 +3851,7 @@ void paladin_t::create_buffs()
   // Glyphs
   buffs.alabaster_shield       = buff_creator_t( this, "glyph_alabaster_shield", find_spell(121467) ) // alabaster shield glyph spell contains no useful data
                                  .cd( timespan_t::zero() );
+  buffs.bastion_of_glory       = buff_creator_t( this, "bastion_of_glory", find_spell( 114637 ) );
   buffs.blessed_life           = buff_creator_t( this, "glyph_blessed_life", glyphs.blessed_life )
                                  .cd( timespan_t::from_seconds( glyphs.blessed_life -> effectN( 2 ).base_value() ) );
   buffs.double_jeopardy        = buff_creator_t( this, "glyph_double_jeopardy", glyphs.double_jeopardy )
@@ -3782,6 +3904,7 @@ void paladin_t::create_buffs()
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.tier15_4pc_melee       = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138164 ) )
                                  .chance( find_spell( 138164 ) -> effectN( 1 ).percent() );
+  buffs.warrior_of_the_light   = buff_creator_t( this, "warrior_of_the_light", find_spell( 144587 ) );
 }
 
 // ==========================================================================
@@ -4535,6 +4658,7 @@ void paladin_t::init_spells()
     {     0,     0, 105765, 105820, 105800, 105744, 105743, 105798 }, // Tier13
     {     0,     0, 123108,  70762, 123104, 123107, 123102, 123103 }, // Tier14
     {     0,     0, 138159, 138164, 138238, 138244, 138291, 138292 }, // Tier15
+    {     0,     0, 144586, 144593, 144566, 144580, 144625, 144613 }, // Tier16    
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -4638,6 +4762,10 @@ double paladin_t::composite_player_multiplier( school_e school )
   // Glyph of Word of Glory buffs everything
   if ( buffs.glyph_of_word_of_glory -> check() )
     m *= 1.0 + buffs.glyph_of_word_of_glory -> value();
+
+  // T16_2pc_melee buffs everything
+  if ( set_bonus.tier16_2pc_melee() && buffs.warrior_of_the_light -> up() )
+    m *= 1.0 + buffs.warrior_of_the_light -> data().effectN( 1 ).percent();
 
   return m;
 }
