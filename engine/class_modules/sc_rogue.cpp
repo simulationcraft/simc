@@ -1721,7 +1721,7 @@ struct killing_spree_t : public rogue_attack_t
     double m = rogue_attack_t::composite_target_da_multiplier( target );
     
     m *= std::pow( 1.0 + p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent(), 
-                   cast_td( target ) -> dots.killing_spree -> current_tick + 1 );
+                   cast_td( target ) -> dots.killing_spree -> current_tick );
 
     return m;
   }
