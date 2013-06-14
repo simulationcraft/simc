@@ -1733,7 +1733,7 @@ struct rip_t : public cat_attack_t
 
   virtual void execute()
   {
-    druid_attack_t::execute();
+    cat_attack_t::execute();
 
     if ( p() -> dbc.ptr && p() -> buff.dream_of_cenarius -> up() )
       p() -> buff.dream_of_cenarius -> decrement();
