@@ -53,6 +53,7 @@ struct rogue_td_t : public actor_pair_t
     dot_t* deadly_poison;
     dot_t* garrote;
     dot_t* hemorrhage;
+    dot_t* killing_spree; // Strictly speaking, this should probably be on player
     dot_t* rupture;
     dot_t* revealing_strike;
   } dots;
@@ -1686,15 +1687,6 @@ struct killing_spree_tick_t : public rogue_attack_t
     may_crit    = true;
     direct_tick = true;
   }
-
-  double composite_da_multiplier()
-  {
-    double m = rogue_attack_t::composite_da_multiplier();
-
-    m *= 1.0 + p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent();
-
-    return m;
-  }
 };
 
 struct killing_spree_t : public rogue_attack_t
@@ -1724,6 +1716,16 @@ struct killing_spree_t : public rogue_attack_t
     }
   }
 
+  double composite_target_da_multiplier( player_t* target )
+  {
+    double m = rogue_attack_t::composite_target_da_multiplier( target );
+    
+    m *= std::pow( 1.0 + p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent(), 
+                   cast_td( target ) -> dots.killing_spree -> current_tick + 1 );
+
+    return m;
+  }
+
   timespan_t tick_time( double )
   { return base_tick_time; }
 
@@ -1738,10 +1740,14 @@ struct killing_spree_t : public rogue_attack_t
   {
     rogue_attack_t::tick( d );
 
+    attack_mh -> pre_execute_state = attack_mh -> get_state( d -> state );
     attack_mh -> execute();
 
     if ( attack_oh && result_is_hit( attack_mh -> execute_state -> result ) )
+    {
+      attack_oh -> pre_execute_state = attack_oh -> get_state( d -> state );
       attack_oh -> execute();
+    }
   }
 };
 
@@ -2953,6 +2959,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   dots.garrote          = target -> get_dot( "garrote", source );
   dots.rupture          = target -> get_dot( "rupture", source );
   dots.hemorrhage       = target -> get_dot( "hemorrhage", source );
+  dots.killing_spree    = target -> get_dot( "killing_spree", source );
   dots.revealing_strike = target -> get_dot( "revealing_strike", source );
 
   const spell_data_t* fw = source -> find_specialization_spell( "Find Weakness" );
