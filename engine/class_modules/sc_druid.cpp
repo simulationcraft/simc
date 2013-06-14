@@ -84,6 +84,10 @@ struct druid_t : public player_t
 public:
   struct heart_of_the_wild_buff_t;
 
+  // Active
+  action_t* t16_2pc_starfall_bolt;
+  action_t* t16_2pc_sun_bolt;
+  
   // Pets
   pet_t* pet_feral_spirit[ 2 ];
   pet_t* pet_mirror_images[ 3 ];
@@ -352,6 +356,8 @@ public:
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
+    t16_2pc_starfall_bolt( nullptr ),
+    t16_2pc_sun_bolt( nullptr ),
     caster_form_weapon(),
     buff( buffs_t() ),
     cooldown( cooldowns_t() ),
@@ -365,6 +371,9 @@ public:
     talent( talents_t() ),
     inflight_starsurge( false )
   {
+    t16_2pc_starfall_bolt = 0;
+    t16_2pc_sun_bolt      = 0;
+
     eclipse_bar_value     = 0;
     eclipse_bar_direction = 0;
 
@@ -3382,6 +3391,26 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     if ( p() -> set_bonus.tier16_4pc_caster() )
       p() -> cooldown.celestial_alignment -> adjust( timespan_t::from_seconds( - p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).base_value() ) );
   }
+  
+  void trigger_t16_2pc_balance( bool nature = false )
+  {
+    if ( ! p() -> set_bonus.tier16_2pc_caster() )
+      return;
+    if ( nature )
+    {
+      if ( p() -> buff.eclipse_solar -> check() )
+      {
+        p() -> t16_2pc_sun_bolt -> execute();
+      }
+    }
+    else
+    {
+      if ( p() -> buff.eclipse_lunar -> check() )
+      {
+        p() -> t16_2pc_starfall_bolt -> execute();
+      }
+    }
+  }
 }; // end druid_spell_t
 
 // Auto Attack ==============================================================
@@ -4109,6 +4138,8 @@ struct moonfire_t : public druid_spell_t
     p() -> buff.lunar_shower -> up();
 
     druid_spell_t::execute();
+      
+    trigger_t16_2pc_balance( false );
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -4260,6 +4291,8 @@ struct starfire_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
+
+    trigger_t16_2pc_balance( false );
 
     // Cast starfire, but solar eclipse was up?
     if ( p() -> buff.eclipse_solar -> check() && ! p() -> buff.celestial_alignment -> check() )
@@ -4513,6 +4546,8 @@ struct sunfire_t : public druid_spell_t
       if ( ! p() -> dbc.ptr )
         p() -> buff.dream_of_cenarius -> up();
       druid_spell_t::execute();
+        
+      trigger_t16_2pc_balance( true );
     }
 
     virtual void impact( action_state_t* s )
@@ -4686,6 +4721,26 @@ struct symbiosis_t : public druid_spell_t
   }
 };
 
+// T16 Balance 2P Bonus =====================================================
+
+struct t16_2pc_starfall_bolt_t : public druid_spell_t
+{
+  t16_2pc_starfall_bolt_t( druid_t* player ) :
+    druid_spell_t( "t16_2pc_starfall_bolt", player, player -> find_spell( 144770 ) )
+  {
+    background  = true;
+  }
+};
+
+struct t16_2pc_sun_bolt_t : public druid_spell_t
+{
+  t16_2pc_sun_bolt_t( druid_t* player ) :
+    druid_spell_t( "t16_2pc_sun_bolt", player, player -> find_spell( 144772 ) )
+  {
+    background  = true;
+  }
+};
+
 // Treants Spell ============================================================
 
 struct treants_spell_t : public druid_spell_t
@@ -4846,7 +4901,9 @@ struct wrath_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-
+      
+    trigger_t16_2pc_balance( true );
+      
     // Cast wrath, but lunar eclipse was up?
     if ( p() -> buff.eclipse_lunar -> check() && ! p() -> buff.celestial_alignment -> check() )
       p() -> proc.wrong_eclipse_wrath -> occur();
@@ -5428,7 +5485,7 @@ void druid_t::init_spells()
     { 105722, 105717, 105725, 105735,      0,      0, 105715, 105770 }, // Tier13
     { 123082, 123083, 123084, 123085, 123086, 123087, 123088, 123089 }, // Tier14
     { 138348, 138350, 138352, 138357, 138216, 138222, 138284, 138286 }, // Tier15
-    {      0,      0,      0,      0,      0,      0,      0,      0 }, // Tier16
+    { 144767, 144756, 144864, 144841, 144879, 144887, 144869, 144875 }, // Tier16
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -5712,6 +5769,9 @@ void druid_t::init_actions()
     quiet = true;
     return;
   }
+
+  t16_2pc_starfall_bolt = new spells::t16_2pc_starfall_bolt_t( this );
+  t16_2pc_sun_bolt      = new spells::t16_2pc_sun_bolt_t( this );
 
   if ( action_list_str.empty() )
   {
