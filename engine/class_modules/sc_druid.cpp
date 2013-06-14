@@ -91,7 +91,7 @@ public:
   // Pets
   pet_t* pet_feral_spirit[ 2 ];
   pet_t* pet_mirror_images[ 3 ];
-  pet_t* pet_treants[ 3 ];
+  pet_t* pet_force_of_nature[ 3 ];
 
   // Auto-attacks
   weapon_t cat_weapon;
@@ -621,24 +621,24 @@ struct symbiosis_mirror_image_t : public pet_t
   }
 };
 
-// Balance Treants ==========================================================
+// Balance Force of Nature ==========================================================
 
-struct treants_balance_t : public pet_t
+struct force_of_nature_balance_t : public pet_t
 {
   struct wrath_t : public spell_t
   {
-    wrath_t( treants_balance_t* player ) :
+    wrath_t( force_of_nature_balance_t* player ) :
       spell_t( "wrath", player, player -> find_spell( 113769 ) )
     {
-      if ( player -> o() -> pet_treants[ 0 ] )
-        stats = player -> o() -> pet_treants[ 0 ] -> get_stats( "wrath" );
+      if ( player -> o() -> pet_force_of_nature[ 0 ] )
+        stats = player -> o() -> pet_force_of_nature[ 0 ] -> get_stats( "wrath" );
       may_crit = true;
     }
   };
 
   druid_t* o() { return static_cast< druid_t* >( owner ); }
 
-  treants_balance_t( sim_t* sim, druid_t* owner ) :
+  force_of_nature_balance_t( sim_t* sim, druid_t* owner ) :
     pet_t( sim, owner, "treant", true /*GUARDIAN*/ )
   {
     owner_coeff.sp_from_sp = 1.0;
@@ -669,9 +669,9 @@ struct treants_balance_t : public pet_t
   }
 };
 
-// Feral Treants ============================================================
+// Feral Force of Nature ============================================================
 
-struct treants_feral_t : public pet_t
+struct force_of_nature_feral_t : public pet_t
 {
   melee_attack_t* melee;
 
@@ -679,7 +679,7 @@ struct treants_feral_t : public pet_t
   {
     druid_t* owner;
 
-    melee_t( treants_feral_t* p )
+    melee_t( force_of_nature_feral_t* p )
       : melee_attack_t( "melee", p, spell_data_t::nil() ), owner( 0 )
     {
       school = SCHOOL_PHYSICAL;
@@ -696,7 +696,7 @@ struct treants_feral_t : public pet_t
     }
   };
   
-  treants_feral_t( sim_t* sim, druid_t* p ) :
+  force_of_nature_feral_t( sim_t* sim, druid_t* p ) :
     pet_t( sim, p, "treant", true ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -4741,9 +4741,9 @@ struct t16_2pc_sun_bolt_t : public druid_spell_t
   }
 };
 
-// Treants Spell ============================================================
+// Force of Nature Spell ============================================================
 
-struct treants_spell_t : public druid_spell_t
+struct force_of_nature_spell_t : public druid_spell_t
 {
   /* TODO: Figure this out
   /  Multiple spells
@@ -4753,8 +4753,8 @@ struct treants_spell_t : public druid_spell_t
   /  http://mop.wowhead.com/spell=102703 Summons 3 treants to attack and stun enemy targets for 1 min. (The Itteh Bitteh Kitteh Woodmen Committeh)
   /  http://mop.wowhead.com/spell=102706 Summons 3 treants to protect the summoner and nearby allies for 1 min. (Bear is schtronk)
   */
-  treants_spell_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "treants", player, player -> talent.force_of_nature )
+  force_of_nature_spell_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( "force_of_nature", player, player -> talent.force_of_nature )
   {
     parse_options( NULL, options_str );
 
@@ -4767,13 +4767,13 @@ struct treants_spell_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( p() -> pet_treants[ 0 ] )
+    if ( p() -> pet_force_of_nature[ 0 ] )
     {
       for ( int i = 0; i < 3; i++ )
       {
-        if ( p() -> pet_treants[ i ] -> is_sleeping() )
+        if ( p() -> pet_force_of_nature[ i ] -> is_sleeping() )
         {
-          p() -> pet_treants[ i ] -> summon( p() -> talent.force_of_nature -> duration() );
+          p() -> pet_force_of_nature[ i ] -> summon( p() -> talent.force_of_nature -> duration() );
           return;
         }
       }
@@ -5315,7 +5315,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "tigers_fury"            ) return new            tigers_fury_t( this, options_str );
   if ( name == "thrash_bear"            ) return new            thrash_bear_t( this, options_str );
   if ( name == "thrash_cat"             ) return new             thrash_cat_t( this, options_str );
-  if ( name == "treants"                ) return new          treants_spell_t( this, options_str );
+  if ( name == "force_of_nature"        ) return new  force_of_nature_spell_t( this, options_str );
   if ( name == "tranquility"            ) return new            tranquility_t( this, options_str );
   if ( name == "typhoon"                ) return new                typhoon_t( this, options_str );
   if ( name == "wild_growth"            ) return new            wild_growth_t( this, options_str );
@@ -5337,10 +5337,10 @@ pet_t* druid_t::create_pet( const std::string& pet_name,
 
   using namespace pets;
 
-  if ( pet_name == "treants" )
+  if ( pet_name == "force_of_nature" )
   {
-    if ( specialization() == DRUID_BALANCE ) return new treants_balance_t( sim, this );
-    if ( specialization() == DRUID_FERAL   ) return new   treants_feral_t( sim, this );
+    if ( specialization() == DRUID_BALANCE ) return new force_of_nature_balance_t( sim, this );
+    if ( specialization() == DRUID_FERAL   ) return new   force_of_nature_feral_t( sim, this );
   }
 
   if ( pet_name == "symbiosis_mirror_image" ) return new symbiosis_mirror_image_t( sim, this );
@@ -5356,14 +5356,14 @@ void druid_t::create_pets()
   if ( specialization() == DRUID_BALANCE )
   {
     for ( int i = 0; i < 3; ++i )
-      pet_treants[ i ] = create_pet( "treants" );
+      pet_force_of_nature[ i ] = create_pet( "force_of_nature" );
     for ( int i = 0; i < 3; ++i )
       pet_mirror_images[ i ] = create_pet( "symbiosis_mirror_image" );
   }
   else if ( specialization() == DRUID_FERAL )
   {
     for ( int i = 0; i < 3; ++i )
-      pet_treants[ i ] = create_pet( "treants" );
+      pet_force_of_nature[ i ] = create_pet( "force_of_nature" );
     for ( int i = 0; i < 2; ++i )
       pet_feral_spirit[ i ] = create_pet( "symbiosis_feral_spirit" );
   }
@@ -5839,7 +5839,7 @@ void druid_t::init_actions()
 
     // Force of Nature
     if ( talent.force_of_nature -> ok() && ( primary_role() == ROLE_DPS || primary_role() == ROLE_ATTACK ) )
-      precombat_list += "/treants";
+      precombat_list += "/force_of_nature";
 
     // Snapshot stats
     precombat_list += "/snapshot_stats";
@@ -5876,238 +5876,404 @@ void druid_t::init_actions()
 
     if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
     {
-      bool hasRune;
-      if ( util::str_compare_ci( items[ SLOT_TRINKET_1 ].name(), "rune_of_reorigination" ) || util::str_compare_ci( items[ SLOT_TRINKET_2 ].name(), "rune_of_reorigination" ) )
+      action_priority_list_t* default = get_action_priority_list( "default" );
+      
+      std::vector<std::string> item_actions = get_item_actions();
+      std::vector<std::string> profession_actions = get_profession_actions();
+      std::vector<std::string> racial_actions = get_racial_actions();
+
+      if ( dbc.ptr )
       {
-        hasRune = true;
+        action_priority_list_t* basic = get_action_priority_list( "basic" );
+        action_priority_list_t* advanced = get_action_priority_list( "advanced" );
+
+        // Default APL -- Switch the appropriate action list here
+      
+        default -> add_action( "swap_action_list,name=basic",
+        "By default the simulation will use the \"Basic\" action list, if you would like to instead use the \"Advanced\" action list do so here." );
+
+        // Basic APL
+
+        basic -> add_action( "auto_attack" );
+        basic -> add_action( "skull_bash_cat" );
+        basic -> add_talent( this, "Force of Nature" );
+        basic -> add_action( this, "Ferocious Bite", "if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25", 
+                             "Keep Rip from falling off during execute range.");
+        basic -> add_action( this, "Faerie Fire", "if=debuff.weakened_armor.stack<3" );
+        basic -> add_action( this, "Healing Touch", "if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down" );
+        basic -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
+
+        // Potion
+        if ( sim -> allow_potions && level >= 80 )
+        {
+          if ( level > 85 )
+            basic -> add_action( "virmens_bite_potion,if=(target.health.pct<30&buff.berserk.up)|target.time_to_die<=40" );
+          else
+            basic -> add_action( "tolvir_potion,if=(target.health.pct<30&buff.berserk.up)|target.time_to_die<=40" );
+        }
+
+        if ( set_bonus.tier16_4pc_melee() )
+        {
+          basic -> add_action( this, "Savage Roar", "if=cooldown.tigers_fury.remains<=1&combo_points>=3",
+                               "Spend extra CP on refreshing Savage Roar or a Ferocious Bite before using Tiger's Fury." );
+          basic -> add_action( this, "Ferocious Bite", "if=cooldown.tigers_fury.remains<=1&combo_points>=3" );
+        }
+        basic -> add_talent( this, "Incarnation", "if=energy<=35&cooldown.tigers_fury.remains<=1" );
+        basic -> add_action( this, "Tiger's Fury", "if=energy<=35&!buff.omen_of_clarity.react" );
+        basic -> add_talent( this, "Nature's Vigil", "if=buff.tigers_fury.up" );
+        basic -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
+
+        // On-Use Items
+        for ( size_t i = 0; i < item_actions.size(); i++ )
+          basic -> add_action( item_actions[ i ] + ",if=buff.tigers_fury.up" );
+
+        // Professions
+        for ( size_t i = 0; i < profession_actions.size(); i++ )
+          basic -> add_action( profession_actions[ i ] + ",if=buff.tigers_fury.up" );
+
+        // Racials
+        for ( size_t i = 0; i < racial_actions.size(); i++ )
+          basic -> add_action( racial_actions[ i ] + ",if=buff.tigers_fury.up" );
+
+        basic -> add_action( this, "Rip", "if=combo_points>=5&target.health.pct<=25&action.rip.tick_damage%dot.rip.tick_dmg>=1.15",
+                             "Overwrite Rip during execute range if it's at least 15% stronger than the current." );
+        basic -> add_action( this, "Ferocious Bite", "if=combo_points>=5&target.health.pct<=25&dot.rip.ticking" );
+        basic -> add_action( this, "Rip", "if=combo_points>=5&dot.rip.remains<2" );
+        basic -> add_action( this, "Ferocious Bite", "if=combo_points>=5&energy.time_to_max<dot.rip.remains-2&energy.time_to_max<buff.savage_roar.remains-3",
+                             "Ferocious Bite if we will energy cap before being able to spend our CP on Rip or Savage Roar." );
+        basic -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3" );
+        if ( find_item( "rune_of_reorigination" ) )
+          basic -> add_action( this, "Rake", "if=action.rake.tick_damage>action.mangle_cat.hit_damage&action.rake.tick_damage>=dot.rake.tick_dmg",
+                               "Rake if it hits harder than Mangle and we won't apply a weaker bleed to the target." );
+        basic -> add_action( this, "Rake", "if=dot.rake.remains<3|action.rake.tick_damage>dot.rake.tick_dmg",
+                             "Rake if it's about to fall off or we can apply a stronger Rake." );
+        basic -> add_action( "pool_resource,for_next=1" );
+        basic -> add_action( "thrash_cat,if=dot.thrash_cat.remains<3&(dot.rip.remains>6|combo_points>=5)" );
+        basic -> add_action( "run_action_list,name=filler,if=buff.omen_of_clarity.react",
+                             "Conditions under which we should execute a CP generator." );
+        basic -> add_action( "run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)" );
+        basic -> add_action( "run_action_list,name=filler,if=target.time_to_die<=8.5" );
+        basic -> add_action( "run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up|buff.natures_vigil.up" );
+        basic -> add_action( "run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3" );
+        basic -> add_action( "run_action_list,name=filler,if=energy.time_to_max<=1.0" );
+
+        // Advanced APL
+
+        advanced -> add_action( "auto_attack" );
+        advanced -> add_action( "skull_bash_cat" );
+        advanced -> add_talent( this, "Force of Nature" );
+
+        // Racials
+        for ( size_t i = 0; i < racial_actions.size(); i++ )
+          advanced -> add_action( racial_actions[ i ] );
+      
+        advanced -> add_action( this, "Ferocious Bite", "if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25", 
+                                "Keep Rip from falling off during execute range.");
+        advanced -> add_action( this, "Faerie Fire", "if=debuff.weakened_armor.stack<3" );
+        advanced -> add_action( this, "Healing Touch", "if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down&buff.predatory_swiftness.remains<=2&dot.rip.remains<=10",
+                                "Force a Healing Touch cast if we'll need to refresh Rip soon and we still don't have Dream of Cenarius up." );
+        advanced -> add_action( this, "Savage Roar", "if=buff.savage_roar.down" );
+
+        // Tier 16 4pc bonus
+        if ( set_bonus.tier16_4pc_melee() )
+        {
+          advanced -> add_action( this, "Savage Roar", "if=cooldown.tigers_fury.remains<=1&combo_points>=3",
+                               "Spend extra CP on refreshing Savage Roar or a Ferocious Bite before using Tiger's Fury." );
+          advanced -> add_action( this, "Ferocious Bite", "if=cooldown.tigers_fury.remains<=1&combo_points>=3" );
+        }
+
+        // Potion
+        if ( sim -> allow_potions && level >= 80 && ! find_item( "rune_of_reorigination" ) )
+        {
+          if ( level > 85 )
+            advanced -> add_action( "virmens_bite_potion,if=(target.health.pct<30&buff.berserk.up)|target.time_to_die<=40" );
+          else
+            advanced -> add_action( "tolvir_potion,if=(target.health.pct<30&buff.berserk.up)|target.time_to_die<=40" );
+        }
+
+        advanced -> add_talent( this, "Incarnation", "if=energy<=35&cooldown.tigers_fury.remains<=1" );
+        advanced -> add_action( this, "Tiger's Fury", "if=energy<=35&!buff.omen_of_clarity.react" );
+        advanced -> add_talent( this, "Nature's Vigil", "if=buff.tigers_fury.up" );
+        advanced -> add_action( this, "Berserk", "if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)" );
+
+        // On-Use Items
+        for ( size_t i = 0; i < item_actions.size(); i++ )
+          advanced -> add_action( item_actions[ i ] + ",if=buff.tigers_fury.up" );
+
+        // Professions
+        for ( size_t i = 0; i < profession_actions.size(); i++ )
+          advanced -> add_action( profession_actions[ i ] + ",if=buff.tigers_fury.up" );
+
+        advanced -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3&target.time_to_die>=6" );
+        advanced -> add_action( this, "Ferocious Bite", "if=target.time_to_die<=1&combo_points>=3" );
+        advanced -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<=3&combo_points>0&target.health.pct<25" );
+
+        // Potion
+        if ( sim -> allow_potions && level >= 80 && find_item( "rune_of_reorigination" ) )
+        {
+          if ( level > 85 )
+            advanced -> add_action( "virmens_bite_potion,if=(combo_points>=5&(target.time_to_die*(target.health.pct-25)%target.health.pct)<15&buff.rune_of_reorigination.up)|target.time_to_die<=40",
+                                    "Potion near or during execute range when Rune is up and we have 5 CP." );
+          else
+            advanced -> add_action( "tolvir_potion,if=(combo_points>=5&(target.time_to_die*(target.health.pct-25)%target.health.pct)<15&buff.rune_of_reorigination.up)|target.time_to_die<=40",
+                                    "Potion near or during execute range when Rune is up and we have 5 CP." );
+        }
+
+        advanced -> add_action( this, "Rip", "if=combo_points>=5&action.rip.tick_damage%dot.rip.tick_dmg>=1.15&target.time_to_die>30",
+                             "Overwrite Rip if it's at least 15% stronger than the current." );
+        advanced -> add_action( "pool_resource,if=combo_points>=5&target.health.pct<=25&dot.rip.ticking&!(energy>=50|(buff.berserk.up&energy>=25))",
+                                 "Pool 50 energy for Ferocious Bite.");
+        advanced -> add_action( this, "Ferocious Bite", "if=combo_points>=5&dot.rip.ticking&target.health.pct<=25" );
+        advanced -> add_action( this, "Rip", "if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)" );
+        advanced -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains" );
+        advanced -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains&dot.rip.ticking" );
+        advanced -> add_action( "pool_resource,if=combo_points>=5&!(energy>=50|(buff.berserk.up&energy>=25))&dot.rip.ticking&!(dot.rip.remains-2<=energy.time_to_max-1)&!(buff.savage_roar.remains-3<=energy.time_to_max-1)",
+                                "Pool to 50 energy for Ferocious Bite." );
+        advanced -> add_action( this, "Ferocious Bite", "if=combo_points>=5&dot.rip.ticking&!(dot.rip.remains-2<=energy.time_to_max-1)&!(buff.savage_roar.remains-3<=energy.time_to_max-1)",
+                                "Ferocious Bite if we will energy cap before being able to spend our CP on Rip or Savage Roar." );
+
+        if ( find_item( "rune_of_reorigination" ) )
+        {
+          advanced -> add_action( this, "Rake", "if=action.rake.tick_damage>action.mangle_cat.hit_damage&action.rake.tick_damage>=dot.rake.tick_dmg",
+                                  "Rake if it hits harder than Mangle and we won't apply a weaker bleed to the target." );
+          advanced -> add_action( this, "Rake", "if=buff.rune_of_reorigination.up&dot.rake.remains<9&buff.rune_of_reorigination.remains<=1.5",
+                                  "Refresh Rake as Re-Origination is about to end if Rake has <9 seconds left." );
+        }
+        advanced -> add_action( this, "Rake", "if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|dot.rake.remains<3)",
+                             "Rake if it's about to fall off or we can apply a stronger Rake." );
+        advanced -> add_action( "pool_resource,for_next=1" );
+        advanced -> add_action( "thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&(dot.rip.remains>=4|buff.berserk.up)&dot.rip.ticking" );
+        advanced -> add_action( "run_action_list,name=filler,if=buff.omen_of_clarity.react" );
+        advanced -> add_action( this, "Healing Touch", "if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&energy+energy.regen<=35",
+                                "Proc Dream of Cenarius if we have downtime.");
+        advanced -> add_action( "run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)",
+                                "Conditions under which we should execute a CP generator." );
+        advanced -> add_action( "run_action_list,name=filler,if=target.time_to_die<=8.5" );
+        advanced -> add_action( "run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up|buff.natures_vigil.up" );
+        advanced -> add_action( "run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3" );
+        advanced -> add_action( "run_action_list,name=filler,if=energy.time_to_max<=1.0" );
       }
       else
-      {
-        hasRune = false;
-      }
-
-      std::string& filler_list = get_action_priority_list( "filler" ) -> action_list_str;
-
-      if ( talent.dream_of_cenarius -> ok() )
-      {
-        action_list_str += "/swap_action_list,name=aoe,if=active_enemies>=5";
-        action_list_str += "/skull_bash_cat";
-        action_list_str += init_use_racial_actions();
-        action_list_str += init_use_profession_actions();
-        action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius.down";
-        action_list_str += "/savage_roar,if=buff.savage_roar.down";
-        action_list_str += "/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3";
-        action_list_str += "/healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius.stack<2";
-        if ( talent.natures_swiftness -> ok() )
-          action_list_str += "/healing_touch,if=buff.natures_swiftness.up";
-        if ( talent.incarnation -> ok() )
-          action_list_str += "/incarnation,if=energy<=35&!buff.omen_of_clarity.react&cooldown.tigers_fury.remains=0&cooldown.berserk.remains=0";
-        action_list_str += init_use_item_actions( ",sync=tigers_fury" );
-        action_list_str += "/tigers_fury,if=(energy<=35&!buff.omen_of_clarity.react)";
-        if ( talent.incarnation -> ok() )
-          action_list_str += "|buff.king_of_the_jungle.up";
-        action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)";
-        action_list_str += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25";
-        action_list_str += "/thrash_cat,if=target.time_to_die>=6&buff.omen_of_clarity.react&dot.thrash_cat.remains<3";
-        action_list_str += "/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|(target.time_to_die<=1&combo_points>=3)";
-        action_list_str += "/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&target.health.pct<25";
-        if ( hasRune )
-        {
-          action_list_str += "/virmens_bite_potion,if=(combo_points>=5&target.health.pct<=25&buff.rune_of_reorigination.up&buff.dream_of_cenarius.up)|target.time_to_die<=40";
-          action_list_str += "/natures_swiftness,if=enabled&combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius.down&buff.predatory_swiftness.down&buff.rune_of_reorigination.up&target.time_to_die>30";
-          action_list_str += "/rip,line_cd=30,if=combo_points>=5&target.health.pct<=25&buff.virmens_bite_potion.up&buff.dream_of_cenarius.up&buff.rune_of_reorigination.up&target.time_to_die>30";
-        }
-        else
-        {
-          action_list_str += "/virmens_bite_potion,if=(combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius.up)|target.time_to_die<=40";
-          if ( talent.natures_swiftness -> ok() )
-            action_list_str += "/natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25";
-          action_list_str += "/rip,line_cd=30,if=combo_points>=5&buff.virmens_bite_potion.up&buff.dream_of_cenarius.up&target.health.pct<=25&target.time_to_die>30";
-        }
-        if ( hasRune )
-          action_list_str += "/natures_swiftness,if=enabled&buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25";
-        action_list_str += "/pool_resource,wait=0.25,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))";
-        action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25";
-        if ( hasRune )
-        {
-          if ( talent.natures_swiftness -> ok() )
-            action_list_str += "/natures_swiftness,if=combo_points>=5&buff.rune_of_reorigination.react&buff.rune_of_reorigination.remains>1";
-          action_list_str += "/rip,if=combo_points>=5&buff.rune_of_reorigination.react";
-        }
-        action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&buff.dream_of_cenarius.up";
-        // action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<6.0&buff.dream_of_cenarius.up&dot.rip.multiplier<=tick_multiplier";
-        if ( talent.natures_swiftness -> ok() )
-          action_list_str += "/natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)";
-        action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)";
-        action_list_str += "/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains";
-        action_list_str += "/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains";
-        action_list_str += "/pool_resource,wait=0.25,if=combo_points>=5&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))&dot.rip.remains>=6.5";
-        action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.remains>6";
-        if ( hasRune )
-        {
-          action_list_str += "/rake,if=buff.rune_of_reorigination.react";//&$(rake_ratio)>=1";
-          // action_list_str += "/rake,if=buff.rune_of_reorigination.react&dot.rake.remains<9&(buff.rune_of_reorigination.remains<=1.5)";
-        }
-        action_list_str += "/rake,if=dot.rake.remains<9&buff.dream_of_cenarius.up"; // threshold is more aggressive (to 9 from 6) to account for lack of clipping otherwise
-        // action_list_str += "/rake,if=dot.rake.remains<3&tick_multiplier%dot.rake.multiplier>1.12";
-        action_list_str += "/rake,if=dot.rake.remains<3";
-        action_list_str += "/pool_resource,wait=0.25,for_next=1";
-        action_list_str += "/thrash_cat,if=dot.thrash_cat.remains<3&target.time_to_die>=6&(dot.rip.remains>=4|buff.berserk.up)";
-        action_list_str += "/run_action_list,name=filler,if=buff.omen_of_clarity.react";
-        action_list_str += "/run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3)|(combo_points=0&buff.savage_roar.remains<2)";
-        action_list_str += "/run_action_list,name=filler,if=buff.predatory_swiftness.remains>1";
-        action_list_str += "/run_action_list,name=filler,if=target.time_to_die<=8.5";
-        action_list_str += "/run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up";
-        action_list_str += "/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3";
-        action_list_str += "/run_action_list,name=filler,if=energy.time_to_max<=1";
-        if ( talent.force_of_nature -> ok() )
-          action_list_str += "/treants";
-      }
-      else
-      {
-        action_list_str += "/swap_action_list,name=aoe,if=active_enemies>=5";
-        action_list_str += "/skull_bash_cat";
-        action_list_str += init_use_racial_actions();
-        action_list_str += init_use_profession_actions();
-        action_list_str += "/savage_roar,if=buff.savage_roar.down";
-        action_list_str += "/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3";
-        if ( talent.incarnation -> ok() )
-          action_list_str += "/incarnation,if=energy<=35&!buff.omen_of_clarity.react&cooldown.tigers_fury.remains=0&cooldown.berserk.remains=0";
-        action_list_str += init_use_item_actions( ",sync=tigers_fury" );
-        action_list_str += "/tigers_fury,if=(energy<=35&!buff.omen_of_clarity.react)";
-        if ( talent.incarnation -> ok() )
-          action_list_str += "|buff.king_of_the_jungle.up";
-        action_list_str += "/berserk,if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)";
-        if ( talent.natures_vigil -> ok() )
-          action_list_str += "/natures_vigil,if=enabled&(buff.tigers_fury.up|(target.time_to_die<35&cooldown.tigers_fury.remains>6))";
-        action_list_str += "/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25";
-        action_list_str += "/thrash_cat,if=target.time_to_die>=6&buff.omen_of_clarity.react&dot.thrash_cat.remains<3";
-        action_list_str += "/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|(target.time_to_die<=1&combo_points>=3)";
-        action_list_str += "/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&target.health.pct<25";
-        if ( hasRune )
-        {
-          action_list_str += "/virmens_bite_potion,if=(combo_points>=5&target.health.pct<=25&buff.rune_of_reorigination.up)|target.time_to_die<=40";
-          action_list_str += "/rip,line_cd=30,if=combo_points>=5&target.health.pct<=25&buff.rune_of_reorigination.up&buff.virmens_bite_potion.up";
-        }
-        else
-        {
-          action_list_str += "/virmens_bite_potion,if=(buff.berserk.up&target.health.pct<=25)|target.time_to_die<=40";
-          // action_list_str += "/rip,if=combo_points>=5&tick_multiplier%dot.rip.multiplier>1.14&target.health.pct<=25&target.time_to_die>30";
-        }
-        action_list_str += "/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25";
-        action_list_str += "/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)";
-        if ( hasRune )
-          action_list_str += "/rip,if=combo_points>=5&buff.rune_of_reorigination.react";
-        action_list_str += "/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains";
-        action_list_str += "/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains";
-        action_list_str += "/ferocious_bite,if=combo_points>=5&(dot.rip.remains>10|(dot.rip.remains>6&buff.berserk.up))&dot.rip.ticking";
-        if ( hasRune )
-        {
-          action_list_str += "/rake,if=buff.rune_of_reorigination.react";//&$(rake_ratio)>=1";
-          // action_list_str += "/rake,if=buff.rune_of_reorigination.react&dot.rake.remains<9&(buff.rune_of_reorigination.remains<=1.5)";
-        }
-        action_list_str += "/rake,if=dot.rake.remains<9&buff.tigers_fury.up";
-        action_list_str += "/rake,if=dot.rake.remains<3&(buff.berserk.up|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains|energy>60)";
-        action_list_str += "/pool_resource,wait=0.1,for_next=1";
-        action_list_str += "/thrash_cat,if=dot.thrash_cat.remains<3&target.time_to_die>=6&(dot.rip.remains>=4|buff.berserk.up)";
-        action_list_str += "/run_action_list,name=filler,if=buff.omen_of_clarity.react";
-        action_list_str += "/run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)";
-        action_list_str += "/run_action_list,name=filler,if=target.time_to_die<=8.5";
-        action_list_str += "/run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up";
-        action_list_str += "/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3.0";
-        action_list_str += "/run_action_list,name=filler,if=energy.time_to_max<=1.0";
-        if ( talent.soul_of_the_forest -> ok() )
-          action_list_str += "/run_action_list,name=filler,if=combo_points<5";
-        if ( talent.force_of_nature -> ok() )
-          action_list_str += "/treants";
-        /*
-        if ( talent.natures_vigil -> ok() )
-        {
-          if ( talent.natures_swiftness -> ok() )
-            action_list_str += "/natures_swiftness,if=buff.natures_vigil.up&!buff.berserk.up&!buff.predatory_swiftness.up";
-          else if ( talent.renewal -> ok() )
-            action_list_str += "/renewal,if=buff.natures_vigil.up";
-          else if ( talent.cenarion_ward -> ok() )
-            action_list_str += "/cenarion_ward,if=buff.natures_vigil.up";
-          action_list_str += "/healing_touch,if=buff.natures_vigil.up&(buff.predatory_swiftness.up|buff.natures_swiftness.up)&!buff.berserk.up";
-        }
-        */
-      }
-
-      filler_list += "/thrash_cat,if=dot.thrash_cat.remains<3&target.time_to_die>=6&combo_points>=5";
-      if ( talent.incarnation -> ok() )
-      {
-        filler_list += "/ravage";
-        filler_list += "/shred,if=(buff.omen_of_clarity.react|buff.berserk.up|energy.regen>=15)&buff.king_of_the_jungle.down";
-        filler_list += "/mangle_cat,if=buff.king_of_the_jungle.down";
-      }
-      else
-      {
-        filler_list += "/shred,if=buff.omen_of_clarity.react|buff.berserk.up|energy.regen>=15";
-        filler_list += "/mangle_cat";
-      }
-
-      std::string& aoe_list = get_action_priority_list( "aoe" ) -> action_list_str;
-
-      aoe_list += "/swap_action_list,name=default,if=active_enemies<5";
-      aoe_list += "/auto_attack";
-      if ( talent.dream_of_cenarius -> ok() )
-      {
-        aoe_list += "/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius.down";
-        if ( talent.natures_swiftness -> ok() )
-          aoe_list += "/healing_touch,if=buff.natures_swiftness.up";
-      }
-      aoe_list += "/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3";
-      aoe_list += "/savage_roar,if=buff.savage_roar.down|(buff.savage_roar.remains<3&combo_points>0)";
-      aoe_list += init_use_item_actions( ",sync=tigers_fury" );
-      aoe_list += init_use_racial_actions( ",sync=tigers_fury" );
-      aoe_list += init_use_profession_actions( ",sync=tigers_fury" );
-      aoe_list += "/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react";
-      aoe_list += "/berserk,if=buff.tigers_fury.up";
-      if ( hasRune )
       {
         if ( talent.dream_of_cenarius -> ok() )
         {
-          aoe_list += "/healing_touch,if=buff.rune_of_reorigination.remains<3&buff.predatory_swiftness.up";
+          default -> add_action( "swap_action_list,name=aoe,if=active_enemies>=5" );
+          default -> add_action( "skull_bash_cat" );
+
+          // Professions
+          for ( size_t i = 0; i < profession_actions.size(); i++ )
+            default -> add_action( profession_actions[ i ] + ",if=buff.tigers_fury.up" );
+
+          // Racials
+          for ( size_t i = 0; i < racial_actions.size(); i++ )
+            default -> add_action( racial_actions[ i ] + ",if=buff.tigers_fury.up" );
+
+          default -> add_action( "healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius.down" );
+          default -> add_action( "savage_roar,if=buff.savage_roar.down" );
+          default -> add_action( "faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3" );
+          default -> add_action( "healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius.stack<2" );
           if ( talent.natures_swiftness -> ok() )
-            aoe_list += "/natures_swiftness,if=buff.rune_of_reorigination.remains<3&buff.predatory_swiftness.down&buff.dream_of_cenarius.down";
-          aoe_list += "/pool_resource,wait=0.1,for_next=1";
-          if ( talent.natures_swiftness -> ok() )
-            aoe_list += "/thrash_cat,if=buff.rune_of_reorigination.up&(dot.thrash_cat.multiplier<=tick_multiplier|buff.predatory_swiftness.up|cooldown.natures_swiftness.remains=0)";
+            default -> add_action( "healing_touch,if=buff.natures_swiftness.up" );
+          if ( talent.incarnation -> ok() )
+            default -> add_action( "incarnation,if=energy<=35&!buff.omen_of_clarity.react&cooldown.tigers_fury.remains=0&cooldown.berserk.remains=0" );
+
+          // On-Use Items
+          for ( size_t i = 0; i < item_actions.size(); i++ )
+            default -> add_action( item_actions[ i ] + ",if=buff.tigers_fury.up" );
+
+          default -> add_action( "tigers_fury,if=(energy<=35&!buff.omen_of_clarity.react)" );
+          if ( talent.incarnation -> ok() )
+            default -> add_action( "|buff.king_of_the_jungle.up" );
+          default -> add_action( "berserk,if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)" );
+          default -> add_action( "ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25" );
+          default -> add_action( "thrash_cat,if=target.time_to_die>=6&buff.omen_of_clarity.react&dot.thrash_cat.remains<3" );
+          default -> add_action( "ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|(target.time_to_die<=1&combo_points>=3)" );
+          default -> add_action( "savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&target.health.pct<25" );
+          if ( find_item( "rune_of_reorigination" ) )
+          {
+            default -> add_action( "virmens_bite_potion,if=(combo_points>=5&target.health.pct<=25&buff.rune_of_reorigination.up&buff.dream_of_cenarius.up)|target.time_to_die<=40" );
+            default -> add_action( "natures_swiftness,if=enabled&combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius.down&buff.predatory_swiftness.down&buff.rune_of_reorigination.up&target.time_to_die>30" );
+            default -> add_action( "rip,line_cd=30,if=combo_points>=5&target.health.pct<=25&buff.virmens_bite_potion.up&buff.dream_of_cenarius.up&buff.rune_of_reorigination.up&target.time_to_die>30" );
+          }
           else
-            aoe_list += "/thrash_cat,if=buff.rune_of_reorigination.up&(dot.thrash_cat.multiplier<=tick_multiplier|buff.predatory_swiftness.up)";
+          {
+            default -> add_action( "virmens_bite_potion,if=(combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius.up)|target.time_to_die<=40" );
+            if ( talent.natures_swiftness -> ok() )
+              default -> add_action( "natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25" );
+            default -> add_action( "rip,line_cd=30,if=combo_points>=5&buff.virmens_bite_potion.up&buff.dream_of_cenarius.up&target.health.pct<=25&target.time_to_die>30" );
+          }
+          if ( find_item( "rune_of_reorigination" ) )
+            default -> add_action( "natures_swiftness,if=enabled&buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25" );
+          default -> add_action( "pool_resource,wait=0.25,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))" );
+          default -> add_action( "ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25" );
+          if ( find_item( "rune_of_reorigination" ) )
+          {
+            if ( talent.natures_swiftness -> ok() )
+              default -> add_action( "natures_swiftness,if=combo_points>=5&buff.rune_of_reorigination.react&buff.rune_of_reorigination.remains>1" );
+            default -> add_action( "rip,if=combo_points>=5&buff.rune_of_reorigination.react" );
+          }
+          default -> add_action( "rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&buff.dream_of_cenarius.up" );
+          // default -> add_action( "rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<6.0&buff.dream_of_cenarius.up&dot.rip.multiplier<=tick_multiplier" );
+          if ( talent.natures_swiftness -> ok() )
+            default -> add_action( "natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)" );
+          default -> add_action( "rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)" );
+          default -> add_action( "savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains" );
+          default -> add_action( "savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains" );
+          default -> add_action( "pool_resource,wait=0.25,if=combo_points>=5&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))&dot.rip.remains>=6.5" );
+          default -> add_action( "ferocious_bite,if=combo_points>=5&dot.rip.remains>6" );
+          if ( find_item( "rune_of_reorigination" ) )
+          {
+            default -> add_action( "rake,if=buff.rune_of_reorigination.react" );//&$(rake_ratio)>=1" );
+            // default -> add_action( "rake,if=buff.rune_of_reorigination.react&dot.rake.remains<9&(buff.rune_of_reorigination.remains<=1.5)" );
+          }
+          default -> add_action( "rake,if=dot.rake.remains<9&buff.dream_of_cenarius.up" ); // threshold is more aggressive (to 9 from 6) to account for lack of clipping otherwise
+          // default -> add_action( "rake,if=dot.rake.remains<3&tick_multiplier%dot.rake.multiplier>1.12" );
+          default -> add_action( "rake,if=dot.rake.remains<3" );
+          default -> add_action( "pool_resource,wait=0.25,for_next=1" );
+          default -> add_action( "thrash_cat,if=dot.thrash_cat.remains<3&target.time_to_die>=6&(dot.rip.remains>=4|buff.berserk.up)" );
+          default -> add_action( "run_action_list,name=filler,if=buff.omen_of_clarity.react" );
+          default -> add_action( "run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3)|(combo_points=0&buff.savage_roar.remains<2)" );
+          default -> add_action( "run_action_list,name=filler,if=buff.predatory_swiftness.remains>1" );
+          default -> add_action( "run_action_list,name=filler,if=target.time_to_die<=8.5" );
+          default -> add_action( "run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up" );
+          default -> add_action( "run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3" );
+          default -> add_action( "run_action_list,name=filler,if=energy.time_to_max<=1" );
+          if ( talent.force_of_nature -> ok() )
+            default -> add_action( "force_of_nature" );
         }
         else
         {
-          aoe_list += "/pool_resource,wait=0.1,for_next=1";
-          aoe_list += "/thrash_cat,if=buff.rune_of_reorigination.up";
+          default -> add_action( "swap_action_list,name=aoe,if=active_enemies>=5" );
+          default -> add_action( "skull_bash_cat" );
+
+          // Professions
+          for ( size_t i = 0; i < profession_actions.size(); i++ )
+            default -> add_action( profession_actions[ i ] + ",if=buff.tigers_fury.up" );
+
+          // Racials
+          for ( size_t i = 0; i < racial_actions.size(); i++ )
+            default -> add_action( racial_actions[ i ] + ",if=buff.tigers_fury.up" );
+
+          default -> add_action( "savage_roar,if=buff.savage_roar.down" );
+          default -> add_action( "faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3" );
+          if ( talent.incarnation -> ok() )
+            default -> add_action( "incarnation,if=energy<=35&!buff.omen_of_clarity.react&cooldown.tigers_fury.remains=0&cooldown.berserk.remains=0" );
+
+          // On-Use Items
+          for ( size_t i = 0; i < item_actions.size(); i++ )
+            default -> add_action( item_actions[ i ] + ",if=buff.tigers_fury.up" );
+
+          default -> add_action( "tigers_fury,if=(energy<=35&!buff.omen_of_clarity.react)" );
+          if ( talent.incarnation -> ok() )
+            default -> add_action( "|buff.king_of_the_jungle.up" );
+          default -> add_action( "berserk,if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)" );
+          if ( talent.natures_vigil -> ok() )
+            default -> add_action( "natures_vigil,if=enabled&(buff.tigers_fury.up|(target.time_to_die<35&cooldown.tigers_fury.remains>6))" );
+          default -> add_action( "ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25" );
+          default -> add_action( "thrash_cat,if=target.time_to_die>=6&buff.omen_of_clarity.react&dot.thrash_cat.remains<3" );
+          default -> add_action( "ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|(target.time_to_die<=1&combo_points>=3)" );
+          default -> add_action( "savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&target.health.pct<25" );
+          if ( find_item( "rune_of_reorigination" ) )
+          {
+            default -> add_action( "virmens_bite_potion,if=(combo_points>=5&target.health.pct<=25&buff.rune_of_reorigination.up)|target.time_to_die<=40" );
+            default -> add_action( "rip,line_cd=30,if=combo_points>=5&target.health.pct<=25&buff.rune_of_reorigination.up&buff.virmens_bite_potion.up" );
+          }
+          else
+          {
+            default -> add_action( "virmens_bite_potion,if=(buff.berserk.up&target.health.pct<=25)|target.time_to_die<=40" );
+            // default -> add_action( "rip,if=combo_points>=5&tick_multiplier%dot.rip.multiplier>1.14&target.health.pct<=25&target.time_to_die>30" );
+          }
+          default -> add_action( "ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25" );
+          default -> add_action( "rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)" );
+          if ( find_item( "rune_of_reorigination" ) )
+            default -> add_action( "rip,if=combo_points>=5&buff.rune_of_reorigination.react" );
+          default -> add_action( "savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains" );
+          default -> add_action( "savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains" );
+          default -> add_action( "ferocious_bite,if=combo_points>=5&(dot.rip.remains>10|(dot.rip.remains>6&buff.berserk.up))&dot.rip.ticking" );
+          if ( find_item( "rune_of_reorigination" ) )
+          {
+            default -> add_action( "rake,if=buff.rune_of_reorigination.react" );//&$(rake_ratio)>=1" );
+            // default -> add_action( "rake,if=buff.rune_of_reorigination.react&dot.rake.remains<9&(buff.rune_of_reorigination.remains<=1.5)" );
+          }
+          default -> add_action( "rake,if=dot.rake.remains<9&buff.tigers_fury.up" );
+          default -> add_action( "rake,if=dot.rake.remains<3&(buff.berserk.up|(cooldown.tigers_fury.remains+0.8)>=dot.rake.remains|energy>60)" );
+          default -> add_action( "pool_resource,wait=0.1,for_next=1" );
+          default -> add_action( "thrash_cat,if=dot.thrash_cat.remains<3&target.time_to_die>=6&(dot.rip.remains>=4|buff.berserk.up)" );
+          default -> add_action( "run_action_list,name=filler,if=buff.omen_of_clarity.react" );
+          default -> add_action( "run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)" );
+          default -> add_action( "run_action_list,name=filler,if=target.time_to_die<=8.5" );
+          default -> add_action( "run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up" );
+          default -> add_action( "run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3.0" );
+          default -> add_action( "run_action_list,name=filler,if=energy.time_to_max<=1.0" );
+          if ( talent.soul_of_the_forest -> ok() )
+            default -> add_action( "run_action_list,name=filler,if=combo_points<5" );
+          if ( talent.force_of_nature -> ok() )
+            default -> add_action( "force_of_nature" );
+          /*
+          if ( talent.natures_vigil -> ok() )
+          {
+            if ( talent.natures_swiftness -> ok() )
+              default -> add_action( "natures_swiftness,if=buff.natures_vigil.up&!buff.berserk.up&!buff.predatory_swiftness.up" );
+            else if ( talent.renewal -> ok() )
+              default -> add_action( "renewal,if=buff.natures_vigil.up" );
+            else if ( talent.cenarion_ward -> ok() )
+              default -> add_action( "cenarion_ward,if=buff.natures_vigil.up" );
+            default -> add_action( "healing_touch,if=buff.natures_vigil.up&(buff.predatory_swiftness.up|buff.natures_swiftness.up)&!buff.berserk.up" );
+          }
+          */
         }
       }
-      if ( talent.dream_of_cenarius -> ok() )
+
+      // Filler APL
+      action_priority_list_t* filler = get_action_priority_list( "filler" );
+      filler -> add_action( this, "Ravage" );
+      filler -> add_action( this, "Shred", "if=(buff.omen_of_clarity.react|buff.berserk.up|energy.regen>=15)&buff.king_of_the_jungle.down" );
+      filler -> add_action( "mangle_cat,if=buff.king_of_the_jungle.down" );
+
+      // AoE APL
+      action_priority_list_t* aoe = get_action_priority_list( "aoe" );
+      aoe -> add_action( "swap_action_list,name=default,if=active_enemies<5" );
+      aoe -> add_action( "auto_attack" );
+      aoe -> add_action( this, "Faerie Fire", "cycle_targets=1,if=debuff.weakened_armor.stack<3" );
+      aoe -> add_action( this, "Savage Roar", "if=buff.savage_roar.down|(buff.savage_roar.remains<3&combo_points>0)" );
+
+      // On-Use Items
+      for ( size_t i = 0; i < item_actions.size(); i++ )
+        aoe -> add_action( item_actions[ i ] + ",if=buff.tigers_fury.up" );
+
+      // Professions
+      for ( size_t i = 0; i < profession_actions.size(); i++ )
+        aoe -> add_action( profession_actions[ i ] + ",if=buff.tigers_fury.up" );
+
+      // Racials
+      for ( size_t i = 0; i < racial_actions.size(); i++ )
+        aoe -> add_action( racial_actions[ i ] + ",if=buff.tigers_fury.up" );
+
+      aoe -> add_action( this, "Tiger's Fury", "if=energy<=35&!buff.omen_of_clarity.react" );
+      aoe -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
+      if ( find_item( "rune_of_reorigination" ) )
       {
-        aoe_list += "/healing_touch,if=buff.predatory_swiftness.up&(dot.thrash_cat.remains<5|(buff.tigers_fury.remains>1&dot.thrash_cat.remains<9&energy>=40))";
-        if ( talent.natures_swiftness -> ok() )
-          aoe_list += "/natures_swiftness,if=buff.predatory_swiftness.down&buff.dream_of_cenarius.down&(dot.thrash_cat.remains<5|(buff.tigers_fury.remains>1&dot.thrash_cat.remains<9&energy>=40))";
+        aoe -> add_action( "pool_resource,for_next=1" );
+        aoe -> add_action( "thrash_cat,if=buff.rune_of_reorigination.up" );
       }
-      aoe_list += "/thrash_cat,if=buff.tigers_fury.up&dot.thrash_cat.remains<9";
-      aoe_list += "/pool_resource,wait=0.1,for_next=1";
-      aoe_list += "/thrash_cat,if=dot.thrash_cat.remains<3";
-      aoe_list += "/savage_roar,if=buff.savage_roar.remains<9&combo_points>=5";
-      aoe_list += "/rip,if=combo_points>=5";
-      if ( hasRune )
-        aoe_list += "/rake,cycle_targets=1,if=(active_enemies<8|buff.rune_of_reorigination.up)&dot.rake.remains<3&target.time_to_die>=15";
+      aoe -> add_action( "pool_resource,wait=0.1,for_next=1" );
+      aoe -> add_action( "thrash_cat,if=dot.thrash_cat.remains<3|(buff.tigers_fury.up&dot.thrash_cat.remains<9)" );
+      aoe -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<9&combo_points>=5" );
+      aoe -> add_action( this, "Rip", "if=combo_points>=5" );
+      if ( find_item( "rune_of_reorigination" ) )
+        aoe -> add_action( this, "Rake", "cycle_targets=1,if=(active_enemies<8|buff.rune_of_reorigination.up)&dot.rake.remains<3&target.time_to_die>=15" );
       else
-        aoe_list += "/rake,cycle_targets=1,if=active_enemies<8&dot.rake.remains<3&target.time_to_die>=15";
-      aoe_list += "/swipe_cat,if=buff.savage_roar.remains<=5";
-      aoe_list += "/swipe_cat,if=(buff.tigers_fury.up|buff.berserk.up)";
-      aoe_list += "/swipe_cat,if=cooldown.tigers_fury.remains<3";
-      aoe_list += "/swipe_cat,if=buff.omen_of_clarity.react";
-      aoe_list += "/swipe_cat,if=energy.time_to_max<=1";
+        aoe -> add_action( this, "Rake", "cycle_targets=1,if=active_enemies<8&dot.rake.remains<3&target.time_to_die>=15" );
+      aoe -> add_action( "swipe_cat,if=buff.savage_roar.remains<=5" );
+      aoe -> add_action( "swipe_cat,if=buff.tigers_fury.up|buff.berserk.up" );
+      aoe -> add_action( "swipe_cat,if=cooldown.tigers_fury.remains<3" );
+      aoe -> add_action( "swipe_cat,if=buff.omen_of_clarity.react" );
+      aoe -> add_action( "swipe_cat,if=energy.time_to_max<=1" );
     }
     else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_DPS ) )
     {
       action_list_str += "/starfall,if=!buff.starfall.up";
-      action_list_str += "/treants,if=talent.force_of_nature.enabled";
+      action_list_str += "/force_of_nature,if=talent.force_of_nature.enabled";
       if ( race == RACE_TROLL && level >= 68 )
         action_list_str += "/berserking,if=buff.celestial_alignment.up";
       else
