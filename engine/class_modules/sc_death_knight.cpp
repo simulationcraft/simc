@@ -161,6 +161,7 @@ public:
     buff_t* will_of_the_necropolis_rt;
 
     absorb_buff_t* blood_shield;
+    stat_buff_t* death_shroud;
   } buffs;
 
   struct runeforge_t
@@ -760,6 +761,12 @@ void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
   double runes_per_second = 1.0 / 10.0 / p -> cache.attack_haste();
 
   runes_per_second *= 1.0 + p -> spec.improved_blood_presence -> effectN( 1 ).percent();
+
+  if ( p -> sets -> set( SET_T16_4PC_MELEE ) -> ok() && p -> specialization() == DEATH_KNIGHT_FROST && 
+       p -> buffs.pillar_of_frost -> check() )
+  {
+    runes_per_second *= 1.0 + p -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 2 ).percent();
+  }
 
   double regen_amount = periodicity.total_seconds() * runes_per_second;
 
@@ -2328,7 +2335,8 @@ struct melee_t : public death_knight_melee_attack_t
           // If we're proccing 2 or we have 0 stacks, trigger like normal
           if ( new_stacks == 2 || p() -> buffs.sudden_doom -> check() == 0 )
           {
-            p() -> buffs.sudden_doom -> trigger( new_stacks );
+            if ( p() -> buffs.sudden_doom -> trigger( new_stacks ) )
+              p() -> buffs.death_shroud -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 11 ) );
           }
           // refresh stacks. However if we have a double stack and only 1 procced, it refreshes to 1 stack
           else
@@ -2349,7 +2357,13 @@ struct melee_t : public death_knight_melee_attack_t
 
       // Killing Machine is 6 PPM
       if ( p() -> spec.killing_machine -> ok() )
-        p() -> buffs.killing_machine -> trigger( 1, buff_t::DEFAULT_VALUE(), weapon -> proc_chance_on_swing( 6 ) );
+      {
+        if ( p() -> buffs.killing_machine -> trigger( 1, buff_t::DEFAULT_VALUE(), weapon -> proc_chance_on_swing( 6 ) ) )
+        {
+          timespan_t duration = timespan_t::from_seconds( 4 + ( ( weapon -> group() == WEAPON_2H ) ? 2 : 1 ) * 2 );
+          p() -> buffs.death_shroud -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+        }
+      }
     }
   }
 };
@@ -3062,6 +3076,9 @@ struct death_coil_t : public death_knight_spell_t
       p() -> buffs.blood_charge -> trigger( 2 );
       if ( p() -> buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> cache.attack_haste() ) ) )
         p() -> buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
+
+      if ( p() -> sets -> set( SET_T16_4PC_MELEE ) -> ok() && p() -> buffs.dark_transformation -> check() )
+        p() -> buffs.dark_transformation -> extend_duration( p(), timespan_t::from_millis( p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).base_value() ) );
     }
   }
 };
@@ -4961,6 +4978,7 @@ void death_knight_t::init_spells()
     {     0,     0, 105609, 105646, 105552, 105587,     0,     0 }, // Tier13
     {     0,     0, 123077, 123078, 123079, 123080,     0,     0 }, // Tier14
     {     0,     0, 138343, 138347, 138195, 138197,     0,     0 }, // Tier15
+    {     0,     0, 144899, 144907, 144934, 144950,     0,     0 }, // Tier16
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -5616,6 +5634,24 @@ void death_knight_t::init_scaling()
 
 // death_knight_t::init_buffs ===============================================
 
+static bool death_shroud_mastery( void* data )
+{
+  player_t* player = debug_cast< player_t* >( data );
+  if ( player -> current.stats.get_stat( STAT_MASTERY_RATING ) >=
+       player -> current.stats.get_stat( STAT_HASTE_RATING ) )
+    return true;
+  return false;
+}
+
+static bool death_shroud_haste( void* data )
+{
+  player_t* player = debug_cast< player_t* >( data );
+  if ( player -> current.stats.get_stat( STAT_HASTE_RATING ) >
+       player -> current.stats.get_stat( STAT_MASTERY_RATING ) )
+    return true;
+  return false;
+}
+
 void death_knight_t::create_buffs()
 {
   player_t::create_buffs();
@@ -5640,6 +5676,10 @@ void death_knight_t::create_buffs()
   buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_spell( 81256 ) )
                               .add_invalidate( CACHE_PARRY );
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) );
+  buffs.death_shroud        = stat_buff_creator_t( this, "death_shroud", sets -> set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )
+                              .chance( sets -> set( SET_T16_2PC_MELEE ) -> proc_chance() )
+                              .add_stat( STAT_MASTERY_RATING, sets -> set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() -> effectN( 2 ).base_value(), death_shroud_mastery )
+                              .add_stat( STAT_HASTE_RATING, sets -> set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(), death_shroud_haste );
   buffs.frost_presence      = buff_creator_t( this, "frost_presence", find_class_spell( "Frost Presence" ) )
                               .default_value( find_class_spell( "Frost Presence" ) -> effectN( 1 ).percent() );
   buffs.icebound_fortitude  = buff_creator_t( this, "icebound_fortitude", find_class_spell( "Icebound Fortitude" ) )
