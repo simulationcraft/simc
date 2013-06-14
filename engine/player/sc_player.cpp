@@ -4810,15 +4810,16 @@ void player_t::assess_damage( school_e school,
   // store post-mitigation, pre-absorb value
   s -> result_mitigated = s -> result_amount;
 
-  if ( buffs.hand_of_sacrifice -> check() )
+  if ( buffs.hand_of_sacrifice -> check() && s -> result_amount > 0 )
   {
     // figure out how much damage gets redirected
     double redirected_damage = s -> result_amount * ( buffs.hand_of_sacrifice -> data().effectN( 1 ).percent() );
     
     // apply that damage to the source paladin
-    // need reia's fix here
+    buffs.hand_of_sacrifice -> trigger( s -> action, 0, redirected_damage, timespan_t::zero() );
     
-    // mitigate that amount from the target
+    // mitigate that amount from the target.
+    // Slight inaccuracy: We do not get a feedback of paladin health buffer expiration here.
     s -> result_amount -= redirected_damage;
   }
 

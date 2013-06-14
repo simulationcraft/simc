@@ -14,6 +14,7 @@ namespace { // UNNAMED NAMESPACE
 
 struct paladin_t;
 struct battle_healer_proc_t;
+struct hand_of_sacrifice_redirect_t;
 
 enum seal_e
 {
@@ -77,7 +78,7 @@ public:
   struct active_actions_t
   {
     battle_healer_proc_t* battle_healer_proc;
-//    hand_of_sacrifice_redirect_t* hand_of_sacrifice_redirect;
+    hand_of_sacrifice_redirect_t* hand_of_sacrifice_redirect;
   } active;
 
   // Buffs
@@ -1515,11 +1516,11 @@ struct hand_of_sacrifice_redirect_t : public paladin_spell_t
     target = p;
   }
 
-  void trigger( const action_state_t& s )
+  void trigger( double redirect_value )
   {   
     // set the redirect amount based on the result of the action
-    base_dd_min = s.result_amount;
-    base_dd_max = s.result_amount;
+    base_dd_min = redirect_value;
+    base_dd_max = redirect_value;
 
     execute();
   }
@@ -1539,14 +1540,13 @@ struct hand_of_sacrifice_t : public paladin_spell_t
     
     if ( p -> talents.clemency -> ok() )
       cooldown -> charges = 2;
+
+    // Create redirect action conditionalized on the existence of HoS.
+    if ( ! p -> active.hand_of_sacrifice_redirect )
+      p -> active.hand_of_sacrifice_redirect = new hand_of_sacrifice_redirect_t( p );
   }
 
-  virtual void execute()
-  {
-    paladin_spell_t::execute();
-    
-     target -> buffs.hand_of_sacrifice -> trigger();
-  }
+  virtual void execute();
 
 };
 
@@ -3322,6 +3322,81 @@ struct templars_verdict_t : public paladin_melee_attack_t
 // End Attacks
 // ==========================================================================
 
+namespace buffs {
+
+struct hand_of_sacrifice_t : public buff_t
+{
+  paladin_t* source; // Assumption: Only one paladin can cast HoS per target
+  double source_health_pool;
+
+  hand_of_sacrifice_t( player_t* p ) :
+    buff_t( buff_creator_t( p, "hand_of_sacrifice", p -> find_spell( 6940 ) ) ),
+    source( nullptr ),
+    source_health_pool( 0.0 )
+  {
+
+  }
+
+  /* Trigger function for the paladin applying HoS on the target
+   */
+  bool trigger_hos( paladin_t& source )
+  {
+    if ( this -> source )
+      return false;
+
+    this -> source = &source;
+    source_health_pool = source.resources.max[ RESOURCE_HEALTH ];
+
+    return buff_t::trigger( 1 );
+  }
+
+  /* Misuse functions as the redirect callback for damage onto the source
+   */
+  virtual bool trigger( int, double value, double, timespan_t )
+  {
+    assert( source );
+
+    value = std::min( source_health_pool, value );
+    source -> active.hand_of_sacrifice_redirect -> trigger( value );
+    source_health_pool -= value;
+
+    // If the health pool is fully consumed, expire the buff early
+    if ( source_health_pool <= 0 )
+    {
+      expire();
+    }
+
+    return true;
+  }
+
+  virtual void expire_override()
+  {
+    buff_t::expire_override();
+
+    source = nullptr;
+    source_health_pool = 0.0;
+  }
+
+  virtual void reset()
+  {
+    buff_t::reset();
+
+    source = nullptr;
+    source_health_pool = 0.0;
+  }
+};
+
+} // end namespace buffs
+
+void hand_of_sacrifice_t::execute()
+{
+  paladin_spell_t::execute();
+
+   buffs::hand_of_sacrifice_t* b = debug_cast<buffs::hand_of_sacrifice_t*>( target -> buffs.hand_of_sacrifice );
+
+   b -> trigger_hos( *p() );
+}
+
 // ==========================================================================
 // Paladin Character Definition
 // ==========================================================================
@@ -4984,7 +5059,7 @@ struct paladin_module_t : public module_t
       player_t* p = sim -> actor_list[i];
       p -> buffs.beacon_of_light          = buff_creator_t( p, "beacon_of_light", p -> find_spell( 53563 ) );
       p -> buffs.illuminated_healing      = buff_creator_t( p, "illuminated_healing", p -> find_spell( 86273 ) );
-      p -> buffs.hand_of_sacrifice        = buff_creator_t( p, "hand_of_sacrifice", p -> find_spell( 6940 ) );
+      p -> buffs.hand_of_sacrifice        = new buffs::hand_of_sacrifice_t( p );
       p -> debuffs.forbearance            = buff_creator_t( p, "forbearance", p -> find_spell( 25771 ) );
     }
   }
