@@ -114,6 +114,7 @@ public:
     buff_t* symbiosis;
 
     // Balance
+    buff_t* astral_insight;
     buff_t* celestial_alignment;
     buff_t* chosen_of_elune;
     buff_t* eclipse_lunar;
@@ -928,7 +929,7 @@ public:
 
     if ( this -> special && this -> harmful )
     {
-      if ( ! p() -> dbc.ptr && this -> p() -> buff.dream_of_cenarius -> check() )
+      if ( ! this -> p() -> dbc.ptr && this -> p() -> buff.dream_of_cenarius -> check() )
       {
         m *= 1.0 + this -> p() -> buff.dream_of_cenarius -> data().effectN( 1 ).percent();
       }
@@ -943,7 +944,7 @@ public:
 
     if ( this -> special && this -> harmful )
     {
-      if ( ! p() -> dbc.ptr && this -> p() -> buff.dream_of_cenarius -> check() )
+      if ( ! this -> p() -> dbc.ptr && this -> p() -> buff.dream_of_cenarius -> check() )
       {
         m *= 1.0 + this -> p() -> buff.dream_of_cenarius -> data().effectN( 2 ).percent();
       }
@@ -956,7 +957,7 @@ public:
   {
     ab::execute();
 
-    if ( ! p() -> dbc.ptr && this -> special && this -> harmful )
+    if ( ! this -> p() -> dbc.ptr && this -> special && this -> harmful )
     {
       if ( this -> p() -> buff.dream_of_cenarius -> up() )
       {
@@ -3365,7 +3366,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
         }
       }
     }
-    if ( soul_of_the_forest )
+    if ( soul_of_the_forest && maybe_ptr( p() -> dbc.ptr ) )
       p() -> trigger_soul_of_the_forest();
   }
 
@@ -3439,6 +3440,9 @@ struct astral_communion_t : public druid_spell_t
       starting_direction = 1;
     else
       starting_direction = p() -> eclipse_bar_direction;
+    
+    // TODO: How does it work with sotf buff up? 
+    p() -> buff.astral_insight -> up();
 
     druid_spell_t::execute();
   }
@@ -4277,6 +4281,8 @@ struct starfire_t : public druid_spell_t
         }
       }
     }
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      p() -> trigger_soul_of_the_forest();
   }
 };
 
@@ -4396,6 +4402,8 @@ struct starsurge_t : public druid_spell_t
         trigger_eclipse_energy_gain( gain );
       }
     }
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      p() -> trigger_soul_of_the_forest();
   }
 
   virtual void schedule_execute( action_state_t* state = 0 )
@@ -4859,6 +4867,8 @@ struct wrath_t : public druid_spell_t
         }
       }
     }
+    if ( maybe_ptr( p() -> dbc.ptr ) )
+      p() -> trigger_soul_of_the_forest();
   }
 
   virtual void schedule_execute( action_state_t* state = 0 )
@@ -5158,15 +5168,25 @@ void druid_t::trigger_soul_of_the_forest()
   if ( ! talent.soul_of_the_forest -> ok() )
     return;
 
-  int gain = talent.soul_of_the_forest -> effectN( 2 ).base_value() * eclipse_bar_direction;
-  eclipse_bar_value += gain;
-
-  if ( sim -> log )
+  if ( maybe_ptr( dbc.ptr ) )
   {
-    sim -> output( "%s gains %d (%d) %s from %s (%d)",
-                   name(), gain, gain,
-                   "Eclipse", talent.soul_of_the_forest -> name_cstr(),
-                   eclipse_bar_value );
+    // 5.4 mechanic: Your Wrath, Starfire, and Starsurge casts have a 8% 
+    // chance to cause your next Astral Communion to instantly advance you to
+    // the next Eclipse.
+    buff.astral_insight -> trigger();
+  }
+  else
+  {
+    int gain = talent.soul_of_the_forest -> effectN( 2 ).base_value() * eclipse_bar_direction;
+    eclipse_bar_value += gain;
+
+    if ( sim -> log )
+    {
+      sim -> output( "%s gains %d (%d) %s from %s (%d)",
+                     name(), gain, gain,
+                     "Eclipse", talent.soul_of_the_forest -> name_cstr(),
+                     eclipse_bar_value );
+    }
   }
 }
 
@@ -5530,6 +5550,8 @@ void druid_t::create_buffs()
 
   // Balance
 
+  buff.astral_insight        = buff_creator_t( this, "astral_insight", talent.soul_of_the_forest -> ok() ? find_spell( 145138 ) : spell_data_t::not_found() )
+                               .chance( 0.08 );
   buff.celestial_alignment   = new celestial_alignment_t( *this );
   buff.eclipse_lunar         = buff_creator_t( this, "lunar_eclipse",  find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 48518 ) : spell_data_t::not_found() )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
