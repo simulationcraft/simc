@@ -1212,6 +1212,7 @@ void print_html_styles( report::sc_html_stream& os, sim_t* sim )
        << "\t\t\ttr.details td table.details tr.odd td {background-color: #f3f3f3; }\n"
        << "\t\t\ttr.details td table.details tr td {padding: 0 0 15px 15px; }\n"
        << "\t\t\ttr.details td table.details tr td.right {text-align: right; }\n"
+       << "\t\t\t.player-thumbnail {float: right;margin: 8px;border-radius: 12px;-moz-border-radius: 12px;-webkit-border-radius: 12px;-khtml-border-radius: 12px; }\n"
        << "\t\t</style>\n";
   }
   else if ( sim -> print_styles == 2 )
