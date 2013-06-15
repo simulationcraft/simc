@@ -454,7 +454,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
 
   for ( size_t i = 0; spell_data._power && i < spell_data._power -> size(); i++ )
   {
-    const spellpower_data_t* pd = spell_data._power -> at( i );
+    const spellpower_data_t* pd = (*spell_data._power)[ i ];
 
     if ( pd -> _cost > 0 )
       base_costs[ pd -> resource() ] = pd -> cost();

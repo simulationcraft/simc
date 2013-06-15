@@ -474,6 +474,7 @@ struct monk_action_t : public Base
   int stancemask;
 
 private:
+  std::array<resource_e,WISE_SERPENT+1> _resource_by_stance;
   typedef Base ab; // action base, eg. spell_t
 public:
   typedef monk_action_t base_t;
@@ -484,6 +485,7 @@ public:
     stancemask( STURDY_OX | FIERCE_TIGER | WISE_SERPENT )
   {
     ab::may_crit   = true;
+    range::fill( _resource_by_stance, RESOURCE_MAX );
   }
   virtual ~monk_action_t() {}
 
@@ -503,17 +505,42 @@ public:
     return true;
   }
 
+  virtual void init()
+  {
+    ab::init();
+
+    /* Iterate through power entries, and find if there are resources linked to one of our stances
+     */
+    for ( size_t i = 0; ab::data()._power && i < ab::data()._power -> size(); i++ )
+    {
+      const spellpower_data_t* pd = (*ab::data()._power)[ i ];
+      switch ( pd -> aura_id() )
+      {
+      case 103985:
+        assert( _resource_by_stance[ FIERCE_TIGER ] == RESOURCE_MAX && "Two power entries per aura id." );
+        _resource_by_stance[ FIERCE_TIGER ] = pd -> resource();
+        break;
+      case 115069:
+        assert( _resource_by_stance[ STURDY_OX ] == RESOURCE_MAX && "Two power entries per aura id." );
+        _resource_by_stance[ STURDY_OX ] = pd -> resource();
+        break;
+      case 115070:
+        assert( _resource_by_stance[ WISE_SERPENT ] == RESOURCE_MAX && "Two power entries per aura id." );
+        _resource_by_stance[ WISE_SERPENT ] = pd -> resource();
+        break;
+      default: break;
+      }
+    }
+  }
+
   virtual resource_e current_resource()
   {
-    if ( this -> data().powerN( POWER_ENERGY ).aura_id() == 103985 && p() -> current_stance() == FIERCE_TIGER )
-    {
-      return RESOURCE_ENERGY;
-    }
-    if ( this -> data().powerN( POWER_MANA ).aura_id() == 115070 && p() -> current_stance() == WISE_SERPENT )
-    {
-      return RESOURCE_MANA;
-    }
-    return ab::current_resource();
+    resource_e resource_by_stance = _resource_by_stance[ p() -> current_stance() ];
+
+    if ( resource_by_stance == RESOURCE_MAX )
+      return ab::current_resource();
+
+    return resource_by_stance;
   }
 
   virtual void consume_resource()
@@ -695,9 +722,11 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
 struct jab_t : public monk_melee_attack_t
 {
+  static const spell_data_t* jab_data( monk_t* p )
+  { return p -> specialization() == MONK_BREWMASTER ? p -> find_spell( 108557 ) : p -> find_class_spell( "Jab" ); }
 
   jab_t( monk_t* p, const std::string& options_str ) :
-    monk_melee_attack_t( "jab", p, p -> find_class_spell( "Jab" ) )
+    monk_melee_attack_t( "jab", p, jab_data( p ) )
   {
     parse_options( nullptr, options_str );
     stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT;
