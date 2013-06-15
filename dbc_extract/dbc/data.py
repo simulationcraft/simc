@@ -697,11 +697,12 @@ class Spell(DBCRecord):
         setattr(self, 'effect_%d' % ( spell_effect.index + 1 ), spell_effect)
 
     def add_power(self, spell_power):
-        if len(self._powers) < spell_power.type_power + 2 + 1:
-            for i in xrange(0, spell_power.type_power + 2 + 1 - len(self._powers)):
-                self._powers.append( None )
-            
-            self._powers[ spell_power.type_power + 2 ] = spell_power
+        self._powers.append(spell_power)
+        #if len(self._powers) < spell_power.type_power + 2 + 1:
+        #    for i in xrange(0, spell_power.type_power + 2 + 1 - len(self._powers)):
+        #        self._powers.append( None )
+        #    
+        #    self._powers[ spell_power.type_power + 2 ] = spell_power
     
     def add_misc(self, misc):
         self._misc.append( misc )
