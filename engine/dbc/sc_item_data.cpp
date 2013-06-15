@@ -56,7 +56,7 @@ std::string item_database::stat_to_str( int stat, int stat_amount )
   return stat_str;
 }
 
-// item_database_t::approx_scale_coefficient ==================================
+// item_database_t::approx_scale_coefficient ================================
 
 double item_database::approx_scale_coefficient( unsigned current_ilevel, unsigned new_ilevel )
 {
@@ -67,7 +67,7 @@ double item_database::approx_scale_coefficient( unsigned current_ilevel, unsigne
   return 1.0 / pow( 1.15, diff / 15.0 );
 }
 
-// item_database_t::scaled_stat ===============================================
+// item_database_t::scaled_stat =============================================
 
 int item_database::scaled_stat( const item_data_t& item, const dbc_t& dbc, size_t idx, unsigned new_ilevel )
 {
@@ -594,7 +594,7 @@ unsigned item_database::parse_gem( item_t& item, unsigned gem_id )
   return gem_prop.color;
 }
 
-// item_database::upgrade_ilevel ==============================================
+// item_database::upgrade_ilevel ============================================
 
 // TODO: DBC Based upgrading system would be safer, this works for now, probably
 unsigned item_database::upgrade_ilevel( const item_data_t& item, unsigned upgrade_level )

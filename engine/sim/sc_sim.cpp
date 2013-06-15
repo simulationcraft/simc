@@ -1366,7 +1366,7 @@ void sim_t::combat_end()
   assert( active_enemies == 0 && active_allies == 0 );
 }
 
-// sim_t::datacollection_begin ================================================
+// sim_t::datacollection_begin ==============================================
 
 void sim_t::datacollection_begin()
 {
@@ -1393,7 +1393,7 @@ void sim_t::datacollection_begin()
 
 }
 
-// sim_t::datacollection_end ==================================================
+// sim_t::datacollection_end ================================================
 
 void sim_t::datacollection_end()
 {

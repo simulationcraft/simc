@@ -25,7 +25,7 @@ struct aoe_player_list_callback_t : public callback_t
 
 } // end anonymous namespace
 
-// heal_t::heal_t ======== Heal Constructor ===================
+// heal_t::heal_t ======== Heal Constructor =================================
 
 heal_t::heal_t( const std::string&  token,
                 player_t*           p,
@@ -52,7 +52,7 @@ void heal_t::init_target_cache()
   sim -> player_non_sleeping_list.register_callback( target_cache.callback );
 }
 
-// heal_t::parse_effect_data ===========================
+// heal_t::parse_effect_data ================================================
 
 void heal_t::parse_effect_data( const spelleffect_data_t& e )
 {
@@ -67,7 +67,7 @@ void heal_t::parse_effect_data( const spelleffect_data_t& e )
   }
 }
 
-// heal_t::calculate_direct_amount ====================================
+// heal_t::calculate_direct_amount ==========================================
 
 double heal_t::calculate_direct_amount( action_state_t* state,
                                         int chain_target )
@@ -193,7 +193,7 @@ player_t* heal_t::find_lowest_player()
   return max_player;
 }
 
-// heal_t::num_targets =====================================================
+// heal_t::num_targets ======================================================
 
 int heal_t::num_targets()
 {
@@ -211,7 +211,7 @@ int heal_t::num_targets()
   return count;
 }
 
-// heal_t::available_targets ==============================================
+// heal_t::available_targets ================================================
 
 size_t heal_t::available_targets( std::vector< player_t* >& tl )
 {

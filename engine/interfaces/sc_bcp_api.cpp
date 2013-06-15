@@ -720,7 +720,7 @@ player_t* bcp_api::download_player( sim_t*             sim,
   return parse_player( sim, player, caching );
 }
 
-// bcp_api::from_local_json =============================================================
+// bcp_api::from_local_json =================================================
 
 player_t* bcp_api::from_local_json( sim_t*             sim,
                                     const std::string& name,

@@ -178,7 +178,7 @@ struct spell_nuke_t : public spell_t
 
 };
 
-// Spell DoT ===============================================================
+// Spell DoT ================================================================
 
 struct spell_dot_t : public spell_t
 {
@@ -550,7 +550,7 @@ void enemy_t::init_defense()
   }
 }
 
-// enemy_t::init_buffs ==================================================
+// enemy_t::init_buffs ======================================================
 
 void enemy_t::create_buffs()
 {
@@ -576,7 +576,7 @@ void enemy_t::init_resources( bool /* force */ )
   }
 }
 
-// enemy_t::init_target ====================================================
+// enemy_t::init_target =====================================================
 
 void enemy_t::init_target()
 {
@@ -666,7 +666,7 @@ double enemy_t::composite_block()
   return b;
 }
 
-// enemy_t::resource_loss ==================================================
+// enemy_t::resource_loss ===================================================
 
 double enemy_t::resource_loss( resource_e resource_type,
                                double    amount,
@@ -784,7 +784,7 @@ expr_t* enemy_t::create_expression( action_t* action,
   return player_t::create_expression( action, name_str );
 }
 
-// enemy_t::combat_begin ======================================================
+// enemy_t::combat_begin ====================================================
 
 void enemy_t::combat_begin()
 {
@@ -803,7 +803,7 @@ void enemy_t::combat_end()
     recalculate_health();
 }
 
-// ENEMY MODULE INTERFACE ================================================
+// ENEMY MODULE INTERFACE ===================================================
 
 struct enemy_module_t : public module_t
 {
@@ -819,7 +819,7 @@ struct enemy_module_t : public module_t
   virtual void combat_end  ( sim_t* ) const {}
 };
 
-// HEAL ENEMY MODULE INTERFACE ================================================
+// HEAL ENEMY MODULE INTERFACE ==============================================
 
 struct heal_enemy_module_t : public module_t
 {

@@ -2281,7 +2281,7 @@ action_t* monk_t::create_action( const std::string& name,
   return base_t::create_action( name, options_str );
 }
 
-// monk_t::create_pet =====================================================
+// monk_t::create_pet =======================================================
 
 pet_t* monk_t::create_pet( const std::string& name,
                            const std::string& /* pet_type */ )
@@ -2296,7 +2296,7 @@ pet_t* monk_t::create_pet( const std::string& name,
   return nullptr;
 }
 
-// monk_t::create_pets ====================================================
+// monk_t::create_pets ======================================================
 
 void monk_t::create_pets()
 {
@@ -2497,7 +2497,7 @@ void monk_t::init_gains()
   gain.tier15_2pc            = get_gain( "tier15_2pc"               );
 }
 
-// monk_t::init_rng =======================================================
+// monk_t::init_rng =========================================================
 
 void monk_t::init_rng()
 {
@@ -2508,7 +2508,7 @@ void monk_t::init_rng()
   rng.tier15_4pc_melee            = get_rng( "tier15_4pc" );
 }
 
-// monk_t::init_procs ======================================================
+// monk_t::init_procs =======================================================
 
 void monk_t::init_procs()
 {
@@ -2519,7 +2519,7 @@ void monk_t::init_procs()
   proc.tier15_4pc_melee = get_proc( "tier15_4pc" );
 }
 
-// monk_t::reset ==================================================
+// monk_t::reset ============================================================
 
 void monk_t::reset()
 {
@@ -2537,7 +2537,7 @@ void monk_t::init_defense()
     vengeance_init();
 }
 
-// monk_t::regen (brews/teas)=======================================
+// monk_t::regen (brews/teas)================================================
 
 void monk_t::regen( timespan_t periodicity )
 {
@@ -2558,7 +2558,7 @@ void monk_t::regen( timespan_t periodicity )
   base_t::regen( periodicity );
 }
 
-// monk_t::init_resources ==================================================
+// monk_t::init_resources ===================================================
 
 void monk_t::init_resources( bool force )
 {
@@ -2844,7 +2844,7 @@ void monk_t::invalidate_cache( cache_e c )
   }
 }
 
-// monk_t::create_options =================================================
+// monk_t::create_options ===================================================
 
 void monk_t::create_options()
 {
@@ -2868,7 +2868,7 @@ void monk_t::copy_from( player_t* source )
   user_options = source_p -> user_options;
 }
 
-// monk_t::primary_role ==================================================
+// monk_t::primary_role =====================================================
 
 resource_e monk_t::primary_resource()
 {
@@ -2878,7 +2878,7 @@ resource_e monk_t::primary_resource()
   return RESOURCE_ENERGY;
 }
 
-// monk_t::primary_role ==================================================
+// monk_t::primary_role =====================================================
 
 role_e monk_t::primary_role()
 {
@@ -2903,7 +2903,7 @@ role_e monk_t::primary_role()
   return ROLE_HYBRID;
 }
 
-// monk_t::pre_analyze_hook  ==============================================
+// monk_t::pre_analyze_hook  ================================================
 
 void monk_t::pre_analyze_hook()
 {
@@ -2918,7 +2918,7 @@ void monk_t::pre_analyze_hook()
   }
 }
 
-// monk_t::energy_regen_per_second ========================================
+// monk_t::energy_regen_per_second ==========================================
 
 double monk_t::energy_regen_per_second()
 {
@@ -3310,7 +3310,7 @@ const spell_data_t& monk_t::active_stance_data( stance_e stance )
   return static_stance_data( stance );
 }
 
-// MONK MODULE INTERFACE ================================================
+// MONK MODULE INTERFACE ====================================================
 
 struct monk_module_t : public module_t
 {

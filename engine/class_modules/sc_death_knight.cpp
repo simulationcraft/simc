@@ -762,7 +762,7 @@ void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
 
   runes_per_second *= 1.0 + p -> spec.improved_blood_presence -> effectN( 1 ).percent();
 
-  if ( p -> sets -> set( SET_T16_4PC_MELEE ) -> ok() && p -> specialization() == DEATH_KNIGHT_FROST && 
+  if ( p -> sets -> set( SET_T16_4PC_MELEE ) -> ok() && p -> specialization() == DEATH_KNIGHT_FROST &&
        p -> buffs.pillar_of_frost -> check() )
   {
     runes_per_second *= 1.0 + p -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 2 ).percent();
@@ -2196,7 +2196,7 @@ static void trigger_bloodworms( death_knight_melee_attack_t* attack )
 // Death Knight Attack Methods
 // ==========================================================================
 
-// death_knight_melee_attack_t::consume_resource() ================================
+// death_knight_melee_attack_t::consume_resource() ==========================
 
 void death_knight_melee_attack_t::consume_resource()
 {
@@ -2206,7 +2206,7 @@ void death_knight_melee_attack_t::consume_resource()
     consume_runes( p(), use, convert_runes == 0 ? false : sim -> roll( convert_runes ) == 1 );
 }
 
-// death_knight_melee_attack_t::execute() =========================================
+// death_knight_melee_attack_t::execute() ===================================
 
 void death_knight_melee_attack_t::execute()
 {
@@ -2230,7 +2230,7 @@ void death_knight_melee_attack_t::execute()
   trigger_t15_2pc_melee( this );
 }
 
-// death_knight_melee_attack_t::ready() ===========================================
+// death_knight_melee_attack_t::ready() =====================================
 
 bool death_knight_melee_attack_t::ready()
 {
@@ -4025,7 +4025,7 @@ struct presence_t : public death_knight_spell_t
   }
 };
 
-// Blood Presence =================================================================
+// Blood Presence ===========================================================
 
 struct blood_presence_t : public presence_t
 {
@@ -4037,7 +4037,7 @@ struct blood_presence_t : public presence_t
   }
 };
 
-// Frost Presence =================================================================
+// Frost Presence ===========================================================
 
 struct frost_presence_t : public presence_t
 {
@@ -4049,7 +4049,7 @@ struct frost_presence_t : public presence_t
   }
 };
 
-// Unholy Presence =================================================================
+// Unholy Presence ==========================================================
 
 struct unholy_presence_t : public presence_t
 {
@@ -4207,7 +4207,7 @@ struct summon_gargoyle_t : public death_knight_spell_t
   }
 };
 
-// Unholy Blight ====================================================
+// Unholy Blight ============================================================
 
 struct unholy_blight_tick_t : public death_knight_spell_t
 {
@@ -4331,7 +4331,7 @@ struct plague_leech_t : public death_knight_spell_t
   }
 };
 
-// Anti-magic Shell ===========================================================
+// Anti-magic Shell =========================================================
 
 struct antimagic_shell_t : public death_knight_spell_t
 {
@@ -4417,7 +4417,7 @@ struct vampiric_blood_t : public death_knight_spell_t
   }
 };
 
-// Icebound Fortitude =========================================================
+// Icebound Fortitude =======================================================
 
 struct icebound_fortitude_t : public death_knight_spell_t
 {
@@ -4485,7 +4485,7 @@ struct rune_tap_t : public death_knight_heal_t
   }
 };
 
-// Buffs ======================================================================
+// Buffs ====================================================================
 
 struct runic_corruption_regen_t : public event_t
 {
@@ -5849,7 +5849,7 @@ void death_knight_t::assess_damage( school_e     school,
   }
 }
 
-// death_knight_t::target_mitigation ==========================================
+// death_knight_t::target_mitigation ========================================
 
 void death_knight_t::target_mitigation( school_e school, dmg_e type, action_state_t* state )
 {
@@ -5980,7 +5980,7 @@ double death_knight_t::composite_player_multiplier( school_e school )
   return m;
 }
 
-// death_knight_t::composite_attack_speed() ====================
+// death_knight_t::composite_attack_speed() =================================
 
 double death_knight_t::composite_melee_speed()
 {
@@ -6337,7 +6337,7 @@ void death_knight_t::arise()
   runeforge.rune_of_spellbreaking_oh -> trigger();
 }
 
-// DEATH_KNIGHT MODULE INTERFACE ================================================
+// DEATH_KNIGHT MODULE INTERFACE ============================================
 
 struct death_knight_module_t : public module_t
 {

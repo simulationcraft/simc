@@ -66,7 +66,7 @@ pet_t::pet_t( sim_t*             s,
   init_pet_t_();
 }
 
-// base_t::pet_attribute =================================
+// base_t::pet_attribute ====================================================
 
 double pet_t::composite_attribute( attribute_e attr )
 {
@@ -217,7 +217,7 @@ void pet_t::combat_begin()
   base_t::combat_begin();
 }
 
-// pet_t::find_pet_spell =============================================
+// pet_t::find_pet_spell ====================================================
 
 const spell_data_t* pet_t::find_pet_spell( const std::string& name, const std::string& token )
 {

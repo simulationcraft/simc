@@ -29,7 +29,7 @@ struct dot_tick_event_t : public event_t
     sim.add_event( this, time_to_tick );
   }
 
-  // dot_tick_event_t::execute ================================================
+  // dot_tick_event_t::execute ==============================================
 
   virtual void execute()
   {
@@ -136,7 +136,7 @@ void dot_t::last_tick()
   }
 }
 
-// dot_t::cancel ===================================================
+// dot_t::cancel ============================================================
 
 void dot_t::cancel()
 {

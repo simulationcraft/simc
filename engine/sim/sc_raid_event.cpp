@@ -191,7 +191,7 @@ struct invulnerable_event_t : public raid_event_t
   }
 };
 
-// Flying =============================================================
+// Flying ===================================================================
 
 struct flying_event_t : public raid_event_t
 {
@@ -462,7 +462,7 @@ struct vulnerable_event_t : public raid_event_t
   }
 };
 
-// Position Switch ===============================================================
+// Position Switch ==========================================================
 
 struct position_event_t : public raid_event_t
 {

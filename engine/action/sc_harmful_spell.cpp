@@ -11,7 +11,7 @@
 
 // spell_t::spell_t =========================================================
 
-// == Harmful Spell Constructor ===============
+// == Harmful Spell Constructor =============================================
 
 spell_t::spell_t( const std::string&  token,
                   player_t*           p,
@@ -32,7 +32,7 @@ double spell_t::miss_chance( double hit, int delta_level )
   return miss;
 }
 
-// spell_t::assess_damage ====================================================
+// spell_t::assess_damage ===================================================
 
 void spell_t::assess_damage( dmg_e type,
                              action_state_t* s )

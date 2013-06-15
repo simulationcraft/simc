@@ -830,7 +830,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   {
     double m = base_t::composite_target_multiplier( target );
 
-    if ( td( target ) -> debuff.t16_2pc_caster -> up() && ( dbc::is_school( school, SCHOOL_FIRE ) 
+    if ( td( target ) -> debuff.t16_2pc_caster -> up() && ( dbc::is_school( school, SCHOOL_FIRE )
           || dbc::is_school( school, SCHOOL_NATURE ) ) )
       m *= 1.0 + td( target ) -> debuff.t16_2pc_caster -> data().effectN( 1 ).percent();
 
@@ -1832,7 +1832,7 @@ static bool trigger_lightning_strike( const action_state_t* s )
   return false;
 }
 
-// trigger_tier16_2pc_melee ===================================================
+// trigger_tier16_2pc_melee =================================================
 
 static bool trigger_tier16_2pc_melee( const action_state_t* s )
 {
@@ -1868,7 +1868,7 @@ static bool trigger_tier16_2pc_melee( const action_state_t* s )
   return true;
 }
 
-// trigger_tier16_4pc_caster ==================================================
+// trigger_tier16_4pc_caster ================================================
 
 static bool trigger_tier16_4pc_caster( const action_state_t* s )
 {
@@ -2246,7 +2246,7 @@ struct unleash_wind_t : public shaman_melee_attack_t
 
     // Unleash wind implicitly uses main hand weapon of the player to perform
     // the damaging attack
- 
+
     weapon = &( player -> main_hand_weapon );
     // Don't cooldown here, unleash elements will handle it
     cooldown -> duration = timespan_t::zero();
@@ -2420,7 +2420,7 @@ void shaman_spell_base_t<Base>::execute()
   p -> buff.spiritwalkers_grace -> up();
 }
 
-// shaman_spell_base_t::impact ===============================================
+// shaman_spell_base_t::impact ==============================================
 
 template <class Base>
 void shaman_spell_base_t<Base>::impact( action_state_t* state )
@@ -2935,7 +2935,7 @@ struct stormblast_t : public shaman_melee_attack_t
 // Shaman Spell
 // ==========================================================================
 
-// shaman_spell_t::execute =================================================
+// shaman_spell_t::execute ==================================================
 
 void shaman_spell_t::execute()
 {
@@ -5907,7 +5907,7 @@ double shaman_t::composite_spell_hit()
   return hit;
 }
 
-// shaman_t::composite_attack_hit ============================================
+// shaman_t::composite_attack_hit ===========================================
 
 double shaman_t::composite_melee_hit()
 {
@@ -6215,7 +6215,7 @@ role_e shaman_t::primary_role()
   return player_t::primary_role();
 }
 
-// SHAMAN MODULE INTERFACE ================================================
+// SHAMAN MODULE INTERFACE ==================================================
 
 struct shaman_module_t : public module_t
 {

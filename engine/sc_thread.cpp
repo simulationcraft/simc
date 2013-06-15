@@ -17,7 +17,7 @@ public:
   void unlock() {}
 };
 
-// sc_thread_t::native_t =======================================================
+// sc_thread_t::native_t ====================================================
 
 class sc_thread_t::native_t
 {
@@ -54,7 +54,7 @@ public:
   void unlock() { LeaveCriticalSection( &cs ); }
 };
 
-// sc_thread_t::native_t =======================================================
+// sc_thread_t::native_t ====================================================
 
 class sc_thread_t::native_t
 {
@@ -108,7 +108,7 @@ public:
 };
 
 
-// sc_thread_t::native_t =======================================================
+// sc_thread_t::native_t ====================================================
 
 class sc_thread_t::native_t
 {
@@ -152,27 +152,27 @@ void mutex_t::lock()
 void mutex_t::unlock()
 { native_handle -> unlock(); }
 
-// sc_thread_t::sc_thread_t() =====================================================
+// sc_thread_t::sc_thread_t() ===============================================
 
 sc_thread_t::sc_thread_t() : native_handle( new native_t() )
 {}
 
-// sc_thread_t::~sc_thread_t() ====================================================
+// sc_thread_t::~sc_thread_t() ==============================================
 
 sc_thread_t::~sc_thread_t()
 { delete native_handle; }
 
-// sc_thread_t::launch() =======================================================
+// sc_thread_t::launch() ====================================================
 
 void sc_thread_t::launch()
 { native_handle -> launch( this ); }
 
-// sc_thread_t::wait() =========================================================
+// sc_thread_t::wait() ======================================================
 
 void sc_thread_t::wait()
 { native_handle -> join(); }
 
-// sc_thread_t::sleep() =========================================================
+// sc_thread_t::sleep() =====================================================
 
 void sc_thread_t::sleep( timespan_t t )
 { native_t::sleep( t ); }

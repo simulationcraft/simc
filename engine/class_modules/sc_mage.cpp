@@ -1105,7 +1105,7 @@ public:
       p -> buffs.heating_up -> expire();
     }
   }
-  // mage_spell_t::execute ====================================================
+  // mage_spell_t::execute ==================================================
 
   virtual void execute()
   {
@@ -2313,7 +2313,7 @@ struct frozen_orb_t : public mage_spell_t
   }
 };
 
-// Ice Floes Spell ===================================================
+// Ice Floes Spell ==========================================================
 
 struct ice_floes_t : public mage_spell_t
 {
@@ -2332,7 +2332,7 @@ struct ice_floes_t : public mage_spell_t
   }
 };
 
-// Mini Ice Lance Spell ==========================================================
+// Mini Ice Lance Spell =====================================================
 
 struct mini_ice_lance_t : public mage_spell_t
 {
@@ -2780,7 +2780,7 @@ public:
   }
 };
 
-// Mirror Image Spell ====================================================
+// Mirror Image Spell =======================================================
 
 struct mirror_image_t : public mage_spell_t
 {
@@ -2850,7 +2850,7 @@ struct molten_armor_t : public mage_spell_t
 
 
 
-// Nether Tempest Cleave ==================================================
+// Nether Tempest Cleave ====================================================
 //FIXME_cleave: take actual distances between main_target and cleave_target into account
 struct nether_tempest_cleave_t: public mage_spell_t
 {
@@ -3425,7 +3425,7 @@ struct choose_rotation_t : public action_t
   }
 };
 
-// Alter Time Spell ===============================================================
+// Alter Time Spell =========================================================
 
 struct alter_time_t : public mage_spell_t
 {
@@ -3467,7 +3467,7 @@ struct alter_time_t : public mage_spell_t
   }
 };
 
-// Incanters_ward Spell ===============================================================
+// Incanters_ward Spell =====================================================
 
 struct incanters_ward_t : public mage_spell_t
 {
@@ -4187,7 +4187,7 @@ void mage_t::init_actions()
   player_t::init_actions();
 }
 
-// mage_t::mana_regen_per_second ====================================================
+// mage_t::mana_regen_per_second ============================================
 
 double mage_t::mana_regen_per_second()
 {
@@ -4495,7 +4495,7 @@ int mage_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
-// MAGE MODULE INTERFACE ================================================
+// MAGE MODULE INTERFACE ====================================================
 
 struct mage_module_t : public module_t
 {

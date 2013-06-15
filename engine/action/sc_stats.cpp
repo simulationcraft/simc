@@ -160,7 +160,7 @@ void stats_t::datacollection_begin()
   }
 }
 
-// stats_t::datacollection_end ========================================================
+// stats_t::datacollection_end ==============================================
 
 void stats_t::datacollection_end()
 {
@@ -274,7 +274,7 @@ void stats_t::analyze()
   timeline_amount.adjust( sim.divisor_timeline );
 }
 
-// stats_results_t::merge ===========================================================
+// stats_results_t::merge ===================================================
 
 stats_t::stats_results_t::stats_results_t() :
   actual_amount(),
@@ -292,7 +292,7 @@ stats_t::stats_results_t::stats_results_t() :
 
 }
 
-// stats_results_t::merge ===========================================================
+// stats_results_t::merge ===================================================
 
 void stats_t::stats_results_t::merge( const stats_results_t& other )
 {
@@ -304,7 +304,7 @@ void stats_t::stats_results_t::merge( const stats_results_t& other )
   total_amount.merge( other.total_amount );
   overkill_pct.merge( other.overkill_pct );
 }
-// stats_results_t::datacollection_begin ===========================================================
+// stats_results_t::datacollection_begin ====================================
 
 void stats_t::stats_results_t::datacollection_begin()
 {
@@ -313,7 +313,7 @@ void stats_t::stats_results_t::datacollection_begin()
   iteration_total_amount = 0.0;
 }
 
-// stats_results_t::combat_end ===========================================================
+// stats_results_t::combat_end ==============================================
 
 void stats_t::stats_results_t::datacollection_end()
 {

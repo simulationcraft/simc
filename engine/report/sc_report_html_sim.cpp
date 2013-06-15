@@ -343,7 +343,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
 }
 
 
-// print_html_raw_ability_summary ===================================================
+// print_html_raw_ability_summary ===========================================
 
 double aggregate_damage( const std::vector<stats_t::stats_results_t>& result )
 {
@@ -629,7 +629,7 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t* sim, sim_t::rep
 
 }
 
-// print_html_raid_imagemaps ==================================================
+// print_html_raid_imagemaps ================================================
 
 void print_html_raid_imagemap( report::sc_html_stream& os, sim_t* sim, size_t num, bool dps )
 {
@@ -1090,7 +1090,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
   os << "\t\t<!-- End Help Boxes -->\n";
 }
 
-// print_html_styles ====================================================
+// print_html_styles ========================================================
 
 void print_html_styles( report::sc_html_stream& os, sim_t* sim )
 {
@@ -3933,7 +3933,7 @@ void print_html_styles( report::sc_html_stream& os, sim_t* sim )
   }
 }
 
-// print_html_masthead ====================================================
+// print_html_masthead ======================================================
 
 void print_html_masthead( report::sc_html_stream& os, sim_t* sim )
 {
@@ -4153,7 +4153,7 @@ void print_html_image_load_scripts( report::sc_html_stream& os, sim_t* sim )
 }
 
 
-// print_html =====================================================
+// print_html ===============================================================
 void print_html_( report::sc_html_stream& os, sim_t* sim )
 {
   os << "<!DOCTYPE html>\n\n";

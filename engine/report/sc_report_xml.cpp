@@ -168,7 +168,7 @@ public:
   }
 };
 
-// report::print_xml ======================================================
+// report::print_xml ========================================================
 
 void print_xml_errors( sim_t* sim, xml_writer_t & writer );
 void print_xml_raid_events( sim_t* sim, xml_writer_t & writer );

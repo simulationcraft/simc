@@ -68,7 +68,7 @@ int vfprintf_helper( FILE *stream, const char *format, va_list args )
 
 } // anonymous namespace ============================================
 
-// stopwatch_t ======================================================
+// stopwatch_t ==============================================================
 
 void stopwatch_t::now( int64_t* now_sec,
                        int64_t* now_usec )
@@ -158,7 +158,7 @@ static stopwatch_t  cpu_sw( STOPWATCH_CPU  );
 double util::wall_time() { return wall_sw.elapsed(); }
 double util::cpu_time() { return cpu_sw.elapsed(); }
 
-// str_compare_ci ===================================================
+// str_compare_ci ===========================================================
 
 bool util::str_compare_ci( const std::string& l,
                            const std::string& r )
@@ -169,7 +169,7 @@ bool util::str_compare_ci( const std::string& l,
     return std::equal( l.begin(), l.end(), r.begin(), pred_ci );
 }
 
-// glyph_name =======================================================
+// glyph_name ===============================================================
 
 std::string& util::glyph_name( std::string& n )
 {
@@ -185,7 +185,7 @@ std::string& util::glyph_name( std::string& n )
   return n;
 }
 
-// str_prefix_ci ====================================================
+// str_prefix_ci ============================================================
 
 bool util::str_prefix_ci( const std::string& str,
                           const std::string& prefix )
@@ -196,7 +196,7 @@ bool util::str_prefix_ci( const std::string& str,
     return std::equal( prefix.begin(), prefix.end(), str.begin(), pred_ci );
 }
 
-// str_in_str_ci ====================================================
+// str_in_str_ci ============================================================
 
 bool util::str_in_str_ci( const std::string& l,
                           const std::string& r )
@@ -251,7 +251,7 @@ double util::interpolate( int    level,
   return 0;
 }
 
-// dot_behavior_type_string =========================================
+// dot_behavior_type_string =================================================
 
 const char* util::dot_behavior_type_string( dot_behavior_e t )
 {
@@ -264,7 +264,7 @@ const char* util::dot_behavior_type_string( dot_behavior_e t )
   }
 }
 
-// role_type_string =================================================
+// role_type_string =========================================================
 
 const char* util::role_type_string( role_e role )
 {
@@ -281,14 +281,14 @@ const char* util::role_type_string( role_e role )
   }
 }
 
-// parse_role_type ==================================================
+// parse_role_type ==========================================================
 
 role_e util::parse_role_type( const std::string& name )
 {
   return parse_enum<role_e, ROLE_NONE, ROLE_MAX, role_type_string>( name );
 }
 
-// race_type_string =================================================
+// race_type_string =========================================================
 
 const char* util::race_type_string( race_e type )
 {
@@ -318,7 +318,7 @@ const char* util::race_type_string( race_e type )
   }
 }
 
-// race_type_string =================================================
+// race_type_string =========================================================
 
 const char* util::stats_type_string( stats_e type )
 {
@@ -332,7 +332,7 @@ const char* util::stats_type_string( stats_e type )
   }
 }
 
-// parse_race_type ==================================================
+// parse_race_type ==========================================================
 
 race_e util::parse_race_type( const std::string &name )
 {
@@ -341,7 +341,7 @@ race_e util::parse_race_type( const std::string &name )
   return parse_enum<race_e, RACE_NONE, RACE_MAX, race_type_string>( name );
 }
 
-// position_type_string =============================================
+// position_type_string =====================================================
 
 const char* util::position_type_string( position_e type )
 {
@@ -356,14 +356,14 @@ const char* util::position_type_string( position_e type )
   }
 }
 
-// parse_position_type ==============================================
+// parse_position_type ======================================================
 
 position_e util::parse_position_type( const std::string &name )
 {
   return parse_enum<position_e, POSITION_NONE, POSITION_MAX, position_type_string>( name );
 }
 
-// profession_type_string ===========================================
+// profession_type_string ===================================================
 
 const char* util::profession_type_string( profession_e type )
 {
@@ -385,14 +385,14 @@ const char* util::profession_type_string( profession_e type )
   }
 }
 
-// parse_profession_type ============================================
+// parse_profession_type ====================================================
 
 profession_e util::parse_profession_type( const std::string& name )
 {
   return parse_enum<profession_e, PROFESSION_NONE, PROFESSION_MAX, profession_type_string>( name );
 }
 
-// translate_profession_id ==========================================
+// translate_profession_id ==================================================
 
 profession_e util::translate_profession_id( int skill_id )
 {
@@ -413,7 +413,7 @@ profession_e util::translate_profession_id( int skill_id )
   return PROFESSION_NONE;
 }
 
-// player_type_string ===============================================
+// player_type_string =======================================================
 
 const char* util::player_type_string( player_e type )
 {
@@ -439,14 +439,14 @@ const char* util::player_type_string( player_e type )
   }
 }
 
-// parse_player_type ================================================
+// parse_player_type ========================================================
 
 player_e util::parse_player_type( const std::string& name )
 {
   return parse_enum<player_e, PLAYER_NONE, PLAYER_MAX, player_type_string>( name );
 }
 
-// translate_class_str ================================================
+// translate_class_str ======================================================
 
 player_e util::translate_class_str( std::string& s )
 {
@@ -454,7 +454,7 @@ player_e util::translate_class_str( std::string& s )
 }
 
 
-// pet_type_string ==================================================
+// pet_type_string ==========================================================
 
 const char* util::pet_type_string( pet_e type )
 {
@@ -519,14 +519,14 @@ const char* util::pet_type_string( pet_e type )
   }
 }
 
-// parse_pet_type ===================================================
+// parse_pet_type ===========================================================
 
 pet_e util::parse_pet_type( const std::string& name )
 {
   return parse_enum<pet_e, PET_NONE, PET_MAX, pet_type_string>( name );
 }
 
-// attribute_type_string ============================================
+// attribute_type_string ====================================================
 
 const char* util::attribute_type_string( attribute_e type )
 {
@@ -541,14 +541,14 @@ const char* util::attribute_type_string( attribute_e type )
   }
 }
 
-// parse_attribute_type =============================================
+// parse_attribute_type =====================================================
 
 attribute_e util::parse_attribute_type( const std::string& name )
 {
   return parse_enum<attribute_e, ATTRIBUTE_NONE, ATTRIBUTE_MAX, attribute_type_string>( name );
 }
 
-// gem_type_string ==================================================
+// gem_type_string ==========================================================
 
 const char* util::gem_type_string( gem_e type )
 {
@@ -568,20 +568,20 @@ const char* util::gem_type_string( gem_e type )
   }
 }
 
-// parse_gem_type ===================================================
+// parse_gem_type ===========================================================
 
 gem_e util::parse_gem_type( const std::string& name )
 {
   return parse_enum<gem_e, GEM_NONE, GEM_MAX, gem_type_string>( name );
 }
 
-// parse_gem_stat ===================================================
+// parse_gem_stat ===========================================================
 
 stat_e util::parse_gem_stat( const std::string& name )
 {
   return parse_enum<stat_e, STAT_NONE, STAT_MAX, stat_type_gem>( name );
 }
-// meta_gem_type_string =============================================
+// meta_gem_type_string =====================================================
 
 const char* util::meta_gem_type_string( meta_gem_e type )
 {
@@ -666,14 +666,14 @@ const char* util::meta_gem_type_string( meta_gem_e type )
   }
 }
 
-// parse_meta_gem_type ==============================================
+// parse_meta_gem_type ======================================================
 
 meta_gem_e util::parse_meta_gem_type( const std::string& name )
 {
   return parse_enum<meta_gem_e, META_GEM_NONE, META_GEM_MAX, meta_gem_type_string>( name );
 }
 
-// result_type_string ===============================================
+// result_type_string =======================================================
 
 const char* util::result_type_string( result_e type )
 {
@@ -692,7 +692,7 @@ const char* util::result_type_string( result_e type )
   }
 }
 
-// amount_type_string ===============================================
+// amount_type_string =======================================================
 
 const char* util::amount_type_string( dmg_e type )
 {
@@ -708,14 +708,14 @@ const char* util::amount_type_string( dmg_e type )
   }
 }
 
-// parse_result_type ================================================
+// parse_result_type ========================================================
 
 result_e util::parse_result_type( const std::string& name )
 {
   return parse_enum<result_e, RESULT_NONE, RESULT_MAX, result_type_string>( name );
 }
 
-// resource_type_string =============================================
+// resource_type_string =====================================================
 
 const char* util::resource_type_string( resource_e resource_type )
 {
@@ -742,14 +742,14 @@ const char* util::resource_type_string( resource_e resource_type )
   }
 }
 
-// parse_resource_type ==============================================
+// parse_resource_type ======================================================
 
 resource_e util::parse_resource_type( const std::string& name )
 {
   return parse_enum<resource_e, RESOURCE_NONE, RESOURCE_MAX, resource_type_string>( name );
 }
 
-// school_type_component ============================================
+// school_type_component ====================================================
 
 uint32_t util::school_type_component( school_e s_type, school_e c_type )
 {
@@ -757,7 +757,7 @@ uint32_t util::school_type_component( school_e s_type, school_e c_type )
           dbc::get_school_mask( c_type ) );
 }
 
-// school_type_string ===============================================
+// school_type_string =======================================================
 
 const char* util::school_type_string( school_e school )
 {
@@ -800,7 +800,7 @@ const char* util::school_type_string( school_e school )
   }
 }
 
-// parse_school_type ================================================
+// parse_school_type ========================================================
 
 school_e util::parse_school_type( const std::string& name )
 {
@@ -828,7 +828,7 @@ resource_e util::translate_power_type( power_e pt )
   }
 }
 
-// weapon_type_string ===============================================
+// weapon_type_string =======================================================
 
 const char* util::weapon_type_string( weapon_e weapon )
 {
@@ -856,7 +856,7 @@ const char* util::weapon_type_string( weapon_e weapon )
   }
 }
 
-// weapon_subclass_string ===========================================
+// weapon_subclass_string ===================================================
 
 const char* util::weapon_subclass_string( int subclass )
 {
@@ -881,7 +881,7 @@ const char* util::weapon_subclass_string( int subclass )
   }
 }
 
-// weapon_class_string ==============================================
+// weapon_class_string ======================================================
 
 const char* util::weapon_class_string( int it )
 {
@@ -904,7 +904,7 @@ const char* util::weapon_class_string( int it )
   }
 }
 
-// set_item_type_string =============================================
+// set_item_type_string =====================================================
 
 const char* util::set_item_type_string( int item_set )
 {
@@ -944,14 +944,14 @@ const char* util::set_item_type_string( int item_set )
   return 0;
 }
 
-// parse_weapon_type ================================================
+// parse_weapon_type ========================================================
 
 weapon_e util::parse_weapon_type( const std::string& name )
 {
   return parse_enum<weapon_e, WEAPON_NONE, WEAPON_MAX, weapon_type_string>( name );
 }
 
-// flask_type_string ================================================
+// flask_type_string ========================================================
 
 const char* util::flask_type_string( flask_e flask )
 {
@@ -977,14 +977,14 @@ const char* util::flask_type_string( flask_e flask )
   }
 }
 
-// parse_flask_type =================================================
+// parse_flask_type =========================================================
 
 flask_e util::parse_flask_type( const std::string& name )
 {
   return parse_enum<flask_e, FLASK_NONE, FLASK_MAX, flask_type_string>( name );
 }
 
-// food_type_string =================================================
+// food_type_string =========================================================
 
 const char* util::food_type_string( food_e food )
 {
@@ -1056,14 +1056,14 @@ const char* util::food_type_string( food_e food )
   }
 }
 
-// parse_food_type ==================================================
+// parse_food_type ==========================================================
 
 food_e util::parse_food_type( const std::string& name )
 {
   return parse_enum<food_e, FOOD_NONE, FOOD_MAX, food_type_string>( name );
 }
 
-// set_bonus_string =================================================
+// set_bonus_string =========================================================
 
 const char* util::set_bonus_string( set_e type )
 {
@@ -1113,14 +1113,14 @@ const char* util::set_bonus_string( set_e type )
   }
 }
 
-// parse_set_bonus ==================================================
+// parse_set_bonus ==========================================================
 
 set_e util::parse_set_bonus( const std::string& name )
 {
   return parse_enum<set_e, SET_NONE, SET_MAX, set_bonus_string>( name );
 }
 
-// slot_type_string =================================================
+// slot_type_string =========================================================
 
 const char* util::slot_type_string( slot_e slot )
 {
@@ -1148,7 +1148,7 @@ const char* util::slot_type_string( slot_e slot )
   }
 }
 
-// is_match_slot ======================================================
+// is_match_slot ============================================================
 
 bool util::is_match_slot( slot_e s )
 {
@@ -1167,7 +1167,7 @@ bool util::is_match_slot( slot_e s )
       return false;
   }
 }
-// matching_armor_type ================================================
+// matching_armor_type ======================================================
 
 item_subclass_armor util::matching_armor_type( player_e ptype )
 {
@@ -1214,7 +1214,7 @@ item_subclass_armor util::parse_armor_type( const std::string& name )
   return parse_enum<item_subclass_armor, ITEM_SUBCLASS_ARMOR_MISC, ITEM_SUBCLASS_ARMOR_PLATE, armor_type_string>( name );
 }
 
-// parse_slot_type ==================================================
+// parse_slot_type ==========================================================
 
 slot_e util::parse_slot_type( const std::string& name )
 {
@@ -1222,7 +1222,7 @@ slot_e util::parse_slot_type( const std::string& name )
 }
 
 
-// cache_type_string =================================================
+// cache_type_string ========================================================
 
 const char* util::cache_type_string( cache_e c )
 {
@@ -1259,7 +1259,7 @@ const char* util::cache_type_string( cache_e c )
   }
 }
 
-// stat_type_string =================================================
+// stat_type_string =========================================================
 
 const char* util::stat_type_string( stat_e stat )
 {
@@ -1318,7 +1318,7 @@ const char* util::stat_type_string( stat_e stat )
   }
 }
 
-// stat_type_abbrev =================================================
+// stat_type_abbrev =========================================================
 
 const char* util::stat_type_abbrev( stat_e stat )
 {
@@ -1377,7 +1377,7 @@ const char* util::stat_type_abbrev( stat_e stat )
   }
 }
 
-// stat_type_wowhead ================================================
+// stat_type_wowhead ========================================================
 
 const char* util::stat_type_wowhead( stat_e stat )
 {
@@ -1420,7 +1420,7 @@ const char* util::stat_type_wowhead( stat_e stat )
   }
 }
 
-// stat_type_blizzard ================================================
+// stat_type_blizzard =======================================================
 
 const char* util::stat_type_gem( stat_e stat )
 {
@@ -1446,7 +1446,7 @@ const char* util::stat_type_gem( stat_e stat )
   }
 }
 
-// parse_stat_type ==================================================
+// parse_stat_type ==========================================================
 
 stat_e util::parse_stat_type( const std::string& name )
 {
@@ -1480,7 +1480,7 @@ stat_e util::parse_stat_type( const std::string& name )
   return STAT_NONE;
 }
 
-// parse_reforge_type ===============================================
+// parse_reforge_type =======================================================
 
 stat_e util::parse_reforge_type( const std::string& name )
 {
@@ -1502,7 +1502,7 @@ stat_e util::parse_reforge_type( const std::string& name )
   }
 }
 
-// parse_origin =====================================================
+// parse_origin =============================================================
 
 bool util::parse_origin( std::string& region_str,
                          std::string& server_str,
@@ -1553,7 +1553,7 @@ bool util::parse_origin( std::string& region_str,
   return false;
 }
 
-// class_id_mask ====================================================
+// class_id_mask ============================================================
 
 int util::class_id_mask( player_e type )
 {
@@ -1562,7 +1562,7 @@ int util::class_id_mask( player_e type )
   return 1 << ( cid - 1 );
 }
 
-// class_id =========================================================
+// class_id =================================================================
 
 int util::class_id( player_e type )
 {
@@ -1587,7 +1587,7 @@ int util::class_id( player_e type )
   }
 }
 
-// race_id ==========================================================
+// race_id ==================================================================
 
 unsigned util::race_id( race_e r )
 {
@@ -1612,7 +1612,7 @@ unsigned util::race_id( race_e r )
   }
 }
 
-// race_mask ========================================================
+// race_mask ================================================================
 
 unsigned util::race_mask( race_e r )
 {
@@ -1624,7 +1624,7 @@ unsigned util::race_mask( race_e r )
   return 0x00;
 }
 
-// pet_class_type ===================================================
+// pet_class_type ===========================================================
 
 player_e util::pet_class_type( pet_e c )
 {
@@ -1650,7 +1650,7 @@ player_e util::pet_class_type( pet_e c )
   return p;
 }
 
-// pet_mask =========================================================
+// pet_mask =================================================================
 
 unsigned util::pet_mask( pet_e p )
 {
@@ -1664,7 +1664,7 @@ unsigned util::pet_mask( pet_e p )
   return 0x0;
 }
 
-// pet_id ===========================================================
+// pet_id ===================================================================
 
 unsigned util::pet_id( pet_e p )
 {
@@ -1680,7 +1680,7 @@ unsigned util::pet_id( pet_e p )
   return 0;
 }
 
-// translate_class_id ===============================================
+// translate_class_id =======================================================
 
 player_e util::translate_class_id( int cid )
 {
@@ -1701,7 +1701,7 @@ player_e util::translate_class_id( int cid )
   }
 }
 
-// translate_race_id ================================================
+// translate_race_id ========================================================
 
 race_e util::translate_race_id( int rid )
 {
@@ -1727,7 +1727,7 @@ race_e util::translate_race_id( int rid )
   return RACE_NONE;
 }
 
-// translate_item_mod ===============================================
+// translate_item_mod =======================================================
 
 stat_e util::translate_item_mod( int item_mod )
 {
@@ -1781,7 +1781,7 @@ int util::translate_stat( stat_e stat )
     default:                     return ITEM_MOD_NONE;
   }
 }
-// translate_rating_mod =============================================
+// translate_rating_mod =====================================================
 
 stat_e util::translate_rating_mod( unsigned ratings )
 {
@@ -1807,7 +1807,7 @@ stat_e util::translate_rating_mod( unsigned ratings )
   return STAT_NONE;
 }
 
-// translate_weapon_subclass ========================================
+// translate_weapon_subclass ================================================
 
 weapon_e util::translate_weapon_subclass( int id )
 {
@@ -1834,7 +1834,7 @@ weapon_e util::translate_weapon_subclass( int id )
   return WEAPON_NONE;
 }
 
-// translate_weapon =================================================
+// translate_weapon =========================================================
 
 item_subclass_weapon util::translate_weapon( weapon_e weapon )
 {
@@ -1861,7 +1861,7 @@ item_subclass_weapon util::translate_weapon( weapon_e weapon )
   return ITEM_SUBCLASS_WEAPON_obsolete;
 }
 
-// translate_invtype ================================================
+// translate_invtype ========================================================
 
 slot_e util::translate_invtype( inventory_type inv_type )
 {
@@ -1911,7 +1911,7 @@ slot_e util::translate_invtype( inventory_type inv_type )
   }
 }
 
-// socket_gem_match =================================================
+// socket_gem_match =========================================================
 
 bool util::socket_gem_match( gem_e socket, unsigned gem )
 {
@@ -1930,7 +1930,7 @@ bool util::socket_gem_match( gem_e socket, unsigned gem )
   return false;
 }
 
-// string_split =====================================================
+// string_split =============================================================
 
 std::vector<std::string> util::string_split( const std::string& str, const std::string& delim )
 {
@@ -2014,7 +2014,7 @@ std::string& util::replace_all( std::string& s, const std::string& from, const s
   return s;
 }
 
-// erase_all ======================================================
+// erase_all ================================================================
 
 std::string& util::erase_all( std::string& s, const std::string& from )
 {
@@ -2032,7 +2032,7 @@ std::string& util::erase_all( std::string& s, const std::string& from )
   return s;
 }
 
-// translate_gem_color ==============================================
+// translate_gem_color ======================================================
 
 gem_e util::translate_socket_color( item_socket_color c )
 {
@@ -2049,7 +2049,7 @@ gem_e util::translate_socket_color( item_socket_color c )
   }
 }
 
-// item_quality_string ==============================================
+// item_quality_string ======================================================
 
 const char* util::item_quality_string( int quality )
 {
@@ -2064,7 +2064,7 @@ const char* util::item_quality_string( int quality )
   }
 }
 
-// parse_item_quality ===============================================
+// parse_item_quality =======================================================
 
 int util::parse_item_quality( const std::string& quality )
 {
@@ -2077,7 +2077,7 @@ int util::parse_item_quality( const std::string& quality )
   return i;
 }
 
-// string_split =====================================================
+// string_split =============================================================
 
 size_t util::string_split( const std::string& str,
                            const char*        delim,
@@ -2109,7 +2109,7 @@ size_t util::string_split( const std::string& str,
   return str_splits.size();
 }
 
-// string_strip_quotes ==============================================
+// string_strip_quotes ======================================================
 
 void util::string_strip_quotes( std::string& str )
 {
@@ -2126,7 +2126,7 @@ void util::string_strip_quotes( std::string& str )
   str.resize( dst - str.begin() );
 }
 
-// to_string ========================================================
+// to_string ================================================================
 
 std::string util::to_string( double f, int precision )
 {
@@ -2135,7 +2135,7 @@ std::string util::to_string( double f, int precision )
   return ss.str();
 }
 
-// to_string ========================================================
+// to_string ================================================================
 
 std::string util::to_string( double f )
 {
@@ -2145,7 +2145,7 @@ std::string util::to_string( double f )
     return to_string( f, 3 );
 }
 
-// to_unsigned ================================================================
+// to_unsigned ==============================================================
 
 unsigned util::to_unsigned( const std::string& str )
 { return util::to_unsigned( str.c_str() ); }
@@ -2159,7 +2159,7 @@ unsigned util::to_unsigned( const char* str )
   return l;
 }
 
-// to_int =====================================================================
+// to_int ===================================================================
 
 int util::to_int( const std::string& str )
 { return util::to_int( str.c_str() ); }
@@ -2173,14 +2173,14 @@ int util::to_int( const char* str )
   return l;
 }
 
-// milliseconds =====================================================
+// milliseconds =============================================================
 
 int64_t util::milliseconds()
 {
   return 1000 * clock() / CLOCKS_PER_SEC;
 }
 
-// parse_date =======================================================
+// parse_date ===============================================================
 
 int64_t util::parse_date( const std::string& month_day_year )
 {
@@ -2219,7 +2219,7 @@ int64_t util::parse_date( const std::string& month_day_year )
   return atoi( buffer.c_str() );
 }
 
-// fprintf ==========================================================
+// fprintf ==================================================================
 
 int util::fprintf( FILE *stream, const char *format,  ... )
 {
@@ -2233,7 +2233,7 @@ int util::fprintf( FILE *stream, const char *format,  ... )
   return retcode;
 }
 
-// printf ===========================================================
+// printf ===================================================================
 
 int util::printf( const char *format,  ... )
 {
@@ -2247,7 +2247,7 @@ int util::printf( const char *format,  ... )
   return retcode;
 }
 
-// snprintf =========================================================
+// snprintf =================================================================
 
 int util::snprintf( char* buf, size_t size, const char* fmt, ... )
 {
@@ -2260,21 +2260,21 @@ int util::snprintf( char* buf, size_t size, const char* fmt, ... )
   return rval;
 }
 
-// vfprintf =========================================================
+// vfprintf =================================================================
 
 int util::vfprintf( FILE *stream, const char *format, va_list fmtargs )
 {
   return vfprintf_helper( stream, format, fmtargs );
 }
 
-// vprintf ==========================================================
+// vprintf ==================================================================
 
 int util::vprintf( const char *format, va_list fmtargs )
 {
   return util::vfprintf( stdout, format, fmtargs );
 }
 
-// urlencode ========================================================
+// urlencode ================================================================
 
 std::string& util::urlencode( std::string& str )
 {
@@ -2305,7 +2305,7 @@ std::string& util::urlencode( std::string& str )
   return str;
 }
 
-// urldecode ========================================================
+// urldecode ================================================================
 
 std::string& util::urldecode( std::string& str )
 {
@@ -2418,7 +2418,7 @@ std::string util::uchar_to_hex( unsigned char c )
   return out.str();
 }
 
-// floor ============================================================
+// floor ====================================================================
 
 double util::floor( double X, unsigned int decplaces )
 {
@@ -2442,7 +2442,7 @@ double util::floor( double X, unsigned int decplaces )
   }
 }
 
-// ceil =============================================================
+// ceil =====================================================================
 
 double util::ceil( double X, unsigned int decplaces )
 {
@@ -2466,7 +2466,7 @@ double util::ceil( double X, unsigned int decplaces )
   }
 }
 
-// round ============================================================
+// round ====================================================================
 
 double util::round( double X, unsigned int decplaces )
 {

@@ -53,7 +53,7 @@ const char* translate_slot( int slot )
 
 } // end unnamed namespace
 
-// chardev::download_player ===============================================
+// chardev::download_player =================================================
 
 player_t* chardev::download_player( sim_t* sim,
                                     const std::string& id,

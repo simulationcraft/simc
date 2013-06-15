@@ -277,7 +277,7 @@ void buff_t::add_invalidate( cache_e c )
   }
 }
 
-// buff_t::datacollection_begin ==========================================================
+// buff_t::datacollection_begin =============================================
 
 void buff_t::datacollection_begin()
 {
@@ -292,7 +292,7 @@ void buff_t::datacollection_begin()
     stack_uptime[ i ] -> datacollection_begin();
 }
 
-// buff_t::datacollection_end ==========================================================
+// buff_t::datacollection_end ===============================================
 
 void buff_t::datacollection_end()
 {

@@ -2243,7 +2243,7 @@ struct mind_spike_t : public priest_spell_t
   }
 };
 
-// Mind Sear Mastery Proc ===========================================
+// Mind Sear Mastery Proc ===================================================
 
 struct mind_sear_mastery_t : public priest_procced_mastery_spell_t
 {
@@ -2437,7 +2437,7 @@ struct shadow_word_death_t : public priest_spell_t
   }
 };
 
-// Devouring Plague Mastery Proc ===========================================
+// Devouring Plague Mastery Proc ============================================
 
 struct devouring_plague_mastery_t : public priest_procced_mastery_spell_t
 {
@@ -2672,7 +2672,7 @@ struct devouring_plague_t : public priest_spell_t
   }
 };
 
-// Mind Flay Mastery Proc ===========================================
+// Mind Flay Mastery Proc ===================================================
 template <bool insanity>
 struct mind_flay_mastery_t : public priest_procced_mastery_spell_t
 {
@@ -2874,7 +2874,7 @@ struct vampiric_embrace_t : public priest_spell_t
   }
 };
 
-// Vampiric Touch Mastery Proc ===========================================
+// Vampiric Touch Mastery Proc ==============================================
 
 struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
 {
@@ -3019,7 +3019,7 @@ struct holy_fire_base_t : public priest_spell_t
     return c;
   }
 };
-// Power Word: Solace Spell ==========================================================
+// Power Word: Solace Spell =================================================
 
 struct power_word_solace_t : public holy_fire_base_t
 {
@@ -3689,7 +3689,7 @@ struct circle_of_healing_t : public priest_heal_t
   }
 };
 
-// Desperate Prayer ===================
+// Desperate Prayer =========================================================
 
 struct desperate_prayer_t : public priest_heal_t
 {
@@ -5057,7 +5057,7 @@ double priest_t::composite_melee_crit()
   return cmc;
 }
 
-// priest_t::composite_attack_hit ============================================
+// priest_t::composite_attack_hit ===========================================
 
 double priest_t::composite_melee_hit()
 {
@@ -5321,7 +5321,7 @@ void priest_t::init_scaling()
     scales_with[ STAT_SPIRIT ] = false;
 }
 
-// priest_t::init_spells ===================
+// priest_t::init_spells ====================================================
 
 void priest_t::init_spells()
 {
@@ -5945,7 +5945,7 @@ void priest_t::init_actions()
   base_t::init_actions();
 }
 
-// priest_t::init_rng ====================================================
+// priest_t::init_rng =======================================================
 
 void priest_t::init_rng()
 {
@@ -6168,7 +6168,7 @@ int priest_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
-// PRIEST MODULE INTERFACE ================================================
+// PRIEST MODULE INTERFACE ==================================================
 
 struct priest_module_t : public module_t
 {

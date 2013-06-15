@@ -1868,7 +1868,7 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
 {
   std::string buff_name;
   assert( b );
-  if ( ! b ) return; // For release builds. 
+  if ( ! b ) return; // For release builds.
 
   if ( b -> player && b -> player -> is_pet() )
   {
@@ -2158,7 +2158,7 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
     p -> level, util::inverse_tokenize( util::role_type_string( p -> primary_role() ) ).c_str(), p -> position_str.c_str() );
 }
 
-// print_html_player_results_spec_gear ========================================================
+// print_html_player_results_spec_gear ======================================
 
 void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim, player_t* p )
 {
@@ -2328,7 +2328,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   }
 }
 
-// print_html_player_abilities ========================================================
+// print_html_player_abilities ==============================================
 
 void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player_t* p )
 {
@@ -2413,7 +2413,7 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
     "\t\t\t\t</div>\n" );
 }
 
-// print_html_player_benefits_uptimes ========================================================
+// print_html_player_benefits_uptimes =======================================
 
 void print_html_player_benefits_uptimes( report::sc_html_stream& os, player_t* p )
 {
@@ -2539,7 +2539,7 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, player_t* p
      << "\t\t\t\t\t</div>\n";
 }
 
-// print_html_player_procs ========================================================
+// print_html_player_procs ==================================================
 
 void print_html_player_procs( report::sc_html_stream& os, std::vector<proc_t*> pr )
 {
@@ -2586,7 +2586,7 @@ void print_html_player_procs( report::sc_html_stream& os, std::vector<proc_t*> p
 
 }
 
-// print_html_player_deaths ========================================================
+// print_html_player_deaths =================================================
 
 void print_html_player_deaths( report::sc_html_stream& os, player_t* p, player_processed_report_information_t& ri )
 {
@@ -2654,7 +2654,7 @@ void print_html_player_deaths( report::sc_html_stream& os, player_t* p, player_p
   }
 }
 
-// print_html_player_ ========================================================
+// print_html_player_ =======================================================
 
 void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* p, int j = 0 )
 {

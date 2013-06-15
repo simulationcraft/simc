@@ -87,7 +87,7 @@ public:
   // Active
   action_t* t16_2pc_starfall_bolt;
   action_t* t16_2pc_sun_bolt;
-  
+
   // Pets
   pet_t* pet_feral_spirit[ 2 ];
   pet_t* pet_mirror_images[ 3 ];
@@ -621,7 +621,7 @@ struct symbiosis_mirror_image_t : public pet_t
   }
 };
 
-// Balance Force of Nature ==========================================================
+// Balance Force of Nature ==================================================
 
 struct force_of_nature_balance_t : public pet_t
 {
@@ -669,7 +669,7 @@ struct force_of_nature_balance_t : public pet_t
   }
 };
 
-// Feral Force of Nature ============================================================
+// Feral Force of Nature ====================================================
 
 struct force_of_nature_feral_t : public pet_t
 {
@@ -695,7 +695,7 @@ struct force_of_nature_feral_t : public pet_t
       special    = false;
     }
   };
-  
+
   force_of_nature_feral_t( sim_t* sim, druid_t* p ) :
     pet_t( sim, p, "treant", true ), melee( 0 )
   {
@@ -707,7 +707,7 @@ struct force_of_nature_feral_t : public pet_t
     owner_coeff.ap_from_ap      = 2.0 * 1.2;
   }
 
-  druid_t* o() 
+  druid_t* o()
   { return static_cast< druid_t* >( owner ); }
 
   virtual void init_base_stats()
@@ -1526,7 +1526,7 @@ struct mangle_cat_t : public cat_attack_t
 
     return tc;
   }
-  
+
   double composite_da_multiplier()
   {
     double m = cat_attack_t::composite_da_multiplier();
@@ -1658,7 +1658,7 @@ struct ravage_t : public cat_attack_t
 
     return tc;
   }
-  
+
   double composite_da_multiplier()
   {
     double m = cat_attack_t::composite_da_multiplier();
@@ -1693,9 +1693,9 @@ struct ravage_t : public cat_attack_t
   virtual void execute()
   {
     cat_attack_t::execute();
-    
+
     p() -> buff.feral_fury -> up();
-    
+
     if ( p() -> buff.tier15_4pc_melee -> up() )
       p() -> buff.tier15_4pc_melee -> decrement();
   }
@@ -1864,7 +1864,7 @@ struct shred_t : public cat_attack_t
     cat_attack_t::execute();
 
     p() -> buff.feral_fury -> up();
-    
+
     if ( p() -> buff.tier15_4pc_melee -> up() )
       p() -> buff.tier15_4pc_melee -> decrement();
   }
@@ -1895,7 +1895,7 @@ struct shred_t : public cat_attack_t
 
     return tc;
   }
-  
+
   double composite_da_multiplier()
   {
     double m = cat_attack_t::composite_da_multiplier();
@@ -1979,7 +1979,7 @@ struct swipe_cat_t : public cat_attack_t
   }
 };
 
-// Thrash (Cat) ===================================================================
+// Thrash (Cat) =============================================================
 
 struct thrash_cat_t : public cat_attack_t
 {
@@ -2028,7 +2028,7 @@ struct thrash_cat_t : public cat_attack_t
   }
 };
 
-// Tiger's Fury ==============================================================
+// Tiger's Fury =============================================================
 
 struct tigers_fury_t : public cat_attack_t
 {
@@ -2429,7 +2429,7 @@ struct swipe_bear_t : public bear_attack_t
   }
 };
 
-// Thrash (Bear) ===================================================================
+// Thrash (Bear) ============================================================
 
 struct thrash_bear_t : public bear_attack_t
 {
@@ -2483,7 +2483,7 @@ struct thrash_bear_t : public bear_attack_t
   }
 };
 
-// Savage Defense ==========================================================
+// Savage Defense ===========================================================
 
 struct savage_defense_t : public bear_attack_t
 {
@@ -2512,7 +2512,7 @@ struct savage_defense_t : public bear_attack_t
   }
 };
 
-// Might of Ursoc ==========================================================
+// Might of Ursoc ===========================================================
 
 struct might_of_ursoc_t : public bear_attack_t
 {
@@ -2800,7 +2800,7 @@ struct healing_touch_t : public druid_heal_t
 
     return druid_heal_t::cost();
   }
-  
+
   virtual double action_da_multiplier()
   {
     double adm = base_t::action_da_multiplier();
@@ -3391,7 +3391,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     if ( p() -> set_bonus.tier16_4pc_caster() )
       p() -> cooldown.celestial_alignment -> adjust( timespan_t::from_seconds( - p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).base_value() ) );
   }
-  
+
   void trigger_t16_2pc_balance( bool nature = false )
   {
     if ( ! p() -> set_bonus.tier16_2pc_caster() )
@@ -3469,8 +3469,8 @@ struct astral_communion_t : public druid_spell_t
       starting_direction = 1;
     else
       starting_direction = p() -> eclipse_bar_direction;
-    
-    // TODO: How does it work with sotf buff up? 
+
+    // TODO: How does it work with sotf buff up?
     p() -> buff.astral_insight -> up();
 
     druid_spell_t::execute();
@@ -3786,7 +3786,7 @@ struct feral_spirit_spell_t : public druid_spell_t
   }
 };
 
-// Heart of the Wild Spell ====================================================
+// Heart of the Wild Spell ==================================================
 
 struct heart_of_the_wild_t : public druid_spell_t
 {
@@ -3804,7 +3804,7 @@ struct heart_of_the_wild_t : public druid_spell_t
   }
 };
 
-// Hurricane =================================================================
+// Hurricane ================================================================
 
 struct hurricane_tick_t : public druid_spell_t
 {
@@ -4138,7 +4138,7 @@ struct moonfire_t : public druid_spell_t
     p() -> buff.lunar_shower -> up();
 
     druid_spell_t::execute();
-      
+
     trigger_t16_2pc_balance( false );
 
     if ( result_is_hit( execute_state -> result ) )
@@ -4546,7 +4546,7 @@ struct sunfire_t : public druid_spell_t
       if ( ! p() -> dbc.ptr )
         p() -> buff.dream_of_cenarius -> up();
       druid_spell_t::execute();
-        
+
       trigger_t16_2pc_balance( true );
     }
 
@@ -4741,7 +4741,7 @@ struct t16_2pc_sun_bolt_t : public druid_spell_t
   }
 };
 
-// Force of Nature Spell ============================================================
+// Force of Nature Spell ====================================================
 
 struct force_of_nature_spell_t : public druid_spell_t
 {
@@ -4901,9 +4901,9 @@ struct wrath_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-      
+
     trigger_t16_2pc_balance( true );
-      
+
     // Cast wrath, but lunar eclipse was up?
     if ( p() -> buff.eclipse_lunar -> check() && ! p() -> buff.celestial_alignment -> check() )
       p() -> proc.wrong_eclipse_wrath -> occur();
@@ -5227,7 +5227,7 @@ void druid_t::trigger_soul_of_the_forest()
 
   if ( maybe_ptr( dbc.ptr ) )
   {
-    // 5.4 mechanic: Your Wrath, Starfire, and Starsurge casts have a 8% 
+    // 5.4 mechanic: Your Wrath, Starfire, and Starsurge casts have a 8%
     // chance to cause your next Astral Communion to instantly advance you to
     // the next Eclipse.
     buff.astral_insight -> trigger();
@@ -5877,7 +5877,7 @@ void druid_t::init_actions()
     if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
     {
       action_priority_list_t* default = get_action_priority_list( "default" );
-      
+
       std::vector<std::string> item_actions = get_item_actions();
       std::vector<std::string> profession_actions = get_profession_actions();
       std::vector<std::string> racial_actions = get_racial_actions();
@@ -5888,7 +5888,7 @@ void druid_t::init_actions()
         action_priority_list_t* advanced = get_action_priority_list( "advanced" );
 
         // Default APL -- Switch the appropriate action list here
-      
+
         default -> add_action( "swap_action_list,name=basic",
         "By default the simulation will use the \"Basic\" action list, if you would like to instead use the \"Advanced\" action list do so here." );
 
@@ -5897,7 +5897,7 @@ void druid_t::init_actions()
         basic -> add_action( "auto_attack" );
         basic -> add_action( "skull_bash_cat" );
         basic -> add_talent( this, "Force of Nature" );
-        basic -> add_action( this, "Ferocious Bite", "if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25", 
+        basic -> add_action( this, "Ferocious Bite", "if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25",
                              "Keep Rip from falling off during execute range.");
         basic -> add_action( this, "Faerie Fire", "if=debuff.weakened_armor.stack<3" );
         basic -> add_action( this, "Healing Touch", "if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down" );
@@ -5966,8 +5966,8 @@ void druid_t::init_actions()
         // Racials
         for ( size_t i = 0; i < racial_actions.size(); i++ )
           advanced -> add_action( racial_actions[ i ] );
-      
-        advanced -> add_action( this, "Ferocious Bite", "if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25", 
+
+        advanced -> add_action( this, "Ferocious Bite", "if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25",
                                 "Keep Rip from falling off during execute range.");
         advanced -> add_action( this, "Faerie Fire", "if=debuff.weakened_armor.stack<3" );
         advanced -> add_action( this, "Healing Touch", "if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down&buff.predatory_swiftness.remains<=2&dot.rip.remains<=10",
@@ -6673,7 +6673,7 @@ double druid_t::composite_melee_hit()
   return hit;
 }
 
-// druid_t::composite_attack_expertise =====================================
+// druid_t::composite_attack_expertise ======================================
 
 double druid_t::composite_melee_expertise( weapon_t* w )
 {
@@ -6725,7 +6725,7 @@ double druid_t::composite_spell_crit()
   return c;
 }
 
-// druid_t::composite_spell_power ==========================================
+// druid_t::composite_spell_power ===========================================
 
 double druid_t::composite_spell_power( school_e school )
 {
@@ -6744,7 +6744,7 @@ double druid_t::composite_spell_power( school_e school )
   return p;
 }
 
-// druid_t::composite_attribute ============================================
+// druid_t::composite_attribute =============================================
 
 double druid_t::composite_attribute( attribute_e attr )
 {
@@ -6833,7 +6833,7 @@ double druid_t::composite_crit_avoidance()
   return c;
 }
 
-// druid_t::composite_tank_dodge =============================================
+// druid_t::composite_tank_dodge ============================================
 
 double druid_t::composite_dodge()
 {
@@ -6871,7 +6871,7 @@ expr_t* druid_t::create_expression( action_t* a, const std::string& name_str )
   return player_t::create_expression( a, name_str );
 }
 
-// druid_t::create_options =================================================
+// druid_t::create_options ==================================================
 
 void druid_t::create_options()
 {
@@ -6887,7 +6887,7 @@ void druid_t::create_options()
   option_t::copy( options, druid_options );
 }
 
-// druid_t::create_profile =================================================
+// druid_t::create_profile ==================================================
 
 bool druid_t::create_profile( std::string& profile_str, save_e type, bool save_html )
 {
@@ -7204,7 +7204,7 @@ int combo_points_t::consume( const std::string* source_name )
 druid_t& druid_td_t::p() const
 { return *static_cast<druid_t*>( source ); }
 
-// DRUID MODULE INTERFACE ================================================
+// DRUID MODULE INTERFACE ===================================================
 
 struct druid_module_t : public module_t
 {

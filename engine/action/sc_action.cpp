@@ -87,7 +87,7 @@ struct action_execute_event_t : public event_t
   ~action_execute_event_t()
   { if ( execute_state ) action_state_t::release( execute_state ); }
 
-  // action_execute_event_t::execute ==========================================
+  // action_execute_event_t::execute ========================================
 
   virtual void execute()
   {
@@ -141,7 +141,7 @@ struct aoe_target_list_callback_t : public callback_t
 } // end anonymous namespace
 
 
-// action_priority_list_t::add_action =========================================
+// action_priority_list_t::add_action =======================================
 
 // Anything goes to action priority list.
 action_priority_t* action_priority_list_t::add_action( const std::string& action_priority_str,
@@ -180,7 +180,7 @@ action_priority_t* action_priority_list_t::add_action( const player_t* p,
   return add_action( p, s, dbc::get_token( s -> id() ), action_options, comment );
 }
 
-// action_priority_list_t::add_talent =========================================
+// action_priority_list_t::add_talent =======================================
 
 // Check the availability of a talent spell of "name" and the validity of it's
 // spell data before anything goes to action priority list. Note that this will
@@ -1976,7 +1976,7 @@ double action_t::ppm_proc_chance( double PPM )
   }
 }
 
-// action_t::real_ppm_proc_chance ================================================
+// action_t::real_ppm_proc_chance ===========================================
 
 double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, timespan_t last_successful_proc, rppm_scale_e scales_with )
 {
@@ -2055,7 +2055,7 @@ int action_t::hasted_num_ticks( double haste, timespan_t d )
   return ( int ) floor( n + 0.5 );
 }
 
-// action_t::snapshot_internal ===============================================
+// action_t::snapshot_internal ==============================================
 
 void action_t::snapshot_internal( action_state_t* state, uint32_t flags, dmg_e rt )
 {

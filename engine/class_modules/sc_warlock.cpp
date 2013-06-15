@@ -5274,7 +5274,7 @@ expr_t* warlock_t::create_expression( action_t* a, const std::string& name_str )
 }
 
 
-// WARLOCK MODULE INTERFACE ================================================
+// WARLOCK MODULE INTERFACE =================================================
 
 struct warlock_module_t : public module_t
 {

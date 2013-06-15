@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 /*
-  TODO: 
+  TODO:
   T16 4-piece bonuses
   Selfless Healer?
   Sacred Shield proxy buff for APL trickery
@@ -211,7 +211,7 @@ public:
     const spell_data_t* sacred_shield;
     const spell_data_t* holy_avenger;
     const spell_data_t* sanctified_wrath;
-    const spell_data_t* divine_purpose;    
+    const spell_data_t* divine_purpose;
     const spell_data_t* holy_prism;
     const spell_data_t* lights_hammer;
     const spell_data_t* execution_sentence;
@@ -465,7 +465,7 @@ public:
       {
         return 0.0;
       }
-      // otherwise return a value equal to our current holy power, 
+      // otherwise return a value equal to our current holy power,
       // lower-bounded by the ability's base cost, upper-bounded by 3
       return std::max( ab::base_costs[ RESOURCE_HOLY_POWER ], std::min( 3.0, p() -> resources.current[ RESOURCE_HOLY_POWER ] ) );
     }
@@ -473,7 +473,7 @@ public:
     return ab::cost();
   }
 
-  // hand of light handling 
+  // hand of light handling
   void trigger_hand_of_light( action_state_t* s )
   {
     if ( p() -> passives.hand_of_light -> ok() )
@@ -483,7 +483,7 @@ public:
     }
   }
 
-  // divine purpose handling 
+  // divine purpose handling
   void trigger_divine_purpose( double c )
   {
     // if divine purpose is talented
@@ -493,8 +493,8 @@ public:
     if ( c > 0.0 )
     {
       // chance to proc the buff, needs to be scaled by holy power spent
-      p() -> buffs.divine_purpose -> trigger( 1, 
-        p() -> buffs.divine_purpose -> default_value, 
+      p() -> buffs.divine_purpose -> trigger( 1,
+        p() -> buffs.divine_purpose -> default_value,
         p() -> buffs.divine_purpose -> default_chance * c / 3 );
     }
     // if we did consume a proc
@@ -571,13 +571,13 @@ public:
       base_t::trigger_unbreakable_spirit( c );
 
       // trigger/consume divine purpose buff
-      base_t::trigger_divine_purpose( c );    
+      base_t::trigger_divine_purpose( c );
     }
   }
 };
 
 
-// ===============================================================================================================
+// ==========================================================================
 // To keep consistency throughout the ability damage definitions, I'm keeping to the following conventions.
 // The damage formula in action_t::calculate_direct_amount in sc_action.cpp is as follows:
 // da_multiplier * ( weapon_multiplier * ( avg_range( base_dd_min, base_dd_max) + base_dd_adder
@@ -593,7 +593,7 @@ public:
 //
 // - for spells that scale with both SP and AP differently (Judgment, Avenger's Shield), we set
 //   direct_power_mod equal to 1.0 and put the appropriate scaling factors in base_X_power_multiplier
-// ================================================================================================================
+// ==========================================================================
 
 
 // ==========================================================================
@@ -738,7 +738,7 @@ struct ancient_fury_t : public paladin_spell_t
   }
 };
 
-// Ardent Defender ===========================================================
+// Ardent Defender ==========================================================
 
 struct ardent_defender_t : public paladin_spell_t
 {
@@ -1225,7 +1225,7 @@ struct divine_protection_t : public paladin_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-    
+
     // link needed for unbreakable spirit talent
     cooldown = p -> cooldowns.divine_protection;
     cooldown -> duration = data().cooldown();
@@ -1249,7 +1249,7 @@ struct divine_shield_t : public paladin_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-    
+
     // link needed for unbreakable spirit talent
     cooldown = p -> cooldowns.divine_shield;
     cooldown -> duration = data().cooldown();
@@ -1296,7 +1296,7 @@ struct eternal_flame_t : public paladin_heal_t
   {
     double am = paladin_heal_t::action_multiplier();
 
-    // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3 
+    // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3
     am *= ( ( p() -> holy_power_stacks() <= 3  && ! p() -> buffs.divine_purpose -> check() ) ? p() -> holy_power_stacks() : 3 );
 
     if ( target == player )
@@ -1331,7 +1331,7 @@ struct eternal_flame_t : public paladin_heal_t
 struct stay_of_execution_t : public paladin_heal_t
 {
   std::array<double, 11> soe_tick_multiplier;
-  
+
   stay_of_execution_t( paladin_t* p, const std::string& options_str )
     : paladin_heal_t( "stay_of_execution", p, p -> find_talent_spell( "Execution Sentence" ) ),
       soe_tick_multiplier()
@@ -1573,7 +1573,7 @@ struct hand_of_purity_t : public paladin_spell_t
 
 // Hand of Sacrifice ========================================================
 
-struct hand_of_sacrifice_redirect_t : public paladin_spell_t 
+struct hand_of_sacrifice_redirect_t : public paladin_spell_t
 {
   hand_of_sacrifice_redirect_t( paladin_t* p ) :
     paladin_spell_t( "hand_of_sacrifice_redirect", p, p -> find_class_spell( "Hand of Sacrifice" ) )
@@ -1587,7 +1587,7 @@ struct hand_of_sacrifice_redirect_t : public paladin_spell_t
   }
 
   void trigger( double redirect_value )
-  {   
+  {
     // set the redirect amount based on the result of the action
     base_dd_min = redirect_value;
     base_dd_max = redirect_value;
@@ -1605,9 +1605,9 @@ struct hand_of_sacrifice_t : public paladin_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-    may_miss = false; 
+    may_miss = false;
 //    p -> active.hand_of_sacrifice_redirect = new hand_of_sacrifice_redirect_t( p );
-    
+
     if ( p -> talents.clemency -> ok() )
       cooldown -> charges = 2;
 
@@ -1697,7 +1697,7 @@ struct holy_prism_aoe_damage_t : public paladin_spell_t
 
 struct holy_prism_aoe_heal_t : public paladin_heal_t
 {
-  holy_prism_aoe_heal_t( paladin_t* p) 
+  holy_prism_aoe_heal_t( paladin_t* p)
     : paladin_heal_t( "holy_prism_aoe_heal", p, p->find_spell( 114871 ) )
   {
     background = true;
@@ -1718,7 +1718,7 @@ struct holy_prism_damage_t : public paladin_spell_t
     may_miss = false;
     // this updates the spell coefficients appropriately for single-target damage
     parse_effect_data( p -> find_spell( 114852 ) -> effectN( 1 ) );
-    
+
     // todo: code AoE heal, insert as proc on HPr damage.
     impact_action = new holy_prism_aoe_heal_t( p );
   }
@@ -1733,7 +1733,7 @@ struct holy_prism_heal_t : public paladin_heal_t
     paladin_heal_t( "holy_prism_heal", p, p -> find_spell( 114871 ) )
   {
     background = true;
-   
+
     // update spell coefficients appropriately for single-target healing
     parse_effect_data( p -> find_spell( 114871 ) -> effectN( 1 ) );
 
@@ -1766,7 +1766,7 @@ struct holy_prism_t : public paladin_spell_t
       background = true;
   }
 
-  virtual void execute() 
+  virtual void execute()
   {
     if ( target -> is_enemy() )
     {
@@ -1950,7 +1950,7 @@ struct holy_wrath_t : public paladin_spell_t
   {
     parse_options( NULL, options_str );
 
-    if ( ! p -> glyphs.focused_wrath -> ok() ) 
+    if ( ! p -> glyphs.focused_wrath -> ok() )
       aoe = -1;
 
     may_crit   = true;
@@ -2058,7 +2058,7 @@ struct lay_on_hands_t : public paladin_heal_t
     paladin_heal_t( "lay_on_hands", p, p -> find_class_spell( "Lay on Hands" ) )
   {
     parse_options( NULL, options_str );
-    
+
     // link needed for unbreakable spirit talent
     cooldown = p -> cooldowns.lay_on_hands;
     cooldown -> duration = data().cooldown();
@@ -2184,11 +2184,11 @@ struct light_of_dawn_t : public paladin_heal_t
   }
 };
 
-// Sacred Shield ===================================================================
+// Sacred Shield ============================================================
 
 struct sacred_shield_t : public paladin_heal_t
 {
-  sacred_shield_t( paladin_t* p, const std::string& options_str ) : 
+  sacred_shield_t( paladin_t* p, const std::string& options_str ) :
     paladin_heal_t( "sacred_shield", p, p -> find_talent_spell( "Sacred Shield") )
   {
     parse_options( NULL, options_str );
@@ -2198,7 +2198,7 @@ struct sacred_shield_t : public paladin_heal_t
     // treat this as a HoT that spawns an absorb bubble on each tick() call rather than healing
     base_td = 342.5; // in effectN( 1 ), but not sure how to extract yet
     tick_power_mod = 1.17; // in tooltip, hardcoding
-    
+
     // disable if not talented
     if ( ! ( p -> talents.sacred_shield -> ok() ) )
       background = true;
@@ -2209,7 +2209,7 @@ struct sacred_shield_t : public paladin_heal_t
     // Kludge to swap the heal for an absorb
     // calculate the tick amount
     double ss_tick_amount = calculate_tick_amount( d -> state);
-    
+
     // if an existing absorb bubble is still hanging around, kill it
     td( d -> state -> target ) -> buffs.sacred_shield_tick -> expire();
 
@@ -2276,7 +2276,7 @@ struct seal_of_insight_proc_t : public paladin_heal_t
   }
 };
 
-// Word of Glory  ======================================================
+// Word of Glory  ===========================================================
 
 struct word_of_glory_t : public paladin_heal_t
 {
@@ -2284,7 +2284,7 @@ struct word_of_glory_t : public paladin_heal_t
   // We'll call that to get spell cooldown, resource cost, and other information and then parse_effect_data on 130551 to get healing coefficients
   // Note: if you have Eternal Flame talented, find_class_spell will return a not_found() object!  Will fix in APL parsing.
   word_of_glory_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "word_of_glory", p, p -> find_class_spell( "Word of Glory" ) ) 
+    paladin_heal_t( "word_of_glory", p, p -> find_class_spell( "Word of Glory" ) )
   {
     parse_options( NULL, options_str );
 
@@ -2303,7 +2303,7 @@ struct word_of_glory_t : public paladin_heal_t
   {
     double am = paladin_heal_t::action_multiplier();
 
-    // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3 
+    // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3
     am *= ( ( p() -> holy_power_stacks() <= 3  && ! p() -> buffs.divine_purpose -> check() ) ? p() -> holy_power_stacks() : 3 );
 
     // T14 protection 4-piece bonus
@@ -2335,7 +2335,7 @@ struct word_of_glory_t : public paladin_heal_t
     if ( p() -> set_bonus.tier15_2pc_tank() )
       p() -> buffs.shield_of_glory -> trigger();
 
-    // T16 2-piece tank bonus grants HP for each stack of BoG used      
+    // T16 2-piece tank bonus grants HP for each stack of BoG used
     if ( p() -> set_bonus.tier16_2pc_tank() )
     {
       // add that much Holy Power
@@ -2346,7 +2346,7 @@ struct word_of_glory_t : public paladin_heal_t
   }
 };
 
-// Word of Glory Damage ( Harsh Words ) ======================================================
+// Word of Glory Damage ( Harsh Words ) =====================================
 
 struct word_of_glory_damage_t : public paladin_spell_t
 {
@@ -2371,7 +2371,7 @@ struct word_of_glory_damage_t : public paladin_spell_t
   {
     double am = paladin_spell_t::action_multiplier();
 
-    // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3 
+    // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3
     am *= ( ( p() -> holy_power_stacks() <= 3  && ! p() -> buffs.divine_purpose -> check() ) ? p() -> holy_power_stacks() : 3 );
 
     return am;
@@ -2680,7 +2680,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
   }
 };
 
-// Divine Storm ===========================================================
+// Divine Storm =============================================================
 
 struct divine_storm_t : public paladin_melee_attack_t
 {
@@ -2719,7 +2719,7 @@ struct divine_storm_t : public paladin_melee_attack_t
   }
 };
 
-// Hammer of Justice, Fist of Justice =====================================
+// Hammer of Justice, Fist of Justice =======================================
 
 struct hammer_of_justice_t : public paladin_melee_attack_t
 {
@@ -3008,7 +3008,7 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
   }
 };
 
-// Judgment ================================================================
+// Judgment =================================================================
 
 struct judgment_t : public paladin_melee_attack_t
 {
@@ -3082,7 +3082,7 @@ struct judgment_t : public paladin_melee_attack_t
   {
     paladin_melee_attack_t::impact( s );
 
-    // Glyph of Double Jeopardy handling ===========================================================
+    // Glyph of Double Jeopardy handling ====================================
     // original implementation was incorrect - would only grant benefit ~ half the time.
     // proper implemenation: buff granted on every J, target set to new value each time.
     // action_multiplier() gets called before impact(), so we can just set the buff parameters here
@@ -3094,7 +3094,7 @@ struct judgment_t : public paladin_melee_attack_t
       p() -> buffs.double_jeopardy -> trigger();
       p() -> last_judgement_target = s -> target;
     }
-    // end Double Jeopardy ==========================================================================
+    // end Double Jeopardy ==================================================
 
     // Physical Vulnerability debuff
     if ( ! sim -> overrides.physical_vulnerability && p() -> passives.judgments_of_the_bold -> ok() )
@@ -3173,7 +3173,7 @@ struct rebuke_t : public paladin_melee_attack_t
   }
 };
 
-// Seals ============================================================
+// Seals ====================================================================
 
 struct paladin_seal_t : public paladin_melee_attack_t
 {
@@ -3355,7 +3355,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     }
     else
       p() -> buffs.shield_of_the_righteous -> trigger();
-    
+
     // Add stack of Bastion of Glory
     p() -> buffs.bastion_of_glory -> trigger();
 
@@ -3534,7 +3534,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   //buffs.sacred_shield      = buff_creator_t( *this, "sacred_shield", paladin -> find_class_spell( "Sacred Shield" ) );
   buffs.sacred_shield_tick = absorb_buff_creator_t( *this, "sacred_shield_tick", paladin -> find_spell( 65148 ) )
                              .source( paladin -> get_stats( "sacred_shield" ) )
-                             .cd( timespan_t::zero() ); 
+                             .cd( timespan_t::zero() );
 }
 
 // paladin_t::create_action =================================================
@@ -3576,7 +3576,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "shield_of_the_righteous"   ) return new shield_of_the_righteous_t  ( this, options_str );
   if ( name == "templars_verdict"          ) return new templars_verdict_t         ( this, options_str );
   if ( name == "holy_prism"                ) return new holy_prism_t               ( this, options_str );
-  
+
   action_t* a = 0;
   if ( name == "seal_of_justice"           ) { a = new paladin_seal_t( this, "seal_of_justice",       SEAL_OF_JUSTICE,       options_str );
                                                active_seal_of_justice_proc       = new seal_of_justice_proc_t       ( this );
@@ -3867,7 +3867,7 @@ void paladin_t::create_buffs()
   buffs.divine_purpose         = buff_creator_t( this, "divine_purpose", find_talent_spell( "Divine Purpose" ) )
                                  .duration( find_spell( find_talent_spell( "Divine Purpose" ) -> effectN( 1 ).trigger_spell_id() ) -> duration() );
   buffs.holy_avenger           = buff_creator_t( this, "holy_avenger", find_talent_spell( "Holy Avenger" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
-  
+
   // General
   buffs.avenging_wrath         = buff_creator_t( this, "avenging_wrath", find_class_spell( "Avenging Wrath" ) )
                                  .cd( timespan_t::zero() ) // Let the ability handle the CD
@@ -3969,7 +3969,7 @@ void paladin_t::generate_action_prio_list_prot()
   std::vector<std::string> racial_actions = get_racial_actions();
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] );
-  
+
   def -> add_action( this, "Avenging Wrath" );
   def -> add_talent( this, "Holy Avenger" );
   def -> add_action( this, "Guardian of Ancient Kings", "if=health.pct<=30" );
@@ -3990,7 +3990,7 @@ void paladin_t::generate_action_prio_list_prot()
 }
 
 void paladin_t::generate_action_prio_list_ret()
-{  
+{
   //precombat first
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
@@ -4018,7 +4018,7 @@ void paladin_t::generate_action_prio_list_ret()
   // Snapshot stats
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  // Pre-potting 
+  // Pre-potting
   if (sim -> allow_potions && level >= 80 )
     precombat -> add_action( ( level > 85 ) ? "mogu_power_potion" : "golemblood_potion" );
 
@@ -4238,9 +4238,9 @@ void paladin_t::generate_action_prio_list_ret()
 }
 
 void paladin_t::generate_action_prio_list_holy()
-{ 
-  // currently unsupported  
-  
+{
+  // currently unsupported
+
   //precombat first
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
@@ -4308,8 +4308,8 @@ void paladin_t::generate_action_prio_list_holy()
   def -> add_action( this, "Holy Shock", "if=holy_power<=3" );
   def -> add_action( this, "Flash of Light", "if=target.health.pct<=30" );
   def -> add_action( this, "Divine Plea", "if=mana_pct<75" );
-  def -> add_action( this, "Holy Light" ); 
-  
+  def -> add_action( this, "Holy Light" );
+
 }
 
 void paladin_t::validate_action_priority_list()
@@ -4348,7 +4348,7 @@ void paladin_t::validate_action_priority_list()
       {
         // check for usage of WoG when EF is talented
         check_ability = "word_of_glory";
-        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) ); 
+        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
         if ( found_ability )
         {
           found_position= action_str.find( check_ability.c_str() );
@@ -4360,7 +4360,7 @@ void paladin_t::validate_action_priority_list()
       {
         // check for usage of EF when not talented
         check_ability = "eternal_flame";
-        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) ); 
+        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
         if ( found_ability )
         {
           found_position= action_str.find( check_ability.c_str() );
@@ -4374,8 +4374,8 @@ void paladin_t::validate_action_priority_list()
       {
         check_ability = "holy_prism";
         talent_check_str = "talent." + check_ability + ".enabled";
-        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) ); 
-        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) ); 
+        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
+        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) );
         if ( found_ability && ! found_talent_str )
         {
           found_position= action_str.find( check_ability.c_str() );
@@ -4396,15 +4396,15 @@ void paladin_t::validate_action_priority_list()
           }
 
           sim -> errorf( "Action priority list contains %s without talent, automatically replacing with %s.", "Holy Prism", replacement.c_str() );
-          
+
         }
       }
       if ( ! talents.lights_hammer -> ok() )
       {
         check_ability = "lights_hammer";
         talent_check_str = "talent." + check_ability + ".enabled";
-        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) ); 
-        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) ); 
+        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
+        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) );
         if ( found_ability && ! found_talent_str )
         {
           found_position= action_str.find( check_ability.c_str() );
@@ -4425,15 +4425,15 @@ void paladin_t::validate_action_priority_list()
           }
 
           sim -> errorf( "Action priority list contains %s without talent, automatically replacing with %s.", "Light's Hammer", replacement.c_str() );
-          
+
         }
       }
       if ( ! talents.execution_sentence -> ok() )
       {
         check_ability = "execution_sentence";
         talent_check_str = "talent." + check_ability + ".enabled";
-        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) ); 
-        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) ); 
+        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
+        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) );
         if ( found_ability && ! found_talent_str )
         {
           found_position= action_str.find( check_ability.c_str() );
@@ -4454,17 +4454,17 @@ void paladin_t::validate_action_priority_list()
           }
 
           sim -> errorf( "Action priority list contains %s without talent, automatically replacing with %s.", "Execution Sentence", replacement.c_str() );
-          
+
         }
       }
-      
+
       // check for Sacred Shield usage without talent
       if ( ! talents.sacred_shield -> ok() )
       {
         check_ability = "sacred_shield";
         talent_check_str = "talent." + check_ability + ".enabled";
-        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) ); 
-        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) ); 
+        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
+        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) );
         if ( found_ability && ! found_talent_str )
         {
           sim -> errorf( "Action priority list contains %s without talent, ignoring", "Sacred Shield" );
@@ -4476,8 +4476,8 @@ void paladin_t::validate_action_priority_list()
       {
         check_ability = "hand_of_purity";
         talent_check_str = "talent." + check_ability + ".enabled";
-        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) ); 
-        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) ); 
+        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
+        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) );
         if ( found_ability && ! found_talent_str )
         {
           sim -> errorf( "Action priority list contains %s without talent, ignoring", "Hand of Purity" );
@@ -4519,11 +4519,11 @@ void paladin_t::init_actions()
   if ( action_list_str.empty() )
   {
     clear_action_priority_lists();
-    
+
     switch ( specialization() )
     {
       case PALADIN_RETRIBUTION:
-        generate_action_prio_list_ret(); // RET        
+        generate_action_prio_list_ret(); // RET
         break;
       // for prot, call subroutine
       case PALADIN_PROTECTION:
@@ -4552,7 +4552,7 @@ void paladin_t::init_actions()
     // clear action_list_str to avoid an assert error in player_t::init_actions()
     action_list_str.clear();
   }
-  
+
 
   validate_action_priority_list(); // this checks for conflicts and cleans up APL accordingly
 
@@ -4658,7 +4658,7 @@ void paladin_t::init_spells()
     {     0,     0, 105765, 105820, 105800, 105744, 105743, 105798 }, // Tier13
     {     0,     0, 123108,  70762, 123104, 123107, 123102, 123103 }, // Tier14
     {     0,     0, 138159, 138164, 138238, 138244, 138291, 138292 }, // Tier15
-    {     0,     0, 144586, 144593, 144566, 144580, 144625, 144613 }, // Tier16    
+    {     0,     0, 144586, 144593, 144566, 144580, 144625, 144613 }, // Tier16
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -4706,7 +4706,7 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr )
   return m;
 }
 
-// paladin_t::composite_attack_crit ===================================
+// paladin_t::composite_attack_crit =========================================
 
 double paladin_t::composite_melee_crit()
 {
@@ -4720,7 +4720,7 @@ double paladin_t::composite_melee_crit()
   return m;
 }
 
-// paladin_t::composite_spell_crit ===================================
+// paladin_t::composite_spell_crit ==========================================
 
 double paladin_t::composite_spell_crit()
 {
@@ -4801,7 +4801,7 @@ double paladin_t::composite_spell_power_multiplier()
   return player_t::composite_spell_power_multiplier();
 }
 
-// paladin_t::composite_spell_speed ==============================
+// paladin_t::composite_spell_speed =========================================
 
 double paladin_t::composite_spell_speed()
 {
@@ -4861,7 +4861,7 @@ double paladin_t::composite_dodge()
   return d;
 }
 
-// paladin_t::target_mitigation ==============================================
+// paladin_t::target_mitigation =============================================
 
 void paladin_t::target_mitigation( school_e school,
                                    dmg_e    dt,
@@ -4911,7 +4911,7 @@ void paladin_t::target_mitigation( school_e school,
   { s -> result_amount *= 1.0 + ( buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() - get_divine_bulwark() ) * (1.0 + sets -> set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent() ); }
 
   s -> result_amount *= 1.0 + passives.sanctuary -> effectN( 1 ).percent();
-  
+
   // Ardent Defender
   if ( buffs.ardent_defender -> check() )
   {
@@ -5167,7 +5167,7 @@ expr_t* paladin_t::create_expression( action_t* a,
   return player_t::create_expression( a, name_str );
 }
 
-// PALADIN MODULE INTERFACE ================================================
+// PALADIN MODULE INTERFACE =================================================
 
 struct paladin_module_t : public module_t
 {

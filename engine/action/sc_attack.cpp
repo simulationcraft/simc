@@ -11,7 +11,7 @@
 
 // attack_t::attack_t =======================================================
 
-// == Attack Constructor ===============
+// == Attack Constructor ====================================================
 attack_t::attack_t( const std::string&  n,
                     player_t*           p,
                     const spell_data_t* s ) :
@@ -269,9 +269,9 @@ void attack_t::reschedule_auto_attack( double old_swing_haste )
 // Melee Attack
 // ==========================================================================
 
-// melee_attack_t::melee_attack_t =======================================================
+// melee_attack_t::melee_attack_t ===========================================
 
-// == Melee Attack Constructor ===============
+// == Melee Attack Constructor ==============================================
 
 melee_attack_t::melee_attack_t( const std::string&  n,
                                 player_t*           p,
@@ -284,7 +284,7 @@ melee_attack_t::melee_attack_t( const std::string&  n,
   if ( range < 0 ) range = 5;
 }
 
-// melee_attack_t::init ===================================================
+// melee_attack_t::init =====================================================
 
 void melee_attack_t::init()
 {
@@ -294,21 +294,21 @@ void melee_attack_t::init()
     may_glance = false;
 }
 
-// melee_attack_t::dodge_chance ===================================================
+// melee_attack_t::dodge_chance =============================================
 
 double melee_attack_t::dodge_chance( double expertise, int delta_level )
 {
   return 0.03 + ( delta_level * 0.015 ) - expertise;
 }
 
-// melee_attack_t::parry_chance ===================================================
+// melee_attack_t::parry_chance =============================================
 
 double melee_attack_t::parry_chance( double expertise, int delta_level )
 {
   return 0.03 + ( delta_level * 0.015 ) + std::min( 0.0, dodge_chance( expertise, delta_level ) );
 }
 
-// melee_attack_t::glance_chance ==================================================
+// melee_attack_t::glance_chance ============================================
 
 double melee_attack_t::glance_chance( int delta_level )
 {
@@ -319,9 +319,9 @@ double melee_attack_t::glance_chance( int delta_level )
 // Ranged Attack
 // ==========================================================================
 
-// ranged_attack_t::ranged_attack_t =======================================================
+// ranged_attack_t::ranged_attack_t =========================================
 
-// == Ranged Attack Constructor by spell_id_t ===============
+// == Ranged Attack Constructor by spell_id_t ===============================
 
 ranged_attack_t::ranged_attack_t( const std::string& token,
                                   player_t* p,
@@ -333,14 +333,14 @@ ranged_attack_t::ranged_attack_t( const std::string& token,
   may_dodge = true;
 }
 
-// ranged_attack_t::dodge_chance ===================================================
+// ranged_attack_t::dodge_chance ============================================
 
 double ranged_attack_t::dodge_chance( double expertise, int delta_level )
 {
   return 0.03 + ( delta_level * 0.015 ) - expertise;
 }
 
-// ranged_attack_t::parry_chance ===================================================
+// ranged_attack_t::parry_chance ============================================
 
 double ranged_attack_t::parry_chance( double /* expertise */, int /* delta_level */ )
 {
@@ -348,7 +348,7 @@ double ranged_attack_t::parry_chance( double /* expertise */, int /* delta_level
   return 0.0;
 }
 
-// ranged_attack_t::glance_chance ==================================================
+// ranged_attack_t::glance_chance ===========================================
 
 double ranged_attack_t::glance_chance( int delta_level )
 {

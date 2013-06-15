@@ -9,7 +9,7 @@
 // Spell
 // ==========================================================================
 
-// spell_base_t::spell_base_t =========================================================
+// spell_base_t::spell_base_t ===============================================
 
 spell_base_t::spell_base_t( action_e at,
                             const std::string& token,
@@ -32,7 +32,7 @@ spell_base_t::spell_base_t( action_e at,
   crit_multiplier *= util::crit_multiplier( player -> meta_gem );
 }
 
-// spell_base_t::gcd =============================================================
+// spell_base_t::gcd ========================================================
 
 timespan_t spell_base_t::gcd()
 {
@@ -45,7 +45,7 @@ timespan_t spell_base_t::gcd()
   return t;
 }
 
-// spell_base_t::execute_time ====================================================
+// spell_base_t::execute_time ===============================================
 
 timespan_t spell_base_t::execute_time()
 {
@@ -60,7 +60,7 @@ timespan_t spell_base_t::execute_time()
   return t;
 }
 
-// spell_base_t::tick_time ======================================================
+// spell_base_t::tick_time ==================================================
 
 timespan_t spell_base_t::tick_time( double haste )
 {
@@ -70,7 +70,7 @@ timespan_t spell_base_t::tick_time( double haste )
   return action_t::tick_time( haste );
 }
 
-// spell_base_t::calculate_result ================================================
+// spell_base_t::calculate_result ===========================================
 
 result_e spell_base_t::calculate_result( action_state_t* s )
 {
@@ -107,7 +107,7 @@ result_e spell_base_t::calculate_result( action_state_t* s )
   return result;
 }
 
-// spell_base_t::execute =========================================================
+// spell_base_t::execute ====================================================
 
 void spell_base_t::execute()
 {
@@ -130,7 +130,7 @@ void spell_base_t::execute()
   }
 }
 
-// spell_base_t::schedule_execute ================================================
+// spell_base_t::schedule_execute ===========================================
 
 void spell_base_t::schedule_execute( action_state_t* execute_state )
 {

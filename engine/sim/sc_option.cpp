@@ -266,7 +266,7 @@ option_t* option_t::merge( std::vector<option_t>& merged_options,
   return &merged_options[ 0 ];
 }
 
-// option_db_t::open_file ======================================================
+// option_db_t::open_file ===================================================
 
 FILE* option_db_t::open_file( const std::string& name )
 {
@@ -282,7 +282,7 @@ FILE* option_db_t::open_file( const std::string& name )
   return io::fopen( name, "r" );
 }
 
-// option_db_t::parse_file =====================================================
+// option_db_t::parse_file ==================================================
 
 bool option_db_t::parse_file( FILE* file )
 {
@@ -310,7 +310,7 @@ bool option_db_t::parse_file( FILE* file )
   return true;
 }
 
-// option_db_t::parse_text =====================================================
+// option_db_t::parse_text ==================================================
 
 bool option_db_t::parse_text( const std::string& text )
 {
@@ -343,7 +343,7 @@ bool option_db_t::parse_text( const std::string& text )
   return true;
 }
 
-// option_db_t::parse_line =====================================================
+// option_db_t::parse_line ==================================================
 
 bool option_db_t::parse_line( const std::string& line )
 {
@@ -361,7 +361,7 @@ bool option_db_t::parse_line( const std::string& line )
   return true;
 }
 
-// option_db_t::parse_token ====================================================
+// option_db_t::parse_token =================================================
 
 bool option_db_t::parse_token( const std::string& token )
 {
@@ -432,7 +432,7 @@ bool option_db_t::parse_token( const std::string& token )
   return true;
 }
 
-// option_db_t::parse_args =====================================================
+// option_db_t::parse_args ==================================================
 
 bool option_db_t::parse_args( const std::vector<std::string>& args )
 {
@@ -443,7 +443,7 @@ bool option_db_t::parse_args( const std::vector<std::string>& args )
   return true;
 }
 
-// option_db_t::option_db_t ====================================================
+// option_db_t::option_db_t =================================================
 
 option_db_t::option_db_t()
 {

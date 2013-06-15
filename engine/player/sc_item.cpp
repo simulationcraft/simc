@@ -148,7 +148,7 @@ std::string special_effect_t::to_string()
   return s.str();
 }
 
-// item_t::item_t =============================================================
+// item_t::item_t ===========================================================
 
 item_t::item_t( player_t* p, const std::string& o ) :
   sim( p -> sim ), player( p ), slot( SLOT_INVALID ), unique( false ),
@@ -159,7 +159,7 @@ item_t::item_t( player_t* p, const std::string& o ) :
   parsed.data.icon = icon_str.c_str();
 }
 
-// item_t::to_string ==========================================================
+// item_t::to_string ========================================================
 
 std::string item_t::to_string()
 {
@@ -493,7 +493,7 @@ bool item_t::parse_options()
   return true;
 }
 
-// item_t::encoded_item =======================================================
+// item_t::encoded_item =====================================================
 
 std::string item_t::encoded_item()
 {
@@ -562,7 +562,7 @@ std::string item_t::encoded_item()
   return s.str();
 }
 
-// item_t::encoded_comment ====================================================
+// item_t::encoded_comment ==================================================
 
 std::string item_t::encoded_comment()
 {
@@ -607,7 +607,7 @@ std::string item_t::encoded_comment()
 }
 
 
-// item_t::encoded_gems =======================================================
+// item_t::encoded_gems =====================================================
 
 std::string item_t::encoded_gems()
 {
@@ -627,7 +627,7 @@ std::string item_t::encoded_gems()
   return stats_str;
 }
 
-// item_t::encoded_enchant ====================================================
+// item_t::encoded_enchant ==================================================
 
 std::string item_t::encoded_enchant()
 {
@@ -641,7 +641,7 @@ std::string item_t::encoded_enchant()
   return stats_str;
 }
 
-// item_t::encoded_addon ======================================================
+// item_t::encoded_addon ====================================================
 
 std::string item_t::encoded_addon()
 {
@@ -655,7 +655,7 @@ std::string item_t::encoded_addon()
   return stats_str;
 }
 
-// item_t::encoded_upgrade_level ==============================================
+// item_t::encoded_upgrade_level ============================================
 
 std::string item_t::encoded_upgrade_level()
 {
@@ -666,7 +666,7 @@ std::string item_t::encoded_upgrade_level()
   return upgrade_level_str;
 }
 
-// item_t::encoded_random_suffix_id ===========================================
+// item_t::encoded_random_suffix_id =========================================
 
 std::string item_t::encoded_random_suffix_id()
 {
@@ -678,7 +678,7 @@ std::string item_t::encoded_random_suffix_id()
   return str;
 }
 
-// item_t::encoded_reforge ====================================================
+// item_t::encoded_reforge ==================================================
 
 std::string item_t::encoded_reforge()
 {
@@ -698,7 +698,7 @@ std::string item_t::encoded_reforge()
   return str;
 }
 
-// item_t::encoded_stats ======================================================
+// item_t::encoded_stats ====================================================
 
 std::string item_t::encoded_stats()
 {
@@ -726,7 +726,7 @@ std::string item_t::encoded_stats()
   return str;
 }
 
-// item_t::encoded_weapon ====================================================
+// item_t::encoded_weapon ===================================================
 
 std::string item_t::encoded_weapon()
 {
@@ -876,7 +876,7 @@ bool item_t::decode_lfr()
   return true;
 }
 
-// item_t::decode_thunderforged ===============================================
+// item_t::decode_thunderforged =============================================
 
 bool item_t::decode_thunderforged()
 {
@@ -899,7 +899,7 @@ bool item_t::is_matching_type()
   return util::matching_armor_type( player -> type ) == parsed.data.item_subclass;
 }
 
-// item_t::is_valid_type =================================================
+// item_t::is_valid_type ====================================================
 
 bool item_t::is_valid_type()
 {
@@ -1283,7 +1283,7 @@ bool item_t::decode_addon()
   return true;
 }
 
-// item_t::decode_proc_spell ==================================================
+// item_t::decode_proc_spell ================================================
 
 // TODO: Discharge/resource procs, option verification, plumbing to item system
 // NOTE: This isn't enabled in the sim currently
@@ -2071,7 +2071,7 @@ bool item_t::decode_weapon()
   return true;
 }
 
-// item_t::decode_data_source =================================================
+// item_t::decode_data_source ===============================================
 
 bool item_t::decode_data_source()
 {
@@ -2308,7 +2308,7 @@ unsigned item_t::parse_gem( item_t& item, unsigned gem_id )
   return type;
 }
 
-// item_t::parse_reforge_id ==================================================
+// item_t::parse_reforge_id =================================================
 
 bool item_t::parse_reforge_id()
 {

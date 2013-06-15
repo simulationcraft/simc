@@ -478,7 +478,7 @@ void report::print_profiles( sim_t* sim )
   }
 }
 
-// report::print_spell_query ==============================================
+// report::print_spell_query ================================================
 
 void report::print_spell_query( sim_t* sim, unsigned level )
 {
@@ -538,7 +538,7 @@ void report::print_spell_query( sim_t* sim, unsigned level )
   }
 }
 
-// report::print_suite ====================================================
+// report::print_suite ======================================================
 
 void report::print_suite( sim_t* sim )
 {

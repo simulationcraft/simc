@@ -157,7 +157,7 @@ bool parse_talent_url( sim_t* sim,
   return false;
 }
 
-// parse_talent_override =========================================================
+// parse_talent_override ====================================================
 
 bool parse_talent_override( sim_t* sim,
                             const std::string& name,
@@ -2162,7 +2162,7 @@ void player_t::override_talent( std::string override_str )
   }
 }
 
-// player_t::init_talents ====================================================
+// player_t::init_talents ===================================================
 
 void player_t::init_talents()
 {
@@ -2267,7 +2267,7 @@ void player_t::init_uptimes()
   uptimes.primary_resource_cap = get_uptime( util::inverse_tokenize( util::resource_type_string( primary_resource() ) ) +  " Cap" );
 }
 
-// player_t::init_benefits ===================================================
+// player_t::init_benefits ==================================================
 
 void player_t::init_benefits()
 {
@@ -2457,7 +2457,7 @@ void player_t::init_scaling()
   }
 }
 
-// player_t::_init_actions ===================================================
+// player_t::_init_actions ==================================================
 
 void player_t::_init_actions()
 {
@@ -2647,7 +2647,7 @@ void player_t::_init_actions()
   collected_data.action_sequence.clear();
 }
 
-// player_t::create_buffs =====================================================
+// player_t::create_buffs ===================================================
 
 void player_t::create_buffs()
 {
@@ -2807,7 +2807,7 @@ double player_t::focus_regen_per_second()
   return r;
 }
 
-// player_t::mana_regen_per_second ==================================================
+// player_t::mana_regen_per_second ==========================================
 
 double player_t::mana_regen_per_second()
 {
@@ -3171,7 +3171,7 @@ double player_t::composite_spell_hit()
   return sh;
 }
 
-// player_t::composite_mastery ==================================================
+// player_t::composite_mastery ==============================================
 
 double player_t::composite_mastery()
 {
@@ -3273,7 +3273,7 @@ double player_t::composite_movement_speed()
   return speed;
 }
 
-// player_t::composite_attribute =================================
+// player_t::composite_attribute ============================================
 
 double player_t::composite_attribute( attribute_e attr )
 {
@@ -3364,7 +3364,7 @@ double player_t::composite_mastery_value()
 
 #ifdef SC_STAT_CACHE
 
-// player_t::invalidate_cache =================================================
+// player_t::invalidate_cache ===============================================
 
 void player_t::invalidate_cache( cache_e c )
 {
@@ -4265,7 +4265,7 @@ void player_t::regen( timespan_t periodicity )
 
 }
 
-// player_t::collect_resource_timeline_information ==================================================
+// player_t::collect_resource_timeline_information ==========================
 
 void player_t::collect_resource_timeline_information()
 {
@@ -4379,7 +4379,7 @@ bool player_t::resource_available( resource_e resource_type,
   return resources.current[ resource_type ] >= cost;
 }
 
-// player_t::recalculate_resources.max =======================================
+// player_t::recalculate_resources.max ======================================
 
 void player_t::recalculate_resource_max( resource_e resource_type )
 {
@@ -4814,10 +4814,10 @@ void player_t::assess_damage( school_e school,
   {
     // figure out how much damage gets redirected
     double redirected_damage = s -> result_amount * ( buffs.hand_of_sacrifice -> data().effectN( 1 ).percent() );
-    
+
     // apply that damage to the source paladin
     buffs.hand_of_sacrifice -> trigger( s -> action, 0, redirected_damage, timespan_t::zero() );
-    
+
     // mitigate that amount from the target.
     // Slight inaccuracy: We do not get a feedback of paladin health buffer expiration here.
     s -> result_amount -= redirected_damage;
@@ -5045,7 +5045,7 @@ action_priority_list_t* player_t::find_action_priority_list( const std::string& 
   return 0;
 }
 
-// player_t::clear_action_priority_lists() ===========
+// player_t::clear_action_priority_lists() ==================================
 
 void player_t::clear_action_priority_lists() const
 {
@@ -5069,7 +5069,7 @@ T* find_vector_member( const std::vector<T*>& list, const std::string& name )
   return nullptr;
 }
 
-// player_t::find_stats ======================================================
+// player_t::find_stats =====================================================
 
 stats_t* player_t::find_stats( const std::string& name )
 { return find_vector_member( stats_list, name ); }
@@ -5177,7 +5177,7 @@ stats_t* player_t::get_stats( const std::string& n, action_t* a )
   return stats;
 }
 
-// player_t::get_benefit =====================================================
+// player_t::get_benefit ====================================================
 
 benefit_t* player_t::get_benefit( const std::string& name )
 {
@@ -6268,7 +6268,7 @@ pet_t* player_t::find_pet( const std::string& pet_name )
   return 0;
 }
 
-// player_t::parse_talents_numbers ===========================================
+// player_t::parse_talents_numbers ==========================================
 
 bool player_t::parse_talents_numbers( const std::string& talent_string )
 {
@@ -6695,7 +6695,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
   return true;
 }
 
-// player_t::replace_spells ======================================================
+// player_t::replace_spells =================================================
 
 void player_t::replace_spells()
 {
@@ -6787,7 +6787,7 @@ void player_t::replace_spells()
 }
 
 
-// player_t::find_talent_spell ====================================================
+// player_t::find_talent_spell ==============================================
 
 const spell_data_t* player_t::find_talent_spell( const std::string& n,
                                                  const std::string& token,
@@ -6842,7 +6842,7 @@ const spell_data_t* player_t::find_glyph( const std::string& n ) const
 }
 
 
-// player_t::find_glyph_spell =====================================================
+// player_t::find_glyph_spell ===============================================
 
 const spell_data_t* player_t::find_glyph_spell( const std::string& n, const std::string& token ) const
 {
@@ -6950,7 +6950,7 @@ const spell_data_t* player_t::find_spell( const std::string& name, const std::st
   return spell_data_t::not_found();
 }
 
-// player_t::find_racial_spell ============================================
+// player_t::find_racial_spell ==============================================
 
 const spell_data_t* player_t::find_racial_spell( const std::string& name, const std::string& token, race_e r ) const
 {
@@ -6968,7 +6968,7 @@ const spell_data_t* player_t::find_racial_spell( const std::string& name, const 
   return spell_data_t::not_found();
 }
 
-// player_t::find_class_spell =============================================
+// player_t::find_class_spell ===============================================
 
 const spell_data_t* player_t::find_class_spell( const std::string& name, const std::string& token, specialization_e s ) const
 {
@@ -6990,7 +6990,7 @@ const spell_data_t* player_t::find_class_spell( const std::string& name, const s
   return spell_data_t::not_found();
 }
 
-// player_t::find_pet_spell =============================================
+// player_t::find_pet_spell =================================================
 
 const spell_data_t* player_t::find_pet_spell( const std::string& name, const std::string& token ) const
 {
@@ -7008,7 +7008,7 @@ const spell_data_t* player_t::find_pet_spell( const std::string& name, const std
   return spell_data_t::not_found();
 }
 
-// player_t::find_spell =============================================
+// player_t::find_spell =====================================================
 
 const spell_data_t* player_t::find_spell( const unsigned int id, const std::string& token ) const
 {
@@ -8048,7 +8048,7 @@ void player_t::copy_from( player_t* source )
   enchant = source -> enchant;
 }
 
-// class_modules::create::options =================================================
+// class_modules::create::options ===========================================
 
 void player_t::create_options()
 {
@@ -8319,7 +8319,7 @@ void player_t::analyze( sim_t& s )
 
   pre_analyze_hook();
 
-  // Sample Data Analysis ========================================================
+  // Sample Data Analysis ===================================================
 
   // sample_data_t::analyze(calc_basics,calc_variance,sort )
 
@@ -8576,7 +8576,7 @@ void player_callbacks_t::register_heal_callback( int64_t mask,
   }
 }
 
-// player_t::register_absorb_callback =========================================
+// player_t::register_absorb_callback =======================================
 
 void player_callbacks_t::register_absorb_callback( int64_t mask,
                                                    action_callback_t* cb )
@@ -8605,7 +8605,7 @@ void player_callbacks_t::register_harmful_spell_callback( int64_t mask,
 }
 
 
-// player_t::register_direct_harmful_spell_callback ================================
+// player_t::register_direct_harmful_spell_callback =========================
 
 void player_callbacks_t::register_direct_harmful_spell_callback( int64_t mask,
                                                                  action_callback_t* cb )
@@ -8647,7 +8647,7 @@ void player_callbacks_t::register_direct_damage_callback( int64_t mask,
   }
 }
 
-// player_t::register_direct_crit_callback ================================
+// player_t::register_direct_crit_callback ==================================
 
 void player_callbacks_t::register_direct_crit_callback( int64_t mask,
                                                         action_callback_t* cb )
@@ -8661,7 +8661,7 @@ void player_callbacks_t::register_direct_crit_callback( int64_t mask,
   }
 }
 
-// player_t::register_spell_tick_damage_callback ==================================
+// player_t::register_spell_tick_damage_callback ============================
 
 void player_callbacks_t::register_spell_tick_damage_callback( int64_t mask,
                                                               action_callback_t* cb )
@@ -8675,7 +8675,7 @@ void player_callbacks_t::register_spell_tick_damage_callback( int64_t mask,
   }
 }
 
-// player_t::register_spell_direct_damage_callback ================================
+// player_t::register_spell_direct_damage_callback ==========================
 
 void player_callbacks_t::register_spell_direct_damage_callback( int64_t mask,
                                                                 action_callback_t* cb )
@@ -8718,7 +8718,7 @@ void player_callbacks_t::register_direct_heal_callback( int64_t mask,
   }
 }
 
-// player_callbacks_t::register_incoming_attack_callback ==================================
+// player_callbacks_t::register_incoming_attack_callback ====================
 
 void player_callbacks_t::register_incoming_attack_callback( int64_t mask,
                                                             action_callback_t* cb )
@@ -8789,7 +8789,7 @@ double player_stat_cache_t::get_attribute( attribute_e a )
 
 #ifdef SC_STAT_CACHE
 
-// player_stat_cache_t::strength ================================================
+// player_stat_cache_t::strength ============================================
 
 double player_stat_cache_t::strength()
 {
@@ -8802,7 +8802,7 @@ double player_stat_cache_t::strength()
   return _strength;
 }
 
-// player_stat_cache_t::agiity ==================================================
+// player_stat_cache_t::agiity ==============================================
 
 double player_stat_cache_t::agility()
 {
@@ -8815,7 +8815,7 @@ double player_stat_cache_t::agility()
   return _agility;
 }
 
-// player_stat_cache_t::stamina =================================================
+// player_stat_cache_t::stamina =============================================
 
 double player_stat_cache_t::stamina()
 {
@@ -8828,7 +8828,7 @@ double player_stat_cache_t::stamina()
   return _stamina;
 }
 
-// player_stat_cache_t::intellect ===============================================
+// player_stat_cache_t::intellect ===========================================
 
 double player_stat_cache_t::intellect()
 {
@@ -8841,7 +8841,7 @@ double player_stat_cache_t::intellect()
   return _intellect;
 }
 
-// player_stat_cache_t::spirit ==================================================
+// player_stat_cache_t::spirit ==============================================
 
 double player_stat_cache_t::spirit()
 {
@@ -8854,7 +8854,7 @@ double player_stat_cache_t::spirit()
   return _spirit;
 }
 
-// player_stat_cache_t::spell_power =============================================
+// player_stat_cache_t::spell_power =========================================
 
 double player_stat_cache_t::spell_power( school_e s )
 {
@@ -8867,7 +8867,7 @@ double player_stat_cache_t::spell_power( school_e s )
   return _spell_power[ s ];
 }
 
-// player_stat_cache_t::attack_power ============================================
+// player_stat_cache_t::attack_power ========================================
 
 double player_stat_cache_t::attack_power()
 {
@@ -8880,7 +8880,7 @@ double player_stat_cache_t::attack_power()
   return _attack_power;
 }
 
-// player_stat_cache_t::attack_expertise ========================================
+// player_stat_cache_t::attack_expertise ====================================
 
 double player_stat_cache_t::attack_expertise()
 {
@@ -8893,7 +8893,7 @@ double player_stat_cache_t::attack_expertise()
   return _attack_expertise;
 }
 
-// player_stat_cache_t::attack_hit ==============================================
+// player_stat_cache_t::attack_hit ==========================================
 
 double player_stat_cache_t::attack_hit()
 {
@@ -8913,7 +8913,7 @@ double player_stat_cache_t::attack_hit()
   return _attack_hit;
 }
 
-// player_stat_cache_t::attack_crit =============================================
+// player_stat_cache_t::attack_crit =========================================
 
 double player_stat_cache_t::attack_crit()
 {
@@ -8926,7 +8926,7 @@ double player_stat_cache_t::attack_crit()
   return _attack_crit;
 }
 
-// player_stat_cache_t::attack_haste ============================================
+// player_stat_cache_t::attack_haste ========================================
 
 double player_stat_cache_t::attack_haste()
 {
@@ -8939,7 +8939,7 @@ double player_stat_cache_t::attack_haste()
   return _attack_haste;
 }
 
-// player_stat_cache_t::attack_speed ============================================
+// player_stat_cache_t::attack_speed ========================================
 
 double player_stat_cache_t::attack_speed()
 {
@@ -8952,7 +8952,7 @@ double player_stat_cache_t::attack_speed()
   return _attack_speed;
 }
 
-// player_stat_cache_t::spell_hit ===============================================
+// player_stat_cache_t::spell_hit ===========================================
 
 double player_stat_cache_t::spell_hit()
 {
@@ -8965,7 +8965,7 @@ double player_stat_cache_t::spell_hit()
   return _spell_hit;
 }
 
-// player_stat_cache_t::spell_crit ==============================================
+// player_stat_cache_t::spell_crit ==========================================
 
 double player_stat_cache_t::spell_crit()
 {
@@ -8978,7 +8978,7 @@ double player_stat_cache_t::spell_crit()
   return _spell_crit;
 }
 
-// player_stat_cache_t::spell_haste =============================================
+// player_stat_cache_t::spell_haste =========================================
 
 double player_stat_cache_t::spell_haste()
 {
@@ -8991,7 +8991,7 @@ double player_stat_cache_t::spell_haste()
   return _spell_haste;
 }
 
-// player_stat_cache_t::spell_speed =============================================
+// player_stat_cache_t::spell_speed =========================================
 
 double player_stat_cache_t::spell_speed()
 {
@@ -9096,7 +9096,7 @@ double player_stat_cache_t::mastery_value()
   return _mastery_value;
 }
 
-// player_stat_cache_t::mastery =================================================
+// player_stat_cache_t::mastery =============================================
 
 double player_stat_cache_t::player_multiplier( school_e s )
 {
@@ -9109,7 +9109,7 @@ double player_stat_cache_t::player_multiplier( school_e s )
   return _player_mult[ s ];
 }
 
-// player_stat_cache_t::mastery =================================================
+// player_stat_cache_t::mastery =============================================
 
 double player_stat_cache_t::player_heal_multiplier( school_e s )
 {

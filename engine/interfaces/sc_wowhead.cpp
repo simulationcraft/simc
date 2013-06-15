@@ -42,7 +42,7 @@ static xml_node_t* download_id( sim_t*             sim,
   return node;
 }
 
-// wowhead::parse_gem =====================================================
+// wowhead::parse_gem =======================================================
 
 gem_e wowhead::parse_gem( item_t&           item,
                           unsigned          gem_id,
@@ -108,7 +108,7 @@ gem_e wowhead::parse_gem( item_t&           item,
   return type;
 }
 
-// wowhead::download_glyph ================================================
+// wowhead::download_glyph ==================================================
 
 bool wowhead::download_glyph( player_t*          player,
                               std::string&       glyph_name,
@@ -306,7 +306,7 @@ bool wowhead::download_item_data( item_t&            item,
   return true;
 }
 
-// wowhead::download_item =================================================
+// wowhead::download_item ===================================================
 
 bool wowhead::download_item( item_t&            item,
                              wowhead_e          source,
@@ -320,7 +320,7 @@ bool wowhead::download_item( item_t&            item,
   return ret;
 }
 
-// wowhead::download_slot =================================================
+// wowhead::download_slot ===================================================
 
 bool wowhead::download_slot( item_t&           item,
                              wowhead_e         source,

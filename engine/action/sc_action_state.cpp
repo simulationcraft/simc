@@ -90,7 +90,7 @@ void action_state_t::copy_state( const action_state_t* o )
 action_state_t::action_state_t( action_t* a, player_t* t ) :
   action( a ), target( t ),
   result_type( RESULT_TYPE_NONE ), result( RESULT_NONE ),
-  result_raw( 0 ), result_total( 0 ), result_mitigated( 0 ), 
+  result_raw( 0 ), result_total( 0 ), result_mitigated( 0 ),
   result_absorbed( 0 ), result_amount( 0 ),
   haste( 0 ), crit( 0 ), target_crit( 0 ),
   attack_power( 0 ), spell_power( 0 ),

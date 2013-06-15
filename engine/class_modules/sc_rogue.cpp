@@ -842,7 +842,7 @@ static bool trigger_blade_flurry( action_state_t* s )
 // Attacks
 // ==========================================================================
 
-// rogue_attack_t::impact =============================================
+// rogue_attack_t::impact ===================================================
 
 void rogue_attack_t::impact( action_state_t* state )
 {
@@ -894,7 +894,7 @@ void rogue_attack_t::impact( action_state_t* state )
   }
 }
 
-// rogue_attack_t::armor ==============================================
+// rogue_attack_t::armor ====================================================
 
 double rogue_attack_t::target_armor( player_t* t )
 {
@@ -907,7 +907,7 @@ double rogue_attack_t::target_armor( player_t* t )
   return a;
 }
 
-// rogue_attack_t::cost ===============================================
+// rogue_attack_t::cost =====================================================
 
 double rogue_attack_t::cost()
 {
@@ -1719,10 +1719,10 @@ struct killing_spree_t : public rogue_attack_t
   double composite_target_da_multiplier( player_t* target )
   {
     double m = rogue_attack_t::composite_target_da_multiplier( target );
-    
+
     rogue_td_t* td = cast_td( target );
     if ( td -> dots.killing_spree -> current_tick > 0 )
-      m *= std::pow( 1.0 + p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent(), 
+      m *= std::pow( 1.0 + p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent(),
                     td -> dots.killing_spree -> current_tick );
 
     return m;
@@ -1753,7 +1753,7 @@ struct killing_spree_t : public rogue_attack_t
   }
 };
 
-// Marked for Death ===========================================================
+// Marked for Death =========================================================
 
 struct marked_for_death_t : public rogue_attack_t
 {
@@ -2053,7 +2053,7 @@ struct shiv_t : public rogue_attack_t
   }
 };
 
-// Shuriken Toss ===========================================================
+// Shuriken Toss ============================================================
 
 struct shuriken_toss_t : public rogue_attack_t
 {
@@ -2468,7 +2468,7 @@ struct rogue_poison_t : public actions::rogue_attack_t
   }
 };
 
-// Venomous Wound ============================================================
+// Venomous Wound ===========================================================
 
 struct venomous_wound_t : public rogue_poison_t
 {
@@ -3934,7 +3934,7 @@ int rogue_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
-// ROGUE MODULE INTERFACE ================================================
+// ROGUE MODULE INTERFACE ===================================================
 
 struct rogue_module_t : public module_t
 {

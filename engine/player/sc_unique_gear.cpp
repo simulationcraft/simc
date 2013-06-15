@@ -172,7 +172,7 @@ struct stat_discharge_proc_callback_t : public discharge_proc_t<action_t>
   }
 };
 
-// Weapon Proc Callback ================================================
+// Weapon Proc Callback =====================================================
 
 struct weapon_proc_callback_t : public proc_callback_t<action_state_t>
 {
@@ -279,7 +279,7 @@ struct synapse_spring_action_t : public action_t
     update_ready();
   }
 };
-// synapse_springs =================================================
+// synapse_springs ==========================================================
 
 void synapse_springs( item_t* item )
 {
@@ -296,7 +296,7 @@ void synapse_springs( item_t* item )
   item -> parsed.use.execute_action = new synapse_spring_action_t( p, "synapse_springs", 480.0, timespan_t::from_seconds( 10.0 ), timespan_t::from_seconds( 60.0 ) );
 }
 
-// synapse_springs_2 =================================================
+// synapse_springs_2 ========================================================
 
 void synapse_springs_2( item_t* item )
 {
@@ -320,7 +320,7 @@ void synapse_springs_2( item_t* item )
       spell1 -> cooldown() );
 }
 
-// phase_fingers =================================================
+// phase_fingers ============================================================
 
 void phase_fingers( item_t* item )
 {
@@ -340,7 +340,7 @@ void phase_fingers( item_t* item )
   item -> parsed.use.cooldown = spell -> cooldown();
 }
 
-// frag_belt =====================================================
+// frag_belt ================================================================
 
 void frag_belt( item_t* item )
 {
@@ -595,7 +595,7 @@ void dancing_steel( player_t* p, const std::string& enchant, weapon_t* w, const 
 }
 
 
-// Windsong Proc Callback ================================================
+// Windsong Proc Callback ===================================================
 
 struct windsong_callback_t : public action_callback_t
 {
@@ -1068,7 +1068,7 @@ void meta_gems( player_t* p, weapon_t* mhw, weapon_t* ohw )
 
 namespace unique_items {
 
-// touch_of_the_grave ==============================================
+// touch_of_the_grave =======================================================
 
 void touch_of_the_grave( player_t* p )
 {
@@ -1128,7 +1128,7 @@ void touch_of_the_grave( player_t* p )
   p -> callbacks.register_harmful_spell_callback( RESULT_HIT_MASK, cb );
 }
 
-// apparatus_of_khazgoroth =========================================
+// apparatus_of_khazgoroth ==================================================
 
 void apparatus_of_khazgoroth( item_t* item )
 {
@@ -1212,7 +1212,7 @@ void apparatus_of_khazgoroth( item_t* item )
   p -> callbacks.register_attack_callback( RESULT_CRIT_MASK, new apparatus_of_khazgoroth_callback_t( p, item -> parsed.data.heroic ) );
 }
 
-// heart_of_ignacious ==============================================
+// heart_of_ignacious =======================================================
 
 void heart_of_ignacious( item_t* item )
 {
@@ -1263,7 +1263,7 @@ void heart_of_ignacious( item_t* item )
   p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb  );
 }
 
-// matrix_restabilizer =============================================
+// matrix_restabilizer ======================================================
 
 void matrix_restabilizer( item_t* item )
 {
@@ -1329,7 +1329,7 @@ void matrix_restabilizer( item_t* item )
   p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new matrix_restabilizer_callback_t( *item, data ) );
 }
 
-// shard_of_woe ====================================================
+// shard_of_woe =============================================================
 
 void shard_of_woe( item_t* item )
 {
@@ -1350,7 +1350,7 @@ void shard_of_woe( item_t* item )
   }
 }
 
-// blazing_power ===================================================
+// blazing_power ============================================================
 
 void blazing_power( item_t* item )
 {
@@ -1415,7 +1415,7 @@ void blazing_power( item_t* item )
   p -> callbacks.register_heal_callback( RESULT_ALL_MASK, new blazing_power_callback_t( p, new blazing_power_heal_t( p, item -> parsed.data.heroic ) )  );
 }
 
-// windward_heart ==================================================
+// windward_heart ===========================================================
 
 void windward_heart( item_t* item )
 {
@@ -1479,7 +1479,7 @@ void windward_heart( item_t* item )
   p -> callbacks.register_heal_callback( RESULT_CRIT_MASK, new windward_heart_callback_t( p, new windward_heart_heal_t( p, item -> parsed.data.heroic, item -> parsed.data.lfr ) )  );
 }
 
-// symbiotic_worm ==================================================
+// symbiotic_worm ===========================================================
 
 void symbiotic_worm( item_t* item )
 {
@@ -1513,7 +1513,7 @@ void symbiotic_worm( item_t* item )
   p -> callbacks.register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
-// indomitable_pride ================================================
+// indomitable_pride ========================================================
 
 void indomitable_pride( item_t* item )
 {
@@ -1562,7 +1562,7 @@ void indomitable_pride( item_t* item )
   p -> callbacks.register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
-// jikuns_rising_winds=============================================
+// jikuns_rising_winds=======================================================
 
 void jikuns_rising_winds( item_t* item )
 {
@@ -1623,7 +1623,7 @@ void jikuns_rising_winds( item_t* item )
   p -> callbacks.register_incoming_attack_callback( RESULT_HIT_MASK,  new jikuns_rising_winds_callback_t( p, new jikuns_rising_winds_heal_t( *item, spell ) )  );
 }
 
-// delicate_vial_of_the_sanguinaire ================================
+// delicate_vial_of_the_sanguinaire =========================================
 
 void delicate_vial_of_the_sanguinaire( item_t* item )
 {
@@ -1671,7 +1671,7 @@ void delicate_vial_of_the_sanguinaire( item_t* item )
 
 
 
-// spidersilk_spindle ==============================================
+// spidersilk_spindle =======================================================
 
 void spidersilk_spindle( item_t* item )
 {
@@ -1714,7 +1714,7 @@ void spidersilk_spindle( item_t* item )
   p -> callbacks.register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
-// bonelink_fetish =================================================
+// bonelink_fetish ==========================================================
 
 void bonelink_fetish( item_t* item )
 {
@@ -1780,7 +1780,7 @@ void bonelink_fetish( item_t* item )
   p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new bonelink_fetish_callback_t( p, spell_id ) );
 }
 
-// fury_of_the_beast ===============================================
+// fury_of_the_beast ========================================================
 
 void fury_of_the_beast( item_t* item )
 {
@@ -1850,7 +1850,7 @@ void fury_of_the_beast( item_t* item )
   p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new fury_of_the_beast_callback_t( p, item -> parsed.data.heroic, item -> parsed.data.lfr ) );
 }
 
-// gurthalak =======================================================
+// gurthalak ================================================================
 
 void gurthalak( item_t* item )
 {
@@ -1970,7 +1970,7 @@ void gurthalak( item_t* item )
   p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new gurthalak_callback_t( p, tick_damage, proc_spell_id, slot ) );
 }
 
-// nokaled =========================================================
+// nokaled ==================================================================
 
 void nokaled( item_t* item )
 {
@@ -2078,7 +2078,7 @@ void nokaled( item_t* item )
   p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new nokaled_callback_t( p, spell_ids, proc_spell_id, slot ) );
 }
 
-// rathrak =========================================================
+// rathrak ==================================================================
 
 void rathrak( item_t* item )
 {
@@ -2129,7 +2129,7 @@ void rathrak( item_t* item )
   p -> callbacks.register_harmful_spell_callback( RESULT_HIT_MASK, new rathrak_callback_t( p, new rathrak_poison_t( p, trigger_spell_id ) ) );
 }
 
-// souldrinker =====================================================
+// souldrinker ==============================================================
 
 void souldrinker( item_t* item )
 {
@@ -2194,7 +2194,7 @@ void souldrinker( item_t* item )
   p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new souldrinker_callback_t( p, new souldrinker_spell_t( p, heroic, lfr ), slot ) );
 }
 
-// titahk ==========================================================
+// titahk ===================================================================
 
 void titahk( item_t* item )
 {
@@ -2247,7 +2247,7 @@ void titahk( item_t* item )
   p -> callbacks.register_spell_callback( SCHOOL_SPELL_MASK, new titahk_callback_t( p, spell, buff ) );
 }
 
-// zen_alchemist_stone =============================================
+// zen_alchemist_stone ======================================================
 
 void zen_alchemist_stone( item_t* item )
 {
@@ -2317,7 +2317,7 @@ void zen_alchemist_stone( item_t* item )
   item -> player -> callbacks.register_direct_heal_callback( RESULT_ALL_MASK, cb );
 }
 
-// bad_juju ==========================================================
+// bad_juju =================================================================
 
 void bad_juju( item_t* item )
 {
@@ -2359,7 +2359,7 @@ void bad_juju( item_t* item )
   item -> player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new bad_juju_callback_t( *item, data ) );
 }
 
-// rune_of_reorigination =============================================
+// rune_of_reorigination ====================================================
 
 // TODO: How does this interact with rating multipliers
 void rune_of_reorigination( item_t* item )
@@ -2449,7 +2449,7 @@ void rune_of_reorigination( item_t* item )
   item -> player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new rune_of_reorigination_callback_t( *item, data ) );
 }
 
-// spark_of_zandalar =================================================
+// spark_of_zandalar ========================================================
 
 void spark_of_zandalar( item_t* item )
 {
@@ -2501,7 +2501,7 @@ void spark_of_zandalar( item_t* item )
   item -> player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new spark_of_zandalar_callback_t( *item, data ) );
 };
 
-// unnerring_vision_of_leishen =======================================
+// unnerring_vision_of_leishen ==============================================
 
 void unerring_vision_of_leishen( item_t* item )
 {

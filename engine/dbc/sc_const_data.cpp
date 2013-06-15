@@ -83,9 +83,9 @@ gem_property_data_t nil_gpd;
 item_upgrade_t nil_iu;
 item_upgrade_rule_t nil_iur;
 
-// =========================================================================================
+// ==========================================================================
 // Indices to provide log time, constant space access to spells, effects, and talents by id.
-// =========================================================================================
+// ==========================================================================
 
 /* id_function_policy and id_member_policy are here to give a standard interface
  * of accessing the id of a data type.
@@ -473,7 +473,7 @@ void dbc::de_init()
   }
 }
 
-// translate_spec_str ===============================================
+// translate_spec_str =======================================================
 
 specialization_e dbc::translate_spec_str( player_e ptype, const std::string& spec_str )
 {
@@ -680,7 +680,7 @@ specialization_e dbc::translate_spec_str( player_e ptype, const std::string& spe
   return SPEC_NONE;
 }
 
-// specialization_string ===============================================
+// specialization_string ====================================================
 
 std::string dbc::specialization_string( specialization_e spec )
 {

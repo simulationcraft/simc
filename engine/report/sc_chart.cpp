@@ -2430,7 +2430,7 @@ std::string chart::normal_distribution( double mean, double std_dev, double conf
   return s.str();
 }
 
-// chart::resource_color ================================================
+// chart::resource_color ====================================================
 
 std::string chart::resource_color( int type )
 {

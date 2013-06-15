@@ -527,7 +527,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
   }
 };
 
-// trigger_bloodbath ===================================================
+// trigger_bloodbath ========================================================
 
 struct bloodbath_dot_t : public ignite::pct_based_action_t< attack_t >
 {
@@ -611,7 +611,7 @@ static void trigger_strikes_of_opportunity( warrior_attack_t* a )
   p -> active_opportunity_strike -> execute();
 }
 
-// trigger_sweeping_strikes =====================================================
+// trigger_sweeping_strikes =================================================
 static  void trigger_sweeping_strikes( action_state_t* s )
 {
   struct sweeping_strikes_attack_t : public warrior_attack_t
@@ -694,7 +694,7 @@ static  void trigger_sweeping_strikes( action_state_t* s )
   return;
 }
 
-// trigger_t15_2pc_melee =====================================================
+// trigger_t15_2pc_melee ====================================================
 
 static bool trigger_t15_2pc_melee( warrior_attack_t* a )
 {
@@ -974,7 +974,7 @@ struct bladestorm_t : public warrior_attack_t
   virtual double composite_haste() { return 1.0; }
 };
 
-// Bloodthirst Heal ==============================================================
+// Bloodthirst Heal =========================================================
 
 struct bloodthirst_heal_t : public heal_t
 {
@@ -1225,7 +1225,7 @@ struct deep_wounds_t : public warrior_attack_t
   }
 };
 
-// Demoralizing Shout =========================================================
+// Demoralizing Shout =======================================================
 
 struct demoralizing_shout : public warrior_attack_t
 {
@@ -1955,7 +1955,7 @@ struct slam_t : public warrior_attack_t
   }
 };
 
-// Storm Bolt ==============================================================
+// Storm Bolt ===============================================================
 
 struct storm_bolt_t : public warrior_attack_t
 {
@@ -2057,7 +2057,7 @@ struct thunder_clap_t : public warrior_attack_t
   }
 };
 
-// Victory Rush ========================================================
+// Victory Rush =============================================================
 
 struct victory_rush_heal_t : public heal_t
 {
@@ -2319,7 +2319,7 @@ struct battle_shout_t : public warrior_spell_t
   }
 };
 
-// Bloodbath ===================================================================
+// Bloodbath ================================================================
 
 struct bloodbath_t : public warrior_spell_t
 {
@@ -2341,7 +2341,7 @@ struct bloodbath_t : public warrior_spell_t
   }
 };
 
-// Commanding Shout =============================================================
+// Commanding Shout =========================================================
 
 struct commanding_shout_t : public warrior_spell_t
 {
@@ -2575,7 +2575,7 @@ struct shield_block_t : public warrior_spell_t
   }
 };
 
-// Shield Wall =============================================================
+// Shield Wall ==============================================================
 
 struct shield_wall_t : public warrior_spell_t
 {
@@ -3520,7 +3520,7 @@ double warrior_t::composite_crit_avoidance()
   return c;
 }
 
-// warrior_t::composite_tank_dodge ===========================================
+// warrior_t::composite_tank_dodge ==========================================
 
 double warrior_t::composite_dodge()
 {
@@ -3531,7 +3531,7 @@ double warrior_t::composite_dodge()
   return d;
 }
 
-// warrior_t::composite_attack_haste =========================================
+// warrior_t::composite_attack_haste ========================================
 
 double warrior_t::composite_melee_haste()
 {
@@ -3667,7 +3667,7 @@ void warrior_t::create_options()
   option_t::copy( options, warrior_options );
 }
 
-// warrior_t::create_profile =================================================
+// warrior_t::create_profile ================================================
 
 bool warrior_t::create_profile( std::string& profile_str, save_e type, bool save_html )
 {
@@ -3764,7 +3764,7 @@ int warrior_t::decode_set( item_t& item )
   return SET_NONE;
 }
 
-// warrior_t::enrage ====================================================
+// warrior_t::enrage ========================================================
 
 void warrior_t::enrage()
 {
@@ -3819,7 +3819,7 @@ void warrior_t::trigger_retaliation( int school, int result )
   buff.retaliation -> decrement();
 }
 
-// WARRIOR MODULE INTERFACE ================================================
+// WARRIOR MODULE INTERFACE =================================================
 
 struct warrior_module_t : public module_t
 {

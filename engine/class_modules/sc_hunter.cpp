@@ -381,7 +381,7 @@ public:
     return c;
   }
 
-  // thrill_of_the_hunt support ===============================================
+  // thrill_of_the_hunt support =============================================
 
   void trigger_thrill_of_the_hunt()
   {
@@ -987,7 +987,7 @@ struct pet_auto_attack_t : public hunter_main_pet_attack_t
   }
 };
 
-// Pet Claw/Bite/Smack ============================================================
+// Pet Claw/Bite/Smack ======================================================
 
 struct basic_attack_t : public hunter_main_pet_attack_t
 {
@@ -1096,7 +1096,7 @@ struct monstrous_bite_t : public hunter_main_pet_attack_t
   }
 };
 
-// Lynx Rush (pet) =======================================================
+// Lynx Rush (pet) ==========================================================
 
 struct lynx_rush_t : public hunter_main_pet_attack_t
 {
@@ -1400,7 +1400,7 @@ struct tear_armor_t : public hunter_main_pet_spell_t
   }
 };
 
-// Hyena Cackling Howl =========================================================
+// Hyena Cackling Howl ======================================================
 
 // TODO add attack speed to hyena
 struct cackling_howl_t : public hunter_main_pet_spell_t
@@ -2098,7 +2098,7 @@ struct glaive_toss_t : public hunter_ranged_attack_t
   }
 };
 
-// Powershot Attack =======================================================
+// Powershot Attack =========================================================
 
 struct powershot_t : public hunter_ranged_attack_t
 {
@@ -2777,7 +2777,7 @@ struct wild_quiver_shot_t : public ranged_t
   }
 };
 
-// Lightning Arrow (Tier 15 4-piece bonus) ====================================
+// Lightning Arrow (Tier 15 4-piece bonus) ==================================
 
 struct lightning_arrow_t : public hunter_ranged_attack_t
 {
@@ -2830,7 +2830,7 @@ public:
   }
 };
 
-// Barrage =================================================================
+// Barrage ==================================================================
 
 // This is a spell because that's the only way to support "channeled" effects
 struct barrage_t : public hunter_spell_t
@@ -2892,7 +2892,7 @@ struct barrage_t : public hunter_spell_t
   }
 };
 
-// A Murder of Crows ==============================================================
+// A Murder of Crows ========================================================
 
 struct moc_t : public ranged_attack_t
 {
@@ -2958,7 +2958,7 @@ struct moc_t : public ranged_attack_t
   }
 };
 
-// Dire Beast ==============================================================
+// Dire Beast ===============================================================
 
 
 struct dire_beast_t : public hunter_spell_t
@@ -3192,7 +3192,7 @@ struct hunters_mark_t : public hunter_spell_t
   }
 };
 
-// Lynx Rush ==============================================================
+// Lynx Rush ================================================================
 
 struct lynx_rush_t : public hunter_spell_t
 {
@@ -3493,7 +3493,7 @@ struct trueshot_aura_t : public hunter_spell_t
   }
 };
 
-// Stampede ============================================================
+// Stampede =================================================================
 
 struct stampede_t : public hunter_spell_t
 {
@@ -4144,7 +4144,7 @@ double hunter_t::composite_attack_power_multiplier()
   return mult;
 }
 
-// Haste and speed buff computations =========================================
+// Haste and speed buff computations ========================================
 
 double hunter_t::composite_melee_haste()
 {
@@ -4495,7 +4495,7 @@ void hunter_t::moving()
   player_t::interrupt();
 }
 
-// HUNTER MODULE INTERFACE ================================================
+// HUNTER MODULE INTERFACE ==================================================
 
 struct hunter_module_t : public module_t
 {
