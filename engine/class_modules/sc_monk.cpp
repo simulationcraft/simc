@@ -702,6 +702,11 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     if ( player -> dual_wield() )
       total_dmg *= 0.898882275;
 
+    // All Brewmaster special abilities use a 0.4 modifier for some reason on 
+    // the base weapon damage, much like the Dual Wielding penalty
+    if ( special && player -> specialization() == MONK_BREWMASTER )
+      total_dmg *= 0.4;
+
     if ( ! mh && ! oh )
       total_dmg += base_t::calculate_weapon_damage( ap );
     else
@@ -744,6 +749,9 @@ struct jab_t : public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
 
     base_multiplier = 1.5; // hardcoded into tooltip
+
+    if ( player -> specialization() == MONK_BREWMASTER )
+      weapon_power_mod = 1 / 11.0;
   }
 
   double combo_breaker_chance()
@@ -824,6 +832,9 @@ struct expel_harm_t : public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
 
     base_multiplier = 7.0; // hardcoded into tooltip
+
+    if ( player -> specialization() == MONK_BREWMASTER )
+      weapon_power_mod = 1 / 11.0;
   }
 
   virtual resource_e current_resource()
@@ -881,6 +892,9 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( p -> spec.brewmaster_training -> ok() )
       base_costs[ RESOURCE_CHI ] = 0.0;
+
+    if ( player -> specialization() == MONK_BREWMASTER )
+      weapon_power_mod = 1 / 11.0;
   }
 
   virtual double action_multiplier()
@@ -979,6 +993,8 @@ struct blackout_kick_t : public monk_melee_attack_t
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier = 8.0 * 0.89; // hardcoded into tooltip
+    if ( player -> specialization() == MONK_BREWMASTER )
+      weapon_power_mod = 1 / 11.0;
   }
 
   virtual void impact( action_state_t* s )
@@ -1115,8 +1131,10 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
       mh = &( player -> main_hand_weapon ) ;
       oh = &( player -> off_hand_weapon ) ;
-      base_multiplier = 1.59 * .89; // hardcoded into tooltip
       school = SCHOOL_PHYSICAL;
+
+      if ( player -> specialization() == MONK_BREWMASTER )
+        weapon_power_mod = 1 / 11.0;
     }
   };
 
@@ -1132,6 +1150,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     channeled = true;
     hasted_ticks = true;
     school = SCHOOL_PHYSICAL;
+    base_multiplier = 1.59 * 1.75 / 1.59; // hardcoded into tooltip
 
     tick_action = new spinning_crane_kick_tick_t( p, p -> find_spell( data().effectN( 1 ).trigger_spell_id() ) );
     dynamic_tick_action = true;
@@ -1462,6 +1481,8 @@ struct keg_smash_t : public monk_melee_attack_t
     oh = &( player -> off_hand_weapon ) ;
 
     base_multiplier = 8.12; // hardcoded into tooltip
+    base_multiplier *= 1.5; // Unknown 1.5 modifier applied at some point in time
+    weapon_power_mod = 1/11.0; // BM AP -> DPS conversion is with ap/11
   }
 
   virtual void execute()
