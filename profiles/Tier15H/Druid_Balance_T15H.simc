@@ -6,7 +6,7 @@ race=troll
 role=spell
 position=back
 professions=engineering=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.1.0
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!022220
 glyphs=moonbeast
 spec=balance
 
@@ -30,7 +30,7 @@ actions.precombat+=/jade_serpent_potion
 
 actions=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
 actions+=/starfall,if=!buff.starfall.up
-actions+=/treants,if=talent.force_of_nature.enabled
+actions+=/treants,if=talent.force_of_nature.enabled&buff.natures_grace.up&buff.tempus_repit.up
 actions+=/berserking,if=buff.celestial_alignment.up
 actions+=/use_item,slot=hands,if=buff.celestial_alignment.up|cooldown.celestial_alignment.remains>30
 actions+=/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
