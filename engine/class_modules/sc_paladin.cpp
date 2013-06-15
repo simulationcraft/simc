@@ -17,6 +17,7 @@ namespace { // UNNAMED NAMESPACE
 struct paladin_t;
 struct battle_healer_proc_t;
 struct hand_of_sacrifice_redirect_t;
+struct blessing_of_the_guardians_t;
 
 enum seal_e
 {
@@ -82,6 +83,7 @@ public:
   {
     battle_healer_proc_t* battle_healer_proc;
     hand_of_sacrifice_redirect_t* hand_of_sacrifice_redirect;
+    blessing_of_the_guardians_t* blessing_of_the_guardians;
   } active;
 
   // Buffs
@@ -94,6 +96,7 @@ public:
     buff_t* bastion_of_glory;
     buff_t* blessed_life;
     buff_t* daybreak;
+    buff_t* divine_crusader; // t16_4pc_melee
     buff_t* divine_plea;
     buff_t* divine_protection;
     buff_t* divine_purpose;
@@ -1526,6 +1529,43 @@ struct flash_of_light_t : public paladin_heal_t
 
 // Guardian of the Ancient Kings ============================================
 
+// Blessing of the Guardians is the t16_4pc_tank set bonus
+struct blessing_of_the_guardians_t : public paladin_heal_t
+{
+  double accumulated_damage;
+
+  blessing_of_the_guardians_t( paladin_t* p ) :
+    paladin_heal_t( "blessing_of_the_guardians", p, p -> find_spell( 144581 ) )
+  {
+    background = true;
+    hasted_ticks = false; // guess, currently not completely implemented on PTR
+    may_crit = false; // guess, currently not completely implemented on PTR
+    // TODO: check if it can crit, hasted ticks, etc.
+
+    // spell info not yet returning proper details, should heal for X every 1 sec for 10 sec.
+    base_tick_time = timespan_t::from_seconds( 1 );
+    num_ticks = 10;
+
+    // initialize accumulator
+    accumulated_damage = 0.0;
+  }
+
+  virtual void increment_damage( double amount )
+  {
+    accumulated_damage += amount;
+  }
+
+  virtual void execute()
+  {
+    base_td = accumulated_damage / num_ticks;
+
+    paladin_heal_t::execute();
+
+    accumulated_damage = 0;
+  }
+
+};
+
 struct guardian_of_ancient_kings_t : public paladin_spell_t
 {
   guardian_of_ancient_kings_t( paladin_t* p, const std::string& options_str )
@@ -1533,6 +1573,8 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
   {
     parse_options( NULL, options_str );
     use_off_gcd = true;
+    
+    p -> active.blessing_of_the_guardians = new blessing_of_the_guardians_t( p );
   }
 
   virtual void execute()
@@ -2343,6 +2385,9 @@ struct word_of_glory_t : public paladin_heal_t
     }
     // consume BoG stacks
     p() -> buffs.bastion_of_glory -> expire();
+        
+    // trigger T16 4-piece bonus
+    p() -> buffs.divine_crusader -> trigger();
   }
 };
 
@@ -2556,9 +2601,11 @@ struct melee_t : public paladin_melee_attack_t
         {
           p() -> procs.wasted_art_of_war -> occur();
         }
+
         // trigger proc, reset Exorcism cooldown
         p() -> procs.the_art_of_war -> occur();
         p() -> cooldowns.exorcism -> reset( true );
+
         // activate T16 2-piece bonus
         if ( p() -> set_bonus.tier16_2pc_melee() )
           p() -> buffs.warrior_of_the_light -> trigger();
@@ -2702,6 +2749,32 @@ struct divine_storm_t : public paladin_melee_attack_t
     {
       heal_percentage = p -> find_spell( 115515 ) -> effectN( 1 ).percent();
     }
+  }
+
+  virtual void execute()
+  {
+    // T16 4-piece melee makes DS free, need to be crafty here
+
+    // could probably skip this, since it'll always be Holy Power
+    resource_e temp_resource = resource_current;
+
+    // check for the T16 4-pc buff
+    if ( p() -> buffs.divine_crusader -> up() )
+    {
+      // if there, set resource equal to none
+      resource_current = RESOURCE_NONE;
+      // expire buff
+      p() -> buffs.divine_crusader -> expire();
+
+    }
+
+    paladin_melee_attack_t::execute();
+
+    // reset the resource to the original
+    resource_current = temp_resource;
+    
+    // trigger T16 4-piece bonus
+    p() -> buffs.divine_crusader -> trigger();
   }
 
   virtual void impact( action_state_t* s )
@@ -3403,6 +3476,9 @@ struct templars_verdict_t : public paladin_melee_attack_t
     school = p() -> buffs.tier15_4pc_melee -> up() ? SCHOOL_HOLY : SCHOOL_PHYSICAL;
 
     paladin_melee_attack_t::execute();
+
+    // trigger T16 4-piece bonus
+    p() -> buffs.divine_crusader -> trigger();
   }
 
   virtual void impact( action_state_t* s )
@@ -3503,6 +3579,30 @@ struct hand_of_sacrifice_t : public buff_t
     source = nullptr;
     source_health_pool = 0.0;
   }
+};
+
+// Guardian of ancient kings Prot
+struct guardian_of_ancient_kings_prot_t : public buff_t
+{
+  paladin_t* source;
+
+  guardian_of_ancient_kings_prot_t( paladin_t* p ) :
+    buff_t( buff_creator_t( p, "guardian_of_the_ancient_kings", p -> find_class_spell( "Guardian of Ancient Kings", std::string(), PALADIN_PROTECTION ) ) )
+  {
+    source = p;
+  }
+  
+  virtual void expire_override()
+  {
+    buff_t::expire_override();
+
+    if ( source -> set_bonus.tier16_4pc_tank() )
+    {
+      // trigger the HoT
+      source -> active.blessing_of_the_guardians -> execute();
+    }
+  }
+
 };
 
 } // end namespace buffs
@@ -3889,7 +3989,7 @@ void paladin_t::create_buffs()
   buffs.infusion_of_light      = buff_creator_t( this, "infusion_of_light", find_class_spell( "Infusion of Light" ) );
 
   // Prot
-  buffs.guardian_of_ancient_kings_prot = buff_creator_t( this, "guardian_of_the_ancient_kings", find_class_spell( "Guardian of Ancient Kings", std::string(), PALADIN_PROTECTION ) );
+  buffs.guardian_of_ancient_kings_prot = new buffs::guardian_of_ancient_kings_prot_t( this );
   buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() ).chance( passives.grand_crusader -> proc_chance() );
   buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
   buffs.ardent_defender                = buff_creator_t( this, "ardent_defender" ).spell( find_specialization_spell( "Ardent Defender" ) );
@@ -3904,7 +4004,10 @@ void paladin_t::create_buffs()
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.tier15_4pc_melee       = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138164 ) )
                                  .chance( find_spell( 138164 ) -> effectN( 1 ).percent() );
-  buffs.warrior_of_the_light   = buff_creator_t( this, "warrior_of_the_light", find_spell( 144587 ) );
+  buffs.warrior_of_the_light   = buff_creator_t( this, "warrior_of_the_light", find_spell( 144587 ) )
+                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.divine_crusader        = buff_creator_t( this, "divine_crusader", find_spell( 144595 ) )                            
+                                  .chance( 0.25 ); // hardcoded because spell is returning not found
 }
 
 // ==========================================================================
@@ -4764,7 +4867,7 @@ double paladin_t::composite_player_multiplier( school_e school )
     m *= 1.0 + buffs.glyph_of_word_of_glory -> value();
 
   // T16_2pc_melee buffs everything
-  if ( set_bonus.tier16_2pc_melee() && buffs.warrior_of_the_light -> up() )
+  if ( set_bonus.tier16_2pc_melee() && buffs.warrior_of_the_light -> check() )
     m *= 1.0 + buffs.warrior_of_the_light -> data().effectN( 1 ).percent();
 
   return m;
@@ -5043,6 +5146,12 @@ void paladin_t::assess_damage( school_e school,
 
     // add that much Holy Power
     resource_gain( RESOURCE_HOLY_POWER, hp_gain, gains.hp_t15_4pc_tank );
+  }
+
+  // T16 4-piece tank
+  if ( set_bonus.tier16_4pc_tank() && buffs.guardian_of_ancient_kings_prot -> check() )
+  {
+    active.blessing_of_the_guardians -> increment_damage( s -> result_amount ); // guess, assuming it's after all mitigation/absorb, need to test
   }
 }
 
