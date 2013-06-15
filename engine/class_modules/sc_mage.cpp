@@ -1382,7 +1382,11 @@ struct arcane_missiles_t : public mage_spell_t
     mage_spell_t::execute();
 
     p() -> buffs.arcane_missiles -> up();
-    p() -> buffs.arcane_missiles -> decrement();
+    // Trying to make the intended logic clear, but leaving it commented out
+//    if ( ! p() -> set_bonus.tier16_2pc_caster() || ! roll( p() -> sets -> set( SET_T16_2PC_CASTER ) -> effectN( 1 ).percent() ))
+//    {
+      p() -> buffs.arcane_missiles -> decrement();
+//    }
   }
 
   virtual bool ready()
