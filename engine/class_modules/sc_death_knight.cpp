@@ -5636,7 +5636,7 @@ void death_knight_t::init_scaling()
 
 static bool death_shroud_mastery( void* data )
 {
-  player_t* player = debug_cast< player_t* >( data );
+  player_t* player = static_cast< player_t* >( data );
   if ( player -> current.stats.get_stat( STAT_MASTERY_RATING ) >=
        player -> current.stats.get_stat( STAT_HASTE_RATING ) )
     return true;
@@ -5645,7 +5645,7 @@ static bool death_shroud_mastery( void* data )
 
 static bool death_shroud_haste( void* data )
 {
-  player_t* player = debug_cast< player_t* >( data );
+  player_t* player = static_cast< player_t* >( data );
   if ( player -> current.stats.get_stat( STAT_HASTE_RATING ) >
        player -> current.stats.get_stat( STAT_MASTERY_RATING ) )
     return true;
