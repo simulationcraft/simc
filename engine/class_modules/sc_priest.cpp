@@ -2070,8 +2070,9 @@ struct mind_blast_t : public priest_spell_t
   {
     double am = priest_spell_t::action_multiplier();
 
+    // Grants only 16.66% = 50.0% / 3 per stack. 2013/06/15 http://howtopriest.com/viewtopic.php?f=4&t=4025&start=30#p35124
     if ( priest.dbc.ptr && priest.buffs.empowered_shadows -> check() )
-      am *= 1.0 + priest.buffs.empowered_shadows -> data().effectN( 1 ).percent() * priest.buffs.empowered_shadows -> check();
+      am *= 1.0 + priest.buffs.empowered_shadows -> data().effectN( 1 ).percent() / 3.0  * priest.buffs.empowered_shadows -> check();
 
     return am;
   }
@@ -2214,8 +2215,9 @@ struct mind_spike_t : public priest_spell_t
       d *= 1.0 + priest.active_spells.surge_of_darkness -> effectN( 4 ).percent();
     }
 
+    // Grants only 16.66% = 50.0% / 3 per stack. 2013/06/15 http://howtopriest.com/viewtopic.php?f=4&t=4025&start=30#p35124
     if ( priest.dbc.ptr && priest.buffs.empowered_shadows -> check() )
-      d *= 1.0 + priest.buffs.empowered_shadows -> data().effectN( 1 ).percent() * priest.buffs.empowered_shadows -> check();
+      d *= 1.0 + priest.buffs.empowered_shadows -> data().effectN( 1 ).percent() / 3.0 * priest.buffs.empowered_shadows -> check();
 
     return d;
   }
@@ -2422,8 +2424,9 @@ struct shadow_word_death_t : public priest_spell_t
   {
     double am = priest_spell_t::action_multiplier();
 
+    // Grants only 16.66% = 50.0% / 3 per stack. 2013/06/15 http://howtopriest.com/viewtopic.php?f=4&t=4025&start=30#p35124
     if ( priest.dbc.ptr && priest.buffs.empowered_shadows -> check() )
-      am *= 1.0 + priest.buffs.empowered_shadows -> data().effectN( 1 ).percent() * priest.buffs.empowered_shadows -> check();
+      am *= 1.0 + priest.buffs.empowered_shadows -> data().effectN( 1 ).percent() / 3.0  * priest.buffs.empowered_shadows -> check();
 
     return am;
   }
@@ -3968,7 +3971,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
       if ( priest.buffs.chakra_sanctuary -> up() )
         am *= 1.0 + priest.buffs.chakra_sanctuary -> data().effectN( 1 ).percent();
 
-      // Assume that the spell data from the buff ( 15% ) is correct, not the one in the triggering spell ( 50% )
+      // Spell data from the buff ( 15% ) is correct, not the one in the triggering spell ( 50% )
       if ( priest.dbc.ptr )
         am *= 1.0 + priest.buffs.absolution -> check() * priest.buffs.absolution -> data().effectN( 1 ).percent();
 
@@ -4061,7 +4064,7 @@ struct holy_word_chastise_t : public priest_spell_t
   {
     double am = priest_spell_t::action_multiplier();
 
-    // Assume that the spell data from the buff ( 15% ) is correct, not the one in the triggering spell ( 50% )
+    // Spell data from the buff ( 15% ) is correct, not the one in the triggering spell ( 50% )
     if ( priest.dbc.ptr )
       am *= 1.0 + priest.buffs.absolution -> check() * priest.buffs.absolution -> data().effectN( 1 ).percent();
 
@@ -4107,7 +4110,7 @@ struct holy_word_serenity_t : public priest_heal_t
   {
     double am = priest_heal_t::action_multiplier();
 
-    // Assume that the spell data from the buff ( 15% ) is correct, not the one in the triggering spell ( 50% )
+    // Spell data from the buff ( 15% ) is correct, not the one in the triggering spell ( 50% )
     if ( priest.dbc.ptr )
       am *= 1.0 + priest.buffs.absolution -> check() * priest.buffs.absolution -> data().effectN( 1 ).percent();
 
@@ -5430,7 +5433,7 @@ void priest_t::init_spells()
     { 105843, 105844,     0,     0,     0,     0, 105827, 105832 }, // Tier13
     { 123114, 123115,     0,     0,     0,     0, 123111, 123113 }, // Tier14
     { 138156, 138158,     0,     0,     0,     0, 138293, 138301 }, // Tier15
-    { 145174, 145179,     0,     0,     0,     0, 145306, 145334 }, // Tier15
+    { 145174, 145179,     0,     0,     0,     0, 145306, 145334 }, // Tier16
   };
   sets = new set_bonus_array_t( this, set_bonuses );
 }
