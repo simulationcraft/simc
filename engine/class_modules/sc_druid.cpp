@@ -3470,10 +3470,19 @@ struct astral_communion_t : public druid_spell_t
     else
       starting_direction = p() -> eclipse_bar_direction;
 
-    // TODO: How does it work with sotf buff up?
-    p() -> buff.astral_insight -> up();
-
-    druid_spell_t::execute();
+    int tmp_ticks = num_ticks;
+    if ( p() -> buff.astral_insight -> up() )
+    {
+      num_ticks = 0;
+      p() -> buff.astral_insight -> expire();
+      trigger_eclipse_energy_gain( 200 * starting_direction );
+      druid_spell_t::execute();
+      num_ticks = tmp_ticks;
+    }
+    else
+    {
+      druid_spell_t::execute();
+    }
   }
 
   virtual void tick( dot_t* /* d */ )
