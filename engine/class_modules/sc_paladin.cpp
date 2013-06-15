@@ -3584,22 +3584,20 @@ struct hand_of_sacrifice_t : public buff_t
 // Guardian of ancient kings Prot
 struct guardian_of_ancient_kings_prot_t : public buff_t
 {
-  paladin_t* source;
 
   guardian_of_ancient_kings_prot_t( paladin_t* p ) :
     buff_t( buff_creator_t( p, "guardian_of_the_ancient_kings", p -> find_class_spell( "Guardian of Ancient Kings", std::string(), PALADIN_PROTECTION ) ) )
-  {
-    source = p;
-  }
+  { }
   
   virtual void expire_override()
   {
     buff_t::expire_override();
 
-    if ( source -> set_bonus.tier16_4pc_tank() )
+    paladin_t* p = static_cast<paladin_t*>( player );
+    if ( p -> set_bonus.tier16_4pc_tank() )
     {
       // trigger the HoT
-      source -> active.blessing_of_the_guardians -> execute();
+      p -> active.blessing_of_the_guardians -> execute();
     }
   }
 
