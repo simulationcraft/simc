@@ -2200,6 +2200,10 @@ struct frostfire_bolt_t : public mage_spell_t
         mini_frostfire_bolt -> schedule_execute( mini_frostfire_bolt -> get_state( execute_state ) );
       }
     }
+    if ( p() -> buffs.brain_freeze -> check() && p() -> set_bonus.tier16_2pc_caster() )
+    {
+      p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 0.75 );
+    }
     p() -> buffs.brain_freeze -> expire();
   }
 
