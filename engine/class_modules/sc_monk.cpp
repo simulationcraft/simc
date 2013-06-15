@@ -6,7 +6,7 @@
   TODO:
 
   Add all buffs
-  Add Crackling Jade Lightning
+  - Crackling Jade Lightning
   Change expel harm to heal later on.
 
   WINDWALKER:
@@ -29,7 +29,14 @@
 
   BREWMASTER:
   - Swift Reflexes strike back
+  - Purifying Brew
+  - Level 75 talents
+  - Black Ox Statue
+  - Gift of the Ox
 
+  - Avert Harm
+  - Zen Meditation
+  - Cache stagger_pct
 */
 #include "simulationcraft.hpp"
 
@@ -3306,6 +3313,9 @@ double monk_t::stagger_pct()
 
     if ( spec.brewmaster_training -> ok() && buff.fortifying_brew -> check() )
       stagger += spec.brewmaster_training -> effectN( 2 ).percent();
+
+    if ( mastery.elusive_brawler -> ok() )
+      stagger += cache.mastery_value();
   }
 
   return stagger;
