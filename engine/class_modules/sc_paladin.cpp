@@ -189,6 +189,7 @@ public:
   struct procs_t
   {
     proc_t* divine_purpose;
+    proc_t* divine_crusader;
     proc_t* eternal_glory;
     proc_t* judgments_of_the_bold;
     proc_t* the_art_of_war;
@@ -463,11 +464,14 @@ public:
   {
     if ( ab::current_resource() == RESOURCE_HOLY_POWER )
     {
+      // check for T16 4-piece melee bonus
+      if ( p() -> buffs.divine_crusader -> check() )
+        return 0.0;
+      
       // check for divine purpose - if active, return a resource cost of 0
       if ( p() -> buffs.divine_purpose -> check() )
-      {
         return 0.0;
-      }
+
       // otherwise return a value equal to our current holy power,
       // lower-bounded by the ability's base cost, upper-bounded by 3
       return std::max( ab::base_costs[ RESOURCE_HOLY_POWER ], std::min( 3.0, p() -> resources.current[ RESOURCE_HOLY_POWER ] ) );
@@ -486,33 +490,57 @@ public:
     }
   }
 
-  // divine purpose handling
-  void trigger_divine_purpose( double c )
+  // Method for handling "free" holy power consumer effects (Divine Purpose, T16 4-pc melee)
+  // covers both the triggering and consumption of those buffs
+  void manage_freebie_buffs( double c )
   {
-    // if divine purpose is talented
-    if ( ! p() -> talents.divine_purpose -> ok() ) return;
-
-    // if we didn't consume a proc, the cost c will be > 0
-    if ( c > 0.0 )
+    // if we did consume a proc, c will be zero - figure out which proc and expire() the corresponding buff
+    if ( c == 0.0 )
     {
-      // chance to proc the buff, needs to be scaled by holy power spent
-      p() -> buffs.divine_purpose -> trigger( 1,
+      // order of operations: T16 4-pc melee, then Divine Purpose
+      // TODO: on PTR, using DS with Divine Crusader buff also consumes DP - probably a bug
+      // if not change "else if" to "if" under Divine Purpose
+
+      // check for the T16 4-pc melee buff
+      if ( p() -> buffs.divine_crusader -> up() )
+      {
+        p() -> buffs.divine_crusader -> expire();
+      }
+      // check for Divine Purpose buff
+      else if ( p() -> buffs.divine_purpose -> up() )
+      {
+        // get rid of the buff corresponding to the current proc
+        p() -> buffs.divine_purpose -> expire();
+      }
+    }
+
+    // now we trigger new buffs.  Need to treat c=0 as c=3 for proc purposes
+    double c_effective = ( c == 0.0 ) ? 3 : c;
+
+    // if Divine Purpose is talented, trigger a DP proc
+    if ( p() -> talents.divine_purpose -> ok() )
+    {
+      // chance to proc the buff needs to be scaled by holy power spent
+      bool success = p() -> buffs.divine_purpose -> trigger( 1,
         p() -> buffs.divine_purpose -> default_value,
-        p() -> buffs.divine_purpose -> default_chance * c / 3 );
+        p() -> buffs.divine_purpose -> default_chance * c_effective / 3 );
+
+      // record success for output
+      if ( success )
+        p() -> procs.divine_purpose -> occur();
     }
-    // if we did consume a proc
-    else if ( c == 0.0 )
+    // If T16 4pc melee set bonus is equipped, trigger a proc
+    if ( p() -> set_bonus.tier16_4pc_melee() )
     {
-      // get id of the buff corresponding to the current proc
-      p() -> buffs.divine_purpose -> expire();
-
-      // and then try for a new proc
-      p() -> buffs.divine_purpose -> trigger();
-    }
-
-    // if the buff is up at this point, we had a new proc - record for output
-    if ( p() -> buffs.divine_purpose -> check() )
-      p() -> procs.divine_purpose -> occur();
+      // as far as we know, it's a flat 25% proc chance, not scaled by HP spent
+      // TODO: test this, as of right now Inquisition is not triggering, probably a bug
+      // if not need to add conditional based on name_str or spell id or some such
+      bool success = p() -> buffs.divine_crusader -> trigger();
+      
+      // record success for output
+      if ( success )
+        p() -> procs.divine_crusader -> occur();
+    }            
   }
 
   // unbreakable spirit handling
@@ -567,14 +595,14 @@ public:
 
     ab::execute();
 
-    // if the ability uses Holy Power, apply Unbreakable Spirit and handle Divine Purpose
+    // if the ability uses Holy Power, apply Unbreakable Spirit and handle Divine Purpose and other freebie effects
     if ( c >= 0 )
     {
       // Unbreakable Spirit reduces the cooldowns of several spells based on Holy Power usage.
       base_t::trigger_unbreakable_spirit( c );
 
       // trigger/consume divine purpose buff
-      base_t::trigger_divine_purpose( c );
+      base_t::manage_freebie_buffs( c );
     }
   }
 };
@@ -2385,9 +2413,6 @@ struct word_of_glory_t : public paladin_heal_t
     }
     // consume BoG stacks
     p() -> buffs.bastion_of_glory -> expire();
-        
-    // trigger T16 4-piece bonus
-    p() -> buffs.divine_crusader -> trigger();
   }
 };
 
@@ -2508,7 +2533,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
       base_t::trigger_unbreakable_spirit( c );
 
       // trigger/consume divine purpose buff
-      base_t::trigger_divine_purpose( c );
+      base_t::manage_freebie_buffs( c );
     }
 
     if ( result_is_hit( execute_state -> result ) )
@@ -2749,32 +2774,6 @@ struct divine_storm_t : public paladin_melee_attack_t
     {
       heal_percentage = p -> find_spell( 115515 ) -> effectN( 1 ).percent();
     }
-  }
-
-  virtual void execute()
-  {
-    // T16 4-piece melee makes DS free, need to be crafty here
-
-    // could probably skip this, since it'll always be Holy Power
-    resource_e temp_resource = resource_current;
-
-    // check for the T16 4-pc buff
-    if ( p() -> buffs.divine_crusader -> up() )
-    {
-      // if there, set resource equal to none
-      resource_current = RESOURCE_NONE;
-      // expire buff
-      p() -> buffs.divine_crusader -> expire();
-
-    }
-
-    paladin_melee_attack_t::execute();
-
-    // reset the resource to the original
-    resource_current = temp_resource;
-    
-    // trigger T16 4-piece bonus
-    p() -> buffs.divine_crusader -> trigger();
   }
 
   virtual void impact( action_state_t* s )
@@ -3476,9 +3475,6 @@ struct templars_verdict_t : public paladin_melee_attack_t
     school = p() -> buffs.tier15_4pc_melee -> up() ? SCHOOL_HOLY : SCHOOL_PHYSICAL;
 
     paladin_melee_attack_t::execute();
-
-    // trigger T16 4-piece bonus
-    p() -> buffs.divine_crusader -> trigger();
   }
 
   virtual void impact( action_state_t* s )
@@ -3817,6 +3813,7 @@ void paladin_t::init_procs()
   player_t::init_procs();
 
   procs.divine_purpose           = get_proc( "divine_purpose"                 );
+  procs.divine_crusader          = get_proc( "divine_crusader"                );
   procs.eternal_glory            = get_proc( "eternal_glory"                  );
   procs.judgments_of_the_bold    = get_proc( "judgments_of_the_bold"          );
   procs.the_art_of_war           = get_proc( "the_art_of_war"                 );
@@ -4865,7 +4862,7 @@ double paladin_t::composite_player_multiplier( school_e school )
     m *= 1.0 + buffs.glyph_of_word_of_glory -> value();
 
   // T16_2pc_melee buffs everything
-  if ( set_bonus.tier16_2pc_melee() && buffs.warrior_of_the_light -> check() )
+  if ( set_bonus.tier16_2pc_melee() && buffs.warrior_of_the_light -> up() )
     m *= 1.0 + buffs.warrior_of_the_light -> data().effectN( 1 ).percent();
 
   return m;
