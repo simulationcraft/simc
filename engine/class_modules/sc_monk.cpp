@@ -67,6 +67,7 @@ public:
   struct active_actions_t
   {
     action_t* blackout_kick_dot;
+    action_t* stagger_self_damage;
   } active_actions;
 
   double track_chi_consumption;
@@ -283,6 +284,7 @@ public:
   virtual void      pre_analyze_hook();
   virtual void      combat_begin();
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
+  virtual void      assess_damage_imminent( school_e, dmg_e, action_state_t* s );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   virtual void invalidate_cache( cache_e );
   virtual void      init_actions();
@@ -1466,7 +1468,7 @@ struct monk_spell_t : public monk_action_t<spell_t>
   {
     double m = base_t::composite_target_multiplier( t );
 
-    if ( td( t ) -> buff.rising_sun_kick -> up() )
+    if ( td( t ) -> buff.rising_sun_kick -> check() )
     {
       m *= 1.0 + td( t ) -> buff.rising_sun_kick -> data().effectN( 1 ).percent();
     }
@@ -2021,6 +2023,24 @@ struct mana_tea_t : public monk_spell_t
   }
 };
 
+struct stagger_self_damage_t : public ignite::pct_based_action_t<monk_spell_t>
+{
+  stagger_self_damage_t( monk_t* p ) :
+    base_t( "stagger_self_damage", p, p -> find_spell( 124255 ) )
+    {
+      num_ticks = 10;
+      target = p;
+    }
+
+  virtual void init()
+  {
+    base_t::init();
+
+    // We don't want this counted towards our dps
+    stats -> type = STATS_NEUTRAL;
+  }
+};
+
 } // END spells NAMESPACE
 
 namespace heals {
@@ -2349,6 +2369,10 @@ void monk_t::init_spells()
 
   //SPELLS
   active_actions.blackout_kick_dot = new actions::dot_blackout_kick_t( this );
+
+  if ( specialization() == MONK_BREWMASTER )
+    active_actions.stagger_self_damage = new actions::stagger_self_damage_t( this );
+
   passives.tier15_2pc = find_spell( 138311 );
   passives.swift_reflexes = find_spell( 124334 );
 
@@ -2446,7 +2470,7 @@ void monk_t::create_buffs()
   buff.fortifying_brew   = buff_creator_t( this, "fortifying_brew"     ).spell( find_spell( 120954 ) );
   buff.power_strikes     = buff_creator_t( this, "power_strikes"       ).spell( find_spell( 129914 ) );
   buff.tiger_strikes     = haste_buff_creator_t( this, "tiger_strikes" ).spell( find_spell( 120273 ) )
-                           .chance( find_spell( 120272 ) -> proc_chance() );
+                           .chance( find_specialization_spell( "Tiger Strikes" ) -> proc_chance() );
   buff.tiger_power       = buff_creator_t( this, "tiger_power" )
                            .spell( find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() );
   buff.zen_sphere        = buff_creator_t( this, "zen_sphere" , talent.zen_sphere );
@@ -2969,6 +2993,23 @@ void monk_t::assess_damage( school_e school,
   base_t::assess_damage( school, dtype, s );
 }
 
+void monk_t::assess_damage_imminent( school_e school,
+                                     dmg_e    dtype,
+                                     action_state_t* s )
+{
+  base_t::assess_damage_imminent( school, dtype, s );
+
+  if ( current_stance() != STURDY_OX )
+    return;
+
+  double stagger_dmg = s -> result_amount > 0 ? s -> result_amount * stagger_pct() : 0.0;
+  s -> result_amount -= stagger_dmg;
+
+  // Hook up Stagger Mechanism
+  if ( stagger_dmg > 0 )
+    ignite::trigger_pct_based( active_actions.stagger_self_damage, this, stagger_dmg );
+}
+
 // Mistweaver Pre-Combat Action Priority List
 
 void monk_t::apl_pre_brewmaster()
@@ -3089,7 +3130,8 @@ void monk_t::apl_combat_brewmaster()
   def -> add_action( this, "Breath of Fire", "if=target.debuff.dizzying_haze.up" );
   def -> add_action( this, "Guard" );
   def -> add_talent( this, "Chi Burst" );
-  def -> add_action( this, "Jab", "if=energy.pct>40" );
+  def -> add_action( this, "Jab", "if=energy.pct>40&chi+2<=chi.max" );
+  def -> add_action( this, "Blackout Kick", "if=chi>=4" );
 }
 
 // Windwalker Combat Action Priority List

@@ -4864,12 +4864,11 @@ void player_t::assess_damage( school_e school,
 
   s -> result_absorbed = s -> result_amount;
 
+  assess_damage_imminent( school, type, s );
+
   iteration_dmg_taken += s -> result_amount;
   collected_data.timeline_dmg_taken.add( sim -> current_time, s -> result_amount );
-
-
   double actual_amount = 0;
-
   if ( s -> result_amount > 0 ) actual_amount = resource_loss( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
 
   action_callback_t::trigger( callbacks.incoming_attack[ s -> result ], s -> action, s );
@@ -4906,6 +4905,11 @@ void player_t::assess_damage( school_e school,
     }
   }
 
+
+}
+
+void player_t::assess_damage_imminent( school_e, dmg_e, action_state_t* )
+{
 
 }
 
@@ -8367,7 +8371,7 @@ void player_t::analyze( sim_t& s )
 
       if ( s -> type == STATS_DMG )
         s -> portion_amount =  collected_data.compound_dmg.mean() ? s -> actual_amount.mean() /  collected_data.compound_dmg.mean() : 0 ;
-      else
+      else if ( s -> type == STATS_HEAL || s -> type == STATS_ABSORB )
         s -> portion_amount =  collected_data.compound_heal.mean() ? s -> actual_amount.mean() /  collected_data.compound_heal.mean() : 0;
     }
   }

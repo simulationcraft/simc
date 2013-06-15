@@ -4424,6 +4424,7 @@ public:
 
   virtual void assess_damage( school_e, dmg_e, action_state_t* );
   virtual void target_mitigation( school_e, dmg_e, action_state_t* );
+  virtual void assess_damage_imminent( school_e, dmg_e, action_state_t*);
 
   virtual void assess_heal( school_e, dmg_e, heal_state_t* );
 
