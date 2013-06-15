@@ -922,12 +922,15 @@ public:
     if ( ( this -> base_execute_time <= timespan_t::zero() ) && ! this -> channeled )
     {
       c *= 1.0 + priest.buffs.inner_will -> check() * priest.buffs.inner_will -> data().effectN( 1 ).percent();
-      c  = floor( c );
+      c  = std::floor( c );
     }
 
 
     if ( priest.buffs.power_infusion -> check() )
+    {
       c *= 1.0 + priest.buffs.power_infusion -> data().effectN( 2 ).percent();
+      c  = std::floor( c );
+    }
 
     return c;
   }

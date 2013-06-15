@@ -40,7 +40,6 @@ xcopy /E /I /H %target_dir%\source\locale %target_dir%\locale
 rd /Q /S %target_dir%\source\locale\
 
 move %target_dir%\source\Examples.simc %target_dir%\
-move %target_dir%\source\Legend.html %target_dir%\
 move %target_dir%\source\READ_ME_FIRST.txt %target_dir%\
 move %target_dir%\source\Welcome.html %target_dir%\
 move %target_dir%\source\Welcome.png %target_dir%\

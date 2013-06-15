@@ -29,7 +29,6 @@ Windows Platforms:
 (2) /profiles => All of the DPS profiles you will find in the GUI
 (3) /profiles_heal => Experimental healing and tanking profiles
 (4) /source => Source used to build the executables
-(5) Legend.html => Glossary for simulation output
 (6) READ_ME_FIRST.txt => This file
 (7) simc.exe => Command-line simulation executable
 (8) SimulationCraft.exe => Basic graphic user-interface.  Accepts drag-n-drop of .simc profiles.
@@ -40,7 +39,6 @@ Windows Platforms:
 Posix Platforms: (Linux, OSX, etc)
 (1) simc => Command-line simulation executable
 (2) simcqt.exe => Alpha-level graphic user-interface.
-(3) Legend.html => Glossary for simulation output
 
 =============================================================================================
 

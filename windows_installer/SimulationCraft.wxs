@@ -20,7 +20,6 @@
 		  <Shortcut Id="SimulationCraftICON" Directory="ProgramMenuDir" Name="SimulationCraft $(var.prod_ver)" WorkingDirectory='INSTALLDIR' Icon="SimulationCraft.ico" IconIndex="0" Advertise="yes" />
 		</File>
 		<File Id='Examples.simc' Name='Examples.simc' DiskId='1' Source='Examples.simc' />
-		<File Id='Legend.html' Name='Legend.html' DiskId='1' Source='Legend.html' />
 		<File Id='READ_ME_FIRST.txt' Name='READ_ME_FIRST.txt' DiskId='1' Source='READ_ME_FIRST.txt' />
 		<File Id='Welcome.html' Name='Welcome.html' DiskId='1' Source='Welcome.html' />
 		<File Id='Welcome.png' Name='Welcome.png' DiskId='1' Source='Welcome.png' />

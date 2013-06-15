@@ -616,34 +616,9 @@ void SC_MainWindow::createHelpTab()
 
 void SC_MainWindow::createResultsTab()
 {
-  QString s = "<div align=center><h1>Understanding SimulationCraft Output!</h1>If you are seeing this text, then Legend.html was unable to load.</div>";
-  QString legendFile = "Legend.html";
-#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
-  CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "Legend" ), CFSTR( "html" ), 0 );
-  if ( fileRef )
-  {
-    CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
-    legendFile          = CFStringGetCStringPtr( macPath, CFStringGetSystemEncoding() );
-
-    CFRelease( fileRef );
-    CFRelease( macPath );
-  }
-#endif
-
-  QFile file( legendFile );
-  if ( file.open( QIODevice::ReadOnly ) )
-  {
-    s = QString::fromUtf8( file.readAll() );
-    file.close();
-  }
-
-  QTextBrowser* legendBanner = new QTextBrowser();
-  legendBanner -> setHtml( s );
-  legendBanner -> moveCursor( QTextCursor::Start );
 
   resultsTab = new QTabWidget();
   resultsTab -> setTabsClosable( true );
-  resultsTab -> addTab( legendBanner, tr( "Legend" ) );
   connect( resultsTab, SIGNAL( currentChanged( int ) ),    this, SLOT( resultsTabChanged( int ) )      );
   connect( resultsTab, SIGNAL( tabCloseRequested( int ) ), this, SLOT( resultsTabCloseRequest( int ) ) );
   mainTab -> addTab( resultsTab, tr( "Results" ) );
@@ -1236,27 +1211,16 @@ void SC_MainWindow::importTabChanged( int index )
 
 void SC_MainWindow::resultsTabChanged( int index )
 {
-  if ( index <= 0 )
-  {
-    cmdLine -> setText( "" );
-  }
-  else
+  if ( resultsTab -> count() > 0 )
   {
     updateVisibleWebView( debug_cast<SC_WebView*>( resultsTab -> widget( index ) ) );
-    cmdLine -> setText( resultsFileText );
   }
+  cmdLine -> setText( resultsFileText );
 }
 
 void SC_MainWindow::resultsTabCloseRequest( int index )
 {
-  if ( index <= 0 )
-  {
-    // Ignore attempts to close Legend
-  }
-  else
-  {
-    resultsTab -> removeTab( index );
-  }
+  resultsTab -> removeTab( index );
 }
 
 void SC_MainWindow::simulateTabCloseRequest( int index )

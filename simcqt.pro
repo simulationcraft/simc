@@ -184,7 +184,6 @@ unix:!mac {
   data.path = $$INSTALLPATH
   data.files += Welcome.html
   data.files += Welcome.png
-  data.files += Legend.html
   data.files += READ_ME_FIRST.txt
   data.commands = @echo Installing global files to $$INSTALLPATH
 
