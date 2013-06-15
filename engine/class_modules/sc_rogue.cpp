@@ -3628,16 +3628,16 @@ void rogue_t::create_buffs()
   buffs.recuperate         = buff_creator_t( this, "recuperate" );
   buffs.shiv               = buff_creator_t( this, "shiv" );
   buffs.sleight_of_hand    = buff_creator_t( this, "sleight_of_hand", find_spell( 145211 ) )
-                             .chance( set_bonus.tier16_4pc_melee() );
+                             .chance( maybe_ptr( dbc.ptr ) && set_bonus.tier16_4pc_melee() );
   buffs.stealthed          = buff_creator_t( this, "stealthed" ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.t16_2pc_melee      = buff_creator_t( this, "silent_blades", find_spell( 145193 ) )
-                             .chance( set_bonus.tier16_2pc_melee() );
+                             .chance( maybe_ptr( dbc.ptr ) && set_bonus.tier16_2pc_melee() );
   buffs.tier13_2pc         = buff_creator_t( this, "tier13_2pc", spell.tier13_2pc )
                              .chance( set_bonus.tier13_2pc_melee() ? 1.0 : 0 );
   buffs.tot_trigger        = buff_creator_t( this, "tricks_of_the_trade_trigger", find_spell( 57934 ) )
                              .activated( true );
   buffs.toxicologist       = stat_buff_creator_t( this, "toxicologist", find_spell( 145249 ) )
-                             .chance( set_bonus.tier16_4pc_melee() );
+                             .chance( maybe_ptr( dbc.ptr ) && set_bonus.tier16_4pc_melee() );
   buffs.vanish             = buff_creator_t( this, "vanish" )
                              .duration( timespan_t::from_seconds( 3.0 ) )
                              .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
