@@ -133,6 +133,7 @@ public:
 
   // Active
   int       active_presence;
+  int       t16_tank_4pc_driver;
 
   // Buffs
   struct buffs_t
@@ -140,10 +141,12 @@ public:
     buff_t* antimagic_shell;
     buff_t* blood_charge;
     buff_t* blood_presence;
+    buff_t* bone_wall;
     buff_t* bone_shield;
     buff_t* crimson_scourge;
     buff_t* dancing_rune_weapon;
     buff_t* dark_transformation;
+    buff_t* deathbringer;
     buff_t* frost_presence;
     buff_t* icebound_fortitude;
     buff_t* killing_machine;
@@ -2142,6 +2145,22 @@ struct death_knight_heal_t : public death_knight_action_t<heal_t>
 // Triggers
 // ==========================================================================
 
+static void trigger_t16_4pc_tank( action_state_t* s )
+{
+  if ( ! s -> action -> player -> set_bonus.tier16_4pc_tank() )
+    return;
+
+  death_knight_t* p = debug_cast< death_knight_t* >( s -> action -> player );
+
+  p -> t16_tank_4pc_driver++;
+
+  if ( p -> t16_tank_4pc_driver == p -> sets -> set( SET_T16_4PC_TANK ) -> effectN( 1 ).base_value() )
+  {
+    p -> buffs.bone_wall -> trigger();
+    p -> t16_tank_4pc_driver = 0;
+  }
+}
+
 static void trigger_t15_2pc_melee( death_knight_melee_attack_t* attack )
 {
   if ( ! attack -> player -> set_bonus.tier15_2pc_melee() )
@@ -2567,6 +2586,9 @@ struct blood_boil_t : public death_knight_spell_t
       if ( cast_td( s -> target ) -> dots_frost_fever -> ticking )
         cast_td( s -> target ) -> dots_frost_fever -> refresh_duration();
     }
+
+    if ( result_is_hit( s -> result ) )
+      trigger_t16_4pc_tank( s );
   }
 
   virtual bool ready()
@@ -2889,6 +2911,9 @@ struct bone_shield_t : public death_knight_spell_t
 
   virtual void execute()
   {
+    size_t max_stacks = p() -> buffs.bone_shield -> data().initial_stacks() +
+                        p() -> buffs.bone_wall -> stack();
+
     if ( ! p() -> in_combat )
     {
       // Pre-casting it before the fight, perfect timing would be so
@@ -2901,7 +2926,7 @@ struct bone_shield_t : public death_knight_spell_t
       cooldown -> duration -= pre_cast;
       p() -> buffs.bone_shield -> buff_duration -= pre_cast;
 
-      p() -> buffs.bone_shield -> trigger( p() -> buffs.bone_shield -> max_stack(), 0.0 ); // FIXME
+      p() -> buffs.bone_shield -> trigger( max_stacks ); // FIXME
       death_knight_spell_t::execute();
 
       cooldown -> duration += pre_cast;
@@ -2909,7 +2934,8 @@ struct bone_shield_t : public death_knight_spell_t
     }
     else
     {
-      p() -> buffs.bone_shield -> trigger( p() -> buffs.bone_shield -> max_stack(), 0.0 ); // FIXME
+      p() -> buffs.bone_shield -> trigger( max_stacks ); // FIXME
+      p() -> buffs.bone_wall -> expire();
       death_knight_spell_t::execute();
     }
   }
@@ -2931,6 +2957,17 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
 
     p() -> buffs.dancing_rune_weapon -> trigger();
     p() -> pets.dancing_rune_weapon -> summon( data().duration() );
+
+    if ( p() -> set_bonus.tier16_2pc_tank() )
+    {
+      for ( int i = 2; i < RUNE_SLOT_MAX; ++i )
+      {
+        p() -> _runes.slot[ i ].fill_rune();
+        p() -> _runes.slot[ i ].type |= RUNE_TYPE_DEATH;
+      }
+
+      p() -> buffs.deathbringer -> trigger( p() -> buffs.deathbringer -> data().initial_stacks() );
+    }
   }
 };
 
@@ -3134,6 +3171,22 @@ struct death_strike_t : public death_knight_melee_attack_t
     }
   }
 
+  virtual void consume_resource()
+  {
+    if ( p() -> buffs.deathbringer -> check() )
+      return;
+
+    death_knight_melee_attack_t::consume_resource();
+  }
+
+  virtual double cost()
+  {
+    if ( p() -> buffs.deathbringer -> check() )
+      return 0;
+
+    return death_knight_melee_attack_t::cost();
+  }
+
   void trigger_death_strike_heal()
   {
     if ( p() -> incoming_damage.size() > 0 )
@@ -3201,7 +3254,22 @@ struct death_strike_t : public death_knight_melee_attack_t
     trigger_death_strike_heal();
     trigger_blood_shield();
 
+    if ( result_is_hit( execute_state -> result ) )
+      trigger_t16_4pc_tank( execute_state );
+
     p() -> buffs.scent_of_blood -> expire();
+    p() -> buffs.deathbringer -> decrement();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! melee_attack_t::ready() )
+      return false;
+
+    if ( p() -> buffs.deathbringer -> check() )
+      return group_runes( p(), 0, 0, 0, 0, use );
+    else
+      return group_runes( p(), cost_blood, cost_frost, cost_unholy, cost_death, use );
   }
 };
 
@@ -3415,6 +3483,8 @@ struct heart_strike_t : public death_knight_melee_attack_t
     {
       if ( p() -> buffs.dancing_rune_weapon -> check() )
         p() -> pets.dancing_rune_weapon -> drw_heart_strike -> execute();
+
+      trigger_t16_4pc_tank( execute_state );
     }
   }
 
@@ -4107,6 +4177,14 @@ struct rune_strike_t : public death_knight_melee_attack_t
     may_dodge = may_block = may_parry = false;
 
     weapon = &( p -> main_hand_weapon );
+  }
+
+  void execute()
+  {
+    death_knight_melee_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+      trigger_t16_4pc_tank( execute_state );
   }
 
   virtual void impact( action_state_t* s )
@@ -5670,12 +5748,18 @@ void death_knight_t::create_buffs()
   buffs.blood_presence      = buff_creator_t( this, "blood_presence", find_class_spell( "Blood Presence" ) )
                               .add_invalidate( CACHE_STAMINA );
   buffs.bone_shield         = buff_creator_t( this, "bone_shield", find_specialization_spell( "Bone Shield" ) )
-                              .cd( timespan_t::zero() );
+                              .cd( timespan_t::zero() )
+                              .max_stack( specialization() == DEATH_KNIGHT_BLOOD ? ( find_specialization_spell( "Bone Shield" ) -> initial_stacks() + 
+                                          find_spell( 144948 ) -> max_stacks() ) : -1 );
+  buffs.bone_wall           = buff_creator_t( this, "bone_wall", find_spell( 144948 ) )
+                              .chance( maybe_ptr( dbc.ptr ) && set_bonus.tier16_4pc_tank() );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" ).spell( find_spell( 81141 ) )
                               .chance( spec.crimson_scourge -> proc_chance() );
   buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_spell( 81256 ) )
                               .add_invalidate( CACHE_PARRY );
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) );
+  buffs.deathbringer        = buff_creator_t( this, "deathbringer", find_spell( 144953 ) )
+                              .chance( maybe_ptr( dbc.ptr ) && set_bonus.tier16_2pc_tank() );
   buffs.death_shroud        = stat_buff_creator_t( this, "death_shroud", sets -> set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )
                               .chance( sets -> set( SET_T16_2PC_MELEE ) -> proc_chance() )
                               .add_stat( STAT_MASTERY_RATING, sets -> set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() -> effectN( 2 ).base_value(), death_shroud_mastery )
@@ -5791,6 +5875,8 @@ void death_knight_t::reset()
 
   // Active
   active_presence = 0;
+
+  t16_tank_4pc_driver = 0;
 
   rng.t15_2pc_melee -> reset();
 

@@ -245,14 +245,14 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
 
   if ( _max_stack < 1 )
   {
+    sim -> errorf( "buff %s: initialized with max_stack < 1 (%d). Setting max_stack to 1.\n", name_str.c_str(), _max_stack );
     _max_stack = 1;
-    sim -> errorf( "buff %s: initialized with max_stack < 1. Setting max_stack to 1.", name_str.c_str() );
   }
 
   if ( _max_stack > 999 )
   {
     _max_stack = 999;
-    sim -> errorf( "buff %s: initialized with max_stack > 999. Setting max_stack to 999.", name_str.c_str() );
+    sim -> errorf( "buff %s: initialized with max_stack > 999. Setting max_stack to 999.\n", name_str.c_str() );
   }
 
   // Keep non hidden reported numbers clean

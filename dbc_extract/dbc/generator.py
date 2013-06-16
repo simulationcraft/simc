@@ -1115,6 +1115,8 @@ class SpellDataGenerator(DataGenerator):
           ( 77535, 0 ), # Blood Shield
           ( 116783, 0 ), # Death Siphon heal
           ( 96171, 0 ), # Will of the Necropolish Rune Tap buff
+          ( 144948, 0 ), # T16 tank 4PC Bone Shield charge proc
+          ( 144953, 0 ), # T16 tank 2PC Death Strike proc
         ),  
         
         # Shaman:
