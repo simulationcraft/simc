@@ -532,6 +532,7 @@ public:
 
   }
 
+  // All of this Unbreakable Spirit code goes away in 5.4
   // unbreakable spirit handling
   void trigger_unbreakable_spirit( double c )
   {
@@ -545,6 +546,27 @@ public:
     unbreakable_spirit_reduce_cooldown( p() -> cooldowns.divine_protection, reduction_percent );
     unbreakable_spirit_reduce_cooldown( p() -> cooldowns.divine_shield,     reduction_percent );
     unbreakable_spirit_reduce_cooldown( p() -> cooldowns.lay_on_hands,      reduction_percent );
+  }
+  
+  virtual void execute()
+  {
+    double c = ( this -> current_resource() == RESOURCE_HOLY_POWER ) ? this -> cost() : -1.0;
+
+    ab::execute();
+
+    // if the ability uses Holy Power, apply Unbreakable Spirit and handle Divine Purpose and other freebie effects
+    if ( c >= 0 )
+    {
+      // Unbreakable Spirit reduces the cooldowns of several spells based on Holy Power usage.
+      trigger_unbreakable_spirit( c );
+
+      // consume divine purpose and other "free hp finisher" buffs (e.g. Divine Purpose)
+      if ( c == 0.0 )
+        consume_free_hp_effects();
+
+      // trigger new "free hp finisher" buffs (e.g. Divine Purpose)
+      trigger_free_hp_effects( c );
+    }
   }
 
 private:
@@ -578,26 +600,6 @@ public:
   {
   }
 
-  virtual void execute()
-  {
-    double c = ( this -> current_resource() == RESOURCE_HOLY_POWER ) ? this -> cost() : -1.0;
-
-    ab::execute();
-
-    // if the ability uses Holy Power, apply Unbreakable Spirit and handle Divine Purpose and other freebie effects
-    if ( c >= 0 )
-    {
-      // Unbreakable Spirit reduces the cooldowns of several spells based on Holy Power usage.
-      base_t::trigger_unbreakable_spirit( c );
-
-      // consume divine purpose and other "free hp finisher" buffs (e.g. Divine Purpose)
-      if ( c == 0.0 )
-        consume_free_hp_effects();
-
-      // trigger new "free hp finisher" buffs (e.g. Divine Purpose)
-      trigger_free_hp_effects( c );
-    }
-  }
 };
 
 
@@ -2519,25 +2521,9 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
 
   virtual void execute()
   {
-    double c = ( current_resource() == RESOURCE_HOLY_POWER ) ? cost() : -1.0;
+    paladin_action_t::execute();
 
-    base_t::execute();
-
-    // if the ability uses Holy Power, apply Unbreakable Spirit and handle Divine Purpose
-    if ( c >= 0 )
-    {
-      // Unbreakable Spirit reduces the cooldowns of several spells based on Holy Power usage.
-      base_t::trigger_unbreakable_spirit( c );
-      
-
-      // consume divine purpose and other "free hp finisher" buffs (e.g. Divine Purpose)
-      if ( c == 0.0 )
-        consume_free_hp_effects();
-
-      // trigger new "free hp finisher" buffs (e.g. Divine Purpose)
-      trigger_free_hp_effects( c );
-    }
-
+    // handle all on-hit effects (seals, Ancient Power, battle healer)
     if ( result_is_hit( execute_state -> result ) )
     {
       if ( ! p() -> guardian_of_ancient_kings -> is_sleeping() )
