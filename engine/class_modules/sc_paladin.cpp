@@ -465,7 +465,7 @@ public:
     if ( ab::current_resource() == RESOURCE_HOLY_POWER )
     {
       // check for T16 4-piece melee bonus
-      if ( p() -> buffs.divine_crusader -> check() )
+      if ( p() -> buffs.divine_crusader -> check() && name_str == "divine_storm" )
         return 0.0;
       
       // check for divine purpose - if active, return a resource cost of 0
@@ -502,7 +502,7 @@ public:
       // if not change "else if" to "if" under Divine Purpose
 
       // check for the T16 4-pc melee buff
-      if ( p() -> buffs.divine_crusader -> up() )
+      if ( p() -> buffs.divine_crusader -> up() && name_str == "divine_storm" )
       {
         p() -> buffs.divine_crusader -> expire();
       }
