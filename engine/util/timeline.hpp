@@ -138,10 +138,11 @@ public:
       _data.insert( _data.end(), other.data().begin() + _data.size(), other.data().end() );
   }
 
-  void build_derivative_timeline( timeline_t<data_type>& out ) const
+  template<unsigned half_window>
+  void build_sliding_average_timeline( timeline_t<data_type>& out ) const
   {
     out._data.reserve( data().size() );
-    sliding_window_average<10>( data(), std::back_inserter( out._data ) );
+    sliding_window_average<half_window>( data(), std::back_inserter( out._data ) );
   }
 
   // Maximum value; 0 if no data available
