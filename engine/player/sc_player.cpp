@@ -1746,22 +1746,27 @@ void player_t::init_resources( bool force )
   resources.current = resources.max = resources.initial;
 
   // Only collect pet resource timelines if they get reported separately
-  if ( ( ! is_pet() || sim -> report_pets_separately ) && collected_data.resource_timelines.size() == 0 )
+  if ( ! is_pet() || sim -> report_pets_separately )
   {
     int size = ( int ) ( sim -> max_time.total_seconds() * ( 1.0 + sim -> vary_combat_length ) );
     if ( size <= 0 ) size = 600; // Default to 10 minutes
     size *= 2;
     size += 3; // Buffer against rounding.
 
-    for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+    if ( collected_data.resource_timelines.size() == 0 )
     {
-      if ( resources.max[ i ] > 0 )
+      for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
       {
-        collected_data.resource_timelines.push_back( player_collected_data_t::resource_timeline_t( i ) );
-        player_collected_data_t::resource_timeline_t& new_tl = collected_data.resource_timelines.back();
-        new_tl.timeline.init( size );
+        if ( resources.max[ i ] > 0 )
+        {
+          collected_data.resource_timelines.push_back( player_collected_data_t::resource_timeline_t( i ) );
+          player_collected_data_t::resource_timeline_t& new_tl = collected_data.resource_timelines.back();
+          new_tl.timeline.init( size );
+        }
       }
     }
+    if ( collected_data.health_changes.timeline.data().empty() )
+      collected_data.health_changes.timeline.init( size );
   }
 }
 
@@ -4274,6 +4279,16 @@ void player_t::collect_resource_timeline_information()
     collected_data.resource_timelines[ j ].timeline.add( sim -> current_time,
                                           resources.current[ collected_data.resource_timelines[ j ].type ] );
   }
+
+  // health change timeline
+  // treat losses positive, gains negative
+  double change = ( resource_lost[ RESOURCE_HEALTH ] - collected_data.health_changes.previous_loss_level );
+  change -= ( resource_gained[ RESOURCE_HEALTH ] - collected_data.health_changes.previous_gain_level );
+  collected_data.health_changes.previous_loss_level = resource_lost[ RESOURCE_HEALTH ];
+  collected_data.health_changes.previous_gain_level = resource_gained[ RESOURCE_HEALTH ];
+  if ( ! is_pet() || sim -> report_pets_separately )
+    collected_data.health_changes.timeline.add( sim -> current_time, change );
+
 }
 
 // player_t::resource_loss ==================================================
@@ -9219,7 +9234,8 @@ player_collected_data_t::player_collected_data_t( const std::string& player_name
   heal_taken( player_name + " Healing Taken", s.statistics_level < 2 ),
   deaths( player_name + " Deaths", s.statistics_level < 2 ),
   resource_timelines(),
-  combat_end_resource( RESOURCE_MAX )
+  combat_end_resource( RESOURCE_MAX ),
+  health_changes()
 { }
 
 void player_collected_data_t::reserve_memory( const player_t& p )
@@ -9271,6 +9287,7 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
     resource_timelines[ i ].timeline.merge ( other.resource_timelines[ i ].timeline );
   }
 
+  health_changes.timeline.merge( other.health_changes.timeline );
 }
 
 void player_collected_data_t::analyze( const player_t& p )
@@ -9298,7 +9315,11 @@ void player_collected_data_t::analyze( const player_t& p )
   {
     resource_timelines[ i ].timeline.adjust( p.sim -> divisor_timeline );
   }
-
+  if ( !p.is_pet() || p.sim -> report_pets_separately )
+  {
+    health_changes.timeline.adjust( p.sim -> divisor_timeline );
+    health_changes.timeline.build_derivative_timeline( health_changes.sliding_timeline );
+  }
 }
 
 

@@ -995,6 +995,25 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
     ri.gains_chart[ rt ] = chart::gains( p, rt );
   }
 
+  if ( !p -> is_pet() || p -> sim -> report_pets_separately )
+  {
+    ri.health_change_chart =
+    chart::timeline( p,
+                     cd.health_changes.timeline.data(),
+                     encoded_name + ' ' + "Health Change",
+                     cd.health_changes.timeline.mean( 0, max_buckets ),
+                     chart::resource_color( RESOURCE_HEALTH ),
+                     max_buckets );
+
+    ri.health_change_sliding_chart =
+    chart::timeline( p,
+                     cd.health_changes.sliding_timeline.data(),
+                     encoded_name + ' ' + "Health Change",
+                     cd.health_changes.sliding_timeline.mean( 0, max_buckets ),
+                     chart::resource_color( RESOURCE_HEALTH ),
+                     max_buckets );
+  }
+
   // Scaling charts
   if ( ! ( ( p -> sim -> scaling -> num_scaling_stats <= 0 ) || p -> quiet || p -> is_pet() || p -> is_enemy() || p -> is_add() || p -> type == HEALING_ENEMY ) )
   {
