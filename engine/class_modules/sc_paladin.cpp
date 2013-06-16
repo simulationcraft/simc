@@ -132,7 +132,6 @@ public:
     gain_t* hp_blessed_life;
     gain_t* hp_crusader_strike;
     gain_t* hp_divine_plea;
-    gain_t* hp_divine_purpose;
     gain_t* hp_exorcism;
     gain_t* hp_grand_crusader;
     gain_t* hp_hammer_of_the_righteous;
@@ -142,6 +141,7 @@ public:
     gain_t* hp_judgments_of_the_bold;
     gain_t* hp_judgments_of_the_wise;
     gain_t* hp_pursuit_of_justice;
+    gain_t* hp_templars_verdict_refund;
     gain_t* hp_tower_of_radiance;
     gain_t* hp_judgment;
     gain_t* hp_t15_4pc_tank;
@@ -3485,10 +3485,20 @@ struct templars_verdict_t : public paladin_melee_attack_t
 
   virtual void execute ()
   {
+    // store cost for potential refunding (see below)
+    double c = cost();
+
     // T15 Retribution 4-piece proc turns damage from physical into Holy damage
     school = p() -> buffs.tier15_4pc_melee -> up() ? SCHOOL_HOLY : SCHOOL_PHYSICAL;
 
     paladin_melee_attack_t::execute();
+
+    // missed/dodged/parried TVs do not consume Holy Power, but do consume Divine Purpose
+    // check for a miss, and refund the appropriate amount of HP if we spent any
+    if ( result_is_miss( execute_state -> result ) && c > 0 )
+    {
+      p() -> resource_gain( RESOURCE_HOLY_POWER, c, p() -> gains.hp_templars_verdict_refund );
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -3804,7 +3814,6 @@ void paladin_t::init_gains()
   gains.hp_blessed_life             = get_gain( "holy_power_blessed_life" );
   gains.hp_crusader_strike          = get_gain( "holy_power_crusader_strike" );
   gains.hp_divine_plea              = get_gain( "holy_power_divine_plea" );
-  gains.hp_divine_purpose           = get_gain( "holy_power_divine_purpose" );
   gains.hp_exorcism                 = get_gain( "holy_power_exorcism" );
   gains.hp_grand_crusader           = get_gain( "holy_power_grand_crusader" );
   gains.hp_hammer_of_the_righteous  = get_gain( "holy_power_hammer_of_the_righteous" );
@@ -3814,6 +3823,7 @@ void paladin_t::init_gains()
   gains.hp_judgments_of_the_bold    = get_gain( "holy_power_judgments_of_the_bold" );
   gains.hp_judgments_of_the_wise    = get_gain( "holy_power_judgments_of_the_wise" );
   gains.hp_pursuit_of_justice       = get_gain( "holy_power_pursuit_of_justice" );
+  gains.hp_templars_verdict_refund  = get_gain( "holy_power_templars_verdict_refund" );
   gains.hp_tower_of_radiance        = get_gain( "holy_power_tower_of_radiance" );
   gains.hp_judgment                 = get_gain( "holy_power_judgment" );
   gains.hp_t15_4pc_tank             = get_gain( "holy_power_t15_4pc_tank" );
