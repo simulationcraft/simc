@@ -1696,6 +1696,10 @@ struct holy_avenger_t : public paladin_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
+
+    // disable if not talented
+    if ( ! p -> talents.holy_avenger -> ok() )
+      background = true;
   }
 
   virtual void execute()
@@ -3428,7 +3432,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     //Duration is additive on refresh, stats not recalculated
     if ( p() -> buffs.shield_of_the_righteous -> check() )
     {
-      p() -> buffs.shield_of_the_righteous -> extend_duration( p(), timespan_t::from_seconds( p() -> find_class_spell( "Shield of the Righteous" ) -> _duration ) );
+      p() -> buffs.shield_of_the_righteous -> extend_duration( p(), p() -> buffs.shield_of_the_righteous -> buff_duration );
     }
     else
       p() -> buffs.shield_of_the_righteous -> trigger();
@@ -4584,6 +4588,19 @@ void paladin_t::validate_action_priority_list()
         if ( found_ability && ! found_talent_str )
         {
           sim -> errorf( "Action priority list contains %s without talent, ignoring", "Hand of Purity" );
+        }
+      }
+
+      // check for Holy Avenger usage without talent
+      if ( ! talents.holy_avenger -> ok() )
+      {
+        check_ability = "holy_avenger";
+        talent_check_str = "talent." + check_ability + ".enabled";
+        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
+        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) );
+        if ( found_ability && ! found_talent_str )
+        {
+          sim -> errorf( "Action priority list contains %s without talent, ignoring", "Holy Avenger" );
         }
       }
 
