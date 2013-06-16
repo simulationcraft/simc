@@ -464,10 +464,6 @@ public:
   {
     if ( ab::current_resource() == RESOURCE_HOLY_POWER )
     {
-      // check for T16 4-piece melee bonus
-      if ( id == 53385  && p() -> buffs.divine_crusader -> check() )
-        return 0.0;
-      
       // check for divine purpose - if active, return a resource cost of 0
       if ( p() -> buffs.divine_purpose -> check() )
         return 0.0;
@@ -501,7 +497,7 @@ public:
       // TODO: on PTR, using DS with Divine Crusader buff also consumes DP - probably a bug
       // if not change "else if" to "if" under Divine Purpose
 
-      // check for the T16 4-pc melee buff
+      // check for T16 4pc melee set bonus, but only if we're casting Divine Storm (53385)
       if ( id == 53385 && p() -> buffs.divine_crusader -> up() )
       {
         p() -> buffs.divine_crusader -> expire();
@@ -2774,6 +2770,15 @@ struct divine_storm_t : public paladin_melee_attack_t
     {
       heal_percentage = p -> find_spell( 115515 ) -> effectN( 1 ).percent();
     }
+  }
+
+  virtual double cost()
+  {
+    // check for the T16 4-pc melee buff
+    if ( p() -> buffs.divine_crusader -> check() )
+      return 0.0;
+
+      paladin_melee_attack_t::cost();
   }
 
   virtual void impact( action_state_t* s )
