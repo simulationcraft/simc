@@ -12,6 +12,7 @@
 #include <cassert>
 #include <numeric>
 #include "sc_generic.hpp"
+#include "sample_data.hpp"
 
 template <unsigned HW, typename Fwd, typename Out>
 void sliding_window_average( Fwd first, Fwd last, Out out )
@@ -105,21 +106,26 @@ public:
     }
   }
 
-  T average( size_t start, size_t length ) const
+  T mean( size_t start, size_t length ) const
   {
-    T average = T();
-    if ( length == 0 )
-      return average;
     assert( start + length <= data().size() );
-    for ( size_t j = start; j < start + length; ++j )
-    {
-      average += data()[ j ];
-    }
-    return average / length;
+    return statistics::calculate_mean( data().begin() + start, data().begin() + start + length );
   }
-  T average() const
+
+  T mean() const
   {
-    return average( 0, data().size() );
+    return mean( 0, data().size() );
+  }
+
+  T mean_stddev( size_t start, size_t length ) const
+  {
+    assert( start + length <= data().size() );
+    return statistics::calculate_mean_stddev( data().begin() + start, data().begin() + start + length );
+  }
+
+  T mean_stddev() const
+  {
+    return mean_stddev( 0, data().size() );
   }
 
   // Merge with other timeline

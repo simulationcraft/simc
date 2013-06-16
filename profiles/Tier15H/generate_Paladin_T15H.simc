@@ -54,5 +54,5 @@ trinket1=soul_barrier,id=96927,stats=2628sta
 trinket2=laochins_liquid_courage,id=89079,stats=1619sta
 back=tigerclaw_cape,id=98147,stats=1525armor_1716str_2694sta_918crit_918haste_918mastery,gems=320haste,enchant=200sta,reforge=crit_exp
 off_hand=greatshield_of_the_gloaming,id=96884,stats=20279armor_957str_1555sta_658dodge_637mastery,gems=320haste,enchant=170parry,reforge=dodge_haste
-save=profiles\Tier15H\Paladin_Protection_T15H.simc
+save=Paladin_Protection_T15H.simc
 

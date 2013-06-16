@@ -6,13 +6,180 @@
 #ifndef SAMPLE_DATA_HPP
 #define SAMPLE_DATA_HPP
 
-#define SAMPLE_DATA_NO_NAN
-
 #include <vector>
 #include <numeric>
 #include <limits>
 #include <sstream>
 #include "../sc_generic.hpp"
+
+/* Collection of statistical formulas for sequences
+ * Note: Returns 0 for empty sequences
+ */
+namespace statistics {
+
+/* Arithmetic Sum
+ */
+template <typename iterator>
+typename std::iterator_traits<iterator>::value_type calculate_sum( iterator begin, iterator end )
+{
+  typedef typename std::iterator_traits<iterator>::value_type value_t;
+  return std::accumulate( begin, end, value_t() );
+}
+
+/* Arithmetic Mean
+ */
+template <typename iterator>
+typename std::iterator_traits<iterator>::value_type calculate_mean( iterator begin, iterator end )
+{
+  typedef typename std::iterator_traits<iterator>::value_type value_t;
+  typedef typename std::iterator_traits<iterator>::difference_type diff_t;
+  diff_t length = end - begin;
+  value_t tmp = calculate_sum( begin, end );
+  if ( length > 1 )
+    tmp /= length;
+  return tmp;
+}
+
+/* Expected Value of the squared deviation from a given mean
+ */
+template <typename iterator>
+typename std::iterator_traits<iterator>::value_type calculate_variance( iterator begin, iterator end, typename std::iterator_traits<iterator>::value_type mean )
+{
+  typedef typename std::iterator_traits<iterator>::value_type value_t;
+  typedef typename std::iterator_traits<iterator>::difference_type diff_t;
+  diff_t length = end - begin;
+  value_t tmp = value_t();
+
+  for( ; begin != end; ++begin )
+  {
+    tmp += ( *begin - mean ) * ( *begin - mean );
+  }
+  if ( length > 1 )
+    tmp /= length;
+  return tmp;
+}
+
+/* Expected Value of the squared deviation
+ */
+template <typename iterator>
+typename std::iterator_traits<iterator>::value_type calculate_variance( iterator begin, iterator end )
+{
+  typedef typename std::iterator_traits<iterator>::value_type value_t;
+  typedef typename std::iterator_traits<iterator>::difference_type diff_t;
+  diff_t length = end - begin;
+  value_t mean = calculate_mean( begin, end );
+  return calculate_variance( begin, end, mean );
+}
+
+/* Standard Deviation from a given mean
+ */
+template <typename iterator>
+typename std::iterator_traits<iterator>::value_type calculate_stddev( iterator begin, iterator end, typename std::iterator_traits<iterator>::value_type mean )
+{
+  return std::sqrt( calculate_variance( begin, end, mean ) );
+}
+
+/* Standard Deviation
+ */
+template <typename iterator>
+typename std::iterator_traits<iterator>::value_type calculate_stddev( iterator begin, iterator end )
+{
+  typedef typename std::iterator_traits<iterator>::value_type value_t;
+  value_t mean = calculate_mean( begin, end );
+  return std::sqrt( calculate_variance( begin, end, mean ) );
+}
+
+/* Standard Deviation of a given sample mean distribution, according to Central Limit Theorem
+ */
+template <typename iterator>
+typename std::iterator_traits<iterator>::value_type calculate_mean_stddev( iterator begin, iterator end, typename std::iterator_traits<iterator>::value_type mean )
+{
+  typedef typename std::iterator_traits<iterator>::value_type value_t;
+  typedef typename std::iterator_traits<iterator>::difference_type diff_t;
+  diff_t length = end - begin;
+  value_t tmp = calculate_variance( begin, end, mean );
+  if ( length > 1 )
+    tmp /= length;
+  return std::sqrt( tmp );
+}
+
+/* Standard Deviation of a given sample mean distribution, according to Central Limit Theorem
+ */
+template <typename iterator>
+typename std::iterator_traits<iterator>::value_type calculate_mean_stddev( iterator begin, iterator end )
+{
+  typedef typename std::iterator_traits<iterator>::value_type value_t;
+  typedef typename std::iterator_traits<iterator>::difference_type diff_t;
+  diff_t length = end - begin;
+  value_t mean = calculate_mean( begin, end );
+  return calculate_mean_stddev( begin, end, mean );
+}
+
+/* Pearson product-moment correlation coefficient
+ */
+template <typename iterator1, typename iterator2>
+typename std::iterator_traits<iterator1>::value_type calculate_correlation_coefficient( iterator1 first_begin, iterator1 first_end, typename std::iterator_traits<iterator1>::value_type mean1, typename std::iterator_traits<iterator1>::value_type std_dev1, iterator2 second_begin, iterator2 second_end, typename std::iterator_traits<iterator2>::value_type mean2, typename std::iterator_traits<iterator2>::value_type std_dev2 )
+{
+  typedef typename std::iterator_traits<iterator1>::value_type value1_t;
+  typedef typename std::iterator_traits<iterator1>::difference_type diff1_t;
+  typedef typename std::iterator_traits<iterator1>::difference_type diff2_t;
+  static_assert( (std::is_same<value1_t,typename std::iterator_traits<iterator2>::value_type>::value), "Value type of iterators not equal" );
+
+  value1_t result = value1_t();
+
+  diff1_t length1 = first_end - first_begin;
+  diff2_t length2 = second_end - second_begin;
+
+  if ( length1 != length2 )
+    return result;
+
+  for( ; first_begin != first_end && second_begin != second_end; )
+  {
+    result += ( *first_begin++ - mean1 ) * ( *second_begin++ - mean2 );
+  }
+
+  if ( length1 > 2 )
+    result /= ( length1 - 1 );
+
+  result /= std_dev1;
+  result /= std_dev2;
+
+  return result;
+}
+
+/* Pearson product-moment correlation coefficient
+ */
+template <typename iterator1, typename iterator2>
+typename std::iterator_traits<iterator1>::value_type calculate_correlation_coefficient( iterator1 first_begin, iterator1 first_end, iterator2 second_begin, iterator2 second_end )
+{
+  typedef typename std::iterator_traits<iterator1>::value_type value1_t;
+  typedef typename std::iterator_traits<iterator2>::value_type value2_t;
+  typedef typename std::iterator_traits<iterator1>::difference_type diff1_t;
+  typedef typename std::iterator_traits<iterator1>::difference_type diff2_t;
+  static_assert( (std::is_same<value1_t,value2_t>::value), "Value type of iterators not equal" );
+
+  value1_t result = value1_t();
+
+  diff1_t length1 = first_end - first_begin;
+  diff2_t length2 = second_end - second_begin;
+
+  if ( length1 != length2 )
+    return result;
+
+  value1_t mean1 = calculate_mean( first_begin, first_end );
+  value1_t mean2 = calculate_mean( second_begin, second_end );
+
+  value1_t std_dev1 = calculate_stddev( first_begin, first_end );
+  value2_t std_dev2 = calculate_stddev( second_begin, second_end );
+
+  result = calculate_correlation_coefficient( first_begin, first_end, mean1, std_dev1, second_begin, second_end, mean2, std_dev2 );
+  return result;
+}
+
+} // end sd namespace
+
+
+#define SAMPLE_DATA_NO_NAN
 
 /* Simplest Samplest Data container. Only tracks sum and count
  *
@@ -207,24 +374,18 @@ public:
     if ( sample_size == 0 )
       return;
 
+    // Calculate Sum, Min, Max
     if ( sorted() )
     {
       base_t::set_min( *_sorted_data.front() );
       base_t::set_max( *_sorted_data.back() );
-      base_t::_sum = std::accumulate( data().begin(), data().end(), 0.0 );
+      base_t::_sum = statistics::calculate_sum( data().begin(), data().end() );
     }
     else
     {
-      // Calculate Sum, Mean, Min, Max
-      double min, max;
-      base_t::_sum = min = max = data()[ 0 ];
-
-      for ( size_t i = 1; i < sample_size; i++ )
-      {
-        base_t::_sum  += data()[ i ];
-        if ( data()[ i ] < min ) min = data()[ i ];
-        if ( data()[ i ] > max ) max = data()[ i ];
-      }
+      base_t::_sum = statistics::calculate_sum( data().begin(), data().end() );
+      base_t::set_min( *std::min_element( data().begin(), data().end() ) );
+      base_t::set_max( *std::max_element( data().begin(), data().end() ) );
     }
 
     _mean = base_t::_sum / sample_size;
@@ -251,18 +412,7 @@ public:
     if ( sample_size == 0 )
       return;
 
-    variance = 0;
-    for ( size_t i = 0; i < sample_size; i++ )
-    {
-      double delta = data()[ i ] - mean();
-      variance += delta * delta;
-    }
-
-    if ( sample_size > 1 )
-    {
-      variance /= ( sample_size - 1 );
-    }
-
+    variance = statistics::calculate_variance( data().begin(), data().end(), mean() );
     std_dev = std::sqrt( variance );
 
     // Calculate Standard Deviation of the Mean ( Central Limit Theorem )
@@ -377,22 +527,7 @@ inline double covariance( const extended_sample_data_t& x, const extended_sample
   if ( x.simple || y.simple )
     return 0;
 
-  if ( x.data().size() != y.data().size() )
-    return 0;
-
-  double corr = 0;
-
-  for ( size_t i = 0; i < x.data().size(); i++ )
-  {
-    corr += ( x.data()[ i ] - x.mean() ) * ( y.data()[ i ] - y.mean() );
-  }
-  if ( x.data().size() > 1 )
-    corr /= ( x.data().size() - 1 );
-
-  corr /= x.std_dev;
-  corr /= y.std_dev;
-
-  return corr;
+  return statistics::calculate_correlation_coefficient( x.data().begin(), x.data().end(), x.mean(), x.std_dev, y.data().begin(), y.data().end(), y.mean(), y.std_dev );
 }
 
 

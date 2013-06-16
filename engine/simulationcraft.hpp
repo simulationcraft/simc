@@ -4540,7 +4540,7 @@ public:
     scales_over_t( const extended_sample_data_t& sd ) :
       name( sd.name_str ), value( sd.mean() ), stddev( sd.mean_std_dev ) {}
     scales_over_t( const sc_timeline_t& tl, const std::string& name ) :
-      name( name ), value( tl.average() ), stddev( 0.0 ) {}
+      name( name ), value( tl.mean() ), stddev( tl.mean_stddev() ) {}
   };
   scales_over_t scales_over();
 

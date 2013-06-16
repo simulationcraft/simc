@@ -1286,6 +1286,8 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
       if ( ! p.options.atonement_target_str.empty() )
         target = sim -> find_player( p.options.atonement_target_str );
+      else
+        target = nullptr;
     }
 
     void trigger( double damage, dmg_e dmg_type, result_e result )

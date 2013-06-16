@@ -3,56 +3,12 @@
 paladin="Paladin_Protection_T15H"
 level=90
 race=blood_elf
-role=hybrid
+role=tank
 position=front
 professions=Blacksmithing=600/Enchanting=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!202101
 glyphs=focused_shield/alabaster_shield/battle_healer
-spec=retribution
-
-# This default action priority list is automatically created based on your character.
-# It is a attempt to provide you with a action list that is both simple and practicable,
-# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
-# Feel free to edit, adapt and improve it to your own needs.
-# SimulationCraft is always looking for updates and improvements to the default action lists.
-
-# Executed before combat begins. Accepts non-harmful actions only.
-
-actions.precombat=flask,type=winters_bite
-actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
-actions.precombat+=/blessing_of_kings,if=!aura.str_agi_int.up
-actions.precombat+=/blessing_of_might,if=!aura.mastery.up&!aura.str_agi_int.up
-actions.precombat+=/seal_of_righteousness,if=active_enemies>=4
-actions.precombat+=/seal_of_truth,if=active_enemies<4
-actions.precombat+=/snapshot_stats
-actions.precombat+=/mogu_power_potion
-
-# Executed every time the actor is available.
-
-actions=rebuke
-actions+=/mogu_power_potion,if=(buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40)
-actions+=/auto_attack
-actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|target.time_to_die<holy_power*10)
-actions+=/avenging_wrath,if=buff.inquisition.up&(cooldown.guardian_of_ancient_kings.remains<291)
-actions+=/guardian_of_ancient_kings,if=cooldown.avenging_wrath.remains<10
-actions+=/holy_avenger,if=buff.inquisition.up&(cooldown.guardian_of_ancient_kings.remains<289)&holy_power<=2
-actions+=/use_item,name=laochins_liquid_courage,if=buff.inquisition.up&time>=14
-actions+=/arcane_torrent
-actions+=/lights_hammer,if=buff.inquisition.up&time>=15
-actions+=/divine_storm,if=active_enemies>=2&(holy_power=5|(buff.holy_avenger.up&holy_power>=3))
-actions+=/templars_verdict,if=holy_power=5|(buff.holy_avenger.up&holy_power>=3)
-actions+=/hammer_of_wrath
-actions+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.1
-actions+=/exorcism
-actions+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2
-actions+=/judgment,if=!(set_bonus.tier15_4pc_melee)&(target.health.pct<=20|buff.avenging_wrath.up)&active_enemies<2
-actions+=/hammer_of_the_righteous,if=active_enemies>=4
-actions+=/crusader_strike
-actions+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2
-actions+=/judgment,target=2,if=active_enemies>=2&buff.glyph_double_jeopardy.up
-actions+=/judgment
-actions+=/divine_storm,if=active_enemies>=2&buff.inquisition.remains>4
-actions+=/templars_verdict,if=buff.inquisition.remains>4
+spec=protection
 
 head=lightning_emperors_faceguard,id=96666,stats=5050armor_1519str_2639sta_731exp_1257mastery,gems=indomitable_primal_320haste_180parry,reforge=mastery_haste
 neck=moonjade_necklace,id=96916,stats=957str_1555sta_651dodge_651exp,gems=160exp_160haste_90sta,reforge=dodge_haste

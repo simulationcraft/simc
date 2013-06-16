@@ -1560,7 +1560,10 @@ void action_t::cancel()
   if ( sim -> debug ) sim -> output( "action %s of %s is canceled", name(), player -> name() );
 
   if ( channeled )
-    get_dot() -> cancel();
+  {
+    if ( dot_t* d = get_dot( target ) )
+      d -> cancel();
+  }
 
   bool was_busy = false;
 
