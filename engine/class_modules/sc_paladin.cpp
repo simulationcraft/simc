@@ -486,30 +486,21 @@ public:
     }
   }
 
-  // Method for handling "free" holy power consumer effects (Divine Purpose, T16 4-pc melee)
-  // covers both the triggering and consumption of those buffs
-  void manage_freebie_buffs( double c )
+  // Method for consuming "free" holy power effects (Divine Purpose et. al.)
+  virtual void consume_free_hp_effects()
   {
-    // if we did consume a proc, c will be zero - figure out which proc and expire() the corresponding buff
-    if ( c == 0.0 )
+    // check for Divine Purpose buff
+    if ( p() -> buffs.divine_purpose -> up() )
     {
-      // order of operations: T16 4-pc melee, then Divine Purpose
-      // TODO: on PTR, using DS with Divine Crusader buff also consumes DP - probably a bug
-      // if not change "else if" to "if" under Divine Purpose
-
-      // check for T16 4pc melee set bonus, but only if we're casting Divine Storm (53385)
-      if ( ab::id == 53385 && p() -> buffs.divine_crusader -> up() )
-      {
-        p() -> buffs.divine_crusader -> expire();
-      }
-      // check for Divine Purpose buff
-      else if ( p() -> buffs.divine_purpose -> up() )
-      {
-        // get rid of the buff corresponding to the current proc
-        p() -> buffs.divine_purpose -> expire();
-      }
+      // get rid of buff corresponding to the current proc
+      p() -> buffs.divine_purpose -> expire();
     }
+    // other general effects can go here if added in the future
+    // ability-specific effects (e.g. T16 4-pc melee) go in the ability definition, overriding this method
+  }
 
+  virtual void trigger_free_hp_effects( double c )
+  {
     // now we trigger new buffs.  Need to treat c=0 as c=3 for proc purposes
     double c_effective = ( c == 0.0 ) ? 3 : c;
 
@@ -525,6 +516,7 @@ public:
       if ( success )
         p() -> procs.divine_purpose -> occur();
     }
+
     // If T16 4pc melee set bonus is equipped, trigger a proc
     if ( p() -> set_bonus.tier16_4pc_melee() )
     {
@@ -536,7 +528,8 @@ public:
       // record success for output
       if ( success )
         p() -> procs.divine_crusader -> occur();
-    }            
+    }  
+
   }
 
   // unbreakable spirit handling
@@ -597,8 +590,12 @@ public:
       // Unbreakable Spirit reduces the cooldowns of several spells based on Holy Power usage.
       base_t::trigger_unbreakable_spirit( c );
 
-      // trigger/consume divine purpose buff
-      base_t::manage_freebie_buffs( c );
+      // consume divine purpose and other "free hp finisher" buffs (e.g. Divine Purpose)
+      if ( c == 0.0 )
+        consume_free_hp_effects();
+
+      // trigger new "free hp finisher" buffs (e.g. Divine Purpose)
+      trigger_free_hp_effects( c );
     }
   }
 };
@@ -2531,9 +2528,14 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
     {
       // Unbreakable Spirit reduces the cooldowns of several spells based on Holy Power usage.
       base_t::trigger_unbreakable_spirit( c );
+      
 
-      // trigger/consume divine purpose buff
-      base_t::manage_freebie_buffs( c );
+      // consume divine purpose and other "free hp finisher" buffs (e.g. Divine Purpose)
+      if ( c == 0.0 )
+        consume_free_hp_effects();
+
+      // trigger new "free hp finisher" buffs (e.g. Divine Purpose)
+      trigger_free_hp_effects( c );
     }
 
     if ( result_is_hit( execute_state -> result ) )
@@ -2783,6 +2785,23 @@ struct divine_storm_t : public paladin_melee_attack_t
       return 0.0;
 
     return paladin_melee_attack_t::cost();
+  }
+
+  virtual void consume_free_hp_effects()
+  {
+    // order of operations: T16 4-pc melee, then Divine Purpose
+
+    // check for T16 4pc melee set bonus
+    if ( p() -> buffs.divine_crusader -> up() )
+    {
+      p() -> buffs.divine_crusader -> expire(); 
+
+      // TODO: on PTR, using DS with Divine Crusader buff also consumes DP - probably a bug
+      // if the two are not supposed to be exclusive, this return will get removed
+      return;
+    }
+
+    paladin_melee_attack_t::consume_free_hp_effects();
   }
 
   virtual void impact( action_state_t* s )
