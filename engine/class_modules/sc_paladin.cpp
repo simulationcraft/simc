@@ -498,7 +498,7 @@ public:
       // if not change "else if" to "if" under Divine Purpose
 
       // check for T16 4pc melee set bonus, but only if we're casting Divine Storm (53385)
-      if ( id == 53385 && p() -> buffs.divine_crusader -> up() )
+      if ( ab::id == 53385 && p() -> buffs.divine_crusader -> up() )
       {
         p() -> buffs.divine_crusader -> expire();
       }
@@ -2782,7 +2782,7 @@ struct divine_storm_t : public paladin_melee_attack_t
     if ( p() -> buffs.divine_crusader -> check() )
       return 0.0;
 
-      paladin_melee_attack_t::cost();
+    return paladin_melee_attack_t::cost();
   }
 
   virtual void impact( action_state_t* s )
