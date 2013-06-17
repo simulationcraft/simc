@@ -5853,11 +5853,6 @@ void druid_t::init_actions()
     // Snapshot stats
     precombat_list += "/snapshot_stats";
 
-    if ( primary_role() == ROLE_ATTACK || primary_role() == ROLE_TANK )
-    {
-      action_list_str += "/auto_attack";
-    }
-
     if ( level >= 80 )
     {
       if ( sim -> allow_potions )
@@ -6319,6 +6314,8 @@ void druid_t::init_actions()
     }
     else if ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK )
     {
+
+      action_list_str += "/auto_attack";
       action_list_str += init_use_racial_actions();
       action_list_str += "/skull_bash_bear";
       action_list_str += init_use_item_actions();
