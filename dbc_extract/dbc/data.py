@@ -36,7 +36,7 @@ _DIFF_DATA = {
         ],
         'SpellEffect.dbc': [
             ( 'unk_15589_1', _ADD_FIELD, 'id' ),
-            ( 'unk_15589_2', _ADD_FIELD, 'trigger_spell' ),
+            ( ( 'unk_15589_2', '%f' ), _ADD_FIELD, 'trigger_spell' ),
         ],
         'SpellCooldowns.dbc' : [
             ( 'id_spell', _ADD_FIELD, 'id' ),
@@ -112,7 +112,7 @@ _DIFF_DATA = {
     },
     17056: {
         'SpellItemEnchantment.dbc' : [
-            ( ( 'unk_17056_1', '%d' ), _ADD_FIELD, 'unk_15464_5' ),
+            ( ( 'coeff_3', '%7.4f' ), _ADD_FIELD, 'coeff_2' ),
         ]
     },
 }
@@ -406,10 +406,10 @@ _DBC_FIELDS = {
           ( 'id', '%4u' ), 'charges', 
           ( 'type_1', '%3u' ), ( 'type_2', '%3u' ), ( 'type_3', '%3u' ), 
           ( 'amount_1', '%4d' ), ( 'amount_2', '%4d' ), ( 'amount_3', '%4d' ),
-          ( 'id_property_1', '%5u' ), ( 'id_property_2', '%5u' ), ( 'id_property_3', '%5u' ), 
-            'ofs_desc', 'id_aura', ( 'slot', '%2u' ), ( 'id_gem', '%5u' ), 'enchantment_condition', 
-          ( 'req_skill', '%4u' ), ( 'req_skill_value', '%3u' ), 'unk_1', 'unk_15464_1', 'unk_2', 
-          ( 'unk_15464_2', '%d' ), 'unk_15464_3', ( 'unk_15464_4', '%f' ), 'unk_15464_5'
+          ( 'id_property_1', '%6u' ), ( 'id_property_2', '%6u' ), ( 'id_property_3', '%6u' ), 
+            'ofs_desc', 'id_aura', ( 'slot', '%2u' ), ( 'id_gem', '%6u' ), 'enchantment_condition', 
+          ( 'req_skill', '%4u' ), ( 'req_skill_value', '%3u' ), 'req_player_level', ( 'max_scaling_level', '%3u' ), ( 'min_scaling_level', '%3u' ),
+          ( 'id_scaling', '%2d' ), ( 'unk_15464_3', '%2d' ), ( 'coeff_1', '%7.4f' ), ( 'coeff_2', '%7.4f' )
     ],    
     'SpellLevels.dbc' : [
           'id', ( 'base_level', '%3u' ), ( 'max_level', '%2u' ), 'spell_level'

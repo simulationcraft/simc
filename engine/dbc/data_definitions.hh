@@ -49,13 +49,18 @@ struct random_suffix_group_t {
 struct item_enchantment_data_t {
   unsigned    id;
   int         slot;
-  const char* name;
   unsigned    id_gem;
+  int         id_scaling;
+  unsigned    min_scaling_level;   // need to verify these
+  unsigned    max_scaling_level;
   unsigned    req_skill;
   unsigned    req_skill_value;
   unsigned    ench_type[3];        // item_enchantment
   int         ench_amount[3];
   unsigned    ench_prop[3];        // item_mod_type
+  double      ench_coeff[3];       // item enchant scaling multiplier for data table
+  unsigned    id_spell;            // reverse mapped spell id for this enchant
+  const char* name;
 };
 
 struct item_data_t {

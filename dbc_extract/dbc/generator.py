@@ -497,7 +497,7 @@ class SpellScalingDataGenerator(DataGenerator):
             self._options.suffix and ('_%s' % self._options.suffix) or '',
             self._options.level )
         
-        for j in xrange(0, len(self._class_names) + 4):
+        for j in xrange(0, len(self._class_names) + 5):
             # Last entry is the fixed data
             if j < len(self._class_names) and self._class_names[j] != None:
                 s += '  // %s\n' % self._class_names[j]
@@ -652,6 +652,7 @@ class ItemDataGenerator(DataGenerator):
     ]
     
     _item_name_blacklist = [
+        "^(Lesser|) Arcanum of",
         "^Scroll of Enchant",
         "^Enchant ",
         "Deprecated",
@@ -701,39 +702,63 @@ class ItemDataGenerator(DataGenerator):
             
             if blacklist_item:
                 continue
-            
-            # Gems, Glyphs, Shirts, Tabards and Permanent item enchants are also included to avoid extra internet fetches
-            # Quest items are also checked for enchant item information, as apparently the DBC 
-            # files handle the various head- and shoulder enchants as class 12 (quest items?)
-            if ( classdata.classs != 3 or data.ilevel < 81 or data.gem_props == 0 ) and \
-               ( classdata.classs != 0 or classdata.subclass != 6 or data.ilevel < 80 ) and \
-               ( classdata.classs != 7 or classdata.subclass != 3 or data.ilevel < 80 ) and \
-               ( classdata.classs != 16 ) and \
-               ( classdata.classs != 12 or data.ilevel < 80 ) and \
-               ( data.inv_type != 19 ) and \
-               ( data.inv_type != 4 ) and \
-               ( data.ilevel < self._options.min_ilevel or data.ilevel > self._options.max_ilevel or data.inv_type == 0 or data.flags & 0x10 ):
-                continue
-            
-            # Grab various permanent item enchants from item class 12
-            if classdata.classs == 12:
+
+            filter_ilevel = True
+
+            # Gems
+            if classdata.classs == 3:
+                if data.gem_props == 0:
+                    continue
+                else:
+                    filter_ilevel = False
+            # Permanent Item Enchants (not strictly needed for simc, but 
+            # paperdoll will like them)
+            elif classdata.classs == 0:
+                if classdata.subclass != 6:
+                    continue
+                else:
+                    filter_ilevel = False
+            # Only very select quest-item permanent item enchantments
+            elif classdata.classs == 12:
+                valid = False
                 for i in xrange(1, 6):
                     spell_id = getattr(data, 'id_spell_%d' % i)
-                    enchant_spell_id = 0
-                    if spell_id > 0:
-                        spell = self._spell_db[spell_id]
-                        for effect in spell._effects:
-                            if not effect or effect.type != 53:
-                                continue
-                            
-                            enchant_spell_id = spell_id
-                            break
-                    
-                    if enchant_spell_id > 0:
-                        ids.append(item_id)
+                    if spell_id == 0:
+                        continue
+
+                    spell = self._spell_db[spell_id]
+                    for effect in spell._effects:
+                        if not effect or effect.type != 53:
+                            continue
+                        
+                        valid = True
                         break
-            else:
-                ids.append(item_id)
+
+                if valid:
+                    filter_ilevel = False
+                else:
+                    continue
+            # Items no longer in game
+            elif data.flags & 0x10:
+                continue
+            # All glyphs
+            elif classdata.classs == 16:
+                filter_ilevel = False
+            # All tabards
+            elif data.inv_type == 19:
+                filter_ilevel = False
+            # All shirts
+            elif data.inv_type == 4:
+                filter_ilevel = False
+
+            # Item-level based non-equippable items
+            if filter_ilevel and data.inv_type == 0:
+                continue
+            # All else is filtered based on item level
+            elif filter_ilevel and (data.ilevel < self._options.min_ilevel or data.ilevel > self._options.max_ilevel):
+                continue
+            
+            ids.append(item_id)
         
         return ids
     
@@ -763,9 +788,9 @@ class ItemDataGenerator(DataGenerator):
                 sys.stderr.write('Item id %d not found\n' % id) 
                 continue
 
-            # Aand, hack classs 12 (quest item) and tradegood/devices (7, 3) to be 0, 6 
+            # Aand, hack classs 12 (quest item) to be 0, 6 
             # so we get item enchants clumped in the same category, sigh ..
-            if item2.classs == 12 or ( item2.classs == 7 and item2.subclass == 3 ):
+            if item2.classs == 12:
                 item2.classs = 0
                 item2.subclass = 6
 
@@ -1686,10 +1711,10 @@ class SpellDataGenerator(DataGenerator):
                     continue
 
                 # Create Item, see if the created item has a spell that enchants an item, if so
-                # add the enchant spell
+                # add the enchant spell. Also grab all gem spells
                 if effect.type == 24:
                     item = self._item_sparse_db[effect.item_type]
-                    if not item.id or item.ilevel < 80:
+                    if not item.id or item.gem_props == 0:
                         continue
 
                     for i in xrange(1, 6):
@@ -1704,12 +1729,11 @@ class SpellDataGenerator(DataGenerator):
 
                         if enchant_spell_id > 0:
                             break
-                # Skip pre-wotlk enchants
                 elif effect.type == 53:
                     spell_item_ench = self._spellitemenchantment_db[effect.misc_value]
-                    if (spell_item_ench.req_skill == 0 and self._spelllevels_db[spell.id_levels].base_level < 60) or \
-                       (spell_item_ench.req_skill > 0 and spell_item_ench.req_skill_value <= 375):
-                        continue
+                    #if (spell_item_ench.req_skill == 0 and self._spelllevels_db[spell.id_levels].base_level < 60) or \
+                    #   (spell_item_ench.req_skill > 0 and spell_item_ench.req_skill_value <= 375):
+                    #    continue
                     enchant_spell_id = spell.id
                 
                 if enchant_spell_id > 0:
@@ -1735,8 +1759,8 @@ class SpellDataGenerator(DataGenerator):
                 continue
             
             # Quest items, Permanent Item enchants
-            if ( classdata.classs != 0 or classdata.subclass != 6 or data.ilevel < 80 ) and \
-               ( classdata.classs != 12 or data.ilevel < 80 ):
+            if (classdata.classs != 0 or classdata.subclass != 6) and \
+               classdata.classs != 12:
                 continue
             
             # Grab various permanent item enchants from item class 12
@@ -2983,16 +3007,47 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
     def __init__(self, options):
         RandomSuffixGenerator.__init__(self, options)
 
-    def filter(self):
-        #sfx_ids = set(RandomSuffixGenerator.filter(self))
-        #ids = set()
-        
-        #for sfx_id in sorted(sfx_ids):
-        #    data = self._itemrandomsuffix_db[sfx_id]
-        #    for j in xrange(1, 6):
-        #        val = getattr(data, 'id_property_%d' % j )
-        #        if val > 0: ids.add( val )
+        self._dbc += ['Spell', 'SpellEffect']
 
+    def initialize(self):
+        RandomSuffixGenerator.initialize(self)
+
+        for spell_effect_id, spell_effect_data in self._spelleffect_db.iteritems():
+            if not spell_effect_data.id_spell:
+                continue
+
+            spell = self._spell_db[spell_effect_data.id_spell]
+            if not spell.id:
+                continue
+
+            spell.add_effect(spell_effect_data)
+        
+        # Map spell ids to spellitemenchantments, as there's no direct 
+        # link between them, and 5.4+, we need/want to scale enchants properly
+        for id, data in self._spell_db.iteritems():
+            enchant = False
+
+            for effect in data._effects:
+                # Skip all effects that are not of type enchant item
+                if not effect or effect.type != 53:
+                    continue
+
+                # No level-based scaling on enchant, skip
+                if data.id_scaling == 0:
+                    continue
+
+                item_ench = self._spellitemenchantment_db[effect.misc_value]
+                if item_ench.id == 0:
+                    continue
+
+                if hasattr(item_ench, '_spells'):
+                    item_ench._spells.append(data)
+                else:
+                    item_ench._spells = [ data ]
+
+        return True
+
+    def filter(self):
         return self._spellitemenchantment_db.keys()
 
     def generate(self, ids = None):
@@ -3011,10 +3066,19 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
         for i in ids + [ 0 ]:
             ench_data = self._spellitemenchantment_db[i]
 
-            fields = ench_data.field('id', 'slot', 'desc', 'id_gem', 'req_skill', 'req_skill_value')
+            fields = ench_data.field('id', 'slot', 'id_gem', 'id_scaling', 'min_scaling_level', 'max_scaling_level', 'req_skill', 'req_skill_value')
             fields += [ '{ %s }' % ', '.join(ench_data.field('type_1', 'type_2', 'type_3')) ]
             fields += [ '{ %s }' % ', '.join(ench_data.field('amount_1', 'amount_2', 'amount_3')) ]
             fields += [ '{ %s }' % ', '.join(ench_data.field('id_property_1', 'id_property_2', 'id_property_3')) ]
+            if self._options.build >= 17056:
+                fields += [ '{ %s }' % ', '.join(ench_data.field('coeff_1', 'coeff_2', 'coeff_3')) ]
+            else:
+                fields += [ '{ 0, 0, 0 }' ]
+            if hasattr(ench_data, '_spells'):
+                fields += ench_data._spells[ 0 ].field('id')
+            else:
+                fields += self._spell_db[0].field('id')
+            fields += ench_data.field('desc')
             s += '  { %s },\n' % (', '.join(fields))
 
         s += '};\n'
