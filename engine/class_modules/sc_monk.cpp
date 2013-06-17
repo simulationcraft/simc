@@ -280,7 +280,6 @@ public:
   virtual void      init_procs();
   virtual void      init_defense();
   virtual void      regen( timespan_t periodicity );
-  virtual void      init_resources( bool force = false );
   virtual void      reset();
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual int       decode_set( item_t& );
@@ -2639,15 +2638,6 @@ void monk_t::regen( timespan_t periodicity )
   base_t::regen( periodicity );
 }
 
-// monk_t::init_resources ===================================================
-
-void monk_t::init_resources( bool force )
-{
-  base_t::init_resources( force );
-
-  resources.current[ RESOURCE_CHI ] = user_options.initial_chi;
-}
-
 // monk_t::matching_gear_multiplier =========================================
 
 double monk_t::matching_gear_multiplier( attribute_e attr )
@@ -3015,6 +3005,8 @@ double monk_t::energy_regen_per_second()
 void monk_t::combat_begin()
 {
   base_t::combat_begin();
+
+  resources.current[ RESOURCE_CHI ] = clamp( resources.max[ RESOURCE_CHI ], as<double>( user_options.initial_chi ), 0.0 );
 
   if ( specialization() == MONK_BREWMASTER )
     vengeance_start();

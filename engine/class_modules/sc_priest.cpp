@@ -650,9 +650,6 @@ struct priest_pet_melee_t : public melee_attack_t
     first_swing = true;
   }
 
-  priest_pet_t* p() const
-  { return static_cast<priest_pet_t*>( player ); }
-
   virtual timespan_t execute_time()
   {
     // First swing comes instantly after summoning the pet
@@ -2098,7 +2095,7 @@ struct mind_spike_t : public priest_spell_t
     void copy_state( const action_state_t* o )
     {
       action_state_t::copy_state( o );
-      const mind_spike_state_t* dps_t = debug_cast<const mind_spike_state_t*>( o );
+      const mind_spike_state_t* dps_t = static_cast<const mind_spike_state_t*>( o );
       surge_of_darkness = dps_t -> surge_of_darkness;
     }
 
@@ -4966,8 +4963,7 @@ void priest_t::combat_begin()
 {
   base_t::combat_begin();
 
-  if ( options.initial_shadow_orbs > 0 )
-    resources.current[ RESOURCE_SHADOW_ORB ] = std::min( as<double>( options.initial_shadow_orbs ), resources.base[ RESOURCE_SHADOW_ORB ] );
+  resources.current[ RESOURCE_SHADOW_ORB ] = clamp( as<double>( options.initial_shadow_orbs ), resources.base[ RESOURCE_SHADOW_ORB ], 0.0 );
 }
 
 // priest_t::composite_armor ================================================
