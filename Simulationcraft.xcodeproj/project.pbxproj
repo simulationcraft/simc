@@ -25,45 +25,6 @@
 /* Begin PBXBuildFile section */
 		3476FB6A167F1DC200D87B43 /* sc_io.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3476FB69167F1DC200D87B43 /* sc_io.cpp */; };
 		3476FB6B167F1DC200D87B43 /* sc_io.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 3476FB69167F1DC200D87B43 /* sc_io.cpp */; };
-		34F1862A16ED190D00E003F2 /* Death_Knight_Frost_1h_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1860216ED190D00E003F2 /* Death_Knight_Frost_1h_T15N.simc */; };
-		34F1862B16ED190D00E003F2 /* Death_Knight_Frost_2h_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1860316ED190D00E003F2 /* Death_Knight_Frost_2h_T15N.simc */; };
-		34F1862C16ED190D00E003F2 /* Death_Knight_Unholy_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1860416ED190D00E003F2 /* Death_Knight_Unholy_T15N.simc */; };
-		34F1862D16ED190D00E003F2 /* Druid_Balance_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1860516ED190D00E003F2 /* Druid_Balance_T15N.simc */; };
-		34F1862E16ED190D00E003F2 /* Druid_Feral_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1860616ED190D00E003F2 /* Druid_Feral_T15N.simc */; };
-		34F1862F16ED190D00E003F2 /* generate_Death_Knight_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1860716ED190D00E003F2 /* generate_Death_Knight_T15N.simc */; };
-		34F1863016ED190D00E003F2 /* generate_Druid_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1860816ED190D00E003F2 /* generate_Druid_T15N.simc */; };
-		34F1863116ED190D00E003F2 /* generate_Hunter_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1860916ED190D00E003F2 /* generate_Hunter_T15N.simc */; };
-		34F1863216ED190D00E003F2 /* generate_Mage_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1860A16ED190D00E003F2 /* generate_Mage_T15N.simc */; };
-		34F1863316ED190D00E003F2 /* generate_Monk_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1860B16ED190D00E003F2 /* generate_Monk_T15N.simc */; };
-		34F1863416ED190D00E003F2 /* generate_Paladin_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1860C16ED190D00E003F2 /* generate_Paladin_T15N.simc */; };
-		34F1863516ED190D00E003F2 /* generate_Priest_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1860D16ED190D00E003F2 /* generate_Priest_T15N.simc */; };
-		34F1863616ED190D00E003F2 /* generate_Rogue_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1860E16ED190D00E003F2 /* generate_Rogue_T15N.simc */; };
-		34F1863716ED190D00E003F2 /* generate_Shaman_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1860F16ED190D00E003F2 /* generate_Shaman_T15N.simc */; };
-		34F1863816ED190D00E003F2 /* generate_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1861016ED190D00E003F2 /* generate_T15N.simc */; };
-		34F1863916ED190D00E003F2 /* generate_Warlock_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1861116ED190D00E003F2 /* generate_Warlock_T15N.simc */; };
-		34F1863A16ED190D00E003F2 /* generate_Warrior_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1861216ED190D00E003F2 /* generate_Warrior_T15N.simc */; };
-		34F1863B16ED190D00E003F2 /* Hunter_BM_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1861316ED190D00E003F2 /* Hunter_BM_T15N.simc */; };
-		34F1863C16ED190D00E003F2 /* Hunter_MM_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1861416ED190D00E003F2 /* Hunter_MM_T15N.simc */; };
-		34F1863D16ED190D00E003F2 /* Hunter_SV_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1861516ED190D00E003F2 /* Hunter_SV_T15N.simc */; };
-		34F1863E16ED190D00E003F2 /* Mage_Arcane_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1861616ED190D00E003F2 /* Mage_Arcane_T15N.simc */; };
-		34F1863F16ED190D00E003F2 /* Mage_Fire_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1861716ED190D00E003F2 /* Mage_Fire_T15N.simc */; };
-		34F1864016ED190D00E003F2 /* Mage_Frost_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1861816ED190D00E003F2 /* Mage_Frost_T15N.simc */; };
-		34F1864116ED190D00E003F2 /* Monk_Windwalker_1h_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1861916ED190D00E003F2 /* Monk_Windwalker_1h_T15N.simc */; };
-		34F1864216ED190D00E003F2 /* Monk_Windwalker_2h_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1861A16ED190D00E003F2 /* Monk_Windwalker_2h_T15N.simc */; };
-		34F1864316ED190D00E003F2 /* Paladin_Retribution_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1861B16ED190D00E003F2 /* Paladin_Retribution_T15N.simc */; };
-		34F1864416ED190D00E003F2 /* Priest_Shadow_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1861C16ED190D00E003F2 /* Priest_Shadow_T15N.simc */; };
-		34F1864516ED190D00E003F2 /* Raid_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1861D16ED190D00E003F2 /* Raid_T15N.simc */; };
-		34F1864616ED190D00E003F2 /* Rogue_Assassination_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1861E16ED190D00E003F2 /* Rogue_Assassination_T15N.simc */; };
-		34F1864716ED190D00E003F2 /* Rogue_Combat_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1861F16ED190D00E003F2 /* Rogue_Combat_T15N.simc */; };
-		34F1864816ED190D00E003F2 /* Rogue_Subtlety_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1862016ED190D00E003F2 /* Rogue_Subtlety_T15N.simc */; };
-		34F1864916ED190D00E003F2 /* Shaman_Elemental_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1862116ED190D00E003F2 /* Shaman_Elemental_T15N.simc */; };
-		34F1864A16ED190D00E003F2 /* Shaman_Enhancement_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1862216ED190D00E003F2 /* Shaman_Enhancement_T15N.simc */; };
-		34F1864C16ED190D00E003F2 /* Warlock_Affliction_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1862416ED190D00E003F2 /* Warlock_Affliction_T15N.simc */; };
-		34F1864D16ED190D00E003F2 /* Warlock_Demonology_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1862516ED190D00E003F2 /* Warlock_Demonology_T15N.simc */; };
-		34F1864E16ED190D00E003F2 /* Warlock_Destruction_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1862616ED190D00E003F2 /* Warlock_Destruction_T15N.simc */; };
-		34F1864F16ED190D00E003F2 /* Warrior_Arms_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1862716ED190D00E003F2 /* Warrior_Arms_T15N.simc */; };
-		34F1865016ED190D00E003F2 /* Warrior_Fury_1h_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1862816ED190D00E003F2 /* Warrior_Fury_1h_T15N.simc */; };
-		34F1865116ED190D00E003F2 /* Warrior_Fury_2h_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1862916ED190D00E003F2 /* Warrior_Fury_2h_T15N.simc */; };
 		6E11BEDD15EA9ED200C1D8B0 /* Death_Knight_Frost_1h_T14N.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E11BEB415EA9E6F00C1D8B0 /* Death_Knight_Frost_1h_T14N.simc */; };
 		6E11BEDE15EA9ED200C1D8B0 /* Death_Knight_Frost_2h_T14N.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E11BEB515EA9E6F00C1D8B0 /* Death_Knight_Frost_2h_T14N.simc */; };
 		6E11BEDF15EA9ED200C1D8B0 /* Death_Knight_Unholy_T14N.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6E11BEB615EA9E6F00C1D8B0 /* Death_Knight_Unholy_T14N.simc */; };
@@ -120,7 +81,6 @@
 		6E392F621396A09700649B6A /* sc_window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC6192C13967883006B7A89 /* sc_window.cpp */; };
 		6E392F961396A0AD00649B6A /* sc_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618E5139677F0006B7A89 /* sc_thread.cpp */; };
 		6E392F981396A0AD00649B6A /* sc_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618E7139677F0006B7A89 /* sc_util.cpp */; };
-		6E6C54D41396A64100407A6A /* Legend.html in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D31396A63000407A6A /* Legend.html */; };
 		6E6C54D51396A64800407A6A /* Welcome.html in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D21396A62600407A6A /* Welcome.html */; };
 		6E6C54D61396A64C00407A6A /* Welcome.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D11396A61C00407A6A /* Welcome.png */; };
 		6E714A1E161C7788004BA4D1 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E714A1C161C7788004BA4D1 /* AppKit.framework */; };
@@ -210,11 +170,8 @@
 		6E7EB8F1175F5565001610FA /* sc_sim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E7EB8D5175F5565001610FA /* sc_sim.cpp */; };
 		6E7EB8F2175F5565001610FA /* sc_sim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E7EB8D5175F5565001610FA /* sc_sim.cpp */; };
 		6E7EB8F3175F5565001610FA /* sc_sim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E7EB8D5175F5565001610FA /* sc_sim.cpp */; };
-		6E7EB8FA175F5572001610FA /* rng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E7EB8F4175F5572001610FA /* rng.cpp */; };
 		6E7EB8FB175F5572001610FA /* rng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E7EB8F4175F5572001610FA /* rng.cpp */; };
 		6E7EB8FC175F5572001610FA /* rng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E7EB8F4175F5572001610FA /* rng.cpp */; };
-		6E7EB900175F5572001610FA /* timeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E7EB8F8175F5572001610FA /* timeline.cpp */; };
-		6E7EB901175F5572001610FA /* timeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E7EB8F8175F5572001610FA /* timeline.cpp */; };
 		6E7EB902175F5572001610FA /* timeline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E7EB8F8175F5572001610FA /* timeline.cpp */; };
 		6E80117E1709CAD500C8235D /* Death_Knight_Frost_1h_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1860216ED190D00E003F2 /* Death_Knight_Frost_1h_T15N.simc */; };
 		6E80117F1709CAD500C8235D /* Death_Knight_Frost_2h_T15N.simc in Copy Files */ = {isa = PBXBuildFile; fileRef = 34F1860316ED190D00E003F2 /* Death_Knight_Frost_2h_T15N.simc */; };
@@ -390,7 +347,6 @@
 		6EEAC40F171C8A98003F8BF1 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E714A1D161C7788004BA4D1 /* CoreFoundation.framework */; };
 		6EEAC411171C8A98003F8BF1 /* Welcome.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D11396A61C00407A6A /* Welcome.png */; };
 		6EEAC412171C8A98003F8BF1 /* Welcome.html in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D21396A62600407A6A /* Welcome.html */; };
-		6EEAC413171C8A98003F8BF1 /* Legend.html in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D31396A63000407A6A /* Legend.html */; };
 		6EEAC414171C8A98003F8BF1 /* Simcraft2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6E392F5313969FCC00649B6A /* Simcraft2.icns */; };
 		6EEAC415171C8A98003F8BF1 /* Death_Knight_Frost_1h_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1860216ED190D00E003F2 /* Death_Knight_Frost_1h_T15N.simc */; };
 		6EEAC416171C8A98003F8BF1 /* Death_Knight_Frost_2h_T15N.simc in Resources */ = {isa = PBXBuildFile; fileRef = 34F1860316ED190D00E003F2 /* Death_Knight_Frost_2h_T15N.simc */; };
@@ -556,6 +512,9 @@
 		6EEAC4C8171C8B3D003F8BF1 /* QtWebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EEAC4C2171C8B3D003F8BF1 /* QtWebKit.framework */; };
 		6EEAC4C9171C8B3D003F8BF1 /* QtWebKitWidgets.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EEAC4C3171C8B3D003F8BF1 /* QtWebKitWidgets.framework */; };
 		6EEAC4CA171C8B3D003F8BF1 /* QtWidgets.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6EEAC4C4171C8B3D003F8BF1 /* QtWidgets.framework */; };
+		6EEADF05176F2E8E00543025 /* sc_options_tab.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EEADF04176F2E8E00543025 /* sc_options_tab.cpp */; };
+		6EEADF06176F2E8E00543025 /* sc_options_tab.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EEADF04176F2E8E00543025 /* sc_options_tab.cpp */; };
+		6EEADF07176F2EBF00543025 /* rng.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E7EB8F4175F5572001610FA /* rng.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -1114,7 +1073,6 @@
 		6E41F18015C68CDF002B6836 /* sc_timespan.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = sc_timespan.hpp; path = engine/sc_timespan.hpp; sourceTree = "<group>"; };
 		6E6C54D11396A61C00407A6A /* Welcome.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Welcome.png; sourceTree = "<group>"; };
 		6E6C54D21396A62600407A6A /* Welcome.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Welcome.html; sourceTree = "<group>"; };
-		6E6C54D31396A63000407A6A /* Legend.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = Legend.html; sourceTree = "<group>"; };
 		6E714A1C161C7788004BA4D1 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/AppKit.framework; sourceTree = DEVELOPER_DIR; };
 		6E714A1D161C7788004BA4D1 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/CoreFoundation.framework; sourceTree = DEVELOPER_DIR; };
 		6E714A26161C7B80004BA4D1 /* QtCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QtCore.framework; path = /Library/Frameworks/QtCore.framework; sourceTree = "<absolute>"; };
@@ -1320,6 +1278,7 @@
 		6EEAC4C2171C8B3D003F8BF1 /* QtWebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QtWebKit.framework; path = ../../Qt/5.0.2/clang_64/lib/QtWebKit.framework; sourceTree = "<group>"; };
 		6EEAC4C3171C8B3D003F8BF1 /* QtWebKitWidgets.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QtWebKitWidgets.framework; path = ../../Qt/5.0.2/clang_64/lib/QtWebKitWidgets.framework; sourceTree = "<group>"; };
 		6EEAC4C4171C8B3D003F8BF1 /* QtWidgets.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QtWidgets.framework; path = ../../Qt/5.0.2/clang_64/lib/QtWidgets.framework; sourceTree = "<group>"; };
+		6EEADF04176F2E8E00543025 /* sc_options_tab.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_options_tab.cpp; path = qt/sc_options_tab.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1470,7 +1429,6 @@
 			children = (
 				6E7C23D413B5361700D85057 /* Icons */,
 				6EF04C46139F7D1A009AA411 /* profiles */,
-				6E6C54D31396A63000407A6A /* Legend.html */,
 				6E6C54D21396A62600407A6A /* Welcome.html */,
 				6E6C54D11396A61C00407A6A /* Welcome.png */,
 				6E392F5313969FCC00649B6A /* Simcraft2.icns */,
@@ -1865,6 +1823,7 @@
 		6EC6192813967816006B7A89 /* GUI */ = {
 			isa = PBXGroup;
 			children = (
+				6EEADF04176F2E8E00543025 /* sc_options_tab.cpp */,
 				6EDCF303162C4D7400571167 /* sc_import.cpp */,
 				6EB6551F1562E5A600583BF3 /* simulationcraftqt.hpp */,
 				6EC6192B13967883006B7A89 /* main.cpp */,
@@ -2044,47 +2003,7 @@
 			files = (
 				6E6C54D61396A64C00407A6A /* Welcome.png in Resources */,
 				6E6C54D51396A64800407A6A /* Welcome.html in Resources */,
-				6E6C54D41396A64100407A6A /* Legend.html in Resources */,
 				6E392F5413969FCC00649B6A /* Simcraft2.icns in Resources */,
-				34F1862A16ED190D00E003F2 /* Death_Knight_Frost_1h_T15N.simc in Resources */,
-				34F1862B16ED190D00E003F2 /* Death_Knight_Frost_2h_T15N.simc in Resources */,
-				34F1862C16ED190D00E003F2 /* Death_Knight_Unholy_T15N.simc in Resources */,
-				34F1862D16ED190D00E003F2 /* Druid_Balance_T15N.simc in Resources */,
-				34F1862E16ED190D00E003F2 /* Druid_Feral_T15N.simc in Resources */,
-				34F1862F16ED190D00E003F2 /* generate_Death_Knight_T15N.simc in Resources */,
-				34F1863016ED190D00E003F2 /* generate_Druid_T15N.simc in Resources */,
-				34F1863116ED190D00E003F2 /* generate_Hunter_T15N.simc in Resources */,
-				34F1863216ED190D00E003F2 /* generate_Mage_T15N.simc in Resources */,
-				34F1863316ED190D00E003F2 /* generate_Monk_T15N.simc in Resources */,
-				34F1863416ED190D00E003F2 /* generate_Paladin_T15N.simc in Resources */,
-				34F1863516ED190D00E003F2 /* generate_Priest_T15N.simc in Resources */,
-				34F1863616ED190D00E003F2 /* generate_Rogue_T15N.simc in Resources */,
-				34F1863716ED190D00E003F2 /* generate_Shaman_T15N.simc in Resources */,
-				34F1863816ED190D00E003F2 /* generate_T15N.simc in Resources */,
-				34F1863916ED190D00E003F2 /* generate_Warlock_T15N.simc in Resources */,
-				34F1863A16ED190D00E003F2 /* generate_Warrior_T15N.simc in Resources */,
-				34F1863B16ED190D00E003F2 /* Hunter_BM_T15N.simc in Resources */,
-				34F1863C16ED190D00E003F2 /* Hunter_MM_T15N.simc in Resources */,
-				34F1863D16ED190D00E003F2 /* Hunter_SV_T15N.simc in Resources */,
-				34F1863E16ED190D00E003F2 /* Mage_Arcane_T15N.simc in Resources */,
-				34F1863F16ED190D00E003F2 /* Mage_Fire_T15N.simc in Resources */,
-				34F1864016ED190D00E003F2 /* Mage_Frost_T15N.simc in Resources */,
-				34F1864116ED190D00E003F2 /* Monk_Windwalker_1h_T15N.simc in Resources */,
-				34F1864216ED190D00E003F2 /* Monk_Windwalker_2h_T15N.simc in Resources */,
-				34F1864316ED190D00E003F2 /* Paladin_Retribution_T15N.simc in Resources */,
-				34F1864416ED190D00E003F2 /* Priest_Shadow_T15N.simc in Resources */,
-				34F1864516ED190D00E003F2 /* Raid_T15N.simc in Resources */,
-				34F1864616ED190D00E003F2 /* Rogue_Assassination_T15N.simc in Resources */,
-				34F1864716ED190D00E003F2 /* Rogue_Combat_T15N.simc in Resources */,
-				34F1864816ED190D00E003F2 /* Rogue_Subtlety_T15N.simc in Resources */,
-				34F1864916ED190D00E003F2 /* Shaman_Elemental_T15N.simc in Resources */,
-				34F1864A16ED190D00E003F2 /* Shaman_Enhancement_T15N.simc in Resources */,
-				34F1864C16ED190D00E003F2 /* Warlock_Affliction_T15N.simc in Resources */,
-				34F1864D16ED190D00E003F2 /* Warlock_Demonology_T15N.simc in Resources */,
-				34F1864E16ED190D00E003F2 /* Warlock_Destruction_T15N.simc in Resources */,
-				34F1864F16ED190D00E003F2 /* Warrior_Arms_T15N.simc in Resources */,
-				34F1865016ED190D00E003F2 /* Warrior_Fury_1h_T15N.simc in Resources */,
-				34F1865116ED190D00E003F2 /* Warrior_Fury_2h_T15N.simc in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2094,7 +2013,6 @@
 			files = (
 				6EEAC411171C8A98003F8BF1 /* Welcome.png in Resources */,
 				6EEAC412171C8A98003F8BF1 /* Welcome.html in Resources */,
-				6EEAC413171C8A98003F8BF1 /* Legend.html in Resources */,
 				6EEAC414171C8A98003F8BF1 /* Simcraft2.icns in Resources */,
 				6EEAC415171C8A98003F8BF1 /* Death_Knight_Frost_1h_T15N.simc in Resources */,
 				6EEAC416171C8A98003F8BF1 /* Death_Knight_Frost_2h_T15N.simc in Resources */,
@@ -2266,7 +2184,7 @@
 				6E7EB8EF175F5565001610FA /* sc_scaling.cpp in Sources */,
 				6E7EB8F2175F5565001610FA /* sc_sim.cpp in Sources */,
 				6E7EB8FB175F5572001610FA /* rng.cpp in Sources */,
-				6E7EB901175F5572001610FA /* timeline.cpp in Sources */,
+				6EEADF05176F2E8E00543025 /* sc_options_tab.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2286,6 +2204,7 @@
 				6EB654D61562E47600583BF3 /* sc_druid.cpp in Sources */,
 				6EB654D81562E47600583BF3 /* sc_enemy.cpp in Sources */,
 				6EB654DA1562E47600583BF3 /* sc_hunter.cpp in Sources */,
+				6EEADF07176F2EBF00543025 /* rng.cpp in Sources */,
 				6EB654DC1562E47600583BF3 /* sc_mage.cpp in Sources */,
 				6EB654DE1562E47600583BF3 /* sc_monk.cpp in Sources */,
 				6EB654E01562E47600583BF3 /* sc_paladin.cpp in Sources */,
@@ -2335,8 +2254,6 @@
 				6E7EB8EB175F5565001610FA /* sc_reforge_plot.cpp in Sources */,
 				6E7EB8EE175F5565001610FA /* sc_scaling.cpp in Sources */,
 				6E7EB8F1175F5565001610FA /* sc_sim.cpp in Sources */,
-				6E7EB8FA175F5572001610FA /* rng.cpp in Sources */,
-				6E7EB900175F5572001610FA /* timeline.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2410,6 +2327,7 @@
 				6E7EB8F3175F5565001610FA /* sc_sim.cpp in Sources */,
 				6E7EB8FC175F5572001610FA /* rng.cpp in Sources */,
 				6E7EB902175F5572001610FA /* timeline.cpp in Sources */,
+				6EEADF06176F2E8E00543025 /* sc_options_tab.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
