@@ -2521,7 +2521,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
 
   virtual void execute()
   {
-    paladin_action_t<melee_attack_t>::execute();
+    base_t::execute();
 
     // handle all on-hit effects (seals, Ancient Power, battle healer)
     if ( result_is_hit( execute_state -> result ) )
