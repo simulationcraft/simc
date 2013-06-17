@@ -6085,10 +6085,13 @@ void druid_t::init_actions()
           for ( size_t i = 0; i < item_actions.size(); i++ )
             default_list -> add_action( item_actions[ i ] + ",if=buff.tigers_fury.up" );
 
-          default_list -> add_action( "tigers_fury,if=(energy<=35&!buff.omen_of_clarity.react)" );
           if ( talent.incarnation -> ok() )
-            default_list -> add_action( "|buff.king_of_the_jungle.up" );
-          default_list -> add_action( "berserk,if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)" );
+			default_list -> add_action( "tigers_fury,if=(energy<=35&!buff.omen_of_clarity.react)|buff.king_of_the_jungle.up" );
+		  else
+		  {
+		    default_list -> add_action( "tigers_fury,if=(energy<=35&!buff.omen_of_clarity.react)" );
+		  }
+		  default_list -> add_action( "berserk,if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)" );
           default_list -> add_action( "ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25" );
           default_list -> add_action( "thrash_cat,if=target.time_to_die>=6&buff.omen_of_clarity.react&dot.thrash_cat.remains<3" );
           default_list -> add_action( "ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|(target.time_to_die<=1&combo_points>=3)" );
@@ -6167,9 +6170,12 @@ void druid_t::init_actions()
           for ( size_t i = 0; i < item_actions.size(); i++ )
             default_list -> add_action( item_actions[ i ] + ",if=buff.tigers_fury.up" );
 
-          default_list -> add_action( "tigers_fury,if=(energy<=35&!buff.omen_of_clarity.react)" );
           if ( talent.incarnation -> ok() )
-            default_list -> add_action( "|buff.king_of_the_jungle.up" );
+			default_list -> add_action( "tigers_fury,if=(energy<=35&!buff.omen_of_clarity.react)|buff.king_of_the_jungle.up" );
+		  else
+		  {
+		    default_list -> add_action( "tigers_fury,if=(energy<=35&!buff.omen_of_clarity.react)" );
+		  }
           default_list -> add_action( "berserk,if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)" );
           if ( talent.natures_vigil -> ok() )
             default_list -> add_action( "natures_vigil,if=enabled&(buff.tigers_fury.up|(target.time_to_die<35&cooldown.tigers_fury.remains>6))" );
