@@ -1862,7 +1862,7 @@ void sim_t::partition()
     {
       children.push_back( child );
 
-      child -> iterations /= threads;
+      child -> iterations = iterations;
       if ( remainder )
       {
         child -> iterations += 1;
