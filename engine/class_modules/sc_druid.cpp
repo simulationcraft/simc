@@ -2805,7 +2805,7 @@ struct healing_touch_t : public druid_heal_t
   {
     double adm = base_t::action_da_multiplier();
 
-    if ( p() -> talent.dream_of_cenarius -> ok() )
+    if ( p() -> dbc.ptr && p() -> talent.dream_of_cenarius -> ok() )
     {
       if ( p() -> specialization() == DRUID_BALANCE )
         adm *= 1.0 + p() -> talent.dream_of_cenarius -> effectN( 1 ).percent();
