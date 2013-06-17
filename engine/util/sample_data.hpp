@@ -110,7 +110,7 @@ typename std::iterator_traits<iterator>::value_type calculate_mean_stddev( itera
 {
   typedef typename std::iterator_traits<iterator>::value_type value_t;
   typedef typename std::iterator_traits<iterator>::difference_type diff_t;
-  diff_t length = end - begin;
+//  diff_t length = end - begin;
   value_t mean = calculate_mean( begin, end );
   return calculate_mean_stddev( begin, end, mean );
 }
