@@ -536,7 +536,7 @@ public:
   // unbreakable spirit handling
   void trigger_unbreakable_spirit( double c )
   {
-    if ( ! sim -> dbc.ptr )
+    if ( ! p() -> dbc.ptr )
     {
     // if unbreakable spirit is talented
     if ( ! p() -> talents.unbreakable_spirit -> ok() ) return;
