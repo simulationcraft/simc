@@ -6109,7 +6109,11 @@ action_t* shaman_t::create_proc_action( const std::string& name, const spell_dat
       m -> may_proc_primal_wisdom = false;
       m -> callbacks = false;
       m -> background = true;
+      m -> may_dodge = false;
+      m -> may_parry = false;
+      m -> proc = true;
       m -> weapon = &( main_hand_weapon );
+      m -> direct_power_mod = data -> extra_coeff();
 
       return m;
     }
