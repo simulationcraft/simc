@@ -4,7 +4,7 @@
 // ==========================================================================
 /*
   TODO:
-  T16 4-piece bonuses
+  5.4: Remove Unbreakable Spirit code
   Selfless Healer?
   Sacred Shield proxy buff for APL trickery
 */
@@ -153,10 +153,10 @@ public:
   {
     // these seem to be required to get Art of War and Grand Crusader procs working
     cooldown_t* avengers_shield;
-    cooldown_t* divine_protection;
-    cooldown_t* divine_shield;
+    cooldown_t* divine_protection; // can be removed in 5.4
+    cooldown_t* divine_shield;  // can be removed in 5.4
     cooldown_t* exorcism;
-    cooldown_t* lay_on_hands;
+    cooldown_t* lay_on_hands;  // can be removed in 5.4
   } cooldowns;
 
   // Passives
@@ -536,6 +536,8 @@ public:
   // unbreakable spirit handling
   void trigger_unbreakable_spirit( double c )
   {
+    if ( ! sim -> dbc.ptr )
+    {
     // if unbreakable spirit is talented
     if ( ! p() -> talents.unbreakable_spirit -> ok() ) return;
 
@@ -546,6 +548,7 @@ public:
     unbreakable_spirit_reduce_cooldown( p() -> cooldowns.divine_protection, reduction_percent );
     unbreakable_spirit_reduce_cooldown( p() -> cooldowns.divine_shield,     reduction_percent );
     unbreakable_spirit_reduce_cooldown( p() -> cooldowns.lay_on_hands,      reduction_percent );
+    }
   }
   
   virtual void execute()
@@ -1252,9 +1255,17 @@ struct divine_protection_t : public paladin_spell_t
 
     harmful = false;
 
-    // link needed for unbreakable spirit talent
-    cooldown = p -> cooldowns.divine_protection;
-    cooldown -> duration = data().cooldown();
+    if ( sim -> dbc.ptr )
+    {
+      if ( p -> talents.unbreakable_spirit -> ok() )
+        cooldown -> duration *= 0.5;
+    }
+    else
+    {
+      // link needed for unbreakable spirit talent
+      cooldown = p -> cooldowns.divine_protection;
+      cooldown -> duration = data().cooldown();
+    }
   }
 
   virtual void execute()
@@ -1276,9 +1287,17 @@ struct divine_shield_t : public paladin_spell_t
 
     harmful = false;
 
-    // link needed for unbreakable spirit talent
-    cooldown = p -> cooldowns.divine_shield;
-    cooldown -> duration = data().cooldown();
+    if ( sim -> dbc.ptr )
+    {
+      if ( p -> talents.unbreakable_spirit -> ok() )
+        cooldown -> duration *= 0.5;
+    }
+    else
+    {
+      // link needed for unbreakable spirit talent
+      cooldown = p -> cooldowns.divine_shield;
+      cooldown -> duration = data().cooldown();
+    }
   }
 
   virtual void execute()
@@ -2128,9 +2147,17 @@ struct lay_on_hands_t : public paladin_heal_t
   {
     parse_options( NULL, options_str );
 
-    // link needed for unbreakable spirit talent
-    cooldown = p -> cooldowns.lay_on_hands;
-    cooldown -> duration = data().cooldown();
+    if ( sim -> dbc.ptr )
+    {
+      if ( p -> talents.unbreakable_spirit -> ok() )
+        cooldown -> duration *= 0.5;
+    }
+    else
+    {
+      // link needed for unbreakable spirit talent
+      cooldown = p -> cooldowns.lay_on_hands;
+      cooldown -> duration = data().cooldown();
+    }
 
   }
 
