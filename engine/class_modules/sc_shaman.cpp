@@ -431,6 +431,7 @@ public:
   virtual role_e primary_role();
   virtual void      arise();
   virtual void      reset();
+  virtual action_t* create_proc_action( const std::string& name, const spell_data_t* data = spell_data_t::nil() );
 
   target_specific_t<shaman_td_t*> target_data;
 
@@ -6092,6 +6093,29 @@ void shaman_t::reset()
 
   ls_reset = timespan_t::zero();
   active_flame_shocks = 0;
+}
+
+action_t* shaman_t::create_proc_action( const std::string& name, const spell_data_t* data )
+{
+  switch ( data -> id() )
+  {
+    // Lightning Strike for the Melee Legendary meta in MoP
+    case 137597:
+    {
+      shaman_melee_attack_t* m = new shaman_melee_attack_t( name, this, data );
+      m -> may_proc_windfury = true;
+      m -> may_proc_flametongue = true;
+      m -> may_proc_maelstrom = false;
+      m -> may_proc_primal_wisdom = false;
+      m -> callbacks = false;
+      m -> background = true;
+      m -> weapon = &( main_hand_weapon );
+
+      return m;
+    }
+    default:
+      return 0;
+  }
 }
 
 // shaman_t::decode_set =====================================================

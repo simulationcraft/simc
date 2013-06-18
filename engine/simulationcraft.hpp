@@ -4558,6 +4558,9 @@ public:
   void change_position( position_e );
   position_e position() const
   { return current.position; }
+
+  virtual action_t* create_proc_action( const std::string& /* name */, const spell_data_t* /* data */ = spell_data_t::nil() )
+  { return 0; }
 };
 
 // Target Specific ==========================================================
