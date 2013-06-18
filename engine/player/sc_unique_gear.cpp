@@ -1014,7 +1014,7 @@ void capacitive_primal( player_t* p )
     data.max_stacks = 5;
     data.ppm        = -21; // Real PPM
 
-    action_t* ls = p -> create_proc_action( "lightning_strike", p -> find_spell( 137597 ) );
+    action_t* ls = p -> create_proc_action( "lightning_strike" );
     if ( ! ls )
       ls = new lightning_strike_t( p );
     action_callback_t* cb = new capacitive_primal_proc_t( p, data, ls );

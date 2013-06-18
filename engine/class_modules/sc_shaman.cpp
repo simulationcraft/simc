@@ -423,6 +423,7 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
+  virtual action_t* create_proc_action( const std::string& name );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual expr_t* create_expression( action_t*, const std::string& name );
@@ -431,7 +432,6 @@ public:
   virtual role_e primary_role();
   virtual void      arise();
   virtual void      reset();
-  virtual action_t* create_proc_action( const std::string& name, const spell_data_t* data = spell_data_t::nil() );
 
   target_specific_t<shaman_td_t*> target_data;
 
@@ -4791,6 +4791,33 @@ struct water_shield_t : public shaman_spell_t
 };
 
 // ==========================================================================
+// Shaman Custom Discharge Procs
+// ==========================================================================
+
+// Shaman Capacitive Primal Meta nuke
+
+struct shaman_lightning_strike_t : public shaman_melee_attack_t
+{
+  shaman_lightning_strike_t( shaman_t* p ) :
+    shaman_melee_attack_t( "lightning_strike", p, p -> find_spell( 137597 ) )
+  {
+    may_proc_windfury = false;
+    may_proc_flametongue = true;
+    may_proc_maelstrom = false;
+    may_proc_primal_wisdom = false;
+    callbacks = false;
+    background = true;
+    may_dodge = false;
+    may_parry = false;
+    proc = true;
+    weapon = &( p -> main_hand_weapon );
+    direct_power_mod = data().extra_coeff();
+    weapon_power_mod = 0;
+    weapon_multiplier = 0;
+  }
+};
+
+// ==========================================================================
 // Shaman Passive Buffs
 // ==========================================================================
 
@@ -5052,6 +5079,16 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "stormlash_totem"         ) return new       stormlash_totem_spell_t( this, options_str );
 
   return player_t::create_action( name, options_str );
+}
+
+// shaman_t::create_proc_action =============================================
+
+action_t* shaman_t::create_proc_action( const std::string& name )
+{
+  // Capacitive meta proc strike
+  if ( name == "lightning_strike" ) return new shaman_lightning_strike_t( this );
+
+  return player_t::create_proc_action( name );
 }
 
 // shaman_t::create_pet =====================================================
@@ -6093,33 +6130,6 @@ void shaman_t::reset()
 
   ls_reset = timespan_t::zero();
   active_flame_shocks = 0;
-}
-
-action_t* shaman_t::create_proc_action( const std::string& name, const spell_data_t* data )
-{
-  switch ( data -> id() )
-  {
-    // Lightning Strike for the Melee Legendary meta in MoP
-    case 137597:
-    {
-      shaman_melee_attack_t* m = new shaman_melee_attack_t( name, this, data );
-      m -> may_proc_windfury = true;
-      m -> may_proc_flametongue = true;
-      m -> may_proc_maelstrom = false;
-      m -> may_proc_primal_wisdom = false;
-      m -> callbacks = false;
-      m -> background = true;
-      m -> may_dodge = false;
-      m -> may_parry = false;
-      m -> proc = true;
-      m -> weapon = &( main_hand_weapon );
-      m -> direct_power_mod = data -> extra_coeff();
-
-      return m;
-    }
-    default:
-      return 0;
-  }
 }
 
 // shaman_t::decode_set =====================================================

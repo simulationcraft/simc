@@ -4559,7 +4559,7 @@ public:
   position_e position() const
   { return current.position; }
 
-  virtual action_t* create_proc_action( const std::string& /* name */, const spell_data_t* /* data */ = spell_data_t::nil() )
+  virtual action_t* create_proc_action( const std::string& /* name */ )
   { return 0; }
 };
 
