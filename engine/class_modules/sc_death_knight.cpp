@@ -133,7 +133,7 @@ public:
 
   // Active
   int       active_presence;
-  int       t16_tank_4pc_driver;
+  int       t16_tank_2pc_driver;
 
   // Buffs
   struct buffs_t
@@ -2145,19 +2145,19 @@ struct death_knight_heal_t : public death_knight_action_t<heal_t>
 // Triggers
 // ==========================================================================
 
-static void trigger_t16_4pc_tank( action_state_t* s )
+static void trigger_t16_2pc_tank( action_state_t* s )
 {
-  if ( ! s -> action -> player -> set_bonus.tier16_4pc_tank() )
+  if ( ! s -> action -> player -> set_bonus.tier16_2pc_tank() )
     return;
 
   death_knight_t* p = debug_cast< death_knight_t* >( s -> action -> player );
 
-  p -> t16_tank_4pc_driver++;
+  p -> t16_tank_2pc_driver++;
 
-  if ( p -> t16_tank_4pc_driver == p -> sets -> set( SET_T16_4PC_TANK ) -> effectN( 1 ).base_value() )
+  if ( p -> t16_tank_2pc_driver == p -> sets -> set( SET_T16_2PC_TANK ) -> effectN( 1 ).base_value() )
   {
     p -> buffs.bone_wall -> trigger();
-    p -> t16_tank_4pc_driver = 0;
+    p -> t16_tank_2pc_driver = 0;
   }
 }
 
@@ -2588,7 +2588,7 @@ struct blood_boil_t : public death_knight_spell_t
     }
 
     if ( result_is_hit( s -> result ) )
-      trigger_t16_4pc_tank( s );
+      trigger_t16_2pc_tank( s );
   }
 
   virtual bool ready()
@@ -2958,7 +2958,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     p() -> buffs.dancing_rune_weapon -> trigger();
     p() -> pets.dancing_rune_weapon -> summon( data().duration() );
 
-    if ( p() -> set_bonus.tier16_2pc_tank() )
+    if ( p() -> set_bonus.tier16_4pc_tank() )
     {
       for ( int i = 2; i < RUNE_SLOT_MAX; ++i )
       {
@@ -3255,7 +3255,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     trigger_blood_shield();
 
     if ( result_is_hit( execute_state -> result ) )
-      trigger_t16_4pc_tank( execute_state );
+      trigger_t16_2pc_tank( execute_state );
 
     p() -> buffs.scent_of_blood -> expire();
     p() -> buffs.deathbringer -> decrement();
@@ -3484,7 +3484,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
       if ( p() -> buffs.dancing_rune_weapon -> check() )
         p() -> pets.dancing_rune_weapon -> drw_heart_strike -> execute();
 
-      trigger_t16_4pc_tank( execute_state );
+      trigger_t16_2pc_tank( execute_state );
     }
   }
 
@@ -4184,7 +4184,7 @@ struct rune_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
-      trigger_t16_4pc_tank( execute_state );
+      trigger_t16_2pc_tank( execute_state );
   }
 
   virtual void impact( action_state_t* s )
@@ -5752,14 +5752,14 @@ void death_knight_t::create_buffs()
                               .max_stack( specialization() == DEATH_KNIGHT_BLOOD ? ( find_specialization_spell( "Bone Shield" ) -> initial_stacks() + 
                                           find_spell( 144948 ) -> max_stacks() ) : -1 );
   buffs.bone_wall           = buff_creator_t( this, "bone_wall", find_spell( 144948 ) )
-                              .chance( maybe_ptr( dbc.ptr ) && set_bonus.tier16_4pc_tank() );
+                              .chance( maybe_ptr( dbc.ptr ) && set_bonus.tier16_2pc_tank() );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" ).spell( find_spell( 81141 ) )
                               .chance( spec.crimson_scourge -> proc_chance() );
   buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_spell( 81256 ) )
                               .add_invalidate( CACHE_PARRY );
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) );
   buffs.deathbringer        = buff_creator_t( this, "deathbringer", find_spell( 144953 ) )
-                              .chance( maybe_ptr( dbc.ptr ) && set_bonus.tier16_2pc_tank() );
+                              .chance( maybe_ptr( dbc.ptr ) && set_bonus.tier16_4pc_tank() );
   buffs.death_shroud        = stat_buff_creator_t( this, "death_shroud", sets -> set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )
                               .chance( sets -> set( SET_T16_2PC_MELEE ) -> proc_chance() )
                               .add_stat( STAT_MASTERY_RATING, sets -> set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() -> effectN( 2 ).base_value(), death_shroud_mastery )
@@ -5876,7 +5876,7 @@ void death_knight_t::reset()
   // Active
   active_presence = 0;
 
-  t16_tank_4pc_driver = 0;
+  t16_tank_2pc_driver = 0;
 
   rng.t15_2pc_melee -> reset();
 
