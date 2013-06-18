@@ -42,6 +42,7 @@ enum rune_state { STATE_DEPLETED, STATE_REGENERATING, STATE_FULL };
 
 struct dk_rune_t
 {
+  death_knight_t* dk;
   int        type;
   rune_state state;
   double     value;   // 0.0 to 1.0, with 1.0 being full
@@ -81,11 +82,7 @@ struct dk_rune_t
     state = STATE_DEPLETED;
   }
 
-  void fill_rune()
-  {
-    value = 1.0;
-    state = STATE_FULL;
-  }
+  void fill_rune();
 
   void reset()
   {
@@ -334,6 +331,10 @@ public:
     proc_t* fs_killing_machine;
     proc_t* sr_killing_machine;
     proc_t* t15_2pc_melee;
+
+    proc_t* ready_blood;
+    proc_t* ready_frost;
+    proc_t* ready_unholy;
   } procs;
 
   // RNGs
@@ -393,6 +394,8 @@ public:
 
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.0 );
+    for ( size_t i = 0; i < _runes.slot.size(); i++ )
+      _runes.slot[ i ].dk = this;
   }
 
   // Character Definition
@@ -465,6 +468,21 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   dots_soul_reaper     = target -> get_dot( "soul_reaper_dot", death_knight );
 
   debuffs_frost_vulnerability = buff_creator_t( *this, "frost_vulnerability", death_knight -> find_spell( 51714 ) );
+}
+
+inline void dk_rune_t::fill_rune()
+{
+  if ( state != STATE_FULL )
+  {
+    if ( is_blood() )
+      dk -> procs.ready_blood -> occur();
+    else if ( is_frost() )
+      dk -> procs.ready_frost -> occur();
+    else if ( is_unholy() )
+      dk -> procs.ready_unholy -> occur();
+  }
+  value = 1.0;
+  state = STATE_FULL;
 }
 
 // ==========================================================================
@@ -813,7 +831,18 @@ void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
   }
 
   if ( value >= 1.0 )
+  {
+    if ( state == STATE_REGENERATING )
+    { 
+      if ( is_blood() )
+        dk -> procs.ready_blood -> occur();
+      else if ( is_frost() )
+        dk -> procs.ready_frost -> occur();
+      else if ( is_unholy() )
+        dk -> procs.ready_unholy -> occur();
+    }
     state = STATE_FULL;
+  }
   else
     state = STATE_REGENERATING;
 
@@ -827,7 +856,18 @@ void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
       paired_rune -> value = 1.0;
     }
     if ( paired_rune -> value >= 1.0 )
+    {
+      if ( paired_rune -> state == STATE_REGENERATING )
+      { 
+        if ( paired_rune -> is_blood() )
+          dk -> procs.ready_blood -> occur();
+        else if ( paired_rune -> is_frost() )
+          dk -> procs.ready_frost -> occur();
+        else if ( paired_rune -> is_unholy() )
+          dk -> procs.ready_unholy -> occur();
+      }
       paired_rune -> state = STATE_FULL;
+    }
     else
       paired_rune -> state = STATE_REGENERATING;
   }
@@ -5856,6 +5896,10 @@ void death_knight_t::init_procs()
   procs.sr_killing_machine       = get_proc( "sr_killing_machine"           );
   procs.fs_killing_machine       = get_proc( "frost_strike_killing_machine" );
   procs.t15_2pc_melee            = get_proc( "t15_2pc_melee"                );
+
+  procs.ready_blood              = get_proc( "Blood runes ready" );
+  procs.ready_frost              = get_proc( "Frost runes ready" );
+  procs.ready_unholy             = get_proc( "Unholy runes ready" );
 }
 
 // death_knight_t::init_resources ===========================================
