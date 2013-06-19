@@ -9370,3 +9370,27 @@ void player_collected_data_t::collect_data( const player_t& p )
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
     combat_end_resource[ i ].add( p.resources.current[ i ] );
 }
+
+std::ostream& player_collected_data_t::data_str( std::ostream& s ) const
+{
+  fight_length.data_str( s );
+  dmg.data_str( s );
+  compound_dmg.data_str( s );
+  dps.data_str( s );
+  dpse.data_str( s );
+  dtps.data_str( s );
+  dmg_taken.data_str( s );
+  timeline_dmg.data_str( s );
+  timeline_dmg_taken.data_str( s );
+  // Heal
+  heal.data_str( s );
+  compound_heal.data_str( s );
+  hps.data_str( s );
+  hpse.data_str( s );
+  htps.data_str( s );
+  heal_taken.data_str( s );
+
+  s << "health changes tl "; health_changes.timeline.data_str( s );
+  s << "health changes moving average tl "; health_changes.sliding_timeline.data_str( s );
+  return s;
+}

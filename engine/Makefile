@@ -148,6 +148,7 @@ SRC = \
 	report$(PATHSEP)sc_report_html_sim.cpp \
 	report$(PATHSEP)sc_report_text.cpp \
 	report$(PATHSEP)sc_report_xml.cpp \
+	report$(PATHSEP)sc_report_csv_data.cpp \
 	report$(PATHSEP)sc_report.cpp \
 	interfaces$(PATHSEP)sc_bcp_api.cpp \
 	interfaces$(PATHSEP)sc_chardev.cpp \

@@ -2643,6 +2643,7 @@ public:
   std::string output_file_str, html_file_str;
   std::string xml_file_str, xml_stylesheet_file_str;
   std::string reforge_plot_output_file_str;
+  std::string csv_output_file_str;
   std::vector<std::string> error_list;
   FILE* output_file;
   int debug_exp;
@@ -3795,6 +3796,7 @@ struct player_collected_data_t
   void merge( const player_collected_data_t& );
   void analyze( const player_t& );
   void collect_data( const player_t& );
+  std::ostream& data_str( std::ostream& s ) const;
 };
 
 // Actor

@@ -101,6 +101,7 @@ SOURCES += engine/report/sc_report_html_player.cpp
 SOURCES += engine/report/sc_report_html_sim.cpp
 SOURCES += engine/report/sc_report_text.cpp
 SOURCES += engine/report/sc_report_xml.cpp
+SOURCES += engine/report/sc_report_csv_data.cpp
 SOURCES += engine/report/sc_report.cpp
 SOURCES += engine/report/sc_chart.cpp
 SOURCES += engine/dbc/sc_const_data.cpp

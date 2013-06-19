@@ -175,14 +175,15 @@ typename std::iterator_traits<iterator1>::value_type calculate_correlation_coeff
 }
 
 template <typename iterator>
-std::vector<size_t> create_histogram( iterator begin, iterator end, size_t num_buckets )
+std::vector<size_t> create_histogram( iterator begin, iterator end, size_t num_buckets, typename std::iterator_traits<iterator>::value_type min, typename std::iterator_traits<iterator>::value_type max )
 {
   std::vector<size_t> result;
   typedef typename std::iterator_traits<iterator>::value_type value_t;
   if ( begin == end )
     return result;
-  value_t min = *std::min_element( begin, end );
-  value_t max = *std::max_element( begin, end );
+
+  assert( min <= *std::min_element( begin, end ) );
+  assert( max >= *std::max_element( begin, end ) );
 
 
   value_t range = max - min;
@@ -203,6 +204,19 @@ std::vector<size_t> create_histogram( iterator begin, iterator end, size_t num_b
   return result;
 }
 
+template <typename iterator>
+std::vector<size_t> create_histogram( iterator begin, iterator end, size_t num_buckets )
+{
+  typedef typename std::iterator_traits<iterator>::value_type value_t;
+  if ( begin == end )
+    return std::vector<size_t>();
+
+  value_t min = *std::min_element( begin, end );
+  value_t max = *std::max_element( begin, end );
+
+  return create_histogram( begin, end, num_buckets, min, max );
+}
+
 /* Normalizes a histogram.
  * sum over all elements of the histogram will be equal to 1.0
  */
@@ -217,6 +231,12 @@ inline std::vector<double> normalize_histogram( const std::vector<size_t>& in )
     result.push_back( in[ i ] * adjust );
 
   return result;
+}
+
+template <typename iterator>
+std::vector<double> create_normalized_histogram( iterator begin, iterator end, size_t num_buckets, typename std::iterator_traits<iterator>::value_type min, typename std::iterator_traits<iterator>::value_type max )
+{
+  return normalize_histogram( create_histogram( begin, end, num_buckets, min, max ) );
 }
 
 template <typename iterator>
@@ -417,18 +437,17 @@ public:
     if ( sample_size == 0 )
       return;
 
-    // Calculate Sum, Min, Max
     if ( sorted() )
-    {
+    { // If we have sorted data, we can just take the front/back as min/max
       base_t::set_min( *_sorted_data.front() );
       base_t::set_max( *_sorted_data.back() );
       base_t::_sum = statistics::calculate_sum( data().begin(), data().end() );
     }
     else
     {
-      base_t::_sum = statistics::calculate_sum( data().begin(), data().end() );
       base_t::set_min( *std::min_element( data().begin(), data().end() ) );
       base_t::set_max( *std::max_element( data().begin(), data().end() ) );
+      base_t::_sum = statistics::calculate_sum( data().begin(), data().end() );
     }
 
     _mean = base_t::_sum / sample_size;
@@ -442,7 +461,6 @@ public:
   { return simple ? base_t::count() : data().size(); }
 
   /* Analyze Variance: Variance, Stddev and Stddev of the mean
-   *
    * Requires: Analyzed Mean
    */
   void analyze_variance()
@@ -499,20 +517,7 @@ public:
     if ( data().empty() )
       return;
 
-    distribution = statistics::create_histogram( data().begin(), data().end(), num_buckets );
-/*
-    if ( base_t::max() > base_t::min() )
-    {
-      value_t range = base_t::max() - base_t::min() + 2;
-
-      distribution.assign( num_buckets, 0 );
-      for ( size_t i = 0; i < data().size(); i++ )
-      {
-        size_t index = static_cast<size_t>( num_buckets * ( data()[ i ] - base_t::min() + 1 ) / range );
-        assert( index < distribution.size() );
-        distribution[ index ]++;
-      }
-    }*/
+    distribution = statistics::create_histogram( data().begin(), data().end(), num_buckets, base_t::min(), base_t::max() );
   }
 
   void clear()
@@ -553,12 +558,15 @@ public:
       _data.insert( _data.end(), other._data.begin(), other._data.end() );
   }
 
-  std::ostringstream& data_str( std::ostringstream& s )
+  std::ostream& data_str( std::ostream& s ) const
   {
-    s << "Sample_Data: Name: \"" << name_str << "\" count: " << count();
+    s << "Sample_Data \"" << name_str << "\": count: " << count();
     s << " mean: " << mean() << " variance: " << variance << " mean_std_dev: " << mean_std_dev << "\n";
+
+    if ( ! data().empty() )
+      s << "data: ";
     for ( size_t i = 0, size = data().size(); i < size; ++i )
-    { if ( i > 0 ) s << " "; s << data()[ i ]; }
+    { if ( i > 0 ) s << ", "; s << data()[ i ]; }
     s << "\n";
     return s;
   }

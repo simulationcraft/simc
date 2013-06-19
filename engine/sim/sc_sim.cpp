@@ -2277,6 +2277,7 @@ void sim_t::create_options()
     opt_bool( "separate_stats_by_actions", separate_stats_by_actions ),
     opt_bool( "report_raid_summary", report_raid_summary ), // Force reporting of raid summary
     opt_string( "reforge_plot_output_file", reforge_plot_output_file_str ),
+    opt_string( "csv_output_file_str", csv_output_file_str ),
     opt_int( "monitor_cpu", monitor_cpu ),
     opt_int( "global_item_upgrade_level", global_item_upgrade_level ),
     opt_null()

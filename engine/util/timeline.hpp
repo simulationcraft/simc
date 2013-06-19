@@ -153,10 +153,20 @@ public:
   data_type min() const
   { return data().empty() ? data_type() : *std::min_element( data().begin(), data().end() ); }
 
+  std::ostream& data_str( std::ostream& s ) const
+  {
+    s << "Timeline: length: " << data().size();
+    //s << " mean: " << mean() << " variance: " << variance << " mean_std_dev: " << mean_std_dev << "\n";
+    if ( ! data().empty() )
+      s << "data: ";
+    for ( size_t i = 0, size = data().size(); i < size; ++i )
+    { if ( i > 0 ) s << ", "; s << data()[ i ]; }
+    s << "\n";
+    return s;
+  }
   /*
     // Functions which could be implemented:
     data_type variance() const;
-    data_type mean() const;
     template <class A>
     static A covariance( const timeline_t<A>& first, const timeline_t<A>& second );
     data_type covariance( const timeline_t<data_type>& other ) const

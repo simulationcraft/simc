@@ -78,6 +78,7 @@ Requires Precompiled Header enabled for simulationcraft.hpp
     <ClCompile Include="..\engine\report\sc_report_html_sim.cpp" />
     <ClCompile Include="..\engine\report\sc_report_text.cpp" />
     <ClCompile Include="..\engine\report\sc_report_xml.cpp" />
+    <ClCompile Include="..\engine\report\sc_report_csv_data.cpp" />
     <ClCompile Include="..\engine\report\sc_report.cpp" />
     <ClCompile Include="..\engine\dbc\sc_const_data.cpp" />
     <ClCompile Include="..\engine\dbc\sc_data.cpp" />

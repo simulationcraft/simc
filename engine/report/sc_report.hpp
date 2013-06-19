@@ -111,6 +111,7 @@ void print_html        ( sim_t* );
 void print_html_player ( report::sc_html_stream&, player_t*, int );
 void print_xml         ( sim_t* );
 void print_suite       ( sim_t* );
+void print_csv_data( sim_t* );
 
 struct compare_hat_donor_interval
 {
