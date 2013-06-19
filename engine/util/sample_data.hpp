@@ -203,12 +203,15 @@ std::vector<size_t> create_histogram( iterator begin, iterator end, size_t num_b
   return result;
 }
 
+/* Normalizes a histogram.
+ * sum over all elements of the histogram will be equal to 1.0
+ */
 inline std::vector<double> normalize_histogram( const std::vector<size_t>& in )
 {
   std::vector<double> result;
 
   size_t count = std::accumulate( in.begin(), in.end(), size_t() );
-  double adjust = 100.0 / count;
+  double adjust = 1.0 / count;
 
   for ( size_t i = 0, size = in.size(); i < size; ++i )
     result.push_back( in[ i ] * adjust );
