@@ -6153,6 +6153,7 @@ void druid_t::init_actions()
         {
           default_list -> add_action( "swap_action_list,name=aoe,if=active_enemies>=5" );
           default_list -> add_action( "skull_bash_cat" );
+          default_list -> add_action( "auto_attack" );
 
           // Professions
           for ( size_t i = 0; i < profession_actions.size(); i++ )
