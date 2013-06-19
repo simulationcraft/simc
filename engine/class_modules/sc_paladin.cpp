@@ -1258,7 +1258,7 @@ struct divine_protection_t : public paladin_spell_t
     if ( sim -> dbc.ptr )
     {
       if ( p -> talents.unbreakable_spirit -> ok() )
-        cooldown -> duration *= 0.5;
+        cooldown -> duration = data().cooldown() * 0.5;
     }
     else
     {
@@ -1290,7 +1290,7 @@ struct divine_shield_t : public paladin_spell_t
     if ( sim -> dbc.ptr )
     {
       if ( p -> talents.unbreakable_spirit -> ok() )
-        cooldown -> duration *= 0.5;
+        cooldown -> duration = data().cooldown() * 0.5;
     }
     else
     {
@@ -2111,7 +2111,7 @@ struct inquisition_t : public paladin_spell_t
     hasted_ticks = false;
     num_ticks    = 0;
 
-    if ( p -> glyphs.inquisition -> ok() )
+    if ( p -> glyphs.inquisition -> ok() && ! p -> dbc.ptr )
     {
       multiplier += p -> glyphs.inquisition -> effectN( 1 ).percent();
       base_duration *= 1.0 + p -> glyphs.inquisition -> effectN( 2 ).percent();
@@ -2150,7 +2150,7 @@ struct lay_on_hands_t : public paladin_heal_t
     if ( sim -> dbc.ptr )
     {
       if ( p -> talents.unbreakable_spirit -> ok() )
-        cooldown -> duration *= 0.5;
+        cooldown -> duration = data().cooldown() * 0.5;
     }
     else
     {
