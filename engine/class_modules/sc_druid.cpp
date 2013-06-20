@@ -3475,7 +3475,7 @@ struct astral_communion_t : public druid_spell_t
     {
       num_ticks = 0;
       p() -> buff.astral_insight -> expire();
-      trigger_eclipse_energy_gain( 200 * starting_direction );
+      trigger_eclipse_energy_gain( 100 * starting_direction );
       druid_spell_t::execute();
       num_ticks = tmp_ticks;
     }
