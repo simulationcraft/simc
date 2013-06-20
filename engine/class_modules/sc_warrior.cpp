@@ -1310,6 +1310,26 @@ struct dragon_roar_t : public warrior_attack_t
     weapon_multiplier = 0;
   }
 
+  double calculate_direct_amount( action_state_t* state )
+  {
+    warrior_attack_t::calculate_direct_amount( state );
+
+    // Adjust damage based on number of targets
+    if ( state -> n_targets > 1 )
+    {
+      if ( state -> n_targets == 2 )
+        state -> result_total *= 0.75;
+      else if ( state -> n_targets == 3 )
+        state -> result_total *= 0.65;
+      else if ( state -> n_targets == 4 )
+        state -> result_total *= 0.55;
+      else
+        state -> result_total *= 0.5;
+    }
+
+    return state -> result_total;
+  }
+
   virtual double target_armor( player_t* )
   {
     return 0;
