@@ -145,7 +145,7 @@ public:
     gain_t* hp_tower_of_radiance;
     gain_t* hp_judgment;
     gain_t* hp_t15_4pc_tank;
-    gain_t* hp_t16_2pc_tank;
+    gain_t* hp_t16_4pc_tank;
   } gains;
 
   // Cooldowns
@@ -1571,7 +1571,7 @@ struct flash_of_light_t : public paladin_heal_t
 
 // Guardian of the Ancient Kings ============================================
 
-// Blessing of the Guardians is the t16_4pc_tank set bonus
+// Blessing of the Guardians is the t16_2pc_tank set bonus
 struct blessing_of_the_guardians_t : public paladin_heal_t
 {
   double accumulated_damage;
@@ -2431,11 +2431,11 @@ struct word_of_glory_t : public paladin_heal_t
     if ( p() -> set_bonus.tier15_2pc_tank() )
       p() -> buffs.shield_of_glory -> trigger();
 
-    // T16 2-piece tank bonus grants HP for each stack of BoG used
-    if ( p() -> set_bonus.tier16_2pc_tank() )
+    // T16 4-piece tank bonus grants HP for each stack of BoG used
+    if ( p() -> set_bonus.tier16_4pc_tank() )
     {
       // add that much Holy Power
-      p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.bastion_of_glory -> stack() , p() -> gains.hp_t16_2pc_tank );
+      p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.bastion_of_glory -> stack() , p() -> gains.hp_t16_4pc_tank );
     }
     // consume BoG stacks
     p() -> buffs.bastion_of_glory -> expire();
@@ -2815,6 +2815,17 @@ struct divine_storm_t : public paladin_melee_attack_t
     }
 
     paladin_melee_attack_t::consume_free_hp_effects();
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = paladin_melee_attack_t::action_multiplier();
+    if ( p() -> buffs.divine_crusader -> check() )
+    {
+      am *= 1.0 + p() -> buffs.divine_crusader -> data().effectN( 2 ).percent();
+    }
+
+    return am;
   }
 
   virtual void impact( action_state_t* s )
@@ -3641,7 +3652,7 @@ struct guardian_of_ancient_kings_prot_t : public buff_t
     buff_t::expire_override();
 
     paladin_t* p = static_cast<paladin_t*>( player );
-    if ( p -> set_bonus.tier16_4pc_tank() )
+    if ( p -> set_bonus.tier16_2pc_tank() )
     {
       // trigger the HoT
       p -> active.blessing_of_the_guardians -> execute();
@@ -3854,7 +3865,7 @@ void paladin_t::init_gains()
   gains.hp_tower_of_radiance        = get_gain( "holy_power_tower_of_radiance" );
   gains.hp_judgment                 = get_gain( "holy_power_judgment" );
   gains.hp_t15_4pc_tank             = get_gain( "holy_power_t15_4pc_tank" );
-  gains.hp_t16_2pc_tank             = get_gain( "holy_power_t16_2pc_tank" );
+  gains.hp_t16_4pc_tank             = get_gain( "holy_power_t16_4pc_tank" );
 }
 
 // paladin_t::init_procs ====================================================
@@ -5207,8 +5218,8 @@ void paladin_t::assess_damage( school_e school,
     resource_gain( RESOURCE_HOLY_POWER, hp_gain, gains.hp_t15_4pc_tank );
   }
 
-  // T16 4-piece tank
-  if ( set_bonus.tier16_4pc_tank() && buffs.guardian_of_ancient_kings_prot -> check() )
+  // T16 2-piece tank
+  if ( set_bonus.tier16_2pc_tank() && buffs.guardian_of_ancient_kings_prot -> check() )
   {
     active.blessing_of_the_guardians -> increment_damage( s -> result_amount ); // guess, assuming it's after all mitigation/absorb, need to test
   }
