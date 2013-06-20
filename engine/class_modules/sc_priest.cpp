@@ -3365,12 +3365,14 @@ public:
           // Copy-Pasted action_t::execute() code. Additionally increasing jump counter by one.
           cascade_state_t* s = debug_cast<cascade_state_t*>( ab::get_state() );
           s -> target = t;
+          s -> n_targets = 1;
+          s -> chain_target = 0;
           s -> jump_counter = cs -> jump_counter + 1;
           ab::snapshot_state( s, q -> target -> is_enemy() ? DMG_DIRECT : HEAL_DIRECT );
           s -> result = ab::calculate_result( s );
 
           if ( ab:: result_is_hit( s -> result ) )
-            s -> result_amount = ab::calculate_direct_amount( s, 0 );
+            s -> result_amount = ab::calculate_direct_amount( s );
 
           if ( ab::sim -> debug )
             s -> debug();

@@ -69,13 +69,12 @@ void heal_t::parse_effect_data( const spelleffect_data_t& e )
 
 // heal_t::calculate_direct_amount ==========================================
 
-double heal_t::calculate_direct_amount( action_state_t* state,
-                                        int chain_target )
+double heal_t::calculate_direct_amount( action_state_t* state )
 {
   if ( pct_heal )
     return state -> target -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
 
-  return base_t::calculate_direct_amount( state, chain_target );
+  return base_t::calculate_direct_amount( state );
 }
 // heal_t::execute ==========================================================
 

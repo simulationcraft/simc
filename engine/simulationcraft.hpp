@@ -4902,7 +4902,7 @@ struct action_t : public noncopyable
   virtual int    hasted_num_ticks( double haste, timespan_t d = timespan_t::min() );
   virtual timespan_t travel_time();
   virtual result_e calculate_result( action_state_t* /* state */ ) { assert( false ); return RESULT_UNKNOWN; }
-  virtual double calculate_direct_amount( action_state_t* state, int chain_target );
+  virtual double calculate_direct_amount( action_state_t* state );
   virtual double calculate_tick_amount( action_state_t* state );
 
   virtual double calculate_weapon_damage( double attack_power );
@@ -5080,7 +5080,10 @@ struct action_state_t : public noncopyable
   // Source action, target actor
   action_t*       action;
   player_t*       target;
-  // Results
+  // Execution attributes
+  size_t          n_targets;            // Total number of targets the execution hits.
+  int             chain_target;         // The chain target number, 0 == no chain, 1 == first target, etc.
+  // Execution sesults
   dmg_e           result_type;
   result_e        result;
   double          result_raw;           // Base result value, without crit/glance etc.
@@ -5094,7 +5097,7 @@ struct action_state_t : public noncopyable
   double          target_crit;
   double          attack_power;
   double          spell_power;
-  // Multipliers
+  // Snapshotted multipliers
   double          da_multiplier;
   double          ta_multiplier;
   double          target_da_multiplier;
@@ -5302,7 +5305,7 @@ public:
   virtual void assess_damage( dmg_e, action_state_t* );
   virtual size_t available_targets( std::vector< player_t* >& );
   virtual void init_target_cache();
-  virtual double calculate_direct_amount( action_state_t* state, int chain_target );
+  virtual double calculate_direct_amount( action_state_t* state );
   virtual void execute();
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();

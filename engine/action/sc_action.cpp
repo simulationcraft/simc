@@ -772,7 +772,7 @@ double action_t::calculate_tick_amount( action_state_t* state )
 
 // action_t::calculate_direct_amount ========================================
 
-double action_t::calculate_direct_amount( action_state_t* state, int chain_target )
+double action_t::calculate_direct_amount( action_state_t* state )
 {
   double amount = sim -> averaged_range( base_da_min( state ), base_da_max( state ) );
 
@@ -796,7 +796,21 @@ double action_t::calculate_direct_amount( action_state_t* state, int chain_targe
   amount += direct_power_coefficient( state ) * ( state -> composite_power() );
   amount *= state -> composite_da_multiplier();
 
-  double init_direct_amount = amount;
+  // AoE with decay per target
+  if ( state -> chain_target > 0 && base_add_multiplier != 1.0 )
+    amount *= pow( base_add_multiplier, state -> chain_target );
+
+  // AoE with static reduced damage per target
+  if ( state -> chain_target > 0 && base_aoe_multiplier != 1.0 )
+    amount *= base_aoe_multiplier;
+
+  // Spell splits damage across all targets equally
+  if ( state -> action -> split_aoe_damage )
+    amount /= state -> n_targets;
+
+  // Spell goes over the maximum number of AOE targets
+  if ( ! state -> action -> split_aoe_damage && state -> n_targets > static_cast< size_t >( sim -> max_aoe_enemies ) )
+    amount *= sim -> max_aoe_enemies / static_cast< double >( state -> n_targets );
 
   // Record initial amount to state
   state -> result_raw = amount;
@@ -836,20 +850,12 @@ double action_t::calculate_direct_amount( action_state_t* state, int chain_targe
     amount *= 1.0 + total_crit_bonus();
   }
 
-  // AoE with decay per target
-  if ( chain_target > 0 && base_add_multiplier != 1.0 )
-    amount *= pow( base_add_multiplier, chain_target );
-
-  // AoE with static reduced damage per target
-  if ( chain_target > 1 && base_aoe_multiplier != 1.0 )
-    amount *= base_aoe_multiplier;
-
   if ( ! sim -> average_range ) amount = floor( amount + sim -> real() );
 
   if ( sim -> debug )
   {
     sim -> output( "%s amount for %s: dd=%.0f i_dd=%.0f w_dd=%.0f b_dd=%.0f mod=%.2f power=%.0f mult=%.2f w_mult=%.2f",
-                   player -> name(), name(), amount, init_direct_amount, weapon_amount, base_direct_amount, direct_power_coefficient( state ),
+                   player -> name(), name(), amount, state -> result_raw, weapon_amount, base_direct_amount, direct_power_coefficient( state ),
                    state -> composite_power(), state -> composite_da_multiplier(), weapon_multiplier );
   }
 
@@ -989,17 +995,14 @@ void action_t::execute()
     {
       action_state_t* s = get_state( pre_execute_state );
       s -> target = tl[ t ];
+      s -> n_targets = std::min( num_targets, tl.size() );
+      s -> chain_target = as<int>( t );
       if ( ! pre_execute_state ) snapshot_state( s, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
       s -> result = calculate_result( s );
 
       if ( result_is_hit( s -> result ) )
-        s -> result_amount = calculate_direct_amount( s, as<int>( t + 1 ) );
+        s -> result_amount = calculate_direct_amount( s );
 
-      if ( split_aoe_damage )
-        s -> result_amount /= num_targets;
-
-      if ( ! split_aoe_damage && tl.size() > static_cast< size_t >( sim -> max_aoe_enemies ) )
-        s -> result_amount *= sim -> max_aoe_enemies / static_cast< double >( tl.size() );
 
       if ( sim -> debug )
         s -> debug();
@@ -1011,11 +1014,13 @@ void action_t::execute()
   {
     action_state_t* s = get_state( pre_execute_state );
     s -> target = target;
+    s -> n_targets = 1;
+    s -> chain_target = 0;
     if ( ! pre_execute_state ) snapshot_state( s, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
     s -> result = calculate_result( s );
 
     if ( result_is_hit( s -> result ) )
-      s -> result_amount = calculate_direct_amount( s, 0 );
+      s -> result_amount = calculate_direct_amount( s );
 
     if ( sim -> debug )
       s -> debug();
@@ -1661,18 +1666,21 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
     amount_expr_t( const std::string& name, dmg_e at, result_e rt, action_t& a ) :
       action_expr_t( name, a ), amount_type( at ), result_type( rt ), state( a.get_state() )
-    { }
+    { 
+      state -> n_targets    = 1;
+      state -> chain_target = 0;
+      state -> result       = result_type;
+    }
 
     virtual double evaluate()
     {
       action.snapshot_state( state, amount_type );
-      state -> result = result_type;
       state -> target = action.target;
       if ( amount_type == DMG_OVER_TIME || amount_type == HEAL_OVER_TIME )
         return action.calculate_tick_amount( state );
       else
       {
-        state -> result_amount = action.calculate_direct_amount( state, 0 );
+        state -> result_amount = action.calculate_direct_amount( state );
         if ( amount_type == DMG_DIRECT )
           state -> target -> target_mitigation( action.school, amount_type, state );
         return state -> result_amount;
