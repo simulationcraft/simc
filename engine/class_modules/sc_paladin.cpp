@@ -520,10 +520,10 @@ public:
     // If T16 4pc melee set bonus is equipped, trigger a proc
     if ( p() -> set_bonus.tier16_4pc_melee() )
     {
-      // as far as we know, it's a flat 25% proc chance, not scaled by HP spent
-      // TODO: test this, as of right now Inquisition is not triggering, probably a bug
-      // if not need to add conditional based on name_str or spell id or some such
-      bool success = p() -> buffs.divine_crusader -> trigger();
+      // chance to proc the buff needs to be scaled by holy power spent
+      bool success = p() -> buffs.divine_crusader -> trigger( 1,
+        p() -> buffs.divine_crusader -> default_value,
+        p() -> buffs.divine_crusader -> default_chance * c_effective / 3 );
       
       // record success for output
       if ( success )
@@ -5221,7 +5221,7 @@ void paladin_t::assess_damage( school_e school,
   // T16 2-piece tank
   if ( set_bonus.tier16_2pc_tank() && buffs.guardian_of_ancient_kings_prot -> check() )
   {
-    active.blessing_of_the_guardians -> increment_damage( s -> result_amount ); // guess, assuming it's after all mitigation/absorb, need to test
+    active.blessing_of_the_guardians -> increment_damage( s -> result_mitigated ); // guess, assuming it's after all mitigation/absorb, need to test
   }
 }
 
