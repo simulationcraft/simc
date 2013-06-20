@@ -652,7 +652,7 @@ class ItemDataGenerator(DataGenerator):
     ]
     
     _item_name_blacklist = [
-        "^(Lesser|) Arcanum of",
+        "^(Lesser |)Arcanum of",
         "^Scroll of Enchant",
         "^Enchant ",
         "Deprecated",
@@ -1757,31 +1757,55 @@ class SpellDataGenerator(DataGenerator):
             
             if blacklist_item:
                 continue
-            
-            # Quest items, Permanent Item enchants
-            if (classdata.classs != 0 or classdata.subclass != 6) and \
-               classdata.classs != 12:
+
+            # Consumables, Flasks, Elixirs, Potions, Food & Drink, Permanent Enchants
+            if classdata.classs != 12 and (classdata.classs != 0 or classdata.subclass not in [1, 2, 3, 5, 6]):
                 continue
             
-            # Grab various permanent item enchants from item class 12
-            enchant_spell_id = 0
+            # Grab relevant spells from quest items, this in essence only 
+            # includes certain permanent enchants
             if classdata.classs == 12:
                 for i in xrange(1, 6):
                     spell_id = getattr(data, 'id_spell_%d' % i)
-                    if spell_id > 0:
-                        spell = self._spell_db[spell_id]
-                        for effect in spell._effects:
-                            if not effect or effect.type != 53:
-                                continue
-                            
-                            enchant_spell_id = spell_id
-                            break
+                    if spell_id == 0:
+                        continue
+
+                    spell = self._spell_db[spell_id]
+                    for effect in spell._effects:
+                        if not effect or effect.type != 53:
+                            continue
+                        
+                        self.process_spell(enchant_spell_id, ids, 0, 0)
+            # Grab relevant spells from consumables as well
+            elif classdata.classs == 0:
+                for i in xrange(1, 6):
+                    spell_id = getattr(data, 'id_spell_%d' % i)
+                    if spell_id == 0:
+                        continue
                     
-                    if enchant_spell_id > 0:
-                        break
-            
-            if enchant_spell_id > 0:
-                self.process_spell(enchant_spell_id, ids, 0, 0)
+                    include_spell = False
+                    spell = self._spell_db[spell_id]
+                    for effect in spell._effects:
+                        if not effect:
+                            continue
+
+                        # Potions and Elixirs need to apply attributes, rating 
+                        # or armor
+                        if classdata.subclass == 1 or classdata.subclass == 2:
+                            if effect.type == 6 and (effect.sub_type == 22 or effect.sub_type == 29 or effect.sub_type == 189):
+                                include_spell = True
+                        # Food needs to have a periodically triggering effect
+                        # (presumed to be always a stat giving effect)
+                        elif classdata.subclass == 5:
+                            if effect.sub_type == 23:
+                                include_spell = True
+                        # Permanent enchants need to have "enchant item" effect
+                        elif classdata.subclass == 6:
+                            if effect.sub_type == 53:
+                                include_spell = True
+
+                    if include_spell:
+                        self.process_spell(spell_id, ids, 0, 0)
         
         # Item sets, loop through ItemSet.dbc getting class-specific tier sets and add 
         # their bonuses to the spell list
