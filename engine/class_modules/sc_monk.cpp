@@ -994,6 +994,12 @@ struct blackout_kick_t : public monk_melee_attack_t
     base_multiplier = 8.0 * 0.89; // hardcoded into tooltip
     if ( player -> specialization() == MONK_BREWMASTER )
       weapon_power_mod = 1 / 11.0;
+
+    if ( p -> spec.teachings_of_the_monastery -> ok() )
+    {
+      aoe = 1 + p -> spec.teachings_of_the_monastery -> effectN( 4 ).base_value();
+      base_multiplier *= p -> spec.teachings_of_the_monastery -> effectN( 5 ).percent();
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -3006,7 +3012,7 @@ void monk_t::combat_begin()
 {
   base_t::combat_begin();
 
-  resources.current[ RESOURCE_CHI ] = clamp( resources.max[ RESOURCE_CHI ], as<double>( user_options.initial_chi ), 0.0 );
+  resources.current[ RESOURCE_CHI ] = clamp( as<double>( user_options.initial_chi ), 0.0, resources.max[ RESOURCE_CHI ] );
 
   if ( specialization() == MONK_BREWMASTER )
     vengeance_start();
