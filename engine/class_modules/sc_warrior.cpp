@@ -3355,7 +3355,7 @@ void warrior_t::init_actions()
       st_list_str += "/execute,if=buff.enrage.up|debuff.colossus_smash.up|rage>90|target.time_to_die<12";
       st_list_str += "/raging_blow,if=buff.raging_blow.stack=2|(buff.raging_blow.up&(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3)))";
       st_list_str += "/wild_strike,if=buff.bloodsurge.react";
-	  st_list_str += "/raging_blow,if=buff.raging_blow.up&cooldown.colossus_smash.remains>=3";
+      st_list_str += "/raging_blow,if=buff.raging_blow.up&cooldown.colossus_smash.remains>=3";
       st_list_str += "/shockwave,if=talent.shockwave.enabled";
       st_list_str += "/heroic_throw,if=debuff.colossus_smash.down&rage<60";
       st_list_str += "/battle_shout,if=rage<70&!debuff.colossus_smash.up";
@@ -3363,7 +3363,7 @@ void warrior_t::init_actions()
       st_list_str += ",if=debuff.colossus_smash.up&target.health.pct>=20";
       st_list_str += "/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20";
       st_list_str += "/battle_shout,if=rage<70";
-	  st_list_str += smf ? "/wild_strike" : "/whirlwind";
+      st_list_str += smf ? "/wild_strike" : "/whirlwind";
       st_list_str += ",if=cooldown.colossus_smash.remains>=2&rage>=80&target.health.pct>=20";
 
       //Two targets
@@ -3391,7 +3391,7 @@ void warrior_t::init_actions()
       three_list_str += "/bladestorm,if=talent.bladestorm.enabled&buff.enrage.up";
       three_list_str += "/raging_blow,if=buff.raging_blow.remains<=2|buff.meat_cleaver.react=2";
       three_list_str += "/bloodthirst";
-	  three_list_str += "/whirlwind";
+      three_list_str += "/whirlwind";
       three_list_str += "/wait,sec=cooldown.bloodthirst.remains,if=cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains";
       three_list_str += "/colossus_smash";
       three_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
@@ -3410,7 +3410,7 @@ void warrior_t::init_actions()
       aoe_list_str += "/whirlwind";
       aoe_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
       aoe_list_str += "/battle_shout,if=rage<70";
-	  aoe_list_str += "/bloodthirst";
+      aoe_list_str += "/bloodthirst";
 
     }
     // Protection
