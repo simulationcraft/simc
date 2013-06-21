@@ -1025,9 +1025,6 @@ void player_t::init()
     else
       get_action_priority_list( it -> first ) -> action_list_str = it -> second;
   }
-
-  size_t size = static_cast<size_t>( sim -> max_time.total_seconds() * ( 1.0 + sim -> vary_combat_length ) );
-  collected_data.timeline_dmg_taken.init( size * 2 + 3 );
 }
 
 /* Determine Spec, Talents, Professions, Glyphs
@@ -1748,11 +1745,6 @@ void player_t::init_resources( bool force )
   // Only collect pet resource timelines if they get reported separately
   if ( ! is_pet() || sim -> report_pets_separately )
   {
-    int size = ( int ) ( sim -> max_time.total_seconds() * ( 1.0 + sim -> vary_combat_length ) );
-    if ( size <= 0 ) size = 600; // Default to 10 minutes
-    size *= 2;
-    size += 3; // Buffer against rounding.
-
     if ( collected_data.resource_timelines.size() == 0 )
     {
       for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
@@ -1760,13 +1752,9 @@ void player_t::init_resources( bool force )
         if ( resources.max[ i ] > 0 )
         {
           collected_data.resource_timelines.push_back( player_collected_data_t::resource_timeline_t( i ) );
-          player_collected_data_t::resource_timeline_t& new_tl = collected_data.resource_timelines.back();
-          new_tl.timeline.init( size );
         }
       }
     }
-    if ( collected_data.health_changes.timeline.data().empty() )
-      collected_data.health_changes.timeline.init( size );
   }
 }
 
@@ -9143,23 +9131,6 @@ double player_stat_cache_t::player_heal_multiplier( school_e s )
 
 #endif
 
-/*
- * Initialize Vengeance Timeline
- *
- * Needs to be called during player initialization.
- * The reason to separate it out like this is that we want dynamic memory allocation
- * during the initialization phase, and not during simulation.
- */
-
-void player_vengeance_t::init( player_t& p )
-{
-  if ( is_initialized() )
-    return;
-
-  int size = static_cast<int>( p.sim -> max_time.total_seconds() * ( 1.0 + p.sim -> vary_combat_length ) );
-  timeline_.init( size * 2 + 3 );
-}
-
 /* Start Vengeance
  *
  * Call in combat_begin() when it is active during the whole fight,
@@ -9168,9 +9139,6 @@ void player_vengeance_t::init( player_t& p )
 
 void player_vengeance_t::start( player_t& p )
 {
-  if ( ! is_initialized() )
-    init( p );
-
   assert( ! is_started() );
 
   struct collect_event_t : public event_t

@@ -90,7 +90,15 @@ public:
   // Add 'value' at the specific index
   void add( size_t index, data_type value )
   {
-    assert( index < _data.size() );
+    if ( index >= _data.capacity() ) // we need to reallocate
+    {
+      _data.reserve( std::max( size_t(10), _data.capacity() * 2 ) );
+      _data.resize( index );
+    }
+    else if ( index >= _data.size() ) // we still have enough capacity left, but need to resize up to index
+    {
+      _data.resize( index );
+    }
     _data[ index ] += value;
   }
 
@@ -98,34 +106,21 @@ public:
   template <class A>
   void adjust( const std::vector<A>& divisor_timeline )
   {
-    assert( _data.size() >= divisor_timeline.size() );
 
-    for ( size_t j = 0; j < divisor_timeline.size(); j++ )
+    for ( size_t j = 0, size = std::min( data().size(), divisor_timeline.size() ); j < size; j++ )
     {
       _data[ j ] /= divisor_timeline[ j ];
     }
   }
 
-  T mean( size_t start, size_t length ) const
-  {
-    assert( start + length <= data().size() );
-    return statistics::calculate_mean( data().begin() + start, data().begin() + start + length );
-  }
-
   T mean() const
   {
-    return mean( 0, data().size() );
-  }
-
-  T mean_stddev( size_t start, size_t length ) const
-  {
-    assert( start + length <= data().size() );
-    return statistics::calculate_mean_stddev( data().begin() + start, data().begin() + start + length );
+    return statistics::calculate_mean( data().begin(), data().end() );
   }
 
   T mean_stddev() const
   {
-    return mean_stddev( 0, data().size() );
+    return statistics::calculate_mean_stddev( data().begin(), data().end() );
   }
 
   // Merge with other timeline

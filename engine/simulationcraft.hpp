@@ -3687,7 +3687,6 @@ public:
   player_vengeance_t( sc_timeline_t& vengeance_tl ) :
     timeline_( vengeance_tl ), event( nullptr ) {}
 
-  void init( player_t& p );
   void start( player_t& p );
   void stop();
 
@@ -4081,7 +4080,6 @@ struct player_t : public actor_t
 private:
   player_vengeance_t vengeance;
 public:
-  void vengeance_init() { vengeance.init( *this ); }
   void vengeance_start() { vengeance.start( *this ); }
   void vengeance_stop() { vengeance.stop(); }
   bool vengeance_is_started() const { return vengeance.is_started(); }

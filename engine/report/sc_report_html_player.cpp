@@ -1776,7 +1776,7 @@ void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t*
 
   sc_timeline_t timeline_dps_taken;
   p -> collected_data.timeline_dmg_taken.build_derivative_timeline( timeline_dps_taken );
-  std::string timeline_dps_takenchart = chart::timeline( p, timeline_dps_taken.data(), "dps_taken", timeline_dps_taken.mean( 0, static_cast<size_t>( p -> collected_data.fight_length.max() ) ), "FDD017", static_cast<size_t>( p -> collected_data.fight_length.max() ) );
+  std::string timeline_dps_takenchart = chart::timeline( p, timeline_dps_taken.data(), "dps_taken", timeline_dps_taken.mean(), "FDD017" );
   if ( ! timeline_dps_takenchart.empty() )
   {
     os << "<img src=\"" << timeline_dps_takenchart << "\" alt=\"DPS Taken Timeline Chart\" />\n";

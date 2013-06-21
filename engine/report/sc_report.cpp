@@ -929,10 +929,9 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
       stats_t* s = stats_list[ i ];
 
       // Create Stats Timeline Chart
-      s -> timeline_amount.resize( max_buckets );
       sc_timeline_t timeline_aps;
       s -> timeline_amount.build_derivative_timeline( timeline_aps );
-      s -> timeline_aps_chart = chart::timeline( p, timeline_aps.data(), s -> name_str + ' ' + stat_type_letter( s -> type ) + "PS", s -> portion_aps.mean() );
+      s -> timeline_aps_chart = chart::timeline( p, timeline_aps.data(), s -> name_str + ' ' + stat_type_letter( s -> type ) + "PS", timeline_aps.mean() );
       s -> aps_distribution_chart = chart::distribution( p -> sim -> print_styles, s -> portion_aps.distribution, s -> name_str + ( s -> type == STATS_DMG ? " DPS" : " HPS" ),
                                                          s -> portion_aps.mean(), s -> portion_aps.min(), s -> portion_aps.max() );
     }
@@ -990,7 +989,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
       chart::timeline( p,
                        cd.resource_timelines[ i ].timeline.data(),
                        encoded_name + ' ' + util::inverse_tokenize( util::resource_type_string( rt ) ),
-                       cd.resource_timelines[ i ].timeline.mean( 0, max_buckets ),
+                       cd.resource_timelines[ i ].timeline.mean(),
                        chart::resource_color( rt ),
                        max_buckets );
     ri.gains_chart[ rt ] = chart::gains( p, rt );
@@ -1002,15 +1001,15 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
     chart::timeline( p,
                      cd.health_changes.timeline.data(),
                      encoded_name + ' ' + "Health Change",
-                     cd.health_changes.timeline.mean( 0, max_buckets ),
+                     cd.health_changes.timeline.mean(),
                      chart::resource_color( RESOURCE_HEALTH ),
                      max_buckets );
 
     ri.health_change_sliding_chart =
     chart::timeline( p,
                      cd.health_changes.sliding_timeline.data(),
-                     encoded_name + ' ' + "Health Change",
-                     cd.health_changes.sliding_timeline.mean( 0, max_buckets ),
+                     encoded_name + ' ' + "Health Change (moving average)",
+                     cd.health_changes.sliding_timeline.mean(),
                      chart::resource_color( RESOURCE_HEALTH ),
                      max_buckets );
   }

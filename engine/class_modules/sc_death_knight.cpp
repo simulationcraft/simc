@@ -5008,10 +5008,6 @@ void death_knight_t::init_base_stats()
   diminished_kfactor   = 0.956;
   diminished_dodge_cap = 0.906425;
   diminished_parry_cap = 2.37186;
-
-
-  if ( specialization() == DEATH_KNIGHT_BLOOD )
-    vengeance_init();
 }
 
 // death_knight_t::init_spells ==============================================

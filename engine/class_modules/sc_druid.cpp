@@ -5012,9 +5012,6 @@ public:
     base_t( p, buff_creator_t( &p, "bear_form", p.find_class_spell( "Bear Form" ) ) ),
     rage_spell( p.find_spell( 17057 ) )
   {
-    if ( druid.specialization() == DRUID_GUARDIAN )
-      druid.vengeance_init();
-
     // HOTW will require invalidation of hit
     if ( druid.talent.heart_of_the_wild -> ok() )
     {

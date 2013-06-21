@@ -2619,8 +2619,6 @@ void monk_t::init_defense()
 {
   base_t::init_defense();
 
-  if ( specialization() == MONK_BREWMASTER )
-    vengeance_init();
 }
 
 // monk_t::regen (brews/teas)================================================

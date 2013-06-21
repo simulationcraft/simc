@@ -3780,9 +3780,6 @@ void paladin_t::init_defense()
   player_t::init_defense();
 
   initial.parry_rating_per_strength = initial_rating().parry / 95115.8596; // exact value given by Blizzard
-
-  if ( passives.vengeance -> ok() )
-    vengeance_init();
 }
 
 // paladin_t::init_base =====================================================
