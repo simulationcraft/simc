@@ -432,7 +432,6 @@ struct water_elemental_pet_t : public pet_t
     pet_t( sim, owner, "water_elemental" )
   {
     action_list_str  = "waterbolt";
-    create_options();
 
     owner_coeff.sp_from_sp = 1.0;
   }
