@@ -1087,6 +1087,8 @@ class SpellDataGenerator(DataGenerator):
         # Paladin:
         (
             ( 86700, 5 ),           # Ancient Power
+            ( 144581, 0 ),          # Blessing of the Guardians (prot T16 2-piece bonus)
+            ( 144595, 0 ),          # Divine Crusader (ret T16 4-piece bonus)
             ( 122287, 0, True ),    # Symbiosis Wrath
             ( 96172, 0 ),           # Hand of Light damage spell
             ( 42463, 0, False ),    # Seal of Truth damage id not directly activatable
