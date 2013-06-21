@@ -1087,8 +1087,6 @@ class SpellDataGenerator(DataGenerator):
         # Paladin:
         (
             ( 86700, 5 ),           # Ancient Power
-            ( 144581, 2 ),          # Blessing of the Guardians (prot T16 2-piece bonus)
-            ( 144595, 3 ),          # Divine Crusader (ret T16 4-piece bonus)
             ( 122287, 0, True ),    # Symbiosis Wrath
             ( 96172, 0 ),           # Hand of Light damage spell
             ( 42463, 0, False ),    # Seal of Truth damage id not directly activatable
@@ -1991,6 +1989,11 @@ class SpellDataGenerator(DataGenerator):
             fields += self._spellauraoptions_db[spell.id_aura_opt].field(
                 'stack_amount', 'proc_chance', 'proc_charges', 'proc_flags'
             )
+
+            if self._options.build >= 17093:
+                fields += self._spellauraoptions_db[spell.id_aura_opt].field('internal_cooldown')
+            else:
+                fields += [ '%6u' % 0 ]
             
             fields += self._spellequippeditems_db[spell.id_equip_items].field('item_class', 'mask_inv_type', 'mask_sub_class')
             

@@ -74,7 +74,7 @@ _DIFF_DATA = {
             ( 'ofs_desc', _REMOVE_FIELD ),
         ],
         'SkillLineAbility.dbc' : [
-            ( 'unk_15640', _ADD_FIELD, 'min_value' ),
+            ( 'id_filter', _ADD_FIELD, 'idx' ),
         ],
 
     },
@@ -115,6 +115,12 @@ _DIFF_DATA = {
             ( ( 'coeff_3', '%7.4f' ), _ADD_FIELD, 'coeff_2' ),
         ]
     },
+    17093: {
+        'SpellAuraOptions.dbc' : [
+            ( ( 'internal_cooldown', '%6u' ), _ADD_FIELD, 'proc_flags' ),
+            ( ( 'unk_2', '%f' ), _ADD_FIELD, 'internal_cooldown' )
+        ],
+    }
 }
 
 # Base DBC/DB2 fields, works for 15464, as that's our first DBC/DB2 data version
@@ -309,12 +315,12 @@ _DBC_FIELDS = {
     ],
     'SkillLine.dbc' : [
           'id',         'id_category',    'ofs_name', 'ofs_desc',
-          'spell_icon', 'alternate_verb', 'can_link', 'unk_15464'
+          'spell_icon', 'alternate_verb', 'can_link', 'unk_15464',
+          'unk_1'
     ],
     'SkillLineAbility.dbc' : [
-          'id',          ( 'id_skill', '%4u' ),   'id_spell',        'mask_race',        'mask_class',
-          'n_mask_race', 'n_mask_class', 'req_skill_value', 'id_spell_forward', 'learn_on_get_skill',
-          'max_value',   ( 'min_value', '%3u' )
+          'id',          ( 'id_skill', '%4u' ),   'id_spell',        ( 'mask_race', '%#.8x' ),        ( 'mask_class', '%#.8x' ),
+          'req_skill_level', 'replace_id', 'unk_3', 'max_learn_skill', 'unk_5', 'reward_skill_pts', 'idx'
     ],
     'SkillLineAbilitySortedSpell.dbc' : [
           'id',          'field'
@@ -410,7 +416,10 @@ _DBC_FIELDS = {
             'ofs_desc', 'id_aura', ( 'slot', '%2u' ), ( 'id_gem', '%6u' ), 'enchantment_condition', 
           ( 'req_skill', '%4u' ), ( 'req_skill_value', '%3u' ), 'req_player_level', ( 'max_scaling_level', '%3u' ), ( 'min_scaling_level', '%3u' ),
           ( 'id_scaling', '%2d' ), ( 'unk_15464_3', '%2d' ), ( 'coeff_1', '%7.4f' ), ( 'coeff_2', '%7.4f' )
-    ],    
+    ],
+    'SpellLearnSpell.dbc' : [
+          'id', 'unk_1', 'unk_2', 'unk_3'
+    ],
     'SpellLevels.dbc' : [
           'id', ( 'base_level', '%3u' ), ( 'max_level', '%2u' ), 'spell_level'
     ],

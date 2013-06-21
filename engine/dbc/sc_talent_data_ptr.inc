@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (198)
 
-// 198 talents, wow build 17056
+// 198 talents, wow build 17093
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001, 0x00,     0,   1,   1,   29838,         0,  0 },
@@ -41,7 +41,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Evil is a Point of View"           , 17577, 0x00, 0x0002, 0x00,     0,   2,   1,  110301,         0,  0 },
   { "Selfless Healer"                   , 17581, 0x00, 0x0002, 0x00,     0,   0,   2,   85804,         0,  0 },
   { "Eternal Flame"                     , 17583, 0x00, 0x0002, 0x00,     0,   1,   2,  114163,     85673,  0 },
-  { "Sacred Shield"                     , 17585, 0x00, 0x0002, 0x00,     0,   2,   2,   20925,         0,  0 },
+  { "Sacred Shield"                     , 17585, 0x00, 0x0002, 0x00,     0,   2,   2,  145760,         0,  0 },
   { "Hand of Purity"                    , 17589, 0x00, 0x0002, 0x00,     0,   0,   3,  114039,         0,  0 },
   { "Unbreakable Spirit"                , 17591, 0x00, 0x0002, 0x00,     0,   1,   3,  114154,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },

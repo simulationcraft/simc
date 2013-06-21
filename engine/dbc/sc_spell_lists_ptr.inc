@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 17056
+// Class based active abilities, wow build 17093
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -103,7 +103,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Paladin
   {
-    // General tree, 28 abilities
+    // General tree, 29 abilities
     {
        31884, // Avenging Wrath
        20217, // Blessing of Kings
@@ -121,6 +121,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         1022, // Hand of Protection
         6940, // Hand of Sacrifice
         1038, // Hand of Salvation
+       20925, // Holy Shield
        20271, // Judgment
          633, // Lay on Hands
        96231, // Rebuke
@@ -149,13 +150,14 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        85222, // Light of Dawn
            0,
     },
-    // Protection tree, 7 abilities
+    // Protection tree, 8 abilities
     {
        31850, // Ardent Defender
        31935, // Avenger's Shield
        26573, // Consecration
        86659, // Guardian of Ancient Kings
        53595, // Hammer of the Righteous
+       20925, // Holy Shield
       119072, // Holy Wrath
        53600, // Shield of the Righteous
            0,
@@ -1031,7 +1033,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (26)
 
-// Talent tree specialization abilities, wow build 17056
+// Talent tree specialization abilities, wow build 17093
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1122,6 +1124,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        76857, // Mastery: Critical Block
        86535, // Plate Specialization
         6572, // Revenge
+      145672, // Riposte
       112048, // Shield Barrier
         2565, // Shield Block
        23922, // Shield Slam
@@ -1169,6 +1172,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        86659, // Guardian of Ancient Kings
       115801, // Hammer of the Righteous
        53595, // Hammer of the Righteous
+       20925, // Holy Shield
       119072, // Holy Wrath
       137028, // Hotfix Passive
       105424, // Judgments of the Wise
@@ -1414,6 +1418,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        50371, // Improved Blood Presence
        77513, // Mastery: Blood Shield
        86537, // Plate Specialization
+      145676, // Riposte
        56815, // Rune Strike
        48982, // Rune Tap
        81127, // Sanguine Fortitude
@@ -1872,7 +1877,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 17056
+// Class mastery abilities, wow build 17093
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2095,7 +2100,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 17056
+// Racial abilities, wow build 17093
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2808,7 +2813,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 17056
+// Glyph spells for classes, wow build 17093
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3066,11 +3071,12 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       120584, // Glyph of Vampiric Embrace
        89489, // Glyph of Weakened Soul
     },
-    // Minor Glyphs (10 spells)
+    // Minor Glyphs (11 spells)
     {
        58009, // Glyph of Borrowed Time
       126152, // Glyph of Confession
        58228, // Glyph of Dark Archangel
+      145722, // Glyph of Feathers
       126174, // Glyph of Holy Resurrection
        57986, // Glyph of Shackle Undead
       107906, // Glyph of Shadow
@@ -3386,7 +3392,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 17056
+// Tier item set bonuses for class, wow build 17093
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
@@ -3465,12 +3471,12 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     },
     // Tier 16 bonuses (6 spells)
     {
-      144566, // T16 PH - Paladin Protection - 2 Piece Bonus (Item - Paladin T16 Protection 2P Bonus)
-      144580, // T16 PH - Paladin Protection - 4 Piece Bonus (Item - Paladin T16 Protection 4P Bonus)
+      144566, // T16 PH - Paladin Protection - 4 Piece Bonus (Item - Paladin T16 Protection 4P Bonus)
+      144580, // T16 PH - Paladin Protection - 2 Piece Bonus (Item - Paladin T16 Protection 2P Bonus)
       144586, // T16 PH - Paladin Retribution - 2 Piece Bonus (Item - Paladin T16 Retribution 2P Bonus)
       144593, // T16 PH - Paladin Retribution - 4 Piece Bonus (Item - Paladin T16 Retribution 4P Bonus)
       144613, // T16 PH - Paladin Holy - 4 Piece Bonus (Item - Paladin T16 Holy 4P Bonus)
-      144624, // T16 PH - Paladin Holy - 2 Piece Bonus (Unyielding Faith)
+      144625, // T16 PH - Paladin Holy - 2 Piece Bonus (Item - Paladin T16 Holy 2P Bonus)
           0,
     },
     {
@@ -3605,8 +3611,8 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     {
       144899, // T16 PH - Death Knight DPS - 2 Piece Bonus (Item - Death Knight T16 DPS 2P Bonus)
       144907, // T16 PH - Death Knight DPS - 4 Piece Bonus (Item - Death Knight T16 DPS 4P Bonus)
-      144934, // T16 PH - Death Knight Tank - 4 Piece Bonus (Item - Death Knight T16 Blood 2P Bonus)
-      144950, // T16 PH - Death Knight Tank - 2 Piece Bonus (Item - Death Knight T16 Blood 4P Bonus)
+      144934, // T16 PH - Death Knight Tank - 2 Piece Bonus (Item - Death Knight T16 Blood 2P Bonus)
+      144950, // T16 PH - Death Knight Tank - 4 Piece Bonus (Item - Death Knight T16 Blood 4P Bonus)
           0,
     },
     {

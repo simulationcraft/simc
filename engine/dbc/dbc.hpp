@@ -311,6 +311,7 @@ public:
   unsigned    _proc_chance;        // Spell proc chance in percent
   unsigned    _proc_charges;       // Per proc charge amount
   unsigned    _proc_flags;         // Proc flags
+  unsigned    _internal_cooldown;  // ICD
   // SpellEquippedItems.dbc
   unsigned    _equipped_class;
   unsigned    _equipped_invtype_mask;
@@ -398,6 +399,9 @@ public:
 
   unsigned proc_flags() const
   { return _proc_flags; }
+
+  timespan_t internal_cooldown() const
+  { return timespan_t::from_millis( _internal_cooldown ); }
 
   const char* rank_str() const
   { return ok() ? _rank_str : ""; }

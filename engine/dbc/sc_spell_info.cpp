@@ -11,23 +11,60 @@ struct proc_map_t
   const char* proc;
 };
 
+/*
+    PF_KILLED                   = 0x00000001,
+    PF_KILLING_BLOW             = 0x00000002,
+    PF_MELEE_HIT                = 0x00000004,
+    PF_MELEE_HIT_TAKEN          = 0x00000008,
+    PF_MELEE_ABILITY_HIT        = 0x00000010,
+    PF_MELEE_ABILITY_HIT_TAKEN  = 0x00000020,
+    PF_RANGED_HIT               = 0x00000040,
+    PF_RANGED_HIT_TAKEN         = 0x00000080,
+    PF_RANGED_ABILITY_HIT       = 0x00000100,
+    PF_RANGED_ABILITY_HIT_TAKEN = 0x00000200,
+    PF_AOE_HEAL_HIT             = 0x00000400,
+    PF_AOE_HEAL_HIT_TAKEN       = 0x00000800,
+    PF_AOE_SPELL_HIT            = 0x00001000,
+    PF_AOE_SPELL_HIT_TAKEN      = 0x00002000,
+    PF_HEAL_HIT                 = 0x00004000,
+    PF_HEAL_HIT_TAKEN           = 0x00008000,
+    PF_SPELL_HIT                = 0x00010000, // Any "negative" spell
+    PF_SPELL_HIT_TAKEN          = 0x00020000,
+    PF_PERIODIC_HIT             = 0x00040000, // Any periodic ability landed
+    PF_PERIODIC_HIT_TAKEN       = 0x00080000,
+    PF_ANY_DAMAGE_TAKEN         = 0x00100000,
+    PF_TRAP_TRIGGERED           = 0x00200000,
+    PF_OFFHAND_HIT              = 0x00800000,
+    PF_DEATH                    = 0x01000000,
+    PF_JUMP                     = 0x02000000,
+*/
 static const struct proc_map_t _proc_flag_map[] =
 {
+  { PF_KILLED,              "Killed"              },
   { PF_KILLING_BLOW,        "Killing Blow"        },
-  { PF_AUTO_ATTACK,         "White Melee"         },
-  { PF_MELEE_DAMAGE_TAKEN,  "Melee Damage Taken"  },
-  { PF_MELEE_ATTACK,        "Yellow Melee"        },
-  { PF_AUTO_SHOT,           "White Ranged"        },
-  { PF_RANGED_SHOT,         "Yellow Ranged"       },
-  { PF_HEAL_SPELL,          "Direct Heal"         },
-  { PF_HEAL_RECEIVED,       "Heal Received"       },
-  { PF_HARMFUL_SPELL,       "Harmful Spell"       },
-  { PF_HARMFUL_RECEIVED,    "Harmful Spell Taken" },
-  { PF_PERIODIC_SPELL,      "Periodic Spell"      },
-  { PF_PERIODIC_RECEIVED,   "Periodic Spell Taken"},
-  { PF_DAMAGE_TAKEN,        "Damage Taken"        },
-  { PF_TRAP_TRIGGERED,      "Trap Triggered"      },
-  { PF_JUMP,                "Proc on jump(?)"     },
+  { PF_MELEE_HIT,           "White Melee Hit"     },
+  { PF_MELEE_HIT_TAKEN,     "Melee Melee Taken"   },
+  { PF_MELEE_ABILITY_HIT,   "Yellow Melee Hit"    },
+  { PF_MELEE_ABILITY_HIT_TAKEN, "Yellow Melee Hit Taken" },
+  { PF_RANGED_HIT,          "White Ranged Hit"    },
+  { PF_RANGED_HIT_TAKEN,    "White Ranged Hit Taken " },
+  { PF_RANGED_ABILITY_HIT,  "Yellow Ranged Hit"       },
+  { PF_RANGED_ABILITY_HIT_TAKEN, "Yellow Ranged Hit Taken"       },
+  { PF_AOE_HEAL_HIT,             "AOE Heal Hit" },
+  { PF_AOE_HEAL_HIT_TAKEN,       "AOE Heal Hit Taken" },
+  { PF_AOE_SPELL_HIT,            "AOE Hostile Spell Hit" },
+  { PF_AOE_SPELL_HIT_TAKEN,      "AOE Hostile Spell Hit Taken" },
+  { PF_HEAL_HIT,                 "Heal Hit"         },
+  { PF_HEAL_HIT_TAKEN,           "Heal Hit Taken"       },
+  { PF_SPELL_HIT,                "Hostile Spell Hit"       },
+  { PF_SPELL_HIT_TAKEN,          "Hostile Spell Hit Taken" },
+  { PF_PERIODIC_HIT,             "Periodic Hit"      },
+  { PF_PERIODIC_HIT_TAKEN,       "Periodic Hit Taken"},
+  { PF_ANY_DAMAGE_TAKEN,         "Any Damage Taken"        },
+  { PF_TRAP_TRIGGERED,           "Trap Triggered"      },
+  { PF_JUMP,                     "Proc on jump"     },
+  { PF_OFFHAND_HIT,              "Melee Off-Hand Hit" },
+  { PF_DEATH,                    "Death" },
   { 0,                        0                   }
 };
 
@@ -250,7 +287,7 @@ std::ostringstream& spell_info::effect_to_str( sim_t*                    sim,
        tmp_buffer2[64];
 
   snprintf( tmp_buffer2, sizeof( tmp_buffer2 ), "(id=%u)", e -> id() );
-  snprintf( tmp_buffer, sizeof( tmp_buffer ), "#%d %-*s: ", e -> index() + 1, 11, tmp_buffer2 );
+  snprintf( tmp_buffer, sizeof( tmp_buffer ), "#%d %-*s: ", e -> index() + 1, 14, tmp_buffer2 );
   s << tmp_buffer;
 
   if ( e -> type() < static_cast< int >( sizeof( _effect_type_strings ) / sizeof( const char* ) ) &&
@@ -343,7 +380,7 @@ std::ostringstream& spell_info::effect_to_str( sim_t*                    sim,
 
   s << std::endl;
 
-  s << "                Base Value: " << e -> base_value();
+  s << "                   Base Value: " << e -> base_value();
   s << " | Scaled Value: ";
 
   double v_min = sim -> dbc.effect_min( e -> id(), level );
@@ -428,18 +465,18 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
     return s.str();
   }
 
-  s <<   "Name          : " << spell -> name_cstr() << " (id=" << spell -> id() << ") " << spell_flags( sim, spell ) << std::endl;
+  s <<   "Name             : " << spell -> name_cstr() << " (id=" << spell -> id() << ") " << spell_flags( sim, spell ) << std::endl;
 
   if ( spell -> replace_spell_id() > 0 )
   {
-    s << "Replaces      : " << sim -> dbc.spell( spell -> replace_spell_id() ) -> name_cstr();
+    s << "Replaces         : " << sim -> dbc.spell( spell -> replace_spell_id() ) -> name_cstr();
     s << " (id=" << spell -> replace_spell_id() << ")" << std::endl;
   }
 
   if ( spell -> class_mask() )
   {
     bool pet_ability = false;
-    s << "Class         : ";
+    s << "Class            : ";
 
     if ( sim -> dbc.is_specialization_ability( spell -> id() ) )
     {
@@ -474,7 +511,7 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
 
   if ( spell -> race_mask() )
   {
-    s << "Race          : ";
+    s << "Race             : ";
     for ( unsigned int i = 0; i < 24; i++ )
     {
       if ( spell -> race_mask() & ( 1 << ( i - 1 ) ) )
@@ -494,7 +531,7 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
       if ( pd -> cost() == 0 )
         continue;
 
-      s << "Resource      : ";
+      s << "Resource         : ";
       if ( pd -> type() == POWER_MANA )
         s << spell -> cost( pd -> type() ) * 100.0 << "%";
       else
@@ -521,7 +558,7 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
   }
   else if ( spell -> rune_cost() > 0 )
   {
-    s << "Resource      : ";
+    s << "Resource         : ";
 
     int b = spell -> rune_cost() & 0x3;
     int u = ( spell -> rune_cost() & 0xC ) >> 2;
@@ -539,7 +576,7 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
 
   if ( spell -> level() > 0 )
   {
-    s << "Spell Level   : " << ( int ) spell -> level();
+    s << "Spell Level      : " << ( int ) spell -> level();
     if ( spell -> max_level() > 0 )
       s << " (max " << ( int ) spell -> max_level() << ")";
 
@@ -548,7 +585,7 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
 
   if ( spell -> min_range() || spell -> max_range() )
   {
-    s << "Range         : ";
+    s << "Range            : ";
     if ( spell -> min_range() )
       s << ( int ) spell -> min_range() << " - ";
 
@@ -557,7 +594,7 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
 
   if ( spell -> _cast_min > 0 || spell -> _cast_max > 0 )
   {
-    s << "Cast Time     : ";
+    s << "Cast Time        : ";
 
     if ( spell -> _cast_div )
       s << spell -> cast_time( level ).total_seconds();
@@ -569,20 +606,20 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
     s << " seconds" << std::endl;
   }
   else if ( spell -> _cast_min < 0 || spell -> _cast_max < 0 )
-    s << "Cast Time     : Ranged Shot" << std::endl;
+    s << "Cast Time        : Ranged Shot" << std::endl;
 
   if ( spell -> gcd() != timespan_t::zero() )
-    s << "GCD           : " << spell -> gcd().total_seconds() << " seconds" << std::endl;
+    s << "GCD              : " << spell -> gcd().total_seconds() << " seconds" << std::endl;
 
   if ( spell -> missile_speed() )
-    s << "Velocity      : " << spell -> missile_speed() << " yards/sec"  << std::endl;
+    s << "Velocity         : " << spell -> missile_speed() << " yards/sec"  << std::endl;
 
   if ( spell -> runic_power_gain() > 0 )
-    s << "Power Gain    : " << spell -> runic_power_gain() << " Runic Power" << std::endl;
+    s << "Power Gain       : " << spell -> runic_power_gain() << " Runic Power" << std::endl;
 
   if ( spell -> duration() != timespan_t::zero() )
   {
-    s << "Duration      : ";
+    s << "Duration         : ";
     if ( spell -> duration() < timespan_t::zero() )
       s << "Aura (infinite)";
     else
@@ -592,11 +629,14 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
   }
 
   if ( spell -> cooldown() > timespan_t::zero() )
-    s << "Cooldown      : " << spell -> cooldown().total_seconds() << " seconds" << std::endl;
+    s << "Cooldown         : " << spell -> cooldown().total_seconds() << " seconds" << std::endl;
+
+  if ( spell -> internal_cooldown() > timespan_t::zero() )
+    s << "Internal Cooldown: " << spell -> internal_cooldown().total_seconds() << " seconds" << std::endl;
 
   if ( spell -> initial_stacks() > 0 || spell -> max_stacks() )
   {
-    s << "Stacks        : ";
+    s << "Stacks           : ";
     if ( spell -> initial_stacks() )
       s << spell -> initial_stacks() << " initial, ";
 
@@ -611,11 +651,11 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
   }
 
   if ( spell -> proc_chance() > 0 )
-    s << "Proc Chance   : " << spell -> proc_chance() * 100 << "%" << std::endl;
+    s << "Proc Chance      : " << spell -> proc_chance() * 100 << "%" << std::endl;
 
   if ( spell -> proc_flags() > 0 )
   {
-    s << "Proc Flags    : ";
+    s << "Proc Flags       : ";
     for ( unsigned flag = 0; flag < 32; flag++ )
     {
       if ( spell -> proc_flags() & ( 1 << flag ) )
@@ -627,7 +667,7 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
         s << " ";
     }
     s << std::endl;
-    s << "              : ";
+    s << "                 : ";
     for ( size_t i = 0; i < sizeof_array( _proc_flag_map ); i++ )
     {
       if ( spell -> proc_flags() & _proc_flag_map[ i ].flag )
@@ -642,9 +682,9 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
   }
 
   if ( spell -> extra_coeff() > 0 )
-    s << "Coefficient   : " << spell -> extra_coeff() << std::endl;
+    s << "Coefficient      : " << spell -> extra_coeff() << std::endl;
 
-  s << "Attributes    : ";
+  s << "Attributes       : ";
   for ( unsigned i = 0; i < NUM_SPELL_FLAGS; i++ )
   {
     for ( unsigned flag = 0; flag < 32; flag++ )
@@ -662,11 +702,11 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
     }
 
     if ( ( i + 1 ) % 2 == 0 && i < NUM_SPELL_FLAGS - 1 )
-      s << std::endl << "              : ";
+      s << std::endl << "                 : ";
   }
   s << std::endl;
 
-  s << "Effects       :" << std::endl;
+  s << "Effects          :" << std::endl;
 
   uint32_t effect_id;
   const spelleffect_data_t* e;
@@ -681,13 +721,13 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
   }
 
   if ( spell -> desc() )
-    s << "Description   : " << spell -> desc() << std::endl;
+    s << "Description      : " << spell -> desc() << std::endl;
 
   if ( spell -> tooltip() )
-    s << "Tooltip       : " << spell -> tooltip() << std::endl;
+    s << "Tooltip          : " << spell -> tooltip() << std::endl;
 
   if ( spell -> desc_vars() )
-    s << "Variables     : " << spell -> desc_vars() << std::endl;
+    s << "Variables        : " << spell -> desc_vars() << std::endl;
 
   s << std::endl;
 

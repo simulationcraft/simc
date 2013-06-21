@@ -1,26 +1,35 @@
 #ifndef DATA_ENUMS_HH
 #define DATA_ENUMS_HH
 
+// Mangos data types for various DBC-related enumerations
 enum proc_flag
 {
-    PF_KILLING_BLOW       = 0x2,
-    PF_AUTO_ATTACK        = 0x4,
-    PF_MELEE_DAMAGE_TAKEN = 0x8,
-    PF_MELEE_ATTACK       = 0x10,
-    PF_AUTO_SHOT          = 0x40,
-    PF_RANGED_SHOT        = 0x100,
-    PF_HEAL_SPELL         = 0x4000,
-    PF_HEAL_RECEIVED      = 0x8000,
-    PF_HARMFUL_SPELL      = 0x10000,
-    PF_HARMFUL_RECEIVED   = 0x20000,
-    PF_PERIODIC_SPELL     = 0x40000,
-    PF_PERIODIC_RECEIVED  = 0x80000,
-    PF_DAMAGE_TAKEN       = 0x100000,
-    PF_TRAP_TRIGGERED     = 0x200000,
-    PF_JUMP               = 0x2000000,
+    PF_KILLED                   = 0x00000001,
+    PF_KILLING_BLOW             = 0x00000002,
+    PF_MELEE_HIT                = 0x00000004,
+    PF_MELEE_HIT_TAKEN          = 0x00000008,
+    PF_MELEE_ABILITY_HIT        = 0x00000010,
+    PF_MELEE_ABILITY_HIT_TAKEN  = 0x00000020,
+    PF_RANGED_HIT               = 0x00000040,
+    PF_RANGED_HIT_TAKEN         = 0x00000080,
+    PF_RANGED_ABILITY_HIT       = 0x00000100,
+    PF_RANGED_ABILITY_HIT_TAKEN = 0x00000200,
+    PF_AOE_HEAL_HIT             = 0x00000400,
+    PF_AOE_HEAL_HIT_TAKEN       = 0x00000800,
+    PF_AOE_SPELL_HIT            = 0x00001000,
+    PF_AOE_SPELL_HIT_TAKEN      = 0x00002000,
+    PF_HEAL_HIT                 = 0x00004000,
+    PF_HEAL_HIT_TAKEN           = 0x00008000,
+    PF_SPELL_HIT                = 0x00010000, // Any "negative" spell
+    PF_SPELL_HIT_TAKEN          = 0x00020000,
+    PF_PERIODIC_HIT             = 0x00040000, // Any periodic ability landed
+    PF_PERIODIC_HIT_TAKEN       = 0x00080000,
+    PF_ANY_DAMAGE_TAKEN         = 0x00100000,
+    PF_TRAP_TRIGGERED           = 0x00200000,
+    PF_OFFHAND_HIT              = 0x00800000,
+    PF_DEATH                    = 0x01000000,
+    PF_JUMP                     = 0x02000000,
 };
-
-// Mangos data types for various DBC-related enumerations
 
 enum item_flag
 {
