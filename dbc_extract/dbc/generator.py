@@ -1995,7 +1995,7 @@ class SpellDataGenerator(DataGenerator):
             if self._options.build >= 17093:
                 fields += self._spellauraoptions_db[spell.id_aura_opt].field('internal_cooldown')
             else:
-                fields += [ '%6u' % 0 ]
+                fields += [ '%7u' % 0 ]
             
             fields += self._spellequippeditems_db[spell.id_equip_items].field('item_class', 'mask_inv_type', 'mask_sub_class')
             

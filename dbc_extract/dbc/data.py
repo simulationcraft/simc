@@ -117,7 +117,7 @@ _DIFF_DATA = {
     },
     17093: {
         'SpellAuraOptions.dbc' : [
-            ( ( 'internal_cooldown', '%6u' ), _ADD_FIELD, 'proc_flags' ),
+            ( ( 'internal_cooldown', '%7u' ), _ADD_FIELD, 'proc_flags' ),
             ( ( 'unk_2', '%f' ), _ADD_FIELD, 'internal_cooldown' )
         ],
     }
@@ -352,7 +352,7 @@ _DBC_FIELDS = {
         'id_active_icon', ( 'mask_school', '%#.2x' )
     ],
     'SpellAuraOptions.dbc' : [
-          'id', ( 'stack_amount', '%3u' ), ( 'proc_chance', '%3u' ), ( 'proc_charges', '%2u' ), ( 'proc_flags', '%#.8x' )
+          'id', ( 'stack_amount', '%3u' ), ( 'proc_chance', '%3u' ), ( 'proc_charges', '%2d' ), ( 'proc_flags', '%#.8x' )
     ],
     'SpellCastTimes.dbc' : [
           'id', ( 'cast_time', '%5d' ), ( 'cast_time_per_level', '%d' ), ( 'min_cast_time', '%5d' )
