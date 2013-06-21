@@ -998,7 +998,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     if ( p -> spec.teachings_of_the_monastery -> ok() )
     {
       aoe = 1 + p -> spec.teachings_of_the_monastery -> effectN( 4 ).base_value();
-      base_multiplier *= p -> spec.teachings_of_the_monastery -> effectN( 5 ).percent();
+      base_aoe_multiplier = p -> spec.teachings_of_the_monastery -> effectN( 5 ).percent();
     }
   }
 
