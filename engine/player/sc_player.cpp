@@ -4757,13 +4757,13 @@ void player_t::assess_damage( school_e school,
 
   if ( ! is_enemy() )
   {
-    if ( buffs.pain_supression -> up() )
+    if ( buffs.pain_supression && buffs.pain_supression -> up() )
       s -> result_amount *= 1.0 + buffs.pain_supression -> data().effectN( 1 ).percent();
 
-    if ( buffs.stoneform -> up() )
+    if ( buffs.stoneform && buffs.stoneform -> up() )
       s -> result_amount *= 1.0 + buffs.stoneform -> data().effectN( 1 ).percent();
 
-    if ( buffs.fortitude -> up() )
+    if ( buffs.fortitude && buffs.fortitude -> up() )
       s -> result_amount *= 1.0 + buffs.fortitude -> data().effectN( 1 ).percent();
 
     // Parry Haste accounting
