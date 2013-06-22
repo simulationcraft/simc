@@ -93,13 +93,13 @@ public:
     if ( index >= _data.capacity() ) // we need to reallocate
     {
       _data.reserve( std::max( size_t(10), _data.capacity() * 2 ) );
-      _data.resize( index );
+      _data.resize( index + 1 );
     }
     else if ( index >= _data.size() ) // we still have enough capacity left, but need to resize up to index
     {
-      _data.resize( index );
+      _data.resize( index + 1 );
     }
-    _data[ index ] += value;
+    _data.at(index) += value;
   }
 
   // Adjust timeline by dividing through divisor timeline
