@@ -14,13 +14,13 @@
 #include "sc_generic.hpp"
 #include "sample_data.hpp"
 
-template <unsigned HW, typename Fwd, typename Out>
-void sliding_window_average( Fwd first, Fwd last, Out out )
+template <typename Fwd, typename Out>
+void sliding_window_average( Fwd first, Fwd last, unsigned half_window, Out out )
 {
   typedef typename std::iterator_traits<Fwd>::value_type value_t;
   typedef typename std::iterator_traits<Fwd>::difference_type diff_t;
   diff_t n = std::distance( first, last );
-  diff_t HALFWINDOW = static_cast<diff_t>( HW );
+  diff_t HALFWINDOW = static_cast<diff_t>( half_window );
 
   if ( n >= 2 * HALFWINDOW )
   {
@@ -60,35 +60,32 @@ void sliding_window_average( Fwd first, Fwd last, Out out )
   }
 }
 
-template <unsigned HW, typename Range, typename Out>
-inline Range& sliding_window_average( Range& r, Out out )
+template <typename Range, typename Out>
+inline Range& sliding_window_average( Range& r, unsigned half_window, Out out )
 {
-  sliding_window_average<HW>( range::begin( r ), range::end( r ), out );
+  sliding_window_average( range::begin( r ), range::end( r ), half_window, out );
   return r;
 }
 
-namespace tl {
 // generic Timeline class
-template <typename T>
 class timeline_t
 {
 private:
-  typedef T data_type;
-  std::vector<T> _data;
+  std::vector<double> _data;
 
 public:
   // const access to the underlying vector data
-  const std::vector<T>& data() const
+  const std::vector<double>& data() const
   { return _data; }
 
   void init( size_t length )
-  { _data.assign( length, data_type() ); }
+  { _data.assign( length, 0.0 ); }
 
   void resize( size_t length )
   { _data.resize( length ); }
 
   // Add 'value' at the specific index
-  void add( size_t index, data_type value )
+  void add( size_t index, double value )
   {
     if ( index >= _data.capacity() ) // we need to reallocate
     {
@@ -113,40 +110,37 @@ public:
     }
   }
 
-  T mean() const
-  {
-    return statistics::calculate_mean( data().begin(), data().end() );
-  }
+  double mean() const
+  { return statistics::calculate_mean( data().begin(), data().end() ); }
 
-  T mean_stddev() const
-  {
-    return statistics::calculate_mean_stddev( data().begin(), data().end() );
-  }
+  double mean_stddev() const
+  { return statistics::calculate_mean_stddev( data().begin(), data().end() ); }
 
   // Merge with other timeline
-  void merge( const timeline_t<data_type>& other )
+  void merge( const timeline_t& other )
   {
+    // merge shared range
     for ( size_t j = 0, num_buckets = std::min( _data.size(), other.data().size() ); j < num_buckets; ++j )
       _data[ j ] += other.data()[ j ];
 
+    // if other is larger, insert tail
     if ( _data.size() < other.data().size() )
       _data.insert( _data.end(), other.data().begin() + _data.size(), other.data().end() );
   }
 
-  template<unsigned half_window>
-  void build_sliding_average_timeline( timeline_t<data_type>& out ) const
+  void build_sliding_average_timeline( timeline_t& out, unsigned half_window ) const
   {
     out._data.reserve( data().size() );
-    sliding_window_average<half_window>( data(), std::back_inserter( out._data ) );
+    sliding_window_average( data(), half_window, std::back_inserter( out._data ) );
   }
 
   // Maximum value; 0 if no data available
-  data_type max() const
-  { return data().empty() ? data_type() : *std::max_element( data().begin(), data().end() ); }
+  double max() const
+  { return data().empty() ? 0.0 : *std::max_element( data().begin(), data().end() ); }
 
   // Minimum value; 0 if no data available
-  data_type min() const
-  { return data().empty() ? data_type() : *std::min_element( data().begin(), data().end() ); }
+  double min() const
+  { return data().empty() ? 0.0 : *std::min_element( data().begin(), data().end() ); }
 
   std::ostream& data_str( std::ostream& s ) const
   {
@@ -169,6 +163,80 @@ public:
   */
 };
 
-} // end namespace tl
+class histogram
+{
+  std::vector<size_t> _data;
+  std::vector<double> _normalized_data;
+  double _min,_max;
 
+  static double nan()
+  { return std::numeric_limits<double>::quiet_NaN(); }
+public:
+  histogram() :
+    _data(), _normalized_data(), _min( nan() ), _max( nan() )
+  {}
+  double min() const
+  { return _min; };
+  double max() const
+  { return _max; };
+
+  std::vector<size_t>& data()
+  { return _data; }
+  std::vector<double>& normalized_data()
+  { return _normalized_data; }
+  double range() const
+  { return max() - min(); };
+
+  double bucket_size() const
+  { return range() / _data.size(); }
+
+  void clear()
+  { _data.clear(); _normalized_data.clear(); _min = nan(); _max = nan();}
+
+  /* Create Histogram from timeline, with given min/max
+   */
+  void create_histogram( const timeline_t& tl, size_t num_buckets, double min, double max )
+  {
+    if ( tl.data().empty() )
+      return;
+    clear();
+    _min = min; _max = max;
+    _data = statistics::create_histogram( tl.data().begin(), tl.data().end(), num_buckets, _min, _max );
+    _normalized_data = statistics::normalize_histogram( _data );
+  }
+
+  /* Create Histogram from timeline, using min/max from tl data
+   */
+  void create_histogram( const timeline_t& tl, size_t num_buckets )
+  {
+    if ( tl.data().empty() )
+      return;
+    double min = *std::min_element( tl.data().begin(), tl.data().end() );
+    double max = *std::max_element( tl.data().begin(), tl.data().end() );
+    create_histogram( tl, num_buckets, min, max );
+  }
+
+  /* Create Histogram from extended sample data, with given min/max
+   */
+  void create_histogram( const extended_sample_data_t& sd, size_t num_buckets, double min, double max )
+  {
+    if ( sd.simple || sd.data().empty() )
+      return;
+    clear();
+    _min = min; _max = max;
+    _data = statistics::create_histogram( sd.data().begin(), sd.data().end(), num_buckets, _min, _max );
+    _normalized_data = statistics::normalize_histogram( _data );
+  }
+
+  /* Create Histogram from extended sample data, using min/max from sd data
+   */
+  void create_histogram( const extended_sample_data_t& sd, size_t num_buckets )
+  {
+    if ( sd.simple || sd.data().empty() )
+      return;
+    double min = *std::min_element( sd.data().begin(), sd.data().end() );
+    double max = *std::max_element( sd.data().begin(), sd.data().end() );
+    create_histogram( sd, num_buckets, min, max );
+  }
+};
 #endif // TIMELINE_HPP

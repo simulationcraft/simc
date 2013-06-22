@@ -194,9 +194,9 @@ namespace std {using namespace tr1; }
  * - data_type is double
  * - timespan_t add helper function
  */
-struct sc_timeline_t : public tl::timeline_t<double>
+struct sc_timeline_t : public timeline_t
 {
-  typedef tl::timeline_t<double> base_t;
+  typedef timeline_t base_t;
   using base_t::add;
 
   // Add 'value' at the corresponding time
@@ -204,7 +204,7 @@ struct sc_timeline_t : public tl::timeline_t<double>
   { base_t::add( static_cast<size_t>( current_time.total_millis() / 1000 ), value ); }
 
   void build_derivative_timeline( sc_timeline_t& out ) const
-  { base_t::build_sliding_average_timeline<10>( out ); }
+  { base_t::build_sliding_average_timeline( out, 10 ); }
 };
 
 // Random Number Generators

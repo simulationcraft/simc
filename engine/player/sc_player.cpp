@@ -9287,7 +9287,7 @@ void player_collected_data_t::analyze( const player_t& p )
   {
     health_changes.timeline.adjust( p.sim -> divisor_timeline );
     // Use half window size of 4, so it's a moving average over 8seconds
-    health_changes.timeline.build_sliding_average_timeline<4>( health_changes.sliding_timeline );
+    health_changes.timeline.build_sliding_average_timeline( health_changes.sliding_timeline, 4 );
   }
 }
 
