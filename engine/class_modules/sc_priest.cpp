@@ -5525,9 +5525,6 @@ void priest_t::create_buffs()
                                            .max_stack( 1 )
                                            .duration( timespan_t::from_seconds( 6.0 ) ); // data in the old deprecated glyph. Leave hardcoded for now, 3/12/2012
 
-  buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", active_spells.surge_of_darkness )
-                                           .chance( active_spells.surge_of_darkness -> ok() ? 0.15 : 0.0 ); // hardcoded into tooltip, 3/12/2012
-
   if ( dbc.ptr )
   {
     buffs.empowered_shadows = buff_creator_t( this, "empowered_shadows" )
@@ -5542,6 +5539,14 @@ void priest_t::create_buffs()
                        .spell( find_spell( 145374 ) )
                        .chance( sets -> has_set_bonus( SET_T16_4PC_HEAL ) ? 1.0 : 0.0 )
                        .add_invalidate( CACHE_HASTE );
+
+    buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", active_spells.surge_of_darkness )
+                                             .chance( active_spells.surge_of_darkness -> ok() ? 0.20 : 0.0 ); // Updated 5.4 PTR value, 6/20/2013
+  }
+  else
+  {
+      buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", active_spells.surge_of_darkness )
+                                               .chance( active_spells.surge_of_darkness -> ok() ? 0.15 : 0.0 ); // hardcoded into tooltip, 3/12/2012
   }
 }
 
