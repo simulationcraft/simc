@@ -3461,6 +3461,11 @@ void player_t::combat_begin()
     buffs.heroic_presence -> trigger();
   }
 
+  if ( ! is_pet() && role == ROLE_TANK )
+  {
+    collected_data.health_changes.timeline.push_back( sc_timeline_t() );
+  }
+
   init_resources( true );
 
   for ( size_t i = 0; i < precombat_action_list.size(); i++ )
@@ -4274,8 +4279,12 @@ void player_t::collect_resource_timeline_information()
   change -= ( resource_gained[ RESOURCE_HEALTH ] - collected_data.health_changes.previous_gain_level );
   collected_data.health_changes.previous_loss_level = resource_lost[ RESOURCE_HEALTH ];
   collected_data.health_changes.previous_gain_level = resource_gained[ RESOURCE_HEALTH ];
-  if ( ! is_pet() || sim -> report_pets_separately )
-    collected_data.health_changes.timeline.add( sim -> current_time, change );
+
+  if ( ! is_pet() && role == ROLE_TANK )
+  {
+    //assert( ! collected_data.health_changes.timeline.empty() );
+    collected_data.health_changes.timeline.back().add( sim -> current_time, change );
+  }
 
 }
 
@@ -9255,7 +9264,7 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
     resource_timelines[ i ].timeline.merge ( other.resource_timelines[ i ].timeline );
   }
 
-  health_changes.timeline.merge( other.health_changes.timeline );
+  health_changes.timeline.insert( health_changes.timeline.end(), other.health_changes.timeline.begin(), other.health_changes.timeline.end() );
 }
 
 void player_collected_data_t::analyze( const player_t& p )
@@ -9283,11 +9292,68 @@ void player_collected_data_t::analyze( const player_t& p )
   {
     resource_timelines[ i ].timeline.adjust( p.sim -> divisor_timeline );
   }
-  if ( !p.is_pet() || p.sim -> report_pets_separately )
+
+  // Health Change Analysis
+  if ( ! p.is_pet() && p.role == ROLE_TANK )
   {
-    health_changes.timeline.adjust( p.sim -> divisor_timeline );
-    // Use half window size of 4, so it's a moving average over 8seconds
-    health_changes.timeline.build_sliding_average_timeline( health_changes.sliding_timeline, 4 );
+    // Stage 1: Create sliding average timelines & merged timelines
+    health_changes.merged_timeline.init( fight_length.max() );
+    health_changes.merged_sliding_average_timeline.init( fight_length.max() );
+    for ( size_t i = 0, size = health_changes.timeline.size(); i < size; ++i )
+    {
+      // Create Merged Timeline
+      for ( size_t j = 0, size = std::min( health_changes.merged_timeline.data().size(), health_changes.timeline[ i ].data().size() ); j < size; ++j )
+      {
+        health_changes.merged_timeline.add( j, health_changes.timeline[ i ].data()[ j ] );
+      }
+
+      // Create Sliding Average Timeline
+      health_changes.sliding_average_timeline.push_back( sc_timeline_t() );
+      // Use half window size of 4, so it's a moving average over 8seconds
+      health_changes.timeline[ i ].build_sliding_average_timeline( health_changes.sliding_average_timeline.back(), 4 );
+
+      // Create Merged Sliding Average Timeline
+      for ( size_t j = 0, size = std::min( health_changes.merged_sliding_average_timeline.data().size(), health_changes.sliding_average_timeline.back().data().size() ); j < size; ++j )
+      {
+        health_changes.merged_sliding_average_timeline.add( j, health_changes.sliding_average_timeline.back().data()[ j ] );
+      }
+    }
+
+    health_changes.merged_timeline.adjust( p.sim -> divisor_timeline );
+    health_changes.merged_sliding_average_timeline.adjust( p.sim -> divisor_timeline );
+
+    // Stage 2: Create Histograms and Merged histograms
+
+    // Obtain min/max value of all slidinga verage timelines
+    double min_value = std::numeric_limits<double>::max(); double max_value = std::numeric_limits<double>::min();
+    for ( size_t i = 0, size = health_changes.sliding_average_timeline.size(); i < size; ++i )
+    {
+      const sc_timeline_t& tl = health_changes.sliding_average_timeline[ i ];
+      if ( ! tl.data().empty() )
+      {
+        double tl_min = *range::min_element( tl.data() );
+        double tl_max = *range::max_element( tl.data() );
+        if ( tl_min < min_value )
+          min_value = tl_min;
+        if ( tl_max > max_value )
+          max_value = tl_max;
+      }
+    }
+    // we found something, create histogram
+    size_t num_buckets = 50; // add option?
+    if ( min_value != std::numeric_limits<double>::max() && min_value != max_value && ! health_changes.sliding_average_timeline.empty() )
+    {
+      health_changes.merged_histogram.create_histogram( health_changes.sliding_average_timeline[ 0 ], num_buckets, min_value, max_value );
+      for ( size_t i = 1, size = health_changes.sliding_average_timeline.size(); i < size; ++i )
+      {
+        const sc_timeline_t& tl = health_changes.sliding_average_timeline[ i ];
+        if ( ! tl.data().empty() )
+        {
+          histogram tmp; tmp.create_histogram( tl, num_buckets, min_value, max_value );
+          health_changes.merged_histogram.accumulate( tmp );
+        }
+      }
+    }
   }
 }
 
@@ -9358,7 +9424,8 @@ std::ostream& player_collected_data_t::data_str( std::ostream& s ) const
   htps.data_str( s );
   heal_taken.data_str( s );
 
-  s << "health changes tl "; health_changes.timeline.data_str( s );
-  s << "health changes moving average tl "; health_changes.sliding_timeline.data_str( s );
+  s << "health changes tl "; health_changes.merged_timeline.data_str( s );
+  s << "health changes moving average tl "; health_changes.merged_sliding_average_timeline.data_str( s );
+
   return s;
 }

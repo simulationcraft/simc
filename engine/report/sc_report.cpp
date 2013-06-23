@@ -999,17 +999,17 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
   {
     ri.health_change_chart =
     chart::timeline( p,
-                     cd.health_changes.timeline.data(),
+                     cd.health_changes.merged_timeline.data(),
                      encoded_name + ' ' + "Health Change",
-                     cd.health_changes.timeline.mean(),
+                     cd.health_changes.merged_timeline.mean(),
                      chart::resource_color( RESOURCE_HEALTH ),
                      max_buckets );
 
     ri.health_change_sliding_chart =
     chart::timeline( p,
-                     cd.health_changes.sliding_timeline.data(),
+                     cd.health_changes.merged_sliding_average_timeline.data(),
                      encoded_name + ' ' + "Health Change (moving average)",
-                     cd.health_changes.sliding_timeline.mean(),
+                     cd.health_changes.merged_sliding_average_timeline.mean(),
                      chart::resource_color( RESOURCE_HEALTH ),
                      max_buckets );
   }

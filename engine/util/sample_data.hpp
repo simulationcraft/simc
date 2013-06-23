@@ -224,6 +224,9 @@ inline std::vector<double> normalize_histogram( const std::vector<size_t>& in )
 {
   std::vector<double> result;
 
+  if ( in.empty() )
+    return result;
+
   size_t count = std::accumulate( in.begin(), in.end(), size_t() );
   double adjust = 1.0 / count;
 

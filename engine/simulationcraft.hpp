@@ -197,7 +197,7 @@ namespace std {using namespace tr1; }
 struct sc_timeline_t : public timeline_t
 {
   typedef timeline_t base_t;
-  using base_t::add;
+  using timeline_t::add;
 
   // Add 'value' at the corresponding time
   void add( timespan_t current_time, double value )
@@ -3774,7 +3774,9 @@ struct player_collected_data_t
   struct health_changes_timeline_t
   {
     double previous_loss_level, previous_gain_level;
-    sc_timeline_t timeline, sliding_timeline;
+    std::vector<sc_timeline_t> timeline, sliding_average_timeline;
+    sc_timeline_t merged_timeline, merged_sliding_average_timeline;
+    histogram merged_histogram;
     health_changes_timeline_t() : previous_loss_level(), previous_gain_level() {}
   } health_changes;
 

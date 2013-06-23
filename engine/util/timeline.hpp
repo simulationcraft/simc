@@ -180,9 +180,9 @@ public:
   double max() const
   { return _max; };
 
-  std::vector<size_t>& data()
+  const std::vector<size_t>& data() const
   { return _data; }
-  std::vector<double>& normalized_data()
+  const std::vector<double>& normalized_data() const
   { return _normalized_data; }
   double range() const
   { return max() - min(); };
@@ -202,7 +202,6 @@ public:
     clear();
     _min = min; _max = max;
     _data = statistics::create_histogram( tl.data().begin(), tl.data().end(), num_buckets, _min, _max );
-    _normalized_data = statistics::normalize_histogram( _data );
   }
 
   /* Create Histogram from timeline, using min/max from tl data
@@ -225,7 +224,6 @@ public:
     clear();
     _min = min; _max = max;
     _data = statistics::create_histogram( sd.data().begin(), sd.data().end(), num_buckets, _min, _max );
-    _normalized_data = statistics::normalize_histogram( _data );
   }
 
   /* Create Histogram from extended sample data, using min/max from sd data
@@ -237,6 +235,32 @@ public:
     double min = *std::min_element( sd.data().begin(), sd.data().end() );
     double max = *std::max_element( sd.data().begin(), sd.data().end() );
     create_histogram( sd, num_buckets, min, max );
+  }
+
+  /* Add a other histogram to this one.
+   * Does nothing if histogram parameters ( min, max, num_buckets ) don't match.
+   */
+  void accumulate( const histogram& other )
+  {
+    if ( min() != other.min() || max() != other.max() || data().size() != other.data().size() )
+      return;
+
+    for ( size_t j = 0, num_buckets = _data.size(); j < num_buckets; ++j )
+      _data[ j ] += other.data()[ j ];
+  }
+
+  /* Creates normalized histogram data from internal unnormalized histogram data
+   */
+  void create_normalized_data()
+  {
+    _normalized_data = statistics::normalize_histogram( _data );
+  }
+
+  /* Returns the total amount of entries of the internal histogram data
+   */
+  size_t num_entries() const
+  {
+    return std::accumulate( _data.begin(), _data.end(), size_t() );
   }
 };
 #endif // TIMELINE_HPP
