@@ -6335,7 +6335,7 @@ int death_knight_t::runes_count( rune_type rt, bool include_death, int position 
         }
       }
       // just count the runes
-      else if ( ( ( ( include_death || rt == RUNE_TYPE_DEATH ) && r -> is_death() ) || ( ! r -> is_death() && r -> get_type() == rt ) )
+      else if ( ( ( ( include_death || rt == RUNE_TYPE_DEATH ) && r -> is_death() ) || r -> get_type() == rt )
                 && r -> is_ready() )
       {
         result++;
