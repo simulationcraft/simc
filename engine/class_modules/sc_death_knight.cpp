@@ -4788,7 +4788,7 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
       case 'u': rt = RUNE_TYPE_UNHOLY; break;
       case 'F': include_death = false;
       case 'f': rt = RUNE_TYPE_FROST; break;
-      case 'D': include_death = false;
+      case 'D': rt = RUNE_TYPE_DEATH; break;
       case 'd': rt = RUNE_TYPE_DEATH; break;
     }
     int position = 0; // any
@@ -4836,14 +4836,18 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
   else if ( splits.size() == 2 )
   {
     rune_type rt = RUNE_TYPE_NONE;
-    if ( util::str_compare_ci( splits[ 0 ], "blood" ) || util::str_compare_ci( splits[ 0 ], "b" ) )
-      rt = RUNE_TYPE_BLOOD;
-    else if ( util::str_compare_ci( splits[ 0 ], "frost" ) || util::str_compare_ci( splits[ 0 ], "f" ) )
-      rt = RUNE_TYPE_FROST;
-    else if ( util::str_compare_ci( splits[ 0 ], "unholy" ) || util::str_compare_ci( splits[ 0 ], "u" ) )
-      rt = RUNE_TYPE_UNHOLY;
-    else if ( util::str_compare_ci( splits[ 0 ], "death" ) || util::str_compare_ci( splits[ 0 ], "d" ) )
-      rt = RUNE_TYPE_DEATH;
+    bool include_death = true;
+    switch ( splits[ 0 ][ 0 ] )
+    {
+      case 'B': include_death = false;
+      case 'b': rt = RUNE_TYPE_BLOOD; break;
+      case 'U': include_death = false;
+      case 'u': rt = RUNE_TYPE_UNHOLY; break;
+      case 'F': include_death = false;
+      case 'f': rt = RUNE_TYPE_FROST; break;
+      case 'D': rt = RUNE_TYPE_DEATH; break;
+      case 'd': rt = RUNE_TYPE_DEATH; break;
+    }
 
     if ( rt != RUNE_TYPE_NONE && util::str_compare_ci( splits[ 1 ], "cooldown_remains" ) )
     {
@@ -4851,59 +4855,62 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
       {
         death_knight_t* dk;
         rune_type r;
+        bool death;
 
-        rune_cooldown_expr_t( death_knight_t* p, rune_type r ) :
+        rune_cooldown_expr_t( death_knight_t* p, rune_type r, bool include_death ) :
           expr_t( "rune_cooldown_remains" ),
-          dk( p ), r( r ) {}
+          dk( p ), r( r ), death( include_death ) {}
         virtual double evaluate()
         {
-          return dk -> runes_cooldown_any( r, true, 0 );
+          return dk -> runes_cooldown_any( r, death, 0 );
         }
       };
 
-      return new rune_cooldown_expr_t( this, rt );
+      return new rune_cooldown_expr_t( this, rt, include_death );
     }
+  }
+  else if ( name_str == "inactive_death" )
+  {
+    struct death_expr_t : public expr_t
+    {
+      death_knight_t* dk;
+      death_expr_t( death_knight_t* p ) :
+        expr_t( "inactive_death" ), dk( p ) { }
+      virtual double evaluate()
+      {
+        return count_death_runes( dk, true );
+      }
+    };
+    return new death_expr_t( this );
   }
   else
   {
     rune_type rt = RUNE_TYPE_NONE;
-    if ( util::str_compare_ci( splits[ 0 ], "blood" ) || util::str_compare_ci( splits[ 0 ], "b" ) )
-      rt = RUNE_TYPE_BLOOD;
-    else if ( util::str_compare_ci( splits[ 0 ], "frost" ) || util::str_compare_ci( splits[ 0 ], "f" ) )
-      rt = RUNE_TYPE_FROST;
-    else if ( util::str_compare_ci( splits[ 0 ], "unholy" ) || util::str_compare_ci( splits[ 0 ], "u" ) )
-      rt = RUNE_TYPE_UNHOLY;
-    else if ( util::str_compare_ci( splits[ 0 ], "death" ) || util::str_compare_ci( splits[ 0 ], "d" ) )
-      rt = RUNE_TYPE_DEATH;
+    bool include_death = true;
+    switch ( splits[ 0 ][ 0 ] )
+    {
+      case 'B': include_death = false;
+      case 'b': rt = RUNE_TYPE_BLOOD; break;
+      case 'U': include_death = false;
+      case 'u': rt = RUNE_TYPE_UNHOLY; break;
+      case 'F': include_death = false;
+      case 'f': rt = RUNE_TYPE_FROST; break;
+      case 'D': rt = RUNE_TYPE_DEATH; break;
+      case 'd': rt = RUNE_TYPE_DEATH; break;
+    }
 
     struct rune_expr_t : public expr_t
     {
       death_knight_t* dk;
       rune_type r;
-      rune_expr_t( death_knight_t* p, rune_type r ) :
-        expr_t( "rune" ), dk( p ), r( r ) { }
+      bool death;
+      rune_expr_t( death_knight_t* p, rune_type r, bool include_death ) :
+        expr_t( "rune" ), dk( p ), r( r ), death( include_death ) { }
       virtual double evaluate()
-      {
-        return dk -> runes_count( r, false, 0 );
-      }
+      { return dk -> runes_count( r, death, 0 ); }
     };
-    if ( rt ) return new rune_expr_t( this, rt );
+    if ( rt ) return new rune_expr_t( this, rt, include_death );
 
-    if ( name_str == "inactive_death" )
-    {
-      struct death_expr_t : public expr_t
-      {
-        death_knight_t* dk;
-        std::string name;
-        death_expr_t( death_knight_t* p, const std::string& name_in ) :
-          expr_t( name_in ), dk( p ), name( name_in ) { }
-        virtual double evaluate()
-        {
-          return count_death_runes( dk, name == "inactive_death" );
-        }
-      };
-      return new death_expr_t( this, name_str );
-    }
   }
 
   return player_t::create_expression( a, name_str );
@@ -6328,7 +6335,7 @@ int death_knight_t::runes_count( rune_type rt, bool include_death, int position 
         }
       }
       // just count the runes
-      else if ( ( ( ( include_death || rt == RUNE_TYPE_DEATH ) && r -> is_death() ) || ( r -> get_type() == rt ) )
+      else if ( ( ( ( include_death || rt == RUNE_TYPE_DEATH ) && r -> is_death() ) || ( ! r -> is_death() && r -> get_type() == rt ) )
                 && r -> is_ready() )
       {
         result++;
