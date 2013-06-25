@@ -2244,6 +2244,7 @@ struct unleash_wind_t : public shaman_melee_attack_t
   {
     background = true;
     may_proc_primal_wisdom = may_dodge = may_parry = false;
+    normalize_weapon_speed = true;
 
     // Unleash wind implicitly uses main hand weapon of the player to perform
     // the damaging attack
@@ -2873,12 +2874,14 @@ struct stormblast_t : public shaman_melee_attack_t
 
     // Actual damaging attacks are done by stormstrike_melee_attack_t
     stormblast_mh = new stormstrike_melee_attack_t( "stormblast_mh", player, data().effectN( 2 ).trigger(), &( player -> main_hand_weapon ) );
+    stormblast_mh -> normalize_weapon_speed = true;
     stormblast_mh -> school = SCHOOL_NATURE;
     add_child( stormblast_mh );
 
     if ( p() -> off_hand_weapon.type != WEAPON_NONE )
     {
       stormblast_oh = new stormstrike_melee_attack_t( "stormblast_oh", player, data().effectN( 3 ).trigger(), &( player -> off_hand_weapon ) );
+      stormblast_oh -> normalize_weapon_speed = true;
       stormblast_oh -> school = SCHOOL_NATURE;
       add_child( stormblast_oh );
     }
