@@ -3774,11 +3774,47 @@ struct player_collected_data_t
   struct health_changes_timeline_t
   {
     double previous_loss_level, previous_gain_level;
+    bool collect_data_per_iteration;
     std::vector<sc_timeline_t> timeline, sliding_average_timeline;
     sc_timeline_t merged_timeline, merged_sliding_average_timeline;
     histogram merged_histogram;
-    health_changes_timeline_t() : previous_loss_level(), previous_gain_level() {}
+    health_changes_timeline_t() : previous_loss_level(), previous_gain_level(), collect_data_per_iteration( false ) {}
   } health_changes;
+
+  // Special Smooth Tanking Metric
+  struct theck_meloree_index_t
+  {
+    std::vector< std::pair<extended_sample_data_t,double> > data; // std::pair< data, weight >
+    theck_meloree_index_t()
+    {
+      // WARNING: Arbitrary metrics!
+      data.push_back( std::make_pair( extended_sample_data_t( "theck_meloree_index_t 95% percentile", false ), 0.6 ) );
+      data.push_back( std::make_pair( extended_sample_data_t( "theck_meloree_index_t 80% percentile", false ), 0.3 ) );
+      data.push_back( std::make_pair( extended_sample_data_t( "theck_meloree_index_t 70% percentile", false ), 0.1 ) );
+    }
+    double result() const
+    {
+      double result = 0.0;
+      for ( size_t i = 0; i < data.size(); ++i )
+        result += data[ i ].first.mean() * data[ i ].second;
+      return result;
+    }
+
+    double mean_stddev() const
+    {
+      double result = 0.0;
+      for ( size_t i = 0; i < data.size(); ++i )
+        result += data[ i ].first.mean_std_dev * data[ i ].second;
+      result /= std::sqrt( data.size() );
+      return result;
+    }
+
+    void analyze()
+    {
+      for ( size_t i = 0; i < data.size(); ++i )
+        data[ i ].first.analyze_all();
+    }
+  } theck_meloree_index;
 
   struct action_sequence_data_t
   {

@@ -4282,7 +4282,7 @@ void player_t::collect_resource_timeline_information()
 
   if ( ! is_pet() && role == ROLE_TANK )
   {
-    //assert( ! collected_data.health_changes.timeline.empty() );
+    assert( ! collected_data.health_changes.timeline.empty() );
     collected_data.health_changes.timeline.back().add( sim -> current_time, change );
   }
 
@@ -8479,6 +8479,9 @@ player_t::scales_over_t player_t::scales_over()
   if ( so == "deaths" )
     return q -> collected_data.deaths;
 
+  if ( so == "theck_meloree_index" )
+    return player_t::scales_over_t( "theck_meloree_index", q -> collected_data.theck_meloree_index.result(), q -> collected_data.theck_meloree_index.mean_stddev() );
+
   if ( q -> primary_role() == ROLE_HEAL || so == "hps" )
     return q -> collected_data.hps;
 
@@ -9293,9 +9296,11 @@ void player_collected_data_t::analyze( const player_t& p )
     resource_timelines[ i ].timeline.adjust( p.sim -> divisor_timeline );
   }
 
+
   // Health Change Analysis
   if ( ! p.is_pet() && p.role == ROLE_TANK )
   {
+    theck_meloree_index.analyze();
     // Stage 1: Create sliding average timelines & merged timelines
     health_changes.merged_timeline.init( fight_length.max() );
     health_changes.merged_sliding_average_timeline.init( fight_length.max() );
@@ -9309,8 +9314,8 @@ void player_collected_data_t::analyze( const player_t& p )
 
       // Create Sliding Average Timeline
       health_changes.sliding_average_timeline.push_back( sc_timeline_t() );
-      // Use half window size of 4, so it's a moving average over 8seconds
-      health_changes.timeline[ i ].build_sliding_average_timeline( health_changes.sliding_average_timeline.back(), 4 );
+      // Use half window size of 3, so it's a moving average over 6seconds
+      health_changes.timeline[ i ].build_sliding_average_timeline( health_changes.sliding_average_timeline.back(), 3 );
 
       // Create Merged Sliding Average Timeline
       for ( size_t j = 0, size = std::min( health_changes.merged_sliding_average_timeline.data().size(), health_changes.sliding_average_timeline.back().data().size() ); j < size; ++j )
@@ -9403,6 +9408,31 @@ void player_collected_data_t::collect_data( const player_t& p )
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
     combat_end_resource[ i ].add( p.resources.current[ i ] );
+
+  // Hook up data extraction for theck_meloree_index
+  if ( ! p.is_pet() && p.role == ROLE_TANK )
+  {
+    assert( ! health_changes.timeline.empty() );
+    std::vector<double> tl_data = health_changes.timeline.back().data();
+    range::sort( tl_data );
+    if ( ! tl_data.empty() )
+    {
+      double percentile = tl_data[ ( int ) ( 0.95 * ( tl_data.size() - 1 ) ) ];
+      theck_meloree_index.data[ 0 ].first.add( percentile);
+
+      percentile = tl_data[ ( int ) ( 0.8 * ( tl_data.size() - 1 ) ) ];
+      theck_meloree_index.data[ 1 ].first.add( percentile);
+
+      percentile = tl_data[ ( int ) ( 0.7 * ( tl_data.size() - 1 ) ) ];
+      theck_meloree_index.data[ 2 ].first.add( percentile);
+    }
+
+
+    if ( ! health_changes.collect_data_per_iteration )
+    {
+      health_changes.timeline.clear(); // Drop Data
+    }
+  }
 }
 
 std::ostream& player_collected_data_t::data_str( std::ostream& s ) const

@@ -220,6 +220,24 @@ std::vector<size_t> create_histogram( iterator begin, iterator end, size_t num_b
 /* Normalizes a histogram.
  * sum over all elements of the histogram will be equal to 1.0
  */
+inline std::vector<double> normalize_histogram( const std::vector<size_t>& in, size_t total_num_entries )
+{
+  std::vector<double> result;
+
+  if ( in.empty() )
+    return result;
+
+  assert( total_num_entries == std::accumulate( in.begin(), in.end(), size_t() ) );
+  double adjust = 1.0 / total_num_entries;
+
+  for ( size_t i = 0, size = in.size(); i < size; ++i )
+    result.push_back( in[ i ] * adjust );
+
+  return result;
+}
+/* Normalizes a histogram.
+ * sum over all elements of the histogram will be equal to 1.0
+ */
 inline std::vector<double> normalize_histogram( const std::vector<size_t>& in )
 {
   std::vector<double> result;
@@ -228,12 +246,8 @@ inline std::vector<double> normalize_histogram( const std::vector<size_t>& in )
     return result;
 
   size_t count = std::accumulate( in.begin(), in.end(), size_t() );
-  double adjust = 1.0 / count;
 
-  for ( size_t i = 0, size = in.size(); i < size; ++i )
-    result.push_back( in[ i ] * adjust );
-
-  return result;
+  return normalize_histogram( in, count );
 }
 
 template <typename iterator>

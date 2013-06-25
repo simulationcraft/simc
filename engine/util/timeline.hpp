@@ -168,9 +168,15 @@ class histogram
   std::vector<size_t> _data;
   std::vector<double> _normalized_data;
   double _min,_max;
+  size_t _num_entries; // total value of all _data entries
 
   static double nan()
   { return std::numeric_limits<double>::quiet_NaN(); }
+
+  /* Calculates the total amount of entries of the internal histogram data
+   */
+  void calculate_num_entries()
+  { _num_entries = std::accumulate( _data.begin(), _data.end(), size_t() ); }
 public:
   histogram() :
     _data(), _normalized_data(), _min( nan() ), _max( nan() )
@@ -191,7 +197,7 @@ public:
   { return range() / _data.size(); }
 
   void clear()
-  { _data.clear(); _normalized_data.clear(); _min = nan(); _max = nan();}
+  { _data.clear(); _normalized_data.clear(); _min = nan(); _max = nan(); _num_entries = 0; }
 
   /* Create Histogram from timeline, with given min/max
    */
@@ -202,6 +208,7 @@ public:
     clear();
     _min = min; _max = max;
     _data = statistics::create_histogram( tl.data().begin(), tl.data().end(), num_buckets, _min, _max );
+    calculate_num_entries();
   }
 
   /* Create Histogram from timeline, using min/max from tl data
@@ -224,6 +231,7 @@ public:
     clear();
     _min = min; _max = max;
     _data = statistics::create_histogram( sd.data().begin(), sd.data().end(), num_buckets, _min, _max );
+    calculate_num_entries();
   }
 
   /* Create Histogram from extended sample data, using min/max from sd data
@@ -247,6 +255,64 @@ public:
 
     for ( size_t j = 0, num_buckets = _data.size(); j < num_buckets; ++j )
       _data[ j ] += other.data()[ j ];
+
+    _num_entries += other.num_entries();
+  }
+
+  /* Calculates approximation of the percentile of the original distribution
+   * The quality of the value depends on how much information was lost when creating the histogram
+   * Inside a bucket, we use linear interpolation
+   */
+  double percentile( double p )
+  {
+    assert( p >= 0.0 && p <= 1.0 && "p must be within [0.0 1.0]" );
+    if ( !num_entries() )
+      return 0.0;
+
+    size_t target = static_cast<size_t>( p * num_entries() );
+
+    // Performance Optimization: We assume a roughly balanced distribution,
+    // so for p <= 0.5 we start from min counting upwards, otherwise from max counting downwards
+    if ( p <= 0.5 )
+    {
+      size_t count = 0;
+      for ( size_t i = 0, size = data().size(); i < size; ++i )
+      {
+        count += data()[ i ];
+        if ( count >= target )
+        {
+          // We reached the target bucket.
+
+          // Calculate linear interpolation x
+          double x = data()[ i ] ? ( count - target ) / data()[ i ] : 0.0;
+          assert( x >= 0.0 && x <= 1.0 );
+
+          // Return result
+          return _min + ( i + x ) * bucket_size();
+        }
+      }
+    }
+    else
+    {
+      size_t count = num_entries();
+      for ( int i = data().size() - 1; i >= 0; --i )
+      {
+        count -= data()[ i ];
+        if ( count <= target )
+        {
+          // We reached the target bucket.
+
+          // Calculate linear interpolation x
+          double x = data()[ i ] ? ( target - count ) / data()[ i ] : 0.0;
+          assert( x >= 0.0 && x <= 1.0 );
+
+          // Return result
+          return _max - ( i - x ) * bucket_size();
+        }
+      }
+    }
+
+    assert( false ); return 0.0;
   }
 
   /* Creates normalized histogram data from internal unnormalized histogram data
@@ -259,8 +325,6 @@ public:
   /* Returns the total amount of entries of the internal histogram data
    */
   size_t num_entries() const
-  {
-    return std::accumulate( _data.begin(), _data.end(), size_t() );
-  }
+  { return _num_entries; }
 };
 #endif // TIMELINE_HPP
