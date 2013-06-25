@@ -39,7 +39,7 @@ shoulders=mantle_of_the_chromatic_hydra,id=96638,gems=80int_160crit_320crit_120h
 waist=vitabinder_wrap,id=94996,gems=160crit_160hit_160crit_160hit_320crit_120int,reforge=hit_haste
 legs=leggings_of_the_chromatic_hydra,id=96636,gems=320crit_160crit_160hit_120int,enchant=285int_165crit
 feet=starwalker_sandals,id=95004,gems=320crit_160crit_160hit_120int,enchant=140mastery,reforge=mastery_haste
-wrists=frostborn_wristwraps,id=96824,gems=320crit_320crit_60int,enchant=180int
+wrists=frostborn_wristwraps,stats=1144armor_957int_1555sta_1024crit,id=96824,gems=320crit_320crit_60int,enchant=180int
 finger1=radens_summoning_band,id=95019,gems=160crit_160hit_60int,reforge=hit_crit
 back=jadefire_drape,id=98150,gems=80int_160crit_60int,enchant=180int
 main_hand=venomlords_totemic_wand,id=96776,gems=160crit_160hit_320crit_60int,enchant=jade_spirit,reforge=haste_hit
