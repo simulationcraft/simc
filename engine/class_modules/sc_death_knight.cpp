@@ -2810,6 +2810,9 @@ struct soul_reaper_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_soul_reaper -> execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+      trigger_t16_2pc_tank( execute_state );
   }
 
   void tick( dot_t* dot )
@@ -3156,6 +3159,8 @@ struct death_coil_t : public death_knight_spell_t
 
       if ( p() -> sets -> set( SET_T16_4PC_MELEE ) -> ok() && p() -> buffs.dark_transformation -> check() )
         p() -> buffs.dark_transformation -> extend_duration( p(), timespan_t::from_millis( p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).base_value() ) );
+
+      trigger_t16_2pc_tank( s );
     }
   }
 };
