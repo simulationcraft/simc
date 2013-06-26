@@ -3080,6 +3080,11 @@ double player_t::composite_spell_haste()
 
     if ( sim -> auras.spell_haste -> check() )
       h *= 1.0 / ( 1.0 + sim -> auras.spell_haste -> value() );
+
+    if ( race == RACE_GOBLIN )
+    {
+      h *= 1.0 / ( 1.0 + 0.01 );
+    }
   }
 
   return h;
@@ -3090,11 +3095,6 @@ double player_t::composite_spell_haste()
 double player_t::composite_spell_speed()
 {
   double h = cache.spell_haste();
-
-  if ( race == RACE_GOBLIN )
-  {
-    h *= 1.0 / ( 1.0 + 0.01 );
-  }
 
   return  h;
 }

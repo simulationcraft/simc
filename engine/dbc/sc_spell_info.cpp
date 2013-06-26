@@ -193,7 +193,7 @@ static const char * _effect_subtype_strings[] =
   "Modify Critical Heal Bonus", "Modify Block%",            "Modify Crit%",         "Periodic Health Leech",    "Modify Hit%",                        // 50
   "Modify Spell Hit%",          0,                          "Modify Spell Crit%",   0,                          0,                                    // 55
   "Pacify Silence",             "Scale%",                   0,                      0,                          "Periodic Mana Leech",                // 60
-  "Modify Spell Haste / Cast Speed%",         "Feign Death",              "Disarm",               "Stalked",                  "Absorb Damage",                      // 65
+  "Modify Spell Haste%",        "Feign Death",              "Disarm",               "Stalked",                  "Absorb Damage",                      // 65
   0,                            0,                          "Modify Power Cost%",   "Modify Power Cost",        "Reflect Spells",                     // 70
   0,                            0,                          "Mechanic Immunity",    0,                          "Modify Damage Done%",   // 75
   "Modify Attribute%",          0,                          0,                      0,                          0,                       // 80
@@ -207,8 +207,8 @@ static const char * _effect_subtype_strings[] =
   0,                            0,                          0,                      0,                          "Modify Ranged Attack Power", // 120
   0,                            0,                          0,                      0,                          0,                       // 125
   0,                            0,                          0,                      0,                          0,                       // 130
-  0,                            0,                          "Modify Total Stat%",   "Modify Haste",             0,                       // 135
-  0,                            0,                          "Modify Base Resistance",0,                         0,                       // 140
+  0,                            0,                          "Modify Total Stat%",   "Modify Melee Haste%",      0,                       // 135
+  "Modify Ranged Haste%",       0,                          "Modify Base Resistance",0,                         0,                       // 140
   0,                            0,                          0,                      0,                          0,                       // 145
   0,                            0,                          0,                      0,                          0,                       // 150
   0,                            0,                          0,                      0,                          0,                       // 155
