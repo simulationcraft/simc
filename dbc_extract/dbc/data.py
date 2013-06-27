@@ -118,7 +118,7 @@ _DIFF_DATA = {
     17093: {
         'SpellAuraOptions.dbc' : [
             ( ( 'internal_cooldown', '%7u' ), _ADD_FIELD, 'proc_flags' ),
-            ( ( 'unk_2', '%f' ), _ADD_FIELD, 'internal_cooldown' )
+            ( ( 'unk_2', '%u' ), _ADD_FIELD, 'internal_cooldown' )
         ],
     }
 }
@@ -426,6 +426,12 @@ _DBC_FIELDS = {
     'SpellPower.dbc' : [
           ( 'id', '%6u' ), ( 'type_power', '%2d' ),( 'cost', '%6d' ),     'unk_1',     ( 'cost_per_second', '%3d' ), 'unk_2',
           'id_display', ( 'cost_2', '%5.2f' ),     ( 'cost_per_second2', '%5.2f' ),   ( 'aura_id', '%6u' ), ( 'id_spell', '%6u' )
+    ],
+    'SpellProcsPerMinute.dbc' : [
+         'id', ( 'ppm', '%f' ), 'f2'
+    ],
+    'SpellProcsPerMinuteMod.dbc' : [
+        'id', 'f1', 'f2', ( 'f3', '%f' ), 'f4'
     ],
     'SpellRadius.dbc' : [
           'id', ( 'radius_1', '%7.1f' ), 'radius_2', ( 'radius_3', '%7.f' )
