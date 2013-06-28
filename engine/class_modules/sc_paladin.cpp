@@ -145,7 +145,7 @@ public:
     gain_t* hp_tower_of_radiance;
     gain_t* hp_judgment;
     gain_t* hp_t15_4pc_tank;
-    gain_t* hp_t16_4pc_tank;
+    gain_t* hp_sanctified_wrath;
   } gains;
 
   // Cooldowns
@@ -2395,6 +2395,29 @@ struct word_of_glory_t : public paladin_heal_t
     }
   }
 
+  virtual double cost()
+  {
+    // check for T16 4-pc tank effect
+    if ( p() -> set_bonus.tier16_4pc_tank() && p() -> buffs.bastion_of_glory -> current_stack >= 3 )
+      return 0.0;
+
+    return paladin_heal_t::cost();
+  }
+
+  virtual void consume_free_hp_effects()
+  {
+    // order of operations: T16 4-pc tank, then Divine Purpose (assumed!)
+
+    // check for T16 4pc tank bonus
+    if ( p() -> set_bonus.tier16_4pc_tank() && p() -> buffs.bastion_of_glory -> current_stack >= 3 )
+    {
+      // nothing necessary here, BoG will be consumed automatically upon cast
+      return;
+    }
+
+    paladin_heal_t::consume_free_hp_effects();
+  }
+
   virtual double action_multiplier()
   {
     double am = paladin_heal_t::action_multiplier();
@@ -2431,12 +2454,14 @@ struct word_of_glory_t : public paladin_heal_t
     if ( p() -> set_bonus.tier15_2pc_tank() )
       p() -> buffs.shield_of_glory -> trigger();
 
+    /* Set bonus changed in PTR b17124, leaving code in case it gets reverted
     // T16 4-piece tank bonus grants HP for each stack of BoG used
     if ( p() -> set_bonus.tier16_4pc_tank() )
     {
       // add that much Holy Power
       p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.bastion_of_glory -> stack() , p() -> gains.hp_t16_4pc_tank );
     }
+    */
     // consume BoG stacks
     p() -> buffs.bastion_of_glory -> expire();
   }
@@ -3191,6 +3216,10 @@ struct judgment_t : public paladin_melee_attack_t
       {
         // apply gain, attribute gain to Judgments of the Wise
         p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgments_of_the_wise );
+
+        // if sanctified wrath is talented and Avenging Wrath is active, give another HP
+        if ( p() -> talents.sanctified_wrath -> ok() && p() -> buffs.avenging_wrath -> check() && p() -> dbc.ptr )
+          p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_sanctified_wrath );
       }
 
       // Holy Avenger adds 2 more Holy Power if active
@@ -3859,11 +3888,11 @@ void paladin_t::init_gains()
   gains.hp_judgments_of_the_bold    = get_gain( "holy_power_judgments_of_the_bold" );
   gains.hp_judgments_of_the_wise    = get_gain( "holy_power_judgments_of_the_wise" );
   gains.hp_pursuit_of_justice       = get_gain( "holy_power_pursuit_of_justice" );
+  gains.hp_sanctified_wrath         = get_gain( "holy_power_sanctified_wrath" );
   gains.hp_templars_verdict_refund  = get_gain( "holy_power_templars_verdict_refund" );
   gains.hp_tower_of_radiance        = get_gain( "holy_power_tower_of_radiance" );
   gains.hp_judgment                 = get_gain( "holy_power_judgment" );
   gains.hp_t15_4pc_tank             = get_gain( "holy_power_t15_4pc_tank" );
-  gains.hp_t16_4pc_tank             = get_gain( "holy_power_t16_4pc_tank" );
 }
 
 // paladin_t::init_procs ====================================================
