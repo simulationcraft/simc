@@ -159,10 +159,12 @@ public:
     cooldown_t* echo_of_the_elements;
     cooldown_t* feral_spirits;
     cooldown_t* lava_burst;
+    cooldown_t* lava_lash;
     cooldown_t* shock;
     cooldown_t* stormlash;
     cooldown_t* strike;
     cooldown_t* t16_4pc_caster;
+    cooldown_t* t16_4pc_melee;
     cooldown_t* windfury_weapon;
   } cooldown;
 
@@ -380,10 +382,12 @@ public:
     cooldown.echo_of_the_elements = get_cooldown( "echo_of_the_elements"  );
     cooldown.feral_spirits        = get_cooldown( "feral_spirit"          );
     cooldown.lava_burst           = get_cooldown( "lava_burst"            );
+    cooldown.lava_lash            = get_cooldown( "lava_lash"             );
     cooldown.shock                = get_cooldown( "shock"                 );
     cooldown.stormlash            = get_cooldown( "stormlash_totem"       );
     cooldown.strike               = get_cooldown( "strike"                );
     cooldown.t16_4pc_caster       = get_cooldown( "t16_4pc_caster"        );
+    cooldown.t16_4pc_melee        = get_cooldown( "t16_4pc_melee"         );
     cooldown.windfury_weapon      = get_cooldown( "windfury_weapon"       );
 
     melee_mh = 0;
@@ -1871,6 +1875,26 @@ static bool trigger_tier16_2pc_melee( const action_state_t* s )
   return true;
 }
 
+// trigger_tier16_4pc_melee ================================================
+
+static bool trigger_tier16_4pc_melee( const action_state_t* s )
+{
+  shaman_t* p = debug_cast< shaman_t* >( s -> action -> player );
+
+  if ( p -> cooldown.t16_4pc_melee -> down() )
+    return false;
+
+  if ( ! p -> rng.t16_4pc_melee -> roll( p -> sets -> set( SET_T16_4PC_MELEE ) -> proc_chance() ) )
+    return false;
+
+  p -> cooldown.t16_4pc_melee -> start( p -> sets -> set( SET_T16_4PC_MELEE ) -> internal_cooldown() );
+
+  p -> proc.t16_4pc_melee -> occur();
+  p -> buff.searing_flames -> trigger( 5 );
+  p -> cooldown.lava_lash -> reset( true );
+
+  return true;
+}
 // trigger_tier16_4pc_caster ================================================
 
 static bool trigger_tier16_4pc_caster( const action_state_t* s )
@@ -1883,7 +1907,7 @@ static bool trigger_tier16_4pc_caster( const action_state_t* s )
   if ( ! p -> rng.t16_4pc_caster -> roll( p -> sets -> set( SET_T16_4PC_CASTER ) -> proc_chance() ) )
     return false;
 
-  p -> cooldown.t16_4pc_caster -> start( timespan_t::from_millis( 100 ) );
+  p -> cooldown.t16_4pc_caster -> start( p -> sets -> set( SET_T16_4PC_CASTER ) -> internal_cooldown() );
 
   for ( size_t i = 0; i < sizeof_array( p -> guardian_lightning_elemental ); i++ )
   {
@@ -3834,11 +3858,8 @@ struct earth_shock_t : public shaman_spell_t
 
 struct flame_shock_t : public shaman_spell_t
 {
-  cooldown_t* cd_lava_lash;
-
   flame_shock_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( player, player -> find_class_spell( "Flame Shock" ), options_str ),
-    cd_lava_lash( player -> get_cooldown( "lava_lash" ) )
+    shaman_spell_t( player, player -> find_class_spell( "Flame Shock" ), options_str )
   {
     tick_may_crit         = true;
     dot_behavior          = DOT_REFRESH;
@@ -3913,12 +3934,7 @@ struct flame_shock_t : public shaman_spell_t
       p() -> buff.lava_surge -> trigger();
     }
 
-    if ( p() -> rng.t16_4pc_melee -> roll( p() -> sets -> set( SET_T16_4PC_MELEE ) -> proc_chance() ) )
-    {
-      p() -> proc.t16_4pc_melee -> occur();
-      p() -> buff.searing_flames -> trigger( 5 );
-      cd_lava_lash -> reset( true );
-    }
+    trigger_tier16_4pc_melee( d -> state );
   }
 
   void last_tick( dot_t* d )
