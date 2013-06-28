@@ -21,6 +21,12 @@ class DataGenerator(object):
     def debug(self, msg):
         if self._options.debug == True:
             sys.stderr.write("%s: %s\n" % ( self.__class__.__name__, msg ))
+
+    def dbc_version(self, wow, build):
+        if self._options.wowversion == 0:
+            return self._options.build >= build
+        else:
+            return self._options.wowversion >= wow and self._options.build >= build
     
     def __init__(self, options):
         self._options = options
@@ -1992,7 +1998,7 @@ class SpellDataGenerator(DataGenerator):
                 'stack_amount', 'proc_chance', 'proc_charges', 'proc_flags'
             )
 
-            if self._options.build >= 17093:
+            if self.dbc_version(50400, 17093):
                 fields += self._spellauraoptions_db[spell.id_aura_opt].field('internal_cooldown')
             else:
                 fields += [ '%7u' % 0 ]
@@ -3101,7 +3107,7 @@ class SpellItemEnchantmentGenerator(RandomSuffixGenerator):
             fields += [ '{ %s }' % ', '.join(ench_data.field('type_1', 'type_2', 'type_3')) ]
             fields += [ '{ %s }' % ', '.join(ench_data.field('amount_1', 'amount_2', 'amount_3')) ]
             fields += [ '{ %s }' % ', '.join(ench_data.field('id_property_1', 'id_property_2', 'id_property_3')) ]
-            if self._options.build >= 17056:
+            if self.dbc_version(50400, 17056):
                 fields += [ '{ %s }' % ', '.join(ench_data.field('coeff_1', 'coeff_2', 'coeff_3')) ]
             else:
                 fields += [ '{ 0, 0, 0 }' ]

@@ -3,6 +3,18 @@
 import optparse, sys, os, glob, re
 import dbc.generator, dbc.db, dbc.parser, dbc.patch
 
+def parse_wow_version(option, opt, value, parser):
+    parser.values.wowversion = 0
+    split = re.split('\.', value)
+    if len(split) != 3:
+        raise optparse.OptionValueError
+
+    mul = 10000
+    div = 100
+    for s in split:
+        parser.values.wowversion += int(s) * mul
+        mul /= div
+
 parser = optparse.OptionParser( usage= "%prog [-otlbp] [ARGS]", version = "%prog 1.0" )
 parser.add_option("-o", "--out", dest = "output_type", 
                   help    = "Output type (.cpp, .js) <NYI> [cpp]", metavar = "TYPE", 
@@ -42,6 +54,9 @@ parser.add_option("--scale-ilvl", dest = "scale_ilevel",
 parser.add_option("--cache", dest = "cache_dir",
                   help    = "World of Warcraft Cache directory.", 
                   default = r'', action = "store", type = "string" )
+parser.add_option("-v", 
+                  help    = "World of Warcraft version, in the format <major>.<minor>.<patch>, i.e., 5.3.0",
+                  action = "callback", dest = "wowversion", type = "string", default = 0, callback = parse_wow_version )
 parser.add_option("--debug", dest = "debug", default = False, action = "store_true")
 (options, args) = parser.parse_args()
 
@@ -65,7 +80,7 @@ if options.type == 'patch' and len(args) < 3:
     
 # Initialize the base model for dbc.data, creating the relevant classes for all patch levels
 # up to options.build
-dbc.data.initialize_data_model(options.build, dbc.data)
+dbc.data.initialize_data_model(options.build, options.wowversion, dbc.data)
 
 if options.type == 'spell':
     g = dbc.generator.SpellDataGenerator(options)

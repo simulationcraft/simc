@@ -111,17 +111,20 @@ _DIFF_DATA = {
         ]
     },
     17056: {
+        'WOW_VERSION': 50400,
         'SpellItemEnchantment.dbc' : [
             ( ( 'coeff_3', '%7.4f' ), _ADD_FIELD, 'coeff_2' ),
         ]
     },
     17093: {
+        'WOW_VERSION': 50400,
         'SpellAuraOptions.dbc' : [
             ( ( 'internal_cooldown', '%7u' ), _ADD_FIELD, 'proc_flags' ),
             ( ( 'unk_2', '%u' ), _ADD_FIELD, 'internal_cooldown' )
         ],
     },
     17124: {
+        'WOW_VERSION': 50400,
         'SpellEffectScaling.dbc' : [
             ( ( 'unk_17124', '%f' ), _ADD_FIELD, 'bonus' )
         ],
@@ -1225,7 +1228,7 @@ class GameTables(DBCRecord):
 
         return s
         
-def initialize_data_model(build, obj):
+def initialize_data_model(build, version, obj):
     # First, create base classes, based on build id 0
     for dbc_file_name, field_data in _DBC_FIELDS.iteritems():
         class_name = '%s' % dbc_file_name.split('.')[0].replace('-', '_')
@@ -1265,6 +1268,10 @@ def initialize_data_model(build, obj):
 
     # Then, derive patch classes from base
     for build_id in sorted(_DIFF_DATA.keys()):
+        diff_version = _DIFF_DATA[build_id].get('WOW_VERSION', 0)
+        if version > 0 and diff_version > 0 and diff_version > version:
+            continue
+
         for dbc_file_name, dbc_fields in _DBC_FIELDS.iteritems():
             if build_id > build:
                 break
