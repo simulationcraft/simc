@@ -162,6 +162,7 @@ public:
     cooldown_t* shock;
     cooldown_t* stormlash;
     cooldown_t* strike;
+    cooldown_t* t16_4pc_caster;
     cooldown_t* windfury_weapon;
   } cooldown;
 
@@ -382,6 +383,7 @@ public:
     cooldown.shock                = get_cooldown( "shock"                 );
     cooldown.stormlash            = get_cooldown( "stormlash_totem"       );
     cooldown.strike               = get_cooldown( "strike"                );
+    cooldown.t16_4pc_caster       = get_cooldown( "t16_4pc_caster"        );
     cooldown.windfury_weapon      = get_cooldown( "windfury_weapon"       );
 
     melee_mh = 0;
@@ -1875,8 +1877,13 @@ static bool trigger_tier16_4pc_caster( const action_state_t* s )
 {
   shaman_t* p = debug_cast< shaman_t* >( s -> action -> player );
 
+  if ( p -> cooldown.t16_4pc_caster -> down() )
+    return false;
+
   if ( ! p -> rng.t16_4pc_caster -> roll( p -> sets -> set( SET_T16_4PC_CASTER ) -> proc_chance() ) )
     return false;
+
+  p -> cooldown.t16_4pc_caster -> start( timespan_t::from_millis( 100 ) );
 
   for ( size_t i = 0; i < sizeof_array( p -> guardian_lightning_elemental ); i++ )
   {
