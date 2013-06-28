@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 17093
+// Class based active abilities, wow build 17124
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -121,12 +121,12 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         1022, // Hand of Protection
         6940, // Hand of Sacrifice
         1038, // Hand of Salvation
-       20925, // Holy Shield
        20271, // Judgment
          633, // Lay on Hands
        96231, // Rebuke
        62124, // Reckoning
        25780, // Righteous Fury
+       20925, // Sacred Shield
       105361, // Seal of Command
        20165, // Seal of Insight
        20154, // Seal of Righteousness
@@ -150,14 +150,13 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        85222, // Light of Dawn
            0,
     },
-    // Protection tree, 8 abilities
+    // Protection tree, 7 abilities
     {
        31850, // Ardent Defender
        31935, // Avenger's Shield
        26573, // Consecration
        86659, // Guardian of Ancient Kings
        53595, // Hammer of the Righteous
-       20925, // Holy Shield
       119072, // Holy Wrath
        53600, // Shield of the Righteous
            0,
@@ -965,12 +964,13 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         5176, // Wrath
            0,
     },
-    // Balance tree, 12 abilities
+    // Balance tree, 13 abilities
     {
       127663, // Astral Communion
       106996, // Astral Storm (Balance)
       112071, // Celestial Alignment
        24858, // Moonkin Form
+      132158, // Nature's Swiftness
         2782, // Remove Corruption
        78675, // Solar Beam
        48505, // Starfall
@@ -1033,7 +1033,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (26)
 
-// Talent tree specialization abilities, wow build 17093
+// Talent tree specialization abilities, wow build 17124
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1172,7 +1172,6 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        86659, // Guardian of Ancient Kings
       115801, // Hammer of the Righteous
        53595, // Hammer of the Righteous
-       20925, // Holy Shield
       119072, // Holy Wrath
       137028, // Hotfix Passive
       105424, // Judgments of the Wise
@@ -1781,6 +1780,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        77492, // Mastery: Total Eclipse
        24858, // Moonkin Form
       112857, // Natural Insight
+      132158, // Nature's Swiftness
        48393, // Owlkin Frenzy
         2782, // Remove Corruption
        93399, // Shooting Stars
@@ -1877,7 +1877,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 17093
+// Class mastery abilities, wow build 17124
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2100,7 +2100,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 17093
+// Racial abilities, wow build 17124
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2813,7 +2813,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 17093
+// Glyph spells for classes, wow build 17124
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3392,7 +3392,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 17093
+// Tier item set bonuses for class, wow build 17124
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {

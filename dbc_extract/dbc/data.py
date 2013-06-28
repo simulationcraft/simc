@@ -120,7 +120,15 @@ _DIFF_DATA = {
             ( ( 'internal_cooldown', '%7u' ), _ADD_FIELD, 'proc_flags' ),
             ( ( 'unk_2', '%u' ), _ADD_FIELD, 'internal_cooldown' )
         ],
-    }
+    },
+    17124: {
+        'SpellEffectScaling.dbc' : [
+            ( ( 'unk_17124', '%f' ), _ADD_FIELD, 'bonus' )
+        ],
+        'JournalEncounterItem.dbc' : [
+            ( 'unk_17124', _ADD_FIELD, 'flags_2' )
+        ],
+    },
 }
 
 # Base DBC/DB2 fields, works for 15464, as that's our first DBC/DB2 data version
