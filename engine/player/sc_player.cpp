@@ -8479,8 +8479,9 @@ player_t::scales_over_t player_t::scales_over()
   if ( so == "deaths" )
     return q -> collected_data.deaths;
 
-  if ( so == "theck_meloree_index" )
-    return player_t::scales_over_t( "theck_meloree_index", q -> collected_data.theck_meloree_index.result(), q -> collected_data.theck_meloree_index.mean_stddev() );
+  if ( so == "theck_meloree_index" || so == "tmi" )
+    return q -> collected_data.theck_meloree_index;
+    //return player_t::scales_over_t( "theck_meloree_index", q -> collected_data.theck_meloree_index.mean(), q -> collected_data.theck_meloree_index.mean_std_dev() );
 
   if ( q -> primary_role() == ROLE_HEAL || so == "hps" )
     return q -> collected_data.hps;
@@ -9215,7 +9216,8 @@ player_collected_data_t::player_collected_data_t( const std::string& player_name
   deaths( player_name + " Deaths", s.statistics_level < 2 ),
   resource_timelines(),
   combat_end_resource( RESOURCE_MAX ),
-  health_changes()
+  health_changes(),
+  theck_meloree_index( player_name + " Theck-Meloree Index", s.statistics_level < 2 )
 { }
 
 void player_collected_data_t::reserve_memory( const player_t& p )
@@ -9290,6 +9292,7 @@ void player_collected_data_t::analyze( const player_t& p )
   htps.analyze_all();
   // Tank
   deaths.analyze_all();
+  theck_meloree_index.analyze_all();
 
   for ( size_t i = 0; i <  resource_timelines.size(); ++i )
   {
@@ -9300,7 +9303,6 @@ void player_collected_data_t::analyze( const player_t& p )
   // Health Change Analysis
   if ( ! p.is_pet() && p.role == ROLE_TANK )
   {
-    theck_meloree_index.analyze();
     // Stage 1: Create sliding average timelines & merged timelines
     health_changes.merged_timeline.init( fight_length.max() );
     health_changes.merged_sliding_average_timeline.init( fight_length.max() );
@@ -9413,7 +9415,49 @@ void player_collected_data_t::collect_data( const player_t& p )
   if ( ! p.is_pet() && p.role == ROLE_TANK )
   {
     assert( ! health_changes.timeline.empty() );
+
+    // define constants that may eventually become user-definable inputs
+    int window = 6; // window size, this may becomeuser-definable later
+    double w0 = 6; // normalized window size
+    double hdf  = 3; // default health decade factor
+    
+    // define TMI result
+    double tmi = 0;
+
+    // create sliding average timeline
+    health_changes.sliding_average_timeline.push_back( sc_timeline_t() );
+    
+    // Use half window size of 3, so it's a moving average over 6seconds
+    health_changes.timeline.back().build_sliding_average_timeline( health_changes.sliding_average_timeline.back(), window / 2 );
+    
+    // pull the data out of the sliding average timeline
     std::vector<double> tl_data = health_changes.timeline.back().data();
+    std::vector<double> ma_data = health_changes.sliding_average_timeline.back().data();
+
+    std::vector<double> weighted_value = ma_data; // just to get size right, we'll overwrite each element in for loop
+    
+    for ( size_t j = 0, size = ma_data.size(); j < size; j++ )
+    {
+      // normalize to the default window size (6-second window)
+      ma_data[ j ] *= w0;
+
+      // normalize the vector by actor health 
+      ma_data[ j ] /= p.resources.initial[ RESOURCE_HEALTH ];
+
+      // calculate weighted contribution of this data point
+      weighted_value[ j ] = std::exp( 10 * std::log(hdf) * ( ma_data[ j ] - 1 ) );
+      
+      tmi += weighted_value [ j ];
+    }
+
+    // constant multiplicative factors
+    tmi *= 10000;
+    tmi *= std::pow( window / 1.5 , 2 );
+    
+    // normalize by fight length and add to TMI data array
+    theck_meloree_index.add( f_length ? tmi / f_length : 0 );
+
+    /* This block is for percentile analysis - not needed for TMI
     range::sort( tl_data );
     if ( ! tl_data.empty() )
     {
@@ -9426,8 +9470,9 @@ void player_collected_data_t::collect_data( const player_t& p )
       percentile = tl_data[ ( int ) ( 0.7 * ( tl_data.size() - 1 ) ) ];
       theck_meloree_index.data[ 2 ].first.add( percentile);
     }
+    */
 
-
+    // If we're not keeping everything, clear the timeline to save memory
     if ( ! health_changes.collect_data_per_iteration )
     {
       health_changes.timeline.clear(); // Drop Data

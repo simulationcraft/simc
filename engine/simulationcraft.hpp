@@ -3756,6 +3756,7 @@ struct player_collected_data_t
   extended_sample_data_t heal_taken;
   // Tank
   extended_sample_data_t deaths;
+  extended_sample_data_t theck_meloree_index;
   sc_timeline_t vengeance_timeline;
 
   struct resource_timeline_t
@@ -3780,6 +3781,9 @@ struct player_collected_data_t
     histogram merged_histogram;
     health_changes_timeline_t() : previous_loss_level(), previous_gain_level(), collect_data_per_iteration( false ) {}
   } health_changes;
+
+  /* This level of complexity is not necessary for the T-M index.  May be useful down the line if 
+     we want to do more complicated statistical analysis of damage distributions
 
   // Special Smooth Tanking Metric
   struct theck_meloree_index_t
@@ -3815,6 +3819,7 @@ struct player_collected_data_t
         data[ i ].first.analyze_all();
     }
   } theck_meloree_index;
+  */
 
   struct action_sequence_data_t
   {

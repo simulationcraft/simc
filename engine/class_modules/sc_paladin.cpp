@@ -2285,7 +2285,7 @@ struct light_of_dawn_t : public paladin_heal_t
 struct sacred_shield_t : public paladin_heal_t
 {
   sacred_shield_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "sacred_shield", p, p -> find_talent_spell( "Sacred Shield") )
+    paladin_heal_t( "sacred_shield", p, p -> find_talent_spell( "Sacred Shield") )  // todo: find_talent_spell -> find_specialization_spell
   {
     parse_options( NULL, options_str );
     may_crit = false;
@@ -2296,7 +2296,7 @@ struct sacred_shield_t : public paladin_heal_t
     tick_power_mod = 1.17; // in tooltip, hardcoding
 
     // disable if not talented
-    if ( ! ( p -> talents.sacred_shield -> ok() ) )
+    if ( ! ( p -> talents.sacred_shield -> ok() ) && ! ( p -> dbc.ptr ) )
       background = true;
   }
 
@@ -3164,7 +3164,8 @@ struct judgment_t : public paladin_melee_attack_t
     // define cooldown multiplier for use with Sanctified Wrath talent for protection only
     if ( ( p -> specialization() == PALADIN_PROTECTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
     {
-      cooldown_mult = p -> find_talent_spell( "Sanctified Wrath" ) -> effectN( 1 ).percent();
+      // for some reason, this is stored in spell 114232 instead of 53376 (which is returned by find_talent_spell)
+      cooldown_mult = 1.0 + p -> find_spell( 114232 ) -> effectN( 2 ).percent();
     }
 
     // damage multiplier from T14 Retribution 4-piece bonus
@@ -4061,7 +4062,7 @@ void paladin_t::create_buffs()
   buffs.warrior_of_the_light   = buff_creator_t( this, "warrior_of_the_light", find_spell( 144587 ) )
                                   .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.divine_crusader        = buff_creator_t( this, "divine_crusader", find_spell( 144595 ) )                            
-                                  .chance( 0.25 ); // hardcoded because spell is returning not found
+                                  .chance( 0.25 ); // spell data errantly defines proc chance as 101%, actual proc chance nowhere to be found; should be 25%
 }
 
 // ==========================================================================
