@@ -8481,7 +8481,6 @@ player_t::scales_over_t player_t::scales_over()
 
   if ( so == "theck_meloree_index" || so == "tmi" )
     return q -> collected_data.theck_meloree_index;
-    //return player_t::scales_over_t( "theck_meloree_index", q -> collected_data.theck_meloree_index.mean(), q -> collected_data.theck_meloree_index.mean_std_dev() );
 
   if ( q -> primary_role() == ROLE_HEAL || so == "hps" )
     return q -> collected_data.hps;
@@ -9214,10 +9213,10 @@ player_collected_data_t::player_collected_data_t( const std::string& player_name
   htps( player_name + " Healing taken Per Second", s.statistics_level < 2 ),
   heal_taken( player_name + " Healing Taken", s.statistics_level < 2 ),
   deaths( player_name + " Deaths", s.statistics_level < 2 ),
+  theck_meloree_index( player_name + " Theck-Meloree Index", s.statistics_level < 2 ),
   resource_timelines(),
   combat_end_resource( RESOURCE_MAX ),
-  health_changes(),
-  theck_meloree_index( player_name + " Theck-Meloree Index", s.statistics_level < 2 )
+  health_changes()
 { }
 
 void player_collected_data_t::reserve_memory( const player_t& p )
@@ -9456,21 +9455,6 @@ void player_collected_data_t::collect_data( const player_t& p )
     
     // normalize by fight length and add to TMI data array
     theck_meloree_index.add( f_length ? tmi / f_length : 0 );
-
-    /* This block is for percentile analysis - not needed for TMI
-    range::sort( tl_data );
-    if ( ! tl_data.empty() )
-    {
-      double percentile = tl_data[ ( int ) ( 0.95 * ( tl_data.size() - 1 ) ) ];
-      theck_meloree_index.data[ 0 ].first.add( percentile);
-
-      percentile = tl_data[ ( int ) ( 0.8 * ( tl_data.size() - 1 ) ) ];
-      theck_meloree_index.data[ 1 ].first.add( percentile);
-
-      percentile = tl_data[ ( int ) ( 0.7 * ( tl_data.size() - 1 ) ) ];
-      theck_meloree_index.data[ 2 ].first.add( percentile);
-    }
-    */
 
     // If we're not keeping everything, clear the timeline to save memory
     if ( ! health_changes.collect_data_per_iteration )

@@ -3782,45 +3782,6 @@ struct player_collected_data_t
     health_changes_timeline_t() : previous_loss_level(), previous_gain_level(), collect_data_per_iteration( false ) {}
   } health_changes;
 
-  /* This level of complexity is not necessary for the T-M index.  May be useful down the line if 
-     we want to do more complicated statistical analysis of damage distributions
-
-  // Special Smooth Tanking Metric
-  struct theck_meloree_index_t
-  {
-    std::vector< std::pair<extended_sample_data_t,double> > data; // std::pair< data, weight >
-    theck_meloree_index_t()
-    {
-      // WARNING: Arbitrary metrics!
-      data.push_back( std::make_pair( extended_sample_data_t( "theck_meloree_index_t 95% percentile", false ), 0.6 ) );
-      data.push_back( std::make_pair( extended_sample_data_t( "theck_meloree_index_t 80% percentile", false ), 0.3 ) );
-      data.push_back( std::make_pair( extended_sample_data_t( "theck_meloree_index_t 70% percentile", false ), 0.1 ) );
-    }
-    double result() const
-    {
-      double result = 0.0;
-      for ( size_t i = 0; i < data.size(); ++i )
-        result += data[ i ].first.mean() * data[ i ].second;
-      return result;
-    }
-
-    double mean_stddev() const
-    {
-      double result = 0.0;
-      for ( size_t i = 0; i < data.size(); ++i )
-        result += data[ i ].first.mean_std_dev * data[ i ].second;
-      result /= std::sqrt( data.size() );
-      return result;
-    }
-
-    void analyze()
-    {
-      for ( size_t i = 0; i < data.size(); ++i )
-        data[ i ].first.analyze_all();
-    }
-  } theck_meloree_index;
-  */
-
   struct action_sequence_data_t
   {
     const action_t* action;
