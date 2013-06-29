@@ -122,7 +122,7 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
   s << std::dec;
 
   s << " n_targets=" << n_targets;
-  s << " chain_target=" << chain_target; 
+  s << " chain_target=" << chain_target;
 
   s << " raw_amount=" << result_raw;
   s << " total_amount=" << result_total;

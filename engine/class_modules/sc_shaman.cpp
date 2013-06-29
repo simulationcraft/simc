@@ -463,7 +463,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
   debuff.stormstrike    = buff_creator_t( *this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) );
   debuff.unleashed_fury = buff_creator_t( *this, "unleashed_fury_ft", p -> find_spell( 118470 ) );
   debuff.t16_2pc_caster = buff_creator_t( *this, "tier16_2pc_caster", p -> sets -> set( SET_T16_2PC_CASTER ) -> effectN( 1 ).trigger() )
-                                  .chance( static_cast< double >( maybe_ptr( p -> dbc.ptr ) && p -> set_bonus.tier16_2pc_caster() ) );
+                          .chance( static_cast< double >( maybe_ptr( p -> dbc.ptr ) && p -> set_bonus.tier16_2pc_caster() ) );
 }
 
 struct shaman_action_state_t : public heal_state_t
@@ -838,7 +838,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     double m = base_t::composite_target_multiplier( target );
 
     if ( td( target ) -> debuff.t16_2pc_caster -> up() && ( dbc::is_school( school, SCHOOL_FIRE )
-          || dbc::is_school( school, SCHOOL_NATURE ) ) )
+         || dbc::is_school( school, SCHOOL_NATURE ) ) )
       m *= 1.0 + td( target ) -> debuff.t16_2pc_caster -> data().effectN( 1 ).percent();
 
     return m;

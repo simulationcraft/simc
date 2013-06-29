@@ -833,7 +833,7 @@ void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
   if ( value >= 1.0 )
   {
     if ( state == STATE_REGENERATING )
-    { 
+    {
       if ( is_blood() )
         dk -> procs.ready_blood -> occur();
       else if ( is_frost() )
@@ -858,7 +858,7 @@ void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
     if ( paired_rune -> value >= 1.0 )
     {
       if ( paired_rune -> state == STATE_REGENERATING )
-      { 
+      {
         if ( paired_rune -> is_blood() )
           dk -> procs.ready_blood -> occur();
         else if ( paired_rune -> is_frost() )
@@ -5797,7 +5797,7 @@ void death_knight_t::create_buffs()
                               .add_invalidate( CACHE_STAMINA );
   buffs.bone_shield         = buff_creator_t( this, "bone_shield", find_specialization_spell( "Bone Shield" ) )
                               .cd( timespan_t::zero() )
-                              .max_stack( specialization() == DEATH_KNIGHT_BLOOD ? ( find_specialization_spell( "Bone Shield" ) -> initial_stacks() + 
+                              .max_stack( specialization() == DEATH_KNIGHT_BLOOD ? ( find_specialization_spell( "Bone Shield" ) -> initial_stacks() +
                                           find_spell( 144948 ) -> max_stacks() ) : -1 );
   buffs.bone_wall           = buff_creator_t( this, "bone_wall", find_spell( 144948 ) )
                               .chance( maybe_ptr( dbc.ptr ) && set_bonus.tier16_2pc_tank() );

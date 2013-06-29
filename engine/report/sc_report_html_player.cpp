@@ -1419,7 +1419,7 @@ void print_html_player_statistics( report::sc_html_stream& os, player_t* p, play
   report::print_html_sample_data( os, p -> sim, p -> collected_data.htps, "HTPS", sd_counter );
 
   os << "\t\t\t\t\t\t\t\t<tr>\n"
-  "\t\t\t\t\t\t\t\t<td>\n";
+     "\t\t\t\t\t\t\t\t<td>\n";
   if ( ! ri.timeline_dps_error_chart.empty() )
     os << "<img src=\"" << ri.timeline_dps_error_chart << "\" alt=\"Timeline DPS Error Chart\" />\n";
 

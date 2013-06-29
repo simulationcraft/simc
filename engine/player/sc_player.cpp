@@ -81,7 +81,7 @@ struct player_ready_event_t : public event_t
 struct demise_event_t : public event_t
 {
   demise_event_t( player_t* p,
-                        timespan_t delta_time = timespan_t::zero() /* Instantly kill the player */ ) :
+                  timespan_t delta_time = timespan_t::zero() /* Instantly kill the player */ ) :
     event_t( p, "Player-Demise" )
   {
     if ( sim.debug )
@@ -4265,7 +4265,7 @@ void player_t::collect_resource_timeline_information()
   for ( size_t j = 0, size = collected_data.resource_timelines.size(); j < size; ++j )
   {
     collected_data.resource_timelines[ j ].timeline.add( sim -> current_time,
-                                          resources.current[ collected_data.resource_timelines[ j ].type ] );
+        resources.current[ collected_data.resource_timelines[ j ].type ] );
   }
 
   if ( ! is_pet() && role == ROLE_TANK )
@@ -9345,7 +9345,7 @@ void player_collected_data_t::collect_data( const player_t& p )
     int window = 6; // window size, this may becomeuser-definable later
     double w0 = 6; // normalized window size
     double hdf  = 3; // default health decade factor
-    
+
     // define TMI result
     double tmi = 0;
 
@@ -9369,7 +9369,7 @@ void player_collected_data_t::collect_data( const player_t& p )
         weighted_value[ j ] /= p.resources.initial[ RESOURCE_HEALTH ];
 
         // calculate weighted contribution of this data point
-        weighted_value[ j ] = std::exp( 10 * std::log(hdf) * ( weighted_value[ j ] - 1 ) );
+        weighted_value[ j ] = std::exp( 10 * std::log( hdf ) * ( weighted_value[ j ] - 1 ) );
 
         tmi += weighted_value [ j ];
       }

@@ -454,7 +454,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
 
   for ( size_t i = 0; spell_data._power && i < spell_data._power -> size(); i++ )
   {
-    const spellpower_data_t* pd = (*spell_data._power)[ i ];
+    const spellpower_data_t* pd = ( *spell_data._power )[ i ];
 
     if ( pd -> _cost > 0 )
       base_costs[ pd -> resource() ] = pd -> cost();
@@ -1666,7 +1666,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
     amount_expr_t( const std::string& name, dmg_e at, result_e rt, action_t& a ) :
       action_expr_t( name, a ), amount_type( at ), result_type( rt ), state( a.get_state() )
-    { 
+    {
       state -> n_targets    = 1;
       state -> chain_target = 0;
       state -> result       = result_type;

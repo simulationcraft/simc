@@ -48,7 +48,7 @@ struct paladin_td_t : public actor_pair_t
   struct buffs_t
   {
     buff_t* debuffs_censure;
-   // buff_t* sacred_shield;
+    // buff_t* sacred_shield;
     absorb_buff_t* sacred_shield_tick;
   } buffs;
 
@@ -528,7 +528,7 @@ public:
       // record success for output
       if ( success )
         p() -> procs.divine_crusader -> occur();
-    }  
+    }
 
   }
 
@@ -538,19 +538,19 @@ public:
   {
     if ( ! p() -> dbc.ptr )
     {
-    // if unbreakable spirit is talented
-    if ( ! p() -> talents.unbreakable_spirit -> ok() ) return;
+      // if unbreakable spirit is talented
+      if ( ! p() -> talents.unbreakable_spirit -> ok() ) return;
 
-    // reduce cooldowns by 1% per holy power spent - divine purpose procs count as 3.
-    double reduction_percent = ( c == 0 ) ? 0.03 : c/100;
+      // reduce cooldowns by 1% per holy power spent - divine purpose procs count as 3.
+      double reduction_percent = ( c == 0 ) ? 0.03 : c / 100;
 
-    // perform the reduction
-    unbreakable_spirit_reduce_cooldown( p() -> cooldowns.divine_protection, reduction_percent );
-    unbreakable_spirit_reduce_cooldown( p() -> cooldowns.divine_shield,     reduction_percent );
-    unbreakable_spirit_reduce_cooldown( p() -> cooldowns.lay_on_hands,      reduction_percent );
+      // perform the reduction
+      unbreakable_spirit_reduce_cooldown( p() -> cooldowns.divine_protection, reduction_percent );
+      unbreakable_spirit_reduce_cooldown( p() -> cooldowns.divine_shield,     reduction_percent );
+      unbreakable_spirit_reduce_cooldown( p() -> cooldowns.lay_on_hands,      reduction_percent );
     }
   }
-  
+
   virtual void execute()
   {
     double c = ( this -> current_resource() == RESOURCE_HOLY_POWER ) ? this -> cost() : -1.0;
@@ -599,7 +599,7 @@ public:
 
   paladin_spell_base_t( const std::string& n, paladin_t* player,
                         const spell_data_t* s = spell_data_t::nil() ) :
-                        ab( n, player, s )
+    ab( n, player, s )
   {
   }
 
@@ -1469,7 +1469,7 @@ struct execution_sentence_t : public paladin_spell_t
 
   virtual void execute()
   {
-    if (target -> is_enemy() )
+    if ( target -> is_enemy() )
     {
       paladin_spell_t::execute();
     }
@@ -1615,7 +1615,7 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
   {
     parse_options( NULL, options_str );
     use_off_gcd = true;
-    
+
     p -> active.blessing_of_the_guardians = new blessing_of_the_guardians_t( p );
   }
 
@@ -1785,11 +1785,11 @@ struct holy_prism_aoe_damage_t : public paladin_spell_t
 
 struct holy_prism_aoe_heal_t : public paladin_heal_t
 {
-  holy_prism_aoe_heal_t( paladin_t* p)
+  holy_prism_aoe_heal_t( paladin_t* p )
     : paladin_heal_t( "holy_prism_aoe_heal", p, p->find_spell( 114871 ) )
   {
     background = true;
-    aoe=5;
+    aoe = 5;
   }
 
 };
@@ -1839,7 +1839,7 @@ struct holy_prism_t : public paladin_spell_t
   holy_prism_heal_t* heal;
 
   holy_prism_t( paladin_t* p, const std::string& options_str )
-    : paladin_spell_t( "holy_prism", p, p->find_spell( 114165) )
+    : paladin_spell_t( "holy_prism", p, p->find_spell( 114165 ) )
   {
     parse_options( NULL, options_str );
 
@@ -2285,7 +2285,7 @@ struct light_of_dawn_t : public paladin_heal_t
 struct sacred_shield_t : public paladin_heal_t
 {
   sacred_shield_t( paladin_t* p, const std::string& options_str ) :
-    paladin_heal_t( "sacred_shield", p, p -> find_talent_spell( "Sacred Shield") )  // todo: find_talent_spell -> find_specialization_spell
+    paladin_heal_t( "sacred_shield", p, p -> find_talent_spell( "Sacred Shield" ) ) // todo: find_talent_spell -> find_specialization_spell
   {
     parse_options( NULL, options_str );
     may_crit = false;
@@ -2304,7 +2304,7 @@ struct sacred_shield_t : public paladin_heal_t
   {
     // Kludge to swap the heal for an absorb
     // calculate the tick amount
-    double ss_tick_amount = calculate_tick_amount( d -> state);
+    double ss_tick_amount = calculate_tick_amount( d -> state );
 
     // if an existing absorb bubble is still hanging around, kill it
     td( d -> state -> target ) -> buffs.sacred_shield_tick -> expire();
@@ -2832,7 +2832,7 @@ struct divine_storm_t : public paladin_melee_attack_t
     // check for T16 4pc melee set bonus
     if ( p() -> buffs.divine_crusader -> up() )
     {
-      p() -> buffs.divine_crusader -> expire(); 
+      p() -> buffs.divine_crusader -> expire();
 
       // TODO: on PTR, using DS with Divine Crusader buff also consumes DP - probably a bug
       // if the two are not supposed to be exclusive, this return will get removed
@@ -3676,7 +3676,7 @@ struct guardian_of_ancient_kings_prot_t : public buff_t
   guardian_of_ancient_kings_prot_t( paladin_t* p ) :
     buff_t( buff_creator_t( p, "guardian_of_the_ancient_kings", p -> find_class_spell( "Guardian of Ancient Kings", std::string(), PALADIN_PROTECTION ) ) )
   { }
-  
+
   virtual void expire_override()
   {
     buff_t::expire_override();
@@ -3697,9 +3697,9 @@ void hand_of_sacrifice_t::execute()
 {
   paladin_spell_t::execute();
 
-   buffs::hand_of_sacrifice_t* b = debug_cast<buffs::hand_of_sacrifice_t*>( target -> buffs.hand_of_sacrifice );
+  buffs::hand_of_sacrifice_t* b = debug_cast<buffs::hand_of_sacrifice_t*>( target -> buffs.hand_of_sacrifice );
 
-   b -> trigger_hos( *p() );
+  b -> trigger_hos( *p() );
 }
 
 // ==========================================================================
@@ -4033,7 +4033,7 @@ void paladin_t::create_buffs()
   player_t::create_buffs();
 
   // Glyphs
-  buffs.alabaster_shield       = buff_creator_t( this, "glyph_alabaster_shield", find_spell(121467) ) // alabaster shield glyph spell contains no useful data
+  buffs.alabaster_shield       = buff_creator_t( this, "glyph_alabaster_shield", find_spell( 121467 ) ) // alabaster shield glyph spell contains no useful data
                                  .cd( timespan_t::zero() );
   buffs.bastion_of_glory       = buff_creator_t( this, "bastion_of_glory", find_spell( 114637 ) );
   buffs.blessed_life           = buff_creator_t( this, "glyph_blessed_life", glyphs.blessed_life )
@@ -4089,9 +4089,9 @@ void paladin_t::create_buffs()
   buffs.tier15_4pc_melee       = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138164 ) )
                                  .chance( find_spell( 138164 ) -> effectN( 1 ).percent() );
   buffs.warrior_of_the_light   = buff_creator_t( this, "warrior_of_the_light", find_spell( 144587 ) )
-                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buffs.divine_crusader        = buff_creator_t( this, "divine_crusader", find_spell( 144595 ) )                            
-                                  .chance( 0.25 ); // spell data errantly defines proc chance as 101%, actual proc chance nowhere to be found; should be 25%
+                                 .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.divine_crusader        = buff_creator_t( this, "divine_crusader", find_spell( 144595 ) )
+                                 .chance( 0.25 ); // spell data errantly defines proc chance as 101%, actual proc chance nowhere to be found; should be 25%
 }
 
 // ==========================================================================
@@ -4206,7 +4206,7 @@ void paladin_t::generate_action_prio_list_ret()
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   // Pre-potting
-  if (sim -> allow_potions && level >= 80 )
+  if ( sim -> allow_potions && level >= 80 )
     precombat -> add_action( ( level > 85 ) ? "mogu_power_potion" : "golemblood_potion" );
 
   // action list string is sort of insane, will clean this up later.
@@ -4538,7 +4538,7 @@ void paladin_t::validate_action_priority_list()
         found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
         if ( found_ability )
         {
-          found_position= action_str.find( check_ability.c_str() );
+          found_position = action_str.find( check_ability.c_str() );
           sim -> errorf( "Action priority list contains Word of Glory instead of Eternal Flame, automatically replacing WoG with EF\n" );
           action_str.replace( found_position, check_ability.length(), "eternal_flame" );
         }
@@ -4550,7 +4550,7 @@ void paladin_t::validate_action_priority_list()
         found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
         if ( found_ability )
         {
-          found_position= action_str.find( check_ability.c_str() );
+          found_position = action_str.find( check_ability.c_str() );
           sim -> errorf( "Action priority list contains Eternal Flame without talent, automatically replacing with Word of Glory\n" );
           action_str.replace( found_position,  check_ability.length(), "word_of_glory" );
         }
@@ -4565,7 +4565,7 @@ void paladin_t::validate_action_priority_list()
         found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) );
         if ( found_ability && ! found_talent_str )
         {
-          found_position= action_str.find( check_ability.c_str() );
+          found_position = action_str.find( check_ability.c_str() );
           if ( talents.lights_hammer -> ok() )
           {
             replacement = "Light's Hammer";
@@ -4594,7 +4594,7 @@ void paladin_t::validate_action_priority_list()
         found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) );
         if ( found_ability && ! found_talent_str )
         {
-          found_position= action_str.find( check_ability.c_str() );
+          found_position = action_str.find( check_ability.c_str() );
           if ( talents.holy_prism -> ok() )
           {
             replacement = "Holy Prism";
@@ -4623,7 +4623,7 @@ void paladin_t::validate_action_priority_list()
         found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) );
         if ( found_ability && ! found_talent_str )
         {
-          found_position= action_str.find( check_ability.c_str() );
+          found_position = action_str.find( check_ability.c_str() );
           if ( talents.holy_prism -> ok() )
           {
             replacement = "Holy Prism";
@@ -4725,7 +4725,7 @@ void paladin_t::init_actions()
       case PALADIN_RETRIBUTION:
         generate_action_prio_list_ret(); // RET
         break;
-      // for prot, call subroutine
+        // for prot, call subroutine
       case PALADIN_PROTECTION:
         generate_action_prio_list_prot(); // PROT
         break;
@@ -4827,7 +4827,7 @@ void paladin_t::init_spells()
   glyphs.word_of_glory            = find_glyph_spell( "Glyph of Word of Glory"   );
 
   if ( glyphs.battle_healer -> ok() )
-      active.battle_healer_proc = new battle_healer_proc_t( this );
+    active.battle_healer_proc = new battle_healer_proc_t( this );
 
   // more spells, these need the glyph check to be present before they can be executed
   spells.alabaster_shield              = glyphs.alabaster_shield -> ok() ? find_spell( 121467 ) : spell_data_t::not_found(); // this is the spell containing Alabaster Shield's effects

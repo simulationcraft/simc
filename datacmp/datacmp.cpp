@@ -87,8 +87,8 @@ struct base_data
   T const **build_index( T const *first, T const *last, unsigned &maxid )
   {
     maxid = std::max_element( first, last, id_lt<T> )->id;
-    T const **index = new T const *[maxid+1];
-    memset( index, 0, sizeof( T const * ) * ( maxid+1 ) );
+    T const **index = new T const *[maxid + 1];
+    memset( index, 0, sizeof( T const * ) * ( maxid + 1 ) );
     for ( T const *a = first; a != last; ++a )
     {
       index[a->id] = a;
@@ -117,7 +117,7 @@ struct base_data
     printf( "  Row:         %u\n", t->row );
     for ( int i = 0; i < 3 && t->rank_id[i]; ++i )
     {
-      printf( "  Rank #%d id:  %u\n", i+1, t->rank_id[i] );
+      printf( "  Rank #%d id:  %u\n", i + 1, t->rank_id[i] );
     }
   }
 
@@ -147,7 +147,7 @@ struct base_data
     printf( "  Cast time div: %d\n", s->cast_div );
     for ( int i = 0; i < 3 && s->effect[i]; ++i )
     {
-      printf( "  Effect #%d id:  %u\n", i+1, s->effect[i] );
+      printf( "  Effect #%d id:  %u\n", i + 1, s->effect[i] );
     }
     if ( s->desc )
     {
@@ -335,10 +335,10 @@ void compare_spell( v1::data::spell_type const *s1, v2::data::spell_type const *
   for ( int i = 0; i < 3; ++i )
   {
     char buf[256];
-    sprintf_s( buf, "changed spell effect #%d from %%d to %%d\n", i+1 );
+    sprintf_s( buf, "changed spell effect #%d from %%d to %%d\n", i + 1 );
     if ( h.cmp( s1->effect[i], s2->effect[i], buf ) && s1->effect[i] )
     {
-      compare_spell_effect( s_class, s1->name, s1->id, i+1, s1->effect[i] );
+      compare_spell_effect( s_class, s1->name, s1->id, i + 1, s1->effect[i] );
     }
   }
 
@@ -385,7 +385,7 @@ void compare_talent( v1::data::talent_type const *t1, v2::data::talent_type cons
     {
       if ( t1->rank_id[i] != t2->rank_id[i] )
       {
-        printf( "%s: Talent '%s' (%d) spell #%d changed from %d to %d\n", t_class.c_str(), name, id, i+1, t1->rank_id[i], t2->rank_id[i] );
+        printf( "%s: Talent '%s' (%d) spell #%d changed from %d to %d\n", t_class.c_str(), name, id, i + 1, t1->rank_id[i], t2->rank_id[i] );
         print_header = false;
       }
     }

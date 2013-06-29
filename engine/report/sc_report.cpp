@@ -559,15 +559,15 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
   }
   td_counter++;
   os << ">\n";
-      os << "\t\t\t\t\t\t\t\t<td class=\"left small\">";
-      os.printf( "<a class=\"toggle-details\">%s</a></td>\n",
-    name.c_str() );
+  os << "\t\t\t\t\t\t\t\t<td class=\"left small\">";
+  os.printf( "<a class=\"toggle-details\">%s</a></td>\n",
+             name.c_str() );
 
   os << "\t\t\t\t\t\t\t\t</tr>\n";
 
-      os << "\t\t\t\t\t\t\t<tr class=\"details hide\">\n";
+  os << "\t\t\t\t\t\t\t<tr class=\"details hide\">\n";
 
-      os << "\t\t\t\t\t\t\t\t<td colspan=\"21\" class=\"filler\">\n";
+  os << "\t\t\t\t\t\t\t\t<td colspan=\"21\" class=\"filler\">\n";
   int i = 0;
 
   os << "\t\t\t\t\t\t\t<table class=\"details\">\n";
@@ -851,7 +851,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
       "\t\t\t\t\t\t\t\t</tr>\n",
       ( int ) (  2.0 * mean_error * mean_error * ( ( float ) data.size() ) / ( 3 * 3 ) ) );
 
-}
+  }
 
   os << "\t\t\t\t\t\t\t\t</table>\n";
 

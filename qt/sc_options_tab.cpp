@@ -146,60 +146,60 @@ QComboBox* createChoice( int count, ... )
 } // end unnamed namespace
 
 SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
-    QTabWidget( parent ), mainWindow( parent )
+  QTabWidget( parent ), mainWindow( parent )
 {
-    createGlobalsTab();
-    createBuffsDebuffsTab();
-    createScalingTab();
-    createPlotsTab();
-    createReforgePlotsTab();
+  createGlobalsTab();
+  createBuffsDebuffsTab();
+  createScalingTab();
+  createPlotsTab();
+  createReforgePlotsTab();
 
 
-    QAbstractButton* allBuffs   =   buffsButtonGroup -> buttons().at( 0 );
-    QAbstractButton* allDebuffs = debuffsButtonGroup -> buttons().at( 0 );
-    QAbstractButton* allScaling = scalingButtonGroup -> buttons().at( 0 );
+  QAbstractButton* allBuffs   =   buffsButtonGroup -> buttons().at( 0 );
+  QAbstractButton* allDebuffs = debuffsButtonGroup -> buttons().at( 0 );
+  QAbstractButton* allScaling = scalingButtonGroup -> buttons().at( 0 );
 
-    connect( allBuffs,   SIGNAL( toggled( bool ) ), this, SLOT( allBuffsChanged( bool ) )   );
-    connect( allDebuffs, SIGNAL( toggled( bool ) ), this, SLOT( allDebuffsChanged( bool ) ) );
-    connect( allScaling, SIGNAL( toggled( bool ) ), this, SLOT( allScalingChanged( bool ) ) );
+  connect( allBuffs,   SIGNAL( toggled( bool ) ), this, SLOT( allBuffsChanged( bool ) )   );
+  connect( allDebuffs, SIGNAL( toggled( bool ) ), this, SLOT( allDebuffsChanged( bool ) ) );
+  connect( allScaling, SIGNAL( toggled( bool ) ), this, SLOT( allScalingChanged( bool ) ) );
 
-    connect( choice.armory_region, SIGNAL( currentIndexChanged( const QString& ) ), this, SIGNAL( armory_region_changed( const QString& ) ) );
+  connect( choice.armory_region, SIGNAL( currentIndexChanged( const QString& ) ), this, SIGNAL( armory_region_changed( const QString& ) ) );
 
-    connect( choice.armory_region,      SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.armory_spec,        SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.aura_delay,         SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.center_scale_delta, SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.challenge_mode,     SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.debug,              SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.default_role,       SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.deterministic_rng,  SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.fight_length,       SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.fight_style,        SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.fight_variance,     SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.iterations,         SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.num_target,         SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.player_skill,       SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.plots_points,       SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.plots_step,         SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.print_style,        SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.reforgeplot_amount, SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.reforgeplot_step,   SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.report_pets,        SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.scale_over,         SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.statistics_level,   SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.target_level,       SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.target_race,        SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.threads,            SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.version,            SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
-    connect( choice.world_lag,          SIGNAL( currentIndexChanged(int) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.armory_region,      SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.armory_spec,        SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.aura_delay,         SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.center_scale_delta, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.challenge_mode,     SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.debug,              SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.default_role,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.deterministic_rng,  SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.fight_length,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.fight_style,        SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.fight_variance,     SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.iterations,         SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.num_target,         SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.player_skill,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.plots_points,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.plots_step,         SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.print_style,        SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.reforgeplot_amount, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.reforgeplot_step,   SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.report_pets,        SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.scale_over,         SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.statistics_level,   SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.target_level,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.target_race,        SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.threads,            SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.version,            SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.world_lag,          SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
 
-    connect( buffsButtonGroup,          SIGNAL( buttonClicked(int) ), this, SLOT( _optionsChanged() ) );
-    connect( debuffsButtonGroup,        SIGNAL( buttonClicked(int) ), this, SLOT( _optionsChanged() ) );
-    connect( scalingButtonGroup,        SIGNAL( buttonClicked(int) ), this, SLOT( _optionsChanged() ) );
-    connect( plotsButtonGroup,          SIGNAL( buttonClicked(int) ), this, SLOT( _optionsChanged() ) );
-    connect( reforgeplotsButtonGroup,   SIGNAL( buttonClicked(int) ), this, SLOT( _optionsChanged() ) );
+  connect( buffsButtonGroup,          SIGNAL( buttonClicked( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( debuffsButtonGroup,        SIGNAL( buttonClicked( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( scalingButtonGroup,        SIGNAL( buttonClicked( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( plotsButtonGroup,          SIGNAL( buttonClicked( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( reforgeplotsButtonGroup,   SIGNAL( buttonClicked( int ) ), this, SLOT( _optionsChanged() ) );
 
-    connect( itemDbOrder,               SIGNAL( itemSelectionChanged() ), this, SLOT( _optionsChanged() ) );
+  connect( itemDbOrder,               SIGNAL( itemSelectionChanged() ), this, SLOT( _optionsChanged() ) );
 }
 
 void SC_OptionsTab::createGlobalsTab()
@@ -225,7 +225,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow( tr(  "Target Level" ),   choice.target_level = createChoice( 4, "Raid Boss", "5-man heroic", "5-man normal", "Max Player Level" ) );
   globalsLayout_left -> addRow( tr(   "Target Race" ),    choice.target_race = createChoice( 7, "humanoid", "beast", "demon", "dragonkin", "elemental", "giant", "undead" ) );
   globalsLayout_left -> addRow( tr(   "Num Enemies" ),     choice.num_target = createChoice( 8, "1", "2", "3", "4", "5", "6", "7", "8" ) );
-  globalsLayout_left -> addRow( tr( "Challenge Mode" ),   choice.challenge_mode = createChoice( 2, "Disabled","Enabled" ) );
+  globalsLayout_left -> addRow( tr( "Challenge Mode" ),   choice.challenge_mode = createChoice( 2, "Disabled", "Enabled" ) );
   globalsLayout_left -> addRow( tr(  "Player Skill" ),   choice.player_skill = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
   globalsLayout_left -> addRow( tr(       "Threads" ),        choice.threads = createChoice( 4, "1", "2", "4", "8" ) );
   globalsLayout_left -> addRow( tr( "Armory Region" ),  choice.armory_region = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
@@ -490,8 +490,8 @@ void SC_OptionsTab::decodeOptions( QString encoding )
   {
     QStringList opt_tokens = tokens[ i ].split( ':' );
 
-    const OptionEntry* options=0;
-    QList<QAbstractButton*>* buttons=0;
+    const OptionEntry* options = 0;
+    QList<QAbstractButton*>* buttons = 0;
 
     if (      ! opt_tokens[ 0 ].compare( "buff"           ) ) { options = buffOptions;        buttons = &buff_buttons;        }
     else if ( ! opt_tokens[ 0 ].compare( "debuff"         ) ) { options = debuffOptions;      buttons = &debuff_buttons;      }
@@ -517,7 +517,7 @@ void SC_OptionsTab::decodeOptions( QString encoding )
     if ( ! options ) continue;
 
     QStringList opt_value = opt_tokens[ 1 ].split( '=' );
-    for ( int opt=0; options[ opt ].label; opt++ )
+    for ( int opt = 0; options[ opt ].label; opt++ )
     {
       if ( ! opt_value[ 0 ].compare( options[ opt ].option ) )
       {
@@ -611,37 +611,37 @@ QString SC_OptionsTab::encodeOptions()
 
 void SC_OptionsTab::createToolTips()
 {
-  choice.version -> setToolTip( tr( "Live: Use mechanics on Live servers. ( WoW Build %1 )" ).arg( dbc::build_level( false ) ) +"\n" +
+  choice.version -> setToolTip( tr( "Live: Use mechanics on Live servers. ( WoW Build %1 )" ).arg( dbc::build_level( false ) ) + "\n" +
 #if SC_BETA
-                                tr( "Beta:  Use mechanics on Beta servers. ( WoW Build %1 )" ).arg( dbc::build_level( true ) ) +"\n" +
+                                tr( "Beta:  Use mechanics on Beta servers. ( WoW Build %1 )" ).arg( dbc::build_level( true ) ) + "\n" +
                                 tr( "Both: Create Evil Twin with Beta mechanics" ) );
 #else
-                                tr( "PTR:  Use mechanics on PTR servers. ( WoW Build %1 )" ).arg( dbc::build_level( true ) ) +"\n" +
+                                tr( "PTR:  Use mechanics on PTR servers. ( WoW Build %1 )" ).arg( dbc::build_level( true ) ) + "\n" +
                                 tr( "Both: Create Evil Twin with PTR mechanics" ) );
 #endif
 
-  choice.iterations -> setToolTip( tr( "%1:   Fast and Rough" ).arg( 100 ) +"\n" +
-                                   tr( "%1:  Sufficient for DPS Analysis" ).arg( 1000 ) +"\n" +
-                                   tr( "%1: Recommended for Scale Factor Generation" ).arg( 10000 ) +"\n" +
-                                   tr( "%1: Use if %2 isn't enough for Scale Factors" ).arg( 25000 ).arg( 10000 ) +"\n" +
+  choice.iterations -> setToolTip( tr( "%1:   Fast and Rough" ).arg( 100 ) + "\n" +
+                                   tr( "%1:  Sufficient for DPS Analysis" ).arg( 1000 ) + "\n" +
+                                   tr( "%1: Recommended for Scale Factor Generation" ).arg( 10000 ) + "\n" +
+                                   tr( "%1: Use if %2 isn't enough for Scale Factors" ).arg( 25000 ).arg( 10000 ) + "\n" +
                                    tr( "%1: If you're patient" ).arg( 100 ) );
 
   choice.fight_length -> setToolTip( tr( "For custom fight lengths use max_time=seconds." ) );
 
   choice.fight_variance -> setToolTip( tr( "Varying the fight length over a given spectrum improves\n"
-                                           "the analysis of trinkets and abilities with long cooldowns." ) );
+                                       "the analysis of trinkets and abilities with long cooldowns." ) );
 
-  choice.fight_style -> setToolTip( tr( "Patchwerk: Tank-n-Spank" ) +"\n" +
+  choice.fight_style -> setToolTip( tr( "Patchwerk: Tank-n-Spank" ) + "\n" +
                                     tr( "HecticAddCleave:\n"
-                                        "    Heavy Movement, Frequent Add Spawns" ) +"\n" +
+                                        "    Heavy Movement, Frequent Add Spawns" ) + "\n" +
                                     tr( "HelterSkelter:\n"
                                         "    Movement, Stuns, Interrupts,\n"
-                                        "    Target-Switching (every 2min)" ) +"\n" +
+                                        "    Target-Switching (every 2min)" ) + "\n" +
                                     tr( "Ultraxion:\n"
-                                        "    Periodic Stuns, Raid Damage" ) +"\n" +
+                                        "    Periodic Stuns, Raid Damage" ) + "\n" +
                                     tr( "LightMovement:\n"
                                         "    %1s Movement, %2s CD,\n"
-                                        "    %3% into the fight until %4% before the end" ).arg( 7 ).arg( 85 ).arg( 10 ).arg( 20 ) +"\n" +
+                                        "    %3% into the fight until %4% before the end" ).arg( 7 ).arg( 85 ).arg( 10 ).arg( 20 ) + "\n" +
                                     tr( "HeavyMovement:\n"
                                         "    %1s Movement, %2s CD,\n"
                                         "    beginning %3s into the fight" ).arg( 4 ).arg( 10 ).arg( 10 ) );
@@ -649,13 +649,13 @@ void SC_OptionsTab::createToolTips()
   choice.target_race -> setToolTip( tr( "Race of the target and any adds." ) );
 
   choice.challenge_mode -> setToolTip( tr( "Enables/Disables the challenge mode setting, downscaling items to level 463.\n"
-                                           "Stats won't be exact, but very close.") );
+                                           "Stats won't be exact, but very close." ) );
 
   choice.num_target -> setToolTip( tr( "Number of enemies." ) );
 
   choice.target_level -> setToolTip( tr( "Level of the target and any adds." ) );
 
-  choice.player_skill -> setToolTip( tr( "Elite:       No mistakes.  No cheating either." ) +"\n" +
+  choice.player_skill -> setToolTip( tr( "Elite:       No mistakes.  No cheating either." ) + "\n" +
                                      tr( "Fire-is-Hot: Frequent DoT-clipping and skipping high-priority abilities." ) );
 
   choice.threads -> setToolTip( tr( "Match the number of CPUs for optimal performance.\n"
@@ -673,7 +673,7 @@ void SC_OptionsTab::createToolTips()
 
 
   choice.statistics_level -> setToolTip( tr( "Determines how much detailed statistical information besides count & mean will be collected during simulation.\n"
-                                             " Higher Statistics Level require more memory." ) +"\n" +
+                                             " Higher Statistics Level require more memory." ) + "\n" +
                                          tr( " Level %1: Only Simulation Length data is collected." ).arg( 0 ) +"\n" +
                                          tr( " Level %1: DPS/HPS data is collected. *default*" ).arg( 1 ) +"\n" +
                                          tr( " Level %1: Player Fight Length, Death Time, DPS(e), HPS(e), DTPS, HTPS, DMG, HEAL data is collected." ).arg( 2 ) +"\n" +
@@ -691,9 +691,9 @@ void SC_OptionsTab::createToolTips()
   choice.world_lag -> setToolTip( tr( "World Lag is the equivalent of the 'world lag' shown in the WoW Client.\n"
                                       "It is currently used to extend the cooldown duration of user executable abilities "
                                       " that have a cooldown.\n"
-                                      "Each setting adds an amount of 'lag' with a default standard deviation of 10%:" ) +"\n" +
-                                  tr( "    'Low'   : %1ms" ).arg( 100 ) +"\n" +
-                                  tr( "    'Medium': %1ms" ).arg( 300 ) +"\n" +
+                                      "Each setting adds an amount of 'lag' with a default standard deviation of 10%:" ) + "\n" +
+                                  tr( "    'Low'   : %1ms" ).arg( 100 ) + "\n" +
+                                  tr( "    'Medium': %1ms" ).arg( 300 ) + "\n" +
                                   tr( "    'High'  : %1ms" ).arg( 500 ) );
 
   choice.aura_delay -> setToolTip( tr( "Aura Lag represents the server latency which occurs when buffs are applied.\n"
@@ -762,7 +762,7 @@ QString SC_OptionsTab::get_globalSettings()
 
   options += "optimal_raid=0\n";
   QList<QAbstractButton*> buttons = buffsButtonGroup -> buttons();
-  for ( int i=1; buffOptions[ i ].label; i++ )
+  for ( int i = 1; buffOptions[ i ].label; i++ )
   {
     options += buffOptions[ i ].option;
     options += "=";
@@ -770,7 +770,7 @@ QString SC_OptionsTab::get_globalSettings()
     options += "\n";
   }
   buttons = debuffsButtonGroup->buttons();
-  for ( int i=1; debuffOptions[ i ].label; i++ )
+  for ( int i = 1; debuffOptions[ i ].label; i++ )
   {
     options += debuffOptions[ i ].option;
     options += "=";
@@ -808,7 +808,7 @@ QString SC_OptionsTab::mergeOptions()
   if ( buttons.at( 15 )->isChecked() || buttons.at( 17 )->isChecked() ) options += "weapon_speed_scale_factors=1\n";
 
   options += "scale_only=none";
-  for ( int i=2; scalingOptions[ i ].label; i++ )
+  for ( int i = 2; scalingOptions[ i ].label; i++ )
   {
     if ( buttons.at( i ) -> isChecked() )
     {
@@ -832,7 +832,7 @@ QString SC_OptionsTab::mergeOptions()
 
   options += "dps_plot_stat=none";
   buttons = plotsButtonGroup->buttons();
-  for ( int i=0; plotOptions[ i ].label; i++ )
+  for ( int i = 0; plotOptions[ i ].label; i++ )
   {
     if ( buttons.at( i )->isChecked() )
     {
@@ -847,7 +847,7 @@ QString SC_OptionsTab::mergeOptions()
 
   options += "reforge_plot_stat=none";
   buttons = reforgeplotsButtonGroup->buttons();
-  for ( int i=0; reforgePlotOptions[ i ].label; i++ )
+  for ( int i = 0; reforgePlotOptions[ i ].label; i++ )
   {
     if ( buttons.at( i )->isChecked() )
     {
@@ -930,12 +930,12 @@ QString SC_OptionsTab::mergeOptions()
 
 QString SC_OptionsTab::get_active_spec()
 {
-    return choice.armory_spec -> currentText();
+  return choice.armory_spec -> currentText();
 }
 
 QString SC_OptionsTab::get_player_role()
 {
-    return choice.default_role -> currentText();
+  return choice.default_role -> currentText();
 }
 
 void SC_OptionsTab::createItemDataSourceSelector( QFormLayout* layout )
@@ -1005,7 +1005,7 @@ void SC_OptionsTab::allScalingChanged( bool checked )
 {
   QList<QAbstractButton*> buttons = scalingButtonGroup->buttons();
   int count = buttons.count();
-  for ( int i=2; i < count - 1; i++ )
+  for ( int i = 2; i < count - 1; i++ )
   {
     buttons.at( i ) -> setChecked( checked );
   }
@@ -1013,7 +1013,7 @@ void SC_OptionsTab::allScalingChanged( bool checked )
 
 void SC_OptionsTab::_optionsChanged()
 {
-    // Maybe hook up history save, depending on IO cost.
+  // Maybe hook up history save, depending on IO cost.
 
-    emit optionsChanged();
+  emit optionsChanged();
 }

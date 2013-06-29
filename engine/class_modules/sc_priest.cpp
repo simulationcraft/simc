@@ -5536,9 +5536,9 @@ void priest_t::create_buffs()
                        .chance( sets -> has_set_bonus( SET_T16_4PC_HEAL ) ? 1.0 : 0.0 );
 
     buffs.resolute_spirit = stat_buff_creator_t( this, "resolute_spirit" )
-                       .spell( find_spell( 145374 ) )
-                       .chance( sets -> has_set_bonus( SET_T16_4PC_HEAL ) ? 1.0 : 0.0 )
-                       .add_invalidate( CACHE_HASTE );
+                            .spell( find_spell( 145374 ) )
+                            .chance( sets -> has_set_bonus( SET_T16_4PC_HEAL ) ? 1.0 : 0.0 )
+                            .add_invalidate( CACHE_HASTE );
 
     buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", active_spells.surge_of_darkness )
                                              .chance( active_spells.surge_of_darkness -> ok() ? 0.20 : 0.0 ); // Updated 5.4 PTR value, 6/20/2013

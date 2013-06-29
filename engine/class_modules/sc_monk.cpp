@@ -480,7 +480,7 @@ struct monk_action_t : public Base
   int stancemask;
 
 private:
-  std::array<resource_e,WISE_SERPENT+1> _resource_by_stance;
+  std::array < resource_e, WISE_SERPENT + 1 > _resource_by_stance;
   typedef Base ab; // action base, eg. spell_t
 public:
   typedef monk_action_t base_t;
@@ -519,22 +519,22 @@ public:
      */
     for ( size_t i = 0; ab::data()._power && i < ab::data()._power -> size(); i++ )
     {
-      const spellpower_data_t* pd = (*ab::data()._power)[ i ];
+      const spellpower_data_t* pd = ( *ab::data()._power )[ i ];
       switch ( pd -> aura_id() )
       {
-      case 103985:
-        assert( _resource_by_stance[ FIERCE_TIGER ] == RESOURCE_MAX && "Two power entries per aura id." );
-        _resource_by_stance[ FIERCE_TIGER ] = pd -> resource();
-        break;
-      case 115069:
-        assert( _resource_by_stance[ STURDY_OX ] == RESOURCE_MAX && "Two power entries per aura id." );
-        _resource_by_stance[ STURDY_OX ] = pd -> resource();
-        break;
-      case 115070:
-        assert( _resource_by_stance[ WISE_SERPENT ] == RESOURCE_MAX && "Two power entries per aura id." );
-        _resource_by_stance[ WISE_SERPENT ] = pd -> resource();
-        break;
-      default: break;
+        case 103985:
+          assert( _resource_by_stance[ FIERCE_TIGER ] == RESOURCE_MAX && "Two power entries per aura id." );
+          _resource_by_stance[ FIERCE_TIGER ] = pd -> resource();
+          break;
+        case 115069:
+          assert( _resource_by_stance[ STURDY_OX ] == RESOURCE_MAX && "Two power entries per aura id." );
+          _resource_by_stance[ STURDY_OX ] = pd -> resource();
+          break;
+        case 115070:
+          assert( _resource_by_stance[ WISE_SERPENT ] == RESOURCE_MAX && "Two power entries per aura id." );
+          _resource_by_stance[ WISE_SERPENT ] = pd -> resource();
+          break;
+        default: break;
       }
     }
   }
@@ -701,7 +701,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     if ( player -> dual_wield() )
       total_dmg *= 0.898882275;
 
-    // All Brewmaster special abilities use a 0.4 modifier for some reason on 
+    // All Brewmaster special abilities use a 0.4 modifier for some reason on
     // the base weapon damage, much like the Dual Wielding penalty
     if ( special && player -> specialization() == MONK_BREWMASTER )
       total_dmg *= 0.4;
@@ -1487,7 +1487,7 @@ struct keg_smash_t : public monk_melee_attack_t
 
     base_multiplier = 8.12; // hardcoded into tooltip
     base_multiplier *= 1.5; // Unknown 1.5 modifier applied at some point in time
-    weapon_power_mod = 1/11.0; // BM AP -> DPS conversion is with ap/11
+    weapon_power_mod = 1 / 11.0; // BM AP -> DPS conversion is with ap/11
   }
 
   virtual void execute()
@@ -2089,10 +2089,10 @@ struct stagger_self_damage_t : public ignite::pct_based_action_t<monk_spell_t>
 {
   stagger_self_damage_t( monk_t* p ) :
     base_t( "stagger_self_damage", p, p -> find_spell( 124255 ) )
-    {
-      num_ticks = 10;
-      target = p;
-    }
+  {
+    num_ticks = 10;
+    target = p;
+  }
 
   virtual void init()
   {

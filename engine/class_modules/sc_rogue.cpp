@@ -1723,7 +1723,7 @@ struct killing_spree_t : public rogue_attack_t
     rogue_td_t* td = cast_td( target );
     if ( td -> dots.killing_spree -> current_tick > 0 )
       m *= std::pow( 1.0 + p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent(),
-                    td -> dots.killing_spree -> current_tick );
+                     td -> dots.killing_spree -> current_tick );
 
     return m;
   }

@@ -43,10 +43,10 @@ void SC_MainWindow::updateSimProgress()
 #ifdef SC_PAPERDOLL
   // If we're in the paperdoll tab, check progress on the current sim running
   if ( mainTab -> currentTab() == TAB_PAPERDOLL )
-      sim = paperdoll_sim ? paperdoll_sim : SC_MainWindow::sim;
+    sim = paperdoll_sim ? paperdoll_sim : SC_MainWindow::sim;
   else
 #endif
-      sim = SC_MainWindow::sim;
+    sim = SC_MainWindow::sim;
 
   if ( sim )
   {
@@ -120,7 +120,7 @@ void SC_MainWindow::saveHistory()
 
     QStringList importHistory;
     int count = historyList -> count();
-    for ( int i=0; i < count; i++ )
+    for ( int i = 0; i < count; i++ )
       importHistory.append( historyList -> item( i ) -> text() );
 
     QDataStream out( &file );
@@ -168,16 +168,16 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
     visibleWebView( 0 ), sim( 0 ), paperdoll_sim( 0 ), simPhase( "%p%" ), simProgress( 100 ), simResults( 0 ),
     AppDataDir( "." ), TmpDir( "." )
 {
-    setAttribute(Qt::WA_AlwaysShowToolTips);
+  setAttribute( Qt::WA_AlwaysShowToolTips );
 #if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
   QDir::home().mkpath( "Library/Application Support/SimulationCraft" );
   AppDataDir = TmpDir = QDir::home().absoluteFilePath( "Library/Application Support/SimulationCraft" );
 #endif
 #ifdef SC_TO_INSTALL // GUI will be installed, use default AppData & Temp location for files created
-  #ifdef Q_OS_WIN32
+#ifdef Q_OS_WIN32
   QDir::home().mkpath( "SimulationCraft" );
-    AppDataDir = TmpDir = QDir::home().absoluteFilePath( "SimulationCraft");
-  #endif
+  AppDataDir = TmpDir = QDir::home().absoluteFilePath( "SimulationCraft" );
+#endif
 #endif
 
 #if QT_VERSION_5
@@ -295,24 +295,24 @@ void SC_MainWindow::createOptionsTab()
   optionsTab = new SC_OptionsTab( this );
   mainTab -> addTab( optionsTab, tr( "Options" ) );
 
-  connect( optionsTab, SIGNAL( armory_region_changed(const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
+  connect( optionsTab, SIGNAL( armory_region_changed( const QString& ) ), this, SLOT( armoryRegionChanged( const QString& ) ) );
 }
 
 SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ) :
-    QWebView( parent )
+  QWebView( parent )
 {
   QString welcomeFile = QDir::currentPath() + "/Welcome.html";
 
 #if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
-CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "Welcome" ), CFSTR( "html" ), 0 );
-if ( fileRef )
-{
-CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
-welcomeFile         = CFStringGetCStringPtr( macPath, CFStringGetSystemEncoding() );
+  CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "Welcome" ), CFSTR( "html" ), 0 );
+  if ( fileRef )
+  {
+    CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
+    welcomeFile         = CFStringGetCStringPtr( macPath, CFStringGetSystemEncoding() );
 
-CFRelease( fileRef );
-CFRelease( macPath );
-}
+    CFRelease( fileRef );
+    CFRelease( macPath );
+  }
 #endif
   setUrl( "file:///" + welcomeFile );
 }
@@ -377,7 +377,7 @@ void SC_MainWindow::createBestInSlotTab()
   bisTree -> setColumnCount( 1 );
   bisTree -> setHeaderLabels( headerLabels );
 
-  const int TIER_MAX=3;
+  const int TIER_MAX = 3;
 #if SC_BETA == 1
   const char* tierNames[] = { "" }; // For the beta include ALL profiles
 #else
@@ -412,7 +412,7 @@ void SC_MainWindow::createBestInSlotTab()
   QStringList tprofileList = tdir.entryList();
   int tnumProfiles = tprofileList.count();
   // Main loop through all subfolders of ./profiles/
-  for ( int i=0; i < tnumProfiles; i++ )
+  for ( int i = 0; i < tnumProfiles; i++ )
   {
 #if ! defined( Q_WS_MAC ) && ! defined( Q_OS_MAC )
     QDir dir = QString( "profiles/" + tprofileList[ i ] );
@@ -513,7 +513,7 @@ void SC_MainWindow::createBestInSlotTab()
 
   bisTree -> setColumnWidth( 0, 300 );
 
-  connect( bisTree, SIGNAL( itemDoubleClicked( QTreeWidgetItem*,int ) ), this, SLOT( bisDoubleClicked( QTreeWidgetItem*,int ) ) );
+  connect( bisTree, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( bisDoubleClicked( QTreeWidgetItem*, int ) ) );
 
   // Create BiS Introduction
 
@@ -676,12 +676,12 @@ void SC_MainWindow::updateVisibleWebView( SC_WebView* wv )
 sim_t* SC_MainWindow::initSim()
 {
   sim_t* sim = new sim_t();
-    sim -> output_file = fopen( (AppDataDir.toStdString() + "/" + SIMC_LOG_FILE ).c_str(), "w" );
-    sim -> report_progress = 0;
+  sim -> output_file = fopen( ( AppDataDir.toStdString() + "/" + SIMC_LOG_FILE ).c_str(), "w" );
+  sim -> report_progress = 0;
 #if SC_USE_PTR
-    sim -> parse_option( "ptr", ( ( optionsTab -> choice.version -> currentIndex() == 1 ) ? "1" : "0" ) );
+  sim -> parse_option( "ptr", ( ( optionsTab -> choice.version -> currentIndex() == 1 ) ? "1" : "0" ) );
 #endif
-    sim -> parse_option( "debug", ( ( optionsTab -> choice.debug -> currentIndex() == 2 ) ? "1" : "0" ) );
+  sim -> parse_option( "debug", ( ( optionsTab -> choice.debug -> currentIndex() == 2 ) ? "1" : "0" ) );
   return sim;
 }
 
@@ -806,56 +806,56 @@ void SC_MainWindow::startSim()
 player_t* SC_MainWindow::init_paperdoll_sim( sim_t*& sim )
 {
 
-    sim = initSim();
+  sim = initSim();
 
-    PaperdollProfile* profile = paperdollProfile;
-    const module_t* module = module_t::get( profile -> currentClass() );
-    player_t* player = module ? module -> create_player( sim, "Paperdoll Player", profile -> currentRace() ) : NULL;
+  PaperdollProfile* profile = paperdollProfile;
+  const module_t* module = module_t::get( profile -> currentClass() );
+  player_t* player = module ? module -> create_player( sim, "Paperdoll Player", profile -> currentRace() ) : NULL;
 
-    if ( player )
+  if ( player )
+  {
+    player -> role = util::parse_role_type( optionsTab -> choice.default_role -> currentText().toUtf8().constData() );
+
+    player -> _spec = profile -> currentSpec();
+
+    profession_e p1 = profile -> currentProfession( 0 );
+    profession_e p2 = profile -> currentProfession( 1 );
+    player -> professions_str = std::string();
+    if ( p1 != PROFESSION_NONE )
+      player -> professions_str += std::string( util::profession_type_string( p1 ) );
+    if ( p1 != PROFESSION_NONE && p2 != PROFESSION_NONE )
+      player -> professions_str += "/";
+    if ( p2 != PROFESSION_NONE )
+      player -> professions_str += util::profession_type_string( p2 );
+
+    for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
     {
-      player -> role = util::parse_role_type( optionsTab -> choice.default_role -> currentText().toUtf8().constData() );
+      const item_data_t* profile_item = profile -> slotItem( i );
 
-      player -> _spec = profile -> currentSpec();
-
-      profession_e p1 = profile -> currentProfession( 0 );
-      profession_e p2 = profile -> currentProfession( 1 );
-      player -> professions_str = std::string();
-      if ( p1 != PROFESSION_NONE )
-        player -> professions_str += std::string( util::profession_type_string( p1 ) );
-      if ( p1 != PROFESSION_NONE && p2 != PROFESSION_NONE )
-        player -> professions_str += "/";
-      if ( p2 != PROFESSION_NONE )
-        player -> professions_str += util::profession_type_string( p2 );
-
-      for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
+      if ( profile_item )
       {
-        const item_data_t* profile_item = profile -> slotItem( i );
-
-        if ( profile_item )
-        {
-            player -> items.push_back( item_t( player, std::string() ) );
-            item_t& item = player -> items.back();
-            item.options_str += "id=" + util::to_string( profile_item -> id );
-        }
+        player -> items.push_back( item_t( player, std::string() ) );
+        item_t& item = player -> items.back();
+        item.options_str += "id=" + util::to_string( profile_item -> id );
       }
     }
-    return player;
+  }
+  return player;
 }
 
 void SC_MainWindow::start_intermediate_paperdoll_sim()
 {
-    if ( paperdoll_sim )
-    {
-      paperdoll_sim -> cancel();
-      paperdollThread -> wait( 100 );
-      deleteSim( paperdoll_sim );
-    }
+  if ( paperdoll_sim )
+  {
+    paperdoll_sim -> cancel();
+    paperdollThread -> wait( 100 );
+    deleteSim( paperdoll_sim );
+  }
 
-    player_t* player = init_paperdoll_sim( paperdoll_sim );
+  player_t* player = init_paperdoll_sim( paperdoll_sim );
 
-    if ( player )
-    {
+  if ( player )
+  {
     paperdoll -> setCurrentDPS( "", 0, 0 );
 
     paperdollThread -> start( paperdoll_sim, player, optionsTab -> get_globalSettings() );
@@ -867,40 +867,40 @@ void SC_MainWindow::start_intermediate_paperdoll_sim()
 
 void SC_MainWindow::start_paperdoll_sim()
 {
-    if ( sim )
+  if ( sim )
+  {
+    return;
+  }
+  if ( paperdoll_sim )
+  {
+    paperdoll_sim -> cancel();
+    paperdollThread -> wait( 1000 );
+    deleteSim( paperdoll_sim ); paperdoll_sim = 0;
+  }
+
+  player_t* player = init_paperdoll_sim( sim );
+
+  if ( player )
+  {
+
+
+    optionsHistory.add( optionsTab -> encodeOptions() );
+    optionsHistory.current_index = 0;
+    if ( simulateTab -> current_Text() -> toPlainText() != defaultSimulateText )
     {
-      return;
+      //simulateTextHistory.add( simulateText -> toPlainText() );
     }
-    if ( paperdoll_sim )
-    {
-      paperdoll_sim -> cancel();
-      paperdollThread -> wait( 1000 );
-      deleteSim( paperdoll_sim ); paperdoll_sim = 0;
-    }
-
-    player_t* player = init_paperdoll_sim( sim );
-
-    if ( player )
-    {
-
-
-        optionsHistory.add( optionsTab -> encodeOptions() );
-        optionsHistory.current_index = 0;
-        if ( simulateTab -> current_Text() -> toPlainText() != defaultSimulateText )
-        {
-          //simulateTextHistory.add( simulateText -> toPlainText() );
-        }
-        overridesTextHistory.add( overridesText -> toPlainText() );
-        simulateCmdLineHistory.add( cmdLine -> text() );
-        simProgress = 0;
-        mainButton -> setText( "Cancel!" );
-        simulateThread -> start( sim, optionsTab -> get_globalSettings() );
-        // simulateText -> setPlainText( defaultSimulateText() );
-        cmdLineText = "";
-        cmdLine -> setText( cmdLineText );
-        timer -> start( 100 );
-        simProgress = 0;
-    }
+    overridesTextHistory.add( overridesText -> toPlainText() );
+    simulateCmdLineHistory.add( cmdLine -> text() );
+    simProgress = 0;
+    mainButton -> setText( "Cancel!" );
+    simulateThread -> start( sim, optionsTab -> get_globalSettings() );
+    // simulateText -> setPlainText( defaultSimulateText() );
+    cmdLineText = "";
+    cmdLine -> setText( cmdLineText );
+    timer -> start( 100 );
+    simProgress = 0;
+  }
 }
 #endif
 
@@ -1009,15 +1009,15 @@ void SC_MainWindow::cmdLineTextEdited( const QString& s )
 {
   switch ( mainTab -> currentTab() )
   {
-  case TAB_WELCOME:   cmdLineText = s; break;
-  case TAB_OPTIONS:   cmdLineText = s; break;
-  case TAB_SIMULATE:  cmdLineText = s; break;
-  case TAB_OVERRIDES: cmdLineText = s; break;
-  case TAB_HELP:      cmdLineText = s; break;
-  case TAB_SITE:      cmdLineText = s; break;
-  case TAB_LOG:       logFileText = s; break;
-  case TAB_RESULTS:   resultsFileText = s; break;
-  default:  break;
+    case TAB_WELCOME:   cmdLineText = s; break;
+    case TAB_OPTIONS:   cmdLineText = s; break;
+    case TAB_SIMULATE:  cmdLineText = s; break;
+    case TAB_OVERRIDES: cmdLineText = s; break;
+    case TAB_HELP:      cmdLineText = s; break;
+    case TAB_SITE:      cmdLineText = s; break;
+    case TAB_LOG:       logFileText = s; break;
+    case TAB_RESULTS:   resultsFileText = s; break;
+    default:  break;
   }
 }
 
@@ -1051,25 +1051,25 @@ void SC_MainWindow::mainButtonClicked( bool /* checked */ )
 {
   switch ( mainTab -> currentTab() )
   {
-  case TAB_WELCOME:   startSim(); break;
-  case TAB_OPTIONS:   startSim(); break;
-  case TAB_SIMULATE:  startSim(); break;
-  case TAB_OVERRIDES: startSim(); break;
-  case TAB_HELP:      startSim(); break;
-  case TAB_SITE:      startSim(); break;
-  case TAB_IMPORT:
-    switch ( importTab -> currentTab() )
-    {
-    case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine->text() ); break;
-    case TAB_CHAR_DEV:   startImport( TAB_CHAR_DEV,   cmdLine->text() ); break;
-    case TAB_RAWR:       startImport( TAB_RAWR,       "Rawr XML"      ); break;
-    default: break;
-    }
-    break;
-  case TAB_LOG: saveLog(); break;
-  case TAB_RESULTS: saveResults(); break;
+    case TAB_WELCOME:   startSim(); break;
+    case TAB_OPTIONS:   startSim(); break;
+    case TAB_SIMULATE:  startSim(); break;
+    case TAB_OVERRIDES: startSim(); break;
+    case TAB_HELP:      startSim(); break;
+    case TAB_SITE:      startSim(); break;
+    case TAB_IMPORT:
+      switch ( importTab -> currentTab() )
+      {
+        case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine->text() ); break;
+        case TAB_CHAR_DEV:   startImport( TAB_CHAR_DEV,   cmdLine->text() ); break;
+        case TAB_RAWR:       startImport( TAB_RAWR,       "Rawr XML"      ); break;
+        default: break;
+      }
+      break;
+    case TAB_LOG: saveLog(); break;
+    case TAB_RESULTS: saveResults(); break;
 #ifdef SC_PAPERDOLL
-  case TAB_PAPERDOLL: start_paperdoll_sim(); break;
+    case TAB_PAPERDOLL: start_paperdoll_sim(); break;
 #endif
   }
 }
@@ -1098,9 +1098,9 @@ void SC_MainWindow::backButtonClicked( bool /* checked */ )
   {
     switch ( mainTab -> currentTab() )
     {
-    case TAB_OPTIONS:   optionsTab -> decodeOptions( optionsHistory.backwards() ); break;
-    case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.backwards() ); overridesText->setFocus(); break;
-    default:            break;
+      case TAB_OPTIONS:   optionsTab -> decodeOptions( optionsHistory.backwards() ); break;
+      case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.backwards() ); overridesText->setFocus(); break;
+      default:            break;
     }
   }
 }
@@ -1116,12 +1116,12 @@ void SC_MainWindow::forwardButtonClicked( bool /* checked */ )
   {
     switch ( mainTab->currentIndex() )
     {
-    case TAB_WELCOME:   break;
-    case TAB_OPTIONS:   optionsTab -> decodeOptions( optionsHistory.forwards() ); break;
-    case TAB_IMPORT:    break;
-    case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.forwards() ); overridesText->setFocus(); break;
-    case TAB_LOG:       break;
-    case TAB_RESULTS:   break;
+      case TAB_WELCOME:   break;
+      case TAB_OPTIONS:   optionsTab -> decodeOptions( optionsHistory.forwards() ); break;
+      case TAB_IMPORT:    break;
+      case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.forwards() ); overridesText->setFocus(); break;
+      case TAB_LOG:       break;
+      case TAB_RESULTS:   break;
     }
   }
 }
@@ -1156,29 +1156,29 @@ void SC_MainWindow::mainTabChanged( int index )
   visibleWebView = 0;
   switch ( index )
   {
-  case TAB_WELCOME:
-  case TAB_OPTIONS:
-  case TAB_SIMULATE:
-  case TAB_OVERRIDES:
+    case TAB_WELCOME:
+    case TAB_OPTIONS:
+    case TAB_SIMULATE:
+    case TAB_OVERRIDES:
 #ifdef SC_PAPERDOLL
-  case TAB_PAPERDOLL:
+    case TAB_PAPERDOLL:
 #endif
-  case TAB_HELP:      cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
-  case TAB_LOG:       cmdLine->setText( logFileText ); mainButton->setText( "Save!" ); break;
-  case TAB_IMPORT:
-    mainButton->setText( sim ? "Cancel!" : "Import!" );
-    importTabChanged( importTab->currentIndex() );
-    break;
-  case TAB_RESULTS:
-    cmdLine -> setText( resultsFileText ); mainButton -> setText( "Save!" );
-    resultsTabChanged( resultsTab -> currentIndex() );
-    break;
-  case TAB_SITE:
-    cmdLine->setText( cmdLineText );
-    mainButton->setText( sim ? "Cancel!" : "Simulate!" );
-    updateVisibleWebView( siteView );
-    break;
-  default: assert( 0 );
+    case TAB_HELP:      cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
+    case TAB_LOG:       cmdLine->setText( logFileText ); mainButton->setText( "Save!" ); break;
+    case TAB_IMPORT:
+      mainButton->setText( sim ? "Cancel!" : "Import!" );
+      importTabChanged( importTab->currentIndex() );
+      break;
+    case TAB_RESULTS:
+      cmdLine -> setText( resultsFileText ); mainButton -> setText( "Save!" );
+      resultsTabChanged( resultsTab -> currentIndex() );
+      break;
+    case TAB_SITE:
+      cmdLine->setText( cmdLineText );
+      mainButton->setText( sim ? "Cancel!" : "Simulate!" );
+      updateVisibleWebView( siteView );
+      break;
+    default: assert( 0 );
   }
   if ( visibleWebView )
   {
@@ -1333,19 +1333,19 @@ void SC_CommandLine::keyPressEvent( QKeyEvent* e )
   }
   switch ( mainWindow -> mainTab -> currentTab() )
   {
-  case TAB_OVERRIDES:
-    mainWindow->cmdLineText = mainWindow->simulateCmdLineHistory.next( k );
-    setText( mainWindow->cmdLineText );
-    break;
-  case TAB_LOG:
-    mainWindow->logFileText = mainWindow->logCmdLineHistory.next( k );
-    setText( mainWindow->logFileText );
-    break;
-  case TAB_RESULTS:
-    mainWindow -> resultsFileText = mainWindow-> resultsCmdLineHistory.next( k );
-    setText( mainWindow -> resultsFileText );
-    break;
-  default: break;
+    case TAB_OVERRIDES:
+      mainWindow->cmdLineText = mainWindow->simulateCmdLineHistory.next( k );
+      setText( mainWindow->cmdLineText );
+      break;
+    case TAB_LOG:
+      mainWindow->logFileText = mainWindow->logCmdLineHistory.next( k );
+      setText( mainWindow->logFileText );
+      break;
+    case TAB_RESULTS:
+      mainWindow -> resultsFileText = mainWindow-> resultsCmdLineHistory.next( k );
+      setText( mainWindow -> resultsFileText );
+      break;
+    default: break;
   }
 }
 
@@ -1394,7 +1394,7 @@ void PersistentCookieJar::save()
     QList<QNetworkCookie> cookies = allCookies();
     qint32 count = ( qint32 ) cookies.count();
     out << count;
-    for ( int i=0; i < count; i++ )
+    for ( int i = 0; i < count; i++ )
     {
       const QNetworkCookie& c = cookies.at( i );
       out << c.name();
@@ -1413,7 +1413,7 @@ void PersistentCookieJar::load()
     QList<QNetworkCookie> cookies;
     qint32 count;
     in >> count;
-    for ( int i=0; i < count; i++ )
+    for ( int i = 0; i < count; i++ )
     {
       QByteArray name, value;
       in >> name;
@@ -1436,7 +1436,7 @@ void PaperdollThread::run()
   QStringList stringList = options.split( '\n', QString::SkipEmptyParts );
 
   std::vector<std::string> args;
-  for ( int i=0; i < stringList.count(); ++i )
+  for ( int i = 0; i < stringList.count(); ++i )
     args.push_back( stringList[ i ].toUtf8().constData() );
   sim_control_t description;
 

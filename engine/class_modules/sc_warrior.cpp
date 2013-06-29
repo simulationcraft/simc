@@ -2640,8 +2640,8 @@ struct skull_banner_t : public warrior_spell_t
   {
     warrior_spell_t::init();
 
-    // If a Warrior that is using a Skull Banner is being simulated, we should 
-    // disable the override in the sim, so the Warrior(s) can optimize Skull 
+    // If a Warrior that is using a Skull Banner is being simulated, we should
+    // disable the override in the sim, so the Warrior(s) can optimize Skull
     // Banner use.
     sim -> overrides.skull_banner = 0;
   }

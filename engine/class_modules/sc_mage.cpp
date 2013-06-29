@@ -1384,7 +1384,7 @@ struct arcane_missiles_t : public mage_spell_t
     // Trying to make the intended logic clear, but leaving it commented out
 //    if ( ! p() -> set_bonus.tier16_4pc_caster() || ! roll( p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() ))
 //    {
-      p() -> buffs.arcane_missiles -> decrement();
+    p() -> buffs.arcane_missiles -> decrement();
 //    }
   }
 

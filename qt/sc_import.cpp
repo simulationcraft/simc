@@ -101,10 +101,10 @@ void ImportThread::run()
 
   switch ( tab )
   {
-  case TAB_BATTLE_NET: importBattleNet(); break;
-  case TAB_CHAR_DEV:   importCharDev();   break;
-  case TAB_RAWR:       importRawr();      break;
-  default: assert( 0 ); break;
+    case TAB_BATTLE_NET: importBattleNet(); break;
+    case TAB_CHAR_DEV:   importCharDev();   break;
+    case TAB_RAWR:       importRawr();      break;
+    default: assert( 0 ); break;
   }
 
   if ( player )
@@ -113,7 +113,7 @@ void ImportThread::run()
 
     if ( sim->init() )
     {
-      std::string buffer="";
+      std::string buffer = "";
       player -> create_profile( buffer );
       profile = QString::fromUtf8( buffer.c_str() );
     }

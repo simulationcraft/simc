@@ -97,7 +97,7 @@ void cooldown_t::reset( bool require_reaction )
 {
   bool was_down = down();
   ready = ready_init();
-  if ( last_start > sim.current_time)
+  if ( last_start > sim.current_time )
     last_start = timespan_t::zero();
   current_charge = charges;
   if ( require_reaction && player )

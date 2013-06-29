@@ -5891,7 +5891,7 @@ void druid_t::init_actions()
         // Default APL -- Switch the appropriate action list here
 
         default_list -> add_action( "swap_action_list,name=basic",
-        "By default the simulation will use the \"Basic\" action list, if you would like to instead use the \"Advanced\" action list do so here." );
+                                    "By default the simulation will use the \"Basic\" action list, if you would like to instead use the \"Advanced\" action list do so here." );
 
         // Basic APL
 
@@ -5899,7 +5899,7 @@ void druid_t::init_actions()
         basic -> add_action( "skull_bash_cat" );
         basic -> add_talent( this, "Force of Nature" );
         basic -> add_action( this, "Ferocious Bite", "if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25",
-                             "Keep Rip from falling off during execute range.");
+                             "Keep Rip from falling off during execute range." );
         basic -> add_action( this, "Faerie Fire", "if=debuff.weakened_armor.stack<3" );
         basic -> add_action( this, "Healing Touch", "if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down" );
         basic -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
@@ -5969,7 +5969,7 @@ void druid_t::init_actions()
           advanced -> add_action( racial_actions[ i ] );
 
         advanced -> add_action( this, "Ferocious Bite", "if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25",
-                                "Keep Rip from falling off during execute range.");
+                                "Keep Rip from falling off during execute range." );
         advanced -> add_action( this, "Faerie Fire", "if=debuff.weakened_armor.stack<3" );
         advanced -> add_action( this, "Healing Touch", "if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down&buff.predatory_swiftness.remains<=2&dot.rip.remains<=10",
                                 "Force a Healing Touch cast if we'll need to refresh Rip soon and we still don't have Dream of Cenarius up." );
@@ -5979,7 +5979,7 @@ void druid_t::init_actions()
         if ( set_bonus.tier16_4pc_melee() )
         {
           advanced -> add_action( this, "Savage Roar", "if=cooldown.tigers_fury.remains<=1&combo_points>=3",
-                               "Spend extra CP on refreshing Savage Roar or a Ferocious Bite before using Tiger's Fury." );
+                                  "Spend extra CP on refreshing Savage Roar or a Ferocious Bite before using Tiger's Fury." );
           advanced -> add_action( this, "Ferocious Bite", "if=cooldown.tigers_fury.remains<=1&combo_points>=3" );
         }
 
@@ -6021,9 +6021,9 @@ void druid_t::init_actions()
         }
 
         advanced -> add_action( this, "Rip", "if=combo_points>=5&action.rip.tick_damage%dot.rip.tick_dmg>=1.15&target.time_to_die>30",
-                             "Overwrite Rip if it's at least 15% stronger than the current." );
+                                "Overwrite Rip if it's at least 15% stronger than the current." );
         advanced -> add_action( "pool_resource,if=combo_points>=5&target.health.pct<=25&dot.rip.ticking&!(energy>=50|(buff.berserk.up&energy>=25))",
-                                 "Pool 50 energy for Ferocious Bite.");
+                                "Pool 50 energy for Ferocious Bite." );
         advanced -> add_action( this, "Ferocious Bite", "if=combo_points>=5&dot.rip.ticking&target.health.pct<=25" );
         advanced -> add_action( this, "Rip", "if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)" );
         advanced -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains" );
@@ -6041,12 +6041,12 @@ void druid_t::init_actions()
                                   "Refresh Rake as Re-Origination is about to end if Rake has <9 seconds left." );
         }
         advanced -> add_action( this, "Rake", "if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|dot.rake.remains<3)",
-                             "Rake if it's about to fall off or we can apply a stronger Rake." );
+                                "Rake if it's about to fall off or we can apply a stronger Rake." );
         advanced -> add_action( "pool_resource,for_next=1" );
         advanced -> add_action( "thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&(dot.rip.remains>=4|buff.berserk.up)&dot.rip.ticking" );
         advanced -> add_action( "run_action_list,name=filler,if=buff.omen_of_clarity.react" );
         advanced -> add_action( this, "Healing Touch", "if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&energy+energy.regen<=35",
-                                "Proc Dream of Cenarius if we have downtime.");
+                                "Proc Dream of Cenarius if we have downtime." );
         advanced -> add_action( "run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)",
                                 "Conditions under which we should execute a CP generator." );
         advanced -> add_action( "run_action_list,name=filler,if=target.time_to_die<=8.5" );
