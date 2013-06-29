@@ -2492,7 +2492,8 @@ void shaman_spell_base_t<Base>::impact( action_state_t* state )
   {
     if ( ab::sim -> debug ) ab::sim -> output( "Echo of the Elements procs for %s", ab::name() );
     new ( *ab::sim ) eoe_execute_event_t< Base >( this );
-    p -> cooldown.echo_of_the_elements -> start( timespan_t::from_seconds( 0.1 ) );
+    p -> cooldown.echo_of_the_elements -> start( p -> dbc.ptr ? p -> talent.echo_of_the_elements -> internal_cooldown() : 
+                                                                timespan_t::from_seconds( 0.1 ) );
   }
 }
 
@@ -5401,7 +5402,8 @@ void shaman_t::create_buffs()
                                  .cd( timespan_t::zero() );
   buff.ascendance              = new ascendance_buff_t( this );
   buff.elemental_focus         = buff_creator_t( this, "elemental_focus",   spec.elemental_focus -> effectN( 1 ).trigger() )
-                                 .activated( false );
+                                 .activated( false )
+                                 .cd( dbc.ptr ? spec.elemental_focus -> internal_cooldown() : timespan_t::from_seconds( 0.5 ) );
   buff.lava_surge              = buff_creator_t( this, "lava_surge",        spec.lava_surge )
                                  .activated( false )
                                  .chance( 1.0 ); // Proc chance is handled externally

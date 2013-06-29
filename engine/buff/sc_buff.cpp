@@ -182,7 +182,14 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   if ( params._cooldown == timespan_t::min() )
   {
     if ( data().ok() )
-      cooldown -> duration = data().cooldown();
+    {
+      assert( ! ( data().cooldown() != timespan_t::zero() && data().internal_cooldown() != timespan_t::zero() ) );
+
+      if ( data().cooldown() != timespan_t::zero() )
+        cooldown -> duration = data().cooldown();
+      else
+        cooldown -> duration = data().internal_cooldown();
+    }
   }
   else
     cooldown -> duration = params._cooldown;
