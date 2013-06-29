@@ -1716,12 +1716,6 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
       os.tabs() << "<img src=\"" << ri.timeline_resource_chart[ j ] << "\" alt=\"Resource Timeline Chart\" />\n";
     }
   }
-  if ( p -> role == ROLE_TANK ) // Experimental, restrict to tanks for now
-  {
-    os.tabs() << "<img src=\"" << ri.health_change_chart << "\" alt=\"Health Change Timeline Chart\" />\n";
-    os.tabs() << "<img src=\"" << ri.health_change_sliding_chart << "\" alt=\"Health Change Sliding Timeline Chart\" />\n";
-    os.tabs() << "<img src=\"" << chart::distribution( p -> sim -> print_styles, p -> collected_data.health_changes.merged_histogram.data(), "Health Change Sliding Average Merged Histogram", p -> collected_data.health_changes.merged_sliding_average_timeline.mean(), p -> collected_data.health_changes.merged_histogram.min(), p -> collected_data.health_changes.merged_histogram.max() ) << "\" alt=\"Health Change Sliding Average Merged Histogram Chart\" />\n";
-  }
   --os;
   os.tabs() << "</div>\n";
   --os;

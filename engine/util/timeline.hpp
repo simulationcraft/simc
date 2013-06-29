@@ -142,6 +142,9 @@ public:
   double min() const
   { return data().empty() ? 0.0 : *std::min_element( data().begin(), data().end() ); }
 
+  void clear()
+  { _data.clear(); }
+
   std::ostream& data_str( std::ostream& s ) const
   {
     s << "Timeline: length: " << data().size();

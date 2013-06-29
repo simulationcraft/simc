@@ -3461,11 +3461,6 @@ void player_t::combat_begin()
     buffs.heroic_presence -> trigger();
   }
 
-  if ( ! is_pet() && role == ROLE_TANK )
-  {
-    collected_data.health_changes.timeline.push_back( sc_timeline_t() );
-  }
-
   init_resources( true );
 
   for ( size_t i = 0; i < precombat_action_list.size(); i++ )
@@ -4273,17 +4268,16 @@ void player_t::collect_resource_timeline_information()
                                           resources.current[ collected_data.resource_timelines[ j ].type ] );
   }
 
-  // health change timeline
-  // treat losses positive, gains negative
-  double change = ( resource_lost[ RESOURCE_HEALTH ] - collected_data.health_changes.previous_loss_level );
-  change -= ( resource_gained[ RESOURCE_HEALTH ] - collected_data.health_changes.previous_gain_level );
-  collected_data.health_changes.previous_loss_level = resource_lost[ RESOURCE_HEALTH ];
-  collected_data.health_changes.previous_gain_level = resource_gained[ RESOURCE_HEALTH ];
-
   if ( ! is_pet() && role == ROLE_TANK )
   {
-    assert( ! collected_data.health_changes.timeline.empty() );
-    collected_data.health_changes.timeline.back().add( sim -> current_time, change );
+    // health change timeline
+    // treat losses positive, gains negative
+    double change = ( resource_lost[ RESOURCE_HEALTH ] - collected_data.health_changes.previous_loss_level );
+    change -= ( resource_gained[ RESOURCE_HEALTH ] - collected_data.health_changes.previous_gain_level );
+    collected_data.health_changes.previous_loss_level = resource_lost[ RESOURCE_HEALTH ];
+    collected_data.health_changes.previous_gain_level = resource_gained[ RESOURCE_HEALTH ];
+
+    collected_data.health_changes.timeline.add( sim -> current_time, change );
   }
 
 }
@@ -9213,7 +9207,7 @@ player_collected_data_t::player_collected_data_t( const std::string& player_name
   htps( player_name + " Healing taken Per Second", s.statistics_level < 2 ),
   heal_taken( player_name + " Healing Taken", s.statistics_level < 2 ),
   deaths( player_name + " Deaths", s.statistics_level < 2 ),
-  theck_meloree_index( player_name + " Theck-Meloree Index", s.statistics_level < 2 ),
+  theck_meloree_index( player_name + " Theck-Meloree Index", s.statistics_level < 1 ),
   resource_timelines(),
   combat_end_resource( RESOURCE_MAX ),
   health_changes()
@@ -9267,8 +9261,6 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
 
     resource_timelines[ i ].timeline.merge ( other.resource_timelines[ i ].timeline );
   }
-
-  health_changes.timeline.insert( health_changes.timeline.end(), other.health_changes.timeline.begin(), other.health_changes.timeline.end() );
 }
 
 void player_collected_data_t::analyze( const player_t& p )
@@ -9296,70 +9288,6 @@ void player_collected_data_t::analyze( const player_t& p )
   for ( size_t i = 0; i <  resource_timelines.size(); ++i )
   {
     resource_timelines[ i ].timeline.adjust( p.sim -> divisor_timeline );
-  }
-
-
-  // Health Change Analysis
-  if ( ! p.is_pet() && p.role == ROLE_TANK )
-  {
-    // Stage 1: Create sliding average timelines & merged timelines
-    health_changes.merged_timeline.init( fight_length.max() );
-    health_changes.merged_sliding_average_timeline.init( fight_length.max() );
-    for ( size_t i = 0, size = health_changes.timeline.size(); i < size; ++i )
-    {
-      // Create Merged Timeline
-      for ( size_t j = 0, size = std::min( health_changes.merged_timeline.data().size(), health_changes.timeline[ i ].data().size() ); j < size; ++j )
-      {
-        health_changes.merged_timeline.add( j, health_changes.timeline[ i ].data()[ j ] );
-      }
-
-      // Create Sliding Average Timeline
-      health_changes.sliding_average_timeline.push_back( sc_timeline_t() );
-      // Use half window size of 3, so it's a moving average over 6seconds
-      health_changes.timeline[ i ].build_sliding_average_timeline( health_changes.sliding_average_timeline.back(), 3 );
-
-      // Create Merged Sliding Average Timeline
-      for ( size_t j = 0, size = std::min( health_changes.merged_sliding_average_timeline.data().size(), health_changes.sliding_average_timeline.back().data().size() ); j < size; ++j )
-      {
-        health_changes.merged_sliding_average_timeline.add( j, health_changes.sliding_average_timeline.back().data()[ j ] );
-      }
-    }
-
-    health_changes.merged_timeline.adjust( p.sim -> divisor_timeline );
-    health_changes.merged_sliding_average_timeline.adjust( p.sim -> divisor_timeline );
-
-    // Stage 2: Create Histograms and Merged histograms
-
-    // Obtain min/max value of all slidinga verage timelines
-    double min_value = std::numeric_limits<double>::max(); double max_value = std::numeric_limits<double>::min();
-    for ( size_t i = 0, size = health_changes.sliding_average_timeline.size(); i < size; ++i )
-    {
-      const sc_timeline_t& tl = health_changes.sliding_average_timeline[ i ];
-      if ( ! tl.data().empty() )
-      {
-        double tl_min = *range::min_element( tl.data() );
-        double tl_max = *range::max_element( tl.data() );
-        if ( tl_min < min_value )
-          min_value = tl_min;
-        if ( tl_max > max_value )
-          max_value = tl_max;
-      }
-    }
-    // we found something, create histogram
-    size_t num_buckets = 50; // add option?
-    if ( min_value != std::numeric_limits<double>::max() && min_value != max_value && ! health_changes.sliding_average_timeline.empty() )
-    {
-      health_changes.merged_histogram.create_histogram( health_changes.sliding_average_timeline[ 0 ], num_buckets, min_value, max_value );
-      for ( size_t i = 1, size = health_changes.sliding_average_timeline.size(); i < size; ++i )
-      {
-        const sc_timeline_t& tl = health_changes.sliding_average_timeline[ i ];
-        if ( ! tl.data().empty() )
-        {
-          histogram tmp; tmp.create_histogram( tl, num_buckets, min_value, max_value );
-          health_changes.merged_histogram.accumulate( tmp );
-        }
-      }
-    }
   }
 }
 
@@ -9413,8 +9341,6 @@ void player_collected_data_t::collect_data( const player_t& p )
   // Hook up data extraction for theck_meloree_index
   if ( ! p.is_pet() && p.role == ROLE_TANK )
   {
-    assert( ! health_changes.timeline.empty() );
-
     // define constants that may eventually become user-definable inputs
     int window = 6; // window size, this may becomeuser-definable later
     double w0 = 6; // normalized window size
@@ -9423,44 +9349,42 @@ void player_collected_data_t::collect_data( const player_t& p )
     // define TMI result
     double tmi = 0;
 
-    // create sliding average timeline
-    health_changes.sliding_average_timeline.push_back( sc_timeline_t() );
-    
-    // Use half window size of 3, so it's a moving average over 6seconds
-    health_changes.timeline.back().build_sliding_average_timeline( health_changes.sliding_average_timeline.back(), window / 2 );
-    
-    // pull the data out of the sliding average timeline
-    std::vector<double> tl_data = health_changes.timeline.back().data();
-    std::vector<double> ma_data = health_changes.sliding_average_timeline.back().data();
-
-    std::vector<double> weighted_value = ma_data; // just to get size right, we'll overwrite each element in for loop
-    
-    for ( size_t j = 0, size = ma_data.size(); j < size; j++ )
+    if ( f_length )
     {
-      // normalize to the default window size (6-second window)
-      ma_data[ j ] *= w0;
+      // create sliding average timeline
+      sc_timeline_t sliding_average_tl;
 
-      // normalize the vector by actor health 
-      ma_data[ j ] /= p.resources.initial[ RESOURCE_HEALTH ];
+      // Use half window size of 3, so it's a moving average over 6seconds
+      health_changes.timeline.build_sliding_average_timeline( sliding_average_tl, window / 2 );
 
-      // calculate weighted contribution of this data point
-      weighted_value[ j ] = std::exp( 10 * std::log(hdf) * ( ma_data[ j ] - 1 ) );
-      
-      tmi += weighted_value [ j ];
+      // pull the data out of the sliding average timeline
+      std::vector<double> weighted_value = sliding_average_tl.data();
+
+      for ( size_t j = 0, size = weighted_value.size(); j < size; j++ )
+      {
+        // normalize to the default window size (6-second window)
+        weighted_value[ j ] *= w0;
+
+        // normalize the vector by actor health
+        weighted_value[ j ] /= p.resources.initial[ RESOURCE_HEALTH ];
+
+        // calculate weighted contribution of this data point
+        weighted_value[ j ] = std::exp( 10 * std::log(hdf) * ( weighted_value[ j ] - 1 ) );
+
+        tmi += weighted_value [ j ];
+      }
+
+      // constant multiplicative factors
+      tmi *= 10000;
+      tmi *= std::pow( window / 1.5 , 2 );
+      tmi /= f_length;
+      //std::cout << "TMI(iteration " << p.sim -> current_iteration << "): " << tmi << " sa tl avg: " << sliding_average_tl.mean() << "\n";
     }
-
-    // constant multiplicative factors
-    tmi *= 10000;
-    tmi *= std::pow( window / 1.5 , 2 );
-    
     // normalize by fight length and add to TMI data array
-    theck_meloree_index.add( f_length ? tmi / f_length : 0 );
+    theck_meloree_index.add( tmi );
 
-    // If we're not keeping everything, clear the timeline to save memory
-    if ( ! health_changes.collect_data_per_iteration )
-    {
-      health_changes.timeline.clear(); // Drop Data
-    }
+    // clear the timeline to save memory
+    health_changes.timeline.clear(); // Drop Data
   }
 }
 
@@ -9482,9 +9406,6 @@ std::ostream& player_collected_data_t::data_str( std::ostream& s ) const
   hpse.data_str( s );
   htps.data_str( s );
   heal_taken.data_str( s );
-
-  s << "health changes tl "; health_changes.merged_timeline.data_str( s );
-  s << "health changes moving average tl "; health_changes.merged_sliding_average_timeline.data_str( s );
 
   return s;
 }
