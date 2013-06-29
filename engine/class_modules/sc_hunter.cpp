@@ -3478,7 +3478,7 @@ struct trueshot_aura_t : public hunter_spell_t
   {
     trigger_gcd = timespan_t::zero();
     harmful = false;
-    background = ( sim -> overrides.attack_power_multiplier != 0 && sim -> overrides.critical_strike != 0 );
+    background = sim -> overrides.attack_power_multiplier != 0;
   }
 
   virtual void execute()
@@ -3487,9 +3487,6 @@ struct trueshot_aura_t : public hunter_spell_t
 
     if ( ! sim -> overrides.attack_power_multiplier )
       sim -> auras.attack_power_multiplier -> trigger();
-
-    if ( ! sim -> overrides.critical_strike )
-      sim -> auras.critical_strike -> trigger();
   }
 };
 
