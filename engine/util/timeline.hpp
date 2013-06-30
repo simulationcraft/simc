@@ -51,7 +51,7 @@ void sliding_window_average( Fwd first, Fwd last, unsigned window, Out out )
     }
 
     // Empty right half of sliding window
-    for ( diff_t count = WINDOW; count > HALFWINDOW; --count )
+    for ( diff_t count = 2 * HALFWINDOW; count > HALFWINDOW; --count )
     {
       window_sum -= *first++;
       *out++ = window_sum / count;
