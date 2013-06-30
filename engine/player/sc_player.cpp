@@ -9261,6 +9261,8 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
 
     resource_timelines[ i ].timeline.merge ( other.resource_timelines[ i ].timeline );
   }
+
+  health_changes.merged_timeline.merge( other.health_changes.merged_timeline );
 }
 
 void player_collected_data_t::analyze( const player_t& p )
@@ -9289,6 +9291,8 @@ void player_collected_data_t::analyze( const player_t& p )
   {
     resource_timelines[ i ].timeline.adjust( p.sim -> divisor_timeline );
   }
+
+  health_changes.merged_timeline.adjust( p.sim -> divisor_timeline );
 }
 
 
@@ -9338,9 +9342,11 @@ void player_collected_data_t::collect_data( const player_t& p )
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
     combat_end_resource[ i ].add( p.resources.current[ i ] );
 
-  // Calculation of theck_meloree_index - only needed for tanks
+  // Health Change Calculations - only needed for tanks
   if ( ! p.is_pet() && p.role == ROLE_TANK )
   {
+    health_changes.merged_timeline.merge( health_changes.timeline );
+
     // The Theck-Meloree Index is a metric that attempts to quantize the smoothness of damage intake.
     // It performs an exponentially-weighted sum of the moving average of damage intake, with larger
     // damage spikes being weighted more heavily. A formal definition of the metric can be found here:
