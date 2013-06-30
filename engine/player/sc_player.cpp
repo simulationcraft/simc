@@ -9338,26 +9338,30 @@ void player_collected_data_t::collect_data( const player_t& p )
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
     combat_end_resource[ i ].add( p.resources.current[ i ] );
 
-  // Hook up data extraction for theck_meloree_index
+  // Calculation of theck_meloree_index - only needed for tanks
   if ( ! p.is_pet() && p.role == ROLE_TANK )
   {
-    // define constants that may eventually become user-definable inputs
-    int window = 6; // window size, this may becomeuser-definable later
-    double w0 = 6; // normalized window size
-    double hdf  = 3; // default health decade factor
+    // The Theck-Meloree Index is a metric that attempts to quantize the smoothness of damage intake.
+    // It performs an exponentially-weighted sum of the moving average of damage intake, with larger
+    // damage spikes being weighted more heavily. A formal definition of the metric can be found here:
+    // (TODO: insert link when available)
 
-    // define TMI result
-    double tmi = 0;
+    // define constants and variables
+    int window = 6; // window size, this may become user-definable later
+    double w0  = 6; // normalized window size
+    double hdf = 3; // default health decade factor
+    double tmi = 0; // TMI result
 
     if ( f_length )
     {
       // create sliding average timeline
       sc_timeline_t sliding_average_tl;
 
-      // Use half window size of 3, so it's a moving average over 6seconds
-      health_changes.timeline.build_sliding_average_timeline( sliding_average_tl, window / 2 );
+      // Use half window size of 3, so it's a moving average over 6 seconds
+      health_changes.timeline.build_sliding_average_timeline( sliding_average_tl, window );
 
       // pull the data out of the sliding average timeline
+      //std::vector<double> tl_data = health_changes.timeline.data();  //temporary, for debugging
       std::vector<double> weighted_value = sliding_average_tl.data();
 
       for ( size_t j = 0, size = weighted_value.size(); j < size; j++ )
@@ -9365,20 +9369,24 @@ void player_collected_data_t::collect_data( const player_t& p )
         // normalize to the default window size (6-second window)
         weighted_value[ j ] *= w0;
 
-        // normalize the vector by actor health
+        // normalize by actor health
         weighted_value[ j ] /= p.resources.initial[ RESOURCE_HEALTH ];
 
-        // calculate weighted contribution of this data point
+        // calculate exponentially-weighted contribution of this data point
         weighted_value[ j ] = std::exp( 10 * std::log( hdf ) * ( weighted_value[ j ] - 1 ) );
 
+        // add to the TMI total
         tmi += weighted_value [ j ];
       }
 
-      // constant multiplicative factors
-      tmi *= 10000;
-      tmi *= std::pow( window / 1.5 , 2 );
+      // normalize for fight length
       tmi /= f_length;
-      //std::cout << "TMI(iteration " << p.sim -> current_iteration << "): " << tmi << " sa tl avg: " << sliding_average_tl.mean() << "\n";
+
+      // constant multiplicative normalization factors
+      // these are estimates at the moment - will be fine-tuned later
+      tmi *= 10000;
+      tmi *= std::pow( window / 1.5 , 2 ); // normalizes for window size
+      //std::cout << "TMI(iteration " << p.sim -> current_iteration << "): " << tmi << " sa tl avg: " << sliding_average_tl.mean() << "\n";   //temporary, for debugging
     }
     // normalize by fight length and add to TMI data array
     theck_meloree_index.add( tmi );

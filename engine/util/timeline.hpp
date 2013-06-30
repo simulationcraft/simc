@@ -15,14 +15,18 @@
 #include "sample_data.hpp"
 
 template <typename Fwd, typename Out>
-void sliding_window_average( Fwd first, Fwd last, unsigned half_window, Out out )
+void sliding_window_average( Fwd first, Fwd last, unsigned window, Out out )
 {
+  // This function performs an apodized moving average of the data bounded by first and last
+  // using a window size defined by the third argument. 
   typedef typename std::iterator_traits<Fwd>::value_type value_t;
   typedef typename std::iterator_traits<Fwd>::difference_type diff_t;
   diff_t n = std::distance( first, last );
-  diff_t HALFWINDOW = static_cast<diff_t>( half_window );
+  diff_t HALFWINDOW = static_cast<diff_t>( window / 2 );
+  diff_t WINDOW = static_cast<diff_t>( window );
 
-  if ( n >= 2 * HALFWINDOW )
+  // if the array is longer than the window size, perform apodized moving average
+  if ( n >= WINDOW )
   {
     value_t window_sum = value_t();
 
@@ -31,8 +35,8 @@ void sliding_window_average( Fwd first, Fwd last, unsigned half_window, Out out 
     for ( diff_t count = 0; count < HALFWINDOW; ++count )
       window_sum += *right++;
 
-    // Fill left half of sliding window
-    for ( diff_t count = HALFWINDOW; count < 2 * HALFWINDOW; ++count )
+    // Fill left half of sliding window and start storing output values
+    for ( diff_t count = HALFWINDOW; count < WINDOW; ++count )
     {
       window_sum += *right++;
       *out++ = window_sum / ( count + 1 );
@@ -42,15 +46,15 @@ void sliding_window_average( Fwd first, Fwd last, unsigned half_window, Out out 
     while ( right != last )
     {
       window_sum += *right++;
-      *out++ = window_sum / ( 2 * HALFWINDOW + 1 );
       window_sum -= *first++;
+      *out++ = window_sum / WINDOW;
     }
 
     // Empty right half of sliding window
-    for ( diff_t count = 2 * HALFWINDOW; count > HALFWINDOW; --count )
+    for ( diff_t count = WINDOW; count > HALFWINDOW; --count )
     {
-      *out++ = window_sum / count;
       window_sum -= *first++;
+      *out++ = window_sum / count;
     }
   }
   else
@@ -61,9 +65,9 @@ void sliding_window_average( Fwd first, Fwd last, unsigned half_window, Out out 
 }
 
 template <typename Range, typename Out>
-inline Range& sliding_window_average( Range& r, unsigned half_window, Out out )
+inline Range& sliding_window_average( Range& r, unsigned window, Out out )
 {
-  sliding_window_average( range::begin( r ), range::end( r ), half_window, out );
+  sliding_window_average( range::begin( r ), range::end( r ), window, out );
   return r;
 }
 
@@ -128,10 +132,10 @@ public:
       _data.insert( _data.end(), other.data().begin() + _data.size(), other.data().end() );
   }
 
-  void build_sliding_average_timeline( timeline_t& out, unsigned half_window ) const
+  void build_sliding_average_timeline( timeline_t& out, unsigned window ) const
   {
     out._data.reserve( data().size() );
-    sliding_window_average( data(), half_window, std::back_inserter( out._data ) );
+    sliding_window_average( data(), window, std::back_inserter( out._data ) );
   }
 
   // Maximum value; 0 if no data available

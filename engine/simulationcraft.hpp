@@ -204,7 +204,7 @@ struct sc_timeline_t : public timeline_t
   { base_t::add( static_cast<size_t>( current_time.total_millis() / 1000 ), value ); }
 
   void build_derivative_timeline( sc_timeline_t& out ) const
-  { base_t::build_sliding_average_timeline( out, 10 ); }
+  { base_t::build_sliding_average_timeline( out, 20 ); }
 };
 
 // Random Number Generators
