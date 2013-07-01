@@ -1199,7 +1199,7 @@ void player_t::init_base_stats()
   if ( brain_lag_stddev < timespan_t::zero() ) brain_lag_stddev = brain_lag * 0.1;
 
   // Collect DTPS data for tanks even for statistics_level == 1
-  if ( sim -> statistics_level >= 1 && role == ROLE_TANK )
+  if ( sim -> statistics_level >= 1 && primary_role() == ROLE_TANK )
     collected_data.dtps.change_mode( false );
 
   if ( sim -> debug )
@@ -3519,7 +3519,7 @@ void player_t::datacollection_begin()
   iteration_heal_taken = 0;
   active_during_iteration = false;
 
-  if ( ! is_pet() && role == ROLE_TANK )
+  if ( ! is_pet() && primary_role() == ROLE_TANK )
     collected_data.health_changes.timeline.clear(); // Drop Data
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
@@ -4271,7 +4271,7 @@ void player_t::collect_resource_timeline_information()
         resources.current[ collected_data.resource_timelines[ j ].type ] );
   }
 
-  if ( ! is_pet() && role == ROLE_TANK )
+  if ( ! is_pet() && primary_role() == ROLE_TANK )
   {
     // health change timeline
     // treat losses positive, gains negative
@@ -4417,7 +4417,7 @@ void player_t::recalculate_resource_max( resource_e resource_type )
 
 // player_t::primary_role ===================================================
 
-role_e player_t::primary_role()
+role_e player_t::primary_role() const
 {
   return role;
 }
@@ -9231,6 +9231,13 @@ void player_collected_data_t::reserve_memory( const player_t& p )
   hps.reserve( p.sim -> iterations );
   hpse.reserve( p.sim -> iterations );
   htps.reserve( p.sim -> iterations );
+  heal_taken.reserve( p.sim -> iterations );
+  deaths.reserve( p.sim -> iterations );
+
+  if ( ! p.is_pet() && p.primary_role() == ROLE_TANK )
+  {
+    theck_meloree_index.reserve( p.sim -> iterations );
+  }
 }
 
 void player_collected_data_t::merge( const player_collected_data_t& other )
@@ -9255,6 +9262,7 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
   // Tank
   deaths.merge( other.deaths );
   timeline_dmg_taken.merge( other.timeline_dmg_taken );
+  theck_meloree_index.merge( other.theck_meloree_index );
 
   assert( resource_timelines.size() == other.resource_timelines.size() );
   for ( size_t i = 0; i < resource_timelines.size(); ++i )
@@ -9346,7 +9354,7 @@ void player_collected_data_t::collect_data( const player_t& p )
     combat_end_resource[ i ].add( p.resources.current[ i ] );
 
   // Health Change Calculations - only needed for tanks
-  if ( ! p.is_pet() && p.role == ROLE_TANK )
+  if ( ! p.is_pet() && p.primary_role() == ROLE_TANK )
   {
     health_changes.merged_timeline.merge( health_changes.timeline );
 

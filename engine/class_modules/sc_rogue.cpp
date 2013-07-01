@@ -317,7 +317,7 @@ struct rogue_t : public player_t
   virtual expr_t*   create_expression( action_t* a, const std::string& name_str );
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
-  virtual role_e primary_role()  { return ROLE_ATTACK; }
+  virtual role_e primary_role() const  { return ROLE_ATTACK; }
   virtual bool      create_profile( std::string& profile_str, save_e = SAVE_ALL, bool save_html = false );
   virtual void      copy_from( player_t* source );
 

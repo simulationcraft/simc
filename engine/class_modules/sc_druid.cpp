@@ -441,7 +441,7 @@ public:
   virtual void      create_pets();
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource();
-  virtual role_e    primary_role();
+  virtual role_e    primary_role() const;
   virtual void      assess_damage( school_e school, dmg_e, action_state_t* );
   virtual void      assess_heal( school_e, dmg_e, heal_state_t* );
   virtual void      create_options();
@@ -7036,7 +7036,7 @@ int druid_t::decode_set( item_t& item )
 
 // druid_t::primary_role ====================================================
 
-role_e druid_t::primary_role()
+role_e druid_t::primary_role() const
 {
   if ( specialization() == DRUID_BALANCE )
   {

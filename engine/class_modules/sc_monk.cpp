@@ -286,7 +286,7 @@ public:
   virtual void      create_options();
   virtual void      copy_from( player_t* );
   virtual resource_e primary_resource();
-  virtual role_e    primary_role();
+  virtual role_e    primary_role() const;
   virtual void      pre_analyze_hook();
   virtual void      combat_begin();
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
@@ -2955,7 +2955,7 @@ resource_e monk_t::primary_resource()
 
 // monk_t::primary_role =====================================================
 
-role_e monk_t::primary_role()
+role_e monk_t::primary_role() const
 {
   if ( base_t::primary_role() == ROLE_DPS )
     return ROLE_HYBRID;

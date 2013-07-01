@@ -995,7 +995,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
     ri.gains_chart[ rt ] = chart::gains( p, rt );
   }
 
-  if ( ! p -> is_pet() && p -> role == ROLE_TANK )
+  if ( ! p -> is_pet() && p -> primary_role() == ROLE_TANK )
   {
     ri.health_change_chart =
     chart::timeline( p,

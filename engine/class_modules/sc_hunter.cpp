@@ -311,7 +311,7 @@ public:
   virtual void      create_pets();
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource() { return RESOURCE_FOCUS; }
-  virtual role_e primary_role() { return ROLE_ATTACK; }
+  virtual role_e primary_role() const { return ROLE_ATTACK; }
   virtual bool      create_profile( std::string& profile_str, save_e = SAVE_ALL, bool save_html = false );
   virtual void      copy_from( player_t* source );
   virtual void      armory_extensions( const std::string& r, const std::string& s, const std::string& c, cache::behavior_e );

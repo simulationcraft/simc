@@ -274,7 +274,7 @@ public:
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
-  virtual role_e primary_role() { return ROLE_SPELL; }
+  virtual role_e primary_role() const { return ROLE_SPELL; }
   virtual double    mana_regen_per_second();
   virtual double    composite_player_multiplier( school_e school );
   virtual void invalidate_cache( cache_e );

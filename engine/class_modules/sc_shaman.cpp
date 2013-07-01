@@ -435,7 +435,7 @@ public:
   virtual expr_t* create_expression( action_t*, const std::string& name );
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
-  virtual role_e primary_role();
+  virtual role_e primary_role() const;
   virtual void      arise();
   virtual void      reset();
 
@@ -6259,7 +6259,7 @@ int shaman_t::decode_set( item_t& item )
 
 // shaman_t::primary_role ===================================================
 
-role_e shaman_t::primary_role()
+role_e shaman_t::primary_role() const
 {
   if ( player_t::primary_role() == ROLE_HEAL )
     return ROLE_HEAL;

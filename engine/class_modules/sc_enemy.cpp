@@ -384,7 +384,7 @@ struct enemy_t : public player_t
     level = level + 3;
   }
 
-  virtual role_e primary_role()
+  virtual role_e primary_role() const
   { return ROLE_TANK; }
 
   virtual resource_e primary_resource()

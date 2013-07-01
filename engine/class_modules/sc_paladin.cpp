@@ -326,7 +326,7 @@ public:
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
-  virtual role_e primary_role();
+  virtual role_e primary_role() const;
   virtual void      regen( timespan_t periodicity );
   virtual pet_t*    create_pet    ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets   ();
@@ -4872,7 +4872,7 @@ void paladin_t::init_spells()
 
 // paladin_t::primary_role ==================================================
 
-role_e paladin_t::primary_role()
+role_e paladin_t::primary_role() const
 {
   if ( player_t::primary_role() == ROLE_DPS || specialization() == PALADIN_RETRIBUTION )
     return ROLE_HYBRID;

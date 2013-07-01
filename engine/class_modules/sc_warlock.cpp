@@ -269,7 +269,7 @@ public:
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
-  virtual role_e primary_role()     { return ROLE_SPELL; }
+  virtual role_e primary_role() const     { return ROLE_SPELL; }
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual double composite_player_multiplier( school_e school );
   virtual void invalidate_cache( cache_e );

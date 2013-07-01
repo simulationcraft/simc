@@ -328,7 +328,7 @@ public:
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
-  virtual role_e primary_role();
+  virtual role_e primary_role() const;
   virtual void      combat_begin();
   virtual double    composite_armor();
   virtual double    composite_spell_haste();
@@ -4941,7 +4941,7 @@ void priest_t::create_benefits()
  * If base_t::primary_role() has a valid role defined, use it,
  * otherwise select spec-based default.
  */
-role_e priest_t::primary_role()
+role_e priest_t::primary_role() const
 {
   switch ( base_t::primary_role() )
   {

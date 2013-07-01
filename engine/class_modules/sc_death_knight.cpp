@@ -430,7 +430,7 @@ public:
   virtual void      create_pets();
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource() { return RESOURCE_RUNIC_POWER; }
-  virtual role_e primary_role();
+  virtual role_e primary_role() const;
   virtual void      trigger_runic_empowerment();
   virtual int       runes_count( rune_type rt, bool include_death, int position );
   virtual double    runes_cooldown_any( rune_type rt, bool include_death, int position );
@@ -6155,7 +6155,7 @@ void death_knight_t::invalidate_cache( cache_e c )
 
 // death_knight_t::primary_role =============================================
 
-role_e death_knight_t::primary_role()
+role_e death_knight_t::primary_role() const
 {
   if ( player_t::primary_role() == ROLE_TANK )
     return ROLE_TANK;

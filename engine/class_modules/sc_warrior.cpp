@@ -281,7 +281,7 @@ public:
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource() { return RESOURCE_RAGE; }
-  virtual role_e primary_role();
+  virtual role_e primary_role() const;
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void      copy_from( player_t* source );
   virtual ~warrior_t();
@@ -3599,7 +3599,7 @@ void warrior_t::regen( timespan_t periodicity )
 
 // warrior_t::primary_role() ================================================
 
-role_e warrior_t::primary_role()
+role_e warrior_t::primary_role() const
 {
   if ( player_t::primary_role() == ROLE_TANK )
     return ROLE_TANK;

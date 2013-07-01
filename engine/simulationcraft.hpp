@@ -4420,7 +4420,7 @@ public:
   virtual bool   resource_available( resource_e resource_type, double cost );
   void collect_resource_timeline_information();
   virtual resource_e primary_resource() { return RESOURCE_NONE; }
-  virtual role_e   primary_role();
+  virtual role_e   primary_role() const;
   specialization_e specialization() const { return _spec; }
   const char* primary_tree_name();
   virtual stat_e normalize_by();
