@@ -9420,6 +9420,7 @@ std::ostream& player_collected_data_t::data_str( std::ostream& s ) const
   hpse.data_str( s );
   htps.data_str( s );
   heal_taken.data_str( s );
+  theck_meloree_index.data_str( s );
 
   return s;
 }

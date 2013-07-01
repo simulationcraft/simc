@@ -78,6 +78,8 @@ private:
   std::vector<double> _data;
 
 public:
+  timeline_t() : _data() {}
+
   // const access to the underlying vector data
   const std::vector<double>& data() const
   { return _data; }

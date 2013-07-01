@@ -199,6 +199,8 @@ struct sc_timeline_t : public timeline_t
   typedef timeline_t base_t;
   using timeline_t::add;
 
+  sc_timeline_t() : timeline_t() {}
+
   // Add 'value' at the corresponding time
   void add( timespan_t current_time, double value )
   { base_t::add( static_cast<size_t>( current_time.total_millis() / 1000 ), value ); }
