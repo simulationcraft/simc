@@ -3519,6 +3519,9 @@ void player_t::datacollection_begin()
   iteration_heal_taken = 0;
   active_during_iteration = false;
 
+  if ( ! is_pet() && role == ROLE_TANK )
+    collected_data.health_changes.timeline.clear(); // Drop Data
+
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> datacollection_begin();
 
@@ -9392,13 +9395,10 @@ void player_collected_data_t::collect_data( const player_t& p )
       // these are estimates at the moment - will be fine-tuned later
       tmi *= 10000;
       tmi *= std::pow( window / 1.5 , 2 ); // normalizes for window size
-      //std::cout << "TMI(iteration " << p.sim -> current_iteration << "): " << tmi << " sa tl avg: " << sliding_average_tl.mean() << "\n";   //temporary, for debugging
+      //std::cout << "TMI(iteration " << p.sim -> current_iteration << "): " << tmi << " sa tl avg: " << sliding_average_tl.mean() << " wl.size(): " << weighted_value.size() << " health: " << p.resources.initial[ RESOURCE_HEALTH ] << "\n";   //temporary, for debugging
     }
     // normalize by fight length and add to TMI data array
     theck_meloree_index.add( tmi );
-
-    // clear the timeline to save memory
-    health_changes.timeline.clear(); // Drop Data
   }
 }
 
