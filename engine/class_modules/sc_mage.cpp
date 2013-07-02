@@ -1075,11 +1075,15 @@ public:
   {
     mage_t* p = this -> p();
     
-    if (travel_speed==0) {
+    if ( ! travel_speed )
+    {
       p -> buffs.heating_up -> expire();
-    } else { // we should delay heating up removal here
+    }
+    else
+    {
+      // delay heating up removal
       if ( sim -> log ) sim -> output( "Heating up delay by 0.25s" );
-      p -> buffs.heating_up -> expire();
+      p -> buffs.heating_up -> expire( timespan_t::from_millis( 250 ) );
     }
   }
   
@@ -3150,12 +3154,13 @@ struct scorch_t : public mage_spell_t
   virtual bool usable_moving()
   { return true; }
   
-  virtual void expire_heating_up() // delay 0.25s the removal of heating up on non-critting spell with travel time or scorch
+  // delay 0.25s the removal of heating up on non-critting spell with travel time or scorch
+  virtual void expire_heating_up()
   {
     // we should delay heating up removal here
     mage_t* p = this -> p();
     if ( sim -> log ) sim -> output( "Heating up delay by 0.25s" );
-    p -> buffs.heating_up -> expire();    
+    p -> buffs.heating_up -> expire( timespan_t::from_millis( 250 ) );
   }
 };
 

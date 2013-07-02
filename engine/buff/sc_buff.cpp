@@ -70,15 +70,13 @@ struct expiration_delay_t : public buff_event_t
 {
   expiration_delay_t( buff_t* b, timespan_t d ) :
     buff_event_t( b, d )
-  {
-    sim.add_event( this, d );
-  }
+  { }
 
   virtual void execute()
   {
+    buff -> expiration_delay = nullptr;
     // Call real expire after a delay
-    buff -> buff_t::expire();
-    buff -> expiration_delay = 0;
+    buff -> expire();
   }
 };
 
@@ -132,6 +130,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   source( params._player.source ),
   expiration(),
   delay(),
+  expiration_delay(),
   rng(),
   cooldown(),
   _max_stack( 1 ),
@@ -752,6 +751,11 @@ void buff_t::expire( timespan_t delay )
     }
     return;
   }
+  else
+  {
+    event_t::cancel( expiration_delay );
+  }
+
 
   event_t::cancel( expiration );
 
