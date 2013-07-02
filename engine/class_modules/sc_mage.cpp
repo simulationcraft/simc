@@ -1071,6 +1071,18 @@ public:
       s -> crit += p() -> passives.shatter -> effectN( 2 ).percent();
   }
 
+  virtual void expire_heating_up() // delay 0.25s the removal of heating up on non-critting spell with travel time or scorch
+  {
+    mage_t* p = this -> p();
+    
+    if (travel_speed==0) {
+      p -> buffs.heating_up -> expire();
+    } else { // we should delay heating up removal here
+      if ( sim -> log ) sim -> output( "Heating up delay by 0.25s" );
+      p -> buffs.heating_up -> expire();
+    }
+  }
+  
   void trigger_hot_streak( action_state_t* s )
   {
     mage_t* p = this -> p();
@@ -1101,7 +1113,7 @@ public:
     }
     else
     {
-      p -> buffs.heating_up -> expire();
+      if ( p -> buffs.heating_up -> up() ) expire_heating_up();
     }
   }
   // mage_spell_t::execute ==================================================
@@ -3137,6 +3149,14 @@ struct scorch_t : public mage_spell_t
 
   virtual bool usable_moving()
   { return true; }
+  
+  virtual void expire_heating_up() // delay 0.25s the removal of heating up on non-critting spell with travel time or scorch
+  {
+    // we should delay heating up removal here
+    mage_t* p = this -> p();
+    if ( sim -> log ) sim -> output( "Heating up delay by 0.25s" );
+    p -> buffs.heating_up -> expire();    
+  }
 };
 
 // Slow Spell ===============================================================
