@@ -1010,7 +1010,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
     ri.health_change_sliding_chart =
     chart::timeline( p,
                      sliding_average_tl.data(),
-                     encoded_name + ' ' + "Health Change (moving average)",
+                     encoded_name + ' ' + "Health Change (moving average, 6s window)",
                      sliding_average_tl.mean(),
                      chart::resource_color( RESOURCE_HEALTH ),
                      max_buckets );

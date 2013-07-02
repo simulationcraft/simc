@@ -46,6 +46,11 @@
 
 namespace { // UNNAMED NAMESPACE
 
+// Forward declarations
+namespace actions {
+  namespace spells {
+    struct stagger_self_damage_t;
+} }
 struct monk_t;
 
 enum stance_e { STURDY_OX = 1, FIERCE_TIGER, WISE_SERPENT = 4 };
@@ -74,7 +79,7 @@ public:
   struct active_actions_t
   {
     action_t* blackout_kick_dot;
-    action_t* stagger_self_damage;
+    actions::spells::stagger_self_damage_t* stagger_self_damage;
   } active_actions;
 
   double track_chi_consumption;
@@ -294,6 +299,7 @@ public:
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   virtual void invalidate_cache( cache_e );
   virtual void      init_actions();
+  virtual expr_t*   create_expression( action_t* a, const std::string& name_str );
   virtual monk_td_t* get_target_data( player_t* target )
   {
     monk_td_t*& td = target_data[ target ];
@@ -312,6 +318,7 @@ public:
   void apl_combat_windwalker();
   void apl_combat_mistweaver();
   double stagger_pct();
+  double current_stagger_dmg();
 
   // Stance
   stance_e current_stance() const
@@ -2101,6 +2108,47 @@ struct stagger_self_damage_t : public ignite::pct_based_action_t<monk_spell_t>
     // We don't want this counted towards our dps
     stats -> type = STATS_NEUTRAL;
   }
+
+  /* Clears the dot and all damage. Used by Purifying Brew
+   * Returns amount purged
+   */
+  double clear_all_damage()
+  {
+    dot_t* d = get_dot();
+    double damage_remaining = 0.0;
+    if ( d -> ticking )
+      damage_remaining += d -> ticks() * base_td; // Assumes base_td == damage, no modifiers or crits
+
+    cancel();
+    d -> cancel();
+
+    return damage_remaining;
+  }
+};
+
+// ==========================================================================
+// Purifying Brew
+// ==========================================================================
+
+struct purifying_brew_t : public monk_spell_t
+{
+  purifying_brew_t( monk_t& p, const std::string& options_str  ) :
+    monk_spell_t( "purifying_brew", &p, p.find_class_spell( "Purifying Brew" ) )
+  {
+    parse_options( nullptr, options_str );
+
+    stancemask = STURDY_OX;
+    harmful = false;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  virtual void execute()
+  {
+    monk_spell_t::execute();
+
+    // Optional addition: Track and report amount of damage cleared
+    p() -> active_actions.stagger_self_damage -> clear_all_damage();
+  }
 };
 
 } // END spells NAMESPACE
@@ -2331,8 +2379,8 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "rising_sun_kick"       ) return new        rising_sun_kick_t( this, options_str );
   if ( name == "stance"                ) return new                 stance_t( this, options_str );
   if ( name == "tigereye_brew"         ) return new          tigereye_brew_t( this, options_str );
-  if ( name == "energizing_brew"       ) return new        energizing_brew_t( this, options_str );
   if ( name == "spinning_fire_blossom" ) return new  spinning_fire_blossom_t( this, options_str );
+  if ( name == "energizing_brew"       ) return new        energizing_brew_t( this, options_str );
 
   // Brewmaster
   if ( name == "breath_of_fire"        ) return new         breath_of_fire_t( *this, options_str );
@@ -2341,6 +2389,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "guard"                 ) return new                  guard_t( *this, options_str );
   if ( name == "fortifying_brew"       ) return new        fortifying_brew_t( *this, options_str );
   if ( name == "elusive_brew"          ) return new           elusive_brew_t( *this, options_str );
+  if ( name == "purifying_brew"        ) return new         purifying_brew_t( *this, options_str );
 
   // Mistweaver
   if ( name == "enveloping_mist"       ) return new        enveloping_mist_t( *this, options_str );
@@ -3179,6 +3228,7 @@ void monk_t::apl_combat_brewmaster()
 
   def -> add_action( "mountains_potion,if=health.pct<35&buff.mountains_potion.down" );
   def -> add_action( this, "Elusive Brew", "if=buff.elusive_brew_stacks.react>=6" );
+  def -> add_action( this, "Purifying Brew", "if=stagger.moderate" );
   def -> add_action( this, "Keg Smash" );
   def -> add_action( this, "Breath of Fire", "if=target.debuff.dizzying_haze.up" );
   def -> add_action( this, "Guard" );
@@ -3336,6 +3386,67 @@ double monk_t::stagger_pct()
   }
 
   return stagger;
+}
+
+double monk_t::current_stagger_dmg()
+{
+  double dmg = 0;
+  if ( active_actions.stagger_self_damage )
+  {
+    dot_t* dot = active_actions.stagger_self_damage -> get_dot();
+
+    if ( dot && dot -> state )
+    {
+      dmg = dot -> state -> result_amount;
+      if ( dot -> state -> result == RESULT_HIT )
+        dmg *= 1.0 + active_actions.stagger_self_damage -> total_crit_bonus();
+    }
+  }
+  return dmg;
+}
+
+expr_t* monk_t::create_expression( action_t* a, const std::string& name_str )
+{
+  std::vector<std::string> splits = util::string_split( name_str, "." );
+  if ( splits.size() == 2 && splits[ 0 ] == "stagger" )
+  {
+    struct stagger_threshold_expr_t : public expr_t
+    {
+      monk_t& player;
+      double stagger_health_pct;
+      stagger_threshold_expr_t( monk_t& p, double stagger_health_pct ) :
+        expr_t( "stagger_threshold_" + util::to_string( stagger_health_pct ) ),
+        player( p ), stagger_health_pct( stagger_health_pct )
+      { }
+
+      virtual double evaluate()
+      {
+        return player.current_stagger_dmg() / player.resources.max[ RESOURCE_HEALTH ] > stagger_health_pct;
+      }
+    };
+    struct stagger_amount_expr_t : public expr_t
+    {
+      monk_t& player;
+      stagger_amount_expr_t( monk_t& p ) :
+        expr_t( "stagger_amount" ),
+        player( p )
+      { }
+
+      virtual double evaluate()
+      { return player.current_stagger_dmg(); }
+    };
+
+    if ( splits[ 1 ] == "light" )
+      return new stagger_threshold_expr_t( *this, 0.0 );
+    else if ( splits[ 1 ] == "moderate" )
+      return new stagger_threshold_expr_t( *this, 0.03 );
+    else if ( splits[ 1 ] == "heavy" )
+      return new stagger_threshold_expr_t( *this, 0.06 );
+    else if ( splits[ 1 ] == "amount" )
+      return new stagger_amount_expr_t( *this );
+  }
+
+  return base_t::create_expression( a, name_str );
 }
 
 /* Invalidate Cache affected by stance
