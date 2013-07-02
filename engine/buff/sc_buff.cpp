@@ -66,6 +66,22 @@ struct buff_delay_t : public buff_event_t
   }
 };
 
+struct expiration_delay_t : public buff_event_t
+{
+  expiration_delay_t( buff_t* b, timespan_t d ) :
+    buff_event_t( b, d )
+  {
+    sim.add_event( this, d );
+  }
+
+  virtual void execute()
+  {
+    // Call real expire after a delay
+    buff -> buff_t::expire();
+    buff -> expiration_delay = 0;
+  }
+};
+
 stat_e translate_stat_buff_misc_number( const spelleffect_data_t& ed )
 {
   if ( ed.subtype() == A_MOD_STAT )
@@ -724,9 +740,19 @@ void buff_t::override( int stacks, double value )
 
 // buff_t::expire ===========================================================
 
-void buff_t::expire()
+void buff_t::expire( timespan_t delay )
 {
   if ( current_stack <= 0 ) return;
+
+  if ( delay > timespan_t::zero() ) // Expiration Delay
+  {
+    if ( ! expiration_delay ) // Don't reschedule already existing expiration delay
+    {
+      expiration_delay = new (*sim) expiration_delay_t( this, delay );
+    }
+    return;
+  }
+
   event_t::cancel( expiration );
 
   assert( as<std::size_t>( current_stack ) < stack_uptime.size() );
@@ -827,6 +853,7 @@ void buff_t::aura_loss()
 void buff_t::reset()
 {
   event_t::cancel( delay );
+  event_t::cancel( expiration_delay );
   cooldown -> reset( false );
   expire();
   last_start = timespan_t::min();

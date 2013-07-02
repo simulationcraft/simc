@@ -1890,6 +1890,7 @@ public:
   player_t* const source;
   event_t* expiration;
   event_t* delay;
+  event_t* expiration_delay;
   rng_t* rng;
   cooldown_t* cooldown;
   sc_timeline_t uptime_array;
@@ -1958,7 +1959,7 @@ public:
   virtual void override ( int stacks = 1, double value = DEFAULT_VALUE() );
   virtual bool may_react( int stacks = 1 );
   virtual int stack_react();
-  void expire();
+  void expire( timespan_t delay = timespan_t::zero() );
 
   // Called only if previously active buff expires
   virtual void expire_override() {}
