@@ -860,9 +860,17 @@ double action_t::calculate_direct_amount( action_state_t* state )
   }
 
   // Record total amount to state
-  state -> result_total = amount;
+  if ( result_is_miss( state -> result ) )
+  {
+    state -> result_total = 0.0;
+    return 0.0;
+  }
+  else
+  {
+    state -> result_total = amount;
+    return amount;
+  }
 
-  return amount;
 }
 
 // action_t::consume_resource ===============================================
@@ -1000,8 +1008,7 @@ void action_t::execute()
       if ( ! pre_execute_state ) snapshot_state( s, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
       s -> result = calculate_result( s );
 
-      if ( result_is_hit( s -> result ) )
-        s -> result_amount = calculate_direct_amount( s );
+      s -> result_amount = calculate_direct_amount( s );
 
 
       if ( sim -> debug )
@@ -1019,8 +1026,7 @@ void action_t::execute()
     if ( ! pre_execute_state ) snapshot_state( s, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
     s -> result = calculate_result( s );
 
-    if ( result_is_hit( s -> result ) )
-      s -> result_amount = calculate_direct_amount( s );
+    s -> result_amount = calculate_direct_amount( s );
 
     if ( sim -> debug )
       s -> debug();
@@ -1128,8 +1134,8 @@ void action_t::assess_damage( dmg_e    type,
 
       // factor out weakened_blows
       double raw_damage =  ( school == SCHOOL_PHYSICAL ? 1.0 : 2.5 ) * s -> action -> player -> debuffs.weakened_blows -> check() ?
-                           s -> result_amount / ( 1.0 - s -> action -> player -> debuffs.weakened_blows -> value() ) :
-                           s -> result_amount;
+                           s -> result_raw / ( 1.0 - s -> action -> player -> debuffs.weakened_blows -> value() ) :
+                           s -> result_raw;
 
       // Take swing time for auto_attacks, take 60 for special attacks (this is how blizzard does it)
       // TODO: Do off hand autoattacks generate vengeance?
@@ -1138,13 +1144,7 @@ void action_t::assess_damage( dmg_e    type,
         attack_frequency = 1.0 / s -> action -> execute_time().total_seconds();
       else
         attack_frequency = 1.0 / 60.0;
-
-      // if it was a miss use average value instead. (as Blizzard does)
-      if ( result_is_miss( s -> result ) )
-      {
-        raw_damage = s -> target -> buffs.vengeance -> value() / 20 / attack_frequency / 0.018;
-      }
-
+      
       // Create new vengeance value
       double new_amount = 0.018 * raw_damage; // new vengeance from hit
 
