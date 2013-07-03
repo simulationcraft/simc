@@ -1081,6 +1081,8 @@ class SpellDataGenerator(DataGenerator):
          137597,                    # Legendary meta gem Lightning Strike
          137323, 137288, 137247,    # Healer legendary meta
          137331, 137326, 
+         146137,                    # Cleave
+         146071,                    # Multistrike
         ),
         
         # Warrior:
