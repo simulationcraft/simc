@@ -82,9 +82,6 @@ struct rogue_td_t : public actor_pair_t
 
 struct rogue_t : public player_t
 {
-  // T16 driver
-  int t16_bs_driver;
-
   // Premeditation
   event_t* event_premeditation;
 
@@ -250,6 +247,7 @@ struct rogue_t : public player_t
     rng_t* main_gauche;
     rng_t* revealing_strike;
     rng_t* relentless_strikes;
+    rng_t* t16_4pc_melee;
     rng_t* venomous_wounds;
     rng_t* wound_poison;
   } rng;
@@ -1274,15 +1272,7 @@ struct backstab_t : public rogue_attack_t
     p() -> buffs.t16_2pc_melee -> expire();
 
     if ( result_is_hit( execute_state -> result ) && p() -> set_bonus.tier16_4pc_melee() )
-    {
-      p() -> t16_bs_driver++;
-
-      if ( p() -> t16_bs_driver == p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 3 ).base_value() )
-      {
-        p() -> buffs.sleight_of_hand -> trigger();
-        p() -> t16_bs_driver = 0;
-      }
-    }
+      p() -> buffs.sleight_of_hand -> trigger();
   }
 
   double composite_da_multiplier()
@@ -3552,6 +3542,7 @@ void rogue_t::init_rng()
   rng.main_gauche           = get_rng( "main_gauche"         );
   rng.relentless_strikes    = get_rng( "relentless_strikes"  );
   rng.revealing_strike      = get_rng( "revealing_strike"    );
+  rng.t16_4pc_melee         = get_rng( "t16_4pc_melee"       );
   rng.venomous_wounds       = get_rng( "venomous_wounds"     );
   rng.wound_poison          = get_rng( "wound_poison"        );
   rng.hat_interval          = get_rng( "hat_interval"        );
@@ -3628,7 +3619,7 @@ void rogue_t::create_buffs()
   buffs.recuperate         = buff_creator_t( this, "recuperate" );
   buffs.shiv               = buff_creator_t( this, "shiv" );
   buffs.sleight_of_hand    = buff_creator_t( this, "sleight_of_hand", find_spell( 145211 ) )
-                             .chance( maybe_ptr( dbc.ptr ) && set_bonus.tier16_4pc_melee() );
+                             .chance( sets -> set( SET_T16_4PC_MELEE ) -> effectN( 3 ).percent() );
   buffs.stealthed          = buff_creator_t( this, "stealthed" ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.t16_2pc_melee      = buff_creator_t( this, "silent_blades", find_spell( 145193 ) )
                              .chance( maybe_ptr( dbc.ptr ) && set_bonus.tier16_2pc_melee() );
@@ -3796,8 +3787,6 @@ void rogue_t::reset()
   }
 
   event_t::cancel( event_premeditation );
-
-  t16_bs_driver = 0;
 }
 
 // rogue_t::arise ===========================================================
