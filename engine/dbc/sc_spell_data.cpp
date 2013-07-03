@@ -57,7 +57,7 @@ static const sdata_field_t _effect_data_fields[] =
   { SD_TYPE_INT,      "misc_value"     },
   { SD_TYPE_INT,      "misc_value2"    },
   { SD_TYPE_INT,      "trigger_spell"  },
-  { SD_TYPE_INT,      "m_chain"        },
+  { SD_TYPE_DOUBLE,   "m_chain"        },
   { SD_TYPE_DOUBLE,   "p_combo_points" },
   { SD_TYPE_DOUBLE,   "p_level"        },
   { SD_TYPE_INT,      "damage_range"   },
