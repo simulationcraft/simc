@@ -2111,6 +2111,9 @@ struct lightning_charge_t : public shaman_spell_t
     background       = true;
     may_crit         = true;
     may_proc_eoe     = false;
+
+    if ( player -> specialization() == SHAMAN_ENHANCEMENT )
+      cooldown -> duration = timespan_t::zero();
   }
 
   double composite_target_crit( player_t* target )
