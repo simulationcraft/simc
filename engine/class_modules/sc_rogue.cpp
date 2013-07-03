@@ -1199,9 +1199,7 @@ struct ambush_t : public rogue_attack_t
     if ( p() -> buffs.shadow_dance -> check() )
       c += p() -> spec.shadow_dance -> effectN( 2 ).base_value();
 
-    // PTR 17056 claims the energy cost for subtlety is reduced by 3 per stack
-    // TODO: Correct spell data, if it's possible to do
-    c -= 3 * p() -> buffs.t16_2pc_melee -> stack();
+    c -= 2 * p() -> buffs.t16_2pc_melee -> stack();
 
     return c;
   }
@@ -1258,10 +1256,7 @@ struct backstab_t : public rogue_attack_t
   virtual double cost()
   {
     double c = rogue_attack_t::cost();
-    // PTR 17056 claims the energy cost for subtlety is reduced by 3 per stack
-    // TODO: Correct spell data, if it's possible to do
-    c -= 3 * p() -> buffs.t16_2pc_melee -> stack();
-
+    c -= 2 * p() -> buffs.t16_2pc_melee -> stack();
     return c;
   }
 
@@ -1327,11 +1322,7 @@ struct dispatch_t : public rogue_attack_t
     else
     {
       double c = rogue_attack_t::cost();
-      // PTR 17056 claims the energy cost for assassination is reduced by 20
-      // TODO: Correct spell data, if it's possible to do
-      if ( p() -> buffs.t16_2pc_melee -> up() )
-        c -= 20; // This is actually 20 per stack, but only 1 stack can be up for assassination
-
+      c -= 6 * p() -> buffs.t16_2pc_melee -> stack();
       return c;
     }
   }
@@ -2078,11 +2069,7 @@ struct sinister_strike_t : public rogue_attack_t
   virtual double cost()
   {
     double c = rogue_attack_t::cost();
-    // PTR 17056 claims the energy cost for combat is reduced by 10
-    // TODO: Correct spell data, if it's possible to do
-    if ( p() -> buffs.t16_2pc_melee -> up() )
-      c -= 10; // This is actually 10 per stack but only one stack can be up for combat
-
+    c -= 15 * p() -> buffs.t16_2pc_melee -> stack();
     return c;
   }
 
