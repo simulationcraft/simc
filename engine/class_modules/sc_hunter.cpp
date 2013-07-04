@@ -683,6 +683,9 @@ public:
                               /*.quiet( true )*/;
 
     double cleave_value     = o() -> find_spell( "Beast Cleave" ) -> effectN( 1 ).percent();
+    
+    sim -> output( "BEAST %g", cleave_value );
+
     buffs.beast_cleave      = buff_creator_t( this, 118455, "beast_cleave" ).activated( true ).default_value( cleave_value );
   }
 
@@ -892,12 +895,14 @@ static bool trigger_beast_cleave( action_state_t* s )
   struct beast_cleave_attack_t : public hunter_main_pet_attack_t
   {
     beast_cleave_attack_t( hunter_main_pet_t* p ) :
-      hunter_main_pet_attack_t( "beast_cleave_attack", p, p -> find_spell( 22482 ) )
+      hunter_main_pet_attack_t( "beast_cleave_attack", p, p -> find_spell( 22482 ))
     {
       may_miss = may_crit = proc = callbacks = false;
       background = true;
+      school = SCHOOL_PHYSICAL;
       aoe = -1;
-      base_multiplier *= 1.0 + p -> find_spell( "Beast Cleave" ) -> effectN( 1 ).percent();
+      // The starting damage includes all the buffs
+      weapon_multiplier = 0;
     }
 
     size_t available_targets( std::vector< player_t* >& tl )
@@ -933,8 +938,9 @@ static bool trigger_beast_cleave( action_state_t* s )
     p -> active.beast_cleave -> init();
   }
 
-  p -> active.beast_cleave -> base_dd_min = s -> result_amount;
-  p -> active.beast_cleave -> base_dd_max = s -> result_amount;
+  double cleave = s -> result_total * p -> buffs.beast_cleave -> current_value;
+  p -> active.beast_cleave -> base_dd_min = cleave;
+  p -> active.beast_cleave -> base_dd_max = cleave;
   p -> active.beast_cleave -> execute();
 
   return true;
