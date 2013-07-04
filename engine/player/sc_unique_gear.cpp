@@ -2621,14 +2621,8 @@ void cooldown_reduction_trinket( item_t* item )
       if ( cd -> cooldowns[ i ] == 0 )
         break;
 
-      action_t* ability = p -> find_action( cd -> cooldowns[ i ] );
-      if ( ! ability )
-        continue;
-
       cooldown_t* ability_cd = p -> get_cooldown( cd -> cooldowns[ i ] );
-
-      assert( ability_cd -> duration != timespan_t::zero() );
-      ability_cd -> duration *= cdr;
+      ability_cd -> recharge_multiplier = cdr;
     }
 
     cd++;

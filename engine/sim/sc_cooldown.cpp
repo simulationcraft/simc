@@ -14,7 +14,7 @@ struct recharge_event_t : event_t
   recharge_event_t( player_t* p, cooldown_t* cd, timespan_t delay = timespan_t::zero() ) :
     event_t( p, "recharge_event" ), cooldown( cd )
   {
-    sim.add_event( this, cd -> duration + delay );
+    sim.add_event( this, cd -> duration * cd -> recharge_multiplier + delay );
   }
 
   virtual void execute()
@@ -65,7 +65,8 @@ cooldown_t::cooldown_t( const std::string& n, player_t& p ) :
   current_charge( 1 ),
   recharge_event( nullptr ),
   ready_trigger_event( nullptr ),
-  last_start( timespan_t::zero() )
+  last_start( timespan_t::zero() ),
+  recharge_multiplier( 1.0 )
 {}
 
 cooldown_t::cooldown_t( const std::string& n, sim_t& s ) :
@@ -79,7 +80,8 @@ cooldown_t::cooldown_t( const std::string& n, sim_t& s ) :
   current_charge( 1 ),
   recharge_event( nullptr ),
   ready_trigger_event( nullptr ),
-  last_start( timespan_t::zero() )
+  last_start( timespan_t::zero() ),
+  recharge_multiplier( 1.0 )
 {}
 
 void cooldown_t::adjust( timespan_t amount )
@@ -136,7 +138,7 @@ void cooldown_t::start( timespan_t override, timespan_t delay )
     }
     else
     {
-      ready = sim.current_time + override + delay;
+      ready = sim.current_time + override * recharge_multiplier + delay;
       last_start = sim.current_time;
     }
     assert( player );
