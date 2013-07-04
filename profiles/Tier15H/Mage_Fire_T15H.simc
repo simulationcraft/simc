@@ -60,7 +60,7 @@ neck=megaeras_shining_eye,id=96825,reforge=hit_haste
 shoulders=mantle_of_the_chromatic_hydra,id=96638,gems=80int_160crit_320crit_120haste,enchant=200int_100crit
 back=jadefire_drape,id=98150,gems=80int_160crit_60int,enchant=180int
 chest=robes_of_the_chromatic_hydra,id=96637,gems=80int_160crit_320crit_160crit_160hit_180int,enchant=80all,reforge=hit_crit
-wrists=frostborn_wristwraps,id=96824,gems=320crit_320crit_60int,enchant=180int
+wrists=frostborn_wristwraps,id=96824,suffix=336,gems=320crit_320crit_60int,enchant=180int
 hands=gloves_of_the_chromatic_hydra,id=96634,gems=80int_160crit_320crit_60int,enchant=170exp,addon=synapse_springs_mark_ii,reforge=mastery_haste
 waist=vitabinder_wrap,id=94996,gems=160crit_160hit_160crit_160hit_320crit_120int,reforge=hit_haste
 legs=leggings_of_the_chromatic_hydra,id=96636,gems=320crit_160crit_160hit_120int,enchant=285int_165crit
@@ -81,7 +81,7 @@ off_hand=lei_shens_orb_of_command,id=96934,gems=80int_160crit_60int,enchant=165i
 # gear_spell_power=10655
 # gear_expertise_rating=170
 # gear_hit_rating=4932
-# gear_crit_rating=17530
+# gear_crit_rating=18554
 # gear_haste_rating=6763
 # gear_mastery_rating=3473
 # gear_armor=16411

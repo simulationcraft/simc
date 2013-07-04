@@ -48,7 +48,6 @@ public:
   action_t* active_bloodbath_dot;
   action_t* active_deep_wounds;
   action_t* active_opportunity_strike;
-  action_t* active_retaliation;
   attack_t* active_sweeping_strikes;
   warrior_stance  active_stance;
 
@@ -70,7 +69,6 @@ public:
     buff_t* raging_blow;
     buff_t* raging_wind;
     buff_t* recklessness;
-    buff_t* retaliation;
     buff_t* rude_interruption;
     absorb_buff_t* shield_barrier;
     buff_t* shield_block;
@@ -235,7 +233,6 @@ public:
     active_bloodbath_dot      = 0;
     active_deep_wounds        = 0;
     active_opportunity_strike = 0;
-    active_retaliation        = 0;
     active_sweeping_strikes   = 0;
     active_stance             = STANCE_BATTLE;
 
@@ -288,7 +285,6 @@ public:
 
   // Custom Warrior Functions
   void enrage();
-  void trigger_retaliation( int school, int result );
 
   target_specific_t<warrior_td_t*> target_data;
 
@@ -1195,19 +1191,6 @@ struct colossus_smash_t : public warrior_attack_t
   }
 };
 
-// Concussion Blow ==========================================================
-
-struct concussion_blow_t : public warrior_attack_t
-{
-  concussion_blow_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "concussion_blow", p, p -> find_class_spell( "Concussion Blow" ) )
-  {
-    parse_options( NULL, options_str );
-
-    direct_power_mod  = data().effectN( 3 ).percent();
-  }
-};
-
 // Deep Wounds ==============================================================
 
 struct deep_wounds_t : public warrior_attack_t
@@ -1833,7 +1816,6 @@ struct revenge_t : public warrior_attack_t
 
 // Shattering Throw =========================================================
 
-// TO-DO: Only a shell at the moment. Needs testing for damage etc.
 struct shattering_throw_t : public warrior_attack_t
 {
   shattering_throw_t( warrior_t* p, const std::string& options_str ) :
@@ -1957,7 +1939,6 @@ struct shockwave_t : public warrior_attack_t
     may_dodge         = false;
     may_parry         = false;
     may_block         = false;
-    base_multiplier   = 1.4; // FIX ME: Why is this here?
     aoe               = -1;
   }
 };
@@ -2447,27 +2428,6 @@ struct recklessness_t : public warrior_spell_t
   }
 };
 
-// Retaliation ==============================================================
-
-struct retaliation_t : public warrior_spell_t
-{
-  retaliation_t( warrior_t* p,  const std::string& options_str ) :
-    warrior_spell_t( "retaliation", p, p -> find_spell( 20230 ) )
-  {
-    parse_options( NULL, options_str );
-
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    warrior_spell_t::execute();
-    warrior_t* p = cast();
-
-    p -> buff.retaliation -> trigger( 20 );
-  }
-};
-
 // Shield Barrier ===========================================================
 
 struct shield_barrier_t : public warrior_action_t<absorb_t>
@@ -2836,7 +2796,6 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "charge"             ) return new charge_t             ( this, options_str );
   if ( name == "cleave"             ) return new cleave_t             ( this, options_str );
   if ( name == "colossus_smash"     ) return new colossus_smash_t     ( this, options_str );
-  if ( name == "concussion_blow"    ) return new concussion_blow_t    ( this, options_str );
 
   if ( name == "demoralizing_shout" ) return new demoralizing_shout   ( this, options_str );
   if ( name == "devastate"          ) return new devastate_t          ( this, options_str );
@@ -2854,7 +2813,6 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "pummel"             ) return new pummel_t             ( this, options_str );
   if ( name == "raging_blow"        ) return new raging_blow_t        ( this, options_str );
   if ( name == "recklessness"       ) return new recklessness_t       ( this, options_str );
-  if ( name == "retaliation"        ) return new retaliation_t        ( this, options_str );
   if ( name == "revenge"            ) return new revenge_t            ( this, options_str );
   if ( name == "shattering_throw"   ) return new shattering_throw_t   ( this, options_str );
   if ( name == "shield_barrier"     ) return new shield_barrier_t     ( this, options_str );
@@ -3066,9 +3024,6 @@ void warrior_t::create_buffs()
   buff.recklessness     = buff_creator_t( this, "recklessness",     find_class_spell( "Recklessness" ) )
                           .duration( find_class_spell( "Recklessness" ) -> duration() * ( 1.0 + ( glyphs.recklessness -> ok() ? glyphs.recklessness -> effectN( 2 ).percent() : 0 )  ) )
                           .cd( timespan_t::zero() );
-  buff.retaliation      = buff_creator_t( this, "retaliation", find_spell( 20230 ) )
-                          .cd( timespan_t::zero() );
-
   buff.taste_for_blood = buff_creator_t( this, "taste_for_blood" )
                          .spell( find_spell( 60503 ) );
 
@@ -3278,7 +3233,7 @@ void warrior_t::init_actions()
     action_list_str += include_default_on_use_items( *this, "synapse_springs_mark_ii,synapse_springs_2" );
 
     action_list_str += init_use_profession_actions();
-    action_list_str += init_use_racial_actions();
+    action_list_str += init_use_racial_actions(",if=(talent.bloodbath.enabled&buff.bloodbath.up)|(!talent.bloodbath.enabled&debuff.colossus_smash.up)");
 
     bool smf =  ( main_hand_weapon.group() == WEAPON_1H && off_hand_weapon.group() == WEAPON_1H );
 
@@ -3656,8 +3611,6 @@ void warrior_t::assess_damage( school_e school,
     cooldown.revenge -> reset( true );
   }
 
-  trigger_retaliation( school, s -> result );
-
   player_t::assess_damage( school, dtype, s );
 
   if ( ( s -> result == RESULT_HIT    ||
@@ -3801,43 +3754,6 @@ void warrior_t::enrage()
   }
   resource_gain( RESOURCE_RAGE, buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ), gain.enrage );
   buff.enrage -> trigger();
-}
-
-// trigger_retaliation ======================================================
-
-void warrior_t::trigger_retaliation( int school, int result )
-{
-  if ( ! buff.retaliation -> up() )
-    return;
-
-  if ( school != SCHOOL_PHYSICAL )
-    return;
-
-  if ( ! ( result == RESULT_HIT || result == RESULT_CRIT || result == RESULT_BLOCK ) )
-    return;
-
-  if ( ! active_retaliation )
-  {
-    struct retaliation_strike_t : public warrior_attack_t
-    {
-      retaliation_strike_t( warrior_t* p ) :
-        warrior_attack_t( "retaliation_strike", p )
-      {
-        background = true;
-        proc = true;
-        trigger_gcd = timespan_t::zero();
-        weapon = &( p -> main_hand_weapon );
-        weapon_multiplier = 1.0;
-
-        init();
-      }
-    };
-
-    active_retaliation = new retaliation_strike_t( this );
-  }
-
-  active_retaliation -> execute();
-  buff.retaliation -> decrement();
 }
 
 // WARRIOR MODULE INTERFACE =================================================
