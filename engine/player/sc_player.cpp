@@ -978,10 +978,10 @@ bool player_t::init( sim_t* sim )
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_initial_stats ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_defense ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::create_buffs ) ); // keep here for now
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_unique_gear ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_enchant ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_scaling ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::_init_actions ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_unique_gear ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_gains ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_procs ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_uptimes ) );

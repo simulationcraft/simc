@@ -96,7 +96,7 @@ public:
   action_t* action_lightning_strike;
 
   // Pets
-  pet_t* pet_feral_spirit[2];
+  pet_t* pet_feral_spirit[4];
   pet_t* pet_fire_elemental;
   pet_t* guardian_fire_elemental;
   pet_t* pet_earth_elemental;
@@ -369,7 +369,7 @@ public:
     action_improved_lava_lash = 0;
     action_lightning_strike = 0;
 
-    for ( int i = 0; i < 2; i++ ) pet_feral_spirit[ i ] = 0;
+    for ( int i = 0; i < 4; i++ ) pet_feral_spirit[ i ] = 0;
     range::fill( guardian_lightning_elemental, 0 );
 
     // Totem tracking
@@ -971,10 +971,8 @@ struct feral_spirit_pet_t : public pet_t
     void init()
     {
       melee_attack_t::init();
-
-      pet_t* first_pet = p() -> o() -> find_pet( "spirit_wolf" );
-      if ( first_pet != player )
-        stats = first_pet -> find_stats( name() );
+      if ( player != p() -> o() -> pet_feral_spirit[ 0 ] )
+        stats = p() -> o() -> pet_feral_spirit[ 0 ] -> get_stats( name(), this );
     }
 
     virtual void impact( action_state_t* state )
@@ -1007,7 +1005,6 @@ struct feral_spirit_pet_t : public pet_t
       special   = true;
       direct_power_mod = data().extra_coeff();
       cooldown -> duration = timespan_t::from_seconds( 7.0 );
-
     }
 
     feral_spirit_pet_t* p()
@@ -1016,9 +1013,8 @@ struct feral_spirit_pet_t : public pet_t
     void init()
     {
       melee_attack_t::init();
-      pet_t* first_pet = p() -> o() -> find_pet( "spirit_wolf" );
-      if ( first_pet != player )
-        stats = first_pet -> find_stats( name() );
+      if ( player != p() -> o() -> pet_feral_spirit[ 0 ] )
+        stats = p() -> o() -> pet_feral_spirit[ 0 ] -> get_stats( name(), this );
     }
 
     virtual double composite_da_multiplier()
@@ -1035,8 +1031,8 @@ struct feral_spirit_pet_t : public pet_t
   melee_t* melee;
   const spell_data_t* command;
 
-  feral_spirit_pet_t( sim_t* sim, shaman_t* owner ) :
-    pet_t( sim, owner, "spirit_wolf", true ), melee( 0 )
+  feral_spirit_pet_t( shaman_t* owner ) :
+    pet_t( owner -> sim, owner, "spirit_wolf", true ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.5;
@@ -3683,8 +3679,15 @@ struct feral_spirit_spell_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    p() -> pet_feral_spirit[ 0 ] -> summon( data().duration() );
-    p() -> pet_feral_spirit[ 1 ] -> summon( data().duration() );
+    int n = 0;
+    for ( size_t i = 0; i < sizeof_array( p() -> pet_feral_spirit ) && n < data().effectN( 1 ).base_value(); i++ )
+    {
+      if ( ! p() -> pet_feral_spirit[ i ] -> is_sleeping() )
+        continue;
+
+      p() -> pet_feral_spirit[ i ] -> summon( data().duration() );
+      n++;
+    }
   }
 };
 
@@ -5130,7 +5133,6 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
 
   if ( p ) return p;
 
-  if ( pet_name == "feral_spirit"             ) return new feral_spirit_pet_t( sim, this );
   if ( pet_name == "fire_elemental_pet"       ) return new fire_elemental_t( sim, this, false );
   if ( pet_name == "fire_elemental_guardian"  ) return new fire_elemental_t( sim, this, true );
   if ( pet_name == "earth_elemental_pet"      ) return new earth_elemental_pet_t( sim, this, false );
@@ -5149,8 +5151,6 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
 
 void shaman_t::create_pets()
 {
-  pet_feral_spirit[ 0 ]    = create_pet( "feral_spirit"             );
-  pet_feral_spirit[ 1 ]    = create_pet( "feral_spirit"             );
   pet_fire_elemental       = create_pet( "fire_elemental_pet"       );
   guardian_fire_elemental  = create_pet( "fire_elemental_guardian"  );
   pet_earth_elemental      = create_pet( "earth_elemental_pet"      );
@@ -5161,6 +5161,9 @@ void shaman_t::create_pets()
     for ( size_t i = 0; i < sizeof_array( guardian_lightning_elemental ); i++ )
       guardian_lightning_elemental[ i ] = new lightning_elemental_t( this );
   }
+
+  for ( size_t i = 0; i < sizeof_array( pet_feral_spirit ); i++ )
+    pet_feral_spirit[ i ] = new feral_spirit_pet_t( this );
 
   create_pet( "earth_elemental_totem" );
   create_pet( "fire_elemental_totem"  );

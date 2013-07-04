@@ -2355,7 +2355,7 @@ void bad_juju( item_t* item )
   data.name_str    = "juju_madness";
   data.ppm         = -0.55; // Real PPM
   data.stat        = STAT_AGILITY;
-  data.stat_amount = budget.p_epic[ 0 ] * spell -> effectN( 1 ).m_average();
+  data.stat_amount = util::round( budget.p_epic[ 0 ] * spell -> effectN( 1 ).m_average() );
   data.duration    = spell -> duration();
 
   item -> player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new bad_juju_callback_t( *item, data ) );
@@ -2567,7 +2567,96 @@ void unerring_vision_of_leishen( item_t* item )
 
   item -> player -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
   item -> player -> callbacks.register_spell_tick_damage_callback( SCHOOL_ALL_MASK, cb );
-};
+}
+
+// CDR trinkets
+void cooldown_reduction_trinket( item_t* item )
+{
+  struct cooldowns_t
+  {
+    specialization_e spec;
+    const char*      cooldowns[6];
+  };
+
+  static const cooldowns_t __cd[] =
+  {
+    { SHAMAN_ENHANCEMENT, { "spiritwalkers_grace", "earth_elemental_totem", "stormlash_totem", "shamanistic_rage", "ascendance", "feral_spirit" } },
+    { SPEC_NONE,          { 0 } }
+  };
+
+  const spell_data_t* cdr_spell = spell_data_t::nil();
+  const spell_data_t* proc_driver_spell = spell_data_t::nil();
+  player_t* p = item -> player;
+
+  // Find the CDR spell on the trinket. Presume that the trinkets have one or
+  // two on-equip spells, and one of them procs a trigger spell, while the CDR
+  // part is passive.
+  for ( size_t i = 0; i < sizeof_array( item -> parsed.data.id_spell ); i++ )
+  {
+    if ( item -> parsed.data.id_spell[ i ] <= 0 ||
+         item -> parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_EQUIP )
+      continue;
+
+    const spell_data_t* spell = p -> find_spell( item -> parsed.data.id_spell[ i ] );
+    if ( spell -> proc_flags() == 0 )
+      cdr_spell = spell;
+    else
+      proc_driver_spell = spell;
+  }
+
+  if ( cdr_spell == spell_data_t::nil() )
+    return;
+
+  const random_prop_data_t& budget = p -> dbc.random_property( item -> item_level() );
+  double cdr = 1.0 / ( 1.0 + budget.p_epic[ 0 ] * cdr_spell -> effectN( 1 ).m_average() / 100.0 );
+
+  const cooldowns_t* cd = &( __cd[ 0 ] );
+  do
+  {
+    if ( p -> specialization() != cd -> spec )
+      continue;
+
+    for ( size_t i = 0; i < 6; i++ )
+    {
+      if ( cd -> cooldowns[ i ] == 0 )
+        break;
+
+      action_t* ability = p -> find_action( cd -> cooldowns[ i ] );
+      if ( ! ability )
+        continue;
+
+      cooldown_t* ability_cd = p -> get_cooldown( cd -> cooldowns[ i ] );
+
+      assert( ability_cd -> duration != timespan_t::zero() );
+      ability_cd -> duration *= cdr;
+    }
+
+    cd++;
+  } while ( cd -> spec != SPEC_NONE );
+
+  // Tank trinket has no separate proc, so bail out here.
+  if ( proc_driver_spell == spell_data_t::nil() )
+    return;
+
+  const spell_data_t* proc_spell = proc_driver_spell -> effectN( 1 ).trigger();
+  if ( proc_spell == spell_data_t::nil() )
+    return;
+
+  std::string name = proc_spell -> name_cstr();
+  util::tokenize( name );
+  special_effect_t effect;
+  effect.name_str = name;
+  effect.proc_chance = proc_driver_spell -> proc_chance();
+  effect.cooldown = proc_driver_spell -> internal_cooldown();
+  effect.duration = proc_spell -> duration();
+  effect.stat = static_cast< stat_e >( proc_spell -> effectN( 1 ).misc_value1() + 1 );
+  effect.stat_amount = util::round( budget.p_epic[ 0 ] * proc_spell -> effectN( 1 ).m_average() );
+
+  stat_buff_proc_t* cb = new stat_buff_proc_t( p, effect );
+  // Agi trinket in reality procs on "hits" most likely
+  if ( item -> parsed.data.id == 102292 )
+    p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+}
 
 } // end unique_gear namespace
 
@@ -2638,6 +2727,7 @@ void unique_gear::init( player_t* p )
     if ( ! strcmp( item.name(), "spark_of_zandalar"                   ) ) spark_of_zandalar                 ( &item );
     if ( ! strcmp( item.name(), "unerring_vision_of_lei_shen"         ) ) unerring_vision_of_leishen        ( &item );
 
+    if ( item.player -> dbc.ptr && item.parsed.data.id == 102292 ) cooldown_reduction_trinket( &item );
   }
 }
 
