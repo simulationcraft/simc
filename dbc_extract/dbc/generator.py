@@ -2682,20 +2682,46 @@ class SpellListGenerator(SpellDataGenerator):
         return s
 
 class ClassFlagGenerator(SpellDataGenerator):
+    _masks = {
+            'mage': 3,
+            'warrior': 4,
+            'warlock': 5,
+            'priest': 6,
+            'druid': 7,
+            'rogue': 8,
+            'hunter': 9,
+            'paladin': 10,
+            'shaman': 11,
+            'deathknight': 15
+    }
     def __init__(self, options):
         SpellDataGenerator.__init__(self, options)
 
-    def generate(self, ids, class_name):
+    def filter(self, class_name):
+        ids = { }
+        mask = ClassFlagGenerator._masks.get(class_name.lower(), -1)
+        if mask == -1:
+            return ids
+
+        for id, data in self._spell_db.iteritems():
+            if data.id_class_opts == 0:
+                continue
+
+            opts = self._spellclassoptions_db[data.id_class_opts]
+
+            if opts.spell_family_name != mask:
+                continue
+
+            ids[id] = { }
+        return ids
+
+    def generate(self, ids):
         s = ''
-        mask = DataGenerator._class_masks[self._class_map[class_name.capitalize()]]
         spell_family = { }
 
         for spell_id, data in ids.iteritems():
             spell = self._spell_db[spell_id]
             if not spell.id_class_opts:
-                continue
-
-            if not data['mask_class'] & mask:
                 continue
 
             copts = self._spellclassoptions_db[spell.id_class_opts]
@@ -2706,7 +2732,6 @@ class ClassFlagGenerator(SpellDataGenerator):
                         'spells' : [ ],
                         'effects': [ ]
                     })
-
 
             # Assign this spell to bitfield entries
             for i in xrange(1, 5):

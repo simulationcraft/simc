@@ -383,7 +383,7 @@ _DBC_FIELDS = {
           'id', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6'
     ],
     'SpellCategory.dbc' : [
-          'id', 'field'
+          'id', 'field', 'f2', 'f3', 'f4', 'f5'
     ],
     'SpellCategories.dbc' : [
           'id',            ( 'category', '%4u' ), 'dmg_class', 'dispel', 'mechanic', 

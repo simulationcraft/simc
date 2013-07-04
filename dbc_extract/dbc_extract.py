@@ -101,9 +101,9 @@ elif options.type == 'class_flags':
     if not g.initialize():
         sys.exit(1)
     #ids = g.filter(args[0])
-    ids = g.filter()
+    ids = g.filter(args[0])
     
-    print g.generate(ids, args[0])
+    print g.generate(ids)
 elif options.type == 'racial_list':
     g = dbc.generator.RacialSpellGenerator(options)
     if not g.initialize():
