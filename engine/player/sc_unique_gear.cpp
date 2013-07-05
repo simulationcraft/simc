@@ -2580,8 +2580,11 @@ void cooldown_reduction_trinket( item_t* item )
 
   static const cooldowns_t __cd[] =
   {
-    { SHAMAN_ENHANCEMENT, { "spiritwalkers_grace", "earth_elemental_totem", "stormlash_totem", "shamanistic_rage", "ascendance", "feral_spirit" } },
-    { SPEC_NONE,          { 0 } }
+    { ROGUE_ASSASSINATION, { "evasion", "vanish", "cloak_of_shadows", "vendetta", "shadow_blades", 0 } },
+    { ROGUE_COMBAT,        { "evasion", "adrenaline_rush", "cloak_of_shadows", "killing_spree", "shadow_blades", 0 } },
+    { ROGUE_SUBTLETY,      { "evasion", "vanish", "cloak_of_shadows", "shadow_dance", "shadow_blades", 0 } },
+    { SHAMAN_ENHANCEMENT,  { "spiritwalkers_grace", "earth_elemental_totem", "stormlash_totem", "shamanistic_rage", "ascendance", "feral_spirit" } },
+    { SPEC_NONE,           { 0 } }
   };
 
   const spell_data_t* cdr_spell = spell_data_t::nil();
@@ -2614,7 +2617,10 @@ void cooldown_reduction_trinket( item_t* item )
   do
   {
     if ( p -> specialization() != cd -> spec )
+    {
+      cd++;
       continue;
+    }
 
     for ( size_t i = 0; i < 6; i++ )
     {
@@ -2625,7 +2631,7 @@ void cooldown_reduction_trinket( item_t* item )
       ability_cd -> recharge_multiplier = cdr;
     }
 
-    cd++;
+    break;
   } while ( cd -> spec != SPEC_NONE );
 
   // Tank trinket has no separate proc, so bail out here.

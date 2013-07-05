@@ -472,7 +472,8 @@ bool item_t::parse_options()
     opt_null()
   };
 
-  option_t::parse( sim, option_name_str.c_str(), options, remainder );
+  if ( ! option_t::parse( sim, option_name_str.c_str(), options, remainder ) )
+    return false;
 
   util::tokenize( option_name_str );
 
@@ -768,7 +769,8 @@ std::string item_t::encoded_weapon()
 
 bool item_t::init()
 {
-  parse_options();
+  if ( ! parse_options() )
+    return false;
 
   // Item specific source list has to be decoded first so we can properly
   // download the item from the correct source
