@@ -2717,7 +2717,11 @@ class ClassFlagGenerator(SpellDataGenerator):
 
     def generate(self, ids):
         s = ''
-        spell_family = { }
+
+        spell_data = []
+        effect_data = { }
+        for i in xrange(0, 128):
+            spell_data.append({ 'spells' : [ ], 'effects': [ ] })
 
         for spell_id, data in ids.iteritems():
             spell = self._spell_db[spell_id]
@@ -2725,24 +2729,17 @@ class ClassFlagGenerator(SpellDataGenerator):
                 continue
 
             copts = self._spellclassoptions_db[spell.id_class_opts]
-            if not copts.spell_family_name in spell_family.keys():
-                spell_family[copts.spell_family_name] = [ ]
-                for i in xrange(0, 128):
-                    spell_family[copts.spell_family_name].append({
-                        'spells' : [ ],
-                        'effects': [ ]
-                    })
 
             # Assign this spell to bitfield entries
             for i in xrange(1, 5):
                 f = getattr(copts, 'spell_family_flags_%u' % i)
                 
-                for bit in xrange(0, 31):
+                for bit in xrange(0, 32):
                     if not (f & (1 << bit)):
                         continue
 
                     bfield = ((i - 1) * 32) + bit
-                    spell_family[copts.spell_family_name][bfield]['spells'].append( spell )
+                    spell_data[bfield]['spells'].append( spell )
 
             # Loop through spell effects, assigning them to effects
             for effect in spell._effects:
@@ -2751,31 +2748,67 @@ class ClassFlagGenerator(SpellDataGenerator):
 
                 for i in xrange(1, 5):
                     f = getattr(effect, 'class_mask_%u' % i)
-                    for bit in xrange(0, 31):
+                    for bit in xrange(0, 32):
                         if not (f & (1 << bit)):
                             continue
 
                         bfield = ((i - 1) * 32) + bit
-                        spell_family[copts.spell_family_name][bfield]['effects'].append( effect )
+                        spell_data[bfield]['effects'].append( effect )
 
-        for family, d in sorted(spell_family.items()):
-            s += 'Spell family %d:\n' % family
-            for bit_field in xrange(0, len(d)):
-                if not len(d[bit_field]['spells']):
-                    continue
+        # Build effect data
+        
+        for bit_data in spell_data:
+            for effect in bit_data['effects']:
+                if not effect_data.has_key(effect.id_spell):
+                    effect_data[effect.id_spell] = {
+                        'effects': { },
+                        'spell': self._spell_db[effect.id_spell]
+                    }
 
-                s += '  [%-3d] ===================================================\n' % bit_field
-                for spell in sorted(d[bit_field]['spells'], key = lambda s: s.name):
-                    s += '       %s (%u)\n' % ( spell.name, spell.id )
-                
-                for effect in sorted(d[bit_field]['effects'], key = lambda e: e.id_spell):
-                    rstr = ''
-                    if self._spell_db[effect.id_spell].rank:
-                        rstr = ' (%s)' % self._spell_db[effect.id_spell].rank
-                    s += '         [%u] {%u} %s%s\n' % ( effect.index, effect.id_spell, self._spell_db[effect.id_spell].name, rstr)
+                if not effect_data[effect.id_spell]['effects'].has_key(effect.index):
+                    effect_data[effect.id_spell]['effects'][effect.index] = []
 
+                effect_data[effect.id_spell]['effects'][effect.index] += bit_data['spells']
+        
+        field = 0
+        for bit_field in spell_data:
+            field += 1
+            if not len(bit_field['spells']):
+                continue
+
+            if not len(bit_field['effects']):
+                continue
+
+            s += '  [%-3d] ===================================================\n' % field
+            for spell in sorted(bit_field['spells'], key = lambda s: s.name):
+                s += '       %s (%u)\n' % ( spell.name, spell.id )
+            
+            for effect in sorted(bit_field['effects'], key = lambda e: e.id_spell):
+                rstr = ''
+                if self._spell_db[effect.id_spell].rank:
+                    rstr = ' (%s)' % self._spell_db[effect.id_spell].rank
+                s += '         [%u] {%u} %s%s\n' % ( effect.index, effect.id_spell, self._spell_db[effect.id_spell].name, rstr)
+
+            s += '\n'
+        
+        for spell_id in sorted(effect_data.keys()):
+            spell = effect_data[spell_id]['spell']
+            s += 'Spell: %s (%u)' % (spell.name, spell.id)
+            if spell.rank:
+                s += ' %s' % spell.rank
+            s += '\n'
+
+            effects = effect_data[spell_id]['effects']
+            for effect_index in sorted(effects.keys()):
+                s += '  Effect#%u:\n' % effect_index
+                for spell in sorted(effects[effect_index], key = lambda s: s.id):
+                    s += '    %s (%u)' % (spell.name, spell.id)
+                    if spell.rank:
+                        s += ' %s' % spell.rank
+                    s += '\n'
                 s += '\n'
-
+            s += '\n'
+        
         return s
 
 class GlyphListGenerator(SpellDataGenerator):
