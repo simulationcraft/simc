@@ -3392,6 +3392,15 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
       p() -> cooldown.celestial_alignment -> adjust( timespan_t::from_seconds( - p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).base_value() ) );
   }
 
+  void test_to_extend( action_state_t* s, dot_t* dot )
+  {
+    if ( s -> result == RESULT_CRIT
+        && p() -> spec.eclipse -> ok()
+	    && dot -> ticking )
+
+      dot -> extend_duration( 1, false, STATE_HASTE );
+  }
+
   void trigger_t16_2pc_balance( bool nature = false )
   {
     if ( ! p() -> set_bonus.tier16_2pc_caster() )
@@ -4277,14 +4286,7 @@ struct starfire_t : public druid_spell_t
   virtual void impact( action_state_t* s )
   {
     druid_spell_t::impact( s );
-
-    if ( s -> result == RESULT_CRIT && p() -> spec.eclipse -> ok() )
-    {
-      if ( td( s -> target ) -> dots.moonfire -> ticking )
-      {
-        td( s -> target ) -> dots.moonfire -> extend_duration( 1, false, td( s -> target ) -> dots.moonfire -> current_action -> snapshot_flags & ~STATE_CRIT );
-      }
-    }
+    test_to_extend( s, td( s -> target ) -> dots.moonfire );
   }
 
   virtual double action_multiplier()
@@ -4402,15 +4404,8 @@ struct starsurge_t : public druid_spell_t
 
     druid_spell_t::impact( s );
 
-    if ( s -> result == RESULT_CRIT && p() -> spec.eclipse -> ok() )
-    {
-      if ( td( s -> target ) -> dots.moonfire -> ticking )
-        td( s -> target ) -> dots.moonfire -> extend_duration( 1, false, STATE_HASTE );
-
-      if ( td( s -> target ) -> dots.sunfire -> ticking )
-        td( s -> target ) -> dots.sunfire -> extend_duration( 1, false, STATE_HASTE );
-
-    }
+    test_to_extend( s, td( s -> target ) -> dots.moonfire );
+    test_to_extend( s, td( s -> target ) -> dots.sunfire );
   }
 
   virtual void execute()
@@ -4885,14 +4880,7 @@ struct wrath_t : public druid_spell_t
   virtual void impact( action_state_t* s )
   {
     druid_spell_t::impact( s );
-
-    if ( s -> result == RESULT_CRIT && p() -> spec.eclipse -> ok() )
-    {
-      if ( td( s -> target ) -> dots.sunfire -> ticking )
-      {
-        td( s -> target ) -> dots.sunfire -> extend_duration( 1, false, td( s -> target ) -> dots.sunfire -> current_action -> snapshot_flags & ~STATE_CRIT );
-      }
-    }
+    test_to_extend( s, td( s -> target ) -> dots.sunfire );
   }
 
   virtual double action_multiplier()
