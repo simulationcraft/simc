@@ -4567,6 +4567,8 @@ public:
 
   virtual action_t* create_proc_action( const std::string& /* name */ )
   { return 0; }
+  virtual bool requires_data_collection() const
+  { return active_during_iteration; }
 };
 
 // Target Specific ==========================================================
@@ -4595,6 +4597,7 @@ struct pet_t : public player_t
   double stamina_per_owner;
   double intellect_per_owner;
   bool summoned;
+  bool dynamic;
   pet_e pet_type;
   event_t* expiration;
   timespan_t duration;
@@ -4608,8 +4611,8 @@ struct pet_t : public player_t
 private:
   void init_pet_t_();
 public:
-  pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian = false );
-  pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_e pt, bool guardian = false );
+  pet_t( sim_t* sim, player_t* owner, const std::string& name, bool guardian = false, bool dynamic = false );
+  pet_t( sim_t* sim, player_t* owner, const std::string& name, pet_e pt, bool guardian = false, bool dynamic = false );
 
   virtual void init_base_stats();
   virtual void init_target();
@@ -4672,6 +4675,8 @@ public:
   { return owner -> cache.armor() * owner_coeff.armor; }
 
   virtual void init_resources( bool force );
+  virtual bool requires_data_collection() const
+  { return active_during_iteration || ( dynamic && sim -> report_pets_separately == 1 ); }
 };
 
 

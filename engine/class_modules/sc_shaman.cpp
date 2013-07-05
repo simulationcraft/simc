@@ -971,7 +971,7 @@ struct feral_spirit_pet_t : public pet_t
     void init()
     {
       melee_attack_t::init();
-      if ( player != p() -> o() -> pet_feral_spirit[ 0 ] )
+      if ( ! player -> sim -> report_pets_separately && player != p() -> o() -> pet_feral_spirit[ 0 ] )
         stats = p() -> o() -> pet_feral_spirit[ 0 ] -> get_stats( name(), this );
     }
 
@@ -1013,7 +1013,7 @@ struct feral_spirit_pet_t : public pet_t
     void init()
     {
       melee_attack_t::init();
-      if ( player != p() -> o() -> pet_feral_spirit[ 0 ] )
+      if ( ! player -> sim -> report_pets_separately && player != p() -> o() -> pet_feral_spirit[ 0 ] )
         stats = p() -> o() -> pet_feral_spirit[ 0 ] -> get_stats( name(), this );
     }
 
@@ -1032,7 +1032,7 @@ struct feral_spirit_pet_t : public pet_t
   const spell_data_t* command;
 
   feral_spirit_pet_t( shaman_t* owner ) :
-    pet_t( owner -> sim, owner, "spirit_wolf", true ), melee( 0 )
+    pet_t( owner -> sim, owner, "spirit_wolf", true, true ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.5;
@@ -1473,13 +1473,13 @@ struct lightning_elemental_t : public pet_t
       spell_t::init();
 
       shaman_t* s = debug_cast< shaman_t* >( player -> cast_pet() -> owner );
-      if ( player != s -> guardian_lightning_elemental[ 0 ] )
+      if ( ! player -> sim -> report_pets_separately && player != s -> guardian_lightning_elemental[ 0 ] )
         stats = s -> guardian_lightning_elemental[ 0 ] -> get_stats( name() );
     }
   };
 
   lightning_elemental_t( shaman_t* owner ) :
-    pet_t( owner -> sim, owner, "lightning_elemental", true /*GUARDIAN*/ )
+    pet_t( owner -> sim, owner, "lightning_elemental", true, true )
   { stamina_per_owner      = 1.0; }
 
   void init_base_stats()
@@ -5156,14 +5156,17 @@ void shaman_t::create_pets()
   pet_earth_elemental      = create_pet( "earth_elemental_pet"      );
   guardian_earth_elemental = create_pet( "earth_elemental_guardian" );
 
-  if ( maybe_ptr( dbc.ptr ) )
+  if ( maybe_ptr( dbc.ptr ) && specialization() == SHAMAN_ELEMENTAL )
   {
     for ( size_t i = 0; i < sizeof_array( guardian_lightning_elemental ); i++ )
       guardian_lightning_elemental[ i ] = new lightning_elemental_t( this );
   }
 
-  for ( size_t i = 0; i < sizeof_array( pet_feral_spirit ); i++ )
-    pet_feral_spirit[ i ] = new feral_spirit_pet_t( this );
+  if ( specialization() == SHAMAN_ENHANCEMENT )
+  {
+    for ( size_t i = 0; i < sizeof_array( pet_feral_spirit ); i++ )
+      pet_feral_spirit[ i ] = new feral_spirit_pet_t( this );
+  }
 
   create_pet( "earth_elemental_totem" );
   create_pet( "fire_elemental_totem"  );

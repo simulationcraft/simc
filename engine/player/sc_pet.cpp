@@ -46,9 +46,10 @@ void pet_t::init_pet_t_()
 pet_t::pet_t( sim_t*             s,
               player_t*          o,
               const std::string& n,
-              bool               g ) :
+              bool               g,
+              bool               d ) :
   player_t( s, g ? PLAYER_GUARDIAN : PLAYER_PET, n ),
-  owner( o ), summoned( false ), pet_type( PET_NONE ),
+  owner( o ), summoned( false ), dynamic( d ), pet_type( PET_NONE ),
   owner_coeff( owner_coefficients_t() )
 {
   init_pet_t_();
@@ -57,10 +58,11 @@ pet_t::pet_t( sim_t*             s,
 pet_t::pet_t( sim_t*             s,
               player_t*          o,
               const std::string& n,
-              pet_e         pt,
-              bool               g ) :
+              pet_e              pt,
+              bool               g,
+              bool               d ) :
   player_t( s, pt == PET_ENEMY ? ENEMY_ADD : g ? PLAYER_GUARDIAN : PLAYER_PET, n ),
-  owner( o ), summoned( false ), pet_type( pt ),
+  owner( o ), summoned( false ), dynamic( d ), pet_type( pt ),
   owner_coeff( owner_coefficients_t() )
 {
   init_pet_t_();

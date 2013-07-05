@@ -1325,8 +1325,8 @@ struct death_knight_pet_t : public pet_t
 {
   const spell_data_t* command;
 
-  death_knight_pet_t( sim_t* sim, death_knight_t* owner, const std::string& n, bool guardian ) :
-    pet_t( sim, owner, n, guardian )
+  death_knight_pet_t( sim_t* sim, death_knight_t* owner, const std::string& n, bool guardian, bool dynamic = false ) :
+    pet_t( sim, owner, n, guardian, dynamic )
   {
     command = find_spell( 54562 );
   }
@@ -1385,7 +1385,7 @@ struct army_ghoul_pet_t : public death_knight_pet_t
     {
       melee_attack_t::init();
 
-      if ( player != p() -> o() -> pets.army_ghoul[ 0 ] )
+      if ( ! player -> sim -> report_pets_separately && player != p() -> o() -> pets.army_ghoul[ 0 ] )
         stats = p() -> o() -> pets.army_ghoul[ 0 ] -> get_stats( name_str );
     }
   };
@@ -1507,7 +1507,7 @@ struct bloodworms_pet_t : public death_knight_pet_t
 
       death_knight_t* o = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
 
-      if ( player != o -> pets.bloodworms[ 0 ] )
+      if ( ! player -> sim -> report_pets_separately && player != o -> pets.bloodworms[ 0 ] )
         stats = o -> pets.bloodworms[ 0 ] -> get_stats( name_str );
     }
   };
@@ -1548,7 +1548,7 @@ struct bloodworms_pet_t : public death_knight_pet_t
 
       death_knight_t* o = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
 
-      if ( player != o -> pets.bloodworms[ 0 ] )
+      if ( ! player -> sim -> report_pets_separately && player != o -> pets.bloodworms[ 0 ] )
         stats = o -> pets.bloodworms[ 0 ] -> get_stats( name_str );
     }
 
@@ -1597,7 +1597,7 @@ struct bloodworms_pet_t : public death_knight_pet_t
   rng_t*  rng_blood_burst;
 
   bloodworms_pet_t( sim_t* sim, death_knight_t* owner ) :
-    death_knight_pet_t( sim, owner, "bloodworms", true /*guardian*/ ),
+    death_knight_pet_t( sim, owner, "bloodworms", true, true ),
     melee( nullptr ), blood_gorged( nullptr ), blood_burst( nullptr ), rng_blood_burst( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
@@ -1884,7 +1884,7 @@ struct ghoul_pet_t : public death_knight_pet_t
 struct fallen_zandalari_t : public death_knight_pet_t
 {
   fallen_zandalari_t( death_knight_t* owner ) :
-    death_knight_pet_t( owner -> sim, owner, "fallen_zandalari", true )
+    death_knight_pet_t( owner -> sim, owner, "fallen_zandalari", true, true )
   { }
 
   struct zandalari_melee_attack_t : public melee_attack_t
@@ -1901,7 +1901,8 @@ struct fallen_zandalari_t : public death_knight_pet_t
     {
       melee_attack_t::init();
       fallen_zandalari_t* p = debug_cast< fallen_zandalari_t* >( player );
-      stats = p -> o() -> pets.fallen_zandalari[ 0 ] -> find_action( name_str ) -> stats;
+      if ( ! player -> sim -> report_pets_separately )
+        stats = p -> o() -> pets.fallen_zandalari[ 0 ] -> find_action( name_str ) -> stats;
     }
   };
 

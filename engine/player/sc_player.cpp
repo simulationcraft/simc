@@ -3546,7 +3546,7 @@ void player_t::datacollection_begin()
 void player_t::datacollection_end()
 {
   // This checks if the actor was arisen at least once during this iteration.
-  if ( ! active_during_iteration )
+  if ( ! requires_data_collection() )
     return;
 
   if ( sim -> debug )
