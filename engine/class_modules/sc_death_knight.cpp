@@ -4777,6 +4777,21 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 
 // death_knight_t::create_expression ========================================
 
+static void parse_rune_type( const std::string& rune_str, bool& include_death, rune_type& type )
+{
+  if ( util::str_compare_ci( rune_str, "blood" ) )
+    type = RUNE_TYPE_BLOOD;
+  else if ( util::str_compare_ci( rune_str, "frost" ) )
+    type = RUNE_TYPE_FROST;
+  else if ( util::str_compare_ci( rune_str, "unholy" ) )
+    type = RUNE_TYPE_UNHOLY;
+  else if ( util::str_compare_ci( rune_str, "death" ) )
+    type = RUNE_TYPE_DEATH;
+
+  if ( rune_str[ 0 ] == 'B' || rune_str[ 0 ] == 'F' || rune_str[ 0 ] == 'U' )
+    include_death = false;
+}
+
 expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_str )
 {
   std::vector<std::string> splits = util::string_split( name_str, "." );
@@ -4785,17 +4800,8 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
   {
     rune_type rt = RUNE_TYPE_NONE;
     bool include_death = true; // whether to include death runes
-    switch ( splits[ 1 ][0] )
-    {
-      case 'B': include_death = false;
-      case 'b': rt = RUNE_TYPE_BLOOD; break;
-      case 'U': include_death = false;
-      case 'u': rt = RUNE_TYPE_UNHOLY; break;
-      case 'F': include_death = false;
-      case 'f': rt = RUNE_TYPE_FROST; break;
-      case 'D': rt = RUNE_TYPE_DEATH; break;
-      case 'd': rt = RUNE_TYPE_DEATH; break;
-    }
+    parse_rune_type( splits[ 1 ], include_death, rt );
+
     int position = 0; // any
     switch ( splits[1][splits[1].size() - 1] )
     {
@@ -4842,17 +4848,7 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
   {
     rune_type rt = RUNE_TYPE_NONE;
     bool include_death = true;
-    switch ( splits[ 0 ][ 0 ] )
-    {
-      case 'B': include_death = false;
-      case 'b': rt = RUNE_TYPE_BLOOD; break;
-      case 'U': include_death = false;
-      case 'u': rt = RUNE_TYPE_UNHOLY; break;
-      case 'F': include_death = false;
-      case 'f': rt = RUNE_TYPE_FROST; break;
-      case 'D': rt = RUNE_TYPE_DEATH; break;
-      case 'd': rt = RUNE_TYPE_DEATH; break;
-    }
+    parse_rune_type( splits[ 0 ], include_death, rt );
 
     if ( rt != RUNE_TYPE_NONE && util::str_compare_ci( splits[ 1 ], "cooldown_remains" ) )
     {
@@ -4892,17 +4888,7 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
   {
     rune_type rt = RUNE_TYPE_NONE;
     bool include_death = true;
-    switch ( splits[ 0 ][ 0 ] )
-    {
-      case 'B': include_death = false;
-      case 'b': rt = RUNE_TYPE_BLOOD; break;
-      case 'U': include_death = false;
-      case 'u': rt = RUNE_TYPE_UNHOLY; break;
-      case 'F': include_death = false;
-      case 'f': rt = RUNE_TYPE_FROST; break;
-      case 'D': rt = RUNE_TYPE_DEATH; break;
-      case 'd': rt = RUNE_TYPE_DEATH; break;
-    }
+    parse_rune_type( splits[ 0 ], include_death, rt );
 
     struct rune_expr_t : public expr_t
     {
