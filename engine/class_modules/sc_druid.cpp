@@ -4405,10 +4405,10 @@ struct starsurge_t : public druid_spell_t
     if ( s -> result == RESULT_CRIT && p() -> spec.eclipse -> ok() )
     {
       if ( td( s -> target ) -> dots.moonfire -> ticking )
-        td( s -> target ) -> dots.moonfire -> extend_duration( 1, false, td( s -> target ) -> dots.moonfire -> current_action -> snapshot_flags & ~STATE_CRIT );
+        td( s -> target ) -> dots.moonfire -> extend_duration( 1, false, STATE_HASTE );
 
       if ( td( s -> target ) -> dots.sunfire -> ticking )
-        td( s -> target ) -> dots.sunfire -> extend_duration( 1, false, td( s -> target ) -> dots.sunfire -> current_action -> snapshot_flags & ~STATE_CRIT );
+        td( s -> target ) -> dots.sunfire -> extend_duration( 1, false, STATE_HASTE );
 
     }
   }
