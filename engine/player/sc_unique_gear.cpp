@@ -2392,8 +2392,15 @@ void rune_of_reorigination( item_t* item )
     {
       player_t* p = action -> player;
       double chr = p -> current.stats.haste_rating;
-      double ccr = p -> current.stats.crit_rating;
-      double cmr = p -> current.stats.mastery_rating;
+      if ( p -> sim -> scaling -> scale_stat == STAT_HASTE_RATING )
+        chr -= p -> sim -> scaling -> scale_value;
+      double ccr = p -> current.stats.crit_rating - p -> scaling.crit_rating;
+      if ( p -> sim -> scaling -> scale_stat == STAT_CRIT_RATING )
+        ccr -= p -> sim -> scaling -> scale_value;
+      double cmr = p -> current.stats.mastery_rating - p -> scaling.mastery_rating;
+      if ( p -> sim -> scaling -> scale_stat == STAT_MASTERY_RATING )
+        cmr -= p -> sim -> scaling -> scale_value;
+
       if ( p -> sim -> debug )
         p -> sim -> output( "%s rune_of_reorigination procs crit=%.0f haste=%.0f mastery=%.0f",
                             p -> name(), ccr, chr, cmr );

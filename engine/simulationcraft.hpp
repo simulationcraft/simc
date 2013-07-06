@@ -3930,6 +3930,7 @@ struct player_t : public actor_t
   // Profs
   std::array<int, PROFESSION_MAX> profession;
 
+  // TODO: FIXME, these stats should not be increased by scale factor deltas
   struct base_initial_current_t
   {
     base_initial_current_t();

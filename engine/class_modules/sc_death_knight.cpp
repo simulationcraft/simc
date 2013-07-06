@@ -5750,8 +5750,14 @@ void death_knight_t::init_scaling()
 static bool death_shroud_mastery( void* data )
 {
   player_t* player = static_cast< player_t* >( data );
-  if ( player -> current.stats.get_stat( STAT_MASTERY_RATING ) >=
-       player -> current.stats.get_stat( STAT_HASTE_RATING ) )
+  double haste = player -> current.stats.get_stat( STAT_HASTE_RATING );
+  if ( player -> sim -> scaling -> scale_stat == STAT_HASTE_RATING )
+    haste -= player -> sim -> scaling -> scale_value;
+  double mastery = player -> current.stats.get_stat( STAT_MASTERY_RATING );
+  if ( player -> sim -> scaling -> scale_stat == STAT_MASTERY_RATING )
+    mastery -= player -> sim -> scaling -> scale_value;
+
+  if ( mastery >= haste )
     return true;
   return false;
 }
@@ -5759,8 +5765,14 @@ static bool death_shroud_mastery( void* data )
 static bool death_shroud_haste( void* data )
 {
   player_t* player = static_cast< player_t* >( data );
-  if ( player -> current.stats.get_stat( STAT_HASTE_RATING ) >
-       player -> current.stats.get_stat( STAT_MASTERY_RATING ) )
+  double haste = player -> current.stats.get_stat( STAT_HASTE_RATING );
+  if ( player -> sim -> scaling -> scale_stat == STAT_HASTE_RATING )
+    haste -= player -> sim -> scaling -> scale_value;
+  double mastery = player -> current.stats.get_stat( STAT_MASTERY_RATING );
+  if ( player -> sim -> scaling -> scale_stat == STAT_MASTERY_RATING )
+    mastery -= player -> sim -> scaling -> scale_value;
+
+  if ( haste > mastery )
     return true;
   return false;
 }
