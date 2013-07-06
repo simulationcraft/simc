@@ -4790,7 +4790,7 @@ static void parse_rune_type( const std::string& rune_str, bool& include_death, r
     type = RUNE_TYPE_DEATH;
 
   if ( rune_str[ 0 ] == 'B' || rune_str[ 0 ] == 'F' || rune_str[ 0 ] == 'U' )
-    include_death = false;
+    include_death = true;
 }
 
 expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_str )
@@ -4800,7 +4800,7 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
   if ( util::str_compare_ci( splits[ 0 ], "rune" ) )
   {
     rune_type rt = RUNE_TYPE_NONE;
-    bool include_death = true; // whether to include death runes
+    bool include_death = false; // whether to include death runes
     parse_rune_type( splits[ 1 ], include_death, rt );
 
     int position = 0; // any
@@ -4848,7 +4848,7 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
   else if ( splits.size() == 2 )
   {
     rune_type rt = RUNE_TYPE_NONE;
-    bool include_death = true;
+    bool include_death = false;
     parse_rune_type( splits[ 0 ], include_death, rt );
 
     if ( rt != RUNE_TYPE_NONE && util::str_compare_ci( splits[ 1 ], "cooldown_remains" ) )
@@ -4888,7 +4888,7 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
   else
   {
     rune_type rt = RUNE_TYPE_NONE;
-    bool include_death = true;
+    bool include_death = false;
     parse_rune_type( splits[ 0 ], include_death, rt );
 
     struct rune_expr_t : public expr_t
