@@ -79,6 +79,7 @@ public:
   struct cooldowns_t
   {
     cooldown_t* explosive_shot;
+    cooldown_t* rapid_fire;
     cooldown_t* viper_venom;
   } cooldowns;
 
@@ -113,6 +114,7 @@ public:
     proc_t* tier15_4pc_melee_aimed_shot;
     proc_t* tier15_4pc_melee_arcane_shot;
     proc_t* tier15_4pc_melee_multi_shot;
+    proc_t* tier16_2pc_melee;
   } procs;
 
   // Random Number Generation
@@ -278,6 +280,7 @@ public:
   {
     // Cooldowns
     cooldowns.explosive_shot = get_cooldown( "explosive_shot" );
+    cooldowns.rapid_fire     = get_cooldown( "rapid_fire" );
     cooldowns.viper_venom    = get_cooldown( "viper_venom" );
 
     summon_pet_str = "";
@@ -684,8 +687,6 @@ public:
 
     double cleave_value     = o() -> find_spell( "Beast Cleave" ) -> effectN( 1 ).percent();
     
-    sim -> output( "BEAST %g", cleave_value );
-
     buffs.beast_cleave      = buff_creator_t( this, 118455, "beast_cleave" ).activated( true ).default_value( cleave_value );
   }
 
@@ -1787,6 +1788,19 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
   }
 
   void trigger_tier15_4pc_melee( proc_t* proc, attack_t* attack );
+
+  // Arcane Shot and Multi-shot reduce the cooldown of Rapid Fire by 12 seconds per cast.
+  void trigger_tier16_2pc_melee()
+  {
+    if ( ! p() -> set_bonus.tier16_2pc_melee() )
+      return;
+
+    if ( p() -> cooldowns.rapid_fire -> down() )
+    {
+      p() -> procs.tier15_2pc_melee -> occur();
+      p() -> cooldowns.rapid_fire -> adjust( -timespan_t::from_seconds( 12 ) );
+    }
+  }
 };
 
 struct piercing_shots_t : public ignite::pct_based_action_t< attack_t >
@@ -2017,8 +2031,10 @@ struct arcane_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
     consume_thrill_of_the_hunt();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( result_is_hit( execute_state -> result ) ) {
       trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_arcane_shot, p() -> action_lightning_arrow_arcane_shot );
+      trigger_tier16_2pc_melee();
+    }
   }
 
   virtual void impact( action_state_t* state )
@@ -2654,8 +2670,11 @@ struct multi_shot_t : public hunter_ranged_attack_t
     if ( pet && p() -> specs.beast_cleave -> ok() )
       pet -> buffs.beast_cleave -> trigger();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( result_is_hit( execute_state -> result ) ) {
       trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_multi_shot, p() -> action_lightning_arrow_multi_shot );
+      // TODO is this on hit or every time?
+      trigger_tier16_2pc_melee();
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -3748,6 +3767,7 @@ void hunter_t::init_spells()
     {     0,     0, 105732, 105921,     0,     0,     0,     0 }, // Tier13
     {     0,     0, 123090, 123091,     0,     0,     0,     0 }, // Tier14
     {     0,     0, 138365, 138367,     0,     0,     0,     0 }, // Tier15
+    {     0,     0, 144637, 144641,     0,     0,     0,     0 }, // Tier16
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );

@@ -84,12 +84,12 @@ cooldown_t::cooldown_t( const std::string& n, sim_t& s ) :
   recharge_multiplier( 1.0 )
 {}
 
-void cooldown_t::adjust( timespan_t amount )
+void cooldown_t::adjust( timespan_t amount, bool require_reaction )
 {
   if ( down() )
   {
     if ( ready + amount <= sim.current_time )
-      reset( true );
+      reset( require_reaction );
     else
       ready += amount;
   }

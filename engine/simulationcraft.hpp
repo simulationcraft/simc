@@ -3502,7 +3502,9 @@ struct cooldown_t
   cooldown_t( const std::string& name, player_t& );
   cooldown_t( const std::string& name, sim_t& );
 
-  void adjust( timespan_t );
+  // Adjust the CD. If "requires_reaction" is true (or not provided), then the CD change is something 
+  // the user would react to rather than plan ahead for.
+  void adjust( timespan_t, bool requires_reaction = true );
   void reset( bool require_reaction );
   void start( timespan_t override = timespan_t::min(), timespan_t delay = timespan_t::zero() );
 
