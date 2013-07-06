@@ -2396,7 +2396,7 @@ struct melee_t : public death_knight_melee_attack_t
           if ( new_stacks == 2 || p() -> buffs.sudden_doom -> check() == 0 )
           {
             if ( p() -> buffs.sudden_doom -> trigger( new_stacks ) )
-              p() -> buffs.death_shroud -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 11 ) );
+              p() -> buffs.death_shroud -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 15 ) );
           }
           // refresh stacks. However if we have a double stack and only 1 procced, it refreshes to 1 stack
           else
