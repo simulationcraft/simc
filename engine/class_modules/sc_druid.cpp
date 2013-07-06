@@ -3375,7 +3375,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
         }
       }
     }
-    if ( soul_of_the_forest && maybe_ptr( p() -> dbc.ptr ) )
+    if ( soul_of_the_forest && ! maybe_ptr( p() -> dbc.ptr ) )
       p() -> trigger_soul_of_the_forest();
   }
 
@@ -3398,7 +3398,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
         && p() -> spec.eclipse -> ok()
 	    && dot -> ticking )
 
-      dot -> extend_duration( 1, false, STATE_HASTE );
+      dot -> extend_duration_seconds( timespan_t::from_seconds( 2 ), STATE_HASTE );
   }
 
   void trigger_t16_2pc_balance( bool nature = false )
@@ -4985,7 +4985,8 @@ struct celestial_alignment_t : public druid_buff_t < buff_t >
     druid_t* p = static_cast<druid_t*>( player );
     p -> buff.eclipse_lunar -> expire();
     p -> buff.eclipse_solar -> expire();
-    p -> trigger_soul_of_the_forest();
+    if ( ! maybe_ptr( p -> dbc.ptr ) )
+      p -> trigger_soul_of_the_forest();
   }
 };
 
