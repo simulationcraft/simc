@@ -71,7 +71,6 @@ public:
     buff_t* master_marksman_fire;
     buff_t* pre_steady_focus;
     buff_t* rapid_fire;
-    // buff_t* trueshot_aura;
     buff_t* tier13_4pc;
   } buffs;
 
@@ -157,7 +156,7 @@ public:
   struct specs_t
   {
     // Baseline
-    // const spell_data_t* trueshot_aura;
+    const spell_data_t* trueshot_aura;
 
     // Shared
     //const spell_data_t* cobra_shot;
@@ -299,6 +298,7 @@ public:
   virtual void      init_scaling();
   virtual void      init_actions();
   virtual void      combat_begin();
+  virtual void      arise();
   virtual void      reset();
   virtual double    composite_attack_power_multiplier();
   virtual double    composite_melee_haste();
@@ -3493,27 +3493,6 @@ struct summon_pet_t : public hunter_spell_t
   }
 };
 
-// Trueshot Aura ============================================================
-
-struct trueshot_aura_t : public hunter_spell_t
-{
-  trueshot_aura_t( hunter_t* player, const std::string& /* options_str */ ) :
-    hunter_spell_t( "trueshot_aura", player, player -> find_spell( 19506 ) )
-  {
-    trigger_gcd = timespan_t::zero();
-    harmful = false;
-    background = sim -> overrides.attack_power_multiplier != 0;
-  }
-
-  virtual void execute()
-  {
-    hunter_spell_t::execute();
-
-    if ( ! sim -> overrides.attack_power_multiplier )
-      sim -> auras.attack_power_multiplier -> trigger();
-  }
-};
-
 // Stampede =================================================================
 
 struct stampede_t : public hunter_spell_t
@@ -3581,7 +3560,6 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "silencing_shot"        ) return new         silencing_shot_t( this, options_str );
   if ( name == "steady_shot"           ) return new            steady_shot_t( this, options_str );
   if ( name == "summon_pet"            ) return new             summon_pet_t( this, options_str );
-  if ( name == "trueshot_aura"         ) return new          trueshot_aura_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
   if ( name == "a_murder_of_crows"     ) return new                    moc_t( this, options_str );
   if ( name == "powershot"             ) return new              powershot_t( this, options_str );
@@ -3633,6 +3611,7 @@ void hunter_t::create_pets()
   create_pet( "raptor",       "raptor"       );
   create_pet( "hyena",        "hyena"        );
   create_pet( "wolf",         "wolf"         );
+  create_pet( "spider",       "spider"       );
 //  create_pet( "chimera",      "chimera"      );
 //  create_pet( "wind_serpent", "wind_serpent" );
 
@@ -3652,6 +3631,7 @@ void hunter_t::init_spells()
 {
   player_t::init_spells();
 
+  // Baseline
   // Talents
   talents.posthaste                         = find_talent_spell( "Posthaste" );
   talents.narrow_escape                     = find_talent_spell( "Narrow Escape" );
@@ -3744,6 +3724,7 @@ void hunter_t::init_spells()
   specs.master_marksman      = find_specialization_spell( "Master Marksman" );
   specs.serpent_spread       = find_specialization_spell( "Serpent Spread" );
   specs.trap_mastery         = find_specialization_spell( "Trap Mastery" );
+  specs.trueshot_aura        = find_spell( 19506 );
 
   if ( specs.piercing_shots -> ok() )
     active.piercing_shots = new attacks::piercing_shots_t( this );
@@ -3964,7 +3945,6 @@ void hunter_t::init_actions()
     precombat += "/aspect_of_the_hawk";
     precombat += "/hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up";
     precombat += "/summon_pet";
-    precombat += "/trueshot_aura";
     precombat += "/snapshot_stats";
 
     if ( ( level >= 80 ) && ( sim -> allow_potions ) )
@@ -4151,6 +4131,16 @@ void hunter_t::reset()
   // Active
   active.pet            = nullptr;
   active.aspect         = ASPECT_NONE;
+}
+
+// hunter_t::arise ==========================================================
+
+void hunter_t::arise()
+{
+  player_t::arise();
+
+  if ( specs.trueshot_aura -> is_level( level ) && ! sim -> overrides.attack_power_multiplier )
+    sim -> auras.attack_power_multiplier -> trigger();
 }
 
 // hunter_t::composite_attack_power_multiplier ==============================

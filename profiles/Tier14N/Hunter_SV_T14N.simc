@@ -21,7 +21,6 @@ actions.precombat+=/food,type=sea_mist_rice_noodles
 actions.precombat+=/aspect_of_the_hawk
 actions.precombat+=/hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up
 actions.precombat+=/summon_pet
-actions.precombat+=/trueshot_aura
 actions.precombat+=/snapshot_stats
 actions.precombat+=/virmens_bite_potion
 
