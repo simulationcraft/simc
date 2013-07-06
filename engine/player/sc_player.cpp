@@ -9378,7 +9378,8 @@ void player_collected_data_t::collect_data( const player_t& p )
       health_changes.timeline.build_sliding_average_timeline( sliding_average_tl, window );
 
       // pull the data out of the sliding average timeline
-      //std::vector<double> tl_data = health_changes.timeline.data();  //temporary, for debugging
+      std::vector<double> tl_data = health_changes.timeline.data();  //temporary, for debugging
+      std::vector<double> ma_data = sliding_average_tl.data(); //temporary, for debugging
       std::vector<double> weighted_value = sliding_average_tl.data();
 
       for ( size_t j = 0, size = weighted_value.size(); j < size; j++ )
@@ -9402,7 +9403,7 @@ void player_collected_data_t::collect_data( const player_t& p )
       // constant multiplicative normalization factors
       // these are estimates at the moment - will be fine-tuned later
       tmi *= 10000;
-      tmi *= std::pow( window / 1.5 , 2 ); // normalizes for window size
+      tmi *= std::pow( window , 2 ); // normalizes for window size
       //std::cout << "TMI(iteration " << p.sim -> current_iteration << "): " << tmi << " sa tl avg: " << sliding_average_tl.mean() << " wl.size(): " << weighted_value.size() << " health: " << p.resources.initial[ RESOURCE_HEALTH ] << "\n";   //temporary, for debugging
     }
     // normalize by fight length and add to TMI data array

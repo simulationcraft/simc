@@ -4121,6 +4121,7 @@ void paladin_t::generate_action_prio_list_prot()
   precombat -> add_action( this, "Blessing of Kings", "if=(!aura.str_agi_int.up)&(aura.mastery.up)" );
   precombat -> add_action( this, "Blessing of Might", "if=!aura.mastery.up" );
   precombat -> add_action( this, "Seal of Insight" );
+  precombat -> add_action( this, "Sacred Shield" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -4159,9 +4160,9 @@ void paladin_t::generate_action_prio_list_prot()
 
   def -> add_action( this, "Avenging Wrath" );
   def -> add_talent( this, "Holy Avenger" );
-  def -> add_action( this, "Guardian of Ancient Kings", "if=health.pct<=30" );
-  def -> add_action( this, "Divine Protection", "if=target.debuff.casting.react" );
-  def -> add_action( this, "Shield of the Righteous", "if=holy_power>=3" );
+  //def -> add_action( this, "Guardian of Ancient Kings", "if=health.pct<=30" );
+  //def -> add_action( this, "Divine Protection", "if=target.debuff.casting.react" );
+  def -> add_action( this, "Shield of the Righteous", "if=(holy_power>=3)|(buff.divine_purpose.up)" );
   def -> add_action( this, "Hammer of the Righteous", "if=target.debuff.weakened_blows.down" );
   def -> add_action( this, "Crusader Strike" );
   def -> add_action( this, "Judgment", "if=cooldown.crusader_strike.remains>=0.5" );

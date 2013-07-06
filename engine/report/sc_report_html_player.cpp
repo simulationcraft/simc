@@ -1725,8 +1725,8 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
     // Tmp Debug Visualization
     histogram tmi_hist;
     tmi_hist.create_histogram( p -> collected_data.theck_meloree_index, 50 );
-    std::string dist_chart = chart::distribution( p -> sim -> print_styles, tmi_hist.data(), "TMI Distribution", p -> collected_data.theck_meloree_index.mean(), tmi_hist.min(), tmi_hist.max() );
-    os.tabs() << "<img src=\"" << dist_chart << "\" alt=\"Theck meloore distribution Chart\" />\n";
+    std::string dist_chart = chart::distribution( p -> sim -> print_styles, tmi_hist.data(), "TMI", p -> collected_data.theck_meloree_index.mean(), tmi_hist.min(), tmi_hist.max() );
+    os.tabs() << "<img src=\"" << dist_chart << "\" alt=\"Theck meloree distribution Chart\" />\n";
   }
   --os;
   os.tabs() << "</div>\n";
@@ -2120,13 +2120,21 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
 
   const std::string n = util::encode_html( p -> name() );
   if ( p -> collected_data.dps.mean() >= p -> collected_data.hps.mean() )
-    os.printf( "\">%s&nbsp;:&nbsp;%.0f dps</h2>\n",
+    os.printf( "\">%s&nbsp;:&nbsp;%.0f dps",
                n.c_str(),
                p -> collected_data.dps.mean() );
   else
-    os.printf( "\">%s&nbsp;:&nbsp;%.0f hps</h2>\n",
+    os.printf( "\">%s&nbsp;:&nbsp;%.0f hps",
                n.c_str(),
                p -> collected_data.hps.mean() );
+
+  // if player tank, print extra metrics
+  if ( p -> primary_role() == ROLE_TANK && p -> type != ENEMY )
+    os.printf( ", %.0f dtps, %.1f TMI\n",
+               p -> collected_data.dtps.mean(),
+               p -> collected_data.theck_meloree_index.mean() );
+
+  os << "</h2>\n";
 
   os << "\t\t\t<div class=\"toggle-content";
   if ( num_players > 1 )
