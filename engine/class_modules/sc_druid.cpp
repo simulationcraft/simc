@@ -701,10 +701,75 @@ struct force_of_nature_feral_t : public pet_t
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
-    main_hand_weapon.min_dmg    = owner -> find_class_spell( "Force of Nature" ) -> effectN( 1 ).base_value();
-    main_hand_weapon.max_dmg    = owner -> find_class_spell( "Force of Nature" ) -> effectN( 1 ).base_value();
+    main_hand_weapon.min_dmg    = owner -> find_spell( 102703 ) -> effectN( 1 ).min( owner );
+    main_hand_weapon.max_dmg    = owner -> find_spell( 102703 ) -> effectN( 1 ).max( owner );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    owner_coeff.ap_from_ap      = 2.0 * 1.2;
+    owner_coeff.ap_from_ap      = 1.2;
+  }
+
+  druid_t* o()
+  { return static_cast< druid_t* >( owner ); }
+
+  virtual void init_base_stats()
+  {
+    pet_t::init_base_stats();
+
+    resources.base[ RESOURCE_HEALTH ] = owner -> resources.max[ RESOURCE_HEALTH ] * 0.4;
+    resources.base[ RESOURCE_MANA   ] = 0;
+    stamina_per_owner = 0.0;
+
+    melee = new melee_t( this );
+  }
+
+  virtual void summon( timespan_t duration = timespan_t::zero() )
+  {
+    pet_t::summon( duration );
+    schedule_ready();
+  }
+
+  virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
+  {
+    pet_t::schedule_ready( delta_time, waiting );
+    if ( ! melee -> execute_event ) melee -> execute();
+  }
+};
+
+// Guardian Force of Nature ====================================================
+
+struct force_of_nature_guardian_t : public pet_t
+{
+  melee_attack_t* melee;
+
+  struct melee_t : public melee_attack_t
+  {
+    druid_t* owner;
+
+    melee_t( force_of_nature_guardian_t* p )
+      : melee_attack_t( "melee", p, spell_data_t::nil() ), owner( 0 )
+    {
+      school = SCHOOL_PHYSICAL;
+      weapon = &( p -> main_hand_weapon );
+      base_execute_time = weapon -> swing_time;
+      background = true;
+      repeating  = true;
+      may_crit   = true;
+      trigger_gcd = timespan_t::zero();
+      owner = p -> o();
+
+      may_glance = true;
+      special    = false;
+    }
+  };
+
+  force_of_nature_guardian_t( sim_t* sim, druid_t* p ) :
+    pet_t( sim, p, "treant", true ), melee( 0 )
+  {
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+    main_hand_weapon.min_dmg    = owner -> find_spell( 102706 ) -> effectN( 1 ).min( owner ) * 0.2;
+    main_hand_weapon.max_dmg    = owner -> find_spell( 102706 ) -> effectN( 1 ).max( owner ) * 0.2;
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    owner_coeff.ap_from_ap      = 0.2 * 1.2;
   }
 
   druid_t* o()
@@ -5332,12 +5397,6 @@ pet_t* druid_t::create_pet( const std::string& pet_name,
 
   using namespace pets;
 
-  if ( pet_name == "force_of_nature" )
-  {
-    if ( specialization() == DRUID_BALANCE ) return new force_of_nature_balance_t( sim, this );
-    if ( specialization() == DRUID_FERAL   ) return new   force_of_nature_feral_t( sim, this );
-  }
-
   if ( pet_name == "symbiosis_mirror_image" ) return new symbiosis_mirror_image_t( sim, this );
   if ( pet_name == "symbiosis_feral_spirit" ) return new symbiosis_feral_spirit_t( sim, this );
 
@@ -5351,16 +5410,21 @@ void druid_t::create_pets()
   if ( specialization() == DRUID_BALANCE )
   {
     for ( int i = 0; i < 3; ++i )
-      pet_force_of_nature[ i ] = create_pet( "force_of_nature" );
+      pet_force_of_nature[ i ] = new pets::force_of_nature_balance_t( sim, this );
     for ( int i = 0; i < 3; ++i )
       pet_mirror_images[ i ] = create_pet( "symbiosis_mirror_image" );
   }
   else if ( specialization() == DRUID_FERAL )
   {
     for ( int i = 0; i < 3; ++i )
-      pet_force_of_nature[ i ] = create_pet( "force_of_nature" );
+      pet_force_of_nature[ i ] = new pets::force_of_nature_feral_t( sim, this );
     for ( int i = 0; i < 2; ++i )
       pet_feral_spirit[ i ] = create_pet( "symbiosis_feral_spirit" );
+  }
+  else if ( specialization() == DRUID_GUARDIAN )
+  {
+    for ( size_t i = 0; i < sizeof_array( pet_force_of_nature ); i++ )
+      pet_force_of_nature[ i ] = new pets::force_of_nature_guardian_t( sim, this );
   }
 }
 
