@@ -3010,7 +3010,8 @@ void warrior_t::create_buffs()
                           .chance( spec.bloodsurge -> effectN( 1 ).percent() );
 
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_spell( 7376 ) );
-  buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) );
+  buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) )
+                          .activated(false) ;
 
   buff.glyph_hold_the_line    = buff_creator_t( this, "hold_the_line",    glyphs.hold_the_line -> effectN( 1 ).trigger() );
   buff.glyph_incite           = buff_creator_t( this, "glyph_incite",           glyphs.incite -> effectN( 1 ).trigger() )
@@ -3287,7 +3288,7 @@ void warrior_t::init_actions()
       action_list_str += "/avatar,if=buff.recklessness.up&talent.avatar.enabled";
       action_list_str += "/skull_banner,if=buff.recklessness.up";
       action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",if=(!talent.bloodbath.enabled&debuff.colossus_smash.up)|(talent.bloodbath.enabled&buff.bloodbath.up)" );
-      action_list_str += "/berserker_rage,if=!buff.enrage.up";
+      action_list_str += "/berserker_rage,if=buff.enrage.remains<0.5&cooldown.bloodthirst.remains>0.5";
       action_list_str += "/heroic_leap,if=debuff.colossus_smash.up";
       action_list_str += "/run_action_list,name=single_target,if=active_enemies=1";
       action_list_str += "/run_action_list,name=two_targets,if=active_enemies=2";
@@ -3298,9 +3299,9 @@ void warrior_t::init_actions()
 
       st_list_str = "/heroic_strike,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=110";
       st_list_str += "/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20";
-      st_list_str += "/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)";
+      st_list_str += "/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)";
       st_list_str += "/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1";
-      st_list_str += "/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains";
+      st_list_str += "/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains";
       st_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&buff.bloodbath.up)";
       st_list_str += "/colossus_smash";
       st_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
