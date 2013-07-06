@@ -1797,7 +1797,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
 
     if ( p() -> cooldowns.rapid_fire -> down() )
     {
-      p() -> procs.tier15_2pc_melee -> occur();
+      p() -> procs.tier16_2pc_melee -> occur();
       p() -> cooldowns.rapid_fire -> adjust( -timespan_t::from_seconds( 12 ) );
     }
   }
@@ -2031,9 +2031,9 @@ struct arcane_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
     consume_thrill_of_the_hunt();
 
+    trigger_tier16_2pc_melee();
     if ( result_is_hit( execute_state -> result ) ) {
       trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_arcane_shot, p() -> action_lightning_arrow_arcane_shot );
-      trigger_tier16_2pc_melee();
     }
   }
 
@@ -2670,10 +2670,9 @@ struct multi_shot_t : public hunter_ranged_attack_t
     if ( pet && p() -> specs.beast_cleave -> ok() )
       pet -> buffs.beast_cleave -> trigger();
 
+    trigger_tier16_2pc_melee();
     if ( result_is_hit( execute_state -> result ) ) {
       trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_multi_shot, p() -> action_lightning_arrow_multi_shot );
-      // TODO is this on hit or every time?
-      trigger_tier16_2pc_melee();
     }
   }
 
@@ -3901,6 +3900,7 @@ void hunter_t::init_procs()
   procs.tier15_4pc_melee_aimed_shot  = get_proc( "tier15_4pc_melee_aimed_shot"  );
   procs.tier15_4pc_melee_arcane_shot = get_proc( "tier15_4pc_melee_arcane_shot" );
   procs.tier15_4pc_melee_multi_shot  = get_proc( "tier15_4pc_melee_multi_shot"  );
+  procs.tier16_2pc_melee             = get_proc( "tier16_2pc_melee"             );
 }
 
 // hunter_t::init_rng =======================================================
