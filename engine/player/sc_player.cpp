@@ -3503,6 +3503,14 @@ void player_t::combat_begin()
 
   if ( ! precombat_action_list.empty() )
     in_combat = true;
+
+  // re-initialize collected_data.health_changes.previous_*_level
+  // necessary because food/flask are counted as resource gains, and thus provide phantom
+  // gains on the timeline if not corrected
+  collected_data.health_changes.previous_gain_level = resource_gained [ RESOURCE_HEALTH ];
+  // forcing a resource timeline data collection in combat_end() seems to have rendered this next line unnecessary
+  collected_data.health_changes.previous_loss_level = resource_lost [ RESOURCE_HEALTH ];
+
 }
 
 // player_t::combat_end =====================================================
@@ -3521,6 +3529,8 @@ void player_t::combat_end()
 
   double f_length = iteration_fight_length.total_seconds();
   double w_time = iteration_waiting_time.total_seconds();
+
+  collect_resource_timeline_information();
 
   if ( ready_type == READY_POLL && sim -> auto_ready_trigger )
     if ( ! is_pet() && ! is_enemy() )
@@ -9418,7 +9428,7 @@ void player_collected_data_t::collect_data( const player_t& p )
     combat_end_resource[ i ].add( p.resources.current[ i ] );
 
   // Health Change Calculations - only needed for tanks
-  if ( ! p.is_pet() && p.primary_role() == ROLE_TANK )
+  if ( ! p.is_pet() && !p.is_enemy() && p.primary_role() == ROLE_TANK )
   {
     health_changes.merged_timeline.merge( health_changes.timeline );
 
