@@ -72,6 +72,8 @@ public:
     buff_t* pre_steady_focus;
     buff_t* rapid_fire;
     buff_t* tier13_4pc;
+    buff_t* tier16_4pc_mm_keen_eye;
+    buff_t* tier16_4pc_bm_brutal_kinskip;
   } buffs;
 
   // Cooldowns
@@ -114,11 +116,13 @@ public:
     proc_t* tier15_4pc_melee_arcane_shot;
     proc_t* tier15_4pc_melee_multi_shot;
     proc_t* tier16_2pc_melee;
+    proc_t* tier16_4pc_melee;
   } procs;
 
   // Random Number Generation
   struct rngs_t
   {
+    rng_t* tier16_4pc_melee_sv;
   } rng;
 
   real_ppm_t ppm_tier15_2pc_melee;
@@ -1788,7 +1792,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
   }
 
   void trigger_tier15_4pc_melee( proc_t* proc, attack_t* attack );
-
+  
   // Arcane Shot and Multi-shot reduce the cooldown of Rapid Fire by 12 seconds per cast.
   void trigger_tier16_2pc_melee()
   {
@@ -1800,6 +1804,17 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
       p() -> procs.tier16_2pc_melee -> occur();
       p() -> cooldowns.rapid_fire -> adjust( -timespan_t::from_seconds( 12 ) );
     }
+  }
+
+  // SV Explosive Shot casts have a 40% chance to not consume a charge of Lock and Load. 
+  // MM Instant Aimed shots reduce the cast time of your next Aimed Shot by 50%. (uses keen eye buff)
+  // TODO BM Offensive abilities used during Bestial Wrath increase all damage you deal by 2% and all 
+  // damage dealt by your pet by 2%, stacking up to 15 times.
+  void trigger_tier16_4pc_melee()
+  {
+    if ( ! p() -> set_bonus.tier16_4pc_melee() )
+      return;
+    // TODO
   }
 };
 
@@ -1926,6 +1941,9 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       hunter_ranged_attack_t::execute();
 
       p() -> buffs.master_marksman_fire -> expire();
+      
+      if ( p() -> set_bonus.tier16_4pc_melee() ) 
+        p() -> buffs.tier16_4pc_mm_keen_eye -> trigger();
 
       if ( result_is_hit( execute_state -> result ) )
         trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_aimed_shot, p() -> action_lightning_arrow_aimed_shot );
@@ -1981,7 +1999,13 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     if ( master_marksman_check() )
       return timespan_t::zero();
 
-    return hunter_ranged_attack_t::execute_time();
+    timespan_t cast_time = hunter_ranged_attack_t::execute_time();
+    if ( p() -> buffs.tier16_4pc_mm_keen_eye -> check() ) 
+    {
+      cast_time *= 1.0 + p() -> buffs.tier16_4pc_mm_keen_eye -> data().effectN( 1 ).percent();
+    }
+
+    return cast_time;
   }
 
   virtual void schedule_execute( action_state_t* state = 0 )
@@ -1999,7 +2023,11 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     if ( master_marksman_check() )
       as_mm -> execute();
     else
+    {
       hunter_ranged_attack_t::execute();
+      if ( p() -> buffs.tier16_4pc_mm_keen_eye -> up() )
+        p() -> buffs.tier16_4pc_mm_keen_eye -> expire();
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -2427,8 +2455,18 @@ struct explosive_shot_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p() -> buffs.lock_and_load -> up();
-    p() -> buffs.lock_and_load -> decrement();
+    // Does saving the proc require round trip latency before we know?
+    // TODO add reaction time for the continuation of the proc?
+    if ( p() -> buffs.lock_and_load -> up()
+          && p() -> set_bonus.tier16_4pc_melee() 
+          && p() -> rng.tier16_4pc_melee_sv -> roll( p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent() ) ) 
+    {
+      p() -> procs.tier16_4pc_melee -> occur();
+    }
+    else 
+    {
+      p() -> buffs.lock_and_load -> decrement();
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -3824,6 +3862,9 @@ void hunter_t::create_buffs()
                                       .chance( sets -> set( SET_T13_4PC_MELEE ) -> proc_chance() )
                                       .cd( timespan_t::from_seconds( 105.0 ) )
                                       .add_invalidate( CACHE_ATTACK_HASTE );
+
+  buffs.tier16_4pc_mm_keen_eye      = buff_creator_t( this, 144659, "tier16_4pc_keen_eye" );
+  buffs.tier16_4pc_bm_brutal_kinskip = buff_creator_t( this, 144670, "tier16_4pc_brutal_kinship" );
 }
 
 // hunter_t::init_gains =====================================================
@@ -3882,12 +3923,16 @@ void hunter_t::init_procs()
   procs.tier15_4pc_melee_arcane_shot = get_proc( "tier15_4pc_melee_arcane_shot" );
   procs.tier15_4pc_melee_multi_shot  = get_proc( "tier15_4pc_melee_multi_shot"  );
   procs.tier16_2pc_melee             = get_proc( "tier16_2pc_melee"             );
+  procs.tier16_4pc_melee             = get_proc( "tier16_4pc_melee"             );
 }
 
 // hunter_t::init_rng =======================================================
 
 void hunter_t::init_rng()
 {
+  rng.tier16_4pc_melee_sv = get_rng( "tier16_4pc_melee_sv" );
+
+  // RPPMS
   double tier15_2pc_melee_rppm;
 
   if ( specialization() == HUNTER_BEAST_MASTERY )
