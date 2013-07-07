@@ -4885,6 +4885,9 @@ void player_t::assess_damage( school_e school,
 
   // store post-mitigation, pre-absorb value
   s -> result_mitigated = s -> result_amount;
+  if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+    sim -> output( "Damage to %s after all mitigation is %f", s -> target -> name(), s -> result_amount );
+
 
   if ( buffs.hand_of_sacrifice -> check() && s -> result_amount > 0 )
   {
@@ -4897,6 +4900,9 @@ void player_t::assess_damage( school_e school,
     // mitigate that amount from the target.
     // Slight inaccuracy: We do not get a feedback of paladin health buffer expiration here.
     s -> result_amount -= redirected_damage;
+    
+  if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+    sim -> output( "Damage to %s after Hand of Sacrifice is %f", s -> target -> name(), s -> result_amount );
   }
 
   /* ABSORB BUFFS
@@ -4932,6 +4938,9 @@ void player_t::assess_damage( school_e school,
         assert( s -> result_amount == 0 );
         break;
       }
+      
+      if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() && buff_value > 0)
+        sim -> output( "Damage to %s after %s is %f", s -> target -> name(), ab -> name(), s -> result_amount );
     }
 
     ab -> expire();
