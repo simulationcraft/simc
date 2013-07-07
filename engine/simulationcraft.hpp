@@ -2497,7 +2497,7 @@ struct sim_t : private sc_thread_t
   int64_t     events_processed, total_events_processed;
   int         seed, id, iterations, current_iteration, current_slot;
   int         armor_update_interval, weapon_speed_scale_factors;
-  int         optimal_raid, log, debug;
+  int         optimal_raid, log, debug, debug_each;
   int         save_profiles, default_actions;
   stat_e normalized_stat;
   std::string current_name, default_region_str, default_server_str, save_prefix_str, save_suffix_str;

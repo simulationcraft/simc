@@ -1050,6 +1050,24 @@ void sim_t::flush_events()
 
 void sim_t::combat( int iteration )
 {
+  if ( debug_each )
+  {
+    fflush( this -> output_file );
+    fclose( output_file );
+    FILE* f = io::fopen( output_file_str, "w" );
+    if ( f )
+    {
+      output_file = f;
+    }
+    else
+    {
+      errorf( "Unable to open output file '%s'\n", output_file_str.c_str() );
+      cancel();
+    }
+
+    output( "------ Iteration #%i ------", iteration + 1 );
+    fflush( this -> output_file );
+  }
   if ( debug ) output( "Starting Simulator" );
 
   current_iteration = iteration;
@@ -2160,6 +2178,7 @@ void sim_t::create_options()
     opt_bool( "save_profiles", save_profiles ),
     opt_bool( "default_actions", default_actions ),
     opt_bool( "debug", debug ),
+    opt_bool( "debug_each", debug_each ),
     opt_string( "html", html_file_str ),
     opt_bool( "hosted_html", hosted_html ),
     opt_string( "xml", xml_file_str ),
@@ -2380,6 +2399,9 @@ bool sim_t::setup( sim_control_t* c )
       return false;
     }
   }
+  if ( debug_each )
+    debug = 1;
+  
   if ( debug )
   {
     log = 1;
@@ -2387,7 +2409,9 @@ bool sim_t::setup( sim_control_t* c )
   }
   if ( log )
   {
-    iterations = 1;
+    if ( ! debug_each )
+      iterations = 1;
+
     threads = 1;
   }
 
