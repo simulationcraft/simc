@@ -3718,6 +3718,7 @@ struct player_processed_report_information_t
   bool charts_generated, buff_lists_generated;
   std::string action_dpet_chart, action_dmg_chart, time_spent_chart;
   std::array<std::string, RESOURCE_MAX> timeline_resource_chart, gains_chart;
+  std::array<std::string, STAT_MAX> timeline_stat_chart;
   std::string timeline_dps_chart, timeline_dps_error_chart, timeline_resource_health_chart;
   std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
   std::string reforge_dps_chart, dps_error_chart, distribution_deaths_chart;
@@ -3777,6 +3778,16 @@ struct player_collected_data_t
 
   std::vector<simple_sample_data_with_min_max_t > combat_end_resource;
 
+  struct stat_timeline_t
+  {
+    stat_e type;
+    sc_timeline_t timeline;
+
+    stat_timeline_t( stat_e t = STAT_NONE ) : type( t ) {}
+  };
+  
+  std::vector<stat_timeline_t> stat_timelines;
+  
   // hooked up in resource timeline collection event
   struct health_changes_timeline_t
   {
@@ -3786,6 +3797,8 @@ struct player_collected_data_t
     health_changes_timeline_t() : previous_loss_level( 0.0 ), previous_gain_level( 0.0 ) {}
   } health_changes;
 
+
+ 
   struct action_sequence_data_t
   {
     const action_t* action;
@@ -3877,6 +3890,9 @@ struct player_t : public actor_t
 
   // Option Parsing
   std::vector<option_t> options;
+  
+  // Stat Timelines to Display
+  std::vector<stat_e> stat_timelines;
 
   // Talent Parsing
   class talent_points_t

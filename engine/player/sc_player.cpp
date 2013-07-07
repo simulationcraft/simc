@@ -279,6 +279,27 @@ bool parse_specialization( sim_t* sim,
   return true;
 }
 
+// parse stat timelines =====================================================
+
+bool parse_stat_timelines( sim_t* sim,
+                           const std::string& name,
+                           const std::string& value )
+{
+  assert( name == "stat_timelines" ); ( void )name;
+  
+  stat_e st;
+  std::vector<std::string> stats = util::string_split( value, "," );
+  
+  for ( size_t i = 0; i < stats.size(); ++i )
+  {
+    st = util::parse_stat_type( stats[i] );
+    
+    sim -> active_player -> stat_timelines.push_back( st );
+  }
+  
+  return true;
+}
+
 // parse_origin =============================================================
 
 bool parse_origin( sim_t* sim, const std::string&, const std::string& origin )
@@ -2293,6 +2314,17 @@ void player_t::init_stats()
 
   range::fill( resource_lost, 0.0 );
   range::fill( resource_gained, 0.0 );
+  
+  if ( ! is_pet() || sim -> report_pets_separately )
+  {
+    if ( collected_data.stat_timelines.size() == 0 )
+    {
+      for ( size_t i = 0; i < stat_timelines.size(); ++i )
+      {
+        collected_data.stat_timelines.push_back( player_collected_data_t::stat_timeline_t( stat_timelines[ i ] ) );
+      }
+    }
+  }
 
   collected_data.reserve_memory( *this );
 }
@@ -4269,6 +4301,31 @@ void player_t::collect_resource_timeline_information()
   {
     collected_data.resource_timelines[ j ].timeline.add( sim -> current_time,
         resources.current[ collected_data.resource_timelines[ j ].type ] );
+  }
+  
+  for ( size_t j = 0, size = collected_data.stat_timelines.size(); j < size; ++j )
+  {
+    switch ( collected_data.stat_timelines[ j ].type )
+    {
+      case STAT_STRENGTH:
+        collected_data.stat_timelines[ j ].timeline.add( sim -> current_time, cache.strength() );
+        break;
+      case STAT_AGILITY:
+        collected_data.stat_timelines[ j ].timeline.add( sim -> current_time, cache.agility() );
+        break;
+      case STAT_INTELLECT:
+        collected_data.stat_timelines[ j ].timeline.add( sim -> current_time, cache.intellect() );
+        break;
+      case STAT_SPELL_POWER:
+        collected_data.stat_timelines[ j ].timeline.add( sim -> current_time, cache.spell_power( SCHOOL_NONE ) );
+        break;
+      case STAT_ATTACK_POWER:
+        collected_data.stat_timelines[ j ].timeline.add( sim -> current_time, cache.attack_power() );
+        break;
+      default:
+        collected_data.stat_timelines[ j ].timeline.add( sim -> current_time, 0 );
+        break;
+    }
   }
 
   if ( ! is_pet() && primary_role() == ROLE_TANK )
@@ -8105,6 +8162,7 @@ void player_t::create_options()
     opt_bool( "scale_player", scale_player ),
     opt_func( "spec", parse_specialization ),
     opt_func( "specialization", parse_specialization ),
+    opt_func( "stat_timelines", parse_stat_timelines ),
 
     // Items
     opt_string( "meta_gem",  meta_gem_str ),
@@ -9213,6 +9271,7 @@ player_collected_data_t::player_collected_data_t( const std::string& player_name
   theck_meloree_index( player_name + " Theck-Meloree Index", s.statistics_level < 1 ),
   resource_timelines(),
   combat_end_resource( RESOURCE_MAX ),
+  stat_timelines(),
   health_changes()
 { }
 
@@ -9301,6 +9360,11 @@ void player_collected_data_t::analyze( const player_t& p )
   for ( size_t i = 0; i <  resource_timelines.size(); ++i )
   {
     resource_timelines[ i ].timeline.adjust( p.sim -> divisor_timeline );
+  }
+  
+  for ( size_t i = 0; i < stat_timelines.size(); ++i )
+  {
+    stat_timelines[ i ].timeline.adjust( p.sim -> divisor_timeline );
   }
 
   health_changes.merged_timeline.adjust( p.sim -> divisor_timeline );

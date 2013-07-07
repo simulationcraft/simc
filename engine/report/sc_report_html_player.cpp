@@ -1868,6 +1868,19 @@ void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t*
       fmt = "\t\t\t\t\t\t\t<span class=\"chart-time-spent\" title=\"Time Spent Chart\">%s</span>\n";
     os.printf( fmt, ri.time_spent_chart.c_str() );
   }
+  
+  for ( size_t i = 0; i < ri.timeline_stat_chart.size(); ++i )
+  {
+    if ( ri.timeline_stat_chart[ i ].length() > 0 )
+    {
+      const char* fmt;
+      if ( num_players == 1 )
+        fmt = "\t\t\t\t\t\t\t<img src=\"%s\" alt=\"Stat Chart\" />\n";
+      else
+        fmt = "\t\t\t\t\t\t\t<span class=\"chart-scaling-dps\" title=\"Stat Chart\">%s</span>\n";
+      os.printf( fmt, ri.timeline_stat_chart[ i ].c_str() );
+    }
+  }
 
   os << "\t\t\t\t\t\t</div>\n"
      << "\t\t\t\t\t\t<div class=\"clear\"></div>\n"

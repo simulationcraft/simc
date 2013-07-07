@@ -994,6 +994,22 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
                        max_buckets );
     ri.gains_chart[ rt ] = chart::gains( p, rt );
   }
+  
+  // Stat Charts
+  for ( size_t i = 0; i < cd.stat_timelines.size(); ++i )
+  {
+    stat_e st = cd.stat_timelines[ i ].type;
+    if ( cd.stat_timelines[ i ].timeline.mean() >  0 )
+    {
+      ri.timeline_stat_chart[ st ] =
+        chart::timeline( p,
+                        cd.stat_timelines[ i ].timeline.data(),
+                        encoded_name + ' ' + util::inverse_tokenize( util::stat_type_string( st ) ),
+                        cd.stat_timelines[ i ].timeline.mean(),
+                        "FFFFFF",
+                        max_buckets );
+    }
+  }
 
   if ( ! p -> is_pet() && p -> primary_role() == ROLE_TANK )
   {
