@@ -42,13 +42,11 @@ struct paladin_td_t : public actor_pair_t
     dot_t* execution_sentence;
     dot_t* stay_of_execution;
     dot_t* holy_radiance;
-    dot_t* word_of_glory; // leftover, can probably be removed
   } dots;
 
   struct buffs_t
   {
     buff_t* debuffs_censure;
-    // buff_t* sacred_shield;
     absorb_buff_t* sacred_shield_tick;
   } buffs;
 
@@ -111,6 +109,7 @@ public:
     buff_t* infusion_of_light;
     buff_t* inquisition;
     buff_t* judgments_of_the_wise;
+    buff_t* sacred_shield;  // dummy buff for APL simplicity
     buff_t* shield_of_glory; // t15_2pc_tank
     buff_t* shield_of_the_righteous;
     buff_t* warrior_of_the_light; // t16_2pc_melee
@@ -1365,6 +1364,8 @@ struct eternal_flame_t : public paladin_heal_t
     }
 
     // Shield of Glory (Tier 15 protection 2-piece bonus)
+    if ( p() -> set_bonus.tier15_2pc_tank() )
+      p() -> buffs.shield_of_glory -> trigger();
   }
 };
 
@@ -2313,6 +2314,13 @@ struct sacred_shield_t : public paladin_heal_t
     td( d -> state -> target ) -> buffs.sacred_shield_tick -> trigger( 1, ss_tick_amount );
 
     // note that we don't call paladin_heal_t::tick( d ) so that the heal doesn't happen
+  }
+
+  virtual void execute()
+  {
+    paladin_heal_t::execute();
+
+    p() -> buffs.sacred_shield -> trigger();
   }
 };
 
@@ -3714,10 +3722,8 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   dots.censure            = target -> get_dot( "censure",            paladin );
   dots.execution_sentence = target -> get_dot( "execution_sentence", paladin );
   dots.stay_of_execution  = target -> get_dot( "stay_of_execution",  paladin );
-  dots.word_of_glory      = target -> get_dot( "word_of_glory",      paladin ); // leftover, can probably be removed
 
   buffs.debuffs_censure    = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
-  //buffs.sacred_shield      = buff_creator_t( *this, "sacred_shield", paladin -> find_class_spell( "Sacred Shield" ) );
   buffs.sacred_shield_tick = absorb_buff_creator_t( *this, "sacred_shield_tick", paladin -> find_spell( 65148 ) )
                              .source( paladin -> get_stats( "sacred_shield" ) )
                              .cd( timespan_t::zero() );
@@ -4051,6 +4057,7 @@ void paladin_t::create_buffs()
   buffs.divine_purpose         = buff_creator_t( this, "divine_purpose", find_talent_spell( "Divine Purpose" ) )
                                  .duration( find_spell( find_talent_spell( "Divine Purpose" ) -> effectN( 1 ).trigger_spell_id() ) -> duration() );
   buffs.holy_avenger           = buff_creator_t( this, "holy_avenger", find_talent_spell( "Holy Avenger" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
+  buffs.sacred_shield          = buff_creator_t( this, "sacred_shield", find_talent_spell( "Sacred Shield" ) );
 
   // General
   buffs.avenging_wrath         = buff_creator_t( this, "avenging_wrath", find_class_spell( "Avenging Wrath" ) )
