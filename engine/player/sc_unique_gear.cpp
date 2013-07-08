@@ -613,7 +613,7 @@ void bloody_dancing_steel( player_t* p, const std::string& enchant, weapon_t* w,
   if ( ! util::str_compare_ci( enchant, "bloody_dancing_steel" ) )
     return;
 
-  const spell_data_t* spell = p -> find_spell( 120032 );
+  const spell_data_t* spell = p -> find_spell( 142530 );
 
   stat_buff_t* buff  = stat_buff_creator_t( p, "bloody_dancing_steel" + weapon_appendix )
                        .duration( spell -> duration() )
