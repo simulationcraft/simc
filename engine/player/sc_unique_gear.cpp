@@ -594,6 +594,44 @@ void dancing_steel( player_t* p, const std::string& enchant, weapon_t* w, const 
   p -> callbacks.register_heal_callback  ( SCHOOL_ALL_MASK, cb );
 }
 
+static bool bloody_dancing_steel_agi_check_func( void* d )
+{
+  player_t* p = static_cast<player_t*>( d );
+
+  return ( p -> agility() >= p -> strength() );
+}
+
+static bool bloody_dancing_steel_str_check_func( void* d )
+{
+  player_t* p = static_cast<player_t*>( d );
+
+  return ( p -> agility() < p -> strength() );
+}
+
+void bloody_dancing_steel( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
+{
+  if ( ! util::str_compare_ci( enchant, "bloody_dancing_steel" ) )
+    return;
+
+  const spell_data_t* spell = p -> find_spell( 120032 );
+
+  stat_buff_t* buff  = stat_buff_creator_t( p, "bloody_dancing_steel" + weapon_appendix )
+                       .duration( spell -> duration() )
+                       .activated( false )
+                       .add_stat( STAT_STRENGTH, spell -> effectN( 1 ).base_value(), bloody_dancing_steel_str_check_func )
+                       .add_stat( STAT_AGILITY,  spell -> effectN( 1 ).base_value(), bloody_dancing_steel_agi_check_func );
+
+  special_effect_t effect;
+  effect.name_str = "bloody_dancing_steel" + weapon_appendix;
+  effect.ppm = -2.3; // Real PPM
+
+  weapon_buff_proc_callback_t* cb  = new weapon_buff_proc_callback_t( p, effect, w, buff );
+
+  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
+  p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
+  p -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
+  p -> callbacks.register_heal_callback  ( SCHOOL_ALL_MASK, cb );
+}
 
 // Windsong Proc Callback ===================================================
 
@@ -3515,6 +3553,9 @@ void unique_gear::initialize_special_effects( player_t* p )
 
   dancing_steel( p, mh_enchant, mhw, "" );
   dancing_steel( p, oh_enchant, ohw, "_oh" );
+  
+  bloody_dancing_steel( p, mh_enchant, mhw, "" );
+  bloody_dancing_steel( p, oh_enchant, ohw, "" ) ;
 
   rivers_song( p, mh_enchant, oh_enchant, mhw, ohw );
 
