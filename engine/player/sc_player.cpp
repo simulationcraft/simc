@@ -4337,19 +4337,6 @@ void player_t::collect_resource_timeline_information()
         break;
     }
   }
-
-  if ( ! is_pet() && primary_role() == ROLE_TANK )
-  {
-    // health change timeline
-    // treat losses positive, gains negative
-    double change = ( resource_lost[ RESOURCE_HEALTH ] - collected_data.health_changes.previous_loss_level );
-    change -= ( resource_gained[ RESOURCE_HEALTH ] - collected_data.health_changes.previous_gain_level );
-    collected_data.health_changes.previous_loss_level = resource_lost[ RESOURCE_HEALTH ];
-    collected_data.health_changes.previous_gain_level = resource_gained[ RESOURCE_HEALTH ];
-
-    collected_data.health_changes.timeline.add( sim -> current_time, change );
-  }
-
 }
 
 // player_t::resource_loss ==================================================
@@ -4952,7 +4939,12 @@ void player_t::assess_damage( school_e school,
   assess_damage_imminent( school, type, s );
 
   iteration_dmg_taken += s -> result_amount;
+
+  // collect data for timelines
   collected_data.timeline_dmg_taken.add( sim -> current_time, s -> result_amount );
+  if ( ! is_pet() && primary_role() == ROLE_TANK )
+    collected_data.health_changes.timeline.add( sim -> current_time, s -> result_amount );
+
   double actual_amount = 0;
   if ( s -> result_amount > 0 ) actual_amount = resource_loss( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
 
@@ -5061,6 +5053,8 @@ void player_t::assess_heal( school_e, dmg_e, heal_state_t* s )
 
   s -> total_result_amount = s -> result_amount;
   s -> result_amount = resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
+  if ( ! is_pet() && primary_role() == ROLE_TANK )
+    collected_data.health_changes.timeline.add( sim -> current_time, - ( s -> result_amount ) );
 
   iteration_heal_taken += s -> result_amount;
 }
