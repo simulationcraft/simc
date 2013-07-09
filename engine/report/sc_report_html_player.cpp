@@ -2291,8 +2291,8 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
       "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
       "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
       "\t\t\t\t\t\t\t\t<td>%.0f / %.1f%%</td>\n"
-      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
-      "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n",
+      "\t\t\t\t\t\t\t\t<td>%.5g</td>\n"
+      "\t\t\t\t\t\t\t\t<td>%.3g / %.2f%%</td>\n",
       cd.dtps.mean(),
       dtps_error,
       cd.dtps.mean() ? dtps_error * 100 / cd.dtps.mean() : 0,

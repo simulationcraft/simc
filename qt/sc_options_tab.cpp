@@ -172,6 +172,7 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
   connect( choice.challenge_mode,     SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.debug,              SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.default_role,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.tmi_boss,           SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.deterministic_rng,  SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.fight_length,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.fight_style,        SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
@@ -231,6 +232,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow( tr( "Armory Region" ),  choice.armory_region = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
   globalsLayout_left -> addRow( tr(   "Armory Spec" ),    choice.armory_spec = createChoice( 2, "active", "inactive" ) );
   globalsLayout_left -> addRow( tr(  "Default Role" ),   choice.default_role = createChoice( 4, "auto", "dps", "heal", "tank" ) );
+  globalsLayout_left -> addRow( tr( "TMI Standard Boss" ),   choice.tmi_boss = createChoice( 4, "custom", "T15H", "T15N", "T15LFR" ) );
   choice.iterations -> setCurrentIndex( 1 );
   choice.fight_length -> setCurrentIndex( 7 );
   choice.fight_variance -> setCurrentIndex( 2 );
@@ -460,6 +462,8 @@ void SC_OptionsTab::decodeOptions( QString encoding )
   if ( i < tokens.count() )
     choice.default_role -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
+    choice.tmi_boss -> setCurrentIndex( tokens[ i++ ].toInt() );
+  if ( i < tokens.count() )
     choice.world_lag -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
     choice.target_level -> setCurrentIndex( tokens[ i++ ].toInt() );
@@ -548,6 +552,7 @@ QString SC_OptionsTab::encodeOptions()
   ss << ' ' << choice.armory_region -> currentIndex();
   ss << ' ' << choice.armory_spec -> currentIndex();
   ss << ' ' << choice.default_role -> currentIndex();
+  ss << ' ' << choice.tmi_boss -> currentIndex();
   ss << ' ' << choice.world_lag -> currentIndex();
   ss << ' ' << choice.target_level -> currentIndex();
   ss << ' ' << choice.aura_delay -> currentIndex();
@@ -667,6 +672,9 @@ void SC_OptionsTab::createToolTips()
 
   choice.default_role -> setToolTip( tr( "Specify the character role during import to ensure correct action priority list." ) );
 
+  choice.tmi_boss -> setToolTip( tr( "Specify boss damage output based on a TMI standard.\n"
+                                     "Leaving at *custom* will use the SimC defaults unless overwritten by the user." ) );
+
   choice.report_pets -> setToolTip( tr( "Specify if pets get reported separately in detail." ) );
 
   choice.print_style -> setToolTip( tr( "Specify html report print style." ) );
@@ -748,13 +756,37 @@ QString SC_OptionsTab::get_globalSettings()
   if ( choice.challenge_mode -> currentIndex() > 0 )
     options += "challenge_mode=1\n";
 
-  static const char* const targetlevel[] = { "3", "2", "1", "0" };
-  options += "target_level+=";
-  options += targetlevel[ choice.target_level -> currentIndex() ];
-  options += "\n";
+  if ( choice.tmi_boss -> currentIndex() != 0 )
+  {
+    // boss damage (
+    int aa_damage [3] = { 900000, 750000, 550000 };
+    int dot_damage [3] = { 25000, 17500, 10000 };
+
+    // boss setup
+    options += "enemy=TMI_Standard_Boss_";
+    options += choice.tmi_boss -> currentText();
+    options += "\n";
+    options += "level=93\n";
+    options += "role=tank\n";
+    options += "position=front\n";
+    options += "actions.precombat=snapshot_stats\n";
+    options += "actions=auto_attack,damage=";
+    options += QString::number( aa_damage[ choice.tmi_boss -> currentIndex() - 1 ] );
+    options += ",attack_speed=1.5\n";
+    options += "actions+=/spell_dot,damage=";
+    options += QString::number( dot_damage[ choice.tmi_boss -> currentIndex() - 1 ] );
+    options += ",tick_time=2,num_ticks=15,aoe_tanks=1,if=!ticking\n";
+  }
+  else
+  {
+    static const char* const targetlevel[] = { "3", "2", "1", "0" };
+    options += "target_level+=";
+    options += targetlevel[ choice.target_level -> currentIndex() ];
+    options += "\n";
+  }
 
   options += "target_race=" + choice.target_race->currentText() + "\n";
-
+  
   options += "default_skill=";
   const char *skill[] = { "1.0", "0.9", "0.75", "0.50" };
   options += skill[ choice.player_skill->currentIndex() ];
@@ -886,7 +918,7 @@ QString SC_OptionsTab::mergeOptions()
   if ( choice.num_target -> currentIndex() >= 1 )
   {
     options += "### Begin enemies ###\n";
-    for ( int i = 1; i <= choice.num_target -> currentIndex() + 1; ++i )
+    for ( int i = 1; i <= choice.num_target -> currentIndex() + ( choice.tmi_boss -> currentIndex() != 0 ? 0 : 1 ); ++i )
     {
       options += "enemy=enemy";
       options += QString::number( i );

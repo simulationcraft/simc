@@ -264,6 +264,7 @@ public:
       QComboBox* armory_region;
       QComboBox* armory_spec;
       QComboBox* default_role;
+      QComboBox* tmi_boss;
       QComboBox* debug;
       QComboBox* report_pets;
       QComboBox* print_style;
