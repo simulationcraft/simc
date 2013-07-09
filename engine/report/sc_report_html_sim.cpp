@@ -889,6 +889,20 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
+  os << "\t\t<div id=\"help-dtps\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>DTPS</h3>\n"
+     << "\t\t\t\t<p>Average damage taken per second per active player duration.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
+  os << "\t\t<div id=\"help-tmi\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>Theck-Meloree Index</h3>\n"
+     << "\t\t\t\t<p>Measure of damage smoothness, calculated over entire fight length.  Lower is better.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
   os << "\t\t<div id=\"help-dynamic-buffs\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>Dynamic Buffs</h3>\n"
