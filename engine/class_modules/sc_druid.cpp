@@ -3549,7 +3549,7 @@ struct astral_communion_t : public druid_spell_t
     {
       num_ticks = 0;
       p() -> buff.astral_insight -> expire();
-      trigger_eclipse_energy_gain( 100 * starting_direction );
+      trigger_eclipse_energy_gain( p() -> buff.astral_insight -> data().effectN( 1 ).base_value() * starting_direction );
       druid_spell_t::execute();
       num_ticks = tmp_ticks;
     }
@@ -4367,9 +4367,6 @@ struct starfire_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-
-    trigger_t16_2pc_balance( false );
-
     // Cast starfire, but solar eclipse was up?
     if ( p() -> buff.eclipse_solar -> check() && ! p() -> buff.celestial_alignment -> check() )
       p() -> proc.wrong_eclipse_starfire -> occur();
@@ -4390,6 +4387,9 @@ struct starfire_t : public druid_spell_t
         }
       }
     }
+
+    trigger_t16_2pc_balance( false );
+
     if ( maybe_ptr( p() -> dbc.ptr ) )
       p() -> trigger_soul_of_the_forest();
   }
@@ -4476,7 +4476,7 @@ struct starsurge_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-
+    
     if ( result_is_hit( execute_state -> result ) )
     {
       p() -> inflight_starsurge = true;
@@ -4506,6 +4506,10 @@ struct starsurge_t : public druid_spell_t
     }
     if ( maybe_ptr( p() -> dbc.ptr ) )
       p() -> trigger_soul_of_the_forest();
+
+    // Starsurge gives a bolt in either Eclipse, and two bolts in CA.
+    trigger_t16_2pc_balance( false );
+    trigger_t16_2pc_balance( true );
   }
 
   virtual void schedule_execute( action_state_t* state = 0 )
@@ -4615,8 +4619,6 @@ struct sunfire_t : public druid_spell_t
       if ( ! p() -> dbc.ptr )
         p() -> buff.dream_of_cenarius -> up();
       druid_spell_t::execute();
-
-      trigger_t16_2pc_balance( true );
     }
 
     virtual void impact( action_state_t* s )
@@ -4691,6 +4693,8 @@ struct sunfire_t : public druid_spell_t
         p() -> buff.lunar_shower -> trigger( 1 );
       }
     }
+
+    trigger_t16_2pc_balance( true );
   }
 
   virtual void impact( action_state_t* s )
@@ -4963,9 +4967,6 @@ struct wrath_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-
-    trigger_t16_2pc_balance( true );
-
     // Cast wrath, but lunar eclipse was up?
     if ( p() -> buff.eclipse_lunar -> check() && ! p() -> buff.celestial_alignment -> check() )
       p() -> proc.wrong_eclipse_wrath -> occur();
@@ -4986,6 +4987,9 @@ struct wrath_t : public druid_spell_t
         }
       }
     }
+
+    trigger_t16_2pc_balance( true );
+
     if ( maybe_ptr( p() -> dbc.ptr ) )
       p() -> trigger_soul_of_the_forest();
   }
