@@ -1722,11 +1722,14 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
     os.tabs() << "<img src=\"" << ri.health_change_chart << "\" alt=\"Health Change Timeline Chart\" />\n";
     os.tabs() << "<img src=\"" << ri.health_change_sliding_chart << "\" alt=\"Health Change Sliding Timeline Chart\" />\n";
 
-    // Tmp Debug Visualization
-    histogram tmi_hist;
-    tmi_hist.create_histogram( p -> collected_data.theck_meloree_index, 50 );
-    std::string dist_chart = chart::distribution( p -> sim -> print_styles, tmi_hist.data(), "TMI", p -> collected_data.theck_meloree_index.mean(), tmi_hist.min(), tmi_hist.max() );
-    os.tabs() << "<img src=\"" << dist_chart << "\" alt=\"Theck meloree distribution Chart\" />\n";
+    if ( ! p -> is_enemy() )
+    {
+      // Tmp Debug Visualization
+      histogram tmi_hist;
+      tmi_hist.create_histogram( p -> collected_data.theck_meloree_index, 50 );
+      std::string dist_chart = chart::distribution( p -> sim -> print_styles, tmi_hist.data(), "TMI", p -> collected_data.theck_meloree_index.mean(), tmi_hist.min(), tmi_hist.max() );
+      os.tabs() << "<img src=\"" << dist_chart << "\" alt=\"Theck meloree distribution Chart\" />\n";
+    }
   }
   --os;
   os.tabs() << "</div>\n";

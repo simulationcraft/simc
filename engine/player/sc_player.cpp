@@ -9431,7 +9431,7 @@ void player_collected_data_t::collect_data( const player_t& p )
     combat_end_resource[ i ].add( p.resources.current[ i ] );
 
   // Health Change Calculations - only needed for tanks
-  if ( ! p.is_pet() && p.primary_role() == ROLE_TANK && ! p.is_enemy() )
+  if ( ! p.is_pet() && p.primary_role() == ROLE_TANK )
   {
     health_changes.merged_timeline.merge( health_changes.timeline );
 
@@ -9439,52 +9439,56 @@ void player_collected_data_t::collect_data( const player_t& p )
     // It performs an exponentially-weighted sum of the moving average of damage intake, with larger
     // damage spikes being weighted more heavily. A formal definition of the metric can be found here:
     // (TODO: insert link when available)
-
-    // define constants and variables
-    int window = 6; // window size, this may become user-definable later
-    double w0  = 6; // normalized window size
-    double hdf = 3; // default health decade factor
-    double tmi = 0; // TMI result
-
-    if ( f_length )
+    if ( ! p.is_enemy() ) // Boss TMI is irrelevant, causes problems in iteration #1 due to lack of 
     {
-      // create sliding average timeline
-      sc_timeline_t sliding_average_tl;
+      // define constants and variables
+      int window = 6; // window size, this may become user-definable later
+      double w0  = 6; // normalized window size
+      double hdf = 3; // default health decade factor
+      double tmi = 0; // TMI result
 
-      // Use half window size of 3, so it's a moving average over 6 seconds
-      health_changes.timeline.build_sliding_average_timeline( sliding_average_tl, window );
-
-      // pull the data out of the sliding average timeline
-      std::vector<double> tl_data = health_changes.timeline.data();  //temporary, for debugging
-      std::vector<double> ma_data = sliding_average_tl.data(); //temporary, for debugging
-      std::vector<double> weighted_value = sliding_average_tl.data();
-
-      for ( size_t j = 0, size = weighted_value.size(); j < size; j++ )
+      if ( f_length )
       {
-        // normalize to the default window size (6-second window)
-        weighted_value[ j ] *= w0;
+        // create sliding average timeline
+        sc_timeline_t sliding_average_tl;
 
-        // normalize by actor health
-        weighted_value[ j ] /= p.resources.initial[ RESOURCE_HEALTH ];
+        // Use half window size of 3, so it's a moving average over 6 seconds
+        health_changes.timeline.build_sliding_average_timeline( sliding_average_tl, window );
 
-        // calculate exponentially-weighted contribution of this data point
-        weighted_value[ j ] = std::exp( 10 * std::log( hdf ) * ( weighted_value[ j ] - 1 ) );
+        // pull the data out of the sliding average timeline
+        std::vector<double> tl_data = health_changes.timeline.data();  //temporary, for debugging
+        std::vector<double> ma_data = sliding_average_tl.data(); //temporary, for debugging
+        std::vector<double> weighted_value = sliding_average_tl.data();
 
-        // add to the TMI total
-        tmi += weighted_value [ j ];
+        for ( size_t j = 0, size = weighted_value.size(); j < size; j++ )
+        {
+          // normalize to the default window size (6-second window)
+          weighted_value[ j ] *= w0;
+
+          // normalize by actor health
+          weighted_value[ j ] /= p.resources.initial[ RESOURCE_HEALTH ];
+
+          // calculate exponentially-weighted contribution of this data point
+          weighted_value[ j ] = std::exp( 10 * std::log( hdf ) * ( weighted_value[ j ] - 1 ) );
+
+          // add to the TMI total
+          tmi += weighted_value [ j ];
+        }
+
+        // normalize for fight length
+        tmi /= f_length;
+
+        // constant multiplicative normalization factors
+        // these are estimates at the moment - will be fine-tuned later
+        tmi *= 10000;
+        tmi *= std::pow( static_cast<double>( window ) , 2 ); // normalizes for window size
+        //std::cout << "TMI(iteration " << p.sim -> current_iteration << "): " << tmi << " sa tl avg: " << sliding_average_tl.mean() << " wl.size(): " << weighted_value.size() << " health: " << p.resources.initial[ RESOURCE_HEALTH ] << "\n";   //temporary, for debugging
       }
-
-      // normalize for fight length
-      tmi /= f_length;
-
-      // constant multiplicative normalization factors
-      // these are estimates at the moment - will be fine-tuned later
-      tmi *= 10000;
-      tmi *= std::pow( static_cast<double>( window ) , 2 ); // normalizes for window size
-      //std::cout << "TMI(iteration " << p.sim -> current_iteration << "): " << tmi << " sa tl avg: " << sliding_average_tl.mean() << " wl.size(): " << weighted_value.size() << " health: " << p.resources.initial[ RESOURCE_HEALTH ] << "\n";   //temporary, for debugging
-    }
     // normalize by fight length and add to TMI data array
     theck_meloree_index.add( tmi );
+    }
+    else
+      theck_meloree_index.add( 0.0 );
   }
 }
 
