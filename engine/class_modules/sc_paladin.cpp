@@ -901,7 +901,7 @@ struct avenging_wrath_t : public paladin_spell_t
 };
 
 // Battle Healer ============================================================
-
+// in 5.4 this entire class can be removed
 struct battle_healer_proc_t : public paladin_heal_t
 {
   battle_healer_proc_t( paladin_t* p ) :
@@ -1576,6 +1576,7 @@ struct flash_of_light_t : public paladin_heal_t
 struct blessing_of_the_guardians_t : public paladin_heal_t
 {
   double accumulated_damage;
+  double healing_multiplier;
 
   blessing_of_the_guardians_t( paladin_t* p ) :
     paladin_heal_t( "blessing_of_the_guardians", p, p -> find_spell( 144581 ) )
@@ -1591,6 +1592,10 @@ struct blessing_of_the_guardians_t : public paladin_heal_t
 
     // initialize accumulator
     accumulated_damage = 0.0;
+
+    // store healing multiplier- need to figure out where this is stored
+    // healing_multiplier = p -> find_spell( 144581 ) -> effectN( 1 ).percent();
+    healing_multiplier = 2.0;
   }
 
   virtual void increment_damage( double amount )
@@ -1600,7 +1605,7 @@ struct blessing_of_the_guardians_t : public paladin_heal_t
 
   virtual void execute()
   {
-    base_td = accumulated_damage / num_ticks;
+    base_td = healing_multiplier * accumulated_damage / num_ticks;
 
     paladin_heal_t::execute();
 
@@ -2297,7 +2302,7 @@ struct sacred_shield_t : public paladin_heal_t
     tick_power_mod = 1.17; // in tooltip, hardcoding
 
     // disable if not talented
-    if ( ! ( p -> talents.sacred_shield -> ok() ) && ! ( p -> dbc.ptr ) )
+    if ( ! ( p -> talents.sacred_shield -> ok() ) )
       background = true;
   }
 
@@ -2354,7 +2359,8 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     weapon_multiplier = 0.0;
 
     // regen is 4% mana
-    proc_regen  = data().effectN( 1 ).trigger() ? data().effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_MANA ) : 0.0;
+    if ( ! p -> dbc.ptr )
+      proc_regen  = data().effectN( 1 ).trigger() ? data().effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_MANA ) : 0.0;
 
     // proc chance is now 20 PPM, spell database info still says 15.
     // Best guess is that the 4th effect describes the additional 5 PPM.
@@ -2368,15 +2374,53 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     if ( rng -> roll( proc_chance ) )
     {
       proc_tracker -> occur();
-      paladin_heal_t::execute();
-      p() -> resource_gain( RESOURCE_MANA,
-                            p() -> resources.base[ RESOURCE_MANA ] * proc_regen,
-                            p() -> gains.seal_of_insight );
+
+      // 5.4 version of Battle Healer glyph makes SoI a smart heal
+      if ( p() -> glyphs.battle_healer -> ok() && p() -> dbc.ptr )
+      {        
+        target = find_lowest_target();
+        if ( target ) // If we are alone and no target is found, nothing happens - test on PTR
+          paladin_heal_t::execute();
+      }
+      else
+        paladin_heal_t::execute();
+
+      // as of 5.4, mana gain is removed
+      if ( ! p() -> dbc.ptr )
+        p() -> resource_gain( RESOURCE_MANA,
+                              p() -> resources.base[ RESOURCE_MANA ] * proc_regen,
+                              p() -> gains.seal_of_insight );
     }
     else
     {
       update_ready();
     }
+  }
+
+private:
+  // Get the lowest target except ourself
+  player_t* find_lowest_target()
+  {
+    // Ignoring range for the time being
+    double lowest_health_pct_found = 100.1;
+    player_t* lowest_player_found = nullptr;
+
+    for ( size_t i = 0, size = sim -> player_no_pet_list.size(); i < size; i++ )
+    {
+      player_t* p = sim -> player_no_pet_list[ i ];
+
+      if ( player == p ) // as long as they aren't the paladin
+        continue;
+
+      // check their health against the current lowest
+      if ( p -> health_percentage() < lowest_health_pct_found )
+      {
+        // if this player is lower, make them the current lowest
+        lowest_health_pct_found = p -> health_percentage();
+        lowest_player_found = p;
+      }
+    }
+    return lowest_player_found;
   }
 };
 
@@ -2617,7 +2661,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
         p() -> active_seal_of_justice_aoe_proc -> execute();
 
       // battle healer
-      if ( trigger_battle_healer && p() -> active.battle_healer_proc )
+      if ( trigger_battle_healer && p() -> active.battle_healer_proc && ! p() -> dbc.ptr )
       {
         p() -> active.battle_healer_proc -> trigger( *execute_state );
       }
@@ -2790,7 +2834,8 @@ struct crusader_strike_t : public paladin_melee_attack_t
       trigger_hand_of_light( s );
 
       // Trigger Grand Crusader procs
-      p() -> trigger_grand_crusader();
+      if ( ! p() -> dbc.ptr )
+        p() -> trigger_grand_crusader();
 
       // Check for T15 Ret 4-piece bonus proc
       if ( p() -> set_bonus.tier15_4pc_melee() )
@@ -3017,7 +3062,8 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
       trigger_hand_of_light( s );
 
       // Trigger Grand Crusader procs
-      p() -> trigger_grand_crusader();
+      if ( ! p() -> dbc.ptr )
+        p() -> trigger_grand_crusader();
 
       // Mists of Pandaria: Hammer of the Righteous triggers Weakened Blows
       if ( ! sim -> overrides.weakened_blows )
