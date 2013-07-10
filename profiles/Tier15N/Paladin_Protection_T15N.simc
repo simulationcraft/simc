@@ -31,15 +31,20 @@ actions=/auto_attack
 actions+=//use_item,name=jade_warlord_figurine
 actions+=/arcane_torrent
 actions+=/avenging_wrath
-actions+=/guardian_of_ancient_kings,if=health.pct<=30
+actions+=/holy_avenger,if=talent.holy_avenger.enabled
 actions+=/shield_of_the_righteous,if=holy_power>=3
 actions+=/hammer_of_the_righteous,if=target.debuff.weakened_blows.down
 actions+=/crusader_strike
-actions+=/judgment
-actions+=/avengers_shield
-actions+=/hammer_of_wrath
-actions+=/holy_wrath
-actions+=/consecration,if=target.debuff.flying.down&!ticking
+actions+=/judgment,if=cooldown.crusader_strike.remains>=0.5
+actions+=/avengers_shield,if=cooldown.crusader_strike.remains>=0.5
+actions+=/sacred_shield,if=talent.sacred_shield.enabled&((target.dot.sacred_shield.remains<5)&(cooldown.crusader_strike.remains>=0.5))
+actions+=/hammer_of_wrath,if=cooldown.crusader_strike.remains>=0.5
+actions+=/execution_sentence,if=talent.execution_sentence.enabled&cooldown.crusader_strike.remains>=0.5
+actions+=/lights_hammer,if=talent.lights_hammer.enabled&cooldown.crusader_strike.remains>=0.5
+actions+=/holy_prism,if=talent.holy_prism.enabled&cooldown.crusader_strike.remains>=0.5
+actions+=/holy_wrath,if=cooldown.crusader_strike.remains>=0.5
+actions+=/consecration,if=(target.debuff.flying.down&!ticking)&(cooldown.crusader_strike.remains>=0.5)
+actions+=/sacred_shield,if=talent.sacred_shield.enabled&cooldown.crusader_strike.remains>=0.5
 
 head=lightning_emperors_faceguard,id=95292,stats=4861armor_1318str_2338sta_629exp_1104mastery,gems=austere_primal_320haste_180parry,reforge=mastery_haste
 neck=necklace_of_the_terracotta_vanquisher,id=95205,stats=788str_1302sta_581hit_468mastery,gems=160exp_160haste_60exp,reforge=hit_haste
@@ -71,4 +76,3 @@ off_hand=greatshield_of_the_gloaming,id=94945,stats=19188armor_788str_1302sta_54
 # meta_gem=austere_primal
 # tier15_2pc_tank=1
 # tier15_4pc_tank=1
-# main_hand=worldbreakers_stormscythe,weapon=axe_2.6speed_7684min_14272max,enchant=windsong
