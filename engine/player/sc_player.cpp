@@ -3530,8 +3530,6 @@ void player_t::combat_end()
   double f_length = iteration_fight_length.total_seconds();
   double w_time = iteration_waiting_time.total_seconds();
 
-  collect_resource_timeline_information();
-
   if ( ready_type == READY_POLL && sim -> auto_ready_trigger )
     if ( ! is_pet() && ! is_enemy() )
       if ( f_length > 0 && ( w_time / f_length ) > 0.25 )
