@@ -4942,7 +4942,7 @@ void player_t::assess_damage( school_e school,
 
   // collect data for timelines
   collected_data.timeline_dmg_taken.add( sim -> current_time, s -> result_amount );
-  if ( ! is_pet() && primary_role() == ROLE_TANK )
+  if ( ! is_pet() && role == ROLE_TANK )
     collected_data.health_changes.timeline.add( sim -> current_time, s -> result_amount );
 
   double actual_amount = 0;
@@ -5053,7 +5053,7 @@ void player_t::assess_heal( school_e, dmg_e, heal_state_t* s )
 
   s -> total_result_amount = s -> result_amount;
   s -> result_amount = resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
-  if ( ! is_pet() && primary_role() == ROLE_TANK )
+  if ( ! is_pet() && role == ROLE_TANK )
     collected_data.health_changes.timeline.add( sim -> current_time, - ( s -> result_amount ) );
 
   iteration_heal_taken += s -> result_amount;
@@ -9431,7 +9431,7 @@ void player_collected_data_t::collect_data( const player_t& p )
     combat_end_resource[ i ].add( p.resources.current[ i ] );
 
   // Health Change Calculations - only needed for tanks
-  if ( ! p.is_pet() && !p.is_enemy() && p.primary_role() == ROLE_TANK )
+  if ( ! p.is_pet() && p.primary_role() == ROLE_TANK && ! p.is_enemy() )
   {
     health_changes.merged_timeline.merge( health_changes.timeline );
 

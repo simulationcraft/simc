@@ -753,6 +753,12 @@ struct resource_timeline_collect_event_t : public event_t
 
       p -> collect_resource_timeline_information();
     }
+  // However, enemies do have health
+  for ( size_t i = 0, actors = sim.target_non_sleeping_list.size(); i < actors; i++ )
+  {    
+      player_t* p = sim.target_non_sleeping_list[ i ];
+      p -> collect_resource_timeline_information();
+  }
 
     new ( sim ) resource_timeline_collect_event_t( sim );
   }

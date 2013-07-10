@@ -2224,13 +2224,6 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">HPS Error</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">HPS Range</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpr\" class=\"help\">HPR</a></th>\n";
-  // Tank
-  if ( p -> primary_role() == ROLE_TANK )
-    os << "\t\t\t\t\t\t\t\t<th><a href=\"#help-dtps\" class=\"help\">DTPS</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">DTPS Error</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">DTPS Range</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmi\" class=\"help\">TMI</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">TMI Error</a></th>\n";
    
 
   os << "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-out\" class=\"help\">RPS Out</a></th>\n"
@@ -2281,27 +2274,6 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
       cd.hps.mean() ? range / cd.hps.mean() * 100.0 : 0,
       p -> hpr );
   }
-  // Tank
-  if ( p -> primary_role() == ROLE_TANK )
-  {
-    double dtps_range = ( cd.dtps.percentile( 0.95 ) - cd.dtps.percentile( 0.05 ) ) / 2;
-    double dtps_error = sim_t::distribution_mean_error( *sim, p -> collected_data.dtps );
-    double tmi_error = sim_t::distribution_mean_error( *sim, p -> collected_data.theck_meloree_index );
-    os.printf(
-      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
-      "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t<td>%.0f / %.1f%%</td>\n"
-      "\t\t\t\t\t\t\t\t<td>%.5g</td>\n"
-      "\t\t\t\t\t\t\t\t<td>%.3g / %.2f%%</td>\n",
-      cd.dtps.mean(),
-      dtps_error,
-      cd.dtps.mean() ? dtps_error * 100 / cd.dtps.mean() : 0,
-      dtps_range,
-      cd.dtps.mean() ? dtps_range / cd.dtps.mean() * 100.0 : 0,
-      cd.theck_meloree_index.mean(),
-      tmi_error,
-      cd.theck_meloree_index.mean() ? tmi_error * 100 / cd.theck_meloree_index.mean() : 0 );
-  }
   os.printf(
     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
     "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
@@ -2319,6 +2291,47 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
     cd.fight_length.mean() ? 60.0 * cd.executed_foreground_actions.mean() / cd.fight_length.mean() : 0,
     sim -> simulation_length.mean() ? cd.fight_length.mean() / sim -> simulation_length.mean() * 100.0 : 0,
     p -> initial.skill * 100.0 );
+  
+  // Tank
+  if ( p -> primary_role() == ROLE_TANK && p -> type != ENEMY )
+  {
+    os << "\t\t\t\t\t\t<table class=\"sc mt\">\n"
+       << "\t\t\t\t\t\t\t<tr>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-dtps\" class=\"help\">DTPS</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">DTPS Error</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">DTPS Range</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmi\" class=\"help\">TMI</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">TMI Error</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">TMI Range</a></th>\n"
+       << "\t\t\t\t\t\t\t</tr>\n"
+       << "\t\t\t\t\t\t\t<tr>\n";
+
+    double dtps_range = ( cd.dtps.percentile( 0.95 ) - cd.dtps.percentile( 0.05 ) ) / 2;
+    double dtps_error = sim_t::distribution_mean_error( *sim, p -> collected_data.dtps );
+    double tmi_error = sim_t::distribution_mean_error( *sim, p -> collected_data.theck_meloree_index );
+    double tmi_range = ( cd.theck_meloree_index.percentile( 0.95 ) - cd.theck_meloree_index.percentile( 0.05 ) ) / 2;
+    os.printf(
+      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
+      "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
+      "\t\t\t\t\t\t\t\t<td>%.0f / %.1f%%</td>\n"
+      "\t\t\t\t\t\t\t\t<td>%.5g</td>\n"
+      "\t\t\t\t\t\t\t\t<td>%.3g / %.2f%%</td>\n"
+      "\t\t\t\t\t\t\t\t<td>%.5g / %.1f%%</td>\n",
+      cd.dtps.mean(),
+      dtps_error,
+      cd.dtps.mean() ? dtps_error * 100 / cd.dtps.mean() : 0,
+      dtps_range,
+      cd.dtps.mean() ? dtps_range / cd.dtps.mean() * 100.0 : 0,
+      cd.theck_meloree_index.mean(),
+      tmi_error,
+      cd.theck_meloree_index.mean() ? tmi_error * 100 / cd.theck_meloree_index.mean() : 0 ),
+      tmi_range;
+
+    
+    os << "\t\t\t\t\t\t\t</tr>\n"
+       << "\t\t\t\t\t\t</table>\n";
+  }
+
 
   // Spec and gear
   if ( ! p -> is_pet() )
