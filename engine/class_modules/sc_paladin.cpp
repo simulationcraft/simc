@@ -1593,9 +1593,8 @@ struct blessing_of_the_guardians_t : public paladin_heal_t
     // initialize accumulator
     accumulated_damage = 0.0;
 
-    // store healing multiplier- need to figure out where this is stored
-    // healing_multiplier = p -> find_spell( 144581 ) -> effectN( 1 ).percent();
-    healing_multiplier = 2.0;
+    // store healing multiplier
+    healing_multiplier = p -> find_spell( 144580 ) -> effectN( 1 ).percent();
   }
 
   virtual void increment_damage( double amount )
