@@ -2321,14 +2321,11 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
       "\t\t\t\t\t\t\t\t<td>%.3g / %.2f%%</td>\n"
       "\t\t\t\t\t\t\t\t<td>%.5g / %.1f%%</td>\n",
       cd.dtps.mean(),
-      dtps_error,
-      cd.dtps.mean() ? dtps_error * 100 / cd.dtps.mean() : 0,
-      dtps_range,
-      cd.dtps.mean() ? dtps_range / cd.dtps.mean() * 100.0 : 0,
+      dtps_error, cd.dtps.mean() ? dtps_error * 100 / cd.dtps.mean() : 0,
+      dtps_range, cd.dtps.mean() ? dtps_range / cd.dtps.mean() * 100.0 : 0,
       cd.theck_meloree_index.mean(),
-      tmi_error,
-      cd.theck_meloree_index.mean() ? tmi_error * 100 / cd.theck_meloree_index.mean() : 0 ),
-      tmi_range;
+      tmi_error, cd.theck_meloree_index.mean() ? tmi_error * 100.0 / cd.theck_meloree_index.mean() : 0.0,
+      tmi_range, cd.theck_meloree_index.mean() ? tmi_range * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
 
     
     os << "\t\t\t\t\t\t\t</tr>\n"
