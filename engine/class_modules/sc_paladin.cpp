@@ -203,6 +203,7 @@ public:
     const spell_data_t* guardian_of_ancient_kings_ret;
     const spell_data_t* holy_light;
     const spell_data_t* glyph_of_word_of_glory;
+    const spell_data_t* sanctified_wrath; // needed to pull out spec-specific effects
   } spells;
 
   // Talents
@@ -320,6 +321,7 @@ public:
   virtual double    composite_crit_avoidance();
   virtual double    composite_dodge();
   virtual void      assess_damage( school_e, dmg_e, action_state_t* );
+  virtual void      assess_heal( school_e, dmg_e, heal_state_t* );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   virtual void      invalidate_cache( cache_e );
   virtual void      create_options();
@@ -1988,13 +1990,15 @@ struct holy_radiance_t : public paladin_heal_t
 // Holy Shock ===============================================================
 
 // TODO: fix the fugly hack
+// TODO: merge into one spell that selects action based on target type
 struct holy_shock_t : public paladin_spell_t
 {
   double cooldown_mult;
+  double crit_increase;
 
   holy_shock_t( paladin_t* p, const std::string& options_str )
     : paladin_spell_t( "holy_shock", p, p -> find_class_spell( "Holy Shock" ) ),
-      cooldown_mult( 1.0 )
+      cooldown_mult( 1.0 ), crit_increase( 0.0 )
   {
     parse_options( NULL, options_str );
 
@@ -2006,8 +2010,22 @@ struct holy_shock_t : public paladin_spell_t
 
     if ( ( p -> specialization() == PALADIN_HOLY ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
     {
-      cooldown_mult = p -> find_talent_spell( "Sanctified Wrath" ) -> effectN( 1 ).percent();
+      // the actual values of these are stored in spell 114232 rather than the spell returned by find_talent_spell
+      cooldown_mult = p -> spells.sanctified_wrath -> effectN( 1 ).percent();
+      crit_increase = p -> spells.sanctified_wrath -> effectN( 5 ).percent();
     }
+  }
+
+  virtual double composite_crit()
+  {
+    double cc = paladin_spell_t::composite_crit();
+
+    if ( p() -> buffs.avenging_wrath -> check() && p() -> dbc.ptr )
+    {
+      cc += crit_increase;
+    }
+
+    return cc;
   }
 
   virtual void execute()
@@ -2043,6 +2061,8 @@ struct holy_shock_heal_t : public paladin_heal_t
 {
   timespan_t cd_duration;
   const spell_data_t* scaling_data;
+  double cooldown_mult;
+  double crit_increase;
 
   holy_shock_heal_t( paladin_t* p, const std::string& options_str ) :
     paladin_heal_t( "holy_shock_heal", p, p -> find_spell( 20473 ) ), cd_duration( timespan_t::zero() ),
@@ -2056,6 +2076,25 @@ struct holy_shock_heal_t : public paladin_heal_t
     parse_spell_data( *scaling_data );
 
     cd_duration = cooldown -> duration;
+
+    if ( ( p -> specialization() == PALADIN_HOLY ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
+    {
+      // the actual values of these are stored in spell 114232 rather than the spell returned by find_talent_spell
+      cooldown_mult = p -> spells.sanctified_wrath -> effectN( 1 ).percent();
+      crit_increase = p -> spells.sanctified_wrath -> effectN( 5 ).percent();
+    }
+  }
+
+  virtual double composite_crit()
+  {
+    double cc = paladin_heal_t::composite_crit();
+
+    if ( p() -> buffs.avenging_wrath -> check() && p() -> dbc.ptr )
+    {
+      cc += crit_increase;
+    }
+
+    return cc;
   }
 
   virtual void execute()
@@ -2081,6 +2120,15 @@ struct holy_shock_heal_t : public paladin_heal_t
 
     if ( result == RESULT_CRIT )
       p() -> buffs.infusion_of_light -> trigger();
+  }
+
+  virtual void update_ready( timespan_t cd_override )
+  {
+    cd_override = cooldown -> duration;
+    if ( p() -> buffs.avenging_wrath -> up() )
+      cd_override *= cooldown_mult;
+
+    paladin_heal_t::update_ready( cd_override );
   }
 };
 
@@ -3151,7 +3199,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     // define cooldown multiplier for use with Sanctified Wrath talent for retribution only
     if ( ( p -> specialization() == PALADIN_RETRIBUTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
     {
-      cooldown_mult = p -> find_talent_spell( "Sanctified Wrath" ) -> effectN( 1 ).percent();
+      cooldown_mult = p -> spells.sanctified_wrath -> effectN( 3 ).percent();
     }
   }
 
@@ -3293,7 +3341,7 @@ struct judgment_t : public paladin_melee_attack_t
     if ( ( p -> specialization() == PALADIN_PROTECTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
     {
       // for some reason, this is stored in spell 114232 instead of 53376 (which is returned by find_talent_spell)
-      cooldown_mult = 1.0 + p -> find_spell( 114232 ) -> effectN( 2 ).percent();
+      cooldown_mult = 1.0 + p -> spells.sanctified_wrath -> effectN( 2 ).percent();
     }
 
     // damage multiplier from T14 Retribution 4-piece bonus
@@ -4888,6 +4936,7 @@ void paladin_t::init_spells()
   // Spells
   spells.guardian_of_ancient_kings_ret = find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION );
   spells.holy_light                    = find_specialization_spell( "Holy Light" );
+  spells.sanctified_wrath              = find_spell( 114232 );  // spec-specific effects for Sanctified Wrath
 
   // Masteries
   passives.divine_bulwark         = find_mastery_spell( PALADIN_PROTECTION );
@@ -5399,6 +5448,19 @@ void paladin_t::assess_damage( school_e school,
   {
     active.blessing_of_the_guardians -> increment_damage( s -> result_mitigated ); // uses post-mitigation, pre-absorb value (tested 7/10/13 PTR)
   }
+}
+
+// paladin_t::assess_heal ===================================================
+
+void paladin_t::assess_heal( school_e school, dmg_e dmg_type, heal_state_t* s )
+{
+  // 20% healing increase due to Sanctified Wrath during Avenging Wrath
+  if ( talents.sanctified_wrath  -> ok() && buffs.avenging_wrath -> check() )
+  {
+    s -> result_amount *= 1.0 + spells.sanctified_wrath  -> effectN( 4 ).percent();
+  }
+
+  player_t::assess_heal( school, dmg_type, s );
 }
 
 // paladin_t::create_options ================================================
