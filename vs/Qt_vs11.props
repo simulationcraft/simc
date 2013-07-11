@@ -2,14 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
-    <QTDIR>C:\Qt\Qt5.0.2\5.0.2\msvc2012_64</QTDIR>
+    <QTDIR_x64>C:\Qt\Qt5.1.0\5.1.0\msvc2012_64</QTDIR_x64>
+    <QTDIR_x86>C:\Qt\Qt5.1.0\5.1.0\msvc2012</QTDIR_x86>
   </PropertyGroup>
-  <PropertyGroup />
-  <ItemDefinitionGroup />
-  <ItemGroup>
-    <BuildMacro Include="QTDIR">
-      <Value>$(QTDIR)</Value>
-      <EnvironmentVariable>true</EnvironmentVariable>
-    </BuildMacro>
-  </ItemGroup>
 </Project>

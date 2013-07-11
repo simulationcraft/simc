@@ -2326,7 +2326,6 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
       cd.theck_meloree_index.mean(),
       tmi_error, cd.theck_meloree_index.mean() ? tmi_error * 100.0 / cd.theck_meloree_index.mean() : 0.0,
       tmi_range, cd.theck_meloree_index.mean() ? tmi_range * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
-
     
     os << "\t\t\t\t\t\t\t</tr>\n"
        << "\t\t\t\t\t\t</table>\n";
