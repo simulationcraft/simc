@@ -67,14 +67,23 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <TargetName>SimulationCraft</TargetName>
-    <IntDir>$(SolutionDir)int\gui\$(Platform)\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)</OutDir>
+    <IntDir>int_gui\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(PlatformShortName)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IntDir>$(SolutionDir)int\gui\$(Configuration)\</IntDir>
-    <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
+    <IntDir>int_gui\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(PlatformShortName)\$(Configuration)\</OutDir>
   </PropertyGroup>
-  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)bin\$(PlatformShortName)\$(Configuration)\</OutDir>
+    <IntDir>int_gui\$(Platform)\$(Configuration)\</IntDir>
+    <TargetName>SimulationCraft</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)bin\$(PlatformShortName)\$(Configuration)\</OutDir>
+    <IntDir>int_gui\$(Platform)\$(Configuration)\</IntDir>
+    <TargetName>SimulationCraft</TargetName>
+  </PropertyGroup>
   <!-- Set Correct QT PATH -->
   <PropertyGroup Label="UserMacros" Condition="'$(Platform)'=='x64'">
     <QTDIR>$(QTDIR_x64)</QTDIR>
@@ -82,7 +91,6 @@
   <PropertyGroup Label="UserMacros" Condition="'$(Platform)'=='Win32'">
     <QTDIR>$(QTDIR_x86)</QTDIR>
   </PropertyGroup>
-    
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
       <WarningLevel>0</WarningLevel>
@@ -129,7 +137,6 @@
       </LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
-  
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
       <WarningLevel>0</WarningLevel>
@@ -169,10 +176,8 @@
       <SubSystem>Windows</SubSystem>
       <LinkTimeCodeGeneration>
       </LinkTimeCodeGeneration>
-      <OutputFile>$(TargetName)$(TargetExt)</OutputFile>
     </Link>
   </ItemDefinitionGroup>
-  
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
       <WarningLevel>0</WarningLevel>
@@ -219,7 +224,6 @@
       </LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
-  
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
       <WarningLevel>0</WarningLevel>
@@ -259,10 +263,8 @@
       <SubSystem>Windows</SubSystem>
       <LinkTimeCodeGeneration>
       </LinkTimeCodeGeneration>
-      <OutputFile>$(TargetName)$(TargetExt)</OutputFile>
     </Link>
   </ItemDefinitionGroup>
-  
   <Import Project="simc_engine.props" />
   <Import Project="simc_gui.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

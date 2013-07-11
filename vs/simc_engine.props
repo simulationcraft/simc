@@ -12,7 +12,8 @@ Requires Precompiled Header enabled for simulationcraft.hpp
     <ClInclude Include="..\engine\simulationcraft.hpp" />
     <ClInclude Include="..\engine\sc_generic.hpp" />
     <ClInclude Include="..\engine\sc_timespan.hpp" />
-    <ClInclude Include="..\engine\sc_sample_data.hpp" />
+    <ClInclude Include="..\engine\util\sample_data.hpp" />
+    <ClInclude Include="..\engine\util\timeline.hpp" />
     <ClInclude Include="..\engine\util\rng.hpp" />
     <ClInclude Include="..\engine\report\sc_report.hpp" />
     <ClInclude Include="..\engine\utf8.h" />
