@@ -1676,7 +1676,7 @@ void sim_t::analyze()
   for ( size_t i = 0; i < num_timelines; i++ )
   {
     int last = ( int ) floor( simulation_length.data()[ i ] );
-    assert( last < divisor_timeline.size() ); // We created it with max length
+    assert( last < (int) divisor_timeline.size() ); // We created it with max length
     for ( int j = 0; j <= last; j++ ) divisor_timeline[ j ] += 1;
   }
 
