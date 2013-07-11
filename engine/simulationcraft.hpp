@@ -17,9 +17,15 @@
 // Simplified access to compiler version
 #if defined( __GNUC__ )
 #  define SC_GCC ( __GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__ )
+#  if ( SC_GCC < 40400 )
+#    error "GCC below 4.4 not supported"
+#  endif
 #endif
 #if defined( __clang__ )
 #  define SC_CLANG ( __clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__ )
+#  if ( SC_CLANG < 20900 )
+#    error "CLANG below 2.9 not supported"
+#  endif
 #endif
 #if defined( _MSC_VER )
 #  define SC_VS ( _MSC_VER / 100 - 6 )
@@ -147,10 +153,6 @@ namespace std {using namespace tr1; }
 #  if !defined(CLOCKS_PER_SEC)
 #    define CLOCKS_PER_SEC 1000000
 #  endif
-#endif
-
-#if ( ! defined(_MSC_VER) || _MSC_VER < 1600 ) && __cplusplus < 201103L && ! defined(__GXX_EXPERIMENTAL_CXX0X__)
-#define static_assert( condition, message )
 #endif
 
 #if defined(__GNUC__)
@@ -2878,7 +2880,7 @@ struct reforge_plot_t
 
   reforge_plot_t( sim_t* s );
 
-  void generate_stat_mods( std::vector<std::vector<int> > &stat_mods,
+  void generate_stat_mods( std::vector<std::vector<int>> &stat_mods,
                            const std::vector<stat_e> &stat_indices,
                            int cur_mod_stat,
                            std::vector<int> cur_stat_mods );
@@ -3801,7 +3803,7 @@ struct player_collected_data_t
 
     action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p );
   };
-  auto_dispose< std::vector<action_sequence_data_t*> > action_sequence;
+  auto_dispose< std::vector<action_sequence_data_t*>> action_sequence;
 
   player_collected_data_t( const std::string& player_name, sim_t& );
   void reserve_memory( const player_t& );
@@ -4089,7 +4091,7 @@ struct player_t : public actor_t
   auto_dispose< std::vector<cooldown_t*> > cooldown_list;
   auto_dispose< std::vector<rng_t*> > rng_list;
   std::array< std::vector<plot_data_t>, STAT_MAX > dps_plot_data;
-  std::vector<std::vector<plot_data_t> > reforge_plot_data;
+  std::vector<std::vector<plot_data_t>> reforge_plot_data;
 
   // All Data collected during / end of combat
   player_collected_data_t collected_data;

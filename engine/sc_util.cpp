@@ -2119,7 +2119,8 @@ void util::string_strip_quotes( std::string& str )
   std::string::size_type pos = str.find( '"' );
   if ( pos == str.npos ) return;
 
-  std::string::iterator dst = str.begin() + pos, src = dst;
+  auto dst = str.begin() + pos;
+  auto src = dst;
   while ( ++src != str.end() )
   {
     if ( *src != '"' )
@@ -2510,7 +2511,7 @@ void util::tokenize( std::string& name )
 
   // remove leading '_' or '+'
   std::string::size_type n = name.find_first_not_of( "_+" );
-  std::string::iterator it = name.erase( name.begin(), name.begin() + n );
+  auto it = name.erase( name.begin(), name.begin() + n );
 
   for ( ; it != name.end(); )
   {
@@ -2549,19 +2550,19 @@ std::string util::inverse_tokenize( const std::string& name )
 {
   std::string s = name;
 
-  for ( std::string::iterator i = s.begin(); i != s.end(); ++i )
+  for ( auto it = s.begin(); it != s.end(); ++it )
   {
-    if ( *i == '_' )
+    if ( *it == '_' )
     {
-      *i = ' ';
-      ++i;
-      if ( i == s.end() )
+      *it = ' ';
+      ++it;
+      if ( it == s.end() )
         break;
-      *i = std::toupper( *i );
+      *it = std::toupper( *it );
     }
-    else if ( i == s.begin() )
+    else if ( it == s.begin() )
     {
-      *i = std::toupper( *i );
+      *it = std::toupper( *it );
     }
   }
 

@@ -4808,7 +4808,7 @@ void priest_t::shadowy_apparitions_t::trigger( action_state_t& s )
  */
 void priest_t::shadowy_apparitions_t::tidy_up( actions::spells::shadowy_apparition_spell_t& s )
 {
-  std::vector<sa_spell*>::iterator it = range::find( apparitions_active, &s );
+  auto it = range::find( apparitions_active, &s );
   assert( it != apparitions_active.end() );
   apparitions_active.erase( it );
   apparitions_free.push_back( &s );

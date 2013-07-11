@@ -2295,7 +2295,7 @@ bool action_t::has_travel_events_for( const player_t* target ) const
 
 void action_t::remove_travel_event( travel_event_t* e )
 {
-  std::vector<travel_event_t*>::iterator pos = range::find( travel_events, e );
+  auto pos = range::find( travel_events, e );
   if ( pos != travel_events.end() )
     erase_unordered( travel_events, pos );
 }

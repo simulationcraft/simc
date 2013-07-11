@@ -314,7 +314,7 @@ xml_node_t* xml_node_t::get( sim_t*             sim,
 {
   auto_lock_t lock( xml_mutex );
 
-  xml_cache_t::iterator p = xml_cache.find( url );
+  auto p = xml_cache.find( url );
   if ( p != xml_cache.end() && ( caching != cache::CURRENT || p -> second.era >= cache::era() ) )
     return p -> second.root;
 

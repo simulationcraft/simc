@@ -481,10 +481,9 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
     if ( sim -> dbc.is_specialization_ability( spell -> id() ) )
     {
       std::vector<specialization_e> spec_list;
-      std::vector<specialization_e>::iterator iter;
       sim -> dbc.ability_specialization( spell -> id(), spec_list );
 
-      for ( iter = spec_list.begin(); iter != spec_list.end(); ++iter )
+      for ( auto iter = spec_list.begin(); iter != spec_list.end(); ++iter )
       {
         if ( *iter == PET_FEROCITY || *iter == PET_CUNNING || *iter == PET_TENACITY )
           pet_ability = true;
@@ -962,10 +961,9 @@ void spell_info::to_xml( sim_t* sim, const spell_data_t* spell, xml_node_t* pare
     if ( sim -> dbc.is_specialization_ability( spell -> id() ) )
     {
       std::vector<specialization_e> spec_list;
-      std::vector<specialization_e>::iterator iter;
       sim -> dbc.ability_specialization( spell -> id(), spec_list );
 
-      for ( iter = spec_list.begin(); iter != spec_list.end(); ++iter )
+      for ( auto iter = spec_list.begin(); iter != spec_list.end(); ++iter )
       {
         xml_node_t* spec_node = node -> add_child( "spec" );
         spec_node -> add_parm( "id", *iter );

@@ -1521,7 +1521,7 @@ std::string chart::reforge_dps( player_t* p )
   if ( ! p )
     return std::string();
 
-  std::vector< std::vector<plot_data_t> >& pd = p -> reforge_plot_data;
+  std::vector<std::vector<plot_data_t>>& pd = p -> reforge_plot_data;
   if ( pd.empty() )
     return std::string();
 
@@ -1662,7 +1662,7 @@ std::string chart::reforge_dps( player_t* p )
   {
     if ( max_dps == 0 ) return 0;
 
-    std::vector<std::vector<double> > triangle_points;
+    std::vector<std::vector<double>> triangle_points;
     std::vector< std::string > colors;
     for ( int i = 0; i < ( int ) pd.size(); i++ )
     {

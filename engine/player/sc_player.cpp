@@ -1039,7 +1039,7 @@ void player_t::init()
   get_action_priority_list( "precombat", "Executed before combat begins. Accepts non-harmful actions only." ) -> used = true;
   get_action_priority_list( "default", "Executed every time the actor is available." );
 
-  for ( std::map<std::string, std::string>::iterator it = alist_map.begin(), end = alist_map.end(); it != end; ++it )
+  for ( auto it = alist_map.begin(), end = alist_map.end(); it != end; ++it )
   {
     if ( it -> first == "default" )
       sim -> errorf( "Ignoring action list named default." );
@@ -6885,7 +6885,7 @@ void player_t::replace_spells()
       if ( s -> replace_spell_id() )
       {
         // Found a spell that might need replacing. Check to see if we have that glyph activated
-        for ( std::vector<const spell_data_t*>::iterator it = glyph_list.begin(); it != glyph_list.end(); ++it )
+        for ( auto it = glyph_list.begin(); it != glyph_list.end(); ++it )
         {
           assert( *it );
           if ( ( *it ) -> id() == id )

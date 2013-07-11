@@ -1462,7 +1462,7 @@ void absorb_buff_t::expire_override()
 {
   buff_t::expire_override();
 
-  std::vector<absorb_buff_t*>::iterator it = range::find( player -> absorb_buff_list, this );
+  auto it = range::find( player -> absorb_buff_list, this );
   if ( it != player -> absorb_buff_list.end() )
     player -> absorb_buff_list.erase( it );
 }
