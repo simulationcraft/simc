@@ -700,7 +700,7 @@ double action_t::crit_chance( double crit, int /* delta_level */ )
 
 double action_t::total_crit_bonus()
 {
-  double crit_multiplier_buffed = crit_multiplier * ( 1.0 + player -> buffs.skull_banner -> value() );
+  double crit_multiplier_buffed = crit_multiplier * composite_player_critical_multiplier();
   double bonus = ( ( 1.0 + crit_bonus ) * crit_multiplier_buffed - 1.0 ) * crit_bonus_multiplier;
 
   if ( sim -> debug )

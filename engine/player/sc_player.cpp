@@ -2775,6 +2775,14 @@ void player_t::create_buffs()
     buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );
 
     buffs.stormlash                 = new stormlash_buff_t( this, find_spell( 120687 ) );
+
+
+    buffs.amplified = buff_creator_t( this, "amplified" )
+                      .spell( find_spell( 146046 ) )
+                      .add_invalidate( CACHE_MASTERY )
+                      .add_invalidate( CACHE_HASTE )
+                      /* .add_invalidate( CACHE_PLAYER_CRITICAL_DAMAGE ) */
+                      /* .add_invalidate( CACHE_PLAYER_CRITICAL_HEALING ) */;
   }
 
   buffs.courageous_primal_diamond_lucidity = buff_creator_t( this, "lucidity" )
@@ -2864,6 +2872,9 @@ double player_t::composite_melee_haste()
     {
       h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
     }
+
+    if ( buffs.amplified -> check() )
+      h /= 1.0 + buffs.amplified -> data().effectN( 1 ).average( this );
   }
 
   return h;
@@ -3117,6 +3128,9 @@ double player_t::composite_spell_haste()
     {
       h *= 1.0 / ( 1.0 + 0.01 );
     }
+
+    if ( buffs.amplified -> check() )
+      h /= 1.0 + buffs.amplified -> data().effectN( 2 ).average( this );
   }
 
   return h;
@@ -3205,6 +3219,12 @@ double player_t::composite_mastery()
   if ( ! is_pet() && ! is_enemy() && sim -> auras.mastery -> check() )
     m += sim -> auras.mastery -> value() / current.rating.mastery;
 
+  if ( ! is_pet() && ! is_enemy() )
+  {
+    if ( buffs.amplified -> check() )
+      m *= 1.0 + buffs.amplified -> data().effectN( 2 ).average( this );
+  }
+
   return m;
 }
 
@@ -3260,6 +3280,36 @@ double player_t::composite_player_th_multiplier( school_e /* school */ )
 double player_t::composite_player_absorb_multiplier( school_e /* school */ )
 {
   return 1.0;
+}
+
+double player_t::composite_player_critical_damage_multiplier()
+{
+  double m = 1.0;
+
+  m *= 1.0 + buffs.skull_banner -> value();
+
+  if ( ! is_pet() && ! is_enemy() )
+  {
+    if ( buffs.amplified -> check() )
+      m *= 1.0 + buffs.amplified -> data().effectN( 1 ).average( this );
+  }
+
+  return m;
+}
+
+double player_t::composite_player_critical_healing_multiplier()
+{
+  double m = 1.0;
+
+  if ( ! is_pet() && ! is_enemy() )
+  {
+    // FIXME: check whether to use effect #1 ( 36% ) or #3( 3.6% ), even though tooltip always refers to #1.
+    // Could also be buged scaling for #3
+    if ( buffs.amplified -> check() )
+      m *= 1.0 + buffs.amplified -> data().effectN( 1 ).average( this );
+  }
+
+  return m;
 }
 
 // player_t::composite_movement_speed =======================================

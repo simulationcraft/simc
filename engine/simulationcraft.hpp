@@ -4181,6 +4181,9 @@ public:
     buff_t* courageous_primal_diamond_lucidity;
     buff_t* tempus_repit;
     buff_t* fortitude;
+
+    // 5.4 trinkets
+    buff_t* amplified; // caster 146046
   } buffs;
 
   struct potion_buffs_t
@@ -4388,6 +4391,9 @@ public:
   virtual double composite_player_th_multiplier( school_e school );
 
   virtual double composite_player_absorb_multiplier( school_e school );
+
+  virtual double composite_player_critical_damage_multiplier();
+  virtual double composite_player_critical_healing_multiplier();
 
   virtual double composite_mitigation_multiplier( school_e );
 
@@ -5084,6 +5090,9 @@ public:
   virtual double composite_target_mitigation( player_t* t, school_e s )
   { return t -> composite_mitigation_multiplier( s ); }
 
+  virtual double composite_player_critical_multiplier()
+  { return player -> composite_player_critical_damage_multiplier(); }
+
   event_t* start_action_execute_event( timespan_t time, action_state_t* execute_state = 0 );
 
 private:
@@ -5345,6 +5354,9 @@ public:
            player -> cache.player_heal_multiplier( school ) *
            player -> composite_player_th_multiplier( school );
   }
+
+  virtual double composite_player_critical_multiplier()
+  { return player -> composite_player_critical_healing_multiplier(); }
 
   virtual action_state_t* new_state()
   { return new heal_state_t( this, target ); }
