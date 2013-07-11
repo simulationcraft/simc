@@ -110,6 +110,7 @@ public:
     buff_t* inquisition;
     buff_t* judgments_of_the_wise;
     buff_t* sacred_shield;  // dummy buff for APL simplicity
+    buff_t* selfless_healer;
     buff_t* shield_of_glory; // t15_2pc_tank
     buff_t* shield_of_the_righteous;
     buff_t* warrior_of_the_light; // t16_2pc_melee
@@ -210,6 +211,7 @@ public:
     const spell_data_t* hand_of_purity;
     const spell_data_t* unbreakable_spirit;
     const spell_data_t* clemency;
+    const spell_data_t* selfless_healer;
     const spell_data_t* eternal_flame;
     const spell_data_t* sacred_shield;
     const spell_data_t* holy_avenger;
@@ -1561,12 +1563,60 @@ struct flash_of_light_t : public paladin_heal_t
     parse_options( NULL, options_str );
   }
 
+  virtual double cost()
+  {
+    // selfless healer reduces mana cost by 35% per stack
+    double cost_multiplier = std::max( 1.0 + p() -> buffs.selfless_healer -> stack() * p() -> buffs.selfless_healer -> data().effectN( 3 ).percent(), 0.0 );
+    
+    return ( paladin_heal_t::cost() * cost_multiplier );
+  }
+
+  virtual timespan_t execute_time()
+  {
+    // Selfless Healer reduces cast time by 35% per stack
+    double cast_multiplier = std::max( 1.0 + p() -> buffs.selfless_healer -> stack() * p() -> buffs.selfless_healer -> data().effectN( 3 ).percent(), 0.0 );
+
+    return ( paladin_heal_t::execute_time() * cast_multiplier );
+  }
+  
+  virtual double action_multiplier()
+  {
+    double am = paladin_heal_t::action_multiplier();
+
+    // Selfless healer has two effects
+    if ( p() -> talents.selfless_healer -> ok() )
+    {
+      // multiplicative 20% per Selfless Healer stack when FoL is used on others
+      if ( target != player )
+      {
+        am *= 1.0 + p() -> buffs.selfless_healer -> data().effectN( 2 ).percent() * p() -> buffs.selfless_healer -> stack();
+      }
+      // multiplicative 20% per stack of Bastion of Glory when used on self
+      // TODO: test if this is modified by Divine Bulwark
+      else if ( p() -> dbc.ptr )
+      {
+        am *= 1.0 + p() -> buffs.bastion_of_glory -> data().effectN( 3 ).percent() * p() -> buffs.bastion_of_glory -> stack();
+      }
+    }
+
+    return am;
+  }
+
   virtual void execute()
   {
     paladin_heal_t::execute();
 
     p() -> buffs.daybreak -> trigger();
     p() -> buffs.infusion_of_light -> expire();
+
+    // if Selfless Healer is talented, expire SH buff (also expire BoG buff if self-cast in 5.4)
+    if ( p() -> talents.selfless_healer -> ok() )
+    {
+      p() -> buffs.selfless_healer -> expire();
+      if ( target == player && p() -> dbc.ptr )
+        p() -> buffs.bastion_of_glory -> expire();
+    }
+
   }
 };
 
@@ -3306,6 +3356,10 @@ struct judgment_t : public paladin_melee_attack_t
     // Physical Vulnerability debuff
     if ( ! sim -> overrides.physical_vulnerability && p() -> passives.judgments_of_the_bold -> ok() )
       s -> target -> debuffs.physical_vulnerability -> trigger();
+
+    // Selfless Healer talent
+    if ( p() -> talents.selfless_healer -> ok() )
+      p() -> buffs.selfless_healer -> trigger();
   }
 
   virtual double action_multiplier()
@@ -4103,6 +4157,7 @@ void paladin_t::create_buffs()
                                  .duration( find_spell( find_talent_spell( "Divine Purpose" ) -> effectN( 1 ).trigger_spell_id() ) -> duration() );
   buffs.holy_avenger           = buff_creator_t( this, "holy_avenger", find_talent_spell( "Holy Avenger" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
   buffs.sacred_shield          = buff_creator_t( this, "sacred_shield", find_talent_spell( "Sacred Shield" ) );
+  buffs.selfless_healer        = buff_creator_t( this, "selfless_healer", find_spell( 114250 ) );
 
   // General
   buffs.avenging_wrath         = buff_creator_t( this, "avenging_wrath", find_class_spell( "Avenging Wrath" ) )
@@ -4820,6 +4875,7 @@ void paladin_t::init_spells()
   talents.hand_of_purity          = find_talent_spell( "Hand of Purity" );
   talents.unbreakable_spirit      = find_talent_spell( "Unbreakable Spirit" );
   talents.clemency                = find_talent_spell( "Clemency" );
+  talents.selfless_healer         = find_talent_spell( "Selfless Healer" );
   talents.eternal_flame           = find_talent_spell( "Eternal Flame" );
   talents.sacred_shield           = find_talent_spell( "Sacred Shield" );
   talents.holy_avenger            = find_talent_spell( "Holy Avenger" );
