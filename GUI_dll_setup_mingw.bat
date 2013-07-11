@@ -2,14 +2,12 @@
 :: Necessary Qt dlls are packaged with every release.
 :: These dlls are not included in the SVN.
 :: They need to be copied into the dev area from the Qt install.
-:: Qt-Framework is simply the Qt runtime dlls built against the MSVC 2008 compiler
-:: It can be found at: http://qt.nokia.com/downloads
-:: If you build SimC with MSVC 2008, then you need to use dlls from Qt-Framework
+:: Qt-Framework can be found at: http://qt-project.org/downloads
 :: As of this writing, the default locations from which to gather the dlls are:
-:: Qt-Framework: C:\Qt\4.7.4
+:: Qt-Framework: C:\Qt\Qt5.1.0
 
 :: Update the qt_dir as necessary
-set qt_dir=C:\Qt\Qt5.1.0\5.1.0\msvc2012_64
+set qt_dir=C:\Qt\Qt5.1.0\5.1.0\mingw48_32
 
 :: IMPORTANT NOTE FOR DEBUGGING
 :: This script will ONLY copy the optimized Qt dlls
@@ -34,6 +32,7 @@ del /q Qt5WebKit.dll
 del /q Qt5WebKitWidgets.dll
 del /q Qt5Multimedia.dll
 del /q Qt5MultimediaWidgets.dll
+del /q D3DCompiler_43.dll
 del /q libGLESv2.dll
 del /q icudt49.dll
 del /q icuin49.dll
@@ -41,8 +40,9 @@ del /q icuuc49.dll
 del /q libEGL.dll
 del /q mingw*.dll
 del /q libgcc*.dll
+del /q libstd*.dll
+del /q libwinpthread-1.dll
 del /q platforms
-del /q D3DCompiler_46.dll
 
 :: Copying new dlls
 
@@ -62,12 +62,17 @@ xcopy %qt_dir%\bin\Qt5WebKit.dll
 xcopy %qt_dir%\bin\Qt5WebKitWidgets.dll
 xcopy %qt_dir%\bin\Qt5Multimedia.dll
 xcopy %qt_dir%\bin\Qt5MultimediaWidgets.dll
+
 xcopy %qt_dir%\bin\libGLESv2.dll
 xcopy %qt_dir%\bin\icudt49.dll
 xcopy %qt_dir%\bin\icuin49.dll
 xcopy %qt_dir%\bin\icuuc49.dll
 xcopy %qt_dir%\bin\libEGL.dll
-xcopy %qt_dir%\bin\D3DCompiler_46.dll
+xcopy %qt_dir%\bin\D3DCompiler_43.dll
+
+xcopy %qt_dir%\bin\libstdc++-6.dll
+xcopy %qt_dir%\bin\libgcc_s_sjlj-1.dll
+xcopy %qt_dir%\bin\libwinpthread-1.dll
 
 xcopy %qt_dir%\plugins\platforms\qminimal.dll platforms\
 xcopy %qt_dir%\plugins\platforms\qwindows.dll platforms\
