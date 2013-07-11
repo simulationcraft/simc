@@ -1117,12 +1117,12 @@ void action_t::last_tick( dot_t* d )
   }
 }
 
-// action_t::assess_damage ==================================================
+// action_t::update_vengeance ===============================================
 
-void action_t::assess_damage( dmg_e    type,
-                              action_state_t* s )
+void action_t::update_vengeance( dmg_e type,
+                                 action_state_t* s )
 {
-  // hook up vengeance here, before armor mitigation, avoidance, and dmg reduction effects, etc.
+  // check that the target has vengeance, damage type, and that the executing player is an enemy
   if ( s -> target -> vengeance_is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) && s-> action -> player -> is_enemy() )
   {
     // bool for auto attack, to make code easier to read
@@ -1173,7 +1173,7 @@ void action_t::assess_damage( dmg_e    type,
       {
         if ( sim -> debug )
         {
-          sim -> output( "%s triggered vengeance ramp-up mechanism due to %s from %s because new amount=%.2f and equilibrium=%.2f\n", 
+          sim -> output( "%s triggered vengeance ramp-up mechanism due to %s from %s because new amount=%.2f and equilibrium=%.2f.", 
                          s -> target -> name(), s -> action -> name(), s -> action -> player -> name(), new_amount, vengeance_equil );
         }
         new_amount = vengeance_equil / 2.0;
@@ -1184,13 +1184,22 @@ void action_t::assess_damage( dmg_e    type,
 
       if ( sim -> debug )
       {
-        sim -> output( "%s updated vengeance due to %s from %s. New vengeance.value=%.2f vengeance.damage=%.2f.\n",
+        sim -> output( "%s updated vengeance due to %s from %s. New vengeance.value=%.2f vengeance.damage=%.2f.",
                        s -> target -> name(), s -> action -> name(), s -> action -> player -> name() , new_amount, raw_damage );
       }
 
       s -> target -> buffs.vengeance -> trigger( 1, new_amount, 1, timespan_t::from_seconds( 20.0 ) );
     }
   } // END Vengeance
+}
+
+// action_t::assess_damage ==================================================
+
+void action_t::assess_damage( dmg_e    type,
+                              action_state_t* s )
+{
+  // hook up vengeance here, before armor mitigation, avoidance, and dmg reduction effects, etc.
+  update_vengeance( type, s );
 
   s -> target -> assess_damage( school, type, s );
 
