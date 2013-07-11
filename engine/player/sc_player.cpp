@@ -4542,7 +4542,7 @@ stat_e player_t::normalize_by()
   if ( role == ROLE_SPELL || role == ROLE_HEAL )
     return STAT_INTELLECT;
   else if ( role == ROLE_TANK )
-    return STAT_STRENGTH;
+    return STAT_STAMINA;
   else if ( type == DRUID || type == HUNTER || type == SHAMAN || type == ROGUE || type == MONK )
     return STAT_AGILITY;
   else if ( type == DEATH_KNIGHT || type == PALADIN || type == WARRIOR )
