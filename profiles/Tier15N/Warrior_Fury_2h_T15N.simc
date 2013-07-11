@@ -32,13 +32,13 @@ actions+=/recklessness,if=(talent.storm_bolt.enabled&(cooldown.colossus_smash.re
 actions+=/avatar,if=buff.recklessness.up&talent.avatar.enabled
 actions+=/skull_banner,if=buff.recklessness.up
 actions+=/berserker_rage,if=buff.enrage.remains<0.5&cooldown.bloodthirst.remains>0.5
-actions+=/heroic_leap,if=debuff.colossus_smash.up
 actions+=/run_action_list,name=single_target,if=active_enemies=1
 actions+=/run_action_list,name=two_targets,if=active_enemies=2
 actions+=/run_action_list,name=three_targets,if=active_enemies=3
 actions+=/run_action_list,name=aoe,if=active_enemies>3
 
 actions.single_target=heroic_strike,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=110
+actions.single_target+=/heroic_leap,if=debuff.colossus_smash.up
 actions.single_target+=/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20
 actions.single_target+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)
 actions.single_target+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1
@@ -49,6 +49,7 @@ actions.single_target+=/storm_bolt,if=talent.storm_bolt.enabled
 actions.single_target+=/execute,if=buff.enrage.up|debuff.colossus_smash.up|rage>90|target.time_to_die<12
 actions.single_target+=/raging_blow,if=buff.raging_blow.stack=2|(buff.raging_blow.up&(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3)))
 actions.single_target+=/wild_strike,if=buff.bloodsurge.react
+actions.single_target+=/bladestorm,if=talent.bladestorm.enabled&cooldown.bloodthirst.remains>2
 actions.single_target+=/raging_blow,if=buff.raging_blow.up&cooldown.colossus_smash.remains>=3
 actions.single_target+=/shockwave,if=talent.shockwave.enabled
 actions.single_target+=/heroic_throw,if=debuff.colossus_smash.down&rage<60
@@ -59,6 +60,7 @@ actions.single_target+=/battle_shout,if=rage<70
 actions.single_target+=/whirlwind,if=cooldown.colossus_smash.remains>=2&rage>=80&target.health.pct>=20
 
 actions.two_targets=cleave,if=rage>=110
+actions.two_targets+=/heroic_leap
 actions.two_targets+=/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&buff.bloodbath.up)
 actions.two_targets+=/shockwave,if=talent.shockwave.enabled
 actions.two_targets+=/bladestorm,if=talent.bladestorm.enabled
@@ -74,6 +76,7 @@ actions.two_targets+=/battle_shout,if=rage<70
 actions.two_targets+=/heroic_throw
 
 actions.three_targets=cleave,if=rage>=110
+actions.three_targets+=/heroic_leap
 actions.three_targets+=/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&buff.bloodbath.up)
 actions.three_targets+=/shockwave,if=talent.shockwave.enabled
 actions.three_targets+=/bladestorm,if=talent.bladestorm.enabled&buff.enrage.up
@@ -88,6 +91,7 @@ actions.three_targets+=/battle_shout,if=rage<70
 actions.three_targets+=/heroic_throw
 
 actions.aoe=cleave,if=rage>110
+actions.aoe+=/heroic_leap
 actions.aoe+=/dragon_roar,if=talent.dragon_roar.enabled&(!debuff.colossus_smash.up&buff.bloodbath.up)
 actions.aoe+=/shockwave,if=talent.shockwave.enabled
 actions.aoe+=/bladestorm,if=talent.bladestorm.enabled&buff.enrage.up

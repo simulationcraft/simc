@@ -66,7 +66,7 @@ role=attack
 position=back
 professions=engineering=600/blacksmithing=600
 talents=233322
-glyphs=unending_rage/death_from_above
+glyphs=unending_rage/death_from_above/raging_wind
 head=crown_of_the_golden_golem,id=96894,gems=capacitive_primal_320crit_180str,reforge=haste_mastery
 neck=talisman_of_angry_spirits,id=96792
 shoulders=pauldrons_of_the_last_mogu,id=96734,gems=160exp_160crit_320crit_120crit,enchant=200str_100crit,reforge=mastery_crit
