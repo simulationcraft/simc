@@ -4552,7 +4552,7 @@ struct icebound_fortitude_t : public death_knight_spell_t
 
     harmful = false;
 
-    cooldown -> duration = data().duration() * ( 1.0 + p -> glyph.icebound_fortitude -> effectN( 1 ).percent() );
+    cooldown -> duration = data().cooldown() * ( 1.0 + p -> glyph.icebound_fortitude -> effectN( 1 ).percent() );
     if ( p -> spec.sanguine_fortitude -> ok() )
       base_costs[ RESOURCE_RUNIC_POWER ] = 0;
   }
@@ -5847,7 +5847,7 @@ void death_knight_t::create_buffs()
   buffs.vampiric_blood      = new vampiric_blood_buff_t( this );
   buffs.will_of_the_necropolis_dr = buff_creator_t( this, "will_of_the_necropolis_dr", find_spell( 81162 ) )
                                     .cd( timespan_t::from_seconds( 45 ) );
-  buffs.will_of_the_necropolis_rt = buff_creator_t( this, "will_of_the_necropolish_bt", find_spell( 96171 ) )
+  buffs.will_of_the_necropolis_rt = buff_creator_t( this, "will_of_the_necropolis_rt", find_spell( 96171 ) )
                                     .cd( timespan_t::from_seconds( 45 ) );
 }
 
