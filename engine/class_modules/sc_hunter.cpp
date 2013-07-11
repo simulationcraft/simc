@@ -427,7 +427,32 @@ public:
       target,
       p.specs.piercing_shots -> effectN( 1 ).percent() * dmg ); // dw damage
   }
+  
+
+  void trigger_tier16_bm_4pc_melee()
+  {
+    if ( background )
+      return;
+
+    trigger_tier16_bm_4pc_brutal_kinskip( p() );
+  }
 };
+
+  // SV Explosive Shot casts have a 40% chance to not consume a charge of Lock and Load. 
+  // MM Instant Aimed shots reduce the cast time of your next Aimed Shot by 50%. (uses keen eye buff)
+  // TODO BM Offensive abilities used during Bestial Wrath increase all damage you deal by 2% and all 
+  // damage dealt by your pet by 2%, stacking up to 15 times.
+  // 1 stack for MoC, Lynx Rush, Glaive Toss, Barrage, Powershot, Focus Fire
+  // no stack for Fervor or Dire Beast
+  void trigger_tier16_bm_4pc_brutal_kinskip(hunter_t* p)
+  {
+    if ( p -> specialization() != HUNTER_BEAST_MASTERY )
+      return;
+    if ( ! p -> set_bonus.tier16_4pc_melee() )
+      return;
+    if ( p -> buffs.beast_within -> check() )
+      p -> buffs.tier16_4pc_bm_brutal_kinskip -> trigger();
+  }
 
 namespace pets {
 
@@ -553,6 +578,7 @@ public:
     buff_t* rabid;
     buff_t* stampede;
     buff_t* beast_cleave;
+    buff_t* tier16_4pc_bm_brutal_kinskip;
   } buffs;
 
   // Gains
@@ -692,6 +718,9 @@ public:
     double cleave_value     = o() -> find_spell( "Beast Cleave" ) -> effectN( 1 ).percent();
     
     buffs.beast_cleave      = buff_creator_t( this, 118455, "beast_cleave" ).activated( true ).default_value( cleave_value );
+
+    buffs.tier16_4pc_bm_brutal_kinskip = buff_creator_t( this, 145737, "tier16_4pc_brutal_kinship" )
+                                      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   virtual void init_gains()
@@ -806,12 +835,17 @@ public:
     double m = base_t::composite_player_multiplier( school );
 
     if ( ! buffs.stampede -> check() && buffs.bestial_wrath -> up() )
+    {
       m *= 1.0 + buffs.bestial_wrath -> data().effectN( 2 ).percent();
+      if ( o() -> set_bonus.tier16_4pc_melee() )
+        m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinskip -> up() * buffs.tier16_4pc_bm_brutal_kinskip -> data().effectN( 1 ).percent();
+    }
 
     // Pet combat experience
     m *= 1.0 + specs.combat_experience -> effectN( 2 ).percent();
 
-    if ( buffs.stampede -> up() )
+    // PTR stampede damage reduction no longer applies to PVE
+    if ( buffs.stampede -> up() && ! dbc.ptr )
       m *= 1.0 + buffs.stampede -> data().effectN( 1 ).percent();
 
     return m;
@@ -891,6 +925,15 @@ struct hunter_main_pet_attack_t : public hunter_main_pet_action_t<melee_attack_t
     return base_t::ready();
   }
 
+  void trigger_tier16_bm_4pc_melee()
+  {
+    if ( o() -> specialization() != HUNTER_BEAST_MASTERY )
+      return;
+    if ( ! o() -> set_bonus.tier16_4pc_melee() )
+      return;
+    if ( p() -> buffs.bestial_wrath -> check() )
+      p() -> buffs.tier16_4pc_bm_brutal_kinskip -> trigger();
+  }
 };
 
 // Beast Cleave
@@ -1023,7 +1066,7 @@ struct basic_attack_t : public hunter_main_pet_attack_t
   virtual void execute()
   {
     hunter_main_pet_attack_t::execute();
-
+    trigger_tier16_bm_4pc_melee();
     if ( p() == o() -> active.pet )
       o() -> buffs.cobra_strikes -> decrement();
 
@@ -1742,6 +1785,8 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
 
     trigger_thrill_of_the_hunt();
 
+    trigger_tier16_bm_4pc_melee();
+
     if ( result_is_hit( execute_state -> result ) )
       trigger_wild_quiver();
   }
@@ -1804,17 +1849,6 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
       p() -> procs.tier16_2pc_melee -> occur();
       p() -> cooldowns.rapid_fire -> adjust( -timespan_t::from_seconds( 12 ) );
     }
-  }
-
-  // SV Explosive Shot casts have a 40% chance to not consume a charge of Lock and Load. 
-  // MM Instant Aimed shots reduce the cast time of your next Aimed Shot by 50%. (uses keen eye buff)
-  // TODO BM Offensive abilities used during Bestial Wrath increase all damage you deal by 2% and all 
-  // damage dealt by your pet by 2%, stacking up to 15 times.
-  void trigger_tier16_4pc_melee()
-  {
-    if ( ! p() -> set_bonus.tier16_4pc_melee() )
-      return;
-    // TODO
   }
 };
 
@@ -2946,6 +2980,7 @@ struct barrage_t : public hunter_spell_t
       time_to_next_hit += num_ticks * tick_time( p() -> cache.attack_speed() );
       p() -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
     }
+    trigger_tier16_bm_4pc_melee();
   }
 
   virtual bool usable_moving()
@@ -3011,6 +3046,8 @@ struct moc_t : public ranged_attack_t
 
   virtual void execute()
   {
+    trigger_tier16_bm_4pc_brutal_kinskip( p() );
+
     cooldown -> duration = data().cooldown();
 
     if ( target -> health_percentage() < 20 )
@@ -3126,6 +3163,9 @@ struct bestial_wrath_t : public hunter_spell_t
 
   virtual void execute()
   {
+    if ( p() -> set_bonus.tier16_4pc_melee() )
+        p() -> buffs.tier16_4pc_bm_brutal_kinskip -> expire();
+
     p() -> buffs.beast_within  -> trigger();
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
 
@@ -3215,6 +3255,8 @@ struct focus_fire_t : public hunter_spell_t
     hunter_spell_t::execute();
 
     p() -> active.pet -> buffs.frenzy -> expire();
+    
+    trigger_tier16_bm_4pc_melee();
   }
 
   virtual bool ready()
@@ -3346,6 +3388,12 @@ struct lynx_rush_t : public hunter_spell_t
 
     bite -> last_tick = true;
   }
+
+  virtual void execute()
+  {
+    hunter_spell_t::execute();
+    trigger_tier16_bm_4pc_melee();
+  }
 };
 
 // Kill Command =============================================================
@@ -3372,6 +3420,7 @@ struct kill_command_t : public hunter_spell_t
   virtual void execute()
   {
     hunter_spell_t::execute();
+    trigger_tier16_bm_4pc_melee();
 
     if ( p() -> active.pet )
     {
@@ -3546,6 +3595,7 @@ struct stampede_t : public hunter_spell_t
   virtual void execute()
   {
     hunter_spell_t::execute();
+    trigger_tier16_bm_4pc_melee();
 
     for ( unsigned int i = 0; i < p() -> hunter_main_pets.size() && i < 5; ++i )
     {
@@ -3555,8 +3605,6 @@ struct stampede_t : public hunter_spell_t
 };
 
 }
-
-// spells
 
 hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ) :
   actor_pair_t( target, p ),
@@ -3864,7 +3912,8 @@ void hunter_t::create_buffs()
                                       .add_invalidate( CACHE_ATTACK_HASTE );
 
   buffs.tier16_4pc_mm_keen_eye      = buff_creator_t( this, 144659, "tier16_4pc_keen_eye" );
-  buffs.tier16_4pc_bm_brutal_kinskip = buff_creator_t( this, 144670, "tier16_4pc_brutal_kinship" );
+  buffs.tier16_4pc_bm_brutal_kinskip = buff_creator_t( this, 144670, "tier16_4pc_brutal_kinship" )
+                                      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
 // hunter_t::init_gains =====================================================
@@ -4254,7 +4303,11 @@ double hunter_t::composite_player_multiplier( school_e school )
   }
 
   if ( buffs.beast_within -> up() )
+  {
     m *= 1.0 + buffs.beast_within -> data().effectN( 2 ).percent();
+    if ( set_bonus.tier16_4pc_melee() )
+      m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinskip -> up() * buffs.tier16_4pc_bm_brutal_kinskip -> data().effectN( 1 ).percent();
+  }
 
   return m;
 }
