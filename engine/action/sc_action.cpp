@@ -752,11 +752,17 @@ double action_t::calculate_tick_amount( action_state_t* state )
 
   double init_tick_amount = amount;
 
+  if ( ! sim -> average_range )
+    amount = floor( amount + sim -> real() );
+
+  // Record raw amount to state
+  state -> result_raw = amount;
+
   if ( state -> result == RESULT_CRIT )
     amount *= 1.0 + total_crit_bonus();
 
-  if ( ! sim -> average_range )
-    amount = floor( amount + sim -> real() );
+  // Record total amount to state
+  state -> result_total = amount;
 
   if ( sim -> debug )
   {
@@ -1119,9 +1125,14 @@ void action_t::assess_damage( dmg_e    type,
   // hook up vengeance here, before armor mitigation, avoidance, and dmg reduction effects, etc.
   if ( s -> target -> vengeance_is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) && s-> action -> player -> is_enemy() )
   {
+    // bool for auto attack, to make code easier to read
+    bool is_auto_attack = ( player -> main_hand_attack && s -> action == player -> main_hand_attack ) || ( player -> off_hand_attack && s -> action == player -> off_hand_attack );
+
+    // on spell attacks that miss, we just extend the duration of Vengeance
+    // note that this specifically excludes melee auto-attacks, which grant Vengeance normally based on raw damage
     if ( result_is_miss( s -> result ) && //is a miss
-         ( s -> action -> player -> level >= ( s -> target -> level + 3 ) ) && // is a boss
-         !( player -> main_hand_attack && s -> action == player -> main_hand_attack ) ) // is no auto_attack
+         ! is_auto_attack &&              // is not an auto-attack
+         ( s -> action -> player -> level >= ( s -> target -> level + 3 ) ) ) // is a boss - I think this conditional is extraneous/wrong?
     {
       //extend duration
       s -> target -> buffs.vengeance -> trigger( 1,
@@ -1132,15 +1143,16 @@ void action_t::assess_damage( dmg_e    type,
     else // vengeance from successful hit or missed auto attack
     {
 
-      // factor out weakened_blows
-      double raw_damage =  ( school == SCHOOL_PHYSICAL ? 1.0 : 2.5 ) * s -> action -> player -> debuffs.weakened_blows -> check() ?
-                           s -> result_raw / ( 1.0 - s -> action -> player -> debuffs.weakened_blows -> value() ) :
-                           s -> result_raw;
+      // factor out weakened_blows from physical damage
+      double raw_damage = s -> result_raw;
+      if ( school == SCHOOL_PHYSICAL && s -> action -> player -> debuffs.weakened_blows -> check() )
+      {
+        raw_damage /= ( 1.0 - s -> action -> player -> debuffs.weakened_blows -> value() );
+      }
 
       // Take swing time for auto_attacks, take 60 for special attacks (this is how blizzard does it)
-      // TODO: Do off hand autoattacks generate vengeance?
       double attack_frequency = 0.0;
-      if ( player -> main_hand_attack && s -> action == player -> main_hand_attack )
+      if ( ( player -> main_hand_attack && s -> action == player -> main_hand_attack ) || ( player -> off_hand_attack && s -> action == player -> off_hand_attack ) )
         attack_frequency = 1.0 / s -> action -> execute_time().total_seconds();
       else
         attack_frequency = 1.0 / 60.0;
@@ -1148,22 +1160,32 @@ void action_t::assess_damage( dmg_e    type,
       // Create new vengeance value
       double new_amount = 0.018 * raw_damage; // new vengeance from hit
 
-
-
+      // modify according to damage type; spell damage gives 2.5x as much Vengeance
+      new_amount *= ( school == SCHOOL_PHYSICAL ? 1.0 : 2.5 );
+      
+      // Perform 20-second decaying average
       new_amount += s -> target -> buffs.vengeance -> value() *
                     s -> target -> buffs.vengeance -> remains().total_seconds() / 20.0; // old diminished vengeance
 
+      // calculate vengeance equilibrium and engage 50% ramp-up mechanism if appropriate
       double vengeance_equil = 0.018 * raw_damage * attack_frequency * 20;
       if ( vengeance_equil / 2.0 > new_amount )
+      {
+        if ( sim -> debug )
+        {
+          sim -> output( "%s triggered vengeance ramp-up mechanism due to %s from %s because new amount=%.2f and equilibrium=%.2f\n", 
+                         s -> target -> name(), s -> action -> name(), s -> action -> player -> name(), new_amount, vengeance_equil );
+        }
         new_amount = vengeance_equil / 2.0;
+      }
 
+      // clamp at max health; in 5.4 we may need to change this based on raid size if they lower the cap
       if ( new_amount > s -> target -> resources.max[ RESOURCE_HEALTH ] ) new_amount = s -> target -> resources.max[ RESOURCE_HEALTH ];
 
       if ( sim -> debug )
       {
         sim -> output( "%s updated vengeance due to %s from %s. New vengeance.value=%.2f vengeance.damage=%.2f.\n",
-                       s -> target -> name(), s -> action -> name(), s -> action -> player -> name() , new_amount,
-                       s -> result_amount );
+                       s -> target -> name(), s -> action -> name(), s -> action -> player -> name() , new_amount, raw_damage );
       }
 
       s -> target -> buffs.vengeance -> trigger( 1, new_amount, 1, timespan_t::from_seconds( 20.0 ) );
