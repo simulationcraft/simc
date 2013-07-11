@@ -23,8 +23,8 @@
 #endif
 #if defined( _MSC_VER )
 #  define SC_VS ( _MSC_VER / 100 - 6 )
-#  if SC_VS < 9
-#    error "Visual Studio 8 ( 2005 ) or lower not supported"
+#  if SC_VS < 10
+#    error "Visual Studio 9 ( 2008 ) or lower not supported"
 #  endif
 #endif
 
@@ -80,7 +80,7 @@
 #endif
 
 // C++11 workarounds for older compiler versions.
-#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || ! __GXX_EXPERIMENTAL_CXX0X__ || SC_GCC < 40600 ) && ( ! defined( SC_VS ) || SC_VS < 10 )
+#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || ! __GXX_EXPERIMENTAL_CXX0X__ || SC_GCC < 40600 ) && ( ! defined( SC_VS ) )
 namespace std {
 class nullptr_t
 {
@@ -93,12 +93,8 @@ public:
 #define nullptr ( std::nullptr_t() )
 #endif
 
-#if defined( SC_VS ) && SC_VS < 10
-#  include "../vs/stdint.h"
-#else
-#  include <stdint.h>
-#endif
 
+#include <stdint.h>
 #include <algorithm>
 #include <cassert>
 #include <cctype>
@@ -132,9 +128,6 @@ public:
 #include <memory>
 #include <type_traits>
 #include <unordered_map>
-#if ( defined( SC_VS ) && SC_VS < 10 )
-namespace std {using namespace tr1; }
-#endif
 #else
 // Use TR1
 #include <tr1/array>
