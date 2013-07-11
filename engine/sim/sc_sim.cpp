@@ -1423,7 +1423,6 @@ void sim_t::datacollection_end()
 {
   if ( debug ) output( "Sim Data Collection End" );
 
-  iteration_timeline.push_back( current_time );
   simulation_length.add( current_time.total_seconds() );
 
   total_events_processed += events_processed;
@@ -1616,8 +1615,6 @@ bool sim_t::init()
 
   if ( report_precision < 0 ) report_precision = 2;
 
-  iteration_timeline.reserve( iterations );
-
   simulation_length.reserve( iterations );
 
   initialized = true;
@@ -1675,12 +1672,11 @@ void sim_t::analyze()
   int max_buckets = ( int ) simulation_length.max() + 1;
   divisor_timeline.assign( max_buckets, 0 );
 
-  size_t num_timelines = iteration_timeline.size();
+  size_t num_timelines = simulation_length.data().size();
   for ( size_t i = 0; i < num_timelines; i++ )
   {
-    int last = ( int ) floor( iteration_timeline[ i ].total_seconds() );
-    size_t num_buckets = divisor_timeline.size();
-    if ( 1 + last > ( int ) num_buckets ) divisor_timeline.resize( 1 + last, 0 );
+    int last = ( int ) floor( simulation_length.data()[ i ] );
+    assert( last < divisor_timeline.size() ); // We created it with max length
     for ( int j = 0; j <= last; j++ ) divisor_timeline[ j ] += 1;
   }
 
@@ -1813,8 +1809,6 @@ void sim_t::merge( sim_t& other_sim )
   raid_hps.merge( other_sim.raid_hps );
 
   if ( max_events_remaining < other_sim.max_events_remaining ) max_events_remaining = other_sim.max_events_remaining;
-
-  range::copy( other_sim.iteration_timeline, std::back_inserter( iteration_timeline ) );
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
   {

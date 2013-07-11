@@ -2641,7 +2641,6 @@ public:
   std::vector<player_t*> players_by_name;
   std::vector<player_t*> targets_by_name;
   std::vector<std::string> id_dictionary;
-  std::vector<timespan_t> iteration_timeline;
   std::vector<int> divisor_timeline;
   std::string output_file_str, html_file_str;
   std::string xml_file_str, xml_stylesheet_file_str;
