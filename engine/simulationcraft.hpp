@@ -15,7 +15,7 @@
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 
 // Simplified access to compiler version
-#if defined( __GNUC__ )
+#if defined( __GNUC__ ) && !defined( __clang__ ) // Do NOT define SC_GCC for Clang
 #  define SC_GCC ( __GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__ )
 #  if ( SC_GCC < 40400 )
 #    error "GCC below 4.4 not supported"
@@ -23,9 +23,6 @@
 #endif
 #if defined( __clang__ )
 #  define SC_CLANG ( __clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__ )
-#  if ( SC_CLANG < 20900 )
-#    error "CLANG below 2.9 not supported"
-#  endif
 #endif
 #if defined( _MSC_VER )
 #  define SC_VS ( _MSC_VER / 100 - 6 )
@@ -86,7 +83,7 @@
 #endif
 
 // C++11 workarounds for older compiler versions.
-#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || ! __GXX_EXPERIMENTAL_CXX0X__ || SC_GCC < 40600 ) && ( ! defined( SC_VS ) )
+#if ( defined( SC_GCC ) && SC_GCC < 40600 ) || ( defined( SC_CLANG ) && SC_CLANG < 20900 )
 namespace std {
 class nullptr_t
 {
@@ -2937,7 +2934,7 @@ struct event_t
 
   static void* operator new( std::size_t size, sim_t& sim ) { return allocate( size, sim ); }
 
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) && ( defined(SC_GCC) && SC_GCC >= 40400 || defined(SC_CLANG) && SC_CLANG >= 30000 ) // Improved compile-time diagnostics.
+#if ( defined(SC_GCC) && SC_GCC >= 40400 || defined(SC_CLANG) && SC_CLANG >= 30000 ) // Improved compile-time diagnostics.
   static void* operator new( std::size_t ) throw() = delete; // DO NOT USE
 #else
   static void* operator new( std::size_t ) throw() { std::terminate(); return nullptr; } // DO NOT USE
