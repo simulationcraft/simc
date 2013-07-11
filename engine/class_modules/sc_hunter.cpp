@@ -431,7 +431,7 @@ public:
 
   void trigger_tier16_bm_4pc_melee()
   {
-    if ( background )
+    if ( ab::background )
       return;
 
     trigger_tier16_bm_4pc_brutal_kinskip( p() );

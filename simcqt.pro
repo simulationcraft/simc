@@ -10,9 +10,13 @@ CONFIG(qt) {
     DEFINES += QT_VERSION_5
   }
 }
+
 CONFIG(console) {
+  QT       -= gui
+  CONFIG   -= app_bundle
+  CONFIG   -= qt
   TARGET = simc
-  CONFIG+=staticlib
+  CONFIG += static staticlib
 }
 
 QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
@@ -65,8 +69,7 @@ HEADERS += engine/utf8/core.h
 HEADERS += engine/utf8/checked.h
 HEADERS += engine/utf8/unchecked.h
 
-SOURCES += engine/sc_io.cpp \
-    qt/sc_options_tab.cpp
+SOURCES += engine/sc_io.cpp
 SOURCES += engine/util/rng.cpp
 SOURCES += engine/sc_thread.cpp
 SOURCES += engine/sc_util.cpp
@@ -140,6 +143,7 @@ CONFIG(qt) {
   SOURCES += qt/main.cpp
   SOURCES += qt/sc_window.cpp
   SOURCES += qt/sc_import.cpp
+  SOURCES += qt/sc_options_tab.cpp
   
   
   CONFIG(paperdoll) {
