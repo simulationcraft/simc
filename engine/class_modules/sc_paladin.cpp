@@ -5186,20 +5186,34 @@ void paladin_t::target_mitigation( school_e school,
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
       sim -> output( "Damage to %s after SotR mitigation is %f", s -> target -> name(), s -> result_amount );  
   }
-    
-
+  
   // Ardent Defender
   if ( buffs.ardent_defender -> check() )
   {
     s -> result_amount *= 1.0 - buffs.ardent_defender -> data().effectN( 1 ).percent();
 
-    if ( s -> result_amount >= resources.current[ RESOURCE_HEALTH ] ) // Keep at the end of target_mitigation
+    if ( s -> result_amount > 0 && s -> result_amount >= resources.current[ RESOURCE_HEALTH ] )
     {
+      // Ardent defender is a little odd - it doesn't heal you *for* 15%, it heals you *to* 15%.  
+      // It does this by either absorbing all damage and healing you for the difference between 15% and your current health (if current < 15%)
+      // or absorbing any damage that would take you below 15% (if current > 15%).
+      // To avoid complications with absorb modeling, we're just going to kludge it by adjusting the amount gained or lost accordingly.
       s -> result_amount = 0.0;
-      resource_gain( RESOURCE_HEALTH,
-                     resources.max[ RESOURCE_HEALTH ] * buffs.ardent_defender -> data().effectN( 2 ).percent(),
-                     nullptr,
-                     s -> action );
+      double AD_health_threshold = resources.max[ RESOURCE_HEALTH ] * buffs.ardent_defender -> data().effectN( 2 ).percent();
+      if ( resources.current[ RESOURCE_HEALTH ] >= AD_health_threshold )
+      {
+        resource_loss( RESOURCE_HEALTH,
+                       resources.current[ RESOURCE_HEALTH ] - AD_health_threshold,
+                       nullptr,
+                       s -> action );
+      }
+      else
+      {
+        resource_gain( RESOURCE_HEALTH,
+                       AD_health_threshold - resources.current[ RESOURCE_HEALTH ],
+                       nullptr,
+                       s -> action );
+      }
       buffs.ardent_defender -> expire(); 
     }
     
@@ -5327,7 +5341,7 @@ void paladin_t::assess_damage( school_e school,
   // T16 2-piece tank
   if ( set_bonus.tier16_2pc_tank() && buffs.guardian_of_ancient_kings_prot -> check() )
   {
-    active.blessing_of_the_guardians -> increment_damage( s -> result_mitigated ); // guess, assuming it's after all mitigation/absorb, need to test
+    active.blessing_of_the_guardians -> increment_damage( s -> result_mitigated ); // uses post-mitigation, pre-absorb value (tested 7/10/13 PTR)
   }
 }
 
