@@ -786,7 +786,7 @@ QString SC_OptionsTab::get_globalSettings()
   }
 
   options += "target_race=" + choice.target_race->currentText() + "\n";
-  
+
   options += "default_skill=";
   const char *skill[] = { "1.0", "0.9", "0.75", "0.50" };
   options += skill[ choice.player_skill->currentIndex() ];

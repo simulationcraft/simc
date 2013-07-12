@@ -3493,7 +3493,7 @@ struct cooldown_t
   cooldown_t( const std::string& name, player_t& );
   cooldown_t( const std::string& name, sim_t& );
 
-  // Adjust the CD. If "requires_reaction" is true (or not provided), then the CD change is something 
+  // Adjust the CD. If "requires_reaction" is true (or not provided), then the CD change is something
   // the user would react to rather than plan ahead for.
   void adjust( timespan_t, bool requires_reaction = true );
   void reset( bool require_reaction );
@@ -3776,9 +3776,9 @@ struct player_collected_data_t
 
     stat_timeline_t( stat_e t = STAT_NONE ) : type( t ) {}
   };
-  
+
   std::vector<stat_timeline_t> stat_timelines;
-  
+
   // hooked up in resource timeline collection event
   struct health_changes_timeline_t
   {
@@ -3789,7 +3789,7 @@ struct player_collected_data_t
   } health_changes;
 
 
- 
+
   struct action_sequence_data_t
   {
     const action_t* action;
@@ -3881,7 +3881,7 @@ struct player_t : public actor_t
 
   // Option Parsing
   std::vector<option_t> options;
-  
+
   // Stat Timelines to Display
   std::vector<stat_e> stat_timelines;
 
@@ -4060,7 +4060,7 @@ struct player_t : public actor_t
 
   // Reporting
   int       quiet;
-  timespan_t iteration_fight_length,arise_time;
+  timespan_t iteration_fight_length, arise_time;
   timespan_t iteration_waiting_time;
   int       iteration_executed_foreground_actions;
   std::array< double, RESOURCE_MAX > resource_lost, resource_gained;
@@ -4457,7 +4457,7 @@ public:
 
   virtual void assess_damage( school_e, dmg_e, action_state_t* );
   virtual void target_mitigation( school_e, dmg_e, action_state_t* );
-  virtual void assess_damage_imminent( school_e, dmg_e, action_state_t*);
+  virtual void assess_damage_imminent( school_e, dmg_e, action_state_t* );
 
   virtual void assess_heal( school_e, dmg_e, heal_state_t* );
 
@@ -4833,7 +4833,7 @@ struct action_t : public noncopyable
     std::vector< player_t* > list;
     callback_t* callback;
     bool is_valid;
-    target_cache_t() : callback( nullptr ),is_valid( false ) {}
+    target_cache_t() : callback( nullptr ), is_valid( false ) {}
     ~target_cache_t() { delete callback; }
   } target_cache;
 

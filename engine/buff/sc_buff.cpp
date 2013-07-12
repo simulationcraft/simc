@@ -747,7 +747,7 @@ void buff_t::expire( timespan_t delay )
   {
     if ( ! expiration_delay ) // Don't reschedule already existing expiration delay
     {
-      expiration_delay = new (*sim) expiration_delay_t( this, delay );
+      expiration_delay = new ( *sim ) expiration_delay_t( this, delay );
     }
     return;
   }

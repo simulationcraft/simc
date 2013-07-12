@@ -753,12 +753,12 @@ struct resource_timeline_collect_event_t : public event_t
 
       p -> collect_resource_timeline_information();
     }
-  // However, enemies do have health
-  for ( size_t i = 0, actors = sim.target_non_sleeping_list.size(); i < actors; i++ )
-  {    
+    // However, enemies do have health
+    for ( size_t i = 0, actors = sim.target_non_sleeping_list.size(); i < actors; i++ )
+    {
       player_t* p = sim.target_non_sleeping_list[ i ];
       p -> collect_resource_timeline_information();
-  }
+    }
 
     new ( sim ) resource_timeline_collect_event_t( sim );
   }
@@ -1676,7 +1676,7 @@ void sim_t::analyze()
   for ( size_t i = 0; i < num_timelines; i++ )
   {
     int last = ( int ) floor( simulation_length.data()[ i ] );
-    assert( last < (int) divisor_timeline.size() ); // We created it with max length
+    assert( last < ( int ) divisor_timeline.size() ); // We created it with max length
     for ( int j = 0; j <= last; j++ ) divisor_timeline[ j ] += 1;
   }
 
@@ -2401,7 +2401,7 @@ bool sim_t::setup( sim_control_t* c )
   }
   if ( debug_each )
     debug = 1;
-  
+
   if ( debug )
   {
     log = 1;

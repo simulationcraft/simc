@@ -3011,7 +3011,7 @@ void warrior_t::create_buffs()
 
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_spell( 7376 ) );
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) )
-                          .activated(false) ;
+                          .activated( false ) ;
 
   buff.glyph_hold_the_line    = buff_creator_t( this, "hold_the_line",    glyphs.hold_the_line -> effectN( 1 ).trigger() );
   buff.glyph_incite           = buff_creator_t( this, "glyph_incite",           glyphs.incite -> effectN( 1 ).trigger() )
@@ -3234,7 +3234,7 @@ void warrior_t::init_actions()
     action_list_str += include_default_on_use_items( *this, "synapse_springs_mark_ii,synapse_springs_2" );
 
     action_list_str += init_use_profession_actions();
-    action_list_str += init_use_racial_actions(",if=(talent.bloodbath.enabled&buff.bloodbath.up)|(!talent.bloodbath.enabled&debuff.colossus_smash.up)");
+    action_list_str += init_use_racial_actions( ",if=(talent.bloodbath.enabled&buff.bloodbath.up)|(!talent.bloodbath.enabled&debuff.colossus_smash.up)" );
 
     bool smf =  ( main_hand_weapon.group() == WEAPON_1H && off_hand_weapon.group() == WEAPON_1H );
 

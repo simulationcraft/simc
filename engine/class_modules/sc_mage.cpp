@@ -1074,7 +1074,7 @@ public:
   virtual void expire_heating_up() // delay 0.25s the removal of heating up on non-critting spell with travel time or scorch
   {
     mage_t* p = this -> p();
-    
+
     if ( ! travel_speed )
     {
       p -> buffs.heating_up -> expire();
@@ -1086,7 +1086,7 @@ public:
       p -> buffs.heating_up -> expire( timespan_t::from_millis( 250 ) );
     }
   }
-  
+
   void trigger_hot_streak( action_state_t* s )
   {
     mage_t* p = this -> p();
@@ -3153,7 +3153,7 @@ struct scorch_t : public mage_spell_t
 
   virtual bool usable_moving()
   { return true; }
-  
+
   // delay 0.25s the removal of heating up on non-critting spell with travel time or scorch
   virtual void expire_heating_up()
   {

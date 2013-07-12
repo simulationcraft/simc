@@ -222,9 +222,9 @@ public:
 
 class SC_WelcomeTabWidget : public QWebView
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    SC_WelcomeTabWidget( SC_MainWindow* parent = nullptr );
+  SC_WelcomeTabWidget( SC_MainWindow* parent = nullptr );
 };
 
 // ============================================================================
@@ -232,76 +232,76 @@ public:
 // ============================================================================
 class SC_OptionsTab : public QTabWidget
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    SC_OptionsTab( SC_MainWindow* parent );
+  SC_OptionsTab( SC_MainWindow* parent );
 
-    void    decodeOptions( QString );
-    QString encodeOptions();
-    QString get_db_order() const;
-    QString get_globalSettings();
-    QString mergeOptions();
-    QString get_active_spec();
-    QString get_player_role();
+  void    decodeOptions( QString );
+  QString encodeOptions();
+  QString get_db_order() const;
+  QString get_globalSettings();
+  QString mergeOptions();
+  QString get_active_spec();
+  QString get_player_role();
 
-    void createToolTips();
-    QListWidget* itemDbOrder;
-    struct choices_t
-    {
-      // options
-      QComboBox* version;
-      QComboBox* world_lag;
-      QComboBox* aura_delay;
-      QComboBox* iterations;
-      QComboBox* fight_length;
-      QComboBox* fight_variance;
-      QComboBox* fight_style;
-      QComboBox* target_level;
-      QComboBox* target_race;
-      QComboBox* num_target;
-      QComboBox* player_skill;
-      QComboBox* threads;
-      QComboBox* armory_region;
-      QComboBox* armory_spec;
-      QComboBox* default_role;
-      QComboBox* tmi_boss;
-      QComboBox* debug;
-      QComboBox* report_pets;
-      QComboBox* print_style;
-      QComboBox* statistics_level;
-      QComboBox* deterministic_rng;
-      QComboBox* center_scale_delta;
-      QComboBox* challenge_mode;
-      // scaling
-      QComboBox* scale_over;
-      QComboBox* plots_points;
-      QComboBox* plots_step;
-      QComboBox* reforgeplot_amount;
-      QComboBox* reforgeplot_step;
-    } choice;
+  void createToolTips();
+  QListWidget* itemDbOrder;
+  struct choices_t
+  {
+    // options
+    QComboBox* version;
+    QComboBox* world_lag;
+    QComboBox* aura_delay;
+    QComboBox* iterations;
+    QComboBox* fight_length;
+    QComboBox* fight_variance;
+    QComboBox* fight_style;
+    QComboBox* target_level;
+    QComboBox* target_race;
+    QComboBox* num_target;
+    QComboBox* player_skill;
+    QComboBox* threads;
+    QComboBox* armory_region;
+    QComboBox* armory_spec;
+    QComboBox* default_role;
+    QComboBox* tmi_boss;
+    QComboBox* debug;
+    QComboBox* report_pets;
+    QComboBox* print_style;
+    QComboBox* statistics_level;
+    QComboBox* deterministic_rng;
+    QComboBox* center_scale_delta;
+    QComboBox* challenge_mode;
+    // scaling
+    QComboBox* scale_over;
+    QComboBox* plots_points;
+    QComboBox* plots_step;
+    QComboBox* reforgeplot_amount;
+    QComboBox* reforgeplot_step;
+  } choice;
 
-    QButtonGroup* buffsButtonGroup;
-    QButtonGroup* debuffsButtonGroup;
-    QButtonGroup* scalingButtonGroup;
-    QButtonGroup* plotsButtonGroup;
-    SC_ReforgeButtonGroup* reforgeplotsButtonGroup;
+  QButtonGroup* buffsButtonGroup;
+  QButtonGroup* debuffsButtonGroup;
+  QButtonGroup* scalingButtonGroup;
+  QButtonGroup* plotsButtonGroup;
+  SC_ReforgeButtonGroup* reforgeplotsButtonGroup;
 protected:
-    SC_MainWindow* mainWindow;
-    void createGlobalsTab();
-    void createBuffsDebuffsTab();
-    void createScalingTab();
-    void createPlotsTab();
-    void createReforgePlotsTab();
-    void createItemDataSourceSelector( QFormLayout* );
+  SC_MainWindow* mainWindow;
+  void createGlobalsTab();
+  void createBuffsDebuffsTab();
+  void createScalingTab();
+  void createPlotsTab();
+  void createReforgePlotsTab();
+  void createItemDataSourceSelector( QFormLayout* );
 
 private slots:
-    void allBuffsChanged( bool checked );
-    void allDebuffsChanged( bool checked );
-    void allScalingChanged( bool checked );
-    void _optionsChanged();
+  void allBuffsChanged( bool checked );
+  void allDebuffsChanged( bool checked );
+  void allScalingChanged( bool checked );
+  void _optionsChanged();
 signals:
-    void armory_region_changed( const QString& );
-    void optionsChanged(); // FIXME: hookup to everything
+  void armory_region_changed( const QString& );
+  void optionsChanged(); // FIXME: hookup to everything
 
 };
 // ============================================================================
@@ -477,15 +477,15 @@ private slots:
   void updateSimProgress();
   void cmdLineReturnPressed();
   void cmdLineTextEdited( const QString& );
-  void backButtonClicked( bool checked=false );
-  void forwardButtonClicked( bool checked=false );
-  void mainButtonClicked( bool checked=false );
+  void backButtonClicked( bool checked = false );
+  void forwardButtonClicked( bool checked = false );
+  void mainButtonClicked( bool checked = false );
   void mainTabChanged( int index );
   void importTabChanged( int index );
   void resultsTabChanged( int index );
   void resultsTabCloseRequest( int index );
   void simulateTabCloseRequest( int index );
-  void rawrButtonClicked( bool checked=false );
+  void rawrButtonClicked( bool checked = false );
   void historyDoubleClicked( QListWidgetItem* item );
   void bisDoubleClicked( QTreeWidgetItem* item, int col );
   void armoryRegionChanged( const QString& region );
@@ -551,7 +551,7 @@ public:
 
     // Add QT Major Version to avoid "mysterious" problems resulting in qBadAlloc. Qt4 and Qt5 webcache do not like each other
     QDir dir( mainWindow -> TmpDir + QDir::separator() + "simc_webcache_qt" + std::string( QT_VERSION_STR ).substr( 0, 3 ).c_str() );
-    if ( ! dir.exists() ) dir.mkpath(".");
+    if ( ! dir.exists() ) dir.mkpath( "." );
 
     QFileInfo fi( dir.absolutePath() );
 
@@ -564,7 +564,7 @@ public:
     }
     else
     {
-     qDebug() << "Can't write webcache! sucks";
+      qDebug() << "Can't write webcache! sucks";
     }
 
 
@@ -616,11 +616,11 @@ public:
   QString options;
   bool success;
 
-  void start( sim_t* s, const QString& o ) { sim=s; options=o; success=false; QThread::start(); }
+  void start( sim_t* s, const QString& o ) { sim = s; options = o; success = false; QThread::start(); }
   virtual void run();
   SimulateThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 )
   {
-      connect( this, SIGNAL( finished() ), this, SLOT( sim_finished() ) );
+    connect( this, SIGNAL( finished() ), this, SLOT( sim_finished() ) );
   }
 private slots:
   void sim_finished()
@@ -650,7 +650,7 @@ public:
   void importRawr();
 
   void start( sim_t* s, int t, const QString& u, const QString& sources, const QString& spec, const QString& role )
-  { sim=s; tab=t; url=u; profile=""; item_db_sources = sources; player=0; active_spec = spec; m_role = role;QThread::start(); }
+  { sim = s; tab = t; url = u; profile = ""; item_db_sources = sources; player = 0; active_spec = spec; m_role = role; QThread::start(); }
   virtual void run();
   ImportThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 ), player( 0 ) {}
 };
@@ -668,7 +668,7 @@ class PaperdollThread : public QThread
 public:
   player_t* player;
 
-  void start( sim_t* s, player_t* p, const QString& o ) { sim=s; player=p; options=o; success=false; QThread::start(); }
+  void start( sim_t* s, player_t* p, const QString& o ) { sim = s; player = p; options = o; success = false; QThread::start(); }
   virtual void run();
   PaperdollThread( SC_MainWindow* mw ) : mainWindow( mw ), sim( 0 ), success( false ), player( 0 ) {}
 };

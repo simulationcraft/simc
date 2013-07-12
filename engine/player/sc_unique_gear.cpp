@@ -3553,7 +3553,7 @@ void unique_gear::initialize_special_effects( player_t* p )
 
   dancing_steel( p, mh_enchant, mhw, "" );
   dancing_steel( p, oh_enchant, ohw, "_oh" );
-  
+
   bloody_dancing_steel( p, mh_enchant, mhw, "" );
   bloody_dancing_steel( p, oh_enchant, ohw, "" ) ;
 

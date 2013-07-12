@@ -427,7 +427,7 @@ public:
       target,
       p.specs.piercing_shots -> effectN( 1 ).percent() * dmg ); // dw damage
   }
-  
+
 
   void trigger_tier16_bm_4pc_melee()
   {
@@ -438,21 +438,21 @@ public:
   }
 };
 
-  // SV Explosive Shot casts have a 40% chance to not consume a charge of Lock and Load. 
-  // MM Instant Aimed shots reduce the cast time of your next Aimed Shot by 50%. (uses keen eye buff)
-  // TODO BM Offensive abilities used during Bestial Wrath increase all damage you deal by 2% and all 
-  // damage dealt by your pet by 2%, stacking up to 15 times.
-  // 1 stack for MoC, Lynx Rush, Glaive Toss, Barrage, Powershot, Focus Fire
-  // no stack for Fervor or Dire Beast
-  void trigger_tier16_bm_4pc_brutal_kinskip(hunter_t* p)
-  {
-    if ( p -> specialization() != HUNTER_BEAST_MASTERY )
-      return;
-    if ( ! p -> set_bonus.tier16_4pc_melee() )
-      return;
-    if ( p -> buffs.beast_within -> check() )
-      p -> buffs.tier16_4pc_bm_brutal_kinskip -> trigger();
-  }
+// SV Explosive Shot casts have a 40% chance to not consume a charge of Lock and Load.
+// MM Instant Aimed shots reduce the cast time of your next Aimed Shot by 50%. (uses keen eye buff)
+// TODO BM Offensive abilities used during Bestial Wrath increase all damage you deal by 2% and all
+// damage dealt by your pet by 2%, stacking up to 15 times.
+// 1 stack for MoC, Lynx Rush, Glaive Toss, Barrage, Powershot, Focus Fire
+// no stack for Fervor or Dire Beast
+void trigger_tier16_bm_4pc_brutal_kinskip( hunter_t* p )
+{
+  if ( p -> specialization() != HUNTER_BEAST_MASTERY )
+    return;
+  if ( ! p -> set_bonus.tier16_4pc_melee() )
+    return;
+  if ( p -> buffs.beast_within -> check() )
+    p -> buffs.tier16_4pc_bm_brutal_kinskip -> trigger();
+}
 
 namespace pets {
 
@@ -716,11 +716,11 @@ public:
                               /*.quiet( true )*/;
 
     double cleave_value     = o() -> find_spell( "Beast Cleave" ) -> effectN( 1 ).percent();
-    
+
     buffs.beast_cleave      = buff_creator_t( this, 118455, "beast_cleave" ).activated( true ).default_value( cleave_value );
 
     buffs.tier16_4pc_bm_brutal_kinskip = buff_creator_t( this, 145737, "tier16_4pc_brutal_kinship" )
-                                      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                                         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   virtual void init_gains()
@@ -943,7 +943,7 @@ static bool trigger_beast_cleave( action_state_t* s )
   struct beast_cleave_attack_t : public hunter_main_pet_attack_t
   {
     beast_cleave_attack_t( hunter_main_pet_t* p ) :
-      hunter_main_pet_attack_t( "beast_cleave_attack", p, p -> find_spell( 22482 ))
+      hunter_main_pet_attack_t( "beast_cleave_attack", p, p -> find_spell( 22482 ) )
     {
       may_miss = may_crit = proc = callbacks = false;
       background = true;
@@ -1837,7 +1837,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
   }
 
   void trigger_tier15_4pc_melee( proc_t* proc, attack_t* attack );
-  
+
   // Arcane Shot and Multi-shot reduce the cooldown of Rapid Fire by 12 seconds per cast.
   void trigger_tier16_2pc_melee()
   {
@@ -1975,8 +1975,8 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       hunter_ranged_attack_t::execute();
 
       p() -> buffs.master_marksman_fire -> expire();
-      
-      if ( p() -> set_bonus.tier16_4pc_melee() ) 
+
+      if ( p() -> set_bonus.tier16_4pc_melee() )
         p() -> buffs.tier16_4pc_mm_keen_eye -> trigger();
 
       if ( result_is_hit( execute_state -> result ) )
@@ -2034,7 +2034,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       return timespan_t::zero();
 
     timespan_t cast_time = hunter_ranged_attack_t::execute_time();
-    if ( p() -> buffs.tier16_4pc_mm_keen_eye -> check() ) 
+    if ( p() -> buffs.tier16_4pc_mm_keen_eye -> check() )
     {
       cast_time *= 1.0 + p() -> buffs.tier16_4pc_mm_keen_eye -> data().effectN( 1 ).percent();
     }
@@ -2492,12 +2492,12 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     // Does saving the proc require round trip latency before we know?
     // TODO add reaction time for the continuation of the proc?
     if ( p() -> buffs.lock_and_load -> up()
-          && p() -> set_bonus.tier16_4pc_melee() 
-          && p() -> rng.tier16_4pc_melee_sv -> roll( p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent() ) ) 
+         && p() -> set_bonus.tier16_4pc_melee()
+         && p() -> rng.tier16_4pc_melee_sv -> roll( p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent() ) )
     {
       p() -> procs.tier16_4pc_melee -> occur();
     }
-    else 
+    else
     {
       p() -> buffs.lock_and_load -> decrement();
     }
@@ -3164,7 +3164,7 @@ struct bestial_wrath_t : public hunter_spell_t
   virtual void execute()
   {
     if ( p() -> set_bonus.tier16_4pc_melee() )
-        p() -> buffs.tier16_4pc_bm_brutal_kinskip -> expire();
+      p() -> buffs.tier16_4pc_bm_brutal_kinskip -> expire();
 
     p() -> buffs.beast_within  -> trigger();
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
@@ -3255,7 +3255,7 @@ struct focus_fire_t : public hunter_spell_t
     hunter_spell_t::execute();
 
     p() -> active.pet -> buffs.frenzy -> expire();
-    
+
     trigger_tier16_bm_4pc_melee();
   }
 
@@ -3913,7 +3913,7 @@ void hunter_t::create_buffs()
 
   buffs.tier16_4pc_mm_keen_eye      = buff_creator_t( this, 144659, "tier16_4pc_keen_eye" );
   buffs.tier16_4pc_bm_brutal_kinskip = buff_creator_t( this, 144670, "tier16_4pc_brutal_kinship" )
-                                      .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                                       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
 // hunter_t::init_gains =====================================================

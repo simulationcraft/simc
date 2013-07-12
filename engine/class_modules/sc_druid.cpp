@@ -3460,8 +3460,8 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
   void test_to_extend( action_state_t* s, dot_t* dot )
   {
     if ( s -> result == RESULT_CRIT
-        && p() -> spec.eclipse -> ok()
-	    && dot -> ticking )
+         && p() -> spec.eclipse -> ok()
+         && dot -> ticking )
 
       dot -> extend_duration_seconds( timespan_t::from_seconds( 2 ), STATE_HASTE );
   }
@@ -4476,7 +4476,7 @@ struct starsurge_t : public druid_spell_t
   virtual void execute()
   {
     druid_spell_t::execute();
-    
+
     if ( result_is_hit( execute_state -> result ) )
     {
       p() -> inflight_starsurge = true;

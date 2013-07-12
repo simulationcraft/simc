@@ -391,9 +391,9 @@ public:
   PaperdollSpecButton( PaperdollProfile*, specialization_e, QWidget* = 0 );
   void set_spec( specialization_e s )
   {
-      m_spec = s;
-      setStatusTip( QString::fromStdString( dbc::specialization_string( s ) ) );
-      m_icon = getPaperdollPixmap( QString( "spec_%1" ).arg( dbc::specialization_string( s ).c_str() ), true );
+    m_spec = s;
+    setStatusTip( QString::fromStdString( dbc::specialization_string( s ) ) );
+    m_icon = getPaperdollPixmap( QString( "spec_%1" ).arg( dbc::specialization_string( s ).c_str() ), true );
   }
 protected:
   specialization_e m_spec;
@@ -484,7 +484,7 @@ private:
   PaperdollProfile*    m_profile;
   SC_MainWindow* mainWindow;
 
-  struct metric_t{
+  struct metric_t {
     QString name;
     double value, error;
   } current_metric;

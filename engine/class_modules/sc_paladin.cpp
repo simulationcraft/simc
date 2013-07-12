@@ -1569,7 +1569,7 @@ struct flash_of_light_t : public paladin_heal_t
   {
     // selfless healer reduces mana cost by 35% per stack
     double cost_multiplier = std::max( 1.0 + p() -> buffs.selfless_healer -> stack() * p() -> buffs.selfless_healer -> data().effectN( 3 ).percent(), 0.0 );
-    
+
     return ( paladin_heal_t::cost() * cost_multiplier );
   }
 
@@ -1580,7 +1580,7 @@ struct flash_of_light_t : public paladin_heal_t
 
     return ( paladin_heal_t::execute_time() * cast_multiplier );
   }
-  
+
   virtual double action_multiplier()
   {
     double am = paladin_heal_t::action_multiplier();
@@ -2474,7 +2474,7 @@ struct seal_of_insight_proc_t : public paladin_heal_t
 
       // 5.4 version of Battle Healer glyph makes SoI a smart heal
       if ( p() -> glyphs.battle_healer -> ok() && p() -> dbc.ptr )
-      {        
+      {
         target = find_lowest_target();
         if ( target ) // If we are alone and no target is found, nothing happens - test on PTR
           paladin_heal_t::execute();
@@ -5282,16 +5282,16 @@ void paladin_t::target_mitigation( school_e school,
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
       sim -> output( "Damage to %s after Glyph of TV is %f", s -> target -> name(), s -> result_amount );
   }
-  
+
   // Shield of the Righteous
   if ( buffs.shield_of_the_righteous -> check() )
-  { 
-    s -> result_amount *= 1.0 + ( buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() - get_divine_bulwark() ) * (1.0 + sets -> set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent() ); 
+  {
+    s -> result_amount *= 1.0 + ( buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() - get_divine_bulwark() ) * ( 1.0 + sets -> set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent() );
 
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> output( "Damage to %s after SotR mitigation is %f", s -> target -> name(), s -> result_amount );  
+      sim -> output( "Damage to %s after SotR mitigation is %f", s -> target -> name(), s -> result_amount );
   }
-  
+
   // Ardent Defender
   if ( buffs.ardent_defender -> check() )
   {
@@ -5299,7 +5299,7 @@ void paladin_t::target_mitigation( school_e school,
 
     if ( s -> result_amount > 0 && s -> result_amount >= resources.current[ RESOURCE_HEALTH ] )
     {
-      // Ardent defender is a little odd - it doesn't heal you *for* 15%, it heals you *to* 15%.  
+      // Ardent defender is a little odd - it doesn't heal you *for* 15%, it heals you *to* 15%.
       // It does this by either absorbing all damage and healing you for the difference between 15% and your current health (if current < 15%)
       // or absorbing any damage that would take you below 15% (if current > 15%).
       // To avoid complications with absorb modeling, we're just going to kludge it by adjusting the amount gained or lost accordingly.
@@ -5319,11 +5319,11 @@ void paladin_t::target_mitigation( school_e school,
                        nullptr,
                        s -> action );
       }
-      buffs.ardent_defender -> expire(); 
+      buffs.ardent_defender -> expire();
     }
-    
-  if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-    sim -> output( "Damage to %s after Ardent Defender is %f", s -> target -> name(), s -> result_amount );
+
+    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+      sim -> output( "Damage to %s after Ardent Defender is %f", s -> target -> name(), s -> result_amount );
   }
 }
 

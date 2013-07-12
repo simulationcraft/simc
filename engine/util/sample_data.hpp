@@ -121,7 +121,7 @@ typename std::iterator_traits<iterator1>::value_type calculate_correlation_coeff
   typedef typename std::iterator_traits<iterator1>::value_type value1_t;
   typedef typename std::iterator_traits<iterator1>::difference_type diff1_t;
   typedef typename std::iterator_traits<iterator1>::difference_type diff2_t;
-  static_assert( (std::is_same<value1_t,typename std::iterator_traits<iterator2>::value_type>::value), "Value type of iterators not equal" );
+  static_assert( ( std::is_same<value1_t, typename std::iterator_traits<iterator2>::value_type>::value ), "Value type of iterators not equal" );
 
   value1_t result = value1_t();
 
@@ -154,7 +154,7 @@ typename std::iterator_traits<iterator1>::value_type calculate_correlation_coeff
   typedef typename std::iterator_traits<iterator2>::value_type value2_t;
   typedef typename std::iterator_traits<iterator1>::difference_type diff1_t;
   typedef typename std::iterator_traits<iterator1>::difference_type diff2_t;
-  static_assert( (std::is_same<value1_t,value2_t>::value), "Value type of iterators not equal" );
+  static_assert( ( std::is_same<value1_t, value2_t>::value ), "Value type of iterators not equal" );
 
   value1_t result = value1_t();
 

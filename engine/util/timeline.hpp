@@ -18,7 +18,7 @@ template <typename Fwd, typename Out>
 void sliding_window_average( Fwd first, Fwd last, unsigned window, Out out )
 {
   // This function performs an apodized moving average of the data bounded by first and last
-  // using a window size defined by the third argument. 
+  // using a window size defined by the third argument.
   typedef typename std::iterator_traits<Fwd>::value_type value_t;
   typedef typename std::iterator_traits<Fwd>::difference_type diff_t;
   diff_t n = std::distance( first, last );
@@ -95,14 +95,14 @@ public:
   {
     if ( index >= _data.capacity() ) // we need to reallocate
     {
-      _data.reserve( std::max( size_t(10), _data.capacity() * 2 ) );
+      _data.reserve( std::max( size_t( 10 ), _data.capacity() * 2 ) );
       _data.resize( index + 1 );
     }
     else if ( index >= _data.size() ) // we still have enough capacity left, but need to resize up to index
     {
       _data.resize( index + 1 );
     }
-    _data.at(index) += value;
+    _data.at( index ) += value;
   }
 
   // Adjust timeline by dividing through divisor timeline
@@ -176,7 +176,7 @@ class histogram
 {
   std::vector<size_t> _data;
   std::vector<double> _normalized_data;
-  double _min,_max;
+  double _min, _max;
   size_t _num_entries; // total value of all _data entries
 
   static double nan()

@@ -286,17 +286,17 @@ bool parse_stat_timelines( sim_t* sim,
                            const std::string& value )
 {
   assert( name == "stat_timelines" ); ( void )name;
-  
+
   stat_e st;
   std::vector<std::string> stats = util::string_split( value, "," );
-  
+
   for ( size_t i = 0; i < stats.size(); ++i )
   {
     st = util::parse_stat_type( stats[i] );
-    
+
     sim -> active_player -> stat_timelines.push_back( st );
   }
-  
+
   return true;
 }
 
@@ -2314,7 +2314,7 @@ void player_t::init_stats()
 
   range::fill( resource_lost, 0.0 );
   range::fill( resource_gained, 0.0 );
-  
+
   if ( ! is_pet() || sim -> report_pets_separately )
   {
     if ( collected_data.stat_timelines.size() == 0 )
@@ -4360,7 +4360,7 @@ void player_t::collect_resource_timeline_information()
     collected_data.resource_timelines[ j ].timeline.add( sim -> current_time,
         resources.current[ collected_data.resource_timelines[ j ].type ] );
   }
-  
+
   for ( size_t j = 0, size = collected_data.stat_timelines.size(); j < size; ++j )
   {
     switch ( collected_data.stat_timelines[ j ].type )
@@ -4935,9 +4935,9 @@ void player_t::assess_damage( school_e school,
     // mitigate that amount from the target.
     // Slight inaccuracy: We do not get a feedback of paladin health buffer expiration here.
     s -> result_amount -= redirected_damage;
-    
-  if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-    sim -> output( "Damage to %s after Hand of Sacrifice is %f", s -> target -> name(), s -> result_amount );
+
+    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+      sim -> output( "Damage to %s after Hand of Sacrifice is %f", s -> target -> name(), s -> result_amount );
   }
 
   /* ABSORB BUFFS
@@ -4973,8 +4973,8 @@ void player_t::assess_damage( school_e school,
         assert( s -> result_amount == 0 );
         break;
       }
-      
-      if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() && buff_value > 0)
+
+      if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() && buff_value > 0 )
         sim -> output( "Damage to %s after %s is %f", s -> target -> name(), ab -> name(), s -> result_amount );
     }
 
@@ -9422,7 +9422,7 @@ void player_collected_data_t::analyze( const player_t& p )
   {
     resource_timelines[ i ].timeline.adjust( p.sim -> divisor_timeline );
   }
-  
+
   for ( size_t i = 0; i < stat_timelines.size(); ++i )
   {
     stat_timelines[ i ].timeline.adjust( p.sim -> divisor_timeline );
@@ -9487,7 +9487,7 @@ void player_collected_data_t::collect_data( const player_t& p )
     // It performs an exponentially-weighted sum of the moving average of damage intake, with larger
     // damage spikes being weighted more heavily. A formal definition of the metric can be found here:
     // (TODO: insert link when available)
-    if ( ! p.is_enemy() ) // Boss TMI is irrelevant, causes problems in iteration #1 due to lack of 
+    if ( ! p.is_enemy() ) // Boss TMI is irrelevant, causes problems in iteration #1 due to lack of
     {
       // define constants and variables
       int window = 6; // window size, this may become user-definable later
@@ -9532,8 +9532,8 @@ void player_collected_data_t::collect_data( const player_t& p )
         tmi *= std::pow( static_cast<double>( window ) , 2 ); // normalizes for window size
         //std::cout << "TMI(iteration " << p.sim -> current_iteration << "): " << tmi << " sa tl avg: " << sliding_average_tl.mean() << " wl.size(): " << weighted_value.size() << " health: " << p.resources.initial[ RESOURCE_HEALTH ] << "\n";   //temporary, for debugging
       }
-    // normalize by fight length and add to TMI data array
-    theck_meloree_index.add( tmi );
+      // normalize by fight length and add to TMI data array
+      theck_meloree_index.add( tmi );
     }
     else
       theck_meloree_index.add( 0.0 );

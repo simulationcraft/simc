@@ -1156,13 +1156,13 @@ void action_t::update_vengeance( dmg_e type,
         attack_frequency = 1.0 / s -> action -> execute_time().total_seconds();
       else
         attack_frequency = 1.0 / 60.0;
-      
+
       // Create new vengeance value
       double new_amount = 0.018 * raw_damage; // new vengeance from hit
 
       // modify according to damage type; spell damage gives 2.5x as much Vengeance
       new_amount *= ( school == SCHOOL_PHYSICAL ? 1.0 : 2.5 );
-      
+
       // Perform 20-second decaying average
       new_amount += s -> target -> buffs.vengeance -> value() *
                     s -> target -> buffs.vengeance -> remains().total_seconds() / 20.0; // old diminished vengeance
@@ -1173,7 +1173,7 @@ void action_t::update_vengeance( dmg_e type,
       {
         if ( sim -> debug )
         {
-          sim -> output( "%s triggered vengeance ramp-up mechanism due to %s from %s because new amount=%.2f and equilibrium=%.2f.", 
+          sim -> output( "%s triggered vengeance ramp-up mechanism due to %s from %s because new amount=%.2f and equilibrium=%.2f.",
                          s -> target -> name(), s -> action -> name(), s -> action -> player -> name(), new_amount, vengeance_equil );
         }
         new_amount = vengeance_equil / 2.0;

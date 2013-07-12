@@ -994,7 +994,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
                        max_buckets );
     ri.gains_chart[ rt ] = chart::gains( p, rt );
   }
-  
+
   // Stat Charts
   for ( size_t i = 0; i < cd.stat_timelines.size(); ++i )
   {
@@ -1003,33 +1003,33 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
     {
       ri.timeline_stat_chart[ st ] =
         chart::timeline( p,
-                        cd.stat_timelines[ i ].timeline.data(),
-                        encoded_name + ' ' + util::inverse_tokenize( util::stat_type_string( st ) ),
-                        cd.stat_timelines[ i ].timeline.mean(),
-                        "FFFFFF",
-                        max_buckets );
+                         cd.stat_timelines[ i ].timeline.data(),
+                         encoded_name + ' ' + util::inverse_tokenize( util::stat_type_string( st ) ),
+                         cd.stat_timelines[ i ].timeline.mean(),
+                         "FFFFFF",
+                         max_buckets );
     }
   }
 
   if ( ! p -> is_pet() && p -> primary_role() == ROLE_TANK )
   {
     ri.health_change_chart =
-    chart::timeline( p,
-                     cd.health_changes.merged_timeline.data(),
-                     encoded_name + ' ' + "Health Change",
-                     cd.health_changes.merged_timeline.mean(),
-                     chart::resource_color( RESOURCE_HEALTH ),
-                     max_buckets );
+      chart::timeline( p,
+                       cd.health_changes.merged_timeline.data(),
+                       encoded_name + ' ' + "Health Change",
+                       cd.health_changes.merged_timeline.mean(),
+                       chart::resource_color( RESOURCE_HEALTH ),
+                       max_buckets );
 
     sc_timeline_t sliding_average_tl;
     cd.health_changes.merged_timeline.build_sliding_average_timeline( sliding_average_tl, 6 );
     ri.health_change_sliding_chart =
-    chart::timeline( p,
-                     sliding_average_tl.data(),
-                     encoded_name + ' ' + "Health Change (moving average, 6s window)",
-                     sliding_average_tl.mean(),
-                     chart::resource_color( RESOURCE_HEALTH ),
-                     max_buckets );
+      chart::timeline( p,
+                       sliding_average_tl.data(),
+                       encoded_name + ' ' + "Health Change (moving average, 6s window)",
+                       sliding_average_tl.mean(),
+                       chart::resource_color( RESOURCE_HEALTH ),
+                       max_buckets );
   }
 
   // Scaling charts

@@ -1871,7 +1871,7 @@ void print_html_player_charts( report::sc_html_stream& os, sim_t* sim, player_t*
       fmt = "\t\t\t\t\t\t\t<span class=\"chart-time-spent\" title=\"Time Spent Chart\">%s</span>\n";
     os.printf( fmt, ri.time_spent_chart.c_str() );
   }
-  
+
   for ( size_t i = 0; i < ri.timeline_stat_chart.size(); ++i )
   {
     if ( ri.timeline_stat_chart[ i ].length() > 0 )
@@ -2227,7 +2227,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">HPS Error</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">HPS Range</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpr\" class=\"help\">HPR</a></th>\n";
-   
+
 
   os << "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-out\" class=\"help\">RPS Out</a></th>\n"
      << "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-in\" class=\"help\">RPS In</a></th>\n"
@@ -2294,7 +2294,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
     cd.fight_length.mean() ? 60.0 * cd.executed_foreground_actions.mean() / cd.fight_length.mean() : 0,
     sim -> simulation_length.mean() ? cd.fight_length.mean() / sim -> simulation_length.mean() * 100.0 : 0,
     p -> initial.skill * 100.0 );
-  
+
   // Tank
   if ( p -> primary_role() == ROLE_TANK && p -> type != ENEMY )
   {
@@ -2326,7 +2326,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
       cd.theck_meloree_index.mean(),
       tmi_error, cd.theck_meloree_index.mean() ? tmi_error * 100.0 / cd.theck_meloree_index.mean() : 0.0,
       tmi_range, cd.theck_meloree_index.mean() ? tmi_range * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
-    
+
     os << "\t\t\t\t\t\t\t</tr>\n"
        << "\t\t\t\t\t\t</table>\n";
   }
