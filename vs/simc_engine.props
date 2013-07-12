@@ -42,9 +42,7 @@ Requires Precompiled Header enabled for simulationcraft.hpp
     <ClCompile Include="..\engine\sc_io.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\engine\util\rng.cpp">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="..\engine\util\rng.cpp"/>
     <ClCompile Include="..\engine\sc_thread.cpp" />
     <ClCompile Include="..\engine\sc_util.cpp" />
     <ClCompile Include="..\engine\action\sc_absorb.cpp" />

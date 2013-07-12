@@ -3,12 +3,12 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
+#include "simulationcraft.hpp"
 #if defined(UNIT_TEST) && ( __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || ( defined(_MSC_VER) && _MSC_VER >= 1700 ) )
 #define RNG_CXX11
 // Order-of-inclusion bug under MSVC: Include <random> early.
 #include <random>
 #endif
-#include "rng.hpp"
 
 #ifndef M_PI
 #define M_PI ( 3.14159265358979323846 )

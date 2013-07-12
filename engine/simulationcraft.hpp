@@ -96,6 +96,9 @@ public:
 #define nullptr ( std::nullptr_t() )
 #endif
 
+#if defined(SC_GCC) && SC_GCC < 40500
+#undef __STRICT_ANSI__ // problem with gcc4.4 + -std=c++0x and including <cstdio>. Not sure if it affects 4.4.1 as well. http://stackoverflow.com/questions/3445312/swprintf-and-vswprintf-not-declared
+#endif
 
 #include <stdint.h>
 #include <algorithm>

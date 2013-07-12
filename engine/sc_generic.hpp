@@ -104,7 +104,7 @@ template <typename T, std::size_t N>
 inline std::size_t sizeof_array( const std::array<T, N>& )
 { return N; }
 
-#if defined(__GXX_EXPERIMENTAL_CXX0X__) && ( defined(SC_GCC) && SC_GCC >= 40400 || defined(SC_CLANG) && SC_CLANG >= 30000 ) // Improved compile-time diagnostics.
+#if defined(__GXX_EXPERIMENTAL_CXX0X__) && ( ( defined(SC_GCC) && SC_GCC >= 40600 ) || ( defined(SC_CLANG) && SC_CLANG >= 30000 ) ) // Improved compile-time diagnostics.
 class noncopyable
 {
 public:
