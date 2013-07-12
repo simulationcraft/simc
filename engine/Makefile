@@ -78,7 +78,7 @@ ifeq (UNIX,${OS})
         optimized::CPP_FLAGS  += -malign-double
     endif
     
-  ifeq (DARWIN,${FLAVOUR})
+  ifeq (Darwin,${FLAVOR})
     # Use clang++ by default instead of clang-g++
     CXX = clang++
   endif
