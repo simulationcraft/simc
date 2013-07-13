@@ -2139,6 +2139,7 @@ struct frostbolt_t : public mage_spell_t
 
 // Frostfire Bolt Spell =====================================================
 
+// Used when glyphed Icy Veins is active
 struct mini_frostfire_bolt_t : public mage_spell_t
 {
   mini_frostfire_bolt_t( mage_t* p , int bolt_count = 1 ) :
@@ -2167,6 +2168,17 @@ struct mini_frostfire_bolt_t : public mage_spell_t
   }
 };
 
+// Cast by Frost T16 4pc bonus when Brain Freeze FFB is cast
+struct frigid_blast_t : public spell_t
+{
+  frigid_blast_t( mage_t* p ) :
+    spell_t( "frigid_blast", p, p -> find_spell( 131581 ) )
+  {
+    background = true;
+    may_crit = true;
+  }
+};
+
 struct frostfire_bolt_t : public mage_spell_t
 {
   struct state_t : public action_state_t
@@ -2188,10 +2200,12 @@ struct frostfire_bolt_t : public mage_spell_t
     }
   };
   mini_frostfire_bolt_t* mini_frostfire_bolt;
+  frigid_blast_t* frigid_blast;
 
   frostfire_bolt_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "frostfire_bolt", p, p -> find_spell( 44614 ) ),
-    mini_frostfire_bolt( new mini_frostfire_bolt_t( p ) )
+    mini_frostfire_bolt( new mini_frostfire_bolt_t( p ) ),
+    frigid_blast( new frigid_blast_t( p ) )
   {
     parse_options( NULL, options_str );
 
@@ -2202,6 +2216,9 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( p -> set_bonus.pvp_4pc_caster() )
       base_multiplier *= 1.05;
+
+    if ( p -> set_bonus.tier16_2pc_caster() )
+      add_child( frigid_blast );
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e type )
@@ -2258,7 +2275,11 @@ struct frostfire_bolt_t : public mage_spell_t
     {
       p() -> buffs.frozen_thoughts -> trigger();
     }
-    p() -> buffs.brain_freeze -> expire();
+    // FIX ME: This needs to happen on (effect #2)% chance (currently 30%)
+    if ( p() -> set_bonus.tier16_4pc_caster() )
+    {
+      frigid_blast -> execute();
+    }
   }
 
   virtual timespan_t travel_time()
@@ -3584,6 +3605,7 @@ struct incanters_ward_t : public mage_spell_t
 
   }
 };
+
 
 // ==========================================================================
 // Mage Character Definition
