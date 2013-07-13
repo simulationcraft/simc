@@ -77,11 +77,6 @@ ifeq (UNIX,${OS})
     ifeq (i686,${HOSTTYPE})
         optimized::CPP_FLAGS  += -malign-double
     endif
-    
-  ifeq (Darwin,${FLAVOR})
-    # Use clang++ by default instead of clang-g++
-    CXX = clang++
-  endif
 endif
 
 # Windows platform with MinGW32
