@@ -1369,7 +1369,7 @@ struct eternal_flame_t : public paladin_heal_t
 
     // Shield of Glory (Tier 15 protection 2-piece bonus)
     if ( p() -> set_bonus.tier15_2pc_tank() )
-      p() -> buffs.shield_of_glory -> trigger();
+      p() -> buffs.shield_of_glory -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> buffs.shield_of_glory -> buff_duration * hopo );
   }
 };
 
@@ -1925,6 +1925,9 @@ struct holy_prism_t : public paladin_spell_t
       heal -> target = target;
       heal -> schedule_execute();
     }
+
+    paladin_spell_t::consume_resource();
+    paladin_spell_t::update_ready();
   }
 };
 
@@ -2601,7 +2604,7 @@ struct word_of_glory_t : public paladin_heal_t
 
     // Shield of Glory (Tier 15 protection 2-piece bonus)
     if ( p() -> set_bonus.tier15_2pc_tank() )
-      p() -> buffs.shield_of_glory -> trigger();
+      p() -> buffs.shield_of_glory -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> buffs.shield_of_glory -> buff_duration * hopo );
 
     /* Set bonus changed in PTR b17124, leaving code in case it gets reverted
     // T16 4-piece tank bonus grants HP for each stack of BoG used
