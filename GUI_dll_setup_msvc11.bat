@@ -34,10 +34,11 @@ del /q Qt5WebKit.dll
 del /q Qt5WebKitWidgets.dll
 del /q Qt5Multimedia.dll
 del /q Qt5MultimediaWidgets.dll
+del /q Qt5Sensors.dll
 del /q libGLESv2.dll
-del /q icudt49.dll
-del /q icuin49.dll
-del /q icuuc49.dll
+del /q icudt51.dll
+del /q icuin51.dll
+del /q icuuc51.dll
 del /q libEGL.dll
 del /q mingw*.dll
 del /q libgcc*.dll
@@ -62,10 +63,12 @@ xcopy %qt_dir%\bin\Qt5WebKit.dll
 xcopy %qt_dir%\bin\Qt5WebKitWidgets.dll
 xcopy %qt_dir%\bin\Qt5Multimedia.dll
 xcopy %qt_dir%\bin\Qt5MultimediaWidgets.dll
+xcopy %qt_dir%\bin\Qt5Sensors.dll
+
 xcopy %qt_dir%\bin\libGLESv2.dll
-xcopy %qt_dir%\bin\icudt49.dll
-xcopy %qt_dir%\bin\icuin49.dll
-xcopy %qt_dir%\bin\icuuc49.dll
+xcopy %qt_dir%\bin\icudt51.dll
+xcopy %qt_dir%\bin\icuin51.dll
+xcopy %qt_dir%\bin\icuuc51.dll
 xcopy %qt_dir%\bin\libEGL.dll
 xcopy %qt_dir%\bin\D3DCompiler_46.dll
 
