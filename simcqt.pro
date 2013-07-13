@@ -19,6 +19,12 @@ CONFIG(console) {
   CONFIG += static staticlib
 }
 
+# OSX qt 5.1 is fubar and has double slashes, messing up things
+QTDIR=$$[QT_INSTALL_PREFIX]
+QTDIR=$$replace(QTDIR, //, /)
+QTBINDIR=$$[QT_INSTALL_BINS]
+QTBINDIR=$$replace(QTBINDIR, //, /)
+
 QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
 QMAKE_CXXFLAGS += $$OPTS
 
@@ -28,18 +34,38 @@ win32 {
 }
 
 macx {
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.6
   QMAKE_INFO_PLIST = qt/Simulationcraft.plist
   ICON = qt/icon/Simcraft2.icns
   LIBS += -framework CoreFoundation -framework AppKit
+  DEFINES += SIMC_NO_AUTOUPDATE
+
+  CONFIG(create_release) {
+    Resources.files = Welcome.html Welcome.png
+    Resources.path = Contents/Resources
+    Profiles.files = profiles/PreRaid profiles/Tier14N profiles/Tier14H profiles/Tier15N profiles/Tier15H
+    Profiles.path = Contents/Resources/profiles
+    QMAKE_BUNDLE_DATA += Profiles Resources
+    QMAKE_POST_LINK += qt/fix_qt51_osx_paths.sh $$QTDIR && \
+                      $$QTBINDIR/macdeployqt $(QMAKE_TARGET).app && \
+                      qt/osx_release.sh
+  }
 }
 
 # This will match both 'g++' and 'clang++'
 COMPILER_CHECK_CXX = $$replace(QMAKE_CXX,'.*g\\+\\+'.*,'g++')
+COMPILER_CXX = $$basename(QMAKE_CXX)
 
 contains(COMPILER_CHECK_CXX,'g++') {
   QMAKE_CXXFLAGS_RELEASE -= -O2
   QMAKE_CXXFLAGS_RELEASE += -O3 -fomit-frame-pointer
-  QMAKE_CXXFLAGS += -ffast-math -Woverloaded-virtual -msse2 -mfpmath=sse
+  QMAKE_CXXFLAGS += -ffast-math -Woverloaded-virtual
+  equals(COMPILER_CXX,'g++') {
+    QMAKE_CXXFLAGS += -mfpmath=sse
+  }
+  equals(COMPILER_CXX,'clang++') {
+    QMAKE_CXXFLAGS += -flto -Os
+  }
 }
 
 win32-msvc2010 {
