@@ -81,6 +81,9 @@ public:
     buff_t* tier15_2pc_haste;
     buff_t* tier15_2pc_crit;
     buff_t* tier15_2pc_mastery;
+    buff_t* profound_magic;
+    buff_t* potent_flames;
+    buff_t* frozen_thoughts;
   } buffs;
 
   // Cooldowns
@@ -1397,6 +1400,12 @@ struct arcane_missiles_t : public mage_spell_t
     mage_spell_t::execute();
 
     p() -> buffs.arcane_missiles -> up();
+
+    if ( p() -> set_bonus.tier16_2pc_caster() )
+    {
+      p() -> buffs.profound_magic -> trigger();
+    }
+
     // Trying to make the intended logic clear, but leaving it commented out
 //    if ( ! p() -> set_bonus.tier16_4pc_caster() || ! roll( p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() ))
 //    {
@@ -1629,6 +1638,24 @@ struct cone_of_cold_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
     aoe = -1;
+  }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+    p() -> buffs.frozen_thoughts -> expire();
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = mage_spell_t::action_multiplier();
+
+    if ( p() -> buffs.frozen_thoughts -> up() )
+    {
+      am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).base_value() );
+    }
+
+    return am;
   }
 };
 
@@ -2069,6 +2096,8 @@ struct frostbolt_t : public mage_spell_t
         mini_frostbolt -> schedule_execute( mini_frostbolt -> get_state( execute_state ) );
       }
     }
+    
+    p() -> buffs.frozen_thoughts -> expire();
   }
 
   virtual void impact( action_state_t* s )
@@ -2090,6 +2119,11 @@ struct frostbolt_t : public mage_spell_t
     if ( p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> up() )
     {
       am *= 0.4;
+    }
+
+    if ( p() -> buffs.frozen_thoughts -> up() )
+    {
+      am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).base_value() );
     }
 
     return am;
@@ -2219,9 +2253,10 @@ struct frostfire_bolt_t : public mage_spell_t
         mini_frostfire_bolt -> schedule_execute( mini_frostfire_bolt -> get_state( execute_state ) );
       }
     }
+    p() -> buffs.frozen_thoughts -> expire();
     if ( p() -> buffs.brain_freeze -> check() && p() -> set_bonus.tier16_2pc_caster() )
     {
-      p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), 0.75 );
+      p() -> buffs.frozen_thoughts -> trigger();
     }
     p() -> buffs.brain_freeze -> expire();
   }
@@ -2436,6 +2471,7 @@ struct ice_lance_t : public mage_spell_t
     }
 
     p() -> buffs.fingers_of_frost -> decrement();
+    p() -> buffs.frozen_thoughts -> expire();
   }
 
   virtual void impact( action_state_t* s )
@@ -2473,6 +2509,11 @@ struct ice_lance_t : public mage_spell_t
     if ( p() -> set_bonus.tier14_2pc_caster() )
     {
       am *= 1.12;
+    }
+
+    if ( p() -> buffs.frozen_thoughts -> up() )
+    {
+      am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).base_value() );
     }
 
     return am;
@@ -3016,6 +3057,10 @@ struct pyroblast_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
+    if ( p() -> buffs.pyroblast -> check() && p() -> set_bonus.tier16_2pc_caster() )
+    {
+      p() -> buffs.potent_flames -> trigger();
+    }
     p() -> buffs.pyroblast -> expire();
   }
 
@@ -3826,6 +3871,13 @@ void mage_t::create_buffs()
                                .add_stat( STAT_HASTE_RATING, find_spell( 138317 ) -> effectN( 1 ).base_value() );
   buffs.tier15_2pc_mastery   = stat_buff_creator_t( this, "tier15_2pc_mastery", find_spell( 138317 ) )
                                .add_stat( STAT_MASTERY_RATING, find_spell( 138317 ) -> effectN( 1 ).base_value() );
+
+  buffs.profound_magic       = stat_buff_creator_t( this, "profound_magic" )
+                               .spell( find_spell( 145252 ) );
+  buffs.potent_flames        = stat_buff_creator_t( this, "potent_flames" )
+                               .spell( find_spell( 145254 ) );
+  buffs.frozen_thoughts      = stat_buff_creator_t( this, "frozen_thoughts" )
+                               .spell( find_spell( 146557 ) );
 }
 
 // mage_t::init_gains =======================================================
