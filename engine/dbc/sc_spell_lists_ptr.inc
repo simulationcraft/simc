@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 17153
+// Class based active abilities, wow build 17169
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -182,7 +182,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Hunter
   {
-    // General tree, 40 abilities
+    // General tree, 41 abilities
     {
         3044, // Arcane Shot
         5118, // Aspect of the Cheetah
@@ -197,6 +197,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        83245, // Call Pet 5
        51753, // Camouflage
         5116, // Concussive Shot
+      147362, // Counter Shot
        19263, // Deterrence
        20736, // Distracting Shot
        13813, // Explosive Trap (Fire)
@@ -545,7 +546,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Shaman
   {
-    // General tree, 36 abilities
+    // General tree, 37 abilities
     {
       114049, // Ascendance
        76780, // Bind Elemental
@@ -567,6 +568,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
        73920, // Healing Rain
         5394, // Healing Stream Totem
         8004, // Healing Surge
+      108280, // Healing Tide Totem
        32182, // Heroism
        51514, // Hex
          403, // Lightning Bolt
@@ -1033,7 +1035,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (26)
 
-// Talent tree specialization abilities, wow build 17153
+// Talent tree specialization abilities, wow build 17169
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1877,7 +1879,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 17153
+// Class mastery abilities, wow build 17169
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2100,7 +2102,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 17153
+// Racial abilities, wow build 17169
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2813,7 +2815,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 17153
+// Glyph spells for classes, wow build 17169
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3073,10 +3075,10 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
     },
     // Minor Glyphs (11 spells)
     {
+      145722, // Glyph of Angels
        58009, // Glyph of Borrowed Time
       126152, // Glyph of Confession
        58228, // Glyph of Dark Archangel
-      145722, // Glyph of Feathers
       126174, // Glyph of Holy Resurrection
        57986, // Glyph of Shackle Undead
       107906, // Glyph of Shadow
@@ -3392,7 +3394,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 17153
+// Tier item set bonuses for class, wow build 17169
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
@@ -3573,8 +3575,8 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     {
       145174, // T16 PH - Priest Shadow - 2 Piece Bonus (Item - Priest T16 Shadow 2P Bonus)
       145179, // T16 PH - Priest Shadow - 4 Piece Bonus (Item - Priest T16 Shadow 4P Bonus)
-      145306, // T16 PH - Priest Healer - 2 Piece Bonus (Item - Priest T16 2P Bonus)
-      145334, // T16 PH - Priest Healer - 4 Piece Bonus (Item - Priest T16 4P Bonus)
+      145306, // T16 PH - Priest Healer - 2 Piece Bonus (Item - Priest T16 Healer 2P Bonus)
+      145334, // T16 PH - Priest Healer - 4 Piece Bonus (Item - Priest T16 Healer 4P Bonus)
           0,
     },
     {

@@ -2506,8 +2506,7 @@ void monk_t::init_spells()
   sets = new set_bonus_array_t( this, set_bonuses );
 
 
-  // Holy Mastery uses effect#2 by default
-  if ( specialization() == MONK_WINDWALKER )
+  if ( specialization() == MONK_WINDWALKER && ! maybe_ptr( dbc.ptr ) )
   {
     _mastery = &find_mastery_spell( specialization() ) -> effectN( 3 );
   }

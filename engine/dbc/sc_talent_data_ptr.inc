@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (198)
 
-// 198 talents, wow build 17153
+// 198 talents, wow build 17169
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001, 0x00,     0,   1,   1,   29838,         0,  0 },
@@ -118,7 +118,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Unleashed Fury"                    , 19265, 0x00, 0x0040, 0x00,     0,   0,   5,  117012,         0,  0 },
   { "Primal Elementalist"               , 19266, 0x00, 0x0040, 0x00,     0,   1,   5,  117013,         0,  0 },
   { "Elemental Blast"                   , 19267, 0x00, 0x0040, 0x00,     0,   2,   5,  117014,         0,  0 },
-  { "Healing Tide Totem"                , 19268, 0x00, 0x0040, 0x00,     0,   0,   4,  108280,         0,  0 },
+  { "Rushing Streams"                   , 19268, 0x00, 0x0040, 0x00,     0,   0,   4,  147074,         0,  0 },
   { "Ancestral Guidance"                , 19269, 0x00, 0x0040, 0x00,     0,   1,   4,  108281,         0,  0 },
   { "Conductivity"                      , 19270, 0x00, 0x0040, 0x00,     0,   2,   4,  108282,         0,  0 },
   { "Elemental Mastery"                 , 19271, 0x00, 0x0040, 0x00,     0,   0,   3,   16166,         0,  0 },
