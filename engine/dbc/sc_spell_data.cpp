@@ -1223,7 +1223,7 @@ struct spell_school_expr_t : public spell_list_expr_t
 spell_data_expr_t* build_expression_tree( sim_t* sim,
                                           const std::vector<expr_token_t>& tokens )
 {
-  auto_dispose<std::vector<spell_data_expr_t*>> stack;
+  auto_dispose< std::vector<spell_data_expr_t*> > stack;
 
   size_t num_tokens = tokens.size();
   for ( size_t i = 0; i < num_tokens; i++ )

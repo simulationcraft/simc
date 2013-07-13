@@ -498,31 +498,31 @@ void report::print_spell_query( sim_t* sim, unsigned level )
     root = new xml_node_t( "spell_query" );
   }
 
-  for ( auto it = sq -> result_spell_list.begin(); it != sq -> result_spell_list.end(); ++it )
+  for ( std::vector<uint32_t>::iterator i = sq -> result_spell_list.begin(); i != sq -> result_spell_list.end(); ++i )
   {
     if ( sq -> data_type == DATA_TALENT )
     {
       if ( root )
-        spell_info::talent_to_xml( sim, sim -> dbc.talent( *it ), root );
+        spell_info::talent_to_xml( sim, sim -> dbc.talent( *i ), root );
       else
-        util::fprintf( sim -> output_file, "%s", spell_info::talent_to_str( sim, sim -> dbc.talent( *it ) ).c_str() );
+        util::fprintf( sim -> output_file, "%s", spell_info::talent_to_str( sim, sim -> dbc.talent( *i ) ).c_str() );
     }
     else if ( sq -> data_type == DATA_EFFECT )
     {
       std::ostringstream sqs;
-      const spell_data_t* spell = sim -> dbc.spell( sim -> dbc.effect( *it ) -> spell_id() );
+      const spell_data_t* spell = sim -> dbc.spell( sim -> dbc.effect( *i ) -> spell_id() );
       if ( spell )
       {
         if ( root )
-          spell_info::effect_to_xml( sim, spell, sim -> dbc.effect( *it ), root );
+          spell_info::effect_to_xml( sim, spell, sim -> dbc.effect( *i ), root );
         else
-          spell_info::effect_to_str( sim, spell, sim -> dbc.effect( *it ), sqs );
+          spell_info::effect_to_str( sim, spell, sim -> dbc.effect( *i ), sqs );
       }
       util::fprintf( sim -> output_file, "%s", sqs.str().c_str() );
     }
     else
     {
-      const spell_data_t* spell = sim -> dbc.spell( *it );
+      const spell_data_t* spell = sim -> dbc.spell( *i );
       if ( root )
         spell_info::to_xml( sim, spell, root, level );
       else

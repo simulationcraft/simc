@@ -31,7 +31,7 @@ OPENSSL_PATH =
 
 CXX        = g++
 CPP_FLAGS  = -Wall -Woverloaded-virtual -W -I.
-OPTS       = -O3 -std=c++0x 
+OPTS       = -O3
 
 ifeq (${CXX},g++)
 # Force on SSE2 to avoid problems with older GCC versions

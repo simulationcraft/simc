@@ -39,7 +39,7 @@ public:
 
     auto_lock_t lock( mutex );
 
-    auto it = map.find( id_spell );
+    token_map_t::iterator it = map.find( id_spell );
     if ( it == map.end() )
       return empty;
 
@@ -50,7 +50,7 @@ public:
   {
     auto_lock_t lock( mutex );
 
-    for ( auto it = map.begin(); it != map.end(); ++it )
+    for ( token_map_t::iterator it = map.begin(); it != map.end(); ++it )
       if ( it -> second == token ) return it -> first;
 
     return 0;

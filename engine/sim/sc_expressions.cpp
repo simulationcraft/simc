@@ -455,7 +455,7 @@ bool expression_t::convert_to_rpn( std::vector<expr_token_t>& tokens )
 static expr_t* build_expression_tree( action_t* action,
                                       std::vector<expr_token_t>& tokens )
 {
-  auto_dispose<std::vector<expr_t*>> stack;
+  auto_dispose< std::vector<expr_t*> > stack;
 
   size_t num_tokens = tokens.size();
   for ( size_t i = 0; i < num_tokens; i++ )

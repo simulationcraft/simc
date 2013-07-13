@@ -126,7 +126,7 @@ struct death_knight_t : public player_t
 {
 public:
   // Track healing for Death Strike
-  std::vector<std::pair<timespan_t, double>> incoming_damage;
+  std::vector<std::pair<timespan_t, double> > incoming_damage;
 
   // Active
   int       active_presence;
@@ -3237,14 +3237,14 @@ struct death_strike_t : public death_knight_melee_attack_t
   {
     if ( p() -> incoming_damage.size() > 0 )
     {
-      auto it = p() -> incoming_damage.begin();
-      while ( it != p() -> incoming_damage.end() &&
-              sim -> current_time - ( *it ).first > timespan_t::from_seconds( 5.0 ) )
+      std::vector< std::pair< timespan_t, double > >::iterator i = p() -> incoming_damage.begin();
+      while ( i != p() -> incoming_damage.end() &&
+              sim -> current_time - ( *i ).first > timespan_t::from_seconds( 5.0 ) )
       {
-        ++it;
+        ++i;
       }
 
-      p() -> incoming_damage.erase( p() -> incoming_damage.begin(), it );
+      p() -> incoming_damage.erase( p() -> incoming_damage.begin(), i );
     }
 
     double heal_amount = 0;

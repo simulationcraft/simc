@@ -58,7 +58,7 @@ reforge_plot_t::reforge_plot_t( sim_t* s ) :
 
 // generate_stat_mods =======================================================
 
-void reforge_plot_t::generate_stat_mods( std::vector<std::vector<int>> &stat_mods,
+void reforge_plot_t::generate_stat_mods( std::vector<std::vector<int> > &stat_mods,
                                          const std::vector<stat_e> &stat_indices,
                                          int cur_mod_stat,
                                          std::vector<int> cur_stat_mods )
@@ -132,7 +132,7 @@ void reforge_plot_t::analyze_stats()
   // Create vector of all stat_add combinations recursively
   std::vector<int> cur_stat_mods( reforge_plot_stat_indices.size() );
 
-  std::vector<std::vector<int>> stat_mods;
+  std::vector<std::vector<int> > stat_mods;
   generate_stat_mods( stat_mods, reforge_plot_stat_indices, 0,
                       cur_stat_mods );
 

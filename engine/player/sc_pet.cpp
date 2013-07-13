@@ -132,7 +132,7 @@ void pet_t::summon( timespan_t summon_duration )
   current.distance = owner -> current.distance;
 
   // Add to active_pets
-  auto it = range::find( owner -> active_pets, this );
+  std::vector<pet_t*>::iterator it = range::find( owner -> active_pets, this );
   if ( it != owner -> active_pets.end() )
     owner -> active_pets.push_back( this );
 
@@ -181,7 +181,7 @@ void pet_t::dismiss()
   if ( sim -> log ) sim -> output( "%s dismisses %s", owner -> name(), name() );
 
   // Remove from active_pets list
-  auto it = range::find( owner -> active_pets, this );
+  std::vector<pet_t*>::iterator it = range::find( owner -> active_pets, this );
   if ( it != owner -> active_pets.end() )
     erase_unordered( owner -> active_pets, it );
 
