@@ -2169,10 +2169,10 @@ struct mini_frostfire_bolt_t : public mage_spell_t
 };
 
 // Cast by Frost T16 4pc bonus when Brain Freeze FFB is cast
-struct frigid_blast_t : public spell_t
+struct frigid_blast_t : public mage_spell_t
 {
   frigid_blast_t( mage_t* p ) :
-    spell_t( "frigid_blast", p, p -> find_spell( 131581 ) )
+    mage_spell_t( "frigid_blast", p, p -> find_spell( 131581 ) )
   {
     background = true;
     may_crit = true;
