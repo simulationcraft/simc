@@ -1919,7 +1919,9 @@ struct shadowy_apparition_spell_t : public priest_spell_t
   rng_t* t15_2pc; // Create this for everyone, as when we make shadowy_apparition_spell_t, we haven't run init_items() yet
 
   shadowy_apparition_spell_t( priest_t& p ) :
-    priest_spell_t( "shadowy_apparition", p, p.specs.shadowy_apparitions -> ok() ? p.find_spell( 87532 ) : spell_data_t::not_found() ),
+    priest_spell_t( "shadowy_apparition",
+                    p,
+                    p.dbc.ptr ? p.find_spell( 147193 ) : p.find_spell( 87532 ) ),
     t15_2pc( p.get_rng( "Tier15 2pc caster" ) )
   {
     background        = true;
