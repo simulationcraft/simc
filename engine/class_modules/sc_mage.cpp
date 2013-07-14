@@ -149,10 +149,10 @@ public:
     proc_t* hotstreak;
   } procs;
 
-  // Random Number Generation
-  struct rngs_t
+  // Random Number Generators
+  struct
   {
-  } rngs;
+  } rng;
 
   // Rotation (DPS vs DPM)
   struct rotation_t
@@ -245,7 +245,7 @@ public:
     passives( passives_t() ),
     pets( pets_t() ),
     procs( procs_t() ),
-    rngs( rngs_t() ),
+    rng(),
     rotation( rotation_t() ),
     spells( spells_t() ),
     spec( specializations_t() ),
@@ -269,6 +269,7 @@ public:
   virtual void      create_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
+  virtual void      init_rng();
   virtual void      init_benefits();
   virtual void      init_actions();
   virtual void      reset();
@@ -2202,11 +2203,13 @@ struct frostfire_bolt_t : public mage_spell_t
   };
   mini_frostfire_bolt_t* mini_frostfire_bolt;
   frigid_blast_t* frigid_blast;
+  rng_t *t16_4pc_frost_rng;
 
   frostfire_bolt_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "frostfire_bolt", p, p -> find_spell( 44614 ) ),
     mini_frostfire_bolt( new mini_frostfire_bolt_t( p ) ),
-    frigid_blast( new frigid_blast_t( p ) )
+    frigid_blast( new frigid_blast_t( p ) ),
+    t16_4pc_frost_rng( nullptr )
   {
     parse_options( NULL, options_str );
 
@@ -2220,6 +2223,7 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( p -> set_bonus.tier16_2pc_caster() )
       add_child( frigid_blast );
+      t16_4pc_frost_rng = sim -> get_rng( "t16_4pc_frost" );
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e type )
@@ -2276,10 +2280,10 @@ struct frostfire_bolt_t : public mage_spell_t
     {
       p() -> buffs.frozen_thoughts -> trigger();
     }
-    // FIX ME: This needs to happen on (effect #2)% chance (currently 30%)
-    if ( p() -> set_bonus.tier16_4pc_caster() )
+    // FIX ME: Instead of hardcoding 0.3, should use effect 2 of 145257
+    if ( p() -> set_bonus.tier16_4pc_caster() && t16_4pc_frost_rng -> roll( p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 2 ).percent() ) )
     {
-      frigid_blast -> execute();
+      frigid_blast -> schedule_execute();
     }
     p() -> buffs.brain_freeze -> expire();
   }
@@ -3822,6 +3826,7 @@ void mage_t::init_spells()
     { 105788, 105790,     0,     0,     0,     0,     0,     0 }, // Tier13
     { 123097, 123101,     0,     0,     0,     0,     0,     0 }, // Tier14
     { 138316, 138376,     0,     0,     0,     0,     0,     0 }, // Tier15
+    { 145251, 145257,     0,     0,     0,     0,     0,     0 }, // Tier16
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -3973,6 +3978,13 @@ void mage_t::add_action( const spell_data_t* s, std::string options, std::string
     *str += "/" + dbc::get_token( s -> id() );
     if ( ! options.empty() ) *str += "," + options;
   }
+}
+
+// mage_t::init_rng =======================================================
+
+void mage_t::init_rng()
+{
+  player_t::init_rng();
 }
 
 // mage_t::init_actions =====================================================
