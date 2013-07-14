@@ -1259,6 +1259,11 @@ struct arcane_blast_t : public mage_spell_t
            ( 1.0 + ( p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
     }
 
+    if ( p() -> buffs.profound_magic -> check() )
+    {
+      c *= 1.0 - p() -> buffs.profound_magic -> stack() * 0.25;
+    }
+
     return c;
   }
 
@@ -1272,6 +1277,7 @@ struct arcane_blast_t : public mage_spell_t
     mage_spell_t::execute();
 
     p() -> buffs.arcane_charge -> trigger();
+    p() -> buffs.profound_magic -> expire();
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -1359,8 +1365,10 @@ struct arcane_missiles_tick_t : public mage_spell_t
 
 struct arcane_missiles_t : public mage_spell_t
 {
+  rng_t *t16_4pc_arcane_rng;
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_missiles", p, p -> find_class_spell( "Arcane Missiles" ) )
+    mage_spell_t( "arcane_missiles", p, p -> find_class_spell( "Arcane Missiles" ) ),
+    t16_4pc_arcane_rng( nullptr )
   {
     parse_options( NULL, options_str );
     may_miss = false;
@@ -1373,6 +1381,11 @@ struct arcane_missiles_t : public mage_spell_t
 
     dynamic_tick_action = true;
     tick_action = new arcane_missiles_tick_t( p );
+
+    if ( p -> set_bonus.tier16_2pc_caster() )
+    {
+      t16_4pc_arcane_rng = sim -> get_rng( "t16_4pc_arcane" );
+    }
   }
 
   virtual double action_multiplier()
@@ -1408,11 +1421,11 @@ struct arcane_missiles_t : public mage_spell_t
       p() -> buffs.profound_magic -> trigger();
     }
 
-    // Trying to make the intended logic clear, but leaving it commented out
-//    if ( ! p() -> set_bonus.tier16_4pc_caster() || ! roll( p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() ))
-//    {
-    p() -> buffs.arcane_missiles -> decrement();
-//    }
+    // T16 4pc has a chance not to consume arcane missiles buff
+    if ( !p() -> set_bonus.tier16_4pc_caster() || !t16_4pc_arcane_rng -> roll( p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() ) )
+    {
+      p() -> buffs.arcane_missiles -> decrement();
+    }
   }
 
   virtual bool ready()
@@ -2222,8 +2235,10 @@ struct frostfire_bolt_t : public mage_spell_t
       base_multiplier *= 1.05;
 
     if ( p -> set_bonus.tier16_2pc_caster() )
+    {
       add_child( frigid_blast );
       t16_4pc_frost_rng = sim -> get_rng( "t16_4pc_frost" );
+    }
   }
 
   virtual void snapshot_state( action_state_t* s, dmg_e type )
