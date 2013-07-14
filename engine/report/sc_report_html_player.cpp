@@ -2146,10 +2146,23 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
 
   // if player tank, print extra metrics
   if ( p -> primary_role() == ROLE_TANK && p -> type != ENEMY )
-    os.printf( ", %.0f dtps, %.1f TMI\n",
+  {
+    double tmi_display =  p -> collected_data.theck_meloree_index.mean();
+    std::string tmi_letter = " ";
+    if ( tmi_display >= 10000000.0 )
+    {
+      tmi_display /= 1e6;
+      tmi_letter = "M ";
+    }
+    else if ( tmi_display >= 100000.0 ) 
+    { 
+      tmi_display /= 1e3; 
+      tmi_letter = "k "; 
+    }
+    os.printf( ", %.0f dtps, %.1f%sTMI\n",
                p -> collected_data.dtps.mean(),
-               p -> collected_data.theck_meloree_index.mean() );
-
+               tmi_display, tmi_letter.c_str() );
+  }
   os << "</h2>\n";
 
   os << "\t\t\t<div class=\"toggle-content";
@@ -2317,9 +2330,9 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
       "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
       "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
       "\t\t\t\t\t\t\t\t<td>%.0f / %.1f%%</td>\n"
-      "\t\t\t\t\t\t\t\t<td>%.5g</td>\n"
-      "\t\t\t\t\t\t\t\t<td>%.3g / %.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t<td>%.5g / %.1f%%</td>\n",
+      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
+      "\t\t\t\t\t\t\t\t<td>%.1f / %.2f%%</td>\n"
+      "\t\t\t\t\t\t\t\t<td>%.1f / %.1f%%</td>\n",
       cd.dtps.mean(),
       dtps_error, cd.dtps.mean() ? dtps_error * 100 / cd.dtps.mean() : 0,
       dtps_range, cd.dtps.mean() ? dtps_range / cd.dtps.mean() * 100.0 : 0,
