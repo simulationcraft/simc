@@ -84,6 +84,7 @@ public:
     buff_t* profound_magic;
     buff_t* potent_flames;
     buff_t* frozen_thoughts;
+    buff_t* fiery_adept;
   } buffs;
 
   // Cooldowns
@@ -1652,7 +1653,7 @@ struct cone_of_cold_t : public mage_spell_t
 
     if ( p() -> buffs.frozen_thoughts -> up() )
     {
-      am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).base_value() );
+      am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).percent() );
     }
 
     return am;
@@ -2123,7 +2124,7 @@ struct frostbolt_t : public mage_spell_t
 
     if ( p() -> buffs.frozen_thoughts -> up() )
     {
-      am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).base_value() );
+      am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).percent() );
     }
 
     return am;
@@ -2280,6 +2281,7 @@ struct frostfire_bolt_t : public mage_spell_t
     {
       frigid_blast -> execute();
     }
+    p() -> buffs.brain_freeze -> expire();
   }
 
   virtual timespan_t travel_time()
@@ -2534,7 +2536,7 @@ struct ice_lance_t : public mage_spell_t
 
     if ( p() -> buffs.frozen_thoughts -> up() )
     {
-      am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).base_value() );
+      am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).percent() );
     }
 
     return am;
@@ -2666,6 +2668,16 @@ struct inferno_blast_t : public mage_spell_t
     }
 
     return tm;
+  }
+
+  virtual void execute()
+  {
+    mage_spell_t::execute();
+
+    if ( p() -> set_bonus.tier16_4pc_caster() )
+    {
+      p() -> buffs.fiery_adept -> trigger();
+    }
   }
 };
 
@@ -3083,6 +3095,7 @@ struct pyroblast_t : public mage_spell_t
       p() -> buffs.potent_flames -> trigger();
     }
     p() -> buffs.pyroblast -> expire();
+    p() -> buffs.fiery_adept -> expire();
   }
 
   virtual timespan_t travel_time()
@@ -3119,6 +3132,9 @@ struct pyroblast_t : public mage_spell_t
 
     if ( p() -> set_bonus.tier15_4pc_caster() )
       c += p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent();
+      
+    if ( p() -> buffs.fiery_adept -> check() )
+      c += 100.0;
 
     return c;
   }
@@ -3894,12 +3910,15 @@ void mage_t::create_buffs()
   buffs.tier15_2pc_mastery   = stat_buff_creator_t( this, "tier15_2pc_mastery", find_spell( 138317 ) )
                                .add_stat( STAT_MASTERY_RATING, find_spell( 138317 ) -> effectN( 1 ).base_value() );
 
-  buffs.profound_magic       = stat_buff_creator_t( this, "profound_magic" )
+  buffs.profound_magic       = buff_creator_t( this, "profound_magic" )
                                .spell( find_spell( 145252 ) );
   buffs.potent_flames        = stat_buff_creator_t( this, "potent_flames" )
                                .spell( find_spell( 145254 ) );
-  buffs.frozen_thoughts      = stat_buff_creator_t( this, "frozen_thoughts" )
+  buffs.frozen_thoughts      = buff_creator_t( this, "frozen_thoughts" )
                                .spell( find_spell( 146557 ) );
+  buffs.fiery_adept          = buff_creator_t( this, "fiery_adept" )
+                               .spell( find_spell( 145261 ) )
+                               .chance( 1.0 );
 }
 
 // mage_t::init_gains =======================================================
