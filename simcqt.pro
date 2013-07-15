@@ -41,14 +41,13 @@ macx {
     ICON = qt/icon/Simcraft2.icns
     LIBS += -framework CoreFoundation -framework AppKit
     DEFINES += SIMC_NO_AUTOUPDATE
-    CLEAN += $$(QMAKE_TARGET).app
 
     Resources.files = Welcome.html Welcome.png
     Resources.path = Contents/Resources
     Profiles.files = profiles/PreRaid profiles/Tier14N profiles/Tier14H profiles/Tier15N profiles/Tier15H
     Profiles.path = Contents/Resources/profiles
     QMAKE_BUNDLE_DATA += Profiles Resources
-    QMAKE_CLEAN += simc *.dmg
+    QMAKE_DISTCLEAN += simc *.dmg
   }
 
   release_simc.target = release_simc
