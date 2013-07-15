@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (198)
 
-// 198 talents, wow build 17169
+// 198 talents, wow build 17191
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001, 0x00,     0,   1,   1,   29838,         0,  0 },
@@ -144,7 +144,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Grimoire of Supremacy"             , 19293, 0x00, 0x0100, 0x00,     0,   0,   4,  108499,         0,  0 },
   { "Grimoire of Service"               , 19294, 0x00, 0x0100, 0x00,     0,   1,   4,  108501,         0,  0 },
   { "Grimoire of Sacrifice"             , 19295, 0x00, 0x0100, 0x00,     0,   2,   4,  108503,         0,  0 },
-  { "Archimonde's Vengeance"            , 19296, 0x00, 0x0100, 0x00,     0,   0,   5,  108505,         0,  0 },
+  { "Archimonde's Darkness"             , 19296, 0x00, 0x0100, 0x00,     0,   0,   5,  108505,         0,  0 },
   { "Kil'jaeden's Cunning"              , 19297, 0x00, 0x0100, 0x00,     0,   1,   5,  137587,         0,  0 },
   { "Mannoroth's Fury"                  , 19298, 0x00, 0x0100, 0x00,     0,   2,   5,  108508,         0,  0 },
   { "Nether Tempest"                    , 19299, 0x00, 0x0080, 0x00,     0,   0,   4,  114923,    125430,  0 },
