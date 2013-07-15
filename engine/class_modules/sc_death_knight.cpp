@@ -162,6 +162,7 @@ public:
 
     absorb_buff_t* blood_shield;
     stat_buff_t* death_shroud;
+    stat_buff_t* riposte;
   } buffs;
 
   struct runeforge_t
@@ -247,6 +248,7 @@ public:
     const spell_data_t* crimson_scourge;
     const spell_data_t* sanguine_fortitude;
     const spell_data_t* will_of_the_necropolis;
+    const spell_data_t* riposte;
 
     // Frost
     const spell_data_t* blood_of_the_north;
@@ -3005,10 +3007,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     if ( p() -> set_bonus.tier16_4pc_tank() )
     {
       for ( int i = 2; i < RUNE_SLOT_MAX; ++i )
-      {
-        p() -> _runes.slot[ i ].fill_rune();
         p() -> _runes.slot[ i ].type |= RUNE_TYPE_DEATH;
-      }
 
       p() -> buffs.deathbringer -> trigger( p() -> buffs.deathbringer -> data().initial_stacks() );
     }
@@ -5031,6 +5030,7 @@ void death_knight_t::init_spells()
   spec.crimson_scourge            = find_specialization_spell( "Crimson Scourge" );
   spec.sanguine_fortitude         = find_specialization_spell( "Sanguine Fortitude" );
   spec.will_of_the_necropolis     = find_specialization_spell( "Will of the Necropolis" );
+  spec.riposte                    = maybe_ptr( dbc.ptr ) ? find_specialization_spell( "Riposte" ) : spell_data_t::not_found();
 
   // Frost
   spec.blood_of_the_north         = find_specialization_spell( "Blood of the North" );
@@ -5827,6 +5827,9 @@ void death_knight_t::create_buffs()
                               .max_stack( ( set_bonus.tier13_2pc_melee() ) ? 2 : 1 )
                               .cd( timespan_t::zero() )
                               .chance( spec.rime -> ok() );
+  buffs.riposte             = stat_buff_creator_t( this, "riposte", spec.riposte -> effectN( 1 ).trigger() )
+                              .chance( spec.riposte -> proc_chance() )
+                              .add_stat( STAT_CRIT_RATING, 0 );
   //buffs.runic_corruption    = buff_creator_t( this, "runic_corruption", find_spell( 51460 ) )
   //                            .chance( talent.runic_corruption -> proc_chance() );
   buffs.runic_corruption    = new runic_corruption_buff_t( this );
@@ -5983,6 +5986,19 @@ void death_knight_t::assess_damage( school_e     school,
   {
     buffs.will_of_the_necropolis_dr -> trigger();
     buffs.will_of_the_necropolis_rt -> trigger();
+  }
+  
+  if ( maybe_ptr( dbc.ptr ) && ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY ) )
+  {
+    if ( buffs.scent_of_blood -> trigger() )
+    {
+      resource_gain( RESOURCE_RUNIC_POWER,
+                     buffs.scent_of_blood -> data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
+                     gains.scent_of_blood );
+    }
+
+    buffs.riposte -> stats[ 0 ].amount = ( current.stats.dodge_rating + current.stats.parry_rating ) * spec.riposte -> effectN( 1 ).percent();
+    buffs.riposte -> trigger();
   }
 }
 
