@@ -34,22 +34,33 @@ win32 {
 }
 
 macx {
-  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.6
-  QMAKE_INFO_PLIST = qt/Simulationcraft.plist
-  ICON = qt/icon/Simcraft2.icns
-  LIBS += -framework CoreFoundation -framework AppKit
-  DEFINES += SIMC_NO_AUTOUPDATE
+  CONFIG(qt) {
+    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.6
+    CONFIG += to_install
+    QMAKE_INFO_PLIST = qt/Simulationcraft.plist
+    ICON = qt/icon/Simcraft2.icns
+    LIBS += -framework CoreFoundation -framework AppKit
+    DEFINES += SIMC_NO_AUTOUPDATE
+    CLEAN += $$(QMAKE_TARGET).app
 
-  CONFIG(create_release) {
     Resources.files = Welcome.html Welcome.png
     Resources.path = Contents/Resources
     Profiles.files = profiles/PreRaid profiles/Tier14N profiles/Tier14H profiles/Tier15N profiles/Tier15H
     Profiles.path = Contents/Resources/profiles
     QMAKE_BUNDLE_DATA += Profiles Resources
-    QMAKE_POST_LINK += qt/fix_qt51_osx_paths.sh $$QTDIR && \
-                      $$QTBINDIR/macdeployqt $(QMAKE_TARGET).app && \
-                      qt/osx_release.sh
+    QMAKE_CLEAN += simc *.dmg
   }
+
+  release_simc.target = release_simc
+  release_simc.commands = make CXX=clang++ OPTS=\"-std=c++0x -fomit-frame-pointer -arch i386 -arch x86_64 -O3 -msse2 -march=native -ffast-math -flto -Os -DNDEBUG\" -C engine install
+
+  create_release.target   = create_release
+  create_release.depends  = $(TARGET) release_simc
+  create_release.commands = qt/fix_qt51_osx_paths.sh $$QTDIR && \
+                            $$QTBINDIR/macdeployqt $(QMAKE_TARGET).app && \
+                            qt/osx_release.sh
+
+  QMAKE_EXTRA_TARGETS += release_simc create_release
 }
 
 # This will match both 'g++' and 'clang++'
@@ -64,7 +75,7 @@ contains(COMPILER_CHECK_CXX,'g++') {
     QMAKE_CXXFLAGS += -mfpmath=sse
   }
   equals(COMPILER_CXX,'clang++') {
-    QMAKE_CXXFLAGS += -flto -Os
+    QMAKE_CXXFLAGS_RELEASE += -flto -Os
   }
 }
 
