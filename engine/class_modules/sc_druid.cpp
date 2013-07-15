@@ -163,7 +163,6 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* celestial_alignment;
     cooldown_t* lotp;
     cooldown_t* natures_swiftness;
     cooldown_t* mangle_bear;
@@ -381,7 +380,6 @@ public:
     default_initial_eclipse = -75;
     preplant_mushrooms = true;
 
-    cooldown.celestial_alignment = get_cooldown( "celestial_alignment" );
     cooldown.lotp                = get_cooldown( "lotp"                );
     cooldown.natures_swiftness   = get_cooldown( "natures_swiftness"   );
     cooldown.mangle_bear         = get_cooldown( "mangle_bear"         );
@@ -3435,9 +3433,6 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
                           p() -> gain.eclipse );
 
     p() -> buff.natures_grace -> trigger();
-    // TODO: Does activating CA reduce the cooldown too?
-    if ( p() -> set_bonus.tier16_4pc_caster() )
-      p() -> cooldown.celestial_alignment -> adjust( timespan_t::from_seconds( - p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).base_value() ) );
   }
 
   void test_to_extend( action_state_t* s, dot_t* dot )
@@ -4205,8 +4200,6 @@ struct moonfire_t : public druid_spell_t
 
     druid_spell_t::execute();
 
-    trigger_t16_2pc_balance( false );
-
     if ( result_is_hit( execute_state -> result ) )
     {
       if ( p() -> spec.lunar_shower -> ok() )
@@ -4214,6 +4207,8 @@ struct moonfire_t : public druid_spell_t
         p() -> buff.lunar_shower -> trigger();
       }
     }
+
+    trigger_t16_2pc_balance( false );
   }
 
   virtual void impact( action_state_t* s )
@@ -5666,7 +5661,7 @@ void druid_t::create_buffs()
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.lunar_shower          = buff_creator_t( this, "lunar_shower",   spec.lunar_shower -> effectN( 1 ).trigger() );
   buff.shooting_stars        = buff_creator_t( this, "shooting_stars", spec.shooting_stars -> effectN( 1 ).trigger() )
-                               .chance( spec.shooting_stars -> proc_chance() );
+                               .chance( spec.shooting_stars -> proc_chance() + ( set_bonus.tier16_4pc_caster() ? 0.2 : 0 ) );
   buff.starfall              = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
                                .cd( timespan_t::zero() );
 
