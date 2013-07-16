@@ -2318,6 +2318,8 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">DTPS Range</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmi\" class=\"help\">TMI</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">TMI Error</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">TMI Min</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">TMI Max</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">TMI Range</a></th>\n"
        << "\t\t\t\t\t\t\t</tr>\n"
        << "\t\t\t\t\t\t\t<tr>\n";
@@ -2332,12 +2334,15 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
       "\t\t\t\t\t\t\t\t<td>%.0f / %.1f%%</td>\n"
       "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
       "\t\t\t\t\t\t\t\t<td>%.1f / %.2f%%</td>\n"
+      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
+      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
       "\t\t\t\t\t\t\t\t<td>%.1f / %.1f%%</td>\n",
       cd.dtps.mean(),
       dtps_error, cd.dtps.mean() ? dtps_error * 100 / cd.dtps.mean() : 0,
       dtps_range, cd.dtps.mean() ? dtps_range / cd.dtps.mean() * 100.0 : 0,
       cd.theck_meloree_index.mean(),
       tmi_error, cd.theck_meloree_index.mean() ? tmi_error * 100.0 / cd.theck_meloree_index.mean() : 0.0,
+      cd.theck_meloree_index.min(), cd.theck_meloree_index.max(),
       tmi_range, cd.theck_meloree_index.mean() ? tmi_range * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
 
     os << "\t\t\t\t\t\t\t</tr>\n"

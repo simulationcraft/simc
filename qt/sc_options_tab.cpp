@@ -760,7 +760,7 @@ QString SC_OptionsTab::get_globalSettings()
   {
     // boss damage (
     int aa_damage [3] = { 900000, 750000, 550000 };
-    int dot_damage [3] = { 25000, 17500, 10000 };
+    int dot_damage [3] = { 30000, 25000, 20000 };
 
     // boss setup
     options += "enemy=TMI_Standard_Boss_";

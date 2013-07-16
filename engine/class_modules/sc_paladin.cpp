@@ -2509,8 +2509,9 @@ private:
     {
       player_t* p = sim -> player_no_pet_list[ i ];
 
-      if ( player == p ) // as long as they aren't the paladin
-        continue;
+      // on PTR, this is still healing the paladin if solo or lowest health
+      //if ( player == p ) // as long as they aren't the paladin
+      //  continue;
 
       // check their health against the current lowest
       if ( p -> health_percentage() < lowest_health_pct_found )
