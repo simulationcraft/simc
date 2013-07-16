@@ -5661,7 +5661,7 @@ void druid_t::create_buffs()
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.lunar_shower          = buff_creator_t( this, "lunar_shower",   spec.lunar_shower -> effectN( 1 ).trigger() );
   buff.shooting_stars        = buff_creator_t( this, "shooting_stars", spec.shooting_stars -> effectN( 1 ).trigger() )
-                               .chance( spec.shooting_stars -> proc_chance() + ( set_bonus.tier16_4pc_caster() ? 0.2 : 0 ) );
+                               .chance( spec.shooting_stars -> proc_chance() + ( set_bonus.tier16_4pc_caster() ? sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
   buff.starfall              = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
                                .cd( timespan_t::zero() );
 
