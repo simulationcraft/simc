@@ -54,6 +54,7 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="OutputDirectories.props" />
     <Import Project="PrecompiledHeaders.props" />
     <Import Project="Qt_vs11.props" />
   </ImportGroup>
