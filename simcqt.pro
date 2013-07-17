@@ -9,6 +9,7 @@ CONFIG(qt) {
     QT += widgets webkitwidgets
     DEFINES += QT_VERSION_5
   }
+  OBJECTS_DIR = qt
 }
 
 CONFIG(console) {
@@ -17,6 +18,7 @@ CONFIG(console) {
   CONFIG   -= qt
   TARGET = simc
   CONFIG += static staticlib
+  OBJECTS_DIR = engine
 }
 
 # OSX qt 5.1 is fubar and has double slashes, messing up things
@@ -51,10 +53,10 @@ macx {
   }
 
   release_simc.target = release_simc
-  release_simc.commands = make CXX=clang++ OPTS=\"-std=c++0x -fomit-frame-pointer -arch i386 -arch x86_64 -O3 -msse2 -march=native -ffast-math -flto -Os -DNDEBUG\" -C engine install
+  release_simc.commands = make -C engine clean && make CXX=clang++ OPTS=\"-std=c++0x -fomit-frame-pointer -arch i386 -arch x86_64 -O3 -msse2 -march=native -ffast-math -flto -Os -DNDEBUG\" -C engine install
 
   create_release.target   = create_release
-  create_release.depends  = $(TARGET) release_simc
+  create_release.depends  = all release_simc
   create_release.commands = $$QTBINDIR/macdeployqt $(QMAKE_TARGET).app && \
                             qt/osx_release.sh
 

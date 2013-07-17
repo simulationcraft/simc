@@ -3,7 +3,6 @@ MAJOR_VERSION=$(grep -E -e "^#define SC_MAJOR_VERSION" engine/simulationcraft.hp
 MINOR_VERSION=$(grep -E -e "^#define SC_MINOR_VERSION" engine/simulationcraft.hpp|sed -E -e "s/#define SC_MINOR_VERSION \"([0-9]+)\"/\1/g")
 REVISION=$((svn info .||git --git-dir=".git")|grep "Revision"|sed -E -e "s/Revision:[^0-9]+//")
 DEPLOY_DIR=$(mktemp -d -t SimulationCraft)
-CONTENTS_FOLDER_PATH=SimulationCraft.app/Contents
 echo Revision is: $REVISION
 echo Deploying to: $DEPLOY_DIR
 echo Version is: $MAJOR_VERSION $MINOR_VERSION
