@@ -978,7 +978,7 @@ void SC_MainWindow::saveLog()
 void SC_MainWindow::saveResults()
 {
   int index = resultsTab -> currentIndex();
-  if ( index <= 0 ) return;
+  if ( index < 0 ) return;
 
   resultsCmdLineHistory.add( cmdLine -> text() );
 
