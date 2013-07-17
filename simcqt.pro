@@ -55,8 +55,7 @@ macx {
 
   create_release.target   = create_release
   create_release.depends  = $(TARGET) release_simc
-  create_release.commands = qt/fix_qt51_osx_paths.sh $$QTDIR && \
-                            $$QTBINDIR/macdeployqt $(QMAKE_TARGET).app && \
+  create_release.commands = $$QTBINDIR/macdeployqt $(QMAKE_TARGET).app && \
                             qt/osx_release.sh
 
   QMAKE_EXTRA_TARGETS += release_simc create_release
