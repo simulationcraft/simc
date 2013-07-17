@@ -3983,10 +3983,10 @@ void paladin_t::init_base_stats()
   resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
 
   // FIXME! Level-specific!
-  base.miss    = 0.060;
-  base.dodge   = 0.0501; //90
+  base.miss    = 0.030;
+  base.dodge   = 0.030;  //90
   base.parry   = 0.030;  //90
-  base.block   = 0.030;  // 90
+  base.block   = 0.030;  //90
 
   //based on http://sacredduty.net/2012/09/14/avoidance-diminishing-returns-in-mop-followup/
   diminished_kfactor    = 0.886;

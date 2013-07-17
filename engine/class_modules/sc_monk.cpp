@@ -2539,9 +2539,9 @@ void monk_t::init_base_stats()
     base.mana_regen_from_spirit_multiplier = spec.mana_meditation -> effectN( 1 ).percent();
 
   // FIXME! Level-specific!
-  base.miss  = 0.060;
-  base.dodge = 0.1176;  //30
-  base.parry = 0.080; //30
+  base.miss  = 0.030; //90
+  base.dodge = 0.030; //90
+  base.parry = 0.030; //90
 
   // FIXME: Add defensive constants
   //diminished_kfactor    = 0;

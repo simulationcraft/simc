@@ -2943,10 +2943,10 @@ void warrior_t::init_base_stats()
   base.stats.attack_power = level * 2 + 60;
 
   // FIXME! Level-specific!
-  base.miss  = 0.060;
-  base.dodge = 0.0501;  //90
+  base.miss  = 0.030;
+  base.dodge = 0.030; //90
   base.parry = 0.030; //90
-  base.block = 0.030; // 90
+  base.block = 0.030; //90
   base.block_reduction = 0.3;
 
   // updated from http://sacredduty.net/2012/09/14/avoidance-diminishing-returns-in-mop-followup/

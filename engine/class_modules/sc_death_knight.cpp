@@ -4990,7 +4990,7 @@ void death_knight_t::init_base_stats()
 
   // Level 90 values, horribly off for anything else
   base.dodge   = 0.0300 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
-  base.miss    = 0.0600;
+  base.miss    = 0.0300;
   base.parry   = 0.0300;
   base.block   = 0.0000;
   base.parry_rating_per_strength = dbc.combat_rating( RATING_PARRY, level ) / 952.0 / 100.0;

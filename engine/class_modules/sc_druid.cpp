@@ -5547,7 +5547,7 @@ void druid_t::init_base_stats()
   base.spell_power_per_intellect = 1.0;
 
   // FIXME! Level-specific?
-  base.miss  = 0.060;
+  base.miss  = 0.030;
   base.dodge = 0.030;
   base.parry = 0.000;
 
