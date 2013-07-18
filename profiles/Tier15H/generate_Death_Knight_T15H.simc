@@ -13,7 +13,7 @@ talents=300010
 head=crown_of_the_golden_golem,id=96894,gems=capacitive_primal_80str_160haste_180str
 neck=talisman_of_angry_spirits,id=96792,reforge=mastery_haste
 shoulders=pauldrons_of_the_allconsuming_maw,id=96573,gems=160str_80str_160haste_120crit,enchant=200str_100crit,reforge=exp_haste
-back=yellow_dawn_lightningcloak,id=95017,gems=80str_160haste_60haste,enchant=180crit
+back=tigerclaw_cape,id=98147,gems=80str_160haste_60str,enchant=180crit
 chest=breastplate_of_the_allconsuming_maw,id=96569,gems=160str_80str_160haste_80str_160hit_180str,enchant=80all
 wrists=caustic_spike_bracers,suffix=340,id=96848,gems=80str_160haste_160str_60str,enchant=180str
 hands=gauntlets_of_the_allconsuming_maw,id=96570,gems=160str_160str_60str,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_haste
@@ -38,7 +38,7 @@ talents=200020
 head=crown_of_the_golden_golem,id=96894,gems=capacitive_primal_80str_160haste_180str
 neck=talisman_of_angry_spirits,id=96792,reforge=mastery_haste
 shoulders=pauldrons_of_the_allconsuming_maw,id=96573,gems=160str_80str_160haste_120crit,enchant=200str_100crit,reforge=exp_haste
-back=yellow_dawn_lightningcloak,id=95017,gems=80str_160haste_60haste,enchant=180crit
+back=tigerclaw_cape,id=98147,gems=80str_160haste_60str,enchant=180crit
 chest=breastplate_of_the_allconsuming_maw,id=96569,gems=160str_80str_160haste_80str_160hit_180str,enchant=80all
 wrists=caustic_spike_bracers,id=96848,suffix=340,gems=80str_160haste_160str_60str,enchant=180str
 hands=gauntlets_of_the_allconsuming_maw,id=96570,gems=160str_160str_60str,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_haste
@@ -63,7 +63,7 @@ talents=200010
 head=doomed_crown_of_lei_shen,id=96922,gems=capacitive_primal_160str_180str,reforge=hit_haste
 neck=necklace_of_the_terracotta_vanquisher,id=97093,gems=160str_60exp,reforge=hit_haste
 shoulders=pauldrons_of_the_allconsuming_maw,id=96573,gems=160str_80str_160mastery_120crit,enchant=200str_100crit,reforge=exp_haste
-back=yellow_dawn_lightningcloak,id=95017,gems=80str_160mastery_60haste,enchant=180crit,reforge=crit_mastery
+back=tigerclaw_cape,id=98147,gems=80str_160mastery_60str,enchant=180crit
 chest=breastplate_of_the_allconsuming_maw,id=96569,gems=160str_80str_160mastery_80str_160hit_180str,enchant=80all,reforge=exp_mastery
 wrists=caustic_spike_bracers,id=96848,suffix=339,gems=80str_160mastery_160str_60str,enchant=180str
 hands=gauntlets_of_the_allconsuming_maw,id=96570,gems=160str_160str_60str,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_mastery

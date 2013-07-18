@@ -80,7 +80,7 @@ actions.aoe+=/lightning_bolt
 head=clearmind_helm,id=96881,gems=sinister_primal_80int_160hit_180int
 neck=horridons_tusk_fragment,id=96774
 shoulders=shoulderwraps_of_the_witch_doctor,id=96698,gems=80int_160haste_320haste_120haste,enchant=200int_100crit,reforge=crit_mastery
-back=deadly_glare_cape,id=96857,gems=80int_160haste_60int,enchant=180int,reforge=crit_mastery
+back=jadefire_drape,id=98150,gems=80int_160haste_60int,enchant=180int
 chest=hauberk_of_the_witch_doctor,id=96694,gems=80int_160haste_80int_320haste_80int_160hit_180int,enchant=80all,reforge=spi_haste
 wrists=loaridden_bracers,id=96789,suffix=339,gems=320haste,enchant=180int
 hands=gloves_of_the_witch_doctor,id=96695,gems=80int_160haste_320haste_60int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
@@ -97,15 +97,15 @@ off_hand=lei_shens_orb_of_command,id=96934,gems=80int_160haste_60int,enchant=165
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=26740
-# gear_intellect=19485
+# gear_stamina=27879
+# gear_intellect=20244
 # gear_spirit=2923
 # gear_spell_power=10655
 # gear_hit_rating=2172
-# gear_crit_rating=3800
-# gear_haste_rating=12469
-# gear_mastery_rating=9251
-# gear_armor=27670
+# gear_crit_rating=4347
+# gear_haste_rating=12715
+# gear_mastery_rating=9923
+# gear_armor=27888
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1

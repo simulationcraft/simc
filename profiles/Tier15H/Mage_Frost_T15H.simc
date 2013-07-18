@@ -54,10 +54,10 @@ actions+=/frostbolt
 actions+=/fire_blast,moving=1
 actions+=/ice_lance,moving=1
 
-head=hood_of_the_chromatic_hydra,id=96635,gems=sinister_primal_320haste_180crit,reforge=hit_mastery
+head=hood_of_the_chromatic_hydra,id=96635,gems=sinister_primal_320haste_180crit
 neck=megaeras_shining_eye,id=96825,reforge=hit_haste
 shoulders=mantle_of_the_chromatic_hydra,id=96638,gems=80int_160haste_320haste_120haste,enchant=200int_100crit,reforge=crit_hit
-back=red_sky_cloudcloak,id=95014,gems=320haste_60haste,enchant=lightweave_embroidery_3,reforge=hit_mastery
+back=jadefire_drape,id=98150,gems=80int_160haste_60int,enchant=lightweave_embroidery_3
 chest=robes_of_the_chromatic_hydra,id=96637,gems=80int_160haste_320haste_80int_160hit_180int,enchant=80all,reforge=hit_haste
 wrists=frostborn_wristwraps,id=96824,suffix=340,gems=320haste_320haste_60int,enchant=180int
 hands=gloves_of_the_chromatic_hydra,id=96634,gems=80int_160haste_320haste_60int,enchant=170haste,reforge=crit_haste
@@ -74,17 +74,17 @@ off_hand=lei_shens_orb_of_command,id=96934,gems=80int_160haste_60int,enchant=165
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=26740
-# gear_intellect=18605
+# gear_stamina=27879
+# gear_intellect=19504
 # gear_spirit=80
 # gear_spell_power=10655
-# gear_hit_rating=5094
-# gear_crit_rating=4701
-# gear_haste_rating=15877
-# gear_mastery_rating=6389
-# gear_armor=16196
+# gear_hit_rating=5108
+# gear_crit_rating=5619
+# gear_haste_rating=16009
+# gear_mastery_rating=6592
+# gear_armor=16414
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
-# back=red_sky_cloudcloak,heroic=1,thunderforged=1,enchant=lightweave_embroidery_3
+# back=jadefire_drape,enchant=lightweave_embroidery_3
 # main_hand=athame_of_the_sanguine_ritual,heroic=1,thunderforged=1,weapon=dagger_1.80speed_3175min_5897max,enchant=jade_spirit

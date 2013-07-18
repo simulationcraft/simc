@@ -90,7 +90,7 @@ actions.single_target+=/empower_rune_weapon
 head=crown_of_the_golden_golem,id=96894,gems=capacitive_primal_80str_160haste_180str
 neck=talisman_of_angry_spirits,id=96792,reforge=mastery_haste
 shoulders=pauldrons_of_the_allconsuming_maw,id=96573,gems=160str_80str_160haste_120crit,enchant=200str_100crit,reforge=exp_haste
-back=yellow_dawn_lightningcloak,id=95017,gems=80str_160haste_60haste,enchant=180crit
+back=tigerclaw_cape,id=98147,gems=80str_160haste_60str,enchant=180crit
 chest=breastplate_of_the_allconsuming_maw,id=96569,gems=160str_80str_160haste_80str_160hit_180str,enchant=80all
 wrists=caustic_spike_bracers,id=96848,suffix=340,gems=80str_160haste_160str_60str,enchant=180str
 hands=gauntlets_of_the_allconsuming_maw,id=96570,gems=160str_160str_60str,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_haste
@@ -104,17 +104,17 @@ trinket2=primordius_talisman_of_rage,id=96873,reforge=crit_haste
 main_hand=greatsword_of_frozen_hells,id=96991,gems=80str_160haste_160str_60str,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_strength=20456
+# gear_strength=21275
 # gear_agility=80
-# gear_stamina=26779
+# gear_stamina=27918
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2552
 # gear_hit_rating=2585
-# gear_crit_rating=9009
-# gear_haste_rating=11645
-# gear_mastery_rating=2340
-# gear_armor=37311
+# gear_crit_rating=9293
+# gear_haste_rating=11842
+# gear_mastery_rating=3258
+# gear_armor=37529
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1

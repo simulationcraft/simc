@@ -108,7 +108,7 @@ actions.aoe+=/bloodthirst
 head=crown_of_the_golden_golem,id=96894,gems=capacitive_primal_320crit_180str,reforge=haste_mastery
 neck=talisman_of_angry_spirits,id=96792
 shoulders=pauldrons_of_the_last_mogu,id=96734,gems=160exp_160crit_320crit_120crit,enchant=200str_100crit,reforge=exp_crit
-back=yellow_dawn_lightningcloak,id=95017,gems=320crit_60haste,enchant=180crit,reforge=haste_mastery
+back=tigerclaw_cape,id=98147,gems=80str_160crit_60str,enchant=180crit
 chest=battleplate_of_the_last_mogu,id=96731,gems=160exp_160crit_320crit_160crit_160hit_180str,enchant=80all,reforge=exp_crit
 wrists=bracers_of_constant_implosion,id=96747,suffix=336,gems=320crit_320crit_60str,enchant=180str
 hands=gauntlets_of_the_last_mogu,id=96732,gems=160exp_160crit_320crit_60mastery,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_mastery
@@ -123,17 +123,17 @@ main_hand=dotharak_the_swordbreaker,id=96992,gems=320crit_320crit_60str,enchant=
 off_hand=dotharak_the_swordbreaker,id=96992,gems=320crit_320crit_60str,enchant=dancing_steel,reforge=hit_crit
 
 # Gear Summary
-# gear_strength=19482
+# gear_strength=20381
 # gear_agility=80
-# gear_stamina=26381
+# gear_stamina=27520
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2540
 # gear_hit_rating=3358
-# gear_crit_rating=16339
-# gear_haste_rating=3460
-# gear_mastery_rating=5820
-# gear_armor=37311
+# gear_crit_rating=16463
+# gear_haste_rating=3921
+# gear_mastery_rating=6474
+# gear_armor=37529
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1

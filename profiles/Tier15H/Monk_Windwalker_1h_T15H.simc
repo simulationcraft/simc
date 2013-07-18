@@ -56,8 +56,8 @@ actions.single_target+=/blackout_kick,if=(energy+(energy.regen*(cooldown.rising_
 
 head=firecharm_headpiece,id=96641,gems=capacitive_primal_320mastery_180crit,reforge=hit_mastery
 neck=quadrahead_brooch,id=96815,gems=320mastery_60crit,reforge=hit_haste
-shoulders=firecharm_spaulders,id=96643,gems=80agi_160haste_320crit_120haste,enchant=200agi_100crit,reforge=hit_haste
-back=pinionfeather_greatcloak,id=96833,gems=80agi_160hit_60agi,enchant=180crit,reforge=crit_haste
+shoulders=firecharm_spaulders,id=96643,gems=80agi_160haste_320crit_120haste,enchant=200agi_100crit
+back=tigerfang_wrap,id=98148,gems=80agi_160mastery_60agi,enchant=180crit
 chest=firecharm_tunic,id=96639,gems=80agi_160haste_320crit_160haste_160hit_180agi,enchant=80all,reforge=exp_haste
 wrists=bracers_of_the_midnight_comet,id=96912,suffix=339,gems=320mastery_320crit_60agi,enchant=180agi,reforge=mastery_haste
 hands=gloves_of_cushioned_air,id=96865,gems=160haste_160hit_160haste_160hit_320crit_120agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
@@ -73,16 +73,16 @@ off_hand=hand_of_the_dark_animus,id=96886,weapon=mace_2.6speed_9172min_17036max,
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=19566
-# gear_stamina=26343
+# gear_agility=20325
+# gear_stamina=27482
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2495
-# gear_hit_rating=2831
-# gear_crit_rating=4393
-# gear_haste_rating=10767
-# gear_mastery_rating=10990
-# gear_armor=20244
+# gear_hit_rating=2953
+# gear_crit_rating=4930
+# gear_haste_rating=11150
+# gear_mastery_rating=11407
+# gear_armor=20462
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1

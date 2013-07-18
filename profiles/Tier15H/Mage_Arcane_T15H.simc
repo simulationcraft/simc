@@ -64,16 +64,16 @@ actions.single_target+=/fire_blast,moving=1
 actions.single_target+=/ice_lance,moving=1
 
 head=hood_of_the_crimson_wake,id=96887,gems=sinister_primal_160hit_160mastery_180int
-neck=megaeras_shining_eye,id=96825,reforge=hit_mastery
+neck=megaeras_shining_eye,id=96825
 shoulders=mantle_of_the_chromatic_hydra,id=96638,gems=80int_160mastery_320mastery_120haste,enchant=200int_100crit,reforge=crit_mastery
-back=red_sky_cloudcloak,id=95014,gems=320mastery_60haste,enchant=lightweave_embroidery_3,reforge=hit_mastery
+back=jadefire_drape,id=98150,gems=80int_160mastery_60int,enchant=lightweave_embroidery_3
 chest=robes_of_the_chromatic_hydra,id=96637,gems=80int_160mastery_320mastery_160hit_160mastery_180int,enchant=80all,reforge=hit_haste
 wrists=bracers_of_fragile_bone,id=96878,enchant=180int,reforge=crit_mastery
 hands=gloves_of_the_chromatic_hydra,id=96634,gems=80int_160mastery_60int,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=crit_haste
 waist=cord_of_cacophonous_cawing,id=96834,gems=80int_160mastery_320mastery_320mastery_120haste,reforge=hit_mastery
 legs=leggings_of_the_chromatic_hydra,id=96636,gems=320mastery_160hit_160mastery_120int,enchant=285int_165crit,reforge=crit_mastery
 feet=starwalker_sandals,id=95004,gems=320mastery_160hit_160mastery_120int,enchant=140mastery,reforge=crit_haste
-finger1=radens_summoning_band,id=95019,gems=160hit_160mastery_60int,reforge=hit_mastery
+finger1=radens_summoning_band,id=95019,gems=160hit_160mastery_60int
 finger2=roshaks_remembrance,id=96901,gems=160hit_160mastery_60haste,reforge=crit_haste
 trinket1=wushoolays_final_choice,id=96785,reforge=hit_mastery
 trinket2=breath_of_the_hydra,id=96827,reforge=haste_mastery
@@ -83,18 +83,18 @@ off_hand=fetish_of_the_hydra,id=96826,gems=160hit_160mastery_60int,enchant=165in
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=26740
-# gear_intellect=18245
+# gear_stamina=27879
+# gear_intellect=19144
 # gear_spirit=80
 # gear_spell_power=10655
-# gear_hit_rating=5149
-# gear_crit_rating=5384
-# gear_haste_rating=8319
-# gear_mastery_rating=13429
-# gear_armor=16193
+# gear_hit_rating=5207
+# gear_crit_rating=6302
+# gear_haste_rating=8611
+# gear_mastery_rating=13428
+# gear_armor=16411
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
-# back=red_sky_cloudcloak,heroic=1,thunderforged=1,enchant=lightweave_embroidery_3
+# back=jadefire_drape,enchant=lightweave_embroidery_3
 # hands=gloves_of_the_chromatic_hydra,heroic=1,addon=synapse_springs_mark_ii
 # main_hand=nadagasts_exsanguinator,heroic=1,thunderforged=1,weapon=dagger_1.8speed_3175min_5897max,enchant=jade_spirit

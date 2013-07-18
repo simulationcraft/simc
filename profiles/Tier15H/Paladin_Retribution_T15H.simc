@@ -56,7 +56,7 @@ actions+=/templars_verdict,if=buff.inquisition.remains>4
 head=lightning_emperors_helmet,id=96656,gems=capacitive_primal_320haste_180crit,reforge=hit_mastery
 neck=talisman_of_angry_spirits,id=96792,reforge=crit_haste
 shoulders=lightning_emperors_pauldrons,id=96658,gems=80str_160haste_320haste_120crit,enchant=200str_100crit,reforge=exp_haste
-back=yellow_dawn_lightningcloak,id=95017,gems=320haste_60haste,enchant=180crit,reforge=crit_mastery
+back=tigerclaw_cape,id=98147,gems=80str_160haste_60str,enchant=180crit
 chest=lightning_emperors_battleplate,id=96654,gems=80str_160haste_320haste_160haste_160hit_180str,enchant=80all,reforge=exp_mastery
 wrists=frozen_warlords_bracers,id=96766,gems=320haste,enchant=180str,reforge=exp_mastery
 hands=reinbinders_fists,id=96905,gems=80str_160haste_160haste_160hit_320haste_120str,enchant=170str,addon=synapse_springs_mark_ii,reforge=crit_mastery
@@ -70,17 +70,17 @@ trinket2=fabled_feather_of_jikun,id=96842,reforge=hit_haste
 main_hand=greatsword_of_frozen_hells,id=96991,gems=320haste_320haste_60str,enchant=dancing_steel,reforge=crit_mastery
 
 # Gear Summary
-# gear_strength=18090
+# gear_strength=18989
 # gear_agility=80
-# gear_stamina=26741
+# gear_stamina=27880
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2264
 # gear_hit_rating=2703
-# gear_crit_rating=4752
-# gear_haste_rating=16993
-# gear_mastery_rating=6112
-# gear_armor=37291
+# gear_crit_rating=5289
+# gear_haste_rating=17030
+# gear_mastery_rating=6777
+# gear_armor=37509
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1

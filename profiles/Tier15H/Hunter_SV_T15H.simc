@@ -57,7 +57,7 @@ actions+=/cobra_shot
 head=saurok_stalkers_headguard,id=96628,stats=3697armor_1519agi_2639sta_1053hit_1053haste,gems=capacitive_primal_80agi_160haste_180crit,reforge=hit_crit
 neck=quadrahead_brooch,id=96815,stats=957agi_1555sta_651hit_651mastery,gems=160agi,reforge=hit_exp
 shoulders=saurok_stalkers_spaulders,id=96630,stats=3413armor_1147agi_1960sta_706hit_842crit,gems=160agi_160agi,enchant=200agi_100crit,reforge=hit_haste
-back=grey_wind_mistcloak,id=95015,stats=1307armor_957agi_1555sta_617crit_672haste,gems=160agi,enchant=180crit
+back=tigerfang_wrap,id=98148,gems=80agi_160haste_60agi,enchant=180crit
 chest=saurok_stalkers_tunic,id=96626,stats=4551armor_1519agi_2639sta_1070exp_1023mastery,gems=160agi_80agi_160haste_80agi_160hit_180agi,enchant=80all,reforge=mastery_haste
 wrists=beadyeye_bracers,id=96797,stats=2025armor_957agi_1555sta_1024haste,gems=80agi_160haste_60agi,enchant=500agi
 hands=synapsestring_handguards,id=96867,stats=2893armor_1222agi_2073sta_857crit_825haste,gems=160agi_160agi_120agi,enchant=170haste
@@ -72,16 +72,16 @@ main_hand=voice_of_the_quilen,id=96897,stats=1860agi_2710sta_1169hit_1219haste,w
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=21160
-# gear_stamina=26661
+# gear_agility=21899
+# gear_stamina=27800
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2664
 # gear_hit_rating=3053
-# gear_crit_rating=6869
-# gear_haste_rating=11234
-# gear_mastery_rating=3501
-# gear_armor=27655
+# gear_crit_rating=7170
+# gear_haste_rating=11640
+# gear_mastery_rating=4419
+# gear_armor=27873
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1

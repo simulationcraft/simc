@@ -63,8 +63,8 @@ actions.finisher+=/eviscerate
 
 head=ninetailed_helmet,id=96681,gems=capacitive_primal_320haste_180crit,reforge=hit_mastery
 neck=quadrahead_brooch,id=96815,gems=320haste_60crit,reforge=hit_haste
-shoulders=ninetailed_spaulders,id=96683,gems=80agi_160haste_320haste_120haste,enchant=200agi_100crit,reforge=hit_haste
-back=grey_wind_mistcloak,id=95015,gems=320haste_60haste,enchant=180crit,reforge=crit_exp
+shoulders=ninetailed_spaulders,id=96683,gems=160exp_160haste_320haste_120haste,enchant=200agi_100crit,reforge=hit_haste
+back=tigerfang_wrap,id=98148,gems=160exp_160haste_60agi,enchant=180crit
 chest=chestguard_of_coruscating_blades,id=95033,gems=80agi_160haste_80agi_160haste_80agi_160haste_180agi,enchant=80all,reforge=crit_mastery
 wrists=bracers_of_the_midnight_comet,id=96912,suffix=340,gems=320haste_320haste_60agi,enchant=180agi
 hands=ninetailed_gloves,id=96680,gems=80agi_160haste_320haste_60agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=exp_haste
@@ -80,16 +80,16 @@ off_hand=fyns_flickering_dagger,id=96976,gems=320haste_320haste_60agi,enchant=da
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=18060
-# gear_stamina=26301
+# gear_agility=18799
+# gear_stamina=27440
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2542
+# gear_expertise_rating=2616
 # gear_hit_rating=2671
-# gear_crit_rating=5011
-# gear_haste_rating=17221
-# gear_mastery_rating=5606
-# gear_armor=20265
+# gear_crit_rating=5558
+# gear_haste_rating=17247
+# gear_mastery_rating=6524
+# gear_armor=20483
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1

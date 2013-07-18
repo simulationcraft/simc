@@ -15,7 +15,7 @@ glyphs=unending_rage/death_from_above
 head=crown_of_the_golden_golem,id=96894,gems=capacitive_primal_320crit_180str
 neck=amulet_of_the_primal_turtle,id=96801,gems=320crit,reforge=hit_exp
 shoulders=pauldrons_of_the_last_mogu,id=96734,gems=80str_160crit_320crit_120crit,enchant=200str_100crit,reforge=exp_crit
-back=yellow_dawn_lightningcloak,id=95017,gems=320crit_60haste,enchant=180crit
+back=tigerclaw_cape,id=98147,gems=80str_160crit_60str,enchant=180crit
 chest=battleplate_of_the_last_mogu,id=96731,gems=80str_160crit_320crit_160crit_160hit_180str,enchant=80all,reforge=exp_crit
 wrists=caustic_spike_bracers,id=96848,stats=2766armor_957str_1555sta_1024haste,gems=320crit_320crit_60str,enchant=180str,reforge=haste_crit
 hands=gauntlets_of_the_last_mogu,id=96732,gems=80str_160crit_320crit_60mastery,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_haste
@@ -42,7 +42,7 @@ glyphs=unending_rage/death_from_above
 head=crown_of_the_golden_golem,id=96894,gems=capacitive_primal_320crit_180str,reforge=haste_mastery
 neck=talisman_of_angry_spirits,id=96792
 shoulders=pauldrons_of_the_last_mogu,id=96734,gems=160exp_160crit_320crit_120crit,enchant=200str_100crit,reforge=exp_crit
-back=yellow_dawn_lightningcloak,id=95017,gems=320crit_60haste,enchant=180crit,reforge=haste_mastery
+back=tigerclaw_cape,id=98147,gems=80str_160crit_60str,enchant=180crit
 chest=battleplate_of_the_last_mogu,id=96731,gems=160exp_160crit_320crit_160crit_160hit_180str,enchant=80all,reforge=exp_crit
 wrists=bracers_of_constant_implosion,id=96747,suffix=336,gems=320crit_320crit_60str,enchant=180str
 hands=gauntlets_of_the_last_mogu,id=96732,gems=160exp_160crit_320crit_60mastery,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_mastery
@@ -70,7 +70,7 @@ glyphs=unending_rage/death_from_above/raging_wind
 head=crown_of_the_golden_golem,id=96894,gems=capacitive_primal_320crit_180str,reforge=haste_mastery
 neck=talisman_of_angry_spirits,id=96792
 shoulders=pauldrons_of_the_last_mogu,id=96734,gems=160exp_160crit_320crit_120crit,enchant=200str_100crit,reforge=mastery_crit
-back=hydrascale_bloodcloak,id=96871,gems=320crit,enchant=180crit,reforge=exp_mastery
+back=tigerclaw_cape,id=98147,gems=160exp_160crit_60str,enchant=180crit
 chest=battleplate_of_the_last_mogu,id=96731,gems=160exp_160crit_320crit_160crit_160hit_180str,enchant=80all,reforge=exp_crit
 wrists=bracers_of_constant_implosion,id=96747,suffix=336,gems=320crit_320crit_60str,enchant=180str
 hands=gauntlets_of_the_last_mogu,id=96732,gems=320crit_320crit,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_mastery
@@ -78,7 +78,7 @@ waist=flareforged_greatbelt,id=95003,gems=160crit_160hit_160crit_160hit_320crit_
 legs=legplates_of_the_last_mogu,id=96733,gems=320crit_160crit_160hit_120str,enchant=285str_165crit
 feet=sabatons_of_the_superior_being,id=95012,gems=320crit_160crit_160hit_120str,enchant=140mastery,reforge=exp_mastery
 finger1=spinescale_seal,id=96820,reforge=hit_mastery
-finger2=band_of_the_scaled_tyrant,id=96872,gems=320crit,reforge=haste_crit
+finger2=band_of_the_scaled_tyrant,id=96872,gems=160exp_160crit,reforge=haste_crit
 trinket1=gaze_of_the_twins,id=96915
 trinket2=fabled_feather_of_jikun,id=96842,reforge=hit_crit
 main_hand=uroe_harbinger_of_terror,id=96925,gems=320mastery_320mastery,enchant=dancing_steel

@@ -81,7 +81,7 @@ actions.single_target+=/empower_rune_weapon
 head=doomed_crown_of_lei_shen,id=96922,gems=capacitive_primal_160str_180str,reforge=hit_haste
 neck=necklace_of_the_terracotta_vanquisher,id=97093,gems=160str_60exp,reforge=hit_haste
 shoulders=pauldrons_of_the_allconsuming_maw,id=96573,gems=160str_80str_160mastery_120crit,enchant=200str_100crit,reforge=exp_haste
-back=yellow_dawn_lightningcloak,id=95017,gems=80str_160mastery_60haste,enchant=180crit,reforge=crit_mastery
+back=tigerclaw_cape,id=98147,gems=80str_160mastery_60str,enchant=180crit
 chest=breastplate_of_the_allconsuming_maw,id=96569,gems=160str_80str_160mastery_80str_160hit_180str,enchant=80all,reforge=exp_mastery
 wrists=caustic_spike_bracers,id=96848,suffix=339,gems=80str_160mastery_160str_60str,enchant=180str
 hands=gauntlets_of_the_allconsuming_maw,id=96570,gems=160str_160str_60str,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_mastery
@@ -96,17 +96,17 @@ main_hand=qons_flaming_scimitar,id=96906,gems=160str_160str_60str,enchant=rune_o
 off_hand=qons_flaming_scimitar,id=96906,gems=160str_160str_60str,enchant=rune_of_the_fallen_crusader,reforge=exp_haste
 
 # Gear Summary
-# gear_strength=20710
+# gear_strength=21529
 # gear_agility=80
-# gear_stamina=26381
+# gear_stamina=27520
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2552
 # gear_hit_rating=3497
-# gear_crit_rating=3638
-# gear_haste_rating=6743
-# gear_mastery_rating=11007
-# gear_armor=37311
+# gear_crit_rating=4175
+# gear_haste_rating=6940
+# gear_mastery_rating=11672
+# gear_armor=37529
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1

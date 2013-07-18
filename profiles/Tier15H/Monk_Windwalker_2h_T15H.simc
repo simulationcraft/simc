@@ -57,10 +57,10 @@ actions.single_target+=/blackout_kick,if=(energy+(energy.regen*(cooldown.rising_
 head=firecharm_headpiece,id=96641,gems=capacitive_primal_320crit_180crit,reforge=hit_mastery
 neck=quadrahead_brooch,id=96815,gems=320mastery_60crit,reforge=hit_exp
 shoulders=firecharm_spaulders,id=96643,gems=80agi_160mastery_320mastery_120haste,enchant=200agi_100crit,reforge=hit_haste
-back=grey_wind_mistcloak,id=95015,gems=320haste_60haste,enchant=180crit,reforge=crit_exp
+back=tigerfang_wrap,id=98148,gems=160exp_160mastery_60agi,enchant=180crit
 chest=firecharm_tunic,id=96639,gems=80agi_160crit_320mastery_160haste_160hit_180agi,enchant=80all,reforge=exp_haste
 wrists=bindings_of_multiplicative_strikes,id=96764,gems=320mastery,enchant=180agi,reforge=crit_exp
-hands=grips_of_vampiric_cruelty,id=96796,gems=160haste_160hit_320mastery_60agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=hit_mastery
+hands=grips_of_vampiric_cruelty,id=96796,gems=160haste_160hit_320haste_60agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=hit_mastery
 waist=featherflight_belt,id=96837,gems=80agi_160mastery_320mastery_320mastery_120haste,reforge=haste_mastery
 legs=firecharm_leggings,id=96642,gems=320mastery_160haste_160hit_120agi,enchant=285agi_165crit
 feet=twisttoe_tabi,id=95007,gems=320mastery_160haste_160hit_120agi,enchant=140agi,reforge=exp_mastery
@@ -72,16 +72,16 @@ main_hand=darkwood_spiritstaff,id=96978,gems=320crit_320crit_60agi,enchant=danci
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=19672
-# gear_stamina=26741
+# gear_agility=20491
+# gear_stamina=27880
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2601
+# gear_expertise_rating=2515
 # gear_hit_rating=2602
-# gear_crit_rating=4874
-# gear_haste_rating=10639
-# gear_mastery_rating=10705
-# gear_armor=20244
+# gear_crit_rating=5421
+# gear_haste_rating=10825
+# gear_mastery_rating=11463
+# gear_armor=20462
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1

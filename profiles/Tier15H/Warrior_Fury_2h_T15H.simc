@@ -108,7 +108,7 @@ actions.aoe+=/bloodthirst
 head=crown_of_the_golden_golem,id=96894,gems=capacitive_primal_320crit_180str,reforge=haste_mastery
 neck=talisman_of_angry_spirits,id=96792
 shoulders=pauldrons_of_the_last_mogu,id=96734,gems=160exp_160crit_320crit_120crit,enchant=200str_100crit,reforge=mastery_crit
-back=hydrascale_bloodcloak,id=96871,gems=320crit,enchant=180crit,reforge=exp_mastery
+back=tigerclaw_cape,id=98147,gems=160exp_160crit_60str,enchant=180crit
 chest=battleplate_of_the_last_mogu,id=96731,gems=160exp_160crit_320crit_160crit_160hit_180str,enchant=80all,reforge=exp_crit
 wrists=bracers_of_constant_implosion,id=96747,suffix=336,gems=320crit_320crit_60str,enchant=180str
 hands=gauntlets_of_the_last_mogu,id=96732,gems=320crit_320crit,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_mastery
@@ -116,24 +116,24 @@ waist=flareforged_greatbelt,id=95003,gems=160crit_160hit_160crit_160hit_320crit_
 legs=legplates_of_the_last_mogu,id=96733,gems=320crit_160crit_160hit_120str,enchant=285str_165crit
 feet=sabatons_of_the_superior_being,id=95012,gems=320crit_160crit_160hit_120str,enchant=140mastery,reforge=exp_mastery
 finger1=spinescale_seal,id=96820,reforge=hit_mastery
-finger2=band_of_the_scaled_tyrant,id=96872,gems=320crit,reforge=haste_crit
+finger2=band_of_the_scaled_tyrant,id=96872,gems=160exp_160crit,reforge=haste_crit
 trinket1=gaze_of_the_twins,id=96915
 trinket2=fabled_feather_of_jikun,id=96842,reforge=hit_crit
 main_hand=uroe_harbinger_of_terror,id=96925,gems=320mastery_320mastery,enchant=dancing_steel
 off_hand=uroe_harbinger_of_terror,id=96925,gems=320mastery_320mastery,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=21508
+# gear_strength=22327
 # gear_agility=80
-# gear_stamina=29569
+# gear_stamina=30708
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2547
+# gear_expertise_rating=2517
 # gear_hit_rating=3380
-# gear_crit_rating=18257
-# gear_haste_rating=1915
-# gear_mastery_rating=7695
-# gear_armor=37311
+# gear_crit_rating=18164
+# gear_haste_rating=2833
+# gear_mastery_rating=8380
+# gear_armor=37529
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1

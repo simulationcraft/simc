@@ -12,7 +12,7 @@ role=attack
 talents=000211
 professions=jewelcrafting=600/leatherworking=600
 main_hand=voice_of_the_quilen,id=96897,stats=1860agi_2710sta_1169hit_1219haste,gems=320agi_320agi_60agi,enchant=lord_blastingtons_scope_of_doom,reforge=hit_crit,weapon=gun_3speed_14270min_26503max
-back=pinionfeather_greatcloak,id=96833,stats=1307armor_957agi_1555sta_634crit_661mastery,gems=160agi,enchant=180crit,reforge=mastery_haste
+back=tigerfang_wrap,id=98148,gems=80agi_160haste_60agi,enchant=180crit
 trinket2=bad_juju,id=96781,stats=1752mastery,reforge=mastery_haste
 trinket1=renatakis_soul_charm,id=96741,stats=1752exp,reforge=exp_haste
 finger2=goresoaked_gear,id=96885,stats=957agi_1555sta_677crit_590haste,gems=160agi
@@ -36,7 +36,7 @@ spec=marksmanship
 talents=000211
 professions=jewelcrafting=600/leatherworking=600
 main_hand=voice_of_the_quilen,id=96897,stats=1860agi_2710sta_1169hit_1219haste,gems=320agi_320agi_60agi,enchant=lord_blastingtons_scope_of_doom,reforge=hit_crit,weapon=gun_3speed_14270min_26503max
-back=pinionfeather_greatcloak,id=96833,stats=1307armor_957agi_1555sta_634crit_661mastery,gems=160agi,enchant=180crit,reforge=mastery_haste
+back=tigerfang_wrap,id=98148,gems=80agi_160haste_60agi,enchant=180crit
 trinket2=bad_juju,id=96781,stats=1752mastery,reforge=mastery_haste
 trinket1=renatakis_soul_charm,id=96741,stats=1752exp,reforge=exp_haste
 finger2=goresoaked_gear,id=96885,stats=957agi_1555sta_677crit_590haste,gems=160agi
@@ -59,7 +59,7 @@ race=orc
 spec=survival
 talents=000211
 professions=jewelcrafting=600/leatherworking=600
-back=grey_wind_mistcloak,id=95015,stats=1307armor_957agi_1555sta_617crit_672haste,gems=160agi,enchant=180crit
+back=tigerfang_wrap,id=98148,gems=80agi_160haste_60agi,enchant=180crit
 trinket2=bad_juju,id=96781,stats=1752mastery,reforge=mastery_haste
 trinket1=renatakis_soul_charm,id=96741,stats=1752exp,reforge=exp_haste
 finger2=goresoaked_gear,id=96885,stats=957agi_1555sta_677crit_590haste,gems=160agi

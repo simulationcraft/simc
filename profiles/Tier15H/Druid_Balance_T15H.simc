@@ -62,9 +62,9 @@ actions+=/moonfire,moving=1,if=buff.lunar_eclipse.up
 actions+=/sunfire,moving=1
 
 head=cover_of_the_haunted_forest,id=96590,gems=sinister_primal_320crit_180crit,reforge=spi_crit
-neck=soul_prism_of_lei_shen,id=96932,gems=320crit_320crit,reforge=spi_crit
+neck=soul_prism_of_lei_shen,id=96932,gems=320crit_320crit
 shoulders=shoulderwraps_of_the_haunted_forest,id=96593,gems=80int_160crit_320crit_120haste,enchant=200int_100crit
-back=constantly_accelerating_cloak,id=96889,gems=80int_160crit_60int,enchant=180int,reforge=spi_crit
+back=jadefire_drape,id=98150,gems=80int_160crit_60int,enchant=180int
 chest=robes_of_concussive_shocks,id=96810,gems=80int_160crit_320crit_120int,enchant=80all,reforge=spi_crit
 wrists=vampire_bathide_bracers,id=96809,gems=320crit,enchant=180int,reforge=spi_crit
 hands=gloves_of_the_haunted_forest,id=96589,gems=80int_160crit_320crit_60int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=mastery_haste
@@ -80,14 +80,14 @@ main_hand=suenwo_spire_of_the_falling_sun,id=96911,gems=80int_160crit_320crit_60
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=26779
-# gear_intellect=18326
-# gear_spirit=5070
+# gear_stamina=27918
+# gear_intellect=19085
+# gear_spirit=5003
 # gear_spell_power=10654
-# gear_crit_rating=15306
-# gear_haste_rating=10338
-# gear_mastery_rating=1837
-# gear_armor=20265
+# gear_crit_rating=15708
+# gear_haste_rating=10565
+# gear_mastery_rating=2755
+# gear_armor=20483
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1

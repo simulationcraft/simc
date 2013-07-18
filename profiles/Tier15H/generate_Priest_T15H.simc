@@ -11,10 +11,10 @@ position=back
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!002212
 glyphs=dark_binding/mind_spike/inner_sanctum
-head=hood_of_the_exorcist,id=96675,gems=sinister_primal_320haste_180crit,reforge=spi_crit
+head=hood_of_the_exorcist,id=96675,gems=sinister_primal_320haste_180crit
 neck=soul_prism_of_lei_shen,id=96932,gems=320haste_320haste,reforge=spi_crit
 shoulders=shoulderguards_of_the_exorcist,id=96678,gems=80int_160haste_320haste_120haste,enchant=200int_100crit
-back=constantly_accelerating_cloak,id=96889,gems=80int_160haste_60int,enchant=180int,reforge=spi_crit
+back=jadefire_drape,id=98150,gems=80int_160haste_60int,enchant=180int
 chest=robes_of_nova,id=95040,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=hit_crit
 wrists=vaccinators_armwraps,id=96772,gems=320haste,enchant=180int,reforge=spi_crit
 hands=gloves_of_the_exorcist,id=96674,gems=80int_160haste_320haste_60int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=mastery_haste

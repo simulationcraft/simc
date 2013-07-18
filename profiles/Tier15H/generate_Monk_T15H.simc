@@ -13,8 +13,8 @@ professions=blacksmithing=600/engineering=600
 talents=112332
 head=firecharm_headpiece,id=96641,gems=capacitive_primal_320mastery_180crit,reforge=hit_mastery
 neck=quadrahead_brooch,id=96815,gems=320mastery_60crit,reforge=hit_haste
-shoulders=firecharm_spaulders,id=96643,gems=80agi_160haste_320crit_120haste,enchant=200agi_100crit,reforge=hit_haste
-back=pinionfeather_greatcloak,id=96833,gems=80agi_160hit_60agi,enchant=180crit,reforge=crit_haste
+shoulders=firecharm_spaulders,id=96643,gems=80agi_160haste_320crit_120haste,enchant=200agi_100crit
+back=tigerfang_wrap,id=98148,gems=80agi_160mastery_60agi,enchant=180crit
 chest=firecharm_tunic,id=96639,gems=80agi_160haste_320crit_160haste_160hit_180agi,enchant=80all,reforge=exp_haste
 wrists=bracers_of_the_midnight_comet,id=96912,suffix=339,gems=320mastery_320crit_60agi,enchant=180agi,reforge=mastery_haste
 hands=gloves_of_cushioned_air,id=96865,gems=160haste_160hit_160haste_160hit_320crit_120agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
@@ -39,12 +39,12 @@ position=back
 professions=blacksmithing=600/engineering=600
 talents=112332
 main_hand=darkwood_spiritstaff,id=96978,gems=320crit_320crit_60agi,enchant=dancing_steel,reforge=crit_haste
-back=grey_wind_mistcloak,id=95015,gems=320haste_60haste,enchant=180crit,reforge=crit_exp
+back=tigerfang_wrap,id=98148,gems=160exp_160mastery_60agi,enchant=180crit
 trinket2=bad_juju,id=96781,reforge=mastery_haste
 trinket1=rune_of_reorigination,id=96918
 finger2=goresoaked_gear,id=96885,gems=320haste_60crit,reforge=crit_mastery
 finger1=sign_of_the_bloodied_god,id=96740
-hands=grips_of_vampiric_cruelty,id=96796,gems=160haste_160hit_320mastery_60agi,enchant=170haste,reforge=hit_mastery,addon=synapse_springs_mark_ii
+hands=grips_of_vampiric_cruelty,id=96796,gems=160haste_160hit_320haste_60agi,enchant=170haste,reforge=hit_mastery,addon=synapse_springs_mark_ii
 wrists=bindings_of_multiplicative_strikes,id=96764,gems=320mastery,enchant=180agi,reforge=crit_exp
 feet=twisttoe_tabi,id=95007,gems=320mastery_160haste_160hit_120agi,enchant=140agi,reforge=exp_mastery
 legs=firecharm_leggings,id=96642,gems=320mastery_160haste_160hit_120agi,enchant=285agi_165crit

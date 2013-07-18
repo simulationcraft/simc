@@ -67,7 +67,7 @@ actions.aoe+=/battle_shout,if=rage<70
 head=crown_of_the_golden_golem,id=96894,gems=capacitive_primal_320crit_180str
 neck=amulet_of_the_primal_turtle,id=96801,gems=320crit,reforge=hit_exp
 shoulders=pauldrons_of_the_last_mogu,id=96734,gems=80str_160crit_320crit_120crit,enchant=200str_100crit,reforge=exp_crit
-back=yellow_dawn_lightningcloak,id=95017,gems=320crit_60haste,enchant=180crit
+back=tigerclaw_cape,id=98147,gems=80str_160crit_60str,enchant=180crit
 chest=battleplate_of_the_last_mogu,id=96731,gems=80str_160crit_320crit_160crit_160hit_180str,enchant=80all,reforge=exp_crit
 wrists=caustic_spike_bracers,id=96848,stats=2766armor_957str_1555sta_1024haste,gems=320crit_320crit_60str,enchant=180str,reforge=haste_crit
 hands=gauntlets_of_the_last_mogu,id=96732,gems=80str_160crit_320crit_60mastery,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_haste
@@ -81,17 +81,17 @@ trinket2=gaze_of_the_twins,id=96915
 main_hand=greatsword_of_frozen_hells,id=96991,gems=320crit_320crit_60str,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=19908
+# gear_strength=20807
 # gear_agility=80
-# gear_stamina=26779
+# gear_stamina=27918
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2631
 # gear_hit_rating=2701
-# gear_crit_rating=16211
-# gear_haste_rating=7220
-# gear_mastery_rating=2145
-# gear_armor=37311
+# gear_crit_rating=16335
+# gear_haste_rating=7417
+# gear_mastery_rating=3063
+# gear_armor=37529
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1

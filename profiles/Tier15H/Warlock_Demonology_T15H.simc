@@ -75,11 +75,11 @@ actions.aoe+=/life_tap
 head=hood_of_the_crimson_wake,id=96887,gems=sinister_primal_160hit_160mastery_180int
 neck=megaeras_shining_eye,id=96825,reforge=crit_exp
 shoulders=mantle_of_the_thousandfold_hells,id=96729,gems=80int_160haste_320haste_120haste,enchant=200int_100crit,reforge=crit_hit
-back=red_sky_cloudcloak,id=95014,gems=320haste_60haste,enchant=lightweave_embroidery_3,reforge=haste_exp
+back=jadefire_drape,id=98150,gems=80int_160mastery_60int,enchant=lightweave_embroidery_3
 chest=starburner_robes,id=95039,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all
-wrists=frostborn_wristwraps,id=96824,suffix=340,gems=320haste_60int,enchant=180int,reforge=haste_mastery
+wrists=frostborn_wristwraps,id=96824,suffix=340,gems=320haste_60int,enchant=180int,reforge=haste_exp
 hands=gloves_of_the_thousandfold_hells,id=96725,gems=80int_160mastery_60int,enchant=170haste,reforge=crit_hit
-waist=cord_of_cacophonous_cawing,id=96834,gems=80int_160haste_320haste_320haste_120haste,reforge=hit_mastery
+waist=cord_of_cacophonous_cawing,id=96834,gems=80int_160haste_320haste_320haste_120haste
 legs=leggings_of_the_discarded_warning,id=95030,gems=80int_160mastery_320haste_320haste_180mastery,enchant=285int_165crit
 feet=damrens_frozen_footguards,id=96900,gems=80int_160mastery_60haste,enchant=140mastery
 finger1=radens_summoning_band,id=95019,gems=160haste_160hit_60int,reforge=haste_exp
@@ -91,19 +91,19 @@ main_hand=suenwo_spire_of_the_falling_sun,id=96911,gems=80int_160mastery_320hast
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=27081
-# gear_intellect=20220
+# gear_stamina=28220
+# gear_intellect=21119
 # gear_spirit=80
 # gear_spell_power=10654
-# gear_expertise_rating=799
-# gear_hit_rating=4303
-# gear_crit_rating=2378
-# gear_haste_rating=14968
-# gear_mastery_rating=7501
-# gear_armor=16276
+# gear_expertise_rating=982
+# gear_hit_rating=3965
+# gear_crit_rating=3296
+# gear_haste_rating=15166
+# gear_mastery_rating=7807
+# gear_armor=16494
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
-# back=red_sky_cloudcloak,heroic=1,thunderforged=1,enchant=lightweave_embroidery_3
+# back=jadefire_drape,enchant=lightweave_embroidery_3
 # trinket1=unerring_vision_of_lei_shen,heroic=1,thunderforged=1
 # main_hand=suenwo_spire_of_the_falling_sun,heroic=1,thunderforged=1,weapon=staff_3.30speed_8970min_13455max,enchant=jade_spirit
 default_pet=felguard

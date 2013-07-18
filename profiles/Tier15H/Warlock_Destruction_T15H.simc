@@ -63,16 +63,16 @@ actions.aoe+=/incinerate,if=buff.fire_and_brimstone.up
 actions.aoe+=/immolate,cycle_targets=1,if=!ticking
 
 head=hood_of_the_crimson_wake,id=96887,gems=sinister_primal_160haste_160hit_180int
-neck=megaeras_shining_eye,id=96825,reforge=crit_haste
+neck=megaeras_shining_eye,id=96825,reforge=crit_exp
 shoulders=mantle_of_the_thousandfold_hells,id=96729,gems=80int_160haste_320haste_120haste,enchant=200int_100crit,reforge=crit_mastery
-back=red_sky_cloudcloak,id=95014,gems=320haste_60haste,enchant=lightweave_embroidery_3,reforge=haste_exp
+back=jadefire_drape,id=98150,gems=80int_160haste_60int,enchant=lightweave_embroidery_3
 chest=robes_of_nova,id=95040,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all
 wrists=frostborn_wristwraps,id=96824,suffix=340,gems=320haste_60int,enchant=180int
 hands=gloves_of_the_thousandfold_hells,id=96725,gems=80int_160haste_60int,enchant=170haste,reforge=crit_haste
 waist=cord_of_cacophonous_cawing,id=96834,gems=80int_160haste_320haste_320haste_120haste
 legs=leggings_of_the_discarded_warning,id=95030,gems=80int_160haste_320haste_320haste_180mastery,enchant=285int_165crit
 feet=damrens_frozen_footguards,id=96900,gems=80int_160haste_60haste,enchant=140mastery
-finger1=radens_summoning_band,id=95019,gems=160haste_160hit_60int,reforge=hit_mastery
+finger1=radens_summoning_band,id=95019,gems=160haste_160hit_60int
 finger2=roshaks_remembrance,id=96901,gems=160haste_160hit_60haste,reforge=crit_haste
 trinket1=unerring_vision_of_lei_shen,id=96930
 trinket2=chayes_essence_of_brilliance,id=96888,reforge=crit_haste
@@ -82,19 +82,19 @@ off_hand=lei_shens_orb_of_command,id=96934,gems=80int_160haste_60int,enchant=165
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=27042
-# gear_intellect=20419
+# gear_stamina=28181
+# gear_intellect=21318
 # gear_spirit=80
 # gear_spell_power=10655
-# gear_expertise_rating=226
-# gear_hit_rating=4864
-# gear_crit_rating=3857
-# gear_haste_rating=16005
-# gear_mastery_rating=4989
-# gear_armor=16276
+# gear_expertise_rating=276
+# gear_hit_rating=4366
+# gear_crit_rating=4775
+# gear_haste_rating=16087
+# gear_mastery_rating=5704
+# gear_armor=16494
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
-# back=red_sky_cloudcloak,heroic=1,thunderforged=1,enchant=lightweave_embroidery_3
+# back=jadefire_drape,enchant=lightweave_embroidery_3
 # trinket1=unerring_vision_of_lei_shen,heroic=1,thunderforged=1
 # main_hand=athame_of_the_sanguine_ritual,heroic=1,thunderforged=1,weapon=dagger_1.80speed_3175min_5897max,enchant=jade_spirit
 default_pet=felhunter

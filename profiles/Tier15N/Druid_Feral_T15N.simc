@@ -28,43 +28,78 @@ actions.precombat+=/virmens_bite_potion
 
 # Executed every time the actor is available.
 
-actions=swap_action_list,name=aoe,if=active_enemies>=5
-actions+=/skull_bash_cat
-actions+=/auto_attack
-actions+=/healing_touch,if=buff.predatory_swiftness.up&buff.predatory_swiftness.remains<=1.5&buff.dream_of_cenarius.down
-actions+=/savage_roar,if=buff.savage_roar.down
-actions+=/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3
-actions+=/healing_touch,if=buff.predatory_swiftness.up&combo_points>=4&buff.dream_of_cenarius.stack<2
-actions+=/healing_touch,if=buff.natures_swiftness.up
-actions+=/tigers_fury,if=(energy<=35&!buff.omen_of_clarity.react)
-actions+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)
-actions+=/ferocious_bite,if=combo_points>=1&dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
-actions+=/thrash_cat,if=target.time_to_die>=6&buff.omen_of_clarity.react&dot.thrash_cat.remains<3
-actions+=/ferocious_bite,if=(target.time_to_die<=4&combo_points>=5)|(target.time_to_die<=1&combo_points>=3)
-actions+=/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&target.health.pct<25
-actions+=/virmens_bite_potion,if=(combo_points>=5&target.health.pct<=25&buff.dream_of_cenarius.up)|target.time_to_die<=40
-actions+=/natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25
-actions+=/rip,line_cd=30,if=combo_points>=5&buff.virmens_bite_potion.up&buff.dream_of_cenarius.up&target.health.pct<=25&target.time_to_die>30
-actions+=/pool_resource,wait=0.25,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))
-actions+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25
-actions+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&buff.dream_of_cenarius.up
-actions+=/natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)
-actions+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)
-actions+=/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains
-actions+=/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains
-actions+=/pool_resource,wait=0.25,if=combo_points>=5&((energy<50&buff.berserk.down)|(energy<25&buff.berserk.remains>1))&dot.rip.remains>=6.5
-actions+=/ferocious_bite,if=combo_points>=5&dot.rip.remains>6
-actions+=/rake,if=dot.rake.remains<9&buff.dream_of_cenarius.up
-actions+=/rake,if=dot.rake.remains<3
-actions+=/pool_resource,wait=0.25,for_next=1
-actions+=/thrash_cat,if=dot.thrash_cat.remains<3&target.time_to_die>=6&(dot.rip.remains>=4|buff.berserk.up)
-actions+=/run_action_list,name=filler,if=buff.omen_of_clarity.react
-actions+=/run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3)|(combo_points=0&buff.savage_roar.remains<2)
-actions+=/run_action_list,name=filler,if=buff.predatory_swiftness.remains>1
-actions+=/run_action_list,name=filler,if=target.time_to_die<=8.5
-actions+=/run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up
-actions+=/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3
-actions+=/run_action_list,name=filler,if=energy.time_to_max<=1
+# By default the simulation will use the "Basic" action list, if you would like to instead use the "Advanced" action list do so here.
+actions=swap_action_list,name=basic
+
+actions.basic=auto_attack
+actions.basic+=/skull_bash_cat
+# Keep Rip from falling off during execute range.
+actions.basic+=/ferocious_bite,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
+actions.basic+=/faerie_fire,if=debuff.weakened_armor.stack<3
+actions.basic+=/healing_touch,if=buff.natures_swiftness.up
+# Proc Dream of Cenarius at 4+ CP or when PS is about to expire.
+actions.basic+=/healing_touch,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down&(buff.predatory_swiftness.remains<1.5|combo_points>=4)
+actions.basic+=/savage_roar,if=buff.savage_roar.remains<3
+actions.basic+=/virmens_bite_potion,if=(target.health.pct<30&buff.berserk.up)|target.time_to_die<=40
+actions.basic+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
+actions.basic+=/berserk,if=buff.tigers_fury.up
+# Overwrite Rip during execute range if it's at least 15% stronger than the current.
+actions.basic+=/rip,if=combo_points>=5&target.health.pct<=25&action.rip.tick_damage%dot.rip.tick_dmg>=1.15
+actions.basic+=/ferocious_bite,if=combo_points>=5&target.health.pct<=25&dot.rip.ticking
+actions.basic+=/rip,if=combo_points>=5&dot.rip.remains<2
+# Ferocious Bite if we will energy cap before being able to spend our CP on Rip or Savage Roar.
+actions.basic+=/ferocious_bite,if=combo_points>=5&energy.time_to_max<dot.rip.remains-2&energy.time_to_max<buff.savage_roar.remains-3
+actions.basic+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3
+# Rake if it's about to fall off or we can apply a stronger Rake.
+actions.basic+=/rake,if=dot.rake.remains<3|action.rake.tick_damage>dot.rake.tick_dmg
+actions.basic+=/pool_resource,for_next=1
+actions.basic+=/thrash_cat,if=dot.thrash_cat.remains<3&(dot.rip.remains>6|combo_points>=5)
+# Conditions under which we should execute a CP generator.
+actions.basic+=/run_action_list,name=filler,if=buff.omen_of_clarity.react
+actions.basic+=/run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)
+actions.basic+=/run_action_list,name=filler,if=target.time_to_die<=8.5
+actions.basic+=/run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up|buff.natures_vigil.up
+actions.basic+=/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3
+actions.basic+=/run_action_list,name=filler,if=energy.time_to_max<=1.0
+actions.basic+=/healing_touch,if=buff.natures_swiftness.up
+
+actions.advanced=auto_attack
+actions.advanced+=/skull_bash_cat
+# Keep Rip from falling off during execute range.
+actions.advanced+=/ferocious_bite,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
+actions.advanced+=/faerie_fire,if=debuff.weakened_armor.stack<3
+# Proc Dream of Cenarius at 4+ CP or when PS is about to expire.
+actions.advanced+=/healing_touch,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down&(buff.predatory_swiftness.remains<1.5|combo_points>=4)
+actions.advanced+=/savage_roar,if=buff.savage_roar.down
+actions.advanced+=/virmens_bite_potion,if=(target.health.pct<30&buff.berserk.up)|target.time_to_die<=40
+actions.advanced+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
+actions.advanced+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)
+actions.advanced+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3&target.time_to_die>=6
+actions.advanced+=/ferocious_bite,if=target.time_to_die<=1&combo_points>=3
+actions.advanced+=/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&target.health.pct<25
+# Overwrite Rip if it's at least 15% stronger than the current.
+actions.advanced+=/rip,if=combo_points>=5&action.rip.tick_damage%dot.rip.tick_dmg>=1.15&target.time_to_die>30
+# Pool 50 energy for Ferocious Bite.
+actions.advanced+=/pool_resource,if=combo_points>=5&target.health.pct<=25&dot.rip.ticking&!(energy>=50|(buff.berserk.up&energy>=25))
+actions.advanced+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25
+actions.advanced+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)
+actions.advanced+=/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains
+actions.advanced+=/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains&dot.rip.ticking
+# Pool to 50 energy for Ferocious Bite.
+actions.advanced+=/pool_resource,if=combo_points>=5&!(energy>=50|(buff.berserk.up&energy>=25))&dot.rip.ticking&!(dot.rip.remains-2<=energy.time_to_max-1)&!(buff.savage_roar.remains-3<=energy.time_to_max-1)
+# Ferocious Bite if we will energy cap before being able to spend our CP on Rip or Savage Roar.
+actions.advanced+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&!(dot.rip.remains-2<=energy.time_to_max-1)&!(buff.savage_roar.remains-3<=energy.time_to_max-1)
+# Rake if it's about to fall off or we can apply a stronger Rake.
+actions.advanced+=/rake,if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|dot.rake.remains<3)
+actions.advanced+=/pool_resource,for_next=1
+actions.advanced+=/thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&(dot.rip.remains>=4|buff.berserk.up)&dot.rip.ticking
+actions.advanced+=/run_action_list,name=filler,if=buff.omen_of_clarity.react
+# Conditions under which we should execute a CP generator.
+actions.advanced+=/run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)
+actions.advanced+=/run_action_list,name=filler,if=target.time_to_die<=8.5
+actions.advanced+=/run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up|buff.natures_vigil.up
+actions.advanced+=/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3
+actions.advanced+=/run_action_list,name=filler,if=energy.time_to_max<=1.0
 
 actions.filler=ravage
 actions.filler+=/shred,if=(buff.omen_of_clarity.react|buff.berserk.up|energy.regen>=15)&buff.king_of_the_jungle.down

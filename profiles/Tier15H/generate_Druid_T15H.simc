@@ -10,9 +10,9 @@ professions=engineering=600/blacksmithing=600
 talents=010201
 glyphs=moonbeast
 head=cover_of_the_haunted_forest,id=96590,gems=sinister_primal_320crit_180crit,reforge=spi_crit
-neck=soul_prism_of_lei_shen,id=96932,gems=320crit_320crit,reforge=spi_crit
+neck=soul_prism_of_lei_shen,id=96932,gems=320crit_320crit
 shoulders=shoulderwraps_of_the_haunted_forest,id=96593,gems=80int_160crit_320crit_120haste,enchant=200int_100crit
-back=constantly_accelerating_cloak,id=96889,gems=80int_160crit_60int,enchant=180int,reforge=spi_crit
+back=jadefire_drape,id=98150,gems=80int_160crit_60int,enchant=180int
 chest=robes_of_concussive_shocks,id=96810,gems=80int_160crit_320crit_120int,enchant=80all,reforge=spi_crit
 wrists=vampire_bathide_bracers,id=96809,gems=320crit,enchant=180int,reforge=spi_crit
 hands=gloves_of_the_haunted_forest,id=96589,gems=80int_160crit_320crit_60int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=mastery_haste
@@ -48,7 +48,7 @@ finger1=radens_swift_seal,id=95021,gems=160agi,reforge=hit_crit
 finger2=goresoaked_gear,id=96885,gems=160agi
 trinket1=rune_of_reorigination,id=96918
 trinket2=renatakis_soul_charm,id=96741,reforge=exp_mastery
-back=pinionfeather_greatcloak,id=96833,gems=160agi,enchant=180crit,reforge=crit_haste
+back=tigerfang_wrap,id=98148,gems=80agi_160mastery_60agi,enchant=180crit
 main_hand=darkwood_spiritstaff,id=96978,gems=80agi_160mastery_160agi_60agi,enchant=dancing_steel,reforge=mastery_exp
 hands=grips_of_the_haunted_forest,id=96580,gems=160agi_60agi,enchant=170str,reforge=exp_haste,addon=synapse_springs_mark_ii
 save=Druid_Feral_T15H.simc
