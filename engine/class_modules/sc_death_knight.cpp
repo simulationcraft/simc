@@ -435,13 +435,15 @@ public:
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource() { return RESOURCE_RUNIC_POWER; }
   virtual role_e primary_role() const;
-  virtual void      trigger_runic_empowerment();
-  virtual int       runes_count( rune_type rt, bool include_death, int position );
-  virtual double    runes_cooldown_any( rune_type rt, bool include_death, int position );
-  virtual double    runes_cooldown_all( rune_type rt, bool include_death, int position );
-  virtual double    runes_cooldown_time( dk_rune_t* r );
-  virtual bool      runes_depleted( rune_type rt, int position );
   virtual void invalidate_cache( cache_e );
+
+  void      trigger_runic_empowerment();
+  int       runes_count( rune_type rt, bool include_death, int position );
+  double    runes_cooldown_any( rune_type rt, bool include_death, int position );
+  double    runes_cooldown_all( rune_type rt, bool include_death, int position );
+  double    runes_cooldown_time( dk_rune_t* r );
+  bool      runes_depleted( rune_type rt, int position );
+  double    compute_incoming_damage( timespan_t = timespan_t::from_seconds( 5 ) );
 
   virtual ~death_knight_t();
 
@@ -3275,36 +3277,22 @@ struct death_strike_t : public death_knight_melee_attack_t
 
   void trigger_death_strike_heal()
   {
-    if ( p() -> incoming_damage.size() > 0 )
-    {
-      std::vector< std::pair< timespan_t, double > >::iterator i = p() -> incoming_damage.begin();
-      while ( i != p() -> incoming_damage.end() &&
-              sim -> current_time - ( *i ).first > timespan_t::from_seconds( 5.0 ) )
-      {
-        ++i;
-      }
+    double amount = p() -> compute_incoming_damage();
 
-      p() -> incoming_damage.erase( p() -> incoming_damage.begin(), i );
-    }
-
-    double heal_amount = 0;
-    for ( size_t i = 0; i < p() -> incoming_damage.size(); i++ )
-      heal_amount += p() -> incoming_damage[ i ].second;
-
-    if ( sim -> debug )
-      sim -> output( "%s Death Strike heal, incoming_damage=%f incoming_heal=%f min_heal=%f", p() -> name(), heal_amount,
-                     heal_amount * data().effectN( 1 ).chain_multiplier() / 100.0,
-                     p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent() );
-
-    heal_amount = std::max( p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent(),
-                            heal_amount * data().effectN( 1 ).chain_multiplier() / 100.0 );
+    amount = std::max( p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent(),
+                       amount * data().effectN( 1 ).chain_multiplier() / 100.0 );
 
     // Note that the Scent of Blood bonus is calculated here, so we can get
     // it to Blood Shield. Apparently any other healing bonus that the DKs get
     // does not affect the size of the blood shield
-    heal_amount *= 1.0 + p() -> buffs.scent_of_blood -> check() * p() -> buffs.scent_of_blood -> data().effectN( 1 ).percent();
+    amount *= 1.0 + p() -> buffs.scent_of_blood -> check() * p() -> buffs.scent_of_blood -> data().effectN( 1 ).percent();
 
-    heal -> base_dd_min = heal -> base_dd_max = heal_amount;
+    if ( sim -> debug )
+      sim -> output( "%s Death Strike heal, incoming_damage=%f incoming_heal=%f min_heal=%f",
+                     p() -> name(), p() -> compute_incoming_damage(),
+                     amount, p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent() );
+
+    heal -> base_dd_min = heal -> base_dd_max = amount;
     heal -> schedule_execute();
   }
 
@@ -4837,7 +4825,23 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
 {
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  if ( util::str_compare_ci( splits[ 0 ], "rune" ) )
+  if ( util::str_compare_ci( name_str, "incoming_damage_5s" ) )
+  {
+    struct ds_heal_expr_t : public expr_t
+    {
+      death_knight_t* dk;
+
+      ds_heal_expr_t( death_knight_t* p ) :
+        expr_t( "incoming_damage_5s" ), dk( p )
+      { }
+
+      double evaluate()
+      { return dk -> compute_incoming_damage(); }
+    };
+
+    return new ds_heal_expr_t( this );
+  }
+  else if ( util::str_compare_ci( splits[ 0 ], "rune" ) )
   {
     rune_type rt = RUNE_TYPE_NONE;
     bool include_death = false; // whether to include death runes
@@ -6035,10 +6039,6 @@ void death_knight_t::assess_damage( school_e     school,
     }
 
     incoming_damage.push_back( std::pair<timespan_t, double>( sim -> current_time, s -> result_amount ) );
-
-    while ( incoming_damage.size() > 0 &&
-            sim -> current_time - incoming_damage.front().first > timespan_t::from_seconds( 5.0 ) )
-      incoming_damage.erase( incoming_damage.begin() );
   }
 
   if ( health_pct >= 35 && health_percentage() < 35 )
@@ -6343,6 +6343,28 @@ int death_knight_t::decode_set( item_t& item )
   if ( strstr( s, "_gladiators_dreadplate_" ) ) return SET_PVP_MELEE;
 
   return SET_NONE;
+}
+
+
+// death_knight_t::compute_death_strike_heal ================================
+
+double death_knight_t::compute_incoming_damage( timespan_t interval )
+{
+  double amount = 0;
+
+  if ( incoming_damage.size() > 0 )
+  {
+    std::vector< std::pair< timespan_t, double > >::reverse_iterator i, end;
+    for ( i = incoming_damage.rbegin(), end = incoming_damage.rend(); i != end; i++ )
+    {
+      if ( sim -> current_time - ( *i ).first > interval )
+        break;
+
+      amount += ( *i ).second;
+    }
+  }
+
+  return amount;
 }
 
 // death_knight_t::trigger_runic_empowerment ================================
