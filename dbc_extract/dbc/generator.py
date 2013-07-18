@@ -1225,6 +1225,7 @@ class SpellDataGenerator(DataGenerator):
           ( 113769, 5 ),       # Wrath for Treants
           ( 110691, 5 ),       # Wrath for Mirror Images
           ( 108291, 0 ), ( 108292, 0 ), ( 108293, 0 ), ( 108294, 0 ), # Heart of the Wild
+          ( 144770, 1, False ), ( 144772, 1, False ), # Balance Tier 16 2pc spells
         ), 
     ]
 
