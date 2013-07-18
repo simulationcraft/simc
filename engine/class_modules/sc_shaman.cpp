@@ -300,6 +300,7 @@ public:
     const spell_data_t* chain_lightning;
     const spell_data_t* fire_elemental_totem;
     const spell_data_t* flame_shock;
+    const spell_data_t* frost_shock;
     const spell_data_t* healing_storm;
     const spell_data_t* lava_lash;
     const spell_data_t* spiritwalkers_grace;
@@ -3808,7 +3809,7 @@ struct earth_shock_t : public shaman_spell_t
   {
     cooldown             = player -> cooldown.shock;
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
-    shock = true;
+    shock                = true;
 
     stats -> add_child ( player -> get_stats( "fulmination" ) );
   }
@@ -3871,8 +3872,8 @@ struct flame_shock_t : public shaman_spell_t
     tick_may_crit         = true;
     dot_behavior          = DOT_REFRESH;
     cooldown              = player -> cooldown.shock;
-    cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
-    shock = true;
+    cooldown -> duration  = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
+    shock                 = true;
   }
 
   // Override assess_damage, so we can prevent 0 damage hits from reports, when
@@ -3959,9 +3960,20 @@ struct frost_shock_t : public shaman_spell_t
   frost_shock_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( "Frost Shock" ), options_str )
   {
-    cooldown             = player -> cooldown.shock;
-    cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
-    shock = true;
+    cooldown = player -> cooldown.shock;
+    shock    = true;
+  }
+
+  void execute()
+  {
+    timespan_t tmp_cd = cooldown -> duration;
+    if ( maybe_ptr( player -> dbc.ptr ) )
+      cooldown -> duration = data().cooldown() + p() -> glyph.frost_shock -> effectN( 1 ).time_value();
+
+    base_t::execute();
+
+    if ( maybe_ptr( player -> dbc.ptr ) )
+      cooldown -> duration = tmp_cd;
   }
 };
 
@@ -5308,6 +5320,7 @@ void shaman_t::init_spells()
   glyph.chain_lightning              = find_glyph_spell( "Glyph of Chain Lightning" );
   glyph.fire_elemental_totem         = find_glyph_spell( "Glyph of Fire Elemental Totem" );
   glyph.flame_shock                  = find_glyph_spell( "Glyph of Flame Shock" );
+  glyph.frost_shock                  = find_glyph_spell( "Glyph of Frost Shock" );
   glyph.healing_storm                = find_glyph_spell( "Glyph of Healing Storm" );
   glyph.lava_lash                    = find_glyph_spell( "Glyph of Lava Lash" );
   glyph.spiritwalkers_grace          = find_glyph_spell( "Glyph of Spiritwalker's Grace" );
