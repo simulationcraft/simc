@@ -2614,6 +2614,72 @@ void unerring_vision_of_leishen( item_t* item )
   item -> player -> callbacks.register_spell_tick_damage_callback( SCHOOL_ALL_MASK, cb );
 }
 
+// Multistrike trinkets
+void multistrike_trinket( item_t* item )
+{
+  struct multistrike_t : public spell_t
+  {
+    multistrike_t( item_t* item ) :
+      spell_t( "multistrike", item -> player )
+    {
+      callbacks = may_miss = may_crit = false;
+      proc = background = true;
+      school = SCHOOL_PHYSICAL; // TODO: Won't work for healing trinket, and spells use various different schools.
+    }
+    
+    double composite_target_multiplier( player_t* )
+    { return 1.0; }
+
+    double composite_da_multiplier()
+    { return 1.0 / 3.0; }
+
+    double target_armor( player_t* )
+    { return 0.0; }
+  };
+
+  struct multistrike_callback_t : public proc_callback_t<action_state_t>
+  {
+    multistrike_t* strike;
+
+    multistrike_callback_t( item_t& i, const special_effect_t& data ) :
+      proc_callback_t<action_state_t>( i.player, data )
+    { strike = new multistrike_t( &i ); }
+
+    void execute( action_t* /* action */, action_state_t* state )
+    {
+      strike -> base_dd_min = strike -> base_dd_max = state -> result_amount;
+      strike -> schedule_execute();
+    }
+  };
+
+  maintenance_check( 502 );
+
+  player_t* p = item -> player;
+  const random_prop_data_t& budget = p -> dbc.random_property( item -> item_level() );
+  const spell_data_t* proc_driver_spell = spell_data_t::nil();
+
+  for ( size_t i = 0; i < sizeof_array( item -> parsed.data.id_spell ); i++ )
+  {
+    if ( item -> parsed.data.id_spell[ i ] <= 0 ||
+         item -> parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_EQUIP )
+      continue;
+
+    const spell_data_t* s = p -> find_spell( item -> parsed.data.id_spell[ i ] );
+    proc_driver_spell = s;
+    break;
+  }
+
+  std::string name = proc_driver_spell -> name_cstr();
+  util::tokenize( name );
+  special_effect_t effect;
+  effect.name_str = name;
+  effect.proc_chance = budget.p_epic[ 0 ] * proc_driver_spell -> effectN( 1 ).m_average() / 1000.0;
+
+  multistrike_callback_t* cb = new multistrike_callback_t( *item, effect );
+  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+  p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
+}
+
 // CDR trinkets
 void cooldown_reduction_trinket( item_t* item )
 {
@@ -2628,7 +2694,7 @@ void cooldown_reduction_trinket( item_t* item )
     { ROGUE_ASSASSINATION, { "evasion", "vanish", "cloak_of_shadows", "vendetta", "shadow_blades", 0 } },
     { ROGUE_COMBAT,        { "evasion", "adrenaline_rush", "cloak_of_shadows", "killing_spree", "shadow_blades", 0 } },
     { ROGUE_SUBTLETY,      { "evasion", "vanish", "cloak_of_shadows", "shadow_dance", "shadow_blades", 0 } },
-    { SHAMAN_ENHANCEMENT,  { "spiritwalkers_grace", "earth_elemental_totem", "stormlash_totem", "shamanistic_rage", "ascendance", "feral_spirit" } },
+    { SHAMAN_ENHANCEMENT,  { "spiritwalkers_grace", "earth_elemental_totem", "fire_elemental_totem", "shamanistic_rage", "ascendance", "feral_spirit" } },
     { SPEC_NONE,           { 0 } }
   };
 
@@ -2773,6 +2839,7 @@ void unique_gear::init( player_t* p )
     if ( ! strcmp( item.name(), "unerring_vision_of_lei_shen"         ) ) unerring_vision_of_leishen        ( &item );
 
     if ( item.player -> dbc.ptr && item.parsed.data.id == 102292 ) cooldown_reduction_trinket( &item );
+    if ( item.player -> dbc.ptr && item.parsed.data.id == 102301 ) multistrike_trinket( &item );
   }
 }
 

@@ -2048,9 +2048,7 @@ struct death_knight_action_t : public Base
       }
     }
     else
-    {
       action_base_t::consume_resource();
-    }
   }
 
   virtual double composite_target_multiplier( player_t* t )
