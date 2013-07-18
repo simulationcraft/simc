@@ -60,7 +60,7 @@ finger1=band_of_the_scaled_tyrant,id=96872,stats=957str_1555sta_574hit_687haste,
 finger2=radens_ruinous_ring,id=95022,stats=957str_1555sta_754haste_493exp,gems=160haste_120sta_60str,enchant=240sta,reforge=exp_hit
 trinket1=soul_barrier,id=96927,stats=2628sta
 trinket2=laochins_liquid_courage,id=89079,stats=1619sta
-main_hand=worldbreakers_stormscythe,id=96748,stats=717str_1196sta_559hit_376exp,weapon=axe_2.6speed_9172min_17036max,gems=160haste_120sta_320haste_60str,enchant=dancing_steel,reforge=hit_haste
+main_hand=worldbreakers_stormscythe,id=96748,stats=717str_1196sta_559hit_376exp,weapon=axe_2.6speed_9172min_17036max,gems=160haste_120sta_320haste_60str,enchant=windsong,reforge=hit_haste
 off_hand=greatshield_of_the_gloaming,id=96884,stats=20279armor_957str_1555sta_658dodge_637mastery,gems=320haste,enchant=170parry,reforge=dodge_haste
 
 # Gear Summary
