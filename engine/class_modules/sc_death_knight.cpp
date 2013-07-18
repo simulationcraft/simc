@@ -2320,7 +2320,7 @@ void death_knight_melee_attack_t::impact( action_state_t* state )
 {
   base_t::impact( state );
 
-  trigger_t16_4pc_melee( execute_state );
+  trigger_t16_4pc_melee( state );
 }
 
 // death_knight_melee_attack_t::ready() =====================================
@@ -2373,7 +2373,7 @@ void death_knight_spell_t::impact( action_state_t* state )
 {
   base_t::impact( state );
 
-  trigger_t16_4pc_melee( execute_state );
+  trigger_t16_4pc_melee( state );
 }
 
 
