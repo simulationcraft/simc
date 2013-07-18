@@ -2614,9 +2614,99 @@ void unerring_vision_of_leishen( item_t* item )
   item -> player -> callbacks.register_spell_tick_damage_callback( SCHOOL_ALL_MASK, cb );
 }
 
+// Cleave trinkets
+void cleave_trinket( item_t* item )
+{
+  // TODO: Currently does a phys damage nuke for everyone. In reality it uses 
+  // a ton of different schools, however they all are just additional damage, 
+  // so we can cheat a bit here.
+  // Additionally, healing cleave needs a heal_t action
+  struct cleave_t : public spell_t
+  {
+    cleave_t( item_t* item ) :
+      spell_t( "cleave_trinket", item -> player )
+    {
+      callbacks = may_miss = may_crit = false;
+      proc = background = true;
+      school = SCHOOL_PHYSICAL; // TODO: Won't work for healing trinket, and spells use various different schools.
+      aoe = -1;
+    }
+    
+    size_t available_targets( std::vector< player_t* >& tl )
+    {
+      tl.clear();
+
+      for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
+      {
+        player_t* t = sim -> target_non_sleeping_list[ i ];
+
+        if ( t -> is_enemy() && ( t != target ) )
+          tl.push_back( t );
+      }
+
+      return tl.size();
+    }
+
+    double composite_target_multiplier( player_t* )
+    { return 1.0; }
+
+    double composite_da_multiplier()
+    { return 1.0; }
+
+    double target_armor( player_t* )
+    { return 0.0; }
+  };
+
+  struct cleave_callback_t : public proc_callback_t<action_state_t>
+  {
+    cleave_t* strike;
+
+    cleave_callback_t( item_t& i, const special_effect_t& data ) :
+      proc_callback_t<action_state_t>( i.player, data )
+    { strike = new cleave_t( &i ); }
+
+    void execute( action_t* /* action */, action_state_t* state )
+    {
+      strike -> base_dd_min = strike -> base_dd_max = state -> result_amount;
+      strike -> schedule_execute();
+    }
+  };
+
+  maintenance_check( 502 );
+
+  player_t* p = item -> player;
+  const random_prop_data_t& budget = p -> dbc.random_property( item -> item_level() );
+  const spell_data_t* proc_driver_spell = spell_data_t::nil();
+
+  for ( size_t i = 0; i < sizeof_array( item -> parsed.data.id_spell ); i++ )
+  {
+    if ( item -> parsed.data.id_spell[ i ] <= 0 ||
+         item -> parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_EQUIP )
+      continue;
+
+    const spell_data_t* s = p -> find_spell( item -> parsed.data.id_spell[ i ] );
+    proc_driver_spell = s;
+    break;
+  }
+
+  std::string name = proc_driver_spell -> name_cstr();
+  util::tokenize( name );
+  special_effect_t effect;
+  effect.name_str = name;
+  effect.proc_chance = budget.p_epic[ 0 ] * proc_driver_spell -> effectN( 1 ).m_average() / 10000.0;
+
+  cleave_callback_t* cb = new cleave_callback_t( *item, effect );
+  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+  p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
+}
+
 // Multistrike trinkets
 void multistrike_trinket( item_t* item )
 {
+  // TODO: Currently does a phys damage nuke for everyone. In reality it uses 
+  // a ton of different schools, however they all are just additional damage, 
+  // so we can cheat a bit here.
+  // Additionally, healing multistrike needs a heal_t action
   struct multistrike_t : public spell_t
   {
     multistrike_t( item_t* item ) :
@@ -2840,6 +2930,7 @@ void unique_gear::init( player_t* p )
 
     if ( item.player -> dbc.ptr && item.parsed.data.id == 102292 ) cooldown_reduction_trinket( &item );
     if ( item.player -> dbc.ptr && item.parsed.data.id == 102301 ) multistrike_trinket( &item );
+    if ( item.player -> dbc.ptr && item.parsed.data.id == 102302 ) cleave_trinket( &item );
   }
 }
 
