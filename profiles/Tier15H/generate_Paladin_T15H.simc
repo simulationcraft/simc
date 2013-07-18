@@ -9,7 +9,7 @@ race=blood_elf
 spec=protection
 role=tank
 position=front
-talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!202101
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bZ!202101
 professions=Blacksmithing=600/Enchanting=600
 glyphs=focused_shield/alabaster_shield/battle_healer
 legs=lightning_emperors_legguards,id=96667,stats=5438armor_1599str_2639sta_1251parry_853hit,gems=320haste_160haste_120sta_180sta,enchant=430sta_165dodge,reforge=parry_haste
