@@ -3968,7 +3968,7 @@ struct frost_shock_t : public shaman_spell_t
   {
     timespan_t tmp_cd = cooldown -> duration;
     if ( maybe_ptr( player -> dbc.ptr ) )
-      cooldown -> duration = data().cooldown() + p() -> glyph.frost_shock -> effectN( 1 ).time_value();
+      cooldown -> duration = data().cooldown() - p() -> glyph.frost_shock -> effectN( 1 ).time_value();
 
     base_t::execute();
 
