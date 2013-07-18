@@ -2396,6 +2396,7 @@ struct sacred_shield_t : public paladin_heal_t
     parse_options( NULL, options_str );
     may_crit = false;
     benefits_from_seal_of_insight = false;
+    harmful = false;
 
     // treat this as a HoT that spawns an absorb bubble on each tick() call rather than healing
     base_td = 342.5; // in effectN( 1 ), but not sure how to extract yet
@@ -2421,11 +2422,39 @@ struct sacred_shield_t : public paladin_heal_t
     // note that we don't call paladin_heal_t::tick( d ) so that the heal doesn't happen
   }
 
+  virtual void last_tick( dot_t* d )
+  {
+    p() -> buffs.sacred_shield -> expire();
+  }
+
   virtual void execute()
   {
-    paladin_heal_t::execute();
+    // if cast precombat, we need to kludge some things
+    if ( ! p() -> in_combat )
+    {
+      // in theory, we need to tweak the number of ticks and force a new one precombat
+      // in practice, it's ticking immediately when cast precombat for some reason, so we can skip all of that
+      // keeping this code here just in case that behavior changes
 
-    p() -> buffs.sacred_shield -> trigger();
+      //int orig_ticks = num_ticks;
+      //num_ticks -= 1;
+      
+      paladin_heal_t::execute();
+      
+      //num_ticks = orig_ticks;
+      
+      p() -> buffs.sacred_shield -> trigger();
+      
+      // force tick
+      //tick( get_dot( p() ) );
+
+    }
+    else
+    {
+      paladin_heal_t::execute();
+
+      p() -> buffs.sacred_shield -> trigger();
+    }
   }
 };
 
@@ -4208,7 +4237,8 @@ void paladin_t::create_buffs()
   buffs.divine_purpose         = buff_creator_t( this, "divine_purpose", find_talent_spell( "Divine Purpose" ) )
                                  .duration( find_spell( find_talent_spell( "Divine Purpose" ) -> effectN( 1 ).trigger_spell_id() ) -> duration() );
   buffs.holy_avenger           = buff_creator_t( this, "holy_avenger", find_talent_spell( "Holy Avenger" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
-  buffs.sacred_shield          = buff_creator_t( this, "sacred_shield", find_talent_spell( "Sacred Shield" ) );
+  buffs.sacred_shield          = buff_creator_t( this, "sacred_shield", find_talent_spell( "Sacred Shield" ) )
+                                 .duration( timespan_t::from_seconds( 60 ) ); // arbitrarily high since this is just a placeholder, we expire() on last_tick()
   buffs.selfless_healer        = buff_creator_t( this, "selfless_healer", find_spell( 114250 ) );
 
   // General
