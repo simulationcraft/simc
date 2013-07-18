@@ -364,6 +364,8 @@ void dbc::apply_hotfixes()
 
 
   // Death Knight
+  s = spell_data_t::find( 48792, false );
+  const_cast<spell_data_t*>( s ) -> _rune_cost = 0; // No rune cost whatsoever, spell data is just plain wrong.
 
 
   // Monk

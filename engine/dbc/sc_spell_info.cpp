@@ -556,9 +556,10 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
       s << std::endl;
     }
   }
-  else if ( spell -> rune_cost() > 0 )
+
+  if ( spell -> rune_cost() > 0 )
   {
-    s << "Resource         : ";
+    s << "Rune Cost        : ";
 
     int b = spell -> rune_cost() & 0x3;
     int u = ( spell -> rune_cost() & 0xC ) >> 2;
