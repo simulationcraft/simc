@@ -2090,6 +2090,7 @@ struct victory_rush_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
+    direct_power_mod = data().extra_coeff();
     weapon               = &( player -> main_hand_weapon );
     cooldown -> duration = timespan_t::from_seconds( 1000.0 );
   }
@@ -3450,7 +3451,7 @@ double warrior_t::matching_gear_multiplier( attribute_e attr )
   return 0.0;
 }
 
-// warrior_t::composite_tank_block ==========================================
+// warrior_t::composite_block ==========================================
 
 double warrior_t::composite_block()
 {
@@ -3478,7 +3479,7 @@ double warrior_t::composite_block()
   return b;
 }
 
-// warrior_t::composite_tank_crit_block =====================================
+// warrior_t::composite_crit_block =====================================
 
 double warrior_t::composite_crit_block()
 {
@@ -3490,7 +3491,7 @@ double warrior_t::composite_crit_block()
   return b;
 }
 
-// warrior_t::composite_tank_crit ===========================================
+// warrior_t::composite_crit_avoidance ===========================================
 
 double warrior_t::composite_crit_avoidance()
 {
@@ -3501,7 +3502,7 @@ double warrior_t::composite_crit_avoidance()
   return c;
 }
 
-// warrior_t::composite_tank_dodge ==========================================
+// warrior_t::composite_dodge ==========================================
 
 double warrior_t::composite_dodge()
 {
