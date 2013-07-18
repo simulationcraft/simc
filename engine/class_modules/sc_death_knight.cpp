@@ -193,6 +193,7 @@ public:
     action_t* blood_caked_blade;
     spell_t* blood_plague;
     spell_t* frost_fever;
+    spell_t* frozen_power;
   } active_spells;
 
   // Gains
@@ -297,6 +298,7 @@ public:
   {
     const spell_data_t* blood_parasite;
     const spell_data_t* t15_4pc_tank;
+    const spell_data_t* t16_4pc_melee;
   } spell;
 
   // Glyphs
@@ -784,12 +786,6 @@ void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
   double runes_per_second = 1.0 / 10.0 / p -> cache.attack_haste();
 
   runes_per_second *= 1.0 + p -> spec.improved_blood_presence -> effectN( 1 ).percent();
-
-  if ( p -> sets -> set( SET_T16_4PC_MELEE ) -> ok() && p -> specialization() == DEATH_KNIGHT_FROST &&
-       p -> buffs.pillar_of_frost -> check() )
-  {
-    runes_per_second *= 1.0 + p -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 2 ).percent();
-  }
 
   double regen_amount = periodicity.total_seconds() * runes_per_second;
 
@@ -2088,6 +2084,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
 
   virtual void   consume_resource();
   virtual void   execute();
+  virtual void   impact( action_state_t* state );
 
   virtual double composite_da_multiplier()
   {
@@ -2128,6 +2125,7 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
 
   virtual void   consume_resource();
   virtual void   execute();
+  virtual void   impact( action_state_t* state );
 
   virtual double composite_da_multiplier()
   {
@@ -2200,6 +2198,32 @@ static void trigger_t16_2pc_tank( action_state_t* s )
     p -> buffs.bone_wall -> trigger();
     p -> t16_tank_2pc_driver = 0;
   }
+}
+
+static void trigger_t16_4pc_melee( action_state_t* s )
+{
+  if ( ! s -> action -> player -> set_bonus.tier16_4pc_melee() )
+    return;
+
+  if ( ! maybe_ptr( s -> action -> player -> dbc.ptr ) )
+    return;
+
+  if ( ! s -> action -> special || ! s -> action -> harmful || s -> action -> proc )
+    return;
+
+  if ( ! s -> action -> result_is_hit( s -> result ) )
+    return;
+
+  if ( s -> result_amount <= 0 )
+    return;
+
+  death_knight_t* p = debug_cast< death_knight_t* >( s -> action -> player );
+
+  if ( ! p -> buffs.pillar_of_frost -> up() )
+    return;
+
+  p -> active_spells.frozen_power -> target = s -> target;
+  p -> active_spells.frozen_power -> schedule_execute();
 }
 
 static void trigger_t15_2pc_melee( death_knight_melee_attack_t* attack )
@@ -2290,6 +2314,15 @@ void death_knight_melee_attack_t::execute()
   trigger_t15_2pc_melee( this );
 }
 
+// death_knight_melee_attack_t::impact() ====================================
+
+void death_knight_melee_attack_t::impact( action_state_t* state )
+{
+  base_t::impact( state );
+
+  trigger_t16_4pc_melee( execute_state );
+}
+
 // death_knight_melee_attack_t::ready() =====================================
 
 bool death_knight_melee_attack_t::ready()
@@ -2333,6 +2366,16 @@ void death_knight_spell_t::execute()
     }
   }
 }
+
+// death_knight_spell_t::impact() ===========================================
+
+void death_knight_spell_t::impact( action_state_t* state )
+{
+  base_t::impact( state );
+
+  trigger_t16_4pc_melee( execute_state );
+}
+
 
 // death_knight_spell_t::ready() ============================================
 
@@ -5074,13 +5117,31 @@ void death_knight_t::init_spells()
   glyph.vampiric_blood            = find_glyph_spell( "Glyph of Vampiric Blood" );
 
   // Generic spells
-  spell.blood_parasite           = find_spell( 50452 );
-  spell.t15_4pc_tank             = find_spell( 138214 );
+  spell.blood_parasite            = find_spell( 50452 );
+  spell.t15_4pc_tank              = find_spell( 138214 );
+  spell.t16_4pc_melee             = maybe_ptr( dbc.ptr ) ? find_spell( 144909 ) : spell_data_t::not_found();
 
   // Active Spells
   active_spells.blood_plague = new blood_plague_t( this );
   active_spells.frost_fever = new frost_fever_t( this );
 
+  if ( maybe_ptr( dbc.ptr ) && set_bonus.tier16_4pc_melee() && specialization() == DEATH_KNIGHT_FROST )
+  {
+    // TODO: Is this on attack or spell crit/hit?
+    struct frozen_power_t : public spell_t
+    {
+      frozen_power_t( death_knight_t* p ) :
+        spell_t( "frozen_power", p, p -> spell.t16_4pc_melee -> effectN( 1 ).trigger() )
+      {
+        direct_power_mod = data().extra_coeff();
+        background = callbacks = proc = may_crit = true;
+        base_spell_power_multiplier = 0;
+        base_attack_power_multiplier = 1;
+      }
+    };
+
+    active_spells.frozen_power = new frozen_power_t( this );
+  }
 
   // Tier Bonuses
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
