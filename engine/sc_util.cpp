@@ -683,12 +683,22 @@ const char* util::result_type_string( result_e type )
     case RESULT_MISS:       return "miss";
     case RESULT_DODGE:      return "dodge";
     case RESULT_PARRY:      return "parry";
-    case RESULT_BLOCK:      return "block";
     case RESULT_GLANCE:     return "glance";
     case RESULT_CRIT:       return "crit";
-    case RESULT_CRIT_BLOCK: return "crit-block";
     case RESULT_HIT:        return "hit";
     default:                return "unknown";
+  }
+}
+
+// block_result_type_string =================================================
+const char* util::block_result_type_string( block_result_e type )
+{
+  switch ( type )
+  {
+    case BLOCK_RESULT_UNBLOCKED:     return "unblocked";
+    case BLOCK_RESULT_BLOCKED:      return "blocked";
+    case BLOCK_RESULT_CRIT_BLOCKED:  return "crit-blocked";
+    default:                         return "unknown";
   }
 }
 

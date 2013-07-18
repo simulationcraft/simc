@@ -468,14 +468,21 @@ enum result_e
   RESULT_UNKNOWN = -1,
   RESULT_NONE = 0,
   RESULT_MISS,  RESULT_DODGE, RESULT_PARRY,
-  RESULT_BLOCK, RESULT_CRIT_BLOCK, RESULT_GLANCE, RESULT_CRIT, RESULT_HIT,
+  RESULT_GLANCE, RESULT_CRIT, RESULT_HIT,
   RESULT_MAX
 };
 
-#define RESULT_HIT_MASK   ( (1<<RESULT_GLANCE) | (1<<RESULT_BLOCK) | (1<<RESULT_CRIT_BLOCK) | (1<<RESULT_CRIT) | (1<<RESULT_HIT) )
+enum block_result_e
+{
+  BLOCK_RESULT_UNKNOWN = -1,
+  BLOCK_RESULT_UNBLOCKED = 0,
+  BLOCK_RESULT_BLOCKED, BLOCK_RESULT_CRIT_BLOCKED,
+  BLOCK_RESULT_MAX
+};
+
+#define RESULT_HIT_MASK   ( (1<<RESULT_GLANCE) | (1<<RESULT_CRIT) | (1<<RESULT_HIT) )
 #define RESULT_CRIT_MASK  ( (1<<RESULT_CRIT) )
 #define RESULT_MISS_MASK  ( (1<<RESULT_MISS) )
-#define RESULT_BLOCK_MASK ( (1<<RESULT_BLOCK) )
 #define RESULT_DODGE_MASK ( (1<<RESULT_DODGE) )
 #define RESULT_PARRY_MASK ( (1<<RESULT_PARRY) )
 #define RESULT_NONE_MASK  ( (1<<RESULT_NONE) )
@@ -1243,6 +1250,7 @@ const char* stats_type_string         ( stats_e );
 const char* role_type_string          ( role_e );
 const char* resource_type_string      ( resource_e );
 const char* result_type_string        ( result_e type );
+const char* block_result_type_string  ( block_result_e type );
 const char* amount_type_string        ( dmg_e type );
 uint32_t    school_type_component     ( school_e s_type, school_e c_type );
 const char* school_type_string        ( school_e type );
@@ -4782,7 +4790,9 @@ public:
     void datacollection_end();
   };
   std::vector<stats_results_t> direct_results;
-  std::vector<stats_results_t>   tick_results;
+  std::vector<stats_results_t> blocked_direct_results;
+  std::vector<stats_results_t> tick_results;
+  std::vector<stats_results_t> blocked_tick_results;
 
   sc_timeline_t timeline_amount;
 
@@ -4845,6 +4855,7 @@ struct action_t : public noncopyable
 
   uint32_t id;
   result_e result;
+  block_result_e block_result;
   resource_e resource_current;
   int aoe, pre_combat;
   // true if this action should not be counted for executes
@@ -4931,6 +4942,7 @@ struct action_t : public noncopyable
   virtual int    hasted_num_ticks( double haste, timespan_t d = timespan_t::min() );
   virtual timespan_t travel_time();
   virtual result_e calculate_result( action_state_t* /* state */ ) { assert( false ); return RESULT_UNKNOWN; }
+  virtual block_result_e calculate_block_result( action_state_t* /* state */ ) { assert ( false ); return BLOCK_RESULT_UNKNOWN; }
   virtual double calculate_direct_amount( action_state_t* state );
   virtual double calculate_tick_amount( action_state_t* state );
 
@@ -4965,8 +4977,6 @@ struct action_t : public noncopyable
     return( r == RESULT_HIT        ||
             r == RESULT_CRIT       ||
             r == RESULT_GLANCE     ||
-            r == RESULT_BLOCK      ||
-            r == RESULT_CRIT_BLOCK ||
             r == RESULT_NONE       );
   }
 
@@ -4976,6 +4986,12 @@ struct action_t : public noncopyable
     return( r == RESULT_MISS   ||
             r == RESULT_DODGE  ||
             r == RESULT_PARRY );
+  }
+
+  inline bool result_is_block( block_result_e r = BLOCK_RESULT_UNKNOWN )
+  {
+    if ( r == BLOCK_RESULT_UNKNOWN ) r = block_result;
+    return( r == BLOCK_RESULT_BLOCKED || r == BLOCK_RESULT_CRIT_BLOCKED );
   }
 
   virtual double   miss_chance( double /* hit */, player_t* /* target */ ) { return 0; }
@@ -5119,6 +5135,7 @@ struct action_state_t : public noncopyable
   // Execution sesults
   dmg_e           result_type;
   result_e        result;
+  block_result_e  block_result;
   double          result_raw;           // Base result value, without crit/glance etc.
   double          result_total;         // Total unmitigated result, including crit bonus, glance penalty, etc.
   double          result_mitigated;     // Result after mitigation / resist. *NOTENOTENOTE* Only filled after action_t::impact() call
@@ -5218,6 +5235,7 @@ struct attack_t : public action_t
                     double parry_chance, double glance_chance,
                     double crit_chance );
   virtual result_e calculate_result( action_state_t* );
+  virtual block_result_e calculate_block_result( action_state_t* );
   virtual void   init();
 
   virtual double  miss_chance( double hit, player_t* t );
@@ -5292,6 +5310,7 @@ struct spell_base_t : public action_t
   virtual timespan_t execute_time();
   virtual timespan_t tick_time( double haste );
   virtual result_e   calculate_result( action_state_t* );
+  virtual block_result_e calculate_block_result( action_state_t* ) { return BLOCK_RESULT_UNBLOCKED; }
   virtual void   execute();
   virtual void   schedule_execute( action_state_t* execute_state = 0 );
 

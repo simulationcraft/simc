@@ -33,7 +33,9 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   portion_aps( name_str + " Portion APS", p -> sim -> statistics_level < 3 ),
   portion_apse( name_str + " Portion APSe", p -> sim -> statistics_level < 3 ),
   direct_results( RESULT_MAX ),
+  blocked_direct_results( BLOCK_RESULT_MAX ),
   tick_results( RESULT_MAX ),
+  blocked_tick_results( BLOCK_RESULT_MAX ),
   // Reporting only
   resource_portion(), apr(), rpe(),
   rpe_sum( 0 ), compound_amount( 0 ), overkill_pct( 0 ),
@@ -148,6 +150,11 @@ void stats_t::datacollection_begin()
     direct_results[ i ].datacollection_begin();
     tick_results[ i ].datacollection_begin();
   }
+  for ( block_result_e i = BLOCK_RESULT_UNBLOCKED; i < BLOCK_RESULT_MAX; i++ )
+  {
+    blocked_direct_results[ i ].datacollection_begin();
+    blocked_tick_results[ i ].datacollection_begin();
+  }
 }
 
 // stats_t::datacollection_end ==============================================
@@ -168,6 +175,11 @@ void stats_t::datacollection_end()
 
     direct_results[ i ].datacollection_end();
     tick_results[ i ].datacollection_end();
+  }
+  for ( block_result_e i = BLOCK_RESULT_UNBLOCKED; i < BLOCK_RESULT_MAX; i++ )
+  {
+    blocked_direct_results[ i ].datacollection_end();
+    blocked_tick_results[ i ].datacollection_end();
   }
 
   actual_amount.add( iaa );
@@ -211,6 +223,12 @@ void stats_t::analyze()
   {
     direct_results[ i ].analyze( num_direct_results.mean() );
     tick_results[ i ].analyze( num_tick_results.mean() );
+  }
+
+  for ( block_result_e i = BLOCK_RESULT_UNBLOCKED; i < BLOCK_RESULT_MAX; i++ )
+  {
+    blocked_direct_results[ i ].analyze( num_direct_results.mean() );
+    blocked_tick_results[ i ].analyze( num_tick_results.mean() );
   }
 
   portion_aps.analyze_all();

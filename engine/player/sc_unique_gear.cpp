@@ -74,8 +74,8 @@ struct discharge_attack_t : public attack_t
     may_dodge = ( data.school == SCHOOL_PHYSICAL ) && ( ( data.override_result_es_mask & RESULT_DODGE_MASK ) ? ( data.result_es_mask & RESULT_DODGE_MASK ) : may_dodge );
     may_parry = ( data.school == SCHOOL_PHYSICAL ) && ( ( data.override_result_es_mask & RESULT_PARRY_MASK ) ? ( data.result_es_mask & RESULT_PARRY_MASK ) : may_parry )
                 && ( p -> position() == POSITION_FRONT || p ->position() == POSITION_RANGED_FRONT );
-    may_block = ( data.school == SCHOOL_PHYSICAL ) && ( ( data.override_result_es_mask & RESULT_BLOCK_MASK ) ? ( data.result_es_mask & RESULT_BLOCK_MASK ) : may_block )
-                && ( p -> position() == POSITION_FRONT || p -> position() == POSITION_RANGED_FRONT );
+    //may_block = ( data.school == SCHOOL_PHYSICAL ) && ( ( data.override_result_es_mask & RESULT_BLOCK_MASK ) ? ( data.result_es_mask & RESULT_BLOCK_MASK ) : may_block )
+    //            && ( p -> position() == POSITION_FRONT || p -> position() == POSITION_RANGED_FRONT );
     may_glance = false;
     background  = true;
     aoe = data.aoe;

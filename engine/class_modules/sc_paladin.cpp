@@ -5453,7 +5453,7 @@ void paladin_t::assess_damage( school_e school,
   }
 
   // On a block event, trigger Alabaster Shield
-  if ( s -> result == RESULT_BLOCK )
+  if ( s -> block_result == BLOCK_RESULT_BLOCKED )
   {
     if ( glyphs.alabaster_shield -> ok() )
       buffs.alabaster_shield -> trigger();

@@ -167,6 +167,35 @@ void attack_t::build_table( std::array<double, RESULT_MAX>& chances,
   }
 }
 
+// attack_t::calculate_block_result =========================================
+
+block_result_e attack_t::calculate_block_result( action_state_t* s )
+{
+  block_result_e block_result = BLOCK_RESULT_UNKNOWN;
+  
+  // Blocks also get a their own roll, and glances/crits can be blocked.
+  if ( result_is_hit() && may_block && ( player -> position() == POSITION_FRONT ) ) 
+  {
+    double block_total = block_chance( s -> target );
+
+    double crit_block = crit_block_chance( s -> target );
+
+    // Roll once for block, then again for crit block if the block succeeds
+    if ( rng_result -> roll( block_total ) )
+    {
+      if ( rng_result -> roll( crit_block ) )
+        block_result = BLOCK_RESULT_CRIT_BLOCKED;
+      else
+        block_result = BLOCK_RESULT_BLOCKED;
+    }
+  }
+
+  if ( sim -> debug )
+    sim -> output( "%s result for %s is %s", player -> name(), name(), util::block_result_type_string( block_result ) );
+
+  return block_result;
+}
+
 // attack_t::calculate_result ===============================================
 
 result_e attack_t::calculate_result( action_state_t* s )
@@ -217,26 +246,6 @@ result_e attack_t::calculate_result( action_state_t* s )
     if ( rng_result -> roll( crit ) )
       result = RESULT_CRIT;
   }
-
-  // Blocks also get a their own roll, and glances/crits can be blocked.
-  if ( result_is_hit() && may_block && ( player -> position() == POSITION_FRONT ) ) 
-  {
-    double block_total = block_chance( s -> target );
-
-    double crit_block = crit_block_chance( s -> target );
-
-    // FIXME: pure assumption on how crit block is handled, needs testing!
-    if ( rng_result -> roll( block_total ) )
-    {
-      if ( rng_result -> roll( crit_block ) )
-        result = RESULT_CRIT_BLOCK;
-      else
-        result = RESULT_BLOCK;
-    }
-  }
-
-  if ( sim -> debug )
-    sim -> output( "%s result for %s is %s", player -> name(), name(), util::result_type_string( result ) );
 
   return result;
 }

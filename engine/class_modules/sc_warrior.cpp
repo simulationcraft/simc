@@ -3582,9 +3582,7 @@ void warrior_t::assess_damage( school_e school,
 {
   if ( s -> result == RESULT_HIT    ||
        s -> result == RESULT_CRIT   ||
-       s -> result == RESULT_GLANCE ||
-       s -> result == RESULT_BLOCK  ||
-       s -> result == RESULT_CRIT_BLOCK )
+       s -> result == RESULT_GLANCE )
   {
     if ( buff.defensive_stance -> check() )
       s -> result_amount *= 1.0 + buff.defensive_stance -> data().effectN( 1 ).percent();
@@ -3600,7 +3598,7 @@ void warrior_t::assess_damage( school_e school,
     if ( buff.shield_wall -> check() )
       s -> result_amount *= 1.0 + buff.shield_wall -> value();
 
-    if ( s -> result == RESULT_CRIT_BLOCK )
+    if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED )
     {
       if ( cooldown.rage_from_crit_block -> up() )
       {
@@ -3621,9 +3619,7 @@ void warrior_t::assess_damage( school_e school,
 
   if ( ( s -> result == RESULT_HIT    ||
          s -> result == RESULT_CRIT   ||
-         s -> result == RESULT_GLANCE ||
-         s -> result == RESULT_BLOCK  ||
-         s -> result == RESULT_CRIT_BLOCK ) &&
+         s -> result == RESULT_GLANCE ) &&
        ( active_stance == STANCE_BERSERKER ) )
   {
     player_t::resource_gain( RESOURCE_RAGE,

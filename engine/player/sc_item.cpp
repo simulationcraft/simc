@@ -1625,16 +1625,6 @@ bool item_t::decode_special( special_effect_t& effect,
       effect.override_result_es_mask |= RESULT_PARRY_MASK;
       effect.result_es_mask |= RESULT_PARRY_MASK;
     }
-    else if ( t.name == "noblock" )
-    {
-      effect.override_result_es_mask |= RESULT_BLOCK_MASK;
-      effect.result_es_mask &= ~RESULT_BLOCK_MASK;
-    }
-    else if ( t.name == "mayblock" )
-    {
-      effect.override_result_es_mask |= RESULT_BLOCK_MASK;
-      effect.result_es_mask |= RESULT_BLOCK_MASK;
-    }
     else if ( t.name == "norefresh" )
     {
       effect.no_refresh = true;

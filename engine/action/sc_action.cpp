@@ -1013,6 +1013,7 @@ void action_t::execute()
       s -> chain_target = as<int>( t );
       if ( ! pre_execute_state ) snapshot_state( s, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
       s -> result = calculate_result( s );
+      s -> block_result = calculate_block_result( s );
 
       s -> result_amount = calculate_direct_amount( s );
 
@@ -1031,6 +1032,7 @@ void action_t::execute()
     s -> chain_target = 0;
     if ( ! pre_execute_state ) snapshot_state( s, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
     s -> result = calculate_result( s );
+    s -> block_result = calculate_block_result( s );
 
     s -> result_amount = calculate_direct_amount( s );
 

@@ -122,7 +122,7 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
     s -> direct_results[ RESULT_DODGE  ].pct +
     s -> direct_results[ RESULT_PARRY  ].pct,
     s -> direct_results[ RESULT_GLANCE ].pct,
-    s -> direct_results[ RESULT_BLOCK  ].pct,
+    s -> blocked_direct_results[ BLOCK_RESULT_BLOCKED  ].pct + s -> blocked_direct_results[ BLOCK_RESULT_CRIT_BLOCKED  ].pct,
     s -> num_ticks.pretty_mean(),
     s -> tick_results[ RESULT_HIT  ].actual_amount.pretty_mean(),
     s -> tick_results[ RESULT_CRIT ].actual_amount.pretty_mean(),
