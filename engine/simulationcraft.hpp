@@ -4978,9 +4978,9 @@ struct action_t : public noncopyable
             r == RESULT_PARRY );
   }
 
-  virtual double   miss_chance( double /* hit */, int /* delta_level */ ) { return 0; }
-  virtual double  dodge_chance( double /* expertise */, int /* delta_level */ ) { return 0; }
-  virtual double  parry_chance( double /* expertise */, int /* delta_level */ ) { return 0; }
+  virtual double   miss_chance( double /* hit */, player_t* /* target */ ) { return 0; }
+  virtual double  dodge_chance( double /* expertise */, player_t* /* target */ ) { return 0; }
+  virtual double  parry_chance( double /* expertise */, player_t* /* target */ ) { return 0; }
   virtual double glance_chance( int /* delta_level */ ) { return 0; }
   virtual double  block_chance( int /* delta_level */ ) { return 0; }
   virtual double   crit_chance( double /* crit */, int /* delta_level */ );
@@ -5220,7 +5220,7 @@ struct attack_t : public action_t
   virtual result_e calculate_result( action_state_t* );
   virtual void   init();
 
-  virtual double   miss_chance( double hit, int delta_level );
+  virtual double   miss_chance( double hit, player_t* t );
   virtual double  block_chance( int /* delta_level */ ) { return 0.0; }
   virtual double  crit_block_chance( int delta_level );
 
@@ -5253,8 +5253,8 @@ struct melee_attack_t : public attack_t
 
   // Melee Attack Overrides
   virtual void init();
-  virtual double  dodge_chance( double /* expertise */, int delta_level );
-  virtual double  parry_chance( double /* expertise */, int delta_level );
+  virtual double  dodge_chance( double /* expertise */, player_t* t );
+  virtual double  parry_chance( double /* expertise */, player_t* t );
   virtual double glance_chance( int delta_level );
 
 };
@@ -5266,8 +5266,8 @@ struct ranged_attack_t : public attack_t
   ranged_attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Ranged Attack Overrides
-  virtual double  dodge_chance( double /* expertise */, int delta_level );
-  virtual double  parry_chance( double /* expertise */, int delta_level );
+  virtual double  dodge_chance( double /* expertise */, player_t* t );
+  virtual double  parry_chance( double /* expertise */, player_t* t );
   virtual double glance_chance( int delta_level );
   virtual double composite_target_multiplier( player_t* target )
   {
@@ -5316,7 +5316,7 @@ public:
   // Harmful Spell Overrides
   virtual void   assess_damage( dmg_e, action_state_t* );
   virtual void   execute();
-  virtual double miss_chance( double hit, int delta_level );
+  virtual double miss_chance( double hit, player_t* t );
   virtual void   init();
 
   virtual double composite_hit()

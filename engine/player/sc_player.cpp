@@ -2997,7 +2997,7 @@ double player_t::composite_armor_multiplier()
   return a;
 }
 
-// player_t::composite_tank_miss ============================================
+// player_t::composite_miss ============================================
 
 double player_t::composite_miss()
 {
@@ -3008,7 +3008,7 @@ double player_t::composite_miss()
   return m;
 }
 
-// player_t::composite_tank_block ===========================================
+// player_t::composite_block ===========================================
 
 double player_t::composite_block()
 {
@@ -3025,7 +3025,7 @@ double player_t::composite_block()
   return b;
 }
 
-// player_t::composite_tank_dodge ===========================================
+// player_t::composite_dodge ===========================================
 
 double player_t::composite_dodge()
 {
@@ -3046,7 +3046,7 @@ double player_t::composite_dodge()
   return d;
 }
 
-// player_t::composite_tank_parry ===========================================
+// player_t::composite_parry ===========================================
 
 double player_t::composite_parry()
 {
@@ -3073,7 +3073,7 @@ double player_t::composite_parry()
 
 
 
-// player_t::composite_tank_block_reduction =================================
+// player_t::composite_block_reduction =================================
 
 double player_t::composite_block_reduction()
 {
@@ -3088,14 +3088,14 @@ double player_t::composite_block_reduction()
   return b;
 }
 
-// player_t::composite_tank_crit_block ======================================
+// player_t::composite_crit_block ======================================
 
 double player_t::composite_crit_block()
 {
   return 0;
 }
 
-// player_t::composite_tank_crit ============================================
+// player_t::composite_crit_avoidance========================================
 
 double player_t::composite_crit_avoidance()
 {
@@ -5796,7 +5796,7 @@ struct snapshot_stats_t : public action_t
       spell_t* spell = new spell_t( "snapshot_spell", p  );
       spell -> background = true;
       spell -> init();
-      double chance = spell -> miss_chance( spell -> composite_hit(), delta_level );
+      double chance = spell -> miss_chance( spell -> composite_hit(), sim -> target );
       if ( chance < 0 ) spell_hit_extra = -chance * p -> current_rating().spell_hit;
     }
 
@@ -5805,17 +5805,17 @@ struct snapshot_stats_t : public action_t
       attack_t* attack = new melee_attack_t( "snapshot_attack", p );
       attack -> background = true;
       attack -> init();
-      double chance = attack -> miss_chance( attack -> composite_hit(), delta_level );
+      double chance = attack -> miss_chance( attack -> composite_hit(), sim -> target );
       if ( p -> dual_wield() ) chance += 0.19;
       if ( chance < 0 ) attack_hit_extra = -chance * p -> current_rating().attack_hit;
       if ( p -> position() != POSITION_FRONT  )
       {
-        chance = attack -> dodge_chance( p -> cache.attack_expertise(), delta_level );
+        chance = attack -> dodge_chance( p -> cache.attack_expertise(), sim -> target );
         if ( chance < 0 ) expertise_extra = -chance * p -> current_rating().expertise;
       }
       else if ( p ->position() == POSITION_FRONT )
       {
-        chance = attack -> parry_chance( p -> cache.attack_expertise(), delta_level );
+        chance = attack -> parry_chance( p -> cache.attack_expertise(), sim -> target );
         if ( chance < 0 ) expertise_extra = -chance * p -> current_rating().expertise;
       }
     }

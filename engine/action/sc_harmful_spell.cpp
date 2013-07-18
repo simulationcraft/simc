@@ -23,10 +23,15 @@ spell_t::spell_t( const std::string&  token,
 
 // spell_t::miss_chance =====================================================
 
-double spell_t::miss_chance( double hit, int delta_level )
+double spell_t::miss_chance( double hit, player_t* t )
 {
-  double miss = 0.06 + ( delta_level * 0.03 );
+  // base spell miss chance is 6% - treat this as base.miss + 3%
+  double miss = 0.03 + t -> cache.miss();
+    
+  // adjustment for level differential
+  miss += ( t -> level - player -> level ) * 0.03;
 
+  // subtract player's hit
   miss -= hit;
 
   return miss;

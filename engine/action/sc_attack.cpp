@@ -58,10 +58,15 @@ timespan_t attack_t::execute_time()
 
 // attack_t::miss_chance ====================================================
 
-double attack_t::miss_chance( double hit, int delta_level )
+double attack_t::miss_chance( double hit, player_t* t )
 {
-  double miss = 0.03 + ( delta_level * 0.015 );
+  // cache.miss() contains the target's miss chance (3.0 base in almost all cases)
+  double miss = t -> cache.miss();
+    
+  // add or subtract 1.5% per level difference
+  miss += ( t -> level - player -> level ) * 0.015;
 
+  // subtract the player's hit chance
   miss -= hit;
 
   return miss;
@@ -162,9 +167,9 @@ result_e attack_t::calculate_result( action_state_t* s )
 
   int delta_level = s -> target -> level - player -> level;
 
-  double miss     = may_miss ? ( miss_chance( composite_hit(), delta_level ) + s -> target -> cache.miss() ) : 0;
-  double dodge    = may_dodge ? ( dodge_chance( composite_expertise(), delta_level ) + s -> target -> cache.dodge() ) : 0;
-  double parry    = may_parry && player -> position() == POSITION_FRONT ? ( parry_chance( composite_expertise(), delta_level ) + s -> target -> cache.parry() ) : 0;
+  double miss     = may_miss ? miss_chance( composite_hit(), s -> target ) : 0;
+  double dodge    = may_dodge ? dodge_chance( composite_expertise(), s -> target ) : 0;
+  double parry    = may_parry && player -> position() == POSITION_FRONT ? parry_chance( composite_expertise(), s -> target ) : 0;
   double crit     = may_crit ? ( crit_chance( s -> composite_crit() + s -> target -> cache.crit_avoidance(), delta_level ) ) : 0;
 
   // Specials are 2-roll calculations, so only pass crit chance to
@@ -202,6 +207,7 @@ result_e attack_t::calculate_result( action_state_t* s )
       result = RESULT_CRIT;
   }
 
+  // TODO: separate blocks out so that we can have blocked criticals and blocked glances
   if ( result == RESULT_HIT && may_block && ( player -> position() == POSITION_FRONT ) ) // Blocks are on their own roll
   {
     double block_total = block_chance( delta_level ) + s -> target -> cache.block();
@@ -296,16 +302,34 @@ void melee_attack_t::init()
 
 // melee_attack_t::dodge_chance =============================================
 
-double melee_attack_t::dodge_chance( double expertise, int delta_level )
+double melee_attack_t::dodge_chance( double expertise, player_t* t )
 {
-  return 0.03 + ( delta_level * 0.015 ) - expertise;
+  // cache.dodge() contains the target's dodge chance (3.0 base, plus spec bonuses and rating)
+  double dodge = t -> cache.dodge();
+
+  // add or subtract 1.5% per level difference
+  dodge += ( t -> level - player -> level ) * 0.015;
+  
+  // subtract the player's expertise chance
+  dodge -= expertise;
+
+  return dodge;
 }
 
 // melee_attack_t::parry_chance =============================================
 
-double melee_attack_t::parry_chance( double expertise, int delta_level )
+double melee_attack_t::parry_chance( double expertise, player_t* t )
 {
-  return 0.03 + ( delta_level * 0.015 ) + std::min( 0.0, dodge_chance( expertise, delta_level ) );
+  // cache.parry() contains the target's parry chance (3.0 base, plus spec bonuses and rating)
+  double parry = t -> cache.parry();
+
+  // add or subtract 1.5% per level difference
+  parry += ( t -> level - player -> level ) * 0.015;
+  
+  // subtract the player's expertise chance
+  parry += std::min( 0.0, dodge_chance( expertise, t ) );
+
+  return parry;
 }
 
 // melee_attack_t::glance_chance ============================================
@@ -335,16 +359,26 @@ ranged_attack_t::ranged_attack_t( const std::string& token,
 
 // ranged_attack_t::dodge_chance ============================================
 
-double ranged_attack_t::dodge_chance( double expertise, int delta_level )
+double ranged_attack_t::dodge_chance( double expertise, player_t* t )
 {
-  return 0.03 + ( delta_level * 0.015 ) - expertise;
+  // cache.dodge() contains the target's dodge chance (3.0 base, plus spec bonuses and rating)
+  double dodge = t -> cache.dodge();
+
+  // add or subtract 1.5% per level difference
+  dodge += ( t -> level - player -> level ) * 0.015;
+  
+  // subtract the player's expertise chance
+  dodge -= expertise;
+
+  return dodge;
 }
 
 // ranged_attack_t::parry_chance ============================================
 
-double ranged_attack_t::parry_chance( double /* expertise */, int /* delta_level */ )
+double ranged_attack_t::parry_chance( double /* expertise */, player_t* /* target */ )
 {
   // Assumed impossible to parry ranged. Needs checking.
+  // TODO: Ranged parries used to exist as "Deflects" - may need re-testing post-MoP
   return 0.0;
 }
 

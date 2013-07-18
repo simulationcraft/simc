@@ -517,6 +517,11 @@ void enemy_t::init_base_stats()
   {
     initial_health_percentage = 100.0;
   }
+  
+  base.miss  = 0.030; //90, level differential handled in miss_chance()
+  base.dodge = 0.030; //90, level differential handled in dodge_chance()
+  base.parry = 0.030; //90, level differential handled in parry_chance()
+  base.block = 0.030; //90, level differential handled in block_chance()
 }
 
 void enemy_t::init_defense()

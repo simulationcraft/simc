@@ -3568,7 +3568,7 @@ struct elemental_blast_t : public shaman_spell_t
 
     if ( ( result == RESULT_NONE ) && may_miss )
     {
-      if ( rng_result -> roll( miss_chance( composite_hit(), delta_level ) ) )
+      if ( rng_result -> roll( miss_chance( composite_hit(), s -> target ) ) )
         result = RESULT_MISS;
     }
 

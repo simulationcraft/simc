@@ -85,7 +85,7 @@ result_e spell_base_t::calculate_result( action_state_t* s )
 
   if ( ( result == RESULT_NONE ) && may_miss )
   {
-    if ( rng_result -> roll( miss_chance( composite_hit(), delta_level ) ) )
+    if ( rng_result -> roll( miss_chance( composite_hit(), s -> target ) ) )
     {
       result = RESULT_MISS;
     }
