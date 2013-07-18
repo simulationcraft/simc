@@ -72,16 +72,26 @@ double attack_t::miss_chance( double hit, player_t* t )
   return miss;
 }
 
+double attack_t::block_chance( player_t* t )
+{
+  // cache.block() contains the target's block chance (3.0 base for bosses, more for shield tanks)
+  double block = t -> cache.block();
+
+  // add or subtract 1.5% per level difference
+  block += ( t-> level - player -> level ) * 0.015;
+
+  return block;
+}
+
 // attack_t::crit_block_chance ==============================================
 
-double attack_t::crit_block_chance( int /* delta_level */ )
+double attack_t::crit_block_chance( player_t* t )
 {
-  // Tested: Player -> Target, both POSITION_RANGED_FRONT and POSITION_FRONT
-  // % is 5%, and not 5% + delta_level * 0.5%.
-  // Moved 5% to target_t::composite_tank_block
+  // This function is probably unnecessary, as we could just query cache.crit_block() directly.
+  // I'm leaving it for consistency with *_chance() and in case future changes modify crit block mechanics
 
-  // FIXME: Test Target -> Player
-  return 0;
+  // Crit Block does not suffer from level-based suppression, return cached value directly
+  return t -> cache.crit_block();
 }
 
 // attack_t::build_table ====================================================
@@ -201,18 +211,19 @@ result_e attack_t::calculate_result( action_state_t* s )
 
   assert( result != RESULT_NONE );
 
-  if ( result == RESULT_HIT && special && may_crit ) // Specials are 2-roll calculations
+  // if we have a special, make a second roll for hit/crit
+  if ( result == RESULT_HIT && special && may_crit ) 
   {
     if ( rng_result -> roll( crit ) )
       result = RESULT_CRIT;
   }
 
-  // TODO: separate blocks out so that we can have blocked criticals and blocked glances
-  if ( result == RESULT_HIT && may_block && ( player -> position() == POSITION_FRONT ) ) // Blocks are on their own roll
+  // Blocks also get a their own roll, and glances/crits can be blocked.
+  if ( result_is_hit() && may_block && ( player -> position() == POSITION_FRONT ) ) 
   {
-    double block_total = block_chance( delta_level ) + s -> target -> cache.block();
+    double block_total = block_chance( s -> target );
 
-    double crit_block = crit_block_chance( delta_level ) + s -> target -> cache.crit_block();
+    double crit_block = crit_block_chance( s -> target );
 
     // FIXME: pure assumption on how crit block is handled, needs testing!
     if ( rng_result -> roll( block_total ) )

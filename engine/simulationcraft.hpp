@@ -4982,7 +4982,7 @@ struct action_t : public noncopyable
   virtual double  dodge_chance( double /* expertise */, player_t* /* target */ ) { return 0; }
   virtual double  parry_chance( double /* expertise */, player_t* /* target */ ) { return 0; }
   virtual double glance_chance( int /* delta_level */ ) { return 0; }
-  virtual double  block_chance( int /* delta_level */ ) { return 0; }
+  virtual double  block_chance( player_t* /* target */ ) { return 0; }
   virtual double   crit_chance( double /* crit */, int /* delta_level */ );
 
   virtual double total_crit_bonus(); // Check if we want to move this into the stateless system.
@@ -5220,9 +5220,9 @@ struct attack_t : public action_t
   virtual result_e calculate_result( action_state_t* );
   virtual void   init();
 
-  virtual double   miss_chance( double hit, player_t* t );
-  virtual double  block_chance( int /* delta_level */ ) { return 0.0; }
-  virtual double  crit_block_chance( int delta_level );
+  virtual double  miss_chance( double hit, player_t* t );
+  virtual double  block_chance( player_t* t );
+  virtual double  crit_block_chance( player_t* t );
 
   virtual double composite_hit()
   { return action_t::composite_hit() + player -> cache.attack_hit(); }
