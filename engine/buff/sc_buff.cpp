@@ -1439,7 +1439,8 @@ debuff_t::debuff_t( const buff_creator_basics_t& params ) :
 absorb_buff_t::absorb_buff_t( const absorb_buff_creator_t& params ) :
   buff_t( params ),
   absorb_school( params._absorb_school ),
-  absorb_source( params._absorb_source )
+  absorb_source( params._absorb_source ),
+  absorb_gain( params._absorb_gain )
 {
   assert( player && "Absorb Buffs only supported for player!" );
 
@@ -1471,6 +1472,9 @@ void absorb_buff_t::consume( double amount )
 {
   if ( absorb_source )
     absorb_source -> add_result( amount, 0, ABSORB, RESULT_HIT, player );
+
+  if ( absorb_gain )
+    absorb_gain -> add( RESOURCE_HEALTH, amount, 0 );
 
   if ( sim -> debug )
     sim -> output( "%s %s absorbs %.2f", player -> name(), name(), amount );

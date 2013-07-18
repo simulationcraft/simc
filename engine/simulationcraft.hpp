@@ -1802,22 +1802,26 @@ struct absorb_buff_creator_t : public buff_creator_helper_t<absorb_buff_creator_
 private:
   school_e _absorb_school;
   stats_t* _absorb_source;
+  gain_t*  _absorb_gain;
   friend struct ::absorb_buff_t;
 public:
   absorb_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
     base_t( q, name, s ),
-    _absorb_school( SCHOOL_CHAOS ),
-    _absorb_source( 0 ) {}
+    _absorb_school( SCHOOL_CHAOS ), _absorb_source( 0 ), _absorb_gain( 0 )
+  { }
   absorb_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
     base_t( sim, name, s ),
-    _absorb_school( SCHOOL_CHAOS ),
-    _absorb_source( 0 ) {}
+    _absorb_school( SCHOOL_CHAOS ), _absorb_source( 0 ), _absorb_gain( 0 )
+  { }
 
   bufftype& source( stats_t* s )
   { _absorb_source = s; return *this; }
 
   bufftype& school( school_e school )
   { _absorb_school = school; return *this; }
+
+  bufftype& gain( gain_t* g )
+  { _absorb_gain = g; return *this; }
 
   operator absorb_buff_t* () const;
 };
@@ -2029,6 +2033,7 @@ struct absorb_buff_t : public buff_t
 {
   school_e absorb_school;
   stats_t* absorb_source;
+  gain_t*  absorb_gain;
 
 protected:
   absorb_buff_t( const absorb_buff_creator_t& params );
@@ -4246,6 +4251,7 @@ public:
     gain_t* essence_of_the_red;
     gain_t* focus_regen;
     gain_t* glyph_of_innervate;
+    gain_t* health;
     gain_t* hymn_of_hope;
     gain_t* innervate;
     gain_t* mana_potion;
@@ -5350,6 +5356,7 @@ public:
   typedef spell_base_t base_t;
   bool group_only;
   double pct_heal;
+  gain_t* heal_gain;
 
   heal_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 

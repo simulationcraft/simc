@@ -2247,6 +2247,7 @@ void player_t::init_gains()
   gains.energy_regen           = get_gain( "energy_regen" );
   gains.essence_of_the_red     = get_gain( "essence_of_the_red" );
   gains.focus_regen            = get_gain( "focus_regen" );
+  gains.health                 = get_gain( "external_healing" );
   gains.hymn_of_hope           = get_gain( "hymn_of_hope_max_mana" );
   gains.innervate              = get_gain( "innervate" );
   gains.mana_potion            = get_gain( "mana_potion" );

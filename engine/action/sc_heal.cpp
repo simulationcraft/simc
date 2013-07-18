@@ -32,7 +32,8 @@ heal_t::heal_t( const std::string&  token,
                 const spell_data_t* s ) :
   spell_base_t( ACTION_HEAL, token, p, s ),
   group_only(),
-  pct_heal()
+  pct_heal(),
+  heal_gain( p -> get_gain( name() ) )
 {
   if ( sim -> heal_target && target == sim -> target )
     target = sim -> heal_target;
@@ -134,6 +135,11 @@ void heal_t::assess_damage( dmg_e heal_type,
   }
 
   stats -> add_result( s -> result_amount, s -> total_result_amount, ( direct_tick ? HEAL_OVER_TIME : heal_type ), s -> result, s -> target );
+  // Record external healing too
+  if ( player != state -> target )
+    state -> target -> gains.health -> add( RESOURCE_HEALTH, s -> result_amount, s -> total_result_amount - s -> result_amount );
+  else
+    heal_gain -> add( RESOURCE_HEALTH, s -> result_amount, s -> total_result_amount - s -> result_amount );
 }
 
 // heal_t::find_greatest_difference_player ==================================
