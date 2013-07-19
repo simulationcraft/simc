@@ -131,6 +131,7 @@ public:
   // Active
   int       active_presence;
   int       t16_tank_2pc_driver;
+  double    runic_power_decay_rate;
 
   // Buffs
   struct buffs_t
@@ -2570,6 +2571,9 @@ struct army_of_the_dead_t : public death_knight_spell_t
       // precombat
       for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
         p() -> _runes.slot[ i ].regen_rune( p(), timespan_t::from_seconds( 5.0 ) );
+
+       //simulate RP decay for that 5 seconds
+      p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * 5, 0, 0);
     }
     else
     {
@@ -3594,12 +3598,16 @@ struct horn_of_winter_t : public death_knight_spell_t
 
   virtual void execute()
   {
-    death_knight_spell_t::execute();
+    death_knight_spell_t::execute();  // 10 RP gain happens in here
 
     if ( ! sim -> overrides.attack_power_multiplier )
       sim -> auras.attack_power_multiplier -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
 
-    //player -> resource_gain( RESOURCE_RUNIC_POWER, 10, p() -> gains.horn_of_winter );
+    if ( ! p() -> in_combat )
+    {
+      // RP decay for 1.5 second GCD
+      p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * 1.5, 0, 0);
+    }
   }
 };
 
@@ -6040,6 +6048,8 @@ void death_knight_t::reset()
   active_presence = 0;
 
   t16_tank_2pc_driver = 0;
+
+  runic_power_decay_rate = 1; // 1 RP per second decay
 
   rng.t15_2pc_melee -> reset();
 
