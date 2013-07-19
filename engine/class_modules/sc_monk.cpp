@@ -2297,7 +2297,7 @@ struct guard_t : public monk_absorb_t
   virtual void impact( action_state_t* s )
   {
     p() -> buff.guard -> trigger( 1, s -> result_amount );
-    stats -> add_result( 0.0, s -> result_amount, ABSORB, s -> result, s -> target );
+    stats -> add_result( 0.0, s -> result_amount, ABSORB, s -> result, s -> block_result, s -> target );
   }
 
   virtual void execute()

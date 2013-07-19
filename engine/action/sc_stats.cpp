@@ -86,6 +86,7 @@ void stats_t::add_result( double act_amount,
                           double tot_amount,
                           dmg_e dmg_type,
                           result_e result,
+                          block_result_e block_result,
                           player_t* /* target */ )
 {
   stats_results_t* r = 0;
@@ -99,6 +100,18 @@ void stats_t::add_result( double act_amount,
   r -> iteration_total_amount += tot_amount;
   r -> actual_amount.add( act_amount );
   r -> total_amount.add( tot_amount );
+
+  stats_results_t* b = 0;
+  if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT || dmg_type == ABSORB )
+    b = &( blocked_direct_results[ block_result ] );
+  else
+    b = &( blocked_tick_results[ block_result ] );
+
+  b -> iteration_count += 1;
+  b -> iteration_actual_amount += act_amount;
+  b -> iteration_total_amount += tot_amount;
+  b -> actual_amount.add( act_amount );
+  b -> total_amount.add( tot_amount );
 
   timeline_amount.add( sim.current_time, act_amount );
 }
@@ -358,6 +371,12 @@ void stats_t::merge( const stats_t& other )
   {
     direct_results[ i ].merge( other.direct_results[ i ] );
     tick_results[ i ].merge( other.tick_results[ i ] );
+  }
+
+  for ( block_result_e i = BLOCK_RESULT_UNBLOCKED; i < BLOCK_RESULT_MAX; ++i )
+  {
+    blocked_direct_results[ i ].merge( other.blocked_direct_results[ i ] );
+    blocked_tick_results[ i ].merge( other.blocked_tick_results[ i ] );
   }
 
   timeline_amount.merge( other.timeline_amount );

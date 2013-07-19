@@ -1471,7 +1471,7 @@ void absorb_buff_t::expire_override()
 void absorb_buff_t::consume( double amount )
 {
   if ( absorb_source )
-    absorb_source -> add_result( amount, 0, ABSORB, RESULT_HIT, player );
+    absorb_source -> add_result( amount, 0, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, player );
 
   if ( absorb_gain )
     absorb_gain -> add( RESOURCE_HEALTH, amount, 0 );

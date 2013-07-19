@@ -42,6 +42,7 @@ void action_t::release_state( action_state_t* s )
 void action_state_t::initialize()
 {
   result = RESULT_NONE;
+  block_result = BLOCK_RESULT_UNBLOCKED;
   result_raw = result_total = result_mitigated = result_absorbed = result_amount = 0;
 }
 /*

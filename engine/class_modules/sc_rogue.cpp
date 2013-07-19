@@ -1542,7 +1542,7 @@ struct crimson_tempest_t : public rogue_attack_t
 
       if ( s -> result_amount > 0.0 ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
 
-      stats -> add_result( s -> result_amount, s -> result_amount, s -> result_type, s -> result, s -> target );
+      stats -> add_result( s -> result_amount, s -> result_amount, s -> result_type, s -> result, s -> block_result, s -> target );
     }
   };
 

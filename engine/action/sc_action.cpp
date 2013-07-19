@@ -1254,7 +1254,7 @@ void action_t::assess_damage( dmg_e    type,
     if ( callbacks && s -> result_amount > 0.0 ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
   }
 
-  stats -> add_result( s -> result_amount, s -> result_amount, ( direct_tick ? DMG_OVER_TIME : periodic_hit ? DMG_DIRECT : type ), s -> result, s -> target );
+  stats -> add_result( s -> result_amount, s -> result_amount, ( direct_tick ? DMG_OVER_TIME : periodic_hit ? DMG_DIRECT : type ), s -> result, s -> block_result, s -> target );
 }
 
 // action_t::schedule_execute ===============================================
@@ -1587,6 +1587,7 @@ void action_t::reset()
   dot_t* dot = find_dot();
   if ( dot ) dot -> reset();
   result = RESULT_NONE;
+  block_result = BLOCK_RESULT_UNBLOCKED;
   execute_event = 0;
   travel_events.clear();
 }

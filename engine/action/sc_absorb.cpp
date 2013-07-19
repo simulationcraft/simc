@@ -94,7 +94,7 @@ void absorb_t::assess_damage( dmg_e    heal_type,
                    s -> target -> name(), s -> result_amount, s -> total_result_amount,
                    util::result_type_string( result ) );
 
-  stats -> add_result( s -> result_amount, s -> total_result_amount, heal_type, s -> result, s -> target );
+  stats -> add_result( s -> result_amount, s -> total_result_amount, heal_type, s -> result, s -> block_result, s -> target );
 }
 
 // absorb_t::available_targets ==============================================

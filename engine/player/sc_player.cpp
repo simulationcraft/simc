@@ -547,6 +547,7 @@ void stormlash_callback_t::trigger( action_t* a, void* call_data )
                                             stormlash_spell -> execute_state -> result_amount,
                                             stormlash_spell -> execute_state -> result_type,
                                             stormlash_spell -> execute_state -> result,
+                                            stormlash_spell -> execute_state -> block_result,
                                             stormlash_spell -> target );
   }
 }

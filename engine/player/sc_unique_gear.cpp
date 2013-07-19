@@ -1592,7 +1592,7 @@ void indomitable_pride( item_t* item )
         else
           assert( 0 );
         buff -> trigger( 1, amount );
-        stats -> add_result( amount, amount, ABSORB, RESULT_HIT, listener );
+        stats -> add_result( amount, amount, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, listener );
         stats -> add_execute( timespan_t::zero(), listener );
       }
     }
@@ -1744,7 +1744,7 @@ void spidersilk_spindle( item_t* item )
         cd -> start();
         double amount = buff -> data().effectN( 1 ).base_value();
         buff -> trigger( 1, amount );
-        stats -> add_result( amount, amount, ABSORB, RESULT_HIT, listener );
+        stats -> add_result( amount, amount, ABSORB, RESULT_HIT, BLOCK_RESULT_UNBLOCKED, listener );
         stats -> add_execute( timespan_t::zero(), listener );
       }
     }

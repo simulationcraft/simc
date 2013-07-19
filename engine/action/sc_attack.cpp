@@ -171,7 +171,7 @@ void attack_t::build_table( std::array<double, RESULT_MAX>& chances,
 
 block_result_e attack_t::calculate_block_result( action_state_t* s )
 {
-  block_result_e block_result = BLOCK_RESULT_UNKNOWN;
+  block_result_e block_result = BLOCK_RESULT_UNBLOCKED;
   
   // Blocks also get a their own roll, and glances/crits can be blocked.
   if ( result_is_hit() && may_block && ( player -> position() == POSITION_FRONT ) ) 
