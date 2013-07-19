@@ -3047,6 +3047,8 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
   dancing_rune_weapon_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "dancing_rune_weapon", p, p -> find_class_spell( "Dancing Rune Weapon" ) )
   {
+    may_miss = may_crit = may_dodge = may_parry = harmful = false;
+
     parse_options( NULL, options_str );
   }
 
@@ -4157,6 +4159,8 @@ struct presence_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
+    bool to_blood = false;
+
     switch ( p() -> active_presence )
     {
       case PRESENCE_BLOOD:  p() -> buffs.blood_presence  -> expire(); break;
@@ -4168,12 +4172,14 @@ struct presence_t : public death_knight_spell_t
 
     switch ( p() -> active_presence )
     {
-      case PRESENCE_BLOOD:  p() -> buffs.blood_presence  -> trigger(); break;
+      case PRESENCE_BLOOD:  p() -> buffs.blood_presence  -> trigger(); to_blood = true; break;
       case PRESENCE_FROST:  p() -> buffs.frost_presence  -> trigger(); break;
       case PRESENCE_UNHOLY: p() -> buffs.unholy_presence -> trigger(); break;
     }
 
     p() -> recalculate_resource_max( RESOURCE_HEALTH );
+    if ( ! p() -> in_combat && to_blood )
+      p() -> resource_gain( RESOURCE_HEALTH, p() -> resources.max[ RESOURCE_HEALTH ] - p() -> resources.current[ RESOURCE_HEALTH ] );
   }
 
   virtual bool ready()
