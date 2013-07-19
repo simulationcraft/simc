@@ -122,7 +122,8 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
     s -> direct_results[ RESULT_DODGE  ].pct +
     s -> direct_results[ RESULT_PARRY  ].pct,
     s -> direct_results[ RESULT_GLANCE ].pct,
-    s -> blocked_direct_results[ BLOCK_RESULT_BLOCKED  ].pct + s -> blocked_direct_results[ BLOCK_RESULT_CRIT_BLOCKED  ].pct,
+    s -> blocked_direct_results[ BLOCK_RESULT_BLOCKED  ].pct + 
+    s -> blocked_direct_results[ BLOCK_RESULT_CRIT_BLOCKED  ].pct,
     s -> num_ticks.pretty_mean(),
     s -> tick_results[ RESULT_HIT  ].actual_amount.pretty_mean(),
     s -> tick_results[ RESULT_CRIT ].actual_amount.pretty_mean(),
@@ -326,6 +327,69 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
 
     }
 
+    if ( s -> blocked_direct_results[ BLOCK_RESULT_BLOCKED ].pct + 
+         s -> blocked_direct_results[ BLOCK_RESULT_CRIT_BLOCKED].pct > 0.0 )
+    {      
+      // Block Table
+      os << "\t\t\t\t\t\t\t\t\t\t<tr>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Block Results</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Count</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Pct</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Mean</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Min</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Max</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average per Iteration</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average Min</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average Max</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Actual Amount</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Amount</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Overkill %</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t</tr>\n";
+      int bk = 0;
+      for ( block_result_e i = BLOCK_RESULT_MAX; --i >= BLOCK_RESULT_UNBLOCKED; )
+      {
+        if ( s -> blocked_direct_results[ i ].count.mean() )
+        {
+          os << "\t\t\t\t\t\t\t\t\t\t<tr";
+
+          if ( bk & 1 )
+          {
+            os << " class=\"odd\"";
+          }
+          bk++;
+          os << ">\n";
+
+          os.printf(
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"left small\">%s</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f%%</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t</tr>\n",
+            util::block_result_type_string( i ),
+            s -> blocked_direct_results[ i ].count.mean(),
+            s -> blocked_direct_results[ i ].pct,
+            s -> blocked_direct_results[ i ].actual_amount.mean(),
+            s -> blocked_direct_results[ i ].actual_amount.min(),
+            s -> blocked_direct_results[ i ].actual_amount.max(),
+            s -> blocked_direct_results[ i ].avg_actual_amount.mean(),
+            s -> blocked_direct_results[ i ].avg_actual_amount.min(),
+            s -> blocked_direct_results[ i ].avg_actual_amount.max(),
+            s -> blocked_direct_results[ i ].fight_actual_amount.mean(),
+            s -> blocked_direct_results[ i ].fight_total_amount.mean(),
+            s -> blocked_direct_results[ i ].overkill_pct.mean() );
+        }
+      }
+
+    }
+
     if ( s -> num_tick_results.mean() > 0 )
     {
       // Tick Damage
@@ -386,6 +450,70 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
 
 
     }
+    
+    if ( s -> blocked_tick_results[ BLOCK_RESULT_BLOCKED ].pct + 
+         s -> blocked_tick_results[ BLOCK_RESULT_CRIT_BLOCKED].pct > 0.0 )
+    {      
+      // Block Table
+      os << "\t\t\t\t\t\t\t\t\t\t<tr>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Block Results</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Count</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Pct</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Mean</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Min</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Max</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average per Iteration</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average Min</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Average Max</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Actual Amount</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Total Amount</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Overkill %</th>\n"
+         << "\t\t\t\t\t\t\t\t\t\t</tr>\n";
+      int bk = 0;
+      for ( block_result_e i = BLOCK_RESULT_MAX; --i >= BLOCK_RESULT_UNBLOCKED; )
+      {
+        if ( s -> blocked_tick_results[ i ].count.mean() )
+        {
+          os << "\t\t\t\t\t\t\t\t\t\t<tr";
+
+          if ( bk & 1 )
+          {
+            os << " class=\"odd\"";
+          }
+          bk++;
+          os << ">\n";
+
+          os.printf(
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"left small\">%s</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f%%</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t\t<td class=\"right small\">%.2f</td>\n"
+            "\t\t\t\t\t\t\t\t\t\t</tr>\n",
+            util::block_result_type_string( i ),
+            s -> blocked_tick_results[ i ].count.mean(),
+            s -> blocked_tick_results[ i ].pct,
+            s -> blocked_tick_results[ i ].actual_amount.mean(),
+            s -> blocked_tick_results[ i ].actual_amount.min(),
+            s -> blocked_tick_results[ i ].actual_amount.max(),
+            s -> blocked_tick_results[ i ].avg_actual_amount.mean(),
+            s -> blocked_tick_results[ i ].avg_actual_amount.min(),
+            s -> blocked_tick_results[ i ].avg_actual_amount.max(),
+            s -> blocked_tick_results[ i ].fight_actual_amount.mean(),
+            s -> blocked_tick_results[ i ].fight_total_amount.mean(),
+            s -> blocked_tick_results[ i ].overkill_pct.mean() );
+        }
+      }
+
+    }
+
     os << "\t\t\t\t\t\t\t\t\t</table>\n";
 
     os << "\t\t\t\t\t\t\t\t\t<div class=\"clear\"></div>\n";
