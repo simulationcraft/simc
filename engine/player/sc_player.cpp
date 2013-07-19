@@ -5055,7 +5055,7 @@ void player_t::target_mitigation( school_e school,
     if ( s -> result_amount <= 0 ) return;
   }
 
-  if ( s -> result == BLOCK_RESULT_CRIT_BLOCKED )
+  if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED )
   {
     s -> result_amount *= ( 1 - 2 * composite_block_reduction() );
     if ( s -> result_amount <= 0 ) return;
@@ -5776,7 +5776,6 @@ struct snapshot_stats_t : public action_t
     p -> buffed.crit         = p -> cache.crit_avoidance();
 
     role_e role = p -> primary_role();
-    int delta_level = sim -> target -> level - p -> level;
     double spell_hit_extra = 0, attack_hit_extra = 0, expertise_extra = 0;
 
     // The code below is not properly handling the case where the player has
