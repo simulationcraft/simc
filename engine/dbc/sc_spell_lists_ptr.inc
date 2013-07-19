@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 17191
+// Class based active abilities, wow build 17205
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -436,7 +436,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         2050, // Heal
        14914, // Holy Fire
        88625, // Holy Word: Chastise
-         724, // Lightwell
+      126135, // Lightspring
          596, // Prayer of Healing
          527, // Purify
       108968, // Void Shift
@@ -545,8 +545,9 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Shaman
   {
-    // General tree, 37 abilities
+    // General tree, 38 abilities
     {
+        2008, // Ancestral Spirit
       114049, // Ascendance
        76780, // Bind Elemental
         2825, // Bloodlust
@@ -1035,7 +1036,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (26)
 
-// Talent tree specialization abilities, wow build 17191
+// Talent tree specialization abilities, wow build 17205
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1161,6 +1162,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        76669, // Mastery: Illuminated Healing
        86103, // Plate Specialization
        53551, // Sacred Cleansing
+      148040, // Sacred Shield Overridde (Holy)
        85512, // Tower of Radiance
            0,
     },
@@ -1367,7 +1369,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        14914, // Holy Fire
        88625, // Holy Word: Chastise
       137031, // Hotfix Passive
-         724, // Lightwell
+      126135, // Lightspring
        77485, // Mastery: Echo of Light
        95861, // Meditation
          596, // Prayer of Healing
@@ -1590,7 +1592,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
        84714, // Frozen Orb
       137020, // Hotfix Passive
        12472, // Icy Veins
-       76613, // Mastery: Frostburn
+       76613, // Mastery: Icicles
        31687, // Summon Water Elemental
            0,
     },
@@ -1880,7 +1882,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 17191
+// Class mastery abilities, wow build 17205
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2034,7 +2036,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
     },
     // Masteries for Frost specialization
     {
-      76613, // Mastery: Frostburn
+      76613, // Mastery: Icicles
     },
     {
           0,
@@ -2103,7 +2105,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 17191
+// Racial abilities, wow build 17205
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2816,7 +2818,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 17191
+// Glyph spells for classes, wow build 17205
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -2831,7 +2833,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Warrior
   {
-    // Major Glyphs (28 spells)
+    // Major Glyphs (30 spells)
     {
        58377, // Glyph of Blitz
        58367, // Glyph of Bloodthirst
@@ -2846,6 +2848,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        58366, // Glyph of Hindering Strikes
        58387, // Glyph of Hoarse Voice
        58364, // Glyph of Hold the Line
+      146970, // Glyph of Impaling Throws
       122013, // Glyph of Incite
        58097, // Glyph of Long Charge
        58368, // Glyph of Mortal Strike
@@ -2861,9 +2864,10 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       146965, // Glyph of Victorious Throw
        58382, // Glyph of Victory Rush
        63324, // Glyph of Whirlwind
+      146971, // Glyph of the Executor
            0,
     },
-    // Minor Glyphs (10 spells)
+    // Minor Glyphs (14 spells)
     {
        58096, // Glyph of Bloodcurdling Shout
        58369, // Glyph of Bloody Healing
@@ -2875,6 +2879,10 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        58095, // Glyph of Mystic Shout
        68164, // Glyph of Thunder Strike
       123779, // Glyph of the Blazing Trail
+      146968, // Glyph of the Raging Whirlwind
+      146969, // Glyph of the Subtle Defender
+      146973, // Glyph of the Watchful Eye
+      146974, // Glyph of the Weaponmaster
            0,
     },
     {
@@ -2883,18 +2891,20 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Paladin
   {
-    // Major Glyphs (31 spells)
+    // Major Glyphs (33 spells)
     {
        54927, // Glyph of Avenging Wrath
        63218, // Glyph of Beacon of Light
        54943, // Glyph of Blessed Life
        54934, // Glyph of Blinding Light
+       54931, // Glyph of Burden of Guilt
        54928, // Glyph of Consecration
        56414, // Glyph of Dazing Shield
        56420, // Glyph of Denounce
       146955, // Glyph of Devotion Aura
        63223, // Glyph of Divine Plea
        54924, // Glyph of Divine Protection
+      146956, // Glyph of Divine Shield
        63220, // Glyph of Divine Storm
        54939, // Glyph of Divinity
        54922, // Glyph of Double Jeopardy
@@ -2902,6 +2912,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        57955, // Glyph of Flash of Light
        54930, // Glyph of Focused Shield
        63219, // Glyph of Hammer of the Righteous
+      146957, // Glyph of Hand of Sacrifice
        54938, // Glyph of Harsh Words
        63224, // Glyph of Holy Shock
        54923, // Glyph of Holy Wrath
@@ -2912,21 +2923,21 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       122028, // Glyph of Mass Exorcism
        93466, // Glyph of Protector of the Innocent
        54926, // Glyph of Templar's Verdict
-       54931, // Glyph of Turn Evil [Needs redesign]
        54936, // Glyph of Word of Glory
        63222, // Glyph of the Alabaster Shield
       119477, // Glyph of the Battle Healer
-           0,
     },
-    // Minor Glyphs (10 spells)
+    // Minor Glyphs (12 spells)
     {
       115934, // Glyph of Bladed Judgment
       125043, // Glyph of Contemplation
        57954, // Glyph of Fire From the Heavens
       115738, // Glyph of Focused Wrath
+      146959, // Glyph of Pillar of Light
       115933, // Glyph of Righteous Retreat
        57947, // Glyph of Seal of Blood
        57979, // Glyph of Winged Vengeance
+      146958, // Glyph of the Exorcist
       115931, // Glyph of the Falling Avenger
        89401, // Glyph of the Luminous Charger
        57958, // Glyph of the Mounted King
@@ -3016,7 +3027,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        63249, // Glyph of Vendetta
            0,
     },
-    // Minor Glyphs (12 spells)
+    // Minor Glyphs (14 spells)
     {
        58039, // Glyph of Blurred Speed
        56800, // Glyph of Decoy
@@ -3024,12 +3035,14 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        63268, // Glyph of Disguise
        58032, // Glyph of Distract
        56807, // Glyph of Hemorrhage
+      146961, // Glyph of Improved Distraction
        63252, // Glyph of Killing Spree
        58027, // Glyph of Pick Lock
        58017, // Glyph of Pick Pocket
        58038, // Glyph of Poisons
        58033, // Glyph of Safe Fall
        63256, // Glyph of Tricks of the Trade
+      146960, // Glyph of the Headhunter
            0,
     },
     {
@@ -3042,19 +3055,19 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
     {
        63248, // Glyph of Binding Heal
        55675, // Glyph of Circle of Healing
+       55673, // Glyph of Deep Wells
       119864, // Glyph of Dispel Magic
        63229, // Glyph of Dispersion
        55684, // Glyph of Fade
        55678, // Glyph of Fear Ward
-      147778, // Glyph of Focused Mending (NYI)
+      147778, // Glyph of Focused Mending
       119853, // Glyph of Holy Fire
       125045, // Glyph of Holy Nova
        55686, // Glyph of Inner Fire
        14771, // Glyph of Inner Sanctum
       119850, // Glyph of Leap of Faith
       108939, // Glyph of Levitate
-      126133, // Glyph of Lightspring
-       55673, // Glyph of Lightwell
+      126133, // Glyph of Lightwell
        55691, // Glyph of Mass Dispel
        87195, // Glyph of Mind Blast
       120585, // Glyph of Mind Flay
@@ -3074,18 +3087,21 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       120584, // Glyph of Vampiric Embrace
        89489, // Glyph of Weakened Soul
     },
-    // Minor Glyphs (11 spells)
+    // Minor Glyphs (14 spells)
     {
       145722, // Glyph of Angels
        58009, // Glyph of Borrowed Time
       126152, // Glyph of Confession
        58228, // Glyph of Dark Archangel
       126174, // Glyph of Holy Resurrection
+      147072, // Glyph of Inspired Hymns
        57986, // Glyph of Shackle Undead
       107906, // Glyph of Shadow
        57985, // Glyph of Shadow Ravens
       126745, // Glyph of Shadowy Friends
+      147779, // Glyph of Shifted Appearances
       120581, // Glyph of the Heavens
+      147776, // Glyph of the Sha
       126094, // Glyph of the Val'kyr
            0,
     },
@@ -3095,7 +3111,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Death Knight
   {
-    // Major Glyphs (20 spells)
+    // Major Glyphs (24 spells)
     {
        58623, // Glyph of Anti-Magic Shell
        58620, // Glyph of Chains of Ice
@@ -3106,20 +3122,24 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        62259, // Glyph of Death Grip
        58629, // Glyph of Death and Decay
        58671, // Glyph of Enduring Infection
+      146650, // Glyph of Festering Blood
        58673, // Glyph of Icebound Fortitude
        58631, // Glyph of Icy Touch
        58686, // Glyph of Mind Freeze
        59332, // Glyph of Outbreak
        58657, // Glyph of Pestilence
        58635, // Glyph of Pillar of Frost
+      146648, // Glyph of Regenerative Magic
        58647, // Glyph of Shifting Presences
        58618, // Glyph of Strangulate
+      146645, // Glyph of Swift Death
        59327, // Glyph of Unholy Command
        58616, // Glyph of Unholy Frenzy
        58676, // Glyph of Vampiric Blood
+      146646, // Glyph of the Loud Horn
            0,
     },
-    // Minor Glyphs (10 spells)
+    // Minor Glyphs (12 spells)
     {
        58669, // Glyph of Army of the Dead
        59336, // Glyph of Corpse Explosion
@@ -3131,6 +3151,8 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        59309, // Glyph of Resilient Grip
        63335, // Glyph of Tranquil Grip
        58640, // Glyph of the Geist
+      146653, // Glyph of the Long Winter
+      146652, // Glyph of the Skeleton
            0,
     },
     {
@@ -3139,12 +3161,13 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Shaman
   {
-    // Major Glyphs (28 spells)
+    // Major Glyphs (30 spells)
     {
        55442, // Glyph of Capacitor Totem
        55449, // Glyph of Chain Lightning
        55452, // Glyph of Chaining
        55445, // Glyph of Cleansing Waters
+      147781, // Glyph of Eternal Earth
        63271, // Glyph of Feral Spirit
        55455, // Glyph of Fire Elemental Totem
        55450, // Glyph of Fire Nova
@@ -3158,6 +3181,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        63291, // Glyph of Hex
       101052, // Glyph of Lightning Shield
        55439, // Glyph of Purge
+      147762, // Glyph of Purging
        63273, // Glyph of Riptide
        63280, // Glyph of Shamanistic Rage
        55454, // Glyph of Spirit Walk
@@ -3171,14 +3195,22 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        55451, // Glyph of Wind Shear
            0,
     },
-    // Minor Glyphs (8 spells)
+    // Minor Glyphs (16 spells)
     {
+      147787, // Glyph of Astral Fixation
        58058, // Glyph of Astral Recall
        63279, // Glyph of Deluge
+      147788, // Glyph of Elemental Familiars
        58059, // Glyph of Far Sight
+      147772, // Glyph of Flaming Serpents
        55444, // Glyph of Lava Lash
+      147784, // Glyph of Lingering Ancestors
+      147707, // Glyph of Rain of Frogs
+      147783, // Glyph of Spirit Raptors
+      147770, // Glyph of Spirit Wolf
        62132, // Glyph of Thunderstorm
        58057, // Glyph of Totemic Encirclement
+      147785, // Glyph of the Compy
        55448, // Glyph of the Lakestrider
        58135, // Glyph of the Spectral Wolf
            0,
@@ -3215,11 +3247,13 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        63090, // Glyph of Water Elemental
            0,
     },
-    // Minor Glyphs (12 spells)
+    // Minor Glyphs (15 spells)
     {
        57925, // Glyph of Arcane Language
+      147353, // Glyph of Condensation
       126748, // Glyph of Conjure Familiar
        56382, // Glyph of Crittermorph
+      146662, // Glyph of Evaporation
        63092, // Glyph of Illusion
        56363, // Glyph of Loose Mana
        63093, // Glyph of Mirror Image
@@ -3229,6 +3263,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        57927, // Glyph of the Monkey
        52648, // Glyph of the Penguin
        57924, // Glyph of the Porcupine
+      146976, // Glyph of the Unbound Elemental
            0,
     },
     {
@@ -3237,7 +3272,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Warlock
   {
-    // Major Glyphs (19 spells)
+    // Major Glyphs (20 spells)
     {
        56235, // Glyph of Conflagrate
        58080, // Glyph of Curse of Exhaustion
@@ -3249,6 +3284,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        63304, // Glyph of Ember Tap
       118778, // Glyph of Everlasting Affliction
        56244, // Glyph of Fear
+      146962, // Glyph of Havoc
        56224, // Glyph of Healthstone
        56242, // Glyph of Imp Swarm
        63320, // Glyph of Life Tap
@@ -3370,16 +3406,18 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
       116172, // Glyph of the Master Shapeshifter
            0,
     },
-    // Minor Glyphs (10 spells)
+    // Minor Glyphs (12 spells)
     {
        57856, // Glyph of Aquatic Form
        57855, // Glyph of Charm Woodland Creature
       114295, // Glyph of Grace
+      146656, // Glyph of One With Nature
       114301, // Glyph of Stars
       107059, // Glyph of the Chameleon
       131113, // Glyph of the Cheetah
       114333, // Glyph of the Orca
       114280, // Glyph of the Predator
+      146654, // Glyph of the Sprouting Mushroom
       114338, // Glyph of the Stag
       125047, // Glyph of the Treant
            0,
@@ -3395,7 +3433,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 17191
+// Tier item set bonuses for class, wow build 17205
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {

@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (198)
 
-// 198 talents, wow build 17191
+// 198 talents, wow build 17205
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001, 0x00,     0,   1,   1,   29838,         0,  0 },
@@ -197,7 +197,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Ascension"                         , 19771, 0x00, 0x0200, 0x00,     0,   1,   2,  115396,         0,  0 },
   { "Chi Brew"                          , 19772, 0x00, 0x0200, 0x00,     0,   2,   2,  115399,         0,  0 },
   { "Tiger's Lust"                      , 19818, 0x00, 0x0200, 0x00,     0,   1,   0,  116841,         0,  0 },
-  { "Rushing Jade Wind"                 , 19819, 0x00, 0x0200, 0x00,     0,   0,   5,  116847,         0,  0 },
+  { "Rushing Jade Wind"                 , 19819, 0x00, 0x0200, 0x00,     0,   0,   5,  116847,    101546,  0 },
   { "Zen Sphere"                        , 19820, 0x00, 0x0200, 0x00,     0,   1,   1,  124081,         0,  0 },
   { "Chi Burst"                         , 19823, 0x00, 0x0200, 0x00,     0,   2,   1,  123986,         0,  0 },
   { "Power Strikes"                     , 19992, 0x00, 0x0200, 0x00,     0,   0,   2,  121817,         0,  0 },

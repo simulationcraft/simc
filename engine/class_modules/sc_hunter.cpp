@@ -4083,7 +4083,7 @@ void hunter_t::init_actions()
         action_list_str += "/dire_beast,if=enabled&focus<=90";
         action_list_str += "/barrage,if=enabled";
         action_list_str += "/powershot,if=enabled";
-        action_list_str += "/readiness,wait_for_rapid_fire=1";
+        if ( ! maybe_ptr( dbc.ptr ) ) action_list_str += "/readiness,wait_for_rapid_fire=1";
         action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
         action_list_str += "/focus_fire,five_stacks=1,if=!ticking&!buff.beast_within.up";
         action_list_str += "/cobra_shot,if=dot.serpent_sting.remains<6";
@@ -4119,7 +4119,7 @@ void hunter_t::init_actions()
           std::string& CA_actions = get_action_priority_list( "careful_aim" ) -> action_list_str;
           CA_actions += "/serpent_sting,if=!ticking";
           CA_actions += "/chimera_shot";
-          CA_actions += "/readiness";
+          if ( ! maybe_ptr( dbc.ptr ) ) CA_actions += "/readiness";
           CA_actions += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<6";
           CA_actions += "/aimed_shot";
           CA_actions += "/steady_shot";
@@ -4131,7 +4131,7 @@ void hunter_t::init_actions()
         action_list_str += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<=5";
         action_list_str += "/serpent_sting,if=!ticking";
         action_list_str += "/chimera_shot";
-        action_list_str += "/readiness";
+        if ( ! maybe_ptr( dbc.ptr ) ) action_list_str += "/readiness";
         action_list_str += "/steady_shot,if=buff.steady_focus.remains<(action.steady_shot.cast_time+1)&!in_flight";
         action_list_str += "/kill_shot";
         action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
@@ -4186,7 +4186,7 @@ void hunter_t::init_actions()
         if ( level >= 87 )
           action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25";
 
-        action_list_str += "/readiness,wait_for_rapid_fire=1";
+        if ( ! maybe_ptr( dbc.ptr ) ) action_list_str += "/readiness,wait_for_rapid_fire=1";
         action_list_str += "/cobra_shot,if=dot.serpent_sting.remains<6";
         action_list_str += "/arcane_shot,if=focus>=67";
 
