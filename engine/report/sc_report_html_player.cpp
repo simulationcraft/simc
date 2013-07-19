@@ -8,7 +8,7 @@
 
 namespace { // UNNAMED NAMESPACE ==========================================
 
-// print_html_action_damage =================================================
+// print_html_action_info =================================================
 
 double mean_damage( std::vector<stats_t::stats_results_t> result )
 {
@@ -27,51 +27,9 @@ double mean_damage( std::vector<stats_t::stats_results_t> result )
   return mean;
 }
 
-void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t* p, int j )
+void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t* p, int j ) 
 {
-  int id = 0;
-
-  os << "\t\t\t\t\t\t\t<tr";
-  if ( j & 1 )
-  {
-    os << " class=\"odd\"";
-  }
-  os << ">\n";
-
-  for ( size_t i = 0; i < s -> player -> action_list.size(); ++i )
-  {
-    action_t* a = s -> player -> action_list[ i ];
-    if ( a -> stats != s ) continue;
-    id = a -> id;
-    if ( ! a -> background ) break;
-  }
-
-  os << "\t\t\t\t\t\t\t\t<td class=\"left small\">";
-
-  if ( id > 0 || p -> sim -> report_details )
-  {
-    std::string href = "#";
-
-    if ( id > 0 )
-    {
-      href = "http://";
-      href += ( p -> dbc.ptr ? "ptr" : "www" );
-      href += ".wowhead.com/spell=";
-      href += util::to_string( id );
-      href += "?lvl=";
-      href += util::to_string( p -> level );
-    }
-
-    const char* class_attr = "";
-    if ( p -> sim -> report_details )
-      class_attr = " class=\"toggle-details\"";
-
-    os.printf( "<a href=\"%s\"%s>%s</a></td>\n",
-               href.c_str(), class_attr, s -> name_str.c_str() );
-  }
-  else
-    os.printf( "%s</td>\n", s -> name_str.c_str() );
-
+  
   std::string compound_dps     = "";
   std::string compound_dps_pct = "";
   double cDPS    = s -> portion_aps.mean();
@@ -133,6 +91,111 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
     s -> tick_results[ RESULT_DODGE ].pct +
     s -> tick_results[ RESULT_PARRY ].pct,
     100 * s -> total_tick_time.mean() / p -> collected_data.fight_length.mean() );
+}
+
+void print_html_action_healing( report::sc_html_stream& os, stats_t* s, player_t* p, int j ) 
+{
+  
+  std::string compound_dps     = "";
+  std::string compound_dps_pct = "";
+  double cDPS    = s -> portion_aps.mean();
+  double cDPSpct = s -> portion_amount;
+
+  for ( size_t i = 0, num_children = s -> children.size(); i < num_children; i++ )
+  {
+    cDPS    += s -> children[ i ] -> portion_apse.mean();
+    cDPSpct += s -> children[ i ] -> portion_amount;
+  }
+
+  if ( cDPS > s -> portion_aps.mean()  ) compound_dps     = "&nbsp;(" + util::to_string( cDPS, 0 ) + ")";
+  if ( cDPSpct > s -> portion_amount ) compound_dps_pct = "&nbsp;(" + util::to_string( cDPSpct * 100, 1 ) + "%)";
+
+  os.printf(
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f%s</td>\n"
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%%s</td>\n"
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.2fsec</td>\n"
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
+    "\t\t\t\t\t\t\t</tr>\n",
+    s -> portion_aps.pretty_mean(), compound_dps.c_str(),
+    s -> portion_amount * 100, compound_dps_pct.c_str(),
+    s -> num_executes.pretty_mean(),
+    s -> total_intervals.pretty_mean(),
+    s -> ape,
+    s -> apet,
+    s -> direct_results[ RESULT_HIT  ].actual_amount.pretty_mean(),
+    s -> direct_results[ RESULT_CRIT ].actual_amount.pretty_mean(),
+    mean_damage( s -> direct_results ),
+    s -> direct_results[ RESULT_CRIT ].pct,
+    s -> num_ticks.pretty_mean(),
+    s -> tick_results[ RESULT_HIT  ].actual_amount.pretty_mean(),
+    s -> tick_results[ RESULT_CRIT ].actual_amount.pretty_mean(),
+    mean_damage( s -> tick_results ),
+    s -> tick_results[ RESULT_CRIT ].pct,
+    100 * s -> total_tick_time.mean() / p -> collected_data.fight_length.mean() );
+}
+
+void print_html_action_info( report::sc_html_stream& os, stats_t* s, player_t* p, int j )
+{
+  int id = 0;
+
+  os << "\t\t\t\t\t\t\t<tr";
+  if ( j & 1 )
+  {
+    os << " class=\"odd\"";
+  }
+  os << ">\n";
+
+  for ( size_t i = 0; i < s -> player -> action_list.size(); ++i )
+  {
+    action_t* a = s -> player -> action_list[ i ];
+    if ( a -> stats != s ) continue;
+    id = a -> id;
+    if ( ! a -> background ) break;
+  }
+
+  os << "\t\t\t\t\t\t\t\t<td class=\"left small\">";
+
+  if ( id > 0 || p -> sim -> report_details )
+  {
+    std::string href = "#";
+
+    if ( id > 0 )
+    {
+      href = "http://";
+      href += ( p -> dbc.ptr ? "ptr" : "www" );
+      href += ".wowhead.com/spell=";
+      href += util::to_string( id );
+      href += "?lvl=";
+      href += util::to_string( p -> level );
+    }
+
+    const char* class_attr = "";
+    if ( p -> sim -> report_details )
+      class_attr = " class=\"toggle-details\"";
+
+    os.printf( "<a href=\"%s\"%s>%s</a></td>\n",
+               href.c_str(), class_attr, s -> name_str.c_str() );
+  }
+  else
+    os.printf( "%s</td>\n", s -> name_str.c_str() );
+
+  if ( s -> type == STATS_HEAL || s -> type == STATS_ABSORB )
+    print_html_action_healing(os, s, p, j );
+  else
+    print_html_action_damage( os, s, p, j );
+
 
   if ( p -> sim -> report_details )
   {
@@ -2552,7 +2615,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
 
 void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player_t* p )
 {
-  // Abilities Section
+  // Abilities Section - Damage
   os << "\t\t\t\t<div class=\"player-section\">\n"
      << "\t\t\t\t\t<h3 class=\"toggle open\">Abilities</h3>\n"
      << "\t\t\t\t\t<div class=\"toggle-content\">\n"
@@ -2592,9 +2655,10 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
     stats_t* s = p -> stats_list[ i ];
-    if ( s -> num_executes.mean() > 1 || s -> compound_amount > 0 || sim -> debug )
+    if ( ( s -> type != STATS_HEAL && s -> type != STATS_ABSORB ) && 
+         ( s -> num_executes.mean() > 1 || s -> compound_amount > 0 || sim -> debug ) )
     {
-      print_html_action_damage( os, s, p, j++ );
+      print_html_action_info( os, s, p, j++ );
     }
   }
 
@@ -2607,7 +2671,8 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
     {
       stats_t* s = pet -> stats_list[ i ];
 
-      if ( s -> num_executes.sum() || s -> compound_amount > 0 || sim -> debug )
+      if ( ( s -> type != STATS_HEAL && s -> type != STATS_ABSORB ) && 
+         ( s -> num_executes.sum() || s -> compound_amount > 0 || sim -> debug ) )
       {
         if ( first )
         {
@@ -2622,7 +2687,80 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
             pet -> collected_data.dps.mean(),
             pet -> collected_data.dpse.mean() );
         }
-        print_html_action_damage( os, s, p, j );
+        print_html_action_info( os, s, p, j );
+      }
+    }
+  }
+
+  os.printf(
+    "\t\t\t\t\t\t</table>\n");
+  
+  // Abilities Section - Heals
+  os << "\t\t\t\t\t\t<table class=\"sc\">\n"
+     << "\t\t\t\t\t\t\t<tr>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"left small\">Healing Stats</th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps\" class=\"help\">HPS</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps-pct\" class=\"help\">HPS%</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpe\" class=\"help\">HPE</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpet\" class=\"help\">HPET</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-avg\" class=\"help\">Avg</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks\" class=\"help\">Ticks</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-hit\" class=\"help\">T-Hit</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit\" class=\"help\">T-Crit</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-avg\" class=\"help\">T-Avg</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit-pct\" class=\"help\">T-Crit%</a></th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-uptime\" class=\"help\">Up%</a></th>\n"
+     << "\t\t\t\t\t\t\t</tr>\n";
+
+  os << "\t\t\t\t\t\t\t<tr>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"left small\">" << util::encode_html( p -> name() ) << "</th>\n"
+     << "\t\t\t\t\t\t\t\t<th class=\"right small\">" << util::to_string( p -> collected_data.hps.mean(), 0 ) << "</th>\n"
+     << "\t\t\t\t\t\t\t\t<td colspan=\"19\" class=\"filler\"></td>\n"
+     << "\t\t\t\t\t\t\t</tr>\n";
+
+  int k = 0;
+
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+  {
+    stats_t* s = p -> stats_list[ i ];
+    if ( ( s -> type == STATS_HEAL || s -> type == STATS_ABSORB ) && 
+         (s -> num_executes.mean() > 1 || s -> compound_amount > 0 || sim -> debug ) )
+    {
+      print_html_action_info( os, s, p, k++ );
+    }
+  }
+
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+  {
+    pet_t* pet = p -> pet_list[ i ];
+    bool first = true;
+
+    for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
+    {
+      stats_t* s = pet -> stats_list[ i ];
+
+      if ( ( s -> type == STATS_HEAL || s -> type == STATS_ABSORB ) && 
+         ( s -> num_executes.sum() || s -> compound_amount > 0 || sim -> debug ) )
+      {
+        if ( first )
+        {
+          first = false;
+          os.printf(
+            "\t\t\t\t\t\t\t<tr>\n"
+            "\t\t\t\t\t\t\t\t<th class=\"left small\">pet - %s</th>\n"
+            "\t\t\t\t\t\t\t\t<th class=\"right small\">%.0f / %.0f</th>\n"
+            "\t\t\t\t\t\t\t\t<td colspan=\"18\" class=\"filler\"></td>\n"
+            "\t\t\t\t\t\t\t</tr>\n",
+            pet -> name_str.c_str(),
+            pet -> collected_data.dps.mean(),
+            pet -> collected_data.dpse.mean() );
+        }
+        print_html_action_info( os, s, p, k );
       }
     }
   }
