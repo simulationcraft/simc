@@ -810,14 +810,15 @@ void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
                       is_unholy() ? p -> gains.rc_unholy  :
                                     p -> gains.rune_unknown ; // should never happen, so if you've seen this in a report happy bug hunting
   }
-  // full runes don't regen. if both full, record half of overflow, as the other rune will record the other half
-  if ( state == STATE_FULL )
+
+  // Full runes don't regen, however only record the overflow once, instead of two times.
+  if ( state == STATE_FULL && paired_rune -> state == STATE_FULL )
   {
-    if ( paired_rune -> state == STATE_FULL )
+    if ( slot_number % 2 == 0 )
     {
       // FIXME: Resource type?
-      gains_rune_type -> add( RESOURCE_NONE, 0, regen_amount * 0.5 );
-      gains_rune      -> add( RESOURCE_NONE, 0, regen_amount * 0.5 );
+      gains_rune_type -> add( RESOURCE_NONE, 0, regen_amount );
+      gains_rune      -> add( RESOURCE_NONE, 0, regen_amount );
     }
     return;
   }
