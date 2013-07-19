@@ -296,6 +296,7 @@ public:
   // Spells
   struct spells_t
   {
+    const spell_data_t* antimagic_shell;
     const spell_data_t* blood_parasite;
     const spell_data_t* t15_4pc_tank;
     const spell_data_t* t16_4pc_melee;
@@ -425,6 +426,7 @@ public:
   virtual void      reset();
   virtual void      arise();
   virtual void      assess_damage( school_e, dmg_e, action_state_t* );
+  virtual void      assess_damage_imminent( school_e, dmg_e, action_state_t* );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   virtual void      combat_begin();
   virtual void      create_options();
@@ -1662,6 +1664,9 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
     result_e calculate_result( action_state_t* /* s */ )
     { return RESULT_HIT; }
+
+    block_result_e calculate_block_result( action_state_t* )
+    { return BLOCK_RESULT_UNBLOCKED; }
 
     void execute()
     {
@@ -4505,7 +4510,8 @@ struct antimagic_shell_t : public death_knight_spell_t
     {
       opt_float( "interval", interval ),
       opt_float( "interval_stddev", interval_stddev_opt ),
-      opt_float( "damage", damage )
+      opt_float( "damage", damage ),
+      opt_null()
     };
 
     parse_options( options, options_str );
@@ -4527,24 +4533,26 @@ struct antimagic_shell_t : public death_knight_spell_t
 
   void execute()
   {
-    timespan_t new_cd = timespan_t::from_seconds( rng -> gauss( interval, interval_stddev ) );
-    if ( new_cd < data().cooldown() )
-      new_cd = data().cooldown();
+    if ( damage > 0 )
+    {
+      timespan_t new_cd = timespan_t::from_seconds( rng -> gauss( interval, interval_stddev ) );
+      if ( new_cd < data().cooldown() )
+        new_cd = data().cooldown();
 
-    cooldown -> duration = new_cd;
+      cooldown -> duration = new_cd;
+    }
 
     death_knight_spell_t::execute();
 
-    double absorbed = std::max( damage * data().effectN( 1 ).percent(),
-                                p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent() );
+    if ( damage > 0 )
+    {
+      double absorbed = std::min( damage * data().effectN( 1 ).percent(),
+                                  p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 2 ).percent() );
 
-    p() -> buffs.antimagic_shell -> trigger( 1, absorbed / 1000.0 / data().duration().total_seconds() );
-  }
-
-  bool ready()
-  {
-    if ( damage == 0 ) return false;
-    return death_knight_spell_t::ready();
+      p() -> buffs.antimagic_shell -> trigger( 1, absorbed / 1000.0 / data().duration().total_seconds() );
+    }
+    else
+      p() -> buffs.antimagic_shell -> trigger();
   }
 };
 
@@ -4633,6 +4641,36 @@ struct rune_tap_t : public death_knight_heal_t
       cost_blood  = 1;
       return r;
     }
+    return death_knight_heal_t::ready();
+  }
+};
+
+// Death Pact
+
+struct death_pact_t : public death_knight_heal_t
+{
+  death_pact_t( death_knight_t* p, const std::string& options_str ) :
+    death_knight_heal_t( "death_pact", p, p -> find_talent_spell( "Death Pact" ) )
+  {
+    may_crit = false;
+
+    parse_options( NULL, options_str );
+  }
+
+  double base_da_min( const action_state_t* )
+  { return p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent(); }
+
+  double base_da_max( const action_state_t* )
+  { return p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent(); }
+
+  bool ready()
+  {
+    if ( p() -> specialization() == DEATH_KNIGHT_UNHOLY && p() -> pets.ghoul_pet -> is_sleeping() )
+      return false;
+
+    if ( p() -> specialization() != DEATH_KNIGHT_UNHOLY && p() -> pets.ghoul_guardian -> is_sleeping() )
+      return false;
+
     return death_knight_heal_t::ready();
   }
 };
@@ -4800,6 +4838,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
   // Talents
   if ( name == "unholy_blight"            ) return new unholy_blight_t            ( this, options_str );
   if ( name == "death_siphon"             ) return new death_siphon_t             ( this, options_str );
+  if ( name == "death_pact"               ) return new death_pact_t               ( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -5070,7 +5109,6 @@ void death_knight_t::init_spells()
   spec.veteran_of_the_third_war   = find_specialization_spell( "Veteran of the Third War" );
   spec.scent_of_blood             = find_specialization_spell( "Scent of Blood" );
   spec.improved_blood_presence    = find_specialization_spell( "Improved Blood Presence" );
-  spec.blood_parasite             = find_specialization_spell( "Blood Parasite" );
   spec.scarlet_fever              = find_specialization_spell( "Scarlet Fever" );
   spec.crimson_scourge            = find_specialization_spell( "Crimson Scourge" );
   spec.sanguine_fortitude         = find_specialization_spell( "Sanguine Fortitude" );
@@ -5121,6 +5159,7 @@ void death_knight_t::init_spells()
   glyph.vampiric_blood            = find_glyph_spell( "Glyph of Vampiric Blood" );
 
   // Generic spells
+  spell.antimagic_shell           = find_class_spell( "Anti-Magic Shell" );
   spell.blood_parasite            = find_spell( 50452 );
   spell.t15_4pc_tank              = find_spell( 138214 );
   spell.t16_4pc_melee             = maybe_ptr( dbc.ptr ) ? find_spell( 144909 ) : spell_data_t::not_found();
@@ -5291,6 +5330,8 @@ void death_knight_t::init_actions()
             action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
         }
         action_list_str += "/auto_attack";
+        if ( level >= 68 )
+          action_list_str += "/antimagic_shell,if=target.buff.casting.react";
         if ( level >= 76 )
           action_list_str += "/vampiric_blood,if=health<30000";
         if ( level >= 87 )
@@ -5301,6 +5342,7 @@ void death_knight_t::init_actions()
           action_list_str += "/rune_tap,if=health.pct<90";
         action_list_str += "/dancing_rune_weapon";
         action_list_str += "/raise_dead,if=time>=10";
+        action_list_str += "/death_pact,if=enabled&health.pct<50";
         action_list_str += "/outbreak,if=(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2)|(!dot.blood_plague.ticking&!dot.frost_fever.ticking)";
         action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
         action_list_str += "/icy_touch,if=!dot.frost_fever.ticking";
@@ -6013,6 +6055,23 @@ void death_knight_t::combat_begin()
     vengeance_start();
 }
 
+// death_knight_t::assess_damage_imminent ===================================
+
+void death_knight_t::assess_damage_imminent( school_e school, dmg_e, action_state_t* s )
+{
+  if ( buffs.antimagic_shell -> up() && school != SCHOOL_PHYSICAL )
+  {
+    double absorbed = std::min( s -> result_amount * spell.antimagic_shell -> effectN( 1 ).percent(),
+                                resources.max[ RESOURCE_HEALTH ] * spell.antimagic_shell -> effectN( 2 ).percent() );
+
+    s -> result_amount -= absorbed;
+    s -> result_absorbed -= absorbed;
+
+    gains.antimagic_shell -> add( RESOURCE_HEALTH, absorbed );
+    buffs.antimagic_shell -> current_value += absorbed / 1000.0 / spell.antimagic_shell -> duration().total_seconds();
+  }
+}
+
 // death_knight_t::assess_damage ============================================
 
 void death_knight_t::assess_damage( school_e     school,
@@ -6250,7 +6309,7 @@ void death_knight_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
 
-  if ( buffs.antimagic_shell -> check() )
+  if ( buffs.antimagic_shell -> check() && buffs.antimagic_shell -> current_value > 0 )
     resource_gain( RESOURCE_RUNIC_POWER, buffs.antimagic_shell -> value() * periodicity.total_seconds(), gains.antimagic_shell );
 
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
