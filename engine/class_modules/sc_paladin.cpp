@@ -297,7 +297,7 @@ public:
 
     beacon_target = 0;
 
-    base.distance = ( specialization() == PALADIN_HOLY ) ? 30 : 3;
+    base.distance = 3;
   }
 
   virtual void      init_defense();
@@ -4028,12 +4028,21 @@ void paladin_t::init_base_stats()
   switch ( specialization() )
   {
     case PALADIN_HOLY:
+      role = ROLE_HEAL;
+      base.distance = 30;
       //base.attack_hit += 0; // TODO spirit -> hit talents.enlightened_judgments
       //base.spell_hit  += 0; // TODO spirit -> hit talents.enlightened_judgments
       break;
+    case PALADIN_PROTECTION:
+      base.position = POSITION_FRONT;
+      initial.position = POSITION_FRONT;
+      change_position( POSITION_FRONT );
+      role = ROLE_TANK;
     default:
       break;
   }
+  // this fixes the position output in the HTML file
+  position_str = util::position_type_string( base.position );
 }
 
 // paladin_t::reset =========================================================
