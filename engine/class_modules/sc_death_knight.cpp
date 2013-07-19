@@ -3312,6 +3312,8 @@ struct death_strike_t : public death_knight_melee_attack_t
     if ( p() -> mastery.blood_shield -> ok() )
       amount += heal -> base_dd_min * p() -> cache.mastery_value();
 
+    amount = std::min( p() -> resources.max[ RESOURCE_HEALTH ], amount );
+
     if ( sim -> debug )
       sim -> output( "%s Blood Shield buff trigger, old_value=%f added_value=%f new_value=%f",
                      player -> name(), p() -> buffs.blood_shield -> current_value,
