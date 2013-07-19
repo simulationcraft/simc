@@ -2,7 +2,7 @@
 
 warrior="Warrior_Arms_T15H"
 level=90
-race=worgen
+race=orc
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
@@ -28,6 +28,7 @@ actions.precombat+=/mogu_power_potion
 
 actions=auto_attack
 actions+=/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25
+actions+=/blood_fury,if=(talent.bloodbath.enabled&buff.bloodbath.up)|(!talent.bloodbath.enabled&debuff.colossus_smash.up)
 actions+=/recklessness,if=target.time_to_die<=18|((target.time_to_die>=186|(target.health.pct<20&(debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=1.5)))&(!talent.bloodbath.enabled|!cooldown.bloodbath.remains))
 actions+=/bloodbath,if=talent.bloodbath.enabled&(target.time_to_die<=18|buff.recklessness.up|target.time_to_die>=75)
 actions+=/avatar,if=talent.avatar.enabled&(buff.recklessness.up|target.time_to_die<=25)
@@ -65,35 +66,35 @@ actions.aoe+=/whirlwind
 actions.aoe+=/battle_shout,if=rage<70
 
 head=crown_of_the_golden_golem,id=96894,gems=capacitive_primal_320crit_180str
-neck=amulet_of_the_primal_turtle,id=96801,gems=320crit,reforge=hit_exp
+neck=talisman_of_angry_spirits,id=96792,reforge=mastery_haste
 shoulders=pauldrons_of_the_last_mogu,id=96734,gems=80str_160crit_320crit_120crit,enchant=200str_100crit,reforge=exp_crit
 back=tigerclaw_cape,id=98147,gems=80str_160crit_60str,enchant=180crit
 chest=battleplate_of_the_last_mogu,id=96731,gems=80str_160crit_320crit_160crit_160hit_180str,enchant=80all,reforge=exp_crit
-wrists=caustic_spike_bracers,id=96848,stats=2766armor_957str_1555sta_1024haste,gems=320crit_320crit_60str,enchant=180str,reforge=haste_crit
+wrists=caustic_spike_bracers,id=96848,stats=2766armor_957str_1555sta_1024haste,gems=320crit_320crit_60str,enchant=180str
 hands=gauntlets_of_the_last_mogu,id=96732,gems=80str_160crit_320crit_60mastery,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_haste
 waist=cloudbreaker_greatbelt,id=96745,gems=80str_160crit_320crit_320crit_120crit,reforge=mastery_crit
 legs=legplates_of_the_last_mogu,id=96733,gems=320crit_160crit_160hit_120str,enchant=285str_165crit,reforge=mastery_haste
 feet=sabatons_of_the_superior_being,id=95012,gems=320crit_160crit_160hit_120str,enchant=140mastery
 finger1=band_of_the_scaled_tyrant,id=96872,gems=80str_160crit_60haste,reforge=hit_crit
-finger2=radens_ruinous_ring,id=95022,gems=320crit,reforge=haste_crit
-trinket1=fabled_feather_of_jikun,id=96842,reforge=hit_crit
-trinket2=gaze_of_the_twins,id=96915
-main_hand=greatsword_of_frozen_hells,id=96991,gems=320crit_320crit_60str,enchant=dancing_steel
+finger2=radens_ruinous_ring,id=95022,gems=160crit_160hit_60str,reforge=exp_crit
+trinket1=fabled_feather_of_jikun,id=96842,reforge=hit_haste
+trinket2=primordius_talisman_of_rage,id=96873,reforge=crit_haste
+main_hand=uroe_harbinger_of_terror,id=96925,gems=80str_160crit_320crit_60str,enchant=dancing_steel,reforge=mastery_haste
 
 # Gear Summary
-# gear_strength=20807
+# gear_strength=19275
 # gear_agility=80
 # gear_stamina=27918
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2631
-# gear_hit_rating=2701
-# gear_crit_rating=16335
-# gear_haste_rating=7417
-# gear_mastery_rating=3063
+# gear_expertise_rating=2240
+# gear_hit_rating=2570
+# gear_crit_rating=15716
+# gear_haste_rating=8928
+# gear_mastery_rating=4014
 # gear_armor=37529
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
 # hands=gauntlets_of_the_last_mogu,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=greatsword_of_frozen_hells,heroic=1,thunderforged=1,weapon=sword2h_3.60speed_19571min_29357max,enchant=dancing_steel
+# main_hand=uroe_harbinger_of_terror,heroic=1,thunderforged=1,weapon=axe2h_3.60speed_19571min_29357max,enchant=dancing_steel
