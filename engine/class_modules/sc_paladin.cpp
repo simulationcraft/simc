@@ -3906,7 +3906,8 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   buffs.debuffs_censure    = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
   buffs.sacred_shield_tick = absorb_buff_creator_t( *this, "sacred_shield_tick", paladin -> find_spell( 65148 ) )
                              .source( paladin -> get_stats( "sacred_shield" ) )
-                             .cd( timespan_t::zero() );
+                             .cd( timespan_t::zero() )
+                             .gain( target -> get_gain( "sacred_shield_tick" ) );
 }
 
 // paladin_t::create_action =================================================
