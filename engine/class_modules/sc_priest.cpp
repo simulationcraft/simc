@@ -4478,7 +4478,14 @@ struct prayer_of_mending_t : public priest_heal_t
 
     aoe = 5;
 
-    castable_in_shadowform = p.glyphs.dark_binding -> ok();
+    if ( priest.dbc.ptr )
+    {
+        castable_in_shadowform = true;
+    }
+    else
+    {
+        castable_in_shadowform = p.glyphs.dark_binding -> ok();
+    }
   }
 
   virtual void execute()
@@ -4554,7 +4561,14 @@ struct renew_t : public priest_heal_t
     base_multiplier *= 1.0 + p.glyphs.renew -> effectN( 1 ).percent();
     num_ticks       += ( int ) ( p.glyphs.renew -> effectN( 2 ).time_value() / base_tick_time );
 
-    castable_in_shadowform = p.glyphs.dark_binding -> ok();
+    if ( priest.dbc.ptr )
+    {
+        castable_in_shadowform = true;
+    }
+    else
+    {
+        castable_in_shadowform = p.glyphs.dark_binding -> ok();
+    }
   }
 
   virtual double action_multiplier()
@@ -4980,6 +4994,11 @@ double priest_t::composite_armor()
   {
     a *= 1.0 + buffs.inner_fire -> data().effectN( 1 ).percent();
     a *= 1.0 + glyphs.inner_fire -> effectN( 1 ).percent();
+  }
+
+  if ( dbc.ptr && buffs.shadowform -> check() )
+  {
+    a *= 1.0 + buffs.shadowform -> data().effectN( 7 ).percent();
   }
 
   return std::floor( a );
@@ -5523,12 +5542,13 @@ void priest_t::create_buffs()
                            .spell( glyphs.mind_spike -> effectN( 1 ).trigger() )
                            .chance( glyphs.mind_spike -> proc_chance() );
 
-  buffs.shadow_word_death_reset_cooldown = buff_creator_t( this, "shadow_word_death_reset_cooldown" )
-                                           .max_stack( 1 )
-                                           .duration( timespan_t::from_seconds( 6.0 ) ); // data in the old deprecated glyph. Leave hardcoded for now, 3/12/2012
-
   if ( dbc.ptr )
   {
+
+    buffs.shadow_word_death_reset_cooldown = buff_creator_t( this, "shadow_word_death_reset_cooldown" )
+                                               .max_stack( 1 )
+                                               .duration( timespan_t::from_seconds( 7.5 ) ); // data in the old deprecated glyph. Leave hardcoded for now, 3/12/2012; 7.5sec ICD in 5.4
+
     buffs.empowered_shadows = buff_creator_t( this, "empowered_shadows" )
                               .spell( sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).trigger() )
                               .chance( sets -> has_set_bonus( SET_T16_4PC_CASTER ) ? 1.0 : 0.0 );
@@ -5547,6 +5567,11 @@ void priest_t::create_buffs()
   }
   else
   {
+
+      buffs.shadow_word_death_reset_cooldown = buff_creator_t( this, "shadow_word_death_reset_cooldown" )
+                                               .max_stack( 1 )
+                                               .duration( timespan_t::from_seconds( 6.0 ) ); // data in the old deprecated glyph. Leave hardcoded for now, 3/12/2012
+
       buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", active_spells.surge_of_darkness )
                                                .chance( active_spells.surge_of_darkness -> ok() ? 0.15 : 0.0 ); // hardcoded into tooltip, 3/12/2012
   }
@@ -5807,7 +5832,7 @@ void priest_t::apl_disc_dmg()
   def -> add_action( "cascade_damage,if=talent.cascade.enabled&active_enemies>3" );
   def -> add_action( this, "Smite", "if=glyph.smite.enabled&dot.power_word_solace.remains>cast_time" );
   def -> add_action( this, "Smite", "if=!talent.twist_of_fate.enabled&mana.pct>15" );
-  def -> add_action( this, "Smite", "if=talent.twist_of_fate.enabled&target.health.pct<20&mana.pct>target.health.pct" );
+  def -> add_action( this, "Smite", "if=talent.twist_of_fate.enabled&target.health.pct<35&mana.pct>target.health.pct" );
 }
 
 // Holy Heal Combat Action Priority List
