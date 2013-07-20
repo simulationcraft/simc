@@ -2402,6 +2402,10 @@ struct sacred_shield_t : public paladin_heal_t
     base_td = 342.5; // in effectN( 1 ), but not sure how to extract yet
     tick_power_mod = 1.17; // in tooltip, hardcoding
 
+    // redirect HoT to self if not specified
+    if ( target -> is_enemy() || target -> type == HEALING_ENEMY )
+      target = p;
+
     // disable if not talented
     if ( ! ( p -> talents.sacred_shield -> ok() ) )
       background = true;

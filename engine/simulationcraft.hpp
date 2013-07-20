@@ -3869,6 +3869,7 @@ struct player_t : public actor_t
   specialization_e  _spec;
   bool         bugs; // If true, include known InGame mechanics which are probably the cause of a bug and not inteded
   bool scale_player;
+  bool tmi_self_only;
 
   // dynamic attributes - things which change during combat
   player_t*   target;

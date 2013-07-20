@@ -603,6 +603,7 @@ player_t::player_t( sim_t*             s,
   _spec( SPEC_NONE ),
   bugs( true ),
   scale_player( true ),
+  tmi_self_only( false ),
 
   // dynamic stuff
   target( 0 ),
@@ -5103,7 +5104,9 @@ void player_t::assess_heal( school_e, dmg_e, heal_state_t* s )
 
   s -> total_result_amount = s -> result_amount;
   s -> result_amount = resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
-  if ( ! is_pet() && role == ROLE_TANK )
+
+  // if the target is a tank record this event on damage timeline - tmi_self_only flag disables recording of external healing
+  if ( ! is_pet() && role == ROLE_TANK && ( ! tmi_self_only || s -> action -> player == this ) ) // may also need to check for s -> action -> target -> type == HEALING_ENEMY ?
     collected_data.health_changes.timeline.add( sim -> current_time, - ( s -> result_amount ) );
 
   iteration_heal_taken += s -> result_amount;
@@ -8222,6 +8225,7 @@ void player_t::create_options()
     opt_func( "brain_lag", parse_brain_lag ),
     opt_func( "brain_lag_stddev", parse_brain_lag_stddev ),
     opt_bool( "scale_player", scale_player ),
+    opt_bool( "tmi_self_only", tmi_self_only),
     opt_func( "spec", parse_specialization ),
     opt_func( "specialization", parse_specialization ),
     opt_func( "stat_timelines", parse_stat_timelines ),
