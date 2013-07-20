@@ -4784,7 +4784,7 @@ void priest_t::shadowy_apparitions_t::trigger( action_state_t& s )
     return;
 
   // Check if there are already 4 active SA
-  if ( apparitions_active.size() >= 4 )
+  if ( !priest.dbc.ptr && apparitions_active.size() >= 4 ) //Live
   {
     // If there are already 4 SA's active, they will get added to a queue
     // Added 11. March 2013, see http://howtopriest.com/viewtopic.php?f=8&t=3242
@@ -4794,7 +4794,7 @@ void priest_t::shadowy_apparitions_t::trigger( action_state_t& s )
       priest.sim -> output( "%s added shadowy apparition to the queue. Active SA: %d, Queued SA: %d",
                             priest.name(), as<unsigned>( apparitions_active.size() ), as<unsigned>( targets_queued.size() ) );
   }
-  else if ( ! apparitions_free.empty() ) // less than 4 active SA
+  else if ( priest.dbc.ptr || ! apparitions_free.empty() ) // less than 4 active SA, and, 5.4 PTR
   {
     // Get SA spell, set target and remove it from free list
     sa_spell* sa = apparitions_free.back();
@@ -5442,7 +5442,14 @@ void priest_t::init_spells()
 
   if ( specs.shadowy_apparitions -> ok() )
   {
-    shadowy_apparitions.add_more( 5 );
+      //if ( !dbc.ptr )
+      //{
+          shadowy_apparitions.add_more( 5 );
+      //}
+      //else
+      //{
+      //    shadowy_apparitions.add_more( 1000 ); //no cap
+      //}
   }
 
   active_spells.surge_of_darkness = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();
