@@ -202,6 +202,7 @@ public:
     const spell_data_t* brain_freeze;
     const spell_data_t* fingers_of_frost;
     const spell_data_t* frostburn;
+//    const spell_data_t* icicles;
 
   } spec;
 
@@ -392,6 +393,11 @@ struct water_elemental_pet_t : public pet_t
         return;
 
       spell_t::impact( s );
+      // If there are five Icicles, launch the oldest at this spell's target
+      // Create an Icicle, stashing damage equal to mastery * value
+      // Damage should be based on damage spell would have done without any
+      // target-based damage increases or decreases, except Frostbolt debuff
+      // Should also apply to mini version
 
     }
 
@@ -458,6 +464,7 @@ struct water_elemental_pet_t : public pet_t
     double m = pet_t::composite_player_multiplier( school );
 
     if ( o() -> spec.frostburn -> ok() )
+//    if ( o() -> spec.icicles -> ok() )
       m *= 1.0 + o() -> cache.mastery_value();
 
     if ( o() -> buffs.invokers_energy -> up() )
@@ -1777,7 +1784,7 @@ public:
 
     if ( p() -> specialization() == MAGE_ARCANE )
     {
-      mana *= 0.1; // PTR patch notes state that arcane gains 10% per tick instead of standard 15%
+      mana *= 0.1;
 
       mana *= 1.0 + arcane_charges * p() -> spells.arcane_charge_arcane_blast -> effectN( 4 ).percent() *
               ( 1.0 + ( p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
@@ -2120,6 +2127,11 @@ struct frostbolt_t : public mage_spell_t
     // TO CHECK : does mini FB apply FB debuff ? prolly yes
     if ( !static_cast<const state_t&>( *s ).mini_version ) // Bail out if mini spells get casted
     { mage_spell_t::impact( s ); }
+    // If there are five Icicles, launch the oldest at this spell's target
+    // Create an Icicle, stashing damage equal to mastery * value
+    // Damage should be based on damage spell would have done without any
+    // target-based damage increases or decreases, except Frostbolt debuff
+    // Should also apply to mini version
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2315,6 +2327,11 @@ struct frostfire_bolt_t : public mage_spell_t
     { return; }
 
     mage_spell_t::impact( s );
+    // If there are five Icicles, launch the oldest at this spell's target
+    // Create an Icicle, stashing damage equal to mastery * value
+    // Damage should be based on damage spell would have done without any
+    // target-based damage increases or decreases, except Frostbolt debuff
+    // Should also apply to mini version
 
     if ( result_is_hit( s -> result ) )
     {
@@ -2511,6 +2528,12 @@ struct ice_lance_t : public mage_spell_t
     {
       mini_ice_lance -> schedule_execute( mini_ice_lance -> get_state( execute_state ) );
     }
+    // Begin casting all Icicles at the target with intervals of 1 second
+    // adjusted by haste (first begins 1 second - haste after casting Ice Lance)
+    // Casting continues until all Icicles are gone, including new ones that
+    // accumulate while they're being fired. If target dies, Icicles stop. If
+    // Ice Lance is cast again, the current sequence is interrupted and a new
+    // one begins.
 
     p() -> buffs.fingers_of_frost -> decrement();
     p() -> buffs.frozen_thoughts -> expire();
@@ -3814,6 +3837,7 @@ void mage_t::init_spells()
 
   // Mastery
   spec.frostburn             = find_mastery_spell( MAGE_FROST );
+//  spec.icicles               = find_mastery_spell( MAGE_FROST );
   spec.ignite                = find_mastery_spell( MAGE_FIRE );
   spec.mana_adept            = find_mastery_spell( MAGE_ARCANE );
 
