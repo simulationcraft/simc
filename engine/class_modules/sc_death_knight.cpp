@@ -5291,7 +5291,7 @@ void death_knight_t::init_actions()
         {
           // Food
           if ( level > 85 )
-            precombat_list += "/food,type=great_pandaren_banquet";
+            precombat_list += "/food,type=chun_tian_spring_rolls";
           else
             precombat_list += "/food,type=beer_basted_crocolisk";
         }
@@ -5335,10 +5335,14 @@ void death_knight_t::init_actions()
 
         if ( level >= 87 )
           precombat_list += "/bone_shield";
-
+          
+          
+		action_list_str += "/auto_attack";
         action_list_str += init_use_item_actions( ",if=time>=10" );
         action_list_str += init_use_profession_actions();
         action_list_str += init_use_racial_actions( ",if=time>=10" );
+        if ( level >= 68 )
+          action_list_str += "/antimagic_shell";
         if ( sim -> allow_potions )
         {
           if ( level > 85 )
@@ -5346,36 +5350,36 @@ void death_knight_t::init_actions()
           else if ( level >= 80 )
             action_list_str += "/golemblood_potion,if=buff.bloodlust.react|target.time_to_die<=60";
         }
-        action_list_str += "/auto_attack";
-        if ( level >= 68 )
-          action_list_str += "/antimagic_shell,if=target.buff.casting.react";
+        
+    	action_list_str += "/death_strike,if=incoming_damage_5s>=health.max*0.65";
+    	 if ( level >= 87 )
+          action_list_str += "/bone_shield,if=buff.bone_shield.down&buff.dancing_rune_weapon.down&buff.icebound_fortitude.down&buff.vampiric_blood.down";
         if ( level >= 76 )
-          action_list_str += "/vampiric_blood,if=health<30000";
-        if ( level >= 87 )
-          action_list_str += "/bone_shield,if=buff.bone_shield.down";
+          action_list_str += "/vampiric_blood,if=health.pct<50";
         if ( level >= 62 )
-          action_list_str += "/icebound_fortitude,if=health.pct<50";
+          action_list_str += "/icebound_fortitude,if=health.pct<30&buff.dancing_rune_weapon.down&buff.bone_shield.down&buff.vampiric_blood.down";
         if ( level >= 64 )
           action_list_str += "/rune_tap,if=health.pct<90";
-        action_list_str += "/dancing_rune_weapon";
-        action_list_str += "/raise_dead,if=time>=10";
-        action_list_str += "/death_pact,if=enabled&health.pct<50";
+        action_list_str += "/dancing_rune_weapon,if=health.pct<80&buff.icebound_fortitude.down&buff.bone_shield.down&buff.vampiric_blood.down";
+        action_list_str += "/raise_dead,if=health.pct<50";
+        action_list_str += "/death_pact,if=health.pct<50";
         action_list_str += "/outbreak,if=(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2)|(!dot.blood_plague.ticking&!dot.frost_fever.ticking)";
         action_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
         action_list_str += "/icy_touch,if=!dot.frost_fever.ticking";
-        action_list_str += "/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35";
-        if ( talent.blood_tap -> ok() )
-          action_list_str += "/blood_tap,if=(unholy=0&frost>=1)|(unholy>=1&frost=0)|(death=1)";
-        action_list_str += "/death_strike";
-        //action_list_str += "/death_siphon,if=health.pct<90";
-        action_list_str += "/death_siphon,if=enabled&hit_damage>action.necrotic_strike.hit_damage";
-        action_list_str += "/necrotic_strike,if=!talent.death_siphon.enabled|hit_damage>action.death_siphon.hit_damage";
-        action_list_str += "/blood_boil,if=buff.crimson_scourge.up";
-        action_list_str += "/heart_strike,if=(blood=1&blood.cooldown_remains<1)|blood=2";
-        action_list_str += "/rune_strike,if=runic_power>=40";
-        action_list_str += "/horn_of_winter";
+        action_list_str += "/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35&blood>=1";
+    	action_list_str += "/blood_boil,if=buff.crimson_scourge.up|(blood>=1&(dot.frost_fever.remains<=10|dot.blood_plague.remains<=10))";
+     	action_list_str += "/heart_strike,if=blood>=1";
+     	action_list_str += "/rune_strike";
+     	action_list_str += "/horn_of_winter";
+        action_list_str += "/death_strike,if=(unholy=2|frost=2)&incoming_damage_5s>=health.max*0.40";
         action_list_str += "/empower_rune_weapon,if=blood=0&unholy=0&frost=0";
         break;
+        
+        // FIMXME Needs support for T5 other than RC. Severely reduces TMI right now. 
+        // if ( talent.blood_tap -> ok() )
+    	// action_list_str += "/blood_tap,if=(unholy=0&frost>=1)|(unholy>=1&frost=0)|(death=1)";
+        
+        
       }
       case DEATH_KNIGHT_FROST:
       {
