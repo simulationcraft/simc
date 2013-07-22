@@ -4038,9 +4038,6 @@ void paladin_t::init_base_stats()
       //base.spell_hit  += 0; // TODO spirit -> hit talents.enlightened_judgments
       break;
     case PALADIN_PROTECTION:
-      base.position = POSITION_FRONT;
-      initial.position = POSITION_FRONT;
-      change_position( POSITION_FRONT );
       role = ROLE_TANK;
     default:
       break;

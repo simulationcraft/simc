@@ -1221,9 +1221,17 @@ void player_t::init_base_stats()
   if ( world_lag_stddev < timespan_t::zero() ) world_lag_stddev = world_lag * 0.1;
   if ( brain_lag_stddev < timespan_t::zero() ) brain_lag_stddev = brain_lag * 0.1;
 
-  // Collect DTPS data for tanks even for statistics_level == 1
-  if ( sim -> statistics_level >= 1 && primary_role() == ROLE_TANK )
-    collected_data.dtps.change_mode( false );
+  if ( primary_role() == ROLE_TANK )
+  {
+    // set position to front
+    base.position = POSITION_FRONT;
+    initial.position = POSITION_FRONT;
+    change_position( POSITION_FRONT );
+
+    // Collect DTPS data for tanks even for statistics_level == 1
+    if ( sim -> statistics_level >= 1  )
+      collected_data.dtps.change_mode( false );
+  }
 
   if ( sim -> debug )
     sim -> output( "%s: Generic Base Stats: %s", name(), base.to_string().c_str() );
