@@ -1267,6 +1267,7 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_PARRY:        return "parry";
     case CACHE_DODGE:        return "dodge";
     case CACHE_BLOCK:        return "block";
+    case CACHE_ARMOR:        return "armor";
 
     default: return "unknown";
   }
