@@ -1172,6 +1172,12 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
 
         stats.push_back( buff_stat_t( stat, amount ) );
       }
+      else if ( data().effectN( i ).subtype() == A_MOD_RESISTANCE )
+      {
+        double amount = player -> dbc.effect_average( data().effectN( i ).id(), player -> level );
+
+        stats.push_back( buff_stat_t( STAT_ARMOR, amount ) );
+      }
     }
   }
   else // parse stats from params
