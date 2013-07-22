@@ -1514,7 +1514,7 @@ struct impending_victory_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if ( p -> buff.tier15_2pc_tank -> check() )
+    if ( p -> talents.impending_victory ->ok() && p -> buff.tier15_2pc_tank -> check() )
     {
       return true;
     }
