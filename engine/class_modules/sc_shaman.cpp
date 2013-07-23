@@ -3926,13 +3926,13 @@ struct flame_shock_t : public shaman_spell_t
   {
     shaman_spell_t::tick( d );
 
-    bool proc = false;
+    bool proced = false;
     if ( p() -> scale_lava_surge )
-      proc = d -> state -> result == RESULT_CRIT;
+      proced = d -> state -> result == RESULT_CRIT;
     else
-      proc = p() -> rng.lava_surge -> roll ( p() -> spec.lava_surge -> proc_chance() );
+      proced = p() -> rng.lava_surge -> roll ( p() -> spec.lava_surge -> proc_chance() );
 
-    if ( proc )
+    if ( proced )
     {
       if ( p() -> buff.lava_surge -> check() )
         p() -> proc.wasted_lava_surge -> occur();
