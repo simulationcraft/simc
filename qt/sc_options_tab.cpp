@@ -758,24 +758,14 @@ QString SC_OptionsTab::get_globalSettings()
 
   if ( choice.tmi_boss -> currentIndex() != 0 )
   {
-    // boss damage (
-    int aa_damage [3] = { 900000, 750000, 550000 };
-    int dot_damage [3] = { 30000, 25000, 20000 };
-
     // boss setup
     options += "enemy=TMI_Standard_Boss_";
     options += choice.tmi_boss -> currentText();
     options += "\n";
-    options += "level=93\n";
+    options += "tmi_boss=" + choice.tmi_boss -> currentText();
+    options += "\n";
     options += "role=tank\n";
     options += "position=front\n";
-    options += "actions.precombat=snapshot_stats\n";
-    options += "actions=auto_attack,damage=";
-    options += QString::number( aa_damage[ choice.tmi_boss -> currentIndex() - 1 ] );
-    options += ",attack_speed=1.5\n";
-    options += "actions+=/spell_dot,damage=";
-    options += QString::number( dot_damage[ choice.tmi_boss -> currentIndex() - 1 ] );
-    options += ",tick_time=2,num_ticks=15,aoe_tanks=1,if=!ticking\n";
   }
   else
   {
@@ -783,9 +773,8 @@ QString SC_OptionsTab::get_globalSettings()
     options += "target_level+=";
     options += targetlevel[ choice.target_level -> currentIndex() ];
     options += "\n";
+    options += "target_race=" + choice.target_race->currentText() + "\n";
   }
-
-  options += "target_race=" + choice.target_race->currentText() + "\n";
 
   options += "default_skill=";
   const char *skill[] = { "1.0", "0.9", "0.75", "0.50" };
@@ -914,18 +903,9 @@ QString SC_OptionsTab::mergeOptions()
   options += mainWindow -> simulateTab -> current_Text() -> toPlainText();
   options += "\n"
              "### End simulateText ###\n";
-
+  
   if ( choice.num_target -> currentIndex() >= 1 )
-  {
-    options += "### Begin enemies ###\n";
-    for ( int i = 1; i <= choice.num_target -> currentIndex() + ( choice.tmi_boss -> currentIndex() != 0 ? 0 : 1 ); ++i )
-    {
-      options += "enemy=enemy";
-      options += QString::number( i );
-      options += "\n";
-    }
-    options += "### End enemies ###\n";
-  }
+    options += "desired_targets=" + QString::number( choice.num_target -> currentIndex() + 1 ) + "\n";
 
   options += "### Begin overrides ###\n";
   options += mainWindow -> overridesText -> toPlainText();

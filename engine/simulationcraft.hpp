@@ -2525,6 +2525,7 @@ struct sim_t : private sc_thread_t
   std::string target_race;
   int         target_adds;
   std::string sim_phase_str;
+  int         desired_targets; // desired number of targets
 
   // Data access
   dbc_t       dbc;

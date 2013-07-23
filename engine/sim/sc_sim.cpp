@@ -835,7 +835,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_talent_str( 0 ),
   talent_format( TALENT_FORMAT_UNCHANGED ),
   auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ),
-  target_death( 0 ), target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ),
+  target_death( 0 ), target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ),
   challenge_mode( false ), scale_to_itemlevel ( -1 ),
   active_enemies( 0 ), active_allies( 0 ),
   deterministic_rng( false ),
@@ -1569,6 +1569,17 @@ bool sim_t::init()
   else
     target = module_t::enemy() -> create_player( this, "Fluffy_Pillow" );
 
+  // create additional enemies here
+  while ( target_list.size() < desired_targets )
+  {
+    active_player = 0;
+    active_player = module_t::enemy() -> create_player( this, "enemy" + util::to_string( target_list.size() + 1 ) );
+    if ( ! active_player )
+    {
+      errorf( "\nUnable to create enemy %i.\n", target_list.size() );
+    }
+  }
+
   {
     // Determine whether we have healers or tanks.
     unsigned int healers = 0, tanks = 0;
@@ -1601,17 +1612,6 @@ bool sim_t::init()
   raid_event_t::init( this );
 
   if ( ! player_t::init( this ) ) return false;
-
-  // Target overrides 2
-  for ( size_t i = 0; i < target_list.size(); ++i )
-  {
-    player_t* t = target_list[ i ];
-    if ( ! target_race.empty() )
-    {
-      t -> race = util::parse_race_type( target_race );
-      t -> race_str = util::race_type_string( t -> race );
-    }
-  }
 
   if ( report_precision < 0 ) report_precision = 2;
 
@@ -2226,6 +2226,7 @@ void sim_t::create_options()
     opt_string( "target_race", target_race ),
     opt_bool( "challenge_mode", challenge_mode ),
     opt_int( "scale_to_itemlevel", scale_to_itemlevel ),
+    opt_int( "desired_targets", desired_targets ),
     // Character Creation
     opt_func( "death_knight", parse_player ),
     opt_func( "deathknight", parse_player ),

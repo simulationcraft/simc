@@ -10,6 +10,12 @@
 // ==========================================================================
 
 namespace { // UNNAMED NAMESPACE
+  
+enum tmi_boss_e
+{
+  TMI_NONE = 0,
+  TMI_T15LFR, TMI_T15N, TMI_T15H
+};
 
 // Enemy actions are generic to serve both enemy_t and enemy_add_t,
 // so they can only rely on player_t and should have no knowledge of class definitions
@@ -370,6 +376,8 @@ struct enemy_t : public player_t
   double fixed_health, initial_health;
   double fixed_health_percentage, initial_health_percentage;
   timespan_t waiting_time;
+  std::string tmi_boss_str;
+  tmi_boss_e tmi_boss_enum;
 
   std::vector<buff_t*> buffs_health_decades;
 
@@ -377,7 +385,9 @@ struct enemy_t : public player_t
     player_t( s, type, n, r ),
     fixed_health( 0 ), initial_health( 0 ),
     fixed_health_percentage( 0 ), initial_health_percentage( 100.0 ),
-    waiting_time( timespan_t::from_seconds( 1.0 ) )
+    waiting_time( timespan_t::from_seconds( 1.0 ) ),
+    tmi_boss_str( "none" ),
+    tmi_boss_enum( TMI_NONE )
   {
     s -> target_list.push_back( this );
     position_str = "front";
@@ -408,6 +418,8 @@ struct enemy_t : public player_t
   virtual void recalculate_health();
   virtual expr_t* create_expression( action_t* action, const std::string& type );
   virtual timespan_t available() { return waiting_time; }
+
+  virtual tmi_boss_e convert_tmi_string( const std::string& tmi_string );
 };
 
 // ==========================================================================
@@ -490,22 +502,62 @@ action_t* enemy_t::create_action( const std::string& name,
   return a;
 }
 
+// enemy_t::convert_tmi_string ==============================================
+
+tmi_boss_e enemy_t::convert_tmi_string( const std::string& tmi_string )
+{
+  // this function translates between the "tmi_boss" option string and the tmi_boss_e enum
+  // eventually plan on using regular expressions here
+  if ( tmi_string == "T15LFR" )
+  {
+    return TMI_T15LFR;
+  }
+  if ( tmi_string == "T15N" )
+  {
+    return TMI_T15N;
+  }
+  if ( tmi_string == "T15H" )
+  {
+    return TMI_T15H;
+  }
+
+  if ( ! tmi_string.empty() && sim -> debug )
+    sim -> output( "Unknown TMI string input provided: %s", tmi_string );
+
+  return TMI_NONE;
+
+}
+
 // enemy_t::init_base =======================================================
 
 void enemy_t::init_base_stats()
 {
   player_t::init_base_stats();
 
+  tmi_boss_enum = convert_tmi_string( tmi_boss_str );
+
   level = sim -> max_player_level + 3;
 
-  if ( sim -> target_level >= 0 )
-    level = sim -> target_level;
-  else if ( ( sim -> max_player_level + sim -> rel_target_level ) >= 0 )
-    level = sim -> max_player_level + sim -> rel_target_level;
+  if ( tmi_boss_enum == TMI_NONE ) // skip overrides for TMI standard bosses
+  {
+    // target_level override
+    if ( sim -> target_level >= 0 )
+      level = sim -> target_level;
+    else if ( ( sim -> max_player_level + sim -> rel_target_level ) >= 0 )
+      level = sim -> max_player_level + sim -> rel_target_level;
 
-  waiting_time = timespan_t::from_seconds( std::min( ( int ) floor( sim -> max_time.total_seconds() ), sim -> wheel_seconds - 1 ) );
-  if ( waiting_time < timespan_t::from_seconds( 1.0 ) )
-    waiting_time = timespan_t::from_seconds( 1.0 );
+    // waiting_time override
+    waiting_time = timespan_t::from_seconds( std::min( ( int ) floor( sim -> max_time.total_seconds() ), sim -> wheel_seconds - 1 ) );
+    if ( waiting_time < timespan_t::from_seconds( 1.0 ) )
+      waiting_time = timespan_t::from_seconds( 1.0 );
+
+    // target_race override
+    if ( ! sim -> target_race.empty() )
+    {
+      race = util::parse_race_type( sim -> target_race );
+      race_str = util::race_type_string( race );
+    }
+  }
 
   base.attack_crit = 0.05;
 
@@ -621,9 +673,20 @@ void enemy_t::init_actions()
       level_mult = std::pow( level_mult, 1.5 );
       if ( ! target -> is_enemy() )
       {
-        action_list_str += "/auto_attack,damage=" + util::to_string( 700000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
-        action_list_str += "/spell_dot,damage=" + util::to_string( 100000 * level_mult ) + ",tick_time=2,num_ticks=10,cooldown=40,aoe_tanks=1,if=!ticking";
-        action_list_str += "/spell_nuke,damage=" + util::to_string( 400000 * level_mult ) + ",cooldown=4,attack_speed=2,aoe_tanks=1";
+        switch ( tmi_boss_enum )
+        {
+        case TMI_NONE:
+          action_list_str += "/auto_attack,damage=" + util::to_string( 700000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
+          action_list_str += "/spell_dot,damage=" + util::to_string( 100000 * level_mult ) + ",tick_time=2,num_ticks=10,cooldown=40,aoe_tanks=1,if=!ticking";
+          action_list_str += "/spell_nuke,damage=" + util::to_string( 400000 * level_mult ) + ",cooldown=4,attack_speed=2,aoe_tanks=1";
+          break;
+        default:
+          // boss damage information ( could move outside this function and make a constant )
+          int aa_damage [4] = { 0, 550000, 750000, 900000 };
+          int dot_damage [4] = { 0, 20000, 25000, 30000 };
+          action_list_str += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5";
+          action_list_str += "/spell_dot,damage=" + util::to_string( dot_damage[ tmi_boss_enum ] ) + ",tick_time=2,num_ticks=15,aoe_tanks=1,if=!ticking";
+        }
       }
       else if ( sim -> heal_target && this != sim -> heal_target )
       {
@@ -693,6 +756,7 @@ void enemy_t::create_options()
     opt_float( "target_initial_health_percentage", initial_health_percentage ),
     opt_float( "target_fixed_health_percentage", fixed_health_percentage ),
     opt_string( "target_tank", target_str ),
+    opt_string( "tmi_boss", tmi_boss_str ),
     opt_null()
   };
 
