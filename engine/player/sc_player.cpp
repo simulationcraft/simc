@@ -7286,7 +7286,7 @@ expr_t* player_t::create_expression( action_t* a,
         timespan_t duration;
 
         inc_dmg_expr_t( player_t* p, const std::string& time_str, const timespan_t& duration ) :
-          player( p ), duration( duration ), expr_t( "incoming_damage_" + time_str )
+           expr_t( "incoming_damage_" + time_str ), player( p ), duration( duration )
         {
         }
 
