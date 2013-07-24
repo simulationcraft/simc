@@ -522,7 +522,7 @@ tmi_boss_e enemy_t::convert_tmi_string( const std::string& tmi_string )
   }
 
   if ( ! tmi_string.empty() && sim -> debug )
-    sim -> output( "Unknown TMI string input provided: %s", tmi_string );
+    sim -> output( "Unknown TMI string input provided: %s", tmi_string.c_str() );
 
   return TMI_NONE;
 
