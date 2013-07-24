@@ -7264,6 +7264,7 @@ expr_t* player_t::create_expression( action_t* a,
   if ( expr_t* q = create_resource_expression( name_str ) )
     return q;
 
+  // incoming damage expressions
   if ( util::str_compare_ci( name_str, "incoming_damage_5s" ) )
   {
     struct inc_dmg_expr_t : public expr_t
@@ -7279,7 +7280,33 @@ expr_t* player_t::create_expression( action_t* a,
     };
 
     return new inc_dmg_expr_t( this );
+  }
+  
+  if ( util::str_in_str_ci( name_str, "incoming_damage_") )
+  {
+    std::vector<std::string> parts = util::string_split( name_str, "_" );
 
+    struct inc_dmg_expr_t : public expr_t
+    {
+      player_t* player;
+      timespan_t duration;
+
+      inc_dmg_expr_t( player_t* p, std::string* time_str ) :
+        player( p ), expr_t( "incoming_damage_" + *time_str )
+      {
+        if ( util::str_in_str_ci( *time_str, "ms" ) )
+          duration = timespan_t::from_millis( util::str_to_num<int>( *time_str ) );
+        else
+          duration = timespan_t::from_seconds( util::str_to_num<int>( *time_str ) );
+      }
+
+      double evaluate()
+      { 
+        return player -> compute_incoming_damage( duration ); 
+      }
+    };
+
+    return new inc_dmg_expr_t( this, &parts[ 2 ] );
   }
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
