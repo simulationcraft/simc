@@ -4123,6 +4123,7 @@ public:
   // Damage
   double iteration_dmg, iteration_dmg_taken; // temporary accumulators
   double dpr;
+  std::vector<std::pair<timespan_t, double> > incoming_damage; // for tank active mitigation conditionals
 
   std::vector<double> dps_convergence_error;
   double dps_convergence;
@@ -4478,6 +4479,7 @@ public:
   virtual void assess_damage( school_e, dmg_e, action_state_t* );
   virtual void target_mitigation( school_e, dmg_e, action_state_t* );
   virtual void assess_damage_imminent( school_e, dmg_e, action_state_t* );
+  double       compute_incoming_damage( timespan_t = timespan_t::from_seconds( 5 ) );
 
   virtual void assess_heal( school_e, dmg_e, heal_state_t* );
 

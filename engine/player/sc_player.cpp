@@ -5001,8 +5001,11 @@ void player_t::assess_damage( school_e school,
 
   // collect data for timelines
   collected_data.timeline_dmg_taken.add( sim -> current_time, s -> result_amount );
-  if ( ! is_pet() && role == ROLE_TANK )
+  if ( ! is_pet() && primary_role() == ROLE_TANK )
+  {
     collected_data.health_changes.timeline.add( sim -> current_time, s -> result_amount );
+    incoming_damage.push_back( std::pair<timespan_t, double>( sim -> current_time, s -> result_amount ) );
+  }
 
   double actual_amount = 0;
   if ( s -> result_amount > 0 ) actual_amount = resource_loss( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
@@ -7261,6 +7264,24 @@ expr_t* player_t::create_expression( action_t* a,
   if ( expr_t* q = create_resource_expression( name_str ) )
     return q;
 
+  if ( util::str_compare_ci( name_str, "incoming_damage_5s" ) )
+  {
+    struct inc_dmg_expr_t : public expr_t
+    {
+      player_t* player;
+
+      inc_dmg_expr_t( player_t* p ) :
+        expr_t( "incoming_damage_5s" ), player( p )
+      { }
+
+      double evaluate()
+      { return player -> compute_incoming_damage(); }
+    };
+
+    return new inc_dmg_expr_t( this );
+
+  }
+
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
   // trinket.[12.].(has_|)(stacking_|)proc.<stat>.<buff_expr>
@@ -7899,6 +7920,27 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
   }
 
   return 0;
+}
+
+// player_t::compute_incoming_damage =======================================
+
+double player_t::compute_incoming_damage( timespan_t interval )
+{
+  double amount = 0;
+
+  if ( incoming_damage.size() > 0 )
+  {
+    std::vector< std::pair< timespan_t, double > >::reverse_iterator i, end;
+    for ( i = incoming_damage.rbegin(), end = incoming_damage.rend(); i != end; i++ )
+    {
+      if ( sim -> current_time - ( *i ).first > interval )
+        break;
+
+      amount += ( *i ).second;
+    }
+  }
+
+  return amount;
 }
 
 void player_t::recreate_talent_str( talent_format_e format )

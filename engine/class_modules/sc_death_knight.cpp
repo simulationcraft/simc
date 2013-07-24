@@ -125,9 +125,6 @@ enum death_knight_presence { PRESENCE_BLOOD = 1, PRESENCE_FROST, PRESENCE_UNHOLY
 struct death_knight_t : public player_t
 {
 public:
-  // Track healing for Death Strike
-  std::vector<std::pair<timespan_t, double> > incoming_damage;
-
   // Active
   int       active_presence;
   int       t16_tank_2pc_driver;
@@ -448,7 +445,6 @@ public:
   double    runes_cooldown_all( rune_type rt, bool include_death, int position );
   double    runes_cooldown_time( dk_rune_t* r );
   bool      runes_depleted( rune_type rt, int position );
-  double    compute_incoming_damage( timespan_t = timespan_t::from_seconds( 5 ) );
 
   void      default_apl_blood();
 
@@ -4888,23 +4884,7 @@ expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_
 {
   std::vector<std::string> splits = util::string_split( name_str, "." );
 
-  if ( util::str_compare_ci( name_str, "incoming_damage_5s" ) )
-  {
-    struct ds_heal_expr_t : public expr_t
-    {
-      death_knight_t* dk;
-
-      ds_heal_expr_t( death_knight_t* p ) :
-        expr_t( "incoming_damage_5s" ), dk( p )
-      { }
-
-      double evaluate()
-      { return dk -> compute_incoming_damage(); }
-    };
-
-    return new ds_heal_expr_t( this );
-  }
-  else if ( util::str_compare_ci( splits[ 0 ], "rune" ) )
+  if ( util::str_compare_ci( splits[ 0 ], "rune" ) )
   {
     rune_type rt = RUNE_TYPE_NONE;
     bool include_death = false; // whether to include death runes
@@ -6204,8 +6184,6 @@ void death_knight_t::assess_damage( school_e     school,
                        gains.t15_4pc_tank );
       }
     }
-
-    incoming_damage.push_back( std::pair<timespan_t, double>( sim -> current_time, s -> result_amount ) );
   }
 
   if ( health_pct >= 35 && health_percentage() < 35 )
@@ -6513,28 +6491,6 @@ int death_knight_t::decode_set( item_t& item )
   if ( strstr( s, "_gladiators_dreadplate_" ) ) return SET_PVP_MELEE;
 
   return SET_NONE;
-}
-
-
-// death_knight_t::compute_death_strike_heal ================================
-
-double death_knight_t::compute_incoming_damage( timespan_t interval )
-{
-  double amount = 0;
-
-  if ( incoming_damage.size() > 0 )
-  {
-    std::vector< std::pair< timespan_t, double > >::reverse_iterator i, end;
-    for ( i = incoming_damage.rbegin(), end = incoming_damage.rend(); i != end; i++ )
-    {
-      if ( sim -> current_time - ( *i ).first > interval )
-        break;
-
-      amount += ( *i ).second;
-    }
-  }
-
-  return amount;
 }
 
 // death_knight_t::trigger_runic_empowerment ================================
