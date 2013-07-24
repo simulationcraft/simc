@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (198)
 
-// 198 talents, wow build 17205
+// 198 talents, wow build 17227
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001, 0x00,     0,   1,   1,   29838,         0,  0 },
@@ -124,13 +124,13 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Elemental Mastery"                 , 19271, 0x00, 0x0040, 0x00,     0,   0,   3,   16166,         0,  0 },
   { "Ancestral Swiftness"               , 19272, 0x00, 0x0040, 0x00,     0,   1,   3,   16188,         0,  0 },
   { "Echo of the Elements"              , 19273, 0x00, 0x0040, 0x00,     0,   2,   3,  108283,         0,  0 },
-  { "Totemic Restoration"               , 19274, 0x00, 0x0040, 0x00,     0,   1,   2,  108284,         0,  0 },
+  { "Totemic Persistence"               , 19274, 0x00, 0x0040, 0x00,     0,   1,   2,  108284,         0,  0 },
   { "Call of the Elements"              , 19275, 0x00, 0x0040, 0x00,     0,   0,   2,  108285,         0,  0 },
   { "Totemic Projection"                , 19276, 0x00, 0x0040, 0x00,     0,   2,   2,  108287,         0,  0 },
   { "Dark Regeneration"                 , 19279, 0x00, 0x0100, 0x00,     0,   0,   0,  108359,         0,  0 },
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Soul Leech"                        , 19280, 0x00, 0x0100, 0x00,     0,   1,   0,  108370,         0,  0 },
-  { "Harvest Life"                      , 19281, 0x00, 0x0100, 0x00,     0,   2,   0,  108371,       689,  0 },
+  { "Harvest Life"                      , 19281, 0x00, 0x0100, 0x00,     0,   2,   0,  108371,         0,  0 },
   { "Renewal"                           , 19283, 0x00, 0x0400, 0x00,     0,   1,   1,  108238,         0,  0 },
   { "Demonic Breath"                    , 19284, 0x00, 0x0100, 0x00,     0,   0,   1,   47897,         0,  0 },
   { "Mortal Coil"                       , 19285, 0x00, 0x0100, 0x00,     0,   1,   1,    6789,         0,  0 },
