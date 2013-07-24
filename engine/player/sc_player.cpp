@@ -7266,49 +7266,38 @@ expr_t* player_t::create_expression( action_t* a,
   if ( expr_t* q = create_resource_expression( name_str ) )
     return q;
 
-  // incoming damage expressions
-  if ( util::str_compare_ci( name_str, "incoming_damage_5s" ) )
-  {
-    struct inc_dmg_expr_t : public expr_t
-    {
-      player_t* player;
-
-      inc_dmg_expr_t( player_t* p ) :
-        expr_t( "incoming_damage_5s" ), player( p )
-      { }
-
-      double evaluate()
-      { return player -> compute_incoming_damage(); }
-    };
-
-    return new inc_dmg_expr_t( this );
-  }
-  
+  // incoming_damage_X expressions  
   if ( util::str_in_str_ci( name_str, "incoming_damage_") )
   {
     std::vector<std::string> parts = util::string_split( name_str, "_" );
-
-    struct inc_dmg_expr_t : public expr_t
-    {
-      player_t* player;
-      timespan_t duration;
-
-      inc_dmg_expr_t( player_t* p, std::string* time_str ) :
-        player( p ), expr_t( "incoming_damage_" + *time_str )
-      {
-        if ( util::str_in_str_ci( *time_str, "ms" ) )
-          duration = timespan_t::from_millis( util::str_to_num<int>( *time_str ) );
+    timespan_t window_duration;
+    
+    if ( util::str_in_str_ci( parts[ 2 ], "ms" ) )
+      window_duration = timespan_t::from_millis( util::str_to_num<int>( parts[ 2 ] ) );
         else
-          duration = timespan_t::from_seconds( util::str_to_num<int>( *time_str ) );
-      }
+      window_duration = timespan_t::from_seconds( util::str_to_num<int>( parts[ 2 ] ) );
 
-      double evaluate()
-      { 
-        return player -> compute_incoming_damage( duration ); 
-      }
-    };
+    // skip construction if the duration is nonsensical
+    if ( window_duration > timespan_t::zero() )
+    {
+      struct inc_dmg_expr_t : public expr_t
+      {
+        player_t* player;
+        timespan_t duration;
 
-    return new inc_dmg_expr_t( this, &parts[ 2 ] );
+        inc_dmg_expr_t( player_t* p, const std::string& time_str, const timespan_t& duration ) :
+          player( p ), duration( duration ), expr_t( "incoming_damage_" + time_str )
+        {
+        }
+
+        double evaluate()
+        { 
+          return player -> compute_incoming_damage( duration ); 
+        }
+      };
+
+      return new inc_dmg_expr_t( this, parts[ 2 ], window_duration );
+    }
   }
 
   std::vector<std::string> splits = util::string_split( name_str, "." );
