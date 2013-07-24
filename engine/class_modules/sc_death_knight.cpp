@@ -6117,8 +6117,6 @@ void death_knight_t::reset()
   rng.t15_2pc_melee -> reset();
 
   _runes.reset();
-
-  incoming_damage.clear();
 }
 
 // death_knight_t::combat_begin =============================================

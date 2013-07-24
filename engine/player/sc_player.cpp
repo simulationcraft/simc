@@ -3975,6 +3975,8 @@ void player_t::reset()
   temporary = gear_stats_t();
 
   item_cooldown.reset( false );
+
+  incoming_damage.clear();
 }
 
 // player_t::trigger_ready ==================================================
