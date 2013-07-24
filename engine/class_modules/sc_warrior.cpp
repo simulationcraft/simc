@@ -1213,9 +1213,24 @@ struct deep_wounds_t : public warrior_attack_t
     proc = true;
     tick_may_crit = true;
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
-    // For Protection only +50% on 12. March 2013 http://us.battle.net/wow/en/forum/topic/8197590653#1
-    tick_power_mod = data().extra_coeff() * ( ( p -> specialization() == WARRIOR_ARMS ) ? 2 : ( p -> specialization() == WARRIOR_PROTECTION ) ? 1.5 : 1 ); //FIXME recheck after next dbc update.. it does 6k dps for 5.1values
+
+    tick_power_mod = data().extra_coeff();
     dot_behavior = DOT_REFRESH;
+
+    // tested 7/23/2013, https://code.google.com/p/simulationcraft/issues/detail?id=1811
+    // fury gets 218 + 24% AP, matching spell data
+    // protection DW ticks are 109 + 12% AP, exactly half of spell data values
+    if ( p -> specialization() == WARRIOR_PROTECTION )
+    {
+      tick_power_mod /= 2;
+      base_td /= 2;
+    }
+    // and arms gets exactly 436 + 48% AP, exactly double
+    else if ( p -> specialization() == WARRIOR_ARMS )
+    {
+      tick_power_mod *= 2;
+      base_td *= 2;
+    }
   }
 };
 
