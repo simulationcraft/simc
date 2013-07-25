@@ -127,6 +127,7 @@ public:
     gain_t* sanctuary;
     gain_t* seal_of_insight;
     gain_t* glyph_divine_storm;
+    gain_t* glyph_divine_shield;
 
     // Holy Power
     gain_t* hp_blessed_life;
@@ -141,11 +142,12 @@ public:
     gain_t* hp_judgments_of_the_bold;
     gain_t* hp_judgments_of_the_wise;
     gain_t* hp_pursuit_of_justice;
+    gain_t* hp_sanctified_wrath;
+    gain_t* hp_selfless_healer;
     gain_t* hp_templars_verdict_refund;
     gain_t* hp_tower_of_radiance;
     gain_t* hp_judgment;
     gain_t* hp_t15_4pc_tank;
-    gain_t* hp_sanctified_wrath;
   } gains;
 
   // Cooldowns
@@ -229,12 +231,15 @@ public:
     const spell_data_t* alabaster_shield;
     const spell_data_t* battle_healer;
     const spell_data_t* blessed_life;
+    const spell_data_t* devotion_aura;
     const spell_data_t* divine_protection;
+    const spell_data_t* divine_shield;
     const spell_data_t* divine_storm;
     const spell_data_t* double_jeopardy;
     const spell_data_t* final_wrath;
     const spell_data_t* focused_shield;
     const spell_data_t* focused_wrath;
+    const spell_data_t* hand_of_sacrifice;
     const spell_data_t* harsh_words;
     const spell_data_t* immediate_truth;
     const spell_data_t* inquisition;
@@ -1191,6 +1196,39 @@ struct consecration_t : public paladin_spell_t
   }
 };
 
+// Devotion Aura Spell ======================================================
+
+struct devotion_aura_t : public paladin_spell_t
+{
+  devotion_aura_t( paladin_t* p, const std::string& options_str ) :
+    paladin_spell_t( "devotion_aura", p, p -> find_class_spell( "Devotion Aura" ) )
+  {
+    parse_options( NULL, options_str );
+
+    if ( p -> glyphs.devotion_aura -> ok() )
+      cooldown -> duration += timespan_t::from_millis( p -> glyphs.devotion_aura -> effectN( 1 ).base_value() );
+  }
+
+  virtual void execute()
+  {
+    paladin_spell_t::execute();
+
+    if ( p() -> glyphs.devotion_aura -> ok() && p() -> dbc.ptr )
+      player -> buffs.devotion_aura -> trigger(); 
+    else
+    {
+      for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
+      {
+        player_t* p = sim -> player_non_sleeping_list[ i ];
+        if ( p -> is_pet() || p -> is_enemy() )
+          continue;
+
+        p -> buffs.devotion_aura -> trigger(); // Technically these stack; we're abstracting somewhat by assuming they don't  
+      }
+    }
+  }
+};
+
 // Divine Light Spell =======================================================
 
 struct divine_light_t : public paladin_heal_t
@@ -1310,6 +1348,32 @@ struct divine_shield_t : public paladin_spell_t
     // Technically this should also drop you from the mob's threat table,
     // but we'll assume the MT isn't using it for now
     p() -> buffs.divine_shield -> trigger();
+
+    // in this sim, the only debuffs we care about are enemy DoTs.  
+    // Check for them and remove them when cast, and apply Glyph of Divine Shield appropriately
+    for ( size_t i = 0, size = p() -> dot_list.size(); i < size; i++ )
+    {
+      dot_t* d = p() -> dot_list[ i ];
+      int num_destroyed = 0;
+
+      if ( d -> source != p() )
+      {
+        d -> cancel();
+        num_destroyed++;
+      }
+
+      // glyph of divine shield heals
+      if ( p() -> glyphs.divine_shield -> ok() && p() -> dbc.ptr )
+      {
+        double amount = std::min( num_destroyed * p() -> glyphs.divine_shield -> effectN( 1 ).percent(),
+          p() -> glyphs.divine_shield -> effectN( 1 ).percent() * p() -> glyphs.divine_shield -> effectN( 2 ).base_value() );
+
+        amount *= p() -> resources.max[ RESOURCE_HEALTH ];
+        
+        p() -> resource_gain( RESOURCE_HEALTH, amount, p() -> gains.glyph_divine_shield, this );
+      }
+    }
+    // trigger forbearance
     p() -> debuffs.forbearance -> trigger();
   }
 
@@ -1733,7 +1797,9 @@ struct hand_of_sacrifice_redirect_t : public paladin_spell_t
     base_dd_min = redirect_value;
     base_dd_max = redirect_value;
 
-    execute();
+    // glyph of HoSac eliminates redirected damage
+    if ( ! p() -> glyphs.hand_of_sacrifice -> ok() && p() -> dbc.ptr )
+      execute();
   }
 
 };
@@ -2409,6 +2475,11 @@ struct sacred_shield_t : public paladin_heal_t
     // disable if not talented
     if ( ! ( p -> talents.sacred_shield -> ok() ) )
       background = true;
+
+    // longer cooldown for Holy
+    if ( p -> specialization() == PALADIN_HOLY && p -> dbc.ptr )
+      cooldown -> duration += timespan_t::from_seconds( 4 ); // hardcoded for now until spell data is updated
+
   }
 
   virtual void tick( dot_t* d )
@@ -2964,6 +3035,10 @@ struct crusader_strike_t : public paladin_melee_attack_t
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
       }
 
+      // In 5.4, this also applies Weakened Blows
+      if ( ! sim -> overrides.weakened_blows && p() -> dbc.ptr )
+        s -> target -> debuffs.weakened_blows -> trigger();
+
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
 
@@ -3408,6 +3483,13 @@ struct judgment_t : public paladin_melee_attack_t
         // if sanctified wrath is talented and Avenging Wrath is active, give another HP
         if ( p() -> talents.sanctified_wrath -> ok() && p() -> buffs.avenging_wrath -> check() && p() -> dbc.ptr )
           p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_sanctified_wrath );
+      }
+      // +1 Holy Power for Holy with Selfless Healer talent
+      else if ( p() -> talents.selfless_healer -> ok() && p() -> specialization() == PALADIN_HOLY && p() -> dbc.ptr )
+      {
+        // apply gain, attribute gain to selfless healer
+        p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_selfless_healer );
+
       }
 
       // Holy Avenger adds 2 more Holy Power if active
@@ -3927,6 +4009,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "blessing_of_might"         ) return new blessing_of_might_t        ( this, options_str );
   if ( name == "consecration"              ) return new consecration_t             ( this, options_str );
   if ( name == "crusader_strike"           ) return new crusader_strike_t          ( this, options_str );
+  if ( name == "devotion_aura"             ) return new devotion_aura_t            ( this, options_str );
   if ( name == "divine_plea"               ) return new divine_plea_t              ( this, options_str );
   if ( name == "divine_protection"         ) return new divine_protection_t        ( this, options_str );
   if ( name == "divine_shield"             ) return new divine_shield_t            ( this, options_str );
@@ -4071,6 +4154,7 @@ void paladin_t::init_gains()
   gains.sanctuary                   = get_gain( "sanctuary"              );
   gains.seal_of_insight             = get_gain( "seal_of_insight"        );
   gains.glyph_divine_storm          = get_gain( "glyph_of_divine_storm"  );
+  gains.glyph_divine_shield         = get_gain( "glyph_of_divine_shield" );
 
   // Holy Power
   gains.hp_blessed_life             = get_gain( "holy_power_blessed_life" );
@@ -4086,6 +4170,7 @@ void paladin_t::init_gains()
   gains.hp_judgments_of_the_wise    = get_gain( "holy_power_judgments_of_the_wise" );
   gains.hp_pursuit_of_justice       = get_gain( "holy_power_pursuit_of_justice" );
   gains.hp_sanctified_wrath         = get_gain( "holy_power_sanctified_wrath" );
+  gains.hp_selfless_healer          = get_gain( "holy_power_selfless_healer" );
   gains.hp_templars_verdict_refund  = get_gain( "holy_power_templars_verdict_refund" );
   gains.hp_tower_of_radiance        = get_gain( "holy_power_tower_of_radiance" );
   gains.hp_judgment                 = get_gain( "holy_power_judgment" );
@@ -4361,9 +4446,10 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_action( this, "Avenging Wrath" );
   def -> add_talent( this, "Holy Avenger" );
   //def -> add_action( this, "Guardian of Ancient Kings", "if=health.pct<=30" );
-  //def -> add_action( this, "Divine Protection", "if=target.debuff.casting.react" );
-  def -> add_action( this, "Shield of the Righteous", "if=(holy_power>=3)|(buff.divine_purpose.up)" );
-  def -> add_action( this, "Hammer of the Righteous", "if=target.debuff.weakened_blows.down" );
+  def -> add_action( this, "Divine Protection", "if=target.debuff.casting.react" );
+  def -> add_action( this, "Shield of the Righteous", "if=(holy_power>=5)|(buff.divine_purpose.up)|(incoming_damage_1500ms>=health.max*0.3)" );
+  if ( ! dbc.ptr )
+    def -> add_action( this, "Hammer of the Righteous", "if=target.debuff.weakened_blows.down" );
   def -> add_action( this, "Crusader Strike" );
   def -> add_action( this, "Judgment", "if=cooldown.crusader_strike.remains>=0.5" );
   def -> add_action( this, "Avenger's Shield", "if=cooldown.crusader_strike.remains>=0.5" );
@@ -5016,6 +5102,8 @@ void paladin_t::init_spells()
   glyphs.alabaster_shield         = find_glyph_spell( "Glyph of the Alabaster Shield" );
   glyphs.battle_healer            = find_glyph_spell( "Glyph of the Battle Healer" );
   glyphs.blessed_life             = find_glyph_spell( "Glyph of Blessed Life" );
+  glyphs.devotion_aura            = find_glyph_spell( "Glyph of Devotion Aura" );
+  glyphs.divine_shield            = find_glyph_spell( "Glyph of Divine Shield" );
   glyphs.divine_protection        = find_glyph_spell( "Glyph of Divine Protection" );
   glyphs.divine_storm             = find_glyph_spell( "Glyph of Divine Storm" );
   glyphs.double_jeopardy          = find_glyph_spell( "Glyph of Double Jeopardy" );
@@ -5024,6 +5112,7 @@ void paladin_t::init_spells()
   glyphs.final_wrath              = find_glyph_spell( "Glyph of Final Wrath" );
   glyphs.focused_wrath            = find_glyph_spell( "Glyph of Focused Wrath" );
   glyphs.focused_shield           = find_glyph_spell( "Glyph of Focused Shield" );
+  glyphs.hand_of_sacrifice        = find_glyph_spell( "Glyph of Hand of Sacrifice" );
   glyphs.harsh_words              = find_glyph_spell( "Glyph of Harsh Words" );
   glyphs.immediate_truth          = find_glyph_spell( "Glyph of Immediate Truth" );
   glyphs.inquisition              = find_glyph_spell( "Glyph of Inquisition"     );
@@ -5650,6 +5739,7 @@ struct paladin_module_t : public module_t
       p -> buffs.beacon_of_light          = buff_creator_t( p, "beacon_of_light", p -> find_spell( 53563 ) );
       p -> buffs.illuminated_healing      = buff_creator_t( p, "illuminated_healing", p -> find_spell( 86273 ) );
       p -> buffs.hand_of_sacrifice        = new buffs::hand_of_sacrifice_t( p );
+      p -> buffs.devotion_aura            = buff_creator_t( p, "devotion_aura", p -> find_spell( 31821 ) );
       p -> debuffs.forbearance            = buff_creator_t( p, "forbearance", p -> find_spell( 25771 ) );
     }
   }

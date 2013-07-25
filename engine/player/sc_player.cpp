@@ -5106,6 +5106,13 @@ void player_t::target_mitigation( school_e school,
       target -> debuffs.tooth_and_claw_absorb -> expire();
     }
   }
+  if ( school != SCHOOL_PHYSICAL )
+  {
+    if ( target -> buffs.devotion_aura -> up() )
+    {
+      s -> result_amount *= 1.0 + target -> buffs.devotion_aura -> data().effectN( 1 ).percent();
+    }
+  }
 }
 
 // player_t::assess_heal ====================================================
