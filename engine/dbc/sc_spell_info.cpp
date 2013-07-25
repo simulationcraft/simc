@@ -654,6 +654,9 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
   if ( spell -> proc_chance() > 0 )
     s << "Proc Chance      : " << spell -> proc_chance() * 100 << "%" << std::endl;
 
+  if ( spell -> real_ppm() != 0 )
+    s << "Real PPM         : " << spell -> real_ppm() << std::endl;
+
   if ( spell -> proc_flags() > 0 )
   {
     s << "Proc Flags       : ";

@@ -90,6 +90,7 @@ static const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_UNSIGNED, "initial_stack" },
   { SD_TYPE_UNSIGNED, ""              }, // Proc flags, no support for now
   { SD_TYPE_UNSIGNED, "icd"           },
+  { SD_TYPE_DOUBLE,   "rppm"          },
   { SD_TYPE_UNSIGNED, "equip_class"   },
   { SD_TYPE_UNSIGNED, "equip_imask"   },
   { SD_TYPE_UNSIGNED, "equip_scmask"  },

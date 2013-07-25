@@ -120,7 +120,7 @@ _DIFF_DATA = {
         'WOW_VERSION': 50400,
         'SpellAuraOptions.dbc' : [
             ( ( 'internal_cooldown', '%7u' ), _ADD_FIELD, 'proc_flags' ),
-            ( ( 'unk_2', '%u' ), _ADD_FIELD, 'internal_cooldown' )
+            ( ( 'id_ppm', '%u' ), _ADD_FIELD, 'internal_cooldown' )
         ],
     },
     17124: {
@@ -439,10 +439,10 @@ _DBC_FIELDS = {
           'id_display', ( 'cost_2', '%5.2f' ),     ( 'cost_per_second2', '%5.2f' ),   ( 'aura_id', '%6u' ), ( 'id_spell', '%6u' )
     ],
     'SpellProcsPerMinute.dbc' : [
-         'id', ( 'ppm', '%f' ), 'f2'
+         'id', ( 'ppm', '%5.3f' ), 'unk_1'
     ],
     'SpellProcsPerMinuteMod.dbc' : [
-        'id', 'f1', 'f2', ( 'f3', '%f' ), 'f4'
+        'id', 'unk_1', 'id_chr_spec', ( 'coefficient', '%f' ), 'id_ppm'
     ],
     'SpellRadius.dbc' : [
           'id', ( 'radius_1', '%7.1f' ), 'radius_2', ( 'radius_3', '%7.f' )

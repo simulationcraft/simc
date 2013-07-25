@@ -1423,6 +1423,8 @@ class SpellDataGenerator(DataGenerator):
     ]
     
     def __init__(self, options):
+        DataGenerator.__init__(self, options)
+
         self._dbc = [
             'Spell', 'SpellEffect', 'SpellScaling', 'SpellCooldowns', 'SpellRange', 'SpellClassOptions',
             'SpellDuration', 'SpellPower', 'SpellLevels', 'SpellCategories', 'Talent', 
@@ -1432,8 +1434,9 @@ class SpellDataGenerator(DataGenerator):
         
         if options.build >= 15589:
             self._dbc.append( 'SpellMisc' )
-        
-        DataGenerator.__init__(self, options)
+
+        if options.build >= 17227:
+            self._dbc.append( 'SpellProcsPerMinute' )
 
     def initialize(self):
         DataGenerator.initialize(self)
@@ -2007,6 +2010,12 @@ class SpellDataGenerator(DataGenerator):
                 fields += self._spellauraoptions_db[spell.id_aura_opt].field('internal_cooldown')
             else:
                 fields += [ '%7u' % 0 ]
+
+            if self._options.build >= 17227:
+                aura = self._spellauraoptions_db[spell.id_aura_opt]
+                fields += self._spellprocsperminute_db[aura.id_ppm].field('ppm')
+            else:
+                fields += [ '%5.3f' % 0 ]
             
             fields += self._spellequippeditems_db[spell.id_equip_items].field('item_class', 'mask_inv_type', 'mask_sub_class')
             

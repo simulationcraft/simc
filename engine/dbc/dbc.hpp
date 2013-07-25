@@ -312,6 +312,7 @@ public:
   unsigned    _proc_charges;       // Per proc charge amount
   unsigned    _proc_flags;         // Proc flags
   unsigned    _internal_cooldown;  // ICD
+  double      _rppm;               // Base real procs per minute
   // SpellEquippedItems.dbc
   unsigned    _equipped_class;
   unsigned    _equipped_invtype_mask;
@@ -402,6 +403,9 @@ public:
 
   timespan_t internal_cooldown() const
   { return timespan_t::from_millis( _internal_cooldown ); }
+
+  double real_ppm() const
+  { return _rppm; }
 
   const char* rank_str() const
   { return ok() ? _rank_str : ""; }
