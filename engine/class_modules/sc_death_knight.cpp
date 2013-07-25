@@ -5995,7 +5995,8 @@ void death_knight_t::create_buffs()
                               .default_value( find_class_spell( "Frost Presence" ) -> effectN( 1 ).percent() );
   buffs.icebound_fortitude  = buff_creator_t( this, "icebound_fortitude", find_class_spell( "Icebound Fortitude" ) )
                               .duration( find_class_spell( "Icebound Fortitude" ) -> duration() *
-                                         ( 1.0 + glyph.icebound_fortitude -> effectN( 2 ).percent() ) );
+                                         ( 1.0 + glyph.icebound_fortitude -> effectN( 2 ).percent() ) )
+                              .cd( timespan_t::zero ); // Cooldown handled by the action
   buffs.killing_machine     = buff_creator_t( this, "killing_machine", find_spell( 51124 ) )
                               .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() )
                               .chance( find_specialization_spell( "Killing Machine" ) -> proc_chance() ); // PPM based!
