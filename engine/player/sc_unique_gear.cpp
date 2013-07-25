@@ -3422,7 +3422,7 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
                                       bool         heroic,
                                       bool         lfr,
                                       bool         thunderforged,
-                                      bool         /* ptr */,
+                                      bool         ptr,
                                       unsigned item_id )
 {
   std::string e;
@@ -3556,6 +3556,11 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   //MoP Tank Trinkets
   else if ( name == "stuff_of_nightmares"                 ) e = "OnAttackHit_"       + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Dodge_15%_20Dur_105Cd"; //assuming same ICD as spirits of the sun etc since the proc value is the same
   else if ( name == "iron_protector_talisman"             ) e = "OnAttackHit_3386Dodge_15%_15Dur_45Cd";
+
+  // 5.4 Trinkets
+
+  // TODO: Name based identification when the name appears, plus other difficulty levels ...
+  else if ( ptr && item_id == 102312                      ) e = "OnDirectDamage_11761Mastery_15%_20Dur_105Cd";
 
   // 5.2 Trinkets
   else if ( name == "talisman_of_bloodlust"               ) e = "OnDirectDamage_"    + std::string( thunderforged ? ( heroic ? "1834" : "1625" ) : ( heroic ? "1736" : lfr ? "1277" : "1538" ) ) + "Haste_3.3RPPM_5Stack_10Dur";
