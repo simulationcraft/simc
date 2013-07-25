@@ -2859,6 +2859,95 @@ void cooldown_reduction_trinket( item_t* item )
     p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
 }
 
+// Reverse renataki
+
+void ticking_ebon_detonator( item_t* item )
+{
+  const spell_data_t* driver_spell = spell_data_t::nil();
+  player_t* p = item -> player;
+
+  for ( size_t i = 0; i < sizeof_array( item -> parsed.data.id_spell ); i++ )
+  {
+    if ( item -> parsed.data.id_spell[ i ] <= 0 ||
+         item -> parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_EQUIP )
+      continue;
+
+    const spell_data_t* spell = p -> find_spell( item -> parsed.data.id_spell[ i ] );
+    if ( spell -> proc_flags() > 0 )
+    {
+      driver_spell = spell;
+      break;
+    }
+  }
+
+  struct teb_reduce_cb_t : public proc_callback_t<action_state_t>
+  {
+    stat_buff_t* teb_proc;
+
+    teb_reduce_cb_t( stat_buff_t* buff, const special_effect_t& effect ) :
+      proc_callback_t<action_state_t>( buff -> player, effect ),
+      teb_proc( buff )
+    { }
+
+    void execute( action_t*, action_state_t* )
+    {
+      teb_proc -> decrement();
+      if ( teb_proc -> check() == 0 )
+        this -> deactivate();
+    }
+  };
+
+  struct ebon_detonator_proc_t : public proc_callback_t<action_state_t>
+  {
+    stat_buff_t*     teb_buff;
+    teb_reduce_cb_t* reduce_cb;
+
+    ebon_detonator_proc_t( item_t* i, const special_effect_t& data ) :
+      proc_callback_t<action_state_t>( i -> player, data )
+    {
+      const random_prop_data_t& budget = i -> player -> dbc.random_property( i -> item_level() );
+      const spell_data_t* proc_spell = i -> player -> find_spell( 146310 );
+
+      stat_e s = static_cast< stat_e >( proc_spell -> effectN( 1 ).misc_value1() + 1 );
+      double amount = util::round( budget.p_epic[ 0 ] * proc_spell -> effectN( 1 ).m_average() );
+      teb_buff = stat_buff_creator_t( i -> player, "restless_agility", i -> player -> find_spell( 146310 ) )
+                 .reverse( true )
+                 .activated( true )
+                 .add_stat( s, amount );
+
+      special_effect_t teb_proc_effect;
+      teb_proc_effect.name_str = "restless_agility";
+      teb_proc_effect.proc_chance = 1.0;
+
+      reduce_cb = new teb_reduce_cb_t( teb_buff, teb_proc_effect );
+      i -> player -> callbacks.register_attack_callback( RESULT_HIT_MASK, reduce_cb );
+    }
+
+    void reset()
+    {
+      proc_callback_t<action_state_t>::reset();
+      reduce_cb -> deactivate();
+    }
+
+    void execute( action_t*, action_state_t* )
+    {
+      teb_buff -> trigger();
+      teb_buff -> decrement();
+      reduce_cb -> activate();
+    }
+  };
+
+  special_effect_t effect;
+  effect.name_str = "ticking_ebon_detonator";
+  effect.ppm = -1.0 * driver_spell -> real_ppm();
+  effect.cooldown = driver_spell -> internal_cooldown();
+  effect.proc_delay = false;
+
+  ebon_detonator_proc_t* cb = new ebon_detonator_proc_t( item, effect );
+
+  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
+}
+
 } // end unique_gear namespace
 
 using namespace enchants;
@@ -2928,9 +3017,20 @@ void unique_gear::init( player_t* p )
     if ( ! strcmp( item.name(), "spark_of_zandalar"                   ) ) spark_of_zandalar                 ( &item );
     if ( ! strcmp( item.name(), "unerring_vision_of_lei_shen"         ) ) unerring_vision_of_leishen        ( &item );
 
-    if ( item.player -> dbc.ptr && item.parsed.data.id == 102292 ) cooldown_reduction_trinket( &item );
-    if ( item.player -> dbc.ptr && item.parsed.data.id == 102301 ) multistrike_trinket( &item );
-    if ( item.player -> dbc.ptr && item.parsed.data.id == 102302 ) cleave_trinket( &item );
+    if ( item.player -> dbc.ptr )
+    {
+      if ( util::str_compare_ci( item.name(), "assurance_of_consequence" ) )
+        cooldown_reduction_trinket( &item );
+
+      if ( util::str_compare_ci( item.name(), "haromms_talisman" ) )
+        multistrike_trinket( &item );
+
+      if ( util::str_compare_ci( item.name(), "sigil_of_rampage" ) )
+        cleave_trinket( &item );
+
+      if ( util::str_compare_ci( item.name(), "ticking_ebon_detonator" ) )
+        ticking_ebon_detonator( &item );
+    }
   }
 }
 

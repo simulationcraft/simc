@@ -480,13 +480,13 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
   }
   last_trigger = sim -> current_time;
 
-  if ( reverse )
+  if ( reverse && current_stack > 0 )
   {
     decrement( stacks, value );
   }
   else
   {
-    increment( stacks, value, duration );
+    increment( stacks == 1 ? ( reverse ? _max_stack : stacks ) : stacks, value, duration );
   }
 
   // new buff cooldown impl

@@ -5663,6 +5663,12 @@ public:
     else if ( chance > 0 )
       triggered = proc_rng -> roll( chance );
 
+    if ( listener -> sim -> debug )                                             
+      listener -> sim -> output( "%s attempts to proc %s on %s: %d",
+          listener -> name(),    
+          proc_data.name_str.c_str(),
+          action -> name(), triggered );  
+
     if ( triggered )
     {
       T_CALLDATA* arg = static_cast<T_CALLDATA*>( call_data );
