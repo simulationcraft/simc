@@ -1921,7 +1921,10 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     return target -> get_dot( splits[ 1 ], player ) -> create_expression( this, splits[ 2 ], true );
   }
-
+  if ( splits.size() == 3 && splits[ 0 ] == "player_dot" )
+  {
+      return player -> get_dot( splits[ 1 ] + "_" + player -> name_str, target ) -> create_expression( this, splits[ 2 ], true );
+  }
   if ( splits.size() == 3 && splits[0] == "buff" )
   {
     return player -> create_expression( this, name_str );
