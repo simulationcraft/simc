@@ -2615,156 +2615,166 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
 
 void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player_t* p )
 {
-  // Abilities Section - Damage
+  // open section 
   os << "\t\t\t\t<div class=\"player-section\">\n"
      << "\t\t\t\t\t<h3 class=\"toggle open\">Abilities</h3>\n"
-     << "\t\t\t\t\t<div class=\"toggle-content\">\n"
-     << "\t\t\t\t\t\t<table class=\"sc\">\n"
-     << "\t\t\t\t\t\t\t<tr>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"left small\">Damage Stats</th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps-pct\" class=\"help\">DPS%</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpe\" class=\"help\">DPE</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpet\" class=\"help\">DPET</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-avg\" class=\"help\">Avg</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-miss-pct\" class=\"help\">Avoid%</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-glance-pct\" class=\"help\">G%</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-block-pct\" class=\"help\">B%</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks\" class=\"help\">Ticks</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-hit\" class=\"help\">T-Hit</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit\" class=\"help\">T-Crit</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-avg\" class=\"help\">T-Avg</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit-pct\" class=\"help\">T-Crit%</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-miss-pct\" class=\"help\">T-Avoid%</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-uptime\" class=\"help\">Up%</a></th>\n"
-     << "\t\t\t\t\t\t\t</tr>\n";
+     << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
-  os << "\t\t\t\t\t\t\t<tr>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"left small\">" << util::encode_html( p -> name() ) << "</th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"right small\">" << util::to_string( p -> collected_data.dps.mean(), 0 ) << "</th>\n"
-     << "\t\t\t\t\t\t\t\t<td colspan=\"19\" class=\"filler\"></td>\n"
-     << "\t\t\t\t\t\t\t</tr>\n";
-
-  int j = 0;
-
-  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+  if ( p -> collected_data.dmg.max() > 0 )
   {
-    stats_t* s = p -> stats_list[ i ];
-    if ( ( s -> type != STATS_HEAL && s -> type != STATS_ABSORB ) && 
-         ( s -> num_executes.mean() > 1 || s -> compound_amount > 0 || sim -> debug ) )
+    // Abilities Section - Damage
+    os << "\t\t\t\t\t\t<table class=\"sc\">\n"
+       << "\t\t\t\t\t\t\t<tr>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"left small\">Damage Stats</th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps-pct\" class=\"help\">DPS%</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpe\" class=\"help\">DPE</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpet\" class=\"help\">DPET</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-avg\" class=\"help\">Avg</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-miss-pct\" class=\"help\">Avoid%</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-glance-pct\" class=\"help\">G%</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-block-pct\" class=\"help\">B%</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks\" class=\"help\">Ticks</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-hit\" class=\"help\">T-Hit</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit\" class=\"help\">T-Crit</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-avg\" class=\"help\">T-Avg</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit-pct\" class=\"help\">T-Crit%</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-miss-pct\" class=\"help\">T-Avoid%</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-uptime\" class=\"help\">Up%</a></th>\n"
+       << "\t\t\t\t\t\t\t</tr>\n";
+
+    os << "\t\t\t\t\t\t\t<tr>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"left small\">" << util::encode_html( p -> name() ) << "</th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"right small\">" << util::to_string( p -> collected_data.dps.mean(), 0 ) << "</th>\n"
+       << "\t\t\t\t\t\t\t\t<td colspan=\"19\" class=\"filler\"></td>\n"
+       << "\t\t\t\t\t\t\t</tr>\n";
+
+    int j = 0;
+
+    for ( size_t i = 0; i < p -> stats_list.size(); ++i )
     {
-      print_html_action_info( os, s, p, j++ );
-    }
-  }
-
-  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
-  {
-    pet_t* pet = p -> pet_list[ i ];
-    bool first = true;
-
-    for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
-    {
-      stats_t* s = pet -> stats_list[ i ];
-
+      stats_t* s = p -> stats_list[ i ];
       if ( ( s -> type != STATS_HEAL && s -> type != STATS_ABSORB ) && 
-         ( s -> num_executes.sum() || s -> compound_amount > 0 || sim -> debug ) )
+        ( s -> num_executes.mean() > 1 || s -> compound_amount > 0 || sim -> debug ) )
       {
-        if ( first )
-        {
-          first = false;
-          os.printf(
-            "\t\t\t\t\t\t\t<tr>\n"
-            "\t\t\t\t\t\t\t\t<th class=\"left small\">pet - %s</th>\n"
-            "\t\t\t\t\t\t\t\t<th class=\"right small\">%.0f / %.0f</th>\n"
-            "\t\t\t\t\t\t\t\t<td colspan=\"18\" class=\"filler\"></td>\n"
-            "\t\t\t\t\t\t\t</tr>\n",
-            pet -> name_str.c_str(),
-            pet -> collected_data.dps.mean(),
-            pet -> collected_data.dpse.mean() );
-        }
-        print_html_action_info( os, s, p, j );
+        print_html_action_info( os, s, p, j++ );
       }
     }
-  }
 
-  os.printf(
-    "\t\t\t\t\t\t</table>\n");
-  
-  // Abilities Section - Heals
-  os << "\t\t\t\t\t\t<table class=\"sc\">\n"
-     << "\t\t\t\t\t\t\t<tr>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"left small\">Healing Stats</th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps\" class=\"help\">HPS</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps-pct\" class=\"help\">HPS%</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpe\" class=\"help\">HPE</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpet\" class=\"help\">HPET</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-avg\" class=\"help\">Avg</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks\" class=\"help\">Ticks</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-hit\" class=\"help\">T-Hit</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit\" class=\"help\">T-Crit</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-avg\" class=\"help\">T-Avg</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit-pct\" class=\"help\">T-Crit%</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-uptime\" class=\"help\">Up%</a></th>\n"
-     << "\t\t\t\t\t\t\t</tr>\n";
-
-  os << "\t\t\t\t\t\t\t<tr>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"left small\">" << util::encode_html( p -> name() ) << "</th>\n"
-     << "\t\t\t\t\t\t\t\t<th class=\"right small\">" << util::to_string( p -> collected_data.hps.mean(), 0 ) << "</th>\n"
-     << "\t\t\t\t\t\t\t\t<td colspan=\"19\" class=\"filler\"></td>\n"
-     << "\t\t\t\t\t\t\t</tr>\n";
-
-  int k = 0;
-
-  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
-  {
-    stats_t* s = p -> stats_list[ i ];
-    if ( ( s -> type == STATS_HEAL || s -> type == STATS_ABSORB ) && 
-         (s -> num_executes.mean() > 1 || s -> compound_amount > 0 || sim -> debug ) )
+    for ( size_t i = 0; i < p -> pet_list.size(); ++i )
     {
-      print_html_action_info( os, s, p, k++ );
+      pet_t* pet = p -> pet_list[ i ];
+      bool first = true;
+
+      for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
+      {
+        stats_t* s = pet -> stats_list[ i ];
+
+        if ( ( s -> type != STATS_HEAL && s -> type != STATS_ABSORB ) && 
+          ( s -> num_executes.sum() || s -> compound_amount > 0 || sim -> debug ) )
+        {
+          if ( first )
+          {
+            first = false;
+            os.printf(
+              "\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t<th class=\"left small\">pet - %s</th>\n"
+              "\t\t\t\t\t\t\t\t<th class=\"right small\">%.0f / %.0f</th>\n"
+              "\t\t\t\t\t\t\t\t<td colspan=\"18\" class=\"filler\"></td>\n"
+              "\t\t\t\t\t\t\t</tr>\n",
+              pet -> name_str.c_str(),
+              pet -> collected_data.dps.mean(),
+              pet -> collected_data.dpse.mean() );
+          }
+          print_html_action_info( os, s, p, j );
+        }
+      }
     }
+
+    os.printf(
+      "\t\t\t\t\t\t</table>\n");
   }
 
-  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+  if ( p -> collected_data.heal.max() > 0 )
   {
-    pet_t* pet = p -> pet_list[ i ];
-    bool first = true;
+    // Abilities Section - Heals
+    os << "\t\t\t\t\t\t<table class=\"sc\">\n"
+       << "\t\t\t\t\t\t\t<tr>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"left small\">Healing Stats</th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps\" class=\"help\">HPS</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps-pct\" class=\"help\">HPS%</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpe\" class=\"help\">HPE</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpet\" class=\"help\">HPET</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-avg\" class=\"help\">Avg</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks\" class=\"help\">Ticks</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-hit\" class=\"help\">T-Hit</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit\" class=\"help\">T-Crit</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-avg\" class=\"help\">T-Avg</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit-pct\" class=\"help\">T-Crit%</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-uptime\" class=\"help\">Up%</a></th>\n"
+       << "\t\t\t\t\t\t\t</tr>\n";
 
-    for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
+    os << "\t\t\t\t\t\t\t<tr>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"left small\">" << util::encode_html( p -> name() ) << "</th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"right small\">" << util::to_string( p -> collected_data.hps.mean(), 0 ) << "</th>\n"
+       << "\t\t\t\t\t\t\t\t<td colspan=\"19\" class=\"filler\"></td>\n"
+       << "\t\t\t\t\t\t\t</tr>\n";
+
+    int k = 0;
+
+    for ( size_t i = 0; i < p -> stats_list.size(); ++i )
     {
-      stats_t* s = pet -> stats_list[ i ];
-
+      stats_t* s = p -> stats_list[ i ];
       if ( ( s -> type == STATS_HEAL || s -> type == STATS_ABSORB ) && 
-         ( s -> num_executes.sum() || s -> compound_amount > 0 || sim -> debug ) )
+        (s -> num_executes.mean() > 1 || s -> compound_amount > 0 || sim -> debug ) )
       {
-        if ( first )
-        {
-          first = false;
-          os.printf(
-            "\t\t\t\t\t\t\t<tr>\n"
-            "\t\t\t\t\t\t\t\t<th class=\"left small\">pet - %s</th>\n"
-            "\t\t\t\t\t\t\t\t<th class=\"right small\">%.0f / %.0f</th>\n"
-            "\t\t\t\t\t\t\t\t<td colspan=\"18\" class=\"filler\"></td>\n"
-            "\t\t\t\t\t\t\t</tr>\n",
-            pet -> name_str.c_str(),
-            pet -> collected_data.dps.mean(),
-            pet -> collected_data.dpse.mean() );
-        }
-        print_html_action_info( os, s, p, k );
+        print_html_action_info( os, s, p, k++ );
       }
     }
+
+    for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+    {
+      pet_t* pet = p -> pet_list[ i ];
+      bool first = true;
+
+      for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
+      {
+        stats_t* s = pet -> stats_list[ i ];
+
+        if ( ( s -> type == STATS_HEAL || s -> type == STATS_ABSORB ) && 
+          ( s -> num_executes.sum() || s -> compound_amount > 0 || sim -> debug ) )
+        {
+          if ( first )
+          {
+            first = false;
+            os.printf(
+              "\t\t\t\t\t\t\t<tr>\n"
+              "\t\t\t\t\t\t\t\t<th class=\"left small\">pet - %s</th>\n"
+              "\t\t\t\t\t\t\t\t<th class=\"right small\">%.0f / %.0f</th>\n"
+              "\t\t\t\t\t\t\t\t<td colspan=\"18\" class=\"filler\"></td>\n"
+              "\t\t\t\t\t\t\t</tr>\n",
+              pet -> name_str.c_str(),
+              pet -> collected_data.dps.mean(),
+              pet -> collected_data.dpse.mean() );
+          }
+          print_html_action_info( os, s, p, k );
+        }
+      }
+    }
+
   }
 
+  // close section
   os.printf(
     "\t\t\t\t\t\t</table>\n"
     "\t\t\t\t\t</div>\n"
