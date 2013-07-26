@@ -1703,7 +1703,7 @@ protected:
   double _default_value;
   int _max_stack;
   timespan_t _duration, _cooldown;
-  int _quiet, _reverse, _activated;
+  int _quiet, _reverse, _activated, _refreshes;
   std::vector<cache_e> _invalidate_list;
   friend struct ::buff_t;
   friend struct ::debuff_t;
@@ -1751,6 +1751,8 @@ public:
   { s_data = s; return *( static_cast<bufftype*>( this ) ); }
   bufftype& add_invalidate( cache_e c )
   { _invalidate_list.push_back( c ); return *( static_cast<bufftype*>( this ) ); }
+  bufftype& refreshes( int r )
+  { _refreshes = r; return *( static_cast<bufftype*>( this ) ); }
 };
 
 struct buff_creator_t : public buff_creator_helper_t<buff_creator_t>
@@ -1831,24 +1833,21 @@ struct cost_reduction_buff_creator_t : public buff_creator_helper_t<cost_reducti
 private:
   double _amount;
   school_e _school;
-  bool _refreshes;
   friend struct ::cost_reduction_buff_t;
 public:
   cost_reduction_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
     base_t( q, name, s ),
-    _amount( 0 ), _school( SCHOOL_NONE ), _refreshes( false )
+    _amount( 0 ), _school( SCHOOL_NONE )
   {}
   cost_reduction_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
     base_t( sim, name, s ),
-    _amount( 0 ), _school( SCHOOL_NONE ), _refreshes( false )
+    _amount( 0 ), _school( SCHOOL_NONE )
   {}
 
   bufftype& amount( double a )
   { _amount = a; return *this; }
   bufftype& school( school_e s )
   { _school = s; return *this; }
-  bufftype& refreshes( bool r )
-  { _refreshes = r; return *this; }
 
   operator cost_reduction_buff_t* () const;
 };
@@ -1909,7 +1908,7 @@ private: // private because changing max_stacks requires resizing some stack-dep
   std::vector<cache_e> invalidate_list;
 public:
   double default_value;
-  bool activated, reactable;
+  bool activated, reactable, refreshes;
   bool reverse, constant, quiet, overridden;
   bool requires_invalidation;
 
@@ -1958,7 +1957,7 @@ public:
   virtual bool   trigger  ( int stacks = 1, double value = DEFAULT_VALUE(), double chance = -1.0, timespan_t duration = timespan_t::min() );
   virtual void   execute ( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
   virtual void   increment( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
-  void   decrement( int stacks = 1, double value = DEFAULT_VALUE() );
+  virtual void   decrement( int stacks = 1, double value = DEFAULT_VALUE() );
   void   extend_duration( player_t* p, timespan_t seconds );
 
   virtual void start    ( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
@@ -2054,7 +2053,6 @@ struct cost_reduction_buff_t : public buff_t
 {
   double amount;
   school_e school;
-  bool refreshes;
 
 protected:
   cost_reduction_buff_t( const cost_reduction_buff_creator_t& params );
@@ -2063,7 +2061,6 @@ public:
   virtual void bump     ( int stacks = 1, double value = -1.0 );
   virtual void decrement( int stacks = 1, double value = -1.0 );
   virtual void expire_override();
-  virtual void refresh  ( int stacks = 0, double value = -1.0, timespan_t duration = timespan_t::min() );
 };
 
 struct haste_buff_t : public buff_t
@@ -5710,7 +5707,7 @@ struct buff_proc_callback_t : public proc_callback_t<T_CALLDATA>
 {
   struct tick_stack_t : public event_t
   {
-    buff_proc_callback_t* callback;
+    buff_proc_callback_t<T_BUFF>* callback;
 
     tick_stack_t( player_t* p, buff_proc_callback_t* cb, timespan_t initial_delay = timespan_t::zero() ) :
       event_t( p, "cb_tick_stack" ), callback( cb )
@@ -5718,10 +5715,10 @@ struct buff_proc_callback_t : public proc_callback_t<T_CALLDATA>
 
     virtual void execute()
     {
-      if ( callback -> buff -> current_stack > 0 &&
-           callback -> buff -> current_stack < callback -> buff -> max_stack() )
+      if ( ( callback -> buff -> reverse && callback -> buff -> check() > 0 ) ||
+           ( ! callback -> buff -> reverse && callback -> buff -> check() > 0 && callback -> buff -> check() < callback -> buff -> max_stack() ) )
       {
-        callback -> buff -> bump();
+        callback -> buff -> trigger();
         new ( sim ) tick_stack_t( player, callback );
       }
     }

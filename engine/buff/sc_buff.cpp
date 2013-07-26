@@ -253,6 +253,9 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   if ( params._activated != -1 )
     activated = params._activated != 0;
 
+  if ( params._refreshes != -1 )
+    refreshes = params._refreshes != 0;
+
   invalidate_list = params._invalidate_list;
   requires_invalidation = ! invalidate_list.empty();
 
@@ -643,23 +646,26 @@ void buff_t::refresh( int        stacks,
 {
   if ( _max_stack == 0 ) return;
 
-  refresh_count++;
-
   bump( stacks, value );
 
-  timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
-  // Make sure we always cancel the expiration event if we get an
-  // infinite duration
-  if ( d <= timespan_t::zero() )
-    event_t::cancel( expiration );
-  else
+  if ( refreshes )
   {
-    assert( d > timespan_t::zero() );
-    // Infinite duration -> duration of d
-    if ( unlikely( ! expiration ) )
-      expiration = new ( *sim ) expiration_t( this, d );
+    refresh_count++;
+
+    timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
+    // Make sure we always cancel the expiration event if we get an
+    // infinite duration
+    if ( d <= timespan_t::zero() )
+      event_t::cancel( expiration );
     else
-      expiration -> reschedule( d );
+    {
+      assert( d > timespan_t::zero() );
+      // Infinite duration -> duration of d
+      if ( unlikely( ! expiration ) )
+        expiration = new ( *sim ) expiration_t( this, d );
+      else
+        expiration -> reschedule( d );
+    }
   }
 }
 
@@ -1255,7 +1261,7 @@ void stat_buff_t::expire_override()
 // ==========================================================================
 
 cost_reduction_buff_t::cost_reduction_buff_t( const cost_reduction_buff_creator_t& params ) :
-  buff_t( params ), amount( params._amount ), school( params._school ), refreshes( params._refreshes )
+  buff_t( params ), amount( params._amount ), school( params._school )
 {
 }
 
@@ -1301,23 +1307,6 @@ void cost_reduction_buff_t::expire_override()
   player -> cost_reduction_loss( school, current_value );
 
   buff_t::expire_override();
-}
-
-// cost_reduction_buff_t::refresh ===========================================
-
-void cost_reduction_buff_t::refresh( int        stacks,
-                                     double     value,
-                                     timespan_t duration )
-{
-  if ( ! refreshes )
-  {
-    refresh_count++;
-
-    bump( stacks, value );
-    return;
-  }
-
-  buff_t::refresh( stacks, value, duration );
 }
 
 // ==========================================================================
@@ -1504,6 +1493,7 @@ void buff_creator_basics_t::init()
   _reverse = -1;
   _activated = -1;
   _default_value = buff_t::DEFAULT_VALUE();
+  _refreshes = true;
 }
 
 buff_creator_basics_t::buff_creator_basics_t( actor_pair_t p, const std::string& n, const spell_data_t* sp ) :
