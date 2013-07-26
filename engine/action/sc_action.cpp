@@ -1921,9 +1921,42 @@ expr_t* action_t::create_expression( const std::string& name_str )
   {
     return target -> get_dot( splits[ 1 ], player ) -> create_expression( this, splits[ 2 ], true );
   }
-  if ( splits.size() == 3 && splits[ 0 ] == "player_dot" )
+  if ( splits.size() == 3 && splits[ 0 ] == "enemy_dot" )
   {
-      return player -> get_dot( splits[ 1 ] + "_" + player -> name_str, target ) -> create_expression( this, splits[ 2 ], true );
+    // simple by-pass to test
+    return player -> get_dot( splits[ 1 ], target ) -> create_expression( this, splits[ 2 ], false );
+
+    // more complicated version, cycles through possible sources
+    std::vector<expr_t*> dot_expressions;
+    dot_t* d;
+    for ( size_t i = 0, size = sim -> target_list.size(); i < size; i++ )
+    {
+      d = player -> get_dot( splits[ 1 ], sim -> target_list[ i ] );
+      dot_expressions.push_back( d -> create_expression( this, splits[ 2 ], false ) );
+    }
+    struct enemy_dots_expr_t : public expr_t
+    {
+      std::vector<expr_t*> expr_list;
+      
+      enemy_dots_expr_t( const std::vector<expr_t*>& expr_list ) : 
+        expr_t( "enemy_dot" ), expr_list( expr_list )
+      {
+      }
+
+      double evaluate()
+      {
+        double ret = 0;
+        for ( size_t i = 0, size = expr_list.size(); i < size; i++ )
+        {
+          double expr_result = expr_list[ i ] -> eval();
+          if ( expr_result != 0 && ( expr_result < ret || ret == 0 ) )
+            ret = expr_result;
+        }
+        return ret;
+      }
+    };
+
+    return new enemy_dots_expr_t( dot_expressions );
   }
   if ( splits.size() == 3 && splits[0] == "buff" )
   {
