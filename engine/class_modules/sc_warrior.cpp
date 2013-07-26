@@ -48,6 +48,7 @@ public:
   action_t* active_bloodbath_dot;
   action_t* active_deep_wounds;
   action_t* active_opportunity_strike;
+  action_t* active_second_wind;
   attack_t* active_sweeping_strikes;
   warrior_stance  active_stance;
 
@@ -113,6 +114,7 @@ public:
     gain_t* mortal_strike;
     gain_t* revenge;
     gain_t* shield_slam;
+    gain_t* second_wind;
     gain_t* sweeping_strikes;
     gain_t* sword_and_board;
 
@@ -216,7 +218,7 @@ public:
     const spell_data_t* bloodbath;
     const spell_data_t* storm_bolt;
   } talents;
-
+  
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, WARRIOR, name, r ),
     buff( buffs_t() ),
@@ -234,6 +236,7 @@ public:
     active_deep_wounds        = 0;
     active_opportunity_strike = 0;
     active_sweeping_strikes   = 0;
+    active_second_wind        = 0;
     active_stance             = STANCE_BATTLE;
 
     // Cooldowns
@@ -1848,6 +1851,40 @@ struct revenge_t : public warrior_attack_t
   }
 };
 
+// Second Wind ==============================================================
+
+struct second_wind_t : public heal_t
+{
+  second_wind_t( warrior_t* p ) :
+    heal_t( "second_wind", p, p -> find_spell( 16491 ) )
+  {
+    num_ticks = 1;
+    base_tick_time = timespan_t::from_seconds( 1.0 ); // hardcoded, not in spell data
+    hasted_ticks = false;
+    tick_may_crit = false;
+    harmful = false;
+    background = true;
+    target = p;
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    warrior_t* p = static_cast<warrior_t*>( player );
+
+    d -> current_tick = 0; // ticks indefinitely
+
+    base_td = 0; // set tick amount to zero
+    
+    // if we're below 35% health, adjust tick amount; threshold hardcoded, not in spell data 
+    if ( p -> resources.current[ RESOURCE_HEALTH ] < p -> resources.max[ RESOURCE_HEALTH ] * 0.35 )
+      base_td = p -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent();
+    
+    // call tick()
+    heal_t::tick( d );
+  }
+
+};
+
 // Shattering Throw =========================================================
 
 struct shattering_throw_t : public warrior_attack_t
@@ -2949,7 +2986,8 @@ void warrior_t::init_spells()
   // Active spells
   active_deep_wounds = new deep_wounds_t( this );
   active_bloodbath_dot = new bloodbath_dot_t( this );
-
+  active_second_wind = new second_wind_t( this );
+  
   if ( mastery.strikes_of_opportunity -> ok() )
     active_opportunity_strike = new opportunity_strike_t( this );
 
@@ -3118,6 +3156,7 @@ void warrior_t::init_gains()
   gain.melee_off_hand         = get_gain( "melee_off_hand"        );
   gain.mortal_strike          = get_gain( "mortal_strike"         );
   gain.revenge                = get_gain( "revenge"               );
+  gain.second_wind            = get_gain( "second_wind"           );
   gain.shield_slam            = get_gain( "shield_slam"           );
   gain.sweeping_strikes       = get_gain( "sweeping_strikes"      );
   gain.sword_and_board        = get_gain( "Sword and Board"       );
@@ -3458,6 +3497,11 @@ void warrior_t::combat_begin()
 
   if ( specialization() == WARRIOR_PROTECTION )
     vengeance_start();
+
+  // if second wind is talented, apply it upon entering combat
+  if ( talents.second_wind -> ok() )
+    active_second_wind -> execute();
+    
 }
 
 // warrior_t::reset =========================================================
