@@ -114,7 +114,6 @@ public:
     gain_t* mortal_strike;
     gain_t* revenge;
     gain_t* shield_slam;
-    gain_t* second_wind;
     gain_t* sweeping_strikes;
     gain_t* sword_and_board;
 
@@ -3156,7 +3155,6 @@ void warrior_t::init_gains()
   gain.melee_off_hand         = get_gain( "melee_off_hand"        );
   gain.mortal_strike          = get_gain( "mortal_strike"         );
   gain.revenge                = get_gain( "revenge"               );
-  gain.second_wind            = get_gain( "second_wind"           );
   gain.shield_slam            = get_gain( "shield_slam"           );
   gain.sweeping_strikes       = get_gain( "sweeping_strikes"      );
   gain.sword_and_board        = get_gain( "Sword and Board"       );
