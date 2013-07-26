@@ -137,6 +137,7 @@ public:
     buff_t* tigers_fury;
     buff_t* tier15_4pc_melee;
     buff_t* feral_fury;
+    buff_t* feral_rage;
 
     // Guardian
     buff_t* enrage;
@@ -1215,6 +1216,11 @@ public:
           p() -> proc.tier15_2pc_melee -> occur();
           td( target ) -> combo_points.add( 1, &name_str );
         }
+        if ( p() -> buff.feral_rage -> up() ) // tier16_4pc_melee
+        {
+          td( target ) -> combo_points.add( 3 , &name_str ); // data().effectN( 1 ).base_value()
+          p() -> buff.feral_rage -> expire();
+        }
       }
     }
     else
@@ -1233,9 +1239,7 @@ public:
     {
       druid_td_t& td = *this -> td( s -> target );
       if ( td.combo_points.get() > 0 && requires_combo_points && p() -> spec.predatory_swiftness -> ok() )
-      {
         p() -> buff.predatory_swiftness -> trigger( 1, 1, td.combo_points.get() * 0.20 );
-      }
     }
   }
 
@@ -2099,7 +2103,7 @@ struct tigers_fury_t : public cat_attack_t
     if ( p() -> set_bonus.tier15_4pc_melee() )
       p() -> buff.tier15_4pc_melee -> trigger( 3 );
     if ( p() -> set_bonus.tier16_4pc_melee() )
-      td( target ) -> combo_points.add( 5, &name_str );
+      p() -> buff.feral_rage -> trigger();
   }
 
   virtual bool ready()
@@ -5683,7 +5687,10 @@ void druid_t::create_buffs()
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
   buff.tier15_4pc_melee      = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138358 ) );
-  buff.feral_fury            = buff_creator_t( this, "feral_fury", find_spell( 144865 ) ); // tier15_2pc_melee
+  buff.feral_fury            = buff_creator_t( this, "feral_fury", find_spell( 144865 ) ); // tier16_2pc_melee
+  buff.feral_rage            = buff_creator_t( this, "feral_rage", spell_data_t::nil() ) // tier16_4pc_melee find_spell( 146874 )
+                               .chance( 1 )
+                               .duration( timespan_t::from_seconds( 12.0 ) );
 
   // Guardian
   buff.enrage                = buff_creator_t( this, "enrage" , find_specialization_spell( "Enrage" ) );
@@ -6012,7 +6019,7 @@ void druid_t::init_actions()
       if ( talent.dream_of_cenarius -> ok() )
       {
         if ( talent.natures_swiftness -> ok() )
-          basic -> add_action( this, "Healing Touch", "if=buff.natures_swiftness.up" );
+          advanced -> add_action( this, "Healing Touch", "if=buff.natures_swiftness.up" );
         advanced -> add_action( this, "Healing Touch", "if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down&(buff.predatory_swiftness.remains<1.5|combo_points>=4)",
                                 "Proc Dream of Cenarius at 4+ CP or when PS is about to expire." );
       }
