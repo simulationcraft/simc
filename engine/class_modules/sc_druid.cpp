@@ -325,6 +325,13 @@ public:
   struct talents_t
   {
     // MoP: Done
+    const spell_data_t* soul_of_the_forest;
+    const spell_data_t* incarnation;
+    const spell_data_t* force_of_nature;
+
+    const spell_data_t* heart_of_the_wild;
+    const spell_data_t* dream_of_cenarius;
+    const spell_data_t* natures_vigil;
 
     // MoP TODO: Fix/Implement
     const spell_data_t* feline_swiftness;
@@ -339,17 +346,9 @@ public:
     const spell_data_t* mass_entanglement;
     const spell_data_t* typhoon;
 
-    const spell_data_t* soul_of_the_forest;
-    const spell_data_t* incarnation;
-    const spell_data_t* force_of_nature;
-
     const spell_data_t* disorienting_roar;
     const spell_data_t* ursols_vortex;
     const spell_data_t* mighty_bash;
-
-    const spell_data_t* heart_of_the_wild;
-    const spell_data_t* dream_of_cenarius;
-    const spell_data_t* natures_vigil;
   } talent;
 
   bool inflight_starsurge;
@@ -2002,9 +2001,21 @@ struct swipe_cat_t : public cat_attack_t
   virtual void execute()
   {
     cat_attack_t::execute();
+    
+    p() -> buff.feral_fury -> up();
 
     if ( p() -> buff.tier15_4pc_melee -> up() )
       p() -> buff.tier15_4pc_melee -> decrement();
+  }
+
+  double composite_da_multiplier()
+  {
+    double m = cat_attack_t::composite_da_multiplier();
+
+    if ( p() -> buff.feral_fury -> check() )
+      m *= 1.0 + p() -> buff.feral_fury -> data().effectN( 1 ).percent();
+
+    return m;
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -4280,7 +4291,7 @@ struct druids_swiftness_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-    if ( maybe_ptr( player -> dbc.ptr ) && player -> specialization() != DRUID_RESTORATION )
+    if ( maybe_ptr( player -> dbc.ptr ) && ! ( player -> specialization() == DRUID_RESTORATION || player -> specialization() == DRUID_BALANCE ) )
       background = true;
   }
 
@@ -5346,7 +5357,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "rejuvenation"           ) return new           rejuvenation_t( this, options_str );
   if ( name == "rip"                    ) return new                    rip_t( this, options_str );
   if ( name == "savage_roar"            ) return new            savage_roar_t( this, options_str );
-  if ( name == "savage_defense"            ) return new            savage_defense_t( this, options_str );
+  if ( name == "savage_defense"         ) return new         savage_defense_t( this, options_str );
   if ( name == "shattering_blow"        ) return new        shattering_blow_t( this, options_str );
   if ( name == "shred"                  ) return new                  shred_t( this, options_str );
   if ( name == "skull_bash_bear"        ) return new        skull_bash_bear_t( this, options_str );
@@ -5974,13 +5985,13 @@ void druid_t::init_actions()
       for ( size_t i = 0; i < racial_actions.size(); i++ )
         basic -> add_action( racial_actions[ i ] + ",if=buff.tigers_fury.up" );
 
-      if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok () )
+      if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
         basic -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25", 
                              "Use NS for finishers during execute range." );
       basic -> add_action( this, "Rip", "if=combo_points>=5&target.health.pct<=25&action.rip.tick_damage%dot.rip.tick_dmg>=1.15",
                             "Overwrite Rip during execute range if it's at least 15% stronger than the current." );
       basic -> add_action( this, "Ferocious Bite", "if=combo_points>=5&target.health.pct<=25&dot.rip.ticking" );
-      if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok () )
+      if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
         basic -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3", 
                              "Use NS for Rip." );
       basic -> add_action( this, "Rip", "if=combo_points>=5&dot.rip.remains<2" );
@@ -6060,7 +6071,7 @@ void druid_t::init_actions()
                                 "Potion near or during execute range when Rune is up and we have 5 CP." );
       }
 
-      if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok () )
+      if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
         advanced -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25", 
                                 "Use NS for finishers during execute range." );
       advanced -> add_action( this, "Rip", "if=combo_points>=5&action.rip.tick_damage%dot.rip.tick_dmg>=1.15&target.time_to_die>30",
@@ -6068,7 +6079,7 @@ void druid_t::init_actions()
       advanced -> add_action( "pool_resource,if=combo_points>=5&target.health.pct<=25&dot.rip.ticking&!(energy>=50|(buff.berserk.up&energy>=25))",
                               "Pool 50 energy for Ferocious Bite." );
       advanced -> add_action( this, "Ferocious Bite", "if=combo_points>=5&dot.rip.ticking&target.health.pct<=25" );
-      if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok () )
+      if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
         basic -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)", 
                              "Use NS for Rip." );
       advanced -> add_action( this, "Rip", "if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)" );
