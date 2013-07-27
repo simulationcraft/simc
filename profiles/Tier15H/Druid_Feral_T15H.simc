@@ -24,6 +24,7 @@ actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius.up&talent.dream_of_cenarius.enabled
 actions.precombat+=/cat_form
 actions.precombat+=/savage_roar
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/virmens_bite_potion
 
@@ -66,7 +67,6 @@ actions.basic+=/run_action_list,name=filler,if=target.time_to_die<=8.5
 actions.basic+=/run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up|buff.natures_vigil.up
 actions.basic+=/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3
 actions.basic+=/run_action_list,name=filler,if=energy.time_to_max<=1.0
-actions.basic+=/healing_touch,if=buff.natures_swiftness.up
 
 actions.advanced=auto_attack
 actions.advanced+=/skull_bash_cat
@@ -74,6 +74,7 @@ actions.advanced+=/berserking
 # Keep Rip from falling off during execute range.
 actions.advanced+=/ferocious_bite,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
 actions.advanced+=/faerie_fire,if=debuff.weakened_armor.stack<3
+actions.advanced+=/healing_touch,if=buff.natures_swiftness.up
 # Proc Dream of Cenarius at 4+ CP or when PS is about to expire.
 actions.advanced+=/healing_touch,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down&(buff.predatory_swiftness.remains<1.5|combo_points>=4)
 actions.advanced+=/savage_roar,if=buff.savage_roar.down
