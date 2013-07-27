@@ -2109,6 +2109,46 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   }
 
   virtual bool   ready();
+
+  // Rewrite RPPM formula due to a massive bug on blizzard's end
+  double real_ppm_proc_chance( double PPM, timespan_t last_trigger, timespan_t last_successful_proc, rppm_scale_e scales_with )
+  {
+    if ( player -> bugs )
+    {
+      // Old RPPM formula
+      double spell_haste = player -> cache.spell_haste();
+      double melee_haste = player -> cache.attack_haste();
+      if ( p() -> buffs.runic_corruption -> up() )
+        melee_haste *= 1.0 / ( 1.0 + p() -> talent.runic_corruption -> effectN( 1 ).percent() );
+      if ( p() -> spec.improved_blood_presence -> ok() && p() -> buffs.blood_presence -> up() )
+        melee_haste *= 1.0 / ( 1.0 + p() -> spec.improved_blood_presence -> effectN( 1 ).percent() );
+
+      double coeff = 1.0 / std::min( spell_haste, melee_haste );
+      double seconds = std::min( ( sim -> current_time - last_trigger ).total_seconds(), 10.0 );
+
+      switch ( scales_with )
+      {
+        case RPPM_ATTACK_CRIT:
+          coeff *= 1.0 + player -> cache.attack_crit();
+          break;
+        case RPPM_SPELL_CRIT:
+          coeff *= 1.0 + player -> cache.spell_crit();
+          break;
+        default: break;
+      }
+
+      double old_rppm_chance = ( PPM * ( seconds / 60.0 ) ) * coeff;
+
+      // RPPM Extension added on 12. March 2013: http://us.battle.net/wow/en/blog/8953693?page=44
+      // Formula see http://us.battle.net/wow/en/forum/topic/8197741003#1
+      double last_success = std::min( ( sim -> current_time - last_successful_proc ).total_seconds(), 1000.0 );
+
+      double expected_average_proc_interval = 60.0 / ( PPM * coeff );
+      return std::max( 1.0, 1 + ( ( last_success / expected_average_proc_interval - 1.5 ) * 3.0 ) )  * old_rppm_chance;
+    }
+    else
+      return base_t::real_ppm_proc_chance( PPM, last_trigger, last_successful_proc, scales_with );
+  }
 };
 
 // ==========================================================================
