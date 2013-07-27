@@ -5941,6 +5941,8 @@ void druid_t::apl_feral()
                           "Rake if it hits harder than Mangle and we won't apply a weaker bleed to the target." );
   basic -> add_action( this, "Rake", "if=dot.rake.remains<3|action.rake.tick_damage>dot.rake.tick_dmg",
                         "Rake if it's about to fall off or we can apply a stronger Rake." );
+  if ( set_bonus.tier16_2pc_melee() )
+    basic -> add_action( "run_action_list,name=filler,if=buff.feral_fury.react" );
   basic -> add_action( "pool_resource,for_next=1" );
   basic -> add_action( "thrash_cat,if=dot.thrash_cat.remains<3&(dot.rip.remains>6|combo_points>=5)" );
   basic -> add_action( "run_action_list,name=filler,if=buff.omen_of_clarity.react",
@@ -6037,6 +6039,8 @@ void druid_t::apl_feral()
   }
   advanced -> add_action( this, "Rake", "if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|dot.rake.remains<3)",
                           "Rake if it's about to fall off or we can apply a stronger Rake." );
+  if ( set_bonus.tier16_2pc_melee() )
+    advanced -> add_action( "run_action_list,name=filler,if=buff.feral_fury.react" );
   advanced -> add_action( "pool_resource,for_next=1" );
   advanced -> add_action( "thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&(dot.rip.remains>=4|buff.berserk.up)&dot.rip.ticking" );
   advanced -> add_action( "run_action_list,name=filler,if=buff.omen_of_clarity.react" );
