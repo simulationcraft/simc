@@ -6035,8 +6035,8 @@ void druid_t::apl_feral()
     advanced -> add_action( this, "Rake", "if=buff.rune_of_reorigination.up&dot.rake.remains<9&buff.rune_of_reorigination.remains<=1.5",
                             "Refresh Rake as Re-Origination is about to end if Rake has <9 seconds left." );
   }
-  advanced -> add_action( this, "Rake", "if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|dot.rake.remains<3)",
-                          "Rake if it's about to fall off or we can apply a stronger Rake." );
+  advanced -> add_action( this, "Rake", "if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|(dot.rake.remains<3&action.rake.tick_damage%dot.rake.tick_dmg>=0.75))",
+                          "Rake if we can apply a stronger Rake or if it's about to fall off and clipping the last tick won't waste too much damage." );
   if ( set_bonus.tier16_2pc_melee() )
     advanced -> add_action( "run_action_list,name=filler,if=buff.feral_fury.react" );
   advanced -> add_action( "pool_resource,for_next=1" );
