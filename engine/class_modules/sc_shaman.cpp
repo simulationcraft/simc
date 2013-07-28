@@ -6219,6 +6219,9 @@ int shaman_t::decode_set( item_t& item )
                  strstr( s, "legwraps"       ) ||
                  strstr( s, "handwraps"      ) );
 
+    if ( is_caster ) return SET_T13_CASTER;
+    if ( is_melee  ) return SET_T13_MELEE;
+    if ( is_heal   ) return SET_T13_HEAL;
   }
 
   if ( strstr( s, "firebirds_" ) )
@@ -6240,6 +6243,10 @@ int shaman_t::decode_set( item_t& item )
                  strstr( s, "tunic"          ) ||
                  strstr( s, "legwraps"       ) ||
                  strstr( s, "handwraps"      ) );
+
+    if ( is_caster ) return SET_T14_CASTER;
+    if ( is_melee  ) return SET_T14_MELEE;
+    if ( is_heal   ) return SET_T14_HEAL;
   }
 
   if ( strstr( s, "_of_the_witch_doctor" ) )
@@ -6261,6 +6268,10 @@ int shaman_t::decode_set( item_t& item )
                  strstr( s, "tunic"          ) ||
                  strstr( s, "legwraps"       ) ||
                  strstr( s, "handwraps"      ) );
+
+    if ( is_caster ) return SET_T15_CASTER;
+    if ( is_melee  ) return SET_T15_MELEE;
+    if ( is_heal   ) return SET_T15_HEAL;
   }
 
   if ( util::str_compare_ci( s, "_of_celestial_harmony" ) )
@@ -6282,15 +6293,15 @@ int shaman_t::decode_set( item_t& item )
                 util::str_compare_ci( s, "faceguard" ) ||
                 util::str_compare_ci( s, "legwraps" ) ||
                 util::str_compare_ci( s, "mantle" ) );
+
+    if ( is_caster ) return SET_T16_CASTER;
+    if ( is_melee  ) return SET_T16_MELEE;
+    if ( is_heal   ) return SET_T16_HEAL;
   }
 
   if ( strstr( s, "_gladiators_linked_"   ) )     return SET_PVP_MELEE;
   if ( strstr( s, "_gladiators_mail_"     ) )     return SET_PVP_CASTER;
   if ( strstr( s, "_gladiators_ringmail_" ) )     return SET_PVP_MELEE;
-
-  if ( is_caster ) return SET_T13_CASTER;
-  if ( is_melee  ) return SET_T13_MELEE;
-  if ( is_heal   ) return SET_T13_HEAL;
 
   return SET_NONE;
 }
