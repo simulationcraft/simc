@@ -5797,10 +5797,6 @@ void druid_t::apl_precombat()
     precombat -> add_action( this, "Moonkin Form" );
   }
 
-  // Force of Nature Pre-Cast
-  if ( primary_role() == ROLE_DPS )
-    precombat -> add_talent( this, "Force of Nature" );
-
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   
