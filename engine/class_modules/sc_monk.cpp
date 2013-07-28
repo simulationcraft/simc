@@ -1786,7 +1786,7 @@ struct chi_wave_t : public monk_spell_t
     monk_spell_t( "chi_wave", player, player -> talent.chi_wave )
   {
     parse_options( nullptr, options_str );
-    num_ticks = 3;
+    num_ticks = 4;
     hasted_ticks   = false;
     base_tick_time = timespan_t::from_seconds( 1.5 );
 
