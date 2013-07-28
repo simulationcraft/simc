@@ -1023,7 +1023,7 @@ public:
 
     if ( this -> special && this -> harmful )
     {
-      if ( ! this -> p() -> dbc.ptr && this -> p() -> buff.dream_of_cenarius -> check() )
+      if ( this -> p() -> buff.dream_of_cenarius -> check() )
       {
         m *= 1.0 + this -> p() -> buff.dream_of_cenarius -> data().effectN( 2 ).percent();
       }
@@ -1036,7 +1036,7 @@ public:
   {
     ab::execute();
 
-    if ( ! this -> p() -> dbc.ptr && this -> special && this -> harmful )
+    if ( this -> special && this -> harmful )
     {
       if ( this -> p() -> buff.dream_of_cenarius -> up() )
       {
@@ -2914,7 +2914,8 @@ struct healing_touch_t : public druid_heal_t
     p() -> buff.predatory_swiftness -> expire();
     if ( p() -> specialization() == DRUID_GUARDIAN )
       p() -> buff.dream_of_cenarius -> expire();
-    p() -> buff.dream_of_cenarius -> trigger( 2 );
+    if ( p() -> specialization() == DRUID_FERAL )
+      p() -> buff.dream_of_cenarius -> trigger( 2 );
   }
 
   virtual void schedule_execute( action_state_t* state = 0 )
@@ -5648,7 +5649,8 @@ void druid_t::create_buffs()
       if ( specialization() == DRUID_BALANCE )
         buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145151 ) );
       else if ( specialization() == DRUID_FERAL )
-        buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145152 ) );
+        buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145152 ) )
+                                 .max_stack( 2 );
       else if ( specialization() == DRUID_GUARDIAN )
         buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145162 ) )
                                  .chance( talent.dream_of_cenarius -> effectN( 1 ).percent() );
@@ -5924,13 +5926,13 @@ void druid_t::apl_feral()
     basic -> add_action( racial_actions[ i ] + ",if=buff.tigers_fury.up" );
 
   if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
-    basic -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25", 
+    basic -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25", 
                           "Use NS for finishers during execute range." );
   basic -> add_action( this, "Rip", "if=combo_points>=5&target.health.pct<=25&action.rip.tick_damage%dot.rip.tick_dmg>=1.15",
                         "Overwrite Rip during execute range if it's at least 15% stronger than the current." );
   basic -> add_action( this, "Ferocious Bite", "if=combo_points>=5&target.health.pct<=25&dot.rip.ticking" );
   if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
-    basic -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3", 
+    basic -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3", 
                           "Use NS for Rip." );
   basic -> add_action( this, "Rip", "if=combo_points>=5&dot.rip.remains<2" );
   basic -> add_action( this, "Ferocious Bite", "if=combo_points>=5&energy.time_to_max<dot.rip.remains-2&energy.time_to_max<buff.savage_roar.remains-3",
@@ -6012,7 +6014,7 @@ void druid_t::apl_feral()
   }
 
   if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
-    advanced -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25", 
+    advanced -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25", 
                             "Use NS for finishers during execute range." );
   advanced -> add_action( this, "Rip", "if=combo_points>=5&action.rip.tick_damage%dot.rip.tick_dmg>=1.15&target.time_to_die>30",
                           "Overwrite Rip if it's at least 15% stronger than the current." );
@@ -6020,7 +6022,7 @@ void druid_t::apl_feral()
                           "Pool 50 energy for Ferocious Bite." );
   advanced -> add_action( this, "Ferocious Bite", "if=combo_points>=5&dot.rip.ticking&target.health.pct<=25" );
   if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
-    advanced -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius_damage.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)", 
+    advanced -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)", 
                           "Use NS for Rip." );
   advanced -> add_action( this, "Rip", "if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)" );
   advanced -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains" );
@@ -6963,6 +6965,37 @@ int druid_t::decode_set( item_t& item )
     if ( is_melee  ) return SET_T15_MELEE;
     if ( is_healer ) return SET_T15_HEAL;
     if ( is_tank   ) return SET_T15_TANK;
+  }
+
+  if ( strstr( s, "of_the_shattered_vale" ) )
+  {
+    bool is_caster = ( strstr( s, "cover"          ) ||
+                       strstr( s, "shoulderwraps"  ) ||
+                       strstr( s, "vestment"       ) ||
+                       strstr( s, "leggings"       ) ||
+                       strstr( s, "gloves"         ) );
+
+    bool is_melee = ( strstr( s, "headpiece"       ) ||
+                      strstr( s, "spaulders"       ) ||
+                      strstr( s, "raiment"         ) ||
+                      strstr( s, "legguards"       ) ||
+                      strstr( s, "grips"           ) );
+
+    bool is_healer = ( strstr( s, "helm"           ) ||
+                       strstr( s, "mantle"         ) ||
+                       strstr( s, "robes"          ) ||
+                       strstr( s, "legwraps"       ) ||
+                       strstr( s, "handwraps"      ) );
+
+    bool is_tank   = ( strstr( s, "headguard"      ) ||
+                       strstr( s, "shoulderguards" ) ||
+                       strstr( s, "tunic"          ) ||
+                       strstr( s, "breeches"       ) ||
+                       strstr( s, "handguards"     ) );
+    if ( is_caster ) return SET_T16_CASTER;
+    if ( is_melee  ) return SET_T16_MELEE;
+    if ( is_healer ) return SET_T16_HEAL;
+    if ( is_tank   ) return SET_T16_TANK;
   }
 
   if ( strstr( s, "_gladiators_kodohide_"   ) )   return SET_PVP_HEAL;

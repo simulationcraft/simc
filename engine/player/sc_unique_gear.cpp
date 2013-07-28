@@ -2786,6 +2786,7 @@ void cooldown_reduction_trinket( item_t* item )
     { ROGUE_COMBAT,        { "evasion", "adrenaline_rush", "cloak_of_shadows", "killing_spree", "shadow_blades", 0 } },
     { ROGUE_SUBTLETY,      { "evasion", "vanish", "cloak_of_shadows", "shadow_dance", "shadow_blades", 0 } },
     { SHAMAN_ENHANCEMENT,  { "spiritwalkers_grace", "earth_elemental_totem", "fire_elemental_totem", "shamanistic_rage", "ascendance", "feral_spirit" } },
+    { DRUID_FERAL,         { "tigers_fury", "berserk", "barkskin", "survival_instincts" } },
     { SPEC_NONE,           { 0 } }
   };
 
