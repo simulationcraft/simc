@@ -304,7 +304,7 @@ public:
     const spell_data_t* eclipse; // Eclipse mana gain
     const spell_data_t* heart_of_the_wild; // HotW INT/AGI bonus
     const spell_data_t* leader_of_the_pack; // LotP aura
-    const spell_data_t* mangle; // Lacerate mangle cooldown reset
+    const spell_data_t* mangle; // Mangle cooldown reset
     const spell_data_t* moonkin_form; // Moonkin form bonuses
     const spell_data_t* primal_fury; // Primal fury rage gain
     const spell_data_t* regrowth; // Old GoRegrowth
@@ -2274,6 +2274,9 @@ struct lacerate_t : public bear_attack_t
       if ( td( state -> target ) -> lacerate_stack < 3 )
         td( state -> target ) -> lacerate_stack++;
       p() -> buff.lacerate -> trigger();
+      
+      if ( p() -> rng.mangle -> roll( 0.25 ) )
+        p() -> cooldown.mangle_bear -> reset( true );
     }
 
     bear_attack_t::impact( state );
@@ -2286,14 +2289,6 @@ struct lacerate_t : public bear_attack_t
     tm *= td( target ) -> lacerate_stack;
 
     return tm;
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    bear_attack_t::tick( d );
-
-    if ( p() -> rng.mangle -> roll( p() -> spell.mangle -> effectN( 1 ).percent() ) )
-      p() -> cooldown.mangle_bear -> reset( true );
   }
 
   virtual void last_tick( dot_t* d )
@@ -2530,13 +2525,8 @@ struct thrash_bear_t : public bear_attack_t
 
     if ( result_is_hit( state -> result ) && ! sim -> overrides.weakened_blows )
       state -> target -> debuffs.weakened_blows -> trigger();
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    bear_attack_t::tick( d );
-
-    if ( p() -> rng.mangle -> roll( p() -> spell.mangle -> effectN( 1 ).percent() ) )
+    
+    if ( p() -> rng.mangle -> roll( 0.25 ) )
       p() -> cooldown.mangle_bear -> reset( true );
   }
 
@@ -3795,7 +3785,6 @@ struct faerie_fire_t : public druid_spell_t
 
     if ( result_is_hit( execute_state -> result ) && ! sim -> overrides.weakened_armor )
       target -> debuffs.weakened_armor -> trigger( 3 );
-
   }
 
   virtual void update_ready( timespan_t )
@@ -3816,16 +3805,14 @@ struct faerie_fire_t : public druid_spell_t
       return 0.0;
   }
 
-
   virtual void impact( action_state_t* state )
   {
     druid_spell_t::impact( state );
 
     if ( p() -> buff.bear_form -> check() )
     {
-      // FIXME: check whether or not it is on hit only.
       if ( result_is_hit( state -> result ) )
-        if ( p() -> rng.mangle -> roll( p() -> spell.mangle -> effectN( 1 ).percent() ) )
+        if ( p() -> rng.mangle -> roll( 0.25 ) )
           p() -> cooldown.mangle_bear -> reset( true );
     }
   }
