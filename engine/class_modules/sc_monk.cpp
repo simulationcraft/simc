@@ -1772,7 +1772,7 @@ struct chi_wave_t : public monk_spell_t
   struct direct_damage_t : public monk_spell_t
   {
     direct_damage_t( monk_t* p ) :
-      monk_spell_t( "chi_wave_dd", p, p -> find_spell( 132467 ) )
+      monk_spell_t( "chi_wave_dd", p, p -> find_spell( 115098 ) )
     {
       direct_power_mod = 0.45; // hardcoded into tooltip of 115098
 
@@ -1788,7 +1788,7 @@ struct chi_wave_t : public monk_spell_t
     parse_options( nullptr, options_str );
     num_ticks = 4;
     hasted_ticks   = false;
-    base_tick_time = timespan_t::from_seconds( 1.5 );
+    base_tick_time = timespan_t::from_seconds( 1.0 );
 
     direct_power_mod = base_dd_min = base_dd_max = 0;
 
