@@ -393,12 +393,6 @@ struct water_elemental_pet_t : public pet_t
         return;
 
       spell_t::impact( s );
-      // If there are five Icicles, launch the oldest at this spell's target
-      // Create an Icicle, stashing damage equal to mastery * value
-      // Damage should be based on damage spell would have done without any
-      // target-based damage increases or decreases, except Frostbolt debuff
-      // Should also apply to mini version
-
     }
 
     void execute()
@@ -2528,12 +2522,12 @@ struct ice_lance_t : public mage_spell_t
     {
       mini_ice_lance -> schedule_execute( mini_ice_lance -> get_state( execute_state ) );
     }
-    // Begin casting all Icicles at the target with intervals of 1 second
-    // adjusted by haste (first begins 1 second - haste after casting Ice Lance)
-    // Casting continues until all Icicles are gone, including new ones that
-    // accumulate while they're being fired. If target dies, Icicles stop. If
-    // Ice Lance is cast again, the current sequence is interrupted and a new
-    // one begins.
+    // Begin casting all Icicles at the target, beginning 0.25 seconds after the
+    // Ice Lance cast with remaining Icicles launching at intervals of 0.75
+    // seconds, both values adjusted by haste. Casting continues until all
+    // Icicles are gone, including new ones that accumulate while they're being
+    // fired. If target dies, Icicles stop. If Ice Lance is cast again, the
+    // current sequence is interrupted and a new one begins.
 
     p() -> buffs.fingers_of_frost -> decrement();
     p() -> buffs.frozen_thoughts -> expire();
