@@ -6,6 +6,7 @@
 #include "simulationcraft.hpp"
 #include "sc_report.hpp"
 #include <cmath>
+#include <clocale>
 
 namespace { // anonymous namespace ==========================================
 
@@ -1797,7 +1798,7 @@ std::string chart::timeline(  player_t* p,
   chart.set_height( 200 );
 
   std::string s = chart.create();
-
+  char * old_locale = setlocale( LC_ALL, "C");
   s += "chd=s:";
   for ( size_t i = 0; i < max_buckets; i += increment )
   {
@@ -1839,6 +1840,7 @@ std::string chart::timeline(  player_t* p,
   s += util::to_string( 100.0 * ( avg - timeline_min ) / timeline_range, 0 );
   s += ",100";
 
+  setlocale( LC_ALL, old_locale);
   return s;
 }
 
