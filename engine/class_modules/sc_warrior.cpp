@@ -2996,6 +2996,7 @@ void warrior_t::init_spells()
     {     0,     0, 105797, 105907, 105908, 105911,     0,     0 }, // Tier13
     {     0,     0, 123142, 123144, 123146, 123147,     0,     0 }, // Tier14
     {     0,     0, 138120, 138126, 138280, 138281,     0,     0 }, // Tier15
+    {     0,     0, 144436, 144441, 144503, 144502,     0,     0 }, // Tier16
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -3357,12 +3358,15 @@ void warrior_t::init_actions()
       aoe_list_str += "/cleave,if=rage>110";
       aoe_list_str += "/mortal_strike";
       aoe_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&buff.bloodbath.up";
-      aoe_list_str += "/thunder_clap";
+      aoe_list_str += "/bladestorm,if=talent.bladestorm.enabled";
+      aoe_list_str += "/thunder_clap,if=active_enemies>=4";
       aoe_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<1";
+      aoe_list_str += "/slam,if=active_enemies<=3";
       aoe_list_str += "/overpower";
-      aoe_list_str += "/whirlwind";
+      aoe_list_str += "/whirlwind,if=active_enemies>=4";
       aoe_list_str += "/battle_shout,if=rage<70";
     }
+
     // Fury
     else if ( specialization() == WARRIOR_FURY )
     {
@@ -3821,6 +3825,25 @@ int warrior_t::decode_set( item_t& item )
     if ( is_melee ) return SET_T15_MELEE;
     if ( is_tank  ) return SET_T15_TANK;
   }
+
+  if ( strstr( s, "Prehistoric Marauder" ) )
+  {
+    bool is_melee = ( strstr( s, "helmet"        ) ||
+                      strstr( s, "pauldrons"     ) ||
+                      strstr( s, "battleplate"   ) ||
+                      strstr( s, "legplates"     ) ||
+                      strstr( s, "gauntlets"     ) );
+
+    bool is_tank = ( strstr( s, "faceguard"      ) ||
+                     strstr( s, "shoulderguards" ) ||
+                     strstr( s, "chestguard"     ) ||
+                     strstr( s, "legguards"      ) ||
+                     strstr( s, "handguards"     ) );
+
+    if ( is_melee ) return SET_T16_MELEE;
+    if ( is_tank  ) return SET_T16_TANK;
+  }
+
 
   if ( strstr( s, "_gladiators_plate_"   ) ) return SET_PVP_MELEE;
 

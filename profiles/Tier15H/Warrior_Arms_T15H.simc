@@ -59,10 +59,12 @@ actions.aoe=sweeping_strikes
 actions.aoe+=/cleave,if=rage>110
 actions.aoe+=/mortal_strike
 actions.aoe+=/dragon_roar,if=talent.dragon_roar.enabled&buff.bloodbath.up
-actions.aoe+=/thunder_clap
+actions.aoe+=/bladestorm,if=talent.bladestorm.enabled
+actions.aoe+=/thunder_clap,if=active_enemies>=4
 actions.aoe+=/colossus_smash,if=debuff.colossus_smash.remains<1
+actions.aoe+=/slam,if=active_enemies<=3
 actions.aoe+=/overpower
-actions.aoe+=/whirlwind
+actions.aoe+=/whirlwind,if=active_enemies>=4
 actions.aoe+=/battle_shout,if=rage<70
 
 head=crown_of_the_golden_golem,id=96894,gems=capacitive_primal_320crit_180str

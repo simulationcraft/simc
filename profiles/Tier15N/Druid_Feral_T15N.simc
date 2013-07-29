@@ -23,6 +23,7 @@ actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius.up&talent.dream_of_cenarius.enabled
 actions.precombat+=/cat_form
 actions.precombat+=/savage_roar
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/virmens_bite_potion
 
@@ -61,13 +62,13 @@ actions.basic+=/run_action_list,name=filler,if=target.time_to_die<=8.5
 actions.basic+=/run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up|buff.natures_vigil.up
 actions.basic+=/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3
 actions.basic+=/run_action_list,name=filler,if=energy.time_to_max<=1.0
-actions.basic+=/healing_touch,if=buff.natures_swiftness.up
 
 actions.advanced=auto_attack
 actions.advanced+=/skull_bash_cat
 # Keep Rip from falling off during execute range.
 actions.advanced+=/ferocious_bite,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
 actions.advanced+=/faerie_fire,if=debuff.weakened_armor.stack<3
+actions.advanced+=/healing_touch,if=buff.natures_swiftness.up
 # Proc Dream of Cenarius at 4+ CP or when PS is about to expire.
 actions.advanced+=/healing_touch,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down&(buff.predatory_swiftness.remains<1.5|combo_points>=4)
 actions.advanced+=/savage_roar,if=buff.savage_roar.down
@@ -89,8 +90,8 @@ actions.advanced+=/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&bu
 actions.advanced+=/pool_resource,if=combo_points>=5&!(energy>=50|(buff.berserk.up&energy>=25))&dot.rip.ticking&!(dot.rip.remains-2<=energy.time_to_max-1)&!(buff.savage_roar.remains-3<=energy.time_to_max-1)
 # Ferocious Bite if we will energy cap before being able to spend our CP on Rip or Savage Roar.
 actions.advanced+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&!(dot.rip.remains-2<=energy.time_to_max-1)&!(buff.savage_roar.remains-3<=energy.time_to_max-1)
-# Rake if it's about to fall off or we can apply a stronger Rake.
-actions.advanced+=/rake,if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|dot.rake.remains<3)
+# Rake if we can apply a stronger Rake or if it's about to fall off and clipping the last tick won't waste too much damage.
+actions.advanced+=/rake,if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|(dot.rake.remains<3&action.rake.tick_damage%dot.rake.tick_dmg>=0.75))
 actions.advanced+=/pool_resource,for_next=1
 actions.advanced+=/thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&(dot.rip.remains>=4|buff.berserk.up)&dot.rip.ticking
 actions.advanced+=/run_action_list,name=filler,if=buff.omen_of_clarity.react

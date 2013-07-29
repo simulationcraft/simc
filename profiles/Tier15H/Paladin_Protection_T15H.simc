@@ -6,7 +6,7 @@ race=blood_elf
 role=tank
 position=front
 professions=Blacksmithing=600/Enchanting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!202101
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bZ!202101
 glyphs=focused_shield/alabaster_shield/battle_healer
 spec=protection
 
@@ -30,9 +30,11 @@ actions.precombat+=/snapshot_stats
 
 actions=/auto_attack
 actions+=//use_item,name=laochins_liquid_courage
+actions+=/arcane_torrent
 actions+=/avenging_wrath
 actions+=/holy_avenger,if=talent.holy_avenger.enabled
-actions+=/shield_of_the_righteous,if=holy_power>=3
+actions+=/divine_protection,if=target.debuff.casting.react
+actions+=/shield_of_the_righteous,if=(holy_power>=5)|(buff.divine_purpose.up)|(incoming_damage_1500ms>=health.max*0.3)
 actions+=/hammer_of_the_righteous,if=target.debuff.weakened_blows.down
 actions+=/crusader_strike
 actions+=/judgment,if=cooldown.crusader_strike.remains>=0.5
@@ -77,4 +79,4 @@ off_hand=greatshield_of_the_gloaming,id=96884,stats=20279armor_957str_1555sta_65
 # meta_gem=indomitable_primal
 # tier15_2pc_tank=1
 # tier15_4pc_tank=1
-# main_hand=worldbreakers_stormscythe,heroic=1,thunderforged=1,weapon=axe_2.6speed_9172min_17036max,enchant=dancing_steel
+# main_hand=worldbreakers_stormscythe,heroic=1,thunderforged=1,weapon=axe_2.6speed_9172min_17036max,enchant=windsong

@@ -102,8 +102,8 @@ actions.advanced+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&!(dot.rip.r
 actions.advanced+=/rake,if=action.rake.tick_damage>action.mangle_cat.hit_damage&action.rake.tick_damage>=dot.rake.tick_dmg
 # Refresh Rake as Re-Origination is about to end if Rake has <9 seconds left.
 actions.advanced+=/rake,if=buff.rune_of_reorigination.up&dot.rake.remains<9&buff.rune_of_reorigination.remains<=1.5
-# Rake if it's about to fall off or we can apply a stronger Rake.
-actions.advanced+=/rake,if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|dot.rake.remains<3)
+# Rake if we can apply a stronger Rake or if it's about to fall off and clipping the last tick won't waste too much damage.
+actions.advanced+=/rake,if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|(dot.rake.remains<3&action.rake.tick_damage%dot.rake.tick_dmg>=0.75))
 actions.advanced+=/pool_resource,for_next=1
 actions.advanced+=/thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&(dot.rip.remains>=4|buff.berserk.up)&dot.rip.ticking
 actions.advanced+=/run_action_list,name=filler,if=buff.omen_of_clarity.react

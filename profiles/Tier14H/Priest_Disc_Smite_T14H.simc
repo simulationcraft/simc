@@ -45,7 +45,7 @@ actions+=/divine_star,if=talent.divine_star.enabled&active_enemies>2
 actions+=/cascade_damage,if=talent.cascade.enabled&active_enemies>3
 actions+=/smite,if=glyph.smite.enabled&dot.power_word_solace.remains>cast_time
 actions+=/smite,if=!talent.twist_of_fate.enabled&mana.pct>15
-actions+=/smite,if=talent.twist_of_fate.enabled&target.health.pct<20&mana.pct>target.health.pct
+actions+=/smite,if=talent.twist_of_fate.enabled&target.health.pct<35&mana.pct>target.health.pct
 
 head=xarils_hood_of_intoxicating_vapors,id=86970,gems=burning_primal_80int_160haste_180mastery,reforge=mastery_crit
 neck=korvens_ambersealed_beetle,id=86976,reforge=spi_haste
