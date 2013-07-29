@@ -1,6 +1,6 @@
 #define PTR_TALENT_SIZE (198)
 
-// 198 talents, wow build 17227
+// 198 talents, wow build 17247
 static struct talent_data_t __ptr_talent_data[] = {
 //{ Name                                ,    Id, Flgs,  Class,  Pet, IsPet, Col, Row, SpellID, ReplaceID, S1 },
   { "Second Wind"                       , 15757, 0x00, 0x0001, 0x00,     0,   1,   1,   29838,         0,  0 },
@@ -135,7 +135,7 @@ static struct talent_data_t __ptr_talent_data[] = {
   { "Demonic Breath"                    , 19284, 0x00, 0x0100, 0x00,     0,   0,   1,   47897,         0,  0 },
   { "Mortal Coil"                       , 19285, 0x00, 0x0100, 0x00,     0,   1,   1,    6789,         0,  0 },
   { "Shadowfury"                        , 19286, 0x00, 0x0100, 0x00,     0,   2,   1,   30283,         0,  0 },
-  { "Soul Link"                         , 19287, 0x00, 0x0100, 0x00,     0,   0,   2,  108415,       755,  0 },
+  { "Soul Link"                         , 19287, 0x00, 0x0100, 0x00,     0,   0,   2,  108415,         0,  0 },
   { "Sacrificial Pact"                  , 19288, 0x00, 0x0100, 0x00,     0,   1,   2,  108416,         0,  0 },
   { "Dark Bargain"                      , 19289, 0x00, 0x0100, 0x00,     0,   2,   2,  110913,         0,  0 },
   { "Blood Horror"                      , 19290, 0x00, 0x0100, 0x00,     0,   0,   3,  111397,         0,  0 },
