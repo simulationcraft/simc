@@ -4822,7 +4822,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
         else
         {
           size_t icicles = 0;
-          for ( ssize_t i = mage.icicles.size() - 1; i >= 0; i++ )
+          for ( size_t i = mage.icicles.size() - 1; i >= 0; i++ )
           {
             if ( mage.sim -> current_time - mage.icicles[ i ].first >= timespan_t::from_seconds( 30.0 ) )
               break;
