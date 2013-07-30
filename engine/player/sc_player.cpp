@@ -4959,6 +4959,7 @@ void player_t::assess_damage( school_e school,
    * the currently active absorb buffs of a player.
    */
   size_t offset = 0;
+  double result_ignoring_external_absorbs = s -> result_amount;
 
   while ( offset < absorb_buff_list.size() && s -> result_amount > 0 && ! absorb_buff_list.empty() )
   {
@@ -4980,6 +4981,10 @@ void player_t::assess_damage( school_e school,
       ab -> consume( value );
 
       s -> result_amount -= value;
+      // track result using only self-absorbs separately
+      if ( ab -> source == this )
+        result_ignoring_external_absorbs -= value;
+
       if ( value < buff_value )
       {
         // Buff is not fully consumed
@@ -5003,9 +5008,15 @@ void player_t::assess_damage( school_e school,
 
   // collect data for timelines
   collected_data.timeline_dmg_taken.add( sim -> current_time, s -> result_amount );
+  // tank-specific data storage
   if ( ! is_pet() && primary_role() == ROLE_TANK )
   {
-    collected_data.health_changes.timeline.add( sim -> current_time, s -> result_amount );
+    if ( tmi_self_only || sim -> tmi_actor_only )
+      collected_data.health_changes.timeline.add( sim -> current_time, result_ignoring_external_absorbs );
+    else
+      collected_data.health_changes.timeline.add( sim -> current_time, s -> result_amount );
+
+    // store value in incoming damage array for conditionals
     incoming_damage.push_back( std::pair<timespan_t, double>( sim -> current_time, s -> result_amount ) );
   }
 
@@ -5125,10 +5136,17 @@ void player_t::assess_heal( school_e, dmg_e, heal_state_t* s )
   s -> total_result_amount = s -> result_amount;
   s -> result_amount = resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
 
-  // if the target is a tank record this event on damage timeline - tmi_self_only flag disables recording of external healing
-  if ( ! is_pet() && role == ROLE_TANK && ( ! tmi_self_only || s -> action -> player == this ) ) // may also need to check for s -> action -> target -> type == HEALING_ENEMY ?
-    collected_data.health_changes.timeline.add( sim -> current_time, - ( s -> result_amount ) );
-
+  // if the target is a tank record this event on damage timeline
+  if ( ! is_pet() && role == ROLE_TANK )
+  {
+    // tmi_self_only flag disables recording of external healing - use total_result_amount to ignore overhealing
+    if ( ( tmi_self_only || sim -> tmi_actor_only ) && s -> action -> player == this )
+      collected_data.health_changes.timeline.add( sim -> current_time, - ( s -> total_result_amount ) );
+    // otherwise just record everything, accounting for overheal
+    else if ( ! tmi_self_only && ! sim -> tmi_actor_only )
+      collected_data.health_changes.timeline.add( sim -> current_time, - ( s -> result_amount ) );
+  }
+  // store iteration heal taken
   iteration_heal_taken += s -> result_amount;
 }
 
@@ -8018,6 +8036,10 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
     {
       profile_str += "professions=" + professions_str + term;
     }
+
+    if ( sim -> tmi_actor_only )
+      profile_str += "tmi_self_only=1\n";
+
   }
 
   if ( stype == SAVE_ALL || stype == SAVE_TALENTS )

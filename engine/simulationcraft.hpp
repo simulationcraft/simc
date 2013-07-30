@@ -2514,6 +2514,7 @@ struct sim_t : private sc_thread_t
   int         auto_ready_trigger;
   int         stat_cache;
   int         max_aoe_enemies;
+  bool        tmi_actor_only;
 
   // Target options
   double      target_death;

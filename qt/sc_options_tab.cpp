@@ -173,6 +173,7 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
   connect( choice.debug,              SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.default_role,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.tmi_boss,           SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.tmi_actor_only,     SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.deterministic_rng,  SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.fight_length,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.fight_style,        SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
@@ -233,6 +234,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow( tr(   "Armory Spec" ),    choice.armory_spec = createChoice( 2, "active", "inactive" ) );
   globalsLayout_left -> addRow( tr(  "Default Role" ),   choice.default_role = createChoice( 4, "auto", "dps", "heal", "tank" ) );
   globalsLayout_left -> addRow( tr( "TMI Standard Boss" ),   choice.tmi_boss = createChoice( 4, "custom", "T15H", "T15N", "T15LFR" ) );
+  globalsLayout_left -> addRow( tr( "Actor-only TMI" ), choice.tmi_actor_only = createChoice( 2, "Disabled", "Enabled" ) );
   choice.iterations -> setCurrentIndex( 1 );
   choice.fight_length -> setCurrentIndex( 7 );
   choice.fight_variance -> setCurrentIndex( 2 );
@@ -464,6 +466,8 @@ void SC_OptionsTab::decodeOptions( QString encoding )
   if ( i < tokens.count() )
     choice.tmi_boss -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
+    choice.tmi_actor_only -> setCurrentIndex( tokens[ i++ ].toInt() );
+  if ( i < tokens.count() )
     choice.world_lag -> setCurrentIndex( tokens[ i++ ].toInt() );
   if ( i < tokens.count() )
     choice.target_level -> setCurrentIndex( tokens[ i++ ].toInt() );
@@ -553,6 +557,7 @@ QString SC_OptionsTab::encodeOptions()
   ss << ' ' << choice.armory_spec -> currentIndex();
   ss << ' ' << choice.default_role -> currentIndex();
   ss << ' ' << choice.tmi_boss -> currentIndex();
+  ss << ' ' << choice.tmi_actor_only -> currentIndex();
   ss << ' ' << choice.world_lag -> currentIndex();
   ss << ' ' << choice.target_level -> currentIndex();
   ss << ' ' << choice.aura_delay -> currentIndex();
@@ -675,6 +680,9 @@ void SC_OptionsTab::createToolTips()
   choice.tmi_boss -> setToolTip( tr( "Specify boss damage output based on a TMI standard.\n"
                                      "Leaving at *custom* will use the SimC defaults unless overwritten by the user." ) );
 
+  choice.tmi_actor_only -> setToolTip( tr( "Ignore external healing for TMI calculations.\n"
+                                          "Note that this will apply to all actors." ) );
+
   choice.report_pets -> setToolTip( tr( "Specify if pets get reported separately in detail." ) );
 
   choice.print_style -> setToolTip( tr( "Specify html report print style." ) );
@@ -755,6 +763,9 @@ QString SC_OptionsTab::get_globalSettings()
 
   if ( choice.challenge_mode -> currentIndex() > 0 )
     options += "challenge_mode=1\n";
+  
+  if ( choice.tmi_actor_only -> currentIndex() != 0 )
+    options += "tmi_actor_only=1\n";
 
   if ( choice.tmi_boss -> currentIndex() != 0 )
   {
@@ -775,7 +786,6 @@ QString SC_OptionsTab::get_globalSettings()
     options += "\n";
     options += "target_race=" + choice.target_race->currentText() + "\n";
   }
-
   options += "default_skill=";
   const char *skill[] = { "1.0", "0.9", "0.75", "0.50" };
   options += skill[ choice.player_skill->currentIndex() ];
