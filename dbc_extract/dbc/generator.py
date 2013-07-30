@@ -1178,6 +1178,7 @@ class SpellDataGenerator(DataGenerator):
           ( 7268, 0, False ),                                     # Arcane missiles trigger
           ( 115757, 0, False ),                                   # Frost Nova false positive for activatable
           ( 145264, 0 ),                                          # T16 Frigid Blast
+          ( 148022, 0 ),                                          # Icicle
         ), 
         
         # Warlock:

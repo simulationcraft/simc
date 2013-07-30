@@ -13,8 +13,10 @@ namespace { // UNNAMED NAMESPACE
 
 struct mage_t;
 struct ignite_t;
+struct icicle_t;
 
 enum mage_rotation_e { ROTATION_NONE = 0, ROTATION_DPS, ROTATION_DPM, ROTATION_MAX };
+typedef std::pair< timespan_t, double > icicle_data_t;
 
 struct mage_td_t : public actor_pair_t
 {
@@ -42,6 +44,10 @@ struct mage_td_t : public actor_pair_t
 struct mage_t : public player_t
 {
 public:
+  // Icicles
+  std::vector< icicle_data_t > icicles;
+  icicle_t* icicle;
+  event_t* icicle_event;
 
   // Active
   ignite_t* active_ignite;
@@ -202,7 +208,7 @@ public:
     const spell_data_t* brain_freeze;
     const spell_data_t* fingers_of_frost;
     const spell_data_t* frostburn;
-//    const spell_data_t* icicles;
+    const spell_data_t* icicles;
 
   } spec;
 
@@ -236,6 +242,8 @@ public:
 
   mage_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, MAGE, name, r ),
+    icicle( 0 ),
+    icicle_event( 0 ),
     active_ignite( 0 ),
     active_living_bomb_targets( 0 ),
     benefits( benefits_t() ),
@@ -457,7 +465,7 @@ struct water_elemental_pet_t : public pet_t
   {
     double m = pet_t::composite_player_multiplier( school );
 
-    if ( o() -> spec.frostburn -> ok() )
+    if ( ! maybe_ptr( dbc.ptr ) && o() -> spec.frostburn -> ok() )
 //    if ( o() -> spec.icicles -> ok() )
       m *= 1.0 + o() -> cache.mastery_value();
 
@@ -1055,7 +1063,7 @@ public:
   {
     double am = spell_t::action_multiplier();
 
-    if ( frozen && p() -> spec.frostburn -> ok() )
+    if ( ! maybe_ptr( player -> dbc.ptr ) && frozen && p() -> spec.frostburn -> ok() )
       am *= 1.0 + p() -> cache.mastery_value();
 
     return am;
@@ -1179,6 +1187,133 @@ public:
 
   void trigger_ignite( action_state_t* state );
 };
+
+// Icicles ==================================================================
+
+static double icicle_damage( mage_t* mage )
+{
+  if ( mage -> sim -> current_time - mage -> icicles[ 0 ].first >= timespan_t::from_seconds( 30 ) )
+    mage -> icicles.clear();
+  else
+  {
+    std::vector< icicle_data_t >::iterator idx = mage -> icicles.begin(),
+                                           end = mage -> icicles.end();
+    for (; idx < end; idx++ )
+    {
+      if ( mage -> sim -> current_time - (*idx).first < timespan_t::from_seconds( 30 ) )
+        break;
+    }
+
+    if ( idx != mage -> icicles.begin() )
+      mage -> icicles.erase( mage -> icicles.begin(), idx );
+  }
+
+  if ( mage -> icicles.size() > 0 )
+  {
+    icicle_data_t d = mage -> icicles.front();
+    mage -> icicles.erase( mage -> icicles.begin() );
+    return d.second;
+  }
+
+  return 0;
+}
+
+struct icicle_t : public mage_spell_t
+{
+  icicle_t( mage_t* p ) : mage_spell_t( "icicle", p, p -> find_spell( 148022 ) )
+  {
+    may_crit = false;
+    proc = background = true;
+  }
+
+  void init()
+  {
+    mage_spell_t::init();
+
+    snapshot_flags &= ~STATE_MUL_DA;
+  }
+};
+
+struct icicle_event_t : public event_t
+{
+  mage_t* mage;
+  double damage;
+
+  icicle_event_t( mage_t* m, double d, bool first = false ) :
+    event_t( m, "icicle_event" ), mage( m ), damage( d )
+  { 
+    double cast_time = first ? 0.25 : 0.75;
+    cast_time *= mage -> cache.spell_speed();
+  
+    sim.add_event( this, timespan_t::from_seconds( cast_time ) );
+  }
+
+  void execute()
+  {
+    mage -> icicle -> base_dd_min = mage -> icicle -> base_dd_max = damage;
+    mage -> icicle -> schedule_execute();
+
+    double d = icicle_damage( mage );
+    if ( d > 0 )
+    {
+      mage -> icicle_event = new ( sim ) icicle_event_t( mage, d );
+      if ( mage -> sim -> debug )
+        mage -> sim -> output( "%s icicle use, total %u", mage -> name(), as<unsigned>( mage -> icicles.size() ) );
+    }
+    else
+      mage -> icicle_event = 0;
+  }
+};
+
+static void trigger_icicle( mage_t* mage, bool chain = false )
+{
+  if ( ! mage -> spec.icicles -> ok() )
+    return;
+
+  if ( ! mage -> icicle )
+  {
+    mage -> icicle = new icicle_t( mage );
+    mage -> icicle -> init();
+  }
+
+  double d = icicle_damage( mage );
+
+  if ( d == 0 )
+    return;
+
+  if ( mage -> sim -> debug )
+    mage -> sim -> output( "%s icicle use, total %u", mage -> name(), as<unsigned>( mage -> icicles.size() ) );
+
+  if ( chain )
+  {
+    if ( ! mage -> icicle_event )
+      mage -> icicle_event = new ( *mage -> sim ) icicle_event_t( mage, d, true );
+  }
+  else
+  {
+    mage -> icicle -> base_dd_min = mage -> icicle -> base_dd_max = d;
+    mage -> icicle -> schedule_execute();
+  }
+}
+
+static void trigger_icicle_gain( action_state_t* state )
+{
+  if ( ! state -> action -> result_is_hit( state -> result ) )
+    return;
+
+  mage_t* mage = debug_cast< mage_t* >( state -> action -> player );
+  if ( ! mage -> spec.icicles -> ok() )
+    return;
+
+  double amount = state -> result_amount / state -> target_da_multiplier * mage -> cache.mastery_value();
+
+  // Shoot one
+  if ( as<int>( mage -> icicles.size() ) >= mage -> spec.icicles -> effectN( 2 ).base_value() )
+    trigger_icicle( mage );
+  mage -> icicles.push_back( icicle_data_t( mage -> sim -> current_time, amount ) );
+  if ( mage -> sim -> debug )
+    mage -> sim -> output( "%s icicle gain, total %u", mage -> name(), as<unsigned>( mage -> icicles.size() ) );
+}
 
 // Ignite ===================================================================
 
@@ -2036,6 +2171,12 @@ struct mini_frostbolt_t : public mage_spell_t
     }
   }
 
+  void impact( action_state_t* s )
+  {
+    mage_spell_t::impact( s );
+    trigger_icicle_gain( s );
+  }
+
   virtual timespan_t execute_time()
   { return timespan_t::from_seconds( 0.25 ); }
 };
@@ -2119,8 +2260,10 @@ struct frostbolt_t : public mage_spell_t
   virtual void impact( action_state_t* s )
   {
     // TO CHECK : does mini FB apply FB debuff ? prolly yes
-    if ( !static_cast<const state_t&>( *s ).mini_version ) // Bail out if mini spells get casted
-    { mage_spell_t::impact( s ); }
+    if ( ! static_cast<const state_t&>( *s ).mini_version ) // Bail out if mini spells get casted
+    {
+      mage_spell_t::impact( s );
+    }
     // If there are five Icicles, launch the oldest at this spell's target
     // Create an Icicle, stashing damage equal to mastery * value
     // Damage should be based on damage spell would have done without any
@@ -2131,6 +2274,8 @@ struct frostbolt_t : public mage_spell_t
     {
       td( s -> target ) -> debuffs.frostbolt -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
     }
+
+    trigger_icicle_gain( s );
   }
 
   virtual double action_multiplier()
@@ -2179,6 +2324,12 @@ struct mini_frostfire_bolt_t : public mage_spell_t
     }
   }
 
+  void impact( action_state_t* s )
+  {
+    mage_spell_t::impact( s );
+    trigger_icicle_gain( s );
+  }
+
   virtual timespan_t execute_time()
   { return timespan_t::from_seconds( 0.25 ); }
 
@@ -2220,6 +2371,7 @@ struct frostfire_bolt_t : public mage_spell_t
       mini_version = static_cast<const state_t&>( *o ).mini_version;
     }
   };
+
   mini_frostfire_bolt_t* mini_frostfire_bolt;
   frigid_blast_t* frigid_blast;
   rng_t *t16_4pc_frost_rng;
@@ -2334,6 +2486,8 @@ struct frostfire_bolt_t : public mage_spell_t
 
       trigger_ignite( s );
     }
+
+    trigger_icicle_gain( s );
   }
 
   virtual double composite_crit_multiplier()
@@ -2531,6 +2685,7 @@ struct ice_lance_t : public mage_spell_t
 
     p() -> buffs.fingers_of_frost -> decrement();
     p() -> buffs.frozen_thoughts -> expire();
+    trigger_icicle( p(), true );
   }
 
   virtual void impact( action_state_t* s )
@@ -3830,8 +3985,8 @@ void mage_t::init_spells()
   spec.pyromaniac            = find_specialization_spell( "Pyromaniac" );
 
   // Mastery
-  spec.frostburn             = find_mastery_spell( MAGE_FROST );
-//  spec.icicles               = find_mastery_spell( MAGE_FROST );
+  spec.frostburn             = ! maybe_ptr( dbc.ptr ) ? find_mastery_spell( MAGE_FROST ) : spell_data_t::nil();
+  spec.icicles               = maybe_ptr( dbc.ptr ) ? find_mastery_spell( MAGE_FROST ) : spell_data_t::nil();
   spec.ignite                = find_mastery_spell( MAGE_FIRE );
   spec.mana_adept            = find_mastery_spell( MAGE_ARCANE );
 
@@ -4485,6 +4640,8 @@ void mage_t::reset()
   player_t::reset();
 
   rotation.reset();
+  icicles.clear();
+  event_t::cancel( icicle_event );
   mana_gem_charges = max_mana_gem_charges();
   active_living_bomb_targets = 0;
 }
@@ -4634,6 +4791,51 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       }
     };
     return new regen_mps_expr_t( *this );
+  }
+
+  if ( util::str_compare_ci( name_str, "shooting_icicles" ) )
+  {
+    struct sicicles_expr_t : public mage_expr_t
+    {
+      sicicles_expr_t( mage_t& m ) : mage_expr_t( "shooting_icicles", m )
+      { }
+      double evaluate()
+      { return mage.icicle_event != 0; }
+    };
+
+    return new sicicles_expr_t( *this );
+  }
+
+  if ( util::str_compare_ci( name_str, "icicles" ) )
+  {
+    struct icicles_expr_t : public mage_expr_t
+    {
+      icicles_expr_t( mage_t& m ) : mage_expr_t( "icicles", m )
+      { }
+
+      double evaluate()
+      {
+        if ( mage.icicles.size() == 0 )
+          return 0;
+        else if ( mage.sim -> current_time - mage.icicles[ 0 ].first < timespan_t::from_seconds( 30.0 ) )
+          return mage.icicles.size();
+        else
+        {
+          size_t icicles = 0;
+          for ( ssize_t i = mage.icicles.size() - 1; i >= 0; i++ )
+          {
+            if ( mage.sim -> current_time - mage.icicles[ i ].first >= timespan_t::from_seconds( 30.0 ) )
+              break;
+
+            icicles++;
+          }
+
+          return icicles;
+        }
+      }
+    };
+
+    return new icicles_expr_t( *this );
   }
 
   return player_t::create_expression( a, name_str );
