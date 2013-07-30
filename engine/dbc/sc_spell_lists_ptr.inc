@@ -837,7 +837,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Monk
   {
-    // General tree, 28 abilities
+    // General tree, 27 abilities
     {
       100784, // Blackout Kick
       117952, // Crackling Jade Lightning
@@ -845,7 +845,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       115450, // Detox
       116095, // Disable
       118022, // Dizzying Haze
-      119650, // Energy Usage
       115072, // Expel Harm
       115203, // Fortifying Brew
       117368, // Grapple Weapon

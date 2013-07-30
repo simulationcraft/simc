@@ -2439,6 +2439,10 @@ class SpellListGenerator(SpellDataGenerator):
             self.debug( "Spell id %u (%s) marked as passive" % ( spell.id, spell.name ) )
             return False
 
+        if self._spellmisc_db[spell.id_misc].flags & 0x80:
+            self.debug( "Spell id %u (%s) marked as hidden" % ( spell.id, spell.name ) )
+            return False
+
         # Skip by possible indicator for spellbook visibility
         if self._spellmisc_db[spell.id_misc].flags_4 & 0x8000:
             self.debug( "Spell id %u (%s) marked as hidden in spellbook" % ( spell.id, spell.name ) )

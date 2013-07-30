@@ -331,6 +331,7 @@ std::ostringstream& spell_info::effect_to_str( sim_t*                    sim,
           if ( e -> period() != timespan_t::zero() )
             s << " every " << e -> period().total_seconds() << " seconds";
           break;
+        case A_PERIODIC_HEAL:
         case A_PERIODIC_ENERGIZE:
         case A_PERIODIC_DUMMY:
           if ( e -> period() != timespan_t::zero() )
