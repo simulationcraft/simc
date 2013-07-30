@@ -861,6 +861,31 @@ struct melee_t : public warrior_attack_t
   }
 };
 
+// Off-hand test attack =====================================================
+// This class is used by several attacks which use both weapons (e.g. Raging Blow)
+
+struct off_hand_test_attack_t : public warrior_attack_t
+{
+  result_e last_result;
+  off_hand_test_attack_t( warrior_t* p, const char* name ) : 
+    warrior_attack_t( name, p ), last_result( RESULT_NONE )
+  {
+    background=true;
+    weapon = &( p -> off_hand_weapon );
+    trigger_gcd = timespan_t::zero();
+    weapon_multiplier = 0.0;
+    direct_power_mod = 0.0;
+    // we may want to disable all procs for this attack
+  }
+
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+    last_result = execute_state -> result;
+  }
+
+};
+
 // Auto Attack ==============================================================
 
 struct auto_attack_t : public warrior_attack_t
@@ -1727,10 +1752,11 @@ struct raging_blow_t : public warrior_attack_t
 {
   raging_blow_attack_t* mh_attack;
   raging_blow_attack_t* oh_attack;
+  off_hand_test_attack_t* oh_test;
 
   raging_blow_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "raging_blow", p, p -> find_class_spell( "Raging Blow" ) ),
-    mh_attack( NULL ), oh_attack( NULL )
+    mh_attack( NULL ), oh_attack( NULL ), oh_test( NULL )
   {
     // Parent attack is only to determine miss/dodge/parry
     base_dd_min = base_dd_max = 0;
@@ -1748,6 +1774,9 @@ struct raging_blow_t : public warrior_attack_t
     oh_attack -> weapon = &( p -> off_hand_weapon );
     add_child( oh_attack );
 
+    oh_test = new off_hand_test_attack_t( p, "raging_blow_oh_test" );
+    add_child( oh_test );
+
     // Needs weapons in both hands
     if ( p -> main_hand_weapon.type == WEAPON_NONE ||
          p -> off_hand_weapon.type == WEAPON_NONE )
@@ -1756,10 +1785,15 @@ struct raging_blow_t : public warrior_attack_t
 
   virtual void execute()
   {
+    // check off-hand attack
+    oh_test -> execute(); // perform test OH attack
+    
+    // check main hand attack
     attack_t::execute();
+
     warrior_t* p = cast();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( result_is_hit( execute_state -> result ) && result_is_hit( oh_test -> last_result ) )
     {
       mh_attack -> execute();
       oh_attack -> execute();
