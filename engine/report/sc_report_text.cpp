@@ -592,6 +592,7 @@ void print_text_scale_factors( FILE* file, player_t* p, player_processed_report_
   std::string wowhead_std    = ri.gear_weights_wowhead_std_link;
   std::string wowhead_alt    = ri.gear_weights_wowhead_alt_link;
   std::string wowreforge     = ri.gear_weights_wowreforge_link;
+  std::string askmrrobot     = ri.gear_weights_askmrrobot_link;
   std::string pawn_std       = ri.gear_weights_pawn_std_string;
   std::string pawn_alt       = ri.gear_weights_pawn_alt_string;
 

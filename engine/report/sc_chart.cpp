@@ -2336,6 +2336,156 @@ std::string chart::gear_weights_wowreforge( player_t* p )
   return util::encode_html( ss.str() );
 }
 
+// chart::gear_weights_askmrrobot ===========================================
+
+std::string chart::gear_weights_askmrrobot( player_t* p )
+{
+  std::stringstream ss;
+  ss << "http://www.askmrrobot.com/wow/gear/";
+
+  // Use valid names if we are provided those
+  if ( ! p -> region_str.empty() && ! p -> server_str.empty() && ! p -> name_str.empty() )
+  {
+    if ( p -> region_str == "us" )
+      ss << p -> region_str << "a";
+    else
+      ss << p -> region_str;
+    
+    ss << '/' << p -> server_str << '/' << p -> name_str;
+  }
+  else
+  {
+    std::string region_str, server_str, name_str;
+    if ( util::parse_origin( region_str, server_str, name_str, p -> origin_str ) )
+    {
+      if ( region_str == "us" )
+        ss << region_str << "a";
+      else
+        ss << region_str;
+
+      ss << '/' << server_str << '/' << name_str;
+    }
+    else
+    {
+      ss << '?';
+    }
+  }
+  ss << "?spec=";
+  
+  // This next section is sort of unwieldly, I may move this to external functions
+
+  // Player type
+  switch ( p -> type )
+  {
+    case DEATH_KNIGHT: ss << "DeathKnight";  break;
+    case DRUID:        ss << "Druid"; break;
+    case HUNTER:       ss << "Hunter";  break;
+    case MAGE:         ss << "Mage";  break;
+    case PALADIN:      ss << "Paladin";  break;
+    case PRIEST:       ss << "Priest";  break;
+    case ROGUE:        ss << "Rogue";  break;
+    case SHAMAN:       ss << "Shaman";  break;
+    case WARLOCK:      ss << "Warlock";  break;
+    case WARRIOR:      ss << "Warrior";  break;
+    case MONK:         ss << "Monk"; break;
+    default: assert( 0 ); break;
+  }  
+  // Player spec
+  switch ( p -> specialization() )
+  {
+    case DEATH_KNIGHT_FROST:
+      {
+        if ( p -> main_hand_weapon.type == WEAPON_2H ) { ss << "Frost2H"; break; }
+        else {ss << "FrostDW"; break;}
+      }
+    case DEATH_KNIGHT_UNHOLY:   ss << "Unholy2H"; break;
+    case DEATH_KNIGHT_BLOOD:    ss << "Blood2H"; break;
+    case DRUID_BALANCE:         ss << "Moonkin"; break;
+    case DRUID_FERAL:           ss << "FeralCat"; break;
+    case DRUID_GUARDIAN:        ss << "FeralBear"; break;
+    case DRUID_RESTORATION:     ss << "Restoration"; break;
+    case HUNTER_BEAST_MASTERY:  ss << "BeastMastery"; break;
+    case HUNTER_MARKSMANSHIP:   ss << "Marksmanship"; break;
+    case HUNTER_SURVIVAL:       ss << "Survival"; break;
+    case MAGE_ARCANE:           ss << "Arcane"; break;
+    case MAGE_FIRE:             ss << "Fire"; break;
+    case MAGE_FROST:            ss << "Frost"; break;
+    case PALADIN_HOLY:          ss << "Holy"; break;
+    case PALADIN_PROTECTION:    ss << "Protection"; break;
+    case PALADIN_RETRIBUTION:   ss << "Retribution"; break;
+    case PRIEST_DISCIPLINE:     ss << "Discipline"; break;
+    case PRIEST_HOLY:           ss << "Holy"; break;
+    case PRIEST_SHADOW:         ss << "Shadow"; break;
+    case ROGUE_ASSASSINATION:   ss << "Assassination"; break;
+    case ROGUE_COMBAT:          ss << "Combat"; break;
+    case ROGUE_SUBTLETY:        ss << "Subtlety"; break;
+    case SHAMAN_ELEMENTAL:      ss << "Elemental"; break;
+    case SHAMAN_ENHANCEMENT:    ss << "Enhancement"; break;
+    case SHAMAN_RESTORATION:    ss << "Restoration"; break;
+    case WARLOCK_AFFLICTION:    ss << "Affliction"; break;
+    case WARLOCK_DEMONOLOGY:    ss << "Demonology"; break;
+    case WARLOCK_DESTRUCTION:   ss << "Destruction"; break;
+    case WARRIOR_ARMS:          ss << "Arms"; break;
+    case WARRIOR_FURY: 
+      {
+        if ( p -> main_hand_weapon.type == WEAPON_SWORD_2H || p -> main_hand_weapon.type == WEAPON_AXE_2H || p -> main_hand_weapon.type == WEAPON_MACE_2H || p -> main_hand_weapon.type == WEAPON_POLEARM ) 
+          { ss << "Fury2H"; break; }
+        else { ss << "Fury"; break; }
+      }         
+    case WARRIOR_PROTECTION:    ss << "Protection"; break;
+    case MONK_BREWMASTER:
+      {
+        if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { ss << "Brewmaster2h"; break; }
+        else { ss << "BrewmasterDw"; break; }
+      }
+    case MONK_MISTWEAVER:       ss << "Mistweaver"; break;
+    case MONK_WINDWALKER: 
+      {
+        if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { ss << "Windwalker2h"; break; }
+        else { ss << "WindwalkerDw"; break; }
+      } 
+  }
+  
+  // add weights
+  ss << "&weights=";    
+
+  // check for negative normalizer
+  bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
+
+  // AMR accepts a max precision of 2 decimal places
+  ss.precision( std::min(p -> sim -> report_precision + 1, 2 ) );
+
+  // flag for skipping the first comma
+  bool skipFirstComma = false;
+
+  // loop through stats and append the relevant ones to the URL
+  for ( stat_e i = STAT_NONE; i < STAT_MAX; ++i )
+  {
+    // get stat weight value
+    double value = positive_normalizing_value ? p -> scaling_normalized.get_stat( i ) : -p -> scaling_normalized.get_stat( i );
+
+    // if the weight is negative or AMR won't recognize the stat type string, skip this stat
+    if ( value <= 0 || util::str_compare_ci( util::stat_type_askmrrobot( i ), "unknown" ) ) continue;
+
+    // skip the first comma
+    if ( skipFirstComma )
+      ss << ',';
+    skipFirstComma = true;    
+
+    // AMR can't handle double-digit stat weights, for now just cap at 9.99 
+    if ( value > 9.99 )
+      value = 9.99;
+
+    // append the stat weight to the URL
+    ss << util::stat_type_askmrrobot( i ) << ':' << value;    
+  }
+
+  // softweights, softcaps, hardcaps would go here if we supported them
+
+  return util::encode_html( ss.str() );
+
+}
+
 // chart::gear_weights_pawn =================================================
 
 std::string chart::gear_weights_pawn( player_t* p,

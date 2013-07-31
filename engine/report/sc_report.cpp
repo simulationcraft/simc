@@ -1041,6 +1041,7 @@ void report::generate_player_charts( player_t* p, player_processed_report_inform
     ri.gear_weights_wowhead_std_link     = chart::gear_weights_wowhead    ( p, true );
     ri.gear_weights_wowhead_alt_link     = chart::gear_weights_wowhead    ( p, false );
     ri.gear_weights_wowreforge_link      = chart::gear_weights_wowreforge ( p );
+    ri.gear_weights_askmrrobot_link      = chart::gear_weights_askmrrobot ( p );
     ri.gear_weights_wowupgrade_link      = chart::gear_weights_wowupgrade ( p );
     ri.gear_weights_pawn_std_string      = chart::gear_weights_pawn       ( p, true  );
     ri.gear_weights_pawn_alt_string      = chart::gear_weights_pawn       ( p, false );

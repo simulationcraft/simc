@@ -1323,18 +1323,30 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
       os << "\t\t\t\t\t\t\t\t</td>\n";
       os << "\t\t\t\t\t\t\t</tr>\n";
 
+      // Optimizers section
       os.printf(
         "\t\t\t\t\t\t\t<tr class=\"left\">\n"
         "\t\t\t\t\t\t\t\t<th>Optimizers</th>\n"
         "\t\t\t\t\t\t\t\t<td colspan=\"%i\" class=\"filler\">\n"
-        "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n"
-        "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">wowreforge</a></li>\n"
-        "\t\t\t\t\t\t\t\t\t</ul>\n"
-        "\t\t\t\t\t\t\t\t</td>\n"
-        "\t\t\t\t\t\t\t</tr>\n",
-        colspan,
+        "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n",
+        colspan );
+
+      // wowreforge
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">wowreforge</a></li>\n",
         ri.gear_weights_wowreforge_link.c_str() );
 
+      // askmrrobot
+      os.printf(        
+        "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">askmrrobot</a></li>\n",
+        ri.gear_weights_askmrrobot_link.c_str() );
+
+      // close optimizers section
+      os << "\t\t\t\t\t\t\t\t\t</ul>\n";
+      os << "\t\t\t\t\t\t\t\t</td>\n";
+      os << "\t\t\t\t\t\t\t</tr>\n";
+
+      // Text Ranking
       os.printf(
         "\t\t\t\t\t\t\t<tr class=\"left\">\n"
         "\t\t\t\t\t\t\t\t<th><a href=\"#help-sf-ranking\" class=\"help\">Ranking</a></th>\n"
