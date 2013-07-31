@@ -5502,13 +5502,15 @@ private:
   double       freq;
   timespan_t   last_trigger_attempt;
   timespan_t   last_successful_trigger;
+  timespan_t   initial_precombat_time;
   rppm_scale_e scales_with;
 public:
   real_ppm_t( const std::string& name, player_t& p, double frequency = std::numeric_limits<double>::min(), rppm_scale_e s = RPPM_HASTE ) :
     rng( p.get_rng( name ) ),
     freq( frequency ),
     last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
-    last_successful_trigger( timespan_t::from_seconds( -300.0 ) ), // Assume 5min out of combat before pull
+    initial_precombat_time( timespan_t::from_seconds( p.dbc.ptr ? -90 :-300.0 )),// Assume 5min out of combat before pull
+    last_successful_trigger( timespan_t::from_seconds( p.dbc.ptr ? -90 :-300.0 )),
     scales_with( s )
   { }
 
@@ -5521,7 +5523,7 @@ public:
   void reset()
   {
     last_trigger_attempt = timespan_t::from_seconds( -10.0 );
-    last_successful_trigger = timespan_t::from_seconds( -300.0 );
+    last_successful_trigger = initial_precombat_time;
   }
 
   bool trigger( action_t& a )
