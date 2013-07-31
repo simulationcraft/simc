@@ -1216,7 +1216,7 @@ static double icicle_damage( mage_t* mage )
   timespan_t threshold = mage -> spells.icicles_driver -> duration();
 
   std::vector< icicle_data_t >::iterator idx = mage -> icicles.begin(),
-                                          end = mage -> icicles.end();
+                                         end = mage -> icicles.end();
   for (; idx < end; idx++ )
   {
     if ( mage -> sim -> current_time - (*idx).first < threshold )
@@ -1226,16 +1226,12 @@ static double icicle_damage( mage_t* mage )
   // Set of icicles timed out
   if ( idx != mage -> icicles.begin() )
     mage -> icicles.erase( mage -> icicles.begin(), idx );
-  // First icicle needs to be handled as a special case if it's the only 
-  // one that is expired
-  else if ( mage -> sim -> current_time - mage -> icicles[ 0 ].first >= threshold )
-    mage -> icicles.erase( mage -> icicles.begin() );
 
   if ( mage -> icicles.size() > 0 )
   {
-    icicle_data_t d = mage -> icicles.front();
+    double d = mage -> icicles.front().second;
     mage -> icicles.erase( mage -> icicles.begin() );
-    return d.second;
+    return d;
   }
 
   return 0;
@@ -1265,8 +1261,8 @@ struct icicle_event_t : public event_t
     {
       mage -> icicle_event = new ( sim ) icicle_event_t( mage, d );
       if ( mage -> sim -> debug )
-        mage -> sim -> output( "%s icicle use (chained), total %u", 
-            mage -> name(), as<unsigned>( mage -> icicles.size() ) );
+        mage -> sim -> output( "%s icicle use (chained), damage=%f, total=%u", 
+            mage -> name(), d, as<unsigned>( mage -> icicles.size() ) );
     }
     else
       mage -> icicle_event = 0;
@@ -1284,8 +1280,8 @@ static void trigger_icicle( mage_t* mage, bool chain = false )
     return;
 
   if ( mage -> sim -> debug )
-    mage -> sim -> output( "%s icicle use%s, total %u", 
-        mage -> name(), chain ? " (chained)" : "", 
+    mage -> sim -> output( "%s icicle use%s, damage=%f, total=%u", 
+        mage -> name(), chain ? " (chained)" : "", d, 
         as<unsigned>( mage -> icicles.size() ) );
 
   if ( chain )
@@ -1309,14 +1305,19 @@ static void trigger_icicle_gain( action_state_t* state )
   if ( ! mage -> spec.icicles -> ok() )
     return;
 
+  // Icicles do not double dip on target based multipliers
   double amount = state -> result_amount / state -> target_da_multiplier * mage -> cache.mastery_value();
 
+  assert( as<int>( mage -> icicles.size() ) <= mage -> spec.icicles -> effectN( 2 ).base_value() );
   // Shoot one
-  if ( as<int>( mage -> icicles.size() ) >= mage -> spec.icicles -> effectN( 2 ).base_value() )
+  if ( as<int>( mage -> icicles.size() ) == mage -> spec.icicles -> effectN( 2 ).base_value() )
     trigger_icicle( mage );
   mage -> icicles.push_back( icicle_data_t( mage -> sim -> current_time, amount ) );
   if ( mage -> sim -> debug )
-    mage -> sim -> output( "%s icicle gain, total %u", mage -> name(), as<unsigned>( mage -> icicles.size() ) );
+    mage -> sim -> output( "%s icicle gain, damage=%f, total=%u", 
+        mage -> name(), 
+        amount,
+        as<unsigned>( mage -> icicles.size() ) );
 }
 
 // Ignite ===================================================================
