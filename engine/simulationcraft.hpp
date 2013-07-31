@@ -5509,8 +5509,8 @@ public:
     rng( p.get_rng( name ) ),
     freq( frequency ),
     last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
-    initial_precombat_time( timespan_t::from_seconds( p.dbc.ptr ? -90 :-300.0 )),// Assume 5min out of combat before pull
     last_successful_trigger( timespan_t::from_seconds( p.dbc.ptr ? -90 :-300.0 )),
+    initial_precombat_time( timespan_t::from_seconds( p.dbc.ptr ? -90 :-300.0 )),// Assume 5min out of combat before pull
     scales_with( s )
   { }
 
