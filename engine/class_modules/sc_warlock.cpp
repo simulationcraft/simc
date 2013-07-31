@@ -3130,13 +3130,25 @@ struct fel_flame_t : public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    if ( p() -> specialization() == WARLOCK_DESTRUCTION ) trigger_ember_gain( p(), 0.1, p() -> gains.fel_flame );
-
-    if ( result_is_hit( s -> result ) )
+    if ( p() -> specialization() == WARLOCK_DESTRUCTION )
     {
-      extend_dot(            td( s -> target ) -> dots_immolate, 3 );
-      extend_dot( td( s -> target ) -> dots_unstable_affliction, 3 );
-      extend_dot(          td( s -> target ) -> dots_corruption, 3 );
+      if ( s->result == RESULT_HIT)
+      {
+        trigger_ember_gain( p(), 0.1, p() -> gains.fel_flame );
+      }
+      else
+      {
+        trigger_ember_gain( p(), 0.2, p() -> gains.fel_flame );
+      }
+    }
+
+    if ( p() -> specialization() == WARLOCK_DEMONOLOGY ) p() -> resource_gain( RESOURCE_DEMONIC_FURY, data().effectN(3).base_value(), p() -> gains.fel_flame );
+
+    if ( result_is_hit( s -> result ) && ! p() -> dbc.ptr )
+    {
+      extend_dot(            td( s -> target ) -> dots_immolate, data().effectN(2).base_value() );
+      extend_dot( td( s -> target ) -> dots_unstable_affliction, data().effectN(2).base_value() );
+      extend_dot(          td( s -> target ) -> dots_corruption, data().effectN(2).base_value() );
     }
   }
 
