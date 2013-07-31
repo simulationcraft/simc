@@ -3132,11 +3132,11 @@ struct fel_flame_t : public warlock_spell_t
 
     if ( p() -> specialization() == WARLOCK_DESTRUCTION )
     {
-      if ( s->result == RESULT_HIT)
+      if ( s -> result == RESULT_HIT)
       {
         trigger_ember_gain( p(), 0.1, p() -> gains.fel_flame );
       }
-      else
+      else if (s -> result == RESULT_CRIT)
       {
         trigger_ember_gain( p(), 0.2, p() -> gains.fel_flame );
       }
