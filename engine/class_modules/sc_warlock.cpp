@@ -104,6 +104,7 @@ public:
     const spell_data_t* grimoire_of_supremacy;
     const spell_data_t* grimoire_of_service;
     const spell_data_t* grimoire_of_sacrifice;
+    const spell_data_t* archimondes_darkness;
     const spell_data_t* archimondes_vengeance;
     const spell_data_t* kiljaedens_cunning;
   } talents;
@@ -3327,8 +3328,12 @@ struct dark_soul_t : public warlock_spell_t
   {
     harmful = false;
 
+    if ( p -> dbc.ptr  && p -> talents.archimondes_darkness -> ok())
+    {
+      cooldown -> charges = p -> talents.archimondes_darkness -> effectN(1).base_value();
+    }
     cooldown -> duration += p -> set_bonus.tier14_4pc_caster() * p -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
-    p -> buffs.dark_soul -> cooldown -> duration = cooldown -> duration;
+    if (! p -> dbc.ptr) p -> buffs.dark_soul -> cooldown -> duration = cooldown -> duration;
   }
 
   virtual void execute()
@@ -3336,7 +3341,7 @@ struct dark_soul_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     p() -> buffs.dark_soul -> trigger();
-    if ( p() -> glyphs.dark_soul -> ok() )
+    if (!p() -> dbc.ptr && p() -> glyphs.dark_soul -> ok() )
       new ( *p() -> sim ) dark_soul_invalidate_event_t( p(), p() -> buffs.dark_soul -> cooldown -> remains() );
   }
 };
@@ -4366,10 +4371,17 @@ double warlock_t::composite_spell_crit()
 
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
-    if ( buffs.dark_soul -> up() )
-      sc += spec.dark_soul -> effectN( 1 ).percent() * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() );
-    else if ( buffs.dark_soul -> cooldown -> up() )
-      sc += spec.dark_soul -> effectN( 1 ).percent() * glyphs.dark_soul -> effectN( 1 ).percent();
+    if (!dbc.ptr)
+    {
+      if ( buffs.dark_soul -> up() )
+        sc += spec.dark_soul -> effectN( 1 ).percent() * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() );
+      else if ( buffs.dark_soul -> cooldown -> up() )
+        sc += spec.dark_soul -> effectN( 1 ).percent() * glyphs.dark_soul -> effectN( 1 ).percent();
+    }
+    else if ( buffs.dark_soul -> up() )
+    {
+      sc += spec.dark_soul -> effectN( 1 ).percent() ;
+    }
   }
 
   return sc;
@@ -4382,10 +4394,18 @@ double warlock_t::composite_spell_haste()
 
   if ( specialization() == WARLOCK_AFFLICTION )
   {
-    if ( buffs.dark_soul -> up() )
+    if (!dbc.ptr)
+    {
+      if ( buffs.dark_soul -> up() )
       h *= 1.0 / ( 1.0 + spec.dark_soul -> effectN( 1 ).percent() * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() ) );
     else if ( buffs.dark_soul -> cooldown -> up() )
       h *= 1.0 / ( 1.0 + spec.dark_soul -> effectN( 1 ).percent() * glyphs.dark_soul -> effectN( 1 ).percent() );
+    }
+    else  if ( buffs.dark_soul -> up() )
+    {
+      h *= 1.0 / ( 1.0 + spec.dark_soul -> effectN( 1 ).percent());
+    }
+    
   }
 
   return h;
@@ -4398,10 +4418,18 @@ double warlock_t::composite_mastery()
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    if ( buffs.dark_soul -> up() )
-      m += spec.dark_soul -> effectN( 1 ).average( this ) * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() ) / current_rating().mastery;
-    else if ( buffs.dark_soul -> cooldown -> up() )
-      m += spec.dark_soul -> effectN( 1 ).average( this ) * glyphs.dark_soul -> effectN( 1 ).percent() / current_rating().mastery;
+    if (!dbc.ptr)
+    {
+      if ( buffs.dark_soul -> up() )
+        m += spec.dark_soul -> effectN( 1 ).average( this ) * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() ) / current_rating().mastery;
+      else if ( buffs.dark_soul -> cooldown -> up() )
+        m += spec.dark_soul -> effectN( 1 ).average( this ) * glyphs.dark_soul -> effectN( 1 ).percent() / current_rating().mastery;
+    }
+    else if ( buffs.dark_soul -> up() )
+    {
+      m += spec.dark_soul -> effectN( 1 ).average( this );
+    }
+    
   }
 
   return m;
@@ -4714,11 +4742,18 @@ void warlock_t::init_spells()
   talents.grimoire_of_supremacy = find_talent_spell( "Grimoire of Supremacy" );
   talents.grimoire_of_service   = find_talent_spell( "Grimoire of Service" );
   talents.grimoire_of_sacrifice = find_talent_spell( "Grimoire of Sacrifice" );
-  talents.archimondes_vengeance = find_talent_spell( "Archimonde's Vengeance" );
+  if ( dbc.ptr )
+  {
+    talents.archimondes_darkness = find_talent_spell( "Archimonde's Darkness" );
+  }
+  else
+  {
+   talents.archimondes_vengeance = find_talent_spell( "Archimonde's Vengeance" );
+  }
   talents.kiljaedens_cunning    = find_talent_spell( "Kil'jaeden's Cunning" );
 
   glyphs.conflagrate            = find_glyph_spell( "Glyph of Conflagrate" );
-  glyphs.dark_soul              = find_glyph_spell( "Glyph of Dark Soul" );
+  if (!dbc.ptr) glyphs.dark_soul = find_glyph_spell( "Glyph of Dark Soul" );
   glyphs.demon_training         = find_glyph_spell( "Glyph of Demon Training" );
   glyphs.life_tap               = find_glyph_spell( "Glyph of Life Tap" );
   glyphs.imp_swarm              = find_glyph_spell( "Glyph of Imp Swarm" );
@@ -4797,7 +4832,7 @@ void warlock_t::create_buffs()
   buffs.fire_and_brimstone    = buff_creator_t( this, "fire_and_brimstone", find_class_spell( "Fire and Brimstone" ) );
   buffs.soul_swap             = buff_creator_t( this, "soul_swap", find_spell( 86211 ) );
   buffs.havoc                 = buff_creator_t( this, "havoc", find_class_spell( "Havoc" ) );
-  buffs.archimondes_vengeance = buff_creator_t( this, "archimondes_vengeance", talents.archimondes_vengeance );
+  if (!dbc.ptr) buffs.archimondes_vengeance = buff_creator_t( this, "archimondes_vengeance", talents.archimondes_vengeance );
   buffs.kiljaedens_cunning    = buff_creator_t( this, "kiljaedens_cunning", talents.kiljaedens_cunning );
   buffs.demonic_rebirth       = buff_creator_t( this, "demonic_rebirth", find_spell( 88448 ) ).cd( find_spell( 89140 ) -> duration() );
 }
