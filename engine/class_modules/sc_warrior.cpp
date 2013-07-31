@@ -2259,6 +2259,7 @@ struct whirlwind_t : public warrior_attack_t
 {
   whirlwind_attack_t *mh_attack;
   whirlwind_attack_t *oh_attack;
+  off_hand_test_attack_t *oh_test;
 
   whirlwind_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "whirlwind", p, p -> find_class_spell( "Whirlwind" ) ),
@@ -2282,6 +2283,9 @@ struct whirlwind_t : public warrior_attack_t
       oh_attack = new whirlwind_attack_t( p, "whirlwind_oh", data().effectN( 3 ).trigger() );
       oh_attack -> weapon = &( p -> off_hand_weapon );
       add_child( oh_attack );
+
+      oh_test = new off_hand_test_attack_t( p, "whirlwind_oh_test" );
+      add_child( oh_test );
     }
 
     if ( p -> spec.seasoned_soldier -> ok() )
@@ -2298,13 +2302,19 @@ struct whirlwind_t : public warrior_attack_t
 
     warrior_attack_t::execute(); //for fury, this is the hit test, for arms its the actual execute
 
-    if ( p -> specialization() == WARRIOR_FURY && result_is_hit( execute_state -> result ) )
+    if ( p -> specialization() == WARRIOR_FURY )
     {
-      p -> buff.meat_cleaver -> trigger();
-      mh_attack -> execute();
-      oh_attack -> execute();
-    }
+      // check off-hand attack
+      oh_test -> execute(); // perform test OH attack
 
+      // if both attacks hit, then execute the child attacks
+      if ( result_is_hit( execute_state -> result ) && result_is_hit( oh_test -> last_result ) )
+      {
+        p -> buff.meat_cleaver -> trigger();
+        mh_attack -> execute();
+        oh_attack -> execute();
+      }
+    }
     p -> buff.raging_wind -> expire();
   }
 };
