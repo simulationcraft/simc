@@ -3541,12 +3541,7 @@ void player_t::sequence_add( const action_t* a, const player_t* target, const ti
 // player_t::is_my_pet =====================================================
 bool player_t::is_my_pet( player_t* t )
 { 
-  for ( size_t i = 0, size = pet_list.size(); i < size; i++ )
-  {
-    if ( t -> actor_index == pet_list[ i ]->actor_index )
-      return true;
-  }
-  return false;
+  return t -> is_pet() && ( ( (pet_t*)t ) -> owner == this );
 }
 
 // player_t::combat_begin ===================================================
@@ -4993,7 +4988,7 @@ void player_t::assess_damage( school_e school,
 
       s -> result_amount -= value;
       // track result using only self-absorbs separately
-      if ( ab -> source == this )
+      if ( ab -> source == this || is_my_pet( ab -> source ) )
         result_ignoring_external_absorbs -= value;
 
       if ( value < buff_value )

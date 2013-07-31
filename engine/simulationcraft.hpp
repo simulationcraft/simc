@@ -4540,7 +4540,7 @@ public:
   bool is_add() { return type == ENEMY_ADD; }
   static bool _is_sleeping( const player_t* t ) { return t -> current.sleeping; }
   bool is_sleeping() const { return _is_sleeping( this ); }
-  virtual bool is_my_pet( player_t* t );
+  bool is_my_pet( player_t* t );
 
   pet_t* cast_pet() { return debug_cast<pet_t*>( this ); }
 
