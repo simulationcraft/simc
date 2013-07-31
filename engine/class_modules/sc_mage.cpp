@@ -188,6 +188,8 @@ public:
 
     const spell_data_t* arcane_charge_arcane_blast;
 
+    const spell_data_t* icicles_driver;
+
   } spells;
 
   // Specializations
@@ -1190,34 +1192,6 @@ public:
 
 // Icicles ==================================================================
 
-static double icicle_damage( mage_t* mage )
-{
-  if ( mage -> sim -> current_time - mage -> icicles[ 0 ].first >= timespan_t::from_seconds( 30 ) )
-    mage -> icicles.clear();
-  else
-  {
-    std::vector< icicle_data_t >::iterator idx = mage -> icicles.begin(),
-                                           end = mage -> icicles.end();
-    for (; idx < end; idx++ )
-    {
-      if ( mage -> sim -> current_time - (*idx).first < timespan_t::from_seconds( 30 ) )
-        break;
-    }
-
-    if ( idx != mage -> icicles.begin() )
-      mage -> icicles.erase( mage -> icicles.begin(), idx );
-  }
-
-  if ( mage -> icicles.size() > 0 )
-  {
-    icicle_data_t d = mage -> icicles.front();
-    mage -> icicles.erase( mage -> icicles.begin() );
-    return d.second;
-  }
-
-  return 0;
-}
-
 struct icicle_t : public mage_spell_t
 {
   icicle_t( mage_t* p ) : mage_spell_t( "icicle", p, p -> find_spell( 148022 ) )
@@ -1230,9 +1204,42 @@ struct icicle_t : public mage_spell_t
   {
     mage_spell_t::init();
 
-    snapshot_flags &= ~STATE_MUL_DA;
+    snapshot_flags &= ~( STATE_MUL_DA | STATE_SP | STATE_CRIT | STATE_TGT_CRIT );
   }
 };
+
+static double icicle_damage( mage_t* mage )
+{
+  if ( mage -> icicles.size() == 0 )
+    return 0;
+
+  timespan_t threshold = mage -> spells.icicles_driver -> duration();
+
+  std::vector< icicle_data_t >::iterator idx = mage -> icicles.begin(),
+                                          end = mage -> icicles.end();
+  for (; idx < end; idx++ )
+  {
+    if ( mage -> sim -> current_time - (*idx).first < threshold )
+      break;
+  }
+
+  // Set of icicles timed out
+  if ( idx != mage -> icicles.begin() )
+    mage -> icicles.erase( mage -> icicles.begin(), idx );
+  // First icicle needs to be handled as a special case if it's the only 
+  // one that is expired
+  else if ( mage -> sim -> current_time - mage -> icicles[ 0 ].first >= threshold )
+    mage -> icicles.erase( mage -> icicles.begin() );
+
+  if ( mage -> icicles.size() > 0 )
+  {
+    icicle_data_t d = mage -> icicles.front();
+    mage -> icicles.erase( mage -> icicles.begin() );
+    return d.second;
+  }
+
+  return 0;
+}
 
 struct icicle_event_t : public event_t
 {
@@ -1258,7 +1265,8 @@ struct icicle_event_t : public event_t
     {
       mage -> icicle_event = new ( sim ) icicle_event_t( mage, d );
       if ( mage -> sim -> debug )
-        mage -> sim -> output( "%s icicle use, total %u", mage -> name(), as<unsigned>( mage -> icicles.size() ) );
+        mage -> sim -> output( "%s icicle use (chained), total %u", 
+            mage -> name(), as<unsigned>( mage -> icicles.size() ) );
     }
     else
       mage -> icicle_event = 0;
@@ -1270,19 +1278,15 @@ static void trigger_icicle( mage_t* mage, bool chain = false )
   if ( ! mage -> spec.icicles -> ok() )
     return;
 
-  if ( ! mage -> icicle )
-  {
-    mage -> icicle = new icicle_t( mage );
-    mage -> icicle -> init();
-  }
-
   double d = icicle_damage( mage );
 
   if ( d == 0 )
     return;
 
   if ( mage -> sim -> debug )
-    mage -> sim -> output( "%s icicle use, total %u", mage -> name(), as<unsigned>( mage -> icicles.size() ) );
+    mage -> sim -> output( "%s icicle use%s, total %u", 
+        mage -> name(), chain ? " (chained)" : "", 
+        as<unsigned>( mage -> icicles.size() ) );
 
   if ( chain )
   {
@@ -3991,9 +3995,13 @@ void mage_t::init_spells()
   spec.mana_adept            = find_mastery_spell( MAGE_ARCANE );
 
   spells.stolen_time         = spell_data_t::find( 105791, "Stolen Time" );
+  spells.icicles_driver      = find_spell( 148012 );
 
   if ( spec.ignite -> ok() )
     active_ignite = new ignite_t( this );
+
+  if ( spec.icicles -> ok() )
+    icicle = new icicle_t( this );
 
   // Glyphs
   glyphs.arcane_brilliance   = find_glyph_spell( "Glyph of Arcane Brilliance" );
@@ -4817,14 +4825,14 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
       {
         if ( mage.icicles.size() == 0 )
           return 0;
-        else if ( mage.sim -> current_time - mage.icicles[ 0 ].first < timespan_t::from_seconds( 30.0 ) )
+        else if ( mage.sim -> current_time - mage.icicles[ 0 ].first < mage.spells.icicles_driver -> duration() )
           return mage.icicles.size();
         else
         {
           size_t icicles = 0;
-          for ( size_t i = mage.icicles.size() - 1; i >= 0; i++ )
+          for ( int i = as<int>( mage.icicles.size() - 1 ); i >= 0; i++ )
           {
-            if ( mage.sim -> current_time - mage.icicles[ i ].first >= timespan_t::from_seconds( 30.0 ) )
+            if ( mage.sim -> current_time - mage.icicles[ i ].first >= mage.spells.icicles_driver -> duration() )
               break;
 
             icicles++;
