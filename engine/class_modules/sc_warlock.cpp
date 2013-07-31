@@ -54,8 +54,6 @@ public:
 
   player_t* havoc_target;
 
-  double kc_movement_reduction, kc_cast_speed_reduction;
-
   // Active Pet
   struct pets_t
   {
@@ -78,7 +76,6 @@ public:
     buff_t* fire_and_brimstone;
     buff_t* soul_swap;
     buff_t* archimondes_vengeance;
-    buff_t* kiljaedens_cunning;
     buff_t* demonic_rebirth;
   } buffs;
 
@@ -280,8 +277,7 @@ public:
   virtual double resource_gain( resource_e, double, gain_t* = 0, action_t* = 0 );
   virtual double mana_regen_per_second();
   virtual double composite_armor();
-  virtual double composite_movement_speed();
-  virtual void moving();
+
   virtual void halt();
   virtual void combat_begin();
   virtual expr_t* create_expression( action_t* a, const std::string& name_str );
@@ -329,8 +325,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t* p ) :
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   player_t( sim, WARLOCK, name, r ),
   havoc_target( 0 ),
-  kc_movement_reduction(),
-  kc_cast_speed_reduction(),
   pets( pets_t() ),
   buffs( buffs_t() ),
   cooldowns( cooldowns_t() ),
@@ -1606,36 +1600,11 @@ public:
       return spell_t::current_resource();
   }
 
-  virtual timespan_t tick_time( double haste )
-  {
-    timespan_t t = spell_t::tick_time( haste );
-
-    // FIXME: Find out if this adjusts mid-tick as well, if so we'll have to check the duration on the movement buff
-    if ( channeled && p() -> is_moving() && p() -> talents.kiljaedens_cunning -> ok() &&
-         ! p() -> buffs.kiljaedens_cunning -> up() && p() -> buffs.kiljaedens_cunning -> cooldown -> up() )
-      t *= ( 1.0 + p() -> kc_cast_speed_reduction );
-
-    return t;
-  }
-
-  virtual timespan_t execute_time()
-  {
-    timespan_t t = spell_t::execute_time();
-
-    // FIXME: Find out if this adjusts mid-cast as well, if so we'll have to check the duration on the movement buff
-    if ( p() -> is_moving() && p() -> talents.kiljaedens_cunning -> ok() &&
-         ! p() -> buffs.kiljaedens_cunning -> up() && p() -> buffs.kiljaedens_cunning -> cooldown -> up() )
-      t *= ( 1.0 + p() -> kc_cast_speed_reduction );
-
-    return t;
-  }
-
   virtual bool usable_moving()
   {
     bool um = spell_t::usable_moving();
 
-    if ( p() -> talents.kiljaedens_cunning -> ok() &&
-         ( p() -> buffs.kiljaedens_cunning -> up() || p() -> buffs.kiljaedens_cunning -> cooldown -> up() ) )
+    if ( !p() -> dbc.ptr && p() -> talents.kiljaedens_cunning -> ok())
       um = true;
 
     return um;
@@ -1991,6 +1960,16 @@ struct shadow_bolt_t : public warlock_spell_t
     if ( p() -> buffs.metamorphosis -> check() ) r = false;
 
     return r;
+  }
+  
+  virtual bool usable_moving()
+  {
+    bool um = warlock_spell_t::usable_moving();
+    
+    if ( p() -> dbc.ptr && p() -> talents.kiljaedens_cunning -> ok())
+      um = true;
+    
+    return um;
   }
 };
 
@@ -2593,6 +2572,16 @@ struct incinerate_t : public warlock_spell_t
     }
 
     return c;
+  }
+  
+  virtual bool usable_moving()
+  {
+    bool um = warlock_spell_t::usable_moving();
+    
+    if ( p() -> dbc.ptr && p() -> talents.kiljaedens_cunning -> ok())
+      um = true;
+    
+    return um;
   }
 };
 
@@ -3267,6 +3256,16 @@ struct malefic_grasp_t : public warlock_spell_t
     trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, multiplier );
 
     consume_tick_resource( d );
+  }
+  
+  virtual bool usable_moving()
+  {
+    bool um = warlock_spell_t::usable_moving();
+    
+    if ( p() -> dbc.ptr && p() -> talents.kiljaedens_cunning -> ok())
+      um = true;
+    
+    return um;
   }
 };
 
@@ -4459,27 +4458,6 @@ double warlock_t::composite_armor()
 }
 
 
-double warlock_t::composite_movement_speed()
-{
-  double s = player_t::composite_movement_speed();
-
-  // FIXME: This won't really work as it should, since movement speed is just checked once when the movement event starts
-  if ( ! buffs.kiljaedens_cunning -> up() && buffs.kiljaedens_cunning -> cooldown -> up() )
-    s *= ( 1.0 - kc_movement_reduction );
-
-  return s;
-}
-
-
-void warlock_t::moving()
-{
-  // FIXME: Handle the situation where the buff is up but the movement duration is longer than the duration of the buff
-  if ( ! talents.kiljaedens_cunning -> ok() ||
-       ( ! buffs.kiljaedens_cunning -> up() && buffs.kiljaedens_cunning -> cooldown -> down() ) )
-    player_t::moving();
-}
-
-
 void warlock_t::halt()
 {
   player_t::halt();
@@ -4770,9 +4748,6 @@ void warlock_t::init_spells()
   spells.archimondes_vengeance_dmg = new actions::archimondes_vengeance_dmg_t( this );
 
   spells.tier15_2pc = find_spell( 138483 );
-
-  kc_movement_reduction = ( talents.kiljaedens_cunning -> ok() ) ? find_spell( 108507 ) -> effectN( 2 ).percent() : 0;
-  kc_cast_speed_reduction = ( talents.kiljaedens_cunning -> ok() ) ? find_spell( 108507 ) -> effectN( 1 ).percent() : 0;
 }
 
 
@@ -4833,7 +4808,6 @@ void warlock_t::create_buffs()
   buffs.soul_swap             = buff_creator_t( this, "soul_swap", find_spell( 86211 ) );
   buffs.havoc                 = buff_creator_t( this, "havoc", find_class_spell( "Havoc" ) );
   if (!dbc.ptr) buffs.archimondes_vengeance = buff_creator_t( this, "archimondes_vengeance", talents.archimondes_vengeance );
-  buffs.kiljaedens_cunning    = buff_creator_t( this, "kiljaedens_cunning", talents.kiljaedens_cunning );
   buffs.demonic_rebirth       = buff_creator_t( this, "demonic_rebirth", find_spell( 88448 ) ).cd( find_spell( 89140 ) -> duration() );
 }
 
