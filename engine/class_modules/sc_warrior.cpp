@@ -875,7 +875,7 @@ struct off_hand_test_attack_t : public warrior_attack_t
     trigger_gcd = timespan_t::zero();
     weapon_multiplier = 0.0;
     direct_power_mod = 0.0;
-    // we may want to disable all procs for this attack
+    proc=false; // disable all procs for this attack
   }
 
   virtual void execute()
