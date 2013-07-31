@@ -3538,6 +3538,17 @@ void player_t::sequence_add( const action_t* a, const player_t* target, const ti
       collected_data.action_sequence.push_back( new player_collected_data_t::action_sequence_data_t( a, target, ts, this ) );
 };
 
+// player_t::is_my_pet =====================================================
+bool player_t::is_my_pet( player_t* t )
+{ 
+  for ( size_t i = 0, size = pet_list.size(); i < size; i++ )
+  {
+    if ( t -> actor_index == pet_list[ i ]->actor_index )
+      return true;
+  }
+  return false;
+}
+
 // player_t::combat_begin ===================================================
 
 void player_t::combat_begin()
@@ -5140,7 +5151,7 @@ void player_t::assess_heal( school_e, dmg_e, heal_state_t* s )
   if ( ! is_pet() && role == ROLE_TANK )
   {
     // tmi_self_only flag disables recording of external healing - use total_result_amount to ignore overhealing
-    if ( ( tmi_self_only || sim -> tmi_actor_only ) && s -> action -> player == this )
+    if ( ( tmi_self_only || sim -> tmi_actor_only ) && ( s -> action -> player == this || is_my_pet( s -> action -> player ) ) )
       collected_data.health_changes.timeline.add( sim -> current_time, - ( s -> total_result_amount ) );
     // otherwise just record everything, accounting for overheal
     else if ( ! tmi_self_only && ! sim -> tmi_actor_only )
