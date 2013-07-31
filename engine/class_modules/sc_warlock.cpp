@@ -3531,7 +3531,7 @@ struct rain_of_fire_tick_t : public warlock_spell_t
     warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
-      trigger_ember_gain( p(), 0.2, p() -> gains.rain_of_fire, 0.2 );
+      trigger_ember_gain( p(), 0.2, p() -> gains.rain_of_fire, p() -> dbc.ptr ? 0.125 : 0.2 );
   }
 };
 
