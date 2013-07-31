@@ -2061,16 +2061,53 @@ struct slam_t : public warrior_attack_t
 };
 
 // Storm Bolt ===============================================================
+struct storm_bolt_off_hand_t : public warrior_attack_t 
+{
+  storm_bolt_off_hand_t( warrior_t* p ) :
+    warrior_attack_t( "storm_bolt_off_hand", p, p -> find_spell( 145585 ) )
+  {
+    may_dodge = false;
+    may_parry = false;
+    may_block = false;
+    background = true;
+
+    // assume the target is stun-immune
+    base_multiplier = 4.0; // hardcoded in tooltip
+  }
+};
 
 struct storm_bolt_t : public warrior_attack_t
 {
+  storm_bolt_off_hand_t* oh_attack;
+
   storm_bolt_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "storm_bolt", p, p -> find_talent_spell( "Storm Bolt" ) )
   {
     parse_options( NULL, options_str );
+    may_dodge = false;
+    may_parry = false;
+    may_block = false;
 
     // Assuming that our target is stun immune, it gets an additional 300% dmg
     base_multiplier = 4.0;
+
+    if ( p -> specialization() == WARRIOR_FURY && p -> dbc.ptr )
+    {
+      oh_attack = new storm_bolt_off_hand_t( p );
+      add_child( oh_attack );
+    }
+  }
+
+  virtual void execute()
+  {
+    warrior_t* p = cast();
+
+    warrior_attack_t::execute(); // for fury, this is the MH attack
+
+    if ( p -> specialization() == WARRIOR_FURY && p -> dbc.ptr )
+    {
+      oh_attack -> execute();
+    }
   }
 };
 
