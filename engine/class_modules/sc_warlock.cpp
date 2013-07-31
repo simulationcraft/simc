@@ -77,6 +77,7 @@ public:
     buff_t* soul_swap;
     buff_t* archimondes_vengeance;
     buff_t* demonic_rebirth;
+    buff_t* mannoroths_fury;
   } buffs;
 
   // Cooldowns
@@ -104,6 +105,7 @@ public:
     const spell_data_t* archimondes_darkness;
     const spell_data_t* archimondes_vengeance;
     const spell_data_t* kiljaedens_cunning;
+    const spell_data_t* mannoroths_fury;
   } talents;
 
   // Specialization Spells
@@ -3414,6 +3416,17 @@ struct seed_of_corruption_aoe_t : public warlock_spell_t
     background = true;
     callbacks  = false;
   }
+  
+  virtual double action_multiplier()
+  {
+    double m = warlock_spell_t::action_multiplier();
+    
+    if (p() -> dbc.ptr && p() -> buffs.mannoroths_fury -> up())
+    {
+      m *= 1.0 + p() -> talents.mannoroths_fury -> effectN( 3 ).percent();
+    }
+    return m;
+  }
 
   virtual void init()
   {
@@ -3537,6 +3550,17 @@ struct rain_of_fire_tick_t : public warlock_spell_t
     if ( result_is_hit( s -> result ) )
       trigger_ember_gain( p(), 0.2, p() -> gains.rain_of_fire, p() -> dbc.ptr ? 0.125 : 0.2 );
   }
+  
+  virtual double action_multiplier()
+  {
+    double m = warlock_spell_t::action_multiplier();
+    
+    if (p() -> dbc.ptr && p() -> buffs.mannoroths_fury -> up())
+    {
+      m *= 1.0 + p() -> talents.mannoroths_fury -> effectN( 3 ).percent();
+    }
+    return m;
+  }
 };
 
 
@@ -3607,7 +3631,6 @@ struct hellfire_t : public warlock_spell_t
     tick_zero = true;
     may_miss = false;
     channeled = true;
-    tick_zero = true;
     may_crit = false;
 
     tick_power_mod = base_td = 0;
@@ -3616,6 +3639,17 @@ struct hellfire_t : public warlock_spell_t
     tick_action = new hellfire_tick_t( p, data() );
   }
 
+  virtual double action_multiplier()
+  {
+    double m = warlock_spell_t::action_multiplier();
+    
+    if (p() -> dbc.ptr && p() -> buffs.mannoroths_fury -> up())
+    {
+      m *= 1.0 + p() -> talents.mannoroths_fury -> effectN( 3 ).percent();
+    }
+    return m;
+  }
+  
   virtual bool usable_moving()
   {
     return true;
@@ -3651,6 +3685,16 @@ struct immolation_aura_tick_t : public warlock_spell_t
   {
     aoe         = -1;
     background  = true;
+  }
+  virtual double action_multiplier()
+  {
+    double m = warlock_spell_t::action_multiplier();
+    
+    if (p() -> dbc.ptr && p() -> buffs.mannoroths_fury -> up())
+    {
+      m *= 1.0 + p() -> talents.mannoroths_fury -> effectN( 3 ).percent();
+    }
+    return m;
   }
 };
 
@@ -4326,6 +4370,23 @@ struct archimondes_vengeance_t : public warlock_spell_t
   }
 };
 
+struct mannoroths_fury_t : public warlock_spell_t
+{
+  mannoroths_fury_t( warlock_t* p ) :
+  warlock_spell_t( "mannoroths_fury", p, p -> talents.mannoroths_fury )
+  {
+    harmful = false;
+  }
+  
+  virtual void execute()
+  {
+    warlock_spell_t::execute();
+    
+    p() -> buffs.mannoroths_fury -> trigger();
+  }
+};
+  
+  
 } // end actions namespace
 
 
@@ -4567,6 +4628,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "flames_of_xoroth"      ) a = new      flames_of_xoroth_t( this );
   else if ( action_name == "harvest_life"          ) a = new          harvest_life_t( this );
   else if ( action_name == "archimondes_vengeance" ) a = new archimondes_vengeance_t( this );
+  else if (dbc.ptr && action_name == "mannoroths_fury" ) a = new mannoroths_fury_t( this );
   else if ( action_name == "summon_infernal"       ) a = new       summon_infernal_t( this );
   else if ( action_name == "summon_doomguard"      ) a = new      summon_doomguard_t( this );
   else if ( action_name == "summon_felhunter"      ) a = new summon_main_pet_t( supremacy_pet( "felhunter",  talents.grimoire_of_supremacy -> ok() ), this );
@@ -4730,6 +4792,8 @@ void warlock_t::init_spells()
   }
   talents.kiljaedens_cunning    = find_talent_spell( "Kil'jaeden's Cunning" );
 
+  if (dbc.ptr) talents.mannoroths_fury = find_talent_spell( "Mannoroth's Fury");
+  
   glyphs.conflagrate            = find_glyph_spell( "Glyph of Conflagrate" );
   if (!dbc.ptr) glyphs.dark_soul = find_glyph_spell( "Glyph of Dark Soul" );
   glyphs.demon_training         = find_glyph_spell( "Glyph of Demon Training" );
@@ -4809,6 +4873,7 @@ void warlock_t::create_buffs()
   buffs.havoc                 = buff_creator_t( this, "havoc", find_class_spell( "Havoc" ) );
   if (!dbc.ptr) buffs.archimondes_vengeance = buff_creator_t( this, "archimondes_vengeance", talents.archimondes_vengeance );
   buffs.demonic_rebirth       = buff_creator_t( this, "demonic_rebirth", find_spell( 88448 ) ).cd( find_spell( 89140 ) -> duration() );
+  if (dbc.ptr) buffs.mannoroths_fury       = buff_creator_t( this, "mannoroths_fury", talents.mannoroths_fury);
 }
 
 
