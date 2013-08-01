@@ -211,10 +211,6 @@ int sim_t::main( const std::vector<std::string>& args )
     fclose( output_file );
   output_file = 0;
 
-  if ( tmi_debug_output_file )
-    fclose( tmi_debug_output_file );
-  tmi_debug_output_file = 0;
-
   http::cache_save( ( cache_directory + DIRECTORY_DELIMITER + "simc_cache.dat" ).c_str() );
   dbc::de_init();
 

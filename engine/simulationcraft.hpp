@@ -2654,11 +2654,9 @@ public:
   std::string output_file_str, html_file_str;
   std::string xml_file_str, xml_stylesheet_file_str;
   std::string reforge_plot_output_file_str;
-  std::string tmi_debug_output_file_str;
   std::string csv_output_file_str;
   std::vector<std::string> error_list;
   FILE* output_file;
-  FILE* tmi_debug_output_file;
   int debug_exp;
   int report_precision;
   int report_pets_separately;
@@ -3826,7 +3824,7 @@ struct player_collected_data_t
   void merge( const player_collected_data_t& );
   void analyze( const player_t& );
   void collect_data( const player_t& );
-  void print_tmi_debug_csv( const std::vector<double>& ma_data, const std::vector<double>& weighted_value, FILE* f, const player_t& p );
+  void print_tmi_debug_csv( const std::vector<double>& ma_data, const std::vector<double>& weighted_value, const player_t& p );
   std::ostream& data_str( std::ostream& s ) const;
 };
 
@@ -4086,6 +4084,7 @@ struct player_t : public actor_t
   int       iteration_executed_foreground_actions;
   std::array< double, RESOURCE_MAX > resource_lost, resource_gained;
   double    rps_gain, rps_loss;
+  std::string tmi_debug_file_str;
 
   // Buffed snapshot_stats (for reporting)
   struct buffed_stats_t

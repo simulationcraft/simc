@@ -1048,25 +1048,6 @@ void player_t::init()
     else
       get_action_priority_list( it -> first ) -> action_list_str = it -> second;
   }
-  // TMI debug output
-  if ( sim -> debug && primary_role() == ROLE_TANK )
-  { 
-    // if this hasn't been set by the GUI yet, define it
-    if ( sim -> tmi_debug_output_file_str.empty() )
-      sim -> tmi_debug_output_file_str = "tmi_debug_output.csv";
-
-    // try to open the file; if it doesn't work just punt and ignore TMI outputs
-    FILE* tmif = io::fopen( sim -> tmi_debug_output_file_str, "w" );
-    if ( tmif )
-    {
-      sim -> tmi_debug_output_file = tmif;
-    }
-    else
-    {
-      sim -> tmi_debug_output_file = 0;
-      sim -> errorf( "Unable to open TMI debug file '%s', TMI debug output disabled\n", sim -> tmi_debug_output_file_str.c_str() );
-    }
-  }
 }
 
 /* Determine Spec, Talents, Professions, Glyphs
@@ -8342,6 +8323,7 @@ void player_t::create_options()
     opt_func( "brain_lag_stddev", parse_brain_lag_stddev ),
     opt_bool( "scale_player", scale_player ),
     opt_bool( "tmi_self_only", tmi_self_only),
+    opt_string( "tmi_output", tmi_debug_file_str),
     opt_func( "spec", parse_specialization ),
     opt_func( "specialization", parse_specialization ),
     opt_func( "stat_timelines", parse_stat_timelines ),
@@ -9553,20 +9535,30 @@ void player_collected_data_t::analyze( const player_t& p )
 }
 
 
-void player_collected_data_t::print_tmi_debug_csv( const std::vector<double>& ma, const std::vector<double>& wv, FILE* file, const player_t& p )
+void player_collected_data_t::print_tmi_debug_csv( const std::vector<double>& ma, const std::vector<double>& wv, const player_t& p )
 {
-  std::vector<double> tl_data = health_changes.timeline.data(); 
-
-  // write elements to CSV
-  util::fprintf( file, "\n %s TMI data:\n", p.name_str.c_str() );
-
-  util::fprintf( file, "tl_data,ma_data,wv_data\n" );
-
-  for ( size_t i = 0; i < tl_data.size(); i++ )
+  if ( ! p.tmi_debug_file_str.empty() )
   {
-    util::fprintf( file, "%f,%f,%f\n", tl_data[ i ], ma[ i ], wv[ i ] );
+    FILE* f = io::fopen( p.tmi_debug_file_str, "w" );
+    if ( f )
+    {
+      std::vector<double> tl_data = health_changes.timeline.data(); 
+
+      // write elements to CSV
+      util::fprintf( f, "%s TMI data:\n", p.name_str.c_str() );
+
+      util::fprintf( f, "tl_data,ma_data,wv_data\n" );
+
+      for ( size_t i = 0; i < tl_data.size(); i++ )
+      {
+        util::fprintf( f, "%f,%f,%f\n", tl_data[ i ], ma[ i ], wv[ i ] );
+      }
+      util::fprintf( f, "\n" );
+
+      fclose( f );
+    }
+
   }
-  util::fprintf( file, "\n" );
 };
 
 void player_collected_data_t::collect_data( const player_t& p )
@@ -9668,8 +9660,7 @@ void player_collected_data_t::collect_data( const player_t& p )
         //std::cout << "TMI(iteration " << p.sim -> current_iteration << "): " << tmi << " sa tl avg: " << sliding_average_tl.mean() << " wl.size(): " << weighted_value.size() << " health: " << p.resources.initial[ RESOURCE_HEALTH ] << "\n";   //temporary, for debugging
 
         // if an output file has been defined, write to it
-        if ( p.sim -> tmi_debug_output_file != 0 )
-          print_tmi_debug_csv( sliding_average_tl.data(), weighted_value, p.sim -> tmi_debug_output_file, p );
+        print_tmi_debug_csv( sliding_average_tl.data(), weighted_value, p );
         
       }
       // normalize by fight length and add to TMI data array
