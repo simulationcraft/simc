@@ -67,6 +67,7 @@ public:
     buff_t* glyph_incite;
     buff_t* last_stand;
     buff_t* meat_cleaver;
+    buff_t* riposte;
     buff_t* raging_blow;
     buff_t* raging_wind;
     buff_t* recklessness;
@@ -95,6 +96,7 @@ public:
     cooldown_t* mortal_strike;
     cooldown_t* strikes_of_opportunity;
     cooldown_t* rage_from_crit_block;
+    cooldown_t* riposte_crit_gain;
   } cooldown;
 
   // Gains
@@ -181,6 +183,7 @@ public:
     const spell_data_t* crazed_berserker;
     const spell_data_t* flurry;
     const spell_data_t* meat_cleaver;
+    const spell_data_t* riposte;
     const spell_data_t* seasoned_soldier;
     const spell_data_t* single_minded_fury;
     const spell_data_t* sudden_death;
@@ -247,6 +250,9 @@ public:
     cooldown.rage_from_crit_block   = get_cooldown( "rage_from_crit_block" );
     cooldown.rage_from_crit_block -> duration = timespan_t::from_seconds( 3.0 );
 
+    cooldown.riposte_crit_gain      = get_cooldown( "riposte_crit_gain" );
+    cooldown.riposte_crit_gain -> duration = timespan_t::from_seconds( 1.0 );
+    
     initial_rage = 0;
 
     base.distance = 3.0;
@@ -3023,6 +3029,7 @@ void warrior_t::init_spells()
   spec.crazed_berserker     = find_specialization_spell( "Crazed Berserker" );
   spec.flurry               = find_specialization_spell( "Flurry" );
   spec.meat_cleaver         = find_specialization_spell( "Meat Cleaver" );
+if ( dbc.ptr )  spec.riposte              = find_specialization_spell( "Riposte" );
   spec.seasoned_soldier     = find_specialization_spell( "Seasoned Soldier" );
   spec.unwavering_sentinel  = find_specialization_spell( "Unwavering Sentinel" );
   spec.single_minded_fury   = find_specialization_spell( "Single-Minded Fury" );
@@ -3202,6 +3209,9 @@ void warrior_t::create_buffs()
   buff.taste_for_blood = buff_creator_t( this, "taste_for_blood" )
                          .spell( find_spell( 60503 ) );
 
+  if (dbc.ptr) buff.riposte = stat_buff_creator_t( this, "riposte",   spec.riposte -> effectN( 1 ).trigger() )
+                          .chance(spec.riposte -> ok() ? spec.riposte -> proc_chance() : 0)
+                          .add_stat( STAT_CRIT_RATING, 0 );
   buff.shield_block     = buff_creator_t( this, "shield_block" ).spell( find_spell( 132404 ) )
                           .add_invalidate( CACHE_BLOCK );
   buff.shield_wall      = buff_creator_t( this, "shield_wall", find_class_spell( "Shield Wall" ) )
@@ -3794,6 +3804,13 @@ void warrior_t::assess_damage( school_e school,
   if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
   {
     cooldown.revenge -> reset( true );
+    if ( dbc.ptr && cooldown.riposte_crit_gain -> up()  )
+    {
+      cooldown.riposte_crit_gain -> start();
+        
+      int amount = ( current.stats.dodge_rating + current.stats.parry_rating ) * spec.riposte -> effectN( 1 ).percent();
+      buff.riposte -> trigger(1 , amount);
+    }
   }
 
   player_t::assess_damage( school, dtype, s );
