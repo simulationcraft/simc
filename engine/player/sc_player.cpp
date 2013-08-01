@@ -3538,12 +3538,6 @@ void player_t::sequence_add( const action_t* a, const player_t* target, const ti
       collected_data.action_sequence.push_back( new player_collected_data_t::action_sequence_data_t( a, target, ts, this ) );
 };
 
-// player_t::is_my_pet =====================================================
-bool player_t::is_my_pet( player_t* t )
-{ 
-  return t -> is_pet() && ( ( (pet_t*)t ) -> owner == this );
-}
-
 // player_t::combat_begin ===================================================
 
 void player_t::combat_begin()

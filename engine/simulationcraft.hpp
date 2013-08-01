@@ -4540,9 +4540,9 @@ public:
   bool is_add() { return type == ENEMY_ADD; }
   static bool _is_sleeping( const player_t* t ) { return t -> current.sleeping; }
   bool is_sleeping() const { return _is_sleeping( this ); }
-  bool is_my_pet( player_t* t );
 
   pet_t* cast_pet() { return debug_cast<pet_t*>( this ); }
+  bool is_my_pet( player_t* t );
 
   bool      in_gcd() { return gcd_ready > sim -> current_time; }
   bool      recent_cast();
@@ -6302,6 +6302,9 @@ inline tick_buff_creator_t::operator tick_buff_t* () const
 
 inline buff_creator_t::operator debuff_t* () const
 { return new debuff_t( *this ); }
+
+inline bool player_t::is_my_pet( player_t* t )
+{ return t -> is_pet() && t -> cast_pet() -> owner == this; }
 
 
 /* Simple String to Number function, using stringstream
