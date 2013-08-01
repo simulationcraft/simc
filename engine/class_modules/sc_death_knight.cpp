@@ -6050,6 +6050,7 @@ void death_knight_t::create_buffs()
                               .cd( timespan_t::zero() )
                               .chance( spec.rime -> ok() );
   buffs.riposte             = stat_buff_creator_t( this, "riposte", spec.riposte -> effectN( 1 ).trigger() )
+                              .cd( spec.riposte -> internal_cooldown() )
                               .chance( spec.riposte -> proc_chance() )
                               .add_stat( STAT_CRIT_RATING, 0 );
   //buffs.runic_corruption    = buff_creator_t( this, "runic_corruption", find_spell( 51460 ) )
