@@ -4471,7 +4471,7 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_action( this, "Avenging Wrath" );
   def -> add_talent( this, "Holy Avenger" );
   //def -> add_action( this, "Guardian of Ancient Kings", "if=health.pct<=30" );
-  def -> add_action( this, "Divine Protection", "if=target.debuff.casting.react" );
+  def -> add_action( this, "Divine Protection" ); // use on cooldown
   def -> add_action( this, "Shield of the Righteous", "if=(holy_power>=5)|(buff.divine_purpose.up)|(incoming_damage_1500ms>=health.max*0.3)" );
   if ( ! dbc.ptr )
     def -> add_action( this, "Hammer of the Righteous", "if=target.debuff.weakened_blows.down" );
