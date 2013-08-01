@@ -1199,11 +1199,10 @@ struct icicle_t : public mage_spell_t
     may_crit = false;
     proc = background = true;
 
-// FIXME: Compiles, but segfaults when pt=1
-//    aoe = p -> glyphs.splitting_ice -> effectN( 1 ).base_value();
-//    if ( aoe ) ++aoe;
+    if ( p -> glyphs.splitting_ice -> ok() )
+      aoe = p -> glyphs.splitting_ice -> effectN( 1 ).base_value() + 1;
 
-//    base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
+    base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
   }
 
   void init()
@@ -2669,24 +2668,15 @@ struct ice_lance_t : public mage_spell_t
     parse_options( NULL, options_str );
 
 	// FIXME: Compiles, but segfaults when ptr=1
-//    if ( p -> glyphs.ice_lance -> ok() )
-//    {
-      aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value();
-//    }
-//    else if ( p -> glyphs.splitting_ice -> ok() )
-//    {
-//      aoe = p -> glyphs.splitting_ice -> effectN( 1 ).base_value();
-//    }
-    if ( aoe ) ++aoe;
+    if ( p -> glyphs.ice_lance -> ok() )
+      aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value() + 1;
+    else if ( p -> glyphs.splitting_ice -> ok() )
+      aoe = p -> glyphs.splitting_ice -> effectN( 1 ).base_value() + 1;
 
-//    if ( p -> glyphs.ice_lance -> ok() )
-//    {
+    if ( p -> glyphs.ice_lance -> ok() )
       base_aoe_multiplier *= p -> glyphs.ice_lance -> effectN( 2 ).percent();
-//    }
-//    else if ( p -> glyphs.splitting_ice -> ok() )
-//    {
-//      base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
-//    }
+    else if ( p -> glyphs.splitting_ice -> ok() )
+      base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
 
     fof_multiplier = p -> find_specialization_spell( "Fingers of Frost" ) -> ok() ? p -> find_spell( 44544 ) -> effectN( 2 ).percent() : 0.0;
 
@@ -4024,12 +4014,6 @@ void mage_t::init_spells()
   spells.stolen_time         = spell_data_t::find( 105791, "Stolen Time" );
   spells.icicles_driver      = find_spell( 148012 );
 
-  if ( spec.ignite -> ok() )
-    active_ignite = new ignite_t( this );
-
-  if ( spec.icicles -> ok() )
-    icicle = new icicle_t( this );
-
   // Glyphs
   glyphs.arcane_brilliance   = find_glyph_spell( "Glyph of Arcane Brilliance" );
   glyphs.arcane_power        = find_glyph_spell( "Glyph of Arcane Power" );
@@ -4042,6 +4026,7 @@ void mage_t::init_spells()
   glyphs.loose_mana          = find_glyph_spell( "Glyph of Loose Mana" );
   glyphs.mana_gem            = find_glyph_spell( "Glyph of Mana Gem" );
   glyphs.mirror_image        = find_glyph_spell( "Glyph of Mirror Image" );
+  glyphs.splitting_ice       = maybe_ptr( dbc.ptr ) ? find_glyph_spell( "Glyph of Splitting Ice" ) : spell_data_t::not_found();
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
@@ -4053,6 +4038,11 @@ void mage_t::init_spells()
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
+
+  // Active spells
+  if ( spec.ignite -> ok()  ) active_ignite = new ignite_t( this );
+  if ( spec.icicles -> ok() ) icicle = new icicle_t( this );
+
 }
 
 // mage_t::init_base ========================================================
