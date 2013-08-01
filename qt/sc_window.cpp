@@ -1295,7 +1295,6 @@ void SimulateThread::run()
   sim -> html_file_str = ( mainWindow -> AppDataDir + QDir::separator() + "simc_report.html" ).toStdString();
   sim -> xml_file_str  = ( mainWindow -> AppDataDir + QDir::separator() + "simc_report.xml" ).toStdString();
   sim -> reforge_plot_output_file_str = ( mainWindow -> AppDataDir + QDir::separator() + "reforge_plot.csv" ).toStdString();
-  sim -> tmi_debug_output_file_str = ( mainWindow -> AppDataDir + QDir::separator() + "tmi_debug_output.csv" ).toStdString();
 
   sim_control_t description;
 
