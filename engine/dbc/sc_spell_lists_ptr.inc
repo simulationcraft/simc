@@ -710,7 +710,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
     // General tree, 38 abilities
     {
          710, // Banish
-         172, // Corruption
+      146739, // Corruption
         6201, // Create Healthstone
       109466, // Curse of Enfeeblement
         1490, // Curse of the Elements
