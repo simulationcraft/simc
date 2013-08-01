@@ -2216,6 +2216,10 @@ struct thunder_clap_t : public warrior_attack_t
       am *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
     }
 
+    if ( p ->  spec.blood_and_thunder -> ok() && p -> dbc.ptr)
+    {
+      am *= 1.0 + p -> spec.blood_and_thunder -> effectN( 2 ).percent();
+    }
     return am;
   }
   virtual void impact( action_state_t* s )
