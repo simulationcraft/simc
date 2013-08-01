@@ -4544,13 +4544,13 @@ void paladin_t::generate_action_prio_list_ret()
   if ( sim -> allow_potions )
   {
     if ( level > 85 )
-      def -> add_action( "/mogu_power_potion,if=(buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40)" );
+      def -> add_action( "mogu_power_potion,if=(buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40)" );
     else if ( level >= 80 )
-      def -> add_action( "/golemblood_potion,if=buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40" );
+      def -> add_action( "golemblood_potion,if=buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40" );
   }
 
   // This should<tm> get Censure up before the auto attack lands
-  def -> add_action( "/auto_attack" );
+  def -> add_action( "auto_attack" );
 
   /*if ( find_class_spell( "Judgment" ) -> ok() && find_specialization_spell( "Judgments of the Bold" ) -> ok() )
   {
@@ -4629,19 +4629,23 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( this, "Hammer of Wrath" );
 
   if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
-    def -> add_action( "/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2" );
+    def -> add_action( "wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2" );
   else
-    def -> add_action( "/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.1" );
+    def -> add_action( "wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.1" );
 
   // Everything Else
-  def -> add_action( this, "Exorcism");
-  def -> add_action( "/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2" );
-  def -> add_action( this, "Judgment", "if=!(set_bonus.tier15_4pc_melee)&(target.health.pct<=20|buff.avenging_wrath.up)&active_enemies<2" );
+  def -> add_action( this, "Crusader Strike", "if=set_bonus.tier15_4pc_melee&!(buff.tier15_4pc_melee.up)");
+  def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=set_bonus.tier15_4pc_melee&!(buff.tier15_4pc_melee.up)&&cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2" );
+  def -> add_action( this, "Exorcism", "if=active_enemies>=2&active_enemies<=4&set_bonus.tier15_2pc_melee&glyph.mass_exorcism.enabled" );
   def -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=4" );
-  def -> add_action( this, "Crusader Strike" );
-  def -> add_action( "/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2" );
   def -> add_action( this, "Judgment", "target=2,if=active_enemies>=2&buff.glyph_double_jeopardy.up" );
   def -> add_action( this, "Judgment" );
+  def -> add_action( "wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2" );
+  def -> add_action( this, "Exorcism");
+  def -> add_action( "wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2" );
+  def -> add_action( this, "Templar's Verdict", "if=buff.tier15_4pc_melee.up" );
+  def -> add_action( this, "Crusader Strike" );
+  def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2" );
   def -> add_action( this, "Divine Storm", "if=active_enemies>=2&buff.inquisition.remains>4" );
   def -> add_action( this, "Templar's Verdict", "if=buff.inquisition.remains>4" );
   def -> add_action( this, "Holy Prism" );
@@ -4749,8 +4753,10 @@ void paladin_t::validate_action_priority_list()
       std::size_t found_position;
       bool found_ability = false;
       bool found_talent_str = false;
+      bool found_buff_str = false;
       std::string check_ability;
       std::string talent_check_str = "";
+      std::string buff_check_str = "";
       std::string replacement = "";
 
       // Check for EF/WoG mistakes
@@ -4899,9 +4905,11 @@ void paladin_t::validate_action_priority_list()
       {
         check_ability = "holy_avenger";
         talent_check_str = "talent." + check_ability + ".enabled";
+        buff_check_str = "buff." + check_ability;
         found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
         found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) );
-        if ( found_ability && ! found_talent_str )
+        found_buff_str = ( util::str_in_str_ci( action_str, buff_check_str ) );
+        if ( found_ability && ! found_talent_str && ! found_buff_str )
         {
           sim -> errorf( "Action priority list contains %s without talent, ignoring", "Holy Avenger" );
         }
