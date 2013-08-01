@@ -2472,8 +2472,10 @@ std::string chart::gear_weights_askmrrobot( player_t* p )
       ss << ',';
     skipFirstComma = true;    
 
-    // AMR can't handle double-digit stat weights, for now just cap at 9.99 
-    if ( value > 9.99 )
+    // AMR enforces certain bounds on stats, cap at 9.99 for regular and 99.99 for weapon DPS
+    if ( ( i == STAT_WEAPON_DPS || i == STAT_WEAPON_OFFHAND_DPS ) && value > 99.99 )
+      value = 99.99;
+    else if ( value > 9.99 )
       value = 9.99;
 
     // append the stat weight to the URL
