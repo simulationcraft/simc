@@ -2061,7 +2061,7 @@ struct corruption_t : public warlock_spell_t
   bool soc_triggered;
 
   corruption_t( warlock_t* p, bool soc = false ) :
-    warlock_spell_t( p, "Corruption" ), soc_triggered( soc )
+  warlock_spell_t("Corruption", p , p -> find_spell(p -> dbc.ptr ? 146739 : 172)), soc_triggered( soc ) //TODO Remove FIX after dbc update
   {
     may_crit = false;
     generate_fury = 4;
