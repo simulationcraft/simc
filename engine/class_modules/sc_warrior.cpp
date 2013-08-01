@@ -96,7 +96,6 @@ public:
     cooldown_t* mortal_strike;
     cooldown_t* strikes_of_opportunity;
     cooldown_t* rage_from_crit_block;
-    cooldown_t* riposte_crit_gain;
   } cooldown;
 
   // Gains
@@ -250,9 +249,6 @@ public:
     cooldown.rage_from_crit_block   = get_cooldown( "rage_from_crit_block" );
     cooldown.rage_from_crit_block -> duration = timespan_t::from_seconds( 3.0 );
 
-    cooldown.riposte_crit_gain      = get_cooldown( "riposte_crit_gain" );
-    cooldown.riposte_crit_gain -> duration = timespan_t::from_seconds( 1.0 );
-    
     initial_rage = 0;
 
     base.distance = 3.0;
@@ -1183,6 +1179,18 @@ struct cleave_t : public warrior_attack_t
 
     return c;
   }
+  
+  virtual double crit_chance( double crit, int delta_level )
+  {
+    double cc = warrior_attack_t::crit_chance( crit, delta_level );
+    
+    warrior_t* p = cast();
+    
+    if ( p -> dbc.ptr && p -> buff.ultimatum -> check() )
+      cc+= p -> buff.ultimatum -> data().effectN( 1 ).percent();
+    
+    return cc;
+  }
 
   virtual void execute()
   {
@@ -1463,6 +1471,18 @@ struct heroic_strike_t : public warrior_attack_t
     return c;
   }
 
+  virtual double crit_chance( double crit, int delta_level )
+  {
+    double cc = warrior_attack_t::crit_chance( crit, delta_level );
+    
+    warrior_t* p = cast();
+    
+    if ( p -> dbc.ptr && p -> buff.ultimatum -> check() )
+      cc+= p -> buff.ultimatum -> data().effectN( 1 ).percent();
+    
+    return cc;
+  }
+  
   virtual void execute()
   {
     warrior_t* p = cast();
@@ -2032,7 +2052,7 @@ struct shield_slam_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if ( result_is_hit( s -> result ) )
+    if ( result_is_hit( s -> result ) && ! p -> dbc.ptr )
       p -> buff.ultimatum -> trigger();
     if ( p -> rng.tier15_2pc_tank -> roll( p -> sets -> set( SET_T15_2PC_TANK ) -> proc_chance() ) )
     {
@@ -2041,7 +2061,10 @@ struct shield_slam_t : public warrior_attack_t
   
     
     if ( p -> dbc.ptr && s -> result == RESULT_CRIT )
+    {
       p -> enrage();
+      p -> buff.ultimatum -> trigger();
+    }
   }
 };
 
@@ -3210,8 +3233,10 @@ void warrior_t::create_buffs()
                          .spell( find_spell( 60503 ) );
 
   if (dbc.ptr) buff.riposte = stat_buff_creator_t( this, "riposte",   spec.riposte -> effectN( 1 ).trigger() )
+                          .cd( spec.riposte -> internal_cooldown() )
                           .chance(spec.riposte -> ok() ? spec.riposte -> proc_chance() : 0)
                           .add_stat( STAT_CRIT_RATING, 0 );
+  
   buff.shield_block     = buff_creator_t( this, "shield_block" ).spell( find_spell( 132404 ) )
                           .add_invalidate( CACHE_BLOCK );
   buff.shield_wall      = buff_creator_t( this, "shield_wall", find_class_spell( "Shield Wall" ) )
@@ -3804,13 +3829,7 @@ void warrior_t::assess_damage( school_e school,
   if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
   {
     cooldown.revenge -> reset( true );
-    if ( dbc.ptr && cooldown.riposte_crit_gain -> up()  )
-    {
-      cooldown.riposte_crit_gain -> start();
-        
-      int amount = ( current.stats.dodge_rating + current.stats.parry_rating ) * spec.riposte -> effectN( 1 ).percent();
-      buff.riposte -> trigger(1 , amount);
-    }
+    if ( dbc.ptr) buff.riposte -> trigger(1 , ( current.stats.dodge_rating + current.stats.parry_rating ) * spec.riposte -> effectN( 1 ).percent());
   }
 
   player_t::assess_damage( school, dtype, s );
