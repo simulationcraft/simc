@@ -4302,6 +4302,31 @@ int paladin_t::decode_set( item_t& item )
     if ( is_heal   ) return SET_T15_HEAL;
   }
 
+  if ( strstr( s, "_of_winged_triumph") )
+  {
+    bool is_melee = ( strstr( s, "helmet"        ) ||
+                      strstr( s, "pauldrons"     ) ||
+                      strstr( s, "battleplate"   ) ||
+                      strstr( s, "legplates"     ) ||
+                      strstr( s, "gauntlets"     ) );
+
+    bool is_tank = ( strstr( s, "faceguard"      ) ||
+                     strstr( s, "shoulderguards" ) ||
+                     strstr( s, "chestguard"     ) ||
+                     strstr( s, "legguards"      ) ||
+                     strstr( s, "handguards"     ) );
+
+    bool is_heal = ( strstr( s, "headguard"      ) ||
+                     strstr( s, "mantle"         ) ||
+                     strstr( s, "breastplate"    ) ||
+                     strstr( s, "greaves"        ) ||
+                     strstr( s, "gloves"         ) );
+
+    if ( is_melee  ) return SET_T16_MELEE;
+    if ( is_tank   ) return SET_T16_TANK;
+    if ( is_heal   ) return SET_T16_HEAL;
+  }
+
   if ( strstr( s, "gladiators_ornamented_"  ) ) return SET_PVP_HEAL;
   if ( strstr( s, "gladiators_scaled_"      ) ) return SET_PVP_MELEE;
 
