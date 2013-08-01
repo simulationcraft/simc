@@ -2203,6 +2203,12 @@ struct thunder_clap_t : public warrior_attack_t
 
     // TC can trigger procs from either weapon, even though it doesn't need a weapon
     proc_ignores_slot = true;
+    
+    if ( p -> spec.seasoned_soldier -> ok() && p -> dbc.ptr)
+    {
+      base_costs[ current_resource() ] += p -> spec.seasoned_soldier -> effectN( 2 ).resource( current_resource() );
+    }
+    
   }
 
   virtual double action_multiplier()
@@ -2222,6 +2228,7 @@ struct thunder_clap_t : public warrior_attack_t
     }
     return am;
   }
+  
   virtual void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
