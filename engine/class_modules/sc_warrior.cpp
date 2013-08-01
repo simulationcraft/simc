@@ -1327,6 +1327,11 @@ struct devastate_t : public warrior_attack_t
 
     if ( result_is_hit( s -> result ) && ! sim -> overrides.weakened_armor )
       s -> target -> debuffs.weakened_armor -> trigger();
+    
+    warrior_t* p = cast();
+    
+    if ( p -> dbc.ptr && s -> result == RESULT_CRIT )
+      p -> enrage();
   }
 };
 
@@ -2027,6 +2032,10 @@ struct shield_slam_t : public warrior_attack_t
     {
       p -> buff.tier15_2pc_tank -> trigger();
     }
+  
+    
+    if ( p -> dbc.ptr && s -> result == RESULT_CRIT )
+      p -> enrage();
   }
 };
 
