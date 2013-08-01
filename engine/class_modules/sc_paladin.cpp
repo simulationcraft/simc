@@ -4623,7 +4623,7 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( this, "Divine Storm", "if=active_enemies>=2&(holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3))" );
   
   // Templar's Verdict  
-  def -> add_action( this, "Templar's Verdict", "if=holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3))" );
+  def -> add_action( this, "Templar's Verdict", "if=holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3)" );
 
   // Hammer of Wrath
   def -> add_action( this, "Hammer of Wrath" );
