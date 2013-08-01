@@ -125,6 +125,7 @@ public:
     const spell_data_t* loose_mana;
     const spell_data_t* mana_gem;
     const spell_data_t* mirror_image;
+    const spell_data_t* splitting_ice;
 
 
     // Minor
@@ -468,7 +469,6 @@ struct water_elemental_pet_t : public pet_t
     double m = pet_t::composite_player_multiplier( school );
 
     if ( ! maybe_ptr( dbc.ptr ) && o() -> spec.frostburn -> ok() )
-//    if ( o() -> spec.icicles -> ok() )
       m *= 1.0 + o() -> cache.mastery_value();
 
     if ( o() -> buffs.invokers_energy -> up() )
@@ -1198,6 +1198,12 @@ struct icicle_t : public mage_spell_t
   {
     may_crit = false;
     proc = background = true;
+
+// FIXME: Compiles, but segfaults when pt=1
+//    aoe = p -> glyphs.splitting_ice -> effectN( 1 ).base_value();
+//    if ( aoe ) ++aoe;
+
+//    base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
   }
 
   void init()
@@ -2657,10 +2663,25 @@ struct ice_lance_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
 
-    aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value();
+	// FIXME: Compiles, but segfaults when ptr=1
+//    if ( p -> glyphs.ice_lance -> ok() )
+//    {
+      aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value();
+//    }
+//    else if ( p -> glyphs.splitting_ice -> ok() )
+//    {
+//      aoe = p -> glyphs.splitting_ice -> effectN( 1 ).base_value();
+//    }
     if ( aoe ) ++aoe;
 
-    base_aoe_multiplier *= p -> glyphs.ice_lance -> effectN( 2 ).percent();
+//    if ( p -> glyphs.ice_lance -> ok() )
+//    {
+      base_aoe_multiplier *= p -> glyphs.ice_lance -> effectN( 2 ).percent();
+//    }
+//    else if ( p -> glyphs.splitting_ice -> ok() )
+//    {
+//      base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
+//    }
 
     fof_multiplier = p -> find_specialization_spell( "Fingers of Frost" ) -> ok() ? p -> find_spell( 44544 ) -> effectN( 2 ).percent() : 0.0;
 
