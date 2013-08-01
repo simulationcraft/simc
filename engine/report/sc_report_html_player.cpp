@@ -27,7 +27,7 @@ double mean_damage( std::vector<stats_t::stats_results_t> result )
   return mean;
 }
 
-void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t* p, int j ) 
+void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t* p ) 
 {
   
   std::string compound_dps     = "";
@@ -93,7 +93,7 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
     100 * s -> total_tick_time.mean() / p -> collected_data.fight_length.mean() );
 }
 
-void print_html_action_healing( report::sc_html_stream& os, stats_t* s, player_t* p, int j ) 
+void print_html_action_healing( report::sc_html_stream& os, stats_t* s, player_t* p ) 
 {
   
   std::string compound_dps     = "";
@@ -192,9 +192,9 @@ void print_html_action_info( report::sc_html_stream& os, stats_t* s, player_t* p
     os.printf( "%s</td>\n", s -> name_str.c_str() );
 
   if ( s -> type == STATS_HEAL || s -> type == STATS_ABSORB )
-    print_html_action_healing(os, s, p, j );
+    print_html_action_healing(os, s, p );
   else
-    print_html_action_damage( os, s, p, j );
+    print_html_action_damage( os, s, p );
 
 
   if ( p -> sim -> report_details )

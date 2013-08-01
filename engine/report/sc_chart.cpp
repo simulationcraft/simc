@@ -2388,6 +2388,7 @@ std::string chart::gear_weights_askmrrobot( player_t* p )
     case WARLOCK:      ss << "Warlock";  break;
     case WARRIOR:      ss << "Warrior";  break;
     case MONK:         ss << "Monk"; break;
+    // if this isn't a player, the AMR link is useless
     default: assert( 0 ); break;
   }  
   // Player spec
@@ -2444,6 +2445,8 @@ std::string chart::gear_weights_askmrrobot( player_t* p )
         if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { ss << "Windwalker2h"; break; }
         else { ss << "WindwalkerDw"; break; }
       } 
+    // if this is a pet or an unknown spec, the AMR link is pointless anyway
+    default: assert( 0 ); break; 
   }
   
   // add weights
