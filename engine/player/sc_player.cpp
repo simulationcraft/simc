@@ -9534,6 +9534,35 @@ void player_collected_data_t::analyze( const player_t& p )
 }
 
 
+void player_collected_data_t::print_tmi_debug_csv( const std::vector<double>& ma, const std::vector<double>& wv, sim_t* sim, const player_t& p )
+{
+  std::vector<double> tl_data = health_changes.timeline.data();  //temporary, for debugging
+   
+  // open file
+  io::cfile file;
+  if ( ! sim -> tmi_debug_output_file_str.empty() )
+  {
+    file = io::cfile( sim -> tmi_debug_output_file_str, "a" );
+    if ( ! file )
+    {
+      sim -> errorf( "Unable to open csv output file '%s'.\n", sim -> tmi_debug_output_file_str.c_str() );
+      return;
+    }
+  }
+  if ( ! file ) file = io::cfile( "tmi_debug_output.csv", "a");
+  
+  // write elements to CSV
+  util::fprintf( file, "\n %s TMI data:\n", p.name_str.c_str() );
+
+  util::fprintf( file, "tl_data,ma_data,wv_data\n" );
+
+  for ( size_t i = 0; i < tl_data.size(); i++ )
+  {
+    util::fprintf( file, "%f,%f,%f\n", tl_data[ i ], ma[ i ], wv[ i ] );
+  }
+  util::fprintf( file, "\n" );
+};
+
 void player_collected_data_t::collect_data( const player_t& p )
 {
 
@@ -9633,6 +9662,9 @@ void player_collected_data_t::collect_data( const player_t& p )
         tmi *= 10000;
         tmi *= std::pow( static_cast<double>( window ) , 2 ); // normalizes for window size
         //std::cout << "TMI(iteration " << p.sim -> current_iteration << "): " << tmi << " sa tl avg: " << sliding_average_tl.mean() << " wl.size(): " << weighted_value.size() << " health: " << p.resources.initial[ RESOURCE_HEALTH ] << "\n";   //temporary, for debugging
+
+        print_tmi_debug_csv( sliding_average_tl.data(), weighted_value, p.sim, p );
+        
       }
       // normalize by fight length and add to TMI data array
       theck_meloree_index.add( tmi );
