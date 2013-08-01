@@ -1280,26 +1280,27 @@ static void trigger_icicle( mage_t* mage, bool chain = false )
   if ( ! mage -> spec.icicles -> ok() )
     return;
 
-  double d = icicle_damage( mage );
-
-  if ( d == 0 )
+  if ( mage -> icicles.size() == 0 )
     return;
+
+  double d = 0;
+
+  if ( chain && ! mage -> icicle_event )
+  {
+    d = icicle_damage( mage );
+    mage -> icicle_event = new ( *mage -> sim ) icicle_event_t( mage, d, true );
+  }
+  else if ( ! chain )
+  {
+    d = icicle_damage( mage );
+    mage -> icicle -> base_dd_min = mage -> icicle -> base_dd_max = d;
+    mage -> icicle -> schedule_execute();
+  }
 
   if ( mage -> sim -> debug )
     mage -> sim -> output( "%s icicle use%s, damage=%f, total=%u", 
         mage -> name(), chain ? " (chained)" : "", d, 
         as<unsigned>( mage -> icicles.size() ) );
-
-  if ( chain )
-  {
-    if ( ! mage -> icicle_event )
-      mage -> icicle_event = new ( *mage -> sim ) icicle_event_t( mage, d, true );
-  }
-  else
-  {
-    mage -> icicle -> base_dd_min = mage -> icicle -> base_dd_max = d;
-    mage -> icicle -> schedule_execute();
-  }
 }
 
 static void trigger_icicle_gain( action_state_t* state )
@@ -2240,7 +2241,9 @@ struct frostbolt_t : public mage_spell_t
 
   virtual void execute()
   {
+    dual = p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> check();
     mage_spell_t::execute();
+    dual = false;
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -2274,6 +2277,7 @@ struct frostbolt_t : public mage_spell_t
     if ( ! static_cast<const state_t&>( *s ).mini_version ) // Bail out if mini spells get casted
     {
       mage_spell_t::impact( s );
+      trigger_icicle_gain( s );
     }
     // If there are five Icicles, launch the oldest at this spell's target
     // Create an Icicle, stashing damage equal to mastery * value
@@ -2286,7 +2290,6 @@ struct frostbolt_t : public mage_spell_t
       td( s -> target ) -> debuffs.frostbolt -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
     }
 
-    trigger_icicle_gain( s );
   }
 
   virtual double action_multiplier()
@@ -2443,7 +2446,9 @@ struct frostfire_bolt_t : public mage_spell_t
     // Brain Freeze treats the target as frozen
     frozen = p() -> buffs.brain_freeze -> check() > 0;
 
+    dual = p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> check();
     mage_spell_t::execute();
+    dual = false;
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -2481,7 +2486,7 @@ struct frostfire_bolt_t : public mage_spell_t
   virtual void impact( action_state_t* s )
   {
     if ( static_cast<const state_t&>( *s ).mini_version ) // Bail out if mini spells get casted
-    { return; }
+      return;
 
     mage_spell_t::impact( s );
     // If there are five Icicles, launch the oldest at this spell's target
