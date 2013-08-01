@@ -3346,6 +3346,7 @@ struct dark_soul_t : public warlock_spell_t
     if ( p -> dbc.ptr  && p -> talents.archimondes_darkness -> ok())
     {
       cooldown -> charges = p -> talents.archimondes_darkness -> effectN(1).base_value();
+      p -> buffs.dark_soul -> cooldown -> duration = timespan_t::zero();
     }
     cooldown -> duration += p -> set_bonus.tier14_4pc_caster() * p -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
     if (! p -> dbc.ptr) p -> buffs.dark_soul -> cooldown -> duration = cooldown -> duration;
