@@ -2185,6 +2185,7 @@ void sim_t::create_options()
     opt_string( "xml_style", xml_stylesheet_file_str ),
     opt_bool( "log", log ),
     opt_string( "output", output_file_str ),
+    opt_string( "tmi_output", tmi_debug_output_file_str ),
     opt_bool( "save_raid_summary", save_raid_summary ),
     opt_bool( "save_gear_comments", save_gear_comments ),
     opt_bool( "buff_uptime_timeline", buff_uptime_timeline ),
