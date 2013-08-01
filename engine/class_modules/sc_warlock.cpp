@@ -53,7 +53,8 @@ struct warlock_t : public player_t
 public:
 
   player_t* havoc_target;
-
+  player_t* latest_corruption_target; //pointer to the latest corruption target
+  
   // Active Pet
   struct pets_t
   {
@@ -327,6 +328,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t* p ) :
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   player_t( sim, WARLOCK, name, r ),
   havoc_target( 0 ),
+  latest_corruption_target( 0 ),
   pets( pets_t() ),
   buffs( buffs_t() ),
   cooldowns( cooldowns_t() ),
@@ -2079,13 +2081,21 @@ struct corruption_t : public warlock_spell_t
     return warlock_spell_t::travel_time();
   }
 
+  virtual void execute()
+  {
+    p() -> latest_corruption_target = target;
+    
+    warlock_spell_t::execute();
+  }
+  
   virtual void tick( dot_t* d )
   {
     warlock_spell_t::tick( d );
 
-    if ( p() -> spec.nightfall -> ok() )
+    if ( p() -> spec.nightfall -> ok() && (!p() -> dbc.ptr || ( p() -> dbc.ptr && target == p() -> latest_corruption_target)) )//ON PTR only the latest corruption procs it
     {
-      p() -> nightfall_chance += 0.00333; // Confirmed 09/09/2012
+      
+      p() -> nightfall_chance += p() -> dbc.ptr ? 0.004662 : 0.00333; // Confirmed 09/09/2012 //Increase by 1.4 (5% to 7% with 5.4)
       if ( p() -> rngs.nightfall -> roll( p() -> nightfall_chance ) )
       {
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
