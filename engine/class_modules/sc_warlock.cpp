@@ -1583,11 +1583,15 @@ public:
   {
     double m = 1.0;
 
-    if ( td( t ) -> debuffs_haunt -> up() )
+    if (!t -> dbc.ptr && td( t ) -> debuffs_haunt -> up())// NO PTR Version
     {
       m *= 1.0 + td( t ) -> debuffs_haunt -> data().effectN( 3 ).percent();
     }
 
+    if ( t -> dbc.ptr && td( t ) -> debuffs_haunt -> up() && (channeled || tick_power_mod)) //PTR Version. Only applies to channeled or dots
+    {
+      m *= 1.0 + td( t ) -> debuffs_haunt -> data().effectN( 3 ).percent();
+    }
     return spell_t::composite_target_multiplier( t ) * m;
   }
 
