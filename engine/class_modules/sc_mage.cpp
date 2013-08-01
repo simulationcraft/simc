@@ -2272,7 +2272,6 @@ struct frostbolt_t : public mage_spell_t
 
   virtual void impact( action_state_t* s )
   {
-    // TO CHECK : does mini FB apply FB debuff ? prolly yes
     if ( ! static_cast<const state_t&>( *s ).mini_version ) // Bail out if mini spells get casted
     {
       mage_spell_t::impact( s );
@@ -2286,7 +2285,9 @@ struct frostbolt_t : public mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      td( s -> target ) -> debuffs.frostbolt -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
+      if ( ! maybe_ptr( player -> dbc.ptr ) ) {
+        td( s -> target ) -> debuffs.frostbolt -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
+      }
     }
 
   }
@@ -2624,6 +2625,16 @@ struct mini_ice_lance_t : public mage_spell_t
     //dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
 
+    if ( p -> glyphs.ice_lance -> ok() )
+      aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value() + 1;
+    else if ( p -> glyphs.splitting_ice -> ok() )
+      aoe = p -> glyphs.splitting_ice -> effectN( 1 ).base_value() + 1;
+
+    if ( p -> glyphs.ice_lance -> ok() )
+      base_aoe_multiplier *= p -> glyphs.ice_lance -> effectN( 2 ).percent();
+    else if ( p -> glyphs.splitting_ice -> ok() )
+      base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
+    
     if ( bolt_count < 3 )
     {
       execute_action = new mini_ice_lance_t( p, bolt_count + 1 );
@@ -2667,7 +2678,6 @@ struct ice_lance_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
 
-	// FIXME: Compiles, but segfaults when ptr=1
     if ( p -> glyphs.ice_lance -> ok() )
       aoe = p -> glyphs.ice_lance -> effectN( 1 ).base_value() + 1;
     else if ( p -> glyphs.splitting_ice -> ok() )
