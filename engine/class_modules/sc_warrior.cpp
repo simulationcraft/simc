@@ -2109,6 +2109,8 @@ struct storm_bolt_off_hand_t : public warrior_attack_t
     may_block = false;
     background = true;
 
+    weapon = &( p -> off_hand_weapon );
+
     // assume the target is stun-immune
     base_multiplier = 4.0; // hardcoded in tooltip
   }
