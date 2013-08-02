@@ -52,6 +52,7 @@ public:
   // Active
   ignite_t* active_ignite;
   int active_living_bomb_targets;
+  player_t* last_bomb_target;
 
   // Benefits
   struct benefits_t
@@ -249,6 +250,7 @@ public:
     icicle_event( 0 ),
     active_ignite( 0 ),
     active_living_bomb_targets( 0 ),
+    last_bomb_target( 0 ),
     benefits( benefits_t() ),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
@@ -2146,6 +2148,9 @@ struct frost_bomb_t : public mage_spell_t
     // Cooldown is reduced by haste
     cooldown -> duration = original_cooldown * composite_haste();
     mage_spell_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+      p() -> last_bomb_target = execute_state -> target;
   }
 
   virtual void impact( action_state_t* s )
@@ -2161,7 +2166,8 @@ struct frost_bomb_t : public mage_spell_t
   virtual void tick( dot_t* d )
   {
     mage_spell_t::tick( d );
-    p() -> buffs.brain_freeze -> trigger();
+    if ( p() -> last_bomb_target == d -> state -> target )
+      p() -> buffs.brain_freeze -> trigger();
     d -> cancel();
   }
 };
@@ -2970,7 +2976,8 @@ struct living_bomb_t : public mage_spell_t
   {
     mage_spell_t::tick( d );
 
-    p() -> buffs.brain_freeze -> trigger();
+    if ( p() -> last_bomb_target == d -> state -> target )
+      p() -> buffs.brain_freeze -> trigger();
   }
 
   virtual void last_tick( dot_t* d )
@@ -2991,6 +2998,7 @@ struct living_bomb_t : public mage_spell_t
     {
       mage_t& p = *this -> p();
       p.active_living_bomb_targets++;
+      p.last_bomb_target = execute_state -> target;
     }
   }
 
@@ -3237,6 +3245,13 @@ struct nether_tempest_t : public mage_spell_t
     add_child( add_cleave );
   }
 
+  void execute()
+  {
+    mage_spell_t::execute();
+    if ( result_is_hit( execute_state -> result ) )
+      p() -> last_bomb_target = execute_state -> target;
+  }
+
   virtual void impact( action_state_t* s )
   {
     mage_spell_t::impact( s );
@@ -3254,7 +3269,8 @@ struct nether_tempest_t : public mage_spell_t
     add_cleave -> main_target = target;
     add_cleave -> execute();
 
-    p() -> buffs.brain_freeze -> trigger();
+    if ( d -> state -> target == p() -> last_bomb_target )
+      p() -> buffs.brain_freeze -> trigger();
   }
 };
 
@@ -4685,6 +4701,7 @@ void mage_t::reset()
   event_t::cancel( icicle_event );
   mana_gem_charges = max_mana_gem_charges();
   active_living_bomb_targets = 0;
+  last_bomb_target = 0;
 }
 
 // mage_t::regen  ===========================================================
