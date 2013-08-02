@@ -2500,6 +2500,7 @@ struct sacred_shield_t : public paladin_heal_t
   virtual void last_tick( dot_t* d )
   {
     p() -> buffs.sacred_shield -> expire();
+    paladin_heal_t::last_tick( d );
   }
 
   virtual void execute()
