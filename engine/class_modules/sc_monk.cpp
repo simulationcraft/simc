@@ -106,7 +106,7 @@ public:
     haste_buff_t* tiger_strikes;
     buff_t* vital_mists;
     buff_t* zen_sphere;
-	buff_t* tier16_4pc_melee;
+    buff_t* tier16_4pc_melee;
 
     //  buff_t* zen_meditation;
     //  buff_t* path_of_blossoms;
@@ -133,7 +133,7 @@ public:
     gain_t* muscle_memory;
     gain_t* soothing_mist;
     gain_t* tier15_2pc;
-	gain_t* tier16_4pc_melee;
+    gain_t* tier16_4pc_melee;
   } gain;
 
   struct procs_t
@@ -228,7 +228,7 @@ public:
   {
     const spell_data_t* tier15_2pc;
     const spell_data_t* swift_reflexes;
-	const spell_data_t* tier16_2pc;
+    const spell_data_t* tier16_2pc;
   } passives;
 
   // Options
@@ -406,13 +406,13 @@ private:
       tick_may_crit  = true;
       aoe = 3;
       tick_power_mod = data().extra_coeff();
-      
 
-	  //if ( player -> dbc.ptr ) {
-		//  cooldown -> duration = timespan_t::from_seconds( 1.0 );
-	  //} else {
-		  cooldown -> duration = timespan_t::from_seconds( 6.0 );
-	  //}
+
+      //if ( player -> dbc.ptr ) {
+      //  cooldown -> duration = timespan_t::from_seconds( 1.0 );
+      //} else {
+      cooldown -> duration = timespan_t::from_seconds( 6.0 );
+      //}
       base_spell_power_multiplier  = 0;
 
       //base_multiplier = 1.323; //1.58138311; EDITED FOR ACTUAL VALUE. verify in the future.
@@ -458,7 +458,7 @@ public:
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
 
-	// originally set as 50% of AP; it's actually 50.5, so Xuen wasn't being calculated properly
+    // originally set as 50% of AP; it's actually 50.5, so Xuen wasn't being calculated properly
     owner_coeff.ap_from_ap = 0.505;
   }
 
@@ -589,7 +589,7 @@ public:
           p() -> track_chi_consumption -= chi_to_consume;
 
           p() -> buff.tigereye_brew -> trigger();
-		  // I assume that this is for the T15 bonus?  If so, then we need similar logic for T16
+          // I assume that this is for the T15 bonus?  If so, then we need similar logic for T16
           if ( p() -> set_bonus.tier15_4pc_melee() &&
                p() -> rng.tier15_4pc_melee -> roll( p() -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent() ) )
           {
@@ -792,7 +792,7 @@ struct jab_t : public monk_melee_attack_t
 
     // Combo Breaker - 5.0/5.1 Windwalker Mastery
     // Debuffs are independent of each other
-	//TODO add a check for 2p
+    //TODO add a check for 2p
 
     if ( result_is_miss( execute_state -> result ) )
       return;
@@ -907,9 +907,6 @@ struct tiger_palm_t : public monk_melee_attack_t
     oh = &( player -> off_hand_weapon ) ;
     base_multiplier = 3.0; // hardcoded into tooltip
 
-	
-
-
     if ( p -> spec.brewmaster_training -> ok() )
       base_costs[ RESOURCE_CHI ] = 0.0;
 
@@ -927,11 +924,11 @@ struct tiger_palm_t : public monk_melee_attack_t
       m *= 1.0 + 1.5; // FIX ME: Not reliant upon spell data! At time of writing spell only has a dummy effect.
 
 
-	// check for melee 2p and CB: TP, for the 50% dmg bonus
-	if ( p() -> set_bonus.tier16_2pc_melee() && p() -> buff.combo_breaker_tp -> check() ) {
-		// damage increased by 50% for WW 2pc upon CB
-		m *= 1.5;
-	}
+    // check for melee 2p and CB: TP, for the 50% dmg bonus
+    if ( p() -> set_bonus.tier16_2pc_melee() && p() -> buff.combo_breaker_tp -> check() ) {
+      // damage increased by 50% for WW 2pc upon CB
+      m *= 1.5;
+    }
 
     return m;
   }
@@ -1062,11 +1059,11 @@ struct blackout_kick_t : public monk_melee_attack_t
     if ( p() -> buff.muscle_memory -> check() )
       m *= 1.0 + 1.5; // FIX ME: Not reliant upon spell data! At time of writing spell only has a dummy effect.
 
-	// check for melee 2p and CB: TP, for the 50% dmg bonus
-	if ( p() -> set_bonus.tier16_2pc_melee() && p() -> buff.combo_breaker_bok -> check() ) {
-		// damage increased by 50% for WW 2pc upon CB
-		m *= 1.5;
-	}
+    // check for melee 2p and CB: TP, for the 50% dmg bonus
+    if ( p() -> set_bonus.tier16_2pc_melee() && p() -> buff.combo_breaker_bok -> check() ) {
+      // damage increased by 50% for WW 2pc upon CB
+      m *= 1.5;
+    }
 
     return m;
   }
@@ -1666,9 +1663,9 @@ struct tigereye_brew_t : public monk_spell_t
     if ( p() -> mastery.bottled_fury -> ok() )
       v += p() -> cache.mastery_value();
 
-	if ( player -> dbc.ptr ) {
-		v = p() -> buff.tigereye_brew_use -> data().effectN( 1 ).percent();
-	}
+    if ( player -> dbc.ptr ) {
+      v = p() -> buff.tigereye_brew_use -> data().effectN( 1 ).percent();
+    }
 
     return v;
   }
@@ -2533,7 +2530,7 @@ void monk_t::init_spells()
     {       0,       0,      0,      0,      0,      0,      0,      0 }, // Tier13
     {       0,       0, 123149, 123150, 123157, 123159, 123152, 123153 }, // Tier14
     {       0,       0, 138177, 138315, 138231, 138236, 138289, 138290 }, // Tier15
-	{       0,       0, 145022, 145004, 138231, 138236, 138289, 138290 }, // Tier16, need spell IDS for MW/BrM
+    {       0,       0, 145022, 145004, 138231, 138236, 138289, 138290 }, // Tier16, need spell IDS for MW/BrM
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );

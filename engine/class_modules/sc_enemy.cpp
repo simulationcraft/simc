@@ -10,7 +10,7 @@
 // ==========================================================================
 
 namespace { // UNNAMED NAMESPACE
-  
+
 enum tmi_boss_e
 {
   TMI_NONE = 0,
@@ -568,7 +568,7 @@ void enemy_t::init_base_stats()
   {
     initial_health_percentage = 100.0;
   }
-  
+
   base.miss  = 0.030; //90, level differential handled in miss_chance()
   base.dodge = 0.030; //90, level differential handled in dodge_chance()
   base.parry = 0.030; //90, level differential handled in parry_chance()
@@ -675,17 +675,17 @@ void enemy_t::init_actions()
       {
         switch ( tmi_boss_enum )
         {
-        case TMI_NONE:
-          action_list_str += "/auto_attack,damage=" + util::to_string( 700000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
-          action_list_str += "/spell_dot,damage=" + util::to_string( 100000 * level_mult ) + ",tick_time=2,num_ticks=10,cooldown=40,aoe_tanks=1,if=!ticking";
-          action_list_str += "/spell_nuke,damage=" + util::to_string( 400000 * level_mult ) + ",cooldown=4,attack_speed=2,aoe_tanks=1";
-          break;
-        default:
-          // boss damage information ( could move outside this function and make a constant )
-          int aa_damage [4] = { 0, 550000, 750000, 900000 };
-          int dot_damage [4] = { 0, 20000, 25000, 30000 };
-          action_list_str += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5";
-          action_list_str += "/spell_dot,damage=" + util::to_string( dot_damage[ tmi_boss_enum ] ) + ",tick_time=2,num_ticks=15,aoe_tanks=1,if=!ticking";
+          case TMI_NONE:
+            action_list_str += "/auto_attack,damage=" + util::to_string( 700000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
+            action_list_str += "/spell_dot,damage=" + util::to_string( 100000 * level_mult ) + ",tick_time=2,num_ticks=10,cooldown=40,aoe_tanks=1,if=!ticking";
+            action_list_str += "/spell_nuke,damage=" + util::to_string( 400000 * level_mult ) + ",cooldown=4,attack_speed=2,aoe_tanks=1";
+            break;
+          default:
+            // boss damage information ( could move outside this function and make a constant )
+            int aa_damage [4] = { 0, 550000, 750000, 900000 };
+            int dot_damage [4] = { 0, 20000, 25000, 30000 };
+            action_list_str += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5";
+            action_list_str += "/spell_dot,damage=" + util::to_string( dot_damage[ tmi_boss_enum ] ) + ",tick_time=2,num_ticks=15,aoe_tanks=1,if=!ticking";
         }
       }
       else if ( sim -> heal_target && this != sim -> heal_target )

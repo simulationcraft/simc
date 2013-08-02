@@ -62,7 +62,7 @@ double attack_t::miss_chance( double hit, player_t* t )
 {
   // cache.miss() contains the target's miss chance (3.0 base in almost all cases)
   double miss = t -> cache.miss();
-    
+
   // add or subtract 1.5% per level difference
   miss += ( t -> level - player -> level ) * 0.015;
 
@@ -172,9 +172,9 @@ void attack_t::build_table( std::array<double, RESULT_MAX>& chances,
 block_result_e attack_t::calculate_block_result( action_state_t* s )
 {
   block_result_e block_result = BLOCK_RESULT_UNBLOCKED;
-  
+
   // Blocks also get a their own roll, and glances/crits can be blocked.
-  if ( result_is_hit( s -> result ) && may_block && ( player -> position() == POSITION_FRONT ) ) 
+  if ( result_is_hit( s -> result ) && may_block && ( player -> position() == POSITION_FRONT ) )
   {
     double block_total = block_chance( s -> target );
 
@@ -241,7 +241,7 @@ result_e attack_t::calculate_result( action_state_t* s )
   assert( result != RESULT_NONE );
 
   // if we have a special, make a second roll for hit/crit
-  if ( result == RESULT_HIT && special && may_crit ) 
+  if ( result == RESULT_HIT && special && may_crit )
   {
     if ( rng_result -> roll( crit ) )
       result = RESULT_CRIT;
@@ -329,7 +329,7 @@ double melee_attack_t::dodge_chance( double expertise, player_t* t )
 
   // add or subtract 1.5% per level difference
   dodge += ( t -> level - player -> level ) * 0.015;
-  
+
   // subtract the player's expertise chance
   dodge -= expertise;
 
@@ -345,7 +345,7 @@ double melee_attack_t::parry_chance( double expertise, player_t* t )
 
   // add or subtract 1.5% per level difference
   parry += ( t -> level - player -> level ) * 0.015;
-  
+
   // subtract the player's expertise chance
   parry += std::min( 0.0, dodge_chance( expertise, t ) );
 
@@ -386,7 +386,7 @@ double ranged_attack_t::dodge_chance( double expertise, player_t* t )
 
   // add or subtract 1.5% per level difference
   dodge += ( t -> level - player -> level ) * 0.015;
-  
+
   // subtract the player's expertise chance
   dodge -= expertise;
 

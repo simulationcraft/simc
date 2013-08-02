@@ -946,7 +946,7 @@ void sim_t::add_event( event_t* e,
   // Insert event into the event list at the appropriate time
   event_t** prev = &( timing_wheel[ slice ] );
   while ( ( *prev ) && ( *prev ) -> time <= e -> time ) // Find position in the list
-    { prev = &( ( *prev ) -> next ); }
+  { prev = &( ( *prev ) -> next ); }
   // insert event
   e -> next = *prev;
   *prev = e;

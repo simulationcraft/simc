@@ -7291,15 +7291,15 @@ expr_t* player_t::create_expression( action_t* a,
   if ( expr_t* q = create_resource_expression( name_str ) )
     return q;
 
-  // incoming_damage_X expressions  
-  if ( util::str_in_str_ci( name_str, "incoming_damage_") )
+  // incoming_damage_X expressions
+  if ( util::str_in_str_ci( name_str, "incoming_damage_" ) )
   {
     std::vector<std::string> parts = util::string_split( name_str, "_" );
     timespan_t window_duration;
-    
+
     if ( util::str_in_str_ci( parts[ 2 ], "ms" ) )
       window_duration = timespan_t::from_millis( util::str_to_num<int>( parts[ 2 ] ) );
-        else
+    else
       window_duration = timespan_t::from_seconds( util::str_to_num<int>( parts[ 2 ] ) );
 
     // skip construction if the duration is nonsensical
@@ -7311,13 +7311,13 @@ expr_t* player_t::create_expression( action_t* a,
         timespan_t duration;
 
         inc_dmg_expr_t( player_t* p, const std::string& time_str, const timespan_t& duration ) :
-           expr_t( "incoming_damage_" + time_str ), player( p ), duration( duration )
+          expr_t( "incoming_damage_" + time_str ), player( p ), duration( duration )
         {
         }
 
         double evaluate()
-        { 
-          return player -> compute_incoming_damage( duration ); 
+        {
+          return player -> compute_incoming_damage( duration );
         }
       };
 
@@ -8322,8 +8322,8 @@ void player_t::create_options()
     opt_func( "brain_lag", parse_brain_lag ),
     opt_func( "brain_lag_stddev", parse_brain_lag_stddev ),
     opt_bool( "scale_player", scale_player ),
-    opt_bool( "tmi_self_only", tmi_self_only),
-    opt_string( "tmi_output", tmi_debug_file_str),
+    opt_bool( "tmi_self_only", tmi_self_only ),
+    opt_string( "tmi_output", tmi_debug_file_str ),
     opt_func( "spec", parse_specialization ),
     opt_func( "specialization", parse_specialization ),
     opt_func( "stat_timelines", parse_stat_timelines ),
@@ -9542,7 +9542,7 @@ void player_collected_data_t::print_tmi_debug_csv( const std::vector<double>& ma
     FILE* f = io::fopen( p.tmi_debug_file_str, "w" );
     if ( f )
     {
-      std::vector<double> tl_data = health_changes.timeline.data(); 
+      std::vector<double> tl_data = health_changes.timeline.data();
 
       // write elements to CSV
       util::fprintf( f, "%s TMI data:\n", p.name_str.c_str() );
@@ -9661,7 +9661,6 @@ void player_collected_data_t::collect_data( const player_t& p )
 
         // if an output file has been defined, write to it
         print_tmi_debug_csv( sliding_average_tl.data(), weighted_value, p );
-        
       }
       // normalize by fight length and add to TMI data array
       theck_meloree_index.add( tmi );

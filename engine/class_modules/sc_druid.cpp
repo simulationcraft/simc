@@ -2009,7 +2009,7 @@ struct swipe_cat_t : public cat_attack_t
   virtual void execute()
   {
     cat_attack_t::execute();
-    
+
     p() -> buff.feral_fury -> up();
 
     if ( p() -> buff.tier15_4pc_melee -> up() )
@@ -2171,7 +2171,7 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   {
     p() -> resource_gain( RESOURCE_RAGE, 10.85, p() -> gain.bear_melee );
     if ( p() -> set_bonus.tier15_4pc_tank() && p() -> buff.enrage -> check() )
-        p() -> resource_gain( RESOURCE_RAGE, 10.85 * p() -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(), p() -> gain.tier15_4pc_tank );
+      p() -> resource_gain( RESOURCE_RAGE, 10.85 * p() -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(), p() -> gain.tier15_4pc_tank );
   }
 }; // end druid_bear_attack_t
 
@@ -2277,7 +2277,7 @@ struct lacerate_t : public bear_attack_t
       if ( td( state -> target ) -> lacerate_stack < 3 )
         td( state -> target ) -> lacerate_stack++;
       p() -> buff.lacerate -> trigger();
-      
+
       if ( p() -> rng.mangle -> roll( 0.25 ) )
         p() -> cooldown.mangle_bear -> reset( true );
     }
@@ -2355,7 +2355,7 @@ struct mangle_bear_t : public bear_attack_t
                             p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
                             p() -> gain.primal_fury );
       p() -> proc.primal_fury -> occur();
-      
+
       if ( p() -> set_bonus.tier15_4pc_tank() && p() -> buff.enrage -> check() )
         p() -> resource_gain( RESOURCE_RAGE, p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ) * p() -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(), p() -> gain.tier15_4pc_tank );
 
@@ -2537,7 +2537,7 @@ struct thrash_bear_t : public bear_attack_t
 
     if ( result_is_hit( state -> result ) && ! sim -> overrides.weakened_blows )
       state -> target -> debuffs.weakened_blows -> trigger();
-    
+
     if ( p() -> rng.mangle -> roll( 0.25 ) )
       p() -> cooldown.mangle_bear -> reset( true );
   }
@@ -5781,7 +5781,7 @@ void druid_t::apl_precombat()
   // Dream of Cenarius Pre-Cast
   if ( level >= 90 && ( specialization() == DRUID_FERAL || specialization() == DRUID_BALANCE ) )
   {
-    precombat -> add_action( this, "Healing Touch", "if=!buff.dream_of_cenarius.up&talent.dream_of_cenarius.enabled");
+    precombat -> add_action( this, "Healing Touch", "if=!buff.dream_of_cenarius.up&talent.dream_of_cenarius.enabled" );
   }
 
   // Forms
@@ -5800,7 +5800,7 @@ void druid_t::apl_precombat()
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-  
+
   // Pre-Potion
   if ( sim -> allow_potions && level >= 80 )
   {
@@ -5867,7 +5867,7 @@ void druid_t::apl_feral()
   std::vector<std::string> item_actions       = get_item_actions();
   std::vector<std::string> profession_actions = get_profession_actions();
   std::vector<std::string> racial_actions     = get_racial_actions();
-      
+
   action_priority_list_t* basic    = get_action_priority_list( "basic" );
   action_priority_list_t* advanced = get_action_priority_list( "advanced" );
 
@@ -5883,14 +5883,14 @@ void druid_t::apl_feral()
   if ( talent.force_of_nature -> ok() )
     basic -> add_action( this, "Force of Nature", "if=charges=3|trinket.proc.agility.react|target.time_to_die<20" );
   basic -> add_action( this, "Ferocious Bite", "if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25",
-                        "Keep Rip from falling off during execute range." );
+                       "Keep Rip from falling off during execute range." );
   basic -> add_action( this, "Faerie Fire", "if=debuff.weakened_armor.stack<3" );
   if ( talent.dream_of_cenarius -> ok() )
   {
     if ( talent.natures_swiftness -> ok() )
       basic -> add_action( this, "Healing Touch", "if=buff.natures_swiftness.up" );
     basic -> add_action( this, "Healing Touch", "if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down&(buff.predatory_swiftness.remains<1.5|combo_points>=4)",
-                            "Proc Dream of Cenarius at 4+ CP or when PS is about to expire." );
+                         "Proc Dream of Cenarius at 4+ CP or when PS is about to expire." );
   }
   basic -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
 
@@ -5923,29 +5923,29 @@ void druid_t::apl_feral()
     basic -> add_action( racial_actions[ i ] + ",if=buff.tigers_fury.up" );
 
   if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
-    basic -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25", 
-                          "Use NS for finishers during execute range." );
+    basic -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25",
+                         "Use NS for finishers during execute range." );
   basic -> add_action( this, "Rip", "if=combo_points>=5&target.health.pct<=25&action.rip.tick_damage%dot.rip.tick_dmg>=1.15",
-                        "Overwrite Rip during execute range if it's at least 15% stronger than the current." );
+                       "Overwrite Rip during execute range if it's at least 15% stronger than the current." );
   basic -> add_action( this, "Ferocious Bite", "if=combo_points>=5&target.health.pct<=25&dot.rip.ticking" );
   if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
-    basic -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3", 
-                          "Use NS for Rip." );
+    basic -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3",
+                         "Use NS for Rip." );
   basic -> add_action( this, "Rip", "if=combo_points>=5&dot.rip.remains<2" );
   basic -> add_action( this, "Ferocious Bite", "if=combo_points>=5&energy.time_to_max<dot.rip.remains-2&energy.time_to_max<buff.savage_roar.remains-3",
-                        "Ferocious Bite if we will energy cap before being able to spend our CP on Rip or Savage Roar." );
+                       "Ferocious Bite if we will energy cap before being able to spend our CP on Rip or Savage Roar." );
   basic -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3" );
   if ( find_item( "rune_of_reorigination" ) )
     basic -> add_action( this, "Rake", "if=action.rake.tick_damage>action.mangle_cat.hit_damage&action.rake.tick_damage>=dot.rake.tick_dmg",
-                          "Rake if it hits harder than Mangle and we won't apply a weaker bleed to the target." );
+                         "Rake if it hits harder than Mangle and we won't apply a weaker bleed to the target." );
   basic -> add_action( this, "Rake", "if=dot.rake.remains<3|action.rake.tick_damage>dot.rake.tick_dmg",
-                        "Rake if it's about to fall off or we can apply a stronger Rake." );
+                       "Rake if it's about to fall off or we can apply a stronger Rake." );
   if ( set_bonus.tier16_2pc_melee() )
     basic -> add_action( "run_action_list,name=filler,if=buff.feral_fury.react" );
   basic -> add_action( "pool_resource,for_next=1" );
   basic -> add_action( "thrash_cat,if=dot.thrash_cat.remains<3&(dot.rip.remains>6|combo_points>=5)" );
   basic -> add_action( "run_action_list,name=filler,if=buff.omen_of_clarity.react",
-                        "Conditions under which we should execute a CP generator." );
+                       "Conditions under which we should execute a CP generator." );
   basic -> add_action( "run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)" );
   basic -> add_action( "run_action_list,name=filler,if=target.time_to_die<=8.5" );
   basic -> add_action( "run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up|buff.natures_vigil.up" );
@@ -6011,7 +6011,7 @@ void druid_t::apl_feral()
   }
 
   if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
-    advanced -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25", 
+    advanced -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25",
                             "Use NS for finishers during execute range." );
   advanced -> add_action( this, "Rip", "if=combo_points>=5&action.rip.tick_damage%dot.rip.tick_dmg>=1.15&target.time_to_die>30",
                           "Overwrite Rip if it's at least 15% stronger than the current." );
@@ -6019,8 +6019,8 @@ void druid_t::apl_feral()
                           "Pool 50 energy for Ferocious Bite." );
   advanced -> add_action( this, "Ferocious Bite", "if=combo_points>=5&dot.rip.ticking&target.health.pct<=25" );
   if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
-    advanced -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)", 
-                          "Use NS for Rip." );
+    advanced -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)",
+                            "Use NS for Rip." );
   advanced -> add_action( this, "Rip", "if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)" );
   advanced -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains" );
   advanced -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains&dot.rip.ticking" );
@@ -6376,7 +6376,7 @@ void druid_t::regen( timespan_t periodicity )
   {
     resource_gain( RESOURCE_RAGE, 1.0 * periodicity.total_seconds(), gain.enrage );
     if ( set_bonus.tier15_4pc_tank() )
-        resource_gain( RESOURCE_RAGE, 1.0 * periodicity.total_seconds() * sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(), gain.tier15_4pc_tank );
+      resource_gain( RESOURCE_RAGE, 1.0 * periodicity.total_seconds() * sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(), gain.tier15_4pc_tank );
   }
 
   player_t::regen( periodicity );

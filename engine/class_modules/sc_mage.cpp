@@ -1237,9 +1237,9 @@ static double icicle_damage( mage_t* mage )
 
   std::vector< icicle_data_t >::iterator idx = mage -> icicles.begin(),
                                          end = mage -> icicles.end();
-  for (; idx < end; idx++ )
+  for ( ; idx < end; idx++ )
   {
-    if ( mage -> sim -> current_time - (*idx).first < threshold )
+    if ( mage -> sim -> current_time - ( *idx ).first < threshold )
       break;
   }
 
@@ -1264,10 +1264,10 @@ struct icicle_event_t : public event_t
 
   icicle_event_t( mage_t* m, double d, bool first = false ) :
     event_t( m, "icicle_event" ), mage( m ), damage( d )
-  { 
+  {
     double cast_time = first ? 0.25 : 0.75;
     cast_time *= mage -> cache.spell_speed();
-  
+
     sim.add_event( this, timespan_t::from_seconds( cast_time ) );
   }
 
@@ -1281,8 +1281,8 @@ struct icicle_event_t : public event_t
     {
       mage -> icicle_event = new ( sim ) icicle_event_t( mage, d );
       if ( mage -> sim -> debug )
-        mage -> sim -> output( "%s icicle use (chained), damage=%f, total=%u", 
-            mage -> name(), d, as<unsigned>( mage -> icicles.size() ) );
+        mage -> sim -> output( "%s icicle use (chained), damage=%f, total=%u",
+                               mage -> name(), d, as<unsigned>( mage -> icicles.size() ) );
     }
     else
       mage -> icicle_event = 0;
@@ -1312,9 +1312,9 @@ static void trigger_icicle( mage_t* mage, bool chain = false )
   }
 
   if ( mage -> sim -> debug )
-    mage -> sim -> output( "%s icicle use%s, damage=%f, total=%u", 
-        mage -> name(), chain ? " (chained)" : "", d, 
-        as<unsigned>( mage -> icicles.size() ) );
+    mage -> sim -> output( "%s icicle use%s, damage=%f, total=%u",
+                           mage -> name(), chain ? " (chained)" : "", d,
+                           as<unsigned>( mage -> icicles.size() ) );
 }
 
 static void trigger_icicle_gain( action_state_t* state )
@@ -1335,10 +1335,10 @@ static void trigger_icicle_gain( action_state_t* state )
     trigger_icicle( mage );
   mage -> icicles.push_back( icicle_data_t( mage -> sim -> current_time, amount ) );
   if ( mage -> sim -> debug )
-    mage -> sim -> output( "%s icicle gain, damage=%f, total=%u", 
-        mage -> name(), 
-        amount,
-        as<unsigned>( mage -> icicles.size() ) );
+    mage -> sim -> output( "%s icicle gain, damage=%f, total=%u",
+                           mage -> name(),
+                           amount,
+                           as<unsigned>( mage -> icicles.size() ) );
 }
 
 // Ignite ===================================================================
@@ -2285,7 +2285,7 @@ struct frostbolt_t : public mage_spell_t
         mini_frostbolt -> schedule_execute( mini_frostbolt -> get_state( execute_state ) );
       }
     }
-    
+
     p() -> buffs.frozen_thoughts -> expire();
   }
 
@@ -2653,7 +2653,7 @@ struct mini_ice_lance_t : public mage_spell_t
       base_aoe_multiplier *= p -> glyphs.ice_lance -> effectN( 2 ).percent();
     else if ( p -> glyphs.splitting_ice -> ok() )
       base_aoe_multiplier *= p -> glyphs.splitting_ice -> effectN( 2 ).percent();
-    
+
     if ( bolt_count < 3 )
     {
       execute_action = new mini_ice_lance_t( p, bolt_count + 1 );
@@ -3385,7 +3385,7 @@ struct pyroblast_t : public mage_spell_t
 
     if ( p() -> set_bonus.tier15_4pc_caster() )
       c += p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent();
-      
+
     if ( p() -> buffs.fiery_adept -> check() )
       c += 100.0;
 

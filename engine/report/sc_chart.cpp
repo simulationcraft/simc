@@ -1798,7 +1798,7 @@ std::string chart::timeline(  player_t* p,
   chart.set_height( 200 );
 
   std::string s = chart.create();
-  char * old_locale = setlocale( LC_ALL, "C");
+  char * old_locale = setlocale( LC_ALL, "C" );
   s += "chd=s:";
   for ( size_t i = 0; i < max_buckets; i += increment )
   {
@@ -1840,7 +1840,7 @@ std::string chart::timeline(  player_t* p,
   s += util::to_string( 100.0 * ( avg - timeline_min ) / timeline_range, 0 );
   s += ",100";
 
-  setlocale( LC_ALL, old_locale);
+  setlocale( LC_ALL, old_locale );
   return s;
 }
 
@@ -2350,7 +2350,7 @@ std::string chart::gear_weights_askmrrobot( player_t* p )
       ss << p -> region_str << "a";
     else
       ss << p -> region_str;
-    
+
     ss << '/' << p -> server_str << '/' << p -> name_str;
   }
   else
@@ -2371,7 +2371,7 @@ std::string chart::gear_weights_askmrrobot( player_t* p )
     }
   }
   ss << "?spec=";
-  
+
   // This next section is sort of unwieldly, I may move this to external functions
 
   // Player type
@@ -2390,15 +2390,15 @@ std::string chart::gear_weights_askmrrobot( player_t* p )
     case MONK:         ss << "Monk"; break;
     // if this isn't a player, the AMR link is useless
     default: assert( 0 ); break;
-  }  
+  }
   // Player spec
   switch ( p -> specialization() )
   {
     case DEATH_KNIGHT_FROST:
-      {
-        if ( p -> main_hand_weapon.type == WEAPON_2H ) { ss << "Frost2H"; break; }
-        else {ss << "FrostDW"; break;}
-      }
+    {
+      if ( p -> main_hand_weapon.type == WEAPON_2H ) { ss << "Frost2H"; break; }
+      else {ss << "FrostDW"; break;}
+    }
     case DEATH_KNIGHT_UNHOLY:   ss << "Unholy2H"; break;
     case DEATH_KNIGHT_BLOOD:    ss << "Blood2H"; break;
     case DRUID_BALANCE:         ss << "Moonkin"; break;
@@ -2427,36 +2427,36 @@ std::string chart::gear_weights_askmrrobot( player_t* p )
     case WARLOCK_DEMONOLOGY:    ss << "Demonology"; break;
     case WARLOCK_DESTRUCTION:   ss << "Destruction"; break;
     case WARRIOR_ARMS:          ss << "Arms"; break;
-    case WARRIOR_FURY: 
-      {
-        if ( p -> main_hand_weapon.type == WEAPON_SWORD_2H || p -> main_hand_weapon.type == WEAPON_AXE_2H || p -> main_hand_weapon.type == WEAPON_MACE_2H || p -> main_hand_weapon.type == WEAPON_POLEARM ) 
-          { ss << "Fury2H"; break; }
-        else { ss << "Fury"; break; }
-      }         
+    case WARRIOR_FURY:
+    {
+      if ( p -> main_hand_weapon.type == WEAPON_SWORD_2H || p -> main_hand_weapon.type == WEAPON_AXE_2H || p -> main_hand_weapon.type == WEAPON_MACE_2H || p -> main_hand_weapon.type == WEAPON_POLEARM )
+      { ss << "Fury2H"; break; }
+      else { ss << "Fury"; break; }
+    }
     case WARRIOR_PROTECTION:    ss << "Protection"; break;
     case MONK_BREWMASTER:
-      {
-        if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { ss << "Brewmaster2h"; break; }
-        else { ss << "BrewmasterDw"; break; }
-      }
+    {
+      if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { ss << "Brewmaster2h"; break; }
+      else { ss << "BrewmasterDw"; break; }
+    }
     case MONK_MISTWEAVER:       ss << "Mistweaver"; break;
-    case MONK_WINDWALKER: 
-      {
-        if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { ss << "Windwalker2h"; break; }
-        else { ss << "WindwalkerDw"; break; }
-      } 
+    case MONK_WINDWALKER:
+    {
+      if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { ss << "Windwalker2h"; break; }
+      else { ss << "WindwalkerDw"; break; }
+    }
     // if this is a pet or an unknown spec, the AMR link is pointless anyway
-    default: assert( 0 ); break; 
+    default: assert( 0 ); break;
   }
-  
+
   // add weights
-  ss << "&weights=";    
+  ss << "&weights=";
 
   // check for negative normalizer
   bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
 
   // AMR accepts a max precision of 2 decimal places
-  ss.precision( std::min(p -> sim -> report_precision + 1, 2 ) );
+  ss.precision( std::min( p -> sim -> report_precision + 1, 2 ) );
 
   // flag for skipping the first comma
   bool skipFirstComma = false;
@@ -2473,7 +2473,7 @@ std::string chart::gear_weights_askmrrobot( player_t* p )
     // skip the first comma
     if ( skipFirstComma )
       ss << ',';
-    skipFirstComma = true;    
+    skipFirstComma = true;
 
     // AMR enforces certain bounds on stats, cap at 9.99 for regular and 99.99 for weapon DPS
     if ( ( i == STAT_WEAPON_DPS || i == STAT_WEAPON_OFFHAND_DPS ) && value > 99.99 )
@@ -2482,7 +2482,7 @@ std::string chart::gear_weights_askmrrobot( player_t* p )
       value = 9.99;
 
     // append the stat weight to the URL
-    ss << util::stat_type_askmrrobot( i ) << ':' << value;    
+    ss << util::stat_type_askmrrobot( i ) << ':' << value;
   }
 
   // softweights, softcaps, hardcaps would go here if we supported them
@@ -2527,18 +2527,18 @@ std::string chart::gear_weights_pawn( player_t* p,
     const char* name = 0;
     switch ( stat )
     {
-      case STAT_STRENGTH:                 name = "Strength";         if ( value*20 > maxR ) maxR = value*20; break;
-      case STAT_AGILITY:                  name = "Agility";          if ( value*20 > maxR ) maxR = value*20; break;
-      case STAT_STAMINA:                  name = "Stamina";          if ( value*20 > maxB ) maxB = value*20; break;
-      case STAT_INTELLECT:                name = "Intellect";        if ( value*20 > maxY ) maxY = value*20; break;
-      case STAT_SPIRIT:                   name = "Spirit";           if ( value*20 > maxB ) maxB = value*20; break;
-      case STAT_SPELL_POWER:              name = "SpellDamage";      if ( value*20 > maxR ) maxR = value*20; break;
-      case STAT_ATTACK_POWER:             name = "Ap";               if ( value*20 > maxR ) maxR = value*20; break;
-      case STAT_EXPERTISE_RATING:         name = "ExpertiseRating";  if ( value*20 > maxR ) maxR = value*20; break;
-      case STAT_HIT_RATING:               name = "HitRating";        if ( value*20 > maxY ) maxY = value*20; break;
-      case STAT_CRIT_RATING:              name = "CritRating";       if ( value*20 > maxY ) maxY = value*20; break;
-      case STAT_HASTE_RATING:             name = "HasteRating";      if ( value*20 > maxY ) maxY = value*20; break;
-      case STAT_MASTERY_RATING:           name = "MasteryRating";    if ( value*20 > maxY ) maxY = value*20; break;
+      case STAT_STRENGTH:                 name = "Strength";         if ( value * 20 > maxR ) maxR = value * 20; break;
+      case STAT_AGILITY:                  name = "Agility";          if ( value * 20 > maxR ) maxR = value * 20; break;
+      case STAT_STAMINA:                  name = "Stamina";          if ( value * 20 > maxB ) maxB = value * 20; break;
+      case STAT_INTELLECT:                name = "Intellect";        if ( value * 20 > maxY ) maxY = value * 20; break;
+      case STAT_SPIRIT:                   name = "Spirit";           if ( value * 20 > maxB ) maxB = value * 20; break;
+      case STAT_SPELL_POWER:              name = "SpellDamage";      if ( value * 20 > maxR ) maxR = value * 20; break;
+      case STAT_ATTACK_POWER:             name = "Ap";               if ( value * 20 > maxR ) maxR = value * 20; break;
+      case STAT_EXPERTISE_RATING:         name = "ExpertiseRating";  if ( value * 20 > maxR ) maxR = value * 20; break;
+      case STAT_HIT_RATING:               name = "HitRating";        if ( value * 20 > maxY ) maxY = value * 20; break;
+      case STAT_CRIT_RATING:              name = "CritRating";       if ( value * 20 > maxY ) maxY = value * 20; break;
+      case STAT_HASTE_RATING:             name = "HasteRating";      if ( value * 20 > maxY ) maxY = value * 20; break;
+      case STAT_MASTERY_RATING:           name = "MasteryRating";    if ( value * 20 > maxY ) maxY = value * 20; break;
       case STAT_ARMOR:                    name = "Armor";            break;
       case STAT_WEAPON_DPS:
         if ( HUNTER == p -> type ) name = "RangedDps"; else name = "MeleeDps";  break;

@@ -2580,7 +2580,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
   timespan_t tick_time( double )
   { return data().effectN( 1 ).period(); }
 
-  virtual void schedule_execute( action_state_t* s ) 
+  virtual void schedule_execute( action_state_t* s )
   {
     death_knight_spell_t::schedule_execute( s );
 
@@ -2612,8 +2612,8 @@ struct army_of_the_dead_t : public death_knight_spell_t
       for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
         p() -> _runes.slot[ i ].regen_rune( p(), timespan_t::from_seconds( 5.0 ) );
 
-       //simulate RP decay for that 5 seconds
-      p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * 5, 0, 0);
+      //simulate RP decay for that 5 seconds
+      p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * 5, 0, 0 );
     }
     else
     {
@@ -3648,7 +3648,7 @@ struct horn_of_winter_t : public death_knight_spell_t
     if ( ! p() -> in_combat )
     {
       // RP decay for 1.5 second GCD
-      p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * 1.5, 0, 0);
+      p() -> resource_loss( RESOURCE_RUNIC_POWER, p() -> runic_power_decay_rate * 1.5, 0, 0 );
     }
   }
 };
@@ -5357,7 +5357,7 @@ void death_knight_t::default_apl_blood()
     def -> add_action( this, "Empower Rune Weapon", "if=!blood&!unholy&!frost" );
   }
 
-  // FIMXME Needs support for T5 other than RC. Severely reduces TMI right now. 
+  // FIMXME Needs support for T5 other than RC. Severely reduces TMI right now.
   // if ( talent.blood_tap -> ok() )
   // action_list_str += "/blood_tap,if=(unholy=0&frost>=1)|(unholy>=1&frost=0)|(death=1)";
 }
@@ -6232,7 +6232,7 @@ void death_knight_t::assess_damage( school_e     school,
     buffs.will_of_the_necropolis_dr -> trigger();
     buffs.will_of_the_necropolis_rt -> trigger();
   }
-  
+
   if ( maybe_ptr( dbc.ptr ) && ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY ) )
   {
     if ( buffs.scent_of_blood -> trigger() )

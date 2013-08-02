@@ -219,7 +219,7 @@ public:
     const spell_data_t* bloodbath;
     const spell_data_t* storm_bolt;
   } talents;
-  
+
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, WARRIOR, name, r ),
     buff( buffs_t() ),
@@ -869,15 +869,15 @@ struct melee_t : public warrior_attack_t
 struct off_hand_test_attack_t : public warrior_attack_t
 {
   result_e last_result;
-  off_hand_test_attack_t( warrior_t* p, const char* name ) : 
+  off_hand_test_attack_t( warrior_t* p, const char* name ) :
     warrior_attack_t( name, p ), last_result( RESULT_NONE )
   {
-    background=true;
+    background = true;
     weapon = &( p -> off_hand_weapon );
     trigger_gcd = timespan_t::zero();
     weapon_multiplier = 0.0;
     direct_power_mod = 0.0;
-    proc=false; // disable all procs for this attack
+    proc = false; // disable all procs for this attack
   }
 
   virtual void execute()
@@ -1013,17 +1013,17 @@ struct bloodthirst_heal_t : public heal_t
     // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
     background = true;
     target = p;
-    
+
     pct_heal = p -> find_spell( 117313 ) -> effectN( 1 ).percent();
   }
 
-  virtual double calculate_direct_amount( action_state_t* s)
+  virtual double calculate_direct_amount( action_state_t* s )
   {
     return player -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
   }
 
   virtual resource_e current_resource() { return RESOURCE_NONE; }
-  
+
 };
 
 // Bloodthirst ==============================================================
@@ -1173,16 +1173,16 @@ struct cleave_t : public warrior_attack_t
 
     return c;
   }
-  
+
   virtual double crit_chance( double crit, int delta_level )
   {
     double cc = warrior_attack_t::crit_chance( crit, delta_level );
-    
+
     warrior_t* p = cast();
-    
+
     if ( p -> dbc.ptr && p -> buff.ultimatum -> check() )
-      cc+= p -> buff.ultimatum -> data().effectN( 1 ).percent();
-    
+      cc += p -> buff.ultimatum -> data().effectN( 1 ).percent();
+
     return cc;
   }
 
@@ -1335,9 +1335,9 @@ struct devastate_t : public warrior_attack_t
 
     if ( result_is_hit( s -> result ) && ! sim -> overrides.weakened_armor )
       s -> target -> debuffs.weakened_armor -> trigger();
-    
+
     warrior_t* p = cast();
-    
+
     if ( p -> dbc.ptr && s -> result == RESULT_CRIT )
       p -> enrage();
   }
@@ -1468,15 +1468,15 @@ struct heroic_strike_t : public warrior_attack_t
   virtual double crit_chance( double crit, int delta_level )
   {
     double cc = warrior_attack_t::crit_chance( crit, delta_level );
-    
+
     warrior_t* p = cast();
-    
+
     if ( p -> dbc.ptr && p -> buff.ultimatum -> check() )
-      cc+= p -> buff.ultimatum -> data().effectN( 1 ).percent();
-    
+      cc += p -> buff.ultimatum -> data().effectN( 1 ).percent();
+
     return cc;
   }
-  
+
   virtual void execute()
   {
     warrior_t* p = cast();
@@ -1546,7 +1546,7 @@ struct impending_victory_heal_t : public heal_t
     target = p;
   }
 
-  virtual double calculate_direct_amount( action_state_t* s)
+  virtual double calculate_direct_amount( action_state_t* s )
   {
     warrior_t* p = static_cast<warrior_t*>( player );
     double pct_heal = 0.15;
@@ -1807,7 +1807,7 @@ struct raging_blow_t : public warrior_attack_t
   {
     // check off-hand attack
     oh_test -> execute(); // perform test OH attack
-    
+
     // check main hand attack
     attack_t::execute();
 
@@ -1927,11 +1927,11 @@ struct second_wind_t : public heal_t
     d -> current_tick = 0; // ticks indefinitely
 
     base_td = 0; // set tick amount to zero
-    
-    // if we're below 35% health, adjust tick amount; threshold hardcoded, not in spell data 
+
+    // if we're below 35% health, adjust tick amount; threshold hardcoded, not in spell data
     if ( p -> resources.current[ RESOURCE_HEALTH ] < p -> resources.max[ RESOURCE_HEALTH ] * 0.35 )
       base_td = p -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent();
-    
+
     // call tick()
     heal_t::tick( d );
   }
@@ -2047,8 +2047,8 @@ struct shield_slam_t : public warrior_attack_t
     {
       p -> buff.tier15_2pc_tank -> trigger();
     }
-  
-    
+
+
     if ( p -> dbc.ptr && s -> result == RESULT_CRIT )
     {
       p -> enrage();
@@ -2088,7 +2088,7 @@ struct slam_t : public warrior_attack_t
 };
 
 // Storm Bolt ===============================================================
-struct storm_bolt_off_hand_t : public warrior_attack_t 
+struct storm_bolt_off_hand_t : public warrior_attack_t
 {
   storm_bolt_off_hand_t( warrior_t* p ) :
     warrior_attack_t( "storm_bolt_off_hand", p, p -> find_spell( 145585 ) )
@@ -2194,12 +2194,12 @@ struct thunder_clap_t : public warrior_attack_t
 
     // TC can trigger procs from either weapon, even though it doesn't need a weapon
     proc_ignores_slot = true;
-    
-    if ( p -> spec.seasoned_soldier -> ok() && p -> dbc.ptr)
+
+    if ( p -> spec.seasoned_soldier -> ok() && p -> dbc.ptr )
     {
       base_costs[ current_resource() ] += p -> spec.seasoned_soldier -> effectN( 2 ).resource( current_resource() );
     }
-    
+
   }
 
   virtual double action_multiplier()
@@ -2213,13 +2213,13 @@ struct thunder_clap_t : public warrior_attack_t
       am *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
     }
 
-    if ( p ->  spec.blood_and_thunder -> ok() && p -> dbc.ptr)
+    if ( p ->  spec.blood_and_thunder -> ok() && p -> dbc.ptr )
     {
       am *= 1.0 + p -> spec.blood_and_thunder -> effectN( 2 ).percent();
     }
     return am;
   }
-  
+
   virtual void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
@@ -2251,7 +2251,7 @@ struct victory_rush_heal_t : public heal_t
     target = p;
   }
 
-  virtual double calculate_direct_amount( action_state_t* s)
+  virtual double calculate_direct_amount( action_state_t* s )
   {
     warrior_t *p = static_cast<warrior_t*>( player );
 
@@ -2665,7 +2665,7 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
   /* stripped down version to calculate s-> result_amount,
    * i.e., how big our shield is, Formula: max(ap_scale*(AP-Str*2), Sta*stam_scale)*RAGE/60
    */
-  virtual double calculate_direct_amount( action_state_t* s)
+  virtual double calculate_direct_amount( action_state_t* s )
   {
     double dmg = sim -> averaged_range( base_dd_min, base_dd_max );
 
@@ -3045,7 +3045,7 @@ void warrior_t::init_spells()
   spec.crazed_berserker     = find_specialization_spell( "Crazed Berserker" );
   spec.flurry               = find_specialization_spell( "Flurry" );
   spec.meat_cleaver         = find_specialization_spell( "Meat Cleaver" );
-if ( dbc.ptr )  spec.riposte              = find_specialization_spell( "Riposte" );
+  if ( dbc.ptr )  spec.riposte              = find_specialization_spell( "Riposte" );
   spec.seasoned_soldier     = find_specialization_spell( "Seasoned Soldier" );
   spec.unwavering_sentinel  = find_specialization_spell( "Unwavering Sentinel" );
   spec.single_minded_fury   = find_specialization_spell( "Single-Minded Fury" );
@@ -3099,7 +3099,7 @@ if ( dbc.ptr )  spec.riposte              = find_specialization_spell( "Riposte"
   active_deep_wounds = new deep_wounds_t( this );
   active_bloodbath_dot = new bloodbath_dot_t( this );
   active_second_wind = new second_wind_t( this );
-  
+
   if ( mastery.strikes_of_opportunity -> ok() )
     active_opportunity_strike = new opportunity_strike_t( this );
 
@@ -3225,11 +3225,11 @@ void warrior_t::create_buffs()
   buff.taste_for_blood = buff_creator_t( this, "taste_for_blood" )
                          .spell( find_spell( 60503 ) );
 
-  if (dbc.ptr) buff.riposte = stat_buff_creator_t( this, "riposte",   spec.riposte -> effectN( 1 ).trigger() )
-                          .cd( spec.riposte -> internal_cooldown() )
-                          .chance(spec.riposte -> ok() ? spec.riposte -> proc_chance() : 0)
-                          .add_stat( STAT_CRIT_RATING, 0 );
-  
+  if ( dbc.ptr ) buff.riposte = stat_buff_creator_t( this, "riposte",   spec.riposte -> effectN( 1 ).trigger() )
+                                  .cd( spec.riposte -> internal_cooldown() )
+                                  .chance( spec.riposte -> ok() ? spec.riposte -> proc_chance() : 0 )
+                                  .add_stat( STAT_CRIT_RATING, 0 );
+
   buff.shield_block     = buff_creator_t( this, "shield_block" ).spell( find_spell( 132404 ) )
                           .add_invalidate( CACHE_BLOCK );
   buff.shield_wall      = buff_creator_t( this, "shield_wall", find_class_spell( "Shield Wall" ) )
@@ -3621,7 +3621,6 @@ void warrior_t::combat_begin()
   // if second wind is talented, apply it upon entering combat
   if ( talents.second_wind -> ok() )
     active_second_wind -> execute();
-    
 }
 
 // warrior_t::reset =========================================================
@@ -3822,7 +3821,7 @@ void warrior_t::assess_damage( school_e school,
   if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
   {
     cooldown.revenge -> reset( true );
-    if ( dbc.ptr) buff.riposte -> trigger(1 , ( current.stats.dodge_rating + current.stats.parry_rating ) * spec.riposte -> effectN( 1 ).percent());
+    if ( dbc.ptr ) buff.riposte -> trigger( 1 , ( current.stats.dodge_rating + current.stats.parry_rating ) * spec.riposte -> effectN( 1 ).percent() );
   }
 
   player_t::assess_damage( school, dtype, s );

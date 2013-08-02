@@ -68,7 +68,7 @@ void gear_stats_t::add_stat( stat_e stat,
 
     case STAT_ALL:
       for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
-        { attribute[ i ] += value; }
+      { attribute[ i ] += value; }
       break;
 
     default: assert( 0 ); break;
@@ -134,7 +134,7 @@ void gear_stats_t::set_stat( stat_e stat,
 
     case STAT_ALL:
       for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; i++ )
-        { attribute[ i ] = value; }
+      { attribute[ i ] = value; }
       break;
 
     default: assert( 0 ); break;

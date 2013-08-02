@@ -2618,8 +2618,8 @@ void unerring_vision_of_leishen( item_t* item )
 // Cleave trinkets
 void cleave_trinket( item_t* item )
 {
-  // TODO: Currently does a phys damage nuke for everyone. In reality it uses 
-  // a ton of different schools, however they all are just additional damage, 
+  // TODO: Currently does a phys damage nuke for everyone. In reality it uses
+  // a ton of different schools, however they all are just additional damage,
   // so we can cheat a bit here.
   // Additionally, healing cleave needs a heal_t action
   struct cleave_t : public spell_t
@@ -2632,7 +2632,7 @@ void cleave_trinket( item_t* item )
       school = SCHOOL_PHYSICAL; // TODO: Won't work for healing trinket, and spells use various different schools.
       aoe = -1;
     }
-    
+
     size_t available_targets( std::vector< player_t* >& tl )
     {
       tl.clear();
@@ -2704,8 +2704,8 @@ void cleave_trinket( item_t* item )
 // Multistrike trinkets
 void multistrike_trinket( item_t* item )
 {
-  // TODO: Currently does a phys damage nuke for everyone. In reality it uses 
-  // a ton of different schools, however they all are just additional damage, 
+  // TODO: Currently does a phys damage nuke for everyone. In reality it uses
+  // a ton of different schools, however they all are just additional damage,
   // so we can cheat a bit here.
   // Additionally, healing multistrike needs a heal_t action
   struct multistrike_t : public spell_t
@@ -2717,7 +2717,7 @@ void multistrike_trinket( item_t* item )
       proc = background = true;
       school = SCHOOL_PHYSICAL; // TODO: Won't work for healing trinket, and spells use various different schools.
     }
-    
+
     double composite_target_multiplier( player_t* )
     { return 1.0; }
 
@@ -3774,7 +3774,7 @@ bool unique_gear::get_use_encoding( std::string& encoding,
   else if ( name == "dominators_durable_badge"     ) e = "2693Mastery_15Dur_60Cd";
 
   //5.4
-  else if ( ptr && (name == "curse_of_hubris" || name == "hellscreams_hubris")) e = std::string( thunderforged ? ( heroic ? "11690" : "10356" ) : ( heroic ? "11054" : ( item_id == 104898 ? "8676" : lfr ? "7758" : "9793" ) ) ) + "Crit_15Dur_90Cd";
+  else if ( ptr && ( name == "curse_of_hubris" || name == "hellscreams_hubris" ) ) e = std::string( thunderforged ? ( heroic ? "11690" : "10356" ) : ( heroic ? "11054" : ( item_id == 104898 ? "8676" : lfr ? "7758" : "9793" ) ) ) + "Crit_15Dur_90Cd";
   else if ( ptr && item_id == 102314                      ) e = "9793Spi_15Dur_90Cd";
   else if ( ptr && name == "contemplation_of_chiji"       ) e = std::string( item_id == 103988 ? "8281" : "5758" ) + "8281Spi_15Dur_90Cd";
 

@@ -1937,8 +1937,8 @@ expr_t* action_t::create_expression( const std::string& name_str )
     struct enemy_dots_expr_t : public expr_t
     {
       std::vector<expr_t*> expr_list;
-      
-      enemy_dots_expr_t( const std::vector<expr_t*>& expr_list ) : 
+
+      enemy_dots_expr_t( const std::vector<expr_t*>& expr_list ) :
         expr_t( "enemy_dot" ), expr_list( expr_list )
       {
       }

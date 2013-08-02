@@ -1214,7 +1214,7 @@ struct devotion_aura_t : public paladin_spell_t
     paladin_spell_t::execute();
 
     if ( p() -> glyphs.devotion_aura -> ok() && p() -> dbc.ptr )
-      player -> buffs.devotion_aura -> trigger(); 
+      player -> buffs.devotion_aura -> trigger();
     else
     {
       for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
@@ -1223,7 +1223,7 @@ struct devotion_aura_t : public paladin_spell_t
         if ( p -> is_pet() || p -> is_enemy() )
           continue;
 
-        p -> buffs.devotion_aura -> trigger(); // Technically these stack; we're abstracting somewhat by assuming they don't  
+        p -> buffs.devotion_aura -> trigger(); // Technically these stack; we're abstracting somewhat by assuming they don't
       }
     }
   }
@@ -1349,7 +1349,7 @@ struct divine_shield_t : public paladin_spell_t
     // but we'll assume the MT isn't using it for now
     p() -> buffs.divine_shield -> trigger();
 
-    // in this sim, the only debuffs we care about are enemy DoTs.  
+    // in this sim, the only debuffs we care about are enemy DoTs.
     // Check for them and remove them when cast, and apply Glyph of Divine Shield appropriately
     for ( size_t i = 0, size = p() -> dot_list.size(); i < size; i++ )
     {
@@ -1366,10 +1366,10 @@ struct divine_shield_t : public paladin_spell_t
       if ( p() -> glyphs.divine_shield -> ok() && p() -> dbc.ptr )
       {
         double amount = std::min( num_destroyed * p() -> glyphs.divine_shield -> effectN( 1 ).percent(),
-          p() -> glyphs.divine_shield -> effectN( 1 ).percent() * p() -> glyphs.divine_shield -> effectN( 2 ).base_value() );
+                                  p() -> glyphs.divine_shield -> effectN( 1 ).percent() * p() -> glyphs.divine_shield -> effectN( 2 ).base_value() );
 
         amount *= p() -> resources.max[ RESOURCE_HEALTH ];
-        
+
         p() -> resource_gain( RESOURCE_HEALTH, amount, p() -> gains.glyph_divine_shield, this );
       }
     }
@@ -2514,13 +2514,13 @@ struct sacred_shield_t : public paladin_heal_t
 
       //int orig_ticks = num_ticks;
       //num_ticks -= 1;
-      
+
       paladin_heal_t::execute();
-      
+
       //num_ticks = orig_ticks;
-      
+
       p() -> buffs.sacred_shield -> trigger();
-      
+
       // force tick
       //tick( get_dot( p() ) );
 
@@ -4303,7 +4303,7 @@ int paladin_t::decode_set( item_t& item )
     if ( is_heal   ) return SET_T15_HEAL;
   }
 
-  if ( strstr( s, "_of_winged_triumph") )
+  if ( strstr( s, "_of_winged_triumph" ) )
   {
     bool is_melee = ( strstr( s, "helmet"        ) ||
                       strstr( s, "pauldrons"     ) ||
@@ -4446,7 +4446,7 @@ void paladin_t::generate_action_prio_list_prot()
     precombat -> add_action( ( level > 85 ) ? "mogu_power_potion" : "golemblood_potion" );
 
   */
-  
+
   ///////////////////////
   // Action Priority List
   ///////////////////////
@@ -4562,9 +4562,9 @@ void paladin_t::generate_action_prio_list_ret()
   if ( find_talent_spell( "Divine Purpose" ) -> ok() )
     def -> add_action( this, "Inquisition", "if=buff.inquisition.down&(holy_power>=1|buff.divine_purpose.react)" );
   def -> add_action( this, "Inquisition", "if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|target.time_to_die<holy_power*10|buff.divine_purpose.react)" );
-  
+
   // Avenging Wrath
-  if ( ! find_talent_spell( "Sanctified Wrath" ) -> ok() & find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() ) 
+  if ( ! find_talent_spell( "Sanctified Wrath" ) -> ok() & find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
     def -> add_action( this, "Avenging Wrath", "if=buff.inquisition.up&(cooldown.guardian_of_ancient_kings.remains<291)" );
   else
     def -> add_action( this, "Avenging Wrath", "if=buff.inquisition.up" );
@@ -4574,7 +4574,7 @@ void paladin_t::generate_action_prio_list_ret()
     def -> add_action( this, "Guardian of Ancient Kings", "if=cooldown.avenging_wrath.remains<10" );
   else
     def -> add_action( this, "Guardian of Ancient Kings", "if=buff.avenging_wrath.up" );
-  
+
   // Holy Avenger
   if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
     def -> add_action( this, "Holy Avenger", "if=buff.inquisition.up&(cooldown.guardian_of_ancient_kings.remains<289)&holy_power<=2" );
@@ -4614,7 +4614,7 @@ void paladin_t::generate_action_prio_list_ret()
   else
     def -> add_action( this, "Execution Sentence", "if=buff.inquisition.up&time>=15" );
 
- // Light's Hammer
+  // Light's Hammer
   if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
     def -> add_action( this, "Light's Hammer", "if=buff.inquisition.up" );
   else
@@ -4622,8 +4622,8 @@ void paladin_t::generate_action_prio_list_ret()
 
   // Divine Storm
   def -> add_action( this, "Divine Storm", "if=active_enemies>=2&(holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3))" );
-  
-  // Templar's Verdict  
+
+  // Templar's Verdict
   def -> add_action( this, "Templar's Verdict", "if=holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3)" );
 
   // Hammer of Wrath
@@ -4644,7 +4644,7 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( this, "Judgment", "target=2,if=active_enemies>=2&buff.glyph_double_jeopardy.up" );
   def -> add_action( this, "Judgment" );
   def -> add_action( "wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2" );
-  def -> add_action( this, "Exorcism");
+  def -> add_action( this, "Exorcism" );
   def -> add_action( "wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2" );
   def -> add_action( this, "Templar's Verdict", "if=buff.tier15_4pc_melee.up" );
   def -> add_action( this, "Divine Storm", "if=active_enemies>=2&buff.inquisition.remains>4" );

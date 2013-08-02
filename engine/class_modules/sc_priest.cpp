@@ -4480,11 +4480,11 @@ struct prayer_of_mending_t : public priest_heal_t
 
     if ( priest.dbc.ptr )
     {
-        castable_in_shadowform = true;
+      castable_in_shadowform = true;
     }
     else
     {
-        castable_in_shadowform = p.glyphs.dark_binding -> ok();
+      castable_in_shadowform = p.glyphs.dark_binding -> ok();
     }
   }
 
@@ -4563,11 +4563,11 @@ struct renew_t : public priest_heal_t
 
     if ( priest.dbc.ptr )
     {
-        castable_in_shadowform = true;
+      castable_in_shadowform = true;
     }
     else
     {
-        castable_in_shadowform = p.glyphs.dark_binding -> ok();
+      castable_in_shadowform = p.glyphs.dark_binding -> ok();
     }
   }
 
@@ -5442,14 +5442,14 @@ void priest_t::init_spells()
 
   if ( specs.shadowy_apparitions -> ok() )
   {
-      if ( !dbc.ptr )
-      {
-          shadowy_apparitions.add_more( 5 );
-      }
-      else
-      {
-          shadowy_apparitions.add_more( 1000 ); //Hacky no cap
-      }
+    if ( !dbc.ptr )
+    {
+      shadowy_apparitions.add_more( 5 );
+    }
+    else
+    {
+      shadowy_apparitions.add_more( 1000 ); //Hacky no cap
+    }
   }
 
   active_spells.surge_of_darkness = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();

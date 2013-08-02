@@ -763,7 +763,7 @@ QString SC_OptionsTab::get_globalSettings()
 
   if ( choice.challenge_mode -> currentIndex() > 0 )
     options += "challenge_mode=1\n";
-  
+
   if ( choice.tmi_actor_only -> currentIndex() != 0 )
     options += "tmi_actor_only=1\n";
 
@@ -913,7 +913,7 @@ QString SC_OptionsTab::mergeOptions()
   options += mainWindow -> simulateTab -> current_Text() -> toPlainText();
   options += "\n"
              "### End simulateText ###\n";
-  
+
   if ( choice.num_target -> currentIndex() >= 1 )
     options += "desired_targets=" + QString::number( choice.num_target -> currentIndex() + 1 ) + "\n";
 

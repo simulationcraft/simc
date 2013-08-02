@@ -27,9 +27,9 @@ double mean_damage( std::vector<stats_t::stats_results_t> result )
   return mean;
 }
 
-void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t* p ) 
+void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t* p )
 {
-  
+
   std::string compound_dps     = "";
   std::string compound_dps_pct = "";
   double cDPS    = s -> portion_aps.mean();
@@ -80,7 +80,7 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
     s -> direct_results[ RESULT_DODGE  ].pct +
     s -> direct_results[ RESULT_PARRY  ].pct,
     s -> direct_results[ RESULT_GLANCE ].pct,
-    s -> blocked_direct_results[ BLOCK_RESULT_BLOCKED  ].pct + 
+    s -> blocked_direct_results[ BLOCK_RESULT_BLOCKED  ].pct +
     s -> blocked_direct_results[ BLOCK_RESULT_CRIT_BLOCKED  ].pct,
     s -> num_ticks.pretty_mean(),
     s -> tick_results[ RESULT_HIT  ].actual_amount.pretty_mean(),
@@ -93,9 +93,9 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
     100 * s -> total_tick_time.mean() / p -> collected_data.fight_length.mean() );
 }
 
-void print_html_action_healing( report::sc_html_stream& os, stats_t* s, player_t* p ) 
+void print_html_action_healing( report::sc_html_stream& os, stats_t* s, player_t* p )
 {
-  
+
   std::string compound_dps     = "";
   std::string compound_dps_pct = "";
   double cDPS    = s -> portion_aps.mean();
@@ -192,7 +192,7 @@ void print_html_action_info( report::sc_html_stream& os, stats_t* s, player_t* p
     os.printf( "%s</td>\n", s -> name_str.c_str() );
 
   if ( s -> type == STATS_HEAL || s -> type == STATS_ABSORB )
-    print_html_action_healing(os, s, p );
+    print_html_action_healing( os, s, p );
   else
     print_html_action_damage( os, s, p );
 
@@ -390,9 +390,9 @@ void print_html_action_info( report::sc_html_stream& os, stats_t* s, player_t* p
 
     }
 
-    if ( s -> blocked_direct_results[ BLOCK_RESULT_BLOCKED ].pct + 
+    if ( s -> blocked_direct_results[ BLOCK_RESULT_BLOCKED ].pct +
          s -> blocked_direct_results[ BLOCK_RESULT_CRIT_BLOCKED].pct > 0.0 )
-    {      
+    {
       // Block Table
       os << "\t\t\t\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Block Results</th>\n"
@@ -513,10 +513,10 @@ void print_html_action_info( report::sc_html_stream& os, stats_t* s, player_t* p
 
 
     }
-    
-    if ( s -> blocked_tick_results[ BLOCK_RESULT_BLOCKED ].pct + 
+
+    if ( s -> blocked_tick_results[ BLOCK_RESULT_BLOCKED ].pct +
          s -> blocked_tick_results[ BLOCK_RESULT_CRIT_BLOCKED].pct > 0.0 )
-    {      
+    {
       // Block Table
       os << "\t\t\t\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t\t\t\t<th class=\"small\">Block Results</th>\n"
@@ -1337,7 +1337,7 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
         ri.gear_weights_wowreforge_link.c_str() );
 
       // askmrrobot
-      os.printf(        
+      os.printf(
         "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">askmrrobot</a></li>\n",
         ri.gear_weights_askmrrobot_link.c_str() );
 
@@ -2357,10 +2357,10 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
       tmi_display /= 1e6;
       tmi_letter = "M ";
     }
-    else if ( tmi_display >= 100000.0 ) 
-    { 
-      tmi_display /= 1e3; 
-      tmi_letter = "k "; 
+    else if ( tmi_display >= 100000.0 )
+    {
+      tmi_display /= 1e3;
+      tmi_letter = "k ";
     }
     os.printf( ", %.0f dtps, %.1f%sTMI\n",
                p -> collected_data.dtps.mean(),
@@ -2627,7 +2627,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
 
 void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player_t* p )
 {
-  // open section 
+  // open section
   os << "\t\t\t\t<div class=\"player-section\">\n"
      << "\t\t\t\t\t<h3 class=\"toggle open\">Abilities</h3>\n"
      << "\t\t\t\t\t<div class=\"toggle-content\">\n";
@@ -2671,8 +2671,8 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
     for ( size_t i = 0; i < p -> stats_list.size(); ++i )
     {
       stats_t* s = p -> stats_list[ i ];
-      if ( ( s -> type != STATS_HEAL && s -> type != STATS_ABSORB ) && 
-        ( s -> num_executes.mean() > 1 || s -> compound_amount > 0 || sim -> debug ) )
+      if ( ( s -> type != STATS_HEAL && s -> type != STATS_ABSORB ) &&
+           ( s -> num_executes.mean() > 1 || s -> compound_amount > 0 || sim -> debug ) )
       {
         print_html_action_info( os, s, p, j++ );
       }
@@ -2687,8 +2687,8 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
       {
         stats_t* s = pet -> stats_list[ i ];
 
-        if ( ( s -> type != STATS_HEAL && s -> type != STATS_ABSORB ) && 
-          ( s -> num_executes.sum() || s -> compound_amount > 0 || sim -> debug ) )
+        if ( ( s -> type != STATS_HEAL && s -> type != STATS_ABSORB ) &&
+             ( s -> num_executes.sum() || s -> compound_amount > 0 || sim -> debug ) )
         {
           if ( first )
           {
@@ -2709,7 +2709,7 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
     }
 
     os.printf(
-      "\t\t\t\t\t\t</table>\n");
+      "\t\t\t\t\t\t</table>\n" );
   }
 
   if ( p -> collected_data.heal.max() > 0 )
@@ -2747,8 +2747,8 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
     for ( size_t i = 0; i < p -> stats_list.size(); ++i )
     {
       stats_t* s = p -> stats_list[ i ];
-      if ( ( s -> type == STATS_HEAL || s -> type == STATS_ABSORB ) && 
-        (s -> num_executes.mean() > 1 || s -> compound_amount > 0 || sim -> debug ) )
+      if ( ( s -> type == STATS_HEAL || s -> type == STATS_ABSORB ) &&
+           ( s -> num_executes.mean() > 1 || s -> compound_amount > 0 || sim -> debug ) )
       {
         print_html_action_info( os, s, p, k++ );
       }
@@ -2763,8 +2763,8 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
       {
         stats_t* s = pet -> stats_list[ i ];
 
-        if ( ( s -> type == STATS_HEAL || s -> type == STATS_ABSORB ) && 
-          ( s -> num_executes.sum() || s -> compound_amount > 0 || sim -> debug ) )
+        if ( ( s -> type == STATS_HEAL || s -> type == STATS_ABSORB ) &&
+             ( s -> num_executes.sum() || s -> compound_amount > 0 || sim -> debug ) )
         {
           if ( first )
           {

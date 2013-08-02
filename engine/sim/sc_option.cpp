@@ -114,7 +114,7 @@ bool option_t::parse( sim_t*             sim,
       case INT:    *static_cast<int*>( data.address )      = strtol( v.c_str(), 0, 10 );  break;
       case UINT:   *static_cast<unsigned*>( data.address ) = strtoul( v.c_str(), 0, 10 ); break;
       case FLT:    *static_cast<double*>( data.address )   = atof( v.c_str() );           break;
-      case TIMESPAN:*( reinterpret_cast<timespan_t*>( data.address ) ) = timespan_t::from_seconds( atof( v.c_str() ) ); break;
+      case TIMESPAN: *( reinterpret_cast<timespan_t*>( data.address ) ) = timespan_t::from_seconds( atof( v.c_str() ) ); break;
       case INT_BOOL:
         *( ( int* ) data.address ) = atoi( v.c_str() ) ? 1 : 0;
         if ( v != "0" && v != "1" ) sim -> errorf( "Acceptable values for '%s' are '1' or '0'\n", name );
