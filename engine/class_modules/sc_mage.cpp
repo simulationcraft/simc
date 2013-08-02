@@ -437,7 +437,9 @@ struct water_elemental_pet_t : public pet_t
 
       water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
 
-      tm *= 1.0 + p -> o() -> get_target_data( target ) -> debuffs.frostbolt -> stack() * 0.05;
+      // This check can go away when 5.4 is released
+      if ( p -> o() -> spec.frostburn -> ok() )
+        tm *= 1.0 + p -> o() -> get_target_data( target ) -> debuffs.frostbolt -> stack() * 0.05;
 
       return tm;
     }
@@ -469,6 +471,8 @@ struct water_elemental_pet_t : public pet_t
     double m = pet_t::composite_player_multiplier( school );
 
     if ( ! maybe_ptr( dbc.ptr ) && o() -> spec.frostburn -> ok() )
+      m *= 1.0 + o() -> cache.mastery_value();
+    if ( maybe_ptr( dbc.ptr ) && o() -> spec.icicles -> ok() )
       m *= 1.0 + o() -> cache.mastery_value();
 
     if ( o() -> buffs.invokers_energy -> up() )
@@ -2768,7 +2772,9 @@ struct ice_lance_t : public mage_spell_t
   {
     double tm = mage_spell_t::composite_target_multiplier( target );
 
-    tm *= 1.0 + td( target ) -> debuffs.frostbolt -> stack() * 0.05;
+    // This check can go away when 5.4 is released
+    if ( p() -> spec.frostburn -> ok() )
+      tm *= 1.0 + td( target ) -> debuffs.frostbolt -> stack() * 0.05;
 
     return tm;
   }
