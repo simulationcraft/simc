@@ -698,6 +698,7 @@ struct mage_state_t
   std::array<double, RESOURCE_MAX > resources;
   // location
   std::vector<buff_state_t> buff_states;
+  std::vector<icicle_data_t> icicle_states;
 
 
   mage_state_t( mage_t& m ) : // Snapshot and start 6s event
@@ -722,6 +723,9 @@ struct mage_state_t
 
       buff_states.push_back( buff_state_t( b ) );
     }
+
+    for ( size_t i = 0, end = mage.icicles.size(); i < end; i++ )
+      icicle_states.push_back( mage.icicles[ i ] );
   }
 
   void write_back_state()
@@ -738,6 +742,10 @@ struct mage_state_t
       buff_states[ i ].write_back_state();
     }
 
+    mage.icicles.clear();
+    for ( size_t i = 0, end = icicle_states.size(); i < end; i++ )
+      mage.icicles[ i ] = icicle_states[ i ];
+
     clear_state();
   }
 
@@ -745,6 +753,7 @@ struct mage_state_t
   {
     range::fill( resources, 0.0 );
     buff_states.clear();
+    icicle_states.clear();
   }
 };
 
