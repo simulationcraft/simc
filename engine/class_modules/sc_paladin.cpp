@@ -4635,8 +4635,10 @@ void paladin_t::generate_action_prio_list_ret()
     def -> add_action( "wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.1" );
 
   // Everything Else
-  def -> add_action( this, "Crusader Strike", "if=set_bonus.tier15_4pc_melee&!(buff.tier15_4pc_melee.up)");
-  def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=set_bonus.tier15_4pc_melee&!(buff.tier15_4pc_melee.up)&&cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2" );
+  def -> add_action( this, "Crusader Strike" );
+  def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2" );
+  //def -> add_action( this, "Crusader Strike", "if=set_bonus.tier15_4pc_melee&!(buff.tier15_4pc_melee.up)");
+  //def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=set_bonus.tier15_4pc_melee&!(buff.tier15_4pc_melee.up)&&cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2" );
   def -> add_action( this, "Exorcism", "if=active_enemies>=2&active_enemies<=4&set_bonus.tier15_2pc_melee&glyph.mass_exorcism.enabled" );
   def -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=4" );
   def -> add_action( this, "Judgment", "target=2,if=active_enemies>=2&buff.glyph_double_jeopardy.up" );
@@ -4645,8 +4647,6 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( this, "Exorcism");
   def -> add_action( "wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2" );
   def -> add_action( this, "Templar's Verdict", "if=buff.tier15_4pc_melee.up" );
-  def -> add_action( this, "Crusader Strike" );
-  def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2" );
   def -> add_action( this, "Divine Storm", "if=active_enemies>=2&buff.inquisition.remains>4" );
   def -> add_action( this, "Templar's Verdict", "if=buff.inquisition.remains>4" );
   def -> add_action( this, "Holy Prism" );
