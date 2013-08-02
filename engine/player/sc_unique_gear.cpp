@@ -3532,17 +3532,17 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
 
   // Cata PvP Trinkets
   //390
-  if      ( name == "cataclysmic_gladiators_insignia_of_victory"   ) e = "OnAttackHit_1452Str_15%_20Dur_55Cd";
+  else if ( name == "cataclysmic_gladiators_insignia_of_victory"   ) e = "OnAttackHit_1452Str_15%_20Dur_55Cd";
   else if ( name == "cataclysmic_gladiators_insignia_of_conquest"  ) e = "OnAttackHit_1452Agi_15%_20Dur_55Cd";
   else if ( name == "cataclysmic_gladiators_insignia_of_dominance" ) e = "OnSpellDamage_1452SP_25%_20Dur_55Cd";
 
   // MoP
-  if      ( name == "vision_of_the_predator"              ) e = "OnSpellDamage_3386Crit_15%_30Dur_105Cd";
+  else if ( name == "vision_of_the_predator"              ) e = "OnSpellDamage_3386Crit_15%_30Dur_105Cd";
   else if ( name == "carbonic_carbuncle"                  ) e = "OnDirectDamage_3386Crit_15%_30Dur_105Cd";
   else if ( name == "windswept_pages"                     ) e = "OnDirectDamage_3386Haste_15%_20Dur_65Cd";
   else if ( name == "searing_words"                       ) e = "OnDirectCrit_3386Agi_45%_25Dur_85Cd";
   else if ( name == "light_of_the_cosmos"                 ) e = "OnSpellTickDamage_" + std::string( heroic ? "3653" : lfr ? "2866" : "3236" ) + "Int_15%_20Dur_45Cd";
-  else if ( name == "essence_of_terror"                   ) e = "OnHarmfulSpellHit_"     + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Haste_15%_20Dur_105Cd";
+  else if ( name == "essence_of_terror"                   ) e = "OnHarmfulSpellHit_" + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Haste_15%_20Dur_105Cd";
   else if ( name == "terror_in_the_mists"                 ) e = "OnDirectDamage_"    + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Crit_15%_20Dur_105Cd";
   else if ( name == "darkmist_vortex"                     ) e = "OnDirectDamage_"    + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Haste_15%_20Dur_105Cd";
   else if ( name == "relic_of_yulon"                      ) e = "OnSpellDamage_3027Int_20%_15Dur_50Cd";
@@ -3560,9 +3560,21 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "iron_protector_talisman"             ) e = "OnAttackHit_3386Dodge_15%_15Dur_45Cd";
 
   // 5.4 Trinkets
-
   // TODO: Name based identification when the name appears, plus other difficulty levels ...
-  else if ( ptr && item_id == 102312                      ) e = "OnDirectDamage_11761Mastery_15%_20Dur_105Cd";
+  else if ( ptr && name == "discipline_of_xuen"           ) e = std::string( item_id == 103986 ? "9943" : "6914" ) + "OnAttackHit_9943Mastery_15%_20Dur_60Cd";
+  else if ( ptr && name == "yulons_bite"                  ) e = std::string( item_id == 103987 ? "9943" : "6914" ) + "OnSpellDamage_9943Crit_15%_20Dur_60Cd";
+  else if ( ptr && name == "alacrity_of_xuen"             ) e = std::string( item_id == 103989 ? "9943" : "6914" ) + "OnAttackHit_9943Haste_15%_20Dur_60Cd";
+  else if ( ptr && item_id == 102312                      ) e = "OnDirectDamage_11761Mastery_15%_20Dur_60Cd";
+  else if ( ptr && item_id == 102313                      ) e = "OnSpellDamage_11761Crit_15%_20Dur_60Cd";
+  else if ( ptr && item_id == 102315                      ) e = "OnAttackHit_11759Haste_15%_20Dur_60Cd";
+  else if ( ptr && name == "assurance_of_consequence"     ) e = "OnAttackHit_"       + std::string( thunderforged ? ( heroic ? "14037" : "12435" ) : ( heroic ? "13273" : ( item_id == 104725 ? "10418" : lfr ? "9316" : "11759" ) ) ) + "Agi_15%_20Dur_60Cd";
+  else if ( ptr && name == "evil_eye_of_galakras"         ) e = "OnAttack_"          + std::string( thunderforged ? ( heroic ? "14037" : "12435" ) : ( heroic ? "13273" : ( item_id == 104744 ? "10418" : lfr ? "9316" : "11759" ) ) ) + "Str_15%_20Dur_60Cd";
+  else if ( ptr && name == "frenzied_crystal_of_rage"     ) e = "OnSpellDamage_"     + std::string( thunderforged ? ( heroic ? "14037" : "12435" ) : ( heroic ? "13273" : ( item_id == 104825 ? "10418" : lfr ? "9316" : "11759" ) ) ) + "Int_15%_20Dur_60Cd";
+  else if ( ptr && name == "fusionfire_core"              ) e = "OnAttack_"          + std::string( thunderforged ? ( heroic ? "14037" : "12435" ) : ( heroic ? "13273" : ( item_id == 104712 ? "10418" : lfr ? "9316" : "11759" ) ) ) + "Str_15%_20Dur_60Cd";
+  else if ( ptr && name == "prismatic_prison_of_pride"    ) e = "OnHeal_"            + std::string( thunderforged ? ( heroic ? "14037" : "12435" ) : ( heroic ? "13273" : ( item_id == 104727 ? "10418" : lfr ? "9316" : "11759" ) ) ) + "Int_15%_20Dur_60Cd";
+  else if ( ptr && name == "purified_bindings_of_immerseus" ) e = "OnSpellDamage_"   + std::string( thunderforged ? ( heroic ? "14037" : "12435" ) : ( heroic ? "13273" : ( item_id == 104675 ? "10418" : lfr ? "9316" : "11759" ) ) ) + "Int_15%_20Dur_60Cd";
+  else if ( ptr && name == "thoks_tail_tip"               ) e = "OnAttack_"          + std::string( thunderforged ? ( heroic ? "14037" : "12435" ) : ( heroic ? "13273" : ( item_id == 104862 ? "10418" : lfr ? "9316" : "11759" ) ) ) + "Str_15%_20Dur_60Cd";
+  else if ( ptr && name == "haromms_talisman"             ) e = "OnAttack_"          + std::string( thunderforged ? ( heroic ? "14037" : "12435" ) : ( heroic ? "13273" : ( item_id == 104780 ? "10418" : lfr ? "9316" : "11759" ) ) ) + "Agi_0.46RPPM_20Dur";
 
   // 5.2 Trinkets
   else if ( name == "talisman_of_bloodlust"               ) e = "OnDirectDamage_"    + std::string( thunderforged ? ( heroic ? "1834" : "1625" ) : ( heroic ? "1736" : lfr ? "1277" : "1538" ) ) + "Haste_3.3RPPM_5Stack_10Dur";
@@ -3580,6 +3592,16 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "volatile_talisman_of_the_shadopan_assault" ) e = "OnHarmfulSpellHit_8800Haste_15%_10Dur_45Cd";
 
   //MoP PvP Trinkets
+
+  //540
+  else if ( name == "prideful_gladiators_insignia_of_victory" ) e = "OnAttackHit_6125Str_15%_20Dur_55Cd";
+  else if ( name == "prideful_gladiators_insignia_of_conquest" ) e = "OnAttackHit_6125Agi_15%_20Dur_55Cd";
+  else if ( name == "prideful_gladiators_insignia_of_dominance" ) e = "OnSpellDamage_6125Int_15%_20Dur_55Cd";
+
+  //522
+  else if ( name == "grievous_gladiators_insignia_of_victory" ) e = "OnAttackHit_5179Str_15%_20Dur_55Cd";
+  else if ( name == "grievous_gladiators_insignia_of_conquest" ) e = "OnAttackHit_5179Agi_15%_20Dur_55Cd";
+  else if ( name == "grievous_gladiators_insignia_of_dominance" ) e = "OnSpellDamage_5179SP_15%_20Dur_55Cd";
 
   //483
   else if ( name == "malevolent_gladiators_insignia_of_victory" ) e = "OnAttackHit_3603Str_15%_20Dur_55Cd";
@@ -3656,8 +3678,8 @@ bool unique_gear::get_use_encoding( std::string& encoding,
                                     bool         heroic,
                                     bool         lfr,
                                     bool         thunderforged,
-                                    bool         /* ptr */,
-                                    unsigned     /* id */ )
+                                    bool         ptr,
+                                    unsigned     item_id )
 {
   std::string e;
 
@@ -3751,9 +3773,16 @@ bool unique_gear::get_use_encoding( std::string& encoding,
   else if ( name == "dominators_deadeye_badge"     ) e = "2693Mastery_15Dur_60Cd";
   else if ( name == "dominators_durable_badge"     ) e = "2693Mastery_15Dur_60Cd";
 
+  //5.4
+  else if ( ptr && (name == "curse_of_hubris" || name == "hellscreams_hubris")) e = std::string( thunderforged ? ( heroic ? "11690" : "10356" ) : ( heroic ? "11054" : ( item_id == 104898 ? "8676" : lfr ? "7758" : "9793" ) ) ) + "Crit_15Dur_90Cd";
+  else if ( ptr && item_id == 102314                      ) e = "9793Spi_15Dur_90Cd";
+  else if ( ptr && name == "contemplation_of_chiji"       ) e = std::string( item_id == 103988 ? "8281" : "5758" ) + "8281Spi_15Dur_90Cd";
+
   //Mop Tank
   else if ( name == "steadfast_talisman_of_the_shadopan_assault" ) e = "10400Dodge_20Dur_120Cd"; //I am too stupid to do this right: Should actually be counting downwards from a 10 stack to a 0 stack (each 1600dodge). Instead we just take an average stack of 11/2 ->
   else if ( name == "fortitude_of_the_zandalari"   ) e = std::string( thunderforged ? ( heroic ? "88147" : "78092" ) : ( heroic ? "83364" : lfr ? "61308" : "73844" ) ) + "Maxhealth_15Dur_120CD";
+  else if ( ptr && item_id == 102316                      ) e = "9793Dodge_20Dur_120Cd";
+  else if ( ptr && name == "resolve_of_niuzao"            ) e = std::string( item_id == 103990 ? "8281" : "5758" ) + "Dodge_20Dur_120Cd";
 
   // MoP PvP
   else if ( name == "dreadful_gladiators_badge_of_dominance"   ) e = "4275SP_20Dur_120Cd";
@@ -3762,6 +3791,14 @@ bool unique_gear::get_use_encoding( std::string& encoding,
   else if ( name == "malevolent_gladiators_badge_of_dominance" ) e = "5105SP_20Dur_120Cd";
   else if ( name == "malevolent_gladiators_badge_of_victory"   ) e = "5105Str_20Dur_120Cd";
   else if ( name == "malevolent_gladiators_badge_of_conquest"  ) e = "5105Agi_20Dur_120Cd";
+  //522
+  else if ( ptr && name == "grievous_gladiators_badge_of_dominance" ) e = "3670Int_20Dur_60Cd";
+  else if ( ptr && name == "grievous_gladiators_badge_of_victory"   ) e = "3670Str_20Dur_60Cd";
+  else if ( ptr && name == "grievous_gladiators_badge_of_conquest"  ) e = "3670Agi_20Dur_60Cd";
+  //540
+  else if ( ptr && name == "prideful_gladiators_badge_of_dominance" ) e = "4340Int_20Dur_60Cd";
+  else if ( ptr && name == "prideful_gladiators_badge_of_victory"   ) e = "4340Str_20Dur_60Cd";
+  else if ( ptr && name == "prideful_gladiators_badge_of_conquest"  ) e = "4340Agi_20Dur_60Cd";
 
   // Hybrid
   else if ( name == "fetish_of_volatile_power"   ) e = ( heroic ? "OnHarmfulSpellCast_64Haste_8Stack_20Dur_120Cd" : "OnHarmfulSpellCast_57Haste_8Stack_20Dur_120Cd" );
