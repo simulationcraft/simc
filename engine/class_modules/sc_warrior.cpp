@@ -1017,19 +1017,13 @@ struct bloodthirst_heal_t : public heal_t
     pct_heal = p -> find_spell( 117313 ) -> effectN( 1 ).percent();
   }
 
-  virtual double calculate_direct_damage()
+  virtual double calculate_direct_amount( action_state_t* s)
   {
     return player -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
   }
 
   virtual resource_e current_resource() { return RESOURCE_NONE; }
   
-  virtual void execute()
-  {
-    base_dd_min = base_dd_max = calculate_direct_damage();
-
-    base_t::execute();
-  }
 };
 
 // Bloodthirst ==============================================================
@@ -1552,7 +1546,7 @@ struct impending_victory_heal_t : public heal_t
     target = p;
   }
 
-  virtual double calculate_direct_damage()
+  virtual double calculate_direct_amount( action_state_t* s)
   {
     warrior_t* p = static_cast<warrior_t*>( player );
     double pct_heal = 0.15;
@@ -1566,12 +1560,7 @@ struct impending_victory_heal_t : public heal_t
 
   virtual resource_e current_resource() { return RESOURCE_NONE; }
 
-  virtual void execute()
-  {
-    base_dd_min = base_dd_max = calculate_direct_damage();
 
-    base_t::execute();
-  }
 };
 
 struct impending_victory_t : public warrior_attack_t
@@ -2262,7 +2251,7 @@ struct victory_rush_heal_t : public heal_t
     target = p;
   }
 
-  virtual double calculate_direct_damage()
+  virtual double calculate_direct_amount( action_state_t* s)
   {
     warrior_t *p = static_cast<warrior_t*>( player );
 
@@ -2270,13 +2259,7 @@ struct victory_rush_heal_t : public heal_t
   }
 
   virtual resource_e current_resource() { return RESOURCE_NONE; }
-  
-  virtual void execute()
-  {
-    base_dd_min = base_dd_max = calculate_direct_damage();
 
-    base_t::execute();
-  }
 };
 
 struct victory_rush_t : public warrior_attack_t
@@ -2673,19 +2656,16 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
   {
     warrior_t* p = cast();
 
-    //get rage so we can use it in calc_direct_damage
+    //get rage so we can use it in calc_direct_amount
     rage_cost = std::min( 60.0, std::max( p -> resources.current[ RESOURCE_RAGE ], cost() ) );
 
-    // set absorb size
-    base_dd_min = base_dd_max = calculate_direct_damage();
-    
     base_t::execute();
   }
 
   /* stripped down version to calculate s-> result_amount,
    * i.e., how big our shield is, Formula: max(ap_scale*(AP-Str*2), Sta*stam_scale)*RAGE/60
    */
-  virtual double calculate_direct_damage()
+  virtual double calculate_direct_amount( action_state_t* s)
   {
     double dmg = sim -> averaged_range( base_dd_min, base_dd_max );
 
