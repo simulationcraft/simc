@@ -4560,27 +4560,25 @@ void paladin_t::generate_action_prio_list_ret()
   }*/
 
   // Inquisition
-  if ( find_talent_spell( "Divine Purpose" ) -> ok() )
-    def -> add_action( this, "Inquisition", "if=buff.inquisition.down&(holy_power>=1|buff.divine_purpose.react)" );
   def -> add_action( this, "Inquisition", "if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|target.time_to_die<holy_power*10|buff.divine_purpose.react)" );
 
   // Avenging Wrath
   if ( ! find_talent_spell( "Sanctified Wrath" ) -> ok() && find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
-    def -> add_action( this, "Avenging Wrath", "if=buff.inquisition.up&(cooldown.guardian_of_ancient_kings.remains<291)" );
+    def -> add_action( this, "Avenging Wrath", "if=buff.inquisition.up&(cooldown.guardian_of_ancient_kings.remains<291)" ); // this holds AW for 9 seconds if GAnK was just popped to maximize STR overlap
   else
-    def -> add_action( this, "Avenging Wrath", "if=buff.inquisition.up" );
+    def -> add_action( this, "Avenging Wrath", "if=buff.inquisition.up" ); // not needed if SW is taken, since AW duration = GAnK duration
 
   // Guardian of Ancient Kings
   if ( ! find_talent_spell( "Sanctified Wrath" ) -> ok() )
-    def -> add_action( this, "Guardian of Ancient Kings", "if=cooldown.avenging_wrath.remains<10|target.time_to_die<=60" );
+    def -> add_action( this, "Guardian of Ancient Kings", "if=cooldown.avenging_wrath.remains<10|target.time_to_die<=60" ); // This holds GAnK for ~10 seconds if AW is about to come off of cooldown
   else
-    def -> add_action( this, "Guardian of Ancient Kings", "if=buff.avenging_wrath.up|target.time_to_die<=60" );
+    def -> add_action( this, "Guardian of Ancient Kings", "if=buff.avenging_wrath.up|target.time_to_die<=60" );  // again, not needed if SW is taken
 
   // Holy Avenger
   if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
-    def -> add_action( this, "Holy Avenger", "if=buff.inquisition.up&(cooldown.guardian_of_ancient_kings.remains<289)&holy_power<=2" );
+    def -> add_action( this, "Holy Avenger", "if=buff.inquisition.up&(cooldown.guardian_of_ancient_kings.remains<289)&holy_power<=2" ); // Similarly, this holds HA for the first 10 seconds of GAnK
   else
-    def -> add_action( this, "Holy Avenger", "if=buff.inquisition.up&holy_power<=2" );
+    def -> add_action( this, "Holy Avenger", "if=buff.inquisition.up&holy_power<=2" ); // This just removes the GANK conditinoal if we don't have it
 
   // Items (not sure why they're radomly put here? I guess after cooldowns but before rotational abilities)
   int num_items = ( int ) items.size();

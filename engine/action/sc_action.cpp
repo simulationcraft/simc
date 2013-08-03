@@ -1124,6 +1124,9 @@ void action_t::last_tick( dot_t* d )
 void action_t::update_vengeance( dmg_e type,
                                  action_state_t* s )
 {
+  // Vengenace damage->pct modifier
+  double veng_pct = ( s -> target -> dbc.ptr ) ? 0.015 : 0.018;
+
   // check that the target has vengeance, damage type, and that the executing player is an enemy
   if ( s -> target -> vengeance_is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) && s-> action -> player -> is_enemy() )
   {
@@ -1132,17 +1135,16 @@ void action_t::update_vengeance( dmg_e type,
 
     // on spell attacks that miss, we just extend the duration of Vengeance
     // note that this specifically excludes melee auto-attacks, which grant Vengeance normally based on raw damage
-    if ( result_is_miss( s -> result ) && //is a miss
-         ! is_auto_attack &&              // is not an auto-attack
-         ( s -> action -> player -> level >= ( s -> target -> level + 3 ) ) ) // is a boss - I think this conditional is extraneous/wrong?
+    if ( ( s -> result == RESULT_MISS && s -> target -> dbc.ptr ) || // PTR: all misses do not generate Vengeance
+         ( result_is_miss( s -> result ) && ! is_auto_attack )  )    // 5.3: Is a miss but not an auto-attack
     {
-      //extend duration
+      //extend duration, but do not add any vengeance
       s -> target -> buffs.vengeance -> trigger( 1,
                                                  s -> target -> buffs.vengeance -> value(),
                                                  1.0 ,
                                                  timespan_t::from_seconds( 20.0 ) );
     }
-    else // vengeance from successful hit or missed auto attack
+    else // vengeance from auto attack or successful spell
     {
 
       // factor out weakened_blows from physical damage
@@ -1160,17 +1162,19 @@ void action_t::update_vengeance( dmg_e type,
         attack_frequency = 1.0 / 60.0;
 
       // Create new vengeance value
-      double new_amount = 0.018 * raw_damage; // new vengeance from hit
+      double new_amount = veng_pct * raw_damage; // new vengeance from hit
 
       // modify according to damage type; spell damage gives 2.5x as much Vengeance
       new_amount *= ( school == SCHOOL_PHYSICAL ? 1.0 : 2.5 );
+
+      // TODO: diminishing returns goes here
 
       // Perform 20-second decaying average
       new_amount += s -> target -> buffs.vengeance -> value() *
                     s -> target -> buffs.vengeance -> remains().total_seconds() / 20.0; // old diminished vengeance
 
       // calculate vengeance equilibrium and engage 50% ramp-up mechanism if appropriate
-      double vengeance_equil = 0.018 * raw_damage * attack_frequency * 20;
+      double vengeance_equil = veng_pct * raw_damage * attack_frequency * 20;
       if ( vengeance_equil / 2.0 > new_amount )
       {
         if ( sim -> debug )
