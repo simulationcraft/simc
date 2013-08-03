@@ -143,6 +143,7 @@ public:
     proc_t* mana_tea;
     proc_t* tier15_2pc_melee;
     proc_t* tier15_4pc_melee;
+	proc_t* tigereye_brew;
   } proc;
 
   struct rngs_t
@@ -150,6 +151,7 @@ public:
     rng_t* mana_tea;
     rng_t* tier15_2pc_melee;
     rng_t* tier15_4pc_melee;
+	rng_t* tigereye_brew;
   } rng;
 
   struct talents_t
@@ -408,11 +410,11 @@ private:
       tick_power_mod = data().extra_coeff();
 
 
-      //if ( player -> dbc.ptr ) {
-      //  cooldown -> duration = timespan_t::from_seconds( 1.0 );
-      //} else {
-      cooldown -> duration = timespan_t::from_seconds( 6.0 );
-      //}
+      if ( player -> dbc.ptr ) {
+        cooldown -> duration = timespan_t::from_seconds( 1.0 );
+      } else {
+		cooldown -> duration = timespan_t::from_seconds( 6.0 );
+      }
       base_spell_power_multiplier  = 0;
 
       //base_multiplier = 1.323; //1.58138311; EDITED FOR ACTUAL VALUE. verify in the future.
@@ -590,12 +592,25 @@ public:
 
           p() -> buff.tigereye_brew -> trigger();
           // I assume that this is for the T15 bonus?  If so, then we need similar logic for T16
-          if ( p() -> set_bonus.tier15_4pc_melee() &&
-               p() -> rng.tier15_4pc_melee -> roll( p() -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent() ) )
-          {
-            p() -> buff.tigereye_brew -> trigger();
-            p() -> proc.tier15_4pc_melee -> occur();
-          }
+		  // rekeying the proc to go by mastery.
+		  if ( player -> dbc.ptr ) {
+			  // Double to hold the chance for our mastery to proc.  This is based upon player's mastery
+			  double mastery_proc_chance =  p() ->  mastery.bottled_fury -> effectN( 1 ).mastery_value() * player -> composite_mastery(); 
+			  if (  p() -> spec.brewing_tigereye_brew -> ok()  && 
+				   p() -> rng.tigereye_brew -> roll( mastery_proc_chance  ) ) {
+				
+				p() -> buff.tigereye_brew -> trigger();
+				p() -> proc.tigereye_brew -> occur();
+			  }
+		  } else {
+			// preserves what we will currently see on Live
+			  if ( p() -> set_bonus.tier15_4pc_melee() &&
+				   p() -> rng.tier15_4pc_melee -> roll( p() -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent() ) )
+			  {
+				p() -> buff.tigereye_brew -> trigger();
+				p() -> proc.tier15_4pc_melee -> occur();
+			  }
+		  }
         }
       }
 
@@ -2530,7 +2545,7 @@ void monk_t::init_spells()
     {       0,       0,      0,      0,      0,      0,      0,      0 }, // Tier13
     {       0,       0, 123149, 123150, 123157, 123159, 123152, 123153 }, // Tier14
     {       0,       0, 138177, 138315, 138231, 138236, 138289, 138290 }, // Tier15
-    {       0,       0, 145022, 145004, 138231, 138236, 138289, 138290 }, // Tier16, need spell IDS for MW/BrM
+    {       0,       0, 145022, 145004, 145049, 145055, 145439, 145449 }, // Tier16
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
@@ -2671,6 +2686,7 @@ void monk_t::init_rng()
   rng.mana_tea                    = get_rng( "mana_tea"   );
   rng.tier15_2pc_melee            = get_rng( "tier15_2pc" );
   rng.tier15_4pc_melee            = get_rng( "tier15_4pc" );
+  rng.tigereye_brew				  = get_rng( "tigereye_brew" );
 }
 
 // monk_t::init_procs =======================================================
@@ -2682,6 +2698,7 @@ void monk_t::init_procs()
   proc.mana_tea         = get_proc( "mana_tea"   );
   proc.tier15_2pc_melee = get_proc( "tier15_2pc" );
   proc.tier15_4pc_melee = get_proc( "tier15_4pc" );
+  proc.tigereye_brew	= get_proc( "tigereye_brew" );
 }
 
 // monk_t::reset ============================================================
