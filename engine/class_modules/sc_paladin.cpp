@@ -4566,9 +4566,9 @@ void paladin_t::generate_action_prio_list_ret()
 
   // Guardian of Ancient Kings
   if ( ! find_talent_spell( "Sanctified Wrath" ) -> ok() )
-    def -> add_action( this, "Guardian of Ancient Kings", "if=cooldown.avenging_wrath.remains<10" );
+    def -> add_action( this, "Guardian of Ancient Kings", "if=cooldown.avenging_wrath.remains<10|target.time_to_die<=60" );
   else
-    def -> add_action( this, "Guardian of Ancient Kings", "if=buff.avenging_wrath.up" );
+    def -> add_action( this, "Guardian of Ancient Kings", "if=buff.avenging_wrath.up|target.time_to_die<=60" );
 
   // Holy Avenger
   if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
@@ -4605,13 +4605,13 @@ void paladin_t::generate_action_prio_list_ret()
 
   // Execution Sentence
   if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
-    def -> add_action( this, "Execution Sentence", "if=buff.inquisition.up" );
+    def -> add_action( this, "Execution Sentence", "if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=20)" );
   else
     def -> add_action( this, "Execution Sentence", "if=buff.inquisition.up&time>=15" );
 
   // Light's Hammer
   if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
-    def -> add_action( this, "Light's Hammer", "if=buff.inquisition.up" );
+    def -> add_action( this, "Light's Hammer", "if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=20)" );
   else
     def -> add_action( this, "Light's Hammer", "if=buff.inquisition.up&time>=15" );
 
@@ -4630,12 +4630,15 @@ void paladin_t::generate_action_prio_list_ret()
     def -> add_action( "wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.1" );
 
   // Everything Else
+  //def -> add_action( this, "Crusader Strike", "if=set_bonus.tier15_4pc_melee&buff.tier15_4pc_melee.down");
+  //def -> add_action( this, "Templar's Verdict", "if=(buff.tier15_4pc_melee.up&cooldown.crusader_strike.remains<=1.5)" );
   def -> add_action( this, "Crusader Strike" );
   def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2" );
-  //def -> add_action( this, "Crusader Strike", "if=set_bonus.tier15_4pc_melee&!(buff.tier15_4pc_melee.up)");
-  //def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=set_bonus.tier15_4pc_melee&!(buff.tier15_4pc_melee.up)&&cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2" );
   def -> add_action( this, "Exorcism", "if=active_enemies>=2&active_enemies<=4&set_bonus.tier15_2pc_melee&glyph.mass_exorcism.enabled" );
   def -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=4" );
+  //def -> add_action( this, "Exorcism", "if=buff.avenging_wrath.up");
+  //def -> add_action( "wait,sec=cooldown.exorcism.remains,if=buff.avenging_wrath.up&cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2" );
+  def -> add_action( this, "Templar's Verdict", "if=buff.avenging_wrath.up");
   def -> add_action( this, "Judgment", "target=2,if=active_enemies>=2&buff.glyph_double_jeopardy.up" );
   def -> add_action( this, "Judgment" );
   def -> add_action( "wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2" );
@@ -4743,174 +4746,41 @@ void paladin_t::validate_action_priority_list()
 
     }
 
+    // This section performs some validation on hand-written APLs.  The ones created in 
+    // generate_action_prio_list_spec() should automatically avoid all of these mistakes.
+    // In most cases, this will spit out a warning to inform the user that something was ignored.
+    // For WoG/EF, it will try to correct the error.
+
     for ( size_t i = 0; i < a -> action_list.size(); i++ )
     {
       std::string& action_str = a -> action_list[ i ].action_;
       std::size_t found_position;
-      bool found_ability = false;
-      bool found_talent_str = false;
-      std::string check_ability;
-      std::string talent_check_str = "";
-      std::string buff_check_str = "";
-      std::string replacement = "";
+      std::vector<std::string> splits = util::string_split( action_str, "," );
 
       // Check for EF/WoG mistakes
-      if ( talents.eternal_flame -> ok() )
+      if ( splits[ 0 ] == "word_of_glory" && talents.eternal_flame -> ok() )
       {
-        // check for usage of WoG when EF is talented
-        check_ability = "word_of_glory";
-        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
-        if ( found_ability )
-        {
-          found_position = action_str.find( check_ability.c_str() );
+          found_position = action_str.find( splits[ 0 ].c_str() );
+          action_str.replace( found_position, splits[ 0 ].length(), "eternal_flame" );
           sim -> errorf( "Action priority list contains Word of Glory instead of Eternal Flame, automatically replacing WoG with EF\n" );
-          action_str.replace( found_position, check_ability.length(), "eternal_flame" );
-        }
       }
-      else
+      else if ( splits[ 0 ] == "eternal_flame" && ! talents.eternal_flame -> ok() )
       {
-        // check for usage of EF when not talented
-        check_ability = "eternal_flame";
-        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
-        if ( found_ability )
-        {
-          found_position = action_str.find( check_ability.c_str() );
+          found_position = action_str.find( splits[ 0 ].c_str() );
+          action_str.replace( found_position,  splits[ 0 ].length(), "word_of_glory" );
           sim -> errorf( "Action priority list contains Eternal Flame without talent, automatically replacing with Word of Glory\n" );
-          action_str.replace( found_position,  check_ability.length(), "word_of_glory" );
-        }
       }
 
-      // Check for usage of level 90 talents without talent present
-      if ( ! talents.holy_prism -> ok() )
+      // Check for usage of talents without talent present
+      if ( ( splits[ 0 ] == "holy_prism" && ! talents.holy_prism -> ok() ) || 
+           ( splits[ 0 ] == "lights_hammer" && ! talents.lights_hammer -> ok() ) || 
+           ( splits[ 0 ] == "execution_sentence" && ! talents.execution_sentence -> ok() ) ||
+           ( splits[ 0 ] == "sacred_shield" && ! talents.sacred_shield -> ok() ) ||
+           ( splits[ 0 ] == "hand_of_purity" && ! talents.hand_of_purity -> ok() ) ||
+           ( splits[ 0 ] == "holy_avenger" && ! talents.holy_avenger -> ok() ) )
       {
-        check_ability = "holy_prism";
-        talent_check_str = "talent." + check_ability + ".enabled";
-        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
-        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) );
-        if ( found_ability && ! found_talent_str )
-        {
-          found_position = action_str.find( check_ability.c_str() );
-          if ( talents.lights_hammer -> ok() )
-          {
-            replacement = "Light's Hammer";
-            action_str.replace( found_position, check_ability.length(), "lights_hammer" );
-          }
-          else if ( talents.execution_sentence -> ok() )
-          {
-            replacement = "Execution Sentence";
-            action_str.replace( found_position, check_ability.length(), "execution_sentence" );
-          }
-          else
-          {
-            // this part is handled in the constructor
-            replacement = "nothing";
-          }
-
-          sim -> errorf( "Action priority list contains %s without talent, automatically replacing with %s.", "Holy Prism", replacement.c_str() );
-
-        }
+        sim -> errorf( "Action priority list contains %s without talent, ignoring.", splits[ 0 ].c_str() );
       }
-      if ( ! talents.lights_hammer -> ok() )
-      {
-        check_ability = "lights_hammer";
-        talent_check_str = "talent." + check_ability + ".enabled";
-        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
-        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) );
-        if ( found_ability && ! found_talent_str )
-        {
-          found_position = action_str.find( check_ability.c_str() );
-          if ( talents.holy_prism -> ok() )
-          {
-            replacement = "Holy Prism";
-            action_str.replace( found_position, check_ability.length(), "holy_prism" );
-          }
-          else if ( talents.execution_sentence -> ok() )
-          {
-            replacement = "Execution Sentence";
-            action_str.replace( found_position, check_ability.length(), "execution_sentence" );
-          }
-          else
-          {
-            // this part is handled in the constructor
-            replacement = "nothing";
-          }
-
-          sim -> errorf( "Action priority list contains %s without talent, automatically replacing with %s.", "Light's Hammer", replacement.c_str() );
-
-        }
-      }
-      if ( ! talents.execution_sentence -> ok() )
-      {
-        check_ability = "execution_sentence";
-        talent_check_str = "talent." + check_ability + ".enabled";
-        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
-        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) );
-        if ( found_ability && ! found_talent_str )
-        {
-          found_position = action_str.find( check_ability.c_str() );
-          if ( talents.holy_prism -> ok() )
-          {
-            replacement = "Holy Prism";
-            action_str.replace( found_position, check_ability.length(), "holy_prism" );
-          }
-          else if ( talents.lights_hammer -> ok() )
-          {
-            replacement = "Light's Hammer";
-            action_str.replace( found_position, check_ability.length(), "lights_hammer" );
-          }
-          else
-          {
-            // this part is handled in the constructor
-            replacement = "nothing";
-          }
-
-          sim -> errorf( "Action priority list contains %s without talent, automatically replacing with %s.", "Execution Sentence", replacement.c_str() );
-
-        }
-      }
-
-      // check for Sacred Shield usage without talent
-      if ( ! talents.sacred_shield -> ok() )
-      {
-        check_ability = "sacred_shield";
-        talent_check_str = "talent." + check_ability + ".enabled";
-        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
-        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) );
-        if ( found_ability && ! found_talent_str )
-        {
-          sim -> errorf( "Action priority list contains %s without talent, ignoring", "Sacred Shield" );
-        }
-      }
-
-      // check for Hand of Purity usage without talent
-      if ( ! talents.hand_of_purity -> ok() )
-      {
-        check_ability = "hand_of_purity";
-        talent_check_str = "talent." + check_ability + ".enabled";
-        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
-        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) );
-        if ( found_ability && ! found_talent_str )
-        {
-          sim -> errorf( "Action priority list contains %s without talent, ignoring", "Hand of Purity" );
-        }
-      }
-
-      // check for Holy Avenger usage without talent
-      if ( ! talents.holy_avenger -> ok() )
-      {
-        check_ability = "holy_avenger";
-        talent_check_str = "talent." + check_ability + ".enabled";
-        buff_check_str = "buff." + check_ability;
-        found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
-        found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) );
-        bool found_buff_str = ( util::str_in_str_ci( action_str, buff_check_str ) );
-        if ( found_ability && ! found_talent_str && ! found_buff_str )
-        {
-          sim -> errorf( "Action priority list contains %s without talent, ignoring", "Holy Avenger" );
-        }
-      }
-
-      // repeat for Fist of Justice / Hammer of Justice
     }
   }
 }
