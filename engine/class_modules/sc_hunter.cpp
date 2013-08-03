@@ -2218,8 +2218,11 @@ struct black_arrow_t : public hunter_ranged_attack_t
   {
     parse_options( NULL, options_str );
 
-    cooldown = p() -> get_cooldown( "traps" );
-    cooldown -> duration = data().cooldown();
+    if ( !sim -> dbc.ptr )
+    { 
+      cooldown = p() -> get_cooldown( "traps" );
+      cooldown -> duration = data().cooldown();
+    }
 
     cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
@@ -2273,7 +2276,7 @@ struct explosive_trap_effect_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::tick( d );
 
-    if ( p() -> buffs.lock_and_load -> trigger( 2 ) )
+    if ( !sim -> dbc.ptr && p() -> buffs.lock_and_load -> trigger( 2 ) )
     {
       p() -> procs.lock_and_load -> occur();
       p() -> cooldowns.explosive_shot -> reset( true );
@@ -2293,7 +2296,6 @@ struct explosive_trap_t : public hunter_ranged_attack_t
   {
     option_t options[] =
     {
-      // FIXME: Launched traps have a focus cost
       opt_bool( "trap_launcher", trap_launcher ),
       opt_null()
     };
