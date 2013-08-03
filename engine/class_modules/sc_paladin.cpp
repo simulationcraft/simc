@@ -3312,7 +3312,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     // define cooldown multiplier for use with Sanctified Wrath talent for retribution only
     if ( ( p -> specialization() == PALADIN_RETRIBUTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
     {
-      cooldown_mult = p -> spells.sanctified_wrath -> effectN( 3 ).percent();
+      cooldown_mult = 1.0 + p -> spells.sanctified_wrath -> effectN( 3 ).percent();
     }
   }
 
@@ -4611,15 +4611,15 @@ void paladin_t::generate_action_prio_list_ret()
 
   // Execution Sentence
   if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
-    def -> add_action( this, "Execution Sentence", "if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=20)" );
+    def -> add_talent( this, "Execution Sentence", "if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=20)" );
   else
-    def -> add_action( this, "Execution Sentence", "if=buff.inquisition.up&time>=15" );
+    def -> add_talent( this, "Execution Sentence", "if=buff.inquisition.up&time>=15" );
 
   // Light's Hammer
   if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
-    def -> add_action( this, "Light's Hammer", "if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=20)" );
+    def -> add_talent( this, "Light's Hammer", "if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=20)" );
   else
-    def -> add_action( this, "Light's Hammer", "if=buff.inquisition.up&time>=15" );
+    def -> add_talent( this, "Light's Hammer", "if=buff.inquisition.up&time>=15" );
 
   // Divine Storm
   def -> add_action( this, "Divine Storm", "if=active_enemies>=2&(holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3))" );
@@ -4653,7 +4653,7 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( this, "Templar's Verdict", "if=buff.tier15_4pc_melee.up" );
   def -> add_action( this, "Divine Storm", "if=active_enemies>=2&buff.inquisition.remains>4" );
   def -> add_action( this, "Templar's Verdict", "if=buff.inquisition.remains>4" );
-  def -> add_action( this, "Holy Prism" );
+  def -> add_talent( this, "Holy Prism" );
 }
 
 void paladin_t::generate_action_prio_list_holy()
