@@ -1570,13 +1570,13 @@ bool sim_t::init()
     target = module_t::enemy() -> create_player( this, "Fluffy_Pillow" );
 
   // create additional enemies here
-  while ( target_list.size() < desired_targets )
+  while ( as<int>(target_list.size()) < desired_targets )
   {
     active_player = 0;
     active_player = module_t::enemy() -> create_player( this, "enemy" + util::to_string( target_list.size() + 1 ) );
     if ( ! active_player )
     {
-      errorf( "\nUnable to create enemy %i.\n", target_list.size() );
+      errorf( "\nUnable to create enemy %d.\n", (unsigned)target_list.size() );
     }
   }
 

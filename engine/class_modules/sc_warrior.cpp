@@ -1017,7 +1017,7 @@ struct bloodthirst_heal_t : public heal_t
     pct_heal = p -> find_spell( 117313 ) -> effectN( 1 ).percent();
   }
 
-  virtual double calculate_direct_amount( action_state_t* s )
+  virtual double calculate_direct_amount( action_state_t* )
   {
     return player -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
   }
@@ -1546,7 +1546,7 @@ struct impending_victory_heal_t : public heal_t
     target = p;
   }
 
-  virtual double calculate_direct_amount( action_state_t* s )
+  virtual double calculate_direct_amount( action_state_t* )
   {
     warrior_t* p = static_cast<warrior_t*>( player );
     double pct_heal = 0.15;
@@ -2251,7 +2251,7 @@ struct victory_rush_heal_t : public heal_t
     target = p;
   }
 
-  virtual double calculate_direct_amount( action_state_t* s )
+  virtual double calculate_direct_amount( action_state_t* )
   {
     warrior_t *p = static_cast<warrior_t*>( player );
 
@@ -2665,7 +2665,7 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
   /* stripped down version to calculate s-> result_amount,
    * i.e., how big our shield is, Formula: max(ap_scale*(AP-Str*2), Sta*stam_scale)*RAGE/60
    */
-  virtual double calculate_direct_amount( action_state_t* s )
+  virtual double calculate_direct_amount( action_state_t* )
   {
     double dmg = sim -> averaged_range( base_dd_min, base_dd_max );
 
