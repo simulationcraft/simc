@@ -2333,7 +2333,7 @@ struct lay_on_hands_t : public paladin_heal_t
 
   }
 
-  virtual double calculate_direct_amount( action_state_t* s )
+  virtual double calculate_direct_amount( action_state_t* )
   {
     return p() -> resources.max[ RESOURCE_HEALTH ];
   }
@@ -4123,6 +4123,7 @@ void paladin_t::init_base_stats()
       break;
     case PALADIN_PROTECTION:
       role = ROLE_TANK;
+      break;
     default:
       break;
   }
