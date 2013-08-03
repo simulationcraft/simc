@@ -2333,6 +2333,11 @@ struct lay_on_hands_t : public paladin_heal_t
 
   }
 
+  virtual double calculate_direct_amount( action_state_t* s )
+  {
+    return p() -> resources.max[ RESOURCE_HEALTH ];
+  }
+
   virtual void execute()
   {
     paladin_heal_t::execute();
@@ -4779,7 +4784,11 @@ void paladin_t::validate_action_priority_list()
            ( splits[ 0 ] == "hand_of_purity" && ! talents.hand_of_purity -> ok() ) ||
            ( splits[ 0 ] == "holy_avenger" && ! talents.holy_avenger -> ok() ) )
       {
-        sim -> errorf( "Action priority list contains %s without talent, ignoring.", splits[ 0 ].c_str() );
+        std::string talent_str = "talent.";
+        talent_str += splits[ 0 ].c_str();
+        talent_str += ".enabled";
+        if ( ! util::str_in_str_ci( action_str, talent_str ) )
+          sim -> errorf( "Action priority list contains %s without talent, ignoring.", splits[ 0 ].c_str() );
       }
     }
   }
