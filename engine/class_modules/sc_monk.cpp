@@ -593,9 +593,10 @@ public:
           p() -> buff.tigereye_brew -> trigger();
           // I assume that this is for the T15 bonus?  If so, then we need similar logic for T16
 		  // rekeying the proc to go by mastery.
-		  if ( player -> dbc.ptr ) {
+		  if ( p() -> dbc.ptr )
+		  {
 			  // Double to hold the chance for our mastery to proc.  This is based upon player's mastery
-			  double mastery_proc_chance =  p() ->  mastery.bottled_fury -> effectN( 1 ).mastery_value() * player -> composite_mastery(); 
+			  double mastery_proc_chance =  p() -> cache.mastery_value();
 			  if (  p() -> spec.brewing_tigereye_brew -> ok()  && 
 				   p() -> rng.tigereye_brew -> roll( mastery_proc_chance  ) ) {
 				
