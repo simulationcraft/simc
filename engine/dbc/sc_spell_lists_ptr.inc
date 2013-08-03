@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 17247
+// Class based active abilities, wow build 17260
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -544,7 +544,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Shaman
   {
-    // General tree, 39 abilities
+    // General tree, 38 abilities
     {
         2008, // Ancestral Spirit
       114049, // Ascendance
@@ -575,7 +575,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
         8190, // Magma Totem
        73899, // Primal Strike
          370, // Purge
-      147709, // Rain of Frogs
         8017, // Rockbiter Weapon
         3599, // Searing Totem
        79206, // Spiritwalker's Grace
@@ -710,7 +709,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
     // General tree, 38 abilities
     {
          710, // Banish
-      146739, // Corruption
+         172, // Corruption
         6201, // Create Healthstone
       109466, // Curse of Enfeeblement
         1490, // Curse of the Elements
@@ -921,7 +920,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
   },
   // Class active abilities for Druid
   {
-    // General tree, 41 abilities
+    // General tree, 40 abilities
     {
         1066, // Aquatic Form (Shapeshift)
        22812, // Barkskin
@@ -949,7 +948,6 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
       110621, // Mirror Image
         8921, // Moonfire
        16689, // Nature's Grasp
-      147420, // One with Nature (Glyph)
         9005, // Pounce
         5215, // Prowl
         1822, // Rake
@@ -1035,7 +1033,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (26)
 
-// Talent tree specialization abilities, wow build 17247
+// Talent tree specialization abilities, wow build 17260
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1882,7 +1880,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 17247
+// Class mastery abilities, wow build 17260
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2105,7 +2103,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 17247
+// Racial abilities, wow build 17260
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2818,7 +2816,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 17247
+// Glyph spells for classes, wow build 17260
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3274,7 +3272,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   },
   // Glyph spells for Warlock
   {
-    // Major Glyphs (20 spells)
+    // Major Glyphs (19 spells)
     {
        56235, // Glyph of Conflagrate
        58080, // Glyph of Curse of Exhaustion
@@ -3284,7 +3282,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        63309, // Glyph of Demonic Circle
        63302, // Glyph of Drain Life
        63304, // Glyph of Ember Tap
-      118778, // Glyph of Everlasting Affliction
+      148683, // Glyph of Eternal Resolve
        56244, // Glyph of Fear
       146962, // Glyph of Havoc
        56224, // Glyph of Healthstone
@@ -3292,7 +3290,6 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
        63320, // Glyph of Life Tap
        56218, // Glyph of Siphon Life
        58070, // Glyph of Soul Consumption
-       56226, // Glyph of Soul Swap
        56231, // Glyph of Soulstone
       146964, // Glyph of Unending Resolve
        56233, // Glyph of Unstable Affliction
@@ -3435,7 +3432,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 17247
+// Tier item set bonuses for class, wow build 17260
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
