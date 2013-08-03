@@ -38,6 +38,9 @@ ifeq (${CXX},g++)
 OPTS += -msse2 -mfpmath=sse
 endif
 
+# Include build setting from user configuration file
+-include ../build.conf
+
 ifneq (${NO_DEBUG},)
   CPP_FLAGS += -DNDEBUG
 endif
@@ -53,9 +56,6 @@ endif
 ifneq (${FFAST-MATH},)
   OPTS += -ffast-math
 endif
-
-# Include build setting from user configuration file
--include ../build.conf
 
 ifeq (32,${BITS})
   OPTS += -m32

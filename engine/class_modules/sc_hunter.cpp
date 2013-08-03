@@ -3475,6 +3475,7 @@ struct readiness_t : public hunter_spell_t
     hunter_spell_t( "readiness", player, player -> find_class_spell( "Readiness" ) ),
     wait_for_rf( false )
   {
+    background = true; // FIXME: adjust spell data, spell or whatever problem 5.4 ptr caused.
     option_t options[] =
     {
       // Only perform Readiness while Rapid Fire is up, allows the sequence
