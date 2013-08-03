@@ -65,7 +65,6 @@ template <typename iterator>
 typename std::iterator_traits<iterator>::value_type calculate_variance( iterator begin, iterator end )
 {
   typedef typename std::iterator_traits<iterator>::value_type value_t;
-  typedef typename std::iterator_traits<iterator>::difference_type diff_t;
   value_t mean = calculate_mean( begin, end );
   return calculate_variance( begin, end, mean );
 }
