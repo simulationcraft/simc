@@ -1368,7 +1368,7 @@ void SC_ReforgeButtonGroup::setSelected( int state )
   if ( selected >= 3 )
   {
     QList< QAbstractButton* > b = buttons();
-    for ( QList< QAbstractButton* >::iterator i = b.begin(); i != b.end(); i++ )
+    for ( QList< QAbstractButton* >::iterator i = b.begin(); i != b.end(); ++i )
       if ( ! ( *i ) -> isChecked() )
         ( *i ) -> setEnabled( false );
   }
@@ -1376,7 +1376,7 @@ void SC_ReforgeButtonGroup::setSelected( int state )
   else
   {
     QList< QAbstractButton* > b = buttons();
-    for ( QList< QAbstractButton* >::iterator i = b.begin(); i != b.end(); i++ )
+    for ( QList< QAbstractButton* >::iterator i = b.begin(); i != b.end(); ++i )
       ( *i ) -> setEnabled( true );
   }
 }

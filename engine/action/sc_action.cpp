@@ -1928,10 +1928,9 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
     // more complicated version, cycles through possible sources
     std::vector<expr_t*> dot_expressions;
-    dot_t* d;
     for ( size_t i = 0, size = sim -> target_list.size(); i < size; i++ )
     {
-      d = player -> get_dot( splits[ 1 ], sim -> target_list[ i ] );
+      dot_t* d = player -> get_dot( splits[ 1 ], sim -> target_list[ i ] );
       dot_expressions.push_back( d -> create_expression( this, splits[ 2 ], false ) );
     }
     struct enemy_dots_expr_t : public expr_t

@@ -532,7 +532,7 @@ public:
       bool success = p() -> buffs.divine_crusader -> trigger( 1,
         p() -> buffs.divine_crusader -> default_value,
         p() -> buffs.divine_crusader -> default_chance * c_effective / 3 );
-      
+
       // record success for output
       if ( success )
         p() -> procs.divine_crusader -> occur();
@@ -4564,7 +4564,7 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( this, "Inquisition", "if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|target.time_to_die<holy_power*10|buff.divine_purpose.react)" );
 
   // Avenging Wrath
-  if ( ! find_talent_spell( "Sanctified Wrath" ) -> ok() & find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
+  if ( ! find_talent_spell( "Sanctified Wrath" ) -> ok() && find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
     def -> add_action( this, "Avenging Wrath", "if=buff.inquisition.up&(cooldown.guardian_of_ancient_kings.remains<291)" );
   else
     def -> add_action( this, "Avenging Wrath", "if=buff.inquisition.up" );
@@ -4754,7 +4754,6 @@ void paladin_t::validate_action_priority_list()
       std::size_t found_position;
       bool found_ability = false;
       bool found_talent_str = false;
-      bool found_buff_str = false;
       std::string check_ability;
       std::string talent_check_str = "";
       std::string buff_check_str = "";
@@ -4909,7 +4908,7 @@ void paladin_t::validate_action_priority_list()
         buff_check_str = "buff." + check_ability;
         found_ability = ( util::str_in_str_ci( action_str, check_ability.c_str() ) );
         found_talent_str = ( util::str_in_str_ci( action_str, talent_check_str ) );
-        found_buff_str = ( util::str_in_str_ci( action_str, buff_check_str ) );
+        bool found_buff_str = ( util::str_in_str_ci( action_str, buff_check_str ) );
         if ( found_ability && ! found_talent_str && ! found_buff_str )
         {
           sim -> errorf( "Action priority list contains %s without talent, ignoring", "Holy Avenger" );

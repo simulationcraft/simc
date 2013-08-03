@@ -7974,7 +7974,7 @@ double player_t::compute_incoming_damage( timespan_t interval )
   if ( incoming_damage.size() > 0 )
   {
     std::vector< std::pair< timespan_t, double > >::reverse_iterator i, end;
-    for ( i = incoming_damage.rbegin(), end = incoming_damage.rend(); i != end; i++ )
+    for ( i = incoming_damage.rbegin(), end = incoming_damage.rend(); i != end; ++i )
     {
       if ( sim -> current_time - ( *i ).first > interval )
         break;
@@ -9618,14 +9618,14 @@ void player_collected_data_t::collect_data( const player_t& p )
     // (TODO: insert link when available)
     if ( ! p.is_enemy() ) // Boss TMI is irrelevant, causes problems in iteration #1 due to lack of
     {
-      // define constants and variables
-      int window = 6; // window size, this may become user-definable later
-      double w0  = 6; // normalized window size
-      double hdf = 3; // default health decade factor
       double tmi = 0; // TMI result
-
       if ( f_length )
       {
+        // define constants and variables
+        int window = 6; // window size, this may become user-definable later
+        double w0  = 6; // normalized window size
+        double hdf = 3; // default health decade factor
+
         // create sliding average timeline
         sc_timeline_t sliding_average_tl;
 

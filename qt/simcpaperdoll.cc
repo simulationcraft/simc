@@ -317,7 +317,7 @@ PaperdollProfile::enchantUsableByProfile( const EnchantData& e ) const
 bool
 PaperdollProfile::itemUsableByClass( const item_data_t* item, bool match_armor ) const
 {
-  if ( ! item -> class_mask & util::class_id_mask( m_class ) ) return false;
+  if ( ! ( item -> class_mask & util::class_id_mask( m_class ) ) ) return false;
 
   if ( item -> item_class == ITEM_CLASS_WEAPON )
   {
@@ -1093,12 +1093,12 @@ RandomSuffixDataModel::randomSuffixStatsStr( const random_suffix_data_t& suffix 
   const random_prop_data_t& ilevel_data   = dbc.random_property( item -> level );
   const random_suffix_data_t& suffix_data = dbc.random_suffix( suffix.id );
   assert( f != -1 && ilevel_data.ilevel > 0 && suffix_data.id > 0 );
-  unsigned enchant_id;
   double stat_amount;
   QStringList stat_list;
 
   for ( int i = 0; i < 5; i++ )
   {
+    unsigned enchant_id;
     if ( ! ( enchant_id = suffix_data.enchant_id[ i ] ) )
       continue;
 
@@ -1561,8 +1561,6 @@ PaperdollBasicButton( profile, parent ), m_type( t )
 PaperdollClassButtonGroup::PaperdollClassButtonGroup( PaperdollProfile* profile, QWidget* parent ) :
   QGroupBox( "Select character class", parent ), m_profile( profile )
 {
-  PaperdollClassButton* tmp;
-
   m_classButtonGroupLayout = new QHBoxLayout();
   m_classButtonGroupLayout -> setAlignment( Qt::AlignHCenter | Qt::AlignTop );
   m_classButtonGroupLayout -> setSpacing( 2 );
@@ -1572,7 +1570,7 @@ PaperdollClassButtonGroup::PaperdollClassButtonGroup( PaperdollProfile* profile,
 
   for ( player_e i = DEATH_KNIGHT; i < PLAYER_PET; i=(player_e)((int)i+1) )
   {
-    tmp = m_classButtons[ i ] = new PaperdollClassButton( profile, i, this );
+    PaperdollClassButton* tmp = m_classButtons[ i ] = new PaperdollClassButton( profile, i, this );
 
     m_classButtonGroup -> addButton( tmp, i );
     m_classButtonGroupLayout -> addWidget( tmp );

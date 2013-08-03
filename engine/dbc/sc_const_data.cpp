@@ -2350,10 +2350,9 @@ unsigned dbc_t::mastery_ability_id( specialization_e spec, const char* spell_nam
   if ( spec == SPEC_NONE )
     return 0;
 
-  uint32_t spell_id;
-
   for ( unsigned n = 0; n < mastery_ability_size(); n++ )
   {
+    uint32_t spell_id;
     if ( ! ( spell_id = mastery_ability( class_idx, spec_index, n ) ) )
       break;
 

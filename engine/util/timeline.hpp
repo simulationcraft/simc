@@ -188,7 +188,7 @@ class histogram
   { _num_entries = std::accumulate( _data.begin(), _data.end(), size_t() ); }
 public:
   histogram() :
-    _data(), _normalized_data(), _min( nan() ), _max( nan() )
+    _data(), _normalized_data(), _min( nan() ), _max( nan() ), _num_entries()
   {}
   double min() const
   { return _min; };

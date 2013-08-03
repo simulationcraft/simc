@@ -50,7 +50,7 @@ struct dk_rune_t
   dk_rune_t* paired_rune;
   int        slot_number;
 
-  dk_rune_t() : type( RUNE_TYPE_NONE ), state( STATE_FULL ), value( 0.0 ), permanent_death_rune( false ), paired_rune( NULL ), slot_number( 0 ) {}
+  dk_rune_t() : dk( nullptr ), type( RUNE_TYPE_NONE ), state( STATE_FULL ), value( 0.0 ), permanent_death_rune( false ), paired_rune( NULL ), slot_number( 0 ) {}
 
   bool is_death()        { return ( type & RUNE_TYPE_DEATH ) != 0                ; }
   bool is_blood()        { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_BLOOD  ; }
@@ -379,6 +379,8 @@ public:
   death_knight_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DEATH_KNIGHT, name, r ),
     active_presence(),
+    t16_tank_2pc_driver(),
+    runic_power_decay_rate(),
     buffs( buffs_t() ),
     runeforge( runeforge_t() ),
     active_spells( active_spells_t() ),
@@ -6036,7 +6038,7 @@ void death_knight_t::create_buffs()
   buffs.icebound_fortitude  = buff_creator_t( this, "icebound_fortitude", find_class_spell( "Icebound Fortitude" ) )
                               .duration( find_class_spell( "Icebound Fortitude" ) -> duration() *
                                          ( 1.0 + glyph.icebound_fortitude -> effectN( 2 ).percent() ) )
-                              .cd( find_class_spell( "Icebound Fortitude" ) -> cooldown() * 
+                              .cd( find_class_spell( "Icebound Fortitude" ) -> cooldown() *
                                    ( 1.0 + glyph.icebound_fortitude -> effectN( 1 ).percent() ) );
   buffs.killing_machine     = buff_creator_t( this, "killing_machine", find_spell( 51124 ) )
                               .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() )

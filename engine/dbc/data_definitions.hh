@@ -101,7 +101,7 @@ struct item_data_t {
   int      id_suffix_group;
 
   bool is_armor()
-  { return item_class == ITEM_CLASS_ARMOR && ( item_subclass >= ITEM_SUBCLASS_ARMOR_CLOTH || item_subclass <= ITEM_SUBCLASS_ARMOR_SHIELD ); }
+  { return item_class == ITEM_CLASS_ARMOR && ( item_subclass >= ITEM_SUBCLASS_ARMOR_CLOTH && item_subclass <= ITEM_SUBCLASS_ARMOR_SHIELD ); }
 };
 
 struct item_scale_data_t {

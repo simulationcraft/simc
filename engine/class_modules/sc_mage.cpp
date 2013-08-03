@@ -1237,7 +1237,7 @@ static double icicle_damage( mage_t* mage )
 
   std::vector< icicle_data_t >::iterator idx = mage -> icicles.begin(),
                                          end = mage -> icicles.end();
-  for ( ; idx < end; idx++ )
+  for ( ; idx < end; ++idx )
   {
     if ( mage -> sim -> current_time - ( *idx ).first < threshold )
       break;
