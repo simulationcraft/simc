@@ -274,7 +274,7 @@ bool parse_specialization( sim_t* sim,
   sim -> active_player -> _spec = dbc::translate_spec_str( sim -> active_player -> type, value );
 
   if ( sim -> active_player -> _spec == SPEC_NONE )
-    sim->errorf( "\n%s specialization string \"%s\" not valid.\n", sim -> active_player->name(), value.c_str() );
+    sim->errorf( "\n%s specialization string \"%s\" not valid.\n", sim -> active_player-> name(), value.c_str() );
 
   return true;
 }
@@ -287,12 +287,11 @@ bool parse_stat_timelines( sim_t* sim,
 {
   assert( name == "stat_timelines" ); ( void )name;
 
-  stat_e st;
   std::vector<std::string> stats = util::string_split( value, "," );
 
   for ( size_t i = 0; i < stats.size(); ++i )
   {
-    st = util::parse_stat_type( stats[i] );
+    stat_e st = util::parse_stat_type( stats[i] );
 
     sim -> active_player -> stat_timelines.push_back( st );
   }
