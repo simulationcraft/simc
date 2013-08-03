@@ -715,11 +715,12 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
 
   for ( size_t i = 0; i < spell -> effect_count(); i++ )
   {
+    const spelleffect_data_t* e;
     uint32_t effect_id;
     if ( ! ( effect_id = spell -> effectN( i + 1 ).id() ) )
       continue;
     else
-      const spelleffect_data_t* e = sim -> dbc.effect( effect_id );
+      e = sim -> dbc.effect( effect_id );
 
     spell_info::effect_to_str( sim, spell, e, s, level );
   }
@@ -1145,10 +1146,11 @@ void spell_info::to_xml( sim_t* sim, const spell_data_t* spell, xml_node_t* pare
   for ( size_t i = 0; i < spell -> _effects -> size(); i++ )
   {
     uint32_t effect_id;
+    const spelleffect_data_t* e;
     if ( ! ( effect_id = spell -> _effects -> at( i ) -> id() ) )
       continue;
     else
-      const spelleffect_data_t* e = sim -> dbc.effect( effect_id );
+      e = sim -> dbc.effect( effect_id );
 
     spell_info::effect_to_xml( sim, spell, e, effect_node, level );
   }
