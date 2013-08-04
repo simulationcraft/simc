@@ -348,6 +348,9 @@ public:
 
   target_specific_t<priest_td_t*> target_data;
 
+  priest_td_t* find_target_data( player_t* target )
+  { return target_data[ target ]; }
+
   virtual priest_td_t* get_target_data( player_t* target )
   {
     priest_td_t*& td = target_data[ target ];
@@ -884,6 +887,9 @@ public:
   priest_td_t& td( player_t* t = nullptr )
   { return *( priest.get_target_data( t ? t : this -> target ) ); }
 
+  priest_td_t* find_td( player_t* t )
+  { return priest.find_target_data( t ); }
+
   virtual void schedule_execute( action_state_t* state = 0 )
   {
     cancel_shadowform();
@@ -1115,8 +1121,9 @@ struct priest_heal_t : public priest_action_t<heal_t>
   {
     double ctc = base_t::composite_target_crit( t );
 
-    if ( td( t ).buffs.holy_word_serenity -> up() )
-      ctc += td( t ).buffs.holy_word_serenity -> data().effectN( 2 ).percent();
+    if ( priest_td_t* td = find_td( t ) )
+      if ( td -> buffs.holy_word_serenity -> up() )
+        ctc += td -> buffs.holy_word_serenity -> data().effectN( 2 ).percent();
 
     return ctc;
   }
@@ -1163,8 +1170,9 @@ struct priest_heal_t : public priest_action_t<heal_t>
         trigger_divine_aegis( s );
         trigger_echo_of_light( this, s );
 
-        if ( priest.buffs.chakra_serenity -> up() && td( s -> target ).dots.renew -> ticking )
-          td( s -> target ).dots.renew -> refresh_duration();
+        if ( priest_td_t* td = find_td( s -> target ) )
+          if ( priest.buffs.chakra_serenity -> up() && td -> dots.renew -> ticking )
+            td -> dots.renew -> refresh_duration();
 
         if ( priest.talents.twist_of_fate -> ok() && ( save_health_percentage < priest.talents.twist_of_fate -> effectN( 1 ).base_value() ) )
         {
@@ -1928,18 +1936,18 @@ struct shadowy_apparition_spell_t : public priest_spell_t
     {
       if ( rng().roll( priest.sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent() ) )
       {
-        priest_td_t& td = this -> td( s -> target );
+        priest_td_t* td = find_td( s -> target);
         priest.procs.t15_2pc_caster -> occur();
 
-        if ( td.dots.shadow_word_pain -> ticking )
+        if ( td && td -> dots.shadow_word_pain -> ticking )
         {
-          td.dots.shadow_word_pain -> extend_duration( 1 );
+          td -> dots.shadow_word_pain -> extend_duration( 1 );
           priest.procs.t15_2pc_caster_shadow_word_pain -> occur();
         }
 
-        if ( td.dots.vampiric_touch -> ticking )
+        if ( td && td -> dots.vampiric_touch -> ticking )
         {
-          td.dots.vampiric_touch   -> extend_duration( 1 );
+          td -> dots.vampiric_touch -> extend_duration( 1 );
           priest.procs.t15_2pc_caster_vampiric_touch -> occur();
         }
       }
@@ -2155,9 +2163,12 @@ struct mind_spike_t : public priest_spell_t
       mind_spike_state_t* ms_s = static_cast< mind_spike_state_t* >( s );
       if ( ! ms_s -> surge_of_darkness )
       {
-        cancel_dot( *td( s -> target ).dots.shadow_word_pain );
-        cancel_dot( *td( s -> target ).dots.vampiric_touch );
-        cancel_dot( *td( s -> target ).dots.devouring_plague_tick );
+        if ( priest_td_t* td = find_td( s -> target ) )
+        {
+          cancel_dot( *td -> dots.shadow_word_pain );
+          cancel_dot( *td -> dots.vampiric_touch );
+          cancel_dot( *td -> dots.devouring_plague_tick );
+        }
         priest.procs.mind_spike_dot_removal -> occur();
 
         priest.buffs.glyph_mind_spike -> trigger();
@@ -2682,9 +2693,11 @@ struct mind_flay_mastery_t : public priest_procced_mastery_spell_t
 
     if ( insanity )
     {
-      if ( priest.talents.solace_and_insanity -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
+      priest_td_t* td = find_td( t );
+      if ( priest.talents.solace_and_insanity -> ok() && td && td -> dots.devouring_plague_tick -> ticking )
       {
-        const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( t ).dots.devouring_plague_tick -> state );
+
+        const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td -> dots.devouring_plague_tick -> state );
         m *= 1.0 + dp_state -> orbs_used / 3.0;
       }
     }
@@ -2742,9 +2755,10 @@ struct mind_flay_insanity_t : public mind_flay_base_t<true>
   {
     double m = priest_spell_t::composite_target_multiplier( t );
 
-    if ( priest.talents.solace_and_insanity -> ok() && td( t ).dots.devouring_plague_tick -> ticking )
+    priest_td_t* td = find_td( t );
+    if ( priest.talents.solace_and_insanity -> ok() && td && td -> dots.devouring_plague_tick -> ticking )
     {
-      const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td( t ).dots.devouring_plague_tick -> state );
+      const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td -> dots.devouring_plague_tick -> state );
       m *= 1.0 + dp_state -> orbs_used / 3.0;
     }
 
@@ -2753,7 +2767,8 @@ struct mind_flay_insanity_t : public mind_flay_base_t<true>
 
   virtual bool ready()
   {
-    if ( !priest.talents.solace_and_insanity -> ok() || ! td( target ).dots.devouring_plague_tick -> ticking )
+    priest_td_t* td = find_td( target );
+    if ( !priest.talents.solace_and_insanity -> ok() || ( td && ! td -> dots.devouring_plague_tick -> ticking ) )
       return false;
 
     return base_t::ready();
@@ -3185,12 +3200,15 @@ struct smite_t : public priest_spell_t
    */
   bool glyph_benefit( player_t* t )
   {
-    bool glyph_benefit;
+    bool glyph_benefit = false;
 
-    if ( priest.talents.solace_and_insanity -> ok() )
-      glyph_benefit = priest.glyphs.smite -> ok() && td( t ).dots.power_word_solace -> ticking;
-    else
-      glyph_benefit = priest.glyphs.smite -> ok() && td( t ).dots.holy_fire -> ticking;
+    if ( priest_td_t* td = find_td( t ) )
+    {
+      if ( priest.talents.solace_and_insanity -> ok() )
+        glyph_benefit = priest.glyphs.smite -> ok() && td -> dots.power_word_solace -> ticking;
+      else
+        glyph_benefit = priest.glyphs.smite -> ok() && td -> dots.holy_fire -> ticking;
+    }
 
     return glyph_benefit;
   }
