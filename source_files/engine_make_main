@@ -1,0 +1,3 @@
+
+SRC += \
+	sc_main.cpp \

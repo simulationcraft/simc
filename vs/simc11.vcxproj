@@ -224,10 +224,8 @@
       <Profile>true</Profile>
     </Link>
   </ItemDefinitionGroup>
-  <Import Project="simc_engine.props" />
-  <ItemGroup>
-    <ClCompile Include="..\engine\sc_main.cpp" />
-  </ItemGroup>
+  <Import Project="source_files\VS_engine.props" />
+  <Import Project="source_files\VS_engine_main.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

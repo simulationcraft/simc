@@ -1,0 +1,1 @@
+# TODO: implement a script to synchronize QT, VS and Make source file lists
