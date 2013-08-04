@@ -121,6 +121,8 @@ std::string special_effect_t::to_string()
     s << " stat=" << util::stat_type_abbrev( stat );
     s << " amount=" << stat_amount;
     s << " duration=" << duration.total_seconds();
+    if ( tick != timespan_t::zero() )
+      s << " tick=" << tick.total_seconds();
   }
 
   if ( school != SCHOOL_NONE )
@@ -1557,8 +1559,10 @@ bool item_t::decode_special( special_effect_t& effect,
         effect.rppm_scale = RPPM_SPELL_CRIT;
       else if ( util::str_in_str_ci( t.name, "attackcrit" ) )
         effect.rppm_scale = RPPM_ATTACK_CRIT;
-      else
+      else if ( util::str_in_str_ci( t.name, "haste" ) )
         effect.rppm_scale = RPPM_HASTE;
+      else
+        effect.rppm_scale = RPPM_NONE;
     }
     else if ( t.name == "duration" || t.name == "dur" )
     {

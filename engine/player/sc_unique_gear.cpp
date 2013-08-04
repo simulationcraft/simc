@@ -966,9 +966,12 @@ void sinister_primal( player_t* p )
       }
     };
 
+    const spell_data_t* driver = p -> find_spell( 137592 );
+
     special_effect_t data;
     data.name_str = "tempus_repit";
-    data.ppm      = -1.18; // Real PPM
+    data.ppm      = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 1.35 ); // Real PPM
+    data.cooldown = maybe_ptr( p -> dbc.ptr ) ? driver -> internal_cooldown() : timespan_t::from_seconds( 3.0 ); 
 
     sinister_primal_proc_t* cb = new sinister_primal_proc_t( p, data );
     p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
@@ -1048,10 +1051,13 @@ void capacitive_primal( player_t* p )
       }
     };
 
+    const spell_data_t* driver = p -> find_spell( 137595 );
     special_effect_t data;
     data.name_str   = "lightning_strike";
     data.max_stacks = 5;
-    data.ppm        = -21; // Real PPM
+    data.ppm        = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 19.27 ); // Real PPM
+    data.rppm_scale = maybe_ptr( p -> dbc.ptr ) ? RPPM_HASTE : RPPM_NONE;
+    data.cooldown   = maybe_ptr( p -> dbc.ptr ) ? driver -> internal_cooldown() : timespan_t::from_seconds( 1.0 );
 
     action_t* ls = p -> create_proc_action( "lightning_strike" );
     if ( ! ls )
@@ -2613,6 +2619,8 @@ void unerring_vision_of_leishen( item_t* item )
 // Cleave trinkets
 void cleave_trinket( item_t* item )
 {
+  maintenance_check( 528 );
+
   // TODO: Currently does a phys damage nuke for everyone. In reality it uses
   // a ton of different schools, however they all are just additional damage,
   // so we can cheat a bit here.
@@ -2668,11 +2676,10 @@ void cleave_trinket( item_t* item )
     }
   };
 
-  maintenance_check( 502 );
-
   player_t* p = item -> player;
   const random_prop_data_t& budget = p -> dbc.random_property( item -> item_level() );
-  const spell_data_t* proc_driver_spell = spell_data_t::nil();
+  const spell_data_t* cleave_driver_spell = spell_data_t::nil();
+  const spell_data_t* stat_driver_spell = spell_data_t::nil();
 
   for ( size_t i = 0; i < sizeof_array( item -> parsed.data.id_spell ); i++ )
   {
@@ -2681,24 +2688,42 @@ void cleave_trinket( item_t* item )
       continue;
 
     const spell_data_t* s = p -> find_spell( item -> parsed.data.id_spell[ i ] );
-    proc_driver_spell = s;
-    break;
+    if ( s -> effectN( 1 ).trigger() -> id() != 0 )
+      stat_driver_spell = s;
+    else
+      cleave_driver_spell = s;
   }
 
-  std::string name = proc_driver_spell -> name_cstr();
+  std::string name = cleave_driver_spell -> name_cstr();
   util::tokenize( name );
   special_effect_t effect;
   effect.name_str = name;
-  effect.proc_chance = budget.p_epic[ 0 ] * proc_driver_spell -> effectN( 1 ).m_average() / 10000.0;
+  effect.proc_chance = budget.p_epic[ 0 ] * cleave_driver_spell -> effectN( 1 ).m_average() / 10000.0;
 
   cleave_callback_t* cb = new cleave_callback_t( *item, effect );
   p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
   p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
+
+  const spell_data_t* stat_spell = stat_driver_spell -> effectN( 1 ).trigger();
+  effect.clear();
+  name = stat_spell -> name_cstr();
+  util::tokenize( name );
+  effect.name_str = name;
+  effect.duration = stat_spell -> duration();
+  effect.proc_chance = stat_driver_spell -> proc_chance();
+  effect.cooldown = stat_driver_spell -> internal_cooldown();
+  effect.stat = static_cast< stat_e >( stat_spell -> effectN( 1 ).misc_value1() + 1 );
+  effect.stat_amount = util::round( budget.p_epic[ 0 ] * stat_spell -> effectN( 1 ).m_average() );
+
+  stat_buff_proc_t* stat_cb = new stat_buff_proc_t( item -> player, effect );
+  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, stat_cb );
 }
 
 // Multistrike trinkets
 void multistrike_trinket( item_t* item )
 {
+  maintenance_check( 528 );
+
   // TODO: Currently does a phys damage nuke for everyone. In reality it uses
   // a ton of different schools, however they all are just additional damage,
   // so we can cheat a bit here.
@@ -2738,11 +2763,10 @@ void multistrike_trinket( item_t* item )
     }
   };
 
-  maintenance_check( 502 );
-
   player_t* p = item -> player;
   const random_prop_data_t& budget = p -> dbc.random_property( item -> item_level() );
-  const spell_data_t* proc_driver_spell = spell_data_t::nil();
+  const spell_data_t* ms_driver_spell = spell_data_t::nil();
+  const spell_data_t* stat_driver_spell = spell_data_t::nil();
 
   for ( size_t i = 0; i < sizeof_array( item -> parsed.data.id_spell ); i++ )
   {
@@ -2751,24 +2775,47 @@ void multistrike_trinket( item_t* item )
       continue;
 
     const spell_data_t* s = p -> find_spell( item -> parsed.data.id_spell[ i ] );
-    proc_driver_spell = s;
-    break;
+    if ( s -> effectN( 1 ).trigger() -> id() != 0 )
+      stat_driver_spell = s;
+    else
+      ms_driver_spell = s;
   }
 
-  std::string name = proc_driver_spell -> name_cstr();
+  if ( ms_driver_spell -> id() == 0 || stat_driver_spell -> id() == 0 )
+    return;
+
+  // Multistrike
+  std::string name = ms_driver_spell -> name_cstr();
   util::tokenize( name );
   special_effect_t effect;
   effect.name_str = name;
-  effect.proc_chance = budget.p_epic[ 0 ] * proc_driver_spell -> effectN( 1 ).m_average() / 1000.0;
+  effect.proc_chance = budget.p_epic[ 0 ] * ms_driver_spell -> effectN( 1 ).m_average() / 1000.0;
 
   multistrike_callback_t* cb = new multistrike_callback_t( *item, effect );
   p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
   p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
+
+  // Stat buff (Int or Agi)
+  effect.clear();
+  const spell_data_t* stat_spell = stat_driver_spell -> effectN( 1 ).trigger();
+  name = stat_spell -> name_cstr();
+  util::tokenize( name );
+
+  effect.name_str = name;
+  effect.ppm = -1.0 * stat_driver_spell -> real_ppm();
+  effect.duration = stat_spell -> duration();
+  effect.stat = static_cast< stat_e >( stat_spell -> effectN( 1 ).misc_value1() + 1 );
+  effect.stat_amount = util::round( budget.p_epic[ 0 ] * stat_spell -> effectN( 1 ).m_average() );
+
+  stat_buff_proc_t* stat_cb = new stat_buff_proc_t( item -> player, effect );
+  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, stat_cb );
 }
 
 // CDR trinkets
 void cooldown_reduction_trinket( item_t* item )
 {
+  maintenance_check( 528 );
+
   struct cooldowns_t
   {
     specialization_e spec;
@@ -2851,16 +2898,15 @@ void cooldown_reduction_trinket( item_t* item )
   effect.stat_amount = util::round( budget.p_epic[ 0 ] * proc_spell -> effectN( 1 ).m_average() );
 
   stat_buff_proc_t* cb = new stat_buff_proc_t( p, effect );
-  // Agi trinket in reality procs on "hits" most likely
-  if ( item -> parsed.data.id == 102292 )
-    p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
 }
 
-// Reverse renataki
-
-void ticking_ebon_detonator( item_t* item )
+void amplify_trinket( item_t* item )
 {
-  const spell_data_t* driver_spell = spell_data_t::nil();
+  maintenance_check( 528 );
+
+  const spell_data_t* amplify_spell = spell_data_t::nil();
+  const spell_data_t* stat_driver_spell = spell_data_t::nil();
   player_t* p = item -> player;
 
   for ( size_t i = 0; i < sizeof_array( item -> parsed.data.id_spell ); i++ )
@@ -2870,79 +2916,118 @@ void ticking_ebon_detonator( item_t* item )
       continue;
 
     const spell_data_t* spell = p -> find_spell( item -> parsed.data.id_spell[ i ] );
-    if ( spell -> proc_flags() > 0 )
-    {
-      driver_spell = spell;
-      break;
-    }
+    if ( spell -> proc_flags() == 0 )
+      amplify_spell = spell;
+    else
+      stat_driver_spell = spell;
   }
 
-  struct teb_reduce_cb_t : public proc_callback_t<action_state_t>
+  if ( stat_driver_spell -> id() == 0 || amplify_spell -> id() == 0 )
+    return;
+
+  const random_prop_data_t& budget = p -> dbc.random_property( item -> item_level() );
+  p -> buffs.amplified -> default_value = budget.p_epic[ 0 ] * amplify_spell -> effectN( 2 ).m_average() / 100.0;
+  p -> buffs.amplified -> default_chance = 1.0;
+
+  const spell_data_t* stat_spell = stat_driver_spell -> effectN( 1 ).trigger();
+
+  std::string name = stat_spell -> name_cstr();
+  util::tokenize( name );
+  special_effect_t effect;
+  effect.name_str = name;
+  effect.proc_chance = stat_driver_spell -> proc_chance();
+  effect.cooldown = stat_driver_spell -> internal_cooldown();
+  effect.duration = stat_spell -> duration();
+  effect.stat = static_cast< stat_e >( stat_spell -> effectN( 1 ).misc_value1() + 1 );
+  effect.stat_amount = util::round( budget.p_epic[ 0 ] * stat_spell -> effectN( 1 ).m_average() );
+
+  stat_buff_proc_t* cb = new stat_buff_proc_t( p, effect );
+
+  if ( util::str_compare_ci( item -> name(), "prismatic_prison_of_pride" ) )
   {
-    stat_buff_t* teb_proc;
+    p -> callbacks.register_direct_heal_callback( RESULT_ALL_MASK, cb );
+    p -> callbacks.register_tick_heal_callback( RESULT_ALL_MASK, cb );
+  }
+  else
+    p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+}
 
-    teb_reduce_cb_t( stat_buff_t* buff, const special_effect_t& effect ) :
-      proc_callback_t<action_state_t>( buff -> player, effect ),
-      teb_proc( buff )
-    { }
+void black_blood_of_yshaarj( item_t* item )
+{
+  maintenance_check( 528 );
 
-    void execute( action_t*, action_state_t* )
+  player_t* p = item -> player;
+  const spell_data_t* driver = p -> find_spell( 146183 );
+
+  struct bboy_expire_event_t : public event_t
+  {
+    stat_buff_proc_t* bboy_cb;
+    bboy_expire_event_t( const timespan_t& duration, stat_buff_proc_t* cb ) :
+      event_t( cb -> listener, "bboy_expire_event" ), bboy_cb( cb )
+    { sim.add_event( this, duration ); }
+
+    void execute()
     {
-      teb_proc -> decrement();
-      if ( teb_proc -> check() == 0 )
-        this -> deactivate();
+      bboy_cb -> deactivate();
+      bboy_cb -> buff -> expire();
     }
   };
 
-  struct ebon_detonator_proc_t : public proc_callback_t<action_state_t>
+  struct bboy_driver_cb_t : public proc_callback_t<action_state_t>
   {
-    stat_buff_t*     teb_buff;
-    teb_reduce_cb_t* reduce_cb;
+    stat_buff_proc_t* buff_proc;
+    timespan_t duration;
 
-    ebon_detonator_proc_t( item_t* i, const special_effect_t& data ) :
-      proc_callback_t<action_state_t>( i -> player, data )
+    bboy_driver_cb_t( item_t* item, const special_effect_t& e ) :
+      proc_callback_t<action_state_t>( item -> player, e ), buff_proc( 0 ),
+      duration( item -> player -> find_spell( 146184 ) -> duration() )
     {
-      const random_prop_data_t& budget = i -> player -> dbc.random_property( i -> item_level() );
-      const spell_data_t* proc_spell = i -> player -> find_spell( 146310 );
+      player_t* p = item -> player;
+      const random_prop_data_t& budget = p -> dbc.random_property( item -> item_level() );
+      const spell_data_t* buff_driver = p -> find_spell( 146184 );
+      const spell_data_t* buff = p -> find_spell( 146202 );
+      std::string name = buff -> name_cstr();
+      util::tokenize( name );
 
-      stat_e s = static_cast< stat_e >( proc_spell -> effectN( 1 ).misc_value1() + 1 );
-      double amount = util::round( budget.p_epic[ 0 ] * proc_spell -> effectN( 1 ).m_average() );
-      teb_buff = stat_buff_creator_t( i -> player, "restless_agility", i -> player -> find_spell( 146310 ) )
-                 .reverse( true )
-                 .activated( true )
-                 .add_stat( s, amount );
+      special_effect_t effect;
+      effect.name_str = name;
+      effect.proc_chance = buff -> proc_chance();
+      effect.stat = static_cast< stat_e >( buff -> effectN( 1 ).misc_value1() + 1 );
+      effect.stat_amount = util::round( budget.p_epic[ 0 ] * buff_driver -> effectN( 1 ).m_average() );
+      effect.max_stacks = buff -> max_stacks();
 
-      special_effect_t teb_proc_effect;
-      teb_proc_effect.name_str = "restless_agility";
-      teb_proc_effect.proc_chance = 1.0;
+      buff_proc = new stat_buff_proc_t( p, effect );
+      buff_proc -> buff -> activated = true;
+      p -> callbacks.register_spell_callback( RESULT_NONE_MASK, buff_proc );
+    }
 
-      reduce_cb = new teb_reduce_cb_t( teb_buff, teb_proc_effect );
-      i -> player -> callbacks.register_attack_callback( RESULT_HIT_MASK, reduce_cb );
+    void execute( action_t*, action_state_t* )
+    {
+      buff_proc -> activate();
+      new ( *listener -> sim ) bboy_expire_event_t( duration, buff_proc );
     }
 
     void reset()
     {
       proc_callback_t<action_state_t>::reset();
-      reduce_cb -> deactivate();
+      buff_proc -> deactivate();
     }
 
-    void execute( action_t*, action_state_t* )
+    void deactivate()
     {
-      teb_buff -> trigger();
-      teb_buff -> decrement();
-      reduce_cb -> activate();
+      proc_callback_t<action_state_t>::deactivate();
+      buff_proc -> deactivate();
+      buff_proc -> buff -> expire();
     }
   };
 
   special_effect_t effect;
-  effect.name_str = "ticking_ebon_detonator";
-  effect.ppm = -1.0 * driver_spell -> real_ppm();
-  effect.cooldown = driver_spell -> internal_cooldown();
-  effect.proc_delay = false;
+  effect.name_str = "black_blood_of_yshaarj";
+  effect.ppm      = -1.0 * driver -> real_ppm();
+  effect.cooldown = driver -> internal_cooldown();
 
-  ebon_detonator_proc_t* cb = new ebon_detonator_proc_t( item, effect );
-
-  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
+  bboy_driver_cb_t* cb = new bboy_driver_cb_t( item, effect );
+  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
 }
 
 } // end unique_gear namespace
@@ -3014,19 +3099,31 @@ void unique_gear::init( player_t* p )
     if ( ! strcmp( item.name(), "spark_of_zandalar"                   ) ) spark_of_zandalar                 ( &item );
     if ( ! strcmp( item.name(), "unerring_vision_of_lei_shen"         ) ) unerring_vision_of_leishen        ( &item );
 
-    if ( item.player -> dbc.ptr )
+    if ( maybe_ptr( item.player -> dbc.ptr ) )
     {
-      if ( util::str_compare_ci( item.name(), "assurance_of_consequence" ) )
+      if ( util::str_compare_ci( item.name(), "assurance_of_consequence"  ) ||
+           util::str_compare_ci( item.name(), "evil_eye_of_galakras"      ) ||
+           util::str_compare_ci( item.name(), "vial_of_living_corruption" ) )
         cooldown_reduction_trinket( &item );
 
-      if ( util::str_compare_ci( item.name(), "haromms_talisman" ) )
+      // No healing trinket for now
+      if ( util::str_compare_ci( item.name(), "haromms_talisman"    ) ||
+           util::str_compare_ci( item.name(), "kardris_toxic_totem" ) )
         multistrike_trinket( &item );
 
-      if ( util::str_compare_ci( item.name(), "sigil_of_rampage" ) )
+      // No healing trinket for now
+      if ( util::str_compare_ci( item.name(), "sigil_of_rampage"         ) ||
+           util::str_compare_ci( item.name(), "frenzied_crystal_of_rage" ) ||
+           util::str_compare_ci( item.name(), "fusionfire_core"          ) )
         cleave_trinket( &item );
 
-      if ( util::str_compare_ci( item.name(), "ticking_ebon_detonator" ) )
-        ticking_ebon_detonator( &item );
+      if ( util::str_compare_ci( item.name(), "tohks_tail_tip"                 ) ||
+           util::str_compare_ci( item.name(), "purified_bindings_of_immerseus" ) || 
+           util::str_compare_ci( item.name(), "prismatic_prison_of_pride"      ) )
+        amplify_trinket( &item );
+
+      if ( util::str_compare_ci( item.name(), "black_blood_of_yshaarj" ) )
+          black_blood_of_yshaarj( &item );
     }
   }
 }
@@ -3555,21 +3652,15 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "iron_protector_talisman"             ) e = "OnAttackHit_3386Dodge_15%_15Dur_45Cd";
 
   // 5.4 Trinkets
+  else if ( ptr && name == "discipline_of_xuen"           ) e = "OnAttackHit_" + std::string( item_id == 103986 ? "9943" : "6914" ) + "Mastery_15%_20Dur_105Cd";
+  else if ( ptr && name == "yulons_bite"                  ) e = "OnSpellDamage_" + std::string( item_id == 103987 ? "9943" : "6914" ) + "Crit_15%_20Dur_105Cd";
+  else if ( ptr && name == "alacrity_of_xuen"             ) e = "OnAttackHit_" + std::string( item_id == 103989 ? "9943" : "6914" ) + "Haste_15%_20Dur_105Cd";
   // TODO: Name based identification when the name appears, plus other difficulty levels ...
-  else if ( ptr && name == "discipline_of_xuen"           ) e = std::string( item_id == 103986 ? "9943" : "6914" ) + "OnAttackHit_9943Mastery_15%_20Dur_60Cd";
-  else if ( ptr && name == "yulons_bite"                  ) e = std::string( item_id == 103987 ? "9943" : "6914" ) + "OnSpellDamage_9943Crit_15%_20Dur_60Cd";
-  else if ( ptr && name == "alacrity_of_xuen"             ) e = std::string( item_id == 103989 ? "9943" : "6914" ) + "OnAttackHit_9943Haste_15%_20Dur_60Cd";
-  else if ( ptr && item_id == 102312                      ) e = "OnDirectDamage_11761Mastery_15%_20Dur_60Cd";
-  else if ( ptr && item_id == 102313                      ) e = "OnSpellDamage_11761Crit_15%_20Dur_60Cd";
-  else if ( ptr && item_id == 102315                      ) e = "OnAttackHit_11759Haste_15%_20Dur_60Cd";
-  else if ( ptr && name == "assurance_of_consequence"     ) e = "OnAttackHit_"       + std::string( thunderforged ? ( heroic ? "14037" : "12435" ) : ( heroic ? "13273" : ( item_id == 104725 ? "10418" : lfr ? "9316" : "11759" ) ) ) + "Agi_15%_20Dur_60Cd";
-  else if ( ptr && name == "evil_eye_of_galakras"         ) e = "OnAttack_"          + std::string( thunderforged ? ( heroic ? "14037" : "12435" ) : ( heroic ? "13273" : ( item_id == 104744 ? "10418" : lfr ? "9316" : "11759" ) ) ) + "Str_15%_20Dur_60Cd";
-  else if ( ptr && name == "frenzied_crystal_of_rage"     ) e = "OnSpellDamage_"     + std::string( thunderforged ? ( heroic ? "14037" : "12435" ) : ( heroic ? "13273" : ( item_id == 104825 ? "10418" : lfr ? "9316" : "11759" ) ) ) + "Int_15%_20Dur_60Cd";
-  else if ( ptr && name == "fusionfire_core"              ) e = "OnAttack_"          + std::string( thunderforged ? ( heroic ? "14037" : "12435" ) : ( heroic ? "13273" : ( item_id == 104712 ? "10418" : lfr ? "9316" : "11759" ) ) ) + "Str_15%_20Dur_60Cd";
-  else if ( ptr && name == "prismatic_prison_of_pride"    ) e = "OnHeal_"            + std::string( thunderforged ? ( heroic ? "14037" : "12435" ) : ( heroic ? "13273" : ( item_id == 104727 ? "10418" : lfr ? "9316" : "11759" ) ) ) + "Int_15%_20Dur_60Cd";
-  else if ( ptr && name == "purified_bindings_of_immerseus" ) e = "OnSpellDamage_"   + std::string( thunderforged ? ( heroic ? "14037" : "12435" ) : ( heroic ? "13273" : ( item_id == 104675 ? "10418" : lfr ? "9316" : "11759" ) ) ) + "Int_15%_20Dur_60Cd";
-  else if ( ptr && name == "thoks_tail_tip"               ) e = "OnAttack_"          + std::string( thunderforged ? ( heroic ? "14037" : "12435" ) : ( heroic ? "13273" : ( item_id == 104862 ? "10418" : lfr ? "9316" : "11759" ) ) ) + "Str_15%_20Dur_60Cd";
-  else if ( ptr && name == "haromms_talisman"             ) e = "OnAttack_"          + std::string( thunderforged ? ( heroic ? "14037" : "12435" ) : ( heroic ? "13273" : ( item_id == 104780 ? "10418" : lfr ? "9316" : "11759" ) ) ) + "Agi_0.46RPPM_20Dur";
+  else if ( ptr && item_id == 102312                      ) e = "OnDirectDamage_11761Mastery_15%_20Dur_105Cd";
+  else if ( ptr && item_id == 102313                      ) e = "OnSpellDamage_11761Crit_15%_20Dur_105Cd";
+  else if ( ptr && item_id == 102315                      ) e = "OnAttackHit_11759Haste_15%_20Dur_105Cd";
+  else if ( ptr && name == "ticking_ebon_detonator"       ) e = "OnDirectDamage_0.57RPPM_22Cd_20Dur_1Tick_20Stack_" + std::string( thunderforged ? ( heroic ? "1276" : "1131" ) : ( heroic ? "1207" : ( item_id == 102311 ? "947" : lfr ? "847" : "1069" ) ) ) + "Agi_Reverse";
+  else if ( ptr && name == "skeers_bloodsoaked_talisman"  ) e = "OnAttackHit_0.51RPPM_22Cd_20Dur_1Tick_20Stack_" + std::string( thunderforged ? ( heroic ? "1402" : "1242" ) : ( heroic ? "1326" : ( item_id == 102311 ? "1041" : lfr ? "931" : "1175" ) ) ) + "Crit";
 
   // 5.2 Trinkets
   else if ( name == "talisman_of_bloodlust"               ) e = "OnDirectDamage_"    + std::string( thunderforged ? ( heroic ? "1834" : "1625" ) : ( heroic ? "1736" : lfr ? "1277" : "1538" ) ) + "Haste_3.3RPPM_5Stack_10Dur";

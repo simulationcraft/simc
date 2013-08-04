@@ -994,7 +994,8 @@ enum ready_e
 // Real PPM scale stats
 enum rppm_scale_e
 {
-  RPPM_HASTE = 0,
+  RPPM_NONE = 0,
+  RPPM_HASTE,
   RPPM_SPELL_CRIT,
   RPPM_ATTACK_CRIT
 };
@@ -3175,7 +3176,7 @@ struct special_effect_t
   special_effect_t() :
     trigger_type( PROC_NONE ), trigger_mask( 0 ), stat( STAT_NONE ), school( SCHOOL_NONE ),
     max_stacks( 0 ), stat_amount( 0 ), discharge_amount( 0 ), discharge_scaling( 0 ),
-    proc_chance( 0 ), ppm( 0 ), rppm_scale( RPPM_HASTE ), duration( timespan_t::zero() ), cooldown( timespan_t::zero() ),
+    proc_chance( 0 ), ppm( 0 ), rppm_scale( RPPM_NONE ), duration( timespan_t::zero() ), cooldown( timespan_t::zero() ),
     tick( timespan_t::zero() ), cost_reduction( false ),
     no_refresh( false ), chance_to_discharge( false ), override_result_es_mask( 0 ),
     result_es_mask( 0 ), reverse( false ), aoe( 0 ), proc_delay( false ), unique( false ),
@@ -3188,7 +3189,7 @@ struct special_effect_t
   {
     name_str.clear(); trigger_type = PROC_NONE; trigger_mask = 0; stat = STAT_NONE;
     school = SCHOOL_NONE; max_stacks = 0; stat_amount = 0; discharge_amount = 0;
-    discharge_scaling = 0; proc_chance = 0; ppm = 0; rppm_scale = RPPM_HASTE;
+    discharge_scaling = 0; proc_chance = 0; ppm = 0; rppm_scale = RPPM_NONE;
     duration = timespan_t::zero(); cooldown = timespan_t::zero();
     tick = timespan_t::zero(); cost_reduction = false; no_refresh = false;
     chance_to_discharge = false; override_result_es_mask = 0;

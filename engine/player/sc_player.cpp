@@ -2772,19 +2772,18 @@ void player_t::create_buffs()
                                   .spell( find_spell( 105706 ) );
       potion_buffs.virmens_bite = potion_buff_creator( this, "virmens_bite_potion" )
                                   .spell( find_spell( 105697 ) );
+
+      buffs.amplified = buff_creator_t( this, "amplified", find_spell( 146051 ) )
+                        .add_invalidate( CACHE_MASTERY )
+                        .add_invalidate( CACHE_HASTE )
+                        .chance( 0 )
+                        /* .add_invalidate( CACHE_PLAYER_CRITICAL_DAMAGE ) */
+                        /* .add_invalidate( CACHE_PLAYER_CRITICAL_HEALING ) */;
     }
 
     buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );
 
     buffs.stormlash                 = new stormlash_buff_t( this, find_spell( 120687 ) );
-
-
-    buffs.amplified = buff_creator_t( this, "amplified" )
-                      .spell( find_spell( 146046 ) )
-                      .add_invalidate( CACHE_MASTERY )
-                      .add_invalidate( CACHE_HASTE )
-                      /* .add_invalidate( CACHE_PLAYER_CRITICAL_DAMAGE ) */
-                      /* .add_invalidate( CACHE_PLAYER_CRITICAL_HEALING ) */;
   }
 
   buffs.courageous_primal_diamond_lucidity = buff_creator_t( this, "lucidity" )
@@ -2876,7 +2875,7 @@ double player_t::composite_melee_haste()
     }
 
     if ( buffs.amplified -> check() )
-      h /= 1.0 + buffs.amplified -> data().effectN( 1 ).average( this );
+      h /= 1.0 + buffs.amplified -> value();
   }
 
   return h;
@@ -3132,7 +3131,7 @@ double player_t::composite_spell_haste()
     }
 
     if ( buffs.amplified -> check() )
-      h /= 1.0 + buffs.amplified -> data().effectN( 2 ).average( this );
+      h /= 1.0 + buffs.amplified -> value();
   }
 
   return h;
@@ -3224,7 +3223,7 @@ double player_t::composite_mastery()
   if ( ! is_pet() && ! is_enemy() )
   {
     if ( buffs.amplified -> check() )
-      m *= 1.0 + buffs.amplified -> data().effectN( 2 ).average( this );
+      m *= 1.0 + buffs.amplified -> value();
   }
 
   return m;
@@ -3293,7 +3292,7 @@ double player_t::composite_player_critical_damage_multiplier()
   if ( ! is_pet() && ! is_enemy() )
   {
     if ( buffs.amplified -> check() )
-      m *= 1.0 + buffs.amplified -> data().effectN( 1 ).average( this );
+      m *= 1.0 + buffs.amplified -> value();
   }
 
   return m;
@@ -3308,7 +3307,7 @@ double player_t::composite_player_critical_healing_multiplier()
     // FIXME: check whether to use effect #1 ( 36% ) or #3( 3.6% ), even though tooltip always refers to #1.
     // Could also be buged scaling for #3
     if ( buffs.amplified -> check() )
-      m *= 1.0 + buffs.amplified -> data().effectN( 1 ).average( this );
+      m *= 1.0 + buffs.amplified -> value();
   }
 
   return m;
@@ -4135,6 +4134,9 @@ void player_t::arise()
     sim -> active_allies++;
     sim -> player_non_sleeping_list.push_back( this );
   }
+
+  if ( ! is_enemy() && ! is_pet() )
+    buffs.amplified -> trigger();
 
   if ( has_foreground_actions( this ) )
     schedule_ready();
