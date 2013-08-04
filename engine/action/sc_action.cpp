@@ -327,8 +327,6 @@ action_t::action_t( action_e       ty,
   base_aoe_multiplier            = 1.0;
   split_aoe_damage               = false;
   normalize_weapon_speed         = false;
-  rng_result                     = NULL;
-  rng_travel                     = NULL;
   stats                          = NULL;
   execute_event                  = 0;
   travel_speed                   = 0.0;
@@ -678,7 +676,7 @@ timespan_t action_t::travel_time()
 
   if ( v )
   {
-    t = rng_travel -> gauss( t, v );
+    t = rng().gauss( t, v );
   }
 
   return timespan_t::from_seconds( t );
@@ -1088,7 +1086,7 @@ void action_t::tick( dot_t* d )
     d -> state -> result = RESULT_HIT;
     update_state( d -> state, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
 
-    if ( tick_may_crit && rng_result -> roll( crit_chance( d -> state -> composite_crit(), d -> state -> target -> level - player -> level ) ) )
+    if ( tick_may_crit && rng().roll( crit_chance( d -> state -> composite_crit(), d -> state -> target -> level - player -> level ) ) )
       d -> state -> result = RESULT_CRIT;
 
     d -> state -> result_amount = calculate_tick_amount( d -> state );
@@ -1351,7 +1349,7 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
 
       lag = player -> world_lag_override ? player -> world_lag : sim -> world_lag;
       dev = player -> world_lag_stddev_override ? player -> world_lag_stddev : sim -> world_lag_stddev;
-      delay = player -> rngs.lag_world -> gauss( lag, dev );
+      delay = rng().gauss( lag, dev );
       if ( sim -> debug ) sim -> output( "%s delaying the cooldown finish of %s by %f", player -> name(), name(), delay.total_seconds() );
     }
 
@@ -1487,8 +1485,6 @@ void action_t::init()
 {
   if ( initialized ) return;
 
-  rng_result = player -> get_rng( name_str + "_result" );
-
   assert( !( aoe && channeled ) && "DONT create a channeled aoe spell!" );
 
   if ( ! sync_str.empty() )
@@ -1522,9 +1518,6 @@ void action_t::init()
   {
     early_chain_if_expr = expr_t::parse( this, early_chain_if_expr_str );
   }
-
-  if ( sim -> travel_variance && travel_speed && player -> current.distance )
-    rng_travel = player -> get_rng( name_str + "_travel" );
 
   if ( tick_action )
   {

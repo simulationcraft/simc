@@ -146,14 +146,6 @@ public:
 	proc_t* tigereye_brew;
   } proc;
 
-  struct rngs_t
-  {
-    rng_t* mana_tea;
-    rng_t* tier15_2pc_melee;
-    rng_t* tier15_4pc_melee;
-	rng_t* tigereye_brew;
-  } rng;
-
   struct talents_t
   {
     //  TODO: Implement
@@ -252,7 +244,6 @@ public:
     stance_data( stance_data_t() ),
     gain( gains_t() ),
     proc( procs_t() ),
-    rng( rngs_t() ),
     talent( talents_t() ),
     spec( specs_t() ),
     mastery( mastery_spells_t() ),
@@ -286,7 +277,6 @@ public:
   virtual void      init_scaling();
   virtual void      create_buffs();
   virtual void      init_gains();
-  virtual void      init_rng();
   virtual void      init_procs();
   virtual void      init_defense();
   virtual void      regen( timespan_t periodicity );
@@ -598,7 +588,7 @@ public:
 			  // Double to hold the chance for our mastery to proc.  This is based upon player's mastery
 			  double mastery_proc_chance =  p() -> cache.mastery_value();
 			  if (  p() -> spec.brewing_tigereye_brew -> ok()  && 
-				   p() -> rng.tigereye_brew -> roll( mastery_proc_chance  ) ) {
+			      ab::rng().roll( mastery_proc_chance  ) ) {
 				
 				p() -> buff.tigereye_brew -> trigger();
 				p() -> proc.tigereye_brew -> occur();
@@ -606,7 +596,7 @@ public:
 		  } else {
 			// preserves what we will currently see on Live
 			  if ( p() -> set_bonus.tier15_4pc_melee() &&
-				   p() -> rng.tier15_4pc_melee -> roll( p() -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent() ) )
+			      ab::rng().roll( p() -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent() ) )
 			  {
 				p() -> buff.tigereye_brew -> trigger();
 				p() -> proc.tier15_4pc_melee -> occur();
@@ -627,7 +617,7 @@ public:
           p() -> buff.mana_tea -> trigger();
           p() -> proc.mana_tea -> occur();
 
-          if ( p() -> rng.mana_tea -> roll( p() -> composite_spell_crit() ) )
+          if ( ab::rng().roll( p() -> composite_spell_crit() ) )
           {
             p() -> buff.mana_tea -> trigger();
           }
@@ -836,7 +826,7 @@ struct jab_t : public monk_melee_attack_t
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
 
     if ( p() -> set_bonus.tier15_2pc_melee() &&
-         p() -> rng.tier15_2pc_melee -> roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
+        rng().roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc_melee -> occur();
@@ -890,7 +880,7 @@ struct expel_harm_t : public monk_melee_attack_t
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
 
     if ( p() -> set_bonus.tier15_2pc_melee() &&
-         p() -> rng.tier15_2pc_melee -> roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
+        rng().roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc_melee -> occur();
@@ -1236,7 +1226,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
 
     if ( p() -> set_bonus.tier15_2pc_melee() &&
-         p() -> rng.tier15_2pc_melee -> roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
+        rng().roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc_melee -> occur();
@@ -1334,11 +1324,10 @@ struct melee_t : public monk_melee_attack_t
 
   int sync_weapons;
   tiger_strikes_melee_attack_t* tsproc;
-  rng_t* elusive_brew;
 
   melee_t( const std::string& name, monk_t* player, int sw ) :
     monk_melee_attack_t( name, player, spell_data_t::nil() ),
-    sync_weapons( sw ), tsproc( nullptr ), elusive_brew( nullptr )
+    sync_weapons( sw ), tsproc( nullptr )
   {
     background  = true;
     repeating   = true;
@@ -1388,11 +1377,6 @@ struct melee_t : public monk_melee_attack_t
 
     tsproc = new tiger_strikes_melee_attack_t( "tiger_strikes_melee", p(), weapon );
     assert( tsproc );
-
-    if ( p() -> spec.brewing_elusive_brew -> ok() )
-    {
-      elusive_brew = p() -> get_rng( "Elusive Brew" );
-    }
   }
 
   virtual void impact( action_state_t* s )
@@ -1448,7 +1432,7 @@ struct melee_t : public monk_melee_attack_t
     assert( low_chance >= 0.0 && low_chance <= 1.0 && "elusive brew proc chance out of bounds" );
 
     // Proc Buff
-    if ( elusive_brew -> roll( low_chance ) )
+    if ( rng().roll( low_chance ) )
       p() -> buff.elusive_brew_stacks -> trigger( low );
     else
       p() -> buff.elusive_brew_stacks -> trigger( high );
@@ -2299,11 +2283,8 @@ struct enveloping_mist_t : public monk_heal_t
 
 struct soothing_mist_t : public monk_heal_t
 {
-  rng_t* chi_gain;
-
   soothing_mist_t( monk_t& p, const std::string& options_str ) :
-    monk_heal_t( "soothing_mist", p, p.find_specialization_spell( "Soothing Mist" ) ),
-    chi_gain( p.get_rng( "soothing_mist" ) )
+    monk_heal_t( "soothing_mist", p, p.find_specialization_spell( "Soothing Mist" ) )
   {
     parse_options( nullptr, options_str );
 
@@ -2316,7 +2297,7 @@ struct soothing_mist_t : public monk_heal_t
   {
     monk_heal_t::tick( d );
 
-    if ( chi_gain -> roll( data().proc_chance() ) )
+    if ( rng().roll( data().proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_CHI, 1, p() -> gain.soothing_mist, this );
     }
@@ -2691,18 +2672,6 @@ void monk_t::init_gains()
   gain.muscle_memory         = get_gain( "muscle_memory"            );
   gain.soothing_mist         = get_gain( "Soothing Mist"            );
   gain.tier15_2pc            = get_gain( "tier15_2pc"               );
-}
-
-// monk_t::init_rng =========================================================
-
-void monk_t::init_rng()
-{
-  base_t::init_rng();
-
-  rng.mana_tea                    = get_rng( "mana_tea"   );
-  rng.tier15_2pc_melee            = get_rng( "tier15_2pc" );
-  rng.tier15_4pc_melee            = get_rng( "tier15_4pc" );
-  rng.tigereye_brew				  = get_rng( "tigereye_brew" );
 }
 
 // monk_t::init_procs =======================================================

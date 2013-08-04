@@ -161,17 +161,7 @@ public:
     proc_t* t15_2pc_melee;
   } proc;
 
-  // Random Number Generation
-  struct rngs_t
-  {
-    rng_t* strikes_of_opportunity;
-    rng_t* sudden_death;
-    rng_t* sudden_execute;
-    rng_t* taste_for_blood;
-    rng_t* tier15_2pc_tank;
-
     real_ppm_t* t15_2pc_melee;
-  } rng;
 
   // Spec Passives
   struct spec_t
@@ -228,7 +218,7 @@ public:
     glyphs( glyphs_t() ),
     mastery( mastery_t() ),
     proc( procs_t() ),
-    rng( rngs_t() ),
+    t15_2pc_melee(),
     spec( spec_t() ),
     talents( talents_t() )
   {
@@ -305,7 +295,7 @@ public:
 
 warrior_t::~warrior_t()
 {
-  delete rng.t15_2pc_melee;
+  delete t15_2pc_melee;
 }
 
 namespace { // UNNAMED NAMESPACE
@@ -552,7 +542,7 @@ static void trigger_sudden_death( warrior_attack_t* a, double chance )
   if ( a -> proc )
     return;
 
-  if ( p -> rng.sudden_death -> roll ( chance ) )
+  if ( p -> rng().roll ( chance ) )
   {
     p -> cooldown.colossus_smash -> reset( true );
     p -> proc.sudden_death       -> occur();
@@ -597,7 +587,7 @@ static void trigger_strikes_of_opportunity( warrior_attack_t* a )
 
   double chance = p -> cache.mastery_value();
 
-  if ( ! p -> rng.strikes_of_opportunity -> roll( chance ) )
+  if ( ! p -> rng().roll( chance ) )
     return;
 
   p -> cooldown.strikes_of_opportunity -> start( timespan_t::from_seconds( 0.5 ) );
@@ -705,7 +695,7 @@ static bool trigger_t15_2pc_melee( warrior_attack_t* a )
 
   bool procced;
 
-  if ( ( procced = p -> rng.t15_2pc_melee -> trigger( *a ) ) )
+  if ( ( procced = p -> t15_2pc_melee -> trigger( *a ) ) )
   {
     p -> proc.t15_2pc_melee -> occur();
     p -> enrage();
@@ -1412,7 +1402,7 @@ struct execute_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if ( p -> specialization() == WARRIOR_ARMS && p -> rng.sudden_execute -> roll ( p -> spec.sudden_death -> effectN( 2 ).percent() ) )
+    if ( p -> specialization() == WARRIOR_ARMS && rng().roll ( p -> spec.sudden_death -> effectN( 2 ).percent() ) )
     {
       p -> buff.sudden_execute -> trigger();
     }
@@ -1895,7 +1885,7 @@ struct revenge_t : public warrior_attack_t
     {
       warrior_t* p = cast();
 
-      if ( p -> rng.tier15_2pc_tank -> roll( p -> sets -> set( SET_T15_2PC_TANK ) -> proc_chance() ) )
+      if ( rng().roll( p -> sets -> set( SET_T15_2PC_TANK ) -> proc_chance() ) )
       {
         p -> buff.tier15_2pc_tank -> trigger();
       }
@@ -2043,7 +2033,7 @@ struct shield_slam_t : public warrior_attack_t
 
     if ( result_is_hit( s -> result ) && ! p -> dbc.ptr )
       p -> buff.ultimatum -> trigger();
-    if ( p -> rng.tier15_2pc_tank -> roll( p -> sets -> set( SET_T15_2PC_TANK ) -> proc_chance() ) )
+    if ( rng().roll( p -> sets -> set( SET_T15_2PC_TANK ) -> proc_chance() ) )
     {
       p -> buff.tier15_2pc_tank -> trigger();
     }
@@ -3302,11 +3292,6 @@ void warrior_t::init_rng()
 {
   player_t::init_rng();
 
-  rng.strikes_of_opportunity  = get_rng( "strikes_of_opportunity" );
-  rng.sudden_death            = get_rng( "sudden_death"           );
-  rng.taste_for_blood         = get_rng( "taste_for_blood"        );
-  rng.tier15_2pc_tank         = get_rng( "tier15_2pc_tank"        );
-
   double rppm;
   //Lookup rppm value according to spec
   switch ( specialization() )
@@ -3323,7 +3308,7 @@ void warrior_t::init_rng()
     default: rppm = 0.0;
       break;
   }
-  rng.t15_2pc_melee = new real_ppm_t( "t15_2pc_melee", *this, rppm );
+  t15_2pc_melee = new real_ppm_t( "t15_2pc_melee", *this, rppm );
 }
 
 // warrior_t::init_actions ==================================================
@@ -3631,7 +3616,7 @@ void warrior_t::reset()
 
   active_stance = STANCE_BATTLE;
 
-  rng.t15_2pc_melee -> reset();
+  t15_2pc_melee -> reset();
 }
 
 // warrior_t::composite_player_multiplier ===================================

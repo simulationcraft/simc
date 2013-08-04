@@ -175,16 +175,6 @@ public:
     proc_t* wild_imp;
   } procs;
 
-  // Random Number Generators
-  struct rngs_t
-  {
-    rng_t* demonic_calling;
-    rng_t* molten_core;
-    rng_t* nightfall;
-    rng_t* ember_gain;
-    rng_t* incinerate_t15_4pc;
-  } rngs;
-
   struct glyphs_t
   {
     const spell_data_t* conflagrate;
@@ -258,7 +248,6 @@ public:
   virtual void      init_gains();
   virtual void      init_benefits();
   virtual void      init_procs();
-  virtual void      init_rng();
   virtual void      init_actions();
   virtual void      init_resources( bool force );
   virtual void      reset();
@@ -337,7 +326,6 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   mastery_spells( mastery_spells_t() ),
   gains( gains_t() ),
   procs( procs_t() ),
-  rngs( rngs_t() ),
   glyphs( glyphs_t() ),
   spells( spells_t() ),
   soul_swap_state( soul_swap_state_t() ),
@@ -878,7 +866,7 @@ struct wild_firebolt_t : public warlock_pet_spell_t
 
     if ( result_is_hit( s -> result )
          && p() -> o() -> spec.molten_core -> ok()
-         && p() -> o() -> rngs.molten_core -> roll( 0.08 ) )
+         && rng().roll( 0.08 ) )
       p() -> o() -> buffs.molten_core -> trigger();
   }
 
@@ -1705,7 +1693,7 @@ public:
 
   static void trigger_ember_gain( warlock_t* p, double amount, gain_t* gain, double chance = 1.0 )
   {
-    if ( ! p -> rngs.ember_gain -> roll( chance ) ) return;
+    if ( ! p -> rng().roll( chance ) ) return;
 
     p -> resource_gain( RESOURCE_BURNING_EMBER, amount, gain );
 
@@ -2100,7 +2088,7 @@ struct corruption_t : public warlock_spell_t
     {
 
       p() -> nightfall_chance += p() -> dbc.ptr ? 0.004662 : 0.00333; // Confirmed 09/09/2012 //Increase by 1.4 (5% to 7% with 5.4)
-      if ( p() -> rngs.nightfall -> roll( p() -> nightfall_chance ) )
+      if ( rng().roll( p() -> nightfall_chance ) )
       {
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
         p() -> nightfall_chance = 0;
@@ -2554,7 +2542,7 @@ struct incinerate_t : public warlock_spell_t
 
     trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate );
     if ( p() -> set_bonus.tier15_4pc_caster() &&
-         p() -> rngs.incinerate_t15_4pc -> roll( p() -> sets -> set ( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent() ) )
+        rng().roll( p() -> sets -> set ( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent() ) )
       trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate_t15_4pc );
 
     if ( result_is_hit( s -> result ) )
@@ -2954,7 +2942,7 @@ struct shadowflame_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( p() -> spec.molten_core -> ok() && p() -> rngs.molten_core -> roll( 0.08 ) )
+    if ( p() -> spec.molten_core -> ok() && rng().roll( 0.08 ) )
       p() -> buffs.molten_core -> trigger();
   }
 
@@ -5001,18 +4989,6 @@ void warlock_t::init_procs()
   procs.wild_imp = get_proc( "wild_imp" );
 }
 
-
-void warlock_t::init_rng()
-{
-  player_t::init_rng();
-
-  rngs.demonic_calling    = get_rng( "demonic_calling" );
-  rngs.molten_core        = get_rng( "molten_core" );
-  rngs.nightfall          = get_rng( "nightfall" );
-  rngs.ember_gain         = get_rng( "ember_gain" );
-  rngs.incinerate_t15_4pc = get_rng( "incinerate_t15_4pc" );
-}
-
 void warlock_t::init_actions()
 {
   if ( action_list_str.empty() )
@@ -5316,7 +5292,7 @@ void warlock_t::combat_begin()
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     buffs.demonic_calling -> trigger();
-    demonic_calling_event = new ( *sim ) demonic_calling_event_t( this, rngs.demonic_calling -> range( timespan_t::zero(),
+    demonic_calling_event = new ( *sim ) demonic_calling_event_t( this, rng().range( timespan_t::zero(),
         timespan_t::from_seconds( ( spec.wild_imps -> effectN( 1 ).period().total_seconds() + spec.imp_swarm -> effectN( 3 ).base_value() ) * composite_spell_speed() ) ) );
   }
 }

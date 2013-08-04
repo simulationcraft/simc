@@ -248,16 +248,6 @@ public:
     proc_t* tooth_and_claw;
   } proc;
 
-  // Random Number Generation
-  struct rngs_t
-  {
-    rng_t* euphoria;
-    rng_t* mangle;
-    rng_t* revitalize;
-    rng_t* tier15_2pc_melee;
-    rng_t* tooth_and_claw;
-  } rng;
-
   // Class Specializations
   struct specializations_t
   {
@@ -368,7 +358,6 @@ public:
     glyph( glyphs_t() ),
     mastery( masteries_t() ),
     proc( procs_t() ),
-    rng( rngs_t() ),
     spec( specializations_t() ),
     spell( spells_t() ),
     talent( talents_t() ),
@@ -411,7 +400,6 @@ public:
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_benefits();
-  virtual void      init_rng();
   virtual void      invalidate_cache( cache_e );
   virtual void      combat_begin();
   virtual void      reset();
@@ -1221,7 +1209,7 @@ public:
       if ( cat_state( execute_state ) -> cp > 0 && requires_combo_points )
       {
         if ( player -> set_bonus.tier15_2pc_melee() &&
-             p() -> rng.tier15_2pc_melee -> roll( cat_state( execute_state ) -> cp * 0.15 ) )
+            rng().roll( cat_state( execute_state ) -> cp * 0.15 ) )
         {
           p() -> proc.tier15_2pc_melee -> occur();
           td( target ) -> combo_points.add( 1, &name_str );
@@ -2207,7 +2195,7 @@ struct bear_melee_t : public bear_attack_t
     if ( result_is_hit( state -> result ) )
     {
       trigger_rage_gain();
-      if ( p() -> rng.tooth_and_claw -> roll( p() -> spec.tooth_and_claw -> proc_chance() ) )
+      if ( rng().roll( p() -> spec.tooth_and_claw -> proc_chance() ) )
       {
         p() -> buff.tooth_and_claw -> trigger();
         p() -> proc.tooth_and_claw -> occur();
@@ -2281,7 +2269,7 @@ struct lacerate_t : public bear_attack_t
         td( state -> target ) -> lacerate_stack++;
       p() -> buff.lacerate -> trigger();
 
-      if ( p() -> rng.mangle -> roll( 0.25 ) )
+      if ( rng().roll( 0.25 ) )
         p() -> cooldown.mangle_bear -> reset( true );
     }
 
@@ -2541,7 +2529,7 @@ struct thrash_bear_t : public bear_attack_t
     if ( result_is_hit( state -> result ) && ! sim -> overrides.weakened_blows )
       state -> target -> debuffs.weakened_blows -> trigger();
 
-    if ( p() -> rng.mangle -> roll( 0.25 ) )
+    if ( rng().roll( 0.25 ) )
       p() -> cooldown.mangle_bear -> reset( true );
   }
 
@@ -2792,7 +2780,7 @@ public:
   {
     if ( p() -> cooldown.revitalize -> down() ) return;
 
-    if ( p() -> rng.revitalize -> roll( p() -> spec.revitalize -> proc_chance() ) )
+    if ( rng().roll( p() -> spec.revitalize -> proc_chance() ) )
     {
       p() -> proc.revitalize -> occur();
       p() -> resource_gain( RESOURCE_MANA,
@@ -3829,7 +3817,7 @@ struct faerie_fire_t : public druid_spell_t
     if ( p() -> buff.bear_form -> check() )
     {
       if ( result_is_hit( state -> result ) )
-        if ( p() -> rng.mangle -> roll( 0.25 ) )
+        if ( rng().roll( 0.25 ) )
           p() -> cooldown.mangle_bear -> reset( true );
     }
   }
@@ -6294,19 +6282,6 @@ void druid_t::init_procs()
 void druid_t::init_benefits()
 {
   player_t::init_benefits();
-}
-
-// druid_t::init_rng ========================================================
-
-void druid_t::init_rng()
-{
-  player_t::init_rng();
-
-  rng.euphoria         = get_rng( "euphoria"         );
-  rng.mangle           = get_rng( "mangle"           );
-  rng.revitalize       = get_rng( "revitalize"       );
-  rng.tier15_2pc_melee = get_rng( "tier15_2pc_melee" );
-  rng.tooth_and_claw   = get_rng( "tooth_and_claw"   );
 }
 
 // druid_t::init_actions ====================================================

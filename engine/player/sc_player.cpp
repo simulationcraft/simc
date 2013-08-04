@@ -675,7 +675,6 @@ player_t::player_t( sim_t*             s,
   debuffs( debuffs_t() ),
   gains( gains_t() ),
   procs( procs_t() ),
-  rngs( rngs_t() ),
   uptimes( uptimes_t() ),
   racials( racials_t() ),
   active_during_iteration( false ),
@@ -2306,13 +2305,6 @@ void player_t::init_rng()
   if ( sim -> debug )
     sim -> output( "Initializing rngs for player (%s)", name() );
 
-  rngs.lag_channel  = get_rng( "lag_channel"  );
-  rngs.lag_ability  = get_rng( "lag_ability"  );
-  rngs.lag_brain    = get_rng( "lag_brain"    );
-  rngs.lag_gcd      = get_rng( "lag_gcd"      );
-  rngs.lag_queue    = get_rng( "lag_queue"    );
-  rngs.lag_reaction = get_rng( "lag_reaction" );
-  rngs.lag_world    = get_rng( "lag_world"    );
 }
 
 // player_t::init_stats =====================================================
@@ -4039,8 +4031,8 @@ void player_t::schedule_ready( timespan_t delta_time,
     {
       if ( last_foreground_action -> ability_lag > timespan_t::zero() )
       {
-        timespan_t ability_lag = rngs.lag_ability -> gauss( last_foreground_action -> ability_lag, last_foreground_action -> ability_lag_stddev );
-        timespan_t gcd_lag     = rngs.lag_gcd   -> gauss( sim ->   gcd_lag, sim ->   gcd_lag_stddev );
+        timespan_t ability_lag = rng().gauss( last_foreground_action -> ability_lag, last_foreground_action -> ability_lag_stddev );
+        timespan_t gcd_lag     = rng().gauss( sim ->   gcd_lag, sim ->   gcd_lag_stddev );
         timespan_t diff        = ( gcd_ready + gcd_lag ) - ( sim -> current_time + ability_lag );
         if ( diff > timespan_t::zero() && sim -> strict_gcd_queue )
         {
@@ -4058,12 +4050,12 @@ void player_t::schedule_ready( timespan_t delta_time,
       }
       else if ( last_foreground_action -> channeled )
       {
-        lag = rngs.lag_channel -> gauss( sim -> channel_lag, sim -> channel_lag_stddev );
+        lag = rng().gauss( sim -> channel_lag, sim -> channel_lag_stddev );
       }
       else
       {
-        timespan_t   gcd_lag = rngs.lag_gcd   -> gauss( sim ->   gcd_lag, sim ->   gcd_lag_stddev );
-        timespan_t queue_lag = rngs.lag_queue -> gauss( sim -> queue_lag, sim -> queue_lag_stddev );
+        timespan_t   gcd_lag = rng().gauss( sim ->   gcd_lag, sim ->   gcd_lag_stddev );
+        timespan_t queue_lag = rng().gauss( sim -> queue_lag, sim -> queue_lag_stddev );
 
         timespan_t diff = ( gcd_ready + gcd_lag ) - ( sim -> current_time + queue_lag );
 
@@ -4096,7 +4088,7 @@ void player_t::schedule_ready( timespan_t delta_time,
   {
     // Record the last ability use time for cast_react
     cast_delay_occurred = readying -> occurs();
-    cast_delay_reaction = rngs.lag_brain -> gauss( brain_lag, brain_lag_stddev );
+    cast_delay_reaction = rng().gauss( brain_lag, brain_lag_stddev );
     if ( sim -> debug )
     {
       sim -> output( "%s %s schedule_ready(): cast_finishes=%f cast_delay=%f",
@@ -4592,7 +4584,7 @@ timespan_t player_t::time_to_die()
 
 timespan_t player_t::total_reaction_time()
 {
-  return reaction_offset + rngs.lag_reaction -> exgauss( reaction_mean, reaction_stddev, reaction_nu );
+  return reaction_offset + rng().exgauss( reaction_mean, reaction_stddev, reaction_nu );
 }
 
 // player_t::stat_gain ======================================================
@@ -5381,21 +5373,6 @@ uptime_t* player_t::get_uptime( const std::string& name )
   }
 
   return u;
-}
-
-// player_t::get_rng ========================================================
-
-rng_t* player_t::get_rng( const std::string& /* n */ )
-{
-  if ( ! sim -> separated_rng )
-    return &sim -> rng();
-
-  rng_t* rng = new rng_t();
-
-  rng_list.push_back( rng );
-
-  return rng;
-
 }
 
 // player_t::get_position_distance ==========================================

@@ -119,12 +119,6 @@ public:
     proc_t* tier16_4pc_melee;
   } procs;
 
-  // Random Number Generation
-  struct rngs_t
-  {
-    rng_t* tier16_4pc_melee_sv;
-  } rng;
-
   real_ppm_t ppm_tier15_2pc_melee;
   real_ppm_t ppm_tier15_4pc_melee;
 
@@ -270,7 +264,6 @@ public:
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
     procs( procs_t() ),
-    rng( rngs_t() ),
     ppm_tier15_2pc_melee( "tier15_2pc", *this ),
     ppm_tier15_4pc_melee( "tier15_4pc", *this ),
     talents( talents_t() ),
@@ -1045,7 +1038,6 @@ struct pet_auto_attack_t : public hunter_main_pet_attack_t
 
 struct basic_attack_t : public hunter_main_pet_attack_t
 {
-  rng_t* rng_invigoration;
   double chance_invigoration;
   double gain_invigoration;
 
@@ -1058,7 +1050,6 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     // hardcoded into tooltip
     direct_power_mod = 0.168;
     base_multiplier *= 1.0 + p -> specs.spiked_collar -> effectN( 1 ).percent();
-    rng_invigoration = player -> get_rng( "invigoration" );
     chance_invigoration = p -> find_spell( 53397 ) -> proc_chance();
     gain_invigoration = p -> find_spell( 53398 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
   }
@@ -1080,7 +1071,7 @@ struct basic_attack_t : public hunter_main_pet_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( o() -> specs.invigoration -> ok() && rng_invigoration -> roll( chance_invigoration ) )
+      if ( o() -> specs.invigoration -> ok() && rng().roll( chance_invigoration ) )
       {
         o() -> resource_gain( RESOURCE_FOCUS, gain_invigoration, o() -> gains.invigoration );
         o() -> procs.invigoration -> occur();
@@ -1712,13 +1703,11 @@ namespace attacks {
 
 struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
 {
-  rng_t* wild_quiver;
   bool can_trigger_wild_quiver;
 
   hunter_ranged_attack_t( const std::string& n, hunter_t* player,
                           const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, player, s ),
-    wild_quiver ( player -> get_rng( "wild_quiver" ) ),
     can_trigger_wild_quiver( true )
   {
     if ( player -> main_hand_weapon.type == WEAPON_NONE )
@@ -1760,7 +1749,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
       return;
 
     double chance = p() -> mastery.wild_quiver -> ok() ? multiplier * p() -> cache.mastery_value() : 0.0;
-    if ( wild_quiver -> roll( chance ) )
+    if ( rng().roll( chance ) )
     {
       p() -> active.wild_quiver_shot -> execute();
       p() -> procs.wild_quiver -> occur();
@@ -2495,7 +2484,7 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     // TODO add reaction time for the continuation of the proc?
     if ( p() -> buffs.lock_and_load -> up()
          && p() -> set_bonus.tier16_4pc_melee()
-         && p() -> rng.tier16_4pc_melee_sv -> roll( p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent() ) )
+         && rng().roll( p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent() ) )
     {
       p() -> procs.tier16_4pc_melee -> occur();
     }
@@ -3304,11 +3293,9 @@ struct lynx_rush_t : public hunter_spell_t
 {
   struct lynx_rush_bite_t : public hunter_spell_t
   {
-    rng_t* position_rng;
     bool last_tick;
 
     lynx_rush_bite_t( hunter_t* player )  : hunter_spell_t( "lynx_rush_bite", player ),
-      position_rng( player -> get_rng( "lynx_rush_position" ) ),
       last_tick( false )
     {
       background = true;
@@ -3328,7 +3315,7 @@ struct lynx_rush_t : public hunter_spell_t
       if ( pet )
       {
         // Hardcoded 50% for randomly jumping around
-        set_position( position_rng -> roll( 0.5 ) ? POSITION_BACK : POSITION_FRONT );
+        set_position( rng().roll( 0.5 ) ? POSITION_BACK : POSITION_FRONT );
         pet -> active.lynx_rush -> execute();
         if ( last_tick ) set_position( POSITION_BACK );
         last_tick = false;
@@ -3982,7 +3969,6 @@ void hunter_t::init_procs()
 
 void hunter_t::init_rng()
 {
-  rng.tier16_4pc_melee_sv = get_rng( "tier16_4pc_melee_sv" );
 
   // RPPMS
   double tier15_2pc_melee_rppm;

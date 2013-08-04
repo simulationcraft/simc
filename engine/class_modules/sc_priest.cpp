@@ -236,14 +236,6 @@ public:
     action_t* echo_of_light;
   } active_spells;
 
-  // Random Number Generators
-  struct rngs_t
-  {
-    rng_t* mastery_extra_tick;
-    rng_t* shadowy_apparitions;
-    rng_t* chakra_chastise_smite;
-  } rngs;
-
   // Pets
   struct pets_t
   {
@@ -300,7 +292,6 @@ public:
     procs( procs_t() ),
     shadowy_apparitions( shadowy_apparitions_t( *this ) ),
     active_spells( active_spells_t() ),
-    rngs( rngs_t() ),
     pets( pets_t() ),
     options( priest_options_t() ),
     glyphs( glyphs_t() )
@@ -317,7 +308,6 @@ public:
   virtual void      init_base_stats();
   virtual void      init_spells();
   virtual void      create_buffs();
-  virtual void      init_rng();
   virtual void      init_scaling();
   virtual void      reset();
   virtual void      create_options();
@@ -1916,13 +1906,10 @@ struct priest_procced_mastery_spell_t : public priest_spell_t
 
 struct shadowy_apparition_spell_t : public priest_spell_t
 {
-  rng_t* t15_2pc; // Create this for everyone, as when we make shadowy_apparition_spell_t, we haven't run init_items() yet
-
   shadowy_apparition_spell_t( priest_t& p ) :
     priest_spell_t( "shadowy_apparition",
                     p,
-                    p.dbc.ptr ? p.find_spell( 147193 ) : p.find_spell( 87532 ) ),
-    t15_2pc( p.get_rng( "Tier15 2pc caster" ) )
+                    p.dbc.ptr ? p.find_spell( 147193 ) : p.find_spell( 87532 ) )
   {
     background        = true;
     proc              = true;
@@ -1939,7 +1926,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
 
     if ( priest.set_bonus.tier15_2pc_caster() )
     {
-      if ( /* t15_2pc && */ t15_2pc -> roll( priest.sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent() ) )
+      if ( rng().roll( priest.sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent() ) )
       {
         priest_td_t& td = this -> td( s -> target );
         priest.procs.t15_2pc_caster -> occur();
@@ -2287,7 +2274,7 @@ struct mind_sear_tick_t : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    if ( proc_spell && priest.rngs.mastery_extra_tick -> roll( priest.shadowy_recall_chance() ) )
+    if ( proc_spell && rng().roll( priest.shadowy_recall_chance() ) )
     {
       proc_spell -> schedule_execute();
     }
@@ -2585,7 +2572,7 @@ struct devouring_plague_t : public priest_spell_t
       double a = data().effectN( 3 ).percent() / 100.0 * dp_state.orbs_used * priest.resources.max[ RESOURCE_HEALTH ];
       priest.resource_gain( RESOURCE_HEALTH, a, priest.gains.devouring_plague_health );
 
-      if ( proc_spell && dp_state.orbs_used && priest.rngs.mastery_extra_tick -> roll( priest.shadowy_recall_chance() ) )
+      if ( proc_spell && dp_state.orbs_used && rng().roll( priest.shadowy_recall_chance() ) )
       {
         proc_spell -> orbs_used = dp_state.orbs_used;
         proc_spell -> schedule_execute();
@@ -2735,7 +2722,7 @@ struct mind_flay_base_t : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    if ( proc_spell && priest.rngs.mastery_extra_tick -> roll( priest.shadowy_recall_chance() ) )
+    if ( proc_spell && rng().roll( priest.shadowy_recall_chance() ) )
     {
       proc_spell -> schedule_execute();
     }
@@ -2847,7 +2834,7 @@ struct shadow_word_pain_t : public priest_spell_t
         priest.procs.divine_insight_shadow -> occur();
       }
     }
-    if ( proc_spell && priest.rngs.mastery_extra_tick -> roll( priest.shadowy_recall_chance() ) )
+    if ( proc_spell && rng().roll( priest.shadowy_recall_chance() ) )
     {
       proc_spell -> schedule_execute();
     }
@@ -2885,18 +2872,10 @@ struct vampiric_embrace_t : public priest_spell_t
 
 struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
 {
-  rng_t* t15_4pc;
-
   vampiric_touch_mastery_t( priest_t& p ) :
     priest_procced_mastery_spell_t( "vampiric_touch_mastery", p,
-                                    p.find_class_spell( "Vampiric Touch" ) -> ok() ? p.find_spell( 124465 ) : spell_data_t::not_found() ),
-    t15_4pc( nullptr )
-  {
-    if ( priest.set_bonus.tier15_4pc_caster() )
-    {
-      t15_4pc = player -> get_rng( "Tier15 4pc caster" );
-    }
-  }
+                                    p.find_class_spell( "Vampiric Touch" ) -> ok() ? p.find_spell( 124465 ) : spell_data_t::not_found() )
+  { }
 
   virtual void impact( action_state_t* s )
   {
@@ -2914,7 +2893,7 @@ struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
     {
       if ( ( s -> result_amount > 0 ) && ( priest.specs.shadowy_apparitions -> ok() ) )
       {
-        if ( t15_4pc -> roll( priest.sets -> set( SET_T15_4PC_CASTER ) -> proc_chance() ) )
+        if ( rng().roll( priest.sets -> set( SET_T15_4PC_CASTER ) -> proc_chance() ) )
         {
           priest.procs.t15_4pc_caster -> occur();
           priest.shadowy_apparitions.trigger( *s );
@@ -2929,22 +2908,15 @@ struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
 struct vampiric_touch_t : public priest_spell_t
 {
   vampiric_touch_mastery_t* proc_spell;
-  rng_t* t15_4pc;
 
   vampiric_touch_t( priest_t& p, const std::string& options_str ) :
     priest_spell_t( "vampiric_touch", p, p.find_class_spell( "Vampiric Touch" ) ),
-    proc_spell( nullptr ),
-    t15_4pc( nullptr )
+    proc_spell( nullptr )
   {
     parse_options( nullptr, options_str );
     may_crit   = false;
 
     num_ticks += ( int ) ( ( p.sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).base_value() / 1000.0 ) / base_tick_time.total_seconds() );
-
-    if ( priest.set_bonus.tier15_4pc_caster() )
-    {
-      t15_4pc = player -> get_rng( "Tier15 4pc caster" );
-    }
 
     if ( p.mastery_spells.shadowy_recall -> ok() )
     {
@@ -2965,7 +2937,7 @@ struct vampiric_touch_t : public priest_spell_t
       priest.procs.surge_of_darkness -> occur();
     }
 
-    if ( proc_spell && priest.rngs.mastery_extra_tick -> roll( priest.shadowy_recall_chance() ) )
+    if ( proc_spell && rng().roll( priest.shadowy_recall_chance() ) )
     {
       proc_spell -> schedule_execute();
     }
@@ -2974,7 +2946,7 @@ struct vampiric_touch_t : public priest_spell_t
     {
       if ( ( d -> state -> result_amount > 0 ) && ( priest.specs.shadowy_apparitions -> ok() ) )
       {
-        if ( t15_4pc -> roll( priest.sets -> set( SET_T15_4PC_CASTER ) -> proc_chance() ) )
+        if ( rng().roll( priest.sets -> set( SET_T15_4PC_CASTER ) -> proc_chance() ) )
         {
           priest.procs.t15_4pc_caster -> occur();
           priest.shadowy_apparitions.trigger( *d -> state );
@@ -3197,7 +3169,7 @@ struct smite_t : public priest_spell_t
 
     if ( priest.buffs.chakra_chastise -> check() )
     {
-      if ( priest.rngs.chakra_chastise_smite -> roll( priest.buffs.chakra_chastise -> data().proc_chance() ) )
+      if ( rng().roll( priest.buffs.chakra_chastise -> data().proc_chance() ) )
         hw_chastise -> reset( true );
     }
   }
@@ -5988,17 +5960,6 @@ void priest_t::init_actions()
   action_list_default = 1;
 
   base_t::init_actions();
-}
-
-// priest_t::init_rng =======================================================
-
-void priest_t::init_rng()
-{
-  base_t::init_rng();
-
-  rngs.mastery_extra_tick  = get_rng( "shadowy_recall_extra_tick" );
-  rngs.shadowy_apparitions = get_rng( "shadowy_apparitions" );
-  rngs.chakra_chastise_smite = get_rng( "chakra_chastise_smite" );
 }
 
 // priest_t::reset ==========================================================

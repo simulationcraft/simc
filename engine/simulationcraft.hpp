@@ -4104,7 +4104,6 @@ struct player_t : public actor_t
   auto_dispose< std::vector<benefit_t*> > benefit_list;
   auto_dispose< std::vector<uptime_t*> > uptime_list;
   auto_dispose< std::vector<cooldown_t*> > cooldown_list;
-  auto_dispose< std::vector<rng_t*> > rng_list;
   std::array< std::vector<plot_data_t>, STAT_MAX > dps_plot_data;
   std::vector<std::vector<plot_data_t> > reforge_plot_data;
 
@@ -4273,17 +4272,6 @@ public:
     proc_t* hat_donor;
     proc_t* parry_haste;
   } procs;
-
-  struct rngs_t
-  {
-    rng_t* lag_ability;
-    rng_t* lag_brain;
-    rng_t* lag_channel;
-    rng_t* lag_gcd;
-    rng_t* lag_queue;
-    rng_t* lag_reaction;
-    rng_t* lag_world;
-  } rngs;
 
   struct uptimes_t
   {
@@ -4571,7 +4559,6 @@ public:
   stats_t*    get_stats   ( const std::string& name, action_t* action = 0 );
   benefit_t*  get_benefit ( const std::string& name );
   uptime_t*   get_uptime  ( const std::string& name );
-  rng_t*      get_rng     ( const std::string& name );
   double      get_player_distance( player_t& );
   double      get_position_distance( double m = 0, double v = 0 );
   action_priority_list_t* get_action_priority_list( const std::string& name, const std::string& comment = std::string() );
@@ -4904,8 +4891,6 @@ struct action_t : public noncopyable
   double base_aoe_multiplier; // Static reduction of damage for AoE
   bool split_aoe_damage;
   bool normalize_weapon_speed;
-  rng_t* rng_result;
-  rng_t* rng_travel;
   cooldown_t* cooldown;
   stats_t* stats;
   event_t* execute_event;
@@ -5504,15 +5489,15 @@ public:
 struct real_ppm_t
 {
 private:
-  rng_t*       rng;
+  rng_t&       rng;
   double       freq;
   timespan_t   last_trigger_attempt;
   timespan_t   last_successful_trigger;
   timespan_t   initial_precombat_time;
   rppm_scale_e scales_with;
 public:
-  real_ppm_t( const std::string& name, player_t& p, double frequency = std::numeric_limits<double>::min(), rppm_scale_e s = RPPM_HASTE ) :
-    rng( p.get_rng( name ) ),
+  real_ppm_t( const std::string& /* name */, player_t& p, double frequency = std::numeric_limits<double>::min(), rppm_scale_e s = RPPM_HASTE ) :
+    rng( p.rng() ),
     freq( frequency ),
     last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
     last_successful_trigger( timespan_t::from_seconds( p.dbc.ptr ? -90 : -300.0 ) ),
@@ -5542,7 +5527,7 @@ public:
     double chance = a.real_ppm_proc_chance( freq, last_trigger_attempt, last_successful_trigger, scales_with );
     last_trigger_attempt = a.sim -> current_time;
 
-    bool success = rng -> roll( chance );
+    bool success = rng.roll( chance );
     if ( success )
     {
       last_successful_trigger = a.sim -> current_time;
@@ -5608,7 +5593,7 @@ struct proc_callback_t : public action_callback_t
   special_effect_t proc_data;
   real_ppm_t       rppm;
   cooldown_t*      cooldown;
-  rng_t*           proc_rng;
+  rng_t&           proc_rng;
 
   struct delay_event_t : public event_t
   {
@@ -5634,16 +5619,13 @@ struct proc_callback_t : public action_callback_t
     action_callback_t( p ),
     proc_data( data ),
     rppm( proc_data.name_str, *listener, is_rppm() ? std::fabs( data.ppm ) : std::numeric_limits<double>::min(), data.rppm_scale ),
-    cooldown( nullptr ), proc_rng( nullptr )
+    cooldown( nullptr ), proc_rng( listener -> rng() )
   {
     if ( proc_data.cooldown != timespan_t::zero() )
     {
       cooldown = listener -> get_cooldown( proc_data.name_str );
       cooldown -> duration = proc_data.cooldown;
     }
-
-    if ( is_ppm() || proc_data.proc_chance > 0 )
-      proc_rng = listener -> get_rng( proc_data.name_str );
   }
 
 private:
@@ -5665,9 +5647,9 @@ public:
       triggered = rppm.trigger( *action );
     }
     else if ( is_ppm() )
-      triggered = proc_rng -> roll( action -> ppm_proc_chance( chance ) );
+      triggered = proc_rng.roll( action -> ppm_proc_chance( chance ) );
     else if ( chance > 0 )
-      triggered = proc_rng -> roll( chance );
+      triggered = proc_rng.roll( chance );
 
     if ( listener -> sim -> debug )
       listener -> sim -> output( "%s attempts to proc %s on %s: %d",

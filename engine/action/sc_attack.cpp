@@ -181,9 +181,9 @@ block_result_e attack_t::calculate_block_result( action_state_t* s )
     double crit_block = crit_block_chance( s -> target );
 
     // Roll once for block, then again for crit block if the block succeeds
-    if ( rng_result -> roll( block_total ) )
+    if ( rng().roll( block_total ) )
     {
-      if ( rng_result -> roll( crit_block ) )
+      if ( rng().roll( crit_block ) )
         block_result = BLOCK_RESULT_CRIT_BLOCKED;
       else
         block_result = BLOCK_RESULT_BLOCKED;
@@ -243,7 +243,7 @@ result_e attack_t::calculate_result( action_state_t* s )
   // if we have a special, make a second roll for hit/crit
   if ( result == RESULT_HIT && special && may_crit )
   {
-    if ( rng_result -> roll( crit ) )
+    if ( rng().roll( crit ) )
       result = RESULT_CRIT;
   }
 

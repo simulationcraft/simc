@@ -1420,13 +1420,12 @@ void blazing_power( item_t* item )
     heal_t* heal;
     cooldown_t* cd;
     proc_t* proc;
-    rng_t* rng;
+    rng_t& rng;
 
     blazing_power_callback_t( player_t* p, heal_t* s ) :
-      action_callback_t( p ), heal( s ), proc( 0 ), rng( 0 )
+      action_callback_t( p ), heal( s ), proc( 0 ), rng( p -> rng() )
     {
       proc = p -> get_proc( "blazing_power" );
-      rng  = p -> get_rng ( "blazing_power" );
       cd = p -> get_cooldown( "blazing_power_callback" );
       cd -> duration = timespan_t::from_seconds( 45.0 );
     }
@@ -1442,7 +1441,7 @@ void blazing_power( item_t* item )
       if ( cd -> down() )
         return;
 
-      if ( rng -> roll( 0.10 ) )
+      if ( rng.roll( 0.10 ) )
       {
         heal -> target =  heal -> find_lowest_player();
         heal -> execute();
@@ -1485,13 +1484,12 @@ void windward_heart( item_t* item )
     heal_t* heal;
     cooldown_t* cd;
     proc_t* proc;
-    rng_t* rng;
+    rng_t& rng;
 
     windward_heart_callback_t( player_t* p, heal_t* s ) :
-      action_callback_t( p ), heal( s ), proc( 0 ), rng( 0 )
+      action_callback_t( p ), heal( s ), proc( 0 ), rng( p -> rng() )
     {
       proc = p -> get_proc( "windward_heart" );
-      rng  = p -> get_rng ( "windward_heart" );
       cd = p -> get_cooldown( "windward_heart_callback" );
       cd -> duration = timespan_t::from_seconds( 20.0 );
     }
@@ -1507,7 +1505,7 @@ void windward_heart( item_t* item )
       if ( cd -> down() )
         return;
 
-      if ( rng -> roll( 0.10 ) )
+      if ( rng.roll( 0.10 ) )
       {
         heal -> target = heal -> find_lowest_player();
         heal -> execute();
@@ -1685,12 +1683,11 @@ void delicate_vial_of_the_sanguinaire( item_t* item )
 
   struct delicate_vial_of_the_sanguinaire_callback_t : public proc_callback_t<action_state_t>
   {
-    rng_t* rng;
     stat_buff_t* buff;
 
     delicate_vial_of_the_sanguinaire_callback_t( item_t& i, const special_effect_t& data ) :
       proc_callback_t<action_state_t>( i.player, data ),
-      rng( 0 ), buff( 0 )
+      buff( nullptr )
     {
       const spell_data_t* spell = listener -> find_spell( 138864 );
 
@@ -1772,7 +1769,7 @@ void bonelink_fetish( item_t* item )
     double chance;
     attack_t* attack;
     cooldown_t* cooldown;
-    rng_t* rng;
+    rng_t& rng;
 
     struct whirling_maw_t : public attack_t
     {
@@ -1792,14 +1789,15 @@ void bonelink_fetish( item_t* item )
     };
 
     bonelink_fetish_callback_t( player_t* p, uint32_t id ) :
-      action_callback_t( p ), chance( p -> dbc.spell( id ) -> proc_chance() )
+      action_callback_t( p ), chance( p -> dbc.spell( id ) -> proc_chance() ),
+      cooldown( p -> get_cooldown( "bonelink_fetish" ) ),
+      rng( p -> rng() )
     {
       attack = new whirling_maw_t( p, p -> dbc.spell( id ) -> effectN( 1 ).trigger_spell_id() );
 
       cooldown = p -> get_cooldown( "bonelink_fetish" );
       cooldown -> duration = timespan_t::from_seconds( 25.0 ); // 25 second ICD
 
-      rng = p -> get_rng ( "bonelink_fetish" );
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )
@@ -1810,7 +1808,7 @@ void bonelink_fetish( item_t* item )
       if ( cooldown -> down() )
         return;
 
-      if ( rng -> roll( chance ) )
+      if ( rng.roll( chance ) )
       {
         attack -> execute();
         cooldown -> start();
@@ -1911,7 +1909,7 @@ void gurthalak( item_t* item )
     double chance;
     spell_t* spell[10];
     dot_t* dot_gurth[10];
-    rng_t* rng;
+    rng_t& rng;
     int slot;
 
     // FIXME: This should be converted to a pet, which casts 3 Mind Flays,
@@ -1959,6 +1957,7 @@ void gurthalak( item_t* item )
 
     gurthalak_callback_t( player_t* p, uint32_t tick_damage, uint32_t proc_spell_id, int slot ) :
       action_callback_t( p ), chance( p -> dbc.spell( proc_spell_id ) -> proc_chance() ),
+      rng( p -> rng() ),
       slot( slot )
     {
       // Init different spells/dots to act like multiple tentacles up at once
@@ -1969,7 +1968,6 @@ void gurthalak( item_t* item )
         dot_gurth[ i ] = p -> target -> get_dot( spell_name, p );
       }
 
-      rng = p -> get_rng ( "gurthalak" );
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )
@@ -1984,7 +1982,7 @@ void gurthalak( item_t* item )
         if ( a -> weapon -> slot != slot ) return;
       }
 
-      if ( rng -> roll( chance ) )
+      if ( rng.roll( chance ) )
       {
         // Try and find a non-ticking dot slot to use, if all are taken, use the one that's closest to expiring
         // This is needed for when we're DWing gurth
@@ -2034,7 +2032,7 @@ void nokaled( item_t* item )
   {
     double chance;
     spell_t* spells[3];
-    rng_t* rng;
+    rng_t& rng;
     int slot;
 
     // FIXME: Verify if spells can miss
@@ -2082,13 +2080,12 @@ void nokaled( item_t* item )
 
     nokaled_callback_t( player_t* p, uint32_t ids[], uint32_t proc_spell_id, int slot ) :
       action_callback_t( p ), chance( p -> dbc.spell( proc_spell_id ) -> proc_chance() ),
-      slot( slot )
+      rng( p -> rng() ), slot( slot )
     {
       spells[ 0 ] = new   nokaled_fire_t( p, ids[ 0 ] );
       spells[ 1 ] = new  nokaled_frost_t( p, ids[ 1 ] );
       spells[ 2 ] = new nokaled_shadow_t( p, ids[ 2 ] );
 
-      rng = p -> get_rng ( "nokaled" );
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )
@@ -2107,9 +2104,9 @@ void nokaled( item_t* item )
           return;
       }
 
-      if ( rng -> roll( chance ) )
+      if ( rng.roll( chance ) )
       {
-        int r = ( int ) ( rng -> range( 0.0, 2.999 ) );
+        int r = ( int ) ( rng.range( 0.0, 2.999 ) );
         assert( r >= 0 && r <= 3 );
         spells[ r ] -> execute();
       }
@@ -2150,17 +2147,16 @@ void rathrak( item_t* item )
   struct rathrak_callback_t : public action_callback_t
   {
     spell_t* spell;
-    rng_t* rng;
+    rng_t& rng;
 
     rathrak_callback_t( player_t* p, spell_t* s ) :
-      action_callback_t( p ), spell( s )
+      action_callback_t( p ), spell( s ), rng( p -> rng() )
     {
-      rng  = p -> get_rng ( "rathrak" );
     }
 
     virtual void trigger( action_t* /* a */, void* /* call_data */ )
     {
-      if ( ( spell -> cooldown -> remains() <= timespan_t::zero() ) && rng -> roll( 0.15 ) )
+      if ( ( spell -> cooldown -> remains() <= timespan_t::zero() ) && rng.roll( 0.15 ) )
       {
         spell -> execute();
       }
@@ -2204,13 +2200,12 @@ void souldrinker( item_t* item )
   struct souldrinker_callback_t : public action_callback_t
   {
     spell_t* spell;
-    rng_t* rng;
+    rng_t& rng;
     int slot;
 
     souldrinker_callback_t( player_t* p, spell_t* s, int slot ) :
-      action_callback_t( p ), spell( s ), slot( slot )
+      action_callback_t( p ), spell( s ), rng( p -> rng() ), slot( slot )
     {
-      rng  = p -> get_rng ( "souldrinker" );
     }
 
     virtual void trigger( action_t* a, void* /* call_data */ )
@@ -2225,7 +2220,7 @@ void souldrinker( item_t* item )
       }
 
       // No ICD
-      if ( rng -> roll( 0.15 ) )
+      if ( rng.roll( 0.15 ) )
       {
         spell -> execute();
       }
@@ -2254,14 +2249,14 @@ void titahk( item_t* item )
   struct titahk_callback_t : public action_callback_t
   {
     double proc_chance;
-    rng_t* rng;
+    rng_t& rng;
     buff_t* buff_self;
     buff_t* buff_radius; // This buff should be in 20 yards radius but it is contained only on the player for simulation.
 
     titahk_callback_t( player_t* p, const spell_data_t* spell, const spell_data_t* buff ) :
       action_callback_t( p ),
       proc_chance( spell -> proc_chance() ),
-      rng( p -> get_rng( "titahk" ) )
+      rng( p -> rng() )
     {
       timespan_t duration = buff -> duration();
 
@@ -2277,7 +2272,7 @@ void titahk( item_t* item )
     virtual void trigger( action_t* /* a */, void* /* call_data */ )
     {
       // FIXME: Does this have an ICD?
-      if ( ( buff_self -> cooldown -> remains() <= timespan_t::zero() ) && rng -> roll( proc_chance ) )
+      if ( ( buff_self -> cooldown -> remains() <= timespan_t::zero() ) && rng.roll( proc_chance ) )
       {
         buff_self -> trigger();
         buff_radius -> trigger();

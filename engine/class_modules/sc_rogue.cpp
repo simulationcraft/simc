@@ -237,21 +237,6 @@ struct rogue_t : public player_t
     proc_t* t16_2pc_melee;
   } procs;
 
-  // Random Number Generation
-  struct rngs_t
-  {
-    rng_t* combat_potency;
-    rng_t* lethal_poison;
-    rng_t* hat_interval;
-    rng_t* honor_among_thieves;
-    rng_t* main_gauche;
-    rng_t* revealing_strike;
-    rng_t* relentless_strikes;
-    rng_t* t16_4pc_melee;
-    rng_t* venomous_wounds;
-    rng_t* wound_poison;
-  } rng;
-
   player_t* tot_target;
   action_callback_t* virtual_hat_callback;
 
@@ -278,7 +263,6 @@ struct rogue_t : public player_t
     mastery( masteries_t() ),
     glyph( glyphs_t() ),
     procs( procs_t() ),
-    rng( rngs_t() ),
     tot_target( 0 ),
     virtual_hat_callback( 0 ),
     tricks_of_the_trade_target_str( "" ),
@@ -300,7 +284,6 @@ struct rogue_t : public player_t
   virtual void      init_base_stats();
   virtual void      init_gains();
   virtual void      init_procs();
-  virtual void      init_rng();
   virtual void      init_scaling();
   virtual void      create_buffs();
   virtual void      init_actions();
@@ -596,7 +579,7 @@ static void trigger_combat_potency( rogue_attack_t* a, bool main_gauche )
   if ( ! main_gauche )
     chance *= a -> weapon -> swing_time.total_seconds() / 1.4;
 
-  if ( p -> rng.combat_potency -> roll( chance ) )
+  if ( p -> rng().roll( chance ) )
   {
     // energy gain value is in the proc trigger spell
     p -> resource_gain( RESOURCE_ENERGY,
@@ -630,7 +613,7 @@ static void trigger_relentless_strikes( rogue_attack_t* a )
 
   rogue_td_t* td = a -> cast_td();
   double chance = p -> spell.relentless_strikes -> effectN( 1 ).pp_combo_points() / 100.0;
-  if ( p -> rng.relentless_strikes -> roll( chance * td -> combo_points.count ) )
+  if ( p -> rng().roll( chance * td -> combo_points.count ) )
   {
     double gain = p -> spell.relentless_strikes -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_ENERGY );
     p -> resource_gain( RESOURCE_ENERGY, gain, p -> gains.relentless_strikes );
@@ -704,7 +687,7 @@ static void trigger_main_gauche( rogue_attack_t* a )
 
   double chance = p -> cache.mastery_value();
 
-  if ( p -> rng.main_gauche -> roll( chance ) )
+  if ( p -> rng().roll( chance ) )
   {
     if ( ! p -> active_main_gauche )
     {
@@ -752,7 +735,7 @@ static void trigger_venomous_wounds( rogue_attack_t* a )
   if ( ! p -> spec.venomous_wounds -> ok() )
     return;
 
-  if ( p -> rng.venomous_wounds -> roll( p -> spec.venomous_wounds -> proc_chance() ) )
+  if ( p -> rng().roll( p -> spec.venomous_wounds -> proc_chance() ) )
   {
     assert( p -> active_venomous_wound );
 
@@ -2102,7 +2085,7 @@ struct sinister_strike_t : public rogue_attack_t
 
       rogue_td_t* td = cast_td( state -> target );
       if ( td -> dots.revealing_strike -> ticking &&
-           p() -> rng.revealing_strike -> roll( td -> dots.revealing_strike -> current_action -> data().proc_chance() ) )
+          rng().roll( td -> dots.revealing_strike -> current_action -> data().proc_chance() ) )
       {
         td -> combo_points.add( 1, "sinister_strike" );
         if ( p() -> buffs.t16_2pc_melee -> trigger() )
@@ -2523,7 +2506,7 @@ struct deadly_poison_t : public rogue_poison_t
       if ( p() -> buffs.envenom -> up() )
         chance += p() -> buffs.envenom -> data().effectN( 2 ).percent();
 
-      if ( p() -> rng.lethal_poison -> roll( chance ) )
+      if ( rng().roll( chance ) )
       {
         proc_dot -> target = state -> target;
         proc_dot -> execute();
@@ -2586,7 +2569,7 @@ struct wound_poison_t : public rogue_poison_t
     if ( p() -> buffs.envenom -> up() )
       chance += p() -> buffs.envenom -> data().effectN( 2 ).percent();
 
-    if ( p() -> rng.lethal_poison -> roll( chance ) )
+    if ( rng().roll( chance ) )
     {
       proc_dd -> target = state -> target;
       proc_dd -> execute();
@@ -3517,24 +3500,6 @@ void rogue_t::init_procs()
   procs.t16_2pc_melee            = get_proc( "t16_2pc_melee"       );
 }
 
-// rogue_t::init_rng ========================================================
-
-void rogue_t::init_rng()
-{
-  player_t::init_rng();
-
-  rng.combat_potency        = get_rng( "combat_potency"      );
-  rng.lethal_poison         = get_rng( "lethal_poison"       );
-  rng.honor_among_thieves   = get_rng( "honor_among_thieves" );
-  rng.main_gauche           = get_rng( "main_gauche"         );
-  rng.relentless_strikes    = get_rng( "relentless_strikes"  );
-  rng.revealing_strike      = get_rng( "revealing_strike"    );
-  rng.t16_4pc_melee         = get_rng( "t16_4pc_melee"       );
-  rng.venomous_wounds       = get_rng( "venomous_wounds"     );
-  rng.wound_poison          = get_rng( "wound_poison"        );
-  rng.hat_interval          = get_rng( "hat_interval"        );
-}
-
 // rogue_t::init_scaling ====================================================
 
 void rogue_t::init_scaling()
@@ -3673,7 +3638,7 @@ struct honor_among_thieves_callback_t : public action_callback_t
     if ( rogue -> cooldowns.honor_among_thieves -> down() )
       return;
 
-    if ( ! rogue -> rng.honor_among_thieves -> roll( rogue -> spec.honor_among_thieves -> proc_chance() ) )
+    if ( ! rogue -> rng().roll( rogue -> spec.honor_among_thieves -> proc_chance() ) )
       return;
 
     rogue_td_t* td = rogue -> get_target_data( rogue -> target );
@@ -3745,7 +3710,7 @@ void rogue_t::combat_begin()
         timespan_t cooldown = timespan_t::from_seconds( 2.0 );
         timespan_t remainder = interval - cooldown;
         if ( remainder < timespan_t::zero() ) remainder = timespan_t::zero();
-        timespan_t time = cooldown + p -> rng.hat_interval -> range( remainder * 0.5, remainder * 1.5 ) + timespan_t::from_seconds( 0.01 );
+        timespan_t time = cooldown + p -> rng().range( remainder * 0.5, remainder * 1.5 ) + timespan_t::from_seconds( 0.01 );
         sim.add_event( this, time );
       }
 

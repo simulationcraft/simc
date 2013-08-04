@@ -213,25 +213,6 @@ public:
     proc_t* uf_wasted;
   } proc;
 
-  // Random Number Generators
-  struct
-  {
-    rng_t* earthliving;
-    rng_t* echo_of_the_elements;
-    rng_t* elemental_overload;
-    rng_t* lava_surge;
-    rng_t* primal_wisdom;
-    rng_t* rolling_thunder;
-    rng_t* searing_flames;
-    rng_t* static_shock;
-    rng_t* t15_2pc_caster;
-    rng_t* t16_2pc_melee;
-    rng_t* t16_4pc_caster;
-    rng_t* t16_4pc_melee;
-    rng_t* windfury_delay;
-    rng_t* windfury_weapon;
-  } rng;
-
   // Class Specializations
   struct
   {
@@ -357,7 +338,6 @@ public:
     cooldown(),
     gain(),
     proc(),
-    rng(),
     spec(),
     mastery(),
     talent(),
@@ -414,7 +394,6 @@ public:
   virtual void      create_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
-  virtual void      init_rng();
   virtual void      init_actions();
   virtual void      moving();
   virtual void      invalidate_cache( cache_e c );
@@ -802,7 +781,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       if ( p() -> mastery.elemental_overload -> ok() )
         overload_chance += p() -> cache.mastery_value() * overload_chance_multiplier;
 
-      if ( overload_chance && p() -> rng.elemental_overload -> roll( overload_chance ) )
+      if ( overload_chance && rng().roll( overload_chance ) )
       {
         overload_spell -> execute();
         if ( p() -> set_bonus.tier13_4pc_caster() )
@@ -1589,7 +1568,7 @@ static bool trigger_windfury_weapon( shaman_melee_attack_t* a )
 
   if ( p -> cooldown.windfury_weapon -> down() ) return false;
 
-  if ( p -> rng.windfury_weapon -> roll( wf -> data().proc_chance() ) )
+  if ( p -> rng().roll( wf -> data().proc_chance() ) )
   {
     p -> cooldown.windfury_weapon -> start( timespan_t::from_seconds( 3.0 ) );
 
@@ -1597,7 +1576,7 @@ static bool trigger_windfury_weapon( shaman_melee_attack_t* a )
       p -> cooldown.feral_spirits -> ready -= timespan_t::from_seconds( p -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).base_value() );
 
     // Delay windfury by some time, up to about a second
-    new ( *p -> sim ) windfury_delay_event_t( wf, p -> rng.windfury_delay -> gauss( p -> wf_delay, p -> wf_delay_stddev ) );
+    new ( *p -> sim ) windfury_delay_event_t( wf, p -> rng().gauss( p -> wf_delay, p -> wf_delay_stddev ) );
     return true;
   }
   return false;
@@ -1612,7 +1591,7 @@ static bool trigger_rolling_thunder( shaman_spell_t* s )
   if ( ! p -> buff.lightning_shield -> check() )
     return false;
 
-  if ( p -> rng.rolling_thunder -> roll( p -> spec.rolling_thunder -> proc_chance() ) )
+  if ( s -> rng().roll( p -> spec.rolling_thunder -> proc_chance() ) )
   {
     if ( p -> buff.lightning_shield -> check() == 1 )
       p -> ls_reset = s -> sim -> current_time;
@@ -1657,7 +1636,7 @@ static bool trigger_static_shock ( shaman_melee_attack_t* a )
   if ( ! p -> buff.lightning_shield -> stack() )
     return false;
 
-  if ( p -> rng.static_shock -> roll( p -> spec.static_shock -> proc_chance() ) )
+  if ( p -> rng().roll( p -> spec.static_shock -> proc_chance() ) )
   {
     p -> active_lightning_charge -> execute();
     p -> proc.static_shock -> occur();
@@ -1823,7 +1802,7 @@ static bool trigger_lightning_strike( const action_state_t* s )
   }
 
   // Do Echo of the Elements procs trigger this?
-  if ( p -> rng.t15_2pc_caster -> roll( p -> sets -> set( SET_T15_2PC_CASTER ) -> proc_chance() ) )
+  if ( p -> rng().roll( p -> sets -> set( SET_T15_2PC_CASTER ) -> proc_chance() ) )
   {
     p -> action_lightning_strike -> execute();
     return true;
@@ -1841,12 +1820,12 @@ static bool trigger_tier16_2pc_melee( const action_state_t* s )
   if ( ! s -> action -> weapon )
     return false;
 
-  if ( ! p -> rng.t16_2pc_melee -> roll( p -> buff.tier16_2pc_melee -> data().proc_chance() ) )
+  if ( ! p -> rng().roll( p -> buff.tier16_2pc_melee -> data().proc_chance() ) )
     return false;
 
   p -> proc.t16_2pc_melee -> occur();
 
-  switch ( static_cast< int >( p -> rng.t16_2pc_melee -> range( 0, 3 ) ) )
+  switch ( static_cast< int >( p -> rng().range( 0, 3 ) ) )
   {
     // Windfury
     case 0:
@@ -1877,7 +1856,7 @@ static bool trigger_tier16_4pc_melee( const action_state_t* s )
   if ( p -> cooldown.t16_4pc_melee -> down() )
     return false;
 
-  if ( ! p -> rng.t16_4pc_melee -> roll( p -> sets -> set( SET_T16_4PC_MELEE ) -> proc_chance() ) )
+  if ( ! p -> rng().roll( p -> sets -> set( SET_T16_4PC_MELEE ) -> proc_chance() ) )
     return false;
 
   p -> cooldown.t16_4pc_melee -> start( p -> sets -> set( SET_T16_4PC_MELEE ) -> internal_cooldown() );
@@ -1897,7 +1876,7 @@ static bool trigger_tier16_4pc_caster( const action_state_t* s )
   if ( p -> cooldown.t16_4pc_caster -> down() )
     return false;
 
-  if ( ! p -> rng.t16_4pc_caster -> roll( p -> sets -> set( SET_T16_4PC_CASTER ) -> proc_chance() ) )
+  if ( ! p -> rng().roll( p -> sets -> set( SET_T16_4PC_CASTER ) -> proc_chance() ) )
     return false;
 
   p -> cooldown.t16_4pc_caster -> start( p -> sets -> set( SET_T16_4PC_CASTER ) -> internal_cooldown() );
@@ -2311,7 +2290,6 @@ struct stormstrike_melee_attack_t : public shaman_melee_attack_t
 struct windlash_t : public shaman_melee_attack_t
 {
   double swing_timer_variance;
-  rng_t* swing_time;
 
   windlash_t( const std::string& n, const spell_data_t* s, shaman_t* player, weapon_t* w, double stv ) :
     shaman_melee_attack_t( n, player, s ), swing_timer_variance( stv )
@@ -2321,8 +2299,6 @@ struct windlash_t : public shaman_melee_attack_t
     weapon            = w;
     base_execute_time = w -> swing_time;
     trigger_gcd       = timespan_t::zero();
-
-    swing_time = p() -> get_rng( "swing_timer_variance" );
   }
 
   timespan_t execute_time()
@@ -2331,7 +2307,7 @@ struct windlash_t : public shaman_melee_attack_t
 
     if ( swing_timer_variance > 0 )
     {
-      timespan_t st = timespan_t::from_seconds( swing_time -> gauss( t.total_seconds(), t.total_seconds() * swing_timer_variance ) );
+      timespan_t st = timespan_t::from_seconds( rng().gauss( t.total_seconds(), t.total_seconds() * swing_timer_variance ) );
       if ( sim -> debug )
         sim -> output( "Swing timer variance for %s, real_time=%.3f swing_timer=%.3f", name(), t.total_seconds(), st.total_seconds() );
 
@@ -2483,7 +2459,7 @@ void shaman_spell_base_t<Base>::impact( action_state_t* state )
   if ( may_proc_eoe && ab::result_is_hit( state -> result ) &&
        ab::harmful && ! ab::proc && ab::base_dd_min > 0 &&
        p -> talent.echo_of_the_elements -> ok() &&
-       p -> rng.echo_of_the_elements -> roll( eoe_proc_chance ) &&
+       ab::rng().roll( eoe_proc_chance ) &&
        p -> cooldown.echo_of_the_elements -> up() )
   {
     if ( ab::sim -> debug ) ab::sim -> output( "Echo of the Elements procs for %s", ab::name() );
@@ -2536,7 +2512,7 @@ void shaman_heal_t::impact( action_state_t* s )
   {
     double chance = ( s -> target -> resources.pct( RESOURCE_HEALTH ) > .35 ) ? elw_proc_high : elw_proc_low;
 
-    if ( p() -> rng.earthliving -> roll( chance ) )
+    if ( rng().roll( chance ) )
     {
       // Todo proc earthliving on target
     }
@@ -2566,7 +2542,7 @@ void shaman_melee_attack_t::impact( action_state_t* state )
   if ( may_proc_flametongue && weapon -> buff_type == FLAMETONGUE_IMBUE )
     trigger_flametongue_weapon( this );
 
-  if ( may_proc_primal_wisdom && p() -> rng.primal_wisdom -> roll( p() -> spec.primal_wisdom -> proc_chance() ) )
+  if ( may_proc_primal_wisdom && rng().roll( p() -> spec.primal_wisdom -> proc_chance() ) )
   {
     double amount = p() -> spell.primal_wisdom -> effectN( 1 ).percent() * p() -> resources.base[ RESOURCE_MANA ];
     p() -> resource_gain( RESOURCE_MANA, amount, p() -> gain.primal_wisdom );
@@ -2585,7 +2561,6 @@ struct melee_t : public shaman_melee_attack_t
 {
   int sync_weapons;
   bool first;
-  rng_t* swing_time;
   double swing_timer_variance;
 
   melee_t( const std::string& name, const spell_data_t* s, shaman_t* player, weapon_t* w, int sw, double stv ) :
@@ -2599,7 +2574,6 @@ struct melee_t : public shaman_melee_attack_t
     base_execute_time = w -> swing_time;
 
     if ( p() -> specialization() == SHAMAN_ENHANCEMENT && p() -> dual_wield() ) base_hit -= 0.19;
-    swing_time = p() -> get_rng( "swing_timer_variance" );
   }
 
   void reset()
@@ -2620,7 +2594,7 @@ struct melee_t : public shaman_melee_attack_t
 
     if ( swing_timer_variance > 0 )
     {
-      timespan_t st = timespan_t::from_seconds( swing_time -> gauss( t.total_seconds(), t.total_seconds() * swing_timer_variance ) );
+      timespan_t st = timespan_t::from_seconds( rng().gauss( t.total_seconds(), t.total_seconds() * swing_timer_variance ) );
       if ( sim -> debug )
         sim -> output( "Swing timer variance for %s, real_time=%.3f swing_timer=%.3f", name(), t.total_seconds(), st.total_seconds() );
       return st;
@@ -3531,11 +3505,8 @@ struct lightning_bolt_t : public shaman_spell_t
 
 struct elemental_blast_t : public shaman_spell_t
 {
-  rng_t* buff_rng;
-
   elemental_blast_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( "elemental_blast", player, player -> talent.elemental_blast, options_str ),
-    buff_rng( 0 )
+    shaman_spell_t( "elemental_blast", player, player -> talent.elemental_blast, options_str )
   {
     may_proc_eoe = true;
     overload_spell = new elemental_blast_overload_t( player );
@@ -3543,8 +3514,6 @@ struct elemental_blast_t : public shaman_spell_t
 
     if ( p() -> specialization() == SHAMAN_ENHANCEMENT )
       eoe_proc_chance = 0.06;
-
-    buff_rng = player -> get_rng( "elemental_blast_rng" );
   }
 
   virtual void execute()
@@ -3565,7 +3534,7 @@ struct elemental_blast_t : public shaman_spell_t
 
     if ( ( result == RESULT_NONE ) && may_miss )
     {
-      if ( rng_result -> roll( miss_chance( composite_hit(), s -> target ) ) )
+      if ( rng().roll( miss_chance( composite_hit(), s -> target ) ) )
         result = RESULT_MISS;
     }
 
@@ -3574,7 +3543,7 @@ struct elemental_blast_t : public shaman_spell_t
       result = RESULT_HIT;
       unsigned max_buffs = 3 + ( p() -> specialization() == SHAMAN_ENHANCEMENT ? 1 : 0 );
 
-      unsigned b = static_cast< unsigned >( buff_rng -> range( 0, max_buffs ) );
+      unsigned b = static_cast< unsigned >( rng().range( 0, max_buffs ) );
       assert( b < max_buffs );
 
       p() -> buff.elemental_blast_agility -> expire();
@@ -3591,7 +3560,7 @@ struct elemental_blast_t : public shaman_spell_t
       else
         p() -> buff.elemental_blast_agility -> trigger();
 
-      if ( rng_result -> roll( crit_chance( composite_crit() + composite_target_crit( s -> target ), delta_level ) ) )
+      if ( rng().roll( crit_chance( composite_crit() + composite_target_crit( s -> target ), delta_level ) ) )
         result = RESULT_CRIT;
     }
 
@@ -3926,7 +3895,7 @@ struct flame_shock_t : public shaman_spell_t
     if ( p() -> scale_lava_surge )
       proced = d -> state -> result == RESULT_CRIT;
     else
-      proced = p() -> rng.lava_surge -> roll ( p() -> spec.lava_surge -> proc_chance() );
+      proced = rng().roll ( p() -> spec.lava_surge -> proc_chance() );
 
     if ( proced )
     {
@@ -5539,28 +5508,6 @@ void shaman_t::init_procs()
   {
     proc.maelstrom_weapon_used[ i ] = get_proc( "maelstrom_weapon_stack_" + util::to_string( i ) );
   }
-}
-
-// shaman_t::init_rng =======================================================
-
-void shaman_t::init_rng()
-{
-  player_t::init_rng();
-
-  rng.earthliving          = get_rng( "earthliving"          );
-  rng.echo_of_the_elements = get_rng( "echo_of_the_elements" );
-  rng.elemental_overload   = get_rng( "elemental_overload"   );
-  rng.lava_surge           = get_rng( "lava_surge"           );
-  rng.primal_wisdom        = get_rng( "primal_wisdom"        );
-  rng.rolling_thunder      = get_rng( "rolling_thunder"      );
-  rng.searing_flames       = get_rng( "searing_flames"       );
-  rng.static_shock         = get_rng( "static_shock"         );
-  rng.t15_2pc_caster       = get_rng( "t15_2pc_caster"       );
-  rng.t16_2pc_melee        = get_rng( "t16_2pc_melee"        );
-  rng.t16_4pc_caster       = get_rng( "t16_4pc_caster"       );
-  rng.t16_4pc_melee        = get_rng( "t16_4pc_melee"        );
-  rng.windfury_delay       = get_rng( "windfury_delay"       );
-  rng.windfury_weapon      = get_rng( "windfury_weapon"      );
 }
 
 // shaman_t::init_actions ===================================================

@@ -586,7 +586,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 
       lag = p -> world_lag_override ? p -> world_lag : sim -> world_lag;
       dev = p -> world_lag_stddev_override ? p -> world_lag_stddev : sim -> world_lag_stddev;
-      reschedule_time = p -> rngs.lag_world -> gauss( lag, dev );
+      reschedule_time = rng().gauss( lag, dev );
     }
 
     event_t::cancel( expiration );

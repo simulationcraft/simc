@@ -341,19 +341,7 @@ public:
     proc_t* ready_unholy;
   } procs;
 
-  // RNGs
-  struct rngs_t
-  {
-    rng_t* blood_caked_blade;
-    rng_t* blood_parasite;
-    rng_t* blood_tap;
-    rng_t* plague_leech;
-    rng_t* rime;
-    rng_t* sudden_doom;
-    rng_t* t13_2pc_melee;
-
-    real_ppm_t* t15_2pc_melee;
-  } rng;
+  real_ppm_t* t15_2pc_melee;
 
   // Runes
   struct runes_t
@@ -392,7 +380,7 @@ public:
     glyph( glyphs_t() ),
     pets( pets_t() ),
     procs( procs_t() ),
-    rng( rngs_t() ),
+    t15_2pc_melee(),
     _runes( runes_t() )
   {
     range::fill( pets.army_ghoul, nullptr );
@@ -467,7 +455,7 @@ public:
 
 death_knight_t::~death_knight_t()
 {
-  delete rng.t15_2pc_melee;
+  delete t15_2pc_melee;
 }
 
 inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* death_knight ) :
@@ -772,7 +760,7 @@ static int random_depleted_rune( death_knight_t* p )
   {
     if ( p -> sim -> debug ) log_rune_status( p );
 
-    return depleted_runes[ ( int ) p -> rng.blood_tap -> range( 0, num_depleted ) ];
+    return depleted_runes[ ( int ) p -> rng().range( 0, num_depleted ) ];
   }
 
   return -1;
@@ -1583,7 +1571,7 @@ struct bloodworms_pet_t : public death_knight_pet_t
             sim -> output( "%s-%s burst chance, base=%f multiplier=%f total=%f",
                            o -> name(), player -> name(), base_proc_chance, multiplier, base_proc_chance * multiplier );
 
-          if ( base_proc_chance * multiplier > p() -> rng_blood_burst -> range( 0, 999 ) )
+          if ( base_proc_chance * multiplier > rng().range( 0, 999 ) )
             new ( *sim ) blood_burst_event_t( p(), timespan_t::zero() );
           else
             p() -> blood_gorged -> trigger();
@@ -1600,11 +1588,10 @@ struct bloodworms_pet_t : public death_knight_pet_t
   melee_t* melee;
   buff_t* blood_gorged;
   blood_burst_t* blood_burst;
-  rng_t*  rng_blood_burst;
 
   bloodworms_pet_t( sim_t* sim, death_knight_t* owner ) :
     death_knight_pet_t( sim, owner, "bloodworms", true, true ),
-    melee( nullptr ), blood_gorged( nullptr ), blood_burst( nullptr ), rng_blood_burst( 0 )
+    melee( nullptr ), blood_gorged( nullptr ), blood_burst( nullptr )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.55;
@@ -1630,13 +1617,6 @@ struct bloodworms_pet_t : public death_knight_pet_t
                    .chance( 1 );
   }
 
-  void init_rng()
-  {
-    pet_t::init_rng();
-
-    rng_blood_burst = get_rng( "blood_burst" );
-  }
-
   virtual void summon( timespan_t duration = timespan_t::zero() )
   {
     pet_t::summon( duration );
@@ -1654,16 +1634,14 @@ struct gargoyle_pet_t : public death_knight_pet_t
 {
   struct travel_t : public action_t
   {
-    rng_t* travel_rng;
     bool executed;
 
     travel_t( player_t* player ) :
       action_t( ACTION_OTHER, "travel", player ),
-      travel_rng( 0 ), executed( false )
+      executed( false )
     {
       may_miss = false;
       dual = true;
-      travel_rng = player -> get_rng( "gargoyle_travel" );
     }
 
     result_e calculate_result( action_state_t* /* s */ )
@@ -1687,7 +1665,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
     // ~3 seconds seems to be the optimal initial delay
     // FIXME: Verify if behavior still exists on 5.3 PTR
     timespan_t execute_time()
-    { return timespan_t::from_seconds( travel_rng -> gauss( 2.9, 0.2 ) ); }
+    { return timespan_t::from_seconds( rng().gauss( 2.9, 0.2 ) ); }
 
     bool ready()
     { return ! executed; }
@@ -2273,7 +2251,7 @@ static void trigger_t15_2pc_melee( death_knight_melee_attack_t* attack )
 
   death_knight_t* p = debug_cast< death_knight_t* >( attack -> player );
 
-  if ( ( p -> rng.t15_2pc_melee -> trigger( *attack ) ) )
+  if ( ( p -> t15_2pc_melee -> trigger( *attack ) ) )
   {
     p -> procs.t15_2pc_melee -> occur();
     size_t i;
@@ -2298,7 +2276,7 @@ static void trigger_bloodworms( death_knight_melee_attack_t* attack )
 
   death_knight_t* p = debug_cast< death_knight_t* >( attack -> player );
 
-  if ( p -> rng.blood_parasite -> roll( p -> spec.blood_parasite -> proc_chance() ) )
+  if ( p -> rng().roll( p -> spec.blood_parasite -> proc_chance() ) )
   {
     p -> procs.blood_parasite -> occur();
     size_t i;
@@ -2469,11 +2447,11 @@ struct melee_t : public death_knight_melee_attack_t
       {
         // T13 2pc gives 2 stacks of SD, otherwise we can only ever have one
         // Ensure that if we have 1 that we only refresh, not add another stack
-        int new_stacks = ( p() -> set_bonus.tier13_2pc_melee() && p() -> rng.t13_2pc_melee -> roll( p() -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() ) ) ? 2 : 1;
+        int new_stacks = ( p() -> set_bonus.tier13_2pc_melee() && p() -> rng().roll( p() -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() ) ) ? 2 : 1;
 
         // Mists of Pandaria Sudden Doom is 3 PPM
         if ( p() -> spec.sudden_doom -> ok() &&
-             p() -> rng.sudden_doom -> roll( weapon -> proc_chance_on_swing( 3 ) ) )
+             p() -> rng().roll( weapon -> proc_chance_on_swing( 3 ) ) )
         {
           // If we're proccing 2 or we have 0 stacks, trigger like normal
           if ( new_stacks == 2 || p() -> buffs.sudden_doom -> check() == 0 )
@@ -3920,12 +3898,12 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> rng.rime -> roll( p() -> spec.rime -> proc_chance() ) )
+      if ( rng().roll( p() -> spec.rime -> proc_chance() ) )
       {
         // T13 2pc gives 2 stacks of Rime, otherwise we can only ever have one
         // Ensure that if we have 1 that we only refresh, not add another stack
         int new_stacks = 1;
-        if ( p() -> rng.t13_2pc_melee -> roll( p() -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 2 ).percent() ) )
+        if ( rng().roll( p() -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 2 ).percent() ) )
           new_stacks++;
 
         // If we're proccing 2 or we have 0 stacks, trigger like normal
@@ -4558,12 +4536,10 @@ struct antimagic_shell_t : public death_knight_spell_t
   double interval_stddev;
   double interval_stddev_opt;
   double damage;
-  rng_t* rng;
 
   antimagic_shell_t( death_knight_t* p, const std::string& options_str ) :
     death_knight_spell_t( "antimagic_shell", p, p -> find_class_spell( "Anti-Magic Shell" ) ),
-    interval( 60 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( 0 ),
-    rng( p -> get_rng( "antimagic_shell" ) )
+    interval( 60 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( 0 )
   {
     harmful = false;
     base_dd_min = base_dd_max = 0;
@@ -4597,7 +4573,7 @@ struct antimagic_shell_t : public death_knight_spell_t
   {
     if ( damage > 0 )
     {
-      timespan_t new_cd = timespan_t::from_seconds( rng -> gauss( interval, interval_stddev ) );
+      timespan_t new_cd = timespan_t::from_seconds( rng().gauss( interval, interval_stddev ) );
       if ( new_cd < data().cooldown() )
         new_cd = data().cooldown();
 
@@ -5096,15 +5072,7 @@ void death_knight_t::init_rng()
 {
   player_t::init_rng();
 
-  rng.blood_caked_blade = get_rng( "blood_caked_blade" );
-  rng.blood_parasite   = get_rng( "blood_parasite"   );
-  rng.blood_tap         = get_rng( "blood_tap"         );
-  rng.plague_leech      = get_rng( "plague_leech"      );
-  rng.rime              = get_rng( "rime"              );
-  rng.sudden_doom       = get_rng( "sudden_doom"       );
-  rng.t13_2pc_melee     = get_rng( "t13_2pc_melee"     );
-
-  rng.t15_2pc_melee     = new real_ppm_t( "t15_2pc_melee", *this, 1.0 );
+  t15_2pc_melee     = new real_ppm_t( "t15_2pc_melee", *this, 1.0 );
 }
 
 // death_knight_t::init_base ================================================
@@ -6159,7 +6127,7 @@ void death_knight_t::reset()
 
   runic_power_decay_rate = 1; // 1 RP per second decay
 
-  rng.t15_2pc_melee -> reset();
+  t15_2pc_melee -> reset();
 
   _runes.reset();
 }

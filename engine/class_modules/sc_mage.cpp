@@ -157,11 +157,6 @@ public:
     proc_t* hotstreak;
   } procs;
 
-  // Random Number Generators
-  struct
-  {
-  } rng;
-
   // Rotation (DPS vs DPM)
   struct rotation_t
   {
@@ -259,7 +254,6 @@ public:
     passives( passives_t() ),
     pets( pets_t() ),
     procs( procs_t() ),
-    rng(),
     rotation( rotation_t() ),
     spells( spells_t() ),
     spec( specializations_t() ),
@@ -283,7 +277,6 @@ public:
   virtual void      create_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
-  virtual void      init_rng();
   virtual void      init_benefits();
   virtual void      init_actions();
   virtual void      reset();
@@ -3184,12 +3177,10 @@ struct molten_armor_t : public mage_spell_t
 struct nether_tempest_cleave_t: public mage_spell_t
 {
   player_t* main_target;
-  rng_t* rng;
 
   nether_tempest_cleave_t( mage_t* p ) :
     mage_spell_t( "nether_tempest_cleave", p, p -> find_spell( 114954 ) ),
-    main_target( nullptr ),
-    rng( p -> get_rng( "nether_tempest_cleave_target" ) )
+    main_target( nullptr )
   {
     background = true;
   }
@@ -3211,7 +3202,7 @@ struct nether_tempest_cleave_t: public mage_spell_t
     while ( target == main_target )
     {
       // Randomly select target index
-      unsigned t = static_cast<unsigned>( rng -> range( 0, as<double>( tl.size() ) ) );
+      unsigned t = static_cast<unsigned>( rng().range( 0, as<double>( tl.size() ) ) );
       if ( t >= tl.size() ) --t; // dsfmt range should not give a value actually equal to max, but be paranoid
       target = tl[ t ];
     }
@@ -4219,13 +4210,6 @@ void mage_t::add_action( const spell_data_t* s, std::string options, std::string
     *str += "/" + dbc::get_token( s -> id() );
     if ( ! options.empty() ) *str += "," + options;
   }
-}
-
-// mage_t::init_rng =======================================================
-
-void mage_t::init_rng()
-{
-  player_t::init_rng();
 }
 
 // mage_t::init_actions =====================================================
