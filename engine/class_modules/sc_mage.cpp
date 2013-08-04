@@ -1489,14 +1489,11 @@ struct arcane_brilliance_t : public mage_spell_t
 
 struct arcane_explosion_t : public mage_spell_t
 {
-  rng_t *arcane_explosion_charge_rng;
   arcane_explosion_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_explosion", p, p -> find_class_spell( "Arcane Explosion" ) ),
-    arcane_explosion_charge_rng( nullptr )
+    mage_spell_t( "arcane_explosion", p, p -> find_class_spell( "Arcane Explosion" ) )
   {
     parse_options( NULL, options_str );
     aoe = -1;
-    arcane_explosion_charge_rng = sim -> get_rng( "arcane_explosion_charge" );
   }
 
   virtual void execute()
@@ -1505,7 +1502,7 @@ struct arcane_explosion_t : public mage_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( arcane_explosion_charge_rng -> roll ( p() -> find_class_spell( "Arcane Explosion" ) -> effectN( 2 ).percent() ) )
+      if ( rng().roll ( p() -> find_class_spell( "Arcane Explosion" ) -> effectN( 2 ).percent() ) )
       {
         p() -> buffs.arcane_charge -> trigger();
       }
@@ -1527,10 +1524,8 @@ struct arcane_missiles_tick_t : public mage_spell_t
 
 struct arcane_missiles_t : public mage_spell_t
 {
-  rng_t *t16_4pc_arcane_rng;
   arcane_missiles_t( mage_t* p, const std::string& options_str ) :
-    mage_spell_t( "arcane_missiles", p, p -> find_class_spell( "Arcane Missiles" ) ),
-    t16_4pc_arcane_rng( nullptr )
+    mage_spell_t( "arcane_missiles", p, p -> find_class_spell( "Arcane Missiles" ) )
   {
     parse_options( NULL, options_str );
     may_miss = false;
@@ -1543,11 +1538,6 @@ struct arcane_missiles_t : public mage_spell_t
 
     dynamic_tick_action = true;
     tick_action = new arcane_missiles_tick_t( p );
-
-    if ( p -> set_bonus.tier16_2pc_caster() )
-    {
-      t16_4pc_arcane_rng = sim -> get_rng( "t16_4pc_arcane" );
-    }
   }
 
   virtual double action_multiplier()
@@ -1584,7 +1574,7 @@ struct arcane_missiles_t : public mage_spell_t
     }
 
     // T16 4pc has a chance not to consume arcane missiles buff
-    if ( !p() -> set_bonus.tier16_4pc_caster() || !t16_4pc_arcane_rng -> roll( p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() ) )
+    if ( !p() -> set_bonus.tier16_4pc_caster() || ! rng().roll( p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() ) )
     {
       p() -> buffs.arcane_missiles -> decrement();
     }
@@ -2407,13 +2397,11 @@ struct frostfire_bolt_t : public mage_spell_t
 
   mini_frostfire_bolt_t* mini_frostfire_bolt;
   frigid_blast_t* frigid_blast;
-  rng_t *t16_4pc_frost_rng;
 
   frostfire_bolt_t( mage_t* p, const std::string& options_str ) :
     mage_spell_t( "frostfire_bolt", p, p -> find_spell( 44614 ) ),
     mini_frostfire_bolt( new mini_frostfire_bolt_t( p ) ),
-    frigid_blast( new frigid_blast_t( p ) ),
-    t16_4pc_frost_rng( nullptr )
+    frigid_blast( new frigid_blast_t( p ) )
   {
     parse_options( NULL, options_str );
 
@@ -2428,7 +2416,6 @@ struct frostfire_bolt_t : public mage_spell_t
     if ( p -> set_bonus.tier16_2pc_caster() )
     {
       add_child( frigid_blast );
-      t16_4pc_frost_rng = sim -> get_rng( "t16_4pc_frost" );
     }
   }
 
@@ -2489,7 +2476,7 @@ struct frostfire_bolt_t : public mage_spell_t
       p() -> buffs.frozen_thoughts -> trigger();
     }
     // FIX ME: Instead of hardcoding 0.3, should use effect 2 of 145257
-    if ( p() -> set_bonus.tier16_4pc_caster() && t16_4pc_frost_rng -> roll( p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 2 ).percent() ) )
+    if ( p() -> set_bonus.tier16_4pc_caster() && rng().roll( p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 2 ).percent() ) )
     {
       frigid_blast -> schedule_execute();
     }

@@ -1672,11 +1672,8 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
 {
   struct improved_lava_lash_t : public shaman_spell_t
   {
-    rng_t* imp_ll_rng;
-
     improved_lava_lash_t( shaman_t* p ) :
-      shaman_spell_t( "improved_lava_lash", p ),
-      imp_ll_rng( 0 )
+      shaman_spell_t( "improved_lava_lash", p )
     {
       aoe = 4;
       may_miss = may_crit = false;
@@ -1685,7 +1682,6 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
       background = true;
       dual = true;
 
-      imp_ll_rng = sim -> get_rng( "improved_ll" );
     }
 
     // Exclude targets with your flame shock on
@@ -1741,7 +1737,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
 
         // There's no flame shocked targets to remove, eliminate a random target
         if ( ! removed )
-          target_cache.list.erase( target_cache.list.begin() + static_cast< size_t >( imp_ll_rng -> range( 0, as<double>( target_cache.list.size() ) ) ) );
+          target_cache.list.erase( target_cache.list.begin() + static_cast< size_t >( rng().range( 0, as<double>( target_cache.list.size() ) ) ) );
 
         total_targets--;
       }

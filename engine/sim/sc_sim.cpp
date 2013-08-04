@@ -1471,7 +1471,7 @@ bool sim_t::init()
   // Seed RNG
   if ( seed == 0 )
     seed = deterministic_rng ? 31459 : ( int ) time( nullptr );
-  rng.seed( seed + thread_index );
+  _rng.seed( seed + thread_index );
 
   // Timing wheel depth defaults to about 17 minutes with a granularity of 32 buckets per second.
   // This makes wheel_size = 32K and it's fully used.
@@ -2004,7 +2004,7 @@ double sim_t::gauss( double mean,
 {
   if ( average_gauss ) return mean;
 
-  return default_rng() -> gauss( mean, stddev );
+  return rng().gauss( mean, stddev );
 }
 
 // sim_t::gauss =============================================================
@@ -2013,20 +2013,6 @@ timespan_t sim_t::gauss( timespan_t mean,
                          timespan_t stddev )
 {
   return timespan_t::from_native( gauss( ( double ) timespan_t::to_native( mean ), ( double ) timespan_t::to_native( stddev ) ) );
-}
-
-// sim_t::get_rng ===========================================================
-
-rng_t* sim_t::get_rng( const std::string& )
-{
-  if ( ! separated_rng )
-    return default_rng();
-
-  rng_t* r = new rng_t;
-
-  rng_list.push_back( r );
-
-  return r;
 }
 
 // sim_t::iteration_adjust ==================================================

@@ -1515,7 +1515,6 @@ protected:
   role_e     affected_role;
 
   timespan_t saved_duration;
-  rng_t* rng;
   std::vector<player_t*> affected_players;
 
   raid_event_t( sim_t*, const std::string& );
@@ -1899,7 +1898,6 @@ public:
   event_t* expiration;
   event_t* delay;
   event_t* expiration_delay;
-  rng_t* rng;
   cooldown_t* cooldown;
   sc_timeline_t uptime_array;
 
@@ -2003,6 +2001,8 @@ public:
   const char* name() const { return name_str.c_str(); }
   std::string source_name() const;
   int max_stack() const { return _max_stack; }
+
+  rng_t& rng();
 };
 
 struct stat_buff_t : public buff_t
@@ -2546,14 +2546,13 @@ struct sim_t : private sc_thread_t
 
   // Random Number Generation
 private:
-  auto_dispose< std::vector<rng_t*> > rng_list;
   int deterministic_rng;
-  rng_t rng;
+  rng_t _rng;
 public:
   int separated_rng, average_range, average_gauss;
   int convergence_scale;
 
-  rng_t* default_rng()  { return &rng; }
+  rng_t& rng() { return _rng; }
 
   bool      roll( double chance );
   double    range( double min, double max );
@@ -2561,7 +2560,6 @@ public:
   double    gauss( double mean, double stddev );
   timespan_t gauss( timespan_t mean, timespan_t stddev );
   double    real() ;
-  rng_t*    get_rng( const std::string& name = std::string() );
 
   // Timing Wheel Event Management
   event_t* recycled_event_list;
@@ -4610,6 +4608,8 @@ public:
   { return 0; }
   virtual bool requires_data_collection() const
   { return active_during_iteration; }
+
+  rng_t& rng() { return sim -> rng(); }
 };
 
 // Target Specific ==========================================================
@@ -5135,6 +5135,8 @@ public:
   void remove_travel_event( travel_event_t* e );
   bool has_travel_events() const { return ! travel_events.empty(); }
   bool has_travel_events_for( const player_t* target ) const;
+
+  rng_t& rng() { return sim -> rng(); }
 };
 
 struct action_state_t : public noncopyable
@@ -6269,19 +6271,21 @@ inline std::string buff_t::source_name() const
   if ( player ) return player -> name_str;
   return "noone";
 }
+inline rng_t& buff_t::rng()
+{ return sim -> rng(); }
 // sim_t inlines
 
-inline double sim_t::real()                { return default_rng() -> real(); }
-inline bool   sim_t::roll( double chance ) { return default_rng() -> roll( chance ); }
+inline double sim_t::real()                { return rng().real(); }
+inline bool   sim_t::roll( double chance ) { return rng().roll( chance ); }
 inline double sim_t::range( double min, double max )
 {
-  return default_rng() -> range( min, max );
+  return rng().range( min, max );
 }
 inline double sim_t::averaged_range( double min, double max )
 {
   if ( average_range ) return ( min + max ) / 2.0;
 
-  return default_rng() -> range( min, max );
+  return rng().range( min, max );
 }
 
 inline buff_creator_t::operator buff_t* () const

@@ -131,7 +131,6 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   expiration(),
   delay(),
   expiration_delay(),
-  rng(),
   cooldown(),
   _max_stack( 1 ),
   default_value( DEFAULT_VALUE() ),
@@ -169,13 +168,11 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   {
     player -> buff_list.push_back( this );
     cooldown = source -> get_cooldown( "buff_" + name_str );
-    rng = source-> get_rng( name_str );
   }
   else // Sim Buffs
   {
     sim -> buff_list.push_back( this );
     cooldown = sim -> get_cooldown( "buff_" + name_str );
-    rng = sim -> get_rng( name_str );
   }
 
 
@@ -446,7 +443,7 @@ bool buff_t::trigger( int        stacks,
 
   if ( chance < 0 ) chance = default_chance;
 
-  if ( ! rng -> roll( chance ) )
+  if ( ! rng().roll( chance ) )
     return false;
 
   if ( value == DEFAULT_VALUE() && default_value != DEFAULT_VALUE() )

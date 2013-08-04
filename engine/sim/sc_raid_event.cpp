@@ -387,7 +387,7 @@ struct damage_event_t : public raid_event_t
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-      raid_damage -> base_dd_min = raid_damage -> base_dd_max = rng -> range( amount - amount_range, amount + amount_range );
+      raid_damage -> base_dd_min = raid_damage -> base_dd_max = sim -> rng().range( amount - amount_range, amount + amount_range );
       raid_damage -> target = p;
       raid_damage -> execute();
     }
@@ -424,7 +424,7 @@ struct heal_event_t : public raid_event_t
     {
       player_t* p = affected_players[ i ];
 
-      double x = rng -> range( amount - amount_range, amount + amount_range );
+      double x = sim -> rng().range( amount - amount_range, amount + amount_range );
       if ( sim -> log ) sim -> output( "%s takes %.0f raid heal.", p -> name(), x );
       p -> resource_gain( RESOURCE_HEALTH, x );
     }
@@ -519,8 +519,7 @@ raid_event_t::raid_event_t( sim_t* s, const std::string& n ) :
   players_only( false ),
   player_chance( 1.0 ),
   affected_role( ROLE_NONE ),
-  saved_duration( timespan_t::zero() ),
-  rng( s -> get_rng( "Raid Event" + n ) )
+  saved_duration( timespan_t::zero() )
 {}
 
 // raid_event_t::cooldown_time ==============================================
@@ -544,7 +543,7 @@ timespan_t raid_event_t::cooldown_time()
   }
   else
   {
-    time = rng -> gauss( cooldown, cooldown_stddev );
+    time = sim -> rng().gauss( cooldown, cooldown_stddev );
 
     if ( time < cooldown_min ) time = cooldown_min;
     if ( time > cooldown_max ) time = cooldown_max;
@@ -557,7 +556,7 @@ timespan_t raid_event_t::cooldown_time()
 
 timespan_t raid_event_t::duration_time()
 {
-  timespan_t time = rng -> gauss( duration, duration_stddev );
+  timespan_t time = sim -> rng().gauss( duration, duration_stddev );
 
   if ( time < duration_min ) time = duration_min;
   if ( time > duration_max ) time = duration_max;
@@ -831,7 +830,7 @@ bool raid_event_t::filter_player( const player_t* p )
   if ( p -> is_pet() && players_only )
     return true;
 
-  if ( ! rng -> roll( player_chance ) )
+  if ( ! sim -> rng().roll( player_chance ) )
     return true;
 
   if ( affected_role != ROLE_NONE && p -> role != affected_role )

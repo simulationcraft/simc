@@ -3159,7 +3159,7 @@ void monk_t::combat_begin()
   if ( talent.power_strikes -> ok() )
   {
     // Random start of the first tick.
-    timespan_t d = sim -> default_rng() -> real() * timespan_t::from_seconds( 20.0 );
+    timespan_t d = player_t::rng().real() * timespan_t::from_seconds( 20.0 );
     new ( *sim ) power_strikes_event_t( this, d );
   }
 }

@@ -439,7 +439,7 @@ void hurricane( player_t* p, const std::string& mh_enchant, const std::string& o
       virtual void trigger( action_t* /* a */, void* /* call_data */ )
       {
         if ( s_buff -> cooldown -> down() ) return;
-        if ( ! s_buff -> rng -> roll( 0.15 ) ) return;
+        if ( ! listener -> rng().roll( 0.15 ) ) return;
         if ( mh_buff && mh_buff -> check() )
         {
           mh_buff -> trigger();
@@ -664,7 +664,7 @@ struct windsong_callback_t : public action_callback_t
     {
       stat_buff_t* buff;
 
-      int p_type = ( int ) ( a -> sim -> default_rng() -> real() * 3.0 );
+      int p_type = ( int ) ( a -> sim -> rng().real() * 3.0 );
       switch ( p_type )
       {
         case 0: buff = haste_buff; break;
