@@ -205,6 +205,10 @@ CONFIG(to_install) {
 
 # deployment for linux
 unix:!mac {
+  CONFIG(console)
+  {
+  LIBS += -pthread
+  }
   DISTFILES += CHANGES \
                COPYING
 
