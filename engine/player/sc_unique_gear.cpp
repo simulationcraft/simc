@@ -843,6 +843,7 @@ void elemental_force( player_t* p, const std::string& mh_enchant, const std::str
   effect.max_stacks = 1;
   effect.school = SCHOOL_ELEMENTAL;
   effect.discharge_amount = amount;
+  effect.rppm_scale = maybe_ptr( p -> dbc.ptr ) ? RPPM_HASTE : RPPM_NONE;
 
   if ( mh_enchant == "elemental_force" )
   {
