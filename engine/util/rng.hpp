@@ -254,21 +254,6 @@ public:
   // This is the main interface of the RNG_ENGINE. Returns a uniformly distributed number in the range [0 1]
   double operator()()
   { return dsfmt_genrand_close_open( &dsfmt_global_data ) - 1.0; }
-
-
-#ifdef RNG_USE_SSE2
-  // Hack to get proper alignment for rng_base_t<rng_engine_mt_sse2_t>:
-  // 32-bit libraries typically align malloc chunks to sizeof(double) == 8.
-  // This object needs to be aligned to sizeof(__m128d) == 16.
-  static void* operator new( size_t size )
-  {
-    void* p = _mm_malloc( size, sizeof( __m128d ) );
-    if ( !p ) throw ( std::bad_alloc() );
-    return p;
-  }
-  static void operator delete( void* p )
-  { return _mm_free( p ); }
-#endif
 };
 
 // ==========================================================================
@@ -369,9 +354,7 @@ public:
     engine( new RNG_GENERATOR() ),
     gauss_pair_value( 0.0 ),
     gauss_pair_use( false )
-  {
-    seed();
-  }
+  { }
 
   ~distribution_t()
   {
@@ -453,7 +436,6 @@ public:
     return result;
   }
 
-
   // exponential distribution
   double exponential( double nu )
   {
@@ -470,14 +452,10 @@ public:
   // Exponentially modified Gaussian distribution
   double exgauss( double gauss_mean, double gauss_stddev, double exp_nu )
   { return std::max( 0.0, gauss( gauss_mean, gauss_stddev ) + exponential( exp_nu ) ); }
-
-
 };
 
 double stdnormal_cdf( double );
 double stdnormal_inv( double );
 } // end namespace rng
-
-
 
 #endif // RNG_HPP

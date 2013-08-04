@@ -21,6 +21,11 @@ int main( int argc, char *argv[] )
   module_t::init();
 
   QApplication a( argc, argv );
+  QCoreApplication::setApplicationName( "SimulationCraft" );
+  QCoreApplication::setApplicationVersion( SC_VERSION );
+  QCoreApplication::setOrganizationDomain( "http://code.google.com/p/simulationcraft/" );
+  QCoreApplication::setOrganizationName( "SimulationCraft" );
+
 
   QNetworkProxyFactory::setUseSystemConfiguration( true );
 
@@ -62,25 +67,6 @@ int main( int argc, char *argv[] )
   }
 
   SC_MainWindow w;
-
-  if ( w.historyWidth  != 0 &&
-       w.historyHeight != 0 )
-  {
-    w.resize( w.historyWidth, w.historyHeight );
-  }
-
-  if ( w.historyMaximized )
-  {
-    w.showMaximized();
-  }
-  else
-  {
-    w.showNormal();
-  }
-
-  w.setWindowTitle( "SimulationCraft " + QString( SC_VERSION ) );
-
-  w.cmdLine -> setFocus();
 
   {
     QStringList args = a.arguments();

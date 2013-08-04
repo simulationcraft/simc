@@ -541,6 +541,31 @@ void SC_OptionsTab::decodeOptions( QString encoding )
 
 QString SC_OptionsTab::encodeOptions()
 {
+  QSettings settings;
+  settings.setValue( "global/iterations", choice.iterations -> currentIndex() );
+  settings.setValue( "global/fight_length", choice.fight_length -> currentIndex() );
+  settings.setValue( "global/fight_variance", choice.fight_variance -> currentIndex() );
+  settings.setValue( "global/fight_style", choice.fight_style -> currentIndex() );
+  settings.setValue( "global/target_race", choice.target_race -> currentIndex() );
+  settings.setValue( "global/num_target", choice.num_target -> currentIndex() );
+  settings.setValue( "global/player_skill", choice.player_skill -> currentIndex() );
+  settings.setValue( "global/threads", choice.threads -> currentIndex() );
+  settings.setValue( "global/armory_region", choice.armory_region -> currentIndex() );
+  settings.setValue( "global/armory_spec", choice.armory_spec -> currentIndex() );
+  settings.setValue( "global/default_role", choice.default_role -> currentIndex() );
+  settings.setValue( "global/tmi_boss", choice.tmi_boss -> currentIndex() );
+  settings.setValue( "global/tmi_actor_only", choice.tmi_actor_only -> currentIndex() );
+  settings.setValue( "global/world_lag", choice.world_lag -> currentIndex() );
+  settings.setValue( "global/target_level", choice.target_level -> currentIndex() );
+  settings.setValue( "global/aura_delay", choice.aura_delay -> currentIndex() );
+  settings.setValue( "global/report_pets", choice.report_pets -> currentIndex() );
+  settings.setValue( "global/print_style", choice.print_style -> currentIndex() );
+  settings.setValue( "global/statistics_level", choice.statistics_level -> currentIndex() );
+  settings.setValue( "global/deterministic_rng", choice.deterministic_rng -> currentIndex() );
+  settings.setValue( "global/center_scale_delta", choice.center_scale_delta -> currentIndex() );
+  settings.setValue( "global/scale_over", choice.scale_over -> currentIndex() );
+  settings.setValue( "global/challenge_mode", choice.challenge_mode -> currentIndex() );
+
   QString encoded;
   QTextStream ss( &encoded );
 

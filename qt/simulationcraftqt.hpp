@@ -367,8 +367,6 @@ class SC_MainWindow : public QWidget
 {
   Q_OBJECT
 public:
-  qint32 historyWidth, historyHeight;
-  qint32 historyMaximized;
   QWidget* customGearTab;
   QWidget* customTalentsTab;
   QWidget* customGlyphsTab;

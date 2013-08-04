@@ -27,6 +27,9 @@ QTDIR=$$replace(QTDIR, //, /)
 QTBINDIR=$$[QT_INSTALL_BINS]
 QTBINDIR=$$replace(QTBINDIR, //, /)
 
+RESOURCES += \
+    qt/simcqt.qrc
+
 QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
 QMAKE_CXXFLAGS += $$OPTS
 

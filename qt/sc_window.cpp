@@ -67,6 +67,25 @@ void SC_MainWindow::updateSimProgress()
 
 void SC_MainWindow::loadHistory()
 {
+  QSettings settings;
+  QVariant size = settings.value( "gui/size");
+  if ( size.isValid() )
+      resize( size.toSize() );
+  QVariant pos = settings.value( "gui/position" );
+  if ( pos.isValid() )
+      move( pos.toPoint() );
+  QVariant maximized = settings.value( "gui/maximized" );
+  if ( maximized.isValid() )
+  {
+    if ( maximized.toBool() )
+      showMaximized();
+    else
+      showNormal();
+  }
+  else
+    showMaximized();
+
+
   http::cache_load( ( TmpDir.toStdString() + "/" + "simc_cache.dat" ).c_str() );
 
   QFile file( AppDataDir + "/" + SIMC_HISTORY_FILE );
@@ -77,9 +96,6 @@ void SC_MainWindow::loadHistory()
     QString historyVersion;
     in >> historyVersion;
     if ( historyVersion != QString( SC_VERSION ) ) return;
-    in >> historyWidth;
-    in >> historyHeight;
-    in >> historyMaximized;
     in >> simulateCmdLineHistory;
     in >> logCmdLineHistory;
     in >> resultsCmdLineHistory;
@@ -110,6 +126,11 @@ void SC_MainWindow::loadHistory()
 
 void SC_MainWindow::saveHistory()
 {
+  QSettings settings;
+  settings.setValue( "gui/size", normalGeometry().size() );
+  settings.setValue( "gui/position", normalGeometry().topLeft() );
+  settings.setValue( "gui/maximized", bool( windowState() & Qt::WindowMaximized ) );
+
   charDevCookies -> save();
   http::cache_save( ( TmpDir.toStdString() + "/" + "simc_cache.dat" ).c_str() );
 
@@ -164,11 +185,12 @@ void SC_MainWindow::saveHistory()
 
 SC_MainWindow::SC_MainWindow( QWidget *parent )
   : QWidget( parent ),
-    historyWidth( 0 ), historyHeight( 0 ), historyMaximized( 1 ),
     visibleWebView( 0 ), sim( 0 ), paperdoll_sim( 0 ), simPhase( "%p%" ), simProgress( 100 ), simResults( 0 ),
     AppDataDir( "." ), TmpDir( "." )
 {
+  setWindowTitle( QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion() );
   setAttribute( Qt::WA_AlwaysShowToolTips );
+
 #if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
   QDir::home().mkpath( "Library/Application Support/SimulationCraft" );
   AppDataDir = TmpDir = QDir::home().absoluteFilePath( "Library/Application Support/SimulationCraft" );
@@ -258,6 +280,9 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   setAcceptDrops( true );
 
   loadHistory();
+
+  cmdLine -> setFocus();
+
 }
 
 void SC_MainWindow::createCmdLine()
