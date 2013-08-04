@@ -107,7 +107,6 @@ scaling_t::scaling_t( sim_t* s ) :
   scale_lag( 0 ),
   scale_factor_noise( 0.10 ),
   normalize_scale_factors( 0 ),
-  smooth_scale_factors( 0 ),
   debug_scale_factors( 0 ),
   current_scaling_stat( STAT_NONE ),
   num_scaling_stats( 0 ),
@@ -156,8 +155,6 @@ void scaling_t::init_deltas()
 
   // Use block rating coefficient * 3.39 because it happens to result in nice round numbers both at level 85 and at level 90
   double default_delta = util::round( sim -> dbc.combat_rating( RATING_BLOCK, sim -> max_player_level ) * 0.0339 ) * scale_delta_multiplier;
-
-  if ( smooth_scale_factors ) default_delta /= 2;
 
   if ( stats.attribute[ ATTR_SPIRIT ] == 0 ) stats.attribute[ ATTR_SPIRIT ] = default_delta;
 
@@ -236,20 +233,6 @@ void scaling_t::analyze_stats()
   if ( ! num_scaling_stats ) return; // No Stats to scale
 
   baseline_sim = sim; // Take the current sim as baseline
-
-  if ( smooth_scale_factors ) // If smooth scale factors are demanded, execute a new base sim
-  {
-    if ( sim -> report_progress )
-    {
-      sim -> sim_phase_str = "Generating smooth baseline";
-      //util::fprintf( stdout, "\nGenerating smooth baseline...\n" );
-      //fflush( stdout );
-    }
-
-    baseline_sim = new sim_t( sim );
-    baseline_sim -> scaling -> scale_stat = STAT_MAX;
-    baseline_sim -> execute();
-  }
 
   for ( size_t k = 0; k < stats_to_scale.size(); ++k )
   {
@@ -530,7 +513,6 @@ void scaling_t::create_options()
   {
     // @option_doc loc=global/scale_factors title="Scale Factors"
     opt_bool( "calculate_scale_factors", calculate_scale_factors ),
-    opt_bool( "smooth_scale_factors", smooth_scale_factors ),
     opt_func( "normalize_scale_factors", parse_normalize_scale_factors ),
     opt_bool( "debug_scale_factors", debug_scale_factors ),
     opt_bool( "center_scale_delta", center_scale_delta ),

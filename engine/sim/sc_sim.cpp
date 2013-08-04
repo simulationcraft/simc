@@ -839,7 +839,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   challenge_mode( false ), scale_to_itemlevel ( -1 ),
   active_enemies( 0 ), active_allies( 0 ),
   deterministic_rng( false ),
-  separated_rng( false ), average_range( true ), average_gauss( false ),
+  average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
   recycled_event_list( 0 ),
   timing_wheel(), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), wheel_shift( 5 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
@@ -1459,14 +1459,6 @@ bool sim_t::init()
 {
   if ( initialized )
     return true;
-
-  if ( scaling -> smooth_scale_factors &&
-       scaling -> scale_stat != STAT_NONE )
-  {
-    separated_rng = true;
-    average_range = true;
-    deterministic_rng = true;
-  }
 
   // Seed RNG
   if ( seed == 0 )
@@ -2185,7 +2177,6 @@ void sim_t::create_options()
     // Regen
     opt_timespan( "regen_periodicity", regen_periodicity ),
     // RNG
-    opt_bool( "separated_rng", separated_rng ),
     opt_bool( "deterministic_rng", deterministic_rng ),
     opt_bool( "average_range", average_range ),
     opt_bool( "average_gauss", average_gauss ),

@@ -2549,7 +2549,7 @@ private:
   int deterministic_rng;
   rng_t _rng;
 public:
-  int separated_rng, average_range, average_gauss;
+  int average_range, average_gauss;
   int convergence_scale;
 
   rng_t& rng() { return _rng; }
@@ -2828,7 +2828,6 @@ struct scaling_t
   int    scale_lag;
   double scale_factor_noise;
   int    normalize_scale_factors;
-  int    smooth_scale_factors;
   int    debug_scale_factors;
   std::string scale_only_str;
   stat_e current_scaling_stat;
