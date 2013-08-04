@@ -1692,9 +1692,24 @@ struct tigereye_brew_t : public monk_spell_t
 
     int max_stacks_consumable = p() -> spec.brewing_tigereye_brew -> effectN( 2 ).base_value();
 
-    double use_value = value() * std::min( p() -> buff.tigereye_brew -> stack(), max_stacks_consumable );
-    p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
-    p() -> buff.tigereye_brew -> decrement( max_stacks_consumable );
+    // so value is going to actually be DIFFERENT if player is using T15 4set now...
+    if (player -> dbc.ptr ) {
+        double use_value = value() * std::min( p() -> buff.tigereye_brew -> stack(), max_stacks_consumable );
+        
+        if ( p() -> set_bonus.tier15_4pc_melee() ) {
+            // So increase the value by 1% per stack used...  HOWEVER, on PTR this is currently broken, and we are only receiving
+            // .5% per stack of Tigereye Brew Used.  Thus, max_stacks_consumable will be divided by 100 IF this is fixed.
+            use_value = ( value() ) * std::min( p() -> buff.tigereye_brew -> stack(), max_stacks_consumable ) + (max_stacks_consumable / 200); 
+        }
+            
+        p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
+        p() -> buff.tigereye_brew -> decrement( max_stacks_consumable );
+        
+    } else {
+        double use_value = value() * std::min( p() -> buff.tigereye_brew -> stack(), max_stacks_consumable );
+        p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
+        p() -> buff.tigereye_brew -> decrement( max_stacks_consumable );
+    }
   }
 };
 
