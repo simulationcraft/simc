@@ -3041,6 +3041,86 @@ void black_blood_of_yshaarj( item_t* item )
   p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
 }
 
+struct flurry_of_xuen_melee_t : public attack_t
+{
+  flurry_of_xuen_melee_t( player_t* player ) : 
+    attack_t( "flurry_of_xuen", player, player -> find_spell( 147891 ) )
+  {
+    const spell_data_t* driver = player -> find_spell( 146194 );
+
+    base_td = base_dd_min;
+    base_dd_min = base_dd_max = 0;
+    base_tick_time = driver -> effectN( 1 ).period();
+    num_ticks = driver -> duration() / base_tick_time;
+    tick_power_mod = this -> data().extra_coeff();
+    weapon = &( player -> main_hand_weapon );
+    weapon_power_mod = 0;
+    weapon_multiplier = 0;
+    proc = background = direct_tick = true;
+    callbacks = false;
+    dot_behavior = DOT_REFRESH;
+  }
+};
+
+struct flurry_of_xuen_ranged_t : public ranged_attack_t
+{
+  flurry_of_xuen_ranged_t( player_t* player ) : 
+    ranged_attack_t( "flurry_of_xuen", player, player -> find_spell( 147891 ) )
+  {
+    const spell_data_t* driver = player -> find_spell( 146194 );
+
+    base_tick_time = driver -> effectN( 1 ).period();
+    num_ticks = driver -> duration() / base_tick_time;
+    tick_power_mod = this -> data().extra_coeff();
+    weapon = &( player -> main_hand_weapon );
+    weapon_power_mod = 0;
+    weapon_multiplier = 0;
+    proc = background = direct_tick = true;
+    callbacks = false;
+    dot_behavior = DOT_REFRESH;
+    base_td = base_dd_min;
+    base_dd_min = base_dd_max = 0;
+    aoe = -1;
+  }
+};
+
+struct flurry_of_xuen_cb_t : public proc_callback_t<action_state_t>
+{
+  action_t* action;
+
+  flurry_of_xuen_cb_t( item_t* item, const special_effect_t& effect, action_t* a ) :
+    proc_callback_t<action_state_t>( item -> player, effect ), action( a )
+  { }
+
+  void execute( action_t*, action_state_t* )
+  { action -> schedule_execute(); }
+};
+
+void flurry_of_xuen( item_t* item )
+{
+  maintenance_check( 600 );
+
+  player_t* p = item -> player;
+  const spell_data_t* driver = p -> find_spell( 146195 );
+  std::string name = driver -> name_cstr();
+  util::tokenize( name );
+
+  special_effect_t effect;
+  effect.name_str = name;
+  effect.ppm = -1.0 * driver -> real_ppm();
+  effect.rppm_scale = RPPM_HASTE;
+
+  action_t* action = 0;
+  if ( p -> type == HUNTER )
+    action = new flurry_of_xuen_ranged_t( p );
+  else
+    action = new flurry_of_xuen_melee_t( p );
+
+  flurry_of_xuen_cb_t* cb = new flurry_of_xuen_cb_t( item, effect, new flurry_of_xuen_melee_t( p ) );
+
+  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+}
+
 } // end unique_gear namespace
 
 using namespace enchants;
@@ -3135,6 +3215,9 @@ void unique_gear::init( player_t* p )
 
       if ( util::str_compare_ci( item.name(), "black_blood_of_yshaarj" ) )
           black_blood_of_yshaarj( &item );
+
+      if ( util::str_compare_ci( item.name(), "fenyu_fury_of_xuen" ) )
+        flurry_of_xuen( &item );
     }
   }
 }
