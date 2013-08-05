@@ -3123,6 +3123,64 @@ void flurry_of_xuen( item_t* item )
   p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
 }
 
+// Xin-Ho, Breath of Yu'lon
+
+struct essence_of_yulon_t : public spell_t
+{
+  essence_of_yulon_t( player_t* p ) :
+    spell_t( "essence_of_yulon", p, p -> find_spell( 148008 ) )
+  {
+    proc = background = true;
+    callbacks = false;
+    aoe = -1;
+  }
+};
+
+struct essence_of_yulon_driver_t : public spell_t
+{
+  essence_of_yulon_driver_t( player_t* player ) :
+    spell_t( "essence_of_yulon", player, player -> find_spell( 146198 ) )
+  {
+    hasted_ticks = may_miss = may_crit = may_dodge = may_parry = may_block = callbacks = false;
+    proc = background = dual = true;
+    travel_speed = 0;
+
+    tick_action = new essence_of_yulon_t( player );
+    dynamic_tick_action = true;
+  }
+};
+
+struct essence_of_yulon_cb_t : public proc_callback_t<action_state_t>
+{
+  action_t* action;
+
+  essence_of_yulon_cb_t( item_t* item, const special_effect_t& effect ) :
+    proc_callback_t<action_state_t>( item -> player, effect ),
+    action( new essence_of_yulon_driver_t( item -> player ) )
+  { }
+
+  void execute( action_t*, action_state_t* )
+  { action -> schedule_execute(); }
+};
+
+void essence_of_yulon( item_t* item )
+{
+  maintenance_check( 600 );
+
+  player_t* p = item -> player;
+  const spell_data_t* driver = p -> find_spell( 146197 );
+  std::string name = driver -> name_cstr();
+  util::tokenize( name );
+
+  special_effect_t effect;
+  effect.name_str = name;
+  effect.ppm = -1.0 * driver -> real_ppm();
+  effect.rppm_scale = RPPM_HASTE;
+
+  essence_of_yulon_cb_t* cb = new essence_of_yulon_cb_t( item, effect );
+  p -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+}
+
 } // end unique_gear namespace
 
 using namespace enchants;
@@ -3218,8 +3276,12 @@ void unique_gear::init( player_t* p )
       if ( util::str_compare_ci( item.name(), "black_blood_of_yshaarj" ) )
           black_blood_of_yshaarj( &item );
 
-      if ( util::str_compare_ci( item.name(), "fenyu_fury_of_xuen" ) )
+      if ( util::str_compare_ci( item.name(), "fenyu_fury_of_xuen"      ) || 
+           util::str_compare_ci( item.name(), "gonglu_strength_of_xuen" ) )
         flurry_of_xuen( &item );
+
+      if ( util::str_compare_ci( item.name(), "xingho_breath_of_yulon" ) )
+        essence_of_yulon( &item );
     }
   }
 }
