@@ -3657,7 +3657,7 @@ double warrior_t::composite_block()
 
   // add mastery block to block_by_rating so we can have DR on it.
   if ( mastery.critical_block -> ok() )
-    block_by_rating += cache.mastery_value();
+    block_by_rating += composite_mastery()  * mastery.critical_block -> effectN( 2 ).mastery_value();
 
   double b = initial.block;
 
