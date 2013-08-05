@@ -716,6 +716,7 @@ void rivers_song( player_t* p, const std::string& mh_enchant, const std::string&
 {
   if ( mh_enchant == "rivers_song" || oh_enchant == "rivers_song" )
   {
+    const spell_data_t* driver = p -> find_spell( 104441 );
     const spell_data_t* spell = p -> find_spell( 116660 );
 
     stat_buff_t* buff  = stat_buff_creator_t( p, "rivers_song" )
@@ -726,7 +727,9 @@ void rivers_song( player_t* p, const std::string& mh_enchant, const std::string&
 
     special_effect_t effect;
     effect.name_str = "rivers_song";
-    effect.ppm = -4.0; // Real PPM
+    effect.ppm = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 4.0 ); // Real PPM
+    effect.cooldown = maybe_ptr( p -> dbc.ptr ) ? driver -> internal_cooldown() : timespan_t::from_seconds( 0.25 );
+    effect.rppm_scale = maybe_ptr( p -> dbc.ptr ) ? RPPM_HASTE : RPPM_NONE;
 
     if ( mh_enchant == "rivers_song" )
     {
@@ -885,6 +888,7 @@ void colossus( player_t* p, const std::string& mh_enchant, const std::string& oh
     special_effect_t effect;
     effect.name_str = "colossus";
     effect.ppm = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 6.0 ); // Real PPM
+    effect.rppm_scale = maybe_ptr( p -> dbc.ptr ) ? RPPM_HASTE : RPPM_NONE;
 
     if ( mh_enchant == "colossus" )
     {
