@@ -3268,7 +3268,7 @@ void unique_gear::init( player_t* p )
            util::str_compare_ci( item.name(), "fusionfire_core"          ) )
         cleave_trinket( &item );
 
-      if ( util::str_compare_ci( item.name(), "tohks_tail_tip"                 ) ||
+      if ( util::str_compare_ci( item.name(), "thoks_tail_tip"                 ) ||
            util::str_compare_ci( item.name(), "purified_bindings_of_immerseus" ) || 
            util::str_compare_ci( item.name(), "prismatic_prison_of_pride"      ) )
         amplify_trinket( &item );
