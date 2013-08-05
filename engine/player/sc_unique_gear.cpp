@@ -531,6 +531,7 @@ static bool jade_spirit_check_func( void* d )
 
 void jade_spirit( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant )
 {
+  const spell_data_t* driver = p -> find_spell( 120033 );
   const spell_data_t* spell = p -> find_spell( 104993 );
 
   if ( mh_enchant == "jade_spirit" || oh_enchant == "jade_spirit" )
@@ -545,7 +546,7 @@ void jade_spirit( player_t* p, const std::string& mh_enchant, const std::string&
 
     special_effect_t effect;
     effect.name_str = "jade_spirit";
-    effect.ppm = -2.0; // Real PPM
+    effect.ppm = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : -2.0 ); // Real PPM
     action_callback_t* cb = new buff_proc_callback_t<stat_buff_t>( p, effect, buff );
 
     p -> callbacks.register_spell_tick_damage_callback  ( SCHOOL_ALL_MASK, cb );
@@ -575,6 +576,7 @@ void dancing_steel( player_t* p, const std::string& enchant, weapon_t* w, const 
   if ( ! util::str_compare_ci( enchant, "dancing_steel" ) )
     return;
 
+  const spell_data_t* driver = p -> find_spell( 118333 );
   const spell_data_t* spell = p -> find_spell( 120032 );
 
   stat_buff_t* buff  = stat_buff_creator_t( p, "dancing_steel" + weapon_appendix )
@@ -585,7 +587,7 @@ void dancing_steel( player_t* p, const std::string& enchant, weapon_t* w, const 
 
   special_effect_t effect;
   effect.name_str = "dancing_steel" + weapon_appendix;
-  effect.ppm = -2.3; // Real PPM
+  effect.ppm = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 2.3 ); // Real PPM
 
   weapon_buff_proc_callback_t* cb  = new weapon_buff_proc_callback_t( p, effect, w, buff );
 
@@ -614,6 +616,7 @@ void bloody_dancing_steel( player_t* p, const std::string& enchant, weapon_t* w,
   if ( ! util::str_compare_ci( enchant, "bloody_dancing_steel" ) )
     return;
 
+  const spell_data_t* driver = p -> find_spell( 142531 );
   const spell_data_t* spell = p -> find_spell( 142530 );
 
   stat_buff_t* buff  = stat_buff_creator_t( p, "bloody_dancing_steel" + weapon_appendix )
@@ -624,7 +627,7 @@ void bloody_dancing_steel( player_t* p, const std::string& enchant, weapon_t* w,
 
   special_effect_t effect;
   effect.name_str = "bloody_dancing_steel" + weapon_appendix;
-  effect.ppm = -2.3; // Real PPM
+  effect.ppm = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 2.3 ); // Real PPM
 
   weapon_buff_proc_callback_t* cb  = new weapon_buff_proc_callback_t( p, effect, w, buff );
 
@@ -648,7 +651,8 @@ struct windsong_callback_t : public action_callback_t
     haste_buff  ( hb ), crit_buff( cb ), mastery_buff( mb ),
     real_ppm( "windsong", *p )
   {
-    real_ppm.set_frequency( 2.0 );
+    const spell_data_t* driver = p -> find_spell( 104561 );
+    real_ppm.set_frequency( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 2.0 );
   }
 
   virtual void reset()
@@ -833,13 +837,14 @@ void elemental_force( player_t* p, const std::string& mh_enchant, const std::str
   if ( p -> is_enemy() )
     return;
 
+  const spell_data_t* driver = p -> find_spell( 104428 );
   const spell_data_t* elemental_force_spell = p -> find_spell( 116616 );
 
   double amount = ( elemental_force_spell -> effectN( 1 ).min( p ) + elemental_force_spell -> effectN( 1 ).max( p ) ) / 2;
 
   special_effect_t effect;
   effect.name_str = "elemental_force";
-  effect.ppm = -10.0; // Real PPM
+  effect.ppm = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 10.0 ); // Real PPM
   effect.max_stacks = 1;
   effect.school = SCHOOL_ELEMENTAL;
   effect.discharge_amount = amount;
@@ -867,7 +872,8 @@ void colossus( player_t* p, const std::string& mh_enchant, const std::string& oh
 {
   if ( mh_enchant == "colossus" || oh_enchant == "colossus" )
   {
-    const spell_data_t* ts = p -> find_spell( 118314 ); // trigger spell
+    const spell_data_t* driver = p -> find_spell( 118314 );
+    const spell_data_t* ts = p -> find_spell( 116631 ); // trigger spell
 
     absorb_buff_t* buff = absorb_buff_creator_t( p, "colossus" )
                           .spell( ts -> effectN( 1 ).trigger() )
@@ -878,7 +884,7 @@ void colossus( player_t* p, const std::string& mh_enchant, const std::string& oh
 
     special_effect_t effect;
     effect.name_str = "colossus";
-    effect.ppm = -6.0; // Real PPM
+    effect.ppm = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 6.0 ); // Real PPM
 
     if ( mh_enchant == "colossus" )
     {
