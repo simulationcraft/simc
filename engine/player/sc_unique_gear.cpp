@@ -546,7 +546,7 @@ void jade_spirit( player_t* p, const std::string& mh_enchant, const std::string&
 
     special_effect_t effect;
     effect.name_str = "jade_spirit";
-    effect.ppm = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : -2.0 ); // Real PPM
+    effect.ppm = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 2.0 ); // Real PPM
     action_callback_t* cb = new buff_proc_callback_t<stat_buff_t>( p, effect, buff );
 
     p -> callbacks.register_spell_tick_damage_callback  ( SCHOOL_ALL_MASK, cb );
