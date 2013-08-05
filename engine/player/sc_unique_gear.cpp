@@ -2842,6 +2842,12 @@ void cooldown_reduction_trinket( item_t* item )
     { ROGUE_SUBTLETY,      { "evasion", "vanish", "cloak_of_shadows", "shadow_dance", "shadow_blades", 0 } },
     { SHAMAN_ENHANCEMENT,  { "spiritwalkers_grace", "earth_elemental_totem", "fire_elemental_totem", "shamanistic_rage", "ascendance", "feral_spirit" } },
     { DRUID_FERAL,         { "tigers_fury", "berserk", "barkskin", "survival_instincts" } },
+    { WARRIOR_FURY,        { "dragon_roar", "bladestorm", "shockwave", "avatar", "bloodbath", "recklessness", "shield_wall" } },
+    { WARRIOR_ARMS,        { "dragon_roar", "bladestorm", "shockwave", "avatar", "bloodbath", "recklessness", "shield_wall" } },
+    { WARRIOR_PROTECTION,  { "shield_wall", "demoralizing_shout", "last_stand", "recklessness", "heroic_leap" } },
+    { DEATHKNIGHT_BLOOD,   { "antimagic_shell", "dancing_rune_weapon", "icebound_fortitude", "outbreak", "vampiric_blood" } },
+    { DEATHKNIGHT_FROST,   { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "empower_rune_weapon", "outbreak", "pillar_of_frost" } },
+    { DEATHKNIGHT_UNHOLY,  { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "empower_rune_weapon", "outbreak" } },
     { SPEC_NONE,           { 0 } }
   };
 
