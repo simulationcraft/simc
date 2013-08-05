@@ -266,8 +266,8 @@
       </LinkTimeCodeGeneration>
     </Link>
   </ItemDefinitionGroup>
-  <Import Project="source_files\VS_engine.props" />
-  <Import Project="source_files\VS_gui.props" />
+  <Import Project="..\source_files\VS_engine.props" />
+  <Import Project="..\source_files\VS_gui.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
