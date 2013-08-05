@@ -2683,6 +2683,7 @@ void cleave_trinket( item_t* item )
     void execute( action_t* /* action */, action_state_t* state )
     {
       strike -> base_dd_min = strike -> base_dd_max = state -> result_amount;
+      strike -> target = state -> target;
       strike -> schedule_execute();
     }
   };
@@ -2770,6 +2771,7 @@ void multistrike_trinket( item_t* item )
     void execute( action_t* /* action */, action_state_t* state )
     {
       strike -> base_dd_min = strike -> base_dd_max = state -> result_amount;
+      strike -> target = state -> target;
       strike -> schedule_execute();
     }
   };
@@ -3100,8 +3102,11 @@ struct flurry_of_xuen_cb_t : public proc_callback_t<action_state_t>
     action( new flurry_of_xuen_driver_t( listener, listener -> create_proc_action( effect.name_str ) ) )
   { }
 
-  void execute( action_t*, action_state_t* )
-  { action -> schedule_execute(); }
+  void execute( action_t*, action_state_t* state )
+  {
+    action -> target = state -> target;
+    action -> schedule_execute(); 
+  }
 };
 
 void flurry_of_xuen( item_t* item )
@@ -3159,8 +3164,11 @@ struct essence_of_yulon_cb_t : public proc_callback_t<action_state_t>
     action( new essence_of_yulon_driver_t( item -> player ) )
   { }
 
-  void execute( action_t*, action_state_t* )
-  { action -> schedule_execute(); }
+  void execute( action_t*, action_state_t* state )
+  {
+    action -> target = state -> target;
+    action -> schedule_execute();
+  }
 };
 
 void essence_of_yulon( item_t* item )
