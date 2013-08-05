@@ -3116,7 +3116,7 @@ void flurry_of_xuen( item_t* item )
   else
     action = new flurry_of_xuen_melee_t( p );
 
-  flurry_of_xuen_cb_t* cb = new flurry_of_xuen_cb_t( item, effect, new flurry_of_xuen_melee_t( p ) );
+  flurry_of_xuen_cb_t* cb = new flurry_of_xuen_cb_t( item, effect, action );
 
   p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
 }
