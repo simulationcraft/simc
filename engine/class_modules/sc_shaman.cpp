@@ -4827,6 +4827,26 @@ struct shaman_lightning_strike_t : public shaman_melee_attack_t
   }
 };
 
+// Shaman Flurry of Xuen proc
+
+struct shaman_flurry_of_xuen_t : public shaman_melee_attack_t
+{
+  shaman_flurry_of_xuen_t( shaman_t* p ) :
+    shaman_melee_attack_t( "flurry_of_xuen", p, p -> find_spell( 147891 ) )
+  {
+    may_proc_windfury = false;
+    may_proc_flametongue = true;
+    may_proc_maelstrom = false;
+    may_proc_primal_wisdom = false;
+    callbacks = false;
+    proc = background = true;
+    weapon = &( p -> main_hand_weapon );
+    weapon_power_mod = 0;
+    weapon_multiplier = 0;
+    direct_power_mod = data().extra_coeff();
+  }
+};
+
 // ==========================================================================
 // Shaman Passive Buffs
 // ==========================================================================
@@ -5097,6 +5117,7 @@ action_t* shaman_t::create_proc_action( const std::string& name )
 {
   // Capacitive meta proc strike
   if ( name == "lightning_strike" ) return new shaman_lightning_strike_t( this );
+  if ( name == "flurry_of_xuen"   ) return new shaman_flurry_of_xuen_t( this );
 
   return player_t::create_proc_action( name );
 }
