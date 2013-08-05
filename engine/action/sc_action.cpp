@@ -699,12 +699,15 @@ double action_t::crit_chance( double crit, int /* delta_level */ )
 double action_t::total_crit_bonus()
 {
   double crit_multiplier_buffed = crit_multiplier * composite_player_critical_multiplier();
-  double bonus = ( ( 1.0 + crit_bonus ) * crit_multiplier_buffed - 1.0 ) * crit_bonus_multiplier;
+  double base_crit_bonus = crit_bonus;
+  if ( ! player -> is_pet() && ! player -> is_enemy() )
+    base_crit_bonus += player -> buffs.amplified -> value();
+  double bonus = ( ( 1.0 + base_crit_bonus ) * crit_multiplier_buffed - 1.0 ) * crit_bonus_multiplier;
 
   if ( sim -> debug )
   {
     sim -> output( "%s crit_bonus for %s: cb=%.3f b_cb=%.2f b_cm=%.2f b_cbm=%.2f",
-                   player -> name(), name(), bonus, crit_bonus, crit_multiplier_buffed, crit_bonus_multiplier );
+                   player -> name(), name(), bonus, base_crit_bonus, crit_multiplier_buffed, crit_bonus_multiplier );
   }
 
   return bonus;

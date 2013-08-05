@@ -2875,7 +2875,7 @@ double player_t::composite_melee_haste()
     }
 
     if ( buffs.amplified -> check() )
-      h /= 1.0 + buffs.amplified -> value();
+      h *= 1.0 / ( 1.0 + buffs.amplified -> value() );
   }
 
   return h;
@@ -3131,7 +3131,7 @@ double player_t::composite_spell_haste()
     }
 
     if ( buffs.amplified -> check() )
-      h /= 1.0 + buffs.amplified -> value();
+      h *= 1.0 / ( 1.0 + buffs.amplified -> value() );
   }
 
   return h;
@@ -3289,26 +3289,12 @@ double player_t::composite_player_critical_damage_multiplier()
 
   m *= 1.0 + buffs.skull_banner -> value();
 
-  if ( ! is_pet() && ! is_enemy() )
-  {
-    if ( buffs.amplified -> check() )
-      m *= 1.0 + buffs.amplified -> value();
-  }
-
   return m;
 }
 
 double player_t::composite_player_critical_healing_multiplier()
 {
   double m = 1.0;
-
-  if ( ! is_pet() && ! is_enemy() )
-  {
-    // FIXME: check whether to use effect #1 ( 36% ) or #3( 3.6% ), even though tooltip always refers to #1.
-    // Could also be buged scaling for #3
-    if ( buffs.amplified -> check() )
-      m *= 1.0 + buffs.amplified -> value();
-  }
 
   return m;
 }

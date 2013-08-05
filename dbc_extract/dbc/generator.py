@@ -1083,6 +1083,9 @@ class SpellDataGenerator(DataGenerator):
          137331, 137326, 
          146137,                    # Cleave
          146071,                    # Multistrike
+         120032, 142530,            # Dancing Steel
+         104993,                    # Jade Spirit
+         116631,                    # Colossus
         ),
         
         # Warrior:
