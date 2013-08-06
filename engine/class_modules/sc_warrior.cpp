@@ -3111,7 +3111,6 @@ void warrior_t::init_defense()
 {
   player_t::init_defense();
 
-  initial.parry_rating_per_strength = initial_rating().parry / 95116;
 }
 
 // warrior_t::init_base =====================================================
@@ -3129,7 +3128,7 @@ void warrior_t::init_base_stats()
 
   base.stats.attack_power = level * 2 + 60;
 
-  // FIXME! Level-specific!
+  // Avoidance diminishing Returns constants/conversions
   base.miss  = 0.030;
   base.dodge = 0.030; //90
   base.parry = 0.030; //90
@@ -3137,11 +3136,15 @@ void warrior_t::init_base_stats()
   base.block_reduction = 0.3;
 
   // updated from http://sacredduty.net/2012/09/14/avoidance-diminishing-returns-in-mop-followup/
-  diminished_kfactor = 0.956;
-
+  // re-confirmed http://www.sacredduty.net/2013/08/09/updated-diminishing-returns-coefficients-all-tanks/
+  diminished_kfactor = 0.9560000;
   diminished_block_cap = 1.5037594692967;
   diminished_dodge_cap = 0.906425;
   diminished_parry_cap = 2.37186;
+  
+  // note that these conversions are level-specific; these are L90 values
+  base.dodge_per_agility = 1 / 10000.0 / 100.0; // empirically tested
+  base.parry_per_strength = 1 / 95115.8596; // exact value given by Blizzard
 
   if ( spec.unwavering_sentinel -> ok() )
   {

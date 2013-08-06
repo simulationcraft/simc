@@ -5561,14 +5561,19 @@ void druid_t::init_base_stats()
   base.attack_power_per_strength = 1.0;
   base.spell_power_per_intellect = 1.0;
 
-  // FIXME! Level-specific?
+  // Avoidance diminishing Returns constants/conversions
   base.miss  = 0.030;
   base.dodge = 0.030;
   base.parry = 0.000;
 
-  diminished_kfactor   = 1.222;
-  diminished_dodge_cap = 1.502;
-  diminished_parry_cap = 0.008555; // ???
+  // based on http://www.sacredduty.net/2013/08/08/updated-diminishing-returns-coefficients-all-tanks/
+  diminished_kfactor   = 1.2220000;
+  diminished_dodge_cap = 1.50375948;
+  diminished_parry_cap = 1; // irrelevant for druids, cannot parry
+
+  // note that these conversions are level-specific; these are L90 values
+  base.dodge_per_agility = 1 / 95115.8596; // exact value given by Blizzard
+  base.parry_per_strength = 0; // this is also the default, but just to be safe...
 
   resources.base[ RESOURCE_ENERGY ] = 100;
   resources.base[ RESOURCE_RAGE   ] = 100;

@@ -5086,24 +5086,26 @@ void death_knight_t::init_base_stats()
 
   base.stats.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
 
-  // Level 90 values, horribly off for anything else
-  base.dodge   = 0.0300 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
-  base.miss    = 0.0300;
-  base.parry   = 0.0300;
-  base.block   = 0.0000;
-  base.parry_rating_per_strength = dbc.combat_rating( RATING_PARRY, level ) / 952.0 / 100.0;
-  base.dodge_per_agility = 1 / 10000.0 / 100.0;
-
   base.attack_power_per_strength = 2.0;
 
   resources.base[ RESOURCE_RUNIC_POWER ] = 100;
 
   base_gcd = timespan_t::from_seconds( 1.0 );
 
-  // Horribly off, what are the new values?
+  // Avoidance diminishing Returns constants/conversions
+  base.dodge   = 0.0300 + spec.veteran_of_the_third_war -> effectN( 2 ).percent();
+  base.miss    = 0.0300;
+  base.parry   = 0.0300;
+  base.block   = 0.0000;
+
+  // based on http://www.sacredduty.net/2013/08/08/updated-diminishing-returns-coefficients-all-tanks/
   diminished_kfactor   = 0.956;
-  diminished_dodge_cap = 0.906425;
-  diminished_parry_cap = 2.37186;
+  diminished_dodge_cap = 0.90642574;
+  diminished_parry_cap = 2.3718614;
+
+  // note that these conversions are level-specific; these are L90 values
+  base.parry_per_strength = 1 / 95115.8596; // exact value given by Blizzard
+  base.dodge_per_agility = 1 / 10000.0 / 100.0; // empirically tested
 }
 
 // death_knight_t::init_spells ==============================================

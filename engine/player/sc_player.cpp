@@ -754,7 +754,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   attack_power_per_agility( 0 ),
   attack_crit_per_agility( 0 ),
   dodge_per_agility( 0 ),
-  parry_rating_per_strength( 0 ),
+  parry_per_strength( 0 ),
   mana_regen_per_spirit( 0 ),
   mana_regen_from_spirit_multiplier( 0 ),
   health_per_stamina( 0 ),
@@ -793,7 +793,7 @@ std::string player_t::base_initial_current_t::to_string()
   s << " attack_power_per_agility=" << attack_power_per_agility;
   s << " attack_crit_per_agility=" << attack_crit_per_agility;
   s << " dodge_per_agility=" << dodge_per_agility;
-  s << " parry_rating_per_strength=" << parry_rating_per_strength;
+  s << " parry_per_strength=" << parry_per_strength;
   s << " mana_regen_per_spirit=" << mana_regen_per_spirit;
   s << " mana_regen_from_spirit_multiplier=" << mana_regen_from_spirit_multiplier;
   s << " health_per_stamina=" << health_per_stamina;
@@ -1191,10 +1191,10 @@ void player_t::init_base_stats()
     base.mana_regen_per_second = dbc.regen_base( type, level ) / 5.0;
     base.mana_regen_per_spirit = dbc.regen_spirit( type, level );
     base.health_per_stamina    = dbc.health_per_stamina( level );
-    base.dodge_per_agility     = dbc.dodge_scaling( type, level );
+    base.dodge_per_agility     = 1 / 10000.0 / 100.0; // default at L90, modified for druid/monk in class module
+    base.parry_per_strength    = 0.0;                 // only certain classes get STR->parry conversions, handle in class module
   }
 
-  base.parry_rating_per_strength = 0.0;
   base.spell_power_multiplier    = 1.0;
   base.attack_power_multiplier   = 1.0;
 
@@ -3055,14 +3055,14 @@ double player_t::composite_parry()
   //changed it to match the typical formulation
 
   double parry_by_parry_rating = current.stats.parry_rating / current.rating.parry;
-  double parry_by_strength = ( cache.strength() - base.stats.attribute[ ATTR_STRENGTH ] ) * current.parry_rating_per_strength / current.rating.parry;
+  double parry_by_strength = ( cache.strength() - base.stats.attribute[ ATTR_STRENGTH ] ) * current.parry_per_strength;
   // these are pre-DR values
 
   double p = current.parry;
 
-  if ( current.parry_rating_per_strength > 0 )
+  if ( current.parry_per_strength > 0 )
   {
-    p += base.stats.attribute[ ATTR_STRENGTH ] * current.parry_rating_per_strength / current.rating.parry;
+    p += base.stats.attribute[ ATTR_STRENGTH ] * current.parry_per_strength;
   }
 
   if ( parry_by_strength > 0 || parry_by_parry_rating > 0 )
@@ -3440,7 +3440,7 @@ void player_t::invalidate_cache( cache_e c )
     case CACHE_STRENGTH:
       if ( current.attack_power_per_strength > 0 )
         invalidate_cache( CACHE_ATTACK_POWER );
-      if ( current.parry_rating_per_strength > 0 )
+      if ( current.parry_per_strength > 0 )
         invalidate_cache( CACHE_PARRY );
     case CACHE_AGILITY:
       if ( current.attack_power_per_agility > 0 )

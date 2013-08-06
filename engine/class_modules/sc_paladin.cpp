@@ -4082,7 +4082,6 @@ void paladin_t::init_defense()
 
   player_t::init_defense();
 
-  initial.parry_rating_per_strength = initial_rating().parry / 95115.8596; // exact value given by Blizzard
 }
 
 // paladin_t::init_base =====================================================
@@ -4098,19 +4097,23 @@ void paladin_t::init_base_stats()
 
   resources.base[ RESOURCE_HOLY_POWER ] = 3 + passives.boundless_conviction -> effectN( 1 ).base_value();
 
-  // FIXME! Level-specific!
+  // Avoidance diminishing Returns constants/conversions
   base.miss    = 0.030;
   base.dodge   = 0.030;  //90
   base.parry   = 0.030;  //90
   base.block   = 0.030;  //90
 
-  //based on http://sacredduty.net/2012/09/14/avoidance-diminishing-returns-in-mop-followup/
+  // based on http://sacredduty.net/2012/09/14/avoidance-diminishing-returns-in-mop-followup/
   diminished_kfactor    = 0.886;
-
   diminished_parry_cap = 2.37186;
   diminished_block_cap = 1.5037594692967;
   diminished_dodge_cap = 0.6656744;
-
+  
+  // note that these conversions are level-specific; these are L90 values
+  base.dodge_per_agility = 1 / 10000.0 / 100.0; // empirically tested
+  base.parry_per_strength = 1 / 95115.8596; // exact value given by Blizzard
+  
+  
   switch ( specialization() )
   {
     case PALADIN_HOLY:
@@ -5483,7 +5486,7 @@ double paladin_t::get_divine_bulwark()
   if ( ! passives.divine_bulwark -> ok() )
     return 0.0;
 
-  // block rating, 2.25% per point of mastery
+  // block rating, 1% per point of mastery
   return cache.mastery_value();
 }
 
