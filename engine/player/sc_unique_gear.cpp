@@ -3832,7 +3832,7 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( ptr && item_id == 102312                      ) e = "OnDirectDamage_11761Mastery_15%_20Dur_105Cd";
   else if ( ptr && item_id == 102313                      ) e = "OnSpellDamage_11761Crit_15%_20Dur_105Cd";
   else if ( ptr && item_id == 102315                      ) e = "OnAttackHit_11759Haste_15%_20Dur_105Cd";
-  else if ( ptr && name == "ticking_ebon_detonator"       ) e = "OnDirectDamage_0.61RPPM_22Cd_20Dur_5Tick_4Stack_" + std::string( thunderforged ? ( heroic ? "1276" : "1131" ) : ( heroic ? "1207" : ( item_id == 102311 ? "947" : lfr ? "847" : "1069" ) ) ) + "Agi_Reverse_NoRefresh";
+  else if ( ptr && name == "ticking_ebon_detonator"       ) e = "OnDirectDamage_0.61RPPM_22Cd_20Dur_1Tick_20Stack_" + std::string( thunderforged ? ( heroic ? "1276" : "1131" ) : ( heroic ? "1207" : ( item_id == 102311 ? "947" : lfr ? "847" : "1069" ) ) ) + "Agi_Reverse_NoRefresh";
   else if ( ptr && name == "skeers_bloodsoaked_talisman"  ) e = "OnAttackHit_0.51RPPM_22Cd_20Dur_1Tick_20Stack_" + std::string( thunderforged ? ( heroic ? "1402" : "1242" ) : ( heroic ? "1326" : ( item_id == 102311 ? "1041" : lfr ? "931" : "1175" ) ) ) + "Crit_NoRefresh";
 
   // 5.2 Trinkets
