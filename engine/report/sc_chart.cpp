@@ -2367,7 +2367,7 @@ std::string chart::gear_weights_askmrrobot( player_t* p )
     }
     else
     {
-      ss << '?';
+      ss << "Unknown_Region_Server_or_Name";
     }
   }
   ss << "?spec=";
@@ -2453,7 +2453,7 @@ std::string chart::gear_weights_askmrrobot( player_t* p )
   ss << "&weights=";
 
   // check for negative normalizer
-  bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
+  bool positive_normalizing_value = p -> scaling_normalized.get_stat( p -> normalize_by() ) >= 0;
 
   // AMR accepts a max precision of 2 decimal places
   ss.precision( std::min( p -> sim -> report_precision + 1, 2 ) );
@@ -2482,7 +2482,7 @@ std::string chart::gear_weights_askmrrobot( player_t* p )
       value = 9.99;
 
     // append the stat weight to the URL
-    ss << util::stat_type_askmrrobot( i ) << ':' << value;
+    ss << util::stat_type_askmrrobot( i ) << ':' << std::fixed << value;
   }
 
   // softweights, softcaps, hardcaps would go here if we supported them
