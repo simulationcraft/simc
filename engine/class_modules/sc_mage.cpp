@@ -4499,6 +4499,9 @@ void mage_t::init_actions()
 
       action_list_str += "/mirror_image";
       action_list_str += "/frozen_orb,if=!buff.fingers_of_frost.react";
+      
+      //on PTR fb's debuff is removed
+      //action_list_str += "/icy_veins,if=(buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22,moving=0";
       action_list_str += "/icy_veins,if=(debuff.frostbolt.stack>=3&(buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22,moving=0";
 
       if ( race == RACE_ORC )                 action_list_str += "/blood_fury,if=buff.icy_veins.up|cooldown.icy_veins.remains>30|target.time_to_die<18";
@@ -4532,7 +4535,9 @@ void mage_t::init_actions()
       else if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
       else if ( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=target.time_to_die>cast_time+tick_time";
 
+      //on PTR, it need to be removed
       action_list_str += "/frostbolt,if=debuff.frostbolt.stack<3";
+      
       action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react&cooldown.icy_veins.remains>2";
       action_list_str += "/ice_lance,if=buff.fingers_of_frost.react&cooldown.icy_veins.remains>2";
       action_list_str += "/frostbolt";
