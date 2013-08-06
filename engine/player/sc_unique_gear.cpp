@@ -2841,13 +2841,14 @@ void cooldown_reduction_trinket( item_t* item )
     { ROGUE_COMBAT,        { "evasion", "adrenaline_rush", "cloak_of_shadows", "killing_spree", "shadow_blades", 0 } },
     { ROGUE_SUBTLETY,      { "evasion", "vanish", "cloak_of_shadows", "shadow_dance", "shadow_blades", 0 } },
     { SHAMAN_ENHANCEMENT,  { "spiritwalkers_grace", "earth_elemental_totem", "fire_elemental_totem", "shamanistic_rage", "ascendance", "feral_spirit" } },
-    { DRUID_FERAL,         { "tigers_fury", "berserk", "barkskin", "survival_instincts" } },
+    { DRUID_FERAL,         { "tigers_fury", "berserk", "barkskin", "survival_instincts", 0, 0 } },
     { WARRIOR_FURY,        { "dragon_roar", "bladestorm", "shockwave", "avatar", "bloodbath", "recklessness" } },
     { WARRIOR_ARMS,        { "dragon_roar", "bladestorm", "shockwave", "avatar", "bloodbath", "recklessness" } },
-    { WARRIOR_PROTECTION,  { "shield_wall", "demoralizing_shout", "last_stand", "recklessness", "heroic_leap" } },
-    { DEATH_KNIGHT_BLOOD,   { "antimagic_shell", "dancing_rune_weapon", "icebound_fortitude", "outbreak", "vampiric_blood" } },
-    { DEATH_KNIGHT_FROST,   { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "empower_rune_weapon", "outbreak", "pillar_of_frost" } },
-    { DEATH_KNIGHT_UNHOLY,  { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "empower_rune_weapon", "outbreak" } },
+    { WARRIOR_PROTECTION,  { "shield_wall", "demoralizing_shout", "last_stand", "recklessness", "heroic_leap", 0 } },
+    { DEATH_KNIGHT_BLOOD,  { "antimagic_shell", "dancing_rune_weapon", "icebound_fortitude", "outbreak", "vampiric_blood", 0 } },
+    { DEATH_KNIGHT_FROST,  { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "empower_rune_weapon", "outbreak", "pillar_of_frost" } },
+    { DEATH_KNIGHT_UNHOLY, { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "empower_rune_weapon", "outbreak", "summon_gargoyle" } },
+    { MONK_WINDWALKER,     { "energizing_brew", "fist_of_fury", "flying_serpent_kick", "fortifying_brew", "zen_meditation", 0 } },
     { SPEC_NONE,           { 0 } }
   };
 
@@ -3831,19 +3832,19 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( ptr && item_id == 102312                      ) e = "OnDirectDamage_11761Mastery_15%_20Dur_105Cd";
   else if ( ptr && item_id == 102313                      ) e = "OnSpellDamage_11761Crit_15%_20Dur_105Cd";
   else if ( ptr && item_id == 102315                      ) e = "OnAttackHit_11759Haste_15%_20Dur_105Cd";
-  else if ( ptr && name == "ticking_ebon_detonator"       ) e = "OnDirectDamage_0.57RPPM_22Cd_20Dur_1Tick_20Stack_" + std::string( thunderforged ? ( heroic ? "1276" : "1131" ) : ( heroic ? "1207" : ( item_id == 102311 ? "947" : lfr ? "847" : "1069" ) ) ) + "Agi_Reverse";
+  else if ( ptr && name == "ticking_ebon_detonator"       ) e = "OnDirectDamage_0.61RPPM_22Cd_20Dur_5Tick_4Stack_" + std::string( thunderforged ? ( heroic ? "1276" : "1131" ) : ( heroic ? "1207" : ( item_id == 102311 ? "947" : lfr ? "847" : "1069" ) ) ) + "Agi_Reverse_NoRefresh";
   else if ( ptr && name == "skeers_bloodsoaked_talisman"  ) e = "OnAttackHit_0.51RPPM_22Cd_20Dur_1Tick_20Stack_" + std::string( thunderforged ? ( heroic ? "1402" : "1242" ) : ( heroic ? "1326" : ( item_id == 102311 ? "1041" : lfr ? "931" : "1175" ) ) ) + "Crit_NoRefresh";
 
   // 5.2 Trinkets
-  else if ( name == "talisman_of_bloodlust"               ) e = "OnDirectDamage_"    + std::string( thunderforged ? ( heroic ? "1834" : "1625" ) : ( heroic ? "1736" : lfr ? "1277" : "1538" ) ) + "Haste_3.3RPPM_5Stack_10Dur";
-  else if ( name == "primordius_talisman_of_rage"         ) e = "OnDirectDamage_"    + std::string( thunderforged ? ( heroic ? "1834" : "1625" ) : ( heroic ? "1736" : lfr ? "1277" : "1538" ) ) + "Str_3.3RPPM_5Stack_10Dur";
-  else if ( name == "gaze_of_the_twins"                   ) e = "OnAttackCrit_"      + std::string( thunderforged ? ( heroic ? "3423" : "3032" ) : ( heroic ? "3238" : lfr ? "2381" : "2868" ) ) + "Crit_0.83RPPMAttackCrit_3Stack_20Dur";
-  else if ( name == "renatakis_soul_charm"                ) e = "OnDirectDamage_"    + std::string( thunderforged ? ( heroic ? "1592" : "1410" ) : ( heroic ? "1505" : lfr ? "1107" : "1333" ) ) + "Agi_0.62RPPM_10Stack_20Dur_2Tick_22Cd_NoRefresh";
-  else if ( name == "fabled_feather_of_jikun"             ) e = "OnDirectDamage_"    + std::string( thunderforged ? ( heroic ? "1910" : "1692" ) : ( heroic ? "1806" : lfr ? "1328" : "1600" ) ) + "Str_0.62RPPM_10Stack_20Dur_2Tick_22Cd_NoRefresh";
+  else if ( name == "talisman_of_bloodlust"               ) e = "OnDirectDamage_"    + std::string( thunderforged ? ( heroic ? "1834" : "1625" ) : ( heroic ? "1736" : lfr ? "1277" : "1538" ) ) + "Haste_" + ( ptr ? "3.5" : "3.3" ) + "RPPM_5Stack_10Dur" + ( ptr ? "_3Cd" : 0 );
+  else if ( name == "primordius_talisman_of_rage"         ) e = "OnDirectDamage_"    + std::string( thunderforged ? ( heroic ? "1834" : "1625" ) : ( heroic ? "1736" : lfr ? "1277" : "1538" ) ) + "Str_" + ( ptr ? "3.5" : "3.3" ) + "RPPM_5Stack_10Dur" + ( ptr ? "_3Cd" : 0 );
+  else if ( name == "gaze_of_the_twins"                   ) e = "OnAttackCrit_"      + std::string( thunderforged ? ( heroic ? "3423" : "3032" ) : ( heroic ? "3238" : lfr ? "2381" : "2868" ) ) + "Crit_" + ( ptr ? "0.72" : "0.83" ) + "RPPMAttackCrit_3Stack_20Dur" + ( ptr ? "_3Cd" : 0 );
+  else if ( name == "renatakis_soul_charm"                ) e = "OnDirectDamage_"    + std::string( thunderforged ? ( heroic ? "1592" : "1410" ) : ( heroic ? "1505" : lfr ? "1107" : "1333" ) ) + "Agi_" + ( ptr ? "0.70" : "0.62" ) + "RPPM_10Stack_20Dur_2Tick_22Cd_NoRefresh";
+  else if ( name == "fabled_feather_of_jikun"             ) e = "OnDirectDamage_"    + std::string( thunderforged ? ( heroic ? "1910" : "1692" ) : ( heroic ? "1806" : lfr ? "1328" : "1600" ) ) + "Str_" + ( ptr ? "0.70" : "0.62" ) + "RPPM_10Stack_20Dur_2Tick_22Cd_NoRefresh";
 
-  else if ( name == "wushoolays_final_choice"             ) e = "OnSpellDamage_"     + std::string( thunderforged ? ( heroic ? "1592" : "1410" ) : ( heroic ? "1505" : lfr ? "1107" : "1333" ) ) + "Int_0.56RPPM_10Stack_20Dur_2Tick_22Cd_NoRefresh";
-  else if ( name == "breath_of_the_hydra"                 ) e = "OnSpellTickDamage_" + std::string( thunderforged ? ( heroic ? "8753" : "7754" ) : ( heroic ? "8279" : lfr ? "6088" : "7333" ) ) + "Int_0.53RPPM_20Dur";
-  else if ( name == "chayes_essence_of_brilliance"        ) e = "OnHarmfulSpellCrit_" + std::string( thunderforged ? ( heroic ? "8753" : "7754" ) : ( heroic ? "8279" : lfr ? "6088" : "7333" ) ) + "Int_0.81RPPMSpellCrit_10Dur";
+  else if ( name == "wushoolays_final_choice"             ) e = "OnSpellDamage_"     + std::string( thunderforged ? ( heroic ? "1592" : "1410" ) : ( heroic ? "1505" : lfr ? "1107" : "1333" ) ) + "Int_" + ( ptr ? "0.61" : "0.56" ) + "RPPM_10Stack_20Dur_2Tick_22Cd_NoRefresh";
+  else if ( name == "breath_of_the_hydra"                 ) e = "OnSpellTickDamage_" + std::string( thunderforged ? ( heroic ? "8753" : "7754" ) : ( heroic ? "8279" : lfr ? "6088" : "7333" ) ) + "Int_" + ( ptr ? "0.55" : "0.53" ) + "RPPM_20Dur" + ( ptr ? "_3Cd" : 0 );
+  else if ( name == "chayes_essence_of_brilliance"        ) e = "OnHarmfulSpellCrit_" + std::string( thunderforged ? ( heroic ? "8753" : "7754" ) : ( heroic ? "8279" : lfr ? "6088" : "7333" ) ) + "Int_" + ( ptr ? "0.85" : "0.81" ) +  "RPPMSpellCrit_10Dur" + ( ptr ? "_3Cd" : 0 );
 
   else if ( name == "brutal_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Str_15%_15Dur_75Cd";
   else if ( name == "vicious_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Agi_15%_20Dur_105Cd";
