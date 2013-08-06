@@ -972,15 +972,8 @@ double dbc_t::spell_crit_base( pet_e t, unsigned level ) const
 
 double dbc_t::dodge_base( player_e t ) const
 {
-  uint32_t class_id = util::class_id( t );
-
-  assert( class_id < dbc_t::class_max_size() );
-#if SC_USE_PTR
-  return ptr ? __ptr_gt_chance_to_dodge_base[ class_id ]
-             : __gt_chance_to_dodge_base[ class_id ];
-#else
-  return __gt_chance_to_dodge_base[ class_id ];
-#endif
+  // base dodge is now 3.0 for all classes
+  return 3.0;
 }
 
 double dbc_t::dodge_base( pet_e t ) const
@@ -1053,24 +1046,6 @@ double dbc_t::spell_crit_scaling( player_e t, unsigned level ) const
 double dbc_t::spell_crit_scaling( pet_e t, unsigned level ) const
 {
   return spell_crit_scaling( util::pet_class_type( t ), level );
-}
-
-double dbc_t::dodge_scaling( player_e t, unsigned level ) const
-{
-  uint32_t class_id = util::class_id( t );
-
-  assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_LEVEL );
-#if SC_USE_PTR
-  return ptr ? __ptr_gt_dodge_per_agi[ class_id ][ level - 1 ]
-             : __gt_dodge_per_agi[ class_id ][ level - 1 ];
-#else
-  return __gt_dodge_per_agi[ class_id ][ level - 1 ];
-#endif
-}
-
-double dbc_t::dodge_scaling( pet_e t, unsigned level ) const
-{
-  return dodge_scaling( util::pet_class_type( t ), level );
 }
 
 double dbc_t::regen_base( player_e t, unsigned level ) const
