@@ -158,3 +158,9 @@ unix:!mac {
   locale.files += locale/*
   locale.commands = @echo Installing localizations to $$INSTALLPATH/locale
 }
+  
+CONFIG(paperdoll) {
+  DEFINES += SC_PAPERDOLL
+  HEADERS += qt/simcpaperdoll.hpp
+  SOURCES += qt/simcpaperdoll.cc
+}

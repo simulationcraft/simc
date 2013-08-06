@@ -103,7 +103,7 @@ LINK_LIBS += -L$(OPENSSL_PATH)/lib -lssleay32
 endif
 
 include ../source_files/engine_make
-include ../source_files/engine_make_main
+include ../source_files/engine_main_make
 
 SRC_H   := $(filter %.h, $(SRC)) $(filter %.hh, $(SRC)) $(filter %.hpp, $(SRC)) $(filter %.inc, $(SRC))
 SRC_CPP := $(filter %.cpp, $(SRC))

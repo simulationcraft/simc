@@ -3,5 +3,5 @@
 
 # To change the list of source files, update the QT_ files and run update.py
 
-
- SOURCES += engine/sc_main.cpp
+SRC = \
+    sc_main.cpp \
