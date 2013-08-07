@@ -3883,6 +3883,8 @@ int rogue_t::decode_set( item_t& item )
 
   if ( strstr( s, "_gladiators_leather_" ) )  return SET_PVP_MELEE;
 
+  if ( util::str_in_str_ci( s, "_barbed_assassin" ) ) return SET_T16_MELEE;
+
   return SET_NONE;
 }
 
