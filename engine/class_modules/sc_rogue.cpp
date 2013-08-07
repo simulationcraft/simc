@@ -178,6 +178,7 @@ struct rogue_t : public player_t
     const spell_data_t* restless_blades;
     const spell_data_t* bandits_guile;
     const spell_data_t* killing_spree;
+    const spell_data_t* ruthlessness;
 
     // Subtlety
     const spell_data_t* master_of_subtlety;
@@ -195,6 +196,7 @@ struct rogue_t : public player_t
     const spell_data_t* bandits_guile_value;
     const spell_data_t* master_poisoner;
     const spell_data_t* relentless_strikes;
+    const spell_data_t* ruthlessness_cp;
     const spell_data_t* shadow_focus;
     const spell_data_t* tier13_2pc;
     const spell_data_t* tier13_4pc;
@@ -939,6 +941,13 @@ void rogue_attack_t::consume_resource()
   }
   else if ( resource_consumed > 0 )
     trigger_energy_refund( this );
+
+  if ( combo_points_spent > 0 )
+  {
+    double chance = p -> spec.ruthlessness -> effectN( 1 ).pp_combo_points() * combo_points_spent / 100.0;
+    if ( p -> rng().roll( chance ) )
+      cast_td( execute_state -> target ) -> combo_points.add( p -> spell.ruthlessness_cp -> effectN( 1 ).base_value(), "ruthlessness" );
+  }
 }
 
 // rogue_attack_t::execute ==================================================
@@ -3418,6 +3427,7 @@ void rogue_t::init_spells()
   spec.restless_blades      = find_specialization_spell( "Restless Blades" );
   spec.bandits_guile        = find_specialization_spell( "Bandit's Guile" );
   spec.killing_spree        = find_specialization_spell( "Killing Spree" );
+  spec.ruthlessness         = find_specialization_spell( "Ruthlessness" );
 
   // Subtlety
   spec.master_of_subtlety   = find_specialization_spell( "Master of Subtlety" );
@@ -3436,6 +3446,7 @@ void rogue_t::init_spells()
   // Misc spells
   spell.master_poisoner     = find_spell( 93068 );
   spell.relentless_strikes  = find_spell( 58423 );
+  spell.ruthlessness_cp     = spec.ruthlessness -> effectN( 1 ).trigger();
   spell.shadow_focus        = find_spell( 112942 );
   spell.tier13_2pc          = find_spell( 105864 );
   spell.tier13_4pc          = find_spell( 105865 );
