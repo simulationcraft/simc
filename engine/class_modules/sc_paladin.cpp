@@ -1072,6 +1072,50 @@ struct blessing_of_might_t : public paladin_spell_t
   }
 };
 
+// Blessing of the Guardians is the t16_2pc_tank set bonus
+struct blessing_of_the_guardians_t : public paladin_heal_t
+{
+  double accumulated_damage;
+  double healing_multiplier;
+
+  blessing_of_the_guardians_t( paladin_t* p ) :
+    paladin_heal_t( "blessing_of_the_guardians", p, p -> find_spell( 144581 ) )
+  {
+    background = true;
+    
+    // tested 8/7/2013 by Theck. Cannot crit, not affected by SoI, ticks not hasted
+    // It _is_ affected by Sanctified Wrath, but that's handled in assess_heal()
+    hasted_ticks = false;
+    may_crit = tick_may_crit = false;
+    benefits_from_seal_of_insight = false;
+    
+    // spell info not yet returning proper details, should heal for X every 1 sec for 10 sec.
+    base_tick_time = timespan_t::from_seconds( 1 );
+    num_ticks = 10;
+
+    // initialize accumulator
+    accumulated_damage = 0.0;
+
+    // store healing multiplier
+    healing_multiplier = p -> find_spell( 144580 ) -> effectN( 1 ).percent() / 2; // bugged on PTR, only giving half the advertised healing
+  }
+
+  virtual void increment_damage( double amount )
+  {
+    accumulated_damage += amount;
+  }
+
+  virtual void execute()
+  {
+    base_td = healing_multiplier * accumulated_damage / num_ticks;
+
+    paladin_heal_t::execute();
+
+    accumulated_damage = 0;
+  }
+
+};
+
 //Censure  ==================================================================
 
 // Censure is the debuff applied by Seal of Truth, and it's an oddball.  The dot ticks are really melee attacks, believe it or not.
@@ -1307,12 +1351,15 @@ struct divine_protection_t : public paladin_spell_t
       cooldown = p -> cooldowns.divine_protection;
       cooldown -> duration = data().cooldown();
     }
+
+    if ( p -> set_bonus.tier16_2pc_tank() )
+      p -> active.blessing_of_the_guardians = new blessing_of_the_guardians_t( p );
   }
 
   virtual void execute()
   {
     paladin_spell_t::execute();
-
+    
     p() -> buffs.divine_protection -> trigger();
   }
 };
@@ -1688,47 +1735,6 @@ struct flash_of_light_t : public paladin_heal_t
 
 // Guardian of the Ancient Kings ============================================
 
-// Blessing of the Guardians is the t16_2pc_tank set bonus
-struct blessing_of_the_guardians_t : public paladin_heal_t
-{
-  double accumulated_damage;
-  double healing_multiplier;
-
-  blessing_of_the_guardians_t( paladin_t* p ) :
-    paladin_heal_t( "blessing_of_the_guardians", p, p -> find_spell( 144581 ) )
-  {
-    background = true;
-    hasted_ticks = false; // guess, currently not completely implemented on PTR
-    may_crit = false; // guess, currently not completely implemented on PTR
-    // TODO: check if it can crit, hasted ticks, etc.
-
-    // spell info not yet returning proper details, should heal for X every 1 sec for 10 sec.
-    base_tick_time = timespan_t::from_seconds( 1 );
-    num_ticks = 10;
-
-    // initialize accumulator
-    accumulated_damage = 0.0;
-
-    // store healing multiplier
-    healing_multiplier = p -> find_spell( 144580 ) -> effectN( 1 ).percent();
-  }
-
-  virtual void increment_damage( double amount )
-  {
-    accumulated_damage += amount;
-  }
-
-  virtual void execute()
-  {
-    base_td = healing_multiplier * accumulated_damage / num_ticks;
-
-    paladin_heal_t::execute();
-
-    accumulated_damage = 0;
-  }
-
-};
-
 struct guardian_of_ancient_kings_t : public paladin_spell_t
 {
   guardian_of_ancient_kings_t( paladin_t* p, const std::string& options_str )
@@ -1736,8 +1742,6 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
   {
     parse_options( NULL, options_str );
     use_off_gcd = true;
-
-    p -> active.blessing_of_the_guardians = new blessing_of_the_guardians_t( p );
   }
 
   virtual void execute()
@@ -1746,8 +1750,6 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
 
     if ( p() -> specialization() == PALADIN_RETRIBUTION )
       p() -> guardian_of_ancient_kings -> summon( p() -> spells.guardian_of_ancient_kings_ret -> duration() );
-    else if ( p() -> specialization() == PALADIN_PROTECTION )
-      p() -> buffs.guardian_of_ancient_kings_prot -> trigger();
   }
 };
 
@@ -3942,12 +3944,12 @@ struct hand_of_sacrifice_t : public buff_t
   }
 };
 
-// Guardian of ancient kings Prot
-struct guardian_of_ancient_kings_prot_t : public buff_t
+// Divine Protection buff
+struct divine_protection_t : public buff_t
 {
 
-  guardian_of_ancient_kings_prot_t( paladin_t* p ) :
-    buff_t( buff_creator_t( p, "guardian_of_the_ancient_kings", p -> find_class_spell( "Guardian of Ancient Kings", std::string(), PALADIN_PROTECTION ) ) )
+  divine_protection_t( paladin_t* p ) :
+    buff_t( buff_creator_t( p, "divine_protection", p -> find_class_spell( "Divine Protection" ) ) )
   { }
 
   virtual void expire_override()
@@ -3965,6 +3967,8 @@ struct guardian_of_ancient_kings_prot_t : public buff_t
 };
 
 } // end namespace buffs
+
+// Hand of Sacrifice execute function
 
 void hand_of_sacrifice_t::execute()
 {
@@ -4374,7 +4378,7 @@ void paladin_t::create_buffs()
     buffs.avenging_wrath -> buff_duration *= 1.0 + find_talent_spell( "Sanctified Wrath" ) -> effectN( 2 ).percent();
   }
 
-  buffs.divine_protection      = buff_creator_t( this, "divine_protection", find_class_spell( "Divine Protection" ) ).cd( timespan_t::zero() ); // Let the ability handle the CD
+  buffs.divine_protection      = new buffs::divine_protection_t( this );
   buffs.divine_shield          = buff_creator_t( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                                  .cd( timespan_t::zero() ) // Let the ability handle the CD
                                  .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -4386,7 +4390,7 @@ void paladin_t::create_buffs()
   buffs.infusion_of_light      = buff_creator_t( this, "infusion_of_light", find_class_spell( "Infusion of Light" ) );
 
   // Prot
-  buffs.guardian_of_ancient_kings_prot = new buffs::guardian_of_ancient_kings_prot_t( this );
+  buffs.guardian_of_ancient_kings_prot = buff_creator_t( this, "guardian_of_ancient_kings_prot", find_class_spell( "Guardian of hte Ancient Kings", std::string(), PALADIN_PROTECTION ) );
   buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() ).chance( passives.grand_crusader -> proc_chance() );
   buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
   buffs.ardent_defender                = buff_creator_t( this, "ardent_defender" ).spell( find_specialization_spell( "Ardent Defender" ) );
@@ -5396,7 +5400,7 @@ void paladin_t::assess_damage( school_e school,
   }
 
   // T16 2-piece tank
-  if ( set_bonus.tier16_2pc_tank() && buffs.guardian_of_ancient_kings_prot -> check() )
+  if ( set_bonus.tier16_2pc_tank() && buffs.divine_protection -> check() )
   {
     active.blessing_of_the_guardians -> increment_damage( s -> result_mitigated ); // uses post-mitigation, pre-absorb value (tested 7/10/13 PTR)
   }
