@@ -3651,11 +3651,6 @@ double warrior_t::matching_gear_multiplier( attribute_e attr )
 
 double warrior_t::composite_block()
 {
-  // Only process everything else if were not getting a for sure block
-  if ( buff.shield_block -> up() )
-    return 1.0;
-
-
   double block_by_rating = current.stats.block_rating / current_rating().block;
 
   // add mastery block to block_by_rating so we can have DR on it.
@@ -3671,7 +3666,8 @@ double warrior_t::composite_block()
   }
 
   b += spec.bastion_of_defense -> effectN( 1 ).percent();
-
+  if ( buff.shield_block -> up() )
+    b += 1.0;
   return b;
 }
 
