@@ -2497,13 +2497,14 @@ void rune_of_reorigination( item_t* item )
   item -> unique = true;
 
   const spell_data_t* driver = item -> player -> find_spell( 139116 );
+  const spell_data_t* spell = item -> player -> find_spell( 139120 );
 
   special_effect_t data;
   data.name_str    = "rune_of_reorigination";
   data.ppm         = -1.0 * ( maybe_ptr( item -> player -> dbc.ptr ) ? driver -> real_ppm() : 1.0 ); // Real PPM
   data.ppm        *= item_database::approx_scale_coefficient( 528, item -> item_level() );
   data.cooldown    = maybe_ptr( item -> player -> dbc.ptr ) ? driver -> internal_cooldown() : timespan_t::from_seconds( 22.0 ); 
-  data.duration    = timespan_t::from_seconds( 10 ); // spell -> duration();
+  data.duration    = spell -> duration();
 
   item -> player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new rune_of_reorigination_callback_t( *item, data ) );
 }
