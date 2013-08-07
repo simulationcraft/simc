@@ -676,7 +676,10 @@ struct buff_state_t
     timespan_t save_buff_cd = buff -> cooldown -> duration; // Temporarily save the buff cooldown duration
     buff -> cooldown -> duration = timespan_t::zero(); // Don't restart the buff cooldown
 
-    buff -> execute( stacks, value, remain_time ); // Reset the buff
+    if ( stacks )
+      buff -> execute( stacks, value, remain_time ); // Reset the buff
+    else
+      buff -> expire();
 
     buff -> cooldown -> duration = save_buff_cd; // Restore the buff cooldown duration
   }
@@ -711,7 +714,13 @@ struct mage_state_t
     {
       buff_t* b = mage.buff_list[ i ];
 
-      if ( b -> current_stack == 0 )
+      if ( b == static_cast<player_t&>( mage ).buffs.exhaustion )
+        continue;
+
+      if ( b == static_cast<player_t&>( mage ).buffs.skull_banner )
+        continue;
+
+      if ( b == static_cast<player_t&>( mage ).buffs.stormlash )
         continue;
 
       buff_states.push_back( buff_state_t( b ) );
