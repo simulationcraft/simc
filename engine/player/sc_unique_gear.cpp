@@ -10,12 +10,6 @@ namespace { // UNNAMED NAMESPACE
 static std::string RTV( unsigned tf, unsigned lfr, unsigned flex, unsigned normal,
                         unsigned elite = 0, unsigned heroic = 0, unsigned heroic_elite = 0 )
 {
-  assert( ( ! lfr || lfr <= flex ) &&
-          ( ! flex || flex <= normal ) &&
-          ( ! normal || normal <= elite ) &&
-          ( ! elite || elite <= heroic ) &&
-          ( ! heroic || heroic <= heroic_elite ) );
-
   std::ostringstream s;
   if ( item_database::lfr( tf ) )
     s << lfr;
@@ -3849,7 +3843,6 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   //MoP Tank Trinkets
   else if ( name == "iron_protector_talisman"             ) e = "OnAttackHit_3386Dodge_15%_15Dur_45Cd";
 
-  /* LFR, Flex, Normal, Elite = 0, Heroic = 0, Heroic Elite = 0 */
   // 5.4 Trinkets
   else if ( ptr && name == "discipline_of_xuen"           ) e = "OnAttackHit_" +   RTV( tf, 0, 0, 6914, 9943 ) + "Mastery_15%_20Dur_105Cd";
   else if ( ptr && name == "yulons_bite"                  ) e = "OnSpellDamage_" + RTV( tf, 0, 0, 6914, 9943 ) + "Crit_15%_20Dur_105Cd";
