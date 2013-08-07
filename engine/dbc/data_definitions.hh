@@ -69,9 +69,7 @@ struct item_data_t {
   const char* icon;               // Icon filename
   unsigned flags_1;
   unsigned flags_2;
-  bool     lfr;
-  bool     heroic;
-  bool     thunderforged;
+  unsigned type_flags;
   int      level;                 // Ilevel
   int      req_level;
   int      req_skill;
@@ -102,6 +100,16 @@ struct item_data_t {
 
   bool is_armor()
   { return item_class == ITEM_CLASS_ARMOR && ( item_subclass >= ITEM_SUBCLASS_ARMOR_CLOTH && item_subclass <= ITEM_SUBCLASS_ARMOR_SHIELD ); }
+  bool normal() const
+  { return type_flags == 0; }
+  bool heroic() const
+  { return type_flags & RAID_TYPE_HEROIC; }
+  bool lfr() const
+  { return type_flags & RAID_TYPE_LFR; }
+  bool flex() const
+  { return type_flags & RAID_TYPE_FLEXIBLE; }
+  bool elite() const
+  { return type_flags & RAID_TYPE_ELITE; }
 };
 
 struct item_scale_data_t {

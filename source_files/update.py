@@ -54,7 +54,7 @@ def create_make_str( input ):
     modified_input = replace( input, r"engine/", r"" )
     modified_input = replace( modified_input , r"/" , r"$(PATHSEP)" )
     prepare = header( "Makefile" )
-    prepare += "SRC = \\"
+    prepare += "SRC += \\"
     for entry in modified_input:
         if entry[0] == "SOURCES" or entry[0] == "HEADERS":
             prepare += "\n    " + entry[1] + " \\"

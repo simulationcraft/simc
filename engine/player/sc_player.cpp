@@ -8180,9 +8180,10 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
         profile_str += item.slot_name();
         profile_str += "=";
         profile_str += item.name();
-        if ( item.parsed.data.heroic                ) profile_str += ",heroic=1";
-        if ( item.parsed.data.lfr                   ) profile_str += ",lfr=1";
-        if ( item.parsed.data.thunderforged         ) profile_str += ",thunderforged=1";
+        if ( item.parsed.data.heroic()                ) profile_str += ",heroic=1";
+        if ( item.parsed.data.lfr()                   ) profile_str += ",lfr=1";
+        if ( item.parsed.data.flex()                   ) profile_str += ",flex=1";
+        if ( item.parsed.data.elite()         ) profile_str += ",elite=1";
         if ( ! item.encoded_weapon().empty()        ) profile_str += ",weapon=" + item.encoded_weapon();
         if ( ! item.parsed.enchant.name_str.empty() ) profile_str += ",enchant=" + item.parsed.enchant.name_str;
         if ( ! item.parsed.addon.name_str.empty()   ) profile_str += ",addon="   + item.parsed.addon.name_str;

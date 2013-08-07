@@ -177,12 +177,14 @@ std::string item_t::to_string()
     s << " (" << ( parsed.data.level + item_database::upgrade_ilevel( parsed.data, upgrade_level() ) ) << ")";
   else if ( upgrade_level() > 0 )
     s << " (" << parsed.data.level << ")";
-  if ( parsed.data.lfr )
+  if ( parsed.data.lfr() )
     s << " LFR";
-  if ( parsed.data.heroic )
+  if ( parsed.data.flex() )
+    s << " Flexible";
+  if ( parsed.data.heroic() )
     s << " Heroic";
-  if ( parsed.data.thunderforged )
-    s << " Thunderforged";
+  if ( parsed.data.elite() )
+    s << " Elite";
   if ( util::is_match_slot( slot ) )
     s << " match=" << is_matching_type();
 
@@ -464,7 +466,8 @@ bool item_t::parse_options()
     opt_string( "weapon", option_weapon_str ),
     opt_string( "heroic", option_heroic_str ),
     opt_string( "lfr", option_lfr_str ),
-    opt_string( "thunderforged", option_thunderforged_str ),
+    opt_string( "flex", option_flex_str ),
+    opt_string( "elite", option_elite_str ),
     opt_string( "type", option_armor_type_str ),
     opt_string( "reforge", option_reforge_str ),
     opt_int( "suffix", parsed.suffix_id ),
@@ -488,6 +491,8 @@ bool item_t::parse_options()
   util::tolower( option_weapon_str           );
   util::tolower( option_heroic_str           );
   util::tolower( option_lfr_str              );
+  util::tolower( option_flex_str             );
+  util::tolower( option_elite_str            );
   util::tolower( option_armor_type_str       );
   util::tolower( option_reforge_str          );
   util::tolower( option_ilevel_str           );
@@ -514,13 +519,16 @@ std::string item_t::encoded_item()
     s << ",type=" << util::armor_type_string( parsed.data.item_subclass );
 
   if ( ! option_heroic_str.empty() )
-    s << ",heroic=" << parsed.data.heroic;
+    s << ",heroic=" << ( parsed.data.heroic() ? 1 : 0 );
 
   if ( ! option_lfr_str.empty() )
-    s << ",lfr=" << parsed.data.lfr;
+    s << ",lfr=" << ( parsed.data.lfr() ? 1 : 0 );
 
-  if ( ! option_thunderforged_str.empty() )
-    s << ",thunderforged=" << parsed.data.thunderforged;
+  if ( ! option_flex_str.empty() )
+    s << ",flex=" << ( parsed.data.flex() ? 1 : 0 );
+
+  if ( ! option_elite_str.empty() )
+    s << ",elite=" << ( parsed.data.elite() ? 1 : 0 );
 
   if ( ! option_quality_str.empty() )
     s << ",quality=" << util::item_quality_string( parsed.data.quality );
@@ -582,14 +590,17 @@ std::string item_t::encoded_comment()
        parsed.data.item_subclass != ITEM_SUBCLASS_ARMOR_MISC )
     s << "type=" << util::armor_type_string( parsed.data.item_subclass ) << ",";
 
-  if ( option_heroic_str.empty() && parsed.data.heroic )
-    s << "heroic=" << parsed.data.heroic << ",";
+  if ( option_heroic_str.empty() && parsed.data.heroic() )
+    s << "heroic=1,";
 
-  if ( option_lfr_str.empty() && parsed.data.lfr )
-    s << "lfr=" << parsed.data.lfr << ",";
+  if ( option_lfr_str.empty() && parsed.data.lfr() )
+    s << "lfr=1,";
 
-  if ( option_thunderforged_str.empty() && parsed.data.thunderforged )
-    s << "thunderforged=" << parsed.data.thunderforged << ",";
+  if ( option_flex_str.empty() && parsed.data.flex() )
+    s << "flex=1,";
+
+  if ( option_elite_str.empty() && parsed.data.elite() )
+    s << "elite=1,";
 
   if ( option_stats_str.empty() && ! encoded_stats().empty() )
     s << "stats=" << encoded_stats() << ",";
@@ -794,7 +805,8 @@ bool item_t::init()
   // Process basic stats
   if ( ! decode_heroic()                           ) return false;
   if ( ! decode_lfr()                              ) return false;
-  if ( ! decode_thunderforged()                    ) return false;
+  if ( ! decode_flexible()                         ) return false;
+  if ( ! decode_elite()                            ) return false;
   if ( ! decode_quality()                          ) return false;
   if ( ! decode_ilevel()                           ) return false;
   if ( ! decode_armor_type()                       ) return false;
@@ -820,8 +832,7 @@ bool item_t::init()
   std::string use_str = option_use_str;
   if ( use_str.empty() )
   {
-    if ( unique_gear::get_use_encoding( use_str, name_str, parsed.data.heroic,
-                                        parsed.data.lfr, parsed.data.thunderforged, player -> dbc.ptr, parsed.data.id ) )
+    if ( unique_gear::get_use_encoding( use_str, name_str, parsed.data.type_flags, player -> dbc.ptr, parsed.data.id ) )
       parsed.use.name_str = name_str;
   }
   else
@@ -830,8 +841,7 @@ bool item_t::init()
   std::string equip_str = option_equip_str;
   if ( equip_str.empty() )
   {
-    if ( unique_gear::get_equip_encoding( equip_str, name_str, parsed.data.heroic,
-                                          parsed.data.lfr, parsed.data.thunderforged, player -> dbc.ptr, parsed.data.id ) )
+    if ( unique_gear::get_equip_encoding( equip_str, name_str, parsed.data.type_flags, player -> dbc.ptr, parsed.data.id ) )
       parsed.equip.name_str = name_str;
   }
   else
@@ -865,7 +875,7 @@ bool item_t::init()
 bool item_t::decode_heroic()
 {
   if ( ! option_heroic_str.empty() )
-    parsed.data.heroic = option_heroic_str == "1";
+    parsed.data.type_flags |= RAID_TYPE_HEROIC;
 
   return true;
 }
@@ -875,17 +885,27 @@ bool item_t::decode_heroic()
 bool item_t::decode_lfr()
 {
   if ( ! option_lfr_str.empty() )
-    parsed.data.lfr = option_lfr_str == "1";
+    parsed.data.type_flags |= RAID_TYPE_LFR;
 
   return true;
 }
 
-// item_t::decode_thunderforged =============================================
+// item_t::decode_elite =====================================================
 
-bool item_t::decode_thunderforged()
+bool item_t::decode_elite()
 {
-  if ( ! option_thunderforged_str.empty() )
-    parsed.data.thunderforged = option_thunderforged_str == "1";
+  if ( ! option_elite_str.empty() )
+    parsed.data.type_flags |= RAID_TYPE_ELITE;
+
+  return true;
+}
+
+// item_t::decode_flexible ==================================================
+
+bool item_t::decode_flexible()
+{
+  if ( ! option_flex_str.empty() )
+    parsed.data.type_flags |= RAID_TYPE_FLEXIBLE;
 
   return true;
 }
@@ -1243,7 +1263,7 @@ bool item_t::decode_enchant()
   }
 
   std::string equip_str;
-  if ( unique_gear::get_equip_encoding( equip_str, parsed.enchant.name_str, parsed.data.heroic, parsed.data.lfr, parsed.data.thunderforged, player -> dbc.ptr ) )
+  if ( unique_gear::get_equip_encoding( equip_str, parsed.enchant.name_str, parsed.data.type_flags, player -> dbc.ptr ) )
   {
     parsed.enchant.unique = true;
     return decode_special( parsed.enchant, equip_str );
@@ -1268,14 +1288,14 @@ bool item_t::decode_addon()
   }
 
   std::string use_str;
-  if ( unique_gear::get_use_encoding( use_str, parsed.addon.name_str, parsed.data.heroic, parsed.data.lfr, parsed.data.thunderforged, player -> dbc.ptr ) )
+  if ( unique_gear::get_use_encoding( use_str, parsed.addon.name_str, parsed.data.type_flags, player -> dbc.ptr ) )
   {
     parsed.use.unique = true;
     return decode_special( parsed.use, use_str );
   }
 
   std::string equip_str;
-  if ( unique_gear::get_equip_encoding( equip_str, parsed.addon.name_str, parsed.data.heroic, parsed.data.lfr, parsed.data.thunderforged, player -> dbc.ptr ) )
+  if ( unique_gear::get_equip_encoding( equip_str, parsed.addon.name_str, parsed.data.type_flags, player -> dbc.ptr ) )
   {
     parsed.addon.unique = true;
     return decode_special( parsed.addon, equip_str );

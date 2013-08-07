@@ -1,6 +1,15 @@
 #ifndef DATA_ENUMS_HH
 #define DATA_ENUMS_HH
 
+enum item_raid_type
+{
+  RAID_TYPE_NORMAL   = 0x00,
+  RAID_TYPE_LFR      = 0x01,
+  RAID_TYPE_HEROIC   = 0x02,
+  RAID_TYPE_FLEXIBLE = 0x04,
+  RAID_TYPE_ELITE    = 0x10,
+};
+
 // Mangos data types for various DBC-related enumerations
 enum proc_flag
 {

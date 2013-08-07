@@ -522,12 +522,20 @@ js_node_t* download_item_data( item_t& item, cache::behavior_e caching )
     if ( js::get_value( nameDescription, js, "nameDescription" ) )
     {
       if ( util::str_in_str_ci( nameDescription, "heroic" ) )
-        item.parsed.data.heroic = true;
+        item.parsed.data.type_flags |= RAID_TYPE_HEROIC;
       else if ( util::str_in_str_ci( nameDescription, "raid finder" ) )
-        item.parsed.data.lfr = true;
+        item.parsed.data.type_flags |= RAID_TYPE_LFR;
+      else if ( util::str_in_str_ci( nameDescription, "flexible" ) )
+        item.parsed.data.type_flags |= RAID_TYPE_FLEXIBLE;
 
       if ( util::str_in_str_ci( nameDescription, "thunderforged" ) )
-        item.parsed.data.thunderforged = true;
+        item.parsed.data.type_flags |= RAID_TYPE_ELITE;
+
+      if ( util::str_in_str_ci( nameDescription, "warforged" ) )
+        item.parsed.data.type_flags |= RAID_TYPE_ELITE;
+
+      if ( util::str_in_str_ci( nameDescription, "timeless" ) )
+        item.parsed.data.type_flags |= RAID_TYPE_ELITE;
     }
 
     js_node_t* item_spell = js::get_node( js, "itemSpells" );

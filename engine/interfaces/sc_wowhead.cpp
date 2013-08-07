@@ -240,12 +240,18 @@ bool wowhead::download_item_data( item_t&            item,
 
     // Search for ">Heroic<", ">Raid Finder<", ">Heroic Thunderforged<" :/
     if ( util::str_in_str_ci( htmltooltip, ">Heroic<" ) || util::str_in_str_ci( htmltooltip, ">Heroic Thunderforged<" ) )
-      item.parsed.data.heroic = true;
+      item.parsed.data.type_flags |= RAID_TYPE_HEROIC;
     else if ( util::str_in_str_ci( htmltooltip, ">Raid Finder<" ) )
-      item.parsed.data.lfr = true;
+      item.parsed.data.type_flags |= RAID_TYPE_LFR;
+    else if ( util::str_in_str_ci( htmltooltip, ">Flexible<" ) ) 
+      item.parsed.data.type_flags |= RAID_TYPE_FLEXIBLE;
 
     if ( util::str_in_str_ci( htmltooltip, "Thunderforged<" ) )
-      item.parsed.data.thunderforged = true;
+      item.parsed.data.type_flags |= RAID_TYPE_ELITE;
+    if ( util::str_in_str_ci( htmltooltip, "Warforged<" ) )
+      item.parsed.data.type_flags |= RAID_TYPE_ELITE;
+    if ( util::str_in_str_ci( htmltooltip, "Timeless<" ) )
+      item.parsed.data.type_flags |= RAID_TYPE_ELITE;
 
     // Parse out Equip: and On use: strings
     int spell_idx = 0;

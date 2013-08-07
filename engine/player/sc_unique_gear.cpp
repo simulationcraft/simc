@@ -7,6 +7,32 @@
 
 namespace { // UNNAMED NAMESPACE
 
+static std::string RTV( unsigned tf, unsigned lfr, unsigned flex, unsigned normal,
+                        unsigned elite = 0, unsigned heroic = 0, unsigned heroic_elite = 0 )
+{
+  assert( ( ! lfr || lfr <= flex ) &&
+          ( ! flex || flex <= normal ) &&
+          ( ! normal || normal <= elite ) &&
+          ( ! elite || elite <= heroic ) &&
+          ( ! heroic || heroic <= heroic_elite ) );
+
+  std::ostringstream s;
+  if ( item_database::lfr( tf ) )
+    s << lfr;
+  else if ( item_database::flex( tf ) )
+    s << flex;
+  else if ( item_database::elite( tf ) && ! item_database::heroic( tf ) )
+    s << elite;
+  else if ( item_database::heroic( tf ) && ! item_database::elite( tf ) )
+    s << heroic;
+  else if ( item_database::heroic( tf ) && item_database::elite( tf ) )
+    s << heroic_elite;
+  else
+    s << normal;
+
+  return s.str();
+}
+
 #define maintenance_check( ilvl ) static_assert( ilvl >= 372, "unique item below min level, should be deprecated." )
 
 struct stat_buff_proc_t : public buff_proc_callback_t<stat_buff_t>
@@ -1267,7 +1293,7 @@ void apparatus_of_khazgoroth( item_t* item )
     }
   };
 
-  p -> callbacks.register_attack_callback( RESULT_CRIT_MASK, new apparatus_of_khazgoroth_callback_t( p, item -> parsed.data.heroic ) );
+  p -> callbacks.register_attack_callback( RESULT_CRIT_MASK, new apparatus_of_khazgoroth_callback_t( p, item -> parsed.data.heroic() ) );
 }
 
 // heart_of_ignacious =======================================================
@@ -1283,7 +1309,7 @@ void heart_of_ignacious( item_t* item )
   special_effect_t data;
   data.name_str    = "heart_of_ignacious";
   data.stat        = STAT_SPELL_POWER;
-  data.stat_amount = item -> parsed.data.heroic ? 87 : 77;
+  data.stat_amount = item -> parsed.data.heroic() ? 87 : 77;
   data.max_stacks  = 5;
   data.duration    = timespan_t::from_seconds( 15 );
   data.cooldown    = timespan_t::from_seconds( 2 );
@@ -1299,7 +1325,7 @@ void heart_of_ignacious( item_t* item )
                    .max_stack( 5 )
                    .duration( timespan_t::from_seconds( 20.0 ) )
                    .cd( timespan_t::from_seconds( 120.0 ) )
-                   .add_stat( STAT_HASTE_RATING, item.parsed.data.heroic ? 363 : 321 );
+                   .add_stat( STAT_HASTE_RATING, item.parsed.data.heroic() ? 363 : 321 );
     }
 
     void execute( action_t* a, action_state_t* state )
@@ -1346,7 +1372,7 @@ void matrix_restabilizer( item_t* item )
     matrix_restabilizer_callback_t( item_t& i, const special_effect_t& data ) :
       proc_callback_t<action_state_t>( i.player, data )
     {
-      double amount = i.parsed.data.heroic ? 1834 : 1624;
+      double amount = i.parsed.data.heroic() ? 1834 : 1624;
 
       struct common_buff_creator : public stat_buff_creator_t
       {
@@ -1469,7 +1495,7 @@ void blazing_power( item_t* item )
   };
 
   // FIXME: Observe if it procs of non-direct healing spells
-  p -> callbacks.register_heal_callback( RESULT_ALL_MASK, new blazing_power_callback_t( p, new blazing_power_heal_t( p, item -> parsed.data.heroic ) )  );
+  p -> callbacks.register_heal_callback( RESULT_ALL_MASK, new blazing_power_callback_t( p, new blazing_power_heal_t( p, item -> parsed.data.heroic() ) )  );
 }
 
 // windward_heart ===========================================================
@@ -1532,7 +1558,7 @@ void windward_heart( item_t* item )
     }
   };
 
-  p -> callbacks.register_heal_callback( RESULT_CRIT_MASK, new windward_heart_callback_t( p, new windward_heart_heal_t( p, item -> parsed.data.heroic, item -> parsed.data.lfr ) )  );
+  p -> callbacks.register_heal_callback( RESULT_CRIT_MASK, new windward_heart_callback_t( p, new windward_heart_heal_t( p, item -> parsed.data.heroic(), item -> parsed.data.lfr() ) )  );
 }
 
 // symbiotic_worm ===========================================================
@@ -1548,7 +1574,7 @@ void symbiotic_worm( item_t* item )
   special_effect_t data;
   data.name_str    = "symbiotic_worm";
   data.stat        = STAT_MASTERY_RATING;
-  data.stat_amount = item -> parsed.data.heroic ? 1089 : 963;
+  data.stat_amount = item -> parsed.data.heroic() ? 1089 : 963;
   data.duration    = timespan_t::from_seconds( 10 );
   data.cooldown    = timespan_t::from_seconds( 30 );
 
@@ -1614,7 +1640,7 @@ void indomitable_pride( item_t* item )
     }
   };
 
-  action_callback_t* cb = new indomitable_pride_callback_t( p, item -> parsed.data.heroic, item -> parsed.data.lfr );
+  action_callback_t* cb = new indomitable_pride_callback_t( p, item -> parsed.data.heroic(), item -> parsed.data.lfr() );
   p -> callbacks.register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
@@ -1765,7 +1791,7 @@ void spidersilk_spindle( item_t* item )
     }
   };
 
-  action_callback_t* cb = new spidersilk_spindle_callback_t( p, item -> parsed.data.heroic );
+  action_callback_t* cb = new spidersilk_spindle_callback_t( p, item -> parsed.data.heroic() );
   p -> callbacks.register_resource_loss_callback( RESOURCE_HEALTH, cb );
 }
 
@@ -1776,8 +1802,8 @@ void bonelink_fetish( item_t* item )
   maintenance_check( 410 );
 
   player_t* p   = item -> player;
-  bool heroic   = item -> parsed.data.heroic;
-  bool lfr      = item -> parsed.data.lfr;
+  bool heroic   = item -> parsed.data.heroic();
+  bool lfr      = item -> parsed.data.lfr();
 
   uint32_t spell_id = heroic ? 109755 : lfr ? 109753 : 107998;
 
@@ -1903,7 +1929,7 @@ void fury_of_the_beast( item_t* item )
     }
   };
 
-  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new fury_of_the_beast_callback_t( p, item -> parsed.data.heroic, item -> parsed.data.lfr ) );
+  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, new fury_of_the_beast_callback_t( p, item -> parsed.data.heroic(), item -> parsed.data.lfr() ) );
 }
 
 // gurthalak ================================================================
@@ -1913,8 +1939,8 @@ void gurthalak( item_t* item )
   maintenance_check( 416 );
 
   player_t* p   = item -> player;
-  bool heroic   = item -> parsed.data.heroic;
-  bool lfr      = item -> parsed.data.lfr;
+  bool heroic   = item -> parsed.data.heroic();
+  bool lfr      = item -> parsed.data.lfr();
   int  slot     = item -> slot;
 
   uint32_t tick_damage = heroic ? 12591 : lfr ? 9881 : 11155;
@@ -2033,8 +2059,8 @@ void nokaled( item_t* item )
   maintenance_check( 416 );
 
   player_t* p   = item -> player;
-  bool heroic   = item -> parsed.data.heroic;
-  bool lfr      = item -> parsed.data.lfr;
+  bool heroic   = item -> parsed.data.heroic();
+  bool lfr      = item -> parsed.data.lfr();
   int slot      = item -> slot;
                                       //Fire  Frost   Shadow
   static uint32_t    lfr_spells[] = { 109871, 109869, 109867 };
@@ -2140,8 +2166,8 @@ void rathrak( item_t* item )
   maintenance_check( 416 );
 
   player_t* p = item -> player;
-  bool heroic = item -> parsed.data.heroic;
-  bool lfr    = item -> parsed.data.lfr;
+  bool heroic = item -> parsed.data.heroic();
+  bool lfr    = item -> parsed.data.lfr();
   uint32_t trigger_spell_id = heroic ? 109854 : lfr ? 109851 : 107831;
 
   struct rathrak_poison_t : public spell_t
@@ -2190,8 +2216,8 @@ void souldrinker( item_t* item )
   maintenance_check( 416 );
 
   player_t* p = item -> player;
-  bool heroic = item -> parsed.data.heroic;
-  bool lfr    = item -> parsed.data.lfr;
+  bool heroic = item -> parsed.data.heroic();
+  bool lfr    = item -> parsed.data.lfr();
   int slot    = item -> slot;
 
   struct souldrinker_spell_t : public spell_t
@@ -2254,8 +2280,8 @@ void titahk( item_t* item )
   maintenance_check( 416 );
 
   player_t* p = item -> player;
-  bool heroic = item -> parsed.data.heroic;
-  bool lfr    = item -> parsed.data.lfr;
+  bool heroic = item -> parsed.data.heroic();
+  bool lfr    = item -> parsed.data.lfr();
 
   uint32_t spell_id = heroic ? 109846 : lfr ? 109843 : 107805;
   uint32_t buff_id = p -> dbc.spell( spell_id ) -> effectN( 1 ).trigger_spell_id();
@@ -3686,9 +3712,7 @@ action_callback_t* unique_gear::register_stat_discharge_proc( item_t& i,
 
 bool unique_gear::get_equip_encoding( std::string&       encoding,
                                       const std::string& name,
-                                      bool         heroic,
-                                      bool         lfr,
-                                      bool         thunderforged,
+                                      unsigned           tf,
                                       bool         ptr,
                                       unsigned item_id )
 {
@@ -3696,7 +3720,7 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
 
   // Stat Procs
   if      ( name == "abyssal_rune"                        ) e = "OnHarmfulSpellCast_590SP_25%_10Dur_45Cd";
-  else if ( name == "anhuurs_hymnal"                      ) e = ( heroic ? "OnSpellCast_1710SP_10%_10Dur_50Cd" : "OnSpellCast_1512SP_10%_10Dur_50Cd" );
+  else if ( name == "anhuurs_hymnal"                      ) e = "OnSpellCast_" + RTV( tf, 0, 0, 1512, 0, 1710 ) + "SP_10%_10Dur_50Cd";
   else if ( name == "ashen_band_of_endless_destruction"   ) e = "OnSpellHit_285SP_10%_10Dur_60Cd";
   else if ( name == "ashen_band_of_unmatched_destruction" ) e = "OnSpellHit_285SP_10%_10Dur_60Cd";
   else if ( name == "ashen_band_of_endless_vengeance"     ) e = "OnAttackHit_480AP_1PPM_10Dur_60Cd";
@@ -3704,39 +3728,39 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "ashen_band_of_endless_might"         ) e = "OnAttackHit_480AP_1PPM_10Dur_60Cd";
   else if ( name == "ashen_band_of_unmatched_might"       ) e = "OnAttackHit_480AP_1PPM_10Dur_60Cd";
   else if ( name == "banner_of_victory"                   ) e = "OnAttackHit_1008AP_20%_10Dur_50Cd";
-  else if ( name == "bell_of_enraging_resonance"          ) e = ( heroic ? "OnHarmfulSpellCast_2178SP_30%_20Dur_100Cd" : "OnHarmfulSpellCast_1926SP_30%_20Dur_100Cd" );
+  else if ( name == "bell_of_enraging_resonance"          ) e = "OnHarmfulSpellCast_" + RTV( tf, 0, 0, 1926, 0, 2178 ) + "SP_30%_20Dur_100Cd";
   else if ( name == "black_magic"                         ) e = "OnSpellHit_250Haste_35%_10Dur_35Cd";
   else if ( name == "blood_of_the_old_god"                ) e = "OnAttackCrit_1284AP_10%_10Dur_50Cd";
   else if ( name == "chuchus_tiny_box_of_horrors"         ) e = "OnAttackHit_258Crit_15%_10Dur_45Cd";
   else if ( name == "comets_trail"                        ) e = "OnAttackHit_726Haste_10%_10Dur_45Cd";
   else if ( name == "corens_chromium_coaster"             ) e = "OnAttackCrit_1000AP_10%_10Dur_50Cd";
   else if ( name == "corens_chilled_chromium_coaster"     ) e = "OnAttackCrit_4000AP_10%_10Dur_50Cd";
-  else if ( name == "crushing_weight"                     ) e = ( heroic ? "OnAttackHit_2178Haste_10%_15Dur_75Cd" : "OnAttackHit_1926Haste_10%_15Dur_75Cd" );
+  else if ( name == "crushing_weight"                     ) e = "OnAttackHit_" + RTV( tf, 0, 0, 1926, 0, 2178 ) + "Haste_10%_15Dur_75Cd";
   else if ( name == "dark_matter"                         ) e = "OnAttackHit_612Crit_15%_10Dur_45Cd";
   else if ( name == "darkmoon_card_crusade"               ) e = "OnDamage_8SP_10Stack_10Dur";
   else if ( name == "dwyers_caber"                        ) e = "OnDamage_1020Crit_15%_20Dur_50Cd";
   else if ( name == "dying_curse"                         ) e = "OnSpellCast_765SP_15%_10Dur_45Cd";
   else if ( name == "elemental_focus_stone"               ) e = "OnHarmfulSpellCast_522Haste_10%_10Dur_45Cd";
   else if ( name == "embrace_of_the_spider"               ) e = "OnSpellCast_505Haste_10%_10Dur_45Cd";
-  else if ( name == "essence_of_the_cyclone"              ) e = ( heroic ? "OnAttackHit_2178Crit_10%_10Dur_50Cd" : "OnAttackHit_1926Crit_10%_10Dur_50Cd" );
+  else if ( name == "essence_of_the_cyclone"              ) e = "OnAttackHit_" + RTV( tf, 0, 0, 1926, 0, 2178 ) + "Crit_10%_10Dur_50Cd";
   else if ( name == "eye_of_magtheridon"                  ) e = "OnSpellMiss_170SP_10Dur";
   else if ( name == "eye_of_the_broodmother"              ) e = "OnSpellDamageHeal_25SP_5Stack_10Dur";
   else if ( name == "flare_of_the_heavens"                ) e = "OnHarmfulSpellCast_850SP_10%_10Dur_45Cd";
   else if ( name == "fluid_death"                         ) e = "OnAttackHit_38Agi_10Stack_15Dur";
   else if ( name == "forge_ember"                         ) e = "OnSpellHit_512SP_10%_10Dur_45Cd";
   else if ( name == "fury_of_the_five_flights"            ) e = "OnAttackHit_16AP_20Stack_10Dur";
-  else if ( name == "gale_of_shadows"                     ) e = ( heroic ? "OnSpellTickDamage_17SP_20Stack_15Dur" : "OnSpellTickDamage_15SP_20Stack_15Dur" );
-  else if ( name == "grace_of_the_herald"                 ) e = ( heroic ? "OnAttackHit_1710Crit_10%_10Dur_75Cd" : "OnAttackHit_924Crit_10%_10Dur_75Cd" );
+  else if ( name == "gale_of_shadows"                     ) e = "OnSpellTickDamage_" + RTV( tf, 0, 0, 15, 0, 17 ) + "SP_20Stack_15Dur";
+  else if ( name == "grace_of_the_herald"                 ) e = "OnAttackHit_" + RTV( tf, 0, 0, 924, 0, 1710 ) + "Crit_10%_10Dur_75Cd";
   else if ( name == "grim_toll"                           ) e = "OnAttackHit_612Crit_15%_10Dur_45Cd";
   else if ( name == "harrisons_insignia_of_panache"       ) e = "OnAttackHit_918Mastery_10%_20Dur_95Cd";
-  else if ( name == "heart_of_rage"                       ) e = ( heroic ? "OnAttackHit_2178Str_10%_20Dur_100Cd" : "OnAttackHit_1926Str_10%_20Dur_100Cd" );
-  else if ( name == "heart_of_solace"                     ) e = ( heroic ? "OnAttackHit_1710Str_10%_20Dur_100Cd" : "OnAttackHit_1512Str_10%_20Dur_100Cd" );
+  else if ( name == "heart_of_rage"                       ) e = "OnAttackHit_" + RTV( tf, 0, 0, 1926, 0, 2178 ) + "Str_10%_20Dur_100Cd";
+  else if ( name == "heart_of_solace"                     ) e = "OnAttackHit_" + RTV( tf, 0, 0, 1926, 0, 2178 ) + "Str_10%_20Dur_100Cd";
   else if ( name == "heart_of_the_vile"                   ) e = "OnAttackHit_924Crit_10%_10Dur_75Cd";
   else if ( name == "heartsong"                           ) e = "OnSpellDamageHeal_200Spi_25%_15Dur_20Cd";
   else if ( name == "herkuml_war_token"                   ) e = "OnAttackHit_17AP_20Stack_10Dur";
   else if ( name == "illustration_of_the_dragon_soul"     ) e = "OnDamageHealSpellCast_20SP_10Stack_10Dur";
-  else if ( name == "key_to_the_endless_chamber"          ) e = ( heroic ? "OnAttackHit_1710Agi_10%_15Dur_75Cd" : "OnAttackHit_1290Agi_10%_15Dur_75Cd" );
-  else if ( name == "left_eye_of_rajh"                    ) e = ( heroic ? "OnAttackCrit_1710Agi_50%_10Dur_50Cd" : "OnAttackCrit_1512Agi_50%_10Dur_50Cd" );
+  else if ( name == "key_to_the_endless_chamber"          ) e = "OnAttackHit_" + RTV( tf, 0, 0, 1290, 0, 1710 ) + "Agi_10%_15Dur_75Cd";
+  else if ( name == "left_eye_of_rajh"                    ) e = "OnAttackCrit_" + RTV( tf, 0, 0, 1512, 0, 1710 ) + "Agi_50%_10Dur_50Cd";
   else if ( name == "license_to_slay"                     ) e = "OnAttackHit_38Str_10Stack_15Dur";
   else if ( name == "mark_of_defiance"                    ) e = "OnSpellHit_150Mana_15%_15Cd";
   else if ( name == "mirror_of_truth"                     ) e = "OnAttackCrit_1000AP_10%_10Dur_50Cd";
@@ -3744,19 +3768,19 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "mithril_stopwatch"                   ) e = "OnHarmfulSpellCast_2040SP_10%_10Dur_45Cd";
   else if ( name == "mithril_wristwatch"                  ) e = "OnHarmfulSpellCast_5082SP_10%_10Dur_45Cd";
   else if ( name == "mjolnir_runestone"                   ) e = "OnAttackHit_665Haste_15%_10Dur_45Cd";
-  else if ( name == "muradins_spyglass"                   ) e = ( heroic ? "OnSpellDamage_20SP_10Stack_10Dur" : "OnSpellDamage_18SP_10Stack_10Dur" );
-  else if ( name == "necromantic_focus"                   ) e = ( heroic ? "OnSpellTickDamage_44Mastery_10Stack_10Dur" : "OnSpellTickDamage_39Mastery_10Stack_10Dur" );
+  else if ( name == "muradins_spyglass"                   ) e = "OnSpellDamage_" + RTV( tf, 0, 0, 18, 0, 20 ) + "SP_10Stack_10Dur";
+  else if ( name == "necromantic_focus"                   ) e = "OnSpellTickDamage_" + RTV( tf, 0, 0, 39, 0, 44 ) + "Mastery_10Stack_10Dur";
   else if ( name == "needleencrusted_scorpion"            ) e = "OnAttackCrit_678crit_10%_10Dur_50Cd";
   else if ( name == "pandoras_plea"                       ) e = "OnSpellCast_751SP_10%_10Dur_45Cd";
   else if ( name == "petrified_pickled_egg"               ) e = "OnHeal_2040Haste_10%_10Dur_50Cd";
   else if ( name == "thousandyear_pickled_egg"            ) e = "OnHeal_5082Haste_10%_10Dur_50Cd";
   else if ( name == "corens_cold_chromium_coaster"        ) e = "OnAttackCrit_10848ap_10%_10Dur_50Cd";
-  else if ( name == "porcelain_crab"                      ) e = ( heroic ? "OnAttackHit_1710Mastery_10%_20Dur_95Cd" : "OnAttackHit_918Mastery_10%_20Dur_95Cd" );
-  else if ( name == "prestors_talisman_of_machination"    ) e = ( heroic ? "OnAttackHit_2178Haste_10%_15Dur_75Cd" : "OnAttackHit_1926Haste_10%_15Dur_75Cd" );
+  else if ( name == "porcelain_crab"                      ) e = "OnAttackHit_" + RTV( tf, 0, 0, 918, 0, 1710 ) + "Mastery_10%_20Dur_95Cd";
+  else if ( name == "prestors_talisman_of_machination"    ) e = "OnAttackHit_" + RTV( tf, 0, 0, 1926, 0, 2178 ) + "Haste_10%_15Dur_75Cd";
   else if ( name == "purified_lunar_dust"                 ) e = "OnSpellCast_608Spi_10%_15Dur_45Cd";
   else if ( name == "pyrite_infuser"                      ) e = "OnAttackCrit_1234AP_10%_10Dur_50Cd";
   else if ( name == "quagmirrans_eye"                     ) e = "OnHarmfulSpellCast_320Haste_10%_6Dur_45Cd";
-  else if ( name == "right_eye_of_rajh"                   ) e = ( heroic ? "OnAttackCrit_1710Str_50%_10Dur_50Cd" : "OnAttackCrit_1512Str_50%_10Dur_50Cd" );
+  else if ( name == "right_eye_of_rajh"                   ) e = "OnAttackCrit_" + RTV( tf, 0, 0, 1512, 0, 1710 ) + "Str_50%_10Dur_50Cd";
   else if ( name == "schnotzzs_medallion_of_command"      ) e = "OnAttackHit_918Mastery_10%_20Dur_95Cd";
   else if ( name == "sextant_of_unstable_currents"        ) e = "OnSpellCrit_190SP_20%_15Dur_45Cd";
   else if ( name == "shiffars_nexus_horn"                 ) e = "OnSpellCrit_225SP_20%_10Dur_45Cd";
@@ -3764,32 +3788,32 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "stump_of_time"                       ) e = "OnHarmfulSpellCast_1926SP_10%_15Dur_75Cd";
   else if ( name == "sundial_of_the_exiled"               ) e = "OnHarmfulSpellCast_590SP_10%_10Dur_45Cd";
   else if ( name == "talisman_of_sinister_order"          ) e = "OnSpellCast_918Mastery_10%_20Dur_95Cd";
-  else if ( name == "tendrils_of_burrowing_dark"          ) e = ( heroic ? "OnSpellCast_1710SP_10%_15Dur_75Cd" : "OnSpellCast_1290SP_10%_15Dur_75Cd" );
-  else if ( name == "the_hungerer"                        ) e = ( heroic ? "OnAttackHit_1730Haste_100%_15Dur_60Cd" : "OnAttackHit_1532Haste_100%_15Dur_60Cd" );
-  else if ( name == "theralions_mirror"                   ) e = ( heroic ? "OnHarmfulSpellCast_2178Mastery_10%_20Dur_100Cd" : "OnHarmfulSpellCast_1926Mastery_10%_20Dur_100Cd" );
-  else if ( name == "tias_grace"                          ) e = ( heroic ? "OnAttackHit_34Agi_10Stack_15Dur" : "OnAttackHit_30Agi_10Stack_15Dur" );
+  else if ( name == "tendrils_of_burrowing_dark"          ) e = "OnSpellCast_" + RTV( tf, 0, 0, 1290, 0, 1710 ) + "SP_10%_15Dur_75Cd";
+  else if ( name == "the_hungerer"                        ) e = "OnAttackHit_" + RTV( tf, 0, 0, 1532, 0, 1730 ) + "Haste_100%_15Dur_60Cd";
+  else if ( name == "theralions_mirror"                   ) e = "OnHarmfulSpellCast_" + RTV( tf, 0, 0, 1926, 0, 2178 ) + "Mastery_10%_20Dur_100Cd";
+  else if ( name == "tias_grace"                          ) e = "OnAttackHit_" + RTV( tf, 0, 0, 30, 0, 34 ) + "Agi_10Stack_15Dur";
   else if ( name == "unheeded_warning"                    ) e = "OnAttackHit_1926AP_10%_10Dur_50Cd";
-  else if ( name == "vessel_of_acceleration"              ) e = ( heroic ? "OnAttackCrit_93Crit_5Stack_20Dur" : "OnAttackCrit_82Crit_5Stack_20Dur" );
-  else if ( name == "witching_hourglass"                  ) e = ( heroic ? "OnSpellCast_1710Haste_10%_15Dur_75Cd" : "OnSpellCast_918Haste_10%_15Dur_75Cd" );
+  else if ( name == "vessel_of_acceleration"              ) e = "OnAttackCrit_" + RTV( tf, 0, 0, 82, 0, 93 ) + "Crit_5Stack_20Dur";
+  else if ( name == "witching_hourglass"                  ) e = "OnSpellCast_" + RTV( tf, 0, 0, 918, 0, 1710 ) + "Haste_10%_15Dur_75Cd";
   else if ( name == "wrath_of_cenarius"                   ) e = "OnSpellHit_132SP_5%_10Dur";
-  else if ( name == "fall_of_mortality"                   ) e = ( heroic ? "OnHealCast_2178Spi_15Dur_75Cd" : "OnHealCast_1926Spi_15Dur_75Cd" );
+  else if ( name == "fall_of_mortality"                   ) e = "OnHealCast_" + RTV( tf, 0, 0, 1926, 0, 2178 ) + "Spi_15Dur_75Cd";
   else if ( name == "darkmoon_card_tsunami"               ) e = "OnHeal_80Spi_5Stack_20Dur";
-  else if ( name == "phylactery_of_the_nameless_lich"     ) e = ( heroic ? "OnSpellTickDamage_1206SP_30%_20Dur_100Cd" : "OnSpellTickDamage_1073SP_30%_20Dur_100Cd" );
-  else if ( name == "whispering_fanged_skull"             ) e = ( heroic ? "OnAttackHit_1250AP_35%_15Dur_45Cd" : "OnAttackHit_1110AP_35%_15Dur_45Cd" );
-  else if ( name == "charred_twilight_scale"              ) e = ( heroic ? "OnHarmfulSpellCast_861SP_10%_15Dur_45Cd" : "OnHarmfulSpellCast_763SP_10%_15Dur_45Cd" );
-  else if ( name == "sharpened_twilight_scale"            ) e = ( heroic ? "OnAttackHit_1472AP_35%_15Dur_45Cd" : "OnAttackHit_1304AP_35%_15Dur_45Cd" );
+  else if ( name == "phylactery_of_the_nameless_lich"     ) e = "OnSpellTickDamage_" + RTV( tf, 0, 0, 1073, 0, 1206 ) + "SP_30%_20Dur_100Cd";
+  else if ( name == "whispering_fanged_skull"             ) e = "OnAttackHit_" + RTV( tf, 0, 0, 1110, 0, 1250 ) + "AP_35%_15Dur_45Cd";
+  else if ( name == "charred_twilight_scale"              ) e = "OnHarmfulSpellCast_" + RTV( tf, 0, 0, 763, 0, 861 ) + "SP_10%_15Dur_45Cd";
+  else if ( name == "sharpened_twilight_scale"            ) e = "OnAttackHit_" + RTV( tf, 0, 0, 1304, 0, 1472 ) + "AP_35%_15Dur_45Cd";
 
   // 4.3
-  else if ( name == "will_of_unbinding"                   ) e = ( heroic ? "OnHarmfulSpellCast_99Int_100%_10Dur_10Stack" : lfr ? "OnHarmfulSpellCast_78Int_100%_10Dur_10Stack" : "OnHarmfulSpellCast_88Int_100%_10Dur_10Stack" );
-  else if ( name == "eye_of_unmaking"                     ) e = ( heroic ? "OnAttackHit_99Str_100%_10Dur_10Stack" : lfr ? "OnAttackHit_78Str_100%_10Dur_10Stack" : "OnAttackHit_88Str_100%_10Dur_10Stack" );
-  else if ( name == "wrath_of_unchaining"                 ) e = ( heroic ? "OnAttackHit_99Agi_100%_10Dur_10Stack" : lfr ? "OnAttackHit_78Agi_100%_10Dur_10Stack" : "OnAttackHit_88Agi_100%_10Dur_10Stack" );
-  else if ( name == "heart_of_unliving"                   ) e = ( heroic ? "OnHealCast_99Spi_100%_10Dur_10Stack" : lfr ? "OnHealCast_78Spi_100%_10Dur_10Stack" : "OnHealCast_88Spi_100%_10Dur_10Stack" );
-  else if ( name == "resolve_of_undying"                  ) e = ( heroic ? "OnAttackHit_99Dodge_100%_10Dur_10Stack" : lfr ? "OnAttackHit_99Dodge_100%_10Dur_10Stack" : "OnAttackHit_88Dodge_100%_10Dur_10Stack" );
-  else if ( name == "creche_of_the_final_dragon"          ) e = ( heroic ? "OnDamage_3278Crit_15%_20Dur_115Cd" : lfr ? "OnDamage_2573Crit_15%_20Dur_115Cd" : "OnDamage_2904Crit_15%_20Dur_115Cd" );
-  else if ( name == "starcatcher_compass"                 ) e = ( heroic ? "OnDamage_3278Haste_15%_20Dur_115Cd" : lfr ? "OnDamage_2573Haste_15%_20Dur_115Cd" : "OnDamage_2904Haste_15%_20Dur_115Cd" );
-  else if ( name == "seal_of_the_seven_signs"             ) e = ( heroic ? "OnHeal_3278Haste_15%_20Dur_115Cd" : lfr ? "OnHeal_2573Haste_15%_20Dur_115Cd" : "OnHeal_2904Haste_15%_20Dur_115Cd" );
-  else if ( name == "soulshifter_vortex"                  ) e = ( heroic ? "OnDamage_3278Mastery_15%_20Dur_115Cd" : lfr ? "OnDamage_2573Mastery_15%_20Dur_115Cd" : "OnDamage_2904Mastery_15%_20Dur_115Cd" );
-  else if ( name == "insignia_of_the_corrupted_mind"      ) e = ( heroic ? "OnDamage_3278Haste_15%_20Dur_115Cd" : lfr ? "OnDamage_2573Haste_15%_20Dur_115Cd" : "OnDamage_2904Haste_15%_20Dur_115Cd" );
+  else if ( name == "will_of_unbinding"                   ) e = "OnHarmfulSpellCast_" + RTV( tf, 78, 0, 88, 0, 99 ) + "Int_100%_10Dur_10Stack";
+  else if ( name == "eye_of_unmaking"                     ) e = "OnAttackHit_" + RTV( tf, 78, 0, 88, 0, 99 ) + "Str_100%_10Dur_10Stack";
+  else if ( name == "wrath_of_unchaining"                 ) e = "OnAttackHit_" + RTV( tf, 78, 0, 88, 0, 99 ) + "Agi_100%_10Dur_10Stack";
+  else if ( name == "heart_of_unliving"                   ) e = "OnHealCast_" + RTV( tf, 78, 0, 88, 0, 99 ) + "Spi_100%_10Dur_10Stack";
+  else if ( name == "resolve_of_undying"                  ) e = "OnAttackHit_" + RTV( tf, 78, 0, 88, 0, 99 ) + "Dodge_100%_10Dur_10Stack";
+  else if ( name == "creche_of_the_final_dragon"          ) e = "OnDamage_" + RTV( tf, 2573, 0, 2904, 0, 3278 ) + "Crit_15%_20Dur_115Cd";
+  else if ( name == "starcatcher_compass"                 ) e = "OnDamage_" + RTV( tf, 2573, 0, 2904, 0, 3278 ) + "Haste_15%_20Dur_115Cd";
+  else if ( name == "seal_of_the_seven_signs"             ) e = "OnHeal_" + RTV( tf, 2573, 0, 2904, 0, 3278 ) + "Haste_15%_20Dur_115Cd";
+  else if ( name == "soulshifter_vortex"                  ) e = "OnDamage_" + RTV( tf, 2573, 0, 2904, 0, 3278 ) + "Mastery_15%_20Dur_115Cd";
+  else if ( name == "insignia_of_the_corrupted_mind"      ) e = "OnDamage_" + RTV( tf, 2573, 0, 2904, 0, 3278 ) + "Haste_15%_20Dur_115Cd";
   else if ( name == "foul_gift_of_the_demon_lord"         ) e = "OnSpellDamageHeal_1149Mastery_15%_20Dur_45Cd";
   else if ( name == "arrow_of_time"                       ) e = "OnAttackHit_1149Haste_20%_20Dur_45Cd";
   else if ( name == "rosary_of_light"                     ) e = "OnAttackHit_1149Crit_15%_20Dur_45Cd";
@@ -3806,45 +3830,49 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "carbonic_carbuncle"                  ) e = "OnDirectDamage_3386Crit_15%_30Dur_105Cd";
   else if ( name == "windswept_pages"                     ) e = "OnDirectDamage_3386Haste_15%_20Dur_65Cd";
   else if ( name == "searing_words"                       ) e = "OnDirectCrit_3386Agi_45%_25Dur_85Cd";
-  else if ( name == "light_of_the_cosmos"                 ) e = "OnSpellTickDamage_" + std::string( heroic ? "3653" : lfr ? "2866" : "3236" ) + "Int_15%_20Dur_45Cd";
-  else if ( name == "essence_of_terror"                   ) e = "OnHarmfulSpellHit_" + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Haste_15%_20Dur_105Cd";
-  else if ( name == "terror_in_the_mists"                 ) e = "OnDirectDamage_"    + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Crit_15%_20Dur_105Cd";
-  else if ( name == "darkmist_vortex"                     ) e = "OnDirectDamage_"    + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Haste_15%_20Dur_105Cd";
+  else if ( name == "essence_of_terror"                   ) e = "OnHarmfulSpellHit_" + RTV( tf, 6121, 0, 6908, 0, 7796 ) + "Haste_15%_20Dur_105Cd";
+  else if ( name == "terror_in_the_mists"                 ) e = "OnDirectDamage_"    + RTV( tf, 6121, 0, 6908, 0, 7796 ) + "Crit_15%_20Dur_105Cd";
+  else if ( name == "darkmist_vortex"                     ) e = "OnDirectDamage_"    + RTV( tf, 6121, 0, 6908, 0, 7796 ) + "Haste_15%_20Dur_105Cd";
+  else if ( name == "spirits_of_the_sun"                  ) e = "OnHeal_"            + RTV( tf, 6121, 0, 6908, 0, 7796 ) + "Spi_15%_20Dur_105Cd";
+  else if ( name == "stuff_of_nightmares"                 ) e = "OnAttackHit_"       + RTV( tf, 6121, 0, 6908, 0, 7796 ) + "Dodge_15%_20Dur_105Cd";
+  else if ( name == "light_of_the_cosmos"                 ) e = "OnSpellTickDamage_" + RTV( tf, 2866, 0, 3236, 0, 3653 ) + "Int_15%_20Dur_45Cd";
+  else if ( name == "bottle_of_infinite_stars"            ) e = "OnAttackHit_"       + RTV( tf, 2866, 0, 3236, 0, 3653 ) + "Agi_15%_20Dur_45Cd";
+  else if ( name == "vial_of_dragons_blood"               ) e = "OnAttackHit_"       + RTV( tf, 2866, 0, 3236, 0, 3653 ) + "Dodge_15%_20Dur_45Cd";
+  else if ( name == "lei_shens_final_orders"              ) e = "OnAttackHit_"       + RTV( tf, 2866, 0, 3236, 0, 3653 ) + "Str_15%_20Dur_45Cd";
+  else if ( name == "qinxis_polarizing_seal"              ) e = "OnHeal_"            + RTV( tf, 2866, 0, 3236, 0, 3653 ) + "Int_15%_20Dur_45Cd";
+
   else if ( name == "relic_of_yulon"                      ) e = "OnSpellDamage_3027Int_20%_15Dur_50Cd";
   else if ( name == "relic_of_chiji"                      ) e = "OnHealCast_3027Spi_20%_15Dur_45Cd";
   else if ( name == "relic_of_xuen" && item_id == 79327   ) e = "OnAttackHit_3027Str_20%_15Dur_45Cd";
   else if ( name == "relic_of_xuen" && item_id == 79328   ) e = "OnAttackCrit_3027Agi_20%_15Dur_55Cd";
-  else if ( name == "bottle_of_infinite_stars"            ) e = "OnAttackHit_"       + std::string( heroic ? "3653" : lfr ? "2866" : "3236" ) + "Agi_15%_20Dur_45Cd";
-  else if ( name == "vial_of_dragons_blood"               ) e = "OnAttackHit_"       + std::string( heroic ? "3653" : lfr ? "2866" : "3236" ) + "Dodge_15%_20Dur_45Cd";
-  else if ( name == "lei_shens_final_orders"              ) e = "OnAttackHit_"       + std::string( heroic ? "3653" : lfr ? "2866" : "3236" ) + "Str_15%_20Dur_45Cd";
-  else if ( name == "qinxis_polarizing_seal"              ) e = "OnHeal_"            + std::string( heroic ? "3653" : lfr ? "2866" : "3236" ) + "Int_15%_20Dur_45Cd";
-  else if ( name == "spirits_of_the_sun"                  ) e = "OnHeal_"            + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Spi_15%_20Dur_105Cd";
 
   //MoP Tank Trinkets
-  else if ( name == "stuff_of_nightmares"                 ) e = "OnAttackHit_"       + std::string( heroic ? "7796" : lfr ? "6121" : "6908" ) + "Dodge_15%_20Dur_105Cd"; //assuming same ICD as spirits of the sun etc since the proc value is the same
   else if ( name == "iron_protector_talisman"             ) e = "OnAttackHit_3386Dodge_15%_15Dur_45Cd";
 
+  /* LFR, Flex, Normal, Elite = 0, Heroic = 0, Heroic Elite = 0 */
   // 5.4 Trinkets
-  else if ( ptr && name == "discipline_of_xuen"           ) e = "OnAttackHit_" + std::string( item_id == 103986 ? "9943" : "6914" ) + "Mastery_15%_20Dur_105Cd";
-  else if ( ptr && name == "yulons_bite"                  ) e = "OnSpellDamage_" + std::string( item_id == 103987 ? "9943" : "6914" ) + "Crit_15%_20Dur_105Cd";
-  else if ( ptr && name == "alacrity_of_xuen"             ) e = "OnAttackHit_" + std::string( item_id == 103989 ? "9943" : "6914" ) + "Haste_15%_20Dur_105Cd";
+  else if ( ptr && name == "discipline_of_xuen"           ) e = "OnAttackHit_" +   RTV( tf, 0, 0, 6914, 9943 ) + "Mastery_15%_20Dur_105Cd";
+  else if ( ptr && name == "yulons_bite"                  ) e = "OnSpellDamage_" + RTV( tf, 0, 0, 6914, 9943 ) + "Crit_15%_20Dur_105Cd";
+  else if ( ptr && name == "alacrity_of_xuen"             ) e = "OnAttackHit_" +   RTV( tf, 0, 0, 6914, 9943 ) + "Haste_15%_20Dur_105Cd";
   // TODO: Name based identification when the name appears, plus other difficulty levels ...
   else if ( ptr && item_id == 102312                      ) e = "OnDirectDamage_11761Mastery_15%_20Dur_105Cd";
   else if ( ptr && item_id == 102313                      ) e = "OnSpellDamage_11761Crit_15%_20Dur_105Cd";
   else if ( ptr && item_id == 102315                      ) e = "OnAttackHit_11759Haste_15%_20Dur_105Cd";
-  else if ( ptr && name == "ticking_ebon_detonator"       ) e = "OnDirectDamage_0.61RPPM_22Cd_20Dur_1Tick_20Stack_" + std::string( thunderforged ? ( heroic ? "1276" : "1131" ) : ( heroic ? "1207" : ( item_id == 102311 ? "947" : lfr ? "847" : "1069" ) ) ) + "Agi_Reverse_NoRefresh";
-  else if ( ptr && name == "skeers_bloodsoaked_talisman"  ) e = "OnAttackHit_0.51RPPM_22Cd_20Dur_1Tick_20Stack_" + std::string( thunderforged ? ( heroic ? "1402" : "1242" ) : ( heroic ? "1326" : ( item_id == 102311 ? "1041" : lfr ? "931" : "1175" ) ) ) + "Crit_NoRefresh";
+  
+  else if ( ptr && name == "ticking_ebon_detonator"       ) e = "OnDirectDamage_0.61RPPM_22Cd_20Dur_1Tick_20Stack_" + RTV( tf, 847, 947, 1069, 1131, 1207, 1276 )  + "Agi_Reverse_NoRefresh";
+  else if ( ptr && name == "skeers_bloodsoaked_talisman"  ) e = "OnAttackHit_0.51RPPM_22Cd_20Dur_1Tick_20Stack_"    + RTV( tf, 931, 1041, 1175, 1242, 1326, 1402 ) + "Crit_NoRefresh";
+
 
   // 5.2 Trinkets
-  else if ( name == "talisman_of_bloodlust"               ) e = "OnDirectDamage_"    + std::string( thunderforged ? ( heroic ? "1834" : "1625" ) : ( heroic ? "1736" : lfr ? "1277" : "1538" ) ) + "Haste_" + std::string( ptr ? "3.5" : "3.3" ) + "RPPM_5Stack_10Dur" + std::string( ptr ? "_3Cd" : "" );
-  else if ( name == "primordius_talisman_of_rage"         ) e = "OnDirectDamage_"    + std::string( thunderforged ? ( heroic ? "1834" : "1625" ) : ( heroic ? "1736" : lfr ? "1277" : "1538" ) ) + "Str_" + std::string( ptr ? "3.5" : "3.3" ) + "RPPM_5Stack_10Dur" + std::string( ptr ? "_3Cd" : "" );
-  else if ( name == "gaze_of_the_twins"                   ) e = "OnAttackCrit_"      + std::string( thunderforged ? ( heroic ? "3423" : "3032" ) : ( heroic ? "3238" : lfr ? "2381" : "2868" ) ) + "Crit_" + std::string( ptr ? "0.72" : "0.83" ) + "RPPMAttackCrit_3Stack_20Dur" + std::string( ptr ? "_3Cd" : "" );
-  else if ( name == "renatakis_soul_charm"                ) e = "OnDirectDamage_"    + std::string( thunderforged ? ( heroic ? "1592" : "1410" ) : ( heroic ? "1505" : lfr ? "1107" : "1333" ) ) + "Agi_" + std::string( ptr ? "0.70" : "0.62" ) + "RPPM_10Stack_20Dur_2Tick_22Cd_NoRefresh";
-  else if ( name == "fabled_feather_of_jikun"             ) e = "OnDirectDamage_"    + std::string( thunderforged ? ( heroic ? "1910" : "1692" ) : ( heroic ? "1806" : lfr ? "1328" : "1600" ) ) + "Str_" + std::string( ptr ? "0.70" : "0.62" ) + "RPPM_10Stack_20Dur_2Tick_22Cd_NoRefresh";
+  else if ( name == "talisman_of_bloodlust"               ) e = "OnDirectDamage_"    + RTV( tf, 1277, 0, 1538, 1625, 1736, 1834 ) + "Haste_" + std::string( ptr ? "3.5" : "3.3" ) + "RPPM_5Stack_10Dur" + std::string( ptr ? "_3Cd" : "" );
+  else if ( name == "primordius_talisman_of_rage"         ) e = "OnDirectDamage_"    + RTV( tf, 1277, 0, 1538, 1625, 1736, 1834 ) + "Str_" + std::string( ptr ? "3.5" : "3.3" ) + "RPPM_5Stack_10Dur" + std::string( ptr ? "_3Cd" : "" );
+  else if ( name == "gaze_of_the_twins"                   ) e = "OnAttackCrit_"      + RTV( tf, 2381, 0, 2868, 3032, 3238, 3423 ) + "Crit_" + std::string( ptr ? "0.72" : "0.83" ) + "RPPMAttackCrit_3Stack_20Dur" + std::string( ptr ? "_3Cd" : "" );
+  else if ( name == "renatakis_soul_charm"                ) e = "OnDirectDamage_"    + RTV( tf, 1107, 0, 1333, 1410, 1505, 1592 ) + "Agi_" + std::string( ptr ? "0.70" : "0.62" ) + "RPPM_10Stack_20Dur_2Tick_22Cd_NoRefresh";
+  else if ( name == "wushoolays_final_choice"             ) e = "OnSpellDamage_"     + RTV( tf, 1107, 0, 1333, 1410, 1505, 1592 ) + "Int_" + std::string( ptr ? "0.61" : "0.56" ) + "RPPM_10Stack_20Dur_2Tick_22Cd_NoRefresh";
+  else if ( name == "fabled_feather_of_jikun"             ) e = "OnDirectDamage_"    + RTV( tf, 1328, 0, 1600, 1692, 1806, 1910 ) + "Str_" + std::string( ptr ? "0.70" : "0.62" ) + "RPPM_10Stack_20Dur_2Tick_22Cd_NoRefresh";
 
-  else if ( name == "wushoolays_final_choice"             ) e = "OnSpellDamage_"     + std::string( thunderforged ? ( heroic ? "1592" : "1410" ) : ( heroic ? "1505" : lfr ? "1107" : "1333" ) ) + "Int_" + std::string( ptr ? "0.61" : "0.56" ) + "RPPM_10Stack_20Dur_2Tick_22Cd_NoRefresh";
-  else if ( name == "breath_of_the_hydra"                 ) e = "OnSpellTickDamage_" + std::string( thunderforged ? ( heroic ? "8753" : "7754" ) : ( heroic ? "8279" : lfr ? "6088" : "7333" ) ) + "Int_" + std::string( ptr ? "0.55" : "0.53" ) + "RPPM_20Dur" + std::string( ptr ? "_3Cd" : "" );
-  else if ( name == "chayes_essence_of_brilliance"        ) e = "OnHarmfulSpellCrit_" + std::string( thunderforged ? ( heroic ? "8753" : "7754" ) : ( heroic ? "8279" : lfr ? "6088" : "7333" ) ) + "Int_" + std::string( ptr ? "0.85" : "0.81" ) +  "RPPMSpellCrit_10Dur" + std::string( ptr ? "_3Cd" : "" );
+  else if ( name == "breath_of_the_hydra"                 ) e = "OnSpellTickDamage_" + RTV( tf, 6088, 0, 7333, 7754, 8279, 8753 ) + "Int_" + std::string( ptr ? "0.55" : "0.53" ) + "RPPM_20Dur" + std::string( ptr ? "_3Cd" : "" );
+  else if ( name == "chayes_essence_of_brilliance"        ) e = "OnHarmfulSpellCrit_" + RTV( tf, 6088, 0, 7333, 7754, 8279, 8753 ) + "Int_" + std::string( ptr ? "0.85" : "0.81" ) +  "RPPMSpellCrit_10Dur" + std::string( ptr ? "_3Cd" : "" );
 
   else if ( name == "brutal_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Str_15%_15Dur_75Cd";
   else if ( name == "vicious_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Agi_15%_20Dur_105Cd";
@@ -3872,7 +3900,7 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "dreadful_gladiators_insignia_of_dominance" ) e = "OnSpellDamage_3017SP_25%_20Dur_55Cd";
 
   // Stat Procs with Tick Increases
-  else if ( name == "dislodged_foreign_object"            ) e = ( heroic ? "OnHarmfulSpellCast_121SP_10Stack_10%_20Dur_45Cd_2Tick" : "OnHarmfulSpellCast_105SP_10Stack_10%_20Dur_45Cd_2Tick" );
+  else if ( name == "dislodged_foreign_object"            ) e = "OnHarmfulSpellCast_" + RTV( tf, 0, 0, 105, 0, 121 ) + "SP_10Stack_10%_20Dur_45Cd_2Tick";
 
   // Discharge Procs
   else if ( name == "bandits_insignia"                    ) e = "OnAttackHit_1880Arcane_15%_45Cd";
@@ -3882,16 +3910,16 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "lightning_capacitor"                 ) e = "OnSpellCrit_750Nature_3Stack_2.5Cd";
   else if ( name == "timbals_crystal"                     ) e = "OnSpellTickDamage_380Shadow_10%_15Cd";
   else if ( name == "thunder_capacitor"                   ) e = "OnSpellCrit_1276Nature_4Stack_2.5Cd";
-  else if ( name == "bryntroll_the_bone_arbiter"          ) e = ( heroic ? "OnAttackHit_2538Drain_11%" : "OnAttackHit_2250Drain_11%" );
-  else if ( name == "cunning_of_the_cruel"                ) e = ( heroic ? "OnSpellDamage_3978.8+35.3Shadow_45%_9Cd_aoe" : lfr ? "OnSpellDamage_3122.6+27.7Shadow_45%_9Cd_aoe" : "OnSpellDamage_3524.5+31.3Shadow_45%_9Cd_aoe" );
-  else if ( name == "vial_of_shadows"                     ) e = ( heroic ? "OnAttackHit_-5682+33.90Physical_45%_9Cd_NoDodge_NoParry_NoBlock" : lfr ? "OnAttackHit_-4460.5+26.60Physical_45%_9Cd_NoDodge_NoParry_NoBlock" : "OnAttackHit_-5035+30.00Physical_45%_9Cd_NoDodge_NoParry_NoBlock" ); // ICD, base damage, and ap coeff determined experimentally on heroic version. Assuming dbc has wrong base damage. Normal and LFR assumed to be changed by the same %
-  else if ( name == "reign_of_the_unliving"               ) e = ( heroic ? "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" );
-  else if ( name == "reign_of_the_dead"                   ) e = ( heroic ? "OnSpellDirectCrit_2117Fire_3Stack_2.0Cd" : "OnSpellDirectCrit_1882Fire_3Stack_2.0Cd" );
-  else if ( name == "solace_of_the_defeated"              ) e = ( heroic ? "OnSpellCast_36Spi_8Stack_10Dur" : "OnSpellCast_32Spi_8Stack_10Dur" );
-  else if ( name == "solace_of_the_fallen"                ) e = ( heroic ? "OnSpellCast_36Spi_8Stack_10Dur" : "OnSpellCast_32Spi_8Stack_10Dur" );
+  else if ( name == "bryntroll_the_bone_arbiter"          ) e = "OnAttackHit_" + RTV( tf, 0, 0, 2250, 0, 2538 ) + "Drain_11%";
+  else if ( name == "cunning_of_the_cruel"                ) e = "OnSpellDamage_" + std::string( item_database::heroic( tf ) ? "3978.8+35.3" : item_database::lfr( tf ) ? "3122.6+27.7" : "3524.5+31.3" ) + "Shadow_45%_9Cd_aoe";
+  else if ( name == "vial_of_shadows"                     ) e = "OnAttackHit_" + std::string( item_database::heroic( tf ) ? "-5682+33.9" : item_database::lfr( tf ) ? "-4460.5+26.6" : "-5035+30.0" ) + "Physical_45%_9Cd_NoDodge_NoParry_NoBlock";
+  else if ( name == "reign_of_the_unliving"               ) e = "OnSpellDirectCrit_" + RTV( tf, 0, 0, 1882, 0, 2117 ) + "Fire_3Stack_2Cd";
+  else if ( name == "reign_of_the_dead"                   ) e = "OnSpellDirectCrit_" + RTV( tf, 0, 0, 1882, 0, 2117 ) + "Fire_3Stack_2Cd";
+  else if ( name == "solace_of_the_defeated"              ) e = "OnSpellCast_" + RTV( tf, 0, 0, 32, 0, 36 ) + "Spi_8Stack_10Dur";
+  else if ( name == "solace_of_the_fallen"                ) e = "OnSpellCast_" + RTV( tf, 0, 0, 32, 0, 36 ) + "Spi_8Stack_10Dur";
 
   // Variable Stack Discharge Procs
-  else if ( name == "variable_pulse_lightning_capacitor"  ) e = ( heroic ? "OnSpellCrit_3300.7Nature_15%_10Stack_2.5Cd_chance" : "OnSpellCrit_2926.3Nature_15%_10Stack_2.5Cd_chance" );
+  else if ( name == "variable_pulse_lightning_capacitor"  ) e = "OnSpellCrit_" + std::string( item_database::heroic( tf ) ? "3300.7" : "2926.3" ) + "Nature_15%_10Stack_2.5Cd_chance";
 
   // Enchants
   if      ( name == "lightweave_1"                        ) e = "OnSpellCast_295SP_35%_15Dur_60Cd";
@@ -3934,49 +3962,47 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
 
 bool unique_gear::get_use_encoding( std::string& encoding,
                                     const std::string& name,
-                                    bool         heroic,
-                                    bool         lfr,
-                                    bool         thunderforged,
+                                    unsigned           tf,
                                     bool         ptr,
                                     unsigned     item_id )
 {
   std::string e;
 
   // Simple
-  if      ( name == "ancient_petrified_seed"       ) e = ( heroic ? "1441Agi_15Dur_60Cd"  : "1277Agi_15Dur_60Cd" );
+  if      ( name == "ancient_petrified_seed"       ) e = RTV( tf, 0, 0, 1277, 0, 1441 ) + "Agi_15Dur_60Cd";
   else if ( name == "brawlers_trophy"              ) e = "1700Dodge_20Dur_120Cd";
   else if ( name == "core_of_ripeness"             ) e = "1926Spi_20Dur_120Cd";
   else if ( name == "electrospark_heartstarter"    ) e = "567Int_20Dur_120Cd";
   else if ( name == "energy_siphon"                ) e = "408SP_20Dur_120Cd";
   else if ( name == "ephemeral_snowflake"          ) e = "464Haste_20Dur_120Cd";
-  else if ( name == "essence_of_the_eternal_flame" ) e = ( heroic ? "1441Str_15Dur_60Cd" : "1277Str_15Dur_60Cd" );
-  else if ( name == "fiery_quintessence"           ) e = ( heroic ? "1297Int_25Dur_90Cd"  : "1149Int_25Dur_90Cd" );
+  else if ( name == "essence_of_the_eternal_flame" ) e = RTV( tf, 0, 0, 1277, 0, 1441 ) + "Str_15Dur_60Cd";
+  else if ( name == "fiery_quintessence"           ) e = RTV( tf, 0, 0, 1297, 0, 1149 ) + "Int_25Dur_90Cd";
   else if ( name == "figurine__demon_panther"      ) e = "1425Agi_20Dur_120Cd";
   else if ( name == "figurine__dream_owl"          ) e = "1425Spi_20Dur_120Cd";
   else if ( name == "figurine__jeweled_serpent"    ) e = "1425Sp_20Dur_120Cd";
   else if ( name == "figurine__king_of_boars"      ) e = "1425Str_20Dur_120Cd";
   else if ( name == "impatience_of_youth"          ) e = "1605Str_20Dur_120Cd";
-  else if ( name == "jaws_of_defeat"               ) e = ( heroic ? "OnSpellCast_125HolyStorm_CostRd_10Stack_20Dur_120Cd" : "OnSpellCast_110HolyStorm_CostRd_10Stack_20Dur_120Cd" );
+  else if ( name == "jaws_of_defeat"               ) e = "OnSpellCast_" + RTV( tf, 0, 0, 110, 0, 125 ) + "HolyStorm_CostRd_10Stack_20Dur_120Cd";
   else if ( name == "living_flame"                 ) e = "505SP_20Dur_120Cd";
   else if ( name == "maghias_misguided_quill"      ) e = "716SP_20Dur_120Cd";
-  else if ( name == "magnetite_mirror"             ) e = ( heroic ? "1425Str_15Dur_90Cd" : "1075Str_15Dur_90Cd" );
-  else if ( name == "mark_of_khardros"             ) e = ( heroic ? "1425Mastery_15Dur_90Cd" : "1260Mastery_15Dur_90Cd" );
+  else if ( name == "magnetite_mirror"             ) e = RTV( tf, 0, 0, 1075, 0, 1425 ) + "Str_15Dur_90Cd";
+  else if ( name == "mark_of_khardros"             ) e = RTV( tf, 0, 0, 1260, 0, 1425 ) + "Mastery_15Dur_90Cd";
   else if ( name == "mark_of_norgannon"            ) e = "491Haste_20Dur_120Cd";
   else if ( name == "mark_of_supremacy"            ) e = "1024AP_20Dur_120Cd";
-  else if ( name == "mark_of_the_firelord"         ) e = ( heroic ? "1441Int_15Dur_60Cd"  : "1277Int_15Dur_60Cd" );
+  else if ( name == "mark_of_the_firelord"         ) e = RTV( tf, 0, 0, 1277, 0, 1444 ) + "Int_15Dur_60Cd";
   else if ( name == "moonwell_chalice"             ) e = "1700Mastery_20Dur_120Cd";
   else if ( name == "moonwell_phial"               ) e = "1700Dodge_20Dur_120Cd";
-  else if ( name == "might_of_the_ocean"           ) e = ( heroic ? "1425Str_15Dur_90Cd" : "765Str_15Dur_90Cd" );
+  else if ( name == "might_of_the_ocean"           ) e = RTV( tf, 0, 0, 765, 0, 1425 ) + "Str_15Dur_90Cd";
   else if ( name == "platinum_disks_of_battle"     ) e = "752AP_20Dur_120Cd";
   else if ( name == "platinum_disks_of_sorcery"    ) e = "440SP_20Dur_120Cd";
   else if ( name == "platinum_disks_of_swiftness"  ) e = "375Haste_20Dur_120Cd";
   else if ( name == "rickets_magnetic_fireball"    ) e = "1700Crit_20Dur_120Cd";
-  else if ( name == "rune_of_zeth"                 ) e = ( heroic ? "1441Int_15Dur_60Cd" : "1277Int_15Dur_60Cd" );
+  else if ( name == "rune_of_zeth"                 ) e = RTV( tf, 0, 0, 1277, 0, 1441 ) + "Int_15Dur_60Cd";
   else if ( name == "scale_of_fates"               ) e = "432Haste_20Dur_120Cd";
-  else if ( name == "sea_star"                     ) e = ( heroic ? "1425Sp_20Dur_120Cd" : "765Sp_20Dur_120Cd" );
+  else if ( name == "sea_star"                     ) e = RTV( tf, 0, 0, 765, 0, 1425 ) + "Sp_20Dur_120Cd";
   else if ( name == "shard_of_the_crystal_heart"   ) e = "512Haste_20Dur_120Cd";
   else if ( name == "shard_of_woe"                 ) e = "1935Haste_10Dur_60Cd";
-  else if ( name == "skardyns_grace"               ) e = ( heroic ? "1425Mastery_20Dur_120Cd" : "1260Mastery_20Dur_120Cd" );
+  else if ( name == "skardyns_grace"               ) e = RTV( tf, 0, 0, 1260, 0, 1425 ) + "Mastery_20Dur_120Cd";
   else if ( name == "sliver_of_pure_ice"           ) e = "1625Mana_120Cd";
   else if ( name == "soul_casket"                  ) e = "1926Sp_20Dur_120Cd";
   else if ( name == "souls_anguish"                ) e = "765Str_15Dur_90Cd";
@@ -3985,11 +4011,11 @@ bool unique_gear::get_use_encoding( std::string& encoding,
   else if ( name == "unsolvable_riddle"            ) e = "1605Agi_20Dur_120Cd";
   else if ( name == "wrathstone"                   ) e = "856AP_20Dur_120Cd";
   // 4.3
-  else if ( name == "bottled_wishes"               ) e = ( heroic ? "2585SP_15Dur_90Cd" : lfr ? "2029SP_15Dur_90Cd" : "2290SP_15Dur_90Cd" );
-  else if ( name == "kiroptyric_sigil"             ) e = ( heroic ? "2585Agi_15Dur_90Cd" : lfr ? "2029Agi_15Dur_90Cd" : "2290Agi_15Dur_90Cd" );
-  else if ( name == "rotting_skull"                ) e = ( heroic ? "2585Str_15Dur_90Cd" : lfr ? "2029Str_15Dur_90Cd" : "2290Str_15Dur_90Cd" );
-  else if ( name == "fire_of_the_deep"             ) e = ( heroic ? "2585Dodge_15Dur_90Cd" : lfr ? "2029Dodge_15Dur_90Cd" : "2290Dodge_15Dur_90Cd" );
-  else if ( name == "reflection_of_the_light"      ) e = ( heroic ? "2585SP_15Dur_90Cd" : lfr ? "2029SP_15Dur_90Cd" : "2290SP_15Dur_90Cd" );
+  else if ( name == "bottled_wishes"               ) e = RTV( tf, 2029, 0, 2290, 0, 2585 ) + "SP_15Dur_90Cd";
+  else if ( name == "kiroptyric_sigil"             ) e = RTV( tf, 2029, 0, 2290, 0, 2585 ) + "Agi_15Dur_90Cd";
+  else if ( name == "rotting_skull"                ) e = RTV( tf, 2029, 0, 2290, 0, 2585 ) + "Str_15Dur_90Cd";
+  else if ( name == "fire_of_the_deep"             ) e = RTV( tf, 2029, 0, 2290, 0, 2585 ) + "Dodge_15Dur_90Cd";
+  else if ( name == "reflection_of_the_light"      ) e = RTV( tf, 2029, 0, 2290, 0, 2585 ) + "SP_15Dur_90Cd";
 
   // MoP
 
@@ -3999,11 +4025,11 @@ bool unique_gear::get_use_encoding( std::string& encoding,
   else if ( name == "lessons_of_the_darkmaster"    ) e = "4232Str_20Dur_120Cd";
   else if ( name == "daelos_final_words"           ) e = "5633Str_10Dur_90Cd";
   else if ( name == "gerps_perfect_arrow"          ) e = "3480Agi_20Dur_120Cd";
-  else if ( name == "jade_bandit_figurine"         ) e = std::string( heroic ? "4059" : lfr ? "3184" : "3595" ) + "Haste_15Dur_60Cd";
-  else if ( name == "jade_charioteer_figurine"     ) e = std::string( heroic ? "4059" : lfr ? "3184" : "3595" ) + "Haste_15Dur_60Cd";
-  else if ( name == "jade_magistrate_figurine"     ) e = std::string( heroic ? "4059" : lfr ? "3184" : "3595" ) + "Crit_15Dur_60Cd";
-  else if ( name == "jade_courtesan_figurine"      ) e = std::string( heroic ? "4059" : lfr ? "3184" : "3595" ) + "Spi_15Dur_60Cd";
-  else if ( name == "jade_warlord_figurine"        ) e = std::string( heroic ? "4059" : lfr ? "3184" : "3595" ) + "Mastery_15Dur_60Cd";
+  else if ( name == "jade_bandit_figurine"         ) e = RTV( tf, 3184, 0, 3595, 0, 4059 ) + "Haste_15Dur_60Cd";
+  else if ( name == "jade_charioteer_figurine"     ) e = RTV( tf, 3184, 0, 3595, 0, 4059 ) + "Haste_15Dur_60Cd";
+  else if ( name == "jade_magistrate_figurine"     ) e = RTV( tf, 3184, 0, 3595, 0, 4059 ) + "Crit_15Dur_60Cd";
+  else if ( name == "jade_courtesan_figurine"      ) e = RTV( tf, 3184, 0, 3595, 0, 4059 ) + "Spi_15Dur_60Cd";
+  else if ( name == "jade_warlord_figurine"        ) e = RTV( tf, 3184, 0, 3595, 0, 4059 ) + "Mastery_15Dur_60Cd";
   else if ( name == "hawkmasters_talon"            ) e = "3595Haste_15Dur_60Cd";
   else if ( name == "laochins_liquid_courage"      ) e = "2822Mastery_15Dur_60Cd";
   else if ( name == "relic_of_niuzao"              ) e = "8871Dodge_12Dur_60Cd";
@@ -4032,16 +4058,16 @@ bool unique_gear::get_use_encoding( std::string& encoding,
   else if ( name == "dominators_deadeye_badge"     ) e = "2693Mastery_15Dur_60Cd";
   else if ( name == "dominators_durable_badge"     ) e = "2693Mastery_15Dur_60Cd";
 
-  //5.4
-  else if ( ptr && ( name == "curse_of_hubris" || name == "hellscreams_hubris" ) ) e = std::string( thunderforged ? ( heroic ? "11690" : "10356" ) : ( heroic ? "11054" : ( item_id == 104898 ? "8676" : lfr ? "7758" : "9793" ) ) ) + "Crit_15Dur_90Cd";
-  else if ( ptr && item_id == 102314                      ) e = "9793Spi_15Dur_90Cd";
-  else if ( ptr && name == "contemplation_of_chiji"       ) e = std::string( item_id == 103988 ? "8281" : "5758" ) + "8281Spi_15Dur_90Cd";
+  // Mists of Pandaria
+  else if ( ptr && name == "resolve_of_niuzao"            ) e = RTV( tf, 0, 0, 5758, 8281 ) + "Dodge_20Dur_120Cd";
+  else if ( ptr && name == "contemplation_of_chiji"       ) e = RTV( tf, 0, 0, 5758, 8281 ) + "Spi_15Dur_90Cd";
 
-  //Mop Tank
+  else if ( ptr && ( name == "curse_of_hubris" || name == "hellscreams_hubris" ) ) e = RTV( tf, 7758, 8676, 9793, 10356, 11054, 11690 ) + "Crit_15Dur_90Cd";
   else if ( name == "steadfast_talisman_of_the_shadopan_assault" ) e = "10400Dodge_20Dur_120Cd"; //I am too stupid to do this right: Should actually be counting downwards from a 10 stack to a 0 stack (each 1600dodge). Instead we just take an average stack of 11/2 ->
-  else if ( name == "fortitude_of_the_zandalari"   ) e = std::string( thunderforged ? ( heroic ? "88147" : "78092" ) : ( heroic ? "83364" : lfr ? "61308" : "73844" ) ) + "Maxhealth_15Dur_120CD";
+  else if ( name == "fortitude_of_the_zandalari"   ) e = RTV( tf, 61308, 0, 73844, 78092, 83364, 88147 ) + "Maxhealth_15Dur_120CD";
+
+  else if ( ptr && item_id == 102314                      ) e = "9793Spi_15Dur_90Cd";
   else if ( ptr && item_id == 102316                      ) e = "9793Dodge_20Dur_120Cd";
-  else if ( ptr && name == "resolve_of_niuzao"            ) e = std::string( item_id == 103990 ? "8281" : "5758" ) + "Dodge_20Dur_120Cd";
 
   // MoP PvP
   else if ( name == "dreadful_gladiators_badge_of_dominance"   ) e = "4275SP_20Dur_120Cd";
@@ -4060,10 +4086,10 @@ bool unique_gear::get_use_encoding( std::string& encoding,
   else if ( ptr && name == "prideful_gladiators_badge_of_conquest"  ) e = "4340Agi_20Dur_60Cd";
 
   // Hybrid
-  else if ( name == "fetish_of_volatile_power"   ) e = ( heroic ? "OnHarmfulSpellCast_64Haste_8Stack_20Dur_120Cd" : "OnHarmfulSpellCast_57Haste_8Stack_20Dur_120Cd" );
-  else if ( name == "talisman_of_volatile_power" ) e = ( heroic ? "OnHarmfulSpellCast_64Haste_8Stack_20Dur_120Cd" : "OnHarmfulSpellCast_57Haste_8Stack_20Dur_120Cd" );
-  else if ( name == "vengeance_of_the_forsaken"  ) e = ( heroic ? "OnAttackHit_250AP_5Stack_20Dur_120Cd" : "OnAttackHit_215AP_5Stack_20Dur_120Cd" );
-  else if ( name == "victors_call"               ) e = ( heroic ? "OnAttackHit_250AP_5Stack_20Dur_120Cd" : "OnAttackHit_215AP_5Stack_20Dur_120Cd" );
+  else if ( name == "fetish_of_volatile_power"   ) e = "OnHarmfulSpellCast_" + RTV( tf, 0, 0, 57, 0, 64 ) + "Haste_8Stack_20Dur_120Cd";
+  else if ( name == "talisman_of_volatile_power" ) e = "OnHarmfulSpellCast_" + RTV( tf, 0, 0, 57, 0, 64 ) + "Haste_8Stack_20Dur_120Cd";
+  else if ( name == "vengeance_of_the_forsaken"  ) e = "OnAttackHit_" + RTV( tf, 0, 0, 215, 0, 250 ) + "AP_5Stack_20Dur_120Cd";
+  else if ( name == "victors_call"               ) e = "OnAttackHit_" + RTV( tf, 0, 0, 215, 0, 250 ) + "AP_5Stack_20Dur_120Cd";
   else if ( name == "nevermelting_ice_crystal"   ) e = "OnSpellCrit_184Crit_5Stack_20Dur_180Cd_reverse";
 
   // Engineering Tinkers

@@ -668,6 +668,20 @@ class ItemDataGenerator(DataGenerator):
         "NYI",
     ]
     
+    _type_flags = {
+        "Raid Finder"   : 0x01,
+        "Heroic"        : 0x02,
+        "Flexible"      : 0x04,
+        "Elite"         : 0x10, # Meta type
+        "Timeless"      : 0x10,
+        "Thunderforged" : 0x10,
+        "Warforged"     : 0x10,
+
+        # Combinations
+        "Heroic Thunderforged" : 0x12,
+        "Heroic Warforged"     : 0x12,
+    }
+
     def __init__(self, options):
         self._dbc = [ 'Item-sparse', 'Item', 'ItemDisplayInfo', 'SpellEffect', 'Spell', 'JournalEncounterItem', 'ItemNameDescription' ]
 
@@ -801,32 +815,24 @@ class ItemDataGenerator(DataGenerator):
                 item2.subclass = 6
 
             if(index % 20 == 0):
-                s += '//{    Id, Name                                                   , Icon                                    ,     Flags1,     Flags2,   LFR,   HRC,Level,ReqL,ReqSk, RSkL,Qua,Inv,Cla,SCl,Bnd, Delay, DmgRange, Modifier,  ClassMask,   RaceMask, { ST1, ST2, ST3, ST4, ST5, ST6, ST7, ST8, ST9, ST10}, {  SV1,  SV2,  SV3,  SV4,  SV5,  SV6,  SV7,  SV8,  SV9, SV10 }, {  SId1,  SId2,  SId3,  SId4,  SId5 }, {TId1,TId2,TId3,TId4,TId5 }, {    CdS1,    CdS2,    CdS3,    CdS4,    CdS5 }, { CdCat1, CdCat2, CdCat3, CdCat4, CdCat5 }, {Soc1,Soc2,Soc3 }, GemP,IdSBon,IdSet,IdSuf },\n'
+                s += '//{    Id, Name                                                   , Icon                                    ,     Flags1,     Flags2, Type,Level,ReqL,ReqSk, RSkL,Qua,Inv,Cla,SCl,Bnd, Delay, DmgRange, Modifier,  ClassMask,   RaceMask, { ST1, ST2, ST3, ST4, ST5, ST6, ST7, ST8, ST9, ST10}, {  SV1,  SV2,  SV3,  SV4,  SV5,  SV6,  SV7,  SV8,  SV9, SV10 }, {  SId1,  SId2,  SId3,  SId4,  SId5 }, {TId1,TId2,TId3,TId4,TId5 }, {    CdS1,    CdS2,    CdS3,    CdS4,    CdS5 }, { CdCat1, CdCat2, CdCat3, CdCat4, CdCat5 }, {Soc1,Soc2,Soc3 }, GemP,IdSBon,IdSet,IdSuf },\n'
 
             fields = item.field('id', 'name')
             fields += item_display.field('icon')
             fields += item.field('flags', 'flags_2')
 
-            # Heroic, LFR, Thunderforged
-            flag_fields = [ 'false', 'false', 'false' ]
+            flag_types = 0x00
 
             if hasattr(item, 'journal'):
                 if item.journal.flags_1 == 0x10:
-                    flag_fields[0] = 'true'
+                    flag_types |= self._type_flags['Raid Finder']
                 elif item.journal.flags_1 == 0xC:
-                    flag_fields[1] = 'true'
+                    flag_types |= self._type_flags['Heroic']
 
             desc = self._itemnamedescription_db[item.id]
-            if desc.desc == 'Raid Finder':
-                flag_fields[0] = 'true'
+            flag_types |= self._type_flags.get(desc.desc, 0)
 
-            if 'Heroic' in desc.desc:
-                flag_fields[1] = 'true'
-
-            if 'Thunderforged' in desc.desc:
-                flag_fields[2] = 'true'
-
-            fields += flag_fields
+            fields += [ '%#.2x' % flag_types ]
             fields += item.field('ilevel', 'req_level', 'req_skill', 'req_skill_rank', 'quality', 'inv_type')
             fields += item2.field('classs', 'subclass')
             fields += item.field( 'bonding', 'delay', 'weapon_damage_range', 'item_damage_modifier', 'race_mask', 'class_mask') 

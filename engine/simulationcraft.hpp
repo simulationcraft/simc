@@ -3272,7 +3272,8 @@ struct item_t
   std::string option_weapon_str;
   std::string option_heroic_str;
   std::string option_lfr_str;
-  std::string option_thunderforged_str;
+  std::string option_flex_str;
+  std::string option_elite_str;
   std::string option_armor_type_str;
   std::string option_reforge_str;
   std::string option_ilevel_str;
@@ -3323,7 +3324,8 @@ struct item_t
   bool decode_weapon();
   bool decode_heroic();
   bool decode_lfr();
-  bool decode_thunderforged();
+  bool decode_elite();
+  bool decode_flexible();
   bool decode_armor_type();
   bool decode_reforge();
   bool decode_random_suffix();
@@ -5859,7 +5861,12 @@ int scaled_stat( const item_data_t& item, const dbc_t& dbc, size_t idx, unsigned
 
 unsigned upgrade_ilevel( const item_data_t& item, unsigned upgrade_level );
 stat_pair_t item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index );
-};
+
+inline bool heroic( unsigned f ) { return f & RAID_TYPE_HEROIC; }
+inline bool lfr( unsigned f ) { return f & RAID_TYPE_LFR; }
+inline bool flex( unsigned f ) { return f & RAID_TYPE_FLEXIBLE; }
+inline bool elite( unsigned f ) { return f & RAID_TYPE_ELITE; }
+}
 
 // Unique Gear ==============================================================
 
@@ -5882,17 +5889,13 @@ action_callback_t* register_stat_discharge_proc( item_t&, special_effect_t& );
 
 bool get_equip_encoding( std::string& encoding,
                          const std::string& item_name,
-                         bool heroic,
-                         bool lfr,
-                         bool thunderforged,
+                         unsigned type_flags,
                          bool ptr,
                          unsigned item_id = 0 );
 
 bool get_use_encoding( std::string& encoding,
                        const std::string& item_name,
-                       bool heroic,
-                       bool lfr,
-                       bool thunderforged,
+                       unsigned type_flags,
                        bool ptr,
                        unsigned item_id = 0 );
 
