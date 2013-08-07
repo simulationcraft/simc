@@ -100,7 +100,7 @@ public:
     buff_t* divine_purpose;
     buff_t* divine_shield;
     buff_t* double_jeopardy;
-    buff_t* guardian_of_ancient_kings_prot;
+    buff_t* guardian_of_ancient_kings;
     buff_t* grand_crusader;
     buff_t* glyph_templars_verdict;
     buff_t* glyph_of_word_of_glory;
@@ -1733,7 +1733,7 @@ struct flash_of_light_t : public paladin_heal_t
   }
 };
 
-// Guardian of the Ancient Kings ============================================
+// Guardian of Ancient Kings ============================================
 
 struct guardian_of_ancient_kings_t : public paladin_spell_t
 {
@@ -1747,6 +1747,8 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
   virtual void execute()
   {
     paladin_spell_t::execute();
+
+    p() -> buffs.guardian_of_ancient_kings -> trigger();
 
     if ( p() -> specialization() == PALADIN_RETRIBUTION )
       p() -> guardian_of_ancient_kings -> summon( p() -> spells.guardian_of_ancient_kings_ret -> duration() );
@@ -2554,8 +2556,13 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     trigger_gcd = timespan_t::zero();
     may_crit = false; //cannot crit
 
+    // handle PTR Battle Healer glyph
+    if ( p -> dbc.ptr && p -> glyphs.battle_healer -> ok() )
+      direct_power_mod = p -> glyphs.battle_healer -> effectN( 1 ).percent();
+    else
+      direct_power_mod           = 1.0;
+
     // spell database info is mostly in effects
-    direct_power_mod             = 1.0;
     base_attack_power_multiplier = data().effectN( 1 ).percent();
     base_spell_power_multiplier  = data().effectN( 1 ).percent();
 
@@ -2584,7 +2591,7 @@ struct seal_of_insight_proc_t : public paladin_heal_t
       if ( p() -> glyphs.battle_healer -> ok() && p() -> dbc.ptr )
       {
         target = find_lowest_target();
-        if ( target ) // If we are alone and no target is found, nothing happens - test on PTR
+        if ( target ) 
           paladin_heal_t::execute();
       }
       else
@@ -4390,7 +4397,7 @@ void paladin_t::create_buffs()
   buffs.infusion_of_light      = buff_creator_t( this, "infusion_of_light", find_class_spell( "Infusion of Light" ) );
 
   // Prot
-  buffs.guardian_of_ancient_kings_prot = buff_creator_t( this, "guardian_of_ancient_kings_prot", find_class_spell( "Guardian of hte Ancient Kings", std::string(), PALADIN_PROTECTION ) );
+  buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_class_spell( "Guardian of the Ancient Kings" ) );
   buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() ).chance( passives.grand_crusader -> proc_chance() );
   buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
   buffs.ardent_defender                = buff_creator_t( this, "ardent_defender" ).spell( find_specialization_spell( "Ardent Defender" ) );
@@ -4940,7 +4947,7 @@ void paladin_t::init_spells()
   glyphs.inquisition              = find_glyph_spell( "Glyph of Inquisition"     );
   glyphs.word_of_glory            = find_glyph_spell( "Glyph of Word of Glory"   );
 
-  if ( glyphs.battle_healer -> ok() )
+  if ( glyphs.battle_healer -> ok() ) // This can be removed after ptr is over
     active.battle_healer_proc = new battle_healer_proc_t( this );
 
   // more spells, these need the glyph check to be present before they can be executed
@@ -5194,7 +5201,7 @@ void paladin_t::target_mitigation( school_e school,
   // Damage Reduction Cooldowns
 
   // Guardian of Ancient Kings
-  if ( buffs.guardian_of_ancient_kings_prot -> up() )
+  if ( buffs.guardian_of_ancient_kings -> up() && specialization() == PALADIN_PROTECTION )
   {
     s -> result_amount *= 1.0 + dbc.spell( 86657 ) -> effectN( 2 ).percent(); // Value of the buff is stored in another spell
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
