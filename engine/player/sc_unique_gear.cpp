@@ -3832,56 +3832,56 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "cataclysmic_gladiators_insignia_of_dominance" ) e = "OnSpellDamage_1452SP_25%_20Dur_55Cd";
 
   // MoP
-  if ( name == "vision_of_the_predator"              ) e = "OnSpellDamage_3386Crit_15%_30Dur_105Cd";
-  else if ( name == "carbonic_carbuncle"                  ) e = "OnDirectDamage_3386Crit_15%_30Dur_105Cd";
+  if ( name == "vision_of_the_predator"                   ) e = "OnSpellDamage_3386Crit_15%_30Dur_" + std::string( ptr ? "115Cd" : "105Cd" );
+  else if ( name == "carbonic_carbuncle"                  ) e = "OnDirectDamage_3386Crit_15%_30Dur_" + std::string( ptr ? "115Cd" : "105Cd" );
   else if ( name == "windswept_pages"                     ) e = "OnDirectDamage_3386Haste_15%_20Dur_65Cd";
   else if ( name == "searing_words"                       ) e = "OnDirectCrit_3386Agi_45%_25Dur_85Cd";
-  else if ( name == "essence_of_terror"                   ) e = "OnHarmfulSpellHit_" + RTV( tf, 6121, 0, 6908, 0, 7796 ) + "Haste_15%_20Dur_105Cd";
-  else if ( name == "terror_in_the_mists"                 ) e = "OnDirectDamage_"    + RTV( tf, 6121, 0, 6908, 0, 7796 ) + "Crit_15%_20Dur_105Cd";
-  else if ( name == "darkmist_vortex"                     ) e = "OnDirectDamage_"    + RTV( tf, 6121, 0, 6908, 0, 7796 ) + "Haste_15%_20Dur_105Cd";
-  else if ( name == "spirits_of_the_sun"                  ) e = "OnHeal_"            + RTV( tf, 6121, 0, 6908, 0, 7796 ) + "Spi_15%_20Dur_105Cd";
-  else if ( name == "stuff_of_nightmares"                 ) e = "OnAttackHit_"       + RTV( tf, 6121, 0, 6908, 0, 7796 ) + "Dodge_15%_20Dur_105Cd";
-  else if ( name == "light_of_the_cosmos"                 ) e = "OnSpellTickDamage_" + RTV( tf, 2866, 0, 3236, 0, 3653 ) + "Int_15%_20Dur_45Cd";
-  else if ( name == "bottle_of_infinite_stars"            ) e = "OnAttackHit_"       + RTV( tf, 2866, 0, 3236, 0, 3653 ) + "Agi_15%_20Dur_45Cd";
-  else if ( name == "vial_of_dragons_blood"               ) e = "OnAttackHit_"       + RTV( tf, 2866, 0, 3236, 0, 3653 ) + "Dodge_15%_20Dur_45Cd";
-  else if ( name == "lei_shens_final_orders"              ) e = "OnAttackHit_"       + RTV( tf, 2866, 0, 3236, 0, 3653 ) + "Str_15%_20Dur_45Cd";
-  else if ( name == "qinxis_polarizing_seal"              ) e = "OnHeal_"            + RTV( tf, 2866, 0, 3236, 0, 3653 ) + "Int_15%_20Dur_45Cd";
+  else if ( name == "essence_of_terror"                   ) e = "OnHarmfulSpellHit_" + RTV( tf, 6121, 0, 6908, 0, 7796 ) + "Haste_15%_20Dur_" + std::string( ptr ? "115Cd" : "105Cd" );
+  else if ( name == "terror_in_the_mists"                 ) e = "OnDirectDamage_"    + RTV( tf, 6121, 0, 6908, 0, 7796 ) + "Crit_15%_20Dur_" + std::string( ptr ? "115Cd" : "105Cd" );
+  else if ( name == "darkmist_vortex"                     ) e = "OnDirectDamage_"    + RTV( tf, 6121, 0, 6908, 0, 7796 ) + "Haste_15%_20Dur_" + std::string( ptr ? "115Cd" : "105Cd" );
+  else if ( name == "spirits_of_the_sun"                  ) e = "OnHeal_"            + RTV( tf, 6121, 0, 6908, 0, 7796 ) + "Spi_15%_20Dur_" + std::string( ptr ? "115Cd" : "105Cd" );
+  else if ( name == "stuff_of_nightmares"                 ) e = "OnAttackHit_"       + RTV( tf, 6121, 0, 6908, 0, 7796 ) + "Dodge_15%_20Dur_" + std::string( ptr ? "115Cd" : "105Cd" );
+  else if ( name == "light_of_the_cosmos"                 ) e = "OnSpellTickDamage_" + RTV( tf, 2866, 0, 3236, 0, 3653 ) + "Int_15%_20Dur_" + std::string( ptr ? "55Cd" : "45Cd" );
+  else if ( name == "bottle_of_infinite_stars"            ) e = "OnAttackHit_"       + RTV( tf, 2866, 0, 3236, 0, 3653 ) + "Agi_15%_20Dur_" + std::string( ptr ? "55Cd" : "45Cd" );
+  else if ( name == "vial_of_dragons_blood"               ) e = "OnAttackHit_"       + RTV( tf, 2866, 0, 3236, 0, 3653 ) + "Dodge_15%_20Dur_" + std::string( ptr ? "55Cd" : "45Cd" );
+  else if ( name == "lei_shens_final_orders"              ) e = "OnAttackHit_"       + RTV( tf, 2866, 0, 3236, 0, 3653 ) + "Str_15%_20Dur_" + std::string( ptr ? "55Cd" : "45Cd" ); 
+  else if ( name == "qinxis_polarizing_seal"              ) e = "OnHeal_"            + RTV( tf, 2866, 0, 3236, 0, 3653 ) + "Int_15%_20Dur_" + std::string( ptr ? "55Cd" : "45Cd" );
 
-  else if ( name == "relic_of_yulon"                      ) e = "OnSpellDamage_3027Int_20%_15Dur_50Cd";
-  else if ( name == "relic_of_chiji"                      ) e = "OnHealCast_3027Spi_20%_15Dur_45Cd";
-  else if ( name == "relic_of_xuen" && item_id == 79327   ) e = "OnAttackHit_3027Str_20%_15Dur_45Cd";
+  else if ( name == "relic_of_yulon"                      ) e = "OnSpellDamage_3027Int_20%_15Dur_" + std::string( ptr ? "55Cd" : "50Cd" );
+  else if ( name == "relic_of_chiji"                      ) e = "OnHealCast_3027Spi_20%_15Dur_" + std::string( ptr ? "55Cd" : "45Cd" );
+  else if ( name == "relic_of_xuen" && item_id == 79327   ) e = "OnAttackHit_3027Str_20%_15Dur_" + std::string( ptr ? "55Cd" : "45Cd" );
   else if ( name == "relic_of_xuen" && item_id == 79328   ) e = "OnAttackCrit_3027Agi_20%_15Dur_55Cd";
 
   //MoP Tank Trinkets
-  else if ( name == "iron_protector_talisman"             ) e = "OnAttackHit_3386Dodge_15%_15Dur_45Cd";
+  else if ( name == "iron_protector_talisman"             ) e = "OnAttackHit_3386Dodge_15%_15Dur_" + std::string( ptr ? "55Cd" : "45Cd" );
 
   // 5.4 Trinkets
-  else if ( ptr && name == "discipline_of_xuen"           ) e = "OnAttackHit_" +   RTV( tf, 0, 0, 6914, 9943 ) + "Mastery_15%_20Dur_105Cd";
-  else if ( ptr && name == "yulons_bite"                  ) e = "OnSpellDamage_" + RTV( tf, 0, 0, 6914, 9943 ) + "Crit_15%_20Dur_105Cd";
-  else if ( ptr && name == "alacrity_of_xuen"             ) e = "OnAttackHit_" +   RTV( tf, 0, 0, 6914, 9943 ) + "Haste_15%_20Dur_105Cd";
+  else if ( ptr && name == "discipline_of_xuen"           ) e = "OnAttackHit_" +   RTV( tf, 0, 0, 6914, 9943 ) + "Mastery_15%_20Dur_115Cd";
+  else if ( ptr && name == "yulons_bite"                  ) e = "OnSpellDamage_" + RTV( tf, 0, 0, 6914, 9943 ) + "Crit_15%_20Dur_115Cd";
+  else if ( ptr && name == "alacrity_of_xuen"             ) e = "OnAttackHit_" +   RTV( tf, 0, 0, 6914, 9943 ) + "Haste_15%_20Dur_115Cd";
   // TODO: Name based identification when the name appears, plus other difficulty levels ...
-  else if ( ptr && item_id == 102312                      ) e = "OnDirectDamage_11761Mastery_15%_20Dur_105Cd";
-  else if ( ptr && item_id == 102313                      ) e = "OnSpellDamage_11761Crit_15%_20Dur_105Cd";
-  else if ( ptr && item_id == 102315                      ) e = "OnAttackHit_11759Haste_15%_20Dur_105Cd";
+  else if ( ptr && item_id == 102312                      ) e = "OnDirectDamage_11761Mastery_15%_20Dur_115Cd";
+  else if ( ptr && item_id == 102313                      ) e = "OnSpellDamage_11761Crit_15%_20Dur_115Cd";
+  else if ( ptr && item_id == 102315                      ) e = "OnAttackHit_11759Haste_15%_20Dur_115Cd";
   
-  else if ( ptr && name == "ticking_ebon_detonator"       ) e = "OnDirectDamage_0.61RPPM_22Cd_20Dur_1Tick_20Stack_" + RTV( tf, 847, 947, 1069, 1131, 1207, 1276 )  + "Agi_Reverse_NoRefresh";
-  else if ( ptr && name == "skeers_bloodsoaked_talisman"  ) e = "OnAttackHit_0.51RPPM_22Cd_20Dur_1Tick_20Stack_"    + RTV( tf, 931, 1041, 1175, 1242, 1326, 1402 ) + "Crit_NoRefresh";
+  else if ( ptr && name == "ticking_ebon_detonator"       ) e = "OnDirectDamage_1.01RPPM_10Cd_10Dur_0.5Tick_20Stack_" + RTV( tf, 847, 947, 1069, 1131, 1207, 1276 )  + "Agi_Reverse_NoRefresh";
+  else if ( ptr && name == "skeers_bloodsoaked_talisman"  ) e = "OnAttackHit_0.92RPPM_10Cd_10Dur_0.5Tick_20Stack_"    + RTV( tf, 931, 1041, 1175, 1242, 1326, 1402 ) + "Crit_NoRefresh";
 
 
   // 5.2 Trinkets
-  else if ( name == "talisman_of_bloodlust"               ) e = "OnDirectDamage_"    + RTV( tf, 1277, 0, 1538, 1625, 1736, 1834 ) + "Haste_" + std::string( ptr ? "3.5" : "3.3" ) + "RPPM_5Stack_10Dur" + std::string( ptr ? "_3Cd" : "" );
-  else if ( name == "primordius_talisman_of_rage"         ) e = "OnDirectDamage_"    + RTV( tf, 1277, 0, 1538, 1625, 1736, 1834 ) + "Str_" + std::string( ptr ? "3.5" : "3.3" ) + "RPPM_5Stack_10Dur" + std::string( ptr ? "_3Cd" : "" );
-  else if ( name == "gaze_of_the_twins"                   ) e = "OnAttackCrit_"      + RTV( tf, 2381, 0, 2868, 3032, 3238, 3423 ) + "Crit_" + std::string( ptr ? "0.72" : "0.83" ) + "RPPMAttackCrit_3Stack_20Dur" + std::string( ptr ? "_3Cd" : "" );
-  else if ( name == "renatakis_soul_charm"                ) e = "OnDirectDamage_"    + RTV( tf, 1107, 0, 1333, 1410, 1505, 1592 ) + "Agi_" + std::string( ptr ? "0.70" : "0.62" ) + "RPPM_10Stack_20Dur_2Tick_22Cd_NoRefresh";
-  else if ( name == "wushoolays_final_choice"             ) e = "OnSpellDamage_"     + RTV( tf, 1107, 0, 1333, 1410, 1505, 1592 ) + "Int_" + std::string( ptr ? "0.61" : "0.56" ) + "RPPM_10Stack_20Dur_2Tick_22Cd_NoRefresh";
-  else if ( name == "fabled_feather_of_jikun"             ) e = "OnDirectDamage_"    + RTV( tf, 1328, 0, 1600, 1692, 1806, 1910 ) + "Str_" + std::string( ptr ? "0.70" : "0.62" ) + "RPPM_10Stack_20Dur_2Tick_22Cd_NoRefresh";
+  else if ( name == "talisman_of_bloodlust"               ) e = "OnDirectDamage_"    + RTV( tf, 1277, 0, 1538, 1625, 1736, 1834 ) + "Haste_" + std::string( ptr ? "3.5" : "3.3" ) + "RPPM_5Stack_10Dur" + std::string( ptr ? "_5Cd" : "" );
+  else if ( name == "primordius_talisman_of_rage"         ) e = "OnDirectDamage_"    + RTV( tf, 1277, 0, 1538, 1625, 1736, 1834 ) + "Str_" + std::string( ptr ? "3.5" : "3.3" ) + "RPPM_5Stack_10Dur" + std::string( ptr ? "_5Cd" : "" );
+  else if ( name == "gaze_of_the_twins"                   ) e = "OnAttackCrit_"      + RTV( tf, 2381, 0, 2868, 3032, 3238, 3423 ) + "Crit_" + std::string( ptr ? "0.72" : "0.83" ) + "RPPMAttackCrit_3Stack_20Dur" + std::string( ptr ? "_10Cd" : "" );
+  else if ( name == "renatakis_soul_charm"                ) e = "OnDirectDamage_"    + RTV( tf, 1107, 0, 1333, 1410, 1505, 1592 ) + "Agi_" + std::string( ptr ? "1.21RPPM_10Stack_10Dur_1Tick_10Cd" : "0.62RPPM_10Stack_20Dur_2Tick_22Cd" ) + "_NoRefresh";
+  else if ( name == "wushoolays_final_choice"             ) e = "OnSpellDamage_"     + RTV( tf, 1107, 0, 1333, 1410, 1505, 1592 ) + "Int_" + std::string( ptr ? "1.21RPPM_10Stack_10Dur_1Tick_10Cd" : "0.56RPPM_10Stack_20Dur_2Tick_22Cd" ) + "_NoRefresh";
+  else if ( name == "fabled_feather_of_jikun"             ) e = "OnDirectDamage_"    + RTV( tf, 1328, 0, 1600, 1692, 1806, 1910 ) + "Str_" + std::string( ptr ? "1.21RPPM_10Stack_10Dur_1Tick_10Cd" : "0.62RPPM_10Stack_20Dur_2Tick_22Cd" ) + "_NoRefresh";
 
-  else if ( name == "breath_of_the_hydra"                 ) e = "OnSpellTickDamage_" + RTV( tf, 6088, 0, 7333, 7754, 8279, 8753 ) + "Int_" + std::string( ptr ? "0.55" : "0.53" ) + "RPPM_20Dur" + std::string( ptr ? "_3Cd" : "" );
-  else if ( name == "chayes_essence_of_brilliance"        ) e = "OnHarmfulSpellCrit_" + RTV( tf, 6088, 0, 7333, 7754, 8279, 8753 ) + "Int_" + std::string( ptr ? "0.85" : "0.81" ) +  "RPPMSpellCrit_10Dur" + std::string( ptr ? "_3Cd" : "" );
+  else if ( name == "breath_of_the_hydra"                 ) e = "OnSpellTickDamage_" + RTV( tf, 6088, 0, 7333, 7754, 8279, 8753 ) + "Int_" + std::string( ptr ? "1.1RPPM_10Dur_10Cd" : "0.53RPPM_20Dur" );
+  else if ( name == "chayes_essence_of_brilliance"        ) e = "OnHarmfulSpellCrit_" + RTV( tf, 6088, 0, 7333, 7754, 8279, 8753 ) + "Int_" + std::string( ptr ? "0.85" : "0.81" ) +  "RPPMSpellCrit_10Dur" + std::string( ptr ? "_10Cd" : "" );
 
-  else if ( name == "brutal_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Str_15%_15Dur_75Cd";
-  else if ( name == "vicious_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Agi_15%_20Dur_105Cd";
-  else if ( name == "volatile_talisman_of_the_shadopan_assault" ) e = "OnHarmfulSpellHit_8800Haste_15%_10Dur_45Cd";
+  else if ( name == "brutal_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Str_15%_15Dur_" + std::string( ptr ? "85Cd" : "75Cd" );
+  else if ( name == "vicious_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Agi_15%_20Dur_" + std::string( ptr ? "115Cd" : "105Cd" );
+  else if ( name == "volatile_talisman_of_the_shadopan_assault" ) e = "OnHarmfulSpellHit_8800Haste_15%_10Dur_" + std::string( ptr ? "55Cd" : "45Cd" );
 
   //MoP PvP Trinkets
 
