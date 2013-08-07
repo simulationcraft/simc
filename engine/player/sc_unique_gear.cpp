@@ -2425,15 +2425,17 @@ void bad_juju( item_t* item )
 
   item -> unique = true;
 
+  const spell_data_t* driver = item -> player -> find_spell( 138939 );
   const spell_data_t* spell = item -> player -> find_spell( 138938 );
   const random_prop_data_t& budget = item -> player -> dbc.random_property( item -> item_level() );
 
   special_effect_t data;
   data.name_str    = "juju_madness";
-  data.ppm         = -0.55; // Real PPM
+  data.ppm         = -1.0 * ( maybe_ptr( item -> player -> dbc.ptr ) ? driver -> real_ppm() : 0.55 ); // Real PPM
   data.stat        = STAT_AGILITY;
   data.stat_amount = util::round( budget.p_epic[ 0 ] * spell -> effectN( 1 ).m_average() );
   data.duration    = spell -> duration();
+  data.cooldown    = maybe_ptr( item -> player -> dbc.ptr ) ? driver -> internal_cooldown() : timespan_t::zero();
 
   item -> player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new bad_juju_callback_t( *item, data ) );
 }
@@ -2543,11 +2545,12 @@ void spark_of_zandalar( item_t* item )
 
   item -> unique = true;
 
+  const spell_data_t* driver = item -> player -> find_spell( 138957 );
   const spell_data_t* spell = item -> player -> find_spell( 138958 );
 
   special_effect_t data;
   data.name_str    = "spark_of_zandalar";
-  data.ppm         = -5.5; // Real PPM
+  data.ppm         = -1.0 * ( maybe_ptr( item -> player -> dbc.ptr ) ? driver -> real_ppm() : 5.5 ); // Real PPM
   data.duration    = spell -> duration();
   data.max_stacks  = spell -> max_stacks();
 
@@ -2642,10 +2645,13 @@ void unerring_vision_of_leishen( item_t* item )
 
   item -> unique = true;
 
+  const spell_data_t* driver = item -> player -> find_spell( 138964 );
+
   special_effect_t data;
   data.name_str    = "perfect_aim";
-  data.ppm         = -0.525; // Real PPM
+  data.ppm         = -1.0 * ( maybe_ptr( item -> player -> dbc.ptr ) ? driver -> real_ppm() : 0.525 ); // Real PPM
   data.ppm        *= item_database::approx_scale_coefficient( 528, item -> item_level() );
+  data.cooldown    = maybe_ptr( item -> player -> dbc.ptr ) ? driver -> internal_cooldown() : timespan_t::zero();
 
   unerring_vision_of_leishen_callback_t* cb = new unerring_vision_of_leishen_callback_t( *item, data );
 
