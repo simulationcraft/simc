@@ -10,6 +10,12 @@ namespace { // UNNAMED NAMESPACE
 static std::string RTV( unsigned tf, unsigned lfr, unsigned flex, unsigned normal,
                         unsigned elite = 0, unsigned heroic = 0, unsigned heroic_elite = 0 )
 {
+  assert( ( lfr && flex && lfr <= flex ) || ( ! lfr && flex ) || ( lfr && ! flex  ) || ( ! lfr && ! flex ) );
+  assert( ( flex && normal && flex <= normal ) || ( ! flex && normal ) || ( flex && ! normal ) || ( ! flex && ! normal ) );
+  assert( ( normal && elite && normal <= elite ) || ( ! normal && elite ) || ( normal && ! elite ) || ( ! normal && ! elite ) );
+  assert( ( elite && heroic && elite <= heroic ) || ( ! elite && heroic ) || ( elite && ! heroic ) || ( ! elite && ! heroic ) );
+  assert( ( heroic && heroic_elite && heroic <= heroic_elite ) || ( ! heroic && heroic_elite ) || ( heroic && ! heroic_elite ) || ( ! heroic && ! heroic_elite ) );
+
   std::ostringstream s;
   if ( item_database::lfr( tf ) )
     s << lfr;
