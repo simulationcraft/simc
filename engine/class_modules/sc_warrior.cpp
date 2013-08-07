@@ -3667,7 +3667,7 @@ double warrior_t::composite_block()
 
   b += spec.bastion_of_defense -> effectN( 1 ).percent();
   if ( buff.shield_block -> up() )
-    b += buff.shield_block -> effectN( 1 ).percent();
+    b += buff.shield_block -> data().effectN( 1 ).percent();
   return b;
 }
 
