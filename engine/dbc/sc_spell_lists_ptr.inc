@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 17260
+// Class based active abilities, wow build 17271
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1033,7 +1033,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (26)
 
-// Talent tree specialization abilities, wow build 17260
+// Talent tree specialization abilities, wow build 17271
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1880,7 +1880,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 17260
+// Class mastery abilities, wow build 17271
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2103,7 +2103,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 17260
+// Racial abilities, wow build 17271
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2816,7 +2816,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 17260
+// Glyph spells for classes, wow build 17271
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3432,7 +3432,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 17260
+// Tier item set bonuses for class, wow build 17271
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
@@ -3467,10 +3467,10 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     },
     // Tier 16 bonuses (4 spells)
     {
-      144436, // T16 PH - Warrior DPS - 2 Piece Bonus (Item - Warrior T16 DPS 2P Bonus)
-      144441, // T16 PH - Warrior DPS - 4 Piece Bonus (Item - Warrior T16 DPS 4P Bonus)
-      144502, // T16 PH - Warrior Tank - 4 Piece Bonus (Item - Warrior T16 Protection 4P Bonus)
-      144503, // T16 PH - Warrior Tank - 2 Piece Bonus (Item - Warrior T16 Protection 2P Bonus)
+      144436, // Battleplate of the Prehistoric Marauder - 2 Piece Bonus (Item - Warrior T16 DPS 2P Bonus)
+      144441, // Battleplate of the Prehistoric Marauder - 4 Piece Bonus (Item - Warrior T16 DPS 4P Bonus)
+      144502, // Plate of the Prehistoric Marauder - 4 Piece Bonus (Item - Warrior T16 Protection 4P Bonus)
+      144503, // Plate of the Prehistoric Marauder - 2 Piece Bonus (Item - Warrior T16 Protection 2P Bonus)
           0,
     },
     {
@@ -3511,12 +3511,12 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     },
     // Tier 16 bonuses (6 spells)
     {
-      144566, // T16 PH - Paladin Protection - 4 Piece Bonus (Item - Paladin T16 Protection 4P Bonus)
-      144580, // T16 PH - Paladin Protection - 2 Piece Bonus (Item - Paladin T16 Protection 2P Bonus)
-      144586, // T16 PH - Paladin Retribution - 2 Piece Bonus (Item - Paladin T16 Retribution 2P Bonus)
-      144593, // T16 PH - Paladin Retribution - 4 Piece Bonus (Item - Paladin T16 Retribution 4P Bonus)
-      144613, // T16 PH - Paladin Holy - 4 Piece Bonus (Item - Paladin T16 Holy 4P Bonus)
-      144625, // T16 PH - Paladin Holy - 2 Piece Bonus (Item - Paladin T16 Holy 2P Bonus)
+      144566, // Plate of Winged Triumph - 4 Piece Bonus (Item - Paladin T16 Protection 4P Bonus)
+      144580, // Plate of Winged Triumph - 2 Piece Bonus (Item - Paladin T16 Protection 2P Bonus)
+      144586, // Battlegear of Winged Glory - 2 Piece Bonus (Item - Paladin T16 Retribution 2P Bonus)
+      144593, // Battlegear of Winged Glory - 4 Piece Bonus (Item - Paladin T16 Retribution 4P Bonus)
+      144613, // Vestments of Winged Glory - 4 Piece Bonus (Item - Paladin T16 Holy 4P Bonus)
+      144625, // Vestments of Winged Glory - 2 Piece Bonus (Item - Paladin T16 Holy 2P Bonus)
           0,
     },
     {
@@ -3545,8 +3545,8 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     },
     // Tier 16 bonuses (2 spells)
     {
-      144637, // T16 PH - Hunter - 2 Piece Bonus (Item - Hunter T16 2P Bonus)
-      144641, // T16 PH - Hunter - 4 Piece Bonus (Item - Hunter T16 4P Bonus)
+      144637, // Battlegear of the Unblinking Vigil - 2 Piece Bonus (Item - Hunter T16 2P Bonus)
+      144641, // Battlegear of the Unblinking Vigil - 4 Piece Bonus (Item - Hunter T16 4P Bonus)
           0,
     },
     {
@@ -3575,8 +3575,8 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     },
     // Tier 16 bonuses (2 spells)
     {
-      145185, // T16 PH - Rogue - 2 Piece Bonus (Item - Rogue T16 2P Bonus)
-      145210, // T16 PH - Rogue - 4 Piece Bonus (Item - Rogue T16 4P Bonus)
+      145185, // Barbed Assassin Battlegear - 2 Piece Bonus (Item - Rogue T16 2P Bonus)
+      145210, // Barbed Assassin Battlegear - 4 Piece Bonus (Item - Rogue T16 4P Bonus)
           0,
     },
     {
@@ -3611,10 +3611,10 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     },
     // Tier 16 bonuses (4 spells)
     {
-      145174, // T16 PH - Priest Shadow - 2 Piece Bonus (Item - Priest T16 Shadow 2P Bonus)
-      145179, // T16 PH - Priest Shadow - 4 Piece Bonus (Item - Priest T16 Shadow 4P Bonus)
-      145306, // T16 PH - Priest Healer - 2 Piece Bonus (Item - Priest T16 Healer 2P Bonus)
-      145334, // T16 PH - Priest Healer - 4 Piece Bonus (Item - Priest T16 Healer 4P Bonus)
+      145174, // Regalia of Ternion Glory - 2 Piece Bonus (Item - Priest T16 Shadow 2P Bonus)
+      145179, // Regalia of Ternion Glory - 4 Piece Bonus (Item - Priest T16 Shadow 4P Bonus)
+      145306, // Vestments of Ternion Glory - 2 Piece Bonus (Item - Priest T16 Healer 2P Bonus)
+      145334, // Vestments of Ternion Glory - 4 Piece Bonus (Item - Priest T16 Healer 4P Bonus)
           0,
     },
     {
@@ -3649,10 +3649,10 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     },
     // Tier 16 bonuses (4 spells)
     {
-      144899, // T16 PH - Death Knight DPS - 2 Piece Bonus (Item - Death Knight T16 DPS 2P Bonus)
-      144907, // T16 PH - Death Knight DPS - 4 Piece Bonus (Item - Death Knight T16 DPS 4P Bonus)
-      144934, // T16 PH - Death Knight Tank - 2 Piece Bonus (Item - Death Knight T16 Blood 2P Bonus)
-      144950, // T16 PH - Death Knight Tank - 4 Piece Bonus (Item - Death Knight T16 Blood 4P Bonus)
+      144899, // Battleplate of Cyclopean Dread - 2 Piece Bonus (Item - Death Knight T16 DPS 2P Bonus)
+      144907, // Battleplate of Cyclopean Dread - 4 Piece Bonus (Item - Death Knight T16 DPS 4P Bonus)
+      144934, // Plate of Cyclopean Dread - 2 Piece Bonus (Item - Death Knight T16 Blood 2P Bonus)
+      144950, // Plate of Cyclopean Dread - 4 Piece Bonus (Item - Death Knight T16 Blood 4P Bonus)
           0,
     },
     {
@@ -3693,12 +3693,12 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     },
     // Tier 16 bonuses (6 spells)
     {
-      144962, // T16 PH - Shaman Enhancement - 2 Piece Bonus (Item - Shaman T16 Enhancement 2P Bonus)
-      144966, // T16 PH - Shaman Enhancement - 4 Piece Bonus (Item - Shaman T16 Enhancement 4P Bonus)
-      144998, // T16 PH - Shaman Elemental - 2 Piece Bonus (Item - Shaman T16 Elemental 2P Bonus)
-      145003, // T16 PH - Shaman Elemental - 4 Piece Bonus (Item - Shaman T16 Elemental 4P Bonus)
-      145378, // T16 PH - Shaman Restoration - 2 Piece Bonus (Item - Shaman T16 Restoration 2P Bonus)
-      145380, // T16 PH - Shaman Restoration - 4 Piece Bonus (Item - Shaman T16 Restoration 4P Bonus)
+      144962, // Celestial Harmony Battlegear - 2 Piece Bonus (Item - Shaman T16 Enhancement 2P Bonus)
+      144966, // Celestial Harmony Battlegear - 4 Piece Bonus (Item - Shaman T16 Enhancement 4P Bonus)
+      144998, // Celestial Harmony Regalia - 2 Piece Bonus (Item - Shaman T16 Elemental 2P Bonus)
+      145003, // Celestial Harmony Regalia - 4 Piece Bonus (Item - Shaman T16 Elemental 4P Bonus)
+      145378, // Celestial Harmony Vestment - 2 Piece Bonus (Item - Shaman T16 Restoration 2P Bonus)
+      145380, // Celestial Harmony Vestment - 4 Piece Bonus (Item - Shaman T16 Restoration 4P Bonus)
           0,
     },
     {
@@ -3727,8 +3727,8 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     },
     // Tier 16 bonuses (2 spells)
     {
-      145251, // T16 PH - Mage - 2 Piece Bonus (Item - Mage T16 2P Bonus)
-      145257, // T16 PH - Mage - 4 Piece Bonus (Item - Mage T16 4P Bonus)
+      145251, // Chronomancer Regalia - 2 Piece Bonus (Item - Mage T16 2P Bonus)
+      145257, // Chronomancer Regalia - 4 Piece Bonus (Item - Mage T16 4P Bonus)
           0,
     },
     {
@@ -3792,12 +3792,12 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     },
     // Tier 16 bonuses (6 spells)
     {
-      145004, // T16 PH - Monk Windwalker - 2 Piece Bonus (Item - Monk T16 Windwalker 2P Bonus)
-      145022, // T16 PH - Monk Windwalker - 4 Piece Bonus (Item - Monk T16 Windwalker 4P Bonus)
-      145049, // T16 PH - Monk Brewmaster - 2 Piece Bonus (Item - Monk T16 Brewmaster 2P Bonus)
-      145055, // T16 PH - Monk Brewmaster - 4 Piece Bonus (Item - Monk T16 Brewmaster 4P Bonus)
-      145439, // T16 PH - Monk Mistweaver - 2 Piece Bonus (Item - Monk T16 Mistweaver 2P Bonus)
-      145449, // T16 PH - Monk Mistweaver - 4 Piece Bonus (Item - Monk T16 Mistweaver 4P Bonus)
+      145004, // Battlegear of Seven Sacred Seals - 2 Piece Bonus (Item - Monk T16 Windwalker 2P Bonus)
+      145022, // Battlegear of Seven Sacred Seals - 4 Piece Bonus (Item - Monk T16 Windwalker 4P Bonus)
+      145049, // Armor of Seven Sacred Seals - 2 Piece Bonus (Item - Monk T16 Brewmaster 2P Bonus)
+      145055, // Armor of Seven Sacred Seals - 4 Piece Bonus (Item - Monk T16 Brewmaster 4P Bonus)
+      145439, // Vestments of Seven Sacred Seals - 2 Piece Bonus (Item - Monk T16 Mistweaver 2P Bonus)
+      145449, // Vestments of Seven Sacred Seals - 4 Piece Bonus (Item - Monk T16 Mistweaver 4P Bonus)
           0,
     },
     {
@@ -3840,14 +3840,14 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     },
     // Tier 16 bonuses (8 spells)
     {
-      144756, // T16 PH - Druid Balance - 4 Piece Bonus (Item - Druid T16 Balance 4P Bonus)
-      144767, // T16 PH - Druid Balance - 2 Piece Bonus (Item - Druid T16 Balance 2P Bonus)
-      144841, // T16 PH - Druid Feral - 4 Piece Bonus (Item - Druid T16 Feral 4P Bonus)
-      144864, // T16 PH - Druid Feral - 2 Piece Bonus (Item - Druid T16 Feral 2P Bonus)
-      144869, // T16 PH - Druid Restoration - 2 Piece Bonus (Item - Druid T16 Restoration 2P Bonus)
-      144875, // T16 PH - Druid Restoration - 4 Piece Bonus (Item - Druid T16 Restoration 4P Bonus)
-      144879, // T16 PH - Druid Guardian - 2 Piece Bonus (Item - Druid T16 Guardian 2P Bonus)
-      144887, // T16 PH - Druid Guardian - 4 Piece Bonus (Item - Druid T16 Guardian 4P Bonus)
+      144756, // Regalia of the Shattered Vale - 4 Piece Bonus (Item - Druid T16 Balance 4P Bonus)
+      144767, // Regalia of the Shattered Vale - 2 Piece Bonus (Item - Druid T16 Balance 2P Bonus)
+      144841, // Battlegear of the Shattered Vale - 4 Piece Bonus (Item - Druid T16 Feral 4P Bonus)
+      144864, // Battlegear of the Shattered Vale - 2 Piece Bonus (Item - Druid T16 Feral 2P Bonus)
+      144869, // Vestments of the Shattered Vale - 2 Piece Bonus (Item - Druid T16 Restoration 2P Bonus)
+      144875, // Vestments of the Shattered Vale - 4 Piece Bonus (Item - Druid T16 Restoration 4P Bonus)
+      144879, // Armor of the Shattered Vale - 2 Piece Bonus (Item - Druid T16 Guardian 2P Bonus)
+      144887, // Armor of the Shattered Vale - 4 Piece Bonus (Item - Druid T16 Guardian 4P Bonus)
     },
     {
           0,
