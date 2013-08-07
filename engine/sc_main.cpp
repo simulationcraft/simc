@@ -90,7 +90,7 @@ std::string get_cache_directory()
 
   const char* env; // store desired environemental variable in here. getenv returns a null pointer if specified
   // environemental variable cannot be found.
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
   env = getenv( "XDG_CACHE_HOME" );
   if ( ! env )
   {
