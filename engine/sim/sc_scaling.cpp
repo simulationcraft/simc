@@ -466,6 +466,10 @@ void scaling_t::normalize()
 
     if ( divisor == 0 ) continue;
 
+    // hack to deal with weirdness in TMI calculations - always normalize using negative divisor
+    if ( scale_over == "tmi" || scale_over == "theck_meloree_index" )
+      divisor = - std::abs( divisor );
+
     for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
       if ( ! p -> scales_with[ j ] ) continue;
@@ -500,7 +504,8 @@ void scaling_t::analyze()
         if ( s ) p -> scaling_stats.push_back( j );
       }
     }
-    bool use_normalized = p -> scaling_normalized.get_stat( p -> normalize_by() ) > 0;
+    // more hack to deal with TMI weirdness
+    bool use_normalized = p -> scaling_normalized.get_stat( p -> normalize_by() ) > 0 || scale_over == "tmi" || scale_over == "theck_meloree_index";
     range::sort( p -> scaling_stats, compare_scale_factors( p, use_normalized ) );
   }
 }
