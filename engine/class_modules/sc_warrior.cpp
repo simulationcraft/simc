@@ -1003,13 +1003,8 @@ struct bloodthirst_heal_t : public heal_t
     // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
     background = true;
     target = p;
-
+    may_crit = false;
     pct_heal = p -> find_spell( 117313 ) -> effectN( 1 ).percent();
-  }
-
-  virtual double calculate_direct_amount( action_state_t* )
-  {
-    return player -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
   }
 
   virtual resource_e current_resource() { return RESOURCE_NONE; }
@@ -1533,10 +1528,11 @@ struct impending_victory_heal_t : public heal_t
   {
     // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
     background = true;
+    may_crit = false;
     target = p;
   }
 
-  virtual double calculate_direct_amount( action_state_t* )
+  virtual double calculate_direct_amount( action_state_t* state)
   {
     warrior_t* p = static_cast<warrior_t*>( player );
     double pct_heal = 0.15;
@@ -1545,7 +1541,14 @@ struct impending_victory_heal_t : public heal_t
       pct_heal += p -> buff.tier15_2pc_tank -> value();
       pct_heal *= ( 1 + p -> glyphs.victory_rush -> effectN( 1 ).percent() );
     }
-    return player -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
+    
+    double amount = state -> target -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
+    
+    // Record initial amount to state
+    state -> result_raw = state -> result_total = amount;
+    
+    return amount;
+    
   }
 
   virtual resource_e current_resource() { return RESOURCE_NONE; }
@@ -2238,14 +2241,9 @@ struct victory_rush_heal_t : public heal_t
   {
     // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
     background = true;
+    may_crit = false;
     target = p;
-  }
-
-  virtual double calculate_direct_amount( action_state_t* )
-  {
-    warrior_t *p = static_cast<warrior_t*>( player );
-
-    return player -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent() * ( 1 + p -> glyphs.victory_rush -> effectN( 1 ).percent() );
+    pct_heal = data().effectN( 1 ).percent() * ( 1 + p -> glyphs.victory_rush -> effectN( 1 ).percent() );
   }
 
   virtual resource_e current_resource() { return RESOURCE_NONE; }
@@ -2655,32 +2653,35 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
   /* stripped down version to calculate s-> result_amount,
    * i.e., how big our shield is, Formula: max(ap_scale*(AP-Str*2), Sta*stam_scale)*RAGE/60
    */
-  virtual double calculate_direct_amount( action_state_t* )
+  virtual double calculate_direct_amount( action_state_t* state)
   {
-    double dmg = sim -> averaged_range( base_dd_min, base_dd_max );
+    double amount = sim -> averaged_range( base_dd_min, base_dd_max );
 
-    if ( round_base_dmg ) dmg = floor( dmg + 0.5 );
+    if ( round_base_dmg ) amount = floor( amount + 0.5 );
 
     warrior_t& p = *cast();
 
     double   ap_scale = data().effectN( 2 ).percent();
     double stam_scale = data().effectN( 3 ).percent();
 
-    dmg += std::max( ap_scale * ( p.cache.attack_power() - p.current.stats.attribute[ ATTR_STRENGTH ] * 2 ),
+    amount += std::max( ap_scale * ( p.cache.attack_power() - p.current.stats.attribute[ ATTR_STRENGTH ] * 2 ),
                      p.current.stats.attribute[ ATTR_STAMINA ] * stam_scale )
            * rage_cost / 60;
 
-    dmg *= 1.0 + p.sets -> set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent();
+    amount *= 1.0 + p.sets -> set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent();
 
-    if ( ! sim -> average_range ) dmg = floor( dmg + sim -> real() );
+    if ( ! sim -> average_range ) amount = floor( amount + sim -> real() );
 
     if ( sim -> debug )
     {
-      sim -> output( "%s dmg for %s: dd=%.0f",
-                     player -> name(), name(), dmg );
+      sim -> output( "%s amount for %s: dd=%.0f",
+                     player -> name(), name(), amount );
     }
-
-    return dmg;
+    
+    // Record initial and total amount to state
+    state -> result_raw = state -> result_total = amount;
+    
+    return amount;
   }
 
   virtual void impact( action_state_t* s )

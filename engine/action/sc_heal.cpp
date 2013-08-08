@@ -73,8 +73,23 @@ void heal_t::parse_effect_data( const spelleffect_data_t& e )
 double heal_t::calculate_direct_amount( action_state_t* state )
 {
   if ( pct_heal )
-    return state -> target -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
-
+  {
+    double amount = state -> target -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
+    
+    // Record initial amount to state
+    state -> result_raw = amount;
+    
+    if ( state -> result == RESULT_CRIT )
+    {
+      amount *= 1.0 + total_crit_bonus();
+    }
+    
+    // Record total amount to state
+    state -> result_total = amount;
+    return amount;
+    
+  }
+  
   return base_t::calculate_direct_amount( state );
 }
 // heal_t::execute ==========================================================
