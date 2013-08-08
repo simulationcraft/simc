@@ -573,6 +573,7 @@ void jade_spirit( player_t* p, const std::string& mh_enchant, const std::string&
     special_effect_t effect;
     effect.name_str = "jade_spirit";
     effect.ppm = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 2.0 ); // Real PPM
+    effect.rppm_scale = maybe_ptr( p -> dbc.ptr ) ? RPPM_NONE : RPPM_HASTE;
     action_callback_t* cb = new buff_proc_callback_t<stat_buff_t>( p, effect, buff );
 
     p -> callbacks.register_spell_tick_damage_callback  ( SCHOOL_ALL_MASK, cb );
@@ -614,6 +615,7 @@ void dancing_steel( player_t* p, const std::string& enchant, weapon_t* w, const 
   special_effect_t effect;
   effect.name_str = "dancing_steel" + weapon_appendix;
   effect.ppm = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 2.3 ); // Real PPM
+  effect.rppm_scale = maybe_ptr( p -> dbc.ptr ) ? RPPM_NONE : RPPM_HASTE;
 
   weapon_buff_proc_callback_t* cb  = new weapon_buff_proc_callback_t( p, effect, w, buff );
 
@@ -654,6 +656,8 @@ void bloody_dancing_steel( player_t* p, const std::string& enchant, weapon_t* w,
   special_effect_t effect;
   effect.name_str = "bloody_dancing_steel" + weapon_appendix;
   effect.ppm = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 2.3 ); // Real PPM
+  effect.rppm_scale = maybe_ptr( p -> dbc.ptr ) ? RPPM_NONE : RPPM_HASTE;
+  
 
   weapon_buff_proc_callback_t* cb  = new weapon_buff_proc_callback_t( p, effect, w, buff );
 
@@ -675,7 +679,7 @@ struct windsong_callback_t : public action_callback_t
   windsong_callback_t( player_t* p, stat_buff_t* hb, stat_buff_t* cb, stat_buff_t* mb ) :
     action_callback_t( p ),
     haste_buff  ( hb ), crit_buff( cb ), mastery_buff( mb ),
-    real_ppm( "windsong", *p )
+    real_ppm( "windsong", *p, maybe_ptr( p -> dbc.ptr ) ? RPPM_NONE : RPPM_HASTE)
   {
     const spell_data_t* driver = p -> find_spell( 104561 );
     real_ppm.set_frequency( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 2.0 );
@@ -755,7 +759,7 @@ void rivers_song( player_t* p, const std::string& mh_enchant, const std::string&
     effect.name_str = "rivers_song";
     effect.ppm = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 4.0 ); // Real PPM
     effect.cooldown = maybe_ptr( p -> dbc.ptr ) ? driver -> internal_cooldown() : timespan_t::from_seconds( 0.25 );
-    effect.rppm_scale = maybe_ptr( p -> dbc.ptr ) ? RPPM_HASTE : RPPM_NONE;
+    effect.rppm_scale = RPPM_HASTE;
 
     if ( mh_enchant == "rivers_song" )
     {
@@ -877,7 +881,7 @@ void elemental_force( player_t* p, const std::string& mh_enchant, const std::str
   effect.max_stacks = 1;
   effect.school = SCHOOL_ELEMENTAL;
   effect.discharge_amount = amount;
-  effect.rppm_scale = maybe_ptr( p -> dbc.ptr ) ? RPPM_HASTE : RPPM_NONE;
+  effect.rppm_scale = RPPM_HASTE;
 
   if ( mh_enchant == "elemental_force" )
   {
@@ -914,7 +918,7 @@ void colossus( player_t* p, const std::string& mh_enchant, const std::string& oh
     special_effect_t effect;
     effect.name_str = "colossus";
     effect.ppm = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 6.0 ); // Real PPM
-    effect.rppm_scale = maybe_ptr( p -> dbc.ptr ) ? RPPM_HASTE : RPPM_NONE;
+    effect.rppm_scale = RPPM_HASTE;
 
     if ( mh_enchant == "colossus" )
     {
@@ -1008,7 +1012,10 @@ void sinister_primal( player_t* p )
     special_effect_t data;
     data.name_str = "tempus_repit";
     data.ppm      = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 1.35 ); // Real PPM
-    data.cooldown = maybe_ptr( p -> dbc.ptr ) ? driver -> internal_cooldown() : timespan_t::from_seconds( 3.0 ); 
+    data.rppm_scale = maybe_ptr( p -> dbc.ptr ) ? RPPM_NONE : RPPM_HASTE;
+    
+
+    data.cooldown = maybe_ptr( p -> dbc.ptr ) ? driver -> internal_cooldown() : timespan_t::from_seconds( 3.0 );
 
     sinister_primal_proc_t* cb = new sinister_primal_proc_t( p, data );
     p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
@@ -1093,7 +1100,7 @@ void capacitive_primal( player_t* p )
     data.name_str   = "lightning_strike";
     data.max_stacks = 5;
     data.ppm        = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 19.27 ); // Real PPM
-    data.rppm_scale = maybe_ptr( p -> dbc.ptr ) ? RPPM_HASTE : RPPM_NONE;
+    data.rppm_scale = RPPM_HASTE;
     data.cooldown   = maybe_ptr( p -> dbc.ptr ) ? driver -> internal_cooldown() : timespan_t::from_seconds( 1.0 );
 
     action_t* ls = p -> create_proc_action( "lightning_strike" );
@@ -1130,7 +1137,9 @@ void courageous_primal_diamond( player_t* p )
 
     special_effect_t data;
     data.name_str = "courageous_primal_diamond_lucidity";
-    data.ppm      = -1.4; // Real PPM
+    data.ppm      = maybe_ptr( p -> dbc.ptr ) ? -1.61 : -1.4; // Real PPM
+    data.rppm_scale = maybe_ptr( p -> dbc.ptr ) ? RPPM_NONE : RPPM_HASTE;
+    
 
     courageous_primal_diamond_proc_t* cb = new courageous_primal_diamond_proc_t( p, data );
     p -> callbacks.register_spell_callback( RESULT_ALL_MASK, cb );
@@ -2432,6 +2441,7 @@ void bad_juju( item_t* item )
   special_effect_t data;
   data.name_str    = "juju_madness";
   data.ppm         = -1.0 * ( maybe_ptr( item -> player -> dbc.ptr ) ? driver -> real_ppm() : 0.55 ); // Real PPM
+  data.rppm_scale  =  maybe_ptr( item -> player -> dbc.ptr ) ? RPPM_NONE : RPPM_HASTE;
   data.stat        = STAT_AGILITY;
   data.stat_amount = util::round( budget.p_epic[ 0 ] * spell -> effectN( 1 ).m_average() );
   data.duration    = spell -> duration();
@@ -2531,6 +2541,7 @@ void rune_of_reorigination( item_t* item )
   data.name_str    = "rune_of_reorigination";
   data.ppm         = -1.0 * ( maybe_ptr( item -> player -> dbc.ptr ) ? driver -> real_ppm() : 1.0 ); // Real PPM
   data.ppm        *= item_database::approx_scale_coefficient( 528, item -> item_level() );
+  data.rppm_scale  =  maybe_ptr( item -> player -> dbc.ptr ) ? RPPM_NONE : RPPM_HASTE;
   data.cooldown    = maybe_ptr( item -> player -> dbc.ptr ) ? driver -> internal_cooldown() : timespan_t::from_seconds( 22.0 ); 
   data.duration    = spell -> duration();
 
@@ -2551,6 +2562,7 @@ void spark_of_zandalar( item_t* item )
   special_effect_t data;
   data.name_str    = "spark_of_zandalar";
   data.ppm         = -1.0 * ( maybe_ptr( item -> player -> dbc.ptr ) ? driver -> real_ppm() : 5.5 ); // Real PPM
+  data.rppm_scale  =  maybe_ptr( item -> player -> dbc.ptr ) ? RPPM_NONE : RPPM_HASTE;
   data.duration    = spell -> duration();
   data.max_stacks  = spell -> max_stacks();
 
@@ -2651,6 +2663,7 @@ void unerring_vision_of_leishen( item_t* item )
   data.name_str    = "perfect_aim";
   data.ppm         = -1.0 * ( maybe_ptr( item -> player -> dbc.ptr ) ? driver -> real_ppm() : 0.525 ); // Real PPM
   data.ppm        *= item_database::approx_scale_coefficient( 528, item -> item_level() );
+  data.rppm_scale  =  maybe_ptr( item -> player -> dbc.ptr ) ? RPPM_NONE : RPPM_HASTE;
   data.cooldown    = maybe_ptr( item -> player -> dbc.ptr ) ? driver -> internal_cooldown() : timespan_t::zero();
 
   unerring_vision_of_leishen_callback_t* cb = new unerring_vision_of_leishen_callback_t( *item, data );
@@ -2848,6 +2861,7 @@ void multistrike_trinket( item_t* item )
 
   effect.name_str = name;
   effect.ppm = -1.0 * stat_driver_spell -> real_ppm();
+  effect.rppm_scale  =  maybe_ptr( item -> player -> dbc.ptr ) ? RPPM_NONE : RPPM_HASTE;
   effect.duration = stat_spell -> duration();
   effect.stat = static_cast< stat_e >( stat_spell -> effectN( 1 ).misc_value1() + 1 );
   effect.stat_amount = util::round( budget.p_epic[ 0 ] * stat_spell -> effectN( 1 ).m_average() );
@@ -3079,6 +3093,7 @@ void black_blood_of_yshaarj( item_t* item )
   special_effect_t effect;
   effect.name_str = "black_blood_of_yshaarj";
   effect.ppm      = -1.0 * driver -> real_ppm();
+  effect.rppm_scale  =  maybe_ptr( item -> player -> dbc.ptr ) ? RPPM_NONE : RPPM_HASTE;
   effect.cooldown = driver -> internal_cooldown();
 
   bboy_driver_cb_t* cb = new bboy_driver_cb_t( item, effect );
@@ -3872,14 +3887,14 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
 
 
   // 5.2 Trinkets
-  else if ( name == "talisman_of_bloodlust"               ) e = "OnDirectDamage_"    + RTV( tf, 1277, 0, 1538, 1625, 1736, 1834 ) + "Haste_" + std::string( ptr ? "3.5" : "3.3" ) + "RPPM_5Stack_10Dur" + std::string( ptr ? "_5Cd" : "" );
-  else if ( name == "primordius_talisman_of_rage"         ) e = "OnDirectDamage_"    + RTV( tf, 1277, 0, 1538, 1625, 1736, 1834 ) + "Str_" + std::string( ptr ? "3.5" : "3.3" ) + "RPPM_5Stack_10Dur" + std::string( ptr ? "_5Cd" : "" );
+  else if ( name == "talisman_of_bloodlust"               ) e = "OnDirectDamage_"    + RTV( tf, 1277, 0, 1538, 1625, 1736, 1834 ) + "Haste_" + std::string( ptr ? "3.5RPPM_5Stack_10Dur" : "3.3RPPMHaste_5Stack_10Dur" ) + std::string( ptr ? "_5Cd" : "" );
+  else if ( name == "primordius_talisman_of_rage"         ) e = "OnDirectDamage_"    + RTV( tf, 1277, 0, 1538, 1625, 1736, 1834 ) + "Str_" + std::string( ptr ? "3.5RPPM_5Stack_10Dur" : "3.3RPPMHaste_5Stack_10Dur" ) + std::string( ptr ? "_5Cd" : "" );
   else if ( name == "gaze_of_the_twins"                   ) e = "OnAttackCrit_"      + RTV( tf, 2381, 0, 2868, 3032, 3238, 3423 ) + "Crit_" + std::string( ptr ? "0.89" : "0.83" ) + "RPPMAttackCrit_3Stack_20Dur" + std::string( ptr ? "_10Cd" : "" );
-  else if ( name == "renatakis_soul_charm"                ) e = "OnDirectDamage_"    + RTV( tf, 1107, 0, 1333, 1410, 1505, 1592 ) + "Agi_" + std::string( ptr ? "1.21RPPM_10Stack_10Dur_1Tick_10Cd" : "0.62RPPM_10Stack_20Dur_2Tick_22Cd" ) + "_NoRefresh";
-  else if ( name == "wushoolays_final_choice"             ) e = "OnSpellDamage_"     + RTV( tf, 1107, 0, 1333, 1410, 1505, 1592 ) + "Int_" + std::string( ptr ? "1.21RPPM_10Stack_10Dur_1Tick_10Cd" : "0.56RPPM_10Stack_20Dur_2Tick_22Cd" ) + "_NoRefresh";
-  else if ( name == "fabled_feather_of_jikun"             ) e = "OnDirectDamage_"    + RTV( tf, 1328, 0, 1600, 1692, 1806, 1910 ) + "Str_" + std::string( ptr ? "1.21RPPM_10Stack_10Dur_2Tick_10Cd" : "0.62RPPM_10Stack_20Dur_2Tick_22Cd" ) + "_NoRefresh";
+  else if ( name == "renatakis_soul_charm"                ) e = "OnDirectDamage_"    + RTV( tf, 1107, 0, 1333, 1410, 1505, 1592 ) + "Agi_" + std::string( ptr ? "1.21RPPM_10Stack_10Dur_1Tick_10Cd" : "0.62RPPMHaste_10Stack_20Dur_2Tick_22Cd" ) + "_NoRefresh";
+  else if ( name == "wushoolays_final_choice"             ) e = "OnSpellDamage_"     + RTV( tf, 1107, 0, 1333, 1410, 1505, 1592 ) + "Int_" + std::string( ptr ? "1.21RPPM_10Stack_10Dur_1Tick_10Cd" : "0.56RPPMHaste_10Stack_20Dur_2Tick_22Cd" ) + "_NoRefresh";
+  else if ( name == "fabled_feather_of_jikun"             ) e = "OnDirectDamage_"    + RTV( tf, 1328, 0, 1600, 1692, 1806, 1910 ) + "Str_" + std::string( ptr ? "1.21RPPM_10Stack_10Dur_2Tick_10Cd" : "0.62RPPMHaste_10Stack_20Dur_2Tick_22Cd" ) + "_NoRefresh";
 
-  else if ( name == "breath_of_the_hydra"                 ) e = "OnSpellTickDamage_" + RTV( tf, 6088, 0, 7333, 7754, 8279, 8753 ) + "Int_" + std::string( ptr ? "1.1RPPM_10Dur_10Cd" : "0.53RPPM_20Dur" );
+  else if ( name == "breath_of_the_hydra"                 ) e = "OnSpellTickDamage_" + RTV( tf, 6088, 0, 7333, 7754, 8279, 8753 ) + "Int_" + std::string( ptr ? "1.1RPPM_10Dur_10Cd" : "0.53RPPMHaste_20Dur" );
   else if ( name == "chayes_essence_of_brilliance"        ) e = "OnHarmfulSpellCrit_" + RTV( tf, 6088, 0, 7333, 7754, 8279, 8753 ) + "Int_" + std::string( ptr ? "0.85" : "0.81" ) +  "RPPMSpellCrit_10Dur" + std::string( ptr ? "_10Cd" : "" );
 
   else if ( name == "brutal_talisman_of_the_shadopan_assault" ) e = "OnDirectDamage_8800Str_15%_15Dur_" + std::string( ptr ? "85Cd" : "75Cd" );
