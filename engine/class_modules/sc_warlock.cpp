@@ -2087,7 +2087,7 @@ struct corruption_t : public warlock_spell_t
     if ( p() -> spec.nightfall -> ok() && ( !p() -> dbc.ptr || ( p() -> dbc.ptr && d -> state -> target == p() -> latest_corruption_target ) ) ) //ON PTR only the latest corruption procs it
     {
 
-      p() -> nightfall_chance += p() -> dbc.ptr ? 0.004662 : 0.00333; // Confirmed 09/09/2012 //Increase by 1.4 (5% to 7% with 5.4)
+      p() -> nightfall_chance += p() -> dbc.ptr ? 0.00666 : 0.00333; // Confirmed 09/09/2012 //Increase by 2 (5% to 10% with 5.4)
       if ( rng().roll( p() -> nightfall_chance ) )
       {
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
