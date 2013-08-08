@@ -1126,7 +1126,7 @@ void action_t::update_vengeance( dmg_e type,
                                  action_state_t* s )
 {
   // Vengenace damage->pct modifier
-  double veng_pct = ( s -> target -> dbc.ptr ) ? 0.015 : 0.018;
+  double veng_pct = ( s -> target -> dbc.ptr && !s -> target -> sim -> challenge_mode ) ? 0.015 : 0.018;
 
   // check that the target has vengeance, damage type, and that the executing player is an enemy
   if ( s -> target -> vengeance_is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) && s-> action -> player -> is_enemy() )
