@@ -2771,7 +2771,7 @@ bool util::contains_non_ascii( const std::string& s )
 {
   for ( std::string::const_iterator it = s.begin(), itEnd = s.end(); it != itEnd; ++it )
   {
-    if ( !isprint( static_cast<unsigned int>( *it ) ) )
+    if ( *it < 0 || ! isprint( *it ) )
       return true;
   }
 
