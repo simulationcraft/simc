@@ -1097,7 +1097,11 @@ struct blessing_of_the_guardians_t : public paladin_heal_t
     accumulated_damage = 0.0;
 
     // store healing multiplier
-    healing_multiplier = p -> find_spell( 144580 ) -> effectN( 1 ).percent() / 2; // bugged on PTR, only giving half the advertised healing
+    healing_multiplier = p -> find_spell( 144580 ) -> effectN( 1 ).percent();
+    
+    // unbreakable spirit seems to halve the healing done
+    if ( p -> talents.unbreakable_spirit -> ok() )
+      healing_multiplier /= 2; 
   }
 
   virtual void increment_damage( double amount )
@@ -2464,13 +2468,23 @@ struct sacred_shield_t : public paladin_heal_t
     paladin_heal_t( "sacred_shield", p, p -> find_talent_spell( "Sacred Shield" ) ) // todo: find_talent_spell -> find_specialization_spell
   {
     parse_options( NULL, options_str );
-    may_crit = false;
+    may_crit = tick_may_crit = false;
     benefits_from_seal_of_insight = false;
     harmful = false;
 
     // treat this as a HoT that spawns an absorb bubble on each tick() call rather than healing
-    base_td = 342.5; // in effectN( 1 ), but not sure how to extract yet
-    tick_power_mod = 1.17; // in tooltip, hardcoding
+    // unfortunately, this spell info is mostly in the tooltip and can't be extracted
+    //base_td = data().effectN( 1 ).base_value(); // base_value is just 1, not helpful
+    if ( p -> dbc.ptr )
+    {
+      base_td = 239.804; // in effectN( 1 ), but not sure how to extract yet
+      tick_power_mod = 0.819; // in tooltip, hardcoding
+    }
+    else
+    {
+      base_td = 342.578;
+      tick_power_mod = 1.17;
+    }
 
     // redirect HoT to self if not specified
     if ( target -> is_enemy() || target -> type == HEALING_ENEMY )
@@ -2480,9 +2494,18 @@ struct sacred_shield_t : public paladin_heal_t
     if ( ! ( p -> talents.sacred_shield -> ok() ) )
       background = true;
 
-    // longer cooldown for Holy
+    // Holy gets special stuff - no cooldown, no target limit, 3 charges, 10-second recharge time, extra (zero) tick, higher coefficients.
     if ( p -> specialization() == PALADIN_HOLY && p -> dbc.ptr )
-      cooldown -> duration += timespan_t::from_seconds( 4 ); // hardcoded for now until spell data is updated
+    {
+      // prot/ret get advertised values, holy gets 1/0.7 times that
+      base_td /= 0.7;
+      tick_power_mod /= 0.7;
+      // 3 charges, recharge time is 10 seconds (base+4)
+      cooldown -> charges = 3;
+      cooldown -> duration += timespan_t::from_seconds( 4 );
+      // extra tick immediately upon cast
+      tick_zero = true;      
+    }
 
   }
 
