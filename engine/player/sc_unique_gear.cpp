@@ -2864,23 +2864,26 @@ void cooldown_reduction_trinket( item_t* item )
   struct cooldowns_t
   {
     specialization_e spec;
-    const char*      cooldowns[6];
+    const char*      cooldowns[7];
   };
 
   static const cooldowns_t __cd[] =
   {
-    { ROGUE_ASSASSINATION, { "evasion", "vanish", "cloak_of_shadows", "vendetta", "shadow_blades", 0 } },
-    { ROGUE_COMBAT,        { "evasion", "adrenaline_rush", "cloak_of_shadows", "killing_spree", "shadow_blades", 0 } },
-    { ROGUE_SUBTLETY,      { "evasion", "vanish", "cloak_of_shadows", "shadow_dance", "shadow_blades", 0 } },
-    { SHAMAN_ENHANCEMENT,  { "spiritwalkers_grace", "earth_elemental_totem", "fire_elemental_totem", "shamanistic_rage", "ascendance", "feral_spirit" } },
-    { DRUID_FERAL,         { "tigers_fury", "berserk", "barkskin", "survival_instincts", 0, 0 } },
-    { WARRIOR_FURY,        { "dragon_roar", "bladestorm", "shockwave", "avatar", "bloodbath", "recklessness" } },
-    { WARRIOR_ARMS,        { "dragon_roar", "bladestorm", "shockwave", "avatar", "bloodbath", "recklessness" } },
-    { WARRIOR_PROTECTION,  { "shield_wall", "demoralizing_shout", "last_stand", "recklessness", "heroic_leap", 0 } },
-    { DEATH_KNIGHT_BLOOD,  { "antimagic_shell", "dancing_rune_weapon", "icebound_fortitude", "outbreak", "vampiric_blood", 0 } },
-    { DEATH_KNIGHT_FROST,  { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "empower_rune_weapon", "outbreak", "pillar_of_frost" } },
-    { DEATH_KNIGHT_UNHOLY, { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "empower_rune_weapon", "outbreak", "summon_gargoyle" } },
-    { MONK_WINDWALKER,     { "energizing_brew", "fist_of_fury", "flying_serpent_kick", "fortifying_brew", "zen_meditation", 0 } },
+    { ROGUE_ASSASSINATION, { "evasion", "vanish", "cloak_of_shadows", "vendetta", "shadow_blades", 0, 0 } },
+    { ROGUE_COMBAT,        { "evasion", "adrenaline_rush", "cloak_of_shadows", "killing_spree", "shadow_blades", 0, 0 } },
+    { ROGUE_SUBTLETY,      { "evasion", "vanish", "cloak_of_shadows", "shadow_dance", "shadow_blades", 0, 0 } },
+    { SHAMAN_ENHANCEMENT,  { "spiritwalkers_grace", "earth_elemental_totem", "fire_elemental_totem", "shamanistic_rage", "ascendance", "feral_spirit", 0 } },
+    { DRUID_FERAL,         { "tigers_fury", "berserk", "barkskin", "survival_instincts", 0, 0, 0 } },
+    { WARRIOR_FURY,        { "dragon_roar", "bladestorm", "shockwave", "avatar", "bloodbath", "recklessness", "storm_bolt" } },
+    { WARRIOR_ARMS,        { "dragon_roar", "bladestorm", "shockwave", "avatar", "bloodbath", "recklessness", "storm_bolt" } },
+    { WARRIOR_PROTECTION,  { "shield_wall", "demoralizing_shout", "last_stand", "recklessness", "heroic_leap", 0, 0 } },
+    { DEATH_KNIGHT_BLOOD,  { "antimagic_shell", "dancing_rune_weapon", "icebound_fortitude", "outbreak", "vampiric_blood", 0, 0 } },
+    { DEATH_KNIGHT_FROST,  { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "empower_rune_weapon", "outbreak", "pillar_of_frost", 0  } },
+    { DEATH_KNIGHT_UNHOLY, { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "empower_rune_weapon", "outbreak", "summon_gargoyle", 0 } },
+    { MONK_WINDWALKER,     { "energizing_brew", "fist_of_fury", "flying_serpent_kick", "fortifying_brew", "zen_meditation", 0, 0 } },
+    { HUNTER_BEAST_MASTERY,{ "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", 0, 0 } }, 
+    { HUNTER_MARKSMANSHIP, { "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", 0, 0 } },
+    { HUNTER_SURVIVAL,     { "black_arrow", "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", 0 } },
     { SPEC_NONE,           { 0 } }
   };
 
@@ -2919,7 +2922,7 @@ void cooldown_reduction_trinket( item_t* item )
       continue;
     }
 
-    for ( size_t i = 0; i < 6; i++ )
+    for ( size_t i = 0; i < 7; i++ )
     {
       if ( cd -> cooldowns[ i ] == 0 )
         break;
