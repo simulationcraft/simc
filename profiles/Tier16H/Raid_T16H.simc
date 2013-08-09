@@ -1,5 +1,6 @@
 #!simc
 
+ptr=1
 optimal_raid=1
 
 # Raid Tier16H

@@ -6037,7 +6037,7 @@ void druid_t::apl_feral()
   if ( set_bonus.tier16_2pc_melee() )
     advanced -> add_action( "run_action_list,name=filler,if=buff.feral_fury.react" );
   advanced -> add_action( "pool_resource,for_next=1" );
-  advanced -> add_action( "thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&(dot.rip.remains>=4|buff.berserk.up)&dot.rip.ticking" );
+  advanced -> add_action( "thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&(dot.rip.remains>=8&buff.savage_roar.remains>=12|buff.berserk.up)&dot.rip.ticking" );
   advanced -> add_action( "run_action_list,name=filler,if=buff.omen_of_clarity.react" );
 
   advanced -> add_action( "run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)",
@@ -6050,6 +6050,7 @@ void druid_t::apl_feral()
   // APL: FILLER
   action_priority_list_t* filler = get_action_priority_list( "filler" );
   filler -> add_action( this, "Ravage" );
+  filler -> add_action( "thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&combo_points>=5" );
   filler -> add_action( this, "Shred", "if=(buff.omen_of_clarity.react|buff.berserk.up|energy.regen>=15)&buff.king_of_the_jungle.down" );
   filler -> add_action( "mangle_cat,if=buff.king_of_the_jungle.down" );
 

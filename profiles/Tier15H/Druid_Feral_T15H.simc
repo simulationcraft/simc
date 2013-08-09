@@ -105,7 +105,7 @@ actions.advanced+=/rake,if=buff.rune_of_reorigination.up&dot.rake.remains<9&buff
 # Rake if we can apply a stronger Rake or if it's about to fall off and clipping the last tick won't waste too much damage.
 actions.advanced+=/rake,if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|(dot.rake.remains<3&action.rake.tick_damage%dot.rake.tick_dmg>=0.75))
 actions.advanced+=/pool_resource,for_next=1
-actions.advanced+=/thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&(dot.rip.remains>=4|buff.berserk.up)&dot.rip.ticking
+actions.advanced+=/thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&(dot.rip.remains>=8&buff.savage_roar.remains>=12|buff.berserk.up)&dot.rip.ticking
 actions.advanced+=/run_action_list,name=filler,if=buff.omen_of_clarity.react
 # Conditions under which we should execute a CP generator.
 actions.advanced+=/run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)
@@ -115,6 +115,7 @@ actions.advanced+=/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=
 actions.advanced+=/run_action_list,name=filler,if=energy.time_to_max<=1.0
 
 actions.filler=ravage
+actions.filler+=/thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&combo_points>=5
 actions.filler+=/shred,if=(buff.omen_of_clarity.react|buff.berserk.up|energy.regen>=15)&buff.king_of_the_jungle.down
 actions.filler+=/mangle_cat,if=buff.king_of_the_jungle.down
 
@@ -171,5 +172,5 @@ main_hand=darkwood_spiritstaff,id=96978,gems=80agi_160mastery_160agi_60agi,encha
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
 # hands=grips_of_the_haunted_forest,heroic=1,addon=synapse_springs_mark_ii
-# trinket1=rune_of_reorigination,heroic=1,thunderforged=1
-# main_hand=darkwood_spiritstaff,heroic=1,thunderforged=1,weapon=staff_3.30speed_17940min_26910max,enchant=dancing_steel
+# trinket1=rune_of_reorigination,heroic=1,elite=1
+# main_hand=darkwood_spiritstaff,heroic=1,elite=1,weapon=staff_3.30speed_17940min_26910max,enchant=dancing_steel

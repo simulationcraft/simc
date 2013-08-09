@@ -1,12 +1,11 @@
 #!./simc 
 
-druid="Druid_Feral_T15H"
+druid="Druid_Feral_T16N"
 level=90
 race=troll
 role=attack
 position=back
-professions=engineering=600/inscription=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!.0.0.1
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!...0.1
 glyphs=savagery
 spec=feral
 
@@ -31,21 +30,19 @@ actions.precombat+=/virmens_bite_potion
 # Executed every time the actor is available.
 
 # By default the simulation will use the "Basic" action list, if you would like to instead use the "Advanced" action list do so here.
-actions=swap_action_list,name=advanced
+actions=swap_action_list,name=basic
 
 actions.basic=auto_attack
 actions.basic+=/skull_bash_cat
 # Keep Rip from falling off during execute range.
 actions.basic+=/ferocious_bite,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
 actions.basic+=/faerie_fire,if=debuff.weakened_armor.stack<3
-actions.basic+=/healing_touch,if=buff.natures_swiftness.up
 # Proc Dream of Cenarius at 4+ CP or when PS is about to expire.
 actions.basic+=/healing_touch,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down&(buff.predatory_swiftness.remains<1.5|combo_points>=4)
 actions.basic+=/savage_roar,if=buff.savage_roar.remains<3
 actions.basic+=/virmens_bite_potion,if=(target.health.pct<30&buff.berserk.up)|target.time_to_die<=40
 actions.basic+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
 actions.basic+=/berserk,if=buff.tigers_fury.up
-actions.basic+=/use_item,slot=hands,if=buff.tigers_fury.up
 actions.basic+=/berserking,if=buff.tigers_fury.up
 # Overwrite Rip during execute range if it's at least 15% stronger than the current.
 actions.basic+=/rip,if=combo_points>=5&target.health.pct<=25&action.rip.tick_damage%dot.rip.tick_dmg>=1.15
@@ -58,6 +55,7 @@ actions.basic+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<
 actions.basic+=/rake,if=action.rake.tick_damage>action.mangle_cat.hit_damage&action.rake.tick_damage>=dot.rake.tick_dmg
 # Rake if it's about to fall off or we can apply a stronger Rake.
 actions.basic+=/rake,if=dot.rake.remains<3|action.rake.tick_damage>dot.rake.tick_dmg
+actions.basic+=/run_action_list,name=filler,if=buff.feral_fury.react
 actions.basic+=/pool_resource,for_next=1
 actions.basic+=/thrash_cat,if=dot.thrash_cat.remains<3&(dot.rip.remains>6|combo_points>=5)
 # Conditions under which we should execute a CP generator.
@@ -74,13 +72,11 @@ actions.advanced+=/berserking
 # Keep Rip from falling off during execute range.
 actions.advanced+=/ferocious_bite,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
 actions.advanced+=/faerie_fire,if=debuff.weakened_armor.stack<3
-actions.advanced+=/healing_touch,if=buff.natures_swiftness.up
 # Proc Dream of Cenarius at 4+ CP or when PS is about to expire.
 actions.advanced+=/healing_touch,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down&(buff.predatory_swiftness.remains<1.5|combo_points>=4)
 actions.advanced+=/savage_roar,if=buff.savage_roar.down
 actions.advanced+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
 actions.advanced+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)
-actions.advanced+=/use_item,slot=hands,if=buff.tigers_fury.up
 actions.advanced+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3&target.time_to_die>=6
 actions.advanced+=/ferocious_bite,if=target.time_to_die<=1&combo_points>=3
 actions.advanced+=/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&target.health.pct<25
@@ -104,6 +100,7 @@ actions.advanced+=/rake,if=action.rake.tick_damage>action.mangle_cat.hit_damage&
 actions.advanced+=/rake,if=buff.rune_of_reorigination.up&dot.rake.remains<9&buff.rune_of_reorigination.remains<=1.5
 # Rake if we can apply a stronger Rake or if it's about to fall off and clipping the last tick won't waste too much damage.
 actions.advanced+=/rake,if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|(dot.rake.remains<3&action.rake.tick_damage%dot.rake.tick_dmg>=0.75))
+actions.advanced+=/run_action_list,name=filler,if=buff.feral_fury.react
 actions.advanced+=/pool_resource,for_next=1
 actions.advanced+=/thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&(dot.rip.remains>=8&buff.savage_roar.remains>=12|buff.berserk.up)&dot.rip.ticking
 actions.advanced+=/run_action_list,name=filler,if=buff.omen_of_clarity.react
@@ -123,7 +120,6 @@ actions.aoe=swap_action_list,name=default,if=active_enemies<5
 actions.aoe+=/auto_attack
 actions.aoe+=/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3
 actions.aoe+=/savage_roar,if=buff.savage_roar.down|(buff.savage_roar.remains<3&combo_points>0)
-actions.aoe+=/use_item,slot=hands,if=buff.tigers_fury.up
 actions.aoe+=/berserking,if=buff.tigers_fury.up
 actions.aoe+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
 actions.aoe+=/berserk,if=buff.tigers_fury.up
@@ -140,37 +136,36 @@ actions.aoe+=/swipe_cat,if=cooldown.tigers_fury.remains<3
 actions.aoe+=/swipe_cat,if=buff.omen_of_clarity.react
 actions.aoe+=/swipe_cat,if=energy.time_to_max<=1
 
-head=headpiece_of_the_haunted_forest,id=96581,gems=capacitive_primal_80agi_160mastery_180crit,reforge=hit_mastery
-neck=quadrahead_brooch,id=96815,gems=80agi_160mastery_60crit,reforge=hit_haste
-shoulders=spaulders_of_the_haunted_forest,id=96583,gems=160agi_80agi_160mastery_120mastery,enchant=520agi_100crit,reforge=hit_haste
-back=tigerfang_wrap,id=98148,gems=80agi_160mastery_60agi,enchant=180crit
-chest=chestguard_of_coruscating_blades,id=95033,gems=160agi_160agi_160agi_180agi,enchant=80all
-wrists=bracers_of_the_midnight_comet,id=96912,suffix=339,gems=80agi_160mastery_60agi,enchant=180agi
-hands=grips_of_the_haunted_forest,id=96580,gems=160agi_60agi,enchant=170str,addon=synapse_springs_mark_ii,reforge=exp_haste
-waist=strap_of_murderous_strikes,id=94998,gems=80agi_160hit_80agi_160hit_160agi_120agi,reforge=crit_haste
-legs=legguards_of_the_haunted_forest,id=96582,gems=80agi_160mastery_80agi_160hit_120agi,enchant=285agi_165crit
-feet=twisttoe_tabi,id=95007,gems=80agi_160mastery_80agi_160hit_120agi,enchant=140agi,reforge=exp_crit
-finger1=radens_swift_seal,id=95021,gems=160agi,reforge=hit_crit
-finger2=goresoaked_gear,id=96885,gems=160agi
-trinket1=rune_of_reorigination,id=96918
-trinket2=renatakis_soul_charm,id=96741,reforge=exp_mastery
-main_hand=darkwood_spiritstaff,id=96978,gems=80agi_160mastery_160agi_60agi,enchant=dancing_steel,reforge=mastery_exp
+head=headpiece_of_the_shattered_vale,id=99182,gems=capacitive_primal_160agi_180agi,reforge=mastery_hit
+neck=immerseus_crystalline_eye,id=103749,reforge=mastery_hit
+shoulders=shoulderguards_of_the_righteous_stand,id=103913,gems=80agi_160crit_80agi_160crit_120agi,enchant=200agi_100crit,reforge=mastery_hit
+back=fenyu_fury_of_xuen,id=102248,gems=160agi_60agi,enchant=180hit,reforge=mastery_hit
+chest=raiment_of_the_shattered_vale,id=99180,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_haste
+wrists=bombers_blackened_wristwatch,id=103910,enchant=180agi,reforge=mastery_hit
+hands=grips_of_the_shattered_vale,id=99181,gems=160agi_160agi_120agi,enchant=170exp,reforge=crit_exp
+waist=cord_of_black_dreams,id=103928,gems=160agi_80agi_160crit_160agi_120agi,reforge=haste_hit
+legs=legguards_of_the_shattered_vale,id=99183,gems=80agi_160haste_80agi_160haste_120agi,enchant=285agi_165crit
+feet=pandaren_roofsprinters,id=103779,gems=80agi_160hit_60mastery,enchant=140agi,reforge=haste_exp
+finger1=kilruks_band_of_ascendancy,id=103844,gems=160agi_60crit
+finger2=ring_of_restless_energy,id=103843,gems=160agi_60crit,reforge=mastery_exp
+trinket1=ticking_ebon_detonator,id=102311,reforge=mastery_exp
+trinket2=rune_of_reorigination,id=96918,upgrade=2
+main_hand=halberd_of_inner_shadows,id=103952,gems=80agi_160crit_160agi_60agi,enchant=dancing_steel,reforge=mastery_exp
 
 # Gear Summary
-# gear_strength=250
-# gear_agility=23017
-# gear_stamina=27918
+# gear_strength=80
+# gear_agility=25628
+# gear_stamina=31490
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2546
-# gear_hit_rating=2511
-# gear_crit_rating=7625
-# gear_haste_rating=7408
-# gear_mastery_rating=7679
-# gear_armor=20483
+# gear_expertise_rating=2550
+# gear_hit_rating=2552
+# gear_crit_rating=8570
+# gear_haste_rating=8579
+# gear_mastery_rating=8583
+# gear_armor=21305
 # meta_gem=capacitive_primal
-# tier15_2pc_melee=1
-# tier15_4pc_melee=1
-# hands=grips_of_the_haunted_forest,heroic=1,addon=synapse_springs_mark_ii
-# trinket1=rune_of_reorigination,heroic=1,thunderforged=1
-# main_hand=darkwood_spiritstaff,heroic=1,thunderforged=1,weapon=staff_3.30speed_17940min_26910max,enchant=dancing_steel
+# tier16_2pc_melee=1
+# tier16_4pc_melee=1
+# trinket2=rune_of_reorigination,heroic=1,elite=1
+# main_hand=halberd_of_inner_shadows,weapon=polearm_3.60speed_21886min_32829max,enchant=dancing_steel
