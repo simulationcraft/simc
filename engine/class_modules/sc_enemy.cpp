@@ -792,7 +792,7 @@ void enemy_t::init_actions()
             break;
           default:
             // boss damage information ( could move outside this function and make a constant )
-            int aa_damage [ 5 ] = { 0, 550000, 750000, 900000, 110000 };
+            int aa_damage [ 5 ] = { 0, 550000, 750000, 900000, 1100000 };
             int dot_damage [ 5 ] = { 0, 20000, 25000, 30000, 40000 };
             action_list_str += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5";
             action_list_str += "/spell_dot,damage=" + util::to_string( dot_damage[ tmi_boss_enum ] ) + ",tick_time=2,num_ticks=15,aoe_tanks=1,if=!ticking";
