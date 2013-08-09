@@ -14,7 +14,7 @@ namespace { // UNNAMED NAMESPACE
 enum tmi_boss_e
 {
   TMI_NONE = 0,
-  TMI_T15LFR, TMI_T15N, TMI_T15H
+  TMI_T15LFR, TMI_T15N, TMI_T15H, TMI_T16Q
 };
 
 // Enemy actions are generic to serve both enemy_t and enemy_add_t,
@@ -613,17 +613,21 @@ tmi_boss_e enemy_t::convert_tmi_string( const std::string& tmi_string )
 {
   // this function translates between the "tmi_boss" option string and the tmi_boss_e enum
   // eventually plan on using regular expressions here
-  if ( tmi_string == "T15LFR" )
+  if ( tmi_string == "T15LFR" || tmi_string == "T15N10" )
   {
     return TMI_T15LFR;
   }
-  if ( tmi_string == "T15N" )
+  if ( tmi_string == "T15N" || tmi_string == "T15N25" || tmi_string == "T15H10" )
   {
     return TMI_T15N;
   }
-  if ( tmi_string == "T15H" )
+  if ( tmi_string == "T15H" || tmi_string == "T15H25" )
   {
     return TMI_T15H;
+  }
+  if ( tmi_string == "T16Q" )
+  {
+    return TMI_T16Q;
   }
 
   if ( ! tmi_string.empty() && sim -> debug )
@@ -788,8 +792,8 @@ void enemy_t::init_actions()
             break;
           default:
             // boss damage information ( could move outside this function and make a constant )
-            int aa_damage [4] = { 0, 550000, 750000, 900000 };
-            int dot_damage [4] = { 0, 20000, 25000, 30000 };
+            int aa_damage [ 5 ] = { 0, 550000, 750000, 900000, 110000 };
+            int dot_damage [ 5 ] = { 0, 20000, 25000, 30000, 40000 };
             action_list_str += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5";
             action_list_str += "/spell_dot,damage=" + util::to_string( dot_damage[ tmi_boss_enum ] ) + ",tick_time=2,num_ticks=15,aoe_tanks=1,if=!ticking";
         }

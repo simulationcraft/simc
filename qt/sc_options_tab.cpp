@@ -233,7 +233,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow( tr( "Armory Region" ),  choice.armory_region = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
   globalsLayout_left -> addRow( tr(   "Armory Spec" ),    choice.armory_spec = createChoice( 2, "active", "inactive" ) );
   globalsLayout_left -> addRow( tr(  "Default Role" ),   choice.default_role = createChoice( 4, "auto", "dps", "heal", "tank" ) );
-  globalsLayout_left -> addRow( tr( "TMI Standard Boss" ),   choice.tmi_boss = createChoice( 4, "custom", "T15H", "T15N", "T15LFR" ) );
+  globalsLayout_left -> addRow( tr( "TMI Standard Boss" ),   choice.tmi_boss = createChoice( 5, "custom", "T16Q", "T15H25", "T15N25", "T15LFR" ) );
   globalsLayout_left -> addRow( tr( "Actor-only TMI" ), choice.tmi_actor_only = createChoice( 2, "Disabled", "Enabled" ) );
   choice.iterations -> setCurrentIndex( 1 );
   choice.fight_length -> setCurrentIndex( 7 );
