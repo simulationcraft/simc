@@ -206,12 +206,33 @@ public:
   {
     player_t* source;//where inhaled from
     
-    //<foo>_is_ticking stores whether <foo> was ticking when inhaling SS. We can't store it in the dot as the dot does not tick while in the buffer
-    int agony;
-    bool corruption_is_ticking; 
+    //<foo>_was_inhaled stores whether <foo> was ticking when inhaling SS. We can't store it in the dot as the dot does not tick while in the buffer
+
+    int agony_stack; //remove with 5.4
+
+    bool agony_was_inhaled;
+    dot_t* agony;    
+    bool corruption_was_inhaled;
     dot_t* corruption;
-    bool unstable_affliction;
-    bool seed_of_corruption;
+    bool unstable_affliction_was_inhaled;
+    dot_t* unstable_affliction;
+    
+    bool seed_of_corruption;//todo soc
+    
+    
+    static void inhale_dot(dot_t* to_inhale, dot_t* soul_swap_buffer_target)//copies over the state 
+    {
+        soul_swap_buffer_target -> cancel(); //clear any previous versions in the buffer;
+      
+        if (soul_swap_buffer_target -> state ) soul_swap_buffer_target -> state = to_inhale -> current_action -> get_state(); //make sure we have memory allocated for the state
+        
+        soul_swap_buffer_target -> state -> copy_state(to_inhale -> state); //copy state and the other stuff
+        soul_swap_buffer_target -> current_action = to_inhale -> current_action;
+        soul_swap_buffer_target -> current_tick = to_inhale -> current_tick;
+        soul_swap_buffer_target -> num_ticks = to_inhale -> num_ticks;
+        soul_swap_buffer_target -> tick_amount = to_inhale -> tick_amount;
+        
+    }
   } soul_swap_buffer;
 
   struct demonic_calling_event_t : event_t
@@ -3842,13 +3863,13 @@ struct soul_swap_t : public warlock_spell_t
         if ( p() -> glyphs.soul_swap -> ok() )
           glyph_cooldown -> start();
 
-        if ( p() -> soul_swap_buffer.agony > 0 )
+        if ( p() -> soul_swap_buffer.agony_stack > 0 )
         {
           agony -> target = target;
           agony -> execute();
-          td( target ) -> agony_stack = p() -> soul_swap_buffer.agony;
+          td( target ) -> agony_stack = p() -> soul_swap_buffer.agony_stack;
         }
-        if ( p() -> soul_swap_buffer.corruption_is_ticking )
+        if ( p() -> soul_swap_buffer.corruption_was_inhaled )
         {
           corruption -> target = target;
           corruption -> execute();
@@ -3886,9 +3907,9 @@ struct soul_swap_t : public warlock_spell_t
 
         p() -> soul_swap_buffer.source              = target;
 
-        p() -> soul_swap_buffer.agony               = td( target ) -> dots_agony -> ticking ? td( target ) -> agony_stack : 0;
-        p() -> soul_swap_buffer.corruption_is_ticking          = td( target ) -> dots_corruption -> ticking;
-        p() -> soul_swap_buffer.unstable_affliction = td( target ) -> dots_unstable_affliction -> ticking;
+        p() -> soul_swap_buffer.agony_stack               = td( target ) -> dots_agony -> ticking ? td( target ) -> agony_stack : 0;
+        p() -> soul_swap_buffer.corruption_was_inhaled          = td( target ) -> dots_corruption -> ticking;
+        p() -> soul_swap_buffer.unstable_affliction_was_inhaled = td( target ) -> dots_unstable_affliction -> ticking;
         p() -> soul_swap_buffer.seed_of_corruption  = td( target ) -> dots_seed_of_corruption -> ticking;
 
         if ( ! p() -> glyphs.soul_swap -> ok() )
@@ -3912,22 +3933,24 @@ struct soul_swap_t : public warlock_spell_t
         /*   if ( p() -> glyphs.soul_swap -> ok() )
              glyph_cooldown -> start(); */
 
-        if ( p() -> soul_swap_buffer.agony > 0 )
+        if ( p() -> soul_swap_buffer.agony_was_inhaled )
         {
-          agony -> target = target;
-          agony -> execute();
-          td( target ) -> agony_stack = p() -> soul_swap_buffer.agony;
+          p() -> soul_swap_buffer.agony -> ticking = true; //so that copy works properly
+          p() -> soul_swap_buffer.agony -> copy( target );
+          p() -> soul_swap_buffer.agony_was_inhaled = false;
         }
 
-        if ( p() -> soul_swap_buffer.corruption_is_ticking )
+        if ( p() -> soul_swap_buffer.corruption_was_inhaled )
         {
           p() -> soul_swap_buffer.corruption -> ticking = true; //so that copy works properly
           p() -> soul_swap_buffer.corruption -> copy( target );
+          p() -> soul_swap_buffer.corruption_was_inhaled = false;
         }
-        if ( p() -> soul_swap_buffer.unstable_affliction )
+        if ( p() -> soul_swap_buffer.unstable_affliction_was_inhaled )
         {
-          unstable_affliction -> target = target;
-          unstable_affliction -> execute();
+          p() -> soul_swap_buffer.unstable_affliction -> ticking = true; //so that copy works properly
+          p() -> soul_swap_buffer.unstable_affliction -> copy( target );
+          p() -> soul_swap_buffer.unstable_affliction_was_inhaled = false;
         }
         if ( p() -> soul_swap_buffer.seed_of_corruption )
         {
@@ -3959,21 +3982,26 @@ struct soul_swap_t : public warlock_spell_t
 
         if ( td( target ) -> dots_corruption -> ticking)
         {
-          
-          p() -> soul_swap_buffer.corruption_is_ticking = true; //dot is ticking, so copy the state into our buffer dot
-          
-          if ( ! p() -> soul_swap_buffer.corruption -> state ) p() -> soul_swap_buffer.corruption -> state = td( target ) -> dots_corruption -> current_action -> get_state(); //make sure we have memory allocated for the state
-          
-          p() -> soul_swap_buffer.corruption -> state -> copy_state(td( target ) -> dots_corruption -> state); //copy state and the other stuff
-          p() -> soul_swap_buffer.corruption -> current_action = td( target ) -> dots_corruption -> current_action;
-          p() -> soul_swap_buffer.corruption -> current_tick = td( target ) -> dots_corruption -> current_tick;
-          p() -> soul_swap_buffer.corruption -> num_ticks = td( target ) -> dots_corruption -> num_ticks;
-          p() -> soul_swap_buffer.corruption -> tick_amount = td( target ) -> dots_corruption -> tick_amount;
+          p() -> soul_swap_buffer.corruption_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
+          p() -> soul_swap_buffer.inhale_dot(td( target ) -> dots_corruption, p() -> soul_swap_buffer.corruption);
         }
         
-        p() -> soul_swap_buffer.agony               = td( target ) -> dots_agony -> ticking ? td( target ) -> agony_stack : 0;
+        if ( td( target ) -> dots_unstable_affliction -> ticking)
+        {
+          p() -> soul_swap_buffer.unstable_affliction_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
+          p() -> soul_swap_buffer.inhale_dot(td( target ) -> dots_unstable_affliction, p() -> soul_swap_buffer.unstable_affliction);
+        }
+        
+        if ( td( target ) -> dots_agony -> ticking)
+        {
+          p() -> soul_swap_buffer.agony_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
+          p() -> soul_swap_buffer.inhale_dot(td( target ) -> dots_agony, p() -> soul_swap_buffer.agony);
+        }
+        
+
+//      p() -> soul_swap_buffer.agony_stack               = td( target ) -> dots_agony -> ticking ? td( target ) -> agony_stack : 0;
 //      p() -> soul_swap_buffer.corruption          = td( target ) -> dots_corruption -> ticking;
-        p() -> soul_swap_buffer.unstable_affliction = td( target ) -> dots_unstable_affliction -> ticking;
+//       p() -> soul_swap_buffer.unstable_affliction = td( target ) -> dots_unstable_affliction -> ticking;
         p() -> soul_swap_buffer.seed_of_corruption  = td( target ) -> dots_seed_of_corruption -> ticking;
 
 
@@ -4901,7 +4929,9 @@ void warlock_t::init_spells()
 
   spells.tier15_2pc = find_spell( 138483 );
 
+  soul_swap_buffer.agony = new dot_t( "soul_swap_buffer_agony", this, this );
   soul_swap_buffer.corruption = new dot_t( "soul_swap_buffer_corruption", this, this );
+  soul_swap_buffer.unstable_affliction = new dot_t( "soul_swap_buffer_unstable_affliction", this, this );
 }
 
 
