@@ -78,11 +78,13 @@ struct auto_attack_t : public attack_t
     p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds( 2.4 );
 
     int aoe_tanks = 0;
+    double damage_range = -1;
     option_t options[] =
     {
       opt_float( "damage", p -> main_hand_attack -> base_dd_min ),
       opt_timespan( "attack_speed", p -> main_hand_attack -> base_execute_time ),
       opt_bool( "aoe_tanks", aoe_tanks ),
+      opt_float( "range", damage_range ),
       opt_null()
     };
     parse_options( options, options_str );
@@ -94,15 +96,36 @@ struct auto_attack_t : public attack_t
     else
       p->main_hand_attack->aoe = aoe_tanks;
 
-    p -> main_hand_attack -> base_dd_max = p -> main_hand_attack -> base_dd_min;
+    // check that the specified damage range is sane
+    if ( damage_range > p -> main_hand_attack -> base_dd_min || damage_range < 0 )
+      damage_range = 0.2 * p -> main_hand_attack -> base_dd_min; // if not, set to +/-20%
+
+    // set damage range to mean +/- range
+    p -> main_hand_attack -> base_dd_max = p -> main_hand_attack -> base_dd_min + damage_range;
+    p -> main_hand_attack -> base_dd_min -= damage_range;
+
+    // if the execute time is somehow less than 10 ms, set it back to the default of 1.5 seconds
     if ( p -> main_hand_attack -> base_execute_time < timespan_t::from_seconds( 0.01 ) )
-      p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds( 2.4 );
+      p -> main_hand_attack -> base_execute_time = timespan_t::from_seconds( 1.5 );
 
     cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
     stats = player -> get_stats( name_str + "_" + target -> name(), this );
     name_str = name_str + "_" + target -> name();
 
     trigger_gcd = timespan_t::zero();
+  }
+
+  virtual double calculate_direct_amount( action_state_t* s )
+  {
+    // force boss attack size to vary regardless of whether the sim itself does
+    double previous_average_range_state = sim ->average_range;
+    sim -> average_range = 0;
+
+    double amount = attack_t::calculate_direct_amount( s );
+
+    sim -> average_range = previous_average_range_state;
+
+    return amount;
   }
 
   virtual void execute()
@@ -121,6 +144,65 @@ struct auto_attack_t : public attack_t
   }
 };
 
+// Melee Nuke ===============================================================
+
+struct melee_nuke_t : public attack_t
+{
+  melee_nuke_t( player_t* p, const std::string& options_str ) :
+    attack_t( "melee_nuke", p, spell_data_t::nil() )
+  {
+    school = SCHOOL_PHYSICAL;
+    may_miss = may_dodge = may_parry = false;
+    base_execute_time = timespan_t::from_seconds( 3.0 );
+    base_dd_min = 250000;
+
+    cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
+
+    int aoe_tanks = 0;
+    double damage_range = -1;
+    option_t options[] =
+    {
+      opt_float( "damage", base_dd_min ),
+      opt_timespan( "attack_speed", base_execute_time ),
+      opt_timespan( "cooldown",     cooldown -> duration ),
+      opt_bool( "aoe_tanks", aoe_tanks ),
+      opt_float( "range", damage_range ),
+      opt_null()
+    };
+    parse_options( options, options_str );
+    
+    // check that the specified damage range is sane
+    if ( damage_range > base_dd_min || damage_range < 0 )
+      damage_range = 0.1 * base_dd_min; // if not, set to +/-10%
+
+    base_dd_max = base_dd_min + damage_range;
+    base_dd_min -= damage_range;
+
+    if ( base_execute_time < timespan_t::zero() )
+      base_execute_time = timespan_t::from_seconds( 3.0 );
+
+    stats = player -> get_stats( name_str + "_" + target -> name(), this );
+    name_str = name_str + "_" + target -> name();
+
+    if ( aoe_tanks == 1 )
+      aoe = -1;
+  }
+  
+  virtual double calculate_direct_amount( action_state_t* s )
+  {
+    // force boss attack size to vary regardless of whether the sim itself does
+    double previous_average_range_state = sim ->average_range;
+    sim -> average_range = 0;
+
+    double amount = attack_t::calculate_direct_amount( s );
+
+    sim -> average_range = previous_average_range_state;
+
+    return amount;
+  }
+
+};
+
 // Spell Nuke ===============================================================
 
 struct spell_nuke_t : public spell_t
@@ -135,17 +217,25 @@ struct spell_nuke_t : public spell_t
     cooldown = player -> get_cooldown( name_str + "_" + target -> name() );
 
     int aoe_tanks = 0;
+    double damage_range = -1;
     option_t options[] =
     {
       opt_float( "damage", base_dd_min ),
       opt_timespan( "attack_speed", base_execute_time ),
       opt_timespan( "cooldown",     cooldown -> duration ),
       opt_bool( "aoe_tanks", aoe_tanks ),
+      opt_float( "range", damage_range ),
       opt_null()
     };
     parse_options( options, options_str );
+    
+    // check that the specified damage range is sane
+    if ( damage_range > base_dd_min || damage_range < 0 )
+      damage_range = 0.1 * base_dd_min; // if not, set to +/-10%
 
-    base_dd_max = base_dd_min;
+    base_dd_max = base_dd_min + damage_range;
+    base_dd_min -= damage_range;
+
     if ( base_execute_time < timespan_t::zero() )
       base_execute_time = timespan_t::from_seconds( 3.0 );
 
@@ -180,6 +270,20 @@ struct spell_nuke_t : public spell_t
       tl.push_back( sim->heal_target );
     }
     return tl.size();
+  }
+
+  
+  virtual double calculate_direct_amount( action_state_t* s )
+  {
+    // force boss attack size to vary regardless of whether the sim itself does
+    double previous_average_range_state = sim ->average_range;
+    sim -> average_range = 0;
+
+    double amount = spell_t::calculate_direct_amount( s );
+
+    sim -> average_range = previous_average_range_state;
+
+    return amount;
   }
 
 };
@@ -363,6 +467,7 @@ struct summon_add_t : public spell_t
 static action_t* enemy_create_action( player_t* p, const std::string& name, const std::string& options_str )
 {
   if ( name == "auto_attack" ) return new auto_attack_t( p, options_str );
+  if ( name == "melee_nuke"  ) return new  melee_nuke_t( p, options_str );
   if ( name == "spell_nuke"  ) return new  spell_nuke_t( p, options_str );
   if ( name == "spell_dot"   ) return new   spell_dot_t( p, options_str );
   if ( name == "spell_aoe"   ) return new   spell_aoe_t( p, options_str );
@@ -677,8 +782,9 @@ void enemy_t::init_actions()
         {
           case TMI_NONE:
             action_list_str += "/auto_attack,damage=" + util::to_string( 700000 * level_mult ) + ",attack_speed=2,aoe_tanks=1";
-            action_list_str += "/spell_dot,damage=" + util::to_string( 100000 * level_mult ) + ",tick_time=2,num_ticks=10,cooldown=40,aoe_tanks=1,if=!ticking";
-            action_list_str += "/spell_nuke,damage=" + util::to_string( 400000 * level_mult ) + ",cooldown=4,attack_speed=2,aoe_tanks=1";
+            action_list_str += "/spell_dot,damage=" + util::to_string( 50000 * level_mult ) + ",tick_time=2,num_ticks=10,cooldown=40,aoe_tanks=1,if=!ticking";
+            action_list_str += "/spell_nuke,damage=" + util::to_string( 500000 * level_mult ) + ",cooldown=35,attack_speed=3,aoe_tanks=1";
+            action_list_str += "/melee_nuke,damage=" + util::to_string( 1000000 * level_mult ) + ",cooldown=27,attack_speed=3,aoe_tanks=1";
             break;
           default:
             // boss damage information ( could move outside this function and make a constant )
