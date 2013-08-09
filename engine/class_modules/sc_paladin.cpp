@@ -2473,18 +2473,12 @@ struct sacred_shield_t : public paladin_heal_t
     harmful = false;
 
     // treat this as a HoT that spawns an absorb bubble on each tick() call rather than healing
-    // unfortunately, this spell info is mostly in the tooltip and can't be extracted
-    //base_td = data().effectN( 1 ).base_value(); // base_value is just 1, not helpful
+    // unfortunately, this spell info is split between effects and tooltip 
+    base_td = data().effectN( 1 ).average( p ); 
     if ( p -> dbc.ptr )
-    {
-      base_td = 239.804; // in effectN( 1 ), but not sure how to extract yet
       tick_power_mod = 0.819; // in tooltip, hardcoding
-    }
     else
-    {
-      base_td = 342.578;
       tick_power_mod = 1.17;
-    }
 
     // redirect HoT to self if not specified
     if ( target -> is_enemy() || target -> type == HEALING_ENEMY )
