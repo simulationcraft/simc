@@ -3072,7 +3072,7 @@ void warrior_t::init_spells()
   talents.storm_bolt            = find_talent_spell( "Storm Bolt" );
 
   // Glyphs
-  glyphs.bull_rush           = find_glyph_spell("Glyph of Bull Rush" );
+  glyphs.bull_rush           = find_glyph_spell( "Glyph of Bull Rush" );
   glyphs.colossus_smash      = find_glyph_spell( "Glyph of Colossus Smash" );
   glyphs.death_from_above    = find_glyph_spell( "Glyph of Death From Above" );
   glyphs.furious_sundering   = find_glyph_spell( "Glyph of Forious Sundering" );
