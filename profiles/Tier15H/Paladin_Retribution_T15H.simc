@@ -33,17 +33,16 @@ actions.precombat+=/mogu_power_potion
 actions=rebuke
 actions+=/mogu_power_potion,if=(buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40)
 actions+=/auto_attack
-actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|target.time_to_die<holy_power*10)
+actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|target.time_to_die<holy_power*10|buff.divine_purpose.react)
 actions+=/avenging_wrath,if=buff.inquisition.up
 actions+=/guardian_of_ancient_kings,if=buff.avenging_wrath.up|target.time_to_die<=60
-actions+=/use_item,name=reinbinders_fists,if=buff.inquisition.up
-actions+=/execution_sentence,if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=20)
-actions+=/divine_storm,if=active_enemies>=2&(holy_power=5)
+actions+=//use_item,name=reinbinders_fists,if=buff.inquisition.up
+actions+=/execution_sentence,if=talent.execution_sentence.enabled&(buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=20))
+actions+=/lights_hammer,if=talent.lights_hammer.enabled&(buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=20))
+actions+=/divine_storm,if=active_enemies>=2&(holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3))
 actions+=/templars_verdict,if=holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3)
 actions+=/hammer_of_wrath
 actions+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
-actions+=/crusader_strike,if=set_bonus.tier15_4pc_melee&buff.tier15_4pc_melee.down
-actions+=/templars_verdict,if=(buff.tier15_4pc_melee.up&cooldown.crusader_strike.remains<=1.5)
 actions+=/crusader_strike
 actions+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2
 actions+=/exorcism,if=active_enemies>=2&active_enemies<=4&set_bonus.tier15_2pc_melee&glyph.mass_exorcism.enabled
@@ -57,6 +56,7 @@ actions+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cool
 actions+=/templars_verdict,if=buff.tier15_4pc_melee.up
 actions+=/divine_storm,if=active_enemies>=2&buff.inquisition.remains>4
 actions+=/templars_verdict,if=buff.inquisition.remains>4
+actions+=/holy_prism,if=talent.holy_prism.enabled
 
 head=lightning_emperors_helmet,id=96656,gems=capacitive_primal_320haste_180crit,reforge=hit_mastery
 neck=talisman_of_angry_spirits,id=96792,reforge=crit_haste
@@ -89,6 +89,6 @@ main_hand=greatsword_of_frozen_hells,id=96991,gems=320haste_320haste_60str,encha
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
-# hands=reinbinders_fists,heroic=1,thunderforged=1,addon=synapse_springs_mark_ii
-# trinket1=spark_of_zandalar,heroic=1,thunderforged=1
-# main_hand=greatsword_of_frozen_hells,heroic=1,thunderforged=1,weapon=sword2h_3.60speed_19571min_29357max,enchant=dancing_steel
+# hands=reinbinders_fists,heroic=1,elite=1,addon=synapse_springs_mark_ii
+# trinket1=spark_of_zandalar,heroic=1,elite=1
+# main_hand=greatsword_of_frozen_hells,heroic=1,elite=1,weapon=sword2h_3.60speed_19571min_29357max,enchant=dancing_steel
