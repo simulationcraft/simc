@@ -7,7 +7,7 @@ role=attack
 position=back
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!122211
-glyphs=unending_rage/death_from_above
+glyphs=unending_rage/death_from_above/bull_rush
 spec=arms
 
 # This default action priority list is automatically created based on your character.
@@ -22,6 +22,7 @@ actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stance,choose=battle
+actions.precombat+=/battle_shout
 actions.precombat+=/mogu_power_potion
 
 # Executed every time the actor is available.
@@ -40,7 +41,7 @@ actions+=/run_action_list,name=single_target,if=active_enemies<2
 
 actions.single_target=heroic_strike,if=(debuff.colossus_smash.up&rage>=rage.max-40&target.health.pct>=20)|rage>=rage.max-15
 actions.single_target+=/mortal_strike
-actions.single_target+=/dragon_roar,if=talent.dragon_roar.enabled&talent.bloodbath.enabled&buff.bloodbath.up&debuff.colossus_smash.down&target.health.pct>=20
+actions.single_target+=/dragon_roar,if=talent.dragon_roar.enabled&((talent.bloodbath.enabled&buff.bloodbath.up&debuff.colossus_smash.down)|debuff.colossus_smash.down)&target.health.pct>=20
 actions.single_target+=/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up
 actions.single_target+=/colossus_smash,if=debuff.colossus_smash.remains<1
 actions.single_target+=/execute,if=debuff.colossus_smash.up|buff.recklessness.up|rage>=rage.max-25

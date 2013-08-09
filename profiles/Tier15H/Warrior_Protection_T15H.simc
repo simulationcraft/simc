@@ -22,6 +22,7 @@ actions.precombat=flask,type=earth
 actions.precombat+=/food,type=great_pandaren_banquet
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stance,choose=defensive
+actions.precombat+=/battle_shout
 actions.precombat+=/mountains_potion
 
 # Executed every time the actor is available.
