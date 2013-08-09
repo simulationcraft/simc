@@ -5270,7 +5270,7 @@ void paladin_t::target_mitigation( school_e school,
   }
 
   // Shield of the Righteous
-  if ( buffs.shield_of_the_righteous -> check() )
+  if ( buffs.shield_of_the_righteous -> check() && school == SCHOOL_PHYSICAL )
   {
     s -> result_amount *= 1.0 + ( buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() - get_divine_bulwark() ) * ( 1.0 + sets -> set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent() );
 
