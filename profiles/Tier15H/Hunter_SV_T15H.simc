@@ -85,6 +85,6 @@ main_hand=voice_of_the_quilen,id=96897,stats=1860agi_2710sta_1169hit_1219haste,w
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
-# trinket2=bad_juju,heroic=1,thunderforged=1
-# main_hand=voice_of_the_quilen,heroic=1,thunderforged=1,weapon=gun_3speed_14270min_26503max,enchant=lord_blastingtons_scope_of_doom
+# trinket2=bad_juju,heroic=1,elite=1
+# main_hand=voice_of_the_quilen,heroic=1,elite=1,weapon=gun_3speed_14270min_26503max,enchant=lord_blastingtons_scope_of_doom
 summon_pet=cat

@@ -31,18 +31,23 @@ actions=auto_attack
 actions+=/mountains_potion,if=health.pct<35&buff.mountains_potion.down
 actions+=/use_item,name=steadfast_talisman_of_the_shadopan_assault
 actions+=/last_stand,if=health<30000
-actions+=/avatar,if=talent.avatar.enabled
+actions+=/avatar,if=enabled
+actions+=/dragon_roar,if=enabled
+actions+=/bladestorm,if=enabled
+actions+=/bloodbath,if=enabled
+actions+=/storm_bolt,if=enabled
+actions+=/shockwave,if=enabled
 actions+=/heroic_strike,if=buff.ultimatum.up
-actions+=/berserker_rage
+actions+=/berserker_rage,if=rage<30
 actions+=/shield_slam,if=rage<75
 actions+=/revenge,if=rage<75
-actions+=/battle_shout,if=rage<80
+actions+=/battle_shout,if=rage<60
 actions+=/shield_block
 actions+=/shield_barrier,if=buff.shield_barrier.down&rage>80
 actions+=/thunder_clap,if=target.debuff.weakened_blows.down
 actions+=/shield_wall,if=buff.shield_block.down
 actions+=/demoralizing_shout
-actions+=/impending_victory,if=talent.impending_victory.enabled
+actions+=/impending_victory,if=enabled
 actions+=/victory_rush,if=!talent.impending_victory.enabled
 actions+=/devastate
 

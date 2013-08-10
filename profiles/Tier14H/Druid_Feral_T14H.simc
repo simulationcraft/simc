@@ -98,7 +98,7 @@ actions.advanced+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&!(dot.rip.r
 # Rake if we can apply a stronger Rake or if it's about to fall off and clipping the last tick won't waste too much damage.
 actions.advanced+=/rake,if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|(dot.rake.remains<3&action.rake.tick_damage%dot.rake.tick_dmg>=0.75))
 actions.advanced+=/pool_resource,for_next=1
-actions.advanced+=/thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&(dot.rip.remains>=4|buff.berserk.up)&dot.rip.ticking
+actions.advanced+=/thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&(dot.rip.remains>=8&buff.savage_roar.remains>=12|buff.berserk.up)&dot.rip.ticking
 actions.advanced+=/run_action_list,name=filler,if=buff.omen_of_clarity.react
 # Conditions under which we should execute a CP generator.
 actions.advanced+=/run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)
@@ -108,6 +108,7 @@ actions.advanced+=/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=
 actions.advanced+=/run_action_list,name=filler,if=energy.time_to_max<=1.0
 
 actions.filler=ravage
+actions.filler+=/thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&combo_points>=5
 actions.filler+=/shred,if=(buff.omen_of_clarity.react|buff.berserk.up|energy.regen>=15)&buff.king_of_the_jungle.down
 actions.filler+=/mangle_cat,if=buff.king_of_the_jungle.down
 

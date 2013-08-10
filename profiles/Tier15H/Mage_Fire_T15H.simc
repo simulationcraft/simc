@@ -89,4 +89,4 @@ off_hand=lei_shens_orb_of_command,id=96934,gems=80int_160crit_60int,enchant=165i
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
 # hands=gloves_of_the_chromatic_hydra,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=venomlords_totemic_wand,heroic=1,thunderforged=1,weapon=wand,enchant=jade_spirit
+# main_hand=venomlords_totemic_wand,heroic=1,elite=1,weapon=wand,enchant=jade_spirit

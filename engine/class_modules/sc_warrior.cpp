@@ -3437,8 +3437,8 @@ void warrior_t::init_actions()
     if ( specialization() == WARRIOR_ARMS )
     {
       action_list_str += "/recklessness,if=target.time_to_die<=18|((target.time_to_die>=186|(target.health.pct<20&(debuff.colossus_smash.remains>=5|cooldown.colossus_smash.remains<=1.5)))&(!talent.bloodbath.enabled|!cooldown.bloodbath.remains))";
-      action_list_str += "/bloodbath,if=talent.bloodbath.enabled&(target.time_to_die<=18|buff.recklessness.up|target.time_to_die>=75)";
-      action_list_str += "/avatar,if=talent.avatar.enabled&(buff.recklessness.up|target.time_to_die<=25)";
+      action_list_str += "/bloodbath,if=enabled&(target.time_to_die<=18|buff.recklessness.up|target.time_to_die>=75)";
+      action_list_str += "/avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)";
       action_list_str += "/skull_banner,if=buff.recklessness.up";
       action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",if=talent.bloodbath.enabled&buff.bloodbath.up" );
       action_list_str += "/berserker_rage,if=buff.enrage.down&rage<=rage.max-10";
@@ -3449,11 +3449,11 @@ void warrior_t::init_actions()
       //Single Target
       st_list_str += "/heroic_strike,if=(debuff.colossus_smash.up&rage>=rage.max-40&target.health.pct>=20)|rage>=rage.max-15";
       st_list_str += "/mortal_strike";
-      st_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&((talent.bloodbath.enabled&buff.bloodbath.up&debuff.colossus_smash.down)|debuff.colossus_smash.down)&target.health.pct>=20";
-      st_list_str += "/storm_bolt,if=talent.storm_bolt.enabled&debuff.colossus_smash.up";
+      st_list_str += "/dragon_roar,if=enabled&((talent.bloodbath.enabled&buff.bloodbath.up&debuff.colossus_smash.down)|debuff.colossus_smash.down)&target.health.pct>=20";
+      st_list_str += "/storm_bolt,if=enabled&debuff.colossus_smash.up";
       st_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<1";
       st_list_str += "/execute,if=debuff.colossus_smash.up|buff.recklessness.up|rage>=rage.max-25";
-      st_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&((talent.bloodbath.enabled&buff.bloodbath.up&target.health.pct>=20)|(debuff.colossus_smash.down&target.health.pct<20))";
+      st_list_str += "/dragon_roar,if=enabled&((talent.bloodbath.enabled&buff.bloodbath.up&target.health.pct>=20)|(debuff.colossus_smash.down&target.health.pct<20))";
       st_list_str += "/slam,if=debuff.colossus_smash.up&(debuff.colossus_smash.remains<1|buff.recklessness.up)&target.health.pct>=20";
       st_list_str += "/overpower,if=buff.taste_for_blood.stack>=3&target.health.pct>=20";
       st_list_str += "/slam,if=debuff.colossus_smash.up&debuff.colossus_smash.remains<2.5&target.health.pct>=20";
@@ -3468,8 +3468,8 @@ void warrior_t::init_actions()
       aoe_list_str = "/sweeping_strikes";
       aoe_list_str += "/cleave,if=rage>110";
       aoe_list_str += "/mortal_strike";
-      aoe_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&buff.bloodbath.up";
-      aoe_list_str += "/bladestorm,if=talent.bladestorm.enabled";
+      aoe_list_str += "/dragon_roar,if=enabled&buff.bloodbath.up";
+      aoe_list_str += "/bladestorm,if=enabled";
       aoe_list_str += "/thunder_clap,if=active_enemies>=4";
       aoe_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<1";
       aoe_list_str += "/slam,if=active_enemies<=3";
@@ -3481,7 +3481,7 @@ void warrior_t::init_actions()
     // Fury
     else if ( specialization() == WARRIOR_FURY )
     {
-      action_list_str += "/bloodbath,if=talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)";
+      action_list_str += "/bloodbath,if=enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)";
       action_list_str += "/recklessness,if=(talent.storm_bolt.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5))|(talent.avatar.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5))|(talent.bloodbath.enabled&(buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)))|target.time_to_die<=12";
       action_list_str += "/avatar,if=buff.recklessness.up&talent.avatar.enabled";
       action_list_str += "/skull_banner,if=buff.recklessness.up";
@@ -3501,20 +3501,20 @@ void warrior_t::init_actions()
       st_list_str += "/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)";
       st_list_str += "/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1";
       st_list_str += "/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains";
-      st_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&((!debuff.colossus_smash.up&buff.bloodbath.up)|debuff.colossus_smash.down)";
+      st_list_str += "/dragon_roar,if=enabled&((!debuff.colossus_smash.up&buff.bloodbath.up)|debuff.colossus_smash.down)";
       st_list_str += "/colossus_smash";
-      st_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
+      st_list_str += "/storm_bolt,if=enabled";
       st_list_str += "/execute,if=buff.enrage.up|debuff.colossus_smash.up|rage>90|target.time_to_die<12";
       st_list_str += "/raging_blow,if=buff.raging_blow.stack=2|(buff.raging_blow.up&(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3)))";
       st_list_str += "/wild_strike,if=buff.bloodsurge.react";
-      st_list_str += "/bladestorm,if=talent.bladestorm.enabled&cooldown.bloodthirst.remains>2";
+      st_list_str += "/bladestorm,if=enabled&cooldown.bloodthirst.remains>2";
       st_list_str += "/raging_blow,if=buff.raging_blow.up&cooldown.colossus_smash.remains>=3";
-      st_list_str += "/shockwave,if=talent.shockwave.enabled";
+      st_list_str += "/shockwave,if=enabled";
       st_list_str += "/heroic_throw,if=debuff.colossus_smash.down&rage<60";
       st_list_str += "/battle_shout,if=rage<70&!debuff.colossus_smash.up";
       st_list_str += smf ? "/wild_strike" : "/whirlwind";
       st_list_str += ",if=debuff.colossus_smash.up&target.health.pct>=20";
-      st_list_str += "/impending_victory,if=talent.impending_victory.enabled&target.health.pct>=20";
+      st_list_str += "/impending_victory,if=enabled&target.health.pct>=20";
       st_list_str += "/battle_shout,if=rage<70";
       st_list_str += smf ? "/wild_strike" : "/whirlwind";
       st_list_str += ",if=cooldown.colossus_smash.remains>=2&rage>=80&target.health.pct>=20";
@@ -3523,9 +3523,9 @@ void warrior_t::init_actions()
 
       two_list_str = "/cleave,if=rage>=110";
       two_list_str += "/heroic_leap";
-      two_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&((!debuff.colossus_smash.up&buff.bloodbath.up)|debuff.colossus_smash.down)";
-      two_list_str += "/shockwave,if=talent.shockwave.enabled";
-      two_list_str += "/bladestorm,if=talent.bladestorm.enabled";
+      two_list_str += "/dragon_roar,if=enabled&((!debuff.colossus_smash.up&buff.bloodbath.up)|debuff.colossus_smash.down)";
+      two_list_str += "/shockwave,if=enabled";
+      two_list_str += "/bladestorm,if=enabled";
       two_list_str += "/execute,if=debuff.colossus_smash.up";
       two_list_str += "/bloodthirst";
       two_list_str += "/wait,sec=cooldown.bloodthirst.remains,if=cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains";
@@ -3533,7 +3533,7 @@ void warrior_t::init_actions()
       two_list_str += "/raging_blow,if=buff.meat_cleaver.up";
       two_list_str += "/whirlwind,if=!buff.meat_cleaver.up";
       two_list_str += "/raging_blow,if=buff.raging_blow.stack=2|(buff.raging_blow.up&(debuff.colossus_smash.up|cooldown.colossus_smash.remains>=3|buff.raging_blow.remains<=3))";
-      two_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
+      two_list_str += "/storm_bolt,if=enabled";
       two_list_str += "/battle_shout,if=rage<70";
       two_list_str += "/heroic_throw";
 
@@ -3541,15 +3541,15 @@ void warrior_t::init_actions()
 
       three_list_str = "/cleave,if=rage>=110";
       three_list_str += "/heroic_leap";
-      three_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&((!debuff.colossus_smash.up&buff.bloodbath.up)|debuff.colossus_smash.down)";
-      three_list_str += "/shockwave,if=talent.shockwave.enabled";
-      three_list_str += "/bladestorm,if=talent.bladestorm.enabled&buff.enrage.up";
+      three_list_str += "/dragon_roar,if=enabled&((!debuff.colossus_smash.up&buff.bloodbath.up)|debuff.colossus_smash.down)";
+      three_list_str += "/shockwave,if=enabled";
+      three_list_str += "/bladestorm,if=enabled&buff.enrage.up";
       three_list_str += "/raging_blow,if=buff.raging_blow.remains<=2|buff.meat_cleaver.react=2";
       three_list_str += "/bloodthirst";
       three_list_str += "/whirlwind";
       three_list_str += "/wait,sec=cooldown.bloodthirst.remains,if=cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains";
       three_list_str += "/colossus_smash";
-      three_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
+      three_list_str += "/storm_bolt,if=enabled";
       three_list_str += "/raging_blow,if=buff.raging_blow.stack=2|(buff.raging_blow.up&(debuff.colossus_smash.up|cooldown.colossus_smash.remains>=3|buff.raging_blow.remains<=3))";
       three_list_str += "/battle_shout,if=rage<70";
       three_list_str += "/heroic_throw";
@@ -3557,14 +3557,14 @@ void warrior_t::init_actions()
       //Aoe
       aoe_list_str += "/cleave,if=rage>110";
       aoe_list_str += "/heroic_leap";
-      aoe_list_str += "/dragon_roar,if=talent.dragon_roar.enabled&((!debuff.colossus_smash.up&buff.bloodbath.up)|debuff.colossus_smash.down)";
-      aoe_list_str += "/shockwave,if=talent.shockwave.enabled";
-      aoe_list_str += "/bladestorm,if=talent.bladestorm.enabled&buff.enrage.up";
+      aoe_list_str += "/dragon_roar,if=enabled&((!debuff.colossus_smash.up&buff.bloodbath.up)|debuff.colossus_smash.down)";
+      aoe_list_str += "/shockwave,if=enabled";
+      aoe_list_str += "/bladestorm,if=enabled&buff.enrage.up";
       aoe_list_str += "/bloodthirst,if=buff.enrage.down";
       aoe_list_str += "/colossus_smash";
       aoe_list_str += "/raging_blow,if=buff.meat_cleaver.stack=3";
       aoe_list_str += "/whirlwind";
-      aoe_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
+      aoe_list_str += "/storm_bolt,if=enabled";
       aoe_list_str += "/battle_shout,if=rage<70";
       aoe_list_str += "/bloodthirst";
 
@@ -3573,18 +3573,23 @@ void warrior_t::init_actions()
     else if ( specialization() == WARRIOR_PROTECTION )
     {
       action_list_str += "/last_stand,if=health<30000";
-      action_list_str += "/avatar,if=talent.avatar.enabled";
+      action_list_str += "/avatar,if=enabled";
+      action_list_str += "/dragon_roar,if=enabled";
+      action_list_str += "/bladestorm,if=enabled";
+      action_list_str += "/bloodbath,if=enabled";
+      action_list_str += "/storm_bolt,if=enabled";
+      action_list_str += "/shockwave,if=enabled";
       action_list_str += "/heroic_strike,if=buff.ultimatum.up";
-      action_list_str += "/berserker_rage";
+      action_list_str += "/berserker_rage,if=rage<30";
       action_list_str += "/shield_slam,if=rage<75";
       action_list_str += "/revenge,if=rage<75";
-      action_list_str += "/battle_shout,if=rage<80";
+      action_list_str += "/battle_shout,if=rage<60";
       action_list_str += "/shield_block";
       action_list_str += "/shield_barrier,if=buff.shield_barrier.down&rage>80";
       action_list_str += "/thunder_clap,if=target.debuff.weakened_blows.down";
       action_list_str += "/shield_wall,if=buff.shield_block.down";
       action_list_str += "/demoralizing_shout";
-      action_list_str += "/impending_victory,if=talent.impending_victory.enabled";
+      action_list_str += "/impending_victory,if=enabled";
       action_list_str += "/victory_rush,if=!talent.impending_victory.enabled";
       action_list_str += "/devastate";
     }

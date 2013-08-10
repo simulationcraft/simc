@@ -95,6 +95,6 @@ main_hand=suenwo_spire_of_the_falling_sun,id=96911,gems=80int_160haste_320haste_
 # tier15_2pc_caster=1
 # tier15_4pc_caster=1
 # hands=gloves_of_the_exorcist,heroic=1,addon=synapse_springs_mark_ii
-# trinket1=unerring_vision_of_lei_shen,heroic=1,thunderforged=1
-# main_hand=suenwo_spire_of_the_falling_sun,heroic=1,thunderforged=1,weapon=staff_3.30speed_8970min_13455max,enchant=jade_spirit
+# trinket1=unerring_vision_of_lei_shen,heroic=1,elite=1
+# main_hand=suenwo_spire_of_the_falling_sun,heroic=1,elite=1,weapon=staff_3.30speed_8970min_13455max,enchant=jade_spirit
 initial_shadow_orbs=3

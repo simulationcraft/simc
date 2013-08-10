@@ -95,6 +95,6 @@ off_hand=lei_shens_orb_of_command,id=96934,gems=80int_160haste_60int,enchant=165
 # meta_gem=sinister_primal
 # tier15_2pc_caster=1
 # back=jadefire_drape,enchant=lightweave_embroidery_3
-# trinket1=unerring_vision_of_lei_shen,heroic=1,thunderforged=1
-# main_hand=athame_of_the_sanguine_ritual,heroic=1,thunderforged=1,weapon=dagger_1.80speed_3175min_5897max,enchant=jade_spirit
+# trinket1=unerring_vision_of_lei_shen,heroic=1,elite=1
+# main_hand=athame_of_the_sanguine_ritual,heroic=1,elite=1,weapon=dagger_1.80speed_3175min_5897max,enchant=jade_spirit
 default_pet=felhunter
