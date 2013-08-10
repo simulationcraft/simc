@@ -60,7 +60,6 @@ struct melee_t : public melee_attack_t
       tl.push_back( sim->heal_target );
     }
 
-
     return tl.size();
   }
 };
@@ -118,7 +117,7 @@ struct auto_attack_t : public attack_t
   virtual double calculate_direct_amount( action_state_t* s )
   {
     // force boss attack size to vary regardless of whether the sim itself does
-    double previous_average_range_state = sim ->average_range;
+    int previous_average_range_state = sim ->average_range;
     sim -> average_range = 0;
 
     double amount = attack_t::calculate_direct_amount( s );
@@ -191,7 +190,7 @@ struct melee_nuke_t : public attack_t
   virtual double calculate_direct_amount( action_state_t* s )
   {
     // force boss attack size to vary regardless of whether the sim itself does
-    double previous_average_range_state = sim ->average_range;
+    int previous_average_range_state = sim ->average_range;
     sim -> average_range = 0;
 
     double amount = attack_t::calculate_direct_amount( s );
@@ -276,7 +275,7 @@ struct spell_nuke_t : public spell_t
   virtual double calculate_direct_amount( action_state_t* s )
   {
     // force boss attack size to vary regardless of whether the sim itself does
-    double previous_average_range_state = sim ->average_range;
+    int previous_average_range_state = sim ->average_range;
     sim -> average_range = 0;
 
     double amount = spell_t::calculate_direct_amount( s );
