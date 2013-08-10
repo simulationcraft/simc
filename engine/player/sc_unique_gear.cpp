@@ -2852,6 +2852,7 @@ void multistrike_trinket( item_t* item )
   effect.duration = stat_spell -> duration();
   effect.stat = static_cast< stat_e >( stat_spell -> effectN( 1 ).misc_value1() + 1 );
   effect.stat_amount = util::round( budget.p_epic[ 0 ] * stat_spell -> effectN( 1 ).m_average() );
+  effect.cooldown = stat_driver_spell -> internal_cooldown();
 
   stat_buff_proc_t* stat_cb = new stat_buff_proc_t( item -> player, effect );
   p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, stat_cb );
