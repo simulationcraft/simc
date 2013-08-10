@@ -653,6 +653,7 @@ player_t::player_t( sim_t*             s,
   buffed( buffed_stats_t() ),
   collected_data( player_collected_data_t( name_str, *sim ) ),
   vengeance( collected_data.vengeance_timeline ),
+  vengeance_list( vengeance_actor_list_t::vengeance_actor_list_t( this ) ),
   // Damage
   iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
   dpr( 0 ),
@@ -4165,7 +4166,8 @@ void player_t::demise()
 
   event_t::cancel( off_gcd );
 
-  vengeance.stop();
+  // stops vengeance and clear vengeance_list
+  vengeance_stop();
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
   {
@@ -4848,6 +4850,21 @@ void player_t::cost_reduction_loss( school_e school,
   {
     current.resource_reduction[ school ] -= amount;
   }
+}
+
+// player_t::get_raw_dps ==============================================
+
+double player_t::get_raw_dps( action_state_t* s )
+{
+  double raw_dps = 0;
+
+  if ( main_hand_attack && main_hand_attack -> execute_time() > timespan_t::zero() )
+  {
+    raw_dps = ( main_hand_attack -> base_da_min( s ) + main_hand_attack -> base_da_max( s ) ) / 2.0;
+    raw_dps /= main_hand_attack -> execute_time().total_seconds();
+  }
+  
+  return raw_dps;
 }
 
 // player_t::assess_damage ==================================================

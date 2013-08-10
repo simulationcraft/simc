@@ -1126,7 +1126,7 @@ void action_t::update_vengeance( dmg_e type,
                                  action_state_t* s )
 {
   // Vengenace damage->pct modifier
-  double veng_pct = ( s -> target -> dbc.ptr && !s -> target -> sim -> challenge_mode ) ? 0.015 : 0.018;
+  double veng_pct = ( s -> target -> dbc.ptr && ! sim -> challenge_mode ) ? 0.015 : 0.018;
 
   // check that the target has vengeance, damage type, and that the executing player is an enemy
   if ( s -> target -> vengeance_is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) && s-> action -> player -> is_enemy() )
@@ -1147,6 +1147,9 @@ void action_t::update_vengeance( dmg_e type,
     }
     else // vengeance from auto attack or successful spell
     {
+      // update the player's vengeance_actor_list
+      if ( sim -> dbc.ptr && ! sim -> challenge_mode )
+        s -> target -> vengeance_list.add( player, player -> get_raw_dps( s ), sim -> current_time );
 
       // factor out weakened_blows from physical damage
       double raw_damage = s -> result_raw;
@@ -1168,7 +1171,9 @@ void action_t::update_vengeance( dmg_e type,
       // modify according to damage type; spell damage gives 2.5x as much Vengeance
       new_amount *= ( school == SCHOOL_PHYSICAL ? 1.0 : 2.5 );
 
-      // TODO: diminishing returns goes here
+      // apply diminishing returns according to position on actor list
+      if ( sim -> dbc.ptr && ! sim -> challenge_mode  )
+        new_amount /= s -> target -> vengeance_list.get_actor_rank( player );
 
       // Perform 20-second decaying average
       new_amount += s -> target -> buffs.vengeance -> value() *

@@ -3851,6 +3851,99 @@ struct actor_t : public noncopyable
   virtual ~ actor_t() { }
 };
 
+// Vengeance Actor List =====================================================
+
+struct vengeance_actor_list_t
+{
+  // structure that contains the relevant information for each actor entry inthe list
+  struct actor_entry_t { player_t* player; double raw_dps; timespan_t last_attack; };
+  std::vector< actor_entry_t > actor_list; // vector of actor entries
+  player_t* myself; // not sure this is strictly necessary, intended to nullify self-veng, but an is_enemy(actor) call might be better
+
+  // TODO: sort these methods into public (constructor, reset, get_actor_rank, add(3arg) ) and private (everything else?)
+
+  // constructor
+  vengeance_actor_list_t( player_t* p ) { myself = p; }
+
+  // method to clear list, called after each iteration in player_t::vengeance_stop()
+  void reset()  { actor_list.clear(); }
+
+  // comparator function for sorting the list
+  static bool compare_DPS( const actor_entry_t &a, const actor_entry_t &b )
+  { return ( a ).raw_dps > ( b ).raw_dps; }
+
+  // method to sort the list according to raw DPS
+  void sort_list() { std::sort( actor_list.begin(), actor_list.end(), compare_DPS ); }
+
+  // method to purge the actor list of any enemy that hasn't participated in the last 5 seconds
+  void purge_actor_list( timespan_t current_time )
+  {
+    for ( std::vector<actor_entry_t>::iterator iter = actor_list.begin(); iter != actor_list.end(); iter++ )
+    {
+      if ( ( *iter ).last_attack < current_time - timespan_t::from_seconds( 5.0 ) )
+        actor_list.erase( iter-- );
+    }
+  }
+  
+  // this returns the integer corresponding to the applied diminishing returns
+  // i.e. it returns N for the Nth-strongest attacker
+  int get_actor_rank( player_t* t )
+  {
+    for ( size_t i = 0, size = actor_list.size(); i < size; i++ )
+    {
+      if ( t == ( actor_list[ i ] ).player )
+        return (int)i+1;
+    }
+    // if actor rank not found, it's not in the list.  this should never happen.
+    // but if it does, we'll return -1 so as no to divide by zero
+    // should probably add an error or some such here
+    return -1;
+  }
+
+  // this attempts to update the list with the current entry, returns false if that actor isn't found
+  bool update_actor_entry( actor_entry_t* a )
+  {    
+    // cycle through the list and look for the actor - if it exists, just update that entry
+    for ( std::vector<actor_entry_t>::iterator iter = actor_list.begin(); iter != actor_list.end(); iter++ )
+    {
+      if ( ( *iter  ).player == a -> player )
+      {
+        ( *iter ).raw_dps = a -> raw_dps;
+        ( *iter ).last_attack = a -> last_attack;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // this is the method that we use to interact with the structure
+  void add( player_t* actor, double boss_raw_dps, timespan_t current_time )
+  {
+    // create a new actor_entry_t
+    actor_entry_t* a = new actor_entry_t();
+    a -> player = actor;
+    a -> raw_dps = boss_raw_dps;
+    a -> last_attack = current_time;
+
+    // add to the list
+    add( a );
+  }
+
+  // this is the workhorse method that adds new actors and maintains the list
+  void add( actor_entry_t* a )
+  {    
+    // try to update the actor's entry; if it doesn't exist and isn't myself, add them
+    if ( ! update_actor_entry( a ) && a -> player != myself )
+      actor_list.push_back( *a );
+
+    // purge any actors that haven't hit you in 5 seconds or more
+    purge_actor_list( a -> last_attack );
+
+    // sort the list
+    sort_list();
+  }
+};
+
 // Player ===================================================================
 
 struct player_t : public actor_t
@@ -3884,6 +3977,7 @@ struct player_t : public actor_t
   std::vector<pet_t*> pet_list;
   std::vector<pet_t*> active_pets;
   std::vector<absorb_buff_t*> absorb_buff_list;
+  vengeance_actor_list_t vengeance_list;
 
   int         invert_scaling;
   double      avg_ilvl;
@@ -4115,8 +4209,16 @@ struct player_t : public actor_t
 private:
   player_vengeance_t vengeance;
 public:
-  void vengeance_start() { vengeance.start( *this ); }
-  void vengeance_stop() { vengeance.stop(); }
+  void vengeance_start() 
+  { 
+    vengeance.start( *this ); 
+    vengeance_list.reset();
+  }
+  void vengeance_stop() 
+  { 
+    vengeance.stop(); 
+    vengeance_list.reset();
+  }
   bool vengeance_is_started() const { return vengeance.is_started(); }
   const sc_timeline_t& vengeance_timeline() const { return vengeance.timeline(); }
 
@@ -4466,6 +4568,7 @@ public:
   virtual void cost_reduction_gain( school_e school, double amount, gain_t* g = 0, action_t* a = 0 );
   virtual void cost_reduction_loss( school_e school, double amount, action_t* a = 0 );
 
+  virtual double get_raw_dps( action_state_t* );
   virtual void assess_damage( school_e, dmg_e, action_state_t* );
   virtual void target_mitigation( school_e, dmg_e, action_state_t* );
   virtual void assess_damage_imminent( school_e, dmg_e, action_state_t* );
