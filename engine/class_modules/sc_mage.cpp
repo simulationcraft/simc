@@ -2556,6 +2556,7 @@ struct frozen_orb_bolt_t : public mage_spell_t
   frozen_orb_bolt_t( mage_t* p ) :
     mage_spell_t( "frozen_orb_bolt", p, p -> find_class_spell( "Frozen Orb" ) -> ok() ? p -> find_spell( 84721 ) : spell_data_t::not_found() )
   {
+    aoe = -1;
     background = true;
     dual = true;
     cooldown -> duration = timespan_t::zero(); // dbc has CD of 6 seconds
