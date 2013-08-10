@@ -653,7 +653,7 @@ player_t::player_t( sim_t*             s,
   buffed( buffed_stats_t() ),
   collected_data( player_collected_data_t( name_str, *sim ) ),
   vengeance( collected_data.vengeance_timeline ),
-  vengeance_list( vengeance_actor_list_t::vengeance_actor_list_t( this ) ),
+  vengeance_list( this ),
   // Damage
   iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
   dpr( 0 ),

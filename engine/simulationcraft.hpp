@@ -3878,10 +3878,12 @@ struct vengeance_actor_list_t
   // method to purge the actor list of any enemy that hasn't participated in the last 5 seconds
   void purge_actor_list( timespan_t current_time )
   {
-    for ( std::vector<actor_entry_t>::iterator iter = actor_list.begin(); iter != actor_list.end(); iter++ )
+    for ( std::vector<actor_entry_t>::iterator iter = actor_list.begin(); iter != actor_list.end(); )
     {
       if ( ( *iter ).last_attack < current_time - timespan_t::from_seconds( 5.0 ) )
-        actor_list.erase( iter-- );
+        iter = actor_list.erase( iter );
+      else
+        ++iter;
     }
   }
   
@@ -3919,14 +3921,14 @@ struct vengeance_actor_list_t
   // this is the method that we use to interact with the structure
   void add( player_t* actor, double boss_raw_dps, timespan_t current_time )
   {
-    // create a new actor_entry_t
-    actor_entry_t* a = new actor_entry_t();
-    a -> player = actor;
-    a -> raw_dps = boss_raw_dps;
-    a -> last_attack = current_time;
+    // make an actor_entry_t with this information
+    actor_entry_t a;
+    a.player = actor;
+    a.raw_dps = boss_raw_dps;
+    a.last_attack = current_time;
 
     // add to the list
-    add( a );
+    add( &a );
   }
 
   // this is the workhorse method that adds new actors and maintains the list
