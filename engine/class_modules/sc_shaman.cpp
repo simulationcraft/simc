@@ -5719,7 +5719,7 @@ void shaman_t::init_actions()
     def -> add_action( "run_action_list,name=aoe,if=active_enemies>1", "On multiple enemies, the priority follows the 'aoe' action list." );
 
     single -> add_action( this, "Searing Totem", "if=!totem.fire.active" );
-    single -> add_action( this, "Unleash Elements", "if=talent.unleashed_fury.enabled" );
+    single -> add_action( this, "Unleash Elements", "if=(talent.unleashed_fury.enabled|set_bonus.tier16_2pc_melee=1)" );
     single -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=1" );
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react=5" );
     single -> add_action( this, "Feral Spirit", "if=set_bonus.tier15_4pc_melee=1" );
