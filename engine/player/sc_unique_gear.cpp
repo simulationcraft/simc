@@ -3117,10 +3117,10 @@ struct flurry_of_xuen_ranged_t : public ranged_attack_t
   }
 };
 
-struct flurry_of_xuen_driver_t : public spell_t
+struct flurry_of_xuen_driver_t : public attack_t
 {
   flurry_of_xuen_driver_t( player_t* player, action_t* action = 0 ) :
-    spell_t( "flurry_of_xuen", player, player -> find_spell( 146194 ) )
+    attack_t( "flurry_of_xuen", player, player -> find_spell( 146194 ) )
   {
     hasted_ticks = may_miss = may_crit = may_dodge = may_parry = may_block = callbacks = false;
     proc = background = dual = true;
@@ -3165,6 +3165,7 @@ void flurry_of_xuen( item_t* item )
   special_effect_t effect;
   effect.name_str = name;
   effect.ppm = -1.0 * driver -> real_ppm();
+  effect.ppm        *= item_database::approx_scale_coefficient( item -> parsed.data.level, item -> item_level() );
   effect.rppm_scale = RPPM_HASTE;
 
   flurry_of_xuen_cb_t* cb = new flurry_of_xuen_cb_t( item, effect );
@@ -3227,6 +3228,7 @@ void essence_of_yulon( item_t* item )
   special_effect_t effect;
   effect.name_str = name;
   effect.ppm = -1.0 * driver -> real_ppm();
+  effect.ppm        *= item_database::approx_scale_coefficient( item -> parsed.data.level, item -> item_level() );
   effect.rppm_scale = RPPM_HASTE;
 
   essence_of_yulon_cb_t* cb = new essence_of_yulon_cb_t( item, effect );

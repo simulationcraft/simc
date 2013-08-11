@@ -4845,6 +4845,13 @@ struct shaman_flurry_of_xuen_t : public shaman_melee_attack_t
     weapon_multiplier = 0;
     direct_power_mod = data().extra_coeff();
   }
+
+  // We need to override shaman_action_state_t returning here, as tick_action
+  // and custom state objects do not mesh at all really. They technically 
+  // work, but in reality we are doing naughty things in the code that are 
+  // not safe.
+  action_state_t* new_state()
+  { return new action_state_t( this, target ); }
 };
 
 // ==========================================================================
@@ -6238,7 +6245,7 @@ int shaman_t::decode_set( item_t& item )
     if ( is_heal   ) return SET_T15_HEAL;
   }
 
-  if ( util::str_compare_ci( s, "_of_celestial_harmony" ) )
+  if ( util::str_in_str_ci( s, "_of_celestial_harmony" ) )
   {
     is_caster = ( util::str_compare_ci( s, "hauberk" ) ||
                   util::str_compare_ci( s, "gloves" ) ||

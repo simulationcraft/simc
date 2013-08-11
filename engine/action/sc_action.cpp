@@ -1493,6 +1493,8 @@ void action_t::init()
 {
   if ( initialized ) return;
 
+  assert( ! ( impact_action && tick_action ) && "Both tick_action and impact_action should not be used in a single action." );
+
   assert( !( aoe && channeled ) && "DONT create a channeled aoe spell!" );
 
   if ( ! sync_str.empty() )
