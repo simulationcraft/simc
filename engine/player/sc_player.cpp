@@ -992,9 +992,9 @@ bool player_t::init( sim_t* sim )
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_target ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_character_properties ) );
 
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_spells ) );
-
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_items ) );
+
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_spells ) );
 
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_base_stats ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_initial_stats ) );
