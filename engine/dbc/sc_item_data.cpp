@@ -601,6 +601,7 @@ unsigned item_database::upgrade_ilevel( const item_data_t& item, unsigned upgrad
 {
   if ( item.quality == 3 ) return upgrade_level * 8;
   if ( item.quality == 4 ) return upgrade_level * 4;
+  if ( item.quality == 5 ) return upgrade_level * 4;
   return 0;
 }
 
