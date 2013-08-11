@@ -1771,6 +1771,8 @@ void player_t::init_resources( bool force )
 
 
   resources.current = resources.max = resources.initial;
+  if ( type == WARRIOR )
+    resources.current [RESOURCE_RAGE] = 0; //Warriors do not have full resource bars pre-combat.
 
   // Only collect pet resource timelines if they get reported separately
   if ( ! is_pet() || sim -> report_pets_separately )

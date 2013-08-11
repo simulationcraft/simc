@@ -3608,11 +3608,11 @@ void warrior_t::combat_begin()
   player_t::combat_begin();
 
   if ( initial_rage > 0 )
-    resources.current[ RESOURCE_RAGE ] = initial_rage ;
+    resources.current[ RESOURCE_RAGE ] = initial_rage ; // User specified rage.
   else if ( glyphs.bull_rush -> ok() )
-    resources.current[ RESOURCE_RAGE ] = 55 ;
+    resources.current[ RESOURCE_RAGE ] = resources.current [RESOURCE_RAGE ] + 35 ; //As charge doesn't work, add rage assuming it was used.
   else
-    resources.current[ RESOURCE_RAGE ] = 40 ; // Pre-combat shout and charge are accounted for here, unless user sets initial_rage.
+    resources.current[ RESOURCE_RAGE ] = resources.current [RESOURCE_RAGE] + 20 ;
 
   if ( active_stance == STANCE_BATTLE && ! buff.battle_stance -> check() )
     buff.battle_stance -> trigger();
