@@ -4,11 +4,7 @@ ptr=1
 
 talent_format=armory
 
-
-
 # Elemental
-
-
 
 # Enhancement
 shaman="Shaman_Enhancement_T16N"
@@ -36,3 +32,4 @@ trinket2=ticking_ebon_detonator,id=102311
 main_hand=hellscreams_cleaver,id=104404,gems=160agi_160agi_120agi,enchant=dancing_steel,reforge=crit_hit
 off_hand=hellscreams_cleaver,id=104404,gems=160agi_160agi_120agi,enchant=dancing_steel,reforge=crit_haste
 save=Shaman_Enhancement_T16N.simc
+

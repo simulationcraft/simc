@@ -6247,23 +6247,23 @@ int shaman_t::decode_set( item_t& item )
 
   if ( util::str_in_str_ci( s, "_of_celestial_harmony" ) )
   {
-    is_caster = ( util::str_compare_ci( s, "hauberk" ) ||
-                  util::str_compare_ci( s, "gloves" ) ||
-                  util::str_compare_ci( s, "headpiece" ) ||
-                  util::str_compare_ci( s, "kilt" ) ||
-                  util::str_compare_ci( s, "shoulderwraps" ) );
+    is_caster = ( util::str_in_str_ci( s, "hauberk" ) ||
+                  util::str_in_str_ci( s, "gloves" ) ||
+                  util::str_in_str_ci( s, "headpiece" ) ||
+                  util::str_in_str_ci( s, "kilt" ) ||
+                  util::str_in_str_ci( s, "shoulderwraps" ) );
 
-    is_melee = ( util::str_compare_ci( s, "cuirass" ) ||
-                 util::str_compare_ci( s, "grips" ) ||
-                 util::str_compare_ci( s, "helmet" ) ||
-                 util::str_compare_ci( s, "legguards" ) ||
-                 util::str_compare_ci( s, "spaulders" ) );
+    is_melee = ( util::str_in_str_ci( s, "cuirass" ) ||
+                 util::str_in_str_ci( s, "grips" ) ||
+                 util::str_in_str_ci( s, "helmet" ) ||
+                 util::str_in_str_ci( s, "legguards" ) ||
+                 util::str_in_str_ci( s, "spaulders" ) );
 
-    is_heal = ( util::str_compare_ci( s, "tunic" ) ||
-                util::str_compare_ci( s, "handwraps" ) ||
-                util::str_compare_ci( s, "faceguard" ) ||
-                util::str_compare_ci( s, "legwraps" ) ||
-                util::str_compare_ci( s, "mantle" ) );
+    is_heal = ( util::str_in_str_ci( s, "tunic" ) ||
+                util::str_in_str_ci( s, "handwraps" ) ||
+                util::str_in_str_ci( s, "faceguard" ) ||
+                util::str_in_str_ci( s, "legwraps" ) ||
+                util::str_in_str_ci( s, "mantle" ) );
 
     if ( is_caster ) return SET_T16_CASTER;
     if ( is_melee  ) return SET_T16_MELEE;

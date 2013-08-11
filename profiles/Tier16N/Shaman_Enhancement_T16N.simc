@@ -9,9 +9,6 @@ talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...0.1
 glyphs=chain_lightning
 spec=enhancement
 
-tier16_2pc_melee=1
-tier16_4pc_melee=1
-
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
 # while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
@@ -118,9 +115,9 @@ off_hand=hellscreams_cleaver,id=104404,gems=160agi_160agi_120agi,enchant=dancing
 # gear_crit_rating=1059
 # gear_haste_rating=7665
 # gear_mastery_rating=15042
-# gear_armor=27524
+# gear_armor=28875
 # meta_gem=agile_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
-# main_hand=hellscreams_cleaver,weapon=axe_2.60speed_11050min_20525max,enchant=dancing_steel
-# off_hand=hellscreams_cleaver,weapon=axe_2.60speed_11050min_20525max,enchant=dancing_steel
+# main_hand=hellscreams_cleaver,weapon=axe_2.60speed_11051min_20525max,enchant=dancing_steel
+# off_hand=hellscreams_cleaver,weapon=axe_2.60speed_11051min_20525max,enchant=dancing_steel
