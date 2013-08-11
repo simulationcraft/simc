@@ -434,220 +434,149 @@ void SC_OptionsTab::createReforgePlotsTab()
 // Decode all options/setting from a string ( loaded from the history ).
 // Decode / Encode order needs to be equal!
 
-void SC_OptionsTab::decodeOptions( QString encoding )
+void load_setting( QSettings& s, const QString& name, QComboBox* choice )
 {
-  int i = 0;
-  QStringList tokens = encoding.split( ' ' );
+  const QString& v = s.value( name ).toString();
+  int index = choice -> findText( v );
+  if ( index != -1 )
+    choice -> setCurrentIndex( index );
+}
 
-  if ( i < tokens.count() )
-    choice.version -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.iterations -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.fight_length -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.fight_variance -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.fight_style -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.target_race -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.num_target -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.player_skill -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.threads -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.armory_region -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.armory_spec -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.default_role -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.tmi_boss -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.tmi_actor_only -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.world_lag -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.target_level -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.aura_delay -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.report_pets -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.print_style -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.statistics_level -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.deterministic_rng -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.center_scale_delta -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.scale_over -> setCurrentIndex( tokens[ i++ ].toInt() );
-  if ( i < tokens.count() )
-    choice.challenge_mode -> setCurrentIndex( tokens[ i++ ].toInt() );
-
-  QList<QAbstractButton*>        buff_buttons =        buffsButtonGroup -> buttons();
-  QList<QAbstractButton*>      debuff_buttons =      debuffsButtonGroup -> buttons();
-  QList<QAbstractButton*>     scaling_buttons =      scalingButtonGroup -> buttons();
-  QList<QAbstractButton*>        plot_buttons =        plotsButtonGroup -> buttons();
-  QList<QAbstractButton*> reforgeplot_buttons = reforgeplotsButtonGroup -> buttons();
-
-  for ( ; i < tokens.count(); i++ )
+void load_button_group( QSettings& s, const QString& groupname, QButtonGroup* bg )
+{
+  s.beginGroup( groupname );
+  QList<QString> button_names;
+  QList<QAbstractButton*> buttons = bg -> buttons();
+  for( int i = 0; i < buttons.size(); ++i)
   {
-    QStringList opt_tokens = tokens[ i ].split( ':' );
-
-    const OptionEntry* options = 0;
-    QList<QAbstractButton*>* buttons = 0;
-
-    if (      ! opt_tokens[ 0 ].compare( "buff"           ) ) { options = buffOptions;        buttons = &buff_buttons;        }
-    else if ( ! opt_tokens[ 0 ].compare( "debuff"         ) ) { options = debuffOptions;      buttons = &debuff_buttons;      }
-    else if ( ! opt_tokens[ 0 ].compare( "scaling"        ) ) { options = scalingOptions;     buttons = &scaling_buttons;     }
-    else if ( ! opt_tokens[ 0 ].compare( "plots"          ) ) { options = plotOptions;        buttons = &plot_buttons;        }
-    else if ( ! opt_tokens[ 0 ].compare( "reforge_plots"  ) ) { options = reforgePlotOptions; buttons = &reforgeplot_buttons; }
-    else if ( ! opt_tokens[ 0 ].compare( "item_db_source" ) )
-    {
-      QStringList item_db_list = opt_tokens[ 1 ].split( '/' );
-
-      for ( int opt = item_db_list.size(); --opt >= 0; )
-      {
-        for ( int source = 0; source < itemDbOrder -> count(); source++ )
-        {
-          if ( ! item_db_list[ opt ].compare( itemDbOrder -> item( source ) -> data( Qt::UserRole ).toString() ) )
-          {
-            itemDbOrder -> insertItem( 0, itemDbOrder -> takeItem( source ) );
-            break;
-          }
-        }
-      }
-    }
-    if ( ! options ) continue;
-
-    QStringList opt_value = opt_tokens[ 1 ].split( '=' );
-    for ( int opt = 0; options[ opt ].label; opt++ )
-    {
-      if ( ! opt_value[ 0 ].compare( options[ opt ].option ) )
-      {
-        buttons -> at( opt )->setChecked( 1 == opt_value[ 1 ].toInt() );
-        break;
-      }
-    }
+    button_names.push_back( buttons[ i ] -> text() );
   }
+  QStringList keys = s.childKeys();
+  for( int i = 0; i < keys.size(); ++i )
+  {
+    int index = button_names.indexOf( keys[ i ] );
+    if ( index != -1 )
+      buttons[ index ] -> setChecked( s.value( keys[ i ] ).toBool() );
+  }
+
+  s.endGroup();
+}
+
+void SC_OptionsTab::decodeOptions()
+{
+  QSettings settings;
+  settings.beginGroup( "options" );
+  load_setting( settings, "version", choice.iterations );
+  load_setting( settings, "iterations", choice.iterations );
+  load_setting( settings, "fight_length", choice.fight_length );
+  load_setting( settings, "fight_variance", choice.fight_variance );
+  load_setting( settings, "fight_style", choice.fight_style );
+  load_setting( settings, "target_race", choice.target_race );
+  load_setting( settings, "num_target", choice.num_target );
+  load_setting( settings, "player_skill", choice.player_skill );
+  load_setting( settings, "threads", choice.threads );
+  load_setting( settings, "armory_region", choice.armory_region );
+  load_setting( settings, "armory_spec", choice.armory_spec );
+  load_setting( settings, "default_role", choice.default_role );
+  load_setting( settings, "tmi_boss", choice.tmi_boss );
+  load_setting( settings, "tmi_actor_only", choice.tmi_actor_only );
+  load_setting( settings, "world_lag", choice.world_lag );
+  load_setting( settings, "target_level", choice.target_level );
+  load_setting( settings, "aura_delay", choice.aura_delay );
+  load_setting( settings, "report_pets", choice.report_pets );
+  load_setting( settings, "print_style", choice.print_style );
+  load_setting( settings, "statistics_level", choice.statistics_level );
+  load_setting( settings, "deterministic_rng", choice.deterministic_rng );
+  load_setting( settings, "center_scale_delta", choice.center_scale_delta );
+  load_setting( settings, "scale_over", choice.scale_over );
+  load_setting( settings, "challenge_mode", choice.challenge_mode );
+
+  load_button_group( settings, "buff_buttons", buffsButtonGroup );
+  load_button_group( settings, "debuff_buttons", debuffsButtonGroup );
+  load_button_group( settings, "scaling_buttons", scalingButtonGroup );
+  load_button_group( settings, "plots_buttons", plotsButtonGroup );
+  load_button_group( settings, "reforgeplots_buttons", reforgeplotsButtonGroup );
+  QStringList item_db_order = settings.value( "item_db_order" ).toString().split( "/");
+  for( int i = 0; i < item_db_order.size(); ++i )
+  {
+    for( int k = 0; k < itemDbOrder->count(); ++k)
+    {
+      if ( ! item_db_order[ i ].compare( itemDbOrder -> item( k ) -> data( Qt::UserRole ).toString() ) )
+      {
+        itemDbOrder -> addItem( itemDbOrder -> takeItem( k ) );
+      }
+    }
+
+  }
+  settings.endGroup();
+}
+
+void store_button_group( QSettings& s, const QString& name, QButtonGroup* bg )
+{
+  s.beginGroup( name );
+  QList<QAbstractButton*> buttons = bg -> buttons();
+  for ( int i = 0; i < buttons.size(); ++i )
+  {
+    s.setValue( buttons[ i ] -> text(), buttons[ i ] -> isChecked());
+  }
+  s.endGroup();
 }
 
 // Encode all options/setting into a string ( to be able to save it to the history )
 // Decode / Encode order needs to be equal!
 
-QString SC_OptionsTab::encodeOptions()
+void SC_OptionsTab::encodeOptions()
 {
   QSettings settings;
-  settings.setValue( "global/iterations", choice.iterations -> currentIndex() );
-  settings.setValue( "global/fight_length", choice.fight_length -> currentIndex() );
-  settings.setValue( "global/fight_variance", choice.fight_variance -> currentIndex() );
-  settings.setValue( "global/fight_style", choice.fight_style -> currentIndex() );
-  settings.setValue( "global/target_race", choice.target_race -> currentIndex() );
-  settings.setValue( "global/num_target", choice.num_target -> currentIndex() );
-  settings.setValue( "global/player_skill", choice.player_skill -> currentIndex() );
-  settings.setValue( "global/threads", choice.threads -> currentIndex() );
-  settings.setValue( "global/armory_region", choice.armory_region -> currentIndex() );
-  settings.setValue( "global/armory_spec", choice.armory_spec -> currentIndex() );
-  settings.setValue( "global/default_role", choice.default_role -> currentIndex() );
-  settings.setValue( "global/tmi_boss", choice.tmi_boss -> currentIndex() );
-  settings.setValue( "global/tmi_actor_only", choice.tmi_actor_only -> currentIndex() );
-  settings.setValue( "global/world_lag", choice.world_lag -> currentIndex() );
-  settings.setValue( "global/target_level", choice.target_level -> currentIndex() );
-  settings.setValue( "global/aura_delay", choice.aura_delay -> currentIndex() );
-  settings.setValue( "global/report_pets", choice.report_pets -> currentIndex() );
-  settings.setValue( "global/print_style", choice.print_style -> currentIndex() );
-  settings.setValue( "global/statistics_level", choice.statistics_level -> currentIndex() );
-  settings.setValue( "global/deterministic_rng", choice.deterministic_rng -> currentIndex() );
-  settings.setValue( "global/center_scale_delta", choice.center_scale_delta -> currentIndex() );
-  settings.setValue( "global/scale_over", choice.scale_over -> currentIndex() );
-  settings.setValue( "global/challenge_mode", choice.challenge_mode -> currentIndex() );
+  settings.beginGroup( "options" );
+  settings.setValue( "version", choice.version -> currentText() );
+  settings.setValue( "iterations", choice.iterations -> currentText() );
+  settings.setValue( "fight_length", choice.fight_length -> currentText() );
+  settings.setValue( "fight_variance", choice.fight_variance -> currentText() );
+  settings.setValue( "fight_style", choice.fight_style -> currentText() );
+  settings.setValue( "target_race", choice.target_race -> currentText() );
+  settings.setValue( "num_target", choice.num_target -> currentText() );
+  settings.setValue( "player_skill", choice.player_skill -> currentText() );
+  settings.setValue( "threads", choice.threads -> currentText() );
+  settings.setValue( "armory_region", choice.armory_region -> currentText() );
+  settings.setValue( "armory_spec", choice.armory_spec -> currentText() );
+  settings.setValue( "default_role", choice.default_role -> currentText() );
+  settings.setValue( "tmi_boss", choice.tmi_boss -> currentText() );
+  settings.setValue( "tmi_actor_only", choice.tmi_actor_only -> currentText() );
+  settings.setValue( "world_lag", choice.world_lag -> currentText() );
+  settings.setValue( "target_level", choice.target_level -> currentText() );
+  settings.setValue( "aura_delay", choice.aura_delay -> currentText() );
+  settings.setValue( "report_pets", choice.report_pets -> currentText() );
+  settings.setValue( "print_style", choice.print_style -> currentText() );
+  settings.setValue( "statistics_level", choice.statistics_level -> currentText() );
+  settings.setValue( "deterministic_rng", choice.deterministic_rng -> currentText() );
+  settings.setValue( "center_scale_delta", choice.center_scale_delta -> currentText() );
+  settings.setValue( "scale_over", choice.scale_over -> currentText() );
+  settings.setValue( "challenge_mode", choice.challenge_mode -> currentText() );
 
   QString encoded;
-  QTextStream ss( &encoded );
 
-  ss << choice.version -> currentIndex();
-  ss << ' ' << choice.iterations -> currentIndex();
-  ss << ' ' << choice.fight_length -> currentIndex();
-  ss << ' ' << choice.fight_variance -> currentIndex();
-  ss << ' ' << choice.fight_style -> currentIndex();
-  ss << ' ' << choice.target_race -> currentIndex();
-  ss << ' ' << choice.num_target -> currentIndex();
-  ss << ' ' << choice.player_skill -> currentIndex();
-  ss << ' ' << choice.threads -> currentIndex();
-  ss << ' ' << choice.armory_region -> currentIndex();
-  ss << ' ' << choice.armory_spec -> currentIndex();
-  ss << ' ' << choice.default_role -> currentIndex();
-  ss << ' ' << choice.tmi_boss -> currentIndex();
-  ss << ' ' << choice.tmi_actor_only -> currentIndex();
-  ss << ' ' << choice.world_lag -> currentIndex();
-  ss << ' ' << choice.target_level -> currentIndex();
-  ss << ' ' << choice.aura_delay -> currentIndex();
-  ss << ' ' << choice.report_pets -> currentIndex();
-  ss << ' ' << choice.print_style -> currentIndex();
-  ss << ' ' << choice.statistics_level -> currentIndex();
-  ss << ' ' << choice.deterministic_rng -> currentIndex();
-  ss << ' ' << choice.center_scale_delta -> currentIndex();
-  ss << ' ' << choice.scale_over -> currentIndex();
-  ss << ' ' << choice.challenge_mode -> currentIndex();
-
-  QList<QAbstractButton*> buttons = buffsButtonGroup -> buttons();
-  for ( int i = 1; buffOptions[ i ].label; i++ )
+  store_button_group( settings, "buff_buttons", buffsButtonGroup );
+  store_button_group( settings, "debuff_buttons", debuffsButtonGroup );
+  store_button_group( settings, "scaling_buttons", scalingButtonGroup );
+  store_button_group( settings, "plots_buttons", plotsButtonGroup );
+  store_button_group( settings, "reforgeplots_buttons", reforgeplotsButtonGroup );
+  QString item_db_order;
+  for( int i = 0; i < itemDbOrder->count(); ++i )
   {
-    ss << " buff:" << buffOptions[ i ].option << '='
-       << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
+    if ( i > 0 )
+      item_db_order += "/";
+    item_db_order += itemDbOrder->item( i ) -> data( Qt::UserRole ).toString();
   }
+  settings.setValue( "item_db_order", item_db_order );
 
-  buttons = debuffsButtonGroup -> buttons();
-  for ( int i = 1; debuffOptions[ i ].label; i++ )
-  {
-    ss << " debuff:" << debuffOptions[ i ].option << '='
-       << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
-  }
-
-  buttons = scalingButtonGroup -> buttons();
-  for ( int i = 2; scalingOptions[ i ].label; i++ )
-  {
-    ss << " scaling:" << scalingOptions[ i ].option << '='
-       << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
-  }
-
-  buttons = plotsButtonGroup -> buttons();
-  for ( int i = 0; plotOptions[ i ].label; i++ )
-  {
-    ss << " plots:" << plotOptions[ i ].option << '='
-       << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
-  }
-
-  buttons = reforgeplotsButtonGroup -> buttons();
-  for ( int i = 0; reforgePlotOptions[ i ].label; i++ )
-  {
-    ss << " reforge_plots:" << reforgePlotOptions[ i ].option << '='
-       << ( buttons.at( i ) -> isChecked() ? '1' : '0' );
-  }
-
-  if ( itemDbOrder -> count() > 0 )
-  {
-    ss << " item_db_source:";
-    for ( int i = 0; i < itemDbOrder -> count(); i++ )
-    {
-      QListWidgetItem *it = itemDbOrder -> item( i );
-      ss << it -> data( Qt::UserRole ).toString();
-      if ( i < itemDbOrder -> count() - 1 )
-        ss << '/';
-    }
-  }
-
-  return encoded;
+  settings.endGroup(); // end group "options"
 }
 
 void SC_OptionsTab::createToolTips()
 {
   choice.version -> setToolTip( tr( "Live: Use mechanics on Live servers. ( WoW Build %1 )" ).arg( dbc::build_level( false ) ) + "\n" +
-#if SC_BETA
+                              #if SC_BETA
                                 tr( "Beta:  Use mechanics on Beta servers. ( WoW Build %1 )" ).arg( dbc::build_level( true ) ) + "\n" +
                                 tr( "Both: Create Evil Twin with Beta mechanics" ) );
 #else
@@ -664,7 +593,7 @@ void SC_OptionsTab::createToolTips()
   choice.fight_length -> setToolTip( tr( "For custom fight lengths use max_time=seconds." ) );
 
   choice.fight_variance -> setToolTip( tr( "Varying the fight length over a given spectrum improves\n"
-                                       "the analysis of trinkets and abilities with long cooldowns." ) );
+                                           "the analysis of trinkets and abilities with long cooldowns." ) );
 
   choice.fight_style -> setToolTip( tr( "Patchwerk: Tank-n-Spank" ) + "\n" +
                                     tr( "HecticAddCleave:\n"
@@ -706,7 +635,7 @@ void SC_OptionsTab::createToolTips()
                                      "Leaving at *custom* will use the SimC defaults unless overwritten by the user." ) );
 
   choice.tmi_actor_only -> setToolTip( tr( "Ignore external healing for TMI calculations.\n"
-                                          "Note that this will apply to all actors." ) );
+                                           "Note that this will apply to all actors." ) );
 
   choice.report_pets -> setToolTip( tr( "Specify if pets get reported separately in detail." ) );
 
@@ -934,10 +863,10 @@ QString SC_OptionsTab::mergeOptions()
   }
   options += "### End GUI options ###\n"
 
-             "### Begin simulateText ###\n";
+      "### Begin simulateText ###\n";
   options += mainWindow -> simulateTab -> current_Text() -> toPlainText();
   options += "\n"
-             "### End simulateText ###\n";
+      "### End simulateText ###\n";
 
   if ( choice.num_target -> currentIndex() >= 1 )
     options += "desired_targets=" + QString::number( choice.num_target -> currentIndex() + 1 ) + "\n";
@@ -947,12 +876,12 @@ QString SC_OptionsTab::mergeOptions()
   options += "\n";
   options += "### End overrides ###\n"
 
-             "### Begin command line ###\n";
+      "### Begin command line ###\n";
   options += mainWindow -> cmdLine -> text();
   options += "\n"
-             "### End command line ###\n"
+      "### End command line ###\n"
 
-             "### Begin final options ###\n";
+      "### Begin final options ###\n";
 #if SC_USE_PTR
   if ( choice.version->currentIndex() == 2 )
   {
@@ -970,7 +899,7 @@ QString SC_OptionsTab::mergeOptions()
   }
   options += "### End final options ###\n"
 
-             "### END ###";
+      "### END ###";
 
   return options;
 }

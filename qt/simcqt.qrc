@@ -1,5 +1,6 @@
 <RCC>
-	<qresource>
-		<file>icon/Simcraft2.ico</file>
-	</qresource>
+    <qresource prefix="/">
+        <file>icon/Simcraft2.ico</file>
+        <file>icon/addtab.png</file>
+    </qresource>
 </RCC>

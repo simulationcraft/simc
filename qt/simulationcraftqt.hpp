@@ -116,7 +116,7 @@ public:
 // SC_PlainTextEdit
 // ============================================================================
 
-class SC_PlainTextEdit : public QPlainTextEdit
+class SC_TextEdit : public QTextEdit
 {
   Q_OBJECT
 private:
@@ -125,14 +125,14 @@ private:
 public:
   bool edited_by_user;
 
-  SC_PlainTextEdit( QWidget* parent = 0, bool accept_drops = true ) :
-    QPlainTextEdit( parent ),
+  SC_TextEdit( QWidget* parent = 0, bool accept_drops = true ) :
+    QTextEdit( parent ),
     edited_by_user( false )
   {
     textformat_error.setFontPointSize( 20 );
 
     setAcceptDrops( accept_drops );
-    setLineWrapMode( QPlainTextEdit::NoWrap );
+    setLineWrapMode( QTextEdit::NoWrap );
 
     connect( this, SIGNAL( textChanged() ), this, SLOT( text_edited() ) );
   }
@@ -228,6 +228,39 @@ public:
 };
 
 // ============================================================================
+// SC_ResultTabWidget
+// ============================================================================
+
+enum result_tabs_e
+{
+  TAB_HTML = 0,
+  TAB_TEXT,
+  TAB_XML,
+  TAB_PLOTDATA,
+  TAB_CSV
+};
+
+class SC_ResultTab : public SC_enumeratedTab<result_tabs_e>
+{
+  Q_OBJECT
+  SC_MainWindow* mainWindow;
+public:
+  SC_ResultTab( SC_MainWindow* mw, QWidget* parent = 0 ) :
+    SC_enumeratedTab<result_tabs_e>( parent ),
+    mainWindow( mw )
+  {
+
+    connect( this, SIGNAL( currentChanged( int ) ), this, SLOT( TabChanged( int ) ) );
+  }
+
+  void save_result();
+
+public slots:
+  void TabChanged( int index );
+
+};
+
+// ============================================================================
 // SC_OptionsTabWidget
 // ============================================================================
 class SC_OptionsTab : public QTabWidget
@@ -236,8 +269,8 @@ class SC_OptionsTab : public QTabWidget
 public:
   SC_OptionsTab( SC_MainWindow* parent );
 
-  void    decodeOptions( QString );
-  QString encodeOptions();
+  void    decodeOptions();
+  void    encodeOptions();
   QString get_db_order() const;
   QString get_globalSettings();
   QString mergeOptions();
@@ -319,6 +352,15 @@ public:
   }
 };
 
+// ==========================================================================
+// Utilities
+// ==========================================================================
+
+
+const QString defaultSimulateText( "# Profile will be downloaded into a new tab.\n"
+                                   "#\n"
+                                   "# Clicking Simulate will create a simc_gui.simc profile for review.\n" );
+
 // ============================================================================
 // SC_SimulateTabWidget
 // ============================================================================
@@ -326,36 +368,92 @@ public:
 class SC_SimulateTab : public QTabWidget
 {
   Q_OBJECT
+  QWidget* addTabWidget;
 public:
   SC_SimulateTab( QWidget* parent = nullptr ) :
-    QTabWidget( parent )
+    QTabWidget( parent ),
+    addTabWidget( new QWidget( this ) )
   {
+    setTabsClosable( true );
+   // setMovable( true ); # Would need to disallow moving the + tab, or to the right of it. That would require subclassing tabbar
+
+    int i = addTab( addTabWidget, QIcon( ":/icon/addtab.png" ), "" );
+    tabBar() -> setTabButton( i, QTabBar::LeftSide, nullptr );
+    tabBar() -> setTabButton( i, QTabBar::RightSide, nullptr );
+    connect( this, SIGNAL( currentChanged(int) ), this, SLOT( addNewTab(int) ) );
+    connect( this, SIGNAL( tabCloseRequested( int ) ), this, SLOT( TabCloseRequest( int ) ) );
+
+  }
+
+  static void format_document( SC_TextEdit* s )
+  {
+    QTextDocument* d = s -> document();
+    QTextBlock b = d -> begin();
+    QRegExp comment_rx( "^\\s*#" );
+    while ( b.isValid() )
+    {
+      if ( comment_rx.indexIn( b.text() ) )
+      {
+        QTextCursor c(b);
+        QTextCharFormat f;
+        f.setForeground( Qt::red );
+        c.setBlockCharFormat( f );
+      }
+      b = b.next();
+    }
   }
 
   int add_Text( const QString& text, const QString& tab_name )
   {
-    SC_PlainTextEdit* s = new SC_PlainTextEdit( this );
-    s -> setPlainText( text );
-    int i = addTab( s, tab_name );
-    setCurrentIndex( count() - 1 );
+    SC_TextEdit* s = new SC_TextEdit( this );
+    s -> setText( text );
+    format_document( s );
+    int indextoInsert = indexOf( addTabWidget );
+    int i = insertTab( indextoInsert, s, tab_name );
+    setCurrentIndex( i );
     return i;
   }
 
-  SC_PlainTextEdit* current_Text()
+  SC_TextEdit* current_Text()
   {
-    return static_cast<SC_PlainTextEdit*>( currentWidget() );
+    return static_cast<SC_TextEdit*>( currentWidget() );
   }
 
   void set_Text( const QString& text )
   {
-    SC_PlainTextEdit* current_s = static_cast<SC_PlainTextEdit*>( currentWidget() );
-    current_s -> setPlainText( text );
+    SC_TextEdit* current_s = static_cast<SC_TextEdit*>( currentWidget() );
+    current_s -> setText( text );
+    format_document( current_s );
   }
 
   void append_Text( const QString& text )
   {
-    SC_PlainTextEdit* current_s = static_cast<SC_PlainTextEdit*>( currentWidget() );
-    current_s -> appendPlainText( text );
+    SC_TextEdit* current_s = static_cast<SC_TextEdit*>( currentWidget() );
+    current_s -> append( text );
+    format_document( current_s );
+  }
+private slots:
+  void TabCloseRequest( int index )
+  {
+    if ( count() > 2 && index != (count() - 1) )
+    {
+      int confirm = QMessageBox::question( this, tr( "Close Simulate Tab" ), tr( "Do you really want to close this simulation profile?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes );
+      if ( confirm == QMessageBox::Yes )
+      {
+        setCurrentIndex( index - 1 );
+        removeTab( index );
+      }
+    }
+  }
+  void addNewTab(int index )
+  {
+    if ( index == indexOf( addTabWidget ) )
+    {
+      SC_TextEdit* s = new SC_TextEdit( this );
+      s -> setText( defaultSimulateText );
+      insertTab( index, s, "Simulate" );
+      setCurrentIndex( index);
+    }
   }
 };
 
@@ -391,10 +489,10 @@ public:
   PersistentCookieJar* charDevCookies;
   QPushButton* rawrButton;
   QByteArray rawrDialogState;
-  SC_PlainTextEdit* rawrText;
+  SC_TextEdit* rawrText;
   QListWidget* historyList;
-  SC_PlainTextEdit* overridesText;
-  SC_PlainTextEdit* logText;
+  SC_TextEdit* overridesText;
+  SC_TextEdit* logText;
   QPushButton* backButton;
   QPushButton* forwardButton;
   SC_CommandLine* cmdLine;
@@ -425,16 +523,10 @@ public:
   QString logFileText;
   QString resultsFileText;
 
-  SC_StringHistory simulateCmdLineHistory;
-  SC_StringHistory logCmdLineHistory;
-  SC_StringHistory resultsCmdLineHistory;
-  SC_StringHistory optionsHistory;
-  SC_StringHistory overridesTextHistory;
-
   void    startImport( int tab, const QString& url );
   void    startSim();
   sim_t*  initSim();
-  void    deleteSim( sim_t* sim, SC_PlainTextEdit* append_error_message = 0 );
+  void    deleteSim( sim_t* sim, SC_TextEdit* append_error_message = 0 );
 
   void saveLog();
   void saveResults();
@@ -483,7 +575,6 @@ private slots:
   void importTabChanged( int index );
   void resultsTabChanged( int index );
   void resultsTabCloseRequest( int index );
-  void simulateTabCloseRequest( int index );
   void rawrButtonClicked( bool checked = false );
   void historyDoubleClicked( QListWidgetItem* item );
   void bisDoubleClicked( QTreeWidgetItem* item, int col );
@@ -568,6 +659,9 @@ public:
 
 
   }
+  void store_html( const QString& s )
+  { html_str = s; }
+
   virtual ~SC_WebView() {}
 
   void loadHtml()

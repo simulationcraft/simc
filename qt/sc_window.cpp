@@ -21,15 +21,6 @@ namespace { // UNNAMED NAMESPACE
 const char* SIMC_HISTORY_FILE = "simc_history.dat";
 const char* SIMC_LOG_FILE = "simc_log.txt";
 
-// ==========================================================================
-// Utilities
-// ==========================================================================
-
-
-const QString defaultSimulateText( "# Profile will be downloaded into a new tab.\n"
-                                   "#\n"
-                                   "# Clicking Simulate will create a simc_gui.simc profile for review.\n" );
-
 } // UNNAMED NAMESPACE
 
 // ==========================================================================
@@ -96,15 +87,10 @@ void SC_MainWindow::loadHistory()
     QString historyVersion;
     in >> historyVersion;
     if ( historyVersion != QString( SC_VERSION ) ) return;
-    in >> simulateCmdLineHistory;
-    in >> logCmdLineHistory;
-    in >> resultsCmdLineHistory;
-    in >> optionsHistory;
     SC_StringHistory SimulateTextHistory_Title;
     SC_StringHistory SimulateTextHistory_Content;
     in >> SimulateTextHistory_Title;
     in >> SimulateTextHistory_Content;
-    in >> overridesTextHistory;
     QStringList importHistory;
     in >> importHistory;
     file.close();
@@ -116,20 +102,24 @@ void SC_MainWindow::loadHistory()
     for ( int i = 0, count = SimulateTextHistory_Title.count(); i < count; i++ )
       simulateTab -> add_Text( SimulateTextHistory_Content.at( i ), SimulateTextHistory_Title.at( i ) );
 
-    optionsTab -> decodeOptions( optionsHistory.backwards() );
+    optionsTab -> decodeOptions();
+  }
 
-    QString s = overridesTextHistory.backwards();
-    if ( ! s.isEmpty() )
-      overridesText -> setPlainText( s );
+  if ( simulateTab -> count() <= 1 )
+  { // If we haven't retrieved any simulate tabs from history, add a default one.
+    simulateTab -> add_Text( defaultSimulateText, "Simulate!" );
   }
 }
 
 void SC_MainWindow::saveHistory()
 {
   QSettings settings;
-  settings.setValue( "gui/size", normalGeometry().size() );
-  settings.setValue( "gui/position", normalGeometry().topLeft() );
-  settings.setValue( "gui/maximized", bool( windowState() & Qt::WindowMaximized ) );
+  settings.beginGroup( "gui" );
+  settings.setValue( "size", normalGeometry().size() );
+  settings.setValue( "position", normalGeometry().topLeft() );
+  settings.setValue( "maximized", bool( windowState() & Qt::WindowMaximized ) );
+  settings.endGroup();
+
 
   charDevCookies -> save();
   http::cache_save( ( TmpDir.toStdString() + "/" + "simc_cache.dat" ).c_str() );
@@ -137,7 +127,7 @@ void SC_MainWindow::saveHistory()
   QFile file( AppDataDir + "/" + SIMC_HISTORY_FILE );
   if ( file.open( QIODevice::WriteOnly ) )
   {
-    optionsHistory.add( optionsTab -> encodeOptions() );
+    optionsTab -> encodeOptions();
 
     QStringList importHistory;
     int count = historyList -> count();
@@ -146,34 +136,18 @@ void SC_MainWindow::saveHistory()
 
     QDataStream out( &file );
     out << QString( SC_VERSION );
-    out << ( qint32 ) width();
-    out << ( qint32 ) height();
-    out << ( qint32 ) ( ( windowState() & Qt::WindowMaximized ) ? 1 : 0 );
-    out << simulateCmdLineHistory;
-    out << logCmdLineHistory;
-    out << resultsCmdLineHistory;
-    out << optionsHistory;
 
     SC_StringHistory SimulateTextHistory_Title;
     SC_StringHistory SimulateTextHistory_Content;
-    for ( int i = 0; i < simulateTab -> count(); ++i )
+    for ( int i = 0; i < simulateTab -> count() - 1; ++i )
     {
-      SC_PlainTextEdit* tab = static_cast<SC_PlainTextEdit*>( simulateTab -> widget( i ) );
-
-      if ( simulateTab -> tabText( i ) == "Simulate!" )
-      {
-        if ( tab -> edited_by_user )
-          simulateTab -> setTabText( i, QDateTime::currentDateTime().toString() );
-        else
-          continue; // skip legend
-      }
+      SC_TextEdit* tab = static_cast<SC_TextEdit*>( simulateTab -> widget( i ) );
 
       SimulateTextHistory_Title.add( simulateTab -> tabText( i ) );
       SimulateTextHistory_Content.add( tab -> toPlainText() );
     }
     out << SimulateTextHistory_Title;;
     out << SimulateTextHistory_Content;
-    out << overridesTextHistory;
     out << importHistory;
     file.close();
   }
@@ -387,7 +361,7 @@ void SC_MainWindow::createRawrTab()
   rawrLabel -> setWordWrap( true );
   rawrLayout -> addWidget( rawrLabel );
   rawrLayout -> addWidget( rawrButton = new QPushButton( tr( "Load Rawr XML" ) ) );
-  rawrLayout -> addWidget( rawrText = new SC_PlainTextEdit( this ), 1 );
+  rawrLayout -> addWidget( rawrText = new SC_TextEdit( this ), 1 );
   QGroupBox* rawrGroupBox = new QGroupBox();
   rawrGroupBox -> setLayout( rawrLayout );
   importTab -> addTab( rawrGroupBox, "Rawr" );
@@ -599,12 +573,9 @@ void SC_MainWindow::createCustomTab()
 void SC_MainWindow::createSimulateTab()
 {
   simulateTab = new SC_SimulateTab( mainTab );
-  simulateTab -> setTabsClosable( true );
-  simulateTab -> setMovable( true );
-  simulateTab -> add_Text( defaultSimulateText, "Simulate!" );
-  simulateTab -> current_Text() -> edited_by_user = false;
 
-  connect( simulateTab, SIGNAL( tabCloseRequested( int ) ), this, SLOT( simulateTabCloseRequest( int ) ) );
+
+
 
   mainTab -> addTab( simulateTab, tr( "Simulate" ) );
 
@@ -612,7 +583,7 @@ void SC_MainWindow::createSimulateTab()
 
 void SC_MainWindow::createOverridesTab()
 {
-  overridesText = new SC_PlainTextEdit( this );
+  overridesText = new SC_TextEdit( this );
   overridesText -> setPlainText( "# User-specified persistent global and player parms will set here.\n" );
 
   // Set a bigger font size, it's not like people put much into the override tab
@@ -625,7 +596,7 @@ void SC_MainWindow::createOverridesTab()
 
 void SC_MainWindow::createLogTab()
 {
-  logText = new SC_PlainTextEdit(  this, false );
+  logText = new SC_TextEdit(  this, false );
   //logText -> document() -> setDefaultFont( QFont( "fixed" ) );
   logText -> setReadOnly( true );
   logText -> setPlainText( "Look here for error messages and simple text-only reporting.\n" );
@@ -710,7 +681,7 @@ sim_t* SC_MainWindow::initSim()
   return sim;
 }
 
-void SC_MainWindow::deleteSim( sim_t* sim, SC_PlainTextEdit* append_error_message )
+void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
 {
   if ( sim )
   {
@@ -730,9 +701,9 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_PlainTextEdit* append_error_messag
 
     // If requested, append the error message to the given Text Widget as well.
     if ( append_error_message )
-      append_error_message -> appendPlainText( contents );
+      append_error_message -> append( contents );
 
-    logText -> appendPlainText( contents );
+    logText -> append( contents );
     logText -> moveCursor( QTextCursor::End );
     logText -> resetformat();
   }
@@ -808,14 +779,11 @@ void SC_MainWindow::startSim()
     sim -> cancel();
     return;
   }
-  optionsHistory.add( optionsTab -> encodeOptions() );
-  optionsHistory.current_index = 0;
+  optionsTab -> encodeOptions();
   if ( simulateTab -> current_Text() -> toPlainText() != defaultSimulateText )
   {
     //simulateTextHistory.add( simulateText -> toPlainText() );
   }
-  overridesTextHistory.add( overridesText -> toPlainText() );
-  simulateCmdLineHistory.add( cmdLine -> text() );
   simProgress = 0;
   mainButton -> setText( "Cancel!" );
   sim = initSim();
@@ -936,33 +904,78 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
   simProgress = 100;
   progressBar -> setFormat( simPhase.c_str() );
   progressBar -> setValue( simProgress );
-  QFile file( sim -> html_file_str.c_str() );
   bool sim_was_debug = sim -> debug;
-  deleteSim( sim ); SC_MainWindow::sim = 0;
   if ( ! simulateThread -> success )
   {
     logText -> setformat_error();
-    logText -> appendPlainText( "Simulation failed!\n" );
+    logText -> append( "Simulation failed!\n" );
     logText -> moveCursor( QTextCursor::End );
     logText -> resetformat();
     mainTab -> setCurrentTab( TAB_LOG );
   }
-  else if ( file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-  {
-    QString resultsName = QString( "Results %1" ).arg( ++simResults );
-    SC_WebView* resultsView = new SC_WebView( this, resultsTab, QString::fromUtf8( file.readAll() ) );
-    resultsView -> loadHtml();
-    resultsTab -> addTab( resultsView, resultsName );
-    resultsTab -> setCurrentWidget( resultsView );
-    resultsView->setFocus();
-    mainTab -> setCurrentTab( sim_was_debug ? TAB_LOG : TAB_RESULTS );
-  }
   else
   {
-    logText -> setformat_error();
-    logText -> appendPlainText( "Unable to open html report!\n" );
-    logText -> resetformat();
-    mainTab -> setCurrentTab( TAB_LOG );
+    QString resultsName = QString( "Results %1" ).arg( ++simResults );
+    SC_ResultTab* resultsEntry = new SC_ResultTab( this, resultsTab );
+    resultsTab -> addTab( resultsEntry, resultsName );
+    resultsTab -> setCurrentWidget( resultsEntry );
+
+    // HTML
+    SC_WebView* resultsHtmlView = new SC_WebView( this, resultsEntry );
+    resultsEntry -> addTab( resultsHtmlView, "html" );
+    QFile html_file( sim -> html_file_str.c_str() );
+    if ( html_file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+      resultsHtmlView -> store_html( QString::fromUtf8( html_file.readAll() ) );
+      resultsHtmlView -> loadHtml();
+      resultsHtmlView->setFocus();
+      html_file.close();
+    }
+
+    // Text
+    SC_TextEdit* resultsTextView = new SC_TextEdit( resultsEntry );
+    resultsEntry -> addTab( resultsTextView, "text" );
+    QFile logFile( AppDataDir + "/" + SIMC_LOG_FILE );
+    if ( logFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+      resultsTextView -> append( logFile.readAll() );
+      logFile.close();
+    }
+
+    // XML
+    SC_TextEdit* resultsXmlView = new SC_TextEdit( resultsEntry );
+    resultsEntry -> addTab( resultsXmlView, "xml" );
+    QFile xml_file( sim -> xml_file_str.c_str() );
+    if ( xml_file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+      resultsXmlView -> append( xml_file.readAll() );
+      xml_file.close();
+    }
+
+    // Plot Data
+    SC_TextEdit* resultsPlotView = new SC_TextEdit( resultsEntry );
+    resultsEntry -> addTab( resultsPlotView, "plot data" );
+    QFile plot_file( sim -> reforge_plot_output_file_str.c_str() );
+    if ( xml_file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+      resultsPlotView -> append( plot_file.readAll() );
+      plot_file.close();
+    }
+
+    // CSV
+    SC_TextEdit* resultsCsvView = new SC_TextEdit( resultsEntry );
+    resultsEntry -> addTab( resultsCsvView, "csv" );
+    QFile csv_file( sim -> csv_output_file_str.c_str() );
+    if ( csv_file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+      resultsCsvView -> append( csv_file.readAll() );
+      csv_file.close();
+    }
+
+    deleteSim( sim ); SC_MainWindow::sim = 0;
+
+    mainTab -> setCurrentTab( sim_was_debug ? TAB_LOG : TAB_RESULTS );
+
   }
 }
 
@@ -987,8 +1000,6 @@ void SC_MainWindow::paperdollFinished()
 
 void SC_MainWindow::saveLog()
 {
-  logCmdLineHistory.add( cmdLine->text() );
-
   QFile file( cmdLine->text() );
 
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
@@ -997,7 +1008,7 @@ void SC_MainWindow::saveLog()
     file.close();
   }
 
-  logText->appendPlainText( QString( "Log saved to: %1\n" ).arg( cmdLine->text() ) );
+  logText->append( QString( "Log saved to: %1\n" ).arg( cmdLine->text() ) );
 }
 
 void SC_MainWindow::saveResults()
@@ -1005,17 +1016,8 @@ void SC_MainWindow::saveResults()
   int index = resultsTab -> currentIndex();
   if ( index < 0 ) return;
 
-  resultsCmdLineHistory.add( cmdLine -> text() );
-
-  QFile file( cmdLine -> text() );
-
-  if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
-  {
-    file.write( visibleWebView -> html_str.toUtf8() );
-    file.close();
-  }
-
-  logText -> appendPlainText( QString( "Results saved to: %1\n" ).arg( cmdLine->text() ) );
+  SC_ResultTab* t = debug_cast<SC_ResultTab*>( resultsTab -> currentWidget() );
+  t -> save_result();
 }
 
 // ==========================================================================
@@ -1123,8 +1125,8 @@ void SC_MainWindow::backButtonClicked( bool /* checked */ )
   {
     switch ( mainTab -> currentTab() )
     {
-      case TAB_OPTIONS:   optionsTab -> decodeOptions( optionsHistory.backwards() ); break;
-      case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.backwards() ); overridesText->setFocus(); break;
+      case TAB_OPTIONS:   break;
+      case TAB_OVERRIDES: break;
       default:            break;
     }
   }
@@ -1141,12 +1143,7 @@ void SC_MainWindow::forwardButtonClicked( bool /* checked */ )
   {
     switch ( mainTab->currentIndex() )
     {
-      case TAB_WELCOME:   break;
-      case TAB_OPTIONS:   optionsTab -> decodeOptions( optionsHistory.forwards() ); break;
-      case TAB_IMPORT:    break;
-      case TAB_OVERRIDES: overridesText->setPlainText( overridesTextHistory.forwards() ); overridesText->setFocus(); break;
-      case TAB_LOG:       break;
-      case TAB_RESULTS:   break;
+    default: break;
     }
   }
 }
@@ -1195,7 +1192,7 @@ void SC_MainWindow::mainTabChanged( int index )
       importTabChanged( importTab->currentIndex() );
       break;
     case TAB_RESULTS:
-      cmdLine -> setText( resultsFileText ); mainButton -> setText( "Save!" );
+      mainButton -> setText( "Save!" );
       resultsTabChanged( resultsTab -> currentIndex() );
       break;
     case TAB_SITE:
@@ -1238,26 +1235,16 @@ void SC_MainWindow::resultsTabChanged( int index )
 {
   if ( resultsTab -> count() > 0 )
   {
-    updateVisibleWebView( debug_cast<SC_WebView*>( resultsTab -> widget( index ) ) );
+    SC_ResultTab* s = static_cast<SC_ResultTab*>( resultsTab -> currentWidget() );
+    s -> TabChanged( s -> currentIndex() );
   }
-  cmdLine -> setText( resultsFileText );
 }
 
 void SC_MainWindow::resultsTabCloseRequest( int index )
 {
-  resultsTab -> removeTab( index );
-}
-
-void SC_MainWindow::simulateTabCloseRequest( int index )
-{
-  if ( simulateTab -> tabText( index ) == "Simulate!" )
-  {
-    // Ignore attempts to close Legend
-  }
-  else
-  {
-    simulateTab -> removeTab( index );
-  }
+  int confirm = QMessageBox::question( this, tr( "Close Result Tab" ), tr( "Do you really want to close this result?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes );
+  if ( confirm == QMessageBox::Yes )
+    resultsTab -> removeTab( index );
 }
 
 void SC_MainWindow::historyDoubleClicked( QListWidgetItem* item )
@@ -1319,7 +1306,8 @@ void SimulateThread::run()
 
   sim -> html_file_str = ( mainWindow -> AppDataDir + QDir::separator() + "simc_report.html" ).toStdString();
   sim -> xml_file_str  = ( mainWindow -> AppDataDir + QDir::separator() + "simc_report.xml" ).toStdString();
-  sim -> reforge_plot_output_file_str = ( mainWindow -> AppDataDir + QDir::separator() + "reforge_plot.csv" ).toStdString();
+  sim -> reforge_plot_output_file_str = ( mainWindow -> AppDataDir + QDir::separator() + "simc_plot_data.csv" ).toStdString();
+  sim -> csv_output_file_str = ( mainWindow -> AppDataDir + QDir::separator() + "simc_report.csv" ).toStdString();
 
   sim_control_t description;
 
@@ -1351,27 +1339,29 @@ void SimulateThread::run()
 void SC_CommandLine::keyPressEvent( QKeyEvent* e )
 {
   int k = e -> key();
-  if ( k != Qt::Key_Up && k != Qt::Key_Down )
+  if ( k == Qt::Key_Up )
   {
-    QLineEdit::keyPressEvent( e );
-    return;
+    switch ( mainWindow -> mainTab -> currentTab() )
+    {
+    case TAB_SIMULATE:
+    {
+      int new_index = mainWindow -> simulateTab -> currentIndex();
+      if ( mainWindow -> simulateTab -> count() - new_index > 1 )
+        new_index++;
+      mainWindow -> simulateTab -> setCurrentIndex( new_index );
+    }
+      break;
+      default: break;
+    }
   }
-  switch ( mainWindow -> mainTab -> currentTab() )
+  if ( k == Qt::Key_Down )
   {
-    case TAB_OVERRIDES:
-      mainWindow->cmdLineText = mainWindow->simulateCmdLineHistory.next( k );
-      setText( mainWindow->cmdLineText );
-      break;
-    case TAB_LOG:
-      mainWindow->logFileText = mainWindow->logCmdLineHistory.next( k );
-      setText( mainWindow->logFileText );
-      break;
-    case TAB_RESULTS:
-      mainWindow -> resultsFileText = mainWindow-> resultsCmdLineHistory.next( k );
-      setText( mainWindow -> resultsFileText );
-      break;
-    default: break;
+    switch ( mainWindow -> mainTab -> currentTab() )
+    {
+      default: break;
+    }
   }
+  QLineEdit::keyPressEvent( e );
 }
 
 // ==========================================================================
@@ -1448,6 +1438,52 @@ void PersistentCookieJar::load()
     setAllCookies( cookies );
     file.close();
   }
+}
+
+void SC_ResultTab::save_result()
+{
+  qDebug() << "foo";
+  QFile file( mainWindow -> cmdLine -> text() );
+  if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+  {
+    switch ( currentTab() )
+    {
+    case TAB_HTML:
+      file.write( static_cast<SC_WebView*>( currentWidget() ) -> html_str.toUtf8() );
+      break;
+    case TAB_TEXT:
+    case TAB_XML:
+    case TAB_PLOTDATA:
+    case TAB_CSV:
+      file.write( static_cast<SC_TextEdit*>( currentWidget() ) -> toPlainText().toUtf8() );
+      break;
+    default: break;
+    }
+    file.close();
+    QMessageBox::information( this, tr( "Save Result" ), tr( "Result saved to %1" ).arg( mainWindow -> cmdLine->text() ), QMessageBox::Ok, QMessageBox::Ok );
+    mainWindow -> logText -> append( QString( "Results saved to: %1\n" ).arg( mainWindow -> cmdLine->text() ) );
+  }
+}
+
+void SC_ResultTab::TabChanged( int index )
+{
+  result_tabs_e t = static_cast<result_tabs_e>( index );
+  QString cmd_line_text;
+  switch ( t )
+  {
+  case TAB_HTML:
+    cmd_line_text = "results_html.html"; break;
+  case TAB_TEXT:
+    cmd_line_text = "results_text.txt"; break;
+  case TAB_XML:
+    cmd_line_text = "results_xml.xml"; break;
+  case TAB_PLOTDATA:
+    cmd_line_text = "results_plotdata.csv"; break;
+  case TAB_CSV:
+    cmd_line_text = "results_csv.csv"; break;
+  default: break;
+  }
+  mainWindow -> cmdLine -> setText( QDir::currentPath() + "/" + cmd_line_text );
 }
 
 #ifdef SC_PAPERDOLL
