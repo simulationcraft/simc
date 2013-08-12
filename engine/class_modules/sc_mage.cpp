@@ -2532,6 +2532,12 @@ struct frostfire_bolt_t : public mage_spell_t
       am *= 0.4;
     }
 
+//FFB's damage can be increase by 2pT16 too
+    if ( p() -> buffs.frozen_thoughts -> up() )
+    {
+      am *= ( 1.0 + p() -> buffs.frozen_thoughts -> data().effectN( 1 ).percent() );
+    }
+
     return am;
   }
 
@@ -2567,8 +2573,6 @@ struct frozen_orb_bolt_t : public mage_spell_t
     mage_spell_t::impact( s );
 
     double fof_proc_chance = p() -> buffs.fingers_of_frost -> data().effectN( 1 ).percent();
-
-    fof_proc_chance += p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 3 ).percent();
 
     if ( p() -> buffs.icy_veins -> up() && p() -> glyphs.icy_veins -> ok() )
     {
