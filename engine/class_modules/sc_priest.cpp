@@ -1917,7 +1917,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
   shadowy_apparition_spell_t( priest_t& p ) :
     priest_spell_t( "shadowy_apparition",
                     p,
-                    p.dbc.ptr ? p.find_spell( 147193 ) : p.find_spell( 87532 ) )
+                    p.dbc.ptr ? p.find_spell( 78203 ) : p.find_spell( 87532 ) ) //When this ability is rebuilt in SimC to be a missile we will most likely use spell ID 147193
   {
     background        = true;
     proc              = true;
@@ -2066,7 +2066,7 @@ struct mind_blast_t : public priest_spell_t
   {
     double am = priest_spell_t::action_multiplier();
 
-    // Grants only 16.66% = 50.0% / 3 per stack. 2013/06/15 http://howtopriest.com/viewtopic.php?f=4&t=4025&start=30#p35124
+    // Grants only 20% = 60.0% / 3 per stack. Updated comment 2013/08/11
     if ( priest.dbc.ptr && priest.buffs.empowered_shadows -> check() )
       am *= 1.0 + priest.buffs.empowered_shadows -> data().effectN( 1 ).percent() / 3.0  * priest.buffs.empowered_shadows -> check();
 
@@ -2423,7 +2423,7 @@ struct shadow_word_death_t : public priest_spell_t
   {
     double am = priest_spell_t::action_multiplier();
 
-    // Grants only 16.66% = 50.0% / 3 per stack. 2013/06/15 http://howtopriest.com/viewtopic.php?f=4&t=4025&start=30#p35124
+    // Grants only 20% = 60.0% / 3 per stack. Updated comment 2013/08/11
     if ( priest.dbc.ptr && priest.buffs.empowered_shadows -> check() )
       am *= 1.0 + priest.buffs.empowered_shadows -> data().effectN( 1 ).percent() / 3.0  * priest.buffs.empowered_shadows -> check();
 
