@@ -2062,15 +2062,14 @@ struct mind_blast_t : public priest_spell_t
     casted_with_divine_insight = false;
   }
 
-  virtual double action_multiplier()
+  virtual double composite_da_multiplier()
   {
-    double am = priest_spell_t::action_multiplier();
+    double d = priest_spell_t::composite_da_multiplier();
 
-    // Grants only 20% = 60.0% / 3 per stack. Updated comment 2013/08/11
     if ( priest.dbc.ptr && priest.buffs.empowered_shadows -> check() )
-      am *= 1.0 + priest.buffs.empowered_shadows -> data().effectN( 1 ).percent() / 3.0  * priest.buffs.empowered_shadows -> check();
+      d *= 1.0 + priest.buffs.empowered_shadows->current_value *  priest.buffs.empowered_shadows -> check();
 
-    return am;
+    return d;
   }
 };
 
@@ -2214,9 +2213,8 @@ struct mind_spike_t : public priest_spell_t
       d *= 1.0 + priest.active_spells.surge_of_darkness -> effectN( 4 ).percent();
     }
 
-    // Grants only 16.66% = 50.0% / 3 per stack. 2013/06/15 http://howtopriest.com/viewtopic.php?f=4&t=4025&start=30#p35124
     if ( priest.dbc.ptr && priest.buffs.empowered_shadows -> check() )
-      d *= 1.0 + priest.buffs.empowered_shadows -> data().effectN( 1 ).percent() / 3.0 * priest.buffs.empowered_shadows -> check();
+      d *= 1.0 + priest.buffs.empowered_shadows->current_value *  priest.buffs.empowered_shadows -> check();
 
     return d;
   }
@@ -2419,15 +2417,14 @@ struct shadow_word_death_t : public priest_spell_t
     priest_spell_t::impact( s );
   }
 
-  virtual double action_multiplier()
+  virtual double composite_da_multiplier()
   {
-    double am = priest_spell_t::action_multiplier();
+    double d = priest_spell_t::composite_da_multiplier();
 
-    // Grants only 20% = 60.0% / 3 per stack. Updated comment 2013/08/11
     if ( priest.dbc.ptr && priest.buffs.empowered_shadows -> check() )
-      am *= 1.0 + priest.buffs.empowered_shadows -> data().effectN( 1 ).percent() / 3.0  * priest.buffs.empowered_shadows -> check();
+      d *= 1.0 + priest.buffs.empowered_shadows->current_value *  priest.buffs.empowered_shadows -> check();
 
-    return am;
+    return d;
   }
 
   virtual bool ready()
@@ -2625,8 +2622,11 @@ struct devouring_plague_t : public priest_spell_t
 
     stats -> consume_resource( current_resource(), resource_consumed );
 
+    // Grants 20% per stack, 60% in total. Overriding DBC data as it is a flat 50% no matter stack count. Updated 2013/08/11
     if ( priest.dbc.ptr )
-      priest.buffs.empowered_shadows -> trigger( as<int>( resource_consumed ) );
+    {
+      priest.buffs.empowered_shadows -> trigger(1, resource_consumed * 0.2);
+    }
   }
 
   virtual double action_da_multiplier()
@@ -2696,7 +2696,6 @@ struct mind_flay_mastery_t : public priest_procced_mastery_spell_t
       priest_td_t* td = find_td( t );
       if ( priest.talents.solace_and_insanity -> ok() && td && td -> dots.devouring_plague_tick -> ticking )
       {
-
         const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td -> dots.devouring_plague_tick -> state );
         m *= 1.0 + dp_state -> orbs_used / 3.0;
       }
