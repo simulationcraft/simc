@@ -4130,6 +4130,7 @@ void paladin_t::init_base_stats()
   base.dodge   = 0.030;  //90
   base.parry   = 0.030;  //90
   base.block   = 0.030;  //90
+  base.block_reduction = 0.3;
 
   // based on http://sacredduty.net/2012/09/14/avoidance-diminishing-returns-in-mop-followup/
   diminished_kfactor    = 0.886;
