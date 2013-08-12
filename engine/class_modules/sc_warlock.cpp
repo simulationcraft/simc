@@ -79,7 +79,12 @@ public:
     buff_t* archimondes_vengeance;
     buff_t* demonic_rebirth;
     buff_t* mannoroths_fury;
+    
     buff_t* tier16_4pc_ember_fillup;
+    buff_t* tier16_2pc_destructive_influence;
+    buff_t* tier16_2pc_empowered_grasp;
+    buff_t* tier16_2pc_fiery_wrath;
+    
   } buffs;
 
   // Cooldowns
@@ -1009,6 +1014,8 @@ double warlock_pet_t::composite_player_multiplier( school_e school )
   if ( o() -> talents.grimoire_of_supremacy -> ok() && pet_type != PET_WILD_IMP )
     m *= 1.0 + supremacy -> effectN( 1 ).percent(); // The relevant effect is not attatched to the talent spell, weirdly enough
 
+  if ( o() -> buffs.tier16_2pc_fiery_wrath -> up())
+    m *= 1.0  + o() -> buffs.tier16_2pc_fiery_wrath -> value();
   return m;
 }
 
@@ -2440,6 +2447,16 @@ struct unstable_affliction_t : public warlock_spell_t
 
     return m;
   }
+  
+  virtual void tick( dot_t* d )
+  {
+    warlock_spell_t::tick( d );
+    
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier16_2pc_caster() && d -> state -> result == RESULT_CRIT )
+    {
+      p() ->  buffs.tier16_2pc_empowered_grasp -> trigger();
+    }
+  }
 };
 
 
@@ -2516,6 +2533,19 @@ struct immolate_t : public warlock_spell_t
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
   }
 
+  virtual double crit_chance( double crit, int delta_level )
+  {
+    double cc = warlock_spell_t::crit_chance(crit, delta_level);
+    
+    if (p() -> set_bonus.tier16_2pc_caster() && p() -> buffs.tier16_2pc_destructive_influence -> up())
+    {
+      cc+= p() -> buffs.tier16_2pc_destructive_influence -> value();
+    }
+      
+      
+    return cc;
+  }
+  
   virtual double cost()
   {
     if ( p() -> buffs.fire_and_brimstone -> check() )
@@ -2641,6 +2671,10 @@ struct conflagrate_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) && p() -> spec.backdraft -> ok() )
       p() -> buffs.backdraft -> trigger( 3 );
+    if (p () -> dbc.ptr && s -> result == RESULT_CRIT &&  p() -> set_bonus.tier16_2pc_caster() )
+    {
+      p() -> buffs.tier16_2pc_destructive_influence -> trigger();
+    }
   }
 };
 
@@ -2655,6 +2689,18 @@ struct incinerate_t : public warlock_spell_t
     base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
   }
 
+  virtual double crit_chance( double crit, int delta_level )
+  {
+    double cc = warlock_spell_t::crit_chance(crit, delta_level);
+    
+    if (p() -> set_bonus.tier16_2pc_caster() && p() -> buffs.tier16_2pc_destructive_influence -> up())
+    {
+      cc+= p() -> buffs.tier16_2pc_destructive_influence -> value();
+    }    
+    
+    return cc;
+  }
+  
   virtual double action_multiplier()
   {
     double m = warlock_spell_t::action_multiplier();
@@ -2802,6 +2848,11 @@ struct soul_fire_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
+    if ( p() -> set_bonus.tier16_2pc_caster() )
+    {
+      p() -> buffs.tier16_2pc_fiery_wrath -> trigger();
+    }
+    
   }
 
   virtual timespan_t execute_time()
@@ -3330,6 +3381,11 @@ struct malefic_grasp_t : public warlock_spell_t
     if ( p() -> set_bonus.tier15_4pc_caster() )
       m *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
+    
+    if ( p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
+    {
+      m *= 1.0 + p() ->  buffs.tier16_2pc_empowered_grasp -> value();
+    }
     return m;
   }
 
@@ -3344,6 +3400,11 @@ struct malefic_grasp_t : public warlock_spell_t
     if ( p() -> set_bonus.tier15_4pc_caster() )
       multiplier *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
+    if ( p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
+    {
+      multiplier *= 1.0 + p() ->  buffs.tier16_2pc_empowered_grasp -> value();
+    }
+    
     trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               multiplier );
     trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          multiplier );
     trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, multiplier );
@@ -4581,6 +4642,10 @@ double warlock_t::composite_player_multiplier( school_e school )
     m *= 1.0 + mastery_value;
   }
 
+  if ( buffs.tier16_2pc_fiery_wrath -> up())
+  {
+    m *= 1.0 + buffs.tier16_2pc_fiery_wrath -> value();
+  }
   return m;
 }
 
@@ -5060,9 +5125,25 @@ void warlock_t::create_buffs()
   if ( !dbc.ptr ) buffs.archimondes_vengeance = buff_creator_t( this, "archimondes_vengeance", talents.archimondes_vengeance );
   buffs.demonic_rebirth       = buff_creator_t( this, "demonic_rebirth", find_spell( 88448 ) ).cd( find_spell( 89140 ) -> duration() );
   if ( dbc.ptr ) buffs.mannoroths_fury       = buff_creator_t( this, "mannoroths_fury", talents.mannoroths_fury ); 
-  if ( dbc.ptr ) buffs.tier16_4pc_ember_fillup = buff_creator_t( this, "ember_master",   find_spell( 145164 ) ).cd( find_spell( 145165 ) -> effectN(1).time_value() * 1000 ).add_invalidate(CACHE_CRIT);
+  if ( dbc.ptr ) buffs.tier16_4pc_ember_fillup = buff_creator_t( this, "ember_master",   find_spell( 145164 ) )
+                                .cd( find_spell( 145165 ) -> effectN(1).time_value() * 1000 )
+                                .add_invalidate(CACHE_CRIT);
+  if ( dbc.ptr ) buffs.tier16_2pc_destructive_influence = buff_creator_t( this, "destructive_influence", find_spell( 145075) )
+                                .chance( sets -> set ( SET_T16_2PC_CASTER ) -> effectN( 4 ).percent() )
+                                .duration( timespan_t::from_seconds( 10 ))
+                                .default_value( 0.1 ); //spell not found... FIX after DBC update .default_value( find_spell( 145075 ) -> effectN( 1 ).percent())
   
-
+  if ( dbc.ptr ) buffs.tier16_2pc_empowered_grasp = buff_creator_t( this, "empowered_grasp", find_spell( 145082 ) )
+                                .chance( sets -> set ( SET_T16_2PC_CASTER ) -> effectN( 2 ).percent())
+                                .default_value( find_spell( 145082 ) -> effectN( 2 ).percent());
+  if ( dbc.ptr ) buffs.tier16_2pc_fiery_wrath = buff_creator_t( this, "fiery_wrath", find_spell( 145085) )
+    .chance( sets -> set ( SET_T16_2PC_CASTER ) -> effectN( 4 ).percent() )
+    .duration( timespan_t::from_seconds( 10 ))
+    .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+    .default_value( 0.2 ); //spell not found... FIX after DBC update .default_value( find_spell( 145085 ) -> effectN( 1 ).percent())
+  
+  
+  
   
 }
 
