@@ -79,6 +79,7 @@ public:
     buff_t* archimondes_vengeance;
     buff_t* demonic_rebirth;
     buff_t* mannoroths_fury;
+    buff_t* tier16_4pc_ember_fillup;
   } buffs;
 
   // Cooldowns
@@ -167,6 +168,7 @@ public:
     gain_t* miss_refund;
     gain_t* siphon_life;
     gain_t* seed_of_corruption;
+    gain_t* haunt_tier16_4pc;
   } gains;
 
   // Procs
@@ -1719,6 +1721,16 @@ public:
   {
     if ( ! p -> rng().roll( chance ) ) return;
 
+    
+    if ( p -> set_bonus.tier16_4pc_caster() && //check whether we fill one up.
+        (( p -> resources.current[ RESOURCE_BURNING_EMBER ] < 1.0 && p -> resources.current[ RESOURCE_BURNING_EMBER ] + amount >= 1.0) ||
+         ( p -> resources.current[ RESOURCE_BURNING_EMBER ] < 2.0 && p -> resources.current[ RESOURCE_BURNING_EMBER ] + amount >= 2.0) ||
+         ( p -> resources.current[ RESOURCE_BURNING_EMBER ] < 3.0 && p -> resources.current[ RESOURCE_BURNING_EMBER ] + amount >= 3.0) ||
+         ( p -> resources.current[ RESOURCE_BURNING_EMBER ] < 4.0 && p -> resources.current[ RESOURCE_BURNING_EMBER ] + amount >= 4.0) ) )
+    {
+      p -> buffs.tier16_4pc_ember_fillup -> trigger();
+    }
+    
     p -> resource_gain( RESOURCE_BURNING_EMBER, amount, gain );
 
     // If getting to 1 full ember was a surprise, the player would have to react to it
@@ -1876,7 +1888,89 @@ struct havoc_t : public warlock_spell_t
   }
 };
 
+struct shadowflame_t : public warlock_spell_t
+{
+  shadowflame_t( warlock_t* p ) :
+  warlock_spell_t( "shadowflame", p, p -> find_spell( 47960 ) )
+  {
+    background = true;
+    may_miss   = false;
+    generate_fury = 2;
+  }
+  
+  virtual void tick( dot_t* d )
+  {
+    warlock_spell_t::tick( d );
+    
+    if ( p() -> spec.molten_core -> ok() && rng().roll( 0.08 ) )
+      p() -> buffs.molten_core -> trigger();
+  }
+  
+  double composite_target_multiplier( player_t* target )
+  {
+    double m = warlock_spell_t::composite_target_multiplier( target );
+    m *= td( target ) -> shadowflame_stack;
+    return m;
+  }
+  
+  virtual void impact( action_state_t* s )
+  {
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( td( s -> target ) -> dots_shadowflame -> ticking )
+        td( s -> target ) -> shadowflame_stack++;
+      else
+        td( s -> target ) -> shadowflame_stack = 1;
+    }
+    
+    warlock_spell_t::impact( s );
+  }
+};
+  
+  
+struct hand_of_guldan_t : public warlock_spell_t
+{
+  hand_of_guldan_t( warlock_t* p ) :
+  warlock_spell_t( p, "Hand of Gul'dan" )
+  {
+    aoe = -1;
+    
+    cooldown -> duration = timespan_t::from_seconds( 15 );
+    cooldown -> charges = 2;
+    
+    impact_action = new shadowflame_t( p );
+    
+    parse_effect_data( p -> find_spell( 86040 ) -> effectN( 1 ) );
+    
+    add_child( impact_action );
+  }
+  
+  virtual double action_da_multiplier()
+  {
+    double m = warlock_spell_t::action_da_multiplier();
+    
+    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
+    
+    return m;
+  }
+  
+  virtual timespan_t travel_time()
+  {
+    return timespan_t::from_seconds( 1.5 );
+  }
+  
+  virtual bool ready()
+  {
+    bool r = warlock_spell_t::ready();
+    
+    if ( p() -> buffs.metamorphosis -> check() ) r = false;
+    
+    return r;
+  }
+};
 
+  
+  
 struct shadow_bolt_copy_t : public warlock_spell_t
 {
   shadow_bolt_copy_t( warlock_t* p, spell_data_t* sd, warlock_spell_t& sb ) :
@@ -1906,12 +2000,18 @@ struct shadow_bolt_t : public warlock_spell_t
   shadow_bolt_copy_t* glyph_copy_1;
   shadow_bolt_copy_t* glyph_copy_2;
 
+  hand_of_guldan_t* hand_of_guldan;
+  
   shadow_bolt_t( warlock_t* p ) :
-    warlock_spell_t( p, "Shadow Bolt" ), glyph_copy_1( 0 ), glyph_copy_2( 0 )
+    warlock_spell_t( p, "Shadow Bolt" ), glyph_copy_1( 0 ), glyph_copy_2( 0 ),  hand_of_guldan( new hand_of_guldan_t( p ) )
   {
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
 
+    hand_of_guldan               -> background = true;
+    hand_of_guldan               -> base_costs[ RESOURCE_MANA ] = 0;
+
+    
     if ( p -> glyphs.shadow_bolt -> ok() )
     {
       base_multiplier *= 0.333;
@@ -1952,6 +2052,13 @@ struct shadow_bolt_t : public warlock_spell_t
     warlock_spell_t::execute();
     background = false;
 
+    //cast HoG
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier16_4pc_caster() && rng().roll( 0.08 ) )//FIX after dbc update
+    {
+      hand_of_guldan -> target = target;
+      hand_of_guldan -> execute();
+    }
+    
     if ( p() -> buffs.demonic_calling -> up() )
     {
       trigger_wild_imp( p() );
@@ -2345,6 +2452,16 @@ struct haunt_t : public warlock_spell_t
     tick_may_crit = false;
   }
 
+  
+  
+  void try_to_trigger_soul_shard_refund()//t16_4pc_bonus
+  {
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier16_4pc_caster() && rng().roll( p() -> sets -> set ( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() ) )//refund shard when haunt expires
+    {
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, p() -> find_spell(145159) -> effectN( 1 ).resource(RESOURCE_SOUL_SHARD), p() -> gains.haunt_tier16_4pc );
+    }
+  }
+  
   virtual double action_multiplier()
   {
     double m = warlock_spell_t::action_multiplier();
@@ -2366,11 +2483,26 @@ struct haunt_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
+      if ( td( s-> target) -> debuffs_haunt -> check() )//also can refund on refresh
+      {
+        try_to_trigger_soul_shard_refund();
+      }
+      
       td( s -> target ) -> debuffs_haunt -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, td( s -> target ) -> dots_haunt -> remains() );
 
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
     }
   }
+  
+  
+  
+  virtual void last_tick( dot_t* d )
+  {
+    warlock_spell_t::last_tick( d );
+
+    try_to_trigger_soul_shard_refund();
+  }
+
 };
 
 
@@ -2952,87 +3084,6 @@ struct cancel_metamorphosis_t : public warlock_spell_t
 };
 
 
-struct shadowflame_t : public warlock_spell_t
-{
-  shadowflame_t( warlock_t* p ) :
-    warlock_spell_t( "shadowflame", p, p -> find_spell( 47960 ) )
-  {
-    background = true;
-    may_miss   = false;
-    generate_fury = 2;
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    warlock_spell_t::tick( d );
-
-    if ( p() -> spec.molten_core -> ok() && rng().roll( 0.08 ) )
-      p() -> buffs.molten_core -> trigger();
-  }
-
-  double composite_target_multiplier( player_t* target )
-  {
-    double m = warlock_spell_t::composite_target_multiplier( target );
-    m *= td( target ) -> shadowflame_stack;
-    return m;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( td( s -> target ) -> dots_shadowflame -> ticking )
-        td( s -> target ) -> shadowflame_stack++;
-      else
-        td( s -> target ) -> shadowflame_stack = 1;
-    }
-
-    warlock_spell_t::impact( s );
-  }
-};
-
-struct hand_of_guldan_t : public warlock_spell_t
-{
-  hand_of_guldan_t( warlock_t* p ) :
-    warlock_spell_t( p, "Hand of Gul'dan" )
-  {
-    aoe = -1;
-
-    cooldown -> duration = timespan_t::from_seconds( 15 );
-    cooldown -> charges = 2;
-
-    impact_action = new shadowflame_t( p );
-
-    parse_effect_data( p -> find_spell( 86040 ) -> effectN( 1 ) );
-
-    add_child( impact_action );
-  }
-
-  virtual double action_da_multiplier()
-  {
-    double m = warlock_spell_t::action_da_multiplier();
-
-    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
-    return m;
-  }
-
-  virtual timespan_t travel_time()
-  {
-    return timespan_t::from_seconds( 1.5 );
-  }
-
-  virtual bool ready()
-  {
-    bool r = warlock_spell_t::ready();
-
-    if ( p() -> buffs.metamorphosis -> check() ) r = false;
-
-    return r;
-  }
-};
-
-
 struct chaos_wave_dmg_t : public warlock_spell_t
 {
   chaos_wave_dmg_t( warlock_t* p ) :
@@ -3086,11 +3137,17 @@ struct chaos_wave_t : public warlock_spell_t
 
 struct touch_of_chaos_t : public warlock_spell_t
 {
+  hand_of_guldan_t* hand_of_guldan;
+
   touch_of_chaos_t( warlock_t* p ) :
-    warlock_spell_t( "touch_of_chaos", p, p -> spec.touch_of_chaos )
+    warlock_spell_t( "touch_of_chaos", p, p -> spec.touch_of_chaos ),hand_of_guldan( new hand_of_guldan_t( p ) )
   {
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent(); // Assumption - need to test whether ToC is affected
+    
+    hand_of_guldan               -> background = true;
+    hand_of_guldan               -> base_costs[ RESOURCE_MANA ] = 0;
+
   }
 
   virtual double action_multiplier()
@@ -3122,6 +3179,14 @@ struct touch_of_chaos_t : public warlock_spell_t
       trigger_wild_imp( p() );
       p() -> buffs.demonic_calling -> expire();
     }
+    
+    //cast HoG
+    if ( p() -> dbc.ptr && p() -> set_bonus.tier16_4pc_caster() && rng().roll( 0.08 ) )//FIX after dbc update
+    {
+      hand_of_guldan -> target = target;
+      hand_of_guldan -> execute();
+    }
+    
   }
 
   virtual bool ready()
@@ -4553,6 +4618,10 @@ double warlock_t::composite_spell_crit()
     {
       sc += spec.dark_soul -> effectN( 1 ).percent() ;
     }
+    if (dbc.ptr && buffs.tier16_4pc_ember_fillup -> up() )
+    {
+      sc += find_spell( 145164 ) -> effectN(1).percent();
+    }
   }
 
   return sc;
@@ -4990,7 +5059,11 @@ void warlock_t::create_buffs()
   buffs.havoc                 = buff_creator_t( this, "havoc", find_class_spell( "Havoc" ) );
   if ( !dbc.ptr ) buffs.archimondes_vengeance = buff_creator_t( this, "archimondes_vengeance", talents.archimondes_vengeance );
   buffs.demonic_rebirth       = buff_creator_t( this, "demonic_rebirth", find_spell( 88448 ) ).cd( find_spell( 89140 ) -> duration() );
-  if ( dbc.ptr ) buffs.mannoroths_fury       = buff_creator_t( this, "mannoroths_fury", talents.mannoroths_fury );
+  if ( dbc.ptr ) buffs.mannoroths_fury       = buff_creator_t( this, "mannoroths_fury", talents.mannoroths_fury ); 
+  if ( dbc.ptr ) buffs.tier16_4pc_ember_fillup = buff_creator_t( this, "ember_master",   find_spell( 145164 ) ).cd( find_spell( 145165 ) -> effectN(1).time_value() * 1000 ).add_invalidate(CACHE_CRIT);
+  
+
+  
 }
 
 
@@ -5013,6 +5086,7 @@ void warlock_t::init_gains()
   gains.miss_refund        = get_gain( "miss_refund"  );
   gains.siphon_life        = get_gain( "siphon_life"  );
   gains.seed_of_corruption = get_gain( "seed_of_corruption" );
+  gains.haunt_tier16_4pc   = get_gain( "haunt_tier16_4pc" );
 }
 
 
