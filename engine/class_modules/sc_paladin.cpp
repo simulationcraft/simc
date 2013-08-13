@@ -785,6 +785,8 @@ struct ardent_defender_t : public paladin_spell_t
     parse_options( nullptr, options_str );
 
     harmful = false;
+    use_off_gcd = true;
+    trigger_gcd = timespan_t::zero();
     if ( p -> set_bonus.tier14_2pc_tank() )
       cooldown -> duration = data().cooldown() + p -> sets -> set( SET_T14_2PC_TANK ) -> effectN( 1 ).time_value();
   }
@@ -899,6 +901,8 @@ struct avenging_wrath_t : public paladin_spell_t
     cooldown -> duration += p -> passives.sword_of_light -> effectN( 7 ).time_value();
 
     harmful = false;
+    use_off_gcd = true;    
+    trigger_gcd = timespan_t::zero();
   }
 
   virtual void execute()
@@ -1343,6 +1347,8 @@ struct divine_protection_t : public paladin_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
+    use_off_gcd = true;
+    trigger_gcd = timespan_t::zero();
 
     if ( sim -> dbc.ptr )
     {
@@ -1746,6 +1752,7 @@ struct guardian_of_ancient_kings_t : public paladin_spell_t
   {
     parse_options( NULL, options_str );
     use_off_gcd = true;
+    trigger_gcd = timespan_t::zero();
   }
 
   virtual void execute()
@@ -2339,6 +2346,8 @@ struct lay_on_hands_t : public paladin_heal_t
       cooldown -> duration = data().cooldown();
     }
 
+    use_off_gcd = true;
+    trigger_gcd = timespan_t::zero();
   }
 
   virtual double calculate_direct_amount( action_state_t* )
