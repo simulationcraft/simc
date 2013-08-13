@@ -1732,7 +1732,8 @@ struct tigereye_brew_t : public monk_spell_t
             // So increase the value by 1% per stack used...  HOWEVER, on PTR this is currently broken, and we are only receiving
             // .5% per stack of Tigereye Brew Used.  Thus, max_stacks_consumable will be divided by 100 IF this is fixed.
             use_value = ( value()  * teb_stacks_used ) * (1.0 + (max_stacks_consumable / 200)); //usevalue * 1.05; t154pc 
-        //} if ( p() -> set_bonus.tier16_4pc_melee() ) {
+        
+        } if ( p() -> set_bonus.tier16_4pc_melee() ) {
             // so, there's actually an error with our 4set in that it doesn't count a full .75 if we don't use a full 4, but
             // can't find post that contains info.
             // TODO  figure out how much of a stack it "saves"
