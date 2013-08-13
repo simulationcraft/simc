@@ -9642,13 +9642,13 @@ void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* ma, cons
 
       for ( size_t i = 0; i < health_changes.timeline.data().size(); i++ )
       {
-        util::fprintf( f, "%f,%f,%f,%f,%f,%f,%f\n", timeline_healing_taken.data()[ i ],
-                                                 timeline_dmg_taken.data()[ i ],
-                                                 health_changes.timeline.data()[ i ], 
-                                                 health_changes.timeline_normalized.data()[ i ],
-                                                 ma -> data()[ i ], 
-                                                 nma -> data()[ i ], 
-                                                 wv[ i ] );
+        util::fprintf( f, "%f,%f,%f,%f,%f,%f,%f\n", timeline_dmg_taken.data()[ i ],
+                                                    timeline_healing_taken.data()[ i ],
+                                                    health_changes.timeline.data()[ i ], 
+                                                    health_changes.timeline_normalized.data()[ i ],
+                                                    ma -> data()[ i ], 
+                                                    nma -> data()[ i ], 
+                                                    wv[ i ] );
       }
       util::fprintf( f, "\n" );
 
