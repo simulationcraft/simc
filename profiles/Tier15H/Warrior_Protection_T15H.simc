@@ -30,8 +30,8 @@ actions.precombat+=/mountains_potion
 actions=auto_attack
 actions+=/mountains_potion,if=health.pct<35&buff.mountains_potion.down
 actions+=/use_item,name=steadfast_talisman_of_the_shadopan_assault
-actions+=/last_stand,if=incoming_damage_1500ms>health.max*0.4
-actions+=/shield_wall,if=incoming_damage_1500ms>health.max*0.4
+actions+=/last_stand,if=incoming_damage_1500ms>health.max*0.4&buff.shield_wall.down
+actions+=/shield_wall,if=incoming_damage_1500ms>health.max*0.4&buff.last_stand.down
 actions+=/avatar,if=talent.avatar.enabled
 actions+=/heroic_strike,if=buff.ultimatum.up
 actions+=/shield_barrier,if=incoming_damage_1500ms>health.max*0.3

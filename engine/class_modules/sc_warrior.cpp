@@ -3573,7 +3573,7 @@ void warrior_t::init_actions()
     else if ( specialization() == WARRIOR_PROTECTION )
     {
       action_list_str += "/last_stand,if=incoming_damage_1500ms>health.max*0.4&buff.shield_wall.down";
-      action_list_str += "/shield_wall,if=incoming_damage_1500ms>health.max*0.4&buff.shield_wall.down";
+      action_list_str += "/shield_wall,if=incoming_damage_1500ms>health.max*0.4&buff.last_stand.down";
       action_list_str += "/avatar,if=talent.avatar.enabled";
       action_list_str += "/heroic_strike,if=buff.ultimatum.up";
       
