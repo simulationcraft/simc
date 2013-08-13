@@ -7276,6 +7276,27 @@ expr_t* player_t::create_expression( action_t* a,
   if ( expr_t* q = create_resource_expression( name_str ) )
     return q;
 
+  // time_to_bloodlust conditional
+  if ( name_str == "time_to_bloodlust" )
+  {
+    struct time_to_bloodlust_expr_t : public expr_t
+    {
+      player_t* player;
+
+      time_to_bloodlust_expr_t( player_t* p, const std::string& name ) : 
+        expr_t( name ), player( p )
+      {
+      }
+
+      double evaluate()
+      {
+        return player -> calculate_time_to_bloodlust();
+      }
+    };
+
+    return new time_to_bloodlust_expr_t( this, name_str );
+  }
+
   // incoming_damage_X expressions
   if ( util::str_in_str_ci( name_str, "incoming_damage_" ) )
   {
@@ -7969,6 +7990,67 @@ double player_t::compute_incoming_damage( timespan_t interval )
   }
 
   return amount;
+}
+
+// sim_t::calculate_time_to_bloodlust =======================================
+
+double player_t::calculate_time_to_bloodlust()
+{
+  // only bother if the sim is automatically casting bloodlust. Otherwise error out
+  if ( sim -> overrides.bloodlust )
+  {
+    timespan_t time_to_bl = timespan_t::from_seconds( -1 );
+    timespan_t bl_pct_time = timespan_t::from_seconds( -1 );
+
+    // first, check bloodlust_time.  If it's >0, we just compare to current_time
+    // if it's <0, then use time_to_die estimate
+    if ( sim -> bloodlust_time > timespan_t::zero() )
+      time_to_bl = sim -> bloodlust_time - sim -> current_time;
+    else if ( sim -> bloodlust_time < timespan_t::zero() )
+      time_to_bl = target -> time_to_die() + sim -> bloodlust_time;
+
+    // check bloodlust_percent, if >0 then we need to estimate time based on time_to_die and health_percentage
+    if ( sim -> bloodlust_percent > 0 && target -> health_percentage() > 0 )
+      bl_pct_time = ( target -> health_percentage() - sim -> bloodlust_percent ) * target -> time_to_die() / target -> health_percentage();
+    
+    // now that we have both times, we want to check for the Exhaustion buff.  If either time is shorter than 
+    // the remaining duration on Exhaustion, we won't get that bloodlust and should ignore it
+    if ( buffs.exhaustion -> check() )
+    {
+      if ( time_to_bl < buffs.exhaustion -> remains() )
+        time_to_bl = timespan_t::from_seconds( -1 );
+      if ( bl_pct_time < buffs.exhaustion -> remains() )
+        bl_pct_time = timespan_t::from_seconds( -1 );
+    }
+    else
+    {      
+      // the sim's bloodlust_check event fires every second, so negative times under 1 second should be treated as zero for safety.
+      // without this, time_to_bloodlust can spike to the next target value up to a second before bloodlust is actually cast.
+      // probably a non-issue since the worst case is likely to be casting something 1 second too early, but we may as well account for it
+      if ( time_to_bl < timespan_t::zero() && - time_to_bl < timespan_t::from_seconds( 1.0 ) )
+        time_to_bl = timespan_t::zero();
+      if ( bl_pct_time < timespan_t::zero() && - bl_pct_time < timespan_t::from_seconds( 1.0 ) )
+        bl_pct_time = timespan_t::zero();
+    }
+    
+    // if both times are non-negative, take the shortest one since that will happen first
+    if ( bl_pct_time >= timespan_t::zero() && time_to_bl >= timespan_t::zero() )
+      time_to_bl = std::min( bl_pct_time, time_to_bl );
+    // otherwise, at least one is negative, so take the larger of the two
+    else
+      time_to_bl = std::max( bl_pct_time, time_to_bl );  
+
+    // if both are negative, time_to_bl will still be negative and we won't be benefitting from another BL cast.
+    // In this case, we can simply return a nonsensical time that's much longer than the simulation.
+    // Otherwise we return the positive time until BL is being cast.
+    if ( time_to_bl < timespan_t::zero() )
+      return 3 * sim -> expected_time.total_seconds();
+    else
+      return time_to_bl.total_seconds();
+  }
+  else if ( sim -> debug )
+    sim -> errorf( "Trying to call time_to_bloodlust conditional with overrides.bloodlust=0" );
+
 }
 
 void player_t::recreate_talent_str( talent_format_e format )
