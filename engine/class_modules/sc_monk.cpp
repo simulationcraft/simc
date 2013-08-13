@@ -1085,27 +1085,33 @@ struct blackout_kick_t : public monk_melee_attack_t
       trigger_blackout_kick_dot( this, s -> target, s -> result_amount * data().effectN( 2 ).percent( ) );
   }
 
-  virtual double cost()
+virtual double cost()
   {
-    if ( p() -> buff.combo_breaker_bok -> check() )
+    if ( p() -> buff.combo_breaker_bok -> check() ){
       return 0.0;
-
+    }
+    if ( p() -> buff.focus_of_xuen -> check() ){
+      return monk_melee_attack_t::cost() + p() -> buff.focus_of_xuen -> effectN( 1 ).base_value();
+    }
     return monk_melee_attack_t::cost();
   }
-
-  virtual void consume_resource()
+ virtual void consume_resource()
   {
     if ( p() -> buff.combo_breaker_bok -> check() && result_is_hit( execute_state -> result ) )
       p() -> track_chi_consumption += base_costs[ RESOURCE_CHI ];
 
     monk_melee_attack_t::consume_resource();
-
+    if ( p() -> buff.focus_of_xuen -> up() )
+    {
+        p() -> buff.focus_of_xuen -> expire();
+        //add gains later. 
+    }
     if ( p() -> buff.combo_breaker_bok -> up() )
     {
       p() -> buff.combo_breaker_bok -> expire();
       p() -> gain.combo_breaker_savings -> add( RESOURCE_CHI, cost() );
     }
-  }
+    }
 };
 
 // ==========================================================================
