@@ -1020,9 +1020,11 @@ void indomitable_primal( player_t *p )
 {
   if ( p -> meta_gem == META_INDOMITABLE_PRIMAL )
   {
+    const spell_data_t* driver = p -> find_spell( 137594 );
+    
     special_effect_t data;
     data.name_str = "fortitude";
-    data.ppm      = -1.4; // Real PPM
+    data.ppm      = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 1.4); // Real PPM
 
     buff_proc_callback_t<buff_t> *cb = new buff_proc_callback_t<buff_t>( p, data, p -> buffs.fortitude );
     p -> callbacks.register_incoming_attack_callback( RESULT_ALL_MASK, cb );
@@ -1033,7 +1035,7 @@ void capacitive_primal( player_t* p )
 {
   if ( p -> meta_gem == META_CAPACITIVE_PRIMAL )
   {
-    // TODO: Spell data from DBC, spell id is 137597
+    
     struct lightning_strike_t : public attack_t
     {
       lightning_strike_t( player_t* p ) :
