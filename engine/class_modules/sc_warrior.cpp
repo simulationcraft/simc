@@ -941,6 +941,8 @@ struct bladestorm_tick_t : public warrior_attack_t
     background  = true;
     direct_tick = true;
     aoe         = -1;
+    if ( p -> specialization() == WARRIOR_ARMS && p -> dbc.ptr ) //Bladestorm does 1.5x more damage as Arms on PTR.
+      weapon_multiplier *= 1.5;
   }
 };
 
@@ -2817,13 +2819,13 @@ struct stance_t : public warrior_spell_t
       else if ( stance_str == "def" || stance_str == "defensive" )
         switch_to_stance = STANCE_DEFENSE;
     }
+    if ( switch_to_stance != p -> active_stance ) // Do not put stance-swapping on CD unless the stance is actually changed.
+      cooldown -> duration = timespan_t::from_seconds( p -> dbc.ptr ? 1.5 : 3.0 ); // Lowered PTR CD on stance swapping. 
 
+    use_off_gcd=true;
     harmful = false;
     trigger_gcd = timespan_t::zero();
-    cooldown -> duration = timespan_t::from_seconds( 1.0 );
   }
-
-  virtual resource_e current_resource() { return RESOURCE_RAGE; }
 
   virtual void execute()
   {
@@ -2843,8 +2845,6 @@ struct stance_t : public warrior_spell_t
       case STANCE_BERSERKER:  p -> buff.berserker_stance -> trigger(); break;
       case STANCE_DEFENSE:    p -> buff.defensive_stance -> trigger(); break;
     }
-
-    consume_resource();
 
     update_ready();
   }
@@ -3177,9 +3177,9 @@ void warrior_t::create_buffs()
                           .cd( timespan_t::zero() )
                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.battle_stance    = buff_creator_t( this, "battle_stance",    find_spell( 21156 ) );
-  buff.berserker_rage   = buff_creator_t( this, "berserker_rage",   find_class_spell( "Berserker Rage" ) )
+  buff.berserker_rage   = buff_creator_t( this, "berserker_rage",   find_spell( 18499 ) )
                           .cd( timespan_t::zero() );
-  buff.berserker_stance = buff_creator_t( this, "berserker_stance", find_spell( 7381 ) );
+  buff.berserker_stance = buff_creator_t( this, "berserker_stance", find_spell( 2458 ) );
   buff.bloodbath        = buff_creator_t( this, "bloodbath",        talents.bloodbath )
                           .cd( timespan_t::zero() );
   buff.bloodsurge       = buff_creator_t( this, "bloodsurge",       spec.bloodsurge -> effectN( 1 ).trigger() )
@@ -3198,8 +3198,8 @@ void warrior_t::create_buffs()
                           .max_stack( find_spell( 131116 ) -> effectN( 1 ).base_value() );
   buff.raging_wind      = buff_creator_t( this, "raging_wind",      glyphs.raging_wind -> effectN( 1 ).trigger() )
                           .chance( ( glyphs.raging_wind -> ok() ? 1 : 0 ) );
-  buff.recklessness     = buff_creator_t( this, "recklessness",     find_class_spell( "Recklessness" ) )
-                          .duration( find_class_spell( "Recklessness" ) -> duration() * ( 1.0 + ( glyphs.recklessness -> ok() ? glyphs.recklessness -> effectN( 2 ).percent() : 0 )  ) )
+  buff.recklessness     = buff_creator_t( this, "recklessness",     find_spell( 1719 ) )
+                          .duration( find_spell( 1719 ) -> duration() * ( 1.0 + ( glyphs.recklessness -> ok() ? glyphs.recklessness -> effectN( 2 ).percent() : 0 )  ) )
                           .cd( timespan_t::zero() );
   buff.taste_for_blood = buff_creator_t( this, "taste_for_blood" )
                          .spell( find_spell( 60503 ) );
@@ -3211,12 +3211,12 @@ void warrior_t::create_buffs()
 
   buff.shield_block     = buff_creator_t( this, "shield_block" ).spell( find_spell( 132404 ) )
                           .add_invalidate( CACHE_BLOCK );
-  buff.shield_wall      = buff_creator_t( this, "shield_wall", find_class_spell( "Shield Wall" ) )
-                          .default_value( find_class_spell( "Shield Wall" )-> effectN( 1 ).percent() )
+  buff.shield_wall      = buff_creator_t( this, "shield_wall", find_spell( 871 ) )
+                          .default_value( find_spell( 871 )-> effectN( 1 ).percent() )
                           .cd( timespan_t::zero() );
   buff.sudden_execute   = buff_creator_t( this, "sudden_execute", find_spell( 139958 ) );
 
-  buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes",  find_class_spell( "Sweeping Strikes" ) );
+  buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes",  find_spell( 12328 ) );
 
   buff.sword_and_board  = buff_creator_t( this, "sword_and_board",   find_spell( 50227 ) )
                           .chance( spec.sword_and_board -> effectN( 1 ).percent() );
