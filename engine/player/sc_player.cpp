@@ -9710,7 +9710,7 @@ void player_collected_data_t::collect_data( const player_t& p )
           weighted_value[ j ] *= w0;
 
           // normalize by actor health
-          weighted_value[ j ] /= p.resources.initial[ RESOURCE_HEALTH ];
+          weighted_value[ j ] /= p.resources.max[ RESOURCE_HEALTH ];
 
           // calculate exponentially-weighted contribution of this data point
           weighted_value[ j ] = std::exp( 10 * std::log( hdf ) * ( weighted_value[ j ] - 1 ) );
