@@ -83,6 +83,7 @@ public:
   } active_actions;
 
   double track_chi_consumption;
+  double track_focus_of_xuen;
 
   struct buffs_t
   {
@@ -1689,7 +1690,10 @@ struct tigereye_brew_t : public monk_spell_t
             // so, there's actually an error with our 4set in that it doesn't count a full .75 if we don't use a full 4, but
             // can't find post that contains info.
             // TODO  figure out how much of a stack it "saves"
-            double focus_of_xuen_stacks = max_stacks_consumable / 10.0;
+            if(track_focus_of_xuen >= 10) {
+                buff.focus_of_xuen -> trigger();
+                track_focus_of_xuen -=10;
+            }
             p() -> buff.focus_of_xuen  -> trigger();
         }
             
