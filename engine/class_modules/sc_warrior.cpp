@@ -152,13 +152,10 @@ public:
   // Procs
   struct procs_t
   {
-    proc_t* munched_deep_wounds;
     proc_t* raging_blow_wasted;
-    proc_t* rolled_deep_wounds;
     proc_t* taste_for_blood_wasted;
     proc_t* strikes_of_opportunity;
     proc_t* sudden_death;
-    proc_t* tier13_4pc_melee;
     proc_t* t15_2pc_melee;
   } proc;
 
@@ -1042,13 +1039,6 @@ struct bloodthirst_t : public warrior_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       warrior_t* p = cast();
-
-      if ( p -> set_bonus.tier13_4pc_melee() && sim -> roll( p -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() ) )
-      {
-        warrior_td_t* td = cast_td();
-        td -> debuffs_colossus_smash -> trigger();
-        p -> proc.tier13_4pc_melee -> occur();
-      }
     }
   }
 
@@ -1139,6 +1129,10 @@ struct cleave_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     weapon = &( player -> main_hand_weapon );
+    // The 140% is hardcoded in the tooltip
+    if ( weapon -> group() == WEAPON_1H ||
+         weapon -> group() == WEAPON_SMALL )
+      base_multiplier *= 1.40;
 
     aoe = 2;
 
@@ -1438,10 +1432,6 @@ struct heroic_strike_t : public warrior_attack_t
     double c = warrior_attack_t::cost();
     warrior_t* p = cast();
 
-    // Needs testing
-    if ( p -> set_bonus.tier13_2pc_melee() )
-      c -= p-> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).resource( RESOURCE_RAGE );
-
     if ( p -> buff.glyph_incite -> check() )
       c += p -> buff.glyph_incite -> data().effectN( 1 ).resource( RESOURCE_RAGE );
 
@@ -1617,12 +1607,6 @@ struct mortal_strike_t : public warrior_attack_t
     {
       warrior_t* p = cast();
       warrior_td_t* td = cast_td();
-
-      if ( p -> set_bonus.tier13_4pc_melee() && sim -> roll( p -> sets -> set( SET_T13_4PC_MELEE ) -> proc_chance() ) )
-      {
-        td -> debuffs_colossus_smash -> trigger();
-        p -> proc.tier13_4pc_melee -> occur();
-      }
 
       p -> active_deep_wounds -> execute();
 
@@ -3099,7 +3083,6 @@ void warrior_t::init_spells()
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P     M2P     M4P     T2P     T4P    H2P    H4P
-    {     0,     0, 105797, 105907, 105908, 105911,     0,     0 }, // Tier13
     {     0,     0, 123142, 123144, 123146, 123147,     0,     0 }, // Tier14
     {     0,     0, 138120, 138126, 138280, 138281,     0,     0 }, // Tier15
     {     0,     0, 144436, 144441, 144503, 144502,     0,     0 }, // Tier16
@@ -3282,13 +3265,10 @@ void warrior_t::init_procs()
 {
   player_t::init_procs();
 
-  proc.munched_deep_wounds     = get_proc( "munched_deep_wounds"     );
-  proc.rolled_deep_wounds      = get_proc( "rolled_deep_wounds"      );
   proc.strikes_of_opportunity  = get_proc( "strikes_of_opportunity"  );
   proc.sudden_death            = get_proc( "sudden_death"            );
   proc.taste_for_blood_wasted  = get_proc( "taste_for_blood_wasted"  );
   proc.raging_blow_wasted      = get_proc( "raging_blow_wasted"      );
-  proc.tier13_4pc_melee        = get_proc( "tier13_4pc_melee"        );
   proc.t15_2pc_melee           = get_proc( "t15_2pc_melee"           );
 }
 
@@ -3608,7 +3588,7 @@ void warrior_t::combat_begin()
   if ( initial_rage > 0 )
     resources.current[ RESOURCE_RAGE ] = initial_rage ; // User specified rage.
   else if ( glyphs.bull_rush -> ok() )
-    resources.current[ RESOURCE_RAGE ] = resources.current [RESOURCE_RAGE ] + 35 ; //As charge doesn't work, add rage assuming it was used.
+    resources.current[ RESOURCE_RAGE ] = resources.current [RESOURCE_RAGE ] + 35 ; //Add rage assuming charge was used, with or without Bull Rush glyph.
   else
     resources.current[ RESOURCE_RAGE ] = resources.current [RESOURCE_RAGE] + 20 ;
 
@@ -3885,24 +3865,6 @@ int warrior_t::decode_set( item_t& item )
   }
 
   const char* s = item.name();
-
-  if ( strstr( s, "colossal_dragonplate" ) )
-  {
-    bool is_melee = ( strstr( s, "helmet"        ) ||
-                      strstr( s, "pauldrons"     ) ||
-                      strstr( s, "battleplate"   ) ||
-                      strstr( s, "legplates"     ) ||
-                      strstr( s, "gauntlets"     ) );
-
-    bool is_tank = ( strstr( s, "faceguard"      ) ||
-                     strstr( s, "shoulderguards" ) ||
-                     strstr( s, "chestguard"     ) ||
-                     strstr( s, "legguards"      ) ||
-                     strstr( s, "handguards"     ) );
-
-    if ( is_melee ) return SET_T13_MELEE;
-    if ( is_tank  ) return SET_T13_TANK;
-  }
 
   if ( strstr( s, "resounding_rings" ) )
   {
