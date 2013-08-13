@@ -1689,7 +1689,12 @@ struct tigereye_brew_t : public monk_spell_t
         //} if ( p() -> set_bonus.tier16_4pc_melee() ) {
             // so, there's actually an error with our 4set in that it doesn't count a full .75 if we don't use a full 4, but
             // can't find post that contains info.
-            // TODO  figure out how much of a stack it "saves"
+            // TODO  figure out how much rof a stack it "saves"
+
+             double use_min = std::min( p() -> buff.tigereye_brew -> stack(), max_stacks_consumable );
+             use_value = value() * use_min;
+
+            track_focus_of_xuen += use_min;
             if(track_focus_of_xuen >= 10) {
                 buff.focus_of_xuen -> trigger();
                 track_focus_of_xuen -=10;
