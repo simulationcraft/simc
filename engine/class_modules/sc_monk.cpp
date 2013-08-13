@@ -1159,6 +1159,22 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     rsk_debuff -> execute();
   }
+  virtual double cost()
+  {
+    if ( p() -> buff.focus_of_xuen -> check() ){
+      return monk_melee_attack_t::cost() + p() -> buff.focus_of_xuen -> effectN( 1 ).base_value();
+    }
+    return monk_melee_attack_t::cost();
+  }
+ virtual void consume_resource()
+  {
+    monk_melee_attack_t::consume_resource();
+    if ( p() -> buff.focus_of_xuen -> up() )
+    {
+        p() -> buff.focus_of_xuen -> expire();
+        //add gains later. 
+    }
+  }
 };
 
 // ==========================================================================
@@ -1284,6 +1300,27 @@ struct fists_of_fury_t : public monk_melee_attack_t
     tick_action = new fists_of_fury_tick_t( p );
     dynamic_tick_action = true;
   }
+  virtual double cost()
+  {
+    if ( p() -> buff.focus_of_xuen -> check() ){
+    //intended to add (-1) to cost.
+      return monk_melee_attack_t::cost() + p() -> buff.focus_of_xuen -> effectN( 1 ).base_value();
+    }
+    return monk_melee_attack_t::cost();
+  }
+ virtual void consume_resource()
+  {
+    if ( p() -> buff.combo_breaker_bok -> check() && result_is_hit( execute_state -> result ) )
+      p() -> track_chi_consumption += base_costs[ RESOURCE_CHI ];
+
+    monk_melee_attack_t::consume_resource();
+    if ( p() -> buff.focus_of_xuen -> up() )
+    {
+        p() -> buff.focus_of_xuen -> expire();
+        //add gains later. 
+    }
+
+    }
 };
 
 // ==========================================================================
