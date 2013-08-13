@@ -107,6 +107,7 @@ public:
     buff_t* vital_mists;
     buff_t* zen_sphere;
     buff_t* tier16_4pc_melee;
+    buff_t* focus_of_xuen;
 
     //  buff_t* zen_meditation;
     //  buff_t* path_of_blossoms;
@@ -932,8 +933,8 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
     if ( p() -> set_bonus.tier16_2pc_melee() && p() -> buff.combo_breaker_tp -> check() ) {
-      // damage increased by 50% for WW 2pc upon CB
-      m *= 1.5;
+      // damage increased by 40% for WW 2pc upon CB
+      m *= 1.4;
     }
 
     return m;
@@ -1067,8 +1068,8 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
     if ( p() -> set_bonus.tier16_2pc_melee() && p() -> buff.combo_breaker_bok -> check() ) {
-      // damage increased by 50% for WW 2pc upon CB
-      m *= 1.5;
+      // damage increased by 40% for WW 2pc upon CB
+      m *= 1.4;
     }
 
     return m;
@@ -1684,6 +1685,12 @@ struct tigereye_brew_t : public monk_spell_t
             // So increase the value by 1% per stack used...  HOWEVER, on PTR this is currently broken, and we are only receiving
             // .5% per stack of Tigereye Brew Used.  Thus, max_stacks_consumable will be divided by 100 IF this is fixed.
             use_value = ( value() ) * std::min( p() -> buff.tigereye_brew -> stack(), max_stacks_consumable ) + (max_stacks_consumable / 200); 
+        //} if ( p() -> set_bonus.tier16_4pc_melee() ) {
+            // so, there's actually an error with our 4set in that it doesn't count a full .75 if we don't use a full 4, but
+            // can't find post that contains info.
+            // TODO  figure out how much of a stack it "saves"
+            double focus_of_xuen_stacks = max_stacks_consumable / 10.0;
+            p() -> buff.focus_of_xuen  -> trigger();
         }
             
         p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
@@ -2657,6 +2664,7 @@ void monk_t::create_buffs()
   buff.energizing_brew -> buff_duration += sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //verify working
   buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"       ).spell( find_spell( 125195 ) );
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use"   ).spell( find_spell( 116740 ) ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.focus_of_xuen  = buff_creator_t( this, "focus_of_xuen"       ).spell( find_spell( 145024 ) );
 
 }
 
