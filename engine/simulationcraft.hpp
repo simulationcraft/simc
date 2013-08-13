@@ -3769,6 +3769,7 @@ struct player_collected_data_t
   extended_sample_data_t hpse;
   extended_sample_data_t htps;
   extended_sample_data_t heal_taken;
+  sc_timeline_t timeline_healing_taken;
   // Tank
   extended_sample_data_t deaths;
   extended_sample_data_t theck_meloree_index;
@@ -3801,6 +3802,7 @@ struct player_collected_data_t
   {
     double previous_loss_level, previous_gain_level;
     sc_timeline_t timeline; // keeps only data per iteration
+    sc_timeline_t timeline_normalized; // same as above, but normalized to current player health
     sc_timeline_t merged_timeline;
     health_changes_timeline_t() : previous_loss_level( 0.0 ), previous_gain_level( 0.0 ) {}
   } health_changes;
@@ -3824,7 +3826,7 @@ struct player_collected_data_t
   void merge( const player_collected_data_t& );
   void analyze( const player_t& );
   void collect_data( const player_t& );
-  void print_tmi_debug_csv( const std::vector<double>& ma_data, const std::vector<double>& weighted_value, const player_t& p );
+  void print_tmi_debug_csv( const sc_timeline_t* ma, const sc_timeline_t* nma, const std::vector<double>& weighted_value, const player_t& p );
   std::ostream& data_str( std::ostream& s ) const;
 };
 
