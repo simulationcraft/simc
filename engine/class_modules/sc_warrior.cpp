@@ -3177,7 +3177,7 @@ void warrior_t::create_buffs()
                           .cd( timespan_t::zero() )
                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.battle_stance    = buff_creator_t( this, "battle_stance",    find_spell( 21156 ) );
-  buff.berserker_rage   = buff_creator_t( this, "berserker_rage",   find_spell( 18499 ) )
+  buff.berserker_rage   = buff_creator_t( this, "berserker_rage",   find_class_spell( "Berserker Rage" ) )
                           .cd( timespan_t::zero() );
   buff.berserker_stance = buff_creator_t( this, "berserker_stance", find_spell( 2458 ) );
   buff.bloodbath        = buff_creator_t( this, "bloodbath",        talents.bloodbath )
@@ -3198,8 +3198,8 @@ void warrior_t::create_buffs()
                           .max_stack( find_spell( 131116 ) -> effectN( 1 ).base_value() );
   buff.raging_wind      = buff_creator_t( this, "raging_wind",      glyphs.raging_wind -> effectN( 1 ).trigger() )
                           .chance( ( glyphs.raging_wind -> ok() ? 1 : 0 ) );
-  buff.recklessness     = buff_creator_t( this, "recklessness",     find_spell( 1719 ) )
-                          .duration( find_spell( 1719 ) -> duration() * ( 1.0 + ( glyphs.recklessness -> ok() ? glyphs.recklessness -> effectN( 2 ).percent() : 0 )  ) )
+  buff.recklessness     = buff_creator_t( this, "recklessness",     find_class_spell( "Recklessness" ) )
+                          .duration( find_class_spell( "Recklessness" ) -> duration() * ( 1.0 + ( glyphs.recklessness -> ok() ? glyphs.recklessness -> effectN( 2 ).percent() : 0 )  ) )
                           .cd( timespan_t::zero() );
   buff.taste_for_blood = buff_creator_t( this, "taste_for_blood" )
                          .spell( find_spell( 60503 ) );
@@ -3211,12 +3211,12 @@ void warrior_t::create_buffs()
 
   buff.shield_block     = buff_creator_t( this, "shield_block" ).spell( find_spell( 132404 ) )
                           .add_invalidate( CACHE_BLOCK );
-  buff.shield_wall      = buff_creator_t( this, "shield_wall", find_spell( 871 ) )
-                          .default_value( find_spell( 871 )-> effectN( 1 ).percent() )
+  buff.shield_wall      = buff_creator_t( this, "shield_wall", find_class_spell( "Shield Wall" ) )
+                          .default_value( find_class_spell( "Shield Wall" )-> effectN( 1 ).percent() )
                           .cd( timespan_t::zero() );
   buff.sudden_execute   = buff_creator_t( this, "sudden_execute", find_spell( 139958 ) );
 
-  buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes",  find_spell( 12328 ) );
+  buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes",  find_class_spell( "Sweeping Strikes" ) );
 
   buff.sword_and_board  = buff_creator_t( this, "sword_and_board",   find_spell( 50227 ) )
                           .chance( spec.sword_and_board -> effectN( 1 ).percent() );
