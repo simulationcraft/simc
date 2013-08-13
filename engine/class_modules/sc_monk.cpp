@@ -1677,39 +1677,33 @@ struct tigereye_brew_t : public monk_spell_t
     monk_spell_t::execute();
 
     int max_stacks_consumable = p() -> spec.brewing_tigereye_brew -> effectN( 2 ).base_value();
-
+    double teb_stacks_used = std::min( p() -> buff.tigereye_brew -> stack(), max_stacks_consumable );
+    // EEIN: Seperated teb_stacks_used from use_value so it can be used to track focus of xuen.
+    double use_value = value() * teb_stacks_used;
     // so value is going to actually be DIFFERENT if player is using T15 4set now...
     if (player -> dbc.ptr ) {
-        double use_value = value() * std::min( p() -> buff.tigereye_brew -> stack(), max_stacks_consumable );
+        //add this vvv into if (set_bonus.tier164pc) when it is created
+        p() -> track_focus_of_xuen += teb_stacks_used;
         
         if ( p() -> set_bonus.tier15_4pc_melee() ) {
             // So increase the value by 1% per stack used...  HOWEVER, on PTR this is currently broken, and we are only receiving
             // .5% per stack of Tigereye Brew Used.  Thus, max_stacks_consumable will be divided by 100 IF this is fixed.
-            use_value = ( value() ) * std::min( p() -> buff.tigereye_brew -> stack(), max_stacks_consumable ) + (max_stacks_consumable / 200); 
+            use_value = ( value()  * teb_stacks_used ) * (1.0 + (max_stacks_consumable / 200)); //usevalue * 1.05; t154pc 
         //} if ( p() -> set_bonus.tier16_4pc_melee() ) {
             // so, there's actually an error with our 4set in that it doesn't count a full .75 if we don't use a full 4, but
             // can't find post that contains info.
-            // TODO  figure out how much rof a stack it "saves"
-
-             double use_min = std::min( p() -> buff.tigereye_brew -> stack(), max_stacks_consumable );
-             use_value = value() * use_min;
-
-            track_focus_of_xuen += use_min;
-            if(track_focus_of_xuen >= 10) {
-                buff.focus_of_xuen -> trigger();
-                track_focus_of_xuen -=10;
+            // TODO  figure out how much of a stack it "saves"
+            if( p() -> track_focus_of_xuen >= 10.0) {
+                p() -> buff.focus_of_xuen -> trigger();
+                p() -> track_focus_of_xuen -= 10.0; // find out if this is additive or resets to zero upon use.
             }
-            p() -> buff.focus_of_xuen  -> trigger();
-        }
             
-        p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
-        p() -> buff.tigereye_brew -> decrement( max_stacks_consumable );
-        
-    } else {
-        double use_value = value() * std::min( p() -> buff.tigereye_brew -> stack(), max_stacks_consumable );
-        p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
-        p() -> buff.tigereye_brew -> decrement( max_stacks_consumable );
+        }
+                    
     }
+    p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
+    p() -> buff.tigereye_brew -> decrement( max_stacks_consumable );
+
   }
 };
 
@@ -2714,6 +2708,7 @@ void monk_t::reset()
   base_t::reset();
 
   track_chi_consumption = 0.0;
+  track_focus_of_xuen = 0.0;
   _active_stance = FIERCE_TIGER;
 }
 
