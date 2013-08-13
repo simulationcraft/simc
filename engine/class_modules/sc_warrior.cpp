@@ -3572,26 +3572,24 @@ void warrior_t::init_actions()
     // Protection
     else if ( specialization() == WARRIOR_PROTECTION )
     {
-      action_list_str += "/last_stand,if=health<30000";
-      action_list_str += "/avatar,if=enabled";
-      action_list_str += "/dragon_roar,if=enabled";
-      action_list_str += "/bladestorm,if=enabled";
-      action_list_str += "/bloodbath,if=enabled";
-      action_list_str += "/storm_bolt,if=enabled";
-      action_list_str += "/shockwave,if=enabled";
+      action_list_str += "/last_stand,if=incoming_damage_1500ms>health.max*0.4&buff.shield_wall.down";
+      action_list_str += "/shield_wall,if=incoming_damage_1500ms>health.max*0.4&buff.shield_wall.down";
+      action_list_str += "/avatar,if=talent.avatar.enabled";
       action_list_str += "/heroic_strike,if=buff.ultimatum.up";
-      action_list_str += "/berserker_rage,if=rage<30";
-      action_list_str += "/shield_slam,if=rage<75";
-      action_list_str += "/revenge,if=rage<75";
-      action_list_str += "/battle_shout,if=rage<60";
-      action_list_str += "/shield_block";
-      action_list_str += "/shield_barrier,if=buff.shield_barrier.down&rage>80";
+      
+      action_list_str += "/shield_barrier,if=incoming_damage_1500ms>health.max*0.3";
+      action_list_str += "/shield_block,if=charges=2|rage>rage.max-35";
+      
+      action_list_str += "/berserker_rage";
+      action_list_str += "/shield_slam";
+      action_list_str += "/revenge";
+      action_list_str += "/battle_shout";
       action_list_str += "/thunder_clap,if=target.debuff.weakened_blows.down";
-      action_list_str += "/shield_wall,if=buff.shield_block.down";
       action_list_str += "/demoralizing_shout";
-      action_list_str += "/impending_victory,if=enabled";
+      action_list_str += "/impending_victory,if=talent.impending_victory.enabled";
       action_list_str += "/victory_rush,if=!talent.impending_victory.enabled";
       action_list_str += "/devastate";
+      
     }
 
     // Default
