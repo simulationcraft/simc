@@ -797,6 +797,23 @@ void print_text_player( FILE* file, player_t* p )
   }
 
   util::fprintf( file, "\n" );
+
+  if ( p -> primary_role() == ROLE_TANK && p -> type != ENEMY )
+  {
+    double dtps_error = sim_t::distribution_mean_error( *p -> sim, p -> collected_data.dtps );
+    util::fprintf( file, "  DTPS: %.1f  DTPS-error=%.1f/%.1f%% \n",
+                    p -> collected_data.dtps.mean(),
+                    p -> collected_data.dtps.mean() ? dtps_error * 100 / p -> collected_data.dtps.mean() : 0.0 );
+
+    double tmi_error = sim_t::distribution_mean_error( *p -> sim, p -> collected_data.theck_meloree_index );
+    util::fprintf( file, "  TMI: %.1f  TMI-error=%.1f/%.1f%%  TMI-min=%.1f  TMI-max=%.1f \n",
+                    p -> collected_data.theck_meloree_index.mean(),
+                    tmi_error,
+                    p -> collected_data.theck_meloree_index.mean() ? tmi_error * 100 / p -> collected_data.theck_meloree_index.mean() : 0.0,
+                    p -> collected_data.theck_meloree_index.min(),
+                    p -> collected_data.theck_meloree_index.max() );
+  }
+
   if ( ! p -> origin_str.empty() )  util::fprintf( file, "  Origin: %s\n", p -> origin_str.c_str() );
   if ( ! p -> talents_str.empty() ) util::fprintf( file, "  Talents: %s\n", p -> talents_str.c_str() );
   print_text_core_stats   ( file, p );

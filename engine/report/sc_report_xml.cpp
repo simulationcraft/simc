@@ -308,6 +308,17 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
     writer.print_attribute( "resource", util::resource_type_string( p -> primary_resource() ) );
     writer.end_tag( "dpr" );
   }
+  if ( p -> primary_role() == ROLE_TANK && p -> type != ENEMY )
+  {
+    double tmi_error = sim_t::distribution_mean_error( *sim, cd.theck_meloree_index );
+    writer.begin_tag( "tmi" );
+    writer.print_attribute( "value", util::to_string( cd.theck_meloree_index.mean() ) );
+    writer.print_attribute( "error", util::to_string( tmi_error ) );
+    writer.print_attribute( "min", util::to_string( cd.theck_meloree_index.min() ) );
+    writer.print_attribute( "max", util::to_string( cd.theck_meloree_index.max() ) );
+    writer.print_attribute( "range", util::to_string( cd.theck_meloree_index.max() - cd.theck_meloree_index.min() ) );
+    writer.end_tag( "tmi" );
+  }
 
   writer.begin_tag( "waiting_time" );
   writer.print_attribute( "pct", util::to_string( cd.fight_length.mean() ? 100.0 * cd.waiting_time.mean() / cd.fight_length.mean() : 0 ) );
