@@ -1836,7 +1836,14 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     if ( p() -> cooldowns.rapid_fire -> down() )
     {
       p() -> procs.tier16_2pc_melee -> occur();
-      p() -> cooldowns.rapid_fire -> adjust( -timespan_t::from_seconds( 6 ) );
+      int reduction;
+      if ( p() -> specialization() == HUNTER_BEAST_MASTERY ||
+	   p() -> specialization() == HUNTER_MARKSMANSHIP )
+	reduction = 4;
+      else
+	reduction = 8;
+
+      p() -> cooldowns.rapid_fire -> adjust( -timespan_t::from_seconds( reduction ) );
     }
   }
 };
