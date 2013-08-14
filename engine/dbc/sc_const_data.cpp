@@ -970,7 +970,7 @@ double dbc_t::spell_crit_base( pet_e t, unsigned level ) const
   return spell_crit_base( util::pet_class_type( t ), level );
 }
 
-double dbc_t::dodge_base( player_e t ) const
+double dbc_t::dodge_base( player_e ) const
 {
   // base dodge is now 3.0 for all classes
   return 3.0;

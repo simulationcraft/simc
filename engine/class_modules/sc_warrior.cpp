@@ -1034,16 +1034,6 @@ struct bloodthirst_t : public warrior_attack_t
     return warrior_attack_t::composite_crit() * 2.0;
   }
 
-  virtual void execute()
-  {
-    warrior_attack_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      warrior_t* p = cast();
-    }
-  }
-
   virtual void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
@@ -1608,7 +1598,6 @@ struct mortal_strike_t : public warrior_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       warrior_t* p = cast();
-      warrior_td_t* td = cast_td();
 
       p -> active_deep_wounds -> execute();
 

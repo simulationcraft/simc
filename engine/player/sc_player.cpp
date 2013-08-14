@@ -610,7 +610,8 @@ player_t::player_t( sim_t*             s,
 
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str(),
   gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::min() ),
-  pet_list(), active_pets(), invert_scaling( 0 ),
+  pet_list(), active_pets(),
+  vengeance_list( this ),invert_scaling( 0 ),
   avg_ilvl( 0 ),
   // Reaction
   reaction_offset( timespan_t::from_seconds( 0.1 ) ), reaction_mean( timespan_t::from_seconds( 0.3 ) ), reaction_stddev( timespan_t::zero() ), reaction_nu( timespan_t::from_seconds( 0.25 ) ),
@@ -653,7 +654,6 @@ player_t::player_t( sim_t*             s,
   buffed( buffed_stats_t() ),
   collected_data( player_collected_data_t( name_str, *sim ) ),
   vengeance( collected_data.vengeance_timeline ),
-  vengeance_list( this ),
   // Damage
   iteration_dmg( 0 ), iteration_dmg_taken( 0 ),
   dpr( 0 ),
