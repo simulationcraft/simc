@@ -1393,7 +1393,7 @@ struct fire_elemental_t : public pet_t
     main_hand_weapon.damage          = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time      = timespan_t::from_seconds( 1.4 );
 
-    if (maybe_ptr( dbc.ptr ))
+    if ( maybe_ptr( dbc.ptr ))
     {
       owner_coeff.sp_from_sp = 0.36;
     }
