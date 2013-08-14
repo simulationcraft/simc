@@ -8066,16 +8066,16 @@ double player_t::calculate_time_to_bloodlust()
       time_to_bl = std::max( bl_pct_time, time_to_bl );  
 
     // if both are negative, time_to_bl will still be negative and we won't be benefitting from another BL cast.
-    // In this case, we can simply return a nonsensical time that's much longer than the simulation.
     // Otherwise we return the positive time until BL is being cast.
-    if ( time_to_bl < timespan_t::zero() )
-      return 3 * sim -> expected_time.total_seconds();
-    else
+    if ( time_to_bl >= timespan_t::zero() )
       return time_to_bl.total_seconds();
   }
   else if ( sim -> debug )
     sim -> errorf( "Trying to call time_to_bloodlust conditional with overrides.bloodlust=0" );
 
+  // Return a nonsensical time that's much longer than the simulation.  This happens if time_to_bl was negative
+  // or if overrides.bloodlust was 0
+  return 3 * sim -> expected_time.total_seconds();
 }
 
 void player_t::recreate_talent_str( talent_format_e format )
