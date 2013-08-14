@@ -4,7 +4,7 @@
 #ifndef ptr_MAX_CLASS
 #define ptr_MAX_CLASS (12)
 #endif
-// Class based active abilities, wow build 17271
+// Class based active abilities, wow build 17299
 static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLASS_ABILITY_SIZE] = {
   {
     {
@@ -1033,7 +1033,7 @@ static unsigned __ptr_class_ability_data[][PTR_CLASS_ABILITY_TREE_SIZE][PTR_CLAS
 
 #define PTR_TREE_SPECIALIZATION_SIZE (26)
 
-// Talent tree specialization abilities, wow build 17271
+// Talent tree specialization abilities, wow build 17299
 static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_SPECIALIZATION_SIZE] = {
   // Specialization abilities for Hunter pets
   {
@@ -1880,7 +1880,7 @@ static unsigned __ptr_tree_specialization_data[][MAX_SPECS_PER_CLASS][PTR_TREE_S
 
 #define PTR_CLASS_MASTERY_ABILITY_SIZE (1)
 
-// Class mastery abilities, wow build 17271
+// Class mastery abilities, wow build 17299
 static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS][PTR_CLASS_MASTERY_ABILITY_SIZE] = {
   {
     {
@@ -2103,7 +2103,7 @@ static unsigned __ptr_class_mastery_ability_data[MAX_CLASS][MAX_SPECS_PER_CLASS]
 #define ptr_MAX_RACE (28)
 #endif
 
-// Racial abilities, wow build 17271
+// Racial abilities, wow build 17299
 static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_ABILITY_SIZE] = {
   {
     {     0, },
@@ -2816,7 +2816,7 @@ static unsigned __ptr_race_ability_data[ptr_MAX_RACE][ptr_MAX_CLASS][PTR_RACE_AB
 
 #define PTR_GLYPH_ABILITIES_SIZE (33)
 
-// Glyph spells for classes, wow build 17271
+// Glyph spells for classes, wow build 17299
 static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
   {
     {
@@ -3432,7 +3432,7 @@ static unsigned __ptr_glyph_abilities_data[][3][PTR_GLYPH_ABILITIES_SIZE] = {
 
 #define PTR_TIER_BONUSES_TIER_BASE (13)
 
-// Tier item set bonuses for class, wow build 17271
+// Tier item set bonuses for class, wow build 17299
 static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BONUSES_SIZE] = {
   {
     {
@@ -3513,10 +3513,10 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     {
       144566, // Plate of Winged Triumph - 4 Piece Bonus (Item - Paladin T16 Protection 4P Bonus)
       144580, // Plate of Winged Triumph - 2 Piece Bonus (Item - Paladin T16 Protection 2P Bonus)
-      144586, // Battlegear of Winged Glory - 2 Piece Bonus (Item - Paladin T16 Retribution 2P Bonus)
-      144593, // Battlegear of Winged Glory - 4 Piece Bonus (Item - Paladin T16 Retribution 4P Bonus)
-      144613, // Vestments of Winged Glory - 4 Piece Bonus (Item - Paladin T16 Holy 4P Bonus)
-      144625, // Vestments of Winged Glory - 2 Piece Bonus (Item - Paladin T16 Holy 2P Bonus)
+      144586, // Battlegear of Winged Triumph - 2 Piece Bonus (Item - Paladin T16 Retribution 2P Bonus)
+      144593, // Battlegear of Winged Triumph - 4 Piece Bonus (Item - Paladin T16 Retribution 4P Bonus)
+      144613, // Vestments of Winged Triumph - 4 Piece Bonus (Item - Paladin T16 Holy 4P Bonus)
+      144625, // Vestments of Winged Triumph - 2 Piece Bonus (Item - Paladin T16 Holy 2P Bonus)
           0,
     },
     {
@@ -3757,8 +3757,8 @@ static unsigned __ptr_tier_bonuses_data[][PTR_TIER_BONUSES_MAX_TIER][PTR_TIER_BO
     },
     // Tier 16 bonuses (2 spells)
     {
-      145072, // T16 PH - Warlock - 2 Piece Bonus (Item - Warlock T16 2P Bonus)
-      145091, // T16 PH - Warlock - 4 Piece Bonus (Item - Warlock T16 4P Bonus)
+      145072, // Regalia of the Horned Nightmare - 2 Piece Bonus (Item - Warlock T16 2P Bonus)
+      145091, // Regalia of the Horned Nightmare - 4 Piece Bonus (Item - Warlock T16 4P Bonus)
           0,
     },
     {
