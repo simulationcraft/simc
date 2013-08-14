@@ -3600,7 +3600,10 @@ void player_t::datacollection_begin()
   active_during_iteration = false;
 
   if ( ! is_pet() && primary_role() == ROLE_TANK )
+  {
     collected_data.health_changes.timeline.clear(); // Drop Data
+    collected_data.health_changes.timeline_normalized.clear();
+  }
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> datacollection_begin();
