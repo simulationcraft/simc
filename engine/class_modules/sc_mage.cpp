@@ -1769,7 +1769,7 @@ struct combustion_t : public mage_spell_t
     {
       mage_spell_t::trigger_dot( s );
 
-      if ( maybe_ptr( dbc.ptr ))
+      if ( maybe_ptr( player -> dbc.ptr ))
       {
         combustion_dot -> tick_amount = ignite_dot -> tick_amount * 0.2; // 0.2 modifier hardcoded into tooltip 2013/08/14 PTR
       }
