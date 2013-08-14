@@ -33,8 +33,10 @@ stats_t::stats_t( const std::string& n, player_t* p ) :
   portion_aps( name_str + " Portion APS", p -> sim -> statistics_level < 3 ),
   portion_apse( name_str + " Portion APSe", p -> sim -> statistics_level < 3 ),
   direct_results( RESULT_MAX ),
+  direct_results_detail( FULLTYPE_MAX ),
   blocked_direct_results( BLOCK_RESULT_MAX ),
   tick_results( RESULT_MAX ),
+  tick_results_detail( FULLTYPE_MAX ),
   blocked_tick_results( BLOCK_RESULT_MAX ),
   // Reporting only
   resource_portion(), apr(), rpe(),
@@ -80,6 +82,32 @@ void stats_t::reset()
   last_execute = timespan_t::min();
 }
 
+full_result_e stats_t::translate_result( result_e result, block_result_e block_result )
+{
+  full_result_e fulltype = FULLTYPE_NONE;
+  switch ( result )
+  {
+    case RESULT_MISS:   fulltype=FULLTYPE_MISS; break;
+    case RESULT_DODGE:  fulltype=FULLTYPE_DODGE; break;
+    case RESULT_PARRY:  fulltype=FULLTYPE_PARRY; break;
+    case RESULT_GLANCE: fulltype=FULLTYPE_GLANCE; break;
+    case RESULT_CRIT:   fulltype=FULLTYPE_CRIT; break;
+    case RESULT_HIT:    fulltype=FULLTYPE_HIT; break;
+    case RESULT_MAX:    fulltype=FULLTYPE_MAX; break;
+    default:            fulltype=FULLTYPE_NONE;
+  }
+
+  if ( result > RESULT_PARRY )
+  {
+    switch ( block_result )
+    {
+    case BLOCK_RESULT_CRIT_BLOCKED: fulltype--;
+    case BLOCK_RESULT_BLOCKED:      fulltype--;
+    }
+  }
+  return fulltype;
+}
+
 // stats_t::add_result ======================================================
 
 void stats_t::add_result( double act_amount,
@@ -100,6 +128,20 @@ void stats_t::add_result( double act_amount,
   r -> iteration_total_amount += tot_amount;
   r -> actual_amount.add( act_amount );
   r -> total_amount.add( tot_amount );
+
+  full_result_e fulltype = translate_result( result, block_result );
+  stats_results_t* f = 0;
+  if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT || dmg_type == ABSORB )
+    f = &( direct_results_detail[ fulltype ] );
+  else
+    f = &( tick_results_detail[ fulltype ] );
+
+  f -> iteration_count += 1;
+  f -> iteration_actual_amount += act_amount;
+  f -> iteration_total_amount += tot_amount;
+  f -> actual_amount.add( act_amount );
+  f -> total_amount.add( tot_amount );
+
 
   stats_results_t* b = 0;
   if ( dmg_type == DMG_DIRECT || dmg_type == HEAL_DIRECT || dmg_type == ABSORB )
@@ -168,6 +210,11 @@ void stats_t::datacollection_begin()
     blocked_direct_results[ i ].datacollection_begin();
     blocked_tick_results[ i ].datacollection_begin();
   }
+  for ( full_result_e i = FULLTYPE_NONE; i < FULLTYPE_MAX; i++ )
+  {
+    direct_results_detail[ i ].datacollection_begin();
+    tick_results_detail[ i ].datacollection_begin();
+  }
 }
 
 // stats_t::datacollection_end ==============================================
@@ -193,6 +240,11 @@ void stats_t::datacollection_end()
   {
     blocked_direct_results[ i ].datacollection_end();
     blocked_tick_results[ i ].datacollection_end();
+  }
+  for ( full_result_e i = FULLTYPE_NONE; i < FULLTYPE_MAX; i++ )
+  {
+    direct_results_detail[ i ].datacollection_end();
+    tick_results_detail[ i ].datacollection_end();
   }
 
   actual_amount.add( iaa );
@@ -242,6 +294,12 @@ void stats_t::analyze()
   {
     blocked_direct_results[ i ].analyze( num_direct_results.mean() );
     blocked_tick_results[ i ].analyze( num_tick_results.mean() );
+  }
+
+  for ( full_result_e i = FULLTYPE_NONE; i < FULLTYPE_MAX; i++ )
+  {
+    direct_results_detail[ i ].analyze( num_direct_results.mean() );
+    tick_results_detail[ i ].analyze( num_tick_results.mean() );
   }
 
   portion_aps.analyze_all();
@@ -377,6 +435,11 @@ void stats_t::merge( const stats_t& other )
   {
     blocked_direct_results[ i ].merge( other.blocked_direct_results[ i ] );
     blocked_tick_results[ i ].merge( other.blocked_tick_results[ i ] );
+  }
+  for ( full_result_e i = FULLTYPE_NONE; i < FULLTYPE_MAX; i++ )
+  {
+    direct_results_detail[ i ].merge( other.direct_results_detail[ i ] );
+    tick_results_detail[ i ].merge( other.tick_results_detail[ i ] );
   }
 
   timeline_amount.merge( other.timeline_amount );

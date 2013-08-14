@@ -480,6 +480,17 @@ enum block_result_e
   BLOCK_RESULT_MAX
 };
 
+enum full_result_e
+{
+  FULLTYPE_UNKNOWN = -1,
+  FULLTYPE_NONE = 0,
+  FULLTYPE_MISS, FULLTYPE_DODGE, FULLTYPE_PARRY, 
+  FULLTYPE_GLANCE_CRITBLOCK, FULLTYPE_GLANCE_BLOCK, FULLTYPE_GLANCE,
+  FULLTYPE_CRIT_CRITBLOCK, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT,
+  FULLTYPE_HIT_CRITBLOCK, FULLTYPE_HIT_BLOCK, FULLTYPE_HIT,
+  FULLTYPE_MAX
+};
+
 #define RESULT_HIT_MASK   ( (1<<RESULT_GLANCE) | (1<<RESULT_CRIT) | (1<<RESULT_HIT) )
 #define RESULT_CRIT_MASK  ( (1<<RESULT_CRIT) )
 #define RESULT_MISS_MASK  ( (1<<RESULT_MISS) )
@@ -1252,6 +1263,7 @@ const char* role_type_string          ( role_e );
 const char* resource_type_string      ( resource_e );
 const char* result_type_string        ( result_e type );
 const char* block_result_type_string  ( block_result_e type );
+const char* full_result_type_string   ( full_result_e type );
 const char* amount_type_string        ( dmg_e type );
 uint32_t    school_type_component     ( school_e s_type, school_e c_type );
 const char* school_type_string        ( school_e type );
@@ -4901,8 +4913,10 @@ public:
   };
   std::vector<stats_results_t> direct_results;
   std::vector<stats_results_t> blocked_direct_results;
+  std::vector<stats_results_t> direct_results_detail;
   std::vector<stats_results_t> tick_results;
   std::vector<stats_results_t> blocked_tick_results;
+  std::vector<stats_results_t> tick_results_detail;
 
   sc_timeline_t timeline_amount;
 
@@ -4923,6 +4937,7 @@ public:
 
   void add_child( stats_t* child );
   void consume_resource( resource_e resource_type, double resource_amount );
+  full_result_e translate_result( result_e result, block_result_e block_result );
   void add_result( double act_amount, double tot_amount, dmg_e dmg_type, result_e result, block_result_e block_result, player_t* target );
   void add_execute( timespan_t time, player_t* target );
   void add_tick   ( timespan_t time, player_t* target );

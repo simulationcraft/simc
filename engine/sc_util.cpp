@@ -691,15 +691,40 @@ const char* util::result_type_string( result_e type )
 }
 
 // block_result_type_string =================================================
+
 const char* util::block_result_type_string( block_result_e type )
 {
   switch ( type )
   {
-    case BLOCK_RESULT_UNBLOCKED:     return "unblocked";
+    case BLOCK_RESULT_UNBLOCKED:     return "unblocked or avoided";
     case BLOCK_RESULT_BLOCKED:      return "blocked";
     case BLOCK_RESULT_CRIT_BLOCKED:  return "crit-blocked";
     default:                         return "unknown";
   }
+}
+
+// full_result_type_string ==================================================
+
+const char* util::full_result_type_string( full_result_e fulltype )
+{
+  switch ( fulltype )
+  {
+    case FULLTYPE_NONE:             return "none";
+    case FULLTYPE_MISS:             return "miss";
+    case FULLTYPE_DODGE:            return "dodge";
+    case FULLTYPE_PARRY:            return "parry";
+    case FULLTYPE_GLANCE_CRITBLOCK: return "glance (crit blocked)";
+    case FULLTYPE_GLANCE_BLOCK:     return "glance (blocked)";
+    case FULLTYPE_GLANCE:           return "glance";
+    case FULLTYPE_CRIT_CRITBLOCK:   return "crit (crit blocked)";
+    case FULLTYPE_CRIT_BLOCK:       return "crit (blocked)";
+    case FULLTYPE_CRIT:             return "crit";
+    case FULLTYPE_HIT_CRITBLOCK:    return "hit (crit blocked)";
+    case FULLTYPE_HIT_BLOCK:        return "hit (blocked)";
+    case FULLTYPE_HIT:              return "hit";
+    default:                        return "unknown";
+  }
+
 }
 
 // amount_type_string =======================================================
