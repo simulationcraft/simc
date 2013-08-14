@@ -1091,7 +1091,7 @@ virtual double cost()
       return 0.0;
     }
     if ( p() -> buff.focus_of_xuen -> check() ){
-      return monk_melee_attack_t::cost() + p() -> buff.focus_of_xuen -> effectN( 1 ).base_value();
+      return monk_melee_attack_t::cost() + p() -> buff.focus_of_xuen -> data().effectN( 1 ).base_value();
     }
     return monk_melee_attack_t::cost();
   }
@@ -1162,7 +1162,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   virtual double cost()
   {
     if ( p() -> buff.focus_of_xuen -> check() ){
-      return monk_melee_attack_t::cost() + p() -> buff.focus_of_xuen -> effectN( 1 ).base_value();
+      return monk_melee_attack_t::cost() + p() -> buff.focus_of_xuen -> data().effectN( 1 ).base_value();
     }
     return monk_melee_attack_t::cost();
   }
@@ -1304,7 +1304,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
   {
     if ( p() -> buff.focus_of_xuen -> check() ){
     //intended to add (-1) to cost.
-      return monk_melee_attack_t::cost() + p() -> buff.focus_of_xuen -> effectN( 1 ).base_value();
+      return monk_melee_attack_t::cost() + p() -> buff.focus_of_xuen -> data().effectN( 1 ).base_value();
     }
     return monk_melee_attack_t::cost();
   }
