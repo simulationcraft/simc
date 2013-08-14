@@ -97,14 +97,20 @@ full_result_e stats_t::translate_result( result_e result, block_result_e block_r
     default:            fulltype=FULLTYPE_NONE;
   }
 
-  if ( result > RESULT_PARRY )
+  switch ( result )
   {
-    switch ( block_result )
+    case RESULT_GLANCE:
+    case RESULT_CRIT:
+    case RESULT_HIT:
     {
-    case BLOCK_RESULT_CRIT_BLOCKED: fulltype--;
-    case BLOCK_RESULT_BLOCKED:      fulltype--;
-    default:                        break;
+      switch ( block_result )
+      {
+      case BLOCK_RESULT_CRIT_BLOCKED: fulltype--;
+      case BLOCK_RESULT_BLOCKED:      fulltype--;
+      default:                        break;
+      }
     }
+    default: break;
   }
   return fulltype;
 }
