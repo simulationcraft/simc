@@ -152,6 +152,7 @@ struct melee_nuke_t : public attack_t
   {
     school = SCHOOL_PHYSICAL;
     may_miss = may_dodge = may_parry = false;
+    may_block = true;
     base_execute_time = timespan_t::from_seconds( 3.0 );
     base_dd_min = 250000;
 
