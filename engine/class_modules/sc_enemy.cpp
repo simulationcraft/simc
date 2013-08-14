@@ -682,6 +682,7 @@ void enemy_t::init_base_stats()
   base.dodge = 0.030; //90, level differential handled in dodge_chance()
   base.parry = 0.030; //90, level differential handled in parry_chance()
   base.block = 0.030; //90, level differential handled in block_chance()
+  base.block_reduction = 0.3;
 }
 
 void enemy_t::init_defense()
