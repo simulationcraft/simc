@@ -622,7 +622,7 @@ static  void trigger_sweeping_strikes( action_state_t* s )
     {
       double m = warrior_attack_t::composite_da_multiplier();
 
-      m *= 0.5; //50% damage of the original attack
+      if (player -> dbc.ptr ? m *= 0.75 : m *= 0.5); //50% damage of the original attack, 75% on PTR
 
       return m;
     }
@@ -2065,6 +2065,20 @@ struct slam_t : public warrior_attack_t
 
     weapon = &( p -> main_hand_weapon );
   }
+
+  virtual double action_multiplier()
+  {
+    double am = warrior_attack_t::action_multiplier();
+
+    warrior_t* p = cast();
+    warrior_td_t* td = cast_td( p );
+
+    if ( p -> dbc.ptr && td -> debuffs_colossus_smash )
+      am *= 1.0 + 0.1;
+
+    return am;
+  }
+
 };
 
 // Storm Bolt ===============================================================
