@@ -972,11 +972,11 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
       csv_file.close();
     }
 
-    deleteSim( sim ); SC_MainWindow::sim = 0;
 
     mainTab -> setCurrentTab( sim_was_debug ? TAB_LOG : TAB_RESULTS );
 
   }
+  deleteSim( sim ); SC_MainWindow::sim = 0;
 }
 
 #ifdef SC_PAPERDOLL
@@ -1192,6 +1192,7 @@ void SC_MainWindow::mainTabChanged( int index )
       importTabChanged( importTab->currentIndex() );
       break;
     case TAB_RESULTS:
+      cmdLine->setText( cmdLineText );
       mainButton -> setText( "Save!" );
       resultsTabChanged( resultsTab -> currentIndex() );
       break;
