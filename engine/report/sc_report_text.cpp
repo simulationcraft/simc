@@ -802,7 +802,7 @@ void print_text_player( FILE* file, player_t* p )
   {
     double dtps_error = sim_t::distribution_mean_error( *p -> sim, p -> collected_data.dtps );
     util::fprintf( file, "  DTPS: %.1f  DTPS-error=%.1f/%.1f%% \n",
-                    p -> collected_data.dtps.mean(),
+                    p -> collected_data.dtps.mean(), dtps_error,
                     p -> collected_data.dtps.mean() ? dtps_error * 100 / p -> collected_data.dtps.mean() : 0.0 );
 
     double tmi_error = sim_t::distribution_mean_error( *p -> sim, p -> collected_data.theck_meloree_index );

@@ -4912,11 +4912,11 @@ public:
     void datacollection_end();
   };
   std::vector<stats_results_t> direct_results;
-  std::vector<stats_results_t> blocked_direct_results;
   std::vector<stats_results_t> direct_results_detail;
+  std::vector<stats_results_t> blocked_direct_results;
   std::vector<stats_results_t> tick_results;
-  std::vector<stats_results_t> blocked_tick_results;
   std::vector<stats_results_t> tick_results_detail;
+  std::vector<stats_results_t> blocked_tick_results;
 
   sc_timeline_t timeline_amount;
 

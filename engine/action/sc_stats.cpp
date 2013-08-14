@@ -103,6 +103,7 @@ full_result_e stats_t::translate_result( result_e result, block_result_e block_r
     {
     case BLOCK_RESULT_CRIT_BLOCKED: fulltype--;
     case BLOCK_RESULT_BLOCKED:      fulltype--;
+    default:                        break;
     }
   }
   return fulltype;
