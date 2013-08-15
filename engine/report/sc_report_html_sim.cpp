@@ -454,7 +454,9 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
       s -> tick_results[ RESULT_CRIT ].pct,
       s -> tick_results[ RESULT_MISS ].pct + s -> tick_results[ RESULT_DODGE  ].pct + s -> tick_results[ RESULT_PARRY  ].pct,
       s -> tick_results[ RESULT_GLANCE ].pct,
-      s -> blocked_tick_results[ BLOCK_RESULT_BLOCKED  ].pct + s -> blocked_tick_results[ BLOCK_RESULT_CRIT_BLOCKED  ].pct,
+      s -> tick_results_detail[ FULLTYPE_HIT_BLOCK ].pct + s -> tick_results_detail[ FULLTYPE_HIT_CRITBLOCK ].pct +
+      s -> tick_results_detail[ FULLTYPE_GLANCE_BLOCK ].pct + s -> tick_results_detail[ FULLTYPE_GLANCE_CRITBLOCK ].pct +
+      s -> tick_results_detail[ FULLTYPE_CRIT_BLOCK ].pct + s -> tick_results_detail[ FULLTYPE_CRIT_CRITBLOCK ].pct,
       s -> total_intervals.mean(),
       s -> total_amount.mean(),
       s -> player -> collected_data.fight_length.mean() );
