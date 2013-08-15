@@ -238,9 +238,9 @@ void print_xml_roster( sim_t* sim, xml_writer_t & writer )
     player_t * current_player = sim -> players_by_name[ i ];
     print_xml_player( sim, writer, current_player, NULL );
     std::vector<pet_t*>& pl = sim -> players_by_name[ i ] -> pet_list;
-    for ( size_t i = 0; i < pl.size(); ++i )
+    for ( size_t j = 0; j < pl.size(); ++j )
     {
-      pet_t* pet = pl[ i ];
+      pet_t* pet = pl[ j ];
       if ( pet -> summoned )
         print_xml_player( sim, writer, pet, current_player );
     }
@@ -258,9 +258,9 @@ void print_xml_targets( sim_t* sim, xml_writer_t & writer )
   {
     player_t * current_player = sim -> targets_by_name[ i ];
     print_xml_player( sim, writer, current_player, NULL );
-    for ( size_t i = 0; i < current_player -> pet_list.size(); ++i )
+    for ( size_t j = 0; j < current_player -> pet_list.size(); ++j )
     {
-      pet_t* pet = current_player -> pet_list[ i ];
+      pet_t* pet = current_player -> pet_list[ j ];
       if ( pet -> summoned )
         print_xml_player( sim, writer, pet, current_player );
     }
@@ -462,9 +462,9 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
     if ( s -> num_executes.mean() > 1 || s -> compound_amount > 0 )
     {
       int id = 0;
-      for ( size_t i = 0; i < s -> player -> action_list.size(); ++i )
+      for ( size_t j = 0; j < s -> player -> action_list.size(); ++j )
       {
-        action_t* a = s -> player -> action_list[ i ];
+        action_t* a = s -> player -> action_list[ j ];
         if ( a -> stats != s ) continue;
         id = a -> id;
         if ( ! a -> background ) break;
@@ -502,22 +502,22 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
         writer.begin_tag( "direct_results" );
         writer.print_attribute( "count", util::to_string( s -> num_direct_results.mean() ) );
 
-        for ( result_e i = RESULT_MAX; --i >= RESULT_NONE; )
+        for ( result_e j = RESULT_MAX; --j >= RESULT_NONE; )
         {
-          if ( s -> direct_results[ i ].count.mean() )
+          if ( s -> direct_results[ j ].count.mean() )
           {
             writer.begin_tag( "result" );
-            writer.print_attribute( "type", util::result_type_string( i ) );
-            writer.print_attribute( "count", util::to_string( s -> direct_results[ i ].count.mean() ) );
-            writer.print_attribute( "pct", util::to_string( s -> direct_results[ i ].pct ) );
-            writer.print_attribute( "min", util::to_string( s -> direct_results[ i ].actual_amount.min() ) );
-            writer.print_attribute( "max", util::to_string( s -> direct_results[ i ].actual_amount.max() ) );
-            writer.print_attribute( "avg", util::to_string( s -> direct_results[ i ].actual_amount.mean() ) );
-            writer.print_attribute( "avg_min", util::to_string( s -> direct_results[ i ].avg_actual_amount.min() ) );
-            writer.print_attribute( "avg_max", util::to_string( s -> direct_results[ i ].avg_actual_amount.max() ) );
-            writer.print_attribute( "actual", util::to_string( s -> direct_results[ i ].fight_actual_amount.mean() ) );
-            writer.print_attribute( "total", util::to_string( s -> direct_results[ i ].fight_total_amount.mean() ) );
-            writer.print_attribute( "overkill_pct", util::to_string( s -> direct_results[ i ].overkill_pct.mean() ) );
+            writer.print_attribute( "type", util::result_type_string( j ) );
+            writer.print_attribute( "count", util::to_string( s -> direct_results[ j ].count.mean() ) );
+            writer.print_attribute( "pct", util::to_string( s -> direct_results[ j ].pct ) );
+            writer.print_attribute( "min", util::to_string( s -> direct_results[ j ].actual_amount.min() ) );
+            writer.print_attribute( "max", util::to_string( s -> direct_results[ j ].actual_amount.max() ) );
+            writer.print_attribute( "avg", util::to_string( s -> direct_results[ j ].actual_amount.mean() ) );
+            writer.print_attribute( "avg_min", util::to_string( s -> direct_results[ j ].avg_actual_amount.min() ) );
+            writer.print_attribute( "avg_max", util::to_string( s -> direct_results[ j ].avg_actual_amount.max() ) );
+            writer.print_attribute( "actual", util::to_string( s -> direct_results[ j ].fight_actual_amount.mean() ) );
+            writer.print_attribute( "total", util::to_string( s -> direct_results[ j ].fight_total_amount.mean() ) );
+            writer.print_attribute( "overkill_pct", util::to_string( s -> direct_results[ j ].overkill_pct.mean() ) );
             writer.end_tag( "result" );
           }
         }
@@ -531,22 +531,22 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
         writer.print_attribute( "count", util::to_string( s -> num_tick_results.mean() ) );
         writer.print_attribute( "ticks", util::to_string( s -> num_ticks.mean() ) );
 
-        for ( result_e i = RESULT_MAX; --i >= RESULT_NONE; )
+        for ( result_e j = RESULT_MAX; --j >= RESULT_NONE; )
         {
-          if ( s -> tick_results[ i ].count.mean() )
+          if ( s -> tick_results[ j ].count.mean() )
           {
             writer.begin_tag( "result" );
-            writer.print_attribute( "type", util::result_type_string( i ) );
-            writer.print_attribute( "count", util::to_string( s -> tick_results[ i ].count.mean() ) );
-            writer.print_attribute( "pct", util::to_string( s -> tick_results[ i ].pct ) );
-            writer.print_attribute( "min", util::to_string( s -> tick_results[ i ].actual_amount.min() ) );
-            writer.print_attribute( "max", util::to_string( s -> tick_results[ i ].actual_amount.max() ) );
-            writer.print_attribute( "avg", util::to_string( s -> tick_results[ i ].actual_amount.mean() ) );
-            writer.print_attribute( "avg_min", util::to_string( s -> tick_results[ i ].avg_actual_amount.min() ) );
-            writer.print_attribute( "avg_max", util::to_string( s -> tick_results[ i ].avg_actual_amount.max() ) );
-            writer.print_attribute( "actual", util::to_string( s -> tick_results[ i ].fight_actual_amount.mean() ) );
-            writer.print_attribute( "total", util::to_string( s -> tick_results[ i ].fight_total_amount.mean() ) );
-            writer.print_attribute( "overkill_pct", util::to_string( s -> tick_results[ i ].overkill_pct.mean() ) );
+            writer.print_attribute( "type", util::result_type_string( j ) );
+            writer.print_attribute( "count", util::to_string( s -> tick_results[ j ].count.mean() ) );
+            writer.print_attribute( "pct", util::to_string( s -> tick_results[ j ].pct ) );
+            writer.print_attribute( "min", util::to_string( s -> tick_results[ j ].actual_amount.min() ) );
+            writer.print_attribute( "max", util::to_string( s -> tick_results[ j ].actual_amount.max() ) );
+            writer.print_attribute( "avg", util::to_string( s -> tick_results[ j ].actual_amount.mean() ) );
+            writer.print_attribute( "avg_min", util::to_string( s -> tick_results[ j ].avg_actual_amount.min() ) );
+            writer.print_attribute( "avg_max", util::to_string( s -> tick_results[ j ].avg_actual_amount.max() ) );
+            writer.print_attribute( "actual", util::to_string( s -> tick_results[ j ].fight_actual_amount.mean() ) );
+            writer.print_attribute( "total", util::to_string( s -> tick_results[ j ].fight_total_amount.mean() ) );
+            writer.print_attribute( "overkill_pct", util::to_string( s -> tick_results[ j ].overkill_pct.mean() ) );
             writer.end_tag( "result" );
           }
         }
@@ -563,9 +563,9 @@ void print_xml_player_actions( xml_writer_t & writer, player_t* p )
       // Action Details
       std::vector<std::string> processed_actions;
       size_t size = s -> action_list.size();
-      for ( size_t i = 0; i < size; i++ )
+      for ( size_t m = 0; m < size; m++ )
       {
-        action_t* a = s -> action_list[ i ];
+        action_t* a = s -> action_list[ m ];
 
         bool found = false;
         size_t size_processed = processed_actions.size();
@@ -682,9 +682,9 @@ void print_xml_player_gains( xml_writer_t & writer, player_t * p )
 {
   writer.begin_tag( "gains" );
 
-  for ( size_t i = 0; i < p -> gain_list.size(); ++i )
+  for ( size_t j = 0; j < p -> gain_list.size(); ++j )
   {
-    gain_t* g = p -> gain_list[ i ];
+    gain_t* g = p -> gain_list[ j ];
     for ( size_t i = 0; i < RESOURCE_MAX; i++ )
     {
       if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
@@ -1161,9 +1161,9 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
 {
   writer.begin_tag( "action_definitions" );
 
-  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+  for ( size_t m = 0; m < p -> stats_list.size(); ++m )
   {
-    stats_t* s = p -> stats_list[ i ];
+    stats_t* s = p -> stats_list[ m ];
     if ( s -> num_executes.mean() > 1 || s -> compound_amount > 0 )
     {
       // Action Details

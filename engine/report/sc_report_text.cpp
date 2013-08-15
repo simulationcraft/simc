@@ -184,9 +184,9 @@ void print_text_actions( FILE* file, player_t* p )
   {
     pet_t* pet = p -> pet_list[ i ];
     bool first = true;
-    for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
+    for ( size_t j = 0; j < pet -> stats_list.size(); ++j )
     {
-      stats_t* s = pet -> stats_list[ i ];
+      stats_t* s = pet -> stats_list[ j ];
       if ( s -> num_executes.mean() > 1 || s -> compound_amount > 0 )
       {
         if ( first )
@@ -362,9 +362,9 @@ void print_text_player_gains( FILE* file, player_t* p )
   for ( size_t i = 0; i < p -> gain_list.size(); ++i )
   {
     gain_t* g = p -> gain_list[ i ];
-    for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+    for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; r++ )
     {
-      if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
+      if ( g -> actual[ r ] > 0 || g -> overflow[ r ] > 0 )
       {
         int length = ( int ) strlen( g -> name() );
         if ( length > max_length ) max_length = length;
@@ -392,12 +392,12 @@ void print_text_pet_gains( FILE* file, player_t* p )
     if ( pet -> collected_data.dmg.mean() <= 0 ) continue;
 
     int max_length = 0;
-    for ( size_t i = 0; i < pet -> gain_list.size(); ++i )
+    for ( size_t j = 0; j < pet -> gain_list.size(); ++j)
     {
-      gain_t* g = pet -> gain_list[ i ];
-      for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+      gain_t* g = pet -> gain_list[ j ];
+      for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; r++ )
       {
-        if ( g -> actual[ i ] > 0 || g -> overflow[ i ] > 0 )
+        if ( g -> actual[ r ] > 0 || g -> overflow[ r ] > 0 )
         {
           int length = ( int ) strlen( g -> name() );
           if ( length > max_length ) max_length = length;
@@ -408,9 +408,9 @@ void print_text_pet_gains( FILE* file, player_t* p )
     {
       util::fprintf( file, "    Pet \"%s\" Gains:\n", pet -> name_str.c_str() );
 
-      for ( size_t i = 0; i < pet -> gain_list.size(); ++i )
+      for ( size_t m = 0; m < pet -> gain_list.size(); ++m )
       {
-        gain_t* g = pet -> gain_list[ i ];
+        gain_t* g = pet -> gain_list[ m ];
         print_text_gains( file, g, max_length );
       }
     }
@@ -895,9 +895,9 @@ void print_text( FILE* file, sim_t* sim, bool detail )
     if ( sim -> report_pets_separately )
     {
       std::vector<pet_t*>& pl = sim -> players_by_name[ i ] -> pet_list;
-      for ( size_t i = 0; i < pl.size(); ++i )
+      for ( size_t j = 0; j < pl.size(); ++j )
       {
-        pet_t* pet = pl[ i ];
+        pet_t* pet = pl[ j ];
         if ( pet -> summoned && !pet -> quiet )
           print_text_player( file, pet );
       }
@@ -917,9 +917,9 @@ void print_text( FILE* file, sim_t* sim, bool detail )
       if ( sim -> report_pets_separately )
       {
         std::vector<pet_t*>& pl = sim -> targets_by_name[ i ] -> pet_list;
-        for ( size_t i = 0; i < pl.size(); ++i )
+        for ( size_t j = 0; j < pl.size(); ++j )
         {
-          pet_t* pet = pl[ i ];
+          pet_t* pet = pl[ j ];
           if ( pet -> summoned )
             print_text_player( file, pet );
         }

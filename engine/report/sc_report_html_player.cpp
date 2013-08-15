@@ -1451,21 +1451,21 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
         data -> action -> name(),
         ( targetname == "none" ? "" : " @ " + targetname ).c_str() );
 
-      for ( resource_e j = RESOURCE_HEALTH; j < RESOURCE_MAX; ++j )
+      for ( resource_e r = RESOURCE_HEALTH; r < RESOURCE_MAX; ++r )
       {
-        if ( ! p -> resources.is_infinite( j ) && data -> resource_snapshot[ j ] >= 0 )
+        if ( ! p -> resources.is_infinite( r ) && data -> resource_snapshot[ r ] >= 0 )
         {
-          if ( j == RESOURCE_HEALTH || j == RESOURCE_MANA )
-            os.printf( " %d%%", ( int ) ( ( data -> resource_snapshot[ j ] / p -> resources.max[ j ] ) * 100 ) );
+          if ( r == RESOURCE_HEALTH || r == RESOURCE_MANA )
+            os.printf( " %d%%", ( int ) ( ( data -> resource_snapshot[ r ] / p -> resources.max[ r ] ) * 100 ) );
           else
-            os.printf( " %.1f", data -> resource_snapshot[ j ] );
-          os.printf( " %s |", util::resource_type_string( j ) );
+            os.printf( " %.1f", data -> resource_snapshot[ r ] );
+          os.printf( " %s |", util::resource_type_string( r ) );
         }
       }
 
-      for ( size_t j = 0; j < data -> buff_list.size(); ++j )
+      for ( size_t b = 0; b < data -> buff_list.size(); ++b )
       {
-        buff_t* buff = data -> buff_list[ j ];
+        buff_t* buff = data -> buff_list[ b ];
         if ( ! buff -> constant ) os.printf( "\n%s", buff -> name() );
       }
 
@@ -1610,9 +1610,9 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
     pet_t* pet = p -> pet_list[ i ];
     bool first = true;
 
-    for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
+    for ( size_t j = 0; j < pet -> stats_list.size(); ++j )
     {
-      stats_t* s = pet -> stats_list[ i ];
+      stats_t* s = pet -> stats_list[ j ];
       if ( s -> rpe_sum > 0 )
       {
         if ( first )
@@ -1664,15 +1664,15 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
       bool first = true;
       std::array<double, RESOURCE_MAX> total_pet_gains = std::array<double, RESOURCE_MAX>();
       get_total_player_gains( *pet, total_pet_gains );
-      for ( size_t i = 0; i < pet -> gain_list.size(); ++i )
+      for ( size_t m = 0; m < pet -> gain_list.size(); ++m )
       {
-        gain_t* g = pet -> gain_list[ i ];
+        gain_t* g = pet -> gain_list[ m ];
         if ( first )
         {
           bool found = false;
-          for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
+          for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; r++ )
           {
-            if ( g -> actual[ i ] != 0 || g -> overflow[ i ] != 0 )
+            if ( g -> actual[ r ] != 0 || g -> overflow[ r ] != 0 )
             {
               found = true;
               break;
@@ -1769,23 +1769,23 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
 
   os.tabs() << "<div class=\"charts charts-left\">\n";
   ++os;
-  for ( resource_e j = RESOURCE_NONE; j < RESOURCE_MAX; ++j )
+  for ( resource_e r = RESOURCE_NONE; r < RESOURCE_MAX; ++r )
   {
     // hack hack. don't display RESOURCE_RUNE_<TYPE> yet. only shown in tabular data.  WiP
-    if ( j == RESOURCE_RUNE_BLOOD || j == RESOURCE_RUNE_UNHOLY || j == RESOURCE_RUNE_FROST ) continue;
+    if ( r == RESOURCE_RUNE_BLOOD || r == RESOURCE_RUNE_UNHOLY || r == RESOURCE_RUNE_FROST ) continue;
     double total_gain = 0;
     for ( size_t i = 0; i < p -> gain_list.size(); ++i )
     {
       gain_t* g = p -> gain_list[ i ];
-      if ( g -> actual[ j ] > 0 )
-        total_gain += g -> actual[ j ];
+      if ( g -> actual[ r ] > 0 )
+        total_gain += g -> actual[ r ];
     }
 
     if ( total_gain > 0 )
     {
-      if ( ! ri.gains_chart[ j ].empty() )
+      if ( ! ri.gains_chart[ r ].empty() )
       {
-        os.tabs() << "<img src=\"" << ri.gains_chart[ j ] << "\" alt=\"Resource Gains Chart\" />\n";
+        os.tabs() << "<img src=\"" << ri.gains_chart[ r ] << "\" alt=\"Resource Gains Chart\" />\n";
       }
     }
   }
@@ -1795,11 +1795,11 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
 
   os.tabs() << "<div class=\"charts\">\n";
   ++os;
-  for ( unsigned j = RESOURCE_NONE + 1; j < RESOURCE_MAX; j++ )
+  for ( unsigned r = RESOURCE_NONE + 1; r < RESOURCE_MAX; r++ )
   {
-    if ( p -> resources.max[ j ] > 0 && ! ri.timeline_resource_chart[ j ].empty() )
+    if ( p -> resources.max[ r ] > 0 && ! ri.timeline_resource_chart[ r ].empty() )
     {
-      os.tabs() << "<img src=\"" << ri.timeline_resource_chart[ j ] << "\" alt=\"Resource Timeline Chart\" />\n";
+      os.tabs() << "<img src=\"" << ri.timeline_resource_chart[ r ] << "\" alt=\"Resource Timeline Chart\" />\n";
     }
   }
   if ( p -> primary_role() == ROLE_TANK ) // Experimental, restrict to tanks for now
@@ -2053,13 +2053,13 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
       os << "\t\t\t\t\t\t\t\t\t<h4>Stat Buff details</h4>\n"
          << "\t\t\t\t\t\t\t\t\t<ul>\n";
 
-      for ( size_t i = 0; i < stat_buff -> stats.size(); ++i )
+      for ( size_t j = 0; j < stat_buff -> stats.size(); ++j )
       {
         os.printf(
           "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">stat:</span>%s</li>\n"
           "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">amount:</span>%.2f</li>\n",
-          util::stat_type_string( stat_buff -> stats[ i ].stat ),
-          stat_buff -> stats[ i ].amount );
+          util::stat_type_string( stat_buff -> stats[ j ].stat ),
+          stat_buff -> stats[ j ].amount );
       }
     }
     os << "\t\t\t\t\t\t\t\t\t</ul>\n";
@@ -2565,9 +2565,9 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
       pet_t* pet = p -> pet_list[ i ];
       bool first = true;
 
-      for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
+      for ( size_t m = 0; m < pet -> stats_list.size(); ++m )
       {
-        stats_t* s = pet -> stats_list[ i ];
+        stats_t* s = pet -> stats_list[ m ];
 
         if ( ( s -> type != STATS_HEAL && s -> type != STATS_ABSORB ) &&
              ( s -> num_executes.sum() || s -> compound_amount > 0 || sim -> debug ) )
@@ -2641,9 +2641,9 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
       pet_t* pet = p -> pet_list[ i ];
       bool first = true;
 
-      for ( size_t i = 0; i < pet -> stats_list.size(); ++i )
+      for ( size_t m = 0; m < pet -> stats_list.size(); ++m )
       {
-        stats_t* s = pet -> stats_list[ i ];
+        stats_t* s = pet -> stats_list[ m ];
 
         if ( ( s -> type == STATS_HEAL || s -> type == STATS_ABSORB ) &&
              ( s -> num_executes.sum() || s -> compound_amount > 0 || sim -> debug ) )
@@ -2710,9 +2710,9 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, player_t* p
     }
   }
 
-  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+  for ( size_t m = 0; m < p -> pet_list.size(); ++m )
   {
-    pet_t* pet = p -> pet_list[ i ];
+    pet_t* pet = p -> pet_list[ m ];
     for ( size_t j = 0; j < p -> benefit_list.size(); ++j )
     {
       benefit_t* u = p -> benefit_list[ j ];
@@ -2723,7 +2723,7 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, player_t* p
         benefit_name += u -> name();
 
         os << "\t\t\t\t\t\t\t\t<tr";
-        if ( !( i & 1 ) )
+        if ( !( m & 1 ) )
         {
           os << " class=\"odd\"";
         }
@@ -2765,9 +2765,9 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, player_t* p
     }
   }
 
-  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+  for ( size_t m = 0; m < p -> pet_list.size(); ++m )
   {
-    pet_t* pet = p -> pet_list[ i ];
+    pet_t* pet = p -> pet_list[ m ];
     for ( size_t j = 0; j < p -> uptime_list.size(); ++j )
     {
       uptime_t* u = p -> uptime_list[ j ];
@@ -2778,7 +2778,7 @@ void print_html_player_benefits_uptimes( report::sc_html_stream& os, player_t* p
         uptime_name += u -> name();
 
         os << "\t\t\t\t\t\t\t\t<tr";
-        if ( !( i & 1 ) )
+        if ( !( m & 1 ) )
         {
           os << " class=\"odd\"";
         }

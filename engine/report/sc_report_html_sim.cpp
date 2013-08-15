@@ -4242,9 +4242,9 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
     if ( sim -> report_pets_separately )
     {
       std::vector<pet_t*>& pl = sim -> players_by_name[ i ] -> pet_list;
-      for ( size_t i = 0; i < pl.size(); ++i )
+      for ( size_t j = 0; j < pl.size(); ++j )
       {
-        pet_t* pet = pl[ i ];
+        pet_t* pet = pl[ j ];
         if ( pet -> summoned && !pet -> quiet )
           report::print_html_player( os, pet, 1 );
       }
@@ -4269,9 +4269,9 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
       if ( sim -> report_pets_separately )
       {
         std::vector<pet_t*>& pl = sim -> targets_by_name[ i ] -> pet_list;
-        for ( size_t i = 0; i < pl.size(); ++i )
+        for ( size_t j = 0; j < pl.size(); ++j )
         {
-          pet_t* pet = pl[ i ];
+          pet_t* pet = pl[ j ];
           //if ( pet -> summoned )
           report::print_html_player( os, pet, 1 );
         }
