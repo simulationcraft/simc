@@ -620,11 +620,9 @@ static  void trigger_sweeping_strikes( action_state_t* s )
 
     double composite_da_multiplier()
     {
-      double m = warrior_attack_t::composite_da_multiplier();
-
-      if (player -> dbc.ptr ? m *= 0.75 : m *= 0.5); //50% damage of the original attack, 75% on PTR
-
-      return m;
+      //do not double dip on multipliers
+      return (player -> dbc.ptr ?  0.75 : 0.5); //50% damage of the original attack, 75% on PTR
+      
     }
 
     size_t available_targets( std::vector< player_t* >& tl )
@@ -2043,16 +2041,67 @@ struct shockwave_t : public warrior_attack_t
   }
 };
 
+struct slam_sweeping_strikes_attack_t : public warrior_attack_t
+{
+  slam_sweeping_strikes_attack_t( warrior_t* p ) :
+  warrior_attack_t( "slam_sweeping_strikes", p , p -> find_class_spell( "Slam" ))
+  {
+    may_miss = may_crit = proc = callbacks = false;
+    background = true;
+    aoe = -1;
+    range = 2;
+    weapon_multiplier=0;//do not add weapon damage
+    weapon = NULL;//so we don't double dip on seasoned soldier
+    
+    
+  }
+  
+  // Sweeping Strikes ignores armor apparently
+  virtual double target_armor( player_t* )
+  {
+    return 0;
+  }
+  
+  double composite_da_multiplier()
+  {
+    return data().effectN( 3 ).percent(); //does not double dip on anything
+  }
+  
+  size_t available_targets( std::vector< player_t* >& tl )
+  {
+    tl.clear();
+    
+    for ( size_t i = 0, actors = sim -> actor_list.size(); i < actors; i++ )
+    {
+      player_t* t = sim -> actor_list[ i ];
+      
+      if ( ! t -> is_sleeping() && t -> is_enemy() && ( t != target ) )
+        tl.push_back( t );
+    }
+    
+    return tl.size();
+  }
+  
+};
+  
 // Slam =====================================================================
 
 struct slam_t : public warrior_attack_t
 {
+  slam_sweeping_strikes_attack_t* extra_sweep;
+  
   slam_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "slam", p, p -> find_class_spell( "Slam" ) )
   {
     parse_options( NULL, options_str );
 
     weapon = &( p -> main_hand_weapon );
+    
+    if ( p -> dbc.ptr )
+    {
+      extra_sweep = new slam_sweeping_strikes_attack_t( p );
+      add_child( extra_sweep );
+    }
   }
 
   virtual double action_multiplier()
@@ -2066,6 +2115,20 @@ struct slam_t : public warrior_attack_t
       am *= 1.0 + 0.1;
 
     return am;
+  }
+  
+  virtual void impact( action_state_t* s )
+  {
+    warrior_attack_t::impact( s );
+    
+    warrior_t *p = cast();
+
+    if ( p-> dbc.ptr && p -> buff.sweeping_strikes -> up())
+    {
+      extra_sweep -> base_dd_min = s -> result_amount;
+      extra_sweep -> base_dd_max = s -> result_amount;
+      extra_sweep -> execute();
+    }
   }
 
 };
