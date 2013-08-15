@@ -1415,7 +1415,12 @@ struct eviscerate_t : public rogue_attack_t
     timespan_t t = rogue_attack_t::gcd();
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
-      t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
+    {
+      if ( maybe_ptr( player -> dbc.ptr ) )
+        t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
+      else
+        t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
+    }
 
     return t;
   }
@@ -1694,7 +1699,7 @@ struct killing_spree_t : public rogue_attack_t
     double m = rogue_attack_t::composite_target_da_multiplier( target );
 
     rogue_td_t* td = cast_td( target );
-    if ( td -> dots.killing_spree -> current_tick > 0 )
+    if ( td -> dots.killing_spree -> current_tick >= 0 )
       m *= std::pow( 1.0 + p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent(),
                      td -> dots.killing_spree -> current_tick );
 
@@ -1790,10 +1795,8 @@ struct mutilate_t : public rogue_attack_t
   virtual double cost()
   {
     double c = rogue_attack_t::cost();
-    // PTR 17056 claims the energy cost for assassination is reduced by 20
-    // TODO: Correct spell data, if it's possible to do
     if ( p() -> buffs.t16_2pc_melee -> up() )
-      c -= 20; // This is actually 20 per stack but only one stack can be up for assassination
+      c -= 6 * p() -> buffs.t16_2pc_melee -> check();
 
     return c;
   }
@@ -1917,7 +1920,12 @@ struct revealing_strike_t : public rogue_attack_t
     timespan_t t = rogue_attack_t::gcd();
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
-      t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
+    {
+      if ( maybe_ptr( player -> dbc.ptr ) )
+        t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
+      else
+        t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
+    }
 
     return t;
   }
@@ -1961,7 +1969,12 @@ struct rupture_t : public rogue_attack_t
     timespan_t t = rogue_attack_t::gcd();
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
-      t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
+    {
+      if ( maybe_ptr( player -> dbc.ptr ) )
+        t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
+      else
+        t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
+    }
 
     return t;
   }
@@ -2053,7 +2066,12 @@ struct sinister_strike_t : public rogue_attack_t
     timespan_t t = rogue_attack_t::gcd();
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
-      t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
+    {
+      if ( maybe_ptr( player -> dbc.ptr ) )
+        t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
+      else
+        t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
+    }
 
     return t;
   }
@@ -2121,7 +2139,12 @@ struct slice_and_dice_t : public rogue_attack_t
     timespan_t t = rogue_attack_t::gcd();
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
-      t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
+    {
+      if ( maybe_ptr( player -> dbc.ptr ) )
+        t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
+      else
+        t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
+    }
 
     return t;
   }
