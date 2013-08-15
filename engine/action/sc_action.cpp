@@ -2074,7 +2074,11 @@ double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, time
   switch ( scales_with )
   {
     case RPPM_HASTE:
-      coeff *= 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
+      // Don't double-dip in RPPM_HASTE on live
+      if ( maybe_ptr( player -> dbc.ptr ) )
+      {
+	coeff *= 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
+      }
       break;
     case RPPM_ATTACK_CRIT:
       coeff *= 1.0 + player -> cache.attack_crit();
