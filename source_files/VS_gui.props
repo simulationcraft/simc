@@ -18,10 +18,10 @@ Requires Precompiled Header enabled for simulationcraft.hpp
     <ClCompile Include="..\qt\simcpaperdoll.cc" >
       <ExcludedFromBuild Condition="'$(Configuration)'=='Release'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="$(IntDir)\moc_simulationcraftqt.cpp">
+    <ClCompile Include="$(IntDir)moc_simulationcraftqt.cpp">
       <PrecompiledHeader />
     </ClCompile>
-    <ClCompile Include="$(IntDir)\moc_simcpaperdoll.cpp">
+    <ClCompile Include="$(IntDir)moc_simcpaperdoll.cpp">
       <PrecompiledHeader />
       <ExcludedFromBuild Condition="'$(Configuration)'=='Release'">true</ExcludedFromBuild>
     </ClCompile>
@@ -32,21 +32,27 @@ Requires Precompiled Header enabled for simulationcraft.hpp
     <ResourceCompile Include="..\simcqt.rc" />
   </ItemGroup>
   
+
+  
   <!-- Moc'ing Header files include Qt Classes -->
+  <PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='Debug'">
+    <MOC_DEFINES>-DUNICODE -DWIN32 -DWIN64 -DQT_VERSION_5 -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -DQT_WEBKITWIDGETS_LIB -DQT_QUICK_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_OPENGL_LIB -DQT_PRINTSUPPORT_LIB -DQT_QML_LIB -DQT_MULTIMEDIA_LIB -DQT_WEBKIT_LIB -DQT_WIDGETS_LIB -DQT_SENSORS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1700 -D_WIN32 -D_WIN64</MOC_DEFINES>
+  </PropertyGroup>
+  <PropertyGroup Label="UserMacros" Condition="'$(Configuration)'=='Release'">
+    <MOC_DEFINES>-DUNICODE -DWIN32 -DWIN64 -DQT_VERSION_5 -DQT_NO_DEBUG -DQT_WEBKITWIDGETS_LIB -DQT_QUICK_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_OPENGL_LIB -DQT_PRINTSUPPORT_LIB -DQT_QML_LIB -DQT_MULTIMEDIA_LIB -DQT_WEBKIT_LIB -DQT_WIDGETS_LIB -DQT_SENSORS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1700 -D_WIN32 -D_WIN64</MOC_DEFINES>
+  </PropertyGroup>
   <ItemGroup>
-    <CustomBuild Include="..\engine\simulationcraft.hpp" />
     <CustomBuild Condition="'$(Configuration)'=='Debug'" Include="..\qt\simcpaperdoll.hpp">
-      <AdditionalInputs Condition="'$(Configuration)'=='Debug'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
-      <Message Condition="'$(Configuration)'=='Debug'">Moc%27ing %(Identity)...</Message>
-      <Outputs Condition="'$(Configuration)'=='Debug'">$(IntDir)\moc_%(Filename).cpp</Outputs>
-      <Command Condition="'$(Configuration)'=='Debug'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o "$(IntDir)\moc_%(Filename).cpp" "-fsimulationcraft.hpp" "-f..\qt\simcpaperdoll.hpp" -DUNICODE -DWIN32 -DWIN64 -DQT_VERSION_5 -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -DQT_WEBKITWIDGETS_LIB -DQT_QUICK_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_OPENGL_LIB -DQT_PRINTSUPPORT_LIB -DQT_QML_LIB -DQT_MULTIMEDIA_LIB -DQT_WEBKIT_LIB -DQT_WIDGETS_LIB -DQT_SENSORS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1700 -D_WIN32 -D_WIN64 "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" -I"$(QTDIR)\include\QtANGLE" "-I$(QTDIR)\include\QtWebKit" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include" "-I$(QTDIR)\include\ActiveQt" "-I$(QTDIR)\mkspecs\default" "-I$(SolutionDir)\." "-I$(SolutionDir)vs" "-I$(SolutionDir)engine" "-I." "-I." "-I."</Command>
+      <AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+      <Message>Moc%27ing %(Identity)...</Message>
+      <Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+      <Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "..\qt\%(Filename).hpp" -o "$(IntDir)moc_%(Filename).cpp" </Command>
     </CustomBuild>
 
     <CustomBuild Include="..\qt\simulationcraftqt.hpp">
-      <AdditionalInputs>$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
+      <AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
       <Message>Moc%27ing %(Identity)...</Message>
-      <Command>$(QTDIR)\bin\moc.exe -DUNICODE -DWIN32 -DWIN64 -DQT_VERSION_5 -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -DQT_WEBKITWIDGETS_LIB -DQT_QUICK_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_OPENGL_LIB -DQT_PRINTSUPPORT_LIB -DQT_QML_LIB -DQT_MULTIMEDIA_LIB -DQT_WEBKIT_LIB -DQT_WIDGETS_LIB -DQT_SENSORS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1700 -D_WIN32 -D_WIN64 -I"$(QTDIR)\include\QtCore" -I"$(QTDIR)\include\QtGui" -I"$(QTDIR)\include\QtANGLE" -I"$(QTDIR)\include\QtWebKit" -I"$(QTDIR)\include\QtWidgets" -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\include\ActiveQt" -I"debug" -I$(QTDIR)\mkspecs\default -DWIN32 ..\qt\simulationcraftqt.hpp -o $(IntDir)\moc_simulationcraftqt.cpp
-</Command>
+      <Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "..\qt\%(Filename).hpp" -o "$(IntDir)moc_%(Filename).cpp" </Command>
       <AdditionalInputs>Rem;..\qt\simulationcraftqt.hpp;%(AdditionalInputs)</AdditionalInputs>
       <Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
       </CustomBuild>
