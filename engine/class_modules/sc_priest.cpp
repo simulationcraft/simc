@@ -2421,8 +2421,13 @@ struct shadow_word_death_t : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier();
 
-    if ( priest.dbc.ptr && priest.buffs.empowered_shadows -> check() )
-      d *= 1.0 + priest.buffs.empowered_shadows->current_value *  priest.buffs.empowered_shadows -> check();
+    if ( priest.dbc.ptr )
+    {
+      d *= 1.0 + 0.15; //2013-08-14 Patch notes, not yet on PTR servers.
+
+      if (priest.buffs.empowered_shadows -> check() )
+        d *= 1.0 + priest.buffs.empowered_shadows->current_value *  priest.buffs.empowered_shadows -> check();
+    }
 
     return d;
   }
@@ -2799,6 +2804,18 @@ struct shadow_word_pain_mastery_t : public priest_procced_mastery_spell_t
       priest.buffs.divine_insight_shadow -> trigger();
     }
   }
+
+  virtual double action_multiplier()
+  {
+    double am = priest_spell_t::action_multiplier();
+
+    if ( priest.dbc.ptr )
+    {
+      am *= 1.0 + 0.25; //2013-08-14 Patch notes, not yet on PTR servers.
+    }
+
+    return am;
+  }
 };
 
 // Shadow Word Pain Spell ===================================================
@@ -2852,6 +2869,18 @@ struct shadow_word_pain_t : public priest_spell_t
     {
       proc_spell -> schedule_execute();
     }
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = priest_spell_t::action_multiplier();
+
+    if ( priest.dbc.ptr )
+    {
+      am *= 1.0 + 0.25; //2013-08-14 Patch notes, not yet on PTR servers.
+    }
+
+    return am;
   }
 };
 
@@ -2915,6 +2944,18 @@ struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
       }
     }
   }
+
+  virtual double action_multiplier()
+  {
+    double am = priest_spell_t::action_multiplier();
+
+    if ( priest.dbc.ptr )
+    {
+      am *= 1.0 + 0.20; //2013-08-14 Patch notes, not yet on PTR servers.
+    }
+
+    return am;
+  }
 };
 
 // Vampiric Touch Spell =====================================================
@@ -2967,6 +3008,18 @@ struct vampiric_touch_t : public priest_spell_t
         }
       }
     }
+  }
+
+  virtual double action_multiplier()
+  {
+    double am = priest_spell_t::action_multiplier();
+
+    if ( priest.dbc.ptr )
+    {
+      am *= 1.0 + 0.20; //2013-08-14 Patch notes, not yet on PTR servers.
+    }
+
+    return am;
   }
 };
 
