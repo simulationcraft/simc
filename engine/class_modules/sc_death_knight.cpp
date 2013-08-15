@@ -406,6 +406,7 @@ public:
   virtual double    composite_armor_multiplier();
   virtual double    composite_melee_speed();
   virtual double    composite_melee_haste();
+  virtual double    composite_spell_haste();
   virtual double    composite_attribute_multiplier( attribute_e attr );
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual double    composite_parry();
@@ -5062,6 +5063,18 @@ double death_knight_t::composite_melee_haste()
   double haste = player_t::composite_melee_haste();
 
   haste *= 1.0 / ( 1.0 + buffs.unholy_presence -> value() );
+
+  return haste;
+}
+
+// death_knight_t::composite_spell_haste() ==================================
+
+double death_knight_t::composite_spell_haste()
+{
+  double haste = player_t::composite_spell_haste();
+
+  if ( maybe_ptr( dbc.ptr ) )
+    haste *= 1.0 / ( 1.0 + buffs.unholy_presence -> value() );
 
   return haste;
 }
