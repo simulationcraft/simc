@@ -1014,7 +1014,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school )
   if ( o() -> talents.grimoire_of_supremacy -> ok() && pet_type != PET_WILD_IMP )
     m *= 1.0 + supremacy -> effectN( 1 ).percent(); // The relevant effect is not attatched to the talent spell, weirdly enough
 
-  if ( o() -> buffs.tier16_2pc_fiery_wrath -> up())
+  if ( maybe_ptr( dbc.ptr ) && o() -> buffs.tier16_2pc_fiery_wrath -> up())
     m *= 1.0  + o() -> buffs.tier16_2pc_fiery_wrath -> value();
   return m;
 }
@@ -4642,7 +4642,7 @@ double warlock_t::composite_player_multiplier( school_e school )
     m *= 1.0 + mastery_value;
   }
 
-  if ( buffs.tier16_2pc_fiery_wrath -> up())
+  if ( maybe_ptr( dbc.ptr ) && buffs.tier16_2pc_fiery_wrath -> up())
   {
     m *= 1.0 + buffs.tier16_2pc_fiery_wrath -> value();
   }
