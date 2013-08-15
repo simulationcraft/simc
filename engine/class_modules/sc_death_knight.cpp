@@ -5072,7 +5072,8 @@ void death_knight_t::init_rng()
 {
   player_t::init_rng();
 
-  t15_2pc_melee     = new real_ppm_t( "t15_2pc_melee", *this, maybe_ptr ( dbc.ptr) ? 1.15 : 1.0);
+  const spell_data_t* spell = find_spell( 138343 );
+  t15_2pc_melee     = new real_ppm_t( "t15_2pc_melee", *this, maybe_ptr( dbc.ptr ) ? spell -> real_ppm() : 1.0 );
 }
 
 // death_knight_t::init_base ================================================

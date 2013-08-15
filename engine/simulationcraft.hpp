@@ -5621,7 +5621,7 @@ private:
   timespan_t   initial_precombat_time;
   rppm_scale_e scales_with;
 public:
-  real_ppm_t( const std::string& /* name */, player_t& p, double frequency = std::numeric_limits<double>::min(), rppm_scale_e s = RPPM_HASTE ) :
+  real_ppm_t( const std::string& /* name */, player_t& p, double frequency = std::numeric_limits<double>::min(), rppm_scale_e s = RPPM_NONE ) :
     rng( p.rng() ),
     freq( frequency ),
     last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
