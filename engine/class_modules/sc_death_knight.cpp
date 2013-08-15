@@ -307,8 +307,11 @@ public:
     const spell_data_t* chains_of_ice;
     const spell_data_t* dancing_rune_weapon;
     const spell_data_t* enduring_infection;
+    const spell_data_t* festering_blood;
     const spell_data_t* icebound_fortitude;
+    const spell_data_t* loud_horn;
     const spell_data_t* outbreak;
+    const spell_data_t* regenerative_magic;
     const spell_data_t* shifting_presences;
     const spell_data_t* vampiric_blood;
   } glyph;
@@ -2685,7 +2688,7 @@ struct blood_boil_t : public death_knight_spell_t
   {
     double m = death_knight_spell_t::composite_target_multiplier( t );
 
-    if ( cast_td( t ) -> diseases() > 0 )
+    if ( cast_td( t ) -> diseases() > 0 || p() -> glyph.festering_blood -> ok() )
       m *= 1.50; // hardcoded into tooltip, 18/12/2012
 
     return m;
@@ -3617,6 +3620,8 @@ struct horn_of_winter_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
+    cooldown -> duration = data().cooldown() * ( 1.0 + p -> glyph.loud_horn -> effectN( 1 ).percent() );
+    rp_gain = data().runic_power_gain() + p -> find_spell( 147078 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
   }
 
   virtual void execute()
@@ -5183,8 +5188,11 @@ void death_knight_t::init_spells()
   glyph.chains_of_ice             = find_glyph_spell( "Glyph of Chains of Ice" );
   glyph.dancing_rune_weapon       = find_glyph_spell( "Glyph of Dancing Rune Weapon" );
   glyph.enduring_infection        = find_glyph_spell( "Glyph of Enduring Infection" );
+  glyph.festering_blood           = find_glyph_spell( "Glyph of Festering Blood" );
   glyph.icebound_fortitude        = find_glyph_spell( "Glyph of Icebound Fortitude" );
+  glyph.loud_horn                 = find_glyph_spell( "Glyph of Loud Horn" );
   glyph.outbreak                  = find_glyph_spell( "Glyph of Outbreak" );
+  glyph.regenerative_magic        = find_glyph_spell( "Glyph of Regenerative Magic" );
   glyph.shifting_presences        = find_glyph_spell( "Glyph of Shifting Presences" );
   glyph.vampiric_blood            = find_glyph_spell( "Glyph of Vampiric Blood" );
 
