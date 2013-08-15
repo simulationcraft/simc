@@ -517,6 +517,7 @@ public:
 //  QStringList resultsHtml;
 
   QString AppDataDir;
+  QString ResultsDestDir;
   QString TmpDir;
 
   QString cmdLineText;

@@ -160,19 +160,20 @@ void SC_MainWindow::saveHistory()
 SC_MainWindow::SC_MainWindow( QWidget *parent )
   : QWidget( parent ),
     visibleWebView( 0 ), sim( 0 ), paperdoll_sim( 0 ), simPhase( "%p%" ), simProgress( 100 ), simResults( 0 ),
-    AppDataDir( "." ), TmpDir( "." )
+    AppDataDir( "." ), ResultsDestDir( "." ), TmpDir( "." )
 {
   setWindowTitle( QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion() );
   setAttribute( Qt::WA_AlwaysShowToolTips );
 
 #if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
   QDir::home().mkpath( "Library/Application Support/SimulationCraft" );
-  AppDataDir = TmpDir = QDir::home().absoluteFilePath( "Library/Application Support/SimulationCraft" );
+  AppDataDir = ResultsDestDir = TmpDir = QDir::home().absoluteFilePath( "Library/Application Support/SimulationCraft" );
 #endif
 #ifdef SC_TO_INSTALL // GUI will be installed, use default AppData & Temp location for files created
 #ifdef Q_OS_WIN32
   QDir::home().mkpath( "SimulationCraft" );
   AppDataDir = TmpDir = QDir::home().absoluteFilePath( "SimulationCraft" );
+  ResultsDestDir = QDir::homePath();
 #endif
 #endif
 
@@ -186,12 +187,31 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   }
   else
   {
-    s = QStandardPaths::standardLocations( QStandardPaths::TempLocation );
+    s = QStandardPaths::standardLocations( QStandardPaths::TempLocation ); // Fallback
     if ( ! s.empty() )
     {
       QDir a( s.first() );
       if ( a.isReadable() )
         TmpDir = s.first();
+    }
+  }
+
+  // Set ResultsDestDir
+  s = QStandardPaths::standardLocations( QStandardPaths::DocumentsLocation );
+  if ( ! s.empty() )
+  {
+    QDir a( s.first() );
+    if ( a.isReadable() )
+      ResultsDestDir = s.first();
+  }
+  else
+  {
+    s = QStandardPaths::standardLocations( QStandardPaths::HomeLocation ); // Fallback, just use home path
+    if ( ! s.empty() )
+    {
+      QDir a( s.first() );
+      if ( a.isReadable() )
+        ResultsDestDir = s.first();
     }
   }
 #endif
@@ -1016,7 +1036,6 @@ void SC_MainWindow::saveResults()
   int index = resultsTab -> currentIndex();
   if ( index < 0 ) return;
 
-  cmdLine -> setText( QFileDialog::getSaveFileName( this, "Save results", AppDataDir + "/results_html.html", "HTML files (*.html)" ) );
   SC_ResultTab* t = debug_cast<SC_ResultTab*>( resultsTab -> currentWidget() );
   t -> save_result();
 }
@@ -1444,8 +1463,22 @@ void PersistentCookieJar::load()
 
 void SC_ResultTab::save_result()
 {
-  qDebug() << "foo";
-  QFile file( mainWindow -> cmdLine -> text() );
+  QString destination;
+  switch ( currentTab() )
+  {
+  case TAB_HTML:
+    destination = "results_html.html"; break;
+  case TAB_TEXT:
+    destination = "results_text.txt"; break;
+  case TAB_XML:
+    destination = "results_xml.xml"; break;
+  case TAB_PLOTDATA:
+    destination = "results_plotdata.csv"; break;
+  case TAB_CSV:
+    destination = "results_csv.csv"; break;
+  default: break;
+  }
+  QFile file( QFileDialog::getSaveFileName( this, "Save results", mainWindow -> ResultsDestDir + "/" + destination, "HTML files (*.html)" ) );
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
     switch ( currentTab() )
@@ -1469,23 +1502,7 @@ void SC_ResultTab::save_result()
 
 void SC_ResultTab::TabChanged( int index )
 {
-  result_tabs_e t = static_cast<result_tabs_e>( index );
-  QString cmd_line_text;
-  switch ( t )
-  {
-  case TAB_HTML:
-    cmd_line_text = "results_html.html"; break;
-  case TAB_TEXT:
-    cmd_line_text = "results_text.txt"; break;
-  case TAB_XML:
-    cmd_line_text = "results_xml.xml"; break;
-  case TAB_PLOTDATA:
-    cmd_line_text = "results_plotdata.csv"; break;
-  case TAB_CSV:
-    cmd_line_text = "results_csv.csv"; break;
-  default: break;
-  }
-  mainWindow -> cmdLine -> setText( QDir::currentPath() + "/" + cmd_line_text );
+
 }
 
 #ifdef SC_PAPERDOLL
