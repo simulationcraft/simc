@@ -1016,6 +1016,7 @@ void SC_MainWindow::saveResults()
   int index = resultsTab -> currentIndex();
   if ( index < 0 ) return;
 
+  cmdLine -> setText( QFileDialog::getSaveFileName( this, "Save results", AppDataDir + "/results_html.html", "HTML files (*.html)" ) );
   SC_ResultTab* t = debug_cast<SC_ResultTab*>( resultsTab -> currentWidget() );
   t -> save_result();
 }
