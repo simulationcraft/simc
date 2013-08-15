@@ -2341,42 +2341,52 @@ std::string chart::gear_weights_wowreforge( player_t* p )
 std::string chart::gear_weights_askmrrobot( player_t* p )
 {
   std::stringstream ss;
-  ss << "http://www.askmrrobot.com/wow/gear/";
-
-  // Use valid names if we are provided those
-  if ( ! p -> region_str.empty() && ! p -> server_str.empty() && ! p -> name_str.empty() )
-  {
-    if ( p -> region_str == "us" )
-      ss << p -> region_str << "a";
-    else
-      ss << p -> region_str;
-
-    ss << '/' << p -> server_str << '/' << p -> name_str;
-  }
+  // AMR update week of 8/15/2013 guarantees that the origin_str provided from their SimC export is
+  // a valid base for appending stat weights.  If the origin has askmrrobot in it, just use that
+  if ( util::str_in_str_ci( p -> origin_str, "askmrrobot" ) )
+    ss << p -> origin_str;
+  // otherwise, we need to construct it from whatever information we have available
   else
   {
-    std::string region_str, server_str, name_str;
-    if ( util::parse_origin( region_str, server_str, name_str, p -> origin_str ) )
-    {
-      if ( region_str == "us" )
-        ss << region_str << "a";
-      else
-        ss << region_str;
+    ss << "http://www.askmrrobot.com/wow/gear/";
 
-      ss << '/' << server_str << '/' << name_str;
+    // Use valid names if we are provided those
+    if ( ! p -> region_str.empty() && ! p -> server_str.empty() && ! p -> name_str.empty() )
+    {
+      if ( p -> region_str == "us" )
+        ss << p -> region_str << "a";
+      else
+        ss << p -> region_str;
+
+      ss << '/' << p -> server_str << '/' << p -> name_str;
     }
+    // otherwise try to reconstruct it from the origin string
     else
     {
-      ss << "Unknown_Region_Server_or_Name";
+      std::string region_str, server_str, name_str;
+      if ( util::parse_origin( region_str, server_str, name_str, p -> origin_str ) )
+      {
+        if ( region_str == "us" )
+          ss << region_str << "a";
+        else
+          ss << region_str;
+
+        ss << '/' << server_str << '/' << name_str;
+      }
+      else
+      {
+        if ( p -> sim -> debug )
+          p -> sim -> errorf( "Unable to construct AMR link - invalid/unknown region, server, or name string" );
+        return "";        
+      }
     }
-  }
-  ss << "?spec=";
+    ss << "?spec=";
 
-  // This next section is sort of unwieldly, I may move this to external functions
+    // This next section is sort of unwieldly, I may move this to external functions
 
-  // Player type
-  switch ( p -> type )
-  {
+    // Player type
+    switch ( p -> type )
+    {
     case DEATH_KNIGHT: ss << "DeathKnight";  break;
     case DRUID:        ss << "Druid"; break;
     case HUNTER:       ss << "Hunter";  break;
@@ -2388,17 +2398,17 @@ std::string chart::gear_weights_askmrrobot( player_t* p )
     case WARLOCK:      ss << "Warlock";  break;
     case WARRIOR:      ss << "Warrior";  break;
     case MONK:         ss << "Monk"; break;
-    // if this isn't a player, the AMR link is useless
+      // if this isn't a player, the AMR link is useless
     default: assert( 0 ); break;
-  }
-  // Player spec
-  switch ( p -> specialization() )
-  {
-    case DEATH_KNIGHT_FROST:
-    {
-      if ( p -> main_hand_weapon.type == WEAPON_2H ) { ss << "Frost2H"; break; }
-      else {ss << "FrostDW"; break;}
     }
+    // Player spec
+    switch ( p -> specialization() )
+    {
+    case DEATH_KNIGHT_FROST:
+      {
+        if ( p -> main_hand_weapon.type == WEAPON_2H ) { ss << "Frost2H"; break; }
+        else {ss << "FrostDW"; break;}
+      }
     case DEATH_KNIGHT_UNHOLY:   ss << "Unholy2H"; break;
     case DEATH_KNIGHT_BLOOD:    ss << "Blood2H"; break;
     case DRUID_BALANCE:         ss << "Moonkin"; break;
@@ -2428,27 +2438,27 @@ std::string chart::gear_weights_askmrrobot( player_t* p )
     case WARLOCK_DESTRUCTION:   ss << "Destruction"; break;
     case WARRIOR_ARMS:          ss << "Arms"; break;
     case WARRIOR_FURY:
-    {
-      if ( p -> main_hand_weapon.type == WEAPON_SWORD_2H || p -> main_hand_weapon.type == WEAPON_AXE_2H || p -> main_hand_weapon.type == WEAPON_MACE_2H || p -> main_hand_weapon.type == WEAPON_POLEARM )
-      { ss << "Fury2H"; break; }
-      else { ss << "Fury"; break; }
-    }
+      {
+        if ( p -> main_hand_weapon.type == WEAPON_SWORD_2H || p -> main_hand_weapon.type == WEAPON_AXE_2H || p -> main_hand_weapon.type == WEAPON_MACE_2H || p -> main_hand_weapon.type == WEAPON_POLEARM )
+        { ss << "Fury2H"; break; }
+        else { ss << "Fury"; break; }
+      }
     case WARRIOR_PROTECTION:    ss << "Protection"; break;
     case MONK_BREWMASTER:
-    {
-      if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { ss << "Brewmaster2h"; break; }
-      else { ss << "BrewmasterDw"; break; }
-    }
+      {
+        if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { ss << "Brewmaster2h"; break; }
+        else { ss << "BrewmasterDw"; break; }
+      }
     case MONK_MISTWEAVER:       ss << "Mistweaver"; break;
     case MONK_WINDWALKER:
-    {
-      if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { ss << "Windwalker2h"; break; }
-      else { ss << "WindwalkerDw"; break; }
-    }
-    // if this is a pet or an unknown spec, the AMR link is pointless anyway
+      {
+        if ( p -> main_hand_weapon.type == WEAPON_STAFF || p -> main_hand_weapon.type == WEAPON_POLEARM ) { ss << "Windwalker2h"; break; }
+        else { ss << "WindwalkerDw"; break; }
+      }
+      // if this is a pet or an unknown spec, the AMR link is pointless anyway
     default: assert( 0 ); break;
+    }
   }
-
   // add weights
   ss << "&weights=";
 

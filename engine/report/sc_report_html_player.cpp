@@ -1216,9 +1216,12 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
         ri.gear_weights_wowreforge_link.c_str() );
 
       // askmrrobot
-      os.printf(
-        "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">askmrrobot</a></li>\n",
-        ri.gear_weights_askmrrobot_link.c_str() );
+      if ( ! ri.gear_weights_askmrrobot_link.empty() )
+      {
+        os.printf(
+          "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">askmrrobot</a></li>\n",
+          ri.gear_weights_askmrrobot_link.c_str() );
+      }
 
       // close optimizers section
       os << "\t\t\t\t\t\t\t\t\t</ul>\n";
