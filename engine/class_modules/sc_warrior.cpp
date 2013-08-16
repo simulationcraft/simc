@@ -610,6 +610,7 @@ static  void trigger_sweeping_strikes( action_state_t* s )
       may_miss = may_crit = proc = callbacks = false;
       background = true;
       aoe = 1; //one additional attack
+      base_costs[ RESOURCE_RAGE] = 0; //Resource consumption already accounted for.
     }
 
     // Sweeping Strikes ignores armor apparently
