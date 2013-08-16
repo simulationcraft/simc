@@ -2097,9 +2097,11 @@ struct slam_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    if ( p -> dbc.ptr ) // Hard-coded to reflect PTR hotfixes as of 8/15/13. 
+    if ( p -> dbc.ptr ) // Hard-coded to reflect PTR hotfixes as of 8/15/13.
+      {
       weapon_multiplier=2.75;
       base_costs[ RESOURCE_RAGE ] = 25;
+      }
 
     weapon = &( p -> main_hand_weapon );
     
@@ -3514,7 +3516,7 @@ void warrior_t::init_actions()
       aoe_list_str = "/sweeping_strikes";
       aoe_list_str += "/cleave,if=rage>110&active_enemies<=3";
       aoe_list_str += "/mortal_strike";
-      aoe_list_str += "/thunder_clap,target=enemy2,if=dot.deep_wounds.attack_power<stat.attack_power*1.1";
+      aoe_list_str += "/thunder_clap,target=2,if=dot.deep_wounds.attack_power<stat.attack_power*1.1";
       aoe_list_str += "/dragon_roar,if=enabled&((!debuff.colossus_smash.up&buff.bloodbath.up)|(!debuff.colossus_smash.up&!talent.bloodbath.enabled))";
       aoe_list_str += "/bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)";
       aoe_list_str += "/colossus_smash,if=debuff.colossus_smash.down";
