@@ -3382,7 +3382,7 @@ struct malefic_grasp_t : public warlock_spell_t
       m *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
     
-    if ( p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
+    if ( maybe_ptr( player -> dbc.ptr ) && p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
     {
       m *= 1.0 + p() ->  buffs.tier16_2pc_empowered_grasp -> value();
     }
@@ -3400,7 +3400,7 @@ struct malefic_grasp_t : public warlock_spell_t
     if ( p() -> set_bonus.tier15_4pc_caster() )
       multiplier *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
-    if ( p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
+    if ( maybe_ptr( player -> dbc.ptr ) && p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
     {
       multiplier *= 1.0 + p() ->  buffs.tier16_2pc_empowered_grasp -> value();
     }
