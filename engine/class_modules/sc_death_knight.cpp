@@ -4581,8 +4581,8 @@ struct antimagic_shell_t : public death_knight_spell_t
     if ( damage > 0 )
     {
       timespan_t new_cd = timespan_t::from_seconds( rng().gauss( interval, interval_stddev ) );
-      if ( new_cd < data().cooldown() )
-        new_cd = data().cooldown();
+      if ( new_cd < timespan_t::from_seconds( 15.0 ) )
+        new_cd = timespan_t::from_seconds( 15.0 );
 
       cooldown -> duration = new_cd;
     }
