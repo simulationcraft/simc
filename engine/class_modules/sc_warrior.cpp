@@ -605,7 +605,7 @@ static  void trigger_sweeping_strikes( action_state_t* s )
   struct sweeping_strikes_attack_t : public warrior_attack_t
   {
     sweeping_strikes_attack_t( warrior_t* p ) :
-      warrior_attack_t( "sweeping_strikes_attack", p, p -> find_spell( 12723 ) )
+      warrior_attack_t( "sweeping_strikes_attack", p, p -> find_spell( 12328 ) )
     {
       may_miss = may_crit = proc = callbacks = false;
       background = true;
