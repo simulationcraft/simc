@@ -5464,6 +5464,7 @@ void death_knight_t::init_actions()
   precombat_list += init_use_racial_actions();
 
   action_list_str += "/auto_attack";
+  action_list_str += "/antimagic_shell,damage=100000";
 
   switch ( specialization() )
   {
