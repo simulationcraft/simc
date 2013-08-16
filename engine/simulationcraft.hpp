@@ -4265,6 +4265,7 @@ public:
   meta_gem_e meta_gem;
   bool matching_gear;
   cooldown_t item_cooldown;
+  cooldown_t* legendary_tank_cloak_cd;
   //bool has_shield_equipped;
 
   // Scale Factors
@@ -4369,6 +4370,7 @@ public:
     gain_t* arcane_torrent;
     gain_t* blessing_of_might;
     gain_t* dark_rune;
+    gain_t* endurance_of_niuzao;
     gain_t* energy_regen;
     gain_t* essence_of_the_red;
     gain_t* focus_regen;

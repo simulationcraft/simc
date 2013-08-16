@@ -667,6 +667,7 @@ player_t::player_t( sim_t*             s,
   sets( nullptr ),
   meta_gem( META_GEM_NONE ), matching_gear( false ),
   item_cooldown( cooldown_t( "item_cd", *this ) ),
+  legendary_tank_cloak_cd( get_cooldown( "endurance_of_niuzao" ) ),
   // Scaling
   scaling_lag( 0 ), scaling_lag_error( 0 ),
   // Movement & Position
@@ -2255,6 +2256,7 @@ void player_t::init_gains()
   gains.arcane_torrent         = get_gain( "arcane_torrent" );
   gains.blessing_of_might      = get_gain( "blessing_of_might" );
   gains.dark_rune              = get_gain( "dark_rune" );
+  gains.endurance_of_niuzao    = get_gain( "endurance_of_niuzao" );
   gains.energy_regen           = get_gain( "energy_regen" );
   gains.essence_of_the_red     = get_gain( "essence_of_the_red" );
   gains.focus_regen            = get_gain( "focus_regen" );
@@ -5014,6 +5016,26 @@ void player_t::assess_damage( school_e school,
   s -> result_absorbed = s -> result_amount;
 
   assess_damage_imminent( school, type, s );
+
+  // Legendary Tank Cloak Proc - max absorb of 1e7 hardcoded (in spellid 146193, effect 1)
+  if ( ( items[ SLOT_BACK ].parsed.data.id == 102245 || items[ SLOT_BACK ].parsed.data.id == 102250 ) // a legendary tank cloak is present
+       && legendary_tank_cloak_cd -> up()  // and the cloak's cooldown is up
+       && s -> result_amount > resources.current[ RESOURCE_HEALTH ] ) // attack exceeds player health
+  {
+    if ( s -> result_amount > 1e7 )
+    {
+      gains.endurance_of_niuzao -> add( RESOURCE_HEALTH, 1e7, 0 );
+      s -> result_amount -= 1e7;
+      s -> result_absorbed += 1e7;
+    }
+    else
+    {
+      gains.endurance_of_niuzao -> add( RESOURCE_HEALTH, s -> result_amount, 0 );
+      s -> result_absorbed += s -> result_amount;
+      s -> result_amount = 0;
+    }
+    legendary_tank_cloak_cd -> start();      
+  }
 
   iteration_dmg_taken += s -> result_amount;
 

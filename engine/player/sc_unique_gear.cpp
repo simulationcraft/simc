@@ -2885,6 +2885,8 @@ void cooldown_reduction_trinket( item_t* item )
     { DEATH_KNIGHT_FROST,  { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "empower_rune_weapon", "outbreak", "pillar_of_frost", 0  } },
     { DEATH_KNIGHT_UNHOLY, { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "empower_rune_weapon", "outbreak", "summon_gargoyle", 0 } },
     { MONK_WINDWALKER,     { "energizing_brew", "fist_of_fury", "flying_serpent_kick", "fortifying_brew", "zen_meditation", 0, 0 } },
+    { PALADIN_PROTECTION,  { "ardent_defender", "avenging_wrath", "divine_protection", "divine_shield", "guardian_of_ancient_kings", 0 } },
+    { PALADIN_RETRIBUTION, { "avenging_wrath", "divine_protection", "divine_shield", "guardian_of_ancient_kings", 0, 0 } },
     { HUNTER_BEAST_MASTERY,{ "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", "bestial_wrath", 0 } },
     { HUNTER_MARKSMANSHIP, { "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", 0, 0 } },
     { HUNTER_SURVIVAL,     { "black_arrow", "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", 0 } },
@@ -3237,6 +3239,19 @@ void essence_of_yulon( item_t* item )
   p -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
 }
 
+// Qiang-Ying, Fortitude of Niuzao and Qian-Le, Courage of Niuzao
+
+void endurance_of_niuzao( item_t* item )
+{
+  maintenance_check( 600 );
+
+  player_t* p = item -> player;
+
+  p -> legendary_tank_cloak_cd -> duration = p -> find_spell( 148010 ) -> duration();
+  //  max_absorb = player -> find_spell( 146193 ) -> effectN( 1 ).base_value();
+
+}
+
 } // end unique_gear namespace
 
 using namespace enchants;
@@ -3338,6 +3353,10 @@ void unique_gear::init( player_t* p )
 
       if ( util::str_compare_ci( item.name(), "xingho_breath_of_yulon" ) )
         essence_of_yulon( &item );
+
+      if ( util::str_compare_ci( item.name(), "qianle_courage_of_niuzao" ) || 
+           util::str_compare_ci( item.name(), "qianying_fortitude_of_niuzao" ) )
+        endurance_of_niuzao( &item );
     }
   }
 }
