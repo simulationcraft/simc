@@ -32,7 +32,8 @@ actions+=//use_item,name=jade_warlord_figurine
 actions+=/arcane_torrent
 actions+=/avenging_wrath
 actions+=/holy_avenger,if=talent.holy_avenger.enabled
-actions+=/shield_of_the_righteous,if=holy_power>=3
+actions+=/divine_protection
+actions+=/shield_of_the_righteous,if=(holy_power>=5)|(buff.divine_purpose.react)|(incoming_damage_1500ms>=health.max*0.3)
 actions+=/hammer_of_the_righteous,if=target.debuff.weakened_blows.down
 actions+=/crusader_strike
 actions+=/judgment,if=cooldown.crusader_strike.remains>=0.5
@@ -76,3 +77,4 @@ off_hand=greatshield_of_the_gloaming,id=94945,stats=19188armor_788str_1302sta_54
 # meta_gem=austere_primal
 # tier15_2pc_tank=1
 # tier15_4pc_tank=1
+# main_hand=worldbreakers_stormscythe,weapon=axe_2.6speed_7684min_14272max,enchant=windsong
