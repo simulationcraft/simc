@@ -2375,8 +2375,14 @@ struct drain_soul_t : public warlock_spell_t
 
     if ( p() -> set_bonus.tier15_4pc_caster() )
       m *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
-
+    
+    
+    if ( maybe_ptr( player -> dbc.ptr ) && p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
+    {
+      m *= 1.0 + p() ->  buffs.tier16_2pc_empowered_grasp -> value();
+    }
     return m;
+
   }
 
   virtual void tick( dot_t* d )
@@ -2394,8 +2400,17 @@ struct drain_soul_t : public warlock_spell_t
 
     if ( d -> state -> target -> health_percentage() <= data().effectN( 3 ).base_value() )
     {
-      double multiplier = data().effectN( 6 ).percent() * ( 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack() );
-
+      double multiplier = data().effectN( 5 ).percent();
+      
+      // DO NOT CHANGE THE ORDER IF YOU ARE NOT 100% SURE
+      if ( maybe_ptr( player -> dbc.ptr ) && p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
+      {
+        multiplier += p() ->  buffs.tier16_2pc_empowered_grasp -> value();
+      }
+      
+      multiplier *=  ( 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack() );
+      
+      
       if ( p() -> set_bonus.tier15_4pc_caster() )
         multiplier *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
@@ -3395,15 +3410,20 @@ struct malefic_grasp_t : public warlock_spell_t
 
     trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
 
-    double multiplier = data().effectN( 3 ).percent() * ( 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack() );
+    double multiplier = data().effectN( 3 ).percent();
+    
+    // DO NOT CHANGE THE ORDER IF YOU ARE NOT 100% SURE
+    if ( maybe_ptr( player -> dbc.ptr ) && p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
+    {
+      multiplier += p() ->  buffs.tier16_2pc_empowered_grasp -> value();
+    }
+    
+    multiplier *=  ( 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack() );
 
     if ( p() -> set_bonus.tier15_4pc_caster() )
       multiplier *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
-    if ( maybe_ptr( player -> dbc.ptr ) && p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
-    {
-      multiplier *= 1.0 + p() ->  buffs.tier16_2pc_empowered_grasp -> value();
-    }
+    
     
     trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               multiplier );
     trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          multiplier );
