@@ -67,7 +67,7 @@ public:
     buff_t* glyph_incite;
     buff_t* last_stand;
     buff_t* meat_cleaver;
-    buff_t* riposte;
+    stat_buff_t* riposte;
     buff_t* raging_blow;
     buff_t* raging_wind;
     buff_t* recklessness;
@@ -3865,7 +3865,11 @@ void warrior_t::assess_damage( school_e school,
   if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
   {
     cooldown.revenge -> reset( true );
-    if ( dbc.ptr ) buff.riposte -> trigger( 1 , ( current.stats.dodge_rating + current.stats.parry_rating ) * spec.riposte -> effectN( 1 ).percent() );
+    if ( dbc.ptr )
+    {
+      buff.riposte -> stats[ 0 ].amount = ( current.stats.dodge_rating + current.stats.parry_rating ) * spec.riposte -> effectN( 1 ).percent();
+      buff.riposte -> trigger();
+    }
   }
 
   player_t::assess_damage( school, dtype, s );
