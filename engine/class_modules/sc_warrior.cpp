@@ -621,7 +621,7 @@ static  void trigger_sweeping_strikes( action_state_t* s )
     double composite_da_multiplier()
     {
       //do not double dip on multipliers
-      return (player -> dbc.ptr ?  0.75 : 0.5); //50% damage of the original attack, 75% on PTR
+      return data().effectN( 1 ).percent();
       
     }
 
@@ -2041,6 +2041,7 @@ struct shockwave_t : public warrior_attack_t
   }
 };
 
+// Slam AoE Cleave =========================================================
 struct slam_sweeping_strikes_attack_t : public warrior_attack_t
 {
   slam_sweeping_strikes_attack_t( warrior_t* p ) :
@@ -2052,11 +2053,11 @@ struct slam_sweeping_strikes_attack_t : public warrior_attack_t
     range = 2;
     weapon_multiplier=0;//do not add weapon damage
     weapon = NULL;//so we don't double dip on seasoned soldier
-    
+    base_costs[ RESOURCE_RAGE ] = 0; // Slam cost already factored in.
     
   }
   
-  // Sweeping Strikes ignores armor apparently
+  // Armor has already been taken into account from the parent attack.
   virtual double target_armor( player_t* )
   {
     return 0;
@@ -2112,7 +2113,7 @@ struct slam_t : public warrior_attack_t
     warrior_td_t* td = cast_td( p );
 
     if ( p -> dbc.ptr && td -> debuffs_colossus_smash )
-      am *= 1.0 + 0.1;
+      am *= 1 + p -> find_class_spell( "Colossus Smash") -> effectN( 5 ).percent();
 
     return am;
   }
