@@ -4560,10 +4560,11 @@ struct antimagic_shell_t : public death_knight_spell_t
 
     parse_options( options, options_str );
 
-    if ( interval < data().cooldown().total_seconds() )
+    // Allow as low as 15 second intervals, due to new glyph
+    if ( interval < 15.0 )
     {
-      sim -> errorf( "%s minimum interval for Anti-Magic Shell is %.3f seconds.", p -> name(), data().cooldown().total_seconds() );
-      interval = data().cooldown().total_seconds();
+      sim -> errorf( "%s minimum interval for Anti-Magic Shell is 15 seconds.", player -> name() );
+      interval = 15.0;
     }
 
     // Less than a second standard deviation is translated to a percent of
