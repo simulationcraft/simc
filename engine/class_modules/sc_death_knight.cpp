@@ -6524,6 +6524,25 @@ int death_knight_t::decode_set( item_t& item )
     if ( is_melee ) return SET_T15_MELEE;
     if ( is_tank  ) return SET_T15_TANK;
   }
+  
+    if ( strstr( s, "_of_cyclopean_dread" ) )
+  {
+    bool is_melee = ( strstr( s, "helmet"        ) ||
+                      strstr( s, "pauldrons"     ) ||
+                      strstr( s, "breastplate"   ) ||
+                      strstr( s, "greaves"       ) ||
+                      strstr( s, "gauntlets"     ) );
+
+    bool is_tank = ( strstr( s, "faceguard"      ) ||
+                     strstr( s, "shoulderguards" ) ||
+                     strstr( s, "chestguard"     ) ||
+                     strstr( s, "legguards"      ) ||
+                     strstr( s, "handguards"     ) );
+
+    if ( is_melee ) return SET_T16_MELEE;
+    if ( is_tank  ) return SET_T16_TANK;
+  }
+
 
   if ( strstr( s, "_gladiators_dreadplate_" ) ) return SET_PVP_MELEE;
 
