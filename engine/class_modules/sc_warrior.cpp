@@ -259,8 +259,8 @@ public:
   virtual double    composite_crit_block();
   virtual double    composite_crit_avoidance();
   virtual double    composite_dodge();
-  virtual double    composite_melee_haste();
   virtual double    composite_melee_speed();
+  virtual double    composite_rating_multiplier( rating_e rating );
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
   virtual void      create_options();
@@ -3765,17 +3765,6 @@ double warrior_t::composite_dodge()
   return d;
 }
 
-// warrior_t::composite_attack_haste ========================================
-
-double warrior_t::composite_melee_haste()
-{
-  double h = player_t::composite_melee_haste() / ( 1.0 / ( 1.0 + current.stats.haste_rating / current_rating().attack_haste ) );
-
-  h *= 1.0 / ( 1.0 + current.stats.haste_rating * 1.5 / current_rating().attack_haste ); //This +50% hidden buff was introduced in 5.2
-
-  return h;
-}
-
 // warrior_t::composite_attack_speed ========================================
 
 double warrior_t::composite_melee_speed()
@@ -3786,6 +3775,25 @@ double warrior_t::composite_melee_speed()
     s *= 1.0 / ( 1.0 + buff.flurry -> data().effectN( 1 ).percent() );
 
   return s;
+}
+
+// warrior_t::composite_rating_multiplier ===================================
+
+double warrior_t::composite_rating_multiplier( rating_e rating )
+{
+  double m = player_t::composite_rating_multiplier( rating );
+
+  switch ( rating )
+  {
+    case RATING_SPELL_HASTE:
+    case RATING_MELEE_HASTE:
+    case RATING_RANGED_HASTE:
+      m *= 1.5; // This +50% hidden buff was introduced in 5.2
+      break;
+    default: break;
+  }
+
+  return m;
 }
 
 void warrior_t::invalidate_cache( cache_e c )

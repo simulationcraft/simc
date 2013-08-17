@@ -261,8 +261,6 @@ public:
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual double    composite_melee_speed();
   virtual double    energy_regen_per_second();
-  virtual double    composite_melee_haste();
-  virtual double    composite_spell_haste();
   virtual double    composite_player_multiplier( school_e school );
   virtual double    composite_player_heal_multiplier( school_e school );
   virtual double    composite_spell_hit();
@@ -272,6 +270,7 @@ public:
   virtual double    composite_parry();
   virtual double    composite_dodge();
   virtual double    composite_crit_avoidance();
+  virtual double    composite_rating_multiplier( rating_e rating );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual void      init_spells();
@@ -2933,36 +2932,6 @@ double monk_t::composite_melee_speed()
   return cas;
 }
 
-// monk_t::composite_attack_haste
-
-double monk_t::composite_melee_haste()
-{
-  double h = base_t::composite_melee_haste();
-
-  if ( current_stance() == WISE_SERPENT )
-  {
-    h *= 1.0 + current.stats.haste_rating / current_rating().attack_haste;
-    h /= 1.0 + current.stats.haste_rating * ( 1 + static_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / current_rating().attack_haste;
-  }
-
-  return h;
-}
-
-// monk_t::composite_spell_haste
-
-double monk_t::composite_spell_haste()
-{
-  double h = base_t::composite_spell_haste();
-
-  if ( current_stance() == WISE_SERPENT )
-  {
-    h *= 1.0 + current.stats.haste_rating / current_rating().spell_haste;
-    h /= 1.0 + current.stats.haste_rating * ( 1 + static_stance_data( WISE_SERPENT ).effectN( 4 ).percent() ) / current_rating().spell_haste;
-  }
-
-  return h;
-}
-
 // monk_t::composite_player_multiplier
 
 double monk_t::composite_player_multiplier( school_e school )
@@ -3066,6 +3035,25 @@ double monk_t::composite_crit_avoidance()
   c += active_stance_data( STURDY_OX ).effectN( 5 ).percent();
 
   return c;
+}
+
+double monk_t::composite_rating_multiplier( rating_e rating )
+{
+  double m = base_t::composite_rating_multiplier( rating );
+
+  switch ( rating )
+  {
+    case RATING_SPELL_HASTE:
+    case RATING_MELEE_HASTE:
+    case RATING_RANGED_HASTE:
+      if ( current_stance() == WISE_SERPENT )
+        m *= 1.0 + static_stance_data( WISE_SERPENT ).effectN( 6 ).percent();
+      break;
+    default:
+      break;
+  }
+
+  return m;
 }
 
 void monk_t::invalidate_cache( cache_e c )

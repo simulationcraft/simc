@@ -2473,16 +2473,25 @@ void rune_of_reorigination( item_t* item )
     virtual void execute( action_t* action, action_state_t* /* state */ )
     {
       player_t* p = action -> player;
-      double chr = p -> current.stats.haste_rating;
-      if ( p -> sim -> scaling -> scale_stat == STAT_HASTE_RATING )
-        chr -= p -> sim -> scaling -> scale_value;
-      double ccr = p -> current.stats.crit_rating - p -> scaling.crit_rating;
-      if ( p -> sim -> scaling -> scale_stat == STAT_CRIT_RATING )
-        ccr -= p -> sim -> scaling -> scale_value;
-      double cmr = p -> current.stats.mastery_rating - p -> scaling.mastery_rating;
-      if ( p -> sim -> scaling -> scale_stat == STAT_MASTERY_RATING )
-        cmr -= p -> sim -> scaling -> scale_value;
 
+      // Determine highest stat based on rating multipliered stats
+      double chr = p -> composite_melee_haste_rating();
+      if ( p -> sim -> scaling -> scale_stat == STAT_HASTE_RATING )
+        chr -= p -> sim -> scaling -> scale_value * p -> composite_rating_multiplier( RATING_MELEE_HASTE );
+
+      double ccr = p -> composite_melee_crit_rating();
+      if ( p -> sim -> scaling -> scale_stat == STAT_CRIT_RATING )
+        ccr -= p -> sim -> scaling -> scale_value * p -> composite_rating_multiplier( RATING_MELEE_CRIT );
+
+      double cmr = p -> composite_mastery_rating();
+      if ( p -> sim -> scaling -> scale_stat == STAT_MASTERY_RATING )
+        cmr -= p -> sim -> scaling -> scale_value * p -> composite_rating_multiplier( RATING_MASTERY );
+
+      // Give un-multipliered stats so we don't double dip anywhere.
+      chr /= p -> composite_rating_multiplier( RATING_MELEE_HASTE );
+      ccr /= p -> composite_rating_multiplier( RATING_MELEE_CRIT );
+      cmr /= p -> composite_rating_multiplier( RATING_MASTERY );
+    
       if ( p -> sim -> debug )
         p -> sim -> output( "%s rune_of_reorigination procs crit=%.0f haste=%.0f mastery=%.0f",
                             p -> name(), ccr, chr, cmr );

@@ -405,6 +405,7 @@ public:
   virtual double    composite_spell_power( school_e school );
   virtual double    composite_spell_power_multiplier();
   virtual double    composite_player_multiplier( school_e school );
+  virtual double    composite_rating_multiplier( rating_e rating );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual void      create_options();
@@ -5962,11 +5963,7 @@ double shaman_t::matching_gear_multiplier( attribute_e attr )
 
 double shaman_t::composite_spell_haste()
 {
-  double h = player_t::composite_spell_haste() / ( 1.0 / ( 1.0 + current.stats.haste_rating / current_rating().spell_haste ) );
-  double hm = 1.0;
-  if ( buff.flurry -> up() )
-    hm *= 1.0 + constant.flurry_rating_multiplier;
-  h *= 1.0 / ( 1.0 + current.stats.haste_rating * hm / current_rating().spell_haste );
+  double h = player_t::composite_spell_haste();
 
   if ( talent.ancestral_swiftness -> ok() )
     h *= constant.haste_spell_ancestral_swiftness;
@@ -6007,11 +6004,7 @@ double shaman_t::composite_melee_hit()
 
 double shaman_t::composite_melee_haste()
 {
-  double h = player_t::composite_melee_haste() / ( 1.0 / ( 1.0 + current.stats.haste_rating / current_rating().attack_haste ) );
-  double hm = 1.0;
-  if ( buff.flurry -> up() )
-    hm *= 1.0 + constant.flurry_rating_multiplier;
-  h *= 1.0 / ( 1.0 + current.stats.haste_rating * hm / current_rating().attack_haste );
+  double h = player_t::composite_melee_haste();
 
   if ( buff.elemental_mastery -> up() )
     h *= constant.haste_elemental_mastery;
@@ -6088,6 +6081,28 @@ double shaman_t::composite_player_multiplier( school_e school )
 
   return m;
 }
+
+// shaman_t::composite_rating_multiplier ====================================
+
+double shaman_t::composite_rating_multiplier( rating_e rating )
+{
+  double m = player_t::composite_rating_multiplier( rating );
+
+  switch ( rating )
+  {
+    case RATING_SPELL_HASTE:
+    case RATING_MELEE_HASTE:
+    case RATING_RANGED_HASTE:
+      if ( buff.flurry -> up() )
+        m *= 1.0 + constant.flurry_rating_multiplier;
+      break;
+    default: break;
+  }
+
+  return m;
+}
+
+// shaman_t::target_mitigation ==============================================
 
 void shaman_t::target_mitigation( school_e school, dmg_e type, action_state_t* state )
 {

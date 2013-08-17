@@ -5962,12 +5962,14 @@ void death_knight_t::init_scaling()
 static bool death_shroud_mastery( void* data )
 {
   player_t* player = static_cast< player_t* >( data );
-  double haste = player -> current.stats.get_stat( STAT_HASTE_RATING );
+
+  double haste = player -> composite_melee_haste_rating();
   if ( player -> sim -> scaling -> scale_stat == STAT_HASTE_RATING )
-    haste -= player -> sim -> scaling -> scale_value;
-  double mastery = player -> current.stats.get_stat( STAT_MASTERY_RATING );
+    haste -= player -> sim -> scaling -> scale_value * player -> composite_rating_multiplier( RATING_MELEE_HASTE );
+
+  double mastery = player -> composite_mastery_rating();
   if ( player -> sim -> scaling -> scale_stat == STAT_MASTERY_RATING )
-    mastery -= player -> sim -> scaling -> scale_value;
+    mastery -= player -> sim -> scaling -> scale_value * player -> composite_rating_multiplier( RATING_MASTERY );
 
   if ( mastery >= haste )
     return true;
@@ -5977,12 +5979,14 @@ static bool death_shroud_mastery( void* data )
 static bool death_shroud_haste( void* data )
 {
   player_t* player = static_cast< player_t* >( data );
-  double haste = player -> current.stats.get_stat( STAT_HASTE_RATING );
+
+  double haste = player -> composite_melee_haste_rating();
   if ( player -> sim -> scaling -> scale_stat == STAT_HASTE_RATING )
-    haste -= player -> sim -> scaling -> scale_value;
-  double mastery = player -> current.stats.get_stat( STAT_MASTERY_RATING );
+    haste -= player -> sim -> scaling -> scale_value * player -> composite_rating_multiplier( RATING_MELEE_HASTE );
+
+  double mastery = player -> composite_mastery_rating();
   if ( player -> sim -> scaling -> scale_stat == STAT_MASTERY_RATING )
-    mastery -= player -> sim -> scaling -> scale_value;
+    mastery -= player -> sim -> scaling -> scale_value * player -> composite_rating_multiplier( RATING_MASTERY );
 
   if ( haste > mastery )
     return true;

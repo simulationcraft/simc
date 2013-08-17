@@ -2857,7 +2857,7 @@ double player_t::mana_regen_per_second()
 
 double player_t::composite_melee_haste()
 {
-  double h = 1.0 / ( 1.0 + std::max( 0.0, current.stats.haste_rating ) / current.rating.attack_haste );
+  double h = 1.0 / ( 1.0 + std::max( 0.0, composite_melee_haste_rating() ) / current.rating.attack_haste );
 
   if ( ! is_pet() && ! is_enemy() )
   {
@@ -2878,9 +2878,6 @@ double player_t::composite_melee_haste()
     {
       h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
     }
-
-    if ( buffs.amplified -> check() )
-      h *= 1.0 / ( 1.0 + buffs.amplified -> value() );
   }
 
   return h;
@@ -2934,7 +2931,7 @@ double player_t::composite_attack_power_multiplier()
 
 double player_t::composite_melee_crit()
 {
-  double ac = current.attack_crit + current.stats.crit_rating / current.rating.attack_crit;
+  double ac = current.attack_crit + composite_melee_crit_rating() / current.rating.attack_crit;
 
   if ( current.attack_crit_per_agility )
     ac += ( cache.agility() / current.attack_crit_per_agility / 100.0 );
@@ -2952,7 +2949,7 @@ double player_t::composite_melee_crit()
 
 double player_t::composite_melee_expertise( weapon_t* weapon )
 {
-  double e = current.stats.expertise_rating / current.rating.expertise;
+  double e = composite_expertise_rating() / current.rating.expertise;
 
   if ( weapon_racial( weapon ) )
     e += 0.01;
@@ -2964,7 +2961,7 @@ double player_t::composite_melee_expertise( weapon_t* weapon )
 
 double player_t::composite_melee_hit()
 {
-  double ah = current.stats.hit_rating / current.rating.attack_hit;
+  double ah = composite_melee_hit_rating() / current.rating.attack_hit;
 
   if ( buffs.heroic_presence && buffs.heroic_presence -> up() )
     ah += 0.01;
@@ -3018,7 +3015,7 @@ double player_t::composite_miss()
 
 double player_t::composite_block()
 {
-  double block_by_rating = current.stats.block_rating / current.rating.block;
+  double block_by_rating = composite_block_rating() / current.rating.block;
 
   double b = current.block;
 
@@ -3035,7 +3032,7 @@ double player_t::composite_block()
 
 double player_t::composite_dodge()
 {
-  double dodge_by_dodge_rating = current.stats.dodge_rating / current.rating.dodge;
+  double dodge_by_dodge_rating = composite_dodge_rating() / current.rating.dodge;
   double dodge_by_agility = ( cache.agility() - base.stats.attribute[ ATTR_AGILITY ] ) * current.dodge_per_agility;
 
   double d = current.dodge;
@@ -3059,7 +3056,7 @@ double player_t::composite_parry()
 
   //changed it to match the typical formulation
 
-  double parry_by_parry_rating = current.stats.parry_rating / current.rating.parry;
+  double parry_by_parry_rating = composite_parry_rating() / current.rating.parry;
   double parry_by_strength = ( cache.strength() - base.stats.attribute[ ATTR_STRENGTH ] ) * current.parry_per_strength;
   // these are pre-DR values
 
@@ -3112,7 +3109,7 @@ double player_t::composite_crit_avoidance()
 
 double player_t::composite_spell_haste()
 {
-  double h = 1.0 / ( 1.0 + std::max( 0.0, current.stats.haste_rating ) / current.rating.spell_haste );
+  double h = 1.0 / ( 1.0 + std::max( 0.0, composite_spell_haste_rating() ) / current.rating.spell_haste );
 
   if ( ! is_pet() && ! is_enemy() )
   {
@@ -3134,9 +3131,6 @@ double player_t::composite_spell_haste()
     {
       h *= 1.0 / ( 1.0 + 0.01 );
     }
-
-    if ( buffs.amplified -> check() )
-      h *= 1.0 / ( 1.0 + buffs.amplified -> value() );
   }
 
   return h;
@@ -3178,7 +3172,7 @@ double player_t::composite_spell_power_multiplier()
 
 double player_t::composite_spell_crit()
 {
-  double sc = current.spell_crit + current.stats.crit_rating / current.rating.spell_crit;
+  double sc = current.spell_crit + composite_spell_crit_rating() / current.rating.spell_crit;
 
   if ( current.spell_crit_per_intellect > 0 )
   {
@@ -3201,7 +3195,7 @@ double player_t::composite_spell_crit()
 
 double player_t::composite_spell_hit()
 {
-  double sh = current.stats.hit_rating / current.rating.spell_hit;
+  double sh = composite_spell_hit_rating() / current.rating.spell_hit;
 
   if ( weapon_racial( &main_hand_weapon ) )
   {
@@ -3220,16 +3214,10 @@ double player_t::composite_spell_hit()
 
 double player_t::composite_mastery()
 {
-  double m = util::round( current.mastery + current.stats.mastery_rating / current.rating.mastery, 2 );
+  double m = util::round( current.mastery + composite_mastery_rating() / current.rating.mastery, 2 );
 
   if ( ! is_pet() && ! is_enemy() && sim -> auras.mastery -> check() )
-    m += sim -> auras.mastery -> value() / current.rating.mastery;
-
-  if ( ! is_pet() && ! is_enemy() )
-  {
-    if ( buffs.amplified -> check() )
-      m *= 1.0 + buffs.amplified -> value();
-  }
+    m += sim -> auras.mastery -> value() * composite_rating_multiplier( RATING_MASTERY ) / current.rating.mastery;
 
   return m;
 }
@@ -3387,6 +3375,69 @@ double player_t::composite_attribute_multiplier( attribute_e attr )
   }
 
   return m;
+}
+
+// player_t::composite_rating_multiplier ====================================
+
+double player_t::composite_rating_multiplier( rating_e rating )
+{
+  double v = 1.0;
+
+  if ( is_pet() || is_enemy() )
+    return v;
+
+  // Internally, we treat all the primary rating types as a single entity; 
+  // in game, they are actually split into spell/ranged/melee
+  switch ( rating )
+  {
+    case RATING_SPELL_HASTE:
+    case RATING_MELEE_HASTE:
+    case RATING_RANGED_HASTE:
+      v *= 1.0 + buffs.amplified -> value(); break;
+    case RATING_MASTERY:
+      v *= 1.0 + buffs.amplified -> value(); break;
+    default: break;
+  }
+
+  return v;
+}
+
+// player_t::composite_rating ===============================================
+
+double player_t::composite_rating( rating_e rating )
+{
+  double v = 0;
+
+  // Internally, we treat all the primary rating types as a single entity; 
+  // in game, they are actually split into spell/ranged/melee
+  switch ( rating )
+  {
+    case RATING_SPELL_CRIT:
+    case RATING_MELEE_CRIT:
+    case RATING_RANGED_CRIT:
+      v = current.stats.crit_rating; break;
+    case RATING_SPELL_HASTE:
+    case RATING_MELEE_HASTE:
+    case RATING_RANGED_HASTE:
+      v = current.stats.haste_rating; break;
+    case RATING_SPELL_HIT:
+    case RATING_MELEE_HIT:
+    case RATING_RANGED_HIT:
+      v = current.stats.hit_rating; break;
+    case RATING_MASTERY:
+      v = current.stats.mastery_rating; break;
+    case RATING_EXPERTISE:
+      v = current.stats.expertise_rating; break;
+    case RATING_DODGE:
+      v = current.stats.dodge_rating; break;
+    case RATING_PARRY:
+      v = current.stats.parry_rating; break;
+    case RATING_BLOCK:
+      v = current.stats.block_rating; break;
+    default: break;
+  }
+
+  return v * composite_rating_multiplier( rating );
 }
 
 // player_t::composite_player_vulnerability =================================
@@ -7707,15 +7758,15 @@ expr_t* player_t::create_expression( action_t* a,
         return new ap_expr_t( name_str, *this );
       }
 
-      case STAT_EXPERTISE_RATING: return make_ref_expr( name_str, current.stats.expertise_rating );
-      case STAT_HIT_RATING:       return make_ref_expr( name_str, current.stats.hit_rating );
-      case STAT_CRIT_RATING:      return make_ref_expr( name_str, current.stats.crit_rating );
-      case STAT_HASTE_RATING:     return make_ref_expr( name_str, current.stats.haste_rating );
+      case STAT_EXPERTISE_RATING: return make_mem_fn_expr( name_str, *this, &player_t::composite_expertise_rating );
+      case STAT_HIT_RATING:       return make_mem_fn_expr( name_str, *this, &player_t::composite_melee_hit_rating );
+      case STAT_CRIT_RATING:      return make_mem_fn_expr( name_str, *this, &player_t::composite_melee_crit_rating );
+      case STAT_HASTE_RATING:     return make_mem_fn_expr( name_str, *this, &player_t::composite_melee_haste_rating );
       case STAT_ARMOR:            return make_ref_expr( name_str, current.stats.armor );
-      case STAT_DODGE_RATING:     return make_ref_expr( name_str, current.stats.dodge_rating );
-      case STAT_PARRY_RATING:     return make_ref_expr( name_str, current.stats.parry_rating );
-      case STAT_BLOCK_RATING:     return make_ref_expr( name_str, current.stats.block_rating );
-      case STAT_MASTERY_RATING:   return make_ref_expr( name_str, current.stats.mastery_rating );
+      case STAT_DODGE_RATING:     return make_mem_fn_expr( name_str, *this, &player_t::composite_dodge_rating );
+      case STAT_PARRY_RATING:     return make_mem_fn_expr( name_str, *this, &player_t::composite_parry_rating );
+      case STAT_BLOCK_RATING:     return make_mem_fn_expr( name_str, *this, &player_t::composite_block_rating );
+      case STAT_MASTERY_RATING:   return make_mem_fn_expr( name_str, *this, &player_t::composite_mastery_rating );
       default: break;
     }
 

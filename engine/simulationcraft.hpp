@@ -4533,6 +4533,35 @@ public:
   virtual double composite_attribute( attribute_e attr );
   virtual double composite_attribute_multiplier( attribute_e attr );
 
+  virtual double composite_rating_multiplier( rating_e /* rating */ );
+  virtual double composite_rating( rating_e rating );
+
+  double composite_spell_hit_rating()
+  { return composite_rating( RATING_SPELL_HIT ); }
+  double composite_spell_crit_rating()
+  { return composite_rating( RATING_SPELL_CRIT ); }
+  double composite_spell_haste_rating()
+  { return composite_rating( RATING_SPELL_HASTE ); }
+
+  double composite_melee_hit_rating()
+  { return composite_rating( RATING_MELEE_HIT ); }
+  double composite_melee_crit_rating()
+  { return composite_rating( RATING_MELEE_CRIT ); }
+  double composite_melee_haste_rating()
+  { return composite_rating( RATING_MELEE_HASTE ); }
+
+  double composite_mastery_rating()
+  { return composite_rating( RATING_MASTERY ); }
+  double composite_expertise_rating()
+  { return composite_rating( RATING_EXPERTISE ); }
+
+  double composite_dodge_rating()
+  { return composite_rating( RATING_DODGE ); }
+  double composite_parry_rating()
+  { return composite_rating( RATING_PARRY ); }
+  double composite_block_rating()
+  { return composite_rating( RATING_BLOCK ); }
+
   double get_attribute( attribute_e a )
   { return util::round( composite_attribute( a ) * composite_attribute_multiplier( a ) ); }
 

@@ -406,16 +406,12 @@ public:
   virtual void      regen( timespan_t periodicity );
   virtual timespan_t available();
   virtual double    composite_armor_multiplier();
-  virtual double    composite_melee_haste();
   virtual double    composite_melee_hit();
   virtual double    composite_melee_expertise( weapon_t* );
-  virtual double    composite_melee_crit();
   virtual double    composite_player_multiplier( school_e school );
   virtual double    composite_player_td_multiplier( school_e, action_t* );
   virtual double    composite_player_heal_multiplier( school_e school );
-  virtual double    composite_spell_haste();
   virtual double    composite_spell_hit();
-  virtual double    composite_spell_crit();
   virtual double    composite_spell_power( school_e school );
   virtual double    composite_attribute( attribute_e attr );
   virtual double    composite_attribute_multiplier( attribute_e attr );
@@ -424,6 +420,7 @@ public:
   virtual double    composite_block() { return 0; }
   virtual double    composite_crit_avoidance();
   virtual double    composite_dodge();
+  virtual double    composite_rating_multiplier( rating_e rating );
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
@@ -6483,33 +6480,6 @@ double druid_t::composite_armor_multiplier()
   return a;
 }
 
-// druid_t::composite_attack_haste ==========================================
-
-double druid_t::composite_melee_haste()
-{
-  double h = player_t::composite_melee_haste();
-
-  if ( buff.bear_form -> up() )
-  {
-    h *= 1.0 + current.stats.haste_rating / current_rating().attack_haste;
-    h /= 1.0 + current.stats.haste_rating * ( 1 + spell.bear_form -> effectN( 4 ).percent() ) / current_rating().attack_haste;
-  }
-
-  return h;
-}
-
-// druid_t::composite_attack_crit ===========================================
-
-double druid_t::composite_melee_crit()
-{
-  double c = player_t::composite_melee_crit();
-
-  if ( buff.bear_form -> up() )
-    c += current.stats.get_stat( STAT_CRIT_RATING ) * spell.bear_form -> effectN( 4 ).percent() / current_rating().attack_crit;
-
-  return c;
-}
-
 // druid_t::composite_player_multiplier =====================================
 
 double druid_t::composite_player_multiplier( school_e school )
@@ -6636,33 +6606,6 @@ double druid_t::composite_spell_hit()
   return hit;
 }
 
-// druid_t::composite_spell_haste ===========================================
-
-double druid_t::composite_spell_haste()
-{
-  double h = player_t::composite_spell_haste();
-
-  if ( buff.bear_form -> up() )
-  {
-    h *= 1.0 + current.stats.haste_rating / current_rating().spell_haste;
-    h /= 1.0 + current.stats.haste_rating * ( 1 + spell.bear_form -> effectN( 4 ).percent() ) / current_rating().spell_haste;
-  }
-
-  return h;
-}
-
-// druid_t::composite_spell_crit ============================================
-
-double druid_t::composite_spell_crit()
-{
-  double c = player_t::composite_spell_crit();
-
-  if ( buff.bear_form -> up() )
-    c += current.stats.crit_rating * spell.bear_form -> effectN( 4 ).percent() / current_rating().spell_crit;
-
-  return c;
-}
-
 // druid_t::composite_spell_power ===========================================
 
 double druid_t::composite_spell_power( school_e school )
@@ -6784,6 +6727,33 @@ double druid_t::composite_dodge()
   }
 
   return d;
+}
+
+// druid_t::composite_rating_multiplier =====================================
+
+double druid_t::composite_rating_multiplier( rating_e rating )
+{
+  double m = player_t::composite_rating_multiplier( rating );
+
+  switch ( rating )
+  {
+    case RATING_SPELL_HASTE:
+    case RATING_MELEE_HASTE:
+    case RATING_RANGED_HASTE:
+      if ( buff.bear_form -> up() )
+        m *= 1.0 + spell.bear_form -> effectN( 4 ).percent();
+      break;
+    case RATING_SPELL_CRIT:
+    case RATING_MELEE_CRIT:
+    case RATING_RANGED_CRIT:
+      if ( buff.bear_form -> up() )
+        m *= 1.0 + spell.bear_form -> effectN( 4 ).percent();
+      break;
+    default:
+      break;
+  }
+
+  return m;
 }
 
 // druid_t::create_expression ===============================================
