@@ -3157,6 +3157,7 @@ void warrior_t::init_spells()
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
     //  C2P    C4P     M2P     M4P     T2P     T4P    H2P    H4P
+    {     0,     0, 105797, 105907, 105908, 105911,     0,     0 }, // Tier13
     {     0,     0, 123142, 123144, 123146, 123147,     0,     0 }, // Tier14
     {     0,     0, 138120, 138126, 138280, 138281,     0,     0 }, // Tier15
     {     0,     0, 144436, 144441, 144503, 144502,     0,     0 }, // Tier16
@@ -3491,7 +3492,7 @@ void warrior_t::init_actions()
     if ( specialization() == WARRIOR_ARMS )
     {
       action_list_str += "/recklessness,if=!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12";
-      action_list_str += "/bloodbath,if=enabled&(debuff.colossus_smash.up|cooldown.colossus_smash.remains<4) ";
+      action_list_str += "/bloodbath,if=enabled&(debuff.colossus_smash.up|cooldown.colossus_smash.remains<4)";
       action_list_str += "/avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)";
       action_list_str += "/skull_banner,if=buff.recklessness.up";
       action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",if=!talent.bloodbath.enabled&debuff.colossus_smash.up|buff.bloodbath.up" );
