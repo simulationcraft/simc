@@ -3370,6 +3370,8 @@ double player_t::composite_attribute_multiplier( attribute_e attr )
       if ( sim -> auras.stamina -> check() )
         m *= 1.0 + sim -> auras.stamina -> value();
       break;
+    case ATTR_SPIRIT:
+      m *= 1.0 + buffs.amplified -> value();
     default:
       break;
   }
