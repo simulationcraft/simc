@@ -386,7 +386,7 @@ public:
   void trigger_thrill_of_the_hunt()
   {
     if ( p() -> talents.thrill_of_the_hunt -> ok() && cost() > 0 )
-      if ( p() -> buffs.thrill_of_the_hunt -> trigger() )
+      if ( p() -> buffs.thrill_of_the_hunt -> trigger( 3 ) )
         p() -> procs.thrill_of_the_hunt -> occur();
   }
 
