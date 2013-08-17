@@ -4341,7 +4341,7 @@ void hunter_t::regen( timespan_t periodicity )
 {
   player_t::regen( periodicity );
 
-  periodicity *= 1.0 + current.stats.haste_rating / current_rating().attack_haste;
+  periodicity *= 1.0 + composite_ranged_haste_rating() / current_rating().attack_haste;
   if ( buffs.rapid_fire -> check() && specs.rapid_recuperation -> ok() )
   {
     // 2/4 focus per sec

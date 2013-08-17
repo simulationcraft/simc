@@ -4550,6 +4550,13 @@ public:
   double composite_melee_haste_rating()
   { return composite_rating( RATING_MELEE_HASTE ); }
 
+  double composite_ranged_hit_rating()
+  { return composite_rating( RATING_RANGED_HIT ); }
+  double composite_ranged_crit_rating()
+  { return composite_rating( RATING_RANGED_CRIT ); }
+  double composite_ranged_haste_rating()
+  { return composite_rating( RATING_RANGED_HASTE ); }
+
   double composite_mastery_rating()
   { return composite_rating( RATING_MASTERY ); }
   double composite_expertise_rating()
