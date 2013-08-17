@@ -1236,7 +1236,7 @@ struct fire_elemental_t : public pet_t
 
       if ( p -> o() -> mastery.enhanced_elements -> ok() )
       {
-        if ( ! p -> bugs )
+        if ( ! p -> bugs || maybe_ptr( p -> dbc.ptr ) )
           m *= 1.0 + p -> o() -> cache.mastery_value();
         else
           m *= 1.0 + p -> owner_mastery;
@@ -1341,7 +1341,7 @@ struct fire_elemental_t : public pet_t
       fire_elemental_t* p = static_cast< fire_elemental_t* >( player );
       if ( p -> o() -> mastery.enhanced_elements -> ok() )
       {
-        if ( ! p -> bugs )
+        if ( ! p -> bugs || maybe_ptr( p -> dbc.ptr ) )
           m *= 1.0 + p -> o() -> cache.mastery_value();
         else
           m *= 1.0 + p -> owner_mastery;
