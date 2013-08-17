@@ -2472,6 +2472,10 @@ void rune_of_reorigination( item_t* item )
 
     virtual void execute( action_t* action, action_state_t* /* state */ )
     {
+      // We can never allow this trinket to refresh, so force the trinket to 
+      // always expire, before we proc a new one.
+      buff -> expire();
+
       player_t* p = action -> player;
 
       // Determine highest stat based on rating multipliered stats
