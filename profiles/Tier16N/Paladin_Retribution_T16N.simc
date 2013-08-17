@@ -1,0 +1,89 @@
+#!./simc 
+
+paladin="Paladin_Retribution_T16N"
+level=90
+race=tauren
+role=hybrid
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bb!110112
+spec=retribution
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=winters_bite
+actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
+actions.precombat+=/blessing_of_kings,if=!aura.str_agi_int.up
+actions.precombat+=/blessing_of_might,if=!aura.mastery.up
+actions.precombat+=/seal_of_truth,if=active_enemies<4
+actions.precombat+=/seal_of_righteousness,if=active_enemies>=4
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/mogu_power_potion
+
+# Executed every time the actor is available.
+
+actions=rebuke
+actions+=/mogu_power_potion,if=(buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40)
+actions+=/auto_attack
+actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|target.time_to_die<holy_power*10|buff.divine_purpose.react)
+actions+=/avenging_wrath,if=buff.inquisition.up
+actions+=/guardian_of_ancient_kings,if=buff.avenging_wrath.up|target.time_to_die<=60
+actions+=/execution_sentence,if=talent.execution_sentence.enabled&(buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=20))
+actions+=/lights_hammer,if=talent.lights_hammer.enabled&(buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=20))
+actions+=/divine_storm,if=active_enemies>=2&(holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3))
+actions+=/templars_verdict,if=holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3)
+actions+=/hammer_of_wrath
+actions+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
+actions+=/crusader_strike
+actions+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2
+actions+=/exorcism,if=active_enemies>=2&active_enemies<=4&set_bonus.tier15_2pc_melee&glyph.mass_exorcism.enabled
+actions+=/hammer_of_the_righteous,if=active_enemies>=4
+actions+=/templars_verdict,if=buff.avenging_wrath.up
+actions+=/judgment,target=2,if=active_enemies>=2&buff.glyph_double_jeopardy.up
+actions+=/judgment
+actions+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2
+actions+=/exorcism
+actions+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2
+actions+=/templars_verdict,if=buff.tier15_4pc_melee.up
+actions+=/divine_storm,if=active_enemies>=2&buff.inquisition.remains>4
+actions+=/templars_verdict,if=buff.inquisition.remains>4
+actions+=/holy_prism,if=talent.holy_prism.enabled
+
+head=helmet_of_winged_triumph,id=99138,gems=capacitive_primal_80str_160haste_180str
+neck=juggernauts_ignition_keys,id=103916
+shoulders=pauldrons_of_winged_triumph,id=99132,gems=80str_160haste_80str_160haste_120str,enchant=200str_100crit,reforge=exp_haste
+back=drape_of_the_despairing_pit,id=103845,enchant=180hit
+chest=battleplate_of_winged_triumph,id=99136,gems=80str_160haste_80str_160haste_80str_160haste_180str,enchant=80all
+wrists=bubbleburst_bracers,id=103738,enchant=180str,reforge=hit_crit
+hands=gauntlets_of_winged_triumph,id=99137,gems=80str_160haste_80str_160haste_120str,enchant=170str,reforge=hit_crit
+waist=demolishers_reinforced_belt,id=103788,gems=80str_160haste_320haste_320haste_120str
+legs=legplates_of_winged_triumph,id=99139,gems=320haste_320haste_120str,enchant=285str_165crit,reforge=crit_mastery
+feet=wolfrider_spurs,id=103880,gems=360haste_60crit,reforge=crit_mastery
+finger1=asgorathian_blood_seal,id=103794,gems=80str_160haste_60haste,reforge=exp_mastery
+finger2=seal_of_the_forgotten_kings,id=103796,gems=80str_160haste_60haste,reforge=crit_mastery
+trinket1=evil_eye_of_galakras,id=102298
+trinket2=thoks_tail_tip,id=102305
+main_hand=britomarts_jagged_pike,id=103968,gems=360haste,enchant=dancing_steel
+
+# Gear Summary
+# gear_strength=21494
+# gear_agility=80
+# gear_stamina=30535
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=1006
+# gear_hit_rating=1920
+# gear_crit_rating=3174
+# gear_haste_rating=15136
+# gear_mastery_rating=8644
+# gear_armor=38939
+# meta_gem=capacitive_primal
+# tier16_2pc_melee=1
+# tier16_4pc_melee=1
+# main_hand=britomarts_jagged_pike,weapon=polearm_3.60speed_21886min_32829max,enchant=dancing_steel

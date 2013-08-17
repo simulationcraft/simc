@@ -1,12 +1,100 @@
 #!simc
 
 ptr=1
+
+
 talent_format=armory
+
+
 
 # Warrior Arms T16H
 
+warrior="Warrior_Arms_T16H"
+level=90
+race=orc
+spec=arms
+role=attack
+position=back
+professions=engineering=600/blacksmithing=600
+talents=233322
+glyphs=unending_rage/death_from_above/sweeping_strikes
+head=helmet_of_the_prehistoric_marauder,id=99418,gems=capacitive_primal_160exp_160crit_180str
+neck=malkoroks_tainted_dog_tags,id=105566
+shoulders=tusks_of_mannoroth,id=105642,gems=160exp_160crit_160exp_160crit_160exp_160crit_180str,enchant=200str_100crit
+back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=160exp_160crit_60str,enchant=180crit,reforge=haste_hit
+chest=battleplate_of_the_prehistoric_marauder,id=99411,gems=160exp_160crit_160exp_160crit_160exp_160crit_180str,enchant=80all,reforge=haste_crit
+wrists=bracers_of_blind_hatred,id=105456,gems=320crit,enchant=180str
+hands=gauntlets_of_the_prehistoric_marauder,id=99412,gems=160exp_160crit_160exp_160crit_360crit_120str,enchant=170str,addon=synapse_springs_ii,reforge=hit_mastery
+waist=ashen_wall_girdle,id=105533,gems=160exp_160crit_160crit_160hit_320crit_120str,reforge=hit_crit
+legs=legplates_of_the_prehistoric_marauder,id=99413,gems=320crit_320crit_120str,enchant=285str_165crit,reforge=haste_mastery
+feet=greaves_of_sublime_superiority,id=105478,gems=320crit,enchant=140mastery,reforge=hit_mastery
+finger1=devilfang_band,id=105611,gems=320crit,reforge=exp_crit
+finger2=seal_of_the_forgotten_kings,id=105589,gems=320crit,reforge=haste_hit
+trinket1=skeers_bloodsoaked_talisman,id=105632
+trinket2=thoks_tail_tip,id=105609
+main_hand=hellscreams_decapitator,id=105692,gems=80str_160crit_80str_160crit_120str,enchant=dancing_steel
+save=Warrior_Arms_T16H.simc
+
+
 # Warrior Fury 1h T16H
+warrior="Warrior_Fury_1h_T16H"
+level=90
+race=orc
+spec=fury
+role=attack
+position=back
+professions=engineering=600/blacksmithing=600
+talents=233322
+glyphs=unending_rage/death_from_above/bull_rush
+head=helmet_of_the_prehistoric_marauder,id=99418,gems=capacitive_primal_160exp_160crit_180str
+neck=malkoroks_tainted_dog_tags,id=105566
+shoulders=tusks_of_mannoroth,id=105642,gems=80str_160crit_160exp_160crit_160exp_160crit_180str,enchant=200str_100crit
+back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=160exp_160crit_60str,enchant=180crit,reforge=haste_hit
+chest=battleplate_of_the_prehistoric_marauder,id=99411,gems=160exp_160crit_160exp_160crit_160exp_160crit_180str,enchant=80all,reforge=haste_crit
+wrists=bracers_of_blind_hatred,id=105456,gems=320crit,enchant=180str
+hands=gauntlets_of_the_prehistoric_marauder,id=99412,gems=80str_160crit_80str_160crit_360crit_120str,enchant=170str,addon=synapse_springs_ii,reforge=hit_mastery
+waist=ashen_wall_girdle,id=105533,gems=160exp_160crit_160crit_160hit_320crit_120str,reforge=hit_crit
+legs=legplates_of_the_prehistoric_marauder,id=99413,gems=320crit_320crit_120str,enchant=285str_165crit,reforge=haste_mastery
+feet=greaves_of_sublime_superiority,id=105478,gems=320crit,enchant=140mastery,reforge=hit_mastery
+finger1=devilfang_band,id=105611,gems=320crit,reforge=exp_crit
+finger2=seal_of_the_forgotten_kings,id=105589,gems=320crit,reforge=haste_hit
+trinket1=skeers_bloodsoaked_talisman,id=105632
+trinket2=thoks_tail_tip,id=105609
+main_hand=hellscreams_doomblade,id=105691,gems=80str_160crit_80str_160crit_120str,enchant=dancing_steel,reforge=exp_crit
+off_hand=hellscreams_doomblade,id=105691,gems=80str_160crit_80str_160crit_120str,enchant=dancing_steel,reforge=exp_crit
+save=Warrior_Fury_1h_T16H.simc
+
+
+
 
 # Warrior Fury 2h T16H
+warrior="Warrior_Fury_2h_T16H"
+level=90
+race=orc
+spec=fury
+role=attack
+position=back
+professions=engineering=600/blacksmithing=600
+talents=233322
+glyphs=unending_rage/death_from_above/bull_rush
+head=helmet_of_the_prehistoric_marauder,id=99418,gems=capacitive_primal_160exp_160crit_180str
+neck=malkoroks_tainted_dog_tags,id=105566
+shoulders=tusks_of_mannoroth,id=105642,gems=160exp_160crit_160exp_160crit_160exp_160crit_180str,enchant=200str_100crit
+back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=160exp_160crit_60str,enchant=180crit,reforge=haste_hit
+chest=battleplate_of_the_prehistoric_marauder,id=99411,gems=160exp_160crit_160exp_160crit_160exp_160crit_180str,enchant=80all,reforge=haste_crit
+wrists=bracers_of_blind_hatred,id=105456,gems=320crit,enchant=180str
+hands=gauntlets_of_the_prehistoric_marauder,id=99412,gems=160exp_160crit_160exp_160crit_360crit_120str,enchant=170str,addon=synapse_springs_ii,reforge=hit_mastery
+waist=ashen_wall_girdle,id=105533,gems=160exp_160crit_160crit_160hit_320crit_120str,reforge=hit_crit
+legs=legplates_of_the_prehistoric_marauder,id=99413,gems=320crit_320crit_120str,enchant=285str_165crit,reforge=haste_mastery
+feet=greaves_of_sublime_superiority,id=105478,gems=320crit,enchant=140mastery,reforge=hit_mastery
+finger1=devilfang_band,id=105611,gems=320crit,reforge=exp_crit
+finger2=seal_of_the_forgotten_kings,id=105589,gems=320crit,reforge=haste_hit
+trinket1=skeers_bloodsoaked_talisman,id=105632
+trinket2=thoks_tail_tip,id=105609
+main_hand=hellscreams_decapitator,id=105692,gems=80str_160crit_80str_160crit_120str,enchant=dancing_steel,reforge=haste_mastery
+off_hand=hellscreams_decapitator,id=105692,gems=80str_160crit_80str_160crit_120str,enchant=dancing_steel,reforge=haste_mastery
+save=Warrior_Fury_2h_T16H.simc
+
+
 
 # Warrior Protection T16H

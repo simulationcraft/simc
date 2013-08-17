@@ -89,6 +89,6 @@ main_hand=greatsword_of_frozen_hells,id=96991,gems=320haste_320haste_60str,encha
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
-# hands=reinbinders_fists,heroic=1,thunderforged=1,addon=synapse_springs_mark_ii
-# trinket1=spark_of_zandalar,heroic=1,thunderforged=1
-# main_hand=greatsword_of_frozen_hells,heroic=1,thunderforged=1,weapon=sword2h_3.60speed_19571min_29357max,enchant=dancing_steel
+# hands=reinbinders_fists,heroic=1,elite=1,addon=synapse_springs_mark_ii
+# trinket1=spark_of_zandalar,heroic=1,elite=1
+# main_hand=greatsword_of_frozen_hells,heroic=1,elite=1,weapon=sword2h_3.60speed_19571min_29357max,enchant=dancing_steel
