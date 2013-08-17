@@ -124,6 +124,67 @@ class DataGenerator(object):
     def generate(self, ids = None):
         return ''
 
+class RealPPMModifierGenerator(DataGenerator):
+    def __init__(self, options):
+        DataGenerator.__init__(self, options)
+
+        self._dbc = [ 'ChrSpecialization', 'SpellProcsPerMinute', 'SpellProcsPerMinuteMod', 'SpellAuraOptions' ]
+        self._specmap = { 0: 'SPEC_NONE' }
+
+    def initialize(self):
+        DataGenerator.initialize(self)
+
+        for i, data in self._chrspecialization_db.iteritems():
+            if data.class_id > 0:
+                self._specmap[i] = '%s_%s' % (
+                    DataGenerator._class_names[data.class_id].upper().replace(" ", "_"),
+                    data.name.upper().replace(" ", "_"),
+                )
+
+        return True
+
+    def generate(self, ids = None):
+        output_data = []
+        
+        for i, data in self._spellprocsperminutemod_db.iteritems():
+            if data.id_chr_spec not in self._specmap.keys() or data.id_chr_spec == 0:
+                continue
+
+            spell_id = 0
+            for aopts_id, aopts_data in self._spellauraoptions_db.iteritems():
+                if aopts_data.id_ppm != data.id_ppm:
+                    continue
+                
+                spell_id = aopts_data.id_spell
+                break
+
+            if spell_id == 0:
+                continue
+
+            output_data.append((data.id_chr_spec, data.coefficient, spell_id))
+        
+        output_data.sort(cmp = lambda l, r: l[2] - r[2])
+
+        s = '#include "specialization.hpp"\n'
+        s += '#include "data_definitions.hh"\n\n'
+        s += '#define %sRPPMMOD%s_SIZE (%d)\n\n' % (
+            (self._options.prefix and ('%s_' % self._options.prefix) or '').upper(),
+            (self._options.suffix and ('_%s' % self._options.suffix) or '').upper(),
+            len(output_data)
+        )
+        s += '// %d RPPM Modifiers, wow build level %d\n' % ( len(output_data), self._options.build )
+        s += 'static struct rppm_modifier_t __%srppmmodifier%s_data[] = {\n' % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or ''
+        )
+
+        for data in output_data + [(0, 0, 0)]:
+            s += '  { %6u, %-20s, %.4f },\n' % (data[2], self._specmap[data[0]], data[1])
+
+        s += '};\n'
+
+        return s
+
 class SpecializationEnumGenerator(DataGenerator):
     def __init__(self, options):
         self._dbc = [ 'ChrSpecialization' ]
@@ -169,19 +230,20 @@ class SpecializationEnumGenerator(DataGenerator):
                     DataGenerator._class_names[spec_data.class_id].upper().replace(" ", "_"),
                     spec_data.name.upper().replace(" ", "_"),
                 )
+
+                if spec_data.spec_id > max_specialization:
+                    max_specialization = spec_data.spec_id
             else:
                 spec_name = 'PET_%s' % (
                     spec_data.name.upper().replace(" ", "_")
                 )
 
-            if spec_data.spec_id > max_specialization:
-                max_specialization = spec_data.spec_id
-            
             for i in xrange(0, (max_specialization + 1) - len(enum_ids[ spec_data.class_id ] ) ):
                 enum_ids[ spec_data.class_id ].append( None )
             
             enum_ids[ spec_data.class_id ][ spec_data.spec_id ] = { 'id': spec_id, 'name': spec_name }
 
+        spec_arr = []
         s  = 'enum specialization_e {\n'
         s += '  SPEC_NONE            = 0,\n'
         s += '  SPEC_PET             = 1,\n'
@@ -199,7 +261,16 @@ class SpecializationEnumGenerator(DataGenerator):
                     enum_ids[cls][spec]['id'] )
                 
                 s += enum_str
+                spec_arr.append('%s' % enum_ids[cls][spec]['name'])
         s += '};\n\n'
+
+        # Ugliness abound, but the easiest way to iterate over all specs is this ...
+        s += 'namespace specdata {\n';
+        s += 'static const unsigned n_specs = %u;\n' % len(spec_arr);
+        s += 'static const specialization_e __specs[%u] = {\n  %s\n};\n\n' % (len(spec_arr), ', \n  '.join(spec_arr))
+        s += 'inline unsigned spec_count()\n{ return n_specs; }\n\n';
+        s += 'inline specialization_e spec_id( unsigned idx )\n{ assert( idx < n_specs ); return __specs[ idx ]; }\n\n'
+        s += '}\n'
                
         return s
 

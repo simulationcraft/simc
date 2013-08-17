@@ -847,6 +847,7 @@ public:
   double regen_spirit( pet_e t, unsigned level ) const;
   double health_per_stamina( unsigned level ) const;
   double item_socket_cost( unsigned ilevel ) const;
+  double real_ppm_coefficient( specialization_e, unsigned ) const;
 
   double combat_rating( unsigned combat_rating_id, unsigned level ) const;
   double oct_combat_rating( unsigned combat_rating_id, player_e t ) const;
@@ -895,6 +896,7 @@ public:
 
   const item_upgrade_t&          item_upgrade( unsigned upgrade_id ) const;
   const item_upgrade_rule_t&     item_upgrade_rule( unsigned item_id, unsigned upgrade_level ) const;
+  const rppm_modifier_t&         real_ppm_modifier( specialization_e spec, unsigned spell_id ) const;
 
   // Derived data access
   unsigned num_tiers() const;
@@ -959,6 +961,7 @@ public:
 
   bool spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& spec_index ) const;
   specialization_e spec_by_idx( const player_e c, unsigned idx ) const;
+  double rppm_coefficient( specialization_e spec, unsigned spell_id ) const;
 
   unsigned item_upgrade_ilevel( unsigned item_id, unsigned upgrade_level ) const;
 };

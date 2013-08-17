@@ -1288,6 +1288,7 @@ const char* weapon_subclass_string    ( int subclass );
 
 const char* set_item_type_string      ( int item_set );
 const char* item_quality_string       ( int item_quality );
+const char* specialization_string     ( specialization_e spec );
 
 attribute_e parse_attribute_type ( const std::string& name );
 dmg_e parse_dmg_type             ( const std::string& name );
@@ -5616,14 +5617,18 @@ struct real_ppm_t
 private:
   rng_t&       rng;
   double       freq;
+  double       modifier;
+  double       rppm;
   timespan_t   last_trigger_attempt;
   timespan_t   last_successful_trigger;
   timespan_t   initial_precombat_time;
   rppm_scale_e scales_with;
 public:
-  real_ppm_t( const std::string& /* name */, player_t& p, double frequency = std::numeric_limits<double>::min(), rppm_scale_e s = RPPM_NONE ) :
+  real_ppm_t( const std::string& /* name */, player_t& p, double frequency = std::numeric_limits<double>::min(), rppm_scale_e s = RPPM_NONE, unsigned /* spell_id */ = 0 ) :
     rng( p.rng() ),
     freq( frequency ),
+    modifier( /* maybe_ptr( p.dbc.ptr ) ? p.dbc.rppm_coefficient( p.specialization(), spell_id ) : */ 1.0 ),
+    rppm( freq * modifier ),
     last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
     last_successful_trigger( timespan_t::from_seconds( p.dbc.ptr ? -90 : -300.0 ) ),
     initial_precombat_time( timespan_t::from_seconds( p.dbc.ptr ? -90 : -300.0 ) ), // Assume 5min out of combat before pull
@@ -5631,10 +5636,13 @@ public:
   { }
 
   void set_frequency( double frequency )
-  { freq = frequency; }
+  { freq = frequency; rppm = freq * modifier; }
 
   double get_frequency()
   { return freq; }
+
+  void set_modifier( double mod )
+  { modifier = mod; rppm = freq * modifier; }
 
   void reset()
   {
@@ -5649,7 +5657,7 @@ public:
     if ( last_trigger_attempt == a.sim -> current_time )
       return false;
 
-    double chance = a.real_ppm_proc_chance( freq, last_trigger_attempt, last_successful_trigger, scales_with );
+    double chance = a.real_ppm_proc_chance( rppm, last_trigger_attempt, last_successful_trigger, scales_with );
     last_trigger_attempt = a.sim -> current_time;
 
     bool success = rng.roll( chance );

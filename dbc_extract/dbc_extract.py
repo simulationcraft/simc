@@ -26,7 +26,7 @@ parser.add_option("-t", "--type", dest = "type",
                   choices = [ 'spell', 'class_list', 'talent', 'scale', 'view', 
                               'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 
                               'glyph_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix',
-                              'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties', 'random_suffix_groups', 'spec_enum', 'spec_list', 'item_upgrade' ]), 
+                              'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties', 'random_suffix_groups', 'spec_enum', 'spec_list', 'item_upgrade', 'rppm_coeff' ]), 
 parser.add_option("-l", "--level", dest = "level", 
                   help    = "Scaling values up to level [90]", 
                   default = 90, action = "store", type = "int")
@@ -216,6 +216,12 @@ elif options.type == 'spec_enum':
     ids = g.filter()
 
     print g.generate(ids)
+elif options.type == 'rppm_coeff':
+    g = dbc.generator.RealPPMModifierGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+
+    print g.generate()
 elif options.type == 'spec_list':
     g = dbc.generator.SpecializationListGenerator(options)
     if not g.initialize():

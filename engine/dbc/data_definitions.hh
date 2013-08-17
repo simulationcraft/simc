@@ -2,6 +2,7 @@
 #define DATA_DEFINITIONS_HH
 
 #include "data_enums.hh"
+#include "specialization.hpp"
 
 // Spell.dbc
 
@@ -14,6 +15,12 @@
 struct spell_data_t;
 struct spelleffect_data_t;
 struct talent_data_t;
+
+struct rppm_modifier_t {
+  unsigned         spell_id;
+  specialization_e spec;
+  double           coefficient;
+};
 
 struct item_upgrade_rule_t {
   unsigned id;

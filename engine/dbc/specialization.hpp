@@ -47,6 +47,55 @@ enum specialization_e {
   DRUID_RESTORATION    = 105,
 };
 
+namespace specdata {
+static const unsigned n_specs = 37;
+static const specialization_e __specs[37] = {
+  PET_FEROCITY, 
+  PET_TENACITY, 
+  PET_CUNNING, 
+  WARRIOR_ARMS, 
+  WARRIOR_FURY, 
+  WARRIOR_PROTECTION, 
+  PALADIN_HOLY, 
+  PALADIN_PROTECTION, 
+  PALADIN_RETRIBUTION, 
+  HUNTER_BEAST_MASTERY, 
+  HUNTER_MARKSMANSHIP, 
+  HUNTER_SURVIVAL, 
+  ROGUE_ASSASSINATION, 
+  ROGUE_COMBAT, 
+  ROGUE_SUBTLETY, 
+  PRIEST_DISCIPLINE, 
+  PRIEST_HOLY, 
+  PRIEST_SHADOW, 
+  DEATH_KNIGHT_BLOOD, 
+  DEATH_KNIGHT_FROST, 
+  DEATH_KNIGHT_UNHOLY, 
+  SHAMAN_ELEMENTAL, 
+  SHAMAN_ENHANCEMENT, 
+  SHAMAN_RESTORATION, 
+  MAGE_ARCANE, 
+  MAGE_FIRE, 
+  MAGE_FROST, 
+  WARLOCK_AFFLICTION, 
+  WARLOCK_DEMONOLOGY, 
+  WARLOCK_DESTRUCTION, 
+  MONK_BREWMASTER, 
+  MONK_MISTWEAVER, 
+  MONK_WINDWALKER, 
+  DRUID_BALANCE, 
+  DRUID_FERAL, 
+  DRUID_GUARDIAN, 
+  DRUID_RESTORATION
+};
+
+inline unsigned spec_count()
+{ return n_specs; }
+
+inline specialization_e spec_id( unsigned idx )
+{ assert( idx < n_specs ); return __specs[ idx ]; }
+
+}
 
 #endif
 

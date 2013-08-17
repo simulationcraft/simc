@@ -648,7 +648,7 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
       s << spell -> initial_stacks() << " maximum, ";
 
     s.seekp( -2, std::ios_base::cur );
-
+  
     s << std::endl;
   }
 
@@ -656,7 +656,37 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
     s << "Proc Chance      : " << spell -> proc_chance() * 100 << "%" << std::endl;
 
   if ( spell -> real_ppm() != 0 )
-    s << "Real PPM         : " << spell -> real_ppm() << std::endl;
+  {
+    s << "Real PPM         : " << spell -> real_ppm();
+    bool has_modifiers = false;
+    for ( unsigned i = 0; i < specdata::spec_count(); i++ )
+    {
+      const rppm_modifier_t& rppmm = sim -> dbc.real_ppm_modifier( specdata::spec_id( i ), spell -> id() );
+      if ( rppmm.coefficient != 0 )
+      {
+        if ( ! has_modifiers )
+          s << " (";
+
+        has_modifiers = true;
+        std::streamsize decimals = 3;
+        double rppm_val = spell -> real_ppm() * ( 1.0 + rppmm.coefficient );
+        if ( rppm_val >= 10 )
+          decimals += 2;
+        else if ( rppm_val >= 1 )
+          decimals += 1;
+        s.precision( decimals );
+        s << util::specialization_string( specdata::spec_id( i ) ) << ": " << rppm_val << ", ";
+      }
+    }
+
+    if ( has_modifiers )
+    {
+      s.seekp( -2, std::ios_base::cur );
+      s << ")";
+    }
+
+    s << std::endl;
+  }
 
   if ( spell -> proc_flags() > 0 )
   {

@@ -29,6 +29,7 @@ goto usage
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% -t spec_list                  > %OUTPATH%\sc_spec_list.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t talent                  > %OUTPATH%\sc_talent_data%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% --cache=%CACHEDIR% -b %BUILD% %PTR%  -t spell > %OUTPATH%\sc_spell_data%PTREXT%.inc
+python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t rppm_coeff              >> %OUTPATH%\sc_spell_data%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t scale                   > %OUTPATH%\sc_scale_data%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t class_list              > %OUTPATH%\sc_spell_lists%PTREXT%.inc
 python.exe %RUNFILE% -p %INPATH% -b %BUILD% %PTR%  -t spec_spell_list        >> %OUTPATH%\sc_spell_lists%PTREXT%.inc

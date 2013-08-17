@@ -2135,6 +2135,50 @@ const char* util::item_quality_string( int quality )
   }
 }
 
+// specialization_string ====================================================
+
+const char* util::specialization_string( specialization_e spec )
+{
+  switch ( spec )
+  {
+    case WARRIOR_ARMS:        return "Arms Warrior";
+    case WARRIOR_FURY:        return "Fury Warrior";
+    case WARRIOR_PROTECTION:  return "Protection Warrior";
+    case PALADIN_HOLY:        return "Holy Paladin";
+    case PALADIN_PROTECTION:  return "Protection Paladin";
+    case PALADIN_RETRIBUTION: return "Retribution Paldin";
+    case HUNTER_BEAST_MASTERY:return "Beast Mastery Hunter";
+    case HUNTER_MARKSMANSHIP: return "Marksmanship Hunter";
+    case HUNTER_SURVIVAL:     return "Survival Hunter";
+    case ROGUE_ASSASSINATION: return "Assassination Rogue";
+    case ROGUE_COMBAT:        return "Combat Rogue";
+    case ROGUE_SUBTLETY:      return "Subtlety Rogue";
+    case PRIEST_DISCIPLINE:   return "Discipline Priest";
+    case PRIEST_HOLY:         return "Holy Priest";
+    case PRIEST_SHADOW:       return "Shadow Priest";
+    case DEATH_KNIGHT_BLOOD:  return "Blood Death Knight";
+    case DEATH_KNIGHT_FROST:  return "Frost Death Knight";
+    case DEATH_KNIGHT_UNHOLY: return "Unholy Death Knight";
+    case SHAMAN_ELEMENTAL:    return "Elemental Shaman";
+    case SHAMAN_ENHANCEMENT:  return "Enhancement Shaman";
+    case SHAMAN_RESTORATION:  return "Restoration Shaman";
+    case MAGE_ARCANE:         return "Arcane Mage";
+    case MAGE_FIRE:           return "Fire Mage";
+    case MAGE_FROST:          return "Frost Mage";
+    case WARLOCK_AFFLICTION:  return "Affliction Warlock";
+    case WARLOCK_DEMONOLOGY:  return "Demonology Warlock";
+    case WARLOCK_DESTRUCTION: return "Destruction Warlock";
+    case MONK_BREWMASTER:     return "Brewmaster Monk";
+    case MONK_MISTWEAVER:     return "Mistweaver Monk";
+    case MONK_WINDWALKER:     return "Windwalker Monk";
+    case DRUID_BALANCE:       return "Balance Druid";
+    case DRUID_FERAL:         return "Feral Druid";
+    case DRUID_GUARDIAN:      return "Guardian Druid";
+    case DRUID_RESTORATION:   return "Restoration Druid";
+    default:                  return "Unknown";
+  }
+}
+
 // parse_item_quality =======================================================
 
 int util::parse_item_quality( const std::string& quality )

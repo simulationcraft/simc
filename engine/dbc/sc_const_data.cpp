@@ -1531,6 +1531,21 @@ const item_upgrade_rule_t& dbc_t::item_upgrade_rule( unsigned item_id, unsigned 
   return nil_iur;
 }
 
+const rppm_modifier_t& dbc_t::real_ppm_modifier( specialization_e spec, unsigned spell_id ) const
+{
+  // TODO: REMEMBER TO CHANGE WHEN 5.4 GOES LIVE
+  const rppm_modifier_t* p = __ptr_rppmmodifier_data;
+
+  while ( p -> spec != SPEC_NONE )
+  {
+    if ( p -> spec == spec && p -> spell_id == spell_id )
+      return *p;
+    p++;
+  }
+
+  return *p;
+}
+
 const random_suffix_data_t& dbc_t::random_suffix( unsigned suffix_id ) const
 {
 #if SC_USE_PTR
@@ -2499,6 +2514,12 @@ bool dbc_t::spec_idx( specialization_e spec_id, uint32_t& class_idx, uint32_t& s
 
 specialization_e dbc_t::spec_by_idx( const player_e c, unsigned idx ) const
 { return dbc::spec_by_idx( c, idx ); }
+
+double dbc_t::rppm_coefficient( specialization_e spec, unsigned spell_id ) const
+{
+  const rppm_modifier_t& rppmm = real_ppm_modifier( spec, spell_id );
+  return 1.0 + rppmm.coefficient;
+}
 
 // DBC
 
