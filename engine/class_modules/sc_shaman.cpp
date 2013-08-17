@@ -1235,7 +1235,12 @@ struct fire_elemental_t : public pet_t
       double m = spell_t::composite_ta_multiplier();
 
       if ( p -> o() -> mastery.enhanced_elements -> ok() )
-        m *= 1.0 + p -> o() -> cache.mastery_value();
+      {
+        if ( ! p -> bugs )
+          m *= 1.0 + p -> o() -> cache.mastery_value();
+        else
+          m *= 1.0 + p -> owner_mastery;
+      }
 
       return m;
     }
@@ -1335,7 +1340,12 @@ struct fire_elemental_t : public pet_t
 
       fire_elemental_t* p = static_cast< fire_elemental_t* >( player );
       if ( p -> o() -> mastery.enhanced_elements -> ok() )
-        m *= 1.0 + p -> o() -> cache.mastery_value();
+      {
+        if ( ! p -> bugs )
+          m *= 1.0 + p -> o() -> cache.mastery_value();
+        else
+          m *= 1.0 + p -> owner_mastery;
+      }
 
       return m;
     }
@@ -1368,9 +1378,11 @@ struct fire_elemental_t : public pet_t
   shaman_t* o() { return static_cast< shaman_t* >( owner ); }
 
   const spell_data_t* command;
+  double owner_mastery;
 
   fire_elemental_t( sim_t* sim, shaman_t* owner, bool guardian ) :
-    pet_t( sim, owner, ( ! guardian ) ? "primal_fire_elemental" : "greater_fire_elemental", guardian /*GUARDIAN*/ )
+    pet_t( sim, owner, ( ! guardian ) ? "primal_fire_elemental" : "greater_fire_elemental", guardian /*GUARDIAN*/ ),
+    owner_mastery( 1.0 )
   {
     stamina_per_owner      = 1.0;
     command = owner -> find_spell( 65222 );
@@ -1393,14 +1405,11 @@ struct fire_elemental_t : public pet_t
     main_hand_weapon.damage          = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time      = timespan_t::from_seconds( 1.4 );
 
-    if ( maybe_ptr( dbc.ptr ))
-    {
+    if ( maybe_ptr( dbc.ptr ) )
       owner_coeff.sp_from_sp = 0.36;
-    }
     else
-    {
       owner_coeff.sp_from_sp = 0.40;
-    }
+
     if ( o() -> talent.primal_elementalist -> ok() )
       owner_coeff.sp_from_sp *= 1.5 * 1.2;
   }
@@ -1415,6 +1424,15 @@ struct fire_elemental_t : public pet_t
   }
 
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
+
+  void summon( timespan_t duration )
+  {
+    pet_t::summon( duration );
+
+    // Soo, apparently Fire Elemental snapshots owner haste ...
+    if ( bugs )
+      owner_mastery = o() -> cache.mastery_value();
+  }
 
   double composite_player_multiplier( school_e school )
   {
