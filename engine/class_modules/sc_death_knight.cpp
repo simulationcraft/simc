@@ -6042,6 +6042,7 @@ void death_knight_t::create_buffs()
                               .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() )
                               .chance( find_specialization_spell( "Killing Machine" ) -> proc_chance() ); // PPM based!
   buffs.pillar_of_frost     = buff_creator_t( this, "pillar_of_frost", find_class_spell( "Pillar of Frost" ) )
+                              .cd( timespan_t::zero() )
                               .default_value( find_class_spell( "Pillar of Frost" ) -> effectN( 1 ).percent() +
                                               sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent() )
                               .add_invalidate( CACHE_STRENGTH );
