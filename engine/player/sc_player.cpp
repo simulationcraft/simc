@@ -2781,6 +2781,7 @@ void player_t::create_buffs()
       buffs.amplified = buff_creator_t( this, "amplified", find_spell( 146051 ) )
                         .add_invalidate( CACHE_MASTERY )
                         .add_invalidate( CACHE_HASTE )
+                        .add_invalidate( CACHE_SPIRIT )
                         .chance( 0 )
                         /* .add_invalidate( CACHE_PLAYER_CRITICAL_DAMAGE ) */
                         /* .add_invalidate( CACHE_PLAYER_CRITICAL_HEALING ) */;
@@ -3372,6 +3373,7 @@ double player_t::composite_attribute_multiplier( attribute_e attr )
       break;
     case ATTR_SPIRIT:
       m *= 1.0 + buffs.amplified -> value();
+      break;
     default:
       break;
   }
