@@ -2688,7 +2688,7 @@ void cleave_trinket( item_t* item )
       callbacks = may_miss = may_crit = false;
       proc = background = true;
       school = SCHOOL_PHYSICAL; // TODO: Won't work for healing trinket, and spells use various different schools.
-      aoe = -1;
+      aoe = 5;
     }
 
     size_t available_targets( std::vector< player_t* >& tl )
@@ -3111,7 +3111,7 @@ struct flurry_of_xuen_melee_t : public attack_t
     weapon_multiplier = 0;
     proc = background = true;
     callbacks = false;
-    aoe = -1;
+    aoe = 5;
   }
 };
 
@@ -3126,7 +3126,7 @@ struct flurry_of_xuen_ranged_t : public ranged_attack_t
     weapon_multiplier = 0;
     proc = background = true;
     callbacks = false;
-    aoe = -1;
+    aoe = 5;
   }
 };
 
@@ -3195,7 +3195,7 @@ struct essence_of_yulon_t : public spell_t
   {
     proc = background = true;
     callbacks = false;
-    aoe = -1;
+    aoe = 5;
   }
 };
 
