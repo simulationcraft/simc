@@ -6023,6 +6023,7 @@ void death_knight_t::create_buffs()
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" ).spell( find_spell( 81141 ) )
                               .chance( spec.crimson_scourge -> proc_chance() );
   buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_spell( 81256 ) )
+                              .cd( timespan_t::zero() )
                               .add_invalidate( CACHE_PARRY );
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) );
   buffs.deathbringer        = buff_creator_t( this, "deathbringer", find_spell( 144953 ) )
@@ -6036,8 +6037,7 @@ void death_knight_t::create_buffs()
   buffs.icebound_fortitude  = buff_creator_t( this, "icebound_fortitude", find_class_spell( "Icebound Fortitude" ) )
                               .duration( find_class_spell( "Icebound Fortitude" ) -> duration() *
                                          ( 1.0 + glyph.icebound_fortitude -> effectN( 2 ).percent() ) )
-                              .cd( find_class_spell( "Icebound Fortitude" ) -> cooldown() *
-                                   ( 1.0 + glyph.icebound_fortitude -> effectN( 1 ).percent() ) );
+                              .cd( timespan_t::zero() );
   buffs.killing_machine     = buff_creator_t( this, "killing_machine", find_spell( 51124 ) )
                               .default_value( find_spell( 51124 ) -> effectN( 1 ).percent() )
                               .chance( find_specialization_spell( "Killing Machine" ) -> proc_chance() ); // PPM based!
