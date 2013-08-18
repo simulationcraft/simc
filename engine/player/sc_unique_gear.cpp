@@ -3187,7 +3187,7 @@ void flurry_of_xuen( item_t* item )
 
   flurry_of_xuen_cb_t* cb = new flurry_of_xuen_cb_t( item, effect );
 
-  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
 }
 
 // Xin-Ho, Breath of Yu'lon
