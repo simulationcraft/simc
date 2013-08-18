@@ -192,7 +192,7 @@ public:
     action_t* blood_caked_blade;
     spell_t* blood_plague;
     spell_t* frost_fever;
-    spell_t* frozen_power;
+    melee_attack_t* frozen_power;
   } active_spells;
 
   // Gains
@@ -5209,16 +5209,13 @@ void death_knight_t::init_spells()
 
   if ( maybe_ptr( dbc.ptr ) && set_bonus.tier16_4pc_melee() && specialization() == DEATH_KNIGHT_FROST )
   {
-    // TODO: Is this on attack or spell crit/hit?
-    struct frozen_power_t : public spell_t
+    struct frozen_power_t : public melee_attack_t
     {
       frozen_power_t( death_knight_t* p ) :
-        spell_t( "frozen_power", p, p -> spell.t16_4pc_melee -> effectN( 1 ).trigger() )
+        melee_attack_t( "frozen_power", p, p -> spell.t16_4pc_melee -> effectN( 1 ).trigger() )
       {
         direct_power_mod = data().extra_coeff();
-        background = callbacks = proc = may_crit = true;
-        base_spell_power_multiplier = 0;
-        base_attack_power_multiplier = 1;
+        special = background = callbacks = proc = may_crit = true;
       }
     };
 
