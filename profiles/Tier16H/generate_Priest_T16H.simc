@@ -5,7 +5,7 @@ talent_format=armory
 
 # Shadow
 priest="Priest_Shadow_T16H"
-talents=002202
+talents=113313
 level=90
 race=goblin
 spec=shadow
