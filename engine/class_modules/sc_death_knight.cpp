@@ -2097,7 +2097,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   // Rewrite RPPM formula due to a massive bug on blizzard's end
   double real_ppm_proc_chance( double PPM, timespan_t last_trigger, timespan_t last_successful_proc, rppm_scale_e scales_with )
   {
-    if ( player -> bugs )
+    if ( player -> bugs && ! maybe_ptr( player -> dbc.ptr ) )
     {
       // Old RPPM formula
       double spell_haste = player -> cache.spell_haste();
