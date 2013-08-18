@@ -229,12 +229,12 @@ public:
     active_stance             = STANCE_BATTLE;
 
     // Cooldowns
-    cooldown.colossus_smash         = get_cooldown( "colossus_smash"         );
-    cooldown.mortal_strike          = get_cooldown( "mortal_strike"          );
-    cooldown.shield_slam            = get_cooldown( "shield_slam"            );
-    cooldown.strikes_of_opportunity = get_cooldown( "strikes_of_opportunity" );
-    cooldown.revenge                = get_cooldown( "revenge" );
-    cooldown.rage_from_crit_block   = get_cooldown( "rage_from_crit_block" );
+    cooldown.colossus_smash         = get_cooldown( "colossus_smash"          );
+    cooldown.mortal_strike          = get_cooldown( "mortal_strike"           );
+    cooldown.shield_slam            = get_cooldown( "shield_slam"             );
+    cooldown.strikes_of_opportunity = get_cooldown( "strikes_of_opportunity"  );
+    cooldown.revenge                = get_cooldown( "revenge"                 );
+    cooldown.rage_from_crit_block   = get_cooldown( "rage_from_crit_block"    );
     cooldown.rage_from_crit_block -> duration = timespan_t::from_seconds( 3.0 );
 
     initial_rage = 0;
@@ -2096,12 +2096,6 @@ struct slam_t : public warrior_attack_t
     warrior_attack_t( "slam", p, p -> find_class_spell( "Slam" ) )
   {
     parse_options( NULL, options_str );
-
-    if ( p -> dbc.ptr ) // Hard-coded to reflect PTR hotfixes as of 8/15/13.
-      {
-      weapon_multiplier=2.75;
-      base_costs[ RESOURCE_RAGE ] = 25;
-      }
 
     weapon = &( p -> main_hand_weapon );
     
