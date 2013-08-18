@@ -5543,7 +5543,7 @@ void priest_t::create_buffs()
 
     buffs.shadow_word_death_reset_cooldown = buff_creator_t( this, "shadow_word_death_reset_cooldown" )
                                                .max_stack( 1 )
-                                               .duration( timespan_t::from_seconds( 7.5 ) ); // data in the old deprecated glyph. Leave hardcoded for now, 3/12/2012; 7.5sec ICD in 5.4
+                                               .duration( timespan_t::from_seconds( 9.0 ) ); // data in the old deprecated glyph. Leave hardcoded for now, 3/12/2012; 9.0sec ICD in 5.4 (2013/08/18)
 
     buffs.empowered_shadows = buff_creator_t( this, "empowered_shadows" )
                               .spell( sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).trigger() )
