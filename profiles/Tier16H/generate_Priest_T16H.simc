@@ -4,3 +4,30 @@ ptr=1
 talent_format=armory
 
 # Shadow
+priest="Priest_Shadow_T16H"
+talents=002202
+level=90
+race=goblin
+spec=shadow
+role=spell
+position=back
+professions=blacksmithing=600/engineering=600
+glyphs=inner_sanctum/mind_flay/dark_archangel/shadowy_friends/shadow_ravens
+head=hood_of_the_ternion_glory,id=99360,upgrade=2,gems=sinister_primal_80int_160mastery_180int
+neck=necklace_of_fading_light,id=105473,upgrade=2
+shoulders=shoulderguards_of_the_ternion_glory,id=99363,upgrade=2,gems=80int_160mastery_80int_160mastery_120int,enchant=200int_100crit
+back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=80int_160haste_60int,enchant=180int
+chest=raiment_of_the_ternion_glory,id=99362,upgrade=2,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=crit_haste
+wrists=bracers_of_sonic_projection,id=105626,upgrade=2,gems=320mastery,enchant=180int
+hands=gloves_of_the_ternion_glory,id=99359,upgrade=2,gems=80int_160mastery_80int_160mastery_320mastery_120int,addon=synapse_springs_mark_ii,enchant=170haste
+waist=belt_of_the_broken_pact,id=105646,upgrade=2,gems=80int_160mastery_320mastery_320haste_120int,reforge=mastery_haste
+legs=leggings_of_furious_flame,id=105516,upgrade=2,gems=320spi_320spi_120int,enchant=285int_165crit
+feet=boneinlaid_sandals,id=105493,upgrade=2,gems=320haste_60int,enchant=175haste
+finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=80int_160mastery_60hit
+finger2=laserslice_signet,id=105520,upgrade=2,gems=320mastery_60spi
+trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
+trinket2=kardris_toxic_totem,id=105540,upgrade=2
+main_hand=horned_mace_of_the_old_ones,id=105649,upgrade=2,gems=80int_160mastery_60int,enchant=jade_spirit
+off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=80int_160mastery_60int,enchant=165int
+save=Priest_Shadow_T16H.simc
+

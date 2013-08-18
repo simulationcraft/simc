@@ -1,12 +1,13 @@
 #!./simc 
 
-priest="Priest_Shadow_T15N"
+priest="Priest_Shadow_T16H"
 level=90
-race=night_elf
+race=goblin
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!002212
-glyphs=dark_binding/mind_spike/inner_sanctum
+professions=blacksmithing=600/engineering=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!..11.1
+glyphs=inner_sanctum/mind_flay/dark_archangel/shadowy_friends/shadow_ravens
 spec=shadow
 
 # This default action priority list is automatically created based on your character.
@@ -29,6 +30,7 @@ actions.precombat+=/jade_serpent_potion
 # Executed every time the actor is available.
 
 actions=shadowform
+actions+=/use_item,slot=hands
 actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/mindbender,if=talent.mindbender.enabled
 actions+=/shadowfiend,if=!talent.mindbender.enabled
@@ -59,37 +61,37 @@ actions+=/mind_blast,moving=1,if=buff.divine_insight_shadow.react&cooldown_react
 actions+=/shadow_word_pain,moving=1
 actions+=/dispersion
 
-head=hood_of_the_exorcist,id=95301,gems=burning_primal_80int_160haste_180crit
-neck=necklace_of_the_terracotta_invoker,id=95203,gems=160int_60hit
-shoulders=shoulderguards_of_the_exorcist,id=95304,gems=160int_80int_160haste_120haste,enchant=200int_100crit
-back=deadly_glare_cape,id=94929,gems=160int_60int,enchant=180int
-chest=raiment_of_the_exorcist,id=95303,gems=160int_80int_160haste_80int_160spi_180int,enchant=80all,reforge=mastery_haste
-wrists=vaccinators_armwraps,id=94750,enchant=180int,reforge=spi_crit
-hands=helixbreaker_gloves,id=94947,gems=80int_160haste_80int_160haste_120int,enchant=170haste
-waist=cord_of_cacophonous_cawing,id=94813,gems=160int_80int_160haste_120haste,reforge=hit_crit
-legs=leggings_of_the_exorcist,id=95302,gems=80int_160haste_80int_160spi_120int,enchant=285int_165crit
-feet=falling_blossom_sandals,id=94279,gems=160int_160int_120mastery,enchant=140mastery,reforge=spi_crit
-finger1=signet_of_the_shadopan_assault,id=95138
-finger2=roshaks_remembrance,id=95512,gems=80int_160spi_60haste
-trinket1=breath_of_the_hydra,id=94521
-trinket2=chayes_essence_of_brilliance,id=94531,reforge=crit_haste
-main_hand=venomlords_totemic_wand,id=94755,gems=80int_160spi_160int_60int,enchant=jade_spirit
-off_hand=lei_shens_orb_of_command,id=95473,gems=80int_160haste_60int,enchant=165int
+head=hood_of_the_ternion_glory,id=99360,upgrade=2,gems=sinister_primal_80int_160mastery_180int
+neck=necklace_of_fading_light,id=105473,upgrade=2
+shoulders=shoulderguards_of_the_ternion_glory,id=99363,upgrade=2,gems=80int_160mastery_80int_160mastery_120int,enchant=200int_100crit
+back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=80int_160haste_60int,enchant=180int
+chest=raiment_of_the_ternion_glory,id=99362,upgrade=2,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=crit_haste
+wrists=bracers_of_sonic_projection,id=105626,upgrade=2,gems=320mastery,enchant=180int
+hands=gloves_of_the_ternion_glory,id=99359,upgrade=2,gems=80int_160mastery_80int_160mastery_320mastery_120int,enchant=170haste,addon=synapse_springs_mark_ii
+waist=belt_of_the_broken_pact,id=105646,upgrade=2,gems=80int_160mastery_320mastery_320haste_120int,reforge=mastery_haste
+legs=leggings_of_furious_flame,id=105516,upgrade=2,gems=320spi_320spi_120int,enchant=285int_165crit
+feet=boneinlaid_sandals,id=105493,upgrade=2,gems=320haste_60int,enchant=175haste
+finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=80int_160mastery_60hit
+finger2=laserslice_signet,id=105520,upgrade=2,gems=320mastery_60spi
+trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
+trinket2=kardris_toxic_totem,id=105540,upgrade=2
+main_hand=horned_mace_of_the_old_ones,id=105649,upgrade=2,gems=80int_160mastery_60int,enchant=jade_spirit
+off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=80int_160mastery_60int,enchant=165int
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=22852
-# gear_intellect=17648
-# gear_spirit=4019
-# gear_spell_power=8926
-# gear_hit_rating=1073
-# gear_crit_rating=7151
-# gear_haste_rating=10935
-# gear_mastery_rating=1255
-# gear_armor=15458
-# meta_gem=burning_primal
-# tier15_2pc_caster=1
-# tier15_4pc_caster=1
-# main_hand=venomlords_totemic_wand,weapon=wand,enchant=jade_spirit
-initial_shadow_orbs=3
+# gear_stamina=39087
+# gear_intellect=27610
+# gear_spirit=4678
+# gear_spell_power=15321
+# gear_hit_rating=60
+# gear_crit_rating=5552
+# gear_haste_rating=16479
+# gear_mastery_rating=12091
+# gear_armor=18104
+# meta_gem=sinister_primal
+# tier16_2pc_caster=1
+# tier16_4pc_caster=1
+# hands=gloves_of_the_ternion_glory,heroic=1,addon=synapse_springs_mark_ii
+# main_hand=horned_mace_of_the_old_ones,heroic=1,elite=1,weapon=mace_2.40speed_5651min_10495max,enchant=jade_spirit
