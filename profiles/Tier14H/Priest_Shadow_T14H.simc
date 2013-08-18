@@ -45,11 +45,11 @@ actions+=/mind_flay_insanity,if=target.dot.devouring_plague_tick.ticks_remain=1,
 actions+=/mind_flay_insanity,interrupt=1,chain=1
 actions+=/shadow_word_pain,cycle_targets=1,max_cycle_targets=8,if=miss_react&!ticking
 actions+=/vampiric_touch,cycle_targets=1,max_cycle_targets=8,if=remains<cast_time&miss_react
-actions+=/mind_spike,if=active_enemies<=6&buff.surge_of_darkness.react=2
 actions+=/shadow_word_pain,cycle_targets=1,max_cycle_targets=8,if=miss_react&ticks_remain<=1
 actions+=/vampiric_touch,cycle_targets=1,max_cycle_targets=8,if=remains<cast_time+tick_time&miss_react
 actions+=/vampiric_embrace,if=shadow_orb=3&health.pct<=40
 actions+=/devouring_plague,if=shadow_orb=3&ticks_remain<=1
+actions+=/mind_spike,if=active_enemies<=6&buff.surge_of_darkness.react=2
 actions+=/halo,if=talent.halo.enabled
 actions+=/cascade_damage,if=talent.cascade.enabled
 actions+=/divine_star,if=talent.divine_star.enabled

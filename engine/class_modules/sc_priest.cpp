@@ -5675,11 +5675,11 @@ void priest_t::apl_shadow()
   def -> add_action( "mind_flay_insanity,interrupt=1,chain=1" );
   def -> add_action( this, "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=8,if=miss_react&!ticking" );
   def -> add_action( this, "Vampiric Touch", "cycle_targets=1,max_cycle_targets=8,if=remains<cast_time&miss_react" );
-  def -> add_action( this, "Mind Spike", "if=active_enemies<=6&buff.surge_of_darkness.react=2" );
   def -> add_action( this, "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=8,if=miss_react&ticks_remain<=1" );
   def -> add_action( this, "Vampiric Touch", "cycle_targets=1,max_cycle_targets=8,if=remains<cast_time+tick_time&miss_react" );
   def -> add_action( this, "Vampiric Embrace", "if=shadow_orb=3&health.pct<=40" );
   def -> add_action( this, "Devouring Plague", "if=shadow_orb=3&ticks_remain<=1" );
+  def -> add_action( this, "Mind Spike", "if=active_enemies<=6&buff.surge_of_darkness.react=2" );
   def -> add_action( "halo,if=talent.halo.enabled" );
   def -> add_action( "cascade_damage,if=talent.cascade.enabled" );
   def -> add_action( "divine_star,if=talent.divine_star.enabled" );
