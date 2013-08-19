@@ -4352,7 +4352,7 @@ void mage_t::init_actions()
       action_list_str += "/mana_gem,if=mana.pct<80&buff.alter_time.down";
 
       //check for Arcane power glyph for use with time_to_bloodlust and Alter Time
-      if (glyph.arcane_power -> ok())
+      if (glyphs.arcane_power -> ok())
       {
         if ( talents.rune_of_power -> ok() )
           action_list_str += "/arcane_power,if=time_to_bloodlust>180&((buff.rune_of_power.remains>=buff.arcane_power.duration&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5),moving=0";
@@ -4505,7 +4505,7 @@ void mage_t::init_actions()
       if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=cooldown.alter_time_activate.remains>60|target.time_to_die<5";
 
       action_list_str += "/flamestrike,if=active_enemies>=5";
-      
+
       //if more than 1 target, cleave dot after every combustion
       action_list_str += "/inferno_blast,if=dot.combustion.ticking&active_enemies>1";
       action_list_str += "/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up";
@@ -4538,12 +4538,12 @@ void mage_t::init_actions()
       }
 
       action_list_str += "/mirror_image";
-      
+
       //remove condition because of T16
       action_list_str += "/frozen_orb";
-      
+
       //on PTR fb's debuff is removed and add time_to_bloodlust
-      if ( PTR == 0)
+      if ( ! maybe_ptr( dbc.ptr ) )
       {
         action_list_str += "/icy_veins,if=time_to_bloodlust>180&((debuff.frostbolt.stack>=3&(buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22),moving=0";
       }
@@ -4551,7 +4551,7 @@ void mage_t::init_actions()
       {
         action_list_str += "/icy_veins,if=time_to_bloodlust>180&((buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22),moving=0";
       }
-      
+
 
       if ( race == RACE_ORC )                 action_list_str += "/blood_fury,if=buff.icy_veins.up|cooldown.icy_veins.remains>30|target.time_to_die<18";
       else if ( race == RACE_TROLL )          action_list_str += "/berserking,if=buff.icy_veins.up|target.time_to_die<18";
@@ -4585,7 +4585,7 @@ void mage_t::init_actions()
       else if ( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=target.time_to_die>cast_time+tick_time";
 
       //on PTR, it need to be removed
-      if (PTR == 0) action_list_str += "/frostbolt,if=debuff.frostbolt.stack<3";
+      if ( ! maybe_ptr( dbc.ptr ) ) action_list_str += "/frostbolt,if=debuff.frostbolt.stack<3";
 
 
       action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react&cooldown.icy_veins.remains>2";
