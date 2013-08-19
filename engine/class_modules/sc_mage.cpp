@@ -4323,6 +4323,7 @@ void mage_t::init_actions()
       add_action( "Conjure Mana Gem", "if=mana_gem_charges<3&target.debuff.invulnerable.react" );
     }
 
+    //not useful if bloodlust is check in option.
     if ( level >= 85 )
       action_list_str += "/time_warp,if=target.health.pct<25|time>5";
 
@@ -4350,12 +4351,25 @@ void mage_t::init_actions()
       action_list_str += "/mirror_image";
       action_list_str += "/mana_gem,if=mana.pct<80&buff.alter_time.down";
 
-      if ( talents.rune_of_power -> ok() )
-        action_list_str += "/arcane_power,if=(buff.rune_of_power.remains>=buff.arcane_power.duration&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5,moving=0";
-      else if ( talents.invocation -> ok() )
-        action_list_str += "/arcane_power,if=(buff.invokers_energy.remains>=buff.arcane_power.duration&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5,moving=0";
+      //check for Arcane power glyph for use with time_to_bloodlust and Alter Time
+      if (glyph.arcane_power -> ok())
+      {
+        if ( talents.rune_of_power -> ok() )
+          action_list_str += "/arcane_power,if=time_to_bloodlust>180&((buff.rune_of_power.remains>=buff.arcane_power.duration&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5),moving=0";
+        else if ( talents.invocation -> ok() )
+          action_list_str += "/arcane_power,if=time_to_bloodlust>180&((buff.invokers_energy.remains>=buff.arcane_power.duration&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5),moving=0";
+        else
+          action_list_str += "/arcane_power,if=time_to_bloodlust>180&((buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5),moving=0";
+      }
       else
-        action_list_str += "/arcane_power,if=(buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5,moving=0";
+      {
+        if ( talents.rune_of_power -> ok() )
+          action_list_str += "/arcane_power,if=time_to_bloodlust>90&((buff.rune_of_power.remains>=buff.arcane_power.duration&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5),moving=0";
+        else if ( talents.invocation -> ok() )
+          action_list_str += "/arcane_power,if=time_to_bloodlust>90&((buff.invokers_energy.remains>=buff.arcane_power.duration&buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5),moving=0";
+        else
+          action_list_str += "/arcane_power,if=time_to_bloodlust>90&((buff.arcane_missiles.stack=2&buff.arcane_charge.stack>2)|target.time_to_die<buff.arcane_power.duration+5),moving=0";
+      }
 
       // The arcane action list for < 87 is terribly gimped, level instead
       if ( level >= 87 )
@@ -4448,6 +4462,7 @@ void mage_t::init_actions()
       action_list_str += init_use_profession_actions( level >= 87 ? ",if=buff.alter_time.down&(cooldown.alter_time_activate.remains>30|target.time_to_die<25)" : "" );
       action_list_str += "/mirror_image";
 
+//hardcoding this calculation for improving performance ???
       action_list_str += "/combustion,if=target.time_to_die<22";
       action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((3*action.pyroblast.crit_damage)*mastery_value*0.5)";
       action_list_str += "/combustion,if=dot.ignite.tick_dmg>=((action.fireball.crit_damage+action.inferno_blast.crit_damage+action.pyroblast.hit_damage)*mastery_value*0.5)&dot.pyroblast.ticking&buff.alter_time.down&buff.pyroblast.down";
@@ -4482,13 +4497,17 @@ void mage_t::init_actions()
 
       action_list_str += init_use_item_actions( ",sync=alter_time_activate" );
       action_list_str += init_use_profession_actions( level >= 87 ? ",sync=alter_time_activate,if=buff.alter_time.down" : "" );
+      //add time_to_bloodlust condition
       if ( level >= 87 )
-        action_list_str += "/alter_time,if=buff.alter_time.down&buff.pyroblast.react";
+        action_list_str += "/alter_time,if=time_to_bloodlust>180&buff.alter_time.down&buff.pyroblast.react";
       action_list_str += init_use_item_actions( ",if=cooldown.alter_time_activate.remains>40|target.time_to_die<12" );
 
       if ( talents.presence_of_mind -> ok() ) action_list_str += "/presence_of_mind,if=cooldown.alter_time_activate.remains>60|target.time_to_die<5";
 
       action_list_str += "/flamestrike,if=active_enemies>=5";
+      
+      //if more than 1 target, cleave dot after every combustion
+      action_list_str += "/inferno_blast,if=dot.combustion.ticking&active_enemies>1";
       action_list_str += "/pyroblast,if=buff.pyroblast.react|buff.presence_of_mind.up";
       action_list_str += "/inferno_blast,if=buff.heating_up.react&buff.pyroblast.down";
 
@@ -4519,11 +4538,20 @@ void mage_t::init_actions()
       }
 
       action_list_str += "/mirror_image";
-      action_list_str += "/frozen_orb,if=!buff.fingers_of_frost.react";
       
-      //on PTR fb's debuff is removed
-      //action_list_str += "/icy_veins,if=(buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22,moving=0";
-      action_list_str += "/icy_veins,if=(debuff.frostbolt.stack>=3&(buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22,moving=0";
+      //remove condition because of T16
+      action_list_str += "/frozen_orb";
+      
+      //on PTR fb's debuff is removed and add time_to_bloodlust
+      if ( PTR == 0)
+      {
+        action_list_str += "/icy_veins,if=time_to_bloodlust>180&((debuff.frostbolt.stack>=3&(buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22),moving=0";
+      }
+      else
+      {
+        action_list_str += "/icy_veins,if=time_to_bloodlust>180&((buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22),moving=0";
+      }
+      
 
       if ( race == RACE_ORC )                 action_list_str += "/blood_fury,if=buff.icy_veins.up|cooldown.icy_veins.remains>30|target.time_to_die<18";
       else if ( race == RACE_TROLL )          action_list_str += "/berserking,if=buff.icy_veins.up|target.time_to_die<18";
@@ -4557,10 +4585,15 @@ void mage_t::init_actions()
       else if ( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=target.time_to_die>cast_time+tick_time";
 
       //on PTR, it need to be removed
-      action_list_str += "/frostbolt,if=debuff.frostbolt.stack<3";
-      
+      if (PTR == 0) action_list_str += "/frostbolt,if=debuff.frostbolt.stack<3";
+
+
       action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react&cooldown.icy_veins.remains>2";
-      action_list_str += "/ice_lance,if=buff.fingers_of_frost.react&cooldown.icy_veins.remains>2";
+
+      //with 2pT16, keep 1 FoF to use with Frozen Thoughts
+      action_list_str += "/ice_lance,if=buff.frozen_thoughts.react&buff.fingers_of_frost.up";
+      action_list_str += "/ice_lance,if=buff.fingers_of_frost.up&(buff.fingers_of_frost.remains<2|(buff.fingers_of_frost.stack>1&cooldown.icy_veins.remains>2))";
+      //action_list_str += "/ice_lance,if=buff.fingers_of_frost.react&cooldown.icy_veins.remains>2";
       action_list_str += "/frostbolt";
 
       if ( talents.ice_floes -> ok() ) action_list_str += "/ice_floes,moving=1";
