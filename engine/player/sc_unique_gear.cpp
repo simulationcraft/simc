@@ -2673,9 +2673,10 @@ void unerring_vision_of_leishen( item_t* item )
 
     double proc_chance()
     {
-      if ( listener -> specialization() == DRUID_BALANCE )
+      if ( ! maybe_ptr( listener -> dbc.ptr ) && listener -> specialization() == DRUID_BALANCE )
         return proc_callback_t<action_state_t>::proc_chance() * 0.65;
-      return proc_callback_t<action_state_t>::proc_chance();
+      else
+        return rppm.get_rppm();
     }
   };
 
