@@ -50,7 +50,7 @@ actions+=/sacred_shield,if=talent.sacred_shield.enabled&cooldown.crusader_strike
 head=faceguard_of_winged_triumph,id=99370,gems=indomitable_primal_160exp_160haste_270sta,reforge=parry_hit
 neck=juggernauts_ignition_keys,id=104517,reforge=hit_haste
 shoulders=shoulderguards_of_winged_triumph,id=99364,gems=320haste_320haste,enchant=180sta_80dodge,reforge=exp_haste
-back=qianying_fortitude_of_niuzao,id=102250,gems=160exp_160haste_90sta,enchant=200sta,reforge=parry_haste
+back=qianying_fortitude_of_niuzao,id=102250,upgrade=2,gems=160exp_160haste_90sta,enchant=200sta,reforge=parry_haste
 chest=chestguard_of_winged_triumph,id=99368,gems=160exp_160haste_160exp_160haste_160exp_160haste_270sta,enchant=300sta,reforge=mastery_haste
 wrists=bubbleburst_bracers,id=104415,gems=320haste,enchant=170mastery
 hands=handguards_of_winged_triumph,id=99369,gems=320haste_320haste_320haste,enchant=150sta,reforge=exp_hit

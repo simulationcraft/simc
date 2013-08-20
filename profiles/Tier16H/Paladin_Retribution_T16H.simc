@@ -60,7 +60,7 @@ actions+=/holy_prism,if=talent.holy_prism.enabled
 head=helmet_of_winged_triumph,id=99379,gems=capacitive_primal_80str_160haste_180str
 neck=juggernauts_ignition_keys,id=104517
 shoulders=pauldrons_of_winged_triumph,id=99373,gems=80str_160haste_80str_160haste_120str,enchant=200str_100crit,reforge=exp_haste
-back=gonglu_strength_of_xuen,id=102249,gems=80str_160haste_60str,enchant=180hit
+back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=80str_160haste_60str,enchant=180hit
 chest=battleplate_of_winged_triumph,id=99136,gems=80str_160haste_80str_160haste_80str_160haste_180str,enchant=80all
 wrists=bubbleburst_bracers,id=103738,gems=360haste,enchant=180str,reforge=hit_crit
 hands=gauntlets_of_winged_triumph,id=99137,gems=80str_160haste_80str_160haste_360haste_120str,enchant=170str,reforge=hit_crit
