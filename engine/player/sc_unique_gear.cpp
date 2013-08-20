@@ -1058,7 +1058,18 @@ void capacitive_primal( player_t* p )
     {
       capacitive_primal_proc_t( player_t* p, const special_effect_t& data, action_t* a, const spell_data_t* spell ) :
         discharge_proc_t<action_t>( p, data, a, spell )
-      { }
+      {
+        // Unfortunately the weapon-based RPPM modifiers have to be hardcoded,
+        // as they will not show on the client tooltip data.
+        if ( maybe_ptr( listener -> dbc.ptr ) && 
+             listener -> main_hand_weapon.group() != WEAPON_2H )
+        {
+          if ( listener -> specialization() == WARRIOR_FURY )
+            rppm.set_modifier( 1.152 );
+          else if ( listener -> specialization() == DEATH_KNIGHT_FROST )
+            rppm.set_modifier( 1.134 );
+        }
+      }
 
       double proc_chance()
       {
@@ -1097,19 +1108,7 @@ void capacitive_primal( player_t* p )
           }
         }
         else
-        {
-          // Unfortunately the weapon-based RPPM modifiers have to be hardcoded,
-          // as they will not show on the client tooltip data.
-          if ( listener -> main_hand_weapon.group() != WEAPON_2H )
-          {
-            if ( listener -> specialization() == WARRIOR_FURY )
-              rppm.set_modifier( 1.152 );
-            else if ( listener -> specialization() == DEATH_KNIGHT_FROST )
-              rppm.set_modifier( 1.134 );
-          }
-
           return rppm.get_rppm();
-        }
       }
     };
 
