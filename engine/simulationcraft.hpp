@@ -5660,10 +5660,10 @@ private:
   timespan_t   initial_precombat_time;
   rppm_scale_e scales_with;
 public:
-  real_ppm_t( const std::string& /* name */, player_t& p, double frequency = std::numeric_limits<double>::min(), rppm_scale_e s = RPPM_NONE, unsigned /* spell_id */ = 0 ) :
+  real_ppm_t( player_t& p, double frequency = std::numeric_limits<double>::min(), rppm_scale_e s = RPPM_NONE, unsigned spell_id = 0 ) :
     rng( p.rng() ),
     freq( frequency ),
-    modifier( /* maybe_ptr( p.dbc.ptr ) ? p.dbc.rppm_coefficient( p.specialization(), spell_id ) : */ 1.0 ),
+    modifier( maybe_ptr( p.dbc.ptr ) ? p.dbc.rppm_coefficient( p.specialization(), spell_id ) : 1.0 ),
     rppm( freq * modifier ),
     last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
     last_successful_trigger( timespan_t::from_seconds( p.dbc.ptr ? -90 : -300.0 ) ),
@@ -5679,6 +5679,12 @@ public:
 
   void set_modifier( double mod )
   { modifier = mod; rppm = freq * modifier; }
+
+  double get_modifier()
+  { return modifier; }
+
+  double get_rppm()
+  { return rppm; }
 
   void reset()
   {
@@ -5784,10 +5790,10 @@ struct proc_callback_t : public action_callback_t
     }
   };
 
-  proc_callback_t( player_t* p, const special_effect_t& data ) :
+  proc_callback_t( player_t* p, const special_effect_t& data, const spell_data_t* driver = spell_data_t::nil() ) :
     action_callback_t( p ),
     proc_data( data ),
-    rppm( proc_data.name_str, *listener, is_rppm() ? std::fabs( data.ppm ) : std::numeric_limits<double>::min(), data.rppm_scale ),
+    rppm( *listener, is_rppm() ? std::fabs( data.ppm ) : std::numeric_limits<double>::min(), data.rppm_scale, driver -> id() ),
     cooldown( nullptr ), proc_rng( listener -> rng() )
   {
     if ( proc_data.cooldown != timespan_t::zero() )
@@ -5812,7 +5818,9 @@ public:
 
     if ( is_rppm() )
     {
-      rppm.set_frequency( chance );
+      if ( ! maybe_ptr( listener -> dbc.ptr ) )
+        rppm.set_frequency( chance );
+
       triggered = rppm.trigger( *action );
     }
     else if ( is_ppm() )
@@ -5886,8 +5894,8 @@ struct buff_proc_callback_t : public proc_callback_t<T_CALLDATA>
 
   T_BUFF* buff;
 
-  buff_proc_callback_t( player_t* p, const special_effect_t& data, T_BUFF* b = nullptr ) :
-    proc_callback_t<T_CALLDATA>( p, data ), buff( b )
+  buff_proc_callback_t( player_t* p, const special_effect_t& data, T_BUFF* b = nullptr, const spell_data_t* driver = spell_data_t::nil() ) :
+    proc_callback_t<T_CALLDATA>( p, data, driver ), buff( b )
   {
     if ( this -> proc_data.max_stacks == 0 ) this -> proc_data.max_stacks = 1;
     if ( this -> proc_data.proc_chance == 0 ) this -> proc_data.proc_chance = 1;
@@ -5915,8 +5923,8 @@ struct discharge_proc_t : public proc_callback_t<T_CALLDATA>
   T_ACTION* discharge_action;
   proc_t*   discharge_proc;
 
-  discharge_proc_t( player_t* p, const special_effect_t& data, T_ACTION* a ) :
-    proc_callback_t<T_CALLDATA>( p, data ),
+  discharge_proc_t( player_t* p, const special_effect_t& data, T_ACTION* a, const spell_data_t* driver = spell_data_t::nil() ) :
+    proc_callback_t<T_CALLDATA>( p, data, driver ),
     discharge_stacks( 0 ), discharge_action( a ),
     discharge_proc( proc_callback_t<T_CALLDATA>::listener -> get_proc( data.name_str ) )
   {

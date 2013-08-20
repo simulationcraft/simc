@@ -3363,7 +3363,7 @@ void warrior_t::init_rng()
     default: rppm = 0.0;
       break;
   }
-  t15_2pc_melee = new real_ppm_t( "t15_2pc_melee", *this, rppm * ( maybe_ptr ( dbc.ptr) ? 1.11 : 1.0));
+  t15_2pc_melee = new real_ppm_t( *this, rppm * ( maybe_ptr ( dbc.ptr) ? 1.11 : 1.0));
 }
 
 // warrior_t::init_actions ==================================================

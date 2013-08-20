@@ -37,8 +37,8 @@ static std::string RTV( unsigned tf, unsigned lfr, unsigned flex, unsigned norma
 
 struct stat_buff_proc_t : public buff_proc_callback_t<stat_buff_t>
 {
-  stat_buff_proc_t( player_t* p, const special_effect_t& data ) :
-    buff_proc_callback_t<stat_buff_t>( p, data )
+  stat_buff_proc_t( player_t* p, const special_effect_t& data, const spell_data_t* driver = spell_data_t::nil() ) :
+    buff_proc_callback_t<stat_buff_t>( p, data, 0, driver )
   {
     buff = stat_buff_creator_t( listener, proc_data.name_str )
            .activated( data.reverse || data.tick != timespan_t::zero() )
@@ -52,8 +52,8 @@ struct stat_buff_proc_t : public buff_proc_callback_t<stat_buff_t>
 
 struct cost_reduction_buff_proc_t : public buff_proc_callback_t<cost_reduction_buff_t>
 {
-  cost_reduction_buff_proc_t( player_t* p, const special_effect_t& data ) :
-    buff_proc_callback_t<cost_reduction_buff_t>( p, data )
+  cost_reduction_buff_proc_t( player_t* p, const special_effect_t& data, const spell_data_t* driver = spell_data_t::nil() ) :
+    buff_proc_callback_t<cost_reduction_buff_t>( p, data, 0, driver )
   {
     buff = cost_reduction_buff_creator_t( listener, proc_data.name_str )
            .activated( false )
@@ -111,8 +111,8 @@ struct discharge_attack_t : public attack_t
 
 struct discharge_proc_callback_base_t : public discharge_proc_t<action_t>
 {
-  discharge_proc_callback_base_t( player_t* p, const special_effect_t& data ) :
-    discharge_proc_t<action_t>( p, data, nullptr )
+  discharge_proc_callback_base_t( player_t* p, const special_effect_t& data, const spell_data_t* driver = spell_data_t::nil() ) :
+    discharge_proc_t<action_t>( p, data, nullptr, driver )
   {
     if ( proc_data.discharge_amount > 0 )
     {
@@ -130,8 +130,8 @@ struct discharge_proc_callback_base_t : public discharge_proc_t<action_t>
 struct discharge_proc_callback_t : public discharge_proc_callback_base_t
 {
 
-  discharge_proc_callback_t( player_t* p, const special_effect_t& data ) :
-    discharge_proc_callback_base_t( p, data )
+  discharge_proc_callback_t( player_t* p, const special_effect_t& data, const spell_data_t* driver = spell_data_t::nil() ) :
+    discharge_proc_callback_base_t( p, data, driver )
   { }
 };
 
@@ -140,8 +140,8 @@ struct discharge_proc_callback_t : public discharge_proc_callback_base_t
 struct chance_discharge_proc_callback_t : public discharge_proc_callback_base_t
 {
 
-  chance_discharge_proc_callback_t( player_t* p, const special_effect_t& data ) :
-    discharge_proc_callback_base_t( p, data )
+  chance_discharge_proc_callback_t( player_t* p, const special_effect_t& data, const spell_data_t* driver = spell_data_t::nil() ) :
+    discharge_proc_callback_base_t( p, data, driver )
   { }
 
   virtual double proc_chance()
@@ -159,8 +159,8 @@ struct stat_discharge_proc_callback_t : public discharge_proc_t<action_t>
 {
   stat_buff_t* buff;
 
-  stat_discharge_proc_callback_t( player_t* p, special_effect_t& data ) :
-    discharge_proc_t<action_t>( p, data, nullptr )
+  stat_discharge_proc_callback_t( player_t* p, special_effect_t& data, const spell_data_t* driver = spell_data_t::nil() ) :
+    discharge_proc_t<action_t>( p, data, nullptr, driver )
   {
     if ( proc_data.max_stacks == 0 ) proc_data.max_stacks = 1;
     if ( proc_data.proc_chance == 0 ) proc_data.proc_chance = 1;
@@ -210,8 +210,9 @@ struct weapon_proc_callback_t : public proc_callback_t<action_state_t>
   weapon_proc_callback_t( player_t* p,
                           special_effect_t& e,
                           weapon_t* w,
-                          bool all = false ) :
-    base_t( p, e ),
+                          bool all = false,
+                          const spell_data_t* driver = spell_data_t::nil() ) :
+    base_t( p, e, driver ),
     weapon( w ), all_damage( all )
   {
   }
@@ -238,8 +239,9 @@ public:
                                special_effect_t& e,
                                weapon_t* w,
                                buff_t* b,
-                               bool all = false ) :
-    base_t( p, e, b ),
+                               bool all = false,
+                               const spell_data_t* driver = spell_data_t::nil() ) :
+    base_t( p, e, b, driver ),
     weapon( w ),
     all_damage( all )
   {  }
@@ -675,7 +677,7 @@ struct windsong_callback_t : public action_callback_t
   windsong_callback_t( player_t* p, stat_buff_t* hb, stat_buff_t* cb, stat_buff_t* mb ) :
     action_callback_t( p ),
     haste_buff  ( hb ), crit_buff( cb ), mastery_buff( mb ),
-    real_ppm( "windsong", *p )
+    real_ppm( *p )
   {
     const spell_data_t* driver = p -> find_spell( 104561 );
     real_ppm.set_frequency( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 2.0 );
@@ -985,21 +987,26 @@ void sinister_primal( player_t* p )
 
       double proc_chance()
       {
-        double base_ppm = std::fabs( proc_data.ppm );
-
-        switch ( listener -> specialization() )
+        if ( ! maybe_ptr( listener -> dbc.ptr ) )
         {
-          case MAGE_ARCANE:         return base_ppm * 0.761;
-          case MAGE_FIRE:           return base_ppm * 0.705;
-          case MAGE_FROST:          return base_ppm * 1.387;
-          case WARLOCK_DEMONOLOGY:  return base_ppm * 0.598;
-          case WARLOCK_AFFLICTION:  return base_ppm * 0.625;
-          case WARLOCK_DESTRUCTION: return base_ppm * 0.509;
-          case SHAMAN_ELEMENTAL:    return base_ppm * 1.891;
-          case DRUID_BALANCE:       return base_ppm * 1.872;
-          case PRIEST_SHADOW:       return base_ppm * 0.933;
-          default:                  return base_ppm;
+          double base_ppm = std::fabs( proc_data.ppm );
+
+          switch ( listener -> specialization() )
+          {
+            case MAGE_ARCANE:         return base_ppm * 0.761;
+            case MAGE_FIRE:           return base_ppm * 0.705;
+            case MAGE_FROST:          return base_ppm * 1.387;
+            case WARLOCK_DEMONOLOGY:  return base_ppm * 0.598;
+            case WARLOCK_AFFLICTION:  return base_ppm * 0.625;
+            case WARLOCK_DESTRUCTION: return base_ppm * 0.509;
+            case SHAMAN_ELEMENTAL:    return base_ppm * 1.891;
+            case DRUID_BALANCE:       return base_ppm * 1.872;
+            case PRIEST_SHADOW:       return base_ppm * 0.933;
+            default:                  return base_ppm;
+          }
         }
+        else
+          return rppm.get_rppm();
       }
     };
 
@@ -1049,43 +1056,59 @@ void capacitive_primal( player_t* p )
 
     struct capacitive_primal_proc_t : public discharge_proc_t<action_t>
     {
-      capacitive_primal_proc_t( player_t* p, const special_effect_t& data, action_t* a ) :
-        discharge_proc_t<action_t>( p, data, a )
+      capacitive_primal_proc_t( player_t* p, const special_effect_t& data, action_t* a, const spell_data_t* spell ) :
+        discharge_proc_t<action_t>( p, data, a, spell )
       { }
 
       double proc_chance()
       {
         double base_ppm = std::fabs( proc_data.ppm );
-
-        switch ( listener -> specialization() )
+        if ( ! maybe_ptr( listener -> dbc.ptr ) )
         {
-          case ROGUE_ASSASSINATION:  return base_ppm * 1.789;
-          case ROGUE_COMBAT:         return base_ppm * 1.136;
-          case ROGUE_SUBTLETY:       return base_ppm * 1.114;
-          case DRUID_FERAL:          return base_ppm * 1.721;
-          case MONK_WINDWALKER:      return base_ppm * 1.087;
-          case HUNTER_BEAST_MASTERY: return base_ppm * 0.950;
-          case HUNTER_MARKSMANSHIP:  return base_ppm * 1.107;
-          case HUNTER_SURVIVAL:      return base_ppm * 0.950;
-          case SHAMAN_ENHANCEMENT:   return base_ppm * 0.809;
-          case DEATH_KNIGHT_UNHOLY:  return base_ppm * 0.838;
-          case WARRIOR_ARMS:         return base_ppm * 1.339;
-          case PALADIN_RETRIBUTION:  return base_ppm * 1.295;
-          default:                   return base_ppm;
-          case DEATH_KNIGHT_FROST:
+          switch ( listener -> specialization() )
           {
-            if ( listener -> main_hand_weapon.group() == WEAPON_2H )
-              return base_ppm * 1.532;
-            else
-              return base_ppm * 1.134;
+            case ROGUE_ASSASSINATION:  return base_ppm * 1.789;
+            case ROGUE_COMBAT:         return base_ppm * 1.136;
+            case ROGUE_SUBTLETY:       return base_ppm * 1.114;
+            case DRUID_FERAL:          return base_ppm * 1.721;
+            case MONK_WINDWALKER:      return base_ppm * 1.087;
+            case HUNTER_BEAST_MASTERY: return base_ppm * 0.950;
+            case HUNTER_MARKSMANSHIP:  return base_ppm * 1.107;
+            case HUNTER_SURVIVAL:      return base_ppm * 0.950;
+            case SHAMAN_ENHANCEMENT:   return base_ppm * 0.809;
+            case DEATH_KNIGHT_UNHOLY:  return base_ppm * 0.838;
+            case WARRIOR_ARMS:         return base_ppm * 1.339;
+            case PALADIN_RETRIBUTION:  return base_ppm * 1.295;
+            default:                   return base_ppm;
+            case DEATH_KNIGHT_FROST:
+            {
+              if ( listener -> main_hand_weapon.group() == WEAPON_2H )
+                return base_ppm * 1.532;
+              else
+                return base_ppm * 1.134;
+            }
+            case WARRIOR_FURY:
+            {
+              if ( listener -> main_hand_weapon.group() == WEAPON_2H )
+                return base_ppm * 1.257;
+              else
+                return base_ppm * 1.152;
+            }
           }
-          case WARRIOR_FURY:
+        }
+        else
+        {
+          // Unfortunately the weapon-based RPPM modifiers have to be hardcoded,
+          // as they will not show on the client tooltip data.
+          if ( listener -> main_hand_weapon.group() != WEAPON_2H )
           {
-            if ( listener -> main_hand_weapon.group() == WEAPON_2H )
-              return base_ppm * 1.257;
-            else
-              return base_ppm * 1.152;
+            if ( listener -> specialization() == WARRIOR_FURY )
+              rppm.set_modifier( 1.152 );
+            else if ( listener -> specialization() == DEATH_KNIGHT_FROST )
+              rppm.set_modifier( 1.134 );
           }
+
+          return rppm.get_rppm();
         }
       }
     };
@@ -1101,7 +1124,7 @@ void capacitive_primal( player_t* p )
     action_t* ls = p -> create_proc_action( "lightning_strike" );
     if ( ! ls )
       ls = new lightning_strike_t( p );
-    action_callback_t* cb = new capacitive_primal_proc_t( p, data, ls );
+    action_callback_t* cb = new capacitive_primal_proc_t( p, data, ls, driver );
     p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
   }
 }
@@ -3154,12 +3177,13 @@ struct flurry_of_xuen_driver_t : public attack_t
   }
 };
 
+// TODO: 2h/1h modifiers for Warriors / Death Knights?
 struct flurry_of_xuen_cb_t : public proc_callback_t<action_state_t>
 {
   action_t* action;
 
-  flurry_of_xuen_cb_t( item_t* item, const special_effect_t& effect ) :
-    proc_callback_t<action_state_t>( item -> player, effect ),
+  flurry_of_xuen_cb_t( item_t* item, const special_effect_t& effect, const spell_data_t* driver ) :
+    proc_callback_t<action_state_t>( item -> player, effect, driver ),
     action( new flurry_of_xuen_driver_t( listener, listener -> create_proc_action( effect.name_str ) ) )
   { }
 
@@ -3185,7 +3209,7 @@ void flurry_of_xuen( item_t* item )
   effect.ppm        *= item_database::approx_scale_coefficient( item -> parsed.data.level, item -> item_level() );
   effect.rppm_scale = RPPM_HASTE;
 
-  flurry_of_xuen_cb_t* cb = new flurry_of_xuen_cb_t( item, effect );
+  flurry_of_xuen_cb_t* cb = new flurry_of_xuen_cb_t( item, effect, driver );
 
   p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
 }
@@ -3221,8 +3245,8 @@ struct essence_of_yulon_cb_t : public proc_callback_t<action_state_t>
 {
   action_t* action;
 
-  essence_of_yulon_cb_t( item_t* item, const special_effect_t& effect ) :
-    proc_callback_t<action_state_t>( item -> player, effect ),
+  essence_of_yulon_cb_t( item_t* item, const special_effect_t& effect, const spell_data_t* driver ) :
+    proc_callback_t<action_state_t>( item -> player, effect, driver ),
     action( new essence_of_yulon_driver_t( item -> player ) )
   { }
 
@@ -3248,7 +3272,7 @@ void essence_of_yulon( item_t* item )
   effect.ppm        *= item_database::approx_scale_coefficient( item -> parsed.data.level, item -> item_level() );
   effect.rppm_scale = RPPM_HASTE;
 
-  essence_of_yulon_cb_t* cb = new essence_of_yulon_cb_t( item, effect );
+  essence_of_yulon_cb_t* cb = new essence_of_yulon_cb_t( item, effect, driver );
   p -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
 }
 
