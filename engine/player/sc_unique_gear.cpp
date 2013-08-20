@@ -2664,8 +2664,8 @@ void unerring_vision_of_leishen( item_t* item )
   {
     perfect_aim_buff_t* buff;
 
-    unerring_vision_of_leishen_callback_t( item_t& i, const special_effect_t& data ) :
-      proc_callback_t<action_state_t>( i.player, data )
+    unerring_vision_of_leishen_callback_t( item_t& i, const special_effect_t& data, const spell_data_t* driver ) :
+      proc_callback_t<action_state_t>( i.player, data, driver )
     { buff = new perfect_aim_buff_t( listener, listener -> find_spell( 138963 ) ); }
 
     void execute( action_t* /* action */, action_state_t* /* state */ )
@@ -2692,7 +2692,7 @@ void unerring_vision_of_leishen( item_t* item )
   data.ppm        *= item_database::approx_scale_coefficient( 528, item -> item_level() );
   data.cooldown    = maybe_ptr( item -> player -> dbc.ptr ) ? driver -> internal_cooldown() : timespan_t::zero();
 
-  unerring_vision_of_leishen_callback_t* cb = new unerring_vision_of_leishen_callback_t( *item, data );
+  unerring_vision_of_leishen_callback_t* cb = new unerring_vision_of_leishen_callback_t( *item, data, driver );
 
   item -> player -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
   item -> player -> callbacks.register_spell_tick_damage_callback( SCHOOL_ALL_MASK, cb );
