@@ -3218,13 +3218,13 @@ void flurry_of_xuen( item_t* item )
 
 struct essence_of_yulon_t : public spell_t
 {
-  essence_of_yulon_t( player_t* p ) :
+  essence_of_yulon_t( player_t* p, const spell_data_t& driver ) :
     spell_t( "essence_of_yulon", p, p -> find_spell( 148008 ) )
   {
-    proc = background = true;
+    proc = background = may_crit = true;
     callbacks = false;
     aoe = 5;
-    direct_power_mod = 0.40; //2013-08-20: Total damage is 200%, but is evenly distributed between on-hit and 4 ticks.
+    direct_power_mod /= driver.duration().total_seconds() + 1;
   }
 };
 
@@ -3234,12 +3234,10 @@ struct essence_of_yulon_driver_t : public spell_t
     spell_t( "essence_of_yulon", player, player -> find_spell( 146198 ) )
   {
     hasted_ticks = may_miss = may_dodge = may_parry = may_block = callbacks = false;
-    may_crit = true;
-    tick_zero  = true;
-    proc = background = dual = true;
+    tick_zero = proc = background = dual = true;
     travel_speed = 0;
 
-    tick_action = new essence_of_yulon_t( player );
+    tick_action = new essence_of_yulon_t( player, data() );
     dynamic_tick_action = true;
   }
 };

@@ -2280,7 +2280,6 @@ struct unleash_wind_t : public shaman_melee_attack_t
 
     // Unleash wind implicitly uses main hand weapon of the player to perform
     // the damaging attack
-
     weapon = &( player -> main_hand_weapon );
     // Don't cooldown here, unleash elements will handle it
     cooldown -> duration = timespan_t::zero();
@@ -4838,7 +4837,6 @@ struct shaman_lightning_strike_t : public shaman_melee_attack_t
     shaman_melee_attack_t( "lightning_strike", p, p -> find_spell( 137597 ) )
   {
     may_proc_windfury = false;
-    may_proc_flametongue = true;
     may_proc_maelstrom = false;
     may_proc_primal_wisdom = false;
     callbacks = false;
@@ -4861,7 +4859,6 @@ struct shaman_flurry_of_xuen_t : public shaman_melee_attack_t
     shaman_melee_attack_t( "flurry_of_xuen", p, p -> find_spell( 147891 ) )
   {
     may_proc_windfury = false;
-    may_proc_flametongue = true;
     may_proc_maelstrom = false;
     may_proc_primal_wisdom = false;
     callbacks = false;
