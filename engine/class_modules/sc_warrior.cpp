@@ -119,6 +119,7 @@ public:
     gain_t* sword_and_board;
 
     gain_t* tier15_4pc_tank;
+    gain_t* tier16_2pc_melee;
   } gain;
 
   // Glyphs
@@ -626,6 +627,9 @@ static  void trigger_sweeping_strikes( action_state_t* s )
       
     }
 
+    double composite_target_multiplier( player_t* t )
+    { return 1.0; }
+
     size_t available_targets( std::vector< player_t* >& tl )
     {
       tl.clear();
@@ -761,12 +765,16 @@ void warrior_attack_t::execute()
 void warrior_attack_t::impact( action_state_t* s )
 {
   base_t::impact( s );
+    warrior_t* p = cast();
+    warrior_td_t* td = cast_td( s -> target );
 
   if ( result_is_hit( s -> result ) && ! proc )
   {
     if ( special )
     {
       trigger_bloodbath_dot( s -> target, s -> result_amount );
+        if ( p -> dbc.ptr && p -> set_bonus.tier16_2pc_melee() && td ->  debuffs_colossus_smash -> up() )
+           p -> resource_gain( RESOURCE_RAGE, 5 , p -> gain.tier16_2pc_melee ); // Hard-coded as DBC shows 0.5 rage, not 5.
     }
 
     trigger_flurry( this, 3 );
@@ -2068,6 +2076,11 @@ struct slam_sweeping_strikes_attack_t : public warrior_attack_t
   {
     return data().effectN( 3 ).percent(); //does not double dip on anything
   }
+
+  double composite_ta_multiplier()
+  {
+    return 1.0; // It really really doesn't double dip on anything.
+  }
   
   size_t available_targets( std::vector< player_t* >& tl )
   {
@@ -3326,6 +3339,7 @@ void warrior_t::init_gains()
   gain.sweeping_strikes       = get_gain( "sweeping_strikes"      );
   gain.sword_and_board        = get_gain( "Sword and Board"       );
   gain.tier15_4pc_tank        = get_gain( "tier15_4pc_tank"       );
+  gain.tier16_2pc_melee       = get_gain( "tier16_2pc_melee"      );
 }
 
 // warrior_t::init_procs ====================================================
@@ -3976,7 +3990,7 @@ int warrior_t::decode_set( item_t& item )
     if ( is_tank  ) return SET_T15_TANK;
   }
 
-  if ( strstr( s, "Prehistoric Marauder" ) )
+  if ( strstr( s, "prehistoric_marauder" ) )
   {
     bool is_melee = ( strstr( s, "helmet"        ) ||
                       strstr( s, "pauldrons"     ) ||
