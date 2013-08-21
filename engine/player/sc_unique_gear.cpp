@@ -3224,6 +3224,7 @@ struct essence_of_yulon_t : public spell_t
     proc = background = true;
     callbacks = false;
     aoe = 5;
+    direct_power_mod = 0.40; //2013-08-20: Total damage is 200%, but is evenly distributed between on-hit and 4 ticks.
   }
 };
 
@@ -3232,7 +3233,8 @@ struct essence_of_yulon_driver_t : public spell_t
   essence_of_yulon_driver_t( player_t* player ) :
     spell_t( "essence_of_yulon", player, player -> find_spell( 146198 ) )
   {
-    hasted_ticks = may_miss = may_crit = may_dodge = may_parry = may_block = callbacks = false;
+    hasted_ticks = may_miss = may_dodge = may_parry = may_block = callbacks = false;
+    may_crit = true;
     proc = background = dual = true;
     travel_speed = 0;
 

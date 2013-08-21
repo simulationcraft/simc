@@ -570,10 +570,20 @@ struct mindbender_pet_t : public base_fiend_pet_t
     base_fiend_pet_t( sim, owner, PET_MINDBENDER, name ),
     mindbender_spell( owner.find_talent_spell( "Mindbender" ) )
   {
-    direct_power_mod = 0.80;
+    if ( dbc.ptr ) //10% Damage increase on PTR
+    {
+      direct_power_mod = 0.88;
 
-    main_hand_weapon.min_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 1.6;
-    main_hand_weapon.max_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 1.6;
+      main_hand_weapon.min_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 1.76;
+      main_hand_weapon.max_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 1.76;
+    }
+    else
+    {
+      direct_power_mod = 0.80;
+
+      main_hand_weapon.min_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 1.6;
+      main_hand_weapon.max_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 1.6;
+    }
 
     main_hand_weapon.damage  = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
   }
@@ -2422,7 +2432,7 @@ struct shadow_word_death_t : public priest_spell_t
     double d = priest_spell_t::composite_da_multiplier();
 
     if ( priest.dbc.ptr && priest.buffs.empowered_shadows -> check() )
-      d *= 1.0 + priest.buffs.empowered_shadows->current_value *  priest.buffs.empowered_shadows -> check();
+        d *= 1.0 + priest.buffs.empowered_shadows->current_value *  priest.buffs.empowered_shadows -> check();
 
     return d;
   }
