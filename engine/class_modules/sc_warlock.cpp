@@ -3291,7 +3291,7 @@ struct fel_flame_t : public warlock_spell_t
       }
     }
 
-    if ( p() -> specialization() == WARLOCK_DEMONOLOGY ) p() -> resource_gain( RESOURCE_DEMONIC_FURY, data().effectN( 3 ).base_value(), p() -> gains.fel_flame );
+    if ( p() -> specialization() == WARLOCK_DEMONOLOGY ) p() -> resource_gain( RESOURCE_DEMONIC_FURY, data().effectN( p() -> dbc.ptr ? 2 : 3 ).base_value(), p() -> gains.fel_flame );
 
     if ( result_is_hit( s -> result ) && ! p() -> dbc.ptr )
     {
