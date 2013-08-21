@@ -2070,9 +2070,6 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   {
     may_crit   = true;
     may_glance = false;
-
-    if ( p -> main_hand_weapon.group() == WEAPON_2H )
-      base_multiplier += p -> spec.might_of_the_frozen_wastes -> effectN( 2 ).percent();
   }
 
   virtual void   consume_resource();
@@ -2082,6 +2079,9 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   virtual double composite_da_multiplier()
   {
     double m = base_t::composite_da_multiplier();
+
+    if ( player -> main_hand_weapon.group() == WEAPON_2H )
+      m *= 1.0 + p() -> spec.might_of_the_frozen_wastes -> effectN( 2 ).percent();
 
     if ( dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) )
     {
@@ -2827,7 +2827,6 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
     may_miss = false;
     weapon_multiplier = 0;
     direct_power_mod = data().extra_coeff();
-    base_multiplier = 1.0; // Disable MotFW multiplier for the execute dot.
   }
 
   virtual void init()
