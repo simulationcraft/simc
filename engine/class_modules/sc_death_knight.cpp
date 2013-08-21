@@ -2827,6 +2827,7 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
     may_miss = false;
     weapon_multiplier = 0;
     direct_power_mod = data().extra_coeff();
+    base_multiplier = 1.0; // Disable MotFW multiplier for the execute dot.
   }
 
   virtual void init()
