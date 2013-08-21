@@ -3235,6 +3235,7 @@ struct essence_of_yulon_driver_t : public spell_t
   {
     hasted_ticks = may_miss = may_dodge = may_parry = may_block = callbacks = false;
     may_crit = true;
+    tick_zero  = true;
     proc = background = dual = true;
     travel_speed = 0;
 
