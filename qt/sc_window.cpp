@@ -18,7 +18,6 @@
 
 namespace { // UNNAMED NAMESPACE
 
-const char* SIMC_HISTORY_FILE = "simc_history.dat";
 const char* SIMC_LOG_FILE = "simc_log.txt";
 
 } // UNNAMED NAMESPACE
@@ -79,31 +78,40 @@ void SC_MainWindow::loadHistory()
 
   http::cache_load( ( TmpDir.toStdString() + "/" + "simc_cache.dat" ).c_str() );
 
-  QFile file( AppDataDir + "/" + SIMC_HISTORY_FILE );
-  if ( file.open( QIODevice::ReadOnly ) )
+
+  QVariant simulateHistory = settings.value( "user_data/simulateHistory");
+  if ( simulateHistory.isValid() )
   {
-    QDataStream in( &file );
+    QList<QVariant>& a = simulateHistory.toList();
+    for( int i = 0; i < a.size(); ++i )
+    {
+      const QVariant& entry = a.at( i );
+      if ( entry.isValid() )
+      {
+        QStringList& sl = entry.toStringList();
+        assert( sl.size() == 2 );
+        simulateTab -> add_Text( sl.at( 1 ), sl.at( 0 ) );
 
-    QString historyVersion;
-    in >> historyVersion;
-    if ( historyVersion != QString( SC_VERSION ) ) return;
-    SC_StringHistory SimulateTextHistory_Title;
-    SC_StringHistory SimulateTextHistory_Content;
-    in >> SimulateTextHistory_Title;
-    in >> SimulateTextHistory_Content;
-    QStringList importHistory;
-    in >> importHistory;
-    file.close();
-
-    for ( int i = 0, count = importHistory.count(); i < count; i++ )
-      historyList -> addItem( new QListWidgetItem( importHistory.at( i ) ) );
-
-    assert( SimulateTextHistory_Title.count() == SimulateTextHistory_Content.count() );
-    for ( int i = 0, count = SimulateTextHistory_Title.count(); i < count; i++ )
-      simulateTab -> add_Text( SimulateTextHistory_Content.at( i ), SimulateTextHistory_Title.at( i ) );
-
-    optionsTab -> decodeOptions();
+      }
+    }
   }
+
+  QVariant history = settings.value( "user_data/historyList");
+  if ( history.isValid() )
+  {
+    QList<QVariant>& a = history.toList();
+    for( int i = 0; i < a.size(); ++i )
+    {
+      const QVariant& entry = a.at( i );
+      if ( entry.isValid() )
+      {
+        QString& s = entry.toString();
+        historyList -> addItem( new QListWidgetItem( s ) );
+
+      }
+    }
+  }
+  optionsTab -> decodeOptions();
 
   if ( simulateTab -> count() <= 1 )
   { // If we haven't retrieved any simulate tabs from history, add a default one.
@@ -124,33 +132,31 @@ void SC_MainWindow::saveHistory()
   charDevCookies -> save();
   http::cache_save( ( TmpDir.toStdString() + "/" + "simc_cache.dat" ).c_str() );
 
-  QFile file( AppDataDir + "/" + SIMC_HISTORY_FILE );
-  if ( file.open( QIODevice::WriteOnly ) )
+
+  settings.beginGroup( "user_data" );
+
+  // simulate tab history
+  QList< QVariant > simulateHist;
+  for ( int i = 0; i < simulateTab -> count() - 1; ++i )
   {
-    optionsTab -> encodeOptions();
-
-    QStringList importHistory;
-    int count = historyList -> count();
-    for ( int i = 0; i < count; i++ )
-      importHistory.append( historyList -> item( i ) -> text() );
-
-    QDataStream out( &file );
-    out << QString( SC_VERSION );
-
-    SC_StringHistory SimulateTextHistory_Title;
-    SC_StringHistory SimulateTextHistory_Content;
-    for ( int i = 0; i < simulateTab -> count() - 1; ++i )
-    {
-      SC_TextEdit* tab = static_cast<SC_TextEdit*>( simulateTab -> widget( i ) );
-
-      SimulateTextHistory_Title.add( simulateTab -> tabText( i ) );
-      SimulateTextHistory_Content.add( tab -> toPlainText() );
-    }
-    out << SimulateTextHistory_Title;;
-    out << SimulateTextHistory_Content;
-    out << importHistory;
-    file.close();
+    SC_TextEdit* tab = static_cast<SC_TextEdit*>( simulateTab -> widget( i ) );
+    QStringList entry;
+    entry << simulateTab -> tabText( i );
+    entry << tab -> toPlainText();
+    simulateHist.append( QVariant(entry) );
   }
+  settings.setValue( "simulateHistory", simulateHist );
+  // end simulate tab history
+
+  QList<QVariant> history;
+  int count = historyList -> count();
+  for ( int i = 0; i < count; i++ )
+    history.append( QVariant( historyList -> item( i ) -> text() ) );
+  settings.setValue( "historyList", history );
+
+  settings.endGroup();
+
+  optionsTab -> encodeOptions();
 }
 
 // ==========================================================================
