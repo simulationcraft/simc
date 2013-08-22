@@ -1056,7 +1056,7 @@ struct bloodthirst_t : public warrior_attack_t
       p -> active_deep_wounds -> execute();
       p -> buff.bloodsurge -> trigger( 3 );
 
-      if ( p -> set_bonus.tier16_4pc_melee())
+      if ( p -> set_bonus.tier16_4pc_melee() )
            p -> buff.death_sentence -> trigger();
 
       p -> resource_gain( RESOURCE_RAGE, data().effectN( 3 ).resource( RESOURCE_RAGE ),
@@ -1406,7 +1406,7 @@ struct execute_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if ( p -> specialization() == WARRIOR_ARMS && rng().roll ( p -> spec.sudden_death -> effectN( 2 ).percent() ) )
+    if ( p -> specialization() == WARRIOR_ARMS )
     {
       p -> buff.sudden_execute -> trigger();
     }
@@ -1679,9 +1679,9 @@ struct overpower_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    p -> buff.sudden_execute -> up();
-
     warrior_attack_t::execute();
+
+    p -> buff.sudden_execute -> expire();
 
     p -> buff.taste_for_blood -> decrement();
   }
