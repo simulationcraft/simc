@@ -3139,6 +3139,7 @@ struct flurry_of_xuen_melee_t : public attack_t
     proc = background = true;
     callbacks = false;
     aoe = 5;
+    special = true; // Each tick procs Warrior T16 2set during CS. 
   }
 };
 
@@ -3177,7 +3178,7 @@ struct flurry_of_xuen_driver_t : public attack_t
   }
 };
 
-// TODO: 2h/1h modifiers for Warriors / Death Knights?
+// TODO: 2h/1h modifiers for Warriors / Death Knights? 
 struct flurry_of_xuen_cb_t : public proc_callback_t<action_state_t>
 {
   action_t* action;
@@ -3185,6 +3186,7 @@ struct flurry_of_xuen_cb_t : public proc_callback_t<action_state_t>
   flurry_of_xuen_cb_t( item_t* item, const special_effect_t& effect, const spell_data_t* driver ) :
     proc_callback_t<action_state_t>( item -> player, effect, driver ),
     action( new flurry_of_xuen_driver_t( listener, listener -> create_proc_action( effect.name_str ) ) )
+
   { }
 
   void execute( action_t*, action_state_t* state )

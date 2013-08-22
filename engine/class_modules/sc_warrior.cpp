@@ -80,6 +80,7 @@ public:
     buff_t* sword_and_board;
     buff_t* taste_for_blood;
     buff_t* ultimatum;
+    buff_t* death_sentence;
 
     haste_buff_t* flurry;
 
@@ -608,7 +609,7 @@ static  void trigger_sweeping_strikes( action_state_t* s )
     sweeping_strikes_attack_t( warrior_t* p ) :
       warrior_attack_t( "sweeping_strikes_attack", p, p -> find_spell( 12328 ) )
     {
-      may_miss = may_crit = proc = callbacks = false;
+      may_miss = may_dodge = may_parry = may_crit = proc = callbacks = false;
       background = true;
       aoe = 1; //one additional attack
       base_costs[ RESOURCE_RAGE] = 0; //Resource consumption already accounted for.
@@ -774,7 +775,7 @@ void warrior_attack_t::impact( action_state_t* s )
     {
       trigger_bloodbath_dot( s -> target, s -> result_amount );
         if ( p -> dbc.ptr && p -> set_bonus.tier16_2pc_melee() && td ->  debuffs_colossus_smash -> up() )
-           p -> resource_gain( RESOURCE_RAGE, 5 , p -> gain.tier16_2pc_melee ); // Hard-coded as DBC shows 0.5 rage, not 5.
+             p -> resource_gain( RESOURCE_RAGE, p -> sets -> set( SET_T16_2PC_MELEE ) -> effectN( 1 ).base_value() , p -> gain.tier16_2pc_melee );
     }
 
     trigger_flurry( this, 3 );
@@ -1054,6 +1055,9 @@ struct bloodthirst_t : public warrior_attack_t
 
       p -> active_deep_wounds -> execute();
       p -> buff.bloodsurge -> trigger( 3 );
+
+      if ( p -> set_bonus.tier16_4pc_melee())
+           p -> buff.death_sentence -> trigger();
 
       p -> resource_gain( RESOURCE_RAGE, data().effectN( 3 ).resource( RESOURCE_RAGE ),
                           p -> gain.bloodthirst );
@@ -1385,6 +1389,17 @@ struct execute_t : public warrior_attack_t
     direct_power_mod   = data().extra_coeff();
   }
 
+ virtual double cost()
+  {
+    double c = warrior_attack_t::cost();
+    warrior_t* p = cast();
+
+    if ( p -> buff.death_sentence -> check() && target -> health_percentage() < 20)
+      c = 0;
+
+    return c;
+  }
+
   virtual void impact( action_state_t* s )
   {
     warrior_attack_t::impact( s );
@@ -1399,10 +1414,21 @@ struct execute_t : public warrior_attack_t
 
   virtual bool ready()
   {
-    if ( target -> health_percentage() > 20 )
+    warrior_t* p = cast();
+
+    if ( target -> health_percentage() > 20 && ! p -> buff.death_sentence -> check() )
       return false;
 
     return warrior_attack_t::ready();
+  }
+
+  virtual void execute()
+  {
+    warrior_t* p = cast();
+
+    warrior_attack_t::execute();
+
+    p -> buff.death_sentence -> expire();
   }
 };
 
@@ -1616,17 +1642,23 @@ struct mortal_strike_t : public warrior_attack_t
   {
     warrior_attack_t::impact( s );
 
-    warrior_t* p = cast();
+ if ( result_is_hit( s -> result ) )
+    {
+      warrior_t* p = cast();
 
-    if ( sim -> overrides.mortal_wounds && result_is_hit( s -> result ) )
-      s -> target -> debuffs.mortal_wounds -> trigger();
+      if ( sim -> overrides.mortal_wounds )
+        s -> target -> debuffs.mortal_wounds -> trigger();
 
-    p -> resource_gain( RESOURCE_RAGE,
-                        data().effectN( 4 ).resource( RESOURCE_RAGE ),
-                        p -> gain.mortal_strike );
+      if ( p -> set_bonus.tier16_4pc_melee() )
+           p -> buff.death_sentence -> trigger();
 
-    if ( s -> result == RESULT_CRIT )
-      p -> enrage();
+      p -> resource_gain( RESOURCE_RAGE,
+                          data().effectN( 4 ).resource( RESOURCE_RAGE ),
+                          p -> gain.mortal_strike );
+
+      if ( s -> result == RESULT_CRIT )
+        p -> enrage();
+    }
   }
 };
 
@@ -2056,7 +2088,7 @@ struct slam_sweeping_strikes_attack_t : public warrior_attack_t
   slam_sweeping_strikes_attack_t( warrior_t* p ) :
   warrior_attack_t( "slam_sweeping_strikes", p , p -> find_class_spell( "Slam" ))
   {
-    may_miss = may_crit = proc = callbacks = false;
+    may_miss = may_crit = may_dodge = may_parry = proc = callbacks = false;
     background = true;
     aoe = -1;
     range = 2;
@@ -3308,6 +3340,9 @@ void warrior_t::create_buffs()
   buff.last_stand       = new buffs::last_stand_t( this, 12975, "last_stand" );
   buff.tier15_2pc_tank  = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138279 ) )
                           .default_value( 0.05 ); // inconsistent information in spellid, hardcode to fix
+
+  buff.death_sentence   = buff_creator_t( this, "death_sentence", find_spell( 144442 ) ) //T16 4 pc melee buff.
+                          .chance( find_spell( 144441 ) -> effectN( 1 ).percent() ); //T16 4 piece proc rate.
 
   buff.rude_interruption = buff_creator_t( this, "rude_interruption", find_spell( 86663 ) )
                            .default_value( find_spell( 86663 ) -> effectN( 1 ).percent() );
