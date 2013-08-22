@@ -3139,7 +3139,6 @@ struct flurry_of_xuen_melee_t : public attack_t
     proc = background = true;
     callbacks = false;
     aoe = 5;
-    special = true; // Each tick procs Warrior T16 2set during CS. 
   }
 };
 
