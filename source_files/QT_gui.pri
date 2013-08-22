@@ -5,6 +5,7 @@
 
 
  HEADERS += qt/simulationcraftqt.hpp
+ HEADERS += qt/SC_OptionsTab.hpp
  HEADERS += qt/sc_autoupdate.h
  SOURCES += qt/main.cpp
  SOURCES += qt/sc_window.cpp

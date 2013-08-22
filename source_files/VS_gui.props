@@ -20,6 +20,9 @@ Requires Precompiled Header enabled for simulationcraft.hpp
     </ClCompile>
     <ClCompile Include="$(IntDir)moc_simulationcraftqt.cpp">
       <PrecompiledHeader />
+    </ClCompile>    
+    <ClCompile Include="$(IntDir)moc_sc_OptionsTab.cpp">
+      <PrecompiledHeader />
     </ClCompile>
     <ClCompile Include="$(IntDir)moc_simcpaperdoll.cpp">
       <PrecompiledHeader />
@@ -56,6 +59,14 @@ Requires Precompiled Header enabled for simulationcraft.hpp
       <AdditionalInputs>Rem;..\qt\simulationcraftqt.hpp;%(AdditionalInputs)</AdditionalInputs>
       <Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
       </CustomBuild>
+      
+    <CustomBuild Include="..\qt\sc_OptionsTab.hpp">
+      <AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+      <Message>Moc%27ing %(Identity)...</Message>
+      <Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "..\qt\%(Filename).hpp" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+      <AdditionalInputs>Rem;..\qt\sc_OptionsTab.hpp;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+    </CustomBuild>
   </ItemGroup>
 
 </Project>

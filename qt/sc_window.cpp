@@ -5,6 +5,7 @@
 
 #include "simulationcraft.hpp"
 #include "simulationcraftqt.hpp"
+#include "SC_OptionsTab.hpp"
 #ifdef SC_PAPERDOLL
 #include "simcpaperdoll.hpp"
 #endif
@@ -89,8 +90,10 @@ void SC_MainWindow::loadHistory()
       if ( entry.isValid() )
       {
         QStringList& sl = entry.toStringList();
-        assert( sl.size() == 2 );
-        simulateTab -> add_Text( sl.at( 1 ), sl.at( 0 ) );
+        if ( sl.size() == 2 )
+        {
+          simulateTab -> add_Text( sl.at( 1 ), sl.at( 0 ) );
+        }
 
       }
     }

@@ -628,7 +628,7 @@ static  void trigger_sweeping_strikes( action_state_t* s )
       
     }
 
-    double composite_target_multiplier( player_t* t )
+    double composite_target_multiplier( player_t* )
     { return 1.0; }
 
     size_t available_targets( std::vector< player_t* >& tl )
