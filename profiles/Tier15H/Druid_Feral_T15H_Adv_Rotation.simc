@@ -1,6 +1,6 @@
 #!./simc 
 
-druid="Druid_Feral_T15H"
+druid="Druid_Feral_T15H_Adv_Rotation"
 level=90
 race=troll
 role=attack
