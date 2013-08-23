@@ -3545,11 +3545,12 @@ void warrior_t::init_actions()
       action_list_str += "/run_action_list,name=single_target,if=active_enemies<2";
 
       //Single Target
-      st_list_str += "/mortal_strike";
-      st_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<1.5";
+      st_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<1.0";
+      st_list_str += "/mortal_strike,if=rage<70|debuff.colossus_smash.down";
       st_list_str += "/storm_bolt,if=enabled&debuff.colossus_smash.up";
       st_list_str += "/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))";
-      st_list_str += "/slam,if=(debuff.colossus_smash.up|rage>100)&target.health.pct>=20";
+      st_list_str += "/execute";
+      st_list_str += "/slam,if=(debuff.colossus_smash.up|(!set_bonus.tier16_2pc_melee&rage>90|set_bonus.tier16_2pc_melee&rage>40))&target.health.pct>=20";
       st_list_str += "/execute,if=buff.sudden_execute.down|debuff.colossus_smash.up|target.time_to_die<12|rage>70";
       st_list_str += "/overpower,if=target.health.pct>=20|buff.sudden_execute.up";
       st_list_str += "/battle_shout";
@@ -3559,13 +3560,12 @@ void warrior_t::init_actions()
 
       aoe_list_str = "/sweeping_strikes";
       aoe_list_str += "/cleave,if=rage>110&active_enemies<=3";
-      aoe_list_str += "/mortal_strike";
+      aoe_list_str += "/mortal_strike,if=rage<40";
       aoe_list_str += "/thunder_clap,target=2,if=dot.deep_wounds.attack_power<stat.attack_power*1.1";
       aoe_list_str += "/dragon_roar,if=enabled&((!debuff.colossus_smash.up&buff.bloodbath.up)|(!debuff.colossus_smash.up&!talent.bloodbath.enabled))";
       aoe_list_str += "/bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)";
       aoe_list_str += "/colossus_smash,if=debuff.colossus_smash.down";
-      aoe_list_str += "/slam,if=debuff.colossus_smash.up|rage>50";
-      aoe_list_str += "/overpower,if=active_enemies<=5";
+      aoe_list_str += "/slam,if=buff.sweeping_strikes.up";
       aoe_list_str += "/battle_shout,if=rage<70";
     }
 

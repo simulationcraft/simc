@@ -37,11 +37,12 @@ actions+=/heroic_leap,if=debuff.colossus_smash.up
 actions+=/run_action_list,name=aoe,if=active_enemies>=2
 actions+=/run_action_list,name=single_target,if=active_enemies<2
 
-actions.single_target=mortal_strike
-actions.single_target+=/colossus_smash,if=debuff.colossus_smash.remains<1.5
+actions.single_target=colossus_smash,if=debuff.colossus_smash.remains<1.0
+actions.single_target+=/mortal_strike,if=rage<70|debuff.colossus_smash.down
 actions.single_target+=/storm_bolt,if=enabled&debuff.colossus_smash.up
 actions.single_target+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
-actions.single_target+=/slam,if=(debuff.colossus_smash.up|rage>100)&target.health.pct>=20
+actions.single_target+=/execute
+actions.single_target+=/slam,if=(debuff.colossus_smash.up|(!set_bonus.tier16_2pc_melee&rage>90|set_bonus.tier16_2pc_melee&rage>40))&target.health.pct>=20
 actions.single_target+=/execute,if=buff.sudden_execute.down|debuff.colossus_smash.up|target.time_to_die<12|rage>70
 actions.single_target+=/overpower,if=target.health.pct>=20|buff.sudden_execute.up
 actions.single_target+=/battle_shout
@@ -49,13 +50,12 @@ actions.single_target+=/heroic_throw
 
 actions.aoe=sweeping_strikes
 actions.aoe+=/cleave,if=rage>110&active_enemies<=3
-actions.aoe+=/mortal_strike
+actions.aoe+=/mortal_strike,if=rage<40
 actions.aoe+=/thunder_clap,target=2,if=dot.deep_wounds.attack_power<stat.attack_power*1.1
 actions.aoe+=/dragon_roar,if=enabled&((!debuff.colossus_smash.up&buff.bloodbath.up)|(!debuff.colossus_smash.up&!talent.bloodbath.enabled))
 actions.aoe+=/bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)
 actions.aoe+=/colossus_smash,if=debuff.colossus_smash.down
-actions.aoe+=/slam,if=debuff.colossus_smash.up|rage>50
-actions.aoe+=/overpower,if=active_enemies<=5
+actions.aoe+=/slam,if=buff.sweeping_strikes.up
 actions.aoe+=/battle_shout,if=rage<70
 
 head=helmet_of_resounding_rings,id=85333,gems=reverberating_primal_160crit_160hit_180str,reforge=hit_crit

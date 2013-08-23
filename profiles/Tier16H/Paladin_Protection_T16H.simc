@@ -65,15 +65,15 @@ main_hand=siegecrafters_forge_hammer,id=104625,gems=320haste,enchant=windsong,re
 off_hand=bulwark_of_the_fallen_general,id=104560,gems=320haste,enchant=170parry,reforge=exp_haste
 
 # Gear Summary
-# gear_strength=21803
-# gear_stamina=44201
-# gear_expertise_rating=6683
+# gear_strength=21942
+# gear_stamina=44409
+# gear_expertise_rating=6756
 # gear_hit_rating=3967
-# gear_haste_rating=16540
-# gear_mastery_rating=8237
-# gear_armor=62167
+# gear_haste_rating=16569
+# gear_mastery_rating=8310
+# gear_armor=62197
 # gear_dodge_rating=180
-# gear_parry_rating=1588
+# gear_parry_rating=1632
 # meta_gem=indomitable_primal
 # tier16_2pc_tank=1
 # tier16_4pc_tank=1

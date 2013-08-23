@@ -136,5 +136,7 @@ off_hand=hellscreams_doomblade,id=105691,gems=80str_160crit_80str_160crit_120str
 # gear_mastery_rating=10938
 # gear_armor=40745
 # meta_gem=capacitive_primal
+# tier16_2pc_melee=1
+# tier16_4pc_melee=1
 # main_hand=hellscreams_doomblade,heroic=1,weapon=sword_2.60speed_12474min_23168max,enchant=dancing_steel
 # off_hand=hellscreams_doomblade,heroic=1,weapon=sword_2.60speed_12474min_23168max,enchant=dancing_steel

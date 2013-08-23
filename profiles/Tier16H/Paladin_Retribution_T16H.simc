@@ -74,17 +74,17 @@ trinket2=thoks_tail_tip,id=102305
 main_hand=britomarts_jagged_pike,id=104614,gems=360haste,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=23074
+# gear_strength=23213
 # gear_agility=80
-# gear_stamina=32814
+# gear_stamina=33022
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=1087
 # gear_hit_rating=2022
-# gear_crit_rating=4092
-# gear_haste_rating=16486
-# gear_mastery_rating=9499
-# gear_armor=39477
+# gear_crit_rating=4165
+# gear_haste_rating=16559
+# gear_mastery_rating=9572
+# gear_armor=39507
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1

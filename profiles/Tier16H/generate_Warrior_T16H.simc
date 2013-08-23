@@ -20,19 +20,19 @@ talents=233322
 glyphs=unending_rage/death_from_above/sweeping_strikes
 head=helmet_of_the_prehistoric_marauder,id=99418,gems=capacitive_primal_160exp_160crit_180str
 neck=malkoroks_tainted_dog_tags,id=105566
-shoulders=tusks_of_mannoroth,id=105642,gems=160exp_160crit_160exp_160crit_160exp_160crit_180str,enchant=200str_100crit
+shoulders=tusks_of_mannoroth,id=105642,gems=160exp_160crit_160exp_160crit_160exp_160crit_180str,enchant=200str_100crit,reforge=mastery_hit
 back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=160exp_160crit_60str,enchant=180crit,reforge=haste_hit
-chest=battleplate_of_the_prehistoric_marauder,id=99411,gems=160exp_160crit_160exp_160crit_160exp_160crit_180str,enchant=80all,reforge=haste_crit
-wrists=bracers_of_blind_hatred,id=105456,gems=320crit,enchant=180str
-hands=gauntlets_of_the_prehistoric_marauder,id=99412,gems=160exp_160crit_160exp_160crit_360crit_120str,enchant=170str,addon=synapse_springs_ii,reforge=hit_mastery
-waist=ashen_wall_girdle,id=105533,gems=160exp_160crit_160crit_160hit_320crit_120str,reforge=hit_crit
-legs=legplates_of_the_prehistoric_marauder,id=99413,gems=320crit_320crit_120str,enchant=285str_165crit,reforge=haste_mastery
-feet=greaves_of_sublime_superiority,id=105478,gems=320crit,enchant=140mastery,reforge=hit_mastery
+chest=chestplate_of_congealed_corrosion,id=105412,gems=160exp_160crit_320crit_160hit_160crit_180str,enchant=80all
+wrists=bracers_of_blind_hatred,id=105456,gems=320crit,enchant=180str,reforge=mastery_hit
+hands=tarcoated_gauntlets,id=105511,gems=160exp_160crit_320crit_320crit_120str,enchant=170str,addon=synapse_springs_ii
+waist=ashen_wall_girdle,id=105533,gems=160exp_160crit_160crit_160hit_320crit_120str,reforge=mastery_crit
+legs=legplates_of_the_prehistoric_marauder,id=99413,gems=320crit_320crit_120str,enchant=285str_165crit
+feet=wolfrider_spurs,id=105531,gems=320crit_60crit,enchant=140mastery
 finger1=devilfang_band,id=105611,gems=320crit,reforge=exp_crit
-finger2=seal_of_the_forgotten_kings,id=105589,gems=320crit,reforge=haste_hit
+finger2=seal_of_the_forgotten_kings,id=105589,gems=320crit
 trinket1=skeers_bloodsoaked_talisman,id=105632
 trinket2=thoks_tail_tip,id=105609
-main_hand=hellscreams_decapitator,id=105692,gems=80str_160crit_80str_160crit_120str,enchant=dancing_steel
+main_hand=hellscreams_decapitator,id=105692,gems=160exp_160crit_160exp_160crit_120str,enchant=dancing_steel
 save=Warrior_Arms_T16H.simc
 
 

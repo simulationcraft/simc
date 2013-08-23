@@ -37,8 +37,8 @@ actions+=/time_warp,if=target.health.pct<25|time>5
 actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time&buff.alter_time.down
 actions+=/rune_of_power,if=cooldown.icy_veins.remains=0&buff.rune_of_power.remains<20
 actions+=/mirror_image
-actions+=/frozen_orb,if=!buff.fingers_of_frost.react
-actions+=/icy_veins,if=(debuff.frostbolt.stack>=3&(buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22,moving=0
+actions+=/frozen_orb
+actions+=/icy_veins,if=time_to_bloodlust>180&((debuff.frostbolt.stack>=3&(buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22),moving=0
 actions+=/berserking,if=buff.icy_veins.up|target.time_to_die<18
 actions+=/jade_serpent_potion,if=buff.icy_veins.up|target.time_to_die<45
 actions+=/presence_of_mind,if=buff.icy_veins.up|cooldown.icy_veins.remains>15|target.time_to_die<15
@@ -49,7 +49,8 @@ actions+=/ice_lance,if=buff.alter_time.up&buff.fingers_of_frost.up
 actions+=/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
 actions+=/frostbolt,if=debuff.frostbolt.stack<3
 actions+=/frostfire_bolt,if=buff.brain_freeze.react&cooldown.icy_veins.remains>2
-actions+=/ice_lance,if=buff.fingers_of_frost.react&cooldown.icy_veins.remains>2
+actions+=/ice_lance,if=buff.frozen_thoughts.react&buff.fingers_of_frost.up
+actions+=/ice_lance,if=buff.fingers_of_frost.up&(buff.fingers_of_frost.remains<2|(buff.fingers_of_frost.stack>1&cooldown.icy_veins.remains>2))
 actions+=/frostbolt
 actions+=/fire_blast,moving=1
 actions+=/ice_lance,moving=1
