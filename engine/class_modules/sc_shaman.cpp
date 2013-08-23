@@ -4891,6 +4891,7 @@ struct shaman_multistrike_attack_t : public shaman_melee_attack_t
     weapon = &( p -> main_hand_weapon );
     weapon_power_mod = 0;
     weapon_multiplier = 0;
+    school = SCHOOL_PHYSICAL;
   }
 
   // We need to override shaman_action_state_t returning here, as tick_action
