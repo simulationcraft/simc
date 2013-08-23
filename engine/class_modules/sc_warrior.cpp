@@ -1679,9 +1679,9 @@ struct overpower_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    warrior_attack_t::execute();
+    p -> buff.sudden_execute -> up();
 
-    p -> buff.sudden_execute -> expire();
+    warrior_attack_t::execute();
 
     p -> buff.taste_for_blood -> decrement();
   }
