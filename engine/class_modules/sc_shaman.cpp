@@ -2250,7 +2250,6 @@ struct windfury_weapon_melee_attack_t : public shaman_melee_attack_t
     weapon           = w;
     school           = SCHOOL_PHYSICAL;
     background       = true;
-    //callbacks        = false; // Windfury does not proc any On-Equip procs, apparently
   }
 
   virtual double composite_attack_power()
@@ -4877,6 +4876,40 @@ struct shaman_flurry_of_xuen_t : public shaman_melee_attack_t
   { return new action_state_t( this, target ); }
 };
 
+// Shaman Multistrike weapon-based proc
+
+struct shaman_multistrike_attack_t : public shaman_melee_attack_t
+{
+  shaman_multistrike_attack_t( shaman_t* p ) :
+    shaman_melee_attack_t( "multistrike_attack", p, spell_data_t::nil() )
+  {
+    may_proc_windfury = false;
+    may_proc_maelstrom = false;
+    may_proc_primal_wisdom = false;
+    callbacks = may_crit = false;
+    proc = background = true;
+    weapon = &( p -> main_hand_weapon );
+    weapon_power_mod = 0;
+    weapon_multiplier = 0;
+  }
+
+  // We need to override shaman_action_state_t returning here, as tick_action
+  // and custom state objects do not mesh at all really. They technically 
+  // work, but in reality we are doing naughty things in the code that are 
+  // not safe.
+  action_state_t* new_state()
+  { return new action_state_t( this, target ); }
+
+  double composite_target_multiplier( player_t* )
+  { return 1.0; }
+
+  double composite_da_multiplier()
+  { return 1.0 / 3.0; }
+
+  double target_armor( player_t* )
+  { return 0.0; }
+};
+
 // ==========================================================================
 // Shaman Passive Buffs
 // ==========================================================================
@@ -5146,8 +5179,9 @@ action_t* shaman_t::create_action( const std::string& name,
 action_t* shaman_t::create_proc_action( const std::string& name )
 {
   // Capacitive meta proc strike
-  if ( name == "lightning_strike" ) return new shaman_lightning_strike_t( this );
-  if ( name == "flurry_of_xuen"   ) return new shaman_flurry_of_xuen_t( this );
+  if ( name == "lightning_strike"   ) return new shaman_lightning_strike_t( this );
+  if ( name == "flurry_of_xuen"     ) return new shaman_flurry_of_xuen_t( this );
+  if ( name == "multistrike_attack" ) return new shaman_multistrike_attack_t( this );
 
   return player_t::create_proc_action( name );
 }

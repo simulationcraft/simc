@@ -2807,18 +2807,36 @@ void multistrike_trinket( item_t* item )
 {
   maintenance_check( 528 );
 
-  // TODO: Currently does a phys damage nuke for everyone. In reality it uses
-  // a ton of different schools, however they all are just additional damage,
-  // so we can cheat a bit here.
-  // Additionally, healing multistrike needs a heal_t action
-  struct multistrike_t : public spell_t
+  // TODO: Healing multistrike
+
+  struct multistrike_attack_t : public attack_t
   {
-    multistrike_t( item_t* item ) :
-      spell_t( "multistrike", item -> player )
+    multistrike_attack_t( item_t* item ) :
+      attack_t( "multistrike_attack", item -> player )
+    {
+      callbacks = may_miss = may_crit = may_dodge = may_parry = may_block = may_glance = false;
+      proc = background = special = true;
+      school = SCHOOL_PHYSICAL;
+    }
+
+    double composite_target_multiplier( player_t* )
+    { return 1.0; }
+
+    double composite_da_multiplier()
+    { return 1.0 / 3.0; }
+
+    double target_armor( player_t* )
+    { return 0.0; }
+  };
+
+  struct multistrike_spell_t : public spell_t
+  {
+    multistrike_spell_t( item_t* item ) :
+      spell_t( "multistrike_spell", item -> player )
     {
       callbacks = may_miss = may_crit = false;
       proc = background = true;
-      school = SCHOOL_PHYSICAL; // TODO: Won't work for healing trinket, and spells use various different schools.
+      school = SCHOOL_NATURE; // Multiple schools in reality, but any school would work
     }
 
     double composite_target_multiplier( player_t* )
@@ -2833,17 +2851,35 @@ void multistrike_trinket( item_t* item )
 
   struct multistrike_callback_t : public proc_callback_t<action_state_t>
   {
-    multistrike_t* strike;
+    action_t* strike_attack;
+    action_t* strike_spell;
 
     multistrike_callback_t( item_t& i, const special_effect_t& data ) :
       proc_callback_t<action_state_t>( i.player, data )
-    { strike = new multistrike_t( &i ); }
-
-    void execute( action_t* /* action */, action_state_t* state )
     {
-      strike -> base_dd_min = strike -> base_dd_max = state -> result_amount;
-      strike -> target = state -> target;
-      strike -> schedule_execute();
+      if ( ! ( strike_attack = listener -> create_proc_action( "multistrike_attack" ) ) )
+        strike_attack = new multistrike_attack_t( &i );
+
+      if ( ! ( strike_spell = listener -> create_proc_action( "multistrike_spell" ) ) )
+        strike_spell = new multistrike_spell_t( &i );
+    }
+
+    void execute( action_t* action, action_state_t* state )
+    {
+      action_t* a = 0;
+
+      if ( action -> type == ACTION_ATTACK )
+        a = strike_attack;
+      else if ( action -> type == ACTION_SPELL )
+        a = strike_spell;
+      // TODO: Heal
+
+      if ( a )
+      {
+        a -> base_dd_min = a -> base_dd_max = state -> result_amount;
+        a -> target = state -> target;
+        a -> schedule_execute();
+      }
     }
   };
 
