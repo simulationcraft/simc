@@ -60,34 +60,34 @@ actions.aoe+=/colossus_smash,if=debuff.colossus_smash.down
 actions.aoe+=/slam,if=buff.sweeping_strikes.up
 actions.aoe+=/battle_shout,if=rage<70
 
-head=helmet_of_the_prehistoric_marauder,id=99418,gems=capacitive_primal_160exp_160crit_180str
-neck=malkoroks_tainted_dog_tags,id=105566
-shoulders=tusks_of_mannoroth,id=105642,gems=160exp_160crit_160exp_160crit_160exp_160crit_180str,enchant=200str_100crit,reforge=mastery_hit
+head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_160exp_160crit_180str
+neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2,reforge=mastery_hit
+shoulders=tusks_of_mannoroth,id=105642,upgrade=2,gems=160exp_160crit_160exp_160crit_160exp_160crit_180str,enchant=200str_100crit,reforge=mastery_hit
 back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=160exp_160crit_60str,enchant=180crit,reforge=haste_hit
-chest=chestplate_of_congealed_corrosion,id=105412,gems=160exp_160crit_320crit_160hit_160crit_180str,enchant=80all
-wrists=bracers_of_blind_hatred,id=105456,gems=320crit,enchant=180str,reforge=mastery_hit
-hands=tarcoated_gauntlets,id=105511,gems=160exp_160crit_320crit_320crit_120str,enchant=170str,addon=synapse_springs_ii
-waist=ashen_wall_girdle,id=105533,gems=160exp_160crit_160crit_160hit_320crit_120str,reforge=mastery_crit
-legs=legplates_of_the_prehistoric_marauder,id=99413,gems=320crit_320crit_120str,enchant=285str_165crit
-feet=wolfrider_spurs,id=105531,gems=320crit_60crit,enchant=140mastery
-finger1=devilfang_band,id=105611,gems=320crit,reforge=exp_crit
-finger2=seal_of_the_forgotten_kings,id=105589,gems=320crit
-trinket1=skeers_bloodsoaked_talisman,id=105632
-trinket2=thoks_tail_tip,id=105609
-main_hand=hellscreams_decapitator,id=105692,gems=160exp_160crit_160exp_160crit_120str,enchant=dancing_steel
+chest=chestplate_of_congealed_corrosion,id=105412,upgrade=2,gems=160exp_160crit_320crit_160hit_160crit_180str,enchant=80all
+wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=320crit,enchant=180str
+hands=tarcoated_gauntlets,id=105511,upgrade=2,gems=160exp_160crit_320crit_320crit_120str,enchant=170str,addon=synapse_springs_ii
+waist=ashen_wall_girdle,id=105533,upgrade=2,gems=160exp_160crit_160crit_160hit_320crit_120str,reforge=mastery_crit
+legs=legplates_of_the_prehistoric_marauder,id=99413,upgrade=2,gems=320crit_320crit_120str,enchant=285str_165crit
+feet=wolfrider_spurs,id=105531,upgrade=2,gems=320crit_60crit,enchant=140mastery
+finger1=devilfang_band,id=105611,upgrade=2,gems=320crit,reforge=exp_crit
+finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=320crit,reforge=haste_exp
+trinket1=skeers_bloodsoaked_talisman,id=105632,upgrade=2
+trinket2=thoks_tail_tip,id=105609,upgrade=2
+main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=80str_160crit_60str,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=27214
+# gear_strength=29187
 # gear_agility=80
-# gear_stamina=36918
+# gear_stamina=39466
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2156
-# gear_hit_rating=2631
-# gear_crit_rating=19839
-# gear_haste_rating=8269
-# gear_mastery_rating=5975
-# gear_armor=40919
+# gear_expertise_rating=2234
+# gear_hit_rating=2743
+# gear_crit_rating=20722
+# gear_haste_rating=6724
+# gear_mastery_rating=8264
+# gear_armor=41743
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
-# main_hand=hellscreams_decapitator,heroic=1,weapon=axe2h_3.60speed_26616min_39925max,enchant=dancing_steel
+# main_hand=xalatoh_desecrated_image_of_gorehowl,heroic=1,elite=1,weapon=axe2h_3.60speed_26125min_39188max,enchant=dancing_steel

@@ -104,37 +104,37 @@ actions.aoe+=/storm_bolt,if=enabled
 actions.aoe+=/battle_shout,if=rage<70
 actions.aoe+=/bloodthirst
 
-head=helmet_of_the_prehistoric_marauder,id=99418,gems=capacitive_primal_160exp_160crit_180str
-neck=malkoroks_tainted_dog_tags,id=105566
-shoulders=tusks_of_mannoroth,id=105642,gems=80str_160crit_160exp_160crit_160exp_160crit_180str,enchant=200str_100crit
+head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_160exp_160crit_180str
+neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
+shoulders=tusks_of_mannoroth,id=105642,upgrade=2,gems=80str_160crit_160exp_160crit_160exp_160crit_180str,enchant=200str_100crit
 back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=160exp_160crit_60str,enchant=180crit,reforge=haste_hit
-chest=battleplate_of_the_prehistoric_marauder,id=99411,gems=160exp_160crit_160exp_160crit_160exp_160crit_180str,enchant=80all,reforge=haste_crit
-wrists=bracers_of_blind_hatred,id=105456,gems=320crit,enchant=180str
-hands=gauntlets_of_the_prehistoric_marauder,id=99412,gems=80str_160crit_80str_160crit_360crit_120str,enchant=170str,addon=synapse_springs_ii,reforge=hit_mastery
-waist=ashen_wall_girdle,id=105533,gems=160exp_160crit_160crit_160hit_320crit_120str,reforge=hit_crit
-legs=legplates_of_the_prehistoric_marauder,id=99413,gems=320crit_320crit_120str,enchant=285str_165crit,reforge=haste_mastery
-feet=greaves_of_sublime_superiority,id=105478,gems=320crit,enchant=140mastery,reforge=hit_mastery
-finger1=devilfang_band,id=105611,gems=320crit,reforge=exp_crit
-finger2=seal_of_the_forgotten_kings,id=105589,gems=320crit,reforge=haste_hit
-trinket1=skeers_bloodsoaked_talisman,id=105632
-trinket2=thoks_tail_tip,id=105609
-main_hand=hellscreams_doomblade,id=105691,gems=80str_160crit_80str_160crit_120str,enchant=dancing_steel,reforge=exp_crit
-off_hand=hellscreams_doomblade,id=105691,gems=80str_160crit_80str_160crit_120str,enchant=dancing_steel,reforge=exp_crit
+chest=battleplate_of_the_prehistoric_marauder,id=99411,upgrade=2,gems=160exp_160crit_160exp_160crit_160exp_160crit_180str,enchant=80all,reforge=haste_crit
+wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=320crit,enchant=180str
+hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=2,gems=80str_160crit_80str_160crit_320crit_120str,enchant=170str,addon=synapse_springs_ii,reforge=hit_mastery
+waist=ashen_wall_girdle,id=105533,upgrade=2,gems=160exp_160crit_160crit_160hit_320crit_120str,reforge=hit_crit
+legs=legplates_of_the_prehistoric_marauder,id=99413,upgrade=2,gems=320crit_320crit_120str,enchant=285str_165crit,reforge=haste_mastery
+feet=wolfrider_spurs,id=105531,upgrade=2,gems=320crit_60crit,enchant=140mastery,reforge=haste_mastery
+finger1=devilfang_band,id=105611,upgrade=2,gems=320crit,reforge=exp_crit
+finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=320crit,reforge=haste_mastery
+trinket1=skeers_bloodsoaked_talisman,id=105632,upgrade=2
+trinket2=thoks_tail_tip,id=105609,upgrade=2
+main_hand=malkoroks_skullcleaver,id=105567,upgrade=2,gems=160exp_160crit_60str,enchant=dancing_steel,reforge=hit_mastery
+off_hand=malkoroks_skullcleaver,id=105567,upgrade=2,gems=160exp_160crit_60str,enchant=dancing_steel,reforge=hit_mastery
 
 # Gear Summary
-# gear_strength=27136
+# gear_strength=28692
 # gear_agility=80
-# gear_stamina=36024
+# gear_stamina=38514
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2672
-# gear_hit_rating=2804
-# gear_crit_rating=18340
-# gear_haste_rating=2743
-# gear_mastery_rating=10938
-# gear_armor=40745
+# gear_expertise_rating=2202
+# gear_hit_rating=2779
+# gear_crit_rating=19711
+# gear_haste_rating=3675
+# gear_mastery_rating=11497
+# gear_armor=41568
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
-# main_hand=hellscreams_doomblade,heroic=1,weapon=sword_2.60speed_12474min_23168max,enchant=dancing_steel
-# off_hand=hellscreams_doomblade,heroic=1,weapon=sword_2.60speed_12474min_23168max,enchant=dancing_steel
+# main_hand=malkoroks_skullcleaver,heroic=1,elite=1,weapon=axe_2.60speed_12244min_22740max,enchant=dancing_steel
+# off_hand=malkoroks_skullcleaver,heroic=1,elite=1,weapon=axe_2.60speed_12244min_22740max,enchant=dancing_steel
