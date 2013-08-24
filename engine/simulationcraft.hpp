@@ -3360,6 +3360,7 @@ struct item_t
   static std::string stat_pairs_to_str( const std::vector<stat_pair_t>& stat_pairs );
 
   std::string to_string();
+  bool has_stats();
 };
 
 

@@ -213,7 +213,8 @@ int item_database::random_suffix_type( const item_data_t* item )
 
 int item_database::random_suffix_type( item_t& item )
 {
-  if ( weapon_t* w = item.weapon() )
+  weapon_t* w = item.weapon();
+  if ( w && w -> type != WEAPON_NONE )
   {
     switch ( w -> type )
     {
@@ -232,8 +233,9 @@ int item_database::random_suffix_type( item_t& item )
       case WEAPON_THROWN:
         return 4;
 
-        // One-hand/Off-hand/Main-hand weapons use the fourth point allocation budget
+      // One-hand/Off-hand/Main-hand weapons use the fourth point allocation budget
       default:
+        fprintf( stdout, "wt=%d\n", w -> type );
         return 3;
     }
   }

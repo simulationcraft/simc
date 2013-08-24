@@ -163,6 +163,19 @@ item_t::item_t( player_t* p, const std::string& o ) :
 
 // item_t::to_string ========================================================
 
+bool item_t::has_stats()
+{
+  for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
+  {
+    if ( parsed.data.stat_type_e[ i ] != ITEM_MOD_NONE )
+      return true;
+  }
+
+  return false;
+}
+
+// item_t::to_string ========================================================
+
 std::string item_t::to_string()
 {
   std::ostringstream s;
@@ -207,20 +220,35 @@ std::string item_t::to_string()
 
   if ( parsed.reforged_from != STAT_NONE && parsed.reforged_to != STAT_NONE )
   {
-    size_t idx_from = 0;
+    double v = 0;
     for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
     {
       if ( parsed.data.stat_type_e[ i ] == util::translate_stat( parsed.reforged_from ) )
-        idx_from = i;
+      {
+        v = stat_value( i );
+        break;
+      }
     }
 
-    s << " reforge={ " << "-" << floor( 0.4 * stat_value( idx_from ) )
+    if ( v == 0 )
+    {
+      for ( size_t i = 0; i < parsed.suffix_stats.size(); i++ )
+      {
+        if ( parsed.reforged_from == parsed.suffix_stats[ i ].stat )
+        {
+          v = parsed.suffix_stats[ i ].value;
+          break;
+        }
+      }
+    }
+
+    s << " reforge={ " << "-" << floor( 0.4 * v )
       << " " << util::stat_type_abbrev( parsed.reforged_from )
-      << " -> " << "+" << floor( 0.4 * stat_value( idx_from ) )
+      << " -> " << "+" << floor( 0.4 * v )
       << " " << util::stat_type_abbrev( parsed.reforged_to ) << " }";
   }
 
-  if ( parsed.data.stat_type_e[ 0 ] > 0 )
+  if ( has_stats() )
   {
     s << " stats={ ";
 
@@ -231,8 +259,9 @@ std::string item_t::to_string()
 
     for ( size_t i = 0; i < sizeof_array( parsed.data.stat_val ); i++ )
     {
-      if ( parsed.data.stat_type_e[ i ] == -1 )
-        break;
+      if ( parsed.data.stat_type_e[ i ] == ITEM_MOD_NONE )
+        continue;
+
       if ( parsed.data.stat_val[ i ] > 0 )
         s << "+";
 
