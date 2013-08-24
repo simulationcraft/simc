@@ -626,11 +626,7 @@ static  void trigger_sweeping_strikes( action_state_t* s )
     {
       //do not double dip on multipliers
       return data().effectN( 1 ).percent();
-      
     }
-
-    double composite_target_multiplier( player_t* )
-    { return 1.0; }
 
     size_t available_targets( std::vector< player_t* >& tl )
     {
@@ -754,7 +750,7 @@ void warrior_attack_t::execute()
   if ( result_is_hit( execute_state -> result ) )
   {
     trigger_strikes_of_opportunity( this );
-    if ( p -> buff.sweeping_strikes -> up() ) trigger_sweeping_strikes( execute_state );
+    if ( p -> buff.sweeping_strikes -> up() && !aoe) trigger_sweeping_strikes( execute_state ); //Dragon Roar/Bladestorm/Other AoE Abilities do not proc Sweeping Strikes.
   }
   else if ( result == RESULT_DODGE  )
   {
@@ -2110,11 +2106,6 @@ struct slam_sweeping_strikes_attack_t : public warrior_attack_t
     return data().effectN( 3 ).percent(); //does not double dip on anything
   }
 
-  double composite_ta_multiplier()
-  {
-    return 1.0; // It really really doesn't double dip on anything.
-  }
-  
   size_t available_targets( std::vector< player_t* >& tl )
   {
     tl.clear();
