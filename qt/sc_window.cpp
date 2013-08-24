@@ -83,13 +83,13 @@ void SC_MainWindow::loadHistory()
   QVariant simulateHistory = settings.value( "user_data/simulateHistory");
   if ( simulateHistory.isValid() )
   {
-    QList<QVariant>& a = simulateHistory.toList();
+    QList<QVariant> a = simulateHistory.toList();
     for( int i = 0; i < a.size(); ++i )
     {
       const QVariant& entry = a.at( i );
       if ( entry.isValid() )
       {
-        QStringList& sl = entry.toStringList();
+        QStringList sl = entry.toStringList();
         if ( sl.size() == 2 )
         {
           simulateTab -> add_Text( sl.at( 1 ), sl.at( 0 ) );
@@ -102,13 +102,13 @@ void SC_MainWindow::loadHistory()
   QVariant history = settings.value( "user_data/historyList");
   if ( history.isValid() )
   {
-    QList<QVariant>& a = history.toList();
+    QList<QVariant> a = history.toList();
     for( int i = 0; i < a.size(); ++i )
     {
       const QVariant& entry = a.at( i );
       if ( entry.isValid() )
       {
-        QString& s = entry.toString();
+        QString s = entry.toString();
         historyList -> addItem( new QListWidgetItem( s ) );
 
       }
