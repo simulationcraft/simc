@@ -2063,7 +2063,16 @@ struct shadow_bolt_t : public warlock_spell_t
     if ( p() -> dbc.ptr && p() -> set_bonus.tier16_4pc_caster() && rng().roll( 0.08 ) )//FIX after dbc update
     {
       hand_of_guldan -> target = target;
+      int current_charge  = hand_of_guldan -> cooldown -> current_charge;
+      bool pre_execute_add = true;
+      if (current_charge == hand_of_guldan -> cooldown -> charges - 1)
+      {
+        pre_execute_add = false;
+      }
+      if (pre_execute_add) hand_of_guldan -> cooldown -> current_charge++;
+      
       hand_of_guldan -> execute();
+      if (!pre_execute_add) hand_of_guldan -> cooldown -> current_charge++;
     }
     
     if ( p() -> buffs.demonic_calling -> up() )
@@ -2490,7 +2499,7 @@ struct haunt_t : public warlock_spell_t
   {
     if ( p() -> dbc.ptr && p() -> set_bonus.tier16_4pc_caster() && rng().roll( p() -> sets -> set ( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() ) )//refund shard when haunt expires
     {
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, p() -> find_spell(145159) -> effectN( 1 ).resource(RESOURCE_SOUL_SHARD), p() -> gains.haunt_tier16_4pc );
+      p() -> resource_gain( RESOURCE_SOUL_SHARD, p() -> find_spell( 145159 ) -> effectN( 1 ).resource( RESOURCE_SOUL_SHARD ), p() -> gains.haunt_tier16_4pc );
     }
   }
   
@@ -3203,16 +3212,16 @@ struct chaos_wave_t : public warlock_spell_t
 
 struct touch_of_chaos_t : public warlock_spell_t
 {
-  hand_of_guldan_t* hand_of_guldan;
+  chaos_wave_t* chaos_wave;
 
   touch_of_chaos_t( warlock_t* p ) :
-    warlock_spell_t( "touch_of_chaos", p, p -> spec.touch_of_chaos ),hand_of_guldan( new hand_of_guldan_t( p ) )
+    warlock_spell_t( "touch_of_chaos", p, p -> spec.touch_of_chaos ),chaos_wave( new chaos_wave_t( p ) )
   {
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent(); // Assumption - need to test whether ToC is affected
     
-    hand_of_guldan               -> background = true;
-    hand_of_guldan               -> base_costs[ RESOURCE_MANA ] = 0;
+    chaos_wave               -> background = true;
+    chaos_wave               -> base_costs[ RESOURCE_DEMONIC_FURY ] = 0;
 
   }
 
@@ -3246,11 +3255,19 @@ struct touch_of_chaos_t : public warlock_spell_t
       p() -> buffs.demonic_calling -> expire();
     }
     
-    //cast HoG
-    if ( p() -> dbc.ptr && p() -> set_bonus.tier16_4pc_caster() && rng().roll( 0.08 ) )//FIX after dbc update
+    //cast CW
+    if (  p() -> dbc.ptr && p() -> set_bonus.tier16_4pc_caster() && rng().roll( 0.08 ) )//FIX after dbc update
     {
-      hand_of_guldan -> target = target;
-      hand_of_guldan -> execute();
+      chaos_wave -> target = target;
+      int current_charge  = chaos_wave -> cooldown -> current_charge;
+      bool pre_execute_add = true;
+      if (current_charge == chaos_wave -> cooldown -> charges - 1)
+      {
+        pre_execute_add = false;
+      }
+      if (pre_execute_add) chaos_wave -> cooldown -> current_charge++;
+      chaos_wave -> execute();
+      if (!pre_execute_add) chaos_wave -> cooldown -> current_charge++;
     }
     
   }
