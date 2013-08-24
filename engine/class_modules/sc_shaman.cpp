@@ -2972,7 +2972,7 @@ void shaman_spell_t::execute()
   if ( eoe_proc )
     return;
 
-  if ( ! totem && ! proc && data().school_mask() & SCHOOL_MASK_FIRE )
+  if ( ! totem && ! background && ! proc && data().school_mask() & SCHOOL_MASK_FIRE )
     p() -> buff.unleash_flame -> expire();
 
 }
