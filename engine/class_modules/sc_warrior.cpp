@@ -81,7 +81,8 @@ public:
     buff_t* taste_for_blood;
     buff_t* ultimatum;
     buff_t* death_sentence;
-
+    buff_t* tier16_reckless_defense;
+    
     haste_buff_t* flurry;
 
     //check
@@ -3341,6 +3342,9 @@ void warrior_t::create_buffs()
   buff.tier15_2pc_tank  = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138279 ) )
                           .default_value( 0.05 ); // inconsistent information in spellid, hardcode to fix
 
+  
+  buff.tier16_reckless_defense  = buff_creator_t( this, "tier16_reckless_defense", find_spell( 144500 ));
+
   buff.death_sentence   = buff_creator_t( this, "death_sentence", find_spell( 144442 ) ) //T16 4 pc melee buff.
                           .chance( find_spell( 144441 ) -> effectN( 1 ).percent() ); //T16 4 piece proc rate.
 
@@ -3926,7 +3930,7 @@ void warrior_t::assess_damage( school_e school,
   if ( ( s -> result == RESULT_HIT    ||
          s -> result == RESULT_CRIT   ||
          s -> result == RESULT_GLANCE ) &&
-       ( active_stance == STANCE_BERSERKER ) )
+       ( active_stance == STANCE_BERSERKER  || buff.tier16_reckless_defense -> up() ) )
   {
     player_t::resource_gain( RESOURCE_RAGE,
                              floor( s -> result_amount / resources.max[ RESOURCE_HEALTH ] * 100 ),
