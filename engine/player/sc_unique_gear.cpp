@@ -3245,6 +3245,7 @@ void flurry_of_xuen( item_t* item )
   effect.ppm = -1.0 * driver -> real_ppm();
   effect.ppm        *= item_database::approx_scale_coefficient( item -> parsed.data.level, item -> item_level() );
   effect.rppm_scale = RPPM_HASTE;
+  effect.cooldown = driver -> internal_cooldown();
 
   flurry_of_xuen_cb_t* cb = new flurry_of_xuen_cb_t( item, effect, driver );
 
