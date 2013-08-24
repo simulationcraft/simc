@@ -650,7 +650,6 @@ struct eoe_execute_event_t : public event_t
     stats_t* tmp_stats = spell -> stats;
     timespan_t tmp_cast_time = spell -> base_execute_time;
     timespan_t tmp_gcd = spell -> trigger_gcd;
-    bool tmp_callbacks = spell -> callbacks;
     double tmp_sl_da_mul = spell -> stormlash_da_multiplier;
     double tmp_sl_ta_mul = spell -> stormlash_ta_multiplier;
 
@@ -658,7 +657,6 @@ struct eoe_execute_event_t : public event_t
 
     spell -> stormlash_da_multiplier = 0;
     spell -> stormlash_ta_multiplier = 0;
-    spell -> callbacks = false;
     spell -> stats = spell -> eoe_stats;
     spell -> base_costs[ RESOURCE_MANA ] = 0;
     spell -> cooldown = spell -> eoe_cooldown;
@@ -674,7 +672,6 @@ struct eoe_execute_event_t : public event_t
     spell -> cooldown = tmp_cooldown;
     spell -> base_costs[ RESOURCE_MANA ] = base_cost;
     spell -> stats = tmp_stats;
-    spell -> callbacks = tmp_callbacks;
     spell -> stormlash_ta_multiplier = tmp_sl_ta_mul;
     spell -> stormlash_da_multiplier = tmp_sl_da_mul;
   }
@@ -2190,7 +2187,7 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
   {
     may_crit           = true;
     background         = true;
-    proc               = true;
+    proc               = false;
     direct_power_mod   = 1.0;
     base_costs[ RESOURCE_MANA ] = 0.0;
 
