@@ -1170,7 +1170,8 @@ class SpellDataGenerator(DataGenerator):
             ( 118340, 0 ),          # Impending Victory Heal
             ( 21156,  0 ),          # Battle stance passive
             ( 118779, 0, False ),   # Victory Rush heal is not directly activatable
-        ),     
+            ( 144500, 0 ),          # T16 tank 4pc proc
+        ),
         
         # Paladin:
         (
@@ -1285,6 +1286,8 @@ class SpellDataGenerator(DataGenerator):
             ( 131737, 0, False ), ( 131740, 0, False ), ( 132566, 0, False ), ( 131736, 0, False ), # Duplicated Warlock dots
             ( 111859, 0, True ), ( 111895, 0, True ), ( 111897, 0, True ), ( 111896, 0, True ), ( 111898, 2, True ), # Grimoire of Service summons
             ( 103988, 0, False ), # Demo melee
+            ( 145159, 0 ),        # T16 affli soul shard gain
+            ( 145164, 0 ),        # T16 destro ember fire gain
         ),
         
         # Monk:
