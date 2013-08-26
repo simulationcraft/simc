@@ -5172,6 +5172,14 @@ void player_t::target_mitigation( school_e school,
   if ( buffs.fortitude && buffs.fortitude -> up() && ( dbc.ptr || school == SCHOOL_PHYSICAL ) )
     s -> result_amount *= 1.0 + buffs.fortitude -> data().effectN( 1 ).percent();
 
+  if ( school != SCHOOL_PHYSICAL )
+  {
+    if ( buffs.devotion_aura -> up() )
+    {
+      s -> result_amount *= 1.0 + buffs.devotion_aura -> data().effectN( 1 ).percent();
+    }
+  }
+
   double pre_block_amount = s -> result_amount;
   
   if ( s -> block_result == BLOCK_RESULT_BLOCKED )
@@ -5217,13 +5225,6 @@ void player_t::target_mitigation( school_e school,
         sim -> output( "Damage to %s after Tooth and Claw absorb is %f", s -> target -> name(), s -> result_amount );
 
       target -> debuffs.tooth_and_claw_absorb -> expire();
-    }
-  }
-  if ( school != SCHOOL_PHYSICAL )
-  {
-    if ( target -> buffs.devotion_aura -> up() )
-    {
-      s -> result_amount *= 1.0 + target -> buffs.devotion_aura -> data().effectN( 1 ).percent();
     }
   }
 }
