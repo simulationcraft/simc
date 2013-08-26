@@ -4872,7 +4872,7 @@ void paladin_t::validate_action_priority_list()
     // This section performs some validation on hand-written APLs.  The ones created in 
     // generate_action_prio_list_spec() should automatically avoid all of these mistakes.
     // In most cases, this will spit out a warning to inform the user that something was ignored.
-    // For WoG/EF, it will try to correct the error.
+    // For WoG w/EF talented, it will try to correct the error.
 
     for ( size_t i = 0; i < a -> action_list.size(); i++ )
     {
@@ -4885,22 +4885,16 @@ void paladin_t::validate_action_priority_list()
       {
           found_position = action_str.find( splits[ 0 ].c_str() );
           action_str.replace( found_position, splits[ 0 ].length(), "eternal_flame" );
-          sim -> errorf( "Action priority list contains Word of Glory instead of Eternal Flame, automatically replacing WoG with EF\n" );
+          sim -> errorf( "Action priority list contains Word of Glory with Eternal Flame talent, automatically replacing WoG with EF\n" );
       }
-      else if ( splits[ 0 ] == "eternal_flame" && ! talents.eternal_flame -> ok() )
-      {
-          found_position = action_str.find( splits[ 0 ].c_str() );
-          action_str.replace( found_position,  splits[ 0 ].length(), "word_of_glory" );
-          sim -> errorf( "Action priority list contains Eternal Flame without talent, automatically replacing with Word of Glory\n" );
-      }
-
       // Check for usage of talents without talent present
       if ( ( splits[ 0 ] == "holy_prism" && ! talents.holy_prism -> ok() ) || 
            ( splits[ 0 ] == "lights_hammer" && ! talents.lights_hammer -> ok() ) || 
            ( splits[ 0 ] == "execution_sentence" && ! talents.execution_sentence -> ok() ) ||
            ( splits[ 0 ] == "sacred_shield" && ! talents.sacred_shield -> ok() ) ||
            ( splits[ 0 ] == "hand_of_purity" && ! talents.hand_of_purity -> ok() ) ||
-           ( splits[ 0 ] == "holy_avenger" && ! talents.holy_avenger -> ok() ) )
+           ( splits[ 0 ] == "holy_avenger" && ! talents.holy_avenger -> ok() ) ||
+           ( splits[ 0 ] == "eternal_flame" && ! talents.eternal_flame -> ok() ) )
       {
         std::string talent_str = "talent.";
         talent_str += splits[ 0 ].c_str();
