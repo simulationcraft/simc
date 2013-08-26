@@ -47,6 +47,7 @@ struct paladin_td_t : public actor_pair_t
   struct buffs_t
   {
     buff_t* debuffs_censure;
+    buff_t* eternal_flame;
     absorb_buff_t* sacred_shield_tick;
   } buffs;
 
@@ -1461,6 +1462,40 @@ struct eternal_flame_t : public paladin_heal_t
     }
   }
 
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    // reduce cooldown if Sanctity of Battle present
+    if ( p() -> passives.sanctity_of_battle -> ok() )
+    {
+      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
+    }
+
+    paladin_heal_t::update_ready( cd_duration );
+  }
+
+  virtual double cost()
+  {
+    // check for T16 4-pc tank effect
+    if ( p() -> set_bonus.tier16_4pc_tank() && p() -> buffs.bastion_of_glory -> current_stack >= 3 && target == player )
+      return 0.0;
+
+    return paladin_heal_t::cost();
+  }
+
+  virtual void consume_free_hp_effects()
+  {
+    // order of operations: T16 4-pc tank, then Divine Purpose (assumed!)
+
+    // check for T16 4pc tank bonus
+    if ( p() -> set_bonus.tier16_4pc_tank() && p() -> buffs.bastion_of_glory -> current_stack >= 3 && target == player  )
+    {
+      // nothing necessary here, BoG will be consumed automatically upon cast
+      return;
+    }
+
+    paladin_heal_t::consume_free_hp_effects();
+  }
+
   virtual double action_multiplier()
   {
     double am = paladin_heal_t::action_multiplier();
@@ -1470,7 +1505,11 @@ struct eternal_flame_t : public paladin_heal_t
 
     if ( target == player )
     {
-      am *= 1.0 + p() -> talents.eternal_flame -> effectN( 3 ).percent(); // twice as effective when used on self
+      // twice as effective when used on self
+      am *= 1.0 + p() -> talents.eternal_flame -> effectN( 3 ).percent(); 
+      
+      // grant 10% extra healing per stack of BoG; can't expire() BoG here because it's needed in execute()
+      am *= ( 1.0 + p() -> buffs.bastion_of_glory -> stack() * ( p() -> buffs.bastion_of_glory -> data().effectN( 1 ).percent() + p() -> get_divine_bulwark() ) );
     }
 
     return am;
@@ -1491,6 +1530,26 @@ struct eternal_flame_t : public paladin_heal_t
     // Shield of Glory (Tier 15 protection 2-piece bonus)
     if ( p() -> set_bonus.tier15_2pc_tank() )
       p() -> buffs.shield_of_glory -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> buffs.shield_of_glory -> buff_duration * hopo );
+    
+    // consume BoG stacks if used on self
+    if ( target == player )
+    {
+      p() -> buffs.bastion_of_glory -> expire();
+    }
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    td( s -> target ) -> buffs.eternal_flame -> trigger();
+
+    paladin_heal_t::impact( s );
+  }
+
+  virtual void last_tick( dot_t* d )
+  {
+    td( d -> state -> target ) -> buffs.eternal_flame -> expire();
+
+    paladin_heal_t::last_tick( d );
   }
 };
 
@@ -2686,10 +2745,21 @@ struct word_of_glory_t : public paladin_heal_t
     }
   }
 
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    // reduce cooldown if Sanctity of Battle present
+    if ( p() -> passives.sanctity_of_battle -> ok() )
+    {
+      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
+    }
+
+    paladin_heal_t::update_ready( cd_duration );
+  }
+
   virtual double cost()
   {
     // check for T16 4-pc tank effect
-    if ( p() -> set_bonus.tier16_4pc_tank() && p() -> buffs.bastion_of_glory -> current_stack >= 3 )
+    if ( p() -> set_bonus.tier16_4pc_tank() && p() -> buffs.bastion_of_glory -> current_stack >= 3  && target == player  )
       return 0.0;
 
     return paladin_heal_t::cost();
@@ -2700,7 +2770,7 @@ struct word_of_glory_t : public paladin_heal_t
     // order of operations: T16 4-pc tank, then Divine Purpose (assumed!)
 
     // check for T16 4pc tank bonus
-    if ( p() -> set_bonus.tier16_4pc_tank() && p() -> buffs.bastion_of_glory -> current_stack >= 3 )
+    if ( p() -> set_bonus.tier16_4pc_tank() && p() -> buffs.bastion_of_glory -> current_stack >= 3 && target == player  )
     {
       // nothing necessary here, BoG will be consumed automatically upon cast
       return;
@@ -2744,17 +2814,12 @@ struct word_of_glory_t : public paladin_heal_t
     // Shield of Glory (Tier 15 protection 2-piece bonus)
     if ( p() -> set_bonus.tier15_2pc_tank() )
       p() -> buffs.shield_of_glory -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> buffs.shield_of_glory -> buff_duration * hopo );
-
-    /* Set bonus changed in PTR b17124, leaving code in case it gets reverted
-    // T16 4-piece tank bonus grants HP for each stack of BoG used
-    if ( p() -> set_bonus.tier16_4pc_tank() )
+        
+    // consume BoG stacks if used on self
+    if ( target == player )
     {
-      // add that much Holy Power
-      p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.bastion_of_glory -> stack() , p() -> gains.hp_t16_4pc_tank );
+      p() -> buffs.bastion_of_glory -> expire();
     }
-    */
-    // consume BoG stacks
-    p() -> buffs.bastion_of_glory -> expire();
   }
 };
 
@@ -2777,6 +2842,17 @@ struct word_of_glory_damage_t : public paladin_spell_t
     else
       trigger_gcd = timespan_t::from_seconds( 1.5 ); // not sure why, but trigger_gcd defaults to zero for WoG when loaded from spell db
 
+  }
+
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    // reduce cooldown if Sanctity of Battle present
+    if ( p() -> passives.sanctity_of_battle -> ok() )
+    {
+      cd_duration = cooldown -> duration * p() -> cache.attack_haste();
+    }
+
+    paladin_spell_t::update_ready( cd_duration );
   }
 
   virtual double action_multiplier()
@@ -4026,6 +4102,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   dots.stay_of_execution  = target -> get_dot( "stay_of_execution",  paladin );
 
   buffs.debuffs_censure    = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
+  buffs.eternal_flame      = buff_creator_t( *this, "eternal_flame", paladin -> find_spell( 114163 ) );
   buffs.sacred_shield_tick = absorb_buff_creator_t( *this, "sacred_shield_tick", paladin -> find_spell( 65148 ) )
                              .source( paladin -> get_stats( "sacred_shield" ) )
                              .cd( timespan_t::zero() )
