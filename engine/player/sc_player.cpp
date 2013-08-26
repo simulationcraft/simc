@@ -5168,6 +5168,8 @@ void player_t::target_mitigation( school_e school,
   if ( buffs.fortitude && buffs.fortitude -> up() && ( dbc.ptr || school == SCHOOL_PHYSICAL ) )
     s -> result_amount *= 1.0 + buffs.fortitude -> data().effectN( 1 ).percent();
 
+  double pre_block_amount = s -> result_amount;
+  
   if ( s -> block_result == BLOCK_RESULT_BLOCKED )
   {
     s -> result_amount *= ( 1 - composite_block_reduction() );
@@ -5180,6 +5182,8 @@ void player_t::target_mitigation( school_e school,
     if ( s -> result_amount <= 0 ) return;
   }
 
+  s -> blocked_amount = pre_block_amount  - s -> result_amount;
+  
   if ( school == SCHOOL_PHYSICAL && dmg_type == DMG_DIRECT )
   {
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )

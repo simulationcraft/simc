@@ -5304,6 +5304,7 @@ struct action_state_t : public noncopyable
   double          result_mitigated;     // Result after mitigation / resist. *NOTENOTENOTE* Only filled after action_t::impact() call
   double          result_absorbed;      // Result after absorption. *NOTENOTENOTE* Only filled after action_t::impact() call
   double          result_amount;        // Final (actual) result
+  double          blocked_amount;        // The exact amount of how much damage was reduced via block
   // Snapshotted stats during execution
   double          haste;
   double          crit;

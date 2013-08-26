@@ -122,6 +122,9 @@ public:
 
     gain_t* tier15_4pc_tank;
     gain_t* tier16_2pc_melee;
+    
+    gain_t* tier16_2pc_tank;
+    gain_t* tier16_4pc_tank;
   } gain;
 
   // Glyphs
@@ -3370,6 +3373,9 @@ void warrior_t::init_gains()
   gain.sword_and_board        = get_gain( "Sword and Board"       );
   gain.tier15_4pc_tank        = get_gain( "tier15_4pc_tank"       );
   gain.tier16_2pc_melee       = get_gain( "tier16_2pc_melee"      );
+
+  gain.tier16_2pc_tank        = get_gain( "tier16_2pc_tank"       );
+  gain.tier16_4pc_tank        = get_gain( "tier16_4pc_tank"       );
 }
 
 // warrior_t::init_procs ====================================================
@@ -3921,11 +3927,30 @@ void warrior_t::assess_damage( school_e school,
   if ( ( s -> result == RESULT_HIT    ||
          s -> result == RESULT_CRIT   ||
          s -> result == RESULT_GLANCE ) &&
-       ( active_stance == STANCE_BERSERKER  || buff.tier16_reckless_defense -> up() ) )
+        active_stance == STANCE_BERSERKER )
   {
     player_t::resource_gain( RESOURCE_RAGE,
                              floor( s -> result_amount / resources.max[ RESOURCE_HEALTH ] * 100 ),
                              gain.beserker_stance );
+  }
+  
+  
+  if ( ( s -> result == RESULT_HIT    ||
+        s -> result == RESULT_CRIT   ||
+        s -> result == RESULT_GLANCE ) &&
+       buff.tier16_reckless_defense -> up() )
+  {
+    player_t::resource_gain( RESOURCE_RAGE,
+                            floor( s -> result_amount / resources.max[ RESOURCE_HEALTH ] * 100 ),
+                            gain.tier16_4pc_tank );
+  }
+
+  
+  if ( dbc.ptr && set_bonus.tier16_2pc_tank())
+  {
+    player_t::resource_gain( RESOURCE_HEALTH,
+                            floor( s -> blocked_amount * sets -> set( SET_T16_2PC_TANK ) -> effectN( 1 ).percent() ),
+                            gain.tier16_2pc_tank );
   }
 }
 
