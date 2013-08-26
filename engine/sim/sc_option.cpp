@@ -468,22 +468,9 @@ option_db_t::option_db_t()
     auto_path += "profiles";
 
     auto_path += starting_path;
-    auto_path += "profiles_heal";
-
-    auto_path += starting_path;
-    auto_path += "profiles";
-    auto_path += DIRECTORY_DELIMITER;
-    auto_path += "mop_test";
-
-    auto_path += starting_path;
     auto_path += "profiles";
     auto_path += DIRECTORY_DELIMITER;
     auto_path += "PreRaid";
-
-    auto_path += starting_path;
-    auto_path += "profiles";
-    auto_path += DIRECTORY_DELIMITER;
-    auto_path += "RaidDummy";
 
     // Add profiles for each tier, except pvp
     for ( int i = 0; i < ( N_TIER - 1 ); i++ )
