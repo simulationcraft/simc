@@ -386,7 +386,8 @@ public:
   void trigger_thrill_of_the_hunt()
   {
     if ( p() -> talents.thrill_of_the_hunt -> ok() && cost() > 0 )
-      if ( p() -> buffs.thrill_of_the_hunt -> trigger( 3 ) )
+      // Stacks: 3 initial, 3 maximum
+      if ( p() -> buffs.thrill_of_the_hunt -> trigger( p() -> buffs.thrill_of_the_hunt -> data().initial_stacks() ) )
         p() -> procs.thrill_of_the_hunt -> occur();
   }
 
@@ -1837,11 +1838,10 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     {
       p() -> procs.tier16_2pc_melee -> occur();
       int reduction;
-      if ( p() -> specialization() == HUNTER_BEAST_MASTERY ||
-	   p() -> specialization() == HUNTER_MARKSMANSHIP )
-	reduction = 4;
+      if ( p() -> specialization() == HUNTER_BEAST_MASTERY || p() -> specialization() == HUNTER_MARKSMANSHIP )
+        reduction = 4;
       else
-	reduction = 8;
+        reduction = 8;
 
       p() -> cooldowns.rapid_fire -> adjust( -timespan_t::from_seconds( reduction ) );
     }
