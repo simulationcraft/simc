@@ -1499,9 +1499,10 @@ struct eternal_flame_t : public paladin_heal_t
   virtual double action_multiplier()
   {
     double am = paladin_heal_t::action_multiplier();
+    double c = cost();
 
     // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3
-    am *= ( ( p() -> holy_power_stacks() <= 3  && ! p() -> buffs.divine_purpose -> check() ) ? p() -> holy_power_stacks() : 3 );
+    am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 );
 
     if ( target == player )
     {
@@ -2782,9 +2783,10 @@ struct word_of_glory_t : public paladin_heal_t
   virtual double action_multiplier()
   {
     double am = paladin_heal_t::action_multiplier();
+    double c = cost();
 
     // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3
-    am *= ( ( p() -> holy_power_stacks() <= 3  && ! p() -> buffs.divine_purpose -> check() ) ? p() -> holy_power_stacks() : 3 );
+    am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 );
 
     // T14 protection 4-piece bonus
     if ( p() -> set_bonus.tier14_4pc_tank() )
@@ -2858,9 +2860,10 @@ struct word_of_glory_damage_t : public paladin_spell_t
   virtual double action_multiplier()
   {
     double am = paladin_spell_t::action_multiplier();
+    double c = cost();
 
     // scale the am by holy power spent, can't be more than 3 and Divine Purpose counts as 3
-    am *= ( ( p() -> holy_power_stacks() <= 3  && ! p() -> buffs.divine_purpose -> check() ) ? p() -> holy_power_stacks() : 3 );
+    am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 );
 
     return am;
   }
