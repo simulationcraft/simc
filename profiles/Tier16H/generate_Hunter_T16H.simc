@@ -25,7 +25,7 @@ feet=puddle_punishers,id=105410,upgrade=2,ilevel=580,quality=epic,reforge=hit_ha
 ring1=kilruks_band_of_ascendancy,id=105624,upgrade=2,ilevel=580,quality=epic,reforge=mastery_hit,gems=160agi_60crit,enchant=160agi
 ring2=ring_of_restless_energy,id=105558,upgrade=2,ilevel=580,quality=epic,gems=160agi_60crit,enchant=160agi
 trinket1=assurance_of_consequence,id=105472,upgrade=2
-trinket2=haromms_talisman,id=105527,upgrade=2
+trinket2=ticking_ebon_detonator,id=105612,upgrade=2
 main_hand=korkron_hand_cannon,id=105559,upgrade=2,ilevel=580,quality=epic,reforge=mastery_hit,gems=160agi_60agi,enchant=lord_blastingtons_scope_of_doom
 save=Hunter_BM_T16H.simc
 

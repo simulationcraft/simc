@@ -66,7 +66,7 @@ feet=puddle_punishers,id=105410,ilevel=580,quality=epic,upgrade=2,gems=160agi_60
 finger1=kilruks_band_of_ascendancy,id=105624,ilevel=580,quality=epic,upgrade=2,gems=160agi_60crit,enchant=160agi,reforge=mastery_hit
 finger2=ring_of_restless_energy,id=105558,ilevel=580,quality=epic,upgrade=2,gems=160agi_60crit,enchant=160agi
 trinket1=assurance_of_consequence,id=105472,upgrade=2
-trinket2=haromms_talisman,id=105527,upgrade=2
+trinket2=ticking_ebon_detonator,id=105612,upgrade=2
 main_hand=korkron_hand_cannon,id=105559,ilevel=580,quality=epic,upgrade=2,gems=160agi_60agi,enchant=lord_blastingtons_scope_of_doom,reforge=mastery_hit
 
 # Gear Summary
@@ -76,7 +76,7 @@ main_hand=korkron_hand_cannon,id=105559,ilevel=580,quality=epic,upgrade=2,gems=1
 # gear_hit_rating=2783
 # gear_crit_rating=14756
 # gear_haste_rating=12282
-# gear_mastery_rating=4454
+# gear_mastery_rating=6973
 # gear_armor=31309
 # meta_gem=capacitive_primal
 # main_hand=korkron_hand_cannon,heroic=1,elite=1,weapon=gun_3.00speed_20523min_38115max,enchant=lord_blastingtons_scope_of_doom
