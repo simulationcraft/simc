@@ -5295,7 +5295,7 @@ struct action_state_t : public noncopyable
   // Execution attributes
   size_t          n_targets;            // Total number of targets the execution hits.
   int             chain_target;         // The chain target number, 0 == no chain, 1 == first target, etc.
-  // Execution sesults
+  // Execution results
   dmg_e           result_type;
   result_e        result;
   block_result_e  block_result;
@@ -5304,7 +5304,8 @@ struct action_state_t : public noncopyable
   double          result_mitigated;     // Result after mitigation / resist. *NOTENOTENOTE* Only filled after action_t::impact() call
   double          result_absorbed;      // Result after absorption. *NOTENOTENOTE* Only filled after action_t::impact() call
   double          result_amount;        // Final (actual) result
-  double          blocked_amount;        // The exact amount of how much damage was reduced via block
+  double          blocked_amount;        // The exact amount of how much damage was reduced via block or critical block
+  double          self_absorb_amount;    // The exqact amount of how much damaga was reduced via personal absorbs such as shield_barrier
   // Snapshotted stats during execution
   double          haste;
   double          crit;

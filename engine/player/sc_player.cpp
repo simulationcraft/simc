@@ -5042,7 +5042,11 @@ void player_t::assess_damage( school_e school,
       s -> result_amount -= value;
       // track result using only self-absorbs separately
       if ( ab -> source == this || is_my_pet( ab -> source ) )
+      {
         result_ignoring_external_absorbs -= value;
+        s -> self_absorb_amount += value;
+      }
+      
 
       if ( value < buff_value )
       {

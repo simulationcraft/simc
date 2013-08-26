@@ -50,6 +50,8 @@ public:
   action_t* active_opportunity_strike;
   action_t* active_second_wind;
   attack_t* active_sweeping_strikes;
+  
+  heal_t* active_t16_2pc;
   warrior_stance  active_stance;
 
   // Buffs
@@ -123,7 +125,6 @@ public:
     gain_t* tier15_4pc_tank;
     gain_t* tier16_2pc_melee;
     
-    gain_t* tier16_2pc_tank;
     gain_t* tier16_4pc_tank;
   } gain;
 
@@ -232,6 +233,7 @@ public:
     active_opportunity_strike = 0;
     active_sweeping_strikes   = 0;
     active_second_wind        = 0;
+    active_t16_2pc            = 0;
     active_stance             = STANCE_BATTLE;
 
     // Cooldowns
@@ -1535,6 +1537,25 @@ struct heroic_leap_t : public warrior_attack_t
   }
 };
 
+struct tier16_2pc_tank_heal_t : public heal_t
+{
+  tier16_2pc_tank_heal_t( warrior_t* p ) :
+  heal_t( "tier16_2pc_tank_heal", p )
+  {
+    // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
+    background = true;
+    may_crit = false;
+    target = p;
+    direct_power_mod = 0;
+  }
+  
+  virtual resource_e current_resource() { return RESOURCE_NONE; }
+  
+  
+};
+  
+  
+  
 // Impending Victory ========================================================
 
 struct impending_victory_heal_t : public heal_t
@@ -3184,6 +3205,7 @@ void warrior_t::init_spells()
   active_deep_wounds = new deep_wounds_t( this );
   active_bloodbath_dot = new bloodbath_dot_t( this );
   active_second_wind = new second_wind_t( this );
+  active_t16_2pc = new tier16_2pc_tank_heal_t( this );
 
   if ( mastery.strikes_of_opportunity -> ok() )
     active_opportunity_strike = new opportunity_strike_t( this );
@@ -3374,7 +3396,6 @@ void warrior_t::init_gains()
   gain.tier15_4pc_tank        = get_gain( "tier15_4pc_tank"       );
   gain.tier16_2pc_melee       = get_gain( "tier16_2pc_melee"      );
 
-  gain.tier16_2pc_tank        = get_gain( "tier16_2pc_tank"       );
   gain.tier16_4pc_tank        = get_gain( "tier16_4pc_tank"       );
 }
 
@@ -3946,11 +3967,23 @@ void warrior_t::assess_damage( school_e school,
   }
 
   
-  if ( dbc.ptr && set_bonus.tier16_2pc_tank())
+  if ( dbc.ptr && set_bonus.tier16_2pc_tank() )
   {
-    player_t::resource_gain( RESOURCE_HEALTH,
-                            floor( s -> blocked_amount * sets -> set( SET_T16_2PC_TANK ) -> effectN( 1 ).percent() ),
-                            gain.tier16_2pc_tank );
+    if (s -> block_result != BLOCK_RESULT_UNBLOCKED) //heal if blocked
+    {
+      double heal_amount = floor( s -> blocked_amount * sets -> set( SET_T16_2PC_TANK ) -> effectN( 1 ).percent() );
+      active_t16_2pc -> base_dd_min = active_t16_2pc -> base_dd_max = heal_amount;
+      active_t16_2pc -> execute();
+                                 
+    }
+   
+    if (s -> self_absorb_amount > 0 )//always heal if shield_barrier absorbed it. This assumes that shield_barrier is our only own absorb spell.
+    {
+      double heal_amount = floor( s -> self_absorb_amount * sets -> set( SET_T16_2PC_TANK ) -> effectN( 2 ).percent() );//FIX: check effectN after dbc update.. Currently the tooltip points to 1 in both cases, but I don't know whether that is intended.
+      active_t16_2pc -> base_dd_min = active_t16_2pc -> base_dd_max = heal_amount;
+      active_t16_2pc -> execute();
+    }
+
   }
 }
 
