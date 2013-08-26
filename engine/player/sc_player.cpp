@@ -5179,22 +5179,6 @@ void player_t::target_mitigation( school_e school,
       s -> result_amount *= 1.0 + buffs.devotion_aura -> data().effectN( 1 ).percent();
     }
   }
-
-  double pre_block_amount = s -> result_amount;
-  
-  if ( s -> block_result == BLOCK_RESULT_BLOCKED )
-  {
-    s -> result_amount *= ( 1 - composite_block_reduction() );
-    if ( s -> result_amount <= 0 ) return;
-  }
-
-  if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED )
-  {
-    s -> result_amount *= ( 1 - 2 * composite_block_reduction() );
-    if ( s -> result_amount <= 0 ) return;
-  }
-
-  s -> blocked_amount = pre_block_amount  - s -> result_amount;
   
   if ( school == SCHOOL_PHYSICAL && dmg_type == DMG_DIRECT )
   {
@@ -5215,6 +5199,25 @@ void player_t::target_mitigation( school_e school,
 
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
       sim -> output( "Damage to %s after armor mitigation is %f", s -> target -> name(), s -> result_amount );
+    
+    double pre_block_amount = s -> result_amount;
+
+    if ( s -> block_result == BLOCK_RESULT_BLOCKED )
+    {
+      s -> result_amount *= ( 1 - composite_block_reduction() );
+      if ( s -> result_amount <= 0 ) return;
+    }
+
+    if ( s -> block_result == BLOCK_RESULT_CRIT_BLOCKED )
+    {
+      s -> result_amount *= ( 1 - 2 * composite_block_reduction() );
+      if ( s -> result_amount <= 0 ) return;
+    }
+
+    s -> blocked_amount = pre_block_amount  - s -> result_amount;
+
+    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() && s -> blocked_amount > 0.0)
+      sim -> output( "Damage to %s after blocking is %f", s -> target -> name(), s -> result_amount );
 
     // Tooth and Claw (Guardian)
     if ( target -> debuffs.tooth_and_claw_absorb -> up() )
