@@ -2316,7 +2316,7 @@ struct windlash_t : public shaman_melee_attack_t
     shaman_melee_attack_t( n, player, s ), swing_timer_variance( stv )
   {
     may_proc_windfury = background = repeating = may_miss = may_dodge = may_parry = true;
-    proc = may_glance = special = false;
+    may_glance = special = false;
     weapon            = w;
     base_execute_time = w -> swing_time;
     trigger_gcd       = timespan_t::zero();
@@ -4889,6 +4889,7 @@ struct shaman_multistrike_attack_t : public shaman_melee_attack_t
     weapon_power_mod = 0;
     weapon_multiplier = 0;
     school = SCHOOL_PHYSICAL;
+    snapshot_flags |= STATE_MUL_DA;
   }
 
   // We need to override shaman_action_state_t returning here, as tick_action

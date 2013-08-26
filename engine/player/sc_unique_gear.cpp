@@ -2817,6 +2817,7 @@ void multistrike_trinket( item_t* item )
       callbacks = may_miss = may_crit = may_dodge = may_parry = may_block = may_glance = false;
       proc = background = special = true;
       school = SCHOOL_PHYSICAL;
+      snapshot_flags |= STATE_MUL_DA;
     }
 
     double composite_target_multiplier( player_t* )
@@ -2837,6 +2838,7 @@ void multistrike_trinket( item_t* item )
       callbacks = may_miss = may_crit = false;
       proc = background = true;
       school = SCHOOL_NATURE; // Multiple schools in reality, but any school would work
+      snapshot_flags |= STATE_MUL_DA;
     }
 
     double composite_target_multiplier( player_t* )
@@ -2858,10 +2860,16 @@ void multistrike_trinket( item_t* item )
       proc_callback_t<action_state_t>( i.player, data )
     {
       if ( ! ( strike_attack = listener -> create_proc_action( "multistrike_attack" ) ) )
+      {
         strike_attack = new multistrike_attack_t( &i );
+        strike_attack -> init();
+      }
 
       if ( ! ( strike_spell = listener -> create_proc_action( "multistrike_spell" ) ) )
+      {
         strike_spell = new multistrike_spell_t( &i );
+        strike_spell -> init();
+      }
     }
 
     void execute( action_t* action, action_state_t* state )
