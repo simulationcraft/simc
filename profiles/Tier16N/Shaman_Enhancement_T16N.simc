@@ -5,7 +5,7 @@ level=90
 race=tauren
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...0.1
+talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...0.0
 glyphs=chain_lightning
 spec=enhancement
 
@@ -100,7 +100,7 @@ feet=minelayers_padded_boots,id=103731,gems=80agi_160mastery_60mastery,enchant=1
 finger1=swift_serpent_signet,id=103842,gems=80agi_160mastery_60crit,reforge=exp_haste
 finger2=kilruks_band_of_ascendancy,id=103844,gems=160agi_60crit,reforge=haste_exp
 trinket1=assurance_of_consequence,id=102292
-trinket2=ticking_ebon_detonator,id=102311
+trinket2=haromms_talisman,id=102301
 main_hand=hellscreams_cleaver,id=104404,gems=160agi_160agi_120agi,enchant=dancing_steel,reforge=crit_hit
 off_hand=hellscreams_cleaver,id=104404,gems=160agi_160agi_120agi,enchant=dancing_steel,reforge=crit_haste
 
@@ -114,7 +114,7 @@ off_hand=hellscreams_cleaver,id=104404,gems=160agi_160agi_120agi,enchant=dancing
 # gear_hit_rating=2550
 # gear_crit_rating=1059
 # gear_haste_rating=7665
-# gear_mastery_rating=15042
+# gear_mastery_rating=13083
 # gear_armor=28875
 # meta_gem=agile_primal
 # tier16_2pc_melee=1

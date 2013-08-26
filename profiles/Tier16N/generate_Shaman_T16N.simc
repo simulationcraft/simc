@@ -13,7 +13,7 @@ race=tauren
 spec=enhancement
 role=attack
 position=back
-talents=000102
+talents=000101
 glyphs=chain_lightning
 head=helmet_of_celestial_harmony,id=99103,gems=agile_primal_160agi_180agi,reforge=haste_hit
 neck=immerseus_crystalline_eye,id=103749,reforge=haste_hit
@@ -28,7 +28,7 @@ feet=minelayers_padded_boots,id=103731,gems=80agi_160mastery_60mastery,enchant=1
 finger1=swift_serpent_signet,id=103842,gems=80agi_160mastery_60crit,reforge=exp_haste
 finger2=kilruks_band_of_ascendancy,id=103844,gems=160agi_60crit,reforge=haste_exp
 trinket1=assurance_of_consequence,id=102292
-trinket2=ticking_ebon_detonator,id=102311
+trinket2=haromms_talisman,id=102301
 main_hand=hellscreams_cleaver,id=104404,gems=160agi_160agi_120agi,enchant=dancing_steel,reforge=crit_hit
 off_hand=hellscreams_cleaver,id=104404,gems=160agi_160agi_120agi,enchant=dancing_steel,reforge=crit_haste
 save=Shaman_Enhancement_T16N.simc

@@ -90,37 +90,37 @@ actions.aoe+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.rem
 actions.aoe+=/spiritwalkers_grace,moving=1
 actions.aoe+=/fire_nova,if=active_flame_shock>=1
 
-head=helmet_of_celestial_harmony,id=99341,gems=capacitive_primal_160agi_180agi,reforge=mastery_exp
-neck=immerseus_crystalline_eye,id=105407,reforge=mastery_hit
-shoulders=quarantine_shoulderguards,id=105455,gems=80agi_160hit_80agi_160hit_120agi,enchant=200agi_100crit
+head=helmet_of_celestial_harmony,id=99341,upgrade=2,gems=capacitive_primal_160agi_180agi
+neck=immerseus_crystalline_eye,id=105407,upgrade=2
+shoulders=quarantine_shoulderguards,id=105455,upgrade=2,gems=80agi_160hit_80agi_160hit_120agi,enchant=200agi_100crit,reforge=mastery_exp
 back=fenyu_fury_of_xuen,id=102248,upgrade=2,enchant=180hit,reforge=crit_exp
-chest=cuirass_of_celestial_harmony,id=99347,gems=160agi_160agi_160agi_180agi,enchant=80all
-wrists=bracers_of_infinite_pipes,id=105617,enchant=180agi
-hands=grips_of_celestial_harmony,id=99340,gems=160agi_160agi_120agi,enchant=170mastery,reforge=mastery_hit
-waist=cannoneers_multipocket_gunbelt,id=105486,gems=160agi_80agi_160hit_160agi_120agi,reforge=hit_mastery
-legs=legguards_of_celestial_harmony,id=99342,gems=80agi_160mastery_80agi_160mastery_120agi,enchant=285agi_165crit
-feet=minelayers_padded_boots,id=105507,gems=80agi_160mastery_60mastery,enchant=140agi,reforge=exp_haste
-finger1=swift_serpent_signet,id=105483,gems=80agi_160mastery_60crit,reforge=exp_haste
-finger2=kilruks_band_of_ascendancy,id=105624,gems=160agi_60crit,reforge=mastery_hit
-trinket1=assurance_of_consequence,id=105472
-trinket2=ticking_ebon_detonator,id=105612,reforge=mastery_haste
-main_hand=hellscreams_cleaver,id=105685,gems=160agi_160agi_120agi,enchant=dancing_steel,reforge=crit_haste
-off_hand=hellscreams_cleaver,id=105685,gems=160agi_160agi_120agi,enchant=dancing_steel,reforge=crit_haste
+chest=cuirass_of_celestial_harmony,id=99347,upgrade=2,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_hit
+wrists=bracers_of_infinite_pipes,id=105617,upgrade=2,enchant=180agi
+hands=grips_of_celestial_harmony,id=99340,upgrade=2,gems=160agi_160agi_120agi,enchant=170mastery,reforge=mastery_hit
+waist=cannoneers_multipocket_gunbelt,id=105486,upgrade=2,gems=160agi_80agi_160hit_160agi_120agi,reforge=hit_mastery
+legs=legguards_of_celestial_harmony,id=99342,upgrade=2,gems=80agi_160mastery_80agi_160mastery_120agi,enchant=285agi_165crit
+feet=minelayers_padded_boots,id=105507,upgrade=2,gems=80agi_160mastery_60mastery,enchant=140agi,reforge=exp_haste
+finger1=swift_serpent_signet,id=105483,upgrade=2,gems=80agi_160mastery_60crit,reforge=exp_haste
+finger2=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=160agi_60crit
+trinket1=assurance_of_consequence,id=105472,upgrade=2
+trinket2=haromms_talisman,id=105527,upgrade=2
+main_hand=korvens_crimson_crescent,id=105625,upgrade=2,gems=160agi_60agi,enchant=dancing_steel,reforge=crit_haste
+off_hand=korvens_crimson_crescent,id=105625,upgrade=2,gems=160agi_60agi,enchant=dancing_steel,reforge=crit_haste
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=26807
-# gear_stamina=36024
+# gear_agility=28183
+# gear_stamina=38514
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2207
-# gear_hit_rating=2556
-# gear_crit_rating=2076
-# gear_haste_rating=13409
-# gear_mastery_rating=14821
-# gear_armor=30251
+# gear_expertise_rating=2208
+# gear_hit_rating=2557
+# gear_crit_rating=2174
+# gear_haste_rating=13436
+# gear_mastery_rating=14719
+# gear_armor=30854
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
-# main_hand=hellscreams_cleaver,heroic=1,weapon=axe_2.60speed_12474min_23168max,enchant=dancing_steel
-# off_hand=hellscreams_cleaver,heroic=1,weapon=axe_2.60speed_12474min_23168max,enchant=dancing_steel
+# main_hand=korvens_crimson_crescent,heroic=1,elite=1,weapon=axe_2.60speed_12244min_22740max,enchant=dancing_steel
+# off_hand=korvens_crimson_crescent,heroic=1,elite=1,weapon=axe_2.60speed_12244min_22740max,enchant=dancing_steel
