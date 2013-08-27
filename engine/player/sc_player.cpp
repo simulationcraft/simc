@@ -2785,6 +2785,9 @@ void player_t::create_buffs()
                         .chance( 0 )
                         /* .add_invalidate( CACHE_PLAYER_CRITICAL_DAMAGE ) */
                         /* .add_invalidate( CACHE_PLAYER_CRITICAL_HEALING ) */;
+
+    buffs.cooldown_reduction = buff_creator_t( this, "cooldown_reduction" )
+                               .chance( 0 );
     }
 
     buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );
@@ -4194,6 +4197,7 @@ void player_t::arise()
 
   if ( ! is_enemy() && ! is_pet() )
     buffs.amplified -> trigger();
+    sim -> active_player -> buffs.cooldown_reduction -> trigger();
 
   if ( has_foreground_actions( this ) )
     schedule_ready();

@@ -4325,6 +4325,7 @@ public:
 
     // 5.4 trinkets
     buff_t* amplified; // caster 146046
+    buff_t* cooldown_reduction;
   } buffs;
 
   struct potion_buffs_t
