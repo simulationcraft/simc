@@ -5792,7 +5792,7 @@ void shaman_t::init_actions()
     single -> add_action( this, "Flame Shock", "if=buff.unleash_flame.up&!ticking" );
     single -> add_action( this, "Lava Lash" );
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=set_bonus.tier15_2pc_melee=1&buff.maelstrom_weapon.react>=4&!buff.ascendance.up" );
-    single -> add_action( this, "Flame Shock", "if=(buff.unleash_flame.up&(dot.flame_shock.remains<=(cooldown.unleash_elements.remains+8)))|(!buff.unleash_flame.up&!ticking&cooldown.unleash_elements.remains>5)" );
+    single -> add_action( this, "Flame Shock", "if=buff.unleash_flame.up&(dot.flame_shock.remains<10|set_bonus.tier16_2pc_melee=0)" );
     single -> add_action( this, "Unleash Elements" );
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>=3&!buff.ascendance.up" );
     single -> add_talent( this, "Ancestral Swiftness", "if=buff.maelstrom_weapon.react<2" ) ;

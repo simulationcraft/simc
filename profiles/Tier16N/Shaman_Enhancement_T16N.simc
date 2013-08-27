@@ -57,7 +57,7 @@ actions.single+=/stormstrike
 actions.single+=/flame_shock,if=buff.unleash_flame.up&!ticking
 actions.single+=/lava_lash
 actions.single+=/lightning_bolt,if=set_bonus.tier15_2pc_melee=1&buff.maelstrom_weapon.react>=4&!buff.ascendance.up
-actions.single+=/flame_shock,if=(buff.unleash_flame.up&(dot.flame_shock.remains<=(cooldown.unleash_elements.remains+8)))|(!buff.unleash_flame.up&!ticking&cooldown.unleash_elements.remains>5)
+actions.single+=/flame_shock,if=buff.unleash_flame.up&(dot.flame_shock.remains<10|set_bonus.tier16_2pc_melee=0)
 actions.single+=/unleash_elements
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>=3&!buff.ascendance.up
 actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.maelstrom_weapon.react<2
