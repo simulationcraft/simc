@@ -5538,7 +5538,6 @@ void death_knight_t::init_actions()
         st_list_str += "/frost_strike,if=talent.runic_empowerment.enabled&frost=0";
         st_list_str += "/frost_strike,if=talent.blood_tap.enabled&buff.blood_charge.stack<=10";
         st_list_str += "/horn_of_winter";
-        st_list_str += "/frost_strike,if=talent.runic_corruption.enabled&buff.runic_corruption.down";
 
         // Normal stuff
         if ( level >= 61 ) st_list_str += "/obliterate";
@@ -5594,7 +5593,6 @@ void death_knight_t::init_actions()
         st_list_str += "/howling_blast";
         st_list_str += "/frost_strike,if=talent.runic_empowerment.enabled&(frost=0|blood=0)";
         st_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)>" + soul_reaper_pct + "|buff.blood_charge.stack>=8)";
-        st_list_str += "/frost_strike,if=talent.runic_corruption.enabled&buff.runic_corruption.down";
         if ( level >= 60 ) st_list_str += "/death_and_decay";
 
         // Better than waiting
