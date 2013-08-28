@@ -5900,7 +5900,7 @@ void druid_t::apl_feral()
     basic -> add_action( this, "Incarnation", "if=energy<=35&cooldown.tigers_fury.remains<=1" );
   basic -> add_action( this, "Tiger's Fury", "if=energy<=35&!buff.omen_of_clarity.react" );
   if ( talent.natures_vigil -> ok() )
-    basic -> add_action( this, "Nature's Vigil", "if=buff.tigers_fury.up" );
+    basic -> add_action( "natures_vigil,if=buff.tigers_fury.up" );
   basic -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
 
   // On-Use Items
@@ -5916,13 +5916,13 @@ void druid_t::apl_feral()
     basic -> add_action( racial_actions[ i ] + ",if=buff.tigers_fury.up" );
 
   if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
-    basic -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25",
+    basic -> add_action( "natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25",
                          "Use NS for finishers during execute range." );
   basic -> add_action( this, "Rip", "if=combo_points>=5&target.health.pct<=25&action.rip.tick_damage%dot.rip.tick_dmg>=1.15",
                        "Overwrite Rip during execute range if it's at least 15% stronger than the current." );
   basic -> add_action( this, "Ferocious Bite", "if=combo_points>=5&target.health.pct<=25&dot.rip.ticking" );
   if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
-    basic -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3",
+    basic -> add_action( "natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3",
                          "Use NS for Rip." );
   basic -> add_action( this, "Rip", "if=combo_points>=5&dot.rip.remains<2" );
   basic -> add_action( this, "Ferocious Bite", "if=combo_points>=5&energy.time_to_max<dot.rip.remains-2&energy.time_to_max<buff.savage_roar.remains-3",
@@ -5981,7 +5981,7 @@ void druid_t::apl_feral()
     advanced -> add_action( this, "Incarnation", "if=energy<=35&cooldown.tigers_fury.remains<=1" );
   advanced -> add_action( this, "Tiger's Fury", "if=energy<=35&!buff.omen_of_clarity.react" );
   if ( talent.natures_vigil -> ok() )
-    advanced -> add_action( this, "Nature's Vigil", "if=buff.tigers_fury.up" );
+    advanced -> add_action( "natures_vigil,if=buff.tigers_fury.up" );
   advanced -> add_action( this, "Berserk", "if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)" );
 
   // On-Use Items
@@ -6004,7 +6004,7 @@ void druid_t::apl_feral()
   }
 
   if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
-    advanced -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25",
+    advanced -> add_action( "natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25",
                             "Use NS for finishers during execute range." );
   advanced -> add_action( this, "Rip", "if=combo_points>=5&action.rip.tick_damage%dot.rip.tick_dmg>=1.15&target.time_to_die>30",
                           "Overwrite Rip if it's at least 15% stronger than the current." );
@@ -6012,7 +6012,7 @@ void druid_t::apl_feral()
                           "Pool 50 energy for Ferocious Bite." );
   advanced -> add_action( this, "Ferocious Bite", "if=combo_points>=5&dot.rip.ticking&target.health.pct<=25" );
   if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
-    advanced -> add_action( this, "Nature's Swiftness", "if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)",
+    advanced -> add_action( "natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)",
                             "Use NS for Rip." );
   advanced -> add_action( this, "Rip", "if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)" );
   advanced -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains" );
