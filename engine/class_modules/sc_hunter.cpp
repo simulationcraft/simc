@@ -398,7 +398,7 @@ public:
     if ( p() -> buffs.thrill_of_the_hunt -> check() )
       result += p() -> buffs.thrill_of_the_hunt -> data().effectN( 1 ).base_value();
 
-    return result;
+    return std::max(0.0, result);
   }
 
   void consume_thrill_of_the_hunt()
