@@ -1214,7 +1214,7 @@ struct kill_command_t : public hunter_main_pet_attack_t
     school = SCHOOL_PHYSICAL;
 
     // hardcoded into hunter kill command tooltip
-    direct_power_mod = 0.7;
+    direct_power_mod = 0.938;
   }
 
   virtual double action_multiplier()
@@ -4142,9 +4142,7 @@ void hunter_t::init_actions()
         }
         else
         {
-          action_list_str += "/aimed_shot,if=buff.rapid_fire.up|buff.bloodlust.react";
-          if ( race == RACE_TROLL )
-            action_list_str += "|buff.berserking.up";
+          action_list_str += "/aimed_shot,if=cast_time<1.7";
           action_list_str += "/arcane_shot,if=focus>=60|(focus>=43&(cooldown.chimera_shot.remains>=action.steady_shot.cast_time))&(!buff.rapid_fire.up&!buff.bloodlust.react";
           if ( race == RACE_TROLL )
             action_list_str += "&!buff.berserking.up)";
