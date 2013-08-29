@@ -598,7 +598,7 @@ static void trigger_strikes_of_opportunity( warrior_attack_t* a )
   if ( ! p -> rng().roll( chance ) )
     return;
 
-  p -> cooldown.strikes_of_opportunity -> start( timespan_t::from_seconds( 0.35 ) ); //Tested 8/29/13.
+  p -> cooldown.strikes_of_opportunity -> start( timespan_t::from_seconds( 0.1 ) ); //Tested 8/29/13.
 
   assert( p -> active_opportunity_strike );
 
