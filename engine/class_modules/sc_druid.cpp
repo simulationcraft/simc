@@ -2849,9 +2849,12 @@ public:
       p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> ok() ? p() -> cache.mastery_value() : 0.0 );
 
     // Nature's Vigil Proc
-    if ( trigger_natures_vigil && p() -> active.natures_vigil_damage_proc && p() -> buff.natures_vigil -> check() )
+    if ( trigger_natures_vigil && p() -> buff.natures_vigil -> check() )
     {
-      p() -> active.natures_vigil_damage_proc -> trigger( *execute_state );
+      if ( p() -> active.natures_vigil_damage_proc )
+        p() -> active.natures_vigil_damage_proc -> trigger( *execute_state );
+      if ( p() -> active.natures_vigil_heal_proc && p() -> dbc.ptr )
+        p() -> active.natures_vigil_heal_proc -> trigger( *execute_state );
     }
   }
 
