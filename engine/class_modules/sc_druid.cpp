@@ -793,6 +793,21 @@ struct force_of_nature_feral_t : public pet_t
     }
   };
 
+  struct rake_t : public melee_attack_t
+  {
+    rake_t( pet_t* p ) :
+      melee_attack_t( "rake", p, p -> find_spell( 150017 ) )
+    {
+      dot_behavior        = DOT_REFRESH;
+      tick_power_mod      = data().extra_coeff();
+      special             = true;
+
+      // Set initial damage as tick zero, not as direct damage
+      base_dd_min = base_dd_max = direct_power_mod = 0.0;
+      tick_zero   = true;
+    }
+  };
+
   force_of_nature_feral_t( sim_t* sim, druid_t* p ) :
     pet_t( sim, p, "treant", true ), melee( 0 )
   {
@@ -802,6 +817,8 @@ struct force_of_nature_feral_t : public pet_t
     main_hand_weapon.max_dmg    = owner -> find_spell( 102703 ) -> effectN( 1 ).max( owner );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     owner_coeff.ap_from_ap      = 1.2;
+
+    action_list_str = "melee";
   }
 
   druid_t* o()
@@ -822,6 +839,14 @@ struct force_of_nature_feral_t : public pet_t
   {
     pet_t::summon( duration );
     schedule_ready();
+  }
+
+  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+  {
+    if ( name == "rake"  ) return new  rake_t( this );
+    if ( name == "melee" ) return new melee_t( this );
+
+    return pet_t::create_action( name, options_str );
   }
 
   virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
@@ -4964,14 +4989,6 @@ struct t16_2pc_sun_bolt_t : public druid_spell_t
 
 struct force_of_nature_spell_t : public druid_spell_t
 {
-  /* TODO: Figure this out
-  /  Multiple spells
-  /  http://mop.wowhead.com/spell=106737 The talent itself?
-  /  http://mop.wowhead.com/spell=33831  Summons 3 treants to attack and root enemy targets for 1 min. (Boomkin)
-  /  http://mop.wowhead.com/spell=102693 Summons 3 treants that heal nearby friendly targets for 1 min. (By my shaggy bark, tree treants)
-  /  http://mop.wowhead.com/spell=102703 Summons 3 treants to attack and stun enemy targets for 1 min. (The Itteh Bitteh Kitteh Woodmen Committeh)
-  /  http://mop.wowhead.com/spell=102706 Summons 3 treants to protect the summoner and nearby allies for 1 min. (Bear is schtronk)
-  */
   force_of_nature_spell_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "force_of_nature", player, player -> talent.force_of_nature )
   {
@@ -6037,7 +6054,7 @@ void druid_t::apl_feral()
   basic -> add_action( "auto_attack" );
   basic -> add_action( "skull_bash_cat" );
   if ( talent.force_of_nature -> ok() )
-    basic -> add_action( this, "Force of Nature", "if=charges=3|trinket.proc.agility.react|target.time_to_die<20" );
+    basic -> add_action( "force_of_nature,if=charges=3|trinket.proc.agility.react|target.time_to_die<20" );
   basic -> add_action( this, "Ferocious Bite", "if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25",
                        "Keep Rip from falling off during execute range." );
   basic -> add_action( this, "Faerie Fire", "if=debuff.weakened_armor.stack<3" );
@@ -6113,7 +6130,7 @@ void druid_t::apl_feral()
   advanced -> add_action( "auto_attack" );
   advanced -> add_action( "skull_bash_cat" );
   if ( talent.force_of_nature -> ok() )
-    advanced -> add_action( this, "Force of Nature", "if=charges=3|trinket.proc.agility.react|target.time_to_die<20" );
+    advanced -> add_action( "force_of_nature,if=charges=3|trinket.proc.agility.react|target.time_to_die<20" );
 
   // Racials
   for ( size_t i = 0; i < racial_actions.size(); i++ )
