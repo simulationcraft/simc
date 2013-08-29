@@ -2823,8 +2823,8 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
   soul_reaper_dot_t( death_knight_t* p ) :
     death_knight_melee_attack_t( "soul_reaper_execute", p, p -> find_spell( 114867 ) )
   {
-    special = background = may_crit = true;
-    may_miss = false;
+    special = background = may_crit = proc = true;
+    may_miss = may_dodge = may_parry = may_block = false;
     weapon_multiplier = 0;
     direct_power_mod = data().extra_coeff();
   }
@@ -4574,6 +4574,9 @@ struct antimagic_shell_t : public death_knight_spell_t
     // >= 1 seconds is used as a standard deviation normally
     else
       interval_stddev = interval_stddev_opt;
+
+    if ( damage > 0 )
+      cooldown -> recharge_multiplier = 1.0;
   }
 
   void execute()
@@ -5216,6 +5219,8 @@ void death_knight_t::init_spells()
       {
         direct_power_mod = data().extra_coeff();
         special = background = callbacks = proc = may_crit = true;
+        if ( p -> main_hand_weapon.group() == WEAPON_2H )
+          base_multiplier = 2.0;
       }
     };
 
