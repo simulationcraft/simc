@@ -28,34 +28,12 @@
 #  endif
 #endif
 
-#if defined(__SSE2__) || ( defined( SC_VS ) && ( defined(_M_X64) || ( defined(_M_IX86_FP) && _M_IX86_FP >= 2 ) ) )
-#  define SC_USE_SSE2
-#endif
-
 #if defined(__APPLE__) || defined(__MACH__)
 #  define SC_OSX
 #endif
 
 #if defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32 )
 #  define SC_WINDOWS
-#  if defined( __MINGW__ ) || defined( __MINGW32__ )
-#    define SC_MINGW
-#  endif
-#  if defined(SC_USE_SSE2)
-#    if defined(SC_MINGW)
-       // <HACK> Include these headers (in this order) early to avoid
-       // an order-of-inclusion bug with MinGW headers.
-#      include <stdlib.h>
-       // Workaround MinGW header bug: http://sourceforge.net/tracker/?func=detail&atid=102435&aid=2962480&group_id=2435
-       extern "C" {
-#        include <emmintrin.h>
-       }
-#      include <malloc.h>
-       // </HACK>
-#    else
-#      include <emmintrin.h>
-#    endif
-#  endif
 #  define WIN32_LEAN_AND_MEAN
 #  define VC_EXTRALEAN
 #  ifndef _CRT_SECURE_NO_WARNINGS
@@ -66,10 +44,6 @@
 #    define UNICODE
 #  endif
 #else
-#  if defined(SC_USE_SSE2)
-#    include <emmintrin.h>
-#    include <mm_malloc.h>
-#  endif
 #  define DIRECTORY_DELIMITER "/"
 #  define SC_SIGACTION
 #endif
@@ -208,52 +182,9 @@ struct sc_timeline_t : public timeline_t
 // Random Number Generators
 #include "util/rng.hpp"
 
-/* Derived SimulationCraft RNG Distribution class with some timespan_t helper function
- */
-template <typename RNG_GENERATOR>
-class sc_distribution_t : public rng::distribution_t<RNG_GENERATOR>
-{
-public:
-  typedef rng::distribution_t<RNG_GENERATOR> base_t;
-  sc_distribution_t() : base_t() {}
-
-  // Make sure base functions aren't hidden, because overload resolution does not search for them
-  using base_t::range;
-  using base_t::gauss;
-  using base_t::exgauss;
-
-  timespan_t range( timespan_t min, timespan_t max )
-  {
-    return timespan_t::from_native( range( static_cast<double>( timespan_t::to_native( min ) ),
-                                           static_cast<double>( timespan_t::to_native( max ) ) ) );
-  }
-
-  timespan_t gauss( timespan_t mean, timespan_t stddev )
-  {
-    return timespan_t::from_native( gauss( static_cast<double>( timespan_t::to_native( mean ) ),
-                                           static_cast<double>( timespan_t::to_native( stddev ) ) ) );
-  }
-
-  timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu )
-  {
-    return timespan_t::from_native(
-             exgauss( static_cast<double>( timespan_t::to_native( mean   ) ),
-                      static_cast<double>( timespan_t::to_native( stddev ) ),
-                      static_cast<double>( timespan_t::to_native( nu ) )
-                    )
-           );
-  }
-
-};
-
 // Hookup rng containers for easy use in SimulationCraft
 
-#if defined(RNG_USE_SSE2)
-typedef sc_distribution_t<rng::rng_engine_mt_sse2_t> rng_t;
-#else
-typedef sc_distribution_t<rng::rng_engine_mt_t> rng_t;
-#endif
-
+typedef rng::sc_distribution_t rng_t;
 
 // Forward Declarations =====================================================
 
