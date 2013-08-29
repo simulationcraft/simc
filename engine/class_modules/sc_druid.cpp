@@ -13,6 +13,9 @@ namespace { // UNNAMED NAMESPACE
 
 struct druid_t;
 
+struct natures_vigil_heal_proc_t;
+struct natures_vigil_damage_proc_t;
+
 struct combo_points_t
 {
 private:
@@ -87,6 +90,12 @@ public:
   // Active
   action_t* t16_2pc_starfall_bolt;
   action_t* t16_2pc_sun_bolt;
+  
+  struct active_actions_t
+  {
+    natures_vigil_damage_proc_t* natures_vigil_damage_proc;
+    natures_vigil_heal_proc_t*   natures_vigil_heal_proc;
+  } active;
 
   // Pets
   pet_t* pet_feral_spirit[ 2 ];
@@ -346,6 +355,7 @@ public:
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
+    active( active_actions_t() ),
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
     pet_feral_spirit(),
@@ -467,6 +477,97 @@ public:
     w.max_dmg *= mod;
     w.damage *= mod;
     w.swing_time = timespan_t::from_seconds( swing_time );
+  }
+};
+
+// ==========================================================================
+// Nature's Vigil Procs
+// ==========================================================================
+
+// Heal Proc ================================================================
+struct natures_vigil_heal_proc_t : public heal_t
+{
+  natures_vigil_heal_proc_t( druid_t* p ) :
+    heal_t( "natures_vigil_proc", p, spell_data_t::nil() ) //p -> find_spell( 124988 )
+  {
+    background = true;
+    proc = true;
+    trigger_gcd = timespan_t::zero();
+    may_crit = false;
+    base_multiplier = p -> find_spell( 124974 ) -> effectN( 3 ).percent();
+  }
+
+  void trigger( const action_state_t& s )
+  {
+    // set the heal size to be fixed based on the result of the action
+    base_dd_min = s.result_amount;
+    base_dd_max = s.result_amount;
+
+    target = find_lowest_target();
+
+    if ( target )
+      execute();
+  }
+
+private:
+  player_t* find_lowest_target()
+  {
+    // Ignoring range for the time being
+    double lowest_health_pct_found = 100.1;
+    player_t* lowest_player_found = nullptr;
+
+    for ( size_t i = 0, size = sim -> player_no_pet_list.size(); i < size; i++ )
+    {
+      player_t* p = sim -> player_no_pet_list[ i ];
+
+      // check their health against the current lowest
+      if ( p -> health_percentage() < lowest_health_pct_found )
+      {
+        // if this player is lower, make them the current lowest
+        lowest_health_pct_found = p -> health_percentage();
+        lowest_player_found = p;
+      }
+    }
+    return lowest_player_found;
+  }
+};
+
+// Damage Proc ================================================================
+struct natures_vigil_damage_proc_t : public spell_t
+{
+  natures_vigil_damage_proc_t( druid_t* p ) :
+    spell_t( "natures_vigil_proc", p, spell_data_t::nil() ) //p -> find_spell( 124991 
+  {
+    background = true;
+    proc = true;
+    trigger_gcd = timespan_t::zero();
+    may_crit = false;
+    base_multiplier = p -> find_spell( 124974 ) -> effectN( 3 ).percent();
+  }
+
+  void trigger( const action_state_t& s )
+  {
+    // set the heal size to be fixed based on the result of the action
+    base_dd_min = s.result_amount;
+    base_dd_max = s.result_amount;
+
+    target = pick_random_target();
+
+    if ( target )
+      execute();
+  }
+
+private:
+  // Get the lowest target except ourself
+  player_t* pick_random_target()
+  {
+    // Targeting is probably done by range, but since the sim doesn't really have
+    // have a concept of that we'll just pick a target at random.
+
+    // Generate a random number between 1 and the number of enemies.
+    int target_index = ceil( rand() % sim -> target_list.size() );
+    // Pick a random enemy to target with the damage.
+    return sim -> target_list[ target_index ];
   }
 };
 
@@ -977,6 +1078,8 @@ public:
 template <class Base>
 struct druid_attack_t : public druid_action_t< Base >
 {
+  bool trigger_natures_vigil;
+
 private:
   typedef druid_action_t< Base > ab;
 public:
@@ -984,6 +1087,7 @@ public:
 
   druid_attack_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
+    trigger_natures_vigil( true ),
     ab( n, player, s )
   {
     ab::may_glance    = false;
@@ -1030,6 +1134,15 @@ public:
       if ( this -> p() -> buff.dream_of_cenarius -> up() )
       {
         this -> p() -> buff.dream_of_cenarius -> decrement();
+      }
+    }
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      // Nature's Vigil Proc
+      if ( this -> harmful && trigger_natures_vigil && p() -> active.natures_vigil_heal_proc && p() -> buff.natures_vigil -> check() )
+      {
+        p() -> active.natures_vigil_heal_proc -> trigger( *execute_state );
       }
     }
   }
@@ -1336,6 +1449,7 @@ struct cat_melee_t : public cat_attack_t
     repeating   = true;
     trigger_gcd = timespan_t::zero();
     special = false;
+    trigger_natures_vigil = false;
   }
 
   virtual timespan_t execute_time()
@@ -1992,6 +2106,7 @@ struct swipe_cat_t : public cat_attack_t
   {
     aoe     = -1;
     special = true;
+    trigger_natures_vigil = false;
   }
 
   virtual void execute()
@@ -2050,6 +2165,7 @@ struct thrash_cat_t : public cat_attack_t
     weapon_multiplier = 0;
     dot_behavior      = DOT_REFRESH;
     special           = true;
+    trigger_natures_vigil = false;
   }
 
   virtual void impact( action_state_t* state )
@@ -2175,6 +2291,7 @@ struct bear_melee_t : public bear_attack_t
     repeating   = true;
     trigger_gcd = timespan_t::zero();
     special     = false;
+    trigger_natures_vigil = false;
   }
 
   virtual timespan_t execute_time()
@@ -2465,6 +2582,7 @@ struct swipe_bear_t : public bear_attack_t
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     special           = true;
+    trigger_natures_vigil = false;
   }
 
   virtual void execute()
@@ -2509,6 +2627,7 @@ struct thrash_bear_t : public bear_attack_t
     weapon_multiplier = 0;
     dot_behavior      = DOT_REFRESH;
     special           = true;
+    trigger_natures_vigil = false;
   }
 
   virtual void execute()
@@ -2667,12 +2786,14 @@ namespace heals {
 struct druid_heal_t : public druid_spell_base_t<heal_t>
 {
   action_t* living_seed;
+  bool trigger_natures_vigil;
 
   druid_heal_t( const std::string& token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
     base_t( token, p, s ),
-    living_seed( nullptr )
+    living_seed( nullptr ),
+    trigger_natures_vigil( true )
   {
     parse_options( 0, options );
 
@@ -2684,7 +2805,8 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
   druid_heal_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
     base_t( "", p, s ),
-    living_seed( nullptr )
+    living_seed( nullptr ),
+    trigger_natures_vigil( true )
   {
     parse_options( 0, options );
 
@@ -2723,6 +2845,12 @@ public:
 
     if ( base_dd_min > 0 && ! background )
       p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> ok() ? p() -> cache.mastery_value() : 0.0 );
+
+    // Nature's Vigil Proc
+    if ( trigger_natures_vigil && p() -> active.natures_vigil_damage_proc && p() -> buff.natures_vigil -> check() )
+    {
+      p() -> active.natures_vigil_damage_proc -> trigger( *execute_state );
+    }
   }
 
   virtual timespan_t execute_time()
@@ -3221,6 +3349,7 @@ struct tranquility_t : public druid_heal_t
     aoe               = data().effectN( 3 ).base_value(); // Heals 5 targets
     base_execute_time = data().duration();
     channeled         = true;
+    trigger_natures_vigil = false;
 
     // Healing is in spell effect 1
     parse_spell_data( ( *player -> dbc.spell( data().effectN( 1 ).trigger_spell_id() ) ) );
@@ -3238,6 +3367,7 @@ struct wild_growth_t : public druid_heal_t
   {
     aoe = data().effectN( 3 ).base_value() + p -> glyph.wild_growth -> effectN( 1 ).base_value();
     cooldown -> duration = data().cooldown() + p -> glyph.wild_growth -> effectN( 2 ).time_value();
+    trigger_natures_vigil = false;
   }
 
   virtual void execute()
@@ -3320,9 +3450,12 @@ namespace spells {
 
 struct druid_spell_t : public druid_spell_base_t<spell_t>
 {
+  bool trigger_natures_vigil;
+
   druid_spell_t( const std::string& token, druid_t* p,
                  const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options = std::string() ) :
+    trigger_natures_vigil( true ),
     base_t( token, p, s )
   {
     parse_options( 0, options );
@@ -3330,6 +3463,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
   druid_spell_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options = std::string() ) :
+    trigger_natures_vigil( true ),
     base_t( "", p, s )
   {
     parse_options( 0, options );
@@ -3476,6 +3610,20 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
       }
     }
   }
+  
+  virtual void execute()
+  {
+    base_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      // Nature's Vigil Proc
+      if ( this -> harmful && trigger_natures_vigil && p() -> active.natures_vigil_heal_proc && p() -> buff.natures_vigil -> check() )
+      {
+        p() -> active.natures_vigil_heal_proc -> trigger( *execute_state );
+      }
+    }
+  }
 }; // end druid_spell_t
 
 // Auto Attack ==============================================================
@@ -3566,6 +3714,7 @@ struct astral_storm_tick_t : public druid_spell_t
   {
     background = true;
     aoe = -1;
+    trigger_natures_vigil = false;
   }
 };
 
@@ -3886,6 +4035,7 @@ struct hurricane_tick_t : public druid_spell_t
   {
     background = true;
     aoe = -1;
+    trigger_natures_vigil = false;
   }
 };
 
@@ -4395,6 +4545,7 @@ struct starfall_star_t : public druid_spell_t
     background  = true;
     direct_tick = true;
     aoe         = 2;
+    trigger_natures_vigil = false;
   }
 };
 
@@ -4888,6 +5039,7 @@ struct wild_mushroom_detonate_damage_t : public druid_spell_t
     aoe        = -1;
     background = true;
     dual       = true;
+    trigger_natures_vigil = false;
   }
 };
 
@@ -5491,6 +5643,12 @@ void druid_t::init_spells()
   talent.heart_of_the_wild  = find_talent_spell( "Heart of the Wild" );
   talent.dream_of_cenarius  = find_talent_spell( "Dream of Cenarius" );
   talent.natures_vigil      = find_talent_spell( "Nature's Vigil" );
+
+  if ( talent.natures_vigil -> ok() )
+  {
+    active.natures_vigil_damage_proc = new natures_vigil_damage_proc_t( this );
+    active.natures_vigil_heal_proc   = new natures_vigil_heal_proc_t( this );
+  }
 
   // TODO: Check if this is really the passive applied, the actual shapeshift
   // only has data of shift, polymorph immunity and the general armor bonus
