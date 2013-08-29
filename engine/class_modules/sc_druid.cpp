@@ -490,10 +490,11 @@ struct natures_vigil_heal_proc_t : public heal_t
   natures_vigil_heal_proc_t( druid_t* p ) :
     heal_t( "natures_vigil_proc", p, spell_data_t::nil() ) //p -> find_spell( 124988 )
   {
-    background = true;
-    proc = true;
-    trigger_gcd = timespan_t::zero();
-    may_crit = false;
+    background      = true;
+    proc            = true;
+    trigger_gcd     = timespan_t::zero();
+    may_crit        = false;
+    may_miss        = false;
     base_multiplier = p -> find_spell( 124974 ) -> effectN( 3 ).percent();
   }
 
@@ -538,10 +539,11 @@ struct natures_vigil_damage_proc_t : public spell_t
   natures_vigil_damage_proc_t( druid_t* p ) :
     spell_t( "natures_vigil_proc", p, spell_data_t::nil() ) //p -> find_spell( 124991 
   {
-    background = true;
-    proc = true;
-    trigger_gcd = timespan_t::zero();
-    may_crit = false;
+    background      = true;
+    proc            = true;
+    trigger_gcd     = timespan_t::zero();
+    may_crit        = false;
+    may_miss        = false;
     base_multiplier = p -> find_spell( 124974 ) -> effectN( 3 ).percent();
   }
 
