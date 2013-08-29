@@ -4196,8 +4196,10 @@ void player_t::arise()
   }
 
   if ( ! is_enemy() && ! is_pet() )
+  {
     buffs.amplified -> trigger();
-    //buffs.cooldown_reduction -> trigger(); Disabled so the program doesn't crash. Will fix later.
+    buffs.cooldown_reduction -> trigger();
+  }
 
   if ( has_foreground_actions( this ) )
     schedule_ready();
