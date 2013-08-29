@@ -502,6 +502,9 @@ public:
 
   double cost()
   {
+    if ( ab::player -> resources.infinite_resource[ RESOURCE_MANA ] == 1 )
+      return 0;
+
     double c = ab::cost();
     if ( c == 0 )
       return c;
@@ -4835,6 +4838,7 @@ struct shaman_lightning_strike_t : public shaman_melee_attack_t
     may_proc_windfury = false;
     may_proc_maelstrom = false;
     may_proc_primal_wisdom = false;
+    may_proc_flametongue = false;
     callbacks = false;
     background = true;
     may_dodge = false;
@@ -4857,6 +4861,7 @@ struct shaman_flurry_of_xuen_t : public shaman_melee_attack_t
     may_proc_windfury = false;
     may_proc_maelstrom = false;
     may_proc_primal_wisdom = false;
+    may_proc_flametongue = false;
     callbacks = false;
     proc = background = true;
     weapon = &( p -> main_hand_weapon );
@@ -5434,6 +5439,8 @@ void shaman_t::init_base_stats()
       eoe_proc_chance = 0.06; // Tested, ~6% (1k LB casts)
   }
 
+  if ( specialization() == SHAMAN_ENHANCEMENT )
+    resources.infinite_resource[ RESOURCE_MANA ] = 1;
 }
 
 // shaman_t::init_scaling ===================================================
