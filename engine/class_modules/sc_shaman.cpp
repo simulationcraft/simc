@@ -410,7 +410,6 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual action_t* create_proc_action( const std::string& name );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual expr_t* create_expression( action_t*, const std::string& name );
@@ -5090,18 +5089,6 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "stormlash_totem"         ) return new       stormlash_totem_spell_t( this, options_str );
 
   return player_t::create_action( name, options_str );
-}
-
-// shaman_t::create_proc_action =============================================
-
-action_t* shaman_t::create_proc_action( const std::string& name )
-{
-  // Capacitive meta proc strike
-  if ( name == "lightning_strike"   ) return new shaman_lightning_strike_t( this );
-  if ( name == "flurry_of_xuen"     ) return new shaman_flurry_of_xuen_t( this );
-  if ( name == "multistrike_attack" ) return new shaman_multistrike_attack_t( this );
-
-  return player_t::create_proc_action( name );
 }
 
 // shaman_t::create_pet =====================================================
