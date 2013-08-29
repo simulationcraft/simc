@@ -74,7 +74,6 @@ actions.single_target+=/obliterate,if=unholy>0
 actions.single_target+=/howling_blast
 actions.single_target+=/frost_strike,if=talent.runic_empowerment.enabled&(frost=0|blood=0)
 actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)>45|buff.blood_charge.stack>=8)
-actions.single_target+=/frost_strike,if=talent.runic_corruption.enabled&buff.runic_corruption.down
 actions.single_target+=/death_and_decay
 actions.single_target+=/frost_strike,if=runic_power>=40
 actions.single_target+=/empower_rune_weapon

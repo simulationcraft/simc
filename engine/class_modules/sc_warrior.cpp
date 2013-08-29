@@ -110,6 +110,7 @@ public:
     gain_t* battle_shout;
     gain_t* beserker_stance;
     gain_t* bloodthirst;
+    gain_t* bull_rush;
     gain_t* charge;
     gain_t* commanding_shout;
     gain_t* critical_block;
@@ -3395,6 +3396,7 @@ void warrior_t::init_gains()
   gain.battle_shout           = get_gain( "battle_shout"          );
   gain.beserker_stance        = get_gain( "berserker_stance"      );
   gain.bloodthirst            = get_gain( "bloodthirst"           );
+  gain.bull_rush              = get_gain( "bull_rush"             );
   gain.charge                 = get_gain( "charge"                );
   gain.commanding_shout       = get_gain( "commanding_shout"      );
   gain.critical_block         = get_gain( "critical_block"        );
@@ -3737,7 +3739,7 @@ void warrior_t::combat_begin()
   else
     player_t::resource_gain( RESOURCE_RAGE, ( find_class_spell( "Charge" ) -> effectN( 2 ).resource( RESOURCE_RAGE ) ), gain.charge );
     if ( glyphs.bull_rush -> ok() )
-      player_t::resource_gain( RESOURCE_RAGE, ( glyphs.bull_rush -> effectN( 2 ).resource( RESOURCE_RAGE ) ), gain.charge );
+      player_t::resource_gain( RESOURCE_RAGE, ( glyphs.bull_rush -> effectN( 2 ).resource( RESOURCE_RAGE ) ), gain.bull_rush );
 
   if ( active_stance == STANCE_BATTLE && ! buff.battle_stance -> check() )
     buff.battle_stance -> trigger();

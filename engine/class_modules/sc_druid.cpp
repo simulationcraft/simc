@@ -217,7 +217,7 @@ public:
     const spell_data_t* frenzied_regeneration;
     const spell_data_t* healing_touch;
     const spell_data_t* maul;
-    const spell_data_t* moonbeast;
+    const spell_data_t* moonbeast; //Remove for 5.4
     const spell_data_t* skull_bash;
     const spell_data_t* wild_growth;
 
@@ -3074,8 +3074,11 @@ struct healing_touch_t : public druid_heal_t
          ! p() -> buff.predatory_swiftness -> up() &&
          ! ( p() -> buff.dream_of_cenarius -> check() && p() -> specialization() == DRUID_GUARDIAN ) )
     {
-      if ( ! p() -> glyph.moonbeast -> ok() )
+      if ( ! p() -> dbc.ptr ) //Remove in 5.4 down to next comment.
+      {
+        if ( ! p() -> glyph.moonbeast -> ok() )
         p() -> buff.moonkin_form -> expire();
+      } //Remove
 
       p() -> buff.cat_form         -> expire();
       p() -> buff.bear_form        -> expire();
@@ -5707,7 +5710,7 @@ void druid_t::init_spells()
   glyph.lifebloom             = find_glyph_spell( "Glyph of Lifebloom" );
   glyph.maul                  = find_glyph_spell( "Glyph of Maul" );
   glyph.might_of_ursoc        = find_glyph_spell( "Glyph of Might of Ursoc" );
-  glyph.moonbeast             = find_glyph_spell( "Glyph of the Moonbeast" );
+  if( !dbc.ptr ) glyph.moonbeast             = find_glyph_spell( "Glyph of the Moonbeast" ); //Remove when 5.4 is released.
   glyph.regrowth              = find_glyph_spell( "Glyph of Regrowth" );
   glyph.rejuvenation          = find_glyph_spell( "Glyph of Rejuvenation" );
   glyph.skull_bash            = find_glyph_spell( "Glyph of Skull Bash" );

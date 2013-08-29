@@ -74,7 +74,6 @@ actions.single_target+=/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost
 actions.single_target+=/frost_strike,if=talent.runic_empowerment.enabled&frost=0
 actions.single_target+=/frost_strike,if=talent.blood_tap.enabled&buff.blood_charge.stack<=10
 actions.single_target+=/horn_of_winter
-actions.single_target+=/frost_strike,if=talent.runic_corruption.enabled&buff.runic_corruption.down
 actions.single_target+=/obliterate
 actions.single_target+=/empower_rune_weapon,if=target.time_to_die<=60&(buff.mogu_power_potion.up|buff.golemblood_potion.up)
 actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>=20

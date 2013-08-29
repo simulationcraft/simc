@@ -33,7 +33,7 @@ actions+=/focus_fire,five_stacks=1
 actions+=/serpent_sting,if=!ticking
 actions+=/fervor,if=enabled&!ticking&focus<=65
 actions+=/bestial_wrath,if=focus>60&!buff.beast_within.up
-actions+=/multi_shot,if=active_enemies>5
+actions+=/multi_shot,if=active_enemies>5|(active_enemies>2&buff.beast_cleave.down)
 actions+=/cobra_shot,if=active_enemies>5
 actions+=/rapid_fire,if=!buff.rapid_fire.up
 actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25

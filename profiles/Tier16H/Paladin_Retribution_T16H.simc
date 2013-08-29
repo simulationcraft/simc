@@ -66,7 +66,7 @@ wrists=bubbleburst_bracers,id=103738,gems=360haste,enchant=180str,reforge=hit_cr
 hands=gauntlets_of_winged_triumph,id=99137,gems=80str_160haste_80str_160haste_360haste_120str,enchant=170str,reforge=hit_crit
 waist=demolishers_reinforced_belt,id=103788,gems=80str_160haste_320haste_320haste_120str
 legs=legplates_of_winged_triumph,id=99139,gems=320haste_320haste_120str,enchant=285str_165crit,reforge=crit_mastery
-feet=wolfrider_spurs,id=103880,gems=360haste_60crit,reforge=crit_mastery
+feet=wolfrider_spurs,id=103880,gems=360haste_60crit,enchant=175haste,reforge=crit_mastery
 finger1=asgorathian_blood_seal,id=103794,gems=80str_160haste_60haste,reforge=exp_mastery
 finger2=seal_of_the_forgotten_kings,id=103796,gems=80str_160haste_60haste,reforge=crit_mastery
 trinket1=evil_eye_of_galakras,id=102298
@@ -82,7 +82,7 @@ main_hand=britomarts_jagged_pike,id=104614,gems=360haste,enchant=dancing_steel
 # gear_expertise_rating=1087
 # gear_hit_rating=2022
 # gear_crit_rating=4165
-# gear_haste_rating=16559
+# gear_haste_rating=16734
 # gear_mastery_rating=9572
 # gear_armor=39507
 # meta_gem=capacitive_primal

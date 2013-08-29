@@ -60,6 +60,7 @@ public:
   struct buffs_t
   {
     buff_t* aspect_of_the_hawk;
+    buff_t* beast_cleave;
     buff_t* beast_within;
     buff_t* bombardment;
     buff_t* cobra_strikes;
@@ -1955,6 +1956,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
 
       // Don't know why these values aren't 0 in the database.
       base_execute_time = timespan_t::zero();
+      weapon_multiplier += 1; // Remove with next DBC update. 8/29/13
 
       normalize_weapon_speed = true;
     }
@@ -2402,6 +2404,7 @@ struct explosive_shot_tick_t : public ignite::pct_based_action_t< attack_t >
   {
     tick_may_crit = true;
     dual = true;
+    base_multiplier = 1.27; //Remove with next DBC update. 8/29/13.
 
     // suppress direct damage in the dot.
     base_dd_min = base_dd_max = 0;
@@ -2738,8 +2741,10 @@ struct multi_shot_t : public hunter_ranged_attack_t
 
     pets::hunter_main_pet_t* pet = p() -> active.pet;
     if ( pet && p() -> specs.beast_cleave -> ok() )
+    {
+      p() -> buffs.beast_cleave -> trigger(); //Added so action lists can be based on beast cleave. The pet buff actions do not seem to be working. 8/29/13
       pet -> buffs.beast_cleave -> trigger();
-
+    }
     trigger_tier16_2pc_melee();
     if ( result_is_hit( execute_state -> result ) ) {
       trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_multi_shot, p() -> action_lightning_arrow_multi_shot );
@@ -3403,6 +3408,7 @@ struct kill_command_t : public hunter_spell_t
 
     base_spell_power_multiplier    = 0.0;
     base_attack_power_multiplier   = 1.0;
+    base_multiplier                = 1.34; // Remove with 17337+ DBC update.
 
     harmful = false;
 
@@ -3879,6 +3885,8 @@ void hunter_t::create_buffs()
 
   buffs.aspect_of_the_hawk          = buff_creator_t( this, 13165, "aspect_of_the_hawk" ).add_invalidate( CACHE_ATTACK_POWER );
 
+  buffs.beast_cleave                = buff_creator_t( this, 118455, "beast_cleave" );
+
   buffs.beast_within                = buff_creator_t( this, 34471, "beast_within" )
                                       .chance( specs.the_beast_within -> ok() )
                                       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
@@ -4064,7 +4072,7 @@ void hunter_t::init_actions()
         action_list_str += "/fervor,if=enabled&!ticking&focus<=65";
         action_list_str += "/bestial_wrath,if=focus>60&!buff.beast_within.up";
 
-        action_list_str += "/multi_shot,if=active_enemies>5";
+        action_list_str += "/multi_shot,if=active_enemies>5|(active_enemies>2&buff.beast_cleave.down)";
         action_list_str += "/cobra_shot,if=active_enemies>5";
 
         action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
