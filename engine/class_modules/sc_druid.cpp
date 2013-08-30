@@ -356,9 +356,9 @@ public:
 
   druid_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DRUID, name, r ),
-    active( active_actions_t() ),
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
+    active( active_actions_t() ),
     pet_feral_spirit(),
     pet_mirror_images(),
     pet_force_of_nature(),
@@ -1115,8 +1115,8 @@ public:
 
   druid_attack_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
-    trigger_natures_vigil( true ),
-    ab( n, player, s )
+    ab( n, player, s ),
+    trigger_natures_vigil( true )
   {
     ab::may_glance    = false;
     ab::special       = true;
@@ -1165,12 +1165,12 @@ public:
       }
     }
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( result_is_hit( this -> execute_state -> result ) )
     {
       // Nature's Vigil Proc
-      if ( this -> harmful && trigger_natures_vigil && p() -> active.natures_vigil_heal_proc && p() -> buff.natures_vigil -> check() )
+      if ( this -> harmful && trigger_natures_vigil && this -> p() -> active.natures_vigil_heal_proc && this -> p() -> buff.natures_vigil -> check() )
       {
-        p() -> active.natures_vigil_heal_proc -> trigger( *execute_state );
+        this -> p() -> active.natures_vigil_heal_proc -> trigger( *this -> execute_state );
       }
     }
   }
@@ -3489,16 +3489,16 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
   druid_spell_t( const std::string& token, druid_t* p,
                  const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options = std::string() ) :
-    trigger_natures_vigil( true ),
-    base_t( token, p, s )
+    base_t( token, p, s ),
+    trigger_natures_vigil( true )
   {
     parse_options( 0, options );
   }
 
   druid_spell_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options = std::string() ) :
-    trigger_natures_vigil( true ),
-    base_t( "", p, s )
+    base_t( "", p, s ),
+    trigger_natures_vigil( true )
   {
     parse_options( 0, options );
   }
