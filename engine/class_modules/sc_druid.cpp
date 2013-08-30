@@ -1165,7 +1165,7 @@ public:
       }
     }
 
-    if ( result_is_hit( this -> execute_state -> result ) )
+    if ( this -> result_is_hit( this -> execute_state -> result ) )
     {
       // Nature's Vigil Proc
       if ( this -> harmful && trigger_natures_vigil && this -> p() -> active.natures_vigil_heal_proc && this -> p() -> buff.natures_vigil -> check() )
