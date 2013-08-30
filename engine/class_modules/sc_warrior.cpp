@@ -3968,6 +3968,11 @@ void warrior_t::assess_damage( school_e school,
     }
   }
 
+  if ( s -> result == RESULT_PARRY && glyphs.hold_the_line -> ok())
+  {
+    buff.glyph_hold_the_line -> trigger();
+  }
+  
   player_t::assess_damage( school, dtype, s );
 
   if ( ( s -> result == RESULT_HIT    ||
