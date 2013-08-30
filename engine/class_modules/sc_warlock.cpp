@@ -2928,6 +2928,7 @@ struct chaos_bolt_t : public warlock_spell_t
   chaos_bolt_t( warlock_t* p ) :
     warlock_spell_t( p, "Chaos Bolt" )
   {
+    base_multiplier = p -> dbc.ptr ? 1.15 : 1; //hotfix 30.08.13 Check after dbc update.
   }
 
   virtual std::vector< player_t* >& target_list()
