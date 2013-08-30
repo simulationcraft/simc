@@ -235,7 +235,6 @@ int item_database::random_suffix_type( item_t& item )
 
       // One-hand/Off-hand/Main-hand weapons use the fourth point allocation budget
       default:
-        fprintf( stdout, "wt=%d\n", w -> type );
         return 3;
     }
   }
