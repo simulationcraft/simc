@@ -31,7 +31,7 @@ shoulders=quarantine_shoulderguards,id=105455,upgrade=2,gems=80agi_160hit_80agi_
 back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180hit,reforge=crit_exp
 chest=cuirass_of_celestial_harmony,id=99347,upgrade=2,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_hit
 wrists=bracers_of_infinite_pipes,id=105617,upgrade=2,enchant=180agi
-hands=grips_of_celestial_harmony,id=99340,upgrade=2,gems=160agi_160agi_120agi,enchant=170mastery,reforge=mastery_hit
+hands=grips_of_celestial_harmony,id=99340,upgrade=2,gems=160agi_160agi_120agi,enchant=170mastery,reforge=mastery_hit,addon=synapse_springs_mark_ii
 waist=cannoneers_multipocket_gunbelt,id=105486,upgrade=2,gems=160agi_80agi_160hit_160agi_120agi,reforge=hit_mastery
 legs=legguards_of_celestial_harmony,id=99342,upgrade=2,gems=80agi_160mastery_80agi_160mastery_120agi,enchant=285agi_165crit
 feet=minelayers_padded_boots,id=105507,upgrade=2,gems=80agi_160mastery_60mastery,enchant=140agi,reforge=exp_haste
