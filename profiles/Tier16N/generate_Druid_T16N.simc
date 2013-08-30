@@ -10,7 +10,7 @@ spec=feral
 role=attack
 position=back
 talents=000102
-glyphs=savagery
+glyphs=savagery/cat_form
 head=headpiece_of_the_shattered_vale,id=99182,reforge=mastery_hit,gems=capacitive_primal_160agi_180agi
 neck=immerseus_crystalline_eye,id=103749,reforge=mastery_hit
 shoulders=shoulderguards_of_the_righteous_stand,id=103913,reforge=mastery_hit,enchant=200agi_100crit,gems=80agi_160crit_80agi_160crit_120agi

@@ -34,7 +34,7 @@ spec=feral
 role=attack
 position=back
 talents=010102
-glyphs=savagery
+glyphs=savagery/cat_form
 head=headpiece_of_the_haunted_forest,id=95237,gems=agile_primal_80agi_160mastery_180crit,reforge=hit_mastery
 neck=quadrahead_brooch,id=94794,gems=160agi,reforge=hit_exp
 shoulders=spaulders_of_the_haunted_forest,id=95239,gems=160agi_80agi_160mastery_120mastery,enchant=200agi_100crit,reforge=hit_mastery

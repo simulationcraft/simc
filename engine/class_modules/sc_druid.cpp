@@ -228,6 +228,7 @@ public:
     const spell_data_t* regrowth;
     const spell_data_t* rejuvenation;
     const spell_data_t* savagery;
+    const spell_data_t* cat_form;
   } glyph;
 
   // Masteries
@@ -5716,6 +5717,7 @@ void druid_t::init_spells()
   glyph.skull_bash            = find_glyph_spell( "Glyph of Skull Bash" );
   glyph.wild_growth           = find_glyph_spell( "Glyph of Wild Growth" );
   glyph.savagery              = find_glyph_spell( "Glyph of Savagery" );
+  glyph.cat_form              = find_glyph_spell( "Glyph of Cat Form" );
 
   // Tier Bonuses
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
@@ -7224,11 +7226,14 @@ void druid_t::assess_damage( school_e school,
   player_t::assess_damage( school, dtype, s );
 }
 
+// druid_t::assess_heal =====================================================
+
 void druid_t::assess_heal( school_e school,
                            dmg_e    dmg_type,
                            heal_state_t* s )
 {
   s -> result_amount *= 1.0 + buff.frenzied_regeneration -> check() * glyph.frenzied_regeneration -> effectN( 1 ).percent();
+  s -> result_amount *= 1.0 + buff.cat_form -> check() * glyph.cat_form -> effectN( 1 ).percent();
 
   player_t::assess_heal( school, dmg_type, s );
 }

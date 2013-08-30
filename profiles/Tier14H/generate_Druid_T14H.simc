@@ -38,7 +38,7 @@ role=attack
 position=back
 professions=engineering=600/inscription=600
 talents=010102
-glyphs=savagery
+glyphs=savagery/cat_form
 head=eternal_blossom_headpiece,id=86925,gems=agile_primal_80agi_160hit_180agi,reforge=exp_crit
 neck=choker_of_the_unleashed_storm,id=86953
 shoulders=eternal_blossom_spaulders,id=86927,gems=80agi_160hit_60agi,enchant=520agi_100crit,reforge=exp_mastery

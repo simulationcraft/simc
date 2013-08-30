@@ -36,7 +36,7 @@ spec=feral
 role=attack
 position=back
 talents=010102
-glyphs=savagery
+glyphs=savagery/cat_form
 head=eternal_blossom_headpiece,id=85311,gems=agile_primal_80agi_160hit_180agi,reforge=exp_crit
 neck=choker_of_the_unleashed_storm,id=86166,reforge=crit_hit
 shoulders=eternal_blossom_spaulders,id=85309,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=haste_mastery

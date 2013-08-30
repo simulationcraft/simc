@@ -38,7 +38,7 @@ role=attack
 position=back
 professions=alchemy=600/engineering=600
 talents=010102
-glyphs=savagery
+glyphs=savagery/cat_form
 head=agile_retinal_armor,id=77534,gems=agile_primal_600mastery_600exp_180agi
 neck=scorched_scarlet_key,id=81564,reforge=hit_mastery
 shoulders=dreadful_gladiators_dragonhide_spaulders,id=84381,gems=80agi_160mastery_60agi,enchant=200agi_100crit,reforge=haste_mastery

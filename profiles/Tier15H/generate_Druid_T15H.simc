@@ -35,7 +35,7 @@ role=attack
 position=back
 professions=engineering=600/inscription=600
 talents=010102
-glyphs=savagery
+glyphs=savagery/cat_form
 head=headpiece_of_the_haunted_forest,id=96581,gems=capacitive_primal_80agi_160mastery_180crit,reforge=hit_mastery
 neck=quadrahead_brooch,id=96815,gems=80agi_160mastery_60crit,reforge=hit_haste
 shoulders=spaulders_of_the_haunted_forest,id=96583,gems=160agi_80agi_160mastery_120mastery,enchant=520agi_100crit,reforge=hit_haste

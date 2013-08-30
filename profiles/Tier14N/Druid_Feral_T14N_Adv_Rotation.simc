@@ -1,6 +1,6 @@
 #!./simc 
 
-druid="Druid_Feral_T15N_Adv_Rotation"
+druid="Druid_Feral_T14N_Adv_Rotation"
 level=90
 race=tauren
 role=attack
@@ -132,36 +132,35 @@ actions.aoe+=/swipe_cat,if=cooldown.tigers_fury.remains<3
 actions.aoe+=/swipe_cat,if=buff.omen_of_clarity.react
 actions.aoe+=/swipe_cat,if=energy.time_to_max<=1
 
-head=headpiece_of_the_haunted_forest,id=95237,gems=agile_primal_80agi_160mastery_180crit,reforge=hit_mastery
-neck=quadrahead_brooch,id=94794,gems=160agi,reforge=hit_exp
-shoulders=spaulders_of_the_haunted_forest,id=95239,gems=160agi_80agi_160mastery_120mastery,enchant=200agi_100crit,reforge=hit_mastery
-back=wastewalkers_sandblasted_drape,id=94748,enchant=180crit,reforge=hit_mastery
-chest=raiment_of_the_haunted_forest,id=95235,gems=160agi_80agi_160mastery_80agi_160hit_180agi,enchant=80all,reforge=mastery_haste
-wrists=bindings_of_multiplicative_strikes,id=94743,enchant=180agi,reforge=crit_exp
-hands=grips_of_vampiric_cruelty,id=94777,gems=80agi_160hit_60agi,enchant=170mastery,reforge=hit_mastery
-waist=abandoned_zandalari_silentbelt,id=95209,gems=160agi_160agi,reforge=crit_exp
-legs=legguards_of_the_haunted_forest,id=95238,gems=80agi_160mastery_80agi_160hit_120agi,enchant=285agi_165crit
-feet=spurs_of_the_storm_cavalry,id=94967,gems=160agi,enchant=140agi,reforge=crit_haste
-finger1=forzarras_last_meal,id=95166,reforge=mastery_haste
-finger2=goresoaked_gear,id=94961,gems=160agi,reforge=crit_exp
-trinket1=talisman_of_bloodlust,id=94522
-trinket2=bad_juju,id=94523,reforge=mastery_haste
-main_hand=darkwood_spiritstaff,id=95507,gems=80agi_160mastery_160agi_60agi,enchant=dancing_steel,reforge=crit_haste
+head=eternal_blossom_headpiece,id=85311,gems=agile_primal_80agi_160hit_180agi,reforge=exp_crit
+neck=choker_of_the_unleashed_storm,id=86166,reforge=crit_hit
+shoulders=eternal_blossom_spaulders,id=85309,gems=80agi_160hit_60agi,enchant=200agi_100crit,reforge=haste_mastery
+back=legbreaker_greatcloak,id=86173,enchant=180hit
+chest=eternal_blossom_raiment,id=85313,gems=160agi_160agi,enchant=80all
+wrists=smooth_beetle_wristbands,id=86185,enchant=180agi,reforge=exp_hit
+hands=murderers_gloves,id=85828,gems=80agi_160hit_60agi,enchant=170mastery
+waist=cannoneers_gunpowder_carrier,id=90451,gems=160agi_160agi_60crit,reforge=crit_exp
+legs=eternal_blossom_legguards,id=85310,gems=160agi_60agi,enchant=285agi_165crit,reforge=haste_mastery
+feet=treads_of_deadly_secretions,id=86212,gems=160agi,enchant=140agi,reforge=exp_hit
+finger1=painful_thorned_ring,id=86200,reforge=exp_crit
+finger2=hereditary_saurok_loop,id=90437,reforge=haste_mastery
+trinket1=bottle_of_infinite_stars,id=86132
+trinket2=relic_of_xuen,id=79328
+main_hand=gaorei_staff_of_the_legendary_protector,id=86321,enchant=dancing_steel,reforge=exp_hit
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=18832
-# gear_stamina=22886
+# gear_agility=14755
+# gear_stamina=17982
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2567
-# gear_hit_rating=2537
-# gear_crit_rating=3495
-# gear_haste_rating=6584
-# gear_mastery_rating=7203
-# gear_armor=19339
+# gear_expertise_rating=2540
+# gear_hit_rating=2549
+# gear_crit_rating=3217
+# gear_haste_rating=1087
+# gear_mastery_rating=7643
+# gear_armor=17832
 # meta_gem=agile_primal
-# tier15_2pc_melee=1
-# tier15_4pc_melee=1
-# trinket2=bad_juju
-# main_hand=darkwood_spiritstaff,weapon=staff_3.30speed_15029min_22544max,enchant=dancing_steel
+# tier14_2pc_melee=1
+# tier14_4pc_melee=1
+# main_hand=gaorei_staff_of_the_legendary_protector,weapon=staff_3.30speed_11795min_17694max,enchant=dancing_steel

@@ -6,7 +6,7 @@ race=tauren
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!.0.0.1
-glyphs=savagery
+glyphs=savagery/cat_form
 spec=feral
 
 # This default action priority list is automatically created based on your character.

@@ -7,7 +7,7 @@ role=attack
 position=back
 professions=engineering=600/inscription=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!.0.0.1
-glyphs=savagery
+glyphs=savagery/cat_form
 spec=feral
 
 # This default action priority list is automatically created based on your character.
