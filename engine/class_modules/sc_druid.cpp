@@ -561,7 +561,6 @@ struct natures_vigil_damage_proc_t : public spell_t
   }
 
 private:
-  // Get the lowest target except ourself
   player_t* pick_random_target()
   {
     // Targeting is probably done by range, but since the sim doesn't really have
