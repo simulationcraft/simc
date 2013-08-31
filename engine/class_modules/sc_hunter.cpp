@@ -1215,7 +1215,7 @@ struct kill_command_t : public hunter_main_pet_attack_t
     school = SCHOOL_PHYSICAL;
 
     // hardcoded into hunter kill command tooltip
-    direct_power_mod = 0.938;
+    direct_power_mod = maybe_ptr( player -> dbc.ptr ) ? 0.938 : 0.700;
   }
 
   virtual double action_multiplier()
