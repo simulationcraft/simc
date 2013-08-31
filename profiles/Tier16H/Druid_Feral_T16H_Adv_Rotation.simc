@@ -1,0 +1,176 @@
+#!./simc 
+
+druid="Druid_Feral_T16H_Adv_Rotation"
+level=90
+race=troll
+role=attack
+position=back
+professions=engineering=600/alchemy=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!...0.1
+glyphs=savagery/cat_form
+spec=feral
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius.up&talent.dream_of_cenarius.enabled
+actions.precombat+=/cat_form
+actions.precombat+=/savage_roar
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+
+# Executed every time the actor is available.
+
+# By default the simulation will use the "Basic" action list, if you would like to instead use the "Advanced" action list do so here.
+actions=swap_action_list,name=advanced
+
+actions.basic=auto_attack
+actions.basic+=/skull_bash_cat
+# Keep Rip from falling off during execute range.
+actions.basic+=/ferocious_bite,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
+actions.basic+=/faerie_fire,if=debuff.weakened_armor.stack<3
+# Proc Dream of Cenarius at 4+ CP or when PS is about to expire.
+actions.basic+=/healing_touch,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down&(buff.predatory_swiftness.remains<1.5|combo_points>=4)
+actions.basic+=/savage_roar,if=buff.savage_roar.remains<3
+actions.basic+=/virmens_bite_potion,if=(target.health.pct<30&buff.berserk.up)|target.time_to_die<=40
+actions.basic+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
+actions.basic+=/berserk,if=buff.tigers_fury.up
+actions.basic+=/use_item,slot=hands,if=buff.tigers_fury.up
+actions.basic+=/berserking,if=buff.tigers_fury.up
+# Overwrite Rip during execute range if it's at least 15% stronger than the current.
+actions.basic+=/rip,if=combo_points>=5&target.health.pct<=25&action.rip.tick_damage%dot.rip.tick_dmg>=1.15
+actions.basic+=/ferocious_bite,if=combo_points>=5&target.health.pct<=25&dot.rip.ticking
+actions.basic+=/rip,if=combo_points>=5&dot.rip.remains<2
+# Ferocious Bite if we will energy cap before being able to spend our CP on Rip or Savage Roar.
+actions.basic+=/ferocious_bite,if=combo_points>=5&energy.time_to_max<dot.rip.remains-2&energy.time_to_max<buff.savage_roar.remains-3
+actions.basic+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3
+# Rake if it hits harder than Mangle and we won't apply a weaker bleed to the target.
+actions.basic+=/rake,if=action.rake.tick_damage>action.mangle_cat.hit_damage&action.rake.tick_damage>=dot.rake.tick_dmg
+# Rake if it's about to fall off or we can apply a stronger Rake.
+actions.basic+=/rake,if=dot.rake.remains<3|action.rake.tick_damage>dot.rake.tick_dmg
+actions.basic+=/run_action_list,name=filler,if=buff.feral_fury.react
+actions.basic+=/pool_resource,for_next=1
+actions.basic+=/thrash_cat,if=dot.thrash_cat.remains<3&(dot.rip.remains>6|combo_points>=5)
+# Conditions under which we should execute a CP generator.
+actions.basic+=/run_action_list,name=filler,if=buff.omen_of_clarity.react
+actions.basic+=/run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)
+actions.basic+=/run_action_list,name=filler,if=target.time_to_die<=8.5
+actions.basic+=/run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up|buff.natures_vigil.up
+actions.basic+=/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3
+actions.basic+=/run_action_list,name=filler,if=energy.time_to_max<=1.0
+
+actions.advanced=auto_attack
+actions.advanced+=/skull_bash_cat
+actions.advanced+=/berserking
+# Keep Rip from falling off during execute range.
+actions.advanced+=/ferocious_bite,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
+actions.advanced+=/faerie_fire,if=debuff.weakened_armor.stack<3
+# Proc Dream of Cenarius at 4+ CP or when PS is about to expire.
+actions.advanced+=/healing_touch,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down&(buff.predatory_swiftness.remains<1.5|combo_points>=4)
+actions.advanced+=/savage_roar,if=buff.savage_roar.down
+actions.advanced+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
+actions.advanced+=/berserk,if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)
+actions.advanced+=/use_item,slot=hands,if=buff.tigers_fury.up
+actions.advanced+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3&target.time_to_die>=6
+actions.advanced+=/ferocious_bite,if=target.time_to_die<=1&combo_points>=3
+actions.advanced+=/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&target.health.pct<25
+# Potion near or during execute range when Rune is up and we have 5 CP.
+actions.advanced+=/virmens_bite_potion,if=(combo_points>=5&(target.time_to_die*(target.health.pct-25)%target.health.pct)<15&buff.rune_of_reorigination.up)|target.time_to_die<=40
+# Overwrite Rip if it's at least 15% stronger than the current.
+actions.advanced+=/rip,if=combo_points>=5&action.rip.tick_damage%dot.rip.tick_dmg>=1.15&target.time_to_die>30
+# Pool 50 energy for Ferocious Bite.
+actions.advanced+=/pool_resource,if=combo_points>=5&target.health.pct<=25&dot.rip.ticking&!(energy>=50|(buff.berserk.up&energy>=25))
+actions.advanced+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25
+actions.advanced+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)
+actions.advanced+=/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains
+actions.advanced+=/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains&dot.rip.ticking
+# Pool to 50 energy for Ferocious Bite.
+actions.advanced+=/pool_resource,if=combo_points>=5&!(energy>=50|(buff.berserk.up&energy>=25))&dot.rip.ticking&!(dot.rip.remains-2<=energy.time_to_max-1)&!(buff.savage_roar.remains-3<=energy.time_to_max-1)
+# Ferocious Bite if we will energy cap before being able to spend our CP on Rip or Savage Roar.
+actions.advanced+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&!(dot.rip.remains-2<=energy.time_to_max-1)&!(buff.savage_roar.remains-3<=energy.time_to_max-1)
+# Rake if it hits harder than Mangle and we won't apply a weaker bleed to the target.
+actions.advanced+=/rake,if=action.rake.tick_damage>action.mangle_cat.hit_damage&action.rake.tick_damage>=dot.rake.tick_dmg
+# Refresh Rake as Re-Origination is about to end if Rake has <9 seconds left.
+actions.advanced+=/rake,if=buff.rune_of_reorigination.up&dot.rake.remains<9&buff.rune_of_reorigination.remains<=1.5
+# Rake if we can apply a stronger Rake or if it's about to fall off and clipping the last tick won't waste too much damage.
+actions.advanced+=/rake,if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|(dot.rake.remains<3&action.rake.tick_damage%dot.rake.tick_dmg>=0.75))
+actions.advanced+=/run_action_list,name=filler,if=buff.feral_fury.react
+actions.advanced+=/pool_resource,for_next=1
+actions.advanced+=/thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&(dot.rip.remains>=8&buff.savage_roar.remains>=12|buff.berserk.up)&dot.rip.ticking
+actions.advanced+=/run_action_list,name=filler,if=buff.omen_of_clarity.react
+# Conditions under which we should execute a CP generator.
+actions.advanced+=/run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)
+actions.advanced+=/run_action_list,name=filler,if=target.time_to_die<=8.5
+actions.advanced+=/run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up|buff.natures_vigil.up
+actions.advanced+=/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3
+actions.advanced+=/run_action_list,name=filler,if=energy.time_to_max<=1.0
+
+actions.filler=ravage
+actions.filler+=/thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&combo_points>=5
+actions.filler+=/shred,if=(buff.omen_of_clarity.react|buff.berserk.up|energy.regen>=15)&buff.king_of_the_jungle.down
+actions.filler+=/mangle_cat,if=buff.king_of_the_jungle.down
+
+actions.aoe=swap_action_list,name=default,if=active_enemies<5
+actions.aoe+=/auto_attack
+actions.aoe+=/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3
+actions.aoe+=/savage_roar,if=buff.savage_roar.down|(buff.savage_roar.remains<3&combo_points>0)
+actions.aoe+=/use_item,slot=hands,if=buff.tigers_fury.up
+actions.aoe+=/berserking,if=buff.tigers_fury.up
+actions.aoe+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
+actions.aoe+=/berserk,if=buff.tigers_fury.up
+actions.aoe+=/pool_resource,for_next=1
+actions.aoe+=/thrash_cat,if=buff.rune_of_reorigination.up
+actions.aoe+=/pool_resource,wait=0.1,for_next=1
+actions.aoe+=/thrash_cat,if=dot.thrash_cat.remains<3|(buff.tigers_fury.up&dot.thrash_cat.remains<9)
+actions.aoe+=/savage_roar,if=buff.savage_roar.remains<9&combo_points>=5
+actions.aoe+=/rip,if=combo_points>=5
+actions.aoe+=/rake,cycle_targets=1,if=(active_enemies<8|buff.rune_of_reorigination.up)&dot.rake.remains<3&target.time_to_die>=15
+actions.aoe+=/swipe_cat,if=buff.savage_roar.remains<=5
+actions.aoe+=/swipe_cat,if=buff.tigers_fury.up|buff.berserk.up
+actions.aoe+=/swipe_cat,if=cooldown.tigers_fury.remains<3
+actions.aoe+=/swipe_cat,if=buff.omen_of_clarity.react
+actions.aoe+=/swipe_cat,if=energy.time_to_max<=1
+
+head=headpiece_of_the_shattered_vale,id=99328,upgrade=2,gems=capacitive_primal_160agi_180agi,reforge=crit_hit
+neck=immerseus_crystalline_eye,id=105407,upgrade=2,reforge=haste_exp
+shoulders=spaulders_of_the_shattered_vale,id=99322,upgrade=2,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=exp_hit
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180hit,addon=goblin_glider,reforge=haste_exp
+chest=raiment_of_the_shattered_vale,id=99326,upgrade=2,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_haste
+wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,enchant=180agi,reforge=mastery_hit
+hands=grips_of_the_shattered_vale,id=99327,upgrade=2,gems=160agi_160agi_120agi,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=mastery_exp
+waist=cord_of_black_dreams,id=105635,upgrade=2,gems=160agi_80agi_160crit_160agi_120agi,addon=nitro_boosts,reforge=crit_mastery
+legs=rious_vigilant_leggings,id=105529,upgrade=2,gems=80agi_160hit_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_haste
+feet=stonetoes_tormented_treads,id=105431,upgrade=2,gems=160agi_60mastery,enchant=140agi,reforge=hit_crit
+finger1=ring_of_restless_energy,id=105558,upgrade=2,gems=160agi_60crit,reforge=crit_exp
+finger2=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=160agi_60crit,reforge=mastery_exp
+trinket1=rune_of_reorigination,id=96918,upgrade=2
+trinket2=haromms_talisman,id=105527,upgrade=2
+main_hand=hellscreams_pig_sticker,id=105686,upgrade=2,gems=160agi_160agi_120agi,enchant=dancing_steel,reforge=mastery_crit
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=31082
+# gear_stamina=39220
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2550
+# gear_hit_rating=2550
+# gear_crit_rating=9922
+# gear_haste_rating=9923
+# gear_mastery_rating=9927
+# gear_armor=22619
+# meta_gem=capacitive_primal
+# tier16_2pc_melee=1
+# tier16_4pc_melee=1
+# hands=grips_of_the_shattered_vale,heroic=1,addon=synapse_springs_mark_ii
+# trinket1=rune_of_reorigination,heroic=1,elite=1
+# main_hand=hellscreams_pig_sticker,heroic=1,weapon=polearm_3.60speed_26616min_39925max,enchant=dancing_steel
