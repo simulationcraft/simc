@@ -5679,23 +5679,23 @@ void priest_t::apl_shadow()
   {
     def -> add_action( this, "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=8,if=miss_react&buff.perfect_aim.react&crit_pct<100" );
   }
-  def -> add_action( this, "Mind Blast", "if=active_enemies<=6&cooldown_react" );
+  def -> add_action( this, "Mind Blast", "if=active_enemies<=5&cooldown_react" );
   def -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0&active_enemies<=5" );
   def -> add_action( "mind_flay_insanity,if=target.dot.devouring_plague_tick.ticks_remain=1,chain=1" );
   def -> add_action( "mind_flay_insanity,interrupt=1,chain=1" );
-  def -> add_action( this, "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=8,if=miss_react&!ticking" );
-  def -> add_action( this, "Vampiric Touch", "cycle_targets=1,max_cycle_targets=8,if=remains<cast_time&miss_react" );
-  def -> add_action( this, "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=8,if=miss_react&ticks_remain<=1" );
-  def -> add_action( this, "Vampiric Touch", "cycle_targets=1,max_cycle_targets=8,if=remains<cast_time+tick_time&miss_react" );
+  def -> add_action( this, "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=5,if=miss_react&!ticking" );
+  def -> add_action( this, "Vampiric Touch", "cycle_targets=1,max_cycle_targets=5,if=remains<cast_time&miss_react" );
+  def -> add_action( this, "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=5,if=miss_react&ticks_remain<=1" );
+  def -> add_action( this, "Vampiric Touch", "cycle_targets=1,max_cycle_targets=5,if=remains<cast_time+tick_time&miss_react" );
   def -> add_action( this, "Vampiric Embrace", "if=shadow_orb=3&health.pct<=40" );
   def -> add_action( this, "Devouring Plague", "if=shadow_orb=3&ticks_remain<=1" );
-  def -> add_action( this, "Mind Spike", "if=active_enemies<=6&buff.surge_of_darkness.react=2" );
+  def -> add_action( this, "Mind Spike", "if=active_enemies<=5&buff.surge_of_darkness.react=2" );
   def -> add_action( "halo,if=talent.halo.enabled" );
   def -> add_action( "cascade_damage,if=talent.cascade.enabled" );
   def -> add_action( "divine_star,if=talent.divine_star.enabled" );
   def -> add_action( "wait,sec=cooldown.shadow_word_death.remains,if=target.health.pct<20&cooldown.shadow_word_death.remains<0.5&active_enemies<=1" );
   def -> add_action( "wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&active_enemies<=1" );
-  def -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=6" );
+  def -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5" );
   def -> add_action( this, "Mind Sear", "chain=1,interrupt=1,if=active_enemies>=3" );
   def -> add_action( this, "Mind Flay", "chain=1,interrupt=1" );
   def -> add_action( this, "Shadow Word: Death", "moving=1" );
