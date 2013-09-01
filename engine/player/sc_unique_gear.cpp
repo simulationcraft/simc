@@ -3187,6 +3187,7 @@ struct flurry_of_xuen_melee_t : public attack_t
     proc = background = true;
     callbacks = false;
     aoe = 5;
+    may_crit = true;
   }
 };
 
@@ -3202,6 +3203,7 @@ struct flurry_of_xuen_ranged_t : public ranged_attack_t
     proc = background = true;
     callbacks = false;
     aoe = 5;
+    may_crit = true;
   }
 };
 
@@ -3222,6 +3224,7 @@ struct flurry_of_xuen_driver_t : public attack_t
     }
     tick_action = action;
     dynamic_tick_action = true;
+    tick_may_crit = true;
   }
 };
 
