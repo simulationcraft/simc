@@ -2196,7 +2196,7 @@ struct slam_t : public warrior_attack_t
 struct storm_bolt_off_hand_t : public warrior_attack_t
 {
   storm_bolt_off_hand_t( warrior_t* p ) :
-    warrior_attack_t( "storm_bolt_off_hand", p, p -> find_spell( "Storm Bolt Off-Hand" ) )
+    warrior_attack_t( "storm_bolt_off_hand", p, p -> find_talent_spell( "Storm Bolt" ) )
   {
     may_dodge  = false;
     may_parry  = false;
@@ -2230,12 +2230,6 @@ struct storm_bolt_t : public warrior_attack_t
       oh_attack = new storm_bolt_off_hand_t( p );
       add_child( oh_attack );
     }
-  }
-
-  virtual timespan_t travel_time()
-  {
-//Storm bolt has a significant amount of travel time. It can range from 1-3 seconds depending on the size of the hitbox.
-    return timespan_t::from_seconds( 1.25 );
   }
 
   virtual void execute()
