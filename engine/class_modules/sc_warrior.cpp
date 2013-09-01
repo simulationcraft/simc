@@ -241,13 +241,13 @@ public:
     active_stance             = STANCE_BATTLE;
 
     // Cooldowns
-    cooldown.colossus_smash         = get_cooldown( "colossus_smash"          );
-    cooldown.mortal_strike          = get_cooldown( "mortal_strike"           );
-    cooldown.shield_slam            = get_cooldown( "shield_slam"             );
-    cooldown.strikes_of_opportunity = get_cooldown( "strikes_of_opportunity"  );
-    cooldown.revenge                = get_cooldown( "revenge"                 );
-    cooldown.rage_from_crit_block   = get_cooldown( "rage_from_crit_block"    );
-    cooldown.rage_from_crit_block -> duration = timespan_t::from_seconds( 3.0 );
+    cooldown.colossus_smash           = get_cooldown( "colossus_smash"            );
+    cooldown.mortal_strike            = get_cooldown( "mortal_strike"             );
+    cooldown.shield_slam              = get_cooldown( "shield_slam"               );
+    cooldown.strikes_of_opportunity   = get_cooldown( "strikes_of_opportunity"    );
+    cooldown.revenge                  = get_cooldown( "revenge"                   );
+    cooldown.rage_from_crit_block     = get_cooldown( "rage_from_crit_block"      );
+    cooldown.rage_from_crit_block     -> duration = timespan_t::from_seconds( 3.0 );
 
     initial_rage = 0;
 
@@ -450,7 +450,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     warrior_t* p = cast();
 
-    if ( special )
+    if ( special && this -> id != 115767 ) // Recklessness crit bonus does not count towards deep wounds.
       cc += p -> buff.recklessness -> value();
 
     if ( p -> set_bonus.tier15_4pc_melee() && p -> buffs.skull_banner -> up() && p -> buffs.skull_banner -> source == p )
@@ -622,19 +622,12 @@ static  void trigger_sweeping_strikes( action_state_t* s )
       range      = 5; //Target must be within 5 yards.
       aoe        = 1; //one additional attack
       base_costs[ RESOURCE_RAGE] = 0; //Resource consumption already accounted for.
+      base_dd_multiplier = data().effectN( 1 ).percent();
     }
 
-    // Sweeping Strikes ignores armor apparently
-    virtual double target_armor( player_t* )
-    {
-      return 0;
-    }
 
-    double composite_da_multiplier()
-    {
-      //do not double dip on multipliers
-      return data().effectN( 1 ).percent();
-    }
+    double composite_target_multiplier( player_t* t )
+      { return 1.0; }
 
     size_t available_targets( std::vector< player_t* >& tl )
     {
@@ -759,7 +752,7 @@ void warrior_attack_t::execute()
   if ( result_is_hit( execute_state -> result ) )
   {
     trigger_strikes_of_opportunity( this );
-    if ( p -> buff.sweeping_strikes -> up() && !aoe) trigger_sweeping_strikes( execute_state ); //Dragon Roar/Bladestorm/Other AoE Abilities do not proc Sweeping Strikes.
+    if ( p -> buff.sweeping_strikes -> up() && !aoe) trigger_sweeping_strikes( execute_state );
   }
   else if ( result == RESULT_DODGE  )
   {
@@ -2119,7 +2112,7 @@ struct slam_sweeping_strikes_attack_t : public warrior_attack_t
     may_miss = may_crit = may_dodge = may_parry = proc = callbacks = false;
     background = true;
     aoe        = -1;
-    range      = 2;
+    range      =  2;
     weapon_multiplier=0; //do not add weapon damage
     weapon = NULL; //so we don't double dip on seasoned soldier
     base_costs[ RESOURCE_RAGE ] = 0; // Slam cost already factored in.
@@ -2237,6 +2230,12 @@ struct storm_bolt_t : public warrior_attack_t
       oh_attack = new storm_bolt_off_hand_t( p );
       add_child( oh_attack );
     }
+  }
+
+  virtual timespan_t travel_time()
+  {
+//Storm bolt has a significant amount of travel time. It can range from 1-3 seconds depending on the size of the hitbox.
+    return timespan_t::from_seconds( 1.25 );
   }
 
   virtual void execute()
@@ -4167,8 +4166,8 @@ struct warrior_module_t : public module_t
     for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
     {
       player_t* p = sim -> actor_list[ i ];
-      p -> debuffs.shattering_throw = buff_creator_t( p, "shattering_throw", p -> find_class_spell( "Shattering Throw" ) )
-                                      .default_value( std::fabs( p -> find_class_spell( "Shattering Throw" ) -> effectN( 2 ).percent() ) )
+      p -> debuffs.shattering_throw = buff_creator_t( p, "shattering_throw", p -> find_spell( 64382 ) )
+                                      .default_value( std::fabs( p -> find_spell( 64382 ) -> effectN( 2 ).percent() ) )
                                       .cd( timespan_t::zero() )
                                       .add_invalidate( CACHE_ARMOR );
 
