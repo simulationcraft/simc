@@ -809,10 +809,8 @@ struct force_of_nature_feral_t : public pet_t
     {
       dot_behavior     = DOT_REFRESH;
       special          = true;
-      base_dd_min      = 0.0;
-      base_dd_max      = 0.0;
-      direct_power_mod = 0.0;
-      tick_zero        = true;
+      may_crit         = true;
+      direct_power_mod = data().extra_coeff();
       tick_may_crit    = true;
       tick_power_mod   = data().extra_coeff();
       owner            = p -> o();
@@ -832,11 +830,26 @@ struct force_of_nature_feral_t : public pet_t
     {
       double m = melee_attack_t::composite_ta_multiplier();
 
-      if ( p() -> o() -> mastery.razor_claws -> ok() )
+      if ( p() -> o() -> buff.cat_form -> up() && p() -> o() -> mastery.razor_claws -> ok() )
         m *= 1.0 + p() -> o() -> cache.mastery_value();
 
       return m;
     }
+
+    // Treat direct damage as "bleed"
+    // Must use direct damage because tick_zeroes cannot be blocked, and this attack is going to get blocked occasionally.
+    double composite_da_multiplier()
+    {
+      double m = melee_attack_t::composite_da_multiplier();
+
+      if ( p() -> o() -> buff.cat_form -> up() && p() -> o() -> mastery.razor_claws -> ok() )
+        m *= 1.0 + p() -> o() -> cache.mastery_value();
+
+      return m;
+    }
+
+    virtual double target_armor( player_t* )
+    { return 0.0; }
 
     virtual void execute()
     {
@@ -1177,7 +1190,7 @@ public:
     {
       if ( this -> p() -> buff.dream_of_cenarius -> check() )
       {
-        m *= 1.0 + this -> p() -> buff.dream_of_cenarius -> data().effectN( 1 ).percent();
+        m *= 1.0 + this -> p() -> buff.dream_of_cenarius -> data().effectN( 2 ).percent();
       }
     }
 
@@ -1192,7 +1205,7 @@ public:
     {
       if ( this -> p() -> buff.dream_of_cenarius -> check() )
       {
-        m *= 1.0 + this -> p() -> buff.dream_of_cenarius -> data().effectN( 2 ).percent();
+        m *= 1.0 + this -> p() -> buff.dream_of_cenarius -> data().effectN( 1 ).percent();
       }
     }
 
@@ -1831,11 +1844,23 @@ struct rake_t : public cat_attack_t
     direct_power_mod    = data().extra_coeff();
     tick_power_mod      = data().extra_coeff();
     special             = true;
-
-    // Set initial damage as tick zero, not as direct damage
-    base_dd_min = base_dd_max = direct_power_mod = 0.0;
-    tick_zero   = true;
   }
+
+  // Treat direct damage as "bleed"
+  // Must use direct damage because tick_zeroes cannot be blocked, and
+  // this attack can be blocked if the druid is in front of the target.
+  double composite_da_multiplier()
+  {
+    double m = melee_attack_t::composite_da_multiplier();
+
+    if ( p() -> buff.cat_form -> up() && p() -> mastery.razor_claws -> ok() )
+      m *= 1.0 + p() -> cache.mastery_value();
+
+    return m;
+  }
+
+  virtual double target_armor( player_t* )
+  { return 0.0; }
 };
 
 // Ravage ===================================================================
@@ -6106,7 +6131,12 @@ void druid_t::apl_feral()
   basic -> add_action( "auto_attack" );
   basic -> add_action( "skull_bash_cat" );
   if ( talent.force_of_nature -> ok() )
-    basic -> add_action( "force_of_nature,if=charges=3|trinket.proc.agility.react|target.time_to_die<20" );
+  {
+    if ( find_item( "rune_of_reorigination" ) && dbc.ptr )
+      basic -> add_action( "force_of_nature,if=charges=3|(buff.rune_of_reorigination.react&buff.rune_of_reorigination.remains<1)|target.time_to_die<20" );
+    else
+      basic -> add_action( "force_of_nature,if=charges=3|trinket.proc.agility.react|target.time_to_die<20" );
+  }
   basic -> add_action( this, "Ferocious Bite", "if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25",
                        "Keep Rip from falling off during execute range." );
   basic -> add_action( this, "Faerie Fire", "if=debuff.weakened_armor.stack<3" );
@@ -6129,7 +6159,7 @@ void druid_t::apl_feral()
   }
 
   if ( talent.incarnation -> ok() )
-    basic -> add_action( this, "Incarnation", "if=energy<=35&cooldown.tigers_fury.remains<=1" );
+    basic -> add_action( "incarnation,if=energy<=35&cooldown.tigers_fury.remains<=1" );
   basic -> add_action( this, "Tiger's Fury", "if=energy<=35&!buff.omen_of_clarity.react" );
   if ( talent.natures_vigil -> ok() )
     basic -> add_action( "natures_vigil,if=buff.tigers_fury.up" );
@@ -6182,7 +6212,17 @@ void druid_t::apl_feral()
   advanced -> add_action( "auto_attack" );
   advanced -> add_action( "skull_bash_cat" );
   if ( talent.force_of_nature -> ok() )
-    advanced -> add_action( "force_of_nature,if=charges=3|trinket.proc.agility.react|target.time_to_die<20" );
+  {
+    if ( find_item( "rune_of_reorigination" ) && dbc.ptr )
+    {
+      if ( find_item( "renatakis_soul_charm" ) )
+        advanced -> add_action( "force_of_nature,if=charges=3|(buff.rune_of_reorigination.react&(buff.rune_of_reorigination.remains<1|(buff.renatakis_soul_charm.up&buff.renatakis_soul_charm.remains<1))|target.time_to_die<20" );
+      else
+        advanced -> add_action( "force_of_nature,if=charges=3|(buff.rune_of_reorigination.react&(buff.rune_of_reorigination.remains<1|trinket.proc.agility.react))|target.time_to_die<20" );
+    }
+    else
+      advanced -> add_action( "force_of_nature,if=charges=3|trinket.proc.agility.react|target.time_to_die<20" );
+  }
 
   // Racials
   for ( size_t i = 0; i < racial_actions.size(); i++ )
@@ -6210,7 +6250,7 @@ void druid_t::apl_feral()
   }
 
   if ( talent.incarnation -> ok() )
-    advanced -> add_action( this, "Incarnation", "if=energy<=35&cooldown.tigers_fury.remains<=1" );
+    advanced -> add_action( "incarnation,if=energy<=35&cooldown.tigers_fury.remains<=1" );
   advanced -> add_action( this, "Tiger's Fury", "if=energy<=35&!buff.omen_of_clarity.react" );
   if ( talent.natures_vigil -> ok() )
     advanced -> add_action( "natures_vigil,if=buff.tigers_fury.up" );
