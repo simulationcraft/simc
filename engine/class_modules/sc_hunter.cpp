@@ -1956,7 +1956,6 @@ struct aimed_shot_t : public hunter_ranged_attack_t
 
       // Don't know why these values aren't 0 in the database.
       base_execute_time = timespan_t::zero();
-      weapon_multiplier += 1; // Remove with next DBC update. 8/29/13
 
       normalize_weapon_speed = true;
     }
@@ -2404,7 +2403,6 @@ struct explosive_shot_tick_t : public ignite::pct_based_action_t< attack_t >
   {
     tick_may_crit = true;
     dual = true;
-    base_multiplier = 1.27; //Remove with next DBC update. 8/29/13.
 
     // suppress direct damage in the dot.
     base_dd_min = base_dd_max = 0;
@@ -3408,7 +3406,6 @@ struct kill_command_t : public hunter_spell_t
 
     base_spell_power_multiplier    = 0.0;
     base_attack_power_multiplier   = 1.0;
-    base_multiplier                = 1.34; // Remove with 17337+ DBC update.
 
     harmful = false;
 
