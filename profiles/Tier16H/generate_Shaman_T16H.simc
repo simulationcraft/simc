@@ -13,6 +13,33 @@ talent_format=armory
 # Elemental
 
 
+shaman="Shaman_Elemental_T16H"
+level=90
+race=orc
+spec=elemental
+role=spell
+position=back
+professions=blacksmithing=600/engineering=600
+talents=000301
+glyphs=chain_lightning
+head=headpiece_of_celestial_harmony,id=99332,upgrade=2,gems=sinister_primal_80int_160haste_180int
+neck=necklace_of_fading_light,id=105473,upgrade=2,reforge=spi_mastery
+shoulders=shoulderguards_of_foul_streams,id=105544,upgrade=2,gems=320haste_320haste,enchant=200int_100crit,reforge=spi_mastery
+back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=80int_160haste_60int,enchant=180int,addon=goblin_glider
+chest=hauberk_of_celestial_harmony,id=99344,upgrade=2,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=crit_haste
+wrists=bracers_of_the_pristine_purifier,id=105598,upgrade=2,gems=320haste,enchant=180int,reforge=spi_mastery
+hands=gloves_of_celestial_harmony,id=99345,upgrade=2,gems=320haste_80int_160haste_80int_160haste_120int,enchant=170haste,addon=synapse_springs_mark_ii
+waist=chitinlink_chain_belt,id=105597,upgrade=2,gems=80int_160haste_320haste_320haste_120int,reforge=spi_haste
+legs=leggings_of_celestial_harmony,id=99333,upgrade=2,gems=320haste_32haste_120int,enchant=285int_165crit
+feet=powderstained_totemic_treads,id=105618,upgrade=2,gems=160haste_160spi_60spi,enchant=140mastery
+finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=80int_160haste_60spi
+finger2=laserslice_signet,id=105520,upgrade=2,gems=320haste_60spi,reforge=spi_mastery
+trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
+trinket2=kardris_toxic_totem,id=105540,upgrade=2
+main_hand=kardris_scepter,id=105541,upgrade=2,gems=80int_160haste_320haste_60int,enchant=jade_spirit,reforge=spi_haste
+off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=80int_160haste_60int,enchant=165int
+save=Shaman_Elemental_T16H.simc
+
 
 
 # Enhancement
