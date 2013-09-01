@@ -5034,6 +5034,7 @@ struct force_of_nature_spell_t : public druid_spell_t
     harmful = false;
     cooldown -> charges = 3;
     cooldown -> duration = timespan_t::from_seconds( 20.0 );
+    use_off_gcd = true;
   }
 
   virtual void execute()
