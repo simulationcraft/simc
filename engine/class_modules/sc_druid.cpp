@@ -895,6 +895,7 @@ struct force_of_nature_feral_t : public pet_t
 
   void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
   {
+    // FIXME: Currently first swing happens after swingtime # seconds, it should happen after 1-1.5 seconds (random).
     if ( melee && ! melee -> execute_event )
       melee -> schedule_execute();
 
