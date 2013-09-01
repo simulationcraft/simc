@@ -2158,7 +2158,7 @@ void action_t::snapshot_internal( action_state_t* state, uint32_t flags, dmg_e r
   state -> result_type = rt;
 
   if ( flags & STATE_CRIT )
-    state -> crit = composite_crit(); // Crit damage is not snapshotted. Tested 8/31/13 with skull banner.
+    state -> crit = composite_crit() * composite_crit_multiplier();
 
   if ( flags & STATE_HASTE )
     state -> haste = composite_haste();
