@@ -635,7 +635,7 @@ struct symbiosis_feral_spirit_t : public pet_t
   melee_t* melee;
 
   symbiosis_feral_spirit_t( sim_t* sim, druid_t* owner ) :
-    pet_t( sim, owner, "symbiosis_wolf" ), melee( 0 )
+    pet_t( sim, owner, "symbiosis_wolf", true, true ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level ) * 0.5;
@@ -736,7 +736,7 @@ struct force_of_nature_balance_t : public pet_t
   druid_t* o() { return static_cast< druid_t* >( owner ); }
 
   force_of_nature_balance_t( sim_t* sim, druid_t* owner ) :
-    pet_t( sim, owner, "treant", true /*GUARDIAN*/ )
+    pet_t( sim, owner, "treant", true /*GUARDIAN*/, true )
   {
     owner_coeff.sp_from_sp = 1.0;
     action_list_str = "wrath";
@@ -770,8 +770,6 @@ struct force_of_nature_balance_t : public pet_t
 
 struct force_of_nature_feral_t : public pet_t
 {
-  melee_attack_t* melee;
-
   struct melee_t : public melee_attack_t
   {
     druid_t* owner;
@@ -782,34 +780,69 @@ struct force_of_nature_feral_t : public pet_t
       school = SCHOOL_PHYSICAL;
       weapon = &( p -> main_hand_weapon );
       base_execute_time = weapon -> swing_time;
+      special     = false;
       background  = true;
       repeating   = true;
       may_crit    = true;
+      may_glance  = true;
       trigger_gcd = timespan_t::zero();
       owner       = p -> o();
+    }
 
-      may_glance  = true;
-      special     = false;
+    force_of_nature_feral_t* p()
+    { return static_cast<force_of_nature_feral_t*>( player ); }
+
+    void init()
+    {
+      melee_attack_t::init();
+      if ( ! player -> sim -> report_pets_separately && player != p() -> o() -> pet_force_of_nature[ 0 ] )
+        stats = p() -> o() -> pet_force_of_nature[ 0 ] -> get_stats( name(), this );
     }
   };
 
   struct rake_t : public melee_attack_t
   {
-    rake_t( pet_t* p ) :
-      melee_attack_t( "rake", p, p -> find_spell( 150017 ) )
-    {
-      dot_behavior        = DOT_REFRESH;
-      tick_power_mod      = data().extra_coeff();
-      special             = true;
+    druid_t* owner;
 
-      // Set initial damage as tick zero, not as direct damage
-      base_dd_min = base_dd_max = direct_power_mod = 0.0;
-      tick_zero   = true;
+    rake_t( force_of_nature_feral_t* p ) :
+      melee_attack_t( "rake", p, p -> find_spell( 150017 ) ), owner( 0 )
+    {
+      dot_behavior     = DOT_REFRESH;
+      special          = true;
+      base_dd_min      = 0.0;
+      base_dd_max      = 0.0;
+      direct_power_mod = 0.0;
+      tick_zero        = true;
+      tick_may_crit    = true;
+      tick_power_mod   = data().extra_coeff();
+      owner            = p -> o();
+    }
+
+    force_of_nature_feral_t* p()
+    { return static_cast<force_of_nature_feral_t*>( player ); }
+
+    void init()
+    {
+      melee_attack_t::init();
+      if ( ! player -> sim -> report_pets_separately && player != p() -> o() -> pet_force_of_nature[ 0 ] )
+        stats = p() -> o() -> pet_force_of_nature[ 0 ] -> get_stats( name(), this );
+    }
+
+    virtual double composite_ta_multiplier()
+    {
+      double m = melee_attack_t::composite_ta_multiplier();
+
+      if ( p() -> o() -> mastery.razor_claws -> ok() )
+        m *= 1.0 + p() -> o() -> cache.mastery_value();
+
+      return m;
     }
   };
+  
+  melee_t* melee;
 
   force_of_nature_feral_t( sim_t* sim, druid_t* p ) :
-    pet_t( sim, p, "treant", true ), melee( 0 )
+    pet_t( sim, p, "treant", true, true ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
@@ -817,8 +850,6 @@ struct force_of_nature_feral_t : public pet_t
     main_hand_weapon.max_dmg    = owner -> find_spell( 102703 ) -> effectN( 1 ).max( owner );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     owner_coeff.ap_from_ap      = 1.2;
-
-    action_list_str = "melee";
   }
 
   druid_t* o()
@@ -835,24 +866,27 @@ struct force_of_nature_feral_t : public pet_t
     melee = new melee_t( this );
   }
 
-  virtual void summon( timespan_t duration = timespan_t::zero() )
+  virtual void init_actions()
   {
-    pet_t::summon( duration );
-    schedule_ready();
-  }
+    action_list_str = "rake";
 
-  virtual action_t* create_action( const std::string& name, const std::string& options_str )
+    pet_t::init_actions();
+  }
+  
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str )
   {
-    if ( name == "rake"  ) return new  rake_t( this );
-    if ( name == "melee" ) return new melee_t( this );
+    if ( name == "rake" ) return new rake_t( this );
 
     return pet_t::create_action( name, options_str );
   }
 
-  virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
+  void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
   {
+    if ( melee && ! melee -> execute_event )
+      melee -> schedule_execute();
+
     pet_t::schedule_ready( delta_time, waiting );
-    if ( ! melee -> execute_event ) melee -> execute();
   }
 };
 
@@ -884,7 +918,7 @@ struct force_of_nature_guardian_t : public pet_t
   };
 
   force_of_nature_guardian_t( sim_t* sim, druid_t* p ) :
-    pet_t( sim, p, "treant", true ), melee( 0 )
+    pet_t( sim, p, "treant", true, true ), melee( 0 )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
