@@ -837,6 +837,12 @@ struct force_of_nature_feral_t : public pet_t
 
       return m;
     }
+
+    virtual void execute()
+    {
+      melee_attack_t::execute();
+      p() -> change_position( POSITION_BACK ); // After casting it's "opener" ability, move behind the target.
+    }
   };
   
   melee_t* melee;
@@ -849,7 +855,7 @@ struct force_of_nature_feral_t : public pet_t
     main_hand_weapon.min_dmg    = owner -> find_spell( 102703 ) -> effectN( 1 ).min( owner );
     main_hand_weapon.max_dmg    = owner -> find_spell( 102703 ) -> effectN( 1 ).max( owner );
     main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
-    owner_coeff.ap_from_ap      = 1.2;
+    owner_coeff.ap_from_ap      = 1.0;
   }
 
   druid_t* o()
@@ -879,6 +885,12 @@ struct force_of_nature_feral_t : public pet_t
     if ( name == "rake" ) return new rake_t( this );
 
     return pet_t::create_action( name, options_str );
+  }
+
+  virtual void summon( timespan_t duration = timespan_t::zero() )
+  {
+    pet_t::summon( duration );
+    this -> change_position( POSITION_FRONT ); // Emulate Treant spawning in front of the target.
   }
 
   void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
