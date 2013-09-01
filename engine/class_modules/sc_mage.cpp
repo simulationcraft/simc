@@ -4959,6 +4959,8 @@ int mage_t::decode_set( item_t& item )
 
   if ( strstr( s, "_chromatic_hydra"  ) ) return SET_T15_CASTER;
 
+  if ( strstr( s, "chronomancer_"     ) ) return SET_T16_CASTER;
+
   if ( strstr( s, "gladiators_silk_"  ) ) return SET_PVP_CASTER;
 
   return SET_NONE;
