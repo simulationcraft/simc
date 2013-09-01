@@ -4545,11 +4545,11 @@ void mage_t::init_actions()
       //on PTR fb's debuff is removed and add time_to_bloodlust
       if ( ! maybe_ptr( dbc.ptr ) )
       {
-        action_list_str += "/icy_veins,if=time_to_bloodlust>180&((debuff.frostbolt.stack>=3&(buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22),moving=0";
+        action_list_str += "/icy_veins,if=time_to_bloodlust>180&((debuff.frostbolt.stack>=3&(buff.brain_freeze.react|buff.fingers_of_frost.react)|target.time_to_die<22),moving=0";
       }
       else
       {
-        action_list_str += "/icy_veins,if=time_to_bloodlust>180&((buff.brain_freeze.react|buff.fingers_of_frost.react))|target.time_to_die<22),moving=0";
+        action_list_str += "/icy_veins,if=time_to_bloodlust>180&((buff.brain_freeze.react|buff.fingers_of_frost.react)|target.time_to_die<22),moving=0";
       }
 
 
