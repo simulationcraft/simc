@@ -98,4 +98,3 @@ inline specialization_e spec_id( unsigned idx )
 }
 
 #endif
-
