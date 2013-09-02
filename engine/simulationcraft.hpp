@@ -39,12 +39,10 @@
 #  ifndef _CRT_SECURE_NO_WARNINGS
 #    define _CRT_SECURE_NO_WARNINGS
 #  endif
-#  define DIRECTORY_DELIMITER "\\"
 #  ifndef UNICODE
 #    define UNICODE
 #  endif
 #else
-#  define DIRECTORY_DELIMITER "/"
 #  define SC_SIGACTION
 #endif
 

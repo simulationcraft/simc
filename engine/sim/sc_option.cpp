@@ -458,8 +458,7 @@ option_db_t::option_db_t()
     std::string starting_path;
     if ( j == 1 )
     {
-      starting_path = "|..";
-      starting_path += DIRECTORY_DELIMITER;
+      starting_path = "|../";
     }
     else
       starting_path = "|";
@@ -468,25 +467,20 @@ option_db_t::option_db_t()
     auto_path += "profiles";
 
     auto_path += starting_path;
-    auto_path += "profiles";
-    auto_path += DIRECTORY_DELIMITER;
-    auto_path += "PreRaid";
+    auto_path += "profiles/PreRaid";
 
     // Add profiles for each tier, except pvp
     for ( int i = 0; i < ( N_TIER - 1 ); i++ )
     {
       // Add Heroic
       auto_path += starting_path;
-      auto_path += "profiles";
-      auto_path += DIRECTORY_DELIMITER;
-      auto_path += "Tier";
+      auto_path += "profiles/Tier";
       auto_path += util::to_string( MIN_TIER + i );
       auto_path += "H";
+
       // Add Normal
       auto_path += starting_path;
-      auto_path += "profiles";
-      auto_path += DIRECTORY_DELIMITER;
-      auto_path += "Tier";
+      auto_path += "profiles/Tier";
       auto_path += util::to_string( MIN_TIER + i );
       auto_path += "N";
     }
