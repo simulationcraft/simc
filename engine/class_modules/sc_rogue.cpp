@@ -404,7 +404,11 @@ struct rogue_attack_t : public melee_attack_t
   virtual void snapshot_state( action_state_t* state, dmg_e rt )
   {
     melee_attack_t::snapshot_state( state, rt );
-    cast_state( state ) -> cp = cast_td( state -> target ) -> combo_points.count;
+    // FIXME: Combo points _NEED_ to move to player .. soon.
+    // In the meantime, snapshot combo points always off the primary target
+    // and pray that nobody makes a rogue ability that has to juggle primary
+    // targets around during it's execution. Gulp.
+    cast_state( state ) -> cp = cast_td( target ) -> combo_points.count;
   }
 
   action_state_t* new_state()
@@ -1508,38 +1512,9 @@ struct crimson_tempest_t : public rogue_attack_t
     crimson_tempest_dot_t( rogue_t * p ) :
       rogue_attack_t( "crimson_tempest_dot", p, p -> find_spell( 122233 ) )
     {
-      may_miss = may_crit = tick_may_crit = false;
-      background = true;
+      may_miss = may_dodge = may_parry = may_block = may_crit = tick_may_crit = false;
+      background = tick_may_crit = true;
       dot_behavior = DOT_REFRESH;
-      dual = true;
-    }
-
-    void init()
-    {
-      rogue_attack_t::init();
-
-      stats = p() -> get_stats( "crimson_tempest" );
-    }
-
-    void assess_damage( dmg_e, action_state_t* s )
-    {
-      if ( s -> result_type == DMG_DIRECT )
-        return;
-
-      if ( sim -> log )
-      {
-        dot_t* dot = get_dot( s -> target );
-        sim -> output( "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
-                       player -> name(), name(),
-                       dot -> current_tick, dot -> num_ticks,
-                       s -> target -> name(), s -> result_amount,
-                       util::school_type_string( school ),
-                       util::result_type_string( dot -> state -> result ) );
-      }
-
-      if ( s -> result_amount > 0.0 ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
-
-      stats -> add_result( s -> result_amount, s -> result_amount, s -> result_type, s -> result, s -> block_result, s -> target );
     }
   };
 
@@ -1564,7 +1539,7 @@ struct crimson_tempest_t : public rogue_attack_t
     {
       ct_dot -> pre_execute_state = ct_dot -> get_state( s );
       ct_dot -> target = s -> target;
-      ct_dot -> base_td = s -> result_amount * 2.4 / ct_dot -> num_ticks;
+      ct_dot -> base_td = s -> result_amount * ct_dot -> data().effectN( 1 ).percent() / ct_dot -> num_ticks;
       ct_dot -> execute();
     }
   }
