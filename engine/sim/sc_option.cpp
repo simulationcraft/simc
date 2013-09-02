@@ -274,7 +274,7 @@ FILE* option_db_t::open_file( const std::string& name )
 
   for ( size_t i = 0; i < splits.size(); i++ )
   {
-    FILE* f = io::fopen( splits[ i ] + DIRECTORY_DELIMITER + name, "r" );
+    FILE* f = io::fopen( splits[ i ] + "/" + name, "r" );
     if ( f )
       return f;
   }
@@ -375,14 +375,13 @@ bool option_db_t::parse_token( const std::string& token )
 
   if ( cut_pt == token.npos )
   {
-    FILE* file = open_file( token );
+    io::cfile file = io::cfile( open_file( token ) );
     if ( ! file )
     {
       printf( "Unexpected parameter '%s'. Expected format: name=value\n", token.c_str() );
       return false;
     }
     parse_file( file );
-    fclose( file );
     return true;
   }
 

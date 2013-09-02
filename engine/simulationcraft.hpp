@@ -10,9 +10,9 @@
 #define SC_USE_PTR ( 1 )
 #define SC_BETA ( 0 )
 
-// Platform Initialization ==================================================
-
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
+
+// Platform Initialization ==================================================
 
 // Simplified access to compiler version
 #if defined( __GNUC__ ) && !defined( __clang__ ) // Do NOT define SC_GCC for Clang

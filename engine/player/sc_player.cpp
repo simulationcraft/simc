@@ -9731,29 +9731,24 @@ void player_collected_data_t::print_tmi_debug_csv( const sc_timeline_t* ma, cons
 {
   if ( ! p.tmi_debug_file_str.empty() )
   {
-    FILE* f = io::fopen( p.tmi_debug_file_str, "w" );
-    if ( f )
+    io::ofstream f;
+    f.open( p.tmi_debug_file_str );
+    // write elements to CSV
+    f << p.name_str << " TMI data:\n";
+
+    f << "damage,healing,health chg,norm health chg,mov avg,norm mov avg, weighted val\n";
+
+    for ( size_t i = 0; i < health_changes.timeline.data().size(); i++ )
     {
-      // write elements to CSV
-      util::fprintf( f, "%s TMI data:\n", p.name_str.c_str() );
-
-      util::fprintf( f, "damage,healing,health chg,norm health chg,mov avg,norm mov avg, weighted val\n" );
-
-      for ( size_t i = 0; i < health_changes.timeline.data().size(); i++ )
-      {
-        util::fprintf( f, "%f,%f,%f,%f,%f,%f,%f\n", timeline_dmg_taken.data()[ i ],
-                                                    timeline_healing_taken.data()[ i ],
-                                                    health_changes.timeline.data()[ i ], 
-                                                    health_changes.timeline_normalized.data()[ i ],
-                                                    ma -> data()[ i ], 
-                                                    nma -> data()[ i ], 
-                                                    wv[ i ] );
-      }
-      util::fprintf( f, "\n" );
-
-      fclose( f );
+      f.printf( "%f,%f,%f,%f,%f,%f,%f\n", timeline_dmg_taken.data()[ i ],
+          timeline_healing_taken.data()[ i ],
+          health_changes.timeline.data()[ i ],
+          health_changes.timeline_normalized.data()[ i ],
+          ma -> data()[ i ],
+          nma -> data()[ i ],
+          wv[ i ] );
     }
-
+    f << "\n";
   }
 };
 

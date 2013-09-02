@@ -1058,8 +1058,10 @@ void sim_t::combat( int iteration )
 {
   if ( debug_each )
   {
-    fflush( this -> output_file );
-    fclose( output_file );
+    // On Debug Each, we collect debug information for each iteration, but clear it before each one
+    fflush( output_file );
+    if ( output_file != stdout )
+      fclose( output_file );
     FILE* f = io::fopen( output_file_str, "w" );
     if ( f )
     {
