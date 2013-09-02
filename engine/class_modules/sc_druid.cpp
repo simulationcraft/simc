@@ -567,7 +567,7 @@ private:
     // have a concept of that we'll just pick a target at random.
 
     // Generate a random number between 1 and the number of enemies.
-    int target_index = ceil( rand() % sim -> target_list.size() );
+    int target_index = 1 + rand() % sim -> target_list.size();
     // Pick a random enemy to target with the damage.
     return sim -> target_list[ target_index ];
   }

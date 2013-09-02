@@ -1,5 +1,7 @@
 #!simc
 
+# the normal mode profiles should be pure 553 gear, no legendaries or upgrades or warforged
+
 ptr=1
 optimal_raid=1
 
