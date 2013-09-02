@@ -6228,7 +6228,7 @@ int shaman_t::decode_set( item_t& item )
     is_caster = ( util::str_in_str_ci( s, "hauberk" ) ||
                   util::str_in_str_ci( s, "gloves" ) ||
                   util::str_in_str_ci( s, "headpiece" ) ||
-                  util::str_in_str_ci( s, "kilt" ) ||
+                  util::str_in_str_ci( s, "leggings" ) ||
                   util::str_in_str_ci( s, "shoulderwraps" ) );
 
     is_melee = ( util::str_in_str_ci( s, "cuirass" ) ||
