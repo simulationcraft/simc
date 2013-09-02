@@ -6,7 +6,7 @@ race=orc
 role=attack
 position=back
 professions=engineering=600/herbalism=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...0.1
+talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...1.1
 glyphs=chain_lightning
 spec=enhancement
 
@@ -91,34 +91,34 @@ actions.aoe+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.rem
 actions.aoe+=/spiritwalkers_grace,moving=1
 actions.aoe+=/fire_nova,if=active_flame_shock>=1
 
-head=helmet_of_celestial_harmony,id=99341,upgrade=2,gems=capacitive_primal_160agi_180agi
+head=helmet_of_celestial_harmony,id=99341,upgrade=2,gems=capacitive_primal_80agi_160mastery_180agi
 neck=immerseus_crystalline_eye,id=105407,upgrade=2
-shoulders=quarantine_shoulderguards,id=105455,upgrade=2,gems=80agi_160hit_80agi_160hit_120agi,enchant=200agi_100crit,reforge=mastery_exp
-back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180hit,reforge=crit_exp
-chest=cuirass_of_celestial_harmony,id=99347,upgrade=2,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_hit
-wrists=bracers_of_infinite_pipes,id=105617,upgrade=2,enchant=180agi
-hands=grips_of_celestial_harmony,id=99340,upgrade=2,gems=160agi_160agi_120agi,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=mastery_hit
-waist=cannoneers_multipocket_gunbelt,id=105486,upgrade=2,gems=160agi_80agi_160hit_160agi_120agi,reforge=hit_mastery
-legs=legguards_of_celestial_harmony,id=99342,upgrade=2,gems=80agi_160mastery_80agi_160mastery_120agi,enchant=285agi_165crit
-feet=minelayers_padded_boots,id=105507,upgrade=2,gems=80agi_160mastery_60mastery,enchant=140agi,reforge=exp_haste
-finger1=swift_serpent_signet,id=105483,upgrade=2,gems=80agi_160mastery_60crit,reforge=exp_haste
-finger2=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=160agi_60crit
+shoulders=quarantine_shoulderguards,id=105455,upgrade=2,gems=160mastery_160hit_160mastery_160hit_120agi,enchant=200agi_100crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=80agi_160mastery_60agi,enchant=180crit,reforge=crit_hit
+chest=cuirass_of_celestial_harmony,id=99347,upgrade=2,gems=160exp_160mastery_160exp_160mastery_160exp_160mastery_180agi,enchant=80all
+wrists=bracers_of_infinite_pipes,id=105617,upgrade=2,enchant=180agi,reforge=mastery_hit
+hands=grips_of_celestial_harmony,id=99340,upgrade=2,gems=160exp_160mastery_160exp_160mastery_120agi,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=mastery_hit
+waist=cannoneers_multipocket_gunbelt,id=105486,upgrade=2,gems=160exp_160mastery_160mastery_160hit_320mastery_120agi,reforge=hit_mastery
+legs=legguards_of_celestial_harmony,id=99342,upgrade=2,gems=320mastery_320mastery_120agi,enchant=285agi_165crit
+feet=ravagers_pathwalkers,id=105553,upgrade=2,gems=160exp_160mastery_60agi,enchant=140agi,reforge=crit_mastery
+finger1=swift_serpent_signet,id=105483,upgrade=2,gems=320mastery_60crit,reforge=exp_haste
+finger2=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=160exp_160mastery_60crit
 trinket1=assurance_of_consequence,id=105472,upgrade=2
 trinket2=haromms_talisman,id=105527,upgrade=2
-main_hand=korvens_crimson_crescent,id=105625,upgrade=2,gems=160agi_60agi,enchant=dancing_steel,reforge=crit_haste
-off_hand=korvens_crimson_crescent,id=105625,upgrade=2,gems=160agi_60agi,enchant=dancing_steel,reforge=crit_haste
+main_hand=korvens_crimson_crescent,id=105625,upgrade=2,gems=160exp_160mastery_60agi,enchant=dancing_steel,reforge=crit_haste
+off_hand=korvens_crimson_crescent,id=105625,upgrade=2,gems=160exp_160mastery_60agi,enchant=dancing_steel,reforge=crit_haste
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=28403
+# gear_agility=26143
 # gear_stamina=38514
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2208
-# gear_hit_rating=2557
-# gear_crit_rating=2174
-# gear_haste_rating=13436
-# gear_mastery_rating=14719
+# gear_expertise_rating=2167
+# gear_hit_rating=2550
+# gear_crit_rating=3071
+# gear_haste_rating=14274
+# gear_mastery_rating=17585
 # gear_armor=30854
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1

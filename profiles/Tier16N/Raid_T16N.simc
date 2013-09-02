@@ -3,8 +3,12 @@
 ptr=1
 optimal_raid=1
 
+# Raid Tier16N
+
 Druid_Feral_T16N.simc
 Druid_Feral_T16N_Adv_Rotation.simc
-Shaman_Enhancement_T16N.simc
+
 Paladin_Protection_T16N.simc
 Paladin_Retribution_T16N.simc
+
+Shaman_Enhancement_T16N.simc
