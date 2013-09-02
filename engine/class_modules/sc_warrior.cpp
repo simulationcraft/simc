@@ -108,7 +108,7 @@ public:
   {
     gain_t* avoided_attacks;
     gain_t* battle_shout;
-    gain_t* beserker_stance;
+    gain_t* berserker_stance;
     gain_t* bloodthirst;
     gain_t* bull_rush;
     gain_t* charge;
@@ -3387,7 +3387,7 @@ void warrior_t::init_gains()
 
   gain.avoided_attacks        = get_gain( "avoided_attacks"       );
   gain.battle_shout           = get_gain( "battle_shout"          );
-  gain.beserker_stance        = get_gain( "berserker_stance"      );
+  gain.berserker_stance       = get_gain( "berserker_stance"      );
   gain.bloodthirst            = get_gain( "bloodthirst"           );
   gain.bull_rush              = get_gain( "bull_rush"             );
   gain.charge                 = get_gain( "charge"                );
@@ -3606,11 +3606,11 @@ void warrior_t::init_actions()
     else if ( specialization() == WARRIOR_FURY )
     {
       action_list_str += "/bloodbath,if=enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)";
-      action_list_str += "/recklessness,if=!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12";
+      action_list_str += "/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20)|target.time_to_die<=12";
       action_list_str += "/avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)";
-      action_list_str += "/skull_banner,if=buff.recklessness.up";
+      action_list_str += "/skull_banner,if=((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192&buff.cooldown_reduction.up)|buff.recklessness.up";
       action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",if=!talent.bloodbath.enabled&debuff.colossus_smash.up|buff.bloodbath.up" );
-      action_list_str += "/berserker_rage,if=buff.enrage.remains<0.5&cooldown.bloodthirst.remains>0.5";
+      action_list_str += "/berserker_rage,if=buff.enrage.remains<1&cooldown.bloodthirst.remains>1";
 
       action_list_str += "/run_action_list,name=single_target,if=active_enemies=1";
       action_list_str += "/run_action_list,name=two_targets,if=active_enemies=2";
@@ -3621,13 +3621,15 @@ void warrior_t::init_actions()
 
       st_list_str = "/heroic_strike,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=100&buff.enrage.up";
       st_list_str += "/heroic_leap,if=debuff.colossus_smash.up";
+      st_list_str += "/storm_bolt,if=enabled&buff.cooldown_reduction.up&debuff.colossus_smash.up";
       st_list_str += "/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20";
+      st_list_str += "/storm_bolt,if=enabled&buff.cooldown_reduction.down&debuff.colossus_smash.up";
       st_list_str += "/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)";
       st_list_str += "/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1";
       st_list_str += "/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains";
       st_list_str += "/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))";
       st_list_str += "/colossus_smash";
-      st_list_str += "/storm_bolt,if=enabled";
+      st_list_str += "/storm_bolt,if=enabled&buff.cooldown_reduction.down";
       st_list_str += "/execute,if=buff.enrage.up|debuff.colossus_smash.up|rage>70|target.time_to_die<12";
       st_list_str += "/raging_blow,if=buff.raging_blow.stack=2|(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3))";
       st_list_str += "/wild_strike,if=buff.bloodsurge.up";
@@ -3636,11 +3638,11 @@ void warrior_t::init_actions()
       st_list_str += "/shockwave,if=enabled";
       st_list_str += "/heroic_throw,if=debuff.colossus_smash.down&rage<60";
       st_list_str += "/battle_shout,if=rage<70&!debuff.colossus_smash.up";
-      st_list_str += smf ? "/wild_strike" : "/whirlwind";
+      st_list_str += "/wild_strike";
       st_list_str += ",if=debuff.colossus_smash.up&target.health.pct>=20";
       st_list_str += "/impending_victory,if=enabled&target.health.pct>=20";
       st_list_str += "/battle_shout,if=rage<70";
-      st_list_str += smf ? "/wild_strike" : "/whirlwind";
+      st_list_str += "/wild_strike";
       st_list_str += ",if=cooldown.colossus_smash.remains>=2&rage>=70&target.health.pct>=20";
 
       //Two targets
@@ -3975,7 +3977,7 @@ void warrior_t::assess_damage( school_e school,
   {
     player_t::resource_gain( RESOURCE_RAGE,
                              floor( s -> result_amount / resources.max[ RESOURCE_HEALTH ] * 100 ),
-                             gain.beserker_stance );
+                             gain.berserker_stance );
   }
 
 

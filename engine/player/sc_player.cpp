@@ -2787,7 +2787,8 @@ void player_t::create_buffs()
                         /* .add_invalidate( CACHE_PLAYER_CRITICAL_HEALING ) */;
 
     buffs.cooldown_reduction = buff_creator_t( this, "cooldown_reduction" )
-                               .chance( 0 );
+                               .chance( 0 )
+                               .default_value( 1 );
     }
 
     buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );

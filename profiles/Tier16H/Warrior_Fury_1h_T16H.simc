@@ -6,7 +6,7 @@ race=orc
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!122211
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!122212
 glyphs=unending_rage/death_from_above/bull_rush
 spec=fury
 
@@ -31,10 +31,10 @@ actions=auto_attack
 actions+=/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
 actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)
 actions+=/bloodbath,if=enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)
-actions+=/recklessness,if=!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12
+actions+=/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20)|target.time_to_die<=12
 actions+=/avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)
-actions+=/skull_banner,if=buff.recklessness.up
-actions+=/berserker_rage,if=buff.enrage.remains<0.5&cooldown.bloodthirst.remains>0.5
+actions+=/skull_banner,if=((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192&buff.cooldown_reduction.up)|buff.recklessness.up
+actions+=/berserker_rage,if=buff.enrage.remains<1&cooldown.bloodthirst.remains>1
 actions+=/run_action_list,name=single_target,if=active_enemies=1
 actions+=/run_action_list,name=two_targets,if=active_enemies=2
 actions+=/run_action_list,name=three_targets,if=active_enemies=3
@@ -42,13 +42,15 @@ actions+=/run_action_list,name=aoe,if=active_enemies>3
 
 actions.single_target=heroic_strike,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=100&buff.enrage.up
 actions.single_target+=/heroic_leap,if=debuff.colossus_smash.up
+actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.up&debuff.colossus_smash.up
 actions.single_target+=/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20
+actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.down&debuff.colossus_smash.up
 actions.single_target+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)
 actions.single_target+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1
 actions.single_target+=/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains
 actions.single_target+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
 actions.single_target+=/colossus_smash
-actions.single_target+=/storm_bolt,if=enabled
+actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.down
 actions.single_target+=/execute,if=buff.enrage.up|debuff.colossus_smash.up|rage>70|target.time_to_die<12
 actions.single_target+=/raging_blow,if=buff.raging_blow.stack=2|(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3))
 actions.single_target+=/wild_strike,if=buff.bloodsurge.up
@@ -116,13 +118,13 @@ legs=legplates_of_the_prehistoric_marauder,id=99413,upgrade=2,gems=320crit_320cr
 feet=wolfrider_spurs,id=105531,upgrade=2,gems=320crit_60crit,enchant=140mastery,reforge=haste_mastery
 finger1=devilfang_band,id=105611,upgrade=2,gems=320crit,reforge=exp_crit
 finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=320crit,reforge=haste_mastery
-trinket1=skeers_bloodsoaked_talisman,id=105632,upgrade=2
+trinket1=evil_eye_of_galakras,id=105491,upgrade=2
 trinket2=thoks_tail_tip,id=105609,upgrade=2
 main_hand=malkoroks_skullcleaver,id=105567,upgrade=2,gems=160exp_160crit_60str,enchant=dancing_steel,reforge=hit_mastery
 off_hand=malkoroks_skullcleaver,id=105567,upgrade=2,gems=160exp_160crit_60str,enchant=dancing_steel,reforge=hit_mastery
 
 # Gear Summary
-# gear_strength=28692
+# gear_strength=26173
 # gear_agility=80
 # gear_stamina=38514
 # gear_intellect=80
