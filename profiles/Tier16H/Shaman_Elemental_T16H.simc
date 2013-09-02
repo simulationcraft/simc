@@ -47,7 +47,7 @@ actions+=/run_action_list,name=aoe,if=active_enemies>1
 
 # Single target action priority list
 
-actions.single=use_item,name=gloves_of_celestial_harmony,if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active
+actions.single=use_item,name=grips_of_tidal_force,if=((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)|buff.ascendance.up|buff.bloodlust.up|totem.fire_elemental_totem.active
 actions.single+=/unleash_elements,if=talent.unleashed_fury.enabled&!buff.ascendance.up
 actions.single+=/spiritwalkers_grace,moving=1,if=buff.ascendance.up
 actions.single+=/lava_burst,if=dot.flame_shock.remains>cast_time&(buff.ascendance.up|cooldown_react)
@@ -79,11 +79,11 @@ actions.aoe+=/lightning_bolt
 
 head=headpiece_of_celestial_harmony,id=99332,upgrade=2,gems=sinister_primal_80int_160haste_180int
 neck=necklace_of_fading_light,id=105473,upgrade=2,reforge=spi_mastery
-shoulders=shoulderguards_of_foul_streams,id=105544,upgrade=2,gems=320haste_320haste,enchant=200int_100crit,reforge=spi_mastery
+shoulders=shoulderwraps_of_celestial_harmony,id=99334,upgrade=2,gems=80int_160haste_80int_160haste_120int,enchant=200int_100crit,reforge=crit_mastery
 back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=80int_160haste_60int,enchant=180int,addon=goblin_glider
 chest=hauberk_of_celestial_harmony,id=99344,upgrade=2,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=crit_haste
-wrists=bracers_of_the_pristine_purifier,id=105598,upgrade=2,gems=320haste,enchant=180int,reforge=spi_mastery
-hands=gloves_of_celestial_harmony,id=99345,upgrade=2,gems=320haste_80int_160haste_80int_160haste_120int,enchant=170haste,addon=synapse_springs_mark_ii
+wrists=bracers_of_the_pristine_purifier,id=105598,upgrade=2,gems=320haste,enchant=180int
+hands=grips_of_tidal_force,id=105501,upgrade=2,gems=80int_160haste_320haste_320haste_120int,enchant=170haste,addon=synapse_springs_mark_ii,reforge=crit_haste
 waist=chitinlink_chain_belt,id=105597,upgrade=2,gems=80int_160haste_320haste_320haste_120int,reforge=spi_haste
 legs=leggings_of_celestial_harmony,id=99333,upgrade=2,gems=320haste_32haste_120int,enchant=285int_165crit,reforge=spi_haste
 feet=powderstained_totemic_treads,id=105618,upgrade=2,gems=160haste_160spi_60spi,enchant=140mastery
@@ -98,14 +98,14 @@ off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=80int_160haste_60int,en
 # gear_strength=80
 # gear_agility=80
 # gear_stamina=39030
-# gear_intellect=27232
-# gear_spirit=5083
+# gear_intellect=27432
+# gear_spirit=4686
 # gear_spell_power=15321
-# gear_crit_rating=2446
-# gear_haste_rating=17656
-# gear_mastery_rating=13909
-# gear_armor=30854
+# gear_crit_rating=3777
+# gear_haste_rating=17073
+# gear_mastery_rating=13272
+# gear_armor=30844
 # meta_gem=sinister_primal
 # tier16_2pc_caster=1
-# hands=gloves_of_celestial_harmony,heroic=1,addon=synapse_springs_mark_ii
+# hands=grips_of_tidal_force,heroic=1,elite=1,addon=synapse_springs_mark_ii
 # main_hand=kardris_scepter,heroic=1,elite=1,weapon=mace_2.40speed_5651min_10495max,enchant=jade_spirit
