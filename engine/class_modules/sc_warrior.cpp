@@ -626,7 +626,7 @@ static  void trigger_sweeping_strikes( action_state_t* s )
     }
 
 
-    double composite_target_multiplier( player_t* t )
+    double composite_target_multiplier( player_t* )
       { return 1.0; }
 
     size_t available_targets( std::vector< player_t* >& tl )
@@ -3562,7 +3562,7 @@ void warrior_t::init_actions()
     action_list_str += init_use_profession_actions();
     action_list_str += init_use_racial_actions( ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)" );
 
-    bool smf =  ( main_hand_weapon.group() == WEAPON_1H && off_hand_weapon.group() == WEAPON_1H );
+    // bool smf =  ( main_hand_weapon.group() == WEAPON_1H && off_hand_weapon.group() == WEAPON_1H );
 
     // Arms
     if ( specialization() == WARRIOR_ARMS )
