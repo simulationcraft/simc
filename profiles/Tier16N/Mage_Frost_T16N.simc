@@ -1,0 +1,107 @@
+#!./simc 
+
+mage="Mage_Frost_T16N"
+level=90
+race=troll
+role=spell
+position=back
+professions=tailoring=600/enchanting=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!0...11
+glyphs=evocation/icy_veins/splitting_ice
+spec=frost
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/arcane_brilliance
+actions.precombat+=/frost_armor
+actions.precombat+=/water_elemental
+actions.precombat+=/snapshot_stats
+actions.precombat+=/rune_of_power
+actions.precombat+=/jade_serpent_potion
+actions.precombat+=/mirror_image
+
+# Executed every time the actor is available.
+
+actions=counterspell,if=target.debuff.casting.react
+actions+=/cancel_buff,name=alter_time,moving=1
+actions+=/conjure_mana_gem,if=mana_gem_charges<3&target.debuff.invulnerable.react
+actions+=/time_warp,if=target.health.pct<25|time>5
+actions+=/rune_of_power,if=buff.rune_of_power.remains<cast_time&buff.alter_time.down
+actions+=/rune_of_power,if=cooldown.icy_veins.remains=0&buff.rune_of_power.remains<20
+actions+=/mirror_image
+actions+=/frozen_orb
+actions+=/icy_veins,if=time_to_bloodlust>180&((buff.brain_freeze.react|buff.fingers_of_frost.react)|target.time_to_die<22),moving=0
+actions+=/berserking,if=buff.icy_veins.up|target.time_to_die<18
+actions+=/jade_serpent_potion,if=buff.icy_veins.up|target.time_to_die<45
+actions+=/presence_of_mind,if=buff.icy_veins.up|cooldown.icy_veins.remains>15|target.time_to_die<15
+actions+=/alter_time,if=buff.alter_time.down&buff.icy_veins.up
+actions+=/flamestrike,if=active_enemies>=5
+actions+=/frostfire_bolt,if=buff.alter_time.up&buff.brain_freeze.up
+actions+=/ice_lance,if=buff.alter_time.up&buff.fingers_of_frost.up
+actions+=/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
+actions+=/frostfire_bolt,if=buff.brain_freeze.react&cooldown.icy_veins.remains>2
+actions+=/ice_lance,if=buff.frozen_thoughts.react&buff.fingers_of_frost.up
+actions+=/ice_lance,if=buff.fingers_of_frost.up&(buff.fingers_of_frost.remains<2|(buff.fingers_of_frost.stack>1&cooldown.icy_veins.remains>2))
+actions+=/frostbolt
+actions+=/fire_blast,moving=1
+actions+=/ice_lance,moving=1
+
+head=chronomancer_hood,id=99161,gems=sinister_primal_80int_160haste_180int
+# ilevel=553,quality=epic,type=cloth,stats=1840int_3121sta_1425haste_998crit
+neck=untainted_guardians_chain,id=103867
+# ilevel=553,quality=epic,stats=1159int_1739sta_734hit_796mastery
+shoulders=chronomancer_mantle,id=99153,gems=80int_160haste_80int_160haste_120int,enchant=200int_100crit,reforge=crit_mastery
+# ilevel=553,quality=epic,type=cloth,stats=1386int_2319sta_1095haste_703crit
+back=xingho_breath_of_yulon,id=102246,gems=80int_160haste_60int,enchant=lightweave_embroidery_3
+# ilevel=600,quality=legendary,type=cloth,stats=1716int_2694sta_918crit_918haste_918mastery
+chest=chronomancer_robes,id=99152,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=crit_haste
+# ilevel=553,quality=epic,type=cloth,stats=1840int_3121sta_1328mastery_1164crit
+wrists=avools_ancestral_bracers,id=103851,enchant=180int
+# ilevel=553,quality=epic,type=cloth,stats=1159int_1739sta_784haste_753mastery
+hands=chronomancer_gloves,id=99160,gems=80int_160haste_80int_160haste_120int,enchant=170haste,reforge=crit_mastery
+# ilevel=553,quality=epic,type=cloth,stats=1386int_2319sta_965crit_915haste
+waist=belt_of_ominous_trembles,id=103898,gems=160int_320hit_320haste_120int
+# ilevel=553,quality=epic,type=cloth,stats=1386int_2319sta_1025hit_824mastery
+legs=leggings_of_furious_flame,id=103921,gems=160haste_160hit_160haste_160hit_120int,enchant=285int_165crit
+# ilevel=553,quality=epic,type=cloth,stats=1920int_3121sta_1328haste_1272mastery
+feet=boneinlaid_sandals,id=103805,gems=80int_160haste_60hit,enchant=140mastery
+# ilevel=553,quality=epic,type=cloth,stats=1466int_2319sta_998haste_973mastery
+finger1=extinguished_ember_of_galakras,id=103823,enchant=160int
+# ilevel=553,quality=epic,stats=1159int_1739sta_773hit_773haste
+finger2=iyyokuks_hereditary_seal,id=103824,enchant=160int
+# ilevel=553,quality=epic,stats=1159int_1739sta_715hit_807mastery
+trinket1=purified_bindings_of_immerseus,id=102293
+# ilevel=553,quality=epic
+trinket2=kardris_toxic_totem,id=102300
+# ilevel=553,quality=epic
+main_hand=rikkals_bloody_scalpel,id=103973,weapon=dagger_1.8speed_3550min_6595max,gems=80int_160haste_60int,enchant=jade_spirit,reforge=crit_exp
+# ilevel=553,quality=epic,stats=811int_1337sta_563hit_539crit_11913sp
+off_hand=festering_primordial_globule,id=103919,gems=80int_160haste_60int,enchant=165int,reforge=hit_mastery
+# ilevel=553,quality=epic,stats=1079int_1739sta_619hit_800haste
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=31445
+# gear_intellect=22836
+# gear_spirit=80
+# gear_spell_power=11913
+# gear_expertise_rating=215
+# gear_hit_rating=4882
+# gear_crit_rating=4529
+# gear_haste_rating=12231
+# gear_mastery_rating=8725
+# gear_armor=17066
+# meta_gem=sinister_primal
+# tier16_2pc_caster=1
+# tier16_4pc_caster=1
+# back=xingho_breath_of_yulon,enchant=lightweave_embroidery_3
+# main_hand=rikkals_bloody_scalpel,weapon=dagger_1.8speed_3550min_6595max,enchant=jade_spirit
