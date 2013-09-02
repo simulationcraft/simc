@@ -30,7 +30,7 @@ chest=hauberk_of_celestial_harmony,id=99344,upgrade=2,gems=80int_160haste_80int_
 wrists=bracers_of_the_pristine_purifier,id=105598,upgrade=2,gems=320haste,enchant=180int,reforge=spi_mastery
 hands=gloves_of_celestial_harmony,id=99345,upgrade=2,gems=320haste_80int_160haste_80int_160haste_120int,enchant=170haste,addon=synapse_springs_mark_ii
 waist=chitinlink_chain_belt,id=105597,upgrade=2,gems=80int_160haste_320haste_320haste_120int,reforge=spi_haste
-legs=leggings_of_celestial_harmony,id=99333,upgrade=2,gems=320haste_32haste_120int,enchant=285int_165crit
+legs=leggings_of_celestial_harmony,id=99333,upgrade=2,gems=320haste_32haste_120int,enchant=285int_165crit,reforge=spi_haste
 feet=powderstained_totemic_treads,id=105618,upgrade=2,gems=160haste_160spi_60spi,enchant=140mastery
 finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=80int_160haste_60spi
 finger2=laserslice_signet,id=105520,upgrade=2,gems=320haste_60spi,reforge=spi_mastery

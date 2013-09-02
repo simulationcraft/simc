@@ -85,7 +85,7 @@ chest=hauberk_of_celestial_harmony,id=99344,upgrade=2,gems=80int_160haste_80int_
 wrists=bracers_of_the_pristine_purifier,id=105598,upgrade=2,gems=320haste,enchant=180int,reforge=spi_mastery
 hands=gloves_of_celestial_harmony,id=99345,upgrade=2,gems=320haste_80int_160haste_80int_160haste_120int,enchant=170haste,addon=synapse_springs_mark_ii
 waist=chitinlink_chain_belt,id=105597,upgrade=2,gems=80int_160haste_320haste_320haste_120int,reforge=spi_haste
-legs=leggings_of_celestial_harmony,id=99333,upgrade=2,gems=320haste_32haste_120int,enchant=285int_165crit
+legs=leggings_of_celestial_harmony,id=99333,upgrade=2,gems=320haste_32haste_120int,enchant=285int_165crit,reforge=spi_haste
 feet=powderstained_totemic_treads,id=105618,upgrade=2,gems=160haste_160spi_60spi,enchant=140mastery
 finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=80int_160haste_60spi
 finger2=laserslice_signet,id=105520,upgrade=2,gems=320haste_60spi,reforge=spi_mastery
@@ -99,10 +99,10 @@ off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=80int_160haste_60int,en
 # gear_agility=80
 # gear_stamina=39030
 # gear_intellect=27232
-# gear_spirit=5774
+# gear_spirit=5083
 # gear_spell_power=15321
 # gear_crit_rating=2446
-# gear_haste_rating=16965
+# gear_haste_rating=17656
 # gear_mastery_rating=13909
 # gear_armor=30854
 # meta_gem=sinister_primal
