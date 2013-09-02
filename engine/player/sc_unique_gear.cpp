@@ -3212,7 +3212,7 @@ struct flurry_of_xuen_driver_t : public attack_t
   flurry_of_xuen_driver_t( player_t* player, action_t* action = 0 ) :
     attack_t( "flurry_of_xuen", player, player -> find_spell( 146194 ) )
   {
-    hasted_ticks = may_miss = may_dodge = may_parry = may_block = callbacks = false;
+    hasted_ticks = may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
     proc = background = dual = true;
 
     if ( ! action )
@@ -3224,7 +3224,6 @@ struct flurry_of_xuen_driver_t : public attack_t
     }
     tick_action = action;
     dynamic_tick_action = true;
-    tick_may_crit = true;
   }
 };
 
@@ -3256,11 +3255,11 @@ void flurry_of_xuen( item_t* item )
   util::tokenize( name );
 
   special_effect_t effect;
-  effect.name_str = name;
-  effect.ppm = -1.0 * driver -> real_ppm();
-  effect.ppm        *= item_database::approx_scale_coefficient( item -> parsed.data.level, item -> item_level() );
+  effect.name_str   = name;
+  effect.ppm        = -1.0 * driver -> real_ppm();
+  effect.ppm       *= item_database::approx_scale_coefficient( item -> parsed.data.level, item -> item_level() );
   effect.rppm_scale = RPPM_HASTE;
-  effect.cooldown = driver -> internal_cooldown();
+  effect.cooldown   = driver -> internal_cooldown();
 
   flurry_of_xuen_cb_t* cb = new flurry_of_xuen_cb_t( item, effect, driver );
 
