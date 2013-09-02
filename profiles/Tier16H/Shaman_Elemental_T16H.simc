@@ -107,5 +107,6 @@ off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=80int_160haste_60int,en
 # gear_armor=30844
 # meta_gem=sinister_primal
 # tier16_2pc_caster=1
+# tier16_4pc_caster=1
 # hands=grips_of_tidal_force,heroic=1,elite=1,addon=synapse_springs_mark_ii
 # main_hand=kardris_scepter,heroic=1,elite=1,weapon=mace_2.40speed_5651min_10495max,enchant=jade_spirit
