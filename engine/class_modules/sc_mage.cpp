@@ -4268,7 +4268,7 @@ void mage_t::init_actions()
     // Armor
     if ( specialization() == MAGE_ARCANE )
     {
-      add_action( "Frost Armor", "", "precombat" );
+      add_action( "Mage Armor", "", "precombat" );
     }
     else if ( specialization() == MAGE_FIRE )
     {
