@@ -30,23 +30,24 @@ actions.precombat+=/mogu_power_potion
 actions=auto_attack
 actions+=/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25
 actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)
-actions+=/recklessness,if=!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12
+actions+=/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20)|target.time_to_die<=12
 actions+=/bloodbath,if=enabled&(debuff.colossus_smash.up|cooldown.colossus_smash.remains<4)
 actions+=/avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)
-actions+=/skull_banner,if=buff.recklessness.up
+actions+=/skull_banner,if=((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192&buff.cooldown_reduction.up)|buff.recklessness.up
 actions+=/berserker_rage,if=buff.enrage.remains<0.5
 actions+=/heroic_leap,if=debuff.colossus_smash.up
 actions+=/run_action_list,name=aoe,if=active_enemies>=2
 actions+=/run_action_list,name=single_target,if=active_enemies<2
 
-actions.single_target=colossus_smash,if=debuff.colossus_smash.remains<1.0
-actions.single_target+=/mortal_strike,if=rage<70|debuff.colossus_smash.down
+actions.single_target=heroic_strike,if=rage>115|(debuff.colossus_smash.up&rage>40&set_bonus.tier16_2pc_melee)
+actions.single_target+=/colossus_smash,if=debuff.colossus_smash.remains<1.0
+actions.single_target+=/mortal_strike
 actions.single_target+=/storm_bolt,if=enabled&debuff.colossus_smash.up
 actions.single_target+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
-actions.single_target+=/execute
-actions.single_target+=/slam,if=(debuff.colossus_smash.up|(!set_bonus.tier16_2pc_melee&rage>90|set_bonus.tier16_2pc_melee&rage>40))&target.health.pct>=20
-actions.single_target+=/execute,if=buff.sudden_execute.down|debuff.colossus_smash.up|target.time_to_die<12|rage>70
+actions.single_target+=/execute,if=buff.sudden_execute.down|rage>80
 actions.single_target+=/overpower,if=target.health.pct>=20|buff.sudden_execute.up
+actions.single_target+=/slam,if=(debuff.colossus_smash.up|rage>80)&target.health.pct>=20
+actions.single_target+=/execute,if=buff.sudden_execute.down|debuff.colossus_smash.up|target.time_to_die<12|rage>70
 actions.single_target+=/battle_shout
 actions.single_target+=/heroic_throw
 
@@ -54,9 +55,9 @@ actions.aoe=sweeping_strikes
 actions.aoe+=/cleave,if=rage>110&active_enemies<=3
 actions.aoe+=/mortal_strike,if=rage<40
 actions.aoe+=/thunder_clap,target=2,if=dot.deep_wounds.attack_power<stat.attack_power*1.1
+actions.aoe+=/colossus_smash,if=debuff.colossus_smash.down
 actions.aoe+=/dragon_roar,if=enabled&((!debuff.colossus_smash.up&buff.bloodbath.up)|(!debuff.colossus_smash.up&!talent.bloodbath.enabled))
 actions.aoe+=/bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)
-actions.aoe+=/colossus_smash,if=debuff.colossus_smash.down
 actions.aoe+=/slam,if=buff.sweeping_strikes.up
 actions.aoe+=/battle_shout,if=rage<70
 

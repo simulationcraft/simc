@@ -30,11 +30,11 @@ actions.precombat+=/mogu_power_potion
 actions=auto_attack
 actions+=/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
 actions+=/bloodbath,if=enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)
-actions+=/recklessness,if=!talent.bloodbath.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12
+actions+=/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20)|target.time_to_die<=12
 actions+=/avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)
-actions+=/skull_banner,if=buff.recklessness.up
+actions+=/skull_banner,if=((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192&buff.cooldown_reduction.up)|buff.recklessness.up
 actions+=/use_item,name=gauntlets_of_resounding_rings,if=!talent.bloodbath.enabled&debuff.colossus_smash.up|buff.bloodbath.up
-actions+=/berserker_rage,if=buff.enrage.remains<0.5&cooldown.bloodthirst.remains>0.5
+actions+=/berserker_rage,if=buff.enrage.remains<1&cooldown.bloodthirst.remains>1
 actions+=/run_action_list,name=single_target,if=active_enemies=1
 actions+=/run_action_list,name=two_targets,if=active_enemies=2
 actions+=/run_action_list,name=three_targets,if=active_enemies=3
@@ -42,13 +42,15 @@ actions+=/run_action_list,name=aoe,if=active_enemies>3
 
 actions.single_target=heroic_strike,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=100&buff.enrage.up
 actions.single_target+=/heroic_leap,if=debuff.colossus_smash.up
+actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.up&debuff.colossus_smash.up
 actions.single_target+=/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20
+actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.down&debuff.colossus_smash.up
 actions.single_target+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)
 actions.single_target+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1
 actions.single_target+=/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains
 actions.single_target+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
 actions.single_target+=/colossus_smash
-actions.single_target+=/storm_bolt,if=enabled
+actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.down
 actions.single_target+=/execute,if=buff.enrage.up|debuff.colossus_smash.up|rage>70|target.time_to_die<12
 actions.single_target+=/raging_blow,if=buff.raging_blow.stack=2|(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3))
 actions.single_target+=/wild_strike,if=buff.bloodsurge.up
