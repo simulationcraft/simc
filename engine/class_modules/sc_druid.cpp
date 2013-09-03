@@ -6133,7 +6133,7 @@ void druid_t::apl_feral()
   if ( talent.force_of_nature -> ok() )
   {
     if ( find_item( "rune_of_reorigination" ) && dbc.ptr )
-      basic -> add_action( "force_of_nature,if=charges=3|(buff.rune_of_reorigination.react&buff.rune_of_reorigination.remains<1)|target.time_to_die<20" );
+      basic -> add_action( "force_of_nature,if=charges=3|trinket.proc.agility.react|(buff.rune_of_reorigination.react&buff.rune_of_reorigination.remains<1)|target.time_to_die<20" );
     else
       basic -> add_action( "force_of_nature,if=charges=3|trinket.proc.agility.react|target.time_to_die<20" );
   }
@@ -6213,12 +6213,35 @@ void druid_t::apl_feral()
   advanced -> add_action( "skull_bash_cat" );
   if ( talent.force_of_nature -> ok() )
   {
-    if ( find_item( "rune_of_reorigination" ) && dbc.ptr )
+    if ( dbc.ptr )
     {
-      if ( find_item( "renatakis_soul_charm" ) )
-        advanced -> add_action( "force_of_nature,if=charges=3|(buff.rune_of_reorigination.react&(buff.rune_of_reorigination.remains<1|(buff.renatakis_soul_charm.up&buff.renatakis_soul_charm.remains<1))|target.time_to_die<20" );
-      else
-        advanced -> add_action( "force_of_nature,if=charges=3|(buff.rune_of_reorigination.react&(buff.rune_of_reorigination.remains<1|trinket.proc.agility.react))|target.time_to_die<20" );
+      std::string fon_str = "force_of_nature,if=charges=3";
+
+      std::vector<std::string> trinketbuffs;
+      
+      for ( int i = 12; i <= 13; i++ )
+      {
+        if ( items[ i ].name_str == "haromms_talisman" )
+          trinketbuffs.push_back( "vicious" );
+        else if ( items[ i ].name_str == "assurance_of_consequence" )
+          trinketbuffs.push_back( "dextrous" );
+        else if ( items[ i ].name_str == "sigil_of_rampage" )
+          trinketbuffs.push_back( "ferocity" );
+        else if ( items[ i ].name_str == "bad_juju" )
+          trinketbuffs.push_back( "juju_madness" );
+        else if ( items[ i].name_str != "" )
+          trinketbuffs.push_back( items[ i ].name_str );
+      }
+
+      for ( size_t i = 0; i < trinketbuffs.size(); i++ )
+        fon_str.append( "|(buff." + trinketbuffs[ i ] + ".react&buff." + trinketbuffs[ i ] + ".remains<1)" );
+
+      if ( ! find_item( "rune_of_reorigination" ) && ! find_item ( "renatakis_soul_charm" ) && trinketbuffs.size() == 2 )
+        fon_str.append( "|(buff." + trinketbuffs[ 0 ] + ".react&buff." + trinketbuffs [ 1 ] + ".react)" );
+
+      fon_str.append( "|target.time_to_die<20" );
+
+      advanced -> add_action( fon_str );
     }
     else
       advanced -> add_action( "force_of_nature,if=charges=3|trinket.proc.agility.react|target.time_to_die<20" );
