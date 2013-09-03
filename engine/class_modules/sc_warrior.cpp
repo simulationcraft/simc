@@ -52,7 +52,7 @@ public:
   attack_t* active_sweeping_strikes;
   
   heal_t* active_t16_2pc;
-  warrior_stance  active_stance;
+  warrior_stance active_stance;
 
   // Buffs
   struct buffs_t
@@ -101,6 +101,7 @@ public:
     cooldown_t* mortal_strike;
     cooldown_t* strikes_of_opportunity;
     cooldown_t* rage_from_crit_block;
+    cooldown_t* stance_swap;
   } cooldown;
 
   // Gains
@@ -248,6 +249,8 @@ public:
     cooldown.revenge                  = get_cooldown( "revenge"                   );
     cooldown.rage_from_crit_block     = get_cooldown( "rage_from_crit_block"      );
     cooldown.rage_from_crit_block     -> duration = timespan_t::from_seconds( 3.0 );
+    cooldown.stance_swap              = get_cooldown( "stance_swap"               );
+    cooldown.stance_swap              -> duration = timespan_t::from_seconds( dbc.ptr ? 1.5 : 3.0 );
 
     initial_rage = 0;
 
@@ -2923,6 +2926,82 @@ struct skull_banner_t : public warrior_spell_t
   }
 };
 
+// Berserker Swap ===========================================================
+struct berserker_swap_t : public warrior_spell_t
+{
+  warrior_stance switch_to_stance;
+  double damage_taken;
+  double swap;
+
+  berserker_swap_t( warrior_t* p, const std::string& options_str ) :
+    warrior_spell_t( "berserker_swap", p ),
+    damage_taken( 0 ), swap( 0 )
+  {
+    option_t options[] =
+    {
+      opt_float( "damage_taken", damage_taken ),
+      opt_float( "swap", swap ),
+      opt_null()
+    };
+    parse_options( options, options_str );
+
+    use_off_gcd = true;
+    harmful     = false;
+    trigger_gcd = timespan_t::zero();
+    cooldown -> duration = timespan_t::from_seconds( swap );
+  }
+
+   void execute()
+  {
+    warrior_t* p = cast();
+
+    if ( p -> active_stance == STANCE_BATTLE )
+      switch_to_stance = STANCE_BERSERKER;
+    // May as well stay in berserker stance if we need to swap back before it's possible.
+    else if ( p -> active_stance == STANCE_BERSERKER && cooldown -> duration > ( p -> cooldown.stance_swap -> duration * 2 ) )
+      switch_to_stance = STANCE_BATTLE;
+
+    if ( p -> active_stance != switch_to_stance )
+      {
+        switch ( p -> active_stance )
+        {
+          case STANCE_BATTLE:     p -> buff.battle_stance    -> expire(); break;
+          case STANCE_BERSERKER:  p -> buff.berserker_stance -> expire(); break;
+          case STANCE_DEFENSE:    p -> buff.defensive_stance -> expire(); break;
+        }
+      p -> active_stance = switch_to_stance;
+
+        switch ( p -> active_stance )
+        {
+          case STANCE_BATTLE:     p -> buff.battle_stance    -> trigger(); break;
+          case STANCE_BERSERKER:  p -> buff.berserker_stance -> trigger(); break;
+          case STANCE_DEFENSE:    p -> buff.defensive_stance -> trigger(); break;
+        }
+      p -> cooldown.stance_swap -> start();
+      cooldown -> start();
+    }
+
+    if ( p -> active_stance == STANCE_BATTLE )
+      cooldown -> adjust(timespan_t::from_seconds( ( p -> dbc.ptr ? -1.5 : -3.0 ) ) );
+    else if ( p -> active_stance == STANCE_BERSERKER )
+    {
+      p -> resource_gain( RESOURCE_RAGE, floor( damage_taken / p -> resources.max[ RESOURCE_HEALTH ] * 100 ), p -> gain.berserker_stance );
+      if ( timespan_t::from_seconds(swap) > ( p -> cooldown.stance_swap -> duration * 2) )// If we stay in berserker stance there is no reason to reset.
+        cooldown -> reset(true);
+    }
+  }
+
+  virtual bool ready()
+  {
+    warrior_t* p = cast();
+
+    if ( p -> cooldown.stance_swap -> down() || cooldown -> down() )
+      return false;
+
+    return warrior_spell_t::ready();
+  }
+};
+
 // Stance ===================================================================
 
 struct stance_t : public warrior_spell_t
@@ -2950,8 +3029,6 @@ struct stance_t : public warrior_spell_t
       else if ( stance_str == "def" || stance_str == "defensive" )
         switch_to_stance = STANCE_DEFENSE;
     }
-    if ( switch_to_stance != p -> active_stance ) // Do not put stance-swapping on CD unless the stance is actually changed.
-      cooldown -> duration = timespan_t::from_seconds( p -> dbc.ptr ? 1.5 : 3.0 ); // Lowered PTR CD on stance swapping. 
 
     use_off_gcd = true;
     harmful     = false;
@@ -2961,30 +3038,31 @@ struct stance_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_t* p = cast();
-
-    switch ( p -> active_stance )
+    if( p -> active_stance != switch_to_stance)
     {
-      case STANCE_BATTLE:     p -> buff.battle_stance    -> expire(); break;
-      case STANCE_BERSERKER:  p -> buff.berserker_stance -> expire(); break;
-      case STANCE_DEFENSE:    p -> buff.defensive_stance -> expire(); break;
-    }
-    p -> active_stance = switch_to_stance;
+      switch ( p -> active_stance )
+      {
+        case STANCE_BATTLE:     p -> buff.battle_stance    -> expire(); break;
+        case STANCE_BERSERKER:  p -> buff.berserker_stance -> expire(); break;
+        case STANCE_DEFENSE:    p -> buff.defensive_stance -> expire(); break;
+      }
+      p -> active_stance = switch_to_stance;
 
-    switch ( p -> active_stance )
-    {
-      case STANCE_BATTLE:     p -> buff.battle_stance    -> trigger(); break;
-      case STANCE_BERSERKER:  p -> buff.berserker_stance -> trigger(); break;
-      case STANCE_DEFENSE:    p -> buff.defensive_stance -> trigger(); break;
+      switch ( p -> active_stance )
+      {
+        case STANCE_BATTLE:     p -> buff.battle_stance    -> trigger(); break;
+        case STANCE_BERSERKER:  p -> buff.berserker_stance -> trigger(); break;
+        case STANCE_DEFENSE:    p -> buff.defensive_stance -> trigger(); break;
+      }
+    p -> cooldown.stance_swap -> start();
     }
-
-    update_ready();
   }
 
   virtual bool ready()
   {
     warrior_t* p = cast();
 
-    if ( p -> active_stance == switch_to_stance )
+    if ( p -> cooldown.stance_swap -> down() )
       return false;
 
     return warrior_spell_t::ready();
@@ -3091,6 +3169,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "avatar"             ) return new avatar_t             ( this, options_str );
   if ( name == "battle_shout"       ) return new battle_shout_t       ( this, options_str );
   if ( name == "berserker_rage"     ) return new berserker_rage_t     ( this, options_str );
+  if ( name == "berserker_swap"     ) return new berserker_swap_t     ( this, options_str );
   if ( name == "bladestorm"         ) return new bladestorm_t         ( this, options_str );
   if ( name == "bloodbath"          ) return new bloodbath_t          ( this, options_str );
   if ( name == "bloodthirst"        ) return new bloodthirst_t        ( this, options_str );
@@ -3313,7 +3392,8 @@ void warrior_t::create_buffs()
   buff.battle_stance    = buff_creator_t( this, "battle_stance",    find_spell( 21156 ) );
   buff.berserker_rage   = buff_creator_t( this, "berserker_rage",   find_class_spell( "Berserker Rage" ) )
                           .cd( timespan_t::zero() );
-  buff.berserker_stance = buff_creator_t( this, "berserker_stance", find_spell( 2458 ) );
+  buff.berserker_stance = buff_creator_t( this, "berserker_stance", find_spell( 2458 ) )
+                          .chance( 1 );
   buff.bloodbath        = buff_creator_t( this, "bloodbath",        talents.bloodbath )
                           .cd( timespan_t::zero() );
   buff.bloodsurge       = buff_creator_t( this, "bloodsurge",       spec.bloodsurge -> effectN( 1 ).trigger() )
