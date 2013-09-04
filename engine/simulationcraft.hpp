@@ -3782,9 +3782,9 @@ struct player_collected_data_t
 struct actor_t : public noncopyable
 {
 #ifndef NDEBUG
-  enum { ACTOR_EVENT_BOOKKEEPING = true };
+  static const bool ACTOR_EVENT_BOOKKEEPING = true;
 #else
-  enum { ACTOR_EVENT_BOOKKEEPING = false };
+  static const bool ACTOR_EVENT_BOOKKEEPING = false;
 #endif
 
   sim_t* sim; // owner

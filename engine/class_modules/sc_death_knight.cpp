@@ -344,7 +344,7 @@ public:
     proc_t* ready_unholy;
   } procs;
 
-  real_ppm_t* t15_2pc_melee;
+  real_ppm_t t15_2pc_melee;
 
   // Runes
   struct runes_t
@@ -383,7 +383,7 @@ public:
     glyph( glyphs_t() ),
     pets( pets_t() ),
     procs( procs_t() ),
-    t15_2pc_melee(),
+    t15_2pc_melee( *this ),
     _runes( runes_t() )
   {
     range::fill( pets.army_ghoul, nullptr );
@@ -442,8 +442,6 @@ public:
 
   void      default_apl_blood();
 
-  virtual ~death_knight_t();
-
   target_specific_t<death_knight_td_t*> target_data;
 
   virtual death_knight_td_t* get_target_data( player_t* target )
@@ -457,10 +455,6 @@ public:
   }
 };
 
-death_knight_t::~death_knight_t()
-{
-  delete t15_2pc_melee;
-}
 
 inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* death_knight ) :
   actor_pair_t( target, death_knight )
@@ -2255,7 +2249,7 @@ static void trigger_t15_2pc_melee( death_knight_melee_attack_t* attack )
 
   death_knight_t* p = debug_cast< death_knight_t* >( attack -> player );
 
-  if ( ( p -> t15_2pc_melee -> trigger( *attack ) ) )
+  if ( ( p -> t15_2pc_melee.trigger( *attack ) ) )
   {
     p -> procs.t15_2pc_melee -> occur();
     size_t i;
@@ -5095,7 +5089,7 @@ void death_knight_t::init_rng()
   player_t::init_rng();
 
   const spell_data_t* spell = find_spell( 138343 );
-  t15_2pc_melee     = new real_ppm_t( *this, maybe_ptr( dbc.ptr ) ? spell -> real_ppm() : 1.0 );
+  t15_2pc_melee.set_frequency( maybe_ptr( dbc.ptr ) ? spell -> real_ppm() : 1.0 );
 }
 
 // death_knight_t::init_base ================================================
@@ -6158,7 +6152,7 @@ void death_knight_t::reset()
 
   runic_power_decay_rate = 1; // 1 RP per second decay
 
-  t15_2pc_melee -> reset();
+  t15_2pc_melee.reset();
 
   _runes.reset();
 }

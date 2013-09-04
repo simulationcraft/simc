@@ -171,7 +171,7 @@ public:
     proc_t* t15_2pc_melee;
   } proc;
 
-    real_ppm_t* t15_2pc_melee;
+    real_ppm_t t15_2pc_melee;
 
   // Spec Passives
   struct spec_t
@@ -228,7 +228,7 @@ public:
     glyphs( glyphs_t() ),
     mastery( mastery_t() ),
     proc( procs_t() ),
-    t15_2pc_melee(),
+    t15_2pc_melee( *this ),
     spec( spec_t() ),
     talents( talents_t() )
   {
@@ -288,7 +288,6 @@ public:
   virtual role_e    primary_role() const;
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void      copy_from( player_t* source );
-  virtual           ~warrior_t();
 
   // Custom Warrior Functions
   void enrage();
@@ -306,11 +305,6 @@ public:
     return td;
   }
 };
-
-warrior_t::~warrior_t()
-{
-  delete t15_2pc_melee;
-}
 
 namespace { // UNNAMED NAMESPACE
 
@@ -699,7 +693,7 @@ static bool trigger_t15_2pc_melee( warrior_attack_t* a )
 
   bool procced;
 
-  if ( ( procced = p -> t15_2pc_melee -> trigger( *a ) ) )
+  if ( ( procced = p -> t15_2pc_melee.trigger( *a ) ) )
   {
     p -> proc.t15_2pc_melee -> occur();
     p -> enrage();
@@ -3542,7 +3536,7 @@ void warrior_t::init_rng()
     default: rppm = 0.0;
       break;
   }
-  t15_2pc_melee = new real_ppm_t( *this, rppm * ( maybe_ptr ( dbc.ptr) ? 1.11 : 1.0));
+  t15_2pc_melee.set_frequency( rppm * ( maybe_ptr ( dbc.ptr) ? 1.11 : 1.0) );
 }
 
 // warrior_t::init_actions ==================================================
@@ -3854,7 +3848,7 @@ void warrior_t::reset()
 
   active_stance = STANCE_BATTLE;
 
-  t15_2pc_melee -> reset();
+  t15_2pc_melee.reset();
 }
 
 // warrior_t::composite_player_multiplier ===================================
