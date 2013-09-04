@@ -47,21 +47,37 @@ actions+=/consecration,if=(target.debuff.flying.down&!ticking)&(cooldown.crusade
 actions+=/sacred_shield,if=talent.sacred_shield.enabled&cooldown.crusader_strike.remains>=0.5
 
 head=faceguard_of_winged_triumph,id=99128,gems=indomitable_primal_160exp_160haste_270sta,reforge=parry_hit
+# ilevel=553,quality=epic,type=plate,stats=1840str_3121sta_1267haste_1267parry
 neck=juggernauts_ignition_keys,id=103916,reforge=hit_haste
+# ilevel=553,quality=epic,stats=1159str_1739sta_796hit_734mastery
 shoulders=shoulderguards_of_winged_triumph,id=99130,gems=320haste_320haste,enchant=180sta_80dodge,reforge=exp_haste
+# ilevel=553,quality=epic,type=plate,stats=1386str_2319sta_966exp_925mastery
 back=drape_of_the_despairing_pit,id=103845,enchant=200sta,reforge=mastery_hit
+# ilevel=553,quality=epic,type=cloth,stats=1159str_1739sta_641mastery_850haste
 chest=chestguard_of_winged_triumph,id=99126,gems=160exp_160haste_160exp_160haste_160exp_160haste_270sta,enchant=300sta,reforge=mastery_haste
+# ilevel=553,quality=epic,type=plate,stats=1840str_3121sta_934exp_1461mastery
 wrists=bubbleburst_bracers,id=103738,enchant=170mastery
+# ilevel=553,quality=epic,type=plate,stats=1159str_1739sta_861hit_623haste
 hands=handguards_of_winged_triumph,id=99127,gems=320haste_320haste,enchant=150sta,reforge=exp_hit
+# ilevel=553,quality=epic,type=plate,stats=1386str_2319sta_687exp_1111haste
 waist=demolishers_reinforced_belt,id=103788,gems=160exp_160haste_320haste_320haste_120str,reforge=mastery_hit
+# ilevel=553,quality=epic,type=plate,stats=1386str_2319sta_950haste_950mastery
 legs=legplates_of_unthinking_strife,id=104311,gems=320haste_320haste_320haste,enchant=250sta_100dodge,reforge=mastery_hit
+# ilevel=553,quality=epic,type=plate,stats=1840str_3121sta_1288haste_1232mastery
 feet=malkoroks_giant_stompers,id=103879,gems=320haste,enchant=175haste,reforge=exp_haste
+# ilevel=553,quality=epic,type=plate,stats=1466str_2319sta_1100exp_799mastery
 finger1=asgorathian_blood_seal,id=103794,gems=160exp_160haste_60haste,reforge=exp_hit
+# ilevel=553,quality=epic,stats=1079str_1739sta_709exp_757haste
 finger2=devilfang_band,id=103896,gems=160exp_160haste_60haste,reforge=exp_haste
+# ilevel=553,quality=epic,stats=1079str_1739sta_765exp_662mastery
 trinket1=vial_of_living_corruption,id=102306
+# ilevel=553,quality=epic,stats=2939sta
 trinket2=rooks_unlucky_talisman,id=102296
+# ilevel=553,quality=epic,stats=2939sta
 main_hand=siegecrafters_forge_hammer,id=103969,gems=320haste,enchant=windsong,reforge=mastery_hit
+# ilevel=553,quality=epic,stats=811str_1337sta_563haste_539mastery,weapon=mace_2.60speed_10257min_19050max
 off_hand=bulwark_of_the_fallen_general,id=103872,gems=320haste,enchant=170parry,reforge=exp_haste
+# ilevel=553,quality=epic,type=,stats=1079str_1739sta_765exp_662mastery
 
 # Gear Summary
 # gear_strength=18789

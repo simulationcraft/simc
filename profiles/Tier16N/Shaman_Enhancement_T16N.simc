@@ -88,21 +88,37 @@ actions.aoe+=/spiritwalkers_grace,moving=1
 actions.aoe+=/fire_nova,if=active_flame_shock>=1
 
 head=helmet_of_celestial_harmony,id=99103,gems=agile_primal_160agi_180agi,reforge=haste_hit
+# ilevel=553,quality=epic,type=mail,stats=1840agi_3121sta_1308mastery_1198haste
 neck=immerseus_crystalline_eye,id=103749,reforge=haste_hit
+# ilevel=553,quality=epic,stats=1159agi_1739sta_773mastery_773haste
 shoulders=quarantine_shoulderguards,id=103836,gems=80agi_160hit_80agi_160hit_120agi,enchant=200agi_100crit
+# ilevel=553,quality=epic,type=mail,stats=1386agi_2319sta_950mastery_950haste
 back=poisonmist_nightcloak,id=103934,enchant=180hit,reforge=haste_hit
+# ilevel=553,quality=epic,type=cloth,stats=1159agi_1739sta_829mastery_678haste
 chest=cuirass_of_celestial_harmony,id=99101,gems=160agi_160agi_160agi_180agi,enchant=80all
+# ilevel=553,quality=epic,type=mail,stats=1840agi_3121sta_1267mastery_1267haste
 wrists=bracers_of_infinite_pipes,id=103891,enchant=180agi
+# ilevel=553,quality=epic,type=mail,stats=1159agi_1739sta_784mastery_753haste
 hands=grips_of_celestial_harmony,id=99102,gems=160agi_160agi_120agi,enchant=170mastery,reforge=haste_exp
+# ilevel=553,quality=epic,type=mail,stats=1386agi_2319sta_965mastery_915haste
 waist=cannoneers_multipocket_gunbelt,id=103887,gems=160agi_80agi_160hit_160agi_120agi,reforge=hit_mastery
+# ilevel=553,quality=epic,type=mail,stats=1386agi_2319sta_1011hit_849haste
 legs=legguards_of_celestial_harmony,id=99104,gems=80agi_160mastery_80agi_160mastery_120agi,enchant=285agi_165crit,reforge=haste_exp
+# ilevel=553,quality=epic,type=mail,stats=1920agi_3121sta_1328mastery_1272haste
 feet=minelayers_padded_boots,id=103731,gems=80agi_160mastery_60mastery,enchant=140agi
+# ilevel=553,quality=epic,type=mail,stats=1466agi_2319sta_957exp_1014mastery
 finger1=swift_serpent_signet,id=103842,gems=80agi_160mastery_60crit,reforge=exp_haste
+# ilevel=553,quality=epic,stats=1079agi_1739sta_720exp_737mastery
 finger2=kilruks_band_of_ascendancy,id=103844,gems=160agi_60crit,reforge=haste_exp
+# ilevel=553,quality=epic,stats=1079agi_1739sta_732mastery_718haste
 trinket1=assurance_of_consequence,id=102292
+# ilevel=553,quality=epic
 trinket2=haromms_talisman,id=102301
+# ilevel=553,quality=epic
 main_hand=hellscreams_cleaver,id=104404,gems=160agi_160agi_120agi,enchant=dancing_steel,reforge=crit_hit
+# ilevel=561,quality=epic,stats=801agi_1441sta_561crit_561mastery,weapon=axe_2.60speed_11051min_20525max
 off_hand=hellscreams_cleaver,id=104404,gems=160agi_160agi_120agi,enchant=dancing_steel,reforge=crit_haste
+# ilevel=561,quality=epic,stats=801agi_1441sta_561crit_561mastery,weapon=axe_2.60speed_11051min_20525max
 
 # Gear Summary
 # gear_strength=80

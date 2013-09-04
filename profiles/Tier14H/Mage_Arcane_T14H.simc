@@ -21,7 +21,7 @@ spec=arcane
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/arcane_brilliance
-actions.precombat+=/frost_armor
+actions.precombat+=/mage_armor
 actions.precombat+=/snapshot_stats
 actions.precombat+=/rune_of_power
 actions.precombat+=/jade_serpent_potion
