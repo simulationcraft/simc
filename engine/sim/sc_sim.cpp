@@ -33,7 +33,15 @@ static bool parse_active( sim_t*             sim,
 
   if ( value == "owner" )
   {
-    sim -> active_player = sim -> active_player -> cast_pet() -> owner;
+    if ( sim -> active_player -> is_pet() )
+    {
+      sim -> active_player = sim -> active_player -> cast_pet() -> owner;
+    }
+    else
+    {
+      sim -> errorf( "Active Player is not a pet, cannot refer to 'owner'" );
+      return false;
+    }
   }
   else if ( value == "none" || value == "0" )
   {

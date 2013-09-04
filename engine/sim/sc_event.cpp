@@ -111,9 +111,3 @@ void event_t::cancel( event_t*& e )
   e -> canceled = true;
   e = 0;
 }
-
-player_event_t::player_event_t( player_t& p, const char* name ) :
-  event_t( p, name ) {}
-
-player_event_t::player_event_t( sim_t& s, player_t* p, const char* name ) :
-  event_t( s, p, name ) {}

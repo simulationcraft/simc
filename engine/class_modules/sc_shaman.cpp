@@ -1463,7 +1463,7 @@ struct lightning_elemental_t : public pet_t
 {
   struct lightning_blast_t : public spell_t
   {
-    lightning_blast_t( player_t* p ) :
+    lightning_blast_t( lightning_elemental_t* p ) :
       spell_t( "lightning_blast", p, p -> find_spell( 145002 ) )
     {
       base_costs[ RESOURCE_MANA ] = 0;
@@ -1477,7 +1477,7 @@ struct lightning_elemental_t : public pet_t
     {
       spell_t::init();
 
-      shaman_t* s = debug_cast< shaman_t* >( player -> cast_pet() -> owner );
+      shaman_t* s = debug_cast< shaman_t* >( static_cast<lightning_elemental_t*>(player) -> owner );
       if ( ! player -> sim -> report_pets_separately && player != s -> guardian_lightning_elemental[ 0 ] )
         stats = s -> guardian_lightning_elemental[ 0 ] -> get_stats( name() );
     }

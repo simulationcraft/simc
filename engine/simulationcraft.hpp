@@ -4715,8 +4715,10 @@ struct target_specific_t
 
 struct player_event_t : public event_t
 {
-  player_event_t( player_t& p, const char* name = "unknown" );
-  player_event_t( sim_t& s, player_t* p, const char* name = "unknown" );
+  player_event_t( player_t& p, const char* name = "unknown" ) :
+    event_t( p, name ) {}
+  player_event_t( sim_t& s, player_t* p, const char* name = "unknown" ) :
+    event_t( s, p, name ) {}
   player_t* p()
   { return player(); }
   player_t* player()

@@ -3005,8 +3005,6 @@ struct berserker_swap_t : public warrior_spell_t
 
   virtual bool ready()
   {
-    warrior_t* p = cast();
-
     if ( cooldown -> down() )
       return false;
 

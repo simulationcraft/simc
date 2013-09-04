@@ -922,7 +922,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     { return static_cast<dancing_rune_weapon_pet_t*>( player ); }
 
     death_knight_t* o() const
-    { return static_cast< death_knight_t* >( player -> cast_pet() -> owner ); }
+    { return static_cast< death_knight_t* >( p() -> owner ); }
   };
 
   struct drw_melee_attack_t : public melee_attack_t
@@ -942,7 +942,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     { return static_cast<dancing_rune_weapon_pet_t*>( player ); }
 
     death_knight_t* o() const
-    { return static_cast< death_knight_t* >( player -> cast_pet() -> owner ); }
+    { return static_cast< death_knight_t* >( p() -> owner ); }
   };
 
   struct drw_blood_plague_t : public drw_spell_t
@@ -1480,13 +1480,13 @@ struct bloodworms_pet_t : public death_knight_pet_t
 
     double base_da_min( const action_state_t* )
     {
-      death_knight_t* o = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
+      death_knight_t* o = debug_cast< death_knight_t* >( p() -> owner );
       return o -> resources.max[ RESOURCE_HEALTH ] * 0.15 * p() -> blood_gorged -> check() * 0.25;
     }
 
     double base_da_max( const action_state_t* )
     {
-      death_knight_t* o = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
+      death_knight_t* o = debug_cast< death_knight_t* >( p() -> owner );
       return o -> resources.max[ RESOURCE_HEALTH ] * 0.15 * p() -> blood_gorged -> check() * 0.25;
     }
 
@@ -1497,7 +1497,7 @@ struct bloodworms_pet_t : public death_knight_pet_t
     {
       heal_t::init();
 
-      death_knight_t* o = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
+      death_knight_t* o = debug_cast< death_knight_t* >( p() -> owner );
 
       if ( ! player -> sim -> report_pets_separately && player != o -> pets.bloodworms[ 0 ] )
         stats = o -> pets.bloodworms[ 0 ] -> get_stats( name_str );
@@ -1538,7 +1538,7 @@ struct bloodworms_pet_t : public death_knight_pet_t
     {
       melee_attack_t::init();
 
-      death_knight_t* o = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
+      death_knight_t* o = debug_cast< death_knight_t* >( p() -> owner );
 
       if ( ! player -> sim -> report_pets_separately && player != o -> pets.bloodworms[ 0 ] )
         stats = o -> pets.bloodworms[ 0 ] -> get_stats( name_str );
@@ -1552,7 +1552,7 @@ struct bloodworms_pet_t : public death_knight_pet_t
       {
         if ( p() -> blood_gorged -> check() > 0 )
         {
-          death_knight_t* o = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
+          death_knight_t* o = debug_cast< death_knight_t* >( p() -> owner );
 
           double base_proc_chance = pow( p() -> blood_gorged -> check() + 1, 3.0 );
           double multiplier = 0;
@@ -1671,7 +1671,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
   struct gargoyle_strike_t : public spell_t
   {
-    gargoyle_strike_t( pet_t* pet ) :
+    gargoyle_strike_t( gargoyle_pet_t* pet ) :
       spell_t( "gargoyle_strike", pet, pet -> find_pet_spell( "Gargoyle Strike" ) )
     {
       harmful            = true;
@@ -1686,7 +1686,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
     {
       double m = spell_t::composite_da_multiplier();
 
-      death_knight_t* dk = debug_cast< death_knight_t* >( player -> cast_pet() -> owner );
+      death_knight_t* dk = debug_cast< death_knight_t* >( static_cast<gargoyle_pet_t*>(player) -> owner );
       if ( dk -> mastery.dreadblade -> ok() )
         m *= 1.0 + dk -> cache.mastery_value();
 
