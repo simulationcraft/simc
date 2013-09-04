@@ -818,10 +818,7 @@ struct avengers_shield_t : public paladin_spell_t
     // hits 1 target if FS glyphed, 3 otherwise
     aoe = ( p -> glyphs.focused_shield -> ok() ) ? 1 : 3;
     may_crit     = true;
-
-    // no weapon multiplier
-    weapon_multiplier = 0.0;
-
+    
     // link needed for trigger_grand_crusader
     cooldown = p -> cooldowns.avengers_shield;
     cooldown -> duration = data().cooldown();
@@ -1219,7 +1216,6 @@ struct consecration_tick_t : public paladin_spell_t
     base_spell_power_multiplier  = 0;
     base_attack_power_multiplier = 1.0;
     direct_power_mod             = data().extra_coeff();
-    weapon_multiplier            = 0;
   }
 };
 
@@ -2291,9 +2287,6 @@ struct holy_wrath_t : public paladin_spell_t
     may_crit   = true;
     split_aoe_damage = true;
 
-    // no weapon component
-    weapon_multiplier = 0;
-
     //Holy Wrath is an oddball - spell database entry doesn't properly contain damage details
     //Tooltip formula is wrong as well.  We're gong to hardcode it here based on empirical testing
     //see http://maintankadin.failsafedesign.com/forum/viewtopic.php?p=743800#p743800
@@ -2926,6 +2919,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
   {
     may_crit = true;
     special = true;
+    weapon = &( p -> main_hand_weapon );
   }
 
   virtual timespan_t gcd()
@@ -3016,7 +3010,6 @@ struct melee_t : public paladin_melee_attack_t
     background            = true;
     repeating             = true;
     trigger_gcd           = timespan_t::zero();
-    weapon                = &( p -> main_hand_weapon );
     base_execute_time     = p -> main_hand_weapon.swing_time;
     trigger_battle_healer = ( sim -> player_no_pet_list.size() > 1 );
   }
@@ -3418,7 +3411,6 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     may_block    = false;
 
     // no weapon multiplier
-    weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
 
     // HoW scales with SP, not AP; flip base multipliers (direct_power_mod is correct @ 1.61)
@@ -3463,8 +3455,8 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
-    // Holy Avenger buffs CS damage by 30% while active
-    if ( p() -> buffs.holy_avenger -> check() )
+    // Holy Avenger buffs HoW damage by 30% while active
+    if ( p() -> specialization() == PALADIN_RETRIBUTION && p() -> buffs.holy_avenger -> check() )
     {
       am *= 1.0 + p() -> buffs.holy_avenger -> data().effectN( 4 ).percent();
     }
@@ -3518,6 +3510,10 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
     background  = true;
     trigger_gcd = timespan_t::zero();
     id          = 96172;
+
+    /* no weapon multiplier - needs to be done by setting weapon = NULL, as setting weapon_multiplier to 0.0 
+    prevents action_multiplier() from being called.  Not wure why it works differently here than with Judgement, Hammer of Wrath, etc. */
+    weapon = NULL;
   }
 
   virtual double action_multiplier()
@@ -3556,6 +3552,9 @@ struct judgment_t : public paladin_melee_attack_t
     base_spell_power_multiplier  = direct_power_mod;
     base_attack_power_multiplier = data().extra_coeff();
     direct_power_mod             = 1.0;
+
+    // no weapon multiplier
+    weapon_multiplier = 0.0;
 
     // Special melee attack that can only miss
     may_glance                   = false;
@@ -3707,6 +3706,9 @@ struct rebuke_t : public paladin_melee_attack_t
     parse_options( NULL, options_str );
 
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+
+    // no weapon multiplier
+    weapon_multiplier = 0.0;
   }
 
   virtual bool ready()
@@ -3772,7 +3774,6 @@ struct seal_of_justice_proc_t : public paladin_melee_attack_t
     background        = true;
     proc              = true;
     trigger_gcd       = timespan_t::zero();
-    weapon            = &( p -> main_hand_weapon );
 
     base_multiplier *= 1.0 + p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
   }
@@ -3787,7 +3788,6 @@ struct seal_of_justice_aoe_proc_t : public paladin_melee_attack_t
     proc              = true;
     aoe               = -1;
     trigger_gcd       = timespan_t::zero();
-    weapon            = &( p -> main_hand_weapon );
 
     base_multiplier *= 1.0 + p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
   }
@@ -3804,7 +3804,6 @@ struct seal_of_righteousness_proc_t : public paladin_melee_attack_t
     proc        = true;
     trigger_gcd = timespan_t::zero();
 
-    weapon      = &( p -> main_hand_weapon );
     aoe         = -1;
 
     // T14 Retribution 4-piece increases seal damage
@@ -3828,8 +3827,6 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
     may_dodge   = false;
     may_parry   = false;
     trigger_gcd = timespan_t::zero();
-
-    weapon      = &( p -> main_hand_weapon );
 
     if ( data().ok() )
     {
@@ -3880,12 +3877,12 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     // not on GCD, usable off-GCD
     trigger_gcd = timespan_t::zero();
     use_off_gcd = true;
-
-    // no weapon scaling
-    weapon_multiplier = 0.0;
-
+    
     //set AP scaling coefficient
     direct_power_mod = data().extra_coeff();
+
+    // no weapon multiplier
+    weapon_multiplier = 0.0;
   }
 
   virtual void execute()
