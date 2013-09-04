@@ -3511,8 +3511,9 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
     trigger_gcd = timespan_t::zero();
     id          = 96172;
 
-    /* no weapon multiplier - needs to be done by setting weapon = NULL, as setting weapon_multiplier to 0.0 
-    prevents action_multiplier() from being called.  Not wure why it works differently here than with Judgement, Hammer of Wrath, etc. */
+    // no weapon multiplier - needs to be done by setting weapon = NULL
+    // setting weapon_multiplier=0.0 prevents STATE_MUL_DA from being added to snapshot_flags because 
+    // both base_dd_min && base_dd_max are zero
     weapon = NULL;
   }
 
