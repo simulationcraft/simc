@@ -66,17 +66,17 @@ void event_t::release( sim_t& sim )
 // ==========================================================================
 
 event_t::event_t( sim_t& s, const char* n ) :
-  sim( s ), player( 0 ), name( n ), time( timespan_t::zero() ),
+  sim( s ), actor( nullptr ), name( n ), time( timespan_t::zero() ),
   reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false ), next( 0 )
 {}
 
-event_t::event_t( sim_t& s, player_t* p, const char* n ) :
-  sim( s ), player( p ), name( n ), time( timespan_t::zero() ),
+event_t::event_t( sim_t& s, actor_t* a, const char* n ) :
+  sim( s ), actor( a ), name( n ), time( timespan_t::zero() ),
   reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false ), next( 0 )
 {}
 
-event_t::event_t( player_t* p, const char* n ) :
-  sim( *( p -> sim ) ), player( p ), name( n ), time( timespan_t::zero() ),
+event_t::event_t( actor_t& a, const char* n ) :
+  sim( *a.sim ), actor( &a ), name( n ), time( timespan_t::zero() ),
   reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false ), next( 0 )
 {}
 
@@ -97,13 +97,13 @@ void event_t::cancel( event_t*& e )
 {
   if ( ! e ) return;
 
-  if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> player && ! e -> canceled )
+  if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> actor && ! e -> canceled )
   {
-    e -> player -> event_counter--;
-    if ( e -> player -> event_counter < 0 )
+    e -> actor -> event_counter--;
+    if ( e -> actor -> event_counter < 0 )
     {
       e -> sim.errorf( "event_t::cancel assertion error: e -> player -> events < 0, event %s from %s.\n",
-                       e -> name, e -> player -> name() );
+                       e -> name, e -> actor -> name() );
       assert( 0 );
     }
   }
@@ -111,3 +111,9 @@ void event_t::cancel( event_t*& e )
   e -> canceled = true;
   e = 0;
 }
+
+player_event_t::player_event_t( player_t& p, const char* name ) :
+  event_t( p, name ) {}
+
+player_event_t::player_event_t( sim_t& s, player_t* p, const char* name ) :
+  event_t( s, p, name ) {}

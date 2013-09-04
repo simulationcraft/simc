@@ -630,12 +630,12 @@ public:
 };
 
 template <class Base>
-struct eoe_execute_event_t : public event_t
+struct eoe_execute_event_t : public player_event_t
 {
   shaman_spell_base_t<Base>* spell;
 
   eoe_execute_event_t( shaman_spell_base_t<Base>* s ) :
-    event_t( s -> player, "eoe_execute" ),
+    player_event_t( *s -> player, "eoe_execute" ),
     spell( s )
   {
     timespan_t delay_duration = sim.gauss( sim.default_aura_delay / 2, sim.default_aura_delay_stddev / 2 );
@@ -1560,12 +1560,12 @@ static void trigger_flametongue_weapon( shaman_melee_attack_t* a )
 
 // trigger_windfury_weapon ==================================================
 
-struct windfury_delay_event_t : public event_t
+struct windfury_delay_event_t : public player_event_t
 {
   shaman_melee_attack_t* wf;
 
   windfury_delay_event_t( shaman_melee_attack_t* wf, timespan_t delay ) :
-    event_t( wf -> p(), "windfury_delay_event" ), wf( wf )
+    player_event_t( *wf -> p(), "windfury_delay_event" ), wf( wf )
   {
     sim.add_event( this, delay );
   }
@@ -3769,14 +3769,14 @@ struct spiritwalkers_grace_t : public shaman_spell_t
 
 struct earth_shock_t : public shaman_spell_t
 {
-  struct lightning_charge_delay_t : public event_t
+  struct lightning_charge_delay_t : public player_event_t
   {
     buff_t* buff;
     int consume_stacks;
     int consume_threshold;
 
-    lightning_charge_delay_t( shaman_t* p, buff_t* b, int consume, int consume_threshold ) :
-      event_t( p, "lightning_charge_delay_t" ), buff( b ),
+    lightning_charge_delay_t( shaman_t& p, buff_t* b, int consume, int consume_threshold ) :
+      player_event_t( p, "lightning_charge_delay_t" ), buff( b ),
       consume_stacks( consume ), consume_threshold( consume_threshold )
     {
       sim.add_event( this, timespan_t::from_seconds( 0.001 ) );
@@ -3828,7 +3828,7 @@ struct earth_shock_t : public shaman_spell_t
       if ( consuming_stacks > 0 )
       {
         p() -> active_lightning_charge -> execute();
-        new ( *p() -> sim ) lightning_charge_delay_t( p(), p() -> buff.lightning_shield, consuming_stacks, consume_threshold );
+        new ( *p() -> sim ) lightning_charge_delay_t( *p(), p() -> buff.lightning_shield, consuming_stacks, consume_threshold );
         p() -> proc.fulmination[ consuming_stacks ] -> occur();
 
         shaman_td_t* tdata = td( execute_state -> target );
@@ -4281,13 +4281,13 @@ struct totem_pulse_action_t : public spell_t
   }
 };
 
-struct totem_pulse_event_t : public event_t
+struct totem_pulse_event_t : public player_event_t
 {
   shaman_totem_pet_t* totem;
 
-  totem_pulse_event_t( shaman_totem_pet_t* t, timespan_t amplitude ) :
-    event_t( t, "totem_pulse" ),
-    totem( t )
+  totem_pulse_event_t( shaman_totem_pet_t& t, timespan_t amplitude ) :
+    player_event_t( t, "totem_pulse" ),
+    totem( &t )
   {
     sim.add_event( this, amplitude );
   }
@@ -4297,7 +4297,7 @@ struct totem_pulse_event_t : public event_t
     if ( totem -> pulse_action )
       totem -> pulse_action -> execute();
 
-    totem -> pulse_event = new ( sim ) totem_pulse_event_t( totem, totem -> pulse_amplitude );
+    totem -> pulse_event = new ( sim ) totem_pulse_event_t( *totem, totem -> pulse_amplitude );
   }
 };
 
@@ -4311,7 +4311,7 @@ void shaman_totem_pet_t::summon( timespan_t duration )
   o() -> totems[ totem_type ] = this;
 
   if ( pulse_action )
-    pulse_event = new ( *sim ) totem_pulse_event_t( this, pulse_amplitude );
+    pulse_event = new ( *sim ) totem_pulse_event_t( *this, pulse_amplitude );
 
   if ( summon_pet )
     summon_pet -> summon();
@@ -4833,14 +4833,14 @@ struct water_shield_t : public shaman_spell_t
 
 struct unleash_flame_buff_t : public buff_t
 {
-  struct unleash_flame_expiration_delay_t : public event_t
+  struct unleash_flame_expiration_delay_t : public player_event_t
   {
     unleash_flame_buff_t* buff;
 
-    unleash_flame_expiration_delay_t( shaman_t* player, unleash_flame_buff_t* b ) :
-      event_t( player, "unleash_flame_expiration_delay" ), buff( b )
+    unleash_flame_expiration_delay_t( shaman_t& player, unleash_flame_buff_t* b ) :
+      player_event_t( player, "unleash_flame_expiration_delay" ), buff( b )
     {
-      sim.add_event( this, sim.gauss( player -> uf_expiration_delay, player -> uf_expiration_delay_stddev ) );
+      sim.add_event( this, sim.gauss( player.uf_expiration_delay, player.uf_expiration_delay_stddev ) );
     }
 
     virtual void execute()
@@ -4880,7 +4880,7 @@ struct unleash_flame_buff_t : public buff_t
       if ( expiration_delay ) return;
       // If there's an expiration event going on, we are prematurely canceling the buff, so delay expiration
       if ( expiration )
-        expiration_delay = new ( *sim ) unleash_flame_expiration_delay_t( debug_cast< shaman_t* >( player ), this );
+        expiration_delay = new ( *sim ) unleash_flame_expiration_delay_t( *debug_cast< shaman_t* >( player ), this );
       else
         buff_t::expire_override();
     }

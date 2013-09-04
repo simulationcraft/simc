@@ -7,16 +7,16 @@
 
 namespace { // UNNAMED NAMESPACE
 
-struct buff_event_t : public event_t
+struct buff_event_t : public player_event_t
 {
   buff_t* buff;
 
   buff_event_t( buff_t* b, const char* name, timespan_t d ) :
-    event_t( *b -> sim, b -> player, name ), buff( b )
+    player_event_t( *b -> sim, b -> player, name ), buff( b )
   { sim.add_event( this, d ); }
 
   buff_event_t( buff_t* b, timespan_t d ) :
-    event_t( *b -> sim, b -> player, b -> name() ), buff( b )
+    player_event_t( *b -> sim, b -> player, b -> name() ), buff( b )
   { sim.add_event( this, d ); }
 };
 
@@ -31,7 +31,9 @@ struct react_ready_trigger_t : public buff_event_t
   void execute()
   {
     buff -> stack_react_ready_triggers[ stack ] = 0;
-    player -> trigger_ready();
+
+    if ( p() )
+      p() -> trigger_ready();
   }
 };
 

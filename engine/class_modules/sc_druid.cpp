@@ -5441,23 +5441,23 @@ struct moonkin_form_t : public druid_buff_t< buff_t >
 
 struct innervate_t : public buff_t
 {
-  struct innervate_event_t : public event_t
+  struct innervate_event_t : public player_event_t
   {
-    innervate_event_t ( player_t* p ) :
-      event_t( p, "innervate" )
+    innervate_event_t ( player_t& p ) :
+      player_event_t( p, "innervate" )
     {
       sim.add_event( this, timespan_t::from_seconds( 1.0 ) );
     }
 
     virtual void execute()
     {
-      if ( player -> buffs.innervate -> check() )
+      if ( p() -> buffs.innervate -> check() )
       {
-        player -> resource_gain( RESOURCE_MANA,
-                                 player -> buffs.innervate -> value(),
-                                 player -> gains.innervate );
+        p() -> resource_gain( RESOURCE_MANA,
+                              p() -> buffs.innervate -> value(),
+                              p() -> gains.innervate );
 
-        new ( sim ) innervate_event_t( player );
+        new ( sim ) innervate_event_t( *p() );
       }
     }
   };
@@ -5470,7 +5470,7 @@ struct innervate_t : public buff_t
 
   virtual void start( int stacks, double value, timespan_t duration )
   {
-    new ( *sim ) innervate_event_t( player );
+    new ( *sim ) innervate_event_t( *player );
 
     buff_t::start( stacks, value, duration );
   }

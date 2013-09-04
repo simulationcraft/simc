@@ -1347,12 +1347,12 @@ struct tiger_strikes_melee_attack_t : public monk_melee_attack_t
 
 struct melee_t : public monk_melee_attack_t
 {
-  struct ts_delay_t : public event_t
+  struct ts_delay_t : public player_event_t
   {
     melee_t* melee;
 
-    ts_delay_t( monk_t* player, melee_t* m ) :
-      event_t( player, "tiger_strikes_delay" ),
+    ts_delay_t( monk_t& player, melee_t* m ) :
+      player_event_t( player, "tiger_strikes_delay" ),
       melee( m )
     {
       sim.add_event( this, timespan_t::from_seconds( sim.gauss( 1.0, 0.2 ) ) );
@@ -1407,7 +1407,7 @@ struct melee_t : public monk_melee_attack_t
     else
     {
       if ( p() -> buff.tiger_strikes -> up() )
-        new ( *sim ) ts_delay_t( p(), this );
+        new ( *sim ) ts_delay_t( *p(), this );
 
       p() -> buff.tiger_strikes -> decrement();
 
@@ -2421,10 +2421,10 @@ using namespace absorbs;
 
 } // end namespace actions;
 
-struct power_strikes_event_t : public event_t
+struct power_strikes_event_t : public player_event_t
 {
-  power_strikes_event_t( monk_t* player, timespan_t tick_time ) :
-    event_t( player, "power_strikes" )
+  power_strikes_event_t( monk_t& player, timespan_t tick_time ) :
+    player_event_t( player, "power_strikes" )
   {
     // Safety clamp
     tick_time = clamp( tick_time, timespan_t::zero(), timespan_t::from_seconds( 20 ) );
@@ -2433,11 +2433,11 @@ struct power_strikes_event_t : public event_t
 
   virtual void execute()
   {
-    monk_t* p = debug_cast<monk_t*>( player );
+    monk_t* p = debug_cast<monk_t*>( actor );
 
     p -> buff.power_strikes -> trigger();
 
-    new ( sim ) power_strikes_event_t( p, timespan_t::from_seconds( 20.0 ) );
+    new ( sim ) power_strikes_event_t( *p, timespan_t::from_seconds( 20.0 ) );
   }
 };
 
@@ -3177,7 +3177,7 @@ void monk_t::combat_begin()
   {
     // Random start of the first tick.
     timespan_t d = player_t::rng().real() * timespan_t::from_seconds( 20.0 );
-    new ( *sim ) power_strikes_event_t( this, d );
+    new ( *sim ) power_strikes_event_t( *this, d );
   }
 }
 

@@ -242,20 +242,20 @@ public:
     }
   } soul_swap_buffer;
 
-  struct demonic_calling_event_t : event_t
+  struct demonic_calling_event_t : player_event_t
   {
     bool initiator;
 
     demonic_calling_event_t( player_t* p, timespan_t delay, bool init = false ) :
-      event_t( p, "demonic_calling" ), initiator( init )
+      player_event_t( *p, "demonic_calling" ), initiator( init )
     {
       sim.add_event( this, delay );
     }
 
     virtual void execute()
     {
-      warlock_t* p = static_cast<warlock_t*>( player );
-      p -> demonic_calling_event = new ( sim ) demonic_calling_event_t( player,
+      warlock_t* p = static_cast<warlock_t*>( actor );
+      p -> demonic_calling_event = new ( sim ) demonic_calling_event_t( p,
           timespan_t::from_seconds( ( p -> spec.wild_imps -> effectN( 1 ).period().total_seconds() + p -> spec.imp_swarm -> effectN( 3 ).base_value() ) * p -> cache.spell_speed() ) );
       if ( ! initiator ) p -> buffs.demonic_calling -> trigger();
     }
@@ -1469,13 +1469,13 @@ public:
   stats_t* mg_tick_stats;
   std::vector< player_t* > havoc_targets;
 
-  struct cost_event_t : event_t
+  struct cost_event_t : player_event_t
   {
     warlock_spell_t* spell;
     resource_e resource;
 
     cost_event_t( player_t* p, warlock_spell_t* s, resource_e r = RESOURCE_NONE ) :
-      event_t( p, "cost_event" ), spell( s ), resource( r )
+      player_event_t( *p, "cost_event" ), spell( s ), resource( r )
     {
       if ( resource == RESOURCE_NONE ) resource = spell -> current_resource();
       sim.add_event( this, timespan_t::from_seconds( 1 ) );
@@ -1483,8 +1483,8 @@ public:
 
     virtual void execute()
     {
-      spell -> cost_event = new ( sim ) cost_event_t( player, spell, resource );
-      player -> resource_loss( resource, spell -> costs_per_second[ resource ], spell -> gain );
+      spell -> cost_event = new ( sim ) cost_event_t( p(), spell, resource );
+      p() -> resource_loss( resource, spell -> costs_per_second[ resource ], spell -> gain );
     }
   };
 
@@ -2119,20 +2119,20 @@ struct shadow_bolt_t : public warlock_spell_t
 
 struct shadowburn_t : public warlock_spell_t
 {
-  struct mana_event_t : public event_t
+  struct mana_event_t : public player_event_t
   {
     shadowburn_t* spell;
     gain_t* gain;
 
     mana_event_t( warlock_t* p, shadowburn_t* s ) :
-      event_t( p, "shadowburn_mana_return" ), spell( s ), gain( p -> gains.shadowburn )
+      player_event_t( *p, "shadowburn_mana_return" ), spell( s ), gain( p -> gains.shadowburn )
     {
       sim.add_event( this, spell -> mana_delay );
     }
 
     virtual void execute()
     {
-      player -> resource_gain( RESOURCE_MANA, player -> resources.max[ RESOURCE_MANA ] * spell -> mana_amount, gain );
+      p() -> resource_gain( RESOURCE_MANA, p() -> resources.max[ RESOURCE_MANA ] * spell -> mana_amount, gain );
     }
   };
 
@@ -3499,17 +3499,17 @@ struct soulburn_t : public warlock_spell_t
 
 struct dark_soul_t : public warlock_spell_t
 {
-  struct dark_soul_invalidate_event_t : public event_t
+  struct dark_soul_invalidate_event_t : public player_event_t
   {
     dark_soul_invalidate_event_t( warlock_t* p, timespan_t duration ) :
-      event_t( p, "dark_soul_cache_invalidate" )
+      player_event_t( *p, "dark_soul_cache_invalidate" )
     { p -> sim -> add_event( this, duration ); }
 
     void execute()
     {
-      player -> invalidate_cache( CACHE_CRIT );
-      player -> invalidate_cache( CACHE_HASTE );
-      player -> invalidate_cache( CACHE_MASTERY );
+      p() -> invalidate_cache( CACHE_CRIT );
+      p() -> invalidate_cache( CACHE_HASTE );
+      p() -> invalidate_cache( CACHE_MASTERY );
     }
   };
 

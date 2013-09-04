@@ -148,17 +148,17 @@ void pet_t::summon( timespan_t summon_duration )
   if ( summon_duration > timespan_t::zero() )
   {
     duration = summon_duration;
-    struct expiration_t : public event_t
+    struct expiration_t : public player_event_t
     {
-      expiration_t( pet_t* p, timespan_t duration ) :
-        event_t( p, "pet_summon_duration" )
+      expiration_t( pet_t& p, timespan_t duration ) :
+        player_event_t( p, "pet_summon_duration" )
       {
         sim.add_event( this, duration );
       }
 
       virtual void execute()
       {
-        pet_t& pet = static_cast<pet_t&>( *player );
+        pet_t& pet = static_cast<pet_t&>( *actor );
 
         pet.expiration = nullptr;
 
@@ -166,7 +166,7 @@ void pet_t::summon( timespan_t summon_duration )
           pet.dismiss();
       }
     };
-    expiration = new ( *sim ) expiration_t( this, summon_duration );
+    expiration = new ( *sim ) expiration_t( *this, summon_duration );
   }
 
   arise();

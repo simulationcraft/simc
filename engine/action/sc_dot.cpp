@@ -14,17 +14,17 @@ namespace { // anonymous namespace
 
 // DoT Tick Event ===========================================================
 
-struct dot_tick_event_t : public event_t
+struct dot_tick_event_t : public player_event_t
 {
   dot_t* dot;
 
   dot_tick_event_t( dot_t* d,
                     timespan_t time_to_tick ) :
-    event_t( d -> source, "DoT Tick" ), dot( d )
+      player_event_t( *d -> source, "DoT Tick" ), dot( d )
   {
     if ( sim.debug )
       sim.output( "New DoT Tick Event: %s %s %d-of-%d %.2f",
-                  player -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick.total_seconds() );
+                  p() -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick.total_seconds() );
 
     sim.add_event( this, time_to_tick );
   }
@@ -36,7 +36,7 @@ struct dot_tick_event_t : public event_t
     if ( dot -> current_tick >= dot -> num_ticks )
     {
       sim.errorf( "Player %s has corrupt tick (%d of %d) event on action %s!\n",
-                  player -> name(), dot -> current_tick, dot -> num_ticks, dot -> name() );
+                  p() -> name(), dot -> current_tick, dot -> num_ticks, dot -> name() );
       sim.cancel();
       assert( 0 );
     }

@@ -11,81 +11,83 @@
 
 namespace { // anonymous namespace
 
-struct player_gcd_event_t : public event_t
+struct player_gcd_event_t : public player_event_t
 {
-  player_gcd_event_t( player_t* p,
-                      timespan_t delta_time ) :
-    event_t( p, "Player-Ready-GCD" )
+  player_gcd_event_t( player_t& p, timespan_t delta_time ) :
+      player_event_t( p, "Player-Ready-GCD" )
   {
     if ( sim.debug )
-      sim.output( "New Player-Ready-GCD Event: %s", p -> name() );
+      sim.output( "New Player-Ready-GCD Event: %s", p.name() );
 
     sim.add_event( this, delta_time );
   }
 
   virtual void execute()
   {
-    for ( std::vector<action_t*>::const_iterator i = player -> active_off_gcd_list -> off_gcd_actions.begin();
-          i < player -> active_off_gcd_list -> off_gcd_actions.end(); ++i )
+    for ( std::vector<action_t*>::const_iterator i = p() -> active_off_gcd_list -> off_gcd_actions.begin();
+          i < p() -> active_off_gcd_list -> off_gcd_actions.end(); ++i )
     {
       action_t* a = *i;
       if ( a -> ready() )
       {
-        action_priority_list_t* alist = player -> active_action_list;
+        action_priority_list_t* alist = p() -> active_action_list;
 
         a -> execute();
         a -> line_cooldown.start();
         if ( ! a -> quiet )
         {
-          player -> iteration_executed_foreground_actions++;
+          p() -> iteration_executed_foreground_actions++;
           a -> total_executions++;
 
-          player -> sequence_add( a, a -> target, sim.current_time );
+          p() -> sequence_add( a, a -> target, sim.current_time );
         }
 
         // Need to restart because the active action list changed
-        if ( alist != player -> active_action_list )
+        if ( alist != p() -> active_action_list )
         {
-          player -> activate_action_list( player -> active_action_list, true );
+          p() -> activate_action_list( p() -> active_action_list, true );
           execute();
-          player -> activate_action_list( alist, true );
+          p() -> activate_action_list( alist, true );
           return;
         }
       }
     }
 
-    if ( player -> restore_action_list != 0 )
+    if ( p() -> restore_action_list != 0 )
     {
-      player -> activate_action_list( player -> restore_action_list );
-      player -> restore_action_list = 0;
+      p() -> activate_action_list( p() -> restore_action_list );
+      p() -> restore_action_list = 0;
     }
 
-    player -> off_gcd = new ( sim ) player_gcd_event_t( player, timespan_t::from_seconds( 0.1 ) );
+    p() -> off_gcd = new ( sim ) player_gcd_event_t( *p(), timespan_t::from_seconds( 0.1 ) );
   }
 };
 // Action Execute Event =====================================================
 
-struct action_execute_event_t : public event_t
+struct action_execute_event_t : public player_event_t
 {
   action_t* action;
   action_state_t* execute_state;
 
-  action_execute_event_t( action_t* a,
-                          timespan_t time_to_execute,
+  action_execute_event_t( action_t* a, timespan_t time_to_execute,
                           action_state_t* state = 0 ) :
-    event_t( a -> player, "Action-Execute" ), action( a ), execute_state( state )
+      player_event_t( *a->player, "Action-Execute" ), action( a ),
+        execute_state( state )
   {
     if ( sim.debug )
       sim.output( "New Action Execute Event: %s %s %.1f (target=%s, marker=%c)",
-                  player -> name(), a -> name(), time_to_execute.total_seconds(),
-                  a -> target -> name(), ( a -> marker ) ? a -> marker : '0' );
+                  p()->name(), a->name(), time_to_execute.total_seconds(),
+                  a->target->name(), ( a->marker ) ? a->marker : '0' );
     sim.add_event( this, time_to_execute );
   }
 
   // Ensure we properly release the carried execute_state even if this event
   // is never executed.
   ~action_execute_event_t()
-  { if ( execute_state ) action_state_t::release( execute_state ); }
+  {
+    if ( execute_state )
+      action_state_t::release( execute_state );
+  }
 
   // action_execute_event_t::execute ========================================
 
@@ -105,23 +107,23 @@ struct action_execute_event_t : public event_t
 
     if ( action -> background ) return;
 
-    if ( ! player -> channeling )
+    if ( ! p() -> channeling )
     {
-      if ( player -> readying )
+      if ( p() -> readying )
         sim.output( "Danger Will Robinson!  Danger!  action %s player %s\n",
-                    action -> name(), player -> name() );
+                    action -> name(), p() -> name() );
 
-      player -> schedule_ready( timespan_t::zero() );
+      p() -> schedule_ready( timespan_t::zero() );
     }
 
-    if ( player -> active_off_gcd_list == 0 )
+    if ( p() -> active_off_gcd_list == 0 )
       return;
 
     // Kick off the during-gcd checker, first run is immediately after
-    event_t::cancel( player -> off_gcd );
+    event_t::cancel( p() -> off_gcd );
 
-    if ( ! player -> channeling )
-      player -> off_gcd = new ( sim ) player_gcd_event_t( player, timespan_t::zero() );
+    if ( ! p() -> channeling )
+      p() -> off_gcd = new ( sim ) player_gcd_event_t( *p(), timespan_t::zero() );
   }
 
 };

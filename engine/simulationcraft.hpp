@@ -192,6 +192,7 @@ struct action_priority_t;
 struct action_priority_list_t;
 struct action_state_t;
 struct action_t;
+struct actor_t;
 struct alias_t;
 struct attack_t;
 struct benefit_t;
@@ -2863,7 +2864,7 @@ struct plot_data_t
 struct event_t
 {
   sim_t&      sim;
-  player_t*   player;
+  actor_t*    actor;
   const char* name;
   timespan_t  time;
   timespan_t  reschedule_time;
@@ -2872,8 +2873,8 @@ struct event_t
   event_t*    next;
 
   event_t( sim_t& s, const char* n = "unknown" );
-  event_t( sim_t& s, player_t* p, const char* n = "unknown" );
-  event_t( player_t* p, const char* n = "unknown" );
+  event_t( sim_t& s, actor_t* p, const char* n = "unknown" );
+  event_t( actor_t& p, const char* n = "unknown" );
 
   timespan_t occurs()  { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
   timespan_t remains() { return occurs() - sim.current_time; }
@@ -3774,26 +3775,34 @@ struct player_collected_data_t
 };
 
 // Actor
+/* actor_t is a lightweight representation of an actor belonging to a simulation,
+ * having a name and some event-related helper functionality.
+ */
 
 struct actor_t : public noncopyable
 {
 #ifndef NDEBUG
-  static const bool ACTOR_EVENT_BOOKKEEPING = true;
+  enum { ACTOR_EVENT_BOOKKEEPING = true };
 #else
-  static const bool ACTOR_EVENT_BOOKKEEPING = false;
+  enum { ACTOR_EVENT_BOOKKEEPING = false };
 #endif
 
   sim_t* sim; // owner
   std::string name_str;
   int event_counter; // safety counter. Shall never be less than zero
 
+  stopwatch_t event_stopwatch;
+
   actor_t( sim_t* s, const std::string& name ) :
     sim( s ), name_str( name ),
-    event_counter( 0 )
+    event_counter( 0 ),
+    event_stopwatch( STOPWATCH_THREAD )
   {
 
   }
   virtual ~ actor_t() { }
+  virtual const char* name() const
+  { return name_str.c_str(); }
 };
 
 // Vengeance Actor List =====================================================
@@ -4341,8 +4350,6 @@ public:
   bool active_during_iteration;
   const spelleffect_data_t* _mastery; // = find_mastery_spell( specialization() ) -> effectN( 1 );
 
-  stopwatch_t event_stopwatch;
-
   player_t( sim_t* sim, player_e type, const std::string& name, race_e race_e = RACE_NONE );
 
   virtual ~player_t();
@@ -4704,6 +4711,16 @@ struct target_specific_t
     if ( data.empty() ) data.resize( target -> sim -> actor_list.size() );
     return data[ target -> actor_index ];
   }
+};
+
+struct player_event_t : public event_t
+{
+  player_event_t( player_t& p, const char* name = "unknown" );
+  player_event_t( sim_t& s, player_t* p, const char* name = "unknown" );
+  player_t* p()
+  { return player(); }
+  player_t* player()
+  { return static_cast<player_t*>( actor ); }
 };
 
 // Pet ======================================================================
@@ -5703,14 +5720,14 @@ struct proc_callback_t : public action_callback_t
   cooldown_t*      cooldown;
   rng_t&           proc_rng;
 
-  struct delay_event_t : public event_t
+  struct delay_event_t : public player_event_t
   {
     proc_callback_t& callback;
     action_t* action;
     T_CALLDATA* call_data;
 
     delay_event_t( player_t& p, proc_callback_t& cb, action_t* a, T_CALLDATA* cd ) :
-      event_t( &p, "proc_callback_delay" ),
+      player_event_t( p, "proc_callback_delay" ),
       callback( cb ), action( a ), call_data( cd )
     {
       timespan_t delay = sim.gauss( sim.default_aura_delay, sim.default_aura_delay_stddev );
@@ -5806,12 +5823,12 @@ public:
 template <typename T_BUFF, typename T_CALLDATA = action_state_t>
 struct buff_proc_callback_t : public proc_callback_t<T_CALLDATA>
 {
-  struct tick_stack_t : public event_t
+  struct tick_stack_t : public player_event_t
   {
     buff_proc_callback_t<T_BUFF>* callback;
 
-    tick_stack_t( player_t* p, buff_proc_callback_t* cb, timespan_t initial_delay = timespan_t::zero() ) :
-      event_t( p, "cb_tick_stack" ), callback( cb )
+    tick_stack_t( player_t& p, buff_proc_callback_t* cb, timespan_t initial_delay = timespan_t::zero() ) :
+      player_event_t( p, "cb_tick_stack" ), callback( cb )
     { sim.add_event( this, callback -> proc_data.tick + initial_delay ); }
 
     virtual void execute()
@@ -5820,7 +5837,7 @@ struct buff_proc_callback_t : public proc_callback_t<T_CALLDATA>
            ( ! callback -> buff -> reverse && callback -> buff -> check() > 0 && callback -> buff -> check() < callback -> buff -> max_stack() ) )
       {
         callback -> buff -> trigger();
-        new ( sim ) tick_stack_t( player, callback );
+        new ( sim ) tick_stack_t( *p(), callback );
       }
     }
   };
@@ -5844,7 +5861,7 @@ struct buff_proc_callback_t : public proc_callback_t<T_CALLDATA>
       timespan_t initial_delay;
       if ( buff -> delay )
         initial_delay = buff -> delay -> remains();
-      new ( *this -> listener -> sim ) tick_stack_t( action -> player, this, initial_delay );
+      new ( *this -> listener -> sim ) tick_stack_t( *action -> player, this, initial_delay );
     }
   }
 };
@@ -5924,7 +5941,7 @@ struct action_priority_list_t
                                  const std::string& comment = std::string() );
 };
 
-struct travel_event_t : public event_t
+struct travel_event_t : public player_event_t
 {
   action_t* action;
   action_state_t* state;

@@ -953,13 +953,13 @@ void sim_t::add_event( event_t* e,
 
   events_remaining++;
   if ( events_remaining > max_events_remaining ) max_events_remaining = events_remaining;
-  if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> player ) e -> player -> event_counter++;
+  if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> actor ) e -> actor -> event_counter++;
 
 
   if ( debug )
   {
-    output( "Add Event: %s %.2f %.2f %d %s", e -> name, e -> time.total_seconds(), e -> reschedule_time.total_seconds(), e -> id, e -> player ? e -> player -> name() : "" );
-    if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> player ) output( "Actor %s has %d scheduled events", e -> player -> name(), e -> player -> event_counter );
+    output( "Add Event: %s %.2f %.2f %d %s", e -> name, e -> time.total_seconds(), e -> reschedule_time.total_seconds(), e -> id, e -> actor ? e -> actor -> name() : "" );
+    if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> actor ) output( "Actor %s has %d scheduled events", e -> actor -> name(), e -> actor -> event_counter );
   }
 }
 
@@ -1086,13 +1086,13 @@ void sim_t::combat( int iteration )
   {
     current_time = e -> time;
 
-    if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> player && ! e -> canceled )
+    if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> actor && ! e -> canceled )
     {
       // Perform actor event bookkeeping first
-      e -> player -> event_counter--;
-      if ( e -> player -> event_counter < 0 )
+      e -> actor -> event_counter--;
+      if ( e -> actor -> event_counter < 0 )
       {
-        errorf( "sim_t::combat assertion error! canceling event %s leaves negative event count for user %s.\n", e -> name, e -> player -> name() );
+        errorf( "sim_t::combat assertion error! canceling event %s leaves negative event count for user %s.\n", e -> name, e -> actor -> name() );
         assert( 0 );
       }
     }
@@ -1108,11 +1108,11 @@ void sim_t::combat( int iteration )
     }
     else
     {
-      if ( debug ) output( "Executing event: %s %s", e -> name, e -> player ? e -> player -> name() : "" );
+      if ( debug ) output( "Executing event: %s %s", e -> name, e -> actor ? e -> actor -> name() : "" );
 
       if ( monitor_cpu )
       {
-        stopwatch_t& sw = e -> player ? e -> player -> event_stopwatch : event_stopwatch;
+        stopwatch_t& sw = e -> actor ? e -> actor -> event_stopwatch : event_stopwatch;
         sw.mark();
         e -> execute();
         sw.accumulate();

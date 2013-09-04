@@ -968,21 +968,21 @@ void rogue_attack_t::execute()
       break_stealth( p() );
     else
     {
-      struct subterfuge_event_t : public event_t
+      struct subterfuge_event_t : public player_event_t
       {
-        subterfuge_event_t( rogue_t* p ) :
-          event_t( p, "subterfuge" )
+        subterfuge_event_t( rogue_t& p ) :
+          player_event_t( p, "subterfuge" )
         {
-          sim.add_event( this, p -> find_spell( 115192 ) -> duration() );
+          sim.add_event( this, p.find_spell( 115192 ) -> duration() );
         }
 
         void execute()
         {
-          break_stealth( debug_cast< rogue_t* >( player ) );
+          break_stealth( debug_cast< rogue_t* >( actor ) );
         }
       };
 
-      new ( *sim ) subterfuge_event_t( p() );
+      new ( *sim ) subterfuge_event_t( *p() );
     }
   }
 
@@ -1808,7 +1808,7 @@ struct premeditation_t : public rogue_attack_t
     int combo_points;
     player_t* target;
 
-    premeditation_event_t( rogue_t* p, player_t* t, timespan_t duration, int cp ) :
+    premeditation_event_t( rogue_t& p, player_t* t, timespan_t duration, int cp ) :
       event_t( p, "premeditation" ),
       combo_points( cp ), target( t )
     {
@@ -1817,7 +1817,7 @@ struct premeditation_t : public rogue_attack_t
 
     void execute()
     {
-      rogue_t* p = static_cast< rogue_t* >( player );
+      rogue_t* p = static_cast< rogue_t* >( actor );
       rogue_td_t* td = p -> get_target_data( target );
 
       td -> combo_points.count -= combo_points;
@@ -1825,7 +1825,7 @@ struct premeditation_t : public rogue_attack_t
       {
         sim.output( "%s loses %d temporary combo_points from premeditation (%d)",
                     td -> combo_points.target -> name(),
-                    player -> find_specialization_spell( "Premeditation" ) -> effectN( 1 ).base_value(),
+                    p -> find_specialization_spell( "Premeditation" ) -> effectN( 1 ).base_value(),
                     td -> combo_points.count );
       }
 
@@ -1844,7 +1844,7 @@ struct premeditation_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    p() -> event_premeditation = new ( *sim ) premeditation_event_t( p(), state -> target, data().duration(), data().effectN( 1 ).base_value() );
+    p() -> event_premeditation = new ( *sim ) premeditation_event_t( *p(), state -> target, data().duration(), data().effectN( 1 ).base_value() );
   }
 };
 
@@ -3707,13 +3707,13 @@ void rogue_t::combat_begin()
 
   if ( spec.honor_among_thieves -> ok() && virtual_hat_interval > timespan_t::zero() )
   {
-    struct virtual_hat_event_t : public event_t
+    struct virtual_hat_event_t : public player_event_t
     {
       action_callback_t* callback;
       timespan_t         interval;
 
       virtual_hat_event_t( rogue_t* p, action_callback_t* cb, timespan_t i ) :
-        event_t( p, "Virtual HAT Event" ),
+        player_event_t( *p, "Virtual HAT Event" ),
         callback( cb ), interval( i )
       {
         timespan_t cooldown = timespan_t::from_seconds( 2.0 );
@@ -3725,7 +3725,7 @@ void rogue_t::combat_begin()
 
       virtual void execute()
       {
-        rogue_t* p = debug_cast<rogue_t*>( player );
+        rogue_t* p = debug_cast<rogue_t*>( actor );
         callback -> trigger( nullptr, nullptr );
         new ( sim ) virtual_hat_event_t( p, callback, interval );
       }

@@ -37,14 +37,14 @@ struct hymn_of_hope_buff_t : public buff_t
 
 // Player Ready Event =======================================================
 
-struct player_ready_event_t : public event_t
+struct player_ready_event_t : public player_event_t
 {
-  player_ready_event_t( player_t* p,
+  player_ready_event_t( player_t& p,
                         timespan_t delta_time ) :
-    event_t( p, "Player-Ready" )
+                          player_event_t( p, "Player-Ready" )
   {
     if ( sim.debug )
-      sim.output( "New Player-Ready Event: %s", p -> name() );
+      sim.output( "New Player-Ready Event: %s", p.name() );
 
     sim.add_event( this, delta_time );
   }
@@ -52,24 +52,24 @@ struct player_ready_event_t : public event_t
   virtual void execute()
   {
     // Player that's checking for off gcd actions to use, cancels that checking when there's a ready event firing.
-    if ( player -> off_gcd )
-      event_t::cancel( player -> off_gcd );
+    if ( p() -> off_gcd )
+      event_t::cancel( p() -> off_gcd );
 
-    if ( ! player -> execute_action() )
+    if ( ! p() -> execute_action() )
     {
-      if ( player -> ready_type == READY_POLL )
+      if ( p() -> ready_type == READY_POLL )
       {
-        timespan_t x = player -> available();
+        timespan_t x = p() -> available();
 
-        player -> schedule_ready( x, true );
+        p() -> schedule_ready( x, true );
 
         // Waiting Debug
         if ( sim.debug )
           sim.output( "%s is waiting for %.4f resource=%.2f",
-                      player -> name(), x.total_seconds(),
-                      player -> resources.current[ player -> primary_resource() ] );
+                      p() -> name(), x.total_seconds(),
+                      p() -> resources.current[ p() -> primary_resource() ] );
       }
-      else player -> started_waiting = sim.current_time;
+      else p() -> started_waiting = sim.current_time;
     }
   }
 };
@@ -78,21 +78,21 @@ struct player_ready_event_t : public event_t
  * - Reason for it are that we need to finish the current action ( eg. a dot tick ) without
  * killing off target dependent things ( eg. dot state ).
  */
-struct demise_event_t : public event_t
+struct demise_event_t : public player_event_t
 {
-  demise_event_t( player_t* p,
+  demise_event_t( player_t& p,
                   timespan_t delta_time = timespan_t::zero() /* Instantly kill the player */ ) :
-    event_t( p, "Player-Demise" )
+     player_event_t( p, "Player-Demise" )
   {
     if ( sim.debug )
-      sim.output( "New Player-Demise Event: %s", p -> name() );
+      sim.output( "New Player-Demise Event: %s", p.name() );
 
     sim.add_event( this, delta_time );
   }
 
   virtual void execute()
   {
-    player -> demise();
+    p() -> demise();
   }
 };
 
@@ -331,14 +331,14 @@ void ignite::trigger_pct_based( action_t* ignite_action,
                                 player_t* t,
                                 double dmg )
 {
-  struct delay_event_t : public event_t
+  struct delay_event_t : public player_event_t
   {
     double additional_ignite_dmg;
     player_t* target;
     action_t* action;
 
     delay_event_t( player_t* t, action_t* a, double dmg ) :
-      event_t( a -> player, "Ignite Sampling Event" ),
+      player_event_t( *a -> player, "Ignite Sampling Event" ),
       additional_ignite_dmg( dmg ), target( t ), action( a )
     {
       // Use same delay as in buff application
@@ -346,7 +346,7 @@ void ignite::trigger_pct_based( action_t* ignite_action,
 
       if ( sim.debug )
         sim.output( "New %s Sampling Event: %s ( delta time: %.4f )",
-                    action -> name(), player -> name(), delay_duration.total_seconds() );
+                    action -> name(), p() -> name(), delay_duration.total_seconds() );
 
       sim.add_event( this, delay_duration );
     }
@@ -681,7 +681,6 @@ player_t::player_t( sim_t*             s,
   racials( racials_t() ),
   active_during_iteration( false ),
   _mastery( spelleffect_data_t::nil() ),
-  event_stopwatch( STOPWATCH_THREAD ),
   cache( this )
 {
   actor_index = sim -> actor_list.size();
@@ -4142,7 +4141,7 @@ void player_t::schedule_ready( timespan_t delta_time,
     last_foreground_action -> stats -> iteration_total_execute_time += delta_time;
   }
 
-  readying = new ( *sim ) player_ready_event_t( this, delta_time );
+  readying = new ( *sim ) player_ready_event_t( *this, delta_time );
 
   if ( was_executing && was_executing -> gcd() > timespan_t::zero() && ! was_executing -> background && ! was_executing -> proc && ! was_executing -> repeating )
   {
@@ -5149,7 +5148,7 @@ void player_t::assess_damage( school_e school,
         collected_data.deaths.add( sim -> current_time.total_seconds() );
       }
       if ( sim -> log ) sim -> output( "%s has died.", name() );
-      new ( *sim ) demise_event_t( this );
+      new ( *sim ) demise_event_t( *this );
     }
   }
 
@@ -6225,13 +6224,13 @@ struct use_item_t : public action_t
 
       if ( item -> parsed.use.duration != timespan_t::zero() )
       {
-        struct trigger_expiration_t : public event_t
+        struct trigger_expiration_t : public player_event_t
         {
           item_t* item;
           action_callback_t* trigger;
 
-          trigger_expiration_t( player_t* player, item_t* i, action_callback_t* t ) :
-            event_t( player, i -> name() ), item( i ), trigger( t )
+          trigger_expiration_t( player_t& player, item_t* i, action_callback_t* t ) :
+            player_event_t( player, i -> name() ), item( i ), trigger( t )
           {
             sim.add_event( this, item -> parsed.use.duration );
           }
@@ -6241,7 +6240,7 @@ struct use_item_t : public action_t
           }
         };
 
-        new ( *sim ) trigger_expiration_t( player, item, trigger );
+        new ( *sim ) trigger_expiration_t( *player, item, trigger );
 
         lockout( item -> parsed.use.duration );
       }
@@ -9562,10 +9561,11 @@ void player_vengeance_t::start( player_t& p )
 {
   assert( ! is_started() );
 
-  struct collect_event_t : public event_t
+  struct collect_event_t : public player_event_t
   {
     player_vengeance_t& vengeance;
-    collect_event_t( player_t* p, player_vengeance_t& v ) : event_t( p, "vengeance_timeline_collect_event_t" ),
+    collect_event_t( player_t& p, player_vengeance_t& v ) :
+      player_event_t( p, "vengeance_timeline_collect_event_t" ),
       vengeance( v )
     {
       sim.add_event( this, timespan_t::from_seconds( 1 ) );
@@ -9574,12 +9574,12 @@ void player_vengeance_t::start( player_t& p )
     virtual void execute()
     {
       assert( vengeance.event == this );
-      vengeance.timeline_.add( sim.current_time, player -> buffs.vengeance -> value() );
-      vengeance.event = new ( sim ) collect_event_t( player, vengeance );
+      vengeance.timeline_.add( sim.current_time, p() -> buffs.vengeance -> value() );
+      vengeance.event = new ( sim ) collect_event_t( *p(), vengeance );
     }
   };
 
-  event = new ( *p.sim ) collect_event_t( &p, *this ); // start timeline
+  event = new ( *p.sim ) collect_event_t( p, *this ); // start timeline
 }
 
 /* Stop Vengeance

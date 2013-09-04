@@ -1259,13 +1259,13 @@ static double icicle_damage( mage_t* mage )
   return 0;
 }
 
-struct icicle_event_t : public event_t
+struct icicle_event_t : public player_event_t
 {
   mage_t* mage;
   double damage;
 
-  icicle_event_t( mage_t* m, double d, bool first = false ) :
-    event_t( m, "icicle_event" ), mage( m ), damage( d )
+  icicle_event_t( mage_t& m, double d, bool first = false ) :
+    player_event_t( m, "icicle_event" ), mage( &m ), damage( d )
   {
     double cast_time = first ? 0.25 : 0.75;
     cast_time *= mage -> cache.spell_speed();
@@ -1281,7 +1281,7 @@ struct icicle_event_t : public event_t
     double d = icicle_damage( mage );
     if ( d > 0 )
     {
-      mage -> icicle_event = new ( sim ) icicle_event_t( mage, d );
+      mage -> icicle_event = new ( sim ) icicle_event_t( *mage, d );
       if ( mage -> sim -> debug )
         mage -> sim -> output( "%s icicle use (chained), damage=%f, total=%u",
                                mage -> name(), d, as<unsigned>( mage -> icicles.size() ) );
@@ -1304,7 +1304,7 @@ static void trigger_icicle( mage_t* mage, bool chain = false )
   if ( chain && ! mage -> icicle_event )
   {
     d = icicle_damage( mage );
-    mage -> icicle_event = new ( *mage -> sim ) icicle_event_t( mage, d, true );
+    mage -> icicle_event = new ( *mage -> sim ) icicle_event_t( *mage, d, true );
   }
   else if ( ! chain )
   {

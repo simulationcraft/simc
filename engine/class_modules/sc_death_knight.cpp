@@ -1513,18 +1513,18 @@ struct bloodworms_pet_t : public death_knight_pet_t
   // FIXME: Level 80/85 values
   struct melee_t : public melee_attack_t
   {
-    struct blood_burst_event_t : public event_t
+    struct blood_burst_event_t : public player_event_t
     {
-      blood_burst_event_t( bloodworms_pet_t* p, timespan_t delta_time ) :
-        event_t( p, "blood_burst" )
+      blood_burst_event_t( bloodworms_pet_t& p, timespan_t delta_time ) :
+        player_event_t( p, "blood_burst" )
       { sim.add_event( this, delta_time ); }
 
       void execute()
       {
-        bloodworms_pet_t* p = debug_cast< bloodworms_pet_t* >( player );
-        p -> blood_burst -> execute();
-        if ( ! player -> is_sleeping() )
-          player -> cast_pet() -> dismiss();
+        bloodworms_pet_t& p = static_cast< bloodworms_pet_t& >( *actor );
+        p.blood_burst -> execute();
+        if ( ! p.is_sleeping() )
+          p.dismiss();
       }
     };
 
@@ -1576,7 +1576,7 @@ struct bloodworms_pet_t : public death_knight_pet_t
                            o -> name(), player -> name(), base_proc_chance, multiplier, base_proc_chance * multiplier );
 
           if ( base_proc_chance * multiplier > rng().range( 0, 999 ) )
-            new ( *sim ) blood_burst_event_t( p(), timespan_t::zero() );
+            new ( *sim ) blood_burst_event_t( *p(), timespan_t::zero() );
           else
             p() -> blood_gorged -> trigger();
         }
@@ -4725,12 +4725,12 @@ struct death_pact_t : public death_knight_heal_t
 
 // Buffs ====================================================================
 
-struct runic_corruption_regen_t : public event_t
+struct runic_corruption_regen_t : public player_event_t
 {
   buff_t* buff;
 
-  runic_corruption_regen_t( death_knight_t* p, buff_t* b ) :
-    event_t( p, "runic_corruption_regen_event" ),
+  runic_corruption_regen_t( death_knight_t& p, buff_t* b ) :
+    player_event_t( p, "runic_corruption_regen_event" ),
     buff( b )
   {
     sim.add_event( this, timespan_t::from_seconds( 0.1 ) );
@@ -4756,7 +4756,7 @@ struct runic_corruption_buff_t : public buff_t
       sim_t::output( sim, "%s runic_corruption_regen_event duration=%f", player -> name(), duration.total_seconds() );
     if ( ! regen_event )
     {
-      death_knight_t* p = debug_cast< death_knight_t* >( player );
+      death_knight_t& p = static_cast< death_knight_t& >( *player );
       regen_event = new ( *sim ) runic_corruption_regen_t( p, this );
     }
   }
@@ -4783,11 +4783,11 @@ struct runic_corruption_buff_t : public buff_t
 
 void runic_corruption_regen_t::execute()
 {
-  death_knight_t* p = debug_cast< death_knight_t* >( player );
+  death_knight_t& p = static_cast< death_knight_t& >( *actor );
   runic_corruption_buff_t* regen_buff = debug_cast< runic_corruption_buff_t* >( buff );
 
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
-    p -> _runes.slot[i].regen_rune( p, timespan_t::from_seconds( 0.1 ), true );
+    p._runes.slot[i].regen_rune( &p, timespan_t::from_seconds( 0.1 ), true );
 
   regen_buff -> regen_event = new ( sim ) runic_corruption_regen_t( p, buff );
 }
