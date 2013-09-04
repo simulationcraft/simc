@@ -27,12 +27,12 @@ glyphs=double_jeopardy/mass_exorcism
 head=helmet_of_winged_triumph,id=99379,gems=capacitive_primal_80str_160haste_180str
 neck=juggernauts_ignition_keys,id=104517
 shoulders=pauldrons_of_winged_triumph,id=99373,gems=80str_160haste_80str_160haste_120str,enchant=200str_100crit,reforge=exp_haste
-back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=80str_160haste_60str,enchant=180hit
+back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=80str_160haste_60str,reforge=crit_exp,enchant=180hit
 chest=battleplate_of_winged_triumph,id=99136,gems=80str_160haste_80str_160haste_80str_160haste_180str,enchant=80all
-wrists=bubbleburst_bracers,id=103738,gems=360haste,enchant=180str,reforge=hit_crit
-hands=gauntlets_of_winged_triumph,id=99137,gems=80str_160haste_80str_160haste_360haste_120str,reforge=hit_crit,enchant=170str
+wrists=bubbleburst_bracers,id=103738,gems=320haste,enchant=180str,reforge=hit_exp
+hands=gauntlets_of_winged_triumph,id=99137,gems=80str_160haste_80str_160haste_360haste_120str,enchant=170str
 waist=demolishers_reinforced_belt,id=103788,gems=80str_160haste_320haste_320haste_120str
-legs=legplates_of_winged_triumph,id=99139,gems=320haste_320haste_120str,reforge=crit_mastery,enchant=285str_165crit
+legs=legplates_of_winged_triumph,id=99139,gems=320haste_320haste_120str,reforge=crit_exp,enchant=285str_165crit
 feet=wolfrider_spurs,id=103880,gems=360haste_60crit,reforge=crit_mastery,enchant=175haste
 finger1=asgorathian_blood_seal,id=103794,gems=80str_160haste_60haste,reforge=exp_mastery
 finger2=seal_of_the_forgotten_kings,id=103796,gems=80str_160haste_60haste,reforge=crit_mastery

@@ -2557,12 +2557,16 @@ struct sacred_shield_t : public paladin_heal_t
     if ( ! ( p -> talents.sacred_shield -> ok() ) )
       background = true;
 
-    // Holy gets special stuff - no cooldown, no target limit, 3 charges, 10-second recharge time, extra (zero) tick, higher coefficients.
-    if ( p -> specialization() == PALADIN_HOLY && p -> dbc.ptr )
+    // Spell data reflects protection values; Ret and Holy are 30% larger
+    if ( ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_HOLY ) && p -> dbc.ptr )
     {
-      // prot/ret get advertised values, holy gets 1/0.7 times that
       base_td /= 0.7;
       tick_power_mod /= 0.7;
+    }
+
+    // Holy gets other special stuff - no cooldown, no target limit, 3 charges, 10-second recharge time, extra (zero) tick
+    if ( p -> specialization() == PALADIN_HOLY && p -> dbc.ptr )
+    {
       // 3 charges, recharge time is 10 seconds (base+4)
       cooldown -> charges = 3;
       cooldown -> duration += timespan_t::from_seconds( 4 );
@@ -4601,7 +4605,10 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_talent( this, "Holy Avenger" );
   //def -> add_action( this, "Guardian of Ancient Kings", "if=health.pct<=30" );
   def -> add_action( this, "Divine Protection" ); // use on cooldown
-  def -> add_action( this, "Shield of the Righteous", "if=(holy_power>=5)|(buff.divine_purpose.react)|(incoming_damage_1500ms>=health.max*0.3)" );
+  if ( dbc.ptr )
+    def -> add_talent( this, "Eternal Flame", "if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>3&(holy_power>=3|buff.divine_purpose.react)" );
+  def -> add_action( this, "Word of Glory", "if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8" );
+  def -> add_action( this, "Shield of the Righteous", "if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3" );
   if ( ! dbc.ptr )
     def -> add_action( this, "Hammer of the Righteous", "if=target.debuff.weakened_blows.down" );
   def -> add_action( this, "Crusader Strike" );
@@ -5519,7 +5526,7 @@ void paladin_t::assess_damage( school_e school,
 void paladin_t::assess_heal( school_e school, dmg_e dmg_type, heal_state_t* s )
 {
   // 20% healing increase due to Sanctified Wrath during Avenging Wrath
-  if ( talents.sanctified_wrath  -> ok() && buffs.avenging_wrath -> check() )
+  if ( specialization() == PALADIN_PROTECTION && talents.sanctified_wrath -> ok() && buffs.avenging_wrath -> check() )
   {
     s -> result_amount *= 1.0 + spells.sanctified_wrath  -> effectN( 4 ).percent();
   }
