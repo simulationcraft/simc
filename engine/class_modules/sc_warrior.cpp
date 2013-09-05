@@ -1151,7 +1151,7 @@ struct cleave_t : public warrior_attack_t
     warrior_t* p = cast();
 
     if ( p -> buff.glyph_incite -> check() )
-      c += p -> buff.glyph_incite -> data().effectN( 1 ).resource( RESOURCE_RAGE );
+      c += p -> buff.glyph_incite -> data().effectN( 1 ).base_value();
 
     if ( p -> buff.ultimatum -> check() )
       c *= 1 + p->buff.ultimatum -> data().effectN( 1 ).percent();
@@ -1166,7 +1166,7 @@ struct cleave_t : public warrior_attack_t
     warrior_t* p = cast();
 
     if ( p -> dbc.ptr && p -> buff.ultimatum -> check() )
-      cc += p -> buff.ultimatum -> data().effectN( 1 ).percent();
+      cc += p -> buff.ultimatum -> data().effectN( 2 ).percent();
 
     return cc;
   }
@@ -1178,6 +1178,7 @@ struct cleave_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     p -> buff.ultimatum -> expire();
+    p -> buff.glyph_incite -> decrement();
   }
 
 };
@@ -1282,7 +1283,7 @@ struct demoralizing_shout : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    p -> buff.glyph_incite -> trigger();
+    p -> buff.glyph_incite -> trigger( 3 );
   }
 
 };
@@ -1460,7 +1461,7 @@ struct heroic_strike_t : public warrior_attack_t
     warrior_t* p = cast();
 
     if ( p -> buff.glyph_incite -> check() )
-      c += p -> buff.glyph_incite -> data().effectN( 1 ).resource( RESOURCE_RAGE );
+      c += p -> buff.glyph_incite -> data().effectN( 1 ).base_value();
 
     if ( p -> buff.ultimatum -> check() )
       c *= 1 + p -> buff.ultimatum -> data().effectN( 1 ).percent();
@@ -1487,6 +1488,7 @@ struct heroic_strike_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     p -> buff.ultimatum -> expire();
+    p -> buff.glyph_incite -> decrement();
   }
 };
 
@@ -3415,7 +3417,9 @@ void warrior_t::create_buffs()
 
   buff.glyph_hold_the_line    = buff_creator_t( this, "hold_the_line",    glyphs.hold_the_line -> effectN( 1 ).trigger() );
   buff.glyph_incite           = buff_creator_t( this, "glyph_incite",           glyphs.incite -> effectN( 1 ).trigger() )
-                                .chance( glyphs.incite -> ok () ? glyphs.incite -> proc_chance() : 0 );
+                                .chance( glyphs.incite -> ok () ? glyphs.incite -> proc_chance() : 0 )
+                                .max_stack( 3 )
+                                .default_value( find_spell( 122016 ) -> effectN( 1 ).percent() );
   buff.meat_cleaver     = buff_creator_t( this, "meat_cleaver",     spec.meat_cleaver -> effectN( 1 ).trigger() );
 
   buff.raging_blow      = buff_creator_t( this, "raging_blow",      find_spell( 131116 ) )
