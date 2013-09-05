@@ -1475,7 +1475,7 @@ struct heroic_strike_t : public warrior_attack_t
     warrior_t* p = cast();
 
     if ( p -> dbc.ptr && p -> buff.ultimatum -> check() )
-      cc += p -> buff.ultimatum -> data().effectN( 1 ).percent();
+      cc += p -> buff.ultimatum -> data().effectN( 2 ).percent();
 
     return cc;
   }
