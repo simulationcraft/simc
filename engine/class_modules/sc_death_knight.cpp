@@ -5582,104 +5582,102 @@ void death_knight_t::init_actions()
       break;
     }
     case DEATH_KNIGHT_UNHOLY:
-    {
-      precombat_list += "/raise_dead";
+	  {
+	    precombat -> add_action( this, "Raise Dead" );
 
-      action_list_str += init_use_profession_actions();
-      action_list_str += init_use_racial_actions( ",if=time>=2" );
+	    for ( size_t i = 0; i < get_profession_actions().size( ); i++ )
+	      def -> add_action( get_profession_actions()[ i ] );
+	
+	    for ( size_t i = 0; i < get_racial_actions().size( ); i++ )
+	      def -> add_action( get_racial_actions()[ i ] );
+	
+	    for ( size_t i = 0; i < get_item_actions().size( ); i++ )
+	      def -> add_action( get_item_actions()[ i ] );
+	
+		  if ( sim -> allow_potions && level >= 80 )
+	      def -> add_action( potion_str, ",if=buff.dark_transformation.up&target.time_to_die<=60" );
 
-      if ( sim -> allow_potions )
-      {
-        if ( level > 85 )
-          action_list_str += "/mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
-        else if ( level >= 80 )
-          action_list_str += "/golemblood_potion,if=buff.dark_transformation.up&target.time_to_die<=35";
-      }
+		  def -> add_action( "Unholy Frenzy", ",if=time>=4" );
 
-      if ( level >= 66 ) action_list_str += "/unholy_frenzy,if=time>=4";
-      action_list_str += init_use_item_actions( ",if=time>=4" );
+	    //decide between single_target and aoe rotation
+	    def -> add_action( "run_action_list,name=aoe,if=active_enemies>=5" );
+	    def -> add_action( "run_action_list,name=single_target,if=active_enemies<5" );
 
-      //decide between single_target and aoe rotation
-      action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
-      action_list_str += "/run_action_list,name=single_target,if=active_enemies<5";
+	    // Disease Gaming
+		  st -> add_action( this, "Outbreak", ",if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)" );
+		  st -> add_action( this, "Plague Strike", ",if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)" );
 
-      // Disease Gaming
+		  st -> add_talent( this, "Blood Tap", ",if=buff.blood_charge.stack>10&runic_power>=32" );
 
-      if ( level >= 82 ) st_list_str += "/outbreak,if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)";
-      st_list_str += "/plague_strike,if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)";
+	    // Diseases for free
+		  st -> add_talent( this, "Unholy Blight", ",if=(dot.frost_fever.remains<3|dot.blood_plague.remains<3)" );
+		  st -> add_action( this, "Outbreak", ",if=dot.frost_fever.remains<3|dot.blood_plague.remains<3" );
 
-      st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>=32";
+	    // Soul Reaper
+		  st -> add_action( this, "Soul Reaper", ",if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
+		  st -> add_talent( this, "Blood Tap", ",if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)" );
+     
 
-      // Diseases for free
-      st_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)";
-      if ( level >= 82 ) st_list_str += "/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3";
+	    // Diseases for Runes
+		  st -> add_action( this, "Plague Strike", ",if=!dot.blood_plague.ticking|!dot.frost_fever.ticking" );
 
-      // Soul Reaper
-      if ( level >= 87 )
-      {
-        st_list_str += "/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct;
-        st_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)";
-      }
+	    // GCD Cooldowns
+		  st -> add_action( this, "Summon Gargoyle" );
+		  st -> add_action( this, "Dark Transformation" );
+		  st -> add_talent( this, "Blood Tap,if=buff.shadow_infusion.stack=5" );
 
-      // Diseases for Runes
-      st_list_str += "/plague_strike,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking";
+	    // Don't waste runic power
+		  st -> add_action( this, "Death Coil", ",if=runic_power>90" );
 
-      // GCD Cooldowns
-      if ( level >= 74 ) st_list_str += "/summon_gargoyle";
-      if ( level >= 70 ) st_list_str += "/dark_transformation";
-      st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.shadow_infusion.stack=5";
+	    // Get runes on cooldown
+		  st -> add_action( this, "Death and Decay", ",if=unholy=2" );
+		  st -> add_talent( this, "Blood Tap", ",if=unholy=2&cooldown.death_and_decay.remains=0" );
+		  st -> add_action( this, "Scourge Strike", ",if=unholy=2" );
+		  st -> add_action( this, "Festering Strike", ",if=blood=2&frost=2" );
 
-      // Don't waste runic power
-      st_list_str += "/death_coil,if=runic_power>90";
+	    // Normal stuff
+		  st -> add_action( this, "Death and Decay" );
+		  st -> add_talent( this, "Blood Tap", ",if=cooldown.death_and_decay.remains=0" );
+		  st -> add_action( this, "Death Coil", ",if=buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)" );
+		  st -> add_action( this, "Scourge Strike" );
+		  st -> add_talent( this, "Plague Leech", ",if=cooldown.outbreak.remains<1" );
+		  st -> add_action( this, "Festering Strike" );
+		  st -> add_action( this, "Horn of Winter" );
+		  st -> add_action( this, "Death Coil", ",if=buff.dark_transformation.down|(cooldown.summon_gargoyle.remains>8&buff.dark_transformation.remains>8)" );
 
-      // Get runes on cooldown
-      if ( level >= 60 ) st_list_str += "/death_and_decay,if=unholy=2";
-      st_list_str += "/blood_tap,if=talent.blood_tap.enabled&unholy=2&cooldown.death_and_decay.remains=0";
-      if ( level >= 58 ) st_list_str += "/scourge_strike,if=unholy=2";
-      if ( level >= 64 ) st_list_str += "/festering_strike,if=blood=2&frost=2";
+	    // Less waiting
+		  st -> add_talent( this, "Blood Tap", ",if=buff.blood_charge.stack>=8" );
+		  st -> add_action( this, "Empower Rune Weapon" );
 
-      // Normal stuff
-      if ( level >= 60 ) st_list_str += "/death_and_decay";
-      st_list_str += "/blood_tap,if=talent.blood_tap.enabled&cooldown.death_and_decay.remains=0";
-      st_list_str += "/death_coil,if=buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)";
-      if ( level >= 58 ) st_list_str += "/scourge_strike";
-      st_list_str += "/plague_leech,if=talent.plague_leech.enabled&cooldown.outbreak.remains<1";
-      if ( level >= 64 ) st_list_str += "/festering_strike";
-      st_list_str += "/horn_of_winter";
-      st_list_str += "/death_coil,if=buff.dark_transformation.down|(cooldown.summon_gargoyle.remains>8&buff.dark_transformation.remains>8)";
+	    //AoE
+	    aoe -> add_talent( this, "Unholy Blight" );
+	    aoe -> add_action( this, "Plague Strike", ",if=!dot.blood_plague.ticking|!dot.frost_fever.ticking" );
+	    aoe -> add_action( this, "Pestilence", ",if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28" );
+	    aoe -> add_action( this, "Pestilence", ",if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28" );
+	    aoe -> add_action( this, "Summon Gargoyle" );
+	    aoe -> add_action( this, "Dark Transformation" );
+	    aoe -> add_talent( this, "Blood Tap", ",if=buff.shadow_infusion.stack=5" );
+	    aoe -> add_action( this, "Blood Boil", ",if=blood=2|death=2" );
+	    aoe -> add_action( this, "Death and Decay", ",if=unholy=1" );
+	    aoe -> add_action( this, "Soul Reaper", ",if=unholy=2&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
+	    aoe -> add_action( this, "Scourge Strike", ",if=unholy=2" );
+	    aoe -> add_talent( this, "Blood Tap", ",if=buff.blood_charge.stack>10" );
+	    aoe -> add_action( this, "Death Coil", ",if=runic_power>90|buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)" );
+	    aoe -> add_action( this, "Blood Boil" );
+	    aoe -> add_action( this, "Icy Touch" );
+	    aoe -> add_action( this, "Soul Reaper", ",if=unholy=1&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
+	    aoe -> add_action( this, "Scourge Strike", ",if=unholy=1" );
+	    aoe -> add_action( this, "Death Coil" );
+	    aoe -> add_talent( this, "Blood Tap" );
+	    aoe -> add_talent( this, "Plague Leech", ",if=unholy=1" );
+	    aoe -> add_action( this, "Horn of Winter" );
+	    aoe -> add_action( this, "Empower Rune Weapon" );
 
-      // Less waiting
-      st_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>=8";
-      if ( level >= 75 ) st_list_str += "/empower_rune_weapon";
+	    break );
+	  }
+	  default: break );
+	}
 
-      //AoE
-      aoe_list_str = "/unholy_blight,if=talent.unholy_blight.enabled";
-      aoe_list_str += "/plague_strike,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking";
-      aoe_list_str += "/pestilence,if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28";
-      aoe_list_str += "/pestilence,if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28";
-      if ( level >= 74 ) aoe_list_str += "/summon_gargoyle";
-      if ( level >= 70 ) aoe_list_str += "/dark_transformation";
-      aoe_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.shadow_infusion.stack=5";
-      aoe_list_str += "/blood_boil,if=blood=2|death=2";
-      aoe_list_str += "/death_and_decay,if=unholy=1";
-      aoe_list_str += "/soul_reaper,if=unholy=2&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct;
-      aoe_list_str += "/scourge_strike,if=unholy=2";
-      aoe_list_str += "/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10";
-      aoe_list_str += "/death_coil,if=runic_power>90|buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)";
-      aoe_list_str += "/blood_boil";
-      aoe_list_str += "/icy_touch";
-      aoe_list_str += "/soul_reaper,if=unholy=1&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct;
-      aoe_list_str += "/scourge_strike,if=unholy=1";
-      aoe_list_str += "/death_coil";
-      aoe_list_str += "/blood_tap,if=talent.blood_tap.enabled";
-      aoe_list_str += "/plague_leech,if=talent.plague_leech.enabled&unholy=1";
-      aoe_list_str += "/horn_of_winter";
-      aoe_list_str += "/empower_rune_weapon";
-
-      break;
-    }
-    default: break;
-  }
 
   action_list_default = 1;
 
