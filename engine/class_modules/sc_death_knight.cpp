@@ -5386,6 +5386,12 @@ void death_knight_t::init_actions()
   std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
   std::string& st_list_str = get_action_priority_list( "single_target" ) -> action_list_str;
   std::string soul_reaper_pct = set_bonus.tier15_4pc_melee() ? "45" : "35";
+  std::string flask_str = "flask,type=";
+  std::string food_str  = "food,type=";
+  std::string potion_str;
+  potion_str = ( level >= 85 ) ? "mogu_power_potion" : "golemblood_potion";
+  flask_str += ( level >= 85 ) ? "winters_bite" : "titanic_strength";
+  food_str += ( level >= 85 ) ? "black_pepper_ribs_and_shrimp" : "beer_basted_crocolisk";
 
   if ( tree == DEATH_KNIGHT_FROST || tree == DEATH_KNIGHT_UNHOLY )
   
