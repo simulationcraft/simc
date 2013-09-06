@@ -2990,15 +2990,15 @@ struct stance_t : public warrior_spell_t
 
     // Damage that will kill the player will error out and not be allowed. Currently set to either one damaging strike that deals more than the players health,
     // Or if the damage taken per second is more than 33% of the players health.
-    if( damage_taken > p -> resources.max[ RESOURCE_HEALTH ] )
+    if( damage_taken > p -> resources.max[ RESOURCE_HEALTH ] || damage_taken / swap > p -> resources.max[ RESOURCE_HEALTH ] / 3 )
     {
       sim -> errorf( "%s will die from amount of incoming damage, please set damage_taken so that it is less than max health.", player -> name() );
-      sim -> errorf( "Also ensure that the amount of incoming damage per second does not exceed 33 percent of max health. This command has been disabled for the simulation.");
+      sim -> errorf( "Also ensure that the amount of incoming damage per second does not exceed 33 percent of max health. This command has been disabled for the simulation." );
       swap = NULL;
       switch_to_stance = starting_stance;
     }
 
-    if( p -> active_stance != switch_to_stance)
+    if( p -> active_stance != switch_to_stance )
     {
       switch ( p -> active_stance )
       {
