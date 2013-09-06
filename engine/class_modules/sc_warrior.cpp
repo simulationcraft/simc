@@ -2922,116 +2922,30 @@ struct skull_banner_t : public warrior_spell_t
   }
 };
 
-// Berserker Swap ===========================================================
-struct berserker_swap_t : public warrior_spell_t
-{
-  warrior_stance switch_to_stance;
-  double damage_taken;
-  double swap;
-
-  berserker_swap_t( warrior_t* p, const std::string& options_str ) :
-    warrior_spell_t( "berserker_swap", p ),
-    damage_taken( 0 ), swap( 0 )
-  {
-    option_t options[] =
-    {
-      opt_float( "damage_taken", damage_taken ),
-      opt_float( "swap", swap ),
-      opt_null()
-    };
-    parse_options( options, options_str );
-
-// To protect user from themselves and reduce amount of time this class could be used.
-    if ( swap < 0 )
-    {
-      sim -> errorf( "%s Cannot have a negative time value for berserker_swap. Setting swap to 1.", player -> name() );
-      swap = 1;
-    }
-    else if ( swap < 1 )
-    {
-      sim -> errorf( "In an effort to limit amount of calculations, swap has been set to 1 and damage_taken has been adjusted accordingly." );
-      damage_taken /= swap;
-      swap = 1;
-    }
-// Will add in later.
-//if ( damage_taken  > player -> resources.initial[ RESOURCE_HEALTH ] ) // Taking too much damage is an issue.
-//  sim -> errorf( "%s will die from this amount of damage. Berserker_swap was not enabled.", player -> name() );
-//else if ( damage_taken / swap > player -> resources.initial[ RESOURCE_HEALTH ] / 2 ) // As is taking more than  half of your health every second.
-//  sim -> errorf( "%s will likely not survive this amount of damage. Incoming damage per second must be lower than half of the players health.", player -> name() );
-
-    use_off_gcd = true;
-    harmful     = false;
-    trigger_gcd = timespan_t::zero();
-    cooldown -> duration = timespan_t::from_seconds( swap );
-  }
-
-  void execute()
-  {
-    warrior_t* p = cast();
-
-    if ( p -> active_stance == STANCE_BATTLE )
-      switch_to_stance = STANCE_BERSERKER;
-    // May as well stay in berserker stance if we need to swap back before it's possible.
-    else if ( p -> active_stance == STANCE_BERSERKER && cooldown -> duration >= ( p -> cooldown.stance_swap -> duration * 2 ) )
-      switch_to_stance = STANCE_BATTLE;
-
-    if ( p -> active_stance != switch_to_stance && p -> cooldown.stance_swap -> up() )
-      {
-        switch ( p -> active_stance )
-        {
-          case STANCE_BATTLE:     p -> buff.battle_stance    -> expire(); break;
-          case STANCE_BERSERKER:  p -> buff.berserker_stance -> expire(); break;
-          case STANCE_DEFENSE:    p -> buff.defensive_stance -> expire(); break;
-        }
-      p -> active_stance = switch_to_stance;
-
-        switch ( p -> active_stance )
-        {
-          case STANCE_BATTLE:     p -> buff.battle_stance    -> trigger(); break;
-          case STANCE_BERSERKER:  p -> buff.berserker_stance -> trigger(); break;
-          case STANCE_DEFENSE:    p -> buff.defensive_stance -> trigger(); break;
-        }
-    p -> cooldown.stance_swap -> start();
-    }
-    cooldown -> start();
-
-    if ( p -> active_stance == STANCE_BATTLE )
-      cooldown -> adjust(timespan_t::from_seconds( ( p -> dbc.ptr ? -1.5 : -3.0 ) ) );
-    else if ( p -> active_stance == STANCE_BERSERKER )
-    {
-      p -> resource_gain( RESOURCE_RAGE, floor( damage_taken / p -> resources.max[ RESOURCE_HEALTH ] * 100 ), p -> gain.berserker_stance );
-      if ( timespan_t::from_seconds(swap) >= ( p -> cooldown.stance_swap -> duration * 2) )// If we stay in berserker stance there is no reason to reset.
-        cooldown -> reset(true);
-    }
-  }
-
-  virtual bool ready()
-  {
-    if ( cooldown -> down() )
-      return false;
-
-    return warrior_spell_t::ready();
-  }
-};
-
-// Stance ===================================================================
-
+// Stance ==============================================================
 struct stance_t : public warrior_spell_t
 {
   warrior_stance switch_to_stance;
+  warrior_stance starting_stance;
   std::string stance_str;
+  double damage_taken;
+  double swap;
 
   stance_t( warrior_t* p, const std::string& options_str ) :
     warrior_spell_t( "stance", p ),
-    switch_to_stance( STANCE_BATTLE ), stance_str( "" )
+    switch_to_stance( STANCE_BATTLE ), stance_str( "" ), damage_taken( 0 ), swap( 0 )
   {
     option_t options[] =
     {
       opt_string( "choose", stance_str ),
+      opt_float( "swap", swap ),
+      opt_float( "damage_taken", damage_taken ),
       opt_null()
     };
     parse_options( options, options_str );
 
+    starting_stance = p -> active_stance;
+    
     if ( ! stance_str.empty() )
     {
       if ( stance_str == "battle" )
@@ -3042,6 +2956,26 @@ struct stance_t : public warrior_spell_t
         switch_to_stance = STANCE_DEFENSE;
     }
 
+    if ( swap < 0 )
+    {
+      sim -> errorf( "%s Cannot have a negative time value for swap. Setting swap to 1.5", player -> name() );
+      swap = 1.5;
+    }
+    else if ( swap < 1.5 && swap > 0 )
+    {
+      sim -> errorf( "%s is only able to swap stances every 1.5 seconds, swap and damage_taken were both adjusted to 1.5 seconds.", player -> name() ); // Assuming 5.4, since it's next week.
+      damage_taken /= swap;
+      swap = 1.5;
+      damage_taken /= swap;
+    }
+
+    if( swap == 0 )
+      cooldown -> duration = p -> cooldown.stance_swap -> duration;
+    else
+      cooldown -> duration = (timespan_t::from_seconds( swap ) );
+
+    starting_stance = p -> active_stance;
+
     use_off_gcd = true;
     harmful     = false;
     trigger_gcd = timespan_t::zero();
@@ -3050,6 +2984,17 @@ struct stance_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_t* p = cast();
+
+    // Damage that will kill the player will error out and not be allowed. Currently set to either one damaging strike that deals more than the players health,
+    // Or if the damage taken per second is more than 33% of the players health.
+    if( damage_taken > p -> resources.max[ RESOURCE_HEALTH ] )
+    {
+      sim -> errorf( "%s will die from amount of incoming damage, please set damage_taken so that it is less than max health.", player -> name() );
+      sim -> errorf( "Also ensure that the amount of incoming damage per second does not exceed 33 percent of max health. This command has been disabled for the simulation.");
+      swap = NULL;
+      switch_to_stance = starting_stance;
+    }
+
     if( p -> active_stance != switch_to_stance)
     {
       switch ( p -> active_stance )
@@ -3068,13 +3013,34 @@ struct stance_t : public warrior_spell_t
       }
     p -> cooldown.stance_swap -> start();
     }
+
+    if( swap != 0 )
+    {
+      if( p -> active_stance == STANCE_BERSERKER )
+        p -> resource_gain( RESOURCE_RAGE, floor( damage_taken / p -> resources.max[ RESOURCE_HEALTH ] * 100 ), p -> gain.berserker_stance );
+      if( swap > ( p -> dbc.ptr ? 3.0 : 6.0 ) && p -> active_stance != starting_stance )
+        switch_to_stance = starting_stance;
+      if( swap < ( p -> dbc.ptr ? 3.0 : 6.0 ) )
+        cooldown -> start();
+      if( swap > ( p -> dbc.ptr ? 3.0 : 6.0 ) && p -> active_stance == starting_stance )
+      {
+        if ( stance_str == "battle" )
+          switch_to_stance = STANCE_BATTLE;
+        else if ( stance_str == "berserker" || stance_str == "zerker" )
+          switch_to_stance = STANCE_BERSERKER;
+        else if ( stance_str == "def" || stance_str == "defensive" )
+          switch_to_stance = STANCE_DEFENSE;
+        cooldown -> start();
+        cooldown -> adjust( -1 * p -> cooldown.stance_swap -> duration );
+      }
+    }
   }
 
   virtual bool ready()
   {
     warrior_t* p = cast();
 
-    if ( p -> cooldown.stance_swap -> down() )
+    if ( p -> cooldown.stance_swap -> down() || cooldown -> down() || swap == NULL )
       return false;
 
     return warrior_spell_t::ready();
@@ -3181,7 +3147,6 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "avatar"             ) return new avatar_t             ( this, options_str );
   if ( name == "battle_shout"       ) return new battle_shout_t       ( this, options_str );
   if ( name == "berserker_rage"     ) return new berserker_rage_t     ( this, options_str );
-  if ( name == "berserker_swap"     ) return new berserker_swap_t     ( this, options_str );
   if ( name == "bladestorm"         ) return new bladestorm_t         ( this, options_str );
   if ( name == "bloodbath"          ) return new bloodbath_t          ( this, options_str );
   if ( name == "bloodthirst"        ) return new bloodthirst_t        ( this, options_str );
@@ -3329,7 +3294,7 @@ void warrior_t::init_base_stats()
 {
   player_t::init_base_stats();
 
-  resources.base[ RESOURCE_RAGE ] = 100.0;
+  resources.base[ RESOURCE_RAGE ] = 100;
 
   if ( glyphs.unending_rage -> ok() )
     resources.base[ RESOURCE_RAGE ] += glyphs.unending_rage -> effectN( 1 ).resource( RESOURCE_RAGE );
