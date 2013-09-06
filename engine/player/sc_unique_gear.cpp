@@ -3097,84 +3097,6 @@ void amplify_trinket( item_t* item )
     p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
 }
 
-void black_blood_of_yshaarj( item_t* item )
-{
-  maintenance_check( 528 );
-
-  player_t* p = item -> player;
-  const spell_data_t* driver = p -> find_spell( 146183 );
-
-  struct bboy_expire_event_t : public player_event_t
-  {
-    stat_buff_proc_t* bboy_cb;
-    bboy_expire_event_t( const timespan_t& duration, stat_buff_proc_t* cb ) :
-      player_event_t( *cb -> listener, "bboy_expire_event" ), bboy_cb( cb )
-    { sim.add_event( this, duration ); }
-
-    void execute()
-    {
-      bboy_cb -> deactivate();
-      bboy_cb -> buff -> expire();
-    }
-  };
-
-  struct bboy_driver_cb_t : public proc_callback_t<action_state_t>
-  {
-    stat_buff_proc_t* buff_proc;
-    timespan_t duration;
-
-    bboy_driver_cb_t( item_t* item, const special_effect_t& e ) :
-      proc_callback_t<action_state_t>( item -> player, e ), buff_proc( 0 ),
-      duration( item -> player -> find_spell( 146184 ) -> duration() )
-    {
-      player_t* p = item -> player;
-      const random_prop_data_t& budget = p -> dbc.random_property( item -> item_level() );
-      const spell_data_t* buff_driver = p -> find_spell( 146184 );
-      const spell_data_t* buff = p -> find_spell( 146202 );
-      std::string name = buff -> name_cstr();
-      util::tokenize( name );
-
-      special_effect_t effect;
-      effect.name_str = name;
-      effect.proc_chance = buff -> proc_chance();
-      effect.stat = static_cast< stat_e >( buff -> effectN( 1 ).misc_value1() + 1 );
-      effect.stat_amount = util::round( budget.p_epic[ 0 ] * buff_driver -> effectN( 1 ).m_average() );
-      effect.max_stacks = buff -> max_stacks();
-
-      buff_proc = new stat_buff_proc_t( p, effect );
-      buff_proc -> buff -> activated = true;
-      p -> callbacks.register_spell_callback( RESULT_NONE_MASK, buff_proc );
-    }
-
-    void execute( action_t*, action_state_t* )
-    {
-      buff_proc -> activate();
-      new ( *listener -> sim ) bboy_expire_event_t( duration, buff_proc );
-    }
-
-    void reset()
-    {
-      proc_callback_t<action_state_t>::reset();
-      buff_proc -> deactivate();
-    }
-
-    void deactivate()
-    {
-      proc_callback_t<action_state_t>::deactivate();
-      buff_proc -> deactivate();
-      buff_proc -> buff -> expire();
-    }
-  };
-
-  special_effect_t effect;
-  effect.name_str = "black_blood_of_yshaarj";
-  effect.ppm      = -1.0 * driver -> real_ppm();
-  effect.cooldown = driver -> internal_cooldown();
-
-  bboy_driver_cb_t* cb = new bboy_driver_cb_t( item, effect );
-  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
-}
-
 struct flurry_of_xuen_melee_t : public attack_t
 {
   flurry_of_xuen_melee_t( player_t* player ) : 
@@ -3433,9 +3355,6 @@ void unique_gear::init( player_t* p )
            util::str_compare_ci( item.name(), "purified_bindings_of_immerseus" ) || 
            util::str_compare_ci( item.name(), "prismatic_prison_of_pride"      ) )
         amplify_trinket( &item );
-
-      if ( util::str_compare_ci( item.name(), "black_blood_of_yshaarj" ) )
-          black_blood_of_yshaarj( &item );
 
       if ( util::str_compare_ci( item.name(), "fenyu_fury_of_xuen"      ) || 
            util::str_compare_ci( item.name(), "gonglu_strength_of_xuen" ) )
@@ -3983,6 +3902,7 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( ptr && item_id == 102315                      ) e = "OnAttackHit_11759Haste_15%_20Dur_115Cd";
   
   else if ( ptr && name == "ticking_ebon_detonator"       ) e = "OnDirectDamage_1.01RPPM_10Cd_10Dur_0.5Tick_20Stack_" + RTV( tf, 847, 947, 1069, 1131, 1207, 1276 )  + "Agi_Reverse_NoRefresh";
+  else if ( ptr && name == "black_blood_of_yshaarj"       ) e = "OnDirectDamage_0.92RPPM_10Cd_10Dur_1.0Tick_10Stack_" + RTV( tf, 1862, 2082, 2350, 2485, 2652, 2805 ) + "Int_NoRefresh";
   else if ( ptr && name == "skeers_bloodsoaked_talisman"  ) e = "OnAttackHit_0.92RPPM_10Cd_10Dur_0.5Tick_20Stack_"    + RTV( tf, 931, 1041, 1175, 1242, 1326, 1402 ) + "Crit_NoRefresh";
 
 
