@@ -861,15 +861,6 @@ struct expel_harm_t : public monk_melee_attack_t
       weapon_power_mod = 1 / 11.0;
   }
 
-  virtual resource_e current_resource()
-  {
-    // Apparently energy requirement in Fierce Tiger stance is not in spell data
-    if ( p() -> current_stance() == FIERCE_TIGER )
-      return RESOURCE_ENERGY;
-
-    return monk_melee_attack_t::current_resource();
-  }
-
   virtual void execute()
   {
     monk_melee_attack_t::execute();
@@ -1209,7 +1200,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     parse_options( nullptr, options_str );
 
-    stancemask = STURDY_OX | FIERCE_TIGER;
+    stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT;
 
     may_crit = false;
     tick_zero = true;
@@ -1220,15 +1211,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     tick_action = new spinning_crane_kick_tick_t( p, p -> find_spell( data().effectN( 1 ).trigger_spell_id() ) );
     dynamic_tick_action = true;
-  }
-
-  virtual resource_e current_resource()
-  {
-    // Apparently energy requirement in Fierce Tiger stance is not in spell data
-    if ( p() -> current_stance() == FIERCE_TIGER )
-      return RESOURCE_ENERGY;
-
-    return monk_melee_attack_t::current_resource();
   }
 
   virtual double action_multiplier()
@@ -1254,6 +1236,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc_melee -> occur();
     }
+
+    if ( tick_action -> target_list().size() >= 3 && p() -> spec.muscle_memory -> ok() )
+      p() -> buff.muscle_memory -> trigger();
   }
 };
 
