@@ -2368,8 +2368,8 @@ void player_t::init_scaling()
     scales_with[ STAT_SPELL_POWER       ] = spell;
 
     scales_with[ STAT_ATTACK_POWER             ] = attack;
-    scales_with[ STAT_EXPERTISE_RATING         ] = attack;
-    scales_with[ STAT_EXPERTISE_RATING2        ] = attack && ( position() == POSITION_FRONT );
+    scales_with[ STAT_EXPERTISE_RATING         ] = attack || tank;
+    scales_with[ STAT_EXPERTISE_RATING2        ] = tank || ( attack && ( position() == POSITION_FRONT ) );
 
     scales_with[ STAT_HIT_RATING                ] = true;
     scales_with[ STAT_CRIT_RATING               ] = true;
