@@ -2993,7 +2993,7 @@ struct stance_t : public warrior_spell_t
     if( damage_taken > p -> resources.max[ RESOURCE_HEALTH ] || damage_taken / swap > p -> resources.max[ RESOURCE_HEALTH ] / 3 )
     {
       sim -> errorf( "%s will die from amount of incoming damage, please set damage_taken so that it is less than max health.", player -> name() );
-      sim -> errorf( "Also ensure that the amount of incoming damage per second does not exceed 33 percent of max health. This command has been disabled for the simulation." );
+      sim -> errorf( "Also ensure that the amount of incoming damage per second does not exceed 33 percent of max health. This option has been disabled for the simulation." );
       swap = NULL;
       switch_to_stance = starting_stance;
     }
@@ -3017,7 +3017,7 @@ struct stance_t : public warrior_spell_t
     p -> cooldown.stance_swap -> start();
     }
 
-    if( swap != 0 )
+    if( swap > 0 )
     {
       if( p -> active_stance == STANCE_BERSERKER )
         p -> resource_gain( RESOURCE_RAGE, floor( damage_taken / p -> resources.max[ RESOURCE_HEALTH ] * 100 ), p -> gain.berserker_stance );
@@ -3043,7 +3043,7 @@ struct stance_t : public warrior_spell_t
   {
     warrior_t* p = cast();
 
-    if ( p -> cooldown.stance_swap -> down() || cooldown -> down() || swap == 0 )
+    if ( p -> cooldown.stance_swap -> down() || cooldown -> down() )
       return false;
 
     return warrior_spell_t::ready();
