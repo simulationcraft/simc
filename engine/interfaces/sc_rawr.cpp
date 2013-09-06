@@ -680,7 +680,7 @@ player_t* load_player_xml( sim_t* sim,
         item.parsed.reforge_id  = util::to_unsigned( splits[ 5 ] );
         item.parsed.addon_id    = util::to_unsigned( splits[ 6 ] );
       }
-      else if ( splits.size() == 8 )
+      else if ( splits.size() >= 8 )
       {
         item.parsed.data.id     = util::to_unsigned( splits[ 0 ] );
         item.parsed.suffix_id   = util::to_int( splits[ 1 ] );
@@ -690,6 +690,8 @@ player_t* load_player_xml( sim_t* sim,
         item.parsed.enchant_id  = util::to_unsigned( splits[ 5 ] );
         item.parsed.reforge_id  = util::to_unsigned( splits[ 6 ] );
         item.parsed.addon_id    = util::to_unsigned( splits[ 7 ] );
+        if ( splits.size() >= 9 )
+          item.parsed.upgrade_level = util::to_unsigned( splits[ 8 ] );
       }
       else
       {
@@ -700,6 +702,16 @@ player_t* load_player_xml( sim_t* sim,
       // FIXME: Proper upgrade level once rawr supports it
       if ( ! item_t::download_slot( item ) )
         return 0;
+      // RAWR exports upgrades as ilevel. After we have "downloaded the slot", 
+      // we need to back-convert the item.parsed.upgrade_level back to 
+      // real upgrade level, instead of ilevels. Sigh.
+      else
+      {
+        if ( item.parsed.data.quality == 3 )
+          item.parsed.upgrade_level /= 8;
+        else if ( item.parsed.data.quality == 4 || item.parsed.data.quality == 5 )
+          item.parsed.upgrade_level /= 4;
+      }
     }
   }
 
