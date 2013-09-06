@@ -233,7 +233,10 @@ std::string tooltip_parser_t::parse()
         case 'm':
         {
           ++pos;
-          replacement_text = util::to_string( spell -> effectN( parse_effect_number() ).base_value() );
+          if ( parse_effect_number() <= spell -> effect_count() )
+            replacement_text = util::to_string( spell -> effectN( parse_effect_number() ).base_value() );
+          else
+            replacement_text = util::to_string( 0 );
           break;
         }
 
@@ -244,7 +247,10 @@ std::string tooltip_parser_t::parse()
         case 't':
         {
           ++pos;
-          replacement_text = util::to_string( spell -> effectN( parse_effect_number() ).period().total_seconds() );
+          if ( parse_effect_number() <= spell -> effect_count() )
+            replacement_text = util::to_string( spell -> effectN( parse_effect_number() ).period().total_seconds() );
+          else
+            replacement_text = util::to_string( 0 );
           break;
         }
 
