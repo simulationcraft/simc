@@ -983,9 +983,7 @@ void sinister_primal( player_t* p )
     {
       sinister_primal_proc_t( player_t* p, const special_effect_t& data, const spell_data_t* driver ) :
         buff_proc_callback_t<buff_t>( p, data, p -> buffs.tempus_repit, driver )
-      { 
-        p -> sim -> output( "procchance=%f", proc_chance() );
-      }
+      {  }
 
       double proc_chance()
       {
