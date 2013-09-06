@@ -1054,6 +1054,7 @@ struct bloodthirst_t : public warrior_attack_t
 
       warrior_t* p = cast();
 
+      p -> active_deep_wounds -> target = s -> target;
       p -> active_deep_wounds -> execute();
       p -> buff.bloodsurge -> trigger( 3 );
 
@@ -1312,6 +1313,7 @@ struct devastate_t : public warrior_attack_t
       }
     }
 
+    p -> active_deep_wounds -> target = execute_state -> target;
     p -> active_deep_wounds -> execute();
   }
 
@@ -1652,6 +1654,7 @@ struct mortal_strike_t : public warrior_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       warrior_t* p = cast();
+      p -> active_deep_wounds -> target = execute_state -> target;
       p -> active_deep_wounds -> execute();
       trigger_taste_for_blood( p -> spec.taste_for_blood -> effectN( 2 ).base_value() );
     }
@@ -3040,7 +3043,7 @@ struct stance_t : public warrior_spell_t
   {
     warrior_t* p = cast();
 
-    if ( p -> cooldown.stance_swap -> down() || cooldown -> down() || swap == NULL )
+    if ( p -> cooldown.stance_swap -> down() || cooldown -> down() || swap == 0 )
       return false;
 
     return warrior_spell_t::ready();
