@@ -5074,7 +5074,8 @@ void player_t::assess_damage( school_e school,
   assess_damage_imminent( school, type, s );
 
   // Legendary Tank Cloak Proc - max absorb of 1e7 hardcoded (in spellid 146193, effect 1)
-  if ( ( items[ SLOT_BACK ].parsed.data.id == 102245 || items[ SLOT_BACK ].parsed.data.id == 102250 ) // a legendary tank cloak is present
+  if ( ! is_enemy() && 
+       ( items[ SLOT_BACK ].parsed.data.id == 102245 || items[ SLOT_BACK ].parsed.data.id == 102250 ) // a legendary tank cloak is present
        && legendary_tank_cloak_cd -> up()  // and the cloak's cooldown is up
        && s -> result_amount > resources.current[ RESOURCE_HEALTH ] ) // attack exceeds player health
   {
