@@ -5560,9 +5560,10 @@ void death_knight_t::init_actions()
         // Killing Machine / Very High RP
         st_list_str += "/frost_strike,if=buff.killing_machine.react|runic_power>88";
 
+        // Capped Runes
+        st_list_str += "/howling_blast,if=death>1|frost>1";
+
         // Diseases for free
-        st_list_str += "/plague_leech,if=talent.plague_leech.enabled&(dot.blood_plague.remains<3|dot.frost_fever.remains<3|cooldown.outbreak.remains<1)";
-        if ( level >= 82 ) st_list_str += "/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3";
         st_list_str += "/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)";
 
         // Soul Reaper
@@ -5574,7 +5575,7 @@ void death_knight_t::init_actions()
 
         // Diseases for runes
         st_list_str += "/howling_blast,if=!dot.frost_fever.ticking";
-        st_list_str += "/plague_strike,if=!dot.blood_plague.ticking";
+        st_list_str += "/plague_strike,if=!dot.blood_plague.ticking&unholy>0";
 
         // Rime
         st_list_str += "/howling_blast,if=buff.rime.react";
@@ -5583,19 +5584,17 @@ void death_knight_t::init_actions()
         st_list_str += "/frost_strike,if=runic_power>76";
 
         // Keep Runes on Cooldown
-        if ( level >= 61 ) st_list_str += "/obliterate,if=unholy>1";
-        st_list_str += "/howling_blast,if=death>1|frost>1";
+        if ( level >= 61 ) st_list_str += "/obliterate,if=unholy>0&!buff.killing_machine.react";
+        st_list_str += "/howling_blast";
 
         // Generate Runic Power or Runes
-        st_list_str += "/horn_of_winter";
-        if ( level >= 61 ) st_list_str += "/obliterate,if=unholy>0";
-        st_list_str += "/howling_blast";
         st_list_str += "/frost_strike,if=talent.runic_empowerment.enabled&(frost=0|blood=0)";
         st_list_str += "/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)>" + soul_reaper_pct + "|buff.blood_charge.stack>=8)";
-        if ( level >= 60 ) st_list_str += "/death_and_decay";
 
         // Better than waiting
         st_list_str += "/frost_strike,if=runic_power>=40";
+        st_list_str += "/horn_of_winter";
+        st_list_str += "/plague_leech,if=talent.plague_leech.enabled";
         if ( level >= 75 ) st_list_str += "/empower_rune_weapon";
       }
 
