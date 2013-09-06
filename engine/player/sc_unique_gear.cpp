@@ -981,9 +981,11 @@ void sinister_primal( player_t* p )
   {
     struct sinister_primal_proc_t : public buff_proc_callback_t<buff_t>
     {
-      sinister_primal_proc_t( player_t* p, const special_effect_t& data ) :
-        buff_proc_callback_t<buff_t>( p, data, p -> buffs.tempus_repit )
-      { }
+      sinister_primal_proc_t( player_t* p, const special_effect_t& data, const spell_data_t* driver ) :
+        buff_proc_callback_t<buff_t>( p, data, p -> buffs.tempus_repit, driver )
+      { 
+        p -> sim -> output( "procchance=%f", proc_chance() );
+      }
 
       double proc_chance()
       {
@@ -1017,7 +1019,7 @@ void sinister_primal( player_t* p )
     data.ppm      = -1.0 * ( maybe_ptr( p -> dbc.ptr ) ? driver -> real_ppm() : 1.35 ); // Real PPM
     data.cooldown = maybe_ptr( p -> dbc.ptr ) ? driver -> internal_cooldown() : timespan_t::from_seconds( 3.0 ); 
 
-    sinister_primal_proc_t* cb = new sinister_primal_proc_t( p, data );
+    sinister_primal_proc_t* cb = new sinister_primal_proc_t( p, data, driver );
     p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
     p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
   }
