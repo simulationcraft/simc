@@ -1785,6 +1785,11 @@ struct chi_brew_t : public monk_spell_t
     parse_options( nullptr, options_str );
 
     harmful = false;
+    if ( maybe_ptr( player -> dbc.ptr ) )
+    {
+      cooldown -> duration = timespan_t::from_seconds( 45.0 );
+      cooldown -> charges = 2;
+    }
   }
 
   virtual void execute()
