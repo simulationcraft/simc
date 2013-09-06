@@ -1101,7 +1101,8 @@ struct succubus_pet_t : public warlock_pet_t
 
     main_hand_weapon.swing_time = timespan_t::from_seconds( 3.0 );
     melee_attack = new warlock_pet_melee_t( this );
-    special_action = new whiplash_t( this );
+    if ( ! util::str_compare_ci( name_str, "service_succubus" ) )
+      special_action = new whiplash_t( this );
   }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
