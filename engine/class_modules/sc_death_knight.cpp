@@ -5338,8 +5338,6 @@ void death_knight_t::default_apl_blood()
     def -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking" );
     def -> add_action( this, "Icy Touch", "if=!dot.frost_fever.ticking" );
     def -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + srpct );
-    def -> add_talent( this, "Death Siphon", "if=hit_damage>action.necrotic_strike.hit_damage" );
-    def -> add_action( this, "Necrotic Strike", "if=!talent.death_siphon.enabled|hit_damage>action.death_siphon.hit_damage" );
     def -> add_action( this, "Death Strike" );
     def -> add_action( this, "Blood Boil", "if=buff.crimson_scourge.react|(blood>=1&(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2))" );
     def -> add_action( this, "Heart Strike", "if=(blood>1&target.health.pct<" + srpct + ")|blood>=1" );
@@ -5390,74 +5388,42 @@ void death_knight_t::init_actions()
   std::string soul_reaper_pct = set_bonus.tier15_4pc_melee() ? "45" : "35";
 
   if ( tree == DEATH_KNIGHT_FROST || tree == DEATH_KNIGHT_UNHOLY )
-  {
-    if ( level >= 80 )
-    {
-      if ( sim -> allow_flasks )
-      {
-        // Flask
-        if ( level > 85 )
-          precombat_list += "/flask,type=winters_bite";
-        else
-          precombat_list += "/flask,type=titanic_strength";
-      }
+  
+  // Precombat actions
 
-      if ( sim -> allow_food )
-      {
-        // Food
-        if ( level > 85 )
-        {
-          precombat_list += "/food,type=black_pepper_ribs_and_shrimp";
-        }
-        else
-        {
-          precombat_list += "/food,type=beer_basted_crocolisk";
-        }
-      }
-    }
-  }
-  else if ( tree == DEATH_KNIGHT_BLOOD && primary_role() == ROLE_TANK )
-  {
-    if ( level >= 80 )
-    {
-      if ( sim -> allow_flasks )
-      {
-        // Flask
-        if ( level >  85 )
-          precombat_list += "/flask,type=earth";
-        else
-          precombat_list += "/flask,type=steelskin";
-      }
+  if ( sim -> allow_flasks && level >= 80 )
+    precombat -> add_action( flask_str );
 
-      if ( sim -> allow_food )
-      {
-        // Food
-        if ( level > 85 )
-          precombat_list += "/food,type=chun_tian_spring_rolls";
-        else
-          precombat_list += "/food,type=beer_basted_crocolisk";
-      }
-    }
-  }
+  if ( sim -> allow_food && level >= 80 )
+    precombat -> add_action( food_str );
+
+  
+  precombat -> add_action( this, "Horn of Winter" );
+  
+
+  if ( sim -> allow_potions && level >= 80 )
+    precombat -> add_action( potion_str );
 
   if ( specialization() == DEATH_KNIGHT_FROST )
-    precombat_list += "/frost_presence";
+    precombat -> add_action( this, "Frost Presence" );
   else
-    precombat_list += "/unholy_presence";
+    precombat -> add_action( this, "Unholy Presence" );
 
-  precombat_list += "/horn_of_winter";
+  precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  precombat_list += "/snapshot_stats";
+  precombat -> add_action( this, "Army of the Dead" );
 
-  precombat_list += "/army_of_the_dead";
+  for ( size_t i = 0; i < get_profession_actions().size(); i++ )
+    precombat -> add_action( get_profession_actions()[ i ] );
 
-  if ( sim -> allow_potions && ( specialization() == DEATH_KNIGHT_FROST || specialization() == DEATH_KNIGHT_UNHOLY || primary_role() == ROLE_ATTACK ) )
-  {
-    if ( level > 85 )       precombat_list += "/mogu_power_potion";
-    else if ( level >= 80 ) precombat_list += "/golemblood_potion";
-  }
+  for ( size_t i = 0; i < get_racial_actions().size(); i++ )
+    precombat -> add_action( get_racial_actions()[ i ] );
 
-  precombat_list += init_use_racial_actions();
+  for ( size_t i = 0; i < get_item_actions().size(); i++ )
+    precombat -> add_action( get_item_actions()[ i ] );
+
+
+
 
   action_list_str += "/auto_attack";
   action_list_str += "/antimagic_shell,damage=100000";
