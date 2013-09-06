@@ -302,10 +302,18 @@ void print_html_action_info( report::sc_html_stream& os, stats_t* s, player_t* p
            << "\t\t\t\t\t\t\t\t<th class=\"left\">Scale Factors</th>\n";
         for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
           if ( p -> scales_with[ i ] )
-            os.printf(
-              "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
-              p -> sim -> report_precision,
-              s -> scaling.get_stat( i ) );
+          {
+            if ( s -> scaling.get_stat( i ) > 1.0e5 )
+              os.printf(
+                "\t\t\t\t\t\t\t\t<td>%.*e</td>\n",
+                p -> sim -> report_precision,
+                s -> scaling.get_stat( i ) );
+            else
+              os.printf(
+                "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
+                p -> sim -> report_precision,
+                s -> scaling.get_stat( i ) );
+          }
         os << "\t\t\t\t\t\t\t</tr>\n";
         os << "\t\t\t\t\t\t\t<tr>\n"
            << "\t\t\t\t\t\t\t\t<th class=\"left\">Scale Deltas</th>\n";
@@ -320,11 +328,18 @@ void print_html_action_info( report::sc_html_stream& os, stats_t* s, player_t* p
            << "\t\t\t\t\t\t\t\t<th class=\"left\">Error</th>\n";
         for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
           if ( p -> scales_with[ i ] )
-            os.printf(
-              "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
-              p -> sim -> report_precision,
-              s -> scaling_error.get_stat( i ) );
-
+          {
+            if ( p -> scaling_error.get_stat( i ) > 1.0e5 )
+              os.printf(
+                "\t\t\t\t\t\t\t\t<td>%.*e</td>\n",
+                p -> sim -> report_precision,
+                s -> scaling_error.get_stat( i ) );
+            else
+              os.printf(
+                "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
+                p -> sim -> report_precision,
+                s -> scaling_error.get_stat( i ) );
+          }
         os << "\t\t\t\t\t\t\t</tr>\n";
         os << "\t\t\t\t\t\t</table>\n";
 
@@ -1131,10 +1146,18 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
          << "\t\t\t\t\t\t\t\t<th class=\"left\">Scale Factors</th>\n";
       for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
         if ( p -> scales_with[ i ] )
-          os.printf(
-            "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
-            p -> sim -> report_precision,
-            p -> scaling.get_stat( i ) );
+        {
+          if ( std::abs( p -> scaling.get_stat( i ) ) > 1.0e5 )
+            os.printf(
+              "\t\t\t\t\t\t\t\t<td>%.*e</td>\n",
+              p -> sim -> report_precision,
+              p -> scaling.get_stat( i ) );
+          else
+            os.printf(
+              "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
+              p -> sim -> report_precision,
+              p -> scaling.get_stat( i ) );
+        }
       if ( p -> sim -> scaling -> scale_lag )
         os.printf(
           "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
@@ -1165,10 +1188,18 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
          << "\t\t\t\t\t\t\t\t<th class=\"left\">Error</th>\n";
       for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
         if ( p -> scales_with[ i ] )
-          os.printf(
-            "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
-            p -> sim -> report_precision,
-            p -> scaling_error.get_stat( i ) );
+        {
+          if ( std::abs( p -> scaling.get_stat( i ) ) > 1.0e5 )
+            os.printf(
+              "\t\t\t\t\t\t\t\t<td>%.*e</td>\n",
+              p -> sim -> report_precision,
+              p -> scaling_error.get_stat( i ) );
+          else           
+            os.printf(
+              "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
+              p -> sim -> report_precision,
+              p -> scaling_error.get_stat( i ) );
+        }
       if ( p -> sim -> scaling -> scale_lag )
         os.printf(
           "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
@@ -2232,21 +2263,26 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
   // if player tank, print extra metrics
   if ( p -> primary_role() == ROLE_TANK && p -> type != ENEMY )
   {
+    // print DTPS
+    os.printf( ", %.0f dtps", p -> collected_data.dtps.mean() );
     double tmi_display =  p -> collected_data.theck_meloree_index.mean();
     std::string tmi_letter = " ";
-    if ( tmi_display >= 10000000.0 )
+    if ( tmi_display >= 1000000000.0 )
+      os.printf( ", %1.2e%sTMI\n", tmi_display, tmi_letter.c_str() );
+    else
     {
-      tmi_display /= 1e6;
-      tmi_letter = "M ";
+      if ( tmi_display >= 10000000.0 )
+      {
+        tmi_display /= 1e6;
+        tmi_letter = "M ";
+      }
+      else if ( tmi_display >= 100000.0 )
+      {
+        tmi_display /= 1e3;
+        tmi_letter = "k ";
+      }
+      os.printf( ", %.1f%sTMI\n", tmi_display, tmi_letter.c_str() );
     }
-    else if ( tmi_display >= 100000.0 )
-    {
-      tmi_display /= 1e3;
-      tmi_letter = "k ";
-    }
-    os.printf( ", %.0f dtps, %.1f%sTMI\n",
-               p -> collected_data.dtps.mean(),
-               tmi_display, tmi_letter.c_str() );
   }
   os << "</h2>\n";
 
@@ -2411,24 +2447,59 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
 
     double dtps_range = ( cd.dtps.percentile( 0.95 ) - cd.dtps.percentile( 0.05 ) ) / 2;
     double dtps_error = sim_t::distribution_mean_error( *sim, p -> collected_data.dtps );
-    double tmi_error = sim_t::distribution_mean_error( *sim, p -> collected_data.theck_meloree_index );
-    double tmi_range = ( cd.theck_meloree_index.percentile( 0.95 ) - cd.theck_meloree_index.percentile( 0.05 ) ) / 2;
     os.printf(
       "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
       "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t<td>%.0f / %.1f%%</td>\n"
-      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
-      "\t\t\t\t\t\t\t\t<td>%.1f / %.2f%%</td>\n"
-      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
-      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
-      "\t\t\t\t\t\t\t\t<td>%.1f / %.1f%%</td>\n",
+      "\t\t\t\t\t\t\t\t<td>%.0f / %.1f%%</td>\n",
       cd.dtps.mean(),
       dtps_error, cd.dtps.mean() ? dtps_error * 100 / cd.dtps.mean() : 0,
-      dtps_range, cd.dtps.mean() ? dtps_range / cd.dtps.mean() * 100.0 : 0,
-      cd.theck_meloree_index.mean(),
-      tmi_error, cd.theck_meloree_index.mean() ? tmi_error * 100.0 / cd.theck_meloree_index.mean() : 0.0,
-      cd.theck_meloree_index.min(), cd.theck_meloree_index.max(),
-      tmi_range, cd.theck_meloree_index.mean() ? tmi_range * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
+      dtps_range, cd.dtps.mean() ? dtps_range / cd.dtps.mean() * 100.0 : 0 );
+    
+    double tmi_error = sim_t::distribution_mean_error( *sim, p -> collected_data.theck_meloree_index );
+    double tmi_range = ( cd.theck_meloree_index.percentile( 0.95 ) - cd.theck_meloree_index.percentile( 0.05 ) ) / 2;
+
+    // print TMI
+    if ( cd.theck_meloree_index.mean() > 1.0e8 )
+      os.printf( "\t\t\t\t\t\t\t\t<td>%1.2e</td>\n", cd.theck_meloree_index.mean() );
+    else
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.1f</td>\n", cd.theck_meloree_index.mean() );
+
+    // print TMI error/variance
+    if ( tmi_error > 1.0e6 )
+    {
+      os.printf( "\t\t\t\t\t\t\t\t<td>%1.2e / %.2f%%</td>\n",
+                 tmi_error, cd.theck_meloree_index.mean() ? tmi_error * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
+    }
+    else
+    {
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.1f / %.2f%%</td>\n",
+                 tmi_error, cd.theck_meloree_index.mean() ? tmi_error * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
+    }
+
+    // print  TMI min/max
+    if ( cd.theck_meloree_index.max() > 1.0e8 )
+    {
+      os.printf( "\t\t\t\t\t\t\t\t<td>%1.2e</td>\n"
+                 "\t\t\t\t\t\t\t\t<td>%1.2e</td>\n",
+                 cd.theck_meloree_index.min(), cd.theck_meloree_index.max() );
+    }
+    else      
+    {
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
+                 "\t\t\t\t\t\t\t\t<td>%.1f</td>\n",
+                 cd.theck_meloree_index.min(), cd.theck_meloree_index.max() );
+    }
+    // print TMI range
+    if ( tmi_range > 1.0e8 )
+    {
+      os.printf( "\t\t\t\t\t\t\t\t<td>%1.2e / %.1f%%</td>\n",
+                  tmi_range, cd.theck_meloree_index.mean() ? tmi_range * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
+    }
+    else
+    {
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.1f / %.1f%%</td>\n",
+                  tmi_range, cd.theck_meloree_index.mean() ? tmi_range * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
+    }
 
     os << "\t\t\t\t\t\t\t</tr>\n"
        << "\t\t\t\t\t\t</table>\n";
