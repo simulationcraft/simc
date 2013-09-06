@@ -5673,9 +5673,9 @@ void death_knight_t::init_actions()
 	    aoe -> add_action( this, "Horn of Winter" );
 	    aoe -> add_action( this, "Empower Rune Weapon" );
 
-	    break );
+	    break;
 	  }
-	  default: break );
+	  default: break;
 	}
 
 
