@@ -5507,7 +5507,7 @@ void death_knight_t::init_actions()
         st -> add_talent( this, "Unholy Blight", ",if=(dot.frost_fever.remains<3|dot.blood_plague.remains<3)" );
         
         // Regenerate resources
-        st -> add_action( this, "Frost Strike", ",if=talent.runic_empowerment.enabled&(frost=0|unholy=0|blood=0" );
+        st -> add_action( this, "Frost Strike", ",if=talent.runic_empowerment.enabled&(frost=0|unholy=0|blood=0)" );
         st -> add_action( this, "Frost Strike", ",if=talent.blood_tap.enabled&buff.blood_charge.stack<=10" );
         st -> add_action( this, "Horn of Winter" );
 
