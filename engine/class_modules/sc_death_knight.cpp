@@ -5411,13 +5411,15 @@ void death_knight_t::init_actions()
   precombat -> add_action( this, "Horn of Winter" );
   
 
-  if ( sim -> allow_potions && level >= 80 )
-    precombat -> add_action( potion_str );
+  
 
   if ( specialization() == DEATH_KNIGHT_FROST )
     precombat -> add_action( this, "Frost Presence" );
   else
     precombat -> add_action( this, "Unholy Presence" );
+    
+  if ( sim -> allow_potions && level >= 80 )
+    precombat -> add_action( potion_str );
 
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
