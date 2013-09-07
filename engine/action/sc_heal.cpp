@@ -213,6 +213,33 @@ player_t* heal_t::find_lowest_player()
   return max_player;
 }
 
+std::vector<player_t*> heal_t::find_lowest_players( int num_players )
+{
+  // vector in which to store lowest N players
+  std::vector<player_t*> lowest_N_players = sim -> player_no_pet_list.data();
+
+  while ( lowest_N_players.size() > static_cast< size_t > ( num_players ) )
+  {
+    // find the remaining player with the highest health
+    double max = -1e7;
+    size_t max_player_index;
+    for ( size_t i = 0; i < lowest_N_players.size(); ++i )
+    {
+      player_t* p = lowest_N_players[ i ];
+      double hp_pct = p -> resources.pct( RESOURCE_HEALTH );
+      if ( hp_pct > max )
+      {
+        max = hp_pct;
+        max_player_index = i;
+      }
+    }
+    // remove that player from lowest_N_players
+    lowest_N_players.erase( lowest_N_players.begin() + max_player_index );
+  }
+
+  return lowest_N_players;
+}
+
 // heal_t::num_targets ======================================================
 
 int heal_t::num_targets()

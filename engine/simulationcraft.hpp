@@ -5476,6 +5476,7 @@ public:
   virtual void execute();
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();
+  std::vector < player_t* > find_lowest_players( int num_players );
   virtual int num_targets();
   virtual void   parse_effect_data( const spelleffect_data_t& );
 
