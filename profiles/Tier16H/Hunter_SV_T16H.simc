@@ -6,7 +6,7 @@ race=orc
 role=attack
 position=ranged_back
 professions=enchanting=600/alchemy=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Yb!...110
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Yb!...200
 spec=survival
 
 # This default action priority list is automatically created based on your character.
@@ -56,28 +56,28 @@ actions+=/cobra_shot
 head=headguard_of_the_unblinking_vigil,id=99402,ilevel=574,quality=epic,upgrade=2,gems=capacitive_primal_160agi_180agi
 neck=gleaming_eye_of_the_devilsaur,id=105602,ilevel=580,quality=epic,upgrade=2,reforge=haste_hit
 shoulders=spaulders_of_the_unblinking_vigil,id=99404,ilevel=574,quality=epic,upgrade=2,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=exp_crit
-back=fenyu_fury_of_xuen,id=102248,ilevel=608,upgrade=2,gems=160agi_60agi,enchant=180crit,reforge=mastery_hit
-chest=tunic_of_the_unblinking_vigil,id=99405,ilevel=574,quality=epic,upgrade=2,gems=160agi_160agi_160agi_180agi,enchant=80agi_80sta
+back=fenyu_fury_of_xuen,id=102248,ilevel=608,upgrade=2,gems=160agi_60agi,enchant=180hit,reforge=mastery_hit
+chest=tunic_of_the_unblinking_vigil,id=99405,ilevel=574,quality=epic,upgrade=2,gems=160agi_160agi_160agi_180agi,enchant=80agi_80sta,reforge=haste_exp
 wrists=wristguards_of_ruination,id=105562,ilevel=580,quality=epic,upgrade=2,enchant=180agi
 hands=gloves_of_the_unblinking_vigil,id=99406,ilevel=574,quality=epic,upgrade=2,gems=160agi_160agi_120agi,enchant=170haste
-waist=arrowflight_girdle,id=105584,gems=160agi_160agi_160agi
-legs=legguards_of_the_unblinking_vigil,id=99403,ilevel=574,quality=epic,upgrade=2,gems=80agi_160crit_80agi_160crit_120agi,enchant=285agi_165crit,reforge=mastery_exp
+waist=arrowflight_girdle,id=105584,ilevel=580,quality=epic,upgrade=2,gems=160agi_80agi_160crit_160agi_120agi
+legs=leggings_of_unabashed_anger,id=105454,ilevel=580,quality=epic,upgrade=2,gems=80agi_160hit_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_haste
 feet=puddle_punishers,id=105410,ilevel=580,quality=epic,upgrade=2,gems=160agi_60mastery,enchant=140agi,reforge=hit_haste
-finger1=kilruks_band_of_ascendancy,id=105624,ilevel=580,quality=epic,upgrade=2,gems=160agi_60crit,enchant=160agi,reforge=mastery_hit
-finger2=ring_of_restless_energy,id=105558,ilevel=580,quality=epic,upgrade=2,gems=160agi_60crit,enchant=160agi
+finger1=kilruks_band_of_ascendancy,id=105624,ilevel=580,quality=epic,upgrade=2,gems=160agi_60crit,enchant=160agi
+finger2=ring_of_restless_energy,id=105558,ilevel=580,quality=epic,upgrade=2,gems=160agi_60crit,enchant=160agi,reforge=mastery_exp
 trinket1=assurance_of_consequence,id=105472,upgrade=2
 trinket2=haromms_talisman,id=105527,upgrade=2
-main_hand=korkron_hand_cannon,id=105559,ilevel=580,quality=epic,upgrade=2,gems=160agi_60agi,enchant=lord_blastingtons_scope_of_doom,reforge=mastery_hit
+main_hand=hiseks_reserve_longbow,id=105623,ilevel=580,quality=epic,upgrade=2,gems=160agi_60agi,enchant=lord_blastingtons_scope_of_doom,reforge=haste_hit
 
 # Gear Summary
-# gear_agility=30850
-# gear_stamina=41487
-# gear_expertise_rating=2438
-# gear_hit_rating=2783
-# gear_crit_rating=14756
-# gear_haste_rating=12282
-# gear_mastery_rating=4454
-# gear_armor=31309
+# gear_agility=31342
+# gear_stamina=42167
+# gear_expertise_rating=2761
+# gear_hit_rating=2762
+# gear_crit_rating=16714
+# gear_haste_rating=11804
+# gear_mastery_rating=3314
+# gear_armor=31496
 # meta_gem=capacitive_primal
-# main_hand=korkron_hand_cannon,heroic=1,elite=1,weapon=gun_3.00speed_20523min_38115max,enchant=lord_blastingtons_scope_of_doom
+# main_hand=hiseks_reserve_longbow,heroic=1,elite=1,weapon=bow_3.00speed_20523min_38115max,enchant=lord_blastingtons_scope_of_doom
 summon_pet=cat
