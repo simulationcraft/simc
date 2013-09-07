@@ -5454,7 +5454,7 @@ void death_knight_t::init_actions()
       def -> add_action( this, "Pillar of Frost" );
 
       if ( sim -> allow_potions && level >= 80 )
-        def -> add_action( potion_str, "if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)" );
+        def -> add_action( potion_str + "if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)" );
       
 
       
