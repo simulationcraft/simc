@@ -4588,13 +4588,15 @@ int hunter_t::decode_set( item_t& item )
     return SET_NONE;
   }
 
-  if ( strstr( s, "wyrmstalkers"       ) ) return SET_T13_MELEE;
+  if ( strstr( s, "wyrmstalkers"             ) ) return SET_T13_MELEE;
 
-  if ( strstr( s, "yaungol_slayer"     ) ) return SET_T14_MELEE;
+  if ( strstr( s, "yaungol_slayer"           ) ) return SET_T14_MELEE;
+  
+  if ( strstr( s, "saurok_stalker"           ) ) return SET_T15_MELEE;
 
-  if ( strstr( s, "saurok_stalker"     ) ) return SET_T15_MELEE;
+  if ( strstr( s, "_of_the_unblinking_vigil" ) ) return SET_T16_MELEE;
 
-  if ( strstr( s, "_gladiators_chain_" ) ) return SET_PVP_MELEE;
+  if ( strstr( s, "_gladiators_chain_"       ) ) return SET_PVP_MELEE;
 
   return SET_NONE;
 }
