@@ -5418,12 +5418,15 @@ void death_knight_t::init_actions()
   else
     precombat -> add_action( this, "Unholy Presence" );
     
-  if ( sim -> allow_potions && level >= 80 )
-    precombat -> add_action( potion_str );
+
+
 
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   precombat -> add_action( this, "Army of the Dead" );
+  
+  if ( sim -> allow_potions && level >= 80 )
+    precombat -> add_action( potion_str );
 
   for ( size_t i = 0; i < get_profession_actions().size(); i++ )
     precombat -> add_action( get_profession_actions()[ i ] );
