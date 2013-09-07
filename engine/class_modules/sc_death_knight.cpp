@@ -3645,7 +3645,10 @@ struct howling_blast_t : public death_knight_spell_t
 
     aoe                 = -1;
     base_aoe_multiplier = data().effectN( 3 ).percent();
-    direct_power_mod    = 0.8487;
+    if ( p -> dbc.ptr )
+      direct_power_mod    = 0.8480; // tested on PTR, was a 14.9% buff, not a 15% buff
+    else
+      direct_power_mod    = 0.738;
 
     assert( p -> active_spells.frost_fever );
   }
