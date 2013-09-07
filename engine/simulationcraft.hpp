@@ -5838,6 +5838,7 @@ struct buff_proc_callback_t : public proc_callback_t<T_CALLDATA>
       if ( ( callback -> buff -> reverse && callback -> buff -> check() > 0 ) ||
            ( ! callback -> buff -> reverse && callback -> buff -> check() > 0 && callback -> buff -> check() < callback -> buff -> max_stack() ) )
       {
+        callback -> buff -> cooldown -> reset( false );
         callback -> buff -> trigger();
         new ( sim ) tick_stack_t( *p(), callback );
       }
