@@ -5385,7 +5385,7 @@ void death_knight_t::init_actions()
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
   action_priority_list_t* def       = get_action_priority_list( "default"   );
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
-  action_priority_list_t* st       = get_action_priority_list( "st"   );
+  action_priority_list_t* st       = get_action_priority_list( "single_target"   );
   std::string soul_reaper_pct = set_bonus.tier15_4pc_melee() ? "45" : "35";
   std::string flask_str = "flask,type=";
   std::string food_str  = "food,type=";
