@@ -2445,9 +2445,21 @@ struct lights_hammer_heal_tick_t : public paladin_heal_t
   {
     dual = true;
     background = true;
-    aoe = -1;
+    aoe = ( p -> dbc.ptr ) ? 6 : -1;
     may_crit = true;
     benefits_from_seal_of_insight = false;
+  }
+  
+  std::vector< player_t* >& target_list()
+  {
+    if ( p() -> dbc.ptr )
+    {
+    target_cache.list = paladin_heal_t::target_list();
+    target_cache.list = find_lowest_players( aoe );
+    return target_cache.list;
+    }
+    else
+      return paladin_heal_t::target_list();
   }
 };
 
@@ -2673,7 +2685,7 @@ struct seal_of_insight_proc_t : public paladin_heal_t
       // 5.4 version of Battle Healer glyph makes SoI a smart heal
       if ( p() -> glyphs.battle_healer -> ok() && p() -> dbc.ptr )
       {
-        target = find_lowest_target();
+        target = find_lowest_player();
         if ( target ) 
           paladin_heal_t::execute();
       }
@@ -2690,33 +2702,6 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     {
       update_ready();
     }
-  }
-
-private:
-  // Get the lowest target except ourself
-  player_t* find_lowest_target()
-  {
-    // Ignoring range for the time being
-    double lowest_health_pct_found = 100.1;
-    player_t* lowest_player_found = nullptr;
-
-    for ( size_t i = 0, size = sim -> player_no_pet_list.size(); i < size; i++ )
-    {
-      player_t* p = sim -> player_no_pet_list[ i ];
-
-      // on PTR, this is still healing the paladin if solo or lowest health
-      //if ( player == p ) // as long as they aren't the paladin
-      //  continue;
-
-      // check their health against the current lowest
-      if ( p -> health_percentage() < lowest_health_pct_found )
-      {
-        // if this player is lower, make them the current lowest
-        lowest_health_pct_found = p -> health_percentage();
-        lowest_player_found = p;
-      }
-    }
-    return lowest_player_found;
   }
 };
 
@@ -4557,7 +4542,7 @@ void paladin_t::generate_action_prio_list_prot()
   precombat -> add_action( this, "Blessing of Kings", "if=(!aura.str_agi_int.up)&(aura.mastery.up)" );
   precombat -> add_action( this, "Blessing of Might", "if=!aura.mastery.up" );
   precombat -> add_action( this, "Seal of Insight" );
-  precombat -> add_action( this, "Sacred Shield" );
+  precombat -> add_talent( this, "Sacred Shield" );
 
   // Snapshot stats
   precombat -> add_action( "snapshot_stats",  "Snapshot raid buffed stats before combat begins and pre-potting is done." );
