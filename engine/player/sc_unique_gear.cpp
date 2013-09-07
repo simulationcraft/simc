@@ -44,6 +44,7 @@ struct stat_buff_proc_t : public buff_proc_callback_t<stat_buff_t>
            .activated( data.reverse || data.tick != timespan_t::zero() )
            .max_stack( proc_data.max_stacks )
            .duration( proc_data.duration )
+           .cd( proc_data.cooldown )
            .reverse( proc_data.reverse )
            .refreshes( ! proc_data.no_refresh )
            .add_stat( proc_data.stat, proc_data.stat_amount );
