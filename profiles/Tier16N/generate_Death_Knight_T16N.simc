@@ -1,10 +1,79 @@
 #!simc
-
 ptr=1
 talent_format=armory
 
 # Frost 1 hander
+deathknight="Death_Knight_Frost_1h_T16N"
+level=90
+race=tauren
+spec=frost
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1...0.
+head=helmet_of_cyclopean_dread,id=99194,gems=reverberating_primal_160str_180str,reforge=haste_crit
+neck=malkoroks_tainted_dog_tags,id=103917
+shoulders=pauldrons_of_cyclopean_dread,id=99187,gems=160str_160str_120str,enchant=200str_100crit
+back=turtleshell_cloak,id=103800,enchant=180crit,reforge=hit_crit
+chest=breastplate_of_cyclopean_dread,id=99192,gems=160str_160str_160str_180str,enchant=80all,reforge=haste_crit
+wrists=bracers_of_blind_hatred,id=103740,enchant=180str
+hands=gauntlets_of_cyclopean_dread,id=99193,gems=160str_160str_120str,enchant=170str
+waist=ashen_wall_girdle,id=103932,gems=160str_80str_160hit_160str_120str,reforge=haste_crit
+legs=legplates_of_willful_doom,id=103954,gems=80str_160hit_80str_160hit_160str_120str,enchant=285str_165crit
+feet=malkoroks_giant_stompers,id=103879,gems=80str_160hit_60crit,enchant=140mastery
+finger1=devilfang_band,id=103896,gems=160str_60exp,reforge=exp_crit
+finger2=bloodclaw_band,id=103798,gems=80str_160mastery_60haste,reforge=hit_crit
+trinket1=evil_eye_of_galakras,id=102298
+trinket2=thoks_tail_tip,id=102305
+main_hand=xifeng_longblade_of_the_titanic_guardian,id=103826,gems=160str_60str,enchant=rune_of_razorice,reforge=hit_crit
+off_hand=xifeng_longblade_of_the_titanic_guardian,id=103826,gems=160str_60str,enchant=rune_of_the_fallen_crusader,reforge=hit_crit
+save=Death_Knight_Frost_1h_T16N.simc
 
 # Frost 2 hander
+deathknight="Death_Knight_Frost_2h_T16N"
+level=90
+race=tauren
+spec=frost
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1...0.
+head=helmet_of_cyclopean_dread,id=99194,gems=reverberating_primal_80str_160crit_180str,reforge=haste_crit
+neck=malkoroks_tainted_dog_tags,id=103917
+shoulders=tusks_of_mannoroth,id=103785,gems=80str_160crit_80str_160crit_80str_160crit_180str,enchant=200str_100crit
+back=aeths_swiftcinder cloak,id=103846,enchant=180crit,reforge=exp_mastery
+chest=breastplate_of_cyclopean_dread,id=99192,gems=80str_160crit_80str__160crit_80str_160crit_180str,enchant=80all,reforge=mastery_crit
+wrists=wallborer_bracers,id=103739,enchant=180str
+hands=gauntlets_of_cyclopean_dread,id=99193,gems=80str_160crit_80str_160crit_120str,enchant=170str,reforge=mastery_crit
+waist=ashen_wall_girdle,id=103932,gems=80str_160crit_160crit_160hit_320crit_120str,reforge=hit_exp
+legs=greaves_of_cyclopean_dread,id=99186,gems=320crit_320crit_120str,enchant=285str_165crit
+feet=greaves_of_sublime_superiority,id=103878,gems=80str_160crit_60crit,enchant=140mastery,reforge=hit_exp
+finger1=devilfang_band,id=103896,gems=80str_160crit_60exp,reforge=mastery_crit
+finger2=seal_of_the_forgotten_kings,id=103796,gems=80str_160crit_60haste
+trinket1=evil_eye_of_galakras,id=102298
+trinket2=thoks_tail_tip,id=102305
+main_hand=xalatoh_desecrated_image_of_gorehowl,id=103649,gems=80str_160crit_60str,enchant=rune_of_the_fallen_crusader
+save=Death_Knight_Frost_2h_T16N.simc
 
 # Unholy
+deathknight="Death_Knight_Unholy_T16N"
+level=90
+race=tauren
+spec=unholy
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#db!2...0.
+head=helmet_of_cyclopean_dread,id=99194,gems=reverberating_primal_80str_160crit_180str,reforge=haste_crit
+neck=malkoroks_tainted_dog_tags,id=103917
+shoulders=tusks_of_mannoroth,id=103785,gems=80str_160crit_80str_160crit_80str_160crit_180str,enchant=200str_100crit
+back=aeths_swiftcinder cloak,id=103846,enchant=180crit,reforge=exp_mastery
+chest=breastplate_of_shamanic_mirrors,id=103737,gems=80str_160crit_80str_160crit_320crit_180str,enchant=80all
+wrists=bracers_of_blind_hatred,id=103740,enchant=180str,reforge=mastery_exp
+hands=gauntlets_of_cyclopean_dread,id=99193,gems=80str_160crit_80str_160crit_120str,enchant=170str,reforge=hit_crit
+waist=ashen_wall_girdle,id=103932,gems=80str_160crit_160crit_160hit_320crit_120str,reforge=hit_crit
+legs=legplates_of_willful_doom,id=103954,gems=160crit_160hit_160crit_160hit_80str_160crit_120str,enchant=285str_165crit
+feet=greaves_of_sublime_superiority,id=103878,gems=80str_160crit_60crit,enchant=140mastery
+finger1=devilfang_band,id=103896,gems=80str_160crit_60exp,reforge=mastery_crit
+finger2=seal_of_the_forgotten_kings,id=103796,gems=80str_160crit_60haste,reforge=haste_exp
+trinket1=evil_eye_of_galakras,id=102298
+trinket2=thoks_tail_tip,id=102305
+main_hand=xalatoh_desecrated_image_of_gorehowl,id=103649,gems=80str_160crit_60str,enchant=rune_of_the_fallen_crusader
+save=Death_Knight_Unholy_T16N.simc
