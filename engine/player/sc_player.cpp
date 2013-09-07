@@ -353,6 +353,9 @@ void ignite::trigger_pct_based( action_t* ignite_action,
 
     virtual void execute()
     {
+      if ( target -> is_sleeping() )
+        return;
+
       dot_t* dot = action -> get_dot( target );
 
       double new_total_ignite_dmg = additional_ignite_dmg;
