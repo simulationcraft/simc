@@ -5856,6 +5856,13 @@ struct buff_proc_callback_t : public proc_callback_t<T_CALLDATA>
   void execute( action_t* action, T_CALLDATA* /* call_data */ )
   {
     assert( buff );
+    // Since buff procs allow tracking of cooldown (by having the cooldown
+    // duplicated in the buff, as well as in proc_callback_t), we reset the CD
+    // before triggering the buff to ensure that the buff can actually proc.
+    // Without the reset, the simulator may use a sequence where the cooldown
+    // of the buff is still up, while the cooldown of the proc_calllback_t
+    // object is not, causing the actual buff to not trigger.
+    buff -> cooldown -> reset( false );
     buff -> trigger( this -> proc_data.reverse ? this -> proc_data.max_stacks : 1 );
 
     if ( this -> proc_data.tick != timespan_t::zero() ) // The buff stacks over time.
