@@ -5560,6 +5560,7 @@ void death_knight_t::init_actions()
 
         // Generate Runic Power or Runes
         st -> add_action( this, "Frost Strike", "if=talent.runic_empowerment.enabled&unholy=1" );
+        st -> add_talent( this, "Blood Tap", "if=target.health.pct-3*(target.health.pct%target.time_to_die)>35|buff.blood_charge.stack>=8" );
 
         // Better than waiting
         st -> add_action( this, "Frost Strike", "if=runic_power>=40" );
