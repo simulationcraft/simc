@@ -1234,6 +1234,8 @@ class SpellDataGenerator(DataGenerator):
           ( 144948, 0 ), # T16 tank 4PC Bone Shield charge proc
           ( 144953, 0 ), # T16 tank 2PC Death Strike proc
           ( 144909, 0 ), # T16 dps 4PC frost driver spell
+          ( 57330, 0, True ), # Horn of Winter needs to be explicitly put in the general tree, as our (over)zealous filtering thinks it's not an active ability
+          ( 47568, 0, True ), # Same goes for Empower Rune Weapon
         ),  
         
         # Shaman:

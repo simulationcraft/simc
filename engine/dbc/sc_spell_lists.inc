@@ -468,7 +468,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Death Knight
   {
-    // General tree, 26 abilities
+    // General tree, 28 abilities
     {
        48707, // Anti-Magic Shell
        42650, // Army of the Dead
@@ -482,7 +482,9 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
        49576, // Death Grip
        49998, // Death Strike
        43265, // Death and Decay
+       47568, // Empower Rune Weapon
        48266, // Frost Presence
+       57330, // Horn of Winter
        48792, // Icebound Fortitude
        45477, // Icy Touch
        47528, // Mind Freeze

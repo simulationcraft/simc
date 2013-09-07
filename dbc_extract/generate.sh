@@ -37,7 +37,9 @@ fi
 
 ./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD$PTR -t talent                  > $OUTPATH/sc_talent_data${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT --cache=$CACHEDIR $WOWVERSION -b $BUILD$PTR -t spell> $OUTPATH/sc_spell_data${PTR:+_ptr}.inc
-./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD$PTR -t rppm_coeff             >> $OUTPATH/sc_spell_data${PTR:+_ptr}.inc
+if [ x"$WOWVERSION" != x"-v 5.3.0" ]; then
+  ./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD$PTR -t rppm_coeff             >> $OUTPATH/sc_spell_data${PTR:+_ptr}.inc
+fi
 ./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD$PTR -t scale                   > $OUTPATH/sc_scale_data${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD$PTR -t class_list              > $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
 ./dbc_extract.py -p $INPUT $WOWVERSION -b $BUILD$PTR -t spec_spell_list        >> $OUTPATH/sc_spell_lists${PTR:+_ptr}.inc
