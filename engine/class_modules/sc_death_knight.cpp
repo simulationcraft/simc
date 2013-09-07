@@ -5431,13 +5431,12 @@ void death_knight_t::init_actions()
   for ( size_t i = 0; i < get_racial_actions().size(); i++ )
     precombat -> add_action( get_racial_actions()[ i ] );
 
-  for ( size_t i = 0; i < get_item_actions().size(); i++ )
-    precombat -> add_action( get_item_actions()[ i ] );
+
 
 
 
   def -> add_action( "auto_attack" );
-  def -> add_action( this, "Anti-Magic Shell", ",damage=100000" );
+  def -> add_action( this, "Anti-Magic Shell", "damage=100000" );
 
 
   switch ( specialization() )
@@ -5452,11 +5451,11 @@ void death_knight_t::init_actions()
       def -> add_action( this, "Pillar of Frost" );
 
       if ( sim -> allow_potions && level >= 80 )
-        def -> add_action( potion_str, ",if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)" );
+        def -> add_action( potion_str, "if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)" );
       
 
       
-      def -> add_action( this, "Empower Rune Weapon", ",if=target.time_to_die<=60&(buff.mogu_power_potion.up|buff.golemblood_potion.up)" );
+      def -> add_action( this, "Empower Rune Weapon", "if=target.time_to_die<=60&(buff.mogu_power_potion.up|buff.golemblood_potion.up)" );
         
 
         
@@ -5480,45 +5479,45 @@ void death_knight_t::init_actions()
       if ( main_hand_weapon.group() == WEAPON_2H )
       {
         // Diseases for free
-        st -> add_talent( this, "Plague Leech", ",if=(dot.blood_plague.remains<1|dot.frost_fever.remains<1)" );
-        st -> add_action( this, "Outbreak", ",if=!dot.frost_fever.ticking|!dot.blood_plague.ticking" );
-        st -> add_talent( this, "Unholy Blight", ",if=(!dot.frost_fever.ticking|!dot.blood_plague.ticking)" );
+        st -> add_talent( this, "Plague Leech", "if=(dot.blood_plague.remains<1|dot.frost_fever.remains<1)" );
+        st -> add_action( this, "Outbreak", "if=!dot.frost_fever.ticking|!dot.blood_plague.ticking" );
+        st -> add_talent( this, "Unholy Blight", "if=(!dot.frost_fever.ticking|!dot.blood_plague.ticking)" );
 
         // Soul Reaper
-        st -> add_action( this, "Soul Reaper", ",if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
-        st -> add_talent( this, "Blood Tap", ",if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)" );
+        st -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
+        st -> add_talent( this, "Blood Tap", "if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)" );
        
         // Diseases for runes
-        st -> add_action( this, "Howling Blast", ",if=!dot.frost_fever.ticking" );
-        st -> add_action( this, "Plague Strike", ",if=!dot.blood_plague.ticking" );
+        st -> add_action( this, "Howling Blast", "if=!dot.frost_fever.ticking" );
+        st -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking" );
 
         // Rime
-        st -> add_action( this, "Howling Blast", ",if=buff.rime.react" );
+        st -> add_action( this, "Howling Blast", "if=buff.rime.react" );
 
         // Killing Machine
-        st -> add_action( this, "Obliterate", ",if=buff.killing_machine.react" );
-        st -> add_talent( this, "Blood Tap", ",if=buff.killing_machine.react" );
+        st -> add_action( this, "Obliterate", "if=buff.killing_machine.react" );
+        st -> add_talent( this, "Blood Tap", "if=buff.killing_machine.react" );
         
         // Don't waste Runic Power
-        st -> add_talent( this, "Blood Tap", ",if=buff.blood_charge.stack>10&runic_power>76" );
-        st -> add_action( this, "Frost Strike", ",if=runic_power>76" );
+        st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&runic_power>76" );
+        st -> add_action( this, "Frost Strike", "if=runic_power>76" );
 
         // Keep runes on cooldown
-        st -> add_action( this, "Obliterate", ",if=blood=2|frost=2|unholy=2" );
+        st -> add_action( this, "Obliterate", "if=blood=2|frost=2|unholy=2" );
 
         // Refresh diseases
-        st -> add_talent( this, "Plague Leech", ",if=(dot.blood_plague.remains<3|dot.frost_fever.remains<3)" );
-        st -> add_action( this, "Outbreak", ",if=dot.frost_fever.remains<3|dot.blood_plague.remains<3" );
-        st -> add_talent( this, "Unholy Blight", ",if=(dot.frost_fever.remains<3|dot.blood_plague.remains<3)" );
+        st -> add_talent( this, "Plague Leech", "if=(dot.blood_plague.remains<3|dot.frost_fever.remains<3)" );
+        st -> add_action( this, "Outbreak", "if=dot.frost_fever.remains<3|dot.blood_plague.remains<3" );
+        st -> add_talent( this, "Unholy Blight", "if=(dot.frost_fever.remains<3|dot.blood_plague.remains<3)" );
         
         // Regenerate resources
-        st -> add_action( this, "Frost Strike", ",if=talent.runic_empowerment.enabled&(frost=0|unholy=0|blood=0)" );
-        st -> add_action( this, "Frost Strike", ",if=talent.blood_tap.enabled&buff.blood_charge.stack<=10" );
+        st -> add_action( this, "Frost Strike", "if=talent.runic_empowerment.enabled&(frost=0|unholy=0|blood=0)" );
+        st -> add_action( this, "Frost Strike", "if=talent.blood_tap.enabled&buff.blood_charge.stack<=10" );
         st -> add_action( this, "Horn of Winter" );
 
         // Normal stuff
         st -> add_action( this, "Obliterate" );
-        st -> add_talent( this, "Blood Tap", ",if=buff.blood_charge.stack>10&runic_power>=20" );
+        st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&runic_power>=20" );
         st -> add_action( this, "Frost Strike" );
 
         // Better than waiting
@@ -5527,40 +5526,40 @@ void death_knight_t::init_actions()
       }
       else
       {
-        st -> add_talent( this, "Blood Tap", ",if=buff.blood_charge.stack>10&(runic_power>76|(runic_power>=20&buff.killing_machine.react))" );
+        st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&(runic_power>76|(runic_power>=20&buff.killing_machine.react))" );
 
         // Killing Machine / Very High RP
-        st -> add_action( this, "Frost Strike", ",if=buff.killing_machine.react|runic_power>88" );
+        st -> add_action( this, "Frost Strike", "if=buff.killing_machine.react|runic_power>88" );
         
         // Capped Runes
-        st -> add_action( this, "Howling Blast", ",if=death>1|frost>1" );
+        st -> add_action( this, "Howling Blast", "if=death>1|frost>1" );
 
         // Diseases for free
-        st -> add_talent( this, "Unholy Blight", ",if=(dot.frost_fever.remains<3|dot.blood_plague.remains<3)" );
+        st -> add_talent( this, "Unholy Blight", "if=(dot.frost_fever.remains<3|dot.blood_plague.remains<3)" );
 
         // Soul Reaper
-        st -> add_action( this, "Soul Reaper", ",if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
-        st -> add_talent( this, "Blood Tap", ",if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)" );
+        st -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
+        st -> add_talent( this, "Blood Tap", "if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)" );
 
         // Diseases for runes
-        st -> add_action( this, "Howling Blast", ",if=!dot.frost_fever.ticking" );
-        st -> add_action( this, "Plague Strike", ",if=!dot.blood_plague.ticking&unholy>0" );
+        st -> add_action( this, "Howling Blast", "if=!dot.frost_fever.ticking" );
+        st -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking&unholy>0" );
 
         // Rime
-        st -> add_action( this, "Howling Blast", ",if=buff.rime.react" );
+        st -> add_action( this, "Howling Blast", "if=buff.rime.react" );
 
         // Don't waste Runic Power
-        st -> add_action( this, "Frost Strike", ",if=runic_power>76" );
+        st -> add_action( this, "Frost Strike", "if=runic_power>76" );
 
         // Keep Runes on Cooldown
-        st -> add_action( this, "Obliterate", ",if=unholy>0&!buff.killing_machine.react" );
+        st -> add_action( this, "Obliterate", "if=unholy>0&!buff.killing_machine.react" );
         st -> add_action( this, "Howling Blast" );
 
         // Generate Runic Power or Runes
-        st -> add_action( this, "Frost Strike", ",if=talent.runic_empowerment.enabled&unholy=1" );
+        st -> add_action( this, "Frost Strike", "if=talent.runic_empowerment.enabled&unholy=1" );
 
         // Better than waiting
-        st -> add_action( this, "Frost Strike", ",if=runic_power>=40" );
+        st -> add_action( this, "Frost Strike", "if=runic_power>=40" );
         st -> add_action( this, "Horn of Winter" );
         st -> add_talent( this, "Blood Tap" );
         st -> add_talent( this, "Plague Leech" );
@@ -5569,18 +5568,18 @@ void death_knight_t::init_actions()
 
       //AoE
       aoe -> add_talent( this, "Unholy Blight" );
-      aoe -> add_action( this, "Pestilence", ",if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28" );
-      aoe -> add_action( this, "Pestilence", ",if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28" );
+      aoe -> add_action( this, "Pestilence", "if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28" );
+      aoe -> add_action( this, "Pestilence", "if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28" );
       aoe -> add_action( this, "Howling Blast" );
-      aoe -> add_talent( this, "Blood Tap", ",if=buff.blood_charge.stack>10" );
-      aoe -> add_action( this, "Frost Strike", ",if=runic_power>76" );
-      aoe -> add_action( this, "Death and Decay", ",if=unholy=1" );
-      aoe -> add_action( this, "Plague Strike", ",if=unholy=2" );
+      aoe -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10" );
+      aoe -> add_action( this, "Frost Strike", "if=runic_power>76" );
+      aoe -> add_action( this, "Death and Decay", "if=unholy=1" );
+      aoe -> add_action( this, "Plague Strike", "if=unholy=2" );
       aoe -> add_talent( this, "Blood Tap" );
       aoe -> add_action( this, "Frost Strike" );
       aoe -> add_action( this, "Horn of Winter" );
-      aoe -> add_talent( this, "Plague Leech", ",if=unholy=1" );
-      aoe -> add_action( this, "Plague Strike", ",if=unholy=1" );
+      aoe -> add_talent( this, "Plague Leech", "if=unholy=1" );
+      aoe -> add_action( this, "Plague Strike", "if=unholy=1" );
       aoe -> add_action( this, "Empower Rune Weapon" );
 
       
@@ -5600,31 +5599,31 @@ void death_knight_t::init_actions()
 	      def -> add_action( get_item_actions()[ i ] );
 	
 		  if ( sim -> allow_potions && level >= 80 )
-	      def -> add_action( potion_str, ",if=buff.dark_transformation.up&target.time_to_die<=60" );
+	      def -> add_action( potion_str, "if=buff.dark_transformation.up&target.time_to_die<=60" );
 
-		  def -> add_action( "Unholy Frenzy", ",if=time>=4" );
+		  def -> add_action( "Unholy Frenzy", "if=time>=4" );
 
 	    //decide between single_target and aoe rotation
 	    def -> add_action( "run_action_list,name=aoe,if=active_enemies>=5" );
 	    def -> add_action( "run_action_list,name=single_target,if=active_enemies<5" );
 
 	    // Disease Gaming
-		  st -> add_action( this, "Outbreak", ",if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)" );
-		  st -> add_action( this, "Plague Strike", ",if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)" );
+		  st -> add_action( this, "Outbreak", "if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)" );
+		  st -> add_action( this, "Plague Strike", "if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)" );
 
-		  st -> add_talent( this, "Blood Tap", ",if=buff.blood_charge.stack>10&runic_power>=32" );
+		  st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10&runic_power>=32" );
 
 	    // Diseases for free
-		  st -> add_talent( this, "Unholy Blight", ",if=(dot.frost_fever.remains<3|dot.blood_plague.remains<3)" );
-		  st -> add_action( this, "Outbreak", ",if=dot.frost_fever.remains<3|dot.blood_plague.remains<3" );
+		  st -> add_talent( this, "Unholy Blight", "if=(dot.frost_fever.remains<3|dot.blood_plague.remains<3)" );
+		  st -> add_action( this, "Outbreak", "if=dot.frost_fever.remains<3|dot.blood_plague.remains<3" );
 
 	    // Soul Reaper
-		  st -> add_action( this, "Soul Reaper", ",if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
-		  st -> add_talent( this, "Blood Tap", ",if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)" );
+		  st -> add_action( this, "Soul Reaper", "if=target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
+		  st -> add_talent( this, "Blood Tap", "if=(target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct + "&cooldown.soul_reaper.remains=0)" );
      
 
 	    // Diseases for Runes
-		  st -> add_action( this, "Plague Strike", ",if=!dot.blood_plague.ticking|!dot.frost_fever.ticking" );
+		  st -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking|!dot.frost_fever.ticking" );
 
 	    // GCD Cooldowns
 		  st -> add_action( this, "Summon Gargoyle" );
@@ -5632,49 +5631,49 @@ void death_knight_t::init_actions()
 		  st -> add_talent( this, "Blood Tap,if=buff.shadow_infusion.stack=5" );
 
 	    // Don't waste runic power
-		  st -> add_action( this, "Death Coil", ",if=runic_power>90" );
+		  st -> add_action( this, "Death Coil", "if=runic_power>90" );
 
 	    // Get runes on cooldown
-		  st -> add_action( this, "Death and Decay", ",if=unholy=2" );
-		  st -> add_talent( this, "Blood Tap", ",if=unholy=2&cooldown.death_and_decay.remains=0" );
-		  st -> add_action( this, "Scourge Strike", ",if=unholy=2" );
-		  st -> add_action( this, "Festering Strike", ",if=blood=2&frost=2" );
+		  st -> add_action( this, "Death and Decay", "if=unholy=2" );
+		  st -> add_talent( this, "Blood Tap", "if=unholy=2&cooldown.death_and_decay.remains=0" );
+		  st -> add_action( this, "Scourge Strike", "if=unholy=2" );
+		  st -> add_action( this, "Festering Strike", "if=blood=2&frost=2" );
 
 	    // Normal stuff
 		  st -> add_action( this, "Death and Decay" );
-		  st -> add_talent( this, "Blood Tap", ",if=cooldown.death_and_decay.remains=0" );
-		  st -> add_action( this, "Death Coil", ",if=buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)" );
+		  st -> add_talent( this, "Blood Tap", "if=cooldown.death_and_decay.remains=0" );
+		  st -> add_action( this, "Death Coil", "if=buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)" );
 		  st -> add_action( this, "Scourge Strike" );
-		  st -> add_talent( this, "Plague Leech", ",if=cooldown.outbreak.remains<1" );
+		  st -> add_talent( this, "Plague Leech", "if=cooldown.outbreak.remains<1" );
 		  st -> add_action( this, "Festering Strike" );
 		  st -> add_action( this, "Horn of Winter" );
-		  st -> add_action( this, "Death Coil", ",if=buff.dark_transformation.down|(cooldown.summon_gargoyle.remains>8&buff.dark_transformation.remains>8)" );
+		  st -> add_action( this, "Death Coil", "if=buff.dark_transformation.down|(cooldown.summon_gargoyle.remains>8&buff.dark_transformation.remains>8)" );
 
 	    // Less waiting
-		  st -> add_talent( this, "Blood Tap", ",if=buff.blood_charge.stack>=8" );
+		  st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=8" );
 		  st -> add_action( this, "Empower Rune Weapon" );
 
 	    //AoE
 	    aoe -> add_talent( this, "Unholy Blight" );
-	    aoe -> add_action( this, "Plague Strike", ",if=!dot.blood_plague.ticking|!dot.frost_fever.ticking" );
-	    aoe -> add_action( this, "Pestilence", ",if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28" );
-	    aoe -> add_action( this, "Pestilence", ",if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28" );
+	    aoe -> add_action( this, "Plague Strike", "if=!dot.blood_plague.ticking|!dot.frost_fever.ticking" );
+	    aoe -> add_action( this, "Pestilence", "if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28" );
+	    aoe -> add_action( this, "Pestilence", "if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28" );
 	    aoe -> add_action( this, "Summon Gargoyle" );
 	    aoe -> add_action( this, "Dark Transformation" );
-	    aoe -> add_talent( this, "Blood Tap", ",if=buff.shadow_infusion.stack=5" );
-	    aoe -> add_action( this, "Blood Boil", ",if=blood=2|death=2" );
-	    aoe -> add_action( this, "Death and Decay", ",if=unholy=1" );
-	    aoe -> add_action( this, "Soul Reaper", ",if=unholy=2&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
-	    aoe -> add_action( this, "Scourge Strike", ",if=unholy=2" );
-	    aoe -> add_talent( this, "Blood Tap", ",if=buff.blood_charge.stack>10" );
-	    aoe -> add_action( this, "Death Coil", ",if=runic_power>90|buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)" );
+	    aoe -> add_talent( this, "Blood Tap", "if=buff.shadow_infusion.stack=5" );
+	    aoe -> add_action( this, "Blood Boil", "if=blood=2|death=2" );
+	    aoe -> add_action( this, "Death and Decay", "if=unholy=1" );
+	    aoe -> add_action( this, "Soul Reaper", "if=unholy=2&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
+	    aoe -> add_action( this, "Scourge Strike", "if=unholy=2" );
+	    aoe -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>10" );
+	    aoe -> add_action( this, "Death Coil", "if=runic_power>90|buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)" );
 	    aoe -> add_action( this, "Blood Boil" );
 	    aoe -> add_action( this, "Icy Touch" );
-	    aoe -> add_action( this, "Soul Reaper", ",if=unholy=1&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
-	    aoe -> add_action( this, "Scourge Strike", ",if=unholy=1" );
+	    aoe -> add_action( this, "Soul Reaper", "if=unholy=1&target.health.pct-3*(target.health.pct%target.time_to_die)<=" + soul_reaper_pct );
+	    aoe -> add_action( this, "Scourge Strike", "if=unholy=1" );
 	    aoe -> add_action( this, "Death Coil" );
 	    aoe -> add_talent( this, "Blood Tap" );
-	    aoe -> add_talent( this, "Plague Leech", ",if=unholy=1" );
+	    aoe -> add_talent( this, "Plague Leech", "if=unholy=1" );
 	    aoe -> add_action( this, "Horn of Winter" );
 	    aoe -> add_action( this, "Empower Rune Weapon" );
 
