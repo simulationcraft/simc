@@ -42,6 +42,7 @@ actions+=/divine_storm,if=active_enemies>=2&(holy_power=5|buff.divine_purpose.re
 actions+=/templars_verdict,if=holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3)
 actions+=/hammer_of_wrath
 actions+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
+actions+=/divine_storm,if=buff.divine_crusader.react
 actions+=/crusader_strike
 actions+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2
 actions+=/exorcism,if=active_enemies>=2&active_enemies<=4&set_bonus.tier15_2pc_melee&glyph.mass_exorcism.enabled
@@ -52,40 +53,40 @@ actions+=/judgment
 actions+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2
 actions+=/exorcism
 actions+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2
-actions+=/templars_verdict,if=buff.tier15_4pc_melee.up
+actions+=/templars_verdict,if=buff.tier15_4pc_melee.up&active_enemies<4
 actions+=/divine_storm,if=active_enemies>=2&buff.inquisition.remains>4
 actions+=/templars_verdict,if=buff.inquisition.remains>4
 actions+=/holy_prism,if=talent.holy_prism.enabled
 
-head=helmet_of_winged_triumph,id=99379,gems=capacitive_primal_80str_160haste_180str
-neck=juggernauts_ignition_keys,id=104517
-shoulders=pauldrons_of_winged_triumph,id=99373,gems=80str_160haste_80str_160haste_120str,enchant=200str_100crit,reforge=exp_haste
+head=helmet_of_winged_triumph,id=99379,upgrade=2,gems=capacitive_primal_160exp_160haste_180str
+neck=juggernauts_ignition_keys,id=105513,upgrade=2,reforge=hit_haste
+shoulders=pauldrons_of_winged_triumph,id=99373,upgrade=2,gems=160exp_160haste_160exp_160haste_120str,enchant=200str_100crit,reforge=exp_haste
 back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=80str_160haste_60str,enchant=180hit
-chest=battleplate_of_winged_triumph,id=99136,gems=80str_160haste_80str_160haste_80str_160haste_180str,enchant=80all
-wrists=bubbleburst_bracers,id=103738,gems=360haste,enchant=180str,reforge=hit_crit
-hands=gauntlets_of_winged_triumph,id=99137,gems=80str_160haste_80str_160haste_360haste_120str,enchant=170str,reforge=hit_crit
-waist=demolishers_reinforced_belt,id=103788,gems=80str_160haste_320haste_320haste_120str
-legs=legplates_of_winged_triumph,id=99139,gems=320haste_320haste_120str,enchant=285str_165crit,reforge=crit_mastery
-feet=wolfrider_spurs,id=103880,gems=360haste_60crit,enchant=175haste,reforge=crit_mastery
-finger1=asgorathian_blood_seal,id=103794,gems=80str_160haste_60haste,reforge=exp_mastery
-finger2=seal_of_the_forgotten_kings,id=103796,gems=80str_160haste_60haste,reforge=crit_mastery
-trinket1=evil_eye_of_galakras,id=102298
-trinket2=thoks_tail_tip,id=102305
-main_hand=britomarts_jagged_pike,id=104614,gems=360haste,enchant=dancing_steel
+chest=battleplate_of_winged_triumph,id=99387,upgrade=2,gems=160exp_160haste_160exp_160haste_160exp_160haste_180str,enchant=80all
+wrists=bubbleburst_bracers,id=105411,upgrade=2,gems=320haste,enchant=180str,reforge=hit_mastery
+hands=gauntlets_of_winged_triumph,id=99380,upgrade=2,gems=80str_160haste_80str_160haste_320haste_120str,enchant=170str,reforge=hit_mastery
+waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=160exp_160haste_320haste_320haste_120str
+legs=legplates_of_unthinking_strife,id=105640,upgrade=2,gems=160hit_160haste_160hit_160haste_160exp_160haste_180str,enchant=285str_165crit
+feet=wolfrider_spurs,id=105531,upgrade=2,gems=320haste_60crit,enchant=175haste,reforge=crit_mastery
+finger1=asgorathian_blood_seal,id=105620,upgrade=2,gems=80str_160haste_60haste,reforge=exp_hit
+finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=80str_160haste_60haste,reforge=crit_mastery
+trinket1=evil_eye_of_galakras,id=105491,upgrade=2
+trinket2=thoks_tail_tip,id=105609,upgrade=2
+main_hand=britomarts_jagged_pike,id=105610,upgrade=2,gems=320haste_60str,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=23213
+# gear_strength=26774
 # gear_agility=80
-# gear_stamina=33022
+# gear_stamina=39144
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=1087
-# gear_hit_rating=2022
-# gear_crit_rating=4165
-# gear_haste_rating=16734
-# gear_mastery_rating=9572
-# gear_armor=39507
+# gear_expertise_rating=2554
+# gear_hit_rating=2682
+# gear_crit_rating=3012
+# gear_haste_rating=19470
+# gear_mastery_rating=12488
+# gear_armor=41582
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
-# main_hand=britomarts_jagged_pike,heroic=1,weapon=polearm_3.60speed_24704min_37057max,enchant=dancing_steel
+# main_hand=britomarts_jagged_pike,heroic=1,elite=1,weapon=polearm_3.60speed_26125min_39188max,enchant=dancing_steel

@@ -34,7 +34,9 @@ actions+=/arcane_torrent
 actions+=/avenging_wrath
 actions+=/holy_avenger,if=talent.holy_avenger.enabled
 actions+=/divine_protection
-actions+=/shield_of_the_righteous,if=(holy_power>=5)|(buff.divine_purpose.react)|(incoming_damage_1500ms>=health.max*0.3)
+actions+=/eternal_flame,if=talent.eternal_flame.enabled&(buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react))
+actions+=/word_of_glory,if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8
+actions+=/shield_of_the_righteous,if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3
 actions+=/crusader_strike
 actions+=/judgment,if=cooldown.crusader_strike.remains>=0.5
 actions+=/avengers_shield,if=cooldown.crusader_strike.remains>=0.5
@@ -47,35 +49,35 @@ actions+=/holy_wrath,if=cooldown.crusader_strike.remains>=0.5
 actions+=/consecration,if=(target.debuff.flying.down&!ticking)&(cooldown.crusader_strike.remains>=0.5)
 actions+=/sacred_shield,if=talent.sacred_shield.enabled&cooldown.crusader_strike.remains>=0.5
 
-head=faceguard_of_winged_triumph,id=99370,gems=indomitable_primal_160exp_160haste_270sta,reforge=parry_hit
-neck=juggernauts_ignition_keys,id=104517,reforge=hit_haste
-shoulders=shoulderguards_of_winged_triumph,id=99364,gems=320haste_320haste,enchant=300sta_100dodge,reforge=exp_haste
+head=faceguard_of_winged_triumph,id=99370,upgrade=2,gems=indomitable_primal_160exp_160haste_270sta,reforge=parry_mastery
+neck=juggernauts_ignition_keys,id=105513,upgrade=2,reforge=hit_haste
+shoulders=shoulderguards_of_winged_triumph,id=99364,upgrade=2,gems=320haste_320haste,enchant=300sta_100dodge,reforge=exp_haste
 back=qianying_fortitude_of_niuzao,id=102250,upgrade=2,gems=160exp_160haste_90sta,enchant=200sta,reforge=parry_haste
-chest=chestguard_of_winged_triumph,id=99368,gems=160exp_160haste_160exp_160haste_160exp_160haste_270sta,enchant=300sta,reforge=mastery_haste
-wrists=bubbleburst_bracers,id=104415,gems=320haste,enchant=170mastery
-hands=handguards_of_winged_triumph,id=99369,gems=320haste_320haste_320haste,enchant=170haste,reforge=exp_hit
-waist=demolishers_reinforced_belt,id=104513,gems=320haste_320haste_320haste
-legs=legplates_of_unthinking_strife,id=104644,gems=320haste_320haste_320haste,enchant=430sta_165dodge
-feet=wolfrider_spurs,id=103880,gems=360haste_60crit,enchant=175haste,reforge=crit_mastery
-finger1=asgorathian_blood_seal,id=104624,gems=160exp_160haste_60haste,enchant=240sta,reforge=exp_mastery
-finger2=bloodclaw_band,id=105534,gems=320haste_60haste,enchant=240sta,reforge=hit_haste
-trinket1=vial_of_living_corruption,id=104572
-trinket2=rooks_unlucky_talisman,id=104442
-main_hand=siegecrafters_forge_hammer,id=104625,gems=320haste,enchant=windsong
-off_hand=bulwark_of_the_fallen_general,id=104560,gems=320haste,enchant=170parry,reforge=exp_haste
+chest=chestguard_of_winged_triumph,id=99368,upgrade=2,gems=160exp_160haste_160exp_160haste_160exp_160haste_270sta,enchant=300sta,reforge=exp_haste
+wrists=bubbleburst_bracers,id=105411,upgrade=2,gems=320haste,enchant=170mastery
+hands=handguards_of_winged_triumph,id=99369,upgrade=2,gems=320haste_320haste_320haste,enchant=170haste,reforge=exp_hit
+waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=320haste_320haste_320haste
+legs=legplates_of_unthinking_strife,id=105640,upgrade=2,gems=320haste_320haste_320haste,enchant=430sta_165dodge
+feet=wolfrider_spurs,id=105531,upgrade=2,gems=320haste_60crit,enchant=175haste,reforge=crit_hit
+finger1=asgorathian_blood_seal,id=105620,upgrade=2,gems=160exp_160haste_60haste,enchant=240sta,reforge=exp_mastery
+finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=160exp_160haste_60haste,enchant=240sta,reforge=crit_mastery
+trinket1=vial_of_living_corruption,id=105568,upgrade=2
+trinket2=thoks_tail_tip,id=105609,upgrade=2
+main_hand=siegecrafters_forge_hammer,id=105621,upgrade=2,gems=320haste,enchant=windsong
+off_hand=bulwark_of_the_fallen_general,id=105556,upgrade=2,gems=320haste,enchant=170parry,reforge=exp_haste
 
 # Gear Summary
-# gear_strength=21700
-# gear_stamina=44374
-# gear_expertise_rating=5163
-# gear_hit_rating=2982
-# gear_crit_rating=659
-# gear_haste_rating=17611
-# gear_mastery_rating=9345
-# gear_armor=62037
+# gear_strength=24320
+# gear_stamina=45450
+# gear_expertise_rating=5199
+# gear_hit_rating=2581
+# gear_crit_rating=1432
+# gear_haste_rating=19052
+# gear_mastery_rating=10868
+# gear_armor=64101
 # gear_dodge_rating=265
-# gear_parry_rating=1632
+# gear_parry_rating=1706
 # meta_gem=indomitable_primal
 # tier16_2pc_tank=1
 # tier16_4pc_tank=1
-# main_hand=siegecrafters_forge_hammer,heroic=1,weapon=mace_2.60speed_11578min_21503max,enchant=windsong
+# main_hand=siegecrafters_forge_hammer,heroic=1,elite=1,weapon=mace_2.60speed_12244min_22740max,enchant=windsong
