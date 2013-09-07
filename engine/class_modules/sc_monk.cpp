@@ -129,6 +129,7 @@ public:
     gain_t* chi;
     gain_t* chi_brew;
     gain_t* combo_breaker_savings;
+    gain_t* crackling_jade_lightning;
     gain_t* energy_refund;
     gain_t* energizing_brew;
     gain_t* mana_tea;
@@ -2238,6 +2239,117 @@ struct purifying_brew_t : public monk_spell_t
   }
 };
 
+// ==========================================================================
+// Crackling Jade Lightning
+// ==========================================================================
+
+struct crackling_jade_lightning_t : public monk_spell_t
+{
+  // Crackling Jade Spirit needs to bypass all mana costs for the duration
+  // of the channel, if Lucidity is up when the spell is cast. Thus, 
+  // we need custom state to go around the channeling cost per second.
+  struct cjl_state_t : public action_state_t
+  {
+    bool lucidity;
+
+    cjl_state_t( crackling_jade_lightning_t* cjl, player_t* target ) :
+      action_state_t( cjl, target ), lucidity( false )
+    { }
+
+    std::ostringstream& debug_str( std::ostringstream& s )
+    { action_state_t::debug_str( s ) << " lucidity=" << lucidity; return s; }
+
+    void initialize()
+    { action_state_t::initialize(); lucidity = false; }
+
+    void copy_state( const action_state_t* o )
+    {
+      action_state_t::copy_state( o );
+      const cjl_state_t* ss = debug_cast< const cjl_state_t* >( o );
+      lucidity = ss -> lucidity;
+    }
+  };
+
+  const spell_data_t* proc_driver;
+
+  crackling_jade_lightning_t( monk_t& p, const std::string& options_str  ) :
+    monk_spell_t( "crackling_jade_lightning", &p, p.find_class_spell( "Crackling Jade Lightning" ) ),
+    proc_driver( p.find_spell( 123332 ) )
+  {
+    parse_options( nullptr, options_str );
+
+    stancemask = STURDY_OX | WISE_SERPENT | FIERCE_TIGER;
+    channeled = tick_may_crit = true;
+    hasted_ticks = false; // Channeled spells always have hasted ticks. Use hasted_ticks = false to disable the increase in the number of ticks.
+    procs_courageous_primal_diamond = false;
+    tick_power_mod = 0.386;
+    base_spell_power_multiplier = 0;
+    base_attack_power_multiplier = 1;
+
+    base_multiplier += p.spec.teachings_of_the_monastery -> effectN( 6 ).percent();
+  }
+
+  action_state_t* new_state()
+  { return new cjl_state_t( this, target ); }
+
+  void snapshot_state( action_state_t* state, dmg_e rt )
+  {
+    monk_spell_t::snapshot_state( state, rt );
+    cjl_state_t* ss = debug_cast< cjl_state_t* >( state );
+    ss -> lucidity = player -> buffs.courageous_primal_diamond_lucidity -> check();
+  }
+
+  double cost_per_second( const cjl_state_t* state )
+  {
+    resource_e resource = current_resource();
+    if ( resource == RESOURCE_MANA && state -> lucidity )
+      return 0;
+
+    return costs_per_second[ resource ];
+  }
+
+  void last_tick( dot_t* dot )
+  {
+    monk_spell_t::last_tick( dot );
+
+    // Reset swing timer
+    if ( player -> main_hand_attack )
+    {
+      player -> main_hand_attack -> cancel();
+      player -> main_hand_attack -> schedule_execute();
+    }
+
+    if ( player -> off_hand_attack )
+    {
+      player -> off_hand_attack -> cancel();
+      player -> off_hand_attack -> schedule_execute();
+    }
+  }
+
+  void tick( dot_t* dot )
+  {
+    monk_spell_t::tick( dot );
+
+    resource_e resource = current_resource();
+    double resource_per_second = cost_per_second( debug_cast< const cjl_state_t* >( dot -> state ) );
+
+    if ( player -> resources.current[ resource ] >= resource_per_second )
+    {
+      player -> resource_loss( resource, resource_per_second, 0, this );
+      stats -> consume_resource( resource, resource_per_second );
+      if ( sim -> log )
+        sim -> output( "%s consumes %.0f %s for %s (%.0f)", player -> name(),
+                      resource_per_second, util::resource_type_string( resource ),
+                      name(), player -> resources.current[ resource ] );
+
+      if ( rng().roll( proc_driver -> proc_chance() ) )
+        p() -> resource_gain( RESOURCE_CHI, proc_driver -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(), p() -> gain.crackling_jade_lightning );
+    }
+    else
+      dot -> cancel();
+  }
+};
+
 } // END spells NAMESPACE
 
 namespace heals {
@@ -2480,6 +2592,9 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "soothing_mist"         ) return new          soothing_mist_t( *this, options_str );
   if ( name == "mana_tea"              ) return new               mana_tea_t( *this, options_str );
 
+  // Misc
+  if ( name == "crackling_jade_lightning" ) return new crackling_jade_lightning_t( *this, options_str );
+
   // Talents
   if ( name == "chi_sphere"            ) return new             chi_sphere_t( this, options_str ); // For Power Strikes
   if ( name == "chi_brew"              ) return new               chi_brew_t( this, options_str );
@@ -2714,6 +2829,7 @@ void monk_t::init_gains()
   gain.chi                   = get_gain( "chi"                      );
   gain.chi_brew              = get_gain( "chi_from_chi_brew"        );
   gain.combo_breaker_savings = get_gain( "combo_breaker_savings"    );
+  gain.crackling_jade_lightning = get_gain( "crackling_jade_lightning" );
   gain.energy_refund         = get_gain( "energy_refund"            );
   gain.energizing_brew       = get_gain( "energizing_brew"          );
   gain.mana_tea              = get_gain( "mana_tea"                 );
