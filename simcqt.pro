@@ -56,7 +56,7 @@ macx {
   }
 
   release_simc.target = release_simc
-  release_simc.commands = make -C engine clean && make CXX=clang++ OPTS=\"-std=c++0x -fomit-frame-pointer -arch i386 -arch x86_64 -O3 -msse2 -march=native -ffast-math -flto -Os -DNDEBUG\" -C engine install
+  release_simc.commands = make -C engine clean && make CXX=clang++ OPTS=\"-fPIE -mmacosx-version-min=10.6 -std=c++0x -fomit-frame-pointer -arch i386 -arch x86_64 -O3 -msse2 -march=native -ffast-math -flto -Os -DNDEBUG\" -C engine install
 
   create_release.target   = create_release
   create_release.depends  = all release_simc
