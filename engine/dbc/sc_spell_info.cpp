@@ -529,26 +529,55 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
     {
       const spellpower_data_t* pd = spell -> _power -> at( i );
 
-      if ( pd -> cost() == 0 )
+      if ( pd -> cost() == 0 && pd -> cost_per_second() == 0 )
         continue;
 
       s << "Resource         : ";
-      if ( pd -> type() == POWER_MANA )
-        s << spell -> cost( pd -> type() ) * 100.0 << "%";
-      else
-        s << spell -> cost( pd -> type() );
-
-      s << " ";
-
-      if ( ( pd -> type() + POWER_OFFSET ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
-           _resource_strings[ pd -> type() + POWER_OFFSET ] != 0 )
-        s << _resource_strings[ pd -> type() + POWER_OFFSET ];
-      else
-        s << "Unknown (" << pd -> type() << ")";
-
-      if ( pd -> type() == POWER_MANA )
+      if ( spell -> cost( pd -> type() ) > 0 )
       {
-        s << " (" << floor( sim -> dbc.resource_base( pt, level ) * pd -> cost() ) << " @Level " << level << ")";
+        if ( pd -> type() == POWER_MANA )
+          s << spell -> cost( pd -> type() ) * 100.0 << "%";
+        else
+          s << spell -> cost( pd -> type() );
+
+        s << " ";
+
+        if ( ( pd -> type() + POWER_OFFSET ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
+            _resource_strings[ pd -> type() + POWER_OFFSET ] != 0 )
+          s << _resource_strings[ pd -> type() + POWER_OFFSET ];
+        else
+          s << "Unknown (" << pd -> type() << ")";
+
+        if ( pd -> type() == POWER_MANA )
+        {
+          s << " (" << floor( sim -> dbc.resource_base( pt, level ) * pd -> cost() ) << " @Level " << level << ")";
+        }
+      }
+      
+      if ( pd -> cost_per_second() > 0 )
+      {
+        if ( pd -> cost() > 0 )
+          s << " and ";
+
+        if ( pd -> type() == POWER_MANA )
+          s << pd -> cost_per_second() * 100.0 << "%";
+        else
+          s << pd -> cost_per_second();
+
+        s << " ";
+
+        if ( ( pd -> type() + POWER_OFFSET ) < static_cast< int >( sizeof( _resource_strings ) / sizeof( const char* ) ) &&
+            _resource_strings[ pd -> type() + POWER_OFFSET ] != 0 )
+          s << _resource_strings[ pd -> type() + POWER_OFFSET ];
+        else
+          s << "Unknown (" << pd -> type() << ")";
+
+        if ( pd -> type() == POWER_MANA )
+        {
+          s << " (" << floor( sim -> dbc.resource_base( pt, level ) * pd -> cost_per_second() ) << " @Level " << level << ")";
+        }
+
+        s << " per second";
       }
 
       if ( pd -> aura_id() > 0 && sim -> dbc.spell( pd -> aura_id() ) -> id() == pd -> aura_id() )
