@@ -2523,16 +2523,31 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
         p -> origin_str.c_str(),
         enc_url.c_str() );
     }
+
     if ( ! p -> talents_str.empty() )
     {
-      std::string enc_url = util::encode_html( p -> talents_str );
       os.printf(
         "\t\t\t\t\t\t\t<tr class=\"left\">\n"
         "\t\t\t\t\t\t\t\t<th>Talents</th>\n"
-        "\t\t\t\t\t\t\t\t<td><a href=\"%s\" class=\"ext\">%s</a></td>\n"
-        "\t\t\t\t\t\t\t</tr>\n",
-        enc_url.c_str(),
+        "\t\t\t\t\t\t\t\t<td><ul class=\"float\">\n" );
+      for ( uint32_t row = 0; row < MAX_TALENT_ROWS; row++ )
+      {
+        for ( uint32_t col = 0; col < MAX_TALENT_COLS; col++ )
+        {
+          talent_data_t* t = talent_data_t::find( p -> type, row, col, p -> dbc.ptr );
+          const char* name = ( t && t -> name_cstr() ) ? t -> name_cstr() : "none";
+          if ( p -> talent_points.has_row_col( row, col ) )
+            os.printf( "\t\t\t\t\t\t\t\t\t<li><strong>%d</strong>:&nbsp;%s</li>\n", ( row + 1 ) * 15, name );
+        }
+      }
+
+      std::string enc_url = util::encode_html( p -> talents_str );
+      os.printf(
+        "\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">Talent Calculator</a></li>\n",
         enc_url.c_str() );
+
+      os << "\t\t\t\t\t\t\t\t</ul></td>\n";
+      os << "\t\t\t\t\t\t\t</tr>\n";
     }
 
     // Glyphs
