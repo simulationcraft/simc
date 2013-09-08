@@ -4590,7 +4590,9 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_action( this, "Divine Protection" ); // use on cooldown
   if ( dbc.ptr )
     def -> add_talent( this, "Eternal Flame", "if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react)" );
+  // these two lines are emergency WoG, only one should survive depending on EF talent status
   def -> add_action( this, "Word of Glory", "if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8" );
+  def -> add_talent( this, "Eternal Flame", "if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8" );
   def -> add_action( this, "Shield of the Righteous", "if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3" );
   if ( ! dbc.ptr )
     def -> add_action( this, "Hammer of the Righteous", "if=target.debuff.weakened_blows.down" );
