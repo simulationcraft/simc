@@ -18,8 +18,9 @@ spec=unholy
 
 actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
-actions.precombat+=/unholy_presence
 actions.precombat+=/horn_of_winter
+actions.precombat+=/unholy_presence
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/army_of_the_dead
 actions.precombat+=/mogu_power_potion
@@ -29,8 +30,10 @@ actions.precombat+=/raise_dead
 
 actions=auto_attack
 actions+=/antimagic_shell,damage=100000
-actions+=/mogu_power_potion,if=buff.dark_transformation.up&target.time_to_die<=35
-actions+=/unholy_frenzy,if=time>=4
+# if=buff.dark_transformation.up&target.time_to_die<=60
+actions+=/mogu_power_potion
+# if=time>=4
+actions+=/Unholy Frenzy
 actions+=/run_action_list,name=aoe,if=active_enemies>=5
 actions+=/run_action_list,name=single_target,if=active_enemies<5
 
@@ -59,18 +62,17 @@ actions.aoe+=/empower_rune_weapon
 
 actions.single_target=outbreak,if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)
 actions.single_target+=/plague_strike,if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)
-actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&runic_power>=32
-actions.single_target+=/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
+actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&(buff.blood_charge.stack>10&runic_power>=32)
+actions.single_target+=/unholy_blight,if=talent.unholy_blight.enabled&((dot.frost_fever.remains<3|dot.blood_plague.remains<3))
 actions.single_target+=/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3
 actions.single_target+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=45
-actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=45&cooldown.soul_reaper.remains=0)
+actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&((target.health.pct-3*(target.health.pct%target.time_to_die)<=45&cooldown.soul_reaper.remains=0))
 actions.single_target+=/plague_strike,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking
 actions.single_target+=/summon_gargoyle
 actions.single_target+=/dark_transformation
-actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&buff.shadow_infusion.stack=5
 actions.single_target+=/death_coil,if=runic_power>90
 actions.single_target+=/death_and_decay,if=unholy=2
-actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&unholy=2&cooldown.death_and_decay.remains=0
+actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&(unholy=2&cooldown.death_and_decay.remains=0)
 actions.single_target+=/scourge_strike,if=unholy=2
 actions.single_target+=/festering_strike,if=blood=2&frost=2
 actions.single_target+=/death_and_decay

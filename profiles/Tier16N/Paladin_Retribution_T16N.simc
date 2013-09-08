@@ -57,20 +57,35 @@ actions+=/templars_verdict,if=buff.inquisition.remains>4
 actions+=/holy_prism,if=talent.holy_prism.enabled
 
 head=helmet_of_winged_triumph,id=99138,gems=reverberating_primal_80str_160haste_180str
+# ilevel=553,quality=epic,type=plate,stats=1840str_3121sta_1328haste_1164mastery
 neck=juggernauts_ignition_keys,id=103916
+# ilevel=553,quality=epic,stats=1159str_1739sta_796hit_734mastery
 shoulders=pauldrons_of_winged_triumph,id=99132,gems=80str_160haste_80str_160haste_120str,enchant=200str_100crit,reforge=exp_haste
+# ilevel=553,quality=epic,type=plate,stats=1386str_2319sta_966exp_925mastery
 back=drape_of_the_despairing_pit,id=103845,enchant=180hit
+# ilevel=553,quality=epic,type=cloth,stats=1159str_1739sta_641mastery_850haste
 chest=battleplate_of_winged_triumph,id=99136,gems=80str_160haste_80str_160haste_80str_160haste_180str,enchant=80all
+# ilevel=553,quality=epic,type=plate,stats=1840str_3121sta_1288haste_1232mastery
 wrists=bubbleburst_bracers,id=103738,enchant=180str,reforge=hit_crit
+# ilevel=553,quality=epic,type=plate,stats=1159str_1739sta_861hit_623haste
 hands=gauntlets_of_winged_triumph,id=99137,gems=80str_160haste_80str_160haste_120str,enchant=170str,reforge=hit_crit
+# ilevel=553,quality=epic,type=plate,stats=1386str_2319sta_711hit_1097haste
 waist=demolishers_reinforced_belt,id=103788,gems=80str_160haste_320haste_320haste_120str
+# ilevel=553,quality=epic,type=plate,stats=1386str_2319sta_950haste_950mastery
 legs=legplates_of_winged_triumph,id=99139,gems=320haste_320haste_120str,enchant=285str_165crit,reforge=crit_mastery
+# ilevel=553,quality=epic,type=plate,stats=1920str_3121sta_1408crit_1137haste
 feet=wolfrider_spurs,id=103880,gems=360haste_60crit,reforge=crit_mastery
+# ilevel=553,quality=epic,type=plate,stats=1466str_2319sta_998crit_973haste
 finger1=asgorathian_blood_seal,id=103794,gems=80str_160haste_60haste,reforge=exp_mastery
+# ilevel=553,quality=epic,stats=1079str_1739sta_709exp_757haste
 finger2=seal_of_the_forgotten_kings,id=103796,gems=80str_160haste_60haste,reforge=crit_mastery
+# ilevel=553,quality=epic,stats=1079str_1739sta_754crit_681haste
 trinket1=evil_eye_of_galakras,id=102298
+# ilevel=553,quality=epic
 trinket2=thoks_tail_tip,id=102305
+# ilevel=553,quality=epic
 main_hand=britomarts_jagged_pike,id=103968,gems=360haste,enchant=dancing_steel
+# ilevel=553,quality=epic,stats=2000str_3121sta_1452mastery_1186haste,weapon=polearm_3.60speed_21886min_32829max
 
 # Gear Summary
 # gear_strength=21710

@@ -75,21 +75,37 @@ actions.aoe+=/chain_lightning,if=mana.pct_nonproc>10
 actions.aoe+=/lightning_bolt
 
 head=headpiece_of_celestial_harmony,id=99093,gems=burning_primal_80int_160mastery_180int
+# ilevel=553,quality=epic,type=mail,stats=1840int_3121sta_1406mastery_1031haste
 neck=necklace_of_fading_light,id=103881,reforge=spi_mastery
+# ilevel=553,quality=epic,stats=1159int_1739sta_784spi_753haste
 shoulders=shoulderwraps_of_celestial_harmony,id=99095,gems=80int_160mastery_80int_160haste_120int,enchant=200int_100crit,reforge=crit_mastery
+# ilevel=553,quality=epic,type=mail,stats=1386int_2319sta_1095haste_703crit
 back=drape_of_the_omega,id=103770,enchant=180int
+# ilevel=553,quality=epic,type=cloth,stats=1159int_1739sta_796mastery_734haste
 chest=hauberk_of_celestial_harmony,id=99106,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=crit_haste
+# ilevel=553,quality=epic,type=mail,stats=1840int_3121sta_1328mastery_1164crit
 wrists=bracers_of_the_pristine_purifier,id=103862,enchant=180int
+# ilevel=553,quality=epic,type=mail,stats=1159int_1739sta_773spi_773haste
 hands=gloves_of_celestial_harmony,id=99092,gems=80int_160mastery_80int_160haste_120int,enchant=170haste
+# ilevel=553,quality=epic,type=mail,stats=1386int_2319sta_965haste_915mastery
 waist=chitinlink_chain_belt,id=103941,gems=80int_160haste_320haste_320haste_120int,reforge=spi_haste
+# ilevel=553,quality=epic,type=mail,stats=1386int_2319sta_899spi_981mastery
 legs=leggings_of_celestial_harmony,id=99094,gems=320haste_320haste_120int,enchant=285int_165crit
+# ilevel=553,quality=epic,type=mail,stats=1920int_3121sta_1408spi_1137mastery
 feet=powderstained_totemic_treads,id=103814,gems=160haste_160spi_60spi,enchant=140mastery
+# ilevel=553,quality=epic,type=mail,stats=1466int_2319sta_1057haste_872mastery
 finger1=signet_of_the_dinomancers,id=103774,gems=80int_160mastery_60spi
+# ilevel=553,quality=epic,stats=1079int_1739sta_720haste_737mastery
 finger2=laserslice_signet,id=103773,gems=320haste_60spi
+# ilevel=553,quality=epic,stats=1079int_1739sta_743spi_699haste
 trinket1=purified_bindings_of_immerseus,id=102293
+# ilevel=553,quality=epic
 trinket2=kardris_toxic_totem,id=102300
+# ilevel=553,quality=epic
 main_hand=kardris_scepter,id=103936,gems=80int_160haste_60int,enchant=jade_spirit
+# ilevel=553,quality=epic,stats=811int_1337sta_425spi_630mastery_11913sp,weapon=mace_2.40speed_4734min_8792max
 off_hand=revelations_of_yshaarj,id=103920,gems=80int_160haste_60int,enchant=165int
+# ilevel=553,quality=epic,stats=1079int_1739sta_744mastery_713haste
 
 # Gear Summary
 # gear_strength=80

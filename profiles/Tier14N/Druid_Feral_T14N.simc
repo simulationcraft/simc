@@ -23,6 +23,7 @@ actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
 actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius.up&talent.dream_of_cenarius.enabled
 actions.precombat+=/cat_form
 actions.precombat+=/savage_roar
+actions.precombat+=/stealth
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/virmens_bite_potion
@@ -52,23 +53,26 @@ actions.basic+=/ferocious_bite,if=combo_points>=5&target.health.pct<=25&dot.rip.
 # Use NS for Rip.
 actions.basic+=/natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3
 actions.basic+=/rip,if=combo_points>=5&dot.rip.remains<2
-# Ferocious Bite if we will energy cap before being able to spend our CP on Rip or Savage Roar.
-actions.basic+=/ferocious_bite,if=combo_points>=5&energy.time_to_max<dot.rip.remains-2&energy.time_to_max<buff.savage_roar.remains-3
 actions.basic+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3
 # Rake if it's about to fall off or we can apply a stronger Rake.
 actions.basic+=/rake,if=dot.rake.remains<3|action.rake.tick_damage>dot.rake.tick_dmg
 actions.basic+=/pool_resource,for_next=1
-actions.basic+=/thrash_cat,if=dot.thrash_cat.remains<3&(dot.rip.remains>6|combo_points>=5)
+actions.basic+=/thrash_cat,if=dot.thrash_cat.remains<3&(dot.rip.remains>=8&buff.savage_roar.remains>=12|buff.berserk.up|combo_points>=5)
+# Pool to near-full energy before casting Ferocious Bite.
+actions.basic+=/pool_resource,if=combo_points>=5&!(energy.time_to_max<=1|(buff.berserk.up&energy>=25))&dot.rip.ticking
+# Ferocious Bite if we reached near-full energy without spending our CP on something else.
+actions.basic+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking
 # Conditions under which we should execute a CP generator.
 actions.basic+=/run_action_list,name=filler,if=buff.omen_of_clarity.react
 actions.basic+=/run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)
 actions.basic+=/run_action_list,name=filler,if=target.time_to_die<=8.5
-actions.basic+=/run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up|buff.natures_vigil.up
+actions.basic+=/run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up
 actions.basic+=/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3
 actions.basic+=/run_action_list,name=filler,if=energy.time_to_max<=1.0
 
 actions.advanced=auto_attack
 actions.advanced+=/skull_bash_cat
+actions.advanced+=/ravage,if=buff.stealthed.up
 # Keep Rip from falling off during execute range.
 actions.advanced+=/ferocious_bite,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
 actions.advanced+=/faerie_fire,if=debuff.weakened_armor.stack<3
@@ -94,24 +98,28 @@ actions.advanced+=/natures_swiftness,if=buff.dream_of_cenarius.down&buff.predato
 actions.advanced+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)
 actions.advanced+=/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains
 actions.advanced+=/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains&dot.rip.ticking
-# Pool to 50 energy for Ferocious Bite.
-actions.advanced+=/pool_resource,if=combo_points>=5&!(energy>=50|(buff.berserk.up&energy>=25))&dot.rip.ticking&!(dot.rip.remains-2<=energy.time_to_max-1)&!(buff.savage_roar.remains-3<=energy.time_to_max-1)
-# Ferocious Bite if we will energy cap before being able to spend our CP on Rip or Savage Roar.
-actions.advanced+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&!(dot.rip.remains-2<=energy.time_to_max-1)&!(buff.savage_roar.remains-3<=energy.time_to_max-1)
+# Savage Roar if we're about to energy cap and it will keep our Rip from expiring around the same time as Savage Roar.
+actions.advanced+=/savage_roar,if=buff.savage_roar.remains<=12&combo_points>=5&energy.time_to_max<=1&buff.savage_roar.remains<=dot.rip.remains+6&dot.rip.ticking
 # Rake if we can apply a stronger Rake or if it's about to fall off and clipping the last tick won't waste too much damage.
 actions.advanced+=/rake,if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|(dot.rake.remains<3&action.rake.tick_damage%dot.rake.tick_dmg>=0.75))
+# Pool energy for and maintain Thrash.
 actions.advanced+=/pool_resource,for_next=1
-actions.advanced+=/thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&(dot.rip.remains>=8&buff.savage_roar.remains>=12|buff.berserk.up)&dot.rip.ticking
-actions.advanced+=/run_action_list,name=filler,if=buff.omen_of_clarity.react
+actions.advanced+=/thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&(dot.rip.remains>=8&buff.savage_roar.remains>=12|buff.berserk.up|combo_points>=5)&dot.rip.ticking
+# Pool to near-full energy before casting Ferocious Bite.
+actions.advanced+=/pool_resource,if=combo_points>=5&!(energy.time_to_max<=1|(buff.berserk.up&energy>=25))&dot.rip.ticking
+# Ferocious Bite if we reached near-full energy without spending our CP on something else.
+actions.advanced+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking
 # Conditions under which we should execute a CP generator.
+actions.advanced+=/run_action_list,name=filler,if=buff.omen_of_clarity.react
 actions.advanced+=/run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)
 actions.advanced+=/run_action_list,name=filler,if=target.time_to_die<=8.5
-actions.advanced+=/run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up|buff.natures_vigil.up
+actions.advanced+=/run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up
 actions.advanced+=/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3
 actions.advanced+=/run_action_list,name=filler,if=energy.time_to_max<=1.0
 
 actions.filler=ravage
-actions.filler+=/thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&combo_points>=5
+# Rake if it hits harder than Mangle and we won't apply a weaker bleed to the target.
+actions.filler+=/rake,if=target.time_to_die-dot.rake.remains>3&action.rake.tick_damage*(dot.rake.ticks_remain+1)-dot.rake.tick_dmg*dot.rake.ticks_remain>action.mangle_cat.hit_damage
 actions.filler+=/shred,if=(buff.omen_of_clarity.react|buff.berserk.up|energy.regen>=15)&buff.king_of_the_jungle.down
 actions.filler+=/mangle_cat,if=buff.king_of_the_jungle.down
 

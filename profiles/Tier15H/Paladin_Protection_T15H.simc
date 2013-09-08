@@ -23,6 +23,7 @@ actions.precombat+=/food,type=chun_tian_spring_rolls
 actions.precombat+=/blessing_of_kings,if=(!aura.str_agi_int.up)&(aura.mastery.up)
 actions.precombat+=/blessing_of_might,if=!aura.mastery.up
 actions.precombat+=/seal_of_insight
+actions.precombat+=/sacred_shield,if=talent.sacred_shield.enabled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 
@@ -34,7 +35,8 @@ actions+=/arcane_torrent
 actions+=/avenging_wrath
 actions+=/holy_avenger,if=talent.holy_avenger.enabled
 actions+=/divine_protection
-actions+=/shield_of_the_righteous,if=(holy_power>=5)|(buff.divine_purpose.react)|(incoming_damage_1500ms>=health.max*0.3)
+actions+=/word_of_glory,if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8
+actions+=/shield_of_the_righteous,if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3
 actions+=/hammer_of_the_righteous,if=target.debuff.weakened_blows.down
 actions+=/crusader_strike
 actions+=/judgment,if=cooldown.crusader_strike.remains>=0.5

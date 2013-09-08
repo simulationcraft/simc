@@ -46,8 +46,8 @@ actions.single_target+=/mortal_strike
 actions.single_target+=/storm_bolt,if=enabled&debuff.colossus_smash.up
 actions.single_target+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
 actions.single_target+=/execute,if=buff.sudden_execute.down|rage>80
+actions.single_target+=/slam,if=(debuff.colossus_smash.up&buff.taste_for_blood.stack<3)&target.health.pct>=20
 actions.single_target+=/overpower,if=target.health.pct>=20|buff.sudden_execute.up
-actions.single_target+=/slam,if=(debuff.colossus_smash.up|rage>80)&target.health.pct>=20
 actions.single_target+=/execute,if=buff.sudden_execute.down|debuff.colossus_smash.up|target.time_to_die<12|rage>70
 actions.single_target+=/battle_shout
 actions.single_target+=/heroic_throw

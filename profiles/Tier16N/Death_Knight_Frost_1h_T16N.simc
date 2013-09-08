@@ -74,21 +74,37 @@ actions.single_target+=/plague_leech,if=talent.plague_leech.enabled
 actions.single_target+=/empower_rune_weapon
 
 head=helmet_of_cyclopean_dread,id=99194,gems=reverberating_primal_160str_180str,reforge=haste_crit
+# ilevel=553,quality=epic,type=plate,stats=1840str_3121sta_1328haste_1164mastery
 neck=malkoroks_tainted_dog_tags,id=103917
+# ilevel=553,quality=epic,stats=1159str_1739sta_818crit_697mastery
 shoulders=pauldrons_of_cyclopean_dread,id=99187,gems=160str_160str_120str,enchant=200str_100crit
+# ilevel=553,quality=epic,type=plate,stats=1386str_2319sta_966exp_925mastery
 back=turtleshell_greatcloak,id=103800,enchant=180crit,reforge=hit_crit
+# ilevel=553,quality=epic,type=cloth,stats=1159str_1739sta_796hit_734mastery
 chest=breastplate_of_cyclopean_dread,id=99192,gems=160str_160str_160str_180str,enchant=80all,reforge=haste_crit
+# ilevel=553,quality=epic,type=plate,stats=1840str_3121sta_1288haste_1232mastery
 wrists=bracers_of_blind_hatred,id=103740,enchant=180str
+# ilevel=553,quality=epic,type=plate,stats=1159str_1739sta_784mastery_753crit
 hands=gauntlets_of_cyclopean_dread,id=99193,gems=160str_160str_120str,enchant=170str
+# ilevel=553,quality=epic,type=plate,stats=1386str_2319sta_711hit_1097mastery
 waist=ashen_wall_girdle,id=103932,gems=160str_80str_160hit_160str_120str,reforge=hit_crit
+# ilevel=553,quality=epic,type=plate,stats=1386str_2319sta_996hit_874mastery
 legs=legplates_of_willful_doom,id=103954,gems=80str_160hit_80str_160hit_160str_120str,enchant=285str_165crit
+# ilevel=553,quality=epic,type=plate,stats=1840str_3121sta_1288crit_1232mastery
 feet=malkoroks_giant_stompers,id=103879,gems=80str_160hit_60crit,enchant=140mastery
+# ilevel=553,quality=epic,type=plate,stats=1466str_2319sta_1100exp_799mastery
 finger1=devilfang_band,id=103896,gems=160str_60exp,reforge=exp_crit
+# ilevel=553,quality=epic,stats=1079str_1739sta_765exp_662mastery
 finger2=bloodclaw_band,id=103798,gems=80str_160mastery_60haste,reforge=hit_crit
+# ilevel=553,quality=epic,stats=1079str_1739sta_797hit_607mastery
 trinket1=evil_eye_of_galakras,id=102298
+# ilevel=553,quality=epic
 trinket2=thoks_tail_tip,id=102305
+# ilevel=553,quality=epic
 main_hand=xifeng_longblade_of_the_titanic_guardian,id=103826,gems=160str_60str,enchant=rune_of_razorice,reforge=hit_crit
+# ilevel=553,quality=epic,stats=811str_1337sta_597hit_481mastery,weapon=sword_2.60speed_10257min_19050max
 off_hand=xifeng_longblade_of_the_titanic_guardian,id=103826,gems=160str_60str,enchant=rune_of_the_fallen_crusader,reforge=hit_crit
+# ilevel=553,quality=epic,stats=811str_1337sta_597hit_481mastery,weapon=sword_2.60speed_10257min_19050max
 
 # Gear Summary
 # gear_strength=23132

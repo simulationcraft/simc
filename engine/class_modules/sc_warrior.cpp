@@ -3649,8 +3649,8 @@ void warrior_t::init_actions()
       st_list_str += "/storm_bolt,if=enabled&debuff.colossus_smash.up";
       st_list_str += "/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))";
       st_list_str += "/execute,if=buff.sudden_execute.down|rage>80";
+      st_list_str += "/slam,if=(debuff.colossus_smash.up&buff.taste_for_blood.stack<3)&target.health.pct>=20";
       st_list_str += "/overpower,if=target.health.pct>=20|buff.sudden_execute.up";
-      st_list_str += "/slam,if=(debuff.colossus_smash.up|rage>80)&target.health.pct>=20";
       st_list_str += "/execute,if=buff.sudden_execute.down|debuff.colossus_smash.up|target.time_to_die<12|rage>70";
       st_list_str += "/battle_shout";
       st_list_str += "/heroic_throw";

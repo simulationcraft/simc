@@ -23,7 +23,7 @@ actions.precombat+=/food,type=chun_tian_spring_rolls
 actions.precombat+=/blessing_of_kings,if=(!aura.str_agi_int.up)&(aura.mastery.up)
 actions.precombat+=/blessing_of_might,if=!aura.mastery.up
 actions.precombat+=/seal_of_insight
-actions.precombat+=/sacred_shield
+actions.precombat+=/sacred_shield,if=talent.sacred_shield.enabled
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 

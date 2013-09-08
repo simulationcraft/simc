@@ -19,8 +19,9 @@ spec=frost
 
 actions.precombat=flask,type=winters_bite
 actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
-actions.precombat+=/frost_presence
 actions.precombat+=/horn_of_winter
+actions.precombat+=/frost_presence
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/army_of_the_dead
 actions.precombat+=/mogu_power_potion
@@ -35,8 +36,8 @@ actions+=/antimagic_shell,damage=100000
 actions+=/pillar_of_frost
 actions+=/mogu_power_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)
 actions+=/empower_rune_weapon,if=target.time_to_die<=60&(buff.mogu_power_potion.up|buff.golemblood_potion.up)
-actions+=/use_item,slot=hands,if=buff.pillar_of_frost.up
 actions+=/blood_fury
+actions+=/use_item,slot=hands
 actions+=/raise_dead
 actions+=/run_action_list,name=aoe,if=active_enemies>=5
 actions+=/run_action_list,name=single_target,if=active_enemies<5
@@ -56,26 +57,24 @@ actions.aoe+=/plague_leech,if=talent.plague_leech.enabled&unholy=1
 actions.aoe+=/plague_strike,if=unholy=1
 actions.aoe+=/empower_rune_weapon
 
-actions.single_target=blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10&(runic_power>76|(runic_power>=20&buff.killing_machine.react))
+actions.single_target=blood_tap,if=talent.blood_tap.enabled&(buff.blood_charge.stack>10&(runic_power>76|(runic_power>=20&buff.killing_machine.react)))
 actions.single_target+=/frost_strike,if=buff.killing_machine.react|runic_power>88
-actions.single_target+=/plague_leech,if=talent.plague_leech.enabled&(dot.blood_plague.remains<3|dot.frost_fever.remains<3|cooldown.outbreak.remains<1)
-actions.single_target+=/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3
-actions.single_target+=/unholy_blight,if=talent.unholy_blight.enabled&(dot.frost_fever.remains<3|dot.blood_plague.remains<3)
+actions.single_target+=/howling_blast,if=death>1|frost>1
+actions.single_target+=/unholy_blight,if=talent.unholy_blight.enabled&((dot.frost_fever.remains<3|dot.blood_plague.remains<3))
 actions.single_target+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
-actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0)
+actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&((target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0))
 actions.single_target+=/howling_blast,if=!dot.frost_fever.ticking
-actions.single_target+=/plague_strike,if=!dot.blood_plague.ticking
+actions.single_target+=/plague_strike,if=!dot.blood_plague.ticking&unholy>0
 actions.single_target+=/howling_blast,if=buff.rime.react
 actions.single_target+=/frost_strike,if=runic_power>76
-actions.single_target+=/obliterate,if=unholy>1
-actions.single_target+=/howling_blast,if=death>1|frost>1
-actions.single_target+=/horn_of_winter
-actions.single_target+=/obliterate,if=unholy>0
+actions.single_target+=/obliterate,if=unholy>0&!buff.killing_machine.react
 actions.single_target+=/howling_blast
-actions.single_target+=/frost_strike,if=talent.runic_empowerment.enabled&(frost=0|blood=0)
+actions.single_target+=/frost_strike,if=talent.runic_empowerment.enabled&unholy=1
 actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)>35|buff.blood_charge.stack>=8)
-actions.single_target+=/death_and_decay
 actions.single_target+=/frost_strike,if=runic_power>=40
+actions.single_target+=/horn_of_winter
+actions.single_target+=/blood_tap,if=talent.blood_tap.enabled
+actions.single_target+=/plague_leech,if=talent.plague_leech.enabled
 actions.single_target+=/empower_rune_weapon
 
 head=helmet_of_the_lost_catacomb,id=86915,gems=reverberating_primal_80str_160hit_180str,reforge=hit_haste

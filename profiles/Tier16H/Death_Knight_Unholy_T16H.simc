@@ -1,0 +1,124 @@
+#!./simc 
+
+deathknight="Death_Knight_Unholy_T16H"
+level=90
+race=orc
+role=attack
+position=back
+professions=blacksmithing=600/engineering=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#db!2...0.
+spec=unholy
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=winters_bite
+actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
+actions.precombat+=/horn_of_winter
+actions.precombat+=/unholy_presence
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/army_of_the_dead
+actions.precombat+=/mogu_power_potion
+actions.precombat+=/blood_fury
+actions.precombat+=/raise_dead
+
+# Executed every time the actor is available.
+
+actions=auto_attack
+actions+=/antimagic_shell,damage=100000
+actions+=/blood_fury
+actions+=/use_item,slot=hands
+# if=buff.dark_transformation.up&target.time_to_die<=60
+actions+=/mogu_power_potion
+# if=time>=4
+actions+=/Unholy Frenzy
+actions+=/run_action_list,name=aoe,if=active_enemies>=5
+actions+=/run_action_list,name=single_target,if=active_enemies<5
+
+actions.aoe=unholy_blight,if=talent.unholy_blight.enabled
+actions.aoe+=/plague_strike,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking
+actions.aoe+=/pestilence,if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28
+actions.aoe+=/pestilence,if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28
+actions.aoe+=/summon_gargoyle
+actions.aoe+=/dark_transformation
+actions.aoe+=/blood_tap,if=talent.blood_tap.enabled&buff.shadow_infusion.stack=5
+actions.aoe+=/blood_boil,if=blood=2|death=2
+actions.aoe+=/death_and_decay,if=unholy=1
+actions.aoe+=/soul_reaper,if=unholy=2&target.health.pct-3*(target.health.pct%target.time_to_die)<=35
+actions.aoe+=/scourge_strike,if=unholy=2
+actions.aoe+=/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10
+actions.aoe+=/death_coil,if=runic_power>90|buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)
+actions.aoe+=/blood_boil
+actions.aoe+=/icy_touch
+actions.aoe+=/soul_reaper,if=unholy=1&target.health.pct-3*(target.health.pct%target.time_to_die)<=35
+actions.aoe+=/scourge_strike,if=unholy=1
+actions.aoe+=/death_coil
+actions.aoe+=/blood_tap,if=talent.blood_tap.enabled
+actions.aoe+=/plague_leech,if=talent.plague_leech.enabled&unholy=1
+actions.aoe+=/horn_of_winter
+actions.aoe+=/empower_rune_weapon
+
+actions.single_target=outbreak,if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)
+actions.single_target+=/plague_strike,if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)
+actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&(buff.blood_charge.stack>10&runic_power>=32)
+actions.single_target+=/unholy_blight,if=talent.unholy_blight.enabled&((dot.frost_fever.remains<3|dot.blood_plague.remains<3))
+actions.single_target+=/outbreak,if=dot.frost_fever.remains<3|dot.blood_plague.remains<3
+actions.single_target+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
+actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&((target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0))
+actions.single_target+=/plague_strike,if=!dot.blood_plague.ticking|!dot.frost_fever.ticking
+actions.single_target+=/summon_gargoyle
+actions.single_target+=/dark_transformation
+actions.single_target+=/death_coil,if=runic_power>90
+actions.single_target+=/death_and_decay,if=unholy=2
+actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&(unholy=2&cooldown.death_and_decay.remains=0)
+actions.single_target+=/scourge_strike,if=unholy=2
+actions.single_target+=/festering_strike,if=blood=2&frost=2
+actions.single_target+=/death_and_decay
+actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&cooldown.death_and_decay.remains=0
+actions.single_target+=/death_coil,if=buff.sudden_doom.react|(buff.dark_transformation.down&rune.unholy<=1)
+actions.single_target+=/scourge_strike
+actions.single_target+=/plague_leech,if=talent.plague_leech.enabled&cooldown.outbreak.remains<1
+actions.single_target+=/festering_strike
+actions.single_target+=/horn_of_winter
+actions.single_target+=/death_coil,if=buff.dark_transformation.down|(cooldown.summon_gargoyle.remains>8&buff.dark_transformation.remains>8)
+actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>=8
+actions.single_target+=/empower_rune_weapon
+
+head=helmet_of_cyclopean_dread,id=99337,upgrade=2,gems=capacitive_primal_80str_160crit_180str,reforge=haste_crit
+neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
+shoulders=tusks_of_mannoroth,id=105642,upgrade=2,gems=80str_160crit_80str_160crit_80str_160crit_180str,enchant=200str_100crit
+back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=80str_160crit_60str,enchant=180crit,reforge=haste_exp
+chest=breastplate_of_shamanic_mirrors,id=105532,upgrade=2,gems=80str_160crit_80str__160crit_320crit_180str,enchant=80all
+wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=320crit,enchant=180str,reforge=mastery_exp
+hands=gauntlets_of_cyclopean_dread,id=99336,upgrade=2,gems=320crit_80str_160crit_80str_160crit_120str,enchant=170str,addon=synapse_springs_mark_ii,reforge=hit_crit
+waist=ashen_wall_girdle,id=105533,upgrade=2,gems=80str_160crit_160crit_160hit_320crit_120str,reforge=hit_crit
+legs=legplates_of_willful_doom,id=105565,upgrade=2,gems=160crit_160hit_160crit_160hit_80str_160crit_120str,enchant=285str_165crit
+feet=greaves_of_sublime_superiority,id=105478,upgrade=2,gems=80str_160crit_60crit,enchant=175haste,reforge=hit_mastery
+finger1=devilfang_band,id=105611,upgrade=2,gems=80str_160crit_60exp,reforge=mastery_crit
+finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=80str_160crit_60haste,reforge=haste_exp
+trinket1=evil_eye_of_galakras,id=105491,upgrade=2
+trinket2=thoks_tail_tip,id=105609,upgrade=2
+main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=80str_160crit_60str,enchant=rune_of_the_fallen_crusader
+
+# Gear Summary
+# gear_strength=27746
+# gear_agility=80
+# gear_stamina=39523
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2213
+# gear_hit_rating=2560
+# gear_crit_rating=18535
+# gear_haste_rating=2343
+# gear_mastery_rating=13327
+# gear_armor=41770
+# meta_gem=capacitive_primal
+# tier16_2pc_melee=1
+# hands=gauntlets_of_cyclopean_dread,heroic=1,addon=synapse_springs_mark_ii
+# main_hand=xalatoh_desecrated_image_of_gorehowl,heroic=1,elite=1,weapon=axe2h_3.60speed_26125min_39188max,enchant=rune_of_the_fallen_crusader

@@ -79,5 +79,7 @@ main_hand=hiseks_reserve_longbow,id=105623,ilevel=580,quality=epic,upgrade=2,gem
 # gear_mastery_rating=3314
 # gear_armor=31496
 # meta_gem=capacitive_primal
+# tier16_2pc_melee=1
+# tier16_4pc_melee=1
 # main_hand=hiseks_reserve_longbow,heroic=1,elite=1,weapon=bow_3.00speed_20523min_38115max,enchant=lord_blastingtons_scope_of_doom
 summon_pet=cat
