@@ -79,12 +79,12 @@ public:
     buff_t* archimondes_vengeance;
     buff_t* demonic_rebirth;
     buff_t* mannoroths_fury;
-    
+
     buff_t* tier16_4pc_ember_fillup;
     buff_t* tier16_2pc_destructive_influence;
     buff_t* tier16_2pc_empowered_grasp;
     buff_t* tier16_2pc_fiery_wrath;
-    
+
   } buffs;
 
   // Cooldowns
@@ -212,33 +212,33 @@ public:
   struct soul_swap_buffer_t
   {
     player_t* source;//where inhaled from
-    
+
     //<foo>_was_inhaled stores whether <foo> was ticking when inhaling SS. We can't store it in the dot as the dot does not tick while in the buffer
 
     int agony_stack; //remove with 5.4
 
     bool agony_was_inhaled;
-    dot_t* agony;    
+    dot_t* agony;
     bool corruption_was_inhaled;
     dot_t* corruption;
     bool unstable_affliction_was_inhaled;
     dot_t* unstable_affliction;
-    
+
     bool seed_of_corruption_was_inhaled;
     dot_t* seed_of_corruption;
-    
-    static void inhale_dot(dot_t* to_inhale, dot_t* soul_swap_buffer_target)//copies over the state 
+
+    static void inhale_dot(dot_t* to_inhale, dot_t* soul_swap_buffer_target)//copies over the state
     {
         soul_swap_buffer_target -> cancel(); //clear any previous versions in the buffer;
-      
+
         if (soul_swap_buffer_target -> state ) soul_swap_buffer_target -> state = to_inhale -> current_action -> get_state(); //make sure we have memory allocated for the state
-        
+
         soul_swap_buffer_target -> state -> copy_state(to_inhale -> state); //copy state and the other stuff
         soul_swap_buffer_target -> current_action = to_inhale -> current_action;
         soul_swap_buffer_target -> current_tick = to_inhale -> current_tick;
         soul_swap_buffer_target -> num_ticks = to_inhale -> num_ticks;
         soul_swap_buffer_target -> tick_amount = to_inhale -> tick_amount;
-        
+
     }
   } soul_swap_buffer;
 
@@ -1729,7 +1729,7 @@ public:
   {
     if ( ! p -> rng().roll( chance ) ) return;
 
-    
+
     if ( p -> set_bonus.tier16_4pc_caster() && //check whether we fill one up.
         (( p -> resources.current[ RESOURCE_BURNING_EMBER ] < 1.0 && p -> resources.current[ RESOURCE_BURNING_EMBER ] + amount >= 1.0) ||
          ( p -> resources.current[ RESOURCE_BURNING_EMBER ] < 2.0 && p -> resources.current[ RESOURCE_BURNING_EMBER ] + amount >= 2.0) ||
@@ -1738,7 +1738,7 @@ public:
     {
       p -> buffs.tier16_4pc_ember_fillup -> trigger();
     }
-    
+
     p -> resource_gain( RESOURCE_BURNING_EMBER, amount, gain );
 
     // If getting to 1 full ember was a surprise, the player would have to react to it
@@ -1905,22 +1905,22 @@ struct shadowflame_t : public warlock_spell_t
     may_miss   = false;
     generate_fury = 2;
   }
-  
+
   virtual void tick( dot_t* d )
   {
     warlock_spell_t::tick( d );
-    
+
     if ( p() -> spec.molten_core -> ok() && rng().roll( 0.08 ) )
       p() -> buffs.molten_core -> trigger();
   }
-  
+
   double composite_target_multiplier( player_t* target )
   {
     double m = warlock_spell_t::composite_target_multiplier( target );
     m *= td( target ) -> shadowflame_stack;
     return m;
   }
-  
+
   virtual void impact( action_state_t* s )
   {
     if ( result_is_hit( s -> result ) )
@@ -1930,55 +1930,55 @@ struct shadowflame_t : public warlock_spell_t
       else
         td( s -> target ) -> shadowflame_stack = 1;
     }
-    
+
     warlock_spell_t::impact( s );
   }
 };
-  
-  
+
+
 struct hand_of_guldan_t : public warlock_spell_t
 {
   hand_of_guldan_t( warlock_t* p ) :
   warlock_spell_t( p, "Hand of Gul'dan" )
   {
     aoe = -1;
-    
+
     cooldown -> duration = timespan_t::from_seconds( 15 );
     cooldown -> charges = 2;
-    
+
     impact_action = new shadowflame_t( p );
-    
+
     parse_effect_data( p -> find_spell( 86040 ) -> effectN( 1 ) );
-    
+
     add_child( impact_action );
   }
-  
+
   virtual double action_da_multiplier()
   {
     double m = warlock_spell_t::action_da_multiplier();
-    
+
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-    
+
     return m;
   }
-  
+
   virtual timespan_t travel_time()
   {
     return timespan_t::from_seconds( 1.5 );
   }
-  
+
   virtual bool ready()
   {
     bool r = warlock_spell_t::ready();
-    
+
     if ( p() -> buffs.metamorphosis -> check() ) r = false;
-    
+
     return r;
   }
 };
 
-  
-  
+
+
 struct shadow_bolt_copy_t : public warlock_spell_t
 {
   shadow_bolt_copy_t( warlock_t* p, spell_data_t* sd, warlock_spell_t& sb ) :
@@ -2009,7 +2009,7 @@ struct shadow_bolt_t : public warlock_spell_t
   shadow_bolt_copy_t* glyph_copy_2;
 
   hand_of_guldan_t* hand_of_guldan;
-  
+
   shadow_bolt_t( warlock_t* p ) :
     warlock_spell_t( p, "Shadow Bolt" ), glyph_copy_1( 0 ), glyph_copy_2( 0 ),  hand_of_guldan( new hand_of_guldan_t( p ) )
   {
@@ -2019,7 +2019,7 @@ struct shadow_bolt_t : public warlock_spell_t
     hand_of_guldan               -> background = true;
     hand_of_guldan               -> base_costs[ RESOURCE_MANA ] = 0;
 
-    
+
     if ( p -> glyphs.shadow_bolt -> ok() )
     {
       base_multiplier *= 0.333;
@@ -2071,11 +2071,11 @@ struct shadow_bolt_t : public warlock_spell_t
         pre_execute_add = false;
       }
       if (pre_execute_add) hand_of_guldan -> cooldown -> current_charge++;
-      
+
       hand_of_guldan -> execute();
       if (!pre_execute_add) hand_of_guldan -> cooldown -> current_charge++;
     }
-    
+
     if ( p() -> buffs.demonic_calling -> up() )
     {
       trigger_wild_imp( p() );
@@ -2385,8 +2385,8 @@ struct drain_soul_t : public warlock_spell_t
 
     if ( p() -> set_bonus.tier15_4pc_caster() )
       m *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
-    
-    
+
+
     if ( maybe_ptr( player -> dbc.ptr ) && p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
     {
       m *= 1.0 + p() ->  buffs.tier16_2pc_empowered_grasp -> value();
@@ -2411,16 +2411,16 @@ struct drain_soul_t : public warlock_spell_t
     if ( d -> state -> target -> health_percentage() <= data().effectN( 3 ).base_value() )
     {
       double multiplier = data().effectN( 5 ).percent();
-      
+
       // DO NOT CHANGE THE ORDER IF YOU ARE NOT 100% SURE
       if ( maybe_ptr( player -> dbc.ptr ) && p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
       {
         multiplier += p() ->  buffs.tier16_2pc_empowered_grasp -> value();
       }
-      
+
       multiplier *=  ( 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack() );
-      
-      
+
+
       if ( p() -> set_bonus.tier15_4pc_caster() )
         multiplier *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
@@ -2472,11 +2472,11 @@ struct unstable_affliction_t : public warlock_spell_t
 
     return m;
   }
-  
+
   virtual void tick( dot_t* d )
   {
     warlock_spell_t::tick( d );
-    
+
     if ( p() -> dbc.ptr && p() -> set_bonus.tier16_2pc_caster() && d -> state -> result == RESULT_CRIT )
     {
       p() ->  buffs.tier16_2pc_empowered_grasp -> trigger();
@@ -2494,8 +2494,8 @@ struct haunt_t : public warlock_spell_t
     tick_may_crit = false;
   }
 
-  
-  
+
+
   void try_to_trigger_soul_shard_refund()//t16_4pc_bonus
   {
     if ( p() -> dbc.ptr && p() -> set_bonus.tier16_4pc_caster() && rng().roll( p() -> sets -> set ( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() ) )//refund shard when haunt expires
@@ -2503,7 +2503,7 @@ struct haunt_t : public warlock_spell_t
       p() -> resource_gain( RESOURCE_SOUL_SHARD, p() -> find_spell( 145159 ) -> effectN( 1 ).resource( RESOURCE_SOUL_SHARD ), p() -> gains.haunt_tier16_4pc );
     }
   }
-  
+
   virtual double action_multiplier()
   {
     double m = warlock_spell_t::action_multiplier();
@@ -2529,15 +2529,15 @@ struct haunt_t : public warlock_spell_t
       {
         try_to_trigger_soul_shard_refund();
       }
-      
+
       td( s -> target ) -> debuffs_haunt -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, td( s -> target ) -> dots_haunt -> remains() );
 
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
     }
   }
-  
-  
-  
+
+
+
   virtual void last_tick( dot_t* d )
   {
     warlock_spell_t::last_tick( d );
@@ -2561,16 +2561,16 @@ struct immolate_t : public warlock_spell_t
   virtual double crit_chance( double crit, int delta_level )
   {
     double cc = warlock_spell_t::crit_chance(crit, delta_level);
-    
+
     if (p() -> set_bonus.tier16_2pc_caster() && p() -> buffs.tier16_2pc_destructive_influence -> up())
     {
       cc+= p() -> buffs.tier16_2pc_destructive_influence -> value();
     }
-      
-      
+
+
     return cc;
   }
-  
+
   virtual double cost()
   {
     if ( p() -> buffs.fire_and_brimstone -> check() )
@@ -2717,15 +2717,15 @@ struct incinerate_t : public warlock_spell_t
   virtual double crit_chance( double crit, int delta_level )
   {
     double cc = warlock_spell_t::crit_chance(crit, delta_level);
-    
+
     if (p() -> set_bonus.tier16_2pc_caster() && p() -> buffs.tier16_2pc_destructive_influence -> up())
     {
       cc+= p() -> buffs.tier16_2pc_destructive_influence -> value();
-    }    
-    
+    }
+
     return cc;
   }
-  
+
   virtual double action_multiplier()
   {
     double m = warlock_spell_t::action_multiplier();
@@ -2877,7 +2877,7 @@ struct soul_fire_t : public warlock_spell_t
     {
       p() -> buffs.tier16_2pc_fiery_wrath -> trigger();
     }
-    
+
   }
 
   virtual timespan_t execute_time()
@@ -3220,7 +3220,7 @@ struct touch_of_chaos_t : public warlock_spell_t
   {
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
     base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent(); // Assumption - need to test whether ToC is affected
-    
+
     chaos_wave               -> background = true;
     chaos_wave               -> base_costs[ RESOURCE_DEMONIC_FURY ] = 0;
 
@@ -3255,7 +3255,7 @@ struct touch_of_chaos_t : public warlock_spell_t
       trigger_wild_imp( p() );
       p() -> buffs.demonic_calling -> expire();
     }
-    
+
     //cast CW
     if (  p() -> dbc.ptr && p() -> set_bonus.tier16_4pc_caster() && rng().roll( 0.08 ) )//FIX after dbc update
     {
@@ -3270,7 +3270,7 @@ struct touch_of_chaos_t : public warlock_spell_t
       chaos_wave -> execute();
       if (!pre_execute_add) chaos_wave -> cooldown -> current_charge++;
     }
-    
+
   }
 
   virtual bool ready()
@@ -3414,7 +3414,7 @@ struct malefic_grasp_t : public warlock_spell_t
     if ( p() -> set_bonus.tier15_4pc_caster() )
       m *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
-    
+
     if ( maybe_ptr( player -> dbc.ptr ) && p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
     {
       m *= 1.0 + p() ->  buffs.tier16_2pc_empowered_grasp -> value();
@@ -3429,20 +3429,20 @@ struct malefic_grasp_t : public warlock_spell_t
     trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
 
     double multiplier = data().effectN( 3 ).percent();
-    
+
     // DO NOT CHANGE THE ORDER IF YOU ARE NOT 100% SURE
     if ( maybe_ptr( player -> dbc.ptr ) && p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
     {
       multiplier += p() ->  buffs.tier16_2pc_empowered_grasp -> value();
     }
-    
+
     multiplier *=  ( 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack() );
 
     if ( p() -> set_bonus.tier15_4pc_caster() )
       multiplier *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
-    
-    
+
+
     trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               multiplier );
     trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          multiplier );
     trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, multiplier );
@@ -4145,19 +4145,19 @@ struct soul_swap_t : public warlock_spell_t
           p() -> soul_swap_buffer.corruption_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
           p() -> soul_swap_buffer.inhale_dot(td( target ) -> dots_corruption, p() -> soul_swap_buffer.corruption);
         }
-        
+
         if ( td( target ) -> dots_unstable_affliction -> ticking)
         {
           p() -> soul_swap_buffer.unstable_affliction_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
           p() -> soul_swap_buffer.inhale_dot(td( target ) -> dots_unstable_affliction, p() -> soul_swap_buffer.unstable_affliction);
         }
-        
+
         if ( td( target ) -> dots_agony -> ticking)
         {
           p() -> soul_swap_buffer.agony_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
           p() -> soul_swap_buffer.inhale_dot(td( target ) -> dots_agony, p() -> soul_swap_buffer.agony);
         }
-        
+
         if ( td( target ) -> dots_seed_of_corruption -> ticking)
         {
           p() -> soul_swap_buffer.seed_of_corruption_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
@@ -5162,7 +5162,7 @@ void warlock_t::create_buffs()
   buffs.havoc                 = buff_creator_t( this, "havoc", find_class_spell( "Havoc" ) );
   if ( !dbc.ptr ) buffs.archimondes_vengeance = buff_creator_t( this, "archimondes_vengeance", talents.archimondes_vengeance );
   buffs.demonic_rebirth       = buff_creator_t( this, "demonic_rebirth", find_spell( 88448 ) ).cd( find_spell( 89140 ) -> duration() );
-  if ( dbc.ptr ) buffs.mannoroths_fury       = buff_creator_t( this, "mannoroths_fury", talents.mannoroths_fury ); 
+  if ( dbc.ptr ) buffs.mannoroths_fury       = buff_creator_t( this, "mannoroths_fury", talents.mannoroths_fury );
   if ( dbc.ptr ) buffs.tier16_4pc_ember_fillup = buff_creator_t( this, "ember_master",   find_spell( 145164 ) )
                                 .cd( find_spell( 145165 ) -> effectN(1).time_value() * 1000 )
                                 .add_invalidate(CACHE_CRIT);
@@ -5170,7 +5170,7 @@ void warlock_t::create_buffs()
                                 .chance( sets -> set ( SET_T16_2PC_CASTER ) -> effectN( 4 ).percent() )
                                 .duration( timespan_t::from_seconds( 10 ))
                                 .default_value( 0.1 ); //spell not found... FIX after DBC update .default_value( find_spell( 145075 ) -> effectN( 1 ).percent())
-  
+
   if ( dbc.ptr ) buffs.tier16_2pc_empowered_grasp = buff_creator_t( this, "empowered_grasp", find_spell( 145082 ) )
                                 .chance( sets -> set ( SET_T16_2PC_CASTER ) -> effectN( 2 ).percent())
                                 .default_value( find_spell( 145082 ) -> effectN( 2 ).percent());
@@ -5179,10 +5179,10 @@ void warlock_t::create_buffs()
     .duration( timespan_t::from_seconds( 10 ))
     .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
     .default_value( 0.2 ); //spell not found... FIX after DBC update .default_value( find_spell( 145085 ) -> effectN( 1 ).percent())
-  
-  
-  
-  
+
+
+
+
 }
 
 
@@ -5293,7 +5293,7 @@ void warlock_t::init_actions()
     if ( specialization() == WARLOCK_DEMONOLOGY )
     {
       if ( spec.imp_swarm -> ok() )
-        action_list_str += "/imp_swarm,if=buff.dark_soul.up|(cooldown.dark_soul.remains>(120%(1%spell_haste)))|time_to_die<32";
+        action_list_str += "/imp_swarm,if=(buff.dark_soul.up|(cooldown.dark_soul.remains>(120%(1%spell_haste)))|time_to_die<32)&time>3";
     }
 
     add_action( spec.dark_soul );
@@ -5437,37 +5437,29 @@ void warlock_t::init_actions()
         {
           add_action( "Metamorphosis",         "if=buff.perfect_aim.react&active_enemies>1" );
           add_action( spec.doom,               "cycle_targets=1,if=buff.metamorphosis.up&buff.perfect_aim.react&(crit_pct<100|ticks_remain<=add_ticks)" );
-        }
-        add_action( spec.touch_of_chaos,     "cycle_targets=1,if=buff.metamorphosis.up&dot.corruption.ticking&dot.corruption.remains<1.5" );
-
-        if ( has_unerring_vision_of_leishen )
-        {
           add_action( "Soul Fire",             "if=buff.metamorphosis.up&buff.molten_core.react&(buff.perfect_aim.react&buff.perfect_aim.remains>cast_time)" );
           add_action( spec.doom,               "cycle_targets=1,if=buff.metamorphosis.up&(ticks_remain<=1|(ticks_remain+1<n_ticks&buff.dark_soul.up))&target.time_to_die>=30&miss_react&dot.doom.crit_pct<100" );
-          add_action( spec.touch_of_chaos,     "cycle_targets=1,if=buff.metamorphosis.up&dot.corruption.ticking&dot.corruption.remains<20&dot.corruption.crit_pct<100" );
-        }
-        else
-        {
-          add_action( spec.doom,               "cycle_targets=1,if=buff.metamorphosis.up&(ticks_remain<=1|(ticks_remain+1<n_ticks&buff.dark_soul.up))&target.time_to_die>=30&miss_react" );
-          add_action( spec.touch_of_chaos,     "cycle_targets=1,if=buff.metamorphosis.up&dot.corruption.ticking&dot.corruption.remains<20" );
-        }
-        if ( find_class_spell( "Metamorphosis" ) -> ok() )
-          action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&buff.dark_soul.down&demonic_fury<=650&target.time_to_die>30";
-
-        add_action( "Soul Fire",             "if=buff.metamorphosis.up&buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)" );
-        add_action( spec.touch_of_chaos,     "if=buff.metamorphosis.up" );
-        if ( has_unerring_vision_of_leishen )
-        {
-          add_action( "Corruption",            "cycle_targets=1,if=buff.perfect_aim.react&(crit_pct<100|ticks_remain<=add_ticks)" );
+          add_action( "Cancel Metamorphosis",  "if=buff.metamorphosis.up&buff.dark_soul.down&demonic_fury<=650&target.time_to_die>30&(cooldown.metamorphosis.remains<4|demonic_fury<=300)&!(action.hand_of_guldan.in_flight&dot.shadowflame.remains)" );
+          add_action( "Soul Fire",             "if=buff.metamorphosis.up&buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)" );
+          add_action( spec.touch_of_chaos,     "if=buff.metamorphosis.up" );
           add_action( "Hand of Gul'dan",       "if=buff.perfect_aim.react&buff.perfect_aim.remains>travel_time" );
+          add_action( "Metamorphosis",         "if=(buff.dark_soul.up&buff.dark_soul.remains<demonic_fury%32)|demonic_fury>=950|demonic_fury%32>target.time_to_die|buff.perfect_aim.react|(action.hand_of_guldan.in_flight&dot.shadowflame.remains)" );
+          add_action( "Corruption",            "cycle_targets=1,if=buff.perfect_aim.react&(crit_pct<100|ticks_remain<=add_ticks)" );
+          add_action( "Corruption",            "cycle_targets=1,if=!ticking&target.time_to_die>=6&miss_react" );
+          add_action( "Corruption",            "cycle_targets=1,if=spell_power<stat.spell_power&ticks_remain<=add_ticks%2&target.time_to_die>=6&miss_react&crit_pct<100" );
         }
-        add_action( "Corruption",            "cycle_targets=1,if=!ticking&target.time_to_die>=6&miss_react" );
-        if ( has_unerring_vision_of_leishen )
-          add_action( "Metamorphosis",         "if=(buff.dark_soul.up&demonic_fury%32>buff.dark_soul.remains)|(dot.corruption.remains<5&dot.corruption.crit_pct<100)|!dot.doom.ticking|demonic_fury>=950|demonic_fury%32>target.time_to_die|buff.perfect_aim.react" );
         else
-          add_action( "Metamorphosis",         "if=(buff.dark_soul.up&demonic_fury%32>buff.dark_soul.remains)|dot.corruption.remains<5|!dot.doom.ticking|demonic_fury>=950|demonic_fury%32>target.time_to_die" );
+        {
+          add_action( spec.doom,               "cycle_targets=1,if=buff.metamorphosis.up&(ticks_remain<=1|(ticks_remain+1<n_ticks&buff.dark_soul.up)|(ticks_remain<=add_ticks%2&stat.spell_power>spell_power))&target.time_to_die>=30&miss_react" );
+          add_action( "Cancel Metamorphosis",  "if=buff.metamorphosis.up&buff.dark_soul.down&demonic_fury<=650&target.time_to_die>30&(cooldown.metamorphosis.remains<4|demonic_fury<=300)&!(action.hand_of_guldan.in_flight&dot.shadowflame.remains)" );
+          add_action( "Soul Fire",             "if=buff.metamorphosis.up&buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)" );
+          add_action( spec.touch_of_chaos,     "if=buff.metamorphosis.up" );
+          add_action( "Metamorphosis",         "(buff.dark_soul.up&buff.dark_soul.remains<demonic_fury%32)|demonic_fury>=950|demonic_fury%32>target.time_to_die|(action.hand_of_guldan.in_flight&dot.shadowflame.remains)" );
+          add_action( "Corruption",            "cycle_targets=1,if=!ticking&target.time_to_die>=6&miss_react" );
+          add_action( "Corruption",            "cycle_targets=1,if=spell_power<stat.spell_power&ticks_remain<=add_ticks%2&target.time_to_die>=6&miss_react" );
+        }
         add_action( "Hand of Gul'dan",       "if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(charges=2|dot.shadowflame.remains>travel_time|(charges=1&recharge_time<4))" );
-        add_action( "Soul Fire",             "if=buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)" );
+        add_action( "Soul Fire",             "if=buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)&(buff.molten_core.react>9|target.health.pct<=28)"
         add_action( "Life Tap",              "if=mana.pct<60" );
         add_action( "Shadow Bolt" );
         add_action( "Fel Flame",             "moving=1" );
@@ -5610,7 +5602,7 @@ int warlock_t::decode_set( item_t& item )
   if ( strstr( s, "shaskin_"               ) ) return SET_T14_CASTER;
 
   if ( strstr( s, "_of_the_thousandfold_hells" ) ) return SET_T15_CASTER;
-  
+
   if ( strstr( s, "_of_the_horned_nightmare" ) ) return SET_T16_CASTER;
 
   if ( strstr( s, "_gladiators_felweave_"   ) ) return SET_PVP_CASTER;
