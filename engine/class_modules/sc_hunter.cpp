@@ -446,9 +446,7 @@ void trigger_tier16_bm_4pc_brutal_kinship( hunter_t* p )
   if ( ! p -> set_bonus.tier16_4pc_melee() )
     return;
   if ( p -> buffs.beast_within -> check() )
-    p -> buffs.tier16_4pc_bm_brutal_kinship -> trigger();
-  else
-    p -> buffs.tier16_4pc_bm_brutal_kinship -> expire();
+    p -> buffs.tier16_4pc_bm_brutal_kinship -> trigger( 1, 0, 1, p -> buffs.beast_within -> remains() );
 }
 
 namespace pets {
@@ -832,11 +830,10 @@ public:
     double m = base_t::composite_player_multiplier( school );
 
     if ( ! buffs.stampede -> check() && buffs.bestial_wrath -> up() )
-    {
       m *= 1.0 + buffs.bestial_wrath -> data().effectN( 2 ).percent();
-      if ( o() -> set_bonus.tier16_4pc_melee() )
-        m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> up() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
-    }
+
+    if ( o() -> set_bonus.tier16_4pc_melee() )
+      m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> up() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
 
     // Pet combat experience
     m *= 1.0 + specs.combat_experience -> effectN( 2 ).percent();
@@ -929,9 +926,7 @@ struct hunter_main_pet_attack_t : public hunter_main_pet_action_t<melee_attack_t
     if ( ! o() -> set_bonus.tier16_4pc_melee() )
       return;
     if ( p() -> buffs.bestial_wrath -> check() )
-      p() -> buffs.tier16_4pc_bm_brutal_kinship -> trigger();
-    else
-      p() -> buffs.tier16_4pc_bm_brutal_kinship -> expire();
+      p() -> buffs.tier16_4pc_bm_brutal_kinship -> trigger( 1, 0, 1, p() -> buffs.bestial_wrath -> remains() );
   }
 };
 
@@ -4310,11 +4305,10 @@ double hunter_t::composite_player_multiplier( school_e school )
   }
 
   if ( buffs.beast_within -> up() )
-  {
     m *= 1.0 + buffs.beast_within -> data().effectN( 2 ).percent();
-    if ( set_bonus.tier16_4pc_melee() )
-      m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> up() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
-  }
+  
+  if ( set_bonus.tier16_4pc_melee() )
+    m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> up() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
 
   return m;
 }
