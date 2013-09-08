@@ -76,6 +76,7 @@
 		6E1F18BF16DFF43A00485193 /* Warrior_Fury_1h_T15H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3424819516DB5821008FC024 /* Warrior_Fury_1h_T15H.simc */; };
 		6E1F18C016DFF43A00485193 /* Warrior_Fury_2h_T15H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3424819616DB5821008FC024 /* Warrior_Fury_2h_T15H.simc */; };
 		6E1F18C116DFF43A00485193 /* Warrior_Protection_T15H.simc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 3424819716DB5821008FC024 /* Warrior_Protection_T15H.simc */; };
+		6E21CFFE17DC8D05000FB100 /* SC_OptionsTab.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E21CFFD17DC8C71000FB100 /* SC_OptionsTab.hpp */; };
 		6E392F5413969FCC00649B6A /* Simcraft2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 6E392F5313969FCC00649B6A /* Simcraft2.icns */; };
 		6E392F611396A09700649B6A /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC6192B13967883006B7A89 /* main.cpp */; };
 		6E392F621396A09700649B6A /* sc_window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC6192C13967883006B7A89 /* sc_window.cpp */; };
@@ -292,7 +293,7 @@
 		6EF04D17139FA8F1009AA411 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
-			filePatterns = "*simulationcraftqt.hpp *simcpaperdoll.hpp";
+			filePatterns = "*simulationcraftqt.hpp *simcpaperdoll.hpp *SC_OptionsTab.hpp";
 			fileType = pattern.proxy;
 			isEditable = 1;
 			outputFiles = (
@@ -630,6 +631,7 @@
 		6E11BED915EA9E6F00C1D8B0 /* Warrior_Arms_T14N.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warrior_Arms_T14N.simc; sourceTree = "<group>"; };
 		6E11BEDA15EA9E6F00C1D8B0 /* Warrior_Fury_1h_T14N.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warrior_Fury_1h_T14N.simc; sourceTree = "<group>"; };
 		6E11BEDB15EA9E6F00C1D8B0 /* Warrior_Fury_2h_T14N.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = Warrior_Fury_2h_T14N.simc; sourceTree = "<group>"; };
+		6E21CFFD17DC8C71000FB100 /* SC_OptionsTab.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SC_OptionsTab.hpp; path = qt/SC_OptionsTab.hpp; sourceTree = "<group>"; };
 		6E392F3213969ECE00649B6A /* SimulationCraft.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimulationCraft.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E392F5313969FCC00649B6A /* Simcraft2.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Simcraft2.icns; path = qt/icon/Simcraft2.icns; sourceTree = "<group>"; };
 		6E41F15915C68C89002B6836 /* generate_Rogue_PreRaid.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = generate_Rogue_PreRaid.simc; sourceTree = "<group>"; };
@@ -1405,6 +1407,7 @@
 		6EC6192813967816006B7A89 /* GUI */ = {
 			isa = PBXGroup;
 			children = (
+				6E21CFFD17DC8C71000FB100 /* SC_OptionsTab.hpp */,
 				6EEADF04176F2E8E00543025 /* sc_options_tab.cpp */,
 				6EDCF303162C4D7400571167 /* sc_import.cpp */,
 				6EB6551F1562E5A600583BF3 /* simulationcraftqt.hpp */,
@@ -1603,6 +1606,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6E21CFFE17DC8D05000FB100 /* SC_OptionsTab.hpp in Sources */,
 				6EB6553D1562E9D400583BF3 /* simulationcraftqt.hpp in Sources */,
 				6E392F961396A0AD00649B6A /* sc_thread.cpp in Sources */,
 				6E392F981396A0AD00649B6A /* sc_util.cpp in Sources */,
