@@ -1975,6 +1975,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       if ( p() -> set_bonus.tier16_4pc_melee() )
         p() -> buffs.tier16_4pc_mm_keen_eye -> trigger();
 
+      trigger_tier16_2pc_melee();
       if ( result_is_hit( execute_state -> result ) )
         trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_aimed_shot, p() -> action_lightning_arrow_aimed_shot );
     }
@@ -1982,7 +1983,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     virtual void impact( action_state_t* s )
     {
       hunter_ranged_attack_t::impact( s );
-
+    
       if ( s -> result == RESULT_CRIT )
         trigger_piercing_shots( s -> target, s -> result_amount );
     }
