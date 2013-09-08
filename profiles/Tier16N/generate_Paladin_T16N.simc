@@ -10,7 +10,7 @@ race=tauren
 spec=retribution
 role=hybrid
 position=back
-head=helmet_of_winged_triumph,id=99138,gems=capacitive_primal_80str_160haste_180str
+head=helmet_of_winged_triumph,id=99138,gems=reverberating_primal_80str_160haste_180str
 neck=juggernauts_ignition_keys,id=103916
 shoulders=pauldrons_of_winged_triumph,id=99132,gems=80str_160haste_80str_160haste_120str,enchant=200str_100crit,reforge=exp_haste
 back=drape_of_the_despairing_pit,id=103845,enchant=180hit

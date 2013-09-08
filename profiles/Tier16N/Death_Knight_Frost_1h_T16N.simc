@@ -1,0 +1,109 @@
+#!./simc 
+
+deathknight="Death_Knight_Frost_1h_T16N"
+level=90
+race=tauren
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1...0.
+spec=frost
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=winters_bite
+actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
+actions.precombat+=/horn_of_winter
+actions.precombat+=/frost_presence
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/army_of_the_dead
+actions.precombat+=/mogu_power_potion
+actions.precombat+=/pillar_of_frost
+actions.precombat+=/raise_dead
+
+# Executed every time the actor is available.
+
+actions=auto_attack
+actions+=/antimagic_shell,damage=100000
+actions+=/pillar_of_frost
+actions+=/mogu_power_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)
+actions+=/empower_rune_weapon,if=target.time_to_die<=60&(buff.mogu_power_potion.up|buff.golemblood_potion.up)
+actions+=/raise_dead
+actions+=/run_action_list,name=aoe,if=active_enemies>=5
+actions+=/run_action_list,name=single_target,if=active_enemies<5
+
+actions.aoe=unholy_blight,if=talent.unholy_blight.enabled
+actions.aoe+=/pestilence,if=dot.blood_plague.ticking&talent.plague_leech.enabled,line_cd=28
+actions.aoe+=/pestilence,if=dot.blood_plague.ticking&talent.unholy_blight.enabled&cooldown.unholy_blight.remains<49,line_cd=28
+actions.aoe+=/howling_blast
+actions.aoe+=/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>10
+actions.aoe+=/frost_strike,if=runic_power>76
+actions.aoe+=/death_and_decay,if=unholy=1
+actions.aoe+=/plague_strike,if=unholy=2
+actions.aoe+=/blood_tap,if=talent.blood_tap.enabled
+actions.aoe+=/frost_strike
+actions.aoe+=/horn_of_winter
+actions.aoe+=/plague_leech,if=talent.plague_leech.enabled&unholy=1
+actions.aoe+=/plague_strike,if=unholy=1
+actions.aoe+=/empower_rune_weapon
+
+actions.single_target=blood_tap,if=talent.blood_tap.enabled&(buff.blood_charge.stack>10&(runic_power>76|(runic_power>=20&buff.killing_machine.react)))
+actions.single_target+=/frost_strike,if=buff.killing_machine.react|runic_power>88
+actions.single_target+=/howling_blast,if=death>1|frost>1
+actions.single_target+=/unholy_blight,if=talent.unholy_blight.enabled&((dot.frost_fever.remains<3|dot.blood_plague.remains<3))
+actions.single_target+=/soul_reaper,if=target.health.pct-3*(target.health.pct%target.time_to_die)<=35
+actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&((target.health.pct-3*(target.health.pct%target.time_to_die)<=35&cooldown.soul_reaper.remains=0))
+actions.single_target+=/howling_blast,if=!dot.frost_fever.ticking
+actions.single_target+=/plague_strike,if=!dot.blood_plague.ticking&unholy>0
+actions.single_target+=/howling_blast,if=buff.rime.react
+actions.single_target+=/frost_strike,if=runic_power>76
+actions.single_target+=/obliterate,if=unholy>0&!buff.killing_machine.react
+actions.single_target+=/howling_blast
+actions.single_target+=/frost_strike,if=talent.runic_empowerment.enabled&unholy=1
+actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&(target.health.pct-3*(target.health.pct%target.time_to_die)>35|buff.blood_charge.stack>=8)
+actions.single_target+=/frost_strike,if=runic_power>=40
+actions.single_target+=/horn_of_winter
+actions.single_target+=/blood_tap,if=talent.blood_tap.enabled
+actions.single_target+=/plague_leech,if=talent.plague_leech.enabled
+actions.single_target+=/empower_rune_weapon
+
+head=helmet_of_cyclopean_dread,id=99194,gems=reverberating_primal_160str_180str,reforge=haste_crit
+neck=malkoroks_tainted_dog_tags,id=103917
+shoulders=pauldrons_of_cyclopean_dread,id=99187,gems=160str_160str_120str,enchant=200str_100crit
+back=turtleshell_greatcloak,id=103800,enchant=180crit,reforge=hit_crit
+chest=breastplate_of_cyclopean_dread,id=99192,gems=160str_160str_160str_180str,enchant=80all,reforge=haste_crit
+wrists=bracers_of_blind_hatred,id=103740,enchant=180str
+hands=gauntlets_of_cyclopean_dread,id=99193,gems=160str_160str_120str,enchant=170str
+waist=ashen_wall_girdle,id=103932,gems=160str_80str_160hit_160str_120str,reforge=hit_crit
+legs=legplates_of_willful_doom,id=103954,gems=80str_160hit_80str_160hit_160str_120str,enchant=285str_165crit
+feet=malkoroks_giant_stompers,id=103879,gems=80str_160hit_60crit,enchant=140mastery
+finger1=devilfang_band,id=103896,gems=160str_60exp,reforge=exp_crit
+finger2=bloodclaw_band,id=103798,gems=80str_160mastery_60haste,reforge=hit_crit
+trinket1=evil_eye_of_galakras,id=102298
+trinket2=thoks_tail_tip,id=102305
+main_hand=xifeng_longblade_of_the_titanic_guardian,id=103826,gems=160str_60str,enchant=rune_of_razorice,reforge=hit_crit
+off_hand=xifeng_longblade_of_the_titanic_guardian,id=103826,gems=160str_60str,enchant=rune_of_the_fallen_crusader,reforge=hit_crit
+
+# Gear Summary
+# gear_strength=23132
+# gear_agility=80
+# gear_stamina=30088
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2585
+# gear_hit_rating=3624
+# gear_crit_rating=6226
+# gear_haste_rating=1630
+# gear_mastery_rating=12069
+# gear_armor=38939
+# meta_gem=reverberating_primal
+# tier16_2pc_melee=1
+# tier16_4pc_melee=1
+# main_hand=xifeng_longblade_of_the_titanic_guardian,weapon=sword_2.60speed_10257min_19050max,enchant=rune_of_razorice
+# off_hand=xifeng_longblade_of_the_titanic_guardian,weapon=sword_2.60speed_10257min_19050max,enchant=rune_of_the_fallen_crusader

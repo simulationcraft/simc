@@ -5,7 +5,6 @@ level=90
 race=troll
 role=spell
 position=back
-professions=tailoring=600/enchanting=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!0...11
 glyphs=evocation/icy_veins/splitting_ice
 spec=frost
@@ -54,14 +53,14 @@ actions+=/frostbolt
 actions+=/fire_blast,moving=1
 actions+=/ice_lance,moving=1
 
-head=chronomancer_hood,id=99161,gems=sinister_primal_80int_160haste_180int
+head=chronomancer_hood,id=99161,gems=burning_primal_80int_160haste_180int
 # ilevel=553,quality=epic,type=cloth,stats=1840int_3121sta_1425haste_998crit
 neck=untainted_guardians_chain,id=103867
 # ilevel=553,quality=epic,stats=1159int_1739sta_734hit_796mastery
 shoulders=chronomancer_mantle,id=99153,gems=80int_160haste_80int_160haste_120int,enchant=200int_100crit,reforge=crit_mastery
 # ilevel=553,quality=epic,type=cloth,stats=1386int_2319sta_1095haste_703crit
-back=xingho_breath_of_yulon,id=102246,gems=80int_160haste_60int,enchant=lightweave_embroidery_3
-# ilevel=600,quality=legendary,type=cloth,stats=1716int_2694sta_918crit_918haste_918mastery
+back=drape_of_the_omega,id=103770,enchant=180int
+# ilevel=553,quality=epic,type=cloth,stats=1159int_1739sta_796mastery_734haste
 chest=chronomancer_robes,id=99152,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=crit_haste
 # ilevel=553,quality=epic,type=cloth,stats=1840int_3121sta_1328mastery_1164crit
 wrists=avools_ancestral_bracers,id=103851,enchant=180int
@@ -74,9 +73,9 @@ legs=leggings_of_furious_flame,id=103921,gems=160haste_160hit_160haste_160hit_12
 # ilevel=553,quality=epic,type=cloth,stats=1920int_3121sta_1328haste_1272mastery
 feet=boneinlaid_sandals,id=103805,gems=80int_160haste_60hit,enchant=140mastery
 # ilevel=553,quality=epic,type=cloth,stats=1466int_2319sta_998haste_973mastery
-finger1=extinguished_ember_of_galakras,id=103823,enchant=160int
+finger1=extinguished_ember_of_galakras,id=103823
 # ilevel=553,quality=epic,stats=1159int_1739sta_773hit_773haste
-finger2=iyyokuks_hereditary_seal,id=103824,enchant=160int
+finger2=iyyokuks_hereditary_seal,id=103824
 # ilevel=553,quality=epic,stats=1159int_1739sta_715hit_807mastery
 trinket1=purified_bindings_of_immerseus,id=102293
 # ilevel=553,quality=epic
@@ -90,18 +89,17 @@ off_hand=festering_primordial_globule,id=103919,gems=80int_160haste_60int,enchan
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=31445
-# gear_intellect=22836
+# gear_stamina=30490
+# gear_intellect=22215
 # gear_spirit=80
 # gear_spell_power=11913
 # gear_expertise_rating=215
 # gear_hit_rating=4882
-# gear_crit_rating=4529
-# gear_haste_rating=12231
-# gear_mastery_rating=8725
-# gear_armor=17066
-# meta_gem=sinister_primal
+# gear_crit_rating=3287
+# gear_haste_rating=11887
+# gear_mastery_rating=8603
+# gear_armor=16892
+# meta_gem=burning_primal
 # tier16_2pc_caster=1
 # tier16_4pc_caster=1
-# back=xingho_breath_of_yulon,enchant=lightweave_embroidery_3
 # main_hand=rikkals_bloody_scalpel,weapon=dagger_1.8speed_3550min_6595max,enchant=jade_spirit

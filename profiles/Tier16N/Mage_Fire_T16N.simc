@@ -5,7 +5,6 @@ level=90
 race=troll
 role=spell
 position=back
-professions=tailoring=600/enchanting=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#eZ!0...11
 glyphs=combustion/counterspell
 spec=fire
@@ -54,14 +53,14 @@ actions+=/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.tim
 actions+=/fireball
 actions+=/scorch,moving=1
 
-head=chronomancer_hood,id=99161,gems=sinister_primal_80int_160crit_180int
+head=chronomancer_hood,id=99161,gems=burning_primal_80int_160crit_180int
 # ilevel=553,quality=epic,type=cloth,stats=1840int_3121sta_1425haste_998crit
 neck=untainted_guardians_chain,id=103867,reforge=hit_crit
 # ilevel=553,quality=epic,stats=1159int_1739sta_734hit_796mastery
 shoulders=chronomancer_mantle,id=99153,gems=80int_160crit_80int_160crit_120int,enchant=200int_100crit
 # ilevel=553,quality=epic,type=cloth,stats=1386int_2319sta_1095haste_703crit
-back=xingho_breath_of_yulon,id=102246,gems=80int_160crit_60int,enchant=lightweave_embroidery_3
-# ilevel=600,quality=legendary,type=cloth,stats=1716int_2694sta_918crit_918haste_918mastery
+back=drape_of_the_omega,id=103770,enchant=180int,reforge=mastery_crit
+# ilevel=553,quality=epic,type=cloth,stats=1159int_1739sta_796mastery_734haste
 chest=chronomancer_robes,id=99152,gems=80int_160crit_80int_160crit_80int_160crit_180int,enchant=80all
 # ilevel=553,quality=epic,type=cloth,stats=1840int_3121sta_1328mastery_1164crit
 wrists=avools_ancestral_bracers,id=103851,enchant=180int
@@ -74,9 +73,9 @@ legs=chronomancer_leggings,id=99162,gems=160crit_160hit_160crit_160hit_120int,en
 # ilevel=553,quality=epic,type=cloth,stats=1920int_3121sta_1170mastery_1388crit
 feet=boneinlaid_sandals,id=103805,gems=320crit_60hit,enchant=140mastery
 # ilevel=553,quality=epic,type=cloth,stats=1466int_2319sta_998haste_973mastery
-finger1=extinguished_ember_of_galakras,id=103823,enchant=160int,reforge=haste_exp
+finger1=extinguished_ember_of_galakras,id=103823,reforge=haste_exp
 # ilevel=553,quality=epic,stats=1159int_1739sta_773hit_773haste
-finger2=petrified_pennyroyal_ring,id=103822,enchant=160int
+finger2=petrified_pennyroyal_ring,id=103822
 # ilevel=553,quality=epic,stats=1159int_1739sta_829hit_678crit
 trinket1=purified_bindings_of_immerseus,id=102293
 # ilevel=553,quality=epic
@@ -90,18 +89,17 @@ off_hand=festering_primordial_globule,id=103919,gems=80int_160crit_60int,enchant
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=31445
-# gear_intellect=22676
+# gear_stamina=30490
+# gear_intellect=22055
 # gear_spirit=80
 # gear_spell_power=11913
 # gear_expertise_rating=309
 # gear_hit_rating=4790
-# gear_crit_rating=11275
-# gear_haste_rating=7569
-# gear_mastery_rating=6902
-# gear_armor=17066
-# meta_gem=sinister_primal
+# gear_crit_rating=10191
+# gear_haste_rating=7385
+# gear_mastery_rating=6462
+# gear_armor=16892
+# meta_gem=burning_primal
 # tier16_2pc_caster=1
 # tier16_4pc_caster=1
-# back=xingho_breath_of_yulon,enchant=lightweave_embroidery_3
 # main_hand=rikkals_bloody_scalpel,weapon=dagger_1.8speed_3550min_6595max,enchant=jade_spirit
