@@ -388,28 +388,31 @@ private:
       }
     }
   };
-
+  
   struct crackling_tiger_lightning_t : public melee_attack_t
   {
-    crackling_tiger_lightning_t( xuen_pet_t* player, const std::string& options_str ) :
-      melee_attack_t( "crackling_tiger_lightning", player, player -> find_spell( 123996 ) )
+    crackling_tiger_lightning_t( xuen_pet_t* player, const std::string& options_str ) : melee_attack_t( "crackling_tiger_lightning", player, player -> find_spell( 123996 ) )
     {
       parse_options( nullptr, options_str );
 
-      special = true;
-      tick_may_crit  = true;
+      // Looks like Xuen needs a couple fixups to work properly.  Let's do that now.
       aoe = 3;
-      tick_power_mod = data().extra_coeff();
-
-
-      if ( player -> dbc.ptr ) {
-        cooldown -> duration = timespan_t::from_seconds( 1.0 );
-      } else {
-		cooldown -> duration = timespan_t::from_seconds( 6.0 );
-      }
+      special = true;
       base_spell_power_multiplier  = 0;
-
       //base_multiplier = 1.323; //1.58138311; EDITED FOR ACTUAL VALUE. verify in the future.
+
+      if (player->dbc.ptr)
+      {
+        may_crit = true;
+        direct_power_mod =  data().extra_coeff();
+        cooldown -> duration = timespan_t::from_seconds( 1.0 - .125 ); // total hack to get xuen to attack roughly once every second... (to be replaced soon)
+      }
+      else
+      {
+        tick_may_crit  = true;
+        tick_power_mod = data().extra_coeff();
+        cooldown -> duration = timespan_t::from_seconds( 6.0 );
+      }
     }
   };
 
@@ -443,8 +446,7 @@ private:
   };
 
 public:
-  xuen_pet_t( sim_t* sim, monk_t* owner ) :
-    pet_t( sim, owner, "xuen_the_white_tiger", true )
+  xuen_pet_t( sim_t* sim, monk_t* owner ) : pet_t( sim, owner, "xuen_the_white_tiger", true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level );
@@ -466,11 +468,13 @@ public:
     pet_t::init_actions();
   }
 
-  action_t* create_action( const std::string& name,
-                           const std::string& options_str )
+  action_t* create_action( const std::string& name, const std::string& options_str )
   {
-    if ( name == "crackling_tiger_lightning" ) return new crackling_tiger_lightning_t( this, options_str );
-    if ( name == "auto_attack" ) return new auto_attack_t( this, options_str );
+    if ( name == "crackling_tiger_lightning" ) 
+      return new crackling_tiger_lightning_t( this, options_str );
+    
+    if ( name == "auto_attack" ) 
+      return new auto_attack_t( this, options_str );
 
     return pet_t::create_action( name, options_str );
   }
