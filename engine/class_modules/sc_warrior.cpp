@@ -1152,7 +1152,7 @@ struct cleave_t : public warrior_attack_t
     warrior_t* p = cast();
 
     if ( p -> buff.glyph_incite -> check() )
-      c += p -> buff.glyph_incite -> data().effectN( 1 ).base_value();
+      c *= 1 + p -> buff.glyph_incite -> data().effectN( 1 ).percent();
 
     if ( p -> buff.ultimatum -> check() )
       c *= 1 + p->buff.ultimatum -> data().effectN( 1 ).percent();
@@ -1463,7 +1463,7 @@ struct heroic_strike_t : public warrior_attack_t
     warrior_t* p = cast();
 
     if ( p -> buff.glyph_incite -> check() )
-      c += p -> buff.glyph_incite -> data().effectN( 1 ).base_value();
+      c *= 1 + p -> buff.glyph_incite -> data().effectN( 1 ).percent();
 
     if ( p -> buff.ultimatum -> check() )
       c *= 1 + p -> buff.ultimatum -> data().effectN( 1 ).percent();
