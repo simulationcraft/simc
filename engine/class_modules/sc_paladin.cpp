@@ -1494,6 +1494,7 @@ struct eternal_flame_t : public paladin_heal_t
 
   virtual double action_multiplier()
   {
+    // this scales both the base heal and the ticks
     double am = paladin_heal_t::action_multiplier();
     double c = cost();
 
@@ -1501,12 +1502,22 @@ struct eternal_flame_t : public paladin_heal_t
     am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 );
 
     if ( target == player )
-    {
-      // twice as effective when used on self
-      am *= 1.0 + p() -> talents.eternal_flame -> effectN( 3 ).percent(); 
-      
+    {      
       // grant 10% extra healing per stack of BoG; can't expire() BoG here because it's needed in execute()
       am *= ( 1.0 + p() -> buffs.bastion_of_glory -> stack() * ( p() -> buffs.bastion_of_glory -> data().effectN( 1 ).percent() + p() -> get_divine_bulwark() ) );
+    }
+
+    return am;
+  }
+
+  virtual double action_ta_multiplier()
+  {
+    // this scales just the ticks
+    double am = paladin_heal_t::action_ta_multiplier();
+    if ( target == player )
+    {
+      // HoT is twice as effective when used on self
+      am *= 1.0 + p() -> talents.eternal_flame -> effectN( 3 ).percent(); 
     }
 
     return am;
