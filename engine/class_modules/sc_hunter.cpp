@@ -2056,6 +2056,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     else
     {
       hunter_ranged_attack_t::execute();
+      trigger_tier16_2pc_melee();
       if ( p() -> buffs.tier16_4pc_mm_keen_eye -> up() )
         p() -> buffs.tier16_4pc_mm_keen_eye -> expire();
     }
