@@ -6858,7 +6858,7 @@ double druid_t::composite_player_td_multiplier( school_e school, action_t* a )
   double m = player_t::composite_player_td_multiplier( school, a );
 
   if ( school == SCHOOL_PHYSICAL && mastery.razor_claws -> ok() && buff.cat_form -> up()
-    && a -> id != 147891 ) // Blacklist for Fen-yu Legendary cloak proc
+    && a -> id != 146194 ) // Blacklist for Fen-yu Legendary cloak proc
     m *= 1.0 + cache.mastery_value();
 
   return m;
