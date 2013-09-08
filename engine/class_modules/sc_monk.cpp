@@ -1101,15 +1101,15 @@ virtual double cost()
       p() -> track_chi_consumption += base_costs[ RESOURCE_CHI ];
 
     monk_melee_attack_t::consume_resource();
-    if ( p() -> buff.focus_of_xuen -> up() )
-    {
-      p() -> buff.focus_of_xuen -> expire();
-	  p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, 1 ); // TODO: Update to spell data
-    }
     if ( p() -> buff.combo_breaker_bok -> up() )
     {
       p() -> buff.combo_breaker_bok -> expire();
       p() -> gain.combo_breaker_savings -> add( RESOURCE_CHI, cost() );
+    }
+    else if ( p() -> buff.focus_of_xuen -> up() )
+    {
+      p() -> buff.focus_of_xuen -> expire();
+	  p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, 1 ); // TODO: Update to spell data
     }
   }
 };
