@@ -74,7 +74,7 @@ public:
     buff_t* rapid_fire;
     buff_t* tier13_4pc;
     buff_t* tier16_4pc_mm_keen_eye;
-    buff_t* tier16_4pc_bm_brutal_kinskip;
+    buff_t* tier16_4pc_bm_brutal_kinship;
   } buffs;
 
   // Cooldowns
@@ -429,7 +429,7 @@ public:
     if ( ab::background )
       return;
 
-    trigger_tier16_bm_4pc_brutal_kinskip( p() );
+    trigger_tier16_bm_4pc_brutal_kinship( p() );
   }
 };
 
@@ -439,14 +439,16 @@ public:
 // damage dealt by your pet by 2%, stacking up to 15 times.
 // 1 stack for MoC, Lynx Rush, Glaive Toss, Barrage, Powershot, Focus Fire
 // no stack for Fervor or Dire Beast
-void trigger_tier16_bm_4pc_brutal_kinskip( hunter_t* p )
+void trigger_tier16_bm_4pc_brutal_kinship( hunter_t* p )
 {
   if ( p -> specialization() != HUNTER_BEAST_MASTERY )
     return;
   if ( ! p -> set_bonus.tier16_4pc_melee() )
     return;
   if ( p -> buffs.beast_within -> check() )
-    p -> buffs.tier16_4pc_bm_brutal_kinskip -> trigger();
+    p -> buffs.tier16_4pc_bm_brutal_kinship -> trigger();
+  else
+    p -> buffs.tier16_4pc_bm_brutal_kinship -> expire();
 }
 
 namespace pets {
@@ -573,7 +575,7 @@ public:
     buff_t* rabid;
     buff_t* stampede;
     buff_t* beast_cleave;
-    buff_t* tier16_4pc_bm_brutal_kinskip;
+    buff_t* tier16_4pc_bm_brutal_kinship;
   } buffs;
 
   // Gains
@@ -714,7 +716,7 @@ public:
 
     buffs.beast_cleave      = buff_creator_t( this, 118455, "beast_cleave" ).activated( true ).default_value( cleave_value );
 
-    buffs.tier16_4pc_bm_brutal_kinskip = buff_creator_t( this, 145737, "tier16_4pc_brutal_kinship" )
+    buffs.tier16_4pc_bm_brutal_kinship = buff_creator_t( this, 145737, "tier16_4pc_brutal_kinship" )
                                          .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
@@ -833,7 +835,7 @@ public:
     {
       m *= 1.0 + buffs.bestial_wrath -> data().effectN( 2 ).percent();
       if ( o() -> set_bonus.tier16_4pc_melee() )
-        m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinskip -> up() * buffs.tier16_4pc_bm_brutal_kinskip -> data().effectN( 1 ).percent();
+        m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> up() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
     }
 
     // Pet combat experience
@@ -927,7 +929,9 @@ struct hunter_main_pet_attack_t : public hunter_main_pet_action_t<melee_attack_t
     if ( ! o() -> set_bonus.tier16_4pc_melee() )
       return;
     if ( p() -> buffs.bestial_wrath -> check() )
-      p() -> buffs.tier16_4pc_bm_brutal_kinskip -> trigger();
+      p() -> buffs.tier16_4pc_bm_brutal_kinship -> trigger();
+    else
+      p() -> buffs.tier16_4pc_bm_brutal_kinship -> expire();
   }
 };
 
@@ -3047,7 +3051,7 @@ struct moc_t : public ranged_attack_t
 
   virtual void execute()
   {
-    trigger_tier16_bm_4pc_brutal_kinskip( p() );
+    trigger_tier16_bm_4pc_brutal_kinship( p() );
 
     cooldown -> duration = data().cooldown();
 
@@ -3164,8 +3168,11 @@ struct bestial_wrath_t : public hunter_spell_t
 
   virtual void execute()
   {
-    if ( p() -> set_bonus.tier16_4pc_melee() )
-      p() -> buffs.tier16_4pc_bm_brutal_kinskip -> expire();
+    /*if ( p() -> set_bonus.tier16_4pc_melee() )
+    {
+      p() -> buffs.tier16_4pc_bm_brutal_kinship -> expire();
+      p() -> active.pet -> buffs.tier16_4pc_bm_brutal_kinship -> expire();
+    }*/
 
     p() -> buffs.beast_within  -> trigger();
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
@@ -3915,7 +3922,7 @@ void hunter_t::create_buffs()
                                       .add_invalidate( CACHE_ATTACK_HASTE );
 
   buffs.tier16_4pc_mm_keen_eye      = buff_creator_t( this, 144659, "tier16_4pc_keen_eye" );
-  buffs.tier16_4pc_bm_brutal_kinskip = buff_creator_t( this, 144670, "tier16_4pc_brutal_kinship" )
+  buffs.tier16_4pc_bm_brutal_kinship = buff_creator_t( this, 144670, "tier16_4pc_brutal_kinship" )
                                        .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
@@ -4306,7 +4313,7 @@ double hunter_t::composite_player_multiplier( school_e school )
   {
     m *= 1.0 + buffs.beast_within -> data().effectN( 2 ).percent();
     if ( set_bonus.tier16_4pc_melee() )
-      m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinskip -> up() * buffs.tier16_4pc_bm_brutal_kinskip -> data().effectN( 1 ).percent();
+      m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> up() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
   }
 
   return m;
