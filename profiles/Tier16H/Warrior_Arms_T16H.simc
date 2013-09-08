@@ -34,6 +34,7 @@ actions+=/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.re
 actions+=/bloodbath,if=enabled&(debuff.colossus_smash.up|cooldown.colossus_smash.remains<4)
 actions+=/avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)
 actions+=/skull_banner,if=buff.skull_banner.down&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192&buff.cooldown_reduction.up)|buff.recklessness.up)
+actions+=/use_item,name=tarcoated_gauntlets,if=!talent.bloodbath.enabled&debuff.colossus_smash.up|buff.bloodbath.up
 actions+=/berserker_rage,if=buff.enrage.remains<0.5
 actions+=/heroic_leap,if=debuff.colossus_smash.up
 actions+=/run_action_list,name=aoe,if=active_enemies>=2
@@ -67,7 +68,7 @@ shoulders=tusks_of_mannoroth,id=105642,upgrade=2,gems=160exp_160crit_160exp_160c
 back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=160exp_160crit_60str,enchant=180crit,reforge=haste_hit
 chest=chestplate_of_congealed_corrosion,id=105412,upgrade=2,gems=160exp_160crit_320crit_160hit_160crit_180str,enchant=80all
 wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=320crit,enchant=180str
-hands=tarcoated_gauntlets,id=105511,upgrade=2,gems=160exp_160crit_320crit_320crit_120str,enchant=170str,addon=synapse_springs_ii
+hands=tarcoated_gauntlets,id=105511,upgrade=2,gems=160exp_160crit_320crit_320crit_120str,enchant=170str,addon=synapse_springs_2
 waist=ashen_wall_girdle,id=105533,upgrade=2,gems=160exp_160crit_160crit_160hit_320crit_120str,reforge=mastery_crit
 legs=legplates_of_the_prehistoric_marauder,id=99413,upgrade=2,gems=320crit_320crit_120str,enchant=285str_165crit
 feet=wolfrider_spurs,id=105531,upgrade=2,gems=320crit_60crit,enchant=140mastery
@@ -91,4 +92,5 @@ main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=80str_16
 # gear_armor=41743
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
+# hands=tarcoated_gauntlets,heroic=1,elite=1,addon=synapse_springs_2
 # main_hand=xalatoh_desecrated_image_of_gorehowl,heroic=1,elite=1,weapon=axe2h_3.60speed_26125min_39188max,enchant=dancing_steel

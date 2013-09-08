@@ -33,6 +33,7 @@ actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colo
 actions+=/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20)|target.time_to_die<=12
 actions+=/avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)
 actions+=/skull_banner,if=buff.skull_banner.down&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192&buff.cooldown_reduction.up)|buff.recklessness.up)
+actions+=/use_item,name=gauntlets_of_the_prehistoric_marauder,if=!talent.bloodbath.enabled&debuff.colossus_smash.up|buff.bloodbath.up
 actions+=/berserker_rage,if=buff.enrage.remains<1&cooldown.bloodthirst.remains>1
 actions+=/run_action_list,name=single_target,if=active_enemies=1
 actions+=/run_action_list,name=two_targets,if=active_enemies=2
@@ -112,7 +113,7 @@ shoulders=tusks_of_mannoroth,id=105642,upgrade=2,gems=80str_160crit_160exp_160cr
 back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=160exp_160crit_60str,enchant=180crit,reforge=haste_hit
 chest=battleplate_of_the_prehistoric_marauder,id=99411,upgrade=2,gems=160exp_160crit_160exp_160crit_160exp_160crit_180str,enchant=80all,reforge=haste_crit
 wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=320crit,enchant=180str
-hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=2,gems=80str_160crit_80str_160crit_320crit_120str,enchant=170str,addon=synapse_springs_ii,reforge=hit_mastery
+hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=2,gems=80str_160crit_80str_160crit_320crit_120str,enchant=170str,addon=synapse_springs_2,reforge=hit_mastery
 waist=ashen_wall_girdle,id=105533,upgrade=2,gems=160exp_160crit_160crit_160hit_320crit_120str,reforge=hit_crit
 legs=legplates_of_the_prehistoric_marauder,id=99413,upgrade=2,gems=320crit_320crit_120str,enchant=285str_165crit,reforge=haste_mastery
 feet=wolfrider_spurs,id=105531,upgrade=2,gems=320crit_60crit,enchant=140mastery,reforge=haste_mastery
@@ -138,5 +139,6 @@ off_hand=malkoroks_skullcleaver,id=105567,upgrade=2,gems=160exp_160crit_60str,en
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
+# hands=gauntlets_of_the_prehistoric_marauder,heroic=1,addon=synapse_springs_2
 # main_hand=malkoroks_skullcleaver,heroic=1,elite=1,weapon=axe_2.60speed_12244min_22740max,enchant=dancing_steel
 # off_hand=malkoroks_skullcleaver,heroic=1,elite=1,weapon=axe_2.60speed_12244min_22740max,enchant=dancing_steel
