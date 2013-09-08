@@ -108,7 +108,7 @@ public:
     buff_t* vital_mists;
     buff_t* zen_sphere;
     buff_t* tier16_4pc_melee;
-	buff_t* focus_of_xuen;
+    buff_t* focus_of_xuen;
 
     //  buff_t* zen_meditation;
     //  buff_t* path_of_blossoms;
@@ -137,7 +137,7 @@ public:
     gain_t* soothing_mist;
     gain_t* tier15_2pc;
     gain_t* tier16_4pc_melee;
-	gain_t* focus_of_xuen_savings;
+    gain_t* focus_of_xuen_savings;
   } gain;
 
   struct procs_t
@@ -590,28 +590,28 @@ public:
 		  // rekeying the proc to go by mastery.
 		  if ( p() -> dbc.ptr )
 		  {
-			  if (  p() -> spec.brewing_tigereye_brew -> ok() )
+            if (  p() -> spec.brewing_tigereye_brew -> ok() )
+			{
+			  // Double to hold the chance for our mastery to proc.  This is based upon player's mastery
+			  double mastery_proc_chance = p() -> cache.mastery_value();
+			  while ( mastery_proc_chance > 0 )
 			  {
-				  // Double to hold the chance for our mastery to proc.  This is based upon player's mastery
-				  double mastery_proc_chance = p() -> cache.mastery_value();
-				  while ( mastery_proc_chance > 0 )
-				  {
-				      if ( ab::rng().roll( fmod( mastery_proc_chance, 1.0 ) ) )
-					  {
-				          p() -> buff.tigereye_brew -> trigger();
-				          p() -> proc.tigereye_brew -> occur();
-					  }
-					  mastery_proc_chance -= 1.0;
-				  }
+				if ( ab::rng().roll( mastery_proc_chance ) )
+				{
+				  p() -> buff.tigereye_brew -> trigger();
+				  p() -> proc.tigereye_brew -> occur();
+				}
+				mastery_proc_chance -= 1.0;
 			  }
+			}
 		  } else {
 			// preserves what we will currently see on Live
-			  if ( p() -> set_bonus.tier15_4pc_melee() &&
-			      ab::rng().roll( p() -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent() ) )
-			  {
-				p() -> buff.tigereye_brew -> trigger();
-				p() -> proc.tier15_4pc_melee -> occur();
-			  }
+			if ( p() -> set_bonus.tier15_4pc_melee() &&
+			    ab::rng().roll( p() -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent() ) )
+			{
+			  p() -> buff.tigereye_brew -> trigger();
+			  p() -> proc.tier15_4pc_melee -> occur();
+			}
 		  }
         }
       }
@@ -1103,15 +1103,15 @@ virtual double cost()
     monk_melee_attack_t::consume_resource();
     if ( p() -> buff.focus_of_xuen -> up() )
     {
-        p() -> buff.focus_of_xuen -> expire();
-		p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, 1 ); // TODO: Update to spell data
+      p() -> buff.focus_of_xuen -> expire();
+	  p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, 1 ); // TODO: Update to spell data
     }
     if ( p() -> buff.combo_breaker_bok -> up() )
     {
       p() -> buff.combo_breaker_bok -> expire();
       p() -> gain.combo_breaker_savings -> add( RESOURCE_CHI, cost() );
     }
-    }
+  }
 };
 
 // ==========================================================================
@@ -1171,8 +1171,8 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     monk_melee_attack_t::consume_resource();
     if ( p() -> buff.focus_of_xuen -> up() )
     {
-        p() -> buff.focus_of_xuen -> expire();
-        p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, 1 ); // TODO: Update to spell data
+      p() -> buff.focus_of_xuen -> expire();
+      p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, 1 ); // TODO: Update to spell data
     }
   }
 };
@@ -1309,11 +1309,10 @@ struct fists_of_fury_t : public monk_melee_attack_t
     monk_melee_attack_t::consume_resource();
     if ( p() -> buff.focus_of_xuen -> up() )
     {
-        p() -> buff.focus_of_xuen -> expire();
-        p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, 1 ); // TODO: Update to spell data
+      p() -> buff.focus_of_xuen -> expire();
+      p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, 1 ); // TODO: Update to spell data
     }
-
-    }
+  }
 };
 
 // ==========================================================================
@@ -1670,7 +1669,7 @@ struct stance_t : public monk_spell_t
 
     p() -> switch_to_stance( switch_to_stance );
   }
-
+  
   virtual bool ready()
   {
     if ( p() -> current_stance() == switch_to_stance )
@@ -1718,30 +1717,26 @@ struct tigereye_brew_t : public monk_spell_t
     double use_value = value() * teb_stacks_used;
     // so value is going to actually be DIFFERENT if player is using T15 4set now...
     if (player -> dbc.ptr ) {
-        //add this vvv into if (set_bonus.tier164pc) when it is created
-        p() -> track_focus_of_xuen += teb_stacks_used;
-		if ( p() -> track_focus_of_xuen > 20.0 ) p() -> track_focus_of_xuen = 20.0;
+      //add this vvv into if (set_bonus.tier164pc) when it is created
+      p() -> track_focus_of_xuen += teb_stacks_used;
+	  if ( p() -> track_focus_of_xuen > 20.0 ) p() -> track_focus_of_xuen = 20.0;
         
-        if ( p() -> set_bonus.tier15_4pc_melee() ) {
-            // So increase the value by 1% per stack used...  HOWEVER, on PTR this is currently broken, and we are only receiving
-            // .5% per stack of Tigereye Brew Used.  Thus, max_stacks_consumable will be divided by 100 IF this is fixed.
-            use_value = ( value()  * teb_stacks_used ) * (1.0 + (max_stacks_consumable / 200)); //usevalue * 1.05; t154pc 
-        
-        } if ( p() -> set_bonus.tier16_4pc_melee() ) {
-            // so, there's actually an error with our 4set in that it doesn't count a full .75 if we don't use a full 4, but
-            // can't find post that contains info.
-            // TODO  figure out how much of a stack it "saves"
-            if( p() -> track_focus_of_xuen >= 10.0) {
-                p() -> buff.focus_of_xuen -> trigger( 1, buff_t::DEFAULT_VALUE(), 100.0 ); // TODO: Update to spell data
-                p() -> track_focus_of_xuen -= 10.0; // find out if this is additive or resets to zero upon use.
-            }
-            
+      if ( p() -> set_bonus.tier15_4pc_melee() ) {
+        // So increase the value by 1% per stack used...  HOWEVER, on PTR this is currently broken, and we are only receiving
+        // .5% per stack of Tigereye Brew Used.  Thus, max_stacks_consumable will be divided by 100 IF this is fixed.
+        use_value = ( value()  * teb_stacks_used ) * (1.0 + (max_stacks_consumable / 200)); //usevalue * 1.05; t154pc 
+      } if ( p() -> set_bonus.tier16_4pc_melee() ) {
+        // so, there's actually an error with our 4set in that it doesn't count a full .75 if we don't use a full 4, but
+        // can't find post that contains info.
+        // TODO  figure out how much of a stack it "saves"
+        if( p() -> track_focus_of_xuen >= 10.0) {
+          p() -> buff.focus_of_xuen -> trigger( 1, buff_t::DEFAULT_VALUE(), 100.0 ); // TODO: Update to spell data
+          p() -> track_focus_of_xuen -= 10.0; // find out if this is additive or resets to zero upon use.
         }
-                    
+      }
     }
     p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
     p() -> buff.tigereye_brew -> decrement( max_stacks_consumable );
-
   }
 };
 
