@@ -17,7 +17,7 @@ back=turtleshell_cloak,id=103800,enchant=180crit,reforge=hit_crit
 chest=breastplate_of_cyclopean_dread,id=99192,gems=160str_160str_160str_180str,enchant=80all,reforge=haste_crit
 wrists=bracers_of_blind_hatred,id=103740,enchant=180str
 hands=gauntlets_of_cyclopean_dread,id=99193,gems=160str_160str_120str,enchant=170str
-waist=ashen_wall_girdle,id=103932,gems=160str_80str_160hit_160str_120str,reforge=haste_crit
+waist=ashen_wall_girdle,id=103932,gems=160str_80str_160hit_160str_120str,reforge=hit_crit
 legs=legplates_of_willful_doom,id=103954,gems=80str_160hit_80str_160hit_160str_120str,enchant=285str_165crit
 feet=malkoroks_giant_stompers,id=103879,gems=80str_160hit_60crit,enchant=140mastery
 finger1=devilfang_band,id=103896,gems=160str_60exp,reforge=exp_crit
