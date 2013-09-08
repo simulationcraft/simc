@@ -2015,20 +2015,9 @@ std::vector<std::string> player_t::get_racial_actions()
 {
   std::vector<std::string> actions;
 
-  switch ( race )
-  {
-    case RACE_ORC:
-      actions.push_back( "blood_fury" );
-      break;
-    case RACE_TROLL:
-      actions.push_back( "berserking" );
-      break;
-    case RACE_BLOOD_ELF:
-      actions.push_back( "arcane_torrent" );
-      break;
-    default:
-      break;
-  }
+  actions.push_back( "blood_fury" );
+  actions.push_back( "berserking" );
+  actions.push_back( "arcane_torrent" );
 
   return actions;
 }
@@ -5615,19 +5604,34 @@ struct stop_moving_t : public action_t
 
 // ===== Racial Abilities ===================================================
 
+struct racial_spell_t : public spell_t
+{
+  racial_spell_t( player_t* p, const std::string token, const spell_data_t* spell, const std::string& options ) :
+    spell_t( token, p, spell )
+  {
+    parse_options( NULL, options );
+  }
+
+  void init()
+  {
+    spell_t::init();
+
+    if ( &data() == &spell_data_not_found_t::singleton )
+      background = true;
+  }
+};
+
 // Arcane Torrent ===========================================================
 
-struct arcane_torrent_t : public spell_t
+struct arcane_torrent_t : public racial_spell_t
 {
   resource_e resource;
   double gain;
 
   arcane_torrent_t( player_t* p, const std::string& options_str ) :
-    spell_t( "arcane_torrent", p, p -> find_racial_spell( "Arcane Torrent" ) ),
+    racial_spell_t( p, "arcane_torrent", p -> find_racial_spell( "Arcane Torrent" ), options_str ),
     resource( RESOURCE_NONE ), gain( 0 )
   {
-    parse_options( NULL, options_str );
-
     resource = util::translate_power_type( static_cast<power_e>( data().effectN( 2 ).misc_value1() ) );
 
     switch ( resource )
@@ -5650,31 +5654,23 @@ struct arcane_torrent_t : public spell_t
 
     player -> resource_gain( resource, gain, player -> gains.arcane_torrent );
 
-    spell_t::execute();
+    racial_spell_t::execute();
   }
 };
 
 // Berserking ===============================================================
 
-struct berserking_t : public spell_t
+struct berserking_t : public racial_spell_t
 {
   berserking_t( player_t* p, const std::string& options_str ) :
-    spell_t( "berserking", p, p -> find_racial_spell( "Berserking" ) )
+    racial_spell_t( p, "berserking", p -> find_racial_spell( "Berserking" ), options_str )
   {
     harmful = false;
-    parse_options( NULL, options_str );
-
-    if ( &data() == &spell_data_not_found_t::singleton )
-    {
-      sim -> errorf( "Player %s attempting to execute action %s without spell data. Setting action to background.\n",
-                     player -> name(), name() );
-      background = true; // prevent action from being executed
-    }
   }
 
   virtual void execute()
   {
-    spell_t::execute();
+    racial_spell_t::execute();
 
     player -> buffs.berserking -> trigger();
   }
@@ -5682,18 +5678,17 @@ struct berserking_t : public spell_t
 
 // Blood Fury ===============================================================
 
-struct blood_fury_t : public spell_t
+struct blood_fury_t : public racial_spell_t
 {
   blood_fury_t( player_t* p, const std::string& options_str ) :
-    spell_t( "blood_fury", p, p -> find_racial_spell( "Blood Fury" ) )
+    racial_spell_t( p, "blood_fury", p -> find_racial_spell( "Blood Fury" ), options_str )
   {
     harmful = false;
-    parse_options( NULL, options_str );
   }
 
   virtual void execute()
   {
-    spell_t::execute();
+    racial_spell_t::execute();
 
     player -> buffs.blood_fury -> trigger();
   }
@@ -5701,10 +5696,10 @@ struct blood_fury_t : public spell_t
 
 // Rocket Barrage ===========================================================
 
-struct rocket_barrage_t : public spell_t
+struct rocket_barrage_t : public racial_spell_t
 {
   rocket_barrage_t( player_t* p, const std::string& options_str ) :
-    spell_t( "rocket_barrage", p, p -> find_racial_spell( "Rocket Barrage" ) )
+    racial_spell_t( p, "rocket_barrage", p -> find_racial_spell( "Rocket Barrage" ), options_str )
   {
     parse_options( NULL, options_str );
 
@@ -5716,18 +5711,17 @@ struct rocket_barrage_t : public spell_t
 
 // Stoneform ================================================================
 
-struct stoneform_t : public spell_t
+struct stoneform_t : public racial_spell_t
 {
   stoneform_t( player_t* p, const std::string& options_str ) :
-    spell_t( "stoneform", p, p -> find_racial_spell( "Stoneform" ) )
+    racial_spell_t( p, "stoneform", p -> find_racial_spell( "Stoneform" ), options_str )
   {
     harmful = false;
-    parse_options( NULL, options_str );
   }
 
   virtual void execute()
   {
-    spell_t::execute();
+    racial_spell_t::execute();
 
     player -> buffs.stoneform -> trigger();
   }
@@ -5740,17 +5734,23 @@ struct lifeblood_t : public spell_t
   lifeblood_t( player_t* player, const std::string& options_str ) :
     spell_t( "lifeblood", player )
   {
-    if ( player -> profession[ PROF_HERBALISM ] < 1 )
+    parse_options( NULL, options_str );
+    harmful = false;
+    trigger_gcd = timespan_t::zero();
+    cooldown -> duration = timespan_t::from_seconds( 120 );
+  }
+
+  void init()
+  {
+    spell_t::init();
+
+    if ( player -> profession[ PROF_HERBALISM ] < 450 )
     {
       sim -> errorf( "Player %s attempting to execute action %s without Herbalism.\n",
                      player -> name(), name() );
 
       background = true; // prevent action from being executed
     }
-    parse_options( NULL, options_str );
-    harmful = false;
-    trigger_gcd = timespan_t::zero();
-    cooldown -> duration = timespan_t::from_seconds( 120 );
   }
 
   virtual void execute()

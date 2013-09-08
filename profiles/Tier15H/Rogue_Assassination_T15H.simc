@@ -35,7 +35,9 @@ actions+=/auto_attack
 actions+=/kick
 actions+=/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
 actions+=/use_item,slot=hands
+actions+=/blood_fury
 actions+=/berserking
+actions+=/arcane_torrent,if=energy<60
 actions+=/vanish,if=time>10&!buff.stealthed.up&!buff.shadow_blades.up
 actions+=/ambush
 actions+=/shadow_blades,if=buff.bloodlust.react|time>60

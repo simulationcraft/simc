@@ -46,7 +46,9 @@ actions.basic+=/virmens_bite_potion,if=(target.health.pct<30&buff.berserk.up)|ta
 actions.basic+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
 actions.basic+=/berserk,if=buff.tigers_fury.up
 actions.basic+=/use_item,slot=hands,if=buff.tigers_fury.up
+actions.basic+=/blood_fury,if=buff.tigers_fury.up
 actions.basic+=/berserking,if=buff.tigers_fury.up
+actions.basic+=/arcane_torrent,if=buff.tigers_fury.up
 # Overwrite Rip during execute range if it's at least 15% stronger than the current.
 actions.basic+=/rip,if=combo_points>=5&target.health.pct<=25&action.rip.tick_damage%dot.rip.tick_dmg>=1.15
 actions.basic+=/ferocious_bite,if=combo_points>=5&target.health.pct<=25&dot.rip.ticking
@@ -71,7 +73,9 @@ actions.basic+=/run_action_list,name=filler,if=energy.time_to_max<=1.0
 
 actions.advanced=auto_attack
 actions.advanced+=/skull_bash_cat
+actions.advanced+=/blood_fury
 actions.advanced+=/berserking
+actions.advanced+=/arcane_torrent
 actions.advanced+=/ravage,if=buff.stealthed.up
 # Keep Rip from falling off during execute range.
 actions.advanced+=/ferocious_bite,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
@@ -133,7 +137,9 @@ actions.aoe+=/auto_attack
 actions.aoe+=/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3
 actions.aoe+=/savage_roar,if=buff.savage_roar.down|(buff.savage_roar.remains<3&combo_points>0)
 actions.aoe+=/use_item,slot=hands,if=buff.tigers_fury.up
+actions.aoe+=/blood_fury,if=buff.tigers_fury.up
 actions.aoe+=/berserking,if=buff.tigers_fury.up
+actions.aoe+=/arcane_torrent,if=buff.tigers_fury.up
 actions.aoe+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
 actions.aoe+=/berserk,if=buff.tigers_fury.up
 actions.aoe+=/pool_resource,for_next=1

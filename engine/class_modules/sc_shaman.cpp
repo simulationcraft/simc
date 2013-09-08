@@ -5667,9 +5667,9 @@ void shaman_t::init_actions()
 
   if ( specialization() == SHAMAN_ENHANCEMENT && primary_role() == ROLE_ATTACK )
   {
-    // Need to remove the "/" in front of the racial action for the new default action priority list stuff :/
-    if ( ! init_use_racial_actions().empty() )
-      def -> add_action( init_use_racial_actions().erase( 0, 1 ) );
+    def -> add_action( "blood_fury" );
+    def -> add_action( "arcane_torrent" );
+    def -> add_action( "berserking" );
 
     def -> add_talent( this, "Elemental Mastery", "if=!glyph.fire_elemental_totem.enabled|cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>70" );
 
@@ -5734,14 +5734,11 @@ void shaman_t::init_actions()
   {
     // Sync berserking with ascendance as they share a cooldown, but making sure
     // that no two haste cooldowns overlap, within reason
-    if ( race == RACE_TROLL )
-      def -> add_action( "berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&(set_bonus.tier15_4pc_caster=1|(buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)))" );
+    def -> add_action( "berserking,if=!buff.bloodlust.up&!buff.elemental_mastery.up&(set_bonus.tier15_4pc_caster=1|(buff.ascendance.cooldown_remains=0&(dot.flame_shock.remains>buff.ascendance.duration|level<87)))" );
     // Sync blood fury with ascendance or fire elemental as long as one is ready
     // soon after blood fury is.
-    else if ( race == RACE_ORC )
-      def -> add_action( "blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)" );
-    else if ( ! init_use_racial_actions().empty() )
-      def -> add_action( init_use_racial_actions().erase( 0, 1 ) );
+    def -> add_action( "blood_fury,if=buff.bloodlust.up|buff.ascendance.up|((cooldown.ascendance.remains>10|level<87)&cooldown.fire_elemental_totem.remains>10)" );
+    def -> add_action( "arcane_torrent" );
 
     // Use Elemental Mastery after initial Bloodlust ends. Also make sure that
     // Elemental Mastery is not used during Ascendance, if Berserking is up.

@@ -34,7 +34,9 @@ actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40
 actions+=/mindbender,if=talent.mindbender.enabled
 actions+=/shadowfiend,if=!talent.mindbender.enabled
 actions+=/hymn_of_hope,if=mana.pct<55&target.time_to_die>30&(pet.mindbender.active|pet.shadowfiend.active)
+actions+=/blood_fury
 actions+=/berserking
+actions+=/arcane_torrent
 actions+=/power_infusion,if=talent.power_infusion.enabled
 actions+=/archangel,if=buff.holy_evangelism.react=5
 actions+=/penance

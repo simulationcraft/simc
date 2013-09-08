@@ -29,6 +29,8 @@ actions.precombat+=/snapshot_stats
 # Executed every time the actor is available.
 
 actions=/auto_attack
+actions+=/blood_fury
+actions+=/berserking
 actions+=/arcane_torrent
 actions+=/avenging_wrath
 actions+=/holy_avenger,if=talent.holy_avenger.enabled

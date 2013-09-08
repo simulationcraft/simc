@@ -5431,13 +5431,6 @@ void death_knight_t::init_actions()
   for ( size_t i = 0; i < get_profession_actions().size(); i++ )
     precombat -> add_action( get_profession_actions()[ i ] );
 
-  for ( size_t i = 0; i < get_racial_actions().size(); i++ )
-    precombat -> add_action( get_racial_actions()[ i ] );
-
-
-
-
-
   def -> add_action( "auto_attack" );
   def -> add_action( this, "Anti-Magic Shell", "damage=100000" );
 
@@ -5449,19 +5442,13 @@ void death_knight_t::init_actions()
       // Frost specific precombat stuff
       precombat -> add_action( this, "Pillar of Frost" );
       precombat -> add_action( this, "Raise Dead" );
-      
 
       def -> add_action( this, "Pillar of Frost" );
 
       if ( sim -> allow_potions && level >= 80 )
         def -> add_action( potion_str + ",if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)" );
       
-
-      
       def -> add_action( this, "Empower Rune Weapon", "if=target.time_to_die<=60&(buff.mogu_power_potion.up|buff.golemblood_potion.up)" );
-        
-
-        
 
       for ( size_t i = 0; i < get_profession_actions().size(); i++ )
         def -> add_action( get_profession_actions()[ i ] );
@@ -5602,10 +5589,10 @@ void death_knight_t::init_actions()
 	    for ( size_t i = 0; i < get_item_actions().size( ); i++ )
 	      def -> add_action( get_item_actions()[ i ] );
 	
-		  if ( sim -> allow_potions && level >= 80 )
-	      def -> add_action( potion_str, "if=buff.dark_transformation.up&target.time_to_die<=60" );
+            if ( sim -> allow_potions && level >= 80 )
+              def -> add_action( potion_str + ",if=buff.dark_transformation.up&target.time_to_die<=60" );
 
-		  def -> add_action( "Unholy Frenzy", "if=time>=4" );
+            def -> add_action( this, "Unholy Frenzy", "if=time>=4" );
 
 	    //decide between single_target and aoe rotation
 	    def -> add_action( "run_action_list,name=aoe,if=active_enemies>=5" );

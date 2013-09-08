@@ -35,7 +35,9 @@ actions+=/auto_attack
 actions+=/kick
 actions+=/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
 actions+=/use_item,slot=hands,if=time=0|buff.shadow_blades.up
+actions+=/blood_fury,if=time=0|buff.shadow_blades.up
 actions+=/berserking,if=time=0|buff.shadow_blades.up
+actions+=/arcane_torrent,if=energy<60
 actions+=/blade_flurry,if=active_enemies>=5
 actions+=/ambush
 actions+=/vanish,if=time>10&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(buff.shadow_blades.down&(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4))))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<20)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))

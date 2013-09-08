@@ -25,7 +25,6 @@ actions.precombat+=/frost_presence
 actions.precombat+=/snapshot_stats
 actions.precombat+=/army_of_the_dead
 actions.precombat+=/mogu_power_potion
-actions.precombat+=/blood_fury
 actions.precombat+=/pillar_of_frost
 actions.precombat+=/raise_dead
 
@@ -37,6 +36,8 @@ actions+=/pillar_of_frost
 actions+=/mogu_power_potion,if=target.time_to_die<=30|(target.time_to_die<=60&buff.pillar_of_frost.up)
 actions+=/empower_rune_weapon,if=target.time_to_die<=60&(buff.mogu_power_potion.up|buff.golemblood_potion.up)
 actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent
 actions+=/use_item,slot=hands
 actions+=/raise_dead
 actions+=/run_action_list,name=aoe,if=active_enemies>=5

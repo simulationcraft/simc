@@ -31,6 +31,8 @@ actions.precombat+=/snapshot_stats
 
 actions=/auto_attack
 actions+=//use_item,name=laochins_liquid_courage
+actions+=/blood_fury
+actions+=/berserking
 actions+=/arcane_torrent
 actions+=/avenging_wrath
 actions+=/holy_avenger,if=talent.holy_avenger.enabled

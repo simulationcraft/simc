@@ -35,7 +35,9 @@ actions+=/mana_potion,if=mana.pct<=75&cooldown.hymn_of_hope.remains
 actions+=/mindbender,if=talent.mindbender.enabled
 actions+=/shadowfiend,if=!talent.mindbender.enabled&(mana.pct<45|(mana.pct<70&cooldown.hymn_of_hope.remains>60))
 actions+=/hymn_of_hope,if=mana.pct<60&(pet.mindbender.active|pet.shadowfiend.active)
+actions+=/blood_fury
 actions+=/berserking
+actions+=/arcane_torrent
 actions+=/inner_focus
 actions+=/power_infusion,if=talent.power_infusion.enabled
 actions+=/power_word_shield,if=!cooldown.rapture.remains
