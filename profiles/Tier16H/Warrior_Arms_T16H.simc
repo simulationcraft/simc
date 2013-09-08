@@ -33,7 +33,7 @@ actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colo
 actions+=/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20)|target.time_to_die<=12
 actions+=/bloodbath,if=enabled&(debuff.colossus_smash.up|cooldown.colossus_smash.remains<4)
 actions+=/avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)
-actions+=/skull_banner,if=((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192&buff.cooldown_reduction.up)|buff.recklessness.up
+actions+=/skull_banner,if=buff.skull_banner.down&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192&buff.cooldown_reduction.up)|buff.recklessness.up)
 actions+=/berserker_rage,if=buff.enrage.remains<0.5
 actions+=/heroic_leap,if=debuff.colossus_smash.up
 actions+=/run_action_list,name=aoe,if=active_enemies>=2
@@ -73,12 +73,12 @@ legs=legplates_of_the_prehistoric_marauder,id=99413,upgrade=2,gems=320crit_320cr
 feet=wolfrider_spurs,id=105531,upgrade=2,gems=320crit_60crit,enchant=140mastery
 finger1=devilfang_band,id=105611,upgrade=2,gems=320crit,reforge=exp_crit
 finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=320crit,reforge=haste_exp
-trinket1=skeers_bloodsoaked_talisman,id=105632,upgrade=2
+trinket1=evil_eye_of_galakras,id=105491,upgrade=2
 trinket2=thoks_tail_tip,id=105609,upgrade=2
 main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=80str_160crit_60str,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=29187
+# gear_strength=26668
 # gear_agility=80
 # gear_stamina=39466
 # gear_intellect=80
