@@ -1,0 +1,108 @@
+#!./simc 
+
+warrior="Warrior_Arms_T16N"
+level=90
+race=night_elf
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!122211
+glyphs=unending_rage/death_from_above/sweeping_strikes
+spec=arms
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=winters_bite
+actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
+actions.precombat+=/snapshot_stats
+actions.precombat+=/stance,choose=battle
+actions.precombat+=/battle_shout
+actions.precombat+=/mogu_power_potion
+
+# Executed every time the actor is available.
+
+actions=auto_attack
+actions+=/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.bloodlust.react|target.time_to_die<=25
+actions+=/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20)|target.time_to_die<=12
+actions+=/bloodbath,if=enabled&(debuff.colossus_smash.up|cooldown.colossus_smash.remains<4)
+actions+=/avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)
+actions+=/skull_banner,if=buff.skull_banner.down&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192&buff.cooldown_reduction.up)|buff.recklessness.up)
+actions+=/berserker_rage,if=buff.enrage.remains<0.5
+actions+=/heroic_leap,if=debuff.colossus_smash.up
+actions+=/run_action_list,name=aoe,if=active_enemies>=2
+actions+=/run_action_list,name=single_target,if=active_enemies<2
+
+actions.single_target=heroic_strike,if=rage>115|(debuff.colossus_smash.up&rage>40&set_bonus.tier16_2pc_melee)
+actions.single_target+=/colossus_smash,if=debuff.colossus_smash.remains<1.0
+actions.single_target+=/mortal_strike
+actions.single_target+=/storm_bolt,if=enabled&debuff.colossus_smash.up
+actions.single_target+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
+actions.single_target+=/execute,if=buff.sudden_execute.down|rage>80
+actions.single_target+=/overpower,if=target.health.pct>=20|buff.sudden_execute.up
+actions.single_target+=/slam,if=(debuff.colossus_smash.up|rage>80)&target.health.pct>=20
+actions.single_target+=/execute,if=buff.sudden_execute.down|debuff.colossus_smash.up|target.time_to_die<12|rage>70
+actions.single_target+=/battle_shout
+actions.single_target+=/heroic_throw
+
+actions.aoe=sweeping_strikes
+actions.aoe+=/cleave,if=rage>110&active_enemies<=3
+actions.aoe+=/mortal_strike,if=rage<40
+actions.aoe+=/thunder_clap,target=2,if=dot.deep_wounds.attack_power<stat.attack_power*1.1
+actions.aoe+=/colossus_smash,if=debuff.colossus_smash.down
+actions.aoe+=/dragon_roar,if=enabled&((!debuff.colossus_smash.up&buff.bloodbath.up)|(!debuff.colossus_smash.up&!talent.bloodbath.enabled))
+actions.aoe+=/bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)
+actions.aoe+=/slam,if=buff.sweeping_strikes.up
+actions.aoe+=/battle_shout,if=rage<70
+
+head=helmet_of_the_prehistoric_marauder,id=99206,gems=reverberating_primal_160exp_160crit_180str
+# ilevel=553,quality=epic,type=plate,stats=1840str_3121sta_1328mastery_1164crit
+neck=malkoroks_tainted_dog_tags,id=103917
+# ilevel=553,quality=epic,stats=1159str_1739sta_818crit_697mastery
+shoulders=pauldrons_of_the_prehistoric_marauder,id=99200,gems=160exp_160crit_160exp_160crit_120str,enchant=200str_100crit,reforge=exp_crit
+# ilevel=553,quality=epic,type=plate,stats=1386str_2319sta_966exp_925mastery
+back=aeths_swiftcinder_cloak,id=103846,enchant=180crit,reforge=exp_mastery
+# ilevel=553,quality=epic,type=cloth,stats=1159str_1739sta_807exp_715crit
+chest=breastplate_of_shamanic_mirrors,id=103737,gems=160exp_160crit_160exp_160crit_320crit_180str,enchant=80all
+# ilevel=553,quality=epic,type=plate,stats=1840str_3121sta_1348crit_1130mastery
+wrists=bracers_of_blind_hatred,id=103740,enchant=180str
+# ilevel=553,quality=epic,type=plate,stats=1159str_1739sta_784mastery_753crit
+hands=gauntlets_of_the_prehistoric_marauder,id=99198,gems=80str_160crit_80str_160crit_120str,enchant=170str
+# ilevel=553,quality=epic,type=plate,stats=1386str_2319sta_711hit_1097crit
+waist=ashen_wall_girdle,id=103932,gems=160exp_160crit_160crit_160hit_320crit_120str,reforge=hit_crit
+# ilevel=553,quality=epic,type=plate,stats=1386str_2319sta_996hit_874mastery
+legs=legplates_of_the_prehistoric_marauder,id=99199,gems=320crit_320crit_120str,enchant=285str_165crit,reforge=haste_mastery
+# ilevel=553,quality=epic,type=plate,stats=1920str_3121sta_1408crit_1137haste
+feet=greaves_of_sublime_superiority,id=103878,gems=320crit,enchant=140mastery
+# ilevel=553,quality=epic,type=plate,stats=1466str_2319sta_982hit_998crit
+finger1=devilfang_band,id=103896,gems=320crit,reforge=exp_crit
+# ilevel=553,quality=epic,stats=1079str_1739sta_765exp_662mastery
+finger2=seal_of_the_forgotten_kings,id=103796,gems=320crit,reforge=haste_hit
+# ilevel=553,quality=epic,stats=1079str_1739sta_754crit_681haste
+trinket1=evil_eye_of_galakras,id=102298
+# ilevel=553,quality=epic
+trinket2=thoks_tail_tip,id=102305
+# ilevel=553,quality=epic
+main_hand=xalatoh_desecrated_image_of_gorehowl,id=103649,gems=160exp_160crit_60str,enchant=dancing_steel
+# ilevel=553,quality=epic,stats=2000str_3121sta_1201crit_1424mastery,weapon=axe2h_3.60speed_21886min_32829max
+
+# Gear Summary
+# gear_strength=21050
+# gear_agility=80
+# gear_stamina=30535
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2644
+# gear_hit_rating=2723
+# gear_crit_rating=15631
+# gear_haste_rating=1092
+# gear_mastery_rating=8740
+# gear_armor=38939
+# meta_gem=reverberating_primal
+# tier16_2pc_melee=1
+# tier16_4pc_melee=1
+# main_hand=xalatoh_desecrated_image_of_gorehowl,weapon=axe2h_3.60speed_21886min_32829max,enchant=dancing_steel
