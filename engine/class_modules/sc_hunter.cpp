@@ -833,7 +833,7 @@ public:
       m *= 1.0 + buffs.bestial_wrath -> data().effectN( 2 ).percent();
 
     if ( o() -> set_bonus.tier16_4pc_melee() )
-      m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> up() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
+      m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> stack() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
 
     // Pet combat experience
     m *= 1.0 + specs.combat_experience -> effectN( 2 ).percent();
@@ -4310,7 +4310,7 @@ double hunter_t::composite_player_multiplier( school_e school )
     m *= 1.0 + buffs.beast_within -> data().effectN( 2 ).percent();
   
   if ( set_bonus.tier16_4pc_melee() )
-    m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> up() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
+    m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> stack() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
 
   return m;
 }
