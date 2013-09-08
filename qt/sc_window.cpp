@@ -813,6 +813,9 @@ void SC_MainWindow::startSim()
   {
     //simulateTextHistory.add( simulateText -> toPlainText() );
   }
+  // Clear log text on success so users don't get confused if there is
+  // an error from previous attempts
+  logText -> clear();
   simProgress = 0;
   mainButton -> setText( "Cancel!" );
   sim = initSim();

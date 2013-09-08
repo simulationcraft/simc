@@ -1140,6 +1140,9 @@ void sim_t::combat( int iteration )
 
     if ( unlikely( iteration_canceled ) )
       break;
+    
+    if ( unlikely( canceled ) )
+      break;
   }
 
   combat_end();
@@ -1792,7 +1795,7 @@ bool sim_t::iterate()
 
   reset();
 
-  return true;
+  return ! canceled;
 }
 
 // sim_t::merge =============================================================
