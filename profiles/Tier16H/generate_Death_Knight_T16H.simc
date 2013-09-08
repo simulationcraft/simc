@@ -67,7 +67,7 @@ back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=80str_160mastery_60str,enc
 chest=breastplate_of_cyclopean_dread,id=99335,upgrade=2,gems=80str_160mastery_80str_160mastery_80str_160mastery_180str,enchant=80all,reforge=haste_crit
 wrists=bracers_of_blind_hatred,id=105456,gems=320mastery,upgrade=2,enchant=180str
 hands=gauntlets_of_cyclopean_dread,id=99336,upgrade=2,gems=320mastery80str_160mastery_80str_160mastery_120str,enchant=170str,addon=synapse_springs_mark_ii
-waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=80str_160mastery_320mastery_320mastery_120str,reforge=haste_crit
+waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=80str_160mastery_320mastery_320mastery_120str,reforge=hit_crit
 legs=legplates_of_willful_doom,id=105565,upgrade=2,gems=160mastery_160hit_160mastery_160hit_80str_160mastery_120str,enchant=285str_165crit
 feet=malkoroks_giant_stompers,id=105563,upgrade=2,gems=320mastery,enchant=140mastery,reforge=exp_crit
 finger1=devilfang_band,id=105611,upgrade=2,gems=80str_160mastery_60exp,reforge=exp_crit
