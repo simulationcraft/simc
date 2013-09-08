@@ -29,7 +29,7 @@ finger1=swift_serpent_signet,id=103842,gems=80agi_160mastery_60crit,reforge=exp_
 finger2=kilruks_band_of_ascendancy,id=103844,gems=160agi_60crit,reforge=haste_exp
 trinket1=assurance_of_consequence,id=102292
 trinket2=haromms_talisman,id=102301
-main_hand=hellscreams_cleaver,id=104404,gems=160agi_160agi_120agi,enchant=dancing_steel,reforge=crit_hit
-off_hand=hellscreams_cleaver,id=104404,gems=160agi_160agi_120agi,enchant=dancing_steel,reforge=crit_haste
+main_hand=korvens_crimson_crescent,id=103971,gems=160agi_60agi,enchant=dancing_steel,reforge=crit_hit
+off_hand=korvens_crimson_crescent,id=103971,gems=160agi_60agi,enchant=dancing_steel,reforge=crit_haste
 save=Shaman_Enhancement_T16N.simc
 
