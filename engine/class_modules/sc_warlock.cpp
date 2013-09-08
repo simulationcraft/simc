@@ -5459,7 +5459,7 @@ void warlock_t::init_actions()
           add_action( "Corruption",            "cycle_targets=1,if=spell_power<stat.spell_power&ticks_remain<=add_ticks%2&target.time_to_die>=6&miss_react" );
         }
         add_action( "Hand of Gul'dan",       "if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(charges=2|dot.shadowflame.remains>travel_time|(charges=1&recharge_time<4))" );
-        add_action( "Soul Fire",             "if=buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)&(buff.molten_core.react>9|target.health.pct<=28)"
+        add_action( "Soul Fire",             "if=buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)&(buff.molten_core.react>9|target.health.pct<=28)" );
         add_action( "Life Tap",              "if=mana.pct<60" );
         add_action( "Shadow Bolt" );
         add_action( "Fel Flame",             "moving=1" );
