@@ -1,11 +1,37 @@
 #!simc
-
+ 
 ptr=1
-
+ 
 talent_format=armory
-
+ 
 # Elemental
-
+shaman="Shaman_Elemental_T16N"
+level=90
+race=tauren
+spec=elemental
+role=spell
+position=back
+talents=000303
+glyphs=chain_lightning
+head=headpiece_of_celestial_harmony,id=99093,gems=burning_primal_80int_160mastery_180int
+neck=necklace_of_fading_light,id=103881,reforge=spi_mastery
+shoulders=shoulderwraps_of_celestial_harmony,id=99095,gems=80int_160mastery_80int_160haste_120int,enchant=200int_100crit,reforge=crit_mastery
+back=drape_of_the_omega,id=103770,enchant=180int
+chest=hauberk_of_celestial_harmony,id=99106,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=crit_haste
+wrists=bracers_of_the_pristine_purifier,id=103862,enchant=180int
+hands=gloves_of_celestial_harmony,id=99092,gems=80int_160mastery_80int_160haste_120int,enchant=170haste
+waist=chitinlink_chain_belt,id=103941,gems=80int_160haste_320haste_320haste_120int,reforge=spi_haste
+legs=leggings_of_celestial_harmony,id=99094,gems=320haste_320haste_120int,enchant=285int_165crit
+feet=powderstained_totemic_treads,id=103814,gems=160haste_160spi_60spi,enchant=140mastery
+finger1=signet_of_the_dinomancers,id=103774,gems=80int_160mastery_60spi
+finger2=laserslice_signet,id=103773,gems=320haste_60spi
+trinket1=purified_bindings_of_immerseus,id=102293
+trinket2=kardris_toxic_totem,id=102300
+main_hand=kardris_scepter,id=103936,gems=80int_160haste_60int,enchant=jade_spirit
+off_hand=revelations_of_yshaarj,id=103920,gems=80int_160haste_60int,enchant=165int
+save=Shaman_Elemental_T16N.simc
+ 
+ 
 # Enhancement
 shaman="Shaman_Enhancement_T16N"
 level=90
@@ -32,4 +58,3 @@ trinket2=haromms_talisman,id=102301
 main_hand=korvens_crimson_crescent,id=103971,gems=160agi_60agi,enchant=dancing_steel,reforge=crit_hit
 off_hand=korvens_crimson_crescent,id=103971,gems=160agi_60agi,enchant=dancing_steel,reforge=crit_haste
 save=Shaman_Enhancement_T16N.simc
-
