@@ -5952,16 +5952,15 @@ void druid_t::create_buffs()
   // Feral
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
                                .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
-                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                               .cd( timespan_t::zero() );
   buff.savage_roar           = buff_creator_t( this, "savage_roar", find_specialization_spell( "Savage Roar" ) )
                                .default_value( find_spell( 62071 ) -> effectN( 1 ).percent() )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
   buff.tier15_4pc_melee      = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138358 ) );
   buff.feral_fury            = buff_creator_t( this, "feral_fury", find_spell( 144865 ) ); // tier16_2pc_melee
-  buff.feral_rage            = buff_creator_t( this, "feral_rage", spell_data_t::nil() ) // tier16_4pc_melee find_spell( 146874 )
-                               .chance( 1 )
-                               .duration( timespan_t::from_seconds( 12.0 ) );
+  buff.feral_rage            = buff_creator_t( this, "feral_rage", find_spell( 146874 ) ); // tier16_4pc_melee
 
   // Guardian
   buff.enrage                = buff_creator_t( this, "enrage" , find_specialization_spell( "Enrage" ) );
@@ -6216,7 +6215,7 @@ void druid_t::apl_feral()
 
   // APL: ADVANCED
 
-  if ( talent.dream_of_cenarius -> ok() && find_item( "rune_of_reorigination" ) && ( find_item( "haromms_talisman" ) || find_item( "ticking_ebon_detonator" ) ) )
+  if ( talent.dream_of_cenarius -> ok() && find_item( "rune_of_reorigination" ) && find_item( "ticking_ebon_detonator" ) )
   {
     advanced -> add_action( this, "Tiger's Fury", "if=time=0&set_bonus.tier16_4pc_melee" );
     advanced -> add_action( this, "Savage Roar", "if=time=0&set_bonus.tier16_4pc_melee" );
@@ -6858,7 +6857,7 @@ double druid_t::composite_player_td_multiplier( school_e school, action_t* a )
 {
   double m = player_t::composite_player_td_multiplier( school, a );
 
-  if ( school == SCHOOL_PHYSICAL && mastery.razor_claws -> ok() && buff.cat_form -> up() )
+  if ( school == SCHOOL_PHYSICAL && mastery.razor_claws -> ok() && buff.cat_form -> up() & a -> name_str != "flurry_of_xuen" )
     m *= 1.0 + cache.mastery_value();
 
   return m;
