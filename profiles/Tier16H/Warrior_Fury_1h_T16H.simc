@@ -81,7 +81,7 @@ actions.two_targets+=/whirlwind,if=!buff.meat_cleaver.up
 actions.two_targets+=/battle_shout
 actions.two_targets+=/heroic_throw
 
-actions.three_targets=bloodbath,if=buff.enrage.up
+actions.three_targets=bloodbath,if=enabled&buff.enrage.up
 actions.three_targets+=/cleave,if=(rage>=60&debuff.colossus_smash.up)|rage>90
 actions.three_targets+=/heroic_leap,if=buff.enrage.up
 actions.three_targets+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))

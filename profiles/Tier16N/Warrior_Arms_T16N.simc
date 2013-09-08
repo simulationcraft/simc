@@ -41,21 +41,21 @@ actions.single_target=heroic_strike,if=rage>115|(debuff.colossus_smash.up&rage>4
 actions.single_target+=/colossus_smash,if=debuff.colossus_smash.remains<1.0
 actions.single_target+=/mortal_strike
 actions.single_target+=/storm_bolt,if=enabled&debuff.colossus_smash.up
-actions.single_target+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
-actions.single_target+=/execute,if=buff.sudden_execute.down|rage>80
+actions.single_target+=/dragon_roar,if=enabled&!debuff.colossus_smash.up
+actions.single_target+=/execute,if=buff.sudden_execute.down|buff.taste_for_blood.down|rage>70
 actions.single_target+=/slam,if=(debuff.colossus_smash.up&buff.taste_for_blood.stack<3)&target.health.pct>=20
 actions.single_target+=/overpower,if=target.health.pct>=20|buff.sudden_execute.up
-actions.single_target+=/execute,if=buff.sudden_execute.down|debuff.colossus_smash.up|target.time_to_die<12|rage>70
 actions.single_target+=/battle_shout
 actions.single_target+=/heroic_throw
 
 actions.aoe=sweeping_strikes
-actions.aoe+=/cleave,if=rage>110&active_enemies<=3
-actions.aoe+=/mortal_strike,if=rage<40
-actions.aoe+=/thunder_clap,target=2,if=dot.deep_wounds.attack_power<stat.attack_power*1.1
-actions.aoe+=/colossus_smash,if=debuff.colossus_smash.down
-actions.aoe+=/dragon_roar,if=enabled&((!debuff.colossus_smash.up&buff.bloodbath.up)|(!debuff.colossus_smash.up&!talent.bloodbath.enabled))
+actions.aoe+=/cleave,if=rage>110&active_enemies<=4
 actions.aoe+=/bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)
+actions.aoe+=/dragon_roar,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)
+actions.aoe+=/thunder_clap,target=2,if=dot.deep_wounds.attack_power*1.1<stat.attack_power
+actions.aoe+=/colossus_smash,if=debuff.colossus_smash.remains<1
+actions.aoe+=/slam,if=buff.sweeping_strikes.up&debuff.colossus_smash.up
+actions.aoe+=/mortal_strike
 actions.aoe+=/slam,if=buff.sweeping_strikes.up
 actions.aoe+=/battle_shout,if=rage<70
 

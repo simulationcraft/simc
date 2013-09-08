@@ -38,6 +38,7 @@ actions+=/avenging_wrath
 actions+=/holy_avenger,if=talent.holy_avenger.enabled
 actions+=/divine_protection
 actions+=/word_of_glory,if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8
+actions+=/eternal_flame,if=talent.eternal_flame.enabled&(buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8)
 actions+=/shield_of_the_righteous,if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3
 actions+=/hammer_of_the_righteous,if=target.debuff.weakened_blows.down
 actions+=/crusader_strike

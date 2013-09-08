@@ -40,8 +40,8 @@ actions+=//use_item,name=reinbinders_fists,if=buff.inquisition.up
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
-actions+=/execution_sentence,if=talent.execution_sentence.enabled&(buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=20))
-actions+=/lights_hammer,if=talent.lights_hammer.enabled&(buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=20))
+actions+=/execution_sentence,if=talent.execution_sentence.enabled&(buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=12))
+actions+=/lights_hammer,if=talent.lights_hammer.enabled&(buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=12))
 actions+=/divine_storm,if=active_enemies>=2&(holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3))
 actions+=/templars_verdict,if=holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3)
 actions+=/hammer_of_wrath

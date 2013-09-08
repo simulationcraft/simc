@@ -1645,6 +1645,8 @@ struct mortal_strike_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
     base_multiplier += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    if( p -> dbc.ptr )
+      base_multiplier *= 1.228; // Ptr hotfix.
   }
 
   virtual void execute()
@@ -3647,23 +3649,23 @@ void warrior_t::init_actions()
       st_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<1.0";
       st_list_str += "/mortal_strike";
       st_list_str += "/storm_bolt,if=enabled&debuff.colossus_smash.up";
-      st_list_str += "/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))";
-      st_list_str += "/execute,if=buff.sudden_execute.down|rage>80";
+      st_list_str += "/dragon_roar,if=enabled&!debuff.colossus_smash.up";
+      st_list_str += "/execute,if=buff.sudden_execute.down|buff.taste_for_blood.down|rage>70";
       st_list_str += "/slam,if=(debuff.colossus_smash.up&buff.taste_for_blood.stack<3)&target.health.pct>=20";
       st_list_str += "/overpower,if=target.health.pct>=20|buff.sudden_execute.up";
-      st_list_str += "/execute,if=buff.sudden_execute.down|debuff.colossus_smash.up|target.time_to_die<12|rage>70";
       st_list_str += "/battle_shout";
       st_list_str += "/heroic_throw";
 
       //AoE
 
       aoe_list_str = "/sweeping_strikes";
-      aoe_list_str += "/cleave,if=rage>110&active_enemies<=3";
-      aoe_list_str += "/mortal_strike,if=rage<40";
-      aoe_list_str += "/thunder_clap,target=2,if=dot.deep_wounds.attack_power<stat.attack_power*1.1";
-      aoe_list_str += "/colossus_smash,if=debuff.colossus_smash.down";
-      aoe_list_str += "/dragon_roar,if=enabled&((!debuff.colossus_smash.up&buff.bloodbath.up)|(!debuff.colossus_smash.up&!talent.bloodbath.enabled))";
+      aoe_list_str += "/cleave,if=rage>110&active_enemies<=4";
       aoe_list_str += "/bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)";
+      aoe_list_str += "/dragon_roar,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)";
+      aoe_list_str += "/thunder_clap,target=2,if=dot.deep_wounds.attack_power*1.1<stat.attack_power";
+      aoe_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<1";
+      aoe_list_str += "/slam,if=buff.sweeping_strikes.up&debuff.colossus_smash.up";
+      aoe_list_str += "/mortal_strike";
       aoe_list_str += "/slam,if=buff.sweeping_strikes.up";
       aoe_list_str += "/battle_shout,if=rage<70";
     }
@@ -3731,7 +3733,7 @@ void warrior_t::init_actions()
 
       //Three targets
 
-      three_list_str = "/bloodbath,if=buff.enrage.up";
+      three_list_str = "/bloodbath,if=enabled&buff.enrage.up";
       three_list_str += "/cleave,if=(rage>=60&debuff.colossus_smash.up)|rage>90";
       three_list_str += "/heroic_leap,if=buff.enrage.up";
       three_list_str += "/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))";

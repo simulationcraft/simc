@@ -5,6 +5,6 @@ cd profiles/PreRaid
 %~dp0\simc.exe generate_PreRaid.simc
 cd ../..
 
-forfiles -s -m generate_????.simc -c "cmd /c echo Running @path && %~dp0simc.exe @file"
+forfiles -s -m generate_????.simc -c "cmd /c echo Running @path && %~dp0simc64.exe @file"
 
 pause
