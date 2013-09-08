@@ -1224,6 +1224,9 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
   }
   else
   {
+    if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
+      stack_uptime[ current_stack ] -> update( false, sim -> current_time );
+
     for ( size_t i = 0; i < stats.size(); ++i )
     {
       double delta = stats[ i ].amount * stacks;
@@ -1234,6 +1237,13 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
       stats[ i ].current_value -= delta;
     }
     current_stack -= stacks;
+
+    if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
+      stack_uptime[ current_stack ] -> update( true, sim -> current_time );
+
+    if ( sim -> debug )
+      sim -> output( "buff %s decremented by %d to %d stacks",
+                     name_str.c_str(), stacks, current_stack );
 
     if ( player ) player -> trigger_ready();
   }
