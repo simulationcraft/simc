@@ -5331,12 +5331,12 @@ void warlock_t::init_actions()
         if ( has_unerring_vision_of_leishen )
         {
           add_action( "Soulburn",              "line_cd=5,if=buff.perfect_aim.react" );
-          add_action( "Soulburn",              "if=(buff.dark_soul.up|trinket.proc.intellect.react)&(dot.agony.ticks_remain<=action.agony.add_ticks%2|dot.corruption.ticks_remain<=action.corruption.add_ticks%2|dot.unstable_affliction.ticks_remain<=action.unstable_affliction.add_ticks%2)&shard_react&(dot.unstable_affliction.crit_pct<100&dot.corruption.crit_pct<100&dot.agony.crit_pct<100)" );
+          add_action( "Soulburn",              "if=(buff.dark_soul.up|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react>7)&(dot.agony.ticks_remain<=action.agony.add_ticks%2|dot.corruption.ticks_remain<=action.corruption.add_ticks%2|dot.unstable_affliction.ticks_remain<=action.unstable_affliction.add_ticks%2)&shard_react&(dot.unstable_affliction.crit_pct<100&dot.corruption.crit_pct<100&dot.agony.crit_pct<100)" );
           add_action( "Soulburn",              "if=(dot.unstable_affliction.ticks_remain<=1|dot.corruption.ticks_remain<=1|dot.agony.ticks_remain<=1)&shard_react&target.health.pct<=20&(dot.unstable_affliction.crit_pct<100&dot.corruption.crit_pct<100&dot.agony.crit_pct<100)" );
         }
         else
         {
-          add_action( "Soulburn",              "if=(buff.dark_soul.up|trinket.proc.intellect.react)&(dot.agony.ticks_remain<=action.agony.add_ticks%2|dot.corruption.ticks_remain<=action.corruption.add_ticks%2|dot.unstable_affliction.ticks_remain<=action.unstable_affliction.add_ticks%2)&shard_react" );
+          add_action( "Soulburn",              "if=(buff.dark_soul.up|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react>7)&(dot.agony.ticks_remain<=action.agony.add_ticks%2|dot.corruption.ticks_remain<=action.corruption.add_ticks%2|dot.unstable_affliction.ticks_remain<=action.unstable_affliction.add_ticks%2)&shard_react" );
           add_action( "Soulburn",              "if=(dot.unstable_affliction.ticks_remain<=1|dot.corruption.ticks_remain<=1|dot.agony.ticks_remain<=1)&shard_react&target.health.pct<=20" );
         }
         add_action( "Haunt",                 "if=!in_flight_to_target&remains<cast_time+travel_time+tick_time&shard_react&target.health.pct<=20" );
@@ -5358,18 +5358,18 @@ void warlock_t::init_actions()
             add_action( "Agony",               "cycle_targets=1,if=ticks_remain<=2&remains+2<cooldown.dark_soul.remains&miss_react&dot.agony.crit_pct<100" );
             add_action( "Corruption",          "cycle_targets=1,if=ticks_remain<=2&remains<cooldown.dark_soul.remains&miss_react&dot.corruption.crit_pct<100" );
             add_action( "Unstable Affliction", "cycle_targets=1,if=(remains-cast_time)%(duration%current_ticks)<=2&remains<cooldown.dark_soul.remains&miss_react&dot.unstable_affliction.crit_pct<100" );
-            add_action( "Agony",               "cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&remains+2<cooldown.dark_soul.remains&miss_react&dot.agony.crit_pct<100" );
-            add_action( "Corruption",          "cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&remains<cooldown.dark_soul.remains&miss_react&dot.corruption.crit_pct<100" );
-            add_action( "Unstable Affliction", "cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&remains<cooldown.dark_soul.remains&miss_react&dot.unstable_affliction.crit_pct<100" );
+            add_action( "Agony",               "cycle_targets=1,if=stat.spell_power>spell_power&(!trinket.stacking_proc.intellect.react|trinket.stacking_proc.intellect.react>7)&ticks_remain<add_ticks%2&remains+2<cooldown.dark_soul.remains&miss_react&dot.agony.crit_pct<100" );
+            add_action( "Corruption",          "cycle_targets=1,if=stat.spell_power>spell_power&(!trinket.stacking_proc.intellect.react|trinket.stacking_proc.intellect.react>7)&ticks_remain<add_ticks%2&remains<cooldown.dark_soul.remains&miss_react&dot.corruption.crit_pct<100" );
+            add_action( "Unstable Affliction", "cycle_targets=1,if=stat.spell_power>spell_power&(!trinket.stacking_proc.intellect.react|trinket.stacking_proc.intellect.react>7)&ticks_remain<add_ticks%2&remains<cooldown.dark_soul.remains&miss_react&dot.unstable_affliction.crit_pct<100" );
           }
           else
           {
             add_action( "Agony",               "cycle_targets=1,if=ticks_remain<=2&remains+2<cooldown.dark_soul.remains&miss_react" );
             add_action( "Corruption",          "cycle_targets=1,if=ticks_remain<=2&remains<cooldown.dark_soul.remains&miss_react" );
             add_action( "Unstable Affliction", "cycle_targets=1,if=(remains-cast_time)%(duration%current_ticks)<=2&remains<cooldown.dark_soul.remains&miss_react" );
-            add_action( "Agony",               "cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&remains+2<cooldown.dark_soul.remains&miss_react" );
-            add_action( "Corruption",          "cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&remains<cooldown.dark_soul.remains&miss_react" );
-            add_action( "Unstable Affliction", "cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&remains<cooldown.dark_soul.remains&miss_react" );
+            add_action( "Agony",               "cycle_targets=1,if=stat.spell_power>spell_power&(!trinket.stacking_proc.intellect.react|trinket.stacking_proc.intellect.react>7)&ticks_remain<add_ticks%2&remains+2<cooldown.dark_soul.remains&miss_react" );
+            add_action( "Corruption",          "cycle_targets=1,if=stat.spell_power>spell_power&(!trinket.stacking_proc.intellect.react|trinket.stacking_proc.intellect.react>7)&ticks_remain<add_ticks%2&remains<cooldown.dark_soul.remains&miss_react" );
+            add_action( "Unstable Affliction", "cycle_targets=1,if=stat.spell_power>spell_power&(!trinket.stacking_proc.intellect.react|trinket.stacking_proc.intellect.react>7)&ticks_remain<add_ticks%2&remains<cooldown.dark_soul.remains&miss_react" );
           }
         }
         else
@@ -5416,7 +5416,7 @@ void warlock_t::init_actions()
           add_action( "Immolate",            "cycle_targets=1,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );
         add_action( "Conflagrate",           "if=charges=2&buff.havoc.stack=0" );
         add_action( "Rain of Fire",          "if=!ticking&!in_flight" );
-        add_action( "Chaos Bolt",            "if=ember_react&target.health.pct>20&(buff.backdraft.stack<3|level<86|(active_enemies>1&action.incinerate.cast_time<1))&(burning_ember>(4.5-active_enemies)|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time))" );
+        add_action( "Chaos Bolt",            "if=ember_react&target.health.pct>20&(buff.backdraft.stack<3|level<86|(active_enemies>1&action.incinerate.cast_time<1))&(burning_ember>(4.5-active_enemies)|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|(trinket.stacking_proc.intellect.react>6&trinket.stacking_proc.intellect.remains>cast_time))" );
         add_action( "Chaos Bolt",            "if=ember_react&target.health.pct>20&(buff.havoc.stack=3&buff.havoc.remains>cast_time)" );
         add_action( "Conflagrate" );
         add_action( "Incinerate" );
@@ -5454,7 +5454,7 @@ void warlock_t::init_actions()
           action_list_str += "/cancel_metamorphosis,if=buff.metamorphosis.up&buff.dark_soul.down&demonic_fury<=650&target.time_to_die>30&(cooldown.metamorphosis.remains<4|demonic_fury<=300)&!(action.hand_of_guldan.in_flight&dot.shadowflame.remains)";
           add_action( "Soul Fire",             "if=buff.metamorphosis.up&buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)" );
           add_action( spec.touch_of_chaos,     "if=buff.metamorphosis.up" );
-          add_action( "Metamorphosis",         "(buff.dark_soul.up&buff.dark_soul.remains<demonic_fury%32)|demonic_fury>=950|demonic_fury%32>target.time_to_die|(action.hand_of_guldan.in_flight&dot.shadowflame.remains)" );
+          add_action( "Metamorphosis",         "if=(buff.dark_soul.up&buff.dark_soul.remains<demonic_fury%32)|demonic_fury>=950|demonic_fury%32>target.time_to_die|(action.hand_of_guldan.in_flight&dot.shadowflame.remains)" );
           add_action( "Corruption",            "cycle_targets=1,if=!ticking&target.time_to_die>=6&miss_react" );
           add_action( "Corruption",            "cycle_targets=1,if=spell_power<stat.spell_power&ticks_remain<=add_ticks%2&target.time_to_die>=6&miss_react" );
         }
