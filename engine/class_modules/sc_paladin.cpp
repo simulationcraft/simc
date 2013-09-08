@@ -4673,7 +4673,7 @@ void paladin_t::generate_action_prio_list_ret()
 
   // Avenging Wrath
   if ( ! find_talent_spell( "Sanctified Wrath" ) -> ok() && find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
-    def -> add_action( this, "Avenging Wrath", "if=buff.inquisition.up&(cooldown.guardian_of_ancient_kings.remains<291)" ); // this holds AW for 9 seconds if GAnK was just popped to maximize STR overlap
+    def -> add_action( this, "Avenging Wrath", "if=buff.inquisition.up&cooldown.guardian_of_ancient_kings.remains<171" ); // this holds AW for 9 seconds if GAnK was just popped to maximize STR overlap
   else
     def -> add_action( this, "Avenging Wrath", "if=buff.inquisition.up" ); // not needed if SW is taken, since AW duration = GAnK duration
 
@@ -4718,13 +4718,13 @@ void paladin_t::generate_action_prio_list_ret()
 
   // Execution Sentence
   if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
-    def -> add_talent( this, "Execution Sentence", "if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=20)" );
+    def -> add_talent( this, "Execution Sentence", "if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=12)" );
   else
     def -> add_talent( this, "Execution Sentence", "if=buff.inquisition.up&time>=15" );
 
   // Light's Hammer
   if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
-    def -> add_talent( this, "Light's Hammer", "if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=20)" );
+    def -> add_talent( this, "Light's Hammer", "if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=12)" );
   else
     def -> add_talent( this, "Light's Hammer", "if=buff.inquisition.up&time>=15" );
 
