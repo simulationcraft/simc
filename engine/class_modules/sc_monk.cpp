@@ -108,7 +108,7 @@ public:
     buff_t* vital_mists;
     buff_t* zen_sphere;
     buff_t* tier16_4pc_melee;
-    buff_t* focus_of_xuen;
+	buff_t* focus_of_xuen;
 
     //  buff_t* zen_meditation;
     //  buff_t* path_of_blossoms;
@@ -137,6 +137,7 @@ public:
     gain_t* soothing_mist;
     gain_t* tier15_2pc;
     gain_t* tier16_4pc_melee;
+	gain_t* focus_of_xuen_savings;
   } gain;
 
   struct procs_t
@@ -388,31 +389,30 @@ private:
       }
     }
   };
-  
+
   struct crackling_tiger_lightning_t : public melee_attack_t
   {
-    crackling_tiger_lightning_t( xuen_pet_t* player, const std::string& options_str ) : melee_attack_t( "crackling_tiger_lightning", player, player -> find_spell( 123996 ) )
+    crackling_tiger_lightning_t( xuen_pet_t* player, const std::string& options_str ) :
+      melee_attack_t( "crackling_tiger_lightning", player, player -> find_spell( 123996 ) )
     {
       parse_options( nullptr, options_str );
 
-      // Looks like Xuen needs a couple fixups to work properly.  Let's do that now.
-      aoe = 3;
       special = true;
-      base_spell_power_multiplier  = 0;
-      //base_multiplier = 1.323; //1.58138311; EDITED FOR ACTUAL VALUE. verify in the future.
+      aoe = 3;
 
-      if (player->dbc.ptr)
-      {
-        may_crit = true;
-        direct_power_mod =  data().extra_coeff();
-        cooldown -> duration = timespan_t::from_seconds( 1.0 - .125 ); // total hack to get xuen to attack roughly once every second... (to be replaced soon)
+      if ( player -> dbc.ptr ) {
+        cooldown -> duration = timespan_t::from_seconds( 40/45.0 );
+		may_crit = true;
+		direct_power_mod = data().extra_coeff();
+      } else {
+		cooldown -> duration = timespan_t::from_seconds( 6.0 );
+		tick_may_crit  = true;
+		tick_power_mod = data().extra_coeff();
       }
-      else
-      {
-        tick_may_crit  = true;
-        tick_power_mod = data().extra_coeff();
-        cooldown -> duration = timespan_t::from_seconds( 6.0 );
-      }
+	  base_spell_power_multiplier  = 0;
+     
+
+      //base_multiplier = 1.323; //1.58138311; EDITED FOR ACTUAL VALUE. verify in the future.
     }
   };
 
@@ -446,7 +446,8 @@ private:
   };
 
 public:
-  xuen_pet_t( sim_t* sim, monk_t* owner ) : pet_t( sim, owner, "xuen_the_white_tiger", true )
+  xuen_pet_t( sim_t* sim, monk_t* owner ) :
+    pet_t( sim, owner, "xuen_the_white_tiger", true )
   {
     main_hand_weapon.type       = WEAPON_BEAST;
     main_hand_weapon.min_dmg    = dbc.spell_scaling( o() -> type, level );
@@ -468,13 +469,11 @@ public:
     pet_t::init_actions();
   }
 
-  action_t* create_action( const std::string& name, const std::string& options_str )
+  action_t* create_action( const std::string& name,
+                           const std::string& options_str )
   {
-    if ( name == "crackling_tiger_lightning" ) 
-      return new crackling_tiger_lightning_t( this, options_str );
-    
-    if ( name == "auto_attack" ) 
-      return new auto_attack_t( this, options_str );
+    if ( name == "crackling_tiger_lightning" ) return new crackling_tiger_lightning_t( this, options_str );
+    if ( name == "auto_attack" ) return new auto_attack_t( this, options_str );
 
     return pet_t::create_action( name, options_str );
   }
@@ -591,13 +590,19 @@ public:
 		  // rekeying the proc to go by mastery.
 		  if ( p() -> dbc.ptr )
 		  {
-			  // Double to hold the chance for our mastery to proc.  This is based upon player's mastery
-			  double mastery_proc_chance =  p() -> cache.mastery_value();
-			  if (  p() -> spec.brewing_tigereye_brew -> ok()  && 
-			      ab::rng().roll( mastery_proc_chance  ) ) {
-				
-				p() -> buff.tigereye_brew -> trigger();
-				p() -> proc.tigereye_brew -> occur();
+			  if (  p() -> spec.brewing_tigereye_brew -> ok() )
+			  {
+				  // Double to hold the chance for our mastery to proc.  This is based upon player's mastery
+				  double mastery_proc_chance = p() -> cache.mastery_value();
+				  while ( mastery_proc_chance > 0 )
+				  {
+				      if ( ab::rng().roll( fmod( mastery_proc_chance, 1.0 ) ) )
+					  {
+				          p() -> buff.tigereye_brew -> trigger();
+				          p() -> proc.tigereye_brew -> occur();
+					  }
+					  mastery_proc_chance -= 1.0;
+				  }
 			  }
 		  } else {
 			// preserves what we will currently see on Live
@@ -1086,7 +1091,7 @@ virtual double cost()
       return 0.0;
     }
     if ( p() -> buff.focus_of_xuen -> check() ){
-      return monk_melee_attack_t::cost() + p() -> buff.focus_of_xuen -> data().effectN( 1 ).base_value();
+      return monk_melee_attack_t::cost() - 1; // TODO: Update to spell data
     }
     return monk_melee_attack_t::cost();
   }
@@ -1099,7 +1104,7 @@ virtual double cost()
     if ( p() -> buff.focus_of_xuen -> up() )
     {
         p() -> buff.focus_of_xuen -> expire();
-        //add gains later. 
+		p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, 1 ); // TODO: Update to spell data
     }
     if ( p() -> buff.combo_breaker_bok -> up() )
     {
@@ -1157,7 +1162,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   virtual double cost()
   {
     if ( p() -> buff.focus_of_xuen -> check() ){
-      return monk_melee_attack_t::cost() + p() -> buff.focus_of_xuen -> data().effectN( 1 ).base_value();
+      return monk_melee_attack_t::cost() - 1; // TODO: Update to spell data
     }
     return monk_melee_attack_t::cost();
   }
@@ -1167,7 +1172,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     if ( p() -> buff.focus_of_xuen -> up() )
     {
         p() -> buff.focus_of_xuen -> expire();
-        //add gains later. 
+        p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, 1 ); // TODO: Update to spell data
     }
   }
 };
@@ -1292,8 +1297,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
   virtual double cost()
   {
     if ( p() -> buff.focus_of_xuen -> check() ){
-    //intended to add (-1) to cost.
-      return monk_melee_attack_t::cost() + p() -> buff.focus_of_xuen -> data().effectN( 1 ).base_value();
+      return monk_melee_attack_t::cost() - 1; // TODO: Update to spell data
     }
     return monk_melee_attack_t::cost();
   }
@@ -1306,7 +1310,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     if ( p() -> buff.focus_of_xuen -> up() )
     {
         p() -> buff.focus_of_xuen -> expire();
-        //add gains later. 
+        p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, 1 ); // TODO: Update to spell data
     }
 
     }
@@ -1716,6 +1720,7 @@ struct tigereye_brew_t : public monk_spell_t
     if (player -> dbc.ptr ) {
         //add this vvv into if (set_bonus.tier164pc) when it is created
         p() -> track_focus_of_xuen += teb_stacks_used;
+		if ( p() -> track_focus_of_xuen > 20.0 ) p() -> track_focus_of_xuen = 20.0;
         
         if ( p() -> set_bonus.tier15_4pc_melee() ) {
             // So increase the value by 1% per stack used...  HOWEVER, on PTR this is currently broken, and we are only receiving
@@ -1727,7 +1732,7 @@ struct tigereye_brew_t : public monk_spell_t
             // can't find post that contains info.
             // TODO  figure out how much of a stack it "saves"
             if( p() -> track_focus_of_xuen >= 10.0) {
-                p() -> buff.focus_of_xuen -> trigger();
+                p() -> buff.focus_of_xuen -> trigger( 1, buff_t::DEFAULT_VALUE(), 100.0 ); // TODO: Update to spell data
                 p() -> track_focus_of_xuen -= 10.0; // find out if this is additive or resets to zero upon use.
             }
             
@@ -2768,6 +2773,8 @@ void monk_t::init_scaling()
     scales_with[ STAT_INTELLECT             ] = false;
     scales_with[ STAT_SPIRIT                ] = false;
     scales_with[ STAT_SPELL_POWER           ] = false;
+	scales_with[ STAT_AGILITY				] = true;
+	scales_with[ STAT_WEAPON_DPS			] = true;
   }
 
   if ( off_hand_weapon.type != WEAPON_NONE )
@@ -2840,6 +2847,7 @@ void monk_t::init_gains()
   gain.muscle_memory         = get_gain( "muscle_memory"            );
   gain.soothing_mist         = get_gain( "Soothing Mist"            );
   gain.tier15_2pc            = get_gain( "tier15_2pc"               );
+  gain.focus_of_xuen_savings = get_gain( "focus_of_xuen_savings"	);
 }
 
 // monk_t::init_procs =======================================================
