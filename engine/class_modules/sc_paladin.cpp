@@ -15,7 +15,6 @@ namespace { // UNNAMED NAMESPACE
 // Forward declarations
 
 struct paladin_t;
-struct battle_healer_proc_t;
 struct hand_of_sacrifice_redirect_t;
 struct blessing_of_the_guardians_t;
 
@@ -72,7 +71,6 @@ public:
   heal_t*   active_protector_of_the_innocent;
   action_t* active_seal_of_insight_proc;
   action_t* active_seal_of_justice_proc;
-  action_t* active_seal_of_justice_aoe_proc;
   action_t* active_seal_of_righteousness_proc;
   action_t* active_seal_of_truth_proc;
   action_t* ancient_fury_explosion;
@@ -80,7 +78,6 @@ public:
 
   struct active_actions_t
   {
-    battle_healer_proc_t* battle_healer_proc;
     hand_of_sacrifice_redirect_t* hand_of_sacrifice_redirect;
     blessing_of_the_guardians_t* blessing_of_the_guardians;
   } active;
@@ -287,7 +284,6 @@ public:
     active_protector_of_the_innocent   = 0;
     active_seal                        = SEAL_NONE;
     active_seal_of_justice_proc        = 0;
-    active_seal_of_justice_aoe_proc    = 0;
     active_seal_of_insight_proc        = 0;
     active_seal_of_righteousness_proc  = 0;
     active_seal_of_truth_proc          = 0;
@@ -541,25 +537,6 @@ public:
 
   }
 
-  // All of this Unbreakable Spirit code goes away in 5.4
-  // unbreakable spirit handling
-  void trigger_unbreakable_spirit( double c )
-  {
-    if ( ! p() -> dbc.ptr )
-    {
-      // if unbreakable spirit is talented
-      if ( ! p() -> talents.unbreakable_spirit -> ok() ) return;
-
-      // reduce cooldowns by 1% per holy power spent - divine purpose procs count as 3.
-      double reduction_percent = ( c == 0 ) ? 0.03 : c / 100;
-
-      // perform the reduction
-      unbreakable_spirit_reduce_cooldown( p() -> cooldowns.divine_protection, reduction_percent );
-      unbreakable_spirit_reduce_cooldown( p() -> cooldowns.divine_shield,     reduction_percent );
-      unbreakable_spirit_reduce_cooldown( p() -> cooldowns.lay_on_hands,      reduction_percent );
-    }
-  }
-
   virtual void execute()
   {
     double c = ( this -> current_resource() == RESOURCE_HOLY_POWER ) ? this -> cost() : -1.0;
@@ -569,28 +546,12 @@ public:
     // if the ability uses Holy Power, apply Unbreakable Spirit and handle Divine Purpose and other freebie effects
     if ( c >= 0 )
     {
-      // Unbreakable Spirit reduces the cooldowns of several spells based on Holy Power usage.
-      trigger_unbreakable_spirit( c );
-
       // consume divine purpose and other "free hp finisher" buffs (e.g. Divine Purpose)
       if ( c == 0.0 )
         consume_free_hp_effects();
 
       // trigger new "free hp finisher" buffs (e.g. Divine Purpose)
       trigger_free_hp_effects( c );
-    }
-  }
-
-private:
-  void unbreakable_spirit_reduce_cooldown( cooldown_t* cd, double rp )
-  {
-    if ( cd -> down() ) // if the ability is already on cooldown
-    {
-      /* we want to subtract reduction_percent * base duration from the current cooldown
-       * and limit it to the first 50% of the base cooldown
-       */
-      cd -> ready = std::max( cd -> last_start + cd -> duration / 2,
-                              cd -> ready - cd -> duration * rp );
     }
   }
 };
@@ -911,60 +872,6 @@ struct avenging_wrath_t : public paladin_spell_t
   }
 };
 
-// Battle Healer ============================================================
-// in 5.4 this entire class can be removed
-struct battle_healer_proc_t : public paladin_heal_t
-{
-  battle_healer_proc_t( paladin_t* p ) :
-    paladin_heal_t( "battle_healer_proc", p, p -> find_spell( 119477 ) )
-  {
-    background = true;
-    proc = true;
-    trigger_gcd = timespan_t::zero();
-    may_crit = false;
-    benefits_from_seal_of_insight = false;
-    base_multiplier = p -> find_spell( 119477 ) -> effectN( 1 ).percent();
-  }
-
-  void trigger( const action_state_t& s )
-  {
-    // set the heal size to be fixed based on the result of the action
-    base_dd_min = s.result_amount;
-    base_dd_max = s.result_amount;
-
-    target = find_lowest_target();
-
-    if ( target ) // If we are alone and no target is found, nothing happens
-      execute();
-  }
-
-private:
-  // Get the lowest target except ourself
-  player_t* find_lowest_target()
-  {
-    // Ignoring range for the time being
-    double lowest_health_pct_found = 100.1;
-    player_t* lowest_player_found = nullptr;
-
-    for ( size_t i = 0, size = sim -> player_no_pet_list.size(); i < size; i++ )
-    {
-      player_t* p = sim -> player_no_pet_list[ i ];
-
-      if ( player == p ) // as long as they aren't the paladin
-        continue;
-
-      // check their health against the current lowest
-      if ( p -> health_percentage() < lowest_health_pct_found )
-      {
-        // if this player is lower, make them the current lowest
-        lowest_health_pct_found = p -> health_percentage();
-        lowest_player_found = p;
-      }
-    }
-    return lowest_player_found;
-  }
-};
-
 // Beacon of Light ==========================================================
 
 struct beacon_of_light_t : public paladin_heal_t
@@ -1262,7 +1169,7 @@ struct devotion_aura_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    if ( p() -> glyphs.devotion_aura -> ok() && p() -> dbc.ptr )
+    if ( p() -> glyphs.devotion_aura -> ok() )
       player -> buffs.devotion_aura -> trigger();
     else
     {
@@ -1347,17 +1254,9 @@ struct divine_protection_t : public paladin_spell_t
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
 
-    if ( sim -> dbc.ptr )
-    {
-      if ( p -> talents.unbreakable_spirit -> ok() )
-        cooldown -> duration = data().cooldown() * 0.5;
-    }
-    else
-    {
-      // link needed for unbreakable spirit talent
-      cooldown = p -> cooldowns.divine_protection;
-      cooldown -> duration = data().cooldown();
-    }
+    // unbreakable spirit reduces cooldown
+    if ( p -> talents.unbreakable_spirit -> ok() )
+      cooldown -> duration = data().cooldown() * ( 1 + p -> talents.unbreakable_spirit -> effectN( 1 ).percent() );
 
     if ( p -> set_bonus.tier16_2pc_tank() )
       p -> active.blessing_of_the_guardians = new blessing_of_the_guardians_t( p );
@@ -1381,18 +1280,11 @@ struct divine_shield_t : public paladin_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
+    
+    // unbreakable spirit reduces cooldown
+    if ( p -> talents.unbreakable_spirit -> ok() )
+      cooldown -> duration = data().cooldown() * ( 1 + p -> talents.unbreakable_spirit -> effectN( 1 ).percent() );
 
-    if ( sim -> dbc.ptr )
-    {
-      if ( p -> talents.unbreakable_spirit -> ok() )
-        cooldown -> duration = data().cooldown() * 0.5;
-    }
-    else
-    {
-      // link needed for unbreakable spirit talent
-      cooldown = p -> cooldowns.divine_shield;
-      cooldown -> duration = data().cooldown();
-    }
   }
 
   virtual void execute()
@@ -1417,7 +1309,7 @@ struct divine_shield_t : public paladin_spell_t
       }
 
       // glyph of divine shield heals
-      if ( p() -> glyphs.divine_shield -> ok() && p() -> dbc.ptr )
+      if ( p() -> glyphs.divine_shield -> ok() )
       {
         double amount = std::min( num_destroyed * p() -> glyphs.divine_shield -> effectN( 1 ).percent(),
                                   p() -> glyphs.divine_shield -> effectN( 1 ).percent() * p() -> glyphs.divine_shield -> effectN( 2 ).base_value() );
@@ -1781,11 +1673,10 @@ struct flash_of_light_t : public paladin_heal_t
       {
         am *= 1.0 + p() -> buffs.selfless_healer -> data().effectN( 2 ).percent() * p() -> buffs.selfless_healer -> stack();
       }
-      // multiplicative 20% per stack of Bastion of Glory when used on self
-      // TODO: test if this is modified by Divine Bulwark
-      else if ( p() -> dbc.ptr )
+      // multiplicative 20% per stack of Bastion of Glory when used on self, only if 1+ stack of SH
+      else if ( p() -> buffs.bastion_of_glory -> stack() > 0  && p() -> buffs.selfless_healer -> stack() > 0 )
       {
-        am *= 1.0 + p() -> buffs.bastion_of_glory -> data().effectN( 3 ).percent() * p() -> buffs.bastion_of_glory -> stack();
+        am *= 1.0 + p() -> buffs.selfless_healer -> data().effectN( 2 ).percent() * p() -> buffs.bastion_of_glory -> stack();
       }
     }
 
@@ -1799,12 +1690,14 @@ struct flash_of_light_t : public paladin_heal_t
     p() -> buffs.daybreak -> trigger();
     p() -> buffs.infusion_of_light -> expire();
 
-    // if Selfless Healer is talented, expire SH buff (also expire BoG buff if self-cast in 5.4)
+    // if Selfless Healer is talented, expire SH buff 
     if ( p() -> talents.selfless_healer -> ok() )
     {
-      p() -> buffs.selfless_healer -> expire();
-      if ( target == player && p() -> dbc.ptr )
+      // also expire BoG buff if self-cast
+      if ( target == player && p() -> buffs.selfless_healer -> stack() > 0 )
         p() -> buffs.bastion_of_glory -> expire();
+
+      p() -> buffs.selfless_healer -> expire();
     }
 
   }
@@ -1880,7 +1773,7 @@ struct hand_of_sacrifice_redirect_t : public paladin_spell_t
     base_dd_max = redirect_value;
 
     // glyph of HoSac eliminates redirected damage
-    if ( ! p() -> glyphs.hand_of_sacrifice -> ok() && p() -> dbc.ptr )
+    if ( ! p() -> glyphs.hand_of_sacrifice -> ok() )
       execute();
   }
 
@@ -2171,7 +2064,7 @@ struct holy_shock_t : public paladin_spell_t
   {
     double cc = paladin_spell_t::composite_crit();
 
-    if ( p() -> buffs.avenging_wrath -> check() && p() -> dbc.ptr )
+    if ( p() -> buffs.avenging_wrath -> check() )
     {
       cc += crit_increase;
     }
@@ -2240,7 +2133,7 @@ struct holy_shock_heal_t : public paladin_heal_t
   {
     double cc = paladin_heal_t::composite_crit();
 
-    if ( p() -> buffs.avenging_wrath -> check() && p() -> dbc.ptr )
+    if ( p() -> buffs.avenging_wrath -> check() )
     {
       cc += crit_increase;
     }
@@ -2361,12 +2254,6 @@ struct inquisition_t : public paladin_spell_t
     harmful      = false;
     hasted_ticks = false;
     num_ticks    = 0;
-
-    if ( p -> glyphs.inquisition -> ok() && ! p -> dbc.ptr )
-    {
-      multiplier += p -> glyphs.inquisition -> effectN( 1 ).percent();
-      base_duration *= 1.0 + p -> glyphs.inquisition -> effectN( 2 ).percent();
-    }
   }
 
   virtual void execute()
@@ -2398,17 +2285,9 @@ struct lay_on_hands_t : public paladin_heal_t
   {
     parse_options( NULL, options_str );
 
-    if ( sim -> dbc.ptr )
-    {
-      if ( p -> talents.unbreakable_spirit -> ok() )
-        cooldown -> duration = data().cooldown() * 0.5;
-    }
-    else
-    {
-      // link needed for unbreakable spirit talent
-      cooldown = p -> cooldowns.lay_on_hands;
-      cooldown -> duration = data().cooldown();
-    }
+    // unbreakable spirit reduces cooldown
+    if ( p -> talents.unbreakable_spirit -> ok() )
+      cooldown -> duration = data().cooldown() * ( 1 + p -> talents.unbreakable_spirit -> effectN( 1 ).percent() );
 
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
@@ -2456,21 +2335,16 @@ struct lights_hammer_heal_tick_t : public paladin_heal_t
   {
     dual = true;
     background = true;
-    aoe = ( p -> dbc.ptr ) ? 6 : -1;
+    aoe = 6;
     may_crit = true;
     benefits_from_seal_of_insight = false;
   }
   
   std::vector< player_t* >& target_list()
   {
-    if ( p() -> dbc.ptr )
-    {
     target_cache.list = paladin_heal_t::target_list();
     target_cache.list = find_lowest_players( aoe );
     return target_cache.list;
-    }
-    else
-      return paladin_heal_t::target_list();
   }
 };
 
@@ -2560,10 +2434,7 @@ struct sacred_shield_t : public paladin_heal_t
     // treat this as a HoT that spawns an absorb bubble on each tick() call rather than healing
     // unfortunately, this spell info is split between effects and tooltip 
     base_td = data().effectN( 1 ).average( p ); 
-    if ( p -> dbc.ptr )
-      tick_power_mod = 0.819; // in tooltip, hardcoding
-    else
-      tick_power_mod = 1.17;
+    tick_power_mod = 0.819; // in tooltip, hardcoding
 
     // redirect HoT to self if not specified
     if ( target -> is_enemy() || target -> type == HEALING_ENEMY )
@@ -2574,14 +2445,14 @@ struct sacred_shield_t : public paladin_heal_t
       background = true;
 
     // Spell data reflects protection values; Ret and Holy are 30% larger
-    if ( ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_HOLY ) && p -> dbc.ptr )
+    if ( ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_HOLY ) )
     {
       base_td /= 0.7;
       tick_power_mod /= 0.7;
     }
 
     // Holy gets other special stuff - no cooldown, no target limit, 3 charges, 10-second recharge time, extra (zero) tick
-    if ( p -> specialization() == PALADIN_HOLY && p -> dbc.ptr )
+    if ( p -> specialization() == PALADIN_HOLY )
     {
       // 3 charges, recharge time is 10 seconds (base+4)
       cooldown -> charges = 3;
@@ -2648,13 +2519,12 @@ struct sacred_shield_t : public paladin_heal_t
 
 struct seal_of_insight_proc_t : public paladin_heal_t
 {
-  double proc_regen;
   double proc_chance;
   proc_t* proc_tracker;
 
   seal_of_insight_proc_t( paladin_t* p ) :
     paladin_heal_t( "seal_of_insight_proc", p, p -> find_class_spell( "Seal of Insight" ) ),
-    proc_regen( 0.0 ), proc_chance( 0.0 ),
+    proc_chance( 0.0 ),
     proc_tracker( p -> get_proc( name_str ) )
   {
     background  = true;
@@ -2662,11 +2532,11 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     trigger_gcd = timespan_t::zero();
     may_crit = false; //cannot crit
 
-    // handle PTR Battle Healer glyph
-    if ( p -> dbc.ptr && p -> glyphs.battle_healer -> ok() )
+    // Battle Healer glyph
+    if ( p -> glyphs.battle_healer -> ok() )
       direct_power_mod = p -> glyphs.battle_healer -> effectN( 1 ).percent();
     else
-      direct_power_mod           = 1.0;
+      direct_power_mod = 1.0;
 
     // spell database info is mostly in effects
     base_attack_power_multiplier = data().effectN( 1 ).percent();
@@ -2675,11 +2545,7 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     // needed for weapon speed, I assume
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = 0.0;
-
-    // regen is 4% mana
-    if ( ! p -> dbc.ptr )
-      proc_regen  = data().effectN( 1 ).trigger() ? data().effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_MANA ) : 0.0;
-
+    
     // proc chance is now 20 PPM, spell database info still says 15.
     // Best guess is that the 4th effect describes the additional 5 PPM.
     proc_chance = ppm_proc_chance( data().effectN( 1 ).base_value() + data().effectN( 4 ).base_value() );
@@ -2693,8 +2559,8 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     {
       proc_tracker -> occur();
 
-      // 5.4 version of Battle Healer glyph makes SoI a smart heal
-      if ( p() -> glyphs.battle_healer -> ok() && p() -> dbc.ptr )
+      // Battle Healer glyph makes SoI a smart heal
+      if ( p() -> glyphs.battle_healer -> ok() )
       {
         target = find_lowest_player();
         if ( target ) 
@@ -2702,12 +2568,6 @@ struct seal_of_insight_proc_t : public paladin_heal_t
       }
       else
         paladin_heal_t::execute();
-
-      // as of 5.4, mana gain is removed
-      if ( ! p() -> dbc.ptr )
-        p() -> resource_gain( RESOURCE_MANA,
-                              p() -> resources.base[ RESOURCE_MANA ] * proc_regen,
-                              p() -> gains.seal_of_insight );
     }
     else
     {
@@ -2892,8 +2752,6 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
   bool trigger_seal_of_righteousness;
   bool trigger_seal_of_justice;
   bool trigger_seal_of_truth;
-  bool trigger_seal_of_justice_aoe; // probably not needed anymore, this change was reverted
-  bool trigger_battle_healer;
 
   // spell cooldown reduction flags
   bool sanctity_of_battle;  //reduces some spell cooldowns/gcds by melee haste
@@ -2908,8 +2766,6 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
     trigger_seal_of_righteousness( false ),
     trigger_seal_of_justice( false ),
     trigger_seal_of_truth( false ),
-    trigger_seal_of_justice_aoe( false ),
-    trigger_battle_healer( false ),
     sanctity_of_battle( false ),
     use2hspec( u2h )
   {
@@ -2969,14 +2825,6 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
           default: break;
         }
       }
-      if ( trigger_seal_of_justice_aoe && ( p() -> active_seal == SEAL_OF_JUSTICE ) )
-        p() -> active_seal_of_justice_aoe_proc -> execute();
-
-      // battle healer
-      if ( trigger_battle_healer && p() -> active.battle_healer_proc && ! p() -> dbc.ptr )
-      {
-        p() -> active.battle_healer_proc -> trigger( *execute_state );
-      }
     }
   }
 
@@ -3007,7 +2855,6 @@ struct melee_t : public paladin_melee_attack_t
     repeating             = true;
     trigger_gcd           = timespan_t::zero();
     base_execute_time     = p -> main_hand_weapon.swing_time;
-    trigger_battle_healer = ( sim -> player_no_pet_list.size() > 1 );
   }
 
   virtual timespan_t execute_time()
@@ -3085,7 +2932,6 @@ struct crusader_strike_t : public paladin_melee_attack_t
 
     // CS triggers all seals
     trigger_seal = true;
-    trigger_battle_healer = ( sim -> player_no_pet_list.size() > 1 );
 
     // Sanctity of Battle reduces melee GCD
     sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
@@ -3141,16 +2987,12 @@ struct crusader_strike_t : public paladin_melee_attack_t
         p() -> resource_gain( RESOURCE_HOLY_POWER, p() -> buffs.holy_avenger -> value() - g, p() -> gains.hp_holy_avenger );
       }
 
-      // In 5.4, this also applies Weakened Blows
-      if ( ! sim -> overrides.weakened_blows && p() -> dbc.ptr )
+      // Apply Weakened Blows
+      if ( ! sim -> overrides.weakened_blows )
         s -> target -> debuffs.weakened_blows -> trigger();
 
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
-
-      // Trigger Grand Crusader procs
-      if ( ! p() -> dbc.ptr )
-        p() -> trigger_grand_crusader();
 
       // Check for T15 Ret 4-piece bonus proc
       if ( p() -> set_bonus.tier15_4pc_melee() )
@@ -3202,8 +3044,6 @@ struct divine_storm_t : public paladin_melee_attack_t
     {
       p() -> buffs.divine_crusader -> expire();
 
-      // TODO: on PTR, using DS with Divine Crusader buff also consumes DP - probably a bug
-      // if the two are not supposed to be exclusive, this return will get removed
       return;
     }
 
@@ -3272,7 +3112,6 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     background = true;
     aoe       = -1;
     trigger_gcd = timespan_t::zero(); // doesn't incur GCD (HotR does that already)
-    trigger_battle_healer = ( sim -> player_no_pet_list.size() > 1 );
 
     // Non-weapon-based AP/SP scaling, zero now, but has been non-zero in past iterations
     direct_power_mod = data().extra_coeff();
@@ -3323,7 +3162,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
     // HotR triggers all seals
     trigger_seal = true;
-    trigger_battle_healer = ( sim -> player_no_pet_list.size() > 1 );
 
     // Implement AoE proc
     add_child( proc );
@@ -3375,10 +3213,6 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
 
       // Trigger Hand of Light procs
       trigger_hand_of_light( s );
-
-      // Trigger Grand Crusader procs
-      if ( ! p() -> dbc.ptr )
-        p() -> trigger_grand_crusader();
 
       // Mists of Pandaria: Hammer of the Righteous triggers Weakened Blows
       if ( ! sim -> overrides.weakened_blows )
@@ -3594,11 +3428,11 @@ struct judgment_t : public paladin_melee_attack_t
         p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_judgments_of_the_wise );
 
         // if sanctified wrath is talented and Avenging Wrath is active, give another HP
-        if ( p() -> talents.sanctified_wrath -> ok() && p() -> buffs.avenging_wrath -> check() && p() -> dbc.ptr )
+        if ( p() -> talents.sanctified_wrath -> ok() && p() -> buffs.avenging_wrath -> check() )
           p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_sanctified_wrath );
       }
       // +1 Holy Power for Holy with Selfless Healer talent
-      else if ( p() -> talents.selfless_healer -> ok() && p() -> specialization() == PALADIN_HOLY && p() -> dbc.ptr )
+      else if ( p() -> talents.selfless_healer -> ok() && p() -> specialization() == PALADIN_HOLY )
       {
         // apply gain, attribute gain to selfless healer
         p() -> resource_gain( RESOURCE_HOLY_POWER, 1, p() -> gains.hp_selfless_healer );
@@ -3776,20 +3610,6 @@ struct seal_of_justice_proc_t : public paladin_melee_attack_t
   }
 };
 
-struct seal_of_justice_aoe_proc_t : public paladin_melee_attack_t
-{
-  seal_of_justice_aoe_proc_t( paladin_t* p ) :
-    paladin_melee_attack_t( "seal_of_justice_aoe_proc", p, p -> find_spell( p -> find_class_spell( "Seal of Justice" ) -> ok() ? 20170 : 0 ) )
-  {
-    background        = true;
-    proc              = true;
-    aoe               = -1;
-    trigger_gcd       = timespan_t::zero();
-
-    base_multiplier *= 1.0 + p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
-  }
-};
-
 // Seal of Righteousness ====================================================
 
 struct seal_of_righteousness_proc_t : public paladin_melee_attack_t
@@ -3869,7 +3689,6 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
 
     // Triggers all seals
     trigger_seal = true;
-    trigger_battle_healer = ( sim -> player_no_pet_list.size() > 1 );
 
     // not on GCD, usable off-GCD
     trigger_gcd = timespan_t::zero();
@@ -4153,8 +3972,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
 
   action_t* a = 0;
   if ( name == "seal_of_justice"           ) { a = new paladin_seal_t( this, "seal_of_justice",       SEAL_OF_JUSTICE,       options_str );
-                                               active_seal_of_justice_proc       = new seal_of_justice_proc_t       ( this );
-                                               active_seal_of_justice_aoe_proc   = new seal_of_justice_aoe_proc_t   ( this ); return a; }
+                                               active_seal_of_justice_proc       = new seal_of_justice_proc_t       ( this ); return a; }
   if ( name == "seal_of_insight"           ) { a = new paladin_seal_t( this, "seal_of_insight",       SEAL_OF_INSIGHT,       options_str );
                                                active_seal_of_insight_proc       = new seal_of_insight_proc_t       ( this ); return a; }
   if ( name == "seal_of_righteousness"     ) { a = new paladin_seal_t( this, "seal_of_righteousness", SEAL_OF_RIGHTEOUSNESS, options_str );
@@ -4599,14 +4417,11 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_talent( this, "Holy Avenger" );
   //def -> add_action( this, "Guardian of Ancient Kings", "if=health.pct<=30" );
   def -> add_action( this, "Divine Protection" ); // use on cooldown
-  if ( dbc.ptr )
-    def -> add_talent( this, "Eternal Flame", "if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react)" );
+  def -> add_talent( this, "Eternal Flame", "if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react)" );
   // these two lines are emergency WoG, only one should survive depending on EF talent status
   def -> add_action( this, "Word of Glory", "if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8" );
   def -> add_talent( this, "Eternal Flame", "if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8" );
   def -> add_action( this, "Shield of the Righteous", "if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3" );
-  if ( ! dbc.ptr )
-    def -> add_action( this, "Hammer of the Righteous", "if=target.debuff.weakened_blows.down" );
   def -> add_action( this, "Crusader Strike" );
   def -> add_action( this, "Judgment", "if=cooldown.crusader_strike.remains>=0.5" );
   def -> add_action( this, "Avenger's Shield", "if=cooldown.crusader_strike.remains>=0.5" );
@@ -5053,10 +4868,7 @@ void paladin_t::init_spells()
   glyphs.immediate_truth          = find_glyph_spell( "Glyph of Immediate Truth" );
   glyphs.inquisition              = find_glyph_spell( "Glyph of Inquisition"     );
   glyphs.word_of_glory            = find_glyph_spell( "Glyph of Word of Glory"   );
-
-  if ( glyphs.battle_healer -> ok() ) // This can be removed after ptr is over
-    active.battle_healer_proc = new battle_healer_proc_t( this );
-
+  
   // more spells, these need the glyph check to be present before they can be executed
   spells.alabaster_shield              = glyphs.alabaster_shield -> ok() ? find_spell( 121467 ) : spell_data_t::not_found(); // this is the spell containing Alabaster Shield's effects
   spells.glyph_of_word_of_glory        = glyphs.word_of_glory -> ok() ? find_spell( 115522 ) : spell_data_t::not_found();
@@ -5516,7 +5328,7 @@ void paladin_t::assess_damage( school_e school,
   // T16 2-piece tank
   if ( set_bonus.tier16_2pc_tank() && buffs.divine_protection -> check() )
   {
-    active.blessing_of_the_guardians -> increment_damage( s -> result_mitigated ); // uses post-mitigation, pre-absorb value (tested 7/10/13 PTR)
+    active.blessing_of_the_guardians -> increment_damage( s -> result_mitigated ); // uses post-mitigation, pre-absorb value
   }
 }
 
