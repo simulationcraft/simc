@@ -1517,7 +1517,7 @@ const item_upgrade_rule_t& dbc_t::item_upgrade_rule( unsigned item_id, unsigned 
 const rppm_modifier_t& dbc_t::real_ppm_modifier( specialization_e spec, unsigned spell_id ) const
 {
 #if SC_USE_PTR
-  const rppm_modifier_t* p = __ptr_rppmmodifier_data;
+  const rppm_modifier_t* p = ptr ? __ptr_rppmmodifier_data : __rppmmodifier_data;
 #else
   const rppm_modifier_t* p = __rppmmodifier_data;
 #endif
