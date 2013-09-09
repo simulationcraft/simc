@@ -770,7 +770,7 @@ void warrior_attack_t::impact( action_state_t* s )
     if ( special )
     {
       trigger_bloodbath_dot( s -> target, s -> result_amount );
-      if ( p -> dbc.ptr && p -> set_bonus.tier16_2pc_melee() && td ->  debuffs_colossus_smash -> up() )
+      if ( p -> dbc.ptr && p -> set_bonus.tier16_2pc_melee() && td ->  debuffs_colossus_smash -> up() && id != 76858 ) // Opportunity Strikes do not proc 2 set anymore, hotfixed 9/8.
         p -> resource_gain( RESOURCE_RAGE,
                             p -> sets -> set( SET_T16_2PC_MELEE ) -> effectN( 1 ).base_value(), 
                             p -> gain.tier16_2pc_melee );
