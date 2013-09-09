@@ -1687,7 +1687,7 @@ public:
     }
   }
 
-  void trigger_extra_tick( dot_t* dot, double multiplier )
+  void trigger_extra_tick( dot_t* dot, double multiplier, bool tick_from_mg ) //if tick_from_mg == true, then MG created the tick, otherwise DS created the tick
   {
     if ( ! dot -> ticking ) return;
 
@@ -1701,10 +1701,10 @@ public:
     dot -> current_action -> periodic_hit = true;
     stats_t* tmp = dot -> current_action -> stats;
     warlock_spell_t* spell = debug_cast<warlock_spell_t*>( dot -> current_action );
-    if ( multiplier > 0.9 )
-      dot -> current_action -> stats = spell -> ds_tick_stats;
-    else
+    if ( tick_from_mg )
       dot -> current_action -> stats = spell -> mg_tick_stats;
+    else
+      dot -> current_action -> stats = spell -> ds_tick_stats;
     dot -> current_action -> tick( dot );
     dot -> current_action -> stats -> add_execute( timespan_t::zero(), dot -> state -> target );
     dot -> current_action -> stats = tmp;
@@ -2424,9 +2424,9 @@ struct drain_soul_t : public warlock_spell_t
       if ( p() -> set_bonus.tier15_4pc_caster() )
         multiplier *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
-      trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               multiplier );
-      trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          multiplier );
-      trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, multiplier );
+      trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               multiplier , false);
+      trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          multiplier , false);
+      trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, multiplier , false);
     }
 
     consume_tick_resource( d );
@@ -3443,9 +3443,9 @@ struct malefic_grasp_t : public warlock_spell_t
 
 
 
-    trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               multiplier );
-    trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          multiplier );
-    trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, multiplier );
+    trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               multiplier , true);
+    trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          multiplier , true);
+    trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, multiplier , true);
 
     consume_tick_resource( d );
   }
