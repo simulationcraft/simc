@@ -2,18 +2,17 @@
 
 ptr=1
 talent_format=armory
-save_gear_comments=1
 
 mage=Mage_Arcane_T16N
 level=90
-race=troll
+race=night_elf
 spec=arcane
 talents=100022
 glyphs=mana_gem/mirror_image/arcane_power
-head=chronomancer_hood,id=99161,gems=burning_primal_80int_160mastery_180int
+head=chronomancer_hood,id=99161,gems=sinister_primal_80int_160mastery_180int
 neck=untainted_guardians_chain,id=103867
 shoulders=chronomancer_mantle,id=99153,gems=80int_160mastery_80int_160mastery_120int,enchant=200int_100crit,reforge=crit_hit
-back=drape_of_the_omega,id=103770,enchant=180int
+back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=80int_160mastery_60int,enchant=180int
 chest=chronomancer_robes,id=99152,gems=80int_160mastery_80int_160mastery_80int_160mastery_180int,enchant=80all
 wrists=avools_ancestral_bracers,id=103851,enchant=180int
 hands=chronomancer_gloves,id=99160,gems=80int_160mastery_80int_160mastery_120int
@@ -30,14 +29,14 @@ save=Mage_Arcane_T16N.simc
 
 mage=Mage_Fire_T16N
 level=90
-race=troll
+race=night_elf
 spec=fire
 talents=100022
 glyphs=combustion/counterspell
-head=chronomancer_hood,id=99161,gems=burning_primal_80int_160crit_180int
+head=chronomancer_hood,id=99161,gems=sinister_primal_80int_160crit_180int
 neck=untainted_guardians_chain,id=103867,reforge=hit_crit
 shoulders=chronomancer_mantle,id=99153,gems=80int_160crit_80int_160crit_120int,enchant=200int_100crit
-back=drape_of_the_omega,id=103770,enchant=180int,reforge=mastery_crit
+back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=80int_160crit_60int,enchant=180int
 chest=chronomancer_robes,id=99152,gems=80int_160crit_80int_160crit_80int_160crit_180int,enchant=80all
 wrists=avools_ancestral_bracers,id=103851,enchant=180int
 hands=chronomancer_gloves,id=99160,gems=80int_160crit_80int_160crit_120int,enchant=170haste
@@ -54,14 +53,14 @@ save=Mage_Fire_T16N.simc
 
 mage=Mage_Frost_T16N
 level=90
-race=troll
+race=night_elf
 spec=frost
 talents=100022
 glyphs=evocation/icy_veins/splitting_ice
-head=chronomancer_hood,id=99161,gems=burning_primal_80int_160haste_180int
+head=chronomancer_hood,id=99161,gems=sinister_primal_80int_160haste_180int
 neck=untainted_guardians_chain,id=103867
 shoulders=chronomancer_mantle,id=99153,gems=80int_160haste_80int_160haste_120int,enchant=200int_100crit,reforge=crit_mastery
-back=drape_of_the_omega,id=103770,enchant=180int
+back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=80int_160haste_60int,enchant=180int
 chest=chronomancer_robes,id=99152,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=crit_haste
 wrists=avools_ancestral_bracers,id=103851,enchant=180int
 hands=chronomancer_gloves,id=99160,gems=80int_160haste_80int_160haste_120int,enchant=170haste,reforge=crit_mastery

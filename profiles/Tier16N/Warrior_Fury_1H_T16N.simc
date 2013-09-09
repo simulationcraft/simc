@@ -104,52 +104,36 @@ actions.aoe+=/raging_blow,if=buff.meat_cleaver.stack=3
 actions.aoe+=/whirlwind
 actions.aoe+=/battle_shout,if=rage<70
 
-head=helmet_of_the_prehistoric_marauder,id=99206,gems=reverberating_primal_160exp_160crit_180str
-# ilevel=553,quality=epic,type=plate,stats=1840str_3121sta_1328mastery_1164crit
+head=helmet_of_the_prehistoric_marauder,id=99206,gems=capacitive_primal_160exp_160crit_180str
 neck=malkoroks_tainted_dog_tags,id=103917
-# ilevel=553,quality=epic,stats=1159str_1739sta_818crit_697mastery
 shoulders=pauldrons_of_the_prehistoric_marauder,id=99200,gems=320crit_320crit,enchant=200str_100crit,reforge=exp_crit
-# ilevel=553,quality=epic,type=plate,stats=1386str_2319sta_966exp_925mastery
-back=aeths_swiftcinder_cloak,id=103846,enchant=180crit,reforge=exp_mastery
-# ilevel=553,quality=epic,type=cloth,stats=1159str_1739sta_807exp_715crit
+back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=80str_160crit_60str,enchant=180crit,reforge=haste_exp
 chest=breastplate_of_shamanic_mirrors,id=103737,gems=160exp_160crit_160exp_160crit_320crit_180str,enchant=80all
-# ilevel=553,quality=epic,type=plate,stats=1840str_3121sta_1348crit_1130mastery
 wrists=bracers_of_blind_hatred,id=103740,enchant=180str
-# ilevel=553,quality=epic,type=plate,stats=1159str_1739sta_784mastery_753crit
 hands=gauntlets_of_the_prehistoric_marauder,id=99198,gems=320crit_320crit,enchant=170str
-# ilevel=553,quality=epic,type=plate,stats=1386str_2319sta_711hit_1097crit
 waist=ashen_wall_girdle,id=103932,gems=80str_160crit_160crit_160hit_320crit_120str,reforge=hit_crit
-# ilevel=553,quality=epic,type=plate,stats=1386str_2319sta_996hit_874mastery
 legs=legplates_of_the_prehistoric_marauder,id=99199,gems=320crit_320crit_120str,enchant=285str_165crit,reforge=haste_mastery
-# ilevel=553,quality=epic,type=plate,stats=1920str_3121sta_1408crit_1137haste
 feet=greaves_of_sublime_superiority,id=103878,gems=320crit,enchant=140mastery
-# ilevel=553,quality=epic,type=plate,stats=1466str_2319sta_982hit_998crit
 finger1=devilfang_band,id=103896,gems=320crit,reforge=exp_crit
-# ilevel=553,quality=epic,stats=1079str_1739sta_765exp_662mastery
 finger2=seal_of_the_forgotten_kings,id=103796,gems=320crit,reforge=haste_hit
-# ilevel=553,quality=epic,stats=1079str_1739sta_754crit_681haste
 trinket1=evil_eye_of_galakras,id=102298
-# ilevel=553,quality=epic
 trinket2=thoks_tail_tip,id=102305
-# ilevel=553,quality=epic
 main_hand=kilruks_furious_blade,id=103972,gems=320crit,enchant=dancing_steel,reforge=exp_mastery
-# ilevel=553,quality=epic,stats=811str_1337sta_554exp_554crit,weapon=sword_2.60speed_10257min_19050max
 off_hand=kilruks_furious_blade,id=103972,gems=320crit,enchant=dancing_steel,reforge=exp_mastery
-# ilevel=553,quality=epic,stats=811str_1337sta_554exp_554crit,weapon=sword_2.60speed_10257min_19050max
 
 # Gear Summary
-# gear_strength=20292
+# gear_strength=20912
 # gear_agility=80
-# gear_stamina=30088
+# gear_stamina=31251
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2670
+# gear_expertise_rating=2581
 # gear_hit_rating=2723
-# gear_crit_rating=16658
-# gear_haste_rating=1092
-# gear_mastery_rating=7758
-# gear_armor=38939
-# meta_gem=reverberating_primal
+# gear_crit_rating=17418
+# gear_haste_rating=1687
+# gear_mastery_rating=8427
+# gear_armor=39143
+# meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
 # main_hand=kilruks_furious_blade,weapon=sword_2.60speed_10257min_19050max,enchant=dancing_steel

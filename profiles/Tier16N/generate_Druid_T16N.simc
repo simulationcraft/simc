@@ -2,7 +2,6 @@
 
 ptr=1
 talent_format=armory
-save_gear_comments=1
 
 druid="Druid_Feral_T16N"
 level=90
@@ -13,18 +12,18 @@ position=back
 talents=000102
 glyphs=savagery/cat_form
 head=headpiece_of_the_shattered_vale,id=99182,reforge=mastery_hit,gems=capacitive_primal_160agi_180agi
-neck=immerseus_crystalline_eye,id=103749,reforge=haste_exp
-shoulders=shoulderguards_of_the_righteous_stand,id=103913,reforge=mastery_exp,enchant=200agi_100crit,gems=80agi_160haste_80agi_160haste_120agi
-back=cape_of_the_alpha,id=103935,reforge=hit_exp,enchant=180hit,addon=goblin_glider
-chest=raiment_of_the_shattered_vale,id=99180,reforge=mastery_exp,enchant=80all,gems=160agi_160agi_160agi_180agi
-wrists=bombers_blackened_wristwatch,id=103910,reforge=haste_crit,enchant=180agi
-hands=grips_of_the_shattered_vale,id=99181,reforge=mastery_exp,enchant=170exp,gems=160agi_160agi_120agi
-waist=cord_of_black_dreams,id=103928,reforge=crit_hit,gems=160agi_80agi_160haste_160agi_120agi
-legs=legguards_of_the_shattered_vale,id=99183,reforge=crit_exp,enchant=285agi_165crit,gems=80agi_160haste_80agi_160haste_120agi
-feet=pandaren_roofsprinters,id=103779,enchant=140agi,gems=80agi_160hit_60mastery
-finger1=kilruks_band_of_ascendancy,id=103844,reforge=haste_hit,gems=160agi_60crit
-finger2=ring_of_restless_energy,id=103843,gems=160agi_60crit
-trinket1=rune_of_reorigination,id=96174,upgrade=2
-trinket2=assurance_of_consequence,id=102292
-main_hand=halberd_of_inner_shadows,id=103952,reforge=mastery_hit,enchant=dancing_steel,gems=80agi_160mastery_60agi
+neck=immerseus_crystalline_eye,id=103749,reforge=mastery_hit
+shoulders=shoulderguards_of_the_righteous_stand,id=103913,reforge=mastery_hit,enchant=200agi_100crit,gems=80agi_160mastery_80agi_160crit_120agi
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,reforge=mastery_hit,enchant=180hit,gems=160agi_60agi
+chest=raiment_of_the_shattered_vale,id=99180,reforge=mastery_haste,enchant=80all,gems=160agi_160agi_160agi_180agi
+wrists=bombers_blackened_wristwatch,id=103910,reforge=mastery_hit,enchant=180agi
+hands=grips_of_the_shattered_vale,id=99181,reforge=crit_exp,enchant=170exp,gems=160agi_160agi_120agi
+waist=cord_of_black_dreams,id=103928,reforge=haste_hit,gems=160agi_80agi_160crit_160agi_120agi
+legs=legguards_of_the_shattered_vale,id=99183,enchant=285agi_165crit,gems=80agi_160haste_80agi_160haste_120agi
+feet=pandaren_roofsprinters,id=103779,reforge=haste_exp,enchant=140agi,gems=80agi_160hit_60mastery
+finger1=kilruks_band_of_ascendancy,id=103844,gems=160agi_60crit
+finger2=ring_of_restless_energy,id=103843,reforge=mastery_exp,gems=160agi_60crit
+trinket1=ticking_ebon_detonator,id=102311,reforge=mastery_exp
+trinket2=rune_of_reorigination,id=96918,upgrade=2
+main_hand=halberd_of_inner_shadows,id=103952,reforge=mastery_exp,enchant=dancing_steel,gems=80agi_160crit_160agi_60agi
 save=Druid_Feral_T16N.simc

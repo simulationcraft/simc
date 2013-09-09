@@ -90,52 +90,36 @@ actions.aoe+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.rem
 actions.aoe+=/spiritwalkers_grace,moving=1
 actions.aoe+=/fire_nova,if=active_flame_shock>=1
 
-head=helmet_of_celestial_harmony,id=99103,gems=agile_primal_80agi_160mastery_180agi,reforge=haste_hit
-# ilevel=553,quality=epic,type=mail,stats=1840agi_3121sta_1308mastery_1198haste
+head=helmet_of_celestial_harmony,id=99103,gems=capacitive_primal_80agi_160mastery_180agi,reforge=haste_hit
 neck=immerseus_crystalline_eye,id=103749,reforge=haste_hit
-# ilevel=553,quality=epic,stats=1159agi_1739sta_773mastery_773haste
 shoulders=quarantine_shoulderguards,id=103836,gems=80agi_160hit_80agi_160hit_120agi,enchant=200agi_100crit
-# ilevel=553,quality=epic,type=mail,stats=1386agi_2319sta_950mastery_950haste
-back=poisonmist_nightcloak,id=103934,enchant=180hit,reforge=haste_hit
-# ilevel=553,quality=epic,type=cloth,stats=1159agi_1739sta_829mastery_678haste
-chest=cuirass_of_celestial_harmony,id=99101,gems=80agi_160mastery_80agi_160mastery_80agi_160mastery_180agi,enchant=80all
-# ilevel=553,quality=epic,type=mail,stats=1840agi_3121sta_1267mastery_1267haste
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=80agi_160mastery_60agi,enchant=180hit
+chest=cuirass_of_celestial_harmony,id=99101,gems=80agi_160mastery_80agi_160mastery_80agi_160mastery_180agi,enchant=80all,reforge=haste_hit
 wrists=bracers_of_infinite_pipes,id=103891,enchant=180agi
-# ilevel=553,quality=epic,type=mail,stats=1159agi_1739sta_784mastery_753haste
 hands=grips_of_celestial_harmony,id=99102,gems=80agi_160mastery_80agi_160mastery_120agi,enchant=170mastery,reforge=haste_exp
-# ilevel=553,quality=epic,type=mail,stats=1386agi_2319sta_965mastery_915haste
 waist=cannoneers_multipocket_gunbelt,id=103887,gems=80agi_160mastery_80agi_160hit_80agi_160mastery_120agi,reforge=hit_mastery
-# ilevel=553,quality=epic,type=mail,stats=1386agi_2319sta_1011hit_849haste
 legs=legguards_of_celestial_harmony,id=99104,gems=80agi_160mastery_80agi_160mastery_120agi,enchant=285agi_165crit,reforge=haste_exp
-# ilevel=553,quality=epic,type=mail,stats=1920agi_3121sta_1328mastery_1272haste
 feet=minelayers_padded_boots,id=103731,gems=80agi_160mastery_60mastery,enchant=140agi
-# ilevel=553,quality=epic,type=mail,stats=1466agi_2319sta_957exp_1014mastery
 finger1=swift_serpent_signet,id=103842,gems=80agi_160mastery_60crit,reforge=exp_haste
-# ilevel=553,quality=epic,stats=1079agi_1739sta_720exp_737mastery
 finger2=kilruks_band_of_ascendancy,id=103844,gems=160agi_60crit,reforge=haste_exp
-# ilevel=553,quality=epic,stats=1079agi_1739sta_732mastery_718haste
 trinket1=assurance_of_consequence,id=102292
-# ilevel=553,quality=epic
 trinket2=haromms_talisman,id=102301
-# ilevel=553,quality=epic
-main_hand=korvens_crimson_crescent,id=103971,gems=160agi_60agi,enchant=dancing_steel,reforge=crit_hit
-# ilevel=553,quality=epic,stats=811agi_1337sta_554crit_554mastery,weapon=axe_2.60speed_10257min_19050max
+main_hand=korvens_crimson_crescent,id=103971,gems=160agi_60agi,enchant=dancing_steel,reforge=crit_haste
 off_hand=korvens_crimson_crescent,id=103971,gems=160agi_60agi,enchant=dancing_steel,reforge=crit_haste
-# ilevel=553,quality=epic,stats=811agi_1337sta_554crit_554mastery,weapon=axe_2.60speed_10257min_19050max
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=22222
-# gear_stamina=30088
+# gear_agility=22842
+# gear_stamina=31251
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2550
-# gear_hit_rating=2547
-# gear_crit_rating=1051
-# gear_haste_rating=7662
-# gear_mastery_rating=14349
-# gear_armor=28875
-# meta_gem=agile_primal
+# gear_hit_rating=2561
+# gear_crit_rating=2366
+# gear_haste_rating=7961
+# gear_mastery_rating=14671
+# gear_armor=29079
+# meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
 # main_hand=korvens_crimson_crescent,weapon=axe_2.60speed_10257min_19050max,enchant=dancing_steel

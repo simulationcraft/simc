@@ -13,7 +13,7 @@ talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1...0.
 head=helmet_of_cyclopean_dread,id=99194,gems=reverberating_primal_160str_180str,reforge=haste_crit
 neck=malkoroks_tainted_dog_tags,id=103917
 shoulders=pauldrons_of_cyclopean_dread,id=99187,gems=160str_160str_120str,enchant=200str_100crit
-back=turtleshell_greatcloak,id=103800,enchant=180crit,reforge=hit_crit
+back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=160str_60str,enchant=180crit
 chest=breastplate_of_cyclopean_dread,id=99192,gems=160str_160str_160str_180str,enchant=80all,reforge=haste_crit
 wrists=bracers_of_blind_hatred,id=103740,enchant=180str
 hands=gauntlets_of_cyclopean_dread,id=99193,gems=160str_160str_120str,enchant=170str
@@ -39,7 +39,7 @@ talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1...0.
 head=helmet_of_cyclopean_dread,id=99194,gems=reverberating_primal_80str_160crit_180str,reforge=haste_crit
 neck=malkoroks_tainted_dog_tags,id=103917
 shoulders=tusks_of_mannoroth,id=103785,gems=80str_160crit_80str_160crit_80str_160crit_180str,enchant=200str_100crit
-back=aeths_swiftcinder_cloak,id=103846,enchant=180crit,reforge=exp_mastery
+back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=160str_60str,enchant=180crit
 chest=breastplate_of_cyclopean_dread,id=99192,gems=80str_160crit_80str__160crit_80str_160crit_180str,enchant=80all,reforge=mastery_crit
 wrists=wallborer_bracers,id=103739,enchant=180str
 hands=gauntlets_of_cyclopean_dread,id=99193,gems=80str_160crit_80str_160crit_120str,enchant=170str,reforge=mastery_crit
@@ -64,7 +64,7 @@ talents=http://us.battle.net/wow/en/tool/talent-calculator#db!2...0.
 head=helmet_of_cyclopean_dread,id=99194,gems=reverberating_primal_80str_160crit_180str,reforge=haste_crit
 neck=malkoroks_tainted_dog_tags,id=103917
 shoulders=tusks_of_mannoroth,id=103785,gems=80str_160crit_80str_160crit_80str_160crit_180str,enchant=200str_100crit
-back=aeths_swiftcinder_cloak,id=103846,enchant=180crit,reforge=exp_mastery
+back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=160str_60str,enchant=180crit
 chest=breastplate_of_shamanic_mirrors,id=103737,gems=80str_160crit_80str_160crit_320crit_180str,enchant=80all
 wrists=bracers_of_blind_hatred,id=103740,enchant=180str,reforge=mastery_exp
 hands=gauntlets_of_cyclopean_dread,id=99193,gems=80str_160crit_80str_160crit_120str,enchant=170str,reforge=hit_crit

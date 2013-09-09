@@ -44,6 +44,9 @@ actions.basic+=/savage_roar,if=buff.savage_roar.remains<3
 actions.basic+=/virmens_bite_potion,if=(target.health.pct<30&buff.berserk.up)|target.time_to_die<=40
 actions.basic+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
 actions.basic+=/berserk,if=buff.tigers_fury.up
+actions.basic+=/blood_fury,if=buff.tigers_fury.up
+actions.basic+=/berserking,if=buff.tigers_fury.up
+actions.basic+=/arcane_torrent,if=buff.tigers_fury.up
 # Overwrite Rip during execute range if it's at least 15% stronger than the current.
 actions.basic+=/rip,if=combo_points>=5&target.health.pct<=25&action.rip.tick_damage%dot.rip.tick_dmg>=1.15
 actions.basic+=/ferocious_bite,if=combo_points>=5&target.health.pct<=25&dot.rip.ticking
@@ -66,8 +69,13 @@ actions.basic+=/run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.
 actions.basic+=/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3
 actions.basic+=/run_action_list,name=filler,if=energy.time_to_max<=1.0
 
-actions.advanced=auto_attack
+actions.advanced=tigers_fury,if=time=0&set_bonus.tier16_4pc_melee
+actions.advanced+=/savage_roar,if=time=0&set_bonus.tier16_4pc_melee
+actions.advanced+=/auto_attack
 actions.advanced+=/skull_bash_cat
+actions.advanced+=/blood_fury
+actions.advanced+=/berserking
+actions.advanced+=/arcane_torrent
 actions.advanced+=/ravage,if=buff.stealthed.up
 # Keep Rip from falling off during execute range.
 actions.advanced+=/ferocious_bite,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
@@ -127,6 +135,9 @@ actions.aoe=swap_action_list,name=default,if=active_enemies<5
 actions.aoe+=/auto_attack
 actions.aoe+=/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3
 actions.aoe+=/savage_roar,if=buff.savage_roar.down|(buff.savage_roar.remains<3&combo_points>0)
+actions.aoe+=/blood_fury,if=buff.tigers_fury.up
+actions.aoe+=/berserking,if=buff.tigers_fury.up
+actions.aoe+=/arcane_torrent,if=buff.tigers_fury.up
 actions.aoe+=/tigers_fury,if=energy<=35&!buff.omen_of_clarity.react
 actions.aoe+=/berserk,if=buff.tigers_fury.up
 actions.aoe+=/pool_resource,for_next=1
@@ -143,50 +154,35 @@ actions.aoe+=/swipe_cat,if=buff.omen_of_clarity.react
 actions.aoe+=/swipe_cat,if=energy.time_to_max<=1
 
 head=headpiece_of_the_shattered_vale,id=99182,gems=capacitive_primal_160agi_180agi,reforge=mastery_hit
-# ilevel=553,quality=epic,type=leather,stats=1840agi_3121sta_1267crit_1267mastery
-neck=immerseus_crystalline_eye,id=103749,reforge=haste_exp
-# ilevel=553,quality=epic,stats=1159agi_1739sta_773mastery_773haste
-shoulders=shoulderguards_of_the_righteous_stand,id=103913,gems=80agi_160haste_80agi_160haste_120agi,enchant=200agi_100crit,reforge=mastery_exp
-# ilevel=553,quality=epic,type=leather,stats=1386agi_2319sta_950mastery_950haste
-back=cape_of_the_alpha,id=103935,enchant=180hit,addon=goblin_glider,reforge=hit_exp
-# ilevel=553,quality=epic,type=cloth,stats=1159agi_1739sta_784hit_753crit
-chest=raiment_of_the_shattered_vale,id=99180,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_exp
-# ilevel=553,quality=epic,type=leather,stats=1840agi_3121sta_1328crit_1164mastery
-wrists=bombers_blackened_wristwatch,id=103910,enchant=180agi,reforge=haste_crit
-# ilevel=553,quality=epic,type=leather,stats=1159agi_1739sta_784haste_753mastery
-hands=grips_of_the_shattered_vale,id=99181,gems=160agi_160agi_120agi,enchant=170exp,reforge=mastery_exp
-# ilevel=553,quality=epic,type=leather,stats=1386agi_2319sta_965crit_915mastery
-waist=cord_of_black_dreams,id=103928,gems=160agi_80agi_160haste_160agi_120agi,reforge=crit_hit
-# ilevel=553,quality=epic,type=leather,stats=1386agi_2319sta_996crit_874haste
-legs=legguards_of_the_shattered_vale,id=99183,gems=80agi_160haste_80agi_160haste_120agi,enchant=285agi_165crit,reforge=crit_exp
-# ilevel=553,quality=epic,type=leather,stats=1920agi_3121sta_1368crit_1204haste
-feet=pandaren_roofsprinters,id=103779,gems=80agi_160hit_60mastery,enchant=140agi
-# ilevel=553,quality=epic,type=leather,stats=1466agi_2319sta_982mastery_998haste
-finger1=kilruks_band_of_ascendancy,id=103844,gems=160agi_60crit,reforge=haste_hit
-# ilevel=553,quality=epic,stats=1079agi_1739sta_732mastery_718haste
-finger2=ring_of_restless_energy,id=103843,gems=160agi_60crit
-# ilevel=553,quality=epic,stats=1079agi_1739sta_765crit_662mastery
-trinket1=rune_of_reorigination,id=96174,upgrade=2
-# ilevel=528,quality=epic,elite=1,stats=1552agi
-trinket2=assurance_of_consequence,id=102292
-# ilevel=553,quality=epic
-main_hand=halberd_of_inner_shadows,id=103952,gems=80agi_160mastery_60agi,enchant=dancing_steel,reforge=mastery_hit
-# ilevel=553,quality=epic,stats=2000agi_3121sta_1371mastery_1323haste,weapon=polearm_3.60speed_21886min_32829max
+neck=immerseus_crystalline_eye,id=103749,reforge=mastery_hit
+shoulders=shoulderguards_of_the_righteous_stand,id=103913,gems=80agi_160mastery_80agi_160crit_120agi,enchant=200agi_100crit,reforge=mastery_hit
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180hit,reforge=mastery_hit
+chest=raiment_of_the_shattered_vale,id=99180,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_haste
+wrists=bombers_blackened_wristwatch,id=103910,enchant=180agi,reforge=mastery_hit
+hands=grips_of_the_shattered_vale,id=99181,gems=160agi_160agi_120agi,enchant=170exp,reforge=crit_exp
+waist=cord_of_black_dreams,id=103928,gems=160agi_80agi_160crit_160agi_120agi,reforge=haste_hit
+legs=legguards_of_the_shattered_vale,id=99183,gems=80agi_160haste_80agi_160haste_120agi,enchant=285agi_165crit
+feet=pandaren_roofsprinters,id=103779,gems=80agi_160hit_60mastery,enchant=140agi,reforge=haste_exp
+finger1=kilruks_band_of_ascendancy,id=103844,gems=160agi_60crit
+finger2=ring_of_restless_energy,id=103843,gems=160agi_60crit,reforge=mastery_exp
+trinket1=ticking_ebon_detonator,id=102311,reforge=mastery_exp
+trinket2=rune_of_reorigination,id=96918,upgrade=2
+main_hand=halberd_of_inner_shadows,id=103952,gems=80agi_160crit_160agi_60agi,enchant=dancing_steel,reforge=mastery_exp
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=24476
-# gear_stamina=30535
+# gear_agility=25767
+# gear_stamina=31698
 # gear_intellect=80
 # gear_spirit=80
 # gear_expertise_rating=2550
-# gear_hit_rating=2550
-# gear_crit_rating=7519
-# gear_haste_rating=7515
-# gear_mastery_rating=7524
-# gear_armor=21131
+# gear_hit_rating=2581
+# gear_crit_rating=8483
+# gear_haste_rating=8652
+# gear_mastery_rating=8787
+# gear_armor=21335
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
-# trinket1=rune_of_reorigination,elite=1
+# trinket2=rune_of_reorigination,heroic=1,elite=1
 # main_hand=halberd_of_inner_shadows,weapon=polearm_3.60speed_21886min_32829max,enchant=dancing_steel
