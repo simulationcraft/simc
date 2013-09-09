@@ -808,6 +808,8 @@ public:
       return;
     }
 
+    type = PLAYER_GUARDIAN;
+
     for ( size_t i = 0; i < stats_list.size(); ++i )
       if ( ! ( stats_list[ i ] -> parent ) )
         o() -> stats_stampede -> add_child( stats_list[ i ] );
@@ -3571,6 +3573,7 @@ struct summon_pet_t : public hunter_spell_t
   {
     hunter_spell_t::execute();
 
+    pet -> type = PLAYER_PET;
     pet -> summon();
 
     if ( p() -> main_hand_attack ) p() -> main_hand_attack -> cancel();
