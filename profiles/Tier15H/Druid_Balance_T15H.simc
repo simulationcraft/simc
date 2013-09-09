@@ -7,7 +7,6 @@ role=spell
 position=back
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.1.0
-glyphs=moonbeast
 spec=balance
 
 # This default action priority list is automatically created based on your character.

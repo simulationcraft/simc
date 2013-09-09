@@ -1419,12 +1419,7 @@ struct eviscerate_t : public rogue_attack_t
     timespan_t t = rogue_attack_t::gcd();
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
-    {
-      if ( maybe_ptr( player -> dbc.ptr ) )
-        t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
-      else
-        t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
-    }
+      t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
 
     return t;
   }
@@ -1895,12 +1890,7 @@ struct revealing_strike_t : public rogue_attack_t
     timespan_t t = rogue_attack_t::gcd();
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
-    {
-      if ( maybe_ptr( player -> dbc.ptr ) )
-        t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
-      else
-        t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
-    }
+      t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
 
     return t;
   }
@@ -1944,12 +1934,7 @@ struct rupture_t : public rogue_attack_t
     timespan_t t = rogue_attack_t::gcd();
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
-    {
-      if ( maybe_ptr( player -> dbc.ptr ) )
-        t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
-      else
-        t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
-    }
+      t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
 
     return t;
   }
@@ -2041,12 +2026,7 @@ struct sinister_strike_t : public rogue_attack_t
     timespan_t t = rogue_attack_t::gcd();
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
-    {
-      if ( maybe_ptr( player -> dbc.ptr ) )
-        t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
-      else
-        t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
-    }
+      t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
 
     return t;
   }
@@ -2114,12 +2094,7 @@ struct slice_and_dice_t : public rogue_attack_t
     timespan_t t = rogue_attack_t::gcd();
 
     if ( t != timespan_t::zero() && p() -> buffs.adrenaline_rush -> check() )
-    {
-      if ( maybe_ptr( player -> dbc.ptr ) )
-        t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
-      else
-        t += p() -> glyph.adrenaline_rush -> effectN( 1 ).time_value();
-    }
+      t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
 
     return t;
   }
@@ -3583,13 +3558,13 @@ void rogue_t::create_buffs()
                              .chance( sets -> set( SET_T16_4PC_MELEE ) -> effectN( 3 ).percent() );
   buffs.stealthed          = buff_creator_t( this, "stealthed" ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.t16_2pc_melee      = buff_creator_t( this, "silent_blades", find_spell( 145193 ) )
-                             .chance( maybe_ptr( dbc.ptr ) && set_bonus.tier16_2pc_melee() );
+                             .chance( set_bonus.tier16_2pc_melee() );
   buffs.tier13_2pc         = buff_creator_t( this, "tier13_2pc", spell.tier13_2pc )
                              .chance( set_bonus.tier13_2pc_melee() ? 1.0 : 0 );
   buffs.tot_trigger        = buff_creator_t( this, "tricks_of_the_trade_trigger", find_spell( 57934 ) )
                              .activated( true );
   buffs.toxicologist       = stat_buff_creator_t( this, "toxicologist", find_spell( 145249 ) )
-                             .chance( maybe_ptr( dbc.ptr ) && set_bonus.tier16_4pc_melee() );
+                             .chance( set_bonus.tier16_4pc_melee() );
   buffs.vanish             = buff_creator_t( this, "vanish" )
                              .duration( timespan_t::from_seconds( 3.0 ) )
                              .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );

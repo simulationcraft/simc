@@ -46,7 +46,6 @@ actions+=/barrage,if=enabled
 actions+=/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<=5
 actions+=/serpent_sting,if=!ticking
 actions+=/chimera_shot
-actions+=/readiness
 actions+=/steady_shot,if=buff.steady_focus.remains<(action.steady_shot.cast_time+1)&!in_flight
 actions+=/kill_shot
 actions+=/aimed_shot,if=buff.master_marksman_fire.react
@@ -57,7 +56,6 @@ actions+=/steady_shot
 
 actions.careful_aim=serpent_sting,if=!ticking
 actions.careful_aim+=/chimera_shot
-actions.careful_aim+=/readiness
 actions.careful_aim+=/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<6
 actions.careful_aim+=/aimed_shot
 actions.careful_aim+=/steady_shot

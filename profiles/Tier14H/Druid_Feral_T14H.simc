@@ -39,7 +39,6 @@ actions.basic+=/skull_bash_cat
 # Keep Rip from falling off during execute range.
 actions.basic+=/ferocious_bite,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
 actions.basic+=/faerie_fire,if=debuff.weakened_armor.stack<3
-actions.basic+=/healing_touch,if=buff.natures_swiftness.up
 # Proc Dream of Cenarius at 4+ CP or when PS is about to expire.
 actions.basic+=/healing_touch,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down&(buff.predatory_swiftness.remains<1.5|combo_points>=4)
 actions.basic+=/savage_roar,if=buff.savage_roar.remains<3
@@ -50,13 +49,9 @@ actions.basic+=/use_item,slot=hands,if=buff.tigers_fury.up
 actions.basic+=/blood_fury,if=buff.tigers_fury.up
 actions.basic+=/berserking,if=buff.tigers_fury.up
 actions.basic+=/arcane_torrent,if=buff.tigers_fury.up
-# Use NS for finishers during execute range.
-actions.basic+=/natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25
 # Overwrite Rip during execute range if it's at least 15% stronger than the current.
 actions.basic+=/rip,if=combo_points>=5&target.health.pct<=25&action.rip.tick_damage%dot.rip.tick_dmg>=1.15
 actions.basic+=/ferocious_bite,if=combo_points>=5&target.health.pct<=25&dot.rip.ticking
-# Use NS for Rip.
-actions.basic+=/natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3
 actions.basic+=/rip,if=combo_points>=5&dot.rip.remains<2
 actions.basic+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3
 # Rake if it's about to fall off or we can apply a stronger Rake.
@@ -84,7 +79,6 @@ actions.advanced+=/ravage,if=buff.stealthed.up
 # Keep Rip from falling off during execute range.
 actions.advanced+=/ferocious_bite,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
 actions.advanced+=/faerie_fire,if=debuff.weakened_armor.stack<3
-actions.advanced+=/healing_touch,if=buff.natures_swiftness.up
 # Proc Dream of Cenarius at 4+ CP or when PS is about to expire.
 actions.advanced+=/healing_touch,if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down&(buff.predatory_swiftness.remains<1.5|combo_points>=4)
 actions.advanced+=/savage_roar,if=buff.savage_roar.down
@@ -95,15 +89,11 @@ actions.advanced+=/use_item,slot=hands,if=buff.tigers_fury.up
 actions.advanced+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3&target.time_to_die>=6
 actions.advanced+=/ferocious_bite,if=target.time_to_die<=1&combo_points>=3
 actions.advanced+=/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&target.health.pct<25
-# Use NS for finishers during execute range.
-actions.advanced+=/natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25
 # Overwrite Rip if it's at least 15% stronger than the current.
 actions.advanced+=/rip,if=combo_points>=5&action.rip.tick_damage%dot.rip.tick_dmg>=1.15&target.time_to_die>30
 # Pool 50 energy for Ferocious Bite.
 actions.advanced+=/pool_resource,if=combo_points>=5&target.health.pct<=25&dot.rip.ticking&!(energy>=50|(buff.berserk.up&energy>=25))
 actions.advanced+=/ferocious_bite,if=combo_points>=5&dot.rip.ticking&target.health.pct<=25
-# Use NS for Rip.
-actions.advanced+=/natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)
 actions.advanced+=/rip,if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)
 actions.advanced+=/savage_roar,if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains
 actions.advanced+=/savage_roar,if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains&dot.rip.ticking

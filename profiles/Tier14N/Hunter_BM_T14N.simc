@@ -45,7 +45,6 @@ actions+=/lynx_rush,if=enabled&!dot.lynx_rush.ticking
 actions+=/dire_beast,if=enabled&focus<=90
 actions+=/barrage,if=enabled
 actions+=/powershot,if=enabled
-actions+=/readiness,wait_for_rapid_fire=1
 actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
 actions+=/focus_fire,five_stacks=1,if=!ticking&!buff.beast_within.up
 actions+=/cobra_shot,if=dot.serpent_sting.remains<6

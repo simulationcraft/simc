@@ -240,10 +240,10 @@ tokenized_map_t<talent_data_t> tokenized_talent_map;
 } // ANONYMOUS namespace ====================================================
 
 int dbc::build_level( bool ptr )
-{ return maybe_ptr( ptr ) ? 17345 : 17116; }
+{ return maybe_ptr( ptr ) ? 17345 : 17345; }
 
 const char* dbc::wow_version( bool ptr )
-{ return maybe_ptr( ptr ) ? "5.4.0" : "5.3.0"; }
+{ return maybe_ptr( ptr ) ? "5.4.0" : "5.4.0"; }
 
 
 const item_data_t* dbc::items( bool ptr )
@@ -320,23 +320,6 @@ void dbc::apply_hotfixes()
     s = spell_data_t::find( 64904, true ); // Hymn of Hope (buff)
     s -> _desc = "$@spelldesc64901";
   }
-
-  // Hunter Hotfixes, June 11 2013 - 10% to arcane, steady, cobra.
-  s = spell_data_t::find( 3044, false ); // arcane
-  assert( s -> effectN( 1 )._m_avg == 1.8500000238 && "DBC Hotfix out of date!" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.85 * 1.10;
-  assert( s -> effectN( 2 )._base_value == 100 && "DBC Hotfix out of date!"  );
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 100 * 1.10;
-
-  s = spell_data_t::find( 77767, false ); // cobra
-  assert( s -> effectN( 2 )._base_value == 70 && "DBC Hotfix out of date!"  );
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 70 * 1.10;
-
-  s = spell_data_t::find( 56641, false ); // steady
-  assert( s -> effectN( 1 )._m_avg == 1.9199999571 && "DBC Hotfix out of date!"  );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.92 * 1.10;
-  assert( s -> effectN( 2 )._base_value == 60 && "DBC Hotfix out of date!"  );
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 60 * 1.10;
 
   // Rogue
 
@@ -1533,8 +1516,11 @@ const item_upgrade_rule_t& dbc_t::item_upgrade_rule( unsigned item_id, unsigned 
 
 const rppm_modifier_t& dbc_t::real_ppm_modifier( specialization_e spec, unsigned spell_id ) const
 {
-  // TODO: REMEMBER TO CHANGE WHEN 5.4 GOES LIVE
+#if SC_USE_PTR
   const rppm_modifier_t* p = __ptr_rppmmodifier_data;
+#else
+  const rppm_modifier_t* p = __rppmmodifier_data;
+#endif
 
   while ( p -> spec != SPEC_NONE )
   {

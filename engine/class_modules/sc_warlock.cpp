@@ -1014,7 +1014,7 @@ double warlock_pet_t::composite_player_multiplier( school_e school )
   if ( o() -> talents.grimoire_of_supremacy -> ok() && pet_type != PET_WILD_IMP )
     m *= 1.0 + supremacy -> effectN( 1 ).percent(); // The relevant effect is not attatched to the talent spell, weirdly enough
 
-  if ( maybe_ptr( dbc.ptr ) && o() -> buffs.tier16_2pc_fiery_wrath -> up())
+  if ( o() -> buffs.tier16_2pc_fiery_wrath -> up())
     m *= 1.0  + o() -> buffs.tier16_2pc_fiery_wrath -> value();
   return m;
 }
@@ -1605,12 +1605,7 @@ public:
   {
     double m = 1.0;
 
-    if ( !t -> dbc.ptr && td( t ) -> debuffs_haunt -> up() ) // NO PTR Version
-    {
-      m *= 1.0 + td( t ) -> debuffs_haunt -> data().effectN( 3 ).percent();
-    }
-
-    if ( t -> dbc.ptr && td( t ) -> debuffs_haunt -> up() && ( channeled || tick_power_mod ) ) //PTR Version. Only applies to channeled or dots
+    if ( td( t ) -> debuffs_haunt -> up() && ( channeled || tick_power_mod ) ) //PTR Version. Only applies to channeled or dots
     {
       m *= 1.0 + td( t ) -> debuffs_haunt -> data().effectN( 3 ).percent();
     }
@@ -1628,16 +1623,6 @@ public:
     }
     else
       return spell_t::current_resource();
-  }
-
-  virtual bool usable_moving()
-  {
-    bool um = spell_t::usable_moving();
-
-    if ( !p() -> dbc.ptr && p() -> talents.kiljaedens_cunning -> ok() )
-      um = true;
-
-    return um;
   }
 
   void trigger_seed_of_corruption( warlock_td_t* td, warlock_t* p, double amount )
@@ -2061,7 +2046,7 @@ struct shadow_bolt_t : public warlock_spell_t
     background = false;
 
     //cast HoG
-    if ( p() -> dbc.ptr && p() -> set_bonus.tier16_4pc_caster() && rng().roll( 0.08 ) )//FIX after dbc update
+    if ( p() -> set_bonus.tier16_4pc_caster() && rng().roll( 0.08 ) )//FIX after dbc update
     {
       hand_of_guldan -> target = target;
       int current_charge  = hand_of_guldan -> cooldown -> current_charge;
@@ -2110,7 +2095,7 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     bool um = warlock_spell_t::usable_moving();
 
-    if ( p() -> dbc.ptr && p() -> talents.kiljaedens_cunning -> ok() )
+    if ( p() -> talents.kiljaedens_cunning -> ok() )
       um = true;
 
     return um;
@@ -2203,7 +2188,7 @@ struct corruption_t : public warlock_spell_t
   bool soc_triggered;
 
   corruption_t( warlock_t* p, bool soc = false ) :
-    warlock_spell_t( "Corruption", p , p -> find_spell( p -> dbc.ptr ? 146739 : 172 ) ), soc_triggered( soc ) //TODO Remove FIX after dbc update
+    warlock_spell_t( "Corruption", p , p -> find_spell( 146739 ) ), soc_triggered( soc ) //TODO Remove FIX after dbc update
   {
     may_crit = false;
     generate_fury = 4;
@@ -2232,10 +2217,10 @@ struct corruption_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( p() -> spec.nightfall -> ok() && ( !p() -> dbc.ptr || ( p() -> dbc.ptr && d -> state -> target == p() -> latest_corruption_target ) ) ) //ON PTR only the latest corruption procs it
+    if ( p() -> spec.nightfall -> ok() && d -> state -> target == p() -> latest_corruption_target ) //ON PTR only the latest corruption procs it
     {
 
-      p() -> nightfall_chance += p() -> dbc.ptr ? 0.00666 : 0.00333; // Confirmed 09/09/2012 //Increase by 2 (5% to 10% with 5.4)
+      p() -> nightfall_chance += 0.00666; // Confirmed 09/09/2012 //Increase by 2 (5% to 10% with 5.4)
       if ( rng().roll( p() -> nightfall_chance ) )
       {
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
@@ -2387,7 +2372,7 @@ struct drain_soul_t : public warlock_spell_t
       m *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
 
-    if ( maybe_ptr( player -> dbc.ptr ) && p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
+    if ( p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
     {
       m *= 1.0 + p() ->  buffs.tier16_2pc_empowered_grasp -> value();
     }
@@ -2413,7 +2398,7 @@ struct drain_soul_t : public warlock_spell_t
       double multiplier = data().effectN( 5 ).percent();
 
       // DO NOT CHANGE THE ORDER IF YOU ARE NOT 100% SURE
-      if ( maybe_ptr( player -> dbc.ptr ) && p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
+      if ( p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
       {
         multiplier += p() ->  buffs.tier16_2pc_empowered_grasp -> value();
       }
@@ -2477,7 +2462,7 @@ struct unstable_affliction_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( p() -> dbc.ptr && p() -> set_bonus.tier16_2pc_caster() && d -> state -> result == RESULT_CRIT )
+    if ( p() -> set_bonus.tier16_2pc_caster() && d -> state -> result == RESULT_CRIT )
     {
       p() ->  buffs.tier16_2pc_empowered_grasp -> trigger();
     }
@@ -2498,7 +2483,7 @@ struct haunt_t : public warlock_spell_t
 
   void try_to_trigger_soul_shard_refund()//t16_4pc_bonus
   {
-    if ( p() -> dbc.ptr && p() -> set_bonus.tier16_4pc_caster() && rng().roll( p() -> sets -> set ( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() ) )//refund shard when haunt expires
+    if ( p() -> set_bonus.tier16_4pc_caster() && rng().roll( p() -> sets -> set ( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() ) )//refund shard when haunt expires
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, p() -> find_spell( 145159 ) -> effectN( 1 ).resource( RESOURCE_SOUL_SHARD ), p() -> gains.haunt_tier16_4pc );
     }
@@ -2696,7 +2681,7 @@ struct conflagrate_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) && p() -> spec.backdraft -> ok() )
       p() -> buffs.backdraft -> trigger( 3 );
-    if (p () -> dbc.ptr && s -> result == RESULT_CRIT &&  p() -> set_bonus.tier16_2pc_caster() )
+    if ( s -> result == RESULT_CRIT &&  p() -> set_bonus.tier16_2pc_caster() )
     {
       p() -> buffs.tier16_2pc_destructive_influence -> trigger();
     }
@@ -2809,7 +2794,7 @@ struct incinerate_t : public warlock_spell_t
   {
     bool um = warlock_spell_t::usable_moving();
 
-    if ( p() -> dbc.ptr && p() -> talents.kiljaedens_cunning -> ok() )
+    if ( p() -> talents.kiljaedens_cunning -> ok() )
       um = true;
 
     return um;
@@ -3257,7 +3242,7 @@ struct touch_of_chaos_t : public warlock_spell_t
     }
 
     //cast CW
-    if (  p() -> dbc.ptr && p() -> set_bonus.tier16_4pc_caster() && rng().roll( 0.08 ) )//FIX after dbc update
+    if ( p() -> set_bonus.tier16_4pc_caster() && rng().roll( 0.08 ) )//FIX after dbc update
     {
       chaos_wave -> target = target;
       int current_charge  = chaos_wave -> cooldown -> current_charge;
@@ -3309,14 +3294,7 @@ struct fel_flame_t : public warlock_spell_t
       }
     }
 
-    if ( p() -> specialization() == WARLOCK_DEMONOLOGY ) p() -> resource_gain( RESOURCE_DEMONIC_FURY, data().effectN( p() -> dbc.ptr ? 2 : 3 ).base_value(), p() -> gains.fel_flame );
-
-    if ( result_is_hit( s -> result ) && ! p() -> dbc.ptr )
-    {
-      extend_dot(            td( s -> target ) -> dots_immolate, data().effectN( 2 ).base_value() );
-      extend_dot( td( s -> target ) -> dots_unstable_affliction, data().effectN( 2 ).base_value() );
-      extend_dot(          td( s -> target ) -> dots_corruption, data().effectN( 2 ).base_value() );
-    }
+    if ( p() -> specialization() == WARLOCK_DEMONOLOGY ) p() -> resource_gain( RESOURCE_DEMONIC_FURY, data().effectN( 2 ).base_value(), p() -> gains.fel_flame );
   }
 
   virtual double action_multiplier()
@@ -3415,7 +3393,7 @@ struct malefic_grasp_t : public warlock_spell_t
       m *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
 
-    if ( maybe_ptr( player -> dbc.ptr ) && p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
+    if ( p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
     {
       m *= 1.0 + p() ->  buffs.tier16_2pc_empowered_grasp -> value();
     }
@@ -3431,7 +3409,7 @@ struct malefic_grasp_t : public warlock_spell_t
     double multiplier = data().effectN( 3 ).percent();
 
     // DO NOT CHANGE THE ORDER IF YOU ARE NOT 100% SURE
-    if ( maybe_ptr( player -> dbc.ptr ) && p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
+    if ( p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
     {
       multiplier += p() ->  buffs.tier16_2pc_empowered_grasp -> value();
     }
@@ -3454,7 +3432,7 @@ struct malefic_grasp_t : public warlock_spell_t
   {
     bool um = warlock_spell_t::usable_moving();
 
-    if ( p() -> dbc.ptr && p() -> talents.kiljaedens_cunning -> ok() )
+    if ( p() -> talents.kiljaedens_cunning -> ok() )
       um = true;
 
     return um;
@@ -3500,32 +3478,17 @@ struct soulburn_t : public warlock_spell_t
 
 struct dark_soul_t : public warlock_spell_t
 {
-  struct dark_soul_invalidate_event_t : public player_event_t
-  {
-    dark_soul_invalidate_event_t( warlock_t* p, timespan_t duration ) :
-      player_event_t( *p, "dark_soul_cache_invalidate" )
-    { p -> sim -> add_event( this, duration ); }
-
-    void execute()
-    {
-      p() -> invalidate_cache( CACHE_CRIT );
-      p() -> invalidate_cache( CACHE_HASTE );
-      p() -> invalidate_cache( CACHE_MASTERY );
-    }
-  };
-
   dark_soul_t( warlock_t* p ) :
     warlock_spell_t( "dark_soul", p, p -> spec.dark_soul )
   {
     harmful = false;
 
-    if ( p -> dbc.ptr  && p -> talents.archimondes_darkness -> ok() )
+    if ( p -> talents.archimondes_darkness -> ok() )
     {
       cooldown -> charges = p -> talents.archimondes_darkness -> effectN( 1 ).base_value();
       p -> buffs.dark_soul -> cooldown -> duration = timespan_t::zero();
     }
     cooldown -> duration += p -> set_bonus.tier14_4pc_caster() * p -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
-    if ( ! p -> dbc.ptr ) p -> buffs.dark_soul -> cooldown -> duration = cooldown -> duration;
   }
 
   virtual void execute()
@@ -3533,8 +3496,6 @@ struct dark_soul_t : public warlock_spell_t
     warlock_spell_t::execute();
 
     p() -> buffs.dark_soul -> trigger();
-    if ( !p() -> dbc.ptr && p() -> glyphs.dark_soul -> ok() )
-      new ( *p() -> sim ) dark_soul_invalidate_event_t( p(), p() -> buffs.dark_soul -> cooldown -> remains() );
   }
 };
 
@@ -3612,7 +3573,7 @@ struct seed_of_corruption_aoe_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( p() -> dbc.ptr && p() -> buffs.mannoroths_fury -> up() )
+    if ( p() -> buffs.mannoroths_fury -> up() )
     {
       m *= 1.0 + p() -> talents.mannoroths_fury -> effectN( 3 ).percent();
     }
@@ -3739,14 +3700,14 @@ struct rain_of_fire_tick_t : public warlock_spell_t
     warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
-      trigger_ember_gain( p(), 0.2, p() -> gains.rain_of_fire, p() -> dbc.ptr ? 0.125 : 0.2 );
+      trigger_ember_gain( p(), 0.2, p() -> gains.rain_of_fire, 0.125 );
   }
 
   virtual double action_multiplier()
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( p() -> dbc.ptr && p() -> buffs.mannoroths_fury -> up() )
+    if ( p() -> buffs.mannoroths_fury -> up() )
     {
       m *= 1.0 + p() -> talents.mannoroths_fury -> effectN( 3 ).percent();
     }
@@ -3834,7 +3795,7 @@ struct hellfire_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( p() -> dbc.ptr && p() -> buffs.mannoroths_fury -> up() )
+    if ( p() -> buffs.mannoroths_fury -> up() )
     {
       m *= 1.0 + p() -> talents.mannoroths_fury -> effectN( 3 ).percent();
     }
@@ -3881,7 +3842,7 @@ struct immolation_aura_tick_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( p() -> dbc.ptr && p() -> buffs.mannoroths_fury -> up() )
+    if ( p() -> buffs.mannoroths_fury -> up() )
     {
       m *= 1.0 + p() -> talents.mannoroths_fury -> effectN( 3 ).percent();
     }
@@ -4016,155 +3977,82 @@ struct soul_swap_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    if ( ! p() -> dbc.ptr )
+    if ( p() -> buffs.soul_swap -> up() )  // EXHALE: TODO Copy(!) the dots from  p() -> soul_swap_buffer.target to target. Currently, it just starts them.
     {
-      if ( p() -> buffs.soul_swap -> up() )
+      if ( target == p() -> soul_swap_buffer.source ) return;
+
+      p() -> buffs.soul_swap -> expire();
+
+      if ( p() -> soul_swap_buffer.agony_was_inhaled )
       {
-        if ( target == p() -> soul_swap_buffer.source ) return;
-
-        p() -> buffs.soul_swap -> expire();
-
-        if ( p() -> glyphs.soul_swap -> ok() )
-          glyph_cooldown -> start();
-
-        if ( p() -> soul_swap_buffer.agony_stack > 0 )
-        {
-          agony -> target = target;
-          agony -> execute();
-          td( target ) -> agony_stack = p() -> soul_swap_buffer.agony_stack;
-        }
-        if ( p() -> soul_swap_buffer.corruption_was_inhaled )
-        {
-          corruption -> target = target;
-          corruption -> execute();
-        }
-        if ( p() -> soul_swap_buffer.unstable_affliction_was_inhaled )
-        {
-          unstable_affliction -> target = target;
-          unstable_affliction -> execute();
-        }
-        if ( p() -> soul_swap_buffer.seed_of_corruption_was_inhaled )
-        {
-          seed_of_corruption -> target = target;
-          seed_of_corruption -> execute();
-        }
+        p() -> soul_swap_buffer.agony -> ticking = true; //so that copy works properly
+        p() -> soul_swap_buffer.agony -> copy( target );
+        p() -> soul_swap_buffer.agony_was_inhaled = false;
       }
-      else if ( p() -> buffs.soulburn -> up() )
+
+      if ( p() -> soul_swap_buffer.corruption_was_inhaled )
       {
-        p() -> buffs.soulburn -> expire();
-
-        agony -> target = target;
-        agony -> execute();
-
-        corruption -> target = target;
-        corruption -> execute();
-
-        unstable_affliction -> target = target;
-        unstable_affliction -> execute();
-
-        if ( p() -> glyphs.soul_swap -> ok() )
-          glyph_cooldown -> start();
+        p() -> soul_swap_buffer.corruption -> ticking = true; //so that copy works properly
+        p() -> soul_swap_buffer.corruption -> copy( target );
+        p() -> soul_swap_buffer.corruption_was_inhaled = false;
       }
-      else
+      if ( p() -> soul_swap_buffer.unstable_affliction_was_inhaled )
       {
-        p() -> buffs.soul_swap -> trigger();
-
-        p() -> soul_swap_buffer.source              = target;
-
-        p() -> soul_swap_buffer.agony_stack               = td( target ) -> dots_agony -> ticking ? td( target ) -> agony_stack : 0;
-        p() -> soul_swap_buffer.corruption_was_inhaled          = td( target ) -> dots_corruption -> ticking;
-        p() -> soul_swap_buffer.unstable_affliction_was_inhaled = td( target ) -> dots_unstable_affliction -> ticking;
-        p() -> soul_swap_buffer.seed_of_corruption_was_inhaled  = td( target ) -> dots_seed_of_corruption -> ticking;
-
-        if ( ! p() -> glyphs.soul_swap -> ok() )
-        {
-          td( target ) -> dots_agony -> cancel();
-          td( target ) -> dots_corruption -> cancel();
-          td( target ) -> dots_unstable_affliction -> cancel();
-          td( target ) -> dots_seed_of_corruption -> cancel();
-        }
+        p() -> soul_swap_buffer.unstable_affliction -> ticking = true; //so that copy works properly
+        p() -> soul_swap_buffer.unstable_affliction -> copy( target );
+        p() -> soul_swap_buffer.unstable_affliction_was_inhaled = false;
       }
-    }//END OF NO PTR VERSION
-
-    else //PTR VERSION
+      if ( p() -> soul_swap_buffer.seed_of_corruption_was_inhaled )
+      {
+        p() -> soul_swap_buffer.seed_of_corruption -> ticking = true; //so that copy works properly
+        p() -> soul_swap_buffer.seed_of_corruption -> copy( target );
+        p() -> soul_swap_buffer.seed_of_corruption_was_inhaled = false;
+      }
+    }
+    else if ( p() -> buffs.soulburn -> up() ) /// SB:SS, just cast Agony/Corruption/UA no matter what the SS buff is.
     {
-      if ( p() -> buffs.soul_swap -> up() )  // EXHALE: TODO Copy(!) the dots from  p() -> soul_swap_buffer.target to target. Currently, it just starts them.
+      p() -> buffs.soulburn -> expire();
+
+      agony -> target = target;
+      agony -> execute();
+
+      corruption -> target = target;
+      corruption -> execute();
+
+      unstable_affliction -> target = target;
+      unstable_affliction -> execute();
+
+    }
+    else //INHALE : Store SS_target and dot ticking state
+    {
+      p() -> buffs.soul_swap -> trigger();
+
+      p() -> soul_swap_buffer.source              = target;
+
+      if ( td( target ) -> dots_corruption -> ticking)
       {
-        if ( target == p() -> soul_swap_buffer.source ) return;
-
-        p() -> buffs.soul_swap -> expire();
-
-        if ( p() -> soul_swap_buffer.agony_was_inhaled )
-        {
-          p() -> soul_swap_buffer.agony -> ticking = true; //so that copy works properly
-          p() -> soul_swap_buffer.agony -> copy( target );
-          p() -> soul_swap_buffer.agony_was_inhaled = false;
-        }
-
-        if ( p() -> soul_swap_buffer.corruption_was_inhaled )
-        {
-          p() -> soul_swap_buffer.corruption -> ticking = true; //so that copy works properly
-          p() -> soul_swap_buffer.corruption -> copy( target );
-          p() -> soul_swap_buffer.corruption_was_inhaled = false;
-        }
-        if ( p() -> soul_swap_buffer.unstable_affliction_was_inhaled )
-        {
-          p() -> soul_swap_buffer.unstable_affliction -> ticking = true; //so that copy works properly
-          p() -> soul_swap_buffer.unstable_affliction -> copy( target );
-          p() -> soul_swap_buffer.unstable_affliction_was_inhaled = false;
-        }
-        if ( p() -> soul_swap_buffer.seed_of_corruption_was_inhaled )
-        {
-          p() -> soul_swap_buffer.seed_of_corruption -> ticking = true; //so that copy works properly
-          p() -> soul_swap_buffer.seed_of_corruption -> copy( target );
-          p() -> soul_swap_buffer.seed_of_corruption_was_inhaled = false;
-        }
+        p() -> soul_swap_buffer.corruption_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
+        p() -> soul_swap_buffer.inhale_dot(td( target ) -> dots_corruption, p() -> soul_swap_buffer.corruption);
       }
-      else if ( p() -> buffs.soulburn -> up() ) /// SB:SS, just cast Agony/Corruption/UA no matter what the SS buff is.
+
+      if ( td( target ) -> dots_unstable_affliction -> ticking)
       {
-        p() -> buffs.soulburn -> expire();
-
-        agony -> target = target;
-        agony -> execute();
-
-        corruption -> target = target;
-        corruption -> execute();
-
-        unstable_affliction -> target = target;
-        unstable_affliction -> execute();
-
+        p() -> soul_swap_buffer.unstable_affliction_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
+        p() -> soul_swap_buffer.inhale_dot(td( target ) -> dots_unstable_affliction, p() -> soul_swap_buffer.unstable_affliction);
       }
-      else //INHALE : Store SS_target and dot ticking state
+
+      if ( td( target ) -> dots_agony -> ticking)
       {
-        p() -> buffs.soul_swap -> trigger();
-
-        p() -> soul_swap_buffer.source              = target;
-
-        if ( td( target ) -> dots_corruption -> ticking)
-        {
-          p() -> soul_swap_buffer.corruption_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
-          p() -> soul_swap_buffer.inhale_dot(td( target ) -> dots_corruption, p() -> soul_swap_buffer.corruption);
-        }
-
-        if ( td( target ) -> dots_unstable_affliction -> ticking)
-        {
-          p() -> soul_swap_buffer.unstable_affliction_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
-          p() -> soul_swap_buffer.inhale_dot(td( target ) -> dots_unstable_affliction, p() -> soul_swap_buffer.unstable_affliction);
-        }
-
-        if ( td( target ) -> dots_agony -> ticking)
-        {
-          p() -> soul_swap_buffer.agony_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
-          p() -> soul_swap_buffer.inhale_dot(td( target ) -> dots_agony, p() -> soul_swap_buffer.agony);
-        }
-
-        if ( td( target ) -> dots_seed_of_corruption -> ticking)
-        {
-          p() -> soul_swap_buffer.seed_of_corruption_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
-          p() -> soul_swap_buffer.inhale_dot(td( target ) -> dots_seed_of_corruption, p() -> soul_swap_buffer.seed_of_corruption);
-        }
-
+        p() -> soul_swap_buffer.agony_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
+        p() -> soul_swap_buffer.inhale_dot(td( target ) -> dots_agony, p() -> soul_swap_buffer.agony);
       }
+
+      if ( td( target ) -> dots_seed_of_corruption -> ticking)
+      {
+        p() -> soul_swap_buffer.seed_of_corruption_was_inhaled = true; //dot is ticking, so copy the state into our buffer dot
+        p() -> soul_swap_buffer.inhale_dot(td( target ) -> dots_seed_of_corruption, p() -> soul_swap_buffer.seed_of_corruption);
+      }
+
     }
   }
 
@@ -4175,10 +4063,6 @@ struct soul_swap_t : public warlock_spell_t
     if ( p() -> buffs.soul_swap -> check() )
     {
       if ( target == p() -> soul_swap_buffer.source ) r = false;
-    }
-    else if ( !p() -> dbc.ptr && glyph_cooldown -> down() )
-    {
-      r = false;
     }
     else if ( ! p() -> buffs.soulburn -> check() )
     {
@@ -4680,7 +4564,7 @@ double warlock_t::composite_player_multiplier( school_e school )
     m *= 1.0 + mastery_value;
   }
 
-  if ( maybe_ptr( dbc.ptr ) && buffs.tier16_2pc_fiery_wrath -> up())
+  if ( buffs.tier16_2pc_fiery_wrath -> up())
   {
     m *= 1.0 + buffs.tier16_2pc_fiery_wrath -> value();
   }
@@ -4710,18 +4594,11 @@ double warlock_t::composite_spell_crit()
 
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
-    if ( !dbc.ptr )
-    {
-      if ( buffs.dark_soul -> up() )
-        sc += spec.dark_soul -> effectN( 1 ).percent() * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() );
-      else if ( buffs.dark_soul -> cooldown -> up() )
-        sc += spec.dark_soul -> effectN( 1 ).percent() * glyphs.dark_soul -> effectN( 1 ).percent();
-    }
-    else if ( buffs.dark_soul -> up() )
+    if ( buffs.dark_soul -> up() )
     {
       sc += spec.dark_soul -> effectN( 1 ).percent() ;
     }
-    if (dbc.ptr && buffs.tier16_4pc_ember_fillup -> up() )
+    if ( buffs.tier16_4pc_ember_fillup -> up() )
     {
       sc += find_spell( 145164 ) -> effectN(1).percent();
     }
@@ -4737,14 +4614,7 @@ double warlock_t::composite_spell_haste()
 
   if ( specialization() == WARLOCK_AFFLICTION )
   {
-    if ( !dbc.ptr )
-    {
-      if ( buffs.dark_soul -> up() )
-        h *= 1.0 / ( 1.0 + spec.dark_soul -> effectN( 1 ).percent() * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() ) );
-      else if ( buffs.dark_soul -> cooldown -> up() )
-        h *= 1.0 / ( 1.0 + spec.dark_soul -> effectN( 1 ).percent() * glyphs.dark_soul -> effectN( 1 ).percent() );
-    }
-    else  if ( buffs.dark_soul -> up() )
+    if ( buffs.dark_soul -> up() )
     {
       h *= 1.0 / ( 1.0 + spec.dark_soul -> effectN( 1 ).percent() );
     }
@@ -4761,14 +4631,7 @@ double warlock_t::composite_mastery()
 
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    if ( !dbc.ptr )
-    {
-      if ( buffs.dark_soul -> up() )
-        m += spec.dark_soul -> effectN( 1 ).average( this ) * ( 1.0 - glyphs.dark_soul -> effectN( 1 ).percent() ) / current_rating().mastery;
-      else if ( buffs.dark_soul -> cooldown -> up() )
-        m += spec.dark_soul -> effectN( 1 ).average( this ) * glyphs.dark_soul -> effectN( 1 ).percent() / current_rating().mastery;
-    }
-    else if ( buffs.dark_soul -> up() )
+    if ( buffs.dark_soul -> up() )
     {
       m += spec.dark_soul -> effectN( 1 ).average( this );
     }
@@ -4911,7 +4774,7 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "flames_of_xoroth"      ) a = new      flames_of_xoroth_t( this );
   else if ( action_name == "harvest_life"          ) a = new          harvest_life_t( this );
   else if ( action_name == "archimondes_vengeance" ) a = new archimondes_vengeance_t( this );
-  else if ( dbc.ptr && action_name == "mannoroths_fury" ) a = new mannoroths_fury_t( this );
+  else if ( action_name == "mannoroths_fury"       ) a = new mannoroths_fury_t      ( this );
   else if ( action_name == "summon_infernal"       ) a = new       summon_infernal_t( this );
   else if ( action_name == "summon_doomguard"      ) a = new      summon_doomguard_t( this );
   else if ( action_name == "summon_felhunter"      ) a = new summon_main_pet_t( supremacy_pet( "felhunter",  talents.grimoire_of_supremacy -> ok() ), this );
@@ -5066,20 +4929,11 @@ void warlock_t::init_spells()
   talents.grimoire_of_supremacy = find_talent_spell( "Grimoire of Supremacy" );
   talents.grimoire_of_service   = find_talent_spell( "Grimoire of Service" );
   talents.grimoire_of_sacrifice = find_talent_spell( "Grimoire of Sacrifice" );
-  if ( dbc.ptr )
-  {
-    talents.archimondes_darkness = find_talent_spell( "Archimonde's Darkness" );
-  }
-  else
-  {
-    talents.archimondes_vengeance = find_talent_spell( "Archimonde's Vengeance" );
-  }
+  talents.archimondes_darkness  = find_talent_spell( "Archimonde's Darkness" );
   talents.kiljaedens_cunning    = find_talent_spell( "Kil'jaeden's Cunning" );
-
-  if ( dbc.ptr ) talents.mannoroths_fury = find_talent_spell( "Mannoroth's Fury" );
+  talents.mannoroths_fury       = find_talent_spell( "Mannoroth's Fury" );
 
   glyphs.conflagrate            = find_glyph_spell( "Glyph of Conflagrate" );
-  if ( !dbc.ptr ) glyphs.dark_soul = find_glyph_spell( "Glyph of Dark Soul" );
   glyphs.demon_training         = find_glyph_spell( "Glyph of Demon Training" );
   glyphs.life_tap               = find_glyph_spell( "Glyph of Life Tap" );
   glyphs.imp_swarm              = find_glyph_spell( "Glyph of Imp Swarm" );
@@ -5160,29 +5014,24 @@ void warlock_t::create_buffs()
   buffs.fire_and_brimstone    = buff_creator_t( this, "fire_and_brimstone", find_class_spell( "Fire and Brimstone" ) );
   buffs.soul_swap             = buff_creator_t( this, "soul_swap", find_spell( 86211 ) );
   buffs.havoc                 = buff_creator_t( this, "havoc", find_class_spell( "Havoc" ) );
-  if ( !dbc.ptr ) buffs.archimondes_vengeance = buff_creator_t( this, "archimondes_vengeance", talents.archimondes_vengeance );
   buffs.demonic_rebirth       = buff_creator_t( this, "demonic_rebirth", find_spell( 88448 ) ).cd( find_spell( 89140 ) -> duration() );
-  if ( dbc.ptr ) buffs.mannoroths_fury       = buff_creator_t( this, "mannoroths_fury", talents.mannoroths_fury );
-  if ( dbc.ptr ) buffs.tier16_4pc_ember_fillup = buff_creator_t( this, "ember_master",   find_spell( 145164 ) )
+  buffs.mannoroths_fury       = buff_creator_t( this, "mannoroths_fury", talents.mannoroths_fury );
+  buffs.tier16_4pc_ember_fillup = buff_creator_t( this, "ember_master",   find_spell( 145164 ) )
                                 .cd( find_spell( 145165 ) -> effectN(1).time_value() * 1000 )
                                 .add_invalidate(CACHE_CRIT);
-  if ( dbc.ptr ) buffs.tier16_2pc_destructive_influence = buff_creator_t( this, "destructive_influence", find_spell( 145075) )
-                                .chance( sets -> set ( SET_T16_2PC_CASTER ) -> effectN( 4 ).percent() )
-                                .duration( timespan_t::from_seconds( 10 ))
-                                .default_value( 0.1 ); //spell not found... FIX after DBC update .default_value( find_spell( 145075 ) -> effectN( 1 ).percent())
+  buffs.tier16_2pc_destructive_influence = buff_creator_t( this, "destructive_influence", find_spell( 145075) )
+                                           .chance( sets -> set ( SET_T16_2PC_CASTER ) -> effectN( 4 ).percent() )
+                                           .duration( timespan_t::from_seconds( 10 ))
+                                           .default_value( 0.1 ); //spell not found... FIX after DBC update .default_value( find_spell( 145075 ) -> effectN( 1 ).percent())
 
-  if ( dbc.ptr ) buffs.tier16_2pc_empowered_grasp = buff_creator_t( this, "empowered_grasp", find_spell( 145082 ) )
-                                .chance( sets -> set ( SET_T16_2PC_CASTER ) -> effectN( 2 ).percent())
-                                .default_value( find_spell( 145082 ) -> effectN( 2 ).percent());
-  if ( dbc.ptr ) buffs.tier16_2pc_fiery_wrath = buff_creator_t( this, "fiery_wrath", find_spell( 145085) )
-    .chance( sets -> set ( SET_T16_2PC_CASTER ) -> effectN( 4 ).percent() )
-    .duration( timespan_t::from_seconds( 10 ))
-    .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-    .default_value( 0.2 ); //spell not found... FIX after DBC update .default_value( find_spell( 145085 ) -> effectN( 1 ).percent())
-
-
-
-
+  buffs.tier16_2pc_empowered_grasp = buff_creator_t( this, "empowered_grasp", find_spell( 145082 ) )
+                                     .chance( sets -> set ( SET_T16_2PC_CASTER ) -> effectN( 2 ).percent())
+                                     .default_value( find_spell( 145082 ) -> effectN( 2 ).percent());
+  buffs.tier16_2pc_fiery_wrath = buff_creator_t( this, "fiery_wrath", find_spell( 145085) )
+                                 .chance( sets -> set ( SET_T16_2PC_CASTER ) -> effectN( 4 ).percent() )
+                                 .duration( timespan_t::from_seconds( 10 ))
+                                 .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
+                                 .default_value( 0.2 ); //spell not found... FIX after DBC update .default_value( find_spell( 145085 ) -> effectN( 1 ).percent())
 }
 
 

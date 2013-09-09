@@ -36,7 +36,7 @@ actions+=/run_action_list,name=aoe,if=active_enemies>3
 actions+=/summon_doomguard
 actions+=/rain_of_fire,if=!ticking&!in_flight&active_enemies>1
 actions+=/havoc,target=2,if=active_enemies>1
-actions+=/shadowburn,if=ember_react&(burning_ember>3.5|mana.pct<=20|buff.dark_soul.up|target.time_to_die<20|buff.havoc.stack>=1|(trinket.has_proc.intellect&trinket.proc.intellect.react)|buff.perfect_aim.react)
+actions+=/shadowburn,if=ember_react&(burning_ember>3.5|mana.pct<=20|buff.dark_soul.up|target.time_to_die<20|buff.havoc.stack>=1|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.react>7&trinket.stacking_proc.intellect.remains>cast_time)|buff.perfect_aim.react)
 actions+=/chaos_bolt,if=ember_react&target.health.pct>20&buff.perfect_aim.react&buff.perfect_aim.remains>cast_time
 actions+=/immolate,cycle_targets=1,if=target.time_to_die>=5&miss_react&buff.perfect_aim.remains>cast_time&buff.perfect_aim.react&crit_pct<100
 actions+=/immolate,cycle_targets=1,if=buff.dark_soul.react&dot.immolate.crit_pct<(stat.crit+30)&ticks_remain<add_ticks%2&miss_react

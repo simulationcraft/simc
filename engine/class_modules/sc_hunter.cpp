@@ -840,10 +840,6 @@ public:
     // Pet combat experience
     m *= 1.0 + specs.combat_experience -> effectN( 2 ).percent();
 
-    // PTR stampede damage reduction no longer applies to PVE
-    if ( buffs.stampede -> up() && ! dbc.ptr )
-      m *= 1.0 + buffs.stampede -> data().effectN( 1 ).percent();
-
     return m;
   }
 
@@ -1216,7 +1212,7 @@ struct kill_command_t : public hunter_main_pet_attack_t
     school = SCHOOL_PHYSICAL;
 
     // hardcoded into hunter kill command tooltip
-    direct_power_mod = maybe_ptr( player -> dbc.ptr ) ? 0.938 : 0.700;
+    direct_power_mod = 0.938;
   }
 
   virtual double action_multiplier()
@@ -2218,12 +2214,6 @@ struct black_arrow_t : public hunter_ranged_attack_t
   {
     parse_options( NULL, options_str );
 
-    if ( !sim -> dbc.ptr )
-    { 
-      cooldown = p() -> get_cooldown( "traps" );
-      cooldown -> duration = data().cooldown();
-    }
-
     cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
 
@@ -2270,17 +2260,6 @@ struct explosive_trap_effect_t : public hunter_ranged_attack_t
     may_miss = false;
     may_crit = false;
     tick_may_crit = true;
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    hunter_ranged_attack_t::tick( d );
-
-    if ( !sim -> dbc.ptr && p() -> buffs.lock_and_load -> trigger( 2 ) )
-    {
-      p() -> procs.lock_and_load -> occur();
-      p() -> cooldowns.explosive_shot -> reset( true );
-    }
   }
 };
 
@@ -3469,85 +3448,6 @@ struct rapid_fire_t : public hunter_spell_t
   }
 };
 
-// Readiness ================================================================
-
-struct readiness_t : public hunter_spell_t
-{
-  int wait_for_rf;
-  std::vector<cooldown_t*> cooldown_list;
-
-  readiness_t( hunter_t* player, const std::string& options_str ) :
-    hunter_spell_t( "readiness", player, player -> find_class_spell( "Readiness" ) ),
-    wait_for_rf( false )
-  {
-    // FIXME: adjust spell data, spell or whatever problem 5.4 ptr caused
-    background = maybe_ptr( player -> dbc.ptr );
-    option_t options[] =
-    {
-      // Only perform Readiness while Rapid Fire is up, allows the sequence
-      // Rapid Fire, Readiness, Rapid Fire, for better RF uptime
-      opt_bool( "wait_for_rapid_fire", wait_for_rf ),
-      opt_null()
-    };
-    parse_options( options, options_str );
-
-    harmful = false;
-
-    static const char* const cooldown_names[] =
-    {
-      "traps",
-      "kill_command",
-      "bestial_wrath",
-      "intimidation",
-      "black_arrow",
-      "explosive_shot",
-      "chimera_shot",
-      "kill_shot",
-      "scatter_shot",
-      "silencing_shot",
-      "wyvern_sting",
-      "binding_shot",
-      "concussive_shot",
-      "rapid_fire",
-      "fervor",
-      "dire_beast",
-      "a_murder_of_crows",
-      "lynx_rush",
-      "glaive_toss",
-      "powershot",
-      "barrage",
-      "deterrence",
-      "disengage",
-      "distracting_shot",
-      "freezing_trap",
-      "frost_trap",
-      "explosive_trap",
-      // FIX ME: does this ICD get reset?
-      // "lock_and_load"
-    };
-
-    for ( size_t i = 0 ; i < sizeof_array( cooldown_names ); ++i )
-      cooldown_list.push_back( p() -> get_cooldown( cooldown_names[ i ] ) );
-  }
-
-  virtual void execute()
-  {
-    hunter_spell_t::execute();
-
-    for ( size_t i = 0; i < cooldown_list.size(); i++ )
-      cooldown_list[ i ] -> reset( false );
-  }
-
-  virtual bool ready()
-  {
-
-    if ( wait_for_rf && ! p() -> buffs.rapid_fire -> check() )
-      return false;
-
-    return hunter_spell_t::ready();
-  }
-};
-
 // Summon Pet ===============================================================
 
 struct summon_pet_t : public hunter_spell_t
@@ -3648,7 +3548,6 @@ action_t* hunter_t::create_action( const std::string& name,
   if ( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
   if ( name == "multi_shot"            ) return new             multi_shot_t( this, options_str );
   if ( name == "rapid_fire"            ) return new             rapid_fire_t( this, options_str );
-  if ( name == "readiness"             ) return new              readiness_t( this, options_str );
   if ( name == "scatter_shot"          ) return new           scatter_shot_t( this, options_str );
   if ( name == "serpent_sting"         ) return new          serpent_sting_t( this, options_str );
   if ( name == "silencing_shot"        ) return new         silencing_shot_t( this, options_str );
@@ -4092,7 +3991,6 @@ void hunter_t::init_actions()
         action_list_str += "/dire_beast,if=enabled&focus<=90";
         action_list_str += "/barrage,if=enabled";
         action_list_str += "/powershot,if=enabled";
-        if ( ! maybe_ptr( dbc.ptr ) ) action_list_str += "/readiness,wait_for_rapid_fire=1";
         action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
         action_list_str += "/focus_fire,five_stacks=1,if=!ticking&!buff.beast_within.up";
         action_list_str += "/cobra_shot,if=dot.serpent_sting.remains<6";
@@ -4128,7 +4026,6 @@ void hunter_t::init_actions()
           std::string& CA_actions = get_action_priority_list( "careful_aim" ) -> action_list_str;
           CA_actions += "/serpent_sting,if=!ticking";
           CA_actions += "/chimera_shot";
-          if ( ! maybe_ptr( dbc.ptr ) ) CA_actions += "/readiness";
           CA_actions += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<6";
           CA_actions += "/aimed_shot";
           CA_actions += "/steady_shot";
@@ -4140,7 +4037,6 @@ void hunter_t::init_actions()
         action_list_str += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<=5";
         action_list_str += "/serpent_sting,if=!ticking";
         action_list_str += "/chimera_shot";
-        if ( ! maybe_ptr( dbc.ptr ) ) action_list_str += "/readiness";
         action_list_str += "/steady_shot,if=buff.steady_focus.remains<(action.steady_shot.cast_time+1)&!in_flight";
         action_list_str += "/kill_shot";
         action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
@@ -4193,7 +4089,6 @@ void hunter_t::init_actions()
         if ( level >= 87 )
           action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25";
 
-        if ( ! maybe_ptr( dbc.ptr ) ) action_list_str += "/readiness,wait_for_rapid_fire=1";
         action_list_str += "/cobra_shot,if=dot.serpent_sting.remains<6";
         action_list_str += "/arcane_shot,if=focus>=67";
 

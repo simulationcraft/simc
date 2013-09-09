@@ -39,7 +39,6 @@ role=attack
 position=back
 professions=blacksmithing=600/engineering=600
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#cZ!200002
-glyphs=adrenaline_rush
 head=ninetailed_helmet,id=96681,gems=capacitive_primal_320haste_180crit,reforge=hit_mastery
 neck=quadrahead_brooch,id=96815,gems=320haste_60crit,reforge=hit_haste
 shoulders=ninetailed_spaulders,id=96683,gems=160exp_160haste_320haste_120haste,enchant=200agi_100crit,reforge=hit_haste

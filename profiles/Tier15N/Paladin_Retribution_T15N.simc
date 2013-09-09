@@ -34,6 +34,7 @@ actions+=/auto_attack
 actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|target.time_to_die<holy_power*10|buff.divine_purpose.react)
 actions+=/avenging_wrath,if=buff.inquisition.up
 actions+=/guardian_of_ancient_kings,if=buff.avenging_wrath.up|target.time_to_die<=60
+actions+=/holy_avenger,if=talent.holy_avenger.enabled&(buff.inquisition.up&cooldown.guardian_of_ancient_kings.remains<171&holy_power<=2)
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent

@@ -250,7 +250,7 @@ public:
     cooldown.rage_from_crit_block     = get_cooldown( "rage_from_crit_block"      );
     cooldown.rage_from_crit_block     -> duration = timespan_t::from_seconds( 3.0 );
     cooldown.stance_swap              = get_cooldown( "stance_swap"               );
-    cooldown.stance_swap              -> duration = timespan_t::from_seconds( dbc.ptr ? 1.5 : 3.0 );
+    cooldown.stance_swap              -> duration = timespan_t::from_seconds( 1.5 );
 
     initial_rage = 0;
 
@@ -765,7 +765,7 @@ void warrior_attack_t::impact( action_state_t* s )
     {
       if( p -> buff.bloodbath -> up() )
         trigger_bloodbath_dot( s -> target, s -> result_amount );
-      if ( p -> dbc.ptr && p -> set_bonus.tier16_2pc_melee() && td ->  debuffs_colossus_smash -> up() && // Melee tier 16 2 piece.
+      if ( p -> set_bonus.tier16_2pc_melee() && td ->  debuffs_colossus_smash -> up() && // Melee tier 16 2 piece.
          ( this ->  weapon == &( p -> main_hand_weapon ) || this -> id == 100130 ) && // Only procs once per ability used.
            this -> id != 12328 && this -> id != 76858 ) //Doesn't proc from opportunity strikes or sweeping strikes.
         p -> resource_gain( RESOURCE_RAGE,
@@ -944,10 +944,10 @@ struct bladestorm_tick_t : public warrior_attack_t
     background  = true;
     direct_tick = true;
     aoe         = -1;
-    if ( p -> specialization() == WARRIOR_ARMS && p -> dbc.ptr ) //Bladestorm does 1.5x more damage as Arms on PTR.
+    if ( p -> specialization() == WARRIOR_ARMS ) //Bladestorm does 1.5x more damage as Arms on PTR.
       weapon_multiplier *= 1.5;
 
-    if ( p -> specialization() == WARRIOR_PROTECTION && p -> dbc.ptr ) //Bladestorm does 4/3 more damage as protection on PTR
+    if ( p -> specialization() == WARRIOR_PROTECTION ) //Bladestorm does 4/3 more damage as protection on PTR
       weapon_multiplier *= 4/3;
   }
 };
@@ -1163,7 +1163,7 @@ struct cleave_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if ( p -> dbc.ptr && p -> buff.ultimatum -> check() )
+    if ( p -> buff.ultimatum -> check() )
       cc += p -> buff.ultimatum -> data().effectN( 2 ).percent();
 
     return cc;
@@ -1323,7 +1323,7 @@ struct devastate_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if ( p -> dbc.ptr && s -> result == RESULT_CRIT )
+    if ( s -> result == RESULT_CRIT )
       p -> enrage();
   }
 };
@@ -1474,7 +1474,7 @@ struct heroic_strike_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if ( p -> dbc.ptr && p -> buff.ultimatum -> check() )
+    if ( p -> buff.ultimatum -> check() )
       cc += p -> buff.ultimatum -> data().effectN( 2 ).percent();
 
     return cc;
@@ -1642,8 +1642,7 @@ struct mortal_strike_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
     base_multiplier += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
-    if( p -> dbc.ptr )
-      base_multiplier *= 1.228; // Ptr hotfix.
+    base_multiplier *= 1.228; // Ptr hotfix.
   }
 
   virtual void execute()
@@ -2071,15 +2070,12 @@ struct shield_slam_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if ( result_is_hit( s -> result ) && ! p -> dbc.ptr )
-      p -> buff.ultimatum -> trigger();
-
     if ( rng().roll( p -> sets -> set( SET_T15_2PC_TANK ) -> proc_chance() ) )
     {
       p -> buff.tier15_2pc_tank -> trigger();
     }
 
-    if ( p -> dbc.ptr && s -> result == RESULT_CRIT )
+    if ( s -> result == RESULT_CRIT )
     {
       p -> enrage();
       p -> buff.ultimatum -> trigger();
@@ -2158,11 +2154,8 @@ struct slam_t : public warrior_attack_t
 
     weapon = &( p -> main_hand_weapon );
     
-    if ( p -> dbc.ptr )
-    {
-      extra_sweep = new slam_sweeping_strikes_attack_t( p );
-      add_child( extra_sweep );
-    }
+    extra_sweep = new slam_sweeping_strikes_attack_t( p );
+    add_child( extra_sweep );
   }
 
   virtual double action_multiplier()
@@ -2172,7 +2165,7 @@ struct slam_t : public warrior_attack_t
     warrior_t* p = cast();
     warrior_td_t* td = cast_td( p );
 
-    if ( p -> dbc.ptr && td -> debuffs_colossus_smash )
+    if ( td -> debuffs_colossus_smash )
       am *= 1 + p -> find_class_spell( "Colossus Smash") -> effectN( 5 ).percent();
 
     return am;
@@ -2184,7 +2177,7 @@ struct slam_t : public warrior_attack_t
 
     warrior_t *p = cast();
 
-    if ( p-> dbc.ptr && p -> buff.sweeping_strikes -> up() )
+    if ( p -> buff.sweeping_strikes -> up() )
     {
       extra_sweep -> base_dd_min = s -> result_amount;
       extra_sweep -> base_dd_max = s -> result_amount;
@@ -2226,7 +2219,7 @@ struct storm_bolt_t : public warrior_attack_t
     // Assuming that our target is stun immune, it gets an additional 300% dmg
     base_multiplier = 4.0;
 
-    if ( p -> specialization() == WARRIOR_FURY && p -> dbc.ptr )
+    if ( p -> specialization() == WARRIOR_FURY )
     {
       oh_attack = new storm_bolt_off_hand_t( p );
       add_child( oh_attack );
@@ -2239,7 +2232,7 @@ struct storm_bolt_t : public warrior_attack_t
 
     warrior_attack_t::execute(); // for fury, this is the MH attack
 
-    if ( p -> specialization() == WARRIOR_FURY && p -> dbc.ptr )
+    if ( p -> specialization() == WARRIOR_FURY )
     {
       oh_attack -> execute();
     }
@@ -2301,7 +2294,7 @@ struct thunder_clap_t : public warrior_attack_t
     // TC can trigger procs from either weapon, even though it doesn't need a weapon
     proc_ignores_slot = true;
 
-    if ( p -> spec.seasoned_soldier -> ok() && p -> dbc.ptr )
+    if ( p -> spec.seasoned_soldier -> ok() )
     {
       base_costs[ current_resource() ] += p -> spec.seasoned_soldier -> effectN( 2 ).resource( current_resource() );
     }
@@ -2318,7 +2311,7 @@ struct thunder_clap_t : public warrior_attack_t
       am *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
     }
 
-    if ( p ->  spec.blood_and_thunder -> ok() && p -> dbc.ptr )
+    if ( p ->  spec.blood_and_thunder -> ok() )
     {
       am *= 1.0 + p -> spec.blood_and_thunder -> effectN( 2 ).percent();
     }
@@ -3023,11 +3016,11 @@ struct stance_t : public warrior_spell_t
     {
       if( p -> active_stance == STANCE_BERSERKER )
         p -> resource_gain( RESOURCE_RAGE, floor( damage_taken / p -> resources.max[ RESOURCE_HEALTH ] * 100 ), p -> gain.berserker_stance );
-      if( swap >= ( p -> dbc.ptr ? 3.0 : 6.0 ) && p -> active_stance != starting_stance )
+      if( swap >= 3.0 && p -> active_stance != starting_stance )
         switch_to_stance = starting_stance;
-      if( swap < ( p -> dbc.ptr ? 3.0 : 6.0 ) )
+      if( swap < 3.0 )
         cooldown -> start();
-      if( swap >= ( p -> dbc.ptr ? 3.0 : 6.0 ) && p -> active_stance == starting_stance )
+      if( swap >= 3.0 && p -> active_stance == starting_stance )
       {
         if ( stance_str == "battle" )
           switch_to_stance = STANCE_BATTLE;
@@ -3236,7 +3229,7 @@ void warrior_t::init_spells()
   spec.crazed_berserker         = find_specialization_spell( "Crazed Berserker"    );
   spec.flurry                   = find_specialization_spell( "Flurry"              );
   spec.meat_cleaver             = find_specialization_spell( "Meat Cleaver"        );
-  if ( dbc.ptr )  spec.riposte  = find_specialization_spell( "Riposte"             );
+  spec.riposte                  = find_specialization_spell( "Riposte"             );
   spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier"    );
   spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel" );
   spec.single_minded_fury       = find_specialization_spell( "Single-Minded Fury"  );
@@ -3430,10 +3423,10 @@ void warrior_t::create_buffs()
   buff.taste_for_blood = buff_creator_t( this, "taste_for_blood" )
                          .spell( find_spell( 60503 ) );
 
-  if ( dbc.ptr ) buff.riposte = stat_buff_creator_t( this, "riposte",   spec.riposte -> effectN( 1 ).trigger() )
-                                  .cd( spec.riposte -> internal_cooldown() )
-                                  .chance( spec.riposte -> ok() ? spec.riposte -> proc_chance() : 0 )
-                                  .add_stat( STAT_CRIT_RATING, 0 );
+  buff.riposte = stat_buff_creator_t( this, "riposte",   spec.riposte -> effectN( 1 ).trigger() )
+                 .cd( spec.riposte -> internal_cooldown() )
+                 .chance( spec.riposte -> ok() ? spec.riposte -> proc_chance() : 0 )
+                 .add_stat( STAT_CRIT_RATING, 0 );
 
   buff.shield_block     = buff_creator_t( this, "shield_block" ).spell( find_spell( 132404 ) )
                           .add_invalidate( CACHE_BLOCK );
@@ -3531,7 +3524,7 @@ void warrior_t::init_rng()
     default: rppm = 0.0;
       break;
   }
-  t15_2pc_melee.set_frequency( rppm * ( maybe_ptr ( dbc.ptr) ? 1.11 : 1.0) );
+  t15_2pc_melee.set_frequency( rppm * 1.11 );
 }
 
 // warrior_t::init_actions ==================================================
@@ -4044,11 +4037,8 @@ void warrior_t::assess_damage( school_e school,
   if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
   {
     cooldown.revenge -> reset( true );
-    if ( dbc.ptr )
-    {
-      buff.riposte -> stats[ 0 ].amount = ( current.stats.dodge_rating + current.stats.parry_rating ) * spec.riposte -> effectN( 1 ).percent();
-      buff.riposte -> trigger();
-    }
+    buff.riposte -> stats[ 0 ].amount = ( current.stats.dodge_rating + current.stats.parry_rating ) * spec.riposte -> effectN( 1 ).percent();
+    buff.riposte -> trigger();
   }
 
   if ( s -> result == RESULT_PARRY && glyphs.hold_the_line -> ok())
@@ -4080,7 +4070,7 @@ void warrior_t::assess_damage( school_e school,
   }
 
   
-  if ( dbc.ptr && set_bonus.tier16_2pc_tank() )
+  if ( set_bonus.tier16_2pc_tank() )
   {
     if (s -> block_result != BLOCK_RESULT_UNBLOCKED) //heal if blocked
     {

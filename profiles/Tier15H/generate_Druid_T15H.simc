@@ -8,7 +8,6 @@ race=troll
 spec=balance
 professions=engineering=600/blacksmithing=600
 talents=010201
-glyphs=moonbeast
 head=cover_of_the_haunted_forest,id=96590,gems=sinister_primal_320crit_180crit,reforge=spi_crit
 neck=soul_prism_of_lei_shen,id=96932,gems=320crit_320crit
 shoulders=shoulderwraps_of_the_haunted_forest,id=96593,gems=80int_160crit_320crit_120haste,enchant=200int_100crit

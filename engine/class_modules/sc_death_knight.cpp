@@ -2087,46 +2087,6 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   }
 
   virtual bool   ready();
-
-  // Rewrite RPPM formula due to a massive bug on blizzard's end
-  double real_ppm_proc_chance( double PPM, timespan_t last_trigger, timespan_t last_successful_proc, rppm_scale_e scales_with )
-  {
-    if ( player -> bugs && ! maybe_ptr( player -> dbc.ptr ) )
-    {
-      // Old RPPM formula
-      double spell_haste = player -> cache.spell_haste();
-      double melee_haste = player -> cache.attack_haste();
-      if ( p() -> buffs.runic_corruption -> up() )
-        melee_haste *= 1.0 / ( 1.0 + p() -> talent.runic_corruption -> effectN( 1 ).percent() );
-      if ( p() -> spec.improved_blood_presence -> ok() && p() -> buffs.blood_presence -> up() )
-        melee_haste *= 1.0 / ( 1.0 + p() -> spec.improved_blood_presence -> effectN( 1 ).percent() );
-
-      double coeff = 1.0 / std::min( spell_haste, melee_haste );
-      double seconds = std::min( ( sim -> current_time - last_trigger ).total_seconds(), 10.0 );
-
-      switch ( scales_with )
-      {
-        case RPPM_ATTACK_CRIT:
-          coeff *= 1.0 + player -> cache.attack_crit();
-          break;
-        case RPPM_SPELL_CRIT:
-          coeff *= 1.0 + player -> cache.spell_crit();
-          break;
-        default: break;
-      }
-
-      double old_rppm_chance = ( PPM * ( seconds / 60.0 ) ) * coeff;
-
-      // RPPM Extension added on 12. March 2013: http://us.battle.net/wow/en/blog/8953693?page=44
-      // Formula see http://us.battle.net/wow/en/forum/topic/8197741003#1
-      double last_success = std::min( ( sim -> current_time - last_successful_proc ).total_seconds(), 1000.0 );
-
-      double expected_average_proc_interval = 60.0 / ( PPM * coeff );
-      return std::max( 1.0, 1 + ( ( last_success / expected_average_proc_interval - 1.5 ) * 3.0 ) )  * old_rppm_chance;
-    }
-    else
-      return base_t::real_ppm_proc_chance( PPM, last_trigger, last_successful_proc, scales_with );
-  }
 };
 
 // ==========================================================================
@@ -2219,9 +2179,6 @@ static void trigger_t16_2pc_tank( action_state_t* s )
 static void trigger_t16_4pc_melee( action_state_t* s )
 {
   if ( ! s -> action -> player -> set_bonus.tier16_4pc_melee() )
-    return;
-
-  if ( ! maybe_ptr( s -> action -> player -> dbc.ptr ) )
     return;
 
   if ( ! s -> action -> special || ! s -> action -> harmful || s -> action -> proc )
@@ -3645,10 +3602,7 @@ struct howling_blast_t : public death_knight_spell_t
 
     aoe                 = -1;
     base_aoe_multiplier = data().effectN( 3 ).percent();
-    if ( p -> dbc.ptr )
-      direct_power_mod    = 0.8480; // tested on PTR, was a 14.9% buff, not a 15% buff
-    else
-      direct_power_mod    = 0.738;
+    direct_power_mod    = 0.8480; // tested on PTR, was a 14.9% buff, not a 15% buff
 
     assert( p -> active_spells.frost_fever );
   }
@@ -4487,7 +4441,7 @@ struct plague_leech_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    for ( int i = 0; i < ( ! maybe_ptr( p() -> dbc.ptr ) ? 1 : 2 ); i++ )
+    for ( int i = 0; i < 2; i++ )
     {
       int selected_rune = random_depleted_rune( p() );
       if ( selected_rune == -1 )
@@ -5079,8 +5033,7 @@ double death_knight_t::composite_spell_haste()
 {
   double haste = player_t::composite_spell_haste();
 
-  if ( maybe_ptr( dbc.ptr ) )
-    haste *= 1.0 / ( 1.0 + buffs.unholy_presence -> value() );
+  haste *= 1.0 / ( 1.0 + buffs.unholy_presence -> value() );
 
   return haste;
 }
@@ -5092,7 +5045,7 @@ void death_knight_t::init_rng()
   player_t::init_rng();
 
   const spell_data_t* spell = find_spell( 138343 );
-  t15_2pc_melee.set_frequency( maybe_ptr( dbc.ptr ) ? spell -> real_ppm() : 1.0 );
+  t15_2pc_melee.set_frequency( spell -> real_ppm() );
 }
 
 // death_knight_t::init_base ================================================
@@ -5149,7 +5102,7 @@ void death_knight_t::init_spells()
   spec.crimson_scourge            = find_specialization_spell( "Crimson Scourge" );
   spec.sanguine_fortitude         = find_specialization_spell( "Sanguine Fortitude" );
   spec.will_of_the_necropolis     = find_specialization_spell( "Will of the Necropolis" );
-  spec.riposte                    = maybe_ptr( dbc.ptr ) ? find_specialization_spell( "Riposte" ) : spell_data_t::not_found();
+  spec.riposte                    = find_specialization_spell( "Riposte" );
 
   // Frost
   spec.blood_of_the_north         = find_specialization_spell( "Blood of the North" );
@@ -5201,13 +5154,13 @@ void death_knight_t::init_spells()
   spell.antimagic_shell           = find_class_spell( "Anti-Magic Shell" );
   spell.blood_parasite            = find_spell( 50452 );
   spell.t15_4pc_tank              = find_spell( 138214 );
-  spell.t16_4pc_melee             = maybe_ptr( dbc.ptr ) ? find_spell( 144909 ) : spell_data_t::not_found();
+  spell.t16_4pc_melee             = find_spell( 144909 );
 
   // Active Spells
   active_spells.blood_plague = new blood_plague_t( this );
   active_spells.frost_fever = new frost_fever_t( this );
 
-  if ( maybe_ptr( dbc.ptr ) && set_bonus.tier16_4pc_melee() && specialization() == DEATH_KNIGHT_FROST )
+  if ( set_bonus.tier16_4pc_melee() && specialization() == DEATH_KNIGHT_FROST )
   {
     struct frozen_power_t : public melee_attack_t
     {
@@ -5969,7 +5922,7 @@ void death_knight_t::create_buffs()
                               .max_stack( specialization() == DEATH_KNIGHT_BLOOD ? ( find_specialization_spell( "Bone Shield" ) -> initial_stacks() +
                                           find_spell( 144948 ) -> max_stacks() ) : -1 );
   buffs.bone_wall           = buff_creator_t( this, "bone_wall", find_spell( 144948 ) )
-                              .chance( maybe_ptr( dbc.ptr ) && set_bonus.tier16_2pc_tank() );
+                              .chance( set_bonus.tier16_2pc_tank() );
   buffs.crimson_scourge     = buff_creator_t( this, "crimson_scourge" ).spell( find_spell( 81141 ) )
                               .chance( spec.crimson_scourge -> proc_chance() );
   buffs.dancing_rune_weapon = buff_creator_t( this, "dancing_rune_weapon", find_spell( 81256 ) )
@@ -5977,7 +5930,7 @@ void death_knight_t::create_buffs()
                               .add_invalidate( CACHE_PARRY );
   buffs.dark_transformation = buff_creator_t( this, "dark_transformation", find_class_spell( "Dark Transformation" ) );
   buffs.deathbringer        = buff_creator_t( this, "deathbringer", find_spell( 144953 ) )
-                              .chance( maybe_ptr( dbc.ptr ) && set_bonus.tier16_4pc_tank() );
+                              .chance( set_bonus.tier16_4pc_tank() );
   buffs.death_shroud        = stat_buff_creator_t( this, "death_shroud", sets -> set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )
                               .chance( sets -> set( SET_T16_2PC_MELEE ) -> proc_chance() )
                               .add_stat( STAT_MASTERY_RATING, sets -> set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() -> effectN( 2 ).base_value(), death_shroud_mastery )
@@ -6184,7 +6137,7 @@ void death_knight_t::assess_damage( school_e     school,
     buffs.will_of_the_necropolis_rt -> trigger();
   }
 
-  if ( maybe_ptr( dbc.ptr ) && ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY ) )
+  if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
   {
     if ( buffs.scent_of_blood -> trigger() )
     {

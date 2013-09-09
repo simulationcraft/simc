@@ -58,7 +58,7 @@ race=troll
 spec=frost
 professions=tailoring=600/blacksmithing=600
 talents=100022
-glyphs=evocation/icy_veins/ice_lance
+glyphs=evocation/icy_veins
 head=hood_of_the_chromatic_hydra,id=96635,gems=sinister_primal_320haste_180crit
 neck=megaeras_shining_eye,id=96825,reforge=hit_haste
 shoulders=mantle_of_the_chromatic_hydra,id=96638,gems=80int_160haste_320haste_120haste,enchant=200int_100crit,reforge=crit_hit

@@ -570,21 +570,10 @@ struct mindbender_pet_t : public base_fiend_pet_t
     base_fiend_pet_t( sim, owner, PET_MINDBENDER, name ),
     mindbender_spell( owner.find_talent_spell( "Mindbender" ) )
   {
-    if ( dbc.ptr ) //10% Damage increase on PTR
-    {
-      direct_power_mod = 0.88;
+    direct_power_mod = 0.88;
 
-      main_hand_weapon.min_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 1.76;
-      main_hand_weapon.max_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 1.76;
-    }
-    else
-    {
-      direct_power_mod = 0.80;
-
-      main_hand_weapon.min_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 1.6;
-      main_hand_weapon.max_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 1.6;
-    }
-
+    main_hand_weapon.min_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 1.76;
+    main_hand_weapon.max_dmg = owner.dbc.spell_scaling( owner.type, owner.level ) * 1.76;
     main_hand_weapon.damage  = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
   }
 
@@ -1902,8 +1891,7 @@ struct priest_procced_mastery_spell_t : public priest_spell_t
     proc                    = true;
     base_execute_time       = timespan_t::zero();
 
-    if ( priest.dbc.ptr )
-      crit_bonus_multiplier *= 1.0 + priest.sets -> set( SET_T16_2PC_CASTER ) -> effectN( 1 ).percent();
+    crit_bonus_multiplier *= 1.0 + priest.sets -> set( SET_T16_2PC_CASTER ) -> effectN( 1 ).percent();
   }
 
 
@@ -1927,7 +1915,7 @@ struct shadowy_apparition_spell_t : public priest_spell_t
   shadowy_apparition_spell_t( priest_t& p ) :
     priest_spell_t( "shadowy_apparition",
                     p,
-                    p.dbc.ptr ? p.find_spell( 78203 ) : p.find_spell( 87532 ) ) //When this ability is rebuilt in SimC to be a missile we will most likely use spell ID 147193
+                    p.find_spell( 78203 ) ) //When this ability is rebuilt in SimC to be a missile we will most likely use spell ID 147193
   {
     background        = true;
     proc              = true;
@@ -2046,11 +2034,8 @@ struct mind_blast_t : public priest_spell_t
     }
     priest_spell_t::update_ready( cd_duration );
 
-    if ( priest.dbc.ptr )
-    {
-      priest.buffs.empowered_shadows -> up(); // benefit tracking
-      priest.buffs.empowered_shadows -> expire();
-    }
+    priest.buffs.empowered_shadows -> up(); // benefit tracking
+    priest.buffs.empowered_shadows -> expire();
   }
 
   virtual timespan_t execute_time()
@@ -2076,7 +2061,7 @@ struct mind_blast_t : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier();
 
-    if ( priest.dbc.ptr && priest.buffs.empowered_shadows -> check() )
+    if ( priest.buffs.empowered_shadows -> check() )
       d *= 1.0 + priest.buffs.empowered_shadows->current_value *  priest.buffs.empowered_shadows -> check();
 
     return d;
@@ -2156,11 +2141,8 @@ struct mind_spike_t : public priest_spell_t
   {
     priest_spell_t::update_ready( cd_duration );
 
-    if ( priest.dbc.ptr )
-    {
-      priest.buffs.empowered_shadows -> up(); // benefit tracking
-      priest.buffs.empowered_shadows -> expire();
-    }
+    priest.buffs.empowered_shadows -> up(); // benefit tracking
+    priest.buffs.empowered_shadows -> expire();
   }
 
   virtual void impact( action_state_t* s )
@@ -2223,7 +2205,7 @@ struct mind_spike_t : public priest_spell_t
       d *= 1.0 + priest.active_spells.surge_of_darkness -> effectN( 4 ).percent();
     }
 
-    if ( priest.dbc.ptr && priest.buffs.empowered_shadows -> check() )
+    if ( priest.buffs.empowered_shadows -> check() )
       d *= 1.0 + priest.buffs.empowered_shadows->current_value *  priest.buffs.empowered_shadows -> check();
 
     return d;
@@ -2397,11 +2379,8 @@ struct shadow_word_death_t : public priest_spell_t
   {
     priest_spell_t::update_ready( cd_duration );
 
-    if ( priest.dbc.ptr )
-    {
-      priest.buffs.empowered_shadows -> up(); // benefit tracking
-      priest.buffs.empowered_shadows -> expire();
-    }
+    priest.buffs.empowered_shadows -> up(); // benefit tracking
+    priest.buffs.empowered_shadows -> expire();
   }
 
   virtual void impact( action_state_t* s )
@@ -2431,7 +2410,7 @@ struct shadow_word_death_t : public priest_spell_t
   {
     double d = priest_spell_t::composite_da_multiplier();
 
-    if ( priest.dbc.ptr && priest.buffs.empowered_shadows -> check() )
+    if ( priest.buffs.empowered_shadows -> check() )
         d *= 1.0 + priest.buffs.empowered_shadows->current_value *  priest.buffs.empowered_shadows -> check();
 
     return d;
@@ -2633,10 +2612,7 @@ struct devouring_plague_t : public priest_spell_t
     stats -> consume_resource( current_resource(), resource_consumed );
 
     // Grants 20% per stack, 60% in total. Overriding DBC data as it is a flat 50% no matter stack count. Updated 2013/08/11
-    if ( priest.dbc.ptr )
-    {
-      priest.buffs.empowered_shadows -> trigger(1, resource_consumed * 0.2);
-    }
+    priest.buffs.empowered_shadows -> trigger(1, resource_consumed * 0.2);
   }
 
   virtual double action_da_multiplier()
@@ -3682,8 +3658,7 @@ struct circle_of_healing_t : public priest_heal_t
 
     priest_heal_t::execute();
 
-    if ( priest.dbc.ptr )
-      priest.buffs.absolution -> trigger();
+    priest.buffs.absolution -> trigger();
   }
 
   virtual double action_multiplier()
@@ -3974,8 +3949,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
         am *= 1.0 + priest.buffs.chakra_sanctuary -> data().effectN( 1 ).percent();
 
       // Spell data from the buff ( 15% ) is correct, not the one in the triggering spell ( 50% )
-      if ( priest.dbc.ptr )
-        am *= 1.0 + priest.buffs.absolution -> check() * priest.buffs.absolution -> data().effectN( 1 ).percent();
+      am *= 1.0 + priest.buffs.absolution -> check() * priest.buffs.absolution -> data().effectN( 1 ).percent();
 
       return am;
     }
@@ -4001,8 +3975,7 @@ struct holy_word_sanctuary_t : public priest_heal_t
   {
     priest_heal_t::execute();
 
-    if ( priest.dbc.ptr )
-      priest.buffs.absolution -> expire();
+    priest.buffs.absolution -> expire();
   }
 
   virtual bool ready()
@@ -4058,8 +4031,7 @@ struct holy_word_chastise_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    if ( priest.dbc.ptr )
-      priest.buffs.absolution -> expire();
+    priest.buffs.absolution -> expire();
   }
 
   virtual double action_multiplier()
@@ -4067,8 +4039,7 @@ struct holy_word_chastise_t : public priest_spell_t
     double am = priest_spell_t::action_multiplier();
 
     // Spell data from the buff ( 15% ) is correct, not the one in the triggering spell ( 50% )
-    if ( priest.dbc.ptr )
-      am *= 1.0 + priest.buffs.absolution -> check() * priest.buffs.absolution -> data().effectN( 1 ).percent();
+    am *= 1.0 + priest.buffs.absolution -> check() * priest.buffs.absolution -> data().effectN( 1 ).percent();
 
     return am;
   }
@@ -4104,8 +4075,7 @@ struct holy_word_serenity_t : public priest_heal_t
   {
     priest_heal_t::execute();
 
-    if ( priest.dbc.ptr )
-      priest.buffs.absolution -> expire();
+    priest.buffs.absolution -> expire();
   }
 
   virtual double action_multiplier()
@@ -4113,8 +4083,7 @@ struct holy_word_serenity_t : public priest_heal_t
     double am = priest_heal_t::action_multiplier();
 
     // Spell data from the buff ( 15% ) is correct, not the one in the triggering spell ( 50% )
-    if ( priest.dbc.ptr )
-      am *= 1.0 + priest.buffs.absolution -> check() * priest.buffs.absolution -> data().effectN( 1 ).percent();
+    am *= 1.0 + priest.buffs.absolution -> check() * priest.buffs.absolution -> data().effectN( 1 ).percent();
 
     return am;
   }
@@ -4477,22 +4446,14 @@ struct prayer_of_mending_t : public priest_heal_t
 
     aoe = 5;
 
-    if ( priest.dbc.ptr )
-    {
-      castable_in_shadowform = true;
-    }
-    else
-    {
-      castable_in_shadowform = p.glyphs.dark_binding -> ok();
-    }
+    castable_in_shadowform = true;
   }
 
   virtual void execute()
   {
     priest_heal_t::execute();
 
-    if ( priest.dbc.ptr )
-      priest.buffs.absolution -> trigger();
+    priest.buffs.absolution -> trigger();
   }
 
   virtual double action_multiplier()
@@ -4560,14 +4521,7 @@ struct renew_t : public priest_heal_t
     base_multiplier *= 1.0 + p.glyphs.renew -> effectN( 1 ).percent();
     num_ticks       += ( int ) ( p.glyphs.renew -> effectN( 2 ).time_value() / base_tick_time );
 
-    if ( priest.dbc.ptr )
-    {
-      castable_in_shadowform = true;
-    }
-    else
-    {
-      castable_in_shadowform = p.glyphs.dark_binding -> ok();
-    }
+    castable_in_shadowform = true;
   }
 
   virtual double action_multiplier()
@@ -4782,18 +4736,7 @@ void priest_t::shadowy_apparitions_t::trigger( action_state_t& s )
   if ( ! priest.specs.shadowy_apparitions -> ok() )
     return;
 
-  // Check if there are already 4 active SA
-  if ( !priest.dbc.ptr && apparitions_active.size() >= 4 ) //Live
-  {
-    // If there are already 4 SA's active, they will get added to a queue
-    // Added 11. March 2013, see http://howtopriest.com/viewtopic.php?f=8&t=3242
-    targets_queued.push_back( s.target );
-
-    if ( priest.sim -> debug )
-      priest.sim -> output( "%s added shadowy apparition to the queue. Active SA: %d, Queued SA: %d",
-                            priest.name(), as<unsigned>( apparitions_active.size() ), as<unsigned>( targets_queued.size() ) );
-  }
-  else if ( priest.dbc.ptr || ! apparitions_free.empty() ) // less than 4 active SA, and, 5.4 PTR
+  if ( ! apparitions_free.empty() ) // less than 4 active SA, and, 5.4 PTR
   {
     // Get SA spell, set target and remove it from free list
     sa_spell* sa = apparitions_free.back();
@@ -4995,10 +4938,8 @@ double priest_t::composite_armor()
     a *= 1.0 + glyphs.inner_fire -> effectN( 1 ).percent();
   }
 
-  if ( dbc.ptr && buffs.shadowform -> check() )
-  {
+  if ( buffs.shadowform -> check() )
     a *= 1.0 + buffs.shadowform -> data().effectN( 7 ).percent();
-  }
 
   return std::floor( a );
 }
@@ -5012,10 +4953,8 @@ double priest_t::composite_spell_haste()
   if ( buffs.power_infusion -> check() )
     h /= 1.0 + buffs.power_infusion -> data().effectN( 1 ).percent();
 
-  if ( dbc.ptr && buffs.resolute_spirit -> check() )
-  {
+  if ( buffs.resolute_spirit -> check() )
     h /= 1.0 + buffs.resolute_spirit -> data().effectN( 1 ).percent(); // FIXME: check whether to use set bonus data ( 10% ) or buff data ( 15% ). 2013/06/13
-  }
 
   return h;
 }
@@ -5441,14 +5380,7 @@ void priest_t::init_spells()
 
   if ( specs.shadowy_apparitions -> ok() )
   {
-    if ( !dbc.ptr )
-    {
-      shadowy_apparitions.add_more( 5 );
-    }
-    else
-    {
-      shadowy_apparitions.add_more( 1000 ); //Hacky no cap
-    }
+    shadowy_apparitions.add_more( 1000 ); //Hacky no cap
   }
 
   active_spells.surge_of_darkness = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();
@@ -5548,39 +5480,25 @@ void priest_t::create_buffs()
                            .spell( glyphs.mind_spike -> effectN( 1 ).trigger() )
                            .chance( glyphs.mind_spike -> proc_chance() );
 
-  if ( dbc.ptr )
-  {
+  buffs.shadow_word_death_reset_cooldown = buff_creator_t( this, "shadow_word_death_reset_cooldown" )
+                                              .max_stack( 1 )
+                                              .duration( timespan_t::from_seconds( 9.0 ) ); // data in the old deprecated glyph. Leave hardcoded for now, 3/12/2012; 9.0sec ICD in 5.4 (2013/08/18)
 
-    buffs.shadow_word_death_reset_cooldown = buff_creator_t( this, "shadow_word_death_reset_cooldown" )
-                                               .max_stack( 1 )
-                                               .duration( timespan_t::from_seconds( 9.0 ) ); // data in the old deprecated glyph. Leave hardcoded for now, 3/12/2012; 9.0sec ICD in 5.4 (2013/08/18)
+  buffs.empowered_shadows = buff_creator_t( this, "empowered_shadows" )
+                            .spell( sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).trigger() )
+                            .chance( sets -> has_set_bonus( SET_T16_4PC_CASTER ) ? 1.0 : 0.0 );
 
-    buffs.empowered_shadows = buff_creator_t( this, "empowered_shadows" )
-                              .spell( sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).trigger() )
-                              .chance( sets -> has_set_bonus( SET_T16_4PC_CASTER ) ? 1.0 : 0.0 );
+  buffs.absolution = buff_creator_t( this, "absolution" )
+                      .spell( find_spell( 145336 ) )
+                      .chance( sets -> has_set_bonus( SET_T16_4PC_HEAL ) ? 1.0 : 0.0 );
 
-    buffs.absolution = buff_creator_t( this, "absolution" )
-                       .spell( find_spell( 145336 ) )
-                       .chance( sets -> has_set_bonus( SET_T16_4PC_HEAL ) ? 1.0 : 0.0 );
+  buffs.resolute_spirit = stat_buff_creator_t( this, "resolute_spirit" )
+                          .spell( find_spell( 145374 ) )
+                          .chance( sets -> has_set_bonus( SET_T16_4PC_HEAL ) ? 1.0 : 0.0 )
+                          .add_invalidate( CACHE_HASTE );
 
-    buffs.resolute_spirit = stat_buff_creator_t( this, "resolute_spirit" )
-                            .spell( find_spell( 145374 ) )
-                            .chance( sets -> has_set_bonus( SET_T16_4PC_HEAL ) ? 1.0 : 0.0 )
-                            .add_invalidate( CACHE_HASTE );
-
-    buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", active_spells.surge_of_darkness )
-                                             .chance( active_spells.surge_of_darkness -> ok() ? 0.20 : 0.0 ); // Updated 5.4 PTR value, 6/20/2013
-  }
-  else
-  {
-
-      buffs.shadow_word_death_reset_cooldown = buff_creator_t( this, "shadow_word_death_reset_cooldown" )
-                                               .max_stack( 1 )
-                                               .duration( timespan_t::from_seconds( 6.0 ) ); // data in the old deprecated glyph. Leave hardcoded for now, 3/12/2012
-
-      buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", active_spells.surge_of_darkness )
-                                               .chance( active_spells.surge_of_darkness -> ok() ? 0.15 : 0.0 ); // hardcoded into tooltip, 3/12/2012
-  }
+  buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", active_spells.surge_of_darkness )
+                                            .chance( active_spells.surge_of_darkness -> ok() ? 0.20 : 0.0 ); // Updated 5.4 PTR value, 6/20/2013
 }
 
 // ALL Spec Pre-Combat Action Priority List
@@ -6042,9 +5960,6 @@ void priest_t::target_mitigation( school_e school,
                                   action_state_t* s )
 {
   base_t::target_mitigation( school, dt, s );
-
-  if ( buffs.shadowform -> check() && ! dbc.ptr /* http://www.mmo-champion.com/content/3274-Patch-5-4-PTR-Build-17056 */ )
-  { s -> result_amount *= 1.0 + buffs.shadowform -> data().effectN( 3 ).percent(); }
 
   if ( buffs.inner_fire -> check() && glyphs.inner_sanctum -> ok() && ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK ) )
   { s -> result_amount *= 1.0 - glyphs.inner_sanctum -> effectN( 1 ).percent(); }

@@ -499,12 +499,7 @@ public:
                            const std::string& options_str )
   {
     if ( name == "crackling_tiger_lightning" ) 
-    {
-      if (owner->dbc.ptr) 
-        return new crackling_tiger_lightning_driver_t( this, options_str );
-        
-      return new crackling_tiger_lightning_t( this, options_str );
-    }
+      return new crackling_tiger_lightning_driver_t( this, options_str );
     
     if ( name == "auto_attack" ) 
       return new auto_attack_t( this, options_str );
@@ -621,32 +616,21 @@ public:
 
           p() -> buff.tigereye_brew -> trigger();
           // I assume that this is for the T15 bonus?  If so, then we need similar logic for T16
-		  // rekeying the proc to go by mastery.
-		  if ( p() -> dbc.ptr )
-		  {
-            if (  p() -> spec.brewing_tigereye_brew -> ok() )
-			{
-			  // Double to hold the chance for our mastery to proc.  This is based upon player's mastery
-			  double mastery_proc_chance = p() -> cache.mastery_value();
-			  while ( mastery_proc_chance > 0 )
-			  {
-				if ( ab::rng().roll( mastery_proc_chance ) )
-				{
-				  p() -> buff.tigereye_brew -> trigger();
-				  p() -> proc.tigereye_brew -> occur();
-				}
-				mastery_proc_chance -= 1.0;
-			  }
-			}
-		  } else {
-			// preserves what we will currently see on Live
-			if ( p() -> set_bonus.tier15_4pc_melee() &&
-			    ab::rng().roll( p() -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent() ) )
-			{
-			  p() -> buff.tigereye_brew -> trigger();
-			  p() -> proc.tier15_4pc_melee -> occur();
-			}
-		  }
+          // rekeying the proc to go by mastery.
+          if (  p() -> spec.brewing_tigereye_brew -> ok() )
+          {
+            // Double to hold the chance for our mastery to proc.  This is based upon player's mastery
+            double mastery_proc_chance = p() -> cache.mastery_value();
+            while ( mastery_proc_chance > 0 )
+            {
+              if ( ab::rng().roll( mastery_proc_chance ) )
+              {
+                p() -> buff.tigereye_brew -> trigger();
+                p() -> proc.tigereye_brew -> occur();
+              }
+              mastery_proc_chance -= 1.0;
+            }
+          }
         }
       }
 
@@ -1728,18 +1712,7 @@ struct tigereye_brew_t : public monk_spell_t
   }
 
   double value()
-  {
-    double v = p() -> buff.tigereye_brew_use -> data().effectN( 1 ).percent();
-
-    if ( p() -> mastery.bottled_fury -> ok() )
-      v += p() -> cache.mastery_value();
-
-    if ( player -> dbc.ptr ) {
-      v = p() -> buff.tigereye_brew_use -> data().effectN( 1 ).percent();
-    }
-
-    return v;
-  }
+  { return p() -> buff.tigereye_brew_use -> data().effectN( 1 ).percent(); }
 
   virtual void execute()
   {
@@ -1750,25 +1723,30 @@ struct tigereye_brew_t : public monk_spell_t
     // EEIN: Seperated teb_stacks_used from use_value so it can be used to track focus of xuen.
     double use_value = value() * teb_stacks_used;
     // so value is going to actually be DIFFERENT if player is using T15 4set now...
-    if (player -> dbc.ptr ) {
-      //add this vvv into if (set_bonus.tier164pc) when it is created
-      p() -> track_focus_of_xuen += teb_stacks_used;
-	  if ( p() -> track_focus_of_xuen > 20.0 ) p() -> track_focus_of_xuen = 20.0;
-        
-      if ( p() -> set_bonus.tier15_4pc_melee() ) {
-        // So increase the value by 1% per stack used...  HOWEVER, on PTR this is currently broken, and we are only receiving
-        // .5% per stack of Tigereye Brew Used.  Thus, max_stacks_consumable will be divided by 100 IF this is fixed.
-        use_value *= 1.05; // t154pc 
-      } if ( p() -> set_bonus.tier16_4pc_melee() ) {
-        // so, there's actually an error with our 4set in that it doesn't count a full .75 if we don't use a full 4, but
-        // can't find post that contains info.
-        // TODO  figure out how much of a stack it "saves"
-        if( p() -> track_focus_of_xuen >= 10.0) {
-          p() -> buff.focus_of_xuen -> trigger( 1, buff_t::DEFAULT_VALUE(), 100.0 ); // TODO: Update to spell data
-          p() -> track_focus_of_xuen -= 10.0; // find out if this is additive or resets to zero upon use.
-        }
+    //add this vvv into if (set_bonus.tier164pc) when it is created
+    p() -> track_focus_of_xuen += teb_stacks_used;
+    if ( p() -> track_focus_of_xuen > 20.0 )
+      p() -> track_focus_of_xuen = 20.0;
+      
+    if ( p() -> set_bonus.tier15_4pc_melee() )
+    {
+      // So increase the value by 1% per stack used...  HOWEVER, on PTR this is currently broken, and we are only receiving
+      // .5% per stack of Tigereye Brew Used.  Thus, max_stacks_consumable will be divided by 100 IF this is fixed.
+      use_value *= 1.05; // t154pc 
+    }
+    
+    if ( p() -> set_bonus.tier16_4pc_melee() )
+    {
+      // so, there's actually an error with our 4set in that it doesn't count a full .75 if we don't use a full 4, but
+      // can't find post that contains info.
+      // TODO  figure out how much of a stack it "saves"
+      if( p() -> track_focus_of_xuen >= 10.0 )
+      {
+        p() -> buff.focus_of_xuen -> trigger( 1, buff_t::DEFAULT_VALUE(), 100.0 ); // TODO: Update to spell data
+        p() -> track_focus_of_xuen -= 10.0; // find out if this is additive or resets to zero upon use.
       }
     }
+
     p() -> buff.tigereye_brew_use -> trigger( 1, use_value );
     p() -> buff.tigereye_brew -> decrement( max_stacks_consumable );
   }
@@ -1809,11 +1787,8 @@ struct chi_brew_t : public monk_spell_t
     parse_options( nullptr, options_str );
 
     harmful = false;
-    if ( maybe_ptr( player -> dbc.ptr ) )
-    {
-      cooldown -> duration = timespan_t::from_seconds( 45.0 );
-      cooldown -> charges = 2;
-    }
+    cooldown -> duration = timespan_t::from_seconds( 45.0 );
+    cooldown -> charges = 2;
   }
 
   virtual void execute()
@@ -2742,12 +2717,6 @@ void monk_t::init_spells()
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
-
-
-  if ( specialization() == MONK_WINDWALKER && ! maybe_ptr( dbc.ptr ) )
-  {
-    _mastery = &find_mastery_spell( specialization() ) -> effectN( 3 );
-  }
 }
 
 // monk_t::init_base ========================================================

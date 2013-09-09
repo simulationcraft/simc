@@ -10,7 +10,7 @@ role=spell
 position=back
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!002212
-glyphs=dark_binding/mind_spike/inner_sanctum
+glyphs=mind_spike/inner_sanctum
 head=hood_of_the_exorcist,id=96675,gems=sinister_primal_320haste_180crit
 neck=soul_prism_of_lei_shen,id=96932,gems=320haste_320haste,reforge=spi_crit
 shoulders=shoulderguards_of_the_exorcist,id=96678,gems=80int_160haste_320haste_120haste,enchant=200int_100crit

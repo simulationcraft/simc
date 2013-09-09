@@ -33,7 +33,7 @@ race=troll
 spec=demonology
 professions=herbalism=600/tailoring=600
 talents=101032
-glyphs=imp_swarm/everlasting_affliction/siphon_life
+glyphs=imp_swarm/siphon_life
 main_hand=suenwo_spire_of_the_falling_sun,id=96911,gems=80int_160mastery_320haste_60int,enchant=jade_spirit
 back=jadefire_drape,id=98150,gems=80int_160mastery_60int,enchant=lightweave_embroidery_3
 trinket2=breath_of_the_hydra,id=96827

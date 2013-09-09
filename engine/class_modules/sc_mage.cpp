@@ -206,7 +206,6 @@ public:
     const spell_data_t* frostbolt;
     const spell_data_t* brain_freeze;
     const spell_data_t* fingers_of_frost;
-    const spell_data_t* frostburn;
     const spell_data_t* icicles;
 
   } spec;
@@ -425,20 +424,6 @@ struct water_elemental_pet_t : public pet_t
 
       return am;
     }
-
-    virtual double composite_target_multiplier( player_t* target )
-    {
-      double tm = spell_t::composite_target_multiplier( target );
-
-      water_elemental_pet_t* p = static_cast<water_elemental_pet_t*>( player );
-
-      // This check can go away when 5.4 is released
-      if ( p -> o() -> spec.frostburn -> ok() )
-        tm *= 1.0 + p -> o() -> get_target_data( target ) -> debuffs.frostbolt -> stack() * 0.05;
-
-      return tm;
-    }
-
   };
 
   water_elemental_pet_t( sim_t* sim, mage_t* owner ) :
@@ -465,9 +450,7 @@ struct water_elemental_pet_t : public pet_t
   {
     double m = pet_t::composite_player_multiplier( school );
 
-    if ( ! maybe_ptr( dbc.ptr ) && o() -> spec.frostburn -> ok() )
-      m *= 1.0 + o() -> cache.mastery_value();
-    if ( maybe_ptr( dbc.ptr ) && o() -> spec.icicles -> ok() )
+    if ( o() -> spec.icicles -> ok() )
       m *= 1.0 + o() -> cache.mastery_value();
 
     if ( o() -> buffs.invokers_energy -> up() )
@@ -1076,16 +1059,6 @@ public:
       um = true;
 
     return um;
-  }
-
-  virtual double action_multiplier()
-  {
-    double am = spell_t::action_multiplier();
-
-    if ( ! maybe_ptr( player -> dbc.ptr ) && frozen && p() -> spec.frostburn -> ok() )
-      am *= 1.0 + p() -> cache.mastery_value();
-
-    return am;
   }
 
   virtual double composite_crit_multiplier()
@@ -1769,14 +1742,7 @@ struct combustion_t : public mage_spell_t
     {
       mage_spell_t::trigger_dot( s );
 
-      if ( maybe_ptr( player -> dbc.ptr ))
-      {
-        combustion_dot -> tick_amount = ignite_dot -> tick_amount * 0.2; // 0.2 modifier hardcoded into tooltip 2013/08/14 PTR
-      }
-      else
-      {
-        combustion_dot -> tick_amount = ignite_dot -> tick_amount * 0.5; // 0.5 modifier hardcoded into tooltip 2013/05/22
-      }
+      combustion_dot -> tick_amount = ignite_dot -> tick_amount * 0.2; // 0.2 modifier hardcoded into tooltip 2013/08/14 PTR
     }
   }
 
@@ -2295,19 +2261,6 @@ struct frostbolt_t : public mage_spell_t
       mage_spell_t::impact( s );
       trigger_icicle_gain( s );
     }
-    // If there are five Icicles, launch the oldest at this spell's target
-    // Create an Icicle, stashing damage equal to mastery * value
-    // Damage should be based on damage spell would have done without any
-    // target-based damage increases or decreases, except Frostbolt debuff
-    // Should also apply to mini version
-
-    if ( result_is_hit( s -> result ) )
-    {
-      if ( ! maybe_ptr( player -> dbc.ptr ) ) {
-        td( s -> target ) -> debuffs.frostbolt -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
-      }
-    }
-
   }
 
   virtual double action_multiplier()
@@ -2783,18 +2736,6 @@ struct ice_lance_t : public mage_spell_t
 
     return am;
   }
-
-  virtual double composite_target_multiplier( player_t* target )
-  {
-    double tm = mage_spell_t::composite_target_multiplier( target );
-
-    // This check can go away when 5.4 is released
-    if ( p() -> spec.frostburn -> ok() )
-      tm *= 1.0 + td( target ) -> debuffs.frostbolt -> stack() * 0.05;
-
-    return tm;
-  }
-
 };
 
 // Icy Veins Spell ==========================================================
@@ -4046,8 +3987,7 @@ void mage_t::init_spells()
   spec.pyromaniac            = find_specialization_spell( "Pyromaniac" );
 
   // Mastery
-  spec.frostburn             = ! maybe_ptr( dbc.ptr ) ? find_mastery_spell( MAGE_FROST ) : spell_data_t::nil();
-  spec.icicles               = maybe_ptr( dbc.ptr ) ? find_mastery_spell( MAGE_FROST ) : spell_data_t::nil();
+  spec.icicles               = find_mastery_spell( MAGE_FROST );
   spec.ignite                = find_mastery_spell( MAGE_FIRE );
   spec.mana_adept            = find_mastery_spell( MAGE_ARCANE );
 
@@ -4066,7 +4006,7 @@ void mage_t::init_spells()
   glyphs.loose_mana          = find_glyph_spell( "Glyph of Loose Mana" );
   glyphs.mana_gem            = find_glyph_spell( "Glyph of Mana Gem" );
   glyphs.mirror_image        = find_glyph_spell( "Glyph of Mirror Image" );
-  glyphs.splitting_ice       = maybe_ptr( dbc.ptr ) ? find_glyph_spell( "Glyph of Splitting Ice" ) : spell_data_t::not_found();
+  glyphs.splitting_ice       = find_glyph_spell( "Glyph of Splitting Ice" );
 
   static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
   {
@@ -4542,15 +4482,7 @@ void mage_t::init_actions()
       //remove condition because of T16
       action_list_str += "/frozen_orb";
 
-      //on PTR fb's debuff is removed and add time_to_bloodlust
-      if ( ! maybe_ptr( dbc.ptr ) )
-      {
-        action_list_str += "/icy_veins,if=time_to_bloodlust>180&(debuff.frostbolt.stack>=3&(buff.brain_freeze.react|buff.fingers_of_frost.react)|target.time_to_die<22),moving=0";
-      }
-      else
-      {
-        action_list_str += "/icy_veins,if=time_to_bloodlust>180&((buff.brain_freeze.react|buff.fingers_of_frost.react)|target.time_to_die<22),moving=0";
-      }
+      action_list_str += "/icy_veins,if=time_to_bloodlust>180&((buff.brain_freeze.react|buff.fingers_of_frost.react)|target.time_to_die<22),moving=0";
 
 
       if ( race == RACE_ORC )                 action_list_str += "/blood_fury,if=buff.icy_veins.up|cooldown.icy_veins.remains>30|target.time_to_die<18";
@@ -4583,10 +4515,6 @@ void mage_t::init_actions()
       if ( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
       else if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
       else if ( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=target.time_to_die>cast_time+tick_time";
-
-      //on PTR, it need to be removed
-      if ( ! maybe_ptr( dbc.ptr ) ) action_list_str += "/frostbolt,if=debuff.frostbolt.stack<3";
-
 
       action_list_str += "/frostfire_bolt,if=buff.brain_freeze.react&cooldown.icy_veins.remains>2";
 

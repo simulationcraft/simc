@@ -2070,17 +2070,13 @@ double action_t::ppm_proc_chance( double PPM )
 double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, timespan_t last_successful_proc, rppm_scale_e scales_with )
 {
   // Old RPPM formula
-  double coeff = maybe_ptr( player -> dbc.ptr ) ? 1.0 : ( 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() ) );
+  double coeff = 1.0;
   double seconds = std::min( ( sim -> current_time - last_trigger ).total_seconds(), 10.0 );
 
   switch ( scales_with )
   {
     case RPPM_HASTE:
-      // Don't double-dip in RPPM_HASTE on live
-      if ( maybe_ptr( player -> dbc.ptr ) )
-      {
-	coeff *= 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
-      }
+      coeff *= 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
       break;
     case RPPM_ATTACK_CRIT:
       coeff *= 1.0 + player -> cache.attack_crit();

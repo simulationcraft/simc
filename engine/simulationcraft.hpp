@@ -5,9 +5,9 @@
 #ifndef SIMULATIONCRAFT_H
 #define SIMULATIONCRAFT_H
 
-#define SC_MAJOR_VERSION "530"
-#define SC_MINOR_VERSION "8"
-#define SC_USE_PTR ( 1 )
+#define SC_MAJOR_VERSION "540"
+#define SC_MINOR_VERSION "1"
+#define SC_USE_PTR ( 0 )
 #define SC_BETA ( 0 )
 
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
@@ -5616,11 +5616,11 @@ public:
   real_ppm_t( player_t& p, double frequency = std::numeric_limits<double>::min(), rppm_scale_e s = RPPM_NONE, unsigned spell_id = 0 ) :
     rng( p.rng() ),
     freq( frequency ),
-    modifier( maybe_ptr( p.dbc.ptr ) ? p.dbc.rppm_coefficient( p.specialization(), spell_id ) : 1.0 ),
+    modifier( p.dbc.rppm_coefficient( p.specialization(), spell_id ) ),
     rppm( freq * modifier ),
     last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
-    last_successful_trigger( timespan_t::from_seconds( p.dbc.ptr ? -120.0 : -300.0 ) ),
-    initial_precombat_time( timespan_t::from_seconds( p.dbc.ptr ? -120.0 : -300.0 ) ), // Assume 5min out of combat before pull
+    last_successful_trigger( timespan_t::from_seconds( -120.0 ) ),
+    initial_precombat_time( timespan_t::from_seconds( -120.0 ) ), // Assume 5min out of combat before pull
     scales_with( s )
   { }
 
@@ -5770,12 +5770,7 @@ public:
     if ( chance == 0 ) return;
 
     if ( is_rppm() )
-    {
-      if ( ! maybe_ptr( listener -> dbc.ptr ) )
-        rppm.set_frequency( chance );
-
       triggered = rppm.trigger( *action );
-    }
     else if ( is_ppm() )
       triggered = proc_rng.roll( action -> ppm_proc_chance( chance ) );
     else if ( chance > 0 )

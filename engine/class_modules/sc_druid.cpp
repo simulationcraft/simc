@@ -2563,7 +2563,7 @@ struct mangle_bear_t : public bear_attack_t
       if ( p() -> set_bonus.tier15_4pc_tank() && p() -> buff.enrage -> check() )
         p() -> resource_gain( RESOURCE_RAGE, p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ) * p() -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(), p() -> gain.tier15_4pc_tank );
 
-      if ( p() -> dbc.ptr && p() -> talent.dream_of_cenarius -> ok() )
+      if ( p() -> talent.dream_of_cenarius -> ok() )
         p() -> buff.dream_of_cenarius -> trigger();
     }
   }
@@ -2950,7 +2950,7 @@ public:
     {
       if ( p() -> active.natures_vigil_damage_proc )
         p() -> active.natures_vigil_damage_proc -> trigger( *execute_state );
-      if ( p() -> active.natures_vigil_heal_proc && p() -> dbc.ptr )
+      if ( p() -> active.natures_vigil_heal_proc )
         p() -> active.natures_vigil_heal_proc -> trigger( *execute_state );
     }
   }
@@ -3098,7 +3098,7 @@ struct healing_touch_t : public druid_heal_t
   {
     double adm = base_t::action_da_multiplier();
 
-    if ( p() -> dbc.ptr && p() -> talent.dream_of_cenarius -> ok() && p() -> specialization() != DRUID_RESTORATION )
+    if ( p() -> talent.dream_of_cenarius -> ok() && p() -> specialization() != DRUID_RESTORATION )
       adm *= 1.0 + p() -> talent.dream_of_cenarius -> effectN( 2 ).percent();
 
     return adm;
@@ -3146,12 +3146,6 @@ struct healing_touch_t : public druid_heal_t
          ! p() -> buff.predatory_swiftness -> up() &&
          ! ( p() -> buff.dream_of_cenarius -> check() && p() -> specialization() == DRUID_GUARDIAN ) )
     {
-      if ( ! p() -> dbc.ptr ) //Remove in 5.4 down to next comment.
-      {
-        if ( ! p() -> glyph.moonbeast -> ok() )
-        p() -> buff.moonkin_form -> expire();
-      } //Remove
-
       p() -> buff.cat_form         -> expire();
       p() -> buff.bear_form        -> expire();
     }
@@ -3291,13 +3285,6 @@ struct nourish_t : public druid_heal_t
 
     return ctm;
   }
-
-  virtual void execute()
-  {
-    druid_heal_t::execute();
-    if ( ! p() -> dbc.ptr )
-      p() -> buff.dream_of_cenarius -> trigger( 2 );
-  }
 };
 
 // Regrowth =================================================================
@@ -3340,14 +3327,6 @@ struct regrowth_t : public druid_heal_t
     {
       td( d -> state -> target )-> dots.regrowth -> refresh_duration();
     }
-  }
-
-  virtual void execute()
-  {
-    druid_heal_t::execute();
-
-    if ( ! p() -> dbc.ptr )
-      p() -> buff.dream_of_cenarius -> trigger( 2 );
   }
 
   virtual timespan_t execute_time()
@@ -3673,8 +3652,6 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
         }
       }
     }
-    if ( soul_of_the_forest && ! maybe_ptr( p() -> dbc.ptr ) )
-      p() -> trigger_soul_of_the_forest();
   }
 
   void trigger_eclipse_proc()
@@ -4384,30 +4361,6 @@ struct moonfire_t : public druid_spell_t
       // Todo: Does this sunfire proc SS?
       p() -> trigger_shooting_stars( d -> state -> result );
     }
-
-    virtual double action_ta_multiplier()
-    {
-      double m = druid_spell_t::action_ta_multiplier();
-
-      if ( ! p() -> dbc.ptr && p() -> buff.dream_of_cenarius -> check() )
-        m *= 1.0 + p() -> buff.dream_of_cenarius -> data().effectN( 4 ).percent();
-
-      return m;
-    }
-
-    virtual void execute()
-    {
-      if ( ! p() -> dbc.ptr )
-        p() -> buff.dream_of_cenarius -> up();
-      druid_spell_t::execute();
-    }
-
-    virtual void impact( action_state_t* s )
-    {
-      druid_spell_t::impact( s );
-      if ( ! p() -> dbc.ptr )
-        p() -> buff.dream_of_cenarius -> decrement();
-    }
   };
 
   action_t* sunfire;
@@ -4433,23 +4386,6 @@ struct moonfire_t : public druid_spell_t
 
     m *= 1.0 + ( p() -> buff.lunar_shower -> data().effectN( 1 ).percent() * p() -> buff.lunar_shower -> check() );
 
-    if ( ! p() -> dbc.ptr && p() -> buff.dream_of_cenarius -> check() )
-    {
-      m *= 1.0 + p() -> buff.dream_of_cenarius -> data().effectN( 3 ).percent();
-    }
-
-    return m;
-  }
-
-  virtual double action_ta_multiplier()
-  {
-    double m = druid_spell_t::action_ta_multiplier();
-
-    if ( ! p() -> dbc.ptr && p() -> buff.dream_of_cenarius -> check() )
-    {
-      m *= 1.0 + p() -> buff.dream_of_cenarius -> data().effectN( 4 ).percent();
-    }
-
     return m;
   }
 
@@ -4461,8 +4397,6 @@ struct moonfire_t : public druid_spell_t
 
   virtual void execute()
   {
-    if ( ! p() -> dbc.ptr )
-      p() -> buff.dream_of_cenarius -> up();
     p() -> buff.lunar_shower -> up();
 
     druid_spell_t::execute();
@@ -4490,9 +4424,6 @@ struct moonfire_t : public druid_spell_t
       }
     }
     druid_spell_t::impact( s );
-
-    if ( ! p() -> dbc.ptr )
-      p() -> buff.dream_of_cenarius -> decrement();
   }
 
   virtual double cost_reduction()
@@ -4543,7 +4474,7 @@ struct druids_swiftness_t : public druid_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
-    if ( maybe_ptr( player -> dbc.ptr ) && ! ( player -> specialization() == DRUID_RESTORATION || player -> specialization() == DRUID_BALANCE ) )
+    if ( ! ( player -> specialization() == DRUID_RESTORATION || player -> specialization() == DRUID_BALANCE ) )
       background = true;
   }
 
@@ -4635,8 +4566,7 @@ struct starfire_t : public druid_spell_t
 
     trigger_t16_2pc_balance( false );
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      p() -> trigger_soul_of_the_forest();
+    p() -> trigger_soul_of_the_forest();
   }
 };
 
@@ -4750,8 +4680,7 @@ struct starsurge_t : public druid_spell_t
         trigger_eclipse_energy_gain( gain );
       }
     }
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      p() -> trigger_soul_of_the_forest();
+    p() -> trigger_soul_of_the_forest();
 
     // Starsurge gives a bolt in either Eclipse, and two bolts in CA.
     trigger_t16_2pc_balance( false );
@@ -4849,31 +4778,8 @@ struct sunfire_t : public druid_spell_t
       // Todo: Does this dot proc SS?
       p() -> trigger_shooting_stars( d -> state -> result );
     }
-
-    virtual double action_ta_multiplier()
-    {
-      double m = druid_spell_t::action_ta_multiplier();
-
-      if ( ! p() -> dbc.ptr && p() -> buff.dream_of_cenarius -> check() )
-        m *= 1.0 + p() -> buff.dream_of_cenarius -> data().effectN( 4 ).percent();
-
-      return m;
-    }
-
-    virtual void execute()
-    {
-      if ( ! p() -> dbc.ptr )
-        p() -> buff.dream_of_cenarius -> up();
-      druid_spell_t::execute();
-    }
-
-    virtual void impact( action_state_t* s )
-    {
-      druid_spell_t::impact( s );
-      if ( ! p() -> dbc.ptr )
-        p() -> buff.dream_of_cenarius -> decrement();
-    }
   };
+
   action_t* moonfire;
 
   sunfire_t( druid_t* player, const std::string& options_str ) :
@@ -4897,23 +4803,6 @@ struct sunfire_t : public druid_spell_t
 
     m *= 1.0 + ( p() -> buff.lunar_shower -> data().effectN( 1 ).percent() * p() -> buff.lunar_shower -> check() );
 
-    if ( ! p() -> dbc.ptr && p() -> buff.dream_of_cenarius -> check() )
-    {
-      m *= 1.0 + p() -> buff.dream_of_cenarius -> data().effectN( 3 ).percent();
-    }
-
-    return m;
-  }
-
-  virtual double action_ta_multiplier()
-  {
-    double m = druid_spell_t::action_ta_multiplier();
-
-    if ( ! p() -> dbc.ptr && p() -> buff.dream_of_cenarius -> check() )
-    {
-      m *= 1.0 + p() -> buff.dream_of_cenarius -> data().effectN( 4 ).percent();
-    }
-
     return m;
   }
 
@@ -4926,8 +4815,6 @@ struct sunfire_t : public druid_spell_t
 
   virtual void execute()
   {
-    if ( ! p() -> dbc.ptr )
-      p() -> buff.dream_of_cenarius -> up();
     p() -> buff.lunar_shower -> up();
 
     druid_spell_t::execute();
@@ -4954,9 +4841,6 @@ struct sunfire_t : public druid_spell_t
       }
     }
     druid_spell_t::impact( s );
-
-    if ( ! p() -> dbc.ptr )
-      p() -> buff.dream_of_cenarius -> decrement();
   }
 
   virtual double cost_reduction()
@@ -5201,7 +5085,7 @@ struct wrath_t : public druid_spell_t
 
     m *= 1.0 + p() -> buff.heart_of_the_wild -> damage_spell_multiplier();
 
-    if ( p() -> dbc.ptr && p() -> talent.dream_of_cenarius && p() -> specialization() == DRUID_RESTORATION )
+    if ( p() -> talent.dream_of_cenarius && p() -> specialization() == DRUID_RESTORATION )
       m *= 1.0 + p() -> talent.dream_of_cenarius -> effectN( 3 ).percent();
 
     return m;
@@ -5233,8 +5117,7 @@ struct wrath_t : public druid_spell_t
 
     trigger_t16_2pc_balance( true );
 
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      p() -> trigger_soul_of_the_forest();
+    p() -> trigger_soul_of_the_forest();
   }
 
   virtual void schedule_execute( action_state_t* state = 0 )
@@ -5297,8 +5180,6 @@ struct celestial_alignment_t : public druid_buff_t < buff_t >
     druid_t* p = static_cast<druid_t*>( player );
     p -> buff.eclipse_lunar -> expire();
     p -> buff.eclipse_solar -> expire();
-    if ( ! maybe_ptr( p -> dbc.ptr ) )
-      p -> trigger_soul_of_the_forest();
   }
 };
 
@@ -5532,26 +5413,10 @@ void druid_t::trigger_soul_of_the_forest()
   if ( ! talent.soul_of_the_forest -> ok() )
     return;
 
-  if ( maybe_ptr( dbc.ptr ) )
-  {
-    // 5.4 mechanic: Your Wrath, Starfire, and Starsurge casts have a 8%
-    // chance to cause your next Astral Communion to instantly advance you to
-    // the next Eclipse.
-    buff.astral_insight -> trigger();
-  }
-  else
-  {
-    int gain = talent.soul_of_the_forest -> effectN( 2 ).base_value() * eclipse_bar_direction;
-    eclipse_bar_value += gain;
-
-    if ( sim -> log )
-    {
-      sim -> output( "%s gains %d (%d) %s from %s (%d)",
-                     name(), gain, gain,
-                     "Eclipse", talent.soul_of_the_forest -> name_cstr(),
-                     eclipse_bar_value );
-    }
-  }
+  // 5.4 mechanic: Your Wrath, Starfire, and Starsurge casts have a 8%
+  // chance to cause your next Astral Communion to instantly advance you to
+  // the next Eclipse.
+  buff.astral_insight -> trigger();
 }
 
 // druid_t::create_action  ==================================================
@@ -5722,7 +5587,7 @@ void druid_t::init_spells()
   talent.displacer_beast    = find_talent_spell( "Displacer Beast" );
   talent.wild_charge        = find_talent_spell( "Wild Charge" );
 
-  talent.natures_swiftness  = maybe_ptr( dbc.ptr ) ? find_specialization_spell( "Nature's Swiftness" ) : find_talent_spell( "Nature's Swiftness" );
+  talent.natures_swiftness  = find_specialization_spell( "Nature's Swiftness" );
   talent.renewal            = find_talent_spell( "Renewal" );
   talent.cenarion_ward      = find_talent_spell( "Cenarion Ward" );
 
@@ -5783,7 +5648,6 @@ void druid_t::init_spells()
   glyph.lifebloom             = find_glyph_spell( "Glyph of Lifebloom" );
   glyph.maul                  = find_glyph_spell( "Glyph of Maul" );
   glyph.might_of_ursoc        = find_glyph_spell( "Glyph of Might of Ursoc" );
-  if( !dbc.ptr ) glyph.moonbeast             = find_glyph_spell( "Glyph of the Moonbeast" ); //Remove when 5.4 is released.
   glyph.regrowth              = find_glyph_spell( "Glyph of Regrowth" );
   glyph.rejuvenation          = find_glyph_spell( "Glyph of Rejuvenation" );
   glyph.skull_bash            = find_glyph_spell( "Glyph of Skull Bash" );
@@ -5895,24 +5759,16 @@ void druid_t::create_buffs()
   // Dream of Cenarius
   if ( talent.dream_of_cenarius -> ok() )
   {
-    if ( dbc.ptr )
-    {
-      if ( specialization() == DRUID_BALANCE )
-        buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145151 ) );
-      else if ( specialization() == DRUID_FERAL )
-        buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145152 ) )
-                                 .max_stack( 2 );
-      else if ( specialization() == DRUID_GUARDIAN )
-        buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145162 ) )
-                                 .chance( talent.dream_of_cenarius -> effectN( 1 ).percent() );
-      else
-        buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", spell_data_t::not_found() );
-    }
+    if ( specialization() == DRUID_BALANCE )
+      buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145151 ) );
+    else if ( specialization() == DRUID_FERAL )
+      buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145152 ) )
+                                .max_stack( 2 );
+    else if ( specialization() == DRUID_GUARDIAN )
+      buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145162 ) )
+                                .chance( talent.dream_of_cenarius -> effectN( 1 ).percent() );
     else
-    {
-      buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 108381 ) )
-                               .max_stack( 2 );
-    }
+      buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", spell_data_t::not_found() );
   }
   else
   {
@@ -6132,7 +5988,7 @@ void druid_t::apl_feral()
   basic -> add_action( "skull_bash_cat" );
   if ( talent.force_of_nature -> ok() )
   {
-    if ( find_item( "rune_of_reorigination" ) && dbc.ptr )
+    if ( find_item( "rune_of_reorigination" ) )
       basic -> add_action( "force_of_nature,if=charges=3|trinket.proc.agility.react|(buff.rune_of_reorigination.react&buff.rune_of_reorigination.remains<1)|target.time_to_die<20" );
     else
       basic -> add_action( "force_of_nature,if=charges=3|trinket.proc.agility.react|target.time_to_die<20" );
@@ -6224,38 +6080,33 @@ void druid_t::apl_feral()
   advanced -> add_action( "skull_bash_cat" );
   if ( talent.force_of_nature -> ok() )
   {
-    if ( dbc.ptr )
+    std::string fon_str = "force_of_nature,if=charges=3";
+
+    std::vector<std::string> trinketbuffs;
+    
+    for ( int i = 12; i <= 13; i++ )
     {
-      std::string fon_str = "force_of_nature,if=charges=3";
-
-      std::vector<std::string> trinketbuffs;
-      
-      for ( int i = 12; i <= 13; i++ )
-      {
-        if ( items[ i ].name_str == "haromms_talisman" )
-          trinketbuffs.push_back( "vicious" );
-        else if ( items[ i ].name_str == "assurance_of_consequence" )
-          trinketbuffs.push_back( "dextrous" );
-        else if ( items[ i ].name_str == "sigil_of_rampage" )
-          trinketbuffs.push_back( "ferocity" );
-        else if ( items[ i ].name_str == "bad_juju" )
-          trinketbuffs.push_back( "juju_madness" );
-        else if ( items[ i].name_str != "" )
-          trinketbuffs.push_back( items[ i ].name_str );
-      }
-
-      for ( size_t i = 0; i < trinketbuffs.size(); i++ )
-        fon_str.append( "|(buff." + trinketbuffs[ i ] + ".react&buff." + trinketbuffs[ i ] + ".remains<1)" );
-
-      if ( ! find_item( "rune_of_reorigination" ) && ! find_item ( "renatakis_soul_charm" ) && trinketbuffs.size() == 2 )
-        fon_str.append( "|(buff." + trinketbuffs[ 0 ] + ".react&buff." + trinketbuffs [ 1 ] + ".react)" );
-
-      fon_str.append( "|target.time_to_die<20" );
-
-      advanced -> add_action( fon_str );
+      if ( items[ i ].name_str == "haromms_talisman" )
+        trinketbuffs.push_back( "vicious" );
+      else if ( items[ i ].name_str == "assurance_of_consequence" )
+        trinketbuffs.push_back( "dextrous" );
+      else if ( items[ i ].name_str == "sigil_of_rampage" )
+        trinketbuffs.push_back( "ferocity" );
+      else if ( items[ i ].name_str == "bad_juju" )
+        trinketbuffs.push_back( "juju_madness" );
+      else if ( items[ i].name_str != "" )
+        trinketbuffs.push_back( items[ i ].name_str );
     }
-    else
-      advanced -> add_action( "force_of_nature,if=charges=3|trinket.proc.agility.react|target.time_to_die<20" );
+
+    for ( size_t i = 0; i < trinketbuffs.size(); i++ )
+      fon_str.append( "|(buff." + trinketbuffs[ i ] + ".react&buff." + trinketbuffs[ i ] + ".remains<1)" );
+
+    if ( ! find_item( "rune_of_reorigination" ) && ! find_item ( "renatakis_soul_charm" ) && trinketbuffs.size() == 2 )
+      fon_str.append( "|(buff." + trinketbuffs[ 0 ] + ".react&buff." + trinketbuffs [ 1 ] + ".react)" );
+
+    fon_str.append( "|target.time_to_die<20" );
+
+    advanced -> add_action( fon_str );
   }
 
   // Racials
@@ -6839,7 +6690,7 @@ double druid_t::composite_player_multiplier( school_e school )
     if ( dbc::is_school( school, SCHOOL_ARCANE ) || dbc::is_school( school, SCHOOL_NATURE ) )
     {
       if ( buff.moonkin_form -> check() )
-        m *= 1.0 + spell.moonkin_form -> effectN( maybe_ptr( dbc.ptr ) ? 2 : 3 ).percent();
+        m *= 1.0 + spell.moonkin_form -> effectN( 2 ).percent();
 
       // BUG? Incarnation won't apply during CA!
       if ( buff.chosen_of_elune -> up() &&

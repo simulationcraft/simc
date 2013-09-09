@@ -5168,7 +5168,7 @@ void player_t::target_mitigation( school_e school,
   if ( buffs.stoneform && buffs.stoneform -> up() )
     s -> result_amount *= 1.0 + buffs.stoneform -> data().effectN( 1 ).percent();
 
-  if ( buffs.fortitude && buffs.fortitude -> up() && ( dbc.ptr || school == SCHOOL_PHYSICAL ) )
+  if ( buffs.fortitude && buffs.fortitude -> up() )
     s -> result_amount *= 1.0 + buffs.fortitude -> data().effectN( 1 ).percent();
 
   if ( school != SCHOOL_PHYSICAL )

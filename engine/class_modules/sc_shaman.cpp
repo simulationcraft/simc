@@ -443,7 +443,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
   debuff.stormstrike    = buff_creator_t( *this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) );
   debuff.unleashed_fury = buff_creator_t( *this, "unleashed_fury_ft", p -> find_spell( 118470 ) );
   debuff.t16_2pc_caster = buff_creator_t( *this, "tier16_2pc_caster", p -> sets -> set( SET_T16_2PC_CASTER ) -> effectN( 1 ).trigger() )
-                          .chance( static_cast< double >( maybe_ptr( p -> dbc.ptr ) && p -> set_bonus.tier16_2pc_caster() ) );
+                          .chance( static_cast< double >( p -> set_bonus.tier16_2pc_caster() ) );
 }
 
 struct shaman_action_state_t : public heal_state_t
@@ -1235,12 +1235,7 @@ struct fire_elemental_t : public pet_t
       double m = spell_t::composite_ta_multiplier();
 
       if ( p -> o() -> mastery.enhanced_elements -> ok() )
-      {
-        if ( ! p -> bugs || maybe_ptr( p -> dbc.ptr ) )
-          m *= 1.0 + p -> o() -> cache.mastery_value();
-        else
-          m *= 1.0 + p -> owner_mastery;
-      }
+        m *= 1.0 + p -> o() -> cache.mastery_value();
 
       return m;
     }
@@ -1340,12 +1335,7 @@ struct fire_elemental_t : public pet_t
 
       fire_elemental_t* p = static_cast< fire_elemental_t* >( player );
       if ( p -> o() -> mastery.enhanced_elements -> ok() )
-      {
-        if ( ! p -> bugs || maybe_ptr( p -> dbc.ptr ) )
-          m *= 1.0 + p -> o() -> cache.mastery_value();
-        else
-          m *= 1.0 + p -> owner_mastery;
-      }
+        m *= 1.0 + p -> o() -> cache.mastery_value();
 
       return m;
     }
@@ -1378,11 +1368,9 @@ struct fire_elemental_t : public pet_t
   shaman_t* o() { return static_cast< shaman_t* >( owner ); }
 
   const spell_data_t* command;
-  double owner_mastery;
 
   fire_elemental_t( sim_t* sim, shaman_t* owner, bool guardian ) :
-    pet_t( sim, owner, ( ! guardian ) ? "primal_fire_elemental" : "greater_fire_elemental", guardian /*GUARDIAN*/ ),
-    owner_mastery( 1.0 )
+    pet_t( sim, owner, ( ! guardian ) ? "primal_fire_elemental" : "greater_fire_elemental", guardian /*GUARDIAN*/ )
   {
     stamina_per_owner      = 1.0;
     command = owner -> find_spell( 65222 );
@@ -1405,10 +1393,7 @@ struct fire_elemental_t : public pet_t
     main_hand_weapon.damage          = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
     main_hand_weapon.swing_time      = timespan_t::from_seconds( 1.4 );
 
-    if ( maybe_ptr( dbc.ptr ) )
-      owner_coeff.sp_from_sp = 0.36;
-    else
-      owner_coeff.sp_from_sp = 0.40;
+    owner_coeff.sp_from_sp = 0.36;
 
     if ( o() -> talent.primal_elementalist -> ok() )
       owner_coeff.sp_from_sp *= 1.5 * 1.2;
@@ -1424,15 +1409,6 @@ struct fire_elemental_t : public pet_t
   }
 
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
-
-  void summon( timespan_t duration )
-  {
-    pet_t::summon( duration );
-
-    // Soo, apparently Fire Elemental snapshots owner haste ...
-    if ( bugs )
-      owner_mastery = o() -> cache.mastery_value();
-  }
 
   double composite_player_multiplier( school_e school )
   {
@@ -2487,8 +2463,7 @@ void shaman_spell_base_t<Base>::impact( action_state_t* state )
   {
     if ( ab::sim -> debug ) ab::sim -> output( "Echo of the Elements procs for %s", ab::name() );
     new ( *ab::sim ) eoe_execute_event_t< Base >( this );
-    p -> cooldown.echo_of_the_elements -> start( p -> dbc.ptr ? p -> talent.echo_of_the_elements -> internal_cooldown() : 
-                                                                timespan_t::from_seconds( 0.1 ) );
+    p -> cooldown.echo_of_the_elements -> start( p -> talent.echo_of_the_elements -> internal_cooldown() );
   }
 }
 
@@ -3073,9 +3048,7 @@ struct chain_lightning_t : public shaman_spell_t
     if ( result_is_hit( state -> result ) )
       trigger_lightning_strike( state );
 
-    // TODO: Overloads proc too? Per jump or per cast proc chance?
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      trigger_tier16_4pc_caster( state );
+    trigger_tier16_4pc_caster( state );
   }
 
   bool ready()
@@ -3515,9 +3488,7 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( result_is_hit( state -> result ) )
       trigger_lightning_strike( state );
 
-    // TODO: Overloads proc too?
-    if ( maybe_ptr( p() -> dbc.ptr ) )
-      trigger_tier16_4pc_caster( state );
+    trigger_tier16_4pc_caster( state );
   }
 
   virtual bool usable_moving()
@@ -3621,7 +3592,7 @@ struct elemental_blast_t : public shaman_spell_t
   {
     double c = shaman_spell_t::composite_target_crit( target );
 
-    if ( maybe_ptr( player -> dbc.ptr ) && td( target ) -> debuff.stormstrike -> up() )
+    if ( td( target ) -> debuff.stormstrike -> up() )
     {
       c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
       c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
@@ -3955,13 +3926,11 @@ struct frost_shock_t : public shaman_spell_t
   void execute()
   {
     timespan_t tmp_cd = cooldown -> duration;
-    if ( maybe_ptr( player -> dbc.ptr ) )
-      cooldown -> duration = data().cooldown() - p() -> glyph.frost_shock -> effectN( 1 ).time_value();
+    cooldown -> duration = data().cooldown() - p() -> glyph.frost_shock -> effectN( 1 ).time_value();
 
     base_t::execute();
 
-    if ( maybe_ptr( player -> dbc.ptr ) )
-      cooldown -> duration = tmp_cd;
+    cooldown -> duration = tmp_cd;
   }
 };
 
@@ -5123,7 +5092,7 @@ void shaman_t::create_pets()
   pet_earth_elemental      = create_pet( "earth_elemental_pet"      );
   guardian_earth_elemental = create_pet( "earth_elemental_guardian" );
 
-  if ( maybe_ptr( dbc.ptr ) && specialization() == SHAMAN_ELEMENTAL )
+  if ( specialization() == SHAMAN_ELEMENTAL )
   {
     for ( size_t i = 0; i < sizeof_array( guardian_lightning_elemental ); i++ )
       guardian_lightning_elemental[ i ] = new lightning_elemental_t( this );
@@ -5298,7 +5267,7 @@ void shaman_t::init_spells()
 
   // Tier16 2PC Enhancement bonus actions, these need to bypass imbue checks
   // presumably, so we cannot just re-use our actual imbued ones
-  if ( maybe_ptr( dbc.ptr ) && set_bonus.tier16_2pc_melee() )
+  if ( set_bonus.tier16_2pc_melee() )
   {
     t16_wind = new unleash_wind_t( "t16_unleash_wind", this );
     t16_flame = new unleash_flame_t( "t16_unleash_flame", this );
@@ -5382,7 +5351,7 @@ void shaman_t::create_buffs()
   buff.ascendance              = new ascendance_buff_t( this );
   buff.elemental_focus         = buff_creator_t( this, "elemental_focus",   spec.elemental_focus -> effectN( 1 ).trigger() )
                                  .activated( false )
-                                 .cd( dbc.ptr ? spec.elemental_focus -> internal_cooldown() : timespan_t::from_seconds( 0.5 ) );
+                                 .cd( spec.elemental_focus -> internal_cooldown() );
   buff.lava_surge              = buff_creator_t( this, "lava_surge",        spec.lava_surge )
                                  .activated( false )
                                  .chance( 1.0 ); // Proc chance is handled externally
@@ -5442,7 +5411,7 @@ void shaman_t::create_buffs()
   buff.tier13_2pc_caster        = stat_buff_creator_t( this, "tier13_2pc_caster", find_spell( 105779 ) );
   buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
   buff.tier16_2pc_melee         = buff_creator_t( this, "tier16_2pc_melee", sets -> set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )
-                                  .chance( static_cast< double >( maybe_ptr( dbc.ptr ) && set_bonus.tier16_2pc_melee() ) );
+                                  .chance( static_cast< double >( set_bonus.tier16_2pc_melee() ) );
 }
 
 // shaman_t::init_gains =====================================================
