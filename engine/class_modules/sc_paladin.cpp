@@ -4698,9 +4698,9 @@ void paladin_t::generate_action_prio_list_ret()
 
   // Holy Avenger
   if ( find_class_spell( "Guardian Of Ancient Kings", std::string(), PALADIN_RETRIBUTION ) -> ok() )
-    def -> add_action( this, "Holy Avenger", "if=buff.inquisition.up&(cooldown.guardian_of_ancient_kings.remains<289)&holy_power<=2" ); // Similarly, this holds HA for the first 10 seconds of GAnK
+    def -> add_talent( this, "Holy Avenger", "if=buff.inquisition.up&cooldown.guardian_of_ancient_kings.remains<171&holy_power<=2" ); // Similarly, this holds HA for the first 10 seconds of GAnK
   else
-    def -> add_action( this, "Holy Avenger", "if=buff.inquisition.up&holy_power<=2" ); // This just removes the GANK conditinoal if we don't have it
+    def -> add_talent( this, "Holy Avenger", "if=buff.inquisition.up&holy_power<=2" ); // This just removes the GANK conditinoal if we don't have it
 
   // Items (not sure why they're radomly put here? I guess after cooldowns but before rotational abilities)
   int num_items = ( int ) items.size();
