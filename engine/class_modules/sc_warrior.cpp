@@ -132,6 +132,12 @@ public:
     gain_t* tier16_4pc_tank;
   } gain;
 
+  // Spells
+  struct spells_t
+  {
+    const spell_data_t* colossus_smash;
+  } spell;
+
   // Glyphs
   struct glyphs_t
   {
@@ -622,6 +628,14 @@ static  void trigger_sweeping_strikes( action_state_t* s )
       base_multiplier = data().effectN( 1 ).percent();
     }
 
+  virtual timespan_t travel_time()
+  {
+// It's possible for sweeping strikes and opportunity strikes to proc off each other into infinity as long as the rng.roll on opportunity strikes returns true. 
+// Sweeping strikes has a 1 second "travel time" in game. 
+    return timespan_t::from_seconds( 1 );
+  }
+
+
     size_t available_targets( std::vector< player_t* >& tl )
     {
       tl.clear();
@@ -739,18 +753,11 @@ void warrior_attack_t::execute()
 
   if ( proc ) return;
 
-  if ( result_is_hit( execute_state -> result ) )
-  {
-    trigger_strikes_of_opportunity( this );
-    if ( p -> buff.sweeping_strikes -> up() && !aoe) 
-      trigger_sweeping_strikes( execute_state );
-  }
-  else if ( result == RESULT_DODGE  )
+  if ( result == RESULT_DODGE  )
   {
     trigger_taste_for_blood( p -> spec.taste_for_blood -> effectN( 1 ).base_value() );
   }
 }
-
 // warrior_attack_t::impact =================================================
 
 void warrior_attack_t::impact( action_state_t* s )
@@ -761,6 +768,9 @@ void warrior_attack_t::impact( action_state_t* s )
 
   if ( result_is_hit( s -> result ) && !proc && s -> result_amount > 0 )
   {
+    trigger_strikes_of_opportunity( this );
+    if ( p -> buff.sweeping_strikes -> up() && !aoe)
+      trigger_sweeping_strikes( execute_state );
     if ( special )
     {
       if( p -> buff.bloodbath -> up() )
@@ -2166,7 +2176,7 @@ struct slam_t : public warrior_attack_t
     warrior_td_t* td = cast_td( p );
 
     if ( td -> debuffs_colossus_smash )
-      am *= 1 + p -> find_class_spell( "Colossus Smash") -> effectN( 5 ).percent();
+      am *= 1 + p -> spell.colossus_smash -> effectN( 5 ).percent();
 
     return am;
   }
@@ -3123,7 +3133,7 @@ struct debuff_demoralizing_shout_t : public buff_t
 {
   
   debuff_demoralizing_shout_t( warrior_t* p) :
-  buff_t( buff_creator_t( p, "demoralizing_shout", p -> find_specialization_spell( "Demoralizing Shout" ) ) )
+  buff_t( buff_creator_t( p, "demo_shout", p -> find_specialization_spell( "Demoralizing Shout" ) ) )
   {
     default_value = data().effectN( 1 ).percent() ;
   }
@@ -3155,7 +3165,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t* p  ) :
 
   debuffs_colossus_smash     = buff_creator_t( *this, "colossus_smash" ).duration( p -> find_class_spell( "Colossus Smash" ) -> duration() );
 
-  debuffs_demoralizing_shout = new buffs::debuff_demoralizing_shout_t( p);
+  debuffs_demoralizing_shout = new buffs::debuff_demoralizing_shout_t( p );
 
 }
 
@@ -3280,6 +3290,10 @@ void warrior_t::init_spells()
   glyphs.sweeping_strikes       = find_glyph_spell( "Glyph of Sweeping Strikes"    );
   glyphs.unending_rage          = find_glyph_spell( "Glyph of Unending Rage"       );
   glyphs.victory_rush           = find_glyph_spell( "Glyph of Victory Rush"        );
+
+  // Generic spells
+  spell.colossus_smash          = find_class_spell( "Colossus Smash"              );
+
 
   // Active spells
   active_deep_wounds   = new deep_wounds_t( this );
