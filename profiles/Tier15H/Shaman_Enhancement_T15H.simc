@@ -2,12 +2,12 @@
 
 shaman="Shaman_Enhancement_T15H"
 level=90
-race=troll
+race=orc
 role=attack
 position=back
 professions=engineering=600/herbalism=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...0.1
-glyphs=chain_lightning/fire_elemental_totem
+talents=http://us.battle.net/wow/en/tool/talent-calculator#WZ!...2.2
+glyphs=chain_lightning
 spec=enhancement
 
 # This default action priority list is automatically created based on your character.
@@ -42,7 +42,8 @@ actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/berserking
 actions+=/elemental_mastery,if=talent.elemental_mastery.enabled&(!glyph.fire_elemental_totem.enabled|cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>70)
-actions+=/fire_elemental_totem,if=!active
+actions+=/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.lifeblood.up|buff.elemental_mastery.up)|time>=60
+actions+=/fire_elemental_totem,if=!active&target.time_to_die<=totem.fire_elemental_totem.duration+10
 actions+=/ascendance,if=cooldown.strike.remains>=3
 actions+=/lifeblood,if=(glyph.fire_elemental_totem.enabled&(pet.primal_fire_elemental.active|pet.greater_fire_elemental.active))|!glyph.fire_elemental_totem.enabled
 # If only one enemy, priority follows the 'single' action list.
@@ -92,39 +93,39 @@ actions.aoe+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.rem
 actions.aoe+=/spiritwalkers_grace,moving=1
 actions.aoe+=/fire_nova,if=active_flame_shock>=1
 
-head=gaze_of_garajal,id=96788,gems=capacitive_primal_320haste_180agi,reforge=crit_mastery
-neck=quadrahead_brooch,id=96815,gems=320haste_60crit,reforge=hit_haste
-shoulders=spaulders_of_the_witch_doctor,id=96693,gems=80agi_160haste_320haste_120haste,enchant=200agi_100crit,reforge=hit_haste
-back=tigerfang_wrap,id=98148,gems=80agi_160haste_60agi,enchant=180hit
-chest=cuirass_of_the_witch_doctor,id=96689,gems=80agi_160haste_320haste_160haste_160hit_180agi,enchant=80all,reforge=exp_haste
-wrists=beadyeye_bracers,id=96797,suffix=340,gems=320haste_60agi,enchant=180agi
-hands=grips_of_the_witch_doctor,id=96690,gems=80agi_160haste_60agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=exp_haste
-waist=jingling_fetishgirdle,id=95000,gems=160haste_160hit_160haste_160hit_320haste_120agi
-legs=legguards_of_the_witch_doctor,id=96692,gems=320haste_160haste_160hit_120agi,enchant=285agi_165crit
-feet=treads_of_the_sanguine_volley,id=95009,gems=320haste_160haste_160hit_120agi,enchant=140agi,reforge=crit_haste
-finger1=goresoaked_gear,id=96885,gems=320haste_60crit,reforge=crit_mastery
-finger2=radens_swift_seal,id=95021,gems=160haste_160hit_60agi,reforge=hit_mastery
-trinket1=renatakis_soul_charm,id=96741,reforge=exp_haste
-trinket2=bad_juju,id=96781,reforge=mastery_haste
-main_hand=hand_of_the_dark_animus,id=96886,gems=80agi_160haste_320haste_60agi,enchant=dancing_steel
-off_hand=wulai_bladed_fan_of_the_consorts,id=96907,gems=80agi_160haste_320haste_60agi,enchant=dancing_steel,reforge=crit_hit
+head=gaze_of_garajal,id=96788,gems=capacitive_primal_80agi_160mastery_180agi,reforge=crit_mastery
+neck=quadrahead_brooch,id=96815,gems=80agi_160mastery_60crit,reforge=hit_haste
+shoulders=spaulders_of_the_witch_doctor,id=96693,gems=160agi_80agi_160mastery_120haste,enchant=200agi_100crit,reforge=hit_mastery
+back=tigerfang_wrap,id=98148,gems=160agi_60agi,enchant=180crit,reforge=crit_hit
+chest=cuirass_of_the_witch_doctor,id=96689,gems=160agi_80agi_160mastery_80agi_160hit_180agi,enchant=80all,reforge=exp_haste
+wrists=bracers_of_mutagenic_fervor,id=96866,enchant=180agi
+hands=grips_of_the_witch_doctor,id=96690,gems=160agi_60agi,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=exp_mastery
+waist=jingling_fetishgirdle,id=95000,gems=80agi_160hit_80agi_160hit_160agi_120agi
+legs=legguards_of_the_witch_doctor,id=96692,gems=80agi_160mastery_80agi_160hit_120agi,enchant=285agi_165crit
+feet=treads_of_the_sanguine_volley,id=95009,gems=80agi_160mastery_80agi_160hit_120agi,enchant=140agi,reforge=crit_haste
+finger1=goresoaked_gear,id=96885,gems=80agi_160mastery_60crit,reforge=crit_mastery
+finger2=radens_swift_seal,id=95021,gems=80agi_160hit_60agi,reforge=hit_mastery
+trinket1=renatakis_soul_charm,id=96741,reforge=exp_mastery
+trinket2=bad_juju,id=96781
+main_hand=wulai_bladed_fan_of_the_consorts,id=96907,gems=160agi_160agi_60agi,enchant=dancing_steel,reforge=crit_mastery
+off_hand=wulai_bladed_fan_of_the_consorts,id=96907,gems=160agi_160agi_60agi,enchant=dancing_steel,reforge=crit_mastery
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=18979
+# gear_agility=20999
 # gear_stamina=27520
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2586
-# gear_hit_rating=2559
-# gear_crit_rating=5087
-# gear_haste_rating=15942
-# gear_mastery_rating=7447
+# gear_expertise_rating=2172
+# gear_hit_rating=2566
+# gear_crit_rating=5172
+# gear_haste_rating=7858
+# gear_mastery_rating=11857
 # gear_armor=27888
 # meta_gem=capacitive_primal
 # tier15_2pc_melee=1
 # tier15_4pc_melee=1
 # hands=grips_of_the_witch_doctor,heroic=1,addon=synapse_springs_mark_ii
 # trinket2=bad_juju,heroic=1,elite=1
-# main_hand=hand_of_the_dark_animus,heroic=1,elite=1,weapon=mace_2.60speed_9172min_17035max,enchant=dancing_steel
+# main_hand=wulai_bladed_fan_of_the_consorts,heroic=1,elite=1,weapon=fist_2.60speed_9172min_17035max,enchant=dancing_steel
 # off_hand=wulai_bladed_fan_of_the_consorts,heroic=1,elite=1,weapon=fist_2.60speed_9172min_17035max,enchant=dancing_steel
