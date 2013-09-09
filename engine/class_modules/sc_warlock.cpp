@@ -5399,9 +5399,9 @@ void warlock_t::init_actions()
         add_action( "Rain of Fire",          "if=!ticking&!in_flight&active_enemies>1" );
         add_action( "Havoc",                 "target=2,if=active_enemies>1" );
         if ( has_unerring_vision_of_leishen )
-          add_action( "Shadowburn",            "if=ember_react&(burning_ember>3.5|mana.pct<=20|buff.dark_soul.up|target.time_to_die<20|buff.havoc.stack>=1|(trinket.has_proc.intellect&trinket.proc.intellect.react)|buff.perfect_aim.react)" );
+          add_action( "Shadowburn",            "if=ember_react&(burning_ember>3.5|mana.pct<=20|buff.dark_soul.up|target.time_to_die<20|buff.havoc.stack>=1|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.react>7&trinket.stacking_proc.intellect.remains>cast_time)|buff.perfect_aim.react)" );
         else
-          add_action( "Shadowburn",            "if=ember_react&(burning_ember>3.5|mana.pct<=20|buff.dark_soul.up|target.time_to_die<20|buff.havoc.stack>=1|(trinket.has_proc.intellect&trinket.proc.intellect.react))" );
+          add_action( "Shadowburn",            "if=ember_react&(burning_ember>3.5|mana.pct<=20|buff.dark_soul.up|target.time_to_die<20|buff.havoc.stack>=1|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.react>7&trinket.stacking_proc.intellect.remains>cast_time))" );
         if ( has_unerring_vision_of_leishen )
           add_action( "Chaos Bolt",            "if=ember_react&target.health.pct>20&buff.perfect_aim.react&buff.perfect_aim.remains>cast_time" );
         if ( spec.pandemic -> ok() && has_unerring_vision_of_leishen )
