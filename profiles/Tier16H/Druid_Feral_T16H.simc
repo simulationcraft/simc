@@ -155,33 +155,33 @@ actions.aoe+=/swipe_cat,if=cooldown.tigers_fury.remains<3
 actions.aoe+=/swipe_cat,if=buff.omen_of_clarity.react
 actions.aoe+=/swipe_cat,if=energy.time_to_max<=1
 
-head=headpiece_of_the_shattered_vale,id=99328,upgrade=2,gems=capacitive_primal_160agi_180agi,reforge=crit_hit
-neck=immerseus_crystalline_eye,id=105407,upgrade=2,reforge=haste_exp
-shoulders=spaulders_of_the_shattered_vale,id=99322,upgrade=2,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=exp_hit
-back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180hit,addon=goblin_glider,reforge=haste_exp
-chest=raiment_of_the_shattered_vale,id=99326,upgrade=2,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_haste
+head=headpiece_of_the_shattered_vale,id=99328,upgrade=2,gems=capacitive_primal_160agi_180agi,reforge=mastery_hit
+neck=immerseus_crystalline_eye,id=105407,upgrade=2,reforge=mastery_hit
+shoulders=spaulders_of_the_shattered_vale,id=99322,upgrade=2,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=exp_crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180crit,reforge=mastery_exp
+chest=raiment_of_the_shattered_vale,id=99326,upgrade=2,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=crit_haste
 wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,enchant=180agi,reforge=mastery_hit
-hands=grips_of_the_shattered_vale,id=99327,upgrade=2,gems=160agi_160agi_120agi,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=mastery_exp
-waist=cord_of_black_dreams,id=105635,upgrade=2,gems=160agi_80agi_160crit_160agi_120agi,addon=nitro_boosts,reforge=crit_mastery
-legs=rious_vigilant_leggings,id=105529,upgrade=2,gems=80agi_160hit_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_haste
-feet=stonetoes_tormented_treads,id=105431,upgrade=2,gems=160agi_60mastery,enchant=140agi,reforge=hit_crit
-finger1=ring_of_restless_energy,id=105558,upgrade=2,gems=160agi_60crit,reforge=crit_exp
-finger2=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=160agi_60crit,reforge=mastery_exp
+hands=grips_of_the_shattered_vale,id=99327,upgrade=2,gems=160agi_160agi_120agi,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=mastery_haste
+waist=cord_of_black_dreams,id=105635,upgrade=2,gems=160agi_80agi_160mastery_160agi_120agi
+legs=rious_vigilant_leggings,id=105529,upgrade=2,gems=80agi_160hit_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_hit
+feet=pandaren_roofsprinters,id=105582,upgrade=2,gems=80agi_160hit_60mastery,enchant=140agi,reforge=haste_exp
+finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=160agi_60crit,reforge=mastery_crit
+finger2=ring_of_restless_energy,id=105558,upgrade=2,gems=160agi_60crit,reforge=crit_exp
 trinket1=rune_of_reorigination,id=96918,upgrade=2
 trinket2=haromms_talisman,id=105527,upgrade=2
-main_hand=hellscreams_pig_sticker,id=105686,upgrade=2,gems=160agi_160agi_120agi,enchant=dancing_steel,reforge=mastery_crit
+main_hand=hellscreams_pig_sticker,id=105686,upgrade=2,gems=160agi_160agi_120agi,enchant=dancing_steel,reforge=mastery_exp
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=31082
+# gear_agility=31002
 # gear_stamina=39220
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2550
-# gear_hit_rating=2550
-# gear_crit_rating=9922
-# gear_haste_rating=9923
-# gear_mastery_rating=9927
+# gear_expertise_rating=2551
+# gear_hit_rating=2553
+# gear_crit_rating=9992
+# gear_haste_rating=9989
+# gear_mastery_rating=10000
 # gear_armor=22619
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
