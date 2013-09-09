@@ -614,17 +614,13 @@ static  void trigger_sweeping_strikes( action_state_t* s )
     sweeping_strikes_attack_t( warrior_t* p ) :
       warrior_attack_t( "sweeping_strikes_attack", p, p -> find_spell( 12328 ) )
     {
-      may_miss = may_dodge = may_parry = may_crit = proc = callbacks = false;
+      may_miss = may_dodge = may_parry = may_crit = callbacks = false;
       background = true;
       range      = 5; //Target must be within 5 yards.
       aoe        = 1; //one additional attack
       base_costs[ RESOURCE_RAGE] = 0; //Resource consumption already accounted for.
-      base_dd_multiplier = data().effectN( 1 ).percent();
+      base_multiplier = data().effectN( 1 ).percent();
     }
-
-
-    double composite_target_multiplier( player_t* )
-      { return 1.0; }
 
     size_t available_targets( std::vector< player_t* >& tl )
     {
@@ -648,10 +644,7 @@ static  void trigger_sweeping_strikes( action_state_t* s )
       warrior_t *p = cast();
 
       if ( result_is_hit( s -> result ) )
-      {
         p -> resource_gain( RESOURCE_RAGE, p -> glyphs.sweeping_strikes -> ok() ? p -> glyphs.sweeping_strikes -> effectN( 1 ).base_value() : 0 ,  p -> gain.sweeping_strikes );
-        trigger_strikes_of_opportunity( this ); //Sweeping Strikes can proc Opportunity Strikes.
-      }
     }
   };
 
@@ -749,7 +742,8 @@ void warrior_attack_t::execute()
   if ( result_is_hit( execute_state -> result ) )
   {
     trigger_strikes_of_opportunity( this );
-    if ( p -> buff.sweeping_strikes -> up() && !aoe) trigger_sweeping_strikes( execute_state );
+    if ( p -> buff.sweeping_strikes -> up() && !aoe) 
+      trigger_sweeping_strikes( execute_state );
   }
   else if ( result == RESULT_DODGE  )
   {
@@ -765,12 +759,15 @@ void warrior_attack_t::impact( action_state_t* s )
   warrior_t* p     = cast();
   warrior_td_t* td = cast_td( s -> target );
 
-  if ( result_is_hit( s -> result ) && ! proc )
+  if ( result_is_hit( s -> result ) && !proc && s -> result_amount > 0 )
   {
     if ( special )
     {
-      trigger_bloodbath_dot( s -> target, s -> result_amount );
-      if ( p -> dbc.ptr && p -> set_bonus.tier16_2pc_melee() && td ->  debuffs_colossus_smash -> up() && id != 76858 ) // Opportunity Strikes do not proc 2 set anymore, hotfixed 9/8.
+      if( p -> buff.bloodbath -> up() )
+        trigger_bloodbath_dot( s -> target, s -> result_amount );
+      if ( p -> dbc.ptr && p -> set_bonus.tier16_2pc_melee() && td ->  debuffs_colossus_smash -> up() && // Melee tier 16 2 piece.
+         ( this ->  weapon == &( p -> main_hand_weapon ) || this -> id == 100130 ) && // Only procs once per ability used.
+           this -> id != 12328 && this -> id != 76858 ) //Doesn't proc from opportunity strikes or sweeping strikes.
         p -> resource_gain( RESOURCE_RAGE,
                             p -> sets -> set( SET_T16_2PC_MELEE ) -> effectN( 1 ).base_value(), 
                             p -> gain.tier16_2pc_melee );
@@ -1813,7 +1810,7 @@ struct raging_blow_t : public warrior_attack_t
     // Parent attack is only to determine miss/dodge/parry
     base_dd_min = base_dd_max = 0;
     weapon_multiplier = direct_power_mod = 0;
-    may_crit = false;
+    may_crit = proc = false;
     weapon = &( p -> main_hand_weapon ); // Include the weapon for racial expertise
 
     parse_options( NULL, options_str );
@@ -2127,7 +2124,7 @@ struct slam_sweeping_strikes_attack_t : public warrior_attack_t
   {
     return 0;
   }
-  
+
   double composite_da_multiplier()
   {
     return data().effectN( 3 ).percent(); //does not double dip on anything
@@ -2450,7 +2447,7 @@ struct whirlwind_t : public warrior_attack_t
       // Parent attack is only to determine miss/dodge/parry
       base_dd_min = base_dd_max = 0;
       weapon_multiplier = direct_power_mod = 0;
-      may_crit = false;
+      may_crit = proc = false;
 
       mh_attack = new whirlwind_attack_t( p, "whirlwind_mh", p -> find_class_spell( "Whirlwind" ) );
       mh_attack -> weapon = &( p -> main_hand_weapon );
