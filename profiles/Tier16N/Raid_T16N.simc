@@ -1,6 +1,6 @@
 #!simc
 
-# the normal mode profiles should be pure 553 gear (no legendaries or upgrades or warforged) with no DPS racials or profession bonuses
+# the normal mode profiles should be pure 553 gear (no upgrades or warforged) with no DPS racials or profession bonuses
 
 ptr=1
 optimal_raid=1
