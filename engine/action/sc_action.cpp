@@ -1128,7 +1128,7 @@ void action_t::update_vengeance( dmg_e type,
                                  action_state_t* s )
 {
   // Vengenace damage->pct modifier
-  double veng_pct = ( s -> target -> dbc.ptr && ! sim -> challenge_mode ) ? 0.015 : 0.018;
+  double veng_pct = ( ! sim -> challenge_mode ) ? 0.015 : 0.018;  // the new value (0.015) is in spellid 84839, effect#1.  CM value is not.
 
   // check that the target has vengeance, damage type, and that the executing player is an enemy
   if ( s -> target -> vengeance_is_started() && ( type == DMG_DIRECT || type == DMG_OVER_TIME ) && s-> action -> player -> is_enemy() )
@@ -1136,10 +1136,10 @@ void action_t::update_vengeance( dmg_e type,
     // bool for auto attack, to make code easier to read
     bool is_auto_attack = ( player -> main_hand_attack && s -> action == player -> main_hand_attack ) || ( player -> off_hand_attack && s -> action == player -> off_hand_attack );
 
-    // on spell attacks that miss, we just extend the duration of Vengeance
-    // note that this specifically excludes melee auto-attacks, which grant Vengeance normally based on raw damage
-    if ( ( s -> result == RESULT_MISS && s -> target -> dbc.ptr ) || // PTR: all misses do not generate Vengeance
-         ( result_is_miss( s -> result ) && ! is_auto_attack )  )    // 5.3: Is a miss but not an auto-attack
+    // On spell/special attacks that miss, we just extend the duration of Vengeance.  This includes all RESULT_MISS events and
+    // dodged/parried attacks that are not auto-attacks; Auto-attack dodges/parries still grant Vengeance normally based on raw damage
+    if ( ( s -> result == RESULT_MISS && ! sim -> challenge_mode ) || // 5.4: misses do not generate Vengeance except in CM
+         ( result_is_miss( s -> result ) && ! is_auto_attack ) )      // Any avoided non-auto-attack
     {
       //extend duration, but do not add any vengeance
       s -> target -> buffs.vengeance -> trigger( 1,
@@ -1150,7 +1150,7 @@ void action_t::update_vengeance( dmg_e type,
     else // vengeance from auto attack or successful spell
     {
       // update the player's vengeance_actor_list
-      if ( sim -> dbc.ptr && ! sim -> challenge_mode )
+      if ( ! sim -> challenge_mode )
         s -> target -> vengeance_list.add( player, player -> get_raw_dps( s ), sim -> current_time );
 
       // factor out weakened_blows from physical damage
@@ -1174,7 +1174,7 @@ void action_t::update_vengeance( dmg_e type,
       new_amount *= ( school == SCHOOL_PHYSICAL ? 1.0 : 2.5 );
 
       // apply diminishing returns according to position on actor list
-      if ( sim -> dbc.ptr && ! sim -> challenge_mode  )
+      if ( ! sim -> challenge_mode  )
         new_amount /= s -> target -> vengeance_list.get_actor_rank( player );
 
       // Perform 20-second decaying average
@@ -1193,7 +1193,7 @@ void action_t::update_vengeance( dmg_e type,
         new_amount = vengeance_equil / 2.0;
       }
 
-      // clamp at max health; in 5.4 we may need to change this based on raid size if they lower the cap
+      // clamp at max health
       if ( new_amount > s -> target -> resources.max[ RESOURCE_HEALTH ] ) new_amount = s -> target -> resources.max[ RESOURCE_HEALTH ];
 
       if ( sim -> debug )
