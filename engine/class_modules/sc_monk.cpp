@@ -389,30 +389,56 @@ private:
       }
     }
   };
+  
+  struct crackling_tiger_lightning_tick_t : public spell_t
+  {
+    crackling_tiger_lightning_tick_t( xuen_pet_t *p ) : spell_t( "crackling_tiger_lightning_tick", p, p->find_spell( 123996 ) )
+    {
+      aoe = 3;
+      dual = true;
+      direct_tick = true;
+      background = true;
+      may_crit = true;
+      may_miss = true;
+      
+      base_spell_power_multiplier  = 0;
+      base_attack_power_multiplier = 1;
+      direct_power_mod = data().extra_coeff();
+    }
+  };
 
+  struct crackling_tiger_lightning_driver_t : public spell_t
+  {
+    crackling_tiger_lightning_driver_t( xuen_pet_t *p, const std::string& options_str ) : spell_t( "crackling_tiger_lightning_driver", p, NULL )
+    {
+      parse_options( NULL, options_str );
+
+      // for future compatibility, we may want to grab Xuen and our tick spell and build this data from those (Xuen summon duration, for example)
+      num_ticks = 45;
+      hasted_ticks = false;
+      may_miss = false; // this driver may NOT miss
+      tick_zero = true; // trigger tick when t == 0
+      dynamic_tick_action = true; // ticks do not snapshot, they sample AP at time of tick
+      base_tick_time = timespan_t::from_seconds(1.0); // trigger a tick every second
+      cooldown->duration = timespan_t::from_seconds(45.0); // we're done after 45 seconds
+
+      tick_action = new crackling_tiger_lightning_tick_t( p );
+    }
+  };
+  
   struct crackling_tiger_lightning_t : public melee_attack_t
   {
-    crackling_tiger_lightning_t( xuen_pet_t* player, const std::string& options_str ) :
-      melee_attack_t( "crackling_tiger_lightning", player, player -> find_spell( 123996 ) )
+    crackling_tiger_lightning_t( xuen_pet_t* player, const std::string& options_str ) : melee_attack_t( "crackling_tiger_lightning", player, player -> find_spell( 123996 ) )
     {
       parse_options( nullptr, options_str );
 
-      special = true;
+      // Looks like Xuen needs a couple fixups to work properly.  Let's do that now.
       aoe = 3;
-
-      if ( player -> dbc.ptr ) {
-        cooldown -> duration = timespan_t::from_seconds( 40/45.0 );
-		may_crit = true;
-		direct_power_mod = data().extra_coeff();
-      } else {
-		cooldown -> duration = timespan_t::from_seconds( 6.0 );
-		tick_may_crit  = true;
-		tick_power_mod = data().extra_coeff();
-      }
-	  base_spell_power_multiplier  = 0;
-     
-
-      //base_multiplier = 1.323; //1.58138311; EDITED FOR ACTUAL VALUE. verify in the future.
+      special = true;
+      tick_may_crit  = true;
+      base_spell_power_multiplier  = 0;
+      tick_power_mod = data().extra_coeff();
+      cooldown -> duration = timespan_t::from_seconds( 6.0 );
     }
   };
 
@@ -472,8 +498,16 @@ public:
   action_t* create_action( const std::string& name,
                            const std::string& options_str )
   {
-    if ( name == "crackling_tiger_lightning" ) return new crackling_tiger_lightning_t( this, options_str );
-    if ( name == "auto_attack" ) return new auto_attack_t( this, options_str );
+    if ( name == "crackling_tiger_lightning" ) 
+    {
+      if (owner->dbc.ptr) 
+        return new crackling_tiger_lightning_driver_t( this, options_str );
+        
+      return new crackling_tiger_lightning_t( this, options_str );
+    }
+    
+    if ( name == "auto_attack" ) 
+      return new auto_attack_t( this, options_str );
 
     return pet_t::create_action( name, options_str );
   }
