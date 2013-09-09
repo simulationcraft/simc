@@ -3292,7 +3292,7 @@ void warrior_t::init_spells()
   glyphs.victory_rush           = find_glyph_spell( "Glyph of Victory Rush"        );
 
   // Generic spells
-  spell.colossus_smash          = find_class_spell( "Colossus Smash"              );
+  spell.colossus_smash          = find_class_spell( "Colossus Smash"               );
 
 
   // Active spells
