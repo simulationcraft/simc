@@ -3125,6 +3125,28 @@ struct last_stand_t : public buff_t
     buff_t::expire_override();
   }
 };
+  
+struct debuff_demoralizing_shout_t : public buff_t
+{
+  
+  debuff_demoralizing_shout_t( warrior_t* p) :
+  buff_t( buff_creator_t( p, "demoralizing_shout", p -> find_specialization_spell( "Demoralizing Shout" ) ) )
+  {
+    default_value = data().effectN( 1 ).percent() ;
+  }
+  
+  virtual void expire_override()
+  {
+    warrior_t* p = (warrior_t*) player;
+
+    if (p -> set_bonus.tier16_2pc_tank())
+    {
+        p -> buff.tier16_reckless_defense -> trigger();
+    }
+    
+    buff_t::expire_override();
+  }
+};
 
 } // end namespace buffs
 
@@ -3139,8 +3161,9 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t* p  ) :
   dots_deep_wounds = target -> get_dot( "deep_wounds", p );
 
   debuffs_colossus_smash     = buff_creator_t( *this, "colossus_smash" ).duration( p -> find_class_spell( "Colossus Smash" ) -> duration() );
-  debuffs_demoralizing_shout = buff_creator_t( *this, "demoralizing_shout" ).duration( timespan_t::from_seconds( 10.0 ) )
-                               .default_value( p -> find_specialization_spell( "Demoralizing Shout" ) -> effectN( 1 ).percent() );
+
+  debuffs_demoralizing_shout = new buffs::debuff_demoralizing_shout_t( p);
+
 }
 
 // warrior_t::create_action  ================================================
