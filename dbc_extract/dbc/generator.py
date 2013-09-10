@@ -1315,6 +1315,7 @@ class SpellDataGenerator(DataGenerator):
           ( 108291, 0 ), ( 108292, 0 ), ( 108293, 0 ), ( 108294, 0 ), # Heart of the Wild
           ( 144770, 1, False ), ( 144772, 1, False ), # Balance Tier 16 2pc spells
           ( 150017, 5 ),       # Rake for Treants
+          ( 146874, 0 ),       # Feral Rage (T16 4pc feral bonus)
         ), 
     ]
 
