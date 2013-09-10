@@ -11,9 +11,6 @@
 //  Later:
 //   * Move the bleeds out of being warrior_attack_t to stop them
 //     triggering effects or having special cases in the class.
-
-//  Protection:
-//   * Double Check Defensive Stats with various item builds
 //
 // ==========================================================================
 
@@ -954,10 +951,10 @@ struct bladestorm_tick_t : public warrior_attack_t
     background  = true;
     direct_tick = true;
     aoe         = -1;
-    if ( p -> specialization() == WARRIOR_ARMS ) //Bladestorm does 1.5x more damage as Arms on PTR.
+    if ( p -> specialization() == WARRIOR_ARMS ) //Bladestorm does 1.5x more damage as Arms with 5.4
       weapon_multiplier *= 1.5;
 
-    if ( p -> specialization() == WARRIOR_PROTECTION ) //Bladestorm does 4/3 more damage as protection on PTR
+    if ( p -> specialization() == WARRIOR_PROTECTION ) //Bladestorm does 4/3 more damage as protection with 5.4
       weapon_multiplier *= 4/3;
   }
 };
@@ -1652,7 +1649,7 @@ struct mortal_strike_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
     base_multiplier += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
-    base_multiplier *= 1.228; // Ptr hotfix.
+    base_multiplier *= 1.228;
   }
 
   virtual void execute()
@@ -1738,7 +1735,7 @@ struct overpower_t : public warrior_attack_t
     if ( result_is_hit( s -> result ) )
     {
       warrior_t* p = cast();
-      p -> cooldown.mortal_strike -> adjust( timespan_t::from_seconds( -0.5 ) ); //FIXME After dbc update
+      p -> cooldown.mortal_strike -> adjust( timespan_t::from_seconds( -0.5 ) ); //FIXME check after dbc update
     }
   }
 
