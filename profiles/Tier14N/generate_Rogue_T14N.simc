@@ -34,7 +34,7 @@ spec=combat
 role=attack
 position=back
 talents=300103
-glyphs=adrenaline_rush
+glyphs=
 head=helmet_of_the_thousandfold_blades,id=85301,reforge=mastery_hit,gems=agile_primal_80agi_160hit
 neck=pheromonecoated_choker,id=89827
 shoulders=spaulders_of_the_thousandfold_blades,id=85299,gems=80agi_160hit_60agi,enchant=200agi_100crit

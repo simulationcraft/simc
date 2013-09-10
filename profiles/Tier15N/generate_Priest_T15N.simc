@@ -9,7 +9,7 @@ spec=shadow
 role=spell
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!002212
-glyphs=dark_binding/mind_spike/inner_sanctum
+glyphs=mind_spike/inner_sanctum
 head=hood_of_the_exorcist,id=95301,gems=burning_primal_80int_160haste_180crit
 neck=necklace_of_the_terracotta_invoker,id=95203,gems=160int_60hit
 shoulders=shoulderguards_of_the_exorcist,id=95304,gems=160int_80int_160haste_120haste,enchant=200int_100crit

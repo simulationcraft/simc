@@ -8,7 +8,7 @@ race=troll
 spec=balance
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!002112
-glyphs=moonbeast
+glyphs=
 
 head=eternal_blossom_cover,id=86934,gems=burning_primal_80int_160spi_180int,reforge=mastery_haste
 neck=korvens_ambersealed_beetle,id=86976,reforge=spi_haste

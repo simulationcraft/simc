@@ -7,7 +7,7 @@ level=90
 race=tauren
 spec=balance
 talents=010203
-glyphs=moonbeast
+glyphs=
 head=cover_of_the_haunted_forest,id=95246,gems=burning_primal_320crit_180crit,reforge=spi_crit
 neck=soul_prism_of_lei_shen,id=94994,gems=160spi_160crit_160haste_160spi_120spi,reforge=spi_crit
 shoulders=shoulderwraps_of_the_haunted_forest,id=95249,gems=80int_160crit_320crit_120haste,enchant=200int_100crit

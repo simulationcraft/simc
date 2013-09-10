@@ -7,7 +7,6 @@ race=tauren
 role=spell
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!002112
-glyphs=moonbeast
 spec=balance
 
 # This default action priority list is automatically created based on your character.

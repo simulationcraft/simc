@@ -59,7 +59,7 @@ race=troll
 spec=frost
 professions=tailoring=600/enchanting=600
 talents=100032
-glyphs=evocation/icy_veins/ice_lance
+glyphs=evocation/icy_veins
 head=hood_of_the_burning_scroll,id=87008,gems=burning_primal_80int_160hit_180int,reforge=mastery_hit
 neck=worldwaker_cabochon,id=87076
 shoulders=mantle_of_the_burning_scroll,id=87011,gems=80int_160hit_60int,enchant=200int_100crit,reforge=mastery_haste

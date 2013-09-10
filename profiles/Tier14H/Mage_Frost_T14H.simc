@@ -7,7 +7,7 @@ role=spell
 position=back
 professions=tailoring=600/enchanting=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#eb!0...21
-glyphs=evocation/icy_veins/ice_lance
+glyphs=evocation/icy_veins
 spec=frost
 
 # This default action priority list is automatically created based on your character.

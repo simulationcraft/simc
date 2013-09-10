@@ -6,7 +6,6 @@ race=night_elf
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#cZ!2..0.2
-glyphs=adrenaline_rush
 spec=combat
 
 # This default action priority list is automatically created based on your character.

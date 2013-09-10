@@ -35,7 +35,7 @@ spec=combat
 role=attack
 position=back
 talents=300103
-glyphs=adrenaline_rush
+glyphs=
 head=ninetailed_helmet,id=95307,gems=agile_primal_80agi_160haste_180crit,reforge=hit_mastery
 neck=necklace_of_the_terracotta_archer,id=95202,gems=160agi_60exp,reforge=crit_exp
 shoulders=ninetailed_spaulders,id=95309,gems=160agi_80agi_160haste_120haste,enchant=200agi_100crit,reforge=hit_haste
