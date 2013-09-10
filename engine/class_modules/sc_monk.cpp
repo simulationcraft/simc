@@ -1109,25 +1109,27 @@ virtual double cost()
       return 0.0;
     }
     if ( p() -> buff.focus_of_xuen -> check() ){
-      return monk_melee_attack_t::cost() - 1; // TODO: Update to spell data
+      return monk_melee_attack_t::cost() - 1.0; // TODO: Update to spell data
     }
     return monk_melee_attack_t::cost();
   }
  virtual void consume_resource()
   {
-    if ( p() -> buff.combo_breaker_bok -> check() && result_is_hit( execute_state -> result ) )
-      p() -> track_chi_consumption += base_costs[ RESOURCE_CHI ];
-
     monk_melee_attack_t::consume_resource();
+
+    double savings = base_costs[ RESOURCE_CHI ] - cost();
+    if ( result_is_hit( execute_state -> result ) )
+      p() -> track_chi_consumption += savings;
+
     if ( p() -> buff.combo_breaker_bok -> up() )
     {
+      p() -> gain.combo_breaker_savings -> add( RESOURCE_CHI, savings );
       p() -> buff.combo_breaker_bok -> expire();
-      p() -> gain.combo_breaker_savings -> add( RESOURCE_CHI, cost() );
     }
     else if ( p() -> buff.focus_of_xuen -> up() )
     {
+      p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, savings );
       p() -> buff.focus_of_xuen -> expire();
-	  p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, 1 ); // TODO: Update to spell data
     }
   }
 };
@@ -1180,17 +1182,22 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   virtual double cost()
   {
     if ( p() -> buff.focus_of_xuen -> check() ){
-      return monk_melee_attack_t::cost() - 1; // TODO: Update to spell data
+      return monk_melee_attack_t::cost() - 1.0; // TODO: Update to spell data
     }
     return monk_melee_attack_t::cost();
   }
  virtual void consume_resource()
   {
     monk_melee_attack_t::consume_resource();
+
+    double savings = base_costs[ RESOURCE_CHI ] - cost();
+    if ( result_is_hit( execute_state -> result ) )
+      p() -> track_chi_consumption += savings;
+
     if ( p() -> buff.focus_of_xuen -> up() )
     {
+      p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, savings );
       p() -> buff.focus_of_xuen -> expire();
-      p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, 1 ); // TODO: Update to spell data
     }
   }
 };
@@ -1321,14 +1328,16 @@ struct fists_of_fury_t : public monk_melee_attack_t
   }
  virtual void consume_resource()
   {
-    if ( p() -> buff.combo_breaker_bok -> check() && result_is_hit( execute_state -> result ) )
-      p() -> track_chi_consumption += base_costs[ RESOURCE_CHI ];
-
     monk_melee_attack_t::consume_resource();
+
+    double savings = base_costs[ RESOURCE_CHI ] - cost();
+    if ( result_is_hit( execute_state -> result ) )
+      p() -> track_chi_consumption += savings;
+
     if ( p() -> buff.focus_of_xuen -> up() )
     {
+      p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, savings );
       p() -> buff.focus_of_xuen -> expire();
-      p() -> gain.focus_of_xuen_savings -> add( RESOURCE_CHI, 1 ); // TODO: Update to spell data
     }
   }
 };
@@ -1730,8 +1739,6 @@ struct tigereye_brew_t : public monk_spell_t
       
     if ( p() -> set_bonus.tier15_4pc_melee() )
     {
-      // So increase the value by 1% per stack used...  HOWEVER, on PTR this is currently broken, and we are only receiving
-      // .5% per stack of Tigereye Brew Used.  Thus, max_stacks_consumable will be divided by 100 IF this is fixed.
       use_value *= 1.05; // t154pc 
     }
     
