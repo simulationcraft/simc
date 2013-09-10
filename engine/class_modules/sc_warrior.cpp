@@ -622,7 +622,7 @@ static  void trigger_sweeping_strikes( action_state_t* s )
       range      = 5; //Target must be within 5 yards.
       aoe        = 1; //one additional attack
       base_costs[ RESOURCE_RAGE] = 0; //Resource consumption already accounted for.
-      base_multiplier = data().effectN( 1 ).percent();
+      base_multiplier = 0.50; //Hotfixed 9/10, reduction from 75% damage to 50% damage.
     }
 
   virtual timespan_t travel_time()
