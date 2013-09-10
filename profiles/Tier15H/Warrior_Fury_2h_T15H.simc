@@ -6,8 +6,10 @@ race=orc
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!122211
-glyphs=unending_rage/death_from_above/raging_wind
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!122212
+talent_override=bladestorm,if=active_enemies>1
+talent_override=bloodbath,if=active_enemies>1
+glyphs=unending_rage/death_from_above/bull_rush
 spec=fury
 
 # This default action priority list is automatically created based on your character.

@@ -50,7 +50,6 @@ actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
 actions+=/rapid_fire,if=!buff.rapid_fire.up
 actions+=/dire_beast,if=enabled
 actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25
-actions+=/readiness,wait_for_rapid_fire=1
 actions+=/cobra_shot,if=dot.serpent_sting.remains<6
 actions+=/arcane_shot,if=focus>=67
 actions+=/cobra_shot

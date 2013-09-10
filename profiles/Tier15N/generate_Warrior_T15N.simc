@@ -10,6 +10,7 @@ spec=arms
 role=attack
 position=back
 talents=233322
+talent_override=bladestorm,if=active_enemies>1
 glyphs=unending_rage/death_from_above/bull_rush
 head=helmet_of_the_last_mogu,id=95330,gems=reverberating_primal_320crit_180crit,reforge=hit_crit
 neck=amulet_of_the_primal_turtle,id=94776,gems=320crit,reforge=hit_exp
@@ -35,7 +36,9 @@ race=night_elf
 spec=fury
 role=attack
 position=back
-talents=233322
+talents=233323
+talent_override=bladestorm,if=active_enemies>2
+talent_override=bloodbath,if=active_enemies>1
 glyphs=unending_rage/death_from_above/bull_rush
 head=crown_of_the_golden_golem,id=94958,gems=reverberating_primal_320crit_180str,reforge=haste_mastery
 neck=amulet_of_the_primal_turtle,id=94776,gems=320crit,reforge=hit_mastery
@@ -62,8 +65,10 @@ race=night_elf
 spec=fury
 role=attack
 position=back
-talents=233322
-glyphs=unending_rage/death_from_above/raging_wind
+talents=233323
+talent_override=bladestorm,if=active_enemies>1
+talent_override=bloodbath,if=active_enemies>1
+glyphs=unending_rage/death_from_above/bull_rush
 head=crown_of_the_golden_golem,id=94958,gems=reverberating_primal_320crit_180str,reforge=haste_mastery
 neck=amulet_of_the_primal_turtle,id=94776,gems=320crit,reforge=hit_exp
 shoulders=pauldrons_of_the_last_mogu,id=95334,gems=80str_160crit_320crit_120crit,enchant=200str_100crit,reforge=mastery_crit

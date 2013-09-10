@@ -17,6 +17,7 @@ role=attack
 position=back
 professions=engineering=600/blacksmithing=600
 talents=233322
+talent_override=bladestorm,if=active_enemies>1
 glyphs=unending_rage/death_from_above/sweeping_strikes
 head=helmet_of_the_prehistoric_marauder,id=99418,gems=capacitive_primal_160exp_160crit_180str,upgrade=2
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
@@ -45,6 +46,8 @@ role=attack
 position=back
 professions=engineering=600/blacksmithing=600
 talents=233323
+talent_override=bladestorm,if=active_enemies>2
+talent_override=bloodbath,if=active_enemies>1
 glyphs=unending_rage/death_from_above/bull_rush
 head=helmet_of_the_prehistoric_marauder,id=99418,gems=capacitive_primal_160exp_160crit_180str,upgrade=2
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
@@ -77,6 +80,8 @@ role=attack
 position=back
 professions=engineering=600/blacksmithing=600
 talents=233323
+talent_override=bladestorm,if=active_enemies>1
+talent_override=bloodbath,if=active_enemies>1
 glyphs=unending_rage/death_from_above/bull_rush
 head=helmet_of_the_prehistoric_marauder,id=99418,gems=capacitive_primal_160exp_160crit_180str,upgrade=2
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2

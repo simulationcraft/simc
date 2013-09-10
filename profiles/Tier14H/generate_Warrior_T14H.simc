@@ -10,7 +10,8 @@ role=attack
 position=back
 professions=engineering=600/blacksmithing=600
 talents=233322
-glyphs=unending_rage/death_from_above/bull_rush
+talent_override=bladestorm,if=active_enemies>1
+glyphs=unending_rage/death_from_above/sweeping_strikes
 head=helmet_of_resounding_rings,id=87192,gems=reverberating_primal_160crit_160hit_180str,reforge=hit_crit
 neck=shackle_of_eversparks,id=90508,reforge=hit_crit
 shoulders=shoulderpads_of_misshapen_life,id=86986,gems=160exp_160crit_60str,enchant=200str_100crit,reforge=mastery_hit
@@ -36,7 +37,9 @@ spec=fury
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
-talents=233322
+talents=233323
+talent_override=bladestorm,if=active_enemies>2
+talent_override=bloodbath,if=active_enemies>1
 glyphs=unending_rage/death_from_above/bull_rush
 head=helmet_of_resounding_rings,id=87192,gems=reverberating_primal_160crit_160hit_180str,reforge=hit_crit
 neck=necklace_of_congealed_weaknesses,id=86967,reforge=mastery_exp
@@ -65,6 +68,8 @@ role=attack
 position=back
 professions=engineering=600/blacksmithing=600
 talents=233322
+talent_override=bladestorm,if=active_enemies>1
+talent_override=bloodbath,if=active_enemies>1
 glyphs=unending_rage/death_from_above/bull_rush
 head=helmet_of_resounding_rings,id=87192,gems=reverberating_primal_160crit_160hit_180str,reforge=hit_crit
 neck=necklace_of_congealed_weaknesses,id=86967,reforge=mastery_hit

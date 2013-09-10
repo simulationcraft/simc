@@ -32,7 +32,9 @@ actions.precombat+=/slice_and_dice
 actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<40
 actions+=/auto_attack
 actions+=/kick
+actions+=/blood_fury,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
+actions+=/arcane_torrent,if=energy<60
 actions+=/shadow_blades
 actions+=/premeditation,if=combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)
 actions+=/pool_resource,for_next=1

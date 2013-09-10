@@ -11,6 +11,7 @@ role=attack
 position=back
 professions=engineering=600/blacksmithing=600
 talents=233322
+talent_override=bladestorm,if=active_enemies>1
 glyphs=unending_rage/death_from_above/sweeping_strikes
 head=crown_of_the_golden_golem,id=96894,gems=capacitive_primal_320crit_180str
 neck=talisman_of_angry_spirits,id=96792,reforge=mastery_haste
@@ -37,7 +38,9 @@ spec=fury
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
-talents=233322
+talents=233323
+talent_override=bladestorm,if=active_enemies>2
+talent_override=bloodbath,if=active_enemies>1
 glyphs=unending_rage/death_from_above/bull_rush
 head=crown_of_the_golden_golem,id=96894,gems=capacitive_primal_320crit_180str,reforge=haste_mastery
 neck=talisman_of_angry_spirits,id=96792
@@ -65,8 +68,10 @@ spec=fury
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
-talents=233322
-glyphs=unending_rage/death_from_above/raging_wind
+talents=233323
+talent_override=bladestorm,if=active_enemies>1
+talent_override=bloodbath,if=active_enemies>1
+glyphs=unending_rage/death_from_above/bull_rush
 head=crown_of_the_golden_golem,id=96894,gems=capacitive_primal_320crit_180str,reforge=haste_mastery
 neck=talisman_of_angry_spirits,id=96792
 shoulders=pauldrons_of_the_last_mogu,id=96734,gems=80str_160crit_320crit_120crit,enchant=200str_100crit,reforge=exp_crit
