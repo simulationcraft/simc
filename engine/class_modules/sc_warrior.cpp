@@ -3142,7 +3142,7 @@ struct debuff_demoralizing_shout_t : public buff_t
   {
     warrior_t* p = (warrior_t*) player;
 
-    if (p -> set_bonus.tier16_2pc_tank())
+    if (p -> set_bonus.tier16_4pc_tank())
     {
         p -> buff.tier16_reckless_defense -> trigger();
     }
