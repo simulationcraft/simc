@@ -4,6 +4,12 @@
 // ==========================================================================
 #include "simulationcraft.hpp"
 
+
+/*TODO for 5.4:
+ 
+ Implement harvest_life talent: Increases Drain Life damage
+ Implement demonic breath talent 
+ */
 namespace { // unnamed namespace
 
 static const int WILD_IMP_LIMIT = 25;
@@ -185,16 +191,15 @@ public:
   struct glyphs_t
   {
     const spell_data_t* conflagrate;
-    const spell_data_t* dark_soul;
+    const spell_data_t* curse_of_elements;
     const spell_data_t* demon_training;
+    const spell_data_t* havoc;
     const spell_data_t* life_tap;
     const spell_data_t* imp_swarm;
     const spell_data_t* soul_shards;
     const spell_data_t* burning_embers;
-    const spell_data_t* soul_swap;
     const spell_data_t* shadow_bolt;
     const spell_data_t* siphon_life;
-    const spell_data_t* everlasting_affliction;
     const spell_data_t* unstable_affliction;
   } glyphs;
 
@@ -1605,7 +1610,7 @@ public:
   {
     double m = 1.0;
 
-    if ( td( t ) -> debuffs_haunt -> up() && ( channeled || tick_power_mod ) ) //PTR Version. Only applies to channeled or dots
+    if ( td( t ) -> debuffs_haunt -> up() && ( channeled || tick_power_mod ) ) // Only applies to channeled or dots
     {
       m *= 1.0 + td( t ) -> debuffs_haunt -> data().effectN( 3 ).percent();
     }
@@ -1774,6 +1779,7 @@ struct curse_of_the_elements_t : public warlock_spell_t
   {
     background = ( sim -> overrides.magic_vulnerability != 0 );
     num_ticks = 0;
+    aoe = (p -> glyphs.curse_of_elements -> ok()) ? 3 : 1;
     may_crit = false;
   }
 
@@ -1797,8 +1803,6 @@ struct agony_t : public warlock_spell_t
   {
     may_crit = false;
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
-    num_ticks = ( int ) util::ceil( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
-    base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
   }
 
@@ -1840,8 +1844,6 @@ struct doom_t : public warlock_spell_t
   {
     may_crit = false;
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
-    num_ticks = ( int ) util::ceil( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
-    base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
   }
 
   virtual void tick( dot_t* d )
@@ -1867,16 +1869,24 @@ struct doom_t : public warlock_spell_t
 
 struct havoc_t : public warlock_spell_t
 {
+  int charges;
   havoc_t( warlock_t* p ) : warlock_spell_t( p, "Havoc" )
   {
     may_crit = false;
+    charges = 3;
+    if ( p -> glyphs.havoc -> ok())
+    {
+      charges += p -> glyphs.havoc -> effectN( 1 ).base_value();
+      cooldown -> duration +=  p -> glyphs.havoc -> effectN( 2 ).time_value();
+    }
+    
   }
 
   virtual void execute()
   {
     warlock_spell_t::execute();
 
-    p() -> buffs.havoc -> trigger( 3 );
+    p() -> buffs.havoc -> trigger( charges );
     p() -> havoc_target = target;
   }
 };
@@ -2193,9 +2203,7 @@ struct corruption_t : public warlock_spell_t
     may_crit = false;
     generate_fury = 4;
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
-    num_ticks = ( int ) util::ceil( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
-    base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
-    base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
+     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
     base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
   };
 
@@ -2217,7 +2225,7 @@ struct corruption_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( p() -> spec.nightfall -> ok() && d -> state -> target == p() -> latest_corruption_target ) //ON PTR only the latest corruption procs it
+    if ( p() -> spec.nightfall -> ok() && d -> state -> target == p() -> latest_corruption_target ) //5.4 only the latest corruption procs it
     {
 
       p() -> nightfall_chance += 0.00666; // Confirmed 09/09/2012 //Increase by 2 (5% to 10% with 5.4)
@@ -2441,9 +2449,7 @@ struct unstable_affliction_t : public warlock_spell_t
   {
     may_crit   = false;
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
-    num_ticks = ( int ) util::ceil( num_ticks * ( 1.0 + p -> glyphs.everlasting_affliction -> effectN( 1 ).percent() ) );
-    base_multiplier *= 1.0 + p -> glyphs.everlasting_affliction -> effectN( 2 ).percent();
-
+    
     if ( p -> glyphs.unstable_affliction -> ok() )
       base_execute_time *= 1.0 + p -> glyphs.unstable_affliction -> effectN( 1 ).percent();
   }
@@ -3488,7 +3494,6 @@ struct dark_soul_t : public warlock_spell_t
       cooldown -> charges = p -> talents.archimondes_darkness -> effectN( 1 ).base_value();
       p -> buffs.dark_soul -> cooldown -> duration = timespan_t::zero();
     }
-    cooldown -> duration += p -> set_bonus.tier14_4pc_caster() * p -> sets -> set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value();
   }
 
   virtual void execute()
@@ -3969,8 +3974,6 @@ struct soul_swap_t : public warlock_spell_t
     seed_of_corruption  -> dual       = true;
     seed_of_corruption  -> base_costs[ RESOURCE_MANA ] = 0;
 
-    if ( p -> glyphs.soul_swap -> ok() )
-      glyph_cooldown -> duration = p -> glyphs.soul_swap -> effectN( 2 ).time_value();
   }
 
   virtual void execute()
@@ -4334,85 +4337,6 @@ struct summon_doomguard_t : public warlock_spell_t
 
 // TALENT SPELLS
 
-struct harvest_life_heal_t : public warlock_heal_t
-{
-  harvest_life_heal_t( warlock_t* p ) :
-    warlock_heal_t( "harvest_life_heal", p, 89653 )
-  {
-    background = true;
-    may_miss = false;
-  }
-
-  void perform( bool main_target )
-  {
-    double heal_pct = ( main_target ) ? 0.033 : 0.0025; // FIXME: Does not match tooltip at all, retest later
-    base_dd_min = base_dd_max = player -> resources.max[ RESOURCE_HEALTH ] * heal_pct;
-
-    execute();
-  }
-};
-
-struct harvest_life_tick_t : public warlock_spell_t
-{
-  harvest_life_heal_t* heal;
-  player_t* main_target;
-
-  harvest_life_tick_t( warlock_t* p ) :
-    warlock_spell_t( "harvest_life_tick", p, p -> find_spell( 115707 ) ),
-    main_target( 0 )
-  {
-    aoe         = -1;
-    background  = true;
-    may_miss    = false;
-    direct_tick_callbacks = true;
-    base_dd_min = base_dd_max = base_td;
-    direct_power_mod = tick_power_mod;
-    num_ticks = 0;
-
-    heal = new harvest_life_heal_t( p );
-  }
-
-  virtual void execute()
-  {
-    main_target = target;
-
-    warlock_spell_t::execute();
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    warlock_spell_t::impact( s );
-
-    heal -> perform( main_target == target );
-
-    if ( p() -> specialization() == WARLOCK_DEMONOLOGY && ! p() -> buffs.metamorphosis -> check() )
-      p() -> resource_gain( RESOURCE_DEMONIC_FURY, main_target == target ? 10 : 3, gain ); // FIXME: This may be a bug, retest later
-  }
-};
-
-struct harvest_life_t : public warlock_spell_t
-{
-  harvest_life_t( warlock_t* p ) :
-    warlock_spell_t( "harvest_life", p, p -> talents.harvest_life )
-  {
-    // FIXME: Harvest Life is actually an aoe channel, not a channeled spell with aoe ticks
-    channeled    = true;
-    hasted_ticks = false;
-    may_crit     = false;
-
-    tick_power_mod = base_td = 0;
-
-    tick_action = new harvest_life_tick_t( p );
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    warlock_spell_t::tick( d );
-
-    consume_tick_resource( d );
-  }
-};
-
 struct mortal_coil_heal_t : public warlock_heal_t
 {
   mortal_coil_heal_t( warlock_t* p, const spell_data_t& s ) :
@@ -4772,7 +4696,6 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "fire_and_brimstone"    ) a = new    fire_and_brimstone_t( this );
   else if ( action_name == "soul_swap"             ) a = new             soul_swap_t( this );
   else if ( action_name == "flames_of_xoroth"      ) a = new      flames_of_xoroth_t( this );
-  else if ( action_name == "harvest_life"          ) a = new          harvest_life_t( this );
   else if ( action_name == "archimondes_vengeance" ) a = new archimondes_vengeance_t( this );
   else if ( action_name == "mannoroths_fury"       ) a = new mannoroths_fury_t      ( this );
   else if ( action_name == "summon_infernal"       ) a = new       summon_infernal_t( this );
@@ -4934,15 +4857,15 @@ void warlock_t::init_spells()
   talents.mannoroths_fury       = find_talent_spell( "Mannoroth's Fury" );
 
   glyphs.conflagrate            = find_glyph_spell( "Glyph of Conflagrate" );
+  glyphs.curse_of_elements      = find_glyph_spell( "Glyph of Curse of the Elements" );
   glyphs.demon_training         = find_glyph_spell( "Glyph of Demon Training" );
+  glyphs.havoc                  = find_glyph_spell( "Glyph of Havoc" );
   glyphs.life_tap               = find_glyph_spell( "Glyph of Life Tap" );
   glyphs.imp_swarm              = find_glyph_spell( "Glyph of Imp Swarm" );
   glyphs.soul_shards            = find_glyph_spell( "Glyph of Soul Shards" );
   glyphs.burning_embers         = find_glyph_spell( "Glyph of Burning Embers" );
-  glyphs.soul_swap              = find_glyph_spell( "Glyph of Soul Swap" );
   glyphs.shadow_bolt            = find_glyph_spell( "Glyph of Shadow Bolt" );
   glyphs.siphon_life            = find_glyph_spell( "Glyph of Siphon Life" );
-  glyphs.everlasting_affliction = find_glyph_spell( "Everlasting Affliction" );
   glyphs.unstable_affliction    = find_glyph_spell( "Glyph of Unstable Affliction" );
 
   spec.imp_swarm = ( glyphs.imp_swarm -> ok() ) ? find_spell( 104316 ) : spell_data_t::not_found();
