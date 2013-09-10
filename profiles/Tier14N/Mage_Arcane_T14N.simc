@@ -51,7 +51,7 @@ actions.single_target=arcane_barrage,if=buff.alter_time.up&buff.alter_time.remai
 actions.single_target+=/arcane_missiles,if=buff.alter_time.up
 actions.single_target+=/arcane_blast,if=buff.alter_time.up
 actions.single_target+=/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)
-actions.single_target+=/living_bomb,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
+actions.single_target+=/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
 actions.single_target+=/arcane_barrage,if=buff.arcane_charge.stack>=4&mana.pct<95
 actions.single_target+=/arcane_blast
 actions.single_target+=/arcane_barrage,moving=1
