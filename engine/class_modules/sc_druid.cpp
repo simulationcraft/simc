@@ -3593,13 +3593,13 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
     // When a Lunar Eclipse ends you gain 20 Solar Energy and when a Solar Eclipse
     // ends you gain 20 Lunar Energy.
-    bool soul_of_the_forest = false;
+    // bool soul_of_the_forest = false;
     if ( p() -> eclipse_bar_value <= 0 )
     {
       if ( p() -> buff.eclipse_solar -> check() )
       {
         p() -> buff.eclipse_solar -> expire();
-        soul_of_the_forest = true;
+        // soul_of_the_forest = true;
       }
       if ( p() -> eclipse_bar_value < p() -> spec.eclipse -> effectN( 2 ).base_value() )
         p() -> eclipse_bar_value = p() -> spec.eclipse -> effectN( 2 ).base_value();
@@ -3610,7 +3610,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
       if ( p() -> buff.eclipse_lunar -> check() )
       {
         p() -> buff.eclipse_lunar -> expire();
-        soul_of_the_forest = true;
+        // soul_of_the_forest = true;
       }
       if ( p() -> eclipse_bar_value > p() -> spec.eclipse -> effectN( 1 ).base_value() )
         p() -> eclipse_bar_value = p() -> spec.eclipse -> effectN( 1 ).base_value();

@@ -3683,7 +3683,7 @@ action_callback_t* unique_gear::register_stat_discharge_proc( item_t& i,
 bool unique_gear::get_equip_encoding( std::string&       encoding,
                                       const std::string& name,
                                       unsigned           tf,
-                                      bool         ptr,
+                                      bool /* ptr */,
                                       unsigned item_id )
 {
   std::string e;
@@ -3933,7 +3933,7 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
 bool unique_gear::get_use_encoding( std::string& encoding,
                                     const std::string& name,
                                     unsigned           tf,
-                                    bool         ptr,
+                                    bool         /* ptr */,
                                     unsigned     item_id )
 {
   std::string e;
