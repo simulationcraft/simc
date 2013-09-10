@@ -4512,7 +4512,7 @@ void mage_t::init_actions()
         action_list_str += "/ice_lance,if=buff.alter_time.up&buff.fingers_of_frost.up";
       }
 
-      if ( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,if=(!ticking|remains<tick_time)&target.time_to_die>6";
+      if ( talents.nether_tempest -> ok() )   action_list_str += "/nether_tempest,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>6";
       else if ( talents.living_bomb -> ok() ) action_list_str += "/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3";
       else if ( talents.frost_bomb -> ok() )  action_list_str += "/frost_bomb,if=target.time_to_die>cast_time+tick_time";
 
