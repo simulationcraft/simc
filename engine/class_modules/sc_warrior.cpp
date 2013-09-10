@@ -3097,10 +3097,10 @@ struct last_stand_t : public buff_t
   }
 };
 
-struct debuff_demoralizing_shout_t : public buff_t
+struct debuff_demo_shout_t : public buff_t
 {
 
-  debuff_demoralizing_shout_t( warrior_t* p) :
+  debuff_demo_shout_t( warrior_t* p) :
   buff_t( buff_creator_t( p, "demo_shout", p -> find_specialization_spell( "Demoralizing Shout" ) ) )
   {
     default_value = data().effectN( 1 ).percent() ;
@@ -3133,7 +3133,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t* p  ) :
 
   debuffs_colossus_smash     = buff_creator_t( *this, "colossus_smash" ).duration( p -> find_class_spell( "Colossus Smash" ) -> duration() );
 
-  debuffs_demoralizing_shout = new buffs::debuff_demoralizing_shout_t( p );
+  debuffs_demoralizing_shout = new buffs::debuff_demo_shout_t( p );
 
 }
 
