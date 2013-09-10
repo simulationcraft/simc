@@ -76,6 +76,7 @@ const OptionEntry scalingOptions[] =
   { "Analyze Attack Power",             "ap",       "Calculate scale factors for Attack Power"             },
   { "Analyze Expertise Rating",         "exp",      "Calculate scale factors for Expertise Rating"         },
   { "Analyze Hit Rating",               "hit",      "Calculate scale factors for Hit Rating"               },
+  { "Analyze positive Hit Rating",      "invhit",   "Calculate scale factors for positive Hit Rating"      },
   { "Analyze Crit Rating",              "crit",     "Calculate scale factors for Crit Rating"              },
   { "Analyze Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
   { "Analyze Mastery Rating",           "mastery",  "Calculate scale factors for Mastery Rating"           },
