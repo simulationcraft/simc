@@ -37,7 +37,11 @@
 #if ( __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) || ( defined(_MSC_VER) && _MSC_VER >= 1700 ) )
 #define RNG_CXX11
 // Order-of-inclusion bug under MSVC: Include <random> early.
+#if ! defined( SC_OSX ) || ( defined( SC_OSX ) && ! defined( SC_CLANG ) )
 #include <random>
+#else
+#include <tr1/random>
+#endif
 #endif
 
 #ifndef M_PI
