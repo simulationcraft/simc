@@ -5666,6 +5666,12 @@ void druid_t::init_spells()
   };
 
   sets = new set_bonus_array_t( this, set_bonuses );
+
+  if ( set_bonus.tier16_2pc_caster() )
+  {
+    t16_2pc_starfall_bolt = new spells::t16_2pc_starfall_bolt_t( this );
+    t16_2pc_sun_bolt = new spells::t16_2pc_sun_bolt_t( this );
+  }
 }
 
 // druid_t::init_base =======================================================
