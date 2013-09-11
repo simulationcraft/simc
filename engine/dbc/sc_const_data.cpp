@@ -284,9 +284,12 @@ void dbc::apply_hotfixes()
    * no multiplication, addition, etc.
    */
 
-
-
   spell_data_t* s;
+
+  s = spell_data_t::find( 137595, false );
+  assert( s -> internal_cooldown() != timespan_t::from_seconds( 0.25 ) && "Capacitive Primal Diamond" );
+  if ( s && s -> ok() )
+    s -> _internal_cooldown = 250;
 
   // Paladin
   // Build Last Checked: 16309
@@ -308,10 +311,7 @@ void dbc::apply_hotfixes()
   }
 
   // Priest
-  // + 25% added on 5. March 2013 http://us.battle.net/wow/en/blog/8953693/
-  // reverted on 12. March 2013 http://us.battle.net/wow/en/forum/topic/8197590653#1
 
-  // Permanent
   // Hack to get proper tooltip text in reports
   s = spell_data_t::find( 64904, false ); // Hymn of Hope (buff)
   s -> _desc = "$@spelldesc64901";
@@ -334,12 +334,6 @@ void dbc::apply_hotfixes()
     const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 1500;
   }
 
-  // 2013/5/23: Elemental Overload version of Lava Burst should now properly
-  // deal 75% of the damage dealt by the Lava Burst that activated it.
-  // m_avg: 0.85 -> 1.06219
-  const spelleffect_data_t& lvb = spell_data_t::find( 51505, false ) -> effectN( 1 );
-  const_cast<spelleffect_data_t&>( spell_data_t::find( 77451, false ) -> effectN( 1 ) )._m_avg = lvb._m_avg * 0.75;
-
   // Warlock
 
 
@@ -347,9 +341,6 @@ void dbc::apply_hotfixes()
 
 
   // Death Knight
-  s = spell_data_t::find( 48792, false );
-  const_cast<spell_data_t*>( s ) -> _rune_cost = 0; // No rune cost whatsoever, spell data is just plain wrong.
-
 
   // Monk
 
