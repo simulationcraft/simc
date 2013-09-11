@@ -598,9 +598,7 @@ static void trigger_strikes_of_opportunity( warrior_attack_t* a )
   if ( ! p -> rng().roll( chance ) )
     return;
 
-  p -> cooldown.strikes_of_opportunity -> start( timespan_t::from_seconds( 0.30 ) ); //Tested 8/29/13.
-// Increased 9/10/13, while technically this ability has a cooldown of 0.1, and if a player stands in front of 2 target dummies and strikes with 100% mastery, it will go into infinity.
-// However, there is never a fight that has 2 targets standing beside each other 100% of the time, and keeping a chain of ss/os going more than a few procs is basically impossible. Thus, the 0.30 second cd.
+  p -> cooldown.strikes_of_opportunity -> start( timespan_t::from_seconds( 0.1 ) ); //Tested 8/29/13.
 
   assert( p -> active_opportunity_strike );
 
