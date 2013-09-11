@@ -1476,39 +1476,68 @@ void PersistentCookieJar::load()
 void SC_ResultTab::save_result()
 {
   QString destination;
+  QString extension;
   switch ( currentTab() )
   {
   case TAB_HTML:
-    destination = "results_html.html"; break;
+    destination = "results_html.html"; extension = "html"; break;
   case TAB_TEXT:
-    destination = "results_text.txt"; break;
+    destination = "results_text.txt"; extension = "txt"; break;
   case TAB_XML:
-    destination = "results_xml.xml"; break;
+    destination = "results_xml.xml"; extension = "xml"; break;
   case TAB_PLOTDATA:
-    destination = "results_plotdata.csv"; break;
+    destination = "results_plotdata.csv"; extension = "csv"; break;
   case TAB_CSV:
-    destination = "results_csv.csv"; break;
+    destination = "results_csv.csv"; extension = "csv"; break;
   default: break;
   }
-  QFile file( QFileDialog::getSaveFileName( this, "Save results", mainWindow -> ResultsDestDir + "/" + destination, "HTML files (*.html)" ) );
-  if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+
+  QString savePath = mainWindow -> ResultsDestDir;
+  int fname_offset = mainWindow -> cmdLine -> text().lastIndexOf( QDir::separator() );
+
+  if ( mainWindow -> cmdLine -> text().size() > 0 )
   {
-    switch ( currentTab() )
+    if ( fname_offset == -1 )
+      destination = mainWindow -> cmdLine -> text();
+    else
     {
-    case TAB_HTML:
-      file.write( static_cast<SC_WebView*>( currentWidget() ) -> html_str.toUtf8() );
-      break;
-    case TAB_TEXT:
-    case TAB_XML:
-    case TAB_PLOTDATA:
-    case TAB_CSV:
-      file.write( static_cast<SC_TextEdit*>( currentWidget() ) -> toPlainText().toUtf8() );
-      break;
-    default: break;
+      savePath = mainWindow -> cmdLine -> text().left( fname_offset );
+      destination = mainWindow -> cmdLine -> text().right( fname_offset - 1 );
     }
-    file.close();
-    QMessageBox::information( this, tr( "Save Result" ), tr( "Result saved to %1" ).arg( mainWindow -> cmdLine->text() ), QMessageBox::Ok, QMessageBox::Ok );
-    mainWindow -> logText -> append( QString( "Results saved to: %1\n" ).arg( mainWindow -> cmdLine->text() ) );
+  }
+
+  if ( destination.indexOf( "." + extension ) == -1 )
+    destination += "." + extension;
+
+  QFileDialog f( this );
+  f.setDirectory( savePath );
+  f.setAcceptMode( QFileDialog::AcceptSave );
+  f.setDefaultSuffix( extension );
+  f.selectFile( destination );
+  f.setWindowTitle( "Save results" );
+
+  if ( f.exec() )
+  {
+    QFile file( f.selectedFiles().at( 0 ) );
+    if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
+    {
+      switch ( currentTab() )
+      {
+      case TAB_HTML:
+        file.write( static_cast<SC_WebView*>( currentWidget() ) -> html_str.toUtf8() );
+        break;
+      case TAB_TEXT:
+      case TAB_XML:
+      case TAB_PLOTDATA:
+      case TAB_CSV:
+        file.write( static_cast<SC_TextEdit*>( currentWidget() ) -> toPlainText().toUtf8() );
+        break;
+      default: break;
+      }
+      file.close();
+      QMessageBox::information( this, tr( "Save Result" ), tr( "Result saved to %1" ).arg( file.fileName() ), QMessageBox::Ok, QMessageBox::Ok );
+      mainWindow -> logText -> append( QString( "Results saved to: %1\n" ).arg( file.fileName() ) );
+    }
   }
 }
 
