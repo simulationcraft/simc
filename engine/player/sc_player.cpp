@@ -9162,28 +9162,7 @@ void player_callbacks_t::register_incoming_attack_callback( int64_t mask,
 
 void player_callbacks_t::reset()
 {
-  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
-  {
-    action_callback_t::reset( resource_gain[ i ] );
-    action_callback_t::reset( resource_loss[ i ] );
-  }
-  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
-  {
-    action_callback_t::reset( attack[ i ] );
-    action_callback_t::reset( spell [ i ] );
-    action_callback_t::reset( harmful_spell [ i ] );
-    action_callback_t::reset( heal [ i ] );
-    action_callback_t::reset( absorb [ i ] );
-    action_callback_t::reset( tick  [ i ] );
-  }
-  for ( school_e i = SCHOOL_NONE; i < SCHOOL_MAX; i++ )
-  {
-    action_callback_t::reset( tick_damage  [ i ] );
-    action_callback_t::reset( direct_damage[ i ] );
-    action_callback_t::reset( direct_crit  [ i ] );
-    action_callback_t::reset( spell_tick_damage  [ i ] );
-    action_callback_t::reset( spell_direct_damage[ i ] );
-  }
+  action_callback_t::reset( all_callbacks );
 }
 
 
