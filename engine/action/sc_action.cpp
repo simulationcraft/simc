@@ -2095,7 +2095,12 @@ double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, time
   double last_success = std::min( ( sim -> current_time - last_successful_proc ).total_seconds(), 1000.0 );
 
   double expected_average_proc_interval = 60.0 / ( PPM * coeff );
-  return std::max( 1.0, 1 + ( ( last_success / expected_average_proc_interval - 1.5 ) * 3.0 ) )  * old_rppm_chance;
+  double rppm_chance = std::max( 1.0, 1 + ( ( last_success / expected_average_proc_interval - 1.5 ) * 3.0 ) )  * old_rppm_chance;
+  if ( sim -> debug )
+    sim -> output( "base=%.3f coeff=%.3f last_trig=%.3f last_proc=%.3f scales=%d chance=%.5f%%",
+        PPM, coeff, last_trigger.total_seconds(), last_successful_proc.total_seconds(), scales_with,
+        rppm_chance * 100.0 );
+  return rppm_chance;
 }
 
 // action_t::tick_time ======================================================
