@@ -109,15 +109,15 @@ actions.aoe+=/battle_shout,if=rage<70
 
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_160exp_160crit_180str
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
-shoulders=tusks_of_mannoroth,id=105642,upgrade=2,gems=80str_160crit_160exp_160crit_160exp_160crit_180str,enchant=200str_100crit
-back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=160exp_160crit_60str,enchant=180crit,reforge=haste_hit
-chest=battleplate_of_the_prehistoric_marauder,id=99411,upgrade=2,gems=160exp_160crit_160exp_160crit_160exp_160crit_180str,enchant=80all,reforge=haste_crit
-wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=320crit,enchant=180str
-hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=2,gems=80str_160crit_80str_160crit_320crit_120str,enchant=170str,addon=synapse_springs_2,reforge=hit_mastery
-waist=ashen_wall_girdle,id=105533,upgrade=2,gems=160exp_160crit_160crit_160hit_320crit_120str,reforge=hit_crit
-legs=legplates_of_the_prehistoric_marauder,id=99413,upgrade=2,gems=320crit_320crit_120str,enchant=285str_165crit,reforge=haste_mastery
+shoulders=pauldrons_of_the_prehistoric_marauder,id=99414,upgrade=2,gems=160exp_160crit_160exp_160crit_120str,enchant=200str_100crit,reforge=exp_crit
+back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=320crit,enchant=180crit,reforge=haste_exp
+chest=battleplate_of_the_prehistoric_marauder,id=99411,upgrade=2,gems=320crit_320crit_320crit,enchant=80all,reforge=haste_crit
+wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=320crit,enchant=170mastery
+hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=2,gems=160exp_160crit_160exp_160crit_320crit_120str,enchant=170mastery,addon=synapse_springs_2,reforge=hit_mastery
+waist=ashen_wall_girdle,id=105533,upgrade=2,gems=320crit_320crit_320crit,reforge=hit_crit
+legs=legplates_of_willful_doom,id=105565,upgrade=2,gems=320crit_320crit_320crit,enchant=285str_165crit
 feet=wolfrider_spurs,id=105531,upgrade=2,gems=320crit_60crit,enchant=140mastery,reforge=haste_mastery
-finger1=devilfang_band,id=105611,upgrade=2,gems=320crit,reforge=exp_crit
+finger1=bloodclaw_band,id=105534,upgrade=2,gems=320crit_60haste,reforge=hit_crit
 finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=320crit,reforge=haste_mastery
 trinket1=evil_eye_of_galakras,id=105491,upgrade=2
 trinket2=thoks_tail_tip,id=105609,upgrade=2
@@ -125,17 +125,17 @@ main_hand=malkoroks_skullcleaver,id=105567,upgrade=2,gems=160exp_160crit_60str,e
 off_hand=malkoroks_skullcleaver,id=105567,upgrade=2,gems=160exp_160crit_60str,enchant=dancing_steel,reforge=hit_mastery
 
 # Gear Summary
-# gear_strength=26173
+# gear_strength=25081
 # gear_agility=80
-# gear_stamina=38514
+# gear_stamina=38571
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2202
-# gear_hit_rating=2779
-# gear_crit_rating=19711
-# gear_haste_rating=3675
-# gear_mastery_rating=11497
-# gear_armor=41568
+# gear_expertise_rating=2232
+# gear_hit_rating=2849
+# gear_crit_rating=19912
+# gear_haste_rating=2895
+# gear_mastery_rating=13050
+# gear_armor=41582
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
