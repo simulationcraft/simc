@@ -34,7 +34,7 @@ actions+=/last_stand,if=incoming_damage_1500ms>health.max*0.4&buff.shield_wall.d
 actions+=/shield_wall,if=incoming_damage_1500ms>health.max*0.4&buff.last_stand.down
 actions+=/avatar,if=talent.avatar.enabled
 actions+=/heroic_strike,if=buff.ultimatum.up
-actions+=/shield_barrier,if=incoming_damage_1500ms>health.max*0.3
+actions+=/shield_barrier,if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20
 actions+=/shield_block,if=charges=2|rage>rage.max-35
 actions+=/berserker_rage
 actions+=/shield_slam

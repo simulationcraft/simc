@@ -3764,7 +3764,7 @@ void warrior_t::init_actions()
       action_list_str += "/avatar,if=talent.avatar.enabled";
       action_list_str += "/heroic_strike,if=buff.ultimatum.up";
       
-      action_list_str += "/shield_barrier,if=incoming_damage_1500ms>health.max*0.3";
+      action_list_str += "/shield_barrier,if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20";
       action_list_str += "/shield_block,if=charges=2|rage>rage.max-35";
       
       action_list_str += "/berserker_rage";
