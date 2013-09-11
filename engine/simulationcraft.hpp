@@ -5801,7 +5801,7 @@ public:
   virtual double proc_chance()
   {
     if ( is_rppm() )
-      return std::fabs( proc_data.ppm );
+      return rppm.get_rppm();
     else if ( is_ppm() )
       return proc_data.ppm;
     else if ( proc_data.proc_chance > 0 )
@@ -5878,11 +5878,13 @@ struct discharge_proc_t : public proc_callback_t<T_CALLDATA>
   int       discharge_stacks;
   T_ACTION* discharge_action;
   proc_t*   discharge_proc;
+  proc_t*   discharge_proc_stack;
 
   discharge_proc_t( player_t* p, const special_effect_t& data, T_ACTION* a, const spell_data_t* driver = spell_data_t::nil() ) :
     proc_callback_t<T_CALLDATA>( p, data, driver ),
     discharge_stacks( 0 ), discharge_action( a ),
-    discharge_proc( proc_callback_t<T_CALLDATA>::listener -> get_proc( data.name_str ) )
+    discharge_proc( proc_callback_t<T_CALLDATA>::listener -> get_proc( data.name_str ) ),
+    discharge_proc_stack( this -> proc_data.max_stacks > 1 ? proc_callback_t<T_CALLDATA>::listener -> get_proc( data.name_str + "_stacks" ) : 0 )
   {
     // Discharge Procs have a delay by default
     this -> proc_data.proc_delay = true;
@@ -5905,6 +5907,9 @@ struct discharge_proc_t : public proc_callback_t<T_CALLDATA>
       discharge_action -> execute();
       discharge_proc -> occur();
     }
+
+    if ( discharge_proc_stack )
+      discharge_proc_stack -> occur();
   }
 };
 
