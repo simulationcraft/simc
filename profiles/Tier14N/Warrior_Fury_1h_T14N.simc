@@ -6,8 +6,6 @@ race=night_elf
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!122212
-talent_override=bladestorm,if=active_enemies>2
-talent_override=bloodbath,if=active_enemies>1
 glyphs=unending_rage/death_from_above/bull_rush
 spec=fury
 
