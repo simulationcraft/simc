@@ -1047,6 +1047,15 @@ void capacitive_primal( player_t* p )
             rppm.set_modifier( 1.134 );
         }
       }
+
+      void trigger( action_t* action, void* call_data )
+      {
+        // Flurry of Xuen cannot proc Capacitance
+        if ( action -> id == 147891 || action -> id == 146194 )
+          return;
+
+        discharge_proc_t<action_t>::trigger( action, call_data );
+      }
     };
 
     const spell_data_t* driver = p -> find_spell( 137595 );
@@ -3033,13 +3042,9 @@ struct flurry_of_xuen_melee_t : public attack_t
     attack_t( "flurry_of_xuen", player, player -> find_spell( 147891 ) )
   {
     direct_power_mod = data().extra_coeff();
-    weapon = &( player -> main_hand_weapon );
-    weapon_power_mod = 0;
-    weapon_multiplier = 0;
-    proc = background = true;
-    callbacks = false;
+    background = true;
     aoe = 5;
-    may_crit = true;
+    special = may_crit = true;
   }
 };
 
@@ -3049,13 +3054,9 @@ struct flurry_of_xuen_ranged_t : public ranged_attack_t
     ranged_attack_t( "flurry_of_xuen", player, player -> find_spell( 147891 ) )
   {
     direct_power_mod = data().extra_coeff();
-    weapon = &( player -> main_hand_weapon );
-    weapon_power_mod = 0;
-    weapon_multiplier = 0;
-    proc = background = true;
-    callbacks = false;
+    background = true;
     aoe = 5;
-    may_crit = true;
+    special = may_crit = true;
   }
 };
 
@@ -3079,7 +3080,6 @@ struct flurry_of_xuen_driver_t : public attack_t
   }
 };
 
-// TODO: 2h/1h modifiers for Warriors / Death Knights? 
 struct flurry_of_xuen_cb_t : public proc_callback_t<action_state_t>
 {
   action_t* action;
@@ -3089,6 +3089,15 @@ struct flurry_of_xuen_cb_t : public proc_callback_t<action_state_t>
     action( new flurry_of_xuen_driver_t( listener, listener -> create_proc_action( effect.name_str ) ) )
 
   { }
+
+  void trigger( action_t* action, void* call_data )
+  {
+    // Flurry of Xuen cannot proc itself, unfortunately
+    if ( action -> id == 147891 || action -> id == 146194 )
+      return;
+
+    proc_callback_t<action_state_t>::trigger( action, call_data );
+  }
 
   void execute( action_t*, action_state_t* state )
   {
