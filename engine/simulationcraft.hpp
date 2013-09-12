@@ -4244,6 +4244,7 @@ public:
     buff_t* pain_supression;
     buff_t* raid_movement;
     buff_t* self_movement;
+    buff_t* shadowmeld;
     buff_t* skull_banner;
     buff_t* stoneform;
     buff_t* stormlash;

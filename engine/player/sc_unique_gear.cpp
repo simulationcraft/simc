@@ -1101,7 +1101,8 @@ void courageous_primal_diamond( player_t* p )
     const spell_data_t* driver = p -> find_spell( 137248 );
     special_effect_t data;
     data.name_str = "courageous_primal_diamond_lucidity";
-    data.ppm      = driver -> real_ppm();
+    data.ppm      = -1.0 * driver -> real_ppm();
+    data.cooldown = driver -> internal_cooldown();
 
     courageous_primal_diamond_proc_t* cb = new courageous_primal_diamond_proc_t( p, data );
     p -> callbacks.register_spell_callback( RESULT_ALL_MASK, cb );

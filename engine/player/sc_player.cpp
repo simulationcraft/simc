@@ -2690,6 +2690,7 @@ void player_t::create_buffs()
                                         .add_invalidate( CACHE_SPELL_POWER )
                                         .add_invalidate( CACHE_ATTACK_POWER );
       buffs.fortitude                 = buff_creator_t( this, "fortitude", find_spell( 137593 ) ).add_invalidate( CACHE_STAMINA ).activated( false );
+      buffs.shadowmeld                = buff_creator_t( this, "shadowmeld", find_spell( 58984 ) ).cd( timespan_t::zero() );
 
       // Legendary meta haste buff
       buffs.tempus_repit              = buff_creator_t( this, "tempus_repit", find_spell( 137590 ) ).add_invalidate( CACHE_HASTE ).activated( false );
@@ -5618,6 +5619,22 @@ struct racial_spell_t : public spell_t
 
     if ( &data() == &spell_data_not_found_t::singleton )
       background = true;
+  }
+};
+
+// Shadowmeld ===============================================================
+
+struct shadowmeld_t : public racial_spell_t
+{
+  shadowmeld_t( player_t* p, const std::string& options_str ) :
+    racial_spell_t( p, "shadowmeld", p -> find_racial_spell( "Shadowmeld" ), options_str )
+  { }
+
+  void execute()
+  {
+    racial_spell_t::execute();
+
+    player -> buffs.shadowmeld -> trigger();
   }
 };
 
