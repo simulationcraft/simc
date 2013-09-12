@@ -5169,8 +5169,8 @@ void death_knight_t::init_spells()
       {
         direct_power_mod = data().extra_coeff();
         special = background = callbacks = proc = may_crit = true;
-        if ( p -> main_hand_weapon.group() == WEAPON_2H )
-          base_multiplier = 2.0;
+        if ( p -> main_hand_weapon.group() != WEAPON_2H )
+          base_multiplier = 0.5;
       }
     };
 
