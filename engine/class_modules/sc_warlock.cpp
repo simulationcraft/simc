@@ -5125,7 +5125,7 @@ void warlock_t::init_actions()
         else
           add_action( "Immolate",            "cycle_targets=1,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );
         add_action( "Conflagrate",           "if=charges=2&buff.havoc.stack=0" );
-        add_action( "Rain of Fire",          "if=!ticking&!in_flight" );
+        add_action( "Rain of Fire",          "if=!ticking&!in_flight&moving=1" );
         add_action( "Chaos Bolt",            "if=ember_react&target.health.pct>20&(buff.backdraft.stack<3|level<86|(active_enemies>1&action.incinerate.cast_time<1))&(burning_ember>(4.5-active_enemies)|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|(trinket.stacking_proc.intellect.react>6&trinket.stacking_proc.intellect.remains>cast_time))" );
         add_action( "Chaos Bolt",            "if=ember_react&target.health.pct>20&(buff.havoc.stack=3&buff.havoc.remains>cast_time)" );
         add_action( "Conflagrate" );
