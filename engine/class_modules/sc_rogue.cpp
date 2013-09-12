@@ -567,6 +567,9 @@ static void break_stealth( rogue_t* p )
     p -> buffs.vanish -> expire();
     p -> buffs.master_of_subtlety -> trigger();
   }
+
+  if ( p -> player_t::buffs.shadowmeld -> check() )
+    p -> player_t::buffs.shadowmeld -> expire();
 }
 
 // trigger_combat_potency ===================================================
@@ -1037,6 +1040,7 @@ bool rogue_attack_t::ready()
   {
     if ( ! p -> buffs.shadow_dance -> check() &&
          ! p -> buffs.stealthed -> check() &&
+         ! player -> buffs.shadowmeld -> check() &&
          ! p -> buffs.vanish -> check() )
     {
       return false;
@@ -1671,7 +1675,7 @@ struct killing_spree_t : public rogue_attack_t
     rogue_td_t* td = cast_td( target );
     if ( td -> dots.killing_spree -> current_tick >= 0 )
       m *= std::pow( 1.0 + p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent(),
-                     td -> dots.killing_spree -> current_tick );
+                     td -> dots.killing_spree -> current_tick + 1 );
 
     return m;
   }
@@ -3565,8 +3569,7 @@ void rogue_t::create_buffs()
                              .activated( true );
   buffs.toxicologist       = stat_buff_creator_t( this, "toxicologist", find_spell( 145249 ) )
                              .chance( set_bonus.tier16_4pc_melee() );
-  buffs.vanish             = buff_creator_t( this, "vanish" )
-                             .duration( timespan_t::from_seconds( 3.0 ) )
+  buffs.vanish             = buff_creator_t( this, "vanish", find_spell( 11327 ) )
                              .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Envenom is controlled by the non-harmful dot applied to player when envenom is used
