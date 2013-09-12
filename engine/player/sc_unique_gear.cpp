@@ -1026,7 +1026,7 @@ void capacitive_primal( player_t* p )
       lightning_strike_t( player_t* p ) :
         attack_t( "lightning_strike", p, p -> find_spell( 137597 ) )
       {
-        may_crit = special = background = proc = true;
+        may_crit = special = background = true;
         may_parry = may_dodge = false;
         direct_power_mod = data().extra_coeff();
       }
@@ -1050,8 +1050,8 @@ void capacitive_primal( player_t* p )
 
       void trigger( action_t* action, void* call_data )
       {
-        // Flurry of Xuen cannot proc Capacitance
-        if ( action -> id == 147891 || action -> id == 146194 )
+        // Flurry of Xuen and Capacitance cannot proc Capacitance
+        if ( action -> id == 147891 || action -> id == 146194 || action -> id == 137597 )
           return;
 
         discharge_proc_t<action_t>::trigger( action, call_data );
@@ -3093,8 +3093,8 @@ struct flurry_of_xuen_cb_t : public proc_callback_t<action_state_t>
 
   void trigger( action_t* action, void* call_data )
   {
-    // Flurry of Xuen cannot proc itself, unfortunately
-    if ( action -> id == 147891 || action -> id == 146194 )
+    // Flurry of Xuen, and Lightning Strike cannot proc Flurry of Xuen
+    if ( action -> id == 147891 || action -> id == 146194 || action -> id == 137597 )
       return;
 
     proc_callback_t<action_state_t>::trigger( action, call_data );
@@ -3135,8 +3135,7 @@ struct essence_of_yulon_t : public spell_t
   essence_of_yulon_t( player_t* p, const spell_data_t& driver ) :
     spell_t( "essence_of_yulon", p, p -> find_spell( 148008 ) )
   {
-    proc = background = may_crit = true;
-    callbacks = false;
+    background = may_crit = true;
     aoe = 5;
     direct_power_mod /= driver.duration().total_seconds() + 1;
   }
@@ -3169,6 +3168,14 @@ struct essence_of_yulon_cb_t : public proc_callback_t<action_state_t>
   {
     action -> target = state -> target;
     action -> schedule_execute();
+  }
+
+  void trigger( action_t* action, void* call_data )
+  {
+    if ( action -> id == 148008 )
+      return;
+
+    proc_callback_t<action_state_t>::trigger( action, call_data );
   }
 };
 
