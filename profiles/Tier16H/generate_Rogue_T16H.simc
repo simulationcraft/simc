@@ -1,10 +1,85 @@
 #!simc
 
-
 talent_format=armory
 
 # Assassination
+rogue="Rogue_Assassination_T16H"
+level=90
+race=troll
+role=attack
+position=back
+professions=blacksmithing=600/engineering=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ca!200002
+glyphs=vendetta
+spec=assassination
+legs=legguards_of_the_barbed_assassin,id=99349,gems=80agi_160crit_80agi_160crit_120agi,enchant=285agi_165crit,reforge=haste_hit,upgrade=2
+shoulders=spaulders_of_the_barbed_assassin,id=99350,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=haste_crit,upgrade=2
+wrists=laser_burn_bracers,id=105505,enchant=180agi,gems=160agi,reforge=exp_mastery,upgrade=2
+feet=unrepentant_heels,id=105484,gems=80agi_160crit_60mastery,enchant=140agi,reforge=exp_hit,upgrade=2
+chest=tunic_of_the_barbed_assassin,id=99356,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=haste_crit,upgrade=2
+main_hand=hvitserks_formidable_shanker,id=105601,gems=160agi_60agi,enchant=dancing_steel,reforge=haste_crit,upgrade=2
+off_hand=hvitserks_formidable_shanker,id=105601,gems=160agi_60agi,enchant=dancing_steel,reforge=haste_crit,upgrade=2
+waist=cord_of_black_dreams,id=105635,gems=160agi_80agi_160crit_160agi_120agi,reforge=haste_mastery,upgrade=2
+head=hood_of_blackened_tears,id=105409,gems=capacitive_primal_80agi_160crit_180agi,reforge=haste_hit,upgrade=2
+hands=gloves_of_the_barbed_assassin,id=99355,gems=160agi_160agi_160agi_120agi,enchant=170exp,reforge=haste_crit,upgrade=2,addon=synapse_springs_2
+back=fenyu_fury_of_xuen,id=102248,gems=160agi_60agi,enchant=180crit,reforge=haste_hit,upgrade=2
+finger1=kilruks_band_of_ascendancy,id=105624,gems=160agi_60crit,reforge=haste_crit,upgrade=2
+finger2=ring_of_restless_energy,id=105558,gems=160agi_60crit,upgrade=2
+neck=gleaming_eye_of_the_devilsaur,id=105602,reforge=haste_hit
+trinket1=assurance_of_consequence,id=105472,upgrade=2
+trinket2=haromms_talisman,id=105527,upgrade=2
+save=Rogue_Assassination_T16H.simc
 
 # Combat
+rogue="Rogue_Combat_T16H"
+level=90
+race=troll
+role=attack
+position=back
+professions=blacksmithing=600/engineering=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#cZ!200002
+spec=combat
+legs=legguards_of_the_barbed_assassin,id=99349,gems=80agi_160haste_80agi_160haste_120agi,enchant=285agi_165crit,upgrade=2
+shoulders=shoulderguards_of_the_righteous_stand,id=105551,gems=80agi_160haste_80agi_160haste_120agi,enchant=200agi_100crit,reforge=mastery_crit,upgrade=2
+wrists=bombers_blackened_wristwatch,id=105616,gems=160agi,enchant=180agi,reforge=mastery_exp,upgrade=2
+chest=tunic_of_the_barbed_assassin,id=99356,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_exp,upgrade=2
+main_hand=enchanted_shaotien_saber,id=105581,gems=160agi_60agi,enchant=dancing_steel,upgrade=2
+off_hand=hvitserks_formidable_shanker,id=105601,gems=160agi_60agi,enchant=dancing_steel,upgrade=2
+hands=gloves_of_the_barbed_assassin,id=99355,gems=160agi_160agi_160agi_120agi,enchant=170haste,reforge=mastery_crit,upgrade=2,addon=synapse_springs_2
+waist=damrons_belt_of_darkness,id=105528,gems=160agi_80agi_160hit_160agi_120agi,upgrade=2
+head=helmet_of_the_barbed_assassin,id=99348,gems=capacitive_primal_160agi_180agi,reforge=mastery_crit,upgrade=2
+back=fenyu_fury_of_xuen,id=102248,gems=160agi_60agi,enchant=180crit,reforge=mastery_exp,upgrade=2
+finger1=kilruks_band_of_ascendancy,id=105624,gems=160agi_60crit,reforge=mastery_hit,upgrade=2
+finger2=ring_of_restless_energy,id=105558,gems=160agi_60crit,reforge=mastery_haste,upgrade=2
+feet=stonetoes_tormented_treads,id=105431,gems=160agi_60mastery,enchant=140agi,reforge=hit_exp,upgrade=2
+neck=immerseus_crystalline_eye,id=105407,reforge=mastery_crit,upgrade=2
+trinket1=assurance_of_consequence,id=105472,upgrade=2
+trinket2=haromms_talisman,id=105527,upgrade=2
+save=Rogue_Combat_T16H.simc
 
 # Subtlety
+rogue="Rogue_Subtlety_T16H"
+level=90
+race=troll
+role=attack
+position=back
+professions=Blacksmithing=600/engineering=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#cb!200002
+spec=subtlety
+legs=rious_vigilant_leggings,id=105529,gems=80agi_160hit_80agi_160hit_120agi,enchant=285agi_165crit,reforge=mastery_haste,upgrade=2
+shoulders=spaulders_of_the_barbed_assassin,id=99350,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=exp_hit,upgrade=2
+wrists=bombers_blackened_wristwatch,id=105616,enchant=180agi,gems=160agi,reforge=mastery_exp,upgrade=2
+feet=stonetoes_tormented_treads,id=105431,gems=160agi_60mastery,enchant=140agi,reforge=hit_crit,upgrade=2
+chest=tunic_of_the_barbed_assassin,id=99356,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_crit,upgrade=2
+main_hand=hvitserks_formidable_shanker,id=105601,gems=160agi_60agi,enchant=dancing_steel,reforge=mastery_hit,upgrade=2
+off_hand=hvitserks_formidable_shanker,id=105601,gems=160agi_60agi,enchant=dancing_steel,reforge=mastery_exp,upgrade=2
+waist=cord_of_black_dreams,id=105635,gems=160agi_80agi_160haste_160agi_120agi,reforge=crit_hit,upgrade=2
+head=helmet_of_the_barbed_assassin,id=99348,gems=capacitive_primal_160agi_180agi,reforge=mastery_crit,upgrade=2
+hands=gloves_of_the_barbed_assassin,id=99355,gems=160agi_160agi__160agi_120agi,enchant=170haste,reforge=mastery_crit,upgrade=2,addon=synapse_springs_2
+back=fenyu_fury_of_xuen,id=102248,gems=160agi_60agi,enchant=180crit,reforge=mastery_exp,upgrade=2
+finger1=kilruks_band_of_ascendancy,id=105624,gems=160agi_60crit,reforge=mastery_hit,upgrade=2
+finger2=swift_serpent_signet,id=105483,gems=80agi_160haste_60crit,reforge=mastery_haste,upgrade=2
+neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=2
+trinket1=assurance_of_consequence,id=105472,upgrade=2
+trinket2=haromms_talisman,id=105527,upgrade=2
+save=Rogue_Subtlety_T16H.simc

@@ -1,0 +1,90 @@
+#!./simc 
+
+rogue="Rogue_Assassination_T16H"
+level=90
+race=troll
+role=attack
+position=back
+professions=blacksmithing=600/engineering=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ca!200002
+glyphs=vendetta
+spec=assassination
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/apply_poison,lethal=deadly
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+actions.precombat+=/stealth
+actions.precombat+=/marked_for_death,if=talent.marked_for_death.enabled
+actions.precombat+=/slice_and_dice,if=talent.marked_for_death.enabled
+
+# Executed every time the actor is available.
+
+actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<40
+actions+=/auto_attack
+actions+=/kick
+actions+=/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
+actions+=/use_item,slot=hands
+actions+=/blood_fury
+actions+=/berserking
+actions+=/arcane_torrent,if=energy<60
+actions+=/vanish,if=time>10&!buff.stealthed.up&!buff.shadow_blades.up
+actions+=/ambush
+actions+=/shadow_blades,if=buff.bloodlust.react|time>60
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
+actions+=/dispatch,if=dot.rupture.ticks_remain<2&energy>90
+actions+=/mutilate,if=dot.rupture.ticks_remain<2&energy>90
+actions+=/marked_for_death,if=talent.marked_for_death.enabled&combo_points=0
+actions+=/rupture,if=ticks_remain<2|(combo_points=5&ticks_remain<3)
+actions+=/vendetta
+actions+=/envenom,if=combo_points>4
+actions+=/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3
+actions+=/dispatch,if=combo_points<5
+actions+=/mutilate
+actions+=/tricks_of_the_trade
+
+head=hood_of_blackened_tears,id=105409,upgrade=2,gems=capacitive_primal_80agi_160crit_180agi,reforge=haste_hit
+neck=gleaming_eye_of_the_devilsaur,id=105602,reforge=haste_hit
+shoulders=spaulders_of_the_barbed_assassin,id=99350,upgrade=2,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=haste_crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180crit,reforge=haste_hit
+chest=tunic_of_the_barbed_assassin,id=99356,upgrade=2,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=haste_crit
+wrists=laser_burn_bracers,id=105505,upgrade=2,gems=160agi,enchant=180agi,reforge=exp_mastery
+hands=gloves_of_the_barbed_assassin,id=99355,upgrade=2,gems=160agi_160agi_160agi_120agi,enchant=170exp,addon=synapse_springs_2,reforge=haste_crit
+waist=cord_of_black_dreams,id=105635,upgrade=2,gems=160agi_80agi_160crit_160agi_120agi,reforge=haste_mastery
+legs=legguards_of_the_barbed_assassin,id=99349,upgrade=2,gems=80agi_160crit_80agi_160crit_120agi,enchant=285agi_165crit,reforge=haste_hit
+feet=unrepentant_heels,id=105484,upgrade=2,gems=80agi_160crit_60mastery,enchant=140agi,reforge=exp_hit
+finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=160agi_60crit,reforge=haste_crit
+finger2=ring_of_restless_energy,id=105558,upgrade=2,gems=160agi_60crit
+trinket1=assurance_of_consequence,id=105472,upgrade=2
+trinket2=haromms_talisman,id=105527,upgrade=2
+main_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,enchant=dancing_steel,reforge=haste_crit
+off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,enchant=dancing_steel,reforge=haste_crit
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=28815
+# gear_stamina=38411
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2526
+# gear_hit_rating=2546
+# gear_crit_rating=13761
+# gear_haste_rating=7549
+# gear_mastery_rating=7922
+# gear_armor=22615
+# meta_gem=capacitive_primal
+# tier16_2pc_melee=1
+# tier16_4pc_melee=1
+# hands=gloves_of_the_barbed_assassin,heroic=1,addon=synapse_springs_2
+# main_hand=hvitserks_formidable_shanker,heroic=1,elite=1,weapon=dagger_1.80speed_8476min_15743max,enchant=dancing_steel
+# off_hand=hvitserks_formidable_shanker,heroic=1,elite=1,weapon=dagger_1.80speed_8476min_15743max,enchant=dancing_steel
