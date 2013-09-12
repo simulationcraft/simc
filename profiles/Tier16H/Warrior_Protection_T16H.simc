@@ -1,0 +1,87 @@
+#!./simc 
+
+warrior="Warrior_Protection_T16H"
+level=90
+race=night_elf
+role=tank
+position=front
+professions=enchanting=600/inscription=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Zb!.00110
+glyphs=unending_rage/hold_the_line/heavy_repercussions
+spec=protection
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=earth
+actions.precombat+=/food,type=chun_tian_spring_rolls
+actions.precombat+=/snapshot_stats
+actions.precombat+=/stance,choose=defensive
+actions.precombat+=/battle_shout
+actions.precombat+=/mountains_potion
+
+# Executed every time the actor is available.
+
+actions=auto_attack
+actions+=/mountains_potion,if=health.pct<35&buff.mountains_potion.down
+actions+=/use_item,name=curse_of_hubris
+actions+=/berserker_rage,if=buff.enrage.down&rage<=rage.max-10
+actions+=/shield_wall,if=incoming_damage_2500ms>health.max*0.6
+actions+=/last_stand,if=incoming_damage_2500ms>health.max*0.6&buff.shield_wall.down
+actions+=/run_action_list,name=dps_cds,if=stat.attack_power>health.max*0.2
+actions+=/heroic_strike,if=buff.ultimatum.up
+actions+=/shield_slam,if=rage<75
+actions+=/revenge,if=rage<75
+actions+=/battle_shout,if=rage<80
+actions+=/shield_barrier,if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20
+actions+=/shield_block,if=charges=2|rage>rage.max-35
+actions+=/thunder_clap,if=target.debuff.weakened_blows.down
+actions+=/demoralizing_shout
+actions+=/impending_victory,if=talent.impending_victory.enabled
+actions+=/victory_rush,if=!talent.impending_victory.enabled
+actions+=/devastate
+
+actions.dps_cds=mogu_power_potion
+actions.dps_cds+=/avatar,if=talent.avatar.enabled
+actions.dps_cds+=/bloodbath,if=talent.bloodbath.enabled
+actions.dps_cds+=/dragon_roar,if=talent.dragon_roar.enabled
+actions.dps_cds+=/shattering_throw
+actions.dps_cds+=/skull_banner
+actions.dps_cds+=/recklessness
+actions.dps_cds+=/storm_bolt,if=talent.storm_bolt.enabled
+
+head=faceguard_of_the_prehistoric_marauder,id=99409,stats=5617armor_2290str_3795sta_1567parry_1567mastery,gems=indomitable_primal_320parry_270sta,reforge=mastery_dodge
+neck=blackfuses_blasting_cord,id=105622,stats=1490str_2236sta_994parry_994exp
+shoulders=shoulderguards_of_the_prehistoric_marauder,id=99407,stats=5185armor_1720str_2820sta_1192exp_1142mastery,gems=320parry_320parry_120str,enchant=780sta_100dodge,reforge=mastery_dodge
+back=qianying_fortitude_of_niuzao,id=102250,stats=1555armor_1855str_2902sta_991parry_991exp_991mastery,gems=320parry_90sta,enchant=200sta,reforge=mastery_dodge
+chest=earthbreakers_steaming_chestplate,id=105512,stats=7021armor_2435str_4013sta_1664dodge_1664parry,gems=320parry_320dodge_160parry_160hit_180dodge,enchant=300sta
+wrists=bracers_of_sordid_sleep,id=105415,stats=3072armor_1490str_2236sta_994dodge_994parry,enchant=170dodge,reforge=dodge_exp
+hands=handguards_of_the_prehistoric_marauder,id=99408,stats=4321armor_1720str_2820sta_856exp_1365mastery,gems=320parry_320parry_120str,enchant=150sta,reforge=mastery_dodge
+waist=untarnishable_greatbelt,id=105587,stats=3949armor_1827str_2981sta_1019parry_1378mastery,gems=320parry_320dodge_320parry_120str,reforge=mastery_dodge
+legs=legguards_of_the_prehistoric_marauder,id=99410,stats=6049armor_2370str_3795sta_1482parry_1681hit,gems=320dodge_320dodge_180sta,enchant=430sta_165dodge,reforge=hit_dodge
+feet=treads_of_unchained_hate,id=105414,stats=4827armor_1907str_2981sta_1370parry_1147hit,gems=320parry_60dodge,enchant=140mastery,reforge=hit_dodge
+finger1=galakrond_control_band,id=105492,stats=1410str_2236sta_953dodge_945parry,gems=160parry_160hit_60parry,enchant=160sta,reforge=dodge_exp
+finger2=ring_of_the_iron_tomb,id=105536,stats=1410str_2236sta_1036dodge_832hit,gems=320dodge_60dodge,enchant=160sta,reforge=hit_parry
+trinket1=vial_of_living_corruption,id=105568,upgrade=2
+trinket2=curse_of_hubris,id=105645,upgrade=2
+main_hand=encapsulated_essence_of_immerseus,id=105417,stats=1066str_1720sta_724dodge_724parry,weapon=mace_2.6speed_13192min_24500max,gems=320parry_60str,enchant=rivers_song,reforge=dodge_exp
+off_hand=shield_of_mockery,id=105481,stats=22519armor_1410str_2236sta_930dodge_978parry,gems=320parry_60str,enchant=170parry
+
+# Gear Summary
+# gear_strength=24880
+# gear_stamina=49609
+# gear_expertise_rating=5100
+# gear_hit_rating=2518
+# gear_mastery_rating=4008
+# gear_armor=64115
+# gear_dodge_rating=11274
+# gear_parry_rating=17450
+# meta_gem=indomitable_primal
+# tier16_2pc_tank=1
+# tier16_4pc_tank=1
+# main_hand=encapsulated_essence_of_immerseus,heroic=1,elite=1,weapon=mace_2.6speed_13192min_24500max,enchant=rivers_song

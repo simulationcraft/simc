@@ -3533,6 +3533,8 @@ void warrior_t::init_actions()
     std::string& two_list_str = get_action_priority_list( "two_targets" ) -> action_list_str;
     std::string& three_list_str = get_action_priority_list( "three_targets" ) -> action_list_str;
     std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
+    
+    std::string& prot_dps_list_str = get_action_priority_list( "dps_cds" ) -> action_list_str;
 
     switch ( specialization() )
     {
@@ -3566,7 +3568,7 @@ void warrior_t::init_actions()
         {
           // Food
           if ( level >= 80 )
-            precombat_list += "/food,type=great_pandaren_banquet";
+            precombat_list += "/food,type=chun_tian_spring_rolls";
         }
 
       break; default: break;
@@ -3760,24 +3762,32 @@ void warrior_t::init_actions()
     // Protection
     else if ( specialization() == WARRIOR_PROTECTION )
     {
-      action_list_str += "/last_stand,if=incoming_damage_1500ms>health.max*0.4&buff.shield_wall.down";
-      action_list_str += "/shield_wall,if=incoming_damage_1500ms>health.max*0.4&buff.last_stand.down";
-      action_list_str += "/avatar,if=talent.avatar.enabled";
-      action_list_str += "/heroic_strike,if=buff.ultimatum.up";
+      action_list_str += "/berserker_rage,if=buff.enrage.down&rage<=rage.max-10";
+      action_list_str += "/shield_wall,if=incoming_damage_2500ms>health.max*0.6";      
+      action_list_str += "/last_stand,if=incoming_damage_2500ms>health.max*0.6&buff.shield_wall.down";
+      action_list_str += "/run_action_list,name=dps_cds,if=stat.attack_power>health.max*0.2";
       
+      action_list_str += "/heroic_strike,if=buff.ultimatum.up";
+      action_list_str += "/shield_slam,if=rage<75";
+      action_list_str += "/revenge,if=rage<75";
+      action_list_str += "/battle_shout,if=rage<80";
       action_list_str += "/shield_barrier,if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20";
       action_list_str += "/shield_block,if=charges=2|rage>rage.max-35";
-      
-      action_list_str += "/berserker_rage";
-      action_list_str += "/shield_slam";
-      action_list_str += "/revenge";
-      action_list_str += "/battle_shout";
       action_list_str += "/thunder_clap,if=target.debuff.weakened_blows.down";
       action_list_str += "/demoralizing_shout";
       action_list_str += "/impending_victory,if=talent.impending_victory.enabled";
       action_list_str += "/victory_rush,if=!talent.impending_victory.enabled";
       action_list_str += "/devastate";
       
+      
+      prot_dps_list_str += "/mogu_power_potion";
+      prot_dps_list_str += "//avatar,if=talent.avatar.enabled";
+      prot_dps_list_str += "/bloodbath,if=talent.bloodbath.enabled";
+      prot_dps_list_str += "/dragon_roar,if=talent.dragon_roar.enabled";
+      prot_dps_list_str += "/shattering_throw";
+      prot_dps_list_str += "/skull_banner";
+      prot_dps_list_str += "/recklessness";
+      prot_dps_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
     }
 
     // Default

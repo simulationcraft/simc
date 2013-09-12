@@ -19,7 +19,7 @@ spec=protection
 # Executed before combat begins. Accepts non-harmful actions only.
 
 actions.precombat=flask,type=earth
-actions.precombat+=/food,type=great_pandaren_banquet
+actions.precombat+=/food,type=chun_tian_spring_rolls
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stance,choose=defensive
 actions.precombat+=/battle_shout
@@ -30,21 +30,30 @@ actions.precombat+=/mountains_potion
 actions=auto_attack
 actions+=/mountains_potion,if=health.pct<35&buff.mountains_potion.down
 actions+=/use_item,name=steadfast_talisman_of_the_shadopan_assault
-actions+=/last_stand,if=incoming_damage_1500ms>health.max*0.4&buff.shield_wall.down
-actions+=/shield_wall,if=incoming_damage_1500ms>health.max*0.4&buff.last_stand.down
-actions+=/avatar,if=talent.avatar.enabled
+actions+=/berserker_rage,if=buff.enrage.down&rage<=rage.max-10
+actions+=/shield_wall,if=incoming_damage_2500ms>health.max*0.6
+actions+=/last_stand,if=incoming_damage_2500ms>health.max*0.6&buff.shield_wall.down
+actions+=/run_action_list,name=dps_cds,if=stat.attack_power>health.max*0.2
 actions+=/heroic_strike,if=buff.ultimatum.up
+actions+=/shield_slam,if=rage<75
+actions+=/revenge,if=rage<75
+actions+=/battle_shout,if=rage<80
 actions+=/shield_barrier,if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20
 actions+=/shield_block,if=charges=2|rage>rage.max-35
-actions+=/berserker_rage
-actions+=/shield_slam
-actions+=/revenge
-actions+=/battle_shout
 actions+=/thunder_clap,if=target.debuff.weakened_blows.down
 actions+=/demoralizing_shout
 actions+=/impending_victory,if=talent.impending_victory.enabled
 actions+=/victory_rush,if=!talent.impending_victory.enabled
 actions+=/devastate
+
+actions.dps_cds=mogu_power_potion
+actions.dps_cds+=/avatar,if=talent.avatar.enabled
+actions.dps_cds+=/bloodbath,if=talent.bloodbath.enabled
+actions.dps_cds+=/dragon_roar,if=talent.dragon_roar.enabled
+actions.dps_cds+=/shattering_throw
+actions.dps_cds+=/skull_banner
+actions.dps_cds+=/recklessness
+actions.dps_cds+=/storm_bolt,if=talent.storm_bolt.enabled
 
 head=faceguard_of_the_last_mogu,id=96737,gems=indomitable_primal_160mastery_120sta_180parry,reforge=exp_parry
 neck=necklace_of_the_terracotta_protector,id=96724,gems=160exp_120sta_60exp,reforge=exp_mastery
