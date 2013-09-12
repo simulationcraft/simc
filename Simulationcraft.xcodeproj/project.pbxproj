@@ -23,6 +23,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		3403892517E20AA900FDEB00 /* Warlock_Destruction_T16H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 3403892417E20AA900FDEB00 /* Warlock_Destruction_T16H.simc */; };
 		3411B45117E1AC3400FB7872 /* Death_Knight_Frost_1h_T16H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 3411B41217E1AC3400FB7872 /* Death_Knight_Frost_1h_T16H.simc */; };
 		3411B45217E1AC3400FB7872 /* Death_Knight_Frost_2h_T16H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 3411B41317E1AC3400FB7872 /* Death_Knight_Frost_2h_T16H.simc */; };
 		3411B45317E1AC3400FB7872 /* Death_Knight_Unholy_T16H.simc in Resources */ = {isa = PBXBuildFile; fileRef = 3411B41417E1AC3400FB7872 /* Death_Knight_Unholy_T16H.simc */; };
@@ -554,6 +555,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3403892417E20AA900FDEB00 /* Warlock_Destruction_T16H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Warlock_Destruction_T16H.simc; sourceTree = "<group>"; };
 		3411B41217E1AC3400FB7872 /* Death_Knight_Frost_1h_T16H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Death_Knight_Frost_1h_T16H.simc; sourceTree = "<group>"; };
 		3411B41317E1AC3400FB7872 /* Death_Knight_Frost_2h_T16H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Death_Knight_Frost_2h_T16H.simc; sourceTree = "<group>"; };
 		3411B41417E1AC3400FB7872 /* Death_Knight_Unholy_T16H.simc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Death_Knight_Unholy_T16H.simc; sourceTree = "<group>"; };
@@ -1050,6 +1052,7 @@
 				3411B42B17E1AC3400FB7872 /* Raid_T16H.simc */,
 				3411B42C17E1AC3400FB7872 /* Shaman_Elemental_T16H.simc */,
 				3411B42D17E1AC3400FB7872 /* Shaman_Enhancement_T16H.simc */,
+				3403892417E20AA900FDEB00 /* Warlock_Destruction_T16H.simc */,
 				3411B42E17E1AC3400FB7872 /* Warrior_Arms_T16H.simc */,
 				3411B42F17E1AC3400FB7872 /* Warrior_Fury_1h_T16H.simc */,
 				3411B43017E1AC3400FB7872 /* Warrior_Fury_2h_T16H.simc */,
@@ -1817,6 +1820,7 @@
 				3411B48D17E1AC3400FB7872 /* Warrior_Fury_2h_T16N.simc in Resources */,
 				3411B48F17E1AD9A00FB7872 /* Warrior_Protection_T16N.simc in Resources */,
 				3411B49117E1ADA400FB7872 /* Warrior_Protection_T16H.simc in Resources */,
+				3403892517E20AA900FDEB00 /* Warlock_Destruction_T16H.simc in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

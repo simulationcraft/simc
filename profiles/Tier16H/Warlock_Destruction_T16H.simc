@@ -1,11 +1,12 @@
 #!./simc 
 
-warlock="Warlock_Destruction_T15N"
+warlock="Warlock_Destruction_T16H"
 level=90
-race=dwarf
+race=orc
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!..0.0.
+professions=Alchemy=600/Tailoring=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!....0.
 glyphs=conflagrate
 spec=destruction
 
@@ -30,15 +31,14 @@ actions.precombat+=/jade_serpent_potion
 
 actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
 actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
+actions+=/blood_fury
 actions+=/dark_soul
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/run_action_list,name=aoe,if=active_enemies>3
 actions+=/summon_doomguard
 actions+=/rain_of_fire,if=!ticking&!in_flight&active_enemies>1
 actions+=/havoc,target=2,if=active_enemies>1
-actions+=/shadowburn,if=ember_react&(burning_ember>3.5|mana.pct<=20|buff.dark_soul.up|target.time_to_die<20|buff.havoc.stack>=1|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.react>7&trinket.stacking_proc.intellect.remains>cast_time)|buff.perfect_aim.react)
-actions+=/chaos_bolt,if=ember_react&target.health.pct>20&buff.perfect_aim.react&buff.perfect_aim.remains>cast_time
-actions+=/immolate,cycle_targets=1,if=target.time_to_die>=5&miss_react&buff.perfect_aim.remains>cast_time&buff.perfect_aim.react&crit_pct<100
+actions+=/shadowburn,if=ember_react&(burning_ember>3.5|mana.pct<=20|buff.dark_soul.up|target.time_to_die<20|buff.havoc.stack>=1|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.react>7&trinket.stacking_proc.intellect.remains>cast_time))
 actions+=/immolate,cycle_targets=1,if=buff.dark_soul.react&dot.immolate.crit_pct<(stat.crit+30)&ticks_remain<add_ticks%2&miss_react
 actions+=/immolate,cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&miss_react&dot.immolate.crit_pct<(stat.crit+30)
 actions+=/immolate,cycle_targets=1,if=ticks_remain<cast_time&target.time_to_die>=5&miss_react
@@ -60,38 +60,39 @@ actions.aoe+=/conflagrate,if=buff.fire_and_brimstone.up
 actions.aoe+=/incinerate,if=buff.fire_and_brimstone.up
 actions.aoe+=/immolate,cycle_targets=1,if=!ticking
 
-head=flamecasters_burning_crown,id=94752,gems=burning_primal_80int_160hit_180int,reforge=crit_hit
-neck=necklace_of_the_terracotta_invoker,id=95203,gems=160int_60hit
-shoulders=mantle_of_the_thousandfold_hells,id=95329,gems=160int_80int_160crit_120haste,enchant=200int_100crit
-back=deadly_glare_cape,id=94929,gems=160int_60int,enchant=180int
-chest=robes_of_the_thousandfold_hells,id=95328,gems=160int_80int_160crit_80int_160hit_180int,enchant=80all,reforge=mastery_crit
-wrists=bracers_of_fragile_bone,id=94948,enchant=180int
-hands=gloves_of_the_thousandfold_hells,id=95325,gems=160int_60int,enchant=170haste,reforge=mastery_hit
-waist=cord_of_cacophonous_cawing,id=94813,gems=160int_80int_160crit_160int_120haste
-legs=leggings_of_the_thousandfold_hells,id=95327,gems=80int_160crit_80int_160hit_120int,enchant=285int_165crit
-feet=damrens_frozen_footguards,id=94968,gems=160int_60haste,enchant=140mastery
-finger1=eye_of_oondasta,id=95164,reforge=mastery_hit
-finger2=roshaks_remembrance,id=95512,gems=80int_160hit_60haste,reforge=crit_hit
-trinket1=chayes_essence_of_brilliance,id=94531,reforge=crit_haste
-trinket2=unerring_vision_of_lei_shen,id=95814
-main_hand=nadagasts_exsanguinator,id=95506,gems=80int_160crit_160int_60int,enchant=jade_spirit,reforge=crit_haste
-off_hand=lei_shens_orb_of_command,id=95473,gems=160int_60int,enchant=165int
+head=hood_of_the_horned_nightmare,id=99425,stats=2322armor_2290int_3795sta_1781haste_1201mastery,gems=sinister_primal_320exp_180int,reforge=haste_crit
+neck=untainted_guardians_chain,id=105465,stats=1490int_2236sta_944hit_1023mastery,reforge=hit_crit
+shoulders=mantle_of_the_horned_nightmare,id=99417,stats=2144armor_1720int_2820sta_872crit_1349haste,gems=320exp_320exp_120int,enchant=200int_100crit,reforge=haste_mastery
+back=xingho_breath_of_yulon,id=102246,stats=1555armor_1855int_2902sta_991crit_991haste_991mastery,gems=320exp_60int,enchant=lightweave_embroidery_3
+chest=akoliks_acidsoaked_robes,id=105604,stats=2903armor_2435int_4013sta_1664crit_1664mastery,gems=160exp_160mastery_160exp_160mastery_320mastery_180int,enchant=80all
+wrists=bracers_of_sonic_projection,id=105626,stats=1270armor_1490int_2236sta_994crit_994haste,enchant=180int,reforge=haste_mastery
+hands=gloves_of_the_horned_nightmare,id=99424,stats=1786armor_1720int_2820sta_1194haste_1127mastery,gems=80int_160mastery_80int_160mastery_120int,enchant=170mastery,reforge=mastery_hit
+waist=miasmic_skullbelt,id=105569,stats=1633armor_1827int_2981sta_1360hit_1051crit,gems=160exp_160mastery_320mastery_320mastery_120int,reforge=hit_mastery
+legs=leggings_of_the_horned_nightmare,id=99426,stats=2501armor_2370int_3795sta_1705crit_1441mastery,gems=320mastery_160hit_160mastery_120int,enchant=285int_165crit,reforge=crit_haste
+feet=boneinlaid_sandals,id=105493,stats=1996armor_1907int_2981sta_1297haste_1260mastery,gems=320mastery_60hit,enchant=140mastery
+finger1=signet_of_the_dinomancers,id=105606,stats=1410int_2236sta_944haste_953mastery,gems=80int_160mastery_60haste,reforge=haste_crit
+finger2=extinguished_ember_of_galakras,id=105498,stats=1490int_2236sta_994hit_994haste,reforge=hit_mastery
+trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
+trinket2=kardris_toxic_totem,id=105540,upgrade=2
+main_hand=arcweaver_spell_sword,id=105550,stats=1066int_1720sta_769crit_649haste_15321sp,weapon=sword_2.2speed_5581min_10366max,gems=320exp_60int,enchant=jade_spirit,reforge=haste_mastery
+off_hand=revelations_of_yshaarj,id=105650,stats=1410int_2236sta_929haste_969mastery,gems=80int_160mastery_60int,enchant=165int
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=22852
-# gear_intellect=19226
+# gear_stamina=39087
+# gear_intellect=26730
 # gear_spirit=80
-# gear_spell_power=8926
-# gear_hit_rating=5090
-# gear_crit_rating=7656
-# gear_haste_rating=7590
-# gear_mastery_rating=1947
-# gear_armor=15458
-# meta_gem=burning_primal
-# tier15_2pc_caster=1
-# tier15_4pc_caster=1
-# trinket2=unerring_vision_of_lei_shen,lfr=1
-# main_hand=nadagasts_exsanguinator,weapon=dagger_1.80speed_2660min_4940max,enchant=jade_spirit
+# gear_spell_power=15321
+# gear_expertise_rating=2080
+# gear_hit_rating=2650
+# gear_crit_rating=9419
+# gear_haste_rating=9580
+# gear_mastery_rating=15505
+# gear_armor=18110
+# meta_gem=sinister_primal
+# tier16_2pc_caster=1
+# tier16_4pc_caster=1
+# back=xingho_breath_of_yulon,enchant=lightweave_embroidery_3
+# main_hand=arcweaver_spell_sword,heroic=1,elite=1,weapon=sword_2.2speed_5581min_10366max,enchant=jade_spirit
 default_pet=felhunter
