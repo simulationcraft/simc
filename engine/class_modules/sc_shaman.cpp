@@ -410,6 +410,7 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
+  virtual action_t* create_proc_action( const std::string& name );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual expr_t* create_expression( action_t*, const std::string& name );
@@ -1818,7 +1819,7 @@ static bool trigger_tier16_2pc_melee( const action_state_t* s )
 {
   shaman_t* p = debug_cast< shaman_t* >( s -> action -> player );
 
-  if ( ! s -> action -> weapon )
+  if ( s -> action -> proc )
     return false;
 
   if ( ! p -> rng().roll( p -> buff.tier16_2pc_melee -> data().proc_chance() ) )
@@ -5005,6 +5006,63 @@ void shaman_t::create_options()
   };
 
   option_t::copy( options, shaman_options );
+}
+
+// ==========================================================================
+// Shaman Specific Proc actions
+// ==========================================================================
+
+struct shaman_lightning_strike_t : public shaman_melee_attack_t
+{
+  shaman_lightning_strike_t( shaman_t* p ) :
+    shaman_melee_attack_t( "lightning_strike", p, p -> find_spell( 137597 ) )
+  {
+    may_proc_windfury = false;
+    may_proc_maelstrom = false;
+    may_proc_primal_wisdom = false;
+    may_proc_flametongue = false;
+    background = true;
+    may_dodge = may_parry = false;
+    direct_power_mod = data().extra_coeff();
+  }
+
+  // We need to override shaman_action_state_t returning here, as tick_action
+  // and custom state objects do not mesh at all really. They technically
+  // work, but in reality we are doing naughty things in the code that are
+  // not safe.
+  action_state_t* new_state()
+  { return new action_state_t( this, target ); }
+};
+ 
+struct shaman_flurry_of_xuen_t : public shaman_melee_attack_t
+{
+  shaman_flurry_of_xuen_t( shaman_t* p ) :
+    shaman_melee_attack_t( "flurry_of_xuen", p, p -> find_spell( 147891 ) )
+  {
+    may_proc_windfury = false;
+    may_proc_maelstrom = false;
+    may_proc_primal_wisdom = false;
+    may_proc_flametongue = false;
+    background = true;
+    direct_power_mod = data().extra_coeff();
+  }
+
+  // We need to override shaman_action_state_t returning here, as tick_action
+  // and custom state objects do not mesh at all really. They technically
+  // work, but in reality we are doing naughty things in the code that are
+  // not safe.
+  action_state_t* new_state()
+  { return new action_state_t( this, target ); }
+};
+
+// shaman_t::create_proc_action =============================================
+
+action_t* shaman_t::create_proc_action( const std::string& name )
+{
+  if ( name == "flurry_of_xuen" ) return new shaman_flurry_of_xuen_t( this );
+  if ( name == "ligtning_strike" ) return new shaman_lightning_strike_t( this );
+
+  return 0;
 }
 
 // shaman_t::create_action  =================================================
