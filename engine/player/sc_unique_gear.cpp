@@ -601,7 +601,7 @@ static bool dancing_steel_str_check_func( void* d )
   return ( p -> agility() < p -> strength() );
 }
 
-void dancing_steel( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
+void dancing_steel( player_t* p, const std::string& enchant, weapon_t* /* w */, const std::string& weapon_appendix )
 {
   if ( ! util::str_compare_ci( enchant, "dancing_steel" ) )
     return;
@@ -619,7 +619,7 @@ void dancing_steel( player_t* p, const std::string& enchant, weapon_t* w, const 
   effect.name_str = "dancing_steel" + weapon_appendix;
   effect.ppm = -1.0 * driver -> real_ppm();
 
-  weapon_buff_proc_callback_t* cb  = new weapon_buff_proc_callback_t( p, effect, w, buff );
+  buff_proc_callback_t<stat_buff_t>* cb = new buff_proc_callback_t<stat_buff_t>( p, effect, buff );
 
   p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
   p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
@@ -641,7 +641,7 @@ static bool bloody_dancing_steel_str_check_func( void* d )
   return ( p -> agility() < p -> strength() );
 }
 
-void bloody_dancing_steel( player_t* p, const std::string& enchant, weapon_t* w, const std::string& weapon_appendix )
+void bloody_dancing_steel( player_t* p, const std::string& enchant, weapon_t* /* w */, const std::string& weapon_appendix )
 {
   if ( ! util::str_compare_ci( enchant, "bloody_dancing_steel" ) )
     return;
@@ -659,7 +659,7 @@ void bloody_dancing_steel( player_t* p, const std::string& enchant, weapon_t* w,
   effect.name_str = "bloody_dancing_steel" + weapon_appendix;
   effect.ppm = -1.0 * driver -> real_ppm();
 
-  weapon_buff_proc_callback_t* cb  = new weapon_buff_proc_callback_t( p, effect, w, buff );
+  buff_proc_callback_t<stat_buff_t>* cb = new buff_proc_callback_t<stat_buff_t>( p, effect, buff );
 
   p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
   p -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
