@@ -2574,7 +2574,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
   buff.rising_sun_kick   = buff_creator_t( *this, "rising_sun_kick"   ).spell( p -> find_spell( 130320 ) );
   buff.enveloping_mist   = buff_creator_t( *this, "enveloping_mist"   ).spell( p -> find_class_spell( "Enveloping Mist" ) );
   buff.dizzying_haze     = buff_creator_t( *this, "dizzying_haze" ).spell( p -> find_spell( 123727 ) );
-  buff.rushing_jade_wind = buff_creator_t( *this, "rushing_jade_wind", p ->  talent.rushing_jade_wind -> effectN( 2 ).trigger() );
+  buff.rushing_jade_wind = buff_creator_t( *this, "rushing_jade_wind", p ->  talent.rushing_jade_wind -> effectN( 1 ).trigger() );
 }
 
 // monk_t::create_action ====================================================
