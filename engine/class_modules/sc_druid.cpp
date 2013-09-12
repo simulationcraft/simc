@@ -1190,7 +1190,7 @@ public:
     {
       if ( this -> p() -> buff.dream_of_cenarius -> check() )
       {
-        m *= 1.0 + this -> p() -> buff.dream_of_cenarius -> data().effectN( 2 ).percent();
+        m *= 1.0 + this -> p() -> buff.dream_of_cenarius -> data().effectN( 1 ).percent();
       }
     }
 
