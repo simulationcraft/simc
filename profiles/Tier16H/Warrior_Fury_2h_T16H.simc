@@ -97,14 +97,15 @@ actions.three_targets+=/battle_shout,if=rage<70
 actions.three_targets+=/heroic_throw
 
 actions.aoe=bloodbath,if=enabled&buff.enrage.up
-actions.aoe+=/cleave,if=(rage>=60&debuff.colossus_smash.up)|rage>90
+actions.aoe+=/cleave,if=rage>110
 actions.aoe+=/heroic_leap,if=buff.enrage.up
 actions.aoe+=/dragon_roar,if=enabled&!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
 actions.aoe+=/bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
-actions.aoe+=/colossus_smash,if=rage<60
 actions.aoe+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking&buff.enrage.down
 actions.aoe+=/raging_blow,if=buff.meat_cleaver.stack=3
 actions.aoe+=/whirlwind
+actions.aoe+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking
+actions.aoe+=/colossus_smash
 actions.aoe+=/battle_shout,if=rage<70
 
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_160exp_160crit_180str

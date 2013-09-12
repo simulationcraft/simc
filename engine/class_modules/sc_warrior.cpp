@@ -3745,14 +3745,15 @@ void warrior_t::init_actions()
 
       //Aoe
       aoe_list_str += "/bloodbath,if=enabled&buff.enrage.up";
-      aoe_list_str += "/cleave,if=(rage>=60&debuff.colossus_smash.up)|rage>90";
+      aoe_list_str += "/cleave,if=rage>110";
       aoe_list_str += "/heroic_leap,if=buff.enrage.up";
       aoe_list_str += "/dragon_roar,if=enabled&!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)";
       aoe_list_str += "/bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)";
-      aoe_list_str += "/colossus_smash,if=rage<60";
       aoe_list_str += "/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking&buff.enrage.down";
       aoe_list_str += "/raging_blow,if=buff.meat_cleaver.stack=3";
       aoe_list_str += "/whirlwind";
+      aoe_list_str += "/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking";
+      aoe_list_str += "/colossus_smash";
       aoe_list_str += "/battle_shout,if=rage<70";
 
     }
