@@ -82,7 +82,6 @@ public:
     buff_t* demonic_calling;
     buff_t* fire_and_brimstone;
     buff_t* soul_swap;
-    buff_t* archimondes_vengeance;
     buff_t* demonic_rebirth;
     buff_t* mannoroths_fury;
 
@@ -116,7 +115,6 @@ public:
     const spell_data_t* grimoire_of_service;
     const spell_data_t* grimoire_of_sacrifice;
     const spell_data_t* archimondes_darkness;
-    const spell_data_t* archimondes_vengeance;
     const spell_data_t* kiljaedens_cunning;
     const spell_data_t* mannoroths_fury;
   } talents;
@@ -207,7 +205,6 @@ public:
   {
     spell_t* seed_of_corruption_aoe;
     spell_t* soulburn_seed_of_corruption_aoe;
-    spell_t* archimondes_vengeance_dmg;
     spell_t* metamorphosis;
     spell_t* melee;
 
@@ -309,7 +306,6 @@ public:
   virtual void halt();
   virtual void combat_begin();
   virtual expr_t* create_expression( action_t* a, const std::string& name_str );
-  virtual void assess_damage( school_e, dmg_e, action_state_t* );
 
   double emberstorm_e3_from_e1() const
   { return mastery_spells.emberstorm -> effectN( 3 ).coeff() / mastery_spells.emberstorm -> effectN( 1 ).coeff(); }
@@ -4424,35 +4420,6 @@ struct grimoire_of_service_t : public summon_pet_t
 };
 
 
-struct archimondes_vengeance_dmg_t : public warlock_spell_t
-{
-  archimondes_vengeance_dmg_t( warlock_t* p ) :
-    warlock_spell_t( "archimondes_vengeance_dmg", p )
-  {
-    // FIXME: Should this have proc=true and/or callbacks=false?
-    trigger_gcd = timespan_t::zero();
-    may_crit = false;
-    may_miss = false;
-    background = true;
-  }
-};
-
-struct archimondes_vengeance_t : public warlock_spell_t
-{
-  archimondes_vengeance_t( warlock_t* p ) :
-    warlock_spell_t( "archimondes_vengeance", p, p -> talents.archimondes_vengeance )
-  {
-    harmful = false;
-  }
-
-  virtual void execute()
-  {
-    warlock_spell_t::execute();
-
-    p() -> buffs.archimondes_vengeance -> trigger();
-  }
-};
-
 struct mannoroths_fury_t : public warlock_spell_t
 {
   mannoroths_fury_t( warlock_t* p ) :
@@ -4597,33 +4564,6 @@ void warlock_t::halt()
 }
 
 
-void warlock_t::assess_damage( school_e school,
-                               dmg_e    type,
-                               action_state_t* s )
-{
-  player_t::assess_damage( school, type, s );
-
-  double m = talents.archimondes_vengeance -> effectN( 1 ).percent();
-
-  if ( ! buffs.archimondes_vengeance -> up() )
-  {
-    if ( buffs.archimondes_vengeance -> cooldown -> up() )
-      m /= 6.0;
-    else
-      m = 0;
-  }
-
-  if ( m > 0 )
-  {
-    // FIXME: Needs testing! Should it include absorbed damage? Should it be unaffected by damage buffs?
-    spells.archimondes_vengeance_dmg -> base_dd_min = spells.archimondes_vengeance_dmg -> base_dd_max = s -> result_amount * m;
-    spells.archimondes_vengeance_dmg -> target = s -> action -> player;
-    spells.archimondes_vengeance_dmg -> school = school; // FIXME: Assuming school is the school of the incoming damage for now
-    spells.archimondes_vengeance_dmg -> execute();
-  }
-}
-
-
 double warlock_t::matching_gear_multiplier( attribute_e attr )
 {
   if ( attr == ATTR_INTELLECT )
@@ -4696,7 +4636,6 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "fire_and_brimstone"    ) a = new    fire_and_brimstone_t( this );
   else if ( action_name == "soul_swap"             ) a = new             soul_swap_t( this );
   else if ( action_name == "flames_of_xoroth"      ) a = new      flames_of_xoroth_t( this );
-  else if ( action_name == "archimondes_vengeance" ) a = new archimondes_vengeance_t( this );
   else if ( action_name == "mannoroths_fury"       ) a = new mannoroths_fury_t      ( this );
   else if ( action_name == "summon_infernal"       ) a = new       summon_infernal_t( this );
   else if ( action_name == "summon_doomguard"      ) a = new      summon_doomguard_t( this );
@@ -4870,8 +4809,6 @@ void warlock_t::init_spells()
 
   spec.imp_swarm = ( glyphs.imp_swarm -> ok() ) ? find_spell( 104316 ) : spell_data_t::not_found();
 
-  spells.archimondes_vengeance_dmg = new actions::archimondes_vengeance_dmg_t( this );
-
   spells.tier15_2pc = find_spell( 138483 );
 
   soul_swap_buffer.agony = new dot_t( "soul_swap_buffer_agony", this, this );
@@ -4926,6 +4863,7 @@ void warlock_t::init_scaling()
 void warlock_t::create_buffs()
 {
   player_t::create_buffs();
+
 
   buffs.backdraft             = buff_creator_t( this, "backdraft", spec.backdraft -> effectN( 1 ).trigger() ).max_stack( 6 );
   buffs.dark_soul             = buff_creator_t( this, "dark_soul", spec.dark_soul ).add_invalidate( CACHE_CRIT ).add_invalidate( CACHE_HASTE ).add_invalidate( CACHE_MASTERY );
