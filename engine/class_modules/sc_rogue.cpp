@@ -74,10 +74,7 @@ struct rogue_td_t : public actor_pair_t
     combo_points.clear( 0, true );
   }
 
-  bool sanguinary_veins()
-  {
-    return dots.garrote -> ticking || dots.rupture -> ticking || dots.crimson_tempest -> ticking;
-  }
+  bool sanguinary_veins();
 };
 
 struct rogue_t : public player_t
@@ -116,7 +113,8 @@ struct rogue_t : public player_t
     buff_t* shallow_insight;
     buff_t* shiv;
     buff_t* sleight_of_hand;
-    buff_t* stealthed;
+    buff_t* stealth;
+    buff_t* subterfuge;
     buff_t* t16_2pc_melee;
     buff_t* tier13_2pc;
     buff_t* tot_trigger;
@@ -226,7 +224,10 @@ struct rogue_t : public player_t
   {
     const spell_data_t* adrenaline_rush;
     const spell_data_t* expose_armor;
+    const spell_data_t* hemorrhaging_veins;
     const spell_data_t* kick;
+    const spell_data_t* sharp_knives;
+    const spell_data_t* vanish;
     const spell_data_t* vendetta;
   } glyph;
 
@@ -324,6 +325,16 @@ struct rogue_t : public player_t
   }
 };
 
+inline bool rogue_td_t::sanguinary_veins()
+{
+  rogue_t* r = debug_cast<rogue_t*>( source );
+
+  return dots.garrote -> ticking ||
+         dots.rupture -> ticking ||
+         dots.crimson_tempest -> ticking ||
+         ( r -> glyph.hemorrhaging_veins -> ok() && dots.hemorrhage -> ticking );
+}
+
 namespace actions { // namespace actions
 
 // ==========================================================================
@@ -409,6 +420,11 @@ struct rogue_attack_t : public melee_attack_t
     // and pray that nobody makes a rogue ability that has to juggle primary
     // targets around during it's execution. Gulp.
     cast_state( state ) -> cp = cast_td( target ) -> combo_points.count;
+  }
+
+  bool stealthed()
+  {
+    return p() -> buffs.vanish -> check() || p() -> buffs.stealth -> check() || player -> buffs.shadowmeld -> check();
   }
 
   action_state_t* new_state()
@@ -524,7 +540,7 @@ struct rogue_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::action_multiplier();
 
-    if ( p() -> talent.nightstalker -> ok() && p() -> buffs.stealthed -> check() )
+    if ( p() -> talent.nightstalker -> ok() && p() -> buffs.stealth -> check() )
       m += p() -> talent.nightstalker -> effectN( 2 ).percent();
 
     return m;
@@ -545,7 +561,6 @@ struct rogue_attack_t : public melee_attack_t
     p() -> cooldowns.killing_spree   -> ready -= reduction;
     p() -> cooldowns.shadow_blades   -> ready -= reduction;
   }
-
 };
 
 // ==========================================================================
@@ -556,9 +571,9 @@ struct rogue_attack_t : public melee_attack_t
 
 static void break_stealth( rogue_t* p )
 {
-  if ( p -> buffs.stealthed -> check() )
+  if ( p -> buffs.stealth -> check() )
   {
-    p -> buffs.stealthed -> expire();
+    p -> buffs.stealth -> expire();
     p -> buffs.master_of_subtlety -> trigger();
   }
 
@@ -907,7 +922,7 @@ double rogue_attack_t::cost()
     return 0;
 
   if ( p() -> talent.shadow_focus -> ok() &&
-       ( p() -> buffs.stealthed -> check() || p() -> buffs.vanish -> check() ) )
+       ( p() -> buffs.stealth -> check() || p() -> buffs.vanish -> check() ) )
   {
     c *= 1.0 + p() -> spell.shadow_focus -> effectN( 1 ).percent();
   }
@@ -965,28 +980,12 @@ void rogue_attack_t::execute()
 
   melee_attack_t::execute();
 
-  if ( harmful && ! background )
+  if ( harmful )
   {
     if ( ! p() -> talent.subterfuge -> ok() )
       break_stealth( p() );
-    else
-    {
-      struct subterfuge_event_t : public player_event_t
-      {
-        subterfuge_event_t( rogue_t& p ) :
-          player_event_t( p, "subterfuge" )
-        {
-          sim.add_event( this, p.find_spell( 115192 ) -> duration() );
-        }
-
-        void execute()
-        {
-          break_stealth( debug_cast< rogue_t* >( actor ) );
-        }
-      };
-
-      new ( *sim ) subterfuge_event_t( *p() );
-    }
+    else if ( ! p() -> buffs.subterfuge -> check() && stealthed() )
+      p() -> buffs.subterfuge -> trigger();
   }
 
   if ( result_is_hit( execute_state -> result ) )
@@ -1039,9 +1038,10 @@ bool rogue_attack_t::ready()
   if ( requires_stealth )
   {
     if ( ! p -> buffs.shadow_dance -> check() &&
-         ! p -> buffs.stealthed -> check() &&
+         ! p -> buffs.stealth -> check() &&
          ! player -> buffs.shadowmeld -> check() &&
-         ! p -> buffs.vanish -> check() )
+         ! p -> buffs.vanish -> check() && 
+         ! p -> buffs.subterfuge -> check() )
     {
       return false;
     }
@@ -1494,10 +1494,16 @@ struct fan_of_knives_t : public rogue_attack_t
   {
     rogue_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && p() -> active_lethal_poison )
+    if ( result_is_hit( s -> result ) )
     {
-      p() -> active_lethal_poison -> target = s -> target;
-      p() -> active_lethal_poison -> execute();
+      if ( p() -> glyph.sharp_knives -> ok() && ! sim -> overrides.weakened_armor )
+        target -> debuffs.weakened_armor -> trigger();
+
+      if ( p() -> active_lethal_poison )
+      {
+        p() -> active_lethal_poison -> target = s -> target;
+        p() -> active_lethal_poison -> execute();
+      }
     }
   }
 };
@@ -1799,7 +1805,6 @@ struct mutilate_t : public rogue_attack_t
 
 // Premeditation ============================================================
 
-// FIXME: Implement somehow
 struct premeditation_t : public rogue_attack_t
 {
   struct premeditation_event_t : public event_t
@@ -1837,13 +1842,26 @@ struct premeditation_t : public rogue_attack_t
   {
     harmful = may_crit = may_miss = false;
     requires_stealth = true;
+    // We need special combo points handling here
+    adds_combo_points = 0;
   }
 
   void impact( action_state_t* state )
   {
     rogue_attack_t::impact( state );
 
-    p() -> event_premeditation = new ( *sim ) premeditation_event_t( *p(), state -> target, data().duration(), data().effectN( 1 ).base_value() );
+    rogue_td_t* td = cast_td( state -> target );
+    int add_points = data().effectN( 1 ).base_value();
+
+    // In game, premeditation does not grant anticipation charges. Flagging
+    // this as a bug for now.
+    if ( p() -> bugs )
+      add_points = std::min( add_points, combo_points_t::max_combo_points - td -> combo_points.count );
+
+    if ( add_points > 0 )
+      td -> combo_points.add( add_points, "premeditation" );
+
+    p() -> event_premeditation = new ( *sim ) premeditation_event_t( *p(), state -> target, data().duration(), data().effectN( 2 ).base_value() );
   }
 };
 
@@ -2248,16 +2266,6 @@ struct vanish_t : public rogue_attack_t
     if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event )
       event_t::cancel( p() -> off_hand_attack -> execute_event );
   }
-
-  virtual bool ready()
-  {
-    rogue_t* p = cast();
-
-    if ( p -> buffs.stealthed -> check() )
-      return false;
-
-    return rogue_attack_t::ready();
-  }
 };
 
 // Vendetta =================================================================
@@ -2348,7 +2356,7 @@ struct stealth_t : public spell_t
     if ( sim -> log )
       sim -> output( "%s performs %s", p -> name(), name() );
 
-    p -> buffs.stealthed -> trigger();
+    p -> buffs.stealth -> trigger();
     used = true;
   }
 
@@ -2759,6 +2767,24 @@ struct shadow_blades_t : public buff_t
   }
 };
 
+struct subterfuge_t : public buff_t
+{
+  rogue_t* rogue;
+
+  subterfuge_t( rogue_t* r ) :
+    buff_t( buff_creator_t( r, "subterfuge", r -> find_spell( 115192 ) ) ),
+    rogue( r )
+  { }
+
+  void expire_override()
+  {
+    buff_t::expire_override();
+
+    if ( ! rogue -> bugs || ( rogue -> bugs && ( ! rogue -> glyph.vanish -> ok() || ! rogue -> buffs.vanish -> check() ) ) )
+      actions::break_stealth( rogue );
+  }
+};
+
 } // end namespace buffs
 
 
@@ -2986,7 +3012,7 @@ double rogue_t::composite_player_multiplier( school_e school )
   double m = player_t::composite_player_multiplier( school );
 
   if ( buffs.master_of_subtlety -> check() ||
-       ( spec.master_of_subtlety -> ok() && ( buffs.stealthed -> check() || buffs.vanish -> check() ) ) )
+       ( spec.master_of_subtlety -> ok() && ( buffs.stealth -> check() || buffs.vanish -> check() ) ) )
     m *= 1.0 + spec.master_of_subtlety -> effectN( 1 ).percent();
 
   m *= 1.0 + buffs.shallow_insight -> value();
@@ -3107,7 +3133,7 @@ void rogue_t::init_actions()
         def -> add_action( racial_actions[ i ] );
     }
 
-    std::string vanish_expr = "if=time>10&!buff.stealthed.up";
+    std::string vanish_expr = "if=time>10&!buff.stealth.up";
     if ( level >= 87 ) vanish_expr += "&!buff.shadow_blades.up";
     def -> add_action( this, "Vanish", vanish_expr );
 
@@ -3220,7 +3246,7 @@ void rogue_t::init_actions()
     def -> add_action( this, find_class_spell( "Ambush" ), "pool_resource", "for_next=1" );
     def -> add_action( this, "Ambush", "if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<3)" );
     def -> add_action( this, find_class_spell( "Shadow Dance" ), "pool_resource", "for_next=1,extra_amount=75" );
-    def -> add_action( this, "Shadow Dance", "if=energy>=75&buff.stealthed.down&buff.vanish.down&debuff.find_weakness.down" );
+    def -> add_action( this, "Shadow Dance", "if=energy>=75&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down" );
     def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=45" );
     def -> add_action( this, "Vanish", "if=energy>=45&energy<=75&combo_points<=3&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down" );
     def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
@@ -3433,7 +3459,10 @@ void rogue_t::init_spells()
   // Glyphs
   glyph.adrenaline_rush     = find_glyph_spell( "Glyph of Adrenaline Rush" );
   glyph.expose_armor        = find_glyph_spell( "Glyph of Expose Armor" );
+  glyph.hemorrhaging_veins  = find_glyph_spell( "Glyph of Hemorrhaging Veins" );
   glyph.kick                = find_glyph_spell( "Glyph of Kick" );
+  glyph.sharp_knives        = find_glyph_spell( "Glyph of Sharp Knives" );
+  glyph.vanish              = find_glyph_spell( "Glyph of Vanish" );
   glyph.vendetta            = find_glyph_spell( "Glyph of Vendetta" );
 
   talent.nightstalker       = find_talent_spell( "Nightstalker" );
@@ -3560,7 +3589,8 @@ void rogue_t::create_buffs()
   buffs.shiv               = buff_creator_t( this, "shiv" );
   buffs.sleight_of_hand    = buff_creator_t( this, "sleight_of_hand", find_spell( 145211 ) )
                              .chance( sets -> set( SET_T16_4PC_MELEE ) -> effectN( 3 ).percent() );
-  buffs.stealthed          = buff_creator_t( this, "stealthed" ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.stealth            = buff_creator_t( this, "stealth" ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buffs.subterfuge         = new buffs::subterfuge_t( this );
   buffs.t16_2pc_melee      = buff_creator_t( this, "silent_blades", find_spell( 145193 ) )
                              .chance( set_bonus.tier16_2pc_melee() );
   buffs.tier13_2pc         = buff_creator_t( this, "tier13_2pc", spell.tier13_2pc )
@@ -3570,7 +3600,8 @@ void rogue_t::create_buffs()
   buffs.toxicologist       = stat_buff_creator_t( this, "toxicologist", find_spell( 145249 ) )
                              .chance( set_bonus.tier16_4pc_melee() );
   buffs.vanish             = buff_creator_t( this, "vanish", find_spell( 11327 ) )
-                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                             .duration( find_spell( 11327 ) -> duration() + glyph.vanish -> effectN( 1 ).time_value() );
 
   // Envenom is controlled by the non-harmful dot applied to player when envenom is used
   buffs.envenom            = tick_buff_creator_t( this, "envenom", find_specialization_spell( "Envenom" ) )
