@@ -1,0 +1,103 @@
+#!./simc 
+
+warlock="Warlock_Demonology_T16H"
+level=90
+race=troll
+role=spell
+position=back
+professions=herbalism=600/tailoring=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!....10
+glyphs=siphon_life
+spec=demonology
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
+actions.precombat+=/summon_pet,if=!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down
+actions.precombat+=/snapshot_stats
+actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/service_pet,if=talent.grimoire_of_service.enabled
+actions.precombat+=/jade_serpent_potion
+
+# Executed every time the actor is available.
+
+actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
+actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
+actions+=/lifeblood
+actions+=/berserking
+actions+=/dark_soul
+actions+=/service_pet,if=talent.grimoire_of_service.enabled
+actions+=/felguard:felstorm
+actions+=/wrathguard:wrathstorm
+actions+=/run_action_list,name=aoe,if=active_enemies>4
+actions+=/summon_doomguard
+actions+=/doom,cycle_targets=1,if=buff.metamorphosis.up&(ticks_remain<=1|(ticks_remain+1<n_ticks&buff.dark_soul.up)|(ticks_remain<=add_ticks%2&stat.spell_power>spell_power))&target.time_to_die>=30&miss_react
+actions+=/cancel_metamorphosis,if=buff.metamorphosis.up&buff.dark_soul.down&demonic_fury<=650&target.time_to_die>30&(cooldown.metamorphosis.remains<4|demonic_fury<=300)&!(action.hand_of_guldan.in_flight&dot.shadowflame.remains)
+actions+=/soul_fire,if=buff.metamorphosis.up&buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)
+actions+=/touch_of_chaos,if=buff.metamorphosis.up
+actions+=/metamorphosis,if=(buff.dark_soul.up&buff.dark_soul.remains<demonic_fury%32)|demonic_fury>=950|demonic_fury%32>target.time_to_die|(action.hand_of_guldan.in_flight&dot.shadowflame.remains)
+actions+=/corruption,cycle_targets=1,if=!ticking&target.time_to_die>=6&miss_react
+actions+=/corruption,cycle_targets=1,if=spell_power<stat.spell_power&ticks_remain<=add_ticks%2&target.time_to_die>=6&miss_react
+actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(charges=2|dot.shadowflame.remains>travel_time|(charges=1&recharge_time<4))
+actions+=/soul_fire,if=buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)&(buff.molten_core.react>9|target.health.pct<=28)
+actions+=/life_tap,if=mana.pct<60
+actions+=/shadow_bolt
+actions+=/fel_flame,moving=1
+actions+=/life_tap
+
+actions.aoe=summon_infernal
+actions.aoe+=/cancel_metamorphosis,if=buff.metamorphosis.up&dot.corruption.remains>10&demonic_fury<=650&buff.dark_soul.down&!dot.immolation_aura.ticking
+actions.aoe+=/immolation_aura,if=buff.metamorphosis.up
+actions.aoe+=/void_ray,if=buff.metamorphosis.up&dot.corruption.remains<10
+actions.aoe+=/doom,cycle_targets=1,if=buff.metamorphosis.up&(!ticking|remains<tick_time|(ticks_remain+1<n_ticks&buff.dark_soul.up))&target.time_to_die>=30&miss_react
+actions.aoe+=/void_ray,if=buff.metamorphosis.up
+actions.aoe+=/corruption,cycle_targets=1,if=!ticking&target.time_to_die>30&miss_react
+actions.aoe+=/hand_of_guldan
+actions.aoe+=/metamorphosis,if=dot.corruption.remains<10|buff.dark_soul.up|demonic_fury>=950|demonic_fury%32>target.time_to_die
+actions.aoe+=/hellfire,chain=1,interrupt=1
+actions.aoe+=/life_tap
+
+head=hood_of_the_horned_nightmare,id=99425,stats=2322armor_2290int_3795sta_1781haste_1201mastery,gems=sinister_primal_160exp_160haste_180int
+neck=ashflare_pendant,id=105539,stats=1490int_2236sta_1133hit_755haste,reforge=hit_mastery
+shoulders=mantle_of_the_horned_nightmare,id=99417,stats=2144armor_1720int_2820sta_872crit_1349haste,gems=320haste_320haste,enchant=200int_100crit,reforge=crit_mastery
+back=xingho_breath_of_yulon,id=102246,stats=1555armor_1855int_2902sta_991crit_991haste_991mastery,gems=160exp_160haste_60int,enchant=lightweave_embroidery_3,reforge=crit_hit
+chest=robes_of_the_tendered_heart,id=105440,stats=2903armor_2435int_4013sta_1235hit_1913haste,gems=160exp_160haste_320haste_160haste_160hit_180int,enchant=80all,reforge=hit_mastery
+wrists=avools_ancestral_bracers,id=105591,stats=1270armor_1490int_2236sta_1009haste_969mastery,enchant=180int
+hands=gloves_of_the_horned_nightmare,id=99424,stats=1786armor_1720int_2820sta_1194haste_1127mastery,gems=320haste_320haste,enchant=170haste
+waist=belt_of_ominous_trembles,id=105515,stats=1633armor_1827int_2981sta_1341hit_1082mastery,gems=160exp_160haste_160haste_160hit_320haste_120int,reforge=hit_haste
+legs=leggings_of_the_horned_nightmare,id=99426,stats=2501armor_2370int_3795sta_1705crit_1441mastery,gems=320haste_320haste_120int,enchant=285int_165crit,reforge=crit_haste
+feet=boneinlaid_sandals,id=105493,stats=1996armor_1907int_2981sta_1297haste_1260mastery,gems=320haste_60hit,enchant=140mastery
+finger1=extinguished_ember_of_galakras,id=105498,stats=1490int_2236sta_994hit_994haste,reforge=hit_mastery
+finger2=signet_of_the_dinomancers,id=105606,stats=1410int_2236sta_944haste_953mastery,gems=160exp_160haste_60haste
+trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
+trinket2=kardris_toxic_totem,id=105540,upgrade=2
+main_hand=arcweaver_spell_sword,id=105550,stats=1066int_1720sta_769crit_649haste_15321sp,weapon=sword_2.2speed_5581min_10366max,gems=160exp_160haste_60int,enchant=jade_spirit,reforge=crit_mastery
+off_hand=revelations_of_yshaarj,id=105650,stats=1410int_2236sta_929haste_969mastery,gems=160exp_160haste_60int,enchant=165int
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=39087
+# gear_intellect=26170
+# gear_spirit=80
+# gear_spell_power=15321
+# gear_expertise_rating=1120
+# gear_hit_rating=3599
+# gear_crit_rating=3193
+# gear_haste_rating=19573
+# gear_mastery_rating=12132
+# gear_armor=18110
+# meta_gem=sinister_primal
+# tier16_2pc_caster=1
+# tier16_4pc_caster=1
+# back=xingho_breath_of_yulon,enchant=lightweave_embroidery_3
+# main_hand=arcweaver_spell_sword,heroic=1,elite=1,weapon=sword_2.2speed_5581min_10366max,enchant=jade_spirit
+default_pet=felguard

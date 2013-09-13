@@ -1,0 +1,111 @@
+#!./simc 
+
+warlock="Warlock_Affliction_T16H"
+level=90
+race=troll
+role=spell
+position=back
+professions=herbalism=600/tailoring=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!..0.0.
+talent_override=grimoire_of_service,if=active_enemies>3
+glyphs=siphon_life
+spec=affliction
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
+actions.precombat+=/summon_pet,if=!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down
+actions.precombat+=/snapshot_stats
+actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/service_pet,if=talent.grimoire_of_service.enabled
+actions.precombat+=/jade_serpent_potion
+
+# Executed every time the actor is available.
+
+actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
+actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
+actions+=/lifeblood
+actions+=/berserking
+actions+=/dark_soul
+actions+=/service_pet,if=talent.grimoire_of_service.enabled
+actions+=/run_action_list,name=aoe,if=active_enemies>3
+actions+=/summon_doomguard
+actions+=/soul_swap,cycle_targets=1,if=buff.soulburn.up
+actions+=/soulburn,line_cd=5,if=buff.perfect_aim.react
+actions+=/soulburn,if=(buff.dark_soul.up|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react>7)&(dot.agony.ticks_remain<=action.agony.add_ticks%2|dot.corruption.ticks_remain<=action.corruption.add_ticks%2|dot.unstable_affliction.ticks_remain<=action.unstable_affliction.add_ticks%2)&shard_react&(dot.unstable_affliction.crit_pct<100&dot.corruption.crit_pct<100&dot.agony.crit_pct<100)
+actions+=/soulburn,if=(dot.unstable_affliction.ticks_remain<=1|dot.corruption.ticks_remain<=1|dot.agony.ticks_remain<=1)&shard_react&target.health.pct<=20&(dot.unstable_affliction.crit_pct<100&dot.corruption.crit_pct<100&dot.agony.crit_pct<100)
+actions+=/haunt,if=!in_flight_to_target&remains<cast_time+travel_time+tick_time&shard_react&target.health.pct<=20
+actions+=/soulburn,if=stat.spell_power>dot.unstable_affliction.spell_power&dot.unstable_affliction.ticks_remain<=action.unstable_affliction.add_ticks%2&shard_react&target.health.pct<=20&(dot.unstable_affliction.crit_pct<100&dot.corruption.crit_pct<100&dot.agony.crit_pct<100)
+actions+=/life_tap,if=buff.dark_soul.down&buff.bloodlust.down&mana.pct<10&target.health.pct<=20
+actions+=/drain_soul,interrupt=1,chain=1,if=target.health.pct<=20
+actions+=/life_tap,if=target.health.pct<=20
+actions+=/agony,cycle_targets=1,if=remains<gcd&remains+2<cooldown.dark_soul.remains&miss_react
+actions+=/haunt,if=!in_flight_to_target&remains<cast_time+travel_time+tick_time&(soul_shard>2|cooldown.dark_soul.remains>35|(soul_shard>1&cooldown.dark_soul.remains<cast_time))&shard_react
+actions+=/corruption,cycle_targets=1,if=remains<gcd&remains<cooldown.dark_soul.remains&miss_react
+actions+=/unstable_affliction,cycle_targets=1,if=remains<gcd+cast_time&remains<cooldown.dark_soul.remains&miss_react
+actions+=/agony,cycle_targets=1,if=ticks_remain<=2&remains+2<cooldown.dark_soul.remains&miss_react&dot.agony.crit_pct<100
+actions+=/corruption,cycle_targets=1,if=ticks_remain<=2&remains<cooldown.dark_soul.remains&miss_react&dot.corruption.crit_pct<100
+actions+=/unstable_affliction,cycle_targets=1,if=(remains-cast_time)%(duration%current_ticks)<=2&remains<cooldown.dark_soul.remains&miss_react&dot.unstable_affliction.crit_pct<100
+actions+=/agony,cycle_targets=1,if=stat.spell_power>spell_power&(!trinket.stacking_proc.intellect.react|trinket.stacking_proc.intellect.react>7)&ticks_remain<add_ticks%2&remains+2<cooldown.dark_soul.remains&miss_react&dot.agony.crit_pct<100
+actions+=/corruption,cycle_targets=1,if=stat.spell_power>spell_power&(!trinket.stacking_proc.intellect.react|trinket.stacking_proc.intellect.react>7)&ticks_remain<add_ticks%2&remains<cooldown.dark_soul.remains&miss_react&dot.corruption.crit_pct<100
+actions+=/unstable_affliction,cycle_targets=1,if=stat.spell_power>spell_power&(!trinket.stacking_proc.intellect.react|trinket.stacking_proc.intellect.react>7)&ticks_remain<add_ticks%2&remains<cooldown.dark_soul.remains&miss_react&dot.unstable_affliction.crit_pct<100
+actions+=/life_tap,if=buff.dark_soul.down&buff.bloodlust.down&mana.pct<50
+actions+=/malefic_grasp,chain=1,interrupt_if=cooldown.dark_soul.remains=0|target.health.pct<=20
+actions+=/life_tap,moving=1,if=mana.pct<80&mana.pct<target.health.pct
+actions+=/fel_flame,moving=1
+actions+=/life_tap
+
+actions.aoe=summon_infernal
+actions.aoe+=/soulburn,cycle_targets=1,if=buff.soulburn.down&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target&shard_react
+actions.aoe+=/soul_swap,if=buff.soulburn.up&!dot.agony.ticking&!dot.corruption.ticking
+actions.aoe+=/soul_swap,cycle_targets=1,if=buff.soulburn.up&dot.corruption.ticking&!dot.agony.ticking
+actions.aoe+=/seed_of_corruption,cycle_targets=1,if=(buff.soulburn.down&!in_flight_to_target&!ticking)|(buff.soulburn.up&!dot.soulburn_seed_of_corruption.ticking&!action.soulburn_seed_of_corruption.in_flight_to_target)
+actions.aoe+=/haunt,cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time&shard_react
+actions.aoe+=/life_tap,if=mana.pct<70
+actions.aoe+=/fel_flame,cycle_targets=1,if=!in_flight_to_target
+
+head=hood_of_the_horned_nightmare,id=99425,stats=2322armor_2290int_3795sta_1781haste_1201mastery,gems=sinister_primal_160exp_160haste_180int
+neck=untainted_guardians_chain,id=105465,stats=1490int_2236sta_944hit_1023mastery,reforge=hit_haste
+shoulders=mantle_of_the_horned_nightmare,id=99417,stats=2144armor_1720int_2820sta_872crit_1349haste,gems=160exp_160haste_160exp_160haste_120int,enchant=200int_100crit,reforge=crit_mastery
+back=xingho_breath_of_yulon,id=102246,stats=1555armor_1855int_2902sta_991crit_991haste_991mastery,gems=160exp_160haste_60int,enchant=lightweave_embroidery_3,reforge=crit_hit
+chest=mantid_viziers_robes,id=105592,stats=2903armor_2435int_4013sta_1575crit_1716haste,gems=160exp_160haste_160exp_160haste_320haste_180int,enchant=80all,reforge=crit_mastery
+wrists=avools_ancestral_bracers,id=105591,stats=1270armor_1490int_2236sta_1009haste_969mastery,enchant=180int
+hands=gloves_of_the_horned_nightmare,id=99424,stats=1786armor_1720int_2820sta_1194haste_1127mastery,gems=160exp_160haste_160exp_160haste_120int,enchant=170exp
+waist=belt_of_ominous_trembles,id=105515,stats=1633armor_1827int_2981sta_1341hit_1082mastery,gems=160exp_160haste_160haste_160hit_320haste_120int,reforge=hit_haste
+legs=leggings_of_the_horned_nightmare,id=99426,stats=2501armor_2370int_3795sta_1705crit_1441mastery,gems=320haste_320haste_120int,enchant=285int_165crit,reforge=crit_haste
+feet=boneinlaid_sandals,id=105493,stats=1996armor_1907int_2981sta_1297haste_1260mastery,gems=320haste_60hit,enchant=140mastery
+finger1=extinguished_ember_of_galakras,id=105498,stats=1490int_2236sta_994hit_994haste,reforge=hit_mastery
+finger2=signet_of_the_dinomancers,id=105606,stats=1410int_2236sta_944haste_953mastery,gems=160exp_160haste_60haste
+trinket1=unerring_vision_of_lei_shen,id=96930,upgrade=2
+trinket2=kardris_toxic_totem,id=105540,upgrade=2
+main_hand=arcweaver_spell_sword,id=105550,stats=1066int_1720sta_769crit_649haste_15321sp,weapon=sword_2.2speed_5581min_10366max,gems=160exp_160haste_60int,enchant=jade_spirit,reforge=crit_mastery
+off_hand=revelations_of_yshaarj,id=105650,stats=1410int_2236sta_929haste_969mastery,gems=160exp_160haste_60int,enchant=165int
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=39087
+# gear_intellect=28297
+# gear_spirit=80
+# gear_spell_power=15321
+# gear_expertise_rating=2090
+# gear_hit_rating=2585
+# gear_crit_rating=4138
+# gear_haste_rating=18188
+# gear_mastery_rating=12838
+# gear_armor=18110
+# meta_gem=sinister_primal
+# tier16_2pc_caster=1
+# tier16_4pc_caster=1
+# back=xingho_breath_of_yulon,enchant=lightweave_embroidery_3
+# trinket1=unerring_vision_of_lei_shen,heroic=1,elite=1
+# main_hand=arcweaver_spell_sword,heroic=1,elite=1,weapon=sword_2.2speed_5581min_10366max,enchant=jade_spirit
+default_pet=felhunter
