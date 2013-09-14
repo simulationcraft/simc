@@ -3927,7 +3927,7 @@ struct frost_shock_t : public shaman_spell_t
   void execute()
   {
     timespan_t tmp_cd = cooldown -> duration;
-    cooldown -> duration = data().cooldown() - p() -> glyph.frost_shock -> effectN( 1 ).time_value();
+    cooldown -> duration = data().cooldown() + p() -> glyph.frost_shock -> effectN( 1 ).time_value();
 
     base_t::execute();
 
@@ -5729,10 +5729,11 @@ void shaman_t::init_actions()
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=set_bonus.tier15_2pc_melee=1&buff.maelstrom_weapon.react>=4&!buff.ascendance.up" );
     single -> add_action( this, "Flame Shock", "if=(buff.unleash_flame.up&(dot.flame_shock.remains<10|set_bonus.tier16_2pc_melee=0))|!ticking" );
     single -> add_action( this, "Unleash Elements" );
+    single -> add_action( this, "Frost Shock", "if=glyph.frost_shock.enabled&set_bonus.tier14_4pc_melee=0" );
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>=3&!buff.ascendance.up" );
     single -> add_talent( this, "Ancestral Swiftness", "if=buff.maelstrom_weapon.react<2" ) ;
     single -> add_action( this, "Lightning Bolt", "if=buff.ancestral_swiftness.up" );
-    single -> add_action( this, "Earth Shock" );
+    single -> add_action( this, "Earth Shock", "if=(!glyph.frost_shock.enabled|set_bonus.tier14_4pc_melee=1)" );
     single -> add_action( this, "Feral Spirit" );
     single -> add_action( this, "Earth Elemental Totem", "if=!active&cooldown.fire_elemental_totem.remains>=50" );
     single -> add_action( this, "Spiritwalker's Grace", "moving=1" );
