@@ -2681,6 +2681,8 @@ struct conflagrate_t : public warlock_spell_t
 
     trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.conflagrate );
 
+    //hotfixed extra gain with 15% chance from 13.09.13
+    trigger_ember_gain( p(), 0.1, p() -> gains.conflagrate, 0.15 );
     if ( result_is_hit( s -> result ) && p() -> spec.backdraft -> ok() )
       p() -> buffs.backdraft -> trigger( 3 );
     if ( s -> result == RESULT_CRIT &&  p() -> set_bonus.tier16_2pc_caster() )
@@ -2756,6 +2758,8 @@ struct incinerate_t : public warlock_spell_t
     warlock_spell_t::impact( s );
 
     trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate );
+    //hotfixed extra gain with 15% 13.09.13
+    trigger_ember_gain( p(), 0.1, p() -> gains.incinerate, 0.15 );
     if ( p() -> set_bonus.tier15_4pc_caster() &&
         rng().roll( p() -> sets -> set ( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent() ) )
       trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate_t15_4pc );
