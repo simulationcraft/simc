@@ -1971,6 +1971,7 @@ struct shattering_throw_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
     direct_power_mod = data().extra_coeff();
+    weapon            = &( p -> main_hand_weapon );
   }
 
   virtual void impact( action_state_t* s )
@@ -2936,10 +2937,10 @@ struct stance_t : public warrior_spell_t
     }
     else if ( swap < 1.5 && swap > 0 )
     {
-      sim -> errorf( "%s is only able to swap stances every 1.5 seconds, swap and damage_taken were both adjusted to 1.5 seconds.", player -> name() ); // Assuming 5.4, since it's next week.
+      sim -> errorf( "%s is only able to swap stances every 1.5 seconds, swap and damage_taken were both adjusted to 1.5 seconds.", player -> name() );
       damage_taken /= swap;
       swap = 1.5;
-      damage_taken /= swap;
+      damage_taken *=swap;
     }
 
     if( swap == 0 )
@@ -3705,10 +3706,11 @@ void warrior_t::init_actions()
       st_list_str += "/battle_shout,if=rage<70&!debuff.colossus_smash.up";
       st_list_str += "/wild_strike";
       st_list_str += ",if=debuff.colossus_smash.up&target.health.pct>=20";
-      st_list_str += "/impending_victory,if=enabled&target.health.pct>=20";
       st_list_str += "/battle_shout,if=rage<70";
+      st_list_str += "/shattering_throw,if=cooldown.colossus_smash.remains>5";
       st_list_str += "/wild_strike";
       st_list_str += ",if=cooldown.colossus_smash.remains>=2&rage>=70&target.health.pct>=20";
+      st_list_str += "/impending_victory,if=enabled&target.health.pct>=20&cooldown.colossus_smash.remains>=2";
 
       //Two targets
 
@@ -3717,6 +3719,7 @@ void warrior_t::init_actions()
       two_list_str += "/heroic_leap,if=buff.enrage.up";
       two_list_str += "/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))";
       two_list_str += "/bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)";
+      two_list_str += "/shockwave,if=enabled";
       two_list_str += "/colossus_smash";
       two_list_str += "/bloodthirst,cycle_targets=1,if=dot.deep_wounds.remains<5";
       two_list_str += "/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)";
@@ -3751,6 +3754,7 @@ void warrior_t::init_actions()
       aoe_list_str += "/heroic_leap,if=buff.enrage.up";
       aoe_list_str += "/dragon_roar,if=enabled&!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)";
       aoe_list_str += "/bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)";
+      aoe_list_str += "/shockwave,if=enabled";
       aoe_list_str += "/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking&buff.enrage.down";
       aoe_list_str += "/raging_blow,if=buff.meat_cleaver.stack=3";
       aoe_list_str += "/whirlwind";

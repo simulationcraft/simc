@@ -8,7 +8,7 @@ race=troll
 spec=balance
 role=spell
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.1.2
-glyphs=moonbeast
+glyphs=
 position=back
 professions=enchanting=600/alchemy=600
 head=hood_of_viridian_residue,id=81262,gems=burning_primal_160int_30int,reforge=crit_haste

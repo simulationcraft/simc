@@ -37,7 +37,7 @@ actions+=/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent,if=energy<60
-actions+=/vanish,if=time>10&!buff.stealthed.up&!buff.shadow_blades.up
+actions+=/vanish,if=time>10&!buff.stealth.up&!buff.shadow_blades.up
 actions+=/ambush
 actions+=/shadow_blades,if=buff.bloodlust.react|time>60
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2

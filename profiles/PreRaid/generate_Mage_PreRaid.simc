@@ -57,7 +57,7 @@ race=orc
 spec=frost
 professions=tailoring=600/enchanting=600
 talents=100031
-glyphs=evocation/icy_veins/ice_lance
+glyphs=evocation/icy_veins
 head=whitemanes_embroidered_chapeau,id=81692,gems=burning_primal_320hit_180int,reforge=crit_hit
 neck=pendant_of_precise_timing,id=81095
 shoulders=shoulders_of_engulfing_winds,id=81235,enchant=200int_100crit

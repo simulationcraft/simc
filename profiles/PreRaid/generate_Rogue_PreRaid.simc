@@ -39,7 +39,7 @@ role=attack
 position=back
 professions=alchemy=600/enchanting=600
 talents=http://us.battle.net/wow/en/game/mists-of-pandaria/feature/talent-specification#cZ!200002
-glyphs=adrenaline_rush
+glyphs=
 head=soulburner_crown,id=82853,gems=agile_primal_160agi_180agi,reforge=crit_haste
 neck=scorched_scarlet_key,id=81564
 shoulders=doubtridden_shoulderguards,id=81071,enchant=200agi_100crit
