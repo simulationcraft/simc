@@ -6302,7 +6302,7 @@ double death_knight_t::composite_crit_avoidance()
 {
   double c = player_t::composite_crit_avoidance();
 
-  c += spec.improved_blood_presence -> effectN( 3 ).percent();
+  c += spec.improved_blood_presence -> effectN( 5 ).percent();
 
   return c;
 }
