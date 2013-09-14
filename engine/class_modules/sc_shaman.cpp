@@ -1998,7 +1998,11 @@ struct chain_lightning_overload_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_da_multiplier();
 
-    m *= 1.0 + p() -> glyph.chain_lightning -> effectN( 2 ).percent();
+    // Glyph of Chain Lightning is bugged on live, and does not reduce the 
+    // damage Chain Lightning overloads do. It does provide the extra targets,
+    // though.
+    if ( ! p() -> bugs )
+      m *= 1.0 + p() -> glyph.chain_lightning -> effectN( 2 ).percent();
 
     return m;
   }
