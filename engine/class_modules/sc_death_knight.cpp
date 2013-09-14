@@ -6156,7 +6156,7 @@ void death_knight_t::assess_damage( school_e     school,
 void death_knight_t::target_mitigation( school_e school, dmg_e type, action_state_t* state )
 {
   if ( buffs.blood_presence -> check() )
-    state -> result_amount *= 1.0 + buffs.blood_presence -> data().effectN( 7 ).percent();
+    state -> result_amount *= 1.0 + buffs.blood_presence -> data().effectN( 9 ).percent();
 
   if ( school != SCHOOL_PHYSICAL && runeforge.rune_of_spellshattering -> check() )
     state -> result_amount *= 1.0 + runeforge.rune_of_spellshattering -> data().effectN( 1 ).percent();
@@ -6189,7 +6189,7 @@ double death_knight_t::composite_armor_multiplier()
   double a = player_t::composite_armor_multiplier();
 
   if ( buffs.blood_presence -> check() )
-    a *= 1.0 + buffs.blood_presence -> data().effectN( 3 ).percent();
+    a *= 1.0 + buffs.blood_presence -> data().effectN( 6 ).percent();
 
   if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
     a *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 1 ).percent();
@@ -6217,7 +6217,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr )
   else if ( attr == ATTR_STAMINA )
   {
     if ( buffs.blood_presence -> check() )
-      m *= 1.0 + buffs.blood_presence -> data().effectN( 6 ).percent();
+      m *= 1.0 + buffs.blood_presence -> data().effectN( 8 ).percent();
 
     if ( runeforge.rune_of_the_stoneskin_gargoyle -> check() )
       m *= 1.0 + runeforge.rune_of_the_stoneskin_gargoyle -> data().effectN( 2 ).percent();
