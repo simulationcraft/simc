@@ -5049,6 +5049,7 @@ struct shaman_flurry_of_xuen_t : public shaman_melee_attack_t
     may_proc_flametongue = false;
     background = true;
     direct_power_mod = data().extra_coeff();
+    aoe = 5;
   }
 
   // We need to override shaman_action_state_t returning here, as tick_action
