@@ -18,7 +18,7 @@ shoulders=pauldrons_of_winged_triumph,id=99373,upgrade=2,gems=160exp_160haste_16
 back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=80str_160haste_60str,enchant=180hit
 chest=battleplate_of_winged_triumph,id=99387,upgrade=2,gems=160exp_160haste_160exp_160haste_160exp_160haste_180str,enchant=80all
 wrists=bubbleburst_bracers,id=105411,upgrade=2,gems=320haste,enchant=180str,reforge=hit_mastery
-hands=gauntlets_of_winged_triumph,id=99380,upgrade=2,gems=80str_160haste_80str_160haste_320haste_120str,enchant=170str,reforge=hit_mastery
+hands=gauntlets_of_winged_triumph,id=99380,upgrade=2,gems=80str_160haste_80str_160haste_320haste_120str,enchant=170str,reforge=hit_mastery,addon=synapse_springs_mark_ii
 waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=160exp_160haste_320haste_320haste_120str
 legs=legplates_of_unthinking_strife,id=105640,upgrade=2,gems=160hit_160haste_160hit_160haste_160exp_160haste_180str,enchant=285str_165crit
 feet=wolfrider_spurs,id=105531,upgrade=2,gems=320haste_60crit,reforge=crit_mastery,enchant=175haste

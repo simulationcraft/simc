@@ -4497,7 +4497,7 @@ void paladin_t::generate_action_prio_list_ret()
   }*/
 
   // Inquisition
-  def -> add_action( this, "Inquisition", "if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|target.time_to_die<holy_power*10|buff.divine_purpose.react)" );
+  def -> add_action( this, "Inquisition", "if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|target.time_to_die<holy_power*20|buff.divine_purpose.react)" );
 
   // Avenging Wrath
   def -> add_action( this, "Avenging Wrath", "if=buff.inquisition.up" );
@@ -4515,12 +4515,9 @@ void paladin_t::generate_action_prio_list_ret()
     if ( items[ i ].parsed.use.active() )
     {
       std::string item_str;
-      item_str += "/use_item,name=";
+      item_str += "use_item,name=";
       item_str += items[ i ].name();
-      if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
-        item_str += ",if=buff.inquisition.up";
-      else
-        item_str += ",if=buff.inquisition.up&time>=14";
+      item_str += ",if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=12)";
       def -> add_action( item_str );
     }
   }
@@ -4536,17 +4533,11 @@ void paladin_t::generate_action_prio_list_ret()
     def -> add_action( racial_actions[ i ] );
 
   // Execution Sentence
-  if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
-    def -> add_talent( this, "Execution Sentence", "if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=12)" );
-  else
-    def -> add_talent( this, "Execution Sentence", "if=buff.inquisition.up&time>=15" );
+  def -> add_talent( this, "Execution Sentence", "if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=12)" );
 
   // Light's Hammer
-  if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
-    def -> add_talent( this, "Light's Hammer", "if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=12)" );
-  else
-    def -> add_talent( this, "Light's Hammer", "if=buff.inquisition.up&time>=15" );
-
+  def -> add_talent( this, "Light's Hammer", "if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=12)" );
+  
   // Divine Storm
   def -> add_action( this, "Divine Storm", "if=active_enemies>=2&(holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3))" );
   
@@ -4554,39 +4545,27 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&holy_power=5" );
 
   // Templar's Verdict @ 5 HP, or if DivPurp is about to expire
-  def -> add_action( this, "Templar's Verdict", "if=holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3)" );
-  if ( find_talent_spell( " Divine Purpose" ) -> ok() )
-    def -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react&buff.divine_purpose.remains<4" );
+  def -> add_action( this, "Templar's Verdict", "if=holy_power=5|buff.holy_avenger.up&holy_power>=3" );
+  def -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react&buff.divine_purpose.remains<4" );
   
   // Hammer of Wrath
   def -> add_action( this, "Hammer of Wrath" );
-
-  if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
-    def -> add_action( "wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2" );
-  else
-    def -> add_action( "wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.1" );
+  def -> add_action( "wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2" );
     
-  // Divine Storm with 4T16 with Sanctified Wrath
-  if ( find_talent_spell( "Sanctified Wrath" ) -> ok() )
-    def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react" );
+  // Divine Storm with 4T16 
+  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react" );
 
   // Everything Else
-  //def -> add_action( this, "Crusader Strike", "if=set_bonus.tier15_4pc_melee&buff.tier15_4pc_melee.down");
-  //def -> add_action( this, "Templar's Verdict", "if=(buff.tier15_4pc_melee.up&cooldown.crusader_strike.remains<=1.5)" );
   def -> add_action( this, "Crusader Strike" );
   def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2" );
   def -> add_action( this, "Exorcism", "if=active_enemies>=2&active_enemies<=4&set_bonus.tier15_2pc_melee&glyph.mass_exorcism.enabled" );
   def -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=4" );
-  //def -> add_action( this, "Exorcism", "if=buff.avenging_wrath.up");
-  //def -> add_action( "wait,sec=cooldown.exorcism.remains,if=buff.avenging_wrath.up&cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2" );
   def -> add_action( this, "Templar's Verdict", "if=buff.avenging_wrath.up");
-  def -> add_action( this, "Judgment", "target=2,if=active_enemies>=2&buff.glyph_double_jeopardy.up" );
   def -> add_action( this, "Judgment" );
   def -> add_action( "wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2" );
 
-  // Divine Storm with 4T16 with Divine Purpose
-  if ( find_talent_spell( "Divine Purpose" ) -> ok() || find_talent_spell( "Holy Avenger" ) -> ok() )
-    def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react" );
+  // Templar's Verdict w/ Divine Purpose
+  def -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react" );
 
   def -> add_action( this, "Exorcism" );
   def -> add_action( "wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2" );
