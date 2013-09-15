@@ -5749,6 +5749,7 @@ void shaman_t::init_actions()
     aoe -> add_action( this, "Magma Totem", "if=active_enemies>5&!totem.fire.active" );
     aoe -> add_action( this, "Searing Totem", "if=active_enemies<=5&!totem.fire.active" );
     aoe -> add_action( this, "Lava Lash", "if=dot.flame_shock.ticking" );
+    aoe -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=1" );
     aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=active_enemies>=2&buff.maelstrom_weapon.react>=3" );
     aoe -> add_action( this, "Unleash Elements" );
     aoe -> add_action( this, "Flame Shock", "cycle_targets=1,if=!ticking" );
