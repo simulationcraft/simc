@@ -3643,14 +3643,14 @@ void warrior_t::init_actions()
       action_list_str += "/run_action_list,name=single_target,if=active_enemies<2";
 
       //Single Target
-      st_list_str += "/heroic_strike,if=rage>115|(debuff.colossus_smash.up&rage>40&set_bonus.tier16_2pc_melee)";
+      st_list_str += "/heroic_strike,if=rage>115|(debuff.colossus_smash.up&rage>60&set_bonus.tier16_2pc_melee)";
       st_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<1.0";
       st_list_str += "/mortal_strike";
       st_list_str += "/storm_bolt,if=enabled&debuff.colossus_smash.up";
       st_list_str += "/dragon_roar,if=enabled&!debuff.colossus_smash.up";
-      st_list_str += "/execute,if=buff.sudden_execute.down|buff.taste_for_blood.down|rage>70";
-      st_list_str += "/slam,if=(debuff.colossus_smash.up&buff.taste_for_blood.stack<3)&target.health.pct>=20";
-      st_list_str += "/overpower,if=target.health.pct>=20|buff.sudden_execute.up";
+      st_list_str += "/execute,if=buff.sudden_execute.down|buff.taste_for_blood.down|rage>90|target.time_to_die<12";
+      st_list_str += "/overpower,if=target.health.pct>=20&rage<100|buff.sudden_execute.up";
+      st_list_str += "/slam,if=target.health.pct>=20";
       st_list_str += "/battle_shout";
       st_list_str += "/heroic_throw";
 

@@ -17,14 +17,14 @@ role=attack
 position=back
 professions=engineering=600/blacksmithing=600
 talents=233322
-glyphs=unending_rage/death_from_above/sweeping_strikes
+glyphs=unending_rage/death_from_above/sweeping_strikes/resonating_power
 head=helmet_of_the_prehistoric_marauder,id=99418,gems=capacitive_primal_160exp_160crit_180str,upgrade=2
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
 shoulders=tusks_of_mannoroth,id=105642,gems=80str_160crit_160exp_160crit_160exp_160crit_180str,enchant=200str_100crit,upgrade=2
 back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=160exp_160crit_60str,enchant=180crit,reforge=haste_hit,upgrade=2
 chest=battleplate_of_the_prehistoric_marauder,id=99411,gems=160exp_160crit_160exp_160crit_160exp_160crit_180str,enchant=80all,reforge=haste_crit,upgrade=2
 wrists=bracers_of_blind_hatred,id=105456,gems=320crit,enchant=180str,upgrade=2
-hands=gauntlets_of_the_prehistoric_marauder,id=99412,gems=80str_160crit_80str_160crit_320crit_120str,enchant=170str,addon=synapse_springs_2,reforge=hit_mastery,upgrade=2
+hands=gauntlets_of_the_prehistoric_marauder,id=99412,gems=160exp_160crit_80str_160crit_320crit_120str,enchant=170str,addon=synapse_springs_2,reforge=hit_mastery,upgrade=2
 waist=ashen_wall_girdle,id=105533,gems=160exp_160crit_160crit_160hit_320crit_120str,reforge=hit_crit,upgrade=2
 legs=legplates_of_the_prehistoric_marauder,id=99413,gems=320crit_320crit_120str,enchant=285str_165crit,reforge=haste_mastery,upgrade=2
 feet=greaves_of_sublime_superiority,id=105478,gems=320crit,enchant=140mastery,reforge=hit_mastery,upgrade=2

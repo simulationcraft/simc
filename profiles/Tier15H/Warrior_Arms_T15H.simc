@@ -40,14 +40,14 @@ actions+=/heroic_leap,if=debuff.colossus_smash.up
 actions+=/run_action_list,name=aoe,if=active_enemies>=2
 actions+=/run_action_list,name=single_target,if=active_enemies<2
 
-actions.single_target=heroic_strike,if=rage>115|(debuff.colossus_smash.up&rage>40&set_bonus.tier16_2pc_melee)
+actions.single_target=heroic_strike,if=rage>115|(debuff.colossus_smash.up&rage>60&set_bonus.tier16_2pc_melee)
 actions.single_target+=/colossus_smash,if=debuff.colossus_smash.remains<1.0
 actions.single_target+=/mortal_strike
 actions.single_target+=/storm_bolt,if=enabled&debuff.colossus_smash.up
 actions.single_target+=/dragon_roar,if=enabled&!debuff.colossus_smash.up
-actions.single_target+=/execute,if=buff.sudden_execute.down|buff.taste_for_blood.down|rage>70
-actions.single_target+=/slam,if=(debuff.colossus_smash.up&buff.taste_for_blood.stack<3)&target.health.pct>=20
-actions.single_target+=/overpower,if=target.health.pct>=20|buff.sudden_execute.up
+actions.single_target+=/execute,if=buff.sudden_execute.down|buff.taste_for_blood.down|rage>90|target.time_to_die<12
+actions.single_target+=/overpower,if=target.health.pct>=20&rage<100|buff.sudden_execute.up
+actions.single_target+=/slam,if=target.health.pct>=20
 actions.single_target+=/battle_shout
 actions.single_target+=/heroic_throw
 

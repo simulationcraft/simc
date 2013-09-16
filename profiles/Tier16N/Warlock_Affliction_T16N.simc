@@ -1,6 +1,6 @@
 #!./simc 
 
-warlock=""
+warlock="Warlock_Affliction_T16N"
 level=90
 race=tauren
 role=spell

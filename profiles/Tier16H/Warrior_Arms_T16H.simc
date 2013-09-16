@@ -7,7 +7,7 @@ role=attack
 position=back
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!122211
-glyphs=unending_rage/death_from_above/sweeping_strikes
+glyphs=unending_rage/death_from_above/sweeping_strikes/resonating_power
 spec=arms
 
 # This default action priority list is automatically created based on your character.
@@ -40,14 +40,14 @@ actions+=/heroic_leap,if=debuff.colossus_smash.up
 actions+=/run_action_list,name=aoe,if=active_enemies>=2
 actions+=/run_action_list,name=single_target,if=active_enemies<2
 
-actions.single_target=heroic_strike,if=rage>115|(debuff.colossus_smash.up&rage>40&set_bonus.tier16_2pc_melee)
+actions.single_target=heroic_strike,if=rage>115|(debuff.colossus_smash.up&rage>60&set_bonus.tier16_2pc_melee)
 actions.single_target+=/colossus_smash,if=debuff.colossus_smash.remains<1.0
 actions.single_target+=/mortal_strike
 actions.single_target+=/storm_bolt,if=enabled&debuff.colossus_smash.up
 actions.single_target+=/dragon_roar,if=enabled&!debuff.colossus_smash.up
-actions.single_target+=/execute,if=buff.sudden_execute.down|buff.taste_for_blood.down|rage>70
-actions.single_target+=/slam,if=(debuff.colossus_smash.up&buff.taste_for_blood.stack<3)&target.health.pct>=20
-actions.single_target+=/overpower,if=target.health.pct>=20|buff.sudden_execute.up
+actions.single_target+=/execute,if=buff.sudden_execute.down|buff.taste_for_blood.down|rage>90|target.time_to_die<12
+actions.single_target+=/overpower,if=target.health.pct>=20&rage<100|buff.sudden_execute.up
+actions.single_target+=/slam,if=target.health.pct>=20
 actions.single_target+=/battle_shout
 actions.single_target+=/heroic_throw
 
@@ -68,7 +68,7 @@ shoulders=tusks_of_mannoroth,id=105642,upgrade=2,gems=80str_160crit_160exp_160cr
 back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=160exp_160crit_60str,enchant=180crit,reforge=haste_hit
 chest=battleplate_of_the_prehistoric_marauder,id=99411,upgrade=2,gems=160exp_160crit_160exp_160crit_160exp_160crit_180str,enchant=80all,reforge=haste_crit
 wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=320crit,enchant=180str
-hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=2,gems=80str_160crit_80str_160crit_320crit_120str,enchant=170str,addon=synapse_springs_2,reforge=hit_mastery
+hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=2,gems=160exp_160crit_80str_160crit_320crit_120str,enchant=170str,addon=synapse_springs_2,reforge=hit_mastery
 waist=ashen_wall_girdle,id=105533,upgrade=2,gems=160exp_160crit_160crit_160hit_320crit_120str,reforge=hit_crit
 legs=legplates_of_the_prehistoric_marauder,id=99413,upgrade=2,gems=320crit_320crit_120str,enchant=285str_165crit,reforge=haste_mastery
 feet=greaves_of_sublime_superiority,id=105478,upgrade=2,gems=320crit,enchant=140mastery,reforge=hit_mastery
@@ -79,12 +79,12 @@ trinket2=thoks_tail_tip,id=105609,upgrade=2
 main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=160exp_160crit_60str,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=26576
+# gear_strength=26496
 # gear_agility=80
 # gear_stamina=39087
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2042
+# gear_expertise_rating=2202
 # gear_hit_rating=2636
 # gear_crit_rating=19700
 # gear_haste_rating=2919

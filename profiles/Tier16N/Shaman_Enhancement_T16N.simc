@@ -78,6 +78,7 @@ actions.aoe=fire_nova,if=active_flame_shock>=4
 actions.aoe+=/magma_totem,if=active_enemies>5&!totem.fire.active
 actions.aoe+=/searing_totem,if=active_enemies<=5&!totem.fire.active
 actions.aoe+=/lava_lash,if=dot.flame_shock.ticking
+actions.aoe+=/elemental_blast,if=talent.elemental_blast.enabled&buff.maelstrom_weapon.react>=1
 actions.aoe+=/chain_lightning,if=active_enemies>=2&buff.maelstrom_weapon.react>=3
 actions.aoe+=/unleash_elements
 actions.aoe+=/flame_shock,cycle_targets=1,if=!ticking
