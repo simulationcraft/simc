@@ -1,13 +1,11 @@
 #!./simc 
 
-warlock="Warlock_Destruction_T16H"
+warlock="Warlock_Destruction_T16N"
 level=90
-race=orc
+race=tauren
 role=spell
 position=back
-professions=Alchemy=600/Tailoring=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!....0.
-glyphs=conflagrate
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Vb!....00
 spec=destruction
 
 # This default action priority list is automatically created based on your character.
@@ -31,7 +29,6 @@ actions.precombat+=/jade_serpent_potion
 
 actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
 actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
-actions+=/blood_fury
 actions+=/dark_soul
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/run_action_list,name=aoe,if=active_enemies>3
@@ -60,39 +57,37 @@ actions.aoe+=/conflagrate,if=buff.fire_and_brimstone.up
 actions.aoe+=/incinerate,if=buff.fire_and_brimstone.up
 actions.aoe+=/immolate,cycle_targets=1,if=!ticking
 
-head=hood_of_the_horned_nightmare,id=99425,stats=2322armor_2290int_3795sta_1781haste_1201mastery,gems=sinister_primal_320exp_180int,reforge=haste_crit
-neck=untainted_guardians_chain,id=105465,stats=1490int_2236sta_944hit_1023mastery,reforge=hit_crit
-shoulders=mantle_of_the_horned_nightmare,id=99417,stats=2144armor_1720int_2820sta_872crit_1349haste,gems=320exp_320exp_120int,enchant=200int_100crit,reforge=haste_mastery
-back=xingho_breath_of_yulon,id=102246,stats=1555armor_1855int_2902sta_991crit_991haste_991mastery,gems=320exp_60int,enchant=lightweave_embroidery_3
-chest=akoliks_acidsoaked_robes,id=105604,stats=2903armor_2435int_4013sta_1664crit_1664mastery,gems=160exp_160mastery_160exp_160mastery_320mastery_180int,enchant=80all
-wrists=bracers_of_sonic_projection,id=105626,stats=1270armor_1490int_2236sta_994crit_994haste,enchant=180int,reforge=haste_mastery
-hands=gloves_of_the_horned_nightmare,id=99424,stats=1786armor_1720int_2820sta_1194haste_1127mastery,gems=80int_160mastery_80int_160mastery_120int,enchant=170mastery,reforge=mastery_hit
-waist=miasmic_skullbelt,id=105569,stats=1633armor_1827int_2981sta_1360hit_1051crit,gems=160exp_160mastery_320mastery_320mastery_120int,reforge=hit_mastery
-legs=leggings_of_the_horned_nightmare,id=99426,stats=2501armor_2370int_3795sta_1705crit_1441mastery,gems=320mastery_160hit_160mastery_120int,enchant=285int_165crit,reforge=crit_haste
-feet=boneinlaid_sandals,id=105493,stats=1996armor_1907int_2981sta_1297haste_1260mastery,gems=320mastery_60hit,enchant=140mastery
-finger1=signet_of_the_dinomancers,id=105606,stats=1410int_2236sta_944haste_953mastery,gems=80int_160mastery_60haste,reforge=haste_crit
-finger2=extinguished_ember_of_galakras,id=105498,stats=1490int_2236sta_994hit_994haste,reforge=hit_mastery
-trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
-trinket2=kardris_toxic_totem,id=105540,upgrade=2
-main_hand=arcweaver_spell_sword,id=105550,stats=1066int_1720sta_769crit_649haste_15321sp,weapon=sword_2.2speed_5581min_10366max,gems=320exp_60int,enchant=jade_spirit,reforge=haste_mastery
-off_hand=revelations_of_yshaarj,id=105650,stats=1410int_2236sta_929haste_969mastery,gems=80int_160mastery_60int,enchant=165int
+head=damiens_icevein_mask,id=105808,stats=2232armor_1960int_3300sta_1533hit_1028haste,gems=sinister_primal_160hit_160mastery_180int,reforge=hit_crit
+neck=penates_perilous_pendant,id=105763,stats=1226int_1839sta_830hit_797mastery,reforge=hit_crit
+shoulders=mantle_of_the_horned_nightmare,id=99205,stats=2027armor_1386int_2319sta_703crit_1095haste,gems=160exp_160crit_160exp_160crit_120int,enchant=200int_100crit,reforge=haste_mastery
+back=xingho_breath_of_yulon,id=102246,stats=1525armor_1716int_2694sta_918crit_918haste_918mastery,gems=160exp_160crit_60int,enchant=180int
+chest=robes_of_the_horned_nightmare,id=99204,stats=2703armor_1840int_3121sta_1164crit_1328mastery,gems=160exp_160crit_160exp_160crit_160exp_160crit_180int,enchant=80all
+wrists=bjams_blasting_bracers,id=105789,stats=1202armor_1226int_1839sta_737hit_865mastery,enchant=180int,reforge=hit_crit
+hands=gloves_of_the_horned_nightmare,id=99096,stats=1689armor_1386int_2319sta_965haste_915mastery,gems=160exp_160crit_160exp_160mastery_120int,enchant=170mastery,reforge=haste_crit
+waist=venrukis_venerable_sash,id=105781,stats=1545armor_1474int_2452sta_850hit_1104mastery,gems=320crit_160crit_160hit_320crit_120int,reforge=hit_crit
+legs=leggings_of_the_horned_nightmare,id=99098,stats=2365armor_1920int_3121sta_1388crit_1170mastery,gems=320crit_320crit_120int,enchant=285int_165crit
+feet=toxic_tornado_treads,id=103806,stats=1858armor_1466int_2319sta_856crit_1073mastery,gems=160crit_160hit_60hit,enchant=140mastery
+finger1=iyyokuks_hereditary_seal,id=103824,stats=1159int_1739sta_715hit_807mastery,reforge=hit_crit
+finger2=signet_of_the_dinomancers,id=103774,stats=1079int_1739sta_720haste_737mastery,gems=160exp_160mastery_60haste,reforge=haste_crit
+trinket1=kardris_toxic_totem,id=102300
+trinket2=purified_bindings_of_immerseus,id=102293
+main_hand=hellscreams_war_staff,id=104406,stats=2081int_3362sta_1329crit_12838sp_1485mastery,weapon=staff_3.3speed_10807min_16212max,gems=160exp_160crit_160exp_160crit_120int,enchant=jade_spirit
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=39087
-# gear_intellect=26730
+# gear_stamina=32243
+# gear_intellect=21864
 # gear_spirit=80
-# gear_spell_power=15321
-# gear_expertise_rating=2080
-# gear_hit_rating=2650
-# gear_crit_rating=9419
-# gear_haste_rating=9580
-# gear_mastery_rating=15505
-# gear_armor=18110
+# gear_spell_power=12838
+# gear_expertise_rating=1760
+# gear_hit_rating=3340
+# gear_crit_rating=12526
+# gear_haste_rating=3674
+# gear_mastery_rating=12427
+# gear_armor=17146
 # meta_gem=sinister_primal
 # tier16_2pc_caster=1
 # tier16_4pc_caster=1
-# back=xingho_breath_of_yulon,enchant=lightweave_embroidery_3
-# main_hand=arcweaver_spell_sword,heroic=1,elite=1,weapon=sword_2.2speed_5581min_10366max,enchant=jade_spirit
+# main_hand=hellscreams_war_staff,weapon=staff_3.3speed_10807min_16212max,enchant=jade_spirit
 default_pet=felhunter

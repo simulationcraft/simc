@@ -33,11 +33,11 @@ actions.precombat+=/mogu_power_potion
 actions=rebuke
 actions+=/mogu_power_potion,if=(buff.bloodlust.react|(buff.ancient_power.up&buff.avenging_wrath.up)|target.time_to_die<=40)
 actions+=/auto_attack
-actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|target.time_to_die<holy_power*20|buff.divine_purpose.react)
+actions+=/inquisition,if=(buff.inquisition.down|buff.inquisition.remains<=2)&(holy_power>=3|target.time_to_die<holy_power*10|buff.divine_purpose.react)
 actions+=/avenging_wrath,if=buff.inquisition.up
 actions+=/guardian_of_ancient_kings,if=buff.inquisition.up
 actions+=/holy_avenger,if=talent.holy_avenger.enabled&(buff.inquisition.up&holy_power<=2)
-actions+=/use_item,name=gauntlets_of_winged_triumph,if=buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=12)
+actions+=//use_item,name=gauntlets_of_winged_triumph,if=buff.inquisition.up
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
@@ -45,8 +45,7 @@ actions+=/execution_sentence,if=talent.execution_sentence.enabled&(buff.inquisit
 actions+=/lights_hammer,if=talent.lights_hammer.enabled&(buff.inquisition.up&(buff.ancient_power.down|buff.ancient_power.stack=12))
 actions+=/divine_storm,if=active_enemies>=2&(holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3))
 actions+=/divine_storm,if=buff.divine_crusader.react&holy_power=5
-actions+=/templars_verdict,if=holy_power=5|buff.holy_avenger.up&holy_power>=3
-actions+=/templars_verdict,if=buff.divine_purpose.react&buff.divine_purpose.remains<4
+actions+=/templars_verdict,if=holy_power=5|buff.divine_purpose.react|(buff.holy_avenger.up&holy_power>=3)
 actions+=/hammer_of_wrath
 actions+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
 actions+=/divine_storm,if=buff.divine_crusader.react
@@ -55,9 +54,9 @@ actions+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.
 actions+=/exorcism,if=active_enemies>=2&active_enemies<=4&set_bonus.tier15_2pc_melee&glyph.mass_exorcism.enabled
 actions+=/hammer_of_the_righteous,if=active_enemies>=4
 actions+=/templars_verdict,if=buff.avenging_wrath.up
+actions+=/judgment,target=2,if=active_enemies>=2&buff.glyph_double_jeopardy.up
 actions+=/judgment
 actions+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2
-actions+=/templars_verdict,if=buff.divine_purpose.react
 actions+=/exorcism
 actions+=/wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2
 actions+=/templars_verdict,if=buff.tier15_4pc_melee.up&active_enemies<4

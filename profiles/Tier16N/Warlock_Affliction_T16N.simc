@@ -1,14 +1,12 @@
 #!./simc 
 
-warlock="Warlock_Affliction_T16H"
+warlock=""
 level=90
-race=troll
+race=tauren
 role=spell
 position=back
-professions=herbalism=600/tailoring=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!..0.0.
-talent_override=grimoire_of_service,if=active_enemies>3
-glyphs=siphon_life
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Va!....00
+glyphs=unstable_affliction
 spec=affliction
 
 # This default action priority list is automatically created based on your character.
@@ -32,8 +30,6 @@ actions.precombat+=/jade_serpent_potion
 
 actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
 actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
-actions+=/lifeblood
-actions+=/berserking
 actions+=/dark_soul
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/run_action_list,name=aoe,if=active_enemies>3
@@ -71,39 +67,37 @@ actions.aoe+=/haunt,cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains
 actions.aoe+=/life_tap,if=mana.pct<70
 actions.aoe+=/fel_flame,cycle_targets=1,if=!in_flight_to_target
 
-head=hood_of_the_horned_nightmare,id=99425,stats=2322armor_2290int_3795sta_1781haste_1201mastery,gems=sinister_primal_160exp_160haste_180int
-neck=untainted_guardians_chain,id=105465,stats=1490int_2236sta_944hit_1023mastery,reforge=hit_haste
-shoulders=mantle_of_the_horned_nightmare,id=99417,stats=2144armor_1720int_2820sta_872crit_1349haste,gems=160exp_160haste_160exp_160haste_120int,enchant=200int_100crit,reforge=crit_mastery
-back=xingho_breath_of_yulon,id=102246,stats=1555armor_1855int_2902sta_991crit_991haste_991mastery,gems=160exp_160haste_60int,enchant=lightweave_embroidery_3,reforge=crit_hit
-chest=mantid_viziers_robes,id=105592,stats=2903armor_2435int_4013sta_1575crit_1716haste,gems=160exp_160haste_160exp_160haste_320haste_180int,enchant=80all,reforge=crit_mastery
-wrists=avools_ancestral_bracers,id=105591,stats=1270armor_1490int_2236sta_1009haste_969mastery,enchant=180int
-hands=gloves_of_the_horned_nightmare,id=99424,stats=1786armor_1720int_2820sta_1194haste_1127mastery,gems=160exp_160haste_160exp_160haste_120int,enchant=170exp
-waist=belt_of_ominous_trembles,id=105515,stats=1633armor_1827int_2981sta_1341hit_1082mastery,gems=160exp_160haste_160haste_160hit_320haste_120int,reforge=hit_haste
-legs=leggings_of_the_horned_nightmare,id=99426,stats=2501armor_2370int_3795sta_1705crit_1441mastery,gems=320haste_320haste_120int,enchant=285int_165crit,reforge=crit_haste
-feet=boneinlaid_sandals,id=105493,stats=1996armor_1907int_2981sta_1297haste_1260mastery,gems=320haste_60hit,enchant=140mastery
-finger1=extinguished_ember_of_galakras,id=105498,stats=1490int_2236sta_994hit_994haste,reforge=hit_mastery
-finger2=signet_of_the_dinomancers,id=105606,stats=1410int_2236sta_944haste_953mastery,gems=160exp_160haste_60haste
-trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
-trinket2=kardris_toxic_totem,id=105540,upgrade=2
-main_hand=arcweaver_spell_sword,id=105550,stats=1066int_1720sta_769crit_649haste_15321sp,weapon=sword_2.2speed_5581min_10366max,gems=160exp_160haste_60int,enchant=jade_spirit,reforge=crit_mastery
-off_hand=revelations_of_yshaarj,id=105650,stats=1410int_2236sta_929haste_969mastery,gems=160exp_160haste_60int,enchant=165int
+head=hood_of_the_horned_nightmare,id=99097,stats=2196armor_1840int_3121sta_1443haste_966mastery,gems=sinister_primal_160exp_160haste_180int
+neck=penates_perilous_pendant,id=105763,stats=1226int_1839sta_830hit_797mastery,reforge=hit_haste
+shoulders=mantle_of_the_horned_nightmare,id=99205,stats=2027armor_1386int_2319sta_703crit_1095haste,gems=160exp_160haste_160exp_160haste_120int,enchant=200int_100crit,reforge=crit_mastery
+back=xingho_breath_of_yulon,id=102246,stats=1525armor_1716int_2694sta_918crit_918haste_918mastery,gems=160exp_160haste_60int,enchant=180int,reforge=crit_hit
+chest=robes_of_the_horned_nightmare,id=99204,stats=2703armor_1840int_3121sta_1164crit_1328mastery,gems=160exp_160haste_160exp_160haste_160exp_160haste_180int,enchant=80all,reforge=crit_haste
+wrists=bjams_blasting_bracers,id=105789,stats=1202armor_1226int_1839sta_737hit_865mastery,enchant=180int,reforge=hit_haste
+hands=gloves_of_the_horned_nightmare,id=99096,stats=1689armor_1386int_2319sta_965haste_915mastery,gems=160exp_160haste_160exp_160haste_120int,enchant=170exp
+waist=venrukis_venerable_sash,id=105781,stats=1545armor_1474int_2452sta_850hit_1104mastery,gems=320haste_160haste_160hit_320haste_120int,reforge=mastery_haste
+legs=shipleys_shady_silks,id=105757,stats=2404armor_2040int_3300sta_1314haste_1430mastery,gems=320haste_160haste_160hit_120int,enchant=285int_165crit
+feet=boneinlaid_sandals,id=103805,stats=1858armor_1466int_2319sta_998haste_973mastery,gems=320haste_60hit,enchant=140mastery
+finger1=signet_of_the_dinomancers,id=103774,stats=1079int_1739sta_720haste_737mastery,gems=160exp_160haste_60haste
+finger2=extinguished_ember_of_galakras,id=103823,stats=1159int_1739sta_773hit_773haste,reforge=hit_mastery
+trinket1=kardris_toxic_totem,id=102300
+trinket2=purified_bindings_of_immerseus,id=102293
+main_hand=hellscreams_war_staff,id=104406,stats=2081int_3362sta_1329crit_12838sp_1485mastery,weapon=staff_3.3speed_10807min_16212max,gems=160exp_160haste_160exp_160haste_120int,enchant=jade_spirit
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=39087
-# gear_intellect=26410
+# gear_stamina=32243
+# gear_intellect=21864
 # gear_spirit=80
-# gear_spell_power=15321
+# gear_spell_power=12838
 # gear_expertise_rating=2090
-# gear_hit_rating=2585
-# gear_crit_rating=4138
-# gear_haste_rating=18188
-# gear_mastery_rating=12838
-# gear_armor=18110
+# gear_hit_rating=3002
+# gear_crit_rating=3590
+# gear_haste_rating=13338
+# gear_mastery_rating=11807
+# gear_armor=17149
 # meta_gem=sinister_primal
 # tier16_2pc_caster=1
 # tier16_4pc_caster=1
-# back=xingho_breath_of_yulon,enchant=lightweave_embroidery_3
-# main_hand=arcweaver_spell_sword,heroic=1,elite=1,weapon=sword_2.2speed_5581min_10366max,enchant=jade_spirit
+# main_hand=hellscreams_war_staff,weapon=staff_3.3speed_10807min_16212max,enchant=jade_spirit
 default_pet=felhunter

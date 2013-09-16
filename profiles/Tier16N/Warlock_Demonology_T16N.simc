@@ -1,0 +1,104 @@
+#!./simc 
+
+warlock="Warlock_Demonology_T16N"
+level=90
+race=tauren
+role=spell
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#VZ!....10
+glyphs=unstable_affliction
+spec=demonology
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/dark_intent,if=!aura.spell_power_multiplier.up
+actions.precombat+=/summon_pet,if=!talent.grimoire_of_sacrifice.enabled|buff.grimoire_of_sacrifice.down
+actions.precombat+=/snapshot_stats
+actions.precombat+=/grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled
+actions.precombat+=/service_pet,if=talent.grimoire_of_service.enabled
+actions.precombat+=/jade_serpent_potion
+
+# Executed every time the actor is available.
+
+actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
+actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
+actions+=/dark_soul
+actions+=/service_pet,if=talent.grimoire_of_service.enabled
+actions+=/felguard:felstorm
+actions+=/wrathguard:wrathstorm
+actions+=/run_action_list,name=aoe,if=active_enemies>4
+actions+=/summon_doomguard
+actions+=/metamorphosis,if=buff.perfect_aim.react&active_enemies>1
+actions+=/doom,cycle_targets=1,if=buff.metamorphosis.up&buff.perfect_aim.react&(crit_pct<100|ticks_remain<=add_ticks)
+actions+=/soul_fire,if=buff.metamorphosis.up&buff.molten_core.react&(buff.perfect_aim.react&buff.perfect_aim.remains>cast_time)
+actions+=/doom,cycle_targets=1,if=buff.metamorphosis.up&(ticks_remain<=1|(ticks_remain+1<n_ticks&buff.dark_soul.up))&target.time_to_die>=30&miss_react&dot.doom.crit_pct<100
+actions+=/cancel_metamorphosis,if=buff.metamorphosis.up&buff.dark_soul.down&demonic_fury<=650&target.time_to_die>30&(cooldown.metamorphosis.remains<4|demonic_fury<=300)&!(action.hand_of_guldan.in_flight&dot.shadowflame.remains)
+actions+=/soul_fire,if=buff.metamorphosis.up&buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)
+actions+=/touch_of_chaos,if=buff.metamorphosis.up
+actions+=/hand_of_guldan,if=buff.perfect_aim.react&buff.perfect_aim.remains>travel_time
+actions+=/metamorphosis,if=(buff.dark_soul.up&buff.dark_soul.remains<demonic_fury%32)|demonic_fury>=950|demonic_fury%32>target.time_to_die|buff.perfect_aim.react|(action.hand_of_guldan.in_flight&dot.shadowflame.remains)
+actions+=/corruption,cycle_targets=1,if=buff.perfect_aim.react&(crit_pct<100|ticks_remain<=add_ticks)
+actions+=/corruption,cycle_targets=1,if=!ticking&target.time_to_die>=6&miss_react
+actions+=/corruption,cycle_targets=1,if=spell_power<stat.spell_power&ticks_remain<=add_ticks%2&target.time_to_die>=6&miss_react&crit_pct<100
+actions+=/hand_of_guldan,if=!in_flight&dot.shadowflame.remains<travel_time+action.shadow_bolt.cast_time&(charges=2|dot.shadowflame.remains>travel_time|(charges=1&recharge_time<4))
+actions+=/soul_fire,if=buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)&(buff.molten_core.react>9|target.health.pct<=28)
+actions+=/life_tap,if=mana.pct<60
+actions+=/shadow_bolt
+actions+=/fel_flame,moving=1
+actions+=/life_tap
+
+actions.aoe=summon_infernal
+actions.aoe+=/cancel_metamorphosis,if=buff.metamorphosis.up&dot.corruption.remains>10&demonic_fury<=650&buff.dark_soul.down&!dot.immolation_aura.ticking
+actions.aoe+=/immolation_aura,if=buff.metamorphosis.up
+actions.aoe+=/void_ray,if=buff.metamorphosis.up&dot.corruption.remains<10
+actions.aoe+=/doom,cycle_targets=1,if=buff.metamorphosis.up&(!ticking|remains<tick_time|(ticks_remain+1<n_ticks&buff.dark_soul.up))&target.time_to_die>=30&miss_react
+actions.aoe+=/void_ray,if=buff.metamorphosis.up
+actions.aoe+=/corruption,cycle_targets=1,if=!ticking&target.time_to_die>30&miss_react
+actions.aoe+=/hand_of_guldan
+actions.aoe+=/metamorphosis,if=dot.corruption.remains<10|buff.dark_soul.up|demonic_fury>=950|demonic_fury%32>target.time_to_die
+actions.aoe+=/hellfire,chain=1,interrupt=1
+actions.aoe+=/life_tap
+
+head=hood_of_the_horned_nightmare,id=99097,stats=2196armor_1840int_3121sta_1443haste_966mastery,gems=sinister_primal_160exp_160mastery_180int
+neck=penates_perilous_pendant,id=105763,stats=1226int_1839sta_830hit_797mastery,reforge=hit_haste
+shoulders=mantle_of_the_horned_nightmare,id=99205,stats=2027armor_1386int_2319sta_703crit_1095haste,gems=160exp_160mastery_160exp_160mastery_120int,enchant=200int_100crit,reforge=crit_mastery
+back=xingho_breath_of_yulon,id=102246,stats=1525armor_1716int_2694sta_918crit_918haste_918mastery,gems=160exp_160mastery_60int,enchant=180int,reforge=crit_hit
+chest=robes_of_the_horned_nightmare,id=99204,stats=2703armor_1840int_3121sta_1164crit_1328mastery,gems=160exp_160mastery_160exp_160mastery_160exp_160mastery_180int,enchant=80all,reforge=crit_haste
+wrists=bjams_blasting_bracers,id=105789,stats=1202armor_1226int_1839sta_737hit_865mastery,enchant=180int,reforge=hit_haste
+hands=gloves_of_the_horned_nightmare,id=99096,stats=1689armor_1386int_2319sta_965haste_915mastery,gems=160exp_160mastery_160exp_160mastery_120int,enchant=170exp,reforge=haste_hit
+waist=venrukis_venerable_sash,id=105781,stats=1545armor_1474int_2452sta_850hit_1104mastery,gems=320mastery_160hit_160mastery_320mastery_120int,reforge=hit_haste
+legs=shipleys_shady_silks,id=105757,stats=2404armor_2040int_3300sta_1314haste_1430mastery,gems=320mastery_160hit_160mastery_120int,enchant=285int_165crit
+feet=boneinlaid_sandals,id=103805,stats=1858armor_1466int_2319sta_998haste_973mastery,gems=320mastery_60hit,enchant=140mastery
+finger1=signet_of_the_dinomancers,id=103774,stats=1079int_1739sta_720haste_737mastery,gems=160exp_160mastery_60haste
+finger2=iyyokuks_hereditary_seal,id=103824,stats=1159int_1739sta_715hit_807mastery,reforge=hit_haste
+trinket1=black_blood_of_yshaarj,id=102310,stats=1959haste,reforge=haste_mastery
+trinket2=unerring_vision_of_lei_shen,id=94524,stats=1467int
+main_hand=hellscreams_war_staff,id=104406,stats=2081int_3362sta_1329crit_12838sp_1485mastery,weapon=staff_3.3speed_10807min_16212max,gems=160exp_160mastery_160exp_160mastery_120int,enchant=jade_spirit
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=32243
+# gear_intellect=23331
+# gear_spirit=80
+# gear_spell_power=12838
+# gear_expertise_rating=2090
+# gear_hit_rating=3013
+# gear_crit_rating=3590
+# gear_haste_rating=10020
+# gear_mastery_rating=17049
+# gear_armor=17149
+# meta_gem=sinister_primal
+# tier16_2pc_caster=1
+# tier16_4pc_caster=1
+# trinket2=unerring_vision_of_lei_shen
+# main_hand=hellscreams_war_staff,weapon=staff_3.3speed_10807min_16212max,enchant=jade_spirit
+default_pet=felguard
