@@ -39,7 +39,7 @@ actions+=/premeditation,if=combo_points<3|(talent.anticipation.enabled&anticipat
 actions+=/pool_resource,for_next=1
 actions+=/ambush,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<3)
 actions+=/pool_resource,for_next=1,extra_amount=75
-actions+=/shadow_dance,if=energy>=75&buff.stealthed.down&buff.vanish.down&debuff.find_weakness.down
+actions+=/shadow_dance,if=energy>=75&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down
 actions+=/pool_resource,for_next=1,extra_amount=45
 actions+=/vanish,if=energy>=45&energy<=75&combo_points<=3&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
 actions+=/marked_for_death,if=talent.marked_for_death.enabled&combo_points=0

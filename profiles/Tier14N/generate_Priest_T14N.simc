@@ -2,8 +2,3 @@
 talent_format=armory
 
 # Shadow
-mopdev=439
-trinket2=relic_of_yulon,id=79331
-name=Priest_Shadow_T14N
-initial_shadow_orbs=0
-save=Priest_Shadow_T14N.simc

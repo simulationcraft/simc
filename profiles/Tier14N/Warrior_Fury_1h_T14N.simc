@@ -58,15 +58,17 @@ actions.single_target+=/shockwave,if=enabled
 actions.single_target+=/heroic_throw,if=debuff.colossus_smash.down&rage<60
 actions.single_target+=/battle_shout,if=rage<70&!debuff.colossus_smash.up
 actions.single_target+=/wild_strike,if=debuff.colossus_smash.up&target.health.pct>=20
-actions.single_target+=/impending_victory,if=enabled&target.health.pct>=20
 actions.single_target+=/battle_shout,if=rage<70
+actions.single_target+=/shattering_throw,if=cooldown.colossus_smash.remains>5
 actions.single_target+=/wild_strike,if=cooldown.colossus_smash.remains>=2&rage>=70&target.health.pct>=20
+actions.single_target+=/impending_victory,if=enabled&target.health.pct>=20&cooldown.colossus_smash.remains>=2
 
 actions.two_targets=bloodbath,if=enabled&buff.enrage.up
 actions.two_targets+=/cleave,if=(rage>=60&debuff.colossus_smash.up)|rage>90
 actions.two_targets+=/heroic_leap,if=buff.enrage.up
 actions.two_targets+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
 actions.two_targets+=/bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
+actions.two_targets+=/shockwave,if=enabled
 actions.two_targets+=/colossus_smash
 actions.two_targets+=/bloodthirst,cycle_targets=1,if=dot.deep_wounds.remains<5
 actions.two_targets+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)
@@ -94,14 +96,16 @@ actions.three_targets+=/battle_shout,if=rage<70
 actions.three_targets+=/heroic_throw
 
 actions.aoe=bloodbath,if=enabled&buff.enrage.up
-actions.aoe+=/cleave,if=(rage>=60&debuff.colossus_smash.up)|rage>90
+actions.aoe+=/cleave,if=rage>110
 actions.aoe+=/heroic_leap,if=buff.enrage.up
 actions.aoe+=/dragon_roar,if=enabled&!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
 actions.aoe+=/bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
-actions.aoe+=/colossus_smash,if=rage<60
+actions.aoe+=/shockwave,if=enabled
 actions.aoe+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking&buff.enrage.down
 actions.aoe+=/raging_blow,if=buff.meat_cleaver.stack=3
 actions.aoe+=/whirlwind
+actions.aoe+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking
+actions.aoe+=/colossus_smash
 actions.aoe+=/battle_shout,if=rage<70
 
 head=helmet_of_resounding_rings,id=85333,gems=reverberating_primal_160crit_160hit_180str,reforge=hit_crit

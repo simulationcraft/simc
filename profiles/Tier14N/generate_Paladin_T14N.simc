@@ -1,9 +1,1 @@
 #!./simc
-talent_format=armory
-
-
-mopdev=454
-name="Paladin_Retribution_T14N"
-back=hiseks_chrysanthemum_cape,id=86154,enchant=180crit
-trinket2=lei_shens_final_orders,id=86144
-save=Paladin_Retribution_T14N.simc
