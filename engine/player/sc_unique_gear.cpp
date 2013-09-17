@@ -2739,6 +2739,7 @@ void cleave_trinket( item_t* item )
 
   stat_buff_proc_t* stat_cb = new stat_buff_proc_t( item -> player, effect );
   p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, stat_cb );
+  p -> items[ item -> slot ].parsed.equip = effect;
 }
 
 // Multistrike trinkets
@@ -2877,6 +2878,7 @@ void multistrike_trinket( item_t* item )
 
   stat_buff_proc_t* stat_cb = new stat_buff_proc_t( item -> player, effect );
   p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, stat_cb );
+  p -> items[ item -> slot ].parsed.equip = effect;
 }
 
 // CDR trinkets
@@ -2984,6 +2986,7 @@ void cooldown_reduction_trinket( item_t* item )
 
   stat_buff_proc_t* cb = new stat_buff_proc_t( p, effect );
   p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+  p -> items[ item -> slot ].parsed.equip = effect;
 }
 
 void amplify_trinket( item_t* item )
@@ -3035,6 +3038,7 @@ void amplify_trinket( item_t* item )
   }
   else
     p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+  p -> items[ item -> slot ].parsed.equip = effect;
 }
 
 struct flurry_of_xuen_melee_t : public attack_t
