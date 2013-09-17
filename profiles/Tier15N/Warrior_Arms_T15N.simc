@@ -38,6 +38,7 @@ actions+=/run_action_list,name=aoe,if=active_enemies>=2
 actions+=/run_action_list,name=single_target,if=active_enemies<2
 
 actions.single_target=heroic_strike,if=rage>115|(debuff.colossus_smash.up&rage>60&set_bonus.tier16_2pc_melee)
+actions.single_target+=/mortal_strike,if=dot.deep_wounds.remains<1.0|buff.enrage.down
 actions.single_target+=/colossus_smash,if=debuff.colossus_smash.remains<1.0
 actions.single_target+=/mortal_strike
 actions.single_target+=/storm_bolt,if=enabled&debuff.colossus_smash.up
@@ -51,13 +52,15 @@ actions.single_target+=/heroic_throw
 actions.aoe=sweeping_strikes
 actions.aoe+=/cleave,if=rage>110&active_enemies<=4
 actions.aoe+=/bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)
-actions.aoe+=/dragon_roar,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)
-actions.aoe+=/thunder_clap,target=2,if=dot.deep_wounds.attack_power*1.1<stat.attack_power
+actions.aoe+=/dragon_roar,if=enabled&debuff.colossus_smash.down
 actions.aoe+=/colossus_smash,if=debuff.colossus_smash.remains<1
+actions.aoe+=/thunder_clap,target=2,if=dot.deep_wounds.attack_power*1.1<stat.attack_power
+actions.aoe+=/mortal_strike,if=active_enemies=2|rage<50
+actions.aoe+=/execute,if=buff.sudden_execute.down&active_enemies=2
 actions.aoe+=/slam,if=buff.sweeping_strikes.up&debuff.colossus_smash.up
-actions.aoe+=/mortal_strike
+actions.aoe+=/overpower,if=active_enemies=2
 actions.aoe+=/slam,if=buff.sweeping_strikes.up
-actions.aoe+=/battle_shout,if=rage<70
+actions.aoe+=/battle_shout
 
 head=helmet_of_the_last_mogu,id=95330,gems=reverberating_primal_320crit_180crit,reforge=hit_crit
 neck=amulet_of_the_primal_turtle,id=94776,gems=320crit,reforge=hit_exp

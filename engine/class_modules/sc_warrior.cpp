@@ -3636,7 +3636,7 @@ void warrior_t::init_actions()
       action_list_str += "/bloodbath,if=enabled&(debuff.colossus_smash.up|cooldown.colossus_smash.remains<4)";
       action_list_str += "/avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)";
       action_list_str += "/skull_banner,if=buff.skull_banner.down&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192&buff.cooldown_reduction.up)|buff.recklessness.up)";
-      action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",if=!talent.bloodbath.enabled&debuff.colossus_smash.up|buff.bloodbath.up" );
+      action_list_str += include_specific_on_use_item( *this, "synapse_springs_mark_ii,synapse_springs_2", ",if=debuff.colossus_smash.up" );
       action_list_str += "/berserker_rage,if=buff.enrage.remains<0.5";
       action_list_str += "/heroic_leap,if=debuff.colossus_smash.up";
       action_list_str += "/run_action_list,name=aoe,if=active_enemies>=2";
@@ -3644,6 +3644,7 @@ void warrior_t::init_actions()
 
       //Single Target
       st_list_str += "/heroic_strike,if=rage>115|(debuff.colossus_smash.up&rage>60&set_bonus.tier16_2pc_melee)";
+      st_list_str += "/mortal_strike,if=dot.deep_wounds.remains<1.0|buff.enrage.down";
       st_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<1.0";
       st_list_str += "/mortal_strike";
       st_list_str += "/storm_bolt,if=enabled&debuff.colossus_smash.up";
@@ -3659,13 +3660,15 @@ void warrior_t::init_actions()
       aoe_list_str = "/sweeping_strikes";
       aoe_list_str += "/cleave,if=rage>110&active_enemies<=4";
       aoe_list_str += "/bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)";
-      aoe_list_str += "/dragon_roar,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)";
-      aoe_list_str += "/thunder_clap,target=2,if=dot.deep_wounds.attack_power*1.1<stat.attack_power";
+      aoe_list_str += "/dragon_roar,if=enabled&debuff.colossus_smash.down";
       aoe_list_str += "/colossus_smash,if=debuff.colossus_smash.remains<1";
+      aoe_list_str += "/thunder_clap,target=2,if=dot.deep_wounds.attack_power*1.1<stat.attack_power";
+      aoe_list_str += "/mortal_strike,if=active_enemies=2|rage<50";
+      aoe_list_str += "/execute,if=buff.sudden_execute.down&active_enemies=2";
       aoe_list_str += "/slam,if=buff.sweeping_strikes.up&debuff.colossus_smash.up";
-      aoe_list_str += "/mortal_strike";
+      aoe_list_str += "/overpower,if=active_enemies=2";
       aoe_list_str += "/slam,if=buff.sweeping_strikes.up";
-      aoe_list_str += "/battle_shout,if=rage<70";
+      aoe_list_str += "/battle_shout";
     }
 
     // Fury
