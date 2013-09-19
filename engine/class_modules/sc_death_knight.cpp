@@ -3571,10 +3571,8 @@ struct horn_of_winter_t : public death_knight_spell_t
 
     harmful = false;
     if( p -> glyph.loud_horn -> ok() )
-    {
-      cooldown -> duration = data().cooldown() * ( 1.0 + p -> glyph.loud_horn -> effectN( 1 ).percent() );
       rp_gain = data().runic_power_gain() + p -> find_spell( 147078 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
-    }
+
   }
 
   virtual void execute()
