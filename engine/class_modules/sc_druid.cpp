@@ -5629,7 +5629,7 @@ void druid_t::init_spells()
   spell.primal_fury                     = ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) ? find_spell( 16959  ) : spell_data_t::not_found(); // Primal fury rage gain trigger
   spell.regrowth                        = find_class_spell( "Regrowth"                    ) -> ok() ? find_spell( 93036  ) : spell_data_t::not_found(); // Regrowth refresh
   spell.survival_instincts              = find_class_spell( "Survival Instincts"          ) -> ok() ? find_spell( 50322  ) : spell_data_t::not_found(); // Survival Instincts aura
-  spell.swiftmend                       = find_class_spell( "Swiftmend"                   ) -> effectN( 2 ).trigger();
+  spell.swiftmend                       = find_spell( 81262 );
   spell.swipe                           = find_class_spell( "Maul"                        ) -> ok() ||
                                           find_class_spell( "Shred"                       ) -> ok() ? find_spell( 62078  ) : spell_data_t::not_found(); // Bleed damage multiplier for Shred etc.
 
@@ -5829,7 +5829,7 @@ void druid_t::create_buffs()
   buff.lacerate              = buff_creator_t( this, "lacerate" , find_class_spell( "Lacerate" ) );
   //buff.might_of_ursoc        = buff_creator_t( this, "might_of_ursoc", find_class_spell( "Might of Ursoc" ) );
   buff.might_of_ursoc        = new might_of_ursoc_t( this, 106922, "might_of_ursoc" );
-  buff.savage_defense        = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() );
+  buff.savage_defense        = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() ).add_invalidate( CACHE_DODGE );
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", spell.survival_instincts );
   buff.tier15_2pc_tank       = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138217 ) );
   buff.tooth_and_claw        = buff_creator_t( this, "tooth_and_claw", find_spell( 135286 ) );
