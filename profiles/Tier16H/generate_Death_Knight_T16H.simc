@@ -35,6 +35,7 @@ role=attack
 position=back
 professions=blacksmithing=600/engineering=600
 talents=200010
+glyphs=loud_horn
 head=helmet_of_cyclopean_dread,id=99337,gems=capacitive_primal_80str_160crit_180str,reforge=haste_crit,upgrade=2
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
 shoulders=tusks_of_mannoroth,id=105642,gems=80str_160crit_80str_160crit_80str_160crit_180str,enchant=200str_100crit,upgrade=2
@@ -60,6 +61,7 @@ role=attack
 position=back
 professions=blacksmithing=600/engineering=600
 talents=200010
+glyphs=loud_horn
 head=helmet_of_cyclopean_dread,id=99337,upgrade=2,gems=capacitive_primal_80str_160mastery_180str,reforge=haste_crit
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
 shoulders=pauldrons_of_cyclopean_dread,id=99339,upgrade=2,gems=80str_160mastery_80str_160mastery_120str,enchant=200str_100crit

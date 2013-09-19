@@ -9,6 +9,7 @@ spec=frost
 role=attack
 position=back
 talents=200010
+glyphs=loud_horn
 head=helmet_of_the_lost_catacomb,id=85336,gems=reverberating_primal_80str_160hit_180str,reforge=hit_exp
 neck=mushan_riders_collar,id=90433
 shoulders=pauldrons_of_the_lost_catacomb,id=85334,enchant=200str_100hit,gems=80str_160hit_60str,reforge=hit_mastery
@@ -35,6 +36,7 @@ spec=frost
 role=attack
 position=back
 talents=200020
+glyphs=loud_horn
 head=helmet_of_the_lost_catacomb,id=85336,gems=reverberating_primal_80str_160hit_180str,reforge=hit_exp
 neck=mushan_riders_collar,id=90433,reforge=mastery_crit
 shoulders=pauldrons_of_the_lost_catacomb,id=85334,enchant=200str_100hit,gems=80str_160hit_60str,reforge=hit_crit

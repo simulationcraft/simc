@@ -9,6 +9,7 @@ race=tauren
 spec=frost
 role=attack
 position=back
+glyphs=loud_horn
 talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1...0.
 head=helmet_of_cyclopean_dread,id=99194,gems=reverberating_primal_160str_180str,reforge=haste_crit
 neck=malkoroks_tainted_dog_tags,id=103917
@@ -36,6 +37,7 @@ spec=frost
 role=attack
 position=back
 talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1...0.
+glyphs=loud_horn
 head=helmet_of_cyclopean_dread,id=99194,gems=reverberating_primal_80str_160crit_180str,reforge=haste_crit
 neck=malkoroks_tainted_dog_tags,id=103917
 shoulders=tusks_of_mannoroth,id=103785,gems=80str_160crit_80str_160crit_80str_160crit_180str,enchant=200str_100crit
