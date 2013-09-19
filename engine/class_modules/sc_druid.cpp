@@ -3390,7 +3390,7 @@ struct swiftmend_t : public druid_heal_t
 
   swiftmend_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( p, p -> find_class_spell( "Swiftmend" ), options_str ),
-    aoe_heal( new swiftmend_aoe_heal_t( p, data().effectN( 2 ).trigger() ) )
+    aoe_heal( new swiftmend_aoe_heal_t( p, &data() ) )
   {
     consume_ooc = true;
 
