@@ -4556,10 +4556,10 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react" );
 
   // Everything Else
+  def -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=4" );
   def -> add_action( this, "Crusader Strike" );
   def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2" );
   def -> add_action( this, "Exorcism", "if=active_enemies>=2&active_enemies<=4&set_bonus.tier15_2pc_melee&glyph.mass_exorcism.enabled" );
-  def -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=4" );
   def -> add_action( this, "Templar's Verdict", "if=buff.avenging_wrath.up");
   def -> add_action( this, "Judgment" );
   def -> add_action( "wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2" );
