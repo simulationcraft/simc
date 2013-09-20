@@ -2539,10 +2539,10 @@ void shaman_melee_attack_t::impact( action_state_t* state )
   if ( may_proc_maelstrom )
     trigger_maelstrom_weapon( this );
 
-  if ( may_proc_windfury && weapon -> buff_type == WINDFURY_IMBUE )
+  if ( may_proc_windfury && weapon && weapon -> buff_type == WINDFURY_IMBUE )
     trigger_windfury_weapon( this );
 
-  if ( may_proc_flametongue && weapon -> buff_type == FLAMETONGUE_IMBUE )
+  if ( may_proc_flametongue && weapon && weapon -> buff_type == FLAMETONGUE_IMBUE )
     trigger_flametongue_weapon( this );
 
   if ( may_proc_primal_wisdom && rng().roll( p() -> spec.primal_wisdom -> proc_chance() ) )
