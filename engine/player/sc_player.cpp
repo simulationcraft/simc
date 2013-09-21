@@ -3422,7 +3422,7 @@ double player_t::composite_rating( rating_e rating )
     case RATING_MASTERY:
       v = current.stats.mastery_rating;
       if ( ! is_pet() && ! is_enemy() && sim -> auras.mastery -> check() )
-        v += sim -> auras.mastery -> value() * composite_rating_multiplier( RATING_MASTERY );
+        v += sim -> auras.mastery -> value();
       break;
     case RATING_EXPERTISE:
       v = current.stats.expertise_rating; break;
