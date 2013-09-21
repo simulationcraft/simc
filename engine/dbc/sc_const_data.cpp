@@ -361,18 +361,6 @@ void dbc::apply_hotfixes()
   assert( e );
   e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_INTELLECT;
 
-  e = item_enchantment_data_index.get( false, 5011 );
-  assert( e );
-  e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_AGILITY;
-
-  e = item_enchantment_data_index.get( false, 5012 );
-  assert( e );
-  e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_AGILITY;
-
-  e = item_enchantment_data_index.get( false, 5013 );
-  assert( e );
-  e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_AGILITY;
-
   if ( SC_USE_PTR )
   {
     e = item_enchantment_data_index.get( true, 4996 );
@@ -386,18 +374,6 @@ void dbc::apply_hotfixes()
     e = item_enchantment_data_index.get( true, 4998 );
     assert( e );
     e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_INTELLECT;
-
-    e = item_enchantment_data_index.get( true, 5011 );
-    assert( e );
-    e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_AGILITY;
-
-    e = item_enchantment_data_index.get( true, 5012 );
-    assert( e );
-    e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_AGILITY;
-
-    e = item_enchantment_data_index.get( true, 5013 );
-    assert( e );
-    e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_AGILITY;
   }
 }
 
