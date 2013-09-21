@@ -3211,12 +3211,7 @@ double player_t::composite_spell_hit()
 
 double player_t::composite_mastery()
 {
-  double m = util::round( current.mastery + composite_mastery_rating() / current.rating.mastery, 2 );
-
-  if ( ! is_pet() && ! is_enemy() && sim -> auras.mastery -> check() )
-    m += sim -> auras.mastery -> value() * composite_rating_multiplier( RATING_MASTERY ) / current.rating.mastery;
-
-  return m;
+  return util::round( current.mastery + composite_mastery_rating() / current.rating.mastery, 2 );
 }
 
 // player_t::composite_player_multiplier ====================================
@@ -3425,7 +3420,10 @@ double player_t::composite_rating( rating_e rating )
     case RATING_RANGED_HIT:
       v = current.stats.hit_rating; break;
     case RATING_MASTERY:
-      v = current.stats.mastery_rating; break;
+      v = current.stats.mastery_rating;
+      if ( ! is_pet() && ! is_enemy() && sim -> auras.mastery -> check() )
+        v += sim -> auras.mastery -> value() * composite_rating_multiplier( RATING_MASTERY );
+      break;
     case RATING_EXPERTISE:
       v = current.stats.expertise_rating; break;
     case RATING_DODGE:
