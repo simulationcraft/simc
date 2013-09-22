@@ -15,6 +15,7 @@ struct druid_t;
 
 struct natures_vigil_heal_proc_t;
 struct natures_vigil_damage_proc_t;
+struct ursocs_vigor_t;
 
 struct combo_points_t
 {
@@ -95,6 +96,7 @@ public:
   {
     natures_vigil_damage_proc_t* natures_vigil_damage_proc;
     natures_vigil_heal_proc_t*   natures_vigil_heal_proc;
+    ursocs_vigor_t*              ursocs_vigor;
   } active;
 
   // Pets
@@ -217,7 +219,6 @@ public:
     const spell_data_t* frenzied_regeneration;
     const spell_data_t* healing_touch;
     const spell_data_t* maul;
-    const spell_data_t* moonbeast; //Remove for 5.4
     const spell_data_t* skull_bash;
     const spell_data_t* wild_growth;
 
@@ -571,6 +572,63 @@ private:
     // Pick a random enemy to target with the damage.
     return sim -> target_list[ target_index ];
   }
+};
+
+// Ursoc's Vigor ( tier16_4pc_tank ) =====================================
+
+struct ursocs_vigor_t : public heal_t
+{
+  double accumulated_healing;
+  double ap_coefficient;
+  int ticks_remain;
+
+  ursocs_vigor_t( druid_t* p ) :
+    heal_t( "ursocs_vigor", p, p -> find_spell( 144888 ) )
+  {
+    background = true;
+
+    hasted_ticks = false;
+    may_crit = tick_may_crit = false;
+    
+    // spell info not yet returning proper details, should heal for X every 1 sec for 10 sec.
+    base_tick_time = timespan_t::from_seconds( 1 );
+    num_ticks = 8;
+
+    // initialize accumulator
+    accumulated_healing = 0.0;
+
+    // store healing multiplier
+    ap_coefficient = p -> find_spell( 144887 ) -> effectN( 1 ).percent();
+  }
+
+  virtual void execute( double rage_consumed )
+  {
+    druid_t* p = static_cast<druid_t*>( player );
+    accumulated_healing *= ticks_remain / num_ticks;
+    accumulated_healing += p -> composite_melee_attack_power() * p -> composite_attack_power_multiplier()
+                           * ap_coefficient
+                           * rage_consumed / 60;
+    base_td = accumulated_healing / num_ticks;
+
+    ticks_remain = num_ticks;
+    heal_t::execute();
+  }
+
+  virtual void tick( dot_t *d )
+  {
+    heal_t::tick( d );
+
+    ticks_remain -= 1;
+  }
+
+  /*
+  virtual void last_tick( dot_t *d )
+  {
+    druid_heal_t::tick( d );
+
+    accumulated_healing = 0;
+  }
+  */
 };
 
 namespace pets {
@@ -2773,6 +2831,9 @@ struct savage_defense_t : public bear_attack_t
     special = false;
     cooldown -> duration = timespan_t::from_seconds( 9.0 );
     cooldown -> charges = 3;
+
+    if ( player -> set_bonus.tier16_2pc_tank() )
+      player -> active.ursocs_vigor = new ursocs_vigor_t( player );
   }
 
   virtual void execute()
@@ -2780,13 +2841,12 @@ struct savage_defense_t : public bear_attack_t
     bear_attack_t::execute();
 
     if ( p() -> buff.savage_defense -> up() )
-    {
       p() -> buff.savage_defense -> extend_duration( p(), timespan_t::from_seconds( 6.0 ) );
-    }
     else
-    {
       p() -> buff.savage_defense -> trigger();
-    }
+
+    if ( p() -> set_bonus.tier16_4pc_tank() )
+      p() -> active.ursocs_vigor -> execute( resource_consumed );
   }
 };
 
@@ -3502,8 +3562,6 @@ struct frenzied_regeneration_t : public druid_heal_t
 
   virtual void execute()
   {
-    druid_heal_t::execute();
-
     if ( p() -> glyph.frenzied_regeneration -> ok() )
       p() -> buff.frenzied_regeneration -> trigger();
     else
@@ -3515,12 +3573,15 @@ struct frenzied_regeneration_t : public druid_heal_t
       double health_restored = std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
                                * ( resource_consumed / maximum_rage_cost )
                                * ( 1.0 + p() -> buff.tier15_2pc_tank -> stack() * p() -> buff.tier15_2pc_tank -> data().effectN( 1 ).percent() );
-      p() -> resource_gain( RESOURCE_HEALTH,
-                            health_restored,
-                            p() -> gain.frenzied_regeneration );
+      base_dd_min = base_dd_max = health_restored;
 
       p() -> buff.tier15_2pc_tank -> expire();
     }
+
+    druid_heal_t::execute();
+
+    if ( p() -> set_bonus.tier16_4pc_tank() )
+      p() -> active.ursocs_vigor -> execute( resource_consumed );
   }
 };
 
@@ -3830,6 +3891,9 @@ struct barkskin_t : public druid_spell_t
   {
     harmful = false;
     use_off_gcd = true;
+
+    if ( player -> spec.thick_hide )
+      cooldown -> duration += player -> spec.thick_hide -> effectN( 6 ).time_value();
   }
 
   virtual void execute()
@@ -5163,7 +5227,48 @@ public:
   { }
 };
 
-// Celestial Ailgnment Buff =================================================
+// Barkskin Buff =================================================
+
+struct barkskin_t : public druid_buff_t < buff_t >
+{
+  barkskin_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "barkskin", p.find_class_spell( "Barkskin" ) ) )
+  {
+    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
+  }
+
+  virtual void expire_override()
+  {
+    buff_t::expire_override();
+
+    druid_t* p = static_cast<druid_t*>( player );
+    if ( p -> set_bonus.tier16_2pc_tank() )
+    {
+      // Trigger 3 seconds of Savage Defense
+      if ( p -> buff.savage_defense -> check() )
+        p -> buff.savage_defense -> extend_duration( p, timespan_t::from_seconds( 3.0 ) );
+      else
+        p -> buff.savage_defense -> trigger( 1, buff_t::DEFAULT_VALUE(), 1, timespan_t::from_seconds( 3.0 ) );
+
+      // Trigger a 20 rage Frenzied Regeneration
+      // max(2.2*(AP - 2*Agi), 2.5*Sta)
+      double ap              = p -> composite_melee_attack_power() * p -> composite_attack_power_multiplier();
+      double agility         = p -> composite_attribute( ATTR_AGILITY ) * p -> composite_attribute_multiplier( ATTR_AGILITY );
+      double stamina         = p -> composite_attribute( ATTR_STAMINA ) * p -> composite_attribute_multiplier( ATTR_STAMINA );
+      double health_restored = std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
+                               * ( 20 / 60 );
+      p -> resource_gain( RESOURCE_HEALTH,
+                          health_restored,
+                          p -> gain.frenzied_regeneration );
+
+      // Trigger tier16_4pc_tank
+      if ( p -> set_bonus.tier16_4pc_tank() )
+        p -> active.ursocs_vigor -> execute( 20 );
+    }
+  }
+};
+
+// Celestial Alignment Buff =================================================
 
 struct celestial_alignment_t : public druid_buff_t < buff_t >
 {
@@ -5204,6 +5309,8 @@ public:
     add_invalidate( CACHE_ATTACK_POWER );
     add_invalidate( CACHE_HASTE );
     add_invalidate( CACHE_CRIT );
+    add_invalidate( CACHE_STAMINA );
+    add_invalidate( CACHE_ARMOR );
   }
 
   virtual void expire_override()
@@ -5213,6 +5320,8 @@ public:
     druid.main_hand_weapon = druid.caster_form_weapon;
 
     sim -> auras.critical_strike -> decrement();
+
+    druid.player_t::recalculate_resource_max( RESOURCE_HEALTH );
 
     if ( druid.specialization() == DRUID_GUARDIAN )
       druid.vengeance_stop();
@@ -5239,6 +5348,8 @@ public:
 
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
+
+    druid.player_t::recalculate_resource_max( RESOURCE_HEALTH );
 
     druid.current.attack_power_per_agility += 2.0;
   }
@@ -5825,9 +5936,9 @@ void druid_t::create_buffs()
   buff.feral_rage            = buff_creator_t( this, "feral_rage", find_spell( 146874 ) ); // tier16_4pc_melee
 
   // Guardian
+  buff.barkskin              = new barkskin_t( *this );
   buff.enrage                = buff_creator_t( this, "enrage" , find_specialization_spell( "Enrage" ) );
   buff.lacerate              = buff_creator_t( this, "lacerate" , find_class_spell( "Lacerate" ) );
-  //buff.might_of_ursoc        = buff_creator_t( this, "might_of_ursoc", find_class_spell( "Might of Ursoc" ) );
   buff.might_of_ursoc        = new might_of_ursoc_t( this, 106922, "might_of_ursoc" );
   buff.savage_defense        = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() ).add_invalidate( CACHE_DODGE );
   buff.survival_instincts    = buff_creator_t( this, "survival_instincts", spell.survival_instincts );
@@ -5838,12 +5949,9 @@ void druid_t::create_buffs()
 
   // Not checked for MoP
 
-  buff.barkskin              = buff_creator_t( this, "barkskin", find_class_spell( "Barkskin" ) -> ok() ? find_spell( 22812 ) : spell_data_t::not_found() );
   buff.harmony               = buff_creator_t( this, "harmony", mastery.harmony -> ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
-  // Cooldown is handled in the spell
   buff.natures_swiftness     = buff_creator_t( this, "natures_swiftness", talent.natures_swiftness )
-                               .cd( timespan_t::zero() );
-
+                               .cd( timespan_t::zero() ); // Cooldown is handled in the spell
   buff.glyph_of_innervate  = buff_creator_t( this, "glyph_of_innervate" , spell_data_t::nil() )
                              .chance( glyph.innervate -> ok() );
   buff.revitalize          = buff_creator_t( this, "revitalize"         , spell_data_t::nil() );
