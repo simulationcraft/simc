@@ -578,7 +578,6 @@ private:
 
 struct ursocs_vigor_t : public heal_t
 {
-  double accumulated_healing;
   double ap_coefficient;
   int ticks_remain;
 
@@ -589,13 +588,12 @@ struct ursocs_vigor_t : public heal_t
 
     hasted_ticks = false;
     may_crit = tick_may_crit = false;
+
+    base_td = 0;
     
     // spell info not yet returning proper details, should heal for X every 1 sec for 10 sec.
     base_tick_time = timespan_t::from_seconds( 1 );
     num_ticks = 8;
-
-    // initialize accumulator
-    accumulated_healing = 0.0;
 
     // store healing multiplier
     ap_coefficient = p -> find_spell( 144887 ) -> effectN( 1 ).percent();
@@ -604,11 +602,22 @@ struct ursocs_vigor_t : public heal_t
   virtual void execute( double rage_consumed )
   {
     druid_t* p = static_cast<druid_t*>( player );
-    accumulated_healing *= ticks_remain / num_ticks;
-    accumulated_healing += p -> composite_melee_attack_power() * p -> composite_attack_power_multiplier()
-                           * ap_coefficient
-                           * rage_consumed / 60;
-    base_td = accumulated_healing / num_ticks;
+    
+    if ( sim -> debug )
+      sim -> output( "Current tick value: %f, Ticks Remain: %d, Adjusted tick value: %f",
+                      base_td,
+                      ticks_remain,
+                      base_td * ticks_remain / num_ticks );
+    base_td *= (double) ticks_remain / (double) num_ticks;
+    base_td += p -> composite_melee_attack_power() * p -> composite_attack_power_multiplier()
+               * ap_coefficient
+               * rage_consumed / 60
+               / num_ticks;
+    if ( sim -> debug )
+      sim -> output( "Current AP: %f, AP Tick value: %f, Cumulative tick value: %f",
+                      p -> composite_melee_attack_power() * p -> composite_attack_power_multiplier(),
+                      p -> composite_melee_attack_power() * p -> composite_attack_power_multiplier() * ap_coefficient * rage_consumed / 60 / num_ticks,
+                      base_td );
 
     ticks_remain = num_ticks;
     heal_t::execute();
@@ -620,15 +629,6 @@ struct ursocs_vigor_t : public heal_t
 
     ticks_remain -= 1;
   }
-
-  /*
-  virtual void last_tick( dot_t *d )
-  {
-    druid_heal_t::tick( d );
-
-    accumulated_healing = 0;
-  }
-  */
 };
 
 namespace pets {
@@ -5263,7 +5263,7 @@ struct barkskin_t : public druid_buff_t < buff_t >
 
       // Trigger tier16_4pc_tank
       if ( p -> set_bonus.tier16_4pc_tank() )
-        p -> active.ursocs_vigor -> execute( 20 );
+        p -> active.ursocs_vigor -> execute( 50 );
     }
   }
 };
