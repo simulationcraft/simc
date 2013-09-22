@@ -2831,6 +2831,7 @@ struct savage_defense_t : public bear_attack_t
     special = false;
     cooldown -> duration = timespan_t::from_seconds( 9.0 );
     cooldown -> charges = 3;
+    use_off_gcd = true;
 
     if ( player -> set_bonus.tier16_2pc_tank() )
       player -> active.ursocs_vigor = new ursocs_vigor_t( player );
@@ -2840,7 +2841,7 @@ struct savage_defense_t : public bear_attack_t
   {
     bear_attack_t::execute();
 
-    if ( p() -> buff.savage_defense -> up() )
+    if ( p() -> buff.savage_defense -> check() )
       p() -> buff.savage_defense -> extend_duration( p(), timespan_t::from_seconds( 6.0 ) );
     else
       p() -> buff.savage_defense -> trigger();
@@ -3194,8 +3195,10 @@ struct healing_touch_t : public druid_heal_t
     p() -> buff.predatory_swiftness -> expire();
     if ( p() -> specialization() == DRUID_GUARDIAN )
       p() -> buff.dream_of_cenarius -> expire();
-    if ( p() -> specialization() == DRUID_FERAL )
+    else if ( p() -> specialization() == DRUID_FERAL )
       p() -> buff.dream_of_cenarius -> trigger( 2 );
+    else if ( p() -> specialization() == DRUID_BALANCE )
+      p() -> buff.dream_of_cenarius -> trigger();
   }
 
   virtual void schedule_execute( action_state_t* state = 0 )
@@ -5940,8 +5943,10 @@ void druid_t::create_buffs()
   buff.enrage                = buff_creator_t( this, "enrage" , find_specialization_spell( "Enrage" ) );
   buff.lacerate              = buff_creator_t( this, "lacerate" , find_class_spell( "Lacerate" ) );
   buff.might_of_ursoc        = new might_of_ursoc_t( this, 106922, "might_of_ursoc" );
-  buff.savage_defense        = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() ).add_invalidate( CACHE_DODGE );
-  buff.survival_instincts    = buff_creator_t( this, "survival_instincts", spell.survival_instincts );
+  buff.savage_defense        = buff_creator_t( this, "savage_defense", find_class_spell( "Savage Defense" ) -> ok() ? find_spell( 132402 ) : spell_data_t::not_found() )
+                               .add_invalidate( CACHE_DODGE );
+  buff.survival_instincts    = buff_creator_t( this, "survival_instincts", spell.survival_instincts )
+                               .cd( timespan_t::zero() );
   buff.tier15_2pc_tank       = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138217 ) );
   buff.tooth_and_claw        = buff_creator_t( this, "tooth_and_claw", find_spell( 135286 ) );
 
@@ -6012,7 +6017,10 @@ void druid_t::apl_precombat()
     precombat -> add_action( "stealth" );
   }
   else if ( primary_role() == ROLE_TANK )
+  {
     precombat -> add_action( this, "Bear Form" );
+    precombat -> add_action( this, "Enrage" );
+  }
   else if ( specialization() == DRUID_BALANCE && ( primary_role() == ROLE_DPS || primary_role() == ROLE_SPELL ) )
   {
     precombat -> add_action( this, "Moonkin Form" );
@@ -6024,7 +6032,7 @@ void druid_t::apl_precombat()
   // Pre-Potion
   if ( sim -> allow_potions && level >= 80 )
   {
-    if ( ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) && ( primary_role() == ROLE_ATTACK || primary_role() == ROLE_TANK ) )
+    if ( specialization() == DRUID_FERAL && ( primary_role() == ROLE_ATTACK || primary_role() == ROLE_TANK ) )
       precombat -> add_action( ( level > 85 ) ? "virmens_bite_potion" : "tolvir_potion" );
     else
       precombat -> add_action( ( level > 85 ) ? "jade_serpent_potion" : "volcanic_potion" );
@@ -6431,25 +6439,13 @@ void druid_t::apl_guardian()
   action_list_str += "/auto_attack";
   action_list_str += init_use_racial_actions();
   action_list_str += "/skull_bash_bear";
-  if ( sim -> allow_potions && level >= 80 )
-  {
-    action_list_str += ( level > 85 ) ? "/virmens_bite_potion" : "/tolvir_potion";
-    if ( talent.incarnation -> ok() )
-      action_list_str += ",if=buff.son_of_ursoc.up|target.time_to_die<40";
-    else
-      action_list_str += ",if=buff.bloodlust.react|target.time_to_die<40";
-  }
+  add_action( "Frenzied Regeneration", "if=action.savage_defense.charges=0&incoming_damage_5%health.max>0.1" );
+  add_action( "Frenzied Regeneration", "if=action.savage_defense.charges>0&incoming_damage_5%health.max>0.8" );
+  add_action( "Savage Defense" );
   action_list_str += init_use_item_actions();
   action_list_str += init_use_profession_actions();
-  action_list_str += "/healing_touch,if=buff.natures_swiftness.up";
-  // add_action( "Frenzied Regeneration", "if=health.pct<50&(buff.savage_defense.remains>6|rage>=80)" );
-  add_action( "Renewal", "if=health.pct<50" );
-  add_action( "Might of Ursoc", "if=health.pct<20" );
-  // add_action( "Frenzied Regeneration", "if=health.pct<40" );
-  add_action( "Survival Instincts" ); // PH
-  add_action( "Barkskin", "if=buff.survival_instincts.down" ); // PH
-  add_action( "Savage Defense" );
-  action_list_str += "/natures_vigil,if=talent.natures_vigil.enabled&(buff.son_of_ursoc.up|cooldown.incarnation.remains)";
+  add_action( "Barkskin" );
+  action_list_str += "/natures_vigil,if=talent.natures_vigil.enabled&(!talent.incarnation.enabled|buff.son_of_ursoc.up|cooldown.incarnation.remains)";
   action_list_str += "/thrash_bear,if=debuff.weakened_blows.remains<3";
   action_list_str += "/maul,if=rage>=80&buff.tooth_and_claw.react";
   action_list_str += "/lacerate,if=((dot.lacerate.remains<3)|(buff.lacerate.stack<3&dot.thrash_bear.remains>3))&(buff.son_of_ursoc.up|buff.berserk.up)";
@@ -6458,9 +6454,7 @@ void druid_t::apl_guardian()
   action_list_str += "/mangle_bear";
   action_list_str += "/wait,sec=cooldown.mangle_bear.remains,if=cooldown.mangle_bear.remains<=0.5";
   action_list_str += "/natures_swiftness,if=talent.natures_swiftness.enabled&incoming_damage_5%health.max>=0.70";
-  action_list_str += "/berserk,if=buff.lacerate.up";
   action_list_str += "/incarnation,if=talent.incarnation.enabled";
-  action_list_str += "/enrage,if=rage<=25";
   action_list_str += "/lacerate,if=dot.lacerate.remains<3|buff.lacerate.stack<3";
   action_list_str += "/thrash_bear,if=dot.thrash_bear.remains<2";
   action_list_str += "/lacerate";
@@ -6509,6 +6503,13 @@ void druid_t::init_scaling()
 
   if ( specialization() == DRUID_BALANCE )
     scales_with[ STAT_SPIRIT ] = false;
+
+  if ( specialization() == DRUID_GUARDIAN )
+  {
+    scales_with[ STAT_WEAPON_DPS ] = false;
+    scales_with[ STAT_PARRY_RATING ] = false;
+    scales_with[ STAT_BLOCK_RATING ] = false;
+  }
 
   // Save a copy of the weapon
   caster_form_weapon = main_hand_weapon;
