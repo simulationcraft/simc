@@ -16,6 +16,8 @@ struct druid_t;
 struct natures_vigil_heal_proc_t;
 struct natures_vigil_damage_proc_t;
 struct ursocs_vigor_t;
+struct cenarion_ward_hot_t;
+struct leader_of_the_pack_t;
 
 struct combo_points_t
 {
@@ -97,6 +99,8 @@ public:
     natures_vigil_damage_proc_t* natures_vigil_damage_proc;
     natures_vigil_heal_proc_t*   natures_vigil_heal_proc;
     ursocs_vigor_t*              ursocs_vigor;
+    cenarion_ward_hot_t*         cenarion_ward_hot;
+    leader_of_the_pack_t*        leader_of_the_pack;
   } active;
 
   // Pets
@@ -120,6 +124,7 @@ public:
     buff_t* barkskin;
     buff_t* bear_form;
     buff_t* cat_form;
+    buff_t* cenarion_ward;
     buff_t* dream_of_cenarius;
     buff_t* frenzied_regeneration;
     buff_t* natures_swiftness;
@@ -630,6 +635,54 @@ struct ursocs_vigor_t : public heal_t
     ticks_remain -= 1;
   }
 };
+
+// Cenarion Ward HoT ========================================================
+
+struct cenarion_ward_hot_t : public heal_t
+{
+  cenarion_ward_hot_t( druid_t* p ) :
+    heal_t( "cenarion_ward_hot", p, p -> find_spell( 102352 ) )
+  {
+    background = true;
+  }
+
+  virtual void execute()
+  {
+    heal_t::execute();
+
+    druid_t* p = static_cast<druid_t*>( player );
+    p -> buff.cenarion_ward -> expire();
+  }
+};
+
+// Leader of the Pack =======================================================
+
+struct leader_of_the_pack_t : public heal_t
+{
+  leader_of_the_pack_t( druid_t* p ) :
+    heal_t( "leader_of_the_pack", p )
+  {
+    background = true;
+    cooldown -> duration = timespan_t::from_seconds( 6.0 );
+    base_dd_min = base_dd_max = 0;
+  }
+
+  virtual void execute()
+  {
+    druid_t* p = static_cast<druid_t*>( player );
+
+    base_dd_min = base_dd_max = p -> resources.max[ RESOURCE_HEALTH ] *
+                                p -> spell.leader_of_the_pack -> effectN( 2 ).percent();
+
+    heal_t::execute();
+
+    p -> resource_gain( RESOURCE_MANA,
+                     p -> resources.max[ RESOURCE_MANA ] *
+                     p -> spec.leader_of_the_pack -> effectN( 1 ).percent(),
+                     p -> gain.lotp_mana );
+  }
+};
+
 
 namespace pets {
 
@@ -1294,26 +1347,9 @@ public:
 
   void trigger_lotp( const action_state_t* s )
   {
-    druid_t& p = *this -> p();
-
-    if ( p.cooldown.lotp -> down() )
-      return;
-
     // Has to do damage and can't be a proc
-    if ( s -> result_amount == 0 || ab::proc )
-      return;
-
-    p.resource_gain( RESOURCE_HEALTH,
-                     p.resources.max[ RESOURCE_HEALTH ] *
-                     p.spell.leader_of_the_pack -> effectN( 2 ).percent(),
-                     p.gain.lotp_health );
-
-    p.resource_gain( RESOURCE_MANA,
-                     p.resources.max[ RESOURCE_MANA ] *
-                     p.spec.leader_of_the_pack -> effectN( 1 ).percent(),
-                     p.gain.lotp_mana );
-
-    p.cooldown.lotp -> start( timespan_t::from_seconds( 6.0 ) );
+    if ( s -> result_amount > 0 && ! ab::proc )
+      this -> p() -> active.leader_of_the_pack -> execute();
   }
 
 };
@@ -3551,6 +3587,9 @@ struct frenzied_regeneration_t : public druid_heal_t
     else
       base_costs[ RESOURCE_RAGE ] = 0;
 
+    if ( p -> set_bonus.tier16_2pc_tank() )
+      p -> active.ursocs_vigor = new ursocs_vigor_t( p );
+
     maximum_rage_cost = data().effectN( 1 ).base_value();
   }
 
@@ -4033,6 +4072,24 @@ struct celestial_alignment_t : public druid_spell_t
     p() -> cooldown.starfall -> reset( false );
 
     trigger_eclipse_proc();
+  }
+};
+
+// Cenarion Ward ============================================================
+
+struct cenarion_ward_t : public druid_spell_t
+{
+  cenarion_ward_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( p, p -> find_talent_spell( "Cenarion Ward" ), options_str )
+  {
+    harmful    = false;
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+
+    p() -> buff.cenarion_ward -> trigger();
   }
 };
 
@@ -5551,6 +5608,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "bear_form"              ) return new              bear_form_t( this, options_str );
   if ( name == "cat_form"               ) return new               cat_form_t( this, options_str );
   if ( name == "celestial_alignment"    ) return new    celestial_alignment_t( this, options_str );
+  if ( name == "cenarion_ward"          ) return new          cenarion_ward_t( this, options_str );
   if ( name == "death_coil"             ) return new             death_coil_t( this, options_str );
   if ( name == "enrage"                 ) return new                 enrage_t( this, options_str );
   if ( name == "faerie_fire"            ) return new            faerie_fire_t( this, options_str );
@@ -5695,6 +5753,8 @@ void druid_t::init_spells()
   spec.natures_focus          = find_specialization_spell( "Nature's Focus" );
   spec.revitalize             = find_specialization_spell( "Revitalize" );
 
+  if ( spec.leader_of_the_pack -> ok() )
+    active.leader_of_the_pack = new leader_of_the_pack_t( this );
 
   // Talents
   talent.feline_swiftness   = find_talent_spell( "Feline Swiftness" );
@@ -5726,6 +5786,8 @@ void druid_t::init_spells()
     active.natures_vigil_damage_proc = new natures_vigil_damage_proc_t( this );
     active.natures_vigil_heal_proc   = new natures_vigil_heal_proc_t( this );
   }
+  if ( talent.cenarion_ward -> ok() )
+    active.cenarion_ward_hot = new cenarion_ward_hot_t( this );
 
   // TODO: Check if this is really the passive applied, the actual shapeshift
   // only has data of shift, polymorph immunity and the general armor bonus
@@ -5854,6 +5916,8 @@ void druid_t::create_buffs()
                                .quiet( true );
 
   // Talent buffs
+
+  buff.cenarion_ward = buff_creator_t( this, "cenarion_ward", find_talent_spell( "Cenarion Ward" ) );
 
   // http://mop.wowhead.com/spell=122114 Chosen of Elune
   buff.chosen_of_elune    = buff_creator_t( this, "chosen_of_elune"   , talent.incarnation -> ok() ? find_spell( 122114 ) : spell_data_t::not_found() )
@@ -7315,6 +7379,9 @@ void druid_t::assess_damage( school_e school,
     else if ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK )
       s -> result_amount *= 1.0 + spec.thick_hide -> effectN( 3 ).percent();
   }
+
+  if ( buff.cenarion_ward -> up() && s -> result_amount > 0 )
+     active.cenarion_ward_hot -> execute();
 
   // Call here to benefit from -10% physical damage before SD is taken into account
   player_t::assess_damage( school, dtype, s );
