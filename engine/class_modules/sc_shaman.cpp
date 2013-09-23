@@ -2164,13 +2164,15 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
   // static constant floats aren't allowed by the spec and some compilers
   static double normalize_speed()   { return 2.649845; }
   static double power_coefficient() { return 0.059114; }
+  const spell_data_t* searing_flames_buff;
 
   flametongue_weapon_spell_t( const std::string& n, shaman_t* player, weapon_t* w ) :
-    shaman_spell_t( n, player, player -> dbc.spell( 8024 ) )
+    shaman_spell_t( n, player, player -> find_spell( 8024 ) ),
+    searing_flames_buff( player -> find_spell( 77661 ) )
   {
+    may_proc_eoe       = false;
     may_crit           = true;
     background         = true;
-    proc               = false;
     direct_power_mod   = 1.0;
     base_costs[ RESOURCE_MANA ] = 0.0;
 
@@ -2190,11 +2192,11 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     }
   }
 
-  virtual double composite_target_multiplier( player_t* target )
+  virtual double action_da_multiplier()
   {
-    double m = shaman_spell_t::composite_target_multiplier( target );
+    double m = shaman_spell_t::action_da_multiplier();
 
-    m *= 1.0 + p() -> buff.searing_flames -> stack() * 0.08;
+    m *= 1.0 + p() -> buff.searing_flames -> stack() * searing_flames_buff -> effectN( 1 ).percent();
 
     return m;
   }
