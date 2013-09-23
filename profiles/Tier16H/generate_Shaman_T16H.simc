@@ -47,7 +47,7 @@ spec=enhancement
 role=attack
 position=back
 professions=engineering=600/herbalism=600
-talents=000202
+talents=000102
 glyphs=chain_lightning
 head=helmet_of_celestial_harmony,id=99341,upgrade=2,gems=capacitive_primal_80agi_160mastery_180agi
 neck=immerseus_crystalline_eye,id=105407,upgrade=2

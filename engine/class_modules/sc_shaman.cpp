@@ -5705,16 +5705,10 @@ void shaman_t::init_actions()
     def -> add_action( "arcane_torrent" );
     def -> add_action( "berserking" );
 
-    def -> add_talent( this, "Elemental Mastery", "if=!glyph.fire_elemental_totem.enabled|cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>70" );
-
-    if ( glyph.fire_elemental_totem -> ok() )
-      def -> add_action( this, "Fire Elemental Totem", "if=!active" );
-    else
-    {
-      def -> add_action( this, "Fire Elemental Totem", "if=!active&(buff.bloodlust.up|buff.lifeblood.up|buff.elemental_mastery.up)|time>=60" );
-      def -> add_action( this, "Fire Elemental Totem", "if=!active&target.time_to_die<=totem.fire_elemental_totem.duration+10" );
-    }
-
+    def -> add_talent( this, "Elemental Mastery", "if=talent.primal_elementalist.enabled&glyph.fire_elemental_totem.enabled&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>=80)" );
+    def -> add_talent( this, "Elemental Mastery", "if=talent.primal_elementalist.enabled&!glyph.fire_elemental_totem.enabled&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>=50)" );
+    def -> add_talent( this, "Elemental Mastery", "if=!talent.primal_elementalist.enabled" );
+    def -> add_action( this, "Fire Elemental Totem", "if=!active" );
     def -> add_action( this, "Ascendance", "if=cooldown.strike.remains>=3" );
 
     // Need to remove the "/" in front of the profession action(s) for the new default action priority list stuff :/
@@ -5742,7 +5736,7 @@ void shaman_t::init_actions()
     single -> add_action( this, "Lightning Bolt", "if=buff.ancestral_swiftness.up" );
     single -> add_action( this, "Earth Shock", "if=(!glyph.frost_shock.enabled|set_bonus.tier14_4pc_melee=1)" );
     single -> add_action( this, "Feral Spirit" );
-    single -> add_action( this, "Earth Elemental Totem", "if=!active&cooldown.fire_elemental_totem.remains>=50" );
+    single -> add_action( this, "Earth Elemental Totem", "if=!active" );
     single -> add_action( this, "Spiritwalker's Grace", "moving=1" );
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react>1&!buff.ascendance.up" );
 

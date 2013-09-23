@@ -39,9 +39,10 @@ actions+=/virmens_bite_potion,if=time>60&(pet.primal_fire_elemental.active|pet.g
 actions+=/blood_fury
 actions+=/arcane_torrent
 actions+=/berserking
-actions+=/elemental_mastery,if=talent.elemental_mastery.enabled&(!glyph.fire_elemental_totem.enabled|cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>70)
-actions+=/fire_elemental_totem,if=!active&(buff.bloodlust.up|buff.lifeblood.up|buff.elemental_mastery.up)|time>=60
-actions+=/fire_elemental_totem,if=!active&target.time_to_die<=totem.fire_elemental_totem.duration+10
+actions+=/elemental_mastery,if=talent.elemental_mastery.enabled&(talent.primal_elementalist.enabled&glyph.fire_elemental_totem.enabled&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>=80))
+actions+=/elemental_mastery,if=talent.elemental_mastery.enabled&(talent.primal_elementalist.enabled&!glyph.fire_elemental_totem.enabled&(cooldown.fire_elemental_totem.remains=0|cooldown.fire_elemental_totem.remains>=50))
+actions+=/elemental_mastery,if=talent.elemental_mastery.enabled&!talent.primal_elementalist.enabled
+actions+=/fire_elemental_totem,if=!active
 actions+=/ascendance,if=cooldown.strike.remains>=3
 # If only one enemy, priority follows the 'single' action list.
 actions+=/run_action_list,name=single,if=active_enemies=1
@@ -68,7 +69,7 @@ actions.single+=/ancestral_swiftness,if=talent.ancestral_swiftness.enabled&buff.
 actions.single+=/lightning_bolt,if=buff.ancestral_swiftness.up
 actions.single+=/earth_shock,if=(!glyph.frost_shock.enabled|set_bonus.tier14_4pc_melee=1)
 actions.single+=/feral_spirit
-actions.single+=/earth_elemental_totem,if=!active&cooldown.fire_elemental_totem.remains>=50
+actions.single+=/earth_elemental_totem,if=!active
 actions.single+=/spiritwalkers_grace,moving=1
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendance.up
 
