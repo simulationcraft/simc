@@ -644,6 +644,7 @@ struct cenarion_ward_hot_t : public heal_t
     heal_t( "cenarion_ward_hot", p, p -> find_spell( 102352 ) )
   {
     background = true;
+    harmful = false;
   }
 
   virtual void execute()
@@ -653,6 +654,8 @@ struct cenarion_ward_hot_t : public heal_t
     druid_t* p = static_cast<druid_t*>( player );
     p -> buff.cenarion_ward -> expire();
   }
+
+  // FIXME: AP is snapshotted with the trigger buff is applied NOT when the hot is applied.
 };
 
 // Leader of the Pack =======================================================
