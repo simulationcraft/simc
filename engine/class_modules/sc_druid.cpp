@@ -1410,7 +1410,7 @@ public:
   void trigger_lotp( const action_state_t* s )
   {
     // Has to do damage and can't be a proc
-    if ( s -> result_amount > 0 && ! ab::proc )
+    if ( s -> result_amount > 0 && ! ab::proc && this -> p() -> active.leader_of_the_pack -> cooldown -> up() )
       this -> p() -> active.leader_of_the_pack -> execute();
   }
 
