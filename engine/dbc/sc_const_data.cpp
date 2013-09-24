@@ -335,6 +335,13 @@ void dbc::apply_hotfixes()
 
   // Shaman
 
+  // Lightning bolt damage increased by 10%
+  s = spell_data_t::find( 403, false );
+  assert( s -> effectN( 1 ).m_average() != 1.14 * 1.1 && "Out of date hotfix for Lightning Bolt" );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.14 * 1.1;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.739 * 1.1;
+
+
   // T15 4pc set bonus to 1.5 seconds
   s = spell_data_t::find( 138144, false );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 1500;

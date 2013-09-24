@@ -2163,7 +2163,7 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
 {
   // static constant floats aren't allowed by the spec and some compilers
   static double normalize_speed()   { return 2.649845; }
-  static double power_coefficient() { return 0.059114; }
+  static double power_coefficient() { return 0.059114 * 1.5; /* 2013/09/24 hotfix */ }
   const spell_data_t* searing_flames_buff;
 
   flametongue_weapon_spell_t( const std::string& n, shaman_t* player, weapon_t* w ) :
@@ -2230,6 +2230,7 @@ struct windfury_weapon_melee_attack_t : public shaman_melee_attack_t
     shaman_melee_attack_t( n, player, player -> dbc.spell( 33757 ) )
   {
     weapon           = w;
+    weapon_multiplier = 1.5; // Hotfix 2013/09/24
     school           = SCHOOL_PHYSICAL;
     background       = true;
   }
