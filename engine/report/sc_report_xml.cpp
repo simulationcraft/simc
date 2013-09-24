@@ -849,7 +849,7 @@ void print_xml_player_charts( xml_writer_t & writer, player_processed_report_inf
   {
     writer.begin_tag( "chart" );
     writer.print_attribute( "type", "dpet" );
-    writer.print_attribute_unescaped( "href", ri.action_dmg_chart );
+    writer.print_attribute_unescaped( "href", ri.action_dpet_chart );
     writer.end_tag( "chart" );
   }
 
