@@ -6660,15 +6660,15 @@ void druid_t::apl_guardian()
   action_list_str += "/auto_attack";
   action_list_str += init_use_racial_actions();
   action_list_str += "/skull_bash_bear";
-  add_action( "Frenzied Regeneration", "if=action.savage_defense.charges=0&incoming_damage_5%health.max>0.1" );
-  add_action( "Frenzied Regeneration", "if=action.savage_defense.charges>0&incoming_damage_5%health.max>0.8" );
+  add_action( "Frenzied Regeneration", "if=health.pct<100&action.savage_defense.charges=0&incoming_damage_5%health.max>0.2" );
+  add_action( "Frenzied Regeneration", "if=health.pct<100&action.savage_defense.charges>0&incoming_damage_5%health.max>0.4" );
   add_action( "Savage Defense" );
   action_list_str += init_use_item_actions();
   action_list_str += init_use_profession_actions();
   add_action( "Barkskin" );
   action_list_str += "/natures_vigil,if=talent.natures_vigil.enabled&(!talent.incarnation.enabled|buff.son_of_ursoc.up|cooldown.incarnation.remains)";
   action_list_str += "/thrash_bear,if=debuff.weakened_blows.remains<3";
-  action_list_str += "/maul,if=buff.tooth_and_claw.react";
+  action_list_str += "/maul,if=buff.tooth_and_claw.react&buff.tooth_and_claw_absorb.down";
   action_list_str += "/lacerate,if=((dot.lacerate.remains<3)|(buff.lacerate.stack<3&dot.thrash_bear.remains>3))&(buff.son_of_ursoc.up|buff.berserk.up)";
   action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
   action_list_str += "/thrash_bear,if=dot.thrash_bear.remains<3&(buff.son_of_ursoc.up|buff.berserk.up)";
