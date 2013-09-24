@@ -778,14 +778,16 @@ void print_text_player( FILE* file, player_t* p )
                  dbc::specialization_string( p -> specialization() ).c_str(), p -> level );
 
   double dps_error = sim_t::distribution_mean_error( *p -> sim, p -> collected_data.dps );
-  double hps_error = sim_t::distribution_mean_error( *p -> sim, p -> collected_data.hps );
-  util::fprintf( file, "  DPS: %.1f  DPS-Error=%.1f/%.1f%% HPS: %.1f HPS-Error=%.1f/%.1f%% DPS-Range=%.0f/%.1f%%  DPS-Convergence=%.1f%%",
+  util::fprintf( file, "  DPS: %.1f  DPS-Error=%.1f/%.1f%%  DPS-Range=%.0f/%.1f%%  DPS-Convergence=%.1f%%\n",
                  p -> collected_data.dps.mean(),
                  dps_error, cd.dps.mean() ? dps_error * 100 / cd.dps.mean() : 0,
-                 cd.hps.mean(),
-                 hps_error, cd.hps.mean() ? hps_error * 100 / cd.hps.mean() : 0,
                  ( cd.dps.max() - cd.dps.min() ) / 2.0 , cd.dps.mean() ? ( ( cd.dps.max() - cd.dps.min() ) / 2 ) * 100 / cd.dps.mean() : 0,
                  p -> dps_convergence * 100 );
+
+  double hps_error = sim_t::distribution_mean_error( *p -> sim, p -> collected_data.hps );
+  util::fprintf( file, "  HPS: %.1f HPS-Error=%.1f/%.1f%%\n",
+                 cd.hps.mean(),
+                 hps_error, cd.hps.mean() ? hps_error * 100 / cd.hps.mean() : 0 );
 
   if ( p -> rps_loss > 0 )
   {
