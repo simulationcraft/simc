@@ -2249,6 +2249,20 @@ static void trigger_bloodworms( death_knight_melee_attack_t* attack )
   }
 }
 
+static void trigger_runic_corruption( death_knight_t* p )
+{
+  if ( ! p -> rng().roll( p -> talent.runic_corruption -> proc_chance() ) )
+    return;
+
+  timespan_t duration = timespan_t::from_seconds( 3.0 * p -> cache.attack_haste() );
+  if ( p -> buffs.runic_corruption -> check() == 0 )
+    p -> buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+  else
+    p -> buffs.runic_corruption -> extend_duration( p, duration );
+
+  p -> buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), p -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
+}
+
 // ==========================================================================
 // Death Knight Attack Methods
 // ==========================================================================
@@ -3183,8 +3197,7 @@ struct death_coil_t : public death_knight_spell_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      if ( p() -> buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> cache.attack_haste() ) ) )
-        p() -> buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
+      trigger_runic_corruption( p() );
 
       if ( p() -> sets -> set( SET_T16_4PC_MELEE ) -> ok() && p() -> buffs.dark_transformation -> check() )
         p() -> buffs.dark_transformation -> extend_duration( p(), timespan_t::from_millis( p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).base_value() ) );
@@ -3507,8 +3520,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      if ( p() -> buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> cache.attack_haste() ) ) )
-        p() -> buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
+      trigger_runic_corruption( p() );
     }
   }
 
@@ -4268,8 +4280,7 @@ struct rune_strike_t : public death_knight_melee_attack_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      if ( p() -> buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 10.0 * 0.3 * p() -> cache.attack_haste() ) ) )
-        p() -> buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
+      trigger_runic_corruption( p() );
     }
   }
 };
@@ -4696,7 +4707,7 @@ struct runic_corruption_buff_t : public buff_t
 
   runic_corruption_buff_t( death_knight_t* p ) :
     buff_t( buff_creator_t( p, "runic_corruption", p -> find_spell( 51460 ) )
-            .chance( p -> talent.runic_corruption -> proc_chance() ) ),
+            .chance( p -> talent.runic_corruption -> ok() ) ),
     regen_event( 0 )
   { }
 
@@ -4732,7 +4743,7 @@ struct runic_corruption_buff_t : public buff_t
   }
 };
 
-void runic_corruption_regen_t::execute()
+inline void runic_corruption_regen_t::execute()
 {
   death_knight_t& p = static_cast< death_knight_t& >( *actor );
   runic_corruption_buff_t* regen_buff = debug_cast< runic_corruption_buff_t* >( buff );
@@ -5721,21 +5732,8 @@ void death_knight_t::init_enchant()
     virtual void trigger( action_t* a, void* /* call_data */ )
     {
       weapon_t* w = a -> weapon;
-      if ( ! w ) return;
-      // FIXME: Currently, in game seems to have a bug, where main-hand
-      // Razorice runeforge will trigger from both main- and off hand hits (or
-      // some similar bug), essentially doubling the proc rate of the
-      // runeforge.
-      if ( listener -> bugs )
-      {
-        if ( slot == SLOT_OFF_HAND && w -> slot != slot )
-          return;
-      }
-      else
-      {
-        if ( w -> slot != slot )
-          return;
-      }
+      if ( ! w || w -> slot != slot )
+        return;
 
       // http://elitistjerks.com/f72/t64830-dw_builds_3_2_revenge_offhand/p28/#post1332820
       // double PPM        = 2.0;
