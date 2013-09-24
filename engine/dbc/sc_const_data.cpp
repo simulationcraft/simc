@@ -333,6 +333,16 @@ void dbc::apply_hotfixes()
 
   // Rogue
 
+  // Assassin's Resolve damage increase 25% -> 20%
+  s = spell_data_t::find( 84601, false );
+  assert( s -> effectN( 2 ).base_value() != 20 && "Out of data hotfix for Assassin's Resolve" );
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 20;
+
+  // Sanguinary Vein dot damage 25% -> 35%
+  s = spell_data_t::find( 79147, false );
+  assert( s -> effectN( 2 ).base_value() != 35 && "Out of data hotfix for Sanguinary Vein" );
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 35;
+
   // Shaman
 
   // Lightning bolt damage increased by 10%
