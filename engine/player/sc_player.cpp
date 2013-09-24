@@ -5216,17 +5216,6 @@ void player_t::target_mitigation( school_e school,
 
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() && s -> blocked_amount > 0.0)
       sim -> output( "Damage to %s after blocking is %f", s -> target -> name(), s -> result_amount );
-
-    // Tooth and Claw (Guardian)
-    if ( target -> debuffs.tooth_and_claw_absorb -> up() )
-    {
-      s -> result_amount -= std::min( target -> debuffs.tooth_and_claw_absorb -> current_value, s -> result_amount );
-
-      if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-        sim -> output( "Damage to %s after Tooth and Claw absorb is %f", s -> target -> name(), s -> result_amount );
-
-      target -> debuffs.tooth_and_claw_absorb -> expire();
-    }
   }
 }
 

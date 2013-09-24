@@ -164,6 +164,7 @@ public:
     buff_t* survival_instincts;
     buff_t* tier15_2pc_tank;
     buff_t* tooth_and_claw;
+    absorb_buff_t* tooth_and_claw_absorb;
 
     // Restoration
     buff_t* soul_of_the_forest;
@@ -180,7 +181,6 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* lotp;
     cooldown_t* natures_swiftness;
     cooldown_t* mangle_bear;
     cooldown_t* pvp_4pc_melee;
@@ -390,7 +390,6 @@ public:
     default_initial_eclipse = -75;
     preplant_mushrooms = true;
 
-    cooldown.lotp                = get_cooldown( "lotp"                );
     cooldown.natures_swiftness   = get_cooldown( "natures_swiftness"   );
     cooldown.mangle_bear         = get_cooldown( "mangle_bear"         );
     cooldown.pvp_4pc_melee       = get_cooldown( "pvp_4pc_melee"       );
@@ -596,36 +595,29 @@ struct ursocs_vigor_t : public heal_t
 
     base_td = 0;
     
-    // spell info not yet returning proper details, should heal for X every 1 sec for 10 sec.
-    base_tick_time = timespan_t::from_seconds( 1 );
+    base_tick_time = timespan_t::from_seconds( 1.0 );
     num_ticks = 8;
 
     // store healing multiplier
     ap_coefficient = p -> find_spell( 144887 ) -> effectN( 1 ).percent();
   }
 
-  virtual void execute( double rage_consumed )
+  druid_t* p() const
+  { return static_cast<druid_t*>( player ); }
+
+  virtual void trigger( double rage_consumed )
   {
-    druid_t* p = static_cast<druid_t*>( player );
-    
-    if ( sim -> debug )
-      sim -> output( "Current tick value: %f, Ticks Remain: %d, Adjusted tick value: %f",
-                      base_td,
-                      ticks_remain,
-                      base_td * ticks_remain / num_ticks );
+    // Adjust the current healing remaining to be spread over the total duration of the hot.
     base_td *= (double) ticks_remain / (double) num_ticks;
-    base_td += p -> composite_melee_attack_power() * p -> composite_attack_power_multiplier()
+    // Add the new amount of healing
+    base_td += p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier()
                * ap_coefficient
                * rage_consumed / 60
                / num_ticks;
-    if ( sim -> debug )
-      sim -> output( "Current AP: %f, AP Tick value: %f, Cumulative tick value: %f",
-                      p -> composite_melee_attack_power() * p -> composite_attack_power_multiplier(),
-                      p -> composite_melee_attack_power() * p -> composite_attack_power_multiplier() * ap_coefficient * rage_consumed / 60 / num_ticks,
-                      base_td );
-
+    // Set the number of ticks remaining back to full
     ticks_remain = num_ticks;
-    heal_t::execute();
+
+    execute();
   }
 
   virtual void tick( dot_t *d )
@@ -647,12 +639,14 @@ struct cenarion_ward_hot_t : public heal_t
     harmful = false;
   }
 
+  druid_t* p() const
+  { return static_cast<druid_t*>( player ); }
+
   virtual void execute()
   {
     heal_t::execute();
 
-    druid_t* p = static_cast<druid_t*>( player );
-    p -> buff.cenarion_ward -> expire();
+    p() -> buff.cenarion_ward -> expire();
   }
 
   // FIXME: AP is snapshotted with the trigger buff is applied NOT when the hot is applied.
@@ -663,29 +657,94 @@ struct cenarion_ward_hot_t : public heal_t
 struct leader_of_the_pack_t : public heal_t
 {
   leader_of_the_pack_t( druid_t* p ) :
-    heal_t( "leader_of_the_pack", p )
+    heal_t( "leader_of_the_pack", p, p -> find_spell( 17007 ) )
   {
+    may_crit = false;
     background = true;
+
     cooldown -> duration = timespan_t::from_seconds( 6.0 );
-    base_dd_min = base_dd_max = 0;
+  }
+
+  druid_t* p() const
+  { return static_cast<druid_t*>( player ); }
+
+  virtual double base_da_min( const action_state_t* )
+  {
+    return p() -> resources.max[ RESOURCE_HEALTH ] *
+           p() -> spell.leader_of_the_pack -> effectN( 2 ).percent();
+  }
+
+  virtual double base_da_max( const action_state_t* )
+  {
+    return p() -> resources.max[ RESOURCE_HEALTH ] *
+           p() -> spell.leader_of_the_pack -> effectN( 2 ).percent();
   }
 
   virtual void execute()
   {
-    druid_t* p = static_cast<druid_t*>( player );
-
-    base_dd_min = base_dd_max = p -> resources.max[ RESOURCE_HEALTH ] *
-                                p -> spell.leader_of_the_pack -> effectN( 2 ).percent();
-
     heal_t::execute();
 
-    p -> resource_gain( RESOURCE_MANA,
-                     p -> resources.max[ RESOURCE_MANA ] *
-                     p -> spec.leader_of_the_pack -> effectN( 1 ).percent(),
-                     p -> gain.lotp_mana );
+    // Trigger mana gain
+    p() -> resource_gain( RESOURCE_MANA,
+                        p() -> resources.max[ RESOURCE_MANA ] *
+                        data().effectN( 1 ).percent(),
+                        p() -> gain.lotp_mana );
   }
 };
 
+// Tooth and Claw Absorb ===========================================================
+
+struct tooth_and_claw_t : public absorb_t
+{
+  tooth_and_claw_t( druid_t* p ) :
+    absorb_t( "tooth_and_claw", p, p -> find_specialization_spell( "Tooth and Claw" ) )
+  {
+    harmful = false;
+    special = false;
+    background = true;
+  }
+
+  druid_t* p() const
+  { return static_cast<druid_t*>( player ); }
+
+  virtual void execute()
+  {
+    absorb_t::execute();
+
+    // max(2.2*(AP - 2*Agi), 2.5*Sta)*0.4
+    double ap         = player -> composite_melee_attack_power() * player -> composite_attack_power_multiplier();
+    double agility    = player -> composite_attribute( ATTR_AGILITY ) * player -> composite_attribute_multiplier( ATTR_AGILITY );
+    double stamina    = player -> composite_attribute( ATTR_STAMINA ) * player -> composite_attribute_multiplier( ATTR_STAMINA );
+    double absorb_amount =  floor(
+                              std::max( ( ap - 2 * agility ) * 2.2, stamina * 2.5 )
+                              * 0.4
+                            );
+
+    double total_absorb = absorb_amount + p() -> buff.tooth_and_claw_absorb -> current_value;
+
+    if ( sim -> debug )
+      sim -> output( "%s's Tooth and Claw value pre-application: %f",
+                     player -> name(),
+                     p() -> buff.tooth_and_claw_absorb -> current_value );
+
+    p() -> buff.tooth_and_claw_absorb -> trigger( 1, total_absorb );
+
+    if ( sim -> debug )
+      sim -> output( "%s's Tooth and Claw value post-application: %f",
+                     player -> name(),
+                     p() -> buff.tooth_and_claw_absorb -> current_value );
+
+    p() -> buff.tooth_and_claw -> expire();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! p() -> buff.tooth_and_claw -> check() )
+      return false;
+
+    return absorb_t::ready();
+  }
+};
 
 namespace pets {
 
@@ -2678,6 +2737,7 @@ struct mangle_bear_t : public bear_attack_t
 
 struct maul_t : public bear_attack_t
 {
+  tooth_and_claw_t* absorb;
   maul_t( druid_t* player, const std::string& options_str ) :
     bear_attack_t( player, player -> find_class_spell( "Maul" ), options_str )
   {
@@ -2687,6 +2747,9 @@ struct maul_t : public bear_attack_t
     base_add_multiplier = player -> glyph.maul -> effectN( 3 ).percent();
     use_off_gcd = true;
     special     = true;
+
+    if ( p() -> spec.tooth_and_claw -> ok() )
+      absorb = new tooth_and_claw_t( player );
   }
 
   virtual void execute()
@@ -2702,26 +2765,7 @@ struct maul_t : public bear_attack_t
     bear_attack_t::impact( s );
 
     if ( result_is_hit( s -> result ) && p() -> buff.tooth_and_claw -> up() )
-    {
-      // max(2.2*(AP - 2*Agi), 2.5*Sta)*0.4
-      double ap         = player -> composite_melee_attack_power() * player -> composite_attack_power_multiplier();
-      double agility    = player -> composite_attribute( ATTR_AGILITY ) * player -> composite_attribute_multiplier( ATTR_AGILITY );
-      double stamina    = player -> composite_attribute( ATTR_STAMINA ) * player -> composite_attribute_multiplier( ATTR_STAMINA );
-      double absorb_amount =  floor(
-                                std::max( ( ap - 2 * agility ) * 2.2, stamina * 2.5 )
-                                * 0.4
-                              );
-
-      if ( sim -> debug )
-        sim -> output( "%s Tooth and Claw debuff trigger: old_value=%f added_value=%f new_value=%f",
-                       player -> name(),
-                       target -> debuffs.tooth_and_claw_absorb -> current_value,
-                       absorb_amount,
-                       absorb_amount + target -> debuffs.tooth_and_claw_absorb -> current_value );
-
-      target -> debuffs.tooth_and_claw_absorb -> trigger( 1, absorb_amount + target -> debuffs.tooth_and_claw_absorb -> current_value );
-      p() -> buff.tooth_and_claw -> expire();
-    }
+      absorb -> execute();
   }
 
   virtual double composite_target_multiplier( player_t* t )
@@ -2886,7 +2930,7 @@ struct savage_defense_t : public bear_attack_t
       p() -> buff.savage_defense -> trigger();
 
     if ( p() -> set_bonus.tier16_4pc_tank() )
-      p() -> active.ursocs_vigor -> execute( resource_consumed );
+      p() -> active.ursocs_vigor -> trigger( resource_consumed );
   }
 };
 
@@ -3020,7 +3064,7 @@ protected:
 public:
   virtual double cost()
   {
-    if ( p() -> buff.heart_of_the_wild -> heals_are_free() )
+    if ( p() -> buff.heart_of_the_wild -> heals_are_free() && current_resource() == RESOURCE_MANA )
       return 0;
 
     return base_t::cost();
@@ -3605,28 +3649,56 @@ struct frenzied_regeneration_t : public druid_heal_t
     return druid_heal_t::cost();
   }
 
+  virtual double base_da_min( const action_state_t* )
+  {
+      if ( p() -> glyph.frenzied_regeneration -> ok() )
+        return 0.0;
+
+      // max(2.2*(AP - 2*Agi), 2.5*Sta)
+      double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
+      double agility = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
+      double stamina = p() -> composite_attribute( ATTR_STAMINA ) * p() -> composite_attribute_multiplier( ATTR_STAMINA );
+      return std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
+             * ( resource_consumed / maximum_rage_cost )
+             * ( 1.0 + p() -> buff.tier15_2pc_tank -> stack() * p() -> buff.tier15_2pc_tank -> data().effectN( 1 ).percent() );
+  }
+
+  virtual double base_da_max( const action_state_t* )
+  {
+      if ( p() -> glyph.frenzied_regeneration -> ok() )
+        return 0.0;
+
+      // max(2.2*(AP - 2*Agi), 2.5*Sta)
+      double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
+      double agility = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
+      double stamina = p() -> composite_attribute( ATTR_STAMINA ) * p() -> composite_attribute_multiplier( ATTR_STAMINA );
+      return std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
+             * ( resource_consumed / maximum_rage_cost )
+             * ( 1.0 + p() -> buff.tier15_2pc_tank -> stack() * p() -> buff.tier15_2pc_tank -> data().effectN( 1 ).percent() );
+  }
+
   virtual void execute()
   {
     if ( p() -> glyph.frenzied_regeneration -> ok() )
       p() -> buff.frenzied_regeneration -> trigger();
     else
-    {
-      // max(2.2*(AP - 2*Agi), 2.5*Sta)
-      double ap              = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
-      double agility         = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
-      double stamina         = p() -> composite_attribute( ATTR_STAMINA ) * p() -> composite_attribute_multiplier( ATTR_STAMINA );
-      double health_restored = std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
-                               * ( resource_consumed / maximum_rage_cost )
-                               * ( 1.0 + p() -> buff.tier15_2pc_tank -> stack() * p() -> buff.tier15_2pc_tank -> data().effectN( 1 ).percent() );
-      base_dd_min = base_dd_max = health_restored;
-
       p() -> buff.tier15_2pc_tank -> expire();
-    }
 
     druid_heal_t::execute();
 
     if ( p() -> set_bonus.tier16_4pc_tank() )
-      p() -> active.ursocs_vigor -> execute( resource_consumed );
+      p() -> active.ursocs_vigor -> trigger( resource_consumed );
+  }
+
+  virtual bool ready()
+  {
+    if ( ! p() -> buff.bear_form -> check() )
+      return false;
+
+    if ( p() -> resources.current[ RESOURCE_RAGE ] < 1 )
+      return false;
+
+    return druid_heal_t::ready();
   }
 };
 
@@ -5294,39 +5366,100 @@ public:
 
 struct barkskin_t : public druid_buff_t < buff_t >
 {
+  druid_t* p() const
+  { return static_cast<druid_t*>( player ); }
+
+  struct frenzied_regeneration_2pc_t : public heal_t
+  {
+    double maximum_rage_cost;
+
+    frenzied_regeneration_2pc_t( druid_t* p ) :
+      heal_t( "frenzied_regeneration", p, p -> find_class_spell( "Frenzied Regeneration" ) )
+    {
+      base_dd_min = base_dd_max = direct_power_mod = 0.0;
+
+      harmful    = false;
+      special    = false;
+      proc       = true;
+      background = true;
+
+      if ( p -> set_bonus.tier16_2pc_tank() )
+        p -> active.ursocs_vigor = new ursocs_vigor_t( p );
+
+      maximum_rage_cost = data().effectN( 1 ).base_value();
+    }
+
+    druid_t* p() const
+    { return static_cast<druid_t*>( player ); }
+
+    virtual double cost()
+    {
+      return 0.0;
+    }
+
+    virtual double base_da_min( const action_state_t* )
+    {
+        // max(2.2*(AP - 2*Agi), 2.5*Sta)
+        double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
+        double agility = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
+        double stamina = p() -> composite_attribute( ATTR_STAMINA ) * p() -> composite_attribute_multiplier( ATTR_STAMINA );
+        return std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
+               * ( 20 / maximum_rage_cost );
+    }
+
+    virtual double base_da_max( const action_state_t* )
+    {
+        // max(2.2*(AP - 2*Agi), 2.5*Sta)
+        double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
+        double agility = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
+        double stamina = p() -> composite_attribute( ATTR_STAMINA ) * p() -> composite_attribute_multiplier( ATTR_STAMINA );
+        return std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
+               * ( 20 / maximum_rage_cost );
+    }
+
+    virtual void execute()
+    {
+      heal_t::execute();
+
+      if ( p() -> set_bonus.tier16_4pc_tank() )
+        p() -> active.ursocs_vigor -> trigger( 20.0 );
+    }
+
+    virtual bool ready()
+    {
+      return true;
+    }
+  };
+  
+  action_t* frenzied_regeneration;
+  
   barkskin_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "barkskin", p.find_class_spell( "Barkskin" ) ) )
+    base_t( p, buff_creator_t( &p, "barkskin", p.find_class_spell( "Barkskin" ) ) ),
+    frenzied_regeneration( nullptr )
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
+
+    if ( player -> set_bonus.tier16_2pc_tank() )
+      frenzied_regeneration = new frenzied_regeneration_2pc_t( static_cast<druid_t*>( player ) );
   }
 
   virtual void expire_override()
   {
     buff_t::expire_override();
 
-    druid_t* p = static_cast<druid_t*>( player );
-    if ( p -> set_bonus.tier16_2pc_tank() )
+    if ( p() -> set_bonus.tier16_2pc_tank() )
     {
       // Trigger 3 seconds of Savage Defense
-      if ( p -> buff.savage_defense -> check() )
-        p -> buff.savage_defense -> extend_duration( p, timespan_t::from_seconds( 3.0 ) );
+      if ( p() -> buff.savage_defense -> check() )
+        p() -> buff.savage_defense -> extend_duration( p(), timespan_t::from_seconds( 3.0 ) );
       else
-        p -> buff.savage_defense -> trigger( 1, buff_t::DEFAULT_VALUE(), 1, timespan_t::from_seconds( 3.0 ) );
+        p() -> buff.savage_defense -> trigger( 1, buff_t::DEFAULT_VALUE(), 1, timespan_t::from_seconds( 3.0 ) );
+
+      if ( p() -> set_bonus.tier16_4pc_tank() )
+        p() -> active.ursocs_vigor -> trigger( 30.0 );
 
       // Trigger a 20 rage Frenzied Regeneration
-      // max(2.2*(AP - 2*Agi), 2.5*Sta)
-      double ap              = p -> composite_melee_attack_power() * p -> composite_attack_power_multiplier();
-      double agility         = p -> composite_attribute( ATTR_AGILITY ) * p -> composite_attribute_multiplier( ATTR_AGILITY );
-      double stamina         = p -> composite_attribute( ATTR_STAMINA ) * p -> composite_attribute_multiplier( ATTR_STAMINA );
-      double health_restored = std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
-                               * ( 20 / 60 );
-      p -> resource_gain( RESOURCE_HEALTH,
-                          health_restored,
-                          p -> gain.frenzied_regeneration );
-
-      // Trigger tier16_4pc_tank
-      if ( p -> set_bonus.tier16_4pc_tank() )
-        p -> active.ursocs_vigor -> execute( 50 );
+      frenzied_regeneration -> execute();
     }
   }
 };
@@ -5558,6 +5691,27 @@ struct might_of_ursoc_t : public buff_t
     player -> stat_loss( STAT_MAX_HEALTH, health_gain );
 
     buff_t::expire_override();
+  }
+};
+
+// Tooth and Claw Absorb Buff
+
+struct tooth_and_claw_absorb_t : public absorb_buff_t
+{
+  tooth_and_claw_absorb_t( druid_t* p ) :
+    absorb_buff_t( absorb_buff_creator_t( p, "tooth_and_claw_absorb", p -> find_spell( 135597 ) )
+                   .school( SCHOOL_PHYSICAL )
+                   .source( p -> get_stats( "tooth_and_claw" ) )
+                   .gain( p -> get_gain( "tooth_and_claw" ) )
+    )
+  {}
+
+  druid_t* p() const
+  { return static_cast<druid_t*>( player ); }
+
+  virtual void absorb_used( double amount )
+  {
+    p() -> buff.tooth_and_claw_absorb -> expire();
   }
 };
 
@@ -6016,6 +6170,7 @@ void druid_t::create_buffs()
                                .cd( timespan_t::zero() );
   buff.tier15_2pc_tank       = buff_creator_t( this, "tier15_2pc_tank", find_spell( 138217 ) );
   buff.tooth_and_claw        = buff_creator_t( this, "tooth_and_claw", find_spell( 135286 ) );
+  buff.tooth_and_claw_absorb = new tooth_and_claw_absorb_t( this );
 
   // Restoration
 
@@ -6099,9 +6254,9 @@ void druid_t::apl_precombat()
   // Pre-Potion
   if ( sim -> allow_potions && level >= 80 )
   {
-    if ( specialization() == DRUID_FERAL && ( primary_role() == ROLE_ATTACK || primary_role() == ROLE_TANK ) )
+    if ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK )
       precombat -> add_action( ( level > 85 ) ? "virmens_bite_potion" : "tolvir_potion" );
-    else
+    else if ( ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION ) && ( primary_role() == ROLE_SPELL || primary_role() == ROLE_HEAL ) )
       precombat -> add_action( ( level > 85 ) ? "jade_serpent_potion" : "volcanic_potion" );
   }
 }
@@ -6514,13 +6669,13 @@ void druid_t::apl_guardian()
   add_action( "Barkskin" );
   action_list_str += "/natures_vigil,if=talent.natures_vigil.enabled&(!talent.incarnation.enabled|buff.son_of_ursoc.up|cooldown.incarnation.remains)";
   action_list_str += "/thrash_bear,if=debuff.weakened_blows.remains<3";
-  action_list_str += "/maul,if=rage>=80&buff.tooth_and_claw.react";
+  action_list_str += "/maul,if=buff.tooth_and_claw.react";
   action_list_str += "/lacerate,if=((dot.lacerate.remains<3)|(buff.lacerate.stack<3&dot.thrash_bear.remains>3))&(buff.son_of_ursoc.up|buff.berserk.up)";
   action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
   action_list_str += "/thrash_bear,if=dot.thrash_bear.remains<3&(buff.son_of_ursoc.up|buff.berserk.up)";
   action_list_str += "/mangle_bear";
   action_list_str += "/wait,sec=cooldown.mangle_bear.remains,if=cooldown.mangle_bear.remains<=0.5";
-  action_list_str += "/natures_swiftness,if=talent.natures_swiftness.enabled&incoming_damage_5%health.max>=0.70";
+  action_list_str += "/cenarion_ward,if=talent.cenarion_ward.enabled";
   action_list_str += "/incarnation,if=talent.incarnation.enabled";
   action_list_str += "/lacerate,if=dot.lacerate.remains<3|buff.lacerate.stack<3";
   action_list_str += "/thrash_bear,if=dot.thrash_bear.remains<2";
@@ -7512,10 +7667,6 @@ struct druid_module_t : public module_t
     {
       player_t* p = sim -> actor_list[ i ];
       p -> buffs.innervate               = new buffs::innervate_t( p );
-      p -> debuffs.tooth_and_claw_absorb = buff_creator_t( p, "tooth_and_claw_absorb", p -> find_spell( 135601 ) )
-                                           .duration( timespan_t::from_seconds( 15.0 ) )
-                                           .chance( 1.0 )
-                                           .cd( timespan_t::zero() );
     }
   }
   virtual void combat_begin( sim_t* ) const {}
