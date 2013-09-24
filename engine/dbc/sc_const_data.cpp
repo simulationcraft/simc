@@ -348,6 +348,17 @@ void dbc::apply_hotfixes()
 
 
   // Warrior
+  // Hotfixes from 2013-09-23
+  // Raging blow -- Buffed from 190% weapon damage to 228% weapon damage.
+  s = spell_data_t::find( 96103, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 228;
+  // Raging blow off-hand.
+  s = spell_data_t::find( 85384, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 228;
+
+  //Bloodthirst -- Buffed from 90% weapon damage to 108% weapon damage.
+  s = spell_data_t::find( 23881, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 108;
 
 
   // Death Knight
