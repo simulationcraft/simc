@@ -351,6 +351,11 @@ void dbc::apply_hotfixes()
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.14 * 1.1;
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.739 * 1.1;
 
+  s = spell_data_t::find( 45284, false );
+  assert( s -> effectN( 1 ).m_average() != 0.855 * 1.1 && "Out of date hotfix for Lightning Bolt Overload" );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.855 * 1.1;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.554 * 1.1;
+
 
   // T15 4pc set bonus to 1.5 seconds
   s = spell_data_t::find( 138144, false );
