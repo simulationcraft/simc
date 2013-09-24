@@ -661,8 +661,7 @@ struct leader_of_the_pack_t : public heal_t
   {
     may_crit = false;
     background = true;
-
-    cooldown -> duration = timespan_t::from_seconds( 6.0 );
+    proc = true;
   }
 
   druid_t* p() const
