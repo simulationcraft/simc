@@ -383,6 +383,14 @@ void dbc::apply_hotfixes()
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 108;
 
 
+  // Druid
+  // Hotfixes from 2013-09-23
+  // Rip -- Damage has been increased by 20%.
+  s = spell_data_t::find( 1079, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.103 * 1.2;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_unk = 0.292 * 1.2;
+
+
   // Death Knight
 
   // Monk

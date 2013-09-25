@@ -2141,7 +2141,7 @@ struct rip_t : public cat_attack_t
     cat_attack_t( p, p -> find_class_spell( "Rip" ), options_str ),
     ap_per_point( 0.0 )
   {
-    ap_per_point          = 0.0484;
+    ap_per_point          = 0.05808; // TOCHECK: Get exact value when tooltip is updated.
     requires_combo_points = true;
     may_crit              = false;
     dot_behavior          = DOT_REFRESH;
