@@ -2693,38 +2693,47 @@ struct mangle_bear_t : public bear_attack_t
     special = true;
     if ( p() -> buff.berserk -> check() || p() -> buff.son_of_ursoc -> check() )
       cooldown -> reset( false );
-
-    p() -> resource_gain( RESOURCE_RAGE,
-                          data().effectN( 3 ).resource( RESOURCE_RAGE ),
-                          p() -> gain.mangle );
-    p() -> resource_gain( RESOURCE_RAGE,
-                          p() -> talent.soul_of_the_forest -> effectN( 3 ).base_value(),
-                          p() -> gain.soul_of_the_forest );
   }
 
   virtual void impact( action_state_t* state )
   {
     bear_attack_t::impact( state );
 
-    if ( result_is_hit ( state -> result ) )
+    if ( result_is_hit( state -> result ) )
     {
+      double rage = data().effectN( 3 ).resource( RESOURCE_RAGE );
+
+      if ( p() -> talent.soul_of_the_forest -> ok() )
+        rage *= 1.0 + p() -> talent.soul_of_the_forest -> effectN( 5 ).percent();
       if ( p() -> set_bonus.tier15_4pc_tank() && p() -> buff.enrage -> check() )
-        p() -> resource_gain( RESOURCE_RAGE, ( data().effectN( 3 ).resource( RESOURCE_RAGE ) + p() -> talent.soul_of_the_forest -> effectN( 3 ).base_value() ) * p() -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(), p() -> gain.tier15_4pc_tank );
+        rage *= 1.0 + p() -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent();
+
+      p() -> resource_gain( RESOURCE_RAGE, rage, p() -> gain.mangle );
     }
 
     if ( state -> result == RESULT_CRIT )
     {
-      p() -> resource_gain( RESOURCE_RAGE,
-                            p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
-                            p() -> gain.primal_fury );
-      p() -> proc.primal_fury -> occur();
+      double rage = p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE );
 
       if ( p() -> set_bonus.tier15_4pc_tank() && p() -> buff.enrage -> check() )
-        p() -> resource_gain( RESOURCE_RAGE, p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ) * p() -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(), p() -> gain.tier15_4pc_tank );
+        rage *= 1.0 + p() -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent();
+
+      p() -> resource_gain( RESOURCE_RAGE, rage, p() -> gain.primal_fury );
+      p() -> proc.primal_fury -> occur();
 
       if ( p() -> talent.dream_of_cenarius -> ok() )
         p() -> buff.dream_of_cenarius -> trigger();
     }
+  }
+
+  virtual double action_da_multiplier()
+  {
+    double adm = bear_attack_t::action_da_multiplier();
+
+    if ( p() -> talent.soul_of_the_forest -> ok() )
+      adm *= 1.0 + p() -> talent.soul_of_the_forest -> effectN( 6 ).percent();
+
+    return adm;
   }
 
   virtual bool ready()
