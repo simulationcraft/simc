@@ -777,6 +777,17 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
     return m;
   }
+
+  virtual double action_multiplier()
+  {
+    double m = base_t::action_multiplier();
+
+    // 2013/09/23: Brewmasters now deal 10% less damage with all attacks.
+    if ( player -> specialization() == MONK_BREWMASTER )
+      m *= 0.9;
+
+    return m;
+  }
 };
 
 // ==========================================================================
