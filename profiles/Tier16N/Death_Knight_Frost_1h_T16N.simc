@@ -91,8 +91,8 @@ finger1=devilfang_band,id=103896,gems=160str_60exp,reforge=exp_crit
 finger2=bloodclaw_band,id=103798,gems=80str_160mastery_60haste,reforge=hit_crit
 trinket1=evil_eye_of_galakras,id=102298
 trinket2=thoks_tail_tip,id=102305
-main_hand=xifeng_longblade_of_the_titanic_guardian,id=103826,gems=160str_60str,enchant=rune_of_razorice,reforge=hit_crit
-off_hand=xifeng_longblade_of_the_titanic_guardian,id=103826,gems=160str_60str,enchant=rune_of_the_fallen_crusader,reforge=hit_crit
+main_hand=xifeng_longblade_of_the_titanic_guardian,id=103826,gems=160str_60str,enchant=rune_of_the_fallen_crusader,reforge=hit_crit
+off_hand=xifeng_longblade_of_the_titanic_guardian,id=103826,gems=160str_60str,enchant=rune_of_razorice,reforge=hit_crit
 
 # Gear Summary
 # gear_strength=24048
