@@ -93,8 +93,8 @@ finger1=radens_ruinous_ring,id=95022,gems=80str_160hit_60str,reforge=exp_mastery
 finger2=band_of_the_scaled_tyrant,id=96872,gems=160str_60haste,reforge=hit_mastery
 trinket1=fabled_feather_of_jikun,id=96842,reforge=hit_mastery
 trinket2=spark_of_zandalar,id=96770,reforge=haste_mastery
-main_hand=qons_flaming_scimitar,id=96906,gems=160str_160str_60str,enchant=rune_of_razorice,reforge=exp_haste
-off_hand=qons_flaming_scimitar,id=96906,gems=160str_160str_60str,enchant=rune_of_the_fallen_crusader,reforge=exp_haste
+main_hand=qons_flaming_scimitar,id=96906,gems=160str_160str_60str,enchant=rune_of_the_fallen_crusader,reforge=exp_haste
+off_hand=qons_flaming_scimitar,id=96906,gems=160str_160str_60str,enchant=rune_of_razorice,reforge=exp_haste
 
 # Gear Summary
 # gear_strength=21529
