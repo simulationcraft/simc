@@ -605,7 +605,7 @@ struct ursocs_vigor_t : public heal_t
   druid_t* p() const
   { return static_cast<druid_t*>( player ); }
 
-  virtual void trigger( double rage_consumed )
+  void trigger_hot( double rage_consumed = 60.0 )
   {
     // Adjust the current healing remaining to be spread over the total duration of the hot.
     base_td *= (double) ticks_remain / (double) num_ticks;
@@ -2933,7 +2933,7 @@ struct savage_defense_t : public bear_attack_t
       p() -> buff.savage_defense -> trigger();
 
     if ( p() -> set_bonus.tier16_4pc_tank() )
-      p() -> active.ursocs_vigor -> trigger( resource_consumed );
+      p() -> active.ursocs_vigor -> trigger_hot();
   }
 };
 
@@ -3690,7 +3690,7 @@ struct frenzied_regeneration_t : public druid_heal_t
     druid_heal_t::execute();
 
     if ( p() -> set_bonus.tier16_4pc_tank() )
-      p() -> active.ursocs_vigor -> trigger( resource_consumed );
+      p() -> active.ursocs_vigor -> trigger_hot( resource_consumed );
   }
 
   virtual bool ready()
@@ -5425,7 +5425,7 @@ struct barkskin_t : public druid_buff_t < buff_t >
       heal_t::execute();
 
       if ( p() -> set_bonus.tier16_4pc_tank() )
-        p() -> active.ursocs_vigor -> trigger( 20.0 );
+        p() -> active.ursocs_vigor -> trigger_hot( 20.0 );
     }
 
     virtual bool ready()
@@ -5462,7 +5462,7 @@ struct barkskin_t : public druid_buff_t < buff_t >
       // For some reason the 2p provides a total of 55 rage of
       // healing so let's account for the extra 5 here. (9/25/2013)
       if ( p() -> set_bonus.tier16_4pc_tank() )
-        p() -> active.ursocs_vigor -> trigger( 30.0 + 5.0 );
+        p() -> active.ursocs_vigor -> trigger_hot( 30.0 + 5.0 );
 
       // Trigger a 20 rage Frenzied Regeneration
       frenzied_regeneration -> execute();
