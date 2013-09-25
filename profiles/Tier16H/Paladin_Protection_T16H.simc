@@ -6,7 +6,7 @@ race=blood_elf
 role=tank
 position=front
 professions=Blacksmithing=600/Enchanting=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#bZ!201101
+talents=http://us.battle.net/wow/en/tool/talent-calculator#bZ!201121
 glyphs=focused_shield/alabaster_shield/divine_protection
 spec=protection
 
@@ -37,7 +37,6 @@ actions+=/avenging_wrath
 actions+=/holy_avenger,if=talent.holy_avenger.enabled
 actions+=/divine_protection
 actions+=/eternal_flame,if=talent.eternal_flame.enabled&(buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react))
-actions+=/eternal_flame,if=talent.eternal_flame.enabled&(buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8)
 actions+=/shield_of_the_righteous,if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3
 actions+=/crusader_strike
 actions+=/judgment,if=cooldown.crusader_strike.remains>=0.5
@@ -82,4 +81,4 @@ off_hand=bulwark_of_the_fallen_general,id=105556,upgrade=2,gems=320haste,enchant
 # meta_gem=indomitable_primal
 # tier16_2pc_tank=1
 # tier16_4pc_tank=1
-# main_hand=siegecrafters_forge_hammer,heroic=1,elite=1,weapon=mace_2.60speed_12244min_22740max,enchant=windsong
+# main_hand=siegecrafters_forge_hammer,heroic=1,elite=1,weapon=mace_2.60speed_12244min_22741max,enchant=windsong

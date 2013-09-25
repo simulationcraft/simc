@@ -30,7 +30,7 @@ main_hand=britomarts_jagged_pike,id=105610,upgrade=2,gems=320haste_60str,enchant
 save=Paladin_Retribution_T16H.simc
 
 paladin="Paladin_Protection_T16H"
-talents=312212
+talents=312232
 level=90
 race=blood_elf
 spec=protection

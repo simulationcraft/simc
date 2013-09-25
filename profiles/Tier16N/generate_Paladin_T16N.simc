@@ -29,7 +29,7 @@ main_hand=britomarts_jagged_pike,id=103968,gems=360haste,enchant=dancing_steel
 save=Paladin_Retribution_T16N.simc
 
 paladin="Paladin_Protection_T16N"
-talents=312212
+talents=312232
 level=90
 race=blood_elf
 spec=protection
