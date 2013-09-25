@@ -301,6 +301,30 @@ void dbc::apply_hotfixes()
   const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 265 * 1.5;
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg = 1.25 * 1.5;
 
+  // Mage
+
+  // Ice Lance damage has been increased by 20%
+  s = spell_data_t::find( 30455, false );
+  assert( s -> effectN( 1 ).m_average() != 0.335 * 1.2 && "Out of date hotfix for Ice Lance" );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.335 * 1.2;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.335 * 1.2;
+
+  s = spell_data_t::find( 131080, false );
+  assert( s -> effectN( 1 ).m_average() != 0.335 * 1.2 && "Out of date hotfix for Ice Lance" );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.335 * 1.2;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.335 * 1.2;
+
+  // Waterbolt's damage has been increased by 10%
+  s = spell_data_t::find( 31707, false );
+  assert( s -> effectN( 1 ).m_average() != 0.5 * 1.1 && "Out of date hotfix for Waterbolt" );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.5 * 1.1;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.5 * 1.1;
+
+  s = spell_data_t::find( 131581, false );
+  assert( s -> effectN( 1 ).m_average() != 0.5 * 1.1 && "Out of date hotfix for Waterbolt" );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.5 * 1.1;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.5 * 1.1;
+
   // Paladin
   // Build Last Checked: 16309
   // Description: Seal of Truth should be replacing Seal of Command but is missing its ReplaceId value
