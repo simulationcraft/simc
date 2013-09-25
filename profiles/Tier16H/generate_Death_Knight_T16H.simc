@@ -76,6 +76,6 @@ finger1=devilfang_band,id=105611,upgrade=2,gems=80str_160mastery_60exp,reforge=e
 finger2=bloodclaw_band,id=105534,upgrade=2,gems=320mastery_60haste,reforge=hit_crit
 trinket1=evil_eye_of_galakras,id=105491,upgrade=2
 trinket2=thoks_tail_tip,id=105609,upgrade=2
-main_hand=xifeng_longblade_of_the_titanic_guardian,id=105460,upgrade=2,gems=80str_160mastery_60str,enchant=rune_of_razorice,reforge=hit_crit
-off_hand=xifeng_longblade_of_the_titanic_guardian,id=105460,upgrade=2,gems=80str_160mastery_60str,enchant=rune_of_the_fallen_crusader,reforge=hit_crit
+main_hand=xifeng_longblade_of_the_titanic_guardian,id=105460,upgrade=2,gems=80str_160mastery_60str,enchant=rune_of_the_fallen_crusader,reforge=hit_crit
+off_hand=xifeng_longblade_of_the_titanic_guardian,id=105460,upgrade=2,gems=80str_160mastery_60str,enchant=rune_of_razorice,reforge=hit_crit
 save=Death_Knight_Frost_1h_T16H.simc
