@@ -322,6 +322,17 @@ void dbc::apply_hotfixes()
 
   // Priest
 
+  // Shadow Word: Pain damage reduced by 15%
+  // TODO: Changed both mastery/normal version, is this correct?
+  s = spell_data_t::find( 589, false );
+  assert( s -> effectN( 1 ).m_average() != 0.743 * 0.85 && "Out of date hotfix for Shadow Word: Pain" );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.743 * 0.85;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.366 * 0.85;
+
+  s = spell_data_t::find( 124464, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.743 * 0.85;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.366 * 0.85;
+
   // Hack to get proper tooltip text in reports
   s = spell_data_t::find( 64904, false ); // Hymn of Hope (buff)
   s -> _desc = "$@spelldesc64901";
@@ -335,12 +346,12 @@ void dbc::apply_hotfixes()
 
   // Assassin's Resolve damage increase 25% -> 20%
   s = spell_data_t::find( 84601, false );
-  assert( s -> effectN( 2 ).base_value() != 20 && "Out of data hotfix for Assassin's Resolve" );
+  assert( s -> effectN( 2 ).base_value() != 20 && "Out of date hotfix for Assassin's Resolve" );
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 20;
 
   // Sanguinary Vein dot damage 25% -> 35%
   s = spell_data_t::find( 79147, false );
-  assert( s -> effectN( 2 ).base_value() != 35 && "Out of data hotfix for Sanguinary Vein" );
+  assert( s -> effectN( 2 ).base_value() != 35 && "Out of date hotfix for Sanguinary Vein" );
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 35;
 
   // Shaman
