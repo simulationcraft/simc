@@ -379,7 +379,7 @@ void dbc::apply_hotfixes()
 
   // Warlock
 
-  // Haunt periodic damage increase 40% -> 35%
+  // Haunt periodic damage decrease 40% -> 35%
   s = spell_data_t::find( 48181, false );
   assert( s -> effectN( 3 ).base_value() != 35 && "Out of date hotfix for Haunt" );
   const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 35;
