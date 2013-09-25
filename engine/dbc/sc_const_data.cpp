@@ -379,6 +379,24 @@ void dbc::apply_hotfixes()
 
   // Warlock
 
+  // Haunt periodic damage increase 40% -> 35%
+  s = spell_data_t::find( 48181, false );
+  assert( s -> effectN( 3 ).base_value() != 35 && "Out of date hotfix for Haunt" );
+  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 35;
+
+  // Fel Firebolt damage decreased by 30%
+  s = spell_data_t::find( 104318, false );
+  assert( s -> effectN( 1 ).m_average() != 0.345 * 0.7 && "Out of date hotfix for Fel Firebolt" );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.345 * 0.7;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.345 * 0.7;
+
+  // Immolate damage increased by 10%
+  s = spell_data_t::find( 348, false );
+  assert( s -> effectN( 1 ).m_average() != 0.628 * 1.1 && "Out of date hotfix for Immolate" );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.628 * 1.1;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.350 * 1.1;
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg = 1.795 * 1.1;
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff = 1.000 * 1.1;
 
   // Warrior
   // Hotfixes from 2013-09-23
