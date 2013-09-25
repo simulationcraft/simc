@@ -204,7 +204,6 @@ public:
     gain_t* omen_of_clarity;
     gain_t* primal_fury;
     gain_t* soul_of_the_forest;
-    gain_t* tier15_4pc_tank;
     gain_t* tigers_fury;
 
     // NYI / Needs checking
@@ -662,6 +661,8 @@ struct leader_of_the_pack_t : public heal_t
     may_crit = false;
     background = true;
     proc = true;
+
+    cooldown -> duration = data().cooldown();
   }
 
   druid_t* p() const
@@ -2531,9 +2532,12 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 
   void trigger_rage_gain()
   {
-    p() -> resource_gain( RESOURCE_RAGE, 10.85, p() -> gain.bear_melee );
+    double rage = 10.85;
+
     if ( p() -> set_bonus.tier15_4pc_tank() && p() -> buff.enrage -> check() )
-      p() -> resource_gain( RESOURCE_RAGE, 10.85 * p() -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(), p() -> gain.tier15_4pc_tank );
+      rage *= 1.0 + p() -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent();
+
+    p() -> resource_gain( RESOURCE_RAGE, rage, p() -> gain.bear_melee );
   }
 }; // end druid_bear_attack_t
 
@@ -4195,9 +4199,13 @@ struct enrage_t : public druid_spell_t
     druid_spell_t::execute();
 
     p() -> buff.enrage -> trigger();
-    p() -> resource_gain( RESOURCE_RAGE, data().effectN( 2 ).resource( RESOURCE_RAGE ), p() -> gain.enrage );
+
+    double rage = data().effectN( 2 ).resource( RESOURCE_RAGE );
+
     if ( p() -> set_bonus.tier15_4pc_tank() )
-      p() -> resource_gain( RESOURCE_RAGE, data().effectN( 2 ).resource( RESOURCE_RAGE ) * p() -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(), p() -> gain.tier15_4pc_tank );
+      rage *= 1.0 + p() -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent();
+
+    p() -> resource_gain( RESOURCE_RAGE, rage, p() -> gain.enrage );
   }
 
   virtual bool ready()
@@ -6773,7 +6781,6 @@ void druid_t::init_gains()
   gain.primal_fury           = get_gain( "primal_fury"           );
   gain.revitalize            = get_gain( "revitalize"            );
   gain.soul_of_the_forest    = get_gain( "soul_of_the_forest"    );
-  gain.tier15_4pc_tank       = get_gain( "tier15_4pc_tank"       );
   gain.tigers_fury           = get_gain( "tigers_fury"           );
 }
 
@@ -6870,9 +6877,12 @@ void druid_t::regen( timespan_t periodicity )
     resource_gain( RESOURCE_MANA, buff.glyph_of_innervate -> value() * periodicity.total_seconds(), gain.glyph_of_innervate );
   if ( buff.enrage -> up() )
   {
-    resource_gain( RESOURCE_RAGE, 1.0 * periodicity.total_seconds(), gain.enrage );
+    double rage = 1.0 * periodicity.total_seconds();
+    
     if ( set_bonus.tier15_4pc_tank() )
-      resource_gain( RESOURCE_RAGE, 1.0 * periodicity.total_seconds() * sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(), gain.tier15_4pc_tank );
+      rage *= 1.0 + sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent();
+
+    resource_gain( RESOURCE_RAGE, rage, gain.enrage );
   }
 
   player_t::regen( periodicity );
