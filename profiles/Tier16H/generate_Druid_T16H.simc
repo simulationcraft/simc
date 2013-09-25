@@ -9,7 +9,7 @@ race=troll
 role=attack
 position=back
 professions=engineering=600/alchemy=600
-talents=000102
+talents=000302
 glyphs=savagery/cat_form
 spec=feral
 head=headpiece_of_the_shattered_vale,id=99328,reforge=mastery_hit,upgrade=2,gems=capacitive_primal_160agi_180agi

@@ -5,7 +5,7 @@ level=90
 race=tauren
 role=attack
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!...0.1
+talents=http://us.battle.net/wow/en/tool/talent-calculator#UZ!...2.1
 glyphs=savagery/cat_form
 spec=feral
 
@@ -35,6 +35,7 @@ actions=swap_action_list,name=basic
 
 actions.basic=auto_attack
 actions.basic+=/skull_bash_cat
+actions.basic+=/force_of_nature,if=charges=3|trinket.proc.agility.react|(buff.rune_of_reorigination.react&buff.rune_of_reorigination.remains<1)|target.time_to_die<20
 # Keep Rip from falling off during execute range.
 actions.basic+=/ferocious_bite,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
 actions.basic+=/faerie_fire,if=debuff.weakened_armor.stack<3
@@ -73,6 +74,7 @@ actions.advanced=tigers_fury,if=time=0&set_bonus.tier16_4pc_melee
 actions.advanced+=/savage_roar,if=time=0&set_bonus.tier16_4pc_melee
 actions.advanced+=/auto_attack
 actions.advanced+=/skull_bash_cat
+actions.advanced+=/force_of_nature,if=charges=3|(buff.ticking_ebon_detonator.react&buff.ticking_ebon_detonator.remains<1)|(buff.rune_of_reorigination.react&buff.rune_of_reorigination.remains<1)|target.time_to_die<20
 actions.advanced+=/blood_fury
 actions.advanced+=/berserking
 actions.advanced+=/arcane_torrent
@@ -185,4 +187,4 @@ main_hand=halberd_of_inner_shadows,id=103952,gems=80agi_160crit_160agi_60agi,enc
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
 # trinket2=rune_of_reorigination,heroic=1,elite=1
-# main_hand=halberd_of_inner_shadows,weapon=polearm_3.60speed_21886min_32829max,enchant=dancing_steel
+# main_hand=halberd_of_inner_shadows,weapon=polearm_3.60speed_21886min_32830max,enchant=dancing_steel

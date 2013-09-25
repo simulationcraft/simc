@@ -9,7 +9,7 @@ race=tauren
 spec=feral
 role=attack
 position=back
-talents=000102
+talents=000302
 glyphs=savagery/cat_form
 head=headpiece_of_the_shattered_vale,id=99182,reforge=mastery_hit,gems=capacitive_primal_160agi_180agi
 neck=immerseus_crystalline_eye,id=103749,reforge=mastery_hit
