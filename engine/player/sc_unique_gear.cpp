@@ -2613,7 +2613,11 @@ void unerring_vision_of_leishen( item_t* item )
 
     unerring_vision_of_leishen_callback_t( item_t& i, const special_effect_t& data, const spell_data_t* driver ) :
       proc_callback_t<action_state_t>( i.player, data, driver )
-    { buff = new perfect_aim_buff_t( listener, listener -> find_spell( 138963 ) ); }
+    {
+      buff = new perfect_aim_buff_t( listener, listener -> find_spell( 138963 ) );
+      if ( i.player -> type == WARLOCK )
+        rppm.set_modifier( 0.6 );
+    }
 
     void execute( action_t* /* action */, action_state_t* /* state */ )
     { buff -> trigger(); }
