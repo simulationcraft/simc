@@ -1004,6 +1004,8 @@ struct force_of_nature_feral_t : public pet_t
 
       if ( p() -> o() -> buff.cat_form -> up() && p() -> o() -> mastery.razor_claws -> ok() )
         m *= 1.0 + p() -> o() -> cache.mastery_value();
+      if ( p() -> o() -> bugs && p() -> o() -> buff.dream_of_cenarius -> up() )
+        m *= 1.0 + p() -> o() -> buff.dream_of_cenarius -> data().effectN( 1 ).percent();
 
       return m;
     }
@@ -1016,6 +1018,8 @@ struct force_of_nature_feral_t : public pet_t
 
       if ( p() -> o() -> buff.cat_form -> up() && p() -> o() -> mastery.razor_claws -> ok() )
         m *= 1.0 + p() -> o() -> cache.mastery_value();
+      if ( p() -> o() -> bugs && p() -> o() -> buff.dream_of_cenarius -> up() )
+        m *= 1.0 + p() -> o() -> buff.dream_of_cenarius -> data().effectN( 1 ).percent();
 
       return m;
     }
