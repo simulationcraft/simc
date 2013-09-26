@@ -1658,7 +1658,7 @@ public:
     player -> resource_loss( r, resource_consumed, 0, this );
 
     if ( sim -> log )
-      sim -> output( "%s consumes %.1f %s for %s tick (%.0f)", player -> name(),
+      sim -> out_log.printf( "%s consumes %.1f %s for %s tick (%.0f)", player -> name(),
                      resource_consumed, util::resource_type_string( r ),
                      name(), player -> resources.current[ r ] );
 

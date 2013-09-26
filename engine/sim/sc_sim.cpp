@@ -549,7 +549,7 @@ static bool parse_fight_style( sim_t*             sim,
   }
   else
   {
-    sim -> output( "Custom fight style specified: %s", value.c_str() );
+    sim -> out_std.printf( "Custom fight style specified: %s", value.c_str() );
     sim -> fight_style = value;
   }
 
@@ -720,7 +720,7 @@ struct proxy_cast_check_t : public event_t
         interval = duration + timespan_t::from_seconds( 1 );
 
         if ( sim().debug )
-          sim().output( "Proxy-Execute uses=%d total=%d start_time=%.3f next_check=%.3f",
+          sim().out_debug.printf( "Proxy-Execute uses=%d total=%d start_time=%.3f next_check=%.3f",
                       uses, override, start_time.total_seconds(),
                       ( sim().current_time + interval ).total_seconds() );
       }
@@ -777,7 +777,7 @@ struct regen_event_t : public event_t
   regen_event_t( sim_t& s ) :
     event_t( s, "Regen Event" )
   {
-    if ( sim().debug ) sim().output( "New Regen Event" );
+    if ( sim().debug ) sim().out_debug.printf( "New Regen Event" );
 
     add_event( sim().regen_periodicity );
   }
@@ -856,7 +856,6 @@ sim_t::sim_t( sim_t* p, int index ) :
   simulation_length( "Simulation Length", false ),
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( 5.0 ) ),
-  output_file( stdout ),
   debug_exp( 0 ),
   // Report
   report_precision( 2 ), report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ),
@@ -895,7 +894,6 @@ sim_t::sim_t( sim_t* p, int index ) :
 
     // Inherit reporting directives from parent
     report_progress = parent -> report_progress;
-    output_file     = parent -> output_file;
 
     // Inherit 'plot' settings from parent because are set outside of the config file
     enchant = parent -> enchant;
@@ -924,22 +922,23 @@ void sim_t::combat( int iteration )
   if ( debug_each )
   {
     // On Debug Each, we collect debug information for each iteration, but clear it before each one
-    fflush( output_file );
-    if ( output_file != stdout )
-      fclose( output_file );
-    FILE* f = io::fopen( output_file_str, "w" );
-    if ( f )
+    std::shared_ptr<io::ofstream> o(new io::ofstream());
+    o -> open( output_file_str );
+    if ( o -> is_open() )
     {
-      output_file = f;
+      out_std = o;
+      out_debug = o;
+      out_log = o;
+      out_error = o;
     }
     else
     {
-      errorf( "Unable to open output file '%s'\n", output_file_str.c_str() );
+      out_error.printf( "Unable to open output file '%s'\n", output_file_str.c_str() );
       cancel();
     }
 
-    output( "------ Iteration #%i ------", iteration + 1 );
-    fflush( this -> output_file );
+    out_std.printf( "------ Iteration #%i ------", iteration + 1 );
+    std::flush( *out_std.get_stream() );
   }
 
   core_sim_t::combat( iteration );
@@ -1201,7 +1200,7 @@ void sim_t::combat_end()
 
 void sim_t::datacollection_begin()
 {
-  if ( debug ) output( "Sim Data Collection Begin" );
+  if ( debug ) out_debug << "Sim Data Collection Begin";
 
   iteration_dmg = iteration_heal = 0;
 
@@ -1228,7 +1227,7 @@ void sim_t::datacollection_begin()
 
 void sim_t::datacollection_end()
 {
-  if ( debug ) output( "Sim Data Collection End" );
+  if ( debug ) out_debug << "Sim Data Collection End";
 
   simulation_length.add( current_time.total_seconds() );
 
@@ -1332,7 +1331,7 @@ bool sim_t::init()
 
   // Find Already defined target, otherwise create a new one.
   if ( debug )
-    output( "Creating Enemies." );
+    out_debug << "Creating Enemies.";
 
   if ( !target_list.empty() )
   {
@@ -1845,24 +1844,23 @@ expr_t* sim_t::create_expression( action_t* a,
 
 void sim_t::print_options()
 {
-  util::fprintf( output_file, "\nWorld of Warcraft Raid Simulator Options:\n" );
+  out_log.raw() << "\nWorld of Warcraft Raid Simulator Options:\n";
 
-  int num_options = ( int ) options.size();
 
-  util::fprintf( output_file, "\nSimulation Engine:\n" );
-  for ( int i = 0; i < num_options; i++ ) options[ i ].print( output_file );
+  out_log.raw() << "\nSimulation Engine:\n";
+  for ( size_t i = 0; i < options.size(); ++i )
+    out_log.raw() << options[ i ];
 
   for ( size_t i = 0; i < player_list.size(); ++i )
   {
     player_t* p = player_list[ i ];
-    num_options = ( int ) p -> options.size();
 
-    util::fprintf( output_file, "\nPlayer: %s (%s)\n", p -> name(), util::player_type_string( p -> type ) );
-    for ( int i = 0; i < num_options; i++ ) p -> options[ i ].print( output_file );
+    out_log.raw().printf( "\nPlayer: %s (%s)\n", p -> name(), util::player_type_string( p -> type ) );
+    for ( size_t i = 0; i < p -> options.size(); ++i )
+      out_log.raw() << p -> options[ i ];
   }
 
-  util::fprintf( output_file, "\n" );
-  fflush( output_file );
+  out_log.raw() << "\n";
 }
 
 // sim_t::create_options ====================================================
@@ -2139,10 +2137,14 @@ bool sim_t::setup( sim_control_t* c )
   }
   else if ( ! output_file_str.empty() )
   {
-    FILE* f = io::fopen( output_file_str, "w" );
-    if ( f )
+    std::shared_ptr<io::ofstream> o(new io::ofstream());
+    o -> open( output_file_str );
+    if ( o -> is_open() )
     {
-      output_file = f;
+      out_std = o;
+      out_debug = o;
+      out_log = o;
+      out_error = o;
     }
     else
     {
@@ -2184,7 +2186,6 @@ void sim_t::cancel()
   {
     errorf( "Simulation has been canceled during player setup! (thread=%d)\n", thread_index );
   }
-  fflush( output_file );
 
   canceled = 1;
 
@@ -2272,42 +2273,10 @@ int sim_t::errorf( const char* format, ... )
     buffer[ strlen( buffer ) + 2 ] = 0;
   }
 
-  fputs( buffer, output_file );
+  out_error << buffer;
 
   setlocale( LC_CTYPE, p_locale.c_str() );
 
   if ( thread_index == 0 ) error_list.push_back( buffer );
   return retcode;
-}
-
-// sim_t::output ============================================================
-
-void sim_t::output( const char* format, ... )
-{
-  va_list vap;
-  char buffer[2048];
-
-  va_start( vap, format );
-  vsnprintf( buffer, sizeof( buffer ),  format, vap );
-  va_end( vap );
-
-  util::fprintf( output_file, "%-3.3f %s\n", current_time.total_seconds(), buffer );
-
-  //fflush( sim -> output_file );
-}
-
-// sim_t::output ============================================================
-
-void sim_t::output( sim_t* sim, const char* format, ... )
-{
-  va_list vap;
-  char buffer[2048];
-
-  va_start( vap, format );
-  vsnprintf( buffer, sizeof( buffer ),  format, vap );
-  va_end( vap );
-
-  util::fprintf( sim -> output_file, "%-3.3f %s\n", sim -> current_time.total_seconds(), buffer );
-
-  //fflush( sim -> output_file );
 }

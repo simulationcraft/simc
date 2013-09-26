@@ -1827,7 +1827,7 @@ struct premeditation_t : public rogue_attack_t
       td -> combo_points.count -= combo_points;
       if ( sim().log )
       {
-        sim().output( "%s loses %d temporary combo_points from premeditation (%d)",
+        sim().out_log.printf( "%s loses %d temporary combo_points from premeditation (%d)",
                     td -> combo_points.target -> name(),
                     p -> find_specialization_spell( "Premeditation" ) -> effectN( 1 ).base_value(),
                     td -> combo_points.count );
@@ -2354,7 +2354,7 @@ struct stealth_t : public spell_t
     rogue_t* p = debug_cast< rogue_t* >( player );
 
     if ( sim -> log )
-      sim -> output( "%s performs %s", p -> name(), name() );
+      sim -> out_log.printf( "%s performs %s", p -> name(), name() );
 
     p -> buffs.stealth -> trigger();
     used = true;
@@ -2626,7 +2626,7 @@ struct apply_poison_t : public action_t
     executed = true;
 
     if ( sim -> log )
-      sim -> output( "%s performs %s", player -> name(), name() );
+      sim -> out_log.printf( "%s performs %s", player -> name(), name() );
   }
 
   virtual bool ready()
@@ -2863,19 +2863,19 @@ void combo_points_t::add( int num, const char* action )
     if ( action )
     {
       if ( actual_num > 0 )
-        source -> sim -> output( "%s gains %d (%d) combo_points from %s (%d)",
+        source -> sim -> out_log.printf( "%s gains %d (%d) combo_points from %s (%d)",
                                  target -> name(), actual_num, num, action, count );
       if ( anticipation_num > 0 )
-        source -> sim -> output( "%s gains %d (%d) anticipation_charges from %s (%d)",
+        source -> sim -> out_log.printf( "%s gains %d (%d) anticipation_charges from %s (%d)",
                                  target -> name(), anticipation_num, overflow, action, anticipation_charges );
     }
     else
     {
       if ( actual_num > 0 )
-        source -> sim -> output( "%s gains %d (%d) combo_points (%d)",
+        source -> sim -> out_log.printf( "%s gains %d (%d) combo_points (%d)",
                                  target -> name(), actual_num, num, count );
       if ( anticipation_num > 0 )
-        source -> sim -> output( "%s gains %d (%d) anticipation_charges (%d)",
+        source -> sim -> out_log.printf( "%s gains %d (%d) anticipation_charges (%d)",
                                  target -> name(), anticipation_num, overflow, anticipation_charges );
     }
   }
@@ -2888,10 +2888,10 @@ void combo_points_t::clear( const char* action, bool anticipation )
   if ( source -> sim -> log )
   {
     if ( action )
-      source -> sim -> output( "%s spends %d combo_points on %s",
+      source -> sim -> out_log.printf( "%s spends %d combo_points on %s",
                                target -> name(), count, action );
     else
-      source -> sim -> output( "%s loses %d combo_points",
+      source -> sim -> out_log.printf( "%s loses %d combo_points",
                                target -> name(), count );
   }
 
@@ -2909,7 +2909,7 @@ void combo_points_t::clear( const char* action, bool anticipation )
   if ( anticipation_charges > 0 )
   {
     if ( source -> sim -> log )
-      source -> sim -> output( "%s replenishes %d combo_points through anticipation", source -> name(), anticipation_charges );
+      source -> sim -> out_log.printf( "%s replenishes %d combo_points through anticipation", source -> name(), anticipation_charges );
     count = anticipation_charges;
     anticipation_charges = 0;
   }

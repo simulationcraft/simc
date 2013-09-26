@@ -959,7 +959,7 @@ public:
       min_interval -> start( timespan_t::min(), timespan_t::zero() );
 
       if ( this -> sim -> debug )
-        this -> sim -> output( "%s starts min_interval for %s (%s). Will be ready at %.4f",
+        this -> sim -> out_debug.printf( "%s starts min_interval for %s (%s). Will be ready at %.4f",
                                priest.name(), this -> name(), min_interval -> name(), min_interval -> ready.total_seconds() );
     }
   }
@@ -1999,7 +1999,7 @@ struct mind_blast_t : public priest_spell_t
     player -> resource_loss( current_resource(), resource_consumed, nullptr, this );
 
     if ( sim -> log )
-      sim -> output( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
+      sim -> out_log.printf( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
                      resource_consumed, util::resource_type_string( current_resource() ),
                      name(), player -> resources.current[ current_resource() ] );
 
@@ -2189,7 +2189,7 @@ struct mind_spike_t : public priest_spell_t
     player -> resource_loss( current_resource(), resource_consumed, nullptr, this );
 
     if ( sim -> log )
-      sim -> output( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
+      sim -> out_log.printf( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
                      resource_consumed, util::resource_type_string( current_resource() ),
                      name(), player -> resources.current[ current_resource() ] );
 
@@ -2556,7 +2556,7 @@ struct devouring_plague_t : public priest_spell_t
         dot_t* dot = get_dot();
         base_ta_adder = saved_impact_dmg / dot -> ticks();
         if ( sim -> debug )
-          sim -> output( "%s DP still ticking. Added %.2f damage / %.2f per tick to new dot", player -> name(), saved_impact_dmg, base_ta_adder );
+          sim -> out_debug.printf( "%s DP still ticking. Added %.2f damage / %.2f per tick to new dot", player -> name(), saved_impact_dmg, base_ta_adder );
       }
     }
 
@@ -2605,7 +2605,7 @@ struct devouring_plague_t : public priest_spell_t
     player -> resource_loss( current_resource(), resource_consumed, nullptr, this );
 
     if ( sim -> log )
-      sim -> output( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
+      sim -> out_log.printf( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
                      resource_consumed, util::resource_type_string( current_resource() ),
                      name(), player -> resources.current[ current_resource() ] );
 
@@ -2640,7 +2640,7 @@ struct devouring_plague_t : public priest_spell_t
       previous_dp_dmg += state.result_amount / state.orbs_used * dot -> ticks();
 
       if ( sim -> debug )
-        sim -> output( "%s DP still ticking. Added %.2f damage to new dot", player -> name(), previous_dp_dmg );
+        sim -> out_debug.printf( "%s DP still ticking. Added %.2f damage to new dot", player -> name(), previous_dp_dmg );
     }
 
 
@@ -3335,7 +3335,7 @@ public:
         if ( t )
         {
           if ( ab::sim -> debug )
-            ab::sim -> output( "%s action %s jumps to player %s",
+            ab::sim -> out_debug.printf( "%s action %s jumps to player %s",
                                ab::player -> name(), ab::name(), t -> name() );
 
 
@@ -4747,7 +4747,7 @@ void priest_t::shadowy_apparitions_t::trigger( action_state_t& s )
     apparitions_active.push_back( sa );
 
     if ( priest.sim -> debug )
-      priest.sim -> output( "%s triggered shadowy apparition. Active SA: %d, Queued SA: %d",
+      priest.sim -> out_debug.printf( "%s triggered shadowy apparition. Active SA: %d, Queued SA: %d",
                             priest.name(), as<unsigned>( apparitions_active.size() ), as<unsigned>( targets_queued.size() ) );
 
     // Execute
@@ -4782,7 +4782,7 @@ void priest_t::shadowy_apparitions_t::add_more( size_t num )
   }
 
   if ( priest.sim -> debug )
-    priest.sim -> output( "%s created %d shadowy apparitions. %d free shadowy apparitions available.",
+    priest.sim -> out_debug.printf( "%s created %d shadowy apparitions. %d free shadowy apparitions available.",
                           priest.name(), as<unsigned>( num ), as<unsigned>( apparitions_free.size() ) );
 }
 
@@ -4807,7 +4807,7 @@ void priest_t::shadowy_apparitions_t::start_from_queue()
       apparitions_active.push_back( s );
 
       if ( priest.sim -> debug )
-        priest.sim -> output( "%s triggered shadowy apparition from the queue. Active SA: %d, Queued SA: %d",
+        priest.sim -> out_debug.printf( "%s triggered shadowy apparition from the queue. Active SA: %d, Queued SA: %d",
                               priest.name(), as<unsigned>( apparitions_active.size() ), as<unsigned>( targets_queued.size() ) );
 
       // Execute

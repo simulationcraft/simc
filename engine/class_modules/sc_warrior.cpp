@@ -603,7 +603,7 @@ static void trigger_strikes_of_opportunity( warrior_attack_t* a )
   assert( p -> active_opportunity_strike );
 
   if ( p -> sim -> debug )
-    p -> sim -> output( "Opportunity Strike procced from %s", a -> name() );
+    p -> sim -> out_debug.printf( "Opportunity Strike procced from %s", a -> name() );
 
   p -> proc.strikes_of_opportunity -> occur();
   p -> active_opportunity_strike -> execute();
@@ -2726,7 +2726,7 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
     player -> resource_loss( current_resource(), resource_consumed, 0, this );
 
     if ( sim -> log )
-      sim -> output( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
+      sim -> out_log.printf( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
                      resource_consumed, util::resource_type_string( current_resource() ),
                      name(), player -> resources.current[ current_resource() ] );
 
@@ -2767,7 +2767,7 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
 
     if ( sim -> debug )
     {
-      sim -> output( "%s amount for %s: dd=%.0f",
+      sim -> out_debug.printf( "%s amount for %s: dd=%.0f",
                      player -> name(), name(), amount );
     }
     // Record initial and total amount to state

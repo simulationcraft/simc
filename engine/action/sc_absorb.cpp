@@ -89,7 +89,7 @@ void absorb_t::assess_damage( dmg_e    heal_type,
   s -> result_amount = s -> target -> resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, this );
 
   if ( sim -> log )
-    sim -> output( "%s %s heals %s for %.0f (%.0f) (%s)",
+    sim -> out_log.printf( "%s %s heals %s for %.0f (%.0f) (%s)",
                    player -> name(), name(),
                    s -> target -> name(), s -> result_amount, s -> total_result_amount,
                    util::result_type_string( result ) );

@@ -126,7 +126,7 @@ void pet_t::summon( timespan_t summon_duration )
 {
   if ( sim -> log )
   {
-    sim -> output( "%s summons %s. for %.2fs", owner -> name(), name(), summon_duration.total_seconds() );
+    sim -> out_log.printf( "%s summons %s. for %.2fs", owner -> name(), name(), summon_duration.total_seconds() );
   }
 
   current.distance = owner -> current.distance;
@@ -178,7 +178,7 @@ void pet_t::summon( timespan_t summon_duration )
 
 void pet_t::dismiss()
 {
-  if ( sim -> log ) sim -> output( "%s dismisses %s", owner -> name(), name() );
+  if ( sim -> log ) sim -> out_log.printf( "%s dismisses %s", owner -> name(), name() );
 
   // Remove from active_pets list
   std::vector<pet_t*>::iterator it = range::find( owner -> active_pets, this );

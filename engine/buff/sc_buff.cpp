@@ -495,7 +495,7 @@ void buff_t::execute( int stacks, double value, timespan_t duration )
   if ( cooldown -> duration > timespan_t::zero() )
   {
     if ( sim -> debug )
-      sim -> output( "%s starts buff %s cooldown (%s) with duration %.2f",
+      sim -> out_debug.printf( "%s starts buff %s cooldown (%s) with duration %.2f",
                      source_name().c_str(), name_str.c_str(), cooldown -> name(), cooldown -> duration.total_seconds() );
 
     cooldown -> start();
@@ -555,7 +555,7 @@ void buff_t::decrement( int    stacks,
       stack_uptime[ current_stack ] -> update( true, sim -> current_time );
 
     if ( sim -> debug )
-      sim -> output( "buff %s decremented by %d to %d stacks",
+      sim -> out_debug.printf( "buff %s decremented by %d to %d stacks",
                      name_str.c_str(), stacks, current_stack );
   }
 }
@@ -571,7 +571,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
     expiration -> reschedule( expiration -> remains() + extra_seconds );
 
     if ( sim -> debug )
-      sim -> output( "%s extends buff %s by %.1f seconds. New expiration time: %.1f",
+      sim -> out_debug.printf( "%s extends buff %s by %.1f seconds. New expiration time: %.1f",
                      p -> name(), name_str.c_str(), extra_seconds.total_seconds(), expiration -> occurs().total_seconds() );
   }
   else if ( extra_seconds < timespan_t::zero() )
@@ -595,7 +595,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
     expiration = new ( *sim ) expiration_t( this, reschedule_time );
 
     if ( sim -> debug )
-      sim -> output( "%s decreases buff %s by %.1f seconds. New expiration time: %.1f",
+      sim -> out_debug.printf( "%s decreases buff %s by %.1f seconds. New expiration time: %.1f",
                      p -> name(), name_str.c_str(), extra_seconds.total_seconds(), expiration -> occurs().total_seconds() );
   }
 }
@@ -831,12 +831,13 @@ void buff_t::aura_gain()
     {
       if ( sim -> log && ! player -> is_sleeping() )
       {
-        sim -> output( "%s gains %s ( value=%.2f )", player -> name(), s.c_str(), current_value );
+        sim -> out_log.printf( "%s gains %s ( value=%.2f )", player -> name(), s.c_str(), current_value );
       }
     }
     else
     {
-      if ( sim -> log ) sim -> output( "Raid gains %s ( value=%.2f )", s.c_str(), current_value );
+      if ( sim -> log )
+        sim -> out_log.printf( "Raid gains %s ( value=%.2f )", s.c_str(), current_value );
     }
   }
 }
@@ -848,11 +849,11 @@ void buff_t::aura_loss()
   if ( player )
   {
     if ( sim -> log && ! player -> is_sleeping() )
-      sim -> output( "%s loses %s", player -> name(), name_str.c_str() );
+      sim -> out_log.printf( "%s loses %s", player -> name(), name_str.c_str() );
   }
   else
   {
-    if ( sim -> log ) sim -> output( "Raid loses %s",  name_str.c_str() );
+    if ( sim -> log ) sim -> out_log.printf( "Raid loses %s",  name_str.c_str() );
   }
 }
 
@@ -1241,7 +1242,7 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
       stack_uptime[ current_stack ] -> update( true, sim -> current_time );
 
     if ( sim -> debug )
-      sim -> output( "buff %s decremented by %d to %d stacks",
+      sim -> out_debug.printf( "buff %s decremented by %d to %d stacks",
                      name_str.c_str(), stacks, current_stack );
 
     if ( player ) player -> trigger_ready();
@@ -1420,7 +1421,7 @@ bool tick_buff_t::trigger( int stacks, double value, double chance, timespan_t d
     assert( carryover < period );
 
     if ( sim -> debug )
-      sim -> output( "%s carryover duration from ongoing tick: %f", name(), carryover.total_seconds() );
+      sim -> out_debug.printf( "%s carryover duration from ongoing tick: %f", name(), carryover.total_seconds() );
 
     duration += carryover;
   }
@@ -1480,7 +1481,7 @@ void absorb_buff_t::consume( double amount )
     absorb_gain -> add( RESOURCE_HEALTH, amount, 0 );
 
   if ( sim -> debug )
-    sim -> output( "%s %s absorbs %.2f", player -> name(), name(), amount );
+    sim -> out_debug.printf( "%s %s absorbs %.2f", player -> name(), name(), amount );
 
   current_value -= amount;
   absorb_used( amount );
@@ -1488,7 +1489,7 @@ void absorb_buff_t::consume( double amount )
   if ( current_value <= 0 )
     expire();
   else if ( sim -> debug )
-    sim -> output( "%s %s absorb remaining %.2f", player -> name(), name(), current_value );
+    sim -> out_debug.printf( "%s %s absorb remaining %.2f", player -> name(), name(), current_value );
 }
 
 void buff_creator_basics_t::init()

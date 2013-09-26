@@ -17,7 +17,7 @@ struct player_gcd_event_t : public event_t
       event_t( p, "Player-Ready-GCD" )
   {
     if ( sim().debug )
-      sim().output( "New Player-Ready-GCD Event: %s", p.name() );
+      sim().out_debug << "New Player-Ready-GCD Event: " << p.name();
 
     sim().add_event( this, delta_time );
   }
@@ -75,7 +75,7 @@ struct action_execute_event_t : public event_t
         execute_state( state )
   {
     if ( sim().debug )
-      sim().output( "New Action Execute Event: %s %s %.1f (target=%s, marker=%c)",
+      sim().out_debug.printf( "New Action Execute Event: %s %s %.1f (target=%s, marker=%c)",
                   p()->name(), a->name(), time_to_execute.total_seconds(),
                   a->target->name(), ( a->marker ) ? a->marker : '0' );
     sim().add_event( this, time_to_execute );
@@ -110,7 +110,7 @@ struct action_execute_event_t : public event_t
     if ( ! p() -> channeling )
     {
       if ( p() -> readying )
-        sim().output( "Danger Will Robinson!  Danger!  action %s player %s\n",
+        sim().out_error.printf( "Danger Will Robinson!  Danger!  action %s player %s\n",
                     action -> name(), p() -> name() );
 
       p() -> schedule_ready( timespan_t::zero() );
@@ -385,7 +385,8 @@ action_t::action_t( action_e       ty,
     util::tokenize( name_str );
   }
 
-  if ( sim -> debug ) sim -> output( "Player %s creates action %s (%d)", player -> name(), name(), ( s_data -> ok() ? s_data -> id() : -1 ) );
+  if ( sim -> debug )
+    sim -> out_debug.printf( "Player %s creates action %s (%d)", player -> name(), name(), ( s_data -> ok() ? s_data -> id() : -1 ) );
 
   if ( unlikely( ! player -> initialized ) )
   {
@@ -649,7 +650,8 @@ double action_t::cost()
 
   if ( c < 0 ) c = 0;
 
-  if ( sim -> debug ) sim -> output( "action_t::cost: %s %.2f %.2f %s", name(), base_costs[ cr ], c, util::resource_type_string( cr ) );
+  if ( sim -> debug )
+    sim -> out_debug.printf( "action_t::cost: %s %.2f %.2f %s", name(), base_costs[ cr ], c, util::resource_type_string( cr ) );
 
   return floor( c );
 }
@@ -708,7 +710,7 @@ double action_t::total_crit_bonus()
 
   if ( sim -> debug )
   {
-    sim -> output( "%s crit_bonus for %s: cb=%.3f b_cb=%.2f b_cm=%.2f b_cbm=%.2f",
+    sim -> out_debug.printf( "%s crit_bonus for %s: cb=%.3f b_cb=%.2f b_cm=%.2f b_cbm=%.2f",
                    player -> name(), name(), bonus, base_crit_bonus, crit_multiplier_buffed, crit_bonus_multiplier );
   }
 
@@ -735,7 +737,7 @@ double action_t::calculate_weapon_damage( double attack_power )
 
   if ( sim -> debug )
   {
-    sim -> output( "%s weapon damage for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f pd=%.3f ap=%.3f",
+    sim -> out_debug.printf( "%s weapon damage for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f pd=%.3f ap=%.3f",
                    player -> name(), name(), total_dmg, dmg, weapon -> bonus_dmg, weapon_speed.total_seconds(), power_damage, attack_power );
   }
 
@@ -769,7 +771,7 @@ double action_t::calculate_tick_amount( action_state_t* state )
 
   if ( sim -> debug )
   {
-    sim -> output( "%s amount for %s on %s: ta=%.0f i_ta=%.0f b_ta=%.0f bonus_ta=%.0f mod=%.2f power=%.0f mult=%.2f",
+    sim -> out_debug.printf( "%s amount for %s on %s: ta=%.0f i_ta=%.0f b_ta=%.0f bonus_ta=%.0f mod=%.2f power=%.0f mult=%.2f",
                    player -> name(), name(), target -> name(), amount,
                    init_tick_amount, base_ta( state ), bonus_ta( state ),
                    tick_power_coefficient( state ), state -> composite_power(),
@@ -863,7 +865,7 @@ double action_t::calculate_direct_amount( action_state_t* state )
 
   if ( sim -> debug )
   {
-    sim -> output( "%s amount for %s: dd=%.0f i_dd=%.0f w_dd=%.0f b_dd=%.0f mod=%.2f power=%.0f mult=%.2f w_mult=%.2f",
+    sim -> out_debug.printf( "%s amount for %s: dd=%.0f i_dd=%.0f w_dd=%.0f b_dd=%.0f mod=%.2f power=%.0f mult=%.2f w_mult=%.2f",
                    player -> name(), name(), amount, state -> result_raw, weapon_amount, base_direct_amount, direct_power_coefficient( state ),
                    state -> composite_power(), state -> composite_da_multiplier(), weapon_multiplier );
   }
@@ -895,7 +897,7 @@ void action_t::consume_resource()
   player -> resource_loss( cr, resource_consumed, 0, this );
 
   if ( sim -> log )
-    sim -> output( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
+    sim -> out_log.printf( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
                    resource_consumed, util::resource_type_string( cr ),
                    name(), player -> resources.current[ cr ] );
 
@@ -988,7 +990,7 @@ void action_t::execute()
 
   if ( sim -> log && ! dual )
   {
-    sim -> output( "%s performs %s (%.0f)", player -> name(), name(),
+    sim -> out_log.printf( "%s performs %s (%.0f)", player -> name(), name(),
                    player -> resources.current[ player -> primary_resource() ] );
   }
 
@@ -998,7 +1000,7 @@ void action_t::execute()
   if ( harmful )
   {
     if ( player -> in_combat == false && sim -> debug )
-      sim -> output( "%s enters combat.", player -> name() );
+      sim -> out_debug.printf( "%s enters combat.", player -> name() );
 
     player -> in_combat = true;
   }
@@ -1069,7 +1071,8 @@ void action_t::execute()
 
 void action_t::tick( dot_t* d )
 {
-  if ( sim -> debug ) sim -> output( "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
+  if ( sim -> debug )
+    sim -> out_debug.printf( "%s ticks (%d of %d)", name(), d -> current_tick, d -> num_ticks );
 
   if ( tick_action )
   {
@@ -1187,7 +1190,7 @@ void action_t::update_vengeance( dmg_e type,
       {
         if ( sim -> debug )
         {
-          sim -> output( "%s triggered vengeance ramp-up mechanism due to %s from %s because new amount=%.2f and equilibrium=%.2f.",
+          sim -> out_debug.printf( "%s triggered vengeance ramp-up mechanism due to %s from %s because new amount=%.2f and equilibrium=%.2f.",
                          s -> target -> name(), s -> action -> name(), s -> action -> player -> name(), new_amount, vengeance_equil );
         }
         new_amount = vengeance_equil / 2.0;
@@ -1198,7 +1201,7 @@ void action_t::update_vengeance( dmg_e type,
 
       if ( sim -> debug )
       {
-        sim -> output( "%s updated vengeance due to %s from %s. New vengeance.value=%.2f vengeance.damage=%.2f.",
+        sim -> out_debug.printf( "%s updated vengeance due to %s from %s. New vengeance.value=%.2f vengeance.damage=%.2f.",
                        s -> target -> name(), s -> action -> name(), s -> action -> player -> name() , new_amount, raw_damage );
       }
 
@@ -1224,7 +1227,7 @@ void action_t::assess_damage( dmg_e    type,
   {
     if ( sim -> log )
     {
-      sim -> output( "%s %s hits %s for %.0f %s damage (%s)",
+      sim -> out_log.printf( "%s %s hits %s for %.0f %s damage (%s)",
                      player -> name(), name(),
                      s -> target -> name(), s -> result_amount,
                      util::school_type_string( school ),
@@ -1255,7 +1258,7 @@ void action_t::assess_damage( dmg_e    type,
     if ( sim -> log )
     {
       dot_t* dot = get_dot( s -> target );
-      sim -> output( "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
+      sim -> out_log.printf( "%s %s ticks (%d of %d) %s for %.0f %s damage (%s)",
                      player -> name(), name(),
                      dot -> current_tick, dot -> num_ticks,
                      s -> target -> name(), s -> result_amount,
@@ -1275,7 +1278,7 @@ void action_t::schedule_execute( action_state_t* execute_state )
 {
   if ( sim -> log )
   {
-    sim -> output( "%s schedules execute for %s", player -> name(), name() );
+    sim -> out_log.printf( "%s schedules execute for %s", player -> name(), name() );
   }
 
   time_to_execute = execute_time();
@@ -1322,7 +1325,7 @@ void action_t::reschedule_execute( timespan_t time )
 {
   if ( sim -> log )
   {
-    sim -> output( "%s reschedules execute for %s", player -> name(), name() );
+    sim -> out_log.printf( "%s reschedules execute for %s", player -> name(), name() );
   }
 
   timespan_t delta_time = sim -> current_time + time - execute_event -> occurs();
@@ -1360,12 +1363,14 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
       lag = player -> world_lag_override ? player -> world_lag : sim -> world_lag;
       dev = player -> world_lag_stddev_override ? player -> world_lag_stddev : sim -> world_lag_stddev;
       delay = rng().gauss( lag, dev );
-      if ( sim -> debug ) sim -> output( "%s delaying the cooldown finish of %s by %f", player -> name(), name(), delay.total_seconds() );
+      if ( sim -> debug )
+        sim -> out_debug.printf( "%s delaying the cooldown finish of %s by %f", player -> name(), name(), delay.total_seconds() );
     }
 
     cooldown -> start( cd_duration, delay );
 
-    if ( sim -> debug ) sim -> output( "%s starts cooldown for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready.total_seconds() );
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s starts cooldown for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready.total_seconds() );
   }
   if ( num_ticks )
   {
@@ -1374,7 +1379,7 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
       dot_t* dot = get_dot( target );
       last_reaction_time = player -> total_reaction_time();
       if ( sim -> debug )
-        sim -> output( "%s pushes out re-cast (%.2f) on miss for %s (%s)",
+        sim -> out_debug.printf( "%s pushes out re-cast (%.2f) on miss for %s (%s)",
                        player -> name(), last_reaction_time.total_seconds(), name(), dot -> name() );
 
       dot -> miss_time = sim -> current_time + time_to_travel;
@@ -1605,7 +1610,8 @@ void action_t::reset()
 
 void action_t::cancel()
 {
-  if ( sim -> debug ) sim -> output( "action %s of %s is canceled", name(), player -> name() );
+  if ( sim -> debug )
+    sim -> out_debug.printf( "action %s of %s is canceled", name(), player -> name() );
 
   if ( channeled )
   {
@@ -1638,11 +1644,13 @@ void action_t::cancel()
 
 void action_t::interrupt_action()
 {
-  if ( sim -> debug ) sim -> output( "action %s of %s is interrupted", name(), player -> name() );
+  if ( sim -> debug )
+    sim -> out_debug.printf( "action %s of %s is interrupted", name(), player -> name() );
 
   if ( cooldown -> duration > timespan_t::zero() && ! dual )
   {
-    if ( sim -> debug ) sim -> output( "%s starts cooldown for %s (%s)", player -> name(), name(), cooldown -> name() );
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s starts cooldown for %s (%s)", player -> name(), name(), cooldown -> name() );
 
     cooldown -> start();
   }
@@ -1836,7 +1844,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       {
         if ( action.sim -> debug )
         {
-          action.sim -> output( "%s %s cast_delay(): can_react_at=%f cur_time=%f",
+          action.sim -> out_debug.printf( "%s %s cast_delay(): can_react_at=%f cur_time=%f",
                                 action.player -> name_str.c_str(),
                                 action.name_str.c_str(),
                                 ( action.player -> cast_delay_occurred + action.player -> cast_delay_reaction ).total_seconds(),
@@ -2097,7 +2105,7 @@ double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, time
   double expected_average_proc_interval = 60.0 / ( PPM * coeff );
   double rppm_chance = std::max( 1.0, 1 + ( ( last_success / expected_average_proc_interval - 1.5 ) * 3.0 ) )  * old_rppm_chance;
   if ( sim -> debug )
-    sim -> output( "base=%.3f coeff=%.3f last_trig=%.3f last_proc=%.3f scales=%d chance=%.5f%%",
+    sim -> out_debug.printf( "base=%.3f coeff=%.3f last_trig=%.3f last_proc=%.3f scales=%d chance=%.5f%%",
         PPM, coeff, last_trigger.total_seconds(), last_successful_proc.total_seconds(), scales_with,
         rppm_chance * 100.0 );
   return rppm_chance;
@@ -2241,7 +2249,7 @@ void action_t::schedule_travel( action_state_t* s )
   {
     if ( sim -> log )
     {
-      sim -> output( "[NEW] %s schedules travel (%.3f) for %s", player -> name(), time_to_travel.total_seconds(), name() );
+      sim -> out_log.printf( "[NEW] %s schedules travel (%.3f) for %s", player -> name(), time_to_travel.total_seconds(), name() );
     }
 
     add_travel_event( new ( *sim ) travel_event_t( this, s, time_to_travel ) );
@@ -2273,7 +2281,7 @@ void action_t::impact( action_state_t* s )
   {
     if ( sim -> log )
     {
-      sim -> output( "Target %s avoids %s %s (%s)", s -> target -> name(), player -> name(), name(), util::result_type_string( s -> result ) );
+      sim -> out_log.printf( "Target %s avoids %s %s (%s)", s -> target -> name(), player -> name(), name(), util::result_type_string( s -> result ) );
     }
   }
 }
@@ -2333,7 +2341,7 @@ void action_t::trigger_dot( action_state_t* s )
   dot -> recalculate_ready();
 
   if ( sim -> debug )
-    sim -> output( "%s extends dot-ready to %.2f for %s (%s)",
+    sim -> out_debug.printf( "%s extends dot-ready to %.2f for %s (%s)",
                    player -> name(), dot -> ready.total_seconds(), name(), dot -> name() );
 }
 

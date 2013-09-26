@@ -2225,7 +2225,7 @@ struct black_arrow_t : public hunter_ranged_attack_t
   {
     if ( cooldown -> up() && ! p() -> resource_available( RESOURCE_FOCUS, cost() ) )
     {
-      if ( sim -> log ) sim -> output( "Player %s was focus starved when Black Arrow was ready.", p() -> name() );
+      if ( sim -> log ) sim -> out_log.printf( "Player %s was focus starved when Black Arrow was ready.", p() -> name() );
       p() -> procs.black_arrow_focus_starved -> occur();
     }
 
@@ -2446,7 +2446,7 @@ struct explosive_shot_t : public hunter_ranged_attack_t
   {
     if ( cooldown -> up() && ! p() -> resource_available( RESOURCE_FOCUS, cost() ) )
     {
-      if ( sim -> log ) sim -> output( "Player %s was focus starved when Explosive Shot was ready.", p() -> name() );
+      if ( sim -> log ) sim -> out_log.printf( "Player %s was focus starved when Explosive Shot was ready.", p() -> name() );
       p() -> procs.explosive_shot_focus_starved -> occur();
     }
 
@@ -3862,7 +3862,7 @@ void hunter_t::init_position()
   }
 
   if ( sim -> debug )
-    sim -> output( "%s: Position adjusted to %s", name(), position_str.c_str() );
+    sim -> out_debug.printf( "%s: Position adjusted to %s", name(), position_str.c_str() );
 }
 
 // hunter_t::init_procs =====================================================

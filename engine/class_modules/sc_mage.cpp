@@ -642,10 +642,10 @@ struct buff_state_t
   {
     if ( b -> sim -> debug )
     {
-      b -> sim -> output( "Creating buff_state_t for buff %s of player %s",
+      b -> sim -> out_debug.printf( "Creating buff_state_t for buff %s of player %s",
                           b -> name_str.c_str(), b -> player ? b -> player -> name() : "" );
 
-      b -> sim -> output( "Snapshoted values are: current_stacks=%d remaining_time=%.4f current_value=%.2f",
+      b -> sim -> out_debug.printf( "Snapshoted values are: current_stacks=%d remaining_time=%.4f current_value=%.2f",
                           stacks, remain_time.total_seconds(), value );
     }
   }
@@ -653,7 +653,7 @@ struct buff_state_t
   void write_back_state() const
   {
     if ( buff -> sim -> debug )
-      buff -> sim -> output( "Writing back buff_state_t for buff %s of player %s",
+      buff -> sim -> out_debug.printf( "Writing back buff_state_t for buff %s of player %s",
                              buff -> name_str.c_str(), buff -> player ? buff -> player -> name() : "" );
 
     timespan_t save_buff_cd = buff -> cooldown -> duration; // Temporarily save the buff cooldown duration
@@ -691,7 +691,7 @@ struct mage_state_t
     resources = mage.resources.current;
 
     if ( mage.sim -> debug )
-      mage.sim -> output( "Creating mage_state_t for mage %s", mage.name() );
+      mage.sim -> out_debug.printf( "Creating mage_state_t for mage %s", mage.name() );
 
     for ( size_t i = 0; i < mage.buff_list.size(); ++i )
     {
@@ -1088,7 +1088,7 @@ public:
     else
     {
       // delay heating up removal
-      if ( sim -> log ) sim -> output( "Heating up delay by 0.25s" );
+      if ( sim -> log ) sim -> out_log << "Heating up delay by 0.25s";
       p -> buffs.heating_up -> expire( timespan_t::from_millis( 250 ) );
     }
   }
@@ -1256,7 +1256,7 @@ struct icicle_event_t : public event_t
     {
       mage -> icicle_event = new ( sim() ) icicle_event_t( *mage, d );
       if ( mage -> sim -> debug )
-        mage -> sim -> output( "%s icicle use (chained), damage=%f, total=%u",
+        mage -> sim -> out_debug.printf( "%s icicle use (chained), damage=%f, total=%u",
                                mage -> name(), d, as<unsigned>( mage -> icicles.size() ) );
     }
     else
@@ -1287,7 +1287,7 @@ static void trigger_icicle( mage_t* mage, bool chain = false )
   }
 
   if ( mage -> sim -> debug )
-    mage -> sim -> output( "%s icicle use%s, damage=%f, total=%u",
+    mage -> sim -> out_debug.printf( "%s icicle use%s, damage=%f, total=%u",
                            mage -> name(), chain ? " (chained)" : "", d,
                            as<unsigned>( mage -> icicles.size() ) );
 }
@@ -1310,7 +1310,7 @@ static void trigger_icicle_gain( action_state_t* state )
     trigger_icicle( mage );
   mage -> icicles.push_back( icicle_data_t( mage -> sim -> current_time, amount ) );
   if ( mage -> sim -> debug )
-    mage -> sim -> output( "%s icicle gain, damage=%f, total=%u",
+    mage -> sim -> out_debug.printf( "%s icicle gain, damage=%f, total=%u",
                            mage -> name(),
                            amount,
                            as<unsigned>( mage -> icicles.size() ) );
@@ -1450,7 +1450,7 @@ struct arcane_brilliance_t : public mage_spell_t
 
   virtual void execute()
   {
-    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
 
     if ( ! sim -> overrides.spell_power_multiplier )
       sim -> auras.spell_power_multiplier -> trigger();
@@ -1962,7 +1962,7 @@ public:
     p.rotation.last_time = sim -> current_time;
 
     if ( sim -> log )
-      sim -> output( "%s switches to DPM spell rotation", player -> name() );
+      sim -> out_log.printf( "%s switches to DPM spell rotation", player -> name() );
     p.rotation.current = ROTATION_DPM;
   }
 };
@@ -3434,7 +3434,7 @@ struct scorch_t : public mage_spell_t
   {
     // we should delay heating up removal here
     mage_t* p = this -> p();
-    if ( sim -> log ) sim -> output( "Heating up delay by 0.25s" );
+    if ( sim -> log ) sim -> out_log << "Heating up delay by 0.25s";
     p -> buffs.heating_up -> expire( timespan_t::from_millis( 250 ) );
   }
 };
@@ -3581,17 +3581,17 @@ struct choose_rotation_t : public action_t
 
       if ( sim -> log )
       {
-        sim -> output( "%f burn mps, %f time to die", ( p -> rotation.dps_mana_loss / p -> rotation.dps_time.total_seconds() ) - ( p -> rotation.mana_gain / sim -> current_time.total_seconds() ), sim -> target -> time_to_die().total_seconds() );
+        sim -> out_log.printf( "%f burn mps, %f time to die", ( p -> rotation.dps_mana_loss / p -> rotation.dps_time.total_seconds() ) - ( p -> rotation.mana_gain / sim -> current_time.total_seconds() ), sim -> target -> time_to_die().total_seconds() );
       }
 
       if ( force_dps )
       {
-        if ( sim -> log ) sim -> output( "%s switches to DPS spell rotation", p -> name() );
+        if ( sim -> log ) sim -> out_log.printf( "%s switches to DPS spell rotation", p -> name() );
         p -> rotation.current = ROTATION_DPS;
       }
       if ( force_dpm )
       {
-        if ( sim -> log ) sim -> output( "%s switches to DPM spell rotation", p -> name() );
+        if ( sim -> log ) sim -> out_log.printf( "%s switches to DPM spell rotation", p -> name() );
         p -> rotation.current = ROTATION_DPM;
       }
 
@@ -3600,7 +3600,7 @@ struct choose_rotation_t : public action_t
       return;
     }
 
-    if ( sim -> log ) sim -> output( "%s Considers Spell Rotation", p -> name() );
+    if ( sim -> log ) sim -> out_log.printf( "%s Considers Spell Rotation", p -> name() );
 
     // The purpose of this action is to automatically determine when to start dps rotation.
     // We aim to either reach 0 mana at end of fight or evocation_target_mana_percentage at next evocation.
@@ -3629,7 +3629,7 @@ struct choose_rotation_t : public action_t
         // We're going until target percentage
         if ( p -> resources.current[ RESOURCE_MANA ] / p -> resources.max[ RESOURCE_MANA ] < evocation_target_mana_percentage / 100.0 )
         {
-          if ( sim -> log ) sim -> output( "%s switches to DPM spell rotation", p -> name() );
+          if ( sim -> log ) sim -> out_log.printf( "%s switches to DPM spell rotation", p -> name() );
 
           p -> rotation.current = ROTATION_DPM;
         }
@@ -3639,7 +3639,7 @@ struct choose_rotation_t : public action_t
         // We're going until OOM, stop when we can no longer cast full stack AB (approximately, 4 stack with AP can be 6177)
         if ( p -> resources.current[ RESOURCE_MANA ] < 6200 )
         {
-          if ( sim -> log ) sim -> output( "%s switches to DPM spell rotation", p -> name() );
+          if ( sim -> log ) sim -> out_log.printf( "%s switches to DPM spell rotation", p -> name() );
 
           p -> rotation.current = ROTATION_DPM;
         }
@@ -3696,7 +3696,7 @@ struct choose_rotation_t : public action_t
 
         if ( expected_time >= target_time )
         {
-          if ( sim -> log ) sim -> output( "%s switches to DPS spell rotation", p -> name() );
+          if ( sim -> log ) sim -> out_log.printf( "%s switches to DPS spell rotation", p -> name() );
 
           p -> rotation.current = ROTATION_DPS;
         }
@@ -3705,7 +3705,7 @@ struct choose_rotation_t : public action_t
       {
         // If dps rotation is regen, then obviously use it all the time.
 
-        if ( sim -> log ) sim -> output( "%s switches to DPS spell rotation", p -> name() );
+        if ( sim -> log ) sim -> out_log.printf( "%s switches to DPS spell rotation", p -> name() );
 
         p -> rotation.current = ROTATION_DPS;
       }
@@ -4749,7 +4749,7 @@ void mage_t::moving()
 {
   //FIXME, only remove the buff if we are moving more than RoPs radius
   buffs.rune_of_power -> expire();
-  if ( sim -> debug ) sim -> output( "%s lost Rune of Power due to movement.", name() );
+  if ( sim -> debug ) sim -> out_debug.printf( "%s lost Rune of Power due to movement.", name() );
 
   player_t::moving();
 }

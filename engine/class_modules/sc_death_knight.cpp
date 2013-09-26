@@ -522,7 +522,7 @@ static void log_rune_status( death_knight_t* p )
     rune_str += rune_letter;
     runeval_str += '[' + runeval + ']';
   }
-  p -> sim -> output( "%s runes: %s %s", p -> name(), rune_str.c_str(), runeval_str.c_str() );
+  p -> sim -> out_log.printf( "%s runes: %s %s", p -> name(), rune_str.c_str(), runeval_str.c_str() );
 }
 
 // Count Death Runes ========================================================
@@ -560,7 +560,7 @@ static void consume_runes( death_knight_t* player, const bool use[RUNE_SLOT_MAX]
       player -> _runes.slot[i].consume( convert_runes );
 
       if ( player -> sim -> log )
-        player -> sim -> output( "%s consumes rune #%d, type %d", player -> name(), i, consumed_type );
+        player -> sim -> out_log.printf( "%s consumes rune #%d, type %d", player -> name(), i, consumed_type );
     }
   }
 
@@ -867,7 +867,7 @@ void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
   gains_rune      -> add( RESOURCE_NONE, regen_amount - overflow, overflow );
 
   if ( p -> sim -> debug )
-    p -> sim -> output( "rune %d has %.2f regen time (%.3f per second) with %.2f%% haste",
+    p -> sim -> out_debug.printf( "rune %d has %.2f regen time (%.3f per second) with %.2f%% haste",
                         slot_number, 1 / runes_per_second, runes_per_second, 100 * ( 1 / p -> cache.attack_haste() - 1 ) );
 
   if ( state == STATE_FULL )
@@ -876,7 +876,7 @@ void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
       log_rune_status( p );
 
     if ( p -> sim -> debug )
-      p -> sim -> output( "rune %d regens to full", slot_number );
+      p -> sim -> out_debug.printf( "rune %d regens to full", slot_number );
   }
 }
 
@@ -1566,7 +1566,7 @@ struct bloodworms_pet_t : public death_knight_pet_t
             multiplier = 2.0;
 
           if ( sim -> debug )
-            sim -> output( "%s-%s burst chance, base=%f multiplier=%f total=%f",
+            sim -> out_debug.printf( "%s-%s burst chance, base=%f multiplier=%f total=%f",
                            o -> name(), player -> name(), base_proc_chance, multiplier, base_proc_chance * multiplier );
 
           if ( base_proc_chance * multiplier > rng().range( 0, 999 ) )
@@ -2953,7 +2953,7 @@ struct blood_tap_t : public death_knight_spell_t
     else
       p() -> gains.blood_tap_unholy -> add( RESOURCE_RUNE, 1, 0 );
 
-    if ( sim -> log ) sim -> output( "%s regened rune %d", name(), selected_rune );
+    if ( sim -> log ) sim -> out_log.printf( "%s regened rune %d", name(), selected_rune );
 
     p() -> buffs.blood_charge -> decrement( consume_charges );
 
@@ -3132,7 +3132,7 @@ struct death_and_decay_t : public death_knight_spell_t
   {
     if ( s -> target -> debuffs.flying -> check() )
     {
-      if ( sim -> debug ) sim -> output( "Ground effect %s can not hit flying target %s", name(), s -> target -> name() );
+      if ( sim -> debug ) sim -> out_debug.printf( "Ground effect %s can not hit flying target %s", name(), s -> target -> name() );
     }
     else
     {
@@ -3287,7 +3287,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     amount *= 1.0 + p() -> buffs.scent_of_blood -> check() * p() -> buffs.scent_of_blood -> data().effectN( 1 ).percent();
 
     if ( sim -> debug )
-      sim -> output( "%s Death Strike heal, incoming_damage=%f incoming_heal=%f min_heal=%f",
+      sim -> out_debug.printf( "%s Death Strike heal, incoming_damage=%f incoming_heal=%f min_heal=%f",
                      p() -> name(), p() -> compute_incoming_damage(),
                      amount, p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 3 ).percent() );
 
@@ -3308,7 +3308,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     amount = std::min( p() -> resources.max[ RESOURCE_HEALTH ], amount );
 
     if ( sim -> debug )
-      sim -> output( "%s Blood Shield buff trigger, old_value=%f added_value=%f new_value=%f",
+      sim -> out_debug.printf( "%s Blood Shield buff trigger, old_value=%f added_value=%f new_value=%f",
                      player -> name(), p() -> buffs.blood_shield -> current_value,
                      heal -> base_dd_min * p() -> cache.mastery_value(),
                      amount );
@@ -4465,7 +4465,7 @@ struct plague_leech_t : public death_knight_spell_t
 
       p() -> gains.plague_leech -> add( RESOURCE_RUNE, 1, 0 );
 
-      if ( sim -> log ) sim -> output( "%s regened rune %d", name(), selected_rune );
+      if ( sim -> log ) sim -> out_log.printf( "%s regened rune %d", name(), selected_rune );
     }
 
     cast_td( state -> target ) -> dots_frost_fever -> cancel();
@@ -4715,7 +4715,7 @@ struct runic_corruption_buff_t : public buff_t
   {
     buff_t::execute( stacks, value, duration );
     if ( sim -> debug )
-      sim_t::output( sim, "%s runic_corruption_regen_event duration=%f", player -> name(), duration.total_seconds() );
+      sim -> out_debug.printf( "%s runic_corruption_regen_event duration=%f", player -> name(), duration.total_seconds() );
     if ( ! regen_event )
     {
       death_knight_t& p = static_cast< death_knight_t& >( *player );
@@ -4732,7 +4732,7 @@ struct runic_corruption_buff_t : public buff_t
       timespan_t remaining_duration = timespan_t::from_seconds( 0.1 ) - ( regen_event -> occurs() - sim -> current_time );
 
       if ( sim -> debug )
-        sim_t::output( sim, "%s runic_corruption_regen_event expires, remaining duration %f", player -> name(), remaining_duration.total_seconds() );
+        sim -> out_debug.printf( "%s runic_corruption_regen_event expires, remaining duration %f", player -> name(), remaining_duration.total_seconds() );
 
       death_knight_t* p = debug_cast< death_knight_t* >( player );
       for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
@@ -6480,7 +6480,7 @@ void death_knight_t::trigger_runic_empowerment()
     else if ( regen_rune -> is_frost()  ) gains.runic_empowerment_frost  -> add ( RESOURCE_RUNE_FROST, 1, 0 );
 
     gains.runic_empowerment -> add ( RESOURCE_RUNE, 1, 0 );
-    if ( sim -> log ) sim -> output( "runic empowerment regen'd rune %d", rune_to_regen );
+    if ( sim -> log ) sim -> out_log.printf( "runic empowerment regen'd rune %d", rune_to_regen );
     procs.runic_empowerment -> occur();
 
     buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() );

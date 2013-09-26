@@ -142,7 +142,7 @@ xml_node_t* xml_node_t::create_node( sim_t*                  sim,
       int start = std::min( 0, ( ( int ) index - 32 ) );
       sim -> errorf( "Unexpected character '%c' at index=%d node=%s context=%s\n",
                      c, ( int ) index, node -> name(), input.substr( start, index - start ).c_str() );
-      fprintf( sim -> output_file, "%s\n", input.c_str() );
+      sim -> out_std.raw() << input << "\n";
       sim -> cancel();
     }
     return 0;

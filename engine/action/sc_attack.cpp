@@ -103,7 +103,7 @@ void attack_t::build_table( std::array<double, RESULT_MAX>& chances,
                             double crit_chance )
 {
   if ( sim -> debug )
-    sim -> output( "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f crit=%.3f",
+    sim -> out_debug.printf( "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f crit=%.3f",
                    name(), miss_chance, dodge_chance, parry_chance, glance_chance, crit_chance );
 
   assert( crit_chance >= 0 && crit_chance <= 1.0 );
@@ -191,7 +191,7 @@ block_result_e attack_t::calculate_block_result( action_state_t* s )
   }
 
   if ( sim -> debug )
-    sim -> output( "%s result for %s is %s", player -> name(), name(), util::block_result_type_string( block_result ) );
+    sim -> out_debug.printf( "%s result for %s is %s", player -> name(), name(), util::block_result_type_string( block_result ) );
 
   return block_result;
 }
@@ -275,7 +275,7 @@ void attack_t::reschedule_auto_attack( double old_swing_haste )
 
     if ( sim -> debug )
     {
-      sim_t::output( sim, "Haste change, reschedule %s attack from %f to %f",
+      sim -> out_debug.printf( "Haste change, reschedule %s attack from %f to %f",
                      name(),
                      execute_event -> remains().total_seconds(),
                      new_time_to_hit.total_seconds() );
@@ -415,7 +415,7 @@ void ranged_attack_t::schedule_execute( action_state_t* execute_state )
 {
   if ( sim -> log )
   {
-    sim -> output( "%s schedules execute for %s (%.0f)", player -> name(), name(),
+    sim -> out_log.printf( "%s schedules execute for %s (%.0f)", player -> name(), name(),
                    player -> resources.current[ player -> primary_resource() ] );
   }
 

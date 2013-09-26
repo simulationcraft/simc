@@ -63,14 +63,14 @@ void sequence_t::schedule_execute( action_state_t* execute_state )
   if ( waiting )
   {
     if ( sim -> log )
-      sim -> output( "Player %s is waiting for %.3f, since action #%d (%s) is not ready", player -> name(), player -> available().total_seconds(), current_action, sub_actions[ current_action ] -> name() );
+      sim -> out_log.printf( "Player %s is waiting for %.3f, since action #%d (%s) is not ready", player -> name(), player -> available().total_seconds(), current_action, sub_actions[ current_action ] -> name() );
     player -> schedule_ready( player -> available(), true );
     waiting = false;
     return;
   }
 
   if ( sim -> log )
-    sim -> output( "Player %s executes Schedule %s action #%d \"%s\"",
+    sim -> out_log.printf( "Player %s executes Schedule %s action #%d \"%s\"",
                    player -> name(), name(), current_action, sub_actions[ current_action ] -> name() );
 
   sub_actions[ current_action++ ] -> schedule_execute( execute_state );

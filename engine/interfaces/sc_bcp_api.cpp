@@ -276,7 +276,8 @@ player_t* parse_player( sim_t*             sim,
     sim -> errorf( "BCP API: Unable to download player from '%s'\n", player.url.c_str() );
     return 0;
   }
-  if ( sim -> debug ) js::print( profile, sim -> output_file );
+  if ( sim -> debug )
+    sim -> out_debug.raw() << profile;
 
   std::string status, reason;
   if ( js::get_value( status, profile, "status" ) && util::str_compare_ci( status, "nok" ) )
@@ -404,7 +405,8 @@ js_node_t* download_item_data( item_t& item, cache::behavior_e caching )
     }
     return js;
   }
-  if ( item.sim -> debug ) js::print( js, item.sim -> output_file );
+  if ( item.sim -> debug )
+    item.sim -> out_debug.raw() << js;
 
   try
   {
@@ -872,7 +874,8 @@ gem_e bcp_api::parse_gem( item_t& item, unsigned gem_id, cache::behavior_e cachi
   if ( ! js )
     return GEM_NONE;
 
-  if ( item.sim -> debug ) js::print( js, item.sim -> output_file );
+  if ( item.sim -> debug )
+    item.sim -> out_debug.raw() << js;
 
   std::string type_str;
   if ( ! js::get_value( type_str, js, "gemInfo/type/type" ) )

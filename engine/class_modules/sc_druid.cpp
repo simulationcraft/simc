@@ -723,14 +723,14 @@ struct tooth_and_claw_t : public absorb_t
     double total_absorb = absorb_amount + p() -> buff.tooth_and_claw_absorb -> current_value;
 
     if ( sim -> debug )
-      sim -> output( "%s's Tooth and Claw value pre-application: %f",
+      sim -> out_debug.printf( "%s's Tooth and Claw value pre-application: %f",
                      player -> name(),
                      p() -> buff.tooth_and_claw_absorb -> current_value );
 
     p() -> buff.tooth_and_claw_absorb -> trigger( 1, total_absorb );
 
     if ( sim -> debug )
-      sim -> output( "%s's Tooth and Claw value post-application: %f",
+      sim -> out_debug.printf( "%s's Tooth and Claw value post-application: %f",
                      player -> name(),
                      p() -> buff.tooth_and_claw_absorb -> current_value );
 
@@ -1853,7 +1853,7 @@ struct ferocious_bite_t : public cat_attack_t
     {
       // Let the additional energy consumption create it's own debug log entries.
       if ( sim -> debug )
-        sim -> output( "%s consumes an additional %.1f %s for %s", player -> name(),
+        sim -> out_debug.printf( "%s consumes an additional %.1f %s for %s", player -> name(),
                        excess_energy, util::resource_type_string( current_resource() ), name() );
 
       player -> resource_loss( current_resource(), excess_energy );
@@ -3809,7 +3809,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     int actual_gain = p() -> eclipse_bar_value - old_eclipse_bar_value;
     if ( p() -> sim -> log )
     {
-      p() -> sim -> output( "%s gains %d (%d) %s from %s (%d)",
+      p() -> sim -> out_log.printf( "%s gains %d (%d) %s from %s (%d)",
                             p() -> name(), actual_gain, gain,
                             "Eclipse", name(),
                             p() -> eclipse_bar_value );
@@ -4138,7 +4138,7 @@ struct celestial_alignment_t : public druid_spell_t
 
   virtual void execute()
   {
-    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
     // http://elitistjerks.com/f73/t126893-mists_pandaria_all_specs/p11/#post2136096
@@ -4449,7 +4449,7 @@ struct innervate_t : public druid_spell_t
 
   virtual void execute()
   {
-    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
     consume_resource();
     update_ready();
 
@@ -4499,7 +4499,7 @@ struct mark_of_the_wild_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
 
     if ( ! sim -> overrides.str_agi_int )
       sim -> auras.str_agi_int -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, player -> dbc.spell( 79060 ) -> duration() );
@@ -4722,7 +4722,7 @@ struct natures_vigil_t : public druid_spell_t
 
   virtual void execute()
   {
-    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
 
     update_ready();
     p() -> buff.natures_vigil -> trigger();
@@ -4946,7 +4946,7 @@ struct stealth_t : public druid_spell_t
   virtual void execute()
   {
     if ( sim -> log )
-      sim -> output( "%s performs %s", player -> name(), name() );
+      sim -> out_log.printf( "%s performs %s", player -> name(), name() );
 
     p() -> buff.stealthed -> trigger();
   }
@@ -7639,13 +7639,13 @@ void combo_points_t::add( int num, const std::string* source_name )
     if ( source_name )
     {
       if ( actual_num > 0 )
-        sim.output( "%s gains %d (%d) combo_points from %s (%d)",
+        sim.out_log.printf( "%s gains %d (%d) combo_points from %s (%d)",
                     target.name(), actual_num, num, source_name -> c_str(), count );
     }
     else
     {
       if ( actual_num > 0 )
-        sim.output( "%s gains %d (%d) combo_points (%d)",
+        sim.out_log.printf( "%s gains %d (%d) combo_points (%d)",
                     target.name(), actual_num, num, count );
     }
   }
@@ -7656,10 +7656,10 @@ int combo_points_t::consume( const std::string* source_name )
   if ( source.sim -> log )
   {
     if ( source_name )
-      source.sim -> output( "%s spends %d combo_points on %s",
+      source.sim -> out_log.printf( "%s spends %d combo_points on %s",
                             target.name(), count, source_name -> c_str() );
     else
-      source.sim -> output( "%s loses %d combo_points",
+      source.sim -> out_log.printf( "%s loses %d combo_points",
                             target.name(), count );
   }
 

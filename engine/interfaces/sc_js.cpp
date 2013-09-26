@@ -401,28 +401,27 @@ const char* js::get_name( js_node_t* node )
   return node -> name();
 }
 
+std::ostream& js::operator<<( std::ostream& s, js_node_t* n )
+{ return print( s, n ); }
+
 // js::print ================================================================
-
-void js::print( js_node_t* root,
-                FILE*      file,
-                int        spacing )
+std::ostream& js::print( std::ostream& stream, js_node_t* root, int spacing )
 {
-  if ( ! root ) return;
+  if ( ! root ) return stream;
 
-  if ( ! file ) file = stdout;
-
-  util::fprintf( file, "%*s%s", spacing, "", root -> name() );
+  sc_raw_ostream_t::printf( stream, "%*s%s", spacing, "", root -> name() );
 
   if ( ! root -> value.empty() )
   {
-    util::fprintf( file, " : '%s'", root -> value.c_str() );
+    sc_raw_ostream_t::printf( stream, " : '%s'", root -> value.c_str() );
   }
-  util::fprintf( file, "\n" );
+  stream << "\n";
 
   int num_children = ( int ) root -> children.size();
   for ( int i = 0; i < num_children; i++ )
   {
-    print( root -> children[ i ], file, spacing + 2 );
+    js::print( stream, root -> children[ i ], spacing + 2 );
   }
+  return stream;
 }
 

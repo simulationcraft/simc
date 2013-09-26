@@ -37,7 +37,7 @@ void core_sim_t::event_managment_t::add_event( core_event_t* e,
                                                timespan_t delta_time,
                                                timespan_t current_time )
 {
-  e -> id   = ++global_event_id;
+  e -> id = ++global_event_id;
 
   if ( delta_time < timespan_t::zero() )
     delta_time = timespan_t::zero();
@@ -77,7 +77,6 @@ void core_sim_t::event_managment_t::add_event( core_event_t* e,
  */
 void core_sim_t::event_managment_t::flush_events()
 {
-
   /* Instead of iterating over the whole timing wheel,
    * we directly flush the remaining active events == ( all_events_ever_created - recycled_events )
    */
@@ -193,8 +192,10 @@ std::vector<core_event_t*> core_sim_t::event_managment_t::get_events_to_flush() 
 /* Constructor
  */
 core_sim_t::core_sim_t() :
-  out_error( std::cerr.rdbuf() ),
-  out_debug( nullptr ),
+  out_std( *this, &std::cout, sim_ostream_t::no_close() ),
+  out_error( *this, &std::cerr, sim_ostream_t::no_close() ),
+  out_log( *this, &std::cout, sim_ostream_t::no_close() ),
+  out_debug(*this, &std::cout, sim_ostream_t::no_close() ),
   debug( false ),
   max_time( timespan_t::zero() ),
   expected_time( timespan_t::zero() ),
@@ -250,10 +251,10 @@ void core_sim_t::add_event( core_event_t* e,
 double core_sim_t::iteration_time_adjust() const
 {
   if ( iterations <= 1 )
-    return 0.0;
+    return 1.0;
 
   if ( current_iteration == 0 )
-    return 0.0;
+    return 1.0;
 
   return 1.0 + vary_combat_length * ( ( current_iteration % 2 ) ? 1 : -1 ) * current_iteration / ( double ) iterations;
 }
@@ -393,7 +394,7 @@ void core_sim_t::reschedule_event( core_event_t* e )
   add_event( e, ( e -> reschedule_time - current_time ) );
 }
 
-sc_ostream& sc_ostream::printf( const char* format, ... )
+sc_raw_ostream_t& sc_raw_ostream_t::printf( const char* format, ... )
 {
   char buffer[ 4048 ];
 
@@ -405,6 +406,38 @@ sc_ostream& sc_ostream::printf( const char* format, ... )
   assert( rval < 0 || ( static_cast<size_t>( rval ) < sizeof( buffer ) ) );
   (void) rval;
 
-  *this << buffer;
+  (*_stream) << buffer;
+  return *this;
+}
+
+std::ostream& sc_raw_ostream_t::printf( std::ostream& stream, const char* format, ... )
+{
+  char buffer[ 4048 ];
+
+  va_list fmtargs;
+  va_start( fmtargs, format );
+  int rval = ::vsnprintf( buffer, sizeof( buffer ), format, fmtargs );
+  va_end( fmtargs );
+
+  assert( rval < 0 || ( static_cast<size_t>( rval ) < sizeof( buffer ) ) );
+  (void) rval;
+
+  stream << buffer;
+  return stream;
+}
+
+sim_ostream_t& sim_ostream_t::printf( const char* format, ... )
+{
+  char buffer[ 4048 ];
+
+  va_list fmtargs;
+  va_start( fmtargs, format );
+  int rval = ::vsnprintf( buffer, sizeof( buffer ), format, fmtargs );
+  va_end( fmtargs );
+
+  assert( rval < 0 || ( static_cast<size_t>( rval ) < sizeof( buffer ) ) );
+  (void) rval;
+
+  _raw << util::to_string( sim.current_time.total_seconds(), 3 ) << " " << buffer << "\n";
   return *this;
 }

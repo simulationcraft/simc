@@ -204,6 +204,7 @@ class  dbc_t;
 struct debuff_t;
 struct dot_t;
 struct core_event_t;
+struct core_sim_t;
 class  expr_t;
 struct gain_t;
 struct haste_buff_t;
@@ -1056,15 +1057,12 @@ private:
     data_t( const char* p ) : cstr( p ) {}
   } data;
 
-  void print( FILE*, bool print_if_zero );
-
 public:
   option_t( const char* n, option_e t, void* a ) : name( n ), type( t ), data( a ) {}
   option_t( const char* n, const char* str ) : name( n ), type( DEPRECATED ), data( str ) {}
   option_t( const char* n, function_t* f ) : name( n ), type( FUNC ), data( f ) {}
 
-  void print( FILE* f ) { print( f, true ); }
-  void save ( FILE* f ) { print ( f, false ); }
+  friend std::ostream& operator<<( std::ostream& stream, const option_t& opt );
   bool parse( sim_t*, const std::string& name, const std::string& value );
 
   static void copy( std::vector<option_t>& opt_vector, const option_t* opt_array );
@@ -1078,6 +1076,7 @@ public:
   static bool parse_token( sim_t*, const std::string& token );
   static option_t* merge( std::vector<option_t>& out, const option_t* in1, const option_t* in2 );
 };
+
 
 inline option_t opt_string( const char* n, std::string& v )
 { return option_t( n, option_t::STRING, &v ); }
@@ -1371,12 +1370,13 @@ class cfile
 
 public:
   struct no_close {};
-
   cfile() {} // = default;
   cfile( const std::string& filename, const char* mode ) :
     file( fopen( filename, mode ), safe_close ) {}
   explicit cfile( FILE* f ) : file( f, safe_close ) {}
   cfile( FILE* f, no_close ) : file( f, dont_close ) {}
+  const cfile operator=( FILE* f )
+  { file = std::shared_ptr<FILE>( f, safe_close ); return *this; }
 
   operator FILE* () const { return file.get(); }
 
@@ -2411,16 +2411,53 @@ private:
   { _data.erase( it ); trigger_callbacks(); }
 };
 
+struct sc_raw_ostream_t {
+  template <class T>
+  sc_raw_ostream_t & operator<< (T const& rhs)
+  { (*_stream) << rhs; return *this; }
+  sc_raw_ostream_t& printf( const char* format, ... );
+  sc_raw_ostream_t( std::shared_ptr<std::ostream> os ) :
+    _stream( os ) {}
+  const sc_raw_ostream_t operator=( std::shared_ptr<std::ostream> os )
+  { _stream = os; return *this; }
+  std::ostream* get_stream()
+  { return _stream.get(); }
+
+  static std::ostream& printf( std::ostream&, const char* format, ... );
+private:
+  std::shared_ptr<std::ostream> _stream;
+};
+
 // Custom SimC output stream with a state ( enabled/disabled )
-class sc_ostream : public std::ostream
+struct sim_ostream_t
 {
-public:
-  sc_ostream( std::streambuf* sb  ) :
-    std::ostream( sb )
+
+  struct no_close {};
+
+  explicit sim_ostream_t( core_sim_t& s, std::shared_ptr<std::ostream> os ) :
+      sim(s),
+    _raw( os )
   {
   }
+  sim_ostream_t( core_sim_t& s, std::ostream* os, no_close ) :
+      sim(s),
+    _raw( std::shared_ptr<std::ostream>( os, dont_close ) )
+  {}
+  const sim_ostream_t operator=( std::shared_ptr<std::ostream> os )
+  { _raw = os; return *this; }
 
-  sc_ostream& printf( const char* format, ... );
+  sc_raw_ostream_t& raw()
+  { return _raw; }
+
+  std::ostream* get_stream()
+  { return _raw.get_stream(); }
+  template <class T>
+  sim_ostream_t & operator<< (T const& rhs);
+  sim_ostream_t& printf( const char* format, ... );
+private:
+  static void dont_close( std::ostream* ) {}
+  core_sim_t& sim;
+  sc_raw_ostream_t _raw;
 };
 
 /* Core Simulation Class.
@@ -2457,8 +2494,10 @@ public:
   virtual ~core_sim_t();
 
 // Public members
-  sc_ostream out_error;
-  sc_ostream out_debug;
+  sim_ostream_t out_std;
+  sim_ostream_t out_error;
+  sim_ostream_t out_log;
+  sim_ostream_t out_debug;
   bool debug;
 
   timespan_t  max_time, expected_time, current_time;
@@ -2581,7 +2620,6 @@ public:
   timespan_t gauss( timespan_t mean, timespan_t stddev );
   double    real() ;
 
-
   // Raid Events
   auto_dispose< std::vector<raid_event_t*> > raid_events;
   std::string raid_events_str;
@@ -2666,7 +2704,6 @@ public:
   std::string reforge_plot_output_file_str;
   std::string csv_output_file_str;
   std::vector<std::string> error_list;
-  FILE* output_file;
   int debug_exp;
   int report_precision;
   int report_pets_separately;
@@ -2744,9 +2781,6 @@ public:
   void      use_optimal_buffs_and_debuffs( int value );
   expr_t* create_expression( action_t*, const std::string& name );
   int       errorf( const char* format, ... ) PRINTF_ATTRIBUTE( 2, 3 );
-
-  virtual void output(         const char* format, ... ) PRINTF_ATTRIBUTE( 2, 3 );
-  static  void output( sim_t*, const char* format, ... ) PRINTF_ATTRIBUTE( 2, 3 );
 
   static double distribution_mean_error( const sim_t& s, const extended_sample_data_t& sd )
   { return s.confidence_estimator * sd.mean_std_dev; }
@@ -3412,7 +3446,7 @@ public:
       reset();
     }
     if ( sim.debug )
-      sim.output( "[PROC] %s: iteration_count=%u count.sum=%u last_proc=%f",
+      sim.out_debug.printf( "[PROC] %s: iteration_count=%u count.sum=%u last_proc=%f",
                   name(),
                   static_cast<unsigned>( iteration_count ),
                   static_cast<unsigned>( count.sum() ),
@@ -5843,7 +5877,7 @@ public:
       triggered = proc_rng.roll( chance );
 
     if ( listener -> sim -> debug )
-      listener -> sim -> output( "%s attempts to proc %s on %s: %d",
+      listener -> sim -> out_debug.printf( "%s attempts to proc %s on %s: %d",
                                  listener -> name(),
                                  proc_data.name_str.c_str(),
                                  action -> name(), triggered );
@@ -5969,7 +6003,7 @@ struct discharge_proc_t : public proc_callback_t<T_CALLDATA>
     {
       discharge_stacks = 0;
       if ( this -> listener -> sim -> debug )
-        this -> listener -> sim -> output( "%s procs %s", action -> name(), discharge_action -> name() );
+        this -> listener -> sim -> out_debug.printf( "%s procs %s", action -> name(), discharge_action -> name() );
       discharge_action -> execute();
       discharge_proc -> occur();
     }
@@ -6291,7 +6325,8 @@ bool get_value( unsigned&    value, js_node_t* root, const std::string& path = s
 bool get_value( double&      value, js_node_t* root, const std::string& path = std::string() );
 js_node_t* create( sim_t* sim, const std::string& input );
 js_node_t* create( sim_t* sim, FILE* input );
-void print( js_node_t* root, FILE* f = 0, int spacing = 0 );
+std::ostream& print( std::ostream&, js_node_t*, int spacing = 0 );
+std::ostream& operator<<( std::ostream& s, js_node_t* n );
 const char* get_name( js_node_t* root );
 void delete_node( js_node_t* root );
 };
@@ -6532,6 +6567,11 @@ T util::ability_rank( int player_level,
   return ability_value;
 }
 
-// NEW ITEM STUFF REMOVED IN r<xxxx>
+template <class T>
+sim_ostream_t& sim_ostream_t::operator<< (T const& rhs)
+{
+  _raw << util::to_string( sim.current_time.total_seconds(), 3 ) << " " << rhs << "\n";
 
+  return *this;
+}
 #endif // SIMULATIONCRAFT_H

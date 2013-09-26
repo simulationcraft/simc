@@ -23,7 +23,7 @@ struct dot_tick_event_t : public event_t
       event_t( *d -> source, "DoT Tick" ), dot( d )
   {
     if ( sim().debug )
-      sim().output( "New DoT Tick Event: %s %s %d-of-%d %.2f",
+      sim().out_debug.printf( "New DoT Tick Event: %s %s %d-of-%d %.2f",
                   p() -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick.total_seconds() );
 
     sim().add_event( this, time_to_tick );
@@ -115,7 +115,7 @@ void dot_t::last_tick()
   core_event_t::cancel( tick_event );
 
   if ( sim.debug )
-    sim.output( "%s fades from %s", name(), state -> target -> name() );
+    sim.out_debug.printf( "%s fades from %s", name(), state -> target -> name() );
 
   // call action_t::last_tick
   current_action -> last_tick( this );
@@ -130,7 +130,7 @@ void dot_t::last_tick()
   if ( current_action -> channeled )
   {
     if ( current_action -> player -> readying )
-      fprintf( sim.output_file, "Danger Will Robinson!  Danger!  %s\n", name() );
+      sim.out_error << "Danger Will Robinson!  Danger! " << name();
 
     current_action -> player -> schedule_ready( timespan_t::zero() );
   }
@@ -157,14 +157,10 @@ void dot_t::extend_duration( int extra_ticks, bool cap, uint32_t state_flags )
   if ( state_flags == ( uint32_t ) - 1 ) state_flags = current_action -> snapshot_flags;
 
   // Make sure this DoT is still ticking......
-  if ( !tick_event )
-  {
-    sim.output( "foo" );
-  }
   assert( tick_event && "dot_t::extend_duration: ticking==true but tick_event=nullptr" );
 
   if ( sim.log )
-    sim.output( "%s extends duration of %s on %s, adding %d tick(s), totalling %d ticks, and snapshotting with %#.x",
+    sim.out_log.printf( "%s extends duration of %s on %s, adding %d tick(s), totalling %d ticks, and snapshotting with %#.x",
                 source -> name(), name(), target -> name(), extra_ticks, num_ticks + extra_ticks, state_flags );
 
   if ( cap )
@@ -229,7 +225,7 @@ void dot_t::extend_duration_seconds( timespan_t extra_seconds, uint32_t state_fl
 
   if ( sim.debug )
   {
-    sim.output( "%s extends duration of %s on %s by %.1f second(s). h: %.2f => %.2f, num_t: %d => %d, rem_t: %d => %d",
+    sim.out_debug.printf( "%s extends duration of %s on %s by %.1f second(s). h: %.2f => %.2f, num_t: %d => %d, rem_t: %d => %d",
                 source -> name(), name(), target -> name(), extra_seconds.total_seconds(),
                 old_haste_factor, ( 1.0 / state -> haste ),
                 old_num_ticks, num_ticks,
@@ -237,7 +233,7 @@ void dot_t::extend_duration_seconds( timespan_t extra_seconds, uint32_t state_fl
   }
   else if ( sim.log )
   {
-    sim.output( "%s extends duration of %s on %s by %.1f second(s).",
+    sim.out_log.printf( "%s extends duration of %s on %s by %.1f second(s).",
                 source -> name(), name(), target -> name(), extra_seconds.total_seconds() );
   }
 
@@ -277,7 +273,7 @@ void dot_t::refresh_duration( uint32_t state_flags )
   assert( tick_event );
 
   if ( sim.log )
-    sim.output( "%s refreshes duration of %s on %s", source -> name(), name(), target -> name() );
+    sim.out_log.printf( "%s refreshes duration of %s on %s", source -> name(), name(), target -> name() );
 
   assert( state );
   current_action -> snapshot_internal( state, state_flags, current_action -> type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
@@ -320,7 +316,7 @@ void dot_t::reset()
 void dot_t::schedule_tick()
 {
   if ( sim.debug )
-    sim.output( "%s schedules tick for %s on %s", source -> name(), name(), target -> name() );
+    sim.out_debug.printf( "%s schedules tick for %s on %s", source -> name(), name(), target -> name() );
 
   if ( current_tick == 0 )
   {

@@ -158,7 +158,7 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
 void action_state_t::debug()
 {
   std::ostringstream s;
-  action -> sim -> output( "%s", debug_str( s ).str().c_str() );
+  action -> sim -> out_debug.printf( "%s", debug_str( s ).str().c_str() );
 }
 
 travel_event_t::travel_event_t( action_t* a,
@@ -167,7 +167,7 @@ travel_event_t::travel_event_t( action_t* a,
   event_t( *a -> player, "Stateless Action Travel" ), action( a ), state( state )
 {
   if ( sim().debug )
-    sim().output( "New Stateless Action Travel Event: %s %s %.2f",
+    sim().out_debug.printf( "New Stateless Action Travel Event: %s %s %.2f",
                 p() -> name(), a -> name(), time_to_travel.total_seconds() );
 
   sim().add_event( this, time_to_travel );

@@ -894,7 +894,7 @@ bool item_t::init()
     source_str = "Manual";
 
   if ( sim -> debug )
-    sim -> output( "%s", to_string().c_str() );
+    sim -> out_debug.printf( "%s", to_string().c_str() );
 
   return true;
 }
@@ -1153,7 +1153,7 @@ bool item_t::decode_random_suffix()
 
   if ( sim -> debug )
   {
-    sim -> output( "random_suffix: item=%s parsed.suffix_id=%d ilevel=%d quality=%d random_point_pool=%d",
+    sim -> out_debug.printf( "random_suffix: item=%s parsed.suffix_id=%d ilevel=%d quality=%d random_point_pool=%d",
                    name(), parsed.suffix_id, item_level(), parsed.data.quality, f );
   }
 
@@ -1207,13 +1207,13 @@ bool item_t::decode_random_suffix()
       if ( has_stat == true )
       {
         if ( sim -> debug )
-          sim -> output( "random_suffix: Player %s item %s attempted to add base stat %u %s (%d) twice, due to random suffix.",
+          sim -> out_debug.printf( "random_suffix: Player %s item %s attempted to add base stat %u %s (%d) twice, due to random suffix.",
                          player -> name(), name(), as<unsigned>( j ), util::stat_type_abbrev( stat.stat ), enchant_data.ench_type[ j ] );
         continue;
       }
 
       if ( sim -> debug )
-        sim -> output( "random_suffix: stat=%d (%s) stat_amount=%f", stat.stat, util::stat_type_abbrev( stat.stat ), stat_amount );
+        sim -> out_debug.printf( "random_suffix: stat=%d (%s) stat_amount=%f", stat.stat, util::stat_type_abbrev( stat.stat ), stat_amount );
 
       stat.value = static_cast<int>( stat_amount );
       parsed.suffix_stats.push_back( stat );
@@ -1571,7 +1571,7 @@ bool item_t::decode_special( special_effect_t& effect,
 
         if ( sim -> debug )
         {
-          sim -> output( "decode_special: %s (%d) ilevel=%d quality=%d orig_ilevel=%d old_budget=%d new_budget=%d old_value=%.0f avg_coeff=%f new_value=%.0f",
+          sim -> out_debug.printf( "decode_special: %s (%d) ilevel=%d quality=%d orig_ilevel=%d old_budget=%d new_budget=%d old_value=%.0f avg_coeff=%f new_value=%.0f",
                          name(), parsed.data.id, item_level(), parsed.data.quality, parsed.data.level, old_budget, new_budget, t.value, t.value / old_budget, effect.stat_amount );
         }
       }

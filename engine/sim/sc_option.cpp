@@ -25,67 +25,75 @@ char* skip_white_space( char* s )
 
 // option_t::print ==========================================================
 
-void option_t::print( FILE* file, bool print_if_zero )
+std::ostream& operator<<( std::ostream& stream, const option_t& opt )
 {
-  if ( type == STRING )
+  switch ( opt.type )
   {
-    const std::string& v = *static_cast<std::string*>( data.address );
-    if ( print_if_zero || ! v.empty() )
-      util::fprintf( file, "%s=%s\n", name, v.c_str() );
+  case option_t::STRING:
+  {
+    const std::string& v = *static_cast<std::string*>( opt.data.address );
+    stream << opt.name << "=" << v.c_str() << "\n";
   }
-  else if ( type == INT_BOOL )
+  break;
+  case option_t::INT_BOOL:
   {
-    int v = *static_cast<int*>( data.address );
-    if ( print_if_zero || v != 0 )
-      util::fprintf( file, "%s=%d\n", name, v ? 1 : 0 );
+    int v = *static_cast<int*>( opt.data.address );
+    stream << opt.name << "=" << (v ? "true" : "false") << "\n";
   }
-  else if ( type == BOOL )
+  break;
+  case option_t::BOOL:
   {
-    bool v = *static_cast<bool*>( data.address );
-    if ( print_if_zero || v != 0 )
-      util::fprintf( file, "%s=%d\n", name, v ? 1 : 0 );
+    bool v = *static_cast<bool*>( opt.data.address );
+    stream << opt.name << "=" << (v ? "true" : "false") << "\n";
   }
-  else if ( type == INT )
+  break;
+  case option_t::INT:
   {
-    int v = *static_cast<int*>( data.address );
-    if ( print_if_zero || v != 0 )
-      util::fprintf( file, "%s=%d\n", name, v );
+    int v = *static_cast<int*>( opt.data.address );
+    stream << opt.name << "=" << v << "\n";
   }
-  else if ( type == UINT )
+  break;
+  case option_t::UINT:
   {
-    unsigned v = *static_cast<unsigned*>( data.address );
-    if ( print_if_zero || v != 0 )
-      util::fprintf( file, "%s=%u\n", name, v );
+    unsigned v = *static_cast<unsigned*>( opt.data.address );
+    stream << opt.name << "=" << v << "\n";
   }
-  else if ( type == FLT )
+  break;
+  case option_t::FLT:
   {
-    double v = *static_cast<double*>( data.address );
-    if ( print_if_zero || v != 0 )
-      util::fprintf( file, "%s=%.2f\n", name, v );
+    double v = *static_cast<double*>( opt.data.address );
+    stream << opt.name << "=" << v << "\n";
   }
-  else if ( type == TIMESPAN )
+  break;
+  case option_t::TIMESPAN:
   {
-    timespan_t v = *static_cast<timespan_t*>( data.address );
-    if ( print_if_zero || v != timespan_t::zero() )
-      util::fprintf( file, "%s=%.2f\n", name, v.total_seconds() );
+    timespan_t v = *static_cast<timespan_t*>( opt.data.address );
+    stream << opt.name << "=" << v.total_seconds() << "\n";
   }
-  else if ( type == LIST )
+  break;
+  case option_t::LIST:
   {
-    const std::vector<std::string>& v = *static_cast<std::vector<std::string>*>( data.address );
-    if ( print_if_zero || ! v.empty() )
+    const std::vector<std::string>& v = *static_cast<std::vector<std::string>*>( opt.data.address );
+    stream << opt.name << "=";
+    for ( size_t i = 0; i < v.size(); ++i )
     {
-      util::fprintf( file, "%s=", name );
-      for ( unsigned i = 0; i < v.size(); i++ )
-        util::fprintf( file, "%s%s", ( i ? " " : "" ), v[ i ].c_str() );
-      util::fprintf( file, "\n" );
+      if ( i > 0 )
+        stream << " ";
+      stream << v[ i ];
     }
+    stream << "\n";
   }
-  else if ( type == MAP )
+  break;
+  case option_t::MAP:
   {
-    const std::map<std::string, std::string>& m = *static_cast<std::map<std::string, std::string>*>( data.address );
+    const std::map<std::string, std::string>& m = *static_cast<std::map<std::string, std::string>*>( opt.data.address );
     for ( std::map<std::string, std::string>::const_iterator it = m.begin(), end = m.end(); it != end; ++it )
-      util::fprintf( file, "%s%s=%s\n", name, it->first.c_str(), it->second.c_str() );
+      stream << opt.name << it->first << "="<< it->second << "\n";
   }
+  break;
+  default: break;
+  }
+  return stream;
 }
 
 // option_t::copy ===========================================================

@@ -1731,7 +1731,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
     void impact( action_state_t* state )
     {
       if ( sim -> debug )
-        sim -> output( "%s spreads Flame Shock (off of %s) on %s",
+        sim -> out_debug.printf( "%s spreads Flame Shock (off of %s) on %s",
                        player -> name(),
                        target -> name(),
                        state -> target -> name() );
@@ -2316,7 +2316,7 @@ struct windlash_t : public shaman_melee_attack_t
     {
       timespan_t st = timespan_t::from_seconds( rng().gauss( t.total_seconds(), t.total_seconds() * swing_timer_variance ) );
       if ( sim -> debug )
-        sim -> output( "Swing timer variance for %s, real_time=%.3f swing_timer=%.3f", name(), t.total_seconds(), st.total_seconds() );
+        sim -> out_debug.printf( "Swing timer variance for %s, real_time=%.3f swing_timer=%.3f", name(), t.total_seconds(), st.total_seconds() );
 
       return st;
     }
@@ -2329,7 +2329,7 @@ struct windlash_t : public shaman_melee_attack_t
     if ( time_to_execute > timespan_t::zero() && p() -> executing )
     {
       if ( sim -> debug )
-        sim_t::output( sim, "Executing '%s' during melee (%s).", p() -> executing -> name(), util::slot_type_string( weapon -> slot ) );
+        sim -> out_debug.printf( "Executing '%s' during melee (%s).", p() -> executing -> name(), util::slot_type_string( weapon -> slot ) );
 
       if ( weapon -> slot == SLOT_OFF_HAND )
         p() -> proc.swings_clipped_oh -> occur();
@@ -2360,7 +2360,7 @@ void shaman_spell_base_t<Base>::schedule_execute( action_state_t* state )
   shaman_t* p = ab::p();
 
   if ( p -> sim -> log )
-    p -> sim -> output( "%s schedules execute for %s", p -> name(), ab::name() );
+    p -> sim -> out_log.printf( "%s schedules execute for %s", p -> name(), ab::name() );
 
   ab::time_to_execute = execute_time();
 
@@ -2405,7 +2405,7 @@ void shaman_spell_base_t<Base>::execute()
   {
     if ( ab::sim -> debug )
     {
-      ab::sim -> output( "Resetting swing timers for '%s', instant_eligibility=%d mw_stacks=%d",
+      ab::sim -> out_debug.printf( "Resetting swing timers for '%s', instant_eligibility=%d mw_stacks=%d",
                          ab::name_str.c_str(), eligible_for_instant, p -> buff.maelstrom_weapon -> check() );
     }
 
@@ -2469,7 +2469,7 @@ void shaman_spell_base_t<Base>::impact( action_state_t* state )
        ab::rng().roll( eoe_proc_chance ) &&
        p -> cooldown.echo_of_the_elements -> up() )
   {
-    if ( ab::sim -> debug ) ab::sim -> output( "Echo of the Elements procs for %s", ab::name() );
+    if ( ab::sim -> debug ) ab::sim -> out_debug.printf( "Echo of the Elements procs for %s", ab::name() );
     new ( *ab::sim ) eoe_execute_event_t< Base >( this );
     p -> cooldown.echo_of_the_elements -> start( p -> talent.echo_of_the_elements -> internal_cooldown() );
   }
@@ -2482,7 +2482,7 @@ void shaman_heal_t::impact( action_state_t* s )
   // Todo deep healing to adjust s -> result_amount by x% before impacting
   if ( sim -> debug && p() -> mastery.deep_healing -> ok() )
   {
-    sim -> output( "%s Deep Heals %s@%.2f%% mul=%.3f %.0f -> %.0f",
+    sim -> out_debug.printf( "%s Deep Heals %s@%.2f%% mul=%.3f %.0f -> %.0f",
                    player -> name(), s -> target -> name(),
                    s -> target -> health_percentage(), deep_healing( s ),
                    s -> result_amount, s -> result_amount * deep_healing( s ) );
@@ -2602,7 +2602,7 @@ struct melee_t : public shaman_melee_attack_t
     {
       timespan_t st = timespan_t::from_seconds( rng().gauss( t.total_seconds(), t.total_seconds() * swing_timer_variance ) );
       if ( sim -> debug )
-        sim -> output( "Swing timer variance for %s, real_time=%.3f swing_timer=%.3f", name(), t.total_seconds(), st.total_seconds() );
+        sim -> out_debug.printf( "Swing timer variance for %s, real_time=%.3f swing_timer=%.3f", name(), t.total_seconds(), st.total_seconds() );
       return st;
     }
     else
@@ -2614,7 +2614,7 @@ struct melee_t : public shaman_melee_attack_t
     if ( time_to_execute > timespan_t::zero() && p() -> executing )
     {
       if ( sim -> debug )
-        sim_t::output( sim, "Executing '%s' during melee (%s).", p() -> executing -> name(), util::slot_type_string( weapon -> slot ) );
+        sim -> out_debug.printf( "Executing '%s' during melee (%s).", p() -> executing -> name(), util::slot_type_string( weapon -> slot ) );
 
       if ( weapon -> slot == SLOT_OFF_HAND )
         p() -> proc.swings_clipped_oh -> occur();
@@ -3566,7 +3566,7 @@ struct elemental_blast_t : public shaman_spell_t
         result = RESULT_CRIT;
     }
 
-    if ( sim -> debug ) sim -> output( "%s result for %s is %s", player -> name(), name(), util::result_type_string( result ) );
+    if ( sim -> debug ) sim -> out_debug.printf( "%s result for %s is %s", player -> name(), name(), util::result_type_string( result ) );
 
     // Re-snapshot state here, after we have procced a buff spell. The new state
     // is going to be used to calculate the damage of this spell already
@@ -4892,7 +4892,7 @@ class ascendance_buff_t : public buff_t
 #ifndef NDEBUG
         if ( time_to_hit < timespan_t::zero() )
         {
-          sim -> output( "Ascendance %s time_to_hit=%f", player -> main_hand_attack -> name(), time_to_hit.total_seconds() );
+          sim -> out_error.printf( "Ascendance %s time_to_hit=%f", player -> main_hand_attack -> name(), time_to_hit.total_seconds() );
           assert( 0 );
         }
 #endif
@@ -4926,7 +4926,7 @@ class ascendance_buff_t : public buff_t
 #ifndef NDEBUG
           if ( time_to_hit < timespan_t::zero() )
           {
-            sim -> output( "Ascendance %s time_to_hit=%f", player -> off_hand_attack -> name(), time_to_hit.total_seconds() );
+            sim -> out_error.printf( "Ascendance %s time_to_hit=%f", player -> off_hand_attack -> name(), time_to_hit.total_seconds() );
             assert( 0 );
           }
 #endif
@@ -5896,7 +5896,7 @@ void shaman_t::moving()
            ( executing -> id == 117014 ) )
       {
         if ( sim -> log )
-          sim -> output( "%s spiritwalkers_grace during spell cast, next cast (%s) should finish",
+          sim -> out_log.printf( "%s spiritwalkers_grace during spell cast, next cast (%s) should finish",
                          name(), executing -> name() );
         swg -> execute();
       }

@@ -250,7 +250,7 @@ struct flask_t : public action_t
         }
       }
     }
-    if ( sim -> log ) sim -> output( "%s uses Flask %s", p.name(), util::flask_type_string( type ) );
+    if ( sim -> log ) sim -> out_log.printf( "%s uses Flask %s", p.name(), util::flask_type_string( type ) );
     p.flask = type;
   }
 
@@ -334,7 +334,7 @@ struct elixir_t : public action_t
     else
       p.active_elixir.guardian = true;
 
-    if ( sim -> log ) sim -> output( "%s uses elixir %s", p.name(), data -> name.c_str() );
+    if ( sim -> log ) sim -> out_log.printf( "%s uses elixir %s", p.name(), data -> name.c_str() );
 
   }
   virtual bool ready()
@@ -393,7 +393,7 @@ struct food_t : public action_t
   virtual void execute()
   {
     player_t* p = player;
-    if ( sim -> log ) sim -> output( "%s uses Food %s", p -> name(), util::food_type_string( type ) );
+    if ( sim -> log ) sim -> out_log.printf( "%s uses Food %s", p -> name(), util::food_type_string( type ) );
     p -> food = type;
 
     double food_stat_multiplier = 1.0;
@@ -580,7 +580,7 @@ struct mana_potion_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log ) sim -> output( "%s uses Mana potion", player -> name() );
+    if ( sim -> log ) sim -> out_log.printf( "%s uses Mana potion", player -> name() );
     double gain = sim -> range( min, max );
     player -> resource_gain( RESOURCE_MANA, gain, player -> gains.mana_potion );
     player -> potion_used = true;
@@ -683,7 +683,7 @@ struct dark_rune_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log ) sim -> output( "%s uses Dark Rune", player -> name() );
+    if ( sim -> log ) sim -> out_log.printf( "%s uses Dark Rune", player -> name() );
     player -> resource_gain( RESOURCE_MANA,   mana, player -> gains.dark_rune );
     player -> resource_loss( RESOURCE_HEALTH, health );
     update_ready();
@@ -746,7 +746,7 @@ struct potion_base_t : public action_t
                               potion_buff ->  buff_duration - pre_pot_time );
     }
 
-    if ( sim -> log ) sim -> output( "%s uses %s", player -> name(), name() );
+    if ( sim -> log ) sim -> out_log.printf( "%s uses %s", player -> name(), name() );
     update_ready();
     cooldown -> duration = potion_buff -> cooldown -> duration;
   }

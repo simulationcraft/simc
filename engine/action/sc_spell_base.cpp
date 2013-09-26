@@ -102,7 +102,8 @@ result_e spell_base_t::calculate_result( action_state_t* s )
     }
   }
 
-  if ( sim -> debug ) sim -> output( "%s result for %s is %s", player -> name(), name(), util::result_type_string( result ) );
+  if ( sim -> debug )
+    sim -> out_debug.printf( "%s result for %s is %s", player -> name(), name(), util::result_type_string( result ) );
 
   return result;
 }

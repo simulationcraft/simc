@@ -69,7 +69,8 @@ player_t* chardev::download_player( sim_t* sim,
     return 0;
   }
 
-  if ( sim -> debug ) js::print( profile_js, sim -> output_file );
+  if ( sim -> debug )
+    sim -> out_debug.raw() << profile_js;
 
   std::string name_str;
   if ( ! js::get_value( name_str, profile_js, "0/0" ) )

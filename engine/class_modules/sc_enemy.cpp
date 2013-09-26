@@ -630,7 +630,7 @@ tmi_boss_e enemy_t::convert_tmi_string( const std::string& tmi_string )
     return TMI_T16_25H;
 
   if ( ! tmi_string.empty() && sim -> debug )
-    sim -> output( "Unknown TMI string input provided: %s", tmi_string.c_str() );
+    sim -> out_debug.printf( "Unknown TMI string input provided: %s", tmi_string.c_str() );
 
   return TMI_NONE;
 
@@ -935,7 +935,7 @@ void enemy_t::recalculate_health()
     initial_health *= factor;
   }
 
-  if ( sim -> debug ) sim -> output( "Target %s initial health calculated to be %.0f. Damage was %.0f", name(), initial_health, iteration_dmg_taken );
+  if ( sim -> debug ) sim -> out_debug.printf( "Target %s initial health calculated to be %.0f. Damage was %.0f", name(), initial_health, iteration_dmg_taken );
 }
 
 // enemy_t::create_expression ===============================================

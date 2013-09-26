@@ -143,8 +143,16 @@ void plot_t::analyze_stats()
         delta_sim -> execute();
         if ( dps_plot_debug )
         {
-          util::fprintf( sim -> output_file, "Stat=%s Point=%d\n", util::stat_type_string( i ), j );
-          report::print_text( sim -> output_file, delta_sim, true );
+          sim -> out_debug.raw().printf( "Stat=%s Point=%d\n", util::stat_type_string( i ), j );
+          if ( sim -> output_file_str.empty() )
+            report::print_text( stdout, delta_sim, true );
+          else
+          {
+            io::cfile report_f( sim -> output_file_str, "a" );
+            if ( report_f )
+              report::print_text( report_f, delta_sim, true );
+          }
+
         }
       }
 

@@ -150,7 +150,7 @@ int sim_t::main( const std::vector<std::string>& args )
 
   if ( canceled ) return 1;
 
-  util::fprintf( output_file, "\nSimulationCraft %s-%s for World of Warcraft %s %s (build level %s)\n",
+  out_std.raw().printf( "\nSimulationCraft %s-%s for World of Warcraft %s %s (build level %s)\n",
                  SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc.wow_version(), ( dbc.ptr ?
 #if SC_BETA
                      "BETA"
@@ -158,7 +158,7 @@ int sim_t::main( const std::vector<std::string>& args )
                      "PTR"
 #endif
                      : "Live" ), util::to_string( dbc.build_level() ).c_str() );
-  fflush( output_file );
+  //fflush( output_file );
 
   if ( spell_query )
   {
@@ -175,24 +175,24 @@ int sim_t::main( const std::vector<std::string>& args )
   {
     if ( max_time <= timespan_t::zero() )
     {
-      util::fprintf( output_file, "simulationcraft: One of -max_time or -target_health must be specified.\n" );
+      out_std.raw() << "simulationcraft: One of -max_time or -target_health must be specified.\n";
       exit( 0 );
     }
     if ( fabs( vary_combat_length ) >= 1.0 )
     {
-      util::fprintf( output_file, "\n |vary_combat_length| >= 1.0, overriding to 0.0.\n" );
+      out_std.raw() << "\n |vary_combat_length| >= 1.0, overriding to 0.0.\n";
       vary_combat_length = 0.0;
     }
     if ( confidence <= 0.0 || confidence >= 1.0 )
     {
-      util::fprintf( output_file, "\nInvalid confidence, reseting to 0.95.\n" );
+      out_std.raw() << "\nInvalid confidence, reseting to 0.95.\n";
       confidence = 0.95;
     }
 
-    util::fprintf( output_file,
+    out_std.raw().printf(
                    "\nSimulating... ( iterations=%d, max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n",
                    iterations, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style.c_str() );
-    fflush( output_file );
+    //fflush( output_file );
 
 //    util::fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
 
@@ -207,9 +207,9 @@ int sim_t::main( const std::vector<std::string>& args )
     }
   }
 
-  if ( output_file != stdout )
-    fclose( output_file );
-  output_file = 0;
+  //if ( output_file != stdout )
+  //  fclose( output_file );
+ // output_file = 0;
 
   http::cache_save( ( cache_directory + "/simc_cache.dat" ).c_str() );
   dbc::de_init();

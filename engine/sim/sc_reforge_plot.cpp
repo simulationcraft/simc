@@ -163,22 +163,22 @@ void reforge_plot_t::analyze_stats()
 
   if ( reforge_plot_debug )
   {
-    util::fprintf( sim -> output_file, "Reforge Plot Stats:" );
+    sim -> out_debug.raw() << "Reforge Plot Stats:";
     for ( size_t i = 0; i < reforge_plot_stat_indices.size(); i++ )
     {
-      util::fprintf( sim -> output_file, "%s%s", i ? ", " : " ",
+      sim -> out_log.raw().printf( "%s%s", i ? ", " : " ",
                      util::stat_type_string( reforge_plot_stat_indices[ i ] ) );
     }
-    util::fprintf( sim -> output_file, "\n" );
+    sim -> out_log.raw() << "\n";
 
-    util::fprintf( sim -> output_file, "Reforge Plot Stat Mods:\n" );
+    sim -> out_log.raw() << "Reforge Plot Stat Mods:\n";
     for ( size_t i = 0; i < stat_mods.size(); i++ )
     {
       for ( size_t j = 0; j < stat_mods[ i ].size(); j++ )
-        util::fprintf( sim -> output_file, "%s: %d ",
+        sim -> out_log.raw().printf( "%s: %d ",
                        util::stat_type_string( reforge_plot_stat_indices[ j ] ),
                        stat_mods[ i ][ j ] );
-      util::fprintf( sim -> output_file, "\n" );
+      sim -> out_log.raw() << "\n";
     }
   }
 
@@ -254,44 +254,39 @@ void reforge_plot_t::analyze()
 
   analyze_stats();
 
-  io::cfile file;
+  io::ofstream out;
   if ( ! sim -> reforge_plot_output_file_str.empty() )
   {
-    file = io::cfile( sim -> reforge_plot_output_file_str, "a" );
-    if ( ! file )
+    out.open( sim -> reforge_plot_output_file_str, io::ofstream::out | io::ofstream::app );
+    if ( ! out.is_open() )
     {
       sim -> errorf( "Unable to open plot output file '%s'.\n", sim -> reforge_plot_output_file_str.c_str() );
       return;
     }
   }
 
-  if ( ! file ) file = io::cfile( sim -> output_file, io::cfile::no_close() );
-
   for ( size_t i = 0; i < sim -> player_list.size(); ++i )
   {
     player_t* p = sim -> player_list[ i ];
     if ( p -> quiet ) continue;
 
-    util::fprintf( file, "%s Reforge Plot Results:\n", p -> name_str.c_str() );
+    out <<  p -> name() << " Reforge Plot Results:\n";
 
     for ( int i = 0; i < ( int ) reforge_plot_stat_indices.size(); i++ )
     {
-      util::fprintf( file, "%s, ",
-                     util::stat_type_string( reforge_plot_stat_indices[ i ] ) );
+      out << util::stat_type_string( reforge_plot_stat_indices[ i ] ) << ", ";
     }
-    util::fprintf( file, " DPS, DPS-Error\n" );
+    out << " DPS, DPS-Error\n";
 
     for ( size_t i = 0; i < p -> reforge_plot_data.size(); i++ )
     {
       for ( size_t j = 0; j < p -> reforge_plot_data[ i ].size(); j++ )
       {
-        util::fprintf( file, "%f, ",
-                       p -> reforge_plot_data[ i ][ j ].value );
+        out << p -> reforge_plot_data[ i ][ j ].value << ", ";
         if ( j + 1 == p -> reforge_plot_data[ i ].size() )
-          util::fprintf( file, "%f, ",
-                         p -> reforge_plot_data[ i ][ j ].error );
+          out << p -> reforge_plot_data[ i ][ j ].error << ", ";
       }
-      util::fprintf( file, "\n" );
+      out << "\n";
     }
   }
 }

@@ -1143,7 +1143,7 @@ struct consecration_t : public paladin_spell_t
   {
     if ( d -> state -> target -> debuffs.flying -> check() )
     {
-      if ( sim -> debug ) sim -> output( "Ground effect %s can not hit flying target %s", name(), d -> state -> target -> name() );
+      if ( sim -> debug ) sim -> out_debug.printf( "Ground effect %s can not hit flying target %s", name(), d -> state -> target -> name() );
     }
     else
     {
@@ -3570,7 +3570,7 @@ struct paladin_seal_t : public paladin_melee_attack_t
 
   virtual void execute()
   {
-    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
     consume_resource();
     seal_e seal_orig = p() -> active_seal;
     if ( p() -> specialization() == PALADIN_PROTECTION && seal_type == SEAL_OF_JUSTICE )
@@ -5096,7 +5096,7 @@ void paladin_t::target_mitigation( school_e school,
   s -> result_amount *= 1.0 + passives.sanctuary -> effectN( 1 ).percent();
 
   if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-    sim -> output( "Damage to %s after passive mitigation is %f", s -> target -> name(), s -> result_amount );
+    sim -> out_debug.printf( "Damage to %s after passive mitigation is %f", s -> target -> name(), s -> result_amount );
 
   // Damage Reduction Cooldowns
 
@@ -5105,7 +5105,7 @@ void paladin_t::target_mitigation( school_e school,
   {
     s -> result_amount *= 1.0 + dbc.spell( 86657 ) -> effectN( 2 ).percent(); // Value of the buff is stored in another spell
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> output( "Damage to %s after GAnK is %f", s -> target -> name(), s -> result_amount );
+      sim -> out_debug.printf( "Damage to %s after GAnK is %f", s -> target -> name(), s -> result_amount );
   }
 
   // Hand of Purity
@@ -5120,7 +5120,7 @@ void paladin_t::target_mitigation( school_e school,
       s -> result_amount *= 1.0 + buffs.hand_of_purity -> data().effectN( 2 ).percent();
     }
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> output( "Damage to %s after Hand of Purity is %f", s -> target -> name(), s -> result_amount );
+      sim -> out_debug.printf( "Damage to %s after Hand of Purity is %f", s -> target -> name(), s -> result_amount );
   }
 
   // Divine Protection
@@ -5135,7 +5135,7 @@ void paladin_t::target_mitigation( school_e school,
       s -> result_amount *= 1.0 + buffs.divine_protection -> data().effectN( 2 ).percent() + glyphs.divine_protection -> effectN( 2 ).percent();
     }
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> output( "Damage to %s after Divine Protection is %f", s -> target -> name(), s -> result_amount );
+      sim -> out_debug.printf( "Damage to %s after Divine Protection is %f", s -> target -> name(), s -> result_amount );
   }
 
   // Glyph of Templar's Verdict
@@ -5143,7 +5143,7 @@ void paladin_t::target_mitigation( school_e school,
   {
     s -> result_amount *= 1.0 + buffs.glyph_templars_verdict -> value();
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> output( "Damage to %s after Glyph of TV is %f", s -> target -> name(), s -> result_amount );
+      sim -> out_debug.printf( "Damage to %s after Glyph of TV is %f", s -> target -> name(), s -> result_amount );
   }
 
   // Shield of the Righteous
@@ -5152,7 +5152,7 @@ void paladin_t::target_mitigation( school_e school,
     s -> result_amount *= 1.0 + ( buffs.shield_of_the_righteous -> data().effectN( 1 ).percent() - get_divine_bulwark() ) * ( 1.0 + sets -> set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent() );
 
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> output( "Damage to %s after SotR mitigation is %f", s -> target -> name(), s -> result_amount );
+      sim -> out_debug.printf( "Damage to %s after SotR mitigation is %f", s -> target -> name(), s -> result_amount );
   }
 
   // Ardent Defender
@@ -5186,7 +5186,7 @@ void paladin_t::target_mitigation( school_e school,
     }
 
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> output( "Damage to %s after Ardent Defender is %f", s -> target -> name(), s -> result_amount );
+      sim -> out_debug.printf( "Damage to %s after Ardent Defender is %f", s -> target -> name(), s -> result_amount );
   }
 }
 

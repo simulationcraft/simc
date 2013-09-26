@@ -165,8 +165,11 @@ bool wowhead::download_item_data( item_t&            item,
     js_node_t* json = js::create( item.sim, jsondata );
     js_node_t* jsonequip = js::create( item.sim, jsonequipdata );
 
-    if ( item.sim -> debug ) js::print( json );
-    if ( item.sim -> debug ) js::print( jsonequip );
+    if ( item.sim -> debug )
+      item.sim -> out_debug.raw() << json;
+
+    if ( item.sim -> debug )
+      item.sim -> out_debug.raw() << jsonequip;
 
     js::get_value( item.parsed.data.req_level, json, "reqlevel" );
     js::get_value( item.parsed.data.req_skill, jsonequip, "reqskill" );

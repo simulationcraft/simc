@@ -380,7 +380,7 @@ private:
       if ( time_to_execute > timespan_t::zero() && player -> executing )
       {
         if ( sim -> debug )
-          sim -> output( "Executing '%s' during melee (%s).", player -> executing -> name(), util::slot_type_string( weapon -> slot ) );
+          sim -> out_debug.printf( "Executing '%s' during melee (%s).", player -> executing -> name(), util::slot_type_string( weapon -> slot ) );
         schedule_execute();
       }
       else
@@ -724,7 +724,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
       if ( sim -> debug )
       {
-        sim -> output( "%s main hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
+        sim -> out_debug.printf( "%s main hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
                        player -> name(), name(), total_dmg, dmg, mh -> bonus_dmg, mh -> swing_time.total_seconds(), ap );
       }
     }
@@ -745,7 +745,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 
       if ( sim -> debug )
       {
-        sim -> output( "%s off-hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
+        sim -> out_debug.printf( "%s off-hand weapon damage portion for %s: td=%.3f wd=%.3f bd=%.3f ws=%.3f ap=%.3f",
                        player -> name(), name(), total_dmg, dmg, oh -> bonus_dmg, oh -> swing_time.total_seconds(), ap );
       }
     }
@@ -1432,7 +1432,7 @@ struct melee_t : public monk_melee_attack_t
   {
     if ( time_to_execute > timespan_t::zero() && player -> executing )
     {
-      if ( sim -> debug ) sim -> output( "Executing '%s' during melee (%s).", player -> executing -> name(), util::slot_type_string( weapon -> slot ) );
+      if ( sim -> debug ) sim -> out_debug.printf( "Executing '%s' during melee (%s).", player -> executing -> name(), util::slot_type_string( weapon -> slot ) );
       schedule_execute();
     }
     else
@@ -2369,7 +2369,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
       player -> resource_loss( resource, resource_per_second, 0, this );
       stats -> consume_resource( resource, resource_per_second );
       if ( sim -> log )
-        sim -> output( "%s consumes %.0f %s for %s (%.0f)", player -> name(),
+        sim -> out_log.printf( "%s consumes %.0f %s for %s (%.0f)", player -> name(),
                       resource_per_second, util::resource_type_string( resource ),
                       name(), player -> resources.current[ resource ] );
 

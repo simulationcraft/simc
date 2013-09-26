@@ -303,7 +303,7 @@ struct synapse_spring_action_t : public action_t
     assert( buff );
     buff -> stats.clear(); // clear previous stat
     buff -> stats.push_back( stat_buff_t::buff_stat_t( max_stat, _stat_amount ) ); // add new max stat
-    if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), name() );
+    if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
     buff -> trigger();
 
 
@@ -1090,7 +1090,7 @@ void courageous_primal_diamond( player_t* p )
         if ( spell -> procs_courageous_primal_diamond )
         {
           if ( listener -> sim -> debug )
-            listener -> sim -> output( "%s procs %s from action %s.",
+            listener -> sim -> out_debug.printf( "%s procs %s from action %s.",
                                        listener -> name(), buff -> name(), spell -> name() );
 
           buff_proc_callback_t<buff_t>::execute( action, call_data );
@@ -2466,7 +2466,7 @@ void rune_of_reorigination( item_t* item )
       cmr /= p -> composite_rating_multiplier( RATING_MASTERY );
     
       if ( p -> sim -> debug )
-        p -> sim -> output( "%s rune_of_reorigination procs crit=%.0f haste=%.0f mastery=%.0f",
+        p -> sim -> out_debug.printf( "%s rune_of_reorigination procs crit=%.0f haste=%.0f mastery=%.0f",
                             p -> name(), ccr, chr, cmr );
 
       if ( ccr >= chr )

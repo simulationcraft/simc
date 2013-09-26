@@ -511,7 +511,7 @@ void report::print_spell_query( sim_t* sim, unsigned level )
       if ( root )
         spell_info::talent_to_xml( sim, sim -> dbc.talent( *i ), root );
       else
-        util::fprintf( sim -> output_file, "%s", spell_info::talent_to_str( sim, sim -> dbc.talent( *i ) ).c_str() );
+        sim -> out_std.raw() << spell_info::talent_to_str( sim, sim -> dbc.talent( *i ) );
     }
     else if ( sq -> data_type == DATA_EFFECT )
     {
@@ -524,7 +524,7 @@ void report::print_spell_query( sim_t* sim, unsigned level )
         else
           spell_info::effect_to_str( sim, spell, sim -> dbc.effect( *i ), sqs );
       }
-      util::fprintf( sim -> output_file, "%s", sqs.str().c_str() );
+      sim -> out_std.raw() << sqs;
     }
     else
     {
@@ -532,7 +532,7 @@ void report::print_spell_query( sim_t* sim, unsigned level )
       if ( root )
         spell_info::to_xml( sim, spell, root, level );
       else
-        util::fprintf( sim -> output_file, "%s", spell_info::to_str( sim, spell, level ).c_str() );
+        sim -> out_std.raw() << spell_info::to_str( sim, spell, level );
     }
   }
 
@@ -548,7 +548,12 @@ void report::print_spell_query( sim_t* sim, unsigned level )
 
 void report::print_suite( sim_t* sim )
 {
-  report::print_text( sim -> output_file, sim, sim -> report_details != 0 );
+  FILE* report_out = stdout;
+  io::cfile report_f( sim -> output_file_str, "a" );
+  if ( report_f )
+    report_out = report_f;
+  report::print_text( report_out, sim, sim -> report_details != 0 );
+
   report::print_html( sim );
   report::print_xml( sim );
   report::print_profiles( sim );

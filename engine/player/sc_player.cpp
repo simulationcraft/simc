@@ -44,7 +44,7 @@ struct player_ready_event_t : public event_t
                           event_t( p, "Player-Ready" )
   {
     if ( sim().debug )
-      sim().output( "New Player-Ready Event: %s", p.name() );
+      sim().out_debug.printf( "New Player-Ready Event: %s", p.name() );
 
     sim().add_event( this, delta_time );
   }
@@ -65,7 +65,7 @@ struct player_ready_event_t : public event_t
 
         // Waiting Debug
         if ( sim().debug )
-          sim().output( "%s is waiting for %.4f resource=%.2f",
+          sim().out_debug.printf( "%s is waiting for %.4f resource=%.2f",
                       p() -> name(), x.total_seconds(),
                       p() -> resources.current[ p() -> primary_resource() ] );
       }
@@ -85,7 +85,7 @@ struct demise_event_t : public event_t
      event_t( p, "Player-Demise" )
   {
     if ( sim().debug )
-      sim().output( "New Player-Demise Event: %s", p.name() );
+      sim().out_debug.printf( "New Player-Demise Event: %s", p.name() );
 
     sim().add_event( this, delta_time );
   }
@@ -345,7 +345,7 @@ void ignite::trigger_pct_based( action_t* ignite_action,
       timespan_t delay_duration = sim().gauss( sim().default_aura_delay, sim().default_aura_delay_stddev );
 
       if ( sim().debug )
-        sim().output( "New %s Sampling Event: %s ( delta time: %.4f )",
+        sim().out_debug.printf( "New %s Sampling Event: %s ( delta time: %.4f )",
                     action -> name(), p() -> name(), delay_duration.total_seconds() );
 
       sim().add_event( this, delay_duration );
@@ -369,12 +369,12 @@ void ignite::trigger_pct_based( action_t* ignite_action,
       {
         if ( dot -> ticking )
         {
-          sim().output( "ignite_delay_event::execute(): additional_damage=%f current_ignite_tick=%f ticks_left=%d new_ignite_dmg=%f",
+          sim().out_debug.printf( "ignite_delay_event::execute(): additional_damage=%f current_ignite_tick=%f ticks_left=%d new_ignite_dmg=%f",
                       additional_ignite_dmg, action -> base_td, dot -> ticks(), new_total_ignite_dmg );
         }
         else
         {
-          sim().output( "ignite_delay_event::execute(): additional_damage=%f new_ignite_dmg=%f",
+          sim().out_debug.printf( "ignite_delay_event::execute(): additional_damage=%f new_ignite_dmg=%f",
                       additional_ignite_dmg, new_total_ignite_dmg );
         }
       }
@@ -520,7 +520,7 @@ void stormlash_callback_t::trigger( action_t* a, void* call_data )
 
   if ( a -> sim -> debug )
   {
-    a -> sim -> output( "%s stormlash proc by %s: power=%.3f base_mul=%.3f cast_time=%.3f cast_time_mul=%.3f spell_multiplier=%.3f amount=%.3f %s",
+    a -> sim -> out_debug.printf( "%s stormlash proc by %s: power=%.3f base_mul=%.3f cast_time=%.3f cast_time_mul=%.3f spell_multiplier=%.3f amount=%.3f %s",
                         a -> player -> name(), a -> name(), base_power, base_multiplier, a -> data().cast_time( a -> player -> level ).total_seconds(), cast_time_multiplier,
                         ( a -> stormlash_da_multiplier ) ? a -> stormlash_da_multiplier : a -> stormlash_ta_multiplier,
                         amount,
@@ -695,7 +695,7 @@ player_t::player_t( sim_t*             s,
 
   if ( !is_enemy() && type != HEALING_ENEMY )
   {
-    if ( sim -> debug ) sim -> output( "Creating Player %s", name() );
+    if ( sim -> debug ) sim -> out_debug.printf( "Creating Player %s", name() );
     sim -> player_list.push_back( this );
     if ( ! is_pet() )
     {
@@ -859,7 +859,7 @@ static bool check_actors( sim_t* sim )
 static bool init_debuffs( sim_t* sim )
 {
   if ( sim -> debug )
-    sim -> output( "Initializing Auras, Buffs, and De-Buffs." );
+    sim -> out_debug.printf( "Initializing Auras, Buffs, and De-Buffs." );
 
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
@@ -898,7 +898,7 @@ static bool init_parties( sim_t* sim )
 {
   // Parties
   if ( sim -> debug )
-    sim -> output( "Building Parties." );
+    sim -> out_debug.printf( "Building Parties." );
 
   int party_index = 0;
   for ( size_t i = 0; i < sim -> party_encoding.size(); i++ )
@@ -959,7 +959,7 @@ bool player_t::init( sim_t* sim )
   // Having two versions of player_t::init is confusing.
 
   if ( sim -> debug )
-    sim -> output( "Creating Pets." );
+    sim -> out_debug.printf( "Creating Pets." );
 
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
@@ -977,7 +977,7 @@ bool player_t::init( sim_t* sim )
   }
 
   if ( sim -> debug )
-    sim -> output( "Initializing Players." );
+    sim -> out_debug.printf( "Initializing Players." );
 
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
@@ -1023,7 +1023,7 @@ bool player_t::init( sim_t* sim )
 
   // Callbacks
   if ( sim -> debug )
-    sim -> output( "Registering Callbacks." );
+    sim -> out_debug.printf( "Registering Callbacks." );
 
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
@@ -1038,7 +1038,7 @@ bool player_t::init( sim_t* sim )
 
 void player_t::init()
 {
-  if ( sim -> debug ) sim -> output( "Initializing player %s", name() );
+  if ( sim -> debug ) sim -> out_debug.printf( "Initializing player %s", name() );
 
   // Ensure the precombat and default lists are the first listed
   get_action_priority_list( "precombat", "Executed before combat begins. Accepts non-harmful actions only." ) -> used = true;
@@ -1145,7 +1145,7 @@ void scale_challenge_mode( player_t& p, const rating_t& rating )
  */
 void player_t::init_base_stats()
 {
-  if ( sim -> debug ) sim -> output( "Initializing base for player (%s)", name() );
+  if ( sim -> debug ) sim -> out_debug.printf( "Initializing base for player (%s)", name() );
 
 
 #ifndef NDEBUG
@@ -1164,14 +1164,14 @@ void player_t::init_base_stats()
     base.rating.init( dbc, level );
 
   if ( sim -> debug )
-    sim -> output( "%s: Base Ratings initialized: %s", name(), base.rating.to_string().c_str() );
+    sim -> out_debug.printf( "%s: Base Ratings initialized: %s", name(), base.rating.to_string().c_str() );
 
   scale_challenge_mode( *this, base.rating ); // needs initialzied base.rating
 
   total_gear = gear + enchant;
   if (  ! is_pet() ) total_gear += sim -> enchant;
   if ( sim -> debug )
-    sim -> output( "%s: Total Gear Stats: %s", name(), total_gear.to_string().c_str() );
+    sim -> out_debug.printf( "%s: Total Gear Stats: %s", name(), total_gear.to_string().c_str() );
 
   if ( ! is_enemy() )
   {
@@ -1237,7 +1237,7 @@ void player_t::init_base_stats()
   }
 
   if ( sim -> debug )
-    sim -> output( "%s: Generic Base Stats: %s", name(), base.to_string().c_str() );
+    sim -> out_debug.printf( "%s: Generic Base Stats: %s", name(), base.to_string().c_str() );
 
 }
 
@@ -1273,7 +1273,7 @@ double stat_gain_skinning( int level )
 void player_t::init_initial_stats()
 {
   if ( sim -> debug )
-    sim -> output( "Initializing initial stats for player (%s)", name() );
+    sim -> out_debug.printf( "Initializing initial stats for player (%s)", name() );
 
 #ifndef NDEBUG
   for ( stat_e i = STAT_NONE; i < STAT_MAX; ++i )
@@ -1290,7 +1290,7 @@ void player_t::init_initial_stats()
   initial = base;
   initial.stats += total_gear;
   if ( sim -> debug )
-    sim -> output( "%s: Generic Initial Stats: %s", name(), initial.to_string().c_str() );
+    sim -> out_debug.printf( "%s: Generic Initial Stats: %s", name(), initial.to_string().c_str() );
 
 
 
@@ -1309,7 +1309,7 @@ void player_t::init_items()
   if ( is_pet() ) return;
 
   if ( sim -> debug )
-    sim -> output( "Initializing items for player (%s)", name() );
+    sim -> out_debug.printf( "Initializing items for player (%s)", name() );
 
   // Create items
   std::vector<std::string> splits = util::string_split( items_str, "/" );
@@ -1408,7 +1408,7 @@ void player_t::init_items()
 
   if ( sim -> debug )
   {
-    sim -> output( "%s gear: %s", name(), gear.to_string().c_str() );
+    sim -> out_debug.printf( "%s gear: %s", name(), gear.to_string().c_str() );
   }
 
   set_bonus.init( this );
@@ -1423,7 +1423,7 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
 {
   if ( ! meta_gem_str.empty() ) meta_gem = util::parse_meta_gem_type( meta_gem_str );
 
-  if ( sim -> debug ) sim -> output( "Initializing meta-gem for player (%s)", name() );
+  if ( sim -> debug ) sim -> out_debug.printf( "Initializing meta-gem for player (%s)", name() );
 
   if      ( meta_gem == META_AGILE_SHADOWSPIRIT         ) item_stats.attribute[ ATTR_AGILITY ] += 54;
   else if ( meta_gem == META_AGILE_PRIMAL               ) item_stats.attribute[ ATTR_AGILITY ] += 216;
@@ -1556,7 +1556,7 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
 void player_t::init_position()
 {
   if ( sim -> debug )
-    sim -> output( "Initializing position for player (%s)", name() );
+    sim -> out_debug.printf( "Initializing position for player (%s)", name() );
 
   if ( ! position_str.empty() )
   {
@@ -1576,7 +1576,7 @@ void player_t::init_position()
   position_str = util::position_type_string( base.position );
 
   if ( sim -> debug )
-    sim -> output( "%s: Position set to %s", name(), position_str.c_str() );
+    sim -> out_debug.printf( "%s: Position set to %s", name(), position_str.c_str() );
 
 }
 
@@ -1585,7 +1585,7 @@ void player_t::init_position()
 void player_t::init_race()
 {
   if ( sim -> debug )
-    sim -> output( "Initializing race for player (%s)", name() );
+    sim -> out_debug.printf( "Initializing race for player (%s)", name() );
 
   if ( race_str.empty() )
   {
@@ -1682,13 +1682,13 @@ bool player_t::weapon_racial( weapon_t* weapon )
 void player_t::init_defense()
 {
   if ( sim -> debug )
-    sim -> output( "Initializing defense for player (%s)", name() );
+    sim -> out_debug.printf( "Initializing defense for player (%s)", name() );
 
   if ( primary_role() == ROLE_TANK )
   {
     initial.position = POSITION_FRONT;
     if ( sim -> debug )
-      sim -> output( "%s: Initial Position set to front because primary_role() == ROLE_TANK", name() );
+      sim -> out_debug.printf( "%s: Initial Position set to front because primary_role() == ROLE_TANK", name() );
   }
 
   // Armor Coefficient
@@ -1715,7 +1715,7 @@ void player_t::init_defense()
   }
   initial.armor_coeff = a * level + b;
   if ( sim -> debug )
-    sim -> output( "%s: Initial Armor Coeff set to %.4f", name(), initial.armor_coeff );
+    sim -> out_debug.printf( "%s: Initial Armor Coeff set to %.4f", name(), initial.armor_coeff );
 
 }
 
@@ -1724,7 +1724,7 @@ void player_t::init_defense()
 void player_t::init_weapon( weapon_t& w )
 {
   if ( sim -> debug )
-    sim -> output( "Initializing weapon ( type %s ) for player (%s)", util::weapon_type_string( w.type ), name() );
+    sim -> out_debug.printf( "Initializing weapon ( type %s ) for player (%s)", util::weapon_type_string( w.type ), name() );
 
   if ( w.type == WEAPON_NONE ) return;
 
@@ -1736,7 +1736,7 @@ void player_t::init_weapon( weapon_t& w )
 
 void player_t::init_unique_gear()
 {
-  if ( sim -> debug ) sim -> output( "Initializing unique gear for player (%s)", name() );
+  if ( sim -> debug ) sim -> out_debug.printf( "Initializing unique gear for player (%s)", name() );
 
   unique_gear::init( this );
 }
@@ -1745,7 +1745,7 @@ void player_t::init_unique_gear()
 
 void player_t::init_enchant()
 {
-  if ( sim -> debug ) sim -> output( "Initializing enchants for player (%s)", name() );
+  if ( sim -> debug ) sim -> out_debug.printf( "Initializing enchants for player (%s)", name() );
 
   unique_gear::initialize_special_effects( this );
 }
@@ -1754,7 +1754,7 @@ void player_t::init_enchant()
 
 void player_t::init_resources( bool force )
 {
-  if ( sim -> debug ) sim -> output( "Initializing resources for player (%s)", name() );
+  if ( sim -> debug ) sim -> out_debug.printf( "Initializing resources for player (%s)", name() );
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
@@ -1800,7 +1800,7 @@ void player_t::init_professions()
 {
   if ( professions_str.empty() ) return;
 
-  if ( sim -> debug ) sim -> output( "Initializing professions for player (%s)", name() );
+  if ( sim -> debug ) sim -> out_debug.printf( "Initializing professions for player (%s)", name() );
 
   std::vector<std::string> splits = util::string_split( professions_str, ",/" );
 
@@ -2165,12 +2165,12 @@ void player_t::override_talent( std::string override_str )
         {
           if ( talent_points.has_row_col( j, i ) )
           {
-            sim -> output( "talent_override: talent %s for player %s is already enabled\n",
+            sim -> out_debug.printf( "talent_override: talent %s for player %s is already enabled\n",
                            override_str.c_str(), name() );
           }
           else
           {
-            sim -> output( "talent_override: talent %s for player %s replaced talent %d in tier %d\n",
+            sim -> out_debug.printf( "talent_override: talent %s for player %s replaced talent %d in tier %d\n",
                            override_str.c_str(), name(), talent_points.choice( j ) + 1, j + 1 );
           }
         }
@@ -2185,7 +2185,7 @@ void player_t::override_talent( std::string override_str )
 void player_t::init_talents()
 {
   if ( sim -> debug )
-    sim -> output( "Initializing talents for player (%s)", name() );
+    sim -> out_debug.printf( "Initializing talents for player (%s)", name() );
 
   if ( ! talent_overrides_str.empty() )
   {
@@ -2203,7 +2203,7 @@ void player_t::init_talents()
 void player_t::init_glyphs()
 {
   if ( sim -> debug )
-    sim -> output( "Initializing glyphs for player (%s)", name() );
+    sim -> out_debug.printf( "Initializing glyphs for player (%s)", name() );
 
   std::vector<std::string> glyph_names = util::string_split( glyphs_str, ",/" );
 
@@ -2225,7 +2225,7 @@ void player_t::init_glyphs()
 void player_t::init_spells()
 {
   if ( sim -> debug )
-    sim -> output( "Initializing spells for player (%s)", name() );
+    sim -> out_debug.printf( "Initializing spells for player (%s)", name() );
 
   racials.quickness = find_racial_spell( "Quickness" );
   racials.command   = find_racial_spell( "Command" );
@@ -2243,7 +2243,7 @@ void player_t::init_spells()
 void player_t::init_gains()
 {
   if ( sim -> debug )
-    sim -> output( "Initializing gains for player (%s)", name() );
+    sim -> out_debug.printf( "Initializing gains for player (%s)", name() );
 
   gains.arcane_torrent         = get_gain( "arcane_torrent" );
   gains.blessing_of_might      = get_gain( "blessing_of_might" );
@@ -2271,7 +2271,7 @@ void player_t::init_gains()
 void player_t::init_procs()
 {
   if ( sim -> debug )
-    sim -> output( "Initializing procs for player (%s)", name() );
+    sim -> out_debug.printf( "Initializing procs for player (%s)", name() );
 
   procs.hat_donor    = get_proc( "hat_donor"   );
   procs.parry_haste  = get_proc( "parry_haste" );
@@ -2282,7 +2282,7 @@ void player_t::init_procs()
 void player_t::init_uptimes()
 {
   if ( sim -> debug )
-    sim -> output( "Initializing uptimes for player (%s)", name() );
+    sim -> out_debug.printf( "Initializing uptimes for player (%s)", name() );
 
   uptimes.primary_resource_cap = get_uptime( util::inverse_tokenize( util::resource_type_string( primary_resource() ) ) +  " Cap" );
 }
@@ -2292,7 +2292,7 @@ void player_t::init_uptimes()
 void player_t::init_benefits()
 {
   if ( sim -> debug )
-    sim -> output( "Initializing benefits for player (%s)", name() );
+    sim -> out_debug.printf( "Initializing benefits for player (%s)", name() );
 }
 
 // player_t::init_rng =======================================================
@@ -2300,7 +2300,7 @@ void player_t::init_benefits()
 void player_t::init_rng()
 {
   if ( sim -> debug )
-    sim -> output( "Initializing rngs for player (%s)", name() );
+    sim -> out_debug.printf( "Initializing rngs for player (%s)", name() );
 
 }
 
@@ -2309,7 +2309,7 @@ void player_t::init_rng()
 void player_t::init_stats()
 {
   if ( sim -> debug )
-    sim -> output( "Initializing stats for player (%s)", name() );
+    sim -> out_debug.printf( "Initializing stats for player (%s)", name() );
 
   range::fill( resource_lost, 0.0 );
   range::fill( resource_gained, 0.0 );
@@ -2333,7 +2333,7 @@ void player_t::init_stats()
 void player_t::init_scaling()
 {
   if ( sim -> debug )
-    sim -> output( "Initializing scaling for player (%s)", name() );
+    sim -> out_debug.printf( "Initializing scaling for player (%s)", name() );
 
   if ( ! is_pet() && ! is_enemy() )
   {
@@ -2508,7 +2508,7 @@ void player_t::_init_actions()
   if ( ! action_list_skip.empty() )
   {
     if ( sim -> debug )
-      sim -> output( "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );
+      sim -> out_debug.printf( "Player %s: action_list_skip=%s", name(), action_list_skip.c_str() );
 
     skip_actions = util::string_split( action_list_skip, "/" );
   }
@@ -2532,7 +2532,7 @@ void player_t::_init_actions()
     }
 
     if ( sim -> debug )
-      sim -> output( "Player %s: actions.%s=%s", name(),
+      sim -> out_debug.printf( "Player %s: actions.%s=%s", name(),
                      action_priority_list[ alist ] -> name_str.c_str(),
                      action_priority_list[ alist ] -> action_list_str.c_str() );
 
@@ -2573,7 +2573,7 @@ void player_t::_init_actions()
         if ( action_name == modify_action )
         {
           if ( sim -> debug )
-            sim -> output( "Player %s: modify_action=%s", name(), modify_action.c_str() );
+            sim -> out_debug.printf( "Player %s: modify_action=%s", name(), modify_action.c_str() );
 
           action_options = modify_action_options;
           action_str = modify_action + "," + modify_action_options;
@@ -2676,7 +2676,7 @@ void player_t::_init_actions()
 void player_t::create_buffs()
 {
   if ( sim -> debug )
-    sim -> output( "Creating buffs for player (%s)", name() );
+    sim -> out_debug.printf( "Creating buffs for player (%s)", name() );
 
   if ( ! is_enemy() && type != PLAYER_GUARDIAN )
   {
@@ -3487,7 +3487,7 @@ void player_t::invalidate_cache( cache_e c )
 {
   if ( ! cache.active ) return;
 
-  if ( sim -> log ) sim -> output( "%s invalidates %s", name(), util::cache_type_string( c ) );
+  if ( sim -> log ) sim -> out_log.printf( "%s invalidates %s", name(), util::cache_type_string( c ) );
 
   // Special linked invalidations
   switch ( c )
@@ -3573,7 +3573,7 @@ void player_t::sequence_add( const action_t* a, const player_t* target, const ti
 
 void player_t::combat_begin()
 {
-  if ( sim -> debug ) sim -> output( "Combat begins for player %s", name() );
+  if ( sim -> debug ) sim -> out_debug.printf( "Combat begins for player %s", name() );
 
   if ( ! is_pet() && ! is_add() )
   {
@@ -3626,7 +3626,7 @@ void player_t::combat_end()
     if ( ! is_pet() && ! is_enemy() )
       if ( f_length > 0 && ( w_time / f_length ) > 0.25 )
         if ( sim -> debug )
-          sim -> output( "Combat ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time.total_seconds(), iteration_fight_length.total_seconds() );
+          sim -> out_debug.printf( "Combat ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time.total_seconds(), iteration_fight_length.total_seconds() );
 }
 
 // startpoint for statistical data collection
@@ -3640,7 +3640,7 @@ void player_t::datacollection_begin()
     return;
 
   if ( sim -> debug )
-    sim -> output( "Data collection begins for player %s", name() );
+    sim -> out_debug.printf( "Data collection begins for player %s", name() );
 
   iteration_fight_length = timespan_t::zero();
   iteration_waiting_time = timespan_t::zero();
@@ -3685,7 +3685,7 @@ void player_t::datacollection_end()
     return;
 
   if ( sim -> debug )
-    sim -> output( "Data collection ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time.total_seconds(), iteration_fight_length.total_seconds() );
+    sim -> out_debug.printf( "Data collection ends for player %s at time %.4f fight_length=%.4f", name(), sim -> current_time.total_seconds(), iteration_fight_length.total_seconds() );
 
   for ( size_t i = 0; i < pet_list.size(); ++i )
     pet_list[ i ] -> datacollection_end();
@@ -3945,7 +3945,7 @@ void player_t::merge( player_t& other )
 
 void player_t::reset()
 {
-  if ( sim -> debug ) sim -> output( "Resetting player %s", name() );
+  if ( sim -> debug ) sim -> out_debug.printf( "Resetting player %s", name() );
 
   last_cast = timespan_t::zero();
   gcd_ready = timespan_t::zero();
@@ -3961,7 +3961,7 @@ void player_t::reset()
 
   if ( sim -> debug )
   {
-    sim -> output( "%s current stats ( reset to initial ): %s", name(), current.to_string().c_str() );
+    sim -> out_debug.printf( "%s current stats ( reset to initial ): %s", name(), current.to_string().c_str() );
   }
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
@@ -4035,7 +4035,7 @@ void player_t::trigger_ready()
 
   if ( buffs.stunned -> check() ) return;
 
-  if ( sim -> debug ) sim -> output( "%s is triggering ready, interval=%f", name(), ( sim -> current_time - started_waiting ).total_seconds() );
+  if ( sim -> debug ) sim -> out_debug.printf( "%s is triggering ready, interval=%f", name(), ( sim -> current_time - started_waiting ).total_seconds() );
 
   assert( started_waiting >= timespan_t::zero() );
   iteration_waiting_time += sim -> current_time - started_waiting;
@@ -4142,7 +4142,7 @@ void player_t::schedule_ready( timespan_t delta_time,
     cast_delay_reaction = rng().gauss( brain_lag, brain_lag_stddev );
     if ( sim -> debug )
     {
-      sim -> output( "%s %s schedule_ready(): cast_finishes=%f cast_delay=%f",
+      sim -> out_debug.printf( "%s %s schedule_ready(): cast_finishes=%f cast_delay=%f",
                      name_str.c_str(),
                      was_executing -> name_str.c_str(),
                      readying -> occurs().total_seconds(),
@@ -4156,7 +4156,7 @@ void player_t::schedule_ready( timespan_t delta_time,
 void player_t::arise()
 {
   if ( sim -> log )
-    sim -> output( "%s tries to arise.", name() );
+    sim -> out_log.printf( "%s tries to arise.", name() );
 
   if ( ! initial.sleeping )
     current.sleeping = false;
@@ -4165,7 +4165,7 @@ void player_t::arise()
     return;
 
   if ( sim -> log )
-    sim -> output( "%s arises.", name() );
+    sim -> out_log.printf( "%s arises.", name() );
 
   init_resources( true );
 
@@ -4208,7 +4208,7 @@ void player_t::demise()
     return;
 
   if ( sim -> log )
-    sim -> output( "%s demises.", name() );
+    sim -> out_log.printf( "%s demises.", name() );
 
   assert( arise_time >= timespan_t::zero() );
   iteration_fight_length += sim -> current_time - arise_time;
@@ -4263,7 +4263,7 @@ void player_t::interrupt()
 {
   // FIXME! Players will need to override this to handle background repeating actions.
 
-  if ( sim -> log ) sim -> output( "%s is interrupted", name() );
+  if ( sim -> log ) sim -> out_log.printf( "%s is interrupted", name() );
 
   if ( executing  ) executing  -> interrupt_action();
   if ( channeling ) channeling -> interrupt_action();
@@ -4283,7 +4283,7 @@ void player_t::interrupt()
 
 void player_t::halt()
 {
-  if ( sim -> log ) sim -> output( "%s is halted", name() );
+  if ( sim -> log ) sim -> out_log.printf( "%s is halted", name() );
 
   interrupt();
 
@@ -4311,7 +4311,7 @@ void player_t::moving()
 
 void player_t::clear_debuffs()
 {
-  if ( sim -> log ) sim -> output( "%s clears debuffs", name() );
+  if ( sim -> log ) sim -> out_log.printf( "%s clears debuffs", name() );
 
   // Clear Dots
   for ( size_t i = 0; i < dot_list.size(); ++i )
@@ -4493,7 +4493,7 @@ double player_t::resource_loss( resource_e resource_type,
   action_callback_t::trigger( callbacks.resource_loss[ resource_type ], action, ( void* ) &actual_amount );
 
   if ( sim -> debug )
-    sim -> output( "Player %s loses %.2f (%.2f) %s. health pct: %.2f (%.0f/%.0f)",
+    sim -> out_debug.printf( "Player %s loses %.2f (%.2f) %s. health pct: %.2f (%.0f/%.0f)",
                    name(), actual_amount, amount, util::resource_type_string( resource_type ), health_percentage(), resources.current[ resource_type ], resources.max[ resource_type ] );
 
   return actual_amount;
@@ -4529,7 +4529,7 @@ double player_t::resource_gain( resource_e resource_type,
 
   if ( sim -> log )
   {
-    sim -> output( "%s gains %.2f (%.2f) %s from %s (%.2f/%.2f)",
+    sim -> out_log.printf( "%s gains %.2f (%.2f) %s from %s (%.2f/%.2f)",
                    name(), actual_amount, amount,
                    util::resource_type_string( resource_type ),
                    source ? source -> name() : action ? action -> name() : "unknown",
@@ -4657,7 +4657,7 @@ void player_t::stat_gain( stat_e    stat,
 {
   if ( amount <= 0 ) return;
 
-  if ( sim -> log ) sim -> output( "%s gains %.2f %s%s", name(), amount, util::stat_type_string( stat ), temporary_stat ? " (temporary)" : "" );
+  if ( sim -> log ) sim -> out_log.printf( "%s gains %.2f %s%s", name(), amount, util::stat_type_string( stat ), temporary_stat ? " (temporary)" : "" );
 
   int temp_value = temporary_stat ? 1 : 0;
   switch ( stat )
@@ -4761,7 +4761,7 @@ void player_t::stat_loss( stat_e    stat,
 {
   if ( amount <= 0 ) return;
 
-  if ( sim -> log ) sim -> output( "%s loses %.2f %s%s", name(), amount, util::stat_type_string( stat ), ( temporary_buff ) ? " (temporary)" : "" );
+  if ( sim -> log ) sim -> out_log.printf( "%s loses %.2f %s%s", name(), amount, util::stat_type_string( stat ), ( temporary_buff ) ? " (temporary)" : "" );
 
   int temp_value = temporary_buff ? 1 : 0;
   switch ( stat )
@@ -4873,7 +4873,7 @@ void player_t::cost_reduction_gain( school_e school,
   if ( amount <= 0 ) return;
 
   if ( sim -> log )
-    sim -> output( "%s gains a cost reduction of %.0f on abilities of school %s", name(), amount,
+    sim -> out_log.printf( "%s gains a cost reduction of %.0f on abilities of school %s", name(), amount,
                    util::school_type_string( school ) );
 
   if ( school > SCHOOL_MAX_PRIMARY )
@@ -4901,7 +4901,7 @@ void player_t::cost_reduction_loss( school_e school,
   if ( amount <= 0 ) return;
 
   if ( sim -> log )
-    sim -> output( "%s loses a cost reduction %.0f on abilities of school %s", name(), amount,
+    sim -> out_log.printf( "%s loses a cost reduction %.0f on abilities of school %s", name(), amount,
                    util::school_type_string( school ) );
 
   if ( school > SCHOOL_MAX_PRIMARY )
@@ -4991,7 +4991,7 @@ void player_t::assess_damage( school_e school,
   // store post-mitigation, pre-absorb value
   s -> result_mitigated = s -> result_amount;
   if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-    sim -> output( "Damage to %s after all mitigation is %f", s -> target -> name(), s -> result_amount );
+    sim -> out_debug.printf( "Damage to %s after all mitigation is %f", s -> target -> name(), s -> result_amount );
 
 
   if ( buffs.hand_of_sacrifice -> check() && s -> result_amount > 0 )
@@ -5007,7 +5007,7 @@ void player_t::assess_damage( school_e school,
     s -> result_amount -= redirected_damage;
 
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> output( "Damage to %s after Hand of Sacrifice is %f", s -> target -> name(), s -> result_amount );
+      sim -> out_debug.printf( "Damage to %s after Hand of Sacrifice is %f", s -> target -> name(), s -> result_amount );
   }
 
   /* ABSORB BUFFS
@@ -5054,7 +5054,7 @@ void player_t::assess_damage( school_e school,
       }
 
       if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() && buff_value > 0 )
-        sim -> output( "Damage to %s after %s is %f", s -> target -> name(), ab -> name(), s -> result_amount );
+        sim -> out_debug.printf( "Damage to %s after %s is %f", s -> target -> name(), ab -> name(), s -> result_amount );
     }
 
     ab -> expire();
@@ -5134,7 +5134,7 @@ void player_t::assess_damage( school_e school,
       {
         collected_data.deaths.add( sim -> current_time.total_seconds() );
       }
-      if ( sim -> log ) sim -> output( "%s has died.", name() );
+      if ( sim -> log ) sim -> out_log.printf( "%s has died.", name() );
       new ( *sim ) demise_event_t( *this );
     }
   }
@@ -5176,7 +5176,7 @@ void player_t::target_mitigation( school_e school,
   if ( school == SCHOOL_PHYSICAL && dmg_type == DMG_DIRECT )
   {
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> output( "Damage to %s before armor mitigation is %f", s -> target -> name(), s -> result_amount );
+      sim -> out_debug.printf( "Damage to %s before armor mitigation is %f", s -> target -> name(), s -> result_amount );
 
     // Armor
     if ( s -> action )
@@ -5191,7 +5191,7 @@ void player_t::target_mitigation( school_e school,
     }
 
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> output( "Damage to %s after armor mitigation is %f", s -> target -> name(), s -> result_amount );
+      sim -> out_debug.printf( "Damage to %s after armor mitigation is %f", s -> target -> name(), s -> result_amount );
     
     double pre_block_amount = s -> result_amount;
 
@@ -5210,7 +5210,7 @@ void player_t::target_mitigation( school_e school,
     s -> blocked_amount = pre_block_amount  - s -> result_amount;
 
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() && s -> blocked_amount > 0.0)
-      sim -> output( "Damage to %s after blocking is %f", s -> target -> name(), s -> result_amount );
+      sim -> out_debug.printf( "Damage to %s after blocking is %f", s -> target -> name(), s -> result_amount );
   }
 }
 
@@ -5543,7 +5543,7 @@ struct start_moving_t : public action_t
     player -> buffs.self_movement -> trigger();
 
     if ( sim -> log )
-      sim -> output( "%s starts moving.", player -> name() );
+      sim -> out_log.printf( "%s starts moving.", player -> name() );
 
     update_ready();
   }
@@ -5572,7 +5572,7 @@ struct stop_moving_t : public action_t
   {
     player -> buffs.self_movement -> expire();
 
-    if ( sim -> log ) sim -> output( "%s stops moving.", player -> name() );
+    if ( sim -> log ) sim -> out_log.printf( "%s stops moving.", player -> name() );
     update_ready();
   }
 
@@ -5821,7 +5821,7 @@ struct restart_sequence_t : public action_t
   virtual void execute()
   {
     if ( sim -> debug )
-      sim -> output( "%s restarting sequence %s", player -> name(), seq_name_str.c_str() );
+      sim -> out_debug.printf( "%s restarting sequence %s", player -> name(), seq_name_str.c_str() );
     seq -> restart();
   }
 
@@ -5893,7 +5893,7 @@ struct snapshot_stats_t : public action_t
 
     if ( sim -> current_iteration > 0 ) return;
 
-    if ( sim -> log ) sim -> output( "%s performs %s", p -> name(), name() );
+    if ( sim -> log ) sim -> out_log.printf( "%s performs %s", p -> name(), name() );
 
     for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; ++i )
       p -> buffed.attribute[ i ] = floor( p -> get_attribute( i ) );
@@ -6218,7 +6218,7 @@ struct use_item_t : public action_t
     }
     else if ( trigger )
     {
-      if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), use_name.c_str() );
+      if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), use_name.c_str() );
 
       trigger -> activate();
 
@@ -6247,7 +6247,7 @@ struct use_item_t : public action_t
     }
     else if ( buff )
     {
-      if ( sim -> log ) sim -> output( "%s performs %s", player -> name(), use_name.c_str() );
+      if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), use_name.c_str() );
       buff -> trigger();
       lockout( buff -> buff_duration );
     }
@@ -6314,7 +6314,7 @@ struct cancel_buff_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log ) sim -> output( "%s cancels buff %s", player -> name(), buff -> name() );
+    if ( sim -> log ) sim -> out_log.printf( "%s cancels buff %s", player -> name(), buff -> name() );
     buff -> expire();
   }
 
@@ -6362,7 +6362,7 @@ struct swap_action_list_t : public action_t
 
   virtual void execute()
   {
-    if ( sim -> log ) sim -> output( "%s swaps to action list %s", player -> name(), alist -> name_str.c_str() );
+    if ( sim -> log ) sim -> out_log.printf( "%s swaps to action list %s", player -> name(), alist -> name_str.c_str() );
     player -> activate_action_list( alist );
   }
 
@@ -6385,7 +6385,7 @@ struct run_action_list_t : public swap_action_list_t
 
   virtual void execute()
   {
-    if ( sim -> log ) sim -> output( "%s runs action list %s", player -> name(), alist -> name_str.c_str() );
+    if ( sim -> log ) sim -> out_log.printf( "%s runs action list %s", player -> name(), alist -> name_str.c_str() );
 
     if ( player -> restore_action_list == 0 ) player -> restore_action_list = player -> active_action_list;
     player -> activate_action_list( alist );
@@ -6464,7 +6464,7 @@ struct pool_resource_t : public action_t
   virtual void execute()
   {
     if ( sim -> log )
-      sim -> output( "%s performs %s", player -> name(), name() );
+      sim -> out_log.printf( "%s performs %s", player -> name(), name() );
   }
 
   virtual timespan_t gcd()
@@ -6965,7 +6965,7 @@ bool player_t::parse_talents_wowhead( const std::string& talent_string )
 
   if ( sim -> debug )
   {
-    util::fprintf( sim -> output_file, "Player %s wowhead talent string translation: '%s'\n",
+    sim -> out_debug.printf( "Player %s wowhead talent string translation: '%s'\n",
                    name(), talent_points.to_string().c_str() );
   }
 
@@ -7080,7 +7080,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
     spell_id = dbc::get_token_id( n );
 
   if ( !spell_id && sim -> debug )
-    sim -> output( "Player %s: Can't find talent with name %s.\n",
+    sim -> out_debug.printf( "Player %s: Can't find talent with name %s.\n",
                    name(), n.c_str() );
 
   if ( ! spell_id )
@@ -8905,7 +8905,7 @@ player_t::scales_over_t player_t::scales_over()
 void player_t::change_position( position_e new_pos )
 {
   if ( sim -> debug )
-    sim -> output( "%s changes position from %s to %s.", name(), util::position_type_string( position() ), util::position_type_string( new_pos ) );
+    sim -> out_debug.printf( "%s changes position from %s to %s.", name(), util::position_type_string( position() ), util::position_type_string( new_pos ) );
 
   current.position = new_pos;
 }

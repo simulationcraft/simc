@@ -425,7 +425,7 @@ struct heal_event_t : public raid_event_t
       player_t* p = affected_players[ i ];
 
       double x = sim -> rng().range( amount - amount_range, amount + amount_range );
-      if ( sim -> log ) sim -> output( "%s takes %.0f raid heal.", p -> name(), x );
+      if ( sim -> log ) sim -> out_log.printf( "%s takes %.0f raid heal.", p -> name(), x );
       p -> resource_gain( RESOURCE_HEALTH, x );
     }
   }
@@ -569,7 +569,7 @@ timespan_t raid_event_t::duration_time()
 void raid_event_t::start()
 {
   if ( sim -> log )
-    sim -> output( "Raid event %s starts.", name_str.c_str() );
+    sim -> out_log.printf( "Raid event %s starts.", name_str.c_str() );
 
   num_starts++;
 
@@ -603,14 +603,14 @@ void raid_event_t::finish()
   _finish();
 
   if ( sim -> log )
-    sim -> output( "Raid event %s finishes.", name_str.c_str() );
+    sim -> out_log.printf( "Raid event %s finishes.", name_str.c_str() );
 }
 
 // raid_event_t::schedule ===================================================
 
 void raid_event_t::schedule()
 {
-  if ( sim -> debug ) sim -> output( "Scheduling raid event: %s", name_str.c_str() );
+  if ( sim -> debug ) sim -> out_debug.printf( "Scheduling raid event: %s", name_str.c_str() );
 
   struct duration_event_t : public event_t
   {
@@ -767,7 +767,7 @@ void raid_event_t::init( sim_t* sim )
     std::string name = splits[ i ];
     std::string options = "";
 
-    if ( sim -> debug ) sim -> output( "Creating raid event: %s", name.c_str() );
+    if ( sim -> debug ) sim -> out_debug.printf( "Creating raid event: %s", name.c_str() );
 
     std::string::size_type cut_pt = name.find_first_of( "," );
 

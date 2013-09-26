@@ -125,7 +125,7 @@ void heal_t::assess_damage( dmg_e heal_type,
   {
     if ( sim -> log )
     {
-      sim -> output( "%s %s heals %s for %.0f (%.0f) (%s)",
+      sim -> out_log.printf( "%s %s heals %s for %.0f (%.0f) (%s)",
                      player -> name(), name(),
                      s -> target -> name(), s -> total_result_amount, s -> result_amount,
                      util::result_type_string( s -> result ) );
@@ -139,7 +139,7 @@ void heal_t::assess_damage( dmg_e heal_type,
     if ( sim -> log )
     {
       dot_t* dot = get_dot( s -> target );
-      sim -> output( "%s %s ticks (%d of %d) %s for %.0f (%.0f) heal (%s)",
+      sim -> out_log.printf( "%s %s ticks (%d of %d) %s for %.0f (%.0f) heal (%s)",
                      player -> name(), name(),
                      dot -> current_tick, dot -> num_ticks,
                      s -> target -> name(), s -> total_result_amount, s -> result_amount,
