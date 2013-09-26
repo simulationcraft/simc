@@ -424,7 +424,7 @@ void dbc::apply_hotfixes()
 
   // Incinerate damage increased by 5% (apparently, in reality it's 15%)
   s = spell_data_t::find( 29722, false );
-  assert( s -> effectN( 1 ).m_average != 1.54 * 1.15 && "Out of date hotfix for Incinerate" );
+  assert( s -> effectN( 1 ).m_average() != 1.54 * 1.15 && "Out of date hotfix for Incinerate" );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.54 * 1.15;
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 1.54 * 1.15;
 
