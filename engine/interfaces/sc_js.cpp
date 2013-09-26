@@ -409,11 +409,11 @@ std::ostream& js::print( std::ostream& stream, js_node_t* root, int spacing )
 {
   if ( ! root ) return stream;
 
-  sc_raw_ostream_t::printf( stream, "%*s%s", spacing, "", root -> name() );
+  util::stream_printf( stream, "%*s%s", spacing, "", root -> name() );
 
   if ( ! root -> value.empty() )
   {
-    sc_raw_ostream_t::printf( stream, " : '%s'", root -> value.c_str() );
+    util::stream_printf( stream, " : '%s'", root -> value.c_str() );
   }
   stream << "\n";
 

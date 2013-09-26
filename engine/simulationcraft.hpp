@@ -1331,6 +1331,8 @@ T str_to_num( const std::string& );
 
 bool contains_non_ascii( const std::string& );
 
+std::ostream& stream_printf( std::ostream&, const char* format, ... );
+
 } // namespace util
 
 
@@ -2422,8 +2424,6 @@ struct sc_raw_ostream_t {
   { _stream = os; return *this; }
   std::ostream* get_stream()
   { return _stream.get(); }
-
-  static std::ostream& printf( std::ostream&, const char* format, ... );
 private:
   std::shared_ptr<std::ostream> _stream;
 };

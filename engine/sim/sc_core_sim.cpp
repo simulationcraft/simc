@@ -410,22 +410,6 @@ sc_raw_ostream_t& sc_raw_ostream_t::printf( const char* format, ... )
   return *this;
 }
 
-std::ostream& sc_raw_ostream_t::printf( std::ostream& stream, const char* format, ... )
-{
-  char buffer[ 4048 ];
-
-  va_list fmtargs;
-  va_start( fmtargs, format );
-  int rval = ::vsnprintf( buffer, sizeof( buffer ), format, fmtargs );
-  va_end( fmtargs );
-
-  assert( rval < 0 || ( static_cast<size_t>( rval ) < sizeof( buffer ) ) );
-  (void) rval;
-
-  stream << buffer;
-  return stream;
-}
-
 sim_ostream_t& sim_ostream_t::printf( const char* format, ... )
 {
   char buffer[ 4048 ];

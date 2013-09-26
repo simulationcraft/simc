@@ -2938,6 +2938,22 @@ double stat_itemization_weight( stat_e s )
   }
 }
 
+std::ostream& stream_printf( std::ostream& stream, const char* format, ... )
+{
+  char buffer[ 4048 ];
+
+  va_list fmtargs;
+  va_start( fmtargs, format );
+  int rval = ::vsnprintf( buffer, sizeof( buffer ), format, fmtargs );
+  va_end( fmtargs );
+
+  assert( rval < 0 || ( static_cast<size_t>( rval ) < sizeof( buffer ) ) );
+  (void) rval;
+
+  stream << buffer;
+  return stream;
+}
+
 } // namespace util
 
 #ifdef _MSC_VER
