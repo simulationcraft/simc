@@ -1193,7 +1193,8 @@ void sim_t::combat_end()
   if ( iterations == 1 || current_iteration >= 1 )
     datacollection_end();
 
-  assert( active_enemies == 0 && active_allies == 0 );
+  assert( active_enemies == 0 );
+  assert( active_allies == 0 );
 }
 
 // sim_t::datacollection_begin ==============================================

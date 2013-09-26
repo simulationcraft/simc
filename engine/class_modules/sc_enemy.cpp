@@ -976,9 +976,7 @@ void enemy_t::demise()
 {
   if ( this == sim -> target )
   {
-    if ( sim -> current_iteration  == 0 )
-      return;
-    else
+    if ( sim -> current_iteration  != 0 )
       // For the main target, end simulation on death.
       sim -> iteration_canceled = 1;
   }
