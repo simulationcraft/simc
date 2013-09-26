@@ -2253,30 +2253,19 @@ double sim_t::progress( std::string& phase )
 
 // sim_t::errorf ============================================================
 
-int sim_t::errorf( const char* format, ... )
+void sim_t::errorf( const char* format, ... )
 {
-  std::string p_locale = setlocale( LC_CTYPE, NULL );
-  setlocale( LC_CTYPE, "" );
+  char buffer[ 1024 ];
 
   va_list fmtargs;
   va_start( fmtargs, format );
-
-  char buffer[ 1024 ];
-  int retcode = vsnprintf( buffer, sizeof( buffer ), format, fmtargs );
-
+  int rval = ::vsnprintf( buffer, sizeof( buffer ), format, fmtargs );
   va_end( fmtargs );
-  assert( retcode >= 0 );
 
-  if ( buffer[ strlen( buffer ) ] != '\n' && strlen( buffer ) + 2 <= sizeof( buffer ) )
-  {
-    buffer[ strlen( buffer ) + 1 ] = '\n';
-    buffer[ strlen( buffer ) + 2 ] = 0;
-  }
+  assert( rval < 0 || ( static_cast<size_t>( rval ) < sizeof( buffer ) ) );
+  (void) rval;
 
-  out_error << buffer;
-
-  setlocale( LC_CTYPE, p_locale.c_str() );
+  out_error << buffer << "\n";
 
   if ( thread_index == 0 ) error_list.push_back( buffer );
-  return retcode;
 }

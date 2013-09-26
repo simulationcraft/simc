@@ -2780,7 +2780,7 @@ public:
   cooldown_t* get_cooldown( const std::string& name );
   void      use_optimal_buffs_and_debuffs( int value );
   expr_t* create_expression( action_t*, const std::string& name );
-  int       errorf( const char* format, ... ) PRINTF_ATTRIBUTE( 2, 3 );
+  void       errorf( const char* format, ... );
 
   static double distribution_mean_error( const sim_t& s, const extended_sample_data_t& sd )
   { return s.confidence_estimator * sd.mean_std_dev; }

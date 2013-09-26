@@ -117,7 +117,7 @@ FILE* fopen( const std::string& filename, const char* mode )
 
 ofstream& ofstream::printf( const char* format, ... )
 {
-  char buffer[ 16384 ];
+  char buffer[ 4048 /*16384*/ ];
 
   va_list fmtargs;
   va_start( fmtargs, format );

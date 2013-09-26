@@ -192,9 +192,8 @@ int sim_t::main( const std::vector<std::string>& args )
     out_std.raw().printf(
                    "\nSimulating... ( iterations=%d, max_time=%.0f, vary_combat_length=%0.2f, optimal_raid=%d, fight_style=%s )\n",
                    iterations, max_time.total_seconds(), vary_combat_length, optimal_raid, fight_style.c_str() );
-    //fflush( output_file );
 
-//    util::fprintf( stdout, "\nGenerating baseline... \n" ); fflush( stdout );
+    out_std.raw() << "\nGenerating baseline... \n";
 
     sim_phase_str = "Generating baseline:   ";
     if ( execute() )
@@ -207,9 +206,6 @@ int sim_t::main( const std::vector<std::string>& args )
     }
   }
 
-  //if ( output_file != stdout )
-  //  fclose( output_file );
- // output_file = 0;
 
   http::cache_save( ( cache_directory + "/simc_cache.dat" ).c_str() );
   dbc::de_init();
