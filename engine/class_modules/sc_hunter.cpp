@@ -1174,7 +1174,7 @@ struct lynx_rush_t : public hunter_main_pet_attack_t
       cast_td( s -> target ) -> debuffs_lynx_bleed -> trigger();
       snapshot_state( s, DMG_OVER_TIME );
       dot_t* dot = get_dot( s -> target );
-      event_t* ticker = dot -> tick_event;
+      core_event_t* ticker = dot -> tick_event;
       if ( ticker )
       {
         ticker -> reschedule_time = ticker -> time;

@@ -47,7 +47,7 @@ public:
   // Icicles
   std::vector< icicle_data_t > icicles;
   icicle_t* icicle;
-  event_t* icicle_event;
+  core_event_t* icicle_event;
 
   // Active
   ignite_t* active_ignite;
@@ -1232,18 +1232,18 @@ static double icicle_damage( mage_t* mage )
   return 0;
 }
 
-struct icicle_event_t : public player_event_t
+struct icicle_event_t : public event_t
 {
   mage_t* mage;
   double damage;
 
   icicle_event_t( mage_t& m, double d, bool first = false ) :
-    player_event_t( m, "icicle_event" ), mage( &m ), damage( d )
+    event_t( m, "icicle_event" ), mage( &m ), damage( d )
   {
     double cast_time = first ? 0.25 : 0.75;
     cast_time *= mage -> cache.spell_speed();
 
-    sim.add_event( this, timespan_t::from_seconds( cast_time ) );
+    add_event( timespan_t::from_seconds( cast_time ) );
   }
 
   void execute()
@@ -1254,7 +1254,7 @@ struct icicle_event_t : public player_event_t
     double d = icicle_damage( mage );
     if ( d > 0 )
     {
-      mage -> icicle_event = new ( sim ) icicle_event_t( *mage, d );
+      mage -> icicle_event = new ( sim() ) icicle_event_t( *mage, d );
       if ( mage -> sim -> debug )
         mage -> sim -> output( "%s icicle use (chained), damage=%f, total=%u",
                                mage -> name(), d, as<unsigned>( mage -> icicles.size() ) );
@@ -4665,7 +4665,7 @@ void mage_t::reset()
 
   rotation.reset();
   icicles.clear();
-  event_t::cancel( icicle_event );
+  core_event_t::cancel( icicle_event );
   mana_gem_charges = max_mana_gem_charges();
   active_living_bomb_targets = 0;
   last_bomb_target = 0;

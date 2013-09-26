@@ -203,7 +203,7 @@ struct cost_reduction_buff_t;
 class  dbc_t;
 struct debuff_t;
 struct dot_t;
-struct event_t;
+struct core_event_t;
 class  expr_t;
 struct gain_t;
 struct haste_buff_t;
@@ -1839,9 +1839,9 @@ public:
   const std::string name_str;
   const spell_data_t* s_data;
   player_t* const source;
-  event_t* expiration;
-  event_t* delay;
-  event_t* expiration_delay;
+  core_event_t* expiration;
+  core_event_t* delay;
+  core_event_t* expiration_delay;
   cooldown_t* cooldown;
   sc_timeline_t uptime_array;
 
@@ -1861,7 +1861,7 @@ public:
   timespan_t buff_duration;
   double default_chance;
   std::vector<timespan_t> stack_occurrence, stack_react_time;
-  std::vector<event_t*> stack_react_ready_triggers;
+  std::vector<core_event_t*> stack_react_ready_triggers;
 
   // tmp data collection
 protected:
@@ -2411,9 +2411,43 @@ private:
   { _data.erase( it ); trigger_callbacks(); }
 };
 
+// Core Simulation Class. Should not have anything to do with World of Warcraft
+struct core_sim_t : protected sc_thread_t
+{
+  core_sim_t();
+  virtual ~core_sim_t();
+  virtual void flush_events();
+  virtual void reset();
+  virtual bool init();
+
+  void add_event( core_event_t*, timespan_t delta_time );
+  core_event_t*  next_event();
+
+  io::ofstream out_error;
+  io::ofstream out_debug;
+
+  // Timing Wheel Event Management
+  core_event_t* recycled_event_list;
+  std::vector<core_event_t*> timing_wheel; // This should be a vector of forward_list's
+  int    wheel_seconds, wheel_size, wheel_mask, wheel_shift;
+  unsigned timing_slice;
+  double wheel_granularity;
+  timespan_t wheel_time;
+  std::vector<core_event_t*> all_events_ever_created;
+  int64_t     events_remaining, max_events_remaining;
+  int64_t     events_processed, total_events_processed;
+  unsigned global_event_id;
+  timespan_t  current_time;
+
+
+  stopwatch_t event_stopwatch;
+  int monitor_cpu;
+
+};
+
 // Simulation Engine ========================================================
 
-struct sim_t : private sc_thread_t
+struct sim_t : public core_sim_t
 {
   sim_control_t* control;
   sim_t*      parent;
@@ -2441,12 +2475,10 @@ struct sim_t : private sc_thread_t
   double     travel_variance, default_skill;
   timespan_t  reaction_time, regen_periodicity;
   timespan_t  ignite_sampling_delta;
-  timespan_t  current_time, max_time, expected_time;
+  timespan_t  max_time, expected_time;
   double      vary_combat_length;
   int         fixed_time;
-  int64_t     events_remaining, max_events_remaining;
-  int64_t     events_processed, total_events_processed;
-  int         seed, id, iterations, current_iteration, current_slot;
+  int         seed, iterations, current_iteration, current_slot;
   int         armor_update_interval, weapon_speed_scale_factors;
   int         optimal_raid, log, debug, debug_each;
   int         save_profiles, default_actions;
@@ -2505,14 +2537,6 @@ public:
   timespan_t gauss( timespan_t mean, timespan_t stddev );
   double    real() ;
 
-  // Timing Wheel Event Management
-  event_t* recycled_event_list;
-  std::vector<event_t*> timing_wheel; // This should be a vector of forward_list's
-  int    wheel_seconds, wheel_size, wheel_mask, wheel_shift;
-  unsigned timing_slice;
-  double wheel_granularity;
-  timespan_t wheel_time;
-  std::vector<event_t*> all_events_ever_created;
 
   // Raid Events
   auto_dispose< std::vector<raid_event_t*> > raid_events;
@@ -2616,9 +2640,6 @@ public:
   int report_raid_summary;
   int buff_uptime_timeline;
 
-  stopwatch_t event_stopwatch;
-  int monitor_cpu;
-
   int allow_potions;
   int allow_food;
   int allow_flasks;
@@ -2658,10 +2679,8 @@ public:
   void      combat_end();
   void      datacollection_begin();
   void      datacollection_end();
-  void      add_event( event_t*, timespan_t delta_time );
-  void      reschedule_event( event_t* );
+  void      reschedule_event( core_event_t* );
   void      flush_events();
-  event_t*  next_event();
   void      reset();
   bool      init();
   void      analyze();
@@ -2861,43 +2880,47 @@ struct plot_data_t
 // (2) There is 1 * sizeof( event_t ) space available to extend the sub-class
 // (3) sim_t is responsible for deleting the memory associated with allocated events
 
-struct event_t
+struct core_event_t
 {
-  sim_t&      sim;
+protected:
+  friend struct core_sim_t;
+  friend struct sim_t; // remove at some point
+  core_sim_t& _sim;
   actor_t*    actor;
+  uint32_t    id;
+  bool        canceled;
+public:
   const char* name;
   timespan_t  time;
   timespan_t  reschedule_time;
-  uint32_t    id;
-  bool        canceled;
-  event_t*    next;
-
-  event_t( sim_t& s, const char* n = "unknown" );
-  event_t( sim_t& s, actor_t* p, const char* n = "unknown" );
-  event_t( actor_t& p, const char* n = "unknown" );
+  core_event_t*    next;
+  core_event_t( core_sim_t& s, const char* n = "unknown" );
+  core_event_t( core_sim_t& s, actor_t* p, const char* n = "unknown" );
+  core_event_t( actor_t& p, const char* n = "unknown" );
 
   timespan_t occurs()  { return ( reschedule_time != timespan_t::zero() ) ? reschedule_time : time; }
-  timespan_t remains() { return occurs() - sim.current_time; }
+  timespan_t remains() { return occurs() - _sim.current_time; }
 
   void reschedule( timespan_t new_time );
+  void add_event( timespan_t delta_time );
 
   virtual void execute() = 0; // MUST BE IMPLEMENTED IN SUB-CLASS!
-  virtual ~event_t() {}
+  virtual ~core_event_t() {}
 
-  static void cancel( event_t*& e );
+  static void cancel( core_event_t*& e );
 
-  static void* allocate( std::size_t size, sim_t& );
-  static void  recycle( event_t* );
-  static void  release( sim_t& );
+  static void* allocate( std::size_t size, core_sim_t& );
+  static void  recycle( core_event_t* );
+  static void  release( core_sim_t& );
 
-  static void* operator new( std::size_t size, sim_t& sim ) { return allocate( size, sim ); }
+  static void* operator new( std::size_t size, core_sim_t& sim ) { return allocate( size, sim ); }
 
 #if defined(__GXX_EXPERIMENTAL_CXX0X__) && ( defined(SC_GCC) && SC_GCC >= 40400 || defined(SC_CLANG) && SC_CLANG >= 30000 ) // Improved compile-time diagnostics.
   static void* operator new( std::size_t ) throw() = delete; // DO NOT USE
 #else
   static void* operator new( std::size_t ) throw() { std::terminate(); return nullptr; } // DO NOT USE
 #endif
-  static void  operator delete( void*, sim_t& ) { std::terminate(); } // DO NOT USE
+  static void  operator delete( void*, core_sim_t& ) { std::terminate(); } // DO NOT USE
   static void  operator delete( void* ) { std::terminate(); } // DO NOT USE
 };
 
@@ -3446,8 +3469,8 @@ struct cooldown_t
   timespan_t reset_react;
   int charges;
   int current_charge;
-  event_t* recharge_event;
-  event_t* ready_trigger_event;
+  core_event_t* recharge_event;
+  core_event_t* ready_trigger_event;
   timespan_t last_start;
   double recharge_multiplier;
 
@@ -3639,7 +3662,7 @@ struct player_vengeance_t
 {
 private:
   sc_timeline_t& timeline_; // reference to collected_data.vengeance_timeline
-  event_t* event; // pointer to collection event so we can cancel it at the end of combat.
+  core_event_t* event; // pointer to collection event so we can cancel it at the end of combat.
 
 public:
   player_vengeance_t( sc_timeline_t& vengeance_tl ) :
@@ -4096,8 +4119,8 @@ struct player_t : public actor_t
   // Events
   action_t* executing;
   action_t* channeling;
-  event_t*  readying;
-  event_t*  off_gcd;
+  core_event_t*  readying;
+  core_event_t*  off_gcd;
   bool      in_combat;
   bool      action_queued;
   action_t* last_foreground_action;
@@ -4713,16 +4736,21 @@ struct target_specific_t
   }
 };
 
-struct player_event_t : public event_t
+struct event_t : public core_event_t
 {
-  player_event_t( player_t& p, const char* name = "unknown" ) :
-    event_t( p, name ) {}
-  player_event_t( sim_t& s, player_t* p, const char* name = "unknown" ) :
-    event_t( s, p, name ) {}
+
+  event_t( sim_t& s, const char* name = "unknown" ) :
+    core_event_t( s, name ) {}
+  event_t( player_t& p, const char* name = "unknown" ) :
+    core_event_t( p, name ) {}
+  event_t( sim_t& s, player_t* p, const char* name = "unknown" ) :
+    core_event_t( s, p, name ) {}
   player_t* p()
   { return player(); }
   player_t* player()
   { return static_cast<player_t*>( actor ); }
+  sim_t& sim()
+  { return static_cast<sim_t&>( _sim ); }
 };
 
 // Pet ======================================================================
@@ -4738,7 +4766,7 @@ struct pet_t : public player_t
   bool summoned;
   bool dynamic;
   pet_e pet_type;
-  event_t* expiration;
+  core_event_t* expiration;
   timespan_t duration;
 
   struct owner_coefficients_t
@@ -5005,7 +5033,7 @@ struct action_t : public noncopyable
   bool normalize_weapon_speed;
   cooldown_t* cooldown;
   stats_t* stats;
-  event_t* execute_event;
+  core_event_t* execute_event;
   timespan_t time_to_execute, time_to_travel;
   double travel_speed, resource_consumed;
   int moving, wait_on_ready, interrupt, chain, cycle_targets, max_cycle_targets, target_number;
@@ -5223,7 +5251,7 @@ public:
   virtual double composite_player_critical_multiplier()
   { return player -> composite_player_critical_damage_multiplier(); }
 
-  event_t* start_action_execute_event( timespan_t time, action_state_t* execute_state = 0 );
+  core_event_t* start_action_execute_event( timespan_t time, action_state_t* execute_state = 0 );
 
 private:
   std::vector<travel_event_t*> travel_events;
@@ -5563,7 +5591,7 @@ public:
   player_t* const source;
   action_t* current_action;
   action_state_t* state;
-  event_t* tick_event;
+  core_event_t* tick_event;
   int num_ticks, current_tick, added_ticks;
   bool ticking;
   timespan_t added_seconds;
@@ -5723,18 +5751,18 @@ struct proc_callback_t : public action_callback_t
   cooldown_t*      cooldown;
   rng_t&           proc_rng;
 
-  struct delay_event_t : public player_event_t
+  struct delay_event_t : public event_t
   {
     proc_callback_t& callback;
     action_t* action;
     T_CALLDATA* call_data;
 
     delay_event_t( player_t& p, proc_callback_t& cb, action_t* a, T_CALLDATA* cd ) :
-      player_event_t( p, "proc_callback_delay" ),
+      event_t( p, "proc_callback_delay" ),
       callback( cb ), action( a ), call_data( cd )
     {
-      timespan_t delay = sim.gauss( sim.default_aura_delay, sim.default_aura_delay_stddev );
-      sim.add_event( this, delay );
+      timespan_t delay = sim().gauss( sim().default_aura_delay, sim().default_aura_delay_stddev );
+      sim().add_event( this, delay );
     }
 
     virtual void execute()
@@ -5821,13 +5849,13 @@ public:
 template <typename T_BUFF, typename T_CALLDATA = action_state_t>
 struct buff_proc_callback_t : public proc_callback_t<T_CALLDATA>
 {
-  struct tick_stack_t : public player_event_t
+  struct tick_stack_t : public event_t
   {
     buff_proc_callback_t<T_BUFF>* callback;
 
     tick_stack_t( player_t& p, buff_proc_callback_t* cb, timespan_t initial_delay = timespan_t::zero() ) :
-      player_event_t( p, "cb_tick_stack" ), callback( cb )
-    { sim.add_event( this, callback -> proc_data.tick + initial_delay ); }
+      event_t( p, "cb_tick_stack" ), callback( cb )
+    { sim().add_event( this, callback -> proc_data.tick + initial_delay ); }
 
     virtual void execute()
     {
@@ -5836,7 +5864,7 @@ struct buff_proc_callback_t : public proc_callback_t<T_CALLDATA>
       {
         callback -> buff -> cooldown -> reset( false );
         callback -> buff -> trigger();
-        new ( sim ) tick_stack_t( *p(), callback );
+        new ( sim() ) tick_stack_t( *p(), callback );
       }
     }
   };
@@ -5952,7 +5980,7 @@ struct action_priority_list_t
                                  const std::string& comment = std::string() );
 };
 
-struct travel_event_t : public player_event_t
+struct travel_event_t : public event_t
 {
   action_t* action;
   action_state_t* state;

@@ -244,26 +244,26 @@ public:
     }
   } soul_swap_buffer;
 
-  struct demonic_calling_event_t : player_event_t
+  struct demonic_calling_event_t : event_t
   {
     bool initiator;
 
     demonic_calling_event_t( player_t* p, timespan_t delay, bool init = false ) :
-      player_event_t( *p, "demonic_calling" ), initiator( init )
+      event_t( *p, "demonic_calling" ), initiator( init )
     {
-      sim.add_event( this, delay );
+      add_event( delay );
     }
 
     virtual void execute()
     {
       warlock_t* p = static_cast<warlock_t*>( actor );
-      p -> demonic_calling_event = new ( sim ) demonic_calling_event_t( p,
+      p -> demonic_calling_event = new ( sim() ) demonic_calling_event_t( p,
           timespan_t::from_seconds( ( p -> spec.wild_imps -> effectN( 1 ).period().total_seconds() + p -> spec.imp_swarm -> effectN( 3 ).base_value() ) * p -> cache.spell_speed() ) );
       if ( ! initiator ) p -> buffs.demonic_calling -> trigger();
     }
   };
 
-  event_t* demonic_calling_event;
+  core_event_t* demonic_calling_event;
 
   int initial_burning_embers, initial_demonic_fury;
   std::string default_pet;
@@ -1471,26 +1471,26 @@ public:
   stats_t* mg_tick_stats;
   std::vector< player_t* > havoc_targets;
 
-  struct cost_event_t : player_event_t
+  struct cost_event_t : event_t
   {
     warlock_spell_t* spell;
     resource_e resource;
 
     cost_event_t( player_t* p, warlock_spell_t* s, resource_e r = RESOURCE_NONE ) :
-      player_event_t( *p, "cost_event" ), spell( s ), resource( r )
+      event_t( *p, "cost_event" ), spell( s ), resource( r )
     {
       if ( resource == RESOURCE_NONE ) resource = spell -> current_resource();
-      sim.add_event( this, timespan_t::from_seconds( 1 ) );
+      add_event( timespan_t::from_seconds( 1 ) );
     }
 
     virtual void execute()
     {
-      spell -> cost_event = new ( sim ) cost_event_t( p(), spell, resource );
+      spell -> cost_event = new ( sim() ) cost_event_t( p(), spell, resource );
       p() -> resource_loss( resource, spell -> costs_per_second[ resource ], spell -> gain );
     }
   };
 
-  event_t* cost_event;
+  core_event_t* cost_event;
 
   warlock_spell_t( warlock_t* p, const std::string& n ) :
     spell_t( n, p, p -> find_class_spell( n ) )
@@ -1520,7 +1520,7 @@ public:
     spell_t::reset();
 
     havoc_override = false;
-    event_t::cancel( cost_event );
+    core_event_t::cancel( cost_event );
   }
 
   virtual std::vector< player_t* >& target_list()
@@ -2111,15 +2111,15 @@ struct shadow_bolt_t : public warlock_spell_t
 
 struct shadowburn_t : public warlock_spell_t
 {
-  struct mana_event_t : public player_event_t
+  struct mana_event_t : public event_t
   {
     shadowburn_t* spell;
     gain_t* gain;
 
     mana_event_t( warlock_t* p, shadowburn_t* s ) :
-      player_event_t( *p, "shadowburn_mana_return" ), spell( s ), gain( p -> gains.shadowburn )
+      event_t( *p, "shadowburn_mana_return" ), spell( s ), gain( p -> gains.shadowburn )
     {
-      sim.add_event( this, spell -> mana_delay );
+      add_event( spell -> mana_delay );
     }
 
     virtual void execute()
@@ -3092,7 +3092,7 @@ struct metamorphosis_t : public warlock_spell_t
 
     if ( p() -> spells.melee ) p() -> spells.melee -> cancel();
     p() -> buffs.metamorphosis -> expire();
-    event_t::cancel( cost_event );
+    core_event_t::cancel( cost_event );
   }
 };
 
@@ -3525,7 +3525,7 @@ struct imp_swarm_t : public warlock_spell_t
 
     warlock_spell_t::execute();
 
-    event_t::cancel( p() -> demonic_calling_event );
+    core_event_t::cancel( p() -> demonic_calling_event );
     p() -> demonic_calling_event = new ( *sim ) warlock_t::demonic_calling_event_t( player, cooldown -> duration, true );
 
     int imp_count = data().effectN( 1 ).base_value();
@@ -3885,7 +3885,7 @@ struct immolation_aura_t : public warlock_spell_t
   {
     warlock_spell_t::last_tick( d );
 
-    event_t::cancel( cost_event );
+    core_event_t::cancel( cost_event );
   }
 
   virtual void impact( action_state_t* s )
@@ -5253,7 +5253,7 @@ void warlock_t::reset()
   ember_react = ( initial_burning_embers >= 1.0 ) ? timespan_t::zero() : timespan_t::max();
   shard_react = timespan_t::zero();
   nightfall_chance = 0;
-  event_t::cancel( demonic_calling_event );
+  core_event_t::cancel( demonic_calling_event );
 }
 
 

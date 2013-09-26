@@ -685,7 +685,7 @@ struct proxy_cast_check_t : public event_t
     event_t( s, "proxy_cast_check" ),
     uses( u ), override( o ), start_time( st ), cooldown( cd ), duration( d )
   {
-    sim.add_event( this, i );
+    sim().add_event( this, i );
   }
 
   virtual bool proxy_check() = 0;
@@ -697,12 +697,12 @@ struct proxy_cast_check_t : public event_t
     timespan_t interval = timespan_t::from_seconds( 0.25 );
 
     if ( uses == override && start_time > timespan_t::zero() )
-      interval = cooldown - ( sim.current_time - start_time );
+      interval = cooldown - ( sim().current_time - start_time );
 
     if ( proxy_check() )
     {
       // Cooldown over, reset uses
-      if ( uses == override && start_time > timespan_t::zero() && ( sim.current_time - start_time ) >= cooldown )
+      if ( uses == override && start_time > timespan_t::zero() && ( sim().current_time - start_time ) >= cooldown )
       {
         start_time = timespan_t::zero();
         uses = 0;
@@ -715,14 +715,14 @@ struct proxy_cast_check_t : public event_t
         uses++;
 
         if ( start_time == timespan_t::zero() )
-          start_time = sim.current_time;
+          start_time = sim().current_time;
 
         interval = duration + timespan_t::from_seconds( 1 );
 
-        if ( sim.debug )
-          sim.output( "Proxy-Execute uses=%d total=%d start_time=%.3f next_check=%.3f",
+        if ( sim().debug )
+          sim().output( "Proxy-Execute uses=%d total=%d start_time=%.3f next_check=%.3f",
                       uses, override, start_time.total_seconds(),
-                      ( sim.current_time + interval ).total_seconds() );
+                      ( sim().current_time + interval ).total_seconds() );
       }
     }
 
@@ -735,11 +735,11 @@ struct sim_end_event_t : event_t
   sim_end_event_t( sim_t& s, const char* n, timespan_t end_time ) :
     event_t( s, n )
   {
-    sim.add_event( this, end_time );
+    sim().add_event( this, end_time );
   }
   virtual void execute()
   {
-    sim.iteration_canceled = 1;
+    sim().iteration_canceled = 1;
   }
 };
 
@@ -748,27 +748,27 @@ struct resource_timeline_collect_event_t : public event_t
   resource_timeline_collect_event_t( sim_t& s ) :
     event_t( s, "resource_timeline_collect_event_t" )
   {
-    sim.add_event( this, timespan_t::from_seconds( 1 ) );
+    sim().add_event( this, timespan_t::from_seconds( 1 ) );
   }
 
   virtual void execute()
   {
     // Assumptions: Enemies do not have primary resource regeneration
-    for ( size_t i = 0, actors = sim.player_non_sleeping_list.size(); i < actors; i++ )
+    for ( size_t i = 0, actors = sim().player_non_sleeping_list.size(); i < actors; i++ )
     {
-      player_t* p = sim.player_non_sleeping_list[ i ];
+      player_t* p = sim().player_non_sleeping_list[ i ];
       if ( p -> primary_resource() == RESOURCE_NONE ) continue;
 
       p -> collect_resource_timeline_information();
     }
     // However, enemies do have health
-    for ( size_t i = 0, actors = sim.target_non_sleeping_list.size(); i < actors; i++ )
+    for ( size_t i = 0, actors = sim().target_non_sleeping_list.size(); i < actors; i++ )
     {
-      player_t* p = sim.target_non_sleeping_list[ i ];
+      player_t* p = sim().target_non_sleeping_list[ i ];
       p -> collect_resource_timeline_information();
     }
 
-    new ( sim ) resource_timeline_collect_event_t( sim );
+    new ( sim() ) resource_timeline_collect_event_t( sim() );
   }
 };
 
@@ -777,22 +777,22 @@ struct regen_event_t : public event_t
   regen_event_t( sim_t& s ) :
     event_t( s, "Regen Event" )
   {
-    if ( sim.debug ) sim.output( "New Regen Event" );
+    if ( sim().debug ) sim().output( "New Regen Event" );
 
-    sim.add_event( this, sim.regen_periodicity );
+    add_event( sim().regen_periodicity );
   }
 
   virtual void execute()
   {
     // targets do not get any resource regen for performance reasons
-    for ( size_t i = 0, actors = sim.player_non_sleeping_list.size(); i < actors; i++ )
+    for ( size_t i = 0, actors = sim().player_non_sleeping_list.size(); i < actors; i++ )
     {
-      player_t* p = sim.player_non_sleeping_list[ i ];
+      player_t* p = sim().player_non_sleeping_list[ i ];
       if ( p -> primary_resource() == RESOURCE_NONE ) continue;
-      p -> regen( sim.regen_periodicity );
+      p -> regen( sim().regen_periodicity );
     }
 
-    new ( sim ) regen_event_t( sim );
+    new ( sim() ) regen_event_t( sim() );
   }
 };
 
@@ -829,12 +829,10 @@ sim_t::sim_t( sim_t* p, int index ) :
   travel_variance( 0 ), default_skill( 1.0 ), reaction_time( timespan_t::from_seconds( 0.5 ) ),
   regen_periodicity( timespan_t::from_seconds( 0.25 ) ),
   ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) ),
-  current_time( timespan_t::zero() ), max_time( timespan_t::from_seconds( 450 ) ),
+  max_time( timespan_t::from_seconds( 450 ) ),
   expected_time( timespan_t::zero() ), vary_combat_length( 0.2 ),
   fixed_time( 0 ),
-  events_remaining( 0 ), max_events_remaining( 0 ),
-  events_processed( 0 ), total_events_processed( 0 ),
-  seed( 0 ), id( 0 ), iterations( 1000 ), current_iteration( -1 ), current_slot( -1 ),
+  seed( 0 ), iterations( 1000 ), current_iteration( -1 ), current_slot( -1 ),
   armor_update_interval( 20 ), weapon_speed_scale_factors( 0 ),
   optimal_raid( 0 ), log( 0 ), debug( 0 ), debug_each( 0 ), save_profiles( 0 ), default_actions( 0 ),
   normalized_stat( STAT_NONE ),
@@ -849,8 +847,6 @@ sim_t::sim_t( sim_t* p, int index ) :
   deterministic_rng( false ),
   average_range( true ), average_gauss( false ),
   convergence_scale( 2 ),
-  recycled_event_list( 0 ),
-  timing_wheel(), wheel_seconds( 0 ), wheel_size( 0 ), wheel_mask( 0 ), wheel_shift( 5 ), timing_slice( 0 ), wheel_granularity( 0.0 ),
   fight_style( "Patchwerk" ), overrides( overrides_t() ), auras( auras_t() ),
   aura_delay( timespan_t::from_seconds( 0.5 ) ), default_aura_delay( timespan_t::from_seconds( 0.3 ) ),
   default_aura_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
@@ -869,7 +865,6 @@ sim_t::sim_t( sim_t* p, int index ) :
   report_precision( 2 ), report_pets_separately( 0 ), report_targets( 1 ), report_details( 1 ), report_raw_abilities( 1 ),
   report_rng( 0 ), hosted_html( 0 ), print_styles( false ), report_overheal( 0 ),
   save_raid_summary( 0 ), save_gear_comments( 0 ), statistics_level( 1 ), separate_stats_by_actions( 0 ), report_raid_summary( 0 ), buff_uptime_timeline( 0 ),
-  event_stopwatch( STOPWATCH_THREAD ), monitor_cpu( 0 ),
   allow_potions( true ),
   allow_food( true ),
   allow_flasks( true ),
@@ -916,148 +911,26 @@ sim_t::sim_t( sim_t* p, int index ) :
 
 sim_t::~sim_t()
 {
-  event_t::release( *this );
   delete scaling;
   delete plot;
   delete reforge_plot;
   delete spell_query;
 }
 
-// sim_t::add_event =========================================================
-
-void sim_t::add_event( event_t* e,
-                       timespan_t delta_time )
-{
-  e -> id   = ++id;
-
-  if ( delta_time < timespan_t::zero() )
-    delta_time = timespan_t::zero();
-
-  if ( unlikely( delta_time > wheel_time ) )
-  {
-    e -> time = current_time + wheel_time - timespan_t::from_seconds( 1 );
-    e -> reschedule_time = current_time + delta_time;
-  }
-  else
-  {
-    e -> time = current_time + delta_time;
-    e -> reschedule_time = timespan_t::zero();
-  }
-
-  // Determine the timing wheel position to which the event will belong
-#ifdef SC_USE_INTEGER_TIME
-  uint32_t slice = ( uint32_t ) ( e -> time.total_millis() >> wheel_shift ) & wheel_mask;
-#else
-  uint32_t slice = ( uint32_t ) ( e -> time.total_seconds() * wheel_granularity ) & wheel_mask;
-#endif
-
-  // Insert event into the event list at the appropriate time
-  event_t** prev = &( timing_wheel[ slice ] );
-  while ( ( *prev ) && ( *prev ) -> time <= e -> time ) // Find position in the list
-  { prev = &( ( *prev ) -> next ); }
-  // insert event
-  e -> next = *prev;
-  *prev = e;
-
-  events_remaining++;
-  if ( events_remaining > max_events_remaining ) max_events_remaining = events_remaining;
-  if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> actor ) e -> actor -> event_counter++;
-
-
-  if ( debug )
-  {
-    output( "Add Event: %s %.2f %.2f %d %s", e -> name, e -> time.total_seconds(), e -> reschedule_time.total_seconds(), e -> id, e -> actor ? e -> actor -> name() : "" );
-    if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> actor ) output( "Actor %s has %d scheduled events", e -> actor -> name(), e -> actor -> event_counter );
-  }
-}
-
 // sim_t::reschedule_event ==================================================
 
-void sim_t::reschedule_event( event_t* e )
+void sim_t::reschedule_event( core_event_t* e )
 {
   if ( debug ) output( "Reschedule Event: %s %d", e -> name, e -> id );
 
   add_event( e, ( e -> reschedule_time - current_time ) );
 }
 
-// sim_t::next_event ========================================================
-
-event_t* sim_t::next_event()
-{
-  if ( events_remaining == 0 ) return 0;
-
-  while ( true )
-  {
-    event_t*& event_list = timing_wheel[ timing_slice ];
-    if ( event_list )
-    {
-      event_t* e = event_list;
-      event_list = e -> next;
-      events_remaining--;
-      events_processed++;
-      return e;
-    }
-
-    timing_slice++;
-    if ( timing_slice == timing_wheel.size() )
-    {
-      timing_slice = 0;
-      if ( debug ) output( "Time Wheel turns around." );
-    }
-  }
-
-  return 0;
-}
-
-namespace {
-/* This basically does the exact same thing as std::set_difference
- * std::set_difference( from.begin(),from.end(), exluding.begin(), exluding.end(), back_inserter( out ) );
- */
-void set_difference( const std::vector<event_t*>& from, event_t* exluding, std::vector<event_t*>& out )
-{
-  for( size_t i = 0, size = from.size(); i < size; ++i )
-  {
-    event_t* e = from[ i ];
-    bool found = false;
-    for( event_t* re = exluding; re; re = re -> next )
-    {
-      if ( e == re )
-      {
-        found = true;
-        break;
-      }
-    }
-    if ( ! found )
-      out.push_back( e );
-  }
-}
-} // end unnamed namespace
-
 void sim_t::flush_events()
 {
   if ( debug ) output( "Flush Events" );
 
-  /* Instead of iterating over the whole timing wheel,
-   * we directly flush the remaining active events == ( all_events_ever_created - recycled_events )
-   */
-  std::vector<event_t*> events_to_flush;
-  set_difference( all_events_ever_created, recycled_event_list, events_to_flush );
-
-  for( size_t i = 0, size = events_to_flush.size(); i < size; ++i )
-  {
-    event_t* e = events_to_flush[ i ];
-    event_t* null_e = e; // necessary evil
-    event_t::cancel( null_e );
-    event_t::recycle( e );
-  }
-
-  // Clear Timing Wheel
-  timing_wheel.assign( timing_wheel.size(), nullptr );
-
-  events_remaining = 0;
-  events_processed = 0;
-  timing_slice = 0;
-  id = 0;
+  core_sim_t::flush_events();
 }
 
 // sim_t::combat ============================================================
@@ -1090,7 +963,7 @@ void sim_t::combat( int iteration )
 
   combat_begin();
 
-  while ( event_t* e = next_event() )
+  while ( core_event_t* e = next_event() )
   {
     current_time = e -> time;
 
@@ -1131,7 +1004,7 @@ void sim_t::combat( int iteration )
       }
     }
 
-    event_t::recycle( e );
+    core_event_t::recycle( e );
 
     // This should be moved to assess_damage somehow, but it is a little tricky given mixed inheritance of player/enemy.
     if ( target_death >= 0 )
@@ -1153,8 +1026,11 @@ void sim_t::combat( int iteration )
 void sim_t::reset()
 {
   if ( debug ) output( "Resetting Simulator" );
+
+  core_sim_t::reset();
+
+
   expected_time = max_time * ( 1.0 + vary_combat_length * iteration_adjust() );
-  id = 0;
   current_time = timespan_t::zero();
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
@@ -1247,10 +1123,11 @@ void sim_t::combat_begin()
       bloodlust_check_t( sim_t& sim ) :
         event_t( sim, "Bloodlust Check" )
       {
-        sim.add_event( this, timespan_t::from_seconds( 1.0 ) );
+        add_event( timespan_t::from_seconds( 1.0 ) );
       }
       virtual void execute()
       {
+        sim_t& sim = this -> sim();
         player_t* t = sim.target;
         if ( ( sim.bloodlust_percent  > 0                  && t -> health_percentage() <  sim.bloodlust_percent ) ||
              ( sim.bloodlust_time     < timespan_t::zero() && t -> time_to_die()       < -sim.bloodlust_time ) ||
@@ -1287,6 +1164,7 @@ void sim_t::combat_begin()
       // Sync to (reasonably) early proxy-Bloodlust if available
       bool proxy_check()
       {
+        sim_t& sim = this -> sim();
         return sim.bloodlust_time <= timespan_t::zero() ||
                sim.bloodlust_time >= timespan_t::from_seconds( 30 ) ||
                ( sim.bloodlust_time > timespan_t::zero() && sim.bloodlust_time < timespan_t::from_seconds( 30 ) &&
@@ -1295,9 +1173,9 @@ void sim_t::combat_begin()
 
       void proxy_execute()
       {
-        for ( size_t i = 0; i < sim.player_list.size(); ++i )
+        for ( size_t i = 0; i < sim().player_list.size(); ++i )
         {
-          player_t* p = sim.player_list[ i ];
+          player_t* p = sim().player_list[ i ];
           if ( p -> type == PLAYER_GUARDIAN )
             continue;
 
@@ -1306,7 +1184,7 @@ void sim_t::combat_begin()
       }
 
       proxy_cast_check_t* proxy_schedule( timespan_t interval )
-      { return new ( sim ) stormlash_proxy_t( sim, uses, start_time, interval ); }
+      { return new ( sim() ) stormlash_proxy_t( sim(), uses, start_time, interval ); }
     };
 
     new ( *this ) stormlash_proxy_t( *this, 0, timespan_t::zero(), timespan_t::from_seconds( 0.25 ) );
@@ -1323,6 +1201,7 @@ void sim_t::combat_begin()
       // Sync to (reasonably) early proxy-Bloodlust if available
       bool proxy_check()
       {
+        sim_t& sim = this -> sim();
         return sim.bloodlust_time <= timespan_t::zero() ||
                sim.bloodlust_time >= timespan_t::from_seconds( 30 ) ||
                ( sim.bloodlust_time > timespan_t::zero() && sim.bloodlust_time < timespan_t::from_seconds( 30 ) &&
@@ -1331,9 +1210,9 @@ void sim_t::combat_begin()
 
       void proxy_execute()
       {
-        for ( size_t i = 0; i < sim.player_list.size(); ++i )
+        for ( size_t i = 0; i < sim().player_list.size(); ++i )
         {
-          player_t* p = sim.player_list[ i ];
+          player_t* p = sim().player_list[ i ];
           if ( p -> type == PLAYER_GUARDIAN || p -> is_enemy() )
             continue;
 
@@ -1342,7 +1221,7 @@ void sim_t::combat_begin()
       }
 
       proxy_cast_check_t* proxy_schedule( timespan_t interval )
-      { return new ( sim ) skull_banner_proxy_t( sim, uses, start_time, interval ); }
+      { return new ( sim() ) skull_banner_proxy_t( sim(), uses, start_time, interval ); }
     };
 
     new ( *this ) skull_banner_proxy_t( *this, 0, timespan_t::zero(), timespan_t::from_seconds( 0.25 ) );
@@ -1478,27 +1357,8 @@ bool sim_t::init()
     seed = deterministic_rng ? 31459 : ( int ) time( nullptr );
   _rng.seed( seed + thread_index );
 
-  // Timing wheel depth defaults to about 17 minutes with a granularity of 32 buckets per second.
-  // This makes wheel_size = 32K and it's fully used.
-  if ( wheel_seconds     < 1024 ) wheel_seconds     = 1024; // 2^10 Min to ensure limited wrap-around
-  if ( wheel_granularity <=   0 ) wheel_granularity = 32;   // 2^5 Time slices per second
-
-  wheel_time = timespan_t::from_seconds( wheel_seconds );
-
-#ifdef SC_USE_INTEGER_TIME
-  wheel_size = ( uint32_t ) ( wheel_time.total_millis() >> wheel_shift );
-#else
-  wheel_size = ( uint32_t ) ( wheel_seconds * wheel_granularity );
-#endif
-
-  // Round up the wheel depth to the nearest power of 2 to enable a fast "mod" operation.
-  for ( wheel_mask = 2; wheel_mask < wheel_size; wheel_mask *= 2 ) { continue; }
-  wheel_size = wheel_mask;
-  wheel_mask--;
-
-  // The timing wheel represents an array of event lists: Each time slice has an event list.
-  timing_wheel.resize( wheel_size );
-
+  if ( ! core_sim_t::init() )
+    return false;
 
   if (   queue_lag_stddev == timespan_t::zero() )   queue_lag_stddev =   queue_lag * 0.25;
   if (     gcd_lag_stddev == timespan_t::zero() )     gcd_lag_stddev =     gcd_lag * 0.25;

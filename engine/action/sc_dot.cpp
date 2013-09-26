@@ -14,19 +14,19 @@ namespace { // anonymous namespace
 
 // DoT Tick Event ===========================================================
 
-struct dot_tick_event_t : public player_event_t
+struct dot_tick_event_t : public event_t
 {
   dot_t* dot;
 
   dot_tick_event_t( dot_t* d,
                     timespan_t time_to_tick ) :
-      player_event_t( *d -> source, "DoT Tick" ), dot( d )
+      event_t( *d -> source, "DoT Tick" ), dot( d )
   {
-    if ( sim.debug )
-      sim.output( "New DoT Tick Event: %s %s %d-of-%d %.2f",
+    if ( sim().debug )
+      sim().output( "New DoT Tick Event: %s %s %d-of-%d %.2f",
                   p() -> name(), dot -> name(), dot -> current_tick + 1, dot -> num_ticks, time_to_tick.total_seconds() );
 
-    sim.add_event( this, time_to_tick );
+    sim().add_event( this, time_to_tick );
   }
 
   // dot_tick_event_t::execute ==============================================
@@ -35,9 +35,9 @@ struct dot_tick_event_t : public player_event_t
   {
     if ( dot -> current_tick >= dot -> num_ticks )
     {
-      sim.errorf( "Player %s has corrupt tick (%d of %d) event on action %s!\n",
+      sim().errorf( "Player %s has corrupt tick (%d of %d) event on action %s!\n",
                   p() -> name(), dot -> current_tick, dot -> num_ticks, dot -> name() );
-      sim.cancel();
+      sim().cancel();
       assert( 0 );
     }
 
@@ -48,7 +48,7 @@ struct dot_tick_event_t : public player_event_t
          dot -> current_action -> channeled &&
          dot -> current_tick == dot -> num_ticks )
     {
-      if ( sim.roll( dot -> current_action -> player -> current.skill ) )
+      if ( sim().roll( dot -> current_action -> player -> current.skill ) )
       {
         dot -> current_action -> tick( dot );
       }
@@ -64,7 +64,7 @@ struct dot_tick_event_t : public player_event_t
       if ( dot -> current_tick == dot -> num_ticks
            || ( dot -> current_action -> channeled
                 && dot -> ticks() > 0
-                && dot -> current_action -> player -> gcd_ready <= sim.current_time
+                && dot -> current_action -> player -> gcd_ready <= sim().current_time
                 && ( dot -> current_action -> interrupt || ( expr && expr -> success() ) )
                 && dot -> is_higher_priority_action_available() ) )
       {
@@ -112,7 +112,7 @@ void dot_t::last_tick()
   time_to_tick = timespan_t::zero();
 
   ticking = false;
-  event_t::cancel( tick_event );
+  core_event_t::cancel( tick_event );
 
   if ( sim.debug )
     sim.output( "%s fades from %s", name(), state -> target -> name() );
@@ -256,7 +256,7 @@ void dot_t::recalculate_ready()
   int remaining_ticks = num_ticks - current_tick;
   if ( remaining_ticks > 0 && tick_event )
   {
-    ready = tick_event -> time + current_action -> tick_time( state -> haste ) * ( remaining_ticks - 1 );
+    ready = tick_event -> occurs() + current_action -> tick_time( state -> haste ) * ( remaining_ticks - 1 );
   }
   else
   {
@@ -303,7 +303,7 @@ void dot_t::refresh_duration( uint32_t state_flags )
 
 void dot_t::reset()
 {
-  event_t::cancel( tick_event );
+  core_event_t::cancel( tick_event );
   current_tick = 0;
   added_ticks = 0;
   ticking = false;

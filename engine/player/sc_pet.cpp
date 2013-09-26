@@ -141,19 +141,19 @@ void pet_t::summon( timespan_t summon_duration )
   // Take care of remaining expiration
   if ( expiration )
   {
-    event_t::cancel( expiration );
+    core_event_t::cancel( expiration );
     expiration = nullptr;
   }
 
   if ( summon_duration > timespan_t::zero() )
   {
     duration = summon_duration;
-    struct expiration_t : public player_event_t
+    struct expiration_t : public event_t
     {
       expiration_t( pet_t& p, timespan_t duration ) :
-        player_event_t( p, "pet_summon_duration" )
+        event_t( p, "pet_summon_duration" )
       {
-        sim.add_event( this, duration );
+        sim().add_event( this, duration );
       }
 
       virtual void execute()
@@ -187,7 +187,7 @@ void pet_t::dismiss()
 
   if ( expiration )
   {
-    event_t::cancel( expiration );
+    core_event_t::cancel( expiration );
     expiration = nullptr;
   }
 

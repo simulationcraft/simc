@@ -1378,15 +1378,15 @@ struct tiger_strikes_melee_attack_t : public monk_melee_attack_t
 
 struct melee_t : public monk_melee_attack_t
 {
-  struct ts_delay_t : public player_event_t
+  struct ts_delay_t : public event_t
   {
     melee_t* melee;
 
     ts_delay_t( monk_t& player, melee_t* m ) :
-      player_event_t( player, "tiger_strikes_delay" ),
+      event_t( player, "tiger_strikes_delay" ),
       melee( m )
     {
-      sim.add_event( this, timespan_t::from_seconds( sim.gauss( 1.0, 0.2 ) ) );
+      add_event( timespan_t::from_seconds( sim().gauss( 1.0, 0.2 ) ) );
     }
 
     void execute()
@@ -2554,14 +2554,14 @@ using namespace absorbs;
 
 } // end namespace actions;
 
-struct power_strikes_event_t : public player_event_t
+struct power_strikes_event_t : public event_t
 {
   power_strikes_event_t( monk_t& player, timespan_t tick_time ) :
-    player_event_t( player, "power_strikes" )
+    event_t( player, "power_strikes" )
   {
     // Safety clamp
     tick_time = clamp( tick_time, timespan_t::zero(), timespan_t::from_seconds( 20 ) );
-    sim.add_event( this, tick_time );
+    add_event( tick_time );
   }
 
   virtual void execute()
@@ -2570,7 +2570,7 @@ struct power_strikes_event_t : public player_event_t
 
     p -> buff.power_strikes -> trigger();
 
-    new ( sim ) power_strikes_event_t( *p, timespan_t::from_seconds( 20.0 ) );
+    new ( sim() ) power_strikes_event_t( *p, timespan_t::from_seconds( 20.0 ) );
   }
 };
 

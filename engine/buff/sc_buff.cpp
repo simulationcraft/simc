@@ -7,17 +7,17 @@
 
 namespace { // UNNAMED NAMESPACE
 
-struct buff_event_t : public player_event_t
+struct buff_event_t : public event_t
 {
   buff_t* buff;
 
   buff_event_t( buff_t* b, const char* name, timespan_t d ) :
-    player_event_t( *b -> sim, b -> player, name ), buff( b )
-  { sim.add_event( this, d ); }
+    event_t( *b -> sim, b -> player, name ), buff( b )
+  { sim().add_event( this, d ); }
 
   buff_event_t( buff_t* b, timespan_t d ) :
-    player_event_t( *b -> sim, b -> player, b -> name() ), buff( b )
-  { sim.add_event( this, d ); }
+    event_t( *b -> sim, b -> player, b -> name() ), buff( b )
+  { sim().add_event( this, d ); }
 };
 
 struct react_ready_trigger_t : public buff_event_t
@@ -591,7 +591,7 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
       reschedule_time = rng().gauss( lag, dev );
     }
 
-    event_t::cancel( expiration );
+    core_event_t::cancel( expiration );
 
     expiration = new ( *sim ) expiration_t( this, reschedule_time );
 
@@ -655,7 +655,7 @@ void buff_t::refresh( int        stacks,
     // Make sure we always cancel the expiration event if we get an
     // infinite duration
     if ( d <= timespan_t::zero() )
-      event_t::cancel( expiration );
+      core_event_t::cancel( expiration );
     else
     {
       assert( d > timespan_t::zero() );
@@ -758,11 +758,11 @@ void buff_t::expire( timespan_t delay )
   }
   else
   {
-    event_t::cancel( expiration_delay );
+    core_event_t::cancel( expiration_delay );
   }
 
 
-  event_t::cancel( expiration );
+  core_event_t::cancel( expiration );
 
   assert( as<std::size_t>( current_stack ) < stack_uptime.size() );
   stack_uptime[ current_stack ] -> update( false, sim -> current_time );
@@ -803,7 +803,7 @@ void buff_t::expire( timespan_t delay )
   if ( reactable && player && player -> ready_type == READY_TRIGGER )
   {
     for ( size_t i = 0; i < stack_react_ready_triggers.size(); i++ )
-      event_t::cancel( stack_react_ready_triggers[ i ] );
+      core_event_t::cancel( stack_react_ready_triggers[ i ] );
   }
 
   expire_override(); // virtual expire call
@@ -861,8 +861,8 @@ void buff_t::aura_loss()
 
 void buff_t::reset()
 {
-  event_t::cancel( delay );
-  event_t::cancel( expiration_delay );
+  core_event_t::cancel( delay );
+  core_event_t::cancel( expiration_delay );
   cooldown -> reset( false );
   expire();
   last_start = timespan_t::min();

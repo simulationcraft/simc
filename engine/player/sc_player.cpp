@@ -37,23 +37,23 @@ struct hymn_of_hope_buff_t : public buff_t
 
 // Player Ready Event =======================================================
 
-struct player_ready_event_t : public player_event_t
+struct player_ready_event_t : public event_t
 {
   player_ready_event_t( player_t& p,
                         timespan_t delta_time ) :
-                          player_event_t( p, "Player-Ready" )
+                          event_t( p, "Player-Ready" )
   {
-    if ( sim.debug )
-      sim.output( "New Player-Ready Event: %s", p.name() );
+    if ( sim().debug )
+      sim().output( "New Player-Ready Event: %s", p.name() );
 
-    sim.add_event( this, delta_time );
+    sim().add_event( this, delta_time );
   }
 
   virtual void execute()
   {
     // Player that's checking for off gcd actions to use, cancels that checking when there's a ready event firing.
     if ( p() -> off_gcd )
-      event_t::cancel( p() -> off_gcd );
+      core_event_t::cancel( p() -> off_gcd );
 
     if ( ! p() -> execute_action() )
     {
@@ -64,12 +64,12 @@ struct player_ready_event_t : public player_event_t
         p() -> schedule_ready( x, true );
 
         // Waiting Debug
-        if ( sim.debug )
-          sim.output( "%s is waiting for %.4f resource=%.2f",
+        if ( sim().debug )
+          sim().output( "%s is waiting for %.4f resource=%.2f",
                       p() -> name(), x.total_seconds(),
                       p() -> resources.current[ p() -> primary_resource() ] );
       }
-      else p() -> started_waiting = sim.current_time;
+      else p() -> started_waiting = sim().current_time;
     }
   }
 };
@@ -78,16 +78,16 @@ struct player_ready_event_t : public player_event_t
  * - Reason for it are that we need to finish the current action ( eg. a dot tick ) without
  * killing off target dependent things ( eg. dot state ).
  */
-struct demise_event_t : public player_event_t
+struct demise_event_t : public event_t
 {
   demise_event_t( player_t& p,
                   timespan_t delta_time = timespan_t::zero() /* Instantly kill the player */ ) :
-     player_event_t( p, "Player-Demise" )
+     event_t( p, "Player-Demise" )
   {
-    if ( sim.debug )
-      sim.output( "New Player-Demise Event: %s", p.name() );
+    if ( sim().debug )
+      sim().output( "New Player-Demise Event: %s", p.name() );
 
-    sim.add_event( this, delta_time );
+    sim().add_event( this, delta_time );
   }
 
   virtual void execute()
@@ -331,24 +331,24 @@ void ignite::trigger_pct_based( action_t* ignite_action,
                                 player_t* t,
                                 double dmg )
 {
-  struct delay_event_t : public player_event_t
+  struct delay_event_t : public event_t
   {
     double additional_ignite_dmg;
     player_t* target;
     action_t* action;
 
     delay_event_t( player_t* t, action_t* a, double dmg ) :
-      player_event_t( *a -> player, "Ignite Sampling Event" ),
+      event_t( *a -> player, "Ignite Sampling Event" ),
       additional_ignite_dmg( dmg ), target( t ), action( a )
     {
       // Use same delay as in buff application
-      timespan_t delay_duration = sim.gauss( sim.default_aura_delay, sim.default_aura_delay_stddev );
+      timespan_t delay_duration = sim().gauss( sim().default_aura_delay, sim().default_aura_delay_stddev );
 
-      if ( sim.debug )
-        sim.output( "New %s Sampling Event: %s ( delta time: %.4f )",
+      if ( sim().debug )
+        sim().output( "New %s Sampling Event: %s ( delta time: %.4f )",
                     action -> name(), p() -> name(), delay_duration.total_seconds() );
 
-      sim.add_event( this, delay_duration );
+      sim().add_event( this, delay_duration );
     }
 
     virtual void execute()
@@ -365,16 +365,16 @@ void ignite::trigger_pct_based( action_t* ignite_action,
       if ( dot -> ticking )
         new_total_ignite_dmg += action -> base_td * dot -> ticks();
 
-      if ( sim.debug )
+      if ( sim().debug )
       {
         if ( dot -> ticking )
         {
-          sim.output( "ignite_delay_event::execute(): additional_damage=%f current_ignite_tick=%f ticks_left=%d new_ignite_dmg=%f",
+          sim().output( "ignite_delay_event::execute(): additional_damage=%f current_ignite_tick=%f ticks_left=%d new_ignite_dmg=%f",
                       additional_ignite_dmg, action -> base_td, dot -> ticks(), new_total_ignite_dmg );
         }
         else
         {
-          sim.output( "ignite_delay_event::execute(): additional_damage=%f new_ignite_dmg=%f",
+          sim().output( "ignite_delay_event::execute(): additional_damage=%f new_ignite_dmg=%f",
                       additional_ignite_dmg, new_total_ignite_dmg );
         }
       }
@@ -4216,7 +4216,7 @@ void player_t::demise()
   current.sleeping = true;
   if ( readying )
   {
-    event_t::cancel( readying );
+    core_event_t::cancel( readying );
     readying = 0;
   }
 
@@ -4231,7 +4231,7 @@ void player_t::demise()
     sim -> player_non_sleeping_list.find_and_erase_unordered( this );
   }
 
-  event_t::cancel( off_gcd );
+  core_event_t::cancel( off_gcd );
 
   // stops vengeance and clear vengeance_list
   vengeance_stop();
@@ -4241,8 +4241,8 @@ void player_t::demise()
     buff_t* b = buff_list[ i ];
     b -> expire();
     // Dead actors speak no lies .. or proc aura delayed buffs
-    event_t::cancel( b -> delay );
-    event_t::cancel( b -> expiration_delay );
+    core_event_t::cancel( b -> delay );
+    core_event_t::cancel( b -> expiration_delay );
   }
   for ( size_t i = 0; i < action_list.size(); ++i )
     action_list[ i ] -> cancel();
@@ -4269,8 +4269,8 @@ void player_t::interrupt()
 
   if ( buffs.stunned -> check() )
   {
-    if ( readying ) event_t::cancel( readying );
-    if ( off_gcd ) event_t::cancel( off_gcd );
+    if ( readying ) core_event_t::cancel( readying );
+    if ( off_gcd ) core_event_t::cancel( off_gcd );
   }
   else
   {
@@ -6229,15 +6229,15 @@ struct use_item_t : public action_t
 
       if ( item -> parsed.use.duration != timespan_t::zero() )
       {
-        struct trigger_expiration_t : public player_event_t
+        struct trigger_expiration_t : public event_t
         {
           item_t* item;
           action_callback_t* trigger;
 
           trigger_expiration_t( player_t& player, item_t* i, action_callback_t* t ) :
-            player_event_t( player, i -> name() ), item( i ), trigger( t )
+            event_t( player, i -> name() ), item( i ), trigger( t )
           {
-            sim.add_event( this, item -> parsed.use.duration );
+            sim().add_event( this, item -> parsed.use.duration );
           }
           virtual void execute()
           {
@@ -9546,21 +9546,21 @@ void player_vengeance_t::start( player_t& p )
 {
   assert( ! is_started() );
 
-  struct collect_event_t : public player_event_t
+  struct collect_event_t : public event_t
   {
     player_vengeance_t& vengeance;
     collect_event_t( player_t& p, player_vengeance_t& v ) :
-      player_event_t( p, "vengeance_timeline_collect_event_t" ),
+      event_t( p, "vengeance_timeline_collect_event_t" ),
       vengeance( v )
     {
-      sim.add_event( this, timespan_t::from_seconds( 1 ) );
+      sim().add_event( this, timespan_t::from_seconds( 1 ) );
     }
 
     virtual void execute()
     {
       assert( vengeance.event == this );
-      vengeance.timeline_.add( sim.current_time, p() -> buffs.vengeance -> value() );
-      vengeance.event = new ( sim ) collect_event_t( *p(), vengeance );
+      vengeance.timeline_.add( sim().current_time, p() -> buffs.vengeance -> value() );
+      vengeance.event = new ( sim() ) collect_event_t( *p(), vengeance );
     }
   };
 
@@ -9574,7 +9574,7 @@ void player_vengeance_t::start( player_t& p )
  */
 
 void player_vengeance_t::stop()
-{ event_t::cancel( event ); }
+{ core_event_t::cancel( event ); }
 
 player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p ) :
   action( a ), target( t ), time( ts )

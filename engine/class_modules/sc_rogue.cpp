@@ -80,7 +80,7 @@ struct rogue_td_t : public actor_pair_t
 struct rogue_t : public player_t
 {
   // Premeditation
-  event_t* event_premeditation;
+  core_event_t* event_premeditation;
 
   // Active
   attack_t* active_blade_flurry;
@@ -1816,7 +1816,7 @@ struct premeditation_t : public rogue_attack_t
       event_t( p, "premeditation" ),
       combo_points( cp ), target( t )
     {
-      sim.add_event( this, duration );
+      add_event( duration );
     }
 
     void execute()
@@ -1825,9 +1825,9 @@ struct premeditation_t : public rogue_attack_t
       rogue_td_t* td = p -> get_target_data( target );
 
       td -> combo_points.count -= combo_points;
-      if ( sim.log )
+      if ( sim().log )
       {
-        sim.output( "%s loses %d temporary combo_points from premeditation (%d)",
+        sim().output( "%s loses %d temporary combo_points from premeditation (%d)",
                     td -> combo_points.target -> name(),
                     p -> find_specialization_spell( "Premeditation" ) -> effectN( 1 ).base_value(),
                     td -> combo_points.count );
@@ -2261,10 +2261,10 @@ struct vanish_t : public rogue_attack_t
 
     // Vanish stops autoattacks
     if ( p() -> main_hand_attack && p() -> main_hand_attack -> execute_event )
-      event_t::cancel( p() -> main_hand_attack -> execute_event );
+      core_event_t::cancel( p() -> main_hand_attack -> execute_event );
 
     if ( p() -> off_hand_attack && p() -> off_hand_attack -> execute_event )
-      event_t::cancel( p() -> off_hand_attack -> execute_event );
+      core_event_t::cancel( p() -> off_hand_attack -> execute_event );
   }
 };
 
@@ -2726,7 +2726,7 @@ struct shadow_blades_t : public buff_t
     if ( executing )
     {
       time_to_hit = hand -> execute_event -> occurs() - sim -> current_time;
-      event_t::cancel( hand -> execute_event );
+      core_event_t::cancel( hand -> execute_event );
     }
 
     hand = a;
@@ -2816,7 +2816,7 @@ void combo_points_t::add( int num, const char* action )
   // already full
   rogue_t* p = source;
   if ( num > 0 && p -> event_premeditation )
-    event_t::cancel( p -> event_premeditation );
+    core_event_t::cancel( p -> event_premeditation );
 
   // we count all combo points gained in the proc
   for ( int i = 0; i < num; i++ )
@@ -2900,7 +2900,7 @@ void combo_points_t::clear( const char* action, bool anticipation )
   // Premeditation cancels when you use the combo points
   rogue_t* p = source;
   if ( p -> event_premeditation )
-    event_t::cancel( p -> event_premeditation );
+    core_event_t::cancel( p -> event_premeditation );
 
   count = 0;
   if ( anticipation )
@@ -3716,27 +3716,27 @@ void rogue_t::combat_begin()
 
   if ( spec.honor_among_thieves -> ok() && virtual_hat_interval > timespan_t::zero() )
   {
-    struct virtual_hat_event_t : public player_event_t
+    struct virtual_hat_event_t : public event_t
     {
       action_callback_t* callback;
       timespan_t         interval;
 
       virtual_hat_event_t( rogue_t* p, action_callback_t* cb, timespan_t i ) :
-        player_event_t( *p, "Virtual HAT Event" ),
+        event_t( *p, "Virtual HAT Event" ),
         callback( cb ), interval( i )
       {
         timespan_t cooldown = timespan_t::from_seconds( 2.0 );
         timespan_t remainder = interval - cooldown;
         if ( remainder < timespan_t::zero() ) remainder = timespan_t::zero();
         timespan_t time = cooldown + p -> rng().range( remainder * 0.5, remainder * 1.5 ) + timespan_t::from_seconds( 0.01 );
-        sim.add_event( this, time );
+        add_event( time );
       }
 
       virtual void execute()
       {
         rogue_t* p = debug_cast<rogue_t*>( actor );
         callback -> trigger( nullptr, nullptr );
-        new ( sim ) virtual_hat_event_t( p, callback, interval );
+        new ( sim() ) virtual_hat_event_t( p, callback, interval );
       }
     };
 
@@ -3756,7 +3756,7 @@ void rogue_t::reset()
     if ( td ) td -> reset();
   }
 
-  event_t::cancel( event_premeditation );
+  core_event_t::cancel( event_premeditation );
 }
 
 // rogue_t::arise ===========================================================

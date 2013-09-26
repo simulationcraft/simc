@@ -7,14 +7,14 @@
 
 namespace { // UNNAMED NAMESPACE
 
-struct recharge_event_t : player_event_t
+struct recharge_event_t : event_t
 {
   cooldown_t* cooldown;
 
   recharge_event_t( player_t& p, cooldown_t* cd, timespan_t delay = timespan_t::zero() ) :
-    player_event_t( p, "recharge_event" ), cooldown( cd )
+    event_t( p, "recharge_event" ), cooldown( cd )
   {
-    sim.add_event( this, cd -> duration * cd -> recharge_multiplier + delay );
+    sim().add_event( this, cd -> duration * cd -> recharge_multiplier + delay );
   }
 
   virtual void execute()
@@ -24,7 +24,7 @@ struct recharge_event_t : player_event_t
 
     if ( cooldown -> current_charge < cooldown -> charges )
     {
-      cooldown -> recharge_event = new ( sim ) recharge_event_t( *p(), cooldown );
+      cooldown -> recharge_event = new ( sim() ) recharge_event_t( *p(), cooldown );
     }
     else
     {
@@ -34,15 +34,15 @@ struct recharge_event_t : player_event_t
 
 };
 
-struct ready_trigger_event_t : public player_event_t
+struct ready_trigger_event_t : public event_t
 {
   cooldown_t* cooldown;
 
   ready_trigger_event_t( player_t& p, cooldown_t* cd ) :
-    player_event_t( p, "ready_trigger_event" ),
+    event_t( p, "ready_trigger_event" ),
     cooldown( cd )
   {
-    sim.add_event( this, cd -> ready - sim.current_time );
+    sim().add_event( this, cd -> ready - sim().current_time );
   }
 
   void execute()
@@ -111,8 +111,8 @@ void cooldown_t::reset( bool require_reaction )
   {
     reset_react = timespan_t::zero();
   }
-  event_t::cancel( recharge_event );
-  event_t::cancel( ready_trigger_event );
+  core_event_t::cancel( recharge_event );
+  core_event_t::cancel( ready_trigger_event );
 }
 
 void cooldown_t::start( timespan_t override, timespan_t delay )

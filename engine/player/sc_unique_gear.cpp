@@ -1850,15 +1850,15 @@ void fury_of_the_beast( item_t* item )
     stat_buff_t* fury_of_the_beast_stack;
 
     // Event
-    struct fury_of_the_beast_event_t : public player_event_t
+    struct fury_of_the_beast_event_t : public event_t
     {
       buff_t* buff;
       buff_t* buff_stack;
 
       fury_of_the_beast_event_t ( player_t& player, buff_t* b, buff_t* q ) :
-        player_event_t( player, "fury_of_the_beast" ), buff( b ), buff_stack( q )
+        event_t( player, "fury_of_the_beast" ), buff( b ), buff_stack( q )
       {
-        sim.add_event( this, timespan_t::from_seconds( 1.0 ) );
+        sim().add_event( this, timespan_t::from_seconds( 1.0 ) );
       }
 
       virtual void execute()
@@ -1867,7 +1867,7 @@ void fury_of_the_beast( item_t* item )
         {
           buff_stack -> buff_duration = buff -> remains(); // hack instead of overriding fury_of_the_beast::expire()
           buff_stack -> trigger();
-          new ( sim ) fury_of_the_beast_event_t( *p(), buff, buff_stack );
+          new ( sim() ) fury_of_the_beast_event_t( *p(), buff, buff_stack );
         }
       }
     };

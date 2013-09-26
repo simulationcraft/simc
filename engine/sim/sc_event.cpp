@@ -9,14 +9,14 @@
 // Event Memory Management
 // ==========================================================================
 
-void* event_t::allocate( std::size_t size, sim_t& sim )
+void* core_event_t::allocate( std::size_t size, core_sim_t& sim )
 {
-  static const std::size_t SIZE = 2 * sizeof( event_t );
+  static const std::size_t SIZE = 2 * sizeof( core_event_t );
   assert( SIZE > size ); ( void ) size;
 
-  event_t*& list = sim.recycled_event_list;
+  core_event_t*& list = sim.recycled_event_list;
 
-  event_t* e = list;
+  core_event_t* e = list;
 
   if ( e )
   {
@@ -24,7 +24,7 @@ void* event_t::allocate( std::size_t size, sim_t& sim )
   }
   else
   {
-    e = static_cast<event_t*>( malloc( SIZE ) );
+    e = static_cast<core_event_t*>( malloc( SIZE ) );
 
     if ( ! e )
     {
@@ -39,23 +39,23 @@ void* event_t::allocate( std::size_t size, sim_t& sim )
   return e;
 }
 
-void event_t::recycle( event_t* e )
+void core_event_t::recycle( core_event_t* e )
 {
-  e -> ~event_t();
+  e -> ~core_event_t();
 
-  event_t*& list = e -> sim.recycled_event_list;
+  core_event_t*& list = e -> _sim.recycled_event_list;
 
   e -> next = list;
   list = e;
 }
 
-void event_t::release( sim_t& sim )
+void core_event_t::release( core_sim_t& sim )
 {
-  event_t*& list = sim.recycled_event_list;
+  core_event_t*& list = sim.recycled_event_list;
 
   while ( list )
   {
-    event_t* e = list;
+    core_event_t* e = list;
     list = e -> next;
     free( e );
   }
@@ -65,35 +65,38 @@ void event_t::release( sim_t& sim )
 // Event
 // ==========================================================================
 
-event_t::event_t( sim_t& s, const char* n ) :
-  sim( s ), actor( nullptr ), name( n ), time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false ), next( 0 )
+core_event_t::core_event_t( core_sim_t& s, const char* n ) :
+  _sim( s ), actor( nullptr ), id( 0 ), canceled( false ), name( n ), time( timespan_t::zero() ),
+  reschedule_time( timespan_t::zero() ), next( 0 )
 {}
 
-event_t::event_t( sim_t& s, actor_t* a, const char* n ) :
-  sim( s ), actor( a ), name( n ), time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false ), next( 0 )
+core_event_t::core_event_t( core_sim_t& s, actor_t* a, const char* n ) :
+  _sim( s ), actor( a ), id( 0 ), canceled( false ), name( n ), time( timespan_t::zero() ),
+  reschedule_time( timespan_t::zero() ), next( 0 )
 {}
 
-event_t::event_t( actor_t& a, const char* n ) :
-  sim( *a.sim ), actor( &a ), name( n ), time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ), id( 0 ), canceled( false ), next( 0 )
+core_event_t::core_event_t( actor_t& a, const char* n ) :
+  _sim( *a.sim ), actor( &a ), id( 0 ), canceled( false ), name( n ), time( timespan_t::zero() ),
+  reschedule_time( timespan_t::zero() ), next( 0 )
 {}
 
 // event_t::reschedule ======================================================
 
-void event_t::reschedule( timespan_t new_time )
+void core_event_t::reschedule( timespan_t new_time )
 {
-  reschedule_time = sim.current_time + new_time;
+  reschedule_time = _sim.current_time + new_time;
 
-  if ( sim.debug )
-    sim.output( "Rescheduling event %s (%d) from %.2f to %.2f",
+  _sim.out_debug.printf( "Rescheduling event %s (%d) from %.2f to %.2f",
                 name, id, time.total_seconds(), reschedule_time.total_seconds() );
+}
+void core_event_t::add_event( timespan_t delta_time )
+{
+  _sim.add_event( this, delta_time );
 }
 
 // event_t::cancel ==========================================================
 
-void event_t::cancel( event_t*& e )
+void core_event_t::cancel( core_event_t*& e )
 {
   if ( ! e ) return;
 
@@ -102,7 +105,7 @@ void event_t::cancel( event_t*& e )
     e -> actor -> event_counter--;
     if ( e -> actor -> event_counter < 0 )
     {
-      e -> sim.errorf( "event_t::cancel assertion error: e -> player -> events < 0, event %s from %s.\n",
+      e -> _sim.out_error.printf( "event_t::cancel assertion error: e -> player -> events < 0, event %s from %s.\n",
                        e -> name, e -> actor -> name() );
       assert( 0 );
     }

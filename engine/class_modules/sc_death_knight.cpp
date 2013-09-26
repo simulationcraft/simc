@@ -1507,11 +1507,11 @@ struct bloodworms_pet_t : public death_knight_pet_t
   // FIXME: Level 80/85 values
   struct melee_t : public melee_attack_t
   {
-    struct blood_burst_event_t : public player_event_t
+    struct blood_burst_event_t : public event_t
     {
       blood_burst_event_t( bloodworms_pet_t& p, timespan_t delta_time ) :
-        player_event_t( p, "blood_burst" )
-      { sim.add_event( this, delta_time ); }
+        event_t( p, "blood_burst" )
+      { add_event( delta_time ); }
 
       void execute()
       {
@@ -4687,15 +4687,15 @@ struct death_pact_t : public death_knight_heal_t
 
 // Buffs ====================================================================
 
-struct runic_corruption_regen_t : public player_event_t
+struct runic_corruption_regen_t : public event_t
 {
   buff_t* buff;
 
   runic_corruption_regen_t( death_knight_t& p, buff_t* b ) :
-    player_event_t( p, "runic_corruption_regen_event" ),
+    event_t( p, "runic_corruption_regen_event" ),
     buff( b )
   {
-    sim.add_event( this, timespan_t::from_seconds( 0.1 ) );
+    add_event( timespan_t::from_seconds( 0.1 ) );
   }
 
   void execute();
@@ -4703,7 +4703,7 @@ struct runic_corruption_regen_t : public player_event_t
 
 struct runic_corruption_buff_t : public buff_t
 {
-  event_t* regen_event;
+  core_event_t* regen_event;
 
   runic_corruption_buff_t( death_knight_t* p ) :
     buff_t( buff_creator_t( p, "runic_corruption", p -> find_spell( 51460 ) )
@@ -4738,7 +4738,7 @@ struct runic_corruption_buff_t : public buff_t
       for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
         p -> _runes.slot[i].regen_rune( p, remaining_duration, true );
 
-      event_t::cancel( regen_event );
+      core_event_t::cancel( regen_event );
     }
   }
 };
@@ -4751,7 +4751,7 @@ inline void runic_corruption_regen_t::execute()
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     p._runes.slot[i].regen_rune( &p, timespan_t::from_seconds( 0.1 ), true );
 
-  regen_buff -> regen_event = new ( sim ) runic_corruption_regen_t( p, buff );
+  regen_buff -> regen_event = new ( sim() ) runic_corruption_regen_t( p, buff );
 }
 
 struct vampiric_blood_buff_t : public buff_t

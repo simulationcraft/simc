@@ -11,15 +11,15 @@
 
 namespace { // anonymous namespace
 
-struct player_gcd_event_t : public player_event_t
+struct player_gcd_event_t : public event_t
 {
   player_gcd_event_t( player_t& p, timespan_t delta_time ) :
-      player_event_t( p, "Player-Ready-GCD" )
+      event_t( p, "Player-Ready-GCD" )
   {
-    if ( sim.debug )
-      sim.output( "New Player-Ready-GCD Event: %s", p.name() );
+    if ( sim().debug )
+      sim().output( "New Player-Ready-GCD Event: %s", p.name() );
 
-    sim.add_event( this, delta_time );
+    sim().add_event( this, delta_time );
   }
 
   virtual void execute()
@@ -39,7 +39,7 @@ struct player_gcd_event_t : public player_event_t
           p() -> iteration_executed_foreground_actions++;
           a -> total_executions++;
 
-          p() -> sequence_add( a, a -> target, sim.current_time );
+          p() -> sequence_add( a, a -> target, sim().current_time );
         }
 
         // Need to restart because the active action list changed
@@ -59,26 +59,26 @@ struct player_gcd_event_t : public player_event_t
       p() -> restore_action_list = 0;
     }
 
-    p() -> off_gcd = new ( sim ) player_gcd_event_t( *p(), timespan_t::from_seconds( 0.1 ) );
+    p() -> off_gcd = new ( sim() ) player_gcd_event_t( *p(), timespan_t::from_seconds( 0.1 ) );
   }
 };
 // Action Execute Event =====================================================
 
-struct action_execute_event_t : public player_event_t
+struct action_execute_event_t : public event_t
 {
   action_t* action;
   action_state_t* execute_state;
 
   action_execute_event_t( action_t* a, timespan_t time_to_execute,
                           action_state_t* state = 0 ) :
-      player_event_t( *a->player, "Action-Execute" ), action( a ),
+      event_t( *a->player, "Action-Execute" ), action( a ),
         execute_state( state )
   {
-    if ( sim.debug )
-      sim.output( "New Action Execute Event: %s %s %.1f (target=%s, marker=%c)",
+    if ( sim().debug )
+      sim().output( "New Action Execute Event: %s %s %.1f (target=%s, marker=%c)",
                   p()->name(), a->name(), time_to_execute.total_seconds(),
                   a->target->name(), ( a->marker ) ? a->marker : '0' );
-    sim.add_event( this, time_to_execute );
+    sim().add_event( this, time_to_execute );
   }
 
   // Ensure we properly release the carried execute_state even if this event
@@ -110,7 +110,7 @@ struct action_execute_event_t : public player_event_t
     if ( ! p() -> channeling )
     {
       if ( p() -> readying )
-        sim.output( "Danger Will Robinson!  Danger!  action %s player %s\n",
+        sim().output( "Danger Will Robinson!  Danger!  action %s player %s\n",
                     action -> name(), p() -> name() );
 
       p() -> schedule_ready( timespan_t::zero() );
@@ -120,10 +120,10 @@ struct action_execute_event_t : public player_event_t
       return;
 
     // Kick off the during-gcd checker, first run is immediately after
-    event_t::cancel( p() -> off_gcd );
+    core_event_t::cancel( p() -> off_gcd );
 
     if ( ! p() -> channeling )
-      p() -> off_gcd = new ( sim ) player_gcd_event_t( *p(), timespan_t::zero() );
+      p() -> off_gcd = new ( sim() ) player_gcd_event_t( *p(), timespan_t::zero() );
   }
 
 };
@@ -1336,7 +1336,7 @@ void action_t::reschedule_execute( timespan_t time )
   else // Impossible to reschedule events "early".  Need to be canceled and re-created.
   {
     action_state_t* state = debug_cast<action_execute_event_t*>( execute_event ) -> execute_state;
-    event_t::cancel( execute_event );
+    core_event_t::cancel( execute_event );
     execute_event = start_action_execute_event( time, state );
   }
 }
@@ -1626,7 +1626,7 @@ void action_t::cancel()
     player -> channeling  = 0;
   }
 
-  event_t::cancel( execute_event );
+  core_event_t::cancel( execute_event );
 
   player -> debuffs.casting -> expire();
 
@@ -1656,7 +1656,7 @@ void action_t::interrupt_action()
     dot -> reset();
   }
 
-  event_t::cancel( execute_event );
+  core_event_t::cancel( execute_event );
 
   player -> debuffs.casting -> expire();
 }
@@ -1867,7 +1867,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
       virtual double evaluate()
       {
         if ( action -> cooldown -> recharge_event )
-          return ( action -> cooldown -> recharge_event -> time - action -> sim -> current_time ).total_seconds();
+          return action -> cooldown -> recharge_event -> remains().total_seconds();
         else
           return action -> cooldown -> duration.total_seconds();
       }
@@ -2218,7 +2218,7 @@ double action_t::composite_target_crit( player_t* target )
   return c;
 }
 
-event_t* action_t::start_action_execute_event( timespan_t t, action_state_t* execute_event )
+core_event_t* action_t::start_action_execute_event( timespan_t t, action_state_t* execute_event )
 {
   return new ( *sim ) action_execute_event_t( this, t, execute_event );
 }
