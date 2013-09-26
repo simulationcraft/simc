@@ -1,0 +1,98 @@
+#!./simc 
+
+druid="Druid_Balance_T16H"
+level=90
+race=troll
+role=spell
+position=back
+professions=engineering=600/blacksmithing=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Ua!.0.1.0
+spec=balance
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=warm_sun
+actions.precombat+=/food,type=mogu_fish_stew
+actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius.up&talent.dream_of_cenarius.enabled
+actions.precombat+=/moonkin_form
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/jade_serpent_potion
+
+# Executed every time the actor is available.
+
+actions=jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=40|buff.celestial_alignment.up
+actions+=/starfall,if=!buff.starfall.up
+actions+=/force_of_nature,if=talent.force_of_nature.enabled
+actions+=/berserking,if=buff.celestial_alignment.up
+actions+=/use_item,slot=hands,if=buff.celestial_alignment.up|cooldown.celestial_alignment.remains>30
+actions+=/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
+actions+=/natures_swiftness,if=talent.natures_swiftness.enabled&talent.dream_of_cenarius.enabled
+actions+=/healing_touch,if=talent.dream_of_cenarius.enabled&!buff.dream_of_cenarius.up&mana.pct>25
+actions+=/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)
+actions+=/celestial_alignment,if=(!buff.lunar_eclipse.up&!buff.solar_eclipse.up)&(buff.chosen_of_elune.up|!talent.incarnation.enabled|cooldown.incarnation.remains>10)
+actions+=/natures_vigil,if=talent.natures_vigil.enabled
+actions+=/starsurge,if=buff.shooting_stars.react&(active_enemies<5|!buff.solar_eclipse.up)
+actions+=/moonfire,cycle_targets=1,if=buff.lunar_eclipse.up&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/sunfire,cycle_targets=1,if=buff.solar_eclipse.up&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/hurricane,if=active_enemies>4&buff.solar_eclipse.up&buff.natures_grace.up
+actions+=/moonfire,cycle_targets=1,if=active_enemies<5&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/sunfire,cycle_targets=1,if=active_enemies<5&(remains<(buff.natures_grace.remains-2+2*set_bonus.tier14_4pc_caster))
+actions+=/hurricane,if=active_enemies>5&buff.solar_eclipse.up&mana.pct>25
+actions+=/moonfire,cycle_targets=1,if=buff.lunar_eclipse.up&ticks_remain<2
+actions+=/sunfire,cycle_targets=1,if=buff.solar_eclipse.up&ticks_remain<2
+actions+=/hurricane,if=active_enemies>4&buff.solar_eclipse.up&mana.pct>25
+actions+=/starsurge,if=cooldown_react
+actions+=/starfire,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
+actions+=/wrath,if=buff.celestial_alignment.up&cast_time<buff.celestial_alignment.remains
+actions+=/starfire,if=eclipse_dir=1|(eclipse_dir=0&eclipse>0)
+actions+=/wrath,if=eclipse_dir=-1|(eclipse_dir=0&eclipse<=0)
+actions+=/moonfire,moving=1,cycle_targets=1,if=ticks_remain<2
+actions+=/sunfire,moving=1,cycle_targets=1,if=ticks_remain<2
+actions+=/wild_mushroom,moving=1,if=buff.wild_mushroom.stack<buff.wild_mushroom.max_stack
+actions+=/starsurge,moving=1,if=buff.shooting_stars.react
+actions+=/moonfire,moving=1,if=buff.lunar_eclipse.up
+actions+=/sunfire,moving=1
+
+head=darkfang_mask,id=105542,upgrade=2,gems=sinister_primal_320crit_180int
+neck=untainted_guardians_chain,id=105465,upgrade=2,reforge=hit_crit
+shoulders=shoulderwraps_of_the_shattered_vale,id=99428,upgrade=2,gems=80int_160crit_80int_160crit_120int,enchant=200int_100crit,reforge=haste_mastery
+back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=80int_160crit_60int,enchant=180int,reforge=haste_spi
+chest=vestment_of_the_shattered_vale,id=99427,upgrade=2,gems=160exp_160crit_160exp_160crit_160exp_160crit_180int,enchant=80all,reforge=haste_crit
+wrists=bracers_of_purified_spirit,id=105425,upgrade=2,gems=320crit,enchant=180int,reforge=spi_mastery
+hands=gloves_of_the_shattered_vale,id=99432,upgrade=2,gems=160exp_160crit_160exp_160crit_320crit_120int,enchant=170mastery,addon=synapse_springs_2,reforge=haste_mastery
+waist=seal_of_karmic_return,id=105651,upgrade=2,gems=160exp_160crit_320crit_320crit_120int,reforge=spi_crit
+legs=leggings_of_the_shattered_vale,id=99434,upgrade=2,gems=320crit_320crit_120int,enchant=285int_165crit
+feet=boots_of_perilous_infusion,id=105576,upgrade=2,gems=160spi_160crit_60spi,enchant=140mastery,reforge=haste_crit
+finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=80int_160crit_60haste,reforge=haste_crit
+finger2=seal_of_sullen_fury,id=105574,upgrade=2,gems=80int_160crit_60spi
+trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
+trinket2=kardris_toxic_totem,id=105540,upgrade=2
+main_hand=kardris_scepter,id=105541,upgrade=2,gems=80int_160crit_60int,enchant=jade_spirit,reforge=spi_crit
+off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=80int_160crit_60int,enchant=165int,reforge=haste_crit
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=80
+# gear_stamina=39087
+# gear_intellect=27070
+# gear_spirit=3268
+# gear_spell_power=15321
+# gear_expertise_rating=960
+# gear_hit_rating=567
+# gear_crit_rating=16439
+# gear_haste_rating=5076
+# gear_mastery_rating=13345
+# gear_armor=22615
+# meta_gem=sinister_primal
+# tier16_2pc_caster=1
+# tier16_4pc_caster=1
+# hands=gloves_of_the_shattered_vale,heroic=1,addon=synapse_springs_2
+# main_hand=kardris_scepter,heroic=1,elite=1,weapon=mace_2.40speed_5651min_10496max,enchant=jade_spirit
