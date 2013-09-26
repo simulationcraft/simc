@@ -565,7 +565,6 @@ void buff_t::decrement( int    stacks,
 void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
 {
   assert( expiration );
-  assert( extra_seconds.total_seconds() < sim -> wheel_seconds );
 
   if ( extra_seconds > timespan_t::zero() )
   {
