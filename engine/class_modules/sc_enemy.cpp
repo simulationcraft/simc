@@ -14,7 +14,7 @@ namespace { // UNNAMED NAMESPACE
 enum tmi_boss_e
 {
   TMI_NONE = 0,
-  TMI_T15LFR, TMI_T15N, TMI_T15H, TMI_T16Q
+  TMI_T15LFR, TMI_T15N, TMI_T15H, TMI_T16_10N, TMI_T16_25N, TMI_T16_10H, TMI_T16_25H
 };
 
 // Enemy actions are generic to serve both enemy_t and enemy_add_t,
@@ -97,7 +97,7 @@ struct auto_attack_t : public attack_t
 
     // check that the specified damage range is sane
     if ( damage_range > p -> main_hand_attack -> base_dd_min || damage_range < 0 )
-      damage_range = 0.2 * p -> main_hand_attack -> base_dd_min; // if not, set to +/-20%
+      damage_range = 0.1 * p -> main_hand_attack -> base_dd_min; // if not, set to +/-10%
 
     // set damage range to mean +/- range
     p -> main_hand_attack -> base_dd_max = p -> main_hand_attack -> base_dd_min + damage_range;
@@ -614,21 +614,19 @@ tmi_boss_e enemy_t::convert_tmi_string( const std::string& tmi_string )
   // this function translates between the "tmi_boss" option string and the tmi_boss_e enum
   // eventually plan on using regular expressions here
   if ( tmi_string == "T15LFR" || tmi_string == "T15N10" )
-  {
     return TMI_T15LFR;
-  }
   if ( tmi_string == "T15N" || tmi_string == "T15N25" || tmi_string == "T15H10" )
-  {
     return TMI_T15N;
-  }
   if ( tmi_string == "T15H" || tmi_string == "T15H25" )
-  {
     return TMI_T15H;
-  }
-  if ( tmi_string == "T16Q" )
-  {
-    return TMI_T16Q;
-  }
+  if ( tmi_string == "T16Q" || tmi_string == "T16N10" )
+    return TMI_T16_10N;
+  if ( tmi_string == "T16N" || tmi_string == "T16N25" )
+    return TMI_T16_25N;
+  if ( tmi_string == "T16H10" )
+    return TMI_T16_10H;
+  if ( tmi_string == "T16H" || tmi_string == "T16H25" )
+    return TMI_T16_25H;
 
   if ( ! tmi_string.empty() && sim -> debug )
     sim -> output( "Unknown TMI string input provided: %s", tmi_string.c_str() );
@@ -793,8 +791,8 @@ void enemy_t::init_actions()
             break;
           default:
             // boss damage information ( could move outside this function and make a constant )
-            int aa_damage [ 5 ] = { 0, 550000, 750000, 900000, 1100000 };
-            int dot_damage [ 5 ] = { 0, 20000, 25000, 30000, 40000 };
+            int aa_damage [ 8 ] = { 0, 550000, 750000, 900000, 1200000, 1350000, 1500000, 1650000 };
+            int dot_damage [ 8 ] = { 0, 20000, 25000, 30000, 40000, 50000, 55000, 600000 };
             action_list_str += "/auto_attack,damage=" + util::to_string( aa_damage[ tmi_boss_enum ] ) + ",attack_speed=1.5";
             action_list_str += "/spell_dot,damage=" + util::to_string( dot_damage[ tmi_boss_enum ] ) + ",tick_time=2,num_ticks=15,aoe_tanks=1,if=!ticking";
         }
