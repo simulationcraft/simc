@@ -2494,7 +2494,6 @@ struct sim_t : public core_sim_t
   bool        tmi_actor_only;
 
   // Target options
-  double      target_death;
   double      target_death_pct;
   int         rel_target_level, target_level;
   std::string target_race;
@@ -3943,6 +3942,7 @@ struct player_t : public actor_t
   bool         bugs; // If true, include known InGame mechanics which are probably the cause of a bug and not inteded
   bool scale_player;
   bool tmi_self_only;
+  double death_pct; // Player will die if he has equal or less than this value as health-pct
 
   // dynamic attributes - things which change during combat
   player_t*   target;

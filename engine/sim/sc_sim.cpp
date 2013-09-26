@@ -841,7 +841,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_talent_str( 0 ),
   talent_format( TALENT_FORMAT_UNCHANGED ),
   auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), tmi_actor_only( 0 ),
-  target_death( 0 ), target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ),
+  target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ),
   challenge_mode( false ), scale_to_itemlevel ( -1 ),
   active_enemies( 0 ), active_allies( 0 ),
   deterministic_rng( false ),
@@ -1005,11 +1005,6 @@ void sim_t::combat( int iteration )
     }
 
     core_event_t::recycle( e );
-
-    // This should be moved to assess_damage somehow, but it is a little tricky given mixed inheritance of player/enemy.
-    if ( target_death >= 0 )
-      if ( target -> resources.current[ RESOURCE_HEALTH ] <= target_death )
-        iteration_canceled = 1;
 
     if ( unlikely( iteration_canceled ) )
       break;
@@ -1232,11 +1227,11 @@ void sim_t::combat_begin()
   if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
   {
     new ( *this ) sim_end_event_t( *this, "sim_end_expected_time", expected_time );
-    target_death = -1;
+    target -> death_pct = target_death_pct;
   }
   else
   {
-    target_death = target -> resources.max[ RESOURCE_HEALTH ] * target_death_pct / 100.0;
+    target -> death_pct = target_death_pct;
   }
   new ( *this ) sim_end_event_t( *this, "sim_end_twice_expected_time", expected_time + expected_time );
 }

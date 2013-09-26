@@ -521,6 +521,7 @@ struct enemy_t : public player_t
   virtual void combat_begin();
   virtual void combat_end();
   virtual void recalculate_health();
+  virtual void demise();
   virtual expr_t* create_expression( action_t* action, const std::string& type );
   virtual timespan_t available() { return waiting_time; }
 
@@ -640,6 +641,8 @@ tmi_boss_e enemy_t::convert_tmi_string( const std::string& tmi_string )
 void enemy_t::init_base_stats()
 {
   player_t::init_base_stats();
+
+  resources.infinite_resource[ RESOURCE_HEALTH ] = false;
 
   tmi_boss_enum = convert_tmi_string( tmi_boss_str );
 
@@ -904,7 +907,7 @@ double enemy_t::health_percentage()
   {
     timespan_t remainder = std::max( timespan_t::zero(), ( sim -> expected_time - sim -> current_time ) );
 
-    return ( remainder / sim -> expected_time ) * ( initial_health_percentage - sim -> target_death_pct ) + sim ->  target_death_pct;
+    return ( remainder / sim -> expected_time ) * ( initial_health_percentage - death_pct ) + death_pct;
   }
 
   return resources.pct( RESOURCE_HEALTH ) * 100 ;
@@ -918,7 +921,7 @@ void enemy_t::recalculate_health()
 
   if ( initial_health == 0 ) // first iteration
   {
-    initial_health = iteration_dmg_taken * ( sim -> expected_time / sim -> current_time ) * ( 1.0 / ( 1.0 - sim ->  target_death_pct / 100 ) );
+    initial_health = iteration_dmg_taken * ( sim -> expected_time / sim -> current_time ) * ( 1.0 / ( 1.0 - death_pct / 100 ) );
   }
   else
   {
@@ -969,6 +972,19 @@ void enemy_t::combat_end()
     recalculate_health();
 }
 
+void enemy_t::demise()
+{
+  if ( this == sim -> target )
+  {
+    if ( sim -> current_iteration  == 0 )
+      return;
+    else
+      // For the main target, end simulation on death.
+      sim -> iteration_canceled = 1;
+  }
+
+  player_t::demise();
+}
 // ENEMY MODULE INTERFACE ===================================================
 
 struct enemy_module_t : public module_t

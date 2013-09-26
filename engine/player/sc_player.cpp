@@ -606,6 +606,7 @@ player_t::player_t( sim_t*             s,
   bugs( true ),
   scale_player( true ),
   tmi_self_only( false ),
+  death_pct( 0.0 ),
 
   // dynamic stuff
   target( 0 ),
@@ -5115,16 +5116,10 @@ void player_t::assess_damage( school_e school,
   if ( s -> result_amount <= 0 )
     return;
 
-  if ( false && ( this == sim -> target ) )
-  {
-    if ( sim -> target_death >= 0 )
-      if ( resources.current[ RESOURCE_HEALTH ] <= sim -> target_death )
-        sim -> iteration_canceled = 1;
-  }
-  else if ( resources.current[ RESOURCE_HEALTH ] <= 0 && ! is_enemy() && ! resources.is_infinite( RESOURCE_HEALTH ) )
+  else if ( health_percentage() <= death_pct && ! resources.is_infinite( RESOURCE_HEALTH ) )
   {
     // This can only save the target, if the damage is less than 200% of the target's health as of 4.0.6
-    if ( buffs.guardian_spirit -> check() && actual_amount <= ( resources.max[ RESOURCE_HEALTH] * 2 ) )
+    if ( ! is_enemy() && buffs.guardian_spirit -> check() && actual_amount <= ( resources.max[ RESOURCE_HEALTH] * 2 ) )
     {
       // Just assume that this is used so rarely that a strcmp hack will do
       //stats_t* stat = buffs.guardian_spirit -> source ? buffs.guardian_spirit -> source -> get_stats( "guardian_spirit" ) : 0;
