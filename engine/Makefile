@@ -47,6 +47,9 @@ endif
 ifneq (${C++11},)
   CPP_FLAGS += -std=c++0x
 endif
+ifneq (${C++03},)
+  CPP_FLAGS += -std=c++03
+endif
 ifneq (${LTO},)
   OPTS += -flto
 endif
