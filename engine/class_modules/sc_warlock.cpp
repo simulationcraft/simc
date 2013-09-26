@@ -233,7 +233,8 @@ public:
     {
         soul_swap_buffer_target -> cancel(); //clear any previous versions in the buffer;
 
-        if (soul_swap_buffer_target -> state ) soul_swap_buffer_target -> state = to_inhale -> current_action -> get_state(); //make sure we have memory allocated for the state
+        if (soul_swap_buffer_target -> state ) 
+			soul_swap_buffer_target -> state = to_inhale -> current_action -> get_state(); //make sure we have memory allocated for the state
 
         soul_swap_buffer_target -> state -> copy_state(to_inhale -> state); //copy state and the other stuff
         soul_swap_buffer_target -> current_action = to_inhale -> current_action;

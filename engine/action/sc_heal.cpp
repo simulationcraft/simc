@@ -222,7 +222,7 @@ std::vector<player_t*> heal_t::find_lowest_players( int num_players )
   {
     // find the remaining player with the highest health
     double max = -1e7;
-    size_t max_player_index;
+    size_t max_player_index = 0;
     for ( size_t i = 0; i < lowest_N_players.size(); ++i )
     {
       player_t* p = lowest_N_players[ i ];

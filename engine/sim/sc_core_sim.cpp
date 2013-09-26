@@ -6,19 +6,19 @@
 #include "simulationcraft.hpp"
 
 core_sim_t::event_managment_t::event_managment_t() :
-    recycled_event_list( nullptr ),
-    timing_wheel(),
-    wheel_seconds( 0 ),
-    wheel_size( 0 ),
-    wheel_mask( 0 ),
-    wheel_shift( 5 ),
-    timing_slice( 0 ),
-    wheel_granularity( 0.0 ),
-    wheel_time( timespan_t::zero() ),
-    all_events_ever_created(),
-    events_remaining( 0 ),
-    events_processed( 0 ),
-    global_event_id( 0 )
+  events_remaining( 0 ),
+  events_processed( 0 ),
+  timing_slice( 0 ),
+  global_event_id( 0 ),
+  timing_wheel(),
+  recycled_event_list( nullptr ),
+  wheel_seconds( 0 ),
+  wheel_size( 0 ),
+  wheel_mask( 0 ),
+  wheel_shift( 5 ),
+  wheel_granularity( 0.0 ),
+  wheel_time( timespan_t::zero() ),
+  all_events_ever_created()
 {
 
 }
@@ -192,16 +192,17 @@ std::vector<core_event_t*> core_sim_t::event_managment_t::get_events_to_flush() 
 /* Constructor
  */
 core_sim_t::core_sim_t() :
+  em(),
+  current_time( timespan_t::zero() ),
   out_std( *this, &std::cout, sim_ostream_t::no_close() ),
   out_error( *this, &std::cerr, sim_ostream_t::no_close() ),
   out_log( *this, &std::cout, sim_ostream_t::no_close() ),
   out_debug(*this, &std::cout, sim_ostream_t::no_close() ),
   debug( false ),
   max_time( timespan_t::zero() ),
-  expected_time( timespan_t::zero() ),
-  current_time( timespan_t::zero() ),
-  current_iteration( -1 ), iterations( 1000 ),
-  em(),
+  expected_iteration_time( timespan_t::zero() ),
+  current_iteration( -1 ),
+  iterations( 1000 ),
   max_events_remaining( 0 ),
   total_events_processed( 0 ),
   event_stopwatch( STOPWATCH_THREAD ),
@@ -356,7 +357,7 @@ void core_sim_t::reset()
 
   em.reset();
   current_time = timespan_t::zero();
-  expected_time = max_time * iteration_time_adjust();
+  expected_iteration_time = max_time * iteration_time_adjust();
 }
 
 /* Begin Combat

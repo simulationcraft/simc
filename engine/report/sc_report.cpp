@@ -524,7 +524,7 @@ void report::print_spell_query( sim_t* sim, unsigned level )
         else
           spell_info::effect_to_str( sim, spell, sim -> dbc.effect( *i ), sqs );
       }
-      sim -> out_std.raw() << sqs;
+      sim -> out_std.raw() << sqs.str();
     }
     else
     {

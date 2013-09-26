@@ -1146,14 +1146,14 @@ void sim_t::combat_begin()
 
   if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
   {
-    new ( *this ) sim_end_event_t( *this, "sim_end_expected_time", expected_time );
+    new ( *this ) sim_end_event_t( *this, "sim_end_expected_time", expected_iteration_time );
     target -> death_pct = target_death_pct;
   }
   else
   {
     target -> death_pct = target_death_pct;
   }
-  new ( *this ) sim_end_event_t( *this, "sim_end_twice_expected_time", expected_time + expected_time );
+  new ( *this ) sim_end_event_t( *this, "sim_end_twice_expected_time", expected_iteration_time + expected_iteration_time );
 }
 
 // sim_t::combat_end ========================================================

@@ -4636,7 +4636,7 @@ timespan_t player_t::time_to_die()
   }
   else
   {
-    return ( sim -> expected_time - sim -> current_time );
+    return ( sim -> expected_iteration_time - sim -> current_time );
   }
 }
 
@@ -8171,7 +8171,7 @@ double player_t::calculate_time_to_bloodlust()
 
   // Return a nonsensical time that's much longer than the simulation.  This happens if time_to_bl was negative
   // or if overrides.bloodlust was 0
-  return 3 * sim -> expected_time.total_seconds();
+  return 3 * sim -> expected_iteration_time.total_seconds();
 }
 
 void player_t::recreate_talent_str( talent_format_e format )

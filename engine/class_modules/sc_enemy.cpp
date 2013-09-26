@@ -905,9 +905,9 @@ double enemy_t::health_percentage()
 
   if ( resources.base[ RESOURCE_HEALTH ] == 0 ) // first iteration
   {
-    timespan_t remainder = std::max( timespan_t::zero(), ( sim -> expected_time - sim -> current_time ) );
+    timespan_t remainder = std::max( timespan_t::zero(), ( sim -> expected_iteration_time - sim -> current_time ) );
 
-    return ( remainder / sim -> expected_time ) * ( initial_health_percentage - death_pct ) + death_pct;
+    return ( remainder / sim -> expected_iteration_time ) * ( initial_health_percentage - death_pct ) + death_pct;
   }
 
   return resources.pct( RESOURCE_HEALTH ) * 100 ;
@@ -917,17 +917,17 @@ double enemy_t::health_percentage()
 
 void enemy_t::recalculate_health()
 {
-  if ( sim -> expected_time <= timespan_t::zero() || fixed_health > 0 ) return;
+  if ( sim -> expected_iteration_time <= timespan_t::zero() || fixed_health > 0 ) return;
 
   if ( initial_health == 0 ) // first iteration
   {
-    initial_health = iteration_dmg_taken * ( sim -> expected_time / sim -> current_time ) * ( 1.0 / ( 1.0 - death_pct / 100 ) );
+    initial_health = iteration_dmg_taken * ( sim -> expected_iteration_time / sim -> current_time ) * ( 1.0 / ( 1.0 - death_pct / 100 ) );
   }
   else
   {
-    timespan_t delta_time = sim -> current_time - sim -> expected_time;
+    timespan_t delta_time = sim -> current_time - sim -> expected_iteration_time;
     delta_time /= ( sim -> current_iteration + 1 ); // dampening factor
-    double factor = 1.0 - ( delta_time / sim -> expected_time );
+    double factor = 1.0 - ( delta_time / sim -> expected_iteration_time );
 
     if ( factor > 1.5 ) factor = 1.5;
     if ( factor < 0.5 ) factor = 0.5;

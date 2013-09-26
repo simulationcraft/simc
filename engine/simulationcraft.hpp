@@ -2413,6 +2413,8 @@ private:
   { _data.erase( it ); trigger_callbacks(); }
 };
 
+/* Unformatted SimC output class.
+ */
 struct sc_raw_ostream_t {
   template <class T>
   sc_raw_ostream_t & operator<< (T const& rhs)
@@ -2428,10 +2430,10 @@ private:
   std::shared_ptr<std::ostream> _stream;
 };
 
-// Custom SimC output stream with a state ( enabled/disabled )
+/* Formatted SimC output class.
+ */
 struct sim_ostream_t
 {
-
   struct no_close {};
 
   explicit sim_ostream_t( core_sim_t& s, std::shared_ptr<std::ostream> os ) :
@@ -2469,15 +2471,14 @@ public:
   // Collection of most event-related functionality
   struct event_managment_t
   {
-    core_event_t* recycled_event_list;
+    int events_remaining, events_processed;
+    unsigned timing_slice, global_event_id;
     std::vector<core_event_t*> timing_wheel;
+    core_event_t* recycled_event_list;
     int    wheel_seconds, wheel_size, wheel_mask, wheel_shift;
-    unsigned timing_slice;
     double wheel_granularity;
     timespan_t wheel_time;
     std::vector<core_event_t*> all_events_ever_created;
-    int events_remaining, events_processed;
-    unsigned global_event_id;
 
     event_managment_t();
     ~event_managment_t();
@@ -2493,18 +2494,19 @@ public:
   core_sim_t();
   virtual ~core_sim_t();
 
-// Public members
+  event_managment_t em; // Timing Wheel Event Management
+  timespan_t current_time;
+
+  // Output
   sim_ostream_t out_std;
   sim_ostream_t out_error;
   sim_ostream_t out_log;
   sim_ostream_t out_debug;
   bool debug;
 
-  timespan_t  max_time, expected_time, current_time;
+  timespan_t  max_time, expected_iteration_time;
   int current_iteration, iterations;
 
-  // Timing Wheel Event Management
-  event_managment_t em;
 
   // Timing Wheel statistics
   int64_t     max_events_remaining, total_events_processed;
