@@ -2701,7 +2701,6 @@ struct incinerate_t : public warlock_spell_t
     base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 2 ).percent();
     base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
-    base_multiplier *= 1.05; //12.09.13 Hotfix. check after dbc update
   }
 
   virtual double crit_chance( double crit, int delta_level )

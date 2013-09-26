@@ -414,13 +414,19 @@ void dbc::apply_hotfixes()
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.345 * 0.7;
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.345 * 0.7;
 
-  // Immolate damage increased by 10%
+  // Immolate damage increased by 10% (apparently, in reality it's 30%)
   s = spell_data_t::find( 348, false );
   assert( s -> effectN( 1 ).m_average() != 0.628 * 1.1 && "Out of date hotfix for Immolate" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.628 * 1.1;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.350 * 1.1;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg = 1.795 * 1.1;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff = 1.000 * 1.1;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.47 * 1.3;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.47 * 1.3;
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg = 0.47 * 1.3;
+  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff = 0.47 * 1.3;
+
+  // Incinerate damage increased by 5% (apparently, in reality it's 15%)
+  s = spell_data_t::find( 29722, false );
+  assert( s -> effectN( 1 ).m_average != 1.54 * 1.15 && "Out of date hotfix for Incinerate" );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.54 * 1.15;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 1.54 * 1.15;
 
   // Warrior
   // Hotfixes from 2013-09-23
