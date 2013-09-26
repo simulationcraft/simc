@@ -14,7 +14,7 @@ void* core_event_t::allocate( std::size_t size, core_sim_t& sim )
   static const std::size_t SIZE = 2 * sizeof( core_event_t );
   assert( SIZE > size ); ( void ) size;
 
-  core_event_t*& list = sim.recycled_event_list;
+  core_event_t*& list = sim.em.recycled_event_list;
 
   core_event_t* e = list;
 
@@ -32,7 +32,7 @@ void* core_event_t::allocate( std::size_t size, core_sim_t& sim )
     }
     else
     {
-      sim.all_events_ever_created.push_back( e );
+      sim.em.all_events_ever_created.push_back( e );
     }
   }
 
@@ -43,16 +43,14 @@ void core_event_t::recycle( core_event_t* e )
 {
   e -> ~core_event_t();
 
-  core_event_t*& list = e -> _sim.recycled_event_list;
+  core_event_t*& list = e -> _sim.em.recycled_event_list;
 
   e -> next = list;
   list = e;
 }
 
-void core_event_t::release( core_sim_t& sim )
+void core_event_t::release( core_event_t*& list )
 {
-  core_event_t*& list = sim.recycled_event_list;
-
   while ( list )
   {
     core_event_t* e = list;

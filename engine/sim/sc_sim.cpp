@@ -819,7 +819,6 @@ sim_t::sim_t( sim_t* p, int index ) :
   num_players( 0 ),
   num_enemies( 0 ),
   max_player_level( -1 ),
-  canceled( 0 ), iteration_canceled( 0 ),
   queue_lag( timespan_t::from_seconds( 0.037 ) ), queue_lag_stddev( timespan_t::zero() ),
   gcd_lag( timespan_t::from_seconds( 0.150 ) ), gcd_lag_stddev( timespan_t::zero() ),
   channel_lag( timespan_t::from_seconds( 0.250 ) ), channel_lag_stddev( timespan_t::zero() ),
@@ -829,10 +828,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   travel_variance( 0 ), default_skill( 1.0 ), reaction_time( timespan_t::from_seconds( 0.5 ) ),
   regen_periodicity( timespan_t::from_seconds( 0.25 ) ),
   ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) ),
-  max_time( timespan_t::from_seconds( 450 ) ),
-  expected_time( timespan_t::zero() ), vary_combat_length( 0.2 ),
   fixed_time( 0 ),
-  seed( 0 ), iterations( 1000 ), current_iteration( -1 ), current_slot( -1 ),
+  seed( 0 ), current_slot( -1 ),
   armor_update_interval( 20 ), weapon_speed_scale_factors( 0 ),
   optimal_raid( 0 ), log( 0 ), debug_each( 0 ), save_profiles( 0 ), default_actions( 0 ),
   normalized_stat( STAT_NONE ),
@@ -879,6 +876,9 @@ sim_t::sim_t( sim_t* p, int index ) :
                           range::end( default_item_db_sources ) );
 
 
+  max_time = timespan_t::from_seconds( 450 );
+  vary_combat_length = 0.2;
+
   use_optimal_buffs_and_debuffs( 1 );
 
   create_options();
@@ -917,22 +917,6 @@ sim_t::~sim_t()
   delete spell_query;
 }
 
-// sim_t::reschedule_event ==================================================
-
-void sim_t::reschedule_event( core_event_t* e )
-{
-  if ( debug ) output( "Reschedule Event: %s %d", e -> name, e -> id );
-
-  add_event( e, ( e -> reschedule_time - current_time ) );
-}
-
-void sim_t::flush_events()
-{
-  if ( debug ) output( "Flush Events" );
-
-  core_sim_t::flush_events();
-}
-
 // sim_t::combat ============================================================
 
 void sim_t::combat( int iteration )
@@ -957,76 +941,15 @@ void sim_t::combat( int iteration )
     output( "------ Iteration #%i ------", iteration + 1 );
     fflush( this -> output_file );
   }
-  if ( debug ) output( "Starting Simulator" );
 
-  current_iteration = iteration;
-
-  combat_begin();
-
-  while ( core_event_t* e = next_event() )
-  {
-    current_time = e -> time;
-
-    if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> actor && ! e -> canceled )
-    {
-      // Perform actor event bookkeeping first
-      e -> actor -> event_counter--;
-      if ( e -> actor -> event_counter < 0 )
-      {
-        errorf( "sim_t::combat assertion error! canceling event %s leaves negative event count for user %s.\n", e -> name, e -> actor -> name() );
-        assert( 0 );
-      }
-    }
-
-    if ( unlikely( e -> canceled ) )
-    {
-      if ( debug ) output( "Canceled event: %s", e -> name );
-    }
-    else if ( unlikely( e -> reschedule_time > e -> time ) )
-    {
-      reschedule_event( e );
-      continue;
-    }
-    else
-    {
-      if ( debug ) output( "Executing event: %s %s", e -> name, e -> actor ? e -> actor -> name() : "" );
-
-      if ( monitor_cpu )
-      {
-        stopwatch_t& sw = e -> actor ? e -> actor -> event_stopwatch : event_stopwatch;
-        sw.mark();
-        e -> execute();
-        sw.accumulate();
-      }
-      else
-      {
-        e -> execute();
-      }
-    }
-
-    core_event_t::recycle( e );
-
-    if ( unlikely( iteration_canceled ) )
-      break;
-    
-    if ( unlikely( canceled ) )
-      break;
-  }
-
-  combat_end();
+  core_sim_t::combat( iteration );
 }
 
 // sim_t::reset =============================================================
 
 void sim_t::reset()
 {
-  if ( debug ) output( "Resetting Simulator" );
-
   core_sim_t::reset();
-
-
-  expected_time = max_time * ( 1.0 + vary_combat_length * iteration_adjust() );
-  current_time = timespan_t::zero();
 
   for ( size_t i = 0; i < buff_list.size(); ++i )
     buff_list[ i ] -> reset();
@@ -1054,9 +977,7 @@ void sim_t::reset()
 
 void sim_t::combat_begin()
 {
-  if ( debug ) output( "Combat Begin" );
-
-  reset();
+  core_sim_t::combat_begin();
 
   iteration_dmg = iteration_heal = 0;
 
@@ -1240,7 +1161,7 @@ void sim_t::combat_begin()
 
 void sim_t::combat_end()
 {
-  if ( debug ) output( "Combat End" );
+  core_sim_t::combat_end();
 
   for ( size_t i = 0; i < target_list.size(); ++i )
   {
@@ -1312,7 +1233,7 @@ void sim_t::datacollection_end()
 
   simulation_length.add( current_time.total_seconds() );
 
-  total_events_processed += events_processed;
+  total_events_processed += em.events_processed;
 
   for ( size_t i = 0; i < target_list.size(); ++i )
   {
@@ -1875,19 +1796,6 @@ timespan_t sim_t::gauss( timespan_t mean,
   return timespan_t::from_native( gauss( ( double ) timespan_t::to_native( mean ), ( double ) timespan_t::to_native( stddev ) ) );
 }
 
-// sim_t::iteration_adjust ==================================================
-
-double sim_t::iteration_adjust()
-{
-  if ( iterations <= 1 )
-    return 0.0;
-
-  if ( current_iteration == 0 )
-    return 0.0;
-
-  return ( ( current_iteration % 2 ) ? 1 : -1 ) * current_iteration / ( double ) iterations;
-}
-
 // sim_t::create_expression =================================================
 
 expr_t* sim_t::create_expression( action_t* a,
@@ -2055,9 +1963,9 @@ void sim_t::create_options()
     opt_int( "armor_update_internval", armor_update_interval ),
     opt_timespan( "aura_delay", aura_delay ),
     opt_int( "seed", seed ),
-    opt_float( "wheel_granularity", wheel_granularity ),
-    opt_int( "wheel_seconds", wheel_seconds ),
-    opt_int( "wheel_shift", wheel_shift ),
+    opt_float( "wheel_granularity", em.wheel_granularity ),
+    opt_int( "wheel_seconds", em.wheel_seconds ),
+    opt_int( "wheel_shift", em.wheel_shift ),
     opt_string( "reference_player", reference_player_str ),
     opt_string( "raid_events", raid_events_str ),
     opt_append( "raid_events+", raid_events_str ),
@@ -2144,7 +2052,7 @@ void sim_t::create_options()
     opt_bool( "report_raid_summary", report_raid_summary ), // Force reporting of raid summary
     opt_string( "reforge_plot_output_file", reforge_plot_output_file_str ),
     opt_string( "csv_output_file_str", csv_output_file_str ),
-    opt_int( "monitor_cpu", monitor_cpu ),
+    opt_bool( "monitor_cpu", monitor_cpu ),
     opt_int( "global_item_upgrade_level", global_item_upgrade_level ),
     opt_null()
   };

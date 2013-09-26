@@ -1661,7 +1661,7 @@ struct inner_focus_t : public priest_spell_t
 
   virtual void execute()
   {
-    cooldown -> duration = timespan_t::from_seconds( sim -> wheel_seconds );
+    cooldown -> duration = sim -> max_time;
 
     priest_spell_t::execute();
 

@@ -96,7 +96,7 @@ void plot_t::analyze_stats()
 
   for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
   {
-    if ( sim -> canceled ) break;
+    if ( sim -> is_canceled() ) break;
 
     if ( ! is_plot_stat( sim, i ) ) continue;
 
@@ -125,7 +125,7 @@ void plot_t::analyze_stats()
 
     for ( int j = start; j <= end; j++ )
     {
-      if ( sim -> canceled ) break;
+      if ( sim -> is_canceled() ) break;
 
       sim_t* delta_sim = 0;
 
@@ -188,7 +188,7 @@ void plot_t::analyze_stats()
 
 void plot_t::analyze()
 {
-  if ( sim -> canceled ) return;
+  if ( sim -> is_canceled() ) return;
 
   if ( dps_plot_stat_str.empty() ) return;
 
@@ -216,7 +216,7 @@ void plot_t::analyze()
 
     for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
     {
-      if ( sim -> canceled ) break;
+      if ( sim -> is_canceled() ) break;
 
       if ( ! is_plot_stat( sim, i ) ) continue;
 

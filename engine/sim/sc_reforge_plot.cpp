@@ -184,7 +184,7 @@ void reforge_plot_t::analyze_stats()
 
   for ( size_t i = 0; i < stat_mods.size(); i++ )
   {
-    if ( sim -> canceled ) break;
+    if ( sim -> is_canceled() ) break;
 
     std::vector<plot_data_t> delta_result( stat_mods[ i ].size() + 1 );
 
@@ -248,7 +248,7 @@ void reforge_plot_t::analyze_stats()
 
 void reforge_plot_t::analyze()
 {
-  if ( sim -> canceled ) return;
+  if ( sim -> is_canceled() ) return;
 
   if ( reforge_plot_stat_str.empty() ) return;
 

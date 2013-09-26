@@ -755,9 +755,15 @@ void print_text_monitor_cpu( FILE* file, sim_t* sim )
 
   util::fprintf( file, "%10.2fsec : Global Events\n", sim -> event_stopwatch.current() );
 
-  for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+  std::vector<player_t*> sorted_p = sim -> player_list.data();
+  struct sort_by_event_stopwatch {
+    bool operator()(player_t* l, player_t* r )
+    { return l -> event_stopwatch.current() > r -> event_stopwatch.current(); }
+  };
+  range::sort( sorted_p, sort_by_event_stopwatch() );
+  for ( size_t i = 0; i < sorted_p.size(); ++i )
   {
-    player_t* p = sim -> player_list[ i ];
+    player_t* p = sorted_p[ i ];
 
     util::fprintf( file, "%10.2fsec : %s\n", p -> event_stopwatch.current(), p -> name() );
   }

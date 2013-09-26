@@ -2426,36 +2426,63 @@ public:
 // Core Simulation Class. Should not have anything to do with World of Warcraft
 struct core_sim_t : protected sc_thread_t
 {
+  // Collection of most event-related functionality
+  struct event_managment_t
+  {
+    core_event_t* recycled_event_list;
+    std::vector<core_event_t*> timing_wheel;
+    int    wheel_seconds, wheel_size, wheel_mask, wheel_shift;
+    unsigned timing_slice;
+    double wheel_granularity;
+    timespan_t wheel_time;
+    std::vector<core_event_t*> all_events_ever_created;
+    int events_remaining, events_processed;
+    unsigned global_event_id;
+
+    event_managment_t();
+    ~event_managment_t();
+    void flush_events();
+    void reset();
+    void init();
+    void add_event( core_event_t*, timespan_t delta_time, timespan_t current_time );
+    core_event_t* next_event();
+  private:
+    std::vector<core_event_t*> get_events_to_flush() const;
+  };
   core_sim_t();
-  virtual ~core_sim_t();
-  virtual void flush_events();
+  virtual ~core_sim_t() {}
+  void add_event( core_event_t*, timespan_t delta_time );
+  double iteration_time_adjust() const;
+  bool is_canceled() const;
+protected:
+  void flush_events();
   virtual void reset();
   virtual bool init();
+  virtual void combat( int iteration );
+  virtual void combat_begin();
+  virtual void combat_end();
+  void      reschedule_event( core_event_t* );
 
-  void add_event( core_event_t*, timespan_t delta_time );
-  core_event_t*  next_event();
-
+public:
   sc_ostream out_error;
   sc_ostream out_debug;
+  bool debug;
+
+  timespan_t  max_time, expected_time, current_time;
+  int current_iteration, iterations;
 
   // Timing Wheel Event Management
-  core_event_t* recycled_event_list;
-  std::vector<core_event_t*> timing_wheel; // This should be a vector of forward_list's
-  int    wheel_seconds, wheel_size, wheel_mask, wheel_shift;
-  unsigned timing_slice;
-  double wheel_granularity;
-  timespan_t wheel_time;
-  std::vector<core_event_t*> all_events_ever_created;
-  int64_t     events_remaining, max_events_remaining;
-  int64_t     events_processed, total_events_processed;
-  unsigned global_event_id;
-  timespan_t  current_time;
+  event_managment_t em;
 
-
+  // Timing Wheel statistics
+  int64_t     max_events_remaining, total_events_processed;
   stopwatch_t event_stopwatch;
-  int monitor_cpu;
+  bool monitor_cpu;
 
-  bool debug;
+  int canceled, iteration_canceled;
+  double      vary_combat_length;
+
+
 
 };
 
@@ -2477,7 +2504,6 @@ struct sim_t : public core_sim_t
   int         num_players;
   int         num_enemies;
   int         max_player_level;
-  int         canceled, iteration_canceled;
   timespan_t  queue_lag, queue_lag_stddev;
   timespan_t  gcd_lag, gcd_lag_stddev;
   timespan_t  channel_lag, channel_lag_stddev;
@@ -2489,10 +2515,8 @@ struct sim_t : public core_sim_t
   double     travel_variance, default_skill;
   timespan_t  reaction_time, regen_periodicity;
   timespan_t  ignite_sampling_delta;
-  timespan_t  max_time, expected_time;
-  double      vary_combat_length;
   int         fixed_time;
-  int         seed, iterations, current_iteration, current_slot;
+  int         seed, current_slot;
   int         armor_update_interval, weapon_speed_scale_factors;
   int         optimal_raid, log, debug_each;
   int         save_profiles, default_actions;
@@ -2687,13 +2711,11 @@ public:
   void      cancel();
   double    progress( int* current = 0, int* final = 0 );
   double    progress( std::string& phase );
-  void      combat( int iteration );
-  void      combat_begin();
-  void      combat_end();
+  virtual void combat( int iteration );
+  virtual void combat_begin();
+  virtual void combat_end();
   void      datacollection_begin();
   void      datacollection_end();
-  void      reschedule_event( core_event_t* );
-  void      flush_events();
   void      reset();
   bool      init();
   void      analyze();
@@ -2709,7 +2731,6 @@ public:
   bool      setup( sim_control_t* );
   bool      time_to_think( timespan_t proc_time );
   timespan_t total_reaction_time ();
-  double    iteration_adjust();
   player_t* find_player( const std::string& name ) ;
   player_t* find_player( int index ) ;
   cooldown_t* get_cooldown( const std::string& name );
@@ -2897,7 +2918,6 @@ struct core_event_t
 {
 protected:
   friend struct core_sim_t;
-  friend struct sim_t; // remove at some point
   core_sim_t& _sim;
   actor_t*    actor;
   uint32_t    id;
@@ -2924,7 +2944,7 @@ public:
 
   static void* allocate( std::size_t size, core_sim_t& );
   static void  recycle( core_event_t* );
-  static void  release( core_sim_t& );
+  static void  release( core_event_t*& );
 
   static void* operator new( std::size_t size, core_sim_t& sim ) { return allocate( size, sim ); }
 

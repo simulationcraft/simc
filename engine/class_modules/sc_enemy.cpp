@@ -657,7 +657,7 @@ void enemy_t::init_base_stats()
       level = sim -> max_player_level + sim -> rel_target_level;
 
     // waiting_time override
-    waiting_time = timespan_t::from_seconds( std::min( ( int ) floor( sim -> max_time.total_seconds() ), sim -> wheel_seconds - 1 ) );
+    waiting_time = sim -> max_time;
     if ( waiting_time < timespan_t::from_seconds( 1.0 ) )
       waiting_time = timespan_t::from_seconds( 1.0 );
 
@@ -731,7 +731,7 @@ void enemy_t::create_buffs()
 
 void enemy_t::init_resources( bool /* force */ )
 {
-  double health_adjust = 1.0 + sim -> vary_combat_length * sim -> iteration_adjust();
+  double health_adjust = sim -> iteration_time_adjust();
 
   resources.base[ RESOURCE_HEALTH ] = initial_health * health_adjust;
 

@@ -236,7 +236,7 @@ void scaling_t::analyze_stats()
 
   for ( size_t k = 0; k < stats_to_scale.size(); ++k )
   {
-    if ( sim -> canceled ) break;
+    if ( sim -> is_canceled() ) break;
 
     current_scaling_stat = stats_to_scale[ k ]; // Stat we're scaling over
     const stat_e& stat = current_scaling_stat;
@@ -483,7 +483,7 @@ void scaling_t::normalize()
 
 void scaling_t::analyze()
 {
-  if ( sim -> canceled ) return;
+  if ( sim -> is_canceled() ) return;
   init_deltas();
   analyze_stats();
   analyze_lag();
