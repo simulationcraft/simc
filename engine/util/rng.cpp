@@ -355,16 +355,18 @@ public:
  * This integrates a C++11 random number generator into our native rng_t concept
  * The advantage of this container is the extremely small code, with nearly no
  * maintenance cost.
- * Unfortunately, it is around 40 percent slower than the dsfmt implementation.
+ * Unfortunately, it is slower than the dsfmt implementation.
  */
 class rng_engine_mt_cxx11_t : public rng::engine_t
 {
-  std::mt19937 engine_t; // Mersenne twister MT19937
+  std::mt19937 engine; // Mersenne twister MT19937
+  std::uniform_real_distribution<double> dist;
 public:
-  void _seed( unsigned start ) { engine_t.seed( start ); }
+  rng_engine_mt_cxx11_t() : rng::engine_t(), engine(), dist(0,1) {}
+  void _seed( unsigned start ) { engine.seed( start ); }
 
   double real()
-  { return ( static_cast<double>( engine_t() ) - engine_t.min() ) / ( engine_t.max() - engine_t.min() ); }
+  { return dist(engine); }
 };
 
 #endif // END RNG_CXX11

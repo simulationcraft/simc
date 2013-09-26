@@ -2958,13 +2958,13 @@ struct plot_data_t
 struct core_event_t
 {
   core_sim_t& _sim;
+  core_event_t*    next;
+  timespan_t  time;
+  timespan_t  reschedule_time;
   actor_t*    actor;
   uint32_t    id;
   bool        canceled;
   const char* name;
-  timespan_t  time;
-  timespan_t  reschedule_time;
-  core_event_t*    next;
   core_event_t( core_sim_t& s, const char* n = "unknown" );
   core_event_t( core_sim_t& s, actor_t* p, const char* n = "unknown" );
   core_event_t( actor_t& p, const char* n = "unknown" );

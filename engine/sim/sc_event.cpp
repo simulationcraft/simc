@@ -64,18 +64,18 @@ void core_event_t::release( core_event_t*& list )
 // ==========================================================================
 
 core_event_t::core_event_t( core_sim_t& s, const char* n ) :
-  _sim( s ), actor( nullptr ), id( 0 ), canceled( false ), name( n ), time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ), next( 0 )
+  _sim( s ), next( nullptr ),  time( timespan_t::zero() ),
+  reschedule_time( timespan_t::zero() ),actor( nullptr ), id( 0 ), canceled( false ), name( n )
 {}
 
 core_event_t::core_event_t( core_sim_t& s, actor_t* a, const char* n ) :
-  _sim( s ), actor( a ), id( 0 ), canceled( false ), name( n ), time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ), next( 0 )
+  _sim( s ), next( nullptr ), time( timespan_t::zero() ),
+  reschedule_time( timespan_t::zero() ), actor( a ), id( 0 ), canceled( false ), name( n )
 {}
 
 core_event_t::core_event_t( actor_t& a, const char* n ) :
-  _sim( *a.sim ), actor( &a ), id( 0 ), canceled( false ), name( n ), time( timespan_t::zero() ),
-  reschedule_time( timespan_t::zero() ), next( 0 )
+  _sim( *a.sim ), next( nullptr ), time( timespan_t::zero() ),
+  reschedule_time( timespan_t::zero() ), actor( &a ), id( 0 ), canceled( false ), name( n )
 {}
 
 // event_t::reschedule ======================================================
