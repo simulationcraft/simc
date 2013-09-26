@@ -2411,6 +2411,18 @@ private:
   { _data.erase( it ); trigger_callbacks(); }
 };
 
+// Custom SimC output stream with a state ( enabled/disabled )
+class sc_ostream : public std::ostream
+{
+public:
+  sc_ostream( std::streambuf* sb  ) :
+    std::ostream( sb )
+  {
+  }
+
+  sc_ostream& printf( const char* format, ... );
+};
+
 // Core Simulation Class. Should not have anything to do with World of Warcraft
 struct core_sim_t : protected sc_thread_t
 {
@@ -2423,8 +2435,8 @@ struct core_sim_t : protected sc_thread_t
   void add_event( core_event_t*, timespan_t delta_time );
   core_event_t*  next_event();
 
-  io::ofstream out_error;
-  io::ofstream out_debug;
+  sc_ostream out_error;
+  sc_ostream out_debug;
 
   // Timing Wheel Event Management
   core_event_t* recycled_event_list;
@@ -2442,6 +2454,8 @@ struct core_sim_t : protected sc_thread_t
 
   stopwatch_t event_stopwatch;
   int monitor_cpu;
+
+  bool debug;
 
 };
 
@@ -2480,7 +2494,7 @@ struct sim_t : public core_sim_t
   int         fixed_time;
   int         seed, iterations, current_iteration, current_slot;
   int         armor_update_interval, weapon_speed_scale_factors;
-  int         optimal_raid, log, debug, debug_each;
+  int         optimal_raid, log, debug_each;
   int         save_profiles, default_actions;
   stat_e normalized_stat;
   std::string current_name, default_region_str, default_server_str, save_prefix_str, save_suffix_str;

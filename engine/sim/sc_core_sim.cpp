@@ -31,8 +31,8 @@ void set_difference( const std::vector<core_event_t*>& from, core_event_t* exlud
 
 
 core_sim_t::core_sim_t() :
-  out_error(),
-  out_debug(),
+  out_error( std::cerr.rdbuf() ),
+  out_debug( nullptr ),
   recycled_event_list( nullptr ),
   timing_wheel(),
   wheel_seconds( 0 ),
@@ -49,7 +49,8 @@ core_sim_t::core_sim_t() :
   global_event_id( 0 ),
   current_time( timespan_t::zero() ),
   event_stopwatch( STOPWATCH_THREAD ),
-  monitor_cpu( 0 )
+  monitor_cpu( 0 ),
+  debug( false )
 {
 
 }
@@ -131,13 +132,13 @@ void core_sim_t::add_event( core_event_t* e,
   if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> actor ) e -> actor -> event_counter++;
 
 
-
-  out_debug.printf( "Add Event: %s %.2f %.2f %d %s",
+  if ( debug )
+    out_debug.printf( "Add Event: %s %.2f %.2f %d %s",
                     e -> name, e -> time.total_seconds(),
                     e -> reschedule_time.total_seconds(),
                     e -> id, e -> actor ? e -> actor -> name() : "" );
 
-  if ( actor_t::ACTOR_EVENT_BOOKKEEPING && e -> actor )
+  if ( actor_t::ACTOR_EVENT_BOOKKEEPING && debug && e -> actor )
   {
     out_debug.printf( "Actor %s has %d scheduled events",
                       e -> actor -> name(), e -> actor -> event_counter );
@@ -193,9 +194,26 @@ core_event_t* core_sim_t::next_event()
     {
       timing_slice = 0;
 
-      out_debug.printf( "Time Wheel turns around." );
+      if ( debug )
+        out_debug << "Time Wheel turns around.";
     }
   }
 
   return 0;
+}
+
+sc_ostream& sc_ostream::printf( const char* format, ... )
+{
+  char buffer[ 16384 ];
+
+  va_list fmtargs;
+  va_start( fmtargs, format );
+  int rval = ::vsnprintf( buffer, sizeof( buffer ), format, fmtargs );
+  va_end( fmtargs );
+
+  if ( rval >= 0 )
+    assert( static_cast<size_t>( rval ) < sizeof( buffer ) );
+
+  *this << buffer;
+  return *this;
 }

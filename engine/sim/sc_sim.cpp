@@ -834,7 +834,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   fixed_time( 0 ),
   seed( 0 ), iterations( 1000 ), current_iteration( -1 ), current_slot( -1 ),
   armor_update_interval( 20 ), weapon_speed_scale_factors( 0 ),
-  optimal_raid( 0 ), log( 0 ), debug( 0 ), debug_each( 0 ), save_profiles( 0 ), default_actions( 0 ),
+  optimal_raid( 0 ), log( 0 ), debug_each( 0 ), save_profiles( 0 ), default_actions( 0 ),
   normalized_stat( STAT_NONE ),
   default_region_str( "us" ),
   save_prefix_str( "save_" ),
