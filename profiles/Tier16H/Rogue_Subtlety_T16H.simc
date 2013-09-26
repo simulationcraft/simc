@@ -102,8 +102,8 @@ off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,ench
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
 # hands=gloves_of_the_barbed_assassin,heroic=1,addon=synapse_springs_2
-# main_hand=hvitserks_formidable_shanker,heroic=1,elite=1,weapon=dagger_1.80speed_8476min_15743max,enchant=dancing_steel
-# off_hand=hvitserks_formidable_shanker,heroic=1,elite=1,weapon=dagger_1.80speed_8476min_15743max,enchant=dancing_steel
+# main_hand=hvitserks_formidable_shanker,heroic=1,elite=1,weapon=dagger_1.80speed_8476min_15744max,enchant=dancing_steel
+# off_hand=hvitserks_formidable_shanker,heroic=1,elite=1,weapon=dagger_1.80speed_8476min_15744max,enchant=dancing_steel
 # These values represent the avg HAT donor interval of the raid.
 # A negative value will make the Rogue use a programmed default interval.
 # A zero value will disable virtual HAT procs and assume a real raid is being simulated.

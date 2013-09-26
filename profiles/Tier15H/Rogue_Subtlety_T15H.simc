@@ -103,8 +103,8 @@ off_hand=fyns_flickering_dagger,id=96976,gems=80agi_160haste_160agi_60agi,enchan
 # tier15_4pc_melee=1
 # hands=ninetailed_gloves,heroic=1,addon=synapse_springs_mark_ii
 # trinket1=bad_juju,heroic=1,elite=1
-# main_hand=fyns_flickering_dagger,heroic=1,elite=1,weapon=dagger_1.80speed_6350min_11794max,enchant=dancing_steel
-# off_hand=fyns_flickering_dagger,heroic=1,elite=1,weapon=dagger_1.80speed_6350min_11794max,enchant=dancing_steel
+# main_hand=fyns_flickering_dagger,heroic=1,elite=1,weapon=dagger_1.80speed_6350min_11795max,enchant=dancing_steel
+# off_hand=fyns_flickering_dagger,heroic=1,elite=1,weapon=dagger_1.80speed_6350min_11795max,enchant=dancing_steel
 # These values represent the avg HAT donor interval of the raid.
 # A negative value will make the Rogue use a programmed default interval.
 # A zero value will disable virtual HAT procs and assume a real raid is being simulated.

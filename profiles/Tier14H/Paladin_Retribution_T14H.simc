@@ -50,10 +50,10 @@ actions+=/templars_verdict,if=buff.divine_purpose.react&buff.divine_purpose.rema
 actions+=/hammer_of_wrath
 actions+=/wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2
 actions+=/divine_storm,if=buff.divine_crusader.react
+actions+=/hammer_of_the_righteous,if=active_enemies>=4
 actions+=/crusader_strike
 actions+=/wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2
 actions+=/exorcism,if=active_enemies>=2&active_enemies<=4&set_bonus.tier15_2pc_melee&glyph.mass_exorcism.enabled
-actions+=/hammer_of_the_righteous,if=active_enemies>=4
 actions+=/templars_verdict,if=buff.avenging_wrath.up
 actions+=/judgment
 actions+=/wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2
@@ -97,4 +97,4 @@ main_hand=shinka_execution_of_dominion,id=87176,gems=500str,enchant=dancing_stee
 # tier14_2pc_melee=1
 # tier14_4pc_melee=1
 # hands=white_tiger_gauntlets,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=shinka_execution_of_dominion,heroic=1,weapon=axe2h_3.60speed_14525min_21788max,enchant=dancing_steel
+# main_hand=shinka_execution_of_dominion,heroic=1,weapon=axe2h_3.60speed_14525min_21789max,enchant=dancing_steel

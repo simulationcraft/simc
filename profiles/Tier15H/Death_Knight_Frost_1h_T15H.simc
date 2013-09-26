@@ -113,5 +113,5 @@ off_hand=qons_flaming_scimitar,id=96906,gems=160str_160str_60str,enchant=rune_of
 # tier15_4pc_melee=1
 # hands=gauntlets_of_the_allconsuming_maw,heroic=1,addon=synapse_springs_mark_ii
 # trinket2=spark_of_zandalar,heroic=1,elite=1
-# main_hand=qons_flaming_scimitar,heroic=1,elite=1,weapon=sword_2.60speed_9172min_17035max,enchant=rune_of_razorice
-# off_hand=qons_flaming_scimitar,heroic=1,elite=1,weapon=sword_2.60speed_9172min_17035max,enchant=rune_of_the_fallen_crusader
+# main_hand=qons_flaming_scimitar,heroic=1,elite=1,weapon=sword_2.60speed_9172min_17036max,enchant=rune_of_the_fallen_crusader
+# off_hand=qons_flaming_scimitar,heroic=1,elite=1,weapon=sword_2.60speed_9172min_17036max,enchant=rune_of_razorice
