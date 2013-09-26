@@ -52,8 +52,8 @@ actions.single_target+=/wait,sec=cooldown.bloodthirst.remains,if=!(target.health
 actions.single_target+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
 actions.single_target+=/colossus_smash
 actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.down
-actions.single_target+=/execute,if=buff.enrage.up|debuff.colossus_smash.up|rage>70|target.time_to_die<12
-actions.single_target+=/raging_blow,if=buff.raging_blow.stack=2|(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3))
+actions.single_target+=/execute,if=debuff.colossus_smash.up|rage>70|target.time_to_die<12
+actions.single_target+=/raging_blow,if=target.health.pct<20|buff.raging_blow.stack=2|(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3))
 actions.single_target+=/wild_strike,if=buff.bloodsurge.up
 actions.single_target+=/bladestorm,if=enabled&cooldown.bloodthirst.remains>2
 actions.single_target+=/raging_blow,if=cooldown.colossus_smash.remains>=3

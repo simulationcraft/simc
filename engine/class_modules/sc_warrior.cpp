@@ -3699,8 +3699,8 @@ void warrior_t::init_actions()
       st_list_str += "/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))";
       st_list_str += "/colossus_smash";
       st_list_str += "/storm_bolt,if=enabled&buff.cooldown_reduction.down";
-      st_list_str += "/execute,if=buff.enrage.up|debuff.colossus_smash.up|rage>70|target.time_to_die<12";
-      st_list_str += "/raging_blow,if=buff.raging_blow.stack=2|(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3))";
+      st_list_str += "/execute,if=debuff.colossus_smash.up|rage>70|target.time_to_die<12";
+      st_list_str += "/raging_blow,if=target.health.pct<20|buff.raging_blow.stack=2|(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3))";
       st_list_str += "/wild_strike,if=buff.bloodsurge.up";
       st_list_str += "/bladestorm,if=enabled&cooldown.bloodthirst.remains>2";
       st_list_str += "/raging_blow,if=cooldown.colossus_smash.remains>=3";
