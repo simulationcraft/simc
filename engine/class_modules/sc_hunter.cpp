@@ -1177,6 +1177,7 @@ struct lynx_rush_t : public hunter_main_pet_attack_t
       core_event_t* ticker = dot -> tick_event;
       if ( ticker )
       {
+        // FIXME: What should this be doing? Right now it hasn't any consequences.
         ticker -> reschedule_time = ticker -> time;
         //sim -> reschedule_event( ticker );
       }

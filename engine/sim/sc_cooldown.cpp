@@ -133,7 +133,7 @@ void cooldown_t::start( timespan_t override, timespan_t delay )
       else if ( current_charge == 0 )
       {
         assert( recharge_event );
-        ready = recharge_event -> time + timespan_t::from_millis( 1 );
+        ready = recharge_event -> occurs() + timespan_t::from_millis( 1 );
       }
     }
     else

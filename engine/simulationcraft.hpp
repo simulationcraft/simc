@@ -2423,9 +2423,12 @@ public:
   sc_ostream& printf( const char* format, ... );
 };
 
-// Core Simulation Class. Should not have anything to do with World of Warcraft
-struct core_sim_t : protected sc_thread_t
+/* Core Simulation Class.
+ * Should not have anything to do with World of Warcraft
+ */
+struct core_sim_t
 {
+public:
   // Collection of most event-related functionality
   struct event_managment_t
   {
@@ -2441,29 +2444,19 @@ struct core_sim_t : protected sc_thread_t
 
     event_managment_t();
     ~event_managment_t();
-    void flush_events();
-    void reset();
-    void init();
     void add_event( core_event_t*, timespan_t delta_time, timespan_t current_time );
+    void flush_events();
+    void init();
     core_event_t* next_event();
+    void reset();
   private:
     std::vector<core_event_t*> get_events_to_flush() const;
   };
-  core_sim_t();
-  virtual ~core_sim_t() {}
-  void add_event( core_event_t*, timespan_t delta_time );
-  double iteration_time_adjust() const;
-  bool is_canceled() const;
-protected:
-  void flush_events();
-  virtual void reset();
-  virtual bool init();
-  virtual void combat( int iteration );
-  virtual void combat_begin();
-  virtual void combat_end();
-  void      reschedule_event( core_event_t* );
 
-public:
+  core_sim_t();
+  virtual ~core_sim_t();
+
+// Public members
   sc_ostream out_error;
   sc_ostream out_debug;
   bool debug;
@@ -2482,13 +2475,27 @@ public:
   int canceled, iteration_canceled;
   double      vary_combat_length;
 
+// Public functions
+  void add_event( core_event_t*, timespan_t delta_time );
+  double iteration_time_adjust() const;
+  bool is_canceled() const;
 
+protected:
+  virtual void combat( int iteration );
+  virtual void combat_begin();
+  virtual void combat_end();
+  virtual bool init();
+  virtual void reset();
 
+private:
+  void begin_combat();
+  void end_combat();
+  void reschedule_event( core_event_t* );
 };
 
 // Simulation Engine ========================================================
 
-struct sim_t : public core_sim_t
+struct sim_t : public core_sim_t, private sc_thread_t
 {
   sim_control_t* control;
   sim_t*      parent;
@@ -2907,7 +2914,7 @@ struct plot_data_t
 
 // Event ====================================================================
 //
-// event_t is designed to be a very simple light-weight event transporter and
+// core_event_t is designed to be a very simple light-weight event transporter and
 // as such there are rules of use that must be honored:
 //
 // (1) The pure virtual execute() method MUST be implemented in the sub-class
@@ -2916,13 +2923,10 @@ struct plot_data_t
 
 struct core_event_t
 {
-protected:
-  friend struct core_sim_t;
   core_sim_t& _sim;
   actor_t*    actor;
   uint32_t    id;
   bool        canceled;
-public:
   const char* name;
   timespan_t  time;
   timespan_t  reschedule_time;

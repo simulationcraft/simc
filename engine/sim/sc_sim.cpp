@@ -1193,8 +1193,6 @@ void sim_t::combat_end()
   if ( iterations == 1 || current_iteration >= 1 )
     datacollection_end();
 
-  flush_events();
-
   assert( active_enemies == 0 && active_allies == 0 );
 }
 
@@ -1232,8 +1230,6 @@ void sim_t::datacollection_end()
   if ( debug ) output( "Sim Data Collection End" );
 
   simulation_length.add( current_time.total_seconds() );
-
-  total_events_processed += em.events_processed;
 
   for ( size_t i = 0; i < target_list.size(); ++i )
   {

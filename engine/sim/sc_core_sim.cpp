@@ -23,46 +23,12 @@ core_sim_t::event_managment_t::event_managment_t() :
 
 }
 
-/* Flush all remaining active events
- */
-void core_sim_t::event_managment_t::flush_events()
-{
-
-  /* Instead of iterating over the whole timing wheel,
-   * we directly flush the remaining active events == ( all_events_ever_created - recycled_events )
-   */
-  std::vector<core_event_t*> events_to_flush = get_events_to_flush();
-
-  for( size_t i = 0, size = events_to_flush.size(); i < size; ++i )
-  {
-    core_event_t* e = events_to_flush[ i ];
-    core_event_t* null_e = e; // necessary evil
-    core_event_t::cancel( null_e );
-    core_event_t::recycle( e );
-  }
-
-  // Clear Timing Wheel
-  timing_wheel.assign( timing_wheel.size(), nullptr );
-
-  events_remaining = 0;
-  events_processed = 0;
-  timing_slice = 0;
-  global_event_id = 0;
-}
-
 /* Destructor
  * Release all remaining events.
  */
 core_sim_t::event_managment_t::~event_managment_t()
 {
   core_event_t::release( recycled_event_list );
-}
-
-/* Reset
- */
-void core_sim_t::event_managment_t::reset()
-{
-  global_event_id = 0;
 }
 
 /* Add new event to the timing wheel
@@ -107,33 +73,31 @@ void core_sim_t::event_managment_t::add_event( core_event_t* e,
 
 }
 
-/* Select the next event to process
+/* Flush all remaining active events
  */
-core_event_t* core_sim_t::event_managment_t::next_event()
+void core_sim_t::event_managment_t::flush_events()
 {
-  if ( events_remaining == 0 ) return 0;
 
-  while ( true )
+  /* Instead of iterating over the whole timing wheel,
+   * we directly flush the remaining active events == ( all_events_ever_created - recycled_events )
+   */
+  std::vector<core_event_t*> events_to_flush = get_events_to_flush();
+
+  for( size_t i = 0, size = events_to_flush.size(); i < size; ++i )
   {
-    core_event_t*& event_list = timing_wheel[ timing_slice ];
-    if ( event_list )
-    {
-      core_event_t* e = event_list;
-      event_list = e -> next;
-      events_remaining--;
-      events_processed++;
-      return e;
-    }
-
-    timing_slice++;
-    if ( timing_slice == timing_wheel.size() )
-    {
-      timing_slice = 0;
-      // Time Wheel turns around.
-    }
+    core_event_t* e = events_to_flush[ i ];
+    core_event_t* null_e = e; // necessary evil
+    core_event_t::cancel( null_e );
+    core_event_t::recycle( e );
   }
 
-  return nullptr;
+  // Clear Timing Wheel
+  timing_wheel.assign( timing_wheel.size(), nullptr );
+
+  events_remaining = 0;
+  events_processed = 0;
+  timing_slice = 0;
+  global_event_id = 0;
 }
 
 /* Initialize Event Manager
@@ -160,6 +124,43 @@ void core_sim_t::event_managment_t::init()
 
   // The timing wheel represents an array of event lists: Each time slice has an event list.
   timing_wheel.resize( wheel_size );
+}
+
+/* Select the next event to process
+ */
+core_event_t* core_sim_t::event_managment_t::next_event()
+{
+  if ( events_remaining == 0 )
+    return nullptr;
+
+  while ( true )
+  {
+    core_event_t*& event_list = timing_wheel[ timing_slice ];
+    if ( event_list )
+    {
+      core_event_t* e = event_list;
+      event_list = e -> next;
+      events_remaining--;
+      events_processed++;
+      return e;
+    }
+
+    timing_slice++;
+    if ( timing_slice == timing_wheel.size() )
+    {
+      timing_slice = 0;
+      // Time Wheel turns around.
+    }
+  }
+
+  return nullptr;
+}
+
+/* Reset
+ */
+void core_sim_t::event_managment_t::reset()
+{
+  global_event_id = 0;
 }
 
 /* This basically does the exact same thing as std::set_difference
@@ -189,6 +190,8 @@ std::vector<core_event_t*> core_sim_t::event_managment_t::get_events_to_flush() 
   return out;
 }
 
+/* Constructor
+ */
 core_sim_t::core_sim_t() :
   out_error( std::cerr.rdbuf() ),
   out_debug( nullptr ),
@@ -196,18 +199,70 @@ core_sim_t::core_sim_t() :
   max_time( timespan_t::zero() ),
   expected_time( timespan_t::zero() ),
   current_time( timespan_t::zero() ),
-  iterations( 1000 ),
+  current_iteration( -1 ), iterations( 1000 ),
   em(),
   max_events_remaining( 0 ),
   total_events_processed( 0 ),
-  current_iteration( -1 ),
+  event_stopwatch( STOPWATCH_THREAD ),
+  monitor_cpu( false ),
   canceled( 0 ),
   iteration_canceled( 0 ),
-  vary_combat_length( 0.0 ),
-  event_stopwatch( STOPWATCH_THREAD ),
-  monitor_cpu( false )
+  vary_combat_length( 0.0 )
 {
 
+}
+
+/* Destructor
+ */
+core_sim_t::~core_sim_t()
+{
+
+}
+
+// non-virtual Public Functions
+
+/* Insert a event into the simulations event manager.
+ * Please use core_event_t::add_event instead
+ */
+void core_sim_t::add_event( core_event_t* e,
+                       timespan_t delta_time )
+{
+  em.add_event( e, delta_time, current_time );
+
+  if ( em.events_remaining > max_events_remaining ) max_events_remaining = em.events_remaining;
+
+  if ( debug )
+    out_debug.printf( "Add Event: %s %.2f %.2f %d %s",
+                    e -> name, e -> time.total_seconds(),
+                    e -> reschedule_time.total_seconds(),
+                    e -> id, e -> actor ? e -> actor -> name() : "" );
+
+  if ( debug && actor_t::ACTOR_EVENT_BOOKKEEPING && e -> actor )
+  {
+    out_debug.printf( "Actor %s has %d scheduled events",
+                      e -> actor -> name(), e -> actor -> event_counter );
+  }
+
+}
+
+/* Simulation Time adjustement coefficient
+ */
+double core_sim_t::iteration_time_adjust() const
+{
+  if ( iterations <= 1 )
+    return 0.0;
+
+  if ( current_iteration == 0 )
+    return 0.0;
+
+  return 1.0 + vary_combat_length * ( ( current_iteration % 2 ) ? 1 : -1 ) * current_iteration / ( double ) iterations;
+}
+
+/* Is the (whole) simulation canceled?
+ */
+bool core_sim_t::is_canceled() const
+{
+  return canceled;
 }
 
 void core_sim_t::combat( int iteration )
@@ -217,7 +272,7 @@ void core_sim_t::combat( int iteration )
 
   current_iteration = iteration;
 
-  combat_begin();
+  begin_combat();
 
   while ( core_event_t* e = em.next_event() )
   {
@@ -271,39 +326,24 @@ void core_sim_t::combat( int iteration )
       break;
   }
 
-  combat_end();
-}
-
-void core_sim_t::reschedule_event( core_event_t* e )
-{
-  if ( debug )
-    out_debug.printf( "Reschedule Event: %s %d", e -> name, e -> id );
-
-  add_event( e, ( e -> reschedule_time - current_time ) );
+  end_combat();
 }
 
 void core_sim_t::combat_begin()
-{
-  if ( debug )
-    out_debug << "Combat Begin";
-
-  reset();
-}
+{ }
 
 void core_sim_t::combat_end()
 {
-  if ( debug )
-    out_debug << "Combat End";
+  total_events_processed += em.events_processed;
 }
 
-/* Flush all remaining active events
+/* Initialize simulator
  */
-void core_sim_t::flush_events()
+bool core_sim_t::init()
 {
-  if ( debug )
-    out_debug << "Flush Events";
+  em.init();
 
-  em.flush_events();
+  return true;
 }
 
 /* Reset the simulator
@@ -318,52 +358,39 @@ void core_sim_t::reset()
   expected_time = max_time * iteration_time_adjust();
 }
 
-/* Simulation Time adjustement coefficient
+/* Begin Combat
  */
-double core_sim_t::iteration_time_adjust() const
+void core_sim_t::begin_combat()
 {
-  if ( iterations <= 1 )
-    return 0.0;
-
-  if ( current_iteration == 0 )
-    return 0.0;
-
-  return 1.0 + vary_combat_length * ( ( current_iteration % 2 ) ? 1 : -1 ) * current_iteration / ( double ) iterations;
-}
-
-/* Is the (whole) simulation canceled?
- */
-bool core_sim_t::is_canceled() const
-{
-  return canceled;
-}
-
-void core_sim_t::add_event( core_event_t* e,
-                       timespan_t delta_time )
-{
-  em.add_event( e, delta_time, current_time );
-
-  if ( em.events_remaining > max_events_remaining ) max_events_remaining = em.events_remaining;
+  reset();
 
   if ( debug )
-    out_debug.printf( "Add Event: %s %.2f %.2f %d %s",
-                    e -> name, e -> time.total_seconds(),
-                    e -> reschedule_time.total_seconds(),
-                    e -> id, e -> actor ? e -> actor -> name() : "" );
+    out_debug << "Combat Begin";
 
-  if ( debug && actor_t::ACTOR_EVENT_BOOKKEEPING && e -> actor )
-  {
-    out_debug.printf( "Actor %s has %d scheduled events",
-                      e -> actor -> name(), e -> actor -> event_counter );
-  }
-
+  combat_begin();
 }
 
-bool core_sim_t::init()
+/* End Combat
+ * Call virtual combat_end() before flushing events
+ */
+void core_sim_t::end_combat()
 {
-  em.init();
+  if ( debug )
+    out_debug << "Combat End";
 
-  return true;
+  combat_end();
+
+  if ( debug )
+    out_debug << "Flush Events";
+  em.flush_events();
+}
+
+void core_sim_t::reschedule_event( core_event_t* e )
+{
+  if ( debug )
+    out_debug.printf( "Reschedule Event: %s %d", e -> name, e -> id );
+
+  add_event( e, ( e -> reschedule_time - current_time ) );
 }
 
 sc_ostream& sc_ostream::printf( const char* format, ... )
