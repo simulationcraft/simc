@@ -899,9 +899,6 @@ sim_t::sim_t( sim_t* p, int index ) :
     enchant = parent -> enchant;
 
     seed = parent -> seed;
-
-    // Inherit scale_to_itemlevel setting from parent because they are set outside of the config file
-    scale_to_itemlevel = parent -> scale_to_itemlevel;
   }
 }
 
@@ -1276,6 +1273,9 @@ bool sim_t::init()
   if (     gcd_lag_stddev == timespan_t::zero() )     gcd_lag_stddev =     gcd_lag * 0.25;
   if ( channel_lag_stddev == timespan_t::zero() ) channel_lag_stddev = channel_lag * 0.25;
   if ( world_lag_stddev    < timespan_t::zero() ) world_lag_stddev   =   world_lag * 0.1;
+
+  if ( challenge_mode && scale_to_itemlevel < 0 ) scale_to_itemlevel = 463;
+
 
   // MoP aura initialization
 

@@ -779,6 +779,7 @@ namespace dbc {
 // Data Access
 int build_level( bool ptr );
 const char* wow_version( bool ptr );
+const char* wow_ptr_status( bool ptr );
 const item_data_t* items( bool ptr );
 std::size_t        n_items( bool ptr );
 specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
@@ -812,6 +813,9 @@ public:
 
   const char* wow_version() const
   { return dbc::wow_version( ptr ); }
+
+  const char* wow_ptr_status() const
+  { return dbc::wow_ptr_status( ptr ); }
 
   const item_data_t* items() const
   { return dbc::items( ptr ); }

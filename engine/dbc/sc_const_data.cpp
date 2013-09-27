@@ -245,6 +245,15 @@ int dbc::build_level( bool ptr )
 const char* dbc::wow_version( bool ptr )
 { return maybe_ptr( ptr ) ? "5.4.0" : "5.4.0"; }
 
+const char* dbc::wow_ptr_status( bool ptr )
+{ return ( maybe_ptr( ptr ) ?
+#if SC_BETA
+                     "BETA"
+#else
+                     "PTR"
+#endif
+                     : "Live" ); }
+
 
 const item_data_t* dbc::items( bool ptr )
 {

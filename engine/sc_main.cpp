@@ -119,6 +119,25 @@ std::string get_cache_directory()
   return s;
 }
 
+// RAII-wrapper for dbc init / de-init
+struct dbc_initializer_t {
+  dbc_initializer_t()
+  { dbc::init(); }
+  ~dbc_initializer_t()
+  { dbc::de_init(); }
+};
+
+// RAII-wrapper for http cache load / save
+struct cache_initializer_t {
+  cache_initializer_t( const char* fn ) :
+    _file_name( fn )
+  { http::cache_load( _file_name ); }
+  ~cache_initializer_t()
+  { http::cache_save( _file_name ); }
+private:
+  const char* _file_name;
+};
+
 } // anonymous namespace ====================================================
 
 // sim_t::main ==============================================================
@@ -127,10 +146,8 @@ int sim_t::main( const std::vector<std::string>& args )
 {
   sim_signal_handler_t handler( this );
 
-  std::string cache_directory = get_cache_directory();
-
-  http::cache_load( ( cache_directory + "/simc_cache.dat" ).c_str() );
-  dbc::init();
+  cache_initializer_t cache_init( ( get_cache_directory() + "/simc_cache.dat" ).c_str() );
+  dbc_initializer_t dbc_init;
   module_t::init();
 
   sim_control_t control;
@@ -146,19 +163,10 @@ int sim_t::main( const std::vector<std::string>& args )
     return 1;
   }
 
-  if ( challenge_mode ) scale_to_itemlevel = 463;
-
   if ( canceled ) return 1;
 
-  out_std.raw().printf( "\nSimulationCraft %s-%s for World of Warcraft %s %s (build level %s)\n",
-                 SC_MAJOR_VERSION, SC_MINOR_VERSION, dbc.wow_version(), ( dbc.ptr ?
-#if SC_BETA
-                     "BETA"
-#else
-                     "PTR"
-#endif
-                     : "Live" ), util::to_string( dbc.build_level() ).c_str() );
-  //fflush( output_file );
+  out_std.raw().printf( "\nSimulationCraft %s for World of Warcraft %s %s (build level %s)\n",
+                 SC_VERSION, dbc.wow_version(), dbc.wow_ptr_status(), util::to_string( dbc.build_level() ).c_str() );
 
   if ( spell_query )
   {
@@ -168,15 +176,15 @@ int sim_t::main( const std::vector<std::string>& args )
   else if ( need_to_save_profiles( this ) )
   {
     init();
-    util::fprintf( stdout, "\nGenerating profiles... \n" ); fflush( stdout );
+    out_std.raw() << "\nGenerating profiles... \n";
     report::print_profiles( this );
   }
   else
   {
     if ( max_time <= timespan_t::zero() )
     {
-      out_std.raw() << "simulationcraft: One of -max_time or -target_health must be specified.\n";
-      exit( 0 );
+      out_error.raw() << "simulationcraft: One of -max_time or -target_health must be specified.\n";
+      return 1;
     }
     if ( fabs( vary_combat_length ) >= 1.0 )
     {
@@ -205,10 +213,6 @@ int sim_t::main( const std::vector<std::string>& args )
       report::print_suite( this );
     }
   }
-
-
-  http::cache_save( ( cache_directory + "/simc_cache.dat" ).c_str() );
-  dbc::de_init();
 
   return canceled;
 }
