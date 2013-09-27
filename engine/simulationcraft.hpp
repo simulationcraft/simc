@@ -2251,9 +2251,16 @@ protected:
   sc_thread_t();
   virtual ~sc_thread_t();
 public:
+  enum priority_e {
+    NORMAL,
+    ABOVE_NORMAL,
+    BELOW_NORMAL,
+    HIGHEST,
+    LOWEST,
+  };
   virtual void run() = 0;
 
-  void launch();
+  void launch( priority_e = NORMAL );
   void wait();
 
   static void sleep( timespan_t );
