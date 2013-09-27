@@ -701,7 +701,6 @@ void SC_MainWindow::updateVisibleWebView( SC_WebView* wv )
 sim_t* SC_MainWindow::initSim()
 {
   sim_t* sim = new sim_t();
-  sim -> output_file = fopen( ( AppDataDir.toStdString() + "/" + SIMC_LOG_FILE ).c_str(), "w" );
   sim -> report_progress = 0;
 #if SC_USE_PTR
   sim -> parse_option( "ptr", ( ( optionsTab -> choice.version -> currentIndex() == 1 ) ? "1" : "0" ) );
@@ -714,7 +713,6 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
 {
   if ( sim )
   {
-    fclose( sim -> output_file );
     delete sim;
 
     QString contents;
@@ -1337,6 +1335,7 @@ void SimulateThread::run()
     file.close();
   }
 
+  sim -> output_file_str = ( mainWindow -> AppDataDir + QDir::separator() + SIMC_LOG_FILE ).toStdString();
   sim -> html_file_str = ( mainWindow -> AppDataDir + QDir::separator() + "simc_report.html" ).toStdString();
   sim -> xml_file_str  = ( mainWindow -> AppDataDir + QDir::separator() + "simc_report.xml" ).toStdString();
   sim -> reforge_plot_output_file_str = ( mainWindow -> AppDataDir + QDir::separator() + "simc_plot_data.csv" ).toStdString();
