@@ -2521,7 +2521,7 @@ void player_t::_init_actions()
   for ( unsigned int alist = 0; alist < action_priority_list.size(); alist++ )
   {
     assert( ! ( ! action_priority_list[ alist ] -> action_list_str.empty() &&
-                ! action_priority_list[ alist ] -> action_list.size() == 0 ) );
+                ! action_priority_list[ alist ] -> action_list.empty() ) );
 
     // Convert old style action list to new style, all lines are without comments
     if ( ! action_priority_list[ alist ] -> action_list_str.empty() )

@@ -174,7 +174,7 @@ block_result_e attack_t::calculate_block_result( action_state_t* s )
   block_result_e block_result = BLOCK_RESULT_UNBLOCKED;
 
   // Blocks also get a their own roll, and glances/crits can be blocked.
-  if ( result_is_hit( s -> result ) && may_block && ( player -> position() == POSITION_FRONT ) && ! s -> result == RESULT_NONE )
+  if ( result_is_hit( s -> result ) && may_block && ( player -> position() == POSITION_FRONT ) && ! ( s -> result == RESULT_NONE ) )
   {
     double block_total = block_chance( s -> target );
 

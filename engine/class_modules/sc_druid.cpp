@@ -5728,7 +5728,7 @@ struct tooth_and_claw_absorb_t : public absorb_buff_t
   druid_t* p() const
   { return static_cast<druid_t*>( player ); }
 
-  virtual void absorb_used( double amount )
+  virtual void absorb_used( double /* amount */ )
   {
     p() -> buff.tooth_and_claw_absorb -> expire();
   }
