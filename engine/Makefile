@@ -74,12 +74,6 @@ ifeq (UNIX,${OS})
   COPY       = cp
   REMOVE     = rm -f
   PATHSEP    = /
-    ifeq (i386,${HOSTTYPE})
-        optimized::CPP_FLAGS  += -malign-double
-    endif
-    ifeq (i686,${HOSTTYPE})
-        optimized::CPP_FLAGS  += -malign-double
-    endif
 endif
 
 # Windows platform with MinGW32
@@ -94,8 +88,6 @@ ifeq (WINDOWS,${OS})
   REMOVE     = del /f
   PATHSEP    = \\
   AR         = ar
-  
-  optimized::CPP_FLAGS += -malign-double
 endif
 
 MODULE     = simc$(MODULE_EXT)
