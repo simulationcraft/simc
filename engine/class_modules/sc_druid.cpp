@@ -18,6 +18,7 @@ struct natures_vigil_damage_proc_t;
 struct ursocs_vigor_t;
 struct cenarion_ward_hot_t;
 struct leader_of_the_pack_t;
+struct yseras_gift_t;
 
 struct combo_points_t
 {
@@ -101,6 +102,7 @@ public:
     ursocs_vigor_t*              ursocs_vigor;
     cenarion_ward_hot_t*         cenarion_ward_hot;
     leader_of_the_pack_t*        leader_of_the_pack;
+    yseras_gift_t*               yseras_gift;
   } active;
 
   // Pets
@@ -331,6 +333,10 @@ public:
   struct talents_t
   {
     // MoP: Done
+    const spell_data_t* yseras_gift;
+    const spell_data_t* renewal;
+    const spell_data_t* cenarion_ward;
+
     const spell_data_t* soul_of_the_forest;
     const spell_data_t* incarnation;
     const spell_data_t* force_of_nature;
@@ -343,10 +349,6 @@ public:
     const spell_data_t* feline_swiftness;
     const spell_data_t* displacer_beast;
     const spell_data_t* wild_charge;
-
-    const spell_data_t* natures_swiftness;
-    const spell_data_t* renewal;
-    const spell_data_t* cenarion_ward;
 
     const spell_data_t* faerie_swarm;
     const spell_data_t* mass_entanglement;
@@ -570,10 +572,9 @@ private:
     // Targeting is probably done by range, but since the sim doesn't really have
     // have a concept of that we'll just pick a target at random.
 
-    // Generate a random number between 1 and the number of enemies.
-    int target_index = 1 + rand() % sim -> target_list.size();
-    // Pick a random enemy to target with the damage.
-    return sim -> target_list[ target_index ];
+    unsigned t = static_cast<unsigned>( rng().range( 0, as<double>( sim -> target_list.size() ) ) );
+    if ( t >= sim-> target_list.size() ) --t; // dsfmt range should not give a value actually equal to max, but be paranoid
+    return sim-> target_list[ t ];
   }
 };
 
@@ -689,6 +690,34 @@ struct leader_of_the_pack_t : public heal_t
                         p() -> resources.max[ RESOURCE_MANA ] *
                         data().effectN( 1 ).percent(),
                         p() -> gain.lotp_mana );
+  }
+};
+
+// Ysera's Gift ==============================================================
+
+struct yseras_gift_t : public heal_t
+{
+  yseras_gift_t( druid_t* p ) :
+    heal_t( "yseras_gift", p, p -> find_talent_spell( "Ysera's Gift" ) )
+  {
+    num_ticks      = 1;
+    base_tick_time = data().effectN( 1 ).period();
+    hasted_ticks   = false;
+    tick_may_crit  = false;
+    harmful        = false;
+    background     = true;
+    target         = p;
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    druid_t* p = static_cast<druid_t*>( player );
+
+    d -> current_tick = 0; // ticks indefinitely
+
+    base_td = p -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent();
+
+    heal_t::tick( d );
   }
 };
 
@@ -3136,7 +3165,7 @@ public:
       adm *= 1.0 + p() -> buff.tree_of_life -> data().effectN( 1 ).percent();
 
     if ( p() -> buff.natures_swiftness -> check() && base_execute_time > timespan_t::zero() )
-      adm *= 1.0 + p() -> talent.natures_swiftness -> effectN( 2 ).percent();
+      adm *= 1.0 + p() -> buff.natures_swiftness -> data().effectN( 2 ).percent();
 
     if ( p() -> mastery.harmony -> ok() )
       adm *= 1.0 + p() -> cache.mastery_value();
@@ -3152,7 +3181,7 @@ public:
       adm += p() -> buff.tree_of_life -> data().effectN( 2 ).percent();
 
     if ( p() -> buff.natures_swiftness -> check() && base_execute_time > timespan_t::zero() )
-      adm += p() -> talent.natures_swiftness -> effectN( 3 ).percent();
+      adm += p() -> buff.natures_swiftness -> data().effectN( 3 ).percent();
 
     adm += p() -> buff.harmony -> value();
 
@@ -3222,6 +3251,95 @@ void druid_heal_t::init_living_seed()
   if ( p() -> specialization() == DRUID_RESTORATION )
     living_seed = new living_seed_t( p() );
 }
+
+// Frenzied Regeneration ====================================================
+
+struct frenzied_regeneration_t : public druid_heal_t
+{
+  double maximum_rage_cost;
+
+  frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
+    druid_heal_t( p, p -> find_class_spell( "Frenzied Regeneration" ), options_str ),
+    maximum_rage_cost( 0.0 )
+  {
+    base_dd_min = base_dd_max = direct_power_mod = 0.0;
+
+    harmful = false;
+    special = false;
+    use_off_gcd = true;
+
+    if ( p -> glyph.frenzied_regeneration -> ok() )
+      base_costs[ RESOURCE_RAGE ] = p -> glyph.frenzied_regeneration -> effectN( 3 ).resource( RESOURCE_RAGE );
+    else
+      base_costs[ RESOURCE_RAGE ] = 0;
+
+    if ( p -> set_bonus.tier16_2pc_tank() )
+      p -> active.ursocs_vigor = new ursocs_vigor_t( p );
+
+    maximum_rage_cost = data().effectN( 1 ).base_value();
+  }
+
+  virtual double cost()
+  {
+    if ( ! p() -> glyph.frenzied_regeneration -> ok() )
+      base_costs[ RESOURCE_RAGE ] = std::min( p() -> resources.current[ RESOURCE_RAGE ],
+                                              maximum_rage_cost );
+
+    return druid_heal_t::cost();
+  }
+
+  virtual double base_da_min( const action_state_t* )
+  {
+      if ( p() -> glyph.frenzied_regeneration -> ok() )
+        return 0.0;
+
+      // max(2.2*(AP - 2*Agi), 2.5*Sta)
+      double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
+      double agility = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
+      double stamina = p() -> composite_attribute( ATTR_STAMINA ) * p() -> composite_attribute_multiplier( ATTR_STAMINA );
+      return std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
+             * ( resource_consumed / maximum_rage_cost )
+             * ( 1.0 + p() -> buff.tier15_2pc_tank -> stack() * p() -> buff.tier15_2pc_tank -> data().effectN( 1 ).percent() );
+  }
+
+  virtual double base_da_max( const action_state_t* )
+  {
+      if ( p() -> glyph.frenzied_regeneration -> ok() )
+        return 0.0;
+
+      // max(2.2*(AP - 2*Agi), 2.5*Sta)
+      double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
+      double agility = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
+      double stamina = p() -> composite_attribute( ATTR_STAMINA ) * p() -> composite_attribute_multiplier( ATTR_STAMINA );
+      return std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
+             * ( resource_consumed / maximum_rage_cost )
+             * ( 1.0 + p() -> buff.tier15_2pc_tank -> stack() * p() -> buff.tier15_2pc_tank -> data().effectN( 1 ).percent() );
+  }
+
+  virtual void execute()
+  {
+    if ( p() -> glyph.frenzied_regeneration -> ok() )
+      p() -> buff.frenzied_regeneration -> trigger();
+    else
+      p() -> buff.tier15_2pc_tank -> expire();
+
+    druid_heal_t::execute();
+
+    if ( p() -> set_bonus.tier16_4pc_tank() )
+      p() -> active.ursocs_vigor -> trigger_hot( resource_consumed );
+  }
+
+  virtual bool ready()
+  {
+    if ( ! p() -> buff.bear_form -> check() )
+      return false;
+
+    if ( p() -> resources.current[ RESOURCE_RAGE ] < 1 )
+      return false;
+
+    return druid_heal_t::ready();
+  }
+};
 
 // Healing Touch ============================================================
 
@@ -3523,6 +3641,24 @@ struct rejuvenation_t : public druid_heal_t
   }
 };
 
+// Renewal ============================================================
+
+struct renewal_t : public druid_heal_t
+{
+  renewal_t( druid_t* p, const std::string& options_str ) :
+    druid_heal_t( "renewal", p, p -> find_spell( 108238 ), options_str )
+  {
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    base_dd_min = base_dd_max = p() -> resources.max[ RESOURCE_HEALTH ] * data().effectN( 1 ).percent();
+
+    druid_heal_t::execute();
+  }
+};
+
 // Swiftmend ================================================================
 
 // TODO: in game, you can swiftmend other druids' hots, which is not supported here
@@ -3622,95 +3758,6 @@ struct wild_growth_t : public druid_heal_t
 
     // Reset AoE
     aoe = save;
-  }
-};
-
-// Frenzied Regeneration ====================================================
-
-struct frenzied_regeneration_t : public druid_heal_t
-{
-  double maximum_rage_cost;
-
-  frenzied_regeneration_t( druid_t* p, const std::string& options_str ) :
-    druid_heal_t( p, p -> find_class_spell( "Frenzied Regeneration" ), options_str ),
-    maximum_rage_cost( 0.0 )
-  {
-    base_dd_min = base_dd_max = direct_power_mod = 0.0;
-
-    harmful = false;
-    special = false;
-    use_off_gcd = true;
-
-    if ( p -> glyph.frenzied_regeneration -> ok() )
-      base_costs[ RESOURCE_RAGE ] = p -> glyph.frenzied_regeneration -> effectN( 3 ).resource( RESOURCE_RAGE );
-    else
-      base_costs[ RESOURCE_RAGE ] = 0;
-
-    if ( p -> set_bonus.tier16_2pc_tank() )
-      p -> active.ursocs_vigor = new ursocs_vigor_t( p );
-
-    maximum_rage_cost = data().effectN( 1 ).base_value();
-  }
-
-  virtual double cost()
-  {
-    if ( ! p() -> glyph.frenzied_regeneration -> ok() )
-      base_costs[ RESOURCE_RAGE ] = std::min( p() -> resources.current[ RESOURCE_RAGE ],
-                                              maximum_rage_cost );
-
-    return druid_heal_t::cost();
-  }
-
-  virtual double base_da_min( const action_state_t* )
-  {
-      if ( p() -> glyph.frenzied_regeneration -> ok() )
-        return 0.0;
-
-      // max(2.2*(AP - 2*Agi), 2.5*Sta)
-      double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
-      double agility = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
-      double stamina = p() -> composite_attribute( ATTR_STAMINA ) * p() -> composite_attribute_multiplier( ATTR_STAMINA );
-      return std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
-             * ( resource_consumed / maximum_rage_cost )
-             * ( 1.0 + p() -> buff.tier15_2pc_tank -> stack() * p() -> buff.tier15_2pc_tank -> data().effectN( 1 ).percent() );
-  }
-
-  virtual double base_da_max( const action_state_t* )
-  {
-      if ( p() -> glyph.frenzied_regeneration -> ok() )
-        return 0.0;
-
-      // max(2.2*(AP - 2*Agi), 2.5*Sta)
-      double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
-      double agility = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
-      double stamina = p() -> composite_attribute( ATTR_STAMINA ) * p() -> composite_attribute_multiplier( ATTR_STAMINA );
-      return std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
-             * ( resource_consumed / maximum_rage_cost )
-             * ( 1.0 + p() -> buff.tier15_2pc_tank -> stack() * p() -> buff.tier15_2pc_tank -> data().effectN( 1 ).percent() );
-  }
-
-  virtual void execute()
-  {
-    if ( p() -> glyph.frenzied_regeneration -> ok() )
-      p() -> buff.frenzied_regeneration -> trigger();
-    else
-      p() -> buff.tier15_2pc_tank -> expire();
-
-    druid_heal_t::execute();
-
-    if ( p() -> set_bonus.tier16_4pc_tank() )
-      p() -> active.ursocs_vigor -> trigger_hot( resource_consumed );
-  }
-
-  virtual bool ready()
-  {
-    if ( ! p() -> buff.bear_form -> check() )
-      return false;
-
-    if ( p() -> resources.current[ RESOURCE_RAGE ] < 1 )
-      return false;
-
-    return druid_heal_t::ready();
   }
 };
 
@@ -4167,7 +4214,7 @@ struct celestial_alignment_t : public druid_spell_t
 struct cenarion_ward_t : public druid_spell_t
 {
   cenarion_ward_t( druid_t* p, const std::string& options_str ) :
-    druid_spell_t( p, p -> find_talent_spell( "Cenarion Ward" ), options_str )
+    druid_spell_t( "cenarion_ward", p, p -> find_talent_spell( "Cenarion Ward" ), options_str )
   {
     harmful    = false;
   }
@@ -4684,7 +4731,7 @@ struct moonkin_form_t : public druid_spell_t
 struct druids_swiftness_t : public druid_spell_t
 {
   druids_swiftness_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "natures_swiftness", player, player -> talent.natures_swiftness )
+    druid_spell_t( "natures_swiftness", player, player -> find_specialization_spell( "Nature's Swiftness" ) )
   {
     parse_options( NULL, options_str );
 
@@ -5813,6 +5860,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "pounce"                 ) return new                 pounce_t( this, options_str );
   if ( name == "rake"                   ) return new                   rake_t( this, options_str );
   if ( name == "ravage"                 ) return new                 ravage_t( this, options_str );
+  if ( name == "renewal"                ) return new                renewal_t( this, options_str );
   if ( name == "regrowth"               ) return new               regrowth_t( this, options_str );
   if ( name == "rejuvenation"           ) return new           rejuvenation_t( this, options_str );
   if ( name == "rip"                    ) return new                    rip_t( this, options_str );
@@ -5937,7 +5985,7 @@ void druid_t::init_spells()
   talent.displacer_beast    = find_talent_spell( "Displacer Beast" );
   talent.wild_charge        = find_talent_spell( "Wild Charge" );
 
-  talent.natures_swiftness  = find_specialization_spell( "Nature's Swiftness" );
+  talent.yseras_gift        = find_talent_spell( "Ysera's Gift" );
   talent.renewal            = find_talent_spell( "Renewal" );
   talent.cenarion_ward      = find_talent_spell( "Cenarion Ward" );
 
@@ -5957,6 +6005,7 @@ void druid_t::init_spells()
   talent.dream_of_cenarius  = find_talent_spell( "Dream of Cenarius" );
   talent.natures_vigil      = find_talent_spell( "Nature's Vigil" );
 
+  // Active actions
   if ( talent.natures_vigil -> ok() )
   {
     active.natures_vigil_damage_proc = new natures_vigil_damage_proc_t( this );
@@ -5964,6 +6013,8 @@ void druid_t::init_spells()
   }
   if ( talent.cenarion_ward -> ok() )
     active.cenarion_ward_hot = new cenarion_ward_hot_t( this );
+  if ( talent.yseras_gift -> ok() )
+    active.yseras_gift = new yseras_gift_t( this );
 
   // TODO: Check if this is really the passive applied, the actual shapeshift
   // only has data of shift, polymorph immunity and the general armor bonus
@@ -6196,7 +6247,7 @@ void druid_t::create_buffs()
   // Not checked for MoP
 
   buff.harmony               = buff_creator_t( this, "harmony", mastery.harmony -> ok() ? find_spell( 100977 ) : spell_data_t::not_found() );
-  buff.natures_swiftness     = buff_creator_t( this, "natures_swiftness", talent.natures_swiftness )
+  buff.natures_swiftness     = buff_creator_t( this, "natures_swiftness", find_specialization_spell( "Nature's Swiftness" ) )
                                .cd( timespan_t::zero() ); // Cooldown is handled in the spell
   buff.glyph_of_innervate  = buff_creator_t( this, "glyph_of_innervate" , spell_data_t::nil() )
                              .chance( glyph.innervate -> ok() );
@@ -6360,12 +6411,8 @@ void druid_t::apl_feral()
                        "Keep Rip from falling off during execute range." );
   basic -> add_action( this, "Faerie Fire", "if=debuff.weakened_armor.stack<3" );
   if ( talent.dream_of_cenarius -> ok() )
-  {
-    if ( talent.natures_swiftness -> ok() )
-      basic -> add_action( this, "Healing Touch", "if=buff.natures_swiftness.up" );
     basic -> add_action( this, "Healing Touch", "if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down&(buff.predatory_swiftness.remains<1.5|combo_points>=4)",
                          "Proc Dream of Cenarius at 4+ CP or when PS is about to expire." );
-  }
   basic -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
 
   // Potion
@@ -6396,15 +6443,9 @@ void druid_t::apl_feral()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     basic -> add_action( racial_actions[ i ] + ",if=buff.tigers_fury.up" );
 
-  if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
-    basic -> add_action( "natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25",
-                         "Use NS for finishers during execute range." );
   basic -> add_action( this, "Rip", "if=combo_points>=5&target.health.pct<=25&action.rip.tick_damage%dot.rip.tick_dmg>=1.15",
                        "Overwrite Rip during execute range if it's at least 15% stronger than the current." );
   basic -> add_action( this, "Ferocious Bite", "if=combo_points>=5&target.health.pct<=25&dot.rip.ticking" );
-  if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
-    basic -> add_action( "natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3",
-                         "Use NS for Rip." );
   basic -> add_action( this, "Rip", "if=combo_points>=5&dot.rip.remains<2" );
   basic -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3" );
   basic -> add_action( this, "Rake", "if=dot.rake.remains<3|action.rake.tick_damage>dot.rake.tick_dmg",
@@ -6481,12 +6522,8 @@ void druid_t::apl_feral()
                           "Keep Rip from falling off during execute range." );
   advanced -> add_action( this, "Faerie Fire", "if=debuff.weakened_armor.stack<3" );
   if ( talent.dream_of_cenarius -> ok() )
-  {
-    if ( talent.natures_swiftness -> ok() )
-      advanced -> add_action( this, "Healing Touch", "if=buff.natures_swiftness.up" );
     advanced -> add_action( this, "Healing Touch", "if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down&(buff.predatory_swiftness.remains<1.5|combo_points>=4)",
                             "Proc Dream of Cenarius at 4+ CP or when PS is about to expire." );
-  }
   advanced -> add_action( this, "Savage Roar", "if=buff.savage_roar.down" );
 
   // Potion
@@ -6524,9 +6561,6 @@ void druid_t::apl_feral()
                             "Potion near or during execute range when Rune is up and we have 5 CP." );
   }
 
-  if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
-    advanced -> add_action( "natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&target.health.pct<=25",
-                            "Use NS for finishers during execute range." );
   advanced -> add_action( this, "Rip", "if=combo_points>=5&action.rip.tick_damage%dot.rip.tick_dmg>=1.15&target.time_to_die>30",
                           "Overwrite Rip if it's at least 15% stronger than the current." );
   if ( find_item( "rune_of_reorigination" ) )
@@ -6535,9 +6569,6 @@ void druid_t::apl_feral()
   advanced -> add_action( "pool_resource,if=combo_points>=5&target.health.pct<=25&dot.rip.ticking&!(energy>=50|(buff.berserk.up&energy>=25))",
                           "Pool 50 energy for Ferocious Bite." );
   advanced -> add_action( this, "Ferocious Bite", "if=combo_points>=5&dot.rip.ticking&target.health.pct<=25" );
-  if ( talent.dream_of_cenarius -> ok() && talent.natures_swiftness -> ok() )
-    advanced -> add_action( "natures_swiftness,if=buff.dream_of_cenarius.down&buff.predatory_swiftness.down&combo_points>=5&dot.rip.remains<3&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)",
-                            "Use NS for Rip." );
   advanced -> add_action( this, "Rip", "if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)" );
   advanced -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains" );
   advanced -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains&dot.rip.ticking" );
@@ -6645,7 +6676,7 @@ void druid_t::apl_balance()
   action_list_str += init_use_item_actions( ",if=buff.celestial_alignment.up|cooldown.celestial_alignment.remains>30" );
   action_list_str += init_use_profession_actions( ",if=buff.celestial_alignment.up|cooldown.celestial_alignment.remains>30" );
   action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
-  action_list_str += "/natures_swiftness,if=talent.natures_swiftness.enabled&talent.dream_of_cenarius.enabled";
+  action_list_str += "/natures_swiftness,if=talent.dream_of_cenarius.enabled";
   action_list_str += "/healing_touch,if=talent.dream_of_cenarius.enabled&!buff.dream_of_cenarius.up&mana.pct>25";
   action_list_str += "/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)";
   action_list_str += "/celestial_alignment,if=(!buff.lunar_eclipse.up&!buff.solar_eclipse.up)&(buff.chosen_of_elune.up|!talent.incarnation.enabled|cooldown.incarnation.remains>10)";
@@ -6680,12 +6711,13 @@ void druid_t::apl_guardian()
   action_list_str += "/auto_attack";
   action_list_str += init_use_racial_actions();
   action_list_str += "/skull_bash_bear";
-  add_action( "Frenzied Regeneration", "if=health.pct<100&action.savage_defense.charges=0&incoming_damage_5%health.max>0.2" );
-  add_action( "Frenzied Regeneration", "if=health.pct<100&action.savage_defense.charges>0&incoming_damage_5%health.max>0.4" );
+  add_action( "Frenzied Regeneration", "if=health.pct<100&action.savage_defense.charges=0&incoming_damage_5>0.2*health.max" );
+  add_action( "Frenzied Regeneration", "if=health.pct<100&action.savage_defense.charges>0&incoming_damage_5>0.4*health.max" );
   add_action( "Savage Defense" );
   action_list_str += init_use_item_actions();
   action_list_str += init_use_profession_actions();
   add_action( "Barkskin" );
+  action_list_str += "/renewal,if=talent.renewal.enabled&incoming_damage_5>0.8*health.max";
   action_list_str += "/natures_vigil,if=talent.natures_vigil.enabled&(!talent.incarnation.enabled|buff.son_of_ursoc.up|cooldown.incarnation.remains)";
   action_list_str += "/thrash_bear,if=debuff.weakened_blows.remains<3";
   action_list_str += "/maul,if=buff.tooth_and_claw.react&buff.tooth_and_claw_absorb.down";
@@ -6951,6 +6983,10 @@ void druid_t::combat_begin()
       }
     }
   }
+
+  // If Ysera's Gift is talented, apply it upon entering combat
+  if ( talent.yseras_gift -> ok() )
+    active.yseras_gift -> execute();
 }
 
 // druid_t::invalidate_cache ================================================
@@ -6962,10 +6998,12 @@ void druid_t::invalidate_cache( cache_e c )
   switch ( c )
   {
     case CACHE_AGILITY:
-      player_t::invalidate_cache( CACHE_SPELL_POWER );
+      if ( spec.nurturing_instinct -> ok() )
+        player_t::invalidate_cache( CACHE_SPELL_POWER );
       break;
     case CACHE_INTELLECT:
-      player_t::invalidate_cache( CACHE_AGILITY );
+      if ( spec.killer_instinct -> ok() )
+        player_t::invalidate_cache( CACHE_AGILITY );
       break;
     case CACHE_MASTERY:
       player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
