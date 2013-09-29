@@ -3879,7 +3879,9 @@ struct divine_protection_t : public buff_t
 
   divine_protection_t( paladin_t* p ) :
     buff_t( buff_creator_t( p, "divine_protection", p -> find_class_spell( "Divine Protection" ) ) )
-  { }
+  { 
+    cooldown -> duration = timespan_t::zero();
+  }
 
   virtual void expire_override()
   {
