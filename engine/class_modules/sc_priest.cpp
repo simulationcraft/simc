@@ -10,11 +10,6 @@ namespace { // UNNAMED NAMESPACE
 /* Forward declarations
  */
 struct priest_t;
-namespace actions {
-namespace spells {
-struct shadowy_apparition_spell_t;
-}
-}
 
 /* Priest target data
  * Contains target specific things
@@ -208,27 +203,6 @@ public:
     proc_t* t15_2pc_caster_vampiric_touch;
   } procs;
 
-  struct shadowy_apparitions_t
-  {
-  private:
-    typedef actions::spells::shadowy_apparition_spell_t sa_spell;
-    priest_t& priest;
-    std::vector<sa_spell*> apparitions_free;
-    std::vector<player_t*> targets_queued;
-    std::vector<sa_spell*> apparitions_active;
-
-  public:
-    shadowy_apparitions_t( priest_t& p ) : priest( p )
-    { /* Do NOT access p or this -> priest here! */ }
-
-    void trigger( action_state_t& d );
-    void tidy_up( actions::spells::shadowy_apparition_spell_t& );
-    void start_from_queue();
-    void reset();
-    void add_more( size_t num );
-
-  } shadowy_apparitions;
-
   // Special
   struct active_spells_t
   {
@@ -290,13 +264,12 @@ public:
     gains( gains_t() ),
     benefits( benefits_t() ),
     procs( procs_t() ),
-    shadowy_apparitions( shadowy_apparitions_t( *this ) ),
     active_spells( active_spells_t() ),
     pets( pets_t() ),
     options( priest_options_t() ),
     glyphs( glyphs_t() )
   {
-    base.distance = 27.0;
+    base.distance = 25.0;
 
     create_cooldowns();
     create_gains();
@@ -1915,15 +1888,18 @@ struct shadowy_apparition_spell_t : public priest_spell_t
   shadowy_apparition_spell_t( priest_t& p ) :
     priest_spell_t( "shadowy_apparition",
                     p,
-                    p.find_spell( 78203 ) ) //When this ability is rebuilt in SimC to be a missile we will most likely use spell ID 147193
+                    p.find_spell( 78203 ) )
   {
     background        = true;
     proc              = true;
     callbacks         = false;
+    may_miss          = false;
 
     trigger_gcd       = timespan_t::zero();
-    travel_speed      = 3.5;
+    travel_speed      = 6.0;
     direct_power_mod  = 0.375;
+    base_dd_min = base_dd_max = 393;
+    school            = SCHOOL_SHADOW;
   }
 
   virtual void impact( action_state_t* s )
@@ -1950,10 +1926,6 @@ struct shadowy_apparition_spell_t : public priest_spell_t
         }
       }
     }
-
-    priest.shadowy_apparitions.tidy_up( *this );
-
-    priest.shadowy_apparitions.start_from_queue();
   }
 };
 
@@ -2764,12 +2736,18 @@ struct mind_flay_insanity_t : public mind_flay_base_t<true>
 
 struct shadow_word_pain_mastery_t : public priest_procced_mastery_spell_t
 {
+  shadowy_apparition_spell_t* proc_shadowy_apparition;
+
   shadow_word_pain_mastery_t( priest_t& p ) :
     priest_procced_mastery_spell_t( "shadow_word_pain_mastery", p,
-                                    p.find_class_spell( "Shadow Word: Pain" ) -> ok() ? p.find_spell( 124464 ) : spell_data_t::not_found() )
+                                    p.find_class_spell( "Shadow Word: Pain" ) -> ok() ? p.find_spell( 124464 ) : spell_data_t::not_found() ),
+    proc_shadowy_apparition( nullptr )
   {
     // TO-DO: Confirm this applies
     base_crit += p.sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
+
+    if ( priest.specs.shadowy_apparitions -> ok() )
+      proc_shadowy_apparition = new shadowy_apparition_spell_t( p );
   }
 
   virtual void impact( action_state_t* s )
@@ -2778,7 +2756,11 @@ struct shadow_word_pain_mastery_t : public priest_procced_mastery_spell_t
 
     if ( ( s -> result == RESULT_CRIT ) && ( priest.specs.shadowy_apparitions -> ok() ) )
     {
-      priest.shadowy_apparitions.trigger( *s );
+      if ( priest.sim -> debug )
+        priest.sim -> out_debug.printf( "%s triggered shadowy apparition.", priest.name());
+
+      priest.procs.shadowy_apparition -> occur();
+      proc_shadowy_apparition -> schedule_execute();
     }
     if ( s -> result_amount > 0.0 )
     {
@@ -2792,10 +2774,12 @@ struct shadow_word_pain_mastery_t : public priest_procced_mastery_spell_t
 struct shadow_word_pain_t : public priest_spell_t
 {
   shadow_word_pain_mastery_t* proc_spell;
+  shadowy_apparition_spell_t* proc_shadowy_apparition;
 
   shadow_word_pain_t( priest_t& p, const std::string& options_str ) :
     priest_spell_t( "shadow_word_pain", p, p.find_class_spell( "Shadow Word: Pain" ) ),
-    proc_spell( nullptr )
+    proc_spell( nullptr ),
+    proc_shadowy_apparition( nullptr )
   {
     parse_options( nullptr, options_str );
 
@@ -2813,6 +2797,12 @@ struct shadow_word_pain_t : public priest_spell_t
       proc_spell = new shadow_word_pain_mastery_t( p );
       add_child( proc_spell );
     }
+
+    if ( priest.specs.shadowy_apparitions -> ok() )
+    {
+      proc_shadowy_apparition = new shadowy_apparition_spell_t( p );
+      add_child( proc_shadowy_apparition );
+    }
   }
 
   virtual void tick( dot_t* d )
@@ -2823,7 +2813,11 @@ struct shadow_word_pain_t : public priest_spell_t
     {
       if ( d -> state -> result == RESULT_CRIT )
       {
-        priest.shadowy_apparitions.trigger( *d -> state );
+        if ( priest.sim -> debug )
+          priest.sim -> out_debug.printf( "%s triggered shadowy apparition.", priest.name());
+
+        priest.procs.shadowy_apparition -> occur();
+        proc_shadowy_apparition -> schedule_execute();
       }
     }
     if ( ( d -> state -> result_amount > 0 ) && ( priest.talents.divine_insight -> ok() ) )
@@ -2872,10 +2866,16 @@ struct vampiric_embrace_t : public priest_spell_t
 
 struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
 {
+  shadowy_apparition_spell_t* proc_shadowy_apparition;
+
   vampiric_touch_mastery_t( priest_t& p ) :
     priest_procced_mastery_spell_t( "vampiric_touch_mastery", p,
-                                    p.find_class_spell( "Vampiric Touch" ) -> ok() ? p.find_spell( 124465 ) : spell_data_t::not_found() )
-  { }
+                                    p.find_class_spell( "Vampiric Touch" ) -> ok() ? p.find_spell( 124465 ) : spell_data_t::not_found() ),
+    proc_shadowy_apparition( nullptr )
+  {
+      if ( priest.specs.shadowy_apparitions -> ok() )
+        proc_shadowy_apparition = new shadowy_apparition_spell_t( p );
+  }
 
   virtual void impact( action_state_t* s )
   {
@@ -2896,7 +2896,12 @@ struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
         if ( rng().roll( priest.sets -> set( SET_T15_4PC_CASTER ) -> proc_chance() ) )
         {
           priest.procs.t15_4pc_caster -> occur();
-          priest.shadowy_apparitions.trigger( *s );
+
+          if ( priest.sim -> debug )
+            priest.sim -> out_debug.printf( "%s triggered shadowy apparition.", priest.name());
+
+          priest.procs.shadowy_apparition -> occur();
+          proc_shadowy_apparition -> schedule_execute();
         }
       }
     }
@@ -2908,10 +2913,12 @@ struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
 struct vampiric_touch_t : public priest_spell_t
 {
   vampiric_touch_mastery_t* proc_spell;
+  shadowy_apparition_spell_t* proc_shadowy_apparition;
 
   vampiric_touch_t( priest_t& p, const std::string& options_str ) :
     priest_spell_t( "vampiric_touch", p, p.find_class_spell( "Vampiric Touch" ) ),
-    proc_spell( nullptr )
+    proc_spell( nullptr ),
+    proc_shadowy_apparition( nullptr )
   {
     parse_options( nullptr, options_str );
     may_crit   = false;
@@ -2923,6 +2930,9 @@ struct vampiric_touch_t : public priest_spell_t
       proc_spell = new vampiric_touch_mastery_t( p );
       add_child( proc_spell );
     }
+
+    if ( priest.specs.shadowy_apparitions -> ok() )
+      proc_shadowy_apparition = new shadowy_apparition_spell_t( p );
   }
 
   virtual void tick( dot_t* d )
@@ -2949,7 +2959,12 @@ struct vampiric_touch_t : public priest_spell_t
         if ( rng().roll( priest.sets -> set( SET_T15_4PC_CASTER ) -> proc_chance() ) )
         {
           priest.procs.t15_4pc_caster -> occur();
-          priest.shadowy_apparitions.trigger( *d -> state );
+
+          if ( priest.sim -> debug )
+            priest.sim -> out_debug.printf( "%s triggered shadowy apparition.", priest.name());
+
+          priest.procs.shadowy_apparition -> occur();
+          proc_shadowy_apparition -> schedule_execute();
         }
       }
     }
@@ -4719,115 +4734,6 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
 }
 
 // ==========================================================================
-// Priest Shadowy Apparition Definitions
-// ==========================================================================
-
-/* Trigger a new Shadowy Apparition
- *
- */
-void priest_t::shadowy_apparitions_t::trigger( action_state_t& s )
-{
-  if ( ! priest.specs.shadowy_apparitions -> ok() )
-    return;
-
-  if ( ! apparitions_free.empty() ) // less than 4 active SA, and, 5.4 PTR
-  {
-    // Get SA spell, set target and remove it from free list
-    sa_spell* sa = apparitions_free.back();
-    sa -> target = s.target;
-    apparitions_free.pop_back();
-
-    // Add to active SA spell list
-    apparitions_active.push_back( sa );
-
-    if ( priest.sim -> debug )
-      priest.sim -> out_debug.printf( "%s triggered shadowy apparition. Active SA: %d, Queued SA: %d",
-                            priest.name(), as<unsigned>( apparitions_active.size() ), as<unsigned>( targets_queued.size() ) );
-
-    // Execute
-    priest.procs.shadowy_apparition -> occur();
-    sa -> execute();
-  }
-  else
-  {
-    assert( false && "not enough free shadowy apparition spells available" );
-  }
-}
-
-/* Cleanup executed SA action.
- * - Remove from active list.
- * - Add to free list.
- */
-void priest_t::shadowy_apparitions_t::tidy_up( actions::spells::shadowy_apparition_spell_t& s )
-{
-  std::vector<sa_spell*>::iterator it = range::find( apparitions_active, &s );
-  assert( it != apparitions_active.end() );
-  apparitions_active.erase( it );
-  apparitions_free.push_back( &s );
-}
-
-/* Add new "free" shadowy apparitions
- */
-void priest_t::shadowy_apparitions_t::add_more( size_t num )
-{
-  for ( size_t i = 0; i < num; i++ )
-  {
-    apparitions_free.push_back( new sa_spell( priest ) );
-  }
-
-  if ( priest.sim -> debug )
-    priest.sim -> out_debug.printf( "%s created %d shadowy apparitions. %d free shadowy apparitions available.",
-                          priest.name(), as<unsigned>( num ), as<unsigned>( apparitions_free.size() ) );
-}
-
-/* Start SA from queue
- * Added 11. March 2013, see http://howtopriest.com/viewtopic.php?f=8&t=3242
- */
-void priest_t::shadowy_apparitions_t::start_from_queue()
-{
-  if ( ! targets_queued.empty() )
-  {
-    if ( ! apparitions_free.empty() )
-    {
-      // Get SA spell from free list
-      sa_spell* s = apparitions_free.back();
-      apparitions_free.pop_back();
-
-      // Set SA spell target to the target saved in the queue
-      s -> target = targets_queued.front();
-      targets_queued.erase( targets_queued.begin() );
-
-      // Add to active SA spell list
-      apparitions_active.push_back( s );
-
-      if ( priest.sim -> debug )
-        priest.sim -> out_debug.printf( "%s triggered shadowy apparition from the queue. Active SA: %d, Queued SA: %d",
-                              priest.name(), as<unsigned>( apparitions_active.size() ), as<unsigned>( targets_queued.size() ) );
-
-      // Execute
-      priest.procs.shadowy_apparition -> occur();
-      s -> execute();
-    }
-    else
-    {
-      assert( false && "not enough free shadowy apparition spells available" );
-    }
-  }
-}
-
-/* Reset Shadowy Apparition Lists
- * - Move contents of "active" list to the "free" list
- * - Clear queue
- */
-void priest_t::shadowy_apparitions_t::reset()
-{
-  apparitions_free.insert( apparitions_free.end(), apparitions_active.begin(), apparitions_active.end() );
-  apparitions_active.clear();
-
-  targets_queued.clear();
-}
-
-// ==========================================================================
 // Priest Definitions
 // ==========================================================================
 
@@ -5372,11 +5278,6 @@ void priest_t::init_spells()
   if ( mastery_spells.echo_of_light -> ok() )
     active_spells.echo_of_light = new actions::heals::echo_of_light_t( *this );
 
-  if ( specs.shadowy_apparitions -> ok() )
-  {
-    shadowy_apparitions.add_more( 1000 ); //Hacky no cap
-  }
-
   active_spells.surge_of_darkness = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();
 
   // Set Bonuses
@@ -5906,11 +5807,6 @@ void priest_t::init_actions()
 void priest_t::reset()
 {
   base_t::reset();
-
-  if ( specs.shadowy_apparitions -> ok() )
-  {
-    shadowy_apparitions.reset();
-  }
 }
 
 /* Copy stats from the trigger spell to the atonement spell
