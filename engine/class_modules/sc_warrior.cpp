@@ -3535,7 +3535,8 @@ void warrior_t::init_actions()
     std::string& three_list_str = get_action_priority_list( "three_targets" ) -> action_list_str;
     std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
     
-    std::string& prot_dps_list_str = get_action_priority_list( "dps_cds" ) -> action_list_str;
+    std::string& prot_dps_cd_list_str = get_action_priority_list( "dps_cds" ) -> action_list_str;
+    std::string& prot_normal_list_str = get_action_priority_list( "normal_rotation" ) -> action_list_str;
 
     switch ( specialization() )
     {
@@ -3615,7 +3616,9 @@ void warrior_t::init_actions()
         if ( level > 85 )
         {
           precombat_list  += "/mountains_potion";
-          action_list_str += "/mountains_potion,if=health.pct<35&buff.mountains_potion.down";
+          
+          action_list_str += "/mountains_potion,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)";
+
         }
 
       }
@@ -3769,32 +3772,36 @@ void warrior_t::init_actions()
     // Protection
     else if ( specialization() == WARRIOR_PROTECTION )
     {
+      action_list_str += "/heroic_strike,if=buff.ultimatum.up|buff.glyph_incite.up";
       action_list_str += "/berserker_rage,if=buff.enrage.down&rage<=rage.max-10";
-      action_list_str += "/shield_wall,if=incoming_damage_2500ms>health.max*0.6";      
-      action_list_str += "/last_stand,if=incoming_damage_2500ms>health.max*0.6&buff.shield_wall.down";
-      action_list_str += "/run_action_list,name=dps_cds,if=stat.attack_power>health.max*0.2";
-      
-      action_list_str += "/heroic_strike,if=buff.ultimatum.up";
-      action_list_str += "/shield_slam,if=rage<75";
-      action_list_str += "/revenge,if=rage<75";
-      action_list_str += "/battle_shout,if=rage<80";
+      action_list_str += "/shield_block";
       action_list_str += "/shield_barrier,if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20";
-      action_list_str += "/shield_block,if=charges=2|rage>rage.max-35";
-      action_list_str += "/thunder_clap,if=target.debuff.weakened_blows.down";
-      action_list_str += "/demoralizing_shout";
-      action_list_str += "/impending_victory,if=talent.impending_victory.enabled";
-      action_list_str += "/victory_rush,if=!talent.impending_victory.enabled";
-      action_list_str += "/devastate";
+      action_list_str += "/shield_wall,if=incoming_damage_2500ms>health.max*0.6";
+      action_list_str += "/last_stand,if=incoming_damage_2500ms>health.max*0.6&buff.shield_wall.down";
+      action_list_str += "/run_action_list,name=dps_cds,if=buff.vengeance.value>health.max*0.20";
+      action_list_str += "/run_action_list,name=normal_rotation";
       
+      prot_normal_list_str="/shield_slam";
+      prot_normal_list_str+="/revenge";
+      prot_normal_list_str+="/battle_shout,if=rage<=rage.max-20";
+      prot_normal_list_str+="/thunder_clap,if=glyph.resonating_power.enabled|target.debuff.weakened_blows.down";
+      prot_normal_list_str+="/demoralizing_shout";
+      prot_normal_list_str+="/impending_victory,if=talent.impending_victory.enabled";
+      prot_normal_list_str+="/victory_rush,if=!talent.impending_victory.enabled";
+      prot_normal_list_str+="/devastate";
       
-      prot_dps_list_str += "/mogu_power_potion";
-      prot_dps_list_str += "//avatar,if=talent.avatar.enabled";
-      prot_dps_list_str += "/bloodbath,if=talent.bloodbath.enabled";
-      prot_dps_list_str += "/dragon_roar,if=talent.dragon_roar.enabled";
-      prot_dps_list_str += "/shattering_throw";
-      prot_dps_list_str += "/skull_banner";
-      prot_dps_list_str += "/recklessness";
-      prot_dps_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
+      prot_dps_cd_list_str += "/avatar,if=talent.avatar.enabled";
+      prot_dps_cd_list_str += "/bloodbath,if=talent.bloodbath.enabled";
+      prot_dps_cd_list_str += "/blood_fury";
+      prot_dps_cd_list_str += "/dragon_roar,if=talent.dragon_roar.enabled";
+      prot_dps_cd_list_str += "/shattering_throw";
+      prot_dps_cd_list_str += "/skull_banner";
+      prot_dps_cd_list_str += "/recklessness";
+      prot_dps_cd_list_str += "/storm_bolt,if=talent.storm_bolt.enabled";
+      prot_dps_cd_list_str += "/shockwave,if=talent.shockwave.enabled";
+      prot_dps_cd_list_str += "/bladestorm,if=talent.bladestorm.enabled";
+      prot_dps_cd_list_str += "/run_action_list,name=normal_rotation";
+      
     }
 
     // Default

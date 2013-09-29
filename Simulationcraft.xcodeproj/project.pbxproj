@@ -2163,6 +2163,7 @@
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "/Library/Frameworks/**";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -2172,6 +2173,7 @@
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = "/Library/Frameworks/**";
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 			};
 			name = Release;
