@@ -3991,11 +3991,9 @@ struct soul_swap_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    if ( p() -> buffs.soul_swap -> up() )  // EXHALE: TODO Copy(!) the dots from  p() -> soul_swap_buffer.target to target. Currently, it just starts them.
+    if ( p() -> buffs.soul_swap -> up() )  // EXHALE: Copy(!) the dots from  p() -> soul_swap_buffer.target to target.
     {
       if ( target == p() -> soul_swap_buffer.source ) return;
-
-      p() -> buffs.soul_swap -> expire();
 
       if ( p() -> soul_swap_buffer.agony_was_inhaled )
       {
