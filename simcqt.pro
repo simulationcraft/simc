@@ -1,5 +1,7 @@
 TEMPLATE = app
 
+CONFIG += c++11
+
 CONFIG(qt) {
   TARGET = SimulationCraft
 
@@ -74,9 +76,6 @@ contains(COMPILER_CHECK_CXX,'g++') {
   QMAKE_CXXFLAGS_RELEASE -= -O2
   QMAKE_CXXFLAGS_RELEASE += -O3 -fomit-frame-pointer
   QMAKE_CXXFLAGS += -ffast-math -Woverloaded-virtual
-  equals(COMPILER_CXX,'g++') {
-    QMAKE_CXXFLAGS += -mfpmath=sse
-  }
   equals(COMPILER_CXX,'clang++') {
     QMAKE_CXXFLAGS_RELEASE += -flto -Os
   }

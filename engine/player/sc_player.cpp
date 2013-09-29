@@ -8749,8 +8749,8 @@ void player_t::analyze( sim_t& s )
 
   collected_data.analyze( *this );
 
-  for ( size_t i = 0; i <  buff_list.size(); ++i )
-    buff_list[ i ] -> analyze();
+  for ( auto& buff : buff_list )
+    buff -> analyze();
 
   range::sort(  stats_list, compare_stats_name() );
 
