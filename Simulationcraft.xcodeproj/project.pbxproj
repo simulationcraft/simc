@@ -150,6 +150,8 @@
 		6E392F621396A09700649B6A /* sc_window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC6192C13967883006B7A89 /* sc_window.cpp */; };
 		6E392F961396A0AD00649B6A /* sc_thread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618E5139677F0006B7A89 /* sc_thread.cpp */; };
 		6E392F981396A0AD00649B6A /* sc_util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6EC618E7139677F0006B7A89 /* sc_util.cpp */; };
+		6E3E63F017F8D8B200AB6485 /* sc_core_sim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E63EF17F8D8B200AB6485 /* sc_core_sim.cpp */; };
+		6E3E63F117F8D8B200AB6485 /* sc_core_sim.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 6E3E63EF17F8D8B200AB6485 /* sc_core_sim.cpp */; };
 		6E6C54D51396A64800407A6A /* Welcome.html in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D21396A62600407A6A /* Welcome.html */; };
 		6E6C54D61396A64C00407A6A /* Welcome.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E6C54D11396A61C00407A6A /* Welcome.png */; };
 		6E714A1E161C7788004BA4D1 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E714A1C161C7788004BA4D1 /* AppKit.framework */; };
@@ -770,6 +772,7 @@
 		6E21CFFD17DC8C71000FB100 /* SC_OptionsTab.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SC_OptionsTab.hpp; path = qt/SC_OptionsTab.hpp; sourceTree = "<group>"; };
 		6E392F3213969ECE00649B6A /* SimulationCraft.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimulationCraft.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E392F5313969FCC00649B6A /* Simcraft2.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Simcraft2.icns; path = qt/icon/Simcraft2.icns; sourceTree = "<group>"; };
+		6E3E63EF17F8D8B200AB6485 /* sc_core_sim.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sc_core_sim.cpp; path = engine/sim/sc_core_sim.cpp; sourceTree = "<group>"; };
 		6E41F15915C68C89002B6836 /* generate_Rogue_PreRaid.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = generate_Rogue_PreRaid.simc; sourceTree = "<group>"; };
 		6E41F15A15C68C89002B6836 /* generate_Shaman_PreRaid.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = generate_Shaman_PreRaid.simc; sourceTree = "<group>"; };
 		6E41F15B15C68C89002B6836 /* generate_Warlock_PreRaid.simc */ = {isa = PBXFileReference; lastKnownFileType = text; path = generate_Warlock_PreRaid.simc; sourceTree = "<group>"; };
@@ -1551,6 +1554,7 @@
 		6EC618B313967780006B7A89 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				6E3E63EF17F8D8B200AB6485 /* sc_core_sim.cpp */,
 				6E7EB8F4175F5572001610FA /* rng.cpp */,
 				6E7EB8F5175F5572001610FA /* rng.hpp */,
 				6E7EB8F7175F5572001610FA /* sample_data.hpp */,
@@ -1950,6 +1954,7 @@
 				6E7EB8C7175F5552001610FA /* sc_set_bonus.cpp in Sources */,
 				6E7EB8CA175F5552001610FA /* sc_unique_gear.cpp in Sources */,
 				6E7EB8D7175F5565001610FA /* sc_cooldown.cpp in Sources */,
+				6E3E63F117F8D8B200AB6485 /* sc_core_sim.cpp in Sources */,
 				6E7EB8DA175F5565001610FA /* sc_event.cpp in Sources */,
 				6E7EB8DD175F5565001610FA /* sc_expressions.cpp in Sources */,
 				6E7EB8E0175F5565001610FA /* sc_gear_stats.cpp in Sources */,
@@ -1975,6 +1980,7 @@
 				6EB654BF1562E39500583BF3 /* sc_const_data.cpp in Sources */,
 				6EB654C11562E39500583BF3 /* sc_data.cpp in Sources */,
 				6EB654C31562E39500583BF3 /* sc_item_data.cpp in Sources */,
+				6E3E63F017F8D8B200AB6485 /* sc_core_sim.cpp in Sources */,
 				6EB654C51562E39500583BF3 /* sc_spell_data.cpp in Sources */,
 				6EB654C71562E39500583BF3 /* sc_spell_info.cpp in Sources */,
 				6EB654D41562E47600583BF3 /* sc_death_knight.cpp in Sources */,
