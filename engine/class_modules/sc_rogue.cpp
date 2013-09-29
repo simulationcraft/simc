@@ -980,11 +980,11 @@ void rogue_attack_t::execute()
 
   melee_attack_t::execute();
 
-  if ( harmful )
+  if ( harmful && stealthed() )
   {
     if ( ! p() -> talent.subterfuge -> ok() )
       break_stealth( p() );
-    else if ( ! p() -> buffs.subterfuge -> check() && stealthed() )
+    else if ( ! p() -> buffs.subterfuge -> check() )
       p() -> buffs.subterfuge -> trigger();
   }
 
@@ -3574,6 +3574,7 @@ void rogue_t::create_buffs()
                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.shadow_blades      = new buffs::shadow_blades_t( this );
   buffs.shadow_dance       = buff_creator_t( this, "shadow_dance", find_specialization_spell( "Shadow Dance" ) )
+                             .cd( timespan_t::zero() )
                              .duration( find_specialization_spell( "Shadow Dance" ) -> duration() + sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).time_value() );
   buffs.deadly_proc        = buff_creator_t( this, "deadly_proc" );
   buffs.shallow_insight    = buff_creator_t( this, "shallow_insight", find_spell( 84745 ) )
