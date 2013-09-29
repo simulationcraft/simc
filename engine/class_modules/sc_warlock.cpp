@@ -3504,6 +3504,15 @@ struct dark_soul_t : public warlock_spell_t
 
     p() -> buffs.dark_soul -> trigger();
   }
+  
+  virtual bool ready()
+  {
+    bool r = warlock_spell_t::ready();
+    
+    if ( p() -> buffs.dark_soul -> check() ) r = false;
+    
+    return r;
+  }
 };
 
 
