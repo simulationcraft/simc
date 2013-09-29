@@ -1927,6 +1927,17 @@ struct shadowy_apparition_spell_t : public priest_spell_t
       }
     }
   }
+
+  /* Trigger a shadowy apparition
+   */
+  void trigger()
+  {
+    if ( priest.sim -> debug )
+      priest.sim -> out_debug << priest.name() << " triggered shadowy apparition.";
+
+    priest.procs.shadowy_apparition -> occur();
+    schedule_execute();
+  }
 };
 
 // Mind Blast Spell =========================================================
@@ -2754,14 +2765,11 @@ struct shadow_word_pain_mastery_t : public priest_procced_mastery_spell_t
   {
     priest_procced_mastery_spell_t::impact( s );
 
-    if ( ( s -> result == RESULT_CRIT ) && ( priest.specs.shadowy_apparitions -> ok() ) )
+    if ( proc_shadowy_apparition && ( s -> result == RESULT_CRIT ) )
     {
-      if ( priest.sim -> debug )
-        priest.sim -> out_debug.printf( "%s triggered shadowy apparition.", priest.name());
-
-      priest.procs.shadowy_apparition -> occur();
-      proc_shadowy_apparition -> schedule_execute();
+      proc_shadowy_apparition -> trigger();
     }
+
     if ( s -> result_amount > 0.0 )
     {
       priest.buffs.divine_insight_shadow -> trigger();
@@ -2809,15 +2817,11 @@ struct shadow_word_pain_t : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    if ( ( d -> state -> result_amount > 0 ) && ( priest.specs.shadowy_apparitions -> ok() ) )
+    if ( proc_shadowy_apparition && ( d -> state -> result_amount > 0 ) )
     {
       if ( d -> state -> result == RESULT_CRIT )
       {
-        if ( priest.sim -> debug )
-          priest.sim -> out_debug.printf( "%s triggered shadowy apparition.", priest.name());
-
-        priest.procs.shadowy_apparition -> occur();
-        proc_shadowy_apparition -> schedule_execute();
+        proc_shadowy_apparition -> trigger();
       }
     }
     if ( ( d -> state -> result_amount > 0 ) && ( priest.talents.divine_insight -> ok() ) )
@@ -2891,17 +2895,13 @@ struct vampiric_touch_mastery_t : public priest_procced_mastery_spell_t
 
     if ( priest.set_bonus.tier15_4pc_caster() )
     {
-      if ( ( s -> result_amount > 0 ) && ( priest.specs.shadowy_apparitions -> ok() ) )
+      if ( proc_shadowy_apparition && ( s -> result_amount > 0 ) )
       {
         if ( rng().roll( priest.sets -> set( SET_T15_4PC_CASTER ) -> proc_chance() ) )
         {
           priest.procs.t15_4pc_caster -> occur();
 
-          if ( priest.sim -> debug )
-            priest.sim -> out_debug.printf( "%s triggered shadowy apparition.", priest.name());
-
-          priest.procs.shadowy_apparition -> occur();
-          proc_shadowy_apparition -> schedule_execute();
+          proc_shadowy_apparition -> trigger();
         }
       }
     }
@@ -2954,17 +2954,13 @@ struct vampiric_touch_t : public priest_spell_t
 
     if ( priest.set_bonus.tier15_4pc_caster() )
     {
-      if ( ( d -> state -> result_amount > 0 ) && ( priest.specs.shadowy_apparitions -> ok() ) )
+      if ( proc_shadowy_apparition && ( d -> state -> result_amount > 0 )  )
       {
         if ( rng().roll( priest.sets -> set( SET_T15_4PC_CASTER ) -> proc_chance() ) )
         {
           priest.procs.t15_4pc_caster -> occur();
 
-          if ( priest.sim -> debug )
-            priest.sim -> out_debug.printf( "%s triggered shadowy apparition.", priest.name());
-
-          priest.procs.shadowy_apparition -> occur();
-          proc_shadowy_apparition -> schedule_execute();
+          proc_shadowy_apparition -> trigger();
         }
       }
     }
