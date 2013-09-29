@@ -3515,11 +3515,25 @@ public:
     ab::proc = ab::background = true;
   }
 
+  // Divine Star will damage and heal targets twice, once on the way out and
+  // again on the way back. This is determined by distance from the target.
+  // If we are too far away, it misses completely. If we are at the very
+  // edge distance wise, it will only hit once. If we are within range (and
+  // aren't moving such that it would miss the target on the way out and/or
+  // back), it will hit twice. Threshold is 30 yards, per tooltip and tests
+  // done by Spinalcrack for his HaloPro addon, for 2 hits. 35 yards is the
+  // threshold for 1 hit.
   void execute() // override
   {
-    ab::execute();
-    if ( return_spell )
-      return_spell -> execute();
+    double distance = ab::player -> current.distance;
+
+    if ( distance <= 35 )
+    {
+      ab::execute();
+
+      if ( return_spell && distance <= 30 )
+        return_spell -> execute();
+    }
   }
 
 };
@@ -3558,28 +3572,8 @@ struct divine_star_t : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    // Divine Star will damage and heal targets twice, once on the way out and
-    // again on the way back. This is determined by distance from the target.
-    // If we are too far away, it misses completely. If we are at the very
-    // edge distance wise, it will only hit once. If we are within range (and
-    // aren't moving such that it would miss the target on the way out and/or
-    // back), it will hit twice. Threshold is 30 yards, per tooltip and tests
-    // done by Spinalcrack for his HaloPro addon, for 2 hits. 35 yards is the
-    // threshold for 1 hit.
-
-    double distance = priest_spell_t::player -> current.distance;
-
-    if ( distance <= 35 )
-    {
-      damage_spell -> execute();
-      heal_spell -> execute();
-
-      if ( distance <= 30 )
-      {
-        damage_spell -> execute();
-        heal_spell -> execute();
-      }
-    }
+    damage_spell -> execute();
+    heal_spell -> execute();
   }
 };
 
