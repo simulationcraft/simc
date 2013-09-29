@@ -28,32 +28,37 @@ actions.precombat+=/mountains_potion
 # Executed every time the actor is available.
 
 actions=auto_attack
-actions+=/mountains_potion,if=health.pct<35&buff.mountains_potion.down
+actions+=/mountains_potion,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)
 actions+=/use_item,name=steadfast_talisman_of_the_shadopan_assault
+actions+=/heroic_strike,if=buff.ultimatum.up|buff.glyph_incite.up
 actions+=/berserker_rage,if=buff.enrage.down&rage<=rage.max-10
+actions+=/shield_block
+actions+=/shield_barrier,if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20
 actions+=/shield_wall,if=incoming_damage_2500ms>health.max*0.6
 actions+=/last_stand,if=incoming_damage_2500ms>health.max*0.6&buff.shield_wall.down
-actions+=/run_action_list,name=dps_cds,if=stat.attack_power>health.max*0.2
-actions+=/heroic_strike,if=buff.ultimatum.up
-actions+=/shield_slam,if=rage<75
-actions+=/revenge,if=rage<75
-actions+=/battle_shout,if=rage<80
-actions+=/shield_barrier,if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20
-actions+=/shield_block,if=charges=2|rage>rage.max-35
-actions+=/thunder_clap,if=target.debuff.weakened_blows.down
-actions+=/demoralizing_shout
-actions+=/impending_victory,if=talent.impending_victory.enabled
-actions+=/victory_rush,if=!talent.impending_victory.enabled
-actions+=/devastate
+actions+=/run_action_list,name=dps_cds,if=buff.vengeance.value>health.max*0.20
+actions+=/run_action_list,name=normal_rotation
 
-actions.dps_cds=mogu_power_potion
-actions.dps_cds+=/avatar,if=talent.avatar.enabled
+actions.dps_cds=avatar,if=talent.avatar.enabled
 actions.dps_cds+=/bloodbath,if=talent.bloodbath.enabled
+actions.dps_cds+=/blood_fury
 actions.dps_cds+=/dragon_roar,if=talent.dragon_roar.enabled
 actions.dps_cds+=/shattering_throw
 actions.dps_cds+=/skull_banner
 actions.dps_cds+=/recklessness
 actions.dps_cds+=/storm_bolt,if=talent.storm_bolt.enabled
+actions.dps_cds+=/shockwave,if=talent.shockwave.enabled
+actions.dps_cds+=/bladestorm,if=talent.bladestorm.enabled
+actions.dps_cds+=/run_action_list,name=normal_rotation
+
+actions.normal_rotation=shield_slam
+actions.normal_rotation+=/revenge
+actions.normal_rotation+=/battle_shout,if=rage<=rage.max-20
+actions.normal_rotation+=/thunder_clap,if=glyph.resonating_power.enabled|target.debuff.weakened_blows.down
+actions.normal_rotation+=/demoralizing_shout
+actions.normal_rotation+=/impending_victory,if=talent.impending_victory.enabled
+actions.normal_rotation+=/victory_rush,if=!talent.impending_victory.enabled
+actions.normal_rotation+=/devastate
 
 head=faceguard_of_the_last_mogu,id=96737,gems=indomitable_primal_160mastery_120sta_180parry,reforge=exp_parry
 neck=necklace_of_the_terracotta_protector,id=96724,gems=160exp_120sta_60exp,reforge=exp_mastery

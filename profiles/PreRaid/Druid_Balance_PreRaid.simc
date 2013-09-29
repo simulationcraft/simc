@@ -34,7 +34,7 @@ actions+=/force_of_nature,if=talent.force_of_nature.enabled
 actions+=/berserking,if=buff.celestial_alignment.up
 actions+=/use_item,slot=trinket2,if=buff.celestial_alignment.up|cooldown.celestial_alignment.remains>30
 actions+=/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up
-actions+=/natures_swiftness,if=talent.natures_swiftness.enabled&talent.dream_of_cenarius.enabled
+actions+=/natures_swiftness,if=talent.dream_of_cenarius.enabled
 actions+=/healing_touch,if=talent.dream_of_cenarius.enabled&!buff.dream_of_cenarius.up&mana.pct>25
 actions+=/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)
 actions+=/celestial_alignment,if=(!buff.lunar_eclipse.up&!buff.solar_eclipse.up)&(buff.chosen_of_elune.up|!talent.incarnation.enabled|cooldown.incarnation.remains>10)
