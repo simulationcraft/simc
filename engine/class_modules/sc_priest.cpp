@@ -2723,16 +2723,10 @@ struct mind_flay_insanity_t : public mind_flay_base_t<true>
 
   virtual double action_multiplier()
   {
-    double m = priest_spell_t::action_multiplier();
+    double am = priest_spell_t::action_multiplier();
 
-//    if ( priest.talents.solace_and_insanity -> ok() && mfi_target_snapshot && mfi_target_snapshot -> dots.devouring_plague_tick -> ticking )
-//    {
-//      const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( mfi_target_snapshot -> dots.devouring_plague_tick -> state );
-      //m *= 1.0 + dp_state -> orbs_used / 3.0;
-      m *= 1.0 + orbs_used / 3.0;
-//    }
-
-    return m;
+    am *= 1.0 + orbs_used / 3.0;
+    return am;
   }
 
   virtual bool ready()
