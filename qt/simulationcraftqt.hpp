@@ -10,6 +10,8 @@
 #include <QtGui/QtGui>
 #include <QtWebKit/QtWebKit>
 #include <QtCore/QTranslator>
+#include <QtNetwork/QtNetwork>
+
 #ifdef QT_VERSION_5
 #include <QtWidgets/QtWidgets>
 #include <QtWebKitWidgets/QtWebKitWidgets>
