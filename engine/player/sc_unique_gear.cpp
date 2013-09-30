@@ -3854,7 +3854,7 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( item_id == 102313                      ) e = "OnSpellDamage_11761Crit_15%_20Dur_115Cd";
   else if ( item_id == 102315                      ) e = "OnAttackHit_11759Haste_15%_20Dur_115Cd";
   
-  else if ( name == "ticking_ebon_detonator"       ) e = "OnDirectDamage_1.01RPPM_10Cd_10Dur_0.5Tick_20Stack_" + RTV( tf, 847, 947, 1069, 1131, 1207, 1276 )  + "Agi_Reverse_NoRefresh";
+  else if ( name == "ticking_ebon_detonator"       ) e = "OnDirectDamage_1RPPM_10Cd_10Dur_0.5Tick_20Stack_" + RTV( tf, 847, 947, 1069, 1131, 1207, 1276 )  + "Agi_Reverse_NoRefresh";
   else if ( name == "black_blood_of_yshaarj"       ) e = "OnDirectDamage_0.92RPPM_10Cd_10Dur_1.0Tick_10Stack_" + RTV( tf, 1862, 2082, 2350, 2485, 2652, 2805 ) + "Int_NoRefresh";
   else if ( name == "skeers_bloodsoaked_talisman"  ) e = "OnAttackHit_0.92RPPM_10Cd_10Dur_0.5Tick_20Stack_"    + RTV( tf, 931, 1041, 1175, 1242, 1326, 1402 ) + "Crit_NoRefresh";
 
