@@ -269,7 +269,7 @@ public:
     options( priest_options_t() ),
     glyphs( glyphs_t() )
   {
-    base.distance = 25.0;
+    base.distance = 27.0;
 
     create_cooldowns();
     create_gains();
@@ -2713,22 +2713,24 @@ struct mind_flay_base_t : public priest_spell_t
 struct mind_flay_insanity_t : public mind_flay_base_t<true>
 {
   typedef mind_flay_base_t<true> base_t;
+  int orbs_used;
 
   mind_flay_insanity_t( priest_t& p, const std::string& options_str ) :
-    base_t( p, options_str, "mind_flay_insanity" )
+    base_t( p, options_str, "mind_flay_insanity" ),
+      orbs_used( 0 )
   {
   }
 
-  virtual double composite_target_multiplier( player_t* t )
+  virtual double action_multiplier()
   {
-    double m = priest_spell_t::composite_target_multiplier( t );
+    double m = priest_spell_t::action_multiplier();
 
-    priest_td_t* td = find_td( t );
-    if ( priest.talents.solace_and_insanity -> ok() && td && td -> dots.devouring_plague_tick -> ticking )
-    {
-      const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td -> dots.devouring_plague_tick -> state );
-      m *= 1.0 + dp_state -> orbs_used / 3.0;
-    }
+//    if ( priest.talents.solace_and_insanity -> ok() && mfi_target_snapshot && mfi_target_snapshot -> dots.devouring_plague_tick -> ticking )
+//    {
+//      const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( mfi_target_snapshot -> dots.devouring_plague_tick -> state );
+      //m *= 1.0 + dp_state -> orbs_used / 3.0;
+      m *= 1.0 + orbs_used / 3.0;
+//    }
 
     return m;
   }
@@ -2736,8 +2738,11 @@ struct mind_flay_insanity_t : public mind_flay_base_t<true>
   virtual bool ready()
   {
     priest_td_t* td = find_td( target );
-    if ( !priest.talents.solace_and_insanity -> ok() || ( td && ! td -> dots.devouring_plague_tick -> ticking ) )
+    if (!( priest.talents.solace_and_insanity -> ok() && td && td -> dots.devouring_plague_tick -> ticking ))
       return false;
+
+    const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td -> dots.devouring_plague_tick -> state );
+    orbs_used = dp_state -> orbs_used;
 
     return base_t::ready();
   }
@@ -3531,18 +3536,17 @@ public:
   // If we are too far away, it misses completely. If we are at the very
   // edge distance wise, it will only hit once. If we are within range (and
   // aren't moving such that it would miss the target on the way out and/or
-  // back), it will hit twice. Threshold is 30 yards, per tooltip and tests
-  // done by Spinalcrack for his HaloPro addon, for 2 hits. 35 yards is the
-  // threshold for 1 hit.
+  // back), it will hit twice. Threshold is 24 yards, per tooltip and tests
+  // for 2 hits. 28 yards is the threshold for 1 hit.
   void execute() // override
   {
     double distance = ab::player -> current.distance;
 
-    if ( distance <= 35 )
+    if ( distance <= 28 )
     {
       ab::execute();
 
-      if ( return_spell && distance <= 30 )
+      if ( return_spell && distance <= 24 )
         return_spell -> execute();
     }
   }
