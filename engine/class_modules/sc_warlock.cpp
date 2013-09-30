@@ -4896,7 +4896,7 @@ void warlock_t::create_buffs()
   buffs.tier16_2pc_destructive_influence = buff_creator_t( this, "destructive_influence", find_spell( 145075) )
                                            .chance( sets -> set ( SET_T16_2PC_CASTER ) -> effectN( 4 ).percent() )
                                            .duration( timespan_t::from_seconds( 10 ))
-                                           .default_value( 0.1 ); //spell not found... FIX after DBC update .default_value( find_spell( 145075 ) -> effectN( 1 ).percent())
+                                           .default_value( find_spell( 145075 ) -> effectN( 1 ).percent());
 
   buffs.tier16_2pc_empowered_grasp = buff_creator_t( this, "empowered_grasp", find_spell( 145082 ) )
                                      .chance( sets -> set ( SET_T16_2PC_CASTER ) -> effectN( 2 ).percent())
@@ -4905,7 +4905,7 @@ void warlock_t::create_buffs()
                                  .chance( sets -> set ( SET_T16_2PC_CASTER ) -> effectN( 4 ).percent() )
                                  .duration( timespan_t::from_seconds( 10 ))
                                  .add_invalidate(CACHE_PLAYER_DAMAGE_MULTIPLIER)
-                                 .default_value( 0.2 ); //spell not found... FIX after DBC update .default_value( find_spell( 145085 ) -> effectN( 1 ).percent())
+                                 .default_value( find_spell( 145085 ) -> effectN( 1 ).percent());
 }
 
 
