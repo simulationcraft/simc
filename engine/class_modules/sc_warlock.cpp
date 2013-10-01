@@ -5019,7 +5019,7 @@ void warlock_t::init_actions()
         action_list_str += "/imp_swarm,if=(buff.dark_soul.up|(cooldown.dark_soul.remains>(120%(1%spell_haste)))|time_to_die<32)&time>3";
     }
 
-    add_action( spec.dark_soul );
+    add_action( spec.dark_soul, "if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react>6))");
 
     action_list_str += "/service_pet,if=talent.grimoire_of_service.enabled";
 
