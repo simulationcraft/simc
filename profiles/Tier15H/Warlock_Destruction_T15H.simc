@@ -55,13 +55,10 @@ actions+=/fel_flame,moving=1
 
 actions.aoe=summon_infernal
 actions.aoe+=/rain_of_fire,if=!ticking&!in_flight
-actions.aoe+=/havoc,target=2,if=burning_ember>=3.5&ember_react&target.health.pct<=20
-actions.aoe+=/shadowburn,if=burning_ember>=3.5&ember_react&buff.havoc.stack>=1
 actions.aoe+=/fire_and_brimstone,if=ember_react&buff.fire_and_brimstone.down
 actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&!ticking
 actions.aoe+=/conflagrate,if=buff.fire_and_brimstone.up
 actions.aoe+=/incinerate,if=buff.fire_and_brimstone.up
-actions.aoe+=/immolate,cycle_targets=1,if=!ticking
 
 head=hood_of_the_crimson_wake,id=96887,gems=sinister_primal_160haste_160hit_180int
 neck=megaeras_shining_eye,id=96825,reforge=crit_exp

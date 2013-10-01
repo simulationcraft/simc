@@ -50,13 +50,10 @@ actions+=/fel_flame,moving=1
 
 actions.aoe=summon_infernal
 actions.aoe+=/rain_of_fire,if=!ticking&!in_flight
-actions.aoe+=/havoc,target=2,if=burning_ember>=3.5&ember_react&target.health.pct<=20
-actions.aoe+=/shadowburn,if=burning_ember>=3.5&ember_react&buff.havoc.stack>=1
 actions.aoe+=/fire_and_brimstone,if=ember_react&buff.fire_and_brimstone.down
 actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&!ticking
 actions.aoe+=/conflagrate,if=buff.fire_and_brimstone.up
 actions.aoe+=/incinerate,if=buff.fire_and_brimstone.up
-actions.aoe+=/immolate,cycle_targets=1,if=!ticking
 
 head=shaskin_hood,id=85370,gems=burning_primal_80int_160hit_180int,reforge=mastery_haste
 neck=necklace_of_imbued_fury,id=90429,reforge=mastery_haste

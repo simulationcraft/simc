@@ -52,13 +52,10 @@ actions+=/fel_flame,moving=1
 
 actions.aoe=summon_infernal
 actions.aoe+=/rain_of_fire,if=!ticking&!in_flight
-actions.aoe+=/havoc,target=2,if=burning_ember>=3.5&ember_react&target.health.pct<=20
-actions.aoe+=/shadowburn,if=burning_ember>=3.5&ember_react&buff.havoc.stack>=1
 actions.aoe+=/fire_and_brimstone,if=ember_react&buff.fire_and_brimstone.down
 actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&!ticking
 actions.aoe+=/conflagrate,if=buff.fire_and_brimstone.up
 actions.aoe+=/incinerate,if=buff.fire_and_brimstone.up
-actions.aoe+=/immolate,cycle_targets=1,if=!ticking
 
 head=hood_of_the_horned_nightmare,id=99425,stats=2322armor_2290int_3795sta_1781haste_1201mastery,gems=sinister_primal_320exp_180int,reforge=haste_crit
 neck=untainted_guardians_chain,id=105465,stats=1490int_2236sta_944hit_1023mastery,reforge=hit_crit

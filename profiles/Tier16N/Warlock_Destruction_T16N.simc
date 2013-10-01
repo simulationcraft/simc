@@ -49,13 +49,10 @@ actions+=/fel_flame,moving=1
 
 actions.aoe=summon_infernal
 actions.aoe+=/rain_of_fire,if=!ticking&!in_flight
-actions.aoe+=/havoc,target=2,if=burning_ember>=3.5&ember_react&target.health.pct<=20
-actions.aoe+=/shadowburn,if=burning_ember>=3.5&ember_react&buff.havoc.stack>=1
 actions.aoe+=/fire_and_brimstone,if=ember_react&buff.fire_and_brimstone.down
 actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&!ticking
 actions.aoe+=/conflagrate,if=buff.fire_and_brimstone.up
 actions.aoe+=/incinerate,if=buff.fire_and_brimstone.up
-actions.aoe+=/immolate,cycle_targets=1,if=!ticking
 
 head=damiens_icevein_mask,id=105808,stats=2232armor_1960int_3300sta_1533hit_1028haste,gems=sinister_primal_160hit_160mastery_180int,reforge=hit_crit
 neck=penates_perilous_pendant,id=105763,stats=1226int_1839sta_830hit_797mastery,reforge=hit_crit

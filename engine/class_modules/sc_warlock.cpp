@@ -5158,13 +5158,10 @@ void warlock_t::init_actions()
 
         // AoE action list
         add_action( "Rain of Fire",          "if=!ticking&!in_flight",                                            "aoe" );
-        add_action( "Havoc",                 "target=2,if=burning_ember>=3.5&ember_react&target.health.pct<=20",  "aoe" );
-        add_action( "Shadowburn",            "if=burning_ember>=3.5&ember_react&buff.havoc.stack>=1",             "aoe" );
         add_action( "Fire and Brimstone",    "if=ember_react&buff.fire_and_brimstone.down",                       "aoe" );
         add_action( "Immolate",              "if=buff.fire_and_brimstone.up&!ticking",                            "aoe" );
         add_action( "Conflagrate",           "if=buff.fire_and_brimstone.up",                                     "aoe" );
         add_action( "Incinerate",            "if=buff.fire_and_brimstone.up",                                     "aoe" );
-        add_action( "Immolate",              "cycle_targets=1,if=!ticking",                                       "aoe" );
         break;
 
       case WARLOCK_DEMONOLOGY:
