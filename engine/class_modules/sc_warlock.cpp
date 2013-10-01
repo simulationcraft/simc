@@ -3995,6 +3995,8 @@ struct soul_swap_t : public warlock_spell_t
     {
       if ( target == p() -> soul_swap_buffer.source ) return;
 
+      p() -> buffs.soul_swap -> expire();
+      
       if ( p() -> soul_swap_buffer.agony_was_inhaled )
       {
         p() -> soul_swap_buffer.agony -> ticking = true; //so that copy works properly
