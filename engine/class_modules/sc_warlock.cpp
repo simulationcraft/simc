@@ -5035,7 +5035,7 @@ void warlock_t::init_actions()
 
     switch ( specialization() )
     {
-      case WARLOCK_AFFLICTION:  multidot_max = 3; break;
+      case WARLOCK_AFFLICTION:  multidot_max = 6; break;
       case WARLOCK_DESTRUCTION: multidot_max = 3; break;
       case WARLOCK_DEMONOLOGY:  multidot_max = 4; break;
       default: break;
@@ -5052,7 +5052,7 @@ void warlock_t::init_actions()
     {
 
       case WARLOCK_AFFLICTION:
-        add_action( "Soul Swap",             "cycle_targets=1,if=buff.soulburn.up" );
+        add_action( "Soul Swap",             "if=buff.soulburn.up" );
         if ( has_unerring_vision_of_leishen )
         {
           add_action( "Soulburn",              "line_cd=5,if=buff.perfect_aim.react" );
@@ -5064,6 +5064,15 @@ void warlock_t::init_actions()
           add_action( "Soulburn",              "if=(buff.dark_soul.up|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react>7)&(dot.agony.ticks_remain<=action.agony.add_ticks%2|dot.corruption.ticks_remain<=action.corruption.add_ticks%2|dot.unstable_affliction.ticks_remain<=action.unstable_affliction.add_ticks%2)&shard_react" );
           add_action( "Soulburn",              "if=(dot.unstable_affliction.ticks_remain<=1|dot.corruption.ticks_remain<=1|dot.agony.ticks_remain<=1)&shard_react&target.health.pct<=20" );
         }
+        
+        //SS Inhale
+        
+        add_action( "Soul Swap",               "if=active_enemies>1&buff.soul_swap.down&(buff.dark_soul.up|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react>7)");
+        
+        //SS Exhale
+        
+        add_action( "Soul Swap",               "cycle_targets=1,if=active_enemies>1&buff.soul_swap.up&(dot.agony.ticks_remain<=action.agony.add_ticks%2|dot.corruption.ticks_remain<=action.corruption.add_ticks%2|dot.unstable_affliction.ticks_remain<=action.unstable_affliction.add_ticks%2)&shard_react");
+        
         add_action( "Haunt",                 "if=!in_flight_to_target&remains<cast_time+travel_time+tick_time&shard_react&target.health.pct<=20" );
         if ( has_unerring_vision_of_leishen )
           add_action( "Soulburn",              "if=stat.spell_power>dot.unstable_affliction.spell_power&dot.unstable_affliction.ticks_remain<=action.unstable_affliction.add_ticks%2&shard_react&target.health.pct<=20&(dot.unstable_affliction.crit_pct<100&dot.corruption.crit_pct<100&dot.agony.crit_pct<100)" );
