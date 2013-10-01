@@ -30,7 +30,7 @@ actions.precombat+=/jade_serpent_potion
 
 actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
 actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
-actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react>6))
+actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react>6|target.health.pct<=10))
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/felguard:felstorm
 actions+=/wrathguard:wrathstorm
