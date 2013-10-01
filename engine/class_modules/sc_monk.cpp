@@ -3433,7 +3433,7 @@ void monk_t::apl_pre_mistweaver()
   {
     // Flask
     if ( level >= 85 )
-      precombat += "flask,type=spring_blossoms";
+      precombat += "flask,type=warm_sun";
     else if ( level > 80 )
       precombat += "flask,type=draconic_mind";
   }
@@ -3551,14 +3551,51 @@ void monk_t::apl_combat_mistweaver()
 {
   action_priority_list_t* def       = get_action_priority_list( "default"   );
 
+  std::string& aoe_list_str = get_action_priority_list( "aoe" ) -> action_list_str;
+  std::string& st_list_str = get_action_priority_list( "single_target" ) -> action_list_str;
+
   def -> add_action( "auto_attack" );
-  def -> add_action( this, "Mana Tea", "if=buff.mana_tea.react>=2&mana.pct<=90" );
-  def -> add_talent( this, "Chi Wave" );
-  def -> add_talent( this, "Chi Brew", "if=buff.tiger_power.up" );
-  def -> add_action( this, "Blackout Kick", "if=buff.muscle_memory.up&buff.tiger_power.up&buff.serpents_zeal.down" );
-  def -> add_action( this, "Tiger Palm", "if=buff.muscle_memory.up" );
-  def -> add_action( this, "Jab" );
-  def -> add_action( this, "Mana Tea" );
+  def -> add_talent( this, "Chi Brew", "if=chi=0" );
+  def -> add_action( this, "Mana Tea", "if=buff.mana_tea.react>=2&mana.pct<=25" );
+  
+  if ( sim -> allow_potions )
+  {
+    if ( level >= 85 )
+      action_list_str += "/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+  }
+  // USE ITEM (engineering etc)
+  for ( size_t i = 0, end = items.size(); i < end; ++i )
+  {
+    if ( items[ i ].parsed.use.active() )
+    {
+      action_list_str += "/use_item,name=";
+      action_list_str += items[ i ].name();
+    }
+  }
+  
+  def -> add_talent( this, "Invoke Xuen" );
+  def->action_list_str+="/run_action_list,name=aoe,if=active_enemies>=3";
+  def->action_list_str+="/run_action_list,name=single_target,if=active_enemies<3";
+
+  
+  st_list_str+="/crackling_jade_lightning,if=buff.bloodlust.up&buff.lucidity.up";
+  st_list_str+="/tiger_palm,if=buff.muscle_memory.up&buff.lucidity.up";
+  st_list_str+="/jab,if=buff.lucidity.up";
+  st_list_str+="/tiger_palm,if=buff.muscle_memory.up&!buff.tiger_power.up";
+  st_list_str+="/blackout_kick,if=buff.muscle_memory.up&buff.tiger_power.up&chi>1";
+  st_list_str+="/tiger_palm,if=buff.muscle_memory.up&buff.tiger_power.up";
+  st_list_str+="/chi_wave,if=talent.chi_wave.enabled";
+  st_list_str+="/zen_sphere,if=talent.zen_sphere.enabled";
+  st_list_str+="/jab";
+  
+  
+  aoe_list_str+="?zen_sphere,if=talent.zen_sphere.enabled";
+  aoe_list_str+="/chi_burst,if=talent.chi_burst.enabled";
+  aoe_list_str+="/tiger_palm,if=buff.muscle_memory.up&!buff.tiger_power.up";
+  aoe_list_str+="/blackout_kick,if=buff.muscle_memory.up&buff.tiger_power.up&chi>1";
+  aoe_list_str+="/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled";
+  aoe_list_str+="/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
+  aoe_list_str+="/jab,if=talent.rushing_jade_wind.enabled";
 }
 
 // monk_t::init_actions =====================================================
