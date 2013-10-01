@@ -5519,10 +5519,8 @@ struct barkskin_t : public druid_buff_t < buff_t >
         p() -> buff.savage_defense -> trigger( 1, buff_t::DEFAULT_VALUE(), 1, timespan_t::from_seconds( 3.0 ) );
 
       // Trigger 4pc equal to the consumption of 30 rage.
-      // For some reason the 2p provides a total of 55 rage of
-      // healing so let's account for the extra 5 here. (9/25/2013)
       if ( p() -> set_bonus.tier16_4pc_tank() )
-        p() -> active.ursocs_vigor -> trigger_hot( 30.0 + 5.0 );
+        p() -> active.ursocs_vigor -> trigger_hot( 30.0 );
 
       // Trigger a 20 rage Frenzied Regeneration
       frenzied_regeneration -> execute();
