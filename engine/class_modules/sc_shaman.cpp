@@ -3516,6 +3516,12 @@ struct elemental_blast_t : public shaman_spell_t
     overload_spell = new elemental_blast_overload_t( player );
     add_child( overload_spell );
 
+  }
+
+  void init()
+  {
+    shaman_spell_t::init();
+
     if ( p() -> specialization() == SHAMAN_ENHANCEMENT )
       eoe_proc_chance = 0.06;
   }
