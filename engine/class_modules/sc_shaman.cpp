@@ -568,6 +568,8 @@ public:
     {
       shaman_t* p = ab::p();
 
+      eoe_proc_chance = p -> eoe_proc_chance;
+
       std::string eoe_stat_name = ab::name_str;
       eoe_stat_name += "_eoe";
 
@@ -2464,7 +2466,7 @@ void shaman_spell_base_t<Base>::impact( action_state_t* state )
   shaman_t* p = ab::p();
 
   if ( may_proc_eoe && ab::result_is_hit( state -> result ) &&
-       ab::harmful && ! ab::proc && ab::base_dd_min > 0 &&
+       ab::harmful && ab::base_dd_min > 0 &&
        p -> talent.echo_of_the_elements -> ok() &&
        ab::rng().roll( eoe_proc_chance ) &&
        p -> cooldown.echo_of_the_elements -> up() )
