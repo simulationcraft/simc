@@ -129,13 +129,13 @@ struct dbc_initializer_t {
 
 // RAII-wrapper for http cache load / save
 struct cache_initializer_t {
-  cache_initializer_t( const char* fn ) :
+  cache_initializer_t( const std::string& fn ) :
     _file_name( fn )
-  { http::cache_load( _file_name ); }
+  { http::cache_load( _file_name.c_str() ); }
   ~cache_initializer_t()
-  { http::cache_save( _file_name ); }
+  { http::cache_save( _file_name.c_str() ); }
 private:
-  const char* _file_name;
+  std::string _file_name;
 };
 
 } // anonymous namespace ====================================================
