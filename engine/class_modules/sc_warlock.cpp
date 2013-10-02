@@ -5079,16 +5079,16 @@ void warlock_t::init_actions()
         {
           add_action( "Haunt",               "if=!in_flight_to_target&remains<cast_time+travel_time+tick_time&shard_react" );
           
+          add_action( "Agony",               "if=(tick_damage*n_ticks*(100+crit_pct_current)>4*dot.agony.tick_dmg*dot.agony.ticks_remain*(100+dot.agony.crit_pct))&miss_react" );
           
           if ( has_unerring_vision_of_leishen )
           {
-            add_action( "Agony",               "if=((stat.spell_power>spell_power&ticks_remain<add_ticks%2)|(stat.spell_power>spell_power*1.5)|remains<gcd)&miss_react&dot.agony.crit_pct<100");
+            
             add_action( "Corruption",          "if=((stat.spell_power>spell_power&ticks_remain<add_ticks%2)|(stat.spell_power>spell_power*1.5)|remains<gcd)&miss_react&dot.corruption.crit_pct<100" );
             add_action( "Unstable Affliction", "if=((stat.spell_power>spell_power&ticks_remain<add_ticks%2)|(stat.spell_power>spell_power*1.5)|remains<cast_time+gcd)&miss_react&dot.unstable_affliction.crit_pct<100" );
           }
           else
           {
-            add_action( "Agony",               "if=((stat.spell_power>spell_power&ticks_remain<add_ticks%2)|(stat.spell_power>spell_power*1.5)|remains<gcd)&miss_react");
             add_action( "Corruption",          "if=((stat.spell_power>spell_power&ticks_remain<add_ticks%2)|(stat.spell_power>spell_power*1.5)|remains<gcd)&miss_react" );
             add_action( "Unstable Affliction", "if=((stat.spell_power>spell_power&ticks_remain<add_ticks%2)|(stat.spell_power>spell_power*1.5)|remains<cast_time+gcd)&miss_react" );
             
