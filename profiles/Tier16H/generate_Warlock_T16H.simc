@@ -25,7 +25,7 @@ finger2=signet_of_the_dinomancers,id=105606,stats=1410int_2236sta_944haste_953ma
 finger1=extinguished_ember_of_galakras,id=105498,stats=1490int_2236sta_994hit_994haste,reforge=hit_mastery
 neck=untainted_guardians_chain,id=105465,stats=1490int_2236sta_944hit_1023mastery,reforge=hit_haste
 trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
-trinket2=kardris_toxic_totem,id=105540,upgrade=2
+trinket2=black_blood_of_yshaarj,id=105648,upgrade=2,reforge=haste_mastery
 save=Warlock_Affliction_T16H.simc
 
 
@@ -51,7 +51,7 @@ finger2=signet_of_the_dinomancers,id=105606,stats=1410int_2236sta_944haste_953ma
 finger1=extinguished_ember_of_galakras,id=105498,stats=1490int_2236sta_994hit_994haste,reforge=hit_mastery
 neck=ashflare_pendant,id=105539,stats=1490int_2236sta_1133hit_755haste,reforge=hit_mastery
 trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
-trinket2=kardris_toxic_totem,id=105540,upgrade=2
+trinket2=black_blood_of_yshaarj,id=105648,upgrade=2,reforge=haste_mastery
 save=Warlock_Demonology_T16H.simc
 
 

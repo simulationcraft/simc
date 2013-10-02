@@ -77,7 +77,7 @@ feet=boneinlaid_sandals,id=105493,stats=1996armor_1907int_2981sta_1297haste_1260
 finger1=extinguished_ember_of_galakras,id=105498,stats=1490int_2236sta_994hit_994haste,reforge=hit_mastery
 finger2=signet_of_the_dinomancers,id=105606,stats=1410int_2236sta_944haste_953mastery,gems=160exp_160haste_60haste
 trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
-trinket2=kardris_toxic_totem,id=105540,upgrade=2
+trinket2=black_blood_of_yshaarj,id=105648,upgrade=2,reforge=haste_mastery
 main_hand=arcweaver_spell_sword,id=105550,stats=1066int_1720sta_769crit_649haste_15321sp,weapon=sword_2.2speed_5581min_10366max,gems=160exp_160haste_60int,enchant=jade_spirit,reforge=crit_mastery
 off_hand=revelations_of_yshaarj,id=105650,stats=1410int_2236sta_929haste_969mastery,gems=160exp_160haste_60int,enchant=165int
 
@@ -91,8 +91,8 @@ off_hand=revelations_of_yshaarj,id=105650,stats=1410int_2236sta_929haste_969mast
 # gear_expertise_rating=2090
 # gear_hit_rating=2585
 # gear_crit_rating=4138
-# gear_haste_rating=18188
-# gear_mastery_rating=12838
+# gear_haste_rating=19700
+# gear_mastery_rating=13845
 # gear_armor=18110
 # meta_gem=sinister_primal
 # tier16_2pc_caster=1
