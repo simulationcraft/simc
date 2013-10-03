@@ -16,7 +16,7 @@ static std::string RTV( unsigned tf, unsigned lfr, unsigned flex, unsigned norma
   assert( ( elite && heroic && elite <= heroic ) || ( ! elite && heroic ) || ( elite && ! heroic ) || ( ! elite && ! heroic ) );
   assert( ( heroic && heroic_elite && heroic <= heroic_elite ) || ( ! heroic && heroic_elite ) || ( heroic && ! heroic_elite ) || ( ! heroic && ! heroic_elite ) );
 
-  std::ostringstream s;
+  std::stringstream s;
   if ( item_database::lfr( tf ) )
     s << lfr;
   else if ( item_database::flex( tf ) )
