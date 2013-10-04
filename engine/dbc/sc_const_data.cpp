@@ -437,6 +437,14 @@ void dbc::apply_hotfixes()
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.54 * 1.15;
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 1.54 * 1.15;
 
+  // Agony was nerfed by 15%. Hotfix from 2013-10-02
+  s = spell_data_t::find( 980, false );
+  assert( s -> effectN( 1 ).m_average() != 0.03 * 0.85 && "Out of date hotfix for Agony" );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.03 * 0.85;
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.03 * 0.85;
+
+  
+  
   // Warrior
   // Hotfixes from 2013-09-23
   // Raging blow -- Buffed from 190% weapon damage to 228% weapon damage.
