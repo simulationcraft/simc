@@ -15,7 +15,7 @@ spell_data_not_found_t spell_data_not_found_t::singleton;
 
 // spell_data_t::override ===================================================
 
-bool spell_data_t::override( const std::string& field, double value )
+bool spell_data_t::override_field( const std::string& field, double value )
 {
   if ( util::str_compare_ci( field, "prj_speed" ) )
     _prj_speed = value;
@@ -66,7 +66,7 @@ bool spell_data_t::override( const std::string& field, double value )
 
 spelleffect_data_nil_t spelleffect_data_nil_t::singleton;
 
-bool spelleffect_data_t::override( const std::string& field, double value )
+bool spelleffect_data_t::override_field( const std::string& field, double value )
 {
   if ( util::str_compare_ci( field, "average" ) )
     _m_avg = value;

@@ -252,7 +252,7 @@ public:
   double min( const player_t* p, unsigned level = 0 ) const;
   double max( const player_t* p, unsigned level = 0 ) const;
 
-  bool override( const std::string& field, double value );
+  bool override_field( const std::string& field, double value );
 
   spell_data_t* spell() const;
 
@@ -570,7 +570,7 @@ public:
   unsigned attribute( unsigned idx ) const
   { assert( idx < sizeof_array( _attributes ) ); return _attributes[ idx ]; }
 
-  bool override( const std::string& field, double value );
+  bool override_field( const std::string& field, double value );
 
   std::string to_str() const
   {

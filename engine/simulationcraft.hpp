@@ -65,6 +65,11 @@ public:
 #define nullptr ( std::nullptr_t() )
 #endif
 
+#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || ! __GXX_EXPERIMENTAL_CXX0X__ || SC_GCC < 40700 ) && ( ! defined( SC_VS ) )
+#define override
+#define final
+#endif
+
 #if defined(SC_GCC) && SC_GCC < 40500
 #undef __STRICT_ANSI__ // problem with gcc4.4 + -std=c++0x and including <cstdio>. Not sure if it affects 4.4.1 as well. http://stackoverflow.com/questions/3445312/swprintf-and-vswprintf-not-declared
 #endif
@@ -1908,7 +1913,7 @@ public:
   virtual void start    ( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
   virtual void refresh  ( int stacks = 0, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
   virtual void bump     ( int stacks = 1, double value = DEFAULT_VALUE() );
-  virtual void override ( int stacks = 1, double value = DEFAULT_VALUE() );
+  virtual void override_buff ( int stacks = 1, double value = DEFAULT_VALUE() );
   virtual bool may_react( int stacks = 1 );
   virtual int stack_react();
   void expire( timespan_t delay = timespan_t::zero() );

@@ -585,7 +585,7 @@ static bool parse_override_spell_data( sim_t*             sim,
     if ( s == spell_data_t::nil() )
       return false;
 
-    return s -> override( splits[ 2 ], v );
+    return s -> override_field( splits[ 2 ], v );
   }
   else if ( util::str_compare_ci( splits[ 0 ], "effect" ) )
   {
@@ -593,7 +593,7 @@ static bool parse_override_spell_data( sim_t*             sim,
     if ( s == spelleffect_data_t::nil() )
       return false;
 
-    return s -> override( splits[ 2 ], v );
+    return s -> override_field( splits[ 2 ], v );
   }
   else
     return false;
@@ -676,14 +676,14 @@ static bool parse_item_sources( sim_t*             sim,
 struct proxy_cast_check_t : public event_t
 {
   int uses;
-  const int& override;
+  const int& _override;
   timespan_t start_time;
   timespan_t cooldown;
   timespan_t duration;
 
   proxy_cast_check_t( sim_t& s, int u, timespan_t st, timespan_t i, timespan_t cd, timespan_t d, const int& o ) :
     event_t( s, "proxy_cast_check" ),
-    uses( u ), override( o ), start_time( st ), cooldown( cd ), duration( d )
+    uses( u ), _override( o ), start_time( st ), cooldown( cd ), duration( d )
   {
     sim().add_event( this, i );
   }
@@ -696,19 +696,19 @@ struct proxy_cast_check_t : public event_t
   {
     timespan_t interval = timespan_t::from_seconds( 0.25 );
 
-    if ( uses == override && start_time > timespan_t::zero() )
+    if ( uses == _override && start_time > timespan_t::zero() )
       interval = cooldown - ( sim().current_time - start_time );
 
     if ( proxy_check() )
     {
       // Cooldown over, reset uses
-      if ( uses == override && start_time > timespan_t::zero() && ( sim().current_time - start_time ) >= cooldown )
+      if ( uses == _override && start_time > timespan_t::zero() && ( sim().current_time - start_time ) >= cooldown )
       {
         start_time = timespan_t::zero();
         uses = 0;
       }
 
-      if ( uses < override )
+      if ( uses < _override )
       {
         proxy_execute();
 
@@ -721,7 +721,7 @@ struct proxy_cast_check_t : public event_t
 
         if ( sim().debug )
           sim().out_debug.printf( "Proxy-Execute uses=%d total=%d start_time=%.3f next_check=%.3f",
-                      uses, override, start_time.total_seconds(),
+                      uses, _override, start_time.total_seconds(),
                       ( sim().current_time + interval ).total_seconds() );
       }
     }
@@ -986,29 +986,29 @@ void sim_t::combat_begin()
     t -> combat_begin();
   }
 
-  if ( overrides.attack_speed            ) auras.attack_speed            -> override();
-  if ( overrides.attack_power_multiplier ) auras.attack_power_multiplier -> override();
-  if ( overrides.critical_strike         ) auras.critical_strike         -> override();
+  if ( overrides.attack_speed            ) auras.attack_speed            -> override_buff();
+  if ( overrides.attack_power_multiplier ) auras.attack_power_multiplier -> override_buff();
+  if ( overrides.critical_strike         ) auras.critical_strike         -> override_buff();
 
   if ( overrides.mastery                 )
-    auras.mastery -> override( 1, dbc.effect_average( dbc.spell( 116956 ) -> effectN( 1 ).id(), max_player_level ) );
+    auras.mastery -> override_buff( 1, dbc.effect_average( dbc.spell( 116956 ) -> effectN( 1 ).id(), max_player_level ) );
 
-  if ( overrides.spell_haste             ) auras.spell_haste             -> override();
-  if ( overrides.spell_power_multiplier  ) auras.spell_power_multiplier  -> override();
-  if ( overrides.stamina                 ) auras.stamina                 -> override();
-  if ( overrides.str_agi_int             ) auras.str_agi_int             -> override();
+  if ( overrides.spell_haste             ) auras.spell_haste             -> override_buff();
+  if ( overrides.spell_power_multiplier  ) auras.spell_power_multiplier  -> override_buff();
+  if ( overrides.stamina                 ) auras.stamina                 -> override_buff();
+  if ( overrides.str_agi_int             ) auras.str_agi_int             -> override_buff();
 
   for ( size_t i = 0; i < target_list.size(); ++i )
   {
     player_t* t = target_list[ i ];
-    if ( overrides.slowed_casting         ) t -> debuffs.slowed_casting         -> override();
-    if ( overrides.magic_vulnerability    ) t -> debuffs.magic_vulnerability    -> override();
-    if ( overrides.ranged_vulnerability   ) t -> debuffs.ranged_vulnerability   -> override();
-    if ( overrides.mortal_wounds          ) t -> debuffs.mortal_wounds          -> override();
-    if ( overrides.physical_vulnerability ) t -> debuffs.physical_vulnerability -> override();
-    if ( overrides.weakened_armor         ) t -> debuffs.weakened_armor         -> override( 3 );
-    if ( overrides.weakened_blows         ) t -> debuffs.weakened_blows         -> override();
-    if ( overrides.bleeding               ) t -> debuffs.bleeding               -> override( 1, 1.0 );
+    if ( overrides.slowed_casting         ) t -> debuffs.slowed_casting         -> override_buff();
+    if ( overrides.magic_vulnerability    ) t -> debuffs.magic_vulnerability    -> override_buff();
+    if ( overrides.ranged_vulnerability   ) t -> debuffs.ranged_vulnerability   -> override_buff();
+    if ( overrides.mortal_wounds          ) t -> debuffs.mortal_wounds          -> override_buff();
+    if ( overrides.physical_vulnerability ) t -> debuffs.physical_vulnerability -> override_buff();
+    if ( overrides.weakened_armor         ) t -> debuffs.weakened_armor         -> override_buff( 3 );
+    if ( overrides.weakened_blows         ) t -> debuffs.weakened_blows         -> override_buff();
+    if ( overrides.bleeding               ) t -> debuffs.bleeding               -> override_buff( 1, 1.0 );
   }
 
   for ( player_e i = PLAYER_NONE; i < PLAYER_MAX; ++i )
@@ -1492,8 +1492,8 @@ bool progress_bar_t::update( bool finished )
   if ( sim.current_iteration < ( sim.iterations - 1 ) )
     if ( sim.current_iteration % interval ) return false;
 
-  int current, final;
-  double pct = sim.progress( &current, &final );
+  int current, _final;
+  double pct = sim.progress( &current, &_final );
   if ( pct <= 0 ) return false;
   if ( finished ) pct = 1.0;
 
@@ -1515,7 +1515,7 @@ bool progress_bar_t::update( bool finished )
   remaining_sec -= remaining_min * 60;
 
   char buffer[80];
-  snprintf( buffer, sizeof( buffer ), " %d/%d", finished ? final : current, final );
+  snprintf( buffer, sizeof( buffer ), " %d/%d", finished ? _final : current, _final );
   status += buffer;
 
   if ( remaining_min > 0 )
@@ -2198,7 +2198,7 @@ void sim_t::cancel()
 // sim_t::progress ==========================================================
 
 double sim_t::progress( int* current,
-                        int* final )
+                        int* _final )
 {
   int total_iterations = iterations;
   for ( size_t i = 0; i < children.size(); i++ )
@@ -2209,7 +2209,7 @@ double sim_t::progress( int* current,
     total_current_iterations += children[ i ] -> current_iteration + 1;
 
   if ( current ) *current = total_current_iterations;
-  if ( final   ) *final   = total_iterations;
+  if ( _final   ) *_final   = total_iterations;
 
   return total_current_iterations / ( double ) total_iterations;
 }

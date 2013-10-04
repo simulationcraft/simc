@@ -721,7 +721,7 @@ void buff_t::bump( int stacks, double value )
 
 // buff_t::override =========================================================
 
-void buff_t::override( int stacks, double value )
+void buff_t::override_buff( int stacks, double value )
 {
   if ( _max_stack == 0 ) return;
 #ifndef NDEBUG
