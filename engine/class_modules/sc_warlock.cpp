@@ -5126,13 +5126,9 @@ void warlock_t::init_actions()
           add_action( "Shadowburn",            "if=ember_react&(burning_ember>3.5|mana.pct<=20|buff.dark_soul.up|target.time_to_die<20|buff.havoc.stack>=1|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.react>6&trinket.stacking_proc.intellect.remains>cast_time))" );
         if ( has_unerring_vision_of_leishen )
           add_action( "Chaos Bolt",            "if=ember_react&target.health.pct>20&buff.perfect_aim.react&buff.perfect_aim.remains>cast_time" );
-        if ( spec.pandemic -> ok() && has_unerring_vision_of_leishen )
-          add_action( "Immolate",              "cycle_targets=1,if=target.time_to_die>=5&miss_react&buff.perfect_aim.remains>cast_time&buff.perfect_aim.react&crit_pct<100" );
         if ( spec.pandemic -> ok() )
         {
-          add_action( "Immolate",              "cycle_targets=1,if=buff.dark_soul.react&dot.immolate.crit_pct<(stat.crit+30)&ticks_remain<add_ticks%2&miss_react" );
-          add_action( "Immolate",              "cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&miss_react&dot.immolate.crit_pct<(stat.crit+30)" );
-          add_action( "Immolate",              "cycle_targets=1,if=ticks_remain<cast_time&target.time_to_die>=5&miss_react" );
+          add_action( "Immolate",              "cycle_targets=1,if=n_ticks*crit_pct_current>3*dot.immolate.ticks_remain*dot.immolate.crit_pct&miss_react" );
         }
         else
           add_action( "Immolate",            "cycle_targets=1,if=(!ticking|remains<(action.incinerate.cast_time+cast_time))&target.time_to_die>=5&miss_react" );
