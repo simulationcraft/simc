@@ -2713,6 +2713,9 @@ struct shadow_blades_t : public buff_t
       buff_duration += timespan_t::from_seconds( p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).base_value() / 2 );
     else
       buff_duration += timespan_t::from_seconds( p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).base_value() );
+
+    // Cooldown of the Shadow blades buff is handled by the action
+    cooldown -> duration = timespan_t::zero();
   }
 
   void change_auto_attack( attack_t*& hand, attack_t* a )
@@ -3602,6 +3605,7 @@ void rogue_t::create_buffs()
                              .chance( set_bonus.tier16_4pc_melee() );
   buffs.vanish             = buff_creator_t( this, "vanish", find_spell( 11327 ) )
                              .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                             .cd( timespan_t::zero() )
                              .duration( find_spell( 11327 ) -> duration() + glyph.vanish -> effectN( 1 ).time_value() );
 
   // Envenom is controlled by the non-harmful dot applied to player when envenom is used
