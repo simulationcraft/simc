@@ -2265,7 +2265,11 @@ void sim_t::errorf( const char* format, ... )
   assert( rval < 0 || ( static_cast<size_t>( rval ) < sizeof( buffer ) ) );
   (void) rval;
 
-  out_error << buffer << "\n";
+  std::string s( buffer );
+  (void) buffer;
 
-  if ( thread_index == 0 ) error_list.push_back( buffer );
+  util::replace_all( s, "\n", "" );
+  out_error.raw() << (s + "\n");
+
+  if ( thread_index == 0 ) error_list.push_back( s );
 }
