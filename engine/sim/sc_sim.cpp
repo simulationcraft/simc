@@ -2255,6 +2255,9 @@ double sim_t::progress( std::string& phase )
 
 void sim_t::errorf( const char* format, ... )
 {
+  if ( thread_index != 0 )
+    return;
+
   char buffer[ 1024 ];
 
   va_list fmtargs;
@@ -2269,7 +2272,7 @@ void sim_t::errorf( const char* format, ... )
   (void) buffer;
 
   util::replace_all( s, "\n", "" );
-  out_error.raw() << (s + "\n");
 
-  if ( thread_index == 0 ) error_list.push_back( s );
+  out_error.raw() << s << "\n";
+  error_list.push_back( s );
 }
