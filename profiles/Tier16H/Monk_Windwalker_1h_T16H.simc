@@ -1,0 +1,90 @@
+#!./simc 
+
+monk="Monk_Windwalker_1h_T16H"
+level=90
+race=troll
+role=dps
+position=back
+professions=blacksmithing=600/engineering=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#fb!001221
+spec=windwalker
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/stance,choose=fierce_tiger
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+
+# Executed every time the actor is available.
+
+actions=auto_attack
+actions+=/chi_sphere,if=talent.power_strikes.enabled&buff.chi_sphere.react&chi<4
+actions+=/virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
+actions+=/use_item,name=gloves_of_the_golden_protector
+actions+=/berserking
+actions+=/chi_brew,if=talent.chi_brew.enabled&chi=0
+actions+=/tiger_palm,if=buff.tiger_power.remains<=3
+actions+=/tigereye_brew,if=buff.tigereye_brew_use.down&cooldown.rising_sun_kick.remains=0&chi>=2&target.debuff.rising_sun_kick.remains&buff.tiger_power.remains
+actions+=/energizing_brew,if=energy.time_to_max>5
+actions+=/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains
+actions+=/tiger_palm,if=buff.tiger_power.down&target.debuff.rising_sun_kick.remains>1&energy.time_to_max>1
+actions+=/invoke_xuen,if=talent.invoke_xuen.enabled
+actions+=/run_action_list,name=aoe,if=active_enemies>=5
+actions+=/run_action_list,name=single_target,if=active_enemies<5
+
+actions.aoe=rushing_jade_wind,if=talent.rushing_jade_wind.enabled
+actions.aoe+=/rising_sun_kick,if=chi=4
+actions.aoe+=/spinning_crane_kick
+
+actions.single_target=rising_sun_kick
+actions.single_target+=/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>4&buff.tiger_power.remains>4
+actions.single_target+=/chi_wave,if=talent.chi_wave.enabled&energy.time_to_max>2
+actions.single_target+=/blackout_kick,if=buff.combo_breaker_bok.react
+actions.single_target+=/tiger_palm,if=(buff.combo_breaker_tp.react&energy.time_to_max>=2)|(buff.combo_breaker_tp.remains<=2&buff.combo_breaker_tp.react)
+actions.single_target+=/jab,if=talent.ascension.enabled&chi<=3
+actions.single_target+=/jab,if=!talent.ascension.enabled&chi<=2
+actions.single_target+=/blackout_kick,if=(energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40
+
+head=headpiece_of_seven_sacred_seals,id=99393,upgrade=2,gems=capacitive_primal_80agi_160crit_180agi,reforge=mastery_haste
+neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=2,reforge=haste_exp
+shoulders=spaulders_of_seven_sacred_seals,id=99395,upgrade=2,gems=80agi_160crit_80agi_160crit_120agi,enchant=200agi_100crit,reforge=haste_crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=80agi_160crit_60agi,enchant=180crit,reforge=mastery_exp
+chest=tunic_of_seven_sacred_seals,id=99396,upgrade=2,gems=80agi_160crit_80agi_160crit_80agi_160crit_180agi,enchant=80all,reforge=mastery_exp
+wrists=mantid_carapace_augments,id=105583,upgrade=2,gems=320crit,enchant=180agi,reforge=hit_crit
+hands=gloves_of_the_golden_protector,id=105453,upgrade=2,gems=80agi_160crit_160crit_160hit_320crit_120agi,enchant=170haste,addon=synapse_springs_2,reforge=hit_haste
+waist=cord_of_black_dreams,id=105635,upgrade=2,gems=80agi_160crit_320crit_320crit_120agi
+legs=leggings_of_seven_sacred_seals,id=99394,upgrade=2,gems=320crit_320crit_120agi,enchant=285agi_165crit
+feet=pandaren_roofsprinters,id=105582,upgrade=2,gems=160crit_160hit_60mastery,enchant=140agi,reforge=mastery_crit
+finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=80agi_160crit_60crit,reforge=mastery_crit
+finger2=ring_of_restless_energy,id=105558,upgrade=2,gems=80agi_160crit_60crit,reforge=mastery_hit
+trinket1=assurance_of_consequence,id=105472,upgrade=2
+trinket2=haromms_talisman,id=105527,upgrade=2
+main_hand=korvens_crimson_crescent,id=105625,upgrade=2,gems=80agi_160crit_60agi,enchant=dancing_steel,reforge=mastery_exp
+off_hand=softfoots_last_resort,id=105430,upgrade=2,gems=80agi_160crit_60agi,enchant=dancing_steel
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=26963
+# gear_stamina=38514
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2553
+# gear_hit_rating=2554
+# gear_crit_rating=19028
+# gear_haste_rating=9365
+# gear_mastery_rating=4754
+# gear_armor=22604
+# meta_gem=capacitive_primal
+# tier16_2pc_melee=1
+# tier16_4pc_melee=1
+# hands=gloves_of_the_golden_protector,heroic=1,elite=1,addon=synapse_springs_2
+# main_hand=korvens_crimson_crescent,heroic=1,elite=1,weapon=axe_2.60speed_12244min_22741max,enchant=dancing_steel
+# off_hand=softfoots_last_resort,heroic=1,elite=1,weapon=fist_2.60speed_12244min_22741max,enchant=dancing_steel

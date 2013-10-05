@@ -4,5 +4,55 @@
 talent_format=armory
 
 # Windwalker 1h
+monk="Monk_Windwalker_1h_T16H"
+level=90
+race=troll
+spec=windwalker
+role=hybrid
+position=back
+professions=blacksmithing=600/engineering=600
+talents=112332
+legs=leggings_of_seven_sacred_seals,id=99394,gems=320crit_320crit_120agi,enchant=285agi_165crit,upgrade=2
+shoulders=spaulders_of_seven_sacred_seals,id=99395,gems=80agi_160crit_80agi_160crit_120agi,enchant=200agi_100crit,reforge=haste_crit,upgrade=2
+wrists=mantid_carapace_augments,id=105583,gems=320crit,enchant=180agi,reforge=hit_crit,upgrade=2
+feet=pandaren_roofsprinters,id=105582,gems=160crit_160hit_60mastery,enchant=140agi,reforge=mastery_crit,upgrade=2
+chest=tunic_of_seven_sacred_seals,id=99396,gems=80agi_160crit_80agi_160crit_80agi_160crit_180agi,enchant=80all,reforge=mastery_exp,upgrade=2
+main_hand=korvens_crimson_crescent,id=105625,gems=80agi_160crit_60agi,enchant=dancing_steel,reforge=mastery_exp,upgrade=2
+off_hand=softfoots_last_resort,id=105430,gems=80agi_160crit_60agi,enchant=dancing_steel,upgrade=2
+waist=cord_of_black_dreams,id=105635,gems=80agi_160crit_320crit_320crit_120agi,upgrade=2
+hands=gloves_of_the_golden_protector,id=105453,gems=80agi_160crit_160crit_160hit_320crit_120agi,enchant=170haste,reforge=hit_haste,upgrade=2,addon=synapse_springs_2
+head=headpiece_of_seven_sacred_seals,id=99393,gems=capacitive_primal_80agi_160crit_180agi,reforge=mastery_haste,upgrade=2
+back=fenyu_fury_of_xuen,id=102248,gems=80agi_160crit_60agi,enchant=180crit,reforge=mastery_exp,upgrade=2
+finger1=kilruks_band_of_ascendancy,id=105624,gems=80agi_160crit_60crit,reforge=mastery_crit,upgrade=2
+finger2=ring_of_restless_energy,id=105558,gems=80agi_160crit_60crit,reforge=mastery_hit,upgrade=2
+neck=gleaming_eye_of_the_devilsaur,id=105602,reforge=haste_exp,upgrade=2
+trinket1=assurance_of_consequence,id=105472,upgrade=2
+trinket2=haromms_talisman,id=105527,upgrade=2
+save=Monk_Windwalker_1h_T16H.simc
 
 # Windwalker 2h
+monk="Monk_Windwalker_2h_T15H"
+level=90
+race=troll
+spec=windwalker
+role=hybrid
+position=back
+professions=blacksmithing=600/engineering=600
+talents=112332
+
+legs=leggings_of_seven_sacred_seals,id=99394,gems=320crit_320crit_120agi,enchant=285agi_165crit,upgrade=2
+shoulders=spaulders_of_seven_sacred_seals,id=99395,gems=80agi_160crit_80agi_160crit_120agi,enchant=200agi_100crit,reforge=exp_crit,upgrade=2
+wrists=mantid_carapace_augments,id=105583,gems=320crit,enchant=180agi,reforge=hit_crit,upgrade=2
+feet=unrepentant_heels,id=105484,gems=320crit_60mastery,enchant=140agi,reforge=exp_haste,upgrade=2
+chest=tunic_of_seven_sacred_seals,id=99396,gems=80agi_160crit_80agi_160crit_80agi_160crit_180agi,enchant=80all,upgrade=2
+main_hand=trident_of_corrupted_waters,id=105408,gems=160crit_160hit_60agi,enchant=dancing_steel,reforge=exp_haste,upgrade=2
+waist=cord_of_black_dreams,id=105635,gems=80agi_160crit_320crit_320crit_120agi,upgrade=2
+hands=gloves_of_the_golden_protector,id=105453,gems=80agi_160crit_160crit_160hit_320crit_120agi,enchant=170str,reforge=hit_haste,upgrade=2,addon=synapse_springs_2
+head=headpiece_of_seven_sacred_seals,id=99393,gems=capacitive_primal_80agi_160crit_180agi,reforge=mastery_haste,upgrade=2
+back=fenyu_fury_of_xuen,id=102248,gems=80agi_160crit_60agi,enchant=180crit,reforge=mastery_exp,upgrade=2
+finger2=ring_of_restless_energy,id=105558,gems=80agi_160crit_60crit,reforge=mastery_hit,upgrade=2
+finger1=reality_ripper_ring,id=105451,gems=320crit,reforge=hit_haste,upgrade=2
+neck=gleaming_eye_of_the_devilsaur,id=105602,upgrade=2
+trinket1=assurance_of_consequence,id=105472,upgrade=2
+trinket2=haromms_talisman,id=105527,upgrade=2
+save=Monk_Windwalker_2h_T16H.simc

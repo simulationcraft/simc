@@ -33,16 +33,14 @@ actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
 actions+=/use_item,name=flashfrozen_rosin_globule
 actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
 actions+=/blood_fury
-actions+=/dark_soul
+actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react>6|target.health.pct<=10))
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/run_action_list,name=aoe,if=active_enemies>3
 actions+=/summon_doomguard
 actions+=/rain_of_fire,if=!ticking&!in_flight&active_enemies>1
 actions+=/havoc,target=2,if=active_enemies>1
-actions+=/shadowburn,if=ember_react&(burning_ember>3.5|mana.pct<=20|buff.dark_soul.up|target.time_to_die<20|buff.havoc.stack>=1|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.react>7&trinket.stacking_proc.intellect.remains>cast_time))
-actions+=/immolate,cycle_targets=1,if=buff.dark_soul.react&dot.immolate.crit_pct<(stat.crit+30)&ticks_remain<add_ticks%2&miss_react
-actions+=/immolate,cycle_targets=1,if=stat.spell_power>spell_power&ticks_remain<add_ticks%2&miss_react&dot.immolate.crit_pct<(stat.crit+30)
-actions+=/immolate,cycle_targets=1,if=ticks_remain<cast_time&target.time_to_die>=5&miss_react
+actions+=/shadowburn,if=ember_react&(burning_ember>3.5|mana.pct<=20|buff.dark_soul.up|target.time_to_die<20|buff.havoc.stack>=1|trinket.proc.intellect.react|(trinket.stacking_proc.intellect.react>6&trinket.stacking_proc.intellect.remains>cast_time))
+actions+=/immolate,cycle_targets=1,if=n_ticks*crit_pct_current>3*dot.immolate.ticks_remain*dot.immolate.crit_pct&miss_react
 actions+=/conflagrate,if=charges=2&buff.havoc.stack=0
 actions+=/rain_of_fire,if=!ticking&!in_flight,moving=1
 actions+=/chaos_bolt,if=ember_react&target.health.pct>20&(buff.backdraft.stack<3|level<86|(active_enemies>1&action.incinerate.cast_time<1))&(burning_ember>(4.5-active_enemies)|buff.dark_soul.remains>cast_time|buff.skull_banner.remains>cast_time|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|(trinket.stacking_proc.intellect.react>6&trinket.stacking_proc.intellect.remains>cast_time))
@@ -53,13 +51,10 @@ actions+=/fel_flame,moving=1
 
 actions.aoe=summon_infernal
 actions.aoe+=/rain_of_fire,if=!ticking&!in_flight
-actions.aoe+=/havoc,target=2,if=burning_ember>=3.5&ember_react&target.health.pct<=20
-actions.aoe+=/shadowburn,if=burning_ember>=3.5&ember_react&buff.havoc.stack>=1
 actions.aoe+=/fire_and_brimstone,if=ember_react&buff.fire_and_brimstone.down
 actions.aoe+=/immolate,if=buff.fire_and_brimstone.up&!ticking
 actions.aoe+=/conflagrate,if=buff.fire_and_brimstone.up
 actions.aoe+=/incinerate,if=buff.fire_and_brimstone.up
-actions.aoe+=/immolate,cycle_targets=1,if=!ticking
 
 head=whitemanes_embroidered_chapeau,ilevel=463,type=cloth,heroic=1,quality=rare,stats=1655armor_899int_1349sta_497crit_450haste,gems=burning_primal_80int_160hit,reforge=crit_hit
 neck=pendant_of_precise_timing,ilevel=463,heroic=1,quality=rare,stats=501int_752sta_358hit_293crit,reforge=crit_haste

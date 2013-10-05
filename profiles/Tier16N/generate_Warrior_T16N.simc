@@ -57,7 +57,7 @@ off_hand=kilruks_furious_blade,id=103972,gems=320crit,enchant=dancing_steel,refo
 save=Warrior_Fury_1h_T16N.simc
 
 # Warrior Fury 2h
-warrior="Warrior_Fury_2H_T16N"
+warrior="Warrior_Fury_2h_T16N"
 level=90
 race=night_elf
 spec=fury

@@ -1,6 +1,6 @@
 #!./simc 
 
-warrior="Warrior_Fury_2H_T16N"
+warrior="Warrior_Fury_2h_T16N"
 level=90
 race=night_elf
 role=attack
