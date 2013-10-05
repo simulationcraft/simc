@@ -4576,7 +4576,7 @@ public:
   virtual ~priest_buff_t() {}
 
   priest_buff_t( priest_td_t& p, const buff_creator_basics_t& params ) :
-    Base( params ), priest( *p.source )
+    Base( params ), priest( p.priest )
   { }
 
   priest_buff_t( priest_t& p, const buff_creator_basics_t& params ) :
