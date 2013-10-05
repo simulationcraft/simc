@@ -1041,9 +1041,13 @@ struct bloodthirst_t : public warrior_attack_t
     base_multiplier += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
   }
 
-  virtual double composite_crit()
+  double composite_crit_multiplier()
   {
-    return warrior_attack_t::composite_crit() * 2.0;
+    double c = warrior_attack_t::composite_crit_multiplier();
+
+    c *= 2;
+
+    return c;
   }
 
   virtual void impact( action_state_t* s )
