@@ -469,6 +469,10 @@ void stormlash_callback_t::trigger( action_t* a, void* call_data )
   if ( cd -> down() )
     return;
 
+  // 2013/10/4: Hotfixed to 20% chance, 100% damage increase
+  if ( ! listener -> rng().roll( 0.2 ) )
+    return;
+
   action_state_t* s = reinterpret_cast< action_state_t* >( call_data );
 
   if ( s -> result_amount == 0 )
@@ -517,6 +521,8 @@ void stormlash_callback_t::trigger( action_t* a, void* call_data )
 
   amount = base_power * base_multiplier * cast_time_multiplier;
   amount *= ( s -> result_type == DMG_DIRECT ) ? a -> stormlash_da_multiplier : a -> stormlash_ta_multiplier;
+  // 2013/10/4: Hotfixed to 20% chance, 100% damage increase
+  amount *= 2.0;
 
   if ( a -> sim -> debug )
   {
