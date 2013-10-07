@@ -1,6 +1,6 @@
 #!./simc
 
-druid="Druid_Feral_T16N"
+druid="Druid_Feral_T16N_Adv_Rotation"
 level=90
 race=tauren
 role=attack
