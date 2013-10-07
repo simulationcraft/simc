@@ -35,7 +35,8 @@ actions.precombat+=/virmens_bite_potion
 # By default the simulation will use the "Basic" action list, if you would like to instead use the "Advanced" action list do so here.
 actions=swap_action_list,name=basic
 
-actions.basic=auto_attack
+actions.basic=swap_action_list,name=aoe,if=active_enemies>=4
+actions.basic+=/auto_attack
 actions.basic+=/skull_bash_cat
 # Keep Rip from falling off during execute range.
 actions.basic+=/ferocious_bite,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25
@@ -71,7 +72,8 @@ actions.basic+=/run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.
 actions.basic+=/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3
 actions.basic+=/run_action_list,name=filler,if=energy.time_to_max<=1.0
 
-actions.advanced=auto_attack
+actions.advanced=swap_action_list,name=aoe,if=active_enemies>=4
+actions.advanced+=/auto_attack
 actions.advanced+=/skull_bash_cat
 actions.advanced+=/blood_fury
 actions.advanced+=/berserking
@@ -123,7 +125,7 @@ actions.filler+=/rake,if=target.time_to_die-dot.rake.remains>3&action.rake.tick_
 actions.filler+=/shred,if=(buff.omen_of_clarity.react|buff.berserk.up|energy.regen>=15)&buff.king_of_the_jungle.down
 actions.filler+=/mangle_cat,if=buff.king_of_the_jungle.down
 
-actions.aoe=swap_action_list,name=default,if=active_enemies<5
+actions.aoe=swap_action_list,name=default,if=active_enemies<4
 actions.aoe+=/auto_attack
 actions.aoe+=/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3
 actions.aoe+=/savage_roar,if=buff.savage_roar.down|(buff.savage_roar.remains<3&combo_points>0)

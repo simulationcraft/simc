@@ -6396,6 +6396,7 @@ void druid_t::apl_feral()
 
   // APL: BASIC
 
+  basic -> add_action( "swap_action_list,name=aoe,if=active_enemies>=4" );
   basic -> add_action( "auto_attack" );
   basic -> add_action( "skull_bash_cat" );
   if ( talent.force_of_nature -> ok() )
@@ -6473,6 +6474,7 @@ void druid_t::apl_feral()
 
   // APL: ADVANCED
 
+  advanced -> add_action( "swap_action_list,name=aoe,if=active_enemies>=4" );
   if ( talent.dream_of_cenarius -> ok() && find_item( "rune_of_reorigination" ) && find_item( "ticking_ebon_detonator" ) )
   {
     advanced -> add_action( this, "Tiger's Fury", "if=time=0&set_bonus.tier16_4pc_melee" );
@@ -6617,7 +6619,7 @@ void druid_t::apl_feral()
 
   // APL: AOE
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
-  aoe -> add_action( "swap_action_list,name=default,if=active_enemies<5" );
+  aoe -> add_action( "swap_action_list,name=default,if=active_enemies<4" );
   aoe -> add_action( "auto_attack" );
   aoe -> add_action( this, "Faerie Fire", "cycle_targets=1,if=debuff.weakened_armor.stack<3" );
   aoe -> add_action( this, "Savage Roar", "if=buff.savage_roar.down|(buff.savage_roar.remains<3&combo_points>0)" );
