@@ -2538,9 +2538,9 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     else
       direct_power_mod = 1.0;
 
-    // spell database info is mostly in effects
-    base_attack_power_multiplier = data().effectN( 1 ).percent();
-    base_spell_power_multiplier  = data().effectN( 1 ).percent();
+    // spell database info is in tooltip
+    base_attack_power_multiplier = 0.15; 
+    base_spell_power_multiplier  = 0.15;
 
     // needed for weapon speed, I assume
     weapon = &( p -> main_hand_weapon );
@@ -4322,7 +4322,8 @@ void paladin_t::create_buffs()
   buffs.infusion_of_light      = buff_creator_t( this, "infusion_of_light", find_class_spell( "Infusion of Light" ) );
 
   // Prot
-  buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_class_spell( "Guardian of the Ancient Kings" ) );
+  buffs.guardian_of_ancient_kings      = buff_creator_t( this, "guardian_of_ancient_kings", find_spell( 86659 ) )
+                                          .cd( timespan_t::zero() ); // let the ability handle the CD
   buffs.grand_crusader                 = buff_creator_t( this, "grand_crusader" ).spell( passives.grand_crusader -> effectN( 1 ).trigger() ).chance( passives.grand_crusader -> proc_chance() );
   buffs.shield_of_the_righteous        = buff_creator_t( this, "shield_of_the_righteous" ).spell( find_spell( 132403 ) );
   buffs.ardent_defender                = buff_creator_t( this, "ardent_defender" ).spell( find_specialization_spell( "Ardent Defender" ) );
@@ -4417,24 +4418,26 @@ void paladin_t::generate_action_prio_list_prot()
 
   def -> add_action( this, "Avenging Wrath" );
   def -> add_talent( this, "Holy Avenger" );
-  //def -> add_action( this, "Guardian of Ancient Kings", "if=health.pct<=30" );
   def -> add_action( this, "Divine Protection" ); // use on cooldown
+  def -> add_action( this, "Guardian of Ancient Kings" ); // use on cooldown
   def -> add_talent( this, "Eternal Flame", "if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react)" );
   // these two lines are emergency WoG, but seem to do more harm than good
   //def -> add_action( this, "Word of Glory", "if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8" );
   //def -> add_talent( this, "Eternal Flame", "if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8" );
   def -> add_action( this, "Shield of the Righteous", "if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3" );
+  def -> add_action( this, "Judgment", "if=talent.sanctified_wrath.enabled&buff.avenging_wrath.react" );
   def -> add_action( this, "Crusader Strike" );
-  def -> add_action( this, "Judgment", "if=cooldown.crusader_strike.remains>=0.5" );
-  def -> add_action( this, "Avenger's Shield", "if=cooldown.crusader_strike.remains>=0.5" );
-  def -> add_talent( this, "Sacred Shield", "if=(target.dot.sacred_shield.remains<5)&(cooldown.crusader_strike.remains>=0.5)" );
-  def -> add_action( this, "Hammer of Wrath", "if=cooldown.crusader_strike.remains>=0.5" );
-  def -> add_talent( this, "Execution Sentence", "if=cooldown.crusader_strike.remains>=0.5" );
-  def -> add_talent( this, "Light's Hammer", "if=cooldown.crusader_strike.remains>=0.5" );
-  def -> add_talent( this, "Holy Prism", "if=cooldown.crusader_strike.remains>=0.5" );
-  def -> add_action( this, "Holy Wrath", "if=cooldown.crusader_strike.remains>=0.5" );
-  def -> add_action( this, "Consecration", "if=(target.debuff.flying.down&!ticking)&(cooldown.crusader_strike.remains>=0.5)" );
-  def -> add_talent( this, "Sacred Shield", "if=cooldown.crusader_strike.remains>=0.5" );
+  def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35" );
+  def -> add_action( this, "Judgment" );
+  def -> add_action( this, "Avenger's Shield" );
+  def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<5" );
+  def -> add_action( this, "Hammer of Wrath" );
+  def -> add_talent( this, "Execution Sentence" );
+  def -> add_talent( this, "Light's Hammer" );
+  def -> add_talent( this, "Holy Prism" );
+  def -> add_action( this, "Holy Wrath" );
+  def -> add_action( this, "Consecration", "if=target.debuff.flying.down&!ticking" );
+  def -> add_talent( this, "Sacred Shield" );
 }
 
 void paladin_t::generate_action_prio_list_ret()
@@ -5105,7 +5108,7 @@ void paladin_t::target_mitigation( school_e school,
   // Guardian of Ancient Kings
   if ( buffs.guardian_of_ancient_kings -> up() && specialization() == PALADIN_PROTECTION )
   {
-    s -> result_amount *= 1.0 + dbc.spell( 86657 ) -> effectN( 2 ).percent(); // Value of the buff is stored in another spell
+    s -> result_amount *= 1.0 + buffs.guardian_of_ancient_kings -> data().effectN( 3 ).percent(); // Value of the buff is stored in another spell
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
       sim -> out_debug.printf( "Damage to %s after GAnK is %f", s -> target -> name(), s -> result_amount );
   }
