@@ -33,22 +33,23 @@ save=Druid_Feral_T16N.simc
 # Balance Druid T16N
 druid="Druid_Balance_T16N"
 level=90
-race=troll
+race=tauren
 spec=balance
-professions=engineering=600/blacksmithing=600
 talents=010201
-shoulders=shoulderwraps_of_the_shattered_vale,id=99169,gems=80int_160crit_80int_160crit_120int,enchant=200int_100crit,reforge=haste_mastery
-wrists=bracers_of_purified_spirit,id=103757,gems=320crit,enchant=180int,reforge=spi_haste
-back=xingho_breath_of_yulon,id=102246,gems=80int_160crit_60int,enchant=180int,upgrade=2
-feet=salt_water_sandals,id=103760,gems=320crit,enchant=140mastery,reforge=spi_crit
-main_hand=drakebinder_greatstaff,id=103875,gems=320crit_60int,enchant=jade_spirit,reforge=spi_crit,weapon=staff_3.3speed_10031min_15047max
-hands=gloves_of_the_shattered_vale,id=99174,gems=80int_160crit_80int_160crit_320crit_120int,enchant=170mastery,reforge=haste_mastery,addon=synapse_springs_2
-chest=robes_of_the_warriors_fall,id=103947,gems=80int_160crit_320crit_160spi_160crit_180int,enchant=80all,reforge=spi_mastery
-waist=dragonmaw_emergency_strap,id=103905,gems=80int_160crit_160spi_160crit_320crit_120int,reforge=spi_mastery
-head=cover_of_the_shattered_vale,id=99175,gems=sinister_primal_80int_160crit_180int,reforge=haste_mastery
+comment="Profile generated with AskMrRobot using 'Default PvE' weights. May not be optimal."
 legs=leggings_of_the_shattered_vale,id=99176,gems=320crit_320crit_120int,enchant=285int_165crit
-finger1=seal_of_eternal_sorrow,id=103771,gems=320crit,reforge=spi_crit
-finger2=laserslice_signet,id=103773,gems=320crit_60spi,reforge=spi_crit
+shoulders=shoulderwraps_of_the_shattered_vale,id=99169,gems=160exp_160mastery_160exp_160mastery_120int,enchant=200int_100crit,reforge=haste_mastery
+wrists=bracers_of_averted_fatality,id=103758,enchant=180int,reforge=spi_mastery
+back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=80int_160crit_60int,enchant=180int
+off_hand=purehearted_cricket_cage,id=103801,enchant=165int,reforge=spi_mastery
+feet=boots_of_perilous_infusion,id=103761,gems=160spi_160mastery_60spi,enchant=140mastery,reforge=haste_crit
+chest=vestment_of_the_shattered_vale,id=99177,gems=80int_160crit_80int_160crit_80int_160crit_180int,enchant=200spi,reforge=haste_crit
+main_hand=hellscreams_warmace,id=104402,gems=80int_160crit_80int_160crit_120int,enchant=jade_spirit,weapon=mace_2.4speed_5100min_9473max
+head=darkfang_mask,id=103877,gems=sinister_primal_320crit_180int
+waist=dragonmaw_emergency_strap,id=103905,gems=160exp_160mastery_160spi_160mastery_320crit_120int,reforge=spi_mastery
+hands=gloves_of_the_shattered_vale,id=99174,gems=160exp_160mastery_160exp_160mastery_120int,enchant=170mastery,reforge=haste_mastery
+finger1=signet_of_the_dinomancers,id=103774,gems=160exp_160mastery_60haste,reforge=haste_crit
+finger2=seal_of_sullen_fury,id=103772,reforge=spi_mastery
 neck=untainted_guardians_chain,id=103867,reforge=hit_crit
 trinket1=purified_bindings_of_immerseus,id=102293
 trinket2=kardris_toxic_totem,id=102300

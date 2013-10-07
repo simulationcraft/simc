@@ -1,7 +1,6 @@
 #!simc
 
-# the normal mode profiles should be pure 553 gear (no upgrades or warforged) with no DPS racials or profession bonuses
-
+# the normal mode profiles should be pure 553 gear except for legendary meta and cloak with no DPS racials or profession bonuses
 
 optimal_raid=1
 
@@ -15,21 +14,34 @@ Druid_Feral_T16N.simc
 Druid_Feral_T16N_Adv_Rotation.simc
 Druid_Balance_T16N.simc
 
+Hunter_BM_T16N.simc
+Hunter_MM_T16N.simc
+Hunter_SV_T16N.simc
+
 Mage_Arcane_T16N.simc
 Mage_Fire_T16N.simc
 Mage_Frost_T16N.simc
 
+Monk_Windwalker_1h_T16N.simc
+Monk_Windwalker_2h_T16N.simc
+
 Paladin_Protection_T16N.simc
 Paladin_Retribution_T16N.simc
 
-Shaman_Enhancement_T16N.simc
+Priest_Shadow_T16N.simc
+
+Rogue_Assassination_T16N.simc
+Rogue_Combat_T16N.simc
+Rogue_Subtlety_T16N.simc
+
 Shaman_Elemental_T16N.simc
+Shaman_Enhancement_T16N.simc
 
 Warlock_Affliction_T16N.simc
-Warlock_Demonology_T16N.simc
 Warlock_Destruction_T16N.simc
+Warlock_Demonology_T16N.simc
 
 Warrior_Arms_T16N.simc
-Warrior_Fury_1H_T16N.simc
-Warrior_Fury_2H_T16N.simc
+Warrior_Fury_1h_T16N.simc
+Warrior_Fury_2h_T16N.simc
 Warrior_Protection_T16N.simc

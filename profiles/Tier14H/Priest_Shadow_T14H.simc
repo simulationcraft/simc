@@ -1,4 +1,4 @@
-#!./simc 
+#!./simc
 
 priest="Priest_Shadow_T14H"
 origin="http://chardev.org/profile/75-Priest_Shadow_T14H_test2.html"
@@ -8,7 +8,7 @@ role=spell
 position=back
 professions=engineering=600/blacksmithing=600
 talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!122102
-glyphs=dark_binding/mind_spike/inner_sanctum
+glyphs=mind_spike/inner_sanctum
 spec=shadow
 
 # This default action priority list is automatically created based on your character.

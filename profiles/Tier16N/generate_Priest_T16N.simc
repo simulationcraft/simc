@@ -2,3 +2,31 @@
 
 
 talent_format=armory
+
+# Shadow
+priest="Priest_Shadow_T16N"
+talents=113313
+level=90
+race=night_elf
+spec=shadow
+role=spell
+position=back
+glyphs=inner_sanctum/mind_flay/dark_archangel/shadowy_friends/shadow_ravens
+comment="Profile generated with AskMrRobot using 'Default PvE' weights. May not be optimal."
+shoulders=shoulderguards_of_the_ternion_glory,id=99111,gems=160exp_160haste_160exp_160haste_120int,enchant=200int_100crit,reforge=crit_mastery
+wrists=avools_ancestral_bracers,id=103851,enchant=180int
+back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=80int_160mastery_60int,enchant=180int,reforge=crit_spi
+off_hand=revelations_of_yshaarj,id=103920,gems=80int_160mastery_60int,enchant=165int
+feet=boneinlaid_sandals,id=103805,gems=320haste_60hit,enchant=140mastery
+main_hand=hellscreams_warmace,id=104402,gems=160exp_160haste_160exp_160haste_120int,enchant=jade_spirit,weapon=mace_2.4speed_5100min_9473max
+chest=akoliks_acidsoaked_robes,id=104308,gems=160exp_160haste_160exp_160haste_320haste_180int,enchant=80all,reforge=crit_haste
+waist=belt_of_the_broken_pact,id=103856,gems=80int_160haste_320mastery_320mastery_120int,reforge=spi_haste
+head=hood_of_the_ternion_glory,id=99122,gems=sinister_primal_160exp_160haste_180int,reforge=crit_spi
+legs=leggings_of_the_ternion_glory,id=99123,gems=320mastery_320haste_120int,enchant=285int_165spi,reforge=crit_haste
+hands=gloves_of_the_ternion_glory,id=99121,gems=160exp_160haste_160exp_160haste_120int,enchant=170haste,reforge=mastery_spi
+finger1=signet_of_the_dinomancers,id=103774,gems=320haste
+finger2=laserslice_signet,id=103773,gems=320haste_60spi,reforge=spi_mastery
+neck=necklace_of_fading_light,id=103881,reforge=spi_mastery
+trinket1=kardris_toxic_totem,id=102300
+trinket2=purified_bindings_of_immerseus,id=102293
+save=Priest_Shadow_T16N.simc

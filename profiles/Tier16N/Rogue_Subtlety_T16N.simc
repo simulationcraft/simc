@@ -1,0 +1,108 @@
+#!./simc 
+
+# Profile generated with AskMrRobot using 'Default PvE' weights. May not be optimal.
+rogue="Rogue_Subtlety_T16N"
+level=90
+race=night_elf
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#cb!200002
+spec=subtlety
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/apply_poison,lethal=deadly
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+actions.precombat+=/stealth
+actions.precombat+=/premeditation
+actions.precombat+=/slice_and_dice
+
+# Executed every time the actor is available.
+
+actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<40
+actions+=/auto_attack
+actions+=/kick
+actions+=/blood_fury,if=buff.shadow_dance.up
+actions+=/berserking,if=buff.shadow_dance.up
+actions+=/arcane_torrent,if=energy<60
+actions+=/shadow_blades
+actions+=/premeditation,if=combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)
+actions+=/pool_resource,for_next=1
+actions+=/ambush,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<3)
+actions+=/pool_resource,for_next=1,extra_amount=75
+actions+=/shadow_dance,if=energy>=75&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down
+actions+=/pool_resource,for_next=1,extra_amount=45
+actions+=/vanish,if=energy>=45&energy<=75&combo_points<=3&buff.shadow_dance.down&buff.master_of_subtlety.down&debuff.find_weakness.down
+actions+=/marked_for_death,if=talent.marked_for_death.enabled&combo_points=0
+actions+=/run_action_list,name=generator,if=talent.anticipation.enabled&anticipation_charges<4&buff.slice_and_dice.up&dot.rupture.remains>2&(buff.slice_and_dice.remains<6|dot.rupture.remains<4)
+actions+=/run_action_list,name=finisher,if=combo_points=5
+actions+=/run_action_list,name=generator,if=combo_points<4|energy>80|talent.anticipation.enabled
+actions+=/run_action_list,name=pool
+
+# Combo point generators
+
+actions.generator=run_action_list,name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+cooldown.shadow_dance.remains*energy.regen<80|energy+cooldown.vanish.remains*energy.regen<60)
+actions.generator+=/hemorrhage,if=remains<3|position_front
+actions.generator+=/shuriken_toss,if=talent.shuriken_toss.enabled&(energy<65&energy.regen<16)
+actions.generator+=/backstab
+actions.generator+=/run_action_list,name=pool
+
+# Combo point finishers
+
+actions.finisher=slice_and_dice,if=buff.slice_and_dice.remains<4
+actions.finisher+=/rupture,if=ticks_remain<2
+actions.finisher+=/eviscerate
+actions.finisher+=/run_action_list,name=pool
+
+# Resource pooling
+
+actions.pool=preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
+
+head=helmet_of_the_barbed_assassin,id=99114,gems=capacitive_primal_160agi_180agi,reforge=mastery_exp
+neck=immerseus_crystalline_eye,id=103749,reforge=mastery_crit
+shoulders=spaulders_of_the_barbed_assassin,id=99116,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=exp_hit
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180crit,reforge=mastery_hit
+chest=tunic_of_the_barbed_assassin,id=99112,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_exp
+wrists=bombers_blackened_wristwatch,id=103910,enchant=180agi,reforge=mastery_hit
+hands=gloves_of_the_barbed_assassin,id=99113,gems=160agi_160agi_120agi,enchant=170haste,reforge=mastery_exp
+waist=cord_of_black_dreams,id=103928,gems=160agi_80agi_160haste_160agi_120agi,reforge=crit_hit
+legs=snow_lily_britches,id=98604,gems=160agi_160agi_120agi,enchant=285agi_165crit,reforge=mastery_crit
+feet=stonetoes_tormented_treads,id=103777,gems=160agi_60mastery,enchant=140agi
+finger1=kilruks_band_of_ascendancy,id=103844,gems=160agi_60crit,reforge=mastery_hit
+finger2=swift_serpent_signet,id=103842,gems=80agi_160haste_60crit,reforge=mastery_haste
+trinket1=haromms_talisman,id=102301
+trinket2=ticking_ebon_detonator,id=102311,reforge=mastery_haste
+main_hand=hellscreams_razor,id=104400,weapon=dagger_1.8speed_7651min_14210max,gems=160agi_160agi_120agi,enchant=dancing_steel
+off_hand=hellscreams_razor,id=104400,weapon=dagger_1.8speed_7651min_14210max,gems=160agi_160agi_120agi,enchant=dancing_steel
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=24382
+# gear_stamina=31459
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2543
+# gear_hit_rating=2549
+# gear_crit_rating=4487
+# gear_haste_rating=13595
+# gear_mastery_rating=6519
+# gear_armor=21335
+# meta_gem=capacitive_primal
+# tier16_2pc_melee=1
+# tier16_4pc_melee=1
+# main_hand=hellscreams_razor,weapon=dagger_1.8speed_7651min_14210max,enchant=dancing_steel
+# off_hand=hellscreams_razor,weapon=dagger_1.8speed_7651min_14210max,enchant=dancing_steel
+# These values represent the avg HAT donor interval of the raid.
+# A negative value will make the Rogue use a programmed default interval.
+# A zero value will disable virtual HAT procs and assume a real raid is being simulated.
+virtual_hat_interval=-1

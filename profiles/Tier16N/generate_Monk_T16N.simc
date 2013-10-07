@@ -4,5 +4,54 @@
 talent_format=armory
 
 # Windwalker 1h
+monk="Monk_Windwalker_1h_T16N"
+level=90
+race=tauren
+spec=windwalker
+role=hybrid
+position=back
+talents=112332
+comment="Profile generated with AskMrRobot using 'Default PvE' weights. May not be optimal."
+legs=leggings_of_seven_sacred_seals,id=99145,gems=320crit_320crit_120agi,enchant=285agi_165crit
+shoulders=spaulders_of_seven_sacred_seals,id=99146,gems=80agi_160crit_80agi_160crit_120agi,enchant=200agi_100crit,reforge=exp_hit
+wrists=mantid_carapace_augments,id=103911,enchant=180agi,reforge=hit_crit
+feet=unrepentant_heels,id=103778,gems=320crit_60mastery,enchant=140agi,reforge=exp_haste
+chest=chestguard_of_seven_sacred_seals,id=99140,gems=80agi_160haste_80agi_160haste_80agi_160haste_180agi,enchant=80all
+main_hand=hellscreams_cleaver,id=104404,gems=80agi_160crit_80agi_160crit_120agi,enchant=dancing_steel,weapon=axe_2.6speed_11051min_20525max
+off_hand=hellscreams_cleaver,id=104404,gems=160exp_160crit_160exp_160crit_120agi,enchant=dancing_steel,weapon=axe_2.6speed_11051min_20525max
+waist=damrons_belt_of_darkness,id=103927,gems=160exp_160crit_160crit_160hit_320crit_120agi,reforge=hit_crit
+head=headpiece_of_seven_sacred_seals,id=99156,gems=capacitive_primal_80agi_160haste_180agi,reforge=mastery_haste
+hands=grips_of_seven_sacred_seals,id=99155,gems=80agi_160crit_80agi_160crit_120agi,enchant=170exp,reforge=mastery_hit
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=80agi_160crit_60agi,enchant=180crit,reforge=mastery_exp
+finger1=kilruks_band_of_ascendancy,id=103844,gems=160exp_160crit_60crit,reforge=mastery_crit
+finger2=reality_ripper_ring,id=103841,gems=160crit_160hit_60crit,reforge=hit_haste
+neck=gleaming_eye_of_the_devilsaur,id=103750,reforge=crit_exp
+trinket1=haromms_talisman,id=102301
+trinket2=assurance_of_consequence,id=102292
+save=Monk_Windwalker_1h_T16N.simc
 
 # Windwalker 2h
+monk="Monk_Windwalker_2h_T16N"
+level=90
+race=tauren
+spec=windwalker
+role=hybrid
+position=back
+talents=112332
+comment="Profile generated with AskMrRobot using 'Default PvE' weights. May not be optimal."
+legs=leggings_of_seven_sacred_seals,id=99145,gems=320crit_320crit_120agi,enchant=285agi_165crit,reforge=haste_hit
+shoulders=spaulders_of_seven_sacred_seals,id=99146,gems=80agi_160crit_80agi_160crit_120agi,enchant=200agi_100crit,reforge=exp_crit
+wrists=mantid_carapace_augments,id=103911,enchant=180agi,reforge=hit_crit
+feet=unrepentant_heels,id=103778,gems=320crit_60mastery,enchant=140agi
+chest=chestguard_of_seven_sacred_seals,id=99140,gems=80agi_160crit_80agi_160crit_80agi_160crit_180agi,enchant=80all
+main_hand=hellscreams_pig_sticker,id=104403,gems=80agi_160crit_80agi_160crit_120agi,enchant=dancing_steel,weapon=polearm_3.6speed_23580min_35371max
+waist=damrons_belt_of_darkness,id=103927,gems=80agi_160crit_160crit_160hit_320crit_120agi,reforge=hit_crit
+head=headpiece_of_seven_sacred_seals,id=99156,gems=capacitive_primal_80agi_160crit_180agi,reforge=mastery_haste
+hands=grips_of_seven_sacred_seals,id=99155,gems=80agi_160crit_80agi_160crit_120agi,enchant=170haste,reforge=mastery_exp
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=80agi_160crit_60agi,enchant=180crit,reforge=mastery_exp
+finger2=kilruks_band_of_ascendancy,id=103844,gems=80agi_160crit_60crit,reforge=mastery_exp
+finger1=reality_ripper_ring,id=103841,gems=320hit_60crit,reforge=hit_haste
+neck=gleaming_eye_of_the_devilsaur,id=103750
+trinket1=assurance_of_consequence,id=102292
+trinket2=haromms_talisman,id=102301
+save=Monk_Windwalker_2h_T16N.simc

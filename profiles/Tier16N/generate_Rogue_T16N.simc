@@ -1,4 +1,85 @@
 #!simc
 
-
 talent_format=armory
+
+# Assassination
+rogue="Rogue_Assassination_T16N"
+level=90
+race=night_elf
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ca!200002
+glyphs=vendetta
+spec=assassination
+comment="Profile generated with AskMrRobot using 'Default PvE' weights. May not be optimal."
+legs=legguards_of_the_barbed_assassin,id=99115,gems=80agi_160crit_80agi_160crit_120agi,enchant=285agi_165crit,reforge=haste_hit
+shoulders=spaulders_of_the_barbed_assassin,id=99116,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=haste_crit
+wrists=laser_burn_bracers,id=103909,enchant=180agi,reforge=exp_mastery
+feet=unrepentant_heels,id=103778,gems=80agi_160crit_60mastery,enchant=140agi
+chest=tunic_of_the_barbed_assassin,id=99112,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=haste_crit
+main_hand=hellscreams_razor,id=104400,gems=160agi_160agi_120agi,enchant=dancing_steel,weapon=dagger_1.8speed_7651min_14210max
+off_hand=hellscreams_razor,id=104400,gems=160agi_160agi_120agi,enchant=dancing_steel,weapon=dagger_1.8speed_7651min_14210max
+waist=cord_of_black_dreams,id=103928,gems=160agi_80agi_160crit_160agi_120agi,reforge=haste_mastery
+head=helmet_of_the_barbed_assassin,id=99114,gems=capacitive_primal_160agi_180agi,reforge=haste_crit
+hands=korgras_venomsoaked_gauntlets,id=103831,gems=160agi_80agi_160crit_120agi,enchant=170mastery,reforge=mastery_hit
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180crit,reforge=haste_hit
+finger2=ring_of_restless_energy,id=103843,gems=160agi_60crit,reforge=mastery_exp
+finger1=reality_ripper_ring,id=103841,gems=80agi_160hit_60crit
+neck=gleaming_eye_of_the_devilsaur,id=103750,reforge=haste_hit
+trinket1=assurance_of_consequence,id=102292
+trinket2=haromms_talisman,id=102301
+save=Rogue_Assassination_T16N.simc
+
+# Combat
+rogue="Rogue_Combat_T16N"
+level=90
+race=night_elf
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#cZ!200002
+comment="Profile generated with AskMrRobot using 'Default PvE' weights. May not be optimal."
+spec=combat
+legs=legguards_of_the_barbed_assassin,id=99115,gems=80agi_160haste_80agi_160haste_120agi,enchant=285agi_165crit,reforge=crit_exp
+shoulders=spaulders_of_the_barbed_assassin,id=99116,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=exp_crit
+wrists=mantid_carapace_augments,id=103911,enchant=180agi,reforge=hit_crit
+chest=tunic_of_the_barbed_assassin,id=99112,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_crit
+main_hand=hellscreams_cleaver,id=104404,gems=160agi_160agi_120agi,enchant=dancing_steel,weapon=axe_2.6speed_11051min_20525max
+off_hand=hellscreams_razor,id=104400,gems=160agi_160agi_120agi,enchant=dancing_steel,weapon=dagger_1.8speed_7651min_14210max
+waist=snow_lily_belt,id=98613,gems=160agi_160agi_160agi_120agi,reforge=hit_haste
+head=helmet_of_the_barbed_assassin,id=99114,gems=capacitive_primal_160agi_180agi,reforge=mastery_exp
+hands=gloves_of_the_golden_protector,id=103830,gems=160agi_80agi_160hit_120agi,enchant=170haste,reforge=crit_haste
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180crit,reforge=mastery_exp
+finger1=ring_of_restless_energy,id=103843,gems=160agi_60crit,reforge=mastery_haste
+finger2=kilruks_band_of_ascendancy,id=103844,gems=160agi_60crit,reforge=mastery_crit
+feet=stonetoes_tormented_treads,id=103777,gems=160agi_60mastery,enchant=140agi,reforge=hit_exp
+neck=immerseus_crystalline_eye,id=103749,reforge=mastery_exp
+trinket1=assurance_of_consequence,id=102292
+trinket2=haromms_talisman,id=102301
+save=Rogue_Combat_T16N.simc
+
+# Subtlety
+rogue="Rogue_Subtlety_T16N"
+level=90
+race=night_elf
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#cb!200002
+comment="Profile generated with AskMrRobot using 'Default PvE' weights. May not be optimal."
+spec=subtlety
+legs=snow_lily_britches,id=98604,gems=160agi_160agi_120agi,enchant=285agi_165crit,reforge=mastery_crit
+shoulders=spaulders_of_the_barbed_assassin,id=99116,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=exp_hit
+wrists=bombers_blackened_wristwatch,id=103910,enchant=180agi,reforge=mastery_hit
+feet=stonetoes_tormented_treads,id=103777,gems=160agi_60mastery,enchant=140agi
+chest=tunic_of_the_barbed_assassin,id=99112,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_exp
+main_hand=hellscreams_razor,id=104400,gems=160agi_160agi_120agi,enchant=dancing_steel,weapon=dagger_1.8speed_7651min_14210max
+off_hand=hellscreams_razor,id=104400,gems=160agi_160agi_120agi,enchant=dancing_steel,weapon=dagger_1.8speed_7651min_14210max
+waist=cord_of_black_dreams,id=103928,gems=160agi_80agi_160haste_160agi_120agi,reforge=crit_hit
+head=helmet_of_the_barbed_assassin,id=99114,gems=capacitive_primal_160agi_180agi,reforge=mastery_exp
+hands=gloves_of_the_barbed_assassin,id=99113,gems=160agi_160agi_120agi,enchant=170haste,reforge=mastery_exp
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180crit,reforge=mastery_hit
+finger1=kilruks_band_of_ascendancy,id=103844,gems=160agi_60crit,reforge=mastery_hit
+finger2=swift_serpent_signet,id=103842,gems=80agi_160haste_60crit,reforge=mastery_haste
+trinket2=ticking_ebon_detonator,id=102311,reforge=mastery_haste
+neck=immerseus_crystalline_eye,id=103749,reforge=mastery_crit
+trinket1=haromms_talisman,id=102301
+save=Rogue_Subtlety_T16N.simc

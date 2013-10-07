@@ -31,7 +31,7 @@ trinket2=haromms_talisman,id=105527,upgrade=2
 save=Monk_Windwalker_1h_T16H.simc
 
 # Windwalker 2h
-monk="Monk_Windwalker_2h_T15H"
+monk="Monk_Windwalker_2h_T16H"
 level=90
 race=troll
 spec=windwalker

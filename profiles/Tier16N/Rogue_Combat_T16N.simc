@@ -1,0 +1,97 @@
+#!./simc 
+
+# Profile generated with AskMrRobot using 'Default PvE' weights. May not be optimal.
+rogue="Rogue_Combat_T16N"
+level=90
+race=night_elf
+role=attack
+position=back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#cZ!200002
+spec=combat
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/apply_poison,lethal=deadly
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+actions.precombat+=/stealth
+actions.precombat+=/marked_for_death,if=talent.marked_for_death.enabled
+actions.precombat+=/slice_and_dice,if=talent.marked_for_death.enabled
+
+# Executed every time the actor is available.
+
+actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<40
+actions+=/auto_attack
+actions+=/kick
+actions+=/preparation,if=!buff.vanish.up&cooldown.vanish.remains>60
+actions+=/blood_fury,if=time=0|buff.shadow_blades.up
+actions+=/berserking,if=time=0|buff.shadow_blades.up
+actions+=/arcane_torrent,if=energy<60
+actions+=/blade_flurry,if=active_enemies>=5
+actions+=/ambush
+actions+=/vanish,if=time>10&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(buff.shadow_blades.down&(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4))))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<20)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))
+actions+=/shadow_blades,if=!set_bonus.tier14_4pc_melee&time>5
+actions+=/killing_spree,if=!set_bonus.tier14_4pc_melee&energy<35&buff.adrenaline_rush.down
+actions+=/adrenaline_rush,if=!set_bonus.tier14_4pc_melee&(energy<35|buff.shadow_blades.up)
+actions+=/shadow_blades,if=set_bonus.tier14_4pc_melee&((cooldown.killing_spree.remains>30.5&cooldown.adrenaline_rush.remains<=9)|(energy<35&(cooldown.killing_spree.remains=0|cooldown.adrenaline_rush.remains=0)))
+actions+=/killing_spree,if=set_bonus.tier14_4pc_melee&((buff.shadow_blades.up&buff.adrenaline_rush.down&(energy<35|buff.shadow_blades.remains<=3.5))|(buff.shadow_blades.down&cooldown.shadow_blades.remains>30))
+actions+=/adrenaline_rush,if=set_bonus.tier14_4pc_melee&buff.shadow_blades.up&(energy<35|buff.shadow_blades.remains<=15)
+actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)
+actions+=/marked_for_death,if=talent.marked_for_death.enabled&(combo_points=0&dot.revealing_strike.ticking)
+actions+=/run_action_list,name=generator,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<=4&!dot.revealing_strike.ticking)
+actions+=/run_action_list,name=finisher,if=!talent.anticipation.enabled|buff.deep_insight.up|cooldown.shadow_blades.remains<=11|anticipation_charges>=4|(buff.shadow_blades.up&anticipation_charges>=3)
+actions+=/run_action_list,name=generator,if=energy>60|buff.deep_insight.down|buff.deep_insight.remains>5-combo_points
+
+# Combo point generators
+
+actions.generator=revealing_strike,if=ticks_remain<2
+actions.generator+=/sinister_strike
+
+# Combo point finishers
+
+actions.finisher=rupture,if=ticks_remain<2&target.time_to_die>=26
+actions.finisher+=/eviscerate
+
+head=helmet_of_the_barbed_assassin,id=99114,gems=capacitive_primal_160agi_180agi,reforge=mastery_exp
+neck=immerseus_crystalline_eye,id=103749,reforge=mastery_exp
+shoulders=spaulders_of_the_barbed_assassin,id=99116,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=exp_crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180crit,reforge=mastery_exp
+chest=tunic_of_the_barbed_assassin,id=99112,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_crit
+wrists=mantid_carapace_augments,id=103911,enchant=180agi,reforge=hit_crit
+hands=gloves_of_the_golden_protector,id=103830,gems=160agi_80agi_160hit_120agi,enchant=170haste,reforge=crit_haste
+waist=snow_lily_belt,id=98613,gems=160agi_160agi_160agi_120agi,reforge=hit_haste
+legs=legguards_of_the_barbed_assassin,id=99115,gems=80agi_160haste_80agi_160haste_120agi,enchant=285agi_165crit,reforge=crit_exp
+feet=stonetoes_tormented_treads,id=103777,gems=160agi_60mastery,enchant=140agi,reforge=hit_exp
+finger1=ring_of_restless_energy,id=103843,gems=160agi_60crit,reforge=mastery_haste
+finger2=kilruks_band_of_ascendancy,id=103844,gems=160agi_60crit,reforge=mastery_crit
+trinket1=assurance_of_consequence,id=102292
+trinket2=haromms_talisman,id=102301
+main_hand=hellscreams_cleaver,id=104404,weapon=axe_2.6speed_11051min_20525max,gems=160agi_160agi_120agi,enchant=dancing_steel
+off_hand=hellscreams_razor,id=104400,weapon=dagger_1.8speed_7651min_14210max,gems=160agi_160agi_120agi,enchant=dancing_steel
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=24302
+# gear_stamina=31459
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2549
+# gear_hit_rating=2550
+# gear_crit_rating=6646
+# gear_haste_rating=11079
+# gear_mastery_rating=4968
+# gear_armor=21335
+# meta_gem=capacitive_primal
+# tier16_2pc_melee=1
+# tier16_4pc_melee=1
+# main_hand=hellscreams_cleaver,weapon=axe_2.6speed_11051min_20525max,enchant=dancing_steel
+# off_hand=hellscreams_razor,weapon=dagger_1.8speed_7651min_14210max,enchant=dancing_steel

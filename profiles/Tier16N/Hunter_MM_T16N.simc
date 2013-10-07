@@ -1,0 +1,94 @@
+#!./simc 
+
+# Profile generated with AskMrRobot using 'Default PvE' weights. May not be optimal.
+hunter="Hunter_MM_T16N"
+level=90
+race=tauren
+role=attack
+position=ranged_back
+talents=http://us.battle.net/wow/en/tool/talent-calculator#YZ!...000
+spec=marksmanship
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+
+actions.precombat=flask,type=spring_blossoms
+actions.precombat+=/food,type=sea_mist_rice_noodles
+actions.precombat+=/aspect_of_the_hawk
+actions.precombat+=/hunters_mark,if=target.time_to_die>=21&!debuff.ranged_vulnerability.up
+actions.precombat+=/summon_pet
+actions.precombat+=/snapshot_stats
+actions.precombat+=/virmens_bite_potion
+
+# Executed every time the actor is available.
+
+actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
+actions+=/auto_shot
+actions+=/explosive_trap,if=active_enemies>1
+actions+=/powershot,if=enabled
+actions+=/lynx_rush,if=enabled&!dot.lynx_rush.ticking
+actions+=/multi_shot,if=active_enemies>5
+actions+=/steady_shot,if=active_enemies>5
+actions+=/fervor,if=enabled&focus<=50
+actions+=/rapid_fire,if=!buff.rapid_fire.up
+actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25
+actions+=/a_murder_of_crows,if=enabled&!ticking
+actions+=/dire_beast,if=enabled
+actions+=/run_action_list,name=careful_aim,if=target.health.pct>80
+actions+=/glaive_toss,if=enabled
+actions+=/barrage,if=enabled
+actions+=/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<=5
+actions+=/serpent_sting,if=!ticking
+actions+=/chimera_shot
+actions+=/steady_shot,if=buff.steady_focus.remains<(action.steady_shot.cast_time+1)&!in_flight
+actions+=/kill_shot
+actions+=/aimed_shot,if=buff.master_marksman_fire.react
+actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
+actions+=/aimed_shot,if=cast_time<1.7
+actions+=/arcane_shot,if=focus>=60|(focus>=43&(cooldown.chimera_shot.remains>=action.steady_shot.cast_time))&(!buff.rapid_fire.up&!buff.bloodlust.react)
+actions+=/steady_shot
+
+actions.careful_aim=serpent_sting,if=!ticking
+actions.careful_aim+=/chimera_shot
+actions.careful_aim+=/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<6
+actions.careful_aim+=/aimed_shot
+actions.careful_aim+=/steady_shot
+
+head=headguard_of_the_unblinking_vigil,id=99157,gems=capacitive_primal_160agi_180agi,reforge=crit_exp
+neck=gleaming_eye_of_the_devilsaur,id=103750,reforge=crit_hit
+shoulders=spaulders_of_the_unblinking_vigil,id=99159,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=exp_crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180hit,reforge=mastery_exp
+chest=tunic_of_the_unblinking_vigil,id=99167,gems=160agi_160agi_160agi_180agi,enchant=80all
+wrists=dagryns_fuselight_bracers,id=103889,enchant=180agi,reforge=hit_crit
+hands=gloves_of_the_unblinking_vigil,id=99168,gems=160agi_160agi_120agi,enchant=170haste,reforge=crit_exp
+waist=gorge_stalker_belt,id=98614,gems=160agi_160agi_160agi_120agi,reforge=hit_haste
+legs=gorge_stalker_legplates,id=98605,gems=160agi_160agi_120agi,enchant=285agi_165crit,reforge=crit_exp
+feet=ravagers_pathwalkers,id=103732,gems=160agi_60agi,enchant=140agi,reforge=crit_hit
+finger1=reality_ripper_ring,id=103841,gems=80agi_160hit_60crit,reforge=hit_haste
+finger2=kilruks_band_of_ascendancy,id=103844,gems=160agi_60crit,reforge=mastery_exp
+trinket1=haromms_talisman,id=102301
+trinket2=assurance_of_consequence,id=102292
+main_hand=hellscreams_warbow,id=104399,weapon=bow_3speed_17193min_31932max,gems=160agi_160agi_120agi,enchant=lord_blastingtons_scope_of_doom
+
+# Gear Summary
+# gear_strength=80
+# gear_agility=24561
+# gear_stamina=31939
+# gear_intellect=80
+# gear_spirit=80
+# gear_expertise_rating=2550
+# gear_hit_rating=2555
+# gear_crit_rating=8230
+# gear_haste_rating=11882
+# gear_mastery_rating=2659
+# gear_armor=29079
+# meta_gem=capacitive_primal
+# tier16_2pc_melee=1
+# tier16_4pc_melee=1
+# main_hand=hellscreams_warbow,weapon=bow_3speed_17193min_31932max,enchant=lord_blastingtons_scope_of_doom
+summon_pet=cat

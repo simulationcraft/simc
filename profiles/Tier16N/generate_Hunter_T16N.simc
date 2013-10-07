@@ -4,7 +4,79 @@
 talent_format=armory
 
 # BM
+hunter=Hunter_BM_T16N
+level=90
+race=tauren
+spec=beast_mastery
+position=ranged_back
+role=attack
+talents=000211
+comment="Profile generated with AskMrRobot using 'Default PvE' weights. May not be optimal."
+legs=gorge_stalker_legplates,id=98605,gems=160agi_160agi_120agi,enchant=285agi_165crit,reforge=crit_exp
+shoulders=spaulders_of_the_unblinking_vigil,id=99159,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=exp_hit
+wrists=dagryns_fuselight_bracers,id=103889,enchant=180agi
+feet=puddle_punishers,id=103730,gems=160agi_60mastery,enchant=140agi,reforge=crit_haste
+chest=tunic_of_the_unblinking_vigil,id=99167,gems=160agi_160agi_160agi_180agi,enchant=80all
+main_hand=hellscreams_warbow,id=104399,gems=160agi_160agi_120agi,enchant=lord_blastingtons_scope_of_doom,weapon=bow_3speed_17193min_31932max
+waist=gorge_stalker_belt,id=98614,gems=160agi_160agi_160agi_120agi,reforge=hit_haste
+head=headguard_of_the_unblinking_vigil,id=99157,gems=capacitive_primal_160agi_180agi,reforge=crit_exp
+hands=gloves_of_the_unblinking_vigil,id=99168,gems=160agi_160agi_120agi,enchant=170haste,reforge=crit_exp
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180crit,reforge=mastery_exp
+finger1=ring_of_restless_energy,id=103843,gems=160agi_60crit,reforge=mastery_haste
+finger2=kilruks_band_of_ascendancy,id=103844,gems=160agi_60crit,reforge=mastery_exp
+neck=immerseus_crystalline_eye,id=103749,reforge=mastery_crit
+trinket1=assurance_of_consequence,id=102292
+trinket2=haromms_talisman,id=102301
+save=Hunter_BM_T16N.simc
 
 # MM
+hunter=Hunter_MM_T16N
+level=90
+race=tauren
+spec=marksmanship
+position=ranged_back
+role=attack
+talents=000111
+comment="Profile generated with AskMrRobot using 'Default PvE' weights. May not be optimal."
+legs=gorge_stalker_legplates,id=98605,gems=160agi_160agi_120agi,enchant=285agi_165crit,reforge=crit_exp
+shoulders=spaulders_of_the_unblinking_vigil,id=99159,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=exp_crit
+wrists=dagryns_fuselight_bracers,id=103889,enchant=180agi,reforge=hit_crit
+feet=ravagers_pathwalkers,id=103732,gems=160agi_60agi,enchant=140agi,reforge=crit_hit
+chest=tunic_of_the_unblinking_vigil,id=99167,gems=160agi_160agi_160agi_180agi,enchant=80all
+main_hand=hellscreams_warbow,id=104399,gems=160agi_160agi_120agi,enchant=lord_blastingtons_scope_of_doom,weapon=bow_3speed_17193min_31932max
+waist=gorge_stalker_belt,id=98614,gems=160agi_160agi_160agi_120agi,reforge=hit_haste
+head=headguard_of_the_unblinking_vigil,id=99157,gems=capacitive_primal_160agi_180agi,reforge=crit_exp
+hands=gloves_of_the_unblinking_vigil,id=99168,gems=160agi_160agi_120agi,enchant=170haste,reforge=crit_exp
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180hit,reforge=mastery_exp
+finger2=kilruks_band_of_ascendancy,id=103844,gems=160agi_60crit,reforge=mastery_exp
+finger1=reality_ripper_ring,id=103841,gems=80agi_160hit_60crit,reforge=hit_haste
+neck=gleaming_eye_of_the_devilsaur,id=103750,reforge=crit_hit
+trinket1=haromms_talisman,id=102301
+trinket2=assurance_of_consequence,id=102292
+save=Hunter_MM_T16N.simc
 
 # SV
+hunter=Hunter_SV_T16N
+level=90
+race=tauren
+spec=survival
+position=ranged_back
+role=attack
+talents=000311
+comment="Profile generated with AskMrRobot. May not be optimal."
+legs=gorge_stalker_legplates,id=98605,gems=160agi_160agi_120agi,enchant=285agi_165crit,reforge=haste_exp
+shoulders=spaulders_of_the_unblinking_vigil,id=99159,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=haste_crit
+wrists=dagryns_fuselight_bracers,id=103889,enchant=180agi,reforge=hit_crit
+feet=ravagers_pathwalkers,id=103732,gems=160agi_60agi,enchant=140agi,reforge=haste_hit
+chest=tunic_of_the_unblinking_vigil,id=99167,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=haste_hit
+main_hand=hellscreams_warbow,id=104399,gems=160agi_160agi_120agi,enchant=lord_blastingtons_scope_of_doom,weapon=bow_3speed_17193min_31932max
+waist=arrowflight_girdle,id=103888,gems=160agi_80agi_160crit_160agi_120agi
+head=headguard_of_the_unblinking_vigil,id=99157,gems=capacitive_primal_160agi_180agi,reforge=haste_exp
+hands=gloves_of_the_unblinking_vigil,id=99168,gems=160agi_160agi_120agi,enchant=170exp,reforge=haste_exp
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180crit,reforge=mastery_hit
+finger2=ring_of_restless_energy,id=103843,gems=160agi_60crit,reforge=mastery_hit
+finger1=reality_ripper_ring,id=103841,gems=160agi,reforge=hit_exp
+neck=gleaming_eye_of_the_devilsaur,id=103750
+trinket1=haromms_talisman,id=102301
+trinket2=assurance_of_consequence,id=102292
+save=Hunter_SV_T16N.simc
