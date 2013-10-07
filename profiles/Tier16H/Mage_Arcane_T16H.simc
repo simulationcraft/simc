@@ -21,7 +21,7 @@ spec=arcane
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/arcane_brilliance
-actions.precombat+=/mage_armor
+actions.precombat+=/frost_armor
 actions.precombat+=/snapshot_stats
 actions.precombat+=/rune_of_power
 actions.precombat+=/jade_serpent_potion
@@ -54,6 +54,7 @@ actions.aoe+=/arcane_explosion
 actions.single_target=arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2
 actions.single_target+=/arcane_missiles,if=buff.alter_time.up
 actions.single_target+=/arcane_blast,if=buff.alter_time.up
+actions.single_target+=/arcane_blast,if=buff.profound_magic.up&buff.arcane_charge.stack>3&mana.pct>93
 actions.single_target+=/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)
 actions.single_target+=/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
 actions.single_target+=/arcane_barrage,if=buff.arcane_charge.stack>=4&mana.pct<95
@@ -63,39 +64,39 @@ actions.single_target+=/arcane_barrage,moving=1
 actions.single_target+=/fire_blast,moving=1
 actions.single_target+=/ice_lance,moving=1
 
-head=chronomancer_hood,id=99398,gems=sinister_primal_160mastery_160exp_180int
-neck=ashflare_pendant,id=105539,upgrade=2,reforge=hit_mastery
-shoulders=chronomancer_mantle,id=99401,gems=160mastery_160exp_160mastery_160exp_120int,enchant=200int_100crit
-back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=160mastery_160exp_60int,enchant=lightweave_embroidery_3,reforge=mastery_hit
-chest=mantid_viziers_robes,id=105592,upgrade=2,gems=160mastery_160exp_160mastery_160exp_320mastery_180int,enchant=80all
-wrists=bracers_of_sonic_projection,id=105626,upgrade=2,enchant=180int
-hands=chronomancer_gloves,id=99397,gems=160mastery_160exp_160mastery_160exp_120int,enchant=170haste,addon=synapse_springs_mark_ii
-waist=miasmic_skullbelt,id=105569,upgrade=2,gems=160mastery_160exp_320mastery_120int,reforge=hit_haste
-legs=chronomancer_leggings,id=99399,gems=320mastery_320mastery_120int,enchant=285int_165crit,reforge=mastery_hit
-feet=toxic_tornado_treads,id=105537,upgrade=2,gems=160mastery_160hit_60hit,enchant=140mastery,reforge=mastery_haste
-finger1=petrified_pennyroyal_ring,id=105443,upgrade=2,reforge=hit_haste
-finger2=signet_of_the_dinomancers,id=105606,upgrade=2,gems=160mastery_160exp_60spi
+head=ebon_ritual_hood,id=105647,upgrade=2,gems=sinister_primal_160exp_160mastery_180int,reforge=haste_hit
+neck=untainted_guardians_chain,id=105465,upgrade=2,reforge=hit_haste
+shoulders=chronomancer_mantle,id=99401,upgrade=2,gems=160exp_160mastery_160exp_160mastery_120int,enchant=200int_100crit,reforge=crit_mastery
+back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=80int_160mastery_60int,enchant=lightweave_embroidery_3,reforge=crit_hit
+chest=chronomancer_robes,id=99400,upgrade=2,gems=160exp_160mastery_160exp_160mastery_160exp_160mastery_180int,enchant=80all,reforge=crit_haste
+wrists=avools_ancestral_bracers,id=105591,upgrade=2,enchant=180int
+hands=chronomancer_gloves,id=99397,upgrade=2,gems=160exp_160mastery_160exp_160mastery_120int,enchant=170mastery,addon=synapse_springs_mark_ii,reforge=crit_mastery
+waist=belt_of_ominous_trembles,id=105515,upgrade=2,gems=160exp_160mastery_160hit_160mastery_320mastery_120int,reforge=hit_haste
+legs=chronomancer_leggings,id=99399,upgrade=2,gems=320mastery_320mastery_120int,enchant=285int_165crit,reforge=crit_haste
+feet=boneinlaid_sandals,id=105493,upgrade=2,gems=320mastery_60hit,enchant=140mastery
+finger1=iyyokuks_hereditary_seal,id=105628,upgrade=2,reforge=hit_haste
+finger2=signet_of_the_dinomancers,id=105606,upgrade=2,gems=320mastery
 trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
-trinket2=black_blood_of_yshaarj,id=105648,upgrade=2,reforge=haste_mastery
-main_hand=arcweaver_spell_sword,id=105550,upgrade=2,gems=160mastery_160exp_60int,enchant=jade_spirit
-off_hand=juggernauts_power_core,id=105521,upgrade=2,gems=320mastery_60int,enchant=165int
+trinket2=kardris_toxic_totem,id=105540,upgrade=2
+main_hand=immaculately_preserved_wand,id=105594,upgrade=2,gems=160exp_160mastery_60int,enchant=jade_spirit,reforge=crit_haste
+off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=160exp_160mastery_60int,enchant=165int
 
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=38135
-# gear_intellect=25774
-# gear_spirit=140
+# gear_stamina=39087
+# gear_intellect=26490
+# gear_spirit=80
 # gear_spell_power=15321
 # gear_expertise_rating=1760
-# gear_hit_rating=3284
-# gear_crit_rating=13533
-# gear_haste_rating=13993
-# gear_mastery_rating=8301
-# gear_armor=17928
+# gear_hit_rating=3152
+# gear_crit_rating=4756
+# gear_haste_rating=11398
+# gear_mastery_rating=18629
+# gear_armor=18101
 # meta_gem=sinister_primal
 # tier16_2pc_caster=1
 # tier16_4pc_caster=1
 # back=xingho_breath_of_yulon,enchant=lightweave_embroidery_3
 # hands=chronomancer_gloves,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=arcweaver_spell_sword,heroic=1,elite=1,weapon=sword_2.20speed_5180min_9622max,enchant=jade_spirit
+# main_hand=immaculately_preserved_wand,heroic=1,elite=1,weapon=wand,enchant=jade_spirit

@@ -4206,7 +4206,7 @@ void mage_t::init_actions()
     add_action( "Arcane Brilliance", "", "precombat" );
 
     // Armor
-    if ( specialization() == MAGE_ARCANE )
+    if ( specialization() == MAGE_ARCANE && !set_bonus.tier16_4pc_caster()) // use Frost Armor for arcane mages with 4p T16
     {
       add_action( "Mage Armor", "", "precombat" );
     }
@@ -4337,6 +4337,10 @@ void mage_t::init_actions()
         st_list_str += "/arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2";
         st_list_str += "/arcane_missiles,if=buff.alter_time.up";
         st_list_str += "/arcane_blast,if=buff.alter_time.up";
+        
+        //modify APL for T16 4p
+        st_list_str += "/arcane_blast,if=buff.profound_magic.up&buff.arcane_charge.stack>3&mana.pct>93";
+
       }
 
       st_list_str += "/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)";

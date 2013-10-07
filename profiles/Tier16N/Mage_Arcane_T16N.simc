@@ -20,7 +20,7 @@ spec=arcane
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/arcane_brilliance
-actions.precombat+=/mage_armor
+actions.precombat+=/frost_armor
 actions.precombat+=/snapshot_stats
 actions.precombat+=/rune_of_power
 actions.precombat+=/jade_serpent_potion
@@ -50,6 +50,7 @@ actions.aoe+=/arcane_explosion
 actions.single_target=arcane_barrage,if=buff.alter_time.up&buff.alter_time.remains<2
 actions.single_target+=/arcane_missiles,if=buff.alter_time.up
 actions.single_target+=/arcane_blast,if=buff.alter_time.up
+actions.single_target+=/arcane_blast,if=buff.profound_magic.up&buff.arcane_charge.stack>3&mana.pct>93
 actions.single_target+=/arcane_missiles,if=(buff.arcane_missiles.stack=2&cooldown.arcane_power.remains>0)|(buff.arcane_charge.stack>=4&cooldown.arcane_power.remains>8)
 actions.single_target+=/living_bomb,cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>tick_time*3
 actions.single_target+=/arcane_barrage,if=buff.arcane_charge.stack>=4&mana.pct<95
