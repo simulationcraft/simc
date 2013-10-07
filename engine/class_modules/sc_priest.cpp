@@ -5495,7 +5495,7 @@ void priest_t::apl_shadow()
   def -> add_action( this, "Mind Blast", "if=active_enemies<=5&cooldown_react" );
   def -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=0&active_enemies<=5" );
   def -> add_action( "mind_flay_insanity,if=target.dot.devouring_plague_tick.ticks_remain=1,chain=1" );
-  def -> add_action( "mind_flay_insanity,interrupt=1,chain=1" );
+  def -> add_action( "mind_flay_insanity,interrupt=1,chain=1,if=active_enemies<=5" );
   def -> add_action( this, "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=5,if=miss_react&!ticking" );
   def -> add_action( this, "Vampiric Touch", "cycle_targets=1,max_cycle_targets=5,if=remains<cast_time&miss_react" );
   def -> add_action( this, "Shadow Word: Pain", "cycle_targets=1,max_cycle_targets=5,if=miss_react&ticks_remain<=1" );
