@@ -732,7 +732,7 @@ void warrior_attack_t::consume_resource()
     return;
 
   // Warrior attacks (non-AoE) which are are avoided by the target consume only 20%
-  if ( resource_consumed > 0 && ! aoe && result_is_miss() )
+  if ( resource_consumed > 0 && ! aoe && result_is_miss( execute_state -> result ) )
   {
     double rage_restored = resource_consumed * 0.80;
     p -> resource_gain( RESOURCE_RAGE, rage_restored, p -> gain.avoided_attacks );
