@@ -2742,7 +2742,8 @@ void cleave_trinket( item_t* item )
   effect.stat_amount = util::round( budget.p_epic[ 0 ] * stat_spell -> effectN( 1 ).m_average() );
 
   stat_buff_proc_t* stat_cb = new stat_buff_proc_t( item -> player, effect );
-  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, stat_cb );
+  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, stat_cb );
+  p -> callbacks.register_harmful_spell_callback( RESULT_HIT_MASK, stat_cb );
   p -> items[ item -> slot ].parsed.equip = effect;
 }
 
@@ -2881,7 +2882,8 @@ void multistrike_trinket( item_t* item )
   effect.cooldown = stat_driver_spell -> internal_cooldown();
 
   stat_buff_proc_t* stat_cb = new stat_buff_proc_t( item -> player, effect );
-  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, stat_cb );
+  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, stat_cb );
+  p -> callbacks.register_harmful_spell_callback( RESULT_HIT_MASK, stat_cb );
   p -> items[ item -> slot ].parsed.equip = effect;
 }
 
@@ -2990,7 +2992,8 @@ void cooldown_reduction_trinket( item_t* item )
   effect.stat_amount = util::round( budget.p_epic[ 0 ] * proc_spell -> effectN( 1 ).m_average() );
 
   stat_buff_proc_t* cb = new stat_buff_proc_t( p, effect );
-  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+  p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
+  p -> callbacks.register_harmful_spell_callback( RESULT_HIT_MASK, cb );
   p -> items[ item -> slot ].parsed.equip = effect;
 }
 
@@ -3042,7 +3045,10 @@ void amplify_trinket( item_t* item )
     p -> callbacks.register_tick_heal_callback( RESULT_ALL_MASK, cb );
   }
   else
-    p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+  {
+    p -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
+    p -> callbacks.register_harmful_spell_callback( RESULT_HIT_MASK, cb );
+  }
   p -> items[ item -> slot ].parsed.equip = effect;
 }
 
@@ -3849,15 +3855,10 @@ bool unique_gear::get_equip_encoding( std::string&       encoding,
   else if ( name == "discipline_of_xuen"           ) e = "OnAttackHit_" +   RTV( tf, 0, 0, 6914, 9943 ) + "Mastery_15%_20Dur_115Cd";
   else if ( name == "yulons_bite"                  ) e = "OnSpellDamage_" + RTV( tf, 0, 0, 6914, 9943 ) + "Crit_15%_20Dur_115Cd";
   else if ( name == "alacrity_of_xuen"             ) e = "OnAttackHit_" +   RTV( tf, 0, 0, 6914, 9943 ) + "Haste_15%_20Dur_115Cd";
-  // TODO: Name based identification when the name appears, plus other difficulty levels ...
-  else if ( item_id == 102312                      ) e = "OnDirectDamage_11761Mastery_15%_20Dur_115Cd";
-  else if ( item_id == 102313                      ) e = "OnSpellDamage_11761Crit_15%_20Dur_115Cd";
-  else if ( item_id == 102315                      ) e = "OnAttackHit_11759Haste_15%_20Dur_115Cd";
   
   else if ( name == "ticking_ebon_detonator"       ) e = "OnDirectDamage_1RPPM_10Cd_10Dur_0.5Tick_20Stack_" + RTV( tf, 847, 947, 1069, 1131, 1207, 1276 )  + "Agi_Reverse_NoRefresh";
-  else if ( name == "black_blood_of_yshaarj"       ) e = "OnDirectDamage_0.92RPPM_10Cd_10Dur_1.0Tick_10Stack_" + RTV( tf, 1862, 2082, 2350, 2485, 2652, 2805 ) + "Int_NoRefresh";
+  else if ( name == "black_blood_of_yshaarj"       ) e = "OnHarmfulSpellHit_0.92RPPM_10Cd_10Dur_1.0Tick_10Stack_" + RTV( tf, 1862, 2082, 2350, 2485, 2652, 2805 ) + "Int_NoRefresh";
   else if ( name == "skeers_bloodsoaked_talisman"  ) e = "OnAttackHit_0.92RPPM_10Cd_10Dur_0.5Tick_20Stack_"    + RTV( tf, 931, 1041, 1175, 1242, 1326, 1402 ) + "Crit_NoRefresh";
-
 
   // 5.2 Trinkets
   else if ( name == "talisman_of_bloodlust"               ) e = "OnDirectDamage_"    + RTV( tf, 1277, 0, 1538, 1625, 1736, 1834 ) + "Haste_3.5RPPM_5Stack_10Dur_5Cd";
