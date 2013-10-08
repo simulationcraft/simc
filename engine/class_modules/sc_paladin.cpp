@@ -423,7 +423,7 @@ struct guardian_of_ancient_kings_ret_t : public pet_t
 
     pet_t::dismiss();
 
-    if ( o() -> ancient_fury_explosion )
+    if ( o() -> ancient_fury_explosion && ! o() -> ancient_fury_explosion -> target -> is_sleeping() )
       o() -> ancient_fury_explosion -> execute();
   }
 
@@ -3891,7 +3891,8 @@ struct divine_protection_t : public buff_t
     if ( p -> set_bonus.tier16_2pc_tank() )
     {
       // trigger the HoT
-      p -> active.blessing_of_the_guardians -> execute();
+      if ( ! p -> active.blessing_of_the_guardians -> target -> is_sleeping() )
+        p -> active.blessing_of_the_guardians -> execute();
     }
   }
 

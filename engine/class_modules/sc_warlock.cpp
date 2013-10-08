@@ -646,7 +646,8 @@ struct felstorm_t : public warlock_pet_melee_attack_t
   {
     warlock_pet_melee_attack_t::last_tick( d );
 
-    if ( ! p() -> is_sleeping() ) p() -> melee_attack -> execute();
+    if ( ! p() -> is_sleeping() && ! p() -> melee_attack -> target -> is_sleeping() )
+      p() -> melee_attack -> execute();
   }
 };
 
