@@ -93,16 +93,26 @@ struct action_execute_event_t : public event_t
 
   virtual void execute()
   {
+    player_t* target = action -> target;
     // Pass the carried execute_state to the action. This saves us a few
     // cycles, as we don't need to make a copy of the state to pass to
     // action -> pre_execute_state.
     if ( execute_state )
     {
+      target = execute_state -> target;
       action -> pre_execute_state = execute_state;
       execute_state = 0;
     }
 
     action -> execute_event = 0;
+
+    if ( target -> is_sleeping() )
+    {
+      if ( execute_state )
+        action_state_t::release( execute_state );
+      return;
+    }
+
     action -> execute();
 
     if ( action -> background ) return;
