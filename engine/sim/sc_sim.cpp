@@ -927,18 +927,22 @@ void sim_t::combat( int iteration )
       out_debug = o;
       out_log = o;
       out_error = o;
+
+      out_std.printf( "------ Iteration #%i ------", iteration + 1 );
+      std::flush( *out_std.get_stream() );
     }
     else
     {
       out_error.printf( "Unable to open output file '%s'\n", output_file_str.c_str() );
       cancel();
     }
-
-    out_std.printf( "------ Iteration #%i ------", iteration + 1 );
-    std::flush( *out_std.get_stream() );
   }
 
-  core_sim_t::combat( iteration );
+  if ( ! canceled )
+    core_sim_t::combat( iteration );
+
+  if ( debug_each && ! canceled )
+    static_cast<io::ofstream*>(out_std.get_stream()) -> close();
 }
 
 // sim_t::reset =============================================================
@@ -1565,7 +1569,8 @@ bool sim_t::iterate()
     fflush( stdout );
   }
 
-  reset();
+  if ( ! canceled )
+    reset();
 
   return ! canceled;
 }
