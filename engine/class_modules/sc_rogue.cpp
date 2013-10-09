@@ -1531,7 +1531,8 @@ struct crimson_tempest_t : public rogue_attack_t
     aoe = -1;
     requires_combo_points = true;
     direct_power_mod = 0.0275;
-
+    weapon = &( p -> main_hand_weapon );
+    weapon_power_mod = weapon_multiplier = 0;
     ct_dot = new crimson_tempest_dot_t( p );
     add_child( ct_dot );
   }
@@ -1547,6 +1548,14 @@ struct crimson_tempest_t : public rogue_attack_t
       ct_dot -> base_td = s -> result_amount * ct_dot -> data().effectN( 1 ).percent() / ct_dot -> num_ticks;
       ct_dot -> execute();
     }
+  }
+
+  virtual void schedule_travel( action_state_t* s )
+  {
+    rogue_attack_t::schedule_travel( s );
+
+    if ( result_is_hit( execute_state -> result ) )
+      trigger_restless_blades( execute_state );
   }
 };
 
