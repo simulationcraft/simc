@@ -36,6 +36,9 @@ struct adds_event_t : public raid_event_t
     parse_options( options, options_str );
 
     master = sim -> find_player( master_str );
+    // If the master is not found, default the master to the first created enemy
+    if ( ! master )
+        master = sim -> target_list.data().front();
     assert( master );
 
     double overlap = 1;
