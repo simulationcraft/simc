@@ -5751,6 +5751,7 @@ void shaman_t::init_actions()
 
     // AoE
     aoe -> add_action( this, "Fire Nova", "if=active_flame_shock>=4" );
+    aoe -> add_action( "wait,sec=cooldown.fire_nova.remains,if=active_flame_shock>=4&cooldown.fire_nova.remains<0.67" );
     aoe -> add_action( this, "Magma Totem", "if=active_enemies>5&!totem.fire.active" );
     aoe -> add_action( this, "Searing Totem", "if=active_enemies<=5&!totem.fire.active" );
     aoe -> add_action( this, "Lava Lash", "if=dot.flame_shock.ticking" );

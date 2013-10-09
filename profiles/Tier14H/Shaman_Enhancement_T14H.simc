@@ -79,6 +79,7 @@ actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.react>1&!buff.ascendanc
 # Multi target action priority list
 
 actions.aoe=fire_nova,if=active_flame_shock>=4
+actions.aoe+=/wait,sec=cooldown.fire_nova.remains,if=active_flame_shock>=4&cooldown.fire_nova.remains<0.67
 actions.aoe+=/magma_totem,if=active_enemies>5&!totem.fire.active
 actions.aoe+=/searing_totem,if=active_enemies<=5&!totem.fire.active
 actions.aoe+=/lava_lash,if=dot.flame_shock.ticking

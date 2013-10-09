@@ -139,6 +139,7 @@ public:
     buff_t* astral_insight;
     buff_t* celestial_alignment;
     buff_t* chosen_of_elune;
+    buff_t* dream_of_cenarius_eclipse;
     buff_t* eclipse_lunar;
     buff_t* eclipse_solar;
     buff_t* lunar_shower;
@@ -663,7 +664,7 @@ struct leader_of_the_pack_t : public heal_t
     background = true;
     proc = true;
 
-    cooldown -> duration = data().cooldown();
+    cooldown -> duration = timespan_t::from_seconds( 6.0 );
   }
 
   druid_t* p() const
@@ -5728,6 +5729,68 @@ struct innervate_t : public buff_t
   }
 };
 
+// Eclipse (Lunar) Buff =================================================
+
+struct eclipse_lunar_t : public druid_buff_t < buff_t >
+{
+  eclipse_lunar_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "lunar_eclipse", p.find_spell( 48518 ) )
+               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
+  {}
+
+  druid_t* p() const
+  { return static_cast<druid_t*>( player ); }
+
+  virtual bool trigger( int stacks, double value, double chance, timespan_adl_barrier::timespan_t duration )
+  {
+    if ( p() -> buff.dream_of_cenarius -> up() )
+    {
+      p() -> buff.dream_of_cenarius_eclipse -> trigger();
+      p() -> buff.dream_of_cenarius -> expire();
+    }
+
+    return druid_buff_t::trigger( stacks, value, chance, duration );
+  }
+
+  virtual void expire_override()
+  {
+    druid_buff_t::expire_override();
+
+    p() -> buff.dream_of_cenarius_eclipse -> expire();
+  }
+};
+
+// Eclipse (Solar) Buff =================================================
+
+struct eclipse_solar_t : public druid_buff_t < buff_t >
+{
+  eclipse_solar_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "solar_eclipse", p.find_spell( 48517 ) )
+               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
+  {}
+
+  druid_t* p() const
+  { return static_cast<druid_t*>( player ); }
+
+  virtual bool trigger( int stacks, double value, double chance, timespan_adl_barrier::timespan_t duration )
+  {
+    if ( p() -> buff.dream_of_cenarius -> up() )
+    {
+      p() -> buff.dream_of_cenarius_eclipse -> trigger();
+      p() -> buff.dream_of_cenarius -> expire();
+    }
+
+    return druid_buff_t::trigger( stacks, value, chance, duration );
+  }
+
+  virtual void expire_override()
+  {
+    druid_buff_t::expire_override();
+
+    p() -> buff.dream_of_cenarius_eclipse -> expire();
+  }
+};
+
 // Might of Ursoc Buff ======================================================
 
 struct might_of_ursoc_t : public buff_t
@@ -6169,15 +6232,15 @@ void druid_t::create_buffs()
   if ( talent.dream_of_cenarius -> ok() )
   {
     if ( specialization() == DRUID_BALANCE )
-      buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145151 ) );
+      buff.dream_of_cenarius         = buff_creator_t( this, "dream_of_cenarius", find_spell( 145151 ) );
     else if ( specialization() == DRUID_FERAL )
-      buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145152 ) )
-                                .max_stack( 2 );
+      buff.dream_of_cenarius         = buff_creator_t( this, "dream_of_cenarius", find_spell( 145152 ) )
+                                       .max_stack( 2 );
     else if ( specialization() == DRUID_GUARDIAN )
-      buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145162 ) )
-                                .chance( talent.dream_of_cenarius -> effectN( 1 ).percent() );
+      buff.dream_of_cenarius         = buff_creator_t( this, "dream_of_cenarius", find_spell( 145162 ) )
+                                       .chance( talent.dream_of_cenarius -> effectN( 1 ).percent() );
     else
-      buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", spell_data_t::not_found() );
+      buff.dream_of_cenarius         = buff_creator_t( this, "dream_of_cenarius", spell_data_t::not_found() );
   }
   else
   {
@@ -6192,18 +6255,19 @@ void druid_t::create_buffs()
 
   // Balance
 
-  buff.astral_insight        = buff_creator_t( this, "astral_insight", talent.soul_of_the_forest -> ok() ? find_spell( 145138 ) : spell_data_t::not_found() )
-                               .chance( 0.08 );
-  buff.celestial_alignment   = new celestial_alignment_t( *this );
-  buff.eclipse_lunar         = buff_creator_t( this, "lunar_eclipse",  find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 48518 ) : spell_data_t::not_found() )
-                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buff.eclipse_solar         = buff_creator_t( this, "solar_eclipse",  find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 48517 ) : spell_data_t::not_found() )
-                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buff.lunar_shower          = buff_creator_t( this, "lunar_shower",   spec.lunar_shower -> effectN( 1 ).trigger() );
-  buff.shooting_stars        = buff_creator_t( this, "shooting_stars", spec.shooting_stars -> effectN( 1 ).trigger() )
-                               .chance( spec.shooting_stars -> proc_chance() + ( set_bonus.tier16_4pc_caster() ? sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
-  buff.starfall              = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
-                               .cd( timespan_t::zero() );
+  buff.astral_insight            = buff_creator_t( this, "astral_insight", talent.soul_of_the_forest -> ok() ? find_spell( 145138 ) : spell_data_t::not_found() )
+                                   .chance( 0.08 );
+  buff.celestial_alignment       = new celestial_alignment_t( *this );
+  buff.dream_of_cenarius_eclipse = buff_creator_t( this, "dream_of_cenarius_eclipse", spell_data_t::nil() );
+  buff.eclipse_lunar             = new eclipse_lunar_t( *this );
+                                   //.add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.eclipse_solar             = new eclipse_solar_t( *this );
+                                   //.add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.lunar_shower              = buff_creator_t( this, "lunar_shower",   spec.lunar_shower -> effectN( 1 ).trigger() );
+  buff.shooting_stars            = buff_creator_t( this, "shooting_stars", spec.shooting_stars -> effectN( 1 ).trigger() )
+                                   .chance( spec.shooting_stars -> proc_chance() + ( set_bonus.tier16_4pc_caster() ? sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
+  buff.starfall                  = buff_creator_t( this, "starfall",       find_specialization_spell( "Starfall" ) )
+                                   .cd( timespan_t::zero() );
 
   stat_buff_creator_t ng = stat_buff_creator_t( this, "natures_grace" )
                            .spell( find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() );
@@ -7062,24 +7126,27 @@ double druid_t::composite_player_multiplier( school_e school )
     {
       if ( buff.eclipse_lunar -> up() || buff.eclipse_solar -> up() )
       {
-        m *= 1.0 + ( buff.eclipse_lunar -> data().effectN( 1 ).percent()
-                     + ( mastery.total_eclipse -> ok() ? cache.mastery_value() : 0.0 ) );
+        m *= 1.0 + buff.eclipse_lunar -> data().effectN( 1 ).percent()
+                 + mastery.total_eclipse -> ok() * cache.mastery_value()
+                 + buff.dream_of_cenarius_eclipse -> check() * buff.dream_of_cenarius -> data().effectN( 1 ).percent();
       }
     }
     else if ( dbc::is_school( school, SCHOOL_ARCANE ) )
     {
       if ( buff.eclipse_lunar -> up() )
       {
-        m *= 1.0 + ( buff.eclipse_lunar -> data().effectN( 1 ).percent()
-                     + ( mastery.total_eclipse -> ok() ? cache.mastery_value() : 0.0 ) );
+        m *= 1.0 + buff.eclipse_lunar -> data().effectN( 1 ).percent()
+                 + mastery.total_eclipse -> ok() * cache.mastery_value()
+                 + buff.dream_of_cenarius_eclipse -> check() * buff.dream_of_cenarius -> data().effectN( 1 ).percent();
       }
     }
     else if ( dbc::is_school( school, SCHOOL_NATURE ) )
     {
       if ( buff.eclipse_solar -> up() )
       {
-        m *= 1.0 + ( buff.eclipse_solar -> data().effectN( 1 ).percent()
-                     + ( mastery.total_eclipse -> ok() ? cache.mastery_value() : 0.0 ) );
+        m *= 1.0 + buff.eclipse_solar -> data().effectN( 1 ).percent()
+                 + mastery.total_eclipse -> ok() * cache.mastery_value()
+                 + buff.dream_of_cenarius_eclipse -> check() * buff.dream_of_cenarius -> data().effectN( 1 ).percent();
       }
     }
 
