@@ -2655,7 +2655,7 @@ void cleave_trinket( item_t* item )
     cleave_t( item_t* item ) :
       spell_t( "cleave_trinket", item -> player )
     {
-      callbacks = may_miss = may_crit = false;
+      callbacks = may_crit = false;
       proc = background = true;
       school = SCHOOL_PHYSICAL; // TODO: Won't work for healing trinket, and spells use various different schools.
       aoe = 5;
@@ -2759,7 +2759,7 @@ void multistrike_trinket( item_t* item )
     multistrike_attack_t( item_t* item ) :
       attack_t( "multistrike_attack", item -> player )
     {
-      callbacks = may_miss = may_crit = may_dodge = may_parry = may_block = may_glance = false;
+      callbacks = may_crit = may_glance = false;
       proc = background = special = true;
       school = SCHOOL_PHYSICAL;
       snapshot_flags |= STATE_MUL_DA;
@@ -2780,7 +2780,7 @@ void multistrike_trinket( item_t* item )
     multistrike_spell_t( item_t* item ) :
       spell_t( "multistrike_spell", item -> player )
     {
-      callbacks = may_miss = may_crit = false;
+      callbacks = may_crit = false;
       proc = background = true;
       school = SCHOOL_NATURE; // Multiple schools in reality, but any school would work
       snapshot_flags |= STATE_MUL_DA;
