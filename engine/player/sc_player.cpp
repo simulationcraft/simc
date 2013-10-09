@@ -670,6 +670,7 @@ player_t::player_t( sim_t*             s,
   dps_convergence( 0 ),
   // Heal
   iteration_heal( 0 ), iteration_heal_taken( 0 ),
+  iteration_absorb(), iteration_absorb_taken(),
   hpr( 0 ),
 
   report_information( player_processed_report_information_t() ),
@@ -3653,6 +3654,8 @@ void player_t::datacollection_begin()
   iteration_executed_foreground_actions = 0;
   iteration_dmg = 0;
   iteration_heal = 0;
+  iteration_absorb = 0.0;
+  iteration_absorb_taken = 0.0;
   iteration_dmg_taken = 0;
   iteration_heal_taken = 0;
   active_during_iteration = false;
@@ -5066,6 +5069,8 @@ void player_t::assess_damage( school_e school,
     ab -> expire();
     assert( absorb_buff_list.empty() || absorb_buff_list[ 0 ] != ab );
   } // end of absorb list loop
+
+  iteration_absorb_taken += result_ignoring_external_absorbs - s -> result_amount;
 
   s -> result_absorbed = s -> result_amount;
 
@@ -9607,6 +9612,11 @@ player_collected_data_t::player_collected_data_t( const std::string& player_name
   hpse( player_name + " Healing per Second (effective)", s.statistics_level < 2 ),
   htps( player_name + " Healing taken Per Second", s.statistics_level < 2 ),
   heal_taken( player_name + " Healing Taken", s.statistics_level < 2 ),
+  absorb( player_name + " Absorb", s.statistics_level < 2 ),
+  compound_absorb( player_name + " Total Absorb", s.statistics_level < 2 ),
+  aps( player_name + " Absorb Per Second", s.statistics_level < 1 ),
+  atps( player_name + " Absorb taken Per Second", s.statistics_level < 2 ),
+  absorb_taken( player_name + " Absorb Taken", s.statistics_level < 2 ),
   deaths( player_name + " Deaths", s.statistics_level < 2 ),
   theck_meloree_index( player_name + " Theck-Meloree Index", s.statistics_level < 1 ),
   resource_timelines(),
@@ -9755,6 +9765,7 @@ void player_collected_data_t::collect_data( const player_t& p )
   // Player only dmg/heal
   dmg.add( p.iteration_dmg );
   heal.add( p.iteration_heal );
+  absorb.add( p.iteration_absorb );
 
   double total_iteration_dmg = p.iteration_dmg; // player + pet dmg
   for ( size_t i = 0; i < p.pet_list.size(); ++i )
@@ -9766,6 +9777,11 @@ void player_collected_data_t::collect_data( const player_t& p )
   {
     total_iteration_heal += p.pet_list[ i ] -> iteration_heal;
   }
+  double total_iteration_absorb = p.iteration_absorb;
+  for ( size_t i = 0; i < p.pet_list.size(); ++i )
+  {
+    total_iteration_absorb += p.pet_list[ i ] -> iteration_absorb;
+  }
 
   compound_dmg.add( total_iteration_dmg );
   dps.add( f_length ? total_iteration_dmg / f_length : 0 );
@@ -9775,11 +9791,16 @@ void player_collected_data_t::collect_data( const player_t& p )
   hps.add( f_length ? total_iteration_heal / f_length : 0 );
   hpse.add( sim_length ? total_iteration_heal / sim_length : 0 );
 
-  dmg_taken.add( p.iteration_dmg_taken );
-  dtps.add( f_length ? p.iteration_dmg_taken / f_length : 0 );
-
   heal_taken.add( p.iteration_heal_taken );
   htps.add( f_length ? p.iteration_heal_taken / f_length : 0 );
+
+  compound_absorb.add( total_iteration_absorb );
+  aps.add( f_length ? total_iteration_absorb / f_length : 0.0 );
+  absorb_taken.add( p.iteration_absorb_taken );
+  atps.add( f_length ? p.iteration_absorb_taken / f_length : 0.0 );
+
+  dmg_taken.add( p.iteration_dmg_taken );
+  dtps.add( f_length ? p.iteration_dmg_taken / f_length : 0 );
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
     combat_end_resource[ i ].add( p.resources.current[ i ] );

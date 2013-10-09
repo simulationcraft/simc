@@ -3825,6 +3825,12 @@ struct player_collected_data_t
   extended_sample_data_t htps;
   extended_sample_data_t heal_taken;
   sc_timeline_t timeline_healing_taken;
+  // Absorb
+  extended_sample_data_t absorb;
+  extended_sample_data_t compound_absorb;
+  extended_sample_data_t aps;
+  extended_sample_data_t atps;
+  extended_sample_data_t absorb_taken;
   // Tank
   extended_sample_data_t deaths;
   extended_sample_data_t theck_meloree_index;
@@ -4299,7 +4305,7 @@ public:
   double dps_convergence;
 
   // Heal
-  double iteration_heal, iteration_heal_taken; // temporary accumulators
+  double iteration_heal, iteration_heal_taken, iteration_absorb, iteration_absorb_taken; // temporary accumulators
   double hpr;
 
 

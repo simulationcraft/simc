@@ -237,8 +237,10 @@ void stats_t::datacollection_end()
 
   if ( type == STATS_DMG )
     player -> iteration_dmg += iaa;
-  else if ( type == STATS_HEAL || type == STATS_ABSORB )
+  else if ( type == STATS_HEAL )
     player -> iteration_heal += iaa;
+  else if ( type == STATS_ABSORB )
+    player -> iteration_absorb += iaa;
 
   portion_aps.add( player -> iteration_fight_length != timespan_t::zero() ? iaa / player -> iteration_fight_length.total_seconds() : 0 );
   portion_apse.add( sim.current_time != timespan_t::zero() ? iaa / sim.current_time.total_seconds() : 0 );
