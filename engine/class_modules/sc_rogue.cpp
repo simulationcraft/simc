@@ -3146,6 +3146,7 @@ void rogue_t::init_actions()
     def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
 
     def -> add_action( this, "Rupture", "if=ticks_remain<2|(combo_points=5&ticks_remain<3)" );
+	def -> add_action( this, "Fan of Knives", "if=combo_points<5&active_enemies>=4" );
 
     def -> add_action( this, "Vendetta" );
 
@@ -3208,12 +3209,14 @@ void rogue_t::init_actions()
 
     // Combo point generators
     action_priority_list_t* gen = get_action_priority_list( "generator", "Combo point generators" );
+	gen -> add_action( this, "Fan of Knives", "line_cd=5,if=active_enemies>=4" );
     gen -> add_action( this, "Revealing Strike", "if=ticks_remain<2" );
     gen -> add_action( this, "Sinister Strike" );
 
     // Combo point finishers
     action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
     finisher -> add_action( this, "Rupture", "if=ticks_remain<2&target.time_to_die>=26&(active_enemies<2|!buff.blade_flurry.up)" );
+	finisher -> add_action( this, "Crimson Tempest", "if=active_enemies>=7&dot.crimson_tempest_dot.ticks_remain<=2" );
     finisher -> add_action( this, "Eviscerate" );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
@@ -3262,7 +3265,8 @@ void rogue_t::init_actions()
     // Combo point generators
     action_priority_list_t* gen = get_action_priority_list( "generator", "Combo point generators" );
     gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+cooldown.shadow_dance.remains*energy.regen<80|energy+cooldown.vanish.remains*energy.regen<60)" );
-    gen -> add_action( this, "Hemorrhage", "if=remains<3|position_front" );
+	gen -> add_action( this, "Fan of Knives", "if=active_enemies>=4" );
+	gen -> add_action( this, "Hemorrhage", "if=remains<3|position_front" );
     gen -> add_talent( this, "Shuriken Toss", "if=energy<65&energy.regen<16" );
     gen -> add_action( this, "Backstab" );
     gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
@@ -3272,14 +3276,15 @@ void rogue_t::init_actions()
     if ( highest_rune_stat != STAT_MASTERY_RATING )
     {
       finisher -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<4" );
-      finisher -> add_action( this, "Rupture", "if=ticks_remain<2" );
+      finisher -> add_action( this, "Rupture", "if=ticks_remain<2&active_enemies<3" );
     }
     else
     {
       finisher -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<4|(buff.rune_of_reorigination.react&buff.slice_and_dice.remains<25)" );
-      finisher -> add_action( this, "Rupture", "if=ticks_remain<2|(buff.rune_of_reorigination.react&ticks_remain<7)" );
+      finisher -> add_action( this, "Rupture", "if=ticks_remain<2&active_enemies<3|(buff.rune_of_reorigination.react&ticks_remain<7)" );
     }
-    finisher -> add_action( this, "Eviscerate" );
+	finisher -> add_action( this, "Crimson Tempest", "if=(active_enemies>1&dot.crimson_tempest_dot.ticks_remain<=2&combo_points=5)|active_enemies>=5" );
+	finisher -> add_action( this, "Eviscerate", "if=active_enemies<4|(active_enemies>3&dot.crimson_tempest_dot.ticks_remain>=2)" );
     finisher -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
 
     // Resource pooling

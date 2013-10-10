@@ -52,6 +52,7 @@ actions+=/run_action_list,name=pool
 # Combo point generators
 
 actions.generator=run_action_list,name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+cooldown.shadow_dance.remains*energy.regen<80|energy+cooldown.vanish.remains*energy.regen<60)
+actions.generator+=/fan_of_knives,if=active_enemies>=4
 actions.generator+=/hemorrhage,if=remains<3|position_front
 actions.generator+=/shuriken_toss,if=talent.shuriken_toss.enabled&(energy<65&energy.regen<16)
 actions.generator+=/backstab
@@ -60,8 +61,9 @@ actions.generator+=/run_action_list,name=pool
 # Combo point finishers
 
 actions.finisher=slice_and_dice,if=buff.slice_and_dice.remains<4
-actions.finisher+=/rupture,if=ticks_remain<2
-actions.finisher+=/eviscerate
+actions.finisher+=/rupture,if=ticks_remain<2&active_enemies<3
+actions.finisher+=/crimson_tempest,if=(active_enemies>1&dot.crimson_tempest_dot.ticks_remain<=2&combo_points=5)|active_enemies>=5
+actions.finisher+=/eviscerate,if=active_enemies<4|(active_enemies>3&dot.crimson_tempest_dot.ticks_remain>=2)
 actions.finisher+=/run_action_list,name=pool
 
 # Resource pooling

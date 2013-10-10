@@ -46,6 +46,7 @@ actions+=/dispatch,if=dot.rupture.ticks_remain<2&energy>90
 actions+=/mutilate,if=dot.rupture.ticks_remain<2&energy>90
 actions+=/marked_for_death,if=talent.marked_for_death.enabled&combo_points=0
 actions+=/rupture,if=ticks_remain<2|(combo_points=5&ticks_remain<3)
+actions+=/fan_of_knives,if=combo_points<5&active_enemies>=4
 actions+=/vendetta
 actions+=/envenom,if=combo_points>4
 actions+=/envenom,if=combo_points>=2&buff.slice_and_dice.remains<3

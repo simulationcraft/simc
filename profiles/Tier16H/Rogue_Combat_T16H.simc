@@ -54,12 +54,14 @@ actions+=/run_action_list,name=generator,if=energy>60|buff.deep_insight.down|buf
 
 # Combo point generators
 
-actions.generator=revealing_strike,if=ticks_remain<2
+actions.generator=fan_of_knives,line_cd=5,if=active_enemies>=4
+actions.generator+=/revealing_strike,if=ticks_remain<2
 actions.generator+=/sinister_strike
 
 # Combo point finishers
 
 actions.finisher=rupture,if=ticks_remain<2&target.time_to_die>=26&(active_enemies<2|!buff.blade_flurry.up)
+actions.finisher+=/crimson_tempest,if=active_enemies>=7&dot.crimson_tempest_dot.ticks_remain<=2
 actions.finisher+=/eviscerate
 
 head=helmet_of_the_barbed_assassin,id=99348,upgrade=2,gems=capacitive_primal_160agi_180agi,reforge=mastery_crit
