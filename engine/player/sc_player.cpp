@@ -9710,7 +9710,11 @@ void player_collected_data_t::analyze( const player_t& p )
   htps.analyze_all();
   timeline_healing_taken.adjust( p.sim -> divisor_timeline );
   // Absorb
+  absorb.analyze_all();
+  compound_absorb.analyze_all();
   aps.analyze_all();
+  absorb_taken.analyze_all();
+  atps.analyze_all();
   // Tank
   deaths.analyze_all();
   theck_meloree_index.analyze_all();
