@@ -546,7 +546,7 @@ struct rogue_attack_t : public melee_attack_t
     return m;
   }
 
-  void trigger_restless_blades( action_state_t* s )
+  void trigger_restless_blades()
   {
     if ( ! p() -> spec.restless_blades -> ok() )
       return;
@@ -554,8 +554,16 @@ struct rogue_attack_t : public melee_attack_t
     if ( ! requires_combo_points )
       return;
 
-    rogue_td_t& td = *this -> cast_td( s -> target );
-    timespan_t reduction = p() -> spec.restless_blades -> effectN( 1 ).time_value() * td.combo_points.count;
+    if ( combo_points_spent == 0 )
+      return;
+
+    if ( ! result_is_hit( execute_state -> result ) )
+      return;
+
+    if ( ! harmful )
+      return;
+
+    timespan_t reduction = p() -> spec.restless_blades -> effectN( 1 ).time_value() * combo_points_spent;
 
     p() -> cooldowns.adrenaline_rush -> ready -= reduction;
     p() -> cooldowns.killing_spree   -> ready -= reduction;
@@ -1002,6 +1010,7 @@ void rogue_attack_t::execute()
       trigger_main_gauche( this );
 
     trigger_tricks_of_the_trade( this );
+    trigger_restless_blades();
   }
 }
 
@@ -1431,14 +1440,6 @@ struct eviscerate_t : public rogue_attack_t
     return t;
   }
 
-  virtual void schedule_travel( action_state_t* s )
-  {
-    rogue_attack_t::schedule_travel( s );
-
-    if ( result_is_hit( execute_state -> result ) )
-      trigger_restless_blades( execute_state );
-  }
-
   virtual void impact( action_state_t* state )
   {
     rogue_attack_t::impact( state );
@@ -1547,14 +1548,6 @@ struct crimson_tempest_t : public rogue_attack_t
       ct_dot -> base_td = s -> result_amount * ct_dot -> data().effectN( 1 ).percent() / ct_dot -> num_ticks;
       ct_dot -> execute();
     }
-  }
-
-  virtual void schedule_travel( action_state_t* s )
-  {
-    rogue_attack_t::schedule_travel( s );
-
-    if ( result_is_hit( execute_state -> result ) )
-      trigger_restless_blades( execute_state );
   }
 };
 
@@ -1967,14 +1960,6 @@ struct rupture_t : public rogue_attack_t
       t += p() -> buffs.adrenaline_rush -> data().effectN( 3 ).time_value();
 
     return t;
-  }
-
-  virtual void schedule_travel( action_state_t* s )
-  {
-    rogue_attack_t::schedule_travel( s );
-
-    if ( result_is_hit( execute_state -> result ) )
-      trigger_restless_blades( execute_state );
   }
 
   virtual void execute()
