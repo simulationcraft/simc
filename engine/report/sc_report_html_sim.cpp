@@ -547,11 +547,11 @@ void print_html_raid_summary( report::sc_html_stream& os, sim_t* sim, sim_t::rep
   if ( sim -> total_heal.mean() > 0 )
   {
     os.printf(
-      "\t\t\t\t<li><b>Raid Heal:</b> %.0f</li>\n",
-      sim -> total_heal.mean() );
+      "\t\t\t\t<li><b>Raid Heal+Absorb:</b> %.0f</li>\n",
+      sim -> total_heal.mean() + sim -> total_absorb.mean() );
     os.printf(
-      "\t\t\t\t<li><b>Raid HPS:</b> %.0f</li>\n",
-      sim -> raid_hps.mean() );
+      "\t\t\t\t<li><b>Raid HPS+APS:</b> %.0f</li>\n",
+      sim -> raid_hps.mean() + sim -> raid_aps.mean() );
   }
   os << "\t\t\t</ul><p>&nbsp;</p>\n";
 

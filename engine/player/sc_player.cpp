@@ -3714,6 +3714,7 @@ void player_t::datacollection_end()
   {
     sim -> iteration_dmg += iteration_dmg;
     sim -> iteration_heal += iteration_heal;
+    sim -> iteration_absorb += iteration_absorb;
   }
   
   // make sure TMI-relevant timeline lengths all match for tanks

@@ -884,12 +884,12 @@ void print_text( FILE* file, sim_t* sim, bool detail )
     if ( ! sim -> players_by_hps.empty() )
     {
       util::fprintf( file, "\nHPS Ranking:\n" );
-      util::fprintf( file, "%7.0f 100.0%%  Raid\n", sim -> raid_hps.mean() );
+      util::fprintf( file, "%7.0f 100.0%%  Raid\n", sim -> raid_hps.mean() + sim -> raid_aps.mean() );
       for ( size_t i = 0; i < sim -> players_by_hps.size(); i++ )
       {
         player_t* p = sim -> players_by_hps[ i ];
         if ( p -> collected_data.hps.mean() <= 0 ) continue;
-        util::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> collected_data.hps.mean(), sim -> raid_hps.mean() ? 100 * p -> collected_data.hpse.mean() / sim -> raid_hps.mean() : 0, p -> name() );
+        util::fprintf( file, "%7.0f  %4.1f%%  %s\n", p -> collected_data.hps.mean() + p -> collected_data.aps.mean(), sim -> raid_hps.mean() ? 100 * p -> collected_data.hpse.mean() / sim -> raid_hps.mean() : 0, p -> name() );
       }
     }
   }

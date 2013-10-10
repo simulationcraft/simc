@@ -724,7 +724,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
   if ( dps )
     max_aps = players_by_aps[ 0 ] -> collected_data.dps.mean();
   else
-    max_aps = players_by_aps[ 0 ] -> collected_data.hps.mean();
+    max_aps = players_by_aps[ 0 ] -> collected_data.hps.mean() + players_by_aps[ 0 ] -> collected_data.aps.mean();
 
   std::string s = std::string();
   char buffer[ 1024 ];
@@ -759,7 +759,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
       }
     }
 
-    std::string chart_name = first ? ( std::string( player_names_non_ascii ? "\xE4\xB8\x80" : "" ) + std::string( dps ? "DPS" : "HPS" ) + " Ranking" ) : "";
+    std::string chart_name = first ? ( std::string( player_names_non_ascii ? "\xE4\xB8\x80" : "" ) + std::string( dps ? "DPS" : "HPS+APS" ) + " Ranking" ) : "";
     sc_chart chart( chart_name, HORIZONTAL_BAR, sim -> print_styles );
     chart.set_height( as<unsigned>( num_players ) * 20 + ( first ? 20 : 0 ) );
 
@@ -771,7 +771,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
     for ( size_t i = 0; i < num_players; i++ )
     {
       player_t* p = player_list[ i ];
-      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i ? "|" : "" ), dps ? p -> collected_data.dps.mean() : p -> collected_data.hps.mean() ); s += buffer;
+      snprintf( buffer, sizeof( buffer ), "%s%.0f", ( i ? "|" : "" ), dps ? p -> collected_data.dps.mean() : p -> collected_data.hps.mean() + p -> collected_data.aps.mean() ); s += buffer;
     }
     s += amp;
     snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", max_aps * 2.5 ); s += buffer;
@@ -789,7 +789,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
       player_t* p = player_list[ i ];
       std::string formatted_name = p -> name_str;
       util::urlencode( formatted_name );
-      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i ? "|" : "" ), dps ? p -> collected_data.dps.mean() : p -> collected_data.hps.mean(), formatted_name.c_str(), get_color( p ).c_str(), ( int )i ); s += buffer;
+      snprintf( buffer, sizeof( buffer ), "%st++%.0f++%s,%s,%d,0,15", ( i ? "|" : "" ), dps ? p -> collected_data.dps.mean() : p -> collected_data.hps.mean() + p -> collected_data.aps.mean(), formatted_name.c_str(), get_color( p ).c_str(), ( int )i ); s += buffer;
     }
     s += amp;
 

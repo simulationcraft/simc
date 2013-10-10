@@ -2703,8 +2703,8 @@ public:
   reforge_plot_t* const reforge_plot;
   timespan_t elapsed_cpu;
   timespan_t elapsed_time;
-  double     iteration_dmg, iteration_heal;
-  simple_sample_data_t raid_dps, total_dmg, raid_hps, total_heal;
+  double     iteration_dmg, iteration_heal, iteration_absorb;
+  simple_sample_data_t raid_dps, total_dmg, raid_hps, total_heal, total_absorb, raid_aps;
   extended_sample_data_t simulation_length;
   int        report_progress;
   int        bloodlust_percent;

@@ -851,8 +851,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   scaling( new scaling_t( this ) ),
   plot( new plot_t( this ) ),
   reforge_plot( new reforge_plot_t( this ) ),
-  elapsed_cpu( timespan_t::zero() ), elapsed_time( timespan_t::zero() ), iteration_dmg( 0 ), iteration_heal( 0 ),
-  raid_dps(), total_dmg(), raid_hps(), total_heal(),
+  elapsed_cpu( timespan_t::zero() ), elapsed_time( timespan_t::zero() ), iteration_dmg( 0 ), iteration_heal( 0 ), iteration_absorb( 0 ),
+  raid_dps(), total_dmg(), raid_hps(), total_heal(), raid_aps(), total_absorb(),
   simulation_length( "Simulation Length", false ),
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( 5.0 ) ),
@@ -1256,6 +1256,8 @@ void sim_t::datacollection_end()
   raid_dps.add( current_time != timespan_t::zero() ? iteration_dmg / current_time.total_seconds() : 0 );
   total_heal.add( iteration_heal );
   raid_hps.add( current_time != timespan_t::zero() ? iteration_heal / current_time.total_seconds() : 0 );
+  total_absorb.add( iteration_absorb );
+  raid_aps.add( current_time != timespan_t::zero() ? iteration_absorb / current_time.total_seconds() : 0 );
 }
 
 // sim_t::init ==============================================================
@@ -1589,6 +1591,8 @@ void sim_t::merge( sim_t& other_sim )
   raid_dps.merge( other_sim.raid_dps );
   total_heal.merge( other_sim.total_heal );
   raid_hps.merge( other_sim.raid_hps );
+  total_absorb.merge( other_sim.total_absorb );
+  raid_aps.merge( other_sim.raid_aps );
 
   if ( max_events_remaining < other_sim.max_events_remaining ) max_events_remaining = other_sim.max_events_remaining;
 
