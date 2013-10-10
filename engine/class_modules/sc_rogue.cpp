@@ -808,7 +808,7 @@ static bool trigger_blade_flurry( action_state_t* s )
       {
         player_t* t = sim -> actor_list[ i ];
 
-        if ( ! t -> is_sleeping() && t -> is_enemy() && ( t != target ) )
+        if ( ! t -> is_sleeping() && t -> is_enemy() && t != target )
           tl.push_back( t );
       }
 
@@ -1353,11 +1353,12 @@ struct envenom_t : public rogue_attack_t
   envenom_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "envenom", p, p -> find_class_spell( "Envenom" ), options_str )
   {
+    weapon = &( p -> main_hand_weapon );
     requires_combo_points  = true;
     direct_power_mod       = 0.134;
     num_ticks              = 0;
     base_dd_min            = base_dd_max = 0.213 * p -> dbc.spell_scaling( p -> type, p -> level );
-    weapon_multiplier      = 0.0;
+    weapon_multiplier = weapon_power_mod = 0.0;
   }
 
   double base_da_min( const action_state_t* s )
@@ -1413,6 +1414,8 @@ struct eviscerate_t : public rogue_attack_t
     rogue_attack_t( "eviscerate", p, p -> find_class_spell( "Eviscerate" ), options_str )
   {
     requires_combo_points = true;
+    weapon = &( player -> main_hand_weapon );
+    weapon_multiplier = weapon_power_mod = 0;
 
 //    base_direct_power_mod  = 0.16;
     direct_power_mod = 0.20; // TO-DO: Possibly fix later. Stealth buffed in beta as of 16016.
@@ -1486,6 +1489,8 @@ struct fan_of_knives_t : public rogue_attack_t
   fan_of_knives_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "fan_of_knives", p, p -> find_class_spell( "Fan of Knives" ), options_str )
   {
+    weapon = &( p -> main_hand_weapon );
+    weapon_multiplier = weapon_power_mod = 0;
     direct_power_mod = data().extra_coeff();
     aoe              = -1;
   }
@@ -1498,12 +1503,6 @@ struct fan_of_knives_t : public rogue_attack_t
     {
       if ( p() -> glyph.sharp_knives -> ok() && ! sim -> overrides.weakened_armor )
         target -> debuffs.weakened_armor -> trigger();
-
-      if ( p() -> active_lethal_poison )
-      {
-        p() -> active_lethal_poison -> target = s -> target;
-        p() -> active_lethal_poison -> execute();
-      }
     }
   }
 };
