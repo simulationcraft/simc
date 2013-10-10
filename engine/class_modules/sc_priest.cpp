@@ -1857,7 +1857,7 @@ struct priest_procced_mastery_spell_t : public priest_spell_t
   {
     stormlash_da_multiplier = 0.0;
     background              = true;
-    proc                    = true;
+    proc                    = false;
     base_execute_time       = timespan_t::zero();
 
     crit_bonus_multiplier *= 1.0 + priest.sets -> set( SET_T16_2PC_CASTER ) -> effectN( 1 ).percent();
@@ -1887,8 +1887,8 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
                     p.find_spell( 78203 ) )
   {
     background        = true;
-    proc              = true;
-    callbacks         = false;
+    proc              = false;
+    callbacks         = true;
     may_miss          = false;
 
     trigger_gcd       = timespan_t::zero();

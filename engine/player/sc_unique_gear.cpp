@@ -3151,6 +3151,7 @@ struct essence_of_yulon_t : public spell_t
     spell_t( "essence_of_yulon", p, p -> find_spell( 148008 ) )
   {
     background = may_crit = true;
+    proc = false;
     aoe = 5;
     direct_power_mod /= driver.duration().total_seconds() + 1;
   }
