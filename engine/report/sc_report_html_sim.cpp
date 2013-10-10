@@ -900,6 +900,41 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
+  os << "\t\t<div id=\"help-hps\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>HPS</h3>\n"
+     << "\t\t\t\t<p>Average healing (or absorption) per active player duration.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
+  os << "\t\t<div id=\"help-hps-pct\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>HPS%</h3>\n"
+     << "\t\t\t\t<p>Percentage of total HPS (including absorb) contributed by a particular action.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
+  os << "\t\t<div id=\"help-hpe\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>HPE</h3>\n"
+     << "\t\t\t\t<p>Average healing (or absorb) per execution of an individual action.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
+  os << "\t\t<div id=\"help-hpet\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>HPET</h3>\n"
+     << "\t\t\t\t<p>Average healing (or absorb) per execute time of an individual action; the amount of healing generated, divided by the time taken to execute the action, including time spent in the GCD.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
+  os << "\t\t<div id=\"help-hpr\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>HPR</h3>\n"
+     << "\t\t\t\t<p>Average healing (or absorb) per resource point spent.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
   os << "\t\t<div id=\"help-tmi\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>Theck-Meloree Index</h3>\n"

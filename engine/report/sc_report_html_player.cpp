@@ -2256,15 +2256,20 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
                n.c_str(),
                p -> collected_data.dps.mean() );
   else
-    os.printf( "\">%s&nbsp;:&nbsp;%.0f hps",
+    os.printf( "\">%s&nbsp;:&nbsp;%.0f hps (%.0f aps)",
                n.c_str(),
-               p -> collected_data.hps.mean() );
+               p -> collected_data.hps.mean() + p -> collected_data.aps.mean(),
+               p -> collected_data.aps.mean() );
 
   // if player tank, print extra metrics
   if ( p -> primary_role() == ROLE_TANK && p -> type != ENEMY )
   {
-    // print DTPS
+    // print DTPS & HPS
     os.printf( ", %.0f dtps", p -> collected_data.dtps.mean() );
+    os.printf( ", %.0f hps (%.0f aps)",  
+               p -> collected_data.hps.mean() + p -> collected_data.aps.mean(), 
+               p -> collected_data.aps.mean() );
+    // print TMI
     double tmi_display =  p -> collected_data.theck_meloree_index.mean();
     std::string tmi_letter = " ";
     if ( tmi_display >= 1000000000.0 )
@@ -2344,36 +2349,49 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   {
     os << "\t\t\t\t\t<h3 class=\"toggle open\">Results, Spec and Gear</h3>\n";
   }
-  os << "\t\t\t\t\t<div class=\"toggle-content\">\n"
-     << "\t\t\t\t\t\t<table class=\"sc\">\n"
+  os << "\t\t\t\t\t<div class=\"toggle-content\">\n";
+
+  // Table for DPS, HPS, APS
+  os << "\t\t\t\t\t\t<table class=\"sc\">\n"
      << "\t\t\t\t\t\t\t<tr>\n";
+  // First, make the header row
   // Damage
   if ( cd.dps.mean() > 0 )
+  {
     os << "\t\t\t\t\t\t\t\t<th><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpse\" class=\"help\">DPS(e)</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">DPS Error</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">DPS Range</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpr\" class=\"help\">DPR</a></th>\n";
+  }
+  // spacer
+  if ( cd.hps.mean() > 0 && cd.dps.mean() > 0 )
+    os << "\t\t\t\t\t\t\t\t<th>&nbsp</th>\n";
   // Heal
   if ( cd.hps.mean() > 0 )
-    os << "\t\t\t\t\t\t\t\t<th><a href=\"#help-dps\" class=\"help\">HPS</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpse\" class=\"help\">HPS(e)</a></th>\n"
+  {
+    os << "\t\t\t\t\t\t\t\t<th><a href=\"#help-hps\" class=\"help\">HPS</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-hpse\" class=\"help\">HPS(e)</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">HPS Error</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">HPS Range</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-dpr\" class=\"help\">HPR</a></th>\n";
-
-
-  os << "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-out\" class=\"help\">RPS Out</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-in\" class=\"help\">RPS In</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th>Primary Resource</th>\n"
-     << "\t\t\t\t\t\t\t\t<th><a href=\"#help-waiting\" class=\"help\">Waiting</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th><a href=\"#help-apm\" class=\"help\">APM</a></th>\n"
-     << "\t\t\t\t\t\t\t\t<th>Active</th>\n"
-     << "\t\t\t\t\t\t\t\t<th>Skill</th>\n"
-     << "\t\t\t\t\t\t\t</tr>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-hpr\" class=\"help\">HPR</a></th>\n";
+  }
+  // spacer
+  if ( cd.hps.mean() > 0 && cd.aps.mean() > 0 )
+    os << "\t\t\t\t\t\t\t\t<th>&nbsp</th>\n";
+  // Absorb
+  if ( cd.aps.mean() > 0 )
+  {
+    os << "\t\t\t\t\t\t\t\t<th><a href=\"#help-hps\" class=\"help\">APS</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">APS Error</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">APS Range</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-hpr\" class=\"help\">APR</a></th>\n";
+  }
+  // end row, begin new row
+  os << "\t\t\t\t\t\t\t</tr>\n"
      << "\t\t\t\t\t\t\t<tr>\n";
 
-  // Damage
+  // Now do the data row
   if ( cd.dps.mean() > 0 )
   {
     double range = ( p -> collected_data.dps.percentile( 0.95 ) - p -> collected_data.dps.percentile( 0.05 ) ) / 2;
@@ -2392,6 +2410,9 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
       cd.dps.mean() ? range / cd.dps.mean() * 100.0 : 0,
       p -> dpr );
   }
+  // Spacer
+  if ( cd.dps.mean() > 0 && cd.hps.mean() > 0 )
+    os << "\t\t\t\t\t\t\t\t<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n";
   // Heal
   if ( cd.hps.mean() > 0 )
   {
@@ -2410,26 +2431,34 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
       range,
       cd.hps.mean() ? range / cd.hps.mean() * 100.0 : 0,
       p -> hpr );
+    
   }
-  os.printf(
-    "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
-    "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
-    "\t\t\t\t\t\t\t\t<td>%s</td>\n"
-    "\t\t\t\t\t\t\t\t<td>%.2f%%</td>\n"
-    "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
-    "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n"
-    "\t\t\t\t\t\t\t\t<td>%.0f%%</td>\n"
-    "\t\t\t\t\t\t\t</tr>\n"
-    "\t\t\t\t\t\t</table>\n",
-    p -> rps_loss,
-    p -> rps_gain,
-    util::inverse_tokenize( util::resource_type_string( p -> primary_resource() ) ).c_str(),
-    cd.fight_length.mean() ? 100.0 * cd.waiting_time.mean() / cd.fight_length.mean() : 0,
-    cd.fight_length.mean() ? 60.0 * cd.executed_foreground_actions.mean() / cd.fight_length.mean() : 0,
-    sim -> simulation_length.mean() ? cd.fight_length.mean() / sim -> simulation_length.mean() * 100.0 : 0,
-    p -> initial.skill * 100.0 );
-
-  // Tank
+  // Spacer
+  if ( cd.aps.mean() > 0 && cd.hps.mean() > 0 )
+    os << "\t\t\t\t\t\t\t\t<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n";
+  // Absorb
+  if ( cd.aps.mean() > 0 )
+  {
+    double range = ( cd.aps.percentile( 0.95 ) - cd.aps.percentile( 0.05 ) ) / 2;
+    double aps_error = sim_t::distribution_mean_error( *sim, p -> collected_data.aps );
+    os.printf(
+      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
+      "\t\t\t\t\t\t\t\t<td>%.2f / %.2f%%</td>\n"
+      "\t\t\t\t\t\t\t\t<td>%.0f / %.1f%%</td>\n"
+      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n",
+      cd.aps.mean(),
+      aps_error,
+      cd.aps.mean() ? aps_error * 100 / cd.aps.mean() : 0,
+      range,
+      cd.aps.mean() ? range / cd.aps.mean() * 100.0 : 0,
+      p -> hpr );
+    
+  }
+  // close table
+  os << "\t\t\t\t\t\t\t</tr>\n"
+     << "\t\t\t\t\t\t</table>\n";
+    
+  // Tank table
   if ( p -> primary_role() == ROLE_TANK && p -> type != ENEMY )
   {
     os << "\t\t\t\t\t\t<table class=\"sc mt\">\n"
@@ -2437,6 +2466,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-dtps\" class=\"help\">DTPS</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">DTPS Error</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">DTPS Range</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th>&nbsp</th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmi\" class=\"help\">TMI</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">TMI Error</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">TMI Min</a></th>\n"
@@ -2454,6 +2484,9 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
       cd.dtps.mean(),
       dtps_error, cd.dtps.mean() ? dtps_error * 100 / cd.dtps.mean() : 0,
       dtps_range, cd.dtps.mean() ? dtps_range / cd.dtps.mean() * 100.0 : 0 );
+    
+    // spacer
+    os << "\t\t\t\t\t\t\t\t<td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n";
     
     double tmi_error = sim_t::distribution_mean_error( *sim, p -> collected_data.theck_meloree_index );
     double tmi_range = ( cd.theck_meloree_index.percentile( 0.95 ) - cd.theck_meloree_index.percentile( 0.05 ) ) / 2;
@@ -2503,6 +2536,40 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
 
     os << "\t\t\t\t\t\t\t</tr>\n"
        << "\t\t\t\t\t\t</table>\n";
+  }
+
+  // Resources/Activity Table
+  if ( ! p -> is_pet() )
+  {
+    os << "\t\t\t\t\t\t<table class=\"sc ra\">\n"
+       << "\t\t\t\t\t\t\t<tr>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-out\" class=\"help\">RPS Out</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-rps-in\" class=\"help\">RPS In</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th>Primary Resource</th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-waiting\" class=\"help\">Waiting</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-apm\" class=\"help\">APM</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th>Active</th>\n"
+       << "\t\t\t\t\t\t\t\t<th>Skill</th>\n"
+       << "\t\t\t\t\t\t\t</tr>\n"
+       << "\t\t\t\t\t\t\t<tr>\n";
+
+    os.printf(
+      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
+      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
+      "\t\t\t\t\t\t\t\t<td>%s</td>\n"
+      "\t\t\t\t\t\t\t\t<td>%.2f%%</td>\n"
+      "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
+      "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n"
+      "\t\t\t\t\t\t\t\t<td>%.0f%%</td>\n"
+      "\t\t\t\t\t\t\t</tr>\n"
+      "\t\t\t\t\t\t</table>\n",
+      p -> rps_loss,
+      p -> rps_gain,
+      util::inverse_tokenize( util::resource_type_string( p -> primary_resource() ) ).c_str(),
+      cd.fight_length.mean() ? 100.0 * cd.waiting_time.mean() / cd.fight_length.mean() : 0,
+      cd.fight_length.mean() ? 60.0 * cd.executed_foreground_actions.mean() / cd.fight_length.mean() : 0,
+      sim -> simulation_length.mean() ? cd.fight_length.mean() / sim -> simulation_length.mean() * 100.0 : 0,
+      p -> initial.skill * 100.0 );
   }
 
 
@@ -2680,18 +2747,18 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
       "\t\t\t\t\t\t</table>\n" );
   }
 
-  if ( p -> collected_data.heal.max() > 0 )
+  if ( p -> collected_data.heal.max() > 0 || p -> collected_data.absorb.max() > 0 )
   {
     // Abilities Section - Heals
     os << "\t\t\t\t\t\t<table class=\"sc\">\n"
        << "\t\t\t\t\t\t\t<tr>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"left small\">Healing Stats</th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps\" class=\"help\">HPS</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps-pct\" class=\"help\">HPS%</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hps\" class=\"help\">HPS</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hps-pct\" class=\"help\">HPS%</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpe\" class=\"help\">HPE</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpet\" class=\"help\">HPET</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hpe\" class=\"help\">HPE</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hpet\" class=\"help\">HPET</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-avg\" class=\"help\">Avg</a></th>\n"
