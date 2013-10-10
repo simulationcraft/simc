@@ -2642,63 +2642,88 @@ void unerring_vision_of_leishen( item_t* item )
 }
 
 // Cleave trinkets
+
+template <typename T>
+struct cleave_t : public T
+{
+  cleave_t( item_t* item, const char* name, school_e s ) :
+    T( name, item -> player )
+  {
+    this -> callbacks = false;
+    this -> may_crit = false;
+    this -> may_glance = false;
+    this -> may_miss = true;
+    this -> special = true;
+    this -> proc = true;
+    this -> background = true;
+    this -> school = s;
+    this -> aoe = 5;
+    this -> snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
+    if ( this -> type == ACTION_ATTACK )
+    {
+      this -> may_dodge = true;
+      this -> may_parry = true;
+      this -> may_block = true;
+    }
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl )
+  {
+    tl.clear();
+
+    for ( size_t i = 0, actors = this -> sim -> target_non_sleeping_list.size(); i < actors; i++ )
+    {
+      player_t* t = this -> sim -> target_non_sleeping_list[ i ];
+
+      if ( t -> is_enemy() && ( t != this -> target ) )
+        tl.push_back( t );
+    }
+
+    return tl.size();
+  }
+
+  double composite_target_multiplier( player_t* )
+  { return 1.0; }
+
+  double composite_da_multiplier()
+  { return 1.0; }
+
+  double target_armor( player_t* )
+  { return 0.0; }
+};
+
 void cleave_trinket( item_t* item )
 {
   maintenance_check( 528 );
 
-  // TODO: Currently does a phys damage nuke for everyone. In reality it uses
-  // a ton of different schools, however they all are just additional damage,
-  // so we can cheat a bit here.
-  // Additionally, healing cleave needs a heal_t action
-  struct cleave_t : public spell_t
-  {
-    cleave_t( item_t* item ) :
-      spell_t( "cleave_trinket", item -> player )
-    {
-      callbacks = may_crit = false;
-      proc = background = true;
-      school = SCHOOL_PHYSICAL; // TODO: Won't work for healing trinket, and spells use various different schools.
-      aoe = 5;
-    }
-
-    size_t available_targets( std::vector< player_t* >& tl )
-    {
-      tl.clear();
-
-      for ( size_t i = 0, actors = sim -> target_non_sleeping_list.size(); i < actors; i++ )
-      {
-        player_t* t = sim -> target_non_sleeping_list[ i ];
-
-        if ( t -> is_enemy() && ( t != target ) )
-          tl.push_back( t );
-      }
-
-      return tl.size();
-    }
-
-    double composite_target_multiplier( player_t* )
-    { return 1.0; }
-
-    double composite_da_multiplier()
-    { return 1.0; }
-
-    double target_armor( player_t* )
-    { return 0.0; }
-  };
-
   struct cleave_callback_t : public proc_callback_t<action_state_t>
   {
-    cleave_t* strike;
+    cleave_t<spell_t>* cleave_spell;
+    cleave_t<attack_t>* cleave_attack;
 
     cleave_callback_t( item_t& i, const special_effect_t& data ) :
       proc_callback_t<action_state_t>( i.player, data )
-    { strike = new cleave_t( &i ); }
-
-    void execute( action_t* /* action */, action_state_t* state )
     {
-      strike -> base_dd_min = strike -> base_dd_max = state -> result_amount;
-      strike -> target = state -> target;
-      strike -> schedule_execute();
+      cleave_spell = new cleave_t<spell_t>( &i, "cleave_spell", SCHOOL_NATURE );
+      cleave_attack = new cleave_t<attack_t>( &i, "cleave_attack", SCHOOL_PHYSICAL );
+    }
+
+    void execute( action_t* action, action_state_t* state )
+    {
+      action_t* a = 0;
+
+      if ( action -> type == ACTION_ATTACK )
+        a = cleave_attack;
+      else if ( action -> type == ACTION_SPELL )
+        a = cleave_spell;
+      // TODO: Heal
+
+      if ( a )
+      {
+        a -> base_dd_min = a -> base_dd_max = state -> result_amount;
+        a -> target = state -> target;
+        a -> schedule_execute();
+      }
     }
   };
 
