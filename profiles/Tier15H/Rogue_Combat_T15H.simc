@@ -37,7 +37,7 @@ actions+=/use_item,slot=hands,if=time=0|buff.shadow_blades.up
 actions+=/blood_fury,if=time=0|buff.shadow_blades.up
 actions+=/berserking,if=time=0|buff.shadow_blades.up
 actions+=/arcane_torrent,if=energy<60
-actions+=/blade_flurry,if=active_enemies>=5
+actions+=/blade_flurry,if=(active_enemies>=2&!buff.blade_flurry.up)|(active_enemies<2&buff.blade_flurry.up)
 actions+=/ambush
 actions+=/vanish,if=time>10&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(buff.shadow_blades.down&(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4))))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<20)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))
 actions+=/shadow_blades,if=!set_bonus.tier14_4pc_melee&time>5
@@ -59,7 +59,7 @@ actions.generator+=/sinister_strike
 
 # Combo point finishers
 
-actions.finisher=rupture,if=ticks_remain<2&target.time_to_die>=26
+actions.finisher=rupture,if=ticks_remain<2&target.time_to_die>=26&(active_enemies<2|!buff.blade_flurry.up)
 actions.finisher+=/eviscerate
 
 head=ninetailed_helmet,id=96681,gems=capacitive_primal_320haste_180crit,reforge=hit_mastery

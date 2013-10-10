@@ -838,6 +838,9 @@ static bool trigger_blade_flurry( action_state_t* s )
   if ( s -> action -> sim -> active_enemies == 1 )
     return false;
 
+  if ( s -> action -> aoe != 0 )
+    return false;
+
   if ( ! p -> active_blade_flurry )
   {
     p -> active_blade_flurry = new blade_flurry_attack_t( p );
@@ -3177,7 +3180,7 @@ void rogue_t::init_actions()
         def -> add_action( racial_actions[ i ] + ",if=time=0|buff.shadow_blades.up" );
     }
 
-    def -> add_action( this, "Blade Flurry", "if=active_enemies>=5" );
+    def -> add_action( this, "Blade Flurry", "if=(active_enemies>=2&!buff.blade_flurry.up)|(active_enemies<2&buff.blade_flurry.up)" );
 
     def -> add_action( this, "Ambush" );
     def -> add_action( this, "Vanish", "if=time>10&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(buff.shadow_blades.down&(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4))))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<20)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))" );
@@ -3210,7 +3213,7 @@ void rogue_t::init_actions()
 
     // Combo point finishers
     action_priority_list_t* finisher = get_action_priority_list( "finisher", "Combo point finishers" );
-    finisher -> add_action( this, "Rupture", "if=ticks_remain<2&target.time_to_die>=26" );
+    finisher -> add_action( this, "Rupture", "if=ticks_remain<2&target.time_to_die>=26&(active_enemies<2|!buff.blade_flurry.up)" );
     finisher -> add_action( this, "Eviscerate" );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
