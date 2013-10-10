@@ -5741,7 +5741,7 @@ struct eclipse_lunar_t : public druid_buff_t < buff_t >
   druid_t* p() const
   { return static_cast<druid_t*>( player ); }
 
-  virtual bool trigger( int stacks, double value, double chance, timespan_adl_barrier::timespan_t duration )
+  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
     if ( p() -> buff.dream_of_cenarius -> up() )
     {
@@ -5749,12 +5749,12 @@ struct eclipse_lunar_t : public druid_buff_t < buff_t >
       p() -> buff.dream_of_cenarius -> expire();
     }
 
-    return druid_buff_t::trigger( stacks, value, chance, duration );
+    return druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
   }
 
   virtual void expire_override()
   {
-    druid_buff_t::expire_override();
+    druid_buff_t<buff_t>::expire_override();
 
     p() -> buff.dream_of_cenarius_eclipse -> expire();
   }
@@ -5772,7 +5772,7 @@ struct eclipse_solar_t : public druid_buff_t < buff_t >
   druid_t* p() const
   { return static_cast<druid_t*>( player ); }
 
-  virtual bool trigger( int stacks, double value, double chance, timespan_adl_barrier::timespan_t duration )
+  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
     if ( p() -> buff.dream_of_cenarius -> up() )
     {
@@ -5780,12 +5780,12 @@ struct eclipse_solar_t : public druid_buff_t < buff_t >
       p() -> buff.dream_of_cenarius -> expire();
     }
 
-    return druid_buff_t::trigger( stacks, value, chance, duration );
+    return druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
   }
 
   virtual void expire_override()
   {
-    druid_buff_t::expire_override();
+    druid_buff_t<buff_t>::expire_override();
 
     p() -> buff.dream_of_cenarius_eclipse -> expire();
   }
