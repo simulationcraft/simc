@@ -788,15 +788,9 @@ static bool trigger_blade_flurry( action_state_t* s )
     blade_flurry_attack_t( rogue_t* p ) :
       rogue_attack_t( "blade_flurry_attack", p, p -> find_spell( 22482 ) )
     {
-      may_miss = may_crit = proc = callbacks = false;
+      may_miss = may_crit = proc = callbacks = may_dodge = may_parry = may_block = false;
       background = true;
       aoe = p -> spec.blade_flurry -> effectN( 4 ).base_value();
-    }
-
-    // Blade Flurry ignores armor apparently
-    virtual double target_armor( player_t* )
-    {
-      return 0;
     }
 
     double composite_da_multiplier()
@@ -847,8 +841,8 @@ static bool trigger_blade_flurry( action_state_t* s )
     p -> active_blade_flurry -> init();
   }
 
-  p -> active_blade_flurry -> base_dd_min = s -> result_amount;
-  p -> active_blade_flurry -> base_dd_max = s -> result_amount;
+  p -> active_blade_flurry -> base_dd_min = s -> result_total;
+  p -> active_blade_flurry -> base_dd_max = s -> result_total;
   p -> active_blade_flurry -> execute();
 
   return true;
