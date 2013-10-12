@@ -61,7 +61,6 @@ public:
   struct buffs_t
   {
     debuff_t* rising_sun_kick;
-    debuff_t* rushing_jade_wind;
     debuff_t* dizzying_haze;
     buff_t* enveloping_mist;
   } buff;
@@ -99,6 +98,7 @@ public:
     buff_t* muscle_memory;
     buff_t* power_guard;
     buff_t* power_strikes;
+    buff_t* rushing_jade_wind;
     buff_t* serpents_zeal;
     buff_t* shuffle;
     buff_t* tigereye_brew;
@@ -1259,16 +1259,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     dynamic_tick_action = true;
   }
 
-  virtual double action_multiplier()
-  {
-    double m = monk_melee_attack_t::action_multiplier();
-
-    if ( td( target ) -> buff.rushing_jade_wind -> up() )
-      m *= 1.0 + p() -> talent.rushing_jade_wind -> effectN( 2 ).percent();
-
-    return m;
-  }
-
   virtual void execute()
   {
     monk_melee_attack_t::execute();
@@ -1285,6 +1275,65 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( tick_action -> target_list().size() >= 3 && p() -> spec.muscle_memory -> ok() )
       p() -> buff.muscle_memory -> trigger();
+  }
+};
+
+// ==========================================================================
+// Rushing Jade Wind
+// ==========================================================================
+
+struct rushing_jade_wind_t : public monk_melee_attack_t
+{
+  struct rushing_jade_wind_tick_t : public monk_melee_attack_t
+  {
+    rushing_jade_wind_tick_t( monk_t* p ) :
+      monk_melee_attack_t( "rushing_jade_wind_tick", p, p -> talent.rushing_jade_wind -> effectN( 1 ).trigger() )
+    {
+      background  = true;
+      dual        = true;
+      direct_tick = true;
+      aoe = -1;
+      base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
+      mh = &( player -> main_hand_weapon ) ;
+      oh = &( player -> off_hand_weapon ) ;
+      school = SCHOOL_PHYSICAL;
+
+      if ( player -> specialization() == MONK_BREWMASTER )
+        weapon_power_mod = 1 / 11.0;
+    }
+  };
+
+  rushing_jade_wind_t( monk_t* player, const std::string& options_str  ) :
+    monk_melee_attack_t( "rushing_jade_wind", player, player -> talent.rushing_jade_wind )
+  {
+    may_crit = may_miss = may_block = may_dodge = may_glance = may_parry = false;
+    tick_zero = true;
+    hasted_ticks = true;
+
+    tick_action = new rushing_jade_wind_tick_t( player );
+    dynamic_tick_action = true;
+  }
+  
+  virtual void update_ready( timespan_t cd_duration )
+  {
+    cd_duration = cooldown -> duration * p() -> cache.attack_haste();
+
+    monk_melee_attack_t::update_ready( cd_duration );
+  }
+
+  virtual void execute()
+  {
+    monk_melee_attack_t::execute();
+
+    p() -> buff.rushing_jade_wind -> trigger( 1, 0, 1.0, cooldown -> duration * p() -> cache.attack_haste() );
+
+    if ( target_list().size() >= 3 )
+    {
+      double chi_gain = 1.0; // hardcoded because SCK gets replaced by RJW
+      player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
+      if ( p() -> spec.muscle_memory -> ok() )
+        p() -> buff.muscle_memory -> trigger();
+    }
   }
 };
 
@@ -1938,35 +1987,6 @@ struct chi_burst_t : public monk_spell_t
 };
 
 // ==========================================================================
-// Rushing Jade Wind
-// ==========================================================================
-
-struct rushing_jade_wind_t : public monk_spell_t
-{
-  rushing_jade_wind_t( monk_t* player, const std::string& options_str  ) :
-    monk_spell_t( "rushing_jade_wind", player, player -> talent.rushing_jade_wind )
-  {
-    parse_options( nullptr, options_str );
-    aoe = -1;
-
-    direct_power_mod = data().extra_coeff();
-    base_attack_power_multiplier = 1.0;
-    base_spell_power_multiplier = 0.0;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    monk_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-      td( s -> target ) -> buff.rushing_jade_wind -> trigger();
-
-    if ( target_list().size() >= 3 && p() -> spec.muscle_memory -> ok() )
-      p() -> buff.muscle_memory -> trigger();
-  }
-};
-
-// ==========================================================================
 // Chi Torpedo
 // ==========================================================================
 
@@ -2587,7 +2607,6 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
   buff.rising_sun_kick   = buff_creator_t( *this, "rising_sun_kick"   ).spell( p -> find_spell( 130320 ) );
   buff.enveloping_mist   = buff_creator_t( *this, "enveloping_mist"   ).spell( p -> find_class_spell( "Enveloping Mist" ) );
   buff.dizzying_haze     = buff_creator_t( *this, "dizzying_haze" ).spell( p -> find_spell( 123727 ) );
-  buff.rushing_jade_wind = buff_creator_t( *this, "rushing_jade_wind", p ->  talent.rushing_jade_wind -> effectN( 1 ).trigger() );
 }
 
 // monk_t::create_action ====================================================
@@ -2817,6 +2836,8 @@ void monk_t::create_buffs()
   buff.tiger_power       = buff_creator_t( this, "tiger_power" )
                            .spell( find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() );
   buff.zen_sphere        = buff_creator_t( this, "zen_sphere" , talent.zen_sphere );
+  buff.rushing_jade_wind = buff_creator_t( this, "rushing_jade_wind", talent.rushing_jade_wind )
+                           .cd( timespan_t::zero() );
 
   // Brewmaster
   buff.elusive_brew_stacks    = buff_creator_t( this, "elusive_brew_stacks"    ).spell( find_spell( 128939 ) );
