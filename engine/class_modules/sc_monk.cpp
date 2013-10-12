@@ -58,6 +58,11 @@ enum stance_e { STURDY_OX = 1, FIERCE_TIGER, WISE_SERPENT = 4 };
 struct monk_td_t : public actor_pair_t
 {
 public:
+  struct dots_t
+  {
+    dot_t* zen_sphere;
+  } dots;
+
   struct buffs_t
   {
     debuff_t* rising_sun_kick;
@@ -65,7 +70,7 @@ public:
     buff_t* enveloping_mist;
   } buff;
 
-  monk_td_t( player_t*, monk_t* );
+  monk_td_t( player_t* target, monk_t* p );
 };
 
 struct monk_t : public player_t
@@ -106,7 +111,6 @@ public:
     buff_t* tiger_power;
     haste_buff_t* tiger_strikes;
     buff_t* vital_mists;
-    buff_t* zen_sphere;
     buff_t* tier16_4pc_melee;
     buff_t* focus_of_xuen;
 
@@ -1861,25 +1865,22 @@ struct zen_sphere_damage_t : public monk_spell_t
     monk_spell_t( "zen_sphere_damage", player, player -> dbc.spell( 124098 ) )
   {
     background  = true;
+
     base_attack_power_multiplier = 1.0;
-    direct_power_mod = data().extra_coeff();
-    dual = true;
+    direct_power_mod = 0.09; // hardcoded into tooltip
   }
 };
-//NYI
-struct zen_sphere_detonate_t : public monk_spell_t
-{
-  zen_sphere_detonate_t( monk_t* player, const std::string& options_str ) :
-    monk_spell_t( "zen_sphere_detonate", player, player -> find_spell( 125033 ) )
-  {
-    parse_options( nullptr, options_str );
-    aoe = -1;
-  }
 
-  virtual void execute()
+struct zen_sphere_detonate_damage_t : public monk_spell_t
+{
+  zen_sphere_detonate_damage_t( monk_t* player ) :
+    monk_spell_t( "zen_sphere_damage_detonate", player, player -> find_spell( 125033 ) )
   {
-    monk_spell_t::execute();
-    p() -> buff.zen_sphere -> expire();
+    background = true;
+    aoe = -1;
+    
+    base_attack_power_multiplier = 1.0;
+    direct_power_mod = 0.368; // hardcoded into tooltip
   }
 };
 
@@ -2405,31 +2406,53 @@ struct monk_heal_t : public monk_action_t<heal_t>
 // ==========================================================================
 /*
   TODO:
-   - Add healing Component
+   - Add periodic healing Component
    - find out if direct tick or tick zero applies
 */
 
 struct zen_sphere_t : public monk_heal_t
 {
   spells::monk_spell_t* zen_sphere_damage;
+  spells::monk_spell_t* zen_sphere_detonate_damage;
+
+  struct zen_sphere_detonate_heal_t : public monk_heal_t
+  {
+    zen_sphere_detonate_heal_t( monk_t& player ) :
+      monk_heal_t( "zen_sphere_detonate", player, player.find_spell( 125033 ) )
+    {
+      background = true;
+      aoe = -1;
+      
+      base_attack_power_multiplier = 1.0;
+      direct_power_mod = 0.281; // hardcoded into tooltip
+    }
+  };
+
+  zen_sphere_detonate_heal_t* zen_sphere_detonate_heal;
 
   zen_sphere_t( monk_t& p, const std::string& options_str  ) :
     monk_heal_t( "zen_sphere", p, p.talent.zen_sphere ),
-    zen_sphere_damage( new spells::zen_sphere_damage_t( &p ) )
+    zen_sphere_damage( new spells::zen_sphere_damage_t( &p ) ),
+    zen_sphere_detonate_damage( new spells::zen_sphere_detonate_damage_t( &p ) ),
+    zen_sphere_detonate_heal( new zen_sphere_detonate_heal_t( p ) )
   {
     parse_options( nullptr, options_str );
+    
+    base_attack_power_multiplier = 1.0;
+    if ( player -> specialization() == MONK_MISTWEAVER )
+      tick_power_mod = 0.108; // hardcoded into tooltip
+    else
+      tick_power_mod = 0.09;  // hardcoded into tooltip
 
-    tick_power_mod = data().extra_coeff();
+    cooldown -> duration = timespan_t::from_seconds( 10.0 );
   }
 
-  virtual void execute()
+ /* virtual void execute()
   {
     monk_heal_t::execute();
 
-    p() -> buff.zen_sphere -> trigger();
-
     zen_sphere_damage -> stats -> add_execute( time_to_execute, target );
-  }
+  }*/
 
   virtual void tick( dot_t* d )
   {
@@ -2438,12 +2461,12 @@ struct zen_sphere_t : public monk_heal_t
     zen_sphere_damage -> execute();
   }
 
-  virtual bool ready()
+  virtual void last_tick( dot_t* d )
   {
-    if ( p() -> buff.zen_sphere -> check() )
-      return false; // temporary to hold off on action
+    monk_heal_t::last_tick( d );
 
-    return monk_heal_t::ready();
+    zen_sphere_detonate_damage -> execute();
+    zen_sphere_detonate_heal -> execute();
   }
 };
 
@@ -2586,11 +2609,14 @@ struct power_strikes_event_t : public event_t
 
 monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
   actor_pair_t( target, p ),
-  buff( buffs_t() )
+  buff( buffs_t() ),
+  dots( dots_t() )
 {
   buff.rising_sun_kick   = buff_creator_t( *this, "rising_sun_kick"   ).spell( p -> find_spell( 130320 ) );
   buff.enveloping_mist   = buff_creator_t( *this, "enveloping_mist"   ).spell( p -> find_class_spell( "Enveloping Mist" ) );
-  buff.dizzying_haze     = buff_creator_t( *this, "dizzying_haze" ).spell( p -> find_spell( 123727 ) );
+  buff.dizzying_haze     = buff_creator_t( *this, "dizzying_haze"     ).spell( p -> find_spell( 123727 ) );
+  
+  dots.zen_sphere        = target -> get_dot( "rejuvenation", p );
 }
 
 // monk_t::create_action ====================================================
@@ -2635,8 +2661,7 @@ action_t* monk_t::create_action( const std::string& name,
   if ( name == "chi_sphere"            ) return new             chi_sphere_t( this, options_str ); // For Power Strikes
   if ( name == "chi_brew"              ) return new               chi_brew_t( this, options_str );
 
-  if ( name == "zen_sphere"            ) return new             zen_sphere_t( *this, options_str );
-  if ( name == "zen_sphere_detonate"   ) return new    zen_sphere_detonate_t( this, options_str );
+  if ( name == "zen_sphere"            ) return new            zen_sphere_t( *this, options_str );
   if ( name == "chi_wave"              ) return new               chi_wave_t( this, options_str );
   if ( name == "chi_burst"             ) return new              chi_burst_t( this, options_str );
 
@@ -2819,7 +2844,6 @@ void monk_t::create_buffs()
                            .chance( find_specialization_spell( "Tiger Strikes" ) -> proc_chance() );
   buff.tiger_power       = buff_creator_t( this, "tiger_power" )
                            .spell( find_class_spell( "Tiger Palm" ) -> effectN( 2 ).trigger() );
-  buff.zen_sphere        = buff_creator_t( this, "zen_sphere" , talent.zen_sphere );
   buff.rushing_jade_wind = buff_creator_t( this, "rushing_jade_wind", talent.rushing_jade_wind )
                            .cd( timespan_t::zero() );
 
@@ -3581,28 +3605,28 @@ void monk_t::apl_combat_mistweaver()
   }
   
   def -> add_talent( this, "Invoke Xuen" );
-  def->action_list_str+="/run_action_list,name=aoe,if=active_enemies>=3";
-  def->action_list_str+="/run_action_list,name=single_target,if=active_enemies<3";
+  def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
+  def -> add_action( "run_action_list,name=single_target,if=active_enemies<3");
 
   
-  st_list_str+="/crackling_jade_lightning,if=buff.bloodlust.up&buff.lucidity.up";
-  st_list_str+="/tiger_palm,if=buff.muscle_memory.up&buff.lucidity.up";
-  st_list_str+="/jab,if=buff.lucidity.up";
-  st_list_str+="/tiger_palm,if=buff.muscle_memory.up&!buff.tiger_power.up";
-  st_list_str+="/blackout_kick,if=buff.muscle_memory.up&buff.tiger_power.up&chi>1";
-  st_list_str+="/tiger_palm,if=buff.muscle_memory.up&buff.tiger_power.up";
-  st_list_str+="/chi_wave,if=talent.chi_wave.enabled";
-  st_list_str+="/zen_sphere,if=talent.zen_sphere.enabled";
-  st_list_str+="/jab";
+  st_list_str += "/crackling_jade_lightning,if=buff.bloodlust.up&buff.lucidity.up";
+  st_list_str += "/tiger_palm,if=buff.muscle_memory.up&buff.lucidity.up";
+  st_list_str += "/jab,if=buff.lucidity.up";
+  st_list_str += "/tiger_palm,if=buff.muscle_memory.up&!buff.tiger_power.up";
+  st_list_str += "/blackout_kick,if=buff.muscle_memory.up&buff.tiger_power.up&chi>1";
+  st_list_str += "/tiger_palm,if=buff.muscle_memory.up&buff.tiger_power.up";
+  st_list_str += "/chi_wave,if=talent.chi_wave.enabled";
+  st_list_str += "/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking";
+  st_list_str += "/jab";
   
   
-  aoe_list_str+="?zen_sphere,if=talent.zen_sphere.enabled";
-  aoe_list_str+="/chi_burst,if=talent.chi_burst.enabled";
-  aoe_list_str+="/tiger_palm,if=buff.muscle_memory.up&!buff.tiger_power.up";
-  aoe_list_str+="/blackout_kick,if=buff.muscle_memory.up&buff.tiger_power.up&chi>1";
-  aoe_list_str+="/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled";
-  aoe_list_str+="/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
-  aoe_list_str+="/jab,if=talent.rushing_jade_wind.enabled";
+  aoe_list_str += "/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled";
+  aoe_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
+  aoe_list_str += "/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking";
+  aoe_list_str += "/chi_burst,if=talent.chi_burst.enabled";
+  aoe_list_str += "/tiger_palm,if=buff.muscle_memory.up&!buff.tiger_power.up";
+  aoe_list_str += "/blackout_kick,if=buff.muscle_memory.up&buff.tiger_power.up&chi>1";
+  aoe_list_str += "/jab,if=talent.rushing_jade_wind.enabled";
 }
 
 // monk_t::init_actions =====================================================
