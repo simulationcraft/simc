@@ -402,16 +402,6 @@ public:
     return std::max(0.0, result);
   }
 
-  void consume_thrill_of_the_hunt()
-  {
-    if ( p() -> buffs.thrill_of_the_hunt -> up() )
-    {
-      //double cost = hunter_action_t::cost();
-      //p() -> resource_gain( RESOURCE_FOCUS, cost, p() -> gains.thrill_of_the_hunt );
-      p() -> buffs.thrill_of_the_hunt -> decrement();
-    }
-  }
-
   void trigger_piercing_shots( player_t* target, double dmg )
   {
     hunter_t& p = *this -> p();
@@ -2088,7 +2078,7 @@ struct arcane_shot_t : public hunter_ranged_attack_t
   virtual void execute()
   {
     hunter_ranged_attack_t::execute();
-    consume_thrill_of_the_hunt();
+    p() -> buffs.thrill_of_the_hunt -> decrement();
 
     trigger_tier16_2pc_melee();
     if ( result_is_hit( execute_state -> result ) ) {
@@ -2718,7 +2708,7 @@ struct multi_shot_t : public hunter_ranged_attack_t
   virtual void execute()
   {
     hunter_ranged_attack_t::execute();
-    consume_thrill_of_the_hunt();
+    p() -> buffs.thrill_of_the_hunt -> decrement();
 
     pets::hunter_main_pet_t* pet = p() -> active.pet;
     if ( pet && p() -> specs.beast_cleave -> ok() )
