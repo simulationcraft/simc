@@ -1948,7 +1948,6 @@ struct rushing_jade_wind_t : public monk_spell_t
   {
     parse_options( nullptr, options_str );
     aoe = -1;
-    procs_courageous_primal_diamond = false;
 
     direct_power_mod = data().extra_coeff();
     base_attack_power_multiplier = 1.0;
@@ -1961,6 +1960,9 @@ struct rushing_jade_wind_t : public monk_spell_t
 
     if ( result_is_hit( s -> result ) )
       td( s -> target ) -> buff.rushing_jade_wind -> trigger();
+
+    if ( target_list().size() >= 3 && p() -> spec.muscle_memory -> ok() )
+      p() -> buff.muscle_memory -> trigger();
   }
 };
 
