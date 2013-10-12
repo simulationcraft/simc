@@ -3084,6 +3084,7 @@ struct flurry_of_xuen_melee_t : public attack_t
   {
     direct_power_mod = data().extra_coeff();
     background = true;
+    proc = false;
     aoe = 5;
     special = may_crit = true;
   }
@@ -3096,6 +3097,7 @@ struct flurry_of_xuen_ranged_t : public ranged_attack_t
   {
     direct_power_mod = data().extra_coeff();
     background = true;
+    proc = false;
     aoe = 5;
     special = may_crit = true;
   }
