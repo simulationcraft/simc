@@ -409,8 +409,6 @@ struct stormlash_spell_t : public spell_t
     may_crit   = true;
     special    = true;
     background = true;
-    proc       = true;
-    callbacks  = false;
     base_attack_power_multiplier = 0;
     base_spell_power_multiplier  = 0;
   }
