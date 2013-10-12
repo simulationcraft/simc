@@ -1028,6 +1028,7 @@ void capacitive_primal( player_t* p )
       {
         may_crit = special = background = true;
         may_parry = may_dodge = false;
+        proc = false;
         direct_power_mod = data().extra_coeff();
       }
     };

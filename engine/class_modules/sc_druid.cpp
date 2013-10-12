@@ -498,19 +498,17 @@ struct natures_vigil_heal_proc_t : public heal_t
   natures_vigil_heal_proc_t( druid_t* p ) :
     heal_t( "natures_vigil_proc", p, spell_data_t::nil() ) //p -> find_spell( 124988 )
   {
-    background      = true;
-    proc            = true;
-    trigger_gcd     = timespan_t::zero();
-    may_crit        = false;
-    may_miss        = false;
-    base_multiplier = p -> find_spell( 124974 ) -> effectN( 3 ).percent();
+    background = proc = true;
+    may_crit = may_miss = false;
+    trigger_gcd         = timespan_t::zero();
+    base_multiplier  = p -> find_spell( 124974 ) -> effectN( 3 ).percent();
   }
 
   void trigger( const action_state_t& s )
   {
     // set the heal size to be fixed based on the result of the action
-    base_dd_min = s.result_amount;
-    base_dd_max = s.result_amount;
+    base_dd_min = s.result_amount * base_multiplier;
+    base_dd_max = s.result_amount * base_multiplier;
 
     target = find_lowest_target();
 
@@ -558,8 +556,8 @@ struct natures_vigil_damage_proc_t : public spell_t
   void trigger( const action_state_t& s )
   {
     // set the heal size to be fixed based on the result of the action
-    base_dd_min = s.result_amount;
-    base_dd_max = s.result_amount;
+    base_dd_min = s.result_amount * base_multiplier;
+    base_dd_max = s.result_amount * base_multiplier;
 
     target = pick_random_target();
 
@@ -1427,10 +1425,20 @@ public:
     if ( this -> result_is_hit( this -> execute_state -> result ) )
     {
       // Nature's Vigil Proc
-      if ( this -> p() -> buff.natures_vigil -> check() && this -> execute_state -> result_amount > 0 && this -> aoe == 0 && this -> special == true )
-      {
+      if ( this -> p() -> buff.natures_vigil -> check() && this -> execute_state -> result_amount > 0 && this -> aoe == 0 && this -> special && ! this -> proc )
         this -> p() -> active.natures_vigil_heal_proc -> trigger( *this -> execute_state );
-      }
+    }
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    ab::tick( d );
+
+    if ( this -> result_is_hit( d -> state -> result ) )
+    {
+      // Nature's Vigil Proc
+      if ( this -> p() -> buff.natures_vigil -> check() && d -> state -> result_amount > 0 && this -> aoe == 0 && this -> special && ! this -> proc )
+        this -> p() -> active.natures_vigil_heal_proc -> trigger( *d -> state );
     }
   }
 
@@ -1440,7 +1448,6 @@ public:
     if ( s -> result_amount > 0 && ! ab::proc && this -> p() -> active.leader_of_the_pack -> cooldown -> up() )
       this -> p() -> active.leader_of_the_pack -> execute();
   }
-
 };
 namespace cat_attacks {
 
@@ -3054,6 +3061,39 @@ public:
 
     return h;
   }
+
+  virtual void tick( dot_t* d )
+  {
+    ab::tick( d );
+
+    if ( result_is_hit( d -> state -> result ) )
+    {
+      // Nature's Vigil Proc
+      if ( this -> p() -> buff.natures_vigil -> check() && d -> state -> result_amount > 0 && this -> aoe == 0 && this -> special && ! this -> proc )
+      {
+        if ( this -> harmful )
+          this -> p() -> active.natures_vigil_heal_proc -> trigger( *d -> state );
+        else
+          this -> p() -> active.natures_vigil_damage_proc -> trigger( *d -> state );
+      }
+    }
+  }
+
+  virtual void execute()
+  {
+    ab::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+    {
+      // Nature's Vigil Proc
+      if ( this -> p() -> buff.natures_vigil -> check() && execute_state -> result_amount > 0 && this -> aoe == 0 && this -> special && ! this -> proc )
+      {
+        if ( ! this -> harmful )
+          this -> p() -> active.natures_vigil_damage_proc -> trigger( *execute_state );
+        this -> p() -> active.natures_vigil_heal_proc -> trigger( *execute_state );
+      }
+    }
+  }
 };
 
 namespace heals {
@@ -3121,15 +3161,6 @@ public:
 
     if ( base_dd_min > 0 && ! background )
       p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> ok() ? p() -> cache.mastery_value() : 0.0 );
-
-    // Nature's Vigil Proc
-    if ( aoe == 0 && special == true && p() -> buff.natures_vigil -> check() )
-    {
-      if ( p() -> active.natures_vigil_damage_proc )
-        p() -> active.natures_vigil_damage_proc -> trigger( *execute_state );
-      if ( p() -> active.natures_vigil_heal_proc )
-        p() -> active.natures_vigil_heal_proc -> trigger( *execute_state );
-    }
   }
 
   virtual timespan_t execute_time()
@@ -3912,20 +3943,6 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
       if ( p() -> buff.eclipse_lunar -> check() )
       {
         p() -> t16_2pc_starfall_bolt -> execute();
-      }
-    }
-  }
-  
-  virtual void execute()
-  {
-    base_t::execute();
-
-    if ( result_is_hit( execute_state -> result ) )
-    {
-      // Nature's Vigil Proc
-      if ( p() -> buff.natures_vigil -> check() && execute_state -> result_amount > 0 && aoe == 0 && special == true )
-      {
-        p() -> active.natures_vigil_heal_proc -> trigger( *execute_state );
       }
     }
   }
