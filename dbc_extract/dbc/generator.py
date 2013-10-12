@@ -1316,6 +1316,7 @@ class SpellDataGenerator(DataGenerator):
           ( 144770, 1, False ), ( 144772, 1, False ), # Balance Tier 16 2pc spells
           ( 150017, 5 ),       # Rake for Treants
           ( 146874, 0 ),       # Feral Rage (T16 4pc feral bonus)
+          ( 124991, 0 ), ( 124998, 0 ), # Nature's Vigil
         ), 
     ]
 
