@@ -1309,8 +1309,8 @@ struct fire_elemental_t : public pet_t
       base_dd_max                  = player -> dbc.spell_scaling( player -> o() -> type, player -> level );
       if ( player -> o() -> talent.primal_elementalist -> ok() )
       {
-        base_dd_min *= 1.5;
-        base_dd_max *= 1.5;
+        base_dd_min *= 1.5 * 1.2;
+        base_dd_max *= 1.5 * 1.2;
       }
     }
 
