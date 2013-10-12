@@ -1423,8 +1423,7 @@ struct eviscerate_t : public rogue_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = weapon_power_mod = 0;
 
-//    base_direct_power_mod  = 0.16;
-    direct_power_mod = 0.20; // TO-DO: Possibly fix later. Stealth buffed in beta as of 16016.
+    direct_power_mod = 0.18;
   }
 
   timespan_t gcd()
