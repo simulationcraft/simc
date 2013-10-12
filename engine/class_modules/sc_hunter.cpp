@@ -3843,7 +3843,7 @@ void hunter_t::init_gains()
   gains.fervor               = get_gain( "fervor"               );
   gains.focus_fire           = get_gain( "focus_fire"           );
   gains.rapid_recuperation   = get_gain( "rapid_recuperation"   );
-  gains.thrill_of_the_hunt   = get_gain( "thrill_of_the_hunt"   );
+  gains.thrill_of_the_hunt   = get_gain( "thrill_of_the_hunt_savings"   );
   gains.steady_shot          = get_gain( "steady_shot"          );
   gains.steady_focus         = get_gain( "steady_focus"         );
   gains.cobra_shot           = get_gain( "cobra_shot"           );
