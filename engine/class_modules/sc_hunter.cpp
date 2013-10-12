@@ -4024,13 +4024,14 @@ void hunter_t::init_actions()
           CA_actions += "/chimera_shot";
           CA_actions += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<6";
           CA_actions += "/aimed_shot";
+          CA_actions += "/glaive_toss,if=enabled";
           CA_actions += "/steady_shot";
         }
 
         // actions for outside the CA phase
+        action_list_str += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<=4";
         action_list_str += "/glaive_toss,if=enabled";
         action_list_str += "/barrage,if=enabled";
-        action_list_str += "/steady_shot,if=buff.pre_steady_focus.up&buff.steady_focus.remains<=5";
         action_list_str += "/serpent_sting,if=!ticking";
         action_list_str += "/chimera_shot";
         action_list_str += "/steady_shot,if=buff.steady_focus.remains<(action.steady_shot.cast_time+1)&!in_flight";
@@ -4046,7 +4047,7 @@ void hunter_t::init_actions()
         }
         else
         {
-          action_list_str += "/aimed_shot,if=cast_time<1.7";
+          action_list_str += "/aimed_shot,if=cast_time<1.6";
           action_list_str += "/arcane_shot,if=focus>=60|(focus>=43&(cooldown.chimera_shot.remains>=action.steady_shot.cast_time))&(!buff.rapid_fire.up&!buff.bloodlust.react";
           if ( race == RACE_TROLL )
             action_list_str += "&!buff.berserking.up)";
