@@ -1864,7 +1864,7 @@ struct zen_sphere_damage_t : public monk_spell_t
   zen_sphere_damage_t( monk_t* player ) :
     monk_spell_t( "zen_sphere_damage", player, player -> dbc.spell( 124098 ) )
   {
-    background  = true;
+    background = true;
 
     base_attack_power_multiplier = 1.0;
     direct_power_mod = 0.09; // hardcoded into tooltip
@@ -1874,7 +1874,7 @@ struct zen_sphere_damage_t : public monk_spell_t
 struct zen_sphere_detonate_damage_t : public monk_spell_t
 {
   zen_sphere_detonate_damage_t( monk_t* player ) :
-    monk_spell_t( "zen_sphere_damage_detonate", player, player -> find_spell( 125033 ) )
+    monk_spell_t( "zen_sphere_damage", player, player -> find_spell( 125033 ) )
   {
     background = true;
     aoe = -1;
@@ -2420,7 +2420,7 @@ struct zen_sphere_t : public monk_heal_t
     zen_sphere_detonate_heal_t( monk_t& player ) :
       monk_heal_t( "zen_sphere_detonate", player, player.find_spell( 125033 ) )
     {
-      background = true;
+      background = dual = true;
       aoe = -1;
       
       base_attack_power_multiplier = 1.0;
