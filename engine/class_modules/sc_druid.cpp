@@ -1368,8 +1368,6 @@ public:
 template <class Base>
 struct druid_attack_t : public druid_action_t< Base >
 {
-  bool trigger_natures_vigil;
-
 private:
   typedef druid_action_t< Base > ab;
 public:
@@ -1377,8 +1375,7 @@ public:
 
   druid_attack_t( const std::string& n, druid_t* player,
                   const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s ),
-    trigger_natures_vigil( true )
+    ab( n, player, s )
   {
     ab::may_glance    = false;
     ab::special       = true;
@@ -1393,7 +1390,7 @@ public:
     {
       if ( this -> p() -> buff.dream_of_cenarius -> check() )
       {
-        m *= 1.0 + this -> p() -> buff.dream_of_cenarius -> data().effectN( 1 ).percent();
+        m *= 1.0 + this -> p() -> buff.dream_of_cenarius -> data().effectN( 2 ).percent();
       }
     }
 
@@ -1430,7 +1427,7 @@ public:
     if ( this -> result_is_hit( this -> execute_state -> result ) )
     {
       // Nature's Vigil Proc
-      if ( this -> harmful && trigger_natures_vigil && this -> p() -> active.natures_vigil_heal_proc && this -> p() -> buff.natures_vigil -> check() )
+      if ( this -> p() -> buff.natures_vigil -> check() && this -> execute_state -> result_amount > 0 && this -> aoe == 0 && this -> special == true )
       {
         this -> p() -> active.natures_vigil_heal_proc -> trigger( *this -> execute_state );
       }
@@ -1725,7 +1722,6 @@ struct cat_melee_t : public cat_attack_t
     repeating   = true;
     trigger_gcd = timespan_t::zero();
     special = false;
-    trigger_natures_vigil = false;
   }
 
   virtual timespan_t execute_time()
@@ -2394,7 +2390,6 @@ struct swipe_cat_t : public cat_attack_t
   {
     aoe     = -1;
     special = true;
-    trigger_natures_vigil = false;
   }
 
   virtual void execute()
@@ -2453,7 +2448,6 @@ struct thrash_cat_t : public cat_attack_t
     weapon_multiplier = 0;
     dot_behavior      = DOT_REFRESH;
     special           = true;
-    trigger_natures_vigil = false;
   }
 
   virtual void impact( action_state_t* state )
@@ -2582,7 +2576,6 @@ struct bear_melee_t : public bear_attack_t
     repeating   = true;
     trigger_gcd = timespan_t::zero();
     special     = false;
-    trigger_natures_vigil = false;
   }
 
   virtual timespan_t execute_time()
@@ -2867,7 +2860,6 @@ struct swipe_bear_t : public bear_attack_t
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     special           = true;
-    trigger_natures_vigil = false;
   }
 
   virtual void execute()
@@ -2912,7 +2904,6 @@ struct thrash_bear_t : public bear_attack_t
     weapon_multiplier = 0;
     dot_behavior      = DOT_REFRESH;
     special           = true;
-    trigger_natures_vigil = false;
   }
 
   virtual void execute()
@@ -3074,14 +3065,12 @@ namespace heals {
 struct druid_heal_t : public druid_spell_base_t<heal_t>
 {
   action_t* living_seed;
-  bool trigger_natures_vigil;
 
   druid_heal_t( const std::string& token, druid_t* p,
                 const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
     base_t( token, p, s ),
-    living_seed( nullptr ),
-    trigger_natures_vigil( true )
+    living_seed( nullptr )
   {
     parse_options( 0, options );
 
@@ -3093,8 +3082,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
   druid_heal_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
     base_t( "", p, s ),
-    living_seed( nullptr ),
-    trigger_natures_vigil( true )
+    living_seed( nullptr )
   {
     parse_options( 0, options );
 
@@ -3135,7 +3123,7 @@ public:
       p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> ok() ? p() -> cache.mastery_value() : 0.0 );
 
     // Nature's Vigil Proc
-    if ( trigger_natures_vigil && p() -> buff.natures_vigil -> check() )
+    if ( aoe == 0 && special == true && p() -> buff.natures_vigil -> check() )
     {
       if ( p() -> active.natures_vigil_damage_proc )
         p() -> active.natures_vigil_damage_proc -> trigger( *execute_state );
@@ -3731,7 +3719,6 @@ struct tranquility_t : public druid_heal_t
     aoe               = data().effectN( 3 ).base_value(); // Heals 5 targets
     base_execute_time = data().duration();
     channeled         = true;
-    trigger_natures_vigil = false;
 
     // Healing is in spell effect 1
     parse_spell_data( ( *player -> dbc.spell( data().effectN( 1 ).trigger_spell_id() ) ) );
@@ -3749,7 +3736,6 @@ struct wild_growth_t : public druid_heal_t
   {
     aoe = data().effectN( 3 ).base_value() + p -> glyph.wild_growth -> effectN( 1 ).base_value();
     cooldown -> duration = data().cooldown() + p -> glyph.wild_growth -> effectN( 2 ).time_value();
-    trigger_natures_vigil = false;
   }
 
   virtual void execute()
@@ -3775,21 +3761,17 @@ namespace spells {
 
 struct druid_spell_t : public druid_spell_base_t<spell_t>
 {
-  bool trigger_natures_vigil;
-
   druid_spell_t( const std::string& token, druid_t* p,
                  const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options = std::string() ) :
-    base_t( token, p, s ),
-    trigger_natures_vigil( true )
+    base_t( token, p, s )
   {
     parse_options( 0, options );
   }
 
   druid_spell_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                  const std::string& options = std::string() ) :
-    base_t( "", p, s ),
-    trigger_natures_vigil( true )
+    base_t( "", p, s )
   {
     parse_options( 0, options );
   }
@@ -3941,7 +3923,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     if ( result_is_hit( execute_state -> result ) )
     {
       // Nature's Vigil Proc
-      if ( this -> harmful && trigger_natures_vigil && p() -> active.natures_vigil_heal_proc && p() -> buff.natures_vigil -> check() )
+      if ( p() -> buff.natures_vigil -> check() && execute_state -> result_amount > 0 && aoe == 0 && special == true )
       {
         p() -> active.natures_vigil_heal_proc -> trigger( *execute_state );
       }
@@ -4037,7 +4019,6 @@ struct astral_storm_tick_t : public druid_spell_t
   {
     background = true;
     aoe = -1;
-    trigger_natures_vigil = false;
   }
 };
 
@@ -4383,7 +4364,6 @@ struct hurricane_tick_t : public druid_spell_t
   {
     background = true;
     aoe = -1;
-    trigger_natures_vigil = false;
   }
 };
 
@@ -4846,7 +4826,6 @@ struct starfall_star_t : public druid_spell_t
     background  = true;
     direct_tick = true;
     aoe         = 2;
-    trigger_natures_vigil = false;
   }
 };
 
@@ -5287,7 +5266,6 @@ struct wild_mushroom_detonate_damage_t : public druid_spell_t
     aoe        = -1;
     background = true;
     dual       = true;
-    trigger_natures_vigil = false;
   }
 };
 
@@ -6235,20 +6213,18 @@ void druid_t::create_buffs()
   if ( talent.dream_of_cenarius -> ok() )
   {
     if ( specialization() == DRUID_BALANCE )
-      buff.dream_of_cenarius         = buff_creator_t( this, "dream_of_cenarius", find_spell( 145151 ) );
+      buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145151 ) );
     else if ( specialization() == DRUID_FERAL )
-      buff.dream_of_cenarius         = buff_creator_t( this, "dream_of_cenarius", find_spell( 145152 ) )
-                                       .max_stack( 2 );
+      buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145152 ) )
+                               .max_stack( 2 );
     else if ( specialization() == DRUID_GUARDIAN )
-      buff.dream_of_cenarius         = buff_creator_t( this, "dream_of_cenarius", find_spell( 145162 ) )
-                                       .chance( talent.dream_of_cenarius -> effectN( 1 ).percent() );
+      buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145162 ) )
+                               .chance( talent.dream_of_cenarius -> effectN( 1 ).percent() );
     else
-      buff.dream_of_cenarius         = buff_creator_t( this, "dream_of_cenarius", spell_data_t::not_found() );
+      buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", spell_data_t::not_found() );
   }
   else
-  {
     buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", spell_data_t::not_found() );
-  }
 
   buff.natures_vigil      = buff_creator_t( this, "natures_vigil", talent.natures_vigil -> ok() ? find_spell( 124974 ) : spell_data_t::not_found() )
                             .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
