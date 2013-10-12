@@ -406,8 +406,8 @@ public:
   {
     if ( p() -> buffs.thrill_of_the_hunt -> up() )
     {
-      double cost = hunter_action_t::cost();
-      p() -> resource_gain( RESOURCE_FOCUS, cost, p() -> gains.thrill_of_the_hunt );
+      //double cost = hunter_action_t::cost();
+      //p() -> resource_gain( RESOURCE_FOCUS, cost, p() -> gains.thrill_of_the_hunt );
       p() -> buffs.thrill_of_the_hunt -> decrement();
     }
   }
