@@ -2957,6 +2957,11 @@ struct barrage_t : public hunter_spell_t
     trigger_tier16_bm_4pc_melee();
   }
 
+  virtual double composite_crit()
+  {
+    return p() -> composite_melee_crit(); // Since barrage is a spell, we need to explicitly make it use attack crit.
+  }
+
   virtual bool usable_moving()
   {
     return true;
