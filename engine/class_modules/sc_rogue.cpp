@@ -1514,7 +1514,7 @@ struct crimson_tempest_t : public rogue_attack_t
       rogue_attack_t( "crimson_tempest_dot", p, p -> find_spell( 122233 ) )
     {
       may_miss = may_dodge = may_parry = may_block = may_crit = tick_may_crit = false;
-      background = tick_may_crit = true;
+      background = true;
       dot_behavior = DOT_REFRESH;
     }
   };
