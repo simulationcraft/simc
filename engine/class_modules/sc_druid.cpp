@@ -1569,8 +1569,16 @@ public:
 
   virtual void execute()
   {
-
     base_t::execute();
+
+    if ( ( cat_state( execute_state ) -> cp > 0 || this -> name_str == "savage_roar" ) && requires_combo_points )
+    {
+      if ( p() -> buff.feral_rage -> up() ) // tier16_4pc_melee
+      {
+        td( target ) -> combo_points.add( p() -> buff.feral_rage -> data().effectN( 1 ).base_value(), &p() -> buff.feral_rage -> name_str );
+        p() -> buff.feral_rage -> expire();
+      }
+    }
 
     if ( result_is_hit( execute_state -> result ) )
     {
@@ -1596,11 +1604,6 @@ public:
         {
           p() -> proc.tier15_2pc_melee -> occur();
           td( target ) -> combo_points.add( 1, &name_str );
-        }
-        if ( p() -> buff.feral_rage -> up() ) // tier16_4pc_melee
-        {
-          td( target ) -> combo_points.add( 3 , &name_str ); // data().effectN( 1 ).base_value()
-          p() -> buff.feral_rage -> expire();
         }
       }
     }
