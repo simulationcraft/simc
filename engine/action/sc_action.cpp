@@ -106,14 +106,11 @@ struct action_execute_event_t : public event_t
 
     action -> execute_event = 0;
 
-    if ( target -> is_sleeping() )
-    {
-      if ( execute_state )
-        action_state_t::release( execute_state );
-      return;
-    }
+    if ( target -> is_sleeping() && execute_state )
+      action_state_t::release( execute_state );
 
-    action -> execute();
+    if ( ! target -> is_sleeping() )
+      action -> execute();
 
     if ( action -> background ) return;
 
