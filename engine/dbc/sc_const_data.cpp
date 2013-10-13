@@ -462,11 +462,11 @@ void dbc::apply_hotfixes()
   // Druid
   // Nature's Vigil -- Increased healing done buffed from 10% to 12%
   s = spell_data_t::find( 124974, false );
-  assert( s -> effectN( 2 )._base_value != 10 && "Out of date hotfix for Nature's Vigil" );
+  assert( s -> effectN( 2 )._base_value != 12 && "Out of date hotfix for Nature's Vigil" );
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 12;
   // Dream of Cenarius (Feral) -- Increased direct damage buffed from 25% to 30%
   s = spell_data_t::find( 145152, false );
-  assert( s -> effectN( 2 )._base_value != 25 && "Out of date hotfix for Dream of Cenarius (Feral)" );
+  assert( s -> effectN( 2 )._base_value != 30 && "Out of date hotfix for Dream of Cenarius (Feral)" );
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 30;
   // Hotfixes from 2013-09-23
   // Rip -- Damage has been increased by 20%.
