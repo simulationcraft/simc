@@ -3066,7 +3066,7 @@ public:
   {
     ab::tick( d );
 
-    if ( result_is_hit( d -> state -> result ) )
+    if ( ab::result_is_hit( d -> state -> result ) )
     {
       // Nature's Vigil Proc
       if ( this -> p() -> buff.natures_vigil -> check() && d -> state -> result_amount > 0 && this -> aoe == 0 && this -> special && ! this -> proc )
@@ -3083,14 +3083,14 @@ public:
   {
     ab::execute();
 
-    if ( result_is_hit( execute_state -> result ) )
+    if ( ab::result_is_hit( ab::execute_state -> result ) )
     {
       // Nature's Vigil Proc
-      if ( this -> p() -> buff.natures_vigil -> check() && execute_state -> result_amount > 0 && this -> aoe == 0 && this -> special && ! this -> proc )
+      if ( this -> p() -> buff.natures_vigil -> check() && ab::execute_state -> result_amount > 0 && this -> aoe == 0 && this -> special && ! this -> proc )
       {
         if ( ! this -> harmful )
-          this -> p() -> active.natures_vigil_damage_proc -> trigger( *execute_state );
-        this -> p() -> active.natures_vigil_heal_proc -> trigger( *execute_state );
+          this -> p() -> active.natures_vigil_damage_proc -> trigger( *ab::execute_state );
+        this -> p() -> active.natures_vigil_heal_proc -> trigger( *ab::execute_state );
       }
     }
   }
