@@ -425,14 +425,14 @@ void dbc::apply_hotfixes()
 
   // Immolate damage increased by 10% (apparently, in reality it's 30%)
   s = spell_data_t::find( 348, false );
-  assert( s -> effectN( 1 ).m_average() != 0.611 * 1.1 && "Out of date hotfix for Immolate" );
+  assert( s -> effectN( 1 ).m_average() != 0.47 * 1.3 && "Out of date hotfix for Immolate" );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.47 * 1.3;
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.47 * 1.3;
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg = 0.47 * 1.3;
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff = 0.47 * 1.3;
 
   s = spell_data_t::find( 108686, false );
-  assert( s -> effectN( 1 ).m_average() != 0.611 * 1.1 && "Out of date hotfix for Immolate" );
+  assert( s -> effectN( 1 ).m_average() != 0.47 * 1.3 && "Out of date hotfix for Immolate" );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.47 * 1.3;
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.47 * 1.3;
   const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg = 0.47 * 1.3;
