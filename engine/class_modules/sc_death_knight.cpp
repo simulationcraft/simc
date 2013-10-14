@@ -5426,8 +5426,8 @@ void death_knight_t::init_actions()
       def -> add_action( this, "Raise Dead" );
 
       //decide between single_target and aoe rotation
-      def -> add_action( "run_action_list,name=aoe,if=active_enemies>=5" );
-      def -> add_action( "run_action_list,name=single_target,if=active_enemies<5" );
+      def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
+      def -> add_action( "run_action_list,name=single_target,if=active_enemies<3" );
       
 
       if ( main_hand_weapon.group() == WEAPON_2H )
@@ -5559,8 +5559,8 @@ void death_knight_t::init_actions()
             def -> add_action( this, "Unholy Frenzy", "if=time>=4" );
 
 	    //decide between single_target and aoe rotation
-	    def -> add_action( "run_action_list,name=aoe,if=active_enemies>=5" );
-	    def -> add_action( "run_action_list,name=single_target,if=active_enemies<5" );
+	    def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
+	    def -> add_action( "run_action_list,name=single_target,if=active_enemies<3" );
 
 	    // Disease Gaming
 		  st -> add_action( this, "Outbreak", "if=stat.attack_power>(dot.blood_plague.attack_power*1.1)&time>15&!(cooldown.unholy_blight.remains>79)" );
