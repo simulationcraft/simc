@@ -3605,18 +3605,23 @@ void monk_t::apl_combat_windwalker()
   action_list_str  += "/tiger_palm,if=buff.tiger_power.down&target.debuff.rising_sun_kick.remains>1&energy.time_to_max>1";
 
   action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
-  action_list_str += "/run_action_list,name=aoe,if=active_enemies>=5";
-  action_list_str += "/run_action_list,name=single_target,if=active_enemies<5";
-  //aoe
+  action_list_str += "/run_action_list,name=aoe,if=active_enemies>=3";
+  action_list_str += "/run_action_list,name=single_target,if=active_enemies<3";
 
+  //aoe
   aoe_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
-  aoe_list_str += "/rising_sun_kick,if=chi=4";
-  aoe_list_str += "/spinning_crane_kick";
+  aoe_list_str += "/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking";
+  aoe_list_str += "/chi_wave,if=talent.chi_wave.enabled";
+  aoe_list_str += "/chi_burst,if=talent.chi_burst.enabled";
+  aoe_list_str += "/rising_sun_kick,if=chi>=4";
+  aoe_list_str += "/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled";
 
   //st
   st_list_str += "/rising_sun_kick";
   st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>4&buff.tiger_power.remains>4";
   st_list_str += "/chi_wave,if=talent.chi_wave.enabled&energy.time_to_max>2";
+  st_list_str += "/chi_burst,if=talent.chi_burst.enabled&energy.time_to_max>2";
+  st_list_str += "/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking";
   st_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
   st_list_str += "/tiger_palm,if=(buff.combo_breaker_tp.react&energy.time_to_max>=2)|(buff.combo_breaker_tp.remains<=2&buff.combo_breaker_tp.react)";
   st_list_str += "/jab,if=talent.ascension.enabled&chi<=3";

@@ -34,16 +34,21 @@ actions+=/energizing_brew,if=energy.time_to_max>5
 actions+=/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains
 actions+=/tiger_palm,if=buff.tiger_power.down&target.debuff.rising_sun_kick.remains>1&energy.time_to_max>1
 actions+=/invoke_xuen,if=talent.invoke_xuen.enabled
-actions+=/run_action_list,name=aoe,if=active_enemies>=5
-actions+=/run_action_list,name=single_target,if=active_enemies<5
+actions+=/run_action_list,name=aoe,if=active_enemies>=3
+actions+=/run_action_list,name=single_target,if=active_enemies<3
 
 actions.aoe=rushing_jade_wind,if=talent.rushing_jade_wind.enabled
-actions.aoe+=/rising_sun_kick,if=chi=4
-actions.aoe+=/spinning_crane_kick
+actions.aoe+=/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking
+actions.aoe+=/chi_wave,if=talent.chi_wave.enabled
+actions.aoe+=/chi_burst,if=talent.chi_burst.enabled
+actions.aoe+=/rising_sun_kick,if=chi>=4
+actions.aoe+=/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled
 
 actions.single_target=rising_sun_kick
 actions.single_target+=/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>4&buff.tiger_power.remains>4
 actions.single_target+=/chi_wave,if=talent.chi_wave.enabled&energy.time_to_max>2
+actions.single_target+=/chi_burst,if=talent.chi_burst.enabled&energy.time_to_max>2
+actions.single_target+=/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking
 actions.single_target+=/blackout_kick,if=buff.combo_breaker_bok.react
 actions.single_target+=/tiger_palm,if=(buff.combo_breaker_tp.react&energy.time_to_max>=2)|(buff.combo_breaker_tp.remains<=2&buff.combo_breaker_tp.react)
 actions.single_target+=/jab,if=talent.ascension.enabled&chi<=3
