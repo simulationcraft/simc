@@ -14,15 +14,12 @@
 
   MISTWEAVER:
   Implement the following spells:
-   - Surging Mist
-    * Interaction w/ Vital Mists
    - Renewing Mist
    - Revival
    - Uplift
    - Life Cocoon
    - Teachings of the Monastery
     * SCK healing
-    * CJL damage increase
     * BoK's cleave effect
    - Non-glyphed Mana Tea
   Check damage values of Jab, TP, BoK, SCK, etc.
@@ -61,6 +58,9 @@ struct monk_td_t : public actor_pair_t
 public:
   struct dots_t
   {
+    dot_t* enveloping_mist;
+    dot_t* renewing_mist;
+    dot_t* soothing_mist;
     dot_t* zen_sphere;
   } dots;
 
@@ -68,7 +68,6 @@ public:
   {
     debuff_t* rising_sun_kick;
     debuff_t* dizzying_haze;
-    buff_t* enveloping_mist;
   } buff;
 
   monk_td_t( player_t* target, monk_t* p );
@@ -92,6 +91,7 @@ public:
 
   struct buffs_t
   {
+    buff_t* channeling_soothing_mist;
     buff_t* chi_sphere;
     buff_t* combo_breaker_tp;
     buff_t* combo_breaker_bok;
@@ -139,7 +139,9 @@ public:
     gain_t* energizing_brew;
     gain_t* mana_tea;
     gain_t* muscle_memory;
+    gain_t* renewing_mist;
     gain_t* soothing_mist;
+    gain_t* surging_mist;
     gain_t* tier15_2pc;
     gain_t* tier16_4pc_melee;
     gain_t* focus_of_xuen_savings;
@@ -217,10 +219,18 @@ public:
 
   struct glyphs_t
   {
-    // Prime
+    // General
     const spell_data_t* fortifying_brew;
 
-    // Major
+    // Brewmaster
+    
+    // Mistweaver
+    const spell_data_t* mana_tea;
+    const spell_data_t* targeted_expulsion;
+
+    // Windwalker
+
+    // Minor
   } glyph;
 
   struct cooldowns_t
@@ -289,6 +299,7 @@ public:
   virtual void      init_defense();
   virtual void      regen( timespan_t periodicity );
   virtual void      reset();
+  virtual void      interrupt();
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual int       decode_set( item_t& );
   virtual void      create_options();
@@ -674,6 +685,36 @@ public:
       p() -> resource_gain( RESOURCE_ENERGY, energy_restored, p() -> gain.energy_refund );
     }
   }
+
+  virtual void execute()
+  {
+    if ( p() -> buff.channeling_soothing_mist -> check()
+      && p() -> executing
+      && ! ( p() -> executing -> name_str == "enveloping_mist" || p() -> executing -> name_str == "surging_mist" ) )
+    {
+      for ( size_t i = 0, actors = sim -> player_non_sleeping_list.size(); i < actors; ++i )
+      {
+        player_t* t = sim -> player_non_sleeping_list[ i ];
+        if ( td( t ) -> dots.soothing_mist -> ticking )
+        {
+          td( t ) -> dots.soothing_mist -> cancel();
+          p() -> buff.channeling_soothing_mist -> expire();
+          break;
+        }
+      }
+    }
+
+    ab::execute();
+  }
+
+  void consume_muscle_memory()
+  {
+    if ( p() -> buff.muscle_memory -> up() )
+    {
+      p() -> resource_gain( RESOURCE_MANA, p() -> resources.max[ RESOURCE_MANA ] * p() -> find_spell( 139597 ) -> effectN( 2 ).percent(), p() -> gain.muscle_memory );
+      p() -> buff.muscle_memory -> expire();
+    }
+  }
 };
 
 namespace attacks {
@@ -787,9 +828,9 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   {
     double m = base_t::action_multiplier();
 
-    // 2013/09/23: Brewmasters now deal 10% less damage with all attacks.
+    // 2013/10/02: Brewmasters now deal 15% less damage with all attacks.
     if ( player -> specialization() == MONK_BREWMASTER )
-      m *= 0.9;
+      m *= 0.85;
 
     return m;
   }
@@ -909,7 +950,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     if ( p() -> spec.teachings_of_the_monastery -> ok() )
       m *= 1.0 + p() -> spec.teachings_of_the_monastery -> effectN( 7 ).percent();
     if ( p() -> buff.muscle_memory -> check() )
-      m *= 1.0 + 1.5; // FIX ME: Not reliant upon spell data! At time of writing spell only has a dummy effect.
+      m *= 1.0 + p() -> find_spell( 139597 ) -> effectN( 1 ).percent();
 
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
@@ -940,12 +981,7 @@ struct tiger_palm_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if ( p() -> buff.muscle_memory -> up() )
-    {
-      double mana_gain = player -> resources.max[ RESOURCE_MANA ] * 0.04; // FIX ME: Amount should be retrieved from spell data if possible.
-      player -> resource_gain( RESOURCE_MANA, mana_gain, p() -> gain.muscle_memory );
-      p() -> buff.muscle_memory -> decrement();
-    }
+    consume_muscle_memory();
   }
 
   virtual double cost()
@@ -1035,12 +1071,7 @@ struct blackout_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if ( p() -> buff.muscle_memory -> up() )
-    {
-      double mana_gain = player -> resources.max[ RESOURCE_MANA ] * 0.04; // FIX ME: Amount should be retrieved from spell data if possible.
-      player -> resource_gain( RESOURCE_MANA, mana_gain, p() -> gain.muscle_memory );
-      p() -> buff.muscle_memory -> decrement();
-    }
+    consume_muscle_memory();
   }
 
   virtual double action_multiplier()
@@ -1048,7 +1079,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     double m = monk_melee_attack_t::action_multiplier();
 
     if ( p() -> buff.muscle_memory -> check() )
-      m *= 1.0 + 1.5; // FIX ME: Not reliant upon spell data! At time of writing spell only has a dummy effect.
+      m *= 1.0 + p() -> find_spell( 139597 ) -> effectN( 1 ).percent();
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
     if ( p() -> set_bonus.tier16_2pc_melee() && p() -> buff.combo_breaker_bok -> check() ) {
@@ -1416,6 +1447,11 @@ struct melee_t : public monk_melee_attack_t
 
   void execute()
   {
+    // Prevent the monk from melee'ing while channeling soothing_mist.
+    // FIXME: This is super hacky and spams up the APL sample sequence a bit.
+    if ( p() -> buff.channeling_soothing_mist -> check() )
+      return;
+
     if ( time_to_execute > timespan_t::zero() && player -> executing )
     {
       if ( sim -> debug ) sim -> out_debug.printf( "Executing '%s' during melee (%s).", player -> executing -> name(), util::slot_type_string( weapon -> slot ) );
@@ -1628,6 +1664,8 @@ struct expel_harm_t : public monk_melee_attack_t
     oh = &( player -> off_hand_weapon );
 
     base_multiplier = 7.0; // hardcoded into tooltip
+    if ( p -> glyph.targeted_expulsion -> ok() )
+      base_multiplier *= 1.0 - p -> glyph.targeted_expulsion -> effectN( 2 ).percent();
 
     if ( player -> specialization() == MONK_BREWMASTER )
       weapon_power_mod = 1 / 11.0;
@@ -1847,7 +1885,6 @@ struct chi_brew_t : public monk_spell_t
 // Zen Sphere
 // ==========================================================================
 // TODO: Check if "tick" damage is periodic or direct.
-//       Verify damage values.
 
 struct zen_sphere_damage_t : public monk_spell_t
 {
@@ -1857,7 +1894,8 @@ struct zen_sphere_damage_t : public monk_spell_t
     background = true;
 
     base_attack_power_multiplier = 1.0;
-    direct_power_mod = 0.09; // hardcoded into tooltip
+    base_spell_power_multiplier = 0.0;
+    direct_power_mod = 0.09 * 1.15; // hardcoded into tooltip
   }
 };
 
@@ -1870,7 +1908,8 @@ struct zen_sphere_detonate_damage_t : public monk_spell_t
     aoe = -1;
     
     base_attack_power_multiplier = 1.0;
-    direct_power_mod = 0.368; // hardcoded into tooltip
+    base_spell_power_multiplier = 0.0;
+    direct_power_mod = 0.368 * 1.15; // hardcoded into tooltip
   }
 };
 
@@ -2388,120 +2427,47 @@ struct monk_heal_t : public monk_action_t<heal_t>
                const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, &p, s )
   {
-  }
-};
-
-// ==========================================================================
-// Zen Sphere
-// ==========================================================================
-// TODO: Verify healing values.
-
-struct zen_sphere_t : public monk_heal_t
-{
-  spells::monk_spell_t* zen_sphere_damage;
-  spells::monk_spell_t* zen_sphere_detonate_damage;
-
-  struct zen_sphere_detonate_heal_t : public monk_heal_t
-  {
-    zen_sphere_detonate_heal_t( monk_t& player ) :
-      monk_heal_t( "zen_sphere_detonate", player, player.find_spell( 125033 ) )
-    {
-      background = dual = true;
-      aoe = -1;
-      
-      base_attack_power_multiplier = 1.0;
-      direct_power_mod = 0.281; // hardcoded into tooltip
-    }
-  };
-
-  zen_sphere_detonate_heal_t* zen_sphere_detonate_heal;
-
-  zen_sphere_t( monk_t& p, const std::string& options_str  ) :
-    monk_heal_t( "zen_sphere", p, p.talent.zen_sphere ),
-    zen_sphere_damage( new spells::zen_sphere_damage_t( &p ) ),
-    zen_sphere_detonate_damage( new spells::zen_sphere_detonate_damage_t( &p ) ),
-    zen_sphere_detonate_heal( new zen_sphere_detonate_heal_t( p ) )
-  {
-    parse_options( nullptr, options_str );
-    
-    base_attack_power_multiplier = 1.0;
-    if ( player -> specialization() == MONK_MISTWEAVER )
-      tick_power_mod = 0.108; // hardcoded into tooltip
-    else
-      tick_power_mod = 0.09;  // hardcoded into tooltip
-
-    cooldown -> duration = timespan_t::from_seconds( 10.0 );
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    monk_heal_t::tick( d );
-
-    zen_sphere_damage -> execute();
-  }
-
-  virtual void last_tick( dot_t* d )
-  {
-    monk_heal_t::last_tick( d );
-
-    zen_sphere_detonate_damage -> execute();
-    zen_sphere_detonate_heal -> execute();
+    harmful = false;
   }
 };
 
 // ==========================================================================
 // Enveloping Mist
 // ==========================================================================
+/*
+  TODO: Verify healing values.
+*/
 
 struct enveloping_mist_t : public monk_heal_t
 {
   enveloping_mist_t( monk_t& p, const std::string& options_str ) :
-    monk_heal_t( "zen_sphere_detonate", p, p.find_class_spell( "Enveloping Mist" ) )
-  {
-    parse_options( nullptr, options_str );
-
-    stancemask = WISE_SERPENT;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    monk_heal_t::impact( s );
-
-    td( s -> target ) -> buff.enveloping_mist -> trigger();
-  }
-};
-
-// ==========================================================================
-// Soothing Mist
-// ==========================================================================
-
-struct soothing_mist_t : public monk_heal_t
-{
-  soothing_mist_t( monk_t& p, const std::string& options_str ) :
-    monk_heal_t( "soothing_mist", p, p.find_specialization_spell( "Soothing Mist" ) )
+    monk_heal_t( "enveloping_mist", p, p.find_spell( 132120 ) )
   {
     parse_options( nullptr, options_str );
 
     stancemask = WISE_SERPENT;
 
-    channeled = true;
+    may_crit = may_miss = false;
+    
+    resource_current = RESOURCE_CHI;
+    base_costs[ RESOURCE_CHI ] = 3.0;
   }
 
-  virtual void tick( dot_t* d )
+  virtual timespan_t execute_time()
   {
-    monk_heal_t::tick( d );
+    if ( p() -> buff.channeling_soothing_mist -> check() )
+      return timespan_t::zero();
 
-    if ( rng().roll( data().proc_chance() ) )
-    {
-      p() -> resource_gain( RESOURCE_CHI, 1, p() -> gain.soothing_mist, this );
-    }
+    return monk_heal_t::execute_time();
   }
 };
 
 // ==========================================================================
 // Expel Harm (Heal)
 // ==========================================================================
-// TODO: Verify healing values.
+/*
+  TODO: Verify healing values.
+*/
 
 struct expel_harm_heal_t : public monk_heal_t
 {
@@ -2513,7 +2479,8 @@ struct expel_harm_heal_t : public monk_heal_t
     parse_options( nullptr, options_str );
 
     stancemask = STURDY_OX | FIERCE_TIGER;
-    target = &p;
+    if ( ! p.glyph.targeted_expulsion -> ok() )
+      target = &p;
     base_multiplier = 2.0;
 
     attack = new attacks::expel_harm_t( &p );
@@ -2545,6 +2512,270 @@ struct expel_harm_heal_t : public monk_heal_t
       cd = timespan_t::zero();
 
     monk_heal_t::update_ready( cd );
+  }
+};
+
+// ==========================================================================
+// Renewing Mist
+// ==========================================================================
+/*
+  TODO: Verify healing values.
+        Add bouncing.
+*/
+
+struct renewing_mist_t : public monk_heal_t
+{
+  renewing_mist_t( monk_t& p, const std::string& options_str ) :
+    monk_heal_t( "renewing_mist", p, p.find_spell( 119611 ) )
+  {
+    parse_options( nullptr, options_str );
+
+    stancemask = WISE_SERPENT;
+    may_crit = may_miss = false;
+
+    tick_power_mod = p.find_spell( 115151 ) -> effectN( 3 ).coeff();
+
+    trigger_gcd = p.find_spell( 115151 ) -> gcd();
+    base_execute_time = p.find_spell( 115151 ) -> cast_time( p.level );
+
+    resource_current = RESOURCE_MANA;
+    base_costs[ RESOURCE_MANA ] = p.find_spell( 115151 ) -> cost( POWER_MANA ) * p.resources.base[ RESOURCE_MANA ];
+
+    cooldown -> duration = p.find_spell( 115151 ) -> cooldown();
+  }
+
+  virtual void execute()
+  {
+    monk_heal_t::execute();
+
+    player -> resource_gain( RESOURCE_CHI, p() -> find_spell( 115151 ) -> effectN( 2 ).base_value(), p() -> gain.renewing_mist, this );
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    monk_heal_t::tick( d );
+  }
+};
+
+// ==========================================================================
+// Soothing Mist
+// ==========================================================================
+/*
+  DESC: Surging Mist and Enveloping Mist need to be able to be cast while
+        we're channeling Soothing Mist WITHOUT interrupting the channel. to
+        achieve this, soothing_mist applies a HoT to the target that is
+        removed whenever the monk executes an action that is not one of these
+        whitelised spells. Auto attack is also halted while the HoT is
+        active. The HoT is also removed any time the user moves, is stunned,
+        interrupted, etc.
+
+  TODO: Verify healing values.
+        Change cost from per tick to on use + per second.
+        Confirm the mana consumption is affected by lucidity.
+*/
+
+struct soothing_mist_t : public monk_heal_t
+{
+  int consecutive_failed_chi_procs;
+
+  soothing_mist_t( monk_t& p, const std::string& options_str ) :
+    monk_heal_t( "soothing_mist", p, p.find_specialization_spell( "Soothing Mist" ) )
+  {
+    parse_options( nullptr, options_str );
+
+    stancemask = WISE_SERPENT;
+
+    tick_zero = true;
+
+    consecutive_failed_chi_procs = 0;
+
+    // Cost is handled in action_t::tick()
+    base_costs[ RESOURCE_MANA ] = 0.0;
+    costs_per_second[ RESOURCE_MANA ] = 0;
+  }
+
+  virtual double action_ta_multiplier()
+  {
+    double tm = monk_heal_t::action_ta_multiplier();
+
+    player_t* t = ( execute_state ) ? execute_state -> target : target;
+
+    if ( td( t ) -> dots.enveloping_mist -> ticking )
+      tm *= 1.0 + p() -> find_spell( 132120 ) -> effectN( 2 ).percent();
+
+    return tm;
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    // Deduct mana / fizzle if the caster does not have enough mana
+    double tick_cost = data().cost( POWER_MANA ) * p() -> resources.base[ RESOURCE_MANA ] * p() -> composite_spell_haste();
+    if ( p() -> resources.current[ RESOURCE_MANA ] >= tick_cost )
+      p() -> resource_loss( RESOURCE_MANA, tick_cost, p() -> gain.soothing_mist, this );
+    else
+    {
+      player_t* t = ( execute_state ) ? execute_state -> target : target;
+
+      td( t ) -> dots.enveloping_mist -> cancel();
+      p() -> buff.channeling_soothing_mist -> expire();
+      return;
+    }
+
+    monk_heal_t::tick( d );
+
+    // Chi Gain
+    if ( rng().roll( 0.15 + consecutive_failed_chi_procs * 0.15 ) )
+    {
+      p() -> resource_gain( RESOURCE_CHI, 1.0, p() -> gain.soothing_mist, this );
+      consecutive_failed_chi_procs = 0;
+    }
+    else
+      consecutive_failed_chi_procs ++;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    monk_heal_t::impact( s );
+
+    p() -> buff.channeling_soothing_mist -> trigger();
+  }
+
+  virtual void last_tick( dot_t* d )
+  {
+    monk_heal_t::last_tick( d );
+
+    p() -> buff.channeling_soothing_mist -> expire();
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buff.channeling_soothing_mist -> check() )
+      return false;
+
+    // Mana cost check
+    double tick_cost = data().cost( POWER_MANA ) * p() -> resources.base[ RESOURCE_MANA ];
+    if ( p() -> resources.current[ RESOURCE_MANA ] < tick_cost )
+      return false;
+
+    return monk_heal_t::ready();
+  }
+};
+
+// ==========================================================================
+// Surging Mist
+// ==========================================================================
+/*
+  TODO: Verify healing values.
+*/
+
+struct surging_mist_t : public monk_heal_t
+{
+  surging_mist_t( monk_t& p, const std::string& options_str ) :
+    monk_heal_t( "surging_mist", p, p.find_spell( 116995 ) )
+  {
+    parse_options( nullptr, options_str );
+
+    stancemask = WISE_SERPENT;
+
+    trigger_gcd = p.find_spell( 116694 ) -> gcd();
+    base_execute_time = p.find_spell( 116694 ) -> cast_time( p.level );
+
+    resource_current = RESOURCE_MANA;
+    base_costs[ RESOURCE_MANA ] = p.find_spell( 116694 ) -> cost( POWER_MANA ) * p.resources.base[ RESOURCE_MANA ];
+
+    may_miss = false;
+  }
+
+  virtual double cost()
+  {
+    double c = monk_heal_t::cost();
+
+    if ( p() -> buff.vital_mists -> up() )
+      c *= 1.0 + p() -> buff.vital_mists -> stack() * p() -> buff.vital_mists -> data().effectN( 2 ).percent();
+
+    return c;
+  }
+
+  virtual timespan_t execute_time()
+  {
+    timespan_t et = monk_heal_t::execute_time();
+
+    if ( p() -> buff.channeling_soothing_mist -> check() )
+      return timespan_t::zero();
+
+    if ( p() -> buff.vital_mists -> up() )
+      et *= 1.0 + p() -> buff.vital_mists -> stack() * p() -> buff.vital_mists -> data().effectN( 1 ).percent();
+
+    return et;
+  }
+
+  virtual void execute()
+  {
+    monk_heal_t::execute();
+
+    p() -> buff.vital_mists -> expire();
+
+    player -> resource_gain( RESOURCE_CHI, p() -> find_spell( 116694 ) -> effectN( 2 ).base_value(), p() -> gain.surging_mist, this );
+  }
+};
+
+
+// ==========================================================================
+// Zen Sphere
+// ==========================================================================
+
+struct zen_sphere_t : public monk_heal_t
+{
+  spells::monk_spell_t* zen_sphere_damage;
+  spells::monk_spell_t* zen_sphere_detonate_damage;
+
+  struct zen_sphere_detonate_heal_t : public monk_heal_t
+  {
+    zen_sphere_detonate_heal_t( monk_t& player ) :
+      monk_heal_t( "zen_sphere_detonate", player, player.find_spell( 124101 ) )
+    {
+      background = dual = true;
+      aoe = -1;
+      
+      base_attack_power_multiplier = 1.0;
+      base_spell_power_multiplier = 0.0;
+      direct_power_mod = 0.281 * 1.15; // hardcoded into tooltip
+    }
+  };
+
+  zen_sphere_detonate_heal_t* zen_sphere_detonate_heal;
+
+  zen_sphere_t( monk_t& p, const std::string& options_str  ) :
+    monk_heal_t( "zen_sphere", p, p.talent.zen_sphere ),
+    zen_sphere_damage( new spells::zen_sphere_damage_t( &p ) ),
+    zen_sphere_detonate_damage( new spells::zen_sphere_detonate_damage_t( &p ) ),
+    zen_sphere_detonate_heal( new zen_sphere_detonate_heal_t( p ) )
+  {
+    parse_options( nullptr, options_str );
+
+    base_attack_power_multiplier = 1.0;
+    base_spell_power_multiplier = 0.0;
+    if ( player -> specialization() == MONK_MISTWEAVER )
+      tick_power_mod = 0.108 * 1.15; // hardcoded into tooltip
+    else
+      tick_power_mod = 0.09 * 1.15;  // hardcoded into tooltip
+
+    cooldown -> duration = timespan_t::from_seconds( 10.0 );
+  }
+
+  virtual void tick( dot_t* d )
+  {
+    monk_heal_t::tick( d );
+
+    zen_sphere_damage -> execute();
+  }
+
+  virtual void last_tick( dot_t* d )
+  {
+    monk_heal_t::last_tick( d );
+
+    zen_sphere_detonate_damage -> execute();
+    zen_sphere_detonate_heal -> execute();
   }
 };
 
@@ -2642,10 +2873,12 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
   dots( dots_t() )
 {
   buff.rising_sun_kick   = buff_creator_t( *this, "rising_sun_kick"   ).spell( p -> find_spell( 130320 ) );
-  buff.enveloping_mist   = buff_creator_t( *this, "enveloping_mist"   ).spell( p -> find_class_spell( "Enveloping Mist" ) );
   buff.dizzying_haze     = buff_creator_t( *this, "dizzying_haze"     ).spell( p -> find_spell( 123727 ) );
   
-  dots.zen_sphere        = target -> get_dot( "rejuvenation", p );
+  dots.enveloping_mist   = target -> get_dot( "enveloping_mist", p );
+  dots.renewing_mist     = target -> get_dot( "renewing_mist",   p );
+  dots.soothing_mist     = target -> get_dot( "soothing_mist",   p );
+  dots.zen_sphere        = target -> get_dot( "zen_sphere",      p );
 }
 
 // monk_t::create_action ====================================================
@@ -2680,8 +2913,10 @@ action_t* monk_t::create_action( const std::string& name,
 
   // Mistweaver
   if ( name == "enveloping_mist"       ) return new        enveloping_mist_t( *this, options_str );
-  if ( name == "soothing_mist"         ) return new          soothing_mist_t( *this, options_str );
   if ( name == "mana_tea"              ) return new               mana_tea_t( *this, options_str );
+  if ( name == "renewing_mist"         ) return new          renewing_mist_t( *this, options_str );
+  if ( name == "soothing_mist"         ) return new          soothing_mist_t( *this, options_str );
+  if ( name == "surging_mist"          ) return new           surging_mist_t( *this, options_str );
 
   // Misc
   if ( name == "crackling_jade_lightning" ) return new crackling_jade_lightning_t( *this, options_str );
@@ -2777,7 +3012,9 @@ void monk_t::init_spells()
   passives.swift_reflexes = find_spell( 124334 );
 
   // GLYPHS
-  glyph.fortifying_brew = find_glyph( "Glyph of Fortifying Brew" );
+  glyph.fortifying_brew    = find_glyph( "Glyph of Fortifying Brew"    );
+  glyph.mana_tea           = find_glyph( "Glyph of Mana Tea"           );
+  glyph.targeted_expulsion = find_glyph( "Glyph of Targeted Expulsion" );
 
   //MASTERY
   mastery.bottled_fury        = find_mastery_spell( MONK_WINDWALKER );
@@ -2889,10 +3126,11 @@ void monk_t::create_buffs()
                                 .add_invalidate( CACHE_PARRY );
 
   // Mistweaver
-  buff.mana_tea          = buff_creator_t( this, "mana_tea"            ).spell( find_spell( 115867 ) );
-  buff.muscle_memory     = buff_creator_t( this, "muscle_memory"       ).spell( find_spell( 139597 ) );
-  buff.serpents_zeal     = buff_creator_t( this, "serpents_zeal"       ).spell( find_spell( 127722 ) );
-  buff.vital_mists       = buff_creator_t( this, "vital_mists"         ).spell( find_spell( 118674 ) );
+  buff.channeling_soothing_mist = buff_creator_t( this, "channeling_soothing_mist" ).spell( spell_data_t::nil()  );
+  buff.mana_tea                 = buff_creator_t( this, "mana_tea"                 ).spell( find_spell( 115867 ) );
+  buff.muscle_memory            = buff_creator_t( this, "muscle_memory"            ).spell( find_spell( 139597 ) );
+  buff.serpents_zeal            = buff_creator_t( this, "serpents_zeal"            ).spell( find_spell( 127722 ) );
+  buff.vital_mists              = buff_creator_t( this, "vital_mists"              ).spell( find_spell( 118674 ) );
 
   // Windwalker
   buff.chi_sphere        = buff_creator_t( this, "chi_sphere"          ).max_stack( 5 );
@@ -2921,9 +3159,11 @@ void monk_t::init_gains()
   gain.energizing_brew       = get_gain( "energizing_brew"          );
   gain.mana_tea              = get_gain( "mana_tea"                 );
   gain.muscle_memory         = get_gain( "muscle_memory"            );
-  gain.soothing_mist         = get_gain( "Soothing Mist"            );
+  gain.renewing_mist         = get_gain( "renewing_mist"            );
+  gain.soothing_mist         = get_gain( "soothing_mist"            );
+  gain.surging_mist          = get_gain( "surging_mist"             );
   gain.tier15_2pc            = get_gain( "tier15_2pc"               );
-  gain.focus_of_xuen_savings = get_gain( "focus_of_xuen_savings"	);
+  gain.focus_of_xuen_savings = get_gain( "focus_of_xuen_savings"	  );
 }
 
 // monk_t::init_procs =======================================================
@@ -2974,6 +3214,30 @@ void monk_t::regen( timespan_t periodicity )
   }
 
   base_t::regen( periodicity );
+}
+
+// monk_t::interrupt =========================================================
+
+void monk_t::interrupt()
+{
+  // This function triggers stuns, movement, and other types of halts.
+
+  // End any active soothing_mist channels
+  if ( buff.channeling_soothing_mist -> check() )
+  {
+    for ( size_t i = 0, actors = sim -> player_non_sleeping_list.size(); i < actors; ++i )
+    {
+      player_t* t = sim -> player_non_sleeping_list[ i ];
+      if ( get_target_data( t ) -> dots.soothing_mist -> ticking )
+      {
+        get_target_data( t ) -> dots.soothing_mist -> cancel();
+        buff.channeling_soothing_mist -> expire();
+        break;
+      }
+    }
+  }
+
+  player_t::interrupt();
 }
 
 // monk_t::matching_gear_multiplier =========================================
@@ -3434,22 +3698,22 @@ void monk_t::apl_pre_brewmaster()
   if ( sim -> allow_food && level >= 80 )
   {
     if ( level >= 85 )
-      pre -> add_action( "food,type=great_pandaren_banquet" );
+      pre -> add_action( "food,type=chun_tian_spring_rolls" );
     else
-      pre -> add_action( "food,type=great_pandaren_banquet" ); // FIXME
+      pre -> add_action( "food,type=seafood_magnifique_feast" );
   }
 
   pre -> add_action( "stance,choose=sturdy_ox" );
   pre -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  // Potion
-  if ( sim -> allow_potions && level >= 80 )
+  // Pre-potting (disabled for now)
+  /* if ( sim -> allow_potions && level >= 80 )
   {
     if ( level >= 85 )
-      pre -> add_action( "mountains_potion" );
+      pre -> add_action( "virmens_bite_potion" );
     else
-      pre -> add_action( "mountains_potion" ); // FIXME
-  }
+      pre -> add_action( "tolvir_agility_potion" ); // FIXME
+  } */
 }
 
 // Mistweaver Pre-Combat Action Priority List
@@ -3544,7 +3808,7 @@ void monk_t::apl_combat_brewmaster()
   st -> add_action( this, "Tiger Palm", "if=buff.tiger_power.down" );
   st -> add_talent( this, "Chi Burst" );
   st -> add_talent( this, "Chi Wave" );
-  st -> add_action( "zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
+  st -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
   st -> add_action( this, "Jab", "if=energy+energy.regen*cooldown.keg_smash.remains>=80" );
   st -> add_action( this, "Tiger Palm" );
 
@@ -3553,7 +3817,7 @@ void monk_t::apl_combat_brewmaster()
   aoe -> add_action( this, "Tiger Palm", "if=buff.tiger_power.down" );
   aoe -> add_talent( this, "Chi Burst" );
   aoe -> add_talent( this, "Chi Wave" );
-  aoe -> add_action( "zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
+  aoe -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
   aoe -> add_action( this, "Jab", "if=talent.rushing_jade_wind.enabled&energy.time_to_max<cooldown.rushing_jade_wind.remains&energy.time_to_max<cooldown.keg_smash.remains" );
   aoe -> add_action( "spinning_crane_kick,if=!talent.rushing_jade_wind.enabled&energy+energy.regen*cooldown.keg_smash.remains>=80" );
   aoe -> add_action( this, "Tiger Palm" );

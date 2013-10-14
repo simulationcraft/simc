@@ -490,6 +490,16 @@ void dbc::apply_hotfixes()
   // Death Knight
 
   // Monk
+  // Zen Sphere -- Damage done buffed by 15%
+  s = spell_data_t::find( 124098, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.104 * 1.15;
+  s = spell_data_t::find( 125033, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.423 * 1.15;
+  // Zen Sphere -- Healing done buffed by 15%
+  s = spell_data_t::find( 124081, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.104 * 1.15;
+  s = spell_data_t::find( 124101, false );
+  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.269 * 1.15;
 
 
   // Misc
