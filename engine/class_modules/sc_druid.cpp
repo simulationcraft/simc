@@ -6456,7 +6456,7 @@ void druid_t::apl_feral()
 
   // APL: BASIC
 
-  basic -> add_action( "swap_action_list,name=aoe,if=active_enemies>=4" );
+  basic -> add_action( "swap_action_list,name=aoe,if=active_enemies>=5" );
   basic -> add_action( "auto_attack" );
   basic -> add_action( "skull_bash_cat" );
   if ( talent.force_of_nature -> ok() )
@@ -6507,7 +6507,7 @@ void druid_t::apl_feral()
   basic -> add_action( this, "Ferocious Bite", "if=combo_points>=5&target.health.pct<=25&dot.rip.ticking" );
   basic -> add_action( this, "Rip", "if=combo_points>=5&dot.rip.remains<2" );
   basic -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3" );
-  basic -> add_action( this, "Rake", "if=dot.rake.remains<3|action.rake.tick_damage>dot.rake.tick_dmg",
+  basic -> add_action( this, "Rake", "cycle_targets=1,if=dot.rake.remains<3|action.rake.tick_damage>dot.rake.tick_dmg",
                        "Rake if it's about to fall off or we can apply a stronger Rake." );
   basic -> add_action( "pool_resource,for_next=1" );
   basic -> add_action( "thrash_cat,if=dot.thrash_cat.remains<3&(dot.rip.remains>=8&buff.savage_roar.remains>=12|buff.berserk.up|combo_points>=5)" );
@@ -6534,7 +6534,7 @@ void druid_t::apl_feral()
 
   // APL: ADVANCED
 
-  advanced -> add_action( "swap_action_list,name=aoe,if=active_enemies>=4" );
+  advanced -> add_action( "swap_action_list,name=aoe,if=active_enemies>=5" );
   if ( talent.dream_of_cenarius -> ok() && find_item( "rune_of_reorigination" ) && find_item( "ticking_ebon_detonator" ) )
   {
     advanced -> add_action( this, "Tiger's Fury", "if=time=0&set_bonus.tier16_4pc_melee" );
@@ -6637,7 +6637,7 @@ void druid_t::apl_feral()
   if ( find_item( "rune_of_reorigination" ) )
     advanced -> add_action( this, "Rake", "if=buff.rune_of_reorigination.up&dot.rake.remains<9&buff.rune_of_reorigination.remains<=1.5",
                             "Refresh Rake as Re-Origination is about to end if Rake has <9 seconds left." );
-  advanced -> add_action( this, "Rake", "if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|(dot.rake.remains<3&action.rake.tick_damage%dot.rake.tick_dmg>=0.75))",
+  advanced -> add_action( this, "Rake", "cycle_targets=1,if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|(dot.rake.remains<3&action.rake.tick_damage%dot.rake.tick_dmg>=0.75))",
                           "Rake if we can apply a stronger Rake or if it's about to fall off and clipping the last tick won't waste too much damage." );
   advanced -> add_action( "pool_resource,for_next=1",
                           "Pool energy for and maintain Thrash." );
@@ -6679,7 +6679,7 @@ void druid_t::apl_feral()
 
   // APL: AOE
   action_priority_list_t* aoe = get_action_priority_list( "aoe" );
-  aoe -> add_action( "swap_action_list,name=default,if=active_enemies<4" );
+  aoe -> add_action( "swap_action_list,name=default,if=active_enemies<5" );
   aoe -> add_action( "auto_attack" );
   aoe -> add_action( this, "Faerie Fire", "cycle_targets=1,if=debuff.weakened_armor.stack<3" );
   aoe -> add_action( this, "Savage Roar", "if=buff.savage_roar.down|(buff.savage_roar.remains<3&combo_points>0)" );

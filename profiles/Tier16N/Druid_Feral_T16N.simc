@@ -33,7 +33,7 @@ actions.precombat+=/virmens_bite_potion
 # By default the simulation will use the "Basic" action list, if you would like to instead use the "Advanced" action list do so here.
 actions=swap_action_list,name=basic
 
-actions.basic=swap_action_list,name=aoe,if=active_enemies>=4
+actions.basic=swap_action_list,name=aoe,if=active_enemies>=5
 actions.basic+=/auto_attack
 actions.basic+=/skull_bash_cat
 actions.basic+=/force_of_nature,if=charges=3|trinket.proc.agility.react|(buff.rune_of_reorigination.react&buff.rune_of_reorigination.remains<1)|target.time_to_die<20
@@ -55,7 +55,7 @@ actions.basic+=/ferocious_bite,if=combo_points>=5&target.health.pct<=25&dot.rip.
 actions.basic+=/rip,if=combo_points>=5&dot.rip.remains<2
 actions.basic+=/thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3
 # Rake if it's about to fall off or we can apply a stronger Rake.
-actions.basic+=/rake,if=dot.rake.remains<3|action.rake.tick_damage>dot.rake.tick_dmg
+actions.basic+=/rake,cycle_targets=1,if=dot.rake.remains<3|action.rake.tick_damage>dot.rake.tick_dmg
 actions.basic+=/pool_resource,for_next=1
 actions.basic+=/thrash_cat,if=dot.thrash_cat.remains<3&(dot.rip.remains>=8&buff.savage_roar.remains>=12|buff.berserk.up|combo_points>=5)
 # Pool to near-full energy before casting Ferocious Bite.
@@ -71,7 +71,7 @@ actions.basic+=/run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.
 actions.basic+=/run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3
 actions.basic+=/run_action_list,name=filler,if=energy.time_to_max<=1.0
 
-actions.advanced=swap_action_list,name=aoe,if=active_enemies>=4
+actions.advanced=swap_action_list,name=aoe,if=active_enemies>=5
 actions.advanced+=/tigers_fury,if=time=0&set_bonus.tier16_4pc_melee
 actions.advanced+=/savage_roar,if=time=0&set_bonus.tier16_4pc_melee
 actions.advanced+=/auto_attack
@@ -109,7 +109,7 @@ actions.advanced+=/savage_roar,if=buff.savage_roar.remains<=12&combo_points>=5&e
 # Refresh Rake as Re-Origination is about to end if Rake has <9 seconds left.
 actions.advanced+=/rake,if=buff.rune_of_reorigination.up&dot.rake.remains<9&buff.rune_of_reorigination.remains<=1.5
 # Rake if we can apply a stronger Rake or if it's about to fall off and clipping the last tick won't waste too much damage.
-actions.advanced+=/rake,if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|(dot.rake.remains<3&action.rake.tick_damage%dot.rake.tick_dmg>=0.75))
+actions.advanced+=/rake,cycle_targets=1,if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|(dot.rake.remains<3&action.rake.tick_damage%dot.rake.tick_dmg>=0.75))
 # Pool energy for and maintain Thrash.
 actions.advanced+=/pool_resource,for_next=1
 actions.advanced+=/thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&(dot.rip.remains>=8&buff.savage_roar.remains>=12|buff.berserk.up|combo_points>=5)&dot.rip.ticking
@@ -135,7 +135,7 @@ actions.filler+=/rake,if=target.time_to_die-dot.rake.remains>3&action.rake.tick_
 actions.filler+=/shred,if=(buff.omen_of_clarity.react|buff.berserk.up|energy.regen>=15)&buff.king_of_the_jungle.down
 actions.filler+=/mangle_cat,if=buff.king_of_the_jungle.down
 
-actions.aoe=swap_action_list,name=default,if=active_enemies<4
+actions.aoe=swap_action_list,name=default,if=active_enemies<5
 actions.aoe+=/auto_attack
 actions.aoe+=/faerie_fire,cycle_targets=1,if=debuff.weakened_armor.stack<3
 actions.aoe+=/savage_roar,if=buff.savage_roar.down|(buff.savage_roar.remains<3&combo_points>0)
