@@ -270,7 +270,6 @@ public:
   std::string default_pet;
 
   timespan_t ember_react, shard_react;
-  double nightfall_chance;
 
   warlock_t( sim_t* sim, const std::string& name, race_e r = RACE_UNDEAD );
 
@@ -367,8 +366,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   initial_demonic_fury( 200 ),
   default_pet( "" ),
   ember_react( ( initial_burning_embers >= 1.0 ) ? timespan_t::zero() : timespan_t::max() ),
-  shard_react( timespan_t::zero() ),
-  nightfall_chance( 0 )
+  shard_react( timespan_t::zero() )
 {
   base.distance = 40;
 
@@ -2226,11 +2224,9 @@ struct corruption_t : public warlock_spell_t
     if ( p() -> spec.nightfall -> ok() && d -> state -> target == p() -> latest_corruption_target ) //5.4 only the latest corruption procs it
     {
 
-      p() -> nightfall_chance += 0.00666; // Confirmed 09/09/2012 //Increase by 2 (5% to 10% with 5.4)
-      if ( rng().roll( p() -> nightfall_chance ) )
+      if ( rng().roll( p() -> spec.nightfall -> effectN( 1 ).percent() ) )
       {
         p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.nightfall );
-        p() -> nightfall_chance = 0;
         // If going from 0 to 1 shard was a surprise, the player would have to react to it
         if ( p() -> resources.current[ RESOURCE_SOUL_SHARD ] == 1 )
           p() -> shard_react = p() -> sim -> current_time + p() -> total_reaction_time();
@@ -5253,7 +5249,6 @@ void warlock_t::reset()
   pets.active = 0;
   ember_react = ( initial_burning_embers >= 1.0 ) ? timespan_t::zero() : timespan_t::max();
   shard_react = timespan_t::zero();
-  nightfall_chance = 0;
   core_event_t::cancel( demonic_calling_event );
 }
 
