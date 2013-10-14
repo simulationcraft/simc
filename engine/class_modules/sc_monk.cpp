@@ -50,7 +50,8 @@ namespace { // UNNAMED NAMESPACE
 namespace actions {
   namespace spells {
     struct stagger_self_damage_t;
-} }
+  }
+}
 struct monk_t;
 
 enum stance_e { STURDY_OX = 1, FIERCE_TIGER, WISE_SERPENT = 4 };
@@ -879,60 +880,6 @@ struct jab_t : public monk_melee_attack_t
 };
 
 // ==========================================================================
-// Expel Harm
-// ==========================================================================
-/*
-  Change to heal later.
-*/
-
-struct expel_harm_t : public monk_melee_attack_t
-{
-  expel_harm_t( monk_t* p, const std::string& options_str ) :
-    monk_melee_attack_t( "expel_harm", p, p -> find_class_spell( "Expel Harm" ) )
-  {
-    parse_options( nullptr, options_str );
-    stancemask = STURDY_OX | FIERCE_TIGER;
-
-    base_dd_min = base_dd_max = direct_power_mod = 0.0; // deactivate parsed spelleffect1
-
-    mh = &( player -> main_hand_weapon );
-    oh = &( player -> off_hand_weapon );
-
-    base_multiplier = 7.0; // hardcoded into tooltip
-
-    if ( player -> specialization() == MONK_BREWMASTER )
-      weapon_power_mod = 1 / 11.0;
-  }
-
-  virtual void execute()
-  {
-    monk_melee_attack_t::execute();
-
-    // Chi Gain
-    double chi_gain = data().effectN( 2 ).base_value();
-    chi_gain += p() -> active_stance_data( FIERCE_TIGER ).effectN( 4 ).base_value();
-
-    player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
-
-    if ( p() -> set_bonus.tier15_2pc_melee() &&
-        rng().roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
-    {
-      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
-      p() -> proc.tier15_2pc_melee -> occur();
-    }
-  }
-
-
-  virtual void update_ready( timespan_t cd )
-  {
-    if ( p() -> spec.desperate_measures -> ok() && p() -> health_percentage() <= 35.0 )
-      cd = timespan_t::zero();
-
-    monk_melee_attack_t::update_ready( cd );
-  }
-};
-
-// ==========================================================================
 // Tiger Palm
 // ==========================================================================
 
@@ -1075,7 +1022,10 @@ struct blackout_kick_t : public monk_melee_attack_t
     if ( result_is_hit( s -> result ) )
     {
       if ( p() -> spec.brewmaster_training -> ok() )
-        p() -> buff.shuffle -> trigger();
+        if ( p() -> buff.shuffle -> check() )
+          p() -> buff.shuffle -> extend_duration( p(), timespan_t::from_seconds( 6.0 ) );
+        else
+          p() -> buff.shuffle -> trigger();
       if ( p() -> spec.teachings_of_the_monastery -> ok() )
         p() -> buff.serpents_zeal -> trigger();
     }
@@ -1220,9 +1170,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 // ==========================================================================
 // Spinning Crane Kick
 // ==========================================================================
-/*
-  may need to modify this and fists of fury depending on how spell ticks
-*/
+// TODO: Verify rushing_jade_wind damage.
 
 struct spinning_crane_kick_t : public monk_melee_attack_t
 {
@@ -1277,13 +1225,14 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     tick_zero = true;
     hasted_ticks = true;
 
+    school = SCHOOL_PHYSICAL;
+    base_multiplier = 1.59 * 1.75 / 1.59; // hardcoded into tooltip
+
     if ( p -> talent.rushing_jade_wind -> ok() )
       tick_action = new rushing_jade_wind_tick_t( p, p -> find_spell( data().effectN( 1 ).trigger_spell_id() ) );
     else
     {
       channeled = true;
-      school = SCHOOL_PHYSICAL;
-      base_multiplier = 1.59 * 1.75 / 1.59; // hardcoded into tooltip
       tick_action = new spinning_crane_kick_tick_t( p, p -> find_spell( data().effectN( 1 ).trigger_spell_id() ) );
     }
     dynamic_tick_action = true;
@@ -1659,6 +1608,45 @@ struct keg_smash_t : public monk_melee_attack_t
   }
 };
 
+// ==========================================================================
+// Expel Harm
+// ==========================================================================
+
+struct expel_harm_t : public monk_melee_attack_t
+{
+  double result_total;
+
+  expel_harm_t( monk_t* p ) :
+    monk_melee_attack_t( "expel_harm", p, p -> find_class_spell( "Expel Harm" ) )
+  {
+    stancemask = STURDY_OX | FIERCE_TIGER;
+    background = true;
+
+    base_dd_min = base_dd_max = direct_power_mod = 0.0; // deactivate parsed spelleffect1
+
+    mh = &( player -> main_hand_weapon );
+    oh = &( player -> off_hand_weapon );
+
+    base_multiplier = 7.0; // hardcoded into tooltip
+
+    if ( player -> specialization() == MONK_BREWMASTER )
+      weapon_power_mod = 1 / 11.0;
+  }
+
+  double trigger_attack()
+  {
+    execute();
+    return result_total;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    monk_melee_attack_t::impact( s );
+
+    result_total = s -> result_total;
+  }
+};
+
 } // END melee_attacks NAMESPACE
 
 namespace spells {
@@ -1858,6 +1846,8 @@ struct chi_brew_t : public monk_spell_t
 // ==========================================================================
 // Zen Sphere
 // ==========================================================================
+// TODO: Check if "tick" damage is periodic or direct.
+//       Verify damage values.
 
 struct zen_sphere_damage_t : public monk_spell_t
 {
@@ -2404,11 +2394,7 @@ struct monk_heal_t : public monk_action_t<heal_t>
 // ==========================================================================
 // Zen Sphere
 // ==========================================================================
-/*
-  TODO:
-   - Add periodic healing Component
-   - find out if direct tick or tick zero applies
-*/
+// TODO: Verify healing values.
 
 struct zen_sphere_t : public monk_heal_t
 {
@@ -2446,13 +2432,6 @@ struct zen_sphere_t : public monk_heal_t
 
     cooldown -> duration = timespan_t::from_seconds( 10.0 );
   }
-
- /* virtual void execute()
-  {
-    monk_heal_t::execute();
-
-    zen_sphere_damage -> stats -> add_execute( time_to_execute, target );
-  }*/
 
   virtual void tick( dot_t* d )
   {
@@ -2516,6 +2495,56 @@ struct soothing_mist_t : public monk_heal_t
     {
       p() -> resource_gain( RESOURCE_CHI, 1, p() -> gain.soothing_mist, this );
     }
+  }
+};
+
+// ==========================================================================
+// Expel Harm (Heal)
+// ==========================================================================
+// TODO: Verify healing values.
+
+struct expel_harm_heal_t : public monk_heal_t
+{
+  attacks::expel_harm_t* attack;
+
+  expel_harm_heal_t( monk_t& p, const std::string& options_str ) :
+    monk_heal_t( "expel_harm_heal", p, p.find_class_spell( "Expel Harm" ) )
+  {
+    parse_options( nullptr, options_str );
+
+    stancemask = STURDY_OX | FIERCE_TIGER;
+    target = &p;
+    base_multiplier = 2.0;
+
+    attack = new attacks::expel_harm_t( &p );
+  }
+
+  virtual void execute()
+  {
+    base_dd_min = base_dd_max = attack -> trigger_attack();
+
+    monk_heal_t::execute();
+
+    // Chi Gain
+    double chi_gain = data().effectN( 2 ).base_value();
+    chi_gain += p() -> active_stance_data( FIERCE_TIGER ).effectN( 4 ).base_value();
+
+    player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
+
+    if ( p() -> set_bonus.tier15_2pc_melee() &&
+        rng().roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
+    {
+      p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
+      p() -> proc.tier15_2pc_melee -> occur();
+    }
+  }
+
+  virtual void update_ready( timespan_t cd )
+  {
+    if ( p() -> spec.desperate_measures -> ok() && p() -> health_percentage() <= 35.0 )
+      cd = timespan_t::zero();
+
+    monk_heal_t::update_ready( cd );
   }
 };
 
@@ -2629,7 +2658,7 @@ action_t* monk_t::create_action( const std::string& name,
   // Melee Attacks
   if ( name == "auto_attack"           ) return new            auto_attack_t( this, options_str );
   if ( name == "jab"                   ) return new                    jab_t( this, options_str );
-  if ( name == "expel_harm"            ) return new             expel_harm_t( this, options_str );
+  if ( name == "expel_harm"            ) return new       expel_harm_heal_t( *this, options_str );
   if ( name == "tiger_palm"            ) return new             tiger_palm_t( this, options_str );
   if ( name == "blackout_kick"         ) return new          blackout_kick_t( this, options_str );
   if ( name == "spinning_crane_kick"   ) return new    spinning_crane_kick_t( this, options_str );
@@ -3405,9 +3434,9 @@ void monk_t::apl_pre_brewmaster()
   if ( sim -> allow_food && level >= 80 )
   {
     if ( level >= 85 )
-      pre -> add_action( "/food,type=great_pandaren_banquet" );
+      pre -> add_action( "food,type=great_pandaren_banquet" );
     else
-      pre -> add_action( "/food,type=great_pandaren_banquet" ); // FIXME
+      pre -> add_action( "food,type=great_pandaren_banquet" ); // FIXME
   }
 
   pre -> add_action( "stance,choose=sturdy_ox" );
@@ -3496,19 +3525,38 @@ void monk_t::apl_pre_mistweaver()
 void monk_t::apl_combat_brewmaster()
 {
   action_priority_list_t* def       = get_action_priority_list( "default"   );
+  action_priority_list_t* st        = get_action_priority_list( "st"   );
+  action_priority_list_t* aoe       = get_action_priority_list( "aoe"   );
 
   def -> add_action( "auto_attack" );
-  def -> add_action( this, "Fortifying Brew", "if=health.pct<40" );
-
-  def -> add_action( "mountains_potion,if=health.pct<35&buff.mountains_potion.down" );
-  def -> add_action( this, "Elusive Brew", "if=buff.elusive_brew_stacks.react>=6" );
-  def -> add_action( this, "Purifying Brew", "if=stagger.moderate" );
+  def -> add_action( this, "Elusive Brew" );
+  def -> add_action( this, "Purifying Brew", "if=buff.shuffle.remains>6&stagger.heavy" );
+  def -> add_action( this, "Purifying Brew", "if=buff.shuffle.remains>12&stagger.moderate" );
+  def -> add_action( this, "Guard", "if=buff.shuffle.remains>6&incoming_damage_2>health.max*0.5" );
+  def -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=1.5|chi=chi.max" );
+  def -> add_action( this, "Blackout Kick", "if=chi>=chi.max-1&cooldown.keg_smash.remains<=1" );
   def -> add_action( this, "Keg Smash" );
-  def -> add_action( this, "Breath of Fire", "if=target.debuff.dizzying_haze.up" );
-  def -> add_action( this, "Guard" );
-  def -> add_talent( this, "Chi Burst" );
-  def -> add_action( this, "Jab", "if=energy.pct>40&chi+2<=chi.max" );
-  def -> add_action( this, "Blackout Kick", "if=chi>=4" );
+  def -> add_action( this, "Expel Harm", "if=incoming_damage_2>health.max*0.3" );
+  def -> add_action( "run_action_list,name=st,if=active_enemies<3" );
+  def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
+
+  st -> add_action( this, "Jab", "if=energy.time_to_max<=1" );
+  st -> add_action( this, "Tiger Palm", "if=buff.tiger_power.down" );
+  st -> add_talent( this, "Chi Burst" );
+  st -> add_talent( this, "Chi Wave" );
+  st -> add_action( "zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
+  st -> add_action( this, "Jab", "if=energy+energy.regen*cooldown.keg_smash.remains>=80" );
+  st -> add_action( this, "Tiger Palm" );
+
+  aoe -> add_talent( this, "Rushing Jade Wind" );
+  aoe -> add_action( "spinning_crane_kick,if=!talent.rushing_jade_wind.enabled&energy.time_to_max<=1" );
+  aoe -> add_action( this, "Tiger Palm", "if=buff.tiger_power.down" );
+  aoe -> add_talent( this, "Chi Burst" );
+  aoe -> add_talent( this, "Chi Wave" );
+  aoe -> add_action( "zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
+  aoe -> add_action( this, "Jab", "if=talent.rushing_jade_wind.enabled&energy.time_to_max<cooldown.rushing_jade_wind.remains&energy.time_to_max<cooldown.keg_smash.remains" );
+  aoe -> add_action( "spinning_crane_kick,if=!talent.rushing_jade_wind.enabled&energy+energy.regen*cooldown.keg_smash.remains>=80" );
+  aoe -> add_action( this, "Tiger Palm" );
 }
 
 // Windwalker Combat Action Priority List
