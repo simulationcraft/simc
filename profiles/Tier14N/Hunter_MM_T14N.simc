@@ -31,8 +31,6 @@ actions+=/auto_shot
 actions+=/explosive_trap,if=active_enemies>1
 actions+=/powershot,if=enabled
 actions+=/lynx_rush,if=enabled&!dot.lynx_rush.ticking
-actions+=/multi_shot,if=active_enemies>5
-actions+=/steady_shot,if=active_enemies>5
 actions+=/fervor,if=enabled&focus<=50
 actions+=/rapid_fire,if=!buff.rapid_fire.up
 actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25
@@ -46,6 +44,7 @@ actions+=/serpent_sting,if=!ticking
 actions+=/chimera_shot
 actions+=/steady_shot,if=buff.steady_focus.remains<(action.steady_shot.cast_time+1)&!in_flight
 actions+=/kill_shot
+actions+=/multi_shot,if=active_enemies>=4
 actions+=/aimed_shot,if=buff.master_marksman_fire.react
 actions+=/arcane_shot,if=buff.thrill_of_the_hunt.react
 actions+=/aimed_shot,if=cast_time<1.6

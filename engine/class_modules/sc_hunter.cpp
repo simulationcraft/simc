@@ -3982,17 +3982,14 @@ void hunter_t::init_actions()
         action_list_str += init_use_racial_actions();
         action_list_str += "/fervor,if=enabled&!ticking&focus<=65";
         action_list_str += "/bestial_wrath,if=focus>60&!buff.beast_within.up";
-
-        action_list_str += "/multi_shot,if=active_enemies>5|(active_enemies>2&buff.beast_cleave.down)";
-        action_list_str += "/cobra_shot,if=active_enemies>5";
-
+        action_list_str += "/multi_shot,if=active_enemies>5|(active_enemies>1&buff.beast_cleave.down)";
         action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
+
         if ( level >= 87 )
           action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25";
 
         action_list_str += "/kill_shot";
         action_list_str += "/kill_command";
-
         action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
         action_list_str += "/glaive_toss,if=enabled";
         action_list_str += "/lynx_rush,if=enabled&!dot.lynx_rush.ticking";
@@ -4016,14 +4013,12 @@ void hunter_t::init_actions()
 
         action_list_str += "/powershot,if=enabled";
         action_list_str += "/lynx_rush,if=enabled&!dot.lynx_rush.ticking";
-
-        action_list_str += "/multi_shot,if=active_enemies>5";
-        action_list_str += "/steady_shot,if=active_enemies>5";
         action_list_str += "/fervor,if=enabled&focus<=50";
-
         action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
+
         if ( level >= 87 )
           action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25";
+
         action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
         action_list_str += "/dire_beast,if=enabled";
 
@@ -4048,6 +4043,7 @@ void hunter_t::init_actions()
         action_list_str += "/chimera_shot";
         action_list_str += "/steady_shot,if=buff.steady_focus.remains<(action.steady_shot.cast_time+1)&!in_flight";
         action_list_str += "/kill_shot";
+		action_list_str += "/multi_shot,if=active_enemies>=4";
         action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
 
         action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
@@ -4075,31 +4071,26 @@ void hunter_t::init_actions()
         action_list_str += "/fervor,if=enabled&focus<=50";
         action_list_str += "/a_murder_of_crows,if=enabled&!ticking";
         action_list_str += "/lynx_rush,if=enabled&!dot.lynx_rush.ticking";
-
         action_list_str += "/explosive_shot,if=buff.lock_and_load.react";
-
         action_list_str += "/glaive_toss,if=enabled";
         action_list_str += "/powershot,if=enabled";
         action_list_str += "/barrage,if=enabled";
-
-        action_list_str += "/multi_shot,if=active_enemies>3";
-        action_list_str += "/cobra_shot,if=active_enemies>3";
         action_list_str += "/serpent_sting,if=!ticking&target.time_to_die>=10";
         action_list_str += "/explosive_shot,if=cooldown_react";
-
         action_list_str += "/kill_shot";
         action_list_str += "/black_arrow,if=!ticking&target.time_to_die>=8";
-
+		action_list_str += "/multi_shot,if=active_enemies>3";
         action_list_str += "/multi_shot,if=buff.thrill_of_the_hunt.react&dot.serpent_sting.remains<2";
         action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
-
         action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
         action_list_str += "/dire_beast,if=enabled";
+
         if ( level >= 87 )
           action_list_str += "/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25";
 
         action_list_str += "/cobra_shot,if=dot.serpent_sting.remains<6";
-        action_list_str += "/arcane_shot,if=focus>=67";
+        action_list_str += "/arcane_shot,if=focus>=67&active_enemies<2";
+		action_list_str += "/multi_shot,if=focus>=67&active_enemies>1";
 
         if ( find_class_spell( "Cobra Shot" ) )
           action_list_str += "/cobra_shot";
