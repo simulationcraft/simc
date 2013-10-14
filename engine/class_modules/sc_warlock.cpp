@@ -2221,7 +2221,7 @@ struct corruption_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( p() -> spec.nightfall -> ok() && d -> state -> target == p() -> latest_corruption_target ) //5.4 only the latest corruption procs it
+    if ( p() -> spec.nightfall -> ok() && d -> state -> target == p() -> latest_corruption_target && ! periodic_hit ) //5.4 only the latest corruption procs it
     {
 
       if ( rng().roll( p() -> spec.nightfall -> effectN( 1 ).percent() ) )
