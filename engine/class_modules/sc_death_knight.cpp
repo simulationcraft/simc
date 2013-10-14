@@ -2436,7 +2436,7 @@ struct melee_t : public death_knight_melee_attack_t
           p() -> buffs.death_shroud -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( 15 ) );
         }
 
-        if ( p() -> buffs.scent_of_blood -> trigger() )
+        if ( p() -> buffs.scent_of_blood -> trigger( 1, buff_t::DEFAULT_VALUE(), weapon -> swing_time.total_seconds() / 3.6 ) )
         {
           p() -> resource_gain( RESOURCE_RUNIC_POWER,
                                 p() -> buffs.scent_of_blood -> data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
@@ -6137,7 +6137,7 @@ void death_knight_t::assess_damage( school_e     school,
 
   if ( s -> result == RESULT_DODGE || s -> result == RESULT_PARRY )
   {
-    if ( buffs.scent_of_blood -> trigger() )
+    if ( buffs.scent_of_blood -> trigger( buffs.scent_of_blood -> trigger( 1, buff_t::DEFAULT_VALUE(), main_hand_weapon.swing_time.total_seconds() / 3.6 ) ) )
     {
       resource_gain( RESOURCE_RUNIC_POWER,
                      buffs.scent_of_blood -> data().effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
