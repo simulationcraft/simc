@@ -1292,6 +1292,11 @@ class SpellDataGenerator(DataGenerator):
             ( 145085, 0 ),        # T16 2pc demo
             ( 145159, 0 ),        # T16 4pc affli soul shard gain
             ( 145164, 0 ),        # T16 4pc destro ember fire gain
+            ( 114654, 0 ),        # Fire and Brimstone nukes
+            ( 108686, 0 ),
+            ( 108685, 0 ),
+            ( 109468, 0 ),
+            ( 104225, 0 ),
         ),
         
         # Monk:
