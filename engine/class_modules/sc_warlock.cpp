@@ -343,7 +343,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t* p ) :
   dots_soulburn_seed_of_corruption  = target -> get_dot( "soulburn_seed_of_corruption", p );
   dots_haunt               = target -> get_dot( "haunt", p );
 
-  debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "haunt" ) );
+  debuffs_haunt = buff_creator_t( *this, "haunt", source -> find_class_spell( "Haunt" ) );
 }
 
 warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
@@ -1452,7 +1452,7 @@ private:
     gain = player -> get_gain( name_str );
     generate_fury = 0;
     cost_event = 0;
-    havoc_override = false;
+    havoc_consume = backdraft_consume = 0;
     fury_in_meta = data().powerN( POWER_DEMONIC_FURY ).aura_id() == 54879;
     ds_tick_stats = player -> get_stats( name_str + "_ds", this );
     ds_tick_stats -> school = school;
@@ -1465,11 +1465,12 @@ private:
 public:
   double generate_fury;
   gain_t* gain;
-  bool havoc_override;
   bool fury_in_meta;
   stats_t* ds_tick_stats;
   stats_t* mg_tick_stats;
   std::vector< player_t* > havoc_targets;
+
+  int havoc_consume, backdraft_consume;
 
   struct cost_event_t : event_t
   {
@@ -1508,6 +1509,28 @@ public:
 
   warlock_td_t* td( player_t* t ) { return p() -> get_target_data( t ? t : target ); }
 
+  bool use_havoc()
+  {
+    if ( ! p() -> havoc_target || target == p() -> havoc_target || ! havoc_consume )
+      return false;
+
+    if ( p() -> buffs.havoc -> check() < havoc_consume )
+      return false;
+
+    return true;
+  }
+
+  bool use_backdraft()
+  {
+    if ( ! backdraft_consume )
+      return false;
+
+    if ( p() -> buffs.backdraft -> check() < backdraft_consume )
+      return false;
+
+    return true;
+  }
+
   virtual void init()
   {
     spell_t::init();
@@ -1519,24 +1542,31 @@ public:
   {
     spell_t::reset();
 
-    havoc_override = false;
     core_event_t::cancel( cost_event );
+  }
+
+  virtual int n_targets()
+  {
+    if ( aoe == 0 && use_havoc() )
+      return 2;
+    
+    return spell_t::n_targets();
   }
 
   virtual std::vector< player_t* >& target_list()
   {
-    if ( aoe == 2 && p() -> buffs.havoc -> check() && target != p() -> havoc_target )
+    if ( use_havoc() )
     {
       if ( ! target_cache.is_valid )
         available_targets( target_cache.list );
 
       havoc_targets.clear();
-      size_t num_targets = ( aoe == 0 ) ? 1 : aoe;
-      for ( size_t i = 0; i < target_cache.list.size() && i < num_targets; i++ )
-      {
-        if ( target_cache.list[ i ] == target || target_cache.list[ i ] == p() -> havoc_target )
-          havoc_targets.push_back( target_cache.list[ i ] );
-      }
+      if ( std::find( target_cache.list.begin(), target_cache.list.end(), target ) != target_cache.list.end() )
+        havoc_targets.push_back( target );
+
+      if ( ! p() -> havoc_target -> is_sleeping() &&
+           std::find( target_cache.list.begin(), target_cache.list.end(), p() -> havoc_target ) != target_cache.list.end() )
+        havoc_targets.push_back( p() -> havoc_target );
       return havoc_targets;
     }
     else
@@ -1551,30 +1581,47 @@ public:
          current_resource() == RESOURCE_DEMONIC_FURY && p() -> buffs.dark_soul -> check() )
       c *= 1.0 + p() -> sets -> set( SET_T15_2PC_CASTER ) -> effectN( 3 ).percent();
 
+    if ( use_backdraft() && current_resource() == RESOURCE_MANA )
+      c *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
+
     return c;
   }
 
   virtual void execute()
   {
-    bool havoc = false;
-    if ( harmful && ! background && aoe == 0 && ! tick_action && p() -> buffs.havoc -> up() && p() -> havoc_target != target )
-    {
-      aoe = 2;
-      havoc = true;
-    }
-
     spell_t::execute();
 
     if ( result_is_hit( execute_state -> result ) && p() -> specialization() == WARLOCK_DEMONOLOGY
          && generate_fury > 0 && ! p() -> buffs.metamorphosis -> check() )
       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain );
+  }
 
+  virtual timespan_t execute_time()
+  {
+    timespan_t h = spell_t::execute_time();
 
-    if ( havoc )
+    if ( use_backdraft() )
+      h *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
+
+    return h;
+  }
+
+  void consume_resource()
+  {
+    spell_t::consume_resource();
+
+    if ( use_havoc() )
     {
-      p() -> buffs.havoc -> decrement();
-      aoe = 0;
+      p() -> buffs.havoc -> decrement( havoc_consume );
+      if ( p() -> buffs.havoc -> check() == 0 )
+        p() -> havoc_target = 0;
     }
+
+    if ( p() -> resources.current[ RESOURCE_BURNING_EMBER ] < 1.0 )
+      p() -> buffs.fire_and_brimstone -> expire();
+
+    if ( use_backdraft() )
+      p() -> buffs.backdraft -> decrement( backdraft_consume );
   }
 
   virtual bool ready()
@@ -1770,23 +1817,50 @@ public:
 
 struct curse_of_the_elements_t : public warlock_spell_t
 {
+  curse_of_the_elements_t* fnb;
+
   curse_of_the_elements_t( warlock_t* p ) :
-    warlock_spell_t( p, "Curse of the Elements" )
+    warlock_spell_t( p, "Curse of the Elements" ),
+    fnb( new curse_of_the_elements_t( "curse_of_elements", p, p -> find_spell( 104225 ) ) )
   {
+    havoc_consume = 1;
     background = ( sim -> overrides.magic_vulnerability != 0 );
     num_ticks = 0;
-    aoe = (p -> glyphs.curse_of_elements -> ok()) ? 3 : 1;
+    aoe = p -> glyphs.curse_of_elements -> ok() ? 3 : 0;
     may_crit = false;
   }
 
-  virtual void execute()
+  curse_of_the_elements_t( const std::string& n, warlock_t* p, const spell_data_t* spell ) :
+    warlock_spell_t( n, p, spell ),
+    fnb( 0 )
   {
-    warlock_spell_t::execute();
+    aoe = -1;
+    stats = p -> get_stats( "curse_of_elements_fnb" );
+  }
 
-    if ( result_is_hit( execute_state -> result ) )
+  double cost()
+  {
+    if ( fnb && p() -> buffs.fire_and_brimstone -> check() )
+      return fnb -> cost();
+    return warlock_spell_t::cost();
+  }
+
+  void schedule_execute( action_state_t* state )
+  {
+    if ( fnb && p() -> buffs.fire_and_brimstone -> check() ) 
+      fnb -> schedule_execute( state );
+    else
+      warlock_spell_t::schedule_execute();
+  }
+
+  virtual void impact( action_state_t* state )
+  {
+    warlock_spell_t::impact( state );
+
+    if ( result_is_hit( state -> result ) )
     {
       if ( ! sim -> overrides.magic_vulnerability )
-        target -> debuffs.magic_vulnerability -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, data().duration() );
+        state -> target -> debuffs.magic_vulnerability -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, data().duration() );
     }
   }
 };
@@ -1865,24 +1939,17 @@ struct doom_t : public warlock_spell_t
 
 struct havoc_t : public warlock_spell_t
 {
-  int charges;
   havoc_t( warlock_t* p ) : warlock_spell_t( p, "Havoc" )
   {
     may_crit = false;
-    charges = 3;
-    if ( p -> glyphs.havoc -> ok())
-    {
-      charges += p -> glyphs.havoc -> effectN( 1 ).base_value();
-      cooldown -> duration +=  p -> glyphs.havoc -> effectN( 2 ).time_value();
-    }
-    
+    cooldown -> duration = data().cooldown() + p -> glyphs.havoc -> effectN( 2 ).time_value();
   }
 
   virtual void execute()
   {
     warlock_spell_t::execute();
 
-    p() -> buffs.havoc -> trigger( charges );
+    p() -> buffs.havoc -> trigger( p() -> buffs.havoc -> max_stack() );
     p() -> havoc_target = target;
   }
 };
@@ -2137,6 +2204,7 @@ struct shadowburn_t : public warlock_spell_t
     warlock_spell_t( p, "Shadowburn" ), mana_event( 0 )
   {
     min_gcd = timespan_t::from_millis( 500 );
+    havoc_consume = 1;
 
     mana_delay  = data().effectN( 1 ).trigger() -> duration();
     mana_amount = p -> find_spell( data().effectN( 1 ).trigger() -> effectN( 1 ).base_value() ) -> effectN( 1 ).percent();
@@ -2535,54 +2603,63 @@ struct haunt_t : public warlock_spell_t
 
 struct immolate_t : public warlock_spell_t
 {
-  immolate_t( warlock_t* p ) :
-    warlock_spell_t( p, "Immolate" )
-  {
-    base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
+  immolate_t* fnb;
 
-    if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
+  immolate_t( warlock_t* p ) :
+    warlock_spell_t( p, "Immolate" ),
+    fnb( new immolate_t( "immolate", p, p -> find_spell( 108686 ) ) )
+  {
+    havoc_consume = 1;
+    base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
+  }
+
+  immolate_t( const std::string& n, warlock_t* p, const spell_data_t* spell ) :
+    warlock_spell_t( n, p, spell )
+  {
+    aoe = -1;
+
+    stats = p -> get_stats( "immolate_fnb", this );
+  }
+
+  void init()
+  {
+    warlock_spell_t::init();
+
+    if ( p() -> spec.pandemic -> ok() )
+      dot_behavior = DOT_EXTEND;
+  }
+
+  void schedule_execute( action_state_t* state )
+  {
+    if ( fnb && p() -> buffs.fire_and_brimstone -> up() )
+      fnb -> schedule_execute( state );
+    else
+      warlock_spell_t::schedule_execute( state );
+  }
+
+  double cost()
+  {
+    if ( fnb && p() -> buffs.fire_and_brimstone -> check() )
+      return fnb -> cost();
+
+    return warlock_spell_t::cost();
   }
 
   virtual double crit_chance( double crit, int delta_level )
   {
     double cc = warlock_spell_t::crit_chance(crit, delta_level);
 
-    if (p() -> set_bonus.tier16_2pc_caster() && p() -> buffs.tier16_2pc_destructive_influence -> up())
-    {
-      cc+= p() -> buffs.tier16_2pc_destructive_influence -> value();
-    }
-
+    if ( p() -> set_bonus.tier16_2pc_caster() && p() -> buffs.tier16_2pc_destructive_influence -> up())
+      cc += p() -> buffs.tier16_2pc_destructive_influence -> value();
 
     return cc;
-  }
-
-  virtual double cost()
-  {
-    if ( p() -> buffs.fire_and_brimstone -> check() )
-      return 0;
-
-    return warlock_spell_t::cost();
-  }
-
-  virtual void execute()
-  {
-    if ( p() -> buffs.fire_and_brimstone -> check() )
-      aoe = -1;
-
-    warlock_spell_t::execute();
-
-    if ( p() -> buffs.fire_and_brimstone -> up() )
-    {
-      p() -> buffs.fire_and_brimstone -> expire();
-      aoe = 0;
-    }
   }
 
   virtual double action_multiplier()
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( aoe == -1 )
+    if ( p() -> buffs.fire_and_brimstone -> check() )
     {
       if ( p() -> mastery_spells.emberstorm -> ok() )
         m *= 1.0 + p() -> cache.mastery_value();
@@ -2622,43 +2699,62 @@ struct immolate_t : public warlock_spell_t
 
 struct conflagrate_t : public warlock_spell_t
 {
+  conflagrate_t* fnb;
+
   conflagrate_t( warlock_t* p ) :
-    warlock_spell_t( p, "Conflagrate" )
+    warlock_spell_t( p, "Conflagrate" ),
+    fnb( new conflagrate_t( "conflagrate", p, p -> find_spell( 108685 ) ) )
   {
+    havoc_consume = 1;
     base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
+  }
+
+  conflagrate_t( const std::string& n, warlock_t* p, const spell_data_t* spell ) :
+    warlock_spell_t( n, p, spell ),
+    fnb( 0 )
+  {
+    aoe = -1;
+    stats = p -> get_stats( "conflagrate_fnb", this );
+  }
+
+  void schedule_execute( action_state_t* state )
+  {
+    if ( fnb && p() -> buffs.fire_and_brimstone -> up() )
+      fnb -> schedule_execute( state );
+    else
+      warlock_spell_t::schedule_execute( state );
+  }
+
+  double cost()
+  {
+    if ( fnb && p() -> buffs.fire_and_brimstone -> check() )
+      return fnb -> cost();
+
+    return warlock_spell_t::cost();
+  }
+
+  void init()
+  {
+    warlock_spell_t::init();
 
     // FIXME: No longer in the spell data for some reason
     cooldown -> duration = timespan_t::from_seconds( 12.0 );
     cooldown -> charges = 2;
   }
 
-  virtual double cost()
+  void execute()
   {
-    if ( p() -> buffs.fire_and_brimstone -> check() )
-      return 0;
-
-    return warlock_spell_t::cost();
-  }
-
-  virtual void execute()
-  {
-    if ( p() -> buffs.fire_and_brimstone -> check() )
-      aoe = -1;
-
     warlock_spell_t::execute();
 
-    if ( p() -> buffs.fire_and_brimstone -> up() )
-    {
-      p() -> buffs.fire_and_brimstone -> expire();
-      aoe = 0;
-    }
+    if ( result_is_hit( execute_state -> result ) && p() -> spec.backdraft -> ok() )
+      p() -> buffs.backdraft -> trigger( 3 );
   }
 
   virtual double action_multiplier()
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( aoe == -1 )
+    if ( p() -> buffs.fire_and_brimstone -> check() )
     {
       if ( p() -> mastery_spells.emberstorm -> ok() )
         m *= 1.0 + p() -> cache.mastery_value();
@@ -2681,34 +2777,72 @@ struct conflagrate_t : public warlock_spell_t
 
     //hotfixed extra gain with 15% chance from 13.09.13
     trigger_ember_gain( p(), 0.1, p() -> gains.conflagrate, 0.15 );
-    if ( result_is_hit( s -> result ) && p() -> spec.backdraft -> ok() )
-      p() -> buffs.backdraft -> trigger( 3 );
     if ( s -> result == RESULT_CRIT &&  p() -> set_bonus.tier16_2pc_caster() )
-    {
       p() -> buffs.tier16_2pc_destructive_influence -> trigger();
-    }
+  }
+
+  virtual bool ready()
+  {
+    if ( fnb && p() -> buffs.fire_and_brimstone -> check() )
+      return fnb -> ready();
+    return warlock_spell_t::ready();
   }
 };
 
-
 struct incinerate_t : public warlock_spell_t
 {
+  incinerate_t* fnb;
+  
+  // Normal incinerate
   incinerate_t( warlock_t* p ) :
-    warlock_spell_t( p, "Incinerate" )
+    warlock_spell_t( p, "Incinerate" ),
+    fnb( new incinerate_t( "incinerate", p, p -> find_spell( 114654 ) ) )
   {
+    havoc_consume                = 1;
     base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
-    base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 2 ).percent();
-    base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
+  }
+
+  // Fire and Brimstone incinerate
+  incinerate_t( const std::string& n, warlock_t* p, const spell_data_t* spell ) :
+    warlock_spell_t( n, p, spell ),
+    fnb( 0 )
+  { 
+    aoe = -1;
+    stats = p -> get_stats( "incinerate_fnb", this );
+  }
+
+  void init()
+  {
+    warlock_spell_t::init();
+
+    backdraft_consume = 1;
+
+    base_multiplier *= 1.0 + p() -> set_bonus.tier14_2pc_caster() * p() -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p() -> set_bonus.tier13_4pc_caster() * p() -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
+  }
+
+  void schedule_execute( action_state_t* state )
+  {
+    if ( fnb && p() -> buffs.fire_and_brimstone -> up() )
+      fnb -> schedule_execute( state );
+    else
+      warlock_spell_t::schedule_execute( state );
+  }
+
+  double cost()
+  {
+    if ( fnb && p() -> buffs.fire_and_brimstone -> check() )
+      return fnb -> cost();
+
+    return warlock_spell_t::cost();
   }
 
   virtual double crit_chance( double crit, int delta_level )
   {
-    double cc = warlock_spell_t::crit_chance(crit, delta_level);
+    double cc = warlock_spell_t::crit_chance( crit, delta_level );
 
-    if (p() -> set_bonus.tier16_2pc_caster() && p() -> buffs.tier16_2pc_destructive_influence -> up())
-    {
-      cc+= p() -> buffs.tier16_2pc_destructive_influence -> value();
-    }
+    if ( p() -> set_bonus.tier16_2pc_caster() && p() -> buffs.tier16_2pc_destructive_influence -> up() )
+      cc += p() -> buffs.tier16_2pc_destructive_influence -> value();
 
     return cc;
   }
@@ -2717,7 +2851,7 @@ struct incinerate_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( aoe == -1 )
+    if ( p() -> buffs.fire_and_brimstone -> check() )
     {
       if ( p() -> mastery_spells.emberstorm -> ok() )
         m *= 1.0 + p() -> cache.mastery_value();
@@ -2731,25 +2865,6 @@ struct incinerate_t : public warlock_spell_t
     return m;
   }
 
-  virtual void execute()
-  {
-    if ( p() -> buffs.fire_and_brimstone -> check() )
-      aoe = -1;
-
-    warlock_spell_t::execute();
-
-    if ( p() -> buffs.fire_and_brimstone -> up() )
-    {
-      p() -> buffs.fire_and_brimstone -> expire();
-      aoe = 0;
-    }
-
-    if ( p() -> buffs.backdraft -> check() )
-    {
-      p() -> buffs.backdraft -> decrement();
-    }
-  }
-
   virtual void impact( action_state_t* s )
   {
     warlock_spell_t::impact( s );
@@ -2758,40 +2873,11 @@ struct incinerate_t : public warlock_spell_t
     //hotfixed extra gain with 15% 13.09.13
     trigger_ember_gain( p(), 0.1, p() -> gains.incinerate, 0.15 );
     if ( p() -> set_bonus.tier15_4pc_caster() &&
-        rng().roll( p() -> sets -> set ( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent() ) )
+         rng().roll( p() -> sets -> set ( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent() ) )
       trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate_t15_4pc );
 
     if ( result_is_hit( s -> result ) )
-    {
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
-    }
-  }
-
-  virtual timespan_t execute_time()
-  {
-    timespan_t h = warlock_spell_t::execute_time();
-
-    if ( p() -> buffs.backdraft -> up() )
-    {
-      h *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
-    }
-
-    return h;
-  }
-
-  virtual double cost()
-  {
-    if ( p() -> buffs.fire_and_brimstone -> check() )
-      return 0;
-
-    double c = warlock_spell_t::cost();
-
-    if ( p() -> buffs.backdraft -> check() )
-    {
-      c *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
-    }
-
-    return c;
   }
 
   virtual bool usable_moving()
@@ -2803,9 +2889,14 @@ struct incinerate_t : public warlock_spell_t
 
     return um;
   }
+
+  virtual bool ready()
+  {
+    if ( fnb && p() -> buffs.fire_and_brimstone -> check() )
+      return fnb -> ready();
+    return warlock_spell_t::ready();
+  }
 };
-
-
 
 struct soul_fire_t : public warlock_spell_t
 {
@@ -2918,14 +3009,9 @@ struct chaos_bolt_t : public warlock_spell_t
   chaos_bolt_t( warlock_t* p ) :
     warlock_spell_t( p, "Chaos Bolt" )
   {
-  }
-
-  virtual std::vector< player_t* >& target_list()
-  {
-    if ( aoe == 2 && p() -> buffs.havoc -> check() >= 3 && target != p() -> havoc_target )
-      return warlock_spell_t::target_list();
-    else
-      return spell_t::target_list();
+    havoc_consume = 3;
+    if ( p -> spec.pyroclasm -> ok() )
+      backdraft_consume = 3;
   }
 
   virtual double crit_chance( double /* crit */, int /* delta_level */ )
@@ -2960,42 +3046,11 @@ struct chaos_bolt_t : public warlock_spell_t
 
   virtual void execute()
   {
-    bool havoc = false;
-    if ( p() -> buffs.havoc -> stack() >= 3 && p() -> havoc_target != target )
-    {
-      aoe = 2;
-      havoc = true;
-    }
-
-    spell_t::execute();
+    warlock_spell_t::execute();
 
     if ( ! result_is_hit( execute_state -> result ) ) refund_embers( p() );
-
-    if ( p() -> spec.pyroclasm -> ok() && p() -> buffs.backdraft -> check() >= 3 )
-    {
-      p() -> buffs.backdraft -> decrement( 3 );
-    }
-
-    if ( havoc )
-    {
-      p() -> buffs.havoc -> decrement();
-      aoe = 0;
-    }
-  }
-
-  virtual timespan_t execute_time()
-  {
-    timespan_t h = warlock_spell_t::execute_time();
-
-    if ( p() -> spec.pyroclasm -> ok() && p() -> buffs.backdraft -> stack() >= 3 )
-    {
-      h *= 1.0 + p() -> buffs.backdraft -> data().effectN( 1 ).percent();
-    }
-
-    return h;
   }
 };
-
 
 struct life_tap_t : public warlock_spell_t
 {
@@ -3278,6 +3333,7 @@ struct fel_flame_t : public warlock_spell_t
   fel_flame_t( warlock_t* p ) :
     warlock_spell_t( p, "Fel Flame" )
   {
+    havoc_consume = 1;
     if ( p -> specialization() == WARLOCK_DESTRUCTION )
       base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
     base_costs[ RESOURCE_MANA ] *= 2.0; //12.09.13 hotfix. check after dbc update
@@ -3562,9 +3618,22 @@ struct fire_and_brimstone_t : public warlock_spell_t
 
   virtual void execute()
   {
+    assert( player -> resources.current[ RESOURCE_BURNING_EMBER ] >= 1.0 );
+
     warlock_spell_t::execute();
 
-    p() -> buffs.fire_and_brimstone -> trigger();
+    if ( p() -> buffs.fire_and_brimstone -> check() )
+      p() -> buffs.fire_and_brimstone -> expire();
+    else
+      p() -> buffs.fire_and_brimstone -> trigger();
+  }
+
+  virtual bool ready()
+  {
+    if ( player -> resources.current[ RESOURCE_BURNING_EMBER ] < 1 )
+      return false;
+
+    return warlock_spell_t::ready();
   }
 };
 
@@ -4884,9 +4953,11 @@ void warlock_t::create_buffs()
   buffs.soulburn              = buff_creator_t( this, "soulburn", find_class_spell( "Soulburn" ) );
   buffs.grimoire_of_sacrifice = buff_creator_t( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice );
   buffs.demonic_calling       = buff_creator_t( this, "demonic_calling", spec.wild_imps -> effectN( 1 ).trigger() ).duration( timespan_t::zero() );
-  buffs.fire_and_brimstone    = buff_creator_t( this, "fire_and_brimstone", find_class_spell( "Fire and Brimstone" ) );
+  buffs.fire_and_brimstone    = buff_creator_t( this, "fire_and_brimstone", find_class_spell( "Fire and Brimstone" ) )
+                                .cd( timespan_t::zero() );
   buffs.soul_swap             = buff_creator_t( this, "soul_swap", find_spell( 86211 ) );
-  buffs.havoc                 = buff_creator_t( this, "havoc", find_class_spell( "Havoc" ) );
+  buffs.havoc                 = buff_creator_t( this, "havoc", find_class_spell( "Havoc" ) )
+                                .cd( timespan_t::zero() );
   buffs.demonic_rebirth       = buff_creator_t( this, "demonic_rebirth", find_spell( 88448 ) ).cd( find_spell( 89140 ) -> duration() );
   buffs.mannoroths_fury       = buff_creator_t( this, "mannoroths_fury", talents.mannoroths_fury );
   buffs.tier16_4pc_ember_fillup = buff_creator_t( this, "ember_master",   find_spell( 145164 ) )
@@ -5143,6 +5214,7 @@ void warlock_t::init_actions()
         add_action( "Immolate",              "if=buff.fire_and_brimstone.up&!ticking",                            "aoe" );
         add_action( "Conflagrate",           "if=buff.fire_and_brimstone.up",                                     "aoe" );
         add_action( "Incinerate",            "if=buff.fire_and_brimstone.up",                                     "aoe" );
+        add_action( "Incinerate",            "",                                                                  "aoe" );
         break;
 
       case WARLOCK_DEMONOLOGY:
@@ -5250,6 +5322,7 @@ void warlock_t::reset()
   ember_react = ( initial_burning_embers >= 1.0 ) ? timespan_t::zero() : timespan_t::max();
   shard_react = timespan_t::zero();
   core_event_t::cancel( demonic_calling_event );
+  havoc_target = 0;
 }
 
 
