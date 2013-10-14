@@ -5183,8 +5183,9 @@ struct action_t : public noncopyable
   virtual double target_armor( player_t* t )
   { return t -> cache.armor(); }
   virtual void   consume_resource();
-  virtual resource_e current_resource()
-  { return resource_current; }
+  virtual resource_e current_resource() { return resource_current; }
+  virtual int n_targets() { return aoe; }
+  bool is_aoe() { return n_targets() == -1 || n_targets() > 0; }
   virtual void   execute();
   virtual void   tick( dot_t* d );
   virtual void   last_tick( dot_t* d );

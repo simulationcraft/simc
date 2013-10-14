@@ -1001,7 +1001,7 @@ void action_t::execute()
                    player -> resources.current[ player -> primary_resource() ] );
   }
 
-  if ( aoe == 0 && target -> is_sleeping() )
+  if ( n_targets() == 0 && target -> is_sleeping() )
     return;
 
   if ( harmful )
@@ -1012,11 +1012,11 @@ void action_t::execute()
     player -> in_combat = true;
   }
 
-  if ( aoe == -1 || aoe > 0 ) // aoe
+  if ( is_aoe() ) // aoe
   {
     std::vector< player_t* >& tl = target_list();
 
-    size_t num_targets = ( aoe < 0 ) ? tl.size() : aoe;
+    size_t num_targets = ( n_targets() < 0 ) ? tl.size() : n_targets();
     for ( size_t t = 0, max_targets = tl.size(); t < num_targets && t < max_targets; t++ )
     {
       action_state_t* s = get_state( pre_execute_state );
@@ -1509,7 +1509,7 @@ void action_t::init()
 
   assert( ! ( impact_action && tick_action ) && "Both tick_action and impact_action should not be used in a single action." );
 
-  assert( !( aoe && channeled ) && "DONT create a channeled aoe spell!" );
+  assert( ! ( n_targets() && channeled ) && "DONT create a channeled aoe spell!" );
 
   if ( ! sync_str.empty() )
   {
@@ -1580,7 +1580,7 @@ void action_t::init()
     else
       player -> precombat_action_list.push_back( this );
   }
-  else if ( ! ( background || sequence ) )
+  else if ( ! ( background || sequence ) && ! action_list.empty() )
     player -> find_action_priority_list( action_list ) -> foreground_action_list.push_back( this );
 
   initialized = true;
