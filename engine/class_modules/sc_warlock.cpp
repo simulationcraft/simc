@@ -4964,7 +4964,7 @@ void warlock_t::create_buffs()
   buffs.demonic_rebirth       = buff_creator_t( this, "demonic_rebirth", find_spell( 88448 ) ).cd( find_spell( 89140 ) -> duration() );
   buffs.mannoroths_fury       = buff_creator_t( this, "mannoroths_fury", talents.mannoroths_fury );
   buffs.tier16_4pc_ember_fillup = buff_creator_t( this, "ember_master",   find_spell( 145164 ) )
-                                .cd( find_spell( 145165 ) -> effectN(1).time_value() * 1000 )
+                                .cd( find_spell( 145165 ) -> duration() )
                                 .add_invalidate(CACHE_CRIT);
   buffs.tier16_2pc_destructive_influence = buff_creator_t( this, "destructive_influence", find_spell( 145075) )
                                            .chance( sets -> set ( SET_T16_2PC_CASTER ) -> effectN( 4 ).percent() )
