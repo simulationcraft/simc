@@ -3006,12 +3006,49 @@ struct soul_fire_t : public warlock_spell_t
 
 struct chaos_bolt_t : public warlock_spell_t
 {
+  struct chaos_bolt_dot_t : public warlock_spell_t
+  {
+    chaos_bolt_dot_t( warlock_t* p ) :
+      warlock_spell_t( p, "Chaos Bolt" )
+    {
+      background = dual = true;
+      may_miss = hasted_ticks = false;
+      num_ticks = 3;
+      base_tick_time = timespan_t::from_seconds( 1.0 );
+      base_execute_time = trigger_gcd = timespan_t::zero();
+      travel_speed = 0.0;
+
+      base_costs[ RESOURCE_BURNING_EMBER ] = 0;
+
+      base_dd_min = base_dd_max = direct_power_mod = tick_power_mod = 0.0;
+    }
+
+    void trigger_gosac_dot( double result )
+    {
+      base_td = result * p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() / num_ticks;
+      if ( sim -> debug )
+        sim -> out_debug.printf( "%s triggering chaos_bolt damage-over-time effect for %f damage over %i seconds.", p() -> name(), base_td * num_ticks, num_ticks );
+      execute();
+    }
+    
+    virtual double crit_chance( double /* crit */, int /* delta_level */ )
+    {
+      // Chaos Bolt always crits
+      return 1.0;
+    }
+  };
+
+  chaos_bolt_dot_t* dot;
+
   chaos_bolt_t( warlock_t* p ) :
     warlock_spell_t( p, "Chaos Bolt" )
   {
     havoc_consume = 3;
     if ( p -> spec.pyroclasm -> ok() )
       backdraft_consume = 3;
+    
+    if ( p -> talents.grimoire_of_sacrifice -> ok() )
+      dot = new chaos_bolt_dot_t( p );
   }
 
   virtual double crit_chance( double /* crit */, int /* delta_level */ )
@@ -3039,9 +3076,15 @@ struct chaos_bolt_t : public warlock_spell_t
 
     m *= 1.0 + p() -> cache.spell_crit();
 
-    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
     return m;
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    warlock_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) && p() -> buffs.grimoire_of_sacrifice -> check() )
+      dot -> trigger_gosac_dot( s -> result_raw );
   }
 
   virtual void execute()
