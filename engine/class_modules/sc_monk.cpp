@@ -692,9 +692,9 @@ public:
       && p() -> executing
       && ! ( p() -> executing -> name_str == "enveloping_mist" || p() -> executing -> name_str == "surging_mist" ) )
     {
-      for ( size_t i = 0, actors = sim -> player_non_sleeping_list.size(); i < actors; ++i )
+      for ( size_t i = 0, actors = p() -> sim -> player_non_sleeping_list.size(); i < actors; ++i )
       {
-        player_t* t = sim -> player_non_sleeping_list[ i ];
+        player_t* t = p() -> sim -> player_non_sleeping_list[ i ];
         if ( td( t ) -> dots.soothing_mist -> ticking )
         {
           td( t ) -> dots.soothing_mist -> cancel();
