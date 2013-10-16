@@ -1058,13 +1058,21 @@ struct blackout_kick_t : public monk_melee_attack_t
     if ( result_is_hit( s -> result ) )
     {
       if ( p() -> spec.brewmaster_training -> ok() )
+      {
         if ( p() -> buff.shuffle -> check() )
+        {
           p() -> buff.shuffle -> extend_duration( p(), timespan_t::from_seconds( 6.0 ) );
+        }
         else
+        {
           p() -> buff.shuffle -> trigger();
+        }
+      }
       if ( p() -> spec.teachings_of_the_monastery -> ok() )
+      {
         p() -> buff.serpents_zeal -> trigger();
     }
+  }
   }
 
   virtual void execute()
