@@ -5602,7 +5602,7 @@ void death_knight_t::init_actions()
 		  st -> add_talent( this, "Plague Leech", "if=cooldown.outbreak.remains<1" );
 		  st -> add_action( this, "Festering Strike" );
 		  st -> add_action( this, "Horn of Winter" );
-		  st -> add_action( this, "Death Coil", "if=buff.dark_transformation.down|(cooldown.summon_gargoyle.remains>8&buff.dark_transformation.remains>8)" );
+		  st -> add_action( this, "Death Coil" );
 
 	    // Less waiting
 		  st -> add_talent( this, "Blood Tap", "if=buff.blood_charge.stack>=8" );
