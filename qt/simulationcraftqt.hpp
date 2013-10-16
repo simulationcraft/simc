@@ -315,7 +315,7 @@ public:
   {
     QTextDocument* d = s -> document();
     QTextBlock b = d -> begin();
-    QRegExp comment_rx( "^\s*\\#" );
+    QRegExp comment_rx( "^\\s*\\#" );
     while ( b.isValid() )
     {
       if ( comment_rx.indexIn( b.text() ) != -1 )
