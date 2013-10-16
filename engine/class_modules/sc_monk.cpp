@@ -3793,11 +3793,13 @@ void monk_t::apl_combat_brewmaster()
   action_priority_list_t* aoe       = get_action_priority_list( "aoe"   );
 
   def -> add_action( "auto_attack" );
+  def -> add_action( "invoke_xuen,if=talent.invoke_xuen.enabled&time>5" );
   def -> add_action( this, "Elusive Brew" );
   def -> add_action( this, "Purifying Brew", "if=buff.shuffle.remains>6&stagger.heavy" );
   def -> add_action( this, "Purifying Brew", "if=buff.shuffle.remains>12&stagger.moderate" );
   def -> add_action( this, "Guard", "if=buff.shuffle.remains>6&incoming_damage_2>health.max*0.5" );
-  def -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=1.5|chi=chi.max" );
+  def -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=1.5" );
+  def -> add_action( this, "Blackout Kick", "if=chi=chi.max&energy.time_to_max<=2" );
   def -> add_action( this, "Blackout Kick", "if=chi>=chi.max-1&cooldown.keg_smash.remains<=1" );
   def -> add_action( this, "Keg Smash" );
   def -> add_action( this, "Expel Harm", "if=incoming_damage_2>health.max*0.3" );
@@ -3809,6 +3811,7 @@ void monk_t::apl_combat_brewmaster()
   st -> add_talent( this, "Chi Burst" );
   st -> add_talent( this, "Chi Wave" );
   st -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
+  st -> add_action( this, "Blackout Kick", "if=chi=chi.max" );
   st -> add_action( this, "Jab", "if=energy+energy.regen*cooldown.keg_smash.remains>=80" );
   st -> add_action( this, "Tiger Palm" );
 
@@ -3818,6 +3821,7 @@ void monk_t::apl_combat_brewmaster()
   aoe -> add_talent( this, "Chi Burst" );
   aoe -> add_talent( this, "Chi Wave" );
   aoe -> add_talent( this, "Zen Sphere", "cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking" );
+  aoe -> add_action( this, "Blackout Kick", "if=chi=chi.max" );
   aoe -> add_action( this, "Jab", "if=talent.rushing_jade_wind.enabled&energy.time_to_max<cooldown.rushing_jade_wind.remains&energy.time_to_max<cooldown.keg_smash.remains" );
   aoe -> add_action( "spinning_crane_kick,if=!talent.rushing_jade_wind.enabled&energy+energy.regen*cooldown.keg_smash.remains>=80" );
   aoe -> add_action( this, "Tiger Palm" );
