@@ -3795,8 +3795,7 @@ void monk_t::apl_combat_brewmaster()
   def -> add_action( "auto_attack" );
   def -> add_action( "invoke_xuen,if=talent.invoke_xuen.enabled&time>5" );
   def -> add_action( this, "Elusive Brew" );
-  def -> add_action( this, "Purifying Brew", "if=buff.shuffle.remains>6&stagger.heavy" );
-  def -> add_action( this, "Purifying Brew", "if=buff.shuffle.remains>12&stagger.moderate" );
+  def -> add_action( this, "Purifying Brew", "if=stagger.amount&stagger.amount%health.max*100>20-buff.shuffle.remains", "Purify off stagger, being more liberal the longer time remains on shuffle." );
   def -> add_action( this, "Guard", "if=buff.shuffle.remains>6&incoming_damage_2>health.max*0.5" );
   def -> add_action( this, "Blackout Kick", "if=buff.shuffle.remains<=1.5" );
   def -> add_action( this, "Blackout Kick", "if=chi=chi.max&energy.time_to_max<=2" );
