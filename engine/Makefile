@@ -38,6 +38,11 @@ ifeq (${CXX},g++)
 OPTS += -msse2 -mfpmath=sse
 endif
 
+ifeq (${CXX},clang++)
+# Force use of old libstdc++ so paths to tr/* work
+OPTS += -stdlib=libstdc++
+endif
+
 # Include build setting from user configuration file
 -include ../build.conf
 
