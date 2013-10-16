@@ -852,7 +852,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   plot( new plot_t( this ) ),
   reforge_plot( new reforge_plot_t( this ) ),
   elapsed_cpu( timespan_t::zero() ), elapsed_time( timespan_t::zero() ), iteration_dmg( 0 ), iteration_heal( 0 ), iteration_absorb( 0 ),
-  raid_dps(), total_dmg(), raid_hps(), total_heal(), raid_aps(), total_absorb(),
+  raid_dps(), total_dmg(), raid_hps(), total_heal(), total_absorb(), raid_aps(),
   simulation_length( "Simulation Length", false ),
   report_progress( 1 ),
   bloodlust_percent( 25 ), bloodlust_time( timespan_t::from_seconds( 5.0 ) ),

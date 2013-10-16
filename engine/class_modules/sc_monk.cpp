@@ -223,7 +223,7 @@ public:
     const spell_data_t* fortifying_brew;
 
     // Brewmaster
-    
+
     // Mistweaver
     const spell_data_t* mana_tea;
     const spell_data_t* targeted_expulsion;
@@ -405,7 +405,7 @@ private:
       }
     }
   };
-  
+
   struct crackling_tiger_lightning_tick_t : public spell_t
   {
     crackling_tiger_lightning_tick_t( xuen_pet_t *p ) : spell_t( "crackling_tiger_lightning_tick", p, p->find_spell( 123996 ) )
@@ -416,7 +416,7 @@ private:
       background = true;
       may_crit = true;
       may_miss = true;
-      
+
       base_spell_power_multiplier  = 0;
       base_attack_power_multiplier = 1;
       direct_power_mod = data().extra_coeff();
@@ -441,7 +441,7 @@ private:
       tick_action = new crackling_tiger_lightning_tick_t( p );
     }
   };
-  
+
   struct crackling_tiger_lightning_t : public melee_attack_t
   {
     crackling_tiger_lightning_t( xuen_pet_t* player, const std::string& options_str ) : melee_attack_t( "crackling_tiger_lightning", player, player -> find_spell( 123996 ) )
@@ -514,10 +514,10 @@ public:
   action_t* create_action( const std::string& name,
                            const std::string& options_str )
   {
-    if ( name == "crackling_tiger_lightning" ) 
+    if ( name == "crackling_tiger_lightning" )
       return new crackling_tiger_lightning_driver_t( this, options_str );
-    
-    if ( name == "auto_attack" ) 
+
+    if ( name == "auto_attack" )
       return new auto_attack_t( this, options_str );
 
     return pet_t::create_action( name, options_str );
@@ -1071,8 +1071,8 @@ struct blackout_kick_t : public monk_melee_attack_t
       if ( p() -> spec.teachings_of_the_monastery -> ok() )
       {
         p() -> buff.serpents_zeal -> trigger();
+      }
     }
-  }
   }
 
   virtual void execute()
@@ -1778,7 +1778,7 @@ struct stance_t : public monk_spell_t
 
     p() -> switch_to_stance( switch_to_stance );
   }
-  
+
   virtual bool ready()
   {
     if ( p() -> current_stance() == switch_to_stance )
@@ -1818,12 +1818,12 @@ struct tigereye_brew_t : public monk_spell_t
     p() -> track_focus_of_xuen += teb_stacks_used;
     if ( p() -> track_focus_of_xuen > 20.0 )
       p() -> track_focus_of_xuen = 20.0;
-      
+
     if ( p() -> set_bonus.tier15_4pc_melee() )
     {
-      use_value *= 1.05; // t154pc 
+      use_value *= 1.05; // t154pc
     }
-    
+
     if ( p() -> set_bonus.tier16_4pc_melee() )
     {
       // so, there's actually an error with our 4set in that it doesn't count a full .75 if we don't use a full 4, but
@@ -1914,7 +1914,7 @@ struct zen_sphere_detonate_damage_t : public monk_spell_t
   {
     background = true;
     aoe = -1;
-    
+
     base_attack_power_multiplier = 1.0;
     base_spell_power_multiplier = 0.0;
     direct_power_mod = 0.368 * 1.15; // hardcoded into tooltip
@@ -2321,7 +2321,7 @@ struct purifying_brew_t : public monk_spell_t
 struct crackling_jade_lightning_t : public monk_spell_t
 {
   // Crackling Jade Spirit needs to bypass all mana costs for the duration
-  // of the channel, if Lucidity is up when the spell is cast. Thus, 
+  // of the channel, if Lucidity is up when the spell is cast. Thus,
   // we need custom state to go around the channeling cost per second.
   struct cjl_state_t : public action_state_t
   {
@@ -2456,7 +2456,7 @@ struct enveloping_mist_t : public monk_heal_t
     stancemask = WISE_SERPENT;
 
     may_crit = may_miss = false;
-    
+
     resource_current = RESOURCE_CHI;
     base_costs[ RESOURCE_CHI ] = 3.0;
   }
@@ -2744,7 +2744,7 @@ struct zen_sphere_t : public monk_heal_t
     {
       background = dual = true;
       aoe = -1;
-      
+
       base_attack_power_multiplier = 1.0;
       base_spell_power_multiplier = 0.0;
       direct_power_mod = 0.281 * 1.15; // hardcoded into tooltip
@@ -2877,12 +2877,12 @@ struct power_strikes_event_t : public event_t
 
 monk_td_t::monk_td_t( player_t* target, monk_t* p ) :
   actor_pair_t( target, p ),
-  buff( buffs_t() ),
-  dots( dots_t() )
+  dots( dots_t() ),
+  buff( buffs_t() )
 {
   buff.rising_sun_kick   = buff_creator_t( *this, "rising_sun_kick"   ).spell( p -> find_spell( 130320 ) );
   buff.dizzying_haze     = buff_creator_t( *this, "dizzying_haze"     ).spell( p -> find_spell( 123727 ) );
-  
+
   dots.enveloping_mist   = target -> get_dot( "enveloping_mist", p );
   dots.renewing_mist     = target -> get_dot( "renewing_mist",   p );
   dots.soothing_mist     = target -> get_dot( "soothing_mist",   p );
@@ -3076,7 +3076,7 @@ void monk_t::init_base_stats()
   diminished_kfactor   =   1.422000;
   diminished_dodge_cap = 501.25348;
   diminished_parry_cap =  90.64244;
-  
+
   // note that these conversions are level-specific; these are L90 values
   base.dodge_per_agility = 1 / 95115.8596; // exact value given by Blizzard
   base.parry_per_strength = 1 / 10000.0 / 100.0 ; // empirically tested
@@ -3916,7 +3916,7 @@ void monk_t::apl_combat_mistweaver()
   def -> add_action( "auto_attack" );
   def -> add_talent( this, "Chi Brew", "if=chi=0" );
   def -> add_action( this, "Mana Tea", "if=buff.mana_tea.react>=2&mana.pct<=25" );
-  
+
   if ( sim -> allow_potions )
   {
     if ( level >= 85 )
@@ -3931,12 +3931,12 @@ void monk_t::apl_combat_mistweaver()
       action_list_str += items[ i ].name();
     }
   }
-  
+
   def -> add_talent( this, "Invoke Xuen" );
   def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );
   def -> add_action( "run_action_list,name=single_target,if=active_enemies<3");
 
-  
+
   st_list_str += "/crackling_jade_lightning,if=buff.bloodlust.up&buff.lucidity.up";
   st_list_str += "/tiger_palm,if=buff.muscle_memory.up&buff.lucidity.up";
   st_list_str += "/jab,if=buff.lucidity.up";
@@ -3946,8 +3946,8 @@ void monk_t::apl_combat_mistweaver()
   st_list_str += "/chi_wave,if=talent.chi_wave.enabled";
   st_list_str += "/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking";
   st_list_str += "/jab";
-  
-  
+
+
   aoe_list_str += "/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled";
   aoe_list_str += "/rushing_jade_wind,if=talent.rushing_jade_wind.enabled";
   aoe_list_str += "/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking";
