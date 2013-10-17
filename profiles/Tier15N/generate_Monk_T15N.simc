@@ -9,7 +9,7 @@ race=tauren
 spec=windwalker
 role=hybrid
 position=back
-talents=112332
+talents=113332
 head=lightningeye_hood,id=94724,gems=agile_primal_80agi_160haste_180agi,reforge=mastery_crit
 neck=quadrahead_brooch,id=94794,gems=320haste_60crit,reforge=hit_exp
 shoulders=firecharm_spaulders,id=95269,gems=80agi_160haste_80agi_160haste_120haste,enchant=200agi_100crit,reforge=hit_haste
@@ -35,7 +35,7 @@ race=tauren
 spec=windwalker
 role=hybrid
 position=back
-talents=132332
+talents=113332
 head=lightningeye_hood,id=94724,gems=agile_primal_320haste_180agi
 neck=quadrahead_brooch,id=94794,gems=320haste_60crit
 shoulders=firecharm_spaulders,id=95269,gems=80agi_160haste_320haste_120haste,enchant=200agi_100crit,reforge=crit_mastery

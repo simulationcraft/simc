@@ -11,7 +11,7 @@ spec=windwalker
 role=hybrid
 position=back
 professions=blacksmithing=600/engineering=600
-talents=112332
+talents=113332
 legs=leggings_of_seven_sacred_seals,id=99394,gems=320crit_320crit_120agi,enchant=285agi_165crit,upgrade=2
 shoulders=spaulders_of_seven_sacred_seals,id=99395,gems=80agi_160crit_80agi_160crit_120agi,enchant=200agi_100crit,reforge=haste_crit,upgrade=2
 wrists=mantid_carapace_augments,id=105583,gems=320crit,enchant=180agi,reforge=hit_crit,upgrade=2
@@ -38,7 +38,7 @@ spec=windwalker
 role=hybrid
 position=back
 professions=blacksmithing=600/engineering=600
-talents=112332
+talents=113332
 
 legs=leggings_of_seven_sacred_seals,id=99394,gems=320crit_320crit_120agi,enchant=285agi_165crit,upgrade=2
 shoulders=spaulders_of_seven_sacred_seals,id=99395,gems=80agi_160crit_80agi_160crit_120agi,enchant=200agi_100crit,reforge=exp_crit,upgrade=2

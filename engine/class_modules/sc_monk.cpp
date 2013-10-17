@@ -130,17 +130,21 @@ public:
 
   struct gains_t
   {
-    gain_t* avoided_chi;
-    gain_t* chi;
     gain_t* chi_brew;
+    gain_t* chi_refund;
+    gain_t* chi_sphere;
     gain_t* combo_breaker_savings;
     gain_t* crackling_jade_lightning;
     gain_t* energy_refund;
     gain_t* energizing_brew;
+    gain_t* expel_harm;
+    gain_t* jab;
+    gain_t* keg_smash;
     gain_t* mana_tea;
     gain_t* muscle_memory;
     gain_t* renewing_mist;
     gain_t* soothing_mist;
+    gain_t* spinning_crane_kick;
     gain_t* surging_mist;
     gain_t* tier15_2pc;
     gain_t* tier16_4pc_melee;
@@ -674,7 +678,7 @@ public:
     if ( current_resource() == RESOURCE_CHI && ab::resource_consumed > 0 && ! ab::aoe && ab::result_is_miss( ab::execute_state -> result ) )
     {
       double chi_restored = ab::resource_consumed;
-      p() -> resource_gain( RESOURCE_CHI, chi_restored, p() -> gain.avoided_chi );
+      p() -> resource_gain( RESOURCE_CHI, chi_restored, p() -> gain.chi_refund );
     }
 
     // Energy refund, estimated at 80%
@@ -909,7 +913,7 @@ struct jab_t : public monk_melee_attack_t
       }
       p() -> buff.power_strikes -> expire();
     }
-    player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
+    player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.jab, this );
 
     if ( p() -> set_bonus.tier15_2pc_melee() &&
         rng().roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
@@ -1306,7 +1310,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
         chi_gain = 1.0;
       else
         chi_gain = data().effectN( 4 ).base_value();
-      player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
+      player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.spinning_crane_kick, this );
       if ( p() -> spec.muscle_memory -> ok() )
         p() -> buff.muscle_memory -> trigger();
     }
@@ -1631,10 +1635,7 @@ struct keg_smash_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    player -> resource_gain( RESOURCE_CHI,
-                             chi_generation -> effectN( 1 ).resource( RESOURCE_CHI ),
-                             p() -> gain.chi,
-                             this );
+    player -> resource_gain( RESOURCE_CHI, chi_generation -> effectN( 1 ).resource( RESOURCE_CHI ), p() -> gain.keg_smash, this );
   }
 
   virtual void impact( action_state_t* s )
@@ -1884,8 +1885,16 @@ struct chi_brew_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    double chi_gain = data().effectN( 1 ).base_value();
-    player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi_brew );
+    // Instantly restore 2 chi
+    player -> resource_gain( RESOURCE_CHI, data().effectN( 1 ).base_value(), p() -> gain.chi_brew, this );
+
+    // and generate x stacks of Brew
+    if ( p() -> spec.brewing_tigereye_brew -> ok() )
+      p() -> buff.tigereye_brew -> trigger( p() -> find_spell( 145640 ) -> effectN( 1 ).base_value() );
+    else if ( p() -> spec.brewing_mana_tea -> ok() )
+      p() -> buff.mana_tea -> trigger( p() -> find_spell( 145640 ) -> effectN( 1 ).base_value() );
+    else if ( p() -> spec.brewing_elusive_brew -> ok() )
+      p() -> buff.mana_tea -> trigger( p() -> find_spell( 145640 ) -> effectN( 2 ).base_value() );
   }
 };
 
@@ -2085,7 +2094,7 @@ struct chi_sphere_t : public monk_spell_t
     if ( p() -> buff.chi_sphere -> up() )
     {
       // Only use 1 Orb per execution
-      player -> resource_gain( RESOURCE_CHI, 1, p() -> gain.chi );
+      player -> resource_gain( RESOURCE_CHI, 1, p() -> gain.chi_sphere, this );
 
       p() -> buff.chi_sphere -> decrement();
     }
@@ -2250,7 +2259,7 @@ struct mana_tea_t : public monk_spell_t
     double mana_gain = player -> resources.max[ RESOURCE_MANA ]
                        * data().effectN( 1 ).percent()
                        * std::min( p() -> buff.mana_tea -> stack(), max_stacks_consumable );
-    player -> resource_gain( RESOURCE_MANA, mana_gain, p() -> gain.mana_tea );
+    player -> resource_gain( RESOURCE_MANA, mana_gain, p() -> gain.mana_tea, this );
     p() -> buff.mana_tea -> decrement( max_stacks_consumable );
   }
 };
@@ -2418,7 +2427,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
                       name(), player -> resources.current[ resource ] );
 
       if ( rng().roll( proc_driver -> proc_chance() ) )
-        p() -> resource_gain( RESOURCE_CHI, proc_driver -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(), p() -> gain.crackling_jade_lightning );
+        p() -> resource_gain( RESOURCE_CHI, proc_driver -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(), p() -> gain.crackling_jade_lightning, this );
     }
     else
       dot -> cancel();
@@ -2504,7 +2513,7 @@ struct expel_harm_heal_t : public monk_heal_t
     double chi_gain = data().effectN( 2 ).base_value();
     chi_gain += p() -> active_stance_data( FIERCE_TIGER ).effectN( 4 ).base_value();
 
-    player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.chi );
+    player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.expel_harm, this );
 
     if ( p() -> set_bonus.tier15_2pc_melee() &&
         rng().roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
@@ -3158,17 +3167,21 @@ void monk_t::init_gains()
 {
   base_t::init_gains();
 
-  gain.avoided_chi           = get_gain( "chi_from_avoided_attacks" );
-  gain.chi                   = get_gain( "chi"                      );
-  gain.chi_brew              = get_gain( "chi_from_chi_brew"        );
+  gain.chi_brew              = get_gain( "chi_brew"        );
+  gain.chi_refund            = get_gain( "chi_refund"               );
+  gain.chi_sphere            = get_gain( "chi_sphere"               );
   gain.combo_breaker_savings = get_gain( "combo_breaker_savings"    );
   gain.crackling_jade_lightning = get_gain( "crackling_jade_lightning" );
   gain.energy_refund         = get_gain( "energy_refund"            );
   gain.energizing_brew       = get_gain( "energizing_brew"          );
+  gain.expel_harm            = get_gain( "expel_harm"               );
+  gain.jab                   = get_gain( "jab"                      );
+  gain.keg_smash             = get_gain( "keg_smash"                );
   gain.mana_tea              = get_gain( "mana_tea"                 );
   gain.muscle_memory         = get_gain( "muscle_memory"            );
   gain.renewing_mist         = get_gain( "renewing_mist"            );
   gain.soothing_mist         = get_gain( "soothing_mist"            );
+  gain.spinning_crane_kick   = get_gain( "spinning_crane_kick"      );
   gain.surging_mist          = get_gain( "surging_mist"             );
   gain.tier15_2pc            = get_gain( "tier15_2pc"               );
   gain.focus_of_xuen_savings = get_gain( "focus_of_xuen_savings"	  );
@@ -3864,20 +3877,13 @@ void monk_t::apl_combat_windwalker()
   }
 
   action_list_str += init_use_racial_actions();
-  action_list_str += "/chi_brew,if=talent.chi_brew.enabled&chi=0";
+  action_list_str += "/chi_brew,if=talent.chi_brew.enabled&chi<=2&(trinket.proc.agility.react|(charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)";
   action_list_str += "/tiger_palm,if=buff.tiger_power.remains<=3";
-  if ( find_item( "rune_of_reorigination" ) )
-  {
-    action_list_str += "/tigereye_brew,line_cd=15,if=buff.rune_of_reorigination.react&(buff.rune_of_reorigination.remains<=1|(buff.tigereye_brew_use.down&cooldown.rising_sun_kick.remains=0&chi>=2&target.debuff.rising_sun_kick.remains&buff.tiger_power.remains))";
-    action_list_str += "/tigereye_brew,if=!buff.tigereye_brew_use.up&(buff.tigereye_brew.react>19|target.time_to_die<20)";
-  }
-  else
-  {
-    action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&cooldown.rising_sun_kick.remains=0&chi>=2&target.debuff.rising_sun_kick.remains&buff.tiger_power.remains";
-  }
+  action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&trinket.proc.agility.react";
+  action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&!cooldown.rising_sun_kick.remains&chi>=2&(trinket.proc.agility.react|buff.tigereye_brew.stack>=15|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up";
   action_list_str += "/energizing_brew,if=energy.time_to_max>5";
-  action_list_str += "/rising_sun_kick,if=!target.debuff.rising_sun_kick.remains";
-  action_list_str  += "/tiger_palm,if=buff.tiger_power.down&target.debuff.rising_sun_kick.remains>1&energy.time_to_max>1";
+  action_list_str += "/rising_sun_kick,if=debuff.rising_sun_kick.down";
+  action_list_str += "/tiger_palm,if=buff.tiger_power.down&debuff.rising_sun_kick.remains>1&energy.time_to_max>1";
 
   action_list_str += "/invoke_xuen,if=talent.invoke_xuen.enabled";
   action_list_str += "/run_action_list,name=aoe,if=active_enemies>=3";
@@ -3888,20 +3894,19 @@ void monk_t::apl_combat_windwalker()
   aoe_list_str += "/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking";
   aoe_list_str += "/chi_wave,if=talent.chi_wave.enabled";
   aoe_list_str += "/chi_burst,if=talent.chi_burst.enabled";
-  aoe_list_str += "/rising_sun_kick,if=chi>=4";
+  aoe_list_str += "/rising_sun_kick,if=chi=chi.max";
   aoe_list_str += "/spinning_crane_kick,if=!talent.rushing_jade_wind.enabled";
 
   //st
   st_list_str += "/rising_sun_kick";
-  st_list_str += "/fists_of_fury,if=!buff.energizing_brew.up&energy.time_to_max>4&buff.tiger_power.remains>4";
+  st_list_str += "/fists_of_fury,if=buff.energizing_brew.down&energy.time_to_max>4&buff.tiger_power.remains>4";
   st_list_str += "/chi_wave,if=talent.chi_wave.enabled&energy.time_to_max>2";
   st_list_str += "/chi_burst,if=talent.chi_burst.enabled&energy.time_to_max>2";
-  st_list_str += "/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&!dot.zen_sphere.ticking";
+  st_list_str += "/zen_sphere,cycle_targets=1,if=talent.zen_sphere.enabled&energy.time_to_max>2&!dot.zen_sphere.ticking";
   st_list_str += "/blackout_kick,if=buff.combo_breaker_bok.react";
-  st_list_str += "/tiger_palm,if=(buff.combo_breaker_tp.react&energy.time_to_max>=2)|(buff.combo_breaker_tp.remains<=2&buff.combo_breaker_tp.react)";
-  st_list_str += "/jab,if=talent.ascension.enabled&chi<=3";
-  st_list_str += "/jab,if=!talent.ascension.enabled&chi<=2";
-  st_list_str += "/blackout_kick,if=(energy+(energy.regen*(cooldown.rising_sun_kick.remains)))>=40";
+  st_list_str += "/tiger_palm,if=buff.combo_breaker_tp.react&(buff.combo_breaker_tp.remains<=2|energy.time_to_max>=2)";
+  st_list_str += "/jab,if=chi.max-chi>=2";
+  st_list_str += "/blackout_kick,if=energy+energy.regen*cooldown.rising_sun_kick.remains>=40";
 }
 
 // Mistweaver Combat Action Priority List

@@ -10,7 +10,7 @@ race=tauren
 spec=windwalker
 role=hybrid
 position=back
-talents=112332
+talents=113332
 comment="Profile generated with AskMrRobot using 'Default PvE' weights. May not be optimal."
 legs=leggings_of_seven_sacred_seals,id=99145,gems=320crit_320crit_120agi,enchant=285agi_165crit
 shoulders=spaulders_of_seven_sacred_seals,id=99146,gems=80agi_160crit_80agi_160crit_120agi,enchant=200agi_100crit,reforge=exp_hit
@@ -37,7 +37,7 @@ race=tauren
 spec=windwalker
 role=hybrid
 position=back
-talents=112332
+talents=113332
 comment="Profile generated with AskMrRobot using 'Default PvE' weights. May not be optimal."
 legs=leggings_of_seven_sacred_seals,id=99145,gems=320crit_320crit_120agi,enchant=285agi_165crit,reforge=haste_hit
 shoulders=spaulders_of_seven_sacred_seals,id=99146,gems=80agi_160crit_80agi_160crit_120agi,enchant=200agi_100crit,reforge=exp_crit

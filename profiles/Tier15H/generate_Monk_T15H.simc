@@ -10,7 +10,7 @@ spec=windwalker
 role=hybrid
 position=back
 professions=blacksmithing=600/engineering=600
-talents=112332
+talents=113332
 head=firecharm_headpiece,id=96641,gems=capacitive_primal_320mastery_180crit,reforge=hit_mastery
 neck=quadrahead_brooch,id=96815,gems=320mastery_60crit,reforge=hit_haste
 shoulders=firecharm_spaulders,id=96643,gems=80agi_160haste_320crit_120haste,enchant=200agi_100crit
@@ -37,7 +37,7 @@ spec=windwalker
 role=hybrid
 position=back
 professions=blacksmithing=600/engineering=600
-talents=112332
+talents=113332
 main_hand=darkwood_spiritstaff,id=96978,gems=320crit_320crit_60agi,enchant=dancing_steel,reforge=crit_haste
 back=tigerfang_wrap,id=98148,gems=160exp_160mastery_60agi,enchant=180crit
 trinket2=bad_juju,id=96781,reforge=mastery_haste
