@@ -83,7 +83,7 @@ actions.single_target+=/scourge_strike
 actions.single_target+=/plague_leech,if=talent.plague_leech.enabled&cooldown.outbreak.remains<1
 actions.single_target+=/festering_strike
 actions.single_target+=/horn_of_winter
-actions.single_target+=/death_coil,if=buff.dark_transformation.down|(cooldown.summon_gargoyle.remains>8&buff.dark_transformation.remains>8)
+actions.single_target+=/death_coil
 actions.single_target+=/blood_tap,if=talent.blood_tap.enabled&buff.blood_charge.stack>=8
 actions.single_target+=/empower_rune_weapon
 

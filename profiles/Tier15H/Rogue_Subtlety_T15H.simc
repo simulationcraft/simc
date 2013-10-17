@@ -39,7 +39,7 @@ actions+=/arcane_torrent,if=energy<60
 actions+=/shadow_blades
 actions+=/premeditation,if=combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)
 actions+=/pool_resource,for_next=1
-actions+=/ambush,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<3)
+actions+=/ambush,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<3)|(buff.sleight_of_hand.up&buff.sleight_of_hand.remains<=gcd)
 actions+=/pool_resource,for_next=1,extra_amount=75
 actions+=/shadow_dance,if=energy>=75&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down
 actions+=/pool_resource,for_next=1,extra_amount=45

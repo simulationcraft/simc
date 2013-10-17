@@ -3239,7 +3239,7 @@ void rogue_t::init_actions()
     // Shadow Dancing and Vanishing and Marking for the Deathing
     def -> add_action( this, "Premeditation", "if=combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)" );
     def -> add_action( this, find_class_spell( "Ambush" ), "pool_resource", "for_next=1" );
-    def -> add_action( this, "Ambush", "if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<3)" );
+    def -> add_action( this, "Ambush", "if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<3)|(buff.sleight_of_hand.up&buff.sleight_of_hand.remains<=gcd)" );
     def -> add_action( this, find_class_spell( "Shadow Dance" ), "pool_resource", "for_next=1,extra_amount=75" );
     def -> add_action( this, "Shadow Dance", "if=energy>=75&buff.stealth.down&buff.vanish.down&debuff.find_weakness.down" );
     def -> add_action( this, find_class_spell( "Vanish" ), "pool_resource", "for_next=1,extra_amount=45" );
