@@ -148,6 +148,7 @@ public:
     const spell_data_t* backdraft;
     const spell_data_t* burning_embers;
     const spell_data_t* chaotic_energy;
+    const spell_data_t* fire_and_brimstone;
     const spell_data_t* pyroclasm;
 
   } spec;
@@ -168,10 +169,13 @@ public:
     gain_t* nightfall;
     gain_t* drain_soul;
     gain_t* incinerate;
+    gain_t* incinerate_fnb;
     gain_t* incinerate_t15_4pc;
     gain_t* conflagrate;
+    gain_t* conflagrate_fnb;
     gain_t* rain_of_fire;
     gain_t* immolate;
+    gain_t* immolate_fnb;
     gain_t* fel_flame;
     gain_t* shadowburn;
     gain_t* miss_refund;
@@ -2678,14 +2682,26 @@ struct immolate_t : public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    if ( s -> result == RESULT_CRIT ) trigger_ember_gain( p(), 0.1, p() -> gains.immolate, 1.0 );
+    gain_t* gain;
+    if ( ! fnb && p() -> spec.fire_and_brimstone -> ok() )
+      gain = p() -> gains.immolate_fnb;
+    else
+      gain = p() -> gains.immolate;
+
+    if ( s -> result == RESULT_CRIT ) trigger_ember_gain( p(), 0.1, gain );
   }
 
   virtual void tick( dot_t* d )
   {
     warlock_spell_t::tick( d );
 
-    if ( d -> state -> result == RESULT_CRIT ) trigger_ember_gain( p(), 0.1, p() -> gains.immolate, 1.0 );
+    gain_t* gain;
+    if ( ! fnb && p() -> spec.fire_and_brimstone -> ok() )
+      gain = p() -> gains.immolate_fnb;
+    else
+      gain = p() -> gains.immolate;
+
+    if ( d -> state -> result == RESULT_CRIT ) trigger_ember_gain( p(), 0.1, gain );
 
     if ( p() -> glyphs.siphon_life -> ok() )
     {
@@ -2773,11 +2789,16 @@ struct conflagrate_t : public warlock_spell_t
   virtual void impact( action_state_t* s )
   {
     warlock_spell_t::impact( s );
+    gain_t* gain;
+    if ( ! fnb && p() -> spec.fire_and_brimstone -> ok() )
+      gain = p() -> gains.conflagrate_fnb;
+    else
+      gain = p() -> gains.conflagrate;
 
-    trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.conflagrate );
+    trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, gain );
 
     //hotfixed extra gain with 15% chance from 13.09.13
-    trigger_ember_gain( p(), 0.1, p() -> gains.conflagrate, 0.15 );
+    trigger_ember_gain( p(), 0.1, gain, 0.15 );
     if ( s -> result == RESULT_CRIT &&  p() -> set_bonus.tier16_2pc_caster() )
       p() -> buffs.tier16_2pc_destructive_influence -> trigger();
   }
@@ -2869,10 +2890,15 @@ struct incinerate_t : public warlock_spell_t
   virtual void impact( action_state_t* s )
   {
     warlock_spell_t::impact( s );
+    gain_t* gain;
+    if ( ! fnb && p() -> spec.fire_and_brimstone -> ok() )
+      gain = p() -> gains.incinerate_fnb;
+    else
+      gain = p() -> gains.incinerate;
 
-    trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate );
+    trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, gain );
     //hotfixed extra gain with 15% 13.09.13
-    trigger_ember_gain( p(), 0.1, p() -> gains.incinerate, 0.15 );
+    trigger_ember_gain( p(), 0.1, gain, 0.15 );
     if ( p() -> set_bonus.tier15_4pc_caster() &&
          rng().roll( p() -> sets -> set ( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent() ) )
       trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate_t15_4pc );
@@ -4862,6 +4888,7 @@ void warlock_t::init_spells()
   spec.backdraft      = find_specialization_spell( "Backdraft" );
   spec.burning_embers = find_specialization_spell( "Burning Embers" );
   spec.chaotic_energy = find_specialization_spell( "Chaotic Energy" );
+  spec.fire_and_brimstone = find_specialization_spell( "Fire and Brimstone" );
   spec.pyroclasm      = find_specialization_spell( "Pyroclasm" );
 
   mastery_spells.emberstorm          = find_mastery_spell( WARLOCK_DESTRUCTION );
@@ -4993,10 +5020,13 @@ void warlock_t::init_gains()
   gains.nightfall          = get_gain( "nightfall"    );
   gains.drain_soul         = get_gain( "drain_soul"   );
   gains.incinerate         = get_gain( "incinerate"   );
+  gains.incinerate_fnb     = get_gain( "incinerate_fnb" );
   gains.incinerate_t15_4pc = get_gain( "incinerate_t15_4pc" );
   gains.conflagrate        = get_gain( "conflagrate"  );
+  gains.conflagrate_fnb    = get_gain( "conflagrate_fnb" );
   gains.rain_of_fire       = get_gain( "rain_of_fire" );
   gains.immolate           = get_gain( "immolate"     );
+  gains.immolate_fnb       = get_gain( "immolate_fnb" );
   gains.fel_flame          = get_gain( "fel_flame"    );
   gains.shadowburn         = get_gain( "shadowburn"   );
   gains.miss_refund        = get_gain( "miss_refund"  );
