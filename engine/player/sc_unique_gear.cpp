@@ -2502,12 +2502,6 @@ void rune_of_reorigination( item_t* item )
         buff -> stats[ BUFF_MASTERY ].amount = 2 * ( ccr + chr );
       }
 
-      // I choose you, mastery
-      // forced mastery proc
-      buff -> stats[ BUFF_CRIT    ].amount = -ccr;
-      buff -> stats[ BUFF_HASTE   ].amount = -chr;
-      buff -> stats[ BUFF_MASTERY ].amount = 2 * ( ccr + chr );
-
       buff -> trigger();
     }
   };
