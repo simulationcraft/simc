@@ -1913,6 +1913,7 @@ struct zen_sphere_damage_t : public monk_spell_t
     base_attack_power_multiplier = 1.0;
     base_spell_power_multiplier = 0.0;
     direct_power_mod = 0.09 * 1.15; // hardcoded into tooltip
+    school = SCHOOL_NATURE;
   }
 };
 
@@ -1927,6 +1928,7 @@ struct zen_sphere_detonate_damage_t : public monk_spell_t
     base_attack_power_multiplier = 1.0;
     base_spell_power_multiplier = 0.0;
     direct_power_mod = 0.368 * 1.15; // hardcoded into tooltip
+    school = SCHOOL_NATURE;
   }
 };
 
@@ -2218,9 +2220,20 @@ struct elusive_brew_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    p() -> buff.elusive_brew_activated -> trigger( 1,
-                                                   p() -> buff.elusive_brew_stacks -> check() );
+    // FIXME: Find sec/stack value in spell data.
+    p() -> buff.elusive_brew_activated -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( p() -> buff.elusive_brew_stacks -> stack() ) );
     p() -> buff.elusive_brew_stacks -> expire();
+  }
+
+  virtual bool ready()
+  {
+    if ( ! p() -> buff.elusive_brew_stacks -> check() )
+      return false;
+    
+    if ( p() -> buff.elusive_brew_activated -> check() )
+      return false;
+
+    return monk_spell_t::ready();
   }
 };
 
@@ -2271,6 +2284,8 @@ struct stagger_self_damage_t : public ignite::pct_based_action_t<monk_spell_t>
   {
     num_ticks = 10;
     target = p;
+    
+    proc = true; // Don't proc effects like Dancing Steel, trinkets, etc.
   }
 
   virtual void init()
@@ -2296,6 +2311,12 @@ struct stagger_self_damage_t : public ignite::pct_based_action_t<monk_spell_t>
 
     return damage_remaining;
   }
+
+  bool stagger_ticking()
+  {
+    dot_t* d = get_dot();
+    return d -> ticking;
+  }
 };
 
 // ==========================================================================
@@ -2320,6 +2341,15 @@ struct purifying_brew_t : public monk_spell_t
 
     // Optional addition: Track and report amount of damage cleared
     p() -> active_actions.stagger_self_damage -> clear_all_damage();
+  }
+
+  virtual bool ready()
+  {
+    // Irrealistic of in-game, but let's make sure stagger is actually present
+    if ( ! p() -> active_actions.stagger_self_damage -> stagger_ticking() )
+      return false;
+
+    return monk_spell_t::ready();
   }
 };
 
@@ -2757,6 +2787,7 @@ struct zen_sphere_t : public monk_heal_t
       base_attack_power_multiplier = 1.0;
       base_spell_power_multiplier = 0.0;
       direct_power_mod = 0.281 * 1.15; // hardcoded into tooltip
+      school = SCHOOL_NATURE;
     }
   };
 
@@ -2772,6 +2803,7 @@ struct zen_sphere_t : public monk_heal_t
 
     base_attack_power_multiplier = 1.0;
     base_spell_power_multiplier = 0.0;
+    school = SCHOOL_NATURE;
     if ( player -> specialization() == MONK_MISTWEAVER )
       tick_power_mod = 0.108 * 1.15; // hardcoded into tooltip
     else
@@ -3133,7 +3165,8 @@ void monk_t::create_buffs()
   // Brewmaster
   buff.elusive_brew_stacks    = buff_creator_t( this, "elusive_brew_stacks"    ).spell( find_spell( 128939 ) );
   buff.elusive_brew_activated = buff_creator_t( this, "elusive_brew_activated" ).spell( spec.elusive_brew )
-                                .add_invalidate( CACHE_DODGE );
+                                .add_invalidate( CACHE_DODGE )
+                                .cd( timespan_t::zero() );
   buff.guard                  = absorb_buff_creator_t( this, "guard" ).spell( find_class_spell( "Guard" ) )
                                 .source( get_stats( "guard" ) )
                                 .cd( timespan_t::zero() );
@@ -3488,7 +3521,7 @@ double monk_t::composite_parry()
   double p = base_t::composite_parry();
 
   if ( buff.shuffle -> check() )
-  { p += buff.shuffle -> data().effectN( 1 ).percent(); }
+    p += buff.shuffle -> data().effectN( 1 ).percent();
 
   p += passives.swift_reflexes -> effectN( 2 ).percent();
 
@@ -3502,7 +3535,7 @@ double monk_t::composite_dodge()
   double d = base_t::composite_dodge();
 
   if ( buff.elusive_brew_activated -> check() )
-  { d += buff.elusive_brew_activated -> current_value * buff.elusive_brew_activated -> data().effectN( 1 ).percent(); }
+    d += buff.elusive_brew_activated -> data().effectN( 1 ).percent();
 
   return d;
 }
@@ -3665,6 +3698,10 @@ void monk_t::target_mitigation( school_e school,
                                 action_state_t* s )
 {
   base_t::target_mitigation( school, dt, s );
+
+  // Stagger is not reduced by damage mitigation effects
+  if ( s -> action -> id == 124255 )
+    return;
 
   if ( buff.fortifying_brew -> check() )
   { s -> result_amount *= 1.0 + buff.fortifying_brew -> data().effectN( 2 ).percent(); }
