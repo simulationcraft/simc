@@ -313,7 +313,7 @@ public:
   virtual void      pre_analyze_hook();
   virtual void      combat_begin();
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
-  virtual void      assess_damage_imminent( school_e, dmg_e, action_state_t* s );
+  virtual void      assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* s );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   virtual void invalidate_cache( cache_e );
   virtual void      init_actions();
@@ -3697,11 +3697,11 @@ void monk_t::target_mitigation( school_e school,
                                 dmg_e    dt,
                                 action_state_t* s )
 {
-  base_t::target_mitigation( school, dt, s );
-
   // Stagger is not reduced by damage mitigation effects
   if ( s -> action -> id == 124255 )
     return;
+
+  base_t::target_mitigation( school, dt, s );
 
   if ( buff.fortifying_brew -> check() )
   { s -> result_amount *= 1.0 + buff.fortifying_brew -> data().effectN( 2 ).percent(); }
@@ -3716,17 +3716,23 @@ void monk_t::assess_damage( school_e school,
   buff.shuffle -> up();
   buff.fortifying_brew -> up();
   buff.elusive_brew_activated -> up();
+  if ( s -> result_total > 0 )
+    buff.guard -> up();
 
   base_t::assess_damage( school, dtype, s );
 }
 
-void monk_t::assess_damage_imminent( school_e school,
+void monk_t::assess_damage_imminent_pre_absorb( school_e school,
                                      dmg_e    dtype,
                                      action_state_t* s )
 {
-  base_t::assess_damage_imminent( school, dtype, s );
+  base_t::assess_damage_imminent_pre_absorb( school, dtype, s );
 
   if ( current_stance() != STURDY_OX )
+    return;
+
+  // Stagger damage can't be staggered!
+  if ( s -> action -> id == 124255 )
     return;
 
   double stagger_dmg = s -> result_amount > 0 ? s -> result_amount * stagger_pct() : 0.0;

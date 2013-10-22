@@ -5018,6 +5018,8 @@ void player_t::assess_damage( school_e school,
       sim -> out_debug.printf( "Damage to %s after Hand of Sacrifice is %f", s -> target -> name(), s -> result_amount );
   }
 
+  assess_damage_imminent_pre_absorb( school, type, s );
+
   /* ABSORB BUFFS
    *
    * std::vector<absorb_buff_t*> absorb_buff_list; is a dynamic vector, which contains
@@ -5149,6 +5151,11 @@ void player_t::assess_damage( school_e school,
     }
   }
 
+
+}
+
+void player_t::assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* )
+{
 
 }
 

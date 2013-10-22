@@ -4682,6 +4682,7 @@ public:
   virtual double get_raw_dps( action_state_t* );
   virtual void assess_damage( school_e, dmg_e, action_state_t* );
   virtual void target_mitigation( school_e, dmg_e, action_state_t* );
+  virtual void assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* );
   virtual void assess_damage_imminent( school_e, dmg_e, action_state_t* );
   double       compute_incoming_damage( timespan_t = timespan_t::from_seconds( 5 ) );
   double       calculate_time_to_bloodlust();
