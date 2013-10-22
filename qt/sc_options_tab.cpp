@@ -254,6 +254,9 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_right -> addRow( tr( "Report Print Style" ),      choice.print_style = createChoice( 3, "MoP", "White", "Classic" ) );
   globalsLayout_right -> addRow( tr( "Statistics Level" ),   choice.statistics_level = createChoice( 4, "0", "1", "2", "3" ) );
   globalsLayout_right -> addRow( tr( "Deterministic RNG" ), choice.deterministic_rng = createChoice( 2, "Yes", "No" ) );
+  QPushButton* resetb = new QPushButton( tr("Reset all Settings"), this );
+  connect( resetb, SIGNAL(clicked()), this, SLOT(_resetallSettings()) );
+  globalsLayout_right -> addWidget( resetb );
   choice.aura_delay -> setCurrentIndex( 1 );
   choice.report_pets -> setCurrentIndex( 1 );
   choice.statistics_level -> setCurrentIndex( 1 );
@@ -994,4 +997,17 @@ void SC_OptionsTab::_optionsChanged()
   // Maybe hook up history save, depending on IO cost.
 
   emit optionsChanged();
+}
+/* Reset all settings, with q nice question box asking for confirmation
+ */
+void SC_OptionsTab::_resetallSettings()
+{
+  int confirm = QMessageBox::question( this, tr( "Reset all Settings" ), tr( "Do you really want to reset all Settings to default?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes );
+  if ( confirm == QMessageBox::Yes )
+  {
+    qDebug() << "removing all settings";
+    QSettings settings;
+    settings.clear();
+    decodeOptions();
+  }
 }

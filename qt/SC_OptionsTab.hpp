@@ -70,6 +70,8 @@ public:
   QButtonGroup* scalingButtonGroup;
   QButtonGroup* plotsButtonGroup;
   SC_ReforgeButtonGroup* reforgeplotsButtonGroup;
+public slots:
+  void _resetallSettings();
 protected:
   SC_MainWindow* mainWindow;
   void createGlobalsTab();

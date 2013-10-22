@@ -316,15 +316,15 @@ public:
     QTextDocument* d = s -> document();
     QTextBlock b = d -> begin();
     QRegExp comment_rx( "^\\s*\\#" );
+    QTextCharFormat* comment_format = new QTextCharFormat();
+    comment_format -> setForeground( QColor( "forestgreen" ) );
     while ( b.isValid() )
     {
       if ( comment_rx.indexIn( b.text() ) != -1 )
       {
         QTextCursor c(b);
         c.select( QTextCursor::BlockUnderCursor );
-        QTextCharFormat f;
-        f.setForeground( QColor( "forestgreen" ) );
-        c.setCharFormat( f );
+        c.setCharFormat( *comment_format );
       }
       b = b.next();
     }
