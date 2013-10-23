@@ -1117,7 +1117,7 @@ virtual double cost()
       return 0.0;
     }
     if ( p() -> buff.focus_of_xuen -> check() ){
-      return monk_melee_attack_t::cost() - 1.0; // TODO: Update to spell data
+		return monk_melee_attack_t::cost() - 1;//+ p() -> buff.focus_of_xuen -> s_data -> effectN( 1 ).base_value(); // TODO: Update to spell data
     }
     return monk_melee_attack_t::cost();
   }
@@ -1190,7 +1190,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   virtual double cost()
   {
     if ( p() -> buff.focus_of_xuen -> check() ){
-      return monk_melee_attack_t::cost() - 1.0; // TODO: Update to spell data
+      return monk_melee_attack_t::cost() - 1;//+ p() -> buff.focus_of_xuen -> s_data -> effectN( 1 ).base_value(); // TODO: Update to spell data
     }
     return monk_melee_attack_t::cost();
   }
@@ -1350,7 +1350,12 @@ struct fists_of_fury_t : public monk_melee_attack_t
     tick_zero = true;
     base_multiplier = 7.5 * 0.89; // hardcoded into tooltip
     school = SCHOOL_PHYSICAL;
-    weapon_multiplier = 0;
+	//weapon_multiplier = (player -> main_hand_weapon.type == WEAPON_POLEARM
+	//	|| player -> main_hand_weapon.type == WEAPON_STAFF ? 1.0 : 0.898882275);
+	// If player uses a 1-handed weapon, the Main hand gains a 0.898882275 weapon multiplier.
+	// Off-hand does not gain a weapon Multiplier
+	// Polearms and staffs have a 1.0 weapon multiplier.
+	weapon_multiplier = 0;
 
     // T14 WW 2PC
     cooldown -> duration = data().cooldown();
@@ -1362,7 +1367,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
   virtual double cost()
   {
     if ( p() -> buff.focus_of_xuen -> check() ){
-      return monk_melee_attack_t::cost() - 1; // TODO: Update to spell data
+      return monk_melee_attack_t::cost() - 1;// + p() -> buff.focus_of_xuen -> s_data -> effectN( 1 ).base_value();// TODO: Update to spell data
     }
     return monk_melee_attack_t::cost();
   }
@@ -1888,13 +1893,30 @@ struct chi_brew_t : public monk_spell_t
     // Instantly restore 2 chi
     player -> resource_gain( RESOURCE_CHI, data().effectN( 1 ).base_value(), p() -> gain.chi_brew, this );
 
+	int chi_brew_secondary_stack = 0;
+	int chi_brew_secondary_proc = 0;
     // and generate x stacks of Brew
     if ( p() -> spec.brewing_tigereye_brew -> ok() )
-      p() -> buff.tigereye_brew -> trigger( p() -> find_spell( 145640 ) -> effectN( 1 ).base_value() );
+	{
+		chi_brew_secondary_stack = p() -> find_spell( 145640 ) -> effectN( 1 ).base_value();
+		for (int i = 0; i <= chi_brew_secondary_stack; i++)
+		{
+			chi_brew_secondary_proc += (rng().roll( p() -> cache.mastery_value() ) ? 1 : 0);
+		}
+		p() -> buff.tigereye_brew -> trigger( chi_brew_secondary_stack + chi_brew_secondary_proc );
+	}
     else if ( p() -> spec.brewing_mana_tea -> ok() )
-      p() -> buff.mana_tea -> trigger( p() -> find_spell( 145640 ) -> effectN( 1 ).base_value() );
+	{
+		chi_brew_secondary_stack = p() -> find_spell( 145640 ) -> effectN( 1 ).base_value();
+		for (int i = 0; i <= chi_brew_secondary_stack; i++)
+		{
+			chi_brew_secondary_proc += (rng().roll( p() -> cache.spell_crit() ) ? 1 : 0);
+		}
+		p() -> buff.tigereye_brew -> trigger( chi_brew_secondary_stack + chi_brew_secondary_proc );
+      p() -> buff.mana_tea -> trigger( chi_brew_secondary_stack + chi_brew_secondary_proc );
+	}
     else if ( p() -> spec.brewing_elusive_brew -> ok() )
-      p() -> buff.mana_tea -> trigger( p() -> find_spell( 145640 ) -> effectN( 2 ).base_value() );
+	  p() -> buff.elusive_brew_stacks -> trigger( p() -> find_spell( 145640 ) -> effectN( 2 ).base_value() );
   }
 };
 
@@ -3922,8 +3944,9 @@ void monk_t::apl_combat_windwalker()
   action_list_str += init_use_racial_actions();
   action_list_str += "/chi_brew,if=talent.chi_brew.enabled&chi<=2&(trinket.proc.agility.react|(charges=1&recharge_time<=10)|charges=2|target.time_to_die<charges*10)";
   action_list_str += "/tiger_palm,if=buff.tiger_power.remains<=3";
+  action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack=20";
   action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&trinket.proc.agility.react";
-  action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&!cooldown.rising_sun_kick.remains&chi>=2&(trinket.proc.agility.react|buff.tigereye_brew.stack>=15|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up";
+  action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&chi>=2&(trinket.proc.agility.react|buff.tigereye_brew.stack>=15|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up";
   action_list_str += "/energizing_brew,if=energy.time_to_max>5";
   action_list_str += "/rising_sun_kick,if=debuff.rising_sun_kick.down";
   action_list_str += "/tiger_palm,if=buff.tiger_power.down&debuff.rising_sun_kick.remains>1&energy.time_to_max>1";
