@@ -759,7 +759,7 @@ size_t chart::raid_aps( std::vector<std::string>& images,
       }
     }
 
-    std::string chart_name = first ? ( std::string( player_names_non_ascii ? "\xE4\xB8\x80" : "" ) + std::string( dps ? "DPS" : "HPS+APS" ) + " Ranking" ) : "";
+    std::string chart_name = first ? ( std::string( player_names_non_ascii ? "\xE4\xB8\x80" : "" ) + std::string( dps ? "DPS" : "HPS %2b APS" ) + " Ranking" ) : "";
     sc_chart chart( chart_name, HORIZONTAL_BAR, sim -> print_styles );
     chart.set_height( as<unsigned>( num_players ) * 20 + ( first ? 20 : 0 ) );
 
