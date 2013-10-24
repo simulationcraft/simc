@@ -614,19 +614,19 @@ public:
 
   void trigger_brew( double base_stacks )
   {
-	  if ( p() -> mastery.bottled_fury -> ok() )
-	    base_stacks *= 1 + p() -> cache.mastery_value();
+    if ( p() -> mastery.bottled_fury -> ok() )
+      base_stacks *= 1 + p() -> cache.mastery_value();
     else if ( p() -> spec.brewing_mana_tea -> ok() && ab::rng().roll( p() -> cache.spell_crit() ) )
-	    base_stacks *= 2;
+      base_stacks *= 2;
 
     int stacks;
     if ( ab::rng().roll( std::fmod( base_stacks, 1 ) ) )
-	    stacks = as<int>( ceil( base_stacks ) );
+      stacks = as<int>( ceil( base_stacks ) );
     else
-	    stacks = as<int>( floor( base_stacks ) );
+      stacks = as<int>( floor( base_stacks ) );
 
-	  if ( p() -> spec.brewing_tigereye_brew -> ok() )
-	    p() -> buff.tigereye_brew -> trigger( stacks );
+    if ( p() -> spec.brewing_tigereye_brew -> ok() )
+      p() -> buff.tigereye_brew -> trigger( stacks );
     else if ( p() -> spec.brewing_elusive_brew -> ok() )
       p() -> buff.elusive_brew_stacks -> trigger( stacks );
     else if ( p() -> spec.brewing_mana_tea -> ok() )
@@ -642,17 +642,11 @@ public:
     {
       // Track Chi Consumption
       if ( current_resource() == RESOURCE_CHI )
-      {
         p() -> track_chi_consumption += ab::resource_consumed;
-      }
       
       if ( p() -> spec.brewing_tigereye_brew -> ok() || p() -> spec.brewing_mana_tea -> ok() )
       {
-        int chi_to_consume;
-        if ( p() -> spec.brewing_tigereye_brew -> ok() )
-          chi_to_consume = p() -> spec.brewing_tigereye_brew -> effectN( 1 ).base_value();
-        else
-          chi_to_consume = 4; // FIXME: Find value in spell data.
+        int chi_to_consume = p() -> spec.brewing_tigereye_brew -> ok() ? p() -> spec.brewing_tigereye_brew -> effectN( 1 ).base_value() : 4;
 
         if ( p() -> track_chi_consumption >= chi_to_consume )
         {
@@ -1853,9 +1847,9 @@ struct chi_brew_t : public monk_spell_t
 
     // and generate x stacks of Brew
     if ( p() -> spec.brewing_tigereye_brew -> ok() || p() -> spec.brewing_mana_tea -> ok() )
-	    trigger_brew( p() -> find_spell( 145640 ) -> effectN( 1 ).base_value() );
+      trigger_brew( p() -> find_spell( 145640 ) -> effectN( 1 ).base_value() );
     else if ( p() -> spec.brewing_elusive_brew -> ok() )
-	    trigger_brew( p() -> find_spell( 145640 ) -> effectN( 2 ).base_value() );
+      trigger_brew( p() -> find_spell( 145640 ) -> effectN( 2 ).base_value() );
   }
 };
 
