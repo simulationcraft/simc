@@ -612,6 +612,27 @@ public:
     return resource_by_stance;
   }
 
+  void trigger_brew( double base_stacks )
+  {
+	  if ( p() -> mastery.bottled_fury -> ok() )
+	    base_stacks *= 1 + p() -> cache.mastery_value();
+    else if ( p() -> spec.brewing_mana_tea -> ok() && ab::rng().roll( p() -> cache.spell_crit() ) )
+	    base_stacks *= 2;
+
+    int stacks;
+    if ( ab::rng().roll( std::fmod( base_stacks, 1 ) ) )
+	    stacks = as<int>( ceil( base_stacks ) );
+    else
+	    stacks = as<int>( floor( base_stacks ) );
+
+	  if ( p() -> spec.brewing_tigereye_brew -> ok() )
+	    p() -> buff.tigereye_brew -> trigger( stacks );
+    else if ( p() -> spec.brewing_elusive_brew -> ok() )
+      p() -> buff.elusive_brew_stacks -> trigger( stacks );
+    else if ( p() -> spec.brewing_mana_tea -> ok() )
+      p() -> buff.mana_tea -> trigger( stacks );
+  }
+
   virtual void consume_resource()
   {
     ab::consume_resource();
@@ -624,52 +645,19 @@ public:
       {
         p() -> track_chi_consumption += ab::resource_consumed;
       }
-
-      // Tigereye Brew
-      if ( p() -> spec.brewing_tigereye_brew -> ok() )
+      
+      if ( p() -> spec.brewing_tigereye_brew -> ok() || p() -> spec.brewing_mana_tea -> ok() )
       {
-        int chi_to_consume = p() -> spec.brewing_tigereye_brew -> effectN( 1 ).base_value();
+        int chi_to_consume;
+        if ( p() -> spec.brewing_tigereye_brew -> ok() )
+          chi_to_consume = p() -> spec.brewing_tigereye_brew -> effectN( 1 ).base_value();
+        else
+          chi_to_consume = 4; // FIXME: Find value in spell data.
 
         if ( p() -> track_chi_consumption >= chi_to_consume )
         {
           p() -> track_chi_consumption -= chi_to_consume;
-
-          p() -> buff.tigereye_brew -> trigger();
-          // I assume that this is for the T15 bonus?  If so, then we need similar logic for T16
-          // rekeying the proc to go by mastery.
-          if (  p() -> spec.brewing_tigereye_brew -> ok() )
-          {
-            // Double to hold the chance for our mastery to proc.  This is based upon player's mastery
-            double mastery_proc_chance = p() -> cache.mastery_value();
-            while ( mastery_proc_chance > 0 )
-            {
-              if ( ab::rng().roll( mastery_proc_chance ) )
-              {
-                p() -> buff.tigereye_brew -> trigger();
-                p() -> proc.tigereye_brew -> occur();
-              }
-              mastery_proc_chance -= 1.0;
-            }
-          }
-        }
-      }
-
-      // Mana Tea
-      if ( p() -> spec.brewing_mana_tea -> ok() )
-      {
-        int chi_to_consume = 4; // FIX ME: For some reason this value isn't in spell data...
-
-        if ( p() -> track_chi_consumption >= chi_to_consume )
-        {
-          p() -> track_chi_consumption -= chi_to_consume;
-
-          p() -> buff.mana_tea -> trigger();
-          p() -> proc.mana_tea -> occur();
-
-          if ( ab::rng().roll( p() -> composite_spell_crit() ) )
-          {
-            p() -> buff.mana_tea -> trigger();
-          }
+          trigger_brew( 1 );
         }
       }
     }
@@ -1514,42 +1502,12 @@ struct melee_t : public monk_melee_attack_t
 
     if ( p() -> spec.brewing_elusive_brew -> ok() && s -> result == RESULT_CRIT )
     {
-      trigger_elusive_brew();
+      // Formula taken from http://www.wowhead.com/spell=128938  2013/04/15
+      if ( weapon -> group() == WEAPON_1H || weapon -> group() == WEAPON_SMALL )
+        trigger_brew( 1.5 * weapon -> swing_time.total_seconds() / 2.6 );
+      else
+        trigger_brew( 3.0 * weapon -> swing_time.total_seconds() / 3.6 );
     }
-  }
-
-
-  /* Trigger buff.elusive_brew_stacks with the correct #stacks calculated from weapon type & speed
-   */
-  void trigger_elusive_brew()
-  {
-    // Formula taken from http://www.wowhead.com/spell=128938  2013/04/15
-    double expected_stacks, low_chance;
-    int low, high;
-
-    // Calculate expected #stacks
-    if ( weapon -> group() == WEAPON_1H || weapon -> group() == WEAPON_SMALL )
-      expected_stacks = 1.5 * weapon -> swing_time.total_seconds() / 2.6;
-    else
-      expected_stacks = 3.0 * weapon -> swing_time.total_seconds() / 3.6;
-    expected_stacks = clamp( expected_stacks, 1.0, 3.0 );
-
-    // Low and High together need to achieve expected_stacks through rng
-    low = as<int>( util::floor( expected_stacks ) );
-    high = as<int>( util::ceil( expected_stacks ) );
-
-    // Solve low * low_chance + high * ( 1 - low_chance ) = expected_stacks
-    if ( high > low )
-      low_chance = ( high - expected_stacks ) / ( high - low );
-    else
-      low_chance = 0.0;
-    assert( low_chance >= 0.0 && low_chance <= 1.0 && "elusive brew proc chance out of bounds" );
-
-    // Proc Buff
-    if ( rng().roll( low_chance ) )
-      p() -> buff.elusive_brew_stacks -> trigger( low );
-    else
-      p() -> buff.elusive_brew_stacks -> trigger( high );
   }
 };
 
@@ -1893,30 +1851,11 @@ struct chi_brew_t : public monk_spell_t
     // Instantly restore 2 chi
     player -> resource_gain( RESOURCE_CHI, data().effectN( 1 ).base_value(), p() -> gain.chi_brew, this );
 
-	int chi_brew_secondary_stack = 0;
-	int chi_brew_secondary_proc = 0;
     // and generate x stacks of Brew
-    if ( p() -> spec.brewing_tigereye_brew -> ok() )
-	{
-		chi_brew_secondary_stack = p() -> find_spell( 145640 ) -> effectN( 1 ).base_value();
-		for (int i = 0; i <= chi_brew_secondary_stack; i++)
-		{
-			chi_brew_secondary_proc += (rng().roll( p() -> cache.mastery_value() ) ? 1 : 0);
-		}
-		p() -> buff.tigereye_brew -> trigger( chi_brew_secondary_stack + chi_brew_secondary_proc );
-	}
-    else if ( p() -> spec.brewing_mana_tea -> ok() )
-	{
-		chi_brew_secondary_stack = p() -> find_spell( 145640 ) -> effectN( 1 ).base_value();
-		for (int i = 0; i <= chi_brew_secondary_stack; i++)
-		{
-			chi_brew_secondary_proc += (rng().roll( p() -> cache.spell_crit() ) ? 1 : 0);
-		}
-		p() -> buff.tigereye_brew -> trigger( chi_brew_secondary_stack + chi_brew_secondary_proc );
-      p() -> buff.mana_tea -> trigger( chi_brew_secondary_stack + chi_brew_secondary_proc );
-	}
+    if ( p() -> spec.brewing_tigereye_brew -> ok() || p() -> spec.brewing_mana_tea -> ok() )
+	    trigger_brew( p() -> find_spell( 145640 ) -> effectN( 1 ).base_value() );
     else if ( p() -> spec.brewing_elusive_brew -> ok() )
-	  p() -> buff.elusive_brew_stacks -> trigger( p() -> find_spell( 145640 ) -> effectN( 2 ).base_value() );
+	    trigger_brew( p() -> find_spell( 145640 ) -> effectN( 2 ).base_value() );
   }
 };
 
