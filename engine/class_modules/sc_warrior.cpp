@@ -3632,7 +3632,7 @@ void warrior_t::init_actions()
     action_list_str += include_default_on_use_items( *this, "synapse_springs_mark_ii,synapse_springs_2" );
 
     action_list_str += init_use_profession_actions();
-    action_list_str += init_use_racial_actions( ",if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)" );
+    action_list_str += init_use_racial_actions( ",if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up" );
 
     // bool smf =  ( main_hand_weapon.group() == WEAPON_1H && off_hand_weapon.group() == WEAPON_1H );
 
