@@ -4558,21 +4558,27 @@ void paladin_t::generate_action_prio_list_ret()
   def -> add_action( this, "Hammer of Wrath" );
   def -> add_action( "wait,sec=cooldown.hammer_of_wrath.remains,if=cooldown.hammer_of_wrath.remains>0&cooldown.hammer_of_wrath.remains<=0.2" );
     
-  // Divine Storm with 4T16 
-  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react" );
+  // Divine Storm with 4T16 & AW
+  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react&buff.avenging_wrath.up" );
+  
+  // Templar's Verdict if AW is up
+  def -> add_action( this, "Templar's Verdict", "if=buff.avenging_wrath.up");
 
-  // Everything Else
+  // HotR/CS > Mexo > J
   def -> add_action( this, "Hammer of the Righteous", "if=active_enemies>=4" );
   def -> add_action( this, "Crusader Strike" );
   def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.2" );
   def -> add_action( this, "Exorcism", "if=active_enemies>=2&active_enemies<=4&set_bonus.tier15_2pc_melee&glyph.mass_exorcism.enabled" );
-  def -> add_action( this, "Templar's Verdict", "if=buff.avenging_wrath.up");
   def -> add_action( this, "Judgment" );
   def -> add_action( "wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.2" );
+
+  // Divine Storm with 4T16 
+  def -> add_action( this, "Divine Storm", "if=buff.divine_crusader.react" );
 
   // Templar's Verdict w/ Divine Purpose
   def -> add_action( this, "Templar's Verdict", "if=buff.divine_purpose.react" );
 
+  // Exo > TV4T15 > DS > TV > HPr
   def -> add_action( this, "Exorcism" );
   def -> add_action( "wait,sec=cooldown.exorcism.remains,if=cooldown.exorcism.remains>0&cooldown.exorcism.remains<=0.2" );
   def -> add_action( this, "Templar's Verdict", "if=buff.tier15_4pc_melee.up&active_enemies<4" );
