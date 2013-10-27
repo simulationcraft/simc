@@ -54,38 +54,38 @@ actions+=/dispatch,if=combo_points<5
 actions+=/mutilate
 actions+=/tricks_of_the_trade
 
-head=hood_of_blackened_tears,id=105409,upgrade=2,gems=capacitive_primal_80agi_160crit_180agi,reforge=haste_hit
-neck=gleaming_eye_of_the_devilsaur,id=105602,reforge=haste_hit
-shoulders=spaulders_of_the_barbed_assassin,id=99350,upgrade=2,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=haste_crit
-back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180crit,reforge=haste_hit
-chest=tunic_of_the_barbed_assassin,id=99356,upgrade=2,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=haste_crit
-wrists=laser_burn_bracers,id=105505,upgrade=2,gems=160agi,enchant=180agi,reforge=exp_mastery
-hands=gloves_of_the_barbed_assassin,id=99355,upgrade=2,gems=160agi_160agi_160agi_120agi,enchant=170exp,addon=synapse_springs_2,reforge=haste_crit
-waist=cord_of_black_dreams,id=105635,upgrade=2,gems=160agi_80agi_160crit_160agi_120agi,reforge=haste_mastery
-legs=legguards_of_the_barbed_assassin,id=99349,upgrade=2,gems=80agi_160crit_80agi_160crit_120agi,enchant=285agi_165crit,reforge=haste_hit
-feet=unrepentant_heels,id=105484,upgrade=2,gems=80agi_160crit_60mastery,enchant=140agi,reforge=exp_hit
-finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=160agi_60crit,reforge=haste_crit
-finger2=ring_of_restless_energy,id=105558,upgrade=2,gems=160agi_60crit
+head=helmet_of_the_barbed_assassin,id=99348,upgrade=2,gems=capacitive_primal_160agi_180agi,reforge=mastery_hit
+neck=immerseus_crystalline_eye,id=105407,upgrade=2,reforge=mastery_exp
+shoulders=spaulders_of_the_barbed_assassin,id=99350,upgrade=2,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=exp_hit
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180hit,reforge=mastery_exp
+chest=tunic_of_the_barbed_assassin,id=99356,upgrade=2,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_crit
+wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,gems=160agi,enchant=180agi,reforge=mastery_hit
+hands=gloves_of_the_barbed_assassin,id=99355,upgrade=2,gems=160agi_160agi_160agi_120agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=mastery_crit
+waist=cord_of_black_dreams,id=105635,upgrade=2,gems=160agi_80agi_160haste_160agi_120agi
+legs=rious_vigilant_leggings,id=105529,upgrade=2,gems=80agi_160hit_80agi_160hit_120agi,enchant=285agi_165crit,reforge=crit_haste
+feet=pandaren_roofsprinters,id=105582,upgrade=2,gems=80agi_160hit_60mastery,enchant=140agi,reforge=mastery_hit
+finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=160agi_60crit,reforge=mastery_crit
+finger2=swift_serpent_signet,id=105483,upgrade=2,gems=80agi_160haste_60crit,reforge=mastery_haste
 trinket1=assurance_of_consequence,id=105472,upgrade=2
 trinket2=haromms_talisman,id=105527,upgrade=2
-main_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,enchant=dancing_steel,reforge=haste_crit
-off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,enchant=dancing_steel,reforge=haste_crit
+main_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,enchant=dancing_steel,reforge=mastery_crit
+off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,enchant=dancing_steel,reforge=mastery_exp
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=28815
-# gear_stamina=38411
+# gear_agility=28921
+# gear_stamina=38571
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2526
-# gear_hit_rating=2546
-# gear_crit_rating=13761
-# gear_haste_rating=7549
-# gear_mastery_rating=7922
-# gear_armor=22615
+# gear_expertise_rating=2551
+# gear_hit_rating=2551
+# gear_crit_rating=5799
+# gear_haste_rating=14924
+# gear_mastery_rating=8881
+# gear_armor=22619
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
-# hands=gloves_of_the_barbed_assassin,heroic=1,addon=synapse_springs_2
+# hands=gloves_of_the_barbed_assassin,heroic=1,addon=synapse_springs_mark_ii
 # main_hand=hvitserks_formidable_shanker,heroic=1,elite=1,weapon=dagger_1.80speed_8476min_15744max,enchant=dancing_steel
 # off_hand=hvitserks_formidable_shanker,heroic=1,elite=1,weapon=dagger_1.80speed_8476min_15744max,enchant=dancing_steel
