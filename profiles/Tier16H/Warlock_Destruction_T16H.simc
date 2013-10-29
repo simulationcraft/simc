@@ -2,7 +2,7 @@
 
 warlock="Warlock_Destruction_T16H"
 level=90
-race=orc
+race=troll
 role=spell
 position=back
 professions=Engineering=600/Tailoring=600
@@ -31,7 +31,7 @@ actions.precombat+=/jade_serpent_potion
 actions=curse_of_the_elements,if=debuff.magic_vulnerability.down
 actions+=/use_item,name=gloves_of_the_horned_nightmare
 actions+=/jade_serpent_potion,if=buff.bloodlust.react|target.health.pct<=20
-actions+=/blood_fury
+actions+=/berserking
 actions+=/dark_soul,if=!talent.archimondes_darkness.enabled|(talent.archimondes_darkness.enabled&(charges=2|trinket.proc.intellect.react|trinket.stacking_proc.intellect.react|target.health.pct<=10))
 actions+=/service_pet,if=talent.grimoire_of_service.enabled
 actions+=/run_action_list,name=aoe,if=active_enemies>3

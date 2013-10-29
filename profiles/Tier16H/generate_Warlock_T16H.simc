@@ -64,7 +64,7 @@ save=Warlock_Demonology_T16H.simc
 
 warlock=Warlock_Destruction_T16H
 level=90
-race=orc
+race=troll
 role=spell
 spec=destruction
 professions=Engineering=600/Tailoring=600
