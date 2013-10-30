@@ -3129,7 +3129,7 @@ void rogue_t::init_actions()
     if ( level >= 87 ) vanish_expr += "&!buff.shadow_blades.up";
     def -> add_action( this, "Vanish", vanish_expr );
 
-    def -> add_action( this, "Ambush" );
+    def -> add_action( this, "Mutilate", "if=buff.stealth.up" );
     def -> add_action( this, "Shadow Blades", "if=buff.bloodlust.react|time>60" );
     def -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<2" );
 

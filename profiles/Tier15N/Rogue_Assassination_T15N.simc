@@ -37,7 +37,7 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent,if=energy<60
 actions+=/vanish,if=time>10&!buff.stealth.up&!buff.shadow_blades.up
-actions+=/ambush
+actions+=/mutilate,if=buff.stealth.up
 actions+=/shadow_blades,if=buff.bloodlust.react|time>60
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
 actions+=/dispatch,if=dot.rupture.ticks_remain<2&energy>90
