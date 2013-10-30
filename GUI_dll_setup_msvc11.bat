@@ -6,10 +6,10 @@
 :: It can be found at: http://qt.nokia.com/downloads
 :: If you build SimC with MSVC 2008, then you need to use dlls from Qt-Framework
 :: As of this writing, the default locations from which to gather the dlls are:
-:: Qt-Framework: C:\Qt\Qt5.1.0\
+:: Qt-Framework: C:\Qt\Qt5.1.1\
 
 :: Update the qt_dir as necessary
-set qt_dir=C:\Qt\Qt5.1.0\5.1.0\msvc2012_64
+set qt_dir=C:\Qt\Qt5.1.1\5.1.1\msvc2012_64
 
 :: IMPORTANT NOTE FOR DEBUGGING
 :: This script will ONLY copy the optimized Qt dlls
