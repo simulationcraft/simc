@@ -3976,13 +3976,14 @@ void hunter_t::init_actions()
     {
         // BEAST MASTERY
       case HUNTER_BEAST_MASTERY:
-        action_list_str += "/focus_fire,five_stacks=1";
+        action_list_str += "/focus_fire,five_stacks=1,if=!ticking&!buff.beast_within.up";
         action_list_str += "/serpent_sting,if=!ticking";
 
         action_list_str += init_use_racial_actions();
         action_list_str += "/fervor,if=enabled&!ticking&focus<=65";
         action_list_str += "/bestial_wrath,if=focus>60&!buff.beast_within.up";
         action_list_str += "/multi_shot,if=active_enemies>5|(active_enemies>1&buff.beast_cleave.down)";
+		action_list_str += "/cobra_shot,if=active_enemies>5";
         action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
 
         if ( level >= 87 )
@@ -3996,10 +3997,10 @@ void hunter_t::init_actions()
         action_list_str += "/dire_beast,if=enabled&focus<=90";
         action_list_str += "/barrage,if=enabled";
         action_list_str += "/powershot,if=enabled";
-        action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
-        action_list_str += "/focus_fire,five_stacks=1,if=!ticking&!buff.beast_within.up";
+        action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react|buff.beast_within.up";
+        action_list_str += "/focus_fire,five_stacks=1";
         action_list_str += "/cobra_shot,if=dot.serpent_sting.remains<6";
-        action_list_str += "/arcane_shot,if=focus>=61|buff.beast_within.up";
+        action_list_str += "/arcane_shot,if=focus>=61";
 
         if ( level >= 81 )
           action_list_str += "/cobra_shot";
