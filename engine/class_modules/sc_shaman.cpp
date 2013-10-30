@@ -3626,8 +3626,6 @@ struct shamanistic_rage_t : public shaman_spell_t
   shamanistic_rage_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( "Shamanistic Rage" ), options_str )
   {
-    check_spec( SHAMAN_ENHANCEMENT );
-
     harmful   = false;
   }
 
