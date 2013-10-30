@@ -5430,7 +5430,8 @@ void shaman_t::create_buffs()
   buff.lightning_shield        = buff_creator_t( this, "lightning_shield", find_class_spell( "Lightning Shield" ) )
                                  .max_stack( ( specialization() == SHAMAN_ELEMENTAL )
                                              ? static_cast< int >( spec.rolling_thunder -> effectN( 1 ).base_value() )
-                                             : find_class_spell( "Lightning Shield" ) -> initial_stacks() );
+                                             : find_class_spell( "Lightning Shield" ) -> initial_stacks() )
+                                 .cd( timespan_t::zero() );
   buff.maelstrom_weapon        = buff_creator_t( this, "maelstrom_weapon",  spec.maelstrom_weapon -> effectN( 1 ).trigger() )
                                  .chance( spec.maelstrom_weapon -> proc_chance() )
                                  .activated( false );
