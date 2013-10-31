@@ -33,18 +33,20 @@ CXX        = g++
 CPP_FLAGS  = -Wall -Woverloaded-virtual -W -I.
 OPTS       = -O3
 
-ifeq (${CXX},g++)
+# Include build setting from user configuration file
+-include ../build.conf
+
 # Force on SSE2 to avoid problems with older GCC versions
+ifeq (${CXX},g++)
 OPTS += -msse2 -mfpmath=sse
 endif
 
-ifeq (${CXX},clang++)
-# Force use of old libstdc++ so paths to tr/* work
+# Force use of old libstdc++ on OS X + Clang so paths to tr/* work
+ifeq (${FLAVOR},Darwin)
+ifneq ($(findstring clang,$(shell ${CXX} -v 2>&1)),)
 OPTS += -stdlib=libstdc++
 endif
-
-# Include build setting from user configuration file
--include ../build.conf
+endif
 
 ifneq (${NO_DEBUG},)
   CPP_FLAGS += -DNDEBUG
