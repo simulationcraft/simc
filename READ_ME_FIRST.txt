@@ -73,7 +73,7 @@ then simply be invoked directly via #! magic.
 What about a Graphic User Interface?
 
 There is a basic GUI built using Qt that is now being bundled with the CLI version.
-If you associate the .simc extension with the simcqt.exe executable you will be able to 
+If you associate the .simc extension with the simulationcraft.exe executable you will be able to 
 simply double-click your config files.  Alternatively, you can simply drag-and-drop a 
 config file on top of SimulationCraft.exe.  It will load the config and allow you to set up 
 different options, such as calculating scale factors, after which you press "Simulate!" 
@@ -82,9 +82,9 @@ to start it running.
 In order to run this on Windows, you may have to install OpenSSL.  The OpenSSL installer was
 included in the zip download: Win32OpenSSL_Light-*.exe
 
-If you get an error of "MSVCP100.dll is not found." Please install VC++ redistributable package from Microsoft.
+If you get an error of "MSVCP110.dll is not found." Please install VC++ redistributable package from Microsoft.
 http://www.microsoft.com/download/en/details.aspx?displaylang=en&id=5555
-MSVCP100.dll should be linked automatically when building the GUI, but in certain cases it silently fails.
+MSVCP110.dll should be linked automatically when building the GUI, but in certain cases it silently fails.
 
 =============================================================================================
 
