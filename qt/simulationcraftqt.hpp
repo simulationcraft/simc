@@ -244,12 +244,34 @@ enum result_tabs_e
   TAB_CSV
 };
 
-class SC_ResultTab : public SC_enumeratedTab<result_tabs_e>
+class SC_ResultTab : public QTabWidget
 {
   Q_OBJECT
   SC_MainWindow* mainWindow;
 public:
-  SC_ResultTab( SC_MainWindow* mw, QWidget* parent = 0 ) :
+  SC_ResultTab( SC_MainWindow* );
+public slots:
+  void TabCloseRequest( int index )
+  {
+    assert( index < count() );
+    if ( count() > 0 )
+    {
+      int confirm = QMessageBox::question( this, tr( "Close Results Tab" ), tr( "Do you really want to close these results?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes );
+      if ( confirm == QMessageBox::Yes )
+      {
+        setCurrentIndex( index - 1 );
+        removeTab( index );
+      }
+    }
+  }
+};
+
+class SC_SingleResultTab : public SC_enumeratedTab<result_tabs_e>
+{
+  Q_OBJECT
+  SC_MainWindow* mainWindow;
+public:
+  SC_SingleResultTab( SC_MainWindow* mw, QWidget* parent = 0 ) :
     SC_enumeratedTab<result_tabs_e>( parent ),
     mainWindow( mw )
   {
@@ -261,7 +283,6 @@ public:
 
 public slots:
   void TabChanged( int index );
-
 };
 
 // ============================================================================
@@ -311,9 +332,10 @@ public:
 
   }
 
-  static void format_document( SC_TextEdit* s )
+  static void format_document( SC_TextEdit* /*s*/ )
   {
-    QTextDocument* d = s -> document();
+    // Causes visual disappearance of text. Deactivated for now.
+    /*QTextDocument* d = s -> document();
     QTextBlock b = d -> begin();
     QRegExp comment_rx( "^\\s*\\#" );
     QTextCharFormat* comment_format = new QTextCharFormat();
@@ -327,7 +349,7 @@ public:
         c.setCharFormat( *comment_format );
       }
       b = b.next();
-    }
+    }*/
   }
 
   int add_Text( const QString& text, const QString& tab_name )
@@ -359,7 +381,7 @@ public:
     current_s -> append( text );
     format_document( current_s );
   }
-private slots:
+public slots:
   void TabCloseRequest( int index )
   {
     if ( count() > 2 && index != (count() - 1) )
@@ -401,7 +423,7 @@ public:
   SC_OptionsTab* optionsTab;
   SC_ImportTab* importTab;
   SC_SimulateTab* simulateTab;
-  QTabWidget* resultsTab;
+  SC_ResultTab* resultsTab;
   QTabWidget* createCustomProfileDock;
 #ifdef SC_PAPERDOLL
   QTabWidget* paperdollTab;

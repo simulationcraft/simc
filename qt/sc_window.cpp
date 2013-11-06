@@ -642,7 +642,7 @@ void SC_MainWindow::createHelpTab()
 void SC_MainWindow::createResultsTab()
 {
 
-  resultsTab = new QTabWidget();
+  resultsTab = new SC_ResultTab( this );
   resultsTab -> setTabsClosable( true );
   connect( resultsTab, SIGNAL( currentChanged( int ) ),    this, SLOT( resultsTabChanged( int ) )      );
   connect( resultsTab, SIGNAL( tabCloseRequested( int ) ), this, SLOT( resultsTabCloseRequest( int ) ) );
@@ -946,7 +946,7 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
   else
   {
     QString resultsName = QString( "Results %1" ).arg( ++simResults );
-    SC_ResultTab* resultsEntry = new SC_ResultTab( this, resultsTab );
+    SC_SingleResultTab* resultsEntry = new SC_SingleResultTab( this, resultsTab );
     resultsTab -> addTab( resultsEntry, resultsName );
     resultsTab -> setCurrentWidget( resultsEntry );
 
@@ -958,7 +958,6 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
     {
       resultsHtmlView -> store_html( QString::fromUtf8( html_file.readAll() ) );
       resultsHtmlView -> loadHtml();
-      resultsHtmlView->setFocus();
       html_file.close();
     }
 
@@ -1007,6 +1006,8 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
 
   }
   deleteSim( sim ); SC_MainWindow::sim = 0;
+
+  cmdLine -> setFocus();
 }
 
 #ifdef SC_PAPERDOLL
@@ -1046,7 +1047,7 @@ void SC_MainWindow::saveResults()
   int index = resultsTab -> currentIndex();
   if ( index < 0 ) return;
 
-  SC_ResultTab* t = debug_cast<SC_ResultTab*>( resultsTab -> currentWidget() );
+  SC_SingleResultTab* t = debug_cast<SC_SingleResultTab*>( resultsTab -> currentWidget() );
   t -> save_result();
 }
 
@@ -1266,7 +1267,7 @@ void SC_MainWindow::resultsTabChanged( int index )
 {
   if ( resultsTab -> count() > 0 )
   {
-    SC_ResultTab* s = static_cast<SC_ResultTab*>( resultsTab -> currentWidget() );
+    SC_SingleResultTab* s = static_cast<SC_SingleResultTab*>( resultsTab -> currentWidget() );
     s -> TabChanged( s -> currentIndex() );
   }
 }
@@ -1368,29 +1369,56 @@ void SimulateThread::run()
 // SC_CommandLine
 // ============================================================================
 
+void change_tab( QTabWidget* tabwidget, int key )
+{
+  int new_index = tabwidget -> currentIndex();
+
+  if ( key == Qt::Key_Up or key == Qt::Key_Right )
+  {
+  if ( tabwidget -> count() - new_index > 1 )
+    tabwidget -> setCurrentIndex( new_index + 1 );
+  }
+  else if ( key == Qt::Key_Down or key == Qt::Key_Left )
+  {
+    if ( new_index > 0 )
+      tabwidget -> setCurrentIndex( new_index - 1 );
+  }
+}
+
 void SC_CommandLine::keyPressEvent( QKeyEvent* e )
 {
   int k = e -> key();
-  if ( k == Qt::Key_Up )
+  if ( k == Qt::Key_Up or k == Qt::Key_Down or k == Qt::Key_Left or k == Qt::Key_Right )
+  {
+    switch ( mainWindow -> mainTab -> currentTab() )
+    {
+    case TAB_SIMULATE:
+      change_tab( mainWindow -> simulateTab, k );
+      break;
+    case TAB_RESULTS:
+      change_tab( mainWindow -> resultsTab, k );
+      break;
+    case TAB_IMPORT:
+      change_tab( mainWindow -> importTab, k );
+      break;
+    default: break;
+    }
+  }
+  if ( k == Qt::Key_Delete )
   {
     switch ( mainWindow -> mainTab -> currentTab() )
     {
     case TAB_SIMULATE:
     {
-      int new_index = mainWindow -> simulateTab -> currentIndex();
-      if ( mainWindow -> simulateTab -> count() - new_index > 1 )
-        new_index++;
-      mainWindow -> simulateTab -> setCurrentIndex( new_index );
+      mainWindow -> simulateTab -> TabCloseRequest( mainWindow -> simulateTab -> currentIndex() );
     }
       break;
-      default: break;
-    }
-  }
-  if ( k == Qt::Key_Down )
-  {
-    switch ( mainWindow -> mainTab -> currentTab() )
+    case TAB_RESULTS:
     {
-      default: break;
+      mainWindow -> resultsTab -> TabCloseRequest( mainWindow -> resultsTab -> currentIndex() );
+    }
+      break;
+    default: break;
     }
   }
   QLineEdit::keyPressEvent( e );
@@ -1472,7 +1500,7 @@ void PersistentCookieJar::load()
   }
 }
 
-void SC_ResultTab::save_result()
+void SC_SingleResultTab::save_result()
 {
   QString destination;
   QString extension;
@@ -1540,9 +1568,15 @@ void SC_ResultTab::save_result()
   }
 }
 
-void SC_ResultTab::TabChanged( int index )
+void SC_SingleResultTab::TabChanged( int index )
 {
 
+}
+
+SC_ResultTab::SC_ResultTab( SC_MainWindow* mw ) :
+  QTabWidget( mw ),
+  mainWindow( mw )
+{
 }
 
 #ifdef SC_PAPERDOLL
