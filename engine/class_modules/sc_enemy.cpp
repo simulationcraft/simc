@@ -978,7 +978,7 @@ void enemy_t::demise()
 {
   if ( this == sim -> target )
   {
-    if ( sim -> current_iteration  != 0 )
+    if ( sim -> current_iteration != 0 || sim -> overrides.target_health > 0 )
       // For the main target, end simulation on death.
       sim -> iteration_canceled = 1;
   }
