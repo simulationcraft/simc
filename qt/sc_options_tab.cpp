@@ -237,9 +237,6 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow( tr(  "Default Role" ),   choice.default_role = createChoice( 4, "auto", "dps", "heal", "tank" ) );
   globalsLayout_left -> addRow( tr( "TMI Standard Boss" ),   choice.tmi_boss = createChoice( 8, "custom", "T17Q", "T16H25", "T16H10", "T16N25", "T16N10", "T15H25", "T15N25", "T15LFR" ) );
   globalsLayout_left -> addRow( tr( "Actor-only TMI" ), choice.tmi_actor_only = createChoice( 2, "Disabled", "Enabled" ) );
-  choice.iterations -> setCurrentIndex( 1 );
-  choice.fight_length -> setCurrentIndex( 7 );
-  choice.fight_variance -> setCurrentIndex( 2 );
 
   QGroupBox* globalsGroupBox_left = new QGroupBox( tr( "Basic Options" ) );
   globalsGroupBox_left -> setLayout( globalsLayout_left );
@@ -257,10 +254,7 @@ void SC_OptionsTab::createGlobalsTab()
   QPushButton* resetb = new QPushButton( tr("Reset all Settings"), this );
   connect( resetb, SIGNAL(clicked()), this, SLOT(_resetallSettings()) );
   globalsLayout_right -> addWidget( resetb );
-  choice.aura_delay -> setCurrentIndex( 1 );
-  choice.report_pets -> setCurrentIndex( 1 );
-  choice.statistics_level -> setCurrentIndex( 1 );
-  choice.deterministic_rng -> setCurrentIndex( 1 );
+
 
   createItemDataSourceSelector( globalsLayout_right );
 
@@ -288,7 +282,6 @@ void SC_OptionsTab::createBuffsDebuffsTab()
   {
     QCheckBox* checkBox = new QCheckBox( buffOptions[ i ].label );
 
-    if ( i > 0 ) checkBox -> setChecked( true );
     checkBox -> setToolTip( buffOptions[ i ].tooltip );
     buffsButtonGroup -> addButton( checkBox );
     buffsLayout -> addWidget( checkBox );
@@ -306,7 +299,6 @@ void SC_OptionsTab::createBuffsDebuffsTab()
   {
     QCheckBox* checkBox = new QCheckBox( debuffOptions[ i ].label );
 
-    if ( i > 0 ) checkBox -> setChecked( true );
     checkBox -> setToolTip( debuffOptions[ i ].tooltip );
     debuffsButtonGroup -> addButton( checkBox );
     debuffsLayout -> addWidget( checkBox );
@@ -350,8 +342,6 @@ void SC_OptionsTab::createScalingTab()
   scalingLayout2 -> addRow( tr( "Center Scale Delta" ),  choice.center_scale_delta = createChoice( 2, "Yes", "No" ) );
   scalingLayout2 -> addRow( tr( "Scale Over" ),  choice.scale_over = createChoice( 8, "default", "dps", "hps", "dtps", "htps", "raid_dps", "raid_hps", "tmi" ) );
 
-  choice.center_scale_delta -> setCurrentIndex( 1 );
-
   scalingLayout -> addLayout( scalingLayout2 );
 
   addTab( scalingGroupBox, tr ( "Scaling" ) );
@@ -367,7 +357,6 @@ void SC_OptionsTab::createPlotsTab()
   plotsLayout -> addRow( tr( "Number of Plot Points" ), choice.plots_points );
 
   choice.plots_step = createChoice( 6, "25", "50", "100", "200", "250", "500" );
-  choice.plots_step -> setCurrentIndex( 2 );
   plotsLayout -> addRow( tr( "Plot Step Amount" ), choice.plots_step );
 
   plotsButtonGroup = new QButtonGroup();
@@ -392,11 +381,9 @@ void SC_OptionsTab::createReforgePlotsTab()
 
   // Create Combo Boxes
   choice.reforgeplot_amount = createChoice( 10, "100", "200", "250", "500", "750", "1000", "1500", "2000", "3000", "5000" );
-  choice.reforgeplot_amount -> setCurrentIndex( 1 );
   reforgePlotsLayout -> addRow( tr( "Reforge Amount" ), choice.reforgeplot_amount );
 
   choice.reforgeplot_step = createChoice( 6, "25", "50", "100", "200", "250", "500" );
-  choice.reforgeplot_step -> setCurrentIndex( 1 );
   reforgePlotsLayout -> addRow( tr( "Step Amount" ), choice.reforgeplot_step );
 
   QLabel* messageText = new QLabel( tr( "A maximum of three stats may be ran at once.\n" ) );
@@ -436,15 +423,29 @@ void SC_OptionsTab::createReforgePlotsTab()
   addTab( reforgeplotsGroupBox, tr( "Reforge Plots" ) );
 }
 
-// Decode all options/setting from a string ( loaded from the history ).
-// Decode / Encode order needs to be equal!
+/* Decode all options/setting from a string ( loaded from the history ).
+ * Decode / Encode order needs to be equal!
+ *
+ * If no default_value is specified, index 0 is used as default.
+ */
 
-void load_setting( QSettings& s, const QString& name, QComboBox* choice )
+void load_setting( QSettings& s, const QString& name, QComboBox* choice, const QString& default_value = QString() )
 {
   const QString& v = s.value( name ).toString();
+
   int index = choice -> findText( v );
   if ( index != -1 )
     choice -> setCurrentIndex( index );
+  else if ( !default_value.isEmpty() )
+  {
+    int default_index = choice -> findText( default_value );
+    if ( default_index != -1 )
+      choice -> setCurrentIndex( default_index );
+  }
+  else
+  {
+    choice -> setCurrentIndex( 0 );
+  }
 }
 
 void load_button_group( QSettings& s, const QString& groupname, QButtonGroup* bg )
@@ -467,14 +468,56 @@ void load_button_group( QSettings& s, const QString& groupname, QButtonGroup* bg
   s.endGroup();
 }
 
+void load_buff_debuff_group( QSettings& s, const QString& groupname, QButtonGroup* bg )
+{
+
+  s.beginGroup( groupname );
+  QStringList keys = s.childKeys();
+  s.endGroup();
+  if ( keys.isEmpty() )
+  {
+    QList<QAbstractButton*> buttons = bg->buttons();
+    for ( int i = 0; i < buttons.size(); ++i )
+    {
+      // All buttons with index > 0 will be checked, 0 won't.
+      buttons[i] -> setChecked( (i > 0) );
+    }
+  }
+  else
+  {
+    load_button_group( s, groupname, bg );
+  }
+}
+
+void load_scaling_groups( QSettings& s, const QString& groupname, QButtonGroup* bg )
+{
+
+  s.beginGroup( groupname );
+  QStringList keys = s.childKeys();
+  s.endGroup();
+  if ( keys.isEmpty() )
+  {
+    QList<QAbstractButton*> buttons = bg->buttons();
+    for ( int i = 0; i < buttons.size(); ++i )
+    {
+      // All buttons unchecked.
+      buttons[i] -> setChecked( false );
+    }
+  }
+  else
+  {
+    load_button_group( s, groupname, bg );
+  }
+}
+
 void SC_OptionsTab::decodeOptions()
 {
   QSettings settings;
   settings.beginGroup( "options" );
   load_setting( settings, "version", choice.iterations );
-  load_setting( settings, "iterations", choice.iterations );
-  load_setting( settings, "fight_length", choice.fight_length );
-  load_setting( settings, "fight_variance", choice.fight_variance );
+  load_setting( settings, "iterations", choice.iterations, "1000" );
+  load_setting( settings, "fight_length", choice.fight_length, "450" );
+  load_setting( settings, "fight_variance", choice.fight_variance, "20%" );
   load_setting( settings, "fight_style", choice.fight_style );
   load_setting( settings, "target_race", choice.target_race );
   load_setting( settings, "num_target", choice.num_target );
@@ -487,32 +530,65 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "tmi_actor_only", choice.tmi_actor_only );
   load_setting( settings, "world_lag", choice.world_lag );
   load_setting( settings, "target_level", choice.target_level );
-  load_setting( settings, "aura_delay", choice.aura_delay );
-  load_setting( settings, "report_pets", choice.report_pets );
+  load_setting( settings, "aura_delay", choice.aura_delay, "500ms" );
+  load_setting( settings, "report_pets", choice.report_pets, "No" );
   load_setting( settings, "print_style", choice.print_style );
-  load_setting( settings, "statistics_level", choice.statistics_level );
-  load_setting( settings, "deterministic_rng", choice.deterministic_rng );
-  load_setting( settings, "center_scale_delta", choice.center_scale_delta );
-  load_setting( settings, "scale_over", choice.scale_over );
+  load_setting( settings, "statistics_level", choice.statistics_level, "1" );
+  load_setting( settings, "deterministic_rng", choice.deterministic_rng, "No" );
   load_setting( settings, "challenge_mode", choice.challenge_mode );
 
-  load_button_group( settings, "buff_buttons", buffsButtonGroup );
-  load_button_group( settings, "debuff_buttons", debuffsButtonGroup );
-  load_button_group( settings, "scaling_buttons", scalingButtonGroup );
-  load_button_group( settings, "plots_buttons", plotsButtonGroup );
-  load_button_group( settings, "reforgeplots_buttons", reforgeplotsButtonGroup );
-  QStringList item_db_order = settings.value( "item_db_order" ).toString().split( "/");
-  for( int i = 0; i < item_db_order.size(); ++i )
-  {
-    for( int k = 0; k < itemDbOrder->count(); ++k)
-    {
-      if ( ! item_db_order[ i ].compare( itemDbOrder -> item( k ) -> data( Qt::UserRole ).toString() ) )
-      {
-        itemDbOrder -> addItem( itemDbOrder -> takeItem( k ) );
-      }
-    }
 
+  load_setting( settings, "center_scale_delta", choice.center_scale_delta, "No" );
+  load_setting( settings, "scale_over", choice.scale_over );
+
+  load_setting( settings, "plot_points", choice.plots_points );
+  load_setting( settings, "plot_step", choice.plots_step, "100" );
+
+
+  load_setting( settings, "reforgeplot_amount", choice.reforgeplot_amount, "200" );
+  load_setting( settings, "reforgeplot_step", choice.reforgeplot_step, "50" );
+
+
+  load_buff_debuff_group( settings, "buff_buttons", buffsButtonGroup );
+  load_buff_debuff_group( settings, "debuff_buttons", debuffsButtonGroup );
+
+  // Default settings
+
+
+  load_scaling_groups( settings, "scaling_buttons", scalingButtonGroup );
+  load_scaling_groups( settings, "plots_buttons", plotsButtonGroup );
+  load_scaling_groups( settings, "reforgeplots_buttons", reforgeplotsButtonGroup );
+
+  QStringList item_db_order = settings.value( "item_db_order" ).toString().split( "/", QString::SkipEmptyParts );
+  if ( !item_db_order.empty() )
+  {
+    for( int i = 0; i < item_db_order.size(); ++i )
+    {
+      for( int k = 0; k < itemDbOrder->count(); ++k)
+      {
+        if ( ! item_db_order[ i ].compare( itemDbOrder -> item( k ) -> data( Qt::UserRole ).toString() ) )
+        {
+          itemDbOrder -> addItem( itemDbOrder -> takeItem( k ) );
+        }
+      }
+
+    }
   }
+  else
+  {
+    for ( unsigned i = 0; i < sizeof_array( itemSourceOptions ); ++i )
+    {
+      for( int k = 0; k < itemDbOrder->count(); ++k)
+      {
+        if ( ! QString(itemSourceOptions[ i ].option).compare( itemDbOrder -> item( k ) -> data( Qt::UserRole ).toString() ) )
+        {
+          itemDbOrder -> addItem( itemDbOrder -> takeItem( k ) );
+        }
+      }
+
+    }
+  }
+
   settings.endGroup();
 }
 
@@ -1005,7 +1081,6 @@ void SC_OptionsTab::_resetallSettings()
   int confirm = QMessageBox::question( this, tr( "Reset all Settings" ), tr( "Do you really want to reset all Settings to default?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes );
   if ( confirm == QMessageBox::Yes )
   {
-    qDebug() << "removing all settings";
     QSettings settings;
     settings.clear();
     decodeOptions();
