@@ -1373,12 +1373,12 @@ void change_tab( QTabWidget* tabwidget, int key )
 {
   int new_index = tabwidget -> currentIndex();
 
-  if ( key == Qt::Key_Up or key == Qt::Key_Right )
+  if ( key == Qt::Key_Up || key == Qt::Key_Right )
   {
   if ( tabwidget -> count() - new_index > 1 )
     tabwidget -> setCurrentIndex( new_index + 1 );
   }
-  else if ( key == Qt::Key_Down or key == Qt::Key_Left )
+  else if ( key == Qt::Key_Down || key == Qt::Key_Left )
   {
     if ( new_index > 0 )
       tabwidget -> setCurrentIndex( new_index - 1 );
@@ -1388,7 +1388,7 @@ void change_tab( QTabWidget* tabwidget, int key )
 void SC_CommandLine::keyPressEvent( QKeyEvent* e )
 {
   int k = e -> key();
-  if ( k == Qt::Key_Up or k == Qt::Key_Down or k == Qt::Key_Left or k == Qt::Key_Right )
+  if ( k == Qt::Key_Up || k == Qt::Key_Down || k == Qt::Key_Left || k == Qt::Key_Right )
   {
     switch ( mainWindow -> mainTab -> currentTab() )
     {
