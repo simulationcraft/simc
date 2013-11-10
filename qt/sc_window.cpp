@@ -1063,6 +1063,34 @@ void SC_MainWindow::closeEvent( QCloseEvent* e )
   e -> accept();
 }
 
+void SC_MainWindow::keyReleaseEvent( QKeyEvent* e )
+{
+  int k = e -> key();
+  Qt::KeyboardModifiers m = e -> modifiers();
+  switch ( k )
+  {
+  case Qt::Key_F5:
+  {
+    reloadButtonClicked();
+  }
+    break;
+  case Qt::Key_Left:
+  {
+    if ( m.testFlag( Qt::AltModifier ) == true )
+      backButtonClicked();
+  }
+    break;
+  case Qt::Key_Right:
+  {
+    if ( m.testFlag( Qt::AltModifier ) == true )
+      forwardButtonClicked();
+  }
+    break;
+    default: break;
+  }
+  QWidget::keyReleaseEvent( e );
+}
+
 void SC_MainWindow::cmdLineTextEdited( const QString& s )
 {
   switch ( mainTab -> currentTab() )
@@ -1176,6 +1204,15 @@ void SC_MainWindow::forwardButtonClicked( bool /* checked */ )
     {
     default: break;
     }
+  }
+}
+
+void SC_MainWindow::reloadButtonClicked( bool )
+{
+  if ( visibleWebView )
+  {
+    visibleWebView->reload();
+    visibleWebView->setFocus();
   }
 }
 

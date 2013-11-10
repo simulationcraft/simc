@@ -563,6 +563,7 @@ public:
 
 protected:
   virtual void closeEvent( QCloseEvent* );
+  virtual void keyReleaseEvent( QKeyEvent* );
 
 private slots:
   void importFinished();
@@ -578,6 +579,7 @@ private slots:
   void cmdLineTextEdited( const QString& );
   void backButtonClicked( bool checked = false );
   void forwardButtonClicked( bool checked = false );
+  void reloadButtonClicked( bool checked = false );
   void mainButtonClicked( bool checked = false );
   void mainTabChanged( int index );
   void importTabChanged( int index );
