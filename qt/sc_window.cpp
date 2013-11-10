@@ -947,6 +947,20 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
   {
     QString resultsName = QString( "Results %1" ).arg( ++simResults );
     SC_SingleResultTab* resultsEntry = new SC_SingleResultTab( this, resultsTab );
+    if ( resultsTab -> count() != 0 )
+    {
+      QList< Qt::KeyboardModifier > s;
+      s.push_back( Qt::ControlModifier );
+      QList< Qt::KeyboardModifier > emptyList;
+      if ( resultsTab -> count () == 1 )
+      {
+          SC_SingleResultTab* resultsEntry_one = static_cast < SC_SingleResultTab* >( resultsTab -> widget ( 0 ) );
+          resultsEntry_one -> addIgnoreKeyPressEvent( Qt::Key_Tab, s );
+          resultsEntry_one -> addIgnoreKeyPressEvent( Qt::Key_Backtab, emptyList );
+      }
+      resultsEntry -> addIgnoreKeyPressEvent( Qt::Key_Tab, s );
+      resultsEntry -> addIgnoreKeyPressEvent( Qt::Key_Backtab, emptyList );
+    }
     resultsTab -> addTab( resultsEntry, resultsName );
     resultsTab -> setCurrentWidget( resultsEntry );
 
@@ -1313,7 +1327,14 @@ void SC_MainWindow::resultsTabCloseRequest( int index )
 {
   int confirm = QMessageBox::question( this, tr( "Close Result Tab" ), tr( "Do you really want to close this result?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes );
   if ( confirm == QMessageBox::Yes )
+  {
     resultsTab -> removeTab( index );
+    if ( resultsTab -> count() == 1)
+    {
+        SC_SingleResultTab* tab = static_cast < SC_SingleResultTab* >( resultsTab -> widget ( 0 ) );
+        tab -> removeAllIgnoreKeyPressEvent();
+    }
+  }
 }
 
 void SC_MainWindow::historyDoubleClicked( QListWidgetItem* item )

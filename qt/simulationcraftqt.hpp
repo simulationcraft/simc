@@ -206,6 +206,7 @@ public slots:
 template <typename E>
 class SC_enumeratedTab : public QTabWidget
 {
+  QList< QPair< Qt::Key, QList< Qt::KeyboardModifier > > > ignoreKeys;
 public:
   SC_enumeratedTab( QWidget* parent = 0 ) :
     QTabWidget( parent )
@@ -218,6 +219,60 @@ public:
 
   void setCurrentTab( E t )
   { return setCurrentIndex( static_cast<int>( t ) ); }
+
+  void addIgnoreKeyPressEvent( Qt::Key k, QList< Qt::KeyboardModifier > s)
+  {
+    QPair< Qt::Key, QList<Qt::KeyboardModifier > > p(k, s);
+    if ( ! ignoreKeys.contains( p ) )
+      ignoreKeys.push_back(p);
+  }
+
+  bool removeIgnoreKeyPressEvent( Qt::Key k, QList< Qt::KeyboardModifier > s)
+  {
+    QPair< Qt::Key, QList<Qt::KeyboardModifier > > p(k, s);
+    return ignoreKeys.removeAll( p );
+  }
+
+  void removeAllIgnoreKeyPressEvent ( )
+  {
+    QList < QPair< Qt::Key, QList< Qt::KeyboardModifier > > > emptyList;
+    ignoreKeys = emptyList;
+  }
+
+protected:
+  virtual void keyPressEvent( QKeyEvent* e )
+  {
+    int k = e -> key();
+    Qt::KeyboardModifiers m = e -> modifiers();
+
+    QList< QPair< Qt::Key, QList<Qt::KeyboardModifier > > >::iterator i = ignoreKeys.begin();
+    for (; i != ignoreKeys.end(); ++i)
+    {
+      if ( (*i).first == k )
+      {
+        bool passModifiers = true;
+        QList< Qt::KeyboardModifier >::iterator j = (*i).second.begin();
+
+        for (; j != (*i).second.end(); ++j)
+        {
+          if ( m.testFlag( (*j) ) == false )
+          {
+            passModifiers = false;
+            break;
+          }
+        }
+
+        if ( passModifiers )
+        {
+          // key combination matches, send key to base classe's base
+          QWidget::keyPressEvent( e );
+          return;
+        }
+      }
+    }
+    // no key match
+    QTabWidget::keyPressEvent( e );
+  }
 };
 
 // ============================================================================
