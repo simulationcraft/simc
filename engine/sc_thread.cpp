@@ -24,6 +24,8 @@ class sc_thread_t::native_t
 public:
   void launch( sc_thread_t* thr ) { thr -> run(); }
   void join() {}
+  void set_priority( priority_e  ) {}
+  static void set_calling_thread_priority( priority_e ) {}
 
   static void sleep( timespan_t t )
   {
@@ -32,8 +34,6 @@ public:
       ;
   }
 
-  void set_priority( priority_e  )
-  { }
 };
 
 #elif defined( SC_WINDOWS )
@@ -72,22 +72,9 @@ int translate_thread_priority( sc_thread_t::priority_e prio )
   case sc_thread_t::LOWEST: return THREAD_PRIORITY_LOWEST;
   default: assert( false && "invalid thread priority" ); break;
   }
-  return 0;
+  return THREAD_PRIORITY_NORMAL;
 }
 
-int translate_process_priority( sc_thread_t::priority_e prio )
-{
-  switch ( prio )
-  {
-  case sc_thread_t::NORMAL: return NORMAL_PRIORITY_CLASS;
-  case sc_thread_t::ABOVE_NORMAL: return ABOVE_NORMAL_PRIORITY_CLASS;
-  case sc_thread_t::BELOW_NORMAL: return BELOW_NORMAL_PRIORITY_CLASS;
-  case sc_thread_t::HIGHEST: return HIGH_PRIORITY_CLASS;
-  case sc_thread_t::LOWEST: return BELOW_NORMAL_PRIORITY_CLASS;
-  default: assert( false && "invalid thread priority" ); break;
-  }
-  return 0;
-}
 } // unnamed namespace
 
 // sc_thread_t::native_t ====================================================
@@ -119,7 +106,7 @@ public:
   {
     if ( !SetThreadPriority( handle, translate_thread_priority( prio ) ) )
     {
-      std::cerr << "could not set priority.\n";
+      std::cerr << "could not set priority: " << GetLastError() << "\n";
     }
   }
 
@@ -127,7 +114,7 @@ public:
   {
     if( !SetThreadPriority( GetCurrentThread(), translate_thread_priority( prio ) ) )
     {
-      std::cerr << "could not set process priority.\n";
+      std::cerr << "could not set process priority: " << GetLastError() << "\n";
     }
   }
 
@@ -187,27 +174,40 @@ public:
 
   void join() { pthread_join( t, NULL ); }
 
-  void set_priority( priority_e prio )
+  static void set_thread_priority( pthread_t t, priority_e prio )
   {
-    // Normalize to 0 == NORMAL, then scale between -20 and 20.
-    int posix_prio = ( static_cast<int>( prio ) - static_cast<int>( sc_thread_t::NORMAL ) ) / 7.0 * 20.0;
+    pthread_attr_t attr;
+    int sched_policy;
+    if (pthread_getattr_np( t, &attr) != 0)
+    {
+      perror( "Could not get thread attributes");
+      return;
+    }
+    if (pthread_attr_getschedpolicy(&attr, &sched_policy) != 0)
+    {
+      perror( "Could not get schedule policy");
+      pthread_attr_destroy(&attr);
+      return;
+    }
+
+    // Translate our priority enum to posix priority values
+    int sched_min = sched_get_priority_min(sched_policy);
+    int posix_prio = static_cast<int>( prio ) / 7.0 * ( sched_get_priority_max(sched_policy) - sched_min );
+    posix_prio += sched_min;
+
     if ( pthread_setschedprio( t , posix_prio) != 0 )
     {
+      perror( "Could not set thread priority" );
 
-      perror( "Could not set thread priority." );
+      pthread_attr_destroy(&attr);
     }
   }
 
-  void set_calling_thread_priority( priority_e prio )
-  {
-    // Normalize to 0 == NORMAL, then scale between -20 and 20.
-    int posix_prio = ( static_cast<int>( prio ) - static_cast<int>( sc_thread_t::NORMAL ) ) / 7.0 * 20.0;
+  void set_priority( priority_e prio )
+  { set_thread_priority( t, prio ); }
 
-    if ( pthread_setschedprio( pthread_self(), posix_prio) != 0 )
-    {
-      perror( "Could not set process priority." );
-    }
-  }
+  static void set_calling_thread_priority( priority_e prio )
+  { set_thread_priority( pthread_self(), prio ); }
 
   static void sleep( timespan_t t )
   { ::sleep( ( unsigned int )t.total_seconds() ); }
