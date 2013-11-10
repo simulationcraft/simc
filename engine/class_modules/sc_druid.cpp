@@ -457,7 +457,7 @@ public:
   void              apl_balance();
   void              apl_guardian();
   void              apl_restoration();
-  virtual void      init_actions();
+  virtual void      init_action_list();
 
   target_specific_t<druid_td_t*> target_data;
 
@@ -856,11 +856,11 @@ struct symbiosis_feral_spirit_t : public pet_t
     melee = new melee_t( this );
   }
 
-  virtual void init_actions()
+  virtual void init_action_list()
   {
     action_list_str = "spirit_bite";
 
-    pet_t::init_actions();
+    pet_t::init_action_list();
   }
 
   action_t* create_action( const std::string& name,
@@ -1086,11 +1086,11 @@ struct force_of_nature_feral_t : public pet_t
     melee = new melee_t( this );
   }
 
-  virtual void init_actions()
+  virtual void init_action_list()
   {
     action_list_str = "rake";
 
-    pet_t::init_actions();
+    pet_t::init_action_list();
   }
   
   action_t* create_action( const std::string& name,
@@ -6899,11 +6899,11 @@ void druid_t::init_benefits()
 
 // druid_t::init_actions ====================================================
 
-void druid_t::init_actions()
+void druid_t::init_action_list()
 {
   if ( ! action_list_str.empty() )
   {
-    player_t::init_actions();
+    player_t::init_action_list();
     return;
   }
   clear_action_priority_lists();
@@ -6931,7 +6931,7 @@ void druid_t::init_actions()
 
   action_list_default = 1;
 
-  player_t::init_actions();
+  player_t::init_action_list();
 }
 
 // druid_t::reset ===========================================================

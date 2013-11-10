@@ -289,7 +289,7 @@ struct rogue_t : public player_t
   virtual void      init_procs();
   virtual void      init_scaling();
   virtual void      create_buffs();
-  virtual void      init_actions();
+  virtual void      init_action_list();
   virtual void      register_callbacks();
   virtual void      combat_begin();
   virtual void      reset();
@@ -3023,7 +3023,7 @@ double rogue_t::composite_player_multiplier( school_e school )
 
 // rogue_t::init_actions ====================================================
 
-void rogue_t::init_actions()
+void rogue_t::init_action_list()
 {
   if ( main_hand_weapon.type == WEAPON_NONE )
   {
@@ -3035,7 +3035,7 @@ void rogue_t::init_actions()
 
   if ( ! action_list_str.empty() )
   {
-    player_t::init_actions();
+    player_t::init_action_list();
     return;
   }
 
@@ -3287,7 +3287,7 @@ void rogue_t::init_actions()
 
   action_list_default = 1;
 
-  player_t::init_actions();
+  player_t::init_action_list();
 }
 
 // rogue_t::create_action  ==================================================

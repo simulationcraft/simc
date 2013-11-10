@@ -316,7 +316,7 @@ public:
   virtual void      assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* s );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   virtual void invalidate_cache( cache_e );
-  virtual void      init_actions();
+  virtual void      init_action_list();
   virtual expr_t*   create_expression( action_t* a, const std::string& name_str );
   virtual monk_td_t* get_target_data( player_t* target )
   {
@@ -507,12 +507,12 @@ public:
 
   monk_t* o() const { return static_cast<monk_t*>( owner ); }
 
-  virtual void init_actions()
+  virtual void init_action_list()
   {
     action_list_str = "auto_attack";
     action_list_str += "/crackling_tiger_lightning";
 
-    pet_t::init_actions();
+    pet_t::init_action_list();
   }
 
   action_t* create_action( const std::string& name,
@@ -3963,11 +3963,11 @@ void monk_t::apl_combat_mistweaver()
 
 // monk_t::init_actions =====================================================
 
-void monk_t::init_actions()
+void monk_t::init_action_list()
 {
   if ( ! action_list_str.empty() )
   {
-    player_t::init_actions();
+    player_t::init_action_list();
     return;
   }
   clear_action_priority_lists();
@@ -4007,7 +4007,7 @@ void monk_t::init_actions()
   }
   action_list_default = 1;
 
-  base_t::init_actions();
+  base_t::init_action_list();
 }
 
 double monk_t::stagger_pct()

@@ -277,7 +277,7 @@ public:
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_benefits();
-  virtual void      init_actions();
+  virtual void      init_action_list();
   virtual void      reset();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -577,7 +577,7 @@ struct mirror_image_pet_t : public pet_t
   mage_t* o() const
   { return static_cast<mage_t*>( owner ); }
 
-  virtual void init_actions()
+  virtual void init_action_list()
   {
     if ( o() -> glyphs.mirror_image -> ok() && o() -> specialization() != MAGE_FROST )
     {
@@ -595,7 +595,7 @@ struct mirror_image_pet_t : public pet_t
       action_list_str = "frostbolt";
     }
 
-    pet_t::init_actions();
+    pet_t::init_action_list();
   }
 
   virtual void create_buffs()
@@ -4175,7 +4175,7 @@ void mage_t::add_action( const spell_data_t* s, std::string options, std::string
 
 // mage_t::init_actions =====================================================
 
-void mage_t::init_actions()
+void mage_t::init_action_list()
 {
   if ( action_list_str.empty() )
   {
@@ -4537,7 +4537,7 @@ void mage_t::init_actions()
     action_list_default = 1;
   }
 
-  player_t::init_actions();
+  player_t::init_action_list();
 }
 
 // mage_t::mana_regen_per_second ============================================

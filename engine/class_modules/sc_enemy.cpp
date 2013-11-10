@@ -511,7 +511,7 @@ struct enemy_t : public player_t
   virtual void create_buffs();
   virtual void init_resources( bool force = false );
   virtual void init_target();
-  virtual void init_actions();
+  virtual void init_action_list();
   virtual void init_stats();
   virtual double resource_loss( resource_e, double, gain_t*, action_t* );
   virtual void create_options();
@@ -540,14 +540,14 @@ struct add_t : public pet_t
     level = default_level + 3;
   }
 
-  virtual void init_actions()
+  virtual void init_action_list()
   {
     if ( action_list_str.empty() )
     {
       action_list_str += "/snapshot_stats";
     }
 
-    pet_t::init_actions();
+    pet_t::init_action_list();
   }
 
   virtual resource_e primary_resource()
@@ -773,7 +773,7 @@ void enemy_t::init_target()
 
 // enemy_t::init_actions ====================================================
 
-void enemy_t::init_actions()
+void enemy_t::init_action_list()
 {
   if ( ! is_add() && is_enemy() )
   {
@@ -813,7 +813,7 @@ void enemy_t::init_actions()
       }
     }
   }
-  player_t::init_actions();
+  player_t::init_action_list();
 }
 
 /* Hack to get this executed after player_t::_init_actions.

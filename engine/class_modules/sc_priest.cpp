@@ -310,7 +310,7 @@ public:
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
   virtual void pre_analyze_hook() override;
   virtual void invalidate_cache( cache_e ) override;
-  virtual void      init_actions() override;
+  virtual void      init_action_list() override;
   virtual priest_td_t* get_target_data( player_t* target ) override;
 
   priest_td_t* find_target_data( player_t* target ) const;
@@ -446,7 +446,7 @@ struct base_fiend_pet_t : public priest_pet_t
 
   virtual double mana_return_percent() const = 0;
 
-  virtual void init_actions() override;
+  virtual void init_action_list() override;
 
   virtual void create_buffs() override
   {
@@ -756,7 +756,7 @@ struct lightwell_renew_t final : public heal_t
 // Pet Shadowfiend/Mindbender Base
 // ==========================================================================
 
-void base_fiend_pet_t::init_actions()
+void base_fiend_pet_t::init_action_list()
 {
   main_hand_attack = new actions::fiend_melee_t( *this );
 
@@ -767,7 +767,7 @@ void base_fiend_pet_t::init_actions()
     action_list_str += "/wait_for_shadowcrawl";
   }
 
-  priest_pet_t::init_actions();
+  priest_pet_t::init_action_list();
 }
 
 action_t* base_fiend_pet_t::create_action( const std::string& name,
@@ -5780,11 +5780,11 @@ priest_td_t* priest_t::get_target_data( player_t* target )
 
 // priest_t::init_actions ===================================================
 
-void priest_t::init_actions()
+void priest_t::init_action_list()
 {
   if ( ! action_list_str.empty() )
   {
-    player_t::init_actions();
+    player_t::init_action_list();
     return;
   }
   clear_action_priority_lists();
@@ -5815,7 +5815,7 @@ void priest_t::init_actions()
 
   action_list_default = 1;
 
-  base_t::init_actions();
+  base_t::init_action_list();
 }
 
 // priest_t::reset ==========================================================

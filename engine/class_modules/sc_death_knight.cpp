@@ -397,7 +397,7 @@ public:
 
   // Character Definition
   virtual void      init_spells();
-  virtual void      init_actions();
+  virtual void      init_action_list();
   virtual void      init_enchant();
   virtual void      init_rng();
   virtual void      init_base_stats();
@@ -5320,7 +5320,7 @@ void death_knight_t::default_apl_blood()
 
 // death_knight_t::init_actions =============================================
 
-void death_knight_t::init_actions()
+void death_knight_t::init_action_list()
 {
   if ( main_hand_weapon.type == WEAPON_NONE )
   {
@@ -5332,7 +5332,7 @@ void death_knight_t::init_actions()
 
   if ( ! action_list_str.empty() )
   {
-    player_t::init_actions();
+    player_t::init_action_list();
     return;
   }
 
@@ -5342,7 +5342,7 @@ void death_knight_t::init_actions()
   {
     default_apl_blood();
     action_list_default = 1;
-    player_t::init_actions();
+    player_t::init_action_list();
     return;
   }
 
@@ -5640,7 +5640,7 @@ void death_knight_t::init_actions()
 
   action_list_default = 1;
 
-  player_t::init_actions();
+  player_t::init_action_list();
 }
 
 // death_knight_t::init_enchant =============================================

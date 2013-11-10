@@ -269,7 +269,7 @@ public:
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_rng();
-  virtual void      init_actions();
+  virtual void      init_action_list();
   virtual void      combat_begin();
   virtual double    composite_player_multiplier( school_e school );
   virtual double    matching_gear_multiplier( attribute_e attr );
@@ -3516,7 +3516,7 @@ void warrior_t::init_rng()
 
 // warrior_t::init_actions ==================================================
 
-void warrior_t::init_actions()
+void warrior_t::init_action_list()
 {
   if ( main_hand_weapon.type == WEAPON_NONE )
   {
@@ -3812,7 +3812,7 @@ void warrior_t::init_actions()
     action_list_default = 1;
   }
 
-  player_t::init_actions();
+  player_t::init_action_list();
 }
 
 // warrior_t::combat_begin ==================================================

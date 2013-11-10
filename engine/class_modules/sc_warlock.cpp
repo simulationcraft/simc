@@ -285,7 +285,7 @@ public:
   virtual void      init_gains();
   virtual void      init_benefits();
   virtual void      init_procs();
-  virtual void      init_actions();
+  virtual void      init_action_list();
   virtual void      init_resources( bool force );
   virtual void      reset();
   virtual void      create_options();
@@ -404,7 +404,7 @@ struct warlock_pet_t : public pet_t
 
   warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
   virtual void init_base_stats();
-  virtual void init_actions();
+  virtual void init_action_list();
   virtual timespan_t available();
   virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(),
                                bool   waiting = false );
@@ -967,7 +967,7 @@ void warlock_pet_t::init_base_stats()
     base.attack_power_multiplier *= 1.0 + owner -> find_spell( 20575 ) -> effectN( 1 ).percent();
 }
 
-void warlock_pet_t::init_actions()
+void warlock_pet_t::init_action_list()
 {
   if ( special_action )
   {
@@ -977,7 +977,7 @@ void warlock_pet_t::init_actions()
       special_action -> action_list = "default";
   }
 
-  pet_t::init_actions();
+  pet_t::init_action_list();
 
   if ( summon_stats )
     for ( size_t i = 0; i < action_list.size(); ++i )
@@ -5049,7 +5049,7 @@ void warlock_t::init_procs()
   procs.wild_imp = get_proc( "wild_imp" );
 }
 
-void warlock_t::init_actions()
+void warlock_t::init_action_list()
 {
   if ( action_list_str.empty() )
   {
@@ -5315,7 +5315,7 @@ void warlock_t::init_actions()
     action_list_default = 1;
   }
 
-  player_t::init_actions();
+  player_t::init_action_list();
 }
 
 void warlock_t::init_resources( bool force )

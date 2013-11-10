@@ -4511,7 +4511,7 @@ public:
   virtual void init_unique_gear();
   virtual void init_enchant();
   virtual void init_scaling();
-  virtual void init_actions() {}
+  virtual void init_action_list() {}
   virtual void init_gains();
   virtual void init_procs();
   virtual void init_uptimes();

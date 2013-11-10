@@ -294,7 +294,7 @@ public:
   virtual void      init_procs();
   virtual void      init_rng();
   virtual void      init_scaling();
-  virtual void      init_actions();
+  virtual void      init_action_list();
   virtual void      combat_begin();
   virtual void      arise();
   virtual void      reset();
@@ -736,7 +736,7 @@ public:
     benefits.wild_hunt = get_benefit( "wild_hunt" );
   }
 
-  virtual void init_actions()
+  virtual void init_action_list()
   {
     if ( action_list_str.empty() )
     {
@@ -758,7 +758,7 @@ public:
       action_list_default = 1;
     }
 
-    base_t::init_actions();
+    base_t::init_action_list();
   }
 
   virtual double composite_attack_power_multiplier()
@@ -3924,7 +3924,7 @@ void hunter_t::init_scaling()
 
 // hunter_t::init_actions ===================================================
 
-void hunter_t::init_actions()
+void hunter_t::init_action_list()
 {
   if ( main_hand_weapon.group() != WEAPON_RANGED )
   {
@@ -4109,7 +4109,7 @@ void hunter_t::init_actions()
     action_list_default = 1;
   }
 
-  player_t::init_actions();
+  player_t::init_action_list();
 }
 
 // hunter_t::combat_begin ===================================================

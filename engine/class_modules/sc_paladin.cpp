@@ -309,7 +309,7 @@ public:
   virtual void      init_scaling();
   virtual void      create_buffs();
   virtual void      init_spells();
-  virtual void      init_actions();
+  virtual void      init_action_list();
   virtual void      reset();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual double    composite_attribute_multiplier( attribute_e attr );
@@ -4722,7 +4722,7 @@ void paladin_t::validate_action_priority_list()
 
 // paladin_t::init_actions ==================================================
 
-void paladin_t::init_actions()
+void paladin_t::init_action_list()
 {
   // sanity check - Holy not implemented yet
   if ( specialization() != PALADIN_RETRIBUTION && specialization() != PALADIN_PROTECTION )
@@ -4787,7 +4787,7 @@ void paladin_t::init_actions()
 
   validate_action_priority_list(); // this checks for conflicts and cleans up APL accordingly
 
-  player_t::init_actions();
+  player_t::init_action_list();
 }
 
 void paladin_t::init_spells()

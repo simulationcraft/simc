@@ -394,7 +394,7 @@ public:
   virtual void      create_buffs();
   virtual void      init_gains();
   virtual void      init_procs();
-  virtual void      init_actions();
+  virtual void      init_action_list();
   virtual void      moving();
   virtual void      invalidate_cache( cache_e c );
   virtual double    composite_melee_hit();
@@ -1037,11 +1037,11 @@ struct feral_spirit_pet_t : public pet_t
     melee = new melee_t( this );
   }
 
-  virtual void init_actions()
+  virtual void init_action_list()
   {
     action_list_str = "spirit_bite";
 
-    pet_t::init_actions();
+    pet_t::init_action_list();
   }
 
   action_t* create_action( const std::string& name,
@@ -1402,13 +1402,13 @@ struct fire_elemental_t : public pet_t
       owner_coeff.sp_from_sp *= 1.5 * 1.2;
   }
 
-  void init_actions()
+  void init_action_list()
   {
     action_list_str = "travel/auto_attack/fire_blast/fire_nova,if=active_enemies>=3";
     if ( type == PLAYER_PET )
       action_list_str += "/immolate,if=!ticking";
 
-    pet_t::init_actions();
+    pet_t::init_action_list();
   }
 
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
@@ -1478,11 +1478,11 @@ struct lightning_elemental_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  void init_actions()
+  void init_action_list()
   {
     action_list_str = "lightning_blast";
 
-    pet_t::init_actions();
+    pet_t::init_action_list();
   }
 
   resource_e primary_resource()
@@ -4494,9 +4494,9 @@ struct stormlash_totem_t : public shaman_totem_pet_t
     aggregate( 0 )
   { }
 
-  void init_actions()
+  void init_action_list()
   {
-    shaman_totem_pet_t::init_actions();
+    shaman_totem_pet_t::init_action_list();
 
     aggregate = new stormlash_aggregate_t( this );
   }
@@ -5546,7 +5546,7 @@ void shaman_t::init_procs()
 
 // shaman_t::init_actions ===================================================
 
-void shaman_t::init_actions()
+void shaman_t::init_action_list()
 {
   if ( ! ( primary_role() == ROLE_ATTACK && specialization() == SHAMAN_ENHANCEMENT ) &&
        ! ( primary_role() == ROLE_SPELL  && specialization() == SHAMAN_ELEMENTAL   ) )
@@ -5578,7 +5578,7 @@ void shaman_t::init_actions()
 
   if ( ! action_list_str.empty() )
   {
-    player_t::init_actions();
+    player_t::init_action_list();
     return;
   }
 
@@ -5873,7 +5873,7 @@ void shaman_t::init_actions()
 
   action_list_default = 1;
 
-  player_t::init_actions();
+  player_t::init_action_list();
 }
 
 // shaman_t::moving =========================================================

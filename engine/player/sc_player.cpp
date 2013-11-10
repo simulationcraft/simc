@@ -422,141 +422,135 @@ struct stormlash_callback_t : public action_callback_t
   stats_t* stormlash_aggregate_stat;
   std::vector< stats_t* > stormlash_sources;
 
-  stormlash_callback_t( player_t* p );
+  stormlash_callback_t( player_t* p ) :
+    action_callback_t( p ),
+    stormlash_spell( new stormlash_spell_t( p ) ),
+    cd( p -> get_cooldown( "stormlash" ) ),
+    stormlash_aggregate( 0 ),
+    stormlash_aggregate_stat()
+  {
+    cd -> duration = timespan_t::from_seconds( 0.1 );
+    stormlash_sources.resize( p -> sim -> num_players + 1 );
+  }
 
-  virtual void activate();
+  virtual void activate() override
+  {
+    action_callback_t::activate();
 
-  virtual void trigger( action_t* a, void* call_data );
+    if ( ! stormlash_aggregate )
+      return;
+
+    player_t* o = stormlash_aggregate -> player -> cast_pet() -> owner;
+    if ( ! stormlash_sources[ o -> index ] )
+    {
+      std::string stat_name = "stormlash_";
+      if ( listener -> is_pet() )
+        stat_name += listener -> cast_pet() -> owner -> name_str + "_";
+      stat_name += listener -> name_str;
+
+      stormlash_sources[ o -> index ] = stormlash_aggregate -> player -> get_stats( stat_name, stormlash_aggregate );
+    }
+
+    stormlash_aggregate_stat = stormlash_sources[ o -> index ];
+  }
+
+  // http://us.battle.net/wow/en/forum/topic/5889309137?page=101#2017
+  virtual void trigger( action_t* a, void* call_data ) override
+  {
+    if ( cd -> down() )
+      return;
+
+    // 2013/10/4: Hotfixed to 20% chance, 500% damage increase
+    if ( ! listener -> rng().roll( 0.2 ) )
+      return;
+
+    action_state_t* s = reinterpret_cast< action_state_t* >( call_data );
+
+    if ( s -> result_amount == 0 )
+      return;
+
+    if ( a -> stormlash_da_multiplier == 0 && s -> result_type == DMG_DIRECT )
+      return;
+
+    if ( a -> stormlash_ta_multiplier == 0 && s -> result_type == DMG_OVER_TIME )
+      return;
+
+    cd -> start();
+
+    double amount = 0;
+    double base_power = std::max( a -> player -> cache.attack_power() * a -> player -> composite_attack_power_multiplier() * 0.2,
+                                  a -> player -> cache.spell_power( a -> school ) * a -> player -> composite_spell_power_multiplier() * 0.3 );
+    double base_multiplier = 1.0;
+    double cast_time_multiplier = 1.0;
+    bool auto_attack = false;
+
+    // Autoattacks
+    if ( a -> special == false )
+    {
+      auto_attack = true;
+
+      // Presume non-special attacks without weapon are main hand attacks
+      if ( ! a -> weapon || a -> weapon -> slot == SLOT_MAIN_HAND )
+        base_multiplier = 0.4;
+      else
+        base_multiplier = 0.2;
+
+      if ( a -> weapon )
+        cast_time_multiplier = a -> weapon -> swing_time.total_seconds() / 2.6;
+      // If no weapon is defined for autoattacks, we should break really .. but use base_execute_time of the spell then.
+      else
+        cast_time_multiplier = a -> base_execute_time.total_seconds() / 2.6;
+    }
+    else
+    {
+      if ( a -> data().cast_time( a -> player -> level ) > timespan_t::from_seconds( 1.5 ) )
+        cast_time_multiplier = a -> data().cast_time( a -> player -> level ).total_seconds() / 1.5;
+    }
+
+    if ( a -> player -> type == PLAYER_PET )
+      base_multiplier *= 0.2;
+
+    amount = base_power * base_multiplier * cast_time_multiplier;
+    amount *= ( s -> result_type == DMG_DIRECT ) ? a -> stormlash_da_multiplier : a -> stormlash_ta_multiplier;
+    // 2013/10/4: Hotfixed to 20% chance, 500% damage increase
+    amount *= 5.0;
+
+    if ( a -> sim -> debug )
+    {
+      a -> sim -> out_debug.printf( "%s stormlash proc by %s: power=%.3f base_mul=%.3f cast_time=%.3f cast_time_mul=%.3f spell_multiplier=%.3f amount=%.3f %s",
+                          a -> player -> name(), a -> name(), base_power, base_multiplier, a -> data().cast_time( a -> player -> level ).total_seconds(), cast_time_multiplier,
+                          ( a -> stormlash_da_multiplier ) ? a -> stormlash_da_multiplier : a -> stormlash_ta_multiplier,
+                          amount,
+                          ( auto_attack ) ? "(auto attack)" : "" );
+    }
+
+    stormlash_spell -> base_dd_min = amount - ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
+    stormlash_spell -> base_dd_max = amount + ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
+
+    if ( unlikely( stormlash_aggregate && stormlash_aggregate -> player -> cast_pet() -> owner == a -> player ) )
+    {
+      assert( stormlash_aggregate_stat -> player == stormlash_aggregate -> player );
+      stats_t* tmp_stats = stormlash_spell -> stats;
+      stormlash_spell -> stats = stormlash_aggregate_stat;
+      stormlash_spell -> execute();
+      stormlash_spell -> stats = tmp_stats;
+    }
+    else
+      stormlash_spell -> execute();
+
+    if ( unlikely( stormlash_aggregate && stormlash_aggregate -> player -> cast_pet() -> owner != a -> player ) )
+    {
+      assert( stormlash_aggregate_stat -> player == stormlash_aggregate -> player );
+      stormlash_aggregate_stat -> add_execute( timespan_t::zero(), stormlash_spell -> target );
+      stormlash_aggregate_stat -> add_result( stormlash_spell -> execute_state -> result_amount,
+                                              stormlash_spell -> execute_state -> result_amount,
+                                              stormlash_spell -> execute_state -> result_type,
+                                              stormlash_spell -> execute_state -> result,
+                                              stormlash_spell -> execute_state -> block_result,
+                                              stormlash_spell -> target );
+    }
+  }
 };
-
-stormlash_callback_t::stormlash_callback_t( player_t* p ) :
-  action_callback_t( p ),
-  stormlash_spell( new stormlash_spell_t( p ) ),
-  cd( p -> get_cooldown( "stormlash" ) ),
-  stormlash_aggregate( 0 ),
-  stormlash_aggregate_stat()
-{
-  cd -> duration = timespan_t::from_seconds( 0.1 );
-  stormlash_sources.resize( p -> sim -> num_players + 1 );
-}
-
-void stormlash_callback_t::activate()
-{
-  action_callback_t::activate();
-
-  if ( ! stormlash_aggregate )
-    return;
-
-  player_t* o = stormlash_aggregate -> player -> cast_pet() -> owner;
-  if ( ! stormlash_sources[ o -> index ] )
-  {
-    std::string stat_name = "stormlash_";
-    if ( listener -> is_pet() )
-      stat_name += listener -> cast_pet() -> owner -> name_str + "_";
-    stat_name += listener -> name_str;
-
-    stormlash_sources[ o -> index ] = stormlash_aggregate -> player -> get_stats( stat_name, stormlash_aggregate );
-  }
-
-  stormlash_aggregate_stat = stormlash_sources[ o -> index ];
-}
-
-// http://us.battle.net/wow/en/forum/topic/5889309137?page=101#2017
-void stormlash_callback_t::trigger( action_t* a, void* call_data )
-{
-  if ( cd -> down() )
-    return;
-
-  // 2013/10/4: Hotfixed to 20% chance, 500% damage increase
-  if ( ! listener -> rng().roll( 0.2 ) )
-    return;
-
-  action_state_t* s = reinterpret_cast< action_state_t* >( call_data );
-
-  if ( s -> result_amount == 0 )
-    return;
-
-  if ( a -> stormlash_da_multiplier == 0 && s -> result_type == DMG_DIRECT )
-    return;
-
-  if ( a -> stormlash_ta_multiplier == 0 && s -> result_type == DMG_OVER_TIME )
-    return;
-
-  cd -> start();
-
-  double amount = 0;
-  double base_power = std::max( a -> player -> cache.attack_power() * a -> player -> composite_attack_power_multiplier() * 0.2,
-                                a -> player -> cache.spell_power( a -> school ) * a -> player -> composite_spell_power_multiplier() * 0.3 );
-  double base_multiplier = 1.0;
-  double cast_time_multiplier = 1.0;
-  bool auto_attack = false;
-
-  // Autoattacks
-  if ( a -> special == false )
-  {
-    auto_attack = true;
-
-    // Presume non-special attacks without weapon are main hand attacks
-    if ( ! a -> weapon || a -> weapon -> slot == SLOT_MAIN_HAND )
-      base_multiplier = 0.4;
-    else
-      base_multiplier = 0.2;
-
-    if ( a -> weapon )
-      cast_time_multiplier = a -> weapon -> swing_time.total_seconds() / 2.6;
-    // If no weapon is defined for autoattacks, we should break really .. but use base_execute_time of the spell then.
-    else
-      cast_time_multiplier = a -> base_execute_time.total_seconds() / 2.6;
-  }
-  else
-  {
-    if ( a -> data().cast_time( a -> player -> level ) > timespan_t::from_seconds( 1.5 ) )
-      cast_time_multiplier = a -> data().cast_time( a -> player -> level ).total_seconds() / 1.5;
-  }
-
-  if ( a -> player -> type == PLAYER_PET )
-    base_multiplier *= 0.2;
-
-  amount = base_power * base_multiplier * cast_time_multiplier;
-  amount *= ( s -> result_type == DMG_DIRECT ) ? a -> stormlash_da_multiplier : a -> stormlash_ta_multiplier;
-  // 2013/10/4: Hotfixed to 20% chance, 500% damage increase
-  amount *= 5.0;
-
-  if ( a -> sim -> debug )
-  {
-    a -> sim -> out_debug.printf( "%s stormlash proc by %s: power=%.3f base_mul=%.3f cast_time=%.3f cast_time_mul=%.3f spell_multiplier=%.3f amount=%.3f %s",
-                        a -> player -> name(), a -> name(), base_power, base_multiplier, a -> data().cast_time( a -> player -> level ).total_seconds(), cast_time_multiplier,
-                        ( a -> stormlash_da_multiplier ) ? a -> stormlash_da_multiplier : a -> stormlash_ta_multiplier,
-                        amount,
-                        ( auto_attack ) ? "(auto attack)" : "" );
-  }
-
-  stormlash_spell -> base_dd_min = amount - ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
-  stormlash_spell -> base_dd_max = amount + ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
-
-  if ( unlikely( stormlash_aggregate && stormlash_aggregate -> player -> cast_pet() -> owner == a -> player ) )
-  {
-    assert( stormlash_aggregate_stat -> player == stormlash_aggregate -> player );
-    stats_t* tmp_stats = stormlash_spell -> stats;
-    stormlash_spell -> stats = stormlash_aggregate_stat;
-    stormlash_spell -> execute();
-    stormlash_spell -> stats = tmp_stats;
-  }
-  else
-    stormlash_spell -> execute();
-
-  if ( unlikely( stormlash_aggregate && stormlash_aggregate -> player -> cast_pet() -> owner != a -> player ) )
-  {
-    assert( stormlash_aggregate_stat -> player == stormlash_aggregate -> player );
-    stormlash_aggregate_stat -> add_execute( timespan_t::zero(), stormlash_spell -> target );
-    stormlash_aggregate_stat -> add_result( stormlash_spell -> execute_state -> result_amount,
-                                            stormlash_spell -> execute_state -> result_amount,
-                                            stormlash_spell -> execute_state -> result_type,
-                                            stormlash_spell -> execute_state -> result,
-                                            stormlash_spell -> execute_state -> block_result,
-                                            stormlash_spell -> target );
-  }
-}
 
 stormlash_buff_t::stormlash_buff_t( player_t* p, const spell_data_t* s ) :
   buff_t( buff_creator_t( p, "stormlash", s ).cd( timespan_t::from_seconds( 0.1 ) ).duration( timespan_t::from_seconds( 10.0 ) ) ),
@@ -2493,7 +2487,7 @@ void player_t::_init_actions()
   if ( action_list_str.empty() )
     no_action_list_provided = true;
 
-  init_actions(); // virtual function which creates the action list string
+  init_action_list(); // virtual function which creates the action list string
 
   std::string modify_action_options;
 
@@ -3502,6 +3496,7 @@ void player_t::invalidate_cache( cache_e c )
         invalidate_cache( CACHE_ATTACK_POWER );
       if ( current.parry_per_strength > 0 )
         invalidate_cache( CACHE_PARRY );
+      break;
     case CACHE_AGILITY:
       if ( current.attack_power_per_agility > 0 )
         invalidate_cache( CACHE_ATTACK_POWER );
@@ -4465,10 +4460,10 @@ double player_t::resource_loss( resource_e resource_type,
                                 action_t* action )
 {
   if ( amount == 0 )
-    return 0;
+    return 0.0;
 
   if ( current.sleeping )
-    return 0;
+    return 0.0;
 
   if ( resource_type == primary_resource() )
     uptimes.primary_resource_cap -> update( false, sim -> current_time );
@@ -4515,11 +4510,11 @@ double player_t::resource_gain( resource_e resource_type,
                                 action_t* action )
 {
   if ( current.sleeping )
-    return 0;
+    return 0.0;
 
   double actual_amount = std::min( amount, resources.max[ resource_type ] - resources.current[ resource_type ] );
 
-  if ( actual_amount > 0 )
+  if ( actual_amount > 0.0 )
   {
     resources.current[ resource_type ] += actual_amount;
     resource_gained [ resource_type ] += actual_amount;
@@ -4871,6 +4866,7 @@ void player_t::modify_current_rating( rating_e r, double amount )
   current.rating.get( r ) += amount;
   invalidate_cache( cache_from_rating( r ) );
 }
+
 // player_t::cost_reduction_gain ============================================
 
 void player_t::cost_reduction_gain( school_e school,
@@ -4943,19 +4939,16 @@ double player_t::get_raw_dps( action_state_t* s )
   return raw_dps;
 }
 
-// player_t::assess_damage ==================================================
+namespace assess_dmg_helper_functions {
 
-void player_t::assess_damage( school_e school,
-                              dmg_e    type,
-                              action_state_t* s )
+void account_parry_haste( player_t& p, action_state_t* s )
 {
-
-  if ( ! is_enemy() )
+  if ( ! p.is_enemy() )
   {
     // Parry Haste accounting
     if ( s -> result == RESULT_PARRY )
     {
-      if ( main_hand_attack && main_hand_attack -> execute_event )
+      if ( p.main_hand_attack && p.main_hand_attack -> execute_event )
       {
         // Parry haste mechanics:  When parrying an attack, the game subtracts 40% of the player's base swing timer
         // from the time remaining on the current swing timer.  However, this effect cannot reduce the current swing
@@ -4972,10 +4965,10 @@ void player_t::assess_damage( school_e school,
         // That value is simply the remaining time on the current swing timer.
 
         // first, we need the hasted base swing timer, swing_time
-        timespan_t swing_time = main_hand_attack -> time_to_execute;
+        timespan_t swing_time = p.main_hand_attack -> time_to_execute;
 
         // and we also need the time remaining on the current swing timer
-        timespan_t current_swing_timer = main_hand_attack -> execute_event -> occurs() - sim-> current_time;
+        timespan_t current_swing_timer = p.main_hand_attack -> execute_event -> occurs() - p.sim-> current_time;
 
         // next, check that the current swing timer is longer than 0.2*swing_time - if not we do nothing
         if ( current_swing_timer > 0.20 * swing_time )
@@ -4987,39 +4980,35 @@ void player_t::assess_damage( school_e school,
           current_swing_timer = std::max( current_swing_timer, 0.20 * swing_time );
 
           // now reschedule the event and log a parry haste
-          main_hand_attack -> reschedule_execute( current_swing_timer );
-          procs.parry_haste -> occur();
+          p.main_hand_attack -> reschedule_execute( current_swing_timer );
+          p.procs.parry_haste -> occur();
         }
       }
     }
   }
+}
 
-  target_mitigation( school, type, s );
-
-  // store post-mitigation, pre-absorb value
-  s -> result_mitigated = s -> result_amount;
-  if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-    sim -> out_debug.printf( "Damage to %s after all mitigation is %f", s -> target -> name(), s -> result_amount );
-
-
-  if ( buffs.hand_of_sacrifice -> check() && s -> result_amount > 0 )
+void account_hand_of_sacrifice( player_t& p, action_state_t* s )
+{
+  if ( p.buffs.hand_of_sacrifice -> check() && s -> result_amount > 0 )
   {
     // figure out how much damage gets redirected
-    double redirected_damage = s -> result_amount * ( buffs.hand_of_sacrifice -> data().effectN( 1 ).percent() );
+    double redirected_damage = s -> result_amount * ( p.buffs.hand_of_sacrifice -> data().effectN( 1 ).percent() );
 
     // apply that damage to the source paladin
-    buffs.hand_of_sacrifice -> trigger( s -> action, 0, redirected_damage, timespan_t::zero() );
+    p.buffs.hand_of_sacrifice -> trigger( s -> action, 0, redirected_damage, timespan_t::zero() );
 
     // mitigate that amount from the target.
     // Slight inaccuracy: We do not get a feedback of paladin health buffer expiration here.
     s -> result_amount -= redirected_damage;
 
-    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
-      sim -> out_debug.printf( "Damage to %s after Hand of Sacrifice is %f", s -> target -> name(), s -> result_amount );
+    if ( p.sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+      p.sim -> out_debug.printf( "Damage to %s after Hand of Sacrifice is %f", s -> target -> name(), s -> result_amount );
   }
+}
 
-  assess_damage_imminent_pre_absorb( school, type, s );
-
+double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
+{
   /* ABSORB BUFFS
    *
    * std::vector<absorb_buff_t*> absorb_buff_list; is a dynamic vector, which contains
@@ -5028,9 +5017,9 @@ void player_t::assess_damage( school_e school,
   size_t offset = 0;
   double result_ignoring_external_absorbs = s -> result_amount;
 
-  while ( offset < absorb_buff_list.size() && s -> result_amount > 0 && ! absorb_buff_list.empty() )
+  while ( offset < p.absorb_buff_list.size() && s -> result_amount > 0 && ! p.absorb_buff_list.empty() )
   {
-    absorb_buff_t* ab = absorb_buff_list[ offset ];
+    absorb_buff_t* ab = p.absorb_buff_list[ offset ];
 
     if ( school != SCHOOL_NONE && ! dbc::is_school( ab -> absorb_school, school ) )
     {
@@ -5049,12 +5038,12 @@ void player_t::assess_damage( school_e school,
 
       s -> result_amount -= value;
       // track result using only self-absorbs separately
-      if ( ab -> source == this || is_my_pet( ab -> source ) )
+      if ( ab -> source == &p || p.is_my_pet( ab -> source ) )
       {
         result_ignoring_external_absorbs -= value;
         s -> self_absorb_amount += value;
       }
-      
+
 
       if ( value < buff_value )
       {
@@ -5063,85 +5052,138 @@ void player_t::assess_damage( school_e school,
         break;
       }
 
-      if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() && buff_value > 0 )
-        sim -> out_debug.printf( "Damage to %s after %s is %f", s -> target -> name(), ab -> name(), s -> result_amount );
+      if ( p.sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() && buff_value > 0 )
+        p.sim -> out_debug.printf( "Damage to %s after %s is %f", s -> target -> name(), ab -> name(), s -> result_amount );
     }
 
     ab -> expire();
-    assert( absorb_buff_list.empty() || absorb_buff_list[ 0 ] != ab );
+    assert( p.absorb_buff_list.empty() || p.absorb_buff_list[ 0 ] != ab );
   } // end of absorb list loop
 
-  iteration_absorb_taken += result_ignoring_external_absorbs - s -> result_amount;
+  p.iteration_absorb_taken += result_ignoring_external_absorbs - s -> result_amount;
 
   s -> result_absorbed = s -> result_amount;
 
-  assess_damage_imminent( school, type, s );
+  return result_ignoring_external_absorbs;
+}
 
+void account_legendary_tank_cloak( player_t& p, action_state_t* s )
+{
   // Legendary Tank Cloak Proc - max absorb of 1e7 hardcoded (in spellid 146193, effect 1)
-  if ( ! is_enemy() && ! is_pet() && 
-       ( items[ SLOT_BACK ].parsed.data.id == 102245 || items[ SLOT_BACK ].parsed.data.id == 102250 ) // a legendary tank cloak is present
-       && legendary_tank_cloak_cd -> up()  // and the cloak's cooldown is up
-       && s -> result_amount > resources.current[ RESOURCE_HEALTH ] ) // attack exceeds player health
+  if ( ! p.is_enemy() && ! p.is_pet() &&
+       ( p.items[ SLOT_BACK ].parsed.data.id == 102245 || p.items[ SLOT_BACK ].parsed.data.id == 102250 ) // a legendary tank cloak is present
+       && p.legendary_tank_cloak_cd -> up()  // and the cloak's cooldown is up
+       && s -> result_amount > p.resources.current[ RESOURCE_HEALTH ] ) // attack exceeds player health
   {
     if ( s -> result_amount > 1e7 )
     {
-      gains.endurance_of_niuzao -> add( RESOURCE_HEALTH, 1e7, 0 );
+      p.gains.endurance_of_niuzao -> add( RESOURCE_HEALTH, 1e7, 0 );
       s -> result_amount -= 1e7;
       s -> result_absorbed += 1e7;
     }
     else
     {
-      gains.endurance_of_niuzao -> add( RESOURCE_HEALTH, s -> result_amount, 0 );
+      p.gains.endurance_of_niuzao -> add( RESOURCE_HEALTH, s -> result_amount, 0 );
       s -> result_absorbed += s -> result_amount;
       s -> result_amount = 0;
     }
-    legendary_tank_cloak_cd -> start();      
+    p.legendary_tank_cloak_cd -> start();
   }
+}
 
-  iteration_dmg_taken += s -> result_amount;
+/* Statistical data collection
+ */
+void collect_dmg_taken_data( player_t& p, action_state_t* s, double result_ignoring_external_absorbs )
+{
+  p.iteration_dmg_taken += s -> result_amount;
 
   // collect data for timelines
-  collected_data.timeline_dmg_taken.add( sim -> current_time, s -> result_amount );
+  p.collected_data.timeline_dmg_taken.add( p.sim -> current_time, s -> result_amount );
+
   // tank-specific data storage
-  if ( ! is_pet() && primary_role() == ROLE_TANK )
+  if ( ! p.is_pet() && p.primary_role() == ROLE_TANK )
   {
-    if ( tmi_self_only || sim -> tmi_actor_only )
+    if ( p.tmi_self_only || p.sim -> tmi_actor_only )
     {
-      collected_data.health_changes.timeline.add( sim -> current_time, result_ignoring_external_absorbs );
-      collected_data.health_changes.timeline_normalized.add( sim -> current_time, result_ignoring_external_absorbs / resources.max[ RESOURCE_HEALTH ] );
-    } 
+      p.collected_data.health_changes.timeline.add( p.sim -> current_time, result_ignoring_external_absorbs );
+      p.collected_data.health_changes.timeline_normalized.add( p.sim -> current_time, result_ignoring_external_absorbs / p.resources.max[ RESOURCE_HEALTH ] );
+    }
     else
     {
-      collected_data.health_changes.timeline.add( sim -> current_time, s -> result_amount );
-      collected_data.health_changes.timeline_normalized.add( sim -> current_time, s -> result_amount / resources.max[ RESOURCE_HEALTH ] );
+      p.collected_data.health_changes.timeline.add( p.sim -> current_time, s -> result_amount );
+      p.collected_data.health_changes.timeline_normalized.add( p.sim -> current_time, s -> result_amount / p.resources.max[ RESOURCE_HEALTH ] );
     }
 
     // store value in incoming damage array for conditionals
-    incoming_damage.push_back( std::pair<timespan_t, double>( sim -> current_time, s -> result_amount ) );
+    p.incoming_damage.push_back( std::pair<timespan_t, double>( p.sim -> current_time, s -> result_amount ) );
+  }
+}
+
+/* If Guardian spirit saves the life of the player, return true,
+ * otherwise false.
+ */
+bool try_guardian_spirit( player_t& p, double actual_amount )
+{
+  // This can only save the target, if the damage is less than 200% of the target's health as of 4.0.6
+  if ( ! p.is_enemy() && p.buffs.guardian_spirit -> check() && actual_amount <= ( p.resources.max[ RESOURCE_HEALTH] * 2 ) )
+  {
+    // Just assume that this is used so rarely that a strcmp hack will do
+    //stats_t* stat = buffs.guardian_spirit -> source ? buffs.guardian_spirit -> source -> get_stats( "guardian_spirit" ) : 0;
+    //double gs_amount = resources.max[ RESOURCE_HEALTH ] * buffs.guardian_spirit -> data().effectN( 2 ).percent();
+    //resource_gain( RESOURCE_HEALTH, s -> result_amount );
+    //if ( stat ) stat -> add_result( gs_amount, gs_amount, HEAL_DIRECT, RESULT_HIT );
+    p.buffs.guardian_spirit -> expire();
+    return true;
   }
 
-  double actual_amount = 0;
-  if ( s -> result_amount > 0 ) actual_amount = resource_loss( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
+  return false;
+}
+
+} // assess_dmg_helper_functions
+
+// player_t::assess_damage ==================================================
+
+void player_t::assess_damage( school_e school,
+                              dmg_e    type,
+                              action_state_t* s )
+{
+  using namespace assess_dmg_helper_functions;
+
+  account_parry_haste( *this, s );
+
+  target_mitigation( school, type, s );
+
+  // store post-mitigation, pre-absorb value
+  s -> result_mitigated = s -> result_amount;
+  if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+    sim -> out_debug.printf( "Damage to %s after all mitigation is %f", s -> target -> name(), s -> result_amount );
+
+  account_hand_of_sacrifice( *this, s );
+
+  assess_damage_imminent_pre_absorb( school, type, s );
+
+  double result_ignoring_external_absorbs = account_absorb_buffs( *this, s, school );
+
+  assess_damage_imminent( school, type, s );
+
+  account_legendary_tank_cloak( *this, s );
+
+  collect_dmg_taken_data( *this, s, result_ignoring_external_absorbs );
+
+  double actual_amount = 0.0;
+  if ( s -> result_amount > 0.0 )
+    actual_amount = resource_loss( RESOURCE_HEALTH, s -> result_amount, nullptr, s -> action );
 
   action_callback_t::trigger( callbacks.incoming_attack[ s -> result ], s -> action, s );
 
-  if ( s -> result_amount <= 0 )
+  if ( s -> result_amount <= 0.0 )
     return;
 
-  else if ( health_percentage() <= death_pct && ! resources.is_infinite( RESOURCE_HEALTH ) )
+  // Check if target is dying
+  if ( health_percentage() <= death_pct && ! resources.is_infinite( RESOURCE_HEALTH ) )
   {
-    // This can only save the target, if the damage is less than 200% of the target's health as of 4.0.6
-    if ( ! is_enemy() && buffs.guardian_spirit -> check() && actual_amount <= ( resources.max[ RESOURCE_HEALTH] * 2 ) )
-    {
-      // Just assume that this is used so rarely that a strcmp hack will do
-      //stats_t* stat = buffs.guardian_spirit -> source ? buffs.guardian_spirit -> source -> get_stats( "guardian_spirit" ) : 0;
-      //double gs_amount = resources.max[ RESOURCE_HEALTH ] * buffs.guardian_spirit -> data().effectN( 2 ).percent();
-      //resource_gain( RESOURCE_HEALTH, s -> result_amount );
-      //if ( stat ) stat -> add_result( gs_amount, gs_amount, HEAL_DIRECT, RESULT_HIT );
-      buffs.guardian_spirit -> expire();
-    }
-    else
-    {
+    if ( ! try_guardian_spirit( *this, actual_amount ) )
+    { // Player was not saved by guardian spirit, kill him
       if ( ! current.sleeping )
       {
         collected_data.deaths.add( sim -> current_time.total_seconds() );
@@ -5150,8 +5192,6 @@ void player_t::assess_damage( school_e school,
       new ( *sim ) demise_event_t( *this );
     }
   }
-
-
 }
 
 void player_t::assess_damage_imminent_pre_absorb( school_e, dmg_e, action_state_t* )
