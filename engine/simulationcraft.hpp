@@ -3560,7 +3560,6 @@ struct cooldown_t
   core_event_t* recharge_event;
   core_event_t* ready_trigger_event;
   timespan_t last_start;
-  double recharge_multiplier;
 
   cooldown_t( const std::string& name, player_t& );
   cooldown_t( const std::string& name, sim_t& );
@@ -3588,9 +3587,16 @@ struct cooldown_t
   timespan_t reduced_cooldown() const
   { return ready - last_start; }
 
+  double get_recharge_multiplier() const
+  { return recharge_multiplier; }
+
+  void set_recharge_multiplier( double );
+
 private:
   static timespan_t ready_init()
   { return timespan_t::from_seconds( -60 * 60 ); }
+
+  double recharge_multiplier;
 };
 
 // Player Callbacks

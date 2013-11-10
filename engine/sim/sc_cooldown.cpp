@@ -14,7 +14,7 @@ struct recharge_event_t : event_t
   recharge_event_t( player_t& p, cooldown_t* cd, timespan_t delay = timespan_t::zero() ) :
     event_t( p, "recharge_event" ), cooldown( cd )
   {
-    sim().add_event( this, cd -> duration * cd -> recharge_multiplier + delay );
+    sim().add_event( this, cd -> duration * cd -> get_recharge_multiplier() + delay );
   }
 
   virtual void execute()
@@ -144,5 +144,23 @@ void cooldown_t::start( timespan_t _override, timespan_t delay )
     assert( player );
     if ( player -> ready_type == READY_TRIGGER )
       ready_trigger_event = new ( sim ) ready_trigger_event_t( *player, this );
+  }
+}
+
+void cooldown_t::set_recharge_multiplier( double v )
+{
+  assert( v >= 0.0 && "Cooldown recharge multiplier should probably not be negative." );
+
+  if ( up() )
+  {
+    // Cooldown not active, just set the recharge multiplier.
+    recharge_multiplier = v;
+  }
+  else
+  {
+    // Cooldown up, we need to recalculate remaining duration.
+    timespan_t new_leftover_adjust = remains() * ( v / recharge_multiplier - 1.0  );
+    ready += new_leftover_adjust;
+    recharge_multiplier = v;
   }
 }

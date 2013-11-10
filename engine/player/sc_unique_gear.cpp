@@ -2993,7 +2993,7 @@ void cooldown_reduction_trinket( item_t* item )
         break;
 
       cooldown_t* ability_cd = p -> get_cooldown( cd -> cooldowns[ i ] );
-      ability_cd -> recharge_multiplier = cdr;
+      ability_cd -> set_recharge_multiplier( cdr );
     }
 
     break;

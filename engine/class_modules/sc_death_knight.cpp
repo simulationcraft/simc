@@ -4538,7 +4538,7 @@ struct antimagic_shell_t : public death_knight_spell_t
       interval_stddev = interval_stddev_opt;
 
     if ( damage > 0 )
-      cooldown -> recharge_multiplier = 1.0;
+      cooldown -> set_recharge_multiplier( 1.0 );
   }
 
   void execute()
