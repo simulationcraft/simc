@@ -308,6 +308,8 @@ const QString defaultSimulateText( "# Profile will be downloaded into a new tab.
                                    "#\n"
                                    "# Clicking Simulate will create a simc_gui.simc profile for review.\n" );
 
+const QString defaultSimulateTabTitle( "Simulate" );
+
 // ============================================================================
 // SC_SimulateTabWidget
 // ============================================================================
@@ -386,7 +388,17 @@ public slots:
   {
     if ( count() > 2 && index != (count() - 1) )
     {
-      int confirm = QMessageBox::question( this, tr( "Close Simulate Tab" ), tr( "Do you really want to close this simulation profile?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes );
+      int confirm;
+
+      if ( tabText( index ) == defaultSimulateTabTitle &&
+           static_cast<SC_TextEdit*>( widget( index ) ) -> toPlainText() == defaultSimulateText )
+      {
+        confirm = QMessageBox::Yes;
+      }
+      else
+      {
+        confirm = QMessageBox::question( this, tr( "Close Simulate Tab" ), tr( "Do you really want to close this simulation profile?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes );
+      }
       if ( confirm == QMessageBox::Yes )
       {
         setCurrentIndex( index - 1 );
@@ -400,7 +412,7 @@ public slots:
     {
       SC_TextEdit* s = new SC_TextEdit( this );
       s -> setText( defaultSimulateText );
-      insertTab( index, s, "Simulate" );
+      insertTab( index, s, defaultSimulateTabTitle );
       setCurrentIndex( index);
     }
   }
