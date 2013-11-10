@@ -2579,16 +2579,14 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
     os << "\t\t\t\t\t\t<table class=\"sc mt\">\n";
     if ( ! p -> origin_str.empty() )
     {
-      std::string html = util::encode_html( p -> origin_str );
-      std::string enc_url = html;
-      util::urlencode( enc_url );
+      std::string origin_url = util::encode_html( p -> origin_str );
       os.printf(
         "\t\t\t\t\t\t\t<tr class=\"left\">\n"
         "\t\t\t\t\t\t\t\t<th><a href=\"#help-origin\" class=\"help\">Origin</a></th>\n"
         "\t\t\t\t\t\t\t\t<td><a href=\"%s\" class=\"ext\">%s</a></td>\n"
         "\t\t\t\t\t\t\t</tr>\n",
         p -> origin_str.c_str(),
-        enc_url.c_str() );
+        origin_url.c_str() );
     }
 
     if ( ! p -> talents_str.empty() )
