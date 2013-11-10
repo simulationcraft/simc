@@ -160,6 +160,21 @@ public:
   }
   */
 
+protected:
+  virtual void keyPressEvent( QKeyEvent* e )
+  {
+    int k = e -> key();
+    Qt::KeyboardModifiers m = e -> modifiers();
+
+    if ( k == Qt::Key_Tab && m.testFlag( Qt::ControlModifier ) )
+    {
+      // If base class gets this event, a tab will be inserted in text, send to bases' base
+      QAbstractScrollArea::keyPressEvent( e );
+      return;
+    }
+    QTextEdit::keyPressEvent( e );
+  }
+
 private slots:
 
   void text_edited()
@@ -382,6 +397,34 @@ public:
     SC_TextEdit* current_s = static_cast<SC_TextEdit*>( currentWidget() );
     current_s -> append( text );
     format_document( current_s );
+  }
+protected:
+  virtual void keyPressEvent( QKeyEvent* e )
+  {
+    int k = e -> key();
+    Qt::KeyboardModifiers m = e -> modifiers();
+    int lastSimulateTabIndexOffset = -2;
+
+    if ( k == Qt::Key_Backtab ||
+         ( k == Qt::Key_Tab && m.testFlag( Qt::ControlModifier ) && m.testFlag( Qt::ShiftModifier ) ) )
+    {
+      if ( currentIndex() == 0 )
+      {
+          // wrap around to end
+          setCurrentIndex( count() + lastSimulateTabIndexOffset );
+          return;
+      }
+    }
+    else if ( k == Qt::Key_Tab )
+    {
+      if ( currentIndex() == count() + lastSimulateTabIndexOffset )
+      {
+          // wrap around to beginning
+          setCurrentIndex( 0 );
+          return;
+      }
+    }
+    QTabWidget::keyPressEvent( e );
   }
 public slots:
   void TabCloseRequest( int index )
