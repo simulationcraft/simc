@@ -412,6 +412,7 @@ public slots:
     {
       SC_TextEdit* s = new SC_TextEdit( this );
       s -> setText( defaultSimulateText );
+      format_document( s );
       insertTab( index, s, defaultSimulateTabTitle );
       setCurrentIndex( index);
     }
