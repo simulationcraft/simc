@@ -1713,7 +1713,7 @@ void sim_t::partition()
     }
   }
 
-  set_priority( thread_priority ); // Set main thread priority
+  sc_thread_t::set_calling_thread_priority( thread_priority ); // Set main thread priority
 
   for ( int i = 0; i < num_children; i++ )
     children[ i ] -> launch( thread_priority );

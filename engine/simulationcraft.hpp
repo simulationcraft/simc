@@ -2273,6 +2273,7 @@ public:
   void set_priority( priority_e );
 
   static void sleep( timespan_t );
+  static void set_calling_thread_priority( priority_e );
 };
 
 class auto_lock_t

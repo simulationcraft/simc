@@ -61,15 +61,29 @@ namespace { // unnamed namespace
 /* Convert our priority enumerations to WinAPI Thread Priority values
  * http://msdn.microsoft.com/en-us/library/windows/desktop/ms686277(v=vs.85).aspx
  */
-int translate_priority( sc_thread_t::priority_e prio )
+int translate_thread_priority( sc_thread_t::priority_e prio )
 {
   switch ( prio )
   {
-  case sc_thread_t::NORMAL: return 0;
-  case sc_thread_t::ABOVE_NORMAL: return 1;
-  case sc_thread_t::BELOW_NORMAL: return -1;
-  case sc_thread_t::HIGHEST: return 2;
-  case sc_thread_t::LOWEST: return -2;
+  case sc_thread_t::NORMAL: return THREAD_PRIORITY_NORMAL;
+  case sc_thread_t::ABOVE_NORMAL: return THREAD_PRIORITY_ABOVE_NORMAL;
+  case sc_thread_t::BELOW_NORMAL: return THREAD_PRIORITY_BELOW_NORMAL;
+  case sc_thread_t::HIGHEST: return THREAD_PRIORITY_HIGHEST;
+  case sc_thread_t::LOWEST: return THREAD_PRIORITY_LOWEST;
+  default: assert( false && "invalid thread priority" ); break;
+  }
+  return 0;
+}
+
+int translate_process_priority( sc_thread_t::priority_e prio )
+{
+  switch ( prio )
+  {
+  case sc_thread_t::NORMAL: return NORMAL_PRIORITY_CLASS;
+  case sc_thread_t::ABOVE_NORMAL: return ABOVE_NORMAL_PRIORITY_CLASS;
+  case sc_thread_t::BELOW_NORMAL: return BELOW_NORMAL_PRIORITY_CLASS;
+  case sc_thread_t::HIGHEST: return HIGH_PRIORITY_CLASS;
+  case sc_thread_t::LOWEST: return BELOW_NORMAL_PRIORITY_CLASS;
   default: assert( false && "invalid thread priority" ); break;
   }
   return 0;
@@ -103,7 +117,18 @@ public:
 
   void set_priority( priority_e prio )
   {
-    SetThreadPriority( handle, translate_priority( prio ) );
+    if ( !SetThreadPriority( handle, translate_thread_priority( prio ) ) )
+    {
+      std::cerr << "could not set priority.\n";
+    }
+  }
+
+  static void set_calling_thread_priority( priority_e prio )
+  {
+    if( !SetThreadPriority( GetCurrentThread(), translate_thread_priority( prio ) ) )
+    {
+      std::cerr << "could not set process priority.\n";
+    }
   }
 
   void join()
@@ -149,7 +174,7 @@ class sc_thread_t::native_t
   }
 
 public:
-  void launch( sc_thread_t* thr, priority_e /* prio */ )
+  void launch( sc_thread_t* thr, priority_e prio )
   {
     int rc = pthread_create( &t, NULL, execute, thr );
     if ( rc != 0 )
@@ -164,11 +189,23 @@ public:
 
   void set_priority( priority_e prio )
   {
-    int prio = ( static_cast<int>( prio ) - static_cast<int>( sc_thread_t::NORMAL ) ) / 7.0 * 20.0;
-    int rc = pthread_setschedprio( t , prio);
-    if ( rc != 0 )
+    // Normalize to 0 == NORMAL, then scale between -20 and 20.
+    int posix_prio = ( static_cast<int>( prio ) - static_cast<int>( sc_thread_t::NORMAL ) ) / 7.0 * 20.0;
+    if ( pthread_setschedprio( t , posix_prio) != 0 )
     {
-      perror( "Could not set thread priority" );
+
+      perror( "Could not set thread priority." );
+    }
+  }
+
+  void set_calling_thread_priority( priority_e prio )
+  {
+    // Normalize to 0 == NORMAL, then scale between -20 and 20.
+    int posix_prio = ( static_cast<int>( prio ) - static_cast<int>( sc_thread_t::NORMAL ) ) / 7.0 * 20.0;
+
+    if ( pthread_setschedprio( pthread_self(), posix_prio) != 0 )
+    {
+      perror( "Could not set process priority." );
     }
   }
 
@@ -218,6 +255,9 @@ void sc_thread_t::launch( priority_e prio )
 
 void sc_thread_t::set_priority( priority_e prio )
 { native_handle -> set_priority( prio ); }
+
+void sc_thread_t::set_calling_thread_priority( priority_e prio )
+{ native_t::set_calling_thread_priority( prio ); }
 
 // sc_thread_t::wait() ======================================================
 
