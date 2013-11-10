@@ -31,6 +31,9 @@ public:
     while ( std::time() < finish )
       ;
   }
+
+  void set_priority( priority_e  )
+  { }
 };
 
 #elif defined( SC_WINDOWS )
@@ -95,6 +98,11 @@ public:
     // and there's no reason NOT to do so with MSVC.
     handle = reinterpret_cast<HANDLE>( _beginthreadex( NULL, 0, execute,
                                                        thr, 0, NULL ) );
+    set_priority( prio );
+  }
+
+  void set_priority( priority_e prio )
+  {
     SetThreadPriority( handle, translate_priority( prio ) );
   }
 
@@ -141,10 +149,28 @@ class sc_thread_t::native_t
   }
 
 public:
-  // TODO: implement priority
   void launch( sc_thread_t* thr, priority_e /* prio */ )
-  { pthread_create( &t, NULL, execute, thr ); }
+  {
+    int rc = pthread_create( &t, NULL, execute, thr );
+    if ( rc != 0 )
+    {
+      perror( "Could not create thread." );
+      std::abort();
+    }
+    set_priority( prio );
+  }
+
   void join() { pthread_join( t, NULL ); }
+
+  void set_priority( priority_e prio )
+  {
+    int prio = ( static_cast<int>( prio ) - static_cast<int>( sc_thread_t::NORMAL ) ) / 7.0 * 20.0;
+    int rc = pthread_setschedprio( t , prio);
+    if ( rc != 0 )
+    {
+      perror( "Could not set thread priority" );
+    }
+  }
 
   static void sleep( timespan_t t )
   { ::sleep( ( unsigned int )t.total_seconds() ); }
@@ -188,6 +214,10 @@ sc_thread_t::~sc_thread_t()
 
 void sc_thread_t::launch( priority_e prio )
 { native_handle -> launch( this, prio ); }
+
+
+void sc_thread_t::set_priority( priority_e prio )
+{ native_handle -> set_priority( prio ); }
 
 // sc_thread_t::wait() ======================================================
 

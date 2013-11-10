@@ -2260,16 +2260,17 @@ protected:
   virtual ~sc_thread_t();
 public:
   enum priority_e {
-    NORMAL,
-    ABOVE_NORMAL,
-    BELOW_NORMAL,
-    HIGHEST,
-    LOWEST,
+    NORMAL = 3,
+    ABOVE_NORMAL = 4,
+    BELOW_NORMAL = 2,
+    HIGHEST = 5,
+    LOWEST = 1,
   };
   virtual void run() = 0;
 
   void launch( priority_e = NORMAL );
   void wait();
+  void set_priority( priority_e );
 
   static void sleep( timespan_t );
 };
@@ -2757,6 +2758,7 @@ public:
   int threads;
   std::vector<sim_t*> children; // Manual delete!
   int thread_index;
+  sc_thread_t::priority_e thread_priority;
 
   virtual void run();
 

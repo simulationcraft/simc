@@ -671,6 +671,42 @@ static bool parse_item_sources( sim_t*             sim,
   return true;
 }
 
+static bool parse_thread_priority( sim_t*             sim,
+                                   const std::string& /* name */,
+                                   const std::string& value )
+{
+  sc_thread_t::priority_e pr = sc_thread_t::NORMAL;
+
+  if ( util::str_compare_ci( value, "normal" ) )
+  {
+    pr = sc_thread_t::NORMAL;
+  }
+  else if ( util::str_compare_ci( value, "above_normal" ) || util::str_compare_ci( value, "high" ) )
+  {
+    pr = sc_thread_t::ABOVE_NORMAL;
+  }
+  else if ( util::str_compare_ci( value, "below_normal" ) || util::str_compare_ci( value, "low" ) )
+  {
+    pr = sc_thread_t::BELOW_NORMAL;
+  }
+  else if ( util::str_compare_ci( value, "highest" ) )
+  {
+    pr = sc_thread_t::HIGHEST;
+  }
+  else if ( util::str_compare_ci( value, "lowest" ) )
+  {
+    pr = sc_thread_t::LOWEST;
+  }
+  else
+  {
+    sim -> errorf( "Could not set thread priority to %s. Using Normal priority.", value.c_str() );
+  }
+
+  sim -> thread_priority = pr;
+
+  return true;
+}
+
 // Proxy cast ===============================================================
 
 struct proxy_cast_check_t : public event_t
@@ -868,7 +904,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   global_item_upgrade_level( 0 ),
   report_information( report_information_t() ),
   // Multi-Threading
-  threads( 0 ), thread_index( index ),
+  threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::NORMAL ),
   spell_query( 0 ), spell_query_level( MAX_LEVEL )
 {
   item_db_sources.assign( range::begin( default_item_db_sources ),
@@ -1677,8 +1713,10 @@ void sim_t::partition()
     }
   }
 
+  set_priority( thread_priority ); // Set main thread priority
+
   for ( int i = 0; i < num_children; i++ )
-    children[ i ] -> launch();
+    children[ i ] -> launch( thread_priority );
 }
 
 // sim_t::execute ===========================================================
@@ -1878,8 +1916,10 @@ void sim_t::create_options()
 {
   option_t global_options[] =
   {
-    // General
+    // Program control
     opt_int( "iterations", iterations ),
+    opt_func( "thread_priority", parse_thread_priority ),
+    // General
     opt_timespan( "max_time", max_time ),
     opt_bool( "fixed_time", fixed_time ),
     opt_float( "vary_combat_length", vary_combat_length ),
