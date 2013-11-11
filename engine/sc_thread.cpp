@@ -106,7 +106,7 @@ public:
   {
     if ( !SetThreadPriority( handle, translate_thread_priority( prio ) ) )
     {
-      std::cerr << "could not set priority: " << GetLastError() << "\n";
+      std::cerr << "Could not set thread priority: " << GetLastError() << "\n";
     }
   }
 
@@ -178,12 +178,12 @@ public:
   {
     pthread_attr_t attr;
     int sched_policy;
-    if (pthread_getattr_np( t, &attr) != 0)
+    if ( pthread_attr_init(&attr) != 0 )
     {
-      perror( "Could not get thread attributes");
+      perror( "Could not init default thread attributes");
       return;
     }
-    if (pthread_attr_getschedpolicy(&attr, &sched_policy) != 0)
+    if (pthread_attr_getschedpolicy(&attr, &sched_policy) != 0 )
     {
       perror( "Could not get schedule policy");
       pthread_attr_destroy(&attr);
@@ -191,16 +191,20 @@ public:
     }
 
     // Translate our priority enum to posix priority values
-    int sched_min = sched_get_priority_min(sched_policy);
-    int posix_prio = static_cast<int>( prio ) / 7.0 * ( sched_get_priority_max(sched_policy) - sched_min );
-    posix_prio += sched_min;
+    int prio_min = sched_get_priority_min(sched_policy);
+    int prio_max = sched_get_priority_max(sched_policy);
+    int posix_prio = static_cast<int>( prio ) / 7.0 * ( prio_max - prio_min );
+    posix_prio += prio_min;
 
-    if ( pthread_setschedprio( t , posix_prio) != 0 )
+    sched_param sp;
+    sp.sched_priority = posix_prio;
+
+    if ( pthread_setschedparam( t, sched_policy, &sp) != 0 )
     {
       perror( "Could not set thread priority" );
-
-      pthread_attr_destroy(&attr);
     }
+
+    pthread_attr_destroy(&attr);
   }
 
   void set_priority( priority_e prio )
