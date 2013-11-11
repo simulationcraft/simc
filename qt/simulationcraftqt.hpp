@@ -393,7 +393,7 @@ public:
   SC_SimulateTab( QWidget* parent = nullptr ) :
     QTabWidget( parent ),
     addTabWidget( new QWidget( this ) ),
-    closeAllTabWidget ( new QToolButton ( this ) )
+    closeAllTabWidget ( new QToolButton( this ) )
   {
     setTabsClosable( true );
    // setMovable( true ); # Would need to disallow moving the + tab, or to the right of it. That would require subclassing tabbar
@@ -476,7 +476,6 @@ public:
       // look for a tab not in the specialTabsList to delete
       while ( ! deleteIndexOk && indexToDelete < count() )
       {
-        assert( indexToDelete >= count() );
         if ( specialTabsList.contains( widget( indexToDelete ) ) )
         {
           deleteIndexOk = false;
