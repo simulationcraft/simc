@@ -3650,6 +3650,15 @@ void warrior_t::apl_prot()
 
 }
 
+// NO Spec Combat Action Priority List
+
+void warrior_t::apl_default()
+{
+  action_priority_list_t* default_list = get_action_priority_list( "default" );
+
+  default_list -> add_action( "heroic_strike" );
+}
+
 
 // warrior_t::init_scaling ==================================================
 
@@ -3857,6 +3866,9 @@ void warrior_t::init_action_list()
       break;
     case WARRIOR_PROTECTION:
       apl_prot();
+      break;
+    default:
+      apl_default(); // DEFAULT
       break;
   }
 

@@ -804,25 +804,7 @@ namespace actions {
 template <typename Base>
 struct priest_action_t : public Base
 {
-private:
-  buff_t* sform;
-  cooldown_t* min_interval; // Minimal interval / Forced cooldown of the action. Specifiable through option
-protected:
-  bool castable_in_shadowform;
-  bool can_cancel_shadowform;
-
-  /* keep reference to the priest. We are sure this will always resolve
-   * to the same player as the action_t::player; pointer, and is always valid
-   * because it owns the action
-   */
-  priest_t& priest;
 public:
-private:
-  typedef Base ab; // typedef for the templated action type, eg. spell_t, attack_t, heal_t
-public:
-  typedef priest_action_t base_t; // typedef for priest_action_t<action_base_t>
-
-  virtual ~priest_action_t() {}
   priest_action_t( const std::string& n, priest_t& p,
                    const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, &p, s ),
@@ -935,6 +917,21 @@ public:
                                priest.name(), this -> name(), min_interval -> name(), min_interval -> ready.total_seconds() );
     }
   }
+private:
+  typedef Base ab; // typedef for the templated action type, eg. spell_t, attack_t, heal_t
+  buff_t* sform;
+  cooldown_t* min_interval; // Minimal interval / Forced cooldown of the action. Specifiable through option
+protected:
+  bool castable_in_shadowform;
+  bool can_cancel_shadowform;
+
+  /* keep reference to the priest. We are sure this will always resolve
+   * to the same player as the action_t::player; pointer, and is always valid
+   * because it owns the action
+   */
+  priest_t& priest;
+
+  typedef priest_action_t base_t; // typedef for priest_action_t<action_base_t>
 };
 
 // ==========================================================================
@@ -986,7 +983,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
       absorb_buff_t& buff = *td( s -> target ).buffs.divine_aegis;
       // Divine Aegis caps absorbs at 40% of target's health
       double old_amount = td( s -> target ).buffs.divine_aegis -> value();
-      double new_amount = std::max( 0.0, std::min( s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount, s -> result_amount ) );
+      double new_amount = clamp( s -> result_amount, 0.0, s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount );
       buff.trigger( 1, old_amount + new_amount );
       stats -> add_result( 0.0, new_amount, ABSORB, s -> result, s -> block_result, s -> target );
       buff.absorb_source -> add_result( 0.0, new_amount, ABSORB, s -> result, s -> block_result, s -> target );
@@ -1023,9 +1020,9 @@ struct priest_heal_t : public priest_action_t<heal_t>
     {
       double am;
 
-      am = absorb_t::action_multiplier(); // ( 1 + 0 ) *
+      am = absorb_t::action_multiplier();
 
-      return am *
+      return am *                                        // ( am ) *
              ( 1 + trigger_crit_multiplier ) *           // ( 1 + crit ) *
              ( 1 + trigger_crit_multiplier * 0.3 );      // ( 1 + crit * 30% "DA factor" )
     }
@@ -1034,8 +1031,8 @@ struct priest_heal_t : public priest_action_t<heal_t>
     {
       // Spirit Shell caps absorbs at 60% of target's health
       double old_amount = td( s -> target ).buffs.spirit_shell -> value();
-      double new_amount = std::max( 0.0, std::min( s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.6 - old_amount,
-                                                   s -> result_amount ) );
+      double new_amount = clamp( s -> result_amount, 0.0, s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.6 - old_amount );
+
       td( s -> target ).buffs.spirit_shell -> trigger( 1, old_amount + new_amount );
       stats -> add_result( 0.0, new_amount, ABSORB, s -> result, s -> block_result, s -> target );
     }
@@ -4572,8 +4569,6 @@ protected:
   priest_t& priest;
 public:
   typedef priest_buff_t base_t; // typedef for priest_buff_t<buff_base_t>
-
-  virtual ~priest_buff_t() {}
 
   priest_buff_t( priest_td_t& p, const buff_creator_basics_t& params ) :
     Base( params ), priest( p.priest )

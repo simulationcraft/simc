@@ -103,20 +103,10 @@ public:
   }
 
   void set_priority( priority_e prio )
-  {
-    if ( !SetThreadPriority( handle, translate_thread_priority( prio ) ) )
-    {
-      std::cerr << "Could not set thread priority: " << GetLastError() << "\n";
-    }
-  }
+  { set_thread_priority( handle, prio ); }
 
   static void set_calling_thread_priority( priority_e prio )
-  {
-    if( !SetThreadPriority( GetCurrentThread(), translate_thread_priority( prio ) ) )
-    {
-      std::cerr << "could not set process priority: " << GetLastError() << "\n";
-    }
-  }
+  { set_thread_priority( GetCurrentThread(), prio ); }
 
   void join()
   {
@@ -126,6 +116,15 @@ public:
 
   static void sleep( timespan_t t )
   { ::Sleep( ( DWORD ) t.total_millis() ); }
+
+private:
+  static void set_thread_priority( HANDLE handle, priority_e prio )
+  {
+    if( !SetThreadPriority( handle, translate_thread_priority( prio ) ) )
+    {
+      std::cerr << "Could not set process priority: " << GetLastError() << "\n";
+    }
+  }
 };
 
 #elif ( defined( _POSIX_THREADS ) && _POSIX_THREADS > 0 ) || defined( _GLIBCXX_HAVE_GTHR_DEFAULT ) || defined( _GLIBCXX__PTHREADS ) || defined( _GLIBCXX_HAS_GTHREADS )
@@ -174,6 +173,16 @@ public:
 
   void join() { pthread_join( t, NULL ); }
 
+  void set_priority( priority_e prio )
+  { set_thread_priority( t, prio ); }
+
+  static void set_calling_thread_priority( priority_e prio )
+  { set_thread_priority( pthread_self(), prio ); }
+
+  static void sleep( timespan_t t )
+  { ::sleep( ( unsigned int )t.total_seconds() ); }
+
+private:
   static void set_thread_priority( pthread_t t, priority_e prio )
   {
     pthread_attr_t attr;
@@ -206,15 +215,6 @@ public:
 
     pthread_attr_destroy(&attr);
   }
-
-  void set_priority( priority_e prio )
-  { set_thread_priority( t, prio ); }
-
-  static void set_calling_thread_priority( priority_e prio )
-  { set_thread_priority( pthread_self(), prio ); }
-
-  static void sleep( timespan_t t )
-  { ::sleep( ( unsigned int )t.total_seconds() ); }
 };
 
 #else

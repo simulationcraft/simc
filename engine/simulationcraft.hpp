@@ -108,7 +108,6 @@ public:
 #if ! defined( SC_OSX ) && ( defined( SC_VS ) || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) )
 // Use C++11
 #include <array>
-#include <memory>
 #include <type_traits>
 #include <unordered_map>
 #else
