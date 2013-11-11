@@ -20,8 +20,10 @@ spec=protection
 
 actions.precombat=flask,type=earth
 actions.precombat+=/food,type=chun_tian_spring_rolls
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stance,choose=defensive
+# Battle shout is used  before combat, character starts out with 40/55 rage depending on whether or not bull rush is glyphed.
 actions.precombat+=/battle_shout
 actions.precombat+=/mountains_potion
 
@@ -29,7 +31,7 @@ actions.precombat+=/mountains_potion
 
 actions=auto_attack
 actions+=/mountains_potion,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)
-actions+=/use_item,name=steadfast_talisman_of_the_shadopan_assault
+actions+=/use_item,slot=trinket2
 actions+=/heroic_strike,if=buff.ultimatum.up|buff.glyph_incite.up
 actions+=/berserker_rage,if=buff.enrage.down&rage<=rage.max-10
 actions+=/shield_block
@@ -42,6 +44,8 @@ actions+=/run_action_list,name=normal_rotation
 actions.dps_cds=avatar,if=talent.avatar.enabled
 actions.dps_cds+=/bloodbath,if=talent.bloodbath.enabled
 actions.dps_cds+=/blood_fury
+actions.dps_cds+=/berserking
+actions.dps_cds+=/arcane_torrent
 actions.dps_cds+=/dragon_roar,if=talent.dragon_roar.enabled
 actions.dps_cds+=/shattering_throw
 actions.dps_cds+=/skull_banner
