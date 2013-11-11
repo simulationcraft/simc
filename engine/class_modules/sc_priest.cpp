@@ -837,10 +837,10 @@ public:
     }
   }
 
-  priest_td_t& td( player_t* t )
+  priest_td_t& get_td( player_t* t )
   { return *( priest.get_target_data( t ) ); }
 
-  priest_td_t* find_td( player_t* t )
+  priest_td_t* find_td( player_t* t ) const
   { return priest.find_target_data( t ); }
 
   virtual void schedule_execute( action_state_t* state = 0 ) override
@@ -980,9 +980,9 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
     virtual void impact( action_state_t* s ) override // override
     {
-      absorb_buff_t& buff = *td( s -> target ).buffs.divine_aegis;
+      absorb_buff_t& buff = *get_td( s -> target ).buffs.divine_aegis;
       // Divine Aegis caps absorbs at 40% of target's health
-      double old_amount = td( s -> target ).buffs.divine_aegis -> value();
+      double old_amount = buff.value();
       double new_amount = clamp( s -> result_amount, 0.0, s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.4 - old_amount );
       buff.trigger( 1, old_amount + new_amount );
       stats -> add_result( 0.0, new_amount, ABSORB, s -> result, s -> block_result, s -> target );
@@ -1030,10 +1030,11 @@ struct priest_heal_t : public priest_action_t<heal_t>
     virtual void impact( action_state_t* s ) override
     {
       // Spirit Shell caps absorbs at 60% of target's health
-      double old_amount = td( s -> target ).buffs.spirit_shell -> value();
+      buff_t& spirit_shell = *get_td( s -> target ).buffs.spirit_shell;
+      double old_amount = spirit_shell.value();
       double new_amount = clamp( s -> result_amount, 0.0, s -> target -> resources.current[ RESOURCE_HEALTH ] * 0.6 - old_amount );
 
-      td( s -> target ).buffs.spirit_shell -> trigger( 1, old_amount + new_amount );
+      spirit_shell.trigger( 1, old_amount + new_amount );
       stats -> add_result( 0.0, new_amount, ABSORB, s -> result, s -> block_result, s -> target );
     }
 
@@ -4095,7 +4096,7 @@ struct holy_word_serenity_t final : public priest_heal_t
   {
     priest_heal_t::impact( s );
 
-    td( s -> target ).buffs.holy_word_serenity -> trigger();
+    get_td( s -> target ).buffs.holy_word_serenity -> trigger();
   }
 
   virtual bool ready() override
@@ -4328,7 +4329,7 @@ struct power_word_shield_t final : public priest_absorb_t
     if ( glyph_pws )
       glyph_pws -> trigger( s );
 
-    td( s -> target ).buffs.power_word_shield -> trigger( 1, s -> result_amount );
+    get_td( s -> target ).buffs.power_word_shield -> trigger( 1, s -> result_amount );
     stats -> add_result( 0, s -> result_amount, ABSORB, s -> result, s -> block_result, s -> target );
   }
 
@@ -4565,8 +4566,6 @@ namespace buffs { // namespace buffs
 template <typename Base>
 struct priest_buff_t : public Base
 {
-protected:
-  priest_t& priest;
 public:
   typedef priest_buff_t base_t; // typedef for priest_buff_t<buff_base_t>
 
@@ -4577,6 +4576,14 @@ public:
   priest_buff_t( priest_t& p, const buff_creator_basics_t& params ) :
     Base( params ), priest( p )
   { }
+
+  priest_td_t& get_td( player_t* t )
+  { return *( priest.get_target_data( t ) ); }
+
+  priest_td_t* find_td( player_t* t ) const
+  { return priest.find_target_data( t ); }
+protected:
+  priest_t& priest;
 };
 
 /* Custom shadowform buff
@@ -4708,8 +4715,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) :
   dots.devouring_plague_tick = target -> get_dot( "devouring_plague_tick", &p );
   dots.shadow_word_pain      = target -> get_dot( "shadow_word_pain",      &p );
   dots.vampiric_touch        = target -> get_dot( "vampiric_touch",        &p );
-
-  dots.renew = target -> get_dot( "renew", &p );
+  dots.renew                 = target -> get_dot( "renew",                 &p );
 
   buffs.divine_aegis = absorb_buff_creator_t( *this, "divine_aegis", p.find_spell( 47753 ) )
                        .source( p.get_stats( "divine_aegis" ) );

@@ -3878,7 +3878,8 @@ struct player_collected_data_t
     sc_timeline_t timeline; // keeps only data per iteration
     sc_timeline_t timeline_normalized; // same as above, but normalized to current player health
     sc_timeline_t merged_timeline;
-    health_changes_timeline_t() : previous_loss_level( 0.0 ), previous_gain_level( 0.0 ) {}
+    bool collect; // whether we collect all this or not.
+    health_changes_timeline_t() : previous_loss_level( 0.0 ), previous_gain_level( 0.0 ), collect( false ) {}
   } health_changes;
 
 
@@ -4794,7 +4795,7 @@ public:
   double      get_position_distance( double m = 0, double v = 0 );
   action_priority_list_t* get_action_priority_list( const std::string& name, const std::string& comment = std::string() );
   virtual actor_pair_t* get_target_data( player_t* /* target */ )
-  { return NULL; }
+  { return nullptr; }
 
   // Opportunity to perform any stat fixups before analysis
   virtual void pre_analyze_hook() {}

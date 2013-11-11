@@ -1690,6 +1690,11 @@ void player_t::init_defense()
       sim -> out_debug.printf( "%s: Initial Position set to front because primary_role() == ROLE_TANK", name() );
   }
 
+  if ( ! is_pet() && primary_role() == ROLE_TANK )
+  {
+    collected_data.health_changes.collect = true;
+  }
+
   // Armor Coefficient
   double a, b;
   if ( level > 85 )
@@ -3653,7 +3658,7 @@ void player_t::datacollection_begin()
   iteration_heal_taken = 0;
   active_during_iteration = false;
 
-  if ( ! is_pet() && primary_role() == ROLE_TANK )
+  if ( collected_data.health_changes.collect )
   {
     collected_data.health_changes.timeline.clear(); // Drop Data
     collected_data.health_changes.timeline_normalized.clear();
@@ -5101,7 +5106,7 @@ void collect_dmg_taken_data( player_t& p, action_state_t* s, double result_ignor
   p.collected_data.timeline_dmg_taken.add( p.sim -> current_time, s -> result_amount );
 
   // tank-specific data storage
-  if ( ! p.is_pet() && p.primary_role() == ROLE_TANK )
+  if ( p.collected_data.health_changes.collect )
   {
     if ( p.tmi_self_only || p.sim -> tmi_actor_only )
     {

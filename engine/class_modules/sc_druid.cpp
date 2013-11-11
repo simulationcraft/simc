@@ -11,25 +11,22 @@ namespace { // UNNAMED NAMESPACE
 // Druid
 // ==========================================================================
 
+// Forward declarations
 struct druid_t;
-
-struct natures_vigil_heal_proc_t;
 struct natures_vigil_damage_proc_t;
 struct ursocs_vigor_t;
 struct cenarion_ward_hot_t;
 struct leader_of_the_pack_t;
 struct yseras_gift_t;
+namespace buffs {
+struct heart_of_the_wild_buff_t;
+}
+namespace heals {
+struct natures_vigil_heal_proc_t;
+}
 
 struct combo_points_t
 {
-private:
-  druid_t& source;
-  player_t& target;
-
-  proc_t* proc;
-  proc_t* wasted;
-
-  int count;
 public:
   static const int max_combo_points = 5;
 
@@ -42,6 +39,14 @@ public:
 
   expr_t* count_expr() const
   { return make_ref_expr( "combo_points", count ); }
+private:
+  druid_t& source;
+  player_t& target;
+
+  proc_t* proc;
+  proc_t* wasted;
+
+  int count;
 };
 
 struct druid_td_t : public actor_pair_t
@@ -69,8 +74,6 @@ struct druid_td_t : public actor_pair_t
 
   druid_td_t( player_t& target, druid_t& source );
 
-  druid_t& p() const;
-
   bool hot_ticking()
   {
     return dots.regrowth      -> ticking ||
@@ -89,7 +92,6 @@ struct druid_td_t : public actor_pair_t
 struct druid_t : public player_t
 {
 public:
-  struct heart_of_the_wild_buff_t;
 
   // Active
   action_t* t16_2pc_starfall_bolt;
@@ -98,7 +100,7 @@ public:
   struct active_actions_t
   {
     natures_vigil_damage_proc_t* natures_vigil_damage_proc;
-    natures_vigil_heal_proc_t*   natures_vigil_heal_proc;
+    heals::natures_vigil_heal_proc_t*   natures_vigil_heal_proc;
     ursocs_vigor_t*              ursocs_vigor;
     cenarion_ward_hot_t*         cenarion_ward_hot;
     leader_of_the_pack_t*        leader_of_the_pack;
@@ -178,7 +180,7 @@ public:
     buff_t* revitalize;
     buff_t* wild_mushroom;
     buff_t* tree_of_life;
-    heart_of_the_wild_buff_t* heart_of_the_wild;
+    buffs::heart_of_the_wild_buff_t* heart_of_the_wild;
   } buff;
 
   // Cooldowns
@@ -485,57 +487,6 @@ public:
     w.max_dmg *= mod;
     w.damage *= mod;
     w.swing_time = timespan_t::from_seconds( swing_time );
-  }
-};
-
-// ==========================================================================
-// Nature's Vigil Procs
-// ==========================================================================
-
-// Heal Proc ================================================================
-struct natures_vigil_heal_proc_t : public heal_t
-{
-  natures_vigil_heal_proc_t( druid_t* p ) :
-    heal_t( "natures_vigil_proc", p, spell_data_t::nil() ) //p -> find_spell( 124988 )
-  {
-    background = proc = true;
-    may_crit = may_miss = false;
-    trigger_gcd         = timespan_t::zero();
-    base_multiplier  = p -> find_spell( 124974 ) -> effectN( 3 ).percent();
-  }
-
-  void trigger( const action_state_t& s )
-  {
-    // set the heal size to be fixed based on the result of the action
-    base_dd_min = s.result_amount * base_multiplier;
-    base_dd_max = s.result_amount * base_multiplier;
-
-    target = find_lowest_target();
-
-    if ( target )
-      execute();
-  }
-
-private:
-  player_t* find_lowest_target()
-  {
-    // Ignoring range for the time being
-    double lowest_health_pct_found = 100.1;
-    player_t* lowest_player_found = nullptr;
-
-    for ( size_t i = 0, size = sim -> player_no_pet_list.size(); i < size; i++ )
-    {
-      player_t* p = sim -> player_no_pet_list[ i ];
-
-      // check their health against the current lowest
-      if ( p -> health_percentage() < lowest_health_pct_found )
-      {
-        // if this player is lower, make them the current lowest
-        lowest_health_pct_found = p -> health_percentage();
-        lowest_player_found = p;
-      }
-    }
-    return lowest_player_found;
   }
 };
 
@@ -1184,7 +1135,457 @@ struct force_of_nature_guardian_t : public pet_t
 
 } // end namespace pets
 
-struct druid_t::heart_of_the_wild_buff_t : public buff_t
+namespace buffs {
+
+template <typename BuffBase>
+struct druid_buff_t : public BuffBase
+{
+protected:
+  typedef druid_buff_t base_t;
+  druid_t& druid;
+
+  // Used when shapeshifting to switch to a new attack & schedule it to occur
+  // when the current swing timer would have ended.
+  void swap_melee( attack_t* new_attack, weapon_t& new_weapon )
+  {
+    if ( druid.main_hand_attack && druid.main_hand_attack -> execute_event )
+    {
+      new_attack -> base_execute_time = new_weapon.swing_time;
+      new_attack -> execute_event = new_attack -> start_action_execute_event(
+                                      druid.main_hand_attack -> execute_event -> remains() );
+      druid.main_hand_attack -> cancel();
+    }
+    new_attack -> weapon = &new_weapon;
+    druid.main_hand_attack = new_attack;
+    druid.main_hand_weapon = new_weapon;
+  }
+
+public:
+  druid_buff_t( druid_t& p, const buff_creator_basics_t& params ) :
+    BuffBase( params ),
+    druid( p )
+  { }
+
+  druid_t& p() const { return druid; }
+};
+
+// Barkskin Buff =================================================
+
+struct barkskin_t : public druid_buff_t < buff_t >
+{
+  druid_t* p() const
+  { return static_cast<druid_t*>( player ); }
+
+  struct frenzied_regeneration_2pc_t : public heal_t
+  {
+    double maximum_rage_cost;
+
+    frenzied_regeneration_2pc_t( druid_t* p ) :
+      heal_t( "frenzied_regeneration", p, p -> find_class_spell( "Frenzied Regeneration" ) )
+    {
+      base_dd_min = base_dd_max = direct_power_mod = 0.0;
+
+      harmful    = false;
+      special    = false;
+      proc       = true;
+      background = true;
+
+      if ( p -> set_bonus.tier16_2pc_tank() )
+        p -> active.ursocs_vigor = new ursocs_vigor_t( p );
+
+      maximum_rage_cost = data().effectN( 1 ).base_value();
+    }
+
+    druid_t* p() const
+    { return static_cast<druid_t*>( player ); }
+
+    virtual double cost()
+    {
+      return 0.0;
+    }
+
+    virtual double base_da_min( const action_state_t* )
+    {
+        // max(2.2*(AP - 2*Agi), 2.5*Sta)
+        double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
+        double agility = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
+        double stamina = p() -> composite_attribute( ATTR_STAMINA ) * p() -> composite_attribute_multiplier( ATTR_STAMINA );
+        return std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
+               * ( 20 / maximum_rage_cost );
+    }
+
+    virtual double base_da_max( const action_state_t* )
+    {
+        // max(2.2*(AP - 2*Agi), 2.5*Sta)
+        double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
+        double agility = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
+        double stamina = p() -> composite_attribute( ATTR_STAMINA ) * p() -> composite_attribute_multiplier( ATTR_STAMINA );
+        return std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
+               * ( 20 / maximum_rage_cost );
+    }
+
+    virtual void execute()
+    {
+      heal_t::execute();
+
+      if ( p() -> set_bonus.tier16_4pc_tank() )
+        p() -> active.ursocs_vigor -> trigger_hot( 20.0 );
+    }
+
+    virtual bool ready()
+    {
+      return true;
+    }
+  };
+
+  action_t* frenzied_regeneration;
+
+  barkskin_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "barkskin", p.find_class_spell( "Barkskin" ) ) ),
+    frenzied_regeneration( nullptr )
+  {
+    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
+
+    if ( player -> set_bonus.tier16_2pc_tank() )
+      frenzied_regeneration = new frenzied_regeneration_2pc_t( static_cast<druid_t*>( player ) );
+  }
+
+  virtual void expire_override()
+  {
+    buff_t::expire_override();
+
+    if ( p() -> set_bonus.tier16_2pc_tank() )
+    {
+      // Trigger 3 seconds of Savage Defense
+      if ( p() -> buff.savage_defense -> check() )
+        p() -> buff.savage_defense -> extend_duration( p(), timespan_t::from_seconds( 3.0 ) );
+      else
+        p() -> buff.savage_defense -> trigger( 1, buff_t::DEFAULT_VALUE(), 1, timespan_t::from_seconds( 3.0 ) );
+
+      // Trigger 4pc equal to the consumption of 30 rage.
+      if ( p() -> set_bonus.tier16_4pc_tank() )
+        p() -> active.ursocs_vigor -> trigger_hot( 30.0 );
+
+      // Trigger a 20 rage Frenzied Regeneration
+      frenzied_regeneration -> execute();
+    }
+  }
+};
+
+// Celestial Alignment Buff =================================================
+
+struct celestial_alignment_t : public druid_buff_t < buff_t >
+{
+  celestial_alignment_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "celestial_alignment", p.find_class_spell( "Celestial Alignment" ) ) )
+  {
+    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
+  }
+
+  virtual void expire_override()
+  {
+    buff_t::expire_override();
+
+    druid_t* p = static_cast<druid_t*>( player );
+    p -> buff.eclipse_lunar -> expire();
+    p -> buff.eclipse_solar -> expire();
+  }
+};
+
+// Bear Form
+
+struct bear_form_t : public druid_buff_t< buff_t >
+{
+public:
+  bear_form_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "bear_form", p.find_class_spell( "Bear Form" ) ) ),
+    rage_spell( p.find_spell( 17057 ) )
+  {
+    // HOTW will require invalidation of hit
+    if ( druid.talent.heart_of_the_wild -> ok() )
+    {
+      add_invalidate( CACHE_HIT );
+      add_invalidate( CACHE_EXP );
+    }
+    add_invalidate( CACHE_AGILITY );
+    add_invalidate( CACHE_ATTACK_POWER );
+    add_invalidate( CACHE_HASTE );
+    add_invalidate( CACHE_CRIT );
+    add_invalidate( CACHE_STAMINA );
+    add_invalidate( CACHE_ARMOR );
+  }
+
+  virtual void expire_override()
+  {
+    base_t::expire_override();
+
+    druid.main_hand_weapon = druid.caster_form_weapon;
+
+    sim -> auras.critical_strike -> decrement();
+
+    druid.player_t::recalculate_resource_max( RESOURCE_HEALTH );
+
+    if ( druid.specialization() == DRUID_GUARDIAN )
+      druid.vengeance_stop();
+
+    druid.current.attack_power_per_agility -= 2.0;
+  }
+
+  virtual void start( int stacks, double value, timespan_t duration )
+  {
+    druid.buff.moonkin_form -> expire();
+    druid.buff.cat_form -> expire();
+
+    if ( druid.specialization() == DRUID_GUARDIAN )
+      druid.vengeance_start();
+
+    swap_melee( druid.bear_melee_attack, druid.bear_weapon );
+
+    // Set rage to 0 and then gain rage to 10
+    druid.resource_loss( RESOURCE_RAGE, druid.resources.current[ RESOURCE_RAGE ] );
+    druid.resource_gain( RESOURCE_RAGE, rage_spell -> effectN( 1 ).base_value() / 10.0, druid.gain.bear_form );
+    // TODO: Clear rage on bear form exit instead of entry.
+
+    base_t::start( stacks, value, duration );
+
+    if ( ! sim -> overrides.critical_strike )
+      sim -> auras.critical_strike -> trigger();
+
+    druid.player_t::recalculate_resource_max( RESOURCE_HEALTH );
+
+    druid.current.attack_power_per_agility += 2.0;
+  }
+private:
+  const spell_data_t* rage_spell;
+};
+
+// Cat Form
+
+struct cat_form_t : public druid_buff_t< buff_t >
+{
+  cat_form_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "cat_form", p.find_class_spell( "Cat Form" ) ) )
+  {
+    // HOTW will require invalidation of various things, as the actor may
+    // change shapeshift forms during HoTW, that affects the stats
+    if ( druid.talent.heart_of_the_wild -> ok() )
+    {
+      add_invalidate( CACHE_HIT );
+      add_invalidate( CACHE_EXP );
+    }
+    add_invalidate( CACHE_AGILITY );
+    add_invalidate( CACHE_ATTACK_POWER );
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  }
+
+  virtual void expire_override()
+  {
+    base_t::expire_override();
+
+    druid.main_hand_weapon = druid.caster_form_weapon;
+
+    sim -> auras.critical_strike -> decrement();
+
+    druid.current.attack_power_per_agility -= 2.0;
+  }
+
+  virtual void start( int stacks, double value, timespan_t duration )
+  {
+    druid.buff.bear_form -> expire();
+    druid.buff.moonkin_form -> expire();
+
+    swap_melee( druid.cat_melee_attack, druid.cat_weapon );
+
+    base_t::start( stacks, value, duration );
+
+    if ( ! sim -> overrides.critical_strike )
+      sim -> auras.critical_strike -> trigger();
+
+    druid.current.attack_power_per_agility += 2.0;
+  }
+};
+
+// Moonkin Form
+
+struct moonkin_form_t : public druid_buff_t< buff_t >
+{
+  moonkin_form_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "moonkin_form", p.find_class_spell( "Moonkin Form" ) )
+               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
+  { }
+
+  virtual void expire_override()
+  {
+    base_t::expire_override();
+
+    sim -> auras.spell_haste -> decrement();
+  }
+
+  virtual void start( int stacks, double value, timespan_t duration )
+  {
+    druid.buff.bear_form -> expire();
+    druid.buff.cat_form  -> expire();
+
+    base_t::start( stacks, value, duration );
+
+    if ( ! sim -> overrides.spell_haste )
+      sim -> auras.spell_haste -> trigger();
+  }
+};
+
+// Innervate Buff ===========================================================
+
+struct innervate_t : public buff_t
+{
+  struct innervate_event_t : public event_t
+  {
+    innervate_event_t ( player_t& p ) :
+      event_t( p, "innervate" )
+    {
+      add_event( timespan_t::from_seconds( 1.0 ) );
+    }
+
+    virtual void execute()
+    {
+      if ( p() -> buffs.innervate -> check() )
+      {
+        p() -> resource_gain( RESOURCE_MANA,
+                              p() -> buffs.innervate -> value(),
+                              p() -> gains.innervate );
+
+        new ( sim() ) innervate_event_t( *p() );
+      }
+    }
+  };
+
+  innervate_t( player_t* player ) :
+    buff_t ( buff_creator_t( player, "innervate", player -> find_spell( 29166 ) ) )
+  {
+    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
+  }
+
+  virtual void start( int stacks, double value, timespan_t duration )
+  {
+    new ( *sim ) innervate_event_t( *player );
+
+    buff_t::start( stacks, value, duration );
+  }
+};
+
+// Eclipse (Lunar) Buff =================================================
+
+struct eclipse_lunar_t : public druid_buff_t < buff_t >
+{
+  eclipse_lunar_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "lunar_eclipse", p.find_spell( 48518 ) )
+               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
+  {}
+
+  druid_t* p() const
+  { return static_cast<druid_t*>( player ); }
+
+  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
+  {
+    if ( p() -> buff.dream_of_cenarius -> up() )
+    {
+      p() -> buff.dream_of_cenarius_eclipse -> trigger();
+      p() -> buff.dream_of_cenarius -> expire();
+    }
+
+    return druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
+  }
+
+  virtual void expire_override()
+  {
+    druid_buff_t<buff_t>::expire_override();
+
+    p() -> buff.dream_of_cenarius_eclipse -> expire();
+  }
+};
+
+// Eclipse (Solar) Buff =================================================
+
+struct eclipse_solar_t : public druid_buff_t < buff_t >
+{
+  eclipse_solar_t( druid_t& p ) :
+    base_t( p, buff_creator_t( &p, "solar_eclipse", p.find_spell( 48517 ) )
+               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
+  {}
+
+  druid_t* p() const
+  { return static_cast<druid_t*>( player ); }
+
+  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
+  {
+    if ( p() -> buff.dream_of_cenarius -> up() )
+    {
+      p() -> buff.dream_of_cenarius_eclipse -> trigger();
+      p() -> buff.dream_of_cenarius -> expire();
+    }
+
+    return druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
+  }
+
+  virtual void expire_override()
+  {
+    druid_buff_t<buff_t>::expire_override();
+
+    p() -> buff.dream_of_cenarius_eclipse -> expire();
+  }
+};
+
+// Might of Ursoc Buff ======================================================
+
+struct might_of_ursoc_t : public buff_t
+{
+  double percent_gain;
+  int health_gain;
+
+  might_of_ursoc_t( druid_t* p, const uint32_t id, const std::string& /* n */ ) :
+    buff_t( buff_creator_t( p, "might_of_ursoc", p -> find_spell( id ) ) ),
+    health_gain( 0 )
+  {
+    percent_gain = data().effectN( 1 ).percent() + p -> glyph.might_of_ursoc -> effectN( 1 ).percent();
+  }
+
+  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
+  {
+    health_gain = ( int ) floor( player -> resources.max[ RESOURCE_HEALTH ] * percent_gain );
+    player -> stat_gain( STAT_MAX_HEALTH, health_gain );
+
+    return buff_t::trigger( stacks, value, chance, duration );
+  }
+
+  virtual void expire_override()
+  {
+    player -> stat_loss( STAT_MAX_HEALTH, health_gain );
+
+    buff_t::expire_override();
+  }
+};
+
+// Tooth and Claw Absorb Buff
+
+struct tooth_and_claw_absorb_t : public absorb_buff_t
+{
+  tooth_and_claw_absorb_t( druid_t* p ) :
+    absorb_buff_t( absorb_buff_creator_t( p, "tooth_and_claw_absorb", p -> find_spell( 135597 ) )
+                   .school( SCHOOL_PHYSICAL )
+                   .source( p -> get_stats( "tooth_and_claw" ) )
+                   .gain( p -> get_gain( "tooth_and_claw" ) )
+    )
+  {}
+
+  druid_t* p() const
+  { return static_cast<druid_t*>( player ); }
+
+  virtual void absorb_used( double /* amount */ )
+  {
+    p() -> buff.tooth_and_claw_absorb -> expire();
+  }
+};
+
+struct heart_of_the_wild_buff_t : public druid_buff_t < buff_t >
 {
 private:
   const spell_data_t* select_spell( const druid_t& p )
@@ -1207,10 +1608,9 @@ private:
   bool all_but( specialization_e spec )
   { return check() > 0 && player -> specialization() != spec; }
 
-  druid_t& p() const { return *static_cast<druid_t*>( player ); }
 public:
   heart_of_the_wild_buff_t( druid_t& p ) :
-    buff_t( buff_creator_t( &p, "heart_of_the_wild" )
+    base_t( p, buff_creator_t( &p, "heart_of_the_wild" )
             .spell( select_spell( p ) ) )
   {
     add_invalidate( CACHE_AGILITY );
@@ -1332,6 +1732,7 @@ public:
     return 0.0;
   }
 };
+} // end namespace buffs
 
 // Template for common druid action code. See priest_action_t.
 template <class Base>
@@ -3782,6 +4183,57 @@ struct wild_growth_t : public druid_heal_t
   }
 };
 
+// ==========================================================================
+// Nature's Vigil Procs
+// ==========================================================================
+
+// Heal Proc ================================================================
+struct natures_vigil_heal_proc_t : public heal_t
+{
+  natures_vigil_heal_proc_t( druid_t* p ) :
+    heal_t( "natures_vigil_proc", p, spell_data_t::nil() ) //p -> find_spell( 124988 )
+  {
+    background = proc = true;
+    may_crit = may_miss = false;
+    trigger_gcd         = timespan_t::zero();
+    base_multiplier  = p -> find_spell( 124974 ) -> effectN( 3 ).percent();
+  }
+
+  void trigger( const action_state_t& s )
+  {
+    // set the heal size to be fixed based on the result of the action
+    base_dd_min = s.result_amount * base_multiplier;
+    base_dd_max = s.result_amount * base_multiplier;
+
+    target = find_lowest_target();
+
+    if ( target )
+      execute();
+  }
+
+private:
+  player_t* find_lowest_target()
+  {
+    // Ignoring range for the time being
+    double lowest_health_pct_found = 100.1;
+    player_t* lowest_player_found = nullptr;
+
+    for ( size_t i = 0, size = sim -> player_no_pet_list.size(); i < size; i++ )
+    {
+      player_t* p = sim -> player_no_pet_list[ i ];
+
+      // check their health against the current lowest
+      if ( p -> health_percentage() < lowest_health_pct_found )
+      {
+        // if this player is lower, make them the current lowest
+        lowest_health_pct_found = p -> health_percentage();
+        lowest_player_found = p;
+      }
+    }
+    return lowest_player_found;
+  }
+};
+
 } // end namespace heals
 
 namespace spells {
@@ -5392,455 +5844,6 @@ struct wrath_t : public druid_spell_t
 
 } // end namespace spells
 
-namespace buffs {
-
-template <typename BuffBase>
-struct druid_buff_t : public BuffBase
-{
-protected:
-  typedef druid_buff_t base_t;
-  druid_t& druid;
-
-  // Used when shapeshifting to switch to a new attack & schedule it to occur
-  // when the current swing timer would have ended.
-  void swap_melee( attack_t* new_attack, weapon_t& new_weapon )
-  {
-    if ( druid.main_hand_attack && druid.main_hand_attack -> execute_event )
-    {
-      new_attack -> base_execute_time = new_weapon.swing_time;
-      new_attack -> execute_event = new_attack -> start_action_execute_event(
-                                      druid.main_hand_attack -> execute_event -> remains() );
-      druid.main_hand_attack -> cancel();
-    }
-    new_attack -> weapon = &new_weapon;
-    druid.main_hand_attack = new_attack;
-    druid.main_hand_weapon = new_weapon;
-  }
-
-public:
-  druid_buff_t( druid_t& p, const buff_creator_basics_t& params ) :
-    BuffBase( params ),
-    druid( p )
-  { }
-};
-
-// Barkskin Buff =================================================
-
-struct barkskin_t : public druid_buff_t < buff_t >
-{
-  druid_t* p() const
-  { return static_cast<druid_t*>( player ); }
-
-  struct frenzied_regeneration_2pc_t : public heal_t
-  {
-    double maximum_rage_cost;
-
-    frenzied_regeneration_2pc_t( druid_t* p ) :
-      heal_t( "frenzied_regeneration", p, p -> find_class_spell( "Frenzied Regeneration" ) )
-    {
-      base_dd_min = base_dd_max = direct_power_mod = 0.0;
-
-      harmful    = false;
-      special    = false;
-      proc       = true;
-      background = true;
-
-      if ( p -> set_bonus.tier16_2pc_tank() )
-        p -> active.ursocs_vigor = new ursocs_vigor_t( p );
-
-      maximum_rage_cost = data().effectN( 1 ).base_value();
-    }
-
-    druid_t* p() const
-    { return static_cast<druid_t*>( player ); }
-
-    virtual double cost()
-    {
-      return 0.0;
-    }
-
-    virtual double base_da_min( const action_state_t* )
-    {
-        // max(2.2*(AP - 2*Agi), 2.5*Sta)
-        double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
-        double agility = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
-        double stamina = p() -> composite_attribute( ATTR_STAMINA ) * p() -> composite_attribute_multiplier( ATTR_STAMINA );
-        return std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
-               * ( 20 / maximum_rage_cost );
-    }
-
-    virtual double base_da_max( const action_state_t* )
-    {
-        // max(2.2*(AP - 2*Agi), 2.5*Sta)
-        double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
-        double agility = p() -> composite_attribute( ATTR_AGILITY ) * p() -> composite_attribute_multiplier( ATTR_AGILITY );
-        double stamina = p() -> composite_attribute( ATTR_STAMINA ) * p() -> composite_attribute_multiplier( ATTR_STAMINA );
-        return std::max( ( ap - 2 * agility ) * data().effectN( 2 ).percent(), stamina * data().effectN( 3 ).percent() )
-               * ( 20 / maximum_rage_cost );
-    }
-
-    virtual void execute()
-    {
-      heal_t::execute();
-
-      if ( p() -> set_bonus.tier16_4pc_tank() )
-        p() -> active.ursocs_vigor -> trigger_hot( 20.0 );
-    }
-
-    virtual bool ready()
-    {
-      return true;
-    }
-  };
-  
-  action_t* frenzied_regeneration;
-  
-  barkskin_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "barkskin", p.find_class_spell( "Barkskin" ) ) ),
-    frenzied_regeneration( nullptr )
-  {
-    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-
-    if ( player -> set_bonus.tier16_2pc_tank() )
-      frenzied_regeneration = new frenzied_regeneration_2pc_t( static_cast<druid_t*>( player ) );
-  }
-
-  virtual void expire_override()
-  {
-    buff_t::expire_override();
-
-    if ( p() -> set_bonus.tier16_2pc_tank() )
-    {
-      // Trigger 3 seconds of Savage Defense
-      if ( p() -> buff.savage_defense -> check() )
-        p() -> buff.savage_defense -> extend_duration( p(), timespan_t::from_seconds( 3.0 ) );
-      else
-        p() -> buff.savage_defense -> trigger( 1, buff_t::DEFAULT_VALUE(), 1, timespan_t::from_seconds( 3.0 ) );
-
-      // Trigger 4pc equal to the consumption of 30 rage.
-      if ( p() -> set_bonus.tier16_4pc_tank() )
-        p() -> active.ursocs_vigor -> trigger_hot( 30.0 );
-
-      // Trigger a 20 rage Frenzied Regeneration
-      frenzied_regeneration -> execute();
-    }
-  }
-};
-
-// Celestial Alignment Buff =================================================
-
-struct celestial_alignment_t : public druid_buff_t < buff_t >
-{
-  celestial_alignment_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "celestial_alignment", p.find_class_spell( "Celestial Alignment" ) ) )
-  {
-    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-  }
-
-  virtual void expire_override()
-  {
-    buff_t::expire_override();
-
-    druid_t* p = static_cast<druid_t*>( player );
-    p -> buff.eclipse_lunar -> expire();
-    p -> buff.eclipse_solar -> expire();
-  }
-};
-
-// Bear Form
-
-class bear_form_t : public druid_buff_t< buff_t >
-{
-  const spell_data_t* rage_spell;
-
-public:
-  bear_form_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "bear_form", p.find_class_spell( "Bear Form" ) ) ),
-    rage_spell( p.find_spell( 17057 ) )
-  {
-    // HOTW will require invalidation of hit
-    if ( druid.talent.heart_of_the_wild -> ok() )
-    {
-      add_invalidate( CACHE_HIT );
-      add_invalidate( CACHE_EXP );
-    }
-    add_invalidate( CACHE_AGILITY );
-    add_invalidate( CACHE_ATTACK_POWER );
-    add_invalidate( CACHE_HASTE );
-    add_invalidate( CACHE_CRIT );
-    add_invalidate( CACHE_STAMINA );
-    add_invalidate( CACHE_ARMOR );
-  }
-
-  virtual void expire_override()
-  {
-    base_t::expire_override();
-
-    druid.main_hand_weapon = druid.caster_form_weapon;
-
-    sim -> auras.critical_strike -> decrement();
-
-    druid.player_t::recalculate_resource_max( RESOURCE_HEALTH );
-
-    if ( druid.specialization() == DRUID_GUARDIAN )
-      druid.vengeance_stop();
-
-    druid.current.attack_power_per_agility -= 2.0;
-  }
-
-  virtual void start( int stacks, double value, timespan_t duration )
-  {
-    druid.buff.moonkin_form -> expire();
-    druid.buff.cat_form -> expire();
-
-    if ( druid.specialization() == DRUID_GUARDIAN )
-      druid.vengeance_start();
-
-    swap_melee( druid.bear_melee_attack, druid.bear_weapon );
-
-    // Set rage to 0 and then gain rage to 10
-    druid.resource_loss( RESOURCE_RAGE, druid.resources.current[ RESOURCE_RAGE ] );
-    druid.resource_gain( RESOURCE_RAGE, rage_spell -> effectN( 1 ).base_value() / 10.0, druid.gain.bear_form );
-    // TODO: Clear rage on bear form exit instead of entry.
-
-    base_t::start( stacks, value, duration );
-
-    if ( ! sim -> overrides.critical_strike )
-      sim -> auras.critical_strike -> trigger();
-
-    druid.player_t::recalculate_resource_max( RESOURCE_HEALTH );
-
-    druid.current.attack_power_per_agility += 2.0;
-  }
-};
-
-// Cat Form
-
-struct cat_form_t : public druid_buff_t< buff_t >
-{
-  cat_form_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "cat_form", p.find_class_spell( "Cat Form" ) ) )
-  {
-    // HOTW will require invalidation of various things, as the actor may
-    // change shapeshift forms during HoTW, that affects the stats
-    if ( druid.talent.heart_of_the_wild -> ok() )
-    {
-      add_invalidate( CACHE_HIT );
-      add_invalidate( CACHE_EXP );
-    }
-    add_invalidate( CACHE_AGILITY );
-    add_invalidate( CACHE_ATTACK_POWER );
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
-
-  virtual void expire_override()
-  {
-    base_t::expire_override();
-
-    druid.main_hand_weapon = druid.caster_form_weapon;
-
-    sim -> auras.critical_strike -> decrement();
-
-    druid.current.attack_power_per_agility -= 2.0;
-  }
-
-  virtual void start( int stacks, double value, timespan_t duration )
-  {
-    druid.buff.bear_form -> expire();
-    druid.buff.moonkin_form -> expire();
-
-    swap_melee( druid.cat_melee_attack, druid.cat_weapon );
-
-    base_t::start( stacks, value, duration );
-
-    if ( ! sim -> overrides.critical_strike )
-      sim -> auras.critical_strike -> trigger();
-
-    druid.current.attack_power_per_agility += 2.0;
-  }
-};
-
-// Moonkin Form
-
-struct moonkin_form_t : public druid_buff_t< buff_t >
-{
-  moonkin_form_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "moonkin_form", p.find_class_spell( "Moonkin Form" ) )
-               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
-  { }
-
-  virtual void expire_override()
-  {
-    base_t::expire_override();
-
-    sim -> auras.spell_haste -> decrement();
-  }
-
-  virtual void start( int stacks, double value, timespan_t duration )
-  {
-    druid.buff.bear_form -> expire();
-    druid.buff.cat_form  -> expire();
-
-    base_t::start( stacks, value, duration );
-
-    if ( ! sim -> overrides.spell_haste )
-      sim -> auras.spell_haste -> trigger();
-  }
-};
-
-// Innervate Buff ===========================================================
-
-struct innervate_t : public buff_t
-{
-  struct innervate_event_t : public event_t
-  {
-    innervate_event_t ( player_t& p ) :
-      event_t( p, "innervate" )
-    {
-      add_event( timespan_t::from_seconds( 1.0 ) );
-    }
-
-    virtual void execute()
-    {
-      if ( p() -> buffs.innervate -> check() )
-      {
-        p() -> resource_gain( RESOURCE_MANA,
-                              p() -> buffs.innervate -> value(),
-                              p() -> gains.innervate );
-
-        new ( sim() ) innervate_event_t( *p() );
-      }
-    }
-  };
-
-  innervate_t( player_t* player ) :
-    buff_t ( buff_creator_t( player, "innervate", player -> find_spell( 29166 ) ) )
-  {
-    cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
-  }
-
-  virtual void start( int stacks, double value, timespan_t duration )
-  {
-    new ( *sim ) innervate_event_t( *player );
-
-    buff_t::start( stacks, value, duration );
-  }
-};
-
-// Eclipse (Lunar) Buff =================================================
-
-struct eclipse_lunar_t : public druid_buff_t < buff_t >
-{
-  eclipse_lunar_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "lunar_eclipse", p.find_spell( 48518 ) )
-               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
-  {}
-
-  druid_t* p() const
-  { return static_cast<druid_t*>( player ); }
-
-  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
-  {
-    if ( p() -> buff.dream_of_cenarius -> up() )
-    {
-      p() -> buff.dream_of_cenarius_eclipse -> trigger();
-      p() -> buff.dream_of_cenarius -> expire();
-    }
-
-    return druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
-  }
-
-  virtual void expire_override()
-  {
-    druid_buff_t<buff_t>::expire_override();
-
-    p() -> buff.dream_of_cenarius_eclipse -> expire();
-  }
-};
-
-// Eclipse (Solar) Buff =================================================
-
-struct eclipse_solar_t : public druid_buff_t < buff_t >
-{
-  eclipse_solar_t( druid_t& p ) :
-    base_t( p, buff_creator_t( &p, "solar_eclipse", p.find_spell( 48517 ) )
-               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER ) )
-  {}
-
-  druid_t* p() const
-  { return static_cast<druid_t*>( player ); }
-
-  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
-  {
-    if ( p() -> buff.dream_of_cenarius -> up() )
-    {
-      p() -> buff.dream_of_cenarius_eclipse -> trigger();
-      p() -> buff.dream_of_cenarius -> expire();
-    }
-
-    return druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
-  }
-
-  virtual void expire_override()
-  {
-    druid_buff_t<buff_t>::expire_override();
-
-    p() -> buff.dream_of_cenarius_eclipse -> expire();
-  }
-};
-
-// Might of Ursoc Buff ======================================================
-
-struct might_of_ursoc_t : public buff_t
-{
-  double percent_gain;
-  int health_gain;
-
-  might_of_ursoc_t( druid_t* p, const uint32_t id, const std::string& /* n */ ) :
-    buff_t( buff_creator_t( p, "might_of_ursoc", p -> find_spell( id ) ) ),
-    health_gain( 0 )
-  {
-    percent_gain = data().effectN( 1 ).percent() + p -> glyph.might_of_ursoc -> effectN( 1 ).percent();
-  }
-
-  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
-  {
-    health_gain = ( int ) floor( player -> resources.max[ RESOURCE_HEALTH ] * percent_gain );
-    player -> stat_gain( STAT_MAX_HEALTH, health_gain );
-
-    return buff_t::trigger( stacks, value, chance, duration );
-  }
-
-  virtual void expire_override()
-  {
-    player -> stat_loss( STAT_MAX_HEALTH, health_gain );
-
-    buff_t::expire_override();
-  }
-};
-
-// Tooth and Claw Absorb Buff
-
-struct tooth_and_claw_absorb_t : public absorb_buff_t
-{
-  tooth_and_claw_absorb_t( druid_t* p ) :
-    absorb_buff_t( absorb_buff_creator_t( p, "tooth_and_claw_absorb", p -> find_spell( 135597 ) )
-                   .school( SCHOOL_PHYSICAL )
-                   .source( p -> get_stats( "tooth_and_claw" ) )
-                   .gain( p -> get_gain( "tooth_and_claw" ) )
-    )
-  {}
-
-  druid_t* p() const
-  { return static_cast<druid_t*>( player ); }
-
-  virtual void absorb_used( double /* amount */ )
-  {
-    p() -> buff.tooth_and_claw_absorb -> expire();
-  }
-};
-
-} // end namespace buffs
 
 
 // ==========================================================================
@@ -6068,7 +6071,7 @@ void druid_t::init_spells()
   if ( talent.natures_vigil -> ok() )
   {
     active.natures_vigil_damage_proc = new natures_vigil_damage_proc_t( this );
-    active.natures_vigil_heal_proc   = new natures_vigil_heal_proc_t( this );
+    active.natures_vigil_heal_proc   = new heals::natures_vigil_heal_proc_t( this );
   }
   if ( talent.cenarion_ward -> ok() )
     active.cenarion_ward_hot = new cenarion_ward_hot_t( this );
@@ -7768,9 +7771,6 @@ int combo_points_t::consume( const std::string* source_name )
   count = 0;
   return tmp_count;
 }
-
-druid_t& druid_td_t::p() const
-{ return *static_cast<druid_t*>( source ); }
 
 // DRUID MODULE INTERFACE ===================================================
 
