@@ -3708,8 +3708,8 @@ void warrior_t::init_action_list()
       st_list_str += "/storm_bolt,if=enabled&buff.cooldown_reduction.down";
       st_list_str += "/execute,if=debuff.colossus_smash.up|rage>70|target.time_to_die<12";
       st_list_str += "/raging_blow,if=target.health.pct<20|buff.raging_blow.stack=2|(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3))";
-      st_list_str += "/wild_strike,if=buff.bloodsurge.up";
-      st_list_str += "/bladestorm,if=enabled&cooldown.bloodthirst.remains>2";
+      st_list_str += "/bladestorm,if=enabled";
+	  st_list_str += "/wild_strike,if=buff.bloodsurge.up";
       st_list_str += "/raging_blow,if=cooldown.colossus_smash.remains>=3";
       st_list_str += "/shockwave,if=enabled";
       st_list_str += "/heroic_throw,if=debuff.colossus_smash.down&rage<60";
