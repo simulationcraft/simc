@@ -1596,7 +1596,7 @@ bool sim_t::iterate()
     // Load Balancing
     {
       // Select the work queue on the main thread
-      work_queue_t& work_queue = parent ? parent -> work_queue : this -> work_queue;
+      work_queue_t& work_queue = (thread_index != 0) ? parent -> work_queue : this -> work_queue;
 
       auto_lock_t( work_queue.mutex );
 
