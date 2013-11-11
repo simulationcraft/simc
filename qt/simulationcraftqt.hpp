@@ -388,10 +388,12 @@ class SC_SimulateTab : public QTabWidget
 {
   Q_OBJECT
   QWidget* addTabWidget;
+  QToolButton* closeAllTabWidget;
 public:
   SC_SimulateTab( QWidget* parent = nullptr ) :
     QTabWidget( parent ),
-    addTabWidget( new QWidget( this ) )
+    addTabWidget( new QWidget( this ) ),
+    closeAllTabWidget ( new QToolButton ( this ) )
   {
     setTabsClosable( true );
    // setMovable( true ); # Would need to disallow moving the + tab, or to the right of it. That would require subclassing tabbar
@@ -399,9 +401,17 @@ public:
     int i = addTab( addTabWidget, QIcon( ":/icon/addtab.png" ), "" );
     tabBar() -> setTabButton( i, QTabBar::LeftSide, nullptr );
     tabBar() -> setTabButton( i, QTabBar::RightSide, nullptr );
-    connect( this, SIGNAL( currentChanged(int) ), this, SLOT( addNewTab(int) ) );
-    connect( this, SIGNAL( tabCloseRequested( int ) ), this, SLOT( TabCloseRequest( int ) ) );
+    QIcon closeAllTabWidgetIcon( ":/icon/closealltabs.png" );
+    if ( closeAllTabWidgetIcon.pixmap( QSize( 64, 64 ) ).isNull() ) // icon failed to load
+      closeAllTabWidget -> setText ( tr( "Close All Tabs" ) );
+    else
+      closeAllTabWidget -> setIcon ( closeAllTabWidgetIcon );
+    closeAllTabWidget -> setAutoRaise( true );
+    setCornerWidget ( closeAllTabWidget ); // default to Qt::TopRightCorner
 
+    connect( closeAllTabWidget, SIGNAL( clicked( bool ) ), this, SLOT( CloseAllTabsRequest( bool ) ) );
+    connect( this, SIGNAL( currentChanged( int ) ), this, SLOT( addNewTab( int ) ) );
+    connect( this, SIGNAL( tabCloseRequested( int ) ), this, SLOT( TabCloseRequest( int ) ) );
   }
 
   static void format_document( SC_TextEdit* /*s*/ )
@@ -452,6 +462,37 @@ public:
     SC_TextEdit* current_s = static_cast<SC_TextEdit*>( currentWidget() );
     current_s -> append( text );
     format_document( current_s );
+  }
+  void close_All_Tabs()
+  {
+    QList < QWidget* > specialTabsList;
+    specialTabsList.append( addTabWidget );
+    // add more special widgets to never delete here
+    int totalTabsToDelete = count();
+    for ( int i = 0; i < totalTabsToDelete; ++i )
+    {
+      bool deleteIndexOk = false;
+      int indexToDelete = 0;
+      // look for a tab not in the specialTabsList to delete
+      while ( ! deleteIndexOk && indexToDelete < count() )
+      {
+        assert( indexToDelete >= count() );
+        if ( specialTabsList.contains( widget( indexToDelete ) ) )
+        {
+          deleteIndexOk = false;
+          indexToDelete++;
+        }
+        else
+        {
+          deleteIndexOk = true;
+        }
+      }
+      if ( deleteIndexOk )
+      {
+        assert( specialTabsList.contains( widget( indexToDelete ) ) == false );
+        removeTab( indexToDelete );
+      }
+    }
   }
 protected:
   virtual void keyPressEvent( QKeyEvent* e )
@@ -514,6 +555,12 @@ public slots:
       insertTab( index, s, defaultSimulateTabTitle );
       setCurrentIndex( index);
     }
+  }
+  void CloseAllTabsRequest( bool /* clicked */ )
+  {
+    int confirm = QMessageBox::warning( this, tr( "Close ALL Simulate Tabs?" ), tr( "Do you really want to close ALL simulation profiles?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+    if ( confirm == QMessageBox::Yes )
+      close_All_Tabs();
   }
 };
 
