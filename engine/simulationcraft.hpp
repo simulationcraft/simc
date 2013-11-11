@@ -2760,6 +2760,11 @@ public:
   std::vector<sim_t*> children; // Manual delete!
   int thread_index;
   sc_thread_t::priority_e thread_priority;
+  struct work_queue_t {
+    mutex_t mutex;
+    int iterations_to_process;
+    work_queue_t() : mutex(), iterations_to_process( 0 ) {}
+  } work_queue;
 
   virtual void run();
 

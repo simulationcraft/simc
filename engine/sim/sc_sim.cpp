@@ -904,7 +904,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   global_item_upgrade_level( 0 ),
   report_information( report_information_t() ),
   // Multi-Threading
-  threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::NORMAL ),
+  threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::NORMAL ), work_queue(),
   spell_query( 0 ), spell_query_level( MAX_LEVEL )
 {
   item_db_sources.assign( range::begin( default_item_db_sources ),
@@ -1585,12 +1585,33 @@ bool sim_t::iterate()
 
   progress_bar.init();
 
-  for ( int i = 0; i < iterations; i++ )
+  for( int i = 0; true; ++i )
   {
     if ( canceled )
     {
       iterations = current_iteration + 1;
       break;
+    }
+
+    // Load Balancing
+    {
+      // Select the work queue on the main thread
+      work_queue_t& work_queue = parent ? parent -> work_queue : this -> work_queue;
+
+      auto_lock_t( work_queue.mutex );
+
+
+      // Check whether we have work left to continue or not
+      if ( work_queue.iterations_to_process > 0 )
+      {
+        // We're good to go for another iteration
+        --work_queue.iterations_to_process;
+      }
+      else
+      {
+        // No more work left to do, break
+        break;
+      }
     }
 
     if ( progress_bar.update() )
@@ -2217,6 +2238,9 @@ bool sim_t::setup( sim_control_t* c )
 
     threads = 1;
   }
+
+  auto_lock_t( work_queue.mutex );
+  work_queue.iterations_to_process = iterations;
 
   return true;
 }
