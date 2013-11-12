@@ -598,7 +598,7 @@ player_t::player_t( sim_t*             s,
   race( r ),
   role( ROLE_HYBRID ),
   level( default_level ),
-  party( 0 ), member( 0 ),
+  party( 0 ),
   ready_type( READY_POLL ),
   _spec( SPEC_NONE ),
   bugs( true ),
@@ -917,7 +917,6 @@ static bool init_parties( sim_t* sim )
       {
         player_t* p = sim -> player_list[ i ];
         p -> party = 1;
-        p -> member = member_index++;
       }
     }
     else
@@ -936,12 +935,10 @@ static bool init_parties( sim_t* sim )
           return false;
         }
         p -> party = party_index;
-        p -> member = member_index++;
         for ( size_t i = 0; i < p -> pet_list.size(); ++i )
         {
           pet_t* pet = p -> pet_list[ i ];
           pet -> party = party_index;
-          pet -> member = member_index++;
         }
       }
     }

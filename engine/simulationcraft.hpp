@@ -4045,7 +4045,7 @@ struct player_t : public actor_t
   race_e       race;
   role_e       role;
   int          level;
-  int          party, member;
+  int          party;
   int          ready_type;
   specialization_e  _spec;
   bool         bugs; // If true, include known InGame mechanics which are probably the cause of a bug and not inteded
