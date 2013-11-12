@@ -30,13 +30,14 @@ actions.precombat+=/mogu_power_potion
 
 actions=auto_attack
 actions+=/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
-# This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'
+# This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'
 actions+=/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20)|target.time_to_die<=12
 actions+=/avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)
 actions+=/skull_banner,if=buff.skull_banner.down&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192&buff.cooldown_reduction.up)|buff.recklessness.up)
 actions+=/blood_fury,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
 actions+=/berserking,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
 actions+=/arcane_torrent,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
+# There is a 0.25~ second delay in enrage application, this delay allows enrage to cover 4 GCDs of ability usage.
 actions+=/berserker_rage,if=buff.enrage.remains<1&cooldown.bloodthirst.remains>1
 actions+=/run_action_list,name=single_target,if=active_enemies=1
 actions+=/run_action_list,name=two_targets,if=active_enemies=2
@@ -48,6 +49,13 @@ actions+=/run_action_list,name=aoe,if=active_enemies>3
 # The above line, when the # is removed, will tell the character to swap to berserker stance, give rage based on 150k of damage taken,
 # and then swap back to the original stance. This will repeat every 20 seconds.
 
+# A very brief overview of the fury single target rotation, keep in mind that this does not include various subtle aspects in the action list, and is only intended for newer players.
+# Fury is a priority-based rotation with moderate amounts of rage management. It is  played in a 20-21 second cycle, based around usage of Colossus Smash.
+# Bloodthirst is used on cooldown, raging blow is a higher priority than bloodsurge-buffed wild strikes, and the player should attempt to save up rage by foregoing usage of 'rage dumps' such as
+# Heroic strike and non-bloodsurge buffed wild strikes when colossus smash is not applied to the target. The goal is to go into using colossus smash with 100-115~ rage
+# and then expend all of this rage by using heroic strike 3-4 times during colossus smash. It's also a good idea to save 1 charge of raging blow to use inside of this 6.5 second window.
+# Cooldowns are stacked whenever possible, and only delayed for the very last use of them.
+
 actions.single_target=bloodbath,if=enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)
 actions.single_target+=/heroic_strike,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=100&buff.enrage.up
 actions.single_target+=/heroic_leap,if=debuff.colossus_smash.up
@@ -56,11 +64,14 @@ actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.up&debuff.
 # Delay Bloodthirst if 2 stacks of raging blow are available inside Colossus Smash.
 actions.single_target+=/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20
 actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.down&debuff.colossus_smash.up
+# Until execute range, Bloodthirst is used on cooldown 95% of the time. When execute range is reached, bloodthirst can be delayed 1-2~ globals as long as the conditions below are met.
+# This is done to lower the amount of heroic strike usage, and to increase the amount of executes used.
 actions.single_target+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)
 # The GCD reduction of the Bloodsurge buff allows 3 Wild Strikes in-between Bloodthirst.
 actions.single_target+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1
 actions.single_target+=/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains
 actions.single_target+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
+# The debuff from Colossus Smash lasts 6.5 seconds and also has 0.25~ seconds of travel time. This allows 4 1.5 second globals to be used inside of it every time now.
 actions.single_target+=/colossus_smash
 actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.down
 actions.single_target+=/execute,if=debuff.colossus_smash.up|rage>70|target.time_to_die<12

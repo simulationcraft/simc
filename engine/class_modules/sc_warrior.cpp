@@ -428,6 +428,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
       if ( p -> buff.enrage -> up() )
       {
         am *= 1.0 + p -> buff.enrage -> data().effectN( 2 ).percent();
+
         if ( p -> mastery.unshackled_fury -> ok() )
           am *= 1.0 + p -> cache.mastery_value();
       }
@@ -602,7 +603,7 @@ static void trigger_strikes_of_opportunity( warrior_attack_t* a )
   if ( ! p -> rng().roll( chance ) )
     return;
 
-  p -> cooldown.strikes_of_opportunity -> start( timespan_t::from_seconds( 0.1 ) ); //Tested 8/29/13.
+  p -> cooldown.strikes_of_opportunity -> start( timespan_t::from_seconds( 0.1 ) ); //Tested 8/29/13, confirmed in game data.
 
   assert( p -> active_opportunity_strike );
 
@@ -622,11 +623,11 @@ static  void trigger_sweeping_strikes( action_state_t* s )
       warrior_attack_t( "sweeping_strikes_attack", p, p -> find_spell( 12328 ) )
     {
       may_miss = may_dodge = may_parry = may_crit = callbacks = false;
-      background = true;
-      range      = 5;                 //Target must be within 5 yards.
-      aoe        = 1;                 //one additional attack
-      base_costs[ RESOURCE_RAGE] = 0; //Resource consumption already accounted for.
-      base_multiplier = 0.50;         //Hotfixed 9/10, reduction from 75% damage to 50% damage.
+      background                 = true;
+      range                      = 5;
+      aoe                        = 1;
+      base_costs[ RESOURCE_RAGE] = 0;     //Resource consumption already accounted for in the buff application.
+      base_multiplier            = 0.50;  //Hotfixed 9/10, reduction from 75% damage to 50% damage.
     }
 
   virtual timespan_t travel_time()
@@ -700,7 +701,7 @@ static bool trigger_t15_2pc_melee( warrior_attack_t* a )
 
   bool procced;
 
-  if ( ( procced = p -> t15_2pc_melee.trigger( *a ) ) )
+  if ( procced = p -> t15_2pc_melee.trigger( *a ) )
   {
     p -> proc.t15_2pc_melee -> occur();
     p -> enrage();
@@ -1527,7 +1528,7 @@ struct heroic_leap_t : public warrior_attack_t
     harmful   = true; // This should be defaulted to true, but it's not
 
     // Damage is stored in a trigger spell
-    const spell_data_t* dmg_spell = p -> dbc.spell( 52174 );//data().effectN( 3 ).trigger_spell_id() does not resolve to 52174 anymore
+    const spell_data_t* dmg_spell = p -> dbc.spell( 52174 );  //data().effectN( 3 ).trigger_spell_id() does not resolve to 52174 anymore
     base_dd_min = p -> dbc.effect_min( dmg_spell -> effectN( 1 ).id(), p -> level );
     base_dd_max = p -> dbc.effect_max( dmg_spell -> effectN( 1 ).id(), p -> level );
     direct_power_mod = dmg_spell -> extra_coeff();
@@ -1734,7 +1735,7 @@ struct overpower_t : public warrior_attack_t
     if ( result_is_hit( s -> result ) )
     {
       warrior_t* p = cast();
-      p -> cooldown.mortal_strike -> adjust( timespan_t::from_seconds( -0.5 ) ); //FIXME check after dbc update
+      p -> cooldown.mortal_strike -> adjust( timespan_t::from_seconds( -0.5 ) ); //Overpower reduces the cooldown on mortal strike by 0.5 seconds.
     }
   }
 
@@ -1839,7 +1840,7 @@ struct raging_blow_t : public warrior_attack_t
 
   virtual void execute()
   {
-    oh_test -> execute(); // perform test OH attack
+    oh_test -> execute(); // perform test OH attack, if either OH or MH test rolls fail, the attack will miss completely.
 
     // check main hand attack
     attack_t::execute();
@@ -2111,8 +2112,8 @@ struct slam_sweeping_strikes_attack_t : public warrior_attack_t
     background = true;
     aoe        = -1;
     range      =  2;
-    weapon_multiplier=0; //do not add weapon damage
-    weapon = NULL; //so we don't double dip on seasoned soldier
+    weapon_multiplier=0;             //do not add weapon damage
+    weapon = NULL;                   //so we don't double dip on seasoned soldier
     base_costs[ RESOURCE_RAGE ] = 0; // Slam cost already factored in.
   }
   
@@ -2902,6 +2903,10 @@ struct skull_banner_t : public warrior_spell_t
   }
 };
 
+// The swap/damage taken options are intended to make it easier for players to simulate possible gains/losses from
+// swapping stances while in combat, without having to create a bunch of messy actions for it, and then adding in raid_damage from
+// the raid_event function. It does not actually hurt the character at the moment, but does include protections to prevent 
+// the character from taking fatal damage.
 // Stance ==============================================================
 struct stance_t : public warrior_spell_t
 {
@@ -3388,6 +3393,12 @@ void warrior_t::apl_precombat()
 
 }
 
+// EXTREMELY IMPORTANT NOTE ABOUT PRIORITY LISTS
+// As of 11/11/2013, it is entirely intentional that some of the action lines do not use the  add_action( this, "Avatar", "if=enabled" ) method of action lists. 
+// Using that type of syntax does a talent check, and will remove the line from the action list automatically. However, this is annoying when attempting
+// To compare talents As the user would need to either reload the character or add the line manually, hopefully without messing it up. 
+// So, I'm bypassing the talent check to leave every line intact, no matter what talents are selected when importing a character.
+
 // Fury Warrior Action Priority List ========================================
 
 void warrior_t::apl_fury()
@@ -3408,7 +3419,7 @@ void warrior_t::apl_fury()
     default_list -> add_action( "mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
 
   default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20)|target.time_to_die<=12",
-                              "This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'" );
+                              "This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'" );
   default_list -> add_action( "avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)" );
   default_list -> add_action( this, "Skull Banner", "if=buff.skull_banner.down&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192&buff.cooldown_reduction.up)|buff.recklessness.up)" );
 
@@ -3421,7 +3432,8 @@ void warrior_t::apl_fury()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] + ",if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up" );
 
-  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.remains<1&cooldown.bloodthirst.remains>1" );
+  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.remains<1&cooldown.bloodthirst.remains>1", 
+                                    "There is a 0.25~ second delay in enrage application, this delay allows enrage to cover 4 GCDs of ability usage." );
   default_list -> add_action( "run_action_list,name=single_target,if=active_enemies=1" );
   default_list -> add_action( "run_action_list,name=two_targets,if=active_enemies=2" );
   default_list -> add_action( "run_action_list,name=three_targets,if=active_enemies=3" );
@@ -3432,7 +3444,14 @@ void warrior_t::apl_fury()
                                "/actions+=/stance,choose=berserker,damage_taken=150000,swap=20\n" 
                                "# If you wish to simulate raid damage with stance swapping, please try something similar to the line above.\n"
                                "# The above line, when the # is removed, will tell the character to swap to berserker stance, give rage based on 150k of damage taken,\n"
-                               "# and then swap back to the original stance. This will repeat every 20 seconds.\n" );
+                               "# and then swap back to the original stance. This will repeat every 20 seconds.\n"
+                               "\n"
+                               "# A very brief overview of the fury single target rotation, keep in mind that this does not include various subtle aspects in the action list, and is only intended for newer players.\n"
+                               "# Fury is a priority-based rotation with moderate amounts of rage management. It is  played in a 20-21 second cycle, based around usage of Colossus Smash.\n"
+                               "# Bloodthirst is used on cooldown, raging blow is a higher priority than bloodsurge-buffed wild strikes, and the player should attempt to save up rage by foregoing usage of 'rage dumps' such as\n"
+                               "# Heroic strike and non-bloodsurge buffed wild strikes when colossus smash is not applied to the target. The goal is to go into using colossus smash with 100-115~ rage\n"
+                               "# and then expend all of this rage by using heroic strike 3-4 times during colossus smash. It's also a good idea to save 1 charge of raging blow to use inside of this 6.5 second window.\n"
+                               "# Cooldowns are stacked whenever possible, and only delayed for the very last use of them.\n" );
   single_target -> add_action( this, "Heroic Strike", "if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=100&buff.enrage.up" );
   single_target -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
   single_target -> add_action( "storm_bolt,if=enabled&buff.cooldown_reduction.up&debuff.colossus_smash.up", 
@@ -3440,12 +3459,15 @@ void warrior_t::apl_fury()
   single_target -> add_action( this, "Raging Blow", "if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20",
                                "Delay Bloodthirst if 2 stacks of raging blow are available inside Colossus Smash." );
   single_target -> add_action( "storm_bolt,if=enabled&buff.cooldown_reduction.down&debuff.colossus_smash.up" );
-  single_target -> add_action( this, "Bloodthirst", "if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)" );
+  single_target -> add_action( this, "Bloodthirst", "if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)", 
+                                "Until execute range, Bloodthirst is used on cooldown 95% of the time. When execute range is reached, bloodthirst can be delayed 1-2~ globals as long as the conditions below are met.\n"
+                                "# This is done to lower the amount of heroic strike usage, and to increase the amount of executes used." );
   single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1",
                                "The GCD reduction of the Bloodsurge buff allows 3 Wild Strikes in-between Bloodthirst." );
   single_target -> add_action( "wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains" );
   single_target -> add_action( "dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))" );
-  single_target -> add_action( this, "Colossus Smash") ;
+  single_target -> add_action( this, "Colossus Smash", "" ,
+                               "The debuff from Colossus Smash lasts 6.5 seconds and also has 0.25~ seconds of travel time. This allows 4 1.5 second globals to be used inside of it every time now." );
   single_target -> add_action( "storm_bolt,if=enabled&buff.cooldown_reduction.down" );
   single_target -> add_action( this, "Execute", "if=debuff.colossus_smash.up|rage>70|target.time_to_die<12" );
   single_target -> add_action( this, "Raging Blow", "if=target.health.pct<20|buff.raging_blow.stack=2|(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3))" );
@@ -3703,7 +3725,7 @@ void warrior_t::create_buffs()
 
   buff.defensive_stance = buff_creator_t( this, "defensive_stance", find_spell( 7376 ) );
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) )
-                          .activated( false ) ;
+                          .activated( false ) ; //Account for delay in buff application.
 
   buff.glyph_hold_the_line    = buff_creator_t( this, "hold_the_line",    glyphs.hold_the_line -> effectN( 1 ).trigger() );
   buff.glyph_incite           = buff_creator_t( this, "glyph_incite",           glyphs.incite -> effectN( 1 ).trigger() )
@@ -3786,10 +3808,10 @@ void warrior_t::init_gains()
   gain.revenge                = get_gain( "revenge"               );
   gain.shield_slam            = get_gain( "shield_slam"           );
   gain.sweeping_strikes       = get_gain( "sweeping_strikes"      );
-  gain.sword_and_board        = get_gain( "Sword and Board"       );
+  gain.sword_and_board        = get_gain( "sword_and_board"       );
+
   gain.tier15_4pc_tank        = get_gain( "tier15_4pc_tank"       );
   gain.tier16_2pc_melee       = get_gain( "tier16_2pc_melee"      );
-
   gain.tier16_4pc_tank        = get_gain( "tier16_4pc_tank"       );
 }
 
@@ -3803,6 +3825,7 @@ void warrior_t::init_procs()
   proc.sudden_death            = get_proc( "sudden_death"            );
   proc.taste_for_blood_wasted  = get_proc( "taste_for_blood_wasted"  );
   proc.raging_blow_wasted      = get_proc( "raging_blow_wasted"      );
+
   proc.t15_2pc_melee           = get_proc( "t15_2pc_melee"           );
 }
 
