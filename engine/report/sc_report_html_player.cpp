@@ -678,10 +678,31 @@ int print_html_action_resource( report::sc_html_stream& os, stats_t* s, int j )
   return j;
 }
 
+double get_avg_itemlvl( const player_t* p )
+{
+  double avg_ilvl = 0.0;
+  int num_ilvl_items = 0;
+  for ( size_t i = 0; i < p->items.size(); i++ )
+  {
+    const item_t& item = p->items[i];
+    if ( item.slot != SLOT_SHIRT && item.slot != SLOT_TABARD
+        && item.slot != SLOT_RANGED && item.active() )
+    {
+      avg_ilvl += item.item_level();
+      num_ilvl_items++;
+    }
+  }
+
+  if ( num_ilvl_items > 1 )
+    avg_ilvl /= num_ilvl_items;
+
+  return avg_ilvl;
+}
 // print_html_gear ==========================================================
 
 void print_html_gear ( report::sc_html_stream& os, player_t* p )
 {
+
   os.printf(
     "\t\t\t\t\t\t<div class=\"player-section gear\">\n"
     "\t\t\t\t\t\t\t<h3 class=\"toggle\">Gear</h3>\n"
@@ -692,7 +713,7 @@ void print_html_gear ( report::sc_html_stream& os, player_t* p )
     "\t\t\t\t\t\t\t\t\t\t<th>Slot</th>\n"
     "\t\t\t\t\t\t\t\t\t\t<th>Average Item Level: %.2f</th>\n"
     "\t\t\t\t\t\t\t\t\t</tr>\n",
-    p -> avg_ilvl );
+    get_avg_itemlvl( p ) );
 
   for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
   {
@@ -754,6 +775,8 @@ void print_html_profile ( report::sc_html_stream& os, player_t* a )
 
 void print_html_stats ( report::sc_html_stream& os, player_t* a )
 {
+  player_collected_data_t::buffed_stats_t& buffed_stats = a -> collected_data.buffed_stats_snapshot;
+
   if ( a -> collected_data.fight_length.mean() > 0 )
   {
     int j = 1;
@@ -780,7 +803,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
         "\t\t\t\t\t\t\t\t\t</tr>\n",
         ( j % 2 == 1 ) ? " class=\"odd\"" : "",
         util::inverse_tokenize( util::attribute_type_string( i ) ).c_str(),
-        a -> buffed.attribute[ i ],
+        buffed_stats.attribute[ i ],
         a -> get_attribute( i ),
         a -> initial.stats.attribute[ i ] );
       j++;
@@ -797,7 +820,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
           "\t\t\t\t\t\t\t\t\t</tr>\n",
           ( j % 2 == 1 ) ? " class=\"odd\"" : "",
           util::inverse_tokenize( util::resource_type_string( i ) ).c_str(),
-          a -> buffed.resource[ i ],
+          buffed_stats.resource[ i ],
           a -> resources.max[ i ],
           0.0 );
       j++;
@@ -811,7 +834,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      a -> buffed.spell_power,
+      buffed_stats.spell_power,
       a -> composite_spell_power( SCHOOL_MAX ) * a -> composite_spell_power_multiplier(),
       a -> initial.stats.spell_power );
     j++;
@@ -823,7 +846,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * a -> buffed.spell_hit,
+      100 * buffed_stats.spell_hit,
       100 * a -> composite_spell_hit(),
       a -> initial.stats.hit_rating  );
     j++;
@@ -835,7 +858,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * a -> buffed.spell_crit,
+      100 * buffed_stats.spell_crit,
       100 * a -> composite_spell_crit(),
       a -> initial.stats.crit_rating );
     j++;
@@ -847,7 +870,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * ( 1 / a -> buffed.spell_haste - 1 ),
+      100 * ( 1 / buffed_stats.spell_haste - 1 ),
       100 * ( 1 / a -> composite_spell_haste() - 1 ),
       a -> initial.stats.haste_rating );
     j++;
@@ -859,7 +882,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * ( 1 / a -> buffed.spell_speed - 1 ),
+      100 * ( 1 / buffed_stats.spell_speed - 1 ),
       100 * ( 1 / a -> composite_spell_speed() - 1 ),
       a -> initial.stats.haste_rating );
     j++;
@@ -871,7 +894,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">0</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      a -> buffed.manareg_per_second,
+      buffed_stats.manareg_per_second,
       a -> mana_regen_per_second() );
     j++;
     os.printf(
@@ -882,7 +905,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      a -> buffed.attack_power,
+      buffed_stats.attack_power,
       a -> composite_melee_attack_power() * a -> composite_attack_power_multiplier(),
       a -> initial.stats.attack_power );
     j++;
@@ -894,7 +917,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * a -> buffed.attack_hit,
+      100 * buffed_stats.attack_hit,
       100 * a -> composite_melee_hit(),
       a -> initial.stats.hit_rating );
     j++;
@@ -906,7 +929,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * a -> buffed.attack_crit,
+      100 * buffed_stats.attack_crit,
       100 * a -> composite_melee_crit(),
       a -> initial.stats.crit_rating );
     j++;
@@ -918,7 +941,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * ( 1 / a -> buffed.attack_haste - 1 ),
+      100 * ( 1 / buffed_stats.attack_haste - 1 ),
       100 * ( 1 / a -> composite_melee_haste() - 1 ),
       a -> initial.stats.haste_rating );
     j++;
@@ -930,7 +953,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * ( 1 / a -> buffed.attack_speed - 1 ),
+      100 * ( 1 / buffed_stats.attack_speed - 1 ),
       100 * ( 1 / a -> composite_melee_speed() - 1 ),
       a -> initial.stats.haste_rating );
     j++;
@@ -944,8 +967,8 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
         "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f </td>\n"
         "\t\t\t\t\t\t\t\t\t</tr>\n",
         ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-        100 * a -> buffed.mh_attack_expertise,
-        100 * a -> buffed.oh_attack_expertise,
+        100 * buffed_stats.mh_attack_expertise,
+        100 * buffed_stats.oh_attack_expertise,
         100 * a -> composite_melee_expertise( &( a -> main_hand_weapon ) ),
         100 * a -> composite_melee_expertise( &( a -> off_hand_weapon ) ),
         a -> initial.stats.expertise_rating );
@@ -960,7 +983,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
         "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f </td>\n"
         "\t\t\t\t\t\t\t\t\t</tr>\n",
         ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-        100 * a -> buffed.mh_attack_expertise,
+        100 * buffed_stats.mh_attack_expertise,
         100 * a -> composite_melee_expertise( &( a -> main_hand_weapon ) ),
         a -> initial.stats.expertise_rating );
     }
@@ -973,7 +996,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      a -> buffed.armor,
+      buffed_stats.armor,
       a -> composite_armor(),
       a -> initial.stats.armor );
     j++;
@@ -985,7 +1008,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * a -> buffed.miss,
+      100 * buffed_stats.miss,
       100 * ( a -> cache.miss() ),
       0.0  );
     j++;
@@ -997,7 +1020,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * a -> buffed.dodge,
+      100 * buffed_stats.dodge,
       100 * ( a -> composite_dodge() ),
       a -> initial.stats.dodge_rating );
     j++;
@@ -1009,7 +1032,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * a -> buffed.parry,
+      100 * buffed_stats.parry,
       100 * ( a -> composite_parry() ),
       a -> initial.stats.parry_rating );
     j++;
@@ -1021,7 +1044,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * a -> buffed.block,
+      100 * buffed_stats.block,
       100 * a -> composite_block(),
       a -> initial.stats.block_rating );
     j++;
@@ -1033,7 +1056,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100 * a -> buffed.crit,
+      100 * buffed_stats.crit,
       100 * a -> cache.crit_avoidance(),
       0.0 );
     j++;
@@ -1045,7 +1068,7 @@ void print_html_stats ( report::sc_html_stream& os, player_t* a )
       "\t\t\t\t\t\t\t\t\t\t<td class=\"right\">%.0f</td>\n"
       "\t\t\t\t\t\t\t\t\t</tr>\n",
       ( j % 2 == 1 ) ? " class=\"odd\"" : "",
-      100.0 * a -> buffed.mastery_value,
+      100.0 * buffed_stats.mastery_value,
       100.0 * a -> cache.mastery_value(),
       a -> initial.stats.mastery_rating );
     j++;

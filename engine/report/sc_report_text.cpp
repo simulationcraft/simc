@@ -273,71 +273,79 @@ void print_text_buffs( FILE* file, player_processed_report_information_t& ri )
 
 void print_text_core_stats( FILE* file, player_t* p )
 {
+  player_collected_data_t::buffed_stats_t& buffed_stats = p -> collected_data.buffed_stats_snapshot;
+
   util::fprintf( file,
                  "  Core Stats:    strength=%.0f|%.0f(%.0f)  agility=%.0f|%.0f(%.0f)  stamina=%.0f|%.0f(%.0f)  intellect=%.0f|%.0f(%.0f)  spirit=%.0f|%.0f(%.0f)  mastery=%.2f%%|%.2f%%(%.0f)  health=%.0f|%.0f  mana=%.0f|%.0f\n",
-                 p -> buffed.attribute[ ATTR_STRENGTH  ], p -> strength(),  p -> initial.stats.get_stat( STAT_STRENGTH  ),
-                 p -> buffed.attribute[ ATTR_AGILITY   ], p -> agility(),   p -> initial.stats.get_stat( STAT_AGILITY   ),
-                 p -> buffed.attribute[ ATTR_STAMINA   ], p -> stamina(),   p -> initial.stats.get_stat( STAT_STAMINA   ),
-                 p -> buffed.attribute[ ATTR_INTELLECT ], p -> intellect(), p -> initial.stats.get_stat( STAT_INTELLECT ),
-                 p -> buffed.attribute[ ATTR_SPIRIT    ], p -> spirit(),    p -> initial.stats.get_stat( STAT_SPIRIT    ),
-                 100.0 * p -> buffed.mastery_value , 100.0 * p -> composite_mastery(), p -> initial.stats.get_stat( STAT_MASTERY_RATING ),
-                 p -> buffed.resource[ RESOURCE_HEALTH ], p -> resources.max[ RESOURCE_HEALTH ],
-                 p -> buffed.resource[ RESOURCE_MANA   ], p -> resources.max[ RESOURCE_MANA   ] );
+                 buffed_stats.attribute[ ATTR_STRENGTH  ], p -> strength(),  p -> initial.stats.get_stat( STAT_STRENGTH  ),
+                 buffed_stats.attribute[ ATTR_AGILITY   ], p -> agility(),   p -> initial.stats.get_stat( STAT_AGILITY   ),
+                 buffed_stats.attribute[ ATTR_STAMINA   ], p -> stamina(),   p -> initial.stats.get_stat( STAT_STAMINA   ),
+                 buffed_stats.attribute[ ATTR_INTELLECT ], p -> intellect(), p -> initial.stats.get_stat( STAT_INTELLECT ),
+                 buffed_stats.attribute[ ATTR_SPIRIT    ], p -> spirit(),    p -> initial.stats.get_stat( STAT_SPIRIT    ),
+                 100.0 * buffed_stats.mastery_value , 100.0 * p -> composite_mastery(), p -> initial.stats.get_stat( STAT_MASTERY_RATING ),
+                 buffed_stats.resource[ RESOURCE_HEALTH ], p -> resources.max[ RESOURCE_HEALTH ],
+                 buffed_stats.resource[ RESOURCE_MANA   ], p -> resources.max[ RESOURCE_MANA   ] );
 }
 
 // print_text_spell_stats ===================================================
 
 void print_text_spell_stats( FILE* file, player_t* p )
 {
+  player_collected_data_t::buffed_stats_t& buffed_stats = p -> collected_data.buffed_stats_snapshot;
+
   util::fprintf( file,
                  "  Spell Stats:   power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  speed=%.2f%%|%.2f%%(%.0f)  manareg=%.0f|%.0f(%d)\n",
-                 p -> buffed.spell_power, p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(), p -> initial.stats.spell_power,
-                 100 * p -> buffed.spell_hit,          100 * p -> composite_spell_hit(),          p -> initial.stats.hit_rating,
-                 100 * p -> buffed.spell_crit,         100 * p -> composite_spell_crit(),         p -> initial.stats.crit_rating,
-                 100 * ( 1 / p -> buffed.spell_haste - 1 ), 100 * ( 1 / p -> composite_spell_speed() - 1 ), p -> initial.stats.haste_rating,
-                 100 * ( 1 / p -> buffed.spell_speed - 1 ), 100 * ( 1 / p -> cache.spell_speed() - 1 ), p -> initial.stats.haste_rating,
-                 p -> buffed.manareg_per_second, p -> mana_regen_per_second(), 0 );
+                 buffed_stats.spell_power, p -> composite_spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(), p -> initial.stats.spell_power,
+                 100 * buffed_stats.spell_hit,          100 * p -> composite_spell_hit(),          p -> initial.stats.hit_rating,
+                 100 * buffed_stats.spell_crit,         100 * p -> composite_spell_crit(),         p -> initial.stats.crit_rating,
+                 100 * ( 1 / buffed_stats.spell_haste - 1 ), 100 * ( 1 / p -> composite_spell_speed() - 1 ), p -> initial.stats.haste_rating,
+                 100 * ( 1 / buffed_stats.spell_speed - 1 ), 100 * ( 1 / p -> cache.spell_speed() - 1 ), p -> initial.stats.haste_rating,
+                 buffed_stats.manareg_per_second, p -> mana_regen_per_second(), 0 );
 }
 
 // print_text_attack_stats ==================================================
 
 void print_text_attack_stats( FILE* file, player_t* p )
 {
+  player_collected_data_t::buffed_stats_t& buffed_stats = p -> collected_data.buffed_stats_snapshot;
+
   if ( p -> dual_wield() )
     util::fprintf( file,
                    "  Attack Stats:  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  expertise=%.2f%%/%.2f%%|%.2f%%/%.2f%%(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  speed=%.2f%%|%.2f%%(%.0f)\n",
-                   p -> buffed.attack_power, p -> composite_melee_attack_power() * p -> composite_attack_power_multiplier(), p -> initial.stats.attack_power,
-                   100 * p -> buffed.attack_hit,         100 * p -> composite_melee_hit(),         p -> initial.stats.hit_rating,
-                   100 * p -> buffed.attack_crit,        100 * p -> composite_melee_crit(),        p -> initial.stats.crit_rating,
-                   100 * p -> buffed.mh_attack_expertise,   100 * p -> composite_melee_expertise( &( p -> main_hand_weapon ) ),
-                   100 * p -> buffed.oh_attack_expertise,   100 * p -> composite_melee_expertise( &( p -> off_hand_weapon ) ),
+                   buffed_stats.attack_power, p -> composite_melee_attack_power() * p -> composite_attack_power_multiplier(), p -> initial.stats.attack_power,
+                   100 * buffed_stats.attack_hit,         100 * p -> composite_melee_hit(),         p -> initial.stats.hit_rating,
+                   100 * buffed_stats.attack_crit,        100 * p -> composite_melee_crit(),        p -> initial.stats.crit_rating,
+                   100 * buffed_stats.mh_attack_expertise,   100 * p -> composite_melee_expertise( &( p -> main_hand_weapon ) ),
+                   100 * buffed_stats.oh_attack_expertise,   100 * p -> composite_melee_expertise( &( p -> off_hand_weapon ) ),
                    p -> current.stats.expertise_rating,
-                   100 * ( 1 / p -> buffed.attack_haste - 1 ), 100 * ( 1 / p -> composite_melee_haste() - 1 ), p -> initial.stats.haste_rating,
-                   100 * ( 1 / p -> buffed.attack_speed - 1 ), 100 * ( 1 / p -> composite_melee_speed() - 1 ), p -> initial.stats.haste_rating );
+                   100 * ( 1 / buffed_stats.attack_haste - 1 ), 100 * ( 1 / p -> composite_melee_haste() - 1 ), p -> initial.stats.haste_rating,
+                   100 * ( 1 / buffed_stats.attack_speed - 1 ), 100 * ( 1 / p -> composite_melee_speed() - 1 ), p -> initial.stats.haste_rating );
   else
     util::fprintf( file,
                    "  Attack Stats:  power=%.0f|%.0f(%.0f)  hit=%.2f%%|%.2f%%(%.0f)  crit=%.2f%%|%.2f%%(%.0f)  expertise=%.2f%%|%.2f%%(%.0f)  haste=%.2f%%|%.2f%%(%.0f)  speed=%.2f%%|%.2f%%(%.0f)\n",
-                   p -> buffed.attack_power, p -> composite_melee_attack_power() * p -> composite_attack_power_multiplier(), p -> initial.stats.attack_power,
-                   100 * p -> buffed.attack_hit,         100 * p -> composite_melee_hit(),         p -> initial.stats.hit_rating,
-                   100 * p -> buffed.attack_crit,        100 * p -> composite_melee_crit(),        p -> initial.stats.crit_rating,
-                   100 * p -> buffed.mh_attack_expertise,   100 * p -> composite_melee_expertise( &( p -> main_hand_weapon ) ),
+                   buffed_stats.attack_power, p -> composite_melee_attack_power() * p -> composite_attack_power_multiplier(), p -> initial.stats.attack_power,
+                   100 * buffed_stats.attack_hit,         100 * p -> composite_melee_hit(),         p -> initial.stats.hit_rating,
+                   100 * buffed_stats.attack_crit,        100 * p -> composite_melee_crit(),        p -> initial.stats.crit_rating,
+                   100 * buffed_stats.mh_attack_expertise,   100 * p -> composite_melee_expertise( &( p -> main_hand_weapon ) ),
                    p -> current.stats.expertise_rating,
-                   100 * ( 1 / p -> buffed.attack_haste - 1 ), 100 * ( 1 / p -> composite_melee_haste() - 1 ), p -> initial.stats.haste_rating,
-                   100 * ( 1 / p -> buffed.attack_speed - 1 ), 100 * ( 1 / p -> composite_melee_speed() - 1 ), p -> initial.stats.haste_rating );
+                   100 * ( 1 / buffed_stats.attack_haste - 1 ), 100 * ( 1 / p -> composite_melee_haste() - 1 ), p -> initial.stats.haste_rating,
+                   100 * ( 1 / buffed_stats.attack_speed - 1 ), 100 * ( 1 / p -> composite_melee_speed() - 1 ), p -> initial.stats.haste_rating );
 }
 
 // print_text_defense_stats =================================================
 
 void print_text_defense_stats( FILE* file, player_t* p )
 {
+  player_collected_data_t::buffed_stats_t& buffed_stats = p -> collected_data.buffed_stats_snapshot;
+
   util::fprintf( file,
                  "  Defense Stats: armor=%.0f|%.0f(%.0f) miss=%.2f%%|%.2f%%  dodge=%.2f%%|%.2f%%(%.0f)  parry=%.2f%%|%.2f%%(%.0f)  block=%.2f%%|%.2f%%(%.0f) crit=%.2f%%|%.2f%%\n",
-                 p -> buffed.armor,       p -> composite_armor(), p -> initial.stats.armor,
-                 100 * p -> buffed.miss,  100 * ( p -> cache.miss() ),
-                 100 * p -> buffed.dodge, 100 * ( p -> cache.dodge() ), p -> initial.stats.dodge_rating,
-                 100 * p -> buffed.parry, 100 * ( p -> cache.parry() ), p -> initial.stats.parry_rating,
-                 100 * p -> buffed.block, 100 * p -> composite_block(), p -> initial.stats.block_rating,
-                 100 * p -> buffed.crit,  100 * p -> cache.crit_avoidance() );
+                 buffed_stats.armor,       p -> composite_armor(), p -> initial.stats.armor,
+                 100 * buffed_stats.miss,  100 * ( p -> cache.miss() ),
+                 100 * buffed_stats.dodge, 100 * ( p -> cache.dodge() ), p -> initial.stats.dodge_rating,
+                 100 * buffed_stats.parry, 100 * ( p -> cache.parry() ), p -> initial.stats.parry_rating,
+                 100 * buffed_stats.block, 100 * p -> composite_block(), p -> initial.stats.block_rating,
+                 100 * buffed_stats.crit,  100 * p -> cache.crit_avoidance() );
 }
 
 void print_text_gains( FILE* file, gain_t* g, int max_length )

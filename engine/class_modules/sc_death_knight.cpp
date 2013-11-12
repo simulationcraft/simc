@@ -5341,7 +5341,7 @@ void death_knight_t::init_action_list()
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
     default_apl_blood();
-    action_list_default = 1;
+    use_default_action_list = true;
     player_t::init_action_list();
     return;
   }
@@ -5638,7 +5638,7 @@ void death_knight_t::init_action_list()
 	}
 
 
-  action_list_default = 1;
+  use_default_action_list = true;
 
   player_t::init_action_list();
 }

@@ -3250,6 +3250,7 @@ void endurance_of_niuzao( item_t* item )
 
   player_t* p = item -> player;
 
+  p -> legendary_tank_cloak_cd = p -> get_cooldown( "endurance_of_niuzao" );
   p -> legendary_tank_cloak_cd -> duration = p -> find_spell( 148010 ) -> duration();
   //  max_absorb = player -> find_spell( 146193 ) -> effectN( 1 ).base_value();
 

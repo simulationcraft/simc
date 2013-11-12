@@ -350,63 +350,65 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
 
 void print_xml_player_stats( xml_writer_t & writer, player_t * p )
 {
+  player_collected_data_t::buffed_stats_t& buffed_stats = p -> collected_data.buffed_stats_snapshot;
+
   for ( attribute_e i = ATTRIBUTE_NONE; ++i < ATTRIBUTE_MAX; )
   {
     print_xml_player_attribute( writer, util::attribute_type_string( i ),
                                 p -> get_attribute( i ), p -> initial.stats.attribute[ i ],
-                                p -> buffed.attribute[ i ] );
+                                buffed_stats.attribute[ i ] );
   }
   print_xml_player_attribute( writer, "mastery_value",
-                              p -> cache.mastery_value(), p -> initial.stats.mastery_rating, p -> buffed.mastery_value );
+                              p -> cache.mastery_value(), p -> initial.stats.mastery_rating, buffed_stats.mastery_value );
   print_xml_player_attribute( writer, "spellpower",
-                              p -> cache.spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(), p -> initial.stats.spell_power, p -> buffed.spell_power );
+                              p -> cache.spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier(), p -> initial.stats.spell_power, buffed_stats.spell_power );
   print_xml_player_attribute( writer, "spellhit",
-                              100 * p -> cache.spell_hit(), p -> initial.stats.hit_rating, 100 * p -> buffed.spell_hit );
+                              100 * p -> cache.spell_hit(), p -> initial.stats.hit_rating, 100 * buffed_stats.spell_hit );
   print_xml_player_attribute( writer, "spellcrit",
-                              100 * p -> cache.spell_crit(), p -> initial.stats.crit_rating, 100 * p -> buffed.spell_crit );
+                              100 * p -> cache.spell_crit(), p -> initial.stats.crit_rating, 100 * buffed_stats.spell_crit );
   print_xml_player_attribute( writer, "spellhaste",
-                              100 * ( 1 / p -> cache.spell_haste() - 1 ), p -> initial.stats.haste_rating, 100 * ( 1 / p -> buffed.spell_haste - 1 ) );
+                              100 * ( 1 / p -> cache.spell_haste() - 1 ), p -> initial.stats.haste_rating, 100 * ( 1 / buffed_stats.spell_haste - 1 ) );
   print_xml_player_attribute( writer, "spellspeed",
-                              100 * ( 1 / p -> cache.spell_speed() - 1 ), p -> initial.stats.haste_rating, 100 * ( 1 / p -> buffed.spell_speed - 1 ) );
+                              100 * ( 1 / p -> cache.spell_speed() - 1 ), p -> initial.stats.haste_rating, 100 * ( 1 / buffed_stats.spell_speed - 1 ) );
   print_xml_player_attribute( writer, "manareg_per_second",
-                              p -> mana_regen_per_second(), 0, p -> buffed.manareg_per_second );
+                              p -> mana_regen_per_second(), 0, buffed_stats.manareg_per_second );
   print_xml_player_attribute( writer, "attackpower",
-                              p -> cache.attack_power() * p -> composite_attack_power_multiplier(), p -> initial.stats.attack_power, p -> buffed.attack_power );
+                              p -> cache.attack_power() * p -> composite_attack_power_multiplier(), p -> initial.stats.attack_power, buffed_stats.attack_power );
   print_xml_player_attribute( writer, "attackhit",
-                              100 * p -> cache.attack_hit(), p -> initial.stats.hit_rating, 100 * p -> buffed.attack_hit );
+                              100 * p -> cache.attack_hit(), p -> initial.stats.hit_rating, 100 * buffed_stats.attack_hit );
   print_xml_player_attribute( writer, "attackcrit",
-                              100 * p -> cache.attack_crit(), p -> initial.stats.crit_rating, 100 * p -> buffed.attack_crit );
+                              100 * p -> cache.attack_crit(), p -> initial.stats.crit_rating, 100 * buffed_stats.attack_crit );
   print_xml_player_attribute( writer, "expertise",
-                              100 * p -> composite_melee_expertise( &( p -> main_hand_weapon ) ), p -> initial.stats.expertise_rating, 100 * p -> buffed.mh_attack_expertise );
+                              100 * p -> composite_melee_expertise( &( p -> main_hand_weapon ) ), p -> initial.stats.expertise_rating, 100 * buffed_stats.mh_attack_expertise );
   print_xml_player_attribute( writer, "expertise_oh",
-                              100 * p -> composite_melee_expertise( &( p -> off_hand_weapon ) ), p -> initial.stats.expertise_rating, 100 * p -> buffed.oh_attack_expertise );
+                              100 * p -> composite_melee_expertise( &( p -> off_hand_weapon ) ), p -> initial.stats.expertise_rating, 100 * buffed_stats.oh_attack_expertise );
   print_xml_player_attribute( writer, "attackhaste",
-                              100 * ( 1 / p -> cache.attack_haste() - 1 ), p -> initial.stats.haste_rating, 100 * ( 1 / p -> buffed.attack_haste - 1 ) );
+                              100 * ( 1 / p -> cache.attack_haste() - 1 ), p -> initial.stats.haste_rating, 100 * ( 1 / buffed_stats.attack_haste - 1 ) );
   print_xml_player_attribute( writer, "attackspeed",
-                              100 * ( 1 / p -> cache.attack_speed() - 1 ), p -> initial.stats.haste_rating, 100 * ( 1 / p -> buffed.attack_speed - 1 ) );
+                              100 * ( 1 / p -> cache.attack_speed() - 1 ), p -> initial.stats.haste_rating, 100 * ( 1 / buffed_stats.attack_speed - 1 ) );
   print_xml_player_attribute( writer, "armor",
-                              p -> cache.armor(), p -> initial.stats.armor, p -> buffed.armor );
+                              p -> cache.armor(), p -> initial.stats.armor, buffed_stats.armor );
   print_xml_player_attribute( writer, "miss",
-                              100 * ( p -> cache.miss() ), 0, 100 * p -> buffed.miss );
+                              100 * ( p -> cache.miss() ), 0, 100 * buffed_stats.miss );
   print_xml_player_attribute( writer, "dodge",
-                              100 * ( p -> cache.dodge() ), p -> initial.stats.dodge_rating, 100 * p -> buffed.dodge );
+                              100 * ( p -> cache.dodge() ), p -> initial.stats.dodge_rating, 100 * buffed_stats.dodge );
   print_xml_player_attribute( writer, "parry",
-                              100 * ( p -> cache.parry() ), p -> initial.stats.parry_rating, 100 * p -> buffed.parry );
+                              100 * ( p -> cache.parry() ), p -> initial.stats.parry_rating, 100 * buffed_stats.parry );
   print_xml_player_attribute( writer, "block",
-                              100 * p -> cache.block(), p -> initial.stats.block_rating, 100 * p -> buffed.block );
+                              100 * p -> cache.block(), p -> initial.stats.block_rating, 100 * buffed_stats.block );
   print_xml_player_attribute( writer, "tank_crit",
-                              100 * p -> cache.crit_avoidance(), 0, 100 * p -> buffed.crit );
+                              100 * p -> cache.crit_avoidance(), 0, 100 * buffed_stats.crit );
 
   writer.begin_tag( "resource" );
   writer.print_attribute( "name", "health" );
   writer.print_attribute( "base", util::to_string( p -> resources.max[ RESOURCE_HEALTH ], 0 ) );
-  writer.print_attribute( "buffed", util::to_string( p -> buffed.attribute[ RESOURCE_HEALTH ], 0 ) );
+  writer.print_attribute( "buffed", util::to_string( buffed_stats.attribute[ RESOURCE_HEALTH ], 0 ) );
   writer.end_tag( "resource" );
 
   writer.begin_tag( "resource" );
   writer.print_attribute( "name", "mana" );
   writer.print_attribute( "base", util::to_string( p -> resources.max[ RESOURCE_MANA ], 0 ) );
-  writer.print_attribute( "buffed", util::to_string( p -> buffed.resource[ RESOURCE_MANA ], 0 ) );
+  writer.print_attribute( "buffed", util::to_string( buffed_stats.resource[ RESOURCE_MANA ], 0 ) );
   writer.end_tag( "resource" );
 }
 

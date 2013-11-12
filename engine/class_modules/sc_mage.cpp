@@ -4534,7 +4534,7 @@ void mage_t::init_action_list()
       action_list_str += "/ice_lance,moving=1";
     }
 
-    action_list_default = 1;
+    use_default_action_list = true;
   }
 
   player_t::init_action_list();

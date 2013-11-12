@@ -608,13 +608,12 @@ player_t::player_t( sim_t*             s,
 
   // dynamic stuff
   target( 0 ),
-  initialized( 0 ), potion_used( false ),
+  initialized( false ), potion_used( false ),
 
   region_str( s -> default_region_str ), server_str( s -> default_server_str ), origin_str(),
   gcd_ready( timespan_t::zero() ), base_gcd( timespan_t::from_seconds( 1.5 ) ), started_waiting( timespan_t::min() ),
   pet_list(), active_pets(),
   vengeance_list( this ),invert_scaling( 0 ),
-  avg_ilvl( 0 ),
   // Reaction
   reaction_offset( timespan_t::from_seconds( 0.1 ) ), reaction_mean( timespan_t::from_seconds( 0.3 ) ), reaction_stddev( timespan_t::zero() ), reaction_nu( timespan_t::from_seconds( 0.25 ) ),
   // Latency
@@ -645,15 +644,14 @@ player_t::player_t( sim_t*             s,
   last_foreground_action( 0 ),
   cast_delay_reaction( timespan_t::zero() ), cast_delay_occurred( timespan_t::zero() ),
   // Actions
-  action_list_default( 0 ),
+  use_default_action_list( 0 ),
   precombat_action_list( 0 ), active_action_list( 0 ), active_off_gcd_list( 0 ), restore_action_list( 0 ),
   no_action_list_provided(),
   // Reporting
-  quiet( 0 ),
+  quiet( false ),
   iteration_fight_length( timespan_t::zero() ), arise_time( timespan_t::min() ),
   iteration_waiting_time( timespan_t::zero() ), iteration_executed_foreground_actions( 0 ),
   rps_gain( 0 ), rps_loss( 0 ),
-  buffed( buffed_stats_t() ),
   collected_data( player_collected_data_t( name_str, *sim ) ),
   vengeance( collected_data.vengeance_timeline ),
   // Damage
@@ -670,7 +668,7 @@ player_t::player_t( sim_t*             s,
   sets( nullptr ),
   meta_gem( META_GEM_NONE ), matching_gear( false ),
   item_cooldown( cooldown_t( "item_cd", *this ) ),
-  legendary_tank_cloak_cd( get_cooldown( "endurance_of_niuzao" ) ),
+  legendary_tank_cloak_cd( nullptr ),
   // Scaling
   scaling_lag( 0 ), scaling_lag_error( 0 ),
   // Movement & Position
@@ -912,7 +910,6 @@ static bool init_parties( sim_t* sim )
     }
     else if ( party_str == "all" )
     {
-      int member_index = 0;
       for ( size_t i = 0; i < sim -> player_list.size(); ++i )
       {
         player_t* p = sim -> player_list[ i ];
@@ -924,7 +921,6 @@ static bool init_parties( sim_t* sim )
       party_index++;
 
       std::vector<std::string> player_names = util::string_split( party_str, ",;/" );
-      int member_index = 0;
 
       for ( size_t j = 0; j < player_names.size(); j++ )
       {
@@ -984,7 +980,7 @@ bool player_t::init( sim_t* sim )
       p -> action_list_str.clear();
     };
     p -> init();
-    p -> initialized = 1;
+    p -> initialized = true;
   }
 
 
@@ -1322,7 +1318,6 @@ void player_t::init_items()
   for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
     slots[ i ] = ! util::is_match_slot( i );
 
-  unsigned num_ilvl_items = 0;
   // Accumulator for the stats given by items. Stats from items cannot directly
   // be added to ``gear'', as it would cause stat values specified on the
   // command line (with options such as gear_intellect=x) to be added to the
@@ -1356,11 +1351,7 @@ void player_t::init_items()
       return;
     }
 
-    if ( item.slot != SLOT_SHIRT && item.slot != SLOT_TABARD && item.slot != SLOT_RANGED && item.active() )
-    {
-      avg_ilvl += item.item_level();
-      num_ilvl_items++;
-    }
+
 
     slots[ item.slot ] = item.is_matching_type();
 
@@ -1368,8 +1359,6 @@ void player_t::init_items()
 
   }
 
-  if ( num_ilvl_items > 1 )
-    avg_ilvl /= num_ilvl_items;
 
   switch ( type )
   {
@@ -5072,9 +5061,7 @@ double account_absorb_buffs( player_t& p, action_state_t* s, school_e school )
 void account_legendary_tank_cloak( player_t& p, action_state_t* s )
 {
   // Legendary Tank Cloak Proc - max absorb of 1e7 hardcoded (in spellid 146193, effect 1)
-  if ( ! p.is_enemy() && ! p.is_pet() &&
-       ( p.items[ SLOT_BACK ].parsed.data.id == 102245 || p.items[ SLOT_BACK ].parsed.data.id == 102250 ) // a legendary tank cloak is present
-       && p.legendary_tank_cloak_cd -> up()  // and the cloak's cooldown is up
+  if ( p.legendary_tank_cloak_cd && p.legendary_tank_cloak_cd -> up()  // and the cloak's cooldown is up
        && s -> result_amount > p.resources.current[ RESOURCE_HEALTH ] ) // attack exceeds player health
   {
     if ( s -> result_amount > 1e7 )
@@ -5951,34 +5938,36 @@ struct snapshot_stats_t : public action_t
 
     if ( sim -> log ) sim -> out_log.printf( "%s performs %s", p -> name(), name() );
 
+    player_collected_data_t::buffed_stats_t& buffed_stats = p -> collected_data.buffed_stats_snapshot;
+
     for ( attribute_e i = ATTRIBUTE_NONE; i < ATTRIBUTE_MAX; ++i )
-      p -> buffed.attribute[ i ] = floor( p -> get_attribute( i ) );
+      buffed_stats.attribute[ i ] = floor( p -> get_attribute( i ) );
 
-    p -> buffed.resource     = p -> resources.max;
+    buffed_stats.resource     = p -> resources.max;
 
-    p -> buffed.spell_haste  = p -> cache.spell_haste();
-    p -> buffed.spell_speed  = p -> cache.spell_speed();
-    p -> buffed.attack_haste = p -> cache.attack_haste();
-    p -> buffed.attack_speed = p -> cache.attack_speed();
-    p -> buffed.mastery_value = p -> cache.mastery_value();
+    buffed_stats.spell_haste  = p -> cache.spell_haste();
+    buffed_stats.spell_speed  = p -> cache.spell_speed();
+    buffed_stats.attack_haste = p -> cache.attack_haste();
+    buffed_stats.attack_speed = p -> cache.attack_speed();
+    buffed_stats.mastery_value = p -> cache.mastery_value();
 
-    p -> buffed.spell_power  = util::round( p -> cache.spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
-    p -> buffed.spell_hit    = p -> cache.spell_hit();
-    p -> buffed.spell_crit   = p -> cache.spell_crit();
-    p -> buffed.manareg_per_second          = p -> mana_regen_per_second();
+    buffed_stats.spell_power  = util::round( p -> cache.spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
+    buffed_stats.spell_hit    = p -> cache.spell_hit();
+    buffed_stats.spell_crit   = p -> cache.spell_crit();
+    buffed_stats.manareg_per_second          = p -> mana_regen_per_second();
 
-    p -> buffed.attack_power = p -> cache.attack_power() * p -> composite_attack_power_multiplier();
-    p -> buffed.attack_hit   = p -> cache.attack_hit();
-    p -> buffed.mh_attack_expertise = p -> composite_melee_expertise( &( p -> main_hand_weapon ) );
-    p -> buffed.oh_attack_expertise = p -> composite_melee_expertise( &( p -> off_hand_weapon ) );
-    p -> buffed.attack_crit  = p -> cache.attack_crit();
+    buffed_stats.attack_power = p -> cache.attack_power() * p -> composite_attack_power_multiplier();
+    buffed_stats.attack_hit   = p -> cache.attack_hit();
+    buffed_stats.mh_attack_expertise = p -> composite_melee_expertise( &( p -> main_hand_weapon ) );
+    buffed_stats.oh_attack_expertise = p -> composite_melee_expertise( &( p -> off_hand_weapon ) );
+    buffed_stats.attack_crit  = p -> cache.attack_crit();
 
-    p -> buffed.armor        = p -> composite_armor();
-    p -> buffed.miss         = p -> composite_miss();
-    p -> buffed.dodge        = p -> cache.dodge();
-    p -> buffed.parry        = p -> cache.parry();
-    p -> buffed.block        = p -> cache.block();
-    p -> buffed.crit         = p -> cache.crit_avoidance();
+    buffed_stats.armor        = p -> composite_armor();
+    buffed_stats.miss         = p -> composite_miss();
+    buffed_stats.dodge        = p -> cache.dodge();
+    buffed_stats.parry        = p -> cache.parry();
+    buffed_stats.block        = p -> cache.block();
+    buffed_stats.crit         = p -> cache.crit_avoidance();
 
     role_e role = p -> primary_role();
     double spell_hit_extra = 0, attack_hit_extra = 0, expertise_extra = 0;
@@ -8072,7 +8061,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
       return make_ref_expr( name_str, resources.max[ r ] );
 
     else if ( splits[ 1 ] == "max_nonproc" )
-      return make_ref_expr( name_str, buffed.resource[ r ] );
+      return make_ref_expr( name_str, collected_data.buffed_stats_snapshot.resource[ r ] );
 
     else if ( splits[ 1 ] == "pct_nonproc" )
     {
@@ -8081,7 +8070,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
         resource_pct_nonproc_expr_t( const std::string& n, player_t& p, resource_e r ) :
           resource_expr_t( n, p, r ) {}
         virtual double evaluate()
-        { return player.resources.current[ rt ] / player.buffed.resource[ rt ] * 100.0; }
+        { return player.resources.current[ rt ] / player.collected_data.buffed_stats_snapshot.resource[ rt ] * 100.0; }
       };
       return new resource_pct_nonproc_expr_t( name_str, *this, r );
     }
@@ -8317,7 +8306,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
 
   if ( stype == SAVE_ALL || stype == SAVE_ACTIONS )
   {
-    if ( action_list_str.size() > 0 || action_list_default == 1 )
+    if ( !action_list_str.empty() || use_default_action_list )
     {
       // If we created a default action list, add comments
       if ( no_action_list_provided )
@@ -8967,24 +8956,6 @@ void player_t::change_position( position_e new_pos )
     sim -> out_debug.printf( "%s changes position from %s to %s.", name(), util::position_type_string( position() ), util::position_type_string( new_pos ) );
 
   current.position = new_pos;
-}
-
-void player_t::talent_points_t::clear()
-{  range::fill( choices, -1 ); }
-
-std::string player_t::talent_points_t::to_string() const
-{
-  std::ostringstream ss;
-
-  ss << "{ ";
-  for ( int i = 0; i < MAX_TALENT_ROWS; ++i )
-  {
-    if ( i ) ss << ", ";
-    ss << choice( i );
-  }
-  ss << " }";
-
-  return ss.str();
 }
 
 // Player Callbacks
@@ -9670,7 +9641,8 @@ player_collected_data_t::player_collected_data_t( const std::string& player_name
   resource_timelines(),
   combat_end_resource( RESOURCE_MAX ),
   stat_timelines(),
-  health_changes()
+  health_changes(),
+  buffed_stats_snapshot()
 { }
 
 void player_collected_data_t::reserve_memory( const player_t& p )
@@ -9943,4 +9915,22 @@ std::ostream& player_collected_data_t::data_str( std::ostream& s ) const
   theck_meloree_index.data_str( s );
 
   return s;
+}
+
+void player_talent_points_t::clear()
+{  range::fill( choices, -1 ); }
+
+std::string player_talent_points_t::to_string() const
+{
+  std::ostringstream ss;
+
+  ss << "{ ";
+  for ( int i = 0; i < MAX_TALENT_ROWS; ++i )
+  {
+    if ( i ) ss << ", ";
+    ss << choice( i );
+  }
+  ss << " }";
+
+  return ss.str();
 }

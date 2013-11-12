@@ -398,14 +398,14 @@ bool item_t::has_item_stat( stat_e stat )
 
 // item_t::upgrade_level ====================================================
 
-unsigned item_t::upgrade_level()
+unsigned item_t::upgrade_level() const
 {
   return parsed.upgrade_level + sim -> global_item_upgrade_level;
 }
 
 // item_t::item_level =======================================================
 
-unsigned item_t::item_level()
+unsigned item_t::item_level() const
 {
   if ( sim -> scale_to_itemlevel > 0 )
     return sim -> scale_to_itemlevel;
@@ -431,7 +431,7 @@ int item_t::stat_value( size_t idx )
 
 // item_t::active ===========================================================
 
-bool item_t::active()
+bool item_t::active() const
 {
   if ( slot == SLOT_INVALID ) return false;
   if ( ! ( name_str.empty() || name_str == "empty" || name_str == "none" ) ) return true;

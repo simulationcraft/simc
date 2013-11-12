@@ -755,7 +755,7 @@ public:
       }
       action_list_str += "/claw";
       action_list_str += "/wait_until_ready";
-      action_list_default = 1;
+      use_default_action_list = true;
     }
 
     base_t::init_action_list();
@@ -4106,7 +4106,7 @@ void hunter_t::init_action_list()
     if ( summon_pet_str.empty() )
       summon_pet_str = "cat";
 
-    action_list_default = 1;
+    use_default_action_list = true;
   }
 
   player_t::init_action_list();

@@ -3349,7 +3349,7 @@ struct item_t
     parsed(), xml( 0 ) { }
   item_t( player_t*, const std::string& options_str );
 
-  bool active();
+  bool active() const;
   const char* name();
   const char* slot_name();
   weapon_t* weapon();
@@ -3359,8 +3359,8 @@ struct item_t
   bool is_matching_type();
   bool is_valid_type();
 
-  unsigned item_level();
-  unsigned upgrade_level();
+  unsigned item_level() const;
+  unsigned upgrade_level() const;
   stat_e stat( size_t idx );
   int stat_value( size_t idx );
   bool has_item_stat( stat_e stat );
@@ -3896,6 +3896,19 @@ struct player_collected_data_t
   };
   auto_dispose< std::vector<action_sequence_data_t*> > action_sequence;
 
+  // Buffed snapshot_stats (for reporting)
+  struct buffed_stats_t
+  {
+    std::array< double, ATTRIBUTE_MAX > attribute;
+    std::array< double, RESOURCE_MAX > resource;
+
+    double spell_power, spell_hit, spell_crit, manareg_per_second;
+    double attack_power,  attack_hit,  mh_attack_expertise,  oh_attack_expertise, attack_crit;
+    double armor, miss, crit, dodge, parry, block;
+    double spell_haste, spell_speed, attack_haste, attack_speed;
+    double mastery_value;
+  } buffed_stats_snapshot;
+
   player_collected_data_t( const std::string& player_name, sim_t& );
   void reserve_memory( const player_t& );
   void merge( const player_collected_data_t& );
@@ -3903,6 +3916,51 @@ struct player_collected_data_t
   void collect_data( const player_t& );
   void print_tmi_debug_csv( const sc_timeline_t* ma, const sc_timeline_t* nma, const std::vector<double>& weighted_value, const player_t& p );
   std::ostream& data_str( std::ostream& s ) const;
+};
+
+struct player_talent_points_t
+{
+public:
+  player_talent_points_t() { clear(); }
+
+  int choice( int row ) const
+  {
+    row_check( row );
+    return choices[ row ];
+  }
+
+  void clear( int row )
+  {
+    row_check( row );
+    choices[ row ] = -1;
+  }
+
+  bool has_row_col( int row, int col ) const
+  { return choice( row ) == col; }
+
+  void select_row_col( int row, int col )
+  {
+    row_col_check( row, col );
+    choices[ row ] = col;
+  }
+
+  void clear();
+  std::string to_string() const;
+
+  friend std::ostream& operator << ( std::ostream& os, const player_talent_points_t& tp )
+  { os << tp.to_string(); return os; }
+private:
+  std::array<int, MAX_TALENT_ROWS> choices;
+
+  static void row_check( int row )
+  { assert( row >= 0 && row < MAX_TALENT_ROWS ); ( void )row; }
+
+  static void column_check( int col )
+  { assert( col >= 0 && col < MAX_TALENT_COLS ); ( void )col; }
+
+  static void row_col_check( int row, int col )
+  { row_check( row ); column_check( col ); }
+
 };
 
 // Actor
@@ -4055,7 +4113,7 @@ struct player_t : public actor_t
 
   // dynamic attributes - things which change during combat
   player_t*   target;
-  int         initialized;
+  bool        initialized;
   bool        potion_used;
 
   std::string talents_str, glyphs_str, id_str, target_str;
@@ -4068,7 +4126,6 @@ struct player_t : public actor_t
   vengeance_actor_list_t vengeance_list;
 
   int         invert_scaling;
-  double      avg_ilvl;
 
   // Reaction
   timespan_t  reaction_offset, reaction_mean, reaction_stddev, reaction_nu;
@@ -4087,49 +4144,7 @@ struct player_t : public actor_t
   std::vector<stat_e> stat_timelines;
 
   // Talent Parsing
-  class talent_points_t
-  {
-    std::array<int, MAX_TALENT_ROWS> choices;
-
-    static void row_check( int row )
-    { assert( row >= 0 && row < MAX_TALENT_ROWS ); ( void )row; }
-
-    static void column_check( int col )
-    { assert( col >= 0 && col < MAX_TALENT_COLS ); ( void )col; }
-
-    static void row_col_check( int row, int col )
-    { row_check( row ); column_check( col ); }
-
-  public:
-    talent_points_t() { clear(); }
-
-    int choice( int row ) const
-    {
-      row_check( row );
-      return choices[ row ];
-    }
-
-    void clear( int row )
-    {
-      row_check( row );
-      choices[ row ] = -1;
-    }
-
-    bool has_row_col( int row, int col ) const
-    { return choice( row ) == col; }
-
-    void select_row_col( int row, int col )
-    {
-      row_col_check( row, col );
-      choices[ row ] = col;
-    }
-
-    void clear();
-    std::string to_string() const;
-
-    friend std::ostream& operator << ( std::ostream& os, const talent_points_t& tp )
-    { os << tp.to_string(); return os; }
-  } talent_points;
+  player_talent_points_t talent_points;
   std::string talent_overrides_str;
 
   // Glyph Parsing
@@ -4248,7 +4263,7 @@ struct player_t : public actor_t
   std::string choose_action_list;
   std::string action_list_skip;
   std::string modify_action;
-  int         action_list_default;
+  bool use_default_action_list;
   auto_dispose< std::vector<dot_t*> > dot_list;
   auto_dispose< std::vector<action_priority_list_t*> > action_priority_list;
   std::vector<action_t*> precombat_action_list;
@@ -4259,27 +4274,14 @@ struct player_t : public actor_t
   std::string action_list_information; // comment displayed in profile
   bool no_action_list_provided;
 
+  bool quiet;
   // Reporting
-  int       quiet;
   timespan_t iteration_fight_length, arise_time;
   timespan_t iteration_waiting_time;
   int       iteration_executed_foreground_actions;
   std::array< double, RESOURCE_MAX > resource_lost, resource_gained;
   double    rps_gain, rps_loss;
   std::string tmi_debug_file_str;
-
-  // Buffed snapshot_stats (for reporting)
-  struct buffed_stats_t
-  {
-    std::array< double, ATTRIBUTE_MAX > attribute;
-    std::array< double, RESOURCE_MAX > resource;
-
-    double spell_power, spell_hit, spell_crit, manareg_per_second;
-    double attack_power,  attack_hit,  mh_attack_expertise,  oh_attack_expertise, attack_crit;
-    double armor, miss, crit, dodge, parry, block;
-    double spell_haste, spell_speed, attack_haste, attack_speed;
-    double mastery_value;
-  } buffed;
 
   auto_dispose< std::vector<buff_t*> > buff_list;
   auto_dispose< std::vector<proc_t*> > proc_list;
@@ -4322,7 +4324,6 @@ public:
   double iteration_heal, iteration_heal_taken, iteration_absorb, iteration_absorb_taken; // temporary accumulators
   double hpr;
 
-
   player_processed_report_information_t report_information;
 
   void sequence_add( const action_t* a, const player_t* target, const timespan_t& ts );
@@ -4337,8 +4338,7 @@ public:
   meta_gem_e meta_gem;
   bool matching_gear;
   cooldown_t item_cooldown;
-  cooldown_t* legendary_tank_cloak_cd;
-  //bool has_shield_equipped;
+  cooldown_t* legendary_tank_cloak_cd; // non-Null if item available
 
   // Scale Factors
   gear_stats_t scaling;
@@ -4482,7 +4482,7 @@ public:
   bool active_during_iteration;
   const spelleffect_data_t* _mastery; // = find_mastery_spell( specialization() ) -> effectN( 1 );
 
-  player_t( sim_t* sim, player_e type, const std::string& name, race_e race_e = RACE_NONE );
+  player_t( sim_t* sim, player_e type, const std::string& name, race_e race_e );
 
   virtual ~player_t();
 
@@ -4503,8 +4503,6 @@ public:
   bool add_action( const spell_data_t* s, std::string options = "", std::string alist = "default" );
   std::string include_default_on_use_items( player_t&, const std::string& exclude_effects );
   std::string include_specific_on_use_item( player_t&, const std::string& effect_names, const std::string& options );
-
-
 
   virtual void init_target();
   void init_character_properties();
@@ -4533,12 +4531,9 @@ public:
   virtual void init_rng();
   virtual void init_stats();
   virtual void register_callbacks() {}
-
 private:
   void _init_actions();
-
 public:
-
   virtual void reset();
   virtual void combat_begin();
   virtual void combat_end();
@@ -4685,10 +4680,10 @@ public:
   virtual timespan_t time_to_die();
   timespan_t total_reaction_time();
 
-  virtual void stat_gain( stat_e stat, double amount, gain_t* g = 0, action_t* a = 0, bool temporary = false );
-  virtual void stat_loss( stat_e stat, double amount, gain_t* g = 0, action_t* a = 0, bool temporary = false );
+  void stat_gain( stat_e stat, double amount, gain_t* g = 0, action_t* a = 0, bool temporary = false );
+  void stat_loss( stat_e stat, double amount, gain_t* g = 0, action_t* a = 0, bool temporary = false );
 
-  virtual void modify_current_rating( rating_e stat, double amount );
+  void modify_current_rating( rating_e stat, double amount );
 
   virtual void cost_reduction_gain( school_e school, double amount, gain_t* g = 0, action_t* a = 0 );
   virtual void cost_reduction_loss( school_e school, double amount, action_t* a = 0 );
@@ -4824,7 +4819,7 @@ public:
   { return current.position; }
 
   virtual action_t* create_proc_action( const std::string& /* name */ )
-  { return 0; }
+  { return nullptr; }
   virtual bool requires_data_collection() const
   { return active_during_iteration; }
 

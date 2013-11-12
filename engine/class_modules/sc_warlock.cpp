@@ -5476,7 +5476,7 @@ void warlock_t::init_action_list()
 
     apl_global_filler();
 
-    action_list_default = 1;
+    use_default_action_list = true;
   }
 
   player_t::init_action_list();

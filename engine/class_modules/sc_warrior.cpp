@@ -3892,7 +3892,7 @@ void warrior_t::init_action_list()
   }
 
   // Default
-  action_list_default = 1;
+  use_default_action_list = true;
 
   player_t::init_action_list();
 }

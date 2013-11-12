@@ -4005,7 +4005,7 @@ void monk_t::init_action_list()
       add_action( "Jab" );
       break;
   }
-  action_list_default = 1;
+  use_default_action_list = true;
 
   base_t::init_action_list();
 }

@@ -6932,7 +6932,7 @@ void druid_t::init_action_list()
       break;
   }
 
-  action_list_default = 1;
+  use_default_action_list = true;
 
   player_t::init_action_list();
 }
