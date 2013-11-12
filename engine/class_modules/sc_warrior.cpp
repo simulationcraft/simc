@@ -495,9 +495,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     weapon_t*  w = weapon;
 
     if ( p.active_stance == STANCE_DEFENSE )
-    {
       return;
-    }
 
     double rage_gain = 1.75 * w -> swing_time.total_seconds();
 
@@ -625,16 +623,16 @@ static  void trigger_sweeping_strikes( action_state_t* s )
     {
       may_miss = may_dodge = may_parry = may_crit = callbacks = false;
       background = true;
-      range      = 5; //Target must be within 5 yards.
-      aoe        = 1; //one additional attack
+      range      = 5;                 //Target must be within 5 yards.
+      aoe        = 1;                 //one additional attack
       base_costs[ RESOURCE_RAGE] = 0; //Resource consumption already accounted for.
-      base_multiplier = 0.50; //Hotfixed 9/10, reduction from 75% damage to 50% damage.
+      base_multiplier = 0.50;         //Hotfixed 9/10, reduction from 75% damage to 50% damage.
     }
 
   virtual timespan_t travel_time()
   {
-// It's possible for sweeping strikes and opportunity strikes to proc off each other into infinity as long as the rng.roll on opportunity strikes returns true. 
-// Sweeping strikes has a 1 second "travel time" in game. 
+  // It's possible for sweeping strikes and opportunity strikes to proc off each other into infinity as long as the rng.roll on opportunity strikes returns true. 
+  // Sweeping strikes has a 1 second "travel time" in game. 
     return timespan_t::from_seconds( 1 );
   }
 
@@ -956,7 +954,7 @@ struct bladestorm_tick_t : public warrior_attack_t
     background  = true;
     direct_tick = true;
     aoe         = -1;
-    if ( p -> specialization() == WARRIOR_ARMS ) //Bladestorm does 1.5x more damage as Arms with 5.4
+    if ( p -> specialization() == WARRIOR_ARMS )       //Bladestorm does 1.5x more damage as Arms with 5.4
       weapon_multiplier *= 1.5;
 
     if ( p -> specialization() == WARRIOR_PROTECTION ) //Bladestorm does 4/3 more damage as protection with 5.4
@@ -1016,8 +1014,6 @@ struct bloodthirst_heal_t : public heal_t
   bloodthirst_heal_t( warrior_t* p ) :
     heal_t( "bloodthirst_heal", p, p -> find_class_spell( "Bloodthirst" ) )
   {
-    // Add Field Dressing Talent, warrior heal etc.
-
     // Implemented as an actual heal because of spell callbacks ( for Hurricane, etc. )
     background = true;
     target     = p;
@@ -1412,7 +1408,7 @@ struct execute_t : public warrior_attack_t
     double c = warrior_attack_t::cost();
     warrior_t* p = cast();
 
-    if ( p -> buff.death_sentence -> check() && target -> health_percentage() < 20)
+    if ( p -> buff.death_sentence -> check() && target -> health_percentage() < 20) //Tier 16 4 piece bonus
       c = 0;
 
     return c;
@@ -1433,7 +1429,7 @@ struct execute_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if ( target -> health_percentage() > 20 && ! p -> buff.death_sentence -> check() )
+    if ( target -> health_percentage() > 20 && ! p -> buff.death_sentence -> check() ) // Tier 16 4 piece bonus
       return false;
 
     return warrior_attack_t::ready();
@@ -1652,7 +1648,7 @@ struct mortal_strike_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
     base_multiplier += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
-    base_multiplier *= 1.228;
+    base_multiplier *= 1.228; //Hotfix buff for 5.4
   }
 
   virtual void execute()
