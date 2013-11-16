@@ -129,7 +129,7 @@ actions.aoe=bloodbath,if=enabled&buff.enrage.up
 actions.aoe+=/cleave,if=rage>110
 actions.aoe+=/heroic_leap,if=buff.enrage.up
 # Dragon roar is a poor choice on large-scale AoE as the damage it does is reduced with additional targets. The damage it does per target is reduced by the following amounts:
-# 1/2/3/4/5+ targets ---> 0%/25%/35%/45%/50%)
+# 1/2/3/4/5+ targets ---> 0%/25%/35%/45%/50%
 actions.aoe+=/dragon_roar,if=enabled&debuff.colossus_smash.down&(buff.bloodbath.up|!talent.bloodbath.enabled)
 actions.aoe+=/bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
 actions.aoe+=/storm_bolt,if=enabled&debuff.colossus_smash.up

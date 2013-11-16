@@ -3525,7 +3525,7 @@ void warrior_t::apl_fury()
   aoe -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
   aoe -> add_action( "dragon_roar,if=enabled&debuff.colossus_smash.down&(buff.bloodbath.up|!talent.bloodbath.enabled)",
                      "Dragon roar is a poor choice on large-scale AoE as the damage it does is reduced with additional targets. The damage it does per target is reduced by the following amounts:\n"
-                     "# 1/2/3/4/5+ targets ---> 0%/25%/35%/45%/50%)" );
+                     "# 1/2/3/4/5+ targets ---> 0%/25%/35%/45%/50%" );
   aoe -> add_action( "bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
   aoe -> add_action( "storm_bolt,if=enabled&debuff.colossus_smash.up" );
   aoe -> add_action( "shockwave,if=enabled",
