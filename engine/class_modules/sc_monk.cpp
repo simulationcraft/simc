@@ -3879,7 +3879,7 @@ void monk_t::apl_combat_windwalker()
   action_list_str += "/tiger_palm,if=buff.tiger_power.remains<=3";
   action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&buff.tigereye_brew.stack=20";
   action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&trinket.proc.agility.react";
-  action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&chi>=2&(trinket.proc.agility.react|buff.tigereye_brew.stack>=15|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up";
+  action_list_str += "/tigereye_brew,if=buff.tigereye_brew_use.down&chi>=2&(trinket.proc.agility.react|trinket.proc.strength.react|buff.tigereye_brew.stack>=15|target.time_to_die<40)&debuff.rising_sun_kick.up&buff.tiger_power.up";
   action_list_str += "/energizing_brew,if=energy.time_to_max>5";
   action_list_str += "/rising_sun_kick,if=debuff.rising_sun_kick.down";
   action_list_str += "/tiger_palm,if=buff.tiger_power.down&debuff.rising_sun_kick.remains>1&energy.time_to_max>1";
