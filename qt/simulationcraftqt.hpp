@@ -182,6 +182,698 @@ private slots:
 };
 
 // ============================================================================
+// SC_HoverAreaWidget
+// ============================================================================
+
+class SC_HoverArea : public QWidget
+{
+Q_OBJECT
+Q_PROPERTY( int timeout READ timeout WRITE setTimeout )
+  int timeout_;
+  QTimer timeSinceMouseEntered;
+public:
+  SC_HoverArea(QWidget* parent = 0, int timeout = 1000) :
+      QWidget(parent), timeout_(timeout)
+  {
+    setMouseTracking(true);
+    connect(&timeSinceMouseEntered, SIGNAL( timeout() ), this,
+        SLOT( TimerTimeout() ));
+    timeSinceMouseEntered.setSingleShot(true);
+  }
+
+  int
+  timeout() const
+  {
+    return timeout_;
+  }
+
+  void
+  setTimeout(int timeout)
+  {
+    timeout_ = timeout;
+  }
+
+protected:
+  virtual void
+  enterEvent(QEvent* /* event */)
+  {
+    if (underMouse() && timeSinceMouseEntered.isActive() == false)
+      timeSinceMouseEntered.start(timeout_);
+  }
+
+  virtual void
+  leaveEvent(QEvent* /* event */)
+  {
+    timeSinceMouseEntered.stop();
+  }
+
+public slots:
+  virtual void
+  TimerTimeout()
+  {
+    emit(MouseHoverTimeout());
+  }
+
+signals:
+  void MouseHoverTimeout();
+};
+
+// ============================================================================
+// SC_RelativePopupWidget
+// ============================================================================
+
+class SC_RelativePopup : public QWidget
+{
+Q_OBJECT
+Q_PROPERTY( Qt::Corner parentCornerToAnchor READ parentCornerToAnchor WRITE setParentCornerToAnchor )
+Q_PROPERTY( Qt::Corner widgetCornerToAnchor READ widgetCornerToAnchor WRITE setWidgetCornerToAnchor )
+Q_PROPERTY( int timeTillHide READ timeTillHide WRITE setTimeTillHide )
+Q_PROPERTY( int timeTillFastHide READ timeTillFastHide WRITE setTimeTillFastHide )
+Q_PROPERTY( int timeFastHide READ timeFastHide WRITE setTimeFastHide )
+public:
+  SC_RelativePopup(QWidget* parent, Qt::Corner parentCornerToAnchor =
+      Qt::BottomRightCorner, Qt::Corner widgetCornerToAnchor =
+      Qt::TopRightCorner) :
+      QWidget(parent), parentCornerToAnchor_(parentCornerToAnchor),
+      widgetCornerToAnchor_( widgetCornerToAnchor), timeTillHide_(1000),
+      timeTillFastHide_(800), timeFastHide_(200), hideChildren(true)
+  {
+    setMouseTracking(true);
+    setWindowFlags(Qt::Popup | Qt::FramelessWindowHint);
+
+    timerTillHide_.setSingleShot(true);
+    timerTillFastHide_.setSingleShot(true);
+
+    timeToWait__ = timeTillHide_;
+
+    connect(&timerTillHide_, SIGNAL( timeout() ), this, SLOT( HideRequest() ));
+    connect(&timerTillFastHide_, SIGNAL( timeout() ), this, SLOT( FastHideRequest() ));
+  }
+  // Q_PROPERTIES
+  Qt::Corner parentCornerToAnchor() const
+  {
+    return parentCornerToAnchor_;
+  }
+  void setParentCornerToAnchor(Qt::Corner corner)
+  {
+    parentCornerToAnchor_ = corner;
+  }
+  Qt::Corner widgetCornerToAnchor() const
+  {
+    return parentCornerToAnchor_;
+  }
+  void setWidgetCornerToAnchor(Qt::Corner corner)
+  {
+    parentCornerToAnchor_ = corner;
+  }
+  int timeTillHide() const
+  {
+    return timeTillHide_;
+  }
+  void setTimeTillHide(int msec)
+  {
+    timeTillHide_ = msec;
+  }
+  int timeTillFastHide() const
+  {
+    return timeTillFastHide_;
+  }
+  void setTimeTillFastHide(int msec)
+  {
+    timeTillHide_ = msec;
+  }
+  int timeFastHide() const
+  {
+    return timeFastHide_;
+  }
+  void setTimeFastHide(int msec)
+  {
+    timeFastHide_ = msec;
+  }
+private:
+  Qt::Corner parentCornerToAnchor_;
+  Qt::Corner widgetCornerToAnchor_;
+  // Initial time to hide
+  int timeTillHide_;
+  QTimer timerTillHide_;
+  // After being visible/having focus for this time,
+  // the mouse leaving should hide quickly
+  int timeTillFastHide_;
+  QTimer timerTillFastHide_;
+  int timeFastHide_;
+  int timeToWait__;
+
+  int xbuffer;
+  int ybuffer;
+  bool hideChildren;
+  void disableChildrenHiding()
+  {
+    hideChildren = false;
+  }
+  void enableChildrenHiding()
+  {
+    hideChildren = true;
+  }
+  bool isWidgetUnderCursorAChild()
+  {
+    QWidget *widget = qApp->widgetAt(QCursor::pos());
+
+    while( widget != nullptr )
+    {
+      if ( widget == this )
+      {
+        return true;
+      }
+      widget = widget -> parentWidget();
+    }
+
+    return false;
+  }
+  void calculateGeometry()
+  {
+    // Convert to global points
+    QObject* parent__ = parent();
+    if ( parent__ == NULL )
+    return;
+    QWidget* parent_ = static_cast< QWidget* >( parent__ );
+    QRect parentRect = parent_ -> geometry();
+    parentRect.moveTopLeft( parent_ -> mapToGlobal(QPoint(0,0)) );
+
+    QRect widgetRect( parentRect );
+    QLayout* layout_ = layout();
+    if ( layout_ != NULL )
+    {
+      QApplication::instance() -> sendPostedEvents();
+      layout_ -> activate();
+      layout_ -> update();
+      QRect geometryrect = layout_ -> geometry();
+    }
+    QRect normalGeometry_ = normalGeometry();
+    // Use normal geometry if there is any
+    if ( normalGeometry_.width() != 0 && normalGeometry_.height() != 0 )
+    {
+      widgetRect.setWidth( normalGeometry_.width() );
+      widgetRect.setHeight( normalGeometry_.height() );
+    }
+    if ( layout_ != nullptr )
+    {
+      QSize sizeHint = layout_ -> sizeHint();
+      if ( widgetRect.height() < sizeHint.height() )
+        widgetRect.setHeight( sizeHint.height() );
+      if ( widgetRect.width() < sizeHint.width() )
+        widgetRect.setWidth( sizeHint.width() );
+      widgetRect.setSize( sizeHint );
+    }
+    if ( minimumHeight() > widgetRect.height() )
+      widgetRect.setHeight( minimumHeight() );
+    if ( minimumWidth() > widgetRect.width() )
+      widgetRect.setWidth( minimumWidth() );
+
+    QPoint bindTo;
+
+    switch(parentCornerToAnchor_)
+    {
+      default:
+      case Qt::TopLeftCorner:
+      bindTo = parentRect.topLeft(); break;
+      case Qt::TopRightCorner:
+      bindTo = parentRect.topRight(); break;
+      case Qt::BottomLeftCorner:
+      bindTo = parentRect.bottomLeft(); break;
+      case Qt::BottomRightCorner:
+      bindTo = parentRect.bottomRight(); break;
+    }
+
+    switch(widgetCornerToAnchor_)
+    {
+      default:
+      case Qt::TopLeftCorner:
+      widgetRect.moveTopLeft( bindTo ); break;
+      case Qt::TopRightCorner:
+      widgetRect.moveTopRight( bindTo ); break;
+      case Qt::BottomLeftCorner:
+      widgetRect.moveBottomLeft( bindTo ); break;
+      case Qt::BottomRightCorner:
+      widgetRect.moveBottomRight( bindTo ); break;
+    }
+
+    setGeometry( widgetRect );
+  }
+public slots:
+  void ShowRequest()
+  {
+    calculateGeometry();
+    if ( ! isVisible() )
+      show();
+  }
+  void HideRequest()
+  {
+    // Set time to hide to default length
+    timeToWait__ = timeTillHide_;
+    if ( isVisible() )
+    {
+      if ( ! isWidgetUnderCursorAChild() )
+      {
+        hide();
+        if ( hideChildren )
+        {
+          // Hide children that are Popups
+          // If we hide all children, floating widgets will be empty when they are shown again
+          QRegExp matchAll(".*");
+          QList< QWidget* > children = findChildren< QWidget* >( matchAll );
+
+          for ( QList< QWidget*>::iterator it = children.begin();
+              it != children.end(); ++it )
+          {
+            if ( ( *it ) -> windowType() == Qt::Popup )
+            ( *it ) -> hide();
+          }
+          QList< SC_RelativePopup* > popupChildren = findChildren< SC_RelativePopup* >( matchAll );
+          for ( QList< SC_RelativePopup* >::iterator it = popupChildren.begin();
+              it != popupChildren.end(); ++it )
+          {
+            ( *it ) -> disableChildrenHiding();
+          }
+        }
+      }
+      else
+      {
+        timerTillHide_.start( timeToWait__ );
+      }
+    }
+  }
+  void FastHideRequest()
+  {
+    // set time to hide to the fast version
+    timeToWait__ = timeFastHide_;
+  }
+protected:
+  virtual void showEvent( QShowEvent* /* event */)
+  {
+    // Fixes bug where the windows' recommended geometry is not correct (first time being shown)
+    // So the window gets shown long enough for the layout to set it correctly
+    // And then we recalculate the positioning
+    //calculateGeometry();
+    // Start waiting for the mouse
+    if ( ! underMouse() )
+    {
+      if ( timerTillHide_.isActive() )
+      timerTillHide_.stop();
+      if ( timerTillFastHide_.isActive() )
+      timerTillFastHide_.stop();
+      timerTillHide_.start( timeTillHide_ );
+    }
+  }
+  virtual void enterEvent( QEvent* /* event */)
+  {
+    if ( underMouse() )
+    {
+      // Have mouse so stop waiting to hide
+      timerTillHide_.stop();
+      // If we have the mouse for so long,
+      // make the next hide quicker
+      // most likely the user is done with the widget
+      if ( timeToWait__ != timeFastHide_ )
+      timerTillFastHide_.start( timeTillFastHide_ );
+    }
+  }
+  virtual void leaveEvent( QEvent* /* event */)
+  {
+    //if ( isWidgetUnderCursorAChild() ) return;
+    //if ( ! underMouse() )
+    timerTillHide_.start( timeToWait__ );
+    //QString widget_name = widget->accessibleName();
+  }
+  virtual void resizeEvent( QResizeEvent* event )
+  {
+    if ( event -> oldSize() != size() )
+    {
+      calculateGeometry();
+    }
+  }
+};
+
+// ============================================================================
+// SC_TabWidgetCloseAll
+// ============================================================================
+
+class SC_TabWidgetCloseAll : public QTabWidget
+{
+Q_OBJECT
+  QSet<QWidget*> specialTabsListToNotDelete;
+
+  virtual QWidget*
+  createCloseAllTabsWidget()
+  {
+    // default will be a close all tabs button
+    QToolButton* closeAllTabs = new QToolButton(this);
+
+    QIcon closeAllTabsIcon(":/icon/closealltabs.png");
+    if (closeAllTabsIcon.pixmap(QSize(64, 64)).isNull()) // icon failed to load
+      closeAllTabs->setText(tr("Close All Tabs"));
+    else
+      closeAllTabs->setIcon(closeAllTabsIcon);
+    closeAllTabs->setAutoRaise(true);
+
+    connect(closeAllTabs, SIGNAL( clicked( bool ) ), this,
+        SLOT( CloseAllTabsRequest( bool ) ));
+
+    return closeAllTabs;
+  }
+  QString closeAllTabsTitleText;
+  QString closeAllTabsBodyText;
+public:
+  SC_TabWidgetCloseAll(QWidget* parent = nullptr, Qt::Corner corner = Qt::TopRightCorner,
+      QString warningTitle = "Close all tabs?", QString warningText = "Close all tabs?" ) :
+  QTabWidget( parent ),
+  closeAllTabsTitleText( warningTitle ),
+  closeAllTabsBodyText( warningText )
+  {
+    setTabsClosable( true );
+    setCornerWidget( createCloseAllTabsWidget(), corner );
+  }
+  void setCloseAllTabsTitleText( QString text )
+  {
+    closeAllTabsTitleText = text;
+  }
+  void setCloseAllTabsBodyText( QString text )
+  {
+    closeAllTabsBodyText = text;
+  }
+  void addCloseAllExclude( QWidget* widget )
+  {
+    specialTabsListToNotDelete.insert( widget );
+  }
+  bool removeCloseAllExclude( QWidget* widget )
+  {
+    return specialTabsListToNotDelete.remove( widget );
+  }
+  void removeAllCloseAllExcludes()
+  {
+    specialTabsListToNotDelete.clear();
+  }
+  bool isACloseAllExclude( QWidget* widget )
+  {
+    return specialTabsListToNotDelete.contains( widget );
+  }
+  void closeAllTabs()
+  {
+    // add more special widgets to never delete here
+    int totalTabsToDelete = count();
+    for ( int i = 0; i < totalTabsToDelete; ++i )
+    {
+      bool deleteIndexOk = false;
+      int indexToDelete = 0;
+      // look for a tab not in the specialTabsList to delete
+      while ( ! deleteIndexOk && indexToDelete <= count() )
+      {
+        if ( specialTabsListToNotDelete.contains( widget( indexToDelete ) ) )
+        {
+          deleteIndexOk = false;
+          indexToDelete++;
+        }
+        else
+        {
+          deleteIndexOk = true;
+        }
+      }
+      if ( deleteIndexOk )
+      {
+        assert( specialTabsListToNotDelete.contains( widget( indexToDelete ) ) == false );
+        removeTab( indexToDelete );
+      }
+    }
+  }
+  void removeTab( int index )
+  {
+    emit( TabAboutToBeRemoved( widget( index ), tabText( index ), tabToolTip( index ), tabIcon( index ) ) );
+  }
+public slots:
+  void CloseAllTabsRequest( bool /* clicked */)
+  {
+    int confirm = QMessageBox::warning( this, closeAllTabsTitleText, closeAllTabsBodyText, QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+    if ( confirm == QMessageBox::Yes )
+    closeAllTabs();
+  }
+signals:
+  void TabAboutToBeRemoved( QWidget*, const QString& tabTitle, const QString& tabToolTip, const QIcon& );
+};
+
+// ============================================================================
+// SC_RecentlyClosedTabWidget
+// ============================================================================
+
+class SC_RecentlyClosedTab : public SC_TabWidgetCloseAll
+{
+Q_OBJECT
+  bool enabled;
+  SC_HoverArea* hoverArea;
+  SC_RelativePopup* recentlyClosedPopup;
+  QBoxLayout* recentlyClosedPopupLayout;
+  QWidget* previewPaneCurrentWidget;
+  QStandardItemModel* recentlyClosedTabs;
+  QListView* listView;
+  QPushButton* clearHistoryButton;
+  QWidget* currentlyPreviewedWidget;
+  QWidget* currentlyPreviewedWidgetsParent;
+public:
+  SC_RecentlyClosedTab(QWidget* parent = nullptr,
+  bool enableRecentlyClosedTabs = true ) :
+  SC_TabWidgetCloseAll( parent, Qt::TopRightCorner ),
+  enabled( enableRecentlyClosedTabs ),
+  previewPaneCurrentWidget( nullptr )
+  {
+    hoverArea = nullptr;
+    recentlyClosedPopup = nullptr;
+    currentlyPreviewedWidget = nullptr;
+    recentlyClosedPopupLayout = nullptr;
+    if ( enabled )
+    {
+      // Wanted to support TopLeftCorner too, but it is bugged for now
+      Qt::Corner corner = Qt::TopRightCorner;
+      hoverArea = new SC_HoverArea( this );
+      QWidget* cornerWidgetOld = cornerWidget( corner );
+      assert( cornerWidgetOld != nullptr );
+      QBoxLayout* hoverAreaLayout = new QBoxLayout( QBoxLayout::LeftToRight );
+      hoverAreaLayout -> setContentsMargins( 0, 0, 0, 0 );
+      hoverAreaLayout -> addWidget( cornerWidgetOld );
+      hoverArea -> setLayout( hoverAreaLayout );
+      cornerWidgetOld -> setParent( hoverArea );
+
+      Qt::Corner parentCorner;
+      Qt::Corner widgetCorner;
+      QBoxLayout::Direction grow;
+      switch ( corner )
+      {
+      default:
+      case Qt::TopRightCorner:
+        parentCorner = Qt::BottomRightCorner;
+        widgetCorner = Qt::TopRightCorner;
+        grow = QBoxLayout::RightToLeft;
+        break;
+      case Qt::TopLeftCorner:
+        parentCorner = Qt::BottomLeftCorner;
+        widgetCorner = Qt::TopLeftCorner;
+        grow = QBoxLayout::LeftToRight;
+        break;
+      case Qt::BottomRightCorner:
+        parentCorner = Qt::TopRightCorner;
+        widgetCorner = Qt::BottomRightCorner;
+        grow = QBoxLayout::RightToLeft;
+        break;
+      case Qt::BottomLeftCorner:
+        parentCorner = Qt::TopLeftCorner;
+        widgetCorner = Qt::BottomLeftCorner;
+        grow = QBoxLayout::LeftToRight;
+        break;
+      }
+      recentlyClosedPopup = new SC_RelativePopup( cornerWidgetOld, Qt::BottomRightCorner, Qt::TopRightCorner );
+
+      recentlyClosedPopupLayout = new QBoxLayout( QBoxLayout::RightToLeft );
+      QWidget* listViewParent = new QWidget( recentlyClosedPopup );
+      QLayout* listViewParentLayout = new QBoxLayout( QBoxLayout::TopToBottom );
+      listView = new QListView( listViewParent );
+      listView -> setEditTriggers( QAbstractItemView::NoEditTriggers );
+      listView -> setMaximumWidth( 150 );
+      listViewParent -> setMinimumHeight( 400 );
+      listViewParent -> setMinimumWidth( 100 );
+      recentlyClosedTabs = new QStandardItemModel;
+      listView -> setMouseTracking( true );
+      connect( listView, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( recentlyClosedListClicked( const QModelIndex& ) ) );
+      connect( listView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( restoreRecentlyClosedTab( const QModelIndex& ) ) );
+      listView -> setSelectionMode( QListView::SingleSelection );
+      listView -> setModel( recentlyClosedTabs );
+
+      clearHistoryButton = new QPushButton( tr( "&Clear History" ), listViewParent );
+
+      listViewParentLayout -> addWidget( listView );
+      listViewParentLayout -> addWidget( clearHistoryButton );
+      listViewParent -> setLayout( listViewParentLayout );
+
+      recentlyClosedPopupLayout -> addWidget( listViewParent );
+      recentlyClosedPopup -> setLayout( recentlyClosedPopupLayout );
+
+      connect( clearHistoryButton, SIGNAL( clicked() ), this, SLOT( clearHistory() ) );
+      connect( hoverArea, SIGNAL( MouseHoverTimeout() ), recentlyClosedPopup, SLOT( ShowRequest() ) );
+      setCornerWidget( hoverArea, corner );
+      cornerWidgetOld -> show();
+
+    }
+    connect( this, SIGNAL( TabAboutToBeRemoved( QWidget*, const QString&, const QString&, const QIcon& ) ), this, SLOT( addTabToRecentlyClosedList( QWidget*, const QString&, const QString&, const QIcon&) ) );
+  }
+  virtual int insertAt()
+  {
+    return count();
+  }
+private:
+  void removePreviousTabFromPreview()
+  {
+    if ( currentlyPreviewedWidget != nullptr )
+    {
+      recentlyClosedPopup -> layout() -> removeWidget( currentlyPreviewedWidget );
+      if ( currentlyPreviewedWidgetsParent != nullptr )
+        currentlyPreviewedWidget -> setParent( currentlyPreviewedWidgetsParent );
+      currentlyPreviewedWidget = nullptr;
+      currentlyPreviewedWidgetsParent = nullptr;
+    }
+  }
+  void addNextWidgetToPreviewOrHide()
+  {
+    removePreviousTabFromPreview();
+    QModelIndex index = listView -> currentIndex();
+    if ( ! index.isValid() )
+    {
+      recentlyClosedPopup -> hide();
+    }
+    else
+    {
+      if ( ! addIndexToPreview( index ) )
+      {
+        recentlyClosedPopup -> hide();
+      }
+    }
+  }
+  bool addIndexToPreview( const QModelIndex& index )
+  {
+    QWidget* widget = index.data( Qt::UserRole ).value< QWidget* >();
+    if ( widget == nullptr )
+      return false;
+    widget -> show();
+    recentlyClosedPopupLayout -> addWidget( widget, 1);
+    currentlyPreviewedWidget = widget;
+    currentlyPreviewedWidgetsParent = index.data( Qt::UserRole + 1 ).value< QWidget* >();
+    recentlyClosedPopupLayout -> update();
+    widget -> updateGeometry();
+    recentlyClosedPopup -> ShowRequest();
+    listView -> setFocus();
+    return true;
+  }
+public slots:
+  void addTabToRecentlyClosedList( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon)
+  {
+    if ( enabled )
+    {
+      QStandardItem* closedTab = new QStandardItem;
+      QWidget* newparent = new QWidget;
+      // Removing a tab from a QTabWidget does not free the tab until the parent is deleted
+      widget -> setParent( newparent );
+      closedTab -> setData( QVariant::fromValue< QString >( title ), Qt::DisplayRole );
+      closedTab -> setData( QVariant::fromValue< QWidget* >( widget ), Qt::UserRole );
+      closedTab -> setData( QVariant::fromValue< QWidget* >( newparent ), Qt::UserRole + 1);
+      closedTab -> setData( QVariant::fromValue< QString >( tooltip ), Qt::ToolTipRole );
+      closedTab -> setData( QVariant::fromValue< QIcon >( icon ), Qt::DecorationRole );
+      recentlyClosedTabs -> appendRow( closedTab );
+    }
+    else
+    {
+      // not enabled; free up closed widget
+      if ( widget != nullptr )
+      {
+        widget -> setParent( this );
+        delete widget;
+      }
+    }
+  }
+  void restoreRecentlyClosedTab( const QModelIndex& index )
+  {
+    removePreviousTabFromPreview();
+    QString title = index.data( Qt::DisplayRole ).toString();
+    QWidget* tab = index.data( Qt::UserRole ).value< QWidget* >();
+    tab -> setParent( this );
+    QWidget* parent = index.data( Qt::UserRole + 1 ).value< QWidget* >();
+    if ( parent != nullptr )
+    {
+      delete parent;
+      parent = nullptr;
+      recentlyClosedTabs -> setData( index, QVariant::fromValue< QWidget* >( parent ), Qt::UserRole + 1 );
+    }
+    int indexToInsert = insertAt();
+    indexToInsert = insertTab( indexToInsert, tab, title );
+    setTabToolTip( indexToInsert, index.data( Qt::ToolTipRole ).toString() );
+    setTabIcon( indexToInsert, index.data( Qt::DecorationRole ).value< QIcon >() );
+    setCurrentIndex( indexToInsert );
+    recentlyClosedTabs -> removeRow( index.row(), index.parent() );
+    addNextWidgetToPreviewOrHide();
+  }
+  void deleteFromRecentlyClosedList( const QModelIndex& index )
+  {
+    removePreviousTabFromPreview();
+    QWidget* widget = index.data( Qt::UserRole ).value< QWidget* >();
+    QWidget* parent = index.data( Qt::UserRole + 1).value< QWidget* >();
+    // Retake ownership
+    if ( ! widget && widget -> parent() == recentlyClosedPopup )
+    {
+      if ( parent != nullptr )
+        widget -> setParent ( parent );
+      else
+      {
+        delete widget;
+        widget = nullptr;
+      }
+    }
+    if ( parent != nullptr )
+    {
+      delete parent;
+      parent = nullptr;
+    }
+    recentlyClosedTabs -> setData( index, QVariant::fromValue< QWidget* >( widget ), Qt::UserRole);
+    recentlyClosedTabs -> setData( index, QVariant::fromValue< QWidget* >( parent ), Qt::UserRole + 1);
+    recentlyClosedTabs -> removeRow( index.row(), index.parent() );
+    addNextWidgetToPreviewOrHide();
+  }
+  void recentlyClosedListClicked( const QModelIndex& index )
+  {
+    removePreviousTabFromPreview();
+    addIndexToPreview( index );
+  }
+  void clearHistory()
+  {
+    removePreviousTabFromPreview();
+
+    int rows = recentlyClosedTabs -> rowCount();
+    for ( int i = 0; i < rows; ++i )
+    {
+      QStandardItem* item = recentlyClosedTabs -> item( i, 0 );
+      QWidget* widget = item -> data( Qt::UserRole ).value< QWidget* >();
+      QWidget* parent = item -> data( Qt::UserRole + 1).value< QWidget* >();
+      if ( ! widget )
+      {
+        if ( widget -> parent() != parent )
+        {
+          widget -> setParent( parent );
+        }
+      }
+      widget && delete widget;
+      parent && delete parent;
+      item -> setData( QVariant::fromValue< QWidget* >( widget ), Qt::UserRole);
+      item -> setData( QVariant::fromValue< QWidget* >( parent ), Qt::UserRole + 1);
+    }
+    recentlyClosedTabs -> clear();
+    recentlyClosedPopup -> hide();
+  }
+};
+
+// ============================================================================
 // SC_ReforgeButtonGroup
 // ============================================================================
 
@@ -384,32 +1076,25 @@ const QString defaultSimulateTabTitle( "Simulate" );
 // SC_SimulateTabWidget
 // ============================================================================
 
-class SC_SimulateTab : public QTabWidget
+class SC_SimulateTab : public SC_RecentlyClosedTab
 {
   Q_OBJECT
   QWidget* addTabWidget;
-  QToolButton* closeAllTabWidget;
 public:
   SC_SimulateTab( QWidget* parent = nullptr ) :
-    QTabWidget( parent ),
-    addTabWidget( new QWidget( this ) ),
-    closeAllTabWidget ( new QToolButton( this ) )
+    SC_RecentlyClosedTab( parent ),
+    addTabWidget( new QWidget( this ) )
   {
     setTabsClosable( true );
    // setMovable( true ); # Would need to disallow moving the + tab, or to the right of it. That would require subclassing tabbar
+    setCloseAllTabsTitleText( tr( "Close ALL Simulate Tabs?" ) );
+    setCloseAllTabsBodyText( tr( "Do you really want to close ALL simulation profiles?" ) );
 
     int i = addTab( addTabWidget, QIcon( ":/icon/addtab.png" ), "" );
     tabBar() -> setTabButton( i, QTabBar::LeftSide, nullptr );
     tabBar() -> setTabButton( i, QTabBar::RightSide, nullptr );
-    QIcon closeAllTabWidgetIcon( ":/icon/closealltabs.png" );
-    if ( closeAllTabWidgetIcon.pixmap( QSize( 64, 64 ) ).isNull() ) // icon failed to load
-      closeAllTabWidget -> setText ( tr( "Close All Tabs" ) );
-    else
-      closeAllTabWidget -> setIcon ( closeAllTabWidgetIcon );
-    closeAllTabWidget -> setAutoRaise( true );
-    setCornerWidget ( closeAllTabWidget ); // default to Qt::TopRightCorner
+    addCloseAllExclude( addTabWidget );
 
-    connect( closeAllTabWidget, SIGNAL( clicked( bool ) ), this, SLOT( CloseAllTabsRequest( bool ) ) );
     connect( this, SIGNAL( currentChanged( int ) ), this, SLOT( addNewTab( int ) ) );
     connect( this, SIGNAL( tabCloseRequested( int ) ), this, SLOT( TabCloseRequest( int ) ) );
   }
@@ -493,6 +1178,10 @@ public:
       }
     }
   }
+  virtual int insertAt()
+  {
+    return indexOf( addTabWidget );
+  }
 protected:
   virtual void keyPressEvent( QKeyEvent* e )
   {
@@ -539,7 +1228,12 @@ public slots:
       }
       if ( confirm == QMessageBox::Yes )
       {
-        setCurrentIndex( index - 1 );
+        if ( index == currentIndex() &&
+             widget( currentIndex() + 1 ) == addTabWidget )
+        {
+          // Change index only if removing causes a new tab to be created
+          setCurrentIndex( qMax<int>( 0, currentIndex() - 1 ) );
+        }
         removeTab( index );
       }
     }
@@ -554,12 +1248,6 @@ public slots:
       insertTab( index, s, defaultSimulateTabTitle );
       setCurrentIndex( index);
     }
-  }
-  void CloseAllTabsRequest( bool /* clicked */ )
-  {
-    int confirm = QMessageBox::warning( this, tr( "Close ALL Simulate Tabs?" ), tr( "Do you really want to close ALL simulation profiles?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
-    if ( confirm == QMessageBox::Yes )
-      close_All_Tabs();
   }
 };
 
