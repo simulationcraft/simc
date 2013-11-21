@@ -1632,7 +1632,7 @@ void SC_SingleResultTab::TabChanged( int index )
 }
 
 SC_ResultTab::SC_ResultTab( SC_MainWindow* mw ) :
-  QTabWidget( mw ),
+  SC_RecentlyClosedTab( mw ),
   mainWindow( mw )
 {
 }

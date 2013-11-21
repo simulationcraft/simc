@@ -1006,7 +1006,7 @@ enum result_tabs_e
   TAB_CSV
 };
 
-class SC_ResultTab : public QTabWidget
+class SC_ResultTab : public SC_RecentlyClosedTab
 {
   Q_OBJECT
   SC_MainWindow* mainWindow;
