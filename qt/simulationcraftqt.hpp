@@ -366,7 +366,6 @@ private:
       QApplication::instance() -> sendPostedEvents();
       layout_ -> activate();
       layout_ -> update();
-      QRect geometryrect = layout_ -> geometry();
     }
     QRect normalGeometry_ = normalGeometry();
     // Use normal geometry if there is any
@@ -470,10 +469,6 @@ public slots:
 protected:
   virtual void showEvent( QShowEvent* /* event */)
   {
-    // Fixes bug where the windows' recommended geometry is not correct (first time being shown)
-    // So the window gets shown long enough for the layout to set it correctly
-    // And then we recalculate the positioning
-    //calculateGeometry();
     // Start waiting for the mouse
     if ( ! underMouse() )
     {
@@ -499,10 +494,7 @@ protected:
   }
   virtual void leaveEvent( QEvent* /* event */)
   {
-    //if ( isWidgetUnderCursorAChild() ) return;
-    //if ( ! underMouse() )
     timerTillHide_.start( timeToWait__ );
-    //QString widget_name = widget->accessibleName();
   }
   virtual void resizeEvent( QResizeEvent* event )
   {
