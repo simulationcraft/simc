@@ -855,8 +855,10 @@ public slots:
           widget -> setParent( parent );
         }
       }
-      widget && delete widget;
-      parent && delete parent;
+      if ( widget != nullptr )
+        delete widget;
+      if ( parent != nullptr )
+        delete parent;
       item -> setData( QVariant::fromValue< QWidget* >( widget ), Qt::UserRole);
       item -> setData( QVariant::fromValue< QWidget* >( parent ), Qt::UserRole + 1);
     }
