@@ -834,9 +834,13 @@ static bool check_actors( sim_t* sim )
   for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
   {
     player_t* p = sim -> actor_list[ i ];
+    if ( p -> is_pet() || p -> is_enemy() ) continue;
+    if ( p -> type == HEALING_ENEMY ) continue;
     if ( ! p -> quiet ) too_quiet = false;
     if ( p -> primary_role() != ROLE_HEAL && p -> primary_role() != ROLE_TANK && ! p -> is_pet() ) zero_dds = false;
   }
+  
+  sim -> errorf( "%d %d", too_quiet, zero_dds );
 
   if ( too_quiet && ! sim -> debug )
   {
