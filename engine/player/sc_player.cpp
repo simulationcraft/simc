@@ -840,8 +840,6 @@ static bool check_actors( sim_t* sim )
     if ( p -> primary_role() != ROLE_HEAL && p -> primary_role() != ROLE_TANK && ! p -> is_pet() ) zero_dds = false;
   }
   
-  sim -> errorf( "%d %d", too_quiet, zero_dds );
-
   if ( too_quiet && ! sim -> debug )
   {
     sim -> errorf( "No active players in sim!" );
