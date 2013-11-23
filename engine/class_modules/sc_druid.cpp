@@ -3939,7 +3939,8 @@ struct lifebloom_t : public druid_heal_t
 
   virtual void last_tick( dot_t* d )
   {
-    bloom -> execute();
+    if ( ! d -> state -> target -> is_sleeping() ) // Prevent crash at end of simulation
+      bloom -> execute();
     td( d -> state -> target ) -> buffs.lifebloom -> expire();
 
     druid_heal_t::last_tick( d );
