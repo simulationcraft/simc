@@ -3571,7 +3571,7 @@ void warrior_t::apl_arms()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     default_list -> add_action( racial_actions[ i ] + ",if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up" );
 
-  default_list -> add_action( "bloodbath,if=enabled&(debuff.colossus_smash.up|cooldown.colossus_smash.remains<4)|target.time_to_die<=20" );
+  default_list -> add_action( "bloodbath,if=enabled&(debuff.colossus_smash.up|cooldown.colossus_smash.remains<4|target.time_to_die<=20)" );
   default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.remains<0.5" );
   default_list -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
   default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
