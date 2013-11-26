@@ -262,6 +262,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   vLayout -> addWidget( mainTab );
   vLayout -> addWidget( cmdLineGroupBox );
   setLayout( vLayout );
+  vLayout -> activate();
 
   timer = new QTimer( this );
   connect( timer, SIGNAL( timeout() ), this, SLOT( updateSimProgress() ) );
@@ -286,6 +287,55 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 
   cmdLine -> setFocus();
 
+  // Resize window if needed
+  QDesktopWidget desktopWidget;
+  QRect smallestScreenGeometry = desktopWidget.availableGeometry();
+  for ( int i = 1; i < desktopWidget.screenCount(); ++i )
+  {
+    QRect screenGeometry = desktopWidget.availableGeometry( i );
+    smallestScreenGeometry.setWidth( qMin< int >( screenGeometry.width(), smallestScreenGeometry.width() ) );
+    smallestScreenGeometry.setHeight( qMin< int >( screenGeometry.height(), smallestScreenGeometry.height() ) );
+  }
+  QSize minSize = minimumSize();
+  QPoint topLeft = pos();
+  QPoint globalTopLeft = topLeft;
+  QRect currentScreen = desktopWidget.availableGeometry( this );
+  QRect newGeometry( globalTopLeft.x(), globalTopLeft.y(), minimumWidth(), minimumHeight() );
+  if ( smallestScreenGeometry.width() < minSize.width() ||
+       smallestScreenGeometry.height() < minSize.height() )
+  {
+    // Screen is too small for the current dimensions, resize
+    setMinimumSize( qMax< int >( smallestScreenGeometry.width() - 100, 100 ),
+                    qMax< int >( smallestScreenGeometry.height() - 100, 100 ) );
+    newGeometry.setSize( minimumSize() );
+    if ( ! currentScreen.contains( newGeometry ) )
+    {
+      // Make sure it will be visible
+      // Calculate middle of screen
+      QPoint middle( currentScreen.topLeft() );
+      middle.setX( middle.x() + ( ( currentScreen.width() - minimumWidth() ) / 2 ) );
+      middle.setY( middle.y() + ( ( currentScreen.height() - minimumHeight() ) / 2 ) );
+      move( middle );
+    }
+    resize( newGeometry.size() );
+  }
+  else
+  {
+    // Don't mess with resizing, just make the minimumSize smaller
+    setMinimumSize( qMin< int >( smallestScreenGeometry.width() - 100, 600 ),
+                    qMin< int >( smallestScreenGeometry.height() - 100 , 550 ) );
+    newGeometry.setSize( size() );
+    if ( ! currentScreen.contains( newGeometry ) )
+    {
+      // Part of the window is off-screen, move it to the middle
+      // Calculate middle of screen
+      QPoint middle( currentScreen.topLeft() );
+      middle.setX( middle.x() + ( ( currentScreen.width() - size().width() ) / 2 ) );
+      middle.setY( middle.y() + ( ( currentScreen.height() - size().height() ) / 2 ) );
+      move( middle );
+      resize( newGeometry.size() );
+    }
+  }
 }
 
 void SC_MainWindow::createCmdLine()

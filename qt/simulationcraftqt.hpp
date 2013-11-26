@@ -354,7 +354,7 @@ private:
     // Convert to global points
     QObject* parent__ = parent();
     if ( parent__ == NULL )
-    return;
+      return;
     QWidget* parent_ = static_cast< QWidget* >( parent__ );
     QRect parentRect = parent_ -> geometry();
     parentRect.moveTopLeft( parent_ -> mapToGlobal(QPoint(0,0)) );
@@ -383,10 +383,6 @@ private:
         widgetRect.setWidth( sizeHint.width() );
       widgetRect.setSize( sizeHint );
     }
-    if ( minimumHeight() > widgetRect.height() )
-      widgetRect.setHeight( minimumHeight() );
-    if ( minimumWidth() > widgetRect.width() )
-      widgetRect.setWidth( minimumWidth() );
 
     QPoint bindTo;
 
@@ -416,6 +412,11 @@ private:
       widgetRect.moveBottomRight( bindTo ); break;
     }
 
+    QDesktopWidget desktopWidget;
+    // If user only has one screen, ensure the popup doesn't go off screen
+    // If multiple screens, this could be annoying as the popup can be viewed on a 2nd screen
+    if ( desktopWidget.screenCount() == 1)
+      widgetRect = desktopWidget.screenGeometry( parent_ ).intersected( widgetRect );
     setGeometry( widgetRect );
   }
 public slots:
@@ -514,8 +515,7 @@ class SC_TabWidgetCloseAll : public QTabWidget
 Q_OBJECT
   QSet<QWidget*> specialTabsListToNotDelete;
 
-  virtual QWidget*
-  createCloseAllTabsWidget()
+  virtual QWidget* createCloseAllTabsWidget()
   {
     // default will be a close all tabs button
     QToolButton* closeAllTabs = new QToolButton(this);
@@ -629,9 +629,9 @@ Q_OBJECT
   QWidget* currentlyPreviewedWidget;
   QWidget* currentlyPreviewedWidgetsParent;
 public:
-  SC_RecentlyClosedTab(QWidget* parent = nullptr,
-  bool enableRecentlyClosedTabs = true ) :
-  SC_TabWidgetCloseAll( parent, Qt::TopRightCorner ),
+  SC_RecentlyClosedTab(QWidget* parent = nullptr, bool enableRecentlyClosedTabs = true,
+      Qt::Corner corner = Qt::TopRightCorner ) :
+  SC_TabWidgetCloseAll( parent, corner ),
   enabled( enableRecentlyClosedTabs ),
   previewPaneCurrentWidget( nullptr )
   {
@@ -641,9 +641,7 @@ public:
     recentlyClosedPopupLayout = nullptr;
     if ( enabled )
     {
-      // Wanted to support TopLeftCorner too, but it is bugged for now
-      Qt::Corner corner = Qt::TopRightCorner;
-      hoverArea = new SC_HoverArea( this );
+      hoverArea = new SC_HoverArea( this, 600 );
       QWidget* cornerWidgetOld = cornerWidget( corner );
       assert( cornerWidgetOld != nullptr );
       QBoxLayout* hoverAreaLayout = new QBoxLayout( QBoxLayout::LeftToRight );
@@ -668,7 +666,7 @@ public:
         widgetCorner = Qt::TopLeftCorner;
         grow = QBoxLayout::LeftToRight;
         break;
-      case Qt::BottomRightCorner:
+      case Qt::BottomRightCorner: // Bottom corners don't work well
         parentCorner = Qt::TopRightCorner;
         widgetCorner = Qt::BottomRightCorner;
         grow = QBoxLayout::RightToLeft;
@@ -679,15 +677,15 @@ public:
         grow = QBoxLayout::LeftToRight;
         break;
       }
-      recentlyClosedPopup = new SC_RelativePopup( cornerWidgetOld, Qt::BottomRightCorner, Qt::TopRightCorner );
+      recentlyClosedPopup = new SC_RelativePopup( cornerWidgetOld, parentCorner, widgetCorner );
 
-      recentlyClosedPopupLayout = new QBoxLayout( QBoxLayout::RightToLeft );
+      recentlyClosedPopupLayout = new QBoxLayout( grow );
       QWidget* listViewParent = new QWidget( recentlyClosedPopup );
       QLayout* listViewParentLayout = new QBoxLayout( QBoxLayout::TopToBottom );
       listView = new QListView( listViewParent );
       listView -> setEditTriggers( QAbstractItemView::NoEditTriggers );
       listView -> setMaximumWidth( 150 );
-      listViewParent -> setMinimumHeight( 400 );
+      listViewParent -> setMinimumHeight( 350 );
       listViewParent -> setMinimumWidth( 100 );
       recentlyClosedTabs = new QStandardItemModel;
       listView -> setMouseTracking( true );
@@ -820,16 +818,12 @@ public slots:
       else
       {
         delete widget;
-        widget = nullptr;
       }
     }
     if ( parent != nullptr )
     {
       delete parent;
-      parent = nullptr;
     }
-    recentlyClosedTabs -> setData( index, QVariant::fromValue< QWidget* >( widget ), Qt::UserRole);
-    recentlyClosedTabs -> setData( index, QVariant::fromValue< QWidget* >( parent ), Qt::UserRole + 1);
     recentlyClosedTabs -> removeRow( index.row(), index.parent() );
     addNextWidgetToPreviewOrHide();
   }
@@ -855,12 +849,8 @@ public slots:
           widget -> setParent( parent );
         }
       }
-      if ( widget != nullptr )
-        delete widget;
-      if ( parent != nullptr )
-        delete parent;
-      item -> setData( QVariant::fromValue< QWidget* >( widget ), Qt::UserRole);
-      item -> setData( QVariant::fromValue< QWidget* >( parent ), Qt::UserRole + 1);
+      delete widget;
+      delete parent;
     }
     recentlyClosedTabs -> clear();
     recentlyClosedPopup -> hide();
