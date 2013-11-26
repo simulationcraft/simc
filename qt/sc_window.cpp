@@ -402,6 +402,8 @@ void SC_MainWindow::createImportTab()
 
   battleNetView = new SC_WebView( this );
   battleNetView -> setUrl( QUrl( "http://us.battle.net/wow/en" ) );
+  battleNetView -> enableMouseNavigation();
+  battleNetView -> enableKeyboardNavigation();
   importTab -> addTab( battleNetView, tr( "Battle.Net" ) );
 
   charDevCookies = new PersistentCookieJar( ( AppDataDir + QDir::separator() + "chardev.cookies" ).toStdString().c_str() );
@@ -409,6 +411,8 @@ void SC_MainWindow::createImportTab()
   charDevView = new SC_WebView( this );
   charDevView -> page() -> networkAccessManager() -> setCookieJar( charDevCookies );
   charDevView -> setUrl( QUrl( "http://chardev.org/?planner" ) );
+  charDevView -> enableMouseNavigation();
+  charDevView -> enableKeyboardNavigation();
   importTab -> addTab( charDevView, tr( "CharDev" ) );
 
   createRawrTab();
@@ -703,6 +707,8 @@ void SC_MainWindow::createSiteTab()
 {
   siteView = new SC_WebView( this );
   siteView -> setUrl( QUrl( "http://code.google.com/p/simulationcraft/" ) );
+  siteView -> enableMouseNavigation();
+  siteView -> enableKeyboardNavigation();
   mainTab -> addTab( siteView, tr( "Site" ) );
 }
 
@@ -1127,34 +1133,6 @@ void SC_MainWindow::closeEvent( QCloseEvent* e )
   e -> accept();
 }
 
-void SC_MainWindow::keyReleaseEvent( QKeyEvent* e )
-{
-  int k = e -> key();
-  Qt::KeyboardModifiers m = e -> modifiers();
-  switch ( k )
-  {
-  case Qt::Key_F5:
-  {
-    reloadButtonClicked();
-  }
-    break;
-  case Qt::Key_Left:
-  {
-    if ( m.testFlag( Qt::AltModifier ) == true )
-      backButtonClicked();
-  }
-    break;
-  case Qt::Key_Right:
-  {
-    if ( m.testFlag( Qt::AltModifier ) == true )
-      forwardButtonClicked();
-  }
-    break;
-    default: break;
-  }
-  QWidget::keyReleaseEvent( e );
-}
-
 void SC_MainWindow::cmdLineTextEdited( const QString& s )
 {
   switch ( mainTab -> currentTab() )
@@ -1383,6 +1361,17 @@ void SC_MainWindow::resultsTabCloseRequest( int index )
     {
         SC_SingleResultTab* tab = static_cast < SC_SingleResultTab* >( resultsTab -> widget ( 0 ) );
         tab -> removeAllIgnoreKeyPressEvent();
+    }
+    else if ( resultsTab -> count() == 0 )
+    {
+      if ( simulateTab -> contains_Only_Default_Profiles() )
+      {
+        mainTab -> setCurrentIndex( mainTab -> indexOf( importTab ) );
+      }
+      else
+      {
+        mainTab -> setCurrentIndex( mainTab -> indexOf( simulateTab ) );
+      }
     }
   }
 }

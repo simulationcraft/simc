@@ -1103,6 +1103,30 @@ public:
     }*/
   }
 
+  bool is_Default_New_Tab( int index )
+  {
+    bool retval = false;
+    if ( index >= 0 && index < count() &&
+         ! isACloseAllExclude( widget( index ) ) )
+      retval = ( tabText( index ) == defaultSimulateTabTitle &&
+                 static_cast<SC_TextEdit*>( widget( index ) ) -> toPlainText() == defaultSimulateText );
+    return retval;
+  }
+
+  bool contains_Only_Default_Profiles()
+  {
+    for ( int i = 0; i < count(); ++i )
+    {
+      QWidget* widget_ = widget( i );
+      if ( ! isACloseAllExclude( widget_ ) )
+      {
+        if ( ! is_Default_New_Tab( i ) )
+          return false;
+      }
+    }
+    return true;
+  }
+
   int add_Text( const QString& text, const QString& tab_name )
   {
     SC_TextEdit* s = new SC_TextEdit( this );
@@ -1201,8 +1225,7 @@ public slots:
     {
       int confirm;
 
-      if ( tabText( index ) == defaultSimulateTabTitle &&
-           static_cast<SC_TextEdit*>( widget( index ) ) -> toPlainText() == defaultSimulateText )
+      if ( is_Default_New_Tab( index ) )
       {
         confirm = QMessageBox::Yes;
       }
@@ -1336,7 +1359,6 @@ public:
 
 protected:
   virtual void closeEvent( QCloseEvent* );
-  virtual void keyReleaseEvent( QKeyEvent* );
 
 private slots:
   void importFinished();
@@ -1404,6 +1426,8 @@ public:
 class SC_WebView : public QWebView
 {
   Q_OBJECT
+  bool allow_mouse_navigation;
+  bool allow_keyboard_navigation;
 public:
   SC_MainWindow* mainWindow;
   int progress;
@@ -1411,7 +1435,7 @@ public:
 
   SC_WebView( SC_MainWindow* mw, QWidget* parent = 0, const QString& h = QString() ) :
     QWebView( parent ),
-    mainWindow( mw ), progress( 0 ), html_str( h )
+    allow_mouse_navigation( false ), allow_keyboard_navigation( false ), mainWindow( mw ), progress( 0 ), html_str( h )
   {
     connect( this, SIGNAL( loadProgress( int ) ),        this, SLOT( loadProgressSlot( int ) ) );
     connect( this, SIGNAL( loadFinished( bool ) ),       this, SLOT( loadFinishedSlot( bool ) ) );
@@ -1450,6 +1474,26 @@ public:
   void loadHtml()
   { setHtml( html_str ); }
 
+  void enableMouseNavigation()
+  {
+    allow_mouse_navigation = true;
+  }
+
+  void disableMouseNavigation()
+  {
+    allow_mouse_navigation = false;
+  }
+
+  void enableKeyboardNavigation()
+  {
+    allow_keyboard_navigation = true;
+  }
+
+  void disableKeyboardNavigation()
+  {
+    allow_keyboard_navigation = false;
+  }
+
 private:
   void update_progress( int p )
   {
@@ -1460,6 +1504,63 @@ private:
     }
   }
 
+protected:
+  virtual void mouseReleaseEvent( QMouseEvent* e )
+  {
+    if ( allow_mouse_navigation )
+    {
+      switch( e -> button() )
+      {
+      case Qt::XButton1:
+        //back
+        back();
+        break;
+      case Qt::XButton2:
+        //forward
+        forward();
+        break;
+      default:
+        break;
+      }
+    }
+    QWebView::mouseReleaseEvent( e );
+  }
+  virtual void keyReleaseEvent( QKeyEvent* e )
+  {
+    if ( allow_keyboard_navigation )
+    {
+      int k = e -> key();
+      Qt::KeyboardModifiers m = e -> modifiers();
+      switch ( k )
+      {
+      case Qt::Key_R:
+      {
+        if ( m.testFlag( Qt::ControlModifier ) == true )
+          reload();
+      }
+        break;
+      case Qt::Key_F5:
+      {
+        reload();
+      }
+        break;
+      case Qt::Key_Left:
+      {
+        if ( m.testFlag( Qt::AltModifier ) == true )
+          back();
+      }
+        break;
+      case Qt::Key_Right:
+      {
+        if ( m.testFlag( Qt::AltModifier ) == true )
+          forward();
+      }
+        break;
+        default: break;
+      }
+    }
+    QWebView::keyReleaseEvent( e );
+  }
 private slots:
   void loadProgressSlot( int p )
   { update_progress( p ); }
