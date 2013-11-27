@@ -16,7 +16,8 @@ attack_t::attack_t( const std::string&  n,
                     player_t*           p,
                     const spell_data_t* s ) :
   action_t( ACTION_ATTACK, n, p, s ),
-  base_attack_expertise( 0 ), num_results( 0 ), attack_table_sum( std::numeric_limits<double>::min() )
+  base_attack_expertise( 0 ),
+  num_results( 0 ), attack_table_sum( std::numeric_limits<double>::min() )
 {
   base_attack_power_multiplier = 1.0;
   crit_bonus = 1.0;
@@ -96,9 +97,7 @@ double attack_t::crit_block_chance( player_t* t )
 
 // attack_t::build_table ====================================================
 
-void attack_t::build_table( std::array<double, RESULT_MAX>& chances,
-                            std::array<result_e, RESULT_MAX>& results,
-                            double miss_chance, double dodge_chance,
+void attack_t::build_table( double miss_chance, double dodge_chance,
                             double parry_chance, double glance_chance,
                             double crit_chance )
 {
@@ -214,7 +213,7 @@ result_e attack_t::calculate_result( action_state_t* s )
   // Specials are 2-roll calculations, so only pass crit chance to
   // build_table for non-special attacks
 
-  build_table( chances, results, miss, dodge, parry,
+  build_table( miss, dodge, parry,
                may_glance ? glance_chance( delta_level ) : 0,
                ! special ? std::min( 1.0, crit ) : 0 );
 
@@ -407,6 +406,13 @@ double ranged_attack_t::parry_chance( double /* expertise */, player_t* /* targe
 double ranged_attack_t::glance_chance( int delta_level )
 {
   return (  delta_level  + 1 ) * 0.06;
+}
+
+double ranged_attack_t::composite_target_multiplier( player_t* target )
+{
+  double v = attack_t::composite_target_multiplier( target );
+  v *= target -> composite_ranged_attack_player_vulnerability();
+  return v;
 }
 
 // ranged_attack_t::schedule_execute ========================================

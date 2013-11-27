@@ -217,7 +217,6 @@ struct gain_t;
 struct haste_buff_t;
 struct heal_state_t;
 struct item_t;
-struct js_node_t;
 struct module_t;
 class option_t;
 struct pet_t;
@@ -236,6 +235,7 @@ struct stat_pair_t;
 struct stormlash_callback_t;
 struct tick_buff_t;
 struct travel_event_t;
+struct js_node_t;
 struct xml_node_t;
 
 // Enumerations =============================================================
@@ -5466,22 +5466,13 @@ struct heal_state_t : public action_state_t
 
 struct attack_t : public action_t
 {
-  std::array<double, RESULT_MAX> chances;
-  std::array<result_e, RESULT_MAX> results;
   double base_attack_expertise;
-  int num_results;
-  double attack_table_sum;
 
   attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Attack Overrides
   virtual timespan_t execute_time();
   virtual void execute();
-  void build_table( std::array<double, RESULT_MAX>& chances,
-                    std::array<result_e, RESULT_MAX>& results,
-                    double miss_chance, double dodge_chance,
-                    double parry_chance, double glance_chance,
-                    double crit_chance );
   virtual result_e calculate_result( action_state_t* );
   virtual block_result_e calculate_block_result( action_state_t* );
   virtual void   init();
@@ -5509,6 +5500,16 @@ struct attack_t : public action_t
 
   virtual void reset()
   { num_results = 0; attack_table_sum = std::numeric_limits<double>::min(); action_t::reset(); }
+
+private:
+  std::array<double, RESULT_MAX> chances;
+  std::array<result_e, RESULT_MAX> results;
+  int num_results;
+  double attack_table_sum; // Used to check whether we can use cached values or not.
+
+  void build_table( double miss_chance, double dodge_chance,
+                    double parry_chance, double glance_chance,
+                    double crit_chance );
 };
 
 // Melee Attack ===================================================================
@@ -5522,7 +5523,6 @@ struct melee_attack_t : public attack_t
   virtual double  dodge_chance( double /* expertise */, player_t* t );
   virtual double  parry_chance( double /* expertise */, player_t* t );
   virtual double glance_chance( int delta_level );
-
 };
 
 // Ranged Attack ===================================================================
@@ -5535,12 +5535,7 @@ struct ranged_attack_t : public attack_t
   virtual double  dodge_chance( double /* expertise */, player_t* t );
   virtual double  parry_chance( double /* expertise */, player_t* t );
   virtual double glance_chance( int delta_level );
-  virtual double composite_target_multiplier( player_t* target )
-  {
-    double v = attack_t::composite_target_multiplier( target );
-    v *= target -> composite_ranged_attack_player_vulnerability();
-    return v;
-  }
+  virtual double composite_target_multiplier( player_t* );
   virtual void schedule_execute( action_state_t* execute_state = 0 );
 };
 
@@ -5585,7 +5580,6 @@ public:
   virtual void   execute();
   virtual double miss_chance( double hit, player_t* t );
   virtual void   init();
-
   virtual double composite_hit()
   { return action_t::composite_hit() + player -> cache.spell_hit(); }
 };
@@ -6351,18 +6345,17 @@ namespace js
 {
 js_node_t* get_child( js_node_t* root, const std::string& name );
 js_node_t* get_node ( js_node_t* root, const std::string& path );
-int  get_children( std::vector<js_node_t*>&, js_node_t* root );
+std::vector<js_node_t*> get_children( js_node_t* root );
 int  get_value( std::vector<std::string>& value, js_node_t* root, const std::string& path = std::string() );
 bool get_value( std::string& value, js_node_t* root, const std::string& path = std::string() );
 bool get_value( int&         value, js_node_t* root, const std::string& path = std::string() );
 bool get_value( unsigned&    value, js_node_t* root, const std::string& path = std::string() );
 bool get_value( double&      value, js_node_t* root, const std::string& path = std::string() );
-js_node_t* create( sim_t* sim, const std::string& input );
-js_node_t* create( sim_t* sim, FILE* input );
+std::shared_ptr<js_node_t> create( sim_t* sim, const std::string& input );
+std::shared_ptr<js_node_t> create( sim_t* sim, FILE* input );
 std::ostream& print( std::ostream&, js_node_t*, int spacing = 0 );
 std::ostream& operator<<( std::ostream& s, js_node_t* n );
 const char* get_name( js_node_t* root );
-void delete_node( js_node_t* root );
 };
 
 // Handy Actions ============================================================

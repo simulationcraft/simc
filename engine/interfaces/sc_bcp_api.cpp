@@ -18,18 +18,18 @@ struct player_spec_t
 
 // download_id ==============================================================
 
-js_node_t* download_id( sim_t* sim,
+std::shared_ptr<js_node_t> download_id( sim_t* sim,
                         const std::string& region,
                         unsigned item_id,
                         cache::behavior_e caching )
 {
-  if ( item_id == 0 ) return 0;
+  if ( item_id == 0 ) return std::shared_ptr<js_node_t>();
 
   std::string url = "http://" + region + ".battle.net/api/wow/item/" + util::to_string( item_id ) + "?locale=en_US";
 
   std::string result;
   if ( ! http::get( result, url, caching ) )
-    return 0;
+    return std::shared_ptr<js_node_t>();
 
   return js::create( sim, result );
 }
@@ -160,8 +160,8 @@ bool parse_glyphs( player_t* p, js_node_t* build )
   {
     if ( js_node_t* glyphs = js::get_node( build, glyph_e_names[ i ] ) )
     {
-      std::vector<js_node_t*> children;
-      if ( js::get_children( children, glyphs ) > 0 )
+      std::vector<js_node_t*> children = js::get_children( glyphs );
+      if ( !children.empty() )
       {
         for ( std::size_t j = 0; j < children.size(); ++j )
         {
@@ -270,7 +270,8 @@ player_t* parse_player( sim_t*             sim,
   }
 
   // if ( sim -> debug ) util::fprintf( sim -> output_file, "%s\n%s\n", url.c_str(), result.c_str() );
-  js_node_t* profile = js::create( sim, result );
+  std::shared_ptr<js_node_t> profile_node = js::create( sim, result );
+  js_node_t* profile = profile_node.get();
   if ( ! profile )
   {
     sim -> errorf( "BCP API: Unable to download player from '%s'\n", player.url.c_str() );
@@ -393,9 +394,10 @@ player_t* parse_player( sim_t*             sim,
 
 // download_item_data =======================================================
 
-js_node_t* download_item_data( item_t& item, cache::behavior_e caching )
+std::shared_ptr<js_node_t> download_item_data( item_t& item, cache::behavior_e caching )
 {
-  js_node_t* js = download_id( item.sim, item.sim -> default_region_str, item.parsed.data.id, caching );
+  std::shared_ptr<js_node_t> js_ = download_id( item.sim, item.sim -> default_region_str, item.parsed.data.id, caching );
+  js_node_t* js = js_.get();
   if ( ! js )
   {
     if ( caching != cache::ONLY )
@@ -403,7 +405,7 @@ js_node_t* download_item_data( item_t& item, cache::behavior_e caching )
       item.sim -> errorf( "BCP API: Player '%s' unable to download item id '%u' at slot %s.\n",
                           item.player -> name(), item.parsed.data.id, item.slot_name() );
     }
-    return js;
+    return js_;
   }
   if ( item.sim -> debug )
     item.sim -> out_debug.raw() << js;
@@ -450,8 +452,7 @@ js_node_t* download_item_data( item_t& item, cache::behavior_e caching )
 
     if ( js_node_t* classes = js::get_child( js, "allowableClasses" ) )
     {
-      std::vector<js_node_t*> nodes;
-      js::get_children( nodes, classes );
+      std::vector<js_node_t*> nodes = js::get_children( classes );
       for ( size_t i = 0, n = nodes.size(); i < n; ++i )
       {
         int cid;
@@ -464,8 +465,7 @@ js_node_t* download_item_data( item_t& item, cache::behavior_e caching )
 
     if ( js_node_t* races = js::get_child( js, "allowableRaces" ) )
     {
-      std::vector<js_node_t*> nodes;
-      js::get_children( nodes, races );
+      std::vector<js_node_t*> nodes = js::get_children( races );
       for ( size_t i = 0, n = nodes.size(); i < n; ++i )
       {
         int rid;
@@ -478,8 +478,7 @@ js_node_t* download_item_data( item_t& item, cache::behavior_e caching )
 
     if ( js_node_t* stats = js::get_child( js, "bonusStats" ) )
     {
-      std::vector<js_node_t*> nodes;
-      js::get_children( nodes, stats );
+      std::vector<js_node_t*> nodes = js::get_children( stats );
       for ( size_t i = 0, n = std::min( nodes.size(), sizeof_array( item.parsed.data.stat_type_e ) ); i < n; ++i )
       {
         if ( ! js::get_value( item.parsed.data.stat_type_e[ i ], nodes[ i ], "stat"   ) ) throw( "bonus stat" );
@@ -493,8 +492,7 @@ js_node_t* download_item_data( item_t& item, cache::behavior_e caching )
 
     if ( js_node_t* sockets = js::get_node( js, "socketInfo/sockets" ) )
     {
-      std::vector<js_node_t*> nodes;
-      js::get_children( nodes, sockets );
+      std::vector<js_node_t*> nodes = js::get_children( sockets );
       for ( size_t i = 0, n = std::min( nodes.size(), sizeof_array( item.parsed.data.socket_color ) ); i < n; ++i )
       {
         std::string color;
@@ -541,8 +539,7 @@ js_node_t* download_item_data( item_t& item, cache::behavior_e caching )
     }
 
     js_node_t* item_spell = js::get_node( js, "itemSpells" );
-    std::vector<js_node_t*> nodes;
-    js::get_children( nodes, item_spell );
+    std::vector<js_node_t*> nodes = js::get_children( item_spell );
     size_t spell_idx = 0;
     for ( size_t i = 0; i < nodes.size() && spell_idx < sizeof_array( item.parsed.data.id_spell ); i++ )
     {
@@ -573,10 +570,10 @@ js_node_t* download_item_data( item_t& item, cache::behavior_e caching )
     if ( caching != cache::ONLY )
       item.sim -> errorf( "BCP API: Player '%s' unable to parse item '%u' %s at slot '%s': %s\n",
                           item.player -> name(), item.parsed.data.id, fieldname, item.slot_name(), error_str.c_str() );
-    return nullptr;
+    return std::shared_ptr<js_node_t>();
   }
 
-  return js;
+  return js_;
 }
 
 // download_roster ==========================================================
@@ -596,7 +593,8 @@ js_node_t* download_roster( sim_t* sim,
     sim -> errorf( "BCP API: Unable to download guild %s|%s|%s.\n", region.c_str(), server.c_str(), name.c_str() );
     return 0;
   }
-  js_node_t* js = js::create( sim, result );
+  std::shared_ptr<js_node_t> js_ = js::create( sim, result );
+  js_node_t* js = js_.get();
   if ( ! js || ! ( js = js::get_child( js, "members" ) ) )
   {
     sim -> errorf( "BCP API: Unable to get members of guild %s|%s|%s.\n", region.c_str(), server.c_str(), name.c_str() );
@@ -765,12 +763,11 @@ bool bcp_api::download_item( item_t& item, cache::behavior_e caching )
 
 bool bcp_api::download_slot( item_t& item, cache::behavior_e caching )
 {
-  js_node_t* js = download_item_data( item, caching );
+  std::shared_ptr<js_node_t> js = download_item_data( item, caching );
   if ( ! js )
     return false;
 
-  parse_gems( item, js );
-  js::delete_node( js ); ( void ) js;
+  parse_gems( item, js.get() );
 
   item.source_str = "Blizzard";
 
@@ -792,8 +789,7 @@ bool bcp_api::download_guild( sim_t* sim,
   if ( !js ) return false;
 
   std::vector<std::string> names;
-  std::vector<js_node_t*> characters;
-  js::get_children( characters, js );
+  std::vector<js_node_t*> characters = js::get_children( js );
 
   for ( std::size_t i = 0, n = characters.size(); i < n; ++i )
   {
@@ -850,7 +846,8 @@ bool bcp_api::download_glyph( player_t*          player,
     ( player -> region_str.empty() ? player -> sim -> default_region_str : player -> region_str );
 
   unsigned glyphid = strtoul( glyph_id.c_str(), 0, 10 );
-  js_node_t* item = download_id( player -> sim, region, glyphid, caching );
+  std::shared_ptr<js_node_t> item_ = download_id( player -> sim, region, glyphid, caching );
+  js_node_t* item = item_.get();
   if ( ! item || ! js::get_value( glyph_name, item, "name" ) )
   {
     if ( caching != cache::ONLY )
@@ -870,7 +867,8 @@ gem_e bcp_api::parse_gem( item_t& item, unsigned gem_id, cache::behavior_e cachi
     ? item.sim -> default_region_str
     : item.player -> region_str;
 
-  js_node_t* js = download_id( item.sim, region, gem_id, caching );
+  std::shared_ptr<js_node_t> js_ = download_id( item.sim, region, gem_id, caching );
+  js_node_t* js = js_.get();
   if ( ! js )
     return GEM_NONE;
 

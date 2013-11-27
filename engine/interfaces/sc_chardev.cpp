@@ -9,7 +9,7 @@ namespace { // unnamed namespace
 
 // download_profile =========================================================
 
-js_node_t* download_profile( sim_t* sim,
+std::shared_ptr<js_node_t> download_profile( sim_t* sim,
                              const std::string& id,
                              cache::behavior_e caching )
 {
@@ -17,7 +17,7 @@ js_node_t* download_profile( sim_t* sim,
   std::string url = "http://chardev.org/php/interface/profiles/get_profile.php?id=" + id;
 
   if ( ! http::get( profile_str, url, caching ) )
-    return 0;
+    return std::shared_ptr<js_node_t>();
 
   return js::create( sim, profile_str );
 }
@@ -62,7 +62,8 @@ player_t* chardev::download_player( sim_t* sim,
   sim -> current_slot = 0;
   sim -> current_name = id;
 
-  js_node_t* profile_js = download_profile( sim, id, caching );
+  std::shared_ptr<js_node_t> profile_js_ = download_profile( sim, id, caching );
+  js_node_t* profile_js = profile_js_.get();
   if ( ! profile_js || ! ( profile_js = js::get_node( profile_js, "character" ) ) )
   {
     sim -> errorf( "Unable to download character profile %s from chardev.\n", id.c_str() );
@@ -234,9 +235,8 @@ player_t* chardev::download_player( sim_t* sim,
   p -> create_talents_armory();
 
   p -> glyphs_str = "";
-  std::vector<js_node_t*> glyph_nodes;
-  int num_glyphs = js::get_children( glyph_nodes, glyphs_root );
-  for ( int i = 0; i < num_glyphs; i++ )
+  std::vector<js_node_t*> glyph_nodes = js::get_children( glyphs_root );
+  for ( size_t i = 0; i < glyph_nodes.size(); i++ )
   {
     std::string glyph_name;
     if ( js::get_value( glyph_name, glyph_nodes[ i ], "2/1" ) )
@@ -251,9 +251,8 @@ player_t* chardev::download_player( sim_t* sim,
   p -> professions_str = "";
   if ( professions_root )
   {
-    std::vector<js_node_t*> skill_nodes;
-    int num_skills = js::get_children( skill_nodes, professions_root );
-    for ( int i = 0; i < num_skills; i++ )
+    std::vector<js_node_t*> skill_nodes = js::get_children( professions_root );
+    for ( size_t i = 0; i < skill_nodes.size(); i++ )
     {
       int skill_id;
       std::string skill_level;

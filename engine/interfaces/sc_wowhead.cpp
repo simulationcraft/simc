@@ -89,9 +89,8 @@ gem_e wowhead::parse_gem( item_t&           item,
       if ( node -> get_value( stats_str, "jsonEquip/cdata" ) )
       {
         stats_str = "{" + stats_str + "}";
-        js_node_t* js = js::create( item.sim, stats_str );
-        std::vector<js_node_t*> children;
-        js::get_children( children, js );
+        std::shared_ptr<js_node_t> js = js::create( item.sim, stats_str );
+        std::vector<js_node_t*> children = js::get_children( js.get() );
         for ( size_t i = 0; i < children.size(); i++ )
         {
           stat_e type = util::parse_stat_type( js::get_name( children[ i ] ) );
@@ -162,8 +161,10 @@ bool wowhead::download_item_data( item_t&            item,
     xml -> get_value( jsondata, "json/cdata" );
     jsondata = "{" + jsondata + "}";
 
-    js_node_t* json = js::create( item.sim, jsondata );
-    js_node_t* jsonequip = js::create( item.sim, jsonequipdata );
+    std::shared_ptr<js_node_t> json_ = js::create( item.sim, jsondata );
+    js_node_t* json = json_.get();
+    std::shared_ptr<js_node_t> jsonequip_ = js::create( item.sim, jsonequipdata );
+    js_node_t* jsonequip = jsonequip_.get();
 
     if ( item.sim -> debug )
       item.sim -> out_debug.raw() << json;
@@ -207,8 +208,7 @@ bool wowhead::download_item_data( item_t&            item,
     js::get_value( classes, jsonequip, "classes" );
     item.parsed.data.class_mask = classes;
 
-    std::vector<js_node_t*> jsonequip_children;
-    js::get_children( jsonequip_children, jsonequip );
+    std::vector<js_node_t*> jsonequip_children = js::get_children( jsonequip );
     size_t n = 0;
     for ( size_t i = 0; i < jsonequip_children.size() && n < sizeof_array( item.parsed.data.stat_type_e ); i++ )
     {

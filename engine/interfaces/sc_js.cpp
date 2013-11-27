@@ -9,15 +9,16 @@ struct js_node_t
 {
   std::string name_str;
   std::string value;
-  std::vector<js_node_t*> children;
+  auto_dispose<std::vector<js_node_t*> > children;
   js_node_t() {}
   js_node_t( const std::string& n ) : name_str( n ) {}
   const char* name() { return name_str.c_str(); }
 };
 
+namespace {
 // is_white_space ===========================================================
 
-static bool is_white_space( char c )
+bool is_white_space( char c )
 {
   return( c == ' '  ||
           c == '\t' ||
@@ -27,7 +28,7 @@ static bool is_white_space( char c )
 
 // is_token_char ============================================================
 
-static bool is_token_char( char c )
+bool is_token_char( char c )
 {
   if ( isalpha( c ) ) return true;
   if ( isdigit( c ) ) return true;
@@ -41,7 +42,7 @@ static bool is_token_char( char c )
 
 // parse_token ==============================================================
 
-static char parse_token( std::string&            token_str,
+char parse_token( std::string&            token_str,
                          const std::string&      input,
                          std::string::size_type& index )
 {
@@ -96,7 +97,7 @@ static char parse_token( std::string&            token_str,
 
 // parse_value ==============================================================
 
-static void parse_value( sim_t*                  sim,
+void parse_value( sim_t*                  sim,
                          js_node_t*              node,
                          char                    token_type,
                          std::string&            token_str,
@@ -238,7 +239,7 @@ static void parse_value( sim_t*                  sim,
 
 // split_path ===============================================================
 
-static js_node_t* split_path( js_node_t*         node,
+js_node_t* split_path( js_node_t*         node,
                               const std::string& path )
 {
   std::vector<std::string> splits = util::string_split( path, "/" );
@@ -246,44 +247,41 @@ static js_node_t* split_path( js_node_t*         node,
   for ( size_t i = 0; i < splits.size(); i++ )
   {
     node = js::get_child( node, splits[ i ] );
-    if ( ! node ) return 0;
+    if ( ! node ) return nullptr;
   }
 
   return node;
 }
 
+} // unnamed
+
 // js::create ===============================================================
 
-js_node_t* js::create( sim_t* sim, const std::string& input )
+std::shared_ptr<js_node_t> js::create( sim_t* sim, const std::string& input )
 {
-  if ( input.empty() ) return 0;
+  if ( input.empty() ) return std::shared_ptr<js_node_t>();
 
-  js_node_t* root = new js_node_t( "root" );
+  std::shared_ptr<js_node_t> root = std::shared_ptr<js_node_t>( new js_node_t( "root" ) );
 
   std::string::size_type index = 0;
 
   std::string token_str;
   char token_type = parse_token( token_str, input, index );
 
-  parse_value( sim, root, token_type, token_str, input, index );
+  parse_value( sim, root.get(), token_type, token_str, input, index );
 
   return root;
 }
 
 // js::create ===============================================================
 
-js_node_t* js::create( sim_t* sim, FILE* input )
+std::shared_ptr<js_node_t> js::create( sim_t* sim, FILE* input )
 {
-  if ( ! input ) return 0;
+  if ( ! input ) return std::shared_ptr<js_node_t>();
   std::string buffer;
   char c;
   while ( ( c = fgetc( input ) ) != EOF ) buffer += c;
   return create( sim, buffer );
-}
-
-void js::delete_node( js_node_t* root )
-{
-  delete root;
 }
 
 // js::get_child ============================================================
@@ -291,23 +289,20 @@ void js::delete_node( js_node_t* root )
 js_node_t* js::get_child( js_node_t*         root,
                           const std::string& name_str )
 {
-  int num_children = ( int ) root -> children.size();
-  for ( int i = 0; i < num_children; i++ )
+  for ( size_t i = 0; i < root -> children.size(); ++i )
   {
     js_node_t* node = root -> children[ i ];
     if ( name_str == node -> name() ) return node;
   }
 
-  return 0;
+  return nullptr;
 }
 
 // js::get_children =========================================================
 
-int js::get_children( std::vector<js_node_t*>& nodes,
-                      js_node_t*               root )
+std::vector<js_node_t*> js::get_children( js_node_t* root )
 {
-  nodes = root -> children;
-  return ( int ) nodes.size();
+  return root -> children;
 }
 
 // js::get_node =============================================================
