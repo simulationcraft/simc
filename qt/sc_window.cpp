@@ -995,10 +995,83 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
   {
     logText -> setformat_error();
     logText -> append( "Simulation failed!\n" );
-    for( std::vector<std::string>::iterator it = sim -> error_list.begin(); it != sim -> error_list.end(); ++it )
+    for( std::vector< std::string >::iterator it = sim -> error_list.begin(); it != sim -> error_list.end(); ++it )
     {
       logText -> append( QString::fromStdString( *it ) );
     }
+    // If the failure is due to permissions issues, make this very clear to the user that the problem is on their end and what must be done to fix it
+    std::list< std::string > files;
+    std::list< QString > directoriesWithPermissionIssues;
+    std::list< QString > filesWithPermissionIssues;
+    std::list< QString > filesThatAreDirectories;
+    files.push_back( sim -> output_file_str );
+    files.push_back( sim -> html_file_str );
+    files.push_back( sim -> xml_file_str );
+    files.push_back( sim -> reforge_plot_output_file_str );
+    files.push_back( sim -> csv_output_file_str );
+    std::string windowsPermissionRecommendation;
+    std::string suggestions;
+#ifdef SC_WINDOWS
+    if ( QSysInfo::WindowsVersion != QSysInfo::WV_NT &&
+         QSysInfo::WindowsVersion != QSysInfo::WV_2000 &&
+         QSysInfo::WindowsVersion != QSysInfo::WV_XP &&
+         QSysInfo::WindowsVersion != QSysInfo::WV_2003 )
+    {
+      windowsPermissionRecommendation = "Try running the program with administrative privileges by right clicking and selecting \"Run as administrator\"\n Or even installing the program to a different directory may help resolve these permission issues.";
+    }
+#endif
+    for( std::list< std::string >::iterator it = files.begin(); it != files.end(); ++it )
+    {
+      QFileInfo file( QString::fromStdString( *it ) );
+      if ( file.isDir() )
+      {
+        filesThatAreDirectories.push_back( file.absoluteFilePath() );
+      }
+      else if ( ! file.isWritable() )
+      {
+        QFileInfo filesDirectory( file.absolutePath() );
+        if ( ! filesDirectory.isWritable() )
+          directoriesWithPermissionIssues.push_back( file.absolutePath() );
+        filesWithPermissionIssues.push_back( file.absoluteFilePath() );
+      }
+    }
+    directoriesWithPermissionIssues.unique();
+    if ( filesThatAreDirectories.size() != 0 )
+    {
+      suggestions.append( "The following files are directories, SimulationCraft uses these as files, please rename them\n" );
+    }
+    for( std::list< QString >::iterator it = filesThatAreDirectories.begin(); it != filesThatAreDirectories.end(); ++it )
+    {
+      suggestions.append( "   " + (*it).toStdString() + "\n" );
+    }
+    if ( filesWithPermissionIssues.size() != 0 )
+    {
+      suggestions.append( "The following files have permission issues and are unwritable\n SimulationCraft needs to write to these files to simulate\n" );
+    }
+    for( std::list< QString >::iterator it = filesWithPermissionIssues.begin(); it != filesWithPermissionIssues.end(); ++it )
+    {
+      suggestions.append( "   " + (*it).toStdString() + "\n" );
+    }
+    if ( directoriesWithPermissionIssues.size() != 0 )
+    {
+      suggestions.append( "The following directories have permission issues and are unwritable\n meaning SimulationCraft cannot create files in these directories\n" );
+    }
+    for( std::list< QString >::iterator it = directoriesWithPermissionIssues.begin(); it != directoriesWithPermissionIssues.end(); ++it )
+    {
+      suggestions.append( "   " + (*it).toStdString() + "\n" );
+    }
+    if ( suggestions.length() != 0 )
+    {
+      suggestions = "\nSome possible suggestions on how to fix:\n" + suggestions;
+      logText -> append( QString::fromStdString( suggestions ) );
+      if ( windowsPermissionRecommendation.length() != 0 )
+      {
+        logText -> append( QString::fromStdString( windowsPermissionRecommendation ) );
+      }
+    }
+    logText -> append( "If for some reason you cannot resolve the issue, check if it is a known issue at\n https://code.google.com/p/simulationcraft/issues/list" );
+    logText -> append( "Or try an older version\n https://code.google.com/p/simulationcraft/wiki/Downloads" );
+    logText -> append( "And if all else fails you can come talk to us on IRC at\n irc.stratics.com (#simulationcraft)" );
     logText -> moveCursor( QTextCursor::End );
     logText -> resetformat();
     mainTab -> setCurrentTab( TAB_LOG );
