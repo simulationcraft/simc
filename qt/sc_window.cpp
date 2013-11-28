@@ -995,6 +995,10 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
   {
     logText -> setformat_error();
     logText -> append( "Simulation failed!\n" );
+    for( std::vector<std::string>::iterator it = sim -> error_list.begin(); it != sim -> error_list.end(); ++it )
+    {
+      logText -> append( QString::fromStdString( *it ) );
+    }
     logText -> moveCursor( QTextCursor::End );
     logText -> resetformat();
     mainTab -> setCurrentTab( TAB_LOG );

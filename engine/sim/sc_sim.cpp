@@ -969,7 +969,7 @@ void sim_t::combat( int iteration )
     }
     else
     {
-      out_error.printf( "Unable to open output file '%s'\n", output_file_str.c_str() );
+      errorf( "Unable to open output file '%s'\n", output_file_str.c_str() );
       cancel();
     }
   }

@@ -1512,11 +1512,9 @@ protected:
       switch( e -> button() )
       {
       case Qt::XButton1:
-        //back
         back();
         break;
       case Qt::XButton2:
-        //forward
         forward();
         break;
       default:
