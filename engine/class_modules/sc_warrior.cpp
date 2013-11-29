@@ -286,7 +286,8 @@ public:
 
   void              apl_precombat();
   void              apl_default();
-  void              apl_fury();
+  void              apl_smf_fury();
+  void              apl_tg_fury();
   void              apl_arms();
   void              apl_prot();
   virtual void      init_action_list();
@@ -3399,9 +3400,9 @@ void warrior_t::apl_precombat()
 // To compare talents As the user would need to either reload the character or add the line manually, hopefully without messing it up. 
 // So, I'm bypassing the talent check to leave every line intact, no matter what talents are selected when importing a character.
 
-// Fury Warrior Action Priority List ========================================
+// Single Minded Fury Warrior Action Priority List ========================================
 
-void warrior_t::apl_fury()
+void warrior_t::apl_smf_fury()
 {
   std::vector<std::string> item_actions       = get_item_actions();
   std::vector<std::string> profession_actions = get_profession_actions();
@@ -3471,8 +3472,7 @@ void warrior_t::apl_fury()
   single_target -> add_action( "storm_bolt,if=enabled&buff.cooldown_reduction.down" );
   single_target -> add_action( this, "Execute", "if=debuff.colossus_smash.up|rage>70|target.time_to_die<12" );
   single_target -> add_action( this, "Raging Blow", "if=target.health.pct<20|buff.raging_blow.stack=2|(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3))" );
-  single_target -> add_action( "bladestorm,if=enabled",
-                               "Titan's Grip Bladestorm is competitive with Dragon Roar (Not quite better) with a single target." );
+  single_target -> add_action( "bladestorm,if=enabled" );
   single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
   single_target -> add_action( this, "Raging Blow", "if=cooldown.colossus_smash.remains>=3", 
                                "If Colossus Smash is coming up soon, it's a good idea to save 1 charge of raging blow for it." );
@@ -3483,6 +3483,145 @@ void warrior_t::apl_fury()
   single_target -> add_action( this, "Battle Shout", "if=rage<70" );
   single_target -> add_action( this, "Shattering Throw", "if=cooldown.colossus_smash.remains>5",
                                "Shattering Throw is a very small personal dps increase, but a fairly significant raid dps increase. Only use to fill empty globals." );
+  single_target -> add_action( this, "Wild Strike", "if=cooldown.colossus_smash.remains>=2&rage>=70&target.health.pct>=20" );
+  single_target -> add_action( "impending_victory,if=enabled&target.health.pct>=20&cooldown.colossus_smash.remains>=2" );
+
+  two_targets -> add_action( "bloodbath,if=enabled&buff.enrage.up" );
+  two_targets -> add_action( this, "Cleave", "if=(rage>=60&debuff.colossus_smash.up)|rage>90" );
+  two_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
+  two_targets -> add_action( "dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))",
+                             "Generally, if an encounter has any type of AoE, Bladestorm will be the better choice." );
+  two_targets -> add_action( "bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
+  two_targets -> add_action( "shockwave,if=enabled" );
+  two_targets -> add_action( this, "Colossus Smash" );
+  two_targets -> add_action( this, "Bloodthirst", "cycle_targets=1,if=dot.deep_wounds.remains<5",
+                             "Keep deep wounds on as many targets as possible." );
+  two_targets -> add_action( this, "Bloodthirst", "if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)" );
+  two_targets -> add_action( "storm_bolt,if=enabled&debuff.colossus_smash.up" );
+  two_targets -> add_action( "wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains" );
+  two_targets -> add_action( this, "Execute", "if=debuff.colossus_smash.up" );
+  two_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up|target.health.pct<20" );
+  two_targets -> add_action( this, "Whirlwind", "if=!buff.meat_cleaver.up" );
+  two_targets -> add_action( this, "Battle Shout", "if=rage<70" );
+  two_targets -> add_action( this, "Heroic Throw" );
+
+  three_targets -> add_action( "bloodbath,if=enabled&buff.enrage.up" );
+  three_targets -> add_action( this, "Cleave", "if=(rage>=60&debuff.colossus_smash.up)|rage>90" );
+  three_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
+  three_targets -> add_action( "dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))" );
+  three_targets -> add_action( "shockwave,if=enabled" );
+  three_targets -> add_action( "bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
+  three_targets -> add_action( this, "Colossus Smash" );
+  three_targets -> add_action( "storm_bolt,if=enabled&debuff.colossus_smash.up" );
+  three_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack=2" );
+  three_targets -> add_action( this, "Bloodthirst", "cycle_targets=1,if=!dot.deep_wounds.ticking" );
+  three_targets -> add_action( this, "Whirlwind" );
+  three_targets -> add_action( this, "Raging Blow" );
+  three_targets -> add_action( this, "Battle Shout", "if=rage<70" );
+  three_targets -> add_action( this, "Heroic Throw" );
+
+  aoe -> add_action( "bloodbath,if=enabled&buff.enrage.up" );
+  aoe -> add_action( this, "Cleave", "if=rage>110" );
+  aoe -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
+  aoe -> add_action( "dragon_roar,if=enabled&debuff.colossus_smash.down&(buff.bloodbath.up|!talent.bloodbath.enabled)",
+                     "Dragon roar is a poor choice on large-scale AoE as the damage it does is reduced with additional targets. The damage it does per target is reduced by the following amounts:\n"
+                     "# 1/2/3/4/5+ targets ---> 0%/25%/35%/45%/50%" );
+  aoe -> add_action( "bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
+  aoe -> add_action( "storm_bolt,if=enabled&debuff.colossus_smash.up" );
+  aoe -> add_action( "shockwave,if=enabled",
+                     "Note: The 20 second reduction when hitting 3+ targets is not modeled." );
+  aoe -> add_action( this, "Bloodthirst", "cycle_targets=1,if=!dot.deep_wounds.ticking&buff.enrage.down", 
+                     "Enrage overlaps 4 GCDs, which allows bloodthirst to be used mostly to keep enrage up, as rage income is typically not an issue with the aoe rotation." );
+  aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack=3" );
+  aoe -> add_action( this, "Whirlwind" );
+  aoe -> add_action( this, "Bloodthirst", "cycle_targets=1,if=!dot.deep_wounds.ticking" );
+  aoe -> add_action( this, "Colossus Smash" );
+  aoe -> add_action( this, "Battle Shout", "if=rage<70" );
+
+}
+
+// Titan's Grip Fury Warrior Action Priority List ========================================
+
+void warrior_t::apl_tg_fury()
+{
+  std::vector<std::string> item_actions       = get_item_actions();
+  std::vector<std::string> profession_actions = get_profession_actions();
+  std::vector<std::string> racial_actions     = get_racial_actions();
+
+  action_priority_list_t* default_list        = get_action_priority_list( "default"       );
+  action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
+  action_priority_list_t* two_targets         = get_action_priority_list( "two_targets"   );
+  action_priority_list_t* three_targets       = get_action_priority_list( "three_targets" );
+  action_priority_list_t* aoe                 = get_action_priority_list( "aoe"           );
+
+  default_list -> add_action( "auto_attack" );
+
+  if ( sim -> allow_potions && level >= 80 )
+    default_list -> add_action( "mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25" );
+
+  default_list -> add_action( this, "Recklessness", "if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20)|target.time_to_die<=12",
+                              "This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'" );
+  default_list -> add_action( "avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)" );
+  default_list -> add_action( this, "Skull Banner", "if=buff.skull_banner.down&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192&buff.cooldown_reduction.up)|buff.recklessness.up)" );
+
+  for ( size_t i = 0; i < item_actions.size(); i++ )
+    default_list -> add_action( item_actions[ i ] + ",if=!talent.bloodbath.enabled&debuff.colossus_smash.up|buff.bloodbath.up" );
+
+  for ( size_t i = 0; i < profession_actions.size(); i++ )
+    default_list -> add_action( profession_actions[ i ] + ",if=!talent.bloodbath.enabled&debuff.colossus_smash.up|buff.bloodbath.up" );
+
+  for ( size_t i = 0; i < racial_actions.size(); i++ )
+    default_list -> add_action( racial_actions[ i ] + ",if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up" );
+
+  default_list -> add_action( this, "Berserker Rage", "if=buff.enrage.remains<1&cooldown.bloodthirst.remains>1", 
+                                    "There is a 0.25~ second delay in enrage application, this delay allows enrage to cover 4 GCDs of ability usage." );
+  default_list -> add_action( "run_action_list,name=single_target,if=active_enemies=1" );
+  default_list -> add_action( "run_action_list,name=two_targets,if=active_enemies=2" );
+  default_list -> add_action( "run_action_list,name=three_targets,if=active_enemies=3" );
+  default_list -> add_action( "run_action_list,name=aoe,if=active_enemies>3" );
+
+
+  single_target -> add_action( "bloodbath,if=enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)", 
+                               "/actions+=/stance,choose=berserker,damage_taken=150000,swap=20\n" 
+                               "# If you wish to simulate raid damage with stance swapping, please try something similar to the line above.\n"
+                               "# The above line, when the # is removed, will tell the character to swap to berserker stance, give rage based on 150k of damage taken,\n"
+                               "# and then swap back to the original stance. This will repeat every 20 seconds.\n"
+                               "\n"
+                               "# A very brief overview of the fury single target rotation, keep in mind that this does not include various subtle aspects in the action list, and is only intended for newer players.\n"
+                               "# Fury is a priority-based rotation with moderate amounts of rage management. It is  played in a 20-21 second cycle, based around usage of Colossus Smash.\n"
+                               "# Bloodthirst is used on cooldown, raging blow is a higher priority than bloodsurge-buffed wild strikes, and the player should attempt to save up rage by foregoing usage of 'rage dumps' such as\n"
+                               "# Heroic strike and non-bloodsurge buffed wild strikes when colossus smash is not applied to the target. The goal is to go into using colossus smash with 100-115~ rage\n"
+                               "# and then expend all of this rage by using heroic strike 3-4 times during colossus smash. It's also a good idea to save 1 charge of raging blow to use inside of this 6.5 second window.\n"
+                               "# Cooldowns are stacked whenever possible, and only delayed for the very last use of them.\n" );
+  single_target -> add_action( this, "Heroic Strike", "if=(debuff.colossus_smash.up&rage>=40&target.health.pct>=20|rage>=100)&buff.enrage.up" );
+  single_target -> add_action( this, "Heroic Leap", "if=debuff.colossus_smash.up" );
+  single_target -> add_action( this, "Bloodthirst", "if=!buff.enrage.up" );
+  single_target -> add_action( "storm_bolt,if=enabled&buff.cooldown_reduction.up&debuff.colossus_smash.up", 
+                               "Galakras cooldown reduction trinket allows Storm Bolt to be synced with Colossus Smash. 'buff.cooldown_reduction.up' is a hackish way of seeing if the trinket is equipped." );
+  single_target -> add_action( this, "Raging Blow", "if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20",
+                               "Delay Bloodthirst if 2 stacks of raging blow are available inside Colossus Smash." );
+  single_target -> add_action( "storm_bolt,if=enabled&buff.cooldown_reduction.down&debuff.colossus_smash.up" );
+  single_target -> add_action( this, "Bloodthirst", "" );
+  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1",
+                               "The GCD reduction of the Bloodsurge buff allows 3 Wild Strikes in-between Bloodthirst." );
+  single_target -> add_action( "wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains" );
+  single_target -> add_action( "dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))" );
+  single_target -> add_action( this, "Colossus Smash", "" ,
+                               "The debuff from Colossus Smash lasts 6.5 seconds and also has 0.25~ seconds of travel time. This allows 4 1.5 second globals to be used inside of it every time now." );
+  single_target -> add_action( "storm_bolt,if=enabled&buff.cooldown_reduction.down" );
+  single_target -> add_action( this, "Execute", "if=debuff.colossus_smash.up|rage>70|target.time_to_die<12" );
+  single_target -> add_action( this, "Raging Blow", "if=target.health.pct<20|buff.raging_blow.stack=2|debuff.colossus_smash.up|buff.raging_blow.remains<=3" );
+  single_target -> add_action( "bladestorm,if=enabled",
+                               "Titan's Grip Bladestorm is competitive with Dragon Roar (Not quite better) with a single target." );
+  single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
+  single_target -> add_action( this, "Raging Blow", "if=cooldown.colossus_smash.remains>=3", 
+                               "If Colossus Smash is coming up soon, it's a good idea to save 1 charge of raging blow for it." );
+  single_target -> add_action( "shockwave,if=enabled" );
+  single_target -> add_action( this, "Heroic Throw", "if=debuff.colossus_smash.down&rage<60" );
+  single_target -> add_action( this, "Shattering Throw", "if=cooldown.colossus_smash.remains>5",
+                               "Shattering Throw is a very small personal dps increase, but a fairly significant raid dps increase. Only use to fill empty globals." );
+  single_target -> add_action( this, "Wild Strike", "if=debuff.colossus_smash.up&target.health.pct>=20" );
+  single_target -> add_action( this, "Battle Shout", "if=rage<70" );
   single_target -> add_action( this, "Wild Strike", "if=cooldown.colossus_smash.remains>=2&rage>=70&target.health.pct>=20" );
   single_target -> add_action( "impending_victory,if=enabled&target.health.pct>=20&cooldown.colossus_smash.remains>=2" );
 
@@ -3878,7 +4017,10 @@ void warrior_t::init_action_list()
   switch ( specialization() )
   {
     case WARRIOR_FURY:
-      apl_fury();
+      if( main_hand_weapon.swing_time < timespan_t::from_seconds( 3.0 ) )
+        apl_smf_fury();
+      else
+        apl_tg_fury();
       break;
     case WARRIOR_ARMS:
       apl_arms();

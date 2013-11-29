@@ -59,16 +59,15 @@ actions+=/run_action_list,name=aoe,if=active_enemies>3
 # Cooldowns are stacked whenever possible, and only delayed for the very last use of them.
 
 actions.single_target=bloodbath,if=enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)
-actions.single_target+=/heroic_strike,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=100&buff.enrage.up
+actions.single_target+=/heroic_strike,if=(debuff.colossus_smash.up&rage>=40&target.health.pct>=20|rage>=100)&buff.enrage.up
 actions.single_target+=/heroic_leap,if=debuff.colossus_smash.up
+actions.single_target+=/bloodthirst,if=!buff.enrage.up
 # Galakras cooldown reduction trinket allows Storm Bolt to be synced with Colossus Smash. 'buff.cooldown_reduction.up' is a hackish way of seeing if the trinket is equipped.
 actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.up&debuff.colossus_smash.up
 # Delay Bloodthirst if 2 stacks of raging blow are available inside Colossus Smash.
 actions.single_target+=/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20
 actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.down&debuff.colossus_smash.up
-# Until execute range, Bloodthirst is used on cooldown 95% of the time. When execute range is reached, bloodthirst can be delayed 1-2~ globals as long as the conditions below are met.
-# This is done to lower the amount of heroic strike usage, and to increase the amount of executes used.
-actions.single_target+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)
+actions.single_target+=/bloodthirst
 # The GCD reduction of the Bloodsurge buff allows 3 Wild Strikes in-between Bloodthirst.
 actions.single_target+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1
 actions.single_target+=/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains
@@ -77,7 +76,7 @@ actions.single_target+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.
 actions.single_target+=/colossus_smash
 actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.down
 actions.single_target+=/execute,if=debuff.colossus_smash.up|rage>70|target.time_to_die<12
-actions.single_target+=/raging_blow,if=target.health.pct<20|buff.raging_blow.stack=2|(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3))
+actions.single_target+=/raging_blow,if=target.health.pct<20|buff.raging_blow.stack=2|debuff.colossus_smash.up|buff.raging_blow.remains<=3
 # Titan's Grip Bladestorm is competitive with Dragon Roar (Not quite better) with a single target.
 actions.single_target+=/bladestorm,if=enabled
 actions.single_target+=/wild_strike,if=buff.bloodsurge.up
@@ -85,11 +84,10 @@ actions.single_target+=/wild_strike,if=buff.bloodsurge.up
 actions.single_target+=/raging_blow,if=cooldown.colossus_smash.remains>=3
 actions.single_target+=/shockwave,if=enabled
 actions.single_target+=/heroic_throw,if=debuff.colossus_smash.down&rage<60
-actions.single_target+=/battle_shout,if=rage<70&!debuff.colossus_smash.up
-actions.single_target+=/wild_strike,if=debuff.colossus_smash.up&target.health.pct>=20
-actions.single_target+=/battle_shout,if=rage<70
 # Shattering Throw is a very small personal dps increase, but a fairly significant raid dps increase. Only use to fill empty globals.
 actions.single_target+=/shattering_throw,if=cooldown.colossus_smash.remains>5
+actions.single_target+=/wild_strike,if=debuff.colossus_smash.up&target.health.pct>=20
+actions.single_target+=/battle_shout,if=rage<70
 actions.single_target+=/wild_strike,if=cooldown.colossus_smash.remains>=2&rage>=70&target.health.pct>=20
 actions.single_target+=/impending_victory,if=enabled&target.health.pct>=20&cooldown.colossus_smash.remains>=2
 
