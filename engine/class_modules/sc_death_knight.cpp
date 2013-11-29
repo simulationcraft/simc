@@ -2707,7 +2707,14 @@ struct blood_plague_t : public death_knight_spell_t
   }
 
   virtual double composite_crit()
-  { return action_t::composite_crit() + player -> cache.attack_crit(); }
+  { 
+  double cc = action_t::composite_crit();
+  
+  cc = action_t::composite_crit() + player -> cache.attack_crit(); 
+  cc -= 0.03;   // Blood plague suffers from crit suppression, unlike Frost Fever so 3% is hardcoded as being removed here. 
+                // https://code.google.com/p/simulationcraft/issues/detail?id=1478 comments near the bottom.
+  return cc; 
+  }
 
   virtual void impact( action_state_t* s )
   {
