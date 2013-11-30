@@ -1547,6 +1547,7 @@ struct heroic_leap_t : public warrior_attack_t
       cooldown -> duration = data().cooldown();
       cooldown -> duration += p -> glyphs.death_from_above -> effectN( 1 ).time_value();
     }
+    cooldown -> duration  *= p -> buffs.cooldown_reduction -> default_value;
     use_off_gcd = true;
   }
 };
