@@ -3801,7 +3801,7 @@ struct healing_touch_t : public druid_heal_t
     if ( state -> result == RESULT_CRIT )
       trigger_living_seed( state );
 
-    p() -> cooldown.swiftmend -> adjust( timespan_t::from_seconds( - p() -> glyph.healing_touch -> effectN( 1 ).base_value() ) );
+    p() -> cooldown.natures_swiftness -> adjust( timespan_t::from_seconds( - p() -> glyph.healing_touch -> effectN( 1 ).base_value() ) );
   }
 
   virtual void execute()
@@ -6785,8 +6785,10 @@ void druid_t::apl_restoration()
   action_list_str += init_use_item_actions();
   action_list_str += init_use_profession_actions();
   action_list_str += "/innervate,if=mana.pct<90";
+  action_list_str += "/natures_swiftness";
   if ( talent.incarnation -> ok() )
     action_list_str += "/incarnation";
+  action_list_str += "/healing_touch,if=buff.natures_swiftness.up";
   action_list_str += "/healing_touch,if=buff.omen_of_clarity.up";
   action_list_str += "/rejuvenation,if=!ticking|remains<tick_time";
   action_list_str += "/lifebloom,if=debuff.lifebloom.stack<3";
