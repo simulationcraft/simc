@@ -808,7 +808,7 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
       std::string windowsPermissionRecommendation;
       std::string suggestions;
 #ifdef SC_WINDOWS
-      if ( QSysInfo::WindowsVersion >= QSysInfo::WVVISTA  )
+      if ( QSysInfo::WindowsVersion >= QSysInfo::WV_VISTA  )
       {
         windowsPermissionRecommendation = "Try running the program with administrative privileges by right clicking and selecting \"Run as administrator\"\n Or even installing the program to a different directory may help resolve these permission issues.";
       }
