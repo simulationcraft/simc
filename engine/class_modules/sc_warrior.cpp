@@ -2091,6 +2091,7 @@ struct shield_slam_t : public warrior_attack_t
 
 struct shockwave_t : public warrior_attack_t
 {
+  timespan_t cd_reduction;
   shockwave_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "shockwave", p, p -> talents.shockwave )
   {
@@ -2101,6 +2102,30 @@ struct shockwave_t : public warrior_attack_t
     may_parry         = false;
     may_block         = false;
     aoe               = -1;
+    cd_reduction      = timespan_t::zero();
+  }
+
+  virtual void execute()
+  {
+    warrior_attack_t::execute();
+    warrior_t* p = cast();
+
+    cd_reduction = timespan_t::zero();
+  }
+
+  virtual void update_ready( timespan_t )
+  {
+   // If shockwave hits 3+ targets, the cooldown is reduced by 20 seconds.
+   // When used with a cooldown reduction trinket, this 20 seconds is taken into account after the first reduction, which can lead to
+   // a 6-8 second cooldown on Shockwave.
+    warrior_t* p = cast();
+    if ( result_is_hit() )
+      if ( execute_state -> n_targets >= 3 )
+        cd_reduction = timespan_t::from_seconds( -20 );
+
+    cd_reduction += cooldown -> duration * p -> buffs.cooldown_reduction -> default_value;
+    cd_reduction /= p -> buffs.cooldown_reduction -> default_value;
+    warrior_attack_t::update_ready( cd_reduction );
   }
 };
 
@@ -2114,8 +2139,8 @@ struct slam_sweeping_strikes_attack_t : public warrior_attack_t
     background = true;
     aoe        = -1;
     range      =  2;
-    weapon_multiplier=0;             //do not add weapon damage
-    weapon = NULL;                   //so we don't double dip on seasoned soldier
+    weapon_multiplier=0;             // Do not add weapon damage
+    weapon = NULL;                   // Don't double dip on seasoned soldier
     base_costs[ RESOURCE_RAGE ] = 0; // Slam cost already factored in.
   }
   
