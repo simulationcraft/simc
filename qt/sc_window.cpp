@@ -769,14 +769,20 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
 {
   if ( sim )
   {
-    delete sim;
-
     QString contents;
-    QFile logFile( AppDataDir + "/" + SIMC_LOG_FILE );
-    if ( logFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    bool logFileOpenedSuccessfully = false;
+    QFile logFile( sim -> output_file_str.empty() ?
+        AppDataDir + "/" + SIMC_LOG_FILE : QString::fromStdString( sim -> output_file_str ) );
+
+    // ReadWrite so it fails if the log file is unwritable, which indicates permission issues
+    if ( logFile.open( QIODevice::ReadWrite | QIODevice::Text ) )
     {
       contents = QString::fromUtf8( logFile.readAll() );
       logFile.close();
+    }
+    else
+    {
+      logFileOpenedSuccessfully = false;
     }
 
     if ( ! simulateThread -> success )
@@ -784,11 +790,94 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
 
     // If requested, append the error message to the given Text Widget as well.
     if ( append_error_message )
+    {
       append_error_message -> append( contents );
-
+      if ( ! logFileOpenedSuccessfully )
+      {
+        for( std::vector< std::string >::iterator it = sim -> error_list.begin(); it != sim -> error_list.end(); ++it )
+        {
+          append_error_message -> append( QString::fromStdString( *it ) );
+        }
+        // If the failure is due to permissions issues, make this very clear to the user that the problem is on their end and what must be done to fix it
+        std::list< std::string > files;
+        std::list< QString > directoriesWithPermissionIssues;
+        std::list< QString > filesWithPermissionIssues;
+        std::list< QString > filesThatAreDirectories;
+        files.push_back( sim -> output_file_str );
+        files.push_back( sim -> html_file_str );
+        files.push_back( sim -> xml_file_str );
+        files.push_back( sim -> reforge_plot_output_file_str );
+        files.push_back( sim -> csv_output_file_str );
+        std::string windowsPermissionRecommendation;
+        std::string suggestions;
+#ifdef SC_WINDOWS
+        if ( QSysInfo::WindowsVersion >= QSysInfo::WVVISTA  )
+        {
+          windowsPermissionRecommendation = "Try running the program with administrative privileges by right clicking and selecting \"Run as administrator\"\n Or even installing the program to a different directory may help resolve these permission issues.";
+        }
+#endif
+        for( std::list< std::string >::iterator it = files.begin(); it != files.end(); ++it )
+        {
+          if ( ! (*it).empty() )
+          {
+            QFileInfo file( QString::fromStdString( *it ) );
+            if ( file.isDir() )
+            {
+              filesThatAreDirectories.push_back( file.absoluteFilePath() );
+            }
+            else if ( ! file.isWritable() )
+            {
+              QFileInfo filesDirectory( file.absolutePath() );
+              if ( ! filesDirectory.isWritable() )
+                directoriesWithPermissionIssues.push_back( file.absolutePath() );
+              filesWithPermissionIssues.push_back( file.absoluteFilePath() );
+            }
+          }
+        }
+        directoriesWithPermissionIssues.unique();
+        if ( filesThatAreDirectories.size() != 0 )
+        {
+          suggestions.append( "The following files are directories, SimulationCraft uses these as files, please rename them\n" );
+        }
+        for( std::list< QString >::iterator it = filesThatAreDirectories.begin(); it != filesThatAreDirectories.end(); ++it )
+        {
+          suggestions.append( "   " + (*it).toStdString() + "\n" );
+        }
+        if ( filesWithPermissionIssues.size() != 0 )
+        {
+          suggestions.append( "The following files have permission issues and are unwritable\n SimulationCraft needs to write to these files to simulate\n" );
+        }
+        for( std::list< QString >::iterator it = filesWithPermissionIssues.begin(); it != filesWithPermissionIssues.end(); ++it )
+        {
+          suggestions.append( "   " + (*it).toStdString() + "\n" );
+        }
+        if ( directoriesWithPermissionIssues.size() != 0 )
+        {
+          suggestions.append( "The following directories have permission issues and are unwritable\n meaning SimulationCraft cannot create files in these directories\n" );
+        }
+        for( std::list< QString >::iterator it = directoriesWithPermissionIssues.begin(); it != directoriesWithPermissionIssues.end(); ++it )
+        {
+          suggestions.append( "   " + (*it).toStdString() + "\n" );
+        }
+        if ( suggestions.length() != 0 )
+        {
+          suggestions = "Some possible suggestions on how to fix:\n" + suggestions;
+          append_error_message -> append( QString::fromStdString( suggestions ) );
+          if ( windowsPermissionRecommendation.length() != 0 )
+          {
+            append_error_message -> append( QString::fromStdString( windowsPermissionRecommendation ) );
+          }
+        }
+        append_error_message -> append( "\nIf for some reason you cannot resolve this issue, check if it is a known issue at\n https://code.google.com/p/simulationcraft/issues/list" );
+        append_error_message -> append( "Or try an older version\n https://code.google.com/p/simulationcraft/wiki/Downloads" );
+        append_error_message -> append( "And if all else fails you can come talk to us on IRC at\n irc.stratics.com (#simulationcraft)" );
+      }
+    }
     logText -> append( contents );
     logText -> moveCursor( QTextCursor::End );
     logText -> resetformat();
+
+    delete sim;
   }
 }
 
@@ -994,84 +1083,7 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
   if ( ! simulateThread -> success )
   {
     logText -> setformat_error();
-    logText -> append( "Simulation failed!\n" );
-    for( std::vector< std::string >::iterator it = sim -> error_list.begin(); it != sim -> error_list.end(); ++it )
-    {
-      logText -> append( QString::fromStdString( *it ) );
-    }
-    // If the failure is due to permissions issues, make this very clear to the user that the problem is on their end and what must be done to fix it
-    std::list< std::string > files;
-    std::list< QString > directoriesWithPermissionIssues;
-    std::list< QString > filesWithPermissionIssues;
-    std::list< QString > filesThatAreDirectories;
-    files.push_back( sim -> output_file_str );
-    files.push_back( sim -> html_file_str );
-    files.push_back( sim -> xml_file_str );
-    files.push_back( sim -> reforge_plot_output_file_str );
-    files.push_back( sim -> csv_output_file_str );
-    std::string windowsPermissionRecommendation;
-    std::string suggestions;
-#ifdef SC_WINDOWS
-    if ( QSysInfo::WindowsVersion != QSysInfo::WV_NT &&
-         QSysInfo::WindowsVersion != QSysInfo::WV_2000 &&
-         QSysInfo::WindowsVersion != QSysInfo::WV_XP &&
-         QSysInfo::WindowsVersion != QSysInfo::WV_2003 )
-    {
-      windowsPermissionRecommendation = "Try running the program with administrative privileges by right clicking and selecting \"Run as administrator\"\n Or even installing the program to a different directory may help resolve these permission issues.";
-    }
-#endif
-    for( std::list< std::string >::iterator it = files.begin(); it != files.end(); ++it )
-    {
-      QFileInfo file( QString::fromStdString( *it ) );
-      if ( file.isDir() )
-      {
-        filesThatAreDirectories.push_back( file.absoluteFilePath() );
-      }
-      else if ( ! file.isWritable() )
-      {
-        QFileInfo filesDirectory( file.absolutePath() );
-        if ( ! filesDirectory.isWritable() )
-          directoriesWithPermissionIssues.push_back( file.absolutePath() );
-        filesWithPermissionIssues.push_back( file.absoluteFilePath() );
-      }
-    }
-    directoriesWithPermissionIssues.unique();
-    if ( filesThatAreDirectories.size() != 0 )
-    {
-      suggestions.append( "The following files are directories, SimulationCraft uses these as files, please rename them\n" );
-    }
-    for( std::list< QString >::iterator it = filesThatAreDirectories.begin(); it != filesThatAreDirectories.end(); ++it )
-    {
-      suggestions.append( "   " + (*it).toStdString() + "\n" );
-    }
-    if ( filesWithPermissionIssues.size() != 0 )
-    {
-      suggestions.append( "The following files have permission issues and are unwritable\n SimulationCraft needs to write to these files to simulate\n" );
-    }
-    for( std::list< QString >::iterator it = filesWithPermissionIssues.begin(); it != filesWithPermissionIssues.end(); ++it )
-    {
-      suggestions.append( "   " + (*it).toStdString() + "\n" );
-    }
-    if ( directoriesWithPermissionIssues.size() != 0 )
-    {
-      suggestions.append( "The following directories have permission issues and are unwritable\n meaning SimulationCraft cannot create files in these directories\n" );
-    }
-    for( std::list< QString >::iterator it = directoriesWithPermissionIssues.begin(); it != directoriesWithPermissionIssues.end(); ++it )
-    {
-      suggestions.append( "   " + (*it).toStdString() + "\n" );
-    }
-    if ( suggestions.length() != 0 )
-    {
-      suggestions = "\nSome possible suggestions on how to fix:\n" + suggestions;
-      logText -> append( QString::fromStdString( suggestions ) );
-      if ( windowsPermissionRecommendation.length() != 0 )
-      {
-        logText -> append( QString::fromStdString( windowsPermissionRecommendation ) );
-      }
-    }
-    logText -> append( "If for some reason you cannot resolve the issue, check if it is a known issue at\n https://code.google.com/p/simulationcraft/issues/list" );
-    logText -> append( "Or try an older version\n https://code.google.com/p/simulationcraft/wiki/Downloads" );
-    logText -> append( "And if all else fails you can come talk to us on IRC at\n irc.stratics.com (#simulationcraft)" );
+    logText -> append( "Simulation failed!" );
     logText -> moveCursor( QTextCursor::End );
     logText -> resetformat();
     mainTab -> setCurrentTab( TAB_LOG );
@@ -1152,7 +1164,7 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
     mainTab -> setCurrentTab( sim_was_debug ? TAB_LOG : TAB_RESULTS );
 
   }
-  deleteSim( sim ); SC_MainWindow::sim = 0;
+  deleteSim( sim, simulateThread -> success == true ? 0:logText ); SC_MainWindow::sim = 0;
 
   cmdLine -> setFocus();
 }
