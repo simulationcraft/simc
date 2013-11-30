@@ -177,7 +177,6 @@ public:
     // NYI / Needs checking
     buff_t* glyph_of_innervate;
     buff_t* harmony;
-    buff_t* revitalize;
     buff_t* wild_mushroom;
     buff_t* tree_of_life;
     buffs::heart_of_the_wild_buff_t* heart_of_the_wild;
@@ -189,7 +188,6 @@ public:
     cooldown_t* natures_swiftness;
     cooldown_t* mangle_bear;
     cooldown_t* pvp_4pc_melee;
-    cooldown_t* revitalize;
     cooldown_t* starfall;
     cooldown_t* starsurge;
     cooldown_t* swiftmend;
@@ -216,7 +214,6 @@ public:
     gain_t* glyph_of_innervate;
     gain_t* glyph_ferocious_bite;
     gain_t* mangle;
-    gain_t* revitalize;
   } gain;
 
   // Glyphs
@@ -257,7 +254,6 @@ public:
   struct procs_t
   {
     proc_t* primal_fury;
-    proc_t* revitalize;
     proc_t* wrong_eclipse_wrath;
     proc_t* wrong_eclipse_starfire;
     proc_t* unaligned_eclipse_gain;
@@ -302,7 +298,6 @@ public:
     const spell_data_t* meditation;
     const spell_data_t* natural_insight;
     const spell_data_t* natures_focus;
-    const spell_data_t* revitalize;
   } spec;
 
 
@@ -398,7 +393,6 @@ public:
     cooldown.mangle_bear         = get_cooldown( "mangle_bear"         );
     cooldown.pvp_4pc_melee       = get_cooldown( "pvp_4pc_melee"       );
     cooldown.pvp_4pc_melee -> duration = timespan_t::from_seconds( 30.0 );
-    cooldown.revitalize          = get_cooldown( "revitalize"          );
     cooldown.starfall            = get_cooldown( "starfall"            );
     cooldown.starsurge           = get_cooldown( "starsurge"           );
     cooldown.swiftmend           = get_cooldown( "swiftmend"           );
@@ -3612,21 +3606,6 @@ public:
     return adm;
   }
 
-  void trigger_revitalize()
-  {
-    if ( p() -> cooldown.revitalize -> down() ) return;
-
-    if ( rng().roll( p() -> spec.revitalize -> proc_chance() ) )
-    {
-      p() -> proc.revitalize -> occur();
-      p() -> resource_gain( RESOURCE_MANA,
-                            p() -> resources.max[ RESOURCE_MANA ] * p() -> spec.revitalize -> effectN( 1 ).percent(),
-                            p() -> gain.revitalize );
-
-      p() -> cooldown.revitalize -> start( timespan_t::from_seconds( 12.0 ) );
-    }
-  }
-
   void trigger_lifebloom_refresh( action_state_t* s )
   {
     druid_td_t& td = *this -> td( s -> target );
@@ -3951,8 +3930,6 @@ struct lifebloom_t : public druid_heal_t
     druid_heal_t::tick( d );
 
     p() -> buff.omen_of_clarity -> trigger();
-
-    trigger_revitalize();
   }
 };
 
@@ -4052,8 +4029,6 @@ struct rejuvenation_t : public druid_heal_t
   virtual void tick( dot_t* d )
   {
     druid_heal_t::tick( d );
-
-    trigger_revitalize();
   }
 
   virtual void schedule_execute( action_state_t* state = 0 )
@@ -6038,7 +6013,6 @@ void druid_t::init_spells()
   spec.meditation             = find_specialization_spell( "Meditation" );
   spec.natural_insight        = find_specialization_spell( "Natural Insight" );
   spec.natures_focus          = find_specialization_spell( "Nature's Focus" );
-  spec.revitalize             = find_specialization_spell( "Revitalize" );
 
   if ( spec.leader_of_the_pack -> ok() )
     active.leader_of_the_pack = new leader_of_the_pack_t( this );
@@ -6313,7 +6287,6 @@ void druid_t::create_buffs()
                                .cd( timespan_t::zero() ); // Cooldown is handled in the spell
   buff.glyph_of_innervate  = buff_creator_t( this, "glyph_of_innervate" , spell_data_t::nil() )
                              .chance( glyph.innervate -> ok() );
-  buff.revitalize          = buff_creator_t( this, "revitalize"         , spell_data_t::nil() );
 }
 
 // ALL Spec Pre-Combat Action Priority List =================================
@@ -6871,7 +6844,6 @@ void druid_t::init_gains()
   gain.mangle                = get_gain( "mangle"                );
   gain.omen_of_clarity       = get_gain( "omen_of_clarity"       );
   gain.primal_fury           = get_gain( "primal_fury"           );
-  gain.revitalize            = get_gain( "revitalize"            );
   gain.soul_of_the_forest    = get_gain( "soul_of_the_forest"    );
   gain.tigers_fury           = get_gain( "tigers_fury"           );
 }
@@ -6883,7 +6855,6 @@ void druid_t::init_procs()
   player_t::init_procs();
 
   proc.primal_fury              = get_proc( "primal_fury"            );
-  proc.revitalize               = get_proc( "revitalize"             );
   proc.unaligned_eclipse_gain   = get_proc( "unaligned_eclipse_gain" );
   proc.wrong_eclipse_wrath      = get_proc( "wrong_eclipse_wrath"    );
   proc.wrong_eclipse_starfire   = get_proc( "wrong_eclipse_starfire" );
