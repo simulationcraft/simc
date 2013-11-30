@@ -2105,20 +2105,14 @@ struct shockwave_t : public warrior_attack_t
     cd_reduction      = timespan_t::zero();
   }
 
-  virtual void execute()
-  {
-    warrior_attack_t::execute();
-    warrior_t* p = cast();
-
-    cd_reduction = timespan_t::zero();
-  }
-
   virtual void update_ready( timespan_t )
   {
    // If shockwave hits 3+ targets, the cooldown is reduced by 20 seconds.
    // When used with a cooldown reduction trinket, this 20 seconds is taken into account after the first reduction, which can lead to
    // a 6-8 second cooldown on Shockwave.
     warrior_t* p = cast();
+    cd_reduction = timespan_t::zero();
+
     if ( result_is_hit() )
       if ( execute_state -> n_targets >= 3 )
         cd_reduction = timespan_t::from_seconds( -20 );
