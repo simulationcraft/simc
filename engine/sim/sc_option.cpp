@@ -386,6 +386,7 @@ bool option_db_t::parse_token( const std::string& token )
     io::cfile file = io::cfile( open_file( token ) );
     if ( ! file )
     {
+      // FIXME no way for the GUI to get this failure through sim_t -> errorf()
       printf( "Unexpected parameter '%s'. Expected format: name=value\n", token.c_str() );
       return false;
     }

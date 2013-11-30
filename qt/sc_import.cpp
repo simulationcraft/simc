@@ -59,7 +59,7 @@ void ImportThread::importBattleNet()
 
   if ( region.isEmpty() || server.isEmpty() || character.isEmpty() )
   {
-    sim -> out_log.raw() << "Unable to determine Server and Character information!\n";
+    sim -> errorf( "Unable to determine Server and Character information!\n" );
   }
   else
   {

@@ -124,6 +124,7 @@ class SC_TextEdit : public QTextEdit
 private:
   QTextCharFormat textformat_default;
   QTextCharFormat textformat_error;
+  QList< QPair< Qt::Key, QList< Qt::KeyboardModifier > > > ignoreKeys;
 public:
   bool edited_by_user;
 
@@ -135,6 +136,10 @@ public:
 
     setAcceptDrops( accept_drops );
     setLineWrapMode( QTextEdit::NoWrap );
+
+    QList< Qt::KeyboardModifier > ctrl;
+    ctrl.push_back( Qt::ControlModifier );
+    addIgnoreKeyPressEvent( Qt::Key_Tab, ctrl );
 
     connect( this, SIGNAL( textChanged() ), this, SLOT( text_edited() ) );
   }
@@ -160,18 +165,57 @@ public:
   }
   */
 
+  void addIgnoreKeyPressEvent( Qt::Key k, QList< Qt::KeyboardModifier > s)
+  {
+    QPair< Qt::Key, QList<Qt::KeyboardModifier > > p(k, s);
+    if ( ! ignoreKeys.contains( p ) )
+      ignoreKeys.push_back(p);
+  }
+
+  bool removeIgnoreKeyPressEvent( Qt::Key k, QList< Qt::KeyboardModifier > s)
+  {
+    QPair< Qt::Key, QList<Qt::KeyboardModifier > > p(k, s);
+    return ignoreKeys.removeAll( p );
+  }
+
+  void removeAllIgnoreKeyPressEvent ( )
+  {
+    QList < QPair< Qt::Key, QList< Qt::KeyboardModifier > > > emptyList;
+    ignoreKeys = emptyList;
+  }
+
 protected:
   virtual void keyPressEvent( QKeyEvent* e )
   {
     int k = e -> key();
     Qt::KeyboardModifiers m = e -> modifiers();
 
-    if ( k == Qt::Key_Tab && m.testFlag( Qt::ControlModifier ) )
+    QList< QPair< Qt::Key, QList<Qt::KeyboardModifier > > >::iterator i = ignoreKeys.begin();
+    for (; i != ignoreKeys.end(); ++i)
     {
-      // If base class gets this event, a tab will be inserted in text, send to bases' base
-      QAbstractScrollArea::keyPressEvent( e );
-      return;
+      if ( (*i).first == k )
+      {
+        bool passModifiers = true;
+        QList< Qt::KeyboardModifier >::iterator j = (*i).second.begin();
+
+        for (; j != (*i).second.end(); ++j)
+        {
+          if ( m.testFlag( (*j) ) == false )
+          {
+            passModifiers = false;
+            break;
+          }
+        }
+
+        if ( passModifiers )
+        {
+          // key combination matches, send key to base classe's base
+          QAbstractScrollArea::keyPressEvent( e );
+          return;
+        }
+      }
     }
+    // no key match
     QTextEdit::keyPressEvent( e );
   }
 
@@ -215,7 +259,7 @@ public:
 
 protected:
   virtual void
-  enterEvent(QEvent* /* event */)
+  enterEvent(QEvent* /* event */ )
   {
     if (underMouse() && timeSinceMouseEntered.isActive() == false)
       timeSinceMouseEntered.start(timeout_);
@@ -1131,6 +1175,9 @@ public:
   {
     SC_TextEdit* s = new SC_TextEdit( this );
     s -> setText( text );
+    QList< Qt::KeyboardModifier > ctrl;
+    ctrl.push_back( Qt::ControlModifier );
+    s -> addIgnoreKeyPressEvent( Qt::Key_W, ctrl );
     format_document( s );
     int indextoInsert = indexOf( addTabWidget );
     int i = insertTab( indextoInsert, s, tab_name );
@@ -1190,33 +1237,62 @@ public:
   {
     return indexOf( addTabWidget );
   }
+  void wrapToEnd()
+  {
+    int lastSimulateTabIndexOffset = -2;
+    if ( currentIndex() == 0 )
+    {
+        setCurrentIndex( count() + lastSimulateTabIndexOffset );
+    }
+  }
+  void wrapToBeginning()
+  {
+    int lastSimulateTabIndexOffset = -2;
+    if ( currentIndex() == count() + lastSimulateTabIndexOffset )
+    {
+        setCurrentIndex( 0 );
+    }
+  }
 protected:
   virtual void keyPressEvent( QKeyEvent* e )
   {
     int k = e -> key();
     Qt::KeyboardModifiers m = e -> modifiers();
-    int lastSimulateTabIndexOffset = -2;
 
     if ( k == Qt::Key_Backtab ||
          ( k == Qt::Key_Tab && m.testFlag( Qt::ControlModifier ) && m.testFlag( Qt::ShiftModifier ) ) )
     {
-      if ( currentIndex() == 0 )
-      {
-          // wrap around to end
-          setCurrentIndex( count() + lastSimulateTabIndexOffset );
-          return;
-      }
+      wrapToEnd();
     }
     else if ( k == Qt::Key_Tab )
     {
-      if ( currentIndex() == count() + lastSimulateTabIndexOffset )
-      {
-          // wrap around to beginning
-          setCurrentIndex( 0 );
-          return;
-      }
+      wrapToBeginning();
+    }
+    else if ( k == Qt::Key_W && m.testFlag( Qt::ControlModifier ) )
+    {
+      // close the tab in keyReleaseEvent()
+      return;
     }
     QTabWidget::keyPressEvent( e );
+  }
+  virtual void keyReleaseEvent( QKeyEvent* e )
+  {
+    int k = e -> key();
+    Qt::KeyboardModifiers m = e -> modifiers();
+    switch ( k )
+    {
+    case Qt::Key_W:
+    {
+      if ( m.testFlag( Qt::ControlModifier ) == true )
+      {
+        TabCloseRequest( currentIndex() );
+        return;
+      }
+    }
+      break;
+    default: break;
+    }
+    SC_RecentlyClosedTab::keyReleaseEvent( e );
   }
 public slots:
   void TabCloseRequest( int index )
