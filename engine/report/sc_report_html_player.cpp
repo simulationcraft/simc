@@ -1763,8 +1763,8 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
   int j = 0;
   for ( resource_e rt = RESOURCE_NONE; rt < RESOURCE_MAX; ++rt )
   {
-    double rps_gain = p -> resource_gained[ rt ] / p -> collected_data.fight_length.mean();
-    double rps_loss = p -> resource_lost[ rt ] / p -> collected_data.fight_length.mean();
+    double rps_gain = p -> collected_data.resource_gained[ rt ].mean() / p -> collected_data.fight_length.mean();
+    double rps_loss = p -> collected_data.resource_lost[ rt ].mean() / p -> collected_data.fight_length.mean();
     if ( rps_gain <= 0 && rps_loss <= 0 )
       continue;
 

@@ -3849,6 +3849,7 @@ struct player_collected_data_t
   extended_sample_data_t theck_meloree_index;
   sc_timeline_t vengeance_timeline;
 
+  std::array<simple_sample_data_t,RESOURCE_MAX> resource_lost, resource_gained;
   struct resource_timeline_t
   {
     resource_e type;
@@ -4279,7 +4280,7 @@ struct player_t : public actor_t
   timespan_t iteration_fight_length, arise_time;
   timespan_t iteration_waiting_time;
   int       iteration_executed_foreground_actions;
-  std::array< double, RESOURCE_MAX > resource_lost, resource_gained;
+  std::array< double, RESOURCE_MAX > iteration_resource_lost, iteration_resource_gained;
   double    rps_gain, rps_loss;
   std::string tmi_debug_file_str;
 

@@ -713,8 +713,8 @@ player_t::player_t( sim_t*             s,
 
   resources.infinite_resource[ RESOURCE_HEALTH ] = true;
 
-  range::fill( resource_lost, 0 );
-  range::fill( resource_gained, 0 );
+  range::fill( iteration_resource_lost, 0 );
+  range::fill( iteration_resource_gained, 0 );
 
   range::fill( profession, 0 );
 
@@ -2303,8 +2303,8 @@ void player_t::init_stats()
   if ( sim -> debug )
     sim -> out_debug.printf( "Initializing stats for player (%s)", name() );
 
-  range::fill( resource_lost, 0.0 );
-  range::fill( resource_gained, 0.0 );
+  range::fill( iteration_resource_lost, 0.0 );
+  range::fill( iteration_resource_gained, 0.0 );
 
   if ( ! is_pet() || sim -> report_pets_separately )
   {
@@ -3592,9 +3592,9 @@ void player_t::combat_begin()
   // re-initialize collected_data.health_changes.previous_*_level
   // necessary because food/flask are counted as resource gains, and thus provide phantom
   // gains on the timeline if not corrected
-  collected_data.health_changes.previous_gain_level = resource_gained [ RESOURCE_HEALTH ];
+  collected_data.health_changes.previous_gain_level = 0.0;
   // forcing a resource timeline data collection in combat_end() seems to have rendered this next line unnecessary
-  collected_data.health_changes.previous_loss_level = resource_lost [ RESOURCE_HEALTH ];
+  collected_data.health_changes.previous_loss_level = 0.0;
 
 }
 
@@ -3645,6 +3645,9 @@ void player_t::datacollection_begin()
   iteration_dmg_taken = 0;
   iteration_heal_taken = 0;
   active_during_iteration = false;
+
+  range::fill( iteration_resource_lost, 0 );
+  range::fill( iteration_resource_gained, 0 );
 
   if ( collected_data.health_changes.collect )
   {
@@ -3853,8 +3856,8 @@ void player_t::merge( player_t& other )
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
   {
-    resource_lost  [ i ] += other.resource_lost  [ i ];
-    resource_gained[ i ] += other.resource_gained[ i ];
+    iteration_resource_lost  [ i ] += other.iteration_resource_lost  [ i ];
+    iteration_resource_gained[ i ] += other.iteration_resource_gained[ i ];
   }
 
   buff_merge::merge( *this, other );
@@ -4467,13 +4470,13 @@ double player_t::resource_loss( resource_e resource_type,
   {
     actual_amount = std::min( amount, resources.current[ resource_type ] );
     resources.current[ resource_type ] -= actual_amount;
-    resource_lost[ resource_type ] += actual_amount;
+    iteration_resource_lost[ resource_type ] += actual_amount;
   }
   else
   {
     actual_amount = amount;
     resources.current[ resource_type ] -= actual_amount;
-    resource_lost[ resource_type ] += actual_amount;
+    iteration_resource_lost[ resource_type ] += actual_amount;
   }
 
   if ( source )
@@ -4510,7 +4513,7 @@ double player_t::resource_gain( resource_e resource_type,
   if ( actual_amount > 0.0 )
   {
     resources.current[ resource_type ] += actual_amount;
-    resource_gained [ resource_type ] += actual_amount;
+    iteration_resource_gained [ resource_type ] += actual_amount;
   }
 
   if ( resource_type == primary_resource() && resources.max[ resource_type ] <= resources.current[ resource_type ] )
@@ -8086,7 +8089,7 @@ expr_t* player_t::create_resource_expression( const std::string& name_str )
         {
           timespan_t now = player.sim -> current_time;
           if ( now != timespan_t::zero() )
-            return ( player.resource_gained[ rt ] - player.resource_lost[ rt ] ) / now.total_seconds();
+            return ( player.iteration_resource_gained[ rt ] - player.iteration_resource_lost[ rt ] ) / now.total_seconds();
           else
             return 0;
         }
@@ -8815,10 +8818,8 @@ void player_t::analyze( sim_t& s )
   }
 
   // Stats Analysis =========================================================
-  std::vector<stats_t*> tmp_stats_list;
+  std::vector<stats_t*> tmp_stats_list( stats_list.begin(), stats_list.end() );
 
-  // Append  stats_list to stats_list
-  tmp_stats_list.insert( tmp_stats_list.end(),  stats_list.begin(),  stats_list.end() );
 
   for ( size_t i = 0; i <  pet_list.size(); ++i )
   {
@@ -8861,18 +8862,13 @@ void player_t::analyze( sim_t& s )
 
   // Resources & Gains ======================================================
 
-  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
-  {
-    resource_lost  [ i ] /= s.iterations;
-    resource_gained[ i ] /= s.iterations;
-  }
+  double rl = collected_data.resource_lost[  primary_resource() ].mean();
 
-  double rl = resource_lost[  primary_resource() ];
   dpr = ( rl > 0 ) ? (  collected_data.dmg.mean() / rl ) : -1.0;
   hpr = ( rl > 0 ) ? (  collected_data.heal.mean() / rl ) : -1.0;
 
-  rps_loss = resource_lost  [  primary_resource() ] /  collected_data.fight_length.mean();
-  rps_gain = resource_gained[  primary_resource() ] /  collected_data.fight_length.mean();
+  rps_loss = rl /  collected_data.fight_length.mean();
+  rps_gain = rl /  collected_data.fight_length.mean();
 
   for ( size_t i = 0; i < gain_list.size(); ++i )
     gain_list[ i ] -> analyze( s );
@@ -9696,6 +9692,12 @@ void player_collected_data_t::merge( const player_collected_data_t& other )
   timeline_healing_taken.merge( other.timeline_healing_taken );
   theck_meloree_index.merge( other.theck_meloree_index );
 
+  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+  {
+    resource_lost  [ i ].merge( other.resource_lost[ i ] );
+    resource_gained[ i ].merge( other.resource_gained[ i ] );
+  }
+
   assert( resource_timelines.size() == other.resource_timelines.size() );
   for ( size_t i = 0; i < resource_timelines.size(); ++i )
   {
@@ -9829,6 +9831,12 @@ void player_collected_data_t::collect_data( const player_t& p )
 
   dmg_taken.add( p.iteration_dmg_taken );
   dtps.add( f_length ? p.iteration_dmg_taken / f_length : 0 );
+
+  for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
+  {
+    resource_lost  [ i ].add( p.iteration_resource_lost[i] );
+    resource_gained[ i ].add( p.iteration_resource_gained[i] );
+  }
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; ++i )
     combat_end_resource[ i ].add( p.resources.current[ i ] );

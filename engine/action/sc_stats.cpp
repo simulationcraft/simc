@@ -289,7 +289,7 @@ void stats_t::analyze()
     rpe[ i ] = num_executes.mean() ? resource_gain.actual[ i ] / num_executes.mean() : -1;
     rpe_sum += rpe[ i ];
 
-    double resource_total = player -> resource_lost [ i ] / sim.iterations;
+    double resource_total = player -> iteration_resource_lost [ i ] / sim.iterations;
 
     resource_portion[ i ] = ( resource_total > 0 ) ? ( resource_gain.actual[ i ] / resource_total ) : 0;
   }
