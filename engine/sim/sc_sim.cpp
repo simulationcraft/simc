@@ -1585,7 +1585,9 @@ bool sim_t::iterate()
 
   progress_bar.init();
 
-  for( int i = 0; true; ++i )
+  bool use_lb = use_load_balancing();
+
+  for( int i = 0; use_lb ? (true) : (i < iterations); ++i )
   {
     if ( canceled )
     {
@@ -1593,7 +1595,8 @@ bool sim_t::iterate()
       break;
     }
 
-    // Load Balancing
+
+    if ( use_lb ) // Load Balancing
     {
       // Select the work queue on the main thread
       work_queue_t& work_queue = (thread_index != 0) ? parent -> work_queue : this -> work_queue;
@@ -2348,4 +2351,12 @@ void sim_t::errorf( const char* format, ... )
 
   out_error.raw() << s << "\n";
   error_list.push_back( s );
+}
+
+bool sim_t::use_load_balancing() const
+{
+  if ( deterministic_rng )
+    return false;
+
+  return true;
 }

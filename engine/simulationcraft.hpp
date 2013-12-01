@@ -2808,6 +2808,9 @@ public:
 
   static double distribution_mean_error( const sim_t& s, const extended_sample_data_t& sd )
   { return s.confidence_estimator * sd.mean_std_dev; }
+
+private:
+  bool use_load_balancing() const;
 };
 
 // Module ===================================================================
