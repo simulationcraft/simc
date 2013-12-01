@@ -27,17 +27,18 @@ static std::string source_desc_str( wowhead::wowhead_e source )
 
 // download_id ==============================================================
 
-static xml_node_t* download_id( sim_t*             sim,
+static std::shared_ptr<xml_node_t> download_id( sim_t*             sim,
                                 unsigned           id,
                                 cache::behavior_e  caching,
                                 wowhead::wowhead_e source )
 {
-  if ( ! id ) return 0;
+  if ( ! id )
+    return std::shared_ptr<xml_node_t>();
 
   std::string url_www = "http://" + source_str( source ) + ".wowhead.com/item="
                         + util::to_string( id ) + "&xml";
 
-  xml_node_t *node = xml_node_t::get( sim, url_www, caching, "</json>" );
+  std::shared_ptr<xml_node_t> node = xml_node_t::get( sim, url_www, caching, "</json>" );
   if ( sim -> debug && node ) node -> print();
   return node;
 }
@@ -52,7 +53,7 @@ gem_e wowhead::parse_gem( item_t&           item,
   if ( gem_id == 0 )
     return GEM_NONE;
 
-  xml_node_t* node = download_id( item.sim, gem_id, caching, source );
+  std::shared_ptr<xml_node_t> node = download_id( item.sim, gem_id, caching, source );
   if ( ! node )
   {
     if ( caching != cache::ONLY )
@@ -116,7 +117,7 @@ bool wowhead::download_glyph( player_t*          player,
                               cache::behavior_e  caching )
 {
   unsigned glyphid = strtoul( glyph_id.c_str(), 0, 10 );
-  xml_node_t* node = download_id( player -> sim, glyphid, caching, source );
+  std::shared_ptr<xml_node_t> node = download_id( player -> sim, glyphid, caching, source );
   if ( ! node || ! node -> get_value( glyph_name, "name/cdata" ) )
   {
     if ( caching != cache::ONLY )
@@ -133,7 +134,7 @@ bool wowhead::download_item_data( item_t&            item,
                                   cache::behavior_e  caching,
                                   wowhead_e          source )
 {
-  xml_node_t* xml = item.xml = download_id( item.sim, item.parsed.data.id, caching, source );
+  std::shared_ptr<xml_node_t> xml = item.xml = download_id( item.sim, item.parsed.data.id, caching, source );
 
   if ( ! xml )
   {
@@ -259,7 +260,7 @@ bool wowhead::download_item_data( item_t&            item,
     // Parse out Equip: and On use: strings
     int spell_idx = 0;
 
-    xml_node_t* htmltooltip_xml = xml_node_t::create( item.sim, htmltooltip );
+    std::shared_ptr<xml_node_t> htmltooltip_xml = xml_node_t::create( item.sim, htmltooltip );
     //htmltooltip_xml -> print( item.sim -> output_file, 2 );
     std::vector<xml_node_t*> spell_links;
     htmltooltip_xml -> get_nodes( spell_links, "span" );
@@ -295,9 +296,6 @@ bool wowhead::download_item_data( item_t&            item,
         spell_idx++;
       }
     }
-
-    if ( htmltooltip_xml )
-      delete htmltooltip_xml;
   }
   catch ( const char* fieldname )
   {

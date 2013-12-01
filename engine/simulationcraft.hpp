@@ -3314,7 +3314,7 @@ struct item_t
     }
   } parsed;
 
-  xml_node_t* xml;
+  std::shared_ptr<xml_node_t> xml;
 
   std::string name_str;
   std::string icon_str;
@@ -3346,7 +3346,7 @@ struct item_t
 
   item_t() : sim( 0 ), player( 0 ), slot( SLOT_INVALID ), unique( false ),
     unique_addon( false ), is_ptr( false ), fetched( false ),
-    parsed(), xml( 0 ) { }
+    parsed(), xml() { }
   item_t( player_t*, const std::string& options_str );
 
   bool active() const;
@@ -6296,9 +6296,8 @@ struct xml_parm_t
 struct xml_node_t
 {
   std::string name_str;
-  std::vector<xml_node_t*> children;
+  std::vector<std::shared_ptr<xml_node_t> > children;
   std::vector<xml_parm_t> parameters;
-  ~xml_node_t();
   xml_node_t() {}
   xml_node_t( const std::string& n ) : name_str( n ) {}
   const char* name() { return name_str.c_str(); }
@@ -6313,7 +6312,7 @@ struct xml_node_t
   bool get_value( double&      value, const std::string& path = std::string() );
   xml_parm_t* get_parm( const std::string& parm_name );
 
-  xml_node_t* create_node     ( sim_t* sim, const std::string& input, std::string::size_type& index );
+  std::shared_ptr<xml_node_t> create_node     ( sim_t* sim, const std::string& input, std::string::size_type& index );
   int         create_children ( sim_t* sim, const std::string& input, std::string::size_type& index );
   void        create_parameter( const std::string& input, std::string::size_type& index );
 
@@ -6323,10 +6322,10 @@ struct xml_node_t
 
   void print( FILE* f = 0, int spacing = 0 );
   void print_xml( FILE* f = 0, int spacing = 0 );
-  static xml_node_t* get( sim_t* sim, const std::string& url, cache::behavior_e b,
+  static std::shared_ptr<xml_node_t> get( sim_t* sim, const std::string& url, cache::behavior_e b,
                           const std::string& confirmation = std::string() );
-  static xml_node_t* create( sim_t* sim, const std::string& input );
-  static xml_node_t* create( sim_t* sim, FILE* input );
+  static std::shared_ptr<xml_node_t> create( sim_t* sim, const std::string& input );
+  static std::shared_ptr<xml_node_t> create( sim_t* sim, FILE* input );
 
   xml_node_t* add_child( const std::string& name );
   template <typename T>

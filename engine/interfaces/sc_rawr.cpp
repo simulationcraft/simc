@@ -763,7 +763,7 @@ player_t* rawr::load_player( sim_t* sim,
                              const std::string& character_file,
                              const std::string& character_xml )
 {
-  xml_node_t* root_node = xml_node_t::create( sim, character_xml );
+  std::shared_ptr<xml_node_t> root_node = xml_node_t::create( sim, character_xml );
 
   if ( ! root_node )
   {
@@ -773,10 +773,7 @@ player_t* rawr::load_player( sim_t* sim,
 
   if ( sim -> debug ) root_node -> print();
 
-  player_t* p = load_player_xml( sim, character_file, root_node );
-
-  if ( root_node )
-    delete root_node;
+  player_t* p = load_player_xml( sim, character_file, root_node.get() );
 
   return p;
 }

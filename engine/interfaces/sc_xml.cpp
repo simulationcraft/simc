@@ -9,10 +9,9 @@ namespace { // UNNAMED NAMESPACE =========================================
 
 struct xml_cache_entry_t
 {
-  xml_node_t*  root;
+  std::shared_ptr<xml_node_t>  root;
   cache::era_t era;
-  xml_cache_entry_t() : root( 0 ), era( cache::IN_THE_BEGINNING ) { }
-  ~xml_cache_entry_t() { if ( root ) delete root; }
+  xml_cache_entry_t() : root(), era( cache::IN_THE_BEGINNING ) { }
 };
 
 typedef std::unordered_map<std::string, xml_cache_entry_t> xml_cache_t;
@@ -106,7 +105,7 @@ void xml_node_t::create_parameter( const std::string&      input,
 
 // xml_node_t::create_node ==================================================
 
-xml_node_t* xml_node_t::create_node( sim_t*                  sim,
+std::shared_ptr<xml_node_t> xml_node_t::create_node( sim_t*                  sim,
                                      const std::string&      input,
                                      std::string::size_type& index )
 {
@@ -117,8 +116,8 @@ xml_node_t* xml_node_t::create_node( sim_t*                  sim,
   parse_name( name_str, input, index );
   assert( ! name_str.empty() );
 
-  xml_node_t* node = new xml_node_t( name_str );
-  if ( ! node ) return 0;
+  std::shared_ptr<xml_node_t> node( new xml_node_t( name_str ) );
+  if ( ! node ) return node;
 
   while ( is_white_space( input[ index ] ) )
   {
@@ -145,7 +144,7 @@ xml_node_t* xml_node_t::create_node( sim_t*                  sim,
       sim -> out_std.raw() << input << "\n";
       sim -> cancel();
     }
-    return 0;
+    return std::shared_ptr<xml_node_t>();
   }
 
   return node;
@@ -202,7 +201,7 @@ int xml_node_t::create_children( sim_t*                  sim,
       }
       else
       {
-        xml_node_t* n = create_node( sim, input, index );
+        std::shared_ptr<xml_node_t> n = create_node( sim, input, index );
         if ( ! n ) return 0;
         children.push_back( n );
       }
@@ -307,7 +306,7 @@ xml_node_t* xml_node_t::split_path( std::string&       key,
 
 // xml_node_t::get ==========================================================
 
-xml_node_t* xml_node_t::get( sim_t*             sim,
+std::shared_ptr<xml_node_t> xml_node_t::get( sim_t*             sim,
                              const std::string& url,
                              cache::behavior_e  caching,
                              const std::string& confirmation )
@@ -320,9 +319,9 @@ xml_node_t* xml_node_t::get( sim_t*             sim,
 
   std::string result;
   if ( ! http::get( result, url, caching, confirmation ) )
-    return 0;
+    return std::shared_ptr<xml_node_t>();
 
-  if ( xml_node_t* node = xml_node_t::create( sim, result ) )
+  if ( std::shared_ptr<xml_node_t> node = xml_node_t::create( sim, result ) )
   {
     xml_cache_entry_t& c = xml_cache[ url ];
     c.root = node;
@@ -330,17 +329,17 @@ xml_node_t* xml_node_t::get( sim_t*             sim,
     return node;
   }
 
-  return 0;
+  return std::shared_ptr<xml_node_t>();
 }
 
 #endif
 
 // xml_node_t::create =======================================================
 
-xml_node_t* xml_node_t::create( sim_t* sim,
+std::shared_ptr<xml_node_t> xml_node_t::create( sim_t* sim,
                                 const std::string& input )
 {
-  xml_node_t* root = new xml_node_t( "root" );
+  std::shared_ptr<xml_node_t> root = std::shared_ptr<xml_node_t>( new xml_node_t( "root" ) );
 
   std::string buffer = input;
   std::string::size_type index = 0;
@@ -353,9 +352,9 @@ xml_node_t* xml_node_t::create( sim_t* sim,
 
 // xml_node_t::create =======================================================
 
-xml_node_t* xml_node_t::create( sim_t* sim, FILE* input )
+std::shared_ptr<xml_node_t> xml_node_t::create( sim_t* sim, FILE* input )
 {
-  if ( ! input ) return 0;
+  if ( ! input ) return std::shared_ptr<xml_node_t>();
   std::string buffer;
   char c;
   while ( ( c = fgetc( input ) ) != EOF ) buffer += c;
@@ -369,8 +368,8 @@ xml_node_t* xml_node_t::get_child( const std::string& name_str )
   int num_children = ( int ) children.size();
   for ( int i = 0; i < num_children; i++ )
   {
-    xml_node_t* node = children[ i ];
-    if ( node && ( name_str == node -> name_str ) ) return node;
+    std::shared_ptr<xml_node_t>& node = children[ i ];
+    if ( node && ( name_str == node -> name_str ) ) return node.get();
   }
 
   return 0;
@@ -384,10 +383,10 @@ int xml_node_t::get_children( std::vector<xml_node_t*>& nodes,
   int num_children = ( int ) children.size();
   for ( int i = 0; i < num_children; i++ )
   {
-    xml_node_t* node = children[ i ];
+    std::shared_ptr<xml_node_t>& node = children[ i ];
     if ( node && ( name_str.empty() || name_str == node -> name_str ) )
     {
-      nodes.push_back( node );
+      nodes.push_back( node.get() );
     }
   }
 
@@ -628,22 +627,12 @@ xml_parm_t* xml_node_t::get_parm( const std::string& parm_name )
   return 0;
 }
 
-// xml_node_t::~xml_node_t ==================================================
-
-xml_node_t::~xml_node_t()
-{
-  int num_children = ( int ) children.size();
-  for ( int i = 0; i < num_children; i++ )
-  {
-    if ( children[ i ] ) delete children[ i ];
-  }
-}
-
 // xml_node_t::add_child ====================================================
 
 xml_node_t* xml_node_t::add_child( const std::string& name )
 {
-  xml_node_t* node = new xml_node_t( name );
-  if ( node ) children.push_back( node );
-  return node;
+  std::shared_ptr<xml_node_t> node( new xml_node_t( name ) );
+  if ( node )
+    children.push_back( node );
+  return node.get();
 }
