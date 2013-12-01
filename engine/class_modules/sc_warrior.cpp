@@ -3338,7 +3338,7 @@ void warrior_t::init_base_stats()
   base.attack_power_per_strength = 2.0;
   base.attack_power_per_agility  = 0.0;
 
-  base.stats.attack_power = level * 2 + 60;
+  base.stats.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
 
   // Avoidance diminishing Returns constants/conversions
   base.miss            = 0.030;
