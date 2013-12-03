@@ -48,7 +48,7 @@ struct dot_tick_event_t : public event_t
          dot -> current_action -> channeled &&
          dot -> current_tick == dot -> num_ticks )
     {
-      if ( sim().roll( dot -> current_action -> player -> current.skill ) )
+      if ( rng().roll( dot -> current_action -> player -> current.skill ) )
       {
         dot -> current_action -> tick( dot );
       }

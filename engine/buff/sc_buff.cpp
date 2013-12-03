@@ -55,7 +55,7 @@ struct buff_delay_t : public buff_event_t
   int        stacks;
 
   buff_delay_t( buff_t* b, int stacks, double value, timespan_t d ) :
-    buff_event_t( b, b -> sim -> gauss( b -> sim -> default_aura_delay, b -> sim -> default_aura_delay_stddev ) ),
+    buff_event_t( b, b -> rng().gauss( b -> sim -> default_aura_delay, b -> sim -> default_aura_delay_stddev ) ),
     value( value ), duration( d ), stacks( stacks )
   {}
 

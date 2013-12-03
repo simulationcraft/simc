@@ -2869,7 +2869,7 @@ struct melee_t : public paladin_melee_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       // Check for Art of War procs
-      if ( p() -> passives.the_art_of_war -> ok() && sim -> roll( p() -> passives.the_art_of_war -> proc_chance() ) )
+      if ( p() -> passives.the_art_of_war -> ok() && rng().roll( p() -> passives.the_art_of_war -> proc_chance() ) )
       {
         // if Exorcism was already off-cooldown, count the proc as wasted
         if ( p() -> cooldowns.exorcism -> remains() <= timespan_t::zero() )

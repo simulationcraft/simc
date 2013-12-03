@@ -3093,7 +3093,7 @@ struct dire_beast_t : public hunter_spell_t
     double partial_attacks_per_summon = base_duration / swing_time;
     double base_attacks_per_summon = floor( partial_attacks_per_summon - 0.5 ); // 8.4 -> 7, 8.5 -> 8, 8.6 -> 8, etc
 
-    if ( sim -> roll( partial_attacks_per_summon - base_attacks_per_summon - 0.5 ) )
+    if ( rng().roll( partial_attacks_per_summon - base_attacks_per_summon - 0.5 ) )
     {
       base_attacks_per_summon += 1;
     }

@@ -1402,7 +1402,7 @@ struct melee_t : public monk_melee_attack_t
       event_t( player, "tiger_strikes_delay" ),
       melee( m )
     {
-      add_event( timespan_t::from_seconds( sim().gauss( 1.0, 0.2 ) ) );
+      add_event( timespan_t::from_seconds( rng().gauss( 1.0, 0.2 ) ) );
     }
 
     void execute()

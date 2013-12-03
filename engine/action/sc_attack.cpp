@@ -225,7 +225,7 @@ result_e attack_t::calculate_result( action_state_t* s )
   {
     // 1-roll attack table with true RNG
 
-    double random = sim -> real();
+    double random = rng().real();
 
     for ( int i = 0; i < num_results; i++ )
     {

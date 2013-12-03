@@ -2274,7 +2274,7 @@ void death_knight_melee_attack_t::consume_resource()
   base_t::consume_resource();
 
   if ( result_is_hit( execute_state -> result ) || always_consume )
-    consume_runes( p(), use, convert_runes == 0 ? false : sim -> roll( convert_runes ) == 1 );
+    consume_runes( p(), use, convert_runes == 0 ? false : rng().roll( convert_runes ) == 1 );
 }
 
 // death_knight_melee_attack_t::execute() ===================================
@@ -2336,7 +2336,7 @@ void death_knight_spell_t::consume_resource()
   base_t::consume_resource();
 
   if ( result_is_hit( execute_state -> result ) )
-    consume_runes( p(), use, convert_runes == 0 ? false : sim -> roll( convert_runes ) == 1 );
+    consume_runes( p(), use, convert_runes == 0 ? false : rng().roll( convert_runes ) == 1 );
 }
 
 // death_knight_spell_t::execute() ==========================================
@@ -3016,7 +3016,7 @@ struct bone_shield_t : public death_knight_spell_t
       // rotation.  Assume we casted Bone Shield somewhere between
       // 8-16s before we start fighting.  The cost in this case is
       // zero and we don't cause any cooldown.
-      timespan_t pre_cast = timespan_t::from_seconds( p() -> sim -> range( 8.0, 16.0 ) );
+      timespan_t pre_cast = timespan_t::from_seconds( rng().range( 8.0, 16.0 ) );
 
       cooldown -> duration -= pre_cast;
       p() -> buffs.bone_shield -> buff_duration -= pre_cast;
@@ -6468,7 +6468,7 @@ int death_knight_t::decode_set( item_t& item )
 
 void death_knight_t::trigger_runic_empowerment()
 {
-  if ( ! sim -> roll( talent.runic_empowerment -> proc_chance() ) )
+  if ( ! rng().roll( talent.runic_empowerment -> proc_chance() ) )
     return;
 
   int depleted_runes[RUNE_SLOT_MAX];

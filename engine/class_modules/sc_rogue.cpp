@@ -877,7 +877,7 @@ void rogue_attack_t::impact( action_state_t* state )
     {
       fof_chance *= ( 1.0 - 0.1 * ( state -> target -> level - 88 ) );
     }
-    if ( sim -> roll( fof_chance ) )
+    if ( rng().roll( fof_chance ) )
     {
       p() -> buffs.fof_p1 -> trigger();
       p() -> buffs.fof_p2 -> trigger();
@@ -886,7 +886,7 @@ void rogue_attack_t::impact( action_state_t* state )
       if ( ! p() -> buffs.fof_fod -> check() && p() -> buffs.fof_p3 -> check() > 30 )
       {
         // Trigging FoF and the Stacking Buff are mutually exclusive
-        if ( sim -> roll( 1.0 / ( 51.0 - p() -> buffs.fof_p3 -> check() ) ) )
+        if ( rng().roll( 1.0 / ( 51.0 - p() -> buffs.fof_p3 -> check() ) ) )
         {
           p() -> buffs.fof_fod -> trigger();
           rogue_td_t* td = cast_td( state -> target );

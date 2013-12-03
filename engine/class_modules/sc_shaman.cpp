@@ -641,7 +641,7 @@ struct eoe_execute_event_t : public event_t
     event_t( *s -> player, "eoe_execute" ),
     spell( s )
   {
-    timespan_t delay_duration = sim().gauss( sim().default_aura_delay / 2, sim().default_aura_delay_stddev / 2 );
+    timespan_t delay_duration = sim().rng().gauss( sim().default_aura_delay / 2, sim().default_aura_delay_stddev / 2 );
     add_event( delay_duration );
   }
 
@@ -966,7 +966,7 @@ struct feral_spirit_pet_t : public pet_t
       {
         shaman_t* o = p() -> o();
 
-        if ( sim -> roll( o -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() ) )
+        if ( rng().roll( o -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent() ) )
         {
           int mwstack = o -> buff.maelstrom_weapon -> total_stack();
           o -> buff.maelstrom_weapon -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
@@ -4823,7 +4823,7 @@ struct unleash_flame_buff_t : public buff_t
     unleash_flame_expiration_delay_t( shaman_t& player, unleash_flame_buff_t* b ) :
       event_t( player, "unleash_flame_expiration_delay" ), buff( b )
     {
-      add_event( sim().gauss( player.uf_expiration_delay, player.uf_expiration_delay_stddev ) );
+      add_event( sim().rng().gauss( player.uf_expiration_delay, player.uf_expiration_delay_stddev ) );
     }
 
     virtual void execute()

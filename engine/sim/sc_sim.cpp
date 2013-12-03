@@ -1239,7 +1239,7 @@ void sim_t::datacollection_begin()
 {
   if ( debug ) out_debug << "Sim Data Collection Begin";
 
-  iteration_dmg = iteration_heal = 0;
+  iteration_dmg = iteration_heal = 0.0;
 
   for ( size_t i = 0; i < target_list.size(); ++i )
   {
@@ -1256,8 +1256,8 @@ void sim_t::datacollection_begin()
     player_t* p = player_no_pet_list[ i ];
     p -> datacollection_begin();
   }
-  new ( *this ) resource_timeline_collect_event_t( *this );
 
+  new ( *this ) resource_timeline_collect_event_t( *this );
 }
 
 // sim_t::datacollection_end ================================================
@@ -1412,8 +1412,6 @@ bool sim_t::init()
     }
     if ( healers > 0 )
       heal_target = module_t::heal_enemy() -> create_player( this, "Healing Target" );
-
-    ( void )tanks;
   }
 
 
@@ -1595,7 +1593,6 @@ bool sim_t::iterate()
       break;
     }
 
-
     if ( use_lb ) // Load Balancing
     {
       // Select the work queue on the main thread
@@ -1771,7 +1768,7 @@ player_t* sim_t::find_player( const std::string& name )
     if ( name == p -> name() )
       return p;
   }
-  return 0;
+  return nullptr;
 }
 
 // sim_t::find_player =======================================================
@@ -1784,14 +1781,14 @@ player_t* sim_t::find_player( int index )
     if ( index == p -> index )
       return p;
   }
-  return 0;
+  return nullptr;
 }
 
 // sim_t::get_cooldown ======================================================
 
 cooldown_t* sim_t::get_cooldown( const std::string& name )
 {
-  cooldown_t* c = 0;
+  cooldown_t* c = nullptr;
 
   for ( size_t i = 0; i < cooldown_list.size(); ++i )
   {
@@ -1843,24 +1840,6 @@ bool sim_t::time_to_think( timespan_t proc_time )
   if ( proc_time == timespan_t::zero() ) return false;
   if ( proc_time < timespan_t::zero() ) return true;
   return current_time - proc_time > reaction_time;
-}
-
-// sim_t::gauss =============================================================
-
-double sim_t::gauss( double mean,
-                     double stddev )
-{
-  if ( average_gauss ) return mean;
-
-  return rng().gauss( mean, stddev );
-}
-
-// sim_t::gauss =============================================================
-
-timespan_t sim_t::gauss( timespan_t mean,
-                         timespan_t stddev )
-{
-  return timespan_t::from_native( gauss( ( double ) timespan_t::to_native( mean ), ( double ) timespan_t::to_native( stddev ) ) );
 }
 
 // sim_t::create_expression =================================================

@@ -2630,13 +2630,7 @@ public:
   int convergence_scale;
 
   rng_t& rng() { return _rng; }
-
-  bool      roll( double chance );
-  double    range( double min, double max );
   double    averaged_range( double min, double max );
-  double    gauss( double mean, double stddev );
-  timespan_t gauss( timespan_t mean, timespan_t stddev );
-  double    real() ;
 
   // Raid Events
   auto_dispose< std::vector<raid_event_t*> > raid_events;
@@ -4860,6 +4854,7 @@ struct event_t : public core_event_t
   { return static_cast<player_t*>( actor ); }
   sim_t& sim()
   { return static_cast<sim_t&>( _sim ); }
+  rng_t& rng() { return sim().rng(); }
 };
 
 // Pet ======================================================================
@@ -5865,7 +5860,7 @@ struct proc_callback_t : public action_callback_t
       event_t( p, "proc_callback_delay" ),
       callback( cb ), action( a ), call_data( cd )
     {
-      timespan_t delay = sim().gauss( sim().default_aura_delay, sim().default_aura_delay_stddev );
+      timespan_t delay = sim().rng().gauss( sim().default_aura_delay, sim().default_aura_delay_stddev );
       sim().add_event( this, delay );
     }
 
@@ -6492,7 +6487,7 @@ struct residual_dot_action : public Action
 
   virtual timespan_t travel_time()
   {
-    return Action::sim -> gauss( Action::sim -> default_aura_delay,
+    return Action::rng().gauss( Action::sim -> default_aura_delay,
                                  Action::sim -> default_aura_delay_stddev );
   }
 
@@ -6527,12 +6522,6 @@ inline rng_t& buff_t::rng()
 { return sim -> rng(); }
 // sim_t inlines
 
-inline double sim_t::real()                { return rng().real(); }
-inline bool   sim_t::roll( double chance ) { return rng().roll( chance ); }
-inline double sim_t::range( double min, double max )
-{
-  return rng().range( min, max );
-}
 inline double sim_t::averaged_range( double min, double max )
 {
   if ( average_range ) return ( min + max ) / 2.0;

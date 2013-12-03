@@ -342,7 +342,7 @@ void ignite::trigger_pct_based( action_t* ignite_action,
       additional_ignite_dmg( dmg ), target( t ), action( a )
     {
       // Use same delay as in buff application
-      timespan_t delay_duration = sim().gauss( sim().default_aura_delay, sim().default_aura_delay_stddev );
+      timespan_t delay_duration = sim().rng().gauss( sim().default_aura_delay, sim().default_aura_delay_stddev );
 
       if ( sim().debug )
         sim().out_debug.printf( "New %s Sampling Event: %s ( delta time: %.4f )",

@@ -2791,7 +2791,7 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
 
     amount *= 1.0 + p.sets -> set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent();
 
-    if ( ! sim -> average_range ) amount = floor( amount + sim -> real() );
+    if ( ! sim -> average_range ) amount = floor( amount + rng().real() );
 
     if ( sim -> debug )
     {

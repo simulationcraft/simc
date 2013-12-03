@@ -3019,7 +3019,7 @@ class mana_gem_t : public mage_spell_t
 
     virtual void execute()
     {
-      double gain = sim -> range( min, max );
+      double gain = rng().range( min, max );
       if ( p() -> passives.nether_attunement -> ok() )
         gain /= p() -> cache.spell_speed();
       player -> resource_gain( RESOURCE_MANA, gain, p() -> gains.mana_gem );

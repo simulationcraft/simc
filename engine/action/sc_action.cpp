@@ -765,7 +765,7 @@ double action_t::calculate_tick_amount( action_state_t* state )
   double init_tick_amount = amount;
 
   if ( ! sim -> average_range )
-    amount = floor( amount + sim -> real() );
+    amount = floor( amount + rng().real() );
 
   // Record raw amount to state
   state -> result_raw = amount;
@@ -868,7 +868,7 @@ double action_t::calculate_direct_amount( action_state_t* state )
     amount *= 1.0 + total_crit_bonus();
   }
 
-  if ( ! sim -> average_range ) amount = floor( amount + sim -> real() );
+  if ( ! sim -> average_range ) amount = floor( amount + rng().real() );
 
   if ( sim -> debug )
   {
@@ -1422,7 +1422,7 @@ bool action_t::ready()
     return false;
 
   // Player Skill must not affect precombat actions
-  if ( player -> in_combat && player -> current.skill < 1.0 && ! sim -> roll( player -> current.skill ) )
+  if ( player -> in_combat && player -> current.skill < 1.0 && ! rng().roll( player -> current.skill ) )
     return false;
 
   if ( line_cooldown.down() )

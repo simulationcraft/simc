@@ -1864,7 +1864,7 @@ struct priest_procced_mastery_spell_t : public priest_spell_t
 
   virtual timespan_t travel_time() override
   {
-    return sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
+    return rng().gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
   }
 
   virtual void impact( action_state_t* s ) override
@@ -2310,7 +2310,7 @@ struct shadow_word_death_t final : public priest_spell_t
     }
 
     virtual timespan_t execute_time() override
-    { return sim -> gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev ); }
+    { return rng().gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev ); }
 
     virtual double composite_spell_power() override
     { return spellpower; }

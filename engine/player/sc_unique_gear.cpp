@@ -1965,7 +1965,7 @@ void gurthalak( item_t* item )
       virtual void execute()
       {
         // Casts either 8 or 9 ticks, roughly equal chance for both
-        num_ticks = sim -> roll( 0.5 ) ? 9 : 8;
+        num_ticks = rng().roll( 0.5 ) ? 9 : 8;
 
         spell_t::execute();
       }
