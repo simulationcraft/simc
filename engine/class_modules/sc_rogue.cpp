@@ -3139,7 +3139,7 @@ void rogue_t::init_action_list()
     def -> add_talent( this, "Marked for Death", "if=combo_points=0" );
 
     def -> add_action( this, "Rupture", "if=ticks_remain<2|(combo_points=5&ticks_remain<3)" );
-	def -> add_action( this, "Fan of Knives", "if=combo_points<5&active_enemies>=4" );
+    def -> add_action( this, "Fan of Knives", "if=combo_points<5&active_enemies>=4" );
 
     def -> add_action( this, "Vendetta" );
 
@@ -3180,14 +3180,9 @@ void rogue_t::init_action_list()
     def -> add_action( this, "Vanish", "if=time>10&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(buff.shadow_blades.down&(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4))))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<20)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))" );
 
     // Cooldowns (No Tier14)
-    def -> add_action( this, "Shadow Blades", "if=!set_bonus.tier14_4pc_melee&time>5" );
-    def -> add_action( this, "Killing Spree", "if=!set_bonus.tier14_4pc_melee&energy<35&buff.adrenaline_rush.down" );
-    def -> add_action( this, "Adrenaline Rush", "if=!set_bonus.tier14_4pc_melee&(energy<35|buff.shadow_blades.up)" );
-
-    // Cooldowns (With Tier14), Fit AR, and every-other KS, into each SB
-    def -> add_action( this, "Shadow Blades", "if=set_bonus.tier14_4pc_melee&((cooldown.killing_spree.remains>30.5&cooldown.adrenaline_rush.remains<=9)|(energy<35&(cooldown.killing_spree.remains=0|cooldown.adrenaline_rush.remains=0)))" );
-    def -> add_action( this, "Killing Spree", "if=set_bonus.tier14_4pc_melee&((buff.shadow_blades.up&buff.adrenaline_rush.down&(energy<35|buff.shadow_blades.remains<=3.5))|(buff.shadow_blades.down&cooldown.shadow_blades.remains>30))" );
-    def -> add_action( this, "Adrenaline Rush", "if=set_bonus.tier14_4pc_melee&buff.shadow_blades.up&(energy<35|buff.shadow_blades.remains<=15)" );
+    def -> add_action( this, "Shadow Blades", "if=time>5" );
+    def -> add_action( this, "Killing Spree", "if=energy<45" );
+    def -> add_action( this, "Adrenaline Rush", "if=energy<35|buff.shadow_blades.up" );
 
     // Rotation
     def -> add_action( this, "Slice and Dice", "if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)" );
@@ -3202,7 +3197,7 @@ void rogue_t::init_action_list()
 
     // Combo point generators
     action_priority_list_t* gen = get_action_priority_list( "generator", "Combo point generators" );
-	gen -> add_action( this, "Fan of Knives", "line_cd=5,if=active_enemies>=4" );
+    gen -> add_action( this, "Fan of Knives", "line_cd=5,if=active_enemies>=4" );
     gen -> add_action( this, "Revealing Strike", "if=ticks_remain<2" );
     gen -> add_action( this, "Sinister Strike" );
 
@@ -3258,8 +3253,8 @@ void rogue_t::init_action_list()
     // Combo point generators
     action_priority_list_t* gen = get_action_priority_list( "generator", "Combo point generators" );
     gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool,if=buff.master_of_subtlety.down&buff.shadow_dance.down&debuff.find_weakness.down&(energy+cooldown.shadow_dance.remains*energy.regen<80|energy+cooldown.vanish.remains*energy.regen<60)" );
-	gen -> add_action( this, "Fan of Knives", "if=active_enemies>=4" );
-	gen -> add_action( this, "Hemorrhage", "if=remains<3|position_front" );
+    gen -> add_action( this, "Fan of Knives", "if=active_enemies>=4" );
+    gen -> add_action( this, "Hemorrhage", "if=remains<3|position_front" );
     gen -> add_talent( this, "Shuriken Toss", "if=energy<65&energy.regen<16" );
     gen -> add_action( this, "Backstab" );
     gen -> add_action( this, find_class_spell( "Preparation" ), "run_action_list", "name=pool" );
