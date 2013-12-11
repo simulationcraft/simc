@@ -1767,12 +1767,12 @@ private:
 public:
   absorb_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = 0 ) :
     base_t( q, name, s, i ),
-    _absorb_school( SCHOOL_NONE ), _absorb_source( 0 ), _absorb_gain( 0 )
+    _absorb_school( SCHOOL_CHAOS ), _absorb_source( 0 ), _absorb_gain( 0 )
   { }
 
   absorb_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = 0 ) :
     base_t( sim, name, s, i ),
-    _absorb_school( SCHOOL_NONE ), _absorb_source( 0 ), _absorb_gain( 0 )
+    _absorb_school( SCHOOL_CHAOS ), _absorb_source( 0 ), _absorb_gain( 0 )
   { }
 
   bufftype& source( stats_t* s )
