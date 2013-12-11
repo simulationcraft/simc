@@ -36,9 +36,10 @@ void attack_t::execute()
 
   if ( harmful && callbacks )
   {
-    if ( ( execute_state ? execute_state -> result : result ) != RESULT_NONE )
+    result_e r = execute_state ? execute_state -> result : RESULT_NONE;
+    if ( r != RESULT_NONE )
     {
-      action_callback_t::trigger( player -> callbacks.attack[ execute_state ? execute_state -> result : result ], this, execute_state );
+      action_callback_t::trigger( player -> callbacks.attack[ execute_state -> result ], this, execute_state );
     }
   }
 }

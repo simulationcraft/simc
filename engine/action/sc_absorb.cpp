@@ -56,7 +56,7 @@ void absorb_t::execute()
 
   if ( harmful && callbacks )
   {
-    result_e r = execute_state ? execute_state -> result : result;
+    result_e r = execute_state ? execute_state -> result : RESULT_UNKNOWN;
     if ( r != RESULT_NONE )
     {
       action_callback_t::trigger( player -> callbacks.absorb[ r ], this );
@@ -92,7 +92,7 @@ void absorb_t::assess_damage( dmg_e    heal_type,
     sim -> out_log.printf( "%s %s heals %s for %.0f (%.0f) (%s)",
                    player -> name(), name(),
                    s -> target -> name(), s -> result_amount, s -> total_result_amount,
-                   util::result_type_string( result ) );
+                   util::result_type_string( state -> result ) );
 
   stats -> add_result( s -> result_amount, s -> total_result_amount, heal_type, s -> result, s -> block_result, s -> target );
 }

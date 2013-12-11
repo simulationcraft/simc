@@ -253,7 +253,6 @@ action_t::action_t( action_e       ty,
   target_cache(),
   school( SCHOOL_NONE ),
   id(),
-  result(),
   resource_current( RESOURCE_NONE ),
   aoe(),
   pre_combat( 0 ),
@@ -1381,7 +1380,8 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
   }
   if ( num_ticks )
   {
-    if ( result_is_miss() )
+    assert( execute_state );
+    if ( result_is_miss( execute_state -> result ) )
     {
       dot_t* dot = get_dot( target );
       last_reaction_time = player -> total_reaction_time();
@@ -1607,8 +1607,6 @@ void action_t::reset()
   // FIXME! Is this really necessary? All DOTs get reset during player_t::reset()
   dot_t* dot = find_dot();
   if ( dot ) dot -> reset();
-  result = RESULT_NONE;
-  block_result = BLOCK_RESULT_UNBLOCKED;
   execute_event = 0;
   travel_events.clear();
 }

@@ -755,7 +755,7 @@ void warrior_attack_t::execute()
 
   if ( proc ) return;
 
-  if ( result == RESULT_DODGE  )
+  if ( execute_state -> result == RESULT_DODGE )
   {
     trigger_taste_for_blood( p -> spec.taste_for_blood -> effectN( 1 ).base_value() );
   }
@@ -2113,7 +2113,7 @@ struct shockwave_t : public warrior_attack_t
     warrior_t* p = cast();
     cd_reduction = timespan_t::zero();
 
-    if ( result_is_hit() )
+    if ( result_is_hit( execute_state -> result ) )
       if ( execute_state -> n_targets >= 3 )
         cd_reduction = timespan_t::from_seconds( -20 );
 

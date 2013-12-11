@@ -2162,7 +2162,7 @@ struct holy_shock_heal_t : public paladin_heal_t
     p() -> buffs.daybreak -> expire();
     cooldown -> duration = cd_duration;
 
-    if ( result == RESULT_CRIT )
+    if ( execute_state -> result == RESULT_CRIT )
       p() -> buffs.infusion_of_light -> trigger();
   }
 

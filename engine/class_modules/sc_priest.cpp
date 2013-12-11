@@ -2373,7 +2373,7 @@ struct shadow_word_death_t final : public priest_spell_t
       backlash -> schedule_execute();
     }
 
-    if ( result_is_hit() )
+    if ( result_is_hit( s -> result ) )
     {
       if ( over_20 )
         s -> result_amount /= 4.0;

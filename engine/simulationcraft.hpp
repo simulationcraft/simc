@@ -5098,8 +5098,6 @@ struct action_t : public noncopyable
   school_e school;
 
   uint32_t id;
-  result_e result;
-  block_result_e block_result;
   resource_e resource_current;
   int aoe, pre_combat;
   // true if this action should not be counted for executes
@@ -5214,26 +5212,23 @@ struct action_t : public noncopyable
   void   check_spell( const spell_data_t* );
   const char* name() const { return name_str.c_str(); }
 
-  inline bool result_is_hit( result_e r = RESULT_UNKNOWN )
+  inline bool result_is_hit( result_e r )
   {
-    if ( r == RESULT_UNKNOWN ) r = result;
     return( r == RESULT_HIT        ||
             r == RESULT_CRIT       ||
             r == RESULT_GLANCE     ||
             r == RESULT_NONE       );
   }
 
-  inline bool result_is_miss( result_e r = RESULT_UNKNOWN )
+  inline bool result_is_miss( result_e r )
   {
-    if ( r == RESULT_UNKNOWN ) r = result;
     return( r == RESULT_MISS   ||
             r == RESULT_DODGE  ||
             r == RESULT_PARRY );
   }
 
-  inline bool result_is_block( block_result_e r = BLOCK_RESULT_UNKNOWN )
+  inline bool result_is_block( block_result_e r )
   {
-    if ( r == BLOCK_RESULT_UNKNOWN ) r = block_result;
     return( r == BLOCK_RESULT_BLOCKED || r == BLOCK_RESULT_CRIT_BLOCKED );
   }
 
