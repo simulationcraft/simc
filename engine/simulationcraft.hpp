@@ -1652,6 +1652,7 @@ protected:
   sim_t* _sim;
   std::string _name;
   const spell_data_t* s_data;
+  const item_t* item;
   double _chance;
   double _default_value;
   int _max_stack;
@@ -1666,6 +1667,10 @@ public:
   buff_creator_basics_t( actor_pair_t, const std::string& name, const spell_data_t* = spell_data_t::nil() );
   buff_creator_basics_t( actor_pair_t, uint32_t id, const std::string& name );
   buff_creator_basics_t( sim_t*, const std::string& name, const spell_data_t* = spell_data_t::nil() );
+
+  buff_creator_basics_t( actor_pair_t, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = 0 );
+  buff_creator_basics_t( actor_pair_t, uint32_t id, const std::string& name, const item_t* item = 0 );
+  buff_creator_basics_t( sim_t*, const std::string& name, const spell_data_t* = spell_data_t::nil(), const item_t* item = 0 );
 };
 
 // This helper template is necessary so that reference functions of the classes inheriting from it return the type of the derived class.
@@ -1677,12 +1682,12 @@ struct buff_creator_helper_t : public buff_creator_basics_t
   typedef buff_creator_helper_t base_t;
 
 public:
-  buff_creator_helper_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
-    buff_creator_basics_t( q, name, s ) {}
-  buff_creator_helper_t( actor_pair_t q, uint32_t id, const std::string& name ) :
-    buff_creator_basics_t( q, id, name ) {}
-  buff_creator_helper_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
-    buff_creator_basics_t( sim, name, s ) {}
+  buff_creator_helper_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = 0 ) :
+    buff_creator_basics_t( q, name, s, item ) {}
+  buff_creator_helper_t( actor_pair_t q, uint32_t id, const std::string& name, const item_t* item = 0 ) :
+    buff_creator_basics_t( q, id, name, item ) {}
+  buff_creator_helper_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = 0 ) :
+    buff_creator_basics_t( sim, name, s, item ) {}
 
   bufftype& duration( timespan_t d )
   { _duration = d; return *( static_cast<bufftype*>( this ) ); }
@@ -1711,12 +1716,12 @@ public:
 struct buff_creator_t : public buff_creator_helper_t<buff_creator_t>
 {
 public:
-  buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( q, name, s ) {}
-  buff_creator_t( actor_pair_t q, uint32_t id, const std::string& name ) :
-    base_t( q, id, name ) {}
-  buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( sim, name, s ) {}
+  buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = 0 ) :
+    base_t( q, name, s, item ) {}
+  buff_creator_t( actor_pair_t q, uint32_t id, const std::string& name, const item_t* item = 0 ) :
+    base_t( q, id, name, item ) {}
+  buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = 0 ) :
+    base_t( sim, name, s, item ) {}
 
   operator buff_t* () const;
   operator debuff_t* () const;
@@ -1741,10 +1746,10 @@ private:
 
   friend struct ::stat_buff_t;
 public:
-  stat_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( q, name, s ) {}
-  stat_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( sim, name, s ) {}
+  stat_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = 0 ) :
+    base_t( q, name, s, item ) {}
+  stat_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = 0 ) :
+    base_t( sim, name, s, item ) {}
 
   bufftype& add_stat( stat_e s, double a, bool ( *c )( void* ) = 0, void *d = 0 )
   { stats.push_back( buff_stat_t( s, a, c, d ) ); return *this; }
@@ -1760,13 +1765,14 @@ private:
   gain_t*  _absorb_gain;
   friend struct ::absorb_buff_t;
 public:
-  absorb_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( q, name, s ),
-    _absorb_school( SCHOOL_CHAOS ), _absorb_source( 0 ), _absorb_gain( 0 )
+  absorb_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = 0 ) :
+    base_t( q, name, s, i ),
+    _absorb_school( SCHOOL_NONE ), _absorb_source( 0 ), _absorb_gain( 0 )
   { }
-  absorb_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( sim, name, s ),
-    _absorb_school( SCHOOL_CHAOS ), _absorb_source( 0 ), _absorb_gain( 0 )
+
+  absorb_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = 0 ) :
+    base_t( sim, name, s, i ),
+    _absorb_school( SCHOOL_NONE ), _absorb_source( 0 ), _absorb_gain( 0 )
   { }
 
   bufftype& source( stats_t* s )
@@ -1788,12 +1794,13 @@ private:
   school_e _school;
   friend struct ::cost_reduction_buff_t;
 public:
-  cost_reduction_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( q, name, s ),
+  cost_reduction_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = 0 ) :
+    base_t( q, name, s, i ),
     _amount( 0 ), _school( SCHOOL_NONE )
   {}
-  cost_reduction_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( sim, name, s ),
+
+  cost_reduction_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = 0 ) :
+    base_t( sim, name, s, i ),
     _amount( 0 ), _school( SCHOOL_NONE )
   {}
 
@@ -1810,8 +1817,8 @@ struct haste_buff_creator_t : public buff_creator_helper_t<haste_buff_creator_t>
 private:
   friend struct ::haste_buff_t;
 public:
-  haste_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( q, name, s )
+  haste_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = 0 ) :
+    base_t( q, name, s, i )
   { }
 
   operator haste_buff_t* () const;
@@ -1824,8 +1831,8 @@ private:
 
   friend struct ::tick_buff_t;
 public:
-  tick_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( q, name, s ), _period( timespan_t::min() )
+  tick_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = 0 ) :
+    base_t( q, name, s, i ), _period( timespan_t::min() )
   { }
 
   bufftype& period( timespan_t p )
@@ -6119,6 +6126,7 @@ int scaled_stat( const item_data_t& item, const dbc_t& dbc, size_t idx, unsigned
 
 unsigned upgrade_ilevel( const item_data_t& item, unsigned upgrade_level );
 stat_pair_t item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index );
+double item_budget( const item_t* item, unsigned max_ilevel );
 
 inline bool heroic( unsigned f ) { return f & RAID_TYPE_HEROIC; }
 inline bool lfr( unsigned f ) { return f & RAID_TYPE_LFR; }

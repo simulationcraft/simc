@@ -252,6 +252,11 @@ public:
   double min( const player_t* p, unsigned level = 0 ) const;
   double max( const player_t* p, unsigned level = 0 ) const;
 
+  double average( const item_t* item ) const;
+  double delta( const item_t* item ) const;
+  double min( const item_t* item ) const;
+  double max( const item_t* item ) const;
+
   bool override_field( const std::string& field, double value );
 
   spell_data_t* spell() const;
@@ -262,6 +267,11 @@ public:
   static spelleffect_data_t* find( unsigned, bool ptr = false );
   static spelleffect_data_t* list( bool ptr = false );
   static void                link( bool ptr = false );
+private:
+  double scaled_average( double budget, unsigned level ) const;
+  double scaled_delta( double budget ) const;
+  double scaled_min( double avg, double delta ) const;
+  double scaled_max( double avg, double delta ) const;
 };
 
 // ==========================================================================

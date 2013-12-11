@@ -81,47 +81,6 @@ struct expiration_delay_t : public buff_event_t
     buff -> expire();
   }
 };
-
-stat_e translate_stat_buff_misc_number( const spelleffect_data_t& ed )
-{
-  if ( ed.subtype() == A_MOD_STAT )
-  {
-    switch ( ed.misc_value1() )
-    {
-      case 0:
-        return STAT_STRENGTH;
-      case 1:
-        return STAT_AGILITY;
-      case 2:
-        return STAT_STAMINA; // guessed
-      case 3:
-        return STAT_INTELLECT;
-      case 4:
-        return STAT_SPIRIT; // guessed
-
-      default: break;
-    }
-  }
-  if ( ed.subtype() == A_MOD_RATING )
-  {
-    switch ( ed.misc_value1() )
-    {
-      case 3355443:
-      case 33554432:
-        return STAT_MASTERY_RATING;
-      case 1792:
-        return STAT_CRIT_RATING;
-      case 917504:
-      case 393216: // melee and ranged haste
-        return STAT_HASTE_RATING;
-      default: break;
-    }
-  }
-  else if ( ed.subtype() == A_MOD_RESISTANCE )
-    return STAT_ARMOR;
-
-  return STAT_NONE;
-}
 }
 
 buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
@@ -138,6 +97,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   default_value( DEFAULT_VALUE() ),
   activated( true ),
   reactable( false ),
+  refreshes( true ),
   reverse(),
   constant(),
   quiet(),
@@ -1152,37 +1112,33 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
 
     for ( size_t i = 1; i <= data().effect_count(); i++ )
     {
-      if ( data().effectN( i ).subtype() == A_MOD_RATING || data().effectN( i ).subtype() == A_MOD_STAT )
-      {
-        double amount = player -> dbc.effect_average( data().effectN( i ).id(), player -> level );
-        stat_e stat = translate_stat_buff_misc_number( data().effectN( i ) );
+      stat_e s = STAT_NONE;
+      double amount = 0;
+      const spelleffect_data_t& effect = data().effectN( i );
 
-        stats.push_back( buff_stat_t( stat, amount ) );
-
-        break; // only parse first effect for now
-      }
-      else if ( ! has_ap && ( data().effectN( i ).subtype() == A_MOD_RANGED_ATTACK_POWER || data().effectN( i ).subtype() == A_MOD_ATTACK_POWER ) )
+      if ( effect.subtype() == A_MOD_STAT )
+        s = static_cast< stat_e >( effect.misc_value1() + 1 );
+      else if ( effect.subtype() == A_MOD_RATING )
+        s = util::translate_rating_mod( effect.misc_value1() );
+      else if ( effect.subtype() == A_MOD_DAMAGE_DONE && effect.misc_value1() == 126 )
+        s = STAT_SPELL_POWER;
+      else if ( effect.subtype() == A_MOD_RESISTANCE )
+        s = STAT_ARMOR;
+      else if ( ! has_ap && ( effect.subtype() == A_MOD_ATTACK_POWER || effect.subtype() == A_MOD_RANGED_ATTACK_POWER ) )
       {
+        s = STAT_ATTACK_POWER;
         has_ap = true;
-        double amount = player -> dbc.effect_average( data().effectN( i ).id(), player -> level );
-        stat_e stat = STAT_ATTACK_POWER;
-
-        stats.push_back( buff_stat_t( stat, amount ) );
       }
-      else if ( data().effectN( i ).subtype() == A_MOD_DAMAGE_DONE && data().effectN( i ).misc_value1() == 126 )
-      {
-        // examples: blood fury 33702
-        double amount = player -> dbc.effect_average( data().effectN( i ).id(), player -> level );
-        stat_e stat = STAT_SPELL_POWER;
+      else if ( effect.subtype() == A_MOD_INCREASE_HEALTH_2 )
+        s = STAT_MAX_HEALTH;
 
-        stats.push_back( buff_stat_t( stat, amount ) );
-      }
-      else if ( data().effectN( i ).subtype() == A_MOD_RESISTANCE )
-      {
-        double amount = player -> dbc.effect_average( data().effectN( i ).id(), player -> level );
+      if ( params.item )
+        amount = util::round( effect.average( params.item ) );
+      else
+        amount = effect.average( player, std::min( MAX_LEVEL, player -> level ) );
 
-        stats.push_back( buff_stat_t( STAT_ARMOR, amount ) );
-      }
+      if ( s != STAT_NONE )
+        stats.push_back( buff_stat_t( s, amount ) );
     }
   }
   else // parse stats from params
@@ -1238,6 +1194,8 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
     }
     current_stack -= stacks;
 
+    invalidate_cache();
+
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
       stack_uptime[ current_stack ] -> update( true, sim -> current_time );
 
@@ -1272,6 +1230,28 @@ void stat_buff_t::expire_override()
 cost_reduction_buff_t::cost_reduction_buff_t( const cost_reduction_buff_creator_t& params ) :
   buff_t( params ), amount( params._amount ), school( params._school )
 {
+  // Detect school / amount
+  if ( params._school == SCHOOL_NONE )
+  {
+    for ( size_t i = 1, e = data().effect_count(); i <= e; i++ )
+    {
+      const spelleffect_data_t& effect = data().effectN( i );
+      if ( effect.type() != E_APPLY_AURA || effect.subtype() != A_MOD_POWER_COST_SCHOOL )
+        continue;
+
+      school = dbc::get_school_type( effect.misc_value1() );
+      if ( params._amount == 0 )
+      {
+        if ( params.item )
+          amount = util::round( effect.average( params.item ) );
+        else
+          amount = effect.average( player, std::min( MAX_LEVEL, player -> level ) );
+
+        amount = std::fabs( amount );
+      }
+      break;
+    }
+  }
 }
 
 // cost_reduction_buff_t::bump ==============================================
@@ -1450,6 +1430,26 @@ absorb_buff_t::absorb_buff_t( const absorb_buff_creator_t& params ) :
 
   if ( absorb_source )
     absorb_source -> type = STATS_ABSORB;
+
+  if ( params._absorb_school == SCHOOL_NONE )
+  {
+    for ( size_t i = 1, e = data().effect_count(); i <= e; i++ )
+    {
+      const spelleffect_data_t& effect = data().effectN( i );
+      if ( effect.type() != E_APPLY_AURA || effect.subtype() != A_SCHOOL_ABSORB )
+        continue;
+
+      absorb_school = dbc::get_school_type( effect.misc_value1() );
+      if ( params._default_value == DEFAULT_VALUE() )
+      {
+        if ( params.item )
+          default_value = util::round( effect.average( params.item ) );
+        else
+          default_value = effect.average( player, std::min( MAX_LEVEL, player -> level ) );
+      }
+      break;
+    }
+  }
 }
 
 void absorb_buff_t::start( int stacks, double value, timespan_t duration )
@@ -1502,17 +1502,17 @@ void buff_creator_basics_t::init()
   _reverse = -1;
   _activated = -1;
   _default_value = buff_t::DEFAULT_VALUE();
-  _refreshes = true;
+  _refreshes = -1;
 }
 
-buff_creator_basics_t::buff_creator_basics_t( actor_pair_t p, const std::string& n, const spell_data_t* sp ) :
-  _player( p ), _sim( p.source->sim ), _name( n ), s_data( sp )
+buff_creator_basics_t::buff_creator_basics_t( actor_pair_t p, const std::string& n, const spell_data_t* sp, const item_t* item ) :
+  _player( p ), _sim( p.source->sim ), _name( n ), s_data( sp ), item( item )
 { init(); }
 
-buff_creator_basics_t::buff_creator_basics_t( actor_pair_t p , uint32_t id, const std::string& n ) :
-  _player( p ), _sim( p.source->sim ), _name( n ), s_data( _player.source ? _player.source->find_spell( id ) : spell_data_t::nil() )
+buff_creator_basics_t::buff_creator_basics_t( actor_pair_t p , uint32_t id, const std::string& n, const item_t* item ) :
+  _player( p ), _sim( p.source->sim ), _name( n ), s_data( _player.source ? _player.source->find_spell( id ) : spell_data_t::nil() ), item( item )
 { init(); }
 
-buff_creator_basics_t::buff_creator_basics_t( sim_t* s, const std::string& n, const spell_data_t* sp ) :
-  _player( actor_pair_t() ), _sim( s ), _name( n ), s_data( sp )
+buff_creator_basics_t::buff_creator_basics_t( sim_t* s, const std::string& n, const spell_data_t* sp, const item_t* item ) :
+  _player( actor_pair_t() ), _sim( s ), _name( n ), s_data( sp ), item( item )
 { init(); }

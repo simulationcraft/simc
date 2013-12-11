@@ -606,3 +606,22 @@ unsigned item_database::upgrade_ilevel( const item_data_t& item, unsigned upgrad
   return 0;
 }
 
+double item_database::item_budget( const item_t* item, unsigned max_ilevel )
+{
+  double m_scale = 0;
+
+  unsigned scaling_level = item -> item_level();
+  if ( max_ilevel > 0 )
+    scaling_level = std::min( scaling_level, max_ilevel );
+
+  const random_prop_data_t& budget = item -> player -> dbc.random_property( scaling_level );
+
+  if ( item -> parsed.data.quality >= 4 )
+    m_scale = budget.p_epic[ 0 ];
+  else if ( item -> parsed.data.quality == 3 )
+    m_scale = budget.p_rare[ 0 ];
+  else
+    m_scale = budget.p_uncommon[ 0 ];
+
+  return m_scale;
+}
