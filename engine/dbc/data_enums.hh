@@ -1,6 +1,67 @@
 #ifndef DATA_ENUMS_HH
 #define DATA_ENUMS_HH
 
+enum proc_types
+{
+  PROC1_KILLED = 0,
+  PROC1_KILLING_BLOW,
+  PROC1_MELEE,
+  PROC1_MELEE_TAKEN,
+  PROC1_MELEE_ABILITY,
+  PROC1_MELEE_ABILITY_TAKEN,
+  PROC1_RANGED,
+  PROC1_RANGED_TAKEN,
+  PROC1_RANGED_ABILITY,
+  PROC1_RANGED_ABILITY_TAKEN,
+  PROC1_AOE_HEAL,
+  PROC1_AOE_HEAL_TAKEN,
+  PROC1_AOE_SPELL,
+  PROC1_AOE_SPELL_TAKEN,
+  PROC1_HEAL,
+  PROC1_HEAL_TAKEN,
+  PROC1_SPELL,
+  PROC1_SPELL_TAKEN,
+  PROC1_PERIODIC,
+  PROC1_PERIODIC_TAKEN,
+  PROC1_ANY_DAMAGE_TAKEN,
+  // Relevant blizzard flags end here
+  
+  // We need to separate heal ticks and damage ticks for our
+  // system, so define a separate cooldown for them. Registering 
+  // cooldowns will automatically infer the correct type from 
+  // given proc flags.
+  PROC1_PERIODIC_HEAL,
+  PROC1_PERIODIC_HEAL_TAKEN,
+  PROC1_TYPE_MAX,
+
+  // Helper types to loop around stuff
+  PROC1_TYPE_MIN = 0,
+  PROC1_TYPE_BLIZZARD_MAX = PROC1_PERIODIC_HEAL,
+  PROC1_INVALID = -1
+};
+
+enum proc_types2
+{
+  PROC2_HIT = 0,                // Any hit damage/heal result
+  PROC2_CRIT,                   // Critical damage/heal result
+  PROC2_GLANCE,                 // Glance damage result
+  PROC2_DODGE,
+  PROC2_PARRY,
+
+  PROC2_MISS,
+
+  PROC2_LANDED,                 // Any "positive" execute result
+  PROC2_CAST,                   // Cast finished
+  PROC2_TYPE_MAX,
+
+  // Pseudo types 
+  PROC2_PERIODIC_HEAL,          // Tick healing, when only PROC1_PERIODIC is defined
+  PROC2_PERIODIC_DAMAGE,        // Tick damage, when only PROC1_PERIODIC is defined
+
+  PROC2_TYPE_MIN = 0,
+  PROC2_INVALID = -1
+};
+
 enum item_raid_type
 {
   RAID_TYPE_NORMAL   = 0x00,
@@ -13,31 +74,53 @@ enum item_raid_type
 // Mangos data types for various DBC-related enumerations
 enum proc_flag
 {
-    PF_KILLED                   = 0x00000001,
-    PF_KILLING_BLOW             = 0x00000002,
-    PF_MELEE_HIT                = 0x00000004,
-    PF_MELEE_HIT_TAKEN          = 0x00000008,
-    PF_MELEE_ABILITY_HIT        = 0x00000010,
-    PF_MELEE_ABILITY_HIT_TAKEN  = 0x00000020,
-    PF_RANGED_HIT               = 0x00000040,
-    PF_RANGED_HIT_TAKEN         = 0x00000080,
-    PF_RANGED_ABILITY_HIT       = 0x00000100,
-    PF_RANGED_ABILITY_HIT_TAKEN = 0x00000200,
-    PF_AOE_HEAL_HIT             = 0x00000400,
-    PF_AOE_HEAL_HIT_TAKEN       = 0x00000800,
-    PF_AOE_SPELL_HIT            = 0x00001000,
-    PF_AOE_SPELL_HIT_TAKEN      = 0x00002000,
-    PF_HEAL_HIT                 = 0x00004000,
-    PF_HEAL_HIT_TAKEN           = 0x00008000,
-    PF_SPELL_HIT                = 0x00010000, // Any "negative" spell
-    PF_SPELL_HIT_TAKEN          = 0x00020000,
-    PF_PERIODIC_HIT             = 0x00040000, // Any periodic ability landed
-    PF_PERIODIC_HIT_TAKEN       = 0x00080000,
-    PF_ANY_DAMAGE_TAKEN         = 0x00100000,
-    PF_TRAP_TRIGGERED           = 0x00200000,
-    PF_OFFHAND_HIT              = 0x00800000,
-    PF_DEATH                    = 0x01000000,
-    PF_JUMP                     = 0x02000000,
+  PF_KILLED               = 1 << PROC1_KILLED,
+  PF_KILLING_BLOW         = 1 << PROC1_KILLING_BLOW,
+  PF_MELEE                = 1 << PROC1_MELEE,
+  PF_MELEE_TAKEN          = 1 << PROC1_MELEE_TAKEN,
+  PF_MELEE_ABILITY        = 1 << PROC1_MELEE_ABILITY,
+  PF_MELEE_ABILITY_TAKEN  = 1 << PROC1_MELEE_ABILITY_TAKEN,
+  PF_RANGED               = 1 << PROC1_RANGED,
+  PF_RANGED_TAKEN         = 1 << PROC1_RANGED_TAKEN,
+  PF_RANGED_ABILITY       = 1 << PROC1_RANGED_ABILITY,
+  PF_RANGED_ABILITY_TAKEN = 1 << PROC1_RANGED_ABILITY_TAKEN,
+  PF_AOE_HEAL             = 1 << PROC1_AOE_HEAL,
+  PF_AOE_HEAL_TAKEN       = 1 << PROC1_AOE_HEAL_TAKEN,
+  PF_AOE_SPELL            = 1 << PROC1_AOE_SPELL,
+  PF_AOE_SPELL_TAKEN      = 1 << PROC1_AOE_SPELL_TAKEN,
+  PF_HEAL                 = 1 << PROC1_HEAL,
+  PF_HEAL_TAKEN           = 1 << PROC1_HEAL_TAKEN,
+  PF_SPELL                = 1 << PROC1_SPELL, // Any "negative" spell
+  PF_SPELL_TAKEN          = 1 << PROC1_SPELL_TAKEN,
+  PF_PERIODIC             = 1 << PROC1_PERIODIC, // Any periodic ability landed
+  PF_PERIODIC_TAKEN       = 1 << PROC1_PERIODIC_TAKEN,
+  PF_ANY_DAMAGE_TAKEN     = 1 << PROC1_ANY_DAMAGE_TAKEN,
+
+  // Irrelevant ones for us
+  PF_TRAP_TRIGGERED           = 0x00200000,
+  PF_OFFHAND                  = 0x00800000,
+  PF_DEATH                    = 0x01000000,
+  PF_JUMP                     = 0x02000000,
+};
+
+// Qualifier on what result / advanced type allows a proc trigger
+enum proc_flag2
+{
+  PF2_HIT                     = 1 << PROC2_HIT,
+  PF2_CRIT                    = 1 << PROC2_CRIT, // Automatically implies an amount
+  PF2_GLANCE                  = 1 << PROC2_GLANCE, // Automatically implies damage
+  PF2_DODGE                   = 1 << PROC2_DODGE,
+  PF2_PARRY                   = 1 << PROC2_PARRY,
+
+  PF2_MISS                    = 1 << PROC2_MISS,
+
+  PF2_LANDED                  = 1 << PROC2_LANDED,
+  PF2_CAST                    = 1 << PROC2_CAST,
+
+  // Pseudo types
+  PF2_PERIODIC_HEAL           = 1 << PROC2_PERIODIC_HEAL,
+  PF2_PERIODIC_DAMAGE         = 1 << PROC2_PERIODIC_DAMAGE,
+  PF2_ALL_HIT                 = PF2_HIT | PF2_CRIT | PF2_GLANCE, // All damaging/healing "hit" results
 };
 
 enum item_flag
