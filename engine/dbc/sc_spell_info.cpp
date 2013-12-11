@@ -11,61 +11,34 @@ struct proc_map_t
   const char* proc;
 };
 
-/*
-    PF_KILLED                   = 0x00000001,
-    PF_KILLING_BLOW             = 0x00000002,
-    PF_MELEE_HIT                = 0x00000004,
-    PF_MELEE_HIT_TAKEN          = 0x00000008,
-    PF_MELEE_ABILITY_HIT        = 0x00000010,
-    PF_MELEE_ABILITY_HIT_TAKEN  = 0x00000020,
-    PF_RANGED_HIT               = 0x00000040,
-    PF_RANGED_HIT_TAKEN         = 0x00000080,
-    PF_RANGED_ABILITY_HIT       = 0x00000100,
-    PF_RANGED_ABILITY_HIT_TAKEN = 0x00000200,
-    PF_AOE_HEAL_HIT             = 0x00000400,
-    PF_AOE_HEAL_HIT_TAKEN       = 0x00000800,
-    PF_AOE_SPELL_HIT            = 0x00001000,
-    PF_AOE_SPELL_HIT_TAKEN      = 0x00002000,
-    PF_HEAL_HIT                 = 0x00004000,
-    PF_HEAL_HIT_TAKEN           = 0x00008000,
-    PF_SPELL_HIT                = 0x00010000, // Any "negative" spell
-    PF_SPELL_HIT_TAKEN          = 0x00020000,
-    PF_PERIODIC_HIT             = 0x00040000, // Any periodic ability landed
-    PF_PERIODIC_HIT_TAKEN       = 0x00080000,
-    PF_ANY_DAMAGE_TAKEN         = 0x00100000,
-    PF_TRAP_TRIGGERED           = 0x00200000,
-    PF_OFFHAND_HIT              = 0x00800000,
-    PF_DEATH                    = 0x01000000,
-    PF_JUMP                     = 0x02000000,
-*/
 static const struct proc_map_t _proc_flag_map[] =
 {
-  { PF_KILLED,              "Killed"              },
-  { PF_KILLING_BLOW,        "Killing Blow"        },
-  { PF_MELEE_HIT,           "White Melee Hit"     },
-  { PF_MELEE_HIT_TAKEN,     "Melee Melee Taken"   },
-  { PF_MELEE_ABILITY_HIT,   "Yellow Melee Hit"    },
-  { PF_MELEE_ABILITY_HIT_TAKEN, "Yellow Melee Hit Taken" },
-  { PF_RANGED_HIT,          "White Ranged Hit"    },
-  { PF_RANGED_HIT_TAKEN,    "White Ranged Hit Taken " },
-  { PF_RANGED_ABILITY_HIT,  "Yellow Ranged Hit"       },
-  { PF_RANGED_ABILITY_HIT_TAKEN, "Yellow Ranged Hit Taken"       },
-  { PF_AOE_HEAL_HIT,             "AOE Heal Hit" },
-  { PF_AOE_HEAL_HIT_TAKEN,       "AOE Heal Hit Taken" },
-  { PF_AOE_SPELL_HIT,            "AOE Hostile Spell Hit" },
-  { PF_AOE_SPELL_HIT_TAKEN,      "AOE Hostile Spell Hit Taken" },
-  { PF_HEAL_HIT,                 "Heal Hit"         },
-  { PF_HEAL_HIT_TAKEN,           "Heal Hit Taken"       },
-  { PF_SPELL_HIT,                "Hostile Spell Hit"       },
-  { PF_SPELL_HIT_TAKEN,          "Hostile Spell Hit Taken" },
-  { PF_PERIODIC_HIT,             "Periodic Hit"      },
-  { PF_PERIODIC_HIT_TAKEN,       "Periodic Hit Taken"},
-  { PF_ANY_DAMAGE_TAKEN,         "Any Damage Taken"        },
-  { PF_TRAP_TRIGGERED,           "Trap Triggered"      },
-  { PF_JUMP,                     "Proc on jump"     },
-  { PF_OFFHAND_HIT,              "Melee Off-Hand Hit" },
-  { PF_DEATH,                    "Death" },
-  { 0,                        0                   }
+  { PF_KILLED,               "Killed"                  },
+  { PF_KILLING_BLOW,         "Killing Blow"            },
+  { PF_MELEE,                "White Melee"             },
+  { PF_MELEE_TAKEN,          "White Melee Taken"       },
+  { PF_MELEE_ABILITY,        "Yellow Melee"            },
+  { PF_MELEE_ABILITY_TAKEN,  "Yellow Melee Taken"      },
+  { PF_RANGED,               "White Ranged"            },
+  { PF_RANGED_TAKEN,         "White Ranged Taken "     },
+  { PF_RANGED_ABILITY,       "Yellow Ranged"           },
+  { PF_RANGED_ABILITY_TAKEN, "Yellow Ranged Taken"     },
+  { PF_AOE_HEAL,             "AOE Heal"                },
+  { PF_AOE_HEAL_TAKEN,       "AOE Heal Taken"          },
+  { PF_AOE_SPELL,            "AOE Hostile Spell"       },
+  { PF_AOE_SPELL_TAKEN,      "AOE Hostile Spell Taken" },
+  { PF_HEAL,                 "Heal"                    },
+  { PF_HEAL_TAKEN,           "Heal Taken"              },
+  { PF_SPELL,                "Hostile Spell"           },
+  { PF_SPELL_TAKEN,          "Hostile Spell Taken"     },
+  { PF_PERIODIC,             "Periodic"                },
+  { PF_PERIODIC_TAKEN,       "Periodic Taken"          },
+  { PF_ANY_DAMAGE_TAKEN,     "Any Damage Taken"        },
+  { PF_TRAP_TRIGGERED,       "Trap Triggered"          },
+  { PF_JUMP,                 "Proc on jump"            },
+  { PF_OFFHAND,              "Melee Off-Hand"          },
+  { PF_DEATH,                "Death"                   },
+  { 0,                       0                         }
 };
 
 static const struct { const char* name; player_e pt; } _class_map[] =
@@ -80,7 +53,7 @@ static const struct { const char* name; player_e pt; } _class_map[] =
   { "Shaman", SHAMAN },
   { "Mage", MAGE },
   { "Warlock", WARLOCK },
-  { "Monk", MONK }, // FIXME: move to the correct place
+  { "Monk", MONK },
   { "Druid", DRUID },
   { 0, PLAYER_NONE },
 };
@@ -199,7 +172,7 @@ static const char * _effect_subtype_strings[] =
   "Modify Attribute%",          0,                          0,                      0,                          0,                       // 80
   "Modify Power Regeneration",  0,                          "Modify Damage Taken%", 0,                          0,                       // 85
   0,                            0,                          0,                      0,                          0,                       // 90
-  0,                            0,                          0,                      0,                          0,                       // 95
+  0,                            0,                          0,                      0,                          "Modify Attack Power",   // 95
   0,                            "Modify Armor%",            0,                      0,                          "Modify Attack Power",   // 100
   0,                            0,                          "Add Flat Modifier",    "Add Percent Modifier",     0,                       // 105
   "Mod Power Regen",                            0,                          0,                      0,                          0,       // 110
@@ -207,7 +180,7 @@ static const char * _effect_subtype_strings[] =
   0,                            0,                          0,                      0,                          "Modify Ranged Attack Power", // 120
   0,                            0,                          0,                      0,                          0,                       // 125
   0,                            0,                          0,                      0,                          0,                       // 130
-  0,                            0,                          "Modify Total Stat%",   "Modify Melee Haste%",      0,                       // 135
+  "Modify Healing Power",       0,                          "Modify Total Stat%",   "Modify Melee Haste%",      0,                       // 135
   "Modify Ranged Haste%",       0,                          "Modify Base Resistance",0,                         0,                       // 140
   0,                            0,                          0,                      0,                          0,                       // 145
   0,                            0,                          0,                      0,                          0,                       // 150
@@ -466,7 +439,10 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
     return s.str();
   }
 
-  s <<   "Name             : " << spell -> name_cstr() << " (id=" << spell -> id() << ") " << spell_flags( sim, spell ) << std::endl;
+  std::string name_str = spell -> name_cstr();
+  if ( spell -> rank_str() )
+    name_str += " (" + std::string( spell -> rank_str() ) + ")";
+  s <<   "Name             : " << name_str << " (id=" << spell -> id() << ") " << spell_flags( sim, spell ) << std::endl;
 
   if ( spell -> replace_spell_id() > 0 )
   {
