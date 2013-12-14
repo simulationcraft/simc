@@ -1136,7 +1136,7 @@ public:
    // setMovable( true ); # Would need to disallow moving the + tab, or to the right of it. That would require subclassing tabbar
     setCloseAllTabsTitleText( tr( "Close ALL Simulate Tabs?" ) );
     setCloseAllTabsBodyText( tr( "Do you really want to close ALL simulation profiles?" ) );
-    QIcon addTabIcon(":/icon/closealltabs.png");
+    QIcon addTabIcon(":/icon/addtab.png");
     int i = addTab( addTabWidget, addTabIcon, addTabIcon.pixmap(QSize(64, 64)).isNull() ? "+":"" );
     tabBar() -> setTabButton( i, QTabBar::LeftSide, nullptr );
     tabBar() -> setTabButton( i, QTabBar::RightSide, nullptr );
