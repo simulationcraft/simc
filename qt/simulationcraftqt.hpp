@@ -672,6 +672,7 @@ Q_OBJECT
   QPushButton* clearHistoryButton;
   QWidget* currentlyPreviewedWidget;
   QWidget* currentlyPreviewedWidgetsParent;
+  QMenu* contextMenu;
 public:
   SC_RecentlyClosedTab(QWidget* parent = nullptr, bool enableRecentlyClosedTabs = true,
       Qt::Corner corner = Qt::TopRightCorner ) :
@@ -743,6 +744,13 @@ public:
       listViewParentLayout -> addWidget( listView );
       listViewParentLayout -> addWidget( clearHistoryButton );
       listViewParent -> setLayout( listViewParentLayout );
+
+      contextMenu = new QMenu( listView );
+      QAction* removeFromHistory = contextMenu -> addAction( tr( "&Delete" ) );
+      connect( removeFromHistory, SIGNAL( triggered( bool ) ), this, SLOT( removeCurrentItem( bool ) ) );
+
+      listView -> setContextMenuPolicy( Qt::CustomContextMenu );
+      connect( listView, SIGNAL( customContextMenuRequested( const QPoint& ) ), this, SLOT( showContextMenu( const QPoint& ) ) );
 
       recentlyClosedPopupLayout -> addWidget( listViewParent );
       recentlyClosedPopup -> setLayout( recentlyClosedPopupLayout );
@@ -898,6 +906,15 @@ public slots:
     }
     recentlyClosedTabs -> clear();
     recentlyClosedPopup -> hide();
+  }
+  void removeCurrentItem( bool /* checked */ )
+  {
+    QItemSelectionModel* selection = listView -> selectionModel();
+    deleteFromRecentlyClosedList( selection -> currentIndex() );
+  }
+  void showContextMenu( const QPoint& p )
+  {
+    contextMenu -> exec( recentlyClosedPopup -> mapToGlobal( p ) );
   }
 };
 
@@ -1108,17 +1125,19 @@ class SC_SimulateTab : public SC_RecentlyClosedTab
 {
   Q_OBJECT
   QWidget* addTabWidget;
+  int lastSimulateTabIndexOffset;
 public:
   SC_SimulateTab( QWidget* parent = nullptr ) :
     SC_RecentlyClosedTab( parent ),
-    addTabWidget( new QWidget( this ) )
+    addTabWidget( new QWidget( this ) ),
+    lastSimulateTabIndexOffset( -2 )
   {
     setTabsClosable( true );
    // setMovable( true ); # Would need to disallow moving the + tab, or to the right of it. That would require subclassing tabbar
     setCloseAllTabsTitleText( tr( "Close ALL Simulate Tabs?" ) );
     setCloseAllTabsBodyText( tr( "Do you really want to close ALL simulation profiles?" ) );
-
-    int i = addTab( addTabWidget, QIcon( ":/icon/addtab.png" ), "" );
+    QIcon addTabIcon(":/icon/closealltabs.png");
+    int i = addTab( addTabWidget, addTabIcon, addTabIcon.pixmap(QSize(64, 64)).isNull() ? "+":"" );
     tabBar() -> setTabButton( i, QTabBar::LeftSide, nullptr );
     tabBar() -> setTabButton( i, QTabBar::RightSide, nullptr );
     addCloseAllExclude( addTabWidget );
@@ -1173,11 +1192,8 @@ public:
 
   int add_Text( const QString& text, const QString& tab_name )
   {
-    SC_TextEdit* s = new SC_TextEdit( this );
+    SC_TextEdit* s = newTextEdit();
     s -> setText( text );
-    QList< Qt::KeyboardModifier > ctrl;
-    ctrl.push_back( Qt::ControlModifier );
-    s -> addIgnoreKeyPressEvent( Qt::Key_W, ctrl );
     format_document( s );
     int indextoInsert = indexOf( addTabWidget );
     int i = insertTab( indextoInsert, s, tab_name );
@@ -1237,21 +1253,42 @@ public:
   {
     return indexOf( addTabWidget );
   }
-  void wrapToEnd()
+  bool wrapToEnd()
   {
-    int lastSimulateTabIndexOffset = -2;
     if ( currentIndex() == 0 )
     {
-        setCurrentIndex( count() + lastSimulateTabIndexOffset );
+      setCurrentIndex( count() + lastSimulateTabIndexOffset );
+      return true;
     }
+    return false;
   }
-  void wrapToBeginning()
+  bool wrapToBeginning()
   {
-    int lastSimulateTabIndexOffset = -2;
     if ( currentIndex() == count() + lastSimulateTabIndexOffset )
     {
-        setCurrentIndex( 0 );
+      setCurrentIndex( 0 );
+      return true;
     }
+    return false;
+  }
+  SC_TextEdit* newTextEdit()
+  {
+    SC_TextEdit* s = new SC_TextEdit( this );
+    QList< Qt::KeyboardModifier > ctrl;
+    ctrl.push_back( Qt::ControlModifier );
+    s -> addIgnoreKeyPressEvent( Qt::Key_W, ctrl ); // Close tab
+    s -> addIgnoreKeyPressEvent( Qt::Key_T, ctrl ); // New tab
+    return s;
+  }
+  void insertNewTabAt( int index = -1, const QString text=defaultSimulateText, const QString title=defaultSimulateTabTitle )
+  {
+    if ( index < 0 || index > count() )
+      index = currentIndex();
+    SC_TextEdit* s = newTextEdit();
+    s -> setText( text );
+    format_document( s );
+    insertTab( index , s, title );
+    setCurrentIndex( index);
   }
 protected:
   virtual void keyPressEvent( QKeyEvent* e )
@@ -1262,15 +1299,21 @@ protected:
     if ( k == Qt::Key_Backtab ||
          ( k == Qt::Key_Tab && m.testFlag( Qt::ControlModifier ) && m.testFlag( Qt::ShiftModifier ) ) )
     {
-      wrapToEnd();
+      if ( wrapToEnd() )
+        return;
     }
     else if ( k == Qt::Key_Tab )
     {
-      wrapToBeginning();
+      if ( wrapToBeginning() )
+        return;
     }
     else if ( k == Qt::Key_W && m.testFlag( Qt::ControlModifier ) )
     {
       // close the tab in keyReleaseEvent()
+      return;
+    }
+    else if ( k == Qt::Key_T && m.testFlag( Qt::ControlModifier ) )
+    {
       return;
     }
     QTabWidget::keyPressEvent( e );
@@ -1286,6 +1329,15 @@ protected:
       if ( m.testFlag( Qt::ControlModifier ) == true )
       {
         TabCloseRequest( currentIndex() );
+        return;
+      }
+    }
+      break;
+    case Qt::Key_T:
+    {
+      if ( m.testFlag( Qt::ControlModifier ) == true )
+      {
+        insertNewTabAt( currentIndex() + 1 );
         return;
       }
     }
@@ -1318,18 +1370,15 @@ public slots:
           setCurrentIndex( qMax<int>( 0, currentIndex() - 1 ) );
         }
         removeTab( index );
+        widget( currentIndex() ) -> setFocus();
       }
     }
   }
-  void addNewTab(int index )
+  void addNewTab( int index )
   {
     if ( index == indexOf( addTabWidget ) )
     {
-      SC_TextEdit* s = new SC_TextEdit( this );
-      s -> setText( defaultSimulateText );
-      format_document( s );
-      insertTab( index, s, defaultSimulateTabTitle );
-      setCurrentIndex( index);
+      insertNewTabAt( index );
     }
   }
 };
@@ -1384,6 +1433,9 @@ public:
   QTimer* timer;
   ImportThread* importThread;
   SimulateThread* simulateThread;
+
+  QSignalMapper mainTabSignalMapper;
+  QList< QShortcut* > shortcuts;
 #ifdef SC_PAPERDOLL
   PaperdollThread* paperdollThread;
 #endif
@@ -1428,6 +1480,7 @@ public:
   void createResultsTab();
   void createSiteTab();
   void createToolTips();
+  void createTabShortcuts();
 #ifdef SC_PAPERDOLL
   void createPaperdoll();
 #endif

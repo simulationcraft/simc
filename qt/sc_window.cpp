@@ -252,6 +252,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   createSiteTab();
   createCmdLine();
   createToolTips();
+  createTabShortcuts();
 #ifdef SC_PAPERDOLL
   createPaperdoll();
 #endif
@@ -719,6 +720,19 @@ void SC_MainWindow::createToolTips()
   forwardButton -> setToolTip( tr( "Forwards" ) );
 
   optionsTab -> createToolTips();
+}
+
+void SC_MainWindow::createTabShortcuts()
+{
+  Qt::Key keys[] = { Qt::Key_1, Qt::Key_2, Qt::Key_3, Qt::Key_4, Qt::Key_5, Qt::Key_6, Qt::Key_7, Qt::Key_8, Qt::Key_9, Qt::Key_unknown };
+  for( int i = 0; keys[i] != Qt::Key_unknown; i++ )
+  {
+    QShortcut* shortcut = new QShortcut( QKeySequence( Qt::ALT + keys[i] ), this );
+    mainTabSignalMapper.setMapping( shortcut, i );
+    connect( shortcut, SIGNAL( activated() ), &mainTabSignalMapper, SLOT( map() ) );
+    shortcuts.push_back( shortcut );
+  }
+  connect( &mainTabSignalMapper, SIGNAL( mapped( int ) ), mainTab, SLOT( setCurrentIndex( int ) ) );
 }
 
 #ifdef SC_PAPERDOLL
@@ -1493,6 +1507,8 @@ void SC_MainWindow::historyDoubleClicked( QListWidgetItem* item )
 void SC_MainWindow::bisDoubleClicked( QTreeWidgetItem* item, int /* col */ )
 {
   QString profile = item -> text( 1 );
+  if ( profile.isEmpty() )
+    return;
   QString s = "Unable to import profile " + profile;
 
   QFile file( profile );
