@@ -115,6 +115,170 @@ public:
 };
 
 // ============================================================================
+// SC_TextEditSearchBox
+// ============================================================================
+
+class SC_TextEditSearchBox : public QWidget
+{
+  Q_OBJECT
+  QLineEdit* searchBox;
+  QToolButton* searchBoxPrev;
+  QToolButton* searchBoxNext;
+  bool reverse;
+  bool emitFindOnTextChange;
+  bool grabFocusOnShow;
+public:
+  SC_TextEditSearchBox( QWidget* parent = nullptr, bool show_arrows = true, QBoxLayout::Direction direction = QBoxLayout::LeftToRight ) :
+    QWidget( parent ),
+    searchBox( new QLineEdit ),
+    searchBoxPrev( new QToolButton( this ) ),
+    searchBoxNext( new QToolButton( this ) ),
+    reverse( false ),
+    emitFindOnTextChange( false ),
+    grabFocusOnShow( true )
+  {
+    QShortcut* altLeft = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Left ), searchBox );
+    QShortcut* altRight = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Right ), searchBox );
+
+    connect( searchBox,     SIGNAL( textChanged( const QString& ) ), this, SIGNAL( textChanged( const QString& ) ) );
+    connect( searchBox,     SIGNAL( textChanged( const QString& ) ), this,   SLOT( searchBoxTextChanged( const QString& ) ) );
+    connect( altLeft,       SIGNAL( activated() ),                   this, SIGNAL( findPrev() ) );
+    connect( altRight,      SIGNAL( activated() ),                   this, SIGNAL( findNext() ) );
+    connect( searchBoxPrev, SIGNAL( pressed() ),                     this, SIGNAL( findPrev() ) );
+    connect( searchBoxNext, SIGNAL( pressed() ),                     this, SIGNAL( findNext() ) );
+
+    QIcon searchPrevIcon(":/icon/leftarrow.png");
+    QIcon searchNextIcon(":/icon/rightarrow.png");
+    if ( ! searchPrevIcon.pixmap( QSize( 64,64 ) ).isNull() )
+    {
+      searchBoxPrev -> setIcon( searchPrevIcon );
+    }
+    else
+    {
+      searchBoxPrev -> setText( tr( "<" ) );
+    }
+    if ( ! searchNextIcon.pixmap( QSize( 64,64 ) ).isNull() )
+    {
+      searchBoxNext -> setIcon( searchNextIcon );
+    }
+    else
+    {
+      searchBoxNext -> setText( tr( ">" ) );
+    }
+
+    QWidget* first = searchBoxPrev;
+    QWidget* second = searchBoxNext;
+    if ( direction == QBoxLayout::RightToLeft )
+    {
+      QWidget* tmp = first;
+      first = second;
+      second = tmp;
+    }
+    if ( direction != QBoxLayout::LeftToRight ||
+         direction != QBoxLayout::RightToLeft )
+      direction = QBoxLayout::LeftToRight;
+
+    QBoxLayout* searchBoxLayout = new QBoxLayout( direction );
+    searchBoxLayout -> addWidget( searchBox );
+    if ( show_arrows )
+    {
+      searchBoxLayout -> addWidget( first );
+      searchBoxLayout -> addWidget( second );
+    }
+    setLayout( searchBoxLayout );
+
+    // If this is not set, focus will be sent to parent when user tries to click
+    // Which will usually be a SC_TextEdit which will call hide() upon grabbing focus
+    searchBoxPrev -> setFocusPolicy( Qt::ClickFocus );
+    searchBoxNext -> setFocusPolicy( Qt::ClickFocus );
+  }
+  void setFocus()
+  {
+    searchBox -> setFocus();
+  }
+  QString text() const
+  {
+    return searchBox -> text();
+  }
+  void setText( const QString& text )
+  {
+    searchBox -> setText( text );
+  }
+  void clear()
+  {
+    searchBox -> clear();
+  }
+  void setEmitFindOnTextChange( bool emitOnChange )
+  {
+    emitFindOnTextChange = emitOnChange;
+  }
+protected:
+  virtual void keyPressEvent( QKeyEvent* e )
+  {
+    // Sending other keys to a QTextEdit (which is probably the parent)
+    // Such as return, causes the textedit to not only insert a newline
+    // while we are searching... but messes up the input of the textedit pretty badly
+
+    // Only propagate Ctrl+Tab & Backtab
+    bool propagate = false;
+    switch( e -> key() )
+    {
+    case Qt::Key_Tab:
+      if ( e -> modifiers().testFlag( Qt::ControlModifier ) )
+        propagate = true;
+      break;
+    case Qt::Key_Backtab:
+      propagate = true;
+      break;
+    case Qt::Key_Return:
+      // We can use searchBox's returnPressed() signal, but then Shift+Return won't work
+      if ( e -> modifiers().testFlag( Qt::ShiftModifier ) )
+      {
+        findPrev();
+      }
+      else
+      {
+        find();
+      }
+      break;
+    default:
+      break;
+    }
+    if ( propagate )
+      QWidget::keyPressEvent( e );
+  }
+  virtual void showEvent( QShowEvent* e )
+  {
+    Q_UNUSED( e );
+    if ( grabFocusOnShow )
+      setFocus();
+  }
+signals:
+  void textChanged( const QString& );
+  void findNext();
+  void findPrev();
+public slots:
+  void find()
+  {
+    if ( ! reverse )
+    {
+      emit( findNext() );
+    }
+    else
+    {
+      emit( findPrev() );
+    }
+  }
+private slots:
+  void searchBoxTextChanged( const QString& text )
+  {
+    Q_UNUSED( text );
+    if ( emitFindOnTextChange )
+      find();
+  }
+};
+
+// ============================================================================
 // SC_PlainTextEdit
 // ============================================================================
 
@@ -125,11 +289,17 @@ private:
   QTextCharFormat textformat_default;
   QTextCharFormat textformat_error;
   QList< QPair< Qt::Key, QList< Qt::KeyboardModifier > > > ignoreKeys;
+  SC_TextEditSearchBox* searchBox;
+  Qt::Corner searchBoxCorner;
+  bool enable_search;
 public:
   bool edited_by_user;
 
-  SC_TextEdit( QWidget* parent = 0, bool accept_drops = true ) :
+  SC_TextEdit( QWidget* parent = 0, bool accept_drops = true, bool enable_search = true ) :
     QTextEdit( parent ),
+    searchBox( nullptr ),
+    searchBoxCorner( Qt::BottomLeftCorner ),
+    enable_search( enable_search ),
     edited_by_user( false )
   {
     textformat_error.setFontPointSize( 20 );
@@ -146,6 +316,11 @@ public:
     addIgnoreKeyPressEvent( Qt::Key_Backtab, nothing );
 
     connect( this, SIGNAL( textChanged() ), this, SLOT( text_edited() ) );
+
+    if ( enable_search )
+    {
+      initSearchBox();
+    }
   }
 
   void setformat_error()
@@ -222,11 +397,138 @@ protected:
     // no key match
     QTextEdit::keyPressEvent( e );
   }
+  void initSearchBox()
+  {
+    if ( ! searchBox )
+    {
+      searchBox = new SC_TextEditSearchBox( this );
 
+      connect( this, SIGNAL( textChanged() ), this, SLOT( text_edited() ) );
+
+      QShortcut* find = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F), this );
+      connect( find, SIGNAL( activated() ), this, SLOT( find() ) );
+      QShortcut* escape = new QShortcut( QKeySequence( Qt::Key_Escape ), this );
+      connect( escape, SIGNAL( activated() ), this, SLOT( hideSearchBox() ) );
+      connect( searchBox, SIGNAL( textChanged( const QString&) ), this, SLOT( findText( const QString& ) ) );
+
+      connect( searchBox, SIGNAL( findPrev() ), this, SLOT( findPrev() ) );
+      connect( searchBox, SIGNAL( findNext() ), this, SLOT( findNext() ) );
+
+      updateSearchBoxGeometry();
+
+      searchBox -> hide();
+    }
+  }
+  virtual void focusInEvent( QFocusEvent* e )
+  {
+    if ( enable_search )
+    {
+      hideSearchBox();
+    }
+    QTextEdit::focusInEvent( e );
+  }
+  virtual void resizeEvent( QResizeEvent* e )
+  {
+    Q_UNUSED( e );
+    updateSearchBoxGeometry();
+  }
+  void updateSearchBoxGeometry()
+  {
+    if ( enable_search )
+    {
+      QLayout* searchBoxLayout = searchBox -> layout();
+      QSize searchBoxSizeHint = searchBoxLayout -> sizeHint();
+      QRect geo( QPoint( 0, 0 ), searchBoxSizeHint );
+
+      QWidget* viewportWidget = viewport();
+      QRect viewportGeo = viewportWidget -> geometry();
+
+      switch( searchBoxCorner )
+      {
+      case Qt::BottomLeftCorner:
+        geo.moveBottomLeft( viewportGeo.bottomLeft() );
+        break;
+      case Qt::TopRightCorner:
+        geo.moveTopRight( viewportGeo.topRight() );
+        break;
+      case Qt::BottomRightCorner:
+        geo.moveBottomRight( viewportGeo.bottomRight() );
+        break;
+      case Qt::TopLeftCorner:
+      default:
+        break;
+      }
+
+      searchBox -> setGeometry( geo );
+    }
+  }
+  void findSomeText( const QString& text, bool loop = true, QTextDocument::FindFlags options = 0, int position = -1 )
+  {
+    if ( ! text.isEmpty() )
+    {
+      QTextDocument* doc = document();
+      if ( position < 0 )
+        position = textCursor().selectionStart();
+      QTextCursor found = doc -> find( text, position, options );
+      if ( ! found.isNull() )
+      {
+        setTextCursor( found );
+      }
+      else if ( loop )
+      {
+        if ( options & QTextDocument::FindBackward )
+        {
+          position = doc -> characterCount();
+        }
+        else
+        {
+          position = 0;
+        }
+        found = doc -> find( text, position, options );
+        if ( ! found.isNull() )
+        {
+          setTextCursor( found );
+        }
+      }
+
+    }
+  }
 private slots:
-
   void text_edited()
-  { edited_by_user = true; }
+  {
+    edited_by_user = true;
+  }
+public slots:
+  void find()
+  {
+    if ( enable_search )
+    {
+      updateSearchBoxGeometry();
+      searchBox -> show();
+    }
+  }
+  void findText( const QString& text )
+  {
+    findSomeText( text );
+  }
+  void findNext()
+  {
+    if ( enable_search )
+      findSomeText( searchBox -> text(), true, 0, textCursor().selectionStart() + 1 );
+  }
+  void findPrev()
+  {
+    if ( enable_search )
+      findSomeText( searchBox -> text(), true, QTextDocument::FindBackward );
+  }
+  void hideSearchBox()
+  {
+    if ( searchBox -> isVisible() )
+    {
+      searchBox -> hide();
+      setFocus();
+    }
+  }
 };
 
 // ============================================================================
