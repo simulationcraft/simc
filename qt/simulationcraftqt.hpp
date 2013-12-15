@@ -140,6 +140,8 @@ public:
     QList< Qt::KeyboardModifier > ctrl;
     ctrl.push_back( Qt::ControlModifier );
     addIgnoreKeyPressEvent( Qt::Key_Tab, ctrl );
+    addIgnoreKeyPressEvent( Qt::Key_W, ctrl ); // Close tab
+    addIgnoreKeyPressEvent( Qt::Key_T, ctrl ); // New tab
     QList< Qt::KeyboardModifier > nothing;
     addIgnoreKeyPressEvent( Qt::Key_Backtab, nothing );
 
@@ -1199,7 +1201,7 @@ public:
 
   int add_Text( const QString& text, const QString& tab_name )
   {
-    SC_TextEdit* s = newTextEdit();
+    SC_TextEdit* s = new SC_TextEdit();
     s -> setText( text );
     format_document( s );
     int indextoInsert = indexOf( addTabWidget );
@@ -1278,20 +1280,11 @@ public:
     }
     return false;
   }
-  SC_TextEdit* newTextEdit()
-  {
-    SC_TextEdit* s = new SC_TextEdit( this );
-    QList< Qt::KeyboardModifier > ctrl;
-    ctrl.push_back( Qt::ControlModifier );
-    s -> addIgnoreKeyPressEvent( Qt::Key_W, ctrl ); // Close tab
-    s -> addIgnoreKeyPressEvent( Qt::Key_T, ctrl ); // New tab
-    return s;
-  }
   void insertNewTabAt( int index = -1, const QString text=defaultSimulateText, const QString title=defaultSimulateTabTitle )
   {
     if ( index < 0 || index > count() )
       index = currentIndex();
-    SC_TextEdit* s = newTextEdit();
+    SC_TextEdit* s = new SC_TextEdit();
     s -> setText( text );
     format_document( s );
     insertTab( index , s, title );
