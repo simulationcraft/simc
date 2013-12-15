@@ -140,6 +140,8 @@ public:
     QList< Qt::KeyboardModifier > ctrl;
     ctrl.push_back( Qt::ControlModifier );
     addIgnoreKeyPressEvent( Qt::Key_Tab, ctrl );
+    QList< Qt::KeyboardModifier > nothing;
+    addIgnoreKeyPressEvent( Qt::Key_Backtab, nothing );
 
     connect( this, SIGNAL( textChanged() ), this, SLOT( text_edited() ) );
   }
