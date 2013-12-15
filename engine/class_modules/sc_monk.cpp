@@ -1207,6 +1207,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       background  = true;
       dual        = true;
       direct_tick = true;
+	  may_crit = may_miss = may_block = may_dodge = may_parry = true;
       aoe = -1;
       base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
       mh = &( player -> main_hand_weapon ) ;
@@ -1226,6 +1227,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       background  = true;
       dual        = true;
       direct_tick = true;
+	  may_crit = may_miss = may_block = may_dodge = may_parry = true;
       aoe = -1;
       base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
       mh = &( player -> main_hand_weapon ) ;
@@ -1246,21 +1248,30 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT;
 
+	// Application of the spell cannot do these, but the ticks themselves can crit, miss, dodge, etc.
     may_crit = may_miss = may_block = may_dodge = may_glance = may_parry = false;
     tick_zero = true;
     hasted_ticks = true;
 
-    school = SCHOOL_PHYSICAL;
-    base_multiplier = 1.59 * 1.75 / 1.59; // hardcoded into tooltip
-
     if ( p -> talent.rushing_jade_wind -> ok() )
+	{
+      base_multiplier = 1.59 * (1.4/1.59); // hardcoded into tooltip
+	  school = SCHOOL_NATURE; // Application is Nature but the actual damage ticks is Physical
       tick_action = new rushing_jade_wind_tick_t( p, p -> find_spell( data().effectN( 1 ).trigger_spell_id() ) );
+	} 
     else
     {
+      base_multiplier = 1.59 * (1.75/1.59); // hardcoded into tooltip
+	  school = SCHOOL_PHYSICAL;
       channeled = true;
       tick_action = new spinning_crane_kick_tick_t( p, p -> find_spell( data().effectN( 1 ).trigger_spell_id() ) );
     }
     dynamic_tick_action = true;
+  }
+
+  virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ )
+  {
+    return num_ticks;
   }
 
   virtual void update_ready( timespan_t cd_duration )
@@ -1353,7 +1364,8 @@ struct fists_of_fury_t : public monk_melee_attack_t
     }
     return monk_melee_attack_t::cost();
   }
- virtual void consume_resource()
+
+  virtual void consume_resource()
   {
     monk_melee_attack_t::consume_resource();
 
