@@ -862,23 +862,26 @@ public slots:
   void deleteFromRecentlyClosedList( const QModelIndex& index )
   {
     removePreviousTabFromPreview();
-    QWidget* widget = index.data( Qt::UserRole ).value< QWidget* >();
-    QWidget* parent = index.data( Qt::UserRole + 1).value< QWidget* >();
-    // Retake ownership
-    if ( ! widget && widget -> parent() == recentlyClosedPopup )
+    if ( index.isValid() )
     {
-      if ( parent != nullptr )
-        widget -> setParent ( parent );
-      else
+      QWidget* widget = index.data( Qt::UserRole ).value< QWidget* >();
+      QWidget* parent = index.data( Qt::UserRole + 1).value< QWidget* >();
+      // Retake ownership
+      if ( ! widget && widget -> parent() == recentlyClosedPopup )
       {
-        delete widget;
+        if ( parent != nullptr )
+          widget -> setParent ( parent );
+        else
+        {
+          delete widget;
+        }
       }
+      if ( parent != nullptr )
+      {
+        delete parent;
+      }
+      recentlyClosedTabs -> removeRow( index.row(), index.parent() );
     }
-    if ( parent != nullptr )
-    {
-      delete parent;
-    }
-    recentlyClosedTabs -> removeRow( index.row(), index.parent() );
     addNextWidgetToPreviewOrHide();
   }
   void recentlyClosedListClicked( const QModelIndex& index )
@@ -916,7 +919,9 @@ public slots:
   }
   void showContextMenu( const QPoint& p )
   {
-    contextMenu -> exec( recentlyClosedPopup -> mapToGlobal( p ) );
+    QModelIndex index = recentlyClosedTabs -> index(0, 0);
+    if ( index.isValid() )
+      contextMenu -> exec( recentlyClosedPopup -> mapToGlobal( p ) );
   }
 };
 
