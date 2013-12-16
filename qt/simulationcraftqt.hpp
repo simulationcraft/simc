@@ -128,7 +128,8 @@ class SC_TextEditSearchBox : public QWidget
   bool emitFindOnTextChange;
   bool grabFocusOnShow;
 public:
-  SC_TextEditSearchBox( QWidget* parent = nullptr, bool show_arrows = true, QBoxLayout::Direction direction = QBoxLayout::LeftToRight ) :
+  SC_TextEditSearchBox( QWidget* parent = nullptr, bool show_arrows = true,
+      QBoxLayout::Direction direction = QBoxLayout::LeftToRight ) :
     QWidget( parent ),
     searchBox( new QLineEdit ),
     searchBoxPrev( new QToolButton( this ) ),
@@ -184,6 +185,11 @@ public:
     {
       searchBoxLayout -> addWidget( first );
       searchBoxLayout -> addWidget( second );
+    }
+    else
+    {
+      searchBoxPrev -> hide();
+      searchBoxNext -> hide();
     }
     setLayout( searchBoxLayout );
 
@@ -402,8 +408,6 @@ protected:
     if ( ! searchBox )
     {
       searchBox = new SC_TextEditSearchBox( this );
-
-      connect( this, SIGNAL( textChanged() ), this, SLOT( text_edited() ) );
 
       QShortcut* find = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F), this );
       connect( find, SIGNAL( activated() ), this, SLOT( find() ) );
