@@ -977,31 +977,40 @@ Q_OBJECT
   SC_RelativePopup* recentlyClosedPopup;
   QBoxLayout* recentlyClosedPopupLayout;
   QWidget* previewPaneCurrentWidget;
-  QStandardItemModel* recentlyClosedTabs;
+  QStandardItemModel* recentlyClosedTabsModel;
   QListView* listView;
   QPushButton* clearHistoryButton;
   QWidget* currentlyPreviewedWidget;
   QWidget* currentlyPreviewedWidgetsParent;
   QMenu* contextMenu;
 public:
-  SC_RecentlyClosedTab(QWidget* parent = nullptr, bool enableRecentlyClosedTabs = true,
-      Qt::Corner corner = Qt::TopRightCorner ) :
+  SC_RecentlyClosedTab(QWidget* parent = nullptr,
+      bool enableRecentlyClosedTabs = true,
+      Qt::Corner corner = Qt::TopRightCorner,
+      QStandardItemModel* modelToUse = nullptr ) :
   SC_TabWidgetCloseAll( parent, corner ),
   enabled( enableRecentlyClosedTabs ),
-  previewPaneCurrentWidget( nullptr )
+  hoverArea( nullptr ),
+  recentlyClosedPopup( nullptr ),
+  recentlyClosedPopupLayout( nullptr ),
+  previewPaneCurrentWidget( nullptr ),
+  recentlyClosedTabsModel( modelToUse ),
+  listView( nullptr ),
+  clearHistoryButton( nullptr ),
+  currentlyPreviewedWidget( nullptr ),
+  currentlyPreviewedWidgetsParent( nullptr ),
+  contextMenu( nullptr )
   {
-    hoverArea = nullptr;
-    recentlyClosedPopup = nullptr;
-    currentlyPreviewedWidget = nullptr;
-    recentlyClosedPopupLayout = nullptr;
     if ( enabled )
     {
       hoverArea = new SC_HoverArea( this, 600 );
       QWidget* cornerWidgetOld = cornerWidget( corner );
       assert( cornerWidgetOld != nullptr );
+
       QBoxLayout* hoverAreaLayout = new QBoxLayout( QBoxLayout::LeftToRight );
       hoverAreaLayout -> setContentsMargins( 0, 0, 0, 0 );
       hoverAreaLayout -> addWidget( cornerWidgetOld );
+
       hoverArea -> setLayout( hoverAreaLayout );
       cornerWidgetOld -> setParent( hoverArea );
 
@@ -1032,22 +1041,26 @@ public:
         grow = QBoxLayout::LeftToRight;
         break;
       }
+      // Using an outside model?
+      if ( recentlyClosedTabsModel == nullptr )
+      {
+        recentlyClosedTabsModel = new QStandardItemModel;
+      }
       recentlyClosedPopup = new SC_RelativePopup( cornerWidgetOld, parentCorner, widgetCorner );
-
       recentlyClosedPopupLayout = new QBoxLayout( grow );
+
       QWidget* listViewParent = new QWidget( recentlyClosedPopup );
+      listViewParent -> setMinimumHeight( 350 );
+      listViewParent -> setMinimumWidth( 100 );
       QLayout* listViewParentLayout = new QBoxLayout( QBoxLayout::TopToBottom );
+
       listView = new QListView( listViewParent );
       listView -> setEditTriggers( QAbstractItemView::NoEditTriggers );
       listView -> setMaximumWidth( 150 );
-      listViewParent -> setMinimumHeight( 350 );
-      listViewParent -> setMinimumWidth( 100 );
-      recentlyClosedTabs = new QStandardItemModel;
       listView -> setMouseTracking( true );
-      connect( listView, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( recentlyClosedListClicked( const QModelIndex& ) ) );
-      connect( listView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( restoreRecentlyClosedTab( const QModelIndex& ) ) );
       listView -> setSelectionMode( QListView::SingleSelection );
-      listView -> setModel( recentlyClosedTabs );
+      listView -> setModel( recentlyClosedTabsModel );
+      listView -> setContextMenuPolicy( Qt::CustomContextMenu );
 
       clearHistoryButton = new QPushButton( tr( "&Clear History" ), listViewParent );
 
@@ -1057,19 +1070,17 @@ public:
 
       contextMenu = new QMenu( listView );
       QAction* removeFromHistory = contextMenu -> addAction( tr( "&Delete" ) );
-      connect( removeFromHistory, SIGNAL( triggered( bool ) ), this, SLOT( removeCurrentItem( bool ) ) );
-
-      listView -> setContextMenuPolicy( Qt::CustomContextMenu );
-      connect( listView, SIGNAL( customContextMenuRequested( const QPoint& ) ), this, SLOT( showContextMenu( const QPoint& ) ) );
 
       recentlyClosedPopupLayout -> addWidget( listViewParent );
       recentlyClosedPopup -> setLayout( recentlyClosedPopupLayout );
-
-      connect( clearHistoryButton, SIGNAL( clicked() ), this, SLOT( clearHistory() ) );
-      connect( hoverArea, SIGNAL( MouseHoverTimeout() ), recentlyClosedPopup, SLOT( ShowRequest() ) );
+      connect( hoverArea,          SIGNAL( MouseHoverTimeout() ),                         recentlyClosedPopup, SLOT( ShowRequest() ) );
+      connect( clearHistoryButton, SIGNAL( clicked() ),                                   this,                SLOT( clearHistory() ) );
+      connect( listView,           SIGNAL( clicked( const QModelIndex& ) ),               this,                SLOT( recentlyClosedListClicked( const QModelIndex& ) ) );
+      connect( listView,           SIGNAL( customContextMenuRequested( const QPoint& ) ), this,                SLOT( showContextMenu( const QPoint& ) ) );
+      connect( listView,           SIGNAL( doubleClicked( const QModelIndex& ) ),         this,                SLOT( restoreRecentlyClosedTab( const QModelIndex& ) ) );
+      connect( removeFromHistory,  SIGNAL( triggered( bool ) ),                           this,                SLOT( removeCurrentItem( bool ) ) );
       setCornerWidget( hoverArea, corner );
       cornerWidgetOld -> show();
-
     }
     connect( this, SIGNAL( TabAboutToBeRemoved( QWidget*, const QString&, const QString&, const QIcon& ) ), this, SLOT( addTabToRecentlyClosedList( QWidget*, const QString&, const QString&, const QIcon&) ) );
   }
@@ -1134,7 +1145,7 @@ public slots:
       closedTab -> setData( QVariant::fromValue< QWidget* >( newparent ), Qt::UserRole + 1);
       closedTab -> setData( QVariant::fromValue< QString >( tooltip ), Qt::ToolTipRole );
       closedTab -> setData( QVariant::fromValue< QIcon >( icon ), Qt::DecorationRole );
-      recentlyClosedTabs -> appendRow( closedTab );
+      recentlyClosedTabsModel -> appendRow( closedTab );
     }
     else
     {
@@ -1157,14 +1168,14 @@ public slots:
     {
       delete parent;
       parent = nullptr;
-      recentlyClosedTabs -> setData( index, QVariant::fromValue< QWidget* >( parent ), Qt::UserRole + 1 );
+      recentlyClosedTabsModel -> setData( index, QVariant::fromValue< QWidget* >( parent ), Qt::UserRole + 1 );
     }
     int indexToInsert = insertAt();
     indexToInsert = insertTab( indexToInsert, tab, title );
     setTabToolTip( indexToInsert, index.data( Qt::ToolTipRole ).toString() );
     setTabIcon( indexToInsert, index.data( Qt::DecorationRole ).value< QIcon >() );
     setCurrentIndex( indexToInsert );
-    recentlyClosedTabs -> removeRow( index.row(), index.parent() );
+    recentlyClosedTabsModel -> removeRow( index.row(), index.parent() );
     addNextWidgetToPreviewOrHide();
   }
   void deleteFromRecentlyClosedList( const QModelIndex& index )
@@ -1188,7 +1199,7 @@ public slots:
       {
         delete parent;
       }
-      recentlyClosedTabs -> removeRow( index.row(), index.parent() );
+      recentlyClosedTabsModel -> removeRow( index.row(), index.parent() );
     }
     addNextWidgetToPreviewOrHide();
   }
@@ -1201,10 +1212,10 @@ public slots:
   {
     removePreviousTabFromPreview();
 
-    int rows = recentlyClosedTabs -> rowCount();
+    int rows = recentlyClosedTabsModel -> rowCount();
     for ( int i = 0; i < rows; ++i )
     {
-      QStandardItem* item = recentlyClosedTabs -> item( i, 0 );
+      QStandardItem* item = recentlyClosedTabsModel -> item( i, 0 );
       QWidget* widget = item -> data( Qt::UserRole ).value< QWidget* >();
       QWidget* parent = item -> data( Qt::UserRole + 1).value< QWidget* >();
       if ( ! widget )
@@ -1217,7 +1228,7 @@ public slots:
       delete widget;
       delete parent;
     }
-    recentlyClosedTabs -> clear();
+    recentlyClosedTabsModel -> clear();
     recentlyClosedPopup -> hide();
   }
   void removeCurrentItem( bool /* checked */ )
@@ -1227,7 +1238,7 @@ public slots:
   }
   void showContextMenu( const QPoint& p )
   {
-    QModelIndex index = recentlyClosedTabs -> index(0, 0);
+    QModelIndex index = recentlyClosedTabsModel -> index(0, 0);
     if ( index.isValid() )
       contextMenu -> exec( recentlyClosedPopup -> mapToGlobal( p ) );
   }
