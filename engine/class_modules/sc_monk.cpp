@@ -3931,15 +3931,14 @@ void monk_t::apl_combat_mistweaver()
   if ( sim -> allow_potions )
   {
     if ( level >= 85 )
-      action_list_str += "/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=60";
+      def -> add_action( "/jade_serpent_potion,if=buff.bloodlust.react|target.time_to_die<=60" );
   }
   // USE ITEM (engineering etc)
   for ( size_t i = 0, end = items.size(); i < end; ++i )
   {
     if ( items[ i ].parsed.use.active() )
     {
-      action_list_str += "/use_item,name=";
-      action_list_str += items[ i ].name();
+      def -> add_action( std::string("/use_item,name=") + items[ i ].name() );
     }
   }
 
