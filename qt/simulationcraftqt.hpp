@@ -127,6 +127,7 @@ class SC_TextEditSearchBox : public QWidget
   bool reverse;
   bool emitFindOnTextChange;
   bool grabFocusOnShow;
+  bool highlightTextOnShow;
 public:
   SC_TextEditSearchBox( QWidget* parent = nullptr, bool show_arrows = true,
       QBoxLayout::Direction direction = QBoxLayout::LeftToRight ) :
@@ -136,7 +137,8 @@ public:
     searchBoxNext( new QToolButton( this ) ),
     reverse( false ),
     emitFindOnTextChange( false ),
-    grabFocusOnShow( true )
+    grabFocusOnShow( true ),
+    highlightTextOnShow( true )
   {
     QShortcut* altLeft =  new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Left  ), searchBox );
     QShortcut* altUp =    new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Up    ), searchBox );
@@ -261,7 +263,13 @@ protected:
   {
     Q_UNUSED( e );
     if ( grabFocusOnShow )
+    {
       setFocus();
+    }
+    if ( highlightTextOnShow )
+    {
+      searchBox -> selectAll();
+    }
   }
 signals:
   void textChanged( const QString& );
