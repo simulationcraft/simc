@@ -73,6 +73,10 @@ public:
 #define final
 #endif
 
+#if ( ! defined(_MSC_VER) || _MSC_VER < 1600 ) && __cplusplus < 201103L && ! defined(__GXX_EXPERIMENTAL_CXX0X__)
+#define static_assert( condition, message )
+#endif
+
 #if defined(SC_GCC) && SC_GCC < 40500
 #undef __STRICT_ANSI__ // problem with gcc4.4 + -std=c++0x and including <cstdio>. Not sure if it affects 4.4.1 as well. http://stackoverflow.com/questions/3445312/swprintf-and-vswprintf-not-declared
 #endif
@@ -131,10 +135,6 @@ namespace std {using namespace tr1; }
 #  endif
 #endif
 
-#if ( ! defined(_MSC_VER) || _MSC_VER < 1600 ) && __cplusplus < 201103L && ! defined(__GXX_EXPERIMENTAL_CXX0X__)
-#define static_assert( condition, message )
-#endif
-
 #if defined(__GNUC__)
 #  define likely(x)         __builtin_expect((x),1)
 #  define unlikely(x)       __builtin_expect((x),0)
@@ -186,10 +186,7 @@ struct sc_timeline_t : public timeline_t
 
 // Random Number Generators
 #include "util/rng.hpp"
-
-// Hookup rng containers for easy use in SimulationCraft
-
-typedef rng::sc_distribution_t rng_t;
+typedef rng::sc_distribution_t rng_t; // Hookup rng containers for easy use in SimulationCraft
 
 // Forward Declarations =====================================================
 
@@ -706,20 +703,6 @@ enum stat_e
   STAT_ALL,
   STAT_MAX
 };
-#define check(x) static_assert( static_cast<int>( STAT_##x ) == static_cast<int>( ATTR_##x ), \
-                                "stat_e and attribute_e must be kept in sync" )
-check( STRENGTH );
-check( AGILITY );
-check( STAMINA );
-check( INTELLECT );
-check( SPIRIT );
-#undef check
-
-inline stat_e stat_from_attr( attribute_e a )
-{
-  // Assumes that ATTR_X == STAT_X
-  return static_cast<stat_e>( a );
-}
 
 enum cache_e
 {
@@ -739,14 +722,21 @@ enum cache_e
   CACHE_MAX
 };
 
-#define check(x) static_assert( static_cast<int>( CACHE_##x ) == static_cast<int>( ATTR_##x ), \
-                                "cache_e and attribute_e must be kept in sync" )
+#define check(x) static_assert( static_cast<int>( STAT_##x ) == static_cast<int>( ATTR_##x ) && \
+                                static_cast<int>( CACHE_##x ) == static_cast<int>( ATTR_##x ), \
+                                "stat_e, cache_e and attribute_e must be kept in sync" )
 check( STRENGTH );
 check( AGILITY );
 check( STAMINA );
 check( INTELLECT );
 check( SPIRIT );
 #undef check
+
+inline stat_e stat_from_attr( attribute_e a )
+{
+  // Assumes that ATTR_X == STAT_X
+  return static_cast<stat_e>( a );
+}
 
 inline cache_e cache_from_stat( stat_e st )
 {

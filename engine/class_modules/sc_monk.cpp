@@ -1251,7 +1251,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 	// Application of the spell cannot do these, but the ticks themselves can crit, miss, dodge, etc.
     may_crit = may_miss = may_block = may_dodge = may_glance = may_parry = false;
     tick_zero = true;
-    hasted_ticks = true;
+    hasted_ticks = false;
 
     if ( p -> talent.rushing_jade_wind -> ok() )
 	{
@@ -1267,11 +1267,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       tick_action = new spinning_crane_kick_tick_t( p, p -> find_spell( data().effectN( 1 ).trigger_spell_id() ) );
     }
     dynamic_tick_action = true;
-  }
-
-  virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ )
-  {
-    return num_ticks;
   }
 
   virtual void update_ready( timespan_t cd_duration )
