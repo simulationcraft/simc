@@ -138,13 +138,17 @@ public:
     emitFindOnTextChange( false ),
     grabFocusOnShow( true )
   {
-    QShortcut* altLeft = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Left ), searchBox );
+    QShortcut* altLeft =  new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Left  ), searchBox );
+    QShortcut* altUp =    new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Up    ), searchBox );
     QShortcut* altRight = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Right ), searchBox );
+    QShortcut* altDown =  new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Down  ), searchBox );
 
     connect( searchBox,     SIGNAL( textChanged( const QString& ) ), this, SIGNAL( textChanged( const QString& ) ) );
     connect( searchBox,     SIGNAL( textChanged( const QString& ) ), this,   SLOT( searchBoxTextChanged( const QString& ) ) );
     connect( altLeft,       SIGNAL( activated() ),                   this, SIGNAL( findPrev() ) );
+    connect( altUp,         SIGNAL( activated() ),                   this, SIGNAL( findPrev() ) );
     connect( altRight,      SIGNAL( activated() ),                   this, SIGNAL( findNext() ) );
+    connect( altDown,       SIGNAL( activated() ),                   this, SIGNAL( findNext() ) );
     connect( searchBoxPrev, SIGNAL( pressed() ),                     this, SIGNAL( findPrev() ) );
     connect( searchBoxNext, SIGNAL( pressed() ),                     this, SIGNAL( findNext() ) );
 
