@@ -597,11 +597,11 @@ public slots:
   virtual void
   TimerTimeout()
   {
-    emit(MouseHoverTimeout());
+    emit(mouseHoverTimeout());
   }
 
 signals:
-  void MouseHoverTimeout();
+  void mouseHoverTimeout();
 };
 
 // ============================================================================
@@ -632,8 +632,8 @@ public:
 
     timeToWait__ = timeTillHide_;
 
-    connect(&timerTillHide_, SIGNAL( timeout() ), this, SLOT( HideRequest() ));
-    connect(&timerTillFastHide_, SIGNAL( timeout() ), this, SLOT( FastHideRequest() ));
+    connect(&timerTillHide_, SIGNAL( timeout() ), this, SLOT( hideRequest() ));
+    connect(&timerTillFastHide_, SIGNAL( timeout() ), this, SLOT( fastHideRequest() ));
   }
   // Q_PROPERTIES
   Qt::Corner parentCornerToAnchor() const
@@ -786,13 +786,7 @@ private:
     setGeometry( widgetRect );
   }
 public slots:
-  void ShowRequest()
-  {
-    calculateGeometry();
-    if ( ! isVisible() )
-      show();
-  }
-  void HideRequest()
+  void hideRequest()
   {
     // Set time to hide to default length
     timeToWait__ = timeTillHide_;
@@ -828,7 +822,7 @@ public slots:
       }
     }
   }
-  void FastHideRequest()
+  void fastHideRequest()
   {
     // set time to hide to the fast version
     timeToWait__ = timeFastHide_;
@@ -845,6 +839,7 @@ protected:
       timerTillFastHide_.stop();
       timerTillHide_.start( timeTillHide_ );
     }
+    calculateGeometry();
   }
   virtual void enterEvent( QEvent* /* event */)
   {
@@ -888,21 +883,26 @@ Q_OBJECT
 
     QIcon closeAllTabsIcon(":/icon/closealltabs.png");
     if (closeAllTabsIcon.pixmap(QSize(64, 64)).isNull()) // icon failed to load
+    {
       closeAllTabs->setText(tr("Close All Tabs"));
+    }
     else
+    {
       closeAllTabs->setIcon(closeAllTabsIcon);
+    }
     closeAllTabs->setAutoRaise(true);
 
-    connect(closeAllTabs, SIGNAL( clicked( bool ) ), this,
-        SLOT( CloseAllTabsRequest( bool ) ));
+    connect( closeAllTabs, SIGNAL( clicked( bool ) ), this, SLOT( closeAllTabsRequest( bool ) ));
 
     return closeAllTabs;
   }
   QString closeAllTabsTitleText;
   QString closeAllTabsBodyText;
 public:
-  SC_TabWidgetCloseAll(QWidget* parent = nullptr, Qt::Corner corner = Qt::TopRightCorner,
-      QString warningTitle = "Close all tabs?", QString warningText = "Close all tabs?" ) :
+  SC_TabWidgetCloseAll(QWidget* parent = nullptr,
+      Qt::Corner corner = Qt::TopRightCorner,
+      QString warningTitle = "Close all tabs?",
+      QString warningText = "Close all tabs?" ) :
   QTabWidget( parent ),
   closeAllTabsTitleText( warningTitle ),
   closeAllTabsBodyText( warningText )
@@ -964,21 +964,368 @@ public:
   }
   void removeTab( int index )
   {
-    emit( TabAboutToBeRemoved( widget( index ), tabText( index ), tabToolTip( index ), tabIcon( index ) ) );
+    emit( tabAboutToBeRemoved( widget( index ), tabText( index ), tabToolTip( index ), tabIcon( index ) ) );
   }
 public slots:
-  void CloseAllTabsRequest( bool /* clicked */)
+  void closeAllTabsRequest( bool /* clicked */)
   {
     int confirm = QMessageBox::warning( this, closeAllTabsTitleText, closeAllTabsBodyText, QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
     if ( confirm == QMessageBox::Yes )
-    closeAllTabs();
+      closeAllTabs();
   }
 signals:
-  void TabAboutToBeRemoved( QWidget*, const QString& tabTitle, const QString& tabToolTip, const QIcon& );
+  void tabAboutToBeRemoved( QWidget*, const QString& tabTitle, const QString& tabToolTip, const QIcon& );
+};
+
+// ============================================================================
+// SC_RecentlyClosedTabItemModel
+// ============================================================================
+
+class SC_RecentlyClosedTabItemModel : public QStandardItemModel
+{
+Q_OBJECT
+  bool owned;
+public:
+  SC_RecentlyClosedTabItemModel( QObject* parent = nullptr ) :
+    QStandardItemModel( parent ),
+    owned( false )
+  {
+    connect( this, SIGNAL( rowsAboutToBeRemoved( const QModelIndex&, int, int ) ), this, SLOT( rowsAboutToBeRemovedSlot( const QModelIndex&, int, int ) ) );
+    connect( this, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( rowsInsertedSlot( const QModelIndex&, int, int ) ) );
+    connect( this, SIGNAL( modelAboutToBeReset() ), this, SLOT( modelAboutToBeResetSlot() ) );
+  }
+  bool tryToOwn()
+  {
+    if ( ! owned )
+    {
+      owned = true;
+      return true;
+    }
+    return false;
+  }
+signals:
+  void removePreview( QWidget* );
+  void newTabAdded( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon );
+  void restoreTab( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon );
+public slots:
+  void restoreTab( const QModelIndex& index )
+  {
+    if ( index.isValid() )
+    {
+      QWidget* tab = index.data( Qt::UserRole ).value< QWidget* >();
+      QString title = index.data( Qt::DisplayRole ).toString();
+      QString tooltip = index.data( Qt::ToolTipRole ).toString();
+      QIcon icon = index.data( Qt::DecorationRole ).value< QIcon >();
+
+      emit( removePreview( tab ) );
+      emit( restoreTab( tab, title, tooltip, icon ) );
+      // removeRow will delete the parent
+      removeRow( index.row(), index.parent() );
+    }
+  }
+  void addTab( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon)
+  {
+    QStandardItem* closedTab = new QStandardItem;
+    QWidget* newparent = new QWidget;
+    // Removing a tab from a QTabWidget does not free the tab until the parent is deleted
+    widget -> setParent( newparent );
+    closedTab -> setData( QVariant::fromValue< QString >( title ), Qt::DisplayRole );
+    closedTab -> setData( QVariant::fromValue< QWidget* >( widget ), Qt::UserRole );
+    closedTab -> setData( QVariant::fromValue< QWidget* >( newparent ), Qt::UserRole + 1);
+    closedTab -> setData( QVariant::fromValue< QString >( tooltip ), Qt::ToolTipRole );
+    closedTab -> setData( QVariant::fromValue< QIcon >( icon ), Qt::DecorationRole );
+
+    appendRow( closedTab );
+  }
+private slots:
+  void rowsAboutToBeRemovedSlot( const QModelIndex& parent, int start, int end )
+  {
+    Q_UNUSED( parent );
+    for ( int row = start; row < end; row++ )
+    {
+      QModelIndex sibling = index( row, 0 );
+      QWidget* widget = sibling.data( Qt::UserRole ).value< QWidget* >();
+      QWidget* parent = sibling.data( Qt::UserRole + 1 ).value< QWidget* >();
+      emit( removePreview( widget ) );
+      Q_ASSERT( parent != nullptr );
+      delete parent;
+
+      setData( sibling, QVariant::fromValue< QWidget* >( nullptr ), Qt::UserRole );
+      setData( sibling, QVariant::fromValue< QWidget* >( nullptr ), Qt::UserRole + 1 );
+    }
+  }
+  void rowsInsertedSlot( const QModelIndex& parent, int start, int end )
+  {
+    Q_UNUSED( parent );
+    for ( int row = start; row < end; row++ )
+    {
+      QModelIndex sibling = index( row, 0 );
+      QWidget* tab = sibling.data( Qt::UserRole ).value< QWidget* >();
+      QString title = sibling.data( Qt::DisplayRole ).toString();
+      QString tooltip = sibling.data( Qt::ToolTipRole ).toString();
+      QIcon icon = sibling.data( Qt::DecorationRole ).value< QIcon >();
+      emit( newTabAdded( tab, title, tooltip, icon ) );
+    }
+  }
+  void modelAboutToBeResetSlot()
+  {
+    rowsAboutToBeRemovedSlot( QModelIndex(), 0, rowCount() );
+  }
 };
 
 // ============================================================================
 // SC_RecentlyClosedTabWidget
+// ============================================================================
+
+class SC_RecentlyClosedTabWidget : public QWidget
+{
+Q_OBJECT
+  QWidget* previewPaneCurrentWidget;
+  SC_RecentlyClosedTabItemModel* model;
+  QBoxLayout::Direction grow;
+  QListView* listView;
+  QPushButton* clearHistoryButton;
+  QWidget* currentlyPreviewedWidget;
+  QWidget* currentlyPreviewedWidgetsParent;
+  QMenu* contextMenu;
+  QBoxLayout* boxLayout;
+  int stretchIndex;
+  bool previewAnItemOnShow;
+  bool enableContextMenu;
+  bool enableClearHistoryButton;
+  bool enableClearHistoryContextMenu;
+public:
+  SC_RecentlyClosedTabWidget( QWidget* parent = nullptr,
+      QBoxLayout::Direction grow = QBoxLayout::LeftToRight,
+      SC_RecentlyClosedTabItemModel* modelToUse = nullptr ) :
+    QWidget( parent ),
+    model( modelToUse ),
+    grow( grow ),
+    listView( nullptr ),
+    clearHistoryButton( nullptr ),
+    currentlyPreviewedWidget( nullptr ),
+    currentlyPreviewedWidgetsParent( nullptr ),
+    contextMenu( nullptr ),
+    boxLayout( nullptr ),
+    stretchIndex( 0 ),
+    previewAnItemOnShow( true ),
+    enableContextMenu( true ),
+    enableClearHistoryButton( true ),
+    enableClearHistoryContextMenu( false )
+  {
+    if ( model == nullptr )
+    {
+      model = new SC_RecentlyClosedTabItemModel( this );
+    }
+
+    init();
+  }
+  SC_RecentlyClosedTabItemModel* getModel()
+  {
+    return model;
+  }
+signals:
+  void hideRequest();
+  void showRequest();
+  void restoreTab( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon );
+protected:
+  void init()
+  {
+    stretchIndex = 1;
+    boxLayout = new QBoxLayout( grow );
+    boxLayout -> addWidget( initListView() );
+    boxLayout -> insertStretch( stretchIndex, 0 );
+    setLayout( boxLayout );
+
+    connect( model, SIGNAL( removePreview( QWidget* ) ), this,  SLOT( removePreviewAndAddNextOrHide( QWidget* ) ) );
+    connect( model, SIGNAL( restoreTab( QWidget*, const QString&, const QString&, const QIcon& ) ),
+             this,  SIGNAL( restoreTab( QWidget*, const QString&, const QString&, const QIcon& ) ) );
+  }
+  QWidget* initListView()
+  {
+    QWidget* listViewParent = new QWidget( this );
+    listViewParent -> setMinimumHeight( 350 );
+    listViewParent -> setMinimumWidth( 100 );
+    listViewParent -> setMaximumWidth( 150 );
+    QLayout* listViewParentLayout = new QBoxLayout( QBoxLayout::TopToBottom );
+
+    listView = new QListView( listViewParent );
+    listView -> setEditTriggers( QAbstractItemView::NoEditTriggers );
+    listView -> setMouseTracking( true );
+    listView -> setSelectionMode( QListView::SingleSelection );
+    listView -> setModel( model );
+
+    listViewParentLayout -> addWidget( listView );
+    if ( enableClearHistoryButton )
+    {
+      clearHistoryButton = new QPushButton( tr( "&Clear History" ), this );
+      listViewParentLayout -> addWidget( clearHistoryButton );
+      connect( clearHistoryButton, SIGNAL( clicked() ), this, SLOT( clearHistory() ) );
+    }
+
+    listViewParent -> setLayout( listViewParentLayout );
+
+    if ( enableContextMenu )
+    {
+      listView -> setContextMenuPolicy( Qt::ActionsContextMenu );
+
+      QAction* removeFromHistoryAction = new QAction( tr( "&Delete" ), listView );
+      connect( removeFromHistoryAction, SIGNAL( triggered( bool ) ), this,  SLOT( removeCurrentItem( bool ) ) );
+      listView -> addAction( removeFromHistoryAction );
+      if ( enableClearHistoryContextMenu )
+      {
+        QAction* clearHistoryAction = new QAction( tr( "&Clear History" ), listView );
+        connect( clearHistoryAction,      SIGNAL( triggered( bool ) ), this,  SLOT( clearHistoryPrompt() ) );
+        listView -> addAction( clearHistoryAction );
+      }
+    }
+
+    connect( listView,             SIGNAL( activated( const QModelIndex& ) ),             model, SLOT( restoreTab( const QModelIndex& ) ) );
+    connect( listView -> selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( currentChanged( const QModelIndex&, const QModelIndex& ) ) );
+
+    return listViewParent;
+  }
+protected:
+  void showEvent( QShowEvent* e )
+  {
+    Q_UNUSED( e );
+    if ( previewAnItemOnShow )
+      previewNext();
+  }
+public slots:
+  void addTab( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon)
+  {
+    model -> addTab( widget, title, tooltip, icon );
+  }
+  void removePreview( QWidget* widget = nullptr )
+  {
+    if ( widget == nullptr )
+      widget = currentlyPreviewedWidget;
+    if ( currentlyPreviewedWidget == nullptr )
+      return;
+    if ( currentlyPreviewedWidget == widget )
+    {
+      boxLayout -> setStretch( stretchIndex, 1 );
+      boxLayout -> removeWidget( currentlyPreviewedWidget );
+
+      if ( currentlyPreviewedWidgetsParent != nullptr )
+        currentlyPreviewedWidget -> setParent( currentlyPreviewedWidgetsParent );
+
+      currentlyPreviewedWidget = nullptr;
+      currentlyPreviewedWidgetsParent = nullptr;
+    }
+  }
+  void removePreviewAndAddNextOrHide( QWidget* widget )
+  {
+    removePreview( widget );
+    previewNextOrHide( widget );
+  }
+  void removePreviousTabFromPreview()
+  {
+    removePreview( currentlyPreviewedWidget );
+  }
+  void restoreCurrentlySelected()
+  {
+    model -> restoreTab( listView -> selectionModel() -> currentIndex() );
+  }
+  bool addIndexToPreview( const QModelIndex& index )
+  {
+    if ( index.isValid() )
+    {
+      QWidget* widget = index.data( Qt::UserRole ).value< QWidget* >();
+      if ( widget != nullptr )
+      {
+        if ( currentlyPreviewedWidget != nullptr )
+          removePreview( currentlyPreviewedWidget );
+        widget -> show();
+        boxLayout -> addWidget( widget, 1 );
+        boxLayout -> setStretch( stretchIndex, 0 );
+        currentlyPreviewedWidget = widget;
+        currentlyPreviewedWidgetsParent = index.data( Qt::UserRole + 1 ).value< QWidget* >();
+        listView -> setFocus();
+        return true;
+      }
+    }
+    return false;
+  }
+  bool previewNext( QWidget* exclude = nullptr )
+  {
+    bool retval = false;
+    QModelIndex index = listView -> currentIndex();
+    // If no selection, then go with first index
+    if ( ! index.isValid() )
+      index = model -> index( 0, 0 );
+
+    QWidget* widget = index.data( Qt::UserRole ).value< QWidget* >();
+    int triedRows = 1;
+
+    // Search up if we start at the last element;
+    int increment = index.row() == ( model -> rowCount() ) ? -1:1;
+    // Try each row looking for a widget that is not excluded
+    while ( triedRows <= model -> rowCount() &&
+            widget == exclude )
+    {
+      int newIndex = ( index.row() + increment ) % model -> rowCount();
+      index = model -> index( newIndex, 0 );
+      widget = index.data( Qt::UserRole ).value< QWidget* >();
+      triedRows++;
+    }
+    // index is ok and we didnt try all rows
+    if ( index.isValid() &&
+         triedRows <= model -> rowCount() )
+    {
+      QItemSelectionModel* selection = listView -> selectionModel();
+      addIndexToPreview( index );
+      selection -> clear();
+      selection -> select( index, QItemSelectionModel::Select );
+      widget = index.data( Qt::UserRole ).value< QWidget* >();
+      if ( currentlyPreviewedWidget != widget )
+        addIndexToPreview( index );
+      retval = true;
+    }
+    return retval;
+  }
+  void previewNextOrHide( QWidget* exclude = nullptr )
+  {
+    if ( ! previewNext( exclude ) )
+      emit( hideRequest() );
+  }
+  void showContextMenu( const QPoint& p )
+  {
+    if ( enableContextMenu )
+    {
+      if ( model -> rowCount() > 0 )
+        contextMenu -> exec( listView -> mapToGlobal( p ) );
+    }
+  }
+  void restoreTabSlot( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon )
+  {
+    emit( restoreTab( widget, title, tooltip, icon ) );
+  }
+  void clearHistory()
+  {
+    model -> clear();
+    emit( hideRequest() );
+  }
+  void removeCurrentItem( bool /* checked */ )
+  {
+    QItemSelectionModel* selection = listView -> selectionModel();
+    QModelIndex index = selection -> currentIndex();
+    int selectedRow = index.row();
+    model -> removeRow( index.row(), selection -> currentIndex().parent() );
+    index = model -> index( selectedRow, 0 );
+    previewNextOrHide();
+  }
+  void currentChanged( const QModelIndex& current, const QModelIndex& previous )
+  {
+    Q_UNUSED( previous );
+    removePreview();
+    addIndexToPreview( current );
+  }
+};
+
+// ============================================================================
+// SC_RecentlyClosedTab
 // ============================================================================
 
 class SC_RecentlyClosedTab : public SC_TabWidgetCloseAll
@@ -987,31 +1334,17 @@ Q_OBJECT
   bool enabled;
   SC_HoverArea* hoverArea;
   SC_RelativePopup* recentlyClosedPopup;
-  QBoxLayout* recentlyClosedPopupLayout;
-  QWidget* previewPaneCurrentWidget;
-  QStandardItemModel* recentlyClosedTabsModel;
-  QListView* listView;
-  QPushButton* clearHistoryButton;
-  QWidget* currentlyPreviewedWidget;
-  QWidget* currentlyPreviewedWidgetsParent;
-  QMenu* contextMenu;
+  SC_RecentlyClosedTabWidget* recentlyClosedTab;
 public:
   SC_RecentlyClosedTab(QWidget* parent = nullptr,
+      SC_RecentlyClosedTabItemModel* modelToUse = nullptr,
       bool enableRecentlyClosedTabs = true,
-      Qt::Corner corner = Qt::TopRightCorner,
-      QStandardItemModel* modelToUse = nullptr ) :
+      Qt::Corner corner = Qt::TopRightCorner ) :
   SC_TabWidgetCloseAll( parent, corner ),
   enabled( enableRecentlyClosedTabs ),
   hoverArea( nullptr ),
   recentlyClosedPopup( nullptr ),
-  recentlyClosedPopupLayout( nullptr ),
-  previewPaneCurrentWidget( nullptr ),
-  recentlyClosedTabsModel( modelToUse ),
-  listView( nullptr ),
-  clearHistoryButton( nullptr ),
-  currentlyPreviewedWidget( nullptr ),
-  currentlyPreviewedWidgetsParent( nullptr ),
-  contextMenu( nullptr )
+  recentlyClosedTab( nullptr )
   {
     if ( enabled )
     {
@@ -1053,206 +1386,43 @@ public:
         grow = QBoxLayout::LeftToRight;
         break;
       }
-      // Using an outside model?
-      if ( recentlyClosedTabsModel == nullptr )
-      {
-        recentlyClosedTabsModel = new QStandardItemModel;
-      }
       recentlyClosedPopup = new SC_RelativePopup( cornerWidgetOld, parentCorner, widgetCorner );
-      recentlyClosedPopupLayout = new QBoxLayout( grow );
-
-      QWidget* listViewParent = new QWidget( recentlyClosedPopup );
-      listViewParent -> setMinimumHeight( 350 );
-      listViewParent -> setMinimumWidth( 100 );
-      QLayout* listViewParentLayout = new QBoxLayout( QBoxLayout::TopToBottom );
-
-      listView = new QListView( listViewParent );
-      listView -> setEditTriggers( QAbstractItemView::NoEditTriggers );
-      listView -> setMaximumWidth( 150 );
-      listView -> setMouseTracking( true );
-      listView -> setSelectionMode( QListView::SingleSelection );
-      listView -> setModel( recentlyClosedTabsModel );
-      listView -> setContextMenuPolicy( Qt::CustomContextMenu );
-
-      clearHistoryButton = new QPushButton( tr( "&Clear History" ), listViewParent );
-
-      listViewParentLayout -> addWidget( listView );
-      listViewParentLayout -> addWidget( clearHistoryButton );
-      listViewParent -> setLayout( listViewParentLayout );
-
-      contextMenu = new QMenu( listView );
-      QAction* removeFromHistory = contextMenu -> addAction( tr( "&Delete" ) );
-
-      recentlyClosedPopupLayout -> addWidget( listViewParent );
+      recentlyClosedTab   = new SC_RecentlyClosedTabWidget( recentlyClosedPopup, grow, modelToUse );
+      QBoxLayout* recentlyClosedPopupLayout = new QBoxLayout( grow );
+      recentlyClosedPopupLayout -> addWidget( recentlyClosedTab );
       recentlyClosedPopup -> setLayout( recentlyClosedPopupLayout );
-      connect( hoverArea,          SIGNAL( MouseHoverTimeout() ),                         recentlyClosedPopup, SLOT( ShowRequest() ) );
-      connect( clearHistoryButton, SIGNAL( clicked() ),                                   this,                SLOT( clearHistory() ) );
-      connect( listView,           SIGNAL( clicked( const QModelIndex& ) ),               this,                SLOT( recentlyClosedListClicked( const QModelIndex& ) ) );
-      connect( listView,           SIGNAL( customContextMenuRequested( const QPoint& ) ), this,                SLOT( showContextMenu( const QPoint& ) ) );
-      connect( listView,           SIGNAL( doubleClicked( const QModelIndex& ) ),         this,                SLOT( restoreRecentlyClosedTab( const QModelIndex& ) ) );
-      connect( removeFromHistory,  SIGNAL( triggered( bool ) ),                           this,                SLOT( removeCurrentItem( bool ) ) );
+
+      QShortcut* escape = new QShortcut( QKeySequence( Qt::Key_Escape ), recentlyClosedPopup );
+
+      connect( escape,            SIGNAL( activated() ),         recentlyClosedPopup, SLOT( hide() ) );
+      connect( recentlyClosedTab, SIGNAL( hideRequest() ),       recentlyClosedPopup, SLOT( hide() ) );
+      connect( recentlyClosedTab, SIGNAL( showRequest() ),       recentlyClosedPopup, SLOT( show() ) );
+      connect( hoverArea,         SIGNAL( mouseHoverTimeout() ), recentlyClosedPopup, SLOT( show() ) );
+      connect( recentlyClosedTab, SIGNAL( restoreTab( QWidget*, const QString&, const QString&, const QIcon& ) ),
+               this,              SLOT  ( restoreTab( QWidget*, const QString&, const QString&, const QIcon& ) ) );
       setCornerWidget( hoverArea, corner );
       cornerWidgetOld -> show();
     }
-    connect( this, SIGNAL( TabAboutToBeRemoved( QWidget*, const QString&, const QString&, const QIcon& ) ), this, SLOT( addTabToRecentlyClosedList( QWidget*, const QString&, const QString&, const QIcon&) ) );
+    connect(   this,              SIGNAL( tabAboutToBeRemoved( QWidget*, const QString&, const QString&, const QIcon& ) ),
+               recentlyClosedTab, SLOT  ( addTab( QWidget*, const QString&, const QString&, const QIcon&) ) );
   }
   virtual int insertAt()
   {
     return count();
   }
-private:
-  void removePreviousTabFromPreview()
+  SC_RecentlyClosedTabItemModel* getModel()
   {
-    if ( currentlyPreviewedWidget != nullptr )
-    {
-      recentlyClosedPopup -> layout() -> removeWidget( currentlyPreviewedWidget );
-      if ( currentlyPreviewedWidgetsParent != nullptr )
-        currentlyPreviewedWidget -> setParent( currentlyPreviewedWidgetsParent );
-      currentlyPreviewedWidget = nullptr;
-      currentlyPreviewedWidgetsParent = nullptr;
-    }
-  }
-  void addNextWidgetToPreviewOrHide()
-  {
-    removePreviousTabFromPreview();
-    QModelIndex index = listView -> currentIndex();
-    if ( ! index.isValid() )
-    {
-      recentlyClosedPopup -> hide();
-    }
-    else
-    {
-      if ( ! addIndexToPreview( index ) )
-      {
-        recentlyClosedPopup -> hide();
-      }
-    }
-  }
-  bool addIndexToPreview( const QModelIndex& index )
-  {
-    QWidget* widget = index.data( Qt::UserRole ).value< QWidget* >();
-    if ( widget == nullptr )
-      return false;
-    widget -> show();
-    recentlyClosedPopupLayout -> addWidget( widget, 1);
-    currentlyPreviewedWidget = widget;
-    currentlyPreviewedWidgetsParent = index.data( Qt::UserRole + 1 ).value< QWidget* >();
-    recentlyClosedPopupLayout -> update();
-    widget -> updateGeometry();
-    recentlyClosedPopup -> ShowRequest();
-    listView -> setFocus();
-    return true;
+    return recentlyClosedTab -> getModel();
   }
 public slots:
-  void addTabToRecentlyClosedList( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon)
+  void restoreTab( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon )
   {
-    if ( enabled )
-    {
-      QStandardItem* closedTab = new QStandardItem;
-      QWidget* newparent = new QWidget;
-      // Removing a tab from a QTabWidget does not free the tab until the parent is deleted
-      widget -> setParent( newparent );
-      closedTab -> setData( QVariant::fromValue< QString >( title ), Qt::DisplayRole );
-      closedTab -> setData( QVariant::fromValue< QWidget* >( widget ), Qt::UserRole );
-      closedTab -> setData( QVariant::fromValue< QWidget* >( newparent ), Qt::UserRole + 1);
-      closedTab -> setData( QVariant::fromValue< QString >( tooltip ), Qt::ToolTipRole );
-      closedTab -> setData( QVariant::fromValue< QIcon >( icon ), Qt::DecorationRole );
-      recentlyClosedTabsModel -> appendRow( closedTab );
-    }
-    else
-    {
-      // not enabled; free up closed widget
-      if ( widget != nullptr )
-      {
-        widget -> setParent( this );
-        delete widget;
-      }
-    }
-  }
-  void restoreRecentlyClosedTab( const QModelIndex& index )
-  {
-    removePreviousTabFromPreview();
-    QString title = index.data( Qt::DisplayRole ).toString();
-    QWidget* tab = index.data( Qt::UserRole ).value< QWidget* >();
-    tab -> setParent( this );
-    QWidget* parent = index.data( Qt::UserRole + 1 ).value< QWidget* >();
-    if ( parent != nullptr )
-    {
-      delete parent;
-      parent = nullptr;
-      recentlyClosedTabsModel -> setData( index, QVariant::fromValue< QWidget* >( parent ), Qt::UserRole + 1 );
-    }
     int indexToInsert = insertAt();
-    indexToInsert = insertTab( indexToInsert, tab, title );
-    setTabToolTip( indexToInsert, index.data( Qt::ToolTipRole ).toString() );
-    setTabIcon( indexToInsert, index.data( Qt::DecorationRole ).value< QIcon >() );
+    widget -> setParent( this );
+    indexToInsert = insertTab( indexToInsert, widget, title );
+    setTabToolTip( indexToInsert, tooltip );
+    setTabIcon( indexToInsert, icon );
     setCurrentIndex( indexToInsert );
-    recentlyClosedTabsModel -> removeRow( index.row(), index.parent() );
-    addNextWidgetToPreviewOrHide();
-  }
-  void deleteFromRecentlyClosedList( const QModelIndex& index )
-  {
-    removePreviousTabFromPreview();
-    if ( index.isValid() )
-    {
-      QWidget* widget = index.data( Qt::UserRole ).value< QWidget* >();
-      QWidget* parent = index.data( Qt::UserRole + 1).value< QWidget* >();
-      // Retake ownership
-      if ( ! widget && widget -> parent() == recentlyClosedPopup )
-      {
-        if ( parent != nullptr )
-          widget -> setParent ( parent );
-        else
-        {
-          delete widget;
-        }
-      }
-      if ( parent != nullptr )
-      {
-        delete parent;
-      }
-      recentlyClosedTabsModel -> removeRow( index.row(), index.parent() );
-    }
-    addNextWidgetToPreviewOrHide();
-  }
-  void recentlyClosedListClicked( const QModelIndex& index )
-  {
-    removePreviousTabFromPreview();
-    addIndexToPreview( index );
-  }
-  void clearHistory()
-  {
-    removePreviousTabFromPreview();
-
-    int rows = recentlyClosedTabsModel -> rowCount();
-    for ( int i = 0; i < rows; ++i )
-    {
-      QStandardItem* item = recentlyClosedTabsModel -> item( i, 0 );
-      QWidget* widget = item -> data( Qt::UserRole ).value< QWidget* >();
-      QWidget* parent = item -> data( Qt::UserRole + 1).value< QWidget* >();
-      if ( ! widget )
-      {
-        if ( widget -> parent() != parent )
-        {
-          widget -> setParent( parent );
-        }
-      }
-      delete widget;
-      delete parent;
-    }
-    recentlyClosedTabsModel -> clear();
-    recentlyClosedPopup -> hide();
-  }
-  void removeCurrentItem( bool /* checked */ )
-  {
-    QItemSelectionModel* selection = listView -> selectionModel();
-    deleteFromRecentlyClosedList( selection -> currentIndex() );
-  }
-  void showContextMenu( const QPoint& p )
-  {
-    QModelIndex index = recentlyClosedTabsModel -> index(0, 0);
-    if ( index.isValid() )
-      contextMenu -> exec( recentlyClosedPopup -> mapToGlobal( p ) );
   }
 };
 
@@ -1465,8 +1635,8 @@ class SC_SimulateTab : public SC_RecentlyClosedTab
   QWidget* addTabWidget;
   int lastSimulateTabIndexOffset;
 public:
-  SC_SimulateTab( QWidget* parent = nullptr ) :
-    SC_RecentlyClosedTab( parent ),
+  SC_SimulateTab( QWidget* parent = nullptr, SC_RecentlyClosedTabItemModel* modelToUse = nullptr ) :
+    SC_RecentlyClosedTab( parent, modelToUse ),
     addTabWidget( new QWidget( this ) ),
     lastSimulateTabIndexOffset( -2 )
   {
@@ -1757,7 +1927,6 @@ public:
   QPushButton* mainButton;
   QGroupBox* cmdLineGroupBox;
   QGroupBox* createCustomCharData;
-
 
   QTimer* timer;
   ImportThread* importThread;
