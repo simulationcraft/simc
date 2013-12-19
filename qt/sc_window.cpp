@@ -879,6 +879,10 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
           contents.append( QString::fromStdString( windowsPermissionRecommendation + "\n" ) );
         }
       }
+      if ( contents.contains( "Internal server error" ) )
+      {
+        contents.append( "\nAn Internal server error means an error occurred with the server, trying again later should fix it\n" );
+      }
       contents.append( "\nIf for some reason you cannot resolve this issue, check if it is a known issue at\n https://code.google.com/p/simulationcraft/issues/list\n" );
       contents.append( "Or try an older version\n https://code.google.com/p/simulationcraft/wiki/Downloads\n" );
       contents.append( "And if all else fails you can come talk to us on IRC at\n irc.stratics.com (#simulationcraft)\n" );
