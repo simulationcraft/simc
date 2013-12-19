@@ -168,7 +168,7 @@ void SC_MainWindow::saveHistory()
 
 SC_MainWindow::SC_MainWindow( QWidget *parent )
   : QWidget( parent ),
-    visibleWebView( 0 ), sim( 0 ), paperdoll_sim( 0 ), simPhase( "%p%" ), simProgress( 100 ), simResults( 0 ),
+    visibleWebView( 0 ), recentlyClosedTabModel( nullptr ), sim( 0 ), paperdoll_sim( 0 ), simPhase( "%p%" ), simProgress( 100 ), simResults( 0 ),
     AppDataDir( "." ), ResultsDestDir( "." ), TmpDir( "." )
 {
   setWindowTitle( QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion() );
@@ -423,9 +423,15 @@ void SC_MainWindow::createImportTab()
   historyList -> setSortingEnabled( true );
   importTab -> addTab( historyList, tr( "History" ) );
 
+  recentlyClosedTabImport = new SC_RecentlyClosedTabWidget( this, QBoxLayout::LeftToRight );
+  recentlyClosedTabModel = recentlyClosedTabImport -> getModel();
+  importTab -> addTab( recentlyClosedTabImport, tr( "Recently Closed" ) );
+
   connect( rawrButton,  SIGNAL( clicked( bool ) ),                       this, SLOT( rawrButtonClicked() ) );
   connect( historyList, SIGNAL( itemDoubleClicked( QListWidgetItem* ) ), this, SLOT( historyDoubleClicked( QListWidgetItem* ) ) );
   connect( importTab,   SIGNAL( currentChanged( int ) ),                 this, SLOT( importTabChanged( int ) ) );
+  connect( recentlyClosedTabImport, SIGNAL( restoreTab( QWidget*, const QString&, const QString&, const QIcon& ) ),
+           this,                    SLOT  ( simulateTabRestored( QWidget*, const QString&, const QString&, const QIcon& ) ) );
 
   // Commenting out until it is more fleshed out.
   // createCustomTab();
@@ -656,8 +662,7 @@ void SC_MainWindow::createCustomTab()
 
 void SC_MainWindow::createSimulateTab()
 {
-  simulateTab = new SC_SimulateTab( mainTab );
-
+  simulateTab = new SC_SimulateTab( mainTab, recentlyClosedTabModel );
 
 
 
@@ -1302,6 +1307,7 @@ void SC_MainWindow::mainButtonClicked( bool /* checked */ )
         case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine->text() ); break;
         case TAB_CHAR_DEV:   startImport( TAB_CHAR_DEV,   cmdLine->text() ); break;
         case TAB_RAWR:       startImport( TAB_RAWR,       "Rawr XML"      ); break;
+        case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
         default: break;
       }
       break;
@@ -1440,7 +1446,8 @@ void SC_MainWindow::importTabChanged( int index )
   if ( index == TAB_RAWR    ||
        index == TAB_BIS     ||
        index == TAB_CUSTOM  ||
-       index == TAB_HISTORY )
+       index == TAB_HISTORY ||
+       index == TAB_RECENT )
   {
     visibleWebView = 0;
     progressBar->setFormat( simPhase.c_str() );
@@ -1530,6 +1537,11 @@ void SC_MainWindow::armoryRegionChanged( const QString& region )
 {
   battleNetView -> stop();
   battleNetView -> setUrl( "http://" + region + ".battle.net/wow/en" );
+}
+
+void SC_MainWindow::simulateTabRestored( QWidget*, const QString&, const QString&, const QIcon& )
+{
+  mainTab -> setCurrentTab( TAB_SIMULATE );
 }
 
 // ==========================================================================

@@ -47,6 +47,7 @@ enum import_tabs_e
   TAB_RAWR,
   TAB_BIS,
   TAB_HISTORY,
+  TAB_RECENT,
   TAB_CUSTOM
 };
 
@@ -1927,6 +1928,8 @@ public:
   QPushButton* mainButton;
   QGroupBox* cmdLineGroupBox;
   QGroupBox* createCustomCharData;
+  SC_RecentlyClosedTabItemModel* recentlyClosedTabModel;
+  SC_RecentlyClosedTabWidget* recentlyClosedTabImport;
 
   QTimer* timer;
   ImportThread* importThread;
@@ -2011,6 +2014,7 @@ private slots:
   void historyDoubleClicked( QListWidgetItem* item );
   void bisDoubleClicked( QTreeWidgetItem* item, int col );
   void armoryRegionChanged( const QString& region );
+  void simulateTabRestored( QWidget* tab, const QString& title, const QString& tooltip, const QIcon& icon );
 
 public:
   SC_MainWindow( QWidget *parent = 0 );
