@@ -116,26 +116,30 @@ public:
 };
 
 // ============================================================================
-// SC_TextEditSearchBox
+// SC_SearchBox
 // ============================================================================
 
-class SC_TextEditSearchBox : public QWidget
+class SC_SearchBox : public QWidget
 {
   Q_OBJECT
   QLineEdit* searchBox;
   QToolButton* searchBoxPrev;
   QToolButton* searchBoxNext;
+  Qt::Corner corner;
   bool reverse;
   bool emitFindOnTextChange;
   bool grabFocusOnShow;
   bool highlightTextOnShow;
 public:
-  SC_TextEditSearchBox( QWidget* parent = nullptr, bool show_arrows = true,
+  SC_SearchBox( QWidget* parent = nullptr,
+      Qt::Corner corner = Qt::BottomLeftCorner,
+      bool show_arrows = true,
       QBoxLayout::Direction direction = QBoxLayout::LeftToRight ) :
     QWidget( parent ),
     searchBox( new QLineEdit ),
     searchBoxPrev( new QToolButton( this ) ),
     searchBoxNext( new QToolButton( this ) ),
+    corner( corner ),
     reverse( false ),
     emitFindOnTextChange( false ),
     grabFocusOnShow( true ),
@@ -225,6 +229,40 @@ public:
   {
     emitFindOnTextChange = emitOnChange;
   }
+  void updateGeometry()
+  {
+    QLayout* widgetLayout = layout();
+    QSize widgetSizeHint = widgetLayout -> sizeHint();
+    QRect geo( QPoint( 0, 0 ), widgetSizeHint );
+
+    QWidget* parentWidget = qobject_cast< QWidget* >( parent() );
+    if ( parentWidget != nullptr )
+    {
+      QRect parentGeo = parentWidget -> geometry();
+
+      switch( corner )
+      {
+      case Qt::BottomLeftCorner:
+        geo.moveBottomLeft( parentGeo.bottomLeft() );
+        break;
+      case Qt::TopRightCorner:
+        geo.moveTopRight( parentGeo.topRight() );
+        break;
+      case Qt::BottomRightCorner:
+        geo.moveBottomRight( parentGeo.bottomRight() );
+        break;
+      case Qt::TopLeftCorner:
+      default:
+        break;
+      }
+
+      setGeometry( geo );
+    }
+  }
+  Qt::Corner getCorner()
+  {
+    return corner;
+  }
 protected:
   virtual void keyPressEvent( QKeyEvent* e )
   {
@@ -263,6 +301,7 @@ protected:
   virtual void showEvent( QShowEvent* e )
   {
     Q_UNUSED( e );
+    updateGeometry();
     if ( grabFocusOnShow )
     {
       setFocus();
@@ -308,7 +347,7 @@ private:
   QTextCharFormat textformat_default;
   QTextCharFormat textformat_error;
   QList< QPair< Qt::Key, QList< Qt::KeyboardModifier > > > ignoreKeys;
-  SC_TextEditSearchBox* searchBox;
+  SC_SearchBox* searchBox;
   Qt::Corner searchBoxCorner;
   bool enable_search;
 public:
@@ -420,7 +459,7 @@ protected:
   {
     if ( ! searchBox )
     {
-      searchBox = new SC_TextEditSearchBox( this );
+      searchBox = new SC_SearchBox( this -> viewport(), searchBoxCorner );
 
       QShortcut* find = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F), this );
       connect( find, SIGNAL( activated() ), this, SLOT( find() ) );
@@ -430,8 +469,6 @@ protected:
 
       connect( searchBox, SIGNAL( findPrev() ), this, SLOT( findPrev() ) );
       connect( searchBox, SIGNAL( findNext() ), this, SLOT( findNext() ) );
-
-      updateSearchBoxGeometry();
 
       searchBox -> hide();
     }
@@ -447,37 +484,7 @@ protected:
   virtual void resizeEvent( QResizeEvent* e )
   {
     Q_UNUSED( e );
-    updateSearchBoxGeometry();
-  }
-  void updateSearchBoxGeometry()
-  {
-    if ( enable_search )
-    {
-      QLayout* searchBoxLayout = searchBox -> layout();
-      QSize searchBoxSizeHint = searchBoxLayout -> sizeHint();
-      QRect geo( QPoint( 0, 0 ), searchBoxSizeHint );
-
-      QWidget* viewportWidget = viewport();
-      QRect viewportGeo = viewportWidget -> geometry();
-
-      switch( searchBoxCorner )
-      {
-      case Qt::BottomLeftCorner:
-        geo.moveBottomLeft( viewportGeo.bottomLeft() );
-        break;
-      case Qt::TopRightCorner:
-        geo.moveTopRight( viewportGeo.topRight() );
-        break;
-      case Qt::BottomRightCorner:
-        geo.moveBottomRight( viewportGeo.bottomRight() );
-        break;
-      case Qt::TopLeftCorner:
-      default:
-        break;
-      }
-
-      searchBox -> setGeometry( geo );
-    }
+    searchBox -> updateGeometry();
   }
   void findSomeText( const QString& text, bool loop = true, QTextDocument::FindFlags options = 0, int position = -1 )
   {
@@ -520,7 +527,6 @@ public slots:
   {
     if ( enable_search )
     {
-      updateSearchBoxGeometry();
       searchBox -> show();
     }
   }
@@ -2057,8 +2063,11 @@ public:
 class SC_WebView : public QWebView
 {
   Q_OBJECT
+  SC_SearchBox* searchBox;
+  QString previousSearch;
   bool allow_mouse_navigation;
   bool allow_keyboard_navigation;
+  bool allow_searching;
 public:
   SC_MainWindow* mainWindow;
   int progress;
@@ -2066,12 +2075,28 @@ public:
 
   SC_WebView( SC_MainWindow* mw, QWidget* parent = 0, const QString& h = QString() ) :
     QWebView( parent ),
-    allow_mouse_navigation( false ), allow_keyboard_navigation( false ), mainWindow( mw ), progress( 0 ), html_str( h )
+    searchBox( nullptr ),
+    previousSearch( "" ),
+    allow_mouse_navigation( false ),
+    allow_keyboard_navigation( false ),
+    allow_searching( false ),
+    mainWindow( mw ),
+    progress( 0 ),
+    html_str( h )
   {
-    connect( this, SIGNAL( loadProgress( int ) ),        this, SLOT( loadProgressSlot( int ) ) );
-    connect( this, SIGNAL( loadFinished( bool ) ),       this, SLOT( loadFinishedSlot( bool ) ) );
-    connect( this, SIGNAL( urlChanged( const QUrl& ) ),  this, SLOT( urlChangedSlot( const QUrl& ) ) );
-    connect( this, SIGNAL( linkClicked( const QUrl& ) ), this, SLOT( linkClickedSlot( const QUrl& ) ) );
+    searchBox = new SC_SearchBox( this );
+    searchBox -> hide();
+    QShortcut* ctrlF = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F ), this );
+    QShortcut* escape = new QShortcut( QKeySequence( Qt::Key_Escape ), this );
+    connect( ctrlF,     SIGNAL( activated() ),                   searchBox, SLOT( show() ) );
+    connect( escape,    SIGNAL( activated() ),                   this,      SLOT( hideSearchBox() ) );
+    connect( searchBox, SIGNAL( textChanged( const QString& ) ), this,      SLOT( findSomeText( const QString& ) ) );
+    connect( searchBox, SIGNAL( findPrev() ),                    this,      SLOT( findPrev() ) );
+    connect( searchBox, SIGNAL( findNext() ),                    this,      SLOT( findNext() ) );
+    connect( this,      SIGNAL( loadProgress( int ) ),           this,      SLOT( loadProgressSlot( int ) ) );
+    connect( this,      SIGNAL( loadFinished( bool ) ),          this,      SLOT( loadFinishedSlot( bool ) ) );
+    connect( this,      SIGNAL( urlChanged( const QUrl& ) ),     this,      SLOT( urlChangedSlot( const QUrl& ) ) );
+    connect( this,      SIGNAL( linkClicked( const QUrl& ) ),    this,      SLOT( linkClickedSlot( const QUrl& ) ) );
 
     SC_WebPage* page = new SC_WebPage( this );
     setPage( page );
@@ -2098,33 +2123,30 @@ public:
 
   }
   void store_html( const QString& s )
-  { html_str = s; }
-
+  {
+    html_str = s;
+  }
   virtual ~SC_WebView() {}
-
   void loadHtml()
-  { setHtml( html_str ); }
-
+  {
+    setHtml( html_str );
+  }
   void enableMouseNavigation()
   {
     allow_mouse_navigation = true;
   }
-
   void disableMouseNavigation()
   {
     allow_mouse_navigation = false;
   }
-
   void enableKeyboardNavigation()
   {
     allow_keyboard_navigation = true;
   }
-
   void disableKeyboardNavigation()
   {
     allow_keyboard_navigation = false;
   }
-
 private:
   void update_progress( int p )
   {
@@ -2190,6 +2212,16 @@ protected:
     }
     QWebView::keyReleaseEvent( e );
   }
+  virtual void resizeEvent( QResizeEvent* e )
+  {
+    searchBox -> updateGeometry();
+    QWebView::resizeEvent( e );
+  }
+  virtual void focusInEvent( QFocusEvent* e )
+  {
+    hideSearchBox();
+    QWebView::focusInEvent( e );
+  }
 private slots:
   void loadProgressSlot( int p )
   { update_progress( p ); }
@@ -2206,6 +2238,50 @@ private slots:
   }
   void linkClickedSlot( const QUrl& url )
   { load( url ); }
+public slots:
+  void hideSearchBox()
+  {
+    previousSearch = ""; // disable clearing of highlighted text on next search
+    searchBox -> hide();
+  }
+  void findSomeText( const QString& text, QWebPage::FindFlags options )
+  {
+    if ( ! previousSearch.isEmpty() && previousSearch != text )
+    {
+      findText( "", QWebPage::HighlightAllOccurrences ); // clears previous highlighting
+    }
+    previousSearch = text;
+    findText( text, options );
+    // If the webview scrolls due to searching with the SC_SearchBox visible
+    // The SC_SearchBox could still be visible, as the area the searchbox is covering
+    // is not redrawn, just moved
+    // This just repaints the area directly above the search box to the top
+    QRect searchBoxRect = searchBox -> rect();
+    searchBoxRect.moveTopLeft( searchBox -> geometry().topLeft() );
+    switch( searchBox -> getCorner() )
+    {
+    case Qt::TopLeftCorner:
+    case Qt::BottomLeftCorner:
+      searchBoxRect.setTopLeft( QPoint( 0, 0 ) );
+      break;
+    default:
+      searchBoxRect.setTopRight( rect().topRight() );
+      break;
+    }
+    repaint( searchBoxRect );
+  }
+  void findSomeText( const QString& text )
+  {
+    findSomeText( text, QWebPage::FindWrapsAroundDocument );
+  }
+  void findPrev()
+  {
+    findSomeText( searchBox -> text(), QWebPage::FindWrapsAroundDocument | QWebPage::FindBackward );
+  }
+  void findNext()
+  {
+    findSomeText( searchBox -> text(), QWebPage::FindWrapsAroundDocument );
+  }
 };
 
 // ============================================================================
