@@ -123,10 +123,19 @@ class SC_SearchBox : public QWidget
 {
   Q_OBJECT
   QLineEdit* searchBox;
+  QMenu* searchBoxContextMenu;
   QToolButton* searchBoxPrev;
   QToolButton* searchBoxNext;
   Qt::Corner corner;
+  QAction* reverseAction;
+  QAction* wrapAction;
+  QAction* hideArrowsAction;
   bool reverse;
+  bool wrap;
+  bool enableReverseContextMenuItem;
+  bool enableWrapAroundContextMenuItem;
+  bool enableFindPrevNextContextMenuItem;
+  bool enableHideArrowsContextMenuItem;
   bool emitFindOnTextChange;
   bool grabFocusOnShow;
   bool highlightTextOnShow;
@@ -137,23 +146,77 @@ public:
       QBoxLayout::Direction direction = QBoxLayout::LeftToRight ) :
     QWidget( parent ),
     searchBox( new QLineEdit ),
+    searchBoxContextMenu( nullptr ),
     searchBoxPrev( new QToolButton( this ) ),
     searchBoxNext( new QToolButton( this ) ),
     corner( corner ),
+    reverseAction( nullptr ),
+    wrapAction( nullptr ),
+    hideArrowsAction( nullptr ),
     reverse( false ),
+    wrap( true ),
+    enableReverseContextMenuItem( true ),
+    enableWrapAroundContextMenuItem( true ),
+    enableFindPrevNextContextMenuItem( true ),
+    enableHideArrowsContextMenuItem( true ),
     emitFindOnTextChange( false ),
     grabFocusOnShow( true ),
     highlightTextOnShow( true )
   {
-    QShortcut* altLeft =  new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Left  ), searchBox );
+    QSettings settings;
+    bool hide_arrows_setting = settings.value( "gui/search_hide_arrows", ! show_arrows ).toBool();
+
+    QAction* altLeftAction =  new QAction( tr( "Find Previous" ), searchBox );
+    altLeftAction -> setShortcut( QKeySequence( Qt::ALT + Qt::Key_Left  ) );
+    QAction* altRightAction =  new QAction( tr( "Find Next" ), searchBox );
+    altRightAction -> setShortcut( QKeySequence( Qt::ALT + Qt::Key_Right ) );
+    QShortcut* altLeft =  new QShortcut( altLeftAction -> shortcut(), searchBox );
     QShortcut* altUp =    new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Up    ), searchBox );
-    QShortcut* altRight = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Right ), searchBox );
+    QShortcut* altRight = new QShortcut( altRightAction -> shortcut(), searchBox );
     QShortcut* altDown =  new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Down  ), searchBox );
+
+    if ( enableReverseContextMenuItem ||
+         enableWrapAroundContextMenuItem ||
+         enableFindPrevNextContextMenuItem )
+    {
+      searchBoxContextMenu = searchBox -> createStandardContextMenu();
+      searchBoxContextMenu -> addSeparator();
+      searchBox -> setContextMenuPolicy( Qt::CustomContextMenu );
+      connect( searchBox,     SIGNAL( customContextMenuRequested( const QPoint& ) ), this, SLOT( searchBoxContextMenuRequested( const QPoint& ) ) );
+    }
+    if ( enableFindPrevNextContextMenuItem )
+    {
+      searchBoxContextMenu -> addAction( altRightAction );
+      searchBoxContextMenu -> addAction( altLeftAction );
+    }
+    if ( enableReverseContextMenuItem )
+    {
+      reverseAction = searchBoxContextMenu -> addAction( tr( "Reverse" ) );
+      reverseAction -> setCheckable( true );
+      reverseAction -> setChecked( reverse );
+      connect( reverseAction, SIGNAL( triggered( bool ) ), this, SLOT( setReverseSearch( bool ) ) );
+    }
+    if ( enableWrapAroundContextMenuItem )
+    {
+      wrapAction = searchBoxContextMenu -> addAction( tr( "&Wrap search" ) );
+      wrapAction -> setCheckable( true );
+      wrapAction -> setChecked( wrap );
+      connect( wrapAction,    SIGNAL( triggered( bool ) ), this, SLOT( setWrapSearch( bool ) ) );
+    }
+    if ( enableHideArrowsContextMenuItem )
+    {
+      hideArrowsAction = searchBoxContextMenu -> addAction( tr( "Hide Arrows" ) );
+      hideArrowsAction -> setCheckable( true );
+      hideArrowsAction -> setChecked( hide_arrows_setting ); // TODO connect to QSettings && sync all other SC_SearchBoxes on change
+      connect( hideArrowsAction, SIGNAL( triggered( bool ) ), this, SLOT( setHideArrows( bool ) ) );
+    }
 
     connect( searchBox,     SIGNAL( textChanged( const QString& ) ), this, SIGNAL( textChanged( const QString& ) ) );
     connect( searchBox,     SIGNAL( textChanged( const QString& ) ), this,   SLOT( searchBoxTextChanged( const QString& ) ) );
+    connect( altLeftAction, SIGNAL( triggered( bool ) ),             this, SIGNAL( findPrev() ) );
     connect( altLeft,       SIGNAL( activated() ),                   this, SIGNAL( findPrev() ) );
     connect( altUp,         SIGNAL( activated() ),                   this, SIGNAL( findPrev() ) );
+    connect( altRightAction,SIGNAL( triggered( bool ) ),             this, SIGNAL( findNext() ) );
     connect( altRight,      SIGNAL( activated() ),                   this, SIGNAL( findNext() ) );
     connect( altDown,       SIGNAL( activated() ),                   this, SIGNAL( findNext() ) );
     connect( searchBoxPrev, SIGNAL( pressed() ),                     this, SIGNAL( findPrev() ) );
@@ -192,12 +255,9 @@ public:
 
     QBoxLayout* searchBoxLayout = new QBoxLayout( direction );
     searchBoxLayout -> addWidget( searchBox );
-    if ( show_arrows )
-    {
-      searchBoxLayout -> addWidget( first );
-      searchBoxLayout -> addWidget( second );
-    }
-    else
+    searchBoxLayout -> addWidget( first );
+    searchBoxLayout -> addWidget( second );
+    if ( hide_arrows_setting )
     {
       searchBoxPrev -> hide();
       searchBoxNext -> hide();
@@ -263,6 +323,14 @@ public:
   {
     return corner;
   }
+  bool reverseSearch() const
+  {
+    return reverse;
+  }
+  bool wrapSearch() const
+  {
+    return wrap;
+  }
 protected:
   virtual void keyPressEvent( QKeyEvent* e )
   {
@@ -327,12 +395,42 @@ public slots:
       emit( findPrev() );
     }
   }
+  void setReverseSearch( bool reversed )
+  {
+    reverse = reversed;
+    if ( reverseAction && reverseAction -> isChecked() != reverse )
+    {
+      reverseAction -> setChecked( reverse );
+    }
+  }
+  void setWrapSearch( bool wrapped )
+  {
+    wrap = wrapped;
+    if ( wrapAction && wrapAction -> isChecked() != wrap )
+    {
+      wrapAction -> setChecked( wrap );
+    }
+  }
+  void setHideArrows( bool hideArrows )
+  {
+    searchBoxPrev -> setVisible( ! hideArrows );
+    searchBoxNext -> setVisible( ! hideArrows );
+    updateGeometry();
+    if ( hideArrowsAction && hideArrowsAction -> isChecked() != hideArrows )
+    {
+      hideArrowsAction -> setChecked( hideArrows );
+    }
+  }
 private slots:
   void searchBoxTextChanged( const QString& text )
   {
     Q_UNUSED( text );
     if ( emitFindOnTextChange )
       find();
+  }
+  void searchBoxContextMenuRequested( const QPoint& p )
+  {
+    searchBoxContextMenu -> exec( searchBox -> mapToGlobal( p ) );
   }
 };
 
@@ -486,7 +584,7 @@ protected:
     Q_UNUSED( e );
     searchBox -> updateGeometry();
   }
-  void findSomeText( const QString& text, bool loop = true, QTextDocument::FindFlags options = 0, int position = -1 )
+  void findSomeText( const QString& text, QTextDocument::FindFlags options = 0, int position = -1 )
   {
     if ( ! text.isEmpty() )
     {
@@ -498,7 +596,7 @@ protected:
       {
         setTextCursor( found );
       }
-      else if ( loop )
+      else if ( searchBox -> wrapSearch() )
       {
         if ( options & QTextDocument::FindBackward )
         {
@@ -532,17 +630,20 @@ public slots:
   }
   void findText( const QString& text )
   {
-    findSomeText( text );
+    QTextDocument::FindFlags flags;
+    if ( searchBox -> reverseSearch() )
+      flags |= QTextDocument::FindBackward;
+    findSomeText( text, flags );
   }
   void findNext()
   {
     if ( enable_search )
-      findSomeText( searchBox -> text(), true, 0, textCursor().selectionStart() + 1 );
+      findSomeText( searchBox -> text(), 0, textCursor().selectionStart() + 1 );
   }
   void findPrev()
   {
     if ( enable_search )
-      findSomeText( searchBox -> text(), true, QTextDocument::FindBackward );
+      findSomeText( searchBox -> text(), QTextDocument::FindBackward );
   }
   void hideSearchBox()
   {
@@ -2251,11 +2352,16 @@ public slots:
       findText( "", QWebPage::HighlightAllOccurrences ); // clears previous highlighting
     }
     previousSearch = text;
+
+    if ( searchBox -> wrapSearch() )
+      options |= QWebPage::FindWrapsAroundDocument;
     findText( text, options );
-    // If the webview scrolls due to searching with the SC_SearchBox visible
+
+    // If the QWebView scrolls due to searching with the SC_SearchBox visible
     // The SC_SearchBox could still be visible, as the area the searchbox is covering
     // is not redrawn, just moved
-    // This just repaints the area directly above the search box to the top
+    // *HACK*
+    // This just repaints the area directly above the search box to the top, in a huge rectangle
     QRect searchBoxRect = searchBox -> rect();
     searchBoxRect.moveTopLeft( searchBox -> geometry().topLeft() );
     switch( searchBox -> getCorner() )
@@ -2263,24 +2369,30 @@ public slots:
     case Qt::TopLeftCorner:
     case Qt::BottomLeftCorner:
       searchBoxRect.setTopLeft( QPoint( 0, 0 ) );
+      searchBoxRect.setBottomLeft( rect().bottomLeft() );
       break;
-    default:
+    case Qt::TopRightCorner:
+    case Qt::BottomRightCorner:
       searchBoxRect.setTopRight( rect().topRight() );
+      searchBoxRect.setBottomRight( rect().bottomRight() );
       break;
     }
     repaint( searchBoxRect );
   }
   void findSomeText( const QString& text )
   {
-    findSomeText( text, QWebPage::FindWrapsAroundDocument );
+    QWebPage::FindFlags flags = 0;
+    if ( searchBox -> reverseSearch() )
+      flags |= QWebPage::FindBackward;
+    findSomeText( text, flags );
   }
   void findPrev()
   {
-    findSomeText( searchBox -> text(), QWebPage::FindWrapsAroundDocument | QWebPage::FindBackward );
+    findSomeText( searchBox -> text(), QWebPage::FindBackward );
   }
   void findNext()
   {
-    findSomeText( searchBox -> text(), QWebPage::FindWrapsAroundDocument );
+    findSomeText( searchBox -> text(), 0 );
   }
 };
 
