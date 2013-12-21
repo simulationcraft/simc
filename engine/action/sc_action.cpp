@@ -1070,6 +1070,24 @@ void action_t::execute()
     execute_action -> schedule_execute( execute_action -> get_state( execute_state ) );
   }
 
+  // New callback system; proc abilities on execute. 
+  // TODO: Not used for now.
+  // Note: direct_tick_callbacks should not be used with the new system, 
+  // override action_t::proc_type() instead
+  if ( 0 /* callbacks */ )
+  {
+    proc_types pt = execute_state -> proc_type();
+    proc_types2 pt2 = execute_state -> execute_proc_type2();
+
+    // "On spell cast"
+    if ( ! background && pt != PROC1_INVALID )
+      action_callback_t::trigger( player -> callbacks.procs[ pt ][ PROC2_CAST ], this, execute_state );
+
+    // "On an execute result"
+    if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
+      action_callback_t::trigger( player -> callbacks.procs[ pt ][ pt2 ], this, execute_state );
+  }
+
   if ( repeating && ! proc ) schedule_execute();
 }
 
@@ -1273,6 +1291,18 @@ void action_t::assess_damage( dmg_e    type,
     }
 
     if ( callbacks && s -> result_amount > 0.0 ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
+  }
+
+  // New callback system; proc spells on impact. 
+  // TODO: Not used for now.
+  // Note: direct_tick_callbacks should not be used with the new system, 
+  // override action_t::proc_type() instead
+  if ( 0 /* callbacks */ )
+  {
+    proc_types pt = s -> proc_type();
+    proc_types2 pt2 = s -> impact_proc_type2();
+    if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
+      action_callback_t::trigger( player -> callbacks.procs[ pt ][ pt2 ], this, s );
   }
 
   stats -> add_result( s -> result_amount, s -> result_amount, ( direct_tick ? DMG_OVER_TIME : periodic_hit ? DMG_DIRECT : type ), s -> result, s -> block_result, s -> target );

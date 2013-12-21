@@ -77,10 +77,6 @@ void spell_t::execute()
     if ( r != RESULT_NONE )
     {
       action_callback_t::trigger( player -> callbacks.harmful_spell[ r ], this );
-      if ( execute_state && execute_state -> result_amount > 0 && ! direct_tick_callbacks )
-      {
-        action_callback_t::trigger( player -> callbacks.direct_harmful_spell[ r ], this );
-      }
     }
     if ( ! background ) // OnHarmfulSpellCast
     {

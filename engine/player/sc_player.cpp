@@ -5170,6 +5170,22 @@ void player_t::assess_damage( school_e school,
 
   action_callback_t::trigger( callbacks.incoming_attack[ s -> result ], s -> action, s );
 
+  // New callback system; proc abilities on incoming events. 
+  // TODO: Not used for now.
+  if ( 0 )
+  {
+    proc_types pt = s -> proc_type();
+    proc_types2 pt2 = s -> execute_proc_type2();
+    // For incoming landed abilities, get the impact type for the proc.
+    if ( pt2 == PROC2_LANDED )
+      pt2 = s -> impact_proc_type2();
+
+    // On damage/heal in. Proc flags are arranged as such that the "incoming"
+    // version of the primary proc flag is always follows the outgoing version.
+    if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
+      action_callback_t::trigger( callbacks.procs[ pt + 1 ][ pt2 ], s -> action, s );
+  }
+
   if ( s -> result_amount <= 0.0 )
     return;
 
@@ -8959,6 +8975,112 @@ void player_t::change_position( position_e new_pos )
 // Player Callbacks
 
 
+// player_callbacks_t::register_allback =====================================
+
+static void add_callback( std::vector<action_callback_t*>& callbacks, action_callback_t* cb )
+{
+  if ( std::find( callbacks.begin(), callbacks.end(), cb ) == callbacks.end() )
+    callbacks.push_back( cb );
+}
+
+void player_callbacks_t::add_proc_callback( proc_types type,
+                                            unsigned flags,
+                                            action_callback_t* cb )
+{
+  std::stringstream s;
+  if ( cb -> listener -> sim -> debug )
+    s << "Registering procs: ";
+
+  // Setup the proc-on-X types for the proc
+  for ( proc_types2 pt = PROC2_TYPE_MIN; pt < PROC2_TYPE_MAX; pt++ )
+  {
+    if ( ! ( flags & ( 1 << pt ) ) )
+      continue;
+
+    // Healing and ticking spells all require "an amount" on landing, so
+    // automatically convert a "proc on spell landed" type to "proc on
+    // hit/crit".
+    if ( pt == PROC2_LANDED &&
+         ( type == PROC1_PERIODIC || type == PROC1_PERIODIC_TAKEN || 
+           type == PROC1_PERIODIC_HEAL || type == PROC1_PERIODIC_HEAL_TAKEN || 
+           type == PROC1_HEAL || type == PROC1_AOE_HEAL ) )
+    {
+      add_callback( procs[ type ][ PROC2_HIT  ], cb );
+      if ( cb -> listener -> sim -> debug )
+        s << util::proc_type_string( type ) << util::proc_type2_string( PROC2_HIT ) << " ";
+
+      add_callback( procs[ type ][ PROC2_CRIT ], cb );
+      if ( cb -> listener -> sim -> debug )
+        s << util::proc_type_string( type ) << util::proc_type2_string( PROC2_CRIT ) << " ";
+    }
+    // Do normal registration based on the existence of the flag
+    else
+    {
+      add_callback( procs[ type ][ pt ], cb );
+      if ( cb -> listener -> sim -> debug )
+        s << util::proc_type_string( type ) << util::proc_type2_string( pt ) << " ";
+    }
+  }
+
+  if ( cb -> listener -> sim -> debug )
+    cb -> listener -> sim -> out_debug.printf( "%s", s.str().c_str() );
+}
+
+
+void player_callbacks_t::register_callback( unsigned proc_flags,
+                                            unsigned proc_flags2,
+                                            action_callback_t* cb )
+{
+  // We cannot default the "what kind of abilities proc this callback" flags,
+  // they need to be non-zero
+  assert( proc_flags != 0 && cb != 0 );
+
+  if ( cb -> listener -> sim -> debug )
+    cb -> listener -> sim -> out_debug.printf( "Registering callback proc_flags=%#.8x proc_flags2=%#.8x",
+        proc_flags, proc_flags2 );
+
+  // Default method for proccing is "on spell landing", if no "what type of
+  // result procs this callback" is given
+  if ( proc_flags2 == 0 )
+    proc_flags2 = PF2_LANDED;
+
+  for ( proc_types t = PROC1_TYPE_MIN; t < PROC1_TYPE_BLIZZARD_MAX; t++ )
+  {
+    // If there's no proc-on-X, we don't need to add anything
+    if ( ! ( proc_flags & ( 1 << t ) ) )
+      continue;
+
+    // Skip periodic procs, they are handled below as a special case
+    if ( t == PROC1_PERIODIC || t == PROC1_PERIODIC_TAKEN )
+      continue;
+
+    add_proc_callback( t, proc_flags2, cb );
+  }
+
+  // Separately handle periodic procs, since they need some special massaging
+  if ( proc_flags & PF_PERIODIC )
+  {
+    // 1) Periodic damage only. This is the default behavior of our system when
+    // only PROC1_PERIODIC is defined on a trinket.
+    if ( ! proc_flags & PF_HEAL && ! proc_flags2 & PF2_PERIODIC_HEAL )
+      add_proc_callback( PROC1_PERIODIC, proc_flags2, cb );
+
+    // 2) Periodic heals only. Either inferred by a "proc by direct heals" flag, 
+    //    or by "proc on periodic heal ticks" flag, but require that there's 
+    //    no direct / ticked spell damage in flags.
+    else if ( ( proc_flags & PF_HEAL || proc_flags2 & PF2_PERIODIC_HEAL ) && 
+              ! proc_flags & PF_SPELL && ! proc_flags2 & PF2_PERIODIC_DAMAGE )
+      add_proc_callback( PROC1_PERIODIC_HEAL, proc_flags2, cb );
+
+    // Both
+    else
+    {
+      add_proc_callback( PROC1_PERIODIC, proc_flags2, cb );
+      add_proc_callback( PROC1_PERIODIC_HEAL, proc_flags2, cb );
+    }
+  }
+}
+
 // player_t::register_resource_gain_callback ================================
 
 void player_callbacks_t::register_resource_gain_callback( resource_e resource_type,
@@ -9060,20 +9182,6 @@ void player_callbacks_t::register_harmful_spell_callback( int64_t mask,
   }
 }
 
-
-// player_t::register_direct_harmful_spell_callback =========================
-
-void player_callbacks_t::register_direct_harmful_spell_callback( int64_t mask,
-                                                                 action_callback_t* cb )
-{
-  for ( result_e i = RESULT_NONE; i < RESULT_MAX; i++ )
-  {
-    if ( ( i > 0 && mask < 0 ) || ( mask & ( int64_t( 1 ) << i ) ) )
-    {
-      direct_harmful_spell[ i ].push_back( cb );
-    }
-  }
-}
 
 // player_t::register_tick_damage_callback ==================================
 

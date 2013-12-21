@@ -3779,6 +3779,9 @@ struct rain_of_fire_tick_t : public warlock_spell_t
     }
     return m;
   }
+
+  proc_types proc_type()
+  { return PROC1_PERIODIC; }
 };
 
 

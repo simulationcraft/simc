@@ -116,11 +116,14 @@ std::ostringstream& action_state_t::debug_str( std::ostringstream& s )
 
   s << std::hex;
 
-  s << " obj=" << this;
   s << " snapshot_flags=" << action -> snapshot_flags;
   s << " update_flags=" << action -> update_flags;
   s << " result=" << util::result_type_string( result );
   s << " type=" << util::amount_type_string( result_type );
+
+  s << " proc_type=" << util::proc_type_string( proc_type() );
+  s << " exec_proc_type=" << util::proc_type2_string( execute_proc_type2() );
+  s << " impact_proc_type=" << util::proc_type2_string( impact_proc_type2() );
 
   s << std::dec;
 

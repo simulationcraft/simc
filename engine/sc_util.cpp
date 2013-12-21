@@ -1239,6 +1239,7 @@ const char* util::armor_type_string( item_subclass_armor type )
     case ITEM_SUBCLASS_ARMOR_LEATHER: return "leather";
     case ITEM_SUBCLASS_ARMOR_MAIL: return "mail";
     case ITEM_SUBCLASS_ARMOR_PLATE: return "plate";
+    case ITEM_SUBCLASS_ARMOR_SHIELD: return "shield";
     case ITEM_SUBCLASS_ARMOR_MISC: return "misc";
     default: return "";
   }
@@ -1295,6 +1296,57 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_ARMOR:        return "armor";
 
     default: return "unknown";
+  }
+}
+
+// proc_type_tring ==========================================================
+
+const char* util::proc_type_string( proc_types type )
+{
+  switch ( type )
+  { 
+    case PROC1_KILLED:               return "Killed";
+    case PROC1_KILLING_BLOW:         return "KillingBlow";
+    case PROC1_MELEE:                return "MeleeSwing";
+    case PROC1_MELEE_TAKEN:          return "MeleeSwingTaken";
+    case PROC1_MELEE_ABILITY:        return "MeleeAbility";
+    case PROC1_MELEE_ABILITY_TAKEN:  return "MeleeAbilityTaken";
+    case PROC1_RANGED:               return "RangedShot";
+    case PROC1_RANGED_TAKEN:         return "RangedShotTaken";
+    case PROC1_RANGED_ABILITY:       return "RangedAbility";
+    case PROC1_RANGED_ABILITY_TAKEN: return "RangedAbilityTaken";
+    case PROC1_AOE_HEAL:             return "AoeHeal";
+    case PROC1_AOE_HEAL_TAKEN:       return "AoeHealTaken";
+    case PROC1_AOE_SPELL:            return "AoeHarmfulSpell";
+    case PROC1_AOE_SPELL_TAKEN:      return "AoeHarmfulSpellTaken";
+    case PROC1_HEAL:                 return "Heal";
+    case PROC1_HEAL_TAKEN:           return "HealTaken";
+    case PROC1_SPELL:                return "HarmfulSpell";
+    case PROC1_SPELL_TAKEN:          return "HarmfulSpellTaken";
+    case PROC1_PERIODIC:             return "HarmfulTick";
+    case PROC1_PERIODIC_TAKEN:       return "HarmfulTickTaken";
+    case PROC1_ANY_DAMAGE_TAKEN:     return "AnyDamageTaken";
+    case PROC1_PERIODIC_HEAL:        return "TickHeal";
+    case PROC1_PERIODIC_HEAL_TAKEN:  return "TickHealTaken";
+    default:                         return "Unknown";
+  }
+}
+
+// proc_type2_string ========================================================
+
+const char* util::proc_type2_string( proc_types2 type )
+{
+  switch ( type )
+  {
+    case PROC2_HIT:    return "HitAmount";
+    case PROC2_CRIT:   return "CritAmount";
+    case PROC2_GLANCE: return "GlanceAmount";
+    case PROC2_DODGE:  return "Dodge";
+    case PROC2_PARRY:  return "Parry";
+    case PROC2_MISS:   return "Miss";
+    case PROC2_LANDED: return "Impact";
+    case PROC2_CAST:   return "Cast";
+    default:           return "Unknown";
   }
 }
 

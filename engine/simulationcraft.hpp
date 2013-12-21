@@ -1207,6 +1207,8 @@ const char* armor_type_string         ( int type );
 const char* armor_type_string         ( item_subclass_armor type );
 const char* set_bonus_string          ( set_e type );
 const char* cache_type_string         ( cache_e type );
+const char* proc_type_string          ( proc_types type );
+const char* proc_type2_string         ( proc_types2 type );
 
 bool is_match_slot( slot_e slot );
 item_subclass_armor matching_armor_type ( player_e ptype );
@@ -1217,7 +1219,6 @@ const char* stat_type_abbrev          ( stat_e type );
 const char* stat_type_wowhead         ( stat_e type );
 const char* stat_type_gem             ( stat_e type );
 const char* stat_type_askmrrobot      ( stat_e type );
-resource_e translate_power_type  ( power_e );
 const char* weapon_type_string        ( weapon_e type );
 const char* weapon_class_string       ( int class_ );
 const char* weapon_subclass_string    ( int subclass );
@@ -1225,6 +1226,9 @@ const char* weapon_subclass_string    ( int subclass );
 const char* set_item_type_string      ( int item_set );
 const char* item_quality_string       ( int item_quality );
 const char* specialization_string     ( specialization_e spec );
+
+resource_e  translate_power_type      ( power_e );
+stat_e      power_type_to_stat        ( power_e );
 
 attribute_e parse_attribute_type ( const std::string& name );
 dmg_e parse_dmg_type             ( const std::string& name );
@@ -3617,7 +3621,6 @@ struct player_callbacks_t
   std::array< std::vector<action_callback_t*>, RESULT_MAX > attack;
   std::array< std::vector<action_callback_t*>, RESULT_MAX > spell;
   std::array< std::vector<action_callback_t*>, RESULT_MAX > harmful_spell;
-  std::array< std::vector<action_callback_t*>, RESULT_MAX > direct_harmful_spell;
   std::array< std::vector<action_callback_t*>, RESULT_MAX > heal;
   std::array< std::vector<action_callback_t*>, RESULT_MAX > absorb;
   std::array< std::vector<action_callback_t*>, RESULT_MAX > tick;
@@ -3635,11 +3638,23 @@ struct player_callbacks_t
 
   std::array< std::vector<action_callback_t*>, RESULT_MAX > incoming_attack;
 
+  // New proc system
+
+  // Callbacks (procs) stored in a vector
+  typedef std::vector<action_callback_t*> proc_list_t;
+  // .. an array of callbacks, for each proc_type2 enum (procced by hit/crit, etc...)
+  typedef std::array<proc_list_t, PROC2_TYPE_MAX> proc_on_array_t;
+  // .. an array of procced by arrays, for each proc_type enum (procced on aoe, heal, tick, etc...)
+  typedef std::array<proc_on_array_t, PROC1_TYPE_MAX> proc_array_t;
+
+  proc_array_t procs;
+  
   virtual ~player_callbacks_t()
   { range::sort( all_callbacks ); dispose( all_callbacks.begin(), range::unique( all_callbacks ) ); }
 
   void reset();
 
+  void register_callback( unsigned proc_flags, unsigned proc_flags2, action_callback_t* cb );
   void register_resource_gain_callback       ( resource_e,     action_callback_t*      );
   void register_resource_loss_callback       ( resource_e,     action_callback_t*      );
   void register_attack_callback              ( int64_t result_mask, action_callback_t* );
@@ -3648,7 +3663,6 @@ struct player_callbacks_t
   void register_heal_callback                ( int64_t result_mask, action_callback_t* );
   void register_absorb_callback              ( int64_t result_mask, action_callback_t* );
   void register_harmful_spell_callback       ( int64_t result_mask, action_callback_t* );
-  void register_direct_harmful_spell_callback( int64_t result_mask, action_callback_t* );
   void register_tick_damage_callback         ( int64_t result_mask, action_callback_t* );
   void register_direct_damage_callback       ( int64_t result_mask, action_callback_t* );
   void register_direct_crit_callback         ( int64_t result_mask, action_callback_t* );
@@ -3657,6 +3671,8 @@ struct player_callbacks_t
   void register_tick_heal_callback           ( int64_t result_mask, action_callback_t* );
   void register_direct_heal_callback         ( int64_t result_mask, action_callback_t* );
   void register_incoming_attack_callback     ( int64_t result_mask, action_callback_t* );
+private:
+  void add_proc_callback( proc_types type, unsigned flags, action_callback_t* cb );
 };
 /* The Cache system increases simulation performance by moving the calculation point
  * from call-time to modification-time of a stat. Because a stat is called much more
@@ -5360,6 +5376,11 @@ public:
 
   core_event_t* start_action_execute_event( timespan_t time, action_state_t* execute_state = 0 );
 
+  // Overridable base proc type for direct results, needed for dynamic aoe 
+  // stuff and such.
+  virtual proc_types proc_type()
+  { return PROC1_INVALID; }
+
 private:
   std::vector<travel_event_t*> travel_events;
 public:
@@ -5439,6 +5460,56 @@ struct action_state_t : public noncopyable
 
   virtual double composite_target_mitigation_ta_multiplier()
   { return target_mitigation_ta_multiplier; }
+
+  // Primary proc type of the result (direct (aoe) damage/heal, periodic
+  // damage/heal)
+  virtual proc_types proc_type() const
+  {
+    if ( result_type == DMG_DIRECT || result_type == HEAL_DIRECT )
+      return action -> proc_type();
+    else if ( result_type == DMG_OVER_TIME )
+      return PROC1_PERIODIC;
+    else if ( result_type == HEAL_OVER_TIME )
+      return PROC1_PERIODIC_HEAL;
+
+    return PROC1_INVALID;
+  }
+
+  // Secondary proc type of the "finished casting" (i.e., execute()). Only
+  // triggers the "landing", dodge, parry, and miss procs
+  virtual proc_types2 execute_proc_type2() const
+  {
+    // Bunch up all non-damaging harmful attacks that land into "hit"
+    if ( action -> harmful && action -> result_is_hit( result ) )
+      return PROC2_LANDED;
+    else if ( result == RESULT_DODGE )
+      return PROC2_DODGE;
+    else if ( result == RESULT_PARRY )
+      return PROC2_PARRY;
+    else if ( result == RESULT_MISS )
+      return PROC2_MISS;
+
+    return PROC2_INVALID;
+  }
+
+  // Secondary proc type of the impact event (i.e., assess_damage()). Only
+  // triggers the "amount" procs
+  virtual proc_types2 impact_proc_type2() const
+  {
+    // Don't allow impact procs that do not do damage or heal anyone; they 
+    // should all be handled by execute_proc_type2().
+    if ( result_amount <= 0 )
+      return PROC2_INVALID;
+
+    if ( result == RESULT_HIT )
+      return PROC2_HIT;
+    else if ( result == RESULT_CRIT )
+      return PROC2_CRIT;
+    else if ( result == RESULT_GLANCE )
+      return PROC2_GLANCE;
+
+    return PROC2_INVALID;
+  }
 };
 
 struct heal_state_t : public action_state_t
@@ -5524,6 +5595,26 @@ struct melee_attack_t : public attack_t
   virtual double  dodge_chance( double /* expertise */, player_t* t );
   virtual double  parry_chance( double /* expertise */, player_t* t );
   virtual double glance_chance( int delta_level );
+
+  virtual proc_types proc_type()
+  {
+    if ( ! is_aoe() )
+    {
+      if ( special )
+        return PROC1_MELEE_ABILITY;
+      else
+        return PROC1_MELEE;
+    }
+    else
+    {
+      // "Fake" AOE based attacks as spells
+      if ( special )
+        return PROC1_AOE_SPELL;
+      // AOE white attacks shouldn't really happen ..
+      else
+        return PROC1_MELEE;
+    }
+  }
 };
 
 // Ranged Attack ===================================================================
@@ -5538,6 +5629,26 @@ struct ranged_attack_t : public attack_t
   virtual double glance_chance( int delta_level );
   virtual double composite_target_multiplier( player_t* );
   virtual void schedule_execute( action_state_t* execute_state = 0 );
+
+  virtual proc_types proc_type()
+  {
+    if ( ! is_aoe() )
+    {
+      if ( special )
+        return PROC1_RANGED_ABILITY;
+      else
+        return PROC1_RANGED;
+    }
+    else
+    {
+      // "Fake" AOE based attacks as spells
+      if ( special )
+        return PROC1_AOE_SPELL;
+      // AOE white attacks shouldn't really happen ..
+      else
+        return PROC1_RANGED;
+    }
+  }
 };
 
 // Spell Base ====================================================================
@@ -5567,6 +5678,26 @@ struct spell_base_t : public action_t
   virtual double composite_crit_multiplier()
   { return action_t::composite_crit_multiplier() * player -> composite_spell_crit_multiplier(); }
 
+  proc_types proc_type()
+  {
+    if ( ! is_aoe() )
+    {
+      if ( harmful )
+        return PROC1_SPELL;
+      // Only allow non-harmful abilities with "an amount" to count as heals
+      else if ( base_dd_min > 0 )
+        return PROC1_HEAL;
+    }
+    else
+    {
+      if ( harmful )
+        return PROC1_AOE_SPELL;
+      else if ( base_dd_min > 0 )
+        return PROC1_AOE_HEAL;
+    }
+
+    return PROC1_INVALID;
+  }
 };
 
 // Harmful Spell ====================================================================
@@ -5807,7 +5938,9 @@ struct action_callback_t
     listener( l ), active( true ), allow_self_procs( asp ), allow_item_procs( aip ), allow_procs( ap )
   {
     assert( l );
-    l -> callbacks.all_callbacks.push_back( this );
+    if ( std::find( l -> callbacks.all_callbacks.begin(), l -> callbacks.all_callbacks.end(), this )
+        == l -> callbacks.all_callbacks.end() )
+      l -> callbacks.all_callbacks.push_back( this );
   }
   virtual ~action_callback_t() {}
   virtual void trigger( action_t*, void* call_data ) = 0;

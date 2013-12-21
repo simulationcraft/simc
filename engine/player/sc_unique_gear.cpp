@@ -3492,10 +3492,6 @@ action_callback_t* unique_gear::register_cost_reduction_proc( player_t* player,
   {
     player -> callbacks.register_heal_callback( effect.trigger_mask, cb );
   }
-  else if ( effect.trigger_type == PROC_DIRECT_HARMFUL_SPELL )
-  {
-    player -> callbacks.register_direct_harmful_spell_callback( effect.trigger_mask, cb );
-  }
 
   return cb;
 }

@@ -553,6 +553,8 @@ std::shared_ptr<js_node_t> download_item_data( item_t& item, cache::behavior_e c
         trigger_type = ITEM_SPELLTRIGGER_ON_EQUIP;
       else if ( util::str_compare_ci( spell_trigger, "ON_USE" ) )
         trigger_type = ITEM_SPELLTRIGGER_ON_USE;
+      else if ( util::str_compare_ci( spell_trigger, "ON_PROC" ) )
+        trigger_type = ITEM_SPELLTRIGGER_CHANCE_ON_HIT;
 
       if ( trigger_type != -1 && spell_id > 0 )
       {
