@@ -291,7 +291,7 @@ public:
   virtual double    composite_parry();
   virtual double    composite_dodge();
   virtual double    composite_crit_avoidance();
-  virtual double    composite_rating_multiplier( rating_e rating );
+  virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual void      init_spells();
@@ -347,8 +347,8 @@ public:
   { return _active_stance; }
   bool switch_to_stance( stance_e );
   void stance_invalidates( stance_e );
-  const spell_data_t& static_stance_data( stance_e );
-  const spell_data_t& active_stance_data( stance_e );
+  const spell_data_t& static_stance_data( stance_e ) const;
+  const spell_data_t& active_stance_data( stance_e ) const;
 
 };
 
@@ -3525,7 +3525,7 @@ double monk_t::composite_crit_avoidance()
   return c;
 }
 
-double monk_t::composite_rating_multiplier( rating_e rating )
+double monk_t::composite_rating_multiplier( rating_e rating ) const
 {
   double m = base_t::composite_rating_multiplier( rating );
 
@@ -4156,7 +4156,7 @@ bool monk_t::switch_to_stance( stance_e to )
 
 /* Returns the stance data of the requested stance
  */
-inline const spell_data_t& monk_t::static_stance_data( stance_e stance )
+inline const spell_data_t& monk_t::static_stance_data( stance_e stance ) const
 {
   switch ( stance )
   {
@@ -4174,7 +4174,7 @@ inline const spell_data_t& monk_t::static_stance_data( stance_e stance )
 
 /* Returns the stance data of the requested stance ONLY IF the stance is active
  */
-const spell_data_t& monk_t::active_stance_data( stance_e stance )
+const spell_data_t& monk_t::active_stance_data( stance_e stance ) const
 {
   if ( stance != current_stance() )
     return *spell_data_t::not_found();

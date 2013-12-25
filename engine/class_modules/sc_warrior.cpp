@@ -277,7 +277,7 @@ public:
   virtual double    composite_crit_avoidance();
   virtual double    composite_dodge();
   virtual double    composite_melee_speed();
-  virtual double    composite_rating_multiplier( rating_e rating );
+  virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
   virtual void      create_options();
@@ -638,7 +638,7 @@ static  void trigger_sweeping_strikes( action_state_t* s )
     return timespan_t::from_seconds( 1 );
   }
 
-  size_t available_targets( std::vector< player_t* >& tl )
+  size_t available_targets( std::vector< player_t* >& tl ) const
   {
     tl.clear();
 
@@ -2149,7 +2149,7 @@ struct slam_sweeping_strikes_attack_t : public warrior_attack_t
     return data().effectN( 3 ).percent(); //does not double dip on anything
   }
 
-  size_t available_targets( std::vector< player_t* >& tl )
+  size_t available_targets( std::vector< player_t* >& tl ) const
   {
     tl.clear();
 
@@ -4194,7 +4194,7 @@ double warrior_t::composite_melee_speed()
 
 // warrior_t::composite_rating_multiplier ===================================
 
-double warrior_t::composite_rating_multiplier( rating_e rating )
+double warrior_t::composite_rating_multiplier( rating_e rating ) const
 {
   double m = player_t::composite_rating_multiplier( rating );
 

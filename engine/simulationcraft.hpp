@@ -4620,8 +4620,8 @@ public:
   virtual double composite_attribute( attribute_e attr );
   virtual double composite_attribute_multiplier( attribute_e attr );
 
-  virtual double composite_rating_multiplier( rating_e /* rating */ );
-  virtual double composite_rating( rating_e rating );
+  virtual double composite_rating_multiplier( rating_e /* rating */ ) const;
+  virtual double composite_rating( rating_e rating ) const;
 
   double composite_spell_hit_rating()
   { return composite_rating( RATING_SPELL_HIT ); }
@@ -4667,7 +4667,7 @@ public:
   double mastery_coefficient() { return _mastery -> mastery_value(); }
 
   // Stat Caching
-  player_stat_cache_t cache;
+  mutable player_stat_cache_t cache;
 #ifdef SC_STAT_CACHE
   virtual void invalidate_cache( cache_e c );
 #else
@@ -4723,7 +4723,7 @@ public:
   virtual void  summon_pet( const std::string& name, timespan_t duration = timespan_t::zero() );
   virtual void dismiss_pet( const std::string& name );
 
-  bool is_moving() { return buffs.raid_movement -> check() || buffs.self_movement -> check(); }
+  bool is_moving() const { return buffs.raid_movement -> check() || buffs.self_movement -> check(); }
 
   bool parse_talents_numbers( const std::string& talent_string );
   bool parse_talents_armory( const std::string& talent_string );
@@ -5117,7 +5117,7 @@ struct action_t : public noncopyable
     bool is_valid;
     target_cache_t() : callback( nullptr ), is_valid( false ) {}
     ~target_cache_t() { delete callback; }
-  } target_cache;
+  } mutable target_cache;
 
   school_e school;
 
@@ -5293,9 +5293,9 @@ struct action_t : public noncopyable
   void add_child( action_t* child ) { stats -> add_child( child -> stats ); }
 
   virtual int num_targets();
-  virtual size_t available_targets( std::vector< player_t* >& );
-  virtual std::vector< player_t* >& target_list();
-  virtual player_t* find_target_by_number( int number );
+  virtual size_t available_targets( std::vector< player_t* >& ) const;
+  virtual std::vector< player_t* >& target_list() const;
+  virtual player_t* find_target_by_number( int number ) const;
 
   auto_dispose< std::vector<action_state_t*> > state_cache;
   action_state_t* execute_state; /* State of the last execute() */
@@ -5731,13 +5731,13 @@ public:
 
 
   virtual void assess_damage( dmg_e, action_state_t* );
-  virtual size_t available_targets( std::vector< player_t* >& );
+  virtual size_t available_targets( std::vector< player_t* >& ) const;
   virtual void init_target_cache();
   virtual double calculate_direct_amount( action_state_t* state );
   virtual void execute();
   player_t* find_greatest_difference_player();
   player_t* find_lowest_player();
-  std::vector < player_t* > find_lowest_players( int num_players );
+  std::vector < player_t* > find_lowest_players( int num_players ) const;
   virtual int num_targets();
   virtual void   parse_effect_data( const spelleffect_data_t& );
 
@@ -5774,7 +5774,7 @@ struct absorb_t : public spell_base_t
   virtual void assess_damage( dmg_e, action_state_t* );
   virtual void impact( action_state_t* );
   virtual void init_target_cache();
-  virtual size_t available_targets( std::vector< player_t* >& );
+  virtual size_t available_targets( std::vector< player_t* >& ) const;
   virtual int num_targets();
 
   virtual double composite_da_multiplier()

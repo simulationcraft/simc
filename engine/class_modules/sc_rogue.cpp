@@ -810,7 +810,7 @@ static bool trigger_blade_flurry( action_state_t* s )
       return m;
     }
 
-    size_t available_targets( std::vector< player_t* >& tl )
+    size_t available_targets( std::vector< player_t* >& tl ) const
     {
       tl.clear();
 

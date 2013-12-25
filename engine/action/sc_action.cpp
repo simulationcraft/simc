@@ -928,7 +928,7 @@ int action_t::num_targets()
 
 // action_t::available_targets ==============================================
 
-size_t action_t::available_targets( std::vector< player_t* >& tl )
+size_t action_t::available_targets( std::vector< player_t* >& tl ) const
 {
   tl.clear();
   tl.push_back( target );
@@ -946,7 +946,7 @@ size_t action_t::available_targets( std::vector< player_t* >& tl )
 
 // action_t::target_list ====================================================
 
-std::vector< player_t* >& action_t::target_list()
+std::vector< player_t* >& action_t::target_list() const
 {
   // Check if target cache is still valid. If not, recalculate it
   if ( ! target_cache.is_valid )
@@ -958,7 +958,7 @@ std::vector< player_t* >& action_t::target_list()
   return target_cache.list;
 }
 
-player_t* action_t::find_target_by_number( int number )
+player_t* action_t::find_target_by_number( int number ) const
 {
   std::vector< player_t* >& tl = target_list();
   size_t total_targets = tl.size();

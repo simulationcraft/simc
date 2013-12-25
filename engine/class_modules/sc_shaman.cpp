@@ -405,7 +405,7 @@ public:
   virtual double    composite_spell_power( school_e school );
   virtual double    composite_spell_power_multiplier();
   virtual double    composite_player_multiplier( school_e school );
-  virtual double    composite_rating_multiplier( rating_e rating );
+  virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   virtual double    matching_gear_multiplier( attribute_e attr );
   virtual void      create_options();
@@ -1677,7 +1677,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
     }
 
     // Exclude targets with your flame shock on
-    size_t available_targets( std::vector< player_t* >& tl )
+    size_t available_targets( std::vector< player_t* >& tl ) const
     {
       tl.clear();
 
@@ -1692,11 +1692,17 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
         if ( sim -> actor_list[ i ] == target )
           continue;
 
-        dot_t* target_dot = td( target ) -> dot.flame_shock;
-        dot_t* spread_dot = td( sim -> actor_list[ i ] ) -> dot.flame_shock;
+        if ( shaman_td_t* main_target_td = find_td( target ) )
+        {
+          if ( shaman_td_t* td = find_td( sim -> actor_list[ i ] ) )
+          {
+            dot_t* target_dot = main_target_td -> dot.flame_shock;
+            dot_t* spread_dot = td -> dot.flame_shock;
 
-        if ( spread_dot -> remains() > target_dot -> remains() )
-          continue;
+            if ( spread_dot -> remains() > target_dot -> remains() )
+              continue;
+          }
+        }
 
         tl.push_back( sim -> actor_list[ i ] );
       }
@@ -1704,7 +1710,7 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
       return tl.size();
     }
 
-    std::vector< player_t* >& target_list()
+    std::vector< player_t* >& target_list() const
     {
       size_t total_targets = available_targets( target_cache.list );
 
@@ -1719,17 +1725,20 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
         // this will have to do for now
         for ( size_t i = 0; i < target_cache.list.size(); i++ )
         {
-          if ( td( target_cache.list[ i ] ) -> dot.flame_shock -> ticking )
+          if ( shaman_td_t* td = find_td( target_cache.list[ i ] ) )
           {
-            target_cache.list.erase( target_cache.list.begin() + i );
-            removed = true;
-            break;
+            if ( td -> dot.flame_shock -> ticking )
+            {
+              target_cache.list.erase( target_cache.list.begin() + i );
+              removed = true;
+              break;
+            }
           }
         }
 
         // There's no flame shocked targets to remove, eliminate a random target
         if ( ! removed )
-          target_cache.list.erase( target_cache.list.begin() + static_cast< size_t >( rng().range( 0, as<double>( target_cache.list.size() ) ) ) );
+          target_cache.list.erase( target_cache.list.begin() + static_cast< size_t >( const_cast<improved_lava_lash_t*>(this) -> rng().range( 0, as<double>( target_cache.list.size() ) ) ) );
 
         total_targets--;
       }
@@ -3225,7 +3234,7 @@ struct fire_nova_explosion_t : public shaman_spell_t
   }
 
   // Fire nova does not damage the main target.
-  size_t available_targets( std::vector< player_t* >& tl )
+  size_t available_targets( std::vector< player_t* >& tl ) const
   {
     tl.clear();
 
@@ -3274,7 +3283,7 @@ struct fire_nova_t : public shaman_spell_t
   }
 
   // Fire nova is emitted on all targets with a flame shock from us .. so
-  std::vector< player_t* >& target_list()
+  std::vector< player_t* >& target_list() const
   {
     target_cache.list.clear();
 
@@ -3284,8 +3293,9 @@ struct fire_nova_t : public shaman_spell_t
       if ( ! e -> is_enemy() )
         continue;
 
-      if ( td( e ) -> dot.flame_shock -> ticking )
-        target_cache.list.push_back( e );
+      if ( shaman_td_t* td = find_td( e ) )
+        if ( td -> dot.flame_shock -> ticking )
+          target_cache.list.push_back( e );
     }
 
     return target_cache.list;
@@ -6070,7 +6080,7 @@ double shaman_t::composite_player_multiplier( school_e school )
 
 // shaman_t::composite_rating_multiplier ====================================
 
-double shaman_t::composite_rating_multiplier( rating_e rating )
+double shaman_t::composite_rating_multiplier( rating_e rating ) const
 {
   double m = player_t::composite_rating_multiplier( rating );
 

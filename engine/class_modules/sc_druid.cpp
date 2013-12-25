@@ -434,7 +434,7 @@ public:
   virtual double    composite_block() { return 0; }
   virtual double    composite_crit_avoidance();
   virtual double    composite_dodge();
-  virtual double    composite_rating_multiplier( rating_e rating );
+  virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
@@ -7340,7 +7340,7 @@ double druid_t::composite_dodge()
 
 // druid_t::composite_rating_multiplier =====================================
 
-double druid_t::composite_rating_multiplier( rating_e rating )
+double druid_t::composite_rating_multiplier( rating_e rating ) const
 {
   double m = player_t::composite_rating_multiplier( rating );
 

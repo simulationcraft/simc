@@ -2668,7 +2668,7 @@ struct cleave_t : public T
     }
   }
 
-  size_t available_targets( std::vector< player_t* >& tl )
+  size_t available_targets( std::vector< player_t* >& tl ) const
   {
     tl.clear();
 

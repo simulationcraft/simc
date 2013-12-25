@@ -213,7 +213,7 @@ player_t* heal_t::find_lowest_player()
   return max_player;
 }
 
-std::vector<player_t*> heal_t::find_lowest_players( int num_players )
+std::vector<player_t*> heal_t::find_lowest_players( int num_players ) const
 {
   // vector in which to store lowest N players
   std::vector<player_t*> lowest_N_players = sim -> player_no_pet_list.data();
@@ -260,7 +260,7 @@ int heal_t::num_targets()
 
 // heal_t::available_targets ================================================
 
-size_t heal_t::available_targets( std::vector< player_t* >& tl )
+size_t heal_t::available_targets( std::vector< player_t* >& tl ) const
 {
   tl.clear();
   tl.push_back( target );

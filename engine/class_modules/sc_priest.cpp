@@ -315,7 +315,7 @@ public:
 
   priest_td_t* find_target_data( player_t* target ) const;
   void fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name );
-  double shadowy_recall_chance();
+  double shadowy_recall_chance() const;
 
 private:
   // Construction helper functions for priest_t members
@@ -3616,7 +3616,7 @@ struct binding_heal_t final : public priest_heal_t
     target_cache.list.push_back( player );
   }
 
-  virtual size_t available_targets( std::vector< player_t* >& tl ) override
+  virtual size_t available_targets( std::vector< player_t* >& tl ) const override
   {
     assert( tl.size() == 2 );
 
@@ -5874,7 +5874,7 @@ void priest_t::target_mitigation( school_e school,
 
 /* Helper function to get the shadowy recall proc chance
  */
-double priest_t::shadowy_recall_chance()
+double priest_t::shadowy_recall_chance() const
 {
   return mastery_spells.shadowy_recall -> ok() ? cache.mastery_value() : 0.0;
 }

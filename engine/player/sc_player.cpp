@@ -3367,7 +3367,7 @@ double player_t::composite_attribute_multiplier( attribute_e attr )
 
 // player_t::composite_rating_multiplier ====================================
 
-double player_t::composite_rating_multiplier( rating_e rating )
+double player_t::composite_rating_multiplier( rating_e rating ) const
 {
   double v = 1.0;
 
@@ -3392,7 +3392,7 @@ double player_t::composite_rating_multiplier( rating_e rating )
 
 // player_t::composite_rating ===============================================
 
-double player_t::composite_rating( rating_e rating )
+double player_t::composite_rating( rating_e rating ) const
 {
   double v = 0;
 

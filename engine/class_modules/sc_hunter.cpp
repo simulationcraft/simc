@@ -947,7 +947,7 @@ static bool trigger_beast_cleave( action_state_t* s )
       weapon_multiplier = 0;
     }
 
-    size_t available_targets( std::vector< player_t* >& tl )
+    size_t available_targets( std::vector< player_t* >& tl ) const
     {
       tl.clear();
 

@@ -1429,7 +1429,7 @@ public:
   bool fury_in_meta;
   stats_t* ds_tick_stats;
   stats_t* mg_tick_stats;
-  std::vector< player_t* > havoc_targets;
+  mutable std::vector< player_t* > havoc_targets;
 
   int havoc_consume, backdraft_consume;
 
@@ -1470,7 +1470,7 @@ public:
 
   warlock_td_t* td( player_t* t ) { return p() -> get_target_data( t ? t : target ); }
 
-  bool use_havoc()
+  bool use_havoc() const
   {
     if ( ! p() -> havoc_target || target == p() -> havoc_target || ! havoc_consume )
       return false;
@@ -1514,7 +1514,7 @@ public:
     return spell_t::n_targets();
   }
 
-  virtual std::vector< player_t* >& target_list()
+  virtual std::vector< player_t* >& target_list() const
   {
     if ( use_havoc() )
     {

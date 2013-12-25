@@ -115,7 +115,7 @@ int absorb_t::num_targets()
 
 // absorb_t::available_targets ==============================================
 
-size_t absorb_t::available_targets( std::vector< player_t* >& tl )
+size_t absorb_t::available_targets( std::vector< player_t* >& tl ) const
 {
   tl.clear();
   tl.push_back( target );

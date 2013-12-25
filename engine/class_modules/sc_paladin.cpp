@@ -2340,7 +2340,7 @@ struct lights_hammer_heal_tick_t : public paladin_heal_t
     benefits_from_seal_of_insight = false;
   }
   
-  std::vector< player_t* >& target_list()
+  std::vector< player_t* >& target_list() const
   {
     target_cache.list = paladin_heal_t::target_list();
     target_cache.list = find_lowest_players( aoe );
