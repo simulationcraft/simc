@@ -369,7 +369,7 @@ public:
 
   hunter_td_t* cast_td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = ab::cost();
 
@@ -392,7 +392,7 @@ public:
         p() -> procs.thrill_of_the_hunt -> occur();
   }
 
-  double thrill_discount( double cost )
+  double thrill_discount( double cost ) const
   {
     double result = cost;
 
@@ -1082,7 +1082,7 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     }
   }
 
-  virtual double composite_crit()
+  virtual double composite_crit() const
   {
     double cc = hunter_main_pet_attack_t::composite_crit();
 
@@ -1092,7 +1092,7 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     return cc;
   }
 
-  bool use_wild_hunt()
+  bool use_wild_hunt() const
   {
     // comment out to avoid procs
     return p() -> resources.current[ RESOURCE_FOCUS ] > 50;
@@ -1116,7 +1116,7 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     return am;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = hunter_main_pet_attack_t::cost();
 
@@ -1683,7 +1683,7 @@ struct tier15_thunderhawk_t : public hunter_pet_t
       base_costs[ RESOURCE_MANA ] = 0;
     }
 
-    virtual double composite_haste() { return 1.0; }
+    virtual double composite_haste() const { return 1.0; }
   };
 
   virtual action_t* create_action( const std::string& name,
@@ -1782,7 +1782,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
       trigger_wild_quiver();
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     timespan_t t = base_t::execute_time();
 
@@ -1875,7 +1875,7 @@ struct ranged_t : public hunter_ranged_attack_t
     special     = false;
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     if ( ! player -> in_combat )
       return timespan_t::from_seconds( 0.01 );
@@ -1930,7 +1930,7 @@ struct start_attack_t : public hunter_ranged_attack_t
     return( player -> main_hand_attack -> execute_event == 0 ); // not swinging
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     double h = 1.0;
 
@@ -2004,12 +2004,12 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     as_mm -> background = true;
   }
 
-  bool master_marksman_check()
+  bool master_marksman_check() const
   {
     return p() -> buffs.master_marksman_fire -> check() != 0;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     // NOTE that master_marksman_fire is now specified to reduce the time and cost by a percentage, though the current number is 100%
     if ( master_marksman_check() )
@@ -2025,7 +2025,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     return cc;
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     // NOTE that master_marksman_fire is now specified to reduce the time and cost by a percentage, though the current number is 100%
     if ( master_marksman_check() )
@@ -2082,7 +2082,7 @@ struct arcane_shot_t : public hunter_ranged_attack_t
     parse_options( NULL, options_str );
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     return thrill_discount( hunter_ranged_attack_t::cost() );
   }
@@ -2352,7 +2352,7 @@ struct cobra_shot_t : public hunter_ranged_attack_t
     direct_power_mod = 0.017;
   }
 
-  virtual bool usable_moving()
+  virtual bool usable_moving() const
   {
     return true;
   }
@@ -2436,7 +2436,7 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     stats -> action_list.push_back( p() -> active.explosive_ticks );
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     if ( p() -> buffs.lock_and_load -> check() )
       return 0;
@@ -2643,7 +2643,7 @@ struct serpent_sting_spread_t : public serpent_sting_t
       serpent_sting_burst -> aoe = 0;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     return 0;
   }
@@ -2697,7 +2697,7 @@ struct multi_shot_t : public hunter_ranged_attack_t
       spread_sting = new serpent_sting_spread_t( player, options_str );
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double cost = hunter_ranged_attack_t::cost();
 
@@ -2829,7 +2829,7 @@ struct steady_shot_t : public hunter_ranged_attack_t
       trigger_piercing_shots( s -> target, s -> result_amount );
   }
 
-  virtual bool usable_moving()
+  virtual bool usable_moving() const
   {
     return true;
   }
@@ -2969,12 +2969,12 @@ struct barrage_t : public hunter_spell_t
     trigger_tier16_bm_4pc_melee();
   }
 
-  virtual double composite_crit()
+  virtual double composite_crit() const
   {
     return p() -> composite_melee_crit(); // Since barrage is a spell, we need to explicitly make it use attack crit.
   }
 
-  virtual bool usable_moving()
+  virtual bool usable_moving() const
   {
     return true;
   }
@@ -3027,7 +3027,7 @@ struct moc_t : public ranged_attack_t
     return am;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = ranged_attack_t::cost();
     if ( p() -> buffs.beast_within -> check() )

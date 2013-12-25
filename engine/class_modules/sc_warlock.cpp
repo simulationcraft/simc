@@ -392,7 +392,7 @@ public:
   }
   virtual ~warlock_pet_action_t() {}
 
-  warlock_pet_t* p()
+  warlock_pet_t* p() const
   { return static_cast<warlock_pet_t*>( ab::player ); }
 
   virtual bool ready()
@@ -527,11 +527,14 @@ struct firebolt_t : public warlock_pet_spell_t
       min_gcd = timespan_t::from_seconds( 1.5 );
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     timespan_t t = warlock_pet_spell_t::execute_time();
 
-    if ( p() -> o() -> glyphs.demon_training -> ok() ) t *= 0.5;
+    if ( p() -> o() -> glyphs.demon_training -> ok() )
+    {
+      t *= 0.5;
+    }
 
     return t;
   }
@@ -653,7 +656,7 @@ struct felbolt_t : public warlock_pet_spell_t
       min_gcd = timespan_t::from_seconds( 1.5 );
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     timespan_t t = warlock_pet_spell_t::execute_time();
 
@@ -808,7 +811,7 @@ struct doom_bolt_t : public warlock_pet_spell_t
   {
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     // FIXME: Not actually how it works, but this achieves a consistent 17 casts per summon, which seems to match reality
     return timespan_t::from_seconds( 3.4 );
@@ -1478,7 +1481,7 @@ public:
     return true;
   }
 
-  bool use_backdraft()
+  bool use_backdraft() const
   {
     if ( ! backdraft_consume )
       return false;
@@ -1531,7 +1534,7 @@ public:
       return spell_t::target_list();
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = spell_t::cost();
 
@@ -1554,7 +1557,7 @@ public:
       p() -> resource_gain( RESOURCE_DEMONIC_FURY, generate_fury, gain );
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     timespan_t h = spell_t::execute_time();
 
@@ -1618,7 +1621,7 @@ public:
     return spell_t::composite_target_multiplier( t ) * m;
   }
 
-  virtual resource_e current_resource()
+  virtual resource_e current_resource() const
   {
     if ( fury_in_meta && p() -> buffs.metamorphosis -> data().ok() )
     {
@@ -1796,7 +1799,7 @@ struct curse_of_the_elements_t : public warlock_spell_t
     stats = p -> get_stats( "curse_of_elements_fnb" );
   }
 
-  double cost()
+  double cost() const
   {
     if ( fnb && p() -> buffs.fire_and_brimstone -> check() )
       return fnb -> cost();
@@ -2122,7 +2125,7 @@ struct shadow_bolt_t : public warlock_spell_t
     return r;
   }
 
-  virtual bool usable_moving()
+  virtual bool usable_moving() const
   {
     bool um = warlock_spell_t::usable_moving();
 
@@ -2175,7 +2178,7 @@ struct shadowburn_t : public warlock_spell_t
     mana_event = new ( *sim ) mana_event_t( p(), this );
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = warlock_spell_t::cost();
 
@@ -2596,7 +2599,7 @@ struct immolate_t : public warlock_spell_t
       warlock_spell_t::schedule_execute( state );
   }
 
-  double cost()
+  double cost() const
   {
     if ( fnb && p() -> buffs.fire_and_brimstone -> check() )
       return fnb -> cost();
@@ -2696,7 +2699,7 @@ struct conflagrate_t : public warlock_spell_t
       warlock_spell_t::schedule_execute( state );
   }
 
-  double cost()
+  double cost() const
   {
     if ( fnb && p() -> buffs.fire_and_brimstone -> check() )
       return fnb -> cost();
@@ -2805,7 +2808,7 @@ struct incinerate_t : public warlock_spell_t
       warlock_spell_t::schedule_execute( state );
   }
 
-  double cost()
+  double cost() const
   {
     if ( fnb && p() -> buffs.fire_and_brimstone -> check() )
       return fnb -> cost();
@@ -2861,7 +2864,7 @@ struct incinerate_t : public warlock_spell_t
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
   }
 
-  virtual bool usable_moving()
+  virtual bool usable_moving() const
   {
     bool um = warlock_spell_t::usable_moving();
 
@@ -2941,7 +2944,7 @@ struct soul_fire_t : public warlock_spell_t
 
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     timespan_t t = warlock_spell_t::execute_time();
 
@@ -2968,7 +2971,7 @@ struct soul_fire_t : public warlock_spell_t
     return m;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = warlock_spell_t::cost();
 
@@ -3006,7 +3009,7 @@ struct chaos_bolt_t : public warlock_spell_t
     return 1.0;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = warlock_spell_t::cost();
 
@@ -3473,7 +3476,7 @@ struct malefic_grasp_t : public warlock_spell_t
     consume_tick_resource( d );
   }
 
-  virtual bool usable_moving()
+  virtual bool usable_moving() const
   {
     bool um = warlock_spell_t::usable_moving();
 
@@ -3871,7 +3874,7 @@ struct hellfire_t : public warlock_spell_t
     return m;
   }
 
-  virtual bool usable_moving()
+  virtual bool usable_moving() const
   {
     return true;
   }
@@ -4233,7 +4236,7 @@ struct summon_main_pet_t : public summon_pet_t
     return summon_pet_t::ready();
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     if ( p() -> buffs.soulburn -> check() || p() -> buffs.demonic_rebirth -> check() || p() -> buffs.metamorphosis -> check() )
       return timespan_t::zero();
@@ -4274,7 +4277,7 @@ struct flames_of_xoroth_t : public warlock_spell_t
     harmful = false;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     if ( p() -> pets.active || p() -> buffs.grimoire_of_sacrifice -> check() )
       return 0;

@@ -455,7 +455,7 @@ public:
   void              apl_restoration();
   virtual void      init_action_list();
 
-  target_specific_t<druid_td_t*> target_data;
+  mutable target_specific_t<druid_td_t*> target_data;
 
   virtual druid_td_t* get_target_data( player_t* target )
   {
@@ -466,6 +466,10 @@ public:
       td = new druid_td_t( *target, *this );
     }
     return td;
+  }
+  druid_td_t* find_target_data( player_t* target ) const
+  {
+    return target_data[ target ];
   }
 
   void trigger_shooting_stars( result_e );
@@ -1193,7 +1197,7 @@ struct barkskin_t : public druid_buff_t < buff_t >
     druid_t* p() const
     { return static_cast<druid_t*>( player ); }
 
-    virtual double cost()
+    virtual double cost() const
     {
       return 0.0;
     }
@@ -1749,6 +1753,11 @@ public:
 
   druid_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 
+  druid_td_t* find_td( player_t* t ) const
+  {
+    return p() -> find_target_data( t );
+  }
+
   bool trigger_omen_of_clarity()
   {
     if ( ab::proc ) return false;
@@ -1929,7 +1938,7 @@ private:
     }
   }
 public:
-  virtual double cost()
+  virtual double cost() const
   {
     double c = base_t::cost();
 
@@ -2126,7 +2135,7 @@ struct cat_melee_t : public cat_attack_t
     special = false;
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     if ( ! player -> in_combat )
       return timespan_t::from_seconds( 0.01 );
@@ -2499,7 +2508,7 @@ struct ravage_t : public cat_attack_t
     return cat_attack_t::requires_stealth();
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     if ( p() -> set_bonus.pvp_4pc_melee() )
       if ( p() -> cooldown.pvp_4pc_melee -> up() )
@@ -2980,7 +2989,7 @@ struct bear_melee_t : public bear_attack_t
     special     = false;
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     if ( ! player -> in_combat )
       return timespan_t::from_seconds( 0.01 );
@@ -3434,7 +3443,7 @@ public:
     }
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     druid_t& p = *this -> p();
 
@@ -3444,10 +3453,10 @@ public:
     return std::max( 0.0, ab::cost() * ( 1.0 + cost_reduction() ) );
   }
 
-  virtual double cost_reduction()
+  virtual double cost_reduction() const
   { return 0.0; }
 
-  virtual double composite_haste()
+  virtual double composite_haste() const
   {
     double h = ab::composite_haste();
     druid_t& p = *this -> p();
@@ -3530,7 +3539,7 @@ protected:
   void init_living_seed();
 
 public:
-  virtual double cost()
+  virtual double cost() const
   {
     if ( p() -> buff.heart_of_the_wild -> heals_are_free() && current_resource() == RESOURCE_MANA )
       return 0;
@@ -3558,7 +3567,7 @@ public:
       p() -> buff.harmony -> trigger( 1, p() -> mastery.harmony -> ok() ? p() -> cache.mastery_value() : 0.0 );
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     if ( p() -> buff.natures_swiftness -> check() )
       return timespan_t::zero();
@@ -3566,7 +3575,7 @@ public:
     return base_t::execute_time();
   }
 
-  virtual double composite_haste()
+  virtual double composite_haste() const
   {
     double h = base_t::composite_haste();
 
@@ -3682,10 +3691,10 @@ struct frenzied_regeneration_t : public druid_heal_t
     maximum_rage_cost = data().effectN( 1 ).base_value();
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     if ( ! p() -> glyph.frenzied_regeneration -> ok() )
-      base_costs[ RESOURCE_RAGE ] = std::min( p() -> resources.current[ RESOURCE_RAGE ],
+      const_cast<frenzied_regeneration_t*>(this) -> base_costs[ RESOURCE_RAGE ] = std::min( p() -> resources.current[ RESOURCE_RAGE ],
                                               maximum_rage_cost );
 
     return druid_heal_t::cost();
@@ -3757,7 +3766,7 @@ struct healing_touch_t : public druid_heal_t
     init_living_seed();
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     if ( p() -> buff.predatory_swiftness -> check() )
       return 0;
@@ -3781,7 +3790,7 @@ struct healing_touch_t : public druid_heal_t
     return adm;
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     if ( p() -> buff.predatory_swiftness -> check() )
       return timespan_t::zero();
@@ -4007,7 +4016,7 @@ struct regrowth_t : public druid_heal_t
     }
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     if ( p() -> buff.tree_of_life -> check() )
       return timespan_t::zero();
@@ -4241,7 +4250,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
     consume_ooc = harmful;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     if ( harmful && p() -> buff.heart_of_the_wild -> damage_spells_are_free() )
       return 0;
@@ -4423,7 +4432,7 @@ struct astral_communion_t : public druid_spell_t
     may_miss     = false;
   }
 
-  virtual double composite_haste()
+  virtual double composite_haste() const
   { return 1.0; }
 
   virtual void execute()
@@ -4742,7 +4751,7 @@ struct faerie_fire_t : public druid_spell_t
     }
   }
 
-  virtual resource_e current_resource()
+  virtual resource_e current_resource() const
   {
     if ( p() -> buff.bear_form -> check() )
       return RESOURCE_RAGE;
@@ -5117,7 +5126,7 @@ struct moonfire_t : public druid_spell_t
     druid_spell_t::impact( s );
   }
 
-  virtual double cost_reduction()
+  virtual double cost_reduction() const
   {
     double cr = druid_spell_t::cost_reduction();
 
@@ -5386,7 +5395,7 @@ struct starsurge_t : public druid_spell_t
     p() -> buff.shooting_stars -> expire();
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     if ( p() -> buff.shooting_stars -> check() )
       return timespan_t::zero();
@@ -5533,7 +5542,7 @@ struct sunfire_t : public druid_spell_t
     druid_spell_t::impact( s );
   }
 
-  virtual double cost_reduction()
+  virtual double cost_reduction() const
   {
     double cr = druid_spell_t::cost_reduction();
 

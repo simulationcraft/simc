@@ -260,6 +260,13 @@ double core_sim_t::iteration_time_adjust() const
   return 1.0 + vary_combat_length * ( ( current_iteration % 2 ) ? 1 : -1 ) * current_iteration / ( double ) iterations;
 }
 
+/* Very simple helper function to return the largest expected regular simulation time.
+ */
+double core_sim_t::expected_max_time() const
+{
+  return max_time.total_seconds() * ( 1.0 + vary_combat_length );
+}
+
 /* Is the (whole) simulation canceled?
  */
 bool core_sim_t::is_canceled() const

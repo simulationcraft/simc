@@ -3556,10 +3556,22 @@ void player_t::invalidate_cache( cache_e c )
 void player_t::sequence_add( const action_t* a, const player_t* target, const timespan_t& ts )
 {
   if ( a -> marker )
+  {
     // Collect iteration#1 data, for log/debug/iterations==1 simulation iteration#0 data
     if ( ( a -> sim -> iterations <= 1 && a -> sim -> current_iteration == 0 ) ||
          ( a -> sim -> iterations > 1 && a -> sim -> current_iteration == 1 ) )
-      collected_data.action_sequence.push_back( new player_collected_data_t::action_sequence_data_t( a, target, ts, this ) );
+    {
+      if ( collected_data.action_sequence.size() <= sim -> expected_max_time() * 1.5 )
+      {
+        collected_data.action_sequence.push_back( new player_collected_data_t::action_sequence_data_t( a, target, ts, this ) );
+      }
+      else
+      {
+        assert( false && "Collected too much action sequence data."
+        "This means there is a serious overflow of executed actions in the first iteration, which should be fixed." );
+      }
+    }
+  }
 };
 
 // player_t::combat_begin ===================================================
@@ -4541,7 +4553,7 @@ double player_t::resource_gain( resource_e resource_type,
 // player_t::resource_available =============================================
 
 bool player_t::resource_available( resource_e resource_type,
-                                   double cost )
+                                   double cost ) const
 {
   if ( resource_type == RESOURCE_NONE || cost <= 0 || resources.is_infinite( resource_type ) )
   {
@@ -5584,7 +5596,7 @@ wait_for_cooldown_t::wait_for_cooldown_t( player_t* player, const std::string& c
   assert( a );
 }
 
-timespan_t wait_for_cooldown_t::execute_time()
+timespan_t wait_for_cooldown_t::execute_time() const
 { assert( wait_cd -> duration > timespan_t::zero() ); return wait_cd -> remains(); }
 
 namespace { // ANONYMOUS
@@ -6084,7 +6096,7 @@ struct wait_fixed_t : public wait_action_base_t
     time_expr = std::auto_ptr<expr_t>( expr_t::parse( this, sec_str ) );
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     timespan_t wait = timespan_t::from_seconds( time_expr -> eval() );
     if ( wait <= timespan_t::zero() ) wait = player -> available();
@@ -6101,7 +6113,7 @@ struct wait_until_ready_t : public wait_fixed_t
     wait_fixed_t( player, options_str )
   {}
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     timespan_t wait = wait_fixed_t::execute_time();
     timespan_t remains = timespan_t::zero();

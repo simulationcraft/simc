@@ -420,7 +420,7 @@ public:
   virtual void      arise();
   virtual void      reset();
 
-  target_specific_t<shaman_td_t*> target_data;
+  mutable target_specific_t<shaman_td_t*> target_data;
 
   virtual shaman_td_t* get_target_data( player_t* target )
   {
@@ -430,6 +430,11 @@ public:
       td = new shaman_td_t( target, this );
     }
     return td;
+  }
+
+  shaman_td_t* find_target_data( player_t* target ) const
+  {
+    return target_data[ target ];
   }
 
   // Event Tracking
@@ -491,16 +496,20 @@ public:
     ab::may_crit = true;
   }
 
-  shaman_t* p()
+  shaman_t* p() const
   { return debug_cast< shaman_t* >( ab::player ); }
 
   shaman_td_t* td( player_t* t = 0 )
   { return p() -> get_target_data( t ? t : ab::target ); }
 
+
+  shaman_td_t* find_td( player_t* t ) const
+  { return p() -> find_target_data( t ); }
+
   action_state_t* new_state()
   { return new shaman_action_state_t( this, ab::target ); }
 
-  double cost()
+  double cost() const
   {
     if ( ab::player -> resources.infinite_resource[ RESOURCE_MANA ] == 1 )
       return 0;
@@ -513,7 +522,7 @@ public:
     return c;
   }
 
-  virtual double cost_reduction()
+  virtual double cost_reduction() const
   {
     double c = 0.0;
 
@@ -529,7 +538,7 @@ public:
   }
 
   // Both Ancestral Swiftness and Maelstrom Weapon share this conditional for use
-  bool instant_eligibility()
+  bool instant_eligibility() const
   { return ab::data().school_mask() & SCHOOL_MASK_NATURE && ab::base_execute_time != timespan_t::zero(); }
 };
 
@@ -596,7 +605,7 @@ public:
     }
   }
 
-  double cost_reduction()
+  double cost_reduction() const
   {
     double c = ab::cost_reduction();
     shaman_t* p = ab::p();
@@ -607,7 +616,7 @@ public:
     return c;
   }
 
-  timespan_t execute_time()
+  timespan_t execute_time() const
   {
     timespan_t t = ab::execute_time();
 
@@ -798,7 +807,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       p() -> buff.elemental_focus -> trigger( p() -> buff.elemental_focus -> data().initial_stacks() );
   }
 
-  virtual double cost_reduction()
+  virtual double cost_reduction() const
   {
     double c = base_t::cost_reduction();
 
@@ -808,7 +817,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     return c;
   }
 
-  virtual bool usable_moving()
+  virtual bool usable_moving() const
   {
     if ( p() -> buff.spiritwalkers_grace -> check() || execute_time() == timespan_t::zero() )
       return true;
@@ -1077,9 +1086,9 @@ struct earth_elemental_pet_t : public pet_t
   {
     travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player ) {}
     virtual void execute() { player -> current.distance = 1; }
-    virtual timespan_t execute_time() { return timespan_t::from_seconds( player -> current.distance / 10.0 ); }
+    virtual timespan_t execute_time() const { return timespan_t::from_seconds( player -> current.distance / 10.0 ); }
     virtual bool ready() { return ( player -> current.distance > 1 ); }
-    virtual bool usable_moving() { return true; }
+    virtual bool usable_moving() const { return true; }
   };
 
   struct auto_melee_attack_t : public melee_attack_t
@@ -1202,10 +1211,10 @@ struct fire_elemental_t : public pet_t
   {
     travel_t( player_t* player ) : action_t( ACTION_OTHER, "travel", player ) {}
     virtual void execute() { player -> current.distance = 1; }
-    virtual timespan_t execute_time() { return timespan_t::from_seconds( player -> current.distance / 10.0 ); }
+    virtual timespan_t execute_time() const { return timespan_t::from_seconds( player -> current.distance / 10.0 ); }
     virtual bool ready() { return ( player -> current.distance > 1 ); }
     virtual timespan_t gcd() { return timespan_t::zero(); }
-    virtual bool usable_moving() { return true; }
+    virtual bool usable_moving() const { return true; }
   };
 
   struct fire_elemental_spell_t : public spell_t
@@ -1273,7 +1282,7 @@ struct fire_elemental_t : public pet_t
         player -> main_hand_attack -> execute_event -> reschedule( player -> main_hand_attack -> execute_time() );
     }
 
-    virtual bool usable_moving()
+    virtual bool usable_moving() const
     {
       return true;
     }
@@ -1449,7 +1458,7 @@ struct lightning_elemental_t : public pet_t
       may_crit = true;
     }
 
-    double composite_haste()
+    double composite_haste() const
     { return 1.0; }
 
     void init()
@@ -2310,13 +2319,13 @@ struct windlash_t : public shaman_melee_attack_t
     trigger_gcd       = timespan_t::zero();
   }
 
-  timespan_t execute_time()
+  timespan_t execute_time() const
   {
     timespan_t t = shaman_melee_attack_t::execute_time();
 
     if ( swing_timer_variance > 0 )
     {
-      timespan_t st = timespan_t::from_seconds( rng().gauss( t.total_seconds(), t.total_seconds() * swing_timer_variance ) );
+      timespan_t st = timespan_t::from_seconds( const_cast<windlash_t*>(this) -> rng().gauss( t.total_seconds(), t.total_seconds() * swing_timer_variance ) );
       if ( sim -> debug )
         sim -> out_debug.printf( "Swing timer variance for %s, real_time=%.3f swing_timer=%.3f", name(), t.total_seconds(), st.total_seconds() );
 
@@ -2591,18 +2600,17 @@ struct melee_t : public shaman_melee_attack_t
     first = true;
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     timespan_t t = shaman_melee_attack_t::execute_time();
     if ( first )
     {
-      first = false;
       return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::from_seconds( 0.01 ) ) : t / 2 ) : timespan_t::from_seconds( 0.01 );
     }
 
     if ( swing_timer_variance > 0 )
     {
-      timespan_t st = timespan_t::from_seconds( rng().gauss( t.total_seconds(), t.total_seconds() * swing_timer_variance ) );
+      timespan_t st = timespan_t::from_seconds(const_cast<melee_t*>(this) ->  rng().gauss( t.total_seconds(), t.total_seconds() * swing_timer_variance ) );
       if ( sim -> debug )
         sim -> out_debug.printf( "Swing timer variance for %s, real_time=%.3f swing_timer=%.3f", name(), t.total_seconds(), st.total_seconds() );
       return st;
@@ -2613,6 +2621,10 @@ struct melee_t : public shaman_melee_attack_t
 
   void execute()
   {
+    if ( first )
+    {
+      first = false;
+    }
     if ( time_to_execute > timespan_t::zero() && p() -> executing )
     {
       if ( sim -> debug )
@@ -3363,7 +3375,7 @@ struct lava_burst_t : public shaman_spell_t
     return m;
   }
 
-  virtual double composite_hit()
+  virtual double composite_hit() const
   {
     double m = shaman_spell_t::composite_hit();
 
@@ -3412,7 +3424,7 @@ struct lava_burst_t : public shaman_spell_t
     }
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     if ( p() -> buff.lava_surge -> up() )
       return timespan_t::zero();
@@ -3444,7 +3456,7 @@ struct lightning_bolt_t : public shaman_spell_t
     return m;
   }
 
-  virtual double composite_hit()
+  virtual double composite_hit() const
   {
     double m = shaman_spell_t::composite_hit();
 
@@ -3501,7 +3513,7 @@ struct lightning_bolt_t : public shaman_spell_t
     trigger_tier16_4pc_caster( state );
   }
 
-  virtual bool usable_moving()
+  virtual bool usable_moving() const
   { return true; }
 };
 
@@ -3594,7 +3606,7 @@ struct elemental_blast_t : public shaman_spell_t
     return m;
   }
 
-  virtual double composite_hit()
+  virtual double composite_hit() const
   {
     double m = shaman_spell_t::composite_hit();
 
@@ -3874,7 +3886,7 @@ struct flame_shock_t : public shaman_spell_t
     return m;
   }
 
-  virtual double composite_hit()
+  virtual double composite_hit() const
   {
     double m = shaman_spell_t::composite_hit();
 
@@ -3998,7 +4010,7 @@ struct healing_surge_t : public shaman_heal_t
     resurgence_gain = 0.6 * p() -> spell.resurgence -> effectN( 1 ).average( player ) * p() -> spec.resurgence -> effectN( 1 ).percent();
   }
 
-  double composite_crit()
+  double composite_crit() const
   {
     double c = shaman_heal_t::composite_crit();
 
@@ -4022,7 +4034,7 @@ struct healing_wave_t : public shaman_heal_t
     resurgence_gain = p() -> spell.resurgence -> effectN( 1 ).average( player ) * p() -> spec.resurgence -> effectN( 1 ).percent();
   }
 
-  timespan_t execute_time()
+  timespan_t execute_time() const
   {
     timespan_t c = shaman_heal_t::execute_time();
 
@@ -4046,7 +4058,7 @@ struct greater_healing_wave_t : public shaman_heal_t
     resurgence_gain = p() -> spell.resurgence -> effectN( 1 ).average( player ) * p() -> spec.resurgence -> effectN( 1 ).percent();
   }
 
-  timespan_t execute_time()
+  timespan_t execute_time() const
   {
     timespan_t c = shaman_heal_t::execute_time();
 

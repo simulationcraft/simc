@@ -614,7 +614,7 @@ struct priest_pet_melee_t : public melee_attack_t
     first_swing = true;
   }
 
-  virtual timespan_t execute_time() override
+  virtual timespan_t execute_time() const override
   {
     // First swing comes instantly after summoning the pet
     if ( first_swing )
@@ -861,7 +861,7 @@ public:
     return ( min_interval -> remains() <= timespan_t::zero() );
   }
 
-  virtual double cost() override
+  virtual double cost() const override
   {
     double c = ab::cost();
 
@@ -1075,7 +1075,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     can_trigger_EoL( true ), can_trigger_spirit_shell( false )
   {}
 
-  virtual double composite_crit() override
+  virtual double composite_crit() const override
   {
     double cc = base_t::composite_crit();
 
@@ -1983,7 +1983,7 @@ struct mind_blast_t final : public priest_spell_t
     stats -> consume_resource( current_resource(), resource_consumed );
   }
 
-  virtual double cost() override
+  virtual double cost() const override
   {
     if ( priest.buffs.divine_insight_shadow -> check() )
       return 0.0;
@@ -2016,7 +2016,7 @@ struct mind_blast_t final : public priest_spell_t
     priest.buffs.empowered_shadows -> expire();
   }
 
-  virtual timespan_t execute_time() override
+  virtual timespan_t execute_time() const override
   {
     if ( priest.buffs.divine_insight_shadow -> check() )
     {
@@ -2189,7 +2189,7 @@ struct mind_spike_t final : public priest_spell_t
     return d;
   }
 
-  virtual double cost() override
+  virtual double cost() const override
   {
     if ( priest.buffs.surge_of_darkness -> check() )
       return 0.0;
@@ -2198,7 +2198,7 @@ struct mind_spike_t final : public priest_spell_t
   }
 
 
-  virtual timespan_t execute_time() override
+  virtual timespan_t execute_time() const override
   {
     if ( priest.buffs.surge_of_darkness -> check() )
     {
@@ -2300,6 +2300,9 @@ struct shadow_word_death_t final : public priest_spell_t
       direct_power_mod = 0.599;
 
       target = &priest;
+
+      ability_lag = sim -> default_aura_delay;
+      ability_lag_stddev = sim -> default_aura_delay_stddev;
     }
 
     virtual void init() override
@@ -2308,9 +2311,6 @@ struct shadow_word_death_t final : public priest_spell_t
 
       stats -> type = STATS_NEUTRAL;
     }
-
-    virtual timespan_t execute_time() override
-    { return rng().gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev ); }
 
     virtual double composite_spell_power() override
     { return spellpower; }
@@ -2992,7 +2992,7 @@ struct holy_fire_base_t : public priest_spell_t
     return m;
   }
 
-  virtual double cost() override
+  virtual double cost() const override
   {
     double c = priest_spell_t::cost();
 
@@ -3091,10 +3091,10 @@ struct penance_t final : public priest_spell_t
       atonement -> channeled = true;
   }
 
-  virtual bool usable_moving() override
+  virtual bool usable_moving() const override
   { return priest.glyphs.penance -> ok(); }
 
-  virtual double cost() override
+  virtual double cost() const override
   {
     double c = priest_spell_t::cost();
 
@@ -3247,7 +3247,7 @@ struct smite_t final : public priest_spell_t
     return am;
   }
 
-  virtual double cost() override
+  virtual double cost() const override
   {
     double c = priest_spell_t::cost();
 
@@ -3771,7 +3771,7 @@ struct flash_heal_t final : public priest_heal_t
       trigger_strength_of_soul( s -> target );
   }
 
-  virtual double composite_crit() override
+  virtual double composite_crit() const override
   {
     double cc = priest_heal_t::composite_crit();
 
@@ -3781,7 +3781,7 @@ struct flash_heal_t final : public priest_heal_t
     return cc;
   }
 
-  virtual timespan_t execute_time() override
+  virtual timespan_t execute_time() const override
   {
     if ( priest.buffs.surge_of_light -> check() )
       return timespan_t::zero();
@@ -3789,7 +3789,7 @@ struct flash_heal_t final : public priest_heal_t
     return priest_heal_t::execute_time();
   }
 
-  virtual double cost() override
+  virtual double cost() const override
   {
     if ( priest.buffs.surge_of_light -> check() )
       return 0.0;
@@ -3860,7 +3860,7 @@ struct greater_heal_t final : public priest_heal_t
       trigger_strength_of_soul( s -> target );
   }
 
-  virtual double composite_crit() override
+  virtual double composite_crit() const override
   {
     double cc = priest_heal_t::composite_crit();
 
@@ -3879,7 +3879,7 @@ struct greater_heal_t final : public priest_heal_t
     return am;
   }
 
-  virtual double cost() override
+  virtual double cost() const override
   {
     double c = priest_heal_t::cost();
 
@@ -3892,7 +3892,7 @@ struct greater_heal_t final : public priest_heal_t
     return c;
   }
 
-  virtual timespan_t execute_time() override
+  virtual timespan_t execute_time() const override
   {
     timespan_t et = priest_heal_t::execute_time();
 
@@ -3992,7 +3992,7 @@ struct holy_word_sanctuary_t final : public priest_heal_t
 
   // HW: Sanctuary is treated as a instant cast spell, both affected by Inner Will and Mental Agility
 
-  virtual double cost() override
+  virtual double cost() const override
   {
     double c = priest_heal_t::cost();
 
@@ -4250,7 +4250,7 @@ struct penance_heal_t final : public priest_heal_t
     tick_action = new penance_heal_tick_t( p );
   }
 
-  virtual double cost() override
+  virtual double cost() const override
   {
     double c = priest_heal_t::cost();
 
@@ -4389,7 +4389,7 @@ struct prayer_of_healing_t final : public priest_heal_t
     return am;
   }
 
-  virtual double composite_crit() override
+  virtual double composite_crit() const override
   {
     double cc = priest_heal_t::composite_crit();
 
@@ -4399,7 +4399,7 @@ struct prayer_of_healing_t final : public priest_heal_t
     return cc;
   }
 
-  virtual double cost() override
+  virtual double cost() const override
   {
     double c = priest_heal_t::cost();
 
@@ -4412,7 +4412,7 @@ struct prayer_of_healing_t final : public priest_heal_t
     return c;
   }
 
-  virtual timespan_t execute_time() override
+  virtual timespan_t execute_time() const override
   {
     timespan_t et = priest_heal_t::execute_time();
 

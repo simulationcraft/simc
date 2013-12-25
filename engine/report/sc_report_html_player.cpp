@@ -2688,7 +2688,7 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
      << "\t\t\t\t\t<h3 class=\"toggle open\">Abilities</h3>\n"
      << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
-  if ( p -> collected_data.dmg.max() > 0 )
+  if ( p -> collected_data.dmg.max() > 0 || sim -> debug )
   {
     // Abilities Section - Damage
     os << "\t\t\t\t\t\t<table class=\"sc\">\n"
@@ -2768,7 +2768,7 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
       "\t\t\t\t\t\t</table>\n" );
   }
 
-  if ( p -> collected_data.heal.max() > 0 || p -> collected_data.absorb.max() > 0 )
+  if ( p -> collected_data.heal.max() > 0 || p -> collected_data.absorb.max() > 0 || sim -> debug )
   {
     // Abilities Section - Heals
     os << "\t\t\t\t\t\t<table class=\"sc\">\n"

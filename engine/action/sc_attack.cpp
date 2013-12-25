@@ -46,7 +46,7 @@ void attack_t::execute()
 
 // attack_t::execute_time ===================================================
 
-timespan_t attack_t::execute_time()
+timespan_t attack_t::execute_time() const
 {
   if ( base_execute_time == timespan_t::zero() )
     return timespan_t::zero();

@@ -47,7 +47,7 @@ timespan_t spell_base_t::gcd()
 
 // spell_base_t::execute_time ===============================================
 
-timespan_t spell_base_t::execute_time()
+timespan_t spell_base_t::execute_time() const
 {
   timespan_t t = base_execute_time;
 

@@ -312,7 +312,7 @@ struct rogue_t : public player_t
   virtual double    composite_player_multiplier( school_e school );
   virtual double    energy_regen_per_second();
 
-  target_specific_t<rogue_td_t*> target_data;
+  mutable target_specific_t<rogue_td_t*> target_data;
 
   virtual rogue_td_t* get_target_data( player_t* target )
   {
@@ -322,6 +322,11 @@ struct rogue_t : public player_t
       td = new rogue_td_t( target, this );
     }
     return td;
+  }
+
+  rogue_td_t* find_target_data( player_t* target ) const
+  {
+    return target_data[ target ];
   }
 };
 
@@ -442,10 +447,13 @@ struct rogue_attack_t : public melee_attack_t
   rogue_t* p() const
   { return debug_cast< rogue_t* >( player ); }
 
-  rogue_td_t* cast_td( player_t* t = 0 ) const
+  rogue_td_t* cast_td( player_t* t = 0 )
   { return p() -> get_target_data( t ? t : target ); }
 
-  virtual double cost();
+  rogue_td_t* find_td( player_t* t ) const
+  { return p() -> find_target_data( t ); }
+
+  virtual double cost() const;
   virtual void   execute();
   virtual void   consume_resource();
   virtual bool   ready();
@@ -919,7 +927,7 @@ double rogue_attack_t::target_armor( player_t* t )
 
 // rogue_attack_t::cost =====================================================
 
-double rogue_attack_t::cost()
+double rogue_attack_t::cost() const
 {
   double c = melee_attack_t::cost();
 
@@ -1092,15 +1100,23 @@ struct melee_t : public rogue_attack_t
     first = true;
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     timespan_t t = rogue_attack_t::execute_time();
     if ( first )
     {
-      first = false;
       return ( weapon -> slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::from_seconds( 0.01 ) ) : t / 2 ) : timespan_t::from_seconds( 0.01 );
     }
     return t;
+  }
+
+  virtual void execute() override
+  {
+    if ( first )
+    {
+      first = false;
+    }
+    rogue_attack_t::execute();
   }
 
   virtual void impact( action_state_t* state )
@@ -1198,7 +1214,7 @@ struct ambush_t : public rogue_attack_t
       weapon_multiplier   *= 1.447; // It'is in the description.
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = rogue_attack_t::cost();
 
@@ -1259,7 +1275,7 @@ struct backstab_t : public rogue_attack_t
     requires_position = POSITION_BACK;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = rogue_attack_t::cost();
     c -= 2 * p() -> buffs.t16_2pc_melee -> stack();
@@ -1321,7 +1337,7 @@ struct dispatch_t : public rogue_attack_t
     }
   }
 
-  double cost()
+  double cost() const
   {
     if ( p() -> buffs.blindside -> check() )
       return 0;
@@ -1769,7 +1785,7 @@ struct mutilate_t : public rogue_attack_t
     add_child( oh_strike );
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = rogue_attack_t::cost();
     if ( p() -> buffs.t16_2pc_melee -> up() )
@@ -2042,7 +2058,7 @@ struct sinister_strike_t : public rogue_attack_t
     return t;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = rogue_attack_t::cost();
     c -= 15 * p() -> buffs.t16_2pc_melee -> stack();

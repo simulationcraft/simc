@@ -2546,6 +2546,7 @@ public:
 // Public functions
   void add_event( core_event_t*, timespan_t delta_time );
   double iteration_time_adjust() const;
+  double expected_max_time() const;
   bool is_canceled() const;
 
 protected:
@@ -4689,7 +4690,7 @@ public:
   virtual double resource_gain( resource_e resource_type, double amount, gain_t* g = 0, action_t* a = 0 );
   virtual double resource_loss( resource_e resource_type, double amount, gain_t* g = 0, action_t* a = 0 );
   virtual void   recalculate_resource_max( resource_e resource_type );
-  virtual bool   resource_available( resource_e resource_type, double cost );
+  virtual bool   resource_available( resource_e resource_type, double cost ) const;
   void collect_resource_timeline_information();
   virtual resource_e primary_resource() { return RESOURCE_NONE; }
   virtual role_e   primary_role() const;
@@ -5193,14 +5194,14 @@ struct action_t : public noncopyable
   virtual ~action_t();
   void init_dot( const std::string& dot_name );
 
-  const spell_data_t& data() { return ( *s_data ); }
+  const spell_data_t& data() const { return ( *s_data ); }
   void parse_spell_data( const spell_data_t& );
   void parse_effect_data( const spelleffect_data_t& );
 
   virtual void   parse_options( option_t*, const std::string& options_str );
-  virtual double cost();
+  virtual double cost() const;
   virtual timespan_t gcd();
-  virtual timespan_t execute_time() { return base_execute_time; }
+  virtual timespan_t execute_time() const { return base_execute_time; }
   virtual timespan_t tick_time( double haste );
   virtual int    hasted_num_ticks( double haste, timespan_t d = timespan_t::min() );
   virtual timespan_t travel_time();
@@ -5213,7 +5214,7 @@ struct action_t : public noncopyable
   virtual double target_armor( player_t* t )
   { return t -> cache.armor(); }
   virtual void   consume_resource();
-  virtual resource_e current_resource() { return resource_current; }
+  virtual resource_e current_resource() const { return resource_current; }
   virtual int n_targets() { return aoe; }
   bool is_aoe() { return n_targets() == -1 || n_targets() > 0; }
   virtual void   execute();
@@ -5224,7 +5225,7 @@ struct action_t : public noncopyable
   virtual void   schedule_execute( action_state_t* execute_state = 0 );
   virtual void   reschedule_execute( timespan_t time );
   virtual void   update_ready( timespan_t cd_duration = timespan_t::min() );
-  virtual bool   usable_moving();
+  virtual bool   usable_moving() const;
   virtual bool   ready();
   virtual void   init();
   virtual void   init_target_cache();
@@ -5338,10 +5339,10 @@ public:
   virtual double action_da_multiplier() { return base_dd_multiplier; }
   virtual double action_ta_multiplier() { return base_td_multiplier; }
 
-  virtual double composite_hit() { return base_hit; }
-  virtual double composite_crit() { return base_crit; }
-  virtual double composite_crit_multiplier() { return 1.0; }
-  virtual double composite_haste() { return 1.0; }
+  virtual double composite_hit() const { return base_hit; }
+  virtual double composite_crit() const { return base_crit; }
+  virtual double composite_crit_multiplier() const { return 1.0; }
+  virtual double composite_haste() const { return 1.0; }
   virtual double composite_attack_power() { return base_attack_power + player -> cache.attack_power(); }
   virtual double composite_spell_power()
   { return base_spell_power + player -> cache.spell_power( school ); }
@@ -5543,7 +5544,7 @@ struct attack_t : public action_t
   attack_t( const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Attack Overrides
-  virtual timespan_t execute_time();
+  virtual timespan_t execute_time() const;
   virtual void execute();
   virtual result_e calculate_result( action_state_t* );
   virtual block_result_e calculate_block_result( action_state_t* );
@@ -5553,19 +5554,19 @@ struct attack_t : public action_t
   virtual double  block_chance( player_t* t );
   virtual double  crit_block_chance( player_t* t );
 
-  virtual double composite_hit()
+  virtual double composite_hit() const
   { return action_t::composite_hit() + player -> cache.attack_hit(); }
 
-  virtual double composite_crit()
+  virtual double composite_crit() const
   { return action_t::composite_crit() + player -> cache.attack_crit(); }
 
-  virtual double composite_crit_multiplier()
+  virtual double composite_crit_multiplier() const
   { return action_t::composite_crit_multiplier() * player -> composite_melee_crit_multiplier(); }
 
-  virtual double composite_haste()
+  virtual double composite_haste() const
   { return action_t::composite_haste() * player -> cache.attack_haste(); }
 
-  virtual double composite_expertise()
+  virtual double composite_expertise() const
   { return base_attack_expertise + player -> cache.attack_expertise(); }
 
   virtual void reschedule_auto_attack( double old_swing_haste );
@@ -5662,20 +5663,20 @@ struct spell_base_t : public action_t
 
   // Spell Base Overrides
   virtual timespan_t gcd();
-  virtual timespan_t execute_time();
+  virtual timespan_t execute_time() const;
   virtual timespan_t tick_time( double haste );
   virtual result_e   calculate_result( action_state_t* );
   virtual block_result_e calculate_block_result( action_state_t* ) { return BLOCK_RESULT_UNBLOCKED; }
   virtual void   execute();
   virtual void   schedule_execute( action_state_t* execute_state = 0 );
 
-  virtual double composite_crit()
+  virtual double composite_crit() const
   { return action_t::composite_crit() + player -> cache.spell_crit(); }
 
-  virtual double composite_haste()
+  virtual double composite_haste() const
   { return action_t::composite_haste() * player -> cache.spell_speed(); }
 
-  virtual double composite_crit_multiplier()
+  virtual double composite_crit_multiplier() const
   { return action_t::composite_crit_multiplier() * player -> composite_spell_crit_multiplier(); }
 
   proc_types proc_type()
@@ -5712,7 +5713,7 @@ public:
   virtual void   execute();
   virtual double miss_chance( double hit, player_t* t );
   virtual void   init();
-  virtual double composite_hit()
+  virtual double composite_hit() const
   { return action_t::composite_hit() + player -> cache.spell_hit(); }
 };
 
@@ -6511,8 +6512,8 @@ struct wait_for_cooldown_t : public wait_action_base_t
   cooldown_t* wait_cd;
   action_t* a;
   wait_for_cooldown_t( player_t* player, const std::string& cd_name );
-  virtual bool usable_moving() { return a -> usable_moving(); }
-  virtual timespan_t execute_time();
+  virtual bool usable_moving() const { return a -> usable_moving(); }
+  virtual timespan_t execute_time() const;
 };
 
 namespace ignite {

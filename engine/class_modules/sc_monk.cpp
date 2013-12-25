@@ -255,7 +255,7 @@ public:
   } user_options;
 
 private:
-  target_specific_t<monk_td_t*> target_data;
+  mutable target_specific_t<monk_td_t*> target_data;
 public:
 
   monk_t( sim_t* sim, const std::string& name, race_e r ) :
@@ -326,6 +326,10 @@ public:
       td = new monk_td_t( target, this );
     }
     return td;
+  }
+  monk_td_t* find_target_data( player_t* target ) const
+  {
+    return target_data[ target ];
   }
 
   // Monk specific
@@ -562,6 +566,11 @@ public:
 
   monk_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 
+  monk_td_t* find_td( player_t* t ) const
+  {
+    return p() -> find_target_data( t );
+  }
+
   virtual bool ready()
   {
     if ( ! ab::ready() )
@@ -602,7 +611,7 @@ public:
     }
   }
 
-  virtual resource_e current_resource()
+  virtual resource_e current_resource() const
   {
     resource_e resource_by_stance = _resource_by_stance[ p() -> current_stance() ];
 
@@ -970,7 +979,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     consume_muscle_memory();
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     if ( p() -> buff.combo_breaker_tp -> check() )
       return 0;
@@ -1093,7 +1102,7 @@ struct blackout_kick_t : public monk_melee_attack_t
       trigger_blackout_kick_dot( this, s -> target, s -> result_amount * data().effectN( 2 ).percent( ) );
   }
 
-virtual double cost()
+virtual double cost() const
   {
     if ( p() -> buff.combo_breaker_bok -> check() ){
       return 0.0;
@@ -1169,7 +1178,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     rsk_debuff -> execute();
   }
-  virtual double cost()
+  virtual double cost() const
   {
     if ( p() -> buff.focus_of_xuen -> check() ){
       return monk_melee_attack_t::cost() - 1;//+ p() -> buff.focus_of_xuen -> s_data -> effectN( 1 ).base_value(); // TODO: Update to spell data
@@ -1357,7 +1366,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     tick_action = new fists_of_fury_tick_t( p );
     dynamic_tick_action = true;
   }
-  virtual double cost()
+  virtual double cost() const
   {
     if ( p() -> buff.focus_of_xuen -> check() ){
       return monk_melee_attack_t::cost() - 1;// + p() -> buff.focus_of_xuen -> s_data -> effectN( 1 ).base_value();// TODO: Update to spell data
@@ -1446,7 +1455,7 @@ struct melee_t : public monk_melee_attack_t
     }
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     timespan_t t = monk_melee_attack_t::execute_time();
     if ( ! player -> in_combat )
@@ -2467,7 +2476,7 @@ struct enveloping_mist_t : public monk_heal_t
     base_costs[ RESOURCE_CHI ] = 3.0;
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     if ( p() -> buff.channeling_soothing_mist -> check() )
       return timespan_t::zero();
@@ -2700,7 +2709,7 @@ struct surging_mist_t : public monk_heal_t
     may_miss = false;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = monk_heal_t::cost();
 
@@ -2710,7 +2719,7 @@ struct surging_mist_t : public monk_heal_t
     return c;
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     timespan_t et = monk_heal_t::execute_time();
 

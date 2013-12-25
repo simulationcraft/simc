@@ -452,7 +452,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     return am;
   }
 
-  virtual double composite_crit()
+  virtual double composite_crit() const
   {
     double cc = base_t::composite_crit();
 
@@ -809,7 +809,7 @@ struct melee_t : public warrior_attack_t
     if ( p -> dual_wield() ) base_hit -= 0.19;
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     timespan_t t = warrior_attack_t::execute_time();
 
@@ -1004,7 +1004,7 @@ struct bladestorm_t : public warrior_attack_t
   }
 
   // Bladestorm is not modified by haste effects
-  virtual double composite_haste() { return 1.0; }
+  virtual double composite_haste() const { return 1.0; }
 };
 
 // Bloodthirst Heal =========================================================
@@ -1023,7 +1023,7 @@ struct bloodthirst_heal_t : public heal_t
     pct_heal   = p -> find_spell( 117313 ) -> effectN( 1 ).percent();
   }
 
-  virtual resource_e current_resource() { return RESOURCE_NONE; }
+  virtual resource_e current_resource() const { return RESOURCE_NONE; }
 
 };
 
@@ -1045,7 +1045,7 @@ struct bloodthirst_t : public warrior_attack_t
     base_multiplier += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
   }
 
-  double composite_crit_multiplier()
+  double composite_crit_multiplier() const
   {
     double c = warrior_attack_t::composite_crit_multiplier();
 
@@ -1157,7 +1157,7 @@ struct cleave_t : public warrior_attack_t
     use_off_gcd = true;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = warrior_attack_t::cost();
     warrior_t* p = cast();
@@ -1405,7 +1405,7 @@ struct execute_t : public warrior_attack_t
     direct_power_mod   = data().extra_coeff();
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = warrior_attack_t::cost();
     warrior_t* p = cast();
@@ -1467,7 +1467,7 @@ struct heroic_strike_t : public warrior_attack_t
     use_off_gcd = true;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = warrior_attack_t::cost();
     warrior_t* p = cast();
@@ -1565,7 +1565,7 @@ struct tier16_2pc_tank_heal_t : public heal_t
     target           = p;
     direct_power_mod = 0;
   }
-  virtual resource_e current_resource() { return RESOURCE_NONE; }
+  virtual resource_e current_resource() const { return RESOURCE_NONE; }
 };
 
 // Impending Victory ========================================================
@@ -1600,7 +1600,7 @@ struct impending_victory_heal_t : public heal_t
     return amount;
   }
 
-  virtual resource_e current_resource() { return RESOURCE_NONE; }
+  virtual resource_e current_resource() const { return RESOURCE_NONE; }
 
 };
 
@@ -1720,7 +1720,7 @@ struct overpower_t : public warrior_attack_t
     return warrior_attack_t::crit_chance( crit, delta_level ) + data().effectN( 3 ).percent();
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     warrior_t* p = cast();
 
@@ -2367,7 +2367,7 @@ struct victory_rush_heal_t : public heal_t
     target     = p;
     pct_heal   = data().effectN( 1 ).percent() * ( 1 + p -> glyphs.victory_rush -> effectN( 1 ).percent() );
   }
-  virtual resource_e current_resource() { return RESOURCE_NONE; }
+  virtual resource_e current_resource() const { return RESOURCE_NONE; }
 };
 
 struct victory_rush_t : public warrior_attack_t
@@ -2515,7 +2515,7 @@ struct wild_strike_t : public warrior_attack_t
       background = true;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = warrior_attack_t::cost();
     warrior_t* p = cast();
@@ -2836,7 +2836,7 @@ struct shield_block_t : public warrior_spell_t
     use_off_gcd = true;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = warrior_spell_t::cost();
     warrior_t* p = cast();

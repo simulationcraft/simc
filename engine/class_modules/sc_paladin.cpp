@@ -465,7 +465,7 @@ public:
 
   paladin_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 
-  virtual double cost()
+  virtual double cost() const
   {
     if ( ab::current_resource() == RESOURCE_HOLY_POWER )
     {
@@ -1203,7 +1203,7 @@ struct divine_light_t : public paladin_heal_t
     p() -> buffs.infusion_of_light -> expire();
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     timespan_t t = paladin_heal_t::execute_time();
 
@@ -1361,7 +1361,7 @@ struct eternal_flame_t : public paladin_heal_t
     paladin_heal_t::update_ready( cd_duration );
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     // check for T16 4-pc tank effect
     if ( p() -> set_bonus.tier16_4pc_tank() && p() -> buffs.bastion_of_glory -> current_stack >= 3 && target == player )
@@ -1645,7 +1645,7 @@ struct flash_of_light_t : public paladin_heal_t
     parse_options( NULL, options_str );
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     // selfless healer reduces mana cost by 35% per stack
     double cost_multiplier = std::max( 1.0 + p() -> buffs.selfless_healer -> stack() * p() -> buffs.selfless_healer -> data().effectN( 3 ).percent(), 0.0 );
@@ -1653,7 +1653,7 @@ struct flash_of_light_t : public paladin_heal_t
     return ( paladin_heal_t::cost() * cost_multiplier );
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     // Selfless Healer reduces cast time by 35% per stack
     double cast_multiplier = std::max( 1.0 + p() -> buffs.selfless_healer -> stack() * p() -> buffs.selfless_healer -> data().effectN( 3 ).percent(), 0.0 );
@@ -1844,7 +1844,7 @@ struct holy_light_t : public paladin_heal_t
     p() -> buffs.infusion_of_light -> expire();
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     timespan_t t = paladin_heal_t::execute_time();
 
@@ -2013,7 +2013,7 @@ struct holy_radiance_t : public paladin_heal_t
     p() -> buffs.infusion_of_light -> expire();
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     timespan_t t = paladin_heal_t::execute_time();
 
@@ -2060,7 +2060,7 @@ struct holy_shock_t : public paladin_spell_t
     }
   }
 
-  virtual double composite_crit()
+  virtual double composite_crit() const
   {
     double cc = paladin_spell_t::composite_crit();
 
@@ -2129,7 +2129,7 @@ struct holy_shock_heal_t : public paladin_heal_t
     }
   }
 
-  virtual double composite_crit()
+  virtual double composite_crit() const
   {
     double cc = paladin_heal_t::composite_crit();
 
@@ -2610,7 +2610,7 @@ struct word_of_glory_t : public paladin_heal_t
     paladin_heal_t::update_ready( cd_duration );
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     // check for T16 4-pc tank effect
     if ( p() -> set_bonus.tier16_4pc_tank() && p() -> buffs.bastion_of_glory -> current_stack >= 3  && target == player  )
@@ -2857,7 +2857,7 @@ struct melee_t : public paladin_melee_attack_t
     base_execute_time     = p -> main_hand_weapon.swing_time;
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     if ( ! player -> in_combat ) return timespan_t::from_seconds( 0.01 );
     return paladin_melee_attack_t::execute_time();
@@ -3026,7 +3026,7 @@ struct divine_storm_t : public paladin_melee_attack_t
     }
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     // check for the T16 4-pc melee buff
     if ( p() -> buffs.divine_crusader -> check() )

@@ -295,7 +295,7 @@ public:
   virtual void      stun();
   virtual void      moving();
 
-  target_specific_t<mage_td_t*> target_data;
+  mutable target_specific_t<mage_td_t*> target_data;
 
   virtual mage_td_t* get_target_data( player_t* target )
   {
@@ -305,6 +305,11 @@ public:
       td = new mage_td_t( target, this );
     }
     return td;
+  }
+
+  mage_td_t* find_target_data( player_t* target ) const
+  {
+    return target_data[ target ];
   }
 
   // Event Tracking
@@ -372,7 +377,7 @@ struct water_elemental_pet_t : public pet_t
 
     }
 
-    virtual timespan_t execute_time()
+    virtual timespan_t execute_time() const
     { return timespan_t::from_seconds( 0.25 ); }
   };
 
@@ -983,6 +988,9 @@ public:
   mage_td_t* td( player_t* t = nullptr )
   { return p() -> get_target_data( t ? t : target ); }
 
+  mage_td_t* find_td( player_t* t ) const
+  { return p() -> get_target_data( t ); }
+
   virtual void parse_options( option_t*          options,
                               const std::string& options_str )
   {
@@ -1009,7 +1017,7 @@ public:
     return spell_t::ready();
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = spell_t::cost();
 
@@ -1023,7 +1031,7 @@ public:
     return c;
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     timespan_t t = spell_t::execute_time();
 
@@ -1049,7 +1057,7 @@ public:
     }
   }
 
-  virtual bool usable_moving()
+  virtual bool usable_moving() const
   {
     bool um = spell_t::usable_moving();
     timespan_t t = base_execute_time;
@@ -1061,7 +1069,7 @@ public:
     return um;
   }
 
-  virtual double composite_crit_multiplier()
+  virtual double composite_crit_multiplier() const
   {
     double m = spell_t::composite_crit_multiplier();
     if ( frozen && p() -> passives.shatter -> ok() )
@@ -1386,7 +1394,7 @@ struct arcane_blast_t : public mage_spell_t
       base_multiplier *= 1.05;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = mage_spell_t::cost();
 
@@ -2017,7 +2025,7 @@ struct fireball_t : public mage_spell_t
     trigger_ignite( s );
   }
 
-  double composite_crit_multiplier()
+  double composite_crit_multiplier() const
   {
     double m = mage_spell_t::composite_crit_multiplier();
 
@@ -2094,7 +2102,7 @@ struct frost_bomb_explosion_t : public mage_spell_t
     parse_effect_data( data().effectN( 1 ) );
   }
 
-  virtual resource_e current_resource()
+  virtual resource_e current_resource() const
   { return RESOURCE_NONE; }
 };
 
@@ -2172,7 +2180,7 @@ struct mini_frostbolt_t : public mage_spell_t
     trigger_icicle_gain( s );
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   { return timespan_t::from_seconds( 0.25 ); }
 };
 
@@ -2315,7 +2323,7 @@ struct mini_frostfire_bolt_t : public mage_spell_t
     trigger_icicle_gain( s );
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   { return timespan_t::from_seconds( 0.25 ); }
 
   virtual timespan_t travel_time()
@@ -2393,7 +2401,7 @@ struct frostfire_bolt_t : public mage_spell_t
   virtual action_state_t* new_state()
   { return new state_t( this, target ); }
 
-  virtual double cost()
+  virtual double cost() const
   {
     if ( p() -> buffs.brain_freeze -> check() )
       return 0.0;
@@ -2401,7 +2409,7 @@ struct frostfire_bolt_t : public mage_spell_t
     return mage_spell_t::cost();
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     if ( p() -> buffs.brain_freeze -> check() )
       return timespan_t::zero();
@@ -2474,7 +2482,7 @@ struct frostfire_bolt_t : public mage_spell_t
     trigger_icicle_gain( s );
   }
 
-  virtual double composite_crit_multiplier()
+  virtual double composite_crit_multiplier() const
   {
     double m = mage_spell_t::composite_crit_multiplier();
 
@@ -2614,7 +2622,7 @@ struct mini_ice_lance_t : public mage_spell_t
     }
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   { return timespan_t::from_seconds( 0.25 ); }
 
 };
@@ -2879,7 +2887,7 @@ struct living_bomb_explosion_t : public mage_spell_t
     base_multiplier *= 4;
   }
 
-  virtual resource_e current_resource()
+  virtual resource_e current_resource() const
   { return RESOURCE_NONE; }
 };
 
@@ -3147,7 +3155,7 @@ struct nether_tempest_cleave_t: public mage_spell_t
     background = true;
   }
 
-  virtual resource_e current_resource()
+  virtual resource_e current_resource() const
   { return RESOURCE_NONE; }
 
   virtual void execute()
@@ -3261,7 +3269,7 @@ struct pyroblast_t : public mage_spell_t
     p() -> buffs.pyroblast -> up();
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     if ( p() -> buffs.pyroblast -> check() )
     {
@@ -3271,7 +3279,7 @@ struct pyroblast_t : public mage_spell_t
     return mage_spell_t::execute_time();
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     if ( p() -> buffs.pyroblast -> check() )
       return 0.0;
@@ -3310,7 +3318,7 @@ struct pyroblast_t : public mage_spell_t
     }
   }
 
-  virtual double composite_crit_multiplier()
+  virtual double composite_crit_multiplier() const
   {
     double m = mage_spell_t::composite_crit_multiplier();
 
@@ -3319,7 +3327,7 @@ struct pyroblast_t : public mage_spell_t
     return m;
   }
 
-  virtual double composite_crit()
+  virtual double composite_crit() const
   {
     double c = mage_spell_t::composite_crit();
 
@@ -3417,7 +3425,7 @@ struct scorch_t : public mage_spell_t
     }
   }
 
-  double composite_crit_multiplier()
+  double composite_crit_multiplier() const
   {
     double m = mage_spell_t::composite_crit_multiplier();
 
@@ -3426,7 +3434,7 @@ struct scorch_t : public mage_spell_t
     return m;
   }
 
-  virtual bool usable_moving()
+  virtual bool usable_moving() const
   { return true; }
 
   // delay 0.25s the removal of heating up on non-critting spell with travel time or scorch

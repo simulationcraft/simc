@@ -958,7 +958,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
       hasted_ticks     = false;
     }
 
-    virtual double composite_crit()
+    virtual double composite_crit() const
     { return action_t::composite_crit() + player -> cache.attack_crit(); }
   };
 
@@ -1662,8 +1662,8 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
     // ~3 seconds seems to be the optimal initial delay
     // FIXME: Verify if behavior still exists on 5.3 PTR
-    timespan_t execute_time()
-    { return timespan_t::from_seconds( rng().gauss( 2.9, 0.2 ) ); }
+    timespan_t execute_time() const
+    { return timespan_t::from_seconds( const_cast<travel_t*>( this ) -> rng().gauss( 2.9, 0.2 ) ); }
 
     bool ready()
     { return ! executed; }
@@ -2396,7 +2396,7 @@ struct melee_t : public death_knight_melee_attack_t
       base_hit -= 0.19;
   }
 
-  virtual timespan_t execute_time()
+  virtual timespan_t execute_time() const
   {
     timespan_t t = death_knight_melee_attack_t::execute_time();
     if ( ! player -> in_combat )
@@ -2625,7 +2625,7 @@ struct blood_boil_t : public death_knight_spell_t
     death_knight_spell_t::consume_resource();
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     if ( p() -> buffs.crimson_scourge -> check() )
       return 0;
@@ -2707,7 +2707,7 @@ struct blood_plague_t : public death_knight_spell_t
       base_multiplier += p -> find_spell( 58671 ) -> effectN( 1 ).percent();
   }
 
-  virtual double composite_crit()
+  virtual double composite_crit() const
   { 
   double cc = action_t::composite_crit();
   
@@ -2826,7 +2826,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     add_child( tick_action );
   }
 
-  virtual double composite_crit()
+  virtual double composite_crit() const
   {
     double cc = death_knight_melee_attack_t::composite_crit();
     if ( player -> set_bonus.tier15_4pc_melee() && p() -> buffs.killing_machine -> check() )
@@ -3121,7 +3121,7 @@ struct death_and_decay_t : public death_knight_spell_t
     death_knight_spell_t::consume_resource();
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     if ( p() -> buffs.crimson_scourge -> check() )
       return 0;
@@ -3176,7 +3176,7 @@ struct death_coil_t : public death_knight_spell_t
     base_costs[ RESOURCE_RUNIC_POWER ] *= 1.0 + p -> spec.sudden_doom -> effectN( 2 ).percent();
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     if ( p() -> buffs.sudden_doom -> check() )
       return 0;
@@ -3274,7 +3274,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::consume_resource();
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     if ( p() -> buffs.deathbringer -> check() )
       return 0;
@@ -3430,7 +3430,7 @@ struct frost_fever_t : public death_knight_spell_t
       base_multiplier += p -> find_spell( 58671 ) -> effectN( 1 ).percent();
   }
 
-  virtual double composite_crit()
+  virtual double composite_crit() const
   { return action_t::composite_crit() + player -> cache.attack_crit(); }
 
   virtual void impact( action_state_t* s )
@@ -3460,7 +3460,7 @@ struct frost_strike_offhand_t : public death_knight_melee_attack_t
     rp_gain = 0; // Incorrectly set to 10 in the DBC
   }
 
-  virtual double composite_crit()
+  virtual double composite_crit() const
   {
     double cc = death_knight_melee_attack_t::composite_crit();
 
@@ -3494,7 +3494,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
     }
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     double c = death_knight_melee_attack_t::cost();
 
@@ -3532,7 +3532,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
     }
   }
 
-  virtual double composite_crit()
+  virtual double composite_crit() const
   {
     double cc = death_knight_melee_attack_t::composite_crit();
 
@@ -3635,7 +3635,7 @@ struct howling_blast_t : public death_knight_spell_t
     death_knight_spell_t::consume_resource();
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     // Rime also prevents getting RP because there are no runes used!
     if ( p() -> buffs.rime -> check() )
@@ -3701,7 +3701,7 @@ struct icy_touch_t : public death_knight_spell_t
     death_knight_spell_t::consume_resource();
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     // Rime also prevents getting RP because there are no runes used!
     if ( p() -> buffs.rime -> check() )
@@ -3807,7 +3807,7 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
     // http://elitistjerks.com/f72/t110296-frost_dps_cataclysm_4_0_6_my_life/p14/#post1886388
   }
 
-  virtual double composite_crit()
+  virtual double composite_crit() const
   {
     double cc = death_knight_melee_attack_t::composite_crit();
 
@@ -3897,7 +3897,7 @@ struct obliterate_t : public death_knight_melee_attack_t
     }
   }
 
-  virtual double composite_crit()
+  virtual double composite_crit() const
   {
     double cc = death_knight_melee_attack_t::composite_crit();
 
@@ -4141,12 +4141,12 @@ struct presence_t : public death_knight_spell_t
     harmful     = false;
   }
 
-  virtual resource_e current_resource()
+  virtual resource_e current_resource() const
   {
     return RESOURCE_RUNIC_POWER;
   }
 
-  virtual double cost()
+  virtual double cost() const
   {
     // Presence changes consume all runic power
     return p() -> resources.current [ RESOURCE_RUNIC_POWER ] * ( 1.0 - p() -> glyph.shifting_presences -> effectN( 1 ).percent() );
@@ -4643,7 +4643,7 @@ struct rune_tap_t : public death_knight_heal_t
     death_knight_heal_t::consume_resource();
   }
 
-  double cost()
+  double cost() const
   {
     if ( p() -> buffs.will_of_the_necropolis_rt -> check() )
       return 0;

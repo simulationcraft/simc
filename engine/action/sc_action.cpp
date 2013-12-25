@@ -640,7 +640,7 @@ void action_t::parse_options( option_t*          options,
 
 // action_t::cost ===========================================================
 
-double action_t::cost()
+double action_t::cost() const
 {
   if ( ! harmful && ! player -> in_combat )
     return 0;
@@ -1426,7 +1426,7 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
 
 // action_t::usable_moving ==================================================
 
-bool action_t::usable_moving()
+bool action_t::usable_moving() const
 {
   if ( execute_time() > timespan_t::zero() )
     return false;
