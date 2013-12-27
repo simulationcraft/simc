@@ -1908,24 +1908,21 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    if ( priest.set_bonus.tier15_2pc_caster() )
+    if ( rng().roll( priest.sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent() ) )
     {
-      if ( rng().roll( priest.sets -> set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent() ) )
+      priest_td_t* td = find_td( s -> target);
+      priest.procs.t15_2pc_caster -> occur();
+
+      if ( td && td -> dots.shadow_word_pain -> ticking )
       {
-        priest_td_t* td = find_td( s -> target);
-        priest.procs.t15_2pc_caster -> occur();
+        td -> dots.shadow_word_pain -> extend_duration( 1 );
+        priest.procs.t15_2pc_caster_shadow_word_pain -> occur();
+      }
 
-        if ( td && td -> dots.shadow_word_pain -> ticking )
-        {
-          td -> dots.shadow_word_pain -> extend_duration( 1 );
-          priest.procs.t15_2pc_caster_shadow_word_pain -> occur();
-        }
-
-        if ( td && td -> dots.vampiric_touch -> ticking )
-        {
-          td -> dots.vampiric_touch -> extend_duration( 1 );
-          priest.procs.t15_2pc_caster_vampiric_touch -> occur();
-        }
+      if ( td && td -> dots.vampiric_touch -> ticking )
+      {
+        td -> dots.vampiric_touch -> extend_duration( 1 );
+        priest.procs.t15_2pc_caster_vampiric_touch -> occur();
       }
     }
   }
@@ -2330,7 +2327,7 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       double d = multiplier;
 
-      if ( priest.set_bonus.tier13_2pc_caster() )
+      if ( priest.sets -> set( SET_T13_2PC_CASTER ) -> ok() )
         d *= 0.663587;
 
       return d;
@@ -2896,7 +2893,7 @@ struct vampiric_touch_mastery_t final : public priest_procced_mastery_spell_t
       priest.procs.surge_of_darkness -> occur();
     }
 
-    if ( priest.set_bonus.tier15_4pc_caster() )
+    if ( priest.sets -> set( SET_T15_4PC_CASTER ) -> ok() )
     {
       if ( proc_shadowy_apparition && ( s -> result_amount > 0 ) )
       {
@@ -2955,7 +2952,7 @@ struct vampiric_touch_t final : public priest_spell_t
       proc_spell -> schedule_execute();
     }
 
-    if ( priest.set_bonus.tier15_4pc_caster() )
+    if ( priest.sets -> set( SET_T15_4PC_CASTER ) -> ok() )
     {
       if ( proc_shadowy_apparition && ( d -> state -> result_amount > 0 )  )
       {
@@ -3980,7 +3977,7 @@ struct holy_word_sanctuary_t final : public priest_heal_t
     tick_action = new holy_word_sanctuary_tick_t( p );
 
     // Needs testing
-    cooldown -> duration *= 1.0 + p.set_bonus.tier13_4pc_heal() * -0.2;
+    cooldown -> duration *= 1.0 + p.sets -> set( SET_T13_4PC_HEAL ) -> ok() * -0.2;
   }
 
   virtual void execute() override
@@ -4034,7 +4031,7 @@ struct holy_word_chastise_t final : public priest_spell_t
     base_costs[ current_resource() ]  = floor( base_costs[ current_resource() ] );
 
     // Needs testing
-    cooldown -> duration *= 1.0 + p.set_bonus.tier13_4pc_heal() * -0.2;
+    cooldown -> duration *= 1.0 + p.sets -> set( SET_T13_4PC_HEAL ) -> ok() * -0.2;
 
     castable_in_shadowform = false;
   }
@@ -4080,7 +4077,7 @@ struct holy_word_serenity_t final : public priest_heal_t
     base_costs[ current_resource() ]  = floor( base_costs[ current_resource() ] );
 
     // Needs testing
-    cooldown -> duration = data().cooldown() * ( 1.0 + p.set_bonus.tier13_4pc_heal() * -0.2 );
+    cooldown -> duration = data().cooldown() * ( 1.0 + p.sets -> set( SET_T13_4PC_HEAL ) -> ok() * -0.2 );
   }
 
   virtual void execute() override

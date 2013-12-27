@@ -529,7 +529,7 @@ struct mirror_image_pet_t : public pet_t
       double am = mirror_image_spell_t::action_multiplier();
 
       am *= 1.0 + p() -> arcane_charge -> stack() * p() -> o() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-            ( 1.0 + ( p() -> o() -> set_bonus.tier15_4pc_caster() ? p() -> o() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
+            ( 1.0 + p() -> o() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() );
 
       return am;
     }
@@ -780,7 +780,7 @@ struct alter_time_t : public buff_t
 
     mage_state.write_back_state();
 
-    if ( p() -> set_bonus.tier15_2pc_caster() )
+    if ( p() -> sets -> set( SET_T15_2PC_CASTER ) -> ok() )
     {
       p() -> buffs.tier15_2pc_crit -> trigger();
       p() -> buffs.tier15_2pc_haste -> trigger();
@@ -1395,7 +1395,7 @@ struct arcane_blast_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
 
-    if ( p -> set_bonus.pvp_4pc_caster() )
+    if ( p -> sets -> set( SET_PVP_4PC_CASTER ) -> ok() )
       base_multiplier *= 1.05;
   }
 
@@ -1431,8 +1431,7 @@ struct arcane_blast_t : public mage_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( p() -> set_bonus.tier13_2pc_caster() )
-        p() -> buffs.tier13_2pc -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
+      p() -> buffs.tier13_2pc -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> buffs.tier13_2pc -> default_chance * 2.0 );
     }
   }
 
@@ -1556,13 +1555,13 @@ struct arcane_missiles_t : public mage_spell_t
 
     p() -> buffs.arcane_missiles -> up();
 
-    if ( p() -> set_bonus.tier16_2pc_caster() )
+    if ( p() -> sets -> set( SET_T16_2PC_CASTER ) -> ok() )
     {
       p() -> buffs.profound_magic -> trigger();
     }
 
     // T16 4pc has a chance not to consume arcane missiles buff
-    if ( !p() -> set_bonus.tier16_4pc_caster() || ! rng().roll( p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() ) )
+    if ( !p() -> sets -> set( SET_T16_4PC_CASTER ) -> ok() || ! rng().roll( p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() ) )
     {
       p() -> buffs.arcane_missiles -> decrement();
     }
@@ -1594,7 +1593,7 @@ struct arcane_power_t : public mage_spell_t
   {
     cd_override = cooldown -> duration;
 
-    if ( p() -> set_bonus.tier13_4pc_caster() )
+    if ( p() -> sets -> set( SET_T13_4PC_CASTER ) -> ok() )
       cd_override *= ( 1.0 - p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 1 ).base_value() );
 
     mage_spell_t::update_ready( cd_override );
@@ -1723,7 +1722,7 @@ struct combustion_t : public mage_spell_t
     num_ticks      = static_cast<int>( tick_spell.duration() / base_tick_time );
     tick_may_crit  = true;
 
-    if ( p -> set_bonus.tier14_4pc_caster() )
+    if ( p -> sets -> set( SET_T14_4PC_CASTER ) -> ok() )
     {
       cooldown -> duration *= 0.8;
     }
@@ -1763,7 +1762,7 @@ struct combustion_t : public mage_spell_t
   {
     cd_override = cooldown -> duration;
 
-    if ( p() -> set_bonus.tier13_4pc_caster() )
+    if ( p() -> sets -> set( SET_T13_4PC_CASTER ) -> ok() )
       cd_override *= ( 1.0 - p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 1 ).base_value() );
 
     mage_spell_t::update_ready( cd_override );
@@ -1920,7 +1919,7 @@ public:
       mana *= 0.1;
 
       mana *= 1.0 + arcane_charges * p() -> spells.arcane_charge_arcane_blast -> effectN( 4 ).percent() *
-              ( 1.0 + ( p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
+              ( 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() );
     }
     else
     {
@@ -2002,7 +2001,7 @@ struct fireball_t : public mage_spell_t
     parse_options( NULL, options_str );
     may_hot_streak = true;
 
-    if ( p -> set_bonus.pvp_4pc_caster() )
+    if ( p -> sets -> set( SET_PVP_4PC_CASTER ) -> ok() )
       base_multiplier *= 1.05;
   }
 
@@ -2012,8 +2011,7 @@ struct fireball_t : public mage_spell_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
-      if ( p() -> set_bonus.tier13_2pc_caster() )
-        p() -> buffs.tier13_2pc -> trigger( 1, buff_t::DEFAULT_VALUE(), 0.5 );
+      p() -> buffs.tier13_2pc -> trigger();
     }
   }
 
@@ -2173,7 +2171,7 @@ struct mini_frostbolt_t : public mage_spell_t
     //dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
 
-    if ( p -> set_bonus.pvp_4pc_caster() )
+    if ( p -> sets -> set( SET_PVP_4PC_CASTER ) -> ok() )
       base_multiplier *= 1.05;
 
     if ( bolt_count < 3 )
@@ -2220,7 +2218,7 @@ struct frostbolt_t : public mage_spell_t
   {
     parse_options( NULL, options_str );
 
-    if ( p -> set_bonus.pvp_4pc_caster() )
+    if ( p -> sets -> set( SET_PVP_4PC_CASTER ) -> ok() )
       base_multiplier *= 1.05;
 
     add_child( mini_frostbolt );
@@ -2256,10 +2254,8 @@ struct frostbolt_t : public mage_spell_t
       }
 
       p() -> buffs.fingers_of_frost -> trigger( 1, buff_t::DEFAULT_VALUE(), fof_proc_chance );
-      if ( p() -> set_bonus.tier13_2pc_caster() )
-      {
-        p() -> buffs.tier13_2pc -> trigger( 1, buff_t::DEFAULT_VALUE(), 0.5 );
-      }
+
+      p() -> buffs.tier13_2pc -> trigger();
 
       if ( p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> up() )
       {
@@ -2309,7 +2305,7 @@ struct mini_frostfire_bolt_t : public mage_spell_t
     //dual = true;
     base_costs[ RESOURCE_MANA ] = 0;
 
-    if ( p -> set_bonus.pvp_4pc_caster() )
+    if ( p -> sets -> set( SET_PVP_4PC_CASTER ) -> ok() )
       base_multiplier *= 1.05;
 
     if ( bolt_count < 3 )
@@ -2381,10 +2377,10 @@ struct frostfire_bolt_t : public mage_spell_t
 
     add_child( mini_frostfire_bolt );
 
-    if ( p -> set_bonus.pvp_4pc_caster() )
+    if ( p -> sets -> set( SET_PVP_4PC_CASTER ) -> ok() )
       base_multiplier *= 1.05;
 
-    if ( p -> set_bonus.tier16_2pc_caster() )
+    if ( p -> sets -> set( SET_T16_2PC_CASTER ) -> ok() )
     {
       add_child( frigid_blast );
     }
@@ -2442,12 +2438,12 @@ struct frostfire_bolt_t : public mage_spell_t
       }
     }
     p() -> buffs.frozen_thoughts -> expire();
-    if ( p() -> buffs.brain_freeze -> check() && p() -> set_bonus.tier16_2pc_caster() )
+    if ( p() -> buffs.brain_freeze -> check() && p() -> sets -> set( SET_T16_2PC_CASTER ) -> ok() )
     {
       p() -> buffs.frozen_thoughts -> trigger();
     }
     // FIX ME: Instead of hardcoding 0.3, should use effect 2 of 145257
-    if ( p() -> set_bonus.tier16_4pc_caster() && rng().roll( p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 2 ).percent() ) )
+    if ( rng().roll( p() -> sets -> set( SET_T16_4PC_CASTER ) -> effectN( 2 ).percent() ) )
     {
       frigid_blast -> schedule_execute();
     }
@@ -2474,8 +2470,7 @@ struct frostfire_bolt_t : public mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> set_bonus.tier13_2pc_caster() )
-        p() -> buffs.tier13_2pc -> trigger( 1, buff_t::DEFAULT_VALUE(), 0.5 );
+      p() -> buffs.tier13_2pc -> trigger();
 
       trigger_ignite( s );
     }
@@ -2761,7 +2756,7 @@ struct icy_veins_t : public mage_spell_t
     parse_options( NULL, options_str );
     harmful = false;
 
-    if ( player -> set_bonus.tier14_4pc_caster() )
+    if ( player -> sets -> set( SET_T14_4PC_CASTER ) -> ok() )
     {
       cooldown -> duration *= 0.5;
     }
@@ -2771,7 +2766,7 @@ struct icy_veins_t : public mage_spell_t
   {
     cd_override = cooldown -> duration;
 
-    if ( p() -> set_bonus.tier13_4pc_caster() )
+    if ( p() -> sets -> set( SET_T13_4PC_CASTER ) -> ok() )
       cd_override *= ( 1.0 - p() -> buffs.tier13_2pc -> check() * p() -> spells.stolen_time -> effectN( 1 ).base_value() );
 
     mage_spell_t::update_ready( cd_override );
@@ -2874,7 +2869,7 @@ struct inferno_blast_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    if ( p() -> set_bonus.tier16_4pc_caster() )
+    if ( p() -> sets -> set( SET_T16_4PC_CASTER ) -> ok() )
     {
       p() -> buffs.fiery_adept -> trigger();
     }
@@ -3298,7 +3293,7 @@ struct pyroblast_t : public mage_spell_t
   {
     mage_spell_t::execute();
 
-    if ( p() -> buffs.pyroblast -> check() && p() -> set_bonus.tier16_2pc_caster() )
+    if ( p() -> buffs.pyroblast -> check() && p() -> sets -> set( SET_T16_2PC_CASTER ) -> ok() )
     {
       p() -> buffs.potent_flames -> trigger();
     }
@@ -3320,8 +3315,7 @@ struct pyroblast_t : public mage_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( player -> set_bonus.tier13_2pc_caster() )
-        p() -> buffs.tier13_2pc -> trigger( 1, buff_t::DEFAULT_VALUE(), 0.5 );
+      p() -> buffs.tier13_2pc -> trigger();
     }
   }
 
@@ -3411,7 +3405,7 @@ struct scorch_t : public mage_spell_t
     may_hot_streak = true;
     consumes_ice_floes = false;
 
-    if ( p -> set_bonus.pvp_4pc_caster() )
+    if ( p -> sets -> set( SET_PVP_4PC_CASTER ) -> ok() )
       base_multiplier *= 1.05;
   }
 
@@ -4110,7 +4104,8 @@ void mage_t::create_buffs()
   buffs.pyroblast            = buff_creator_t( this, "pyroblast",  find_class_spell( "Pyroblast" ) -> ok() ? find_spell( 48108 ) : spell_data_t::not_found() );
 
   buffs.tier13_2pc           = stat_buff_creator_t( this, "tier13_2pc" )
-                               .spell( find_spell( 105785 ) );
+                               .spell( find_spell( 105785 ) )
+                               .chance( sets -> set( SET_T13_2PC_CASTER ) -> ok() ? 0.5 : 0.0 );
 
   buffs.alter_time           = new buffs::alter_time_t( this );
   buffs.incanters_ward       = new buffs::incanters_ward_t( this );
@@ -4223,7 +4218,7 @@ void mage_t::init_action_list()
     add_action( "Arcane Brilliance", "", "precombat" );
 
     // Armor
-    if ( specialization() == MAGE_ARCANE && !set_bonus.tier16_4pc_caster()) // use Frost Armor for arcane mages with 4p T16
+    if ( specialization() == MAGE_ARCANE && !sets -> set( SET_T16_4PC_CASTER ) -> ok() ) // use Frost Armor for arcane mages with 4p T16
     {
       add_action( "Mage Armor", "", "precombat" );
     }

@@ -499,7 +499,7 @@ struct rogue_attack_t : public melee_attack_t
     timespan_t gcd = melee_attack_t::gcd();
 
     if ( gcd > timespan_t::zero() &&
-         p() -> set_bonus.tier15_4pc_melee() &&
+         p() -> sets -> set( SET_T15_4PC_MELEE ) -> ok() &&
          p() -> buffs.shadow_blades -> up() )
       gcd += p() -> spell.tier15_4pc -> effectN( 2 ).time_value();
 
@@ -1293,7 +1293,7 @@ struct backstab_t : public rogue_attack_t
 
     p() -> buffs.t16_2pc_melee -> expire();
 
-    if ( result_is_hit( execute_state -> result ) && p() -> set_bonus.tier16_4pc_melee() )
+    if ( result_is_hit( execute_state -> result ) && p() -> sets -> set( SET_T16_4PC_MELEE ) -> ok() )
       p() -> buffs.sleight_of_hand -> trigger();
   }
 
@@ -1400,7 +1400,7 @@ struct envenom_t : public rogue_attack_t
 
     timespan_t envenom_duration = p() -> buffs.envenom -> period * ( 1 + td -> combo_points.count );
 
-    if ( p() -> set_bonus.tier15_2pc_melee() )
+    if ( p() -> sets -> set( SET_T15_2PC_MELEE ) -> ok() )
       envenom_duration += p() -> buffs.envenom -> period;
     p() -> buffs.envenom -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, envenom_duration );
 
@@ -1984,7 +1984,7 @@ struct rupture_t : public rogue_attack_t
   virtual void execute()
   {
     num_ticks = 2 + 2 * cast_td() -> combo_points.count;
-    if ( p() -> set_bonus.tier15_2pc_melee() )
+    if ( p() -> sets -> set( SET_T15_2PC_MELEE ) -> ok() )
       num_ticks += 2;
 
     rogue_attack_t::execute();
@@ -2145,7 +2145,7 @@ struct slice_and_dice_t : public rogue_attack_t
       snd *= 1.0 + p() -> cache.mastery_value();
     timespan_t snd_duration = 3 * ( action_cp + 1 ) * p() -> buffs.slice_and_dice -> period;
 
-    if ( p() -> set_bonus.tier15_2pc_melee() )
+    if ( p() -> sets -> set( SET_T15_2PC_MELEE ) -> ok() )
       snd_duration += 3 * p() -> buffs.slice_and_dice -> period;
 
     p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
@@ -3411,7 +3411,7 @@ void rogue_t::init_base_stats()
   resources.base[ RESOURCE_ENERGY ] = 100;
   if ( main_hand_weapon.type == WEAPON_DAGGER && off_hand_weapon.type == WEAPON_DAGGER )
     resources.base[ RESOURCE_ENERGY ] += spec.assassins_resolve -> effectN( 1 ).base_value();
-  if ( set_bonus.pvp_2pc_melee() )
+  if ( sets -> set( SET_PVP_2PC_MELEE ) -> ok() )
     resources.base[ RESOURCE_ENERGY ] += 10;
 
   base_energy_regen_per_second = 10 * ( 1.0 + spec.vitality -> effectN( 1 ).percent() );
@@ -3608,13 +3608,13 @@ void rogue_t::create_buffs()
   buffs.stealth            = buff_creator_t( this, "stealth" ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buffs.subterfuge         = new buffs::subterfuge_t( this );
   buffs.t16_2pc_melee      = buff_creator_t( this, "silent_blades", find_spell( 145193 ) )
-                             .chance( set_bonus.tier16_2pc_melee() );
+                             .chance( sets -> set( SET_T16_2PC_MELEE ) -> ok() );
   buffs.tier13_2pc         = buff_creator_t( this, "tier13_2pc", spell.tier13_2pc )
-                             .chance( set_bonus.tier13_2pc_melee() ? 1.0 : 0 );
+                             .chance( sets -> set( SET_T13_2PC_MELEE ) -> ok() ? 1.0 : 0 );
   buffs.tot_trigger        = buff_creator_t( this, "tricks_of_the_trade_trigger", find_spell( 57934 ) )
                              .activated( true );
   buffs.toxicologist       = stat_buff_creator_t( this, "toxicologist", find_spell( 145249 ) )
-                             .chance( set_bonus.tier16_4pc_melee() );
+                             .chance( sets -> set( SET_T16_4PC_MELEE ) -> ok() );
   buffs.vanish             = buff_creator_t( this, "vanish", find_spell( 11327 ) )
                              .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                              .cd( timespan_t::zero() )

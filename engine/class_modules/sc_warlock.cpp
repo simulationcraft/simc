@@ -1742,7 +1742,7 @@ public:
     if ( ! p -> rng().roll( chance ) ) return;
 
 
-    if ( p -> set_bonus.tier16_4pc_caster() && //check whether we fill one up.
+    if ( p -> sets -> set( SET_T16_4PC_CASTER ) -> ok() && //check whether we fill one up.
         (( p -> resources.current[ RESOURCE_BURNING_EMBER ] < 1.0 && p -> resources.current[ RESOURCE_BURNING_EMBER ] + amount >= 1.0) ||
          ( p -> resources.current[ RESOURCE_BURNING_EMBER ] < 2.0 && p -> resources.current[ RESOURCE_BURNING_EMBER ] + amount >= 2.0) ||
          ( p -> resources.current[ RESOURCE_BURNING_EMBER ] < 3.0 && p -> resources.current[ RESOURCE_BURNING_EMBER ] + amount >= 3.0) ||
@@ -1852,7 +1852,7 @@ struct agony_t : public warlock_spell_t
   {
     may_crit = false;
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
-    base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
   }
 
   virtual void last_tick( dot_t* d )
@@ -2060,8 +2060,8 @@ struct shadow_bolt_t : public warlock_spell_t
   shadow_bolt_t( warlock_t* p ) :
     warlock_spell_t( p, "Shadow Bolt" ), glyph_copy_1( 0 ), glyph_copy_2( 0 ),  hand_of_guldan( new hand_of_guldan_t( p ) )
   {
-    base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
-    base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
+    base_multiplier *= 1.0 + p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
 
     hand_of_guldan               -> background = true;
     hand_of_guldan               -> base_costs[ RESOURCE_MANA ] = 0;
@@ -2108,7 +2108,7 @@ struct shadow_bolt_t : public warlock_spell_t
     background = false;
 
     //cast HoG
-    if ( p() -> set_bonus.tier16_4pc_caster() && rng().roll( 0.08 ) )//FIX after dbc update
+    if ( p() -> sets -> set( SET_T16_4PC_CASTER ) -> ok() && rng().roll( 0.08 ) )//FIX after dbc update
     {
       hand_of_guldan -> target = target;
       int current_charge  = hand_of_guldan -> cooldown -> current_charge;
@@ -2256,8 +2256,8 @@ struct corruption_t : public warlock_spell_t
     may_crit = false;
     generate_fury = 4;
     if ( p -> spec.pandemic -> ok() ) dot_behavior = DOT_EXTEND;
-     base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
-    base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
+     base_multiplier *= 1.0 + p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
   };
 
   virtual timespan_t travel_time()
@@ -2464,8 +2464,7 @@ struct drain_soul_t : public warlock_spell_t
       multiplier *=  ( 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack() );
 
 
-      if ( p() -> set_bonus.tier15_4pc_caster() )
-        multiplier *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
+      multiplier *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
       trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               multiplier , false);
       trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          multiplier , false);
@@ -2518,7 +2517,7 @@ struct unstable_affliction_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( p() -> set_bonus.tier16_2pc_caster() && d -> state -> result == RESULT_CRIT )
+    if ( p() -> sets -> set( SET_T16_2PC_CASTER ) -> ok() && d -> state -> result == RESULT_CRIT )
     {
       p() ->  buffs.tier16_2pc_empowered_grasp -> trigger();
     }
@@ -2539,7 +2538,7 @@ struct haunt_t : public warlock_spell_t
 
   void try_to_trigger_soul_shard_refund()//t16_4pc_bonus
   {
-    if ( p() -> set_bonus.tier16_4pc_caster() && rng().roll( p() -> sets -> set ( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() ) )//refund shard when haunt expires
+    if ( rng().roll( p() -> sets -> set ( SET_T16_4PC_CASTER ) -> effectN( 1 ).percent() ) )//refund shard when haunt expires
     {
       p() -> resource_gain( RESOURCE_SOUL_SHARD, p() -> find_spell( 145159 ) -> effectN( 1 ).resource( RESOURCE_SOUL_SHARD ), p() -> gains.haunt_tier16_4pc );
     }
@@ -2558,7 +2557,7 @@ struct haunt_t : public warlock_spell_t
   {
     timespan_t duration = data().duration();
 
-    if ( p() -> set_bonus.tier15_2pc_caster() && p() -> buffs.dark_soul -> check() )
+    if ( p() -> sets -> set( SET_T15_2PC_CASTER ) -> ok() && p() -> buffs.dark_soul -> check() )
       duration += p() -> spells.tier15_2pc -> effectN( 1 ).time_value();
 
     num_ticks = ( int ) ( duration / base_tick_time );
@@ -2783,7 +2782,7 @@ struct conflagrate_t : public warlock_spell_t
 
     //hotfixed extra gain with 15% chance from 13.09.13
     trigger_ember_gain( p(), 0.1, gain, 0.15 );
-    if ( s -> result == RESULT_CRIT &&  p() -> set_bonus.tier16_2pc_caster() )
+    if ( s -> result == RESULT_CRIT &&  p() -> sets -> set( SET_T16_2PC_CASTER ) -> ok() )
       p() -> buffs.tier16_2pc_destructive_influence -> trigger();
   }
 
@@ -2823,8 +2822,8 @@ struct incinerate_t : public warlock_spell_t
 
     backdraft_consume = 1;
 
-    base_multiplier *= 1.0 + p() -> set_bonus.tier14_2pc_caster() * p() -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 2 ).percent();
-    base_multiplier *= 1.0 + p() -> set_bonus.tier13_4pc_caster() * p() -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p() -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 2 ).percent();
+    base_multiplier *= 1.0 + p() -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
   }
 
   void schedule_execute( action_state_t* state )
@@ -2883,8 +2882,7 @@ struct incinerate_t : public warlock_spell_t
     trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, gain );
     //hotfixed extra gain with 15% 13.09.13
     trigger_ember_gain( p(), 0.1, gain, 0.15 );
-    if ( p() -> set_bonus.tier15_4pc_caster() &&
-         rng().roll( p() -> sets -> set ( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent() ) )
+    if ( rng().roll( p() -> sets -> set ( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent() ) )
       trigger_ember_gain( p(), s -> result == RESULT_CRIT ? 0.2 : 0.1, p() -> gains.incinerate_t15_4pc );
 
     if ( result_is_hit( s -> result ) )
@@ -2964,7 +2962,7 @@ struct soul_fire_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
-    if ( p() -> set_bonus.tier16_2pc_caster() )
+    if ( p() -> sets -> set( SET_T16_2PC_CASTER ) -> ok() )
     {
       p() -> buffs.tier16_2pc_fiery_wrath -> trigger();
     }
@@ -3276,8 +3274,8 @@ struct touch_of_chaos_t : public warlock_spell_t
   touch_of_chaos_t( warlock_t* p ) :
     warlock_spell_t( "touch_of_chaos", p, p -> spec.touch_of_chaos ),chaos_wave( new chaos_wave_t( p ) )
   {
-    base_multiplier *= 1.0 + p -> set_bonus.tier14_2pc_caster() * p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
-    base_multiplier *= 1.0 + p -> set_bonus.tier13_4pc_caster() * p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent(); // Assumption - need to test whether ToC is affected
+    base_multiplier *= 1.0 + p -> sets -> set( SET_T14_2PC_CASTER ) -> effectN( 3 ).percent();
+    base_multiplier *= 1.0 + p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent(); // Assumption - need to test whether ToC is affected
 
     chaos_wave               -> background = true;
     chaos_wave               -> base_costs[ RESOURCE_DEMONIC_FURY ] = 0;
@@ -3315,7 +3313,7 @@ struct touch_of_chaos_t : public warlock_spell_t
     }
 
     //cast CW
-    if ( p() -> set_bonus.tier16_4pc_caster() && rng().roll( 0.08 ) )//FIX after dbc update
+    if ( p() -> sets -> set( SET_T16_4PC_CASTER ) -> ok() && rng().roll( 0.08 ) )//FIX after dbc update
     {
       chaos_wave -> target = target;
       int current_charge  = chaos_wave -> cooldown -> current_charge;
@@ -3490,8 +3488,7 @@ struct malefic_grasp_t : public warlock_spell_t
 
     multiplier *=  ( 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack() );
 
-    if ( p() -> set_bonus.tier15_4pc_caster() )
-      multiplier *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
+    multiplier *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
 
 
@@ -4365,13 +4362,12 @@ struct summon_infernal_t : public summon_pet_t
 
     cooldown = p -> cooldowns.infernal;
     cooldown -> duration = data().cooldown(); // Reset the cooldown duration because we're overriding the duration
-    cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? timespan_t::from_millis( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 3 ).base_value() ) : timespan_t::zero();
+    cooldown -> duration += timespan_t::from_millis( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 3 ).base_value() );
 
     summoning_duration = data().effectN( 2 ).trigger() -> duration();
-    summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
-                          ( p -> specialization() == WARLOCK_DEMONOLOGY ?
+    summoning_duration += ( p -> specialization() == WARLOCK_DEMONOLOGY ) ?
                             timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).base_value() ) :
-                            timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 2 ).base_value() ) ) : timespan_t::zero();
+                            timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 2 ).base_value() );
 
     infernal_awakening = new infernal_awakening_t( p, data().effectN( 1 ).trigger() );
     infernal_awakening -> stats = stats;
@@ -4397,10 +4393,9 @@ struct summon_doomguard2_t : public summon_pet_t
     dual       = true;
     callbacks  = false;
     summoning_duration = data().duration();
-    summoning_duration += ( p -> set_bonus.tier13_2pc_caster() ) ?
-                          ( p -> specialization() == WARLOCK_DEMONOLOGY ?
+    summoning_duration += ( p -> specialization() == WARLOCK_DEMONOLOGY ?
                             timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).base_value() ) :
-                            timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 2 ).base_value() ) ) : timespan_t::zero();
+                            timespan_t::from_seconds( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 2 ).base_value() ) );
   }
 };
 
@@ -4414,7 +4409,7 @@ struct summon_doomguard_t : public warlock_spell_t
   {
     cooldown = p -> cooldowns.doomguard;
     cooldown -> duration = data().cooldown(); // Reset the cooldown duration because we're overriding the duration
-    cooldown -> duration += ( p -> set_bonus.tier13_2pc_caster() ) ? timespan_t::from_millis( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 3 ).base_value() ) : timespan_t::zero();
+    cooldown -> duration += timespan_t::from_millis( p -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 3 ).base_value() );
 
     harmful = false;
     summon_doomguard2 = new summon_doomguard2_t( p, data().effectN( 2 ).trigger() );
@@ -4687,7 +4682,7 @@ double warlock_t::composite_mastery() const
 
 double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t* source, action_t* action )
 {
-  if ( set_bonus.tier15_4pc_caster() && resource_type == RESOURCE_DEMONIC_FURY )
+  if ( resource_type == RESOURCE_DEMONIC_FURY )
     amount *= 1.0 + sets -> set( SET_T15_4PC_CASTER ) -> effectN( 3 ).percent();
 
   return player_t::resource_gain( resource_type, amount, source, action );

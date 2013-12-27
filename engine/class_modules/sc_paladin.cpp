@@ -533,7 +533,7 @@ public:
     }
 
     // If T16 4pc melee set bonus is equipped, trigger a proc
-    if ( p() -> set_bonus.tier16_4pc_melee() )
+    if ( p() -> sets -> set( SET_T16_4PC_MELEE ) -> ok() )
     {
       // chance to proc the buff needs to be scaled by holy power spent
       bool success = p() -> buffs.divine_crusader -> trigger( 1,
@@ -759,7 +759,7 @@ struct ardent_defender_t : public paladin_spell_t
     harmful = false;
     use_off_gcd = true;
     trigger_gcd = timespan_t::zero();
-    if ( p -> set_bonus.tier14_2pc_tank() )
+    if (  p -> sets -> set( SET_T14_2PC_TANK ) -> ok() )
       cooldown -> duration = data().cooldown() + p -> sets -> set( SET_T14_2PC_TANK ) -> effectN( 1 ).time_value();
   }
 
@@ -1271,7 +1271,7 @@ struct divine_protection_t : public paladin_spell_t
     if ( p -> talents.unbreakable_spirit -> ok() )
       cooldown -> duration = data().cooldown() * ( 1 + p -> talents.unbreakable_spirit -> effectN( 1 ).percent() );
 
-    if ( p -> set_bonus.tier16_2pc_tank() )
+    if ( p -> sets -> set( SET_T16_2PC_TANK ) -> ok() )
       p -> active.blessing_of_the_guardians = new blessing_of_the_guardians_t( p );
   }
 
@@ -1388,7 +1388,7 @@ struct eternal_flame_t : public paladin_heal_t
     // order of operations: T16 4-pc tank, then Divine Purpose (assumed!)
 
     // check for T16 4pc tank bonus
-    if ( p() -> set_bonus.tier16_4pc_tank() && p() -> buffs.bastion_of_glory -> current_stack >= 3 && target == player  )
+    if ( p() -> sets -> set( SET_T16_4PC_TANK ) -> ok() && p() -> buffs.bastion_of_glory -> current_stack >= 3 && target == player  )
     {
       // nothing necessary here, BoG will be consumed automatically upon cast
       return;
@@ -1441,7 +1441,7 @@ struct eternal_flame_t : public paladin_heal_t
     }
 
     // Shield of Glory (Tier 15 protection 2-piece bonus)
-    if ( p() -> set_bonus.tier15_2pc_tank() )
+    if ( p() -> sets -> set( SET_T15_2PC_TANK ) -> ok() )
       p() -> buffs.shield_of_glory -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> buffs.shield_of_glory -> buff_duration * hopo );
     
     // consume BoG stacks if used on self
@@ -1649,7 +1649,7 @@ struct exorcism_t : public paladin_spell_t
 
   virtual void impact( action_state_t* s )
   {
-    if ( result_is_hit( s -> result ) && p() -> set_bonus.tier15_2pc_melee() )
+    if ( result_is_hit( s -> result ) && p() -> sets -> set( SET_T15_2PC_MELEE ) -> ok() )
     {
       p() -> buffs.tier15_2pc_melee -> trigger();
     }
@@ -2647,7 +2647,7 @@ struct word_of_glory_t : public paladin_heal_t
     // order of operations: T16 4-pc tank, then Divine Purpose (assumed!)
 
     // check for T16 4pc tank bonus
-    if ( p() -> set_bonus.tier16_4pc_tank() && p() -> buffs.bastion_of_glory -> current_stack >= 3 && target == player  )
+    if ( p() -> sets -> set( SET_T16_4PC_TANK ) -> ok() && p() -> buffs.bastion_of_glory -> current_stack >= 3 && target == player  )
     {
       // nothing necessary here, BoG will be consumed automatically upon cast
       return;
@@ -2689,7 +2689,7 @@ struct word_of_glory_t : public paladin_heal_t
     }
 
     // Shield of Glory (Tier 15 protection 2-piece bonus)
-    if ( p() -> set_bonus.tier15_2pc_tank() )
+    if ( p() -> sets -> set( SET_T15_2PC_TANK ) -> ok() )
       p() -> buffs.shield_of_glory -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> buffs.shield_of_glory -> buff_duration * hopo );
         
     // consume BoG stacks if used on self
@@ -2904,7 +2904,7 @@ struct melee_t : public paladin_melee_attack_t
         p() -> cooldowns.exorcism -> reset( true );
 
         // activate T16 2-piece bonus
-        if ( p() -> set_bonus.tier16_2pc_melee() )
+        if ( p() -> sets -> set( SET_T16_2PC_MELEE ) -> ok() )
           p() -> buffs.warrior_of_the_light -> trigger();
       }
     }
@@ -2959,7 +2959,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
     sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
 
     // multiplier modification for T13 Retribution 2-piece bonus
-    base_multiplier *= 1.0 + ( ( p -> set_bonus.tier13_2pc_melee() ) ? p -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() : 0.0 );
+    base_multiplier *= 1.0 + ( p -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 1 ).percent() );
 
     // Guarded by the Light and Sword of Light reduce base mana cost; spec-limited so only one will ever be active
     base_costs[ RESOURCE_MANA ] *= 1.0 +  p -> passives.guarded_by_the_light -> effectN( 7 ).percent()
@@ -3017,7 +3017,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
       trigger_hand_of_light( s );
 
       // Check for T15 Ret 4-piece bonus proc
-      if ( p() -> set_bonus.tier15_4pc_melee() )
+      if ( p() -> sets -> set( SET_T15_4PC_MELEE ) -> ok() )
         p() -> buffs.tier15_4pc_melee -> trigger();
 
     }
@@ -3905,7 +3905,7 @@ struct divine_protection_t : public buff_t
     buff_t::expire_override();
 
     paladin_t* p = static_cast<paladin_t*>( player );
-    if ( p -> set_bonus.tier16_2pc_tank() )
+    if ( p -> sets -> set( SET_T16_2PC_TANK ) -> ok() )
     {
       // trigger the HoT
       if ( ! p -> active.blessing_of_the_guardians -> target -> is_sleeping() )
@@ -5326,7 +5326,7 @@ void paladin_t::assess_damage( school_e school,
   player_t::assess_damage( school, dtype, s );
 
   // T15 4-piece tank
-  if ( set_bonus.tier15_4pc_tank() && buffs.divine_protection -> check() )
+  if ( sets -> set( SET_T15_4PC_TANK ) -> ok() && buffs.divine_protection -> check() )
   {
     // compare damage to player health to find HP gain
     double hp_gain = std::floor( s -> result_mitigated / resources.max[ RESOURCE_HEALTH ] * 5 );
@@ -5336,7 +5336,7 @@ void paladin_t::assess_damage( school_e school,
   }
 
   // T16 2-piece tank
-  if ( set_bonus.tier16_2pc_tank() && buffs.divine_protection -> check() )
+  if ( sets -> set( SET_T16_2PC_TANK ) -> ok() && buffs.divine_protection -> check() )
   {
     active.blessing_of_the_guardians -> increment_damage( s -> result_mitigated ); // uses post-mitigation, pre-absorb value
   }

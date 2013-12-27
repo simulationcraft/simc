@@ -913,8 +913,7 @@ struct jab_t : public monk_melee_attack_t
     }
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.jab, this );
 
-    if ( p() -> set_bonus.tier15_2pc_melee() &&
-        rng().roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
+    if ( rng().roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc_melee -> occur();
@@ -1305,8 +1304,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     if ( p() -> talent.rushing_jade_wind -> ok() )
       p() -> buff.rushing_jade_wind -> trigger( 1, 0, 1.0, cooldown -> duration * p() -> cache.attack_haste() );
 
-    if ( p() -> set_bonus.tier15_2pc_melee() &&
-        rng().roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
+    if ( rng().roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc_melee -> occur();
@@ -1808,12 +1806,12 @@ struct tigereye_brew_t : public monk_spell_t
     if ( p() -> track_focus_of_xuen > 20.0 )
       p() -> track_focus_of_xuen = 20.0;
 
-    if ( p() -> set_bonus.tier15_4pc_melee() )
+    if ( p() -> sets -> set( SET_T15_4PC_MELEE ) -> ok() )
     {
       use_value *= 1.05; // t154pc
     }
 
-    if ( p() -> set_bonus.tier16_4pc_melee() )
+    if ( p() -> sets -> set( SET_T16_4PC_MELEE ) -> ok() )
     {
       // so, there's actually an error with our 4set in that it doesn't count a full .75 if we don't use a full 4, but
       // can't find post that contains info.
@@ -2531,8 +2529,7 @@ struct expel_harm_heal_t : public monk_heal_t
 
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.expel_harm, this );
 
-    if ( p() -> set_bonus.tier15_2pc_melee() &&
-        rng().roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
+    if ( rng().roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc_melee -> occur();

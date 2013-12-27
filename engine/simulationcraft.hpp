@@ -3512,16 +3512,6 @@ struct set_bonus_t
 {
   std::array<int, SET_MAX> count;
 
-  int tier13_2pc_caster(); int tier13_2pc_melee(); int tier13_2pc_tank(); int tier13_2pc_heal();
-  int tier13_4pc_caster(); int tier13_4pc_melee(); int tier13_4pc_tank(); int tier13_4pc_heal();
-  int tier14_2pc_caster(); int tier14_2pc_melee(); int tier14_2pc_tank(); int tier14_2pc_heal();
-  int tier14_4pc_caster(); int tier14_4pc_melee(); int tier14_4pc_tank(); int tier14_4pc_heal();
-  int tier15_2pc_caster(); int tier15_2pc_melee(); int tier15_2pc_tank(); int tier15_2pc_heal();
-  int tier15_4pc_caster(); int tier15_4pc_melee(); int tier15_4pc_tank(); int tier15_4pc_heal();
-  int tier16_2pc_caster(); int tier16_2pc_melee(); int tier16_2pc_tank(); int tier16_2pc_heal();
-  int tier16_4pc_caster(); int tier16_4pc_melee(); int tier16_4pc_tank(); int tier16_4pc_heal();
-  int pvp_2pc_caster(); int pvp_2pc_melee(); int pvp_2pc_tank(); int pvp_2pc_heal();
-  int pvp_4pc_caster(); int pvp_4pc_melee(); int pvp_4pc_tank(); int pvp_4pc_heal();
   int decode( player_t*, item_t& item );
   bool init( player_t* );
 

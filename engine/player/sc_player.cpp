@@ -8425,6 +8425,8 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
       profile_str += term;
     }
 
+    // TODO: add replacement from new set bonus system
+    /*
     if ( set_bonus.tier13_2pc_caster() ) profile_str += "# tier13_2pc_caster=1" + term;
     if ( set_bonus.tier13_4pc_caster() ) profile_str += "# tier13_4pc_caster=1" + term;
     if ( set_bonus.tier13_2pc_melee()  ) profile_str += "# tier13_2pc_melee=1" + term;
@@ -8468,7 +8470,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
     if ( set_bonus.pvp_2pc_tank()   ) profile_str += "# pvp_2pc_tank=1" + term;
     if ( set_bonus.pvp_4pc_tank()   ) profile_str += "# pvp_4pc_tank=1" + term;
     if ( set_bonus.pvp_2pc_heal()   ) profile_str += "# pvp_2pc_heal=1" + term;
-    if ( set_bonus.pvp_4pc_heal()   ) profile_str += "# pvp_4pc_heal=1" + term;
+    if ( set_bonus.pvp_4pc_heal()   ) profile_str += "# pvp_4pc_heal=1" + term;*/
 
     for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
     {

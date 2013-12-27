@@ -467,7 +467,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     if ( special && this -> id != 115767 ) // Recklessness crit bonus does not count towards deep wounds.
       cc += p -> buff.recklessness -> value();
 
-    if ( p -> set_bonus.tier15_4pc_melee() && p -> buffs.skull_banner -> up() && p -> buffs.skull_banner -> source == p )
+    if ( p -> sets -> set( SET_T15_4PC_MELEE ) -> ok() && p -> buffs.skull_banner -> check() && p -> buffs.skull_banner -> source == p )
     {
       cc += p -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent();
     }
@@ -701,7 +701,7 @@ static  void trigger_sweeping_strikes( action_state_t* s )
 
 static bool trigger_t15_2pc_melee( warrior_attack_t* a )
 {
-  if ( ! a -> player -> set_bonus.tier15_2pc_melee() )
+  if ( ! a -> player -> sets -> set( SET_T15_2PC_MELEE ) -> ok() )
     return false;
 
   warrior_t* p = a -> cast();
@@ -783,7 +783,7 @@ void warrior_attack_t::impact( action_state_t* s )
     {
       if( p -> buff.bloodbath -> up() )
         trigger_bloodbath_dot( s -> target, s -> result_amount );
-      if ( p -> set_bonus.tier16_2pc_melee() && td ->  debuffs_colossus_smash -> up() && // Melee tier 16 2 piece.
+      if ( p -> sets -> set( SET_T16_2PC_MELEE ) -> ok() && td ->  debuffs_colossus_smash -> up() && // Melee tier 16 2 piece.
          ( this ->  weapon == &( p -> main_hand_weapon ) || this -> id == 100130 ) &&    // Only procs once per ability used.
            this -> id != 12328 && this -> id != 76858 )                                  // Doesn't proc from opportunity strikes or sweeping strikes.
         p -> resource_gain( RESOURCE_RAGE,
@@ -1075,7 +1075,7 @@ struct bloodthirst_t : public warrior_attack_t
       p -> active_deep_wounds -> execute();
       p -> buff.bloodsurge -> trigger( 3 );
 
-      if ( p -> set_bonus.tier16_4pc_melee() )
+      if ( p -> sets -> set( SET_T16_4PC_MELEE ) -> ok() )
         p -> buff.death_sentence -> trigger();
 
       p -> resource_gain( RESOURCE_RAGE,
@@ -1684,7 +1684,7 @@ struct mortal_strike_t : public warrior_attack_t
       if ( sim -> overrides.mortal_wounds )
         s -> target -> debuffs.mortal_wounds -> trigger();
 
-      if ( p -> set_bonus.tier16_4pc_melee() )
+      if ( p -> sets -> set( SET_T16_4PC_MELEE ) -> ok() )
         p -> buff.death_sentence -> trigger();
 
       p -> resource_gain( RESOURCE_RAGE,
@@ -1909,7 +1909,7 @@ struct revenge_t : public warrior_attack_t
 
         p -> resource_gain( RESOURCE_RAGE, rage_gain, p -> gain.revenge );
 
-        if ( td -> debuffs_demoralizing_shout -> up() && p -> set_bonus.tier15_4pc_tank() )
+        if ( td -> debuffs_demoralizing_shout -> up() && p -> sets -> set( SET_T15_4PC_TANK ) -> ok() )
            p -> resource_gain( RESOURCE_RAGE,
                                rage_gain * p -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(),
                                p -> gain.tier15_4pc_tank );
@@ -2070,7 +2070,7 @@ struct shield_slam_t : public warrior_attack_t
       }
     }
 
-    if ( td -> debuffs_demoralizing_shout -> up() && p -> set_bonus.tier15_4pc_tank() )
+    if ( td -> debuffs_demoralizing_shout -> up() && p -> sets -> set( SET_T15_4PC_TANK ) -> ok() )
       p -> resource_gain( RESOURCE_RAGE,
                         ( rage_gain + rage_from_snb ) * p -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(),
                           p -> gain.tier15_4pc_tank );
@@ -3149,7 +3149,7 @@ struct debuff_demo_shout_t : public buff_t
   {
     warrior_t* p = (warrior_t*) player;
 
-    if (p -> set_bonus.tier16_4pc_tank())
+    if ( p -> sets -> set( SET_T16_4PC_TANK ) -> ok() )
     {
         p -> buff.tier16_reckless_defense -> trigger();
     }
@@ -4328,7 +4328,7 @@ void warrior_t::assess_damage( school_e school,
   }
 
   
-  if ( set_bonus.tier16_2pc_tank() )
+  if ( sets -> set( SET_T16_2PC_TANK ) -> ok() )
   {
     if (s -> block_result != BLOCK_RESULT_UNBLOCKED) //heal if blocked
     {

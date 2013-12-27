@@ -448,7 +448,7 @@ void trigger_tier16_bm_4pc_brutal_kinship( hunter_t* p )
 {
   if ( p -> specialization() != HUNTER_BEAST_MASTERY )
     return;
-  if ( ! p -> set_bonus.tier16_4pc_melee() )
+  if ( ! p -> sets -> set( SET_T16_4PC_MELEE ) -> ok() )
     return;
   if ( p -> buffs.beast_within -> check() )
     p -> buffs.tier16_4pc_bm_brutal_kinship -> trigger( 1, 0, 1, p -> buffs.beast_within -> remains() );
@@ -843,7 +843,7 @@ public:
     if ( ! buffs.stampede -> check() && buffs.bestial_wrath -> up() )
       m *= 1.0 + buffs.bestial_wrath -> data().effectN( 2 ).percent();
 
-    if ( o() -> set_bonus.tier16_4pc_melee() )
+    if ( o() -> sets -> set( SET_T16_4PC_MELEE ) -> ok() )
       m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> stack() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
 
     // Pet combat experience
@@ -938,7 +938,7 @@ struct hunter_main_pet_attack_t : public hunter_main_pet_action_t<melee_attack_t
   {
     if ( o() -> specialization() != HUNTER_BEAST_MASTERY )
       return;
-    if ( ! o() -> set_bonus.tier16_4pc_melee() )
+    if ( ! o() -> sets -> set( SET_T16_4PC_MELEE ) -> ok() )
       return;
     if ( p() -> buffs.bestial_wrath -> check() )
       p() -> buffs.tier16_4pc_bm_brutal_kinship -> trigger( 1, 0, 1, p() -> buffs.bestial_wrath -> remains() );
@@ -1824,7 +1824,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
 
   void trigger_tier15_2pc_melee()
   {
-    if ( ! p() -> set_bonus.tier15_2pc_melee() )
+    if ( ! p() -> sets -> set( SET_T15_2PC_MELEE ) -> ok() )
       return;
 
     if ( ( p() -> ppm_tier15_2pc_melee.trigger( *this ) ) )
@@ -1850,7 +1850,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
   // Arcane Shot and Multi-shot reduce the cooldown of Rapid Fire by 12 seconds per cast.
   void trigger_tier16_2pc_melee()
   {
-    if ( ! p() -> set_bonus.tier16_2pc_melee() )
+    if ( ! p() -> sets -> set( SET_T16_2PC_MELEE ) -> ok() )
       return;
 
     if ( p() -> cooldowns.rapid_fire -> down() )
@@ -1991,7 +1991,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
 
       p() -> buffs.master_marksman_fire -> expire();
 
-      if ( p() -> set_bonus.tier16_4pc_melee() )
+      if ( p() -> sets -> set( SET_T16_4PC_MELEE ) -> ok() )
         p() -> buffs.tier16_4pc_mm_keen_eye -> trigger();
 
       trigger_tier16_2pc_melee();
@@ -2364,7 +2364,7 @@ struct cobra_shot_t : public hunter_ranged_attack_t
     focus_gain = p() -> dbc.spell( 91954 ) -> effectN( 1 ).base_value();
 
     // Needs testing
-    if ( p() -> set_bonus.tier13_2pc_melee() )
+    if ( p() -> sets -> set( SET_T13_2PC_MELEE ) -> ok() )
       focus_gain *= 2.0;
 
     direct_power_mod = 0.017;
@@ -2494,7 +2494,6 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     // Does saving the proc require round trip latency before we know?
     // TODO add reaction time for the continuation of the proc?
     if ( p() -> buffs.lock_and_load -> up()
-         && p() -> set_bonus.tier16_4pc_melee()
          && rng().roll( p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent() ) )
     {
       p() -> procs.tier16_4pc_melee -> occur();
@@ -2807,7 +2806,7 @@ struct steady_shot_t : public hunter_ranged_attack_t
     steady_focus_gain = p() -> buffs.steady_focus -> data().effectN( 2 ).base_value();
 
     // Needs testing
-    if ( p() -> set_bonus.tier13_2pc_melee() )
+    if ( p() -> sets -> set( SET_T13_2PC_MELEE ) -> ok() )
       focus_gain *= 2.0;
   }
 
@@ -2894,7 +2893,7 @@ struct lightning_arrow_t : public hunter_ranged_attack_t
 void hunter_ranged_attack_t::trigger_tier15_4pc_melee( proc_t* proc, attack_t* attack )
 {
 
-  if ( ! p() -> set_bonus.tier15_4pc_melee() )
+  if ( ! p() -> sets -> set( SET_T15_4PC_MELEE ) -> ok() )
     return;
 
   if ( p() -> ppm_tier15_4pc_melee.trigger( *this ) )
@@ -3785,7 +3784,7 @@ void hunter_t::init_base_stats()
   base.attack_power_per_agility  = 2.0;
 
   base_focus_regen_per_second = 4;
-  if ( set_bonus.pvp_4pc_melee() )
+  if ( sets -> set( SET_PVP_4PC_MELEE ) -> ok() )
     base_focus_regen_per_second *= 1.25;
 
 
@@ -4067,7 +4066,7 @@ void hunter_t::init_action_list()
 
         action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
 
-        if ( set_bonus.tier13_4pc_melee() )
+        if ( sets -> set( SET_T13_4PC_MELEE ) -> ok() )
         {
           action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=4)&(!buff.rapid_fire.up&!buff.bloodlust.react&!buff.berserking.up&!buff.tier13_4pc.react&cooldown.buff_tier13_4pc.remains<=0)";
           action_list_str += "/aimed_shot,if=(cooldown.chimera_shot.remains>5|focus>=80)&(buff.bloodlust.react|buff.tier13_4pc.react|cooldown.buff_tier13_4pc.remains>0)|buff.rapid_fire.up";

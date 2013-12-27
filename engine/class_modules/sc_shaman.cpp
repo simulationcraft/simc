@@ -449,7 +449,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
   debuff.stormstrike    = buff_creator_t( *this, "stormstrike", p -> find_specialization_spell( "Stormstrike" ) );
   debuff.unleashed_fury = buff_creator_t( *this, "unleashed_fury_ft", p -> find_spell( 118470 ) );
   debuff.t16_2pc_caster = buff_creator_t( *this, "tier16_2pc_caster", p -> sets -> set( SET_T16_2PC_CASTER ) -> effectN( 1 ).trigger() )
-                          .chance( static_cast< double >( p -> set_bonus.tier16_2pc_caster() ) );
+                          .chance( static_cast< double >( p -> sets -> set( SET_T16_2PC_CASTER ) -> ok() ) );
 }
 
 struct shaman_action_state_t : public heal_state_t
@@ -798,7 +798,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       if ( overload_chance && rng().roll( overload_chance ) )
       {
         overload_spell -> execute();
-        if ( p() -> set_bonus.tier13_4pc_caster() )
+        if ( p() -> sets -> set( SET_T13_4PC_CASTER ) -> ok() )
           p() -> buff.tier13_4pc_caster -> trigger();
       }
     }
@@ -1518,7 +1518,7 @@ static bool trigger_maelstrom_weapon( shaman_melee_attack_t* a )
 
   double chance = a -> weapon -> proc_chance_on_swing( 10.0 );
 
-  if ( a -> p() -> set_bonus.pvp_2pc_melee() )
+  if ( a -> p() -> sets -> set( SET_PVP_2PC_MELEE ) -> ok() )
     chance *= 1.2;
 
   if ( a -> p() -> specialization() == SHAMAN_ENHANCEMENT &&
@@ -1590,8 +1590,7 @@ static bool trigger_windfury_weapon( shaman_melee_attack_t* a )
   {
     p -> cooldown.windfury_weapon -> start( timespan_t::from_seconds( 3.0 ) );
 
-    if ( p -> set_bonus.tier15_4pc_melee() )
-      p -> cooldown.feral_spirits -> ready -= timespan_t::from_seconds( p -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).base_value() );
+    p -> cooldown.feral_spirits -> ready -= timespan_t::from_seconds( p -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).base_value() );
 
     // Delay windfury by some time, up to about a second
     new ( *p -> sim ) windfury_delay_event_t( wf, p -> rng().gauss( p -> wf_delay, p -> wf_delay_stddev ) );
@@ -1619,7 +1618,7 @@ static bool trigger_rolling_thunder( shaman_spell_t* s )
                         p -> gain.rolling_thunder );
 
 
-    int stacks = ( p -> set_bonus.tier14_4pc_caster() ) ? 2 : 1;
+    int stacks = ( p -> sets -> set( SET_T14_4PC_CASTER ) -> ok() ) ? 2 : 1;
     int wasted_stacks = ( p -> buff.lightning_shield -> check() + stacks ) - p -> buff.lightning_shield -> max_stack();
 
     for ( int i = 0; i < wasted_stacks; i++ )
@@ -1819,7 +1818,7 @@ static bool trigger_lightning_strike( const action_state_t* s )
 
   shaman_t* p = debug_cast< shaman_t* >( s -> action -> player );
 
-  if ( !  p -> set_bonus.tier15_2pc_caster() )
+  if ( !  p -> sets -> set( SET_T15_2PC_CASTER ) -> ok() )
     return false;
 
   if ( ! p -> action_lightning_strike )
@@ -1971,8 +1970,7 @@ struct lava_burst_overload_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     // FIXME: DBC Value modified in dbc_t::apply_hotfixes()
-    if ( p() -> set_bonus.tier15_4pc_caster() )
-      p() -> cooldown.ascendance -> ready -= p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).time_value();
+    p() -> cooldown.ascendance -> ready -= p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).time_value();
   }
 };
 
@@ -2850,7 +2848,7 @@ struct stormstrike_t : public shaman_melee_attack_t
   {
     shaman_melee_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && p() -> set_bonus.tier15_2pc_melee() )
+    if ( result_is_hit( execute_state -> result ) && p() -> sets -> set( SET_T15_2PC_MELEE ) -> ok() )
     {
       int mwstack = p() -> buff.maelstrom_weapon -> total_stack();
       int bonus = p() -> sets -> set( SET_T15_2PC_MELEE ) -> effectN( 1 ).base_value();
@@ -2936,7 +2934,7 @@ struct stormblast_t : public shaman_melee_attack_t
   {
     shaman_melee_attack_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && p() -> set_bonus.tier15_2pc_melee() )
+    if ( result_is_hit( execute_state -> result ) && p() -> sets -> set( SET_T15_2PC_MELEE ) -> ok() )
     {
       int mwstack = p() -> buff.maelstrom_weapon -> total_stack();
       int bonus = p() -> sets -> set( SET_T15_2PC_MELEE ) -> effectN( 1 ).base_value();
@@ -2994,7 +2992,7 @@ void shaman_spell_t::execute()
   if ( eoe_proc )
     return;
 
-  if ( ! totem && ! background && ! proc && data().school_mask() & SCHOOL_MASK_FIRE )
+  if ( ! totem && ! background && ! proc && ( data().school_mask() & SCHOOL_MASK_FIRE ) )
     p() -> buff.unleash_flame -> expire();
 
 }
@@ -3175,7 +3173,7 @@ struct elemental_mastery_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p() -> buff.elemental_mastery -> trigger();
-    if ( p() -> set_bonus.tier13_2pc_caster() )
+    if ( p() -> sets -> set( SET_T13_2PC_CASTER ) -> ok() )
       p() -> buff.tier13_2pc_caster -> trigger();
   }
 };
@@ -3439,8 +3437,7 @@ struct lava_burst_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     // FIXME: DBC Value modified in dbc_t::apply_hotfixes()
-    if ( p() -> set_bonus.tier15_4pc_caster() )
-      p() -> cooldown.ascendance -> ready -= p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).time_value();
+    p() -> cooldown.ascendance -> ready -= p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).time_value();
 
     if ( eoe_proc )
       return;
@@ -3792,7 +3789,8 @@ struct spiritwalkers_grace_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p() -> buff.spiritwalkers_grace -> trigger();
-    if ( p() -> set_bonus.tier13_4pc_heal() )
+
+    if ( p() -> sets -> set( SET_T13_4PC_HEAL ) -> ok() )
       p() -> buff.tier13_4pc_healer -> trigger();
   }
 };
@@ -5396,7 +5394,7 @@ void shaman_t::init_spells()
 
   // Tier16 2PC Enhancement bonus actions, these need to bypass imbue checks
   // presumably, so we cannot just re-use our actual imbued ones
-  if ( set_bonus.tier16_2pc_melee() )
+  if ( sets -> set( SET_T16_2PC_MELEE ) -> ok() )
   {
     t16_wind = new unleash_wind_t( "t16_unleash_wind", this );
     t16_flame = new unleash_flame_t( "t16_unleash_flame", this );
@@ -5541,7 +5539,7 @@ void shaman_t::create_buffs()
   buff.tier13_2pc_caster        = stat_buff_creator_t( this, "tier13_2pc_caster", find_spell( 105779 ) );
   buff.tier13_4pc_caster        = stat_buff_creator_t( this, "tier13_4pc_caster", find_spell( 105821 ) );
   buff.tier16_2pc_melee         = buff_creator_t( this, "tier16_2pc_melee", sets -> set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )
-                                  .chance( static_cast< double >( set_bonus.tier16_2pc_melee() ) );
+                                  .chance( static_cast< double >( sets -> set( SET_T16_2PC_MELEE ) -> ok() ) );
 }
 
 // shaman_t::init_gains =====================================================
