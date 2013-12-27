@@ -664,7 +664,7 @@ double action_t::cost() const
 
 // action_t::gcd ============================================================
 
-timespan_t action_t::gcd()
+timespan_t action_t::gcd() const
 {
   if ( ! harmful && ! player -> in_combat )
     return timespan_t::zero();
@@ -674,7 +674,7 @@ timespan_t action_t::gcd()
 
 // action_t::travel_time ====================================================
 
-timespan_t action_t::travel_time()
+timespan_t action_t::travel_time() const
 {
   if ( travel_speed == 0 ) return timespan_t::zero();
 
@@ -2148,7 +2148,7 @@ double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, time
 
 // action_t::tick_time ======================================================
 
-timespan_t action_t::tick_time( double haste )
+timespan_t action_t::tick_time( double haste ) const
 {
   timespan_t t = base_tick_time;
   if ( channeled || hasted_ticks )
@@ -2160,7 +2160,7 @@ timespan_t action_t::tick_time( double haste )
 
 // action_t::hasted_num_ticks ===============================================
 
-int action_t::hasted_num_ticks( double haste, timespan_t d )
+int action_t::hasted_num_ticks( double haste, timespan_t d ) const
 {
   if ( ! hasted_ticks )
   {

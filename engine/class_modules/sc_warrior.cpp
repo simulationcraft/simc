@@ -294,7 +294,7 @@ public:
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual int       decode_set( item_t& );
-  virtual resource_e primary_resource() { return RESOURCE_RAGE; }
+  virtual resource_e primary_resource() const { return RESOURCE_RAGE; }
   virtual role_e    primary_role() const;
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
   virtual void      copy_from( player_t* source );
@@ -377,13 +377,14 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     special    = true;
   }
 
-  virtual double target_armor( player_t* t )
+  virtual double target_armor( player_t* t ) const
   {
-    warrior_td_t* td = cast_td( t );
-
     double a = base_t::target_armor( t );
 
-    a *= 1.0 - td -> debuffs_colossus_smash -> value();
+    if ( warrior_td_t* td = find_td( t ) )
+    {
+      a *= 1.0 - td -> debuffs_colossus_smash -> current_value;
+    }
 
     return a;
   }
@@ -637,7 +638,7 @@ static  void trigger_sweeping_strikes( action_state_t* s )
       base_multiplier            = 0.50;  //Hotfixed 9/10, reduction from 75% damage to 50% damage.
     }
 
-  virtual timespan_t travel_time()
+  virtual timespan_t travel_time() const
   {
   // It's possible for sweeping strikes and opportunity strikes to proc off each other into infinity as long as the rng.roll on opportunity strikes returns true. 
   // Sweeping strikes has a 1 second "travel time" in game. 
@@ -1213,7 +1214,7 @@ struct colossus_smash_t : public warrior_attack_t
     weapon = &( player -> main_hand_weapon );
   }
 
-  virtual timespan_t travel_time()
+  virtual timespan_t travel_time() const
   {
     // Dirty hack to ensure you can fit 3 x 1.5 + 2 x 1s abilities into the colossus smash window, like you can in-game
     return timespan_t::from_millis( 250 );
@@ -1384,7 +1385,7 @@ struct dragon_roar_t : public warrior_attack_t
     return state -> result_total;
   }
 
-  virtual double target_armor( player_t* )
+  virtual double target_armor( player_t* ) const
   {
     return 0;
   }
@@ -2145,7 +2146,7 @@ struct slam_sweeping_strikes_attack_t : public warrior_attack_t
   }
   
   // Armor has already been taken into account from the parent attack.
-  virtual double target_armor( player_t* )
+  virtual double target_armor( player_t* ) const
   {
     return 0;
   }
@@ -2566,7 +2567,7 @@ struct warrior_spell_t : public warrior_action_t< spell_t >
   {
   }
 
-  virtual timespan_t gcd()
+  virtual timespan_t gcd() const
   {
     // Unaffected by haste
     return trigger_gcd;

@@ -429,7 +429,7 @@ public:
   virtual pet_t*    create_pet( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( item_t& );
-  virtual resource_e primary_resource() { return RESOURCE_RUNIC_POWER; }
+  virtual resource_e primary_resource() const { return RESOURCE_RUNIC_POWER; }
   virtual role_e primary_role() const;
   virtual void invalidate_cache( cache_e );
 
@@ -1466,7 +1466,7 @@ struct army_ghoul_pet_t : public death_knight_pet_t
     owner_coeff.ap_from_ap = 0.5;
   }
 
-  virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
+  virtual resource_e primary_resource() const { return RESOURCE_ENERGY; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
   {
@@ -1476,7 +1476,7 @@ struct army_ghoul_pet_t : public death_knight_pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  timespan_t available()
+  timespan_t available() const
   {
     double energy = resources.current[ RESOURCE_ENERGY ];
 
@@ -1648,7 +1648,7 @@ struct bloodworms_pet_t : public death_knight_pet_t
     melee -> schedule_execute();
   }
 
-  virtual resource_e primary_resource() { return RESOURCE_MANA; }
+  virtual resource_e primary_resource() const { return RESOURCE_MANA; }
 };
 
 // ==========================================================================
@@ -1860,7 +1860,7 @@ struct ghoul_pet_t : public death_knight_pet_t
   }
 
   //Ghoul regen doesn't benefit from haste (even bloodlust/heroism)
-  virtual resource_e primary_resource()
+  virtual resource_e primary_resource() const
   {
     return RESOURCE_ENERGY;
   }
@@ -1874,7 +1874,7 @@ struct ghoul_pet_t : public death_knight_pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  timespan_t available()
+  timespan_t available() const
   {
     double energy = resources.current[ RESOURCE_ENERGY ];
 
@@ -1969,7 +1969,7 @@ struct fallen_zandalari_t : public death_knight_pet_t
     action_list_str = "auto_attack/strike";
   }
 
-  virtual resource_e primary_resource()
+  virtual resource_e primary_resource() const
   { return RESOURCE_ENERGY; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str )
@@ -1980,7 +1980,7 @@ struct fallen_zandalari_t : public death_knight_pet_t
     return death_knight_pet_t::create_action( name, options_str );
   }
 
-  timespan_t available()
+  timespan_t available() const
   {
     double energy = resources.current[ RESOURCE_ENERGY ];
 
@@ -2559,7 +2559,7 @@ struct army_of_the_dead_t : public death_knight_spell_t
     hasted_ticks = false;
   }
 
-  timespan_t tick_time( double )
+  timespan_t tick_time( double ) const
   { return data().effectN( 1 ).period(); }
 
   virtual void schedule_execute( action_state_t* s )

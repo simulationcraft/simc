@@ -291,7 +291,7 @@ public:
   virtual void      create_pets() override;
   virtual void      copy_from( player_t* source ) override;
   virtual int       decode_set( item_t& ) override;
-  virtual resource_e primary_resource() override { return RESOURCE_MANA; }
+  virtual resource_e primary_resource() const override { return RESOURCE_MANA; }
   virtual role_e primary_role() const override;
   virtual void      combat_begin() override;
   virtual double    composite_armor() const override;
@@ -405,7 +405,7 @@ struct priest_pet_t : public pet_t
     return m;
   }
 
-  virtual resource_e primary_resource() override
+  virtual resource_e primary_resource() const override
   { return RESOURCE_ENERGY; }
 
   priest_t& o() const
@@ -1870,7 +1870,7 @@ struct priest_procced_mastery_spell_t : public priest_spell_t
   }
 
 
-  virtual timespan_t travel_time() override
+  virtual timespan_t travel_time() const override
   {
     return rng().gauss( sim -> default_aura_delay, sim -> default_aura_delay_stddev );
   }

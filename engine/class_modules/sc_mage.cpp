@@ -284,7 +284,7 @@ public:
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( item_t& item );
-  virtual resource_e primary_resource() { return RESOURCE_MANA; }
+  virtual resource_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_e primary_role() const { return ROLE_SPELL; }
   virtual double    mana_regen_per_second() const;
   virtual double    composite_player_multiplier( school_e school ) const;
@@ -2015,7 +2015,7 @@ struct fireball_t : public mage_spell_t
     }
   }
 
-  virtual timespan_t travel_time()
+  virtual timespan_t travel_time() const
   {
     timespan_t t = mage_spell_t::travel_time();
     return ( t > timespan_t::from_seconds( 0.75 ) ? timespan_t::from_seconds( 0.75 ) : t );
@@ -2323,7 +2323,7 @@ struct mini_frostfire_bolt_t : public mage_spell_t
   virtual timespan_t execute_time() const
   { return timespan_t::from_seconds( 0.25 ); }
 
-  virtual timespan_t travel_time()
+  virtual timespan_t travel_time() const
   {
     timespan_t t = mage_spell_t::travel_time();
     return ( t > timespan_t::from_seconds( 0.75 ) ? timespan_t::from_seconds( 0.75 ) : t );
@@ -2450,7 +2450,7 @@ struct frostfire_bolt_t : public mage_spell_t
     p() -> buffs.brain_freeze -> expire();
   }
 
-  virtual timespan_t travel_time()
+  virtual timespan_t travel_time() const
   {
     timespan_t t = mage_spell_t::travel_time();
     return ( t > timespan_t::from_seconds( 0.75 ) ? timespan_t::from_seconds( 0.75 ) : t );
@@ -3182,7 +3182,7 @@ struct nether_tempest_cleave_t: public mage_spell_t
     mage_spell_t::execute();
   }
 
-  virtual timespan_t travel_time()
+  virtual timespan_t travel_time() const
   {
     return timespan_t::from_seconds( travel_speed ); // assuming 1 yard to the cleave target
   }
@@ -3301,7 +3301,7 @@ struct pyroblast_t : public mage_spell_t
     p() -> buffs.fiery_adept -> expire();
   }
 
-  virtual timespan_t travel_time()
+  virtual timespan_t travel_time() const
   {
     timespan_t t = mage_spell_t::travel_time();
     return ( t > timespan_t::from_seconds( 0.75 ) ? timespan_t::from_seconds( 0.75 ) : t );

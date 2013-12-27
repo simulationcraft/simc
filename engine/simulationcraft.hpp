@@ -2636,12 +2636,13 @@ struct sim_t : public core_sim_t, private sc_thread_t
   // Random Number Generation
 private:
   int deterministic_rng;
-  rng_t _rng;
+  mutable rng_t _rng;
 public:
   int average_range, average_gauss;
   int convergence_scale;
 
   rng_t& rng() { return _rng; }
+  rng_t& rng() const { return _rng; }
   double    averaged_range( double min, double max );
 
   // Raid Events
@@ -4675,7 +4676,7 @@ public:
   virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false );
   virtual void arise();
   virtual void demise();
-  virtual timespan_t available() { return timespan_t::from_seconds( 0.1 ); }
+  virtual timespan_t available() const { return timespan_t::from_seconds( 0.1 ); }
   action_t* execute_action();
 
   virtual void   regen( timespan_t periodicity = timespan_t::from_seconds( 0.25 ) );
@@ -4684,14 +4685,14 @@ public:
   virtual void   recalculate_resource_max( resource_e resource_type );
   virtual bool   resource_available( resource_e resource_type, double cost ) const;
   void collect_resource_timeline_information();
-  virtual resource_e primary_resource() { return RESOURCE_NONE; }
+  virtual resource_e primary_resource() const { return RESOURCE_NONE; }
   virtual role_e   primary_role() const;
   specialization_e specialization() const { return _spec; }
-  const char* primary_tree_name();
-  virtual stat_e normalize_by();
+  const char* primary_tree_name() const;
+  virtual stat_e normalize_by() const;
 
-  virtual double health_percentage();
-  virtual timespan_t time_to_die();
+  virtual double health_percentage() const;
+  virtual timespan_t time_to_die() const;
   timespan_t total_reaction_time();
 
   void stat_gain( stat_e stat, double amount, gain_t* g = 0, action_t* a = 0, bool temporary = false );
@@ -4749,7 +4750,6 @@ public:
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual void      create_pets() { }
   virtual pet_t*    create_pet( const std::string& /* name*/,  const std::string& /* type */ = std::string() ) { return 0; }
-  virtual pet_t*    find_pet  ( const std::string& name );
 
   virtual int decode_set( item_t& item ) { ( void )item; assert( item.name() ); return SET_NONE; }
 
@@ -4771,12 +4771,10 @@ public:
   bool is_sleeping() const { return _is_sleeping( this ); }
 
   pet_t* cast_pet() { return debug_cast<pet_t*>( this ); }
-  bool is_my_pet( player_t* t );
+  bool is_my_pet( player_t* t ) const;
 
-  bool      in_gcd() { return gcd_ready > sim -> current_time; }
+  bool      in_gcd() const { return gcd_ready > sim -> current_time; }
   bool      recent_cast();
-  item_t*   find_item( const std::string& );
-  action_t* find_action( const std::string& );
   bool      dual_wield() const { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
   bool      has_shield_equipped() const
   { return  items[ SLOT_OFF_HAND ].parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD; }
@@ -4785,13 +4783,16 @@ public:
   action_priority_list_t* find_action_priority_list( const std::string& name );
   void                    clear_action_priority_lists() const;
 
-  cooldown_t* find_cooldown( const std::string& name );
-  dot_t*      find_dot     ( const std::string& name, player_t* source );
-  stats_t*    find_stats   ( const std::string& name );
-  gain_t*     find_gain    ( const std::string& name );
-  proc_t*     find_proc    ( const std::string& name );
-  benefit_t*  find_benefit ( const std::string& name );
-  uptime_t*   find_uptime  ( const std::string& name );
+  pet_t*    find_pet( const std::string& name ) const;
+  item_t*     find_item( const std::string& );
+  action_t*   find_action( const std::string& ) const;
+  cooldown_t* find_cooldown( const std::string& name ) const;
+  dot_t*      find_dot     ( const std::string& name, player_t* source ) const;
+  stats_t*    find_stats   ( const std::string& name ) const;
+  gain_t*     find_gain    ( const std::string& name ) const;
+  proc_t*     find_proc    ( const std::string& name ) const;
+  benefit_t*  find_benefit ( const std::string& name ) const;
+  uptime_t*   find_uptime  ( const std::string& name ) const;
 
   cooldown_t* get_cooldown( const std::string& name );
   dot_t*      get_dot     ( const std::string& name, player_t* source );
@@ -4810,8 +4811,8 @@ public:
   virtual void pre_analyze_hook() {}
 
   /* New stuff */
-  virtual double composite_player_vulnerability( school_e );
-  virtual double composite_ranged_attack_player_vulnerability();
+  virtual double composite_player_vulnerability( school_e ) const;
+  virtual double composite_ranged_attack_player_vulnerability() const;
 
   virtual void activate_action_list( action_priority_list_t* a, bool off_gcd = false );
 
@@ -4838,6 +4839,7 @@ public:
   { return active_during_iteration; }
 
   rng_t& rng() { return sim -> rng(); }
+  rng_t& rng() const { return sim -> rng(); }
 };
 
 // Target Specific ==========================================================
@@ -4870,7 +4872,10 @@ struct event_t : public core_event_t
   { return static_cast<player_t*>( actor ); }
   sim_t& sim()
   { return static_cast<sim_t&>( _sim ); }
+  const sim_t& sim() const
+  { return static_cast<sim_t&>( _sim ); }
   rng_t& rng() { return sim().rng(); }
+  rng_t& rng() const { return sim().rng(); }
 };
 
 // Pet ======================================================================
@@ -5192,23 +5197,23 @@ struct action_t : public noncopyable
 
   virtual void   parse_options( option_t*, const std::string& options_str );
   virtual double cost() const;
-  virtual timespan_t gcd();
+  virtual timespan_t gcd() const;
   virtual timespan_t execute_time() const { return base_execute_time; }
-  virtual timespan_t tick_time( double haste );
-  virtual int    hasted_num_ticks( double haste, timespan_t d = timespan_t::min() );
-  virtual timespan_t travel_time();
+  virtual timespan_t tick_time( double haste ) const;
+  virtual int    hasted_num_ticks( double haste, timespan_t d = timespan_t::min() ) const;
+  virtual timespan_t travel_time() const;
   virtual result_e calculate_result( action_state_t* /* state */ ) { assert( false ); return RESULT_UNKNOWN; }
   virtual block_result_e calculate_block_result( action_state_t* /* state */ ) { assert ( false ); return BLOCK_RESULT_UNKNOWN; }
   virtual double calculate_direct_amount( action_state_t* state );
   virtual double calculate_tick_amount( action_state_t* state );
 
   virtual double calculate_weapon_damage( double attack_power );
-  virtual double target_armor( player_t* t )
+  virtual double target_armor( player_t* t ) const
   { return t -> cache.armor(); }
   virtual void   consume_resource();
   virtual resource_e current_resource() const { return resource_current; }
-  virtual int n_targets() { return aoe; }
-  bool is_aoe() { return n_targets() == -1 || n_targets() > 0; }
+  virtual int n_targets() const { return aoe; }
+  bool is_aoe() const { return n_targets() == -1 || n_targets() > 0; }
   virtual void   execute();
   virtual void   tick( dot_t* d );
   virtual void   last_tick( dot_t* d );
@@ -5383,6 +5388,7 @@ public:
   bool has_travel_events_for( const player_t* target ) const;
 
   rng_t& rng() { return sim -> rng(); }
+  rng_t& rng() const { return sim -> rng(); }
 };
 
 struct action_state_t : public noncopyable
@@ -5654,9 +5660,9 @@ struct spell_base_t : public action_t
   spell_base_t( action_e at, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
   // Spell Base Overrides
-  virtual timespan_t gcd();
+  virtual timespan_t gcd() const;
   virtual timespan_t execute_time() const;
-  virtual timespan_t tick_time( double haste );
+  virtual timespan_t tick_time( double haste ) const;
   virtual result_e   calculate_result( action_state_t* );
   virtual block_result_e calculate_block_result( action_state_t* ) { return BLOCK_RESULT_UNBLOCKED; }
   virtual void   execute();
@@ -6547,7 +6553,7 @@ public:
     ab::base_td = saved_impact_dmg / dot -> ticks();
   }
 
-  virtual timespan_t travel_time()
+  virtual timespan_t travel_time() const
   {
     // Starts directly after ignite amount is calculated
     return timespan_t::zero();
@@ -6614,7 +6620,7 @@ struct residual_dot_action : public Action
     dot -> tick_amount /= dot -> ticks();
   }
 
-  virtual timespan_t travel_time()
+  virtual timespan_t travel_time() const
   {
     return Action::rng().gauss( Action::sim -> default_aura_delay,
                                  Action::sim -> default_aura_delay_stddev );
@@ -6679,7 +6685,7 @@ inline tick_buff_creator_t::operator tick_buff_t* () const
 inline buff_creator_t::operator debuff_t* () const
 { return new debuff_t( *this ); }
 
-inline bool player_t::is_my_pet( player_t* t )
+inline bool player_t::is_my_pet( player_t* t ) const
 { return t -> is_pet() && t -> cast_pet() -> owner == this; }
 
 

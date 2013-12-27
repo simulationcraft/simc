@@ -2689,7 +2689,7 @@ struct cleave_t : public T
   double composite_da_multiplier() const
   { return 1.0; }
 
-  double target_armor( player_t* )
+  double target_armor( player_t* ) const
   { return 0.0; }
 };
 
@@ -2797,7 +2797,7 @@ void multistrike_trinket( item_t* item )
     double composite_da_multiplier() const
     { return 1.0 / 3.0; }
 
-    double target_armor( player_t* )
+    double target_armor( player_t* ) const
     { return 0.0; }
   };
 
@@ -2818,7 +2818,7 @@ void multistrike_trinket( item_t* item )
     double composite_da_multiplier() const
     { return 1.0 / 3.0; }
 
-    double target_armor( player_t* )
+    double target_armor( player_t* ) const
     { return 0.0; }
   };
 

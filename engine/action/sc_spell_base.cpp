@@ -34,7 +34,7 @@ spell_base_t::spell_base_t( action_e at,
 
 // spell_base_t::gcd ========================================================
 
-timespan_t spell_base_t::gcd()
+timespan_t spell_base_t::gcd() const
 {
   timespan_t t = action_t::gcd();
   if ( t == timespan_t::zero() ) return timespan_t::zero();
@@ -62,7 +62,7 @@ timespan_t spell_base_t::execute_time() const
 
 // spell_base_t::tick_time ==================================================
 
-timespan_t spell_base_t::tick_time( double haste )
+timespan_t spell_base_t::tick_time( double haste ) const
 {
   if ( ! harmful && ! player -> in_combat )
     return timespan_t::zero();

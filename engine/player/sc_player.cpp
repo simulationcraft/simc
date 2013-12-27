@@ -3433,7 +3433,7 @@ double player_t::composite_rating( rating_e rating ) const
 
 // player_t::composite_player_vulnerability =================================
 
-double player_t::composite_player_vulnerability( school_e school )
+double player_t::composite_player_vulnerability( school_e school ) const
 {
   double m = 1.0;
 
@@ -3452,7 +3452,7 @@ double player_t::composite_player_vulnerability( school_e school )
 
 // player_t::composite_ranged_attack_player_vulnerability ===================
 
-double player_t::composite_ranged_attack_player_vulnerability()
+double player_t::composite_ranged_attack_player_vulnerability() const
 {
   // MoP: Increase ranged damage taken by 5%. make sure
   if ( debuffs.ranged_vulnerability -> check() )
@@ -4590,14 +4590,14 @@ role_e player_t::primary_role() const
 
 // player_t::primary_tree_name ==============================================
 
-const char* player_t::primary_tree_name()
+const char* player_t::primary_tree_name() const
 {
   return dbc::specialization_string( specialization() ).c_str();
 }
 
 // player_t::normalize_by ===================================================
 
-stat_e player_t::normalize_by()
+stat_e player_t::normalize_by() const
 {
   if ( sim -> normalized_stat != STAT_NONE )
     return sim -> normalized_stat;
@@ -4619,14 +4619,14 @@ stat_e player_t::normalize_by()
 
 // player_t::health_percentage() ============================================
 
-double player_t::health_percentage()
+double player_t::health_percentage() const
 {
   return resources.pct( RESOURCE_HEALTH ) * 100;
 }
 
 // target_t::time_to_die ====================================================
 
-timespan_t player_t::time_to_die()
+timespan_t player_t::time_to_die() const
 {
   // FIXME: Someone can figure out a better way to do this, for now, we NEED to
   // wait a minimum gcd before starting to estimate fight duration based on health,
@@ -5356,7 +5356,7 @@ bool player_t::recent_cast()
 // player_t::find_dot =======================================================
 
 dot_t* player_t::find_dot( const std::string& name,
-                           player_t* source )
+                           player_t* source ) const
 {
   for ( size_t i = 0; i < dot_list.size(); ++i )
   {
@@ -5406,27 +5406,28 @@ T* find_vector_member( const std::vector<T*>& list, const std::string& name )
   return nullptr;
 }
 
-// player_t::find_stats =====================================================
+pet_t* player_t::find_pet( const std::string& name ) const
+{ return find_vector_member( pet_list, name ); }
 
-stats_t* player_t::find_stats( const std::string& name )
+stats_t* player_t::find_stats( const std::string& name ) const
 { return find_vector_member( stats_list, name ); }
 
-gain_t* player_t::find_gain ( const std::string& name )
+gain_t* player_t::find_gain ( const std::string& name ) const
 { return find_vector_member( gain_list, name ); }
 
-proc_t* player_t::find_proc ( const std::string& name )
+proc_t* player_t::find_proc ( const std::string& name ) const
 { return find_vector_member( proc_list, name ); }
 
-benefit_t* player_t::find_benefit ( const std::string& name )
+benefit_t* player_t::find_benefit ( const std::string& name ) const
 { return find_vector_member( benefit_list, name ); }
 
-uptime_t* player_t::find_uptime ( const std::string& name )
+uptime_t* player_t::find_uptime ( const std::string& name ) const
 { return find_vector_member( uptime_list, name ); }
 
-cooldown_t* player_t::find_cooldown( const std::string& name )
+cooldown_t* player_t::find_cooldown( const std::string& name ) const
 { return find_vector_member( cooldown_list, name ); }
 
-action_t* player_t::find_action( const std::string& name )
+action_t* player_t::find_action( const std::string& name ) const
 { return find_vector_member( action_list, name ); }
 
 // player_t::get_cooldown ===================================================
@@ -6536,7 +6537,7 @@ struct pool_resource_t : public action_t
       sim -> out_log.printf( "%s performs %s", player -> name(), name() );
   }
 
-  virtual timespan_t gcd()
+  virtual timespan_t gcd() const
   {
     return wait;
   }
@@ -6600,20 +6601,6 @@ action_t* player_t::create_action( const std::string& name,
   if ( name == "pool_resource"      ) return new      pool_resource_t( this, options_str );
 
   return consumable::create_action( this, name, options_str );
-}
-
-// player_t::find_pet =======================================================
-
-pet_t* player_t::find_pet( const std::string& pet_name )
-{
-  for ( size_t i = 0; i < pet_list.size(); ++i )
-  {
-    pet_t* p = pet_list[ i ];
-    if ( p -> name_str == pet_name )
-      return p;
-  }
-
-  return 0;
 }
 
 // player_t::parse_talents_numbers ==========================================

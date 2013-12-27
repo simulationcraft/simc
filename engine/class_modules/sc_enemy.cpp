@@ -502,7 +502,7 @@ struct enemy_t : public player_t
   virtual role_e primary_role() const
   { return ROLE_TANK; }
 
-  virtual resource_e primary_resource()
+  virtual resource_e primary_resource() const
   { return RESOURCE_MANA; }
 
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
@@ -517,13 +517,13 @@ struct enemy_t : public player_t
   virtual void create_options();
   virtual pet_t* create_pet( const std::string& add_name, const std::string& pet_type = std::string() );
   virtual void create_pets();
-  virtual double health_percentage();
+  virtual double health_percentage() const;
   virtual void combat_begin();
   virtual void combat_end();
   virtual void recalculate_health();
   virtual void demise();
   virtual expr_t* create_expression( action_t* action, const std::string& type );
-  virtual timespan_t available() { return waiting_time; }
+  virtual timespan_t available() const { return waiting_time; }
 
   virtual tmi_boss_e convert_tmi_string( const std::string& tmi_string );
 };
@@ -550,7 +550,7 @@ struct add_t : public pet_t
     pet_t::init_action_list();
   }
 
-  virtual resource_e primary_resource()
+  virtual resource_e primary_resource() const
   { return RESOURCE_HEALTH; }
 
   virtual action_t* create_action( const std::string& name,
@@ -590,7 +590,7 @@ struct heal_enemy_t : public enemy_t
 
     level = std::min( 90, level );
   }
-  virtual resource_e primary_resource()
+  virtual resource_e primary_resource() const
   { return RESOURCE_HEALTH; }
 
 };
@@ -901,7 +901,7 @@ void enemy_t::create_pets()
 
 // enemy_t::health_percentage() =============================================
 
-double enemy_t::health_percentage()
+double enemy_t::health_percentage() const
 {
   if ( fixed_health_percentage > 0 ) return fixed_health_percentage;
 

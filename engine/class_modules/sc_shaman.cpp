@@ -415,7 +415,7 @@ public:
   virtual void      create_pets();
   virtual expr_t* create_expression( action_t*, const std::string& name );
   virtual int       decode_set( item_t& );
-  virtual resource_e primary_resource() { return RESOURCE_MANA; }
+  virtual resource_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_e primary_role() const;
   virtual void      arise();
   virtual void      reset();
@@ -1218,7 +1218,7 @@ struct fire_elemental_t : public pet_t
     virtual void execute() { player -> current.distance = 1; }
     virtual timespan_t execute_time() const { return timespan_t::from_seconds( player -> current.distance / 10.0 ); }
     virtual bool ready() { return ( player -> current.distance > 1 ); }
-    virtual timespan_t gcd() { return timespan_t::zero(); }
+    virtual timespan_t gcd() const { return timespan_t::zero(); }
     virtual bool usable_moving() const { return true; }
   };
 
@@ -1425,7 +1425,7 @@ struct fire_elemental_t : public pet_t
     pet_t::init_action_list();
   }
 
-  virtual resource_e primary_resource() { return RESOURCE_MANA; }
+  virtual resource_e primary_resource() const { return RESOURCE_MANA; }
 
   double composite_player_multiplier( school_e school ) const
   {
@@ -1499,7 +1499,7 @@ struct lightning_elemental_t : public pet_t
     pet_t::init_action_list();
   }
 
-  resource_e primary_resource()
+  resource_e primary_resource() const
   { return RESOURCE_MANA; }
 };
 
@@ -3347,7 +3347,7 @@ struct earthquake_rumble_t : public shaman_spell_t
     return sp;
   }
 
-  virtual double target_armor( player_t* )
+  virtual double target_armor( player_t* ) const
   {
     return 0;
   }

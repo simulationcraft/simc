@@ -418,7 +418,7 @@ public:
   virtual void      combat_begin();
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
-  virtual timespan_t available();
+  virtual timespan_t available() const;
   virtual double    composite_armor_multiplier() const;
   virtual double    composite_melee_hit() const;
   virtual double    composite_melee_expertise( weapon_t* ) const;
@@ -440,7 +440,7 @@ public:
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
   virtual int       decode_set( item_t& );
-  virtual resource_e primary_resource();
+  virtual resource_e primary_resource() const;
   virtual role_e    primary_role() const;
   virtual void      assess_damage( school_e school, dmg_e, action_state_t* );
   virtual void      assess_heal( school_e, dmg_e, heal_state_t* );
@@ -857,7 +857,7 @@ struct symbiosis_mirror_image_t : public pet_t
     pet_t::init_base_stats();
   }
 
-  virtual resource_e primary_resource() { return RESOURCE_MANA; }
+  virtual resource_e primary_resource() const { return RESOURCE_MANA; }
 
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
@@ -905,7 +905,7 @@ struct force_of_nature_balance_t : public pet_t
     stamina_per_owner = 0;
   }
 
-  virtual resource_e primary_resource() { return RESOURCE_MANA; }
+  virtual resource_e primary_resource() const { return RESOURCE_MANA; }
 
   virtual action_t* create_action( const std::string& name,
                                    const std::string& options_str )
@@ -1000,7 +1000,7 @@ struct force_of_nature_feral_t : public pet_t
       return m;
     }
 
-    virtual double target_armor( player_t* )
+    virtual double target_armor( player_t* ) const
     { return 0.0; }
 
     virtual void execute()
@@ -2462,7 +2462,7 @@ struct rake_t : public cat_attack_t
     return m;
   }
 
-  virtual double target_armor( player_t* )
+  virtual double target_armor( player_t* ) const
   { return 0.0; }
 };
 
@@ -2887,7 +2887,7 @@ struct thrash_cat_t : public cat_attack_t
   }
 
   // Treat direct damage as "bleed"
-  virtual double target_armor( player_t* )
+  virtual double target_armor( player_t* ) const
   { return 0.0; }
 
   virtual bool ready()
@@ -3346,7 +3346,7 @@ struct thrash_bear_t : public bear_attack_t
   }
 
   // Treat direct damage as "bleed"
-  virtual double target_armor( player_t* )
+  virtual double target_armor( player_t* ) const
   { return 0.0; }
 
   virtual bool ready()
@@ -3845,9 +3845,9 @@ struct healing_touch_t : public druid_heal_t
     }
   }
 
-  virtual timespan_t gcd()
+  virtual timespan_t gcd() const
   {
-    druid_t& p = *this -> p();
+    const druid_t& p = *this -> p();
     if ( p.buff.cat_form -> check() )
       if ( timespan_t::from_seconds( 1.0 ) < druid_heal_t::gcd() )
         return timespan_t::from_seconds( 1.0 );
@@ -6973,7 +6973,7 @@ void druid_t::regen( timespan_t periodicity )
 
 // druid_t::available =======================================================
 
-timespan_t druid_t::available()
+timespan_t druid_t::available() const
 {
   if ( primary_resource() != RESOURCE_ENERGY )
     return timespan_t::from_seconds( 0.1 );
@@ -7615,7 +7615,7 @@ role_e druid_t::primary_role() const
 
 // druid_t::primary_resource ================================================
 
-resource_e druid_t::primary_resource()
+resource_e druid_t::primary_resource() const
 {
   if ( primary_role() == ROLE_SPELL || primary_role() == ROLE_HEAL )
     return RESOURCE_MANA;

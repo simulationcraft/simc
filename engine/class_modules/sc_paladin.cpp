@@ -330,7 +330,7 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual int       decode_set( item_t& );
-  virtual resource_e primary_resource() { return RESOURCE_MANA; }
+  virtual resource_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_e primary_role() const;
   virtual void      regen( timespan_t periodicity );
   virtual pet_t*    create_pet    ( const std::string& name, const std::string& type = std::string() );
@@ -2407,7 +2407,7 @@ struct lights_hammer_t : public paladin_spell_t
       background = true;
   }
 
-  virtual timespan_t travel_time()
+  virtual timespan_t travel_time() const
   { return travel_time_; }
 
   virtual void tick( dot_t* d )
@@ -2796,7 +2796,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
     weapon = &( p -> main_hand_weapon );
   }
 
-  virtual timespan_t gcd()
+  virtual timespan_t gcd() const
   {
 
     if ( sanctity_of_battle )

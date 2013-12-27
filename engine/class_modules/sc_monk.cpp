@@ -308,7 +308,7 @@ public:
   virtual int       decode_set( item_t& );
   virtual void      create_options();
   virtual void      copy_from( player_t* );
-  virtual resource_e primary_resource();
+  virtual resource_e primary_resource() const;
   virtual role_e    primary_role() const;
   virtual void      pre_analyze_hook();
   virtual void      combat_begin();
@@ -732,7 +732,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     may_glance = false;
   }
 
-  virtual double target_armor( player_t* t )
+  virtual double target_armor( player_t* t ) const
   {
     double a = base_t::target_armor( t );
 
@@ -1284,7 +1284,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     dynamic_tick_action = true;
   }
 
-  virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ )
+  virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ ) const
   {
     return num_ticks;
   }
@@ -3599,7 +3599,7 @@ void monk_t::copy_from( player_t* source )
 
 // monk_t::primary_role =====================================================
 
-resource_e monk_t::primary_resource()
+resource_e monk_t::primary_resource() const
 {
   if ( current_stance() == WISE_SERPENT )
     return RESOURCE_MANA;

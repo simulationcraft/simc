@@ -295,7 +295,7 @@ public:
   virtual bool      create_profile( std::string& profile_str, save_e = SAVE_ALL, bool save_html = false );
   virtual void      copy_from( player_t* source );
   virtual int       decode_set( item_t& );
-  virtual resource_e primary_resource() { return RESOURCE_MANA; }
+  virtual resource_e primary_resource() const { return RESOURCE_MANA; }
   virtual role_e primary_role() const     { return ROLE_SPELL; }
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual double composite_player_multiplier( school_e school ) const;
@@ -363,11 +363,11 @@ struct warlock_pet_t : public pet_t
   warlock_pet_t( sim_t* sim, warlock_t* owner, const std::string& pet_name, pet_e pt, bool guardian = false );
   virtual void init_base_stats();
   virtual void init_action_list();
-  virtual timespan_t available();
+  virtual timespan_t available() const;
   virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(),
                                bool   waiting = false );
   virtual double composite_player_multiplier( school_e school ) const;
-  virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
+  virtual resource_e primary_resource() const { return RESOURCE_ENERGY; }
   warlock_t* o()
   { return static_cast<warlock_t*>( owner ); }
   const warlock_t* o() const
@@ -949,7 +949,7 @@ void warlock_pet_t::init_action_list()
       summon_stats -> add_child( action_list[ i ] -> stats );
 }
 
-timespan_t warlock_pet_t::available()
+timespan_t warlock_pet_t::available() const
 {
   assert( primary_resource() == RESOURCE_ENERGY );
   double energy = resources.current[ RESOURCE_ENERGY ];
@@ -1182,7 +1182,7 @@ struct wild_imp_pet_t : public warlock_pet_t
     base_energy_regen_per_second = 0;
   }
 
-  virtual timespan_t available()
+  virtual timespan_t available() const
   {
     return timespan_t::from_seconds( 0.1 );
   }
@@ -1521,7 +1521,7 @@ public:
     core_event_t::cancel( cost_event );
   }
 
-  virtual int n_targets()
+  virtual int n_targets() const
   {
     if ( aoe == 0 && use_havoc() )
       return 2;
@@ -2009,7 +2009,7 @@ struct hand_of_guldan_t : public warlock_spell_t
     return m;
   }
 
-  virtual timespan_t travel_time()
+  virtual timespan_t travel_time() const
   {
     return timespan_t::from_seconds( 1.5 );
   }
@@ -2260,7 +2260,7 @@ struct corruption_t : public warlock_spell_t
     base_multiplier *= 1.0 + p -> sets -> set( SET_T13_4PC_CASTER ) -> effectN( 1 ).percent();
   };
 
-  virtual timespan_t travel_time()
+  virtual timespan_t travel_time() const
   {
     if ( soc_triggered ) return timespan_t::from_seconds( std::max( rng().gauss( sim -> aura_delay, 0.25 * sim -> aura_delay ).total_seconds() , 0.01 ) );
 
@@ -3251,7 +3251,7 @@ struct chaos_wave_t : public warlock_spell_t
     return m;
   }
 
-  virtual timespan_t travel_time()
+  virtual timespan_t travel_time() const
   {
     return timespan_t::from_seconds( 1.5 );
   }
@@ -3832,7 +3832,7 @@ struct rain_of_fire_t : public warlock_spell_t
     if ( channeled && d -> current_tick != 0 ) consume_tick_resource( d );
   }
 
-  virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ )
+  virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ ) const
   {
     return num_ticks;
   }
@@ -3921,7 +3921,7 @@ struct hellfire_t : public warlock_spell_t
     return r;
   }
 
-  virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ )
+  virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ ) const
   {
     return num_ticks;
   }
@@ -3997,7 +3997,7 @@ struct immolation_aura_t : public warlock_spell_t
     }
   }
 
-  virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ )
+  virtual int hasted_num_ticks( double /*haste*/, timespan_t /*d*/ ) const
   {
     return num_ticks;
   }

@@ -295,12 +295,12 @@ struct rogue_t : public player_t
   virtual void      reset();
   virtual void      arise();
   virtual void      regen( timespan_t periodicity );
-  virtual timespan_t available();
+  virtual timespan_t available() const;
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual expr_t*   create_expression( action_t* a, const std::string& name_str );
   virtual int       decode_set( item_t& );
-  virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
+  virtual resource_e primary_resource() const { return RESOURCE_ENERGY; }
   virtual role_e primary_role() const  { return ROLE_ATTACK; }
   virtual bool      create_profile( std::string& profile_str, save_e = SAVE_ALL, bool save_html = false );
   virtual void      copy_from( player_t* source );
@@ -464,7 +464,7 @@ struct rogue_attack_t : public melee_attack_t
   virtual void   impact( action_state_t* state );
 
   virtual double calculate_weapon_damage( double attack_power );
-  virtual double target_armor( player_t* );
+  virtual double target_armor( player_t* ) const;
 
   virtual double direct_power_coefficient( const action_state_t* s ) const
   {
@@ -494,7 +494,7 @@ struct rogue_attack_t : public melee_attack_t
     return melee_attack_t::bonus_ta( s );
   }
 
-  virtual timespan_t gcd()
+  virtual timespan_t gcd() const
   {
     timespan_t gcd = melee_attack_t::gcd();
 
@@ -919,13 +919,14 @@ void rogue_attack_t::impact( action_state_t* state )
 
 // rogue_attack_t::armor ====================================================
 
-double rogue_attack_t::target_armor( player_t* t )
+double rogue_attack_t::target_armor( player_t* t ) const
 {
   double a = melee_attack_t::target_armor( t );
 
-  rogue_td_t* td = cast_td( t );
-
-  a *= 1.0 - td -> debuffs.find_weakness -> value();
+  if ( rogue_td_t* td = find_td( t ) )
+  {
+    a *= 1.0 - td -> debuffs.find_weakness -> current_value;
+  }
 
   return a;
 }
@@ -1447,7 +1448,7 @@ struct eviscerate_t : public rogue_attack_t
     direct_power_mod = 0.18;
   }
 
-  timespan_t gcd()
+  timespan_t gcd() const
   {
     timespan_t t = rogue_attack_t::gcd();
 
@@ -1706,7 +1707,7 @@ struct killing_spree_t : public rogue_attack_t
     return m;
   }
 
-  timespan_t tick_time( double )
+  timespan_t tick_time( double ) const
   { return base_tick_time; }
 
   virtual void execute()
@@ -1927,7 +1928,7 @@ struct revealing_strike_t : public rogue_attack_t
       base_multiplier *= 1.0 + p -> dbc.spell( 110211 ) -> effectN( 1 ).percent();
   }
 
-  timespan_t gcd()
+  timespan_t gcd() const
   {
     timespan_t t = rogue_attack_t::gcd();
 
@@ -1971,7 +1972,7 @@ struct rupture_t : public rogue_attack_t
   double tick_power_coefficient( const action_state_t* state ) const
   { return combo_point_tick_power_mod[ rogue_attack_t::cast_state( state ) -> cp - 1 ]; }
 
-  timespan_t gcd()
+  timespan_t gcd() const
   {
     timespan_t t = rogue_attack_t::gcd();
 
@@ -2055,7 +2056,7 @@ struct sinister_strike_t : public rogue_attack_t
     adds_combo_points = 1; // it has an effect but with no base value :rollseyes:
   }
 
-  timespan_t gcd()
+  timespan_t gcd() const
   {
     timespan_t t = rogue_attack_t::gcd();
 
@@ -2123,7 +2124,7 @@ struct slice_and_dice_t : public rogue_attack_t
     num_ticks             = 0;
   }
 
-  timespan_t gcd()
+  timespan_t gcd() const
   {
     timespan_t t = rogue_attack_t::gcd();
 
@@ -3826,7 +3827,7 @@ void rogue_t::regen( timespan_t periodicity )
 
 // rogue_t::available =======================================================
 
-timespan_t rogue_t::available()
+timespan_t rogue_t::available() const
 {
   double energy = resources.current[ RESOURCE_ENERGY ];
 
