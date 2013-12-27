@@ -5287,7 +5287,7 @@ void priest_t::init_spells()
   active_spells.surge_of_darkness = talents.from_darkness_comes_light -> ok() ? find_spell( 87160 ) : spell_data_t::not_found();
 
   // Set Bonuses
-  static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
+  static const set_bonus_description_t set_bonuses =
   {
     //   C2P     C4P    M2P    M4P    T2P    T4P     H2P     H4P
     { 105843, 105844,     0,     0,     0,     0, 105827, 105832 }, // Tier13

@@ -3492,7 +3492,7 @@ void rogue_t::init_spells()
     active_venomous_wound = new poisons::venomous_wound_t( this );
   }
 
-  static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
+  static const set_bonus_description_t set_bonuses =
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
     {     0,     0, 105849, 105865,     0,     0,     0,     0 }, // Tier13

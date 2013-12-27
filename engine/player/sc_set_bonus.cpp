@@ -91,7 +91,7 @@ inline const spell_data_t* set_bonus_array_t::create_set_bonus( uint32_t spell_i
 
 // set_bonus_array_t::set_bonus_array_t =====================================
 
-set_bonus_array_t::set_bonus_array_t( player_t* p, const uint32_t a_bonus[ N_TIER ][ N_TIER_BONUS ] ) :
+set_bonus_array_t::set_bonus_array_t( player_t* p, const set_bonus_description_t a_bonus ) :
   default_value( spell_data_t::nil() ), p( p )
 {
   // Map two-dimensional array into correct slots in the one-dimensional set_bonuses

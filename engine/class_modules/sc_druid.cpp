@@ -6109,7 +6109,7 @@ void druid_t::init_spells()
   glyph.cat_form              = find_glyph_spell( "Glyph of Cat Form" );
 
   // Tier Bonuses
-  static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
+  static const set_bonus_description_t set_bonuses =
   {
     //   C2P     C4P     M2P     M4P    T2P    T4P     H2P     H4P
     { 105722, 105717, 105725, 105735,      0,      0, 105715, 105770 }, // Tier13

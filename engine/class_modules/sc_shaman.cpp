@@ -5304,7 +5304,7 @@ expr_t* shaman_t::create_expression( action_t* a, const std::string& name )
 void shaman_t::init_spells()
 {
   // New set bonus system
-  static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
+  static const set_bonus_description_t set_bonuses =
   {
     //   C2P     C4P     M2P     M4P    T2P    T4P     H2P     H4P
     { 105780, 105816, 105866, 105872,     0,     0, 105764, 105876 }, // Tier13

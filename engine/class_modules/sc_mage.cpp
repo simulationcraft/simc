@@ -4019,7 +4019,7 @@ void mage_t::init_spells()
   glyphs.mirror_image        = find_glyph_spell( "Glyph of Mirror Image" );
   glyphs.splitting_ice       = find_glyph_spell( "Glyph of Splitting Ice" );
 
-  static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
+  static const set_bonus_description_t set_bonuses =
   {
     //  C2P    C4P    M2P    M4P    T2P    T4P    H2P    H4P
     { 105788, 105790,     0,     0,     0,     0,     0,     0 }, // Tier13

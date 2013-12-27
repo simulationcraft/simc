@@ -569,7 +569,6 @@ enum slot_e   // these enum values match armory settings
 // Caster 2/4, Melee 2/4, Tank 2/4, Heal 2/4
 #define N_TIER_BONUS 8
 
-typedef uint32_t set_bonus_description_t[N_TIER][N_TIER_BONUS];
 
 enum set_e
 {
@@ -3532,10 +3531,12 @@ struct set_bonus_t
   std::array<int, SET_MAX> count;
 };
 
+typedef uint32_t set_bonus_description_t[N_TIER][N_TIER_BONUS];
+// typedef std::array<std::array<uint32_t,N_TIER_BONUS>,N_TIER> set_bonus_description_t; // Use when we support initializer lists to enforce matching array dimensions
 struct set_bonus_array_t
 {
 public:
-  set_bonus_array_t( player_t* p, const uint32_t a_bonus[ N_TIER ][ N_TIER_BONUS ] );
+  set_bonus_array_t( player_t* p, const set_bonus_description_t a_bonus );
 
   bool has_set_bonus( set_e s );
   static bool has_set_bonus( player_t* p, set_e s );

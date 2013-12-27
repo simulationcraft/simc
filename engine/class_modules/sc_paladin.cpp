@@ -4902,7 +4902,7 @@ void paladin_t::init_spells()
     active_illuminated_healing = new illuminated_healing_t( this );
 
   // Tier Bonuses
-  static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
+  static const set_bonus_description_t set_bonuses =
   {
     //  C2P    C4P     M2P     M4P     T2P     T4P     H2P     H4P
     {     0,     0, 105765, 105820, 105800, 105744, 105743, 105798 }, // Tier13

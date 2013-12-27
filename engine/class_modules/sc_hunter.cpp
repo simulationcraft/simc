@@ -3759,7 +3759,7 @@ void hunter_t::init_spells()
   action_lightning_arrow_arcane_shot = new attacks::lightning_arrow_t( this, "_arcane_shot" );
   action_lightning_arrow_multi_shot = new attacks::lightning_arrow_t( this, "_multi_shot" );
 
-  static const uint32_t set_bonuses[N_TIER][N_TIER_BONUS] =
+  static const set_bonus_description_t set_bonuses =
   {
     //  C2P    C4P     M2P     M4P    T2P    T4P     H2P    H4P
     {     0,     0, 105732, 105921,     0,     0,     0,     0 }, // Tier13
