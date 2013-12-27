@@ -8425,52 +8425,14 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
       profile_str += term;
     }
 
-    // TODO: add replacement from new set bonus system
-    /*
-    if ( set_bonus.tier13_2pc_caster() ) profile_str += "# tier13_2pc_caster=1" + term;
-    if ( set_bonus.tier13_4pc_caster() ) profile_str += "# tier13_4pc_caster=1" + term;
-    if ( set_bonus.tier13_2pc_melee()  ) profile_str += "# tier13_2pc_melee=1" + term;
-    if ( set_bonus.tier13_4pc_melee()  ) profile_str += "# tier13_4pc_melee=1" + term;
-    if ( set_bonus.tier13_2pc_tank()   ) profile_str += "# tier13_2pc_tank=1" + term;
-    if ( set_bonus.tier13_4pc_tank()   ) profile_str += "# tier13_4pc_tank=1" + term;
-    if ( set_bonus.tier13_2pc_heal()   ) profile_str += "# tier13_2pc_heal=1" + term;
-    if ( set_bonus.tier13_4pc_heal()   ) profile_str += "# tier13_4pc_heal=1" + term;
-
-    if ( set_bonus.tier14_2pc_caster() ) profile_str += "# tier14_2pc_caster=1" + term;
-    if ( set_bonus.tier14_4pc_caster() ) profile_str += "# tier14_4pc_caster=1" + term;
-    if ( set_bonus.tier14_2pc_melee()  ) profile_str += "# tier14_2pc_melee=1" + term;
-    if ( set_bonus.tier14_4pc_melee()  ) profile_str += "# tier14_4pc_melee=1" + term;
-    if ( set_bonus.tier14_2pc_tank()   ) profile_str += "# tier14_2pc_tank=1" + term;
-    if ( set_bonus.tier14_4pc_tank()   ) profile_str += "# tier14_4pc_tank=1" + term;
-    if ( set_bonus.tier14_2pc_heal()   ) profile_str += "# tier14_2pc_heal=1" + term;
-    if ( set_bonus.tier14_4pc_heal()   ) profile_str += "# tier14_4pc_heal=1" + term;
-
-    if ( set_bonus.tier15_2pc_caster() ) profile_str += "# tier15_2pc_caster=1" + term;
-    if ( set_bonus.tier15_4pc_caster() ) profile_str += "# tier15_4pc_caster=1" + term;
-    if ( set_bonus.tier15_2pc_melee()  ) profile_str += "# tier15_2pc_melee=1" + term;
-    if ( set_bonus.tier15_4pc_melee()  ) profile_str += "# tier15_4pc_melee=1" + term;
-    if ( set_bonus.tier15_2pc_tank()   ) profile_str += "# tier15_2pc_tank=1" + term;
-    if ( set_bonus.tier15_4pc_tank()   ) profile_str += "# tier15_4pc_tank=1" + term;
-    if ( set_bonus.tier15_2pc_heal()   ) profile_str += "# tier15_2pc_heal=1" + term;
-    if ( set_bonus.tier15_4pc_heal()   ) profile_str += "# tier15_4pc_heal=1" + term;
-
-    if ( set_bonus.tier16_2pc_caster() ) profile_str += "# tier16_2pc_caster=1" + term;
-    if ( set_bonus.tier16_4pc_caster() ) profile_str += "# tier16_4pc_caster=1" + term;
-    if ( set_bonus.tier16_2pc_melee()  ) profile_str += "# tier16_2pc_melee=1" + term;
-    if ( set_bonus.tier16_4pc_melee()  ) profile_str += "# tier16_4pc_melee=1" + term;
-    if ( set_bonus.tier16_2pc_tank()   ) profile_str += "# tier16_2pc_tank=1" + term;
-    if ( set_bonus.tier16_4pc_tank()   ) profile_str += "# tier16_4pc_tank=1" + term;
-    if ( set_bonus.tier16_2pc_heal()   ) profile_str += "# tier16_2pc_heal=1" + term;
-    if ( set_bonus.tier16_4pc_heal()   ) profile_str += "# tier16_4pc_heal=1" + term;
-
-    if ( set_bonus.pvp_2pc_caster() ) profile_str += "# pvp_2pc_caster=1" + term;
-    if ( set_bonus.pvp_4pc_caster() ) profile_str += "# pvp_4pc_caster=1" + term;
-    if ( set_bonus.pvp_2pc_melee()  ) profile_str += "# pvp_2pc_melee=1" + term;
-    if ( set_bonus.pvp_4pc_melee()  ) profile_str += "# pvp_4pc_melee=1" + term;
-    if ( set_bonus.pvp_2pc_tank()   ) profile_str += "# pvp_2pc_tank=1" + term;
-    if ( set_bonus.pvp_4pc_tank()   ) profile_str += "# pvp_4pc_tank=1" + term;
-    if ( set_bonus.pvp_2pc_heal()   ) profile_str += "# pvp_2pc_heal=1" + term;
-    if ( set_bonus.pvp_4pc_heal()   ) profile_str += "# pvp_4pc_heal=1" + term;*/
+    // Set Bonus
+    for ( set_e s = SET_NONE; s < SET_MAX; ++s )
+    {
+      if ( set_bonus_array_t::has_set_bonus( this, s ) )
+      {
+        profile_str += std::string("# ") + util::set_bonus_string( s ) + "=1" + term;
+      }
+    }
 
     for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
     {

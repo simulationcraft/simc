@@ -108,6 +108,11 @@ set_bonus_array_t::set_bonus_array_t( player_t* p, const uint32_t a_bonus[ N_TIE
 
 bool set_bonus_array_t::has_set_bonus( set_e s )
 {
+  return set_bonus_array_t::has_set_bonus( p, s );
+}
+
+bool set_bonus_array_t::has_set_bonus( player_t* p, set_e s )
+{
   if ( p -> set_bonus.count[ s ] > 0 )
     return true;
 

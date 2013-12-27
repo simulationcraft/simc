@@ -3532,7 +3532,8 @@ private:
 public:
   set_bonus_array_t( player_t* p, const uint32_t a_bonus[ N_TIER ][ N_TIER_BONUS ] );
 
-  bool              has_set_bonus( set_e s );
+  bool has_set_bonus( set_e s );
+  static bool has_set_bonus( player_t* p, set_e s );
   const spell_data_t* set( set_e s );
 };
 
