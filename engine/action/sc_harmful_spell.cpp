@@ -23,7 +23,7 @@ spell_t::spell_t( const std::string&  token,
 
 // spell_t::miss_chance =====================================================
 
-double spell_t::miss_chance( double hit, player_t* t )
+double spell_t::miss_chance( double hit, player_t* t ) const
 {
   // base spell miss chance is 6% - treat this as base.miss + 3%
   double miss = 0.03 + t -> cache.miss();

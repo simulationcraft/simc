@@ -337,7 +337,7 @@ public:
   virtual void      create_pets   ();
   virtual void      combat_begin();
 
-  int     holy_power_stacks();
+  int     holy_power_stacks() const;
   double  get_divine_bulwark() const;
   double  get_hand_of_light();
   double  jotp_haste();
@@ -347,7 +347,7 @@ public:
   void    generate_action_prio_list_holy();
   void    validate_action_priority_list();
 
-  target_specific_t<paladin_td_t*> target_data;
+  mutable target_specific_t<paladin_td_t*> target_data;
 
   virtual paladin_td_t* get_target_data( player_t* target )
   {
@@ -357,6 +357,10 @@ public:
       td = new paladin_td_t( target, this );
     }
     return td;
+  }
+  paladin_td_t* find_target_data( player_t* target ) const
+  {
+    return target_data[ target ];
   }
 };
 
@@ -461,9 +465,15 @@ public:
   {
   }
 
-  paladin_t* p() const { return static_cast<paladin_t*>( ab::player ); }
+  paladin_t* p()
+  { return static_cast<paladin_t*>( ab::player ); }
+  const paladin_t* p() const
+  { return static_cast<paladin_t*>( ab::player ); }
 
   paladin_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
+
+  paladin_td_t* find_td( player_t* t ) const
+  { return p() -> find_target_data( t ); }
 
   virtual double cost() const
   {
@@ -625,7 +635,7 @@ struct paladin_heal_t : public paladin_spell_base_t<heal_t>
 
   bool benefits_from_seal_of_insight;
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = base_t::action_multiplier();
 
@@ -727,7 +737,7 @@ struct ancient_fury_t : public paladin_spell_t
     p() -> buffs.ancient_power -> expire();
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = paladin_spell_t::action_multiplier();
 
@@ -791,7 +801,7 @@ struct avengers_shield_t : public paladin_spell_t
   }
 
   // Multiplicative damage effects
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = paladin_spell_t::action_multiplier();
 
@@ -1085,13 +1095,16 @@ struct censure_t : public paladin_spell_t
     paladin_spell_t::impact( s );
   }
 
-  virtual double composite_target_multiplier( player_t* t )
+  virtual double composite_target_multiplier( player_t* t ) const
   {
     // since we don't support stacking debuffs, we handle the stack size in paladin_td buffs.debuffs_censure
     // and apply the stack size as an action multiplier
     double am = paladin_spell_t::composite_target_multiplier( t );
 
-    am *= td( t ) -> buffs.debuffs_censure -> stack();
+    if ( paladin_td_t* td = find_td( t ) )
+    {
+      am *= td -> buffs.debuffs_censure -> check();
+    }
 
     return am;
   }
@@ -1364,7 +1377,7 @@ struct eternal_flame_t : public paladin_heal_t
   virtual double cost() const
   {
     // check for T16 4-pc tank effect
-    if ( p() -> set_bonus.tier16_4pc_tank() && p() -> buffs.bastion_of_glory -> current_stack >= 3 && target == player )
+    if ( p() -> sets -> set(SET_T16_4PC_TANK ) -> ok() && p() -> buffs.bastion_of_glory -> current_stack >= 3 && target == player )
       return 0.0;
 
     return paladin_heal_t::cost();
@@ -1384,7 +1397,7 @@ struct eternal_flame_t : public paladin_heal_t
     paladin_heal_t::consume_free_hp_effects();
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     // this scales both the base heal and the ticks
     double am = paladin_heal_t::action_multiplier();
@@ -1402,7 +1415,7 @@ struct eternal_flame_t : public paladin_heal_t
     return am;
   }
 
-  virtual double action_ta_multiplier()
+  virtual double action_ta_multiplier() const
   {
     // this scales just the ticks
     double am = paladin_heal_t::action_ta_multiplier();
@@ -1495,10 +1508,15 @@ struct stay_of_execution_t : public paladin_heal_t
 
   }
 
-  double composite_target_multiplier( player_t* target )
+  double composite_target_multiplier( player_t* target ) const
   {
     double m = paladin_heal_t::composite_target_multiplier( target );
-    m *= soe_tick_multiplier[ td( target ) -> dots.stay_of_execution -> current_tick ];
+
+    if ( paladin_td_t* td = find_td( target ) )
+    {
+      m *= soe_tick_multiplier[ td -> dots.stay_of_execution -> current_tick ];
+    }
+
     return m;
   }
 };
@@ -1545,10 +1563,15 @@ struct execution_sentence_t : public paladin_spell_t
       background = true;
   }
 
-  double composite_target_multiplier( player_t* target )
+  double composite_target_multiplier( player_t* target ) const
   {
     double m = paladin_spell_t::composite_target_multiplier( target );
-    m *= tick_multiplier[ td( target ) -> dots.execution_sentence -> current_tick ];
+
+    if ( paladin_td_t* td = find_td( target ) )
+    {
+      m *= tick_multiplier[ td -> dots.execution_sentence -> current_tick ];
+    }
+
     return m;
   }
 
@@ -1589,7 +1612,7 @@ struct exorcism_t : public paladin_spell_t
     cooldown -> duration = data().cooldown();
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = paladin_spell_t::action_multiplier();
 
@@ -1661,7 +1684,7 @@ struct flash_of_light_t : public paladin_heal_t
     return ( paladin_heal_t::execute_time() * cast_multiplier );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = paladin_heal_t::action_multiplier();
 
@@ -2212,7 +2235,7 @@ struct holy_wrath_t : public paladin_spell_t
     paladin_spell_t::update_ready( cd_duration );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = paladin_spell_t::action_multiplier();
 
@@ -2409,7 +2432,7 @@ struct light_of_dawn_t : public paladin_heal_t
     aoe = 6;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = paladin_heal_t::action_multiplier();
 
@@ -2613,7 +2636,7 @@ struct word_of_glory_t : public paladin_heal_t
   virtual double cost() const
   {
     // check for T16 4-pc tank effect
-    if ( p() -> set_bonus.tier16_4pc_tank() && p() -> buffs.bastion_of_glory -> current_stack >= 3  && target == player  )
+    if ( p() -> sets -> set(SET_T16_4PC_TANK ) -> ok() && p() -> buffs.bastion_of_glory -> current_stack >= 3  && target == player  )
       return 0.0;
 
     return paladin_heal_t::cost();
@@ -2633,7 +2656,7 @@ struct word_of_glory_t : public paladin_heal_t
     paladin_heal_t::consume_free_hp_effects();
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = paladin_heal_t::action_multiplier();
     double c = cost();
@@ -2642,8 +2665,7 @@ struct word_of_glory_t : public paladin_heal_t
     am *= ( ( p() -> holy_power_stacks() <= 3  && c > 0.0 ) ? p() -> holy_power_stacks() : 3 );
 
     // T14 protection 4-piece bonus
-    if ( p() -> set_bonus.tier14_4pc_tank() )
-      am *= ( 1.0 + p() -> sets -> set( SET_T14_4PC_TANK ) -> effectN( 1 ).percent() );
+    am *= ( 1.0 + p() -> sets -> set( SET_T14_4PC_TANK ) -> effectN( 1 ).percent() );
 
     if ( p() -> buffs.bastion_of_glory -> up() )
     {
@@ -2710,7 +2732,7 @@ struct word_of_glory_damage_t : public paladin_spell_t
     paladin_spell_t::update_ready( cd_duration );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = paladin_spell_t::action_multiplier();
     double c = cost();
@@ -2828,7 +2850,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
     }
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = base_t::action_multiplier();
 
@@ -2945,7 +2967,7 @@ struct crusader_strike_t : public paladin_melee_attack_t
     base_costs[ RESOURCE_MANA ] = floor( base_costs[ RESOURCE_MANA ] + 0.5 );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
@@ -3050,7 +3072,7 @@ struct divine_storm_t : public paladin_melee_attack_t
     paladin_melee_attack_t::consume_free_hp_effects();
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
     if ( p() -> buffs.divine_crusader -> check() )
@@ -3116,7 +3138,7 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     // Non-weapon-based AP/SP scaling, zero now, but has been non-zero in past iterations
     direct_power_mod = data().extra_coeff();
   }
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
@@ -3177,7 +3199,7 @@ struct hammer_of_the_righteous_t : public paladin_melee_attack_t
     paladin_melee_attack_t::update_ready( cd_duration );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
@@ -3281,7 +3303,7 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     }
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
@@ -3347,7 +3369,7 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
     weapon = NULL;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     //am = melee_attack_t::action_multiplier();
     // not *= since we don't want to double dip, just calling base to initialize variables
@@ -3476,7 +3498,7 @@ struct judgment_t : public paladin_melee_attack_t
       p() -> buffs.selfless_healer -> trigger();
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
@@ -3732,7 +3754,7 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     paladin_melee_attack_t::update_ready( cd_duration );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
@@ -3786,20 +3808,15 @@ struct templars_verdict_t : public paladin_melee_attack_t
     }
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = paladin_melee_attack_t::action_multiplier();
 
     // Tier 13 Retribution 4-piece boosts damage
-    if ( p() -> set_bonus.tier13_4pc_melee() )
-    {
-      am *= 1.0 + p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent();
-    }
+    am *= 1.0 + p() -> sets -> set( SET_T13_4PC_MELEE ) -> effectN( 1 ).percent();
+
     // Tier 14 Retribution 2-piece boosts damage
-    if ( p() -> set_bonus.tier14_2pc_melee() )
-    {
-      am *= 1.0 + p() -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
-    }
+    am *= 1.0 + p() -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
 
     return am;
   }
@@ -5394,7 +5411,7 @@ void paladin_t::combat_begin()
 
 // paladin_t::holy_power_stacks =============================================
 
-int paladin_t::holy_power_stacks()
+int paladin_t::holy_power_stacks() const
 {
   if ( buffs.divine_purpose -> check() )
   {

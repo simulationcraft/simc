@@ -314,7 +314,7 @@ public:
   double emberstorm_e3_from_e1() const
   { return mastery_spells.emberstorm -> effectN( 3 ).coeff() / mastery_spells.emberstorm -> effectN( 1 ).coeff(); }
 
-  target_specific_t<warlock_td_t*> target_data;
+  mutable target_specific_t<warlock_td_t*> target_data;
 
   virtual warlock_td_t* get_target_data( player_t* target )
   {
@@ -324,6 +324,10 @@ public:
       td = new warlock_td_t( target, this );
     }
     return td;
+  }
+  warlock_td_t* find_target_data( player_t* target ) const
+  {
+    return target_data[ target ];
   }
 private:
   void apl_precombat();
@@ -364,7 +368,9 @@ struct warlock_pet_t : public pet_t
                                bool   waiting = false );
   virtual double composite_player_multiplier( school_e school ) const;
   virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
-  warlock_t* o() const
+  warlock_t* o()
+  { return static_cast<warlock_t*>( owner ); }
+  const warlock_t* o() const
   { return static_cast<warlock_t*>( owner ); }
 };
 
@@ -392,7 +398,9 @@ public:
   }
   virtual ~warlock_pet_action_t() {}
 
-  warlock_pet_t* p() const
+  warlock_pet_t* p()
+  { return static_cast<warlock_pet_t*>( ab::player ); }
+  const warlock_pet_t* p() const
   { return static_cast<warlock_pet_t*>( ab::player ); }
 
   virtual bool ready()
@@ -817,7 +825,7 @@ struct doom_bolt_t : public warlock_pet_spell_t
     return timespan_t::from_seconds( 3.4 );
   }
 
-  virtual double composite_target_multiplier( player_t* target )
+  virtual double composite_target_multiplier( player_t* target ) const
   {
     double m = warlock_pet_spell_t::composite_target_multiplier( target );
 
@@ -844,7 +852,7 @@ struct wild_firebolt_t : public warlock_pet_spell_t
     }
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_pet_spell_t::action_multiplier();
 
@@ -1466,9 +1474,16 @@ public:
     _init_warlock_spell_t();
   }
 
-  warlock_t* p() const { return static_cast<warlock_t*>( player ); }
+  warlock_t* p()
+  { return static_cast<warlock_t*>( player ); }
+  const warlock_t* p() const
+  { return static_cast<warlock_t*>( player ); }
 
   warlock_td_t* td( player_t* t ) { return p() -> get_target_data( t ? t : target ); }
+
+
+  warlock_td_t* find_td( player_t* t ) const
+  { return p() -> find_target_data( t ); }
 
   bool use_havoc() const
   {
@@ -1538,8 +1553,7 @@ public:
   {
     double c = spell_t::cost();
 
-    if ( p() -> set_bonus.tier15_2pc_caster() &&
-         current_resource() == RESOURCE_DEMONIC_FURY && p() -> buffs.dark_soul -> check() )
+    if ( current_resource() == RESOURCE_DEMONIC_FURY && p() -> buffs.dark_soul -> check() )
       c *= 1.0 + p() -> sets -> set( SET_T15_2PC_CASTER ) -> effectN( 3 ).percent();
 
     if ( use_backdraft() && current_resource() == RESOURCE_MANA )
@@ -1610,14 +1624,18 @@ public:
     trigger_seed_of_corruption( td( s -> target ), p(), s -> result_amount );
   }
 
-  virtual double composite_target_multiplier( player_t* t )
+  virtual double composite_target_multiplier( player_t* t ) const
   {
     double m = 1.0;
 
-    if ( td( t ) -> debuffs_haunt -> up() && ( channeled || tick_power_mod ) ) // Only applies to channeled or dots
+    if ( warlock_td_t* td = find_td( t ) )
     {
-      m *= 1.0 + td( t ) -> debuffs_haunt -> data().effectN( 3 ).percent();
+      if ( td -> debuffs_haunt -> check() && ( channeled || tick_power_mod ) ) // Only applies to channeled or dots
+      {
+        m *= 1.0 + td -> debuffs_haunt -> data().effectN( 3 ).percent();
+      }
     }
+
     return spell_t::composite_target_multiplier( t ) * m;
   }
 
@@ -1849,14 +1867,19 @@ struct agony_t : public warlock_spell_t
     warlock_spell_t::tick( d );
   }
 
-  double composite_target_multiplier( player_t* target )
+  double composite_target_multiplier( player_t* target ) const
   {
     double m = warlock_spell_t::composite_target_multiplier( target );
-    m *= td( target ) -> agony_stack;
+
+    if ( warlock_td_t* td = find_td( target ) )
+    {
+      m *= td -> agony_stack;
+    }
+
     return m;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -1933,10 +1956,15 @@ struct shadowflame_t : public warlock_spell_t
       p() -> buffs.molten_core -> trigger();
   }
 
-  double composite_target_multiplier( player_t* target )
+  double composite_target_multiplier( player_t* target ) const
   {
     double m = warlock_spell_t::composite_target_multiplier( target );
-    m *= td( target ) -> shadowflame_stack;
+
+    if ( warlock_td_t* td = find_td( target ) )
+    {
+      m *= td -> shadowflame_stack;
+    }
+
     return m;
   }
 
@@ -1972,7 +2000,7 @@ struct hand_of_guldan_t : public warlock_spell_t
     add_child( impact_action );
   }
 
-  virtual double action_da_multiplier()
+  virtual double action_da_multiplier() const
   {
     double m = warlock_spell_t::action_da_multiplier();
 
@@ -2012,7 +2040,7 @@ struct shadow_bolt_copy_t : public warlock_spell_t
     if ( data()._effects -> size() > 1 ) generate_fury = data().effectN( 2 ).base_value();
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -2053,7 +2081,7 @@ struct shadow_bolt_t : public warlock_spell_t
     }
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -2182,13 +2210,13 @@ struct shadowburn_t : public warlock_spell_t
   {
     double c = warlock_spell_t::cost();
 
-    if ( p() -> set_bonus.tier15_2pc_caster() && p() -> buffs.dark_soul -> check() )
+    if ( p() -> buffs.dark_soul -> check() )
       c *= 1.0 + p() -> sets -> set( SET_T15_2PC_CASTER ) -> effectN( 2 ).percent();
 
     return c;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -2275,7 +2303,7 @@ struct corruption_t : public warlock_spell_t
     }
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -2383,7 +2411,7 @@ struct drain_soul_t : public warlock_spell_t
     stats -> add_child( p -> get_stats( "unstable_affliction_ds" ) );
   }
 
-  virtual double composite_target_multiplier( player_t* t )
+  virtual double composite_target_multiplier( player_t* t ) const
   {
     double m = warlock_spell_t::composite_target_multiplier( t );
 
@@ -2393,14 +2421,13 @@ struct drain_soul_t : public warlock_spell_t
     return m;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
-    if ( p() -> set_bonus.tier15_4pc_caster() )
-      m *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
+    m *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
 
     if ( p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
@@ -2477,7 +2504,7 @@ struct unstable_affliction_t : public warlock_spell_t
       base_execute_time *= 1.0 + p -> glyphs.unstable_affliction -> effectN( 1 ).percent();
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -2518,7 +2545,7 @@ struct haunt_t : public warlock_spell_t
     }
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -2607,17 +2634,17 @@ struct immolate_t : public warlock_spell_t
     return warlock_spell_t::cost();
   }
 
-  virtual double crit_chance( double crit, int delta_level )
+  virtual double crit_chance( double crit, int delta_level ) const
   {
     double cc = warlock_spell_t::crit_chance(crit, delta_level);
 
-    if ( p() -> set_bonus.tier16_2pc_caster() && p() -> buffs.tier16_2pc_destructive_influence -> up())
+    if ( p() -> sets -> set( SET_T16_2PC_CASTER ) -> ok() && p() -> buffs.tier16_2pc_destructive_influence -> check() )
       cc += p() -> buffs.tier16_2pc_destructive_influence -> value();
 
     return cc;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -2724,7 +2751,7 @@ struct conflagrate_t : public warlock_spell_t
       p() -> buffs.backdraft -> trigger( 3 );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -2816,17 +2843,17 @@ struct incinerate_t : public warlock_spell_t
     return warlock_spell_t::cost();
   }
 
-  virtual double crit_chance( double crit, int delta_level )
+  virtual double crit_chance( double crit, int delta_level ) const
   {
     double cc = warlock_spell_t::crit_chance( crit, delta_level );
 
-    if ( p() -> set_bonus.tier16_2pc_caster() && p() -> buffs.tier16_2pc_destructive_influence -> up() )
+    if ( p() -> sets -> set( SET_T16_2PC_CASTER ) -> ok() && p() -> buffs.tier16_2pc_destructive_influence -> check() )
       cc += p() -> buffs.tier16_2pc_destructive_influence -> value();
 
     return cc;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -2954,13 +2981,13 @@ struct soul_fire_t : public warlock_spell_t
     return t;
   }
 
-  virtual double crit_chance( double /* crit */, int /* delta_level */ )
+  virtual double crit_chance( double /* crit */, int /* delta_level */ ) const
   {
     // Soul fire always crits
     return 1.0;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -3003,7 +3030,7 @@ struct chaos_bolt_t : public warlock_spell_t
       num_ticks = p -> talents.grimoire_of_sacrifice -> effectN( 12 ).time_value().total_seconds() / data().effectN( 2 ).period().total_seconds();
   }
 
-  virtual double crit_chance( double /* crit */, int /* delta_level */ )
+  virtual double crit_chance( double /* crit */, int /* delta_level */ ) const
   {
     // Chaos Bolt always crits
     return 1.0;
@@ -3013,13 +3040,13 @@ struct chaos_bolt_t : public warlock_spell_t
   {
     double c = warlock_spell_t::cost();
 
-    if ( p() -> set_bonus.tier15_2pc_caster() && p() -> buffs.dark_soul -> check() )
+    if ( p() -> buffs.dark_soul -> check() )
       c *= 1.0 + p() -> sets -> set( SET_T15_2PC_CASTER ) -> effectN( 2 ).percent();
 
     return c;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -3073,7 +3100,7 @@ struct melee_t : public warlock_spell_t
     base_execute_time = timespan_t::from_seconds( 1 );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -3217,7 +3244,7 @@ struct chaos_wave_t : public warlock_spell_t
     impact_action -> stats = stats;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -3257,7 +3284,7 @@ struct touch_of_chaos_t : public warlock_spell_t
 
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -3345,7 +3372,7 @@ struct fel_flame_t : public warlock_spell_t
     if ( p() -> specialization() == WARLOCK_DEMONOLOGY ) p() -> resource_gain( RESOURCE_DEMONIC_FURY, data().effectN( 2 ).base_value(), p() -> gains.fel_flame );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -3385,7 +3412,7 @@ struct void_ray_t : public warlock_spell_t
     direct_power_mod = data().effectN( 1 ).coeff();
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -3431,14 +3458,13 @@ struct malefic_grasp_t : public warlock_spell_t
     stats -> add_child( p -> get_stats( "unstable_affliction_mg" ) );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
     m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
 
-    if ( p() -> set_bonus.tier15_4pc_caster() )
-      m *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
+    m *= 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
 
 
     if ( p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
@@ -3638,7 +3664,7 @@ struct seed_of_corruption_aoe_t : public warlock_spell_t
     callbacks  = false;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -3772,7 +3798,7 @@ struct rain_of_fire_tick_t : public warlock_spell_t
       trigger_ember_gain( p(), 0.2, p() -> gains.rain_of_fire, 0.125 );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -3814,12 +3840,15 @@ struct rain_of_fire_t : public warlock_spell_t
     return num_ticks;
   }
 
-  virtual double composite_target_ta_multiplier( player_t* t )
+  virtual double composite_target_ta_multiplier( player_t* t ) const
   {
     double m = warlock_spell_t::composite_target_ta_multiplier( t );
 
-    if ( td( t ) -> dots_immolate -> ticking )
-      m *= 1.5;
+    if ( warlock_td_t* td = find_td( t ) )
+    {
+      if ( td -> dots_immolate -> ticking )
+        m *= 1.5;
+    }
 
     return m;
   }
@@ -3863,7 +3892,7 @@ struct hellfire_t : public warlock_spell_t
     tick_action = new hellfire_tick_t( p, data() );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 
@@ -3910,7 +3939,7 @@ struct immolation_aura_tick_t : public warlock_spell_t
     aoe         = -1;
     background  = true;
   }
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = warlock_spell_t::action_multiplier();
 

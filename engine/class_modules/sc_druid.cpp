@@ -423,7 +423,7 @@ public:
   virtual double    composite_melee_hit() const;
   virtual double    composite_melee_expertise( weapon_t* ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
-  virtual double    composite_player_td_multiplier( school_e, action_t* ) const;
+  virtual double    composite_player_td_multiplier( school_e,  const action_t* ) const;
   virtual double    composite_player_heal_multiplier( school_e school ) const;
   virtual double    composite_spell_hit() const;
   virtual double    composite_spell_power( school_e school ) const;
@@ -617,13 +617,13 @@ struct leader_of_the_pack_t : public heal_t
   druid_t* p() const
   { return static_cast<druid_t*>( player ); }
 
-  virtual double base_da_min( const action_state_t* )
+  virtual double base_da_min( const action_state_t* ) const
   {
     return p() -> resources.max[ RESOURCE_HEALTH ] *
            p() -> spell.leader_of_the_pack -> effectN( 2 ).percent();
   }
 
-  virtual double base_da_max( const action_state_t* )
+  virtual double base_da_max( const action_state_t* ) const
   {
     return p() -> resources.max[ RESOURCE_HEALTH ] *
            p() -> spell.leader_of_the_pack -> effectN( 2 ).percent();
@@ -968,6 +968,8 @@ struct force_of_nature_feral_t : public pet_t
 
     force_of_nature_feral_t* p()
     { return static_cast<force_of_nature_feral_t*>( player ); }
+    const force_of_nature_feral_t* p() const
+    { return static_cast<force_of_nature_feral_t*>( player ); }
 
     void init()
     {
@@ -976,11 +978,11 @@ struct force_of_nature_feral_t : public pet_t
         stats = p() -> o() -> pet_force_of_nature[ 0 ] -> get_stats( name(), this );
     }
 
-    virtual double composite_ta_multiplier()
+    virtual double composite_ta_multiplier() const
     {
       double m = melee_attack_t::composite_ta_multiplier();
 
-      if ( p() -> o() -> buff.cat_form -> up() && p() -> o() -> mastery.razor_claws -> ok() )
+      if ( p() -> o() -> buff.cat_form -> check() && p() -> o() -> mastery.razor_claws -> ok() )
         m *= 1.0 + p() -> o() -> cache.mastery_value();
 
       return m;
@@ -988,11 +990,11 @@ struct force_of_nature_feral_t : public pet_t
 
     // Treat direct damage as "bleed"
     // Must use direct damage because tick_zeroes cannot be blocked, and this attack is going to get blocked occasionally.
-    double composite_da_multiplier()
+    double composite_da_multiplier() const
     {
       double m = melee_attack_t::composite_da_multiplier();
 
-      if ( p() -> o() -> buff.cat_form -> up() && p() -> o() -> mastery.razor_claws -> ok() )
+      if ( p() -> o() -> buff.cat_form -> check() && p() -> o() -> mastery.razor_claws -> ok() )
         m *= 1.0 + p() -> o() -> cache.mastery_value();
 
       return m;
@@ -1023,6 +1025,8 @@ struct force_of_nature_feral_t : public pet_t
 
   druid_t* o()
   { return static_cast< druid_t* >( owner ); }
+  const druid_t* o() const
+  { return static_cast<const druid_t* >( owner ); }
 
   virtual void init_base_stats()
   {
@@ -1202,7 +1206,7 @@ struct barkskin_t : public druid_buff_t < buff_t >
       return 0.0;
     }
 
-    virtual double base_da_min( const action_state_t* )
+    virtual double base_da_min( const action_state_t* ) const
     {
         // max(2.2*(AP - 2*Agi), 2.5*Sta)
         double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
@@ -1212,7 +1216,7 @@ struct barkskin_t : public druid_buff_t < buff_t >
                * ( 20 / maximum_rage_cost );
     }
 
-    virtual double base_da_max( const action_state_t* )
+    virtual double base_da_max( const action_state_t* ) const
     {
         // max(2.2*(AP - 2*Agi), 2.5*Sta)
         double ap      = p() -> composite_melee_attack_power() * p() -> composite_attack_power_multiplier();
@@ -1749,7 +1753,10 @@ public:
     ab::tick_may_crit = true;
   }
 
-  druid_t* p() const { return static_cast<druid_t*>( ab::player ); }
+  druid_t* p()
+  { return static_cast<druid_t*>( ab::player ); }
+  const druid_t* p() const
+  { return static_cast<druid_t*>( ab::player ); }
 
   druid_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 
@@ -1784,7 +1791,7 @@ public:
   }
 
 
-  virtual double action_da_multiplier()
+  virtual double action_da_multiplier() const
   {
     double m = ab::action_da_multiplier();
 
@@ -1799,7 +1806,7 @@ public:
     return m;
   }
 
-  virtual double action_ta_multiplier()
+  virtual double action_ta_multiplier() const
   {
     double m = ab::action_ta_multiplier();
 
@@ -1954,16 +1961,16 @@ public:
     return c;
   }
 
-  const cat_attack_state_t* cat_state( const action_state_t* st )
+  const cat_attack_state_t* cat_state( const action_state_t* st ) const
   { return debug_cast< const cat_attack_state_t* >( st ); }
 
-  cat_attack_state_t* cat_state( action_state_t* st )
+  cat_attack_state_t* cat_state( action_state_t* st ) const
   { return debug_cast< cat_attack_state_t* >( st ); }
 
-  virtual double bonus_ta( const action_state_t* s )
+  virtual double bonus_ta( const action_state_t* s ) const
   { return base_td_bonus * ( requires_combo_points ? cat_state( s ) -> cp : 1 ); }
 
-  virtual double bonus_da( const action_state_t* s )
+  virtual double bonus_da( const action_state_t* s ) const
   { return base_dd_bonus * ( requires_combo_points ? cat_state( s ) -> cp : 1 ); }
 
   virtual action_state_t* new_state()
@@ -2143,7 +2150,7 @@ struct cat_melee_t : public cat_attack_t
     return cat_attack_t::execute_time();
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double cm = cat_attack_t::action_multiplier();
 
@@ -2235,7 +2242,7 @@ struct ferocious_bite_t : public cat_attack_t
     special = true;
   }
 
-  double direct_power_coefficient( const action_state_t* state )
+  double direct_power_coefficient( const action_state_t* state ) const
   { return 0.196 * cat_state( state ) -> cp; }
 
   virtual void execute()
@@ -2301,7 +2308,7 @@ struct ferocious_bite_t : public cat_attack_t
     }
   }
 
-  double action_multiplier()
+  double action_multiplier() const
   {
     double dm = cat_attack_t::action_multiplier();
 
@@ -2310,7 +2317,7 @@ struct ferocious_bite_t : public cat_attack_t
     return dm;
   }
 
-  double composite_target_crit( player_t* t )
+  double composite_target_crit( player_t* t ) const
   {
     double tc = cat_attack_t::composite_target_crit( t );
 
@@ -2376,7 +2383,7 @@ struct mangle_cat_t : public cat_attack_t
     extend_rip( *state );
   }
 
-  double composite_target_crit( player_t* t )
+  double composite_target_crit( player_t* t ) const
   {
     double tc = cat_attack_t::composite_target_crit( t );
 
@@ -2386,7 +2393,7 @@ struct mangle_cat_t : public cat_attack_t
     return tc;
   }
 
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   {
     double m = cat_attack_t::composite_da_multiplier();
 
@@ -2445,7 +2452,7 @@ struct rake_t : public cat_attack_t
   // Treat direct damage as "bleed"
   // Must use direct damage because tick_zeroes cannot be blocked, and
   // this attack can be blocked if the druid is in front of the target.
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   {
     double m = melee_attack_t::composite_da_multiplier();
 
@@ -2510,14 +2517,14 @@ struct ravage_t : public cat_attack_t
 
   virtual double cost() const
   {
-    if ( p() -> set_bonus.pvp_4pc_melee() )
+    if ( p() -> sets->set( SET_PVP_4PC_MELEE ) -> ok() )
       if ( p() -> cooldown.pvp_4pc_melee -> up() )
         return 0;
 
     return cat_attack_t::cost();
   }
 
-  double composite_target_crit( player_t* t )
+  double composite_target_crit( player_t* t ) const
   {
     double tc = cat_attack_t::composite_target_crit( t );
 
@@ -2530,7 +2537,7 @@ struct ravage_t : public cat_attack_t
     return tc;
   }
 
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   {
     double m = cat_attack_t::composite_da_multiplier();
 
@@ -2592,7 +2599,7 @@ struct rip_t : public cat_attack_t
       num_ticks += ( int ) (  player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value() / base_tick_time );
   }
 
-  double tick_power_coefficient( const action_state_t* state )
+  double tick_power_coefficient( const action_state_t* state ) const
   { return cat_state( state ) -> cp * ap_per_point; }
 };
 
@@ -2729,7 +2736,7 @@ struct shred_t : public cat_attack_t
     extend_rip( *state );
   }
 
-  virtual double composite_target_multiplier( player_t* t )
+  virtual double composite_target_multiplier( player_t* t ) const
   {
     double tm = cat_attack_t::composite_target_multiplier( t );
 
@@ -2739,7 +2746,7 @@ struct shred_t : public cat_attack_t
     return tm;
   }
 
-  double composite_target_crit( player_t* t )
+  double composite_target_crit( player_t* t ) const
   {
     double tc = cat_attack_t::composite_target_crit( t );
 
@@ -2749,7 +2756,7 @@ struct shred_t : public cat_attack_t
     return tc;
   }
 
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   {
     double m = cat_attack_t::composite_da_multiplier();
 
@@ -2813,7 +2820,7 @@ struct swipe_cat_t : public cat_attack_t
       p() -> buff.tier15_4pc_melee -> decrement();
   }
 
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   {
     double m = cat_attack_t::composite_da_multiplier();
 
@@ -2823,7 +2830,7 @@ struct swipe_cat_t : public cat_attack_t
     return m;
   }
 
-  virtual double composite_target_multiplier( player_t* t )
+  virtual double composite_target_multiplier( player_t* t ) const
   {
     double tm = cat_attack_t::composite_target_multiplier( t );
 
@@ -2833,7 +2840,7 @@ struct swipe_cat_t : public cat_attack_t
     return tm;
   }
 
-  double composite_target_crit( player_t* t )
+  double composite_target_crit( player_t* t ) const
   {
     double tc = cat_attack_t::composite_target_crit( t );
 
@@ -2870,11 +2877,11 @@ struct thrash_cat_t : public cat_attack_t
   }
 
   // Treat direct damage as "bleed"
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   {
     double m = cat_attack_t::composite_da_multiplier();
 
-    if ( p() -> buff.cat_form -> up() && p() -> mastery.razor_claws -> ok() )
+    if ( p() -> buff.cat_form -> check() && p() -> mastery.razor_claws -> ok() )
       m *= 1.0 + p() -> cache.mastery_value();
 
     return m;
@@ -3085,11 +3092,12 @@ struct lacerate_t : public bear_attack_t
     bear_attack_t::impact( state );
   }
 
-  virtual double action_ta_multiplier()
+  virtual double action_ta_multiplier() const
   {
     double tm = bear_attack_t::action_ta_multiplier();
 
-    tm *= td( target ) -> lacerate_stack;
+    if ( druid_td_t* td = find_td( target ) )
+      tm *= td -> lacerate_stack;
 
     return tm;
   }
@@ -3163,7 +3171,7 @@ struct mangle_bear_t : public bear_attack_t
     }
   }
 
-  virtual double action_da_multiplier()
+  virtual double action_da_multiplier() const
   {
     double adm = bear_attack_t::action_da_multiplier();
 
@@ -3217,7 +3225,7 @@ struct maul_t : public bear_attack_t
       absorb -> execute();
   }
 
-  virtual double composite_target_multiplier( player_t* t )
+  virtual double composite_target_multiplier( player_t* t ) const
   {
     double tm = bear_attack_t::composite_target_multiplier( t );
 
@@ -3281,7 +3289,7 @@ struct swipe_bear_t : public bear_attack_t
       cooldown -> reset( false );
   }
 
-  virtual double composite_target_multiplier( player_t* t )
+  virtual double composite_target_multiplier( player_t* t ) const
   {
     double tm = bear_attack_t::composite_target_multiplier( t );
 
@@ -3445,9 +3453,7 @@ public:
 
   virtual double cost() const
   {
-    druid_t& p = *this -> p();
-
-    if ( consume_ooc && p.buff.omen_of_clarity -> check() && this -> execute_time() != timespan_t::zero() )
+    if ( consume_ooc && this -> p() -> buff.omen_of_clarity -> check() && this -> execute_time() != timespan_t::zero() )
       return 0;
 
     return std::max( 0.0, ab::cost() * ( 1.0 + cost_reduction() ) );
@@ -3459,9 +3465,8 @@ public:
   virtual double composite_haste() const
   {
     double h = ab::composite_haste();
-    druid_t& p = *this -> p();
 
-    h *= 1.0 / ( 1.0 +  p.buff.natures_grace -> data().effectN( 1 ).percent() );
+    h *= 1.0 / ( 1.0 +  this -> p() -> buff.natures_grace -> data().effectN( 1 ).percent() );
 
     return h;
   }
@@ -3584,7 +3589,7 @@ public:
     return h;
   }
 
-  virtual double action_da_multiplier()
+  virtual double action_da_multiplier() const
   {
     double adm = base_t::action_da_multiplier();
 
@@ -3600,7 +3605,7 @@ public:
     return adm;
   }
 
-  virtual double action_ta_multiplier()
+  virtual double action_ta_multiplier() const
   {
     double adm = base_t::action_ta_multiplier();
 
@@ -3652,7 +3657,7 @@ struct living_seed_t : public druid_heal_t
     school     = SCHOOL_NATURE;
   }
 
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   {
     return data().effectN( 1 ).percent();
   }
@@ -3700,7 +3705,7 @@ struct frenzied_regeneration_t : public druid_heal_t
     return druid_heal_t::cost();
   }
 
-  virtual double base_da_min( const action_state_t* )
+  virtual double base_da_min( const action_state_t* ) const
   {
       if ( p() -> glyph.frenzied_regeneration -> ok() )
         return 0.0;
@@ -3714,7 +3719,7 @@ struct frenzied_regeneration_t : public druid_heal_t
              * ( 1.0 + p() -> buff.tier15_2pc_tank -> stack() * p() -> buff.tier15_2pc_tank -> data().effectN( 1 ).percent() );
   }
 
-  virtual double base_da_max( const action_state_t* )
+  virtual double base_da_max( const action_state_t* ) const
   {
       if ( p() -> glyph.frenzied_regeneration -> ok() )
         return 0.0;
@@ -3780,7 +3785,7 @@ struct healing_touch_t : public druid_heal_t
     return druid_heal_t::cost();
   }
 
-  virtual double action_da_multiplier()
+  virtual double action_da_multiplier() const
   {
     double adm = base_t::action_da_multiplier();
 
@@ -3867,16 +3872,19 @@ struct lifebloom_bloom_t : public druid_heal_t
     direct_power_mod = data().effectN( 2 ).coeff();
   }
 
-  virtual double composite_target_multiplier( player_t* target )
+  virtual double composite_target_multiplier( player_t* target ) const
   {
     double ctm = druid_heal_t::composite_target_multiplier( target );
 
-    ctm *= 1.0 + td( target ) -> buffs.lifebloom -> check();
+    if ( druid_td_t* td = find_td( target ) )
+    {
+      ctm *= 1.0 + td -> buffs.lifebloom -> check();
+    }
 
     return ctm;
   }
 
-  virtual double composite_da_multiplier()
+  virtual double composite_da_multiplier() const
   {
     double cdm = druid_heal_t::composite_da_multiplier();
 
@@ -3899,11 +3907,14 @@ struct lifebloom_t : public druid_heal_t
     // TODO: this can be only cast on one target, unless Tree of Life is up
   }
 
-  virtual double composite_target_multiplier( player_t* target )
+  virtual double composite_target_multiplier( player_t* target ) const
   {
     double ctm = druid_heal_t::composite_target_multiplier( target );
 
-    ctm *= 1.0 + td( target ) -> buffs.lifebloom -> check();
+    if ( druid_td_t* td = find_td( target ) )
+    {
+      ctm *= 1.0 + td -> buffs.lifebloom -> check();
+    }
 
     return ctm;
   }
@@ -3963,12 +3974,17 @@ struct nourish_t : public druid_heal_t
       trigger_living_seed( state );
   }
 
-  virtual double composite_target_multiplier( player_t* t )
+  virtual double composite_target_multiplier( player_t* t ) const
   {
     double ctm = druid_heal_t::composite_target_multiplier( t );
 
-    if ( td( t ) -> hot_ticking() )
-      ctm *= 1.20;
+    if ( druid_td_t* td = find_td( t ) )
+    {
+      if ( td -> hot_ticking() )
+      {
+        ctm *= 1.20;
+      }
+    }
 
     return ctm;
   }
@@ -4731,7 +4747,7 @@ struct faerie_fire_t : public druid_spell_t
     druid_spell_t::update_ready( cd );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     if ( p() -> buff.bear_form -> check() )
       return druid_spell_t::action_multiplier();
@@ -4841,7 +4857,7 @@ struct hurricane_t : public druid_spell_t
     return druid_spell_t::ready();
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     return druid_spell_t::action_multiplier()
            * ( 1.0 + p() -> buff.heart_of_the_wild -> damage_spell_multiplier() );
@@ -5080,7 +5096,7 @@ struct moonfire_t : public druid_spell_t
       sunfire = new sunfire_CA_t( player );
   }
 
-  virtual double action_da_multiplier()
+  virtual double action_da_multiplier() const
   {
     double m = druid_spell_t::action_da_multiplier();
 
@@ -5230,12 +5246,11 @@ struct starfire_t : public druid_spell_t
     test_to_extend( s, td( s -> target ) -> dots.moonfire );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = druid_spell_t::action_multiplier();
 
-    if (  p() -> set_bonus.tier13_2pc_caster() )
-      m *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
+    m *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
 
     return m;
   }
@@ -5496,7 +5511,7 @@ struct sunfire_t : public druid_spell_t
       moonfire = new moonfire_CA_t( player );
   }
 
-  virtual double action_da_multiplier()
+  virtual double action_da_multiplier() const
   {
     double m = druid_spell_t::action_da_multiplier();
 
@@ -5774,12 +5789,11 @@ struct wrath_t : public druid_spell_t
     test_to_extend( s, td( s -> target ) -> dots.sunfire );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = druid_spell_t::action_multiplier();
 
-    if ( p() -> set_bonus.tier13_2pc_caster() )
-      m *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
+    m *= 1.0 + p() -> sets -> set( SET_T13_2PC_CASTER ) -> effectN( 1 ).percent();
 
     m *= 1.0 + p() -> buff.heart_of_the_wild -> damage_spell_multiplier();
 
@@ -7149,7 +7163,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
-double druid_t::composite_player_td_multiplier( school_e school, action_t* a ) const
+double druid_t::composite_player_td_multiplier( school_e school,  const action_t* a ) const
 {
   double m = player_t::composite_player_td_multiplier( school, a );
 

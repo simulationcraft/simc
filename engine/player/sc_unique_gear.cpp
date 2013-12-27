@@ -2683,10 +2683,10 @@ struct cleave_t : public T
     return tl.size();
   }
 
-  double composite_target_multiplier( player_t* )
+  double composite_target_multiplier( player_t* ) const
   { return 1.0; }
 
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   { return 1.0; }
 
   double target_armor( player_t* )
@@ -2791,10 +2791,10 @@ void multistrike_trinket( item_t* item )
       snapshot_flags |= STATE_MUL_DA;
     }
 
-    double composite_target_multiplier( player_t* )
+    double composite_target_multiplier( player_t* ) const
     { return 1.0; }
 
-    double composite_da_multiplier()
+    double composite_da_multiplier() const
     { return 1.0 / 3.0; }
 
     double target_armor( player_t* )
@@ -2812,10 +2812,10 @@ void multistrike_trinket( item_t* item )
       snapshot_flags |= STATE_MUL_DA;
     }
 
-    double composite_target_multiplier( player_t* )
+    double composite_target_multiplier( player_t* ) const
     { return 1.0; }
 
-    double composite_da_multiplier()
+    double composite_da_multiplier() const
     { return 1.0 / 3.0; }
 
     double target_armor( player_t* )

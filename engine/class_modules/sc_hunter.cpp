@@ -330,7 +330,7 @@ public:
   // Event Tracking
   virtual void regen( timespan_t periodicity );
 
-  double careful_aim_crit( player_t* target )
+  double careful_aim_crit( player_t* target ) const
   {
     int threshold = specs.careful_aim -> effectN( 2 ).base_value();
     if ( specs.careful_aim -> ok() && target -> health_percentage() > threshold )
@@ -365,7 +365,10 @@ public:
 
   virtual ~hunter_action_t() {}
 
-  hunter_t* p() const { return static_cast<hunter_t*>( ab::player ); }
+  hunter_t* p()
+  { return static_cast<hunter_t*>( ab::player ); }
+  const hunter_t* p() const
+  { return static_cast<hunter_t*>( ab::player ); }
 
   hunter_td_t* cast_td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 
@@ -511,10 +514,14 @@ public:
 
   }
 
-  T_PET* p() const
+  T_PET* p()
+  { return static_cast<T_PET*>( ab::player ); }
+  const T_PET* p() const
   { return static_cast<T_PET*>( ab::player ); }
 
-  hunter_t* o() const
+  hunter_t* o()
+  { return static_cast<hunter_t*>( p() -> o() ); }
+  const hunter_t* o() const
   { return static_cast<hunter_t*>( p() -> o() ); }
 };
 
@@ -845,7 +852,7 @@ public:
     return m;
   }
 
-  target_specific_t<hunter_main_pet_td_t*> target_data;
+  mutable target_specific_t<hunter_main_pet_td_t*> target_data;
 
   virtual hunter_main_pet_td_t* get_target_data( player_t* target )
   {
@@ -855,6 +862,11 @@ public:
       td = new hunter_main_pet_td_t( target, this );
     }
     return td;
+  }
+
+  hunter_main_pet_td_t* find_target_data( player_t* target ) const
+  {
+    return target_data[ target ];
   }
 
   virtual resource_e primary_resource() { return RESOURCE_FOCUS; }
@@ -894,6 +906,9 @@ public:
 
   hunter_main_pet_td_t* cast_td( player_t* t = 0 )
   { return p() -> get_target_data( t ? t : ab::target ); }
+
+  hunter_main_pet_td_t* find_td( player_t* t ) const
+  { return p() -> find_target_data( t ); }
 };
 
 // ==========================================================================
@@ -1098,7 +1113,7 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     return p() -> resources.current[ RESOURCE_FOCUS ] > 50;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = hunter_main_pet_attack_t::action_multiplier();
 
@@ -1188,11 +1203,14 @@ struct lynx_rush_t : public hunter_main_pet_attack_t
     hunter_main_pet_attack_t::impact( s );
   }
 
-  virtual double composite_target_ta_multiplier( player_t* t )
+  virtual double composite_target_ta_multiplier( player_t* t ) const
   {
     double am = hunter_main_pet_attack_t::composite_target_ta_multiplier( t );
-    double stack = cast_td( t -> target ) -> debuffs_lynx_bleed -> stack();
-    am *= stack;
+
+    if ( hunter_main_pet_td_t* td = find_td( t -> target ) )
+    {
+      am *= td -> debuffs_lynx_bleed -> check();
+    }
     return am;
   }
 
@@ -1218,7 +1236,7 @@ struct kill_command_t : public hunter_main_pet_attack_t
     direct_power_mod = 0.938;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = hunter_main_pet_attack_t::action_multiplier();
     am *= 1.0 + o() -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
@@ -1960,7 +1978,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       normalize_weapon_speed = true;
     }
 
-    virtual double composite_target_crit( player_t* t )
+    virtual double composite_target_crit( player_t* t ) const
     {
       double cc = hunter_ranged_attack_t::composite_target_crit( t );
       cc += p() -> careful_aim_crit( t );
@@ -2018,7 +2036,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     return hunter_ranged_attack_t::cost();
   }
 
-  virtual double composite_target_crit( player_t* t )
+  virtual double composite_target_crit( player_t* t ) const
   {
     double cc = hunter_ranged_attack_t::composite_target_crit( t );
     cc += p() -> careful_aim_crit( t );
@@ -2136,7 +2154,7 @@ struct glaive_toss_strike_t : public ranged_attack_t
     aoe = -1;
   }
 
-  virtual double composite_target_multiplier( player_t* target )
+  virtual double composite_target_multiplier( player_t* target ) const
   {
     double m = ranged_attack_t::composite_target_multiplier( target );
 
@@ -2197,7 +2215,7 @@ struct powershot_t : public hunter_ranged_attack_t
     can_trigger_wild_quiver = false;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
@@ -2310,7 +2328,7 @@ struct chimera_shot_t : public hunter_ranged_attack_t
     parse_options( NULL, options_str );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = hunter_ranged_attack_t::action_multiplier();
     am *= 1.0 + p() -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
@@ -2462,7 +2480,7 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::update_ready( cd_override );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = hunter_ranged_attack_t::action_multiplier();
     am *= 1.0 + p() -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 3 ).percent();
@@ -2648,7 +2666,7 @@ struct serpent_sting_spread_t : public serpent_sting_t
     return 0;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = hunter_ranged_attack_t::action_multiplier();
 
@@ -2709,7 +2727,7 @@ struct multi_shot_t : public hunter_ranged_attack_t
     return cost;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = hunter_ranged_attack_t::action_multiplier();
     if ( p() -> buffs.bombardment -> up() )
@@ -2834,7 +2852,7 @@ struct steady_shot_t : public hunter_ranged_attack_t
     return true;
   }
 
-  virtual double composite_target_crit( player_t* t )
+  virtual double composite_target_crit( player_t* t ) const
   {
     double cc = hunter_ranged_attack_t::composite_target_crit( t );
     cc += p() -> careful_aim_crit( t );
@@ -3020,7 +3038,7 @@ struct moc_t : public ranged_attack_t
 
   hunter_t* p() const { return static_cast<hunter_t*>( player ); }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = ranged_attack_t::action_multiplier();
     am *= p() -> beast_multiplier();

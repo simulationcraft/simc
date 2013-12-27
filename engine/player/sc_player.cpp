@@ -3235,7 +3235,7 @@ double player_t::composite_player_multiplier( school_e school ) const
 
 // player_t::composite_player_td_multiplier =================================
 
-double player_t::composite_player_td_multiplier( school_e /* school */, action_t* /* a */ ) const
+double player_t::composite_player_td_multiplier( school_e /* school */,  const action_t* /* a */ ) const
 {
   return 1.0;
 }

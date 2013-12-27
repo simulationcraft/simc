@@ -441,10 +441,14 @@ struct rogue_attack_t : public melee_attack_t
   static rogue_attack_state_t* cast_state( action_state_t* st )
   { return debug_cast< rogue_attack_state_t* >( st ); }
 
-  rogue_t* cast() const
-  { return debug_cast< rogue_t* >( player ); }
+  rogue_t* cast()
+  { return p(); }
+  const rogue_t* cast() const
+  { return p(); }
 
-  rogue_t* p() const
+  rogue_t* p()
+  { return debug_cast< rogue_t* >( player ); }
+  const rogue_t* p() const
   { return debug_cast< rogue_t* >( player ); }
 
   rogue_td_t* cast_td( player_t* t = 0 )
@@ -462,28 +466,28 @@ struct rogue_attack_t : public melee_attack_t
   virtual double calculate_weapon_damage( double attack_power );
   virtual double target_armor( player_t* );
 
-  virtual double direct_power_coefficient( const action_state_t* s )
+  virtual double direct_power_coefficient( const action_state_t* s ) const
   {
     if ( requires_combo_points )
       return direct_power_mod * cast_state( s ) -> cp;
     return melee_attack_t::direct_power_coefficient( s );
   }
 
-  virtual double tick_power_coefficient( const action_state_t* s )
+  virtual double tick_power_coefficient( const action_state_t* s ) const
   {
     if ( requires_combo_points )
       return tick_power_mod * cast_state( s ) -> cp;
     return melee_attack_t::tick_power_coefficient( s );
   }
 
-  virtual double bonus_da( const action_state_t* s )
+  virtual double bonus_da( const action_state_t* s ) const
   {
     if ( requires_combo_points )
       return base_dd_adder * cast_state( s ) -> cp;
     return melee_attack_t::bonus_da( s );
   }
 
-  virtual double bonus_ta( const action_state_t* s )
+  virtual double bonus_ta( const action_state_t* s ) const
   {
     if ( requires_combo_points )
       return base_ta_adder * cast_state( s ) -> cp;
@@ -502,7 +506,7 @@ struct rogue_attack_t : public melee_attack_t
     return gcd;
   }
 
-  virtual double composite_da_multiplier()
+  virtual double composite_da_multiplier() const
   {
     double m = melee_attack_t::composite_da_multiplier();
 
@@ -512,7 +516,7 @@ struct rogue_attack_t : public melee_attack_t
     return m;
   }
 
-  virtual double composite_ta_multiplier()
+  virtual double composite_ta_multiplier() const
   {
     double m = melee_attack_t::composite_ta_multiplier();
 
@@ -522,29 +526,30 @@ struct rogue_attack_t : public melee_attack_t
     return m;
   }
 
-  virtual double composite_target_multiplier( player_t* target )
+  virtual double composite_target_multiplier( player_t* target ) const
   {
     double m = melee_attack_t::composite_target_multiplier( target );
 
-    rogue_td_t* td = cast_td( target );
-
-    if ( requires_combo_points )
+    if ( rogue_td_t* td = find_td( target ) )
     {
-      if ( td -> dots.revealing_strike -> ticking )
-        m *= 1.0 + td -> dots.revealing_strike -> current_action -> data().effectN( 3 ).percent();
-      else if ( p() -> specialization() == ROGUE_COMBAT )
-        p() -> procs.no_revealing_strike -> occur();
+      if ( requires_combo_points )
+      {
+        if ( td -> dots.revealing_strike -> ticking )
+          m *= 1.0 + td -> dots.revealing_strike -> current_action -> data().effectN( 3 ).percent();
+        else if ( p() -> specialization() == ROGUE_COMBAT )
+          p() -> procs.no_revealing_strike -> occur();
+      }
+
+      m *= 1.0 + td -> debuffs.vendetta -> value();
+
+      if ( p() -> spec.sanguinary_vein -> ok() && td -> sanguinary_veins() )
+        m *= 1.0 + p() -> spec.sanguinary_vein -> effectN( 2 ).percent();
     }
-
-    m *= 1.0 + td -> debuffs.vendetta -> value();
-
-    if ( p() -> spec.sanguinary_vein -> ok() && td -> sanguinary_veins() )
-      m *= 1.0 + p() -> spec.sanguinary_vein -> effectN( 2 ).percent();
 
     return m;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = melee_attack_t::action_multiplier();
 
@@ -801,7 +806,7 @@ static bool trigger_blade_flurry( action_state_t* s )
       aoe = p -> spec.blade_flurry -> effectN( 4 ).base_value();
     }
 
-    double composite_da_multiplier()
+    double composite_da_multiplier() const
     {
       double m = rogue_attack_t::composite_da_multiplier();
 
@@ -940,10 +945,10 @@ double rogue_attack_t::cost() const
     c *= 1.0 + p() -> spell.shadow_focus -> effectN( 1 ).percent();
   }
 
-  if ( p() -> set_bonus.tier13_2pc_melee() && p() -> buffs.tier13_2pc -> up() )
+  if ( p() -> sets -> set( SET_T15_2PC_MELEE ) -> ok() && p() -> buffs.tier13_2pc -> check() )
     c *= 1.0 + p() -> spell.tier13_2pc -> effectN( 1 ).percent();
 
-  if ( p() -> set_bonus.tier15_4pc_melee() && p() -> buffs.shadow_blades -> up() )
+  if ( p() -> sets -> set(SET_T15_4PC_MELEE ) -> ok() && p() -> buffs.shadow_blades -> check() )
     c *= 1.0 + p() -> spell.tier15_4pc -> effectN ( 1 ).percent();
 
   return c;
@@ -1292,7 +1297,7 @@ struct backstab_t : public rogue_attack_t
       p() -> buffs.sleight_of_hand -> trigger();
   }
 
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   {
     double m = rogue_attack_t::composite_da_multiplier();
 
@@ -1383,10 +1388,10 @@ struct envenom_t : public rogue_attack_t
     weapon_multiplier = weapon_power_mod = 0.0;
   }
 
-  double base_da_min( const action_state_t* s )
+  double base_da_min( const action_state_t* s ) const
   { return base_dd_min * rogue_attack_t::cast_state( s ) -> cp; }
 
-  double base_da_max( const action_state_t* s )
+  double base_da_max( const action_state_t* s ) const
   { return base_dd_max * rogue_attack_t::cast_state( s ) -> cp; }
 
   virtual void execute()
@@ -1402,7 +1407,7 @@ struct envenom_t : public rogue_attack_t
     rogue_attack_t::execute();
   }
 
-  virtual double action_da_multiplier()
+  virtual double action_da_multiplier() const
   {
     double m = rogue_attack_t::action_da_multiplier();
 
@@ -1687,14 +1692,16 @@ struct killing_spree_t : public rogue_attack_t
     }
   }
 
-  double composite_target_da_multiplier( player_t* target )
+  double composite_target_da_multiplier( player_t* target ) const
   {
     double m = rogue_attack_t::composite_target_da_multiplier( target );
 
-    rogue_td_t* td = cast_td( target );
-    if ( td -> dots.killing_spree -> current_tick >= 0 )
-      m *= std::pow( 1.0 + p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent(),
-                     td -> dots.killing_spree -> current_tick + 1 );
+    if ( rogue_td_t* td = find_td( target ) )
+    {
+      if ( td -> dots.killing_spree -> current_tick >= 0 )
+        m *= std::pow( 1.0 + p() -> sets -> set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent(),
+                       td -> dots.killing_spree -> current_tick + 1 );
+    }
 
     return m;
   }
@@ -1961,7 +1968,7 @@ struct rupture_t : public rogue_attack_t
     base_multiplier      += p -> spec.sanguinary_vein -> effectN( 1 ).percent();
   }
 
-  double tick_power_coefficient( const action_state_t* state )
+  double tick_power_coefficient( const action_state_t* state ) const
   { return combo_point_tick_power_mod[ rogue_attack_t::cast_state( state ) -> cp - 1 ]; }
 
   timespan_t gcd()
@@ -2065,7 +2072,7 @@ struct sinister_strike_t : public rogue_attack_t
     return c;
   }
 
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   {
     double m = rogue_attack_t::composite_da_multiplier();
 
@@ -2406,7 +2413,7 @@ struct rogue_poison_t : public actions::rogue_attack_t
     proc_chance   += p -> spec.improved_poisons -> effectN( 1 ).percent();
   }
 
-  virtual double action_da_multiplier()
+  virtual double action_da_multiplier() const
   {
     double m = rogue_attack_t::action_da_multiplier();
 
@@ -2416,7 +2423,7 @@ struct rogue_poison_t : public actions::rogue_attack_t
     return m;
   }
 
-  virtual double action_ta_multiplier()
+  virtual double action_ta_multiplier() const
   {
     double m = rogue_attack_t::action_ta_multiplier();
 
@@ -2439,7 +2446,7 @@ struct venomous_wound_t : public rogue_poison_t
     direct_power_mod = data().extra_coeff();
   }
 
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   {
     double m = rogue_poison_t::composite_da_multiplier();
 

@@ -496,7 +496,9 @@ public:
     ab::may_crit = true;
   }
 
-  shaman_t* p() const
+  shaman_t* p()
+  { return debug_cast< shaman_t* >( ab::player ); }
+  const shaman_t* p() const
   { return debug_cast< shaman_t* >( ab::player ); }
 
   shaman_td_t* td( player_t* t = 0 )
@@ -608,7 +610,7 @@ public:
   double cost_reduction() const
   {
     double c = ab::cost_reduction();
-    shaman_t* p = ab::p();
+    const shaman_t* p = ab::p();
 
     if ( c > -1.0 && ab::instant_eligibility() )
       c += p -> buff.maelstrom_weapon -> check() * p -> buff.maelstrom_weapon -> data().effectN( 2 ).percent();
@@ -622,7 +624,7 @@ public:
 
     if ( ab::instant_eligibility() )
     {
-      shaman_t* p = ab::p();
+      const shaman_t* p = ab::p();
 
       if ( p -> buff.ancestral_swiftness -> up() )
         t *= 1.0 + p -> buff.ancestral_swiftness -> data().effectN( 1 ).percent();
@@ -825,18 +827,21 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     return base_t::usable_moving();
   }
 
-  virtual double composite_target_multiplier( player_t* target )
+  virtual double composite_target_multiplier( player_t* target ) const
   {
     double m = base_t::composite_target_multiplier( target );
 
-    if ( td( target ) -> debuff.t16_2pc_caster -> up() && ( dbc::is_school( school, SCHOOL_FIRE )
-         || dbc::is_school( school, SCHOOL_NATURE ) ) )
-      m *= 1.0 + td( target ) -> debuff.t16_2pc_caster -> data().effectN( 1 ).percent();
+    if ( shaman_td_t* td = find_td( target ) )
+    {
+      if ( td -> debuff.t16_2pc_caster -> check() && ( dbc::is_school( school, SCHOOL_FIRE )
+      || dbc::is_school( school, SCHOOL_NATURE ) ) )
+        m *= 1.0 + td -> debuff.t16_2pc_caster -> data().effectN( 1 ).percent();
+    }
 
     return m;
   }
 
-  virtual double composite_da_multiplier()
+  virtual double composite_da_multiplier() const
   {
     double m = base_t::composite_da_multiplier();
 
@@ -884,7 +889,7 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
     parse_options( 0, options );
   }
 
-  double composite_spell_power()
+  double composite_spell_power() const
   {
     double sp = base_t::composite_spell_power();
 
@@ -894,7 +899,7 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
     return sp;
   }
 
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   {
     double m = base_t::composite_da_multiplier();
     m *= 1.0 + p() -> spec.purification -> effectN( 1 ).percent();
@@ -902,7 +907,7 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
     return m;
   }
 
-  double composite_ta_multiplier()
+  double composite_ta_multiplier() const
   {
     double m = base_t::composite_da_multiplier();
     m *= 1.0 + p() -> spec.purification -> effectN( 1 ).percent();
@@ -910,7 +915,7 @@ struct shaman_heal_t : public shaman_spell_base_t<heal_t>
     return m;
   }
 
-  double composite_target_multiplier( player_t* target )
+  double composite_target_multiplier( player_t* target ) const
   {
     double m = base_t::composite_target_multiplier( target );
     if ( target -> buffs.earth_shield -> up() )
@@ -999,7 +1004,7 @@ struct feral_spirit_pet_t : public pet_t
       cooldown -> duration = timespan_t::from_seconds( 7.0 );
     }
 
-    feral_spirit_pet_t* p()
+    feral_spirit_pet_t* p() const
     { return static_cast<feral_spirit_pet_t*>( player ); }
 
     void init()
@@ -1009,7 +1014,7 @@ struct feral_spirit_pet_t : public pet_t
         stats = p() -> o() -> pet_feral_spirit[ 0 ] -> get_stats( name(), this );
     }
 
-    virtual double composite_da_multiplier()
+    virtual double composite_da_multiplier() const
     {
       double m = melee_attack_t::composite_da_multiplier();
 
@@ -1232,7 +1237,7 @@ struct fire_elemental_t : public pet_t
       crit_bonus_multiplier      *= 1.0 + p -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
     }
 
-    virtual double composite_da_multiplier()
+    virtual double composite_da_multiplier() const
     {
       double m = spell_t::composite_da_multiplier();
 
@@ -1242,7 +1247,7 @@ struct fire_elemental_t : public pet_t
       return m;
     }
 
-    virtual double composite_ta_multiplier()
+    virtual double composite_ta_multiplier() const
     {
       double m = spell_t::composite_ta_multiplier();
 
@@ -1341,7 +1346,7 @@ struct fire_elemental_t : public pet_t
         p -> o() -> buff.searing_flames -> trigger();
     }
 
-    virtual double composite_da_multiplier()
+    virtual double composite_da_multiplier() const
     {
       double m = melee_attack_t::composite_da_multiplier();
 
@@ -1804,7 +1809,7 @@ static bool trigger_lightning_strike( const action_state_t* s )
       aoe = -1;
     }
 
-    double composite_da_multiplier()
+    double composite_da_multiplier() const
     {
       double m = shaman_spell_t::composite_da_multiplier();
       m *= 1 / static_cast< double >( target_cache.list.size() );
@@ -1932,30 +1937,33 @@ struct lava_burst_overload_t : public shaman_spell_t
     base_execute_time    = timespan_t::zero();
   }
 
-  virtual double composite_da_multiplier()
+  virtual double composite_da_multiplier() const
   {
     double m = shaman_spell_t::composite_da_multiplier();
 
-    if ( p() -> buff.unleash_flame -> up() )
+    if ( p() -> buff.unleash_flame -> check() )
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
   }
 
-  virtual double composite_target_multiplier( player_t* target )
+  virtual double composite_target_multiplier( player_t* target ) const
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
 
-    if ( td( target ) -> debuff.unleashed_fury -> up() )
-      m *= 1.0 + td( target ) -> debuff.unleashed_fury -> data().effectN( 2 ).percent();
+    if ( shaman_td_t* td = find_td( target ) )
+    {
+      if ( td -> debuff.unleashed_fury -> check() )
+        m *= 1.0 + td -> debuff.unleashed_fury -> data().effectN( 2 ).percent();
 
-    if ( td( target ) -> dot.flame_shock -> ticking )
-      m *= 1.0 + p() -> spell.flame_shock -> effectN( 3 ).percent();
+      if ( td -> dot.flame_shock -> ticking )
+        m *= 1.0 + p() -> spell.flame_shock -> effectN( 3 ).percent();
+    }
 
     return m;
   }
 
-  virtual double composite_target_crit( player_t* )
+  virtual double composite_target_crit( player_t* ) const
   { return 1.0; }
 
   void execute()
@@ -1979,12 +1987,15 @@ struct lightning_bolt_overload_t : public shaman_spell_t
     base_multiplier     += player -> spec.shamanism -> effectN( 1 ).percent();
   }
 
-  virtual double composite_target_multiplier( player_t* target )
+  virtual double composite_target_multiplier( player_t* target ) const
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
 
-    if ( td( target ) -> debuff.unleashed_fury -> up() )
-      m *= 1.0 + td( target ) -> debuff.unleashed_fury -> data().effectN( 1 ).percent();
+    if ( shaman_td_t* td = find_td( target ) )
+    {
+      if ( td -> debuff.unleashed_fury -> up() )
+        m *= 1.0 + td -> debuff.unleashed_fury -> data().effectN( 1 ).percent();
+    }
 
     return m;
   }
@@ -2014,7 +2025,7 @@ struct chain_lightning_overload_t : public shaman_spell_t
     base_add_multiplier  = data().effectN( 1 ).chain_multiplier();
   }
 
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   {
     double m = shaman_spell_t::composite_da_multiplier();
 
@@ -2054,7 +2065,7 @@ struct lava_beam_overload_t : public shaman_spell_t
     base_add_multiplier  = data().effectN( 1 ).chain_multiplier();
   }
 
-  virtual double composite_da_multiplier()
+  virtual double composite_da_multiplier() const
   {
     double m = shaman_spell_t::composite_da_multiplier();
 
@@ -2086,11 +2097,11 @@ struct elemental_blast_overload_t : public shaman_spell_t
     base_execute_time    = timespan_t::zero();
   }
 
-  virtual double composite_da_multiplier()
+  virtual double composite_da_multiplier() const
   {
     double m = shaman_spell_t::composite_da_multiplier();
 
-    if ( p() -> buff.unleash_flame -> up() )
+    if ( p() -> buff.unleash_flame -> check() )
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
@@ -2114,20 +2125,23 @@ struct lightning_charge_t : public shaman_spell_t
       cooldown -> duration = timespan_t::zero();
   }
 
-  double composite_target_crit( player_t* target )
+  double composite_target_crit( player_t* target ) const
   {
     double c = shaman_spell_t::composite_target_crit( target );
 
-    if ( td( target ) -> debuff.stormstrike -> up() )
+    if ( shaman_td_t* td = find_td( target ) )
     {
-      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
-      c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+      if ( td -> debuff.stormstrike -> check() )
+      {
+        c += td -> debuff.stormstrike -> data().effectN( 1 ).percent();
+        c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+      }
     }
 
     return c;
   }
 
-  virtual double composite_da_multiplier()
+  virtual double composite_da_multiplier() const
   {
     double m = shaman_spell_t::composite_da_multiplier();
 
@@ -2212,7 +2226,7 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     }
   }
 
-  virtual double action_da_multiplier()
+  virtual double action_da_multiplier() const
   {
     double m = shaman_spell_t::action_da_multiplier();
 
@@ -2230,7 +2244,7 @@ struct ancestral_awakening_t : public shaman_heal_t
     background = proc = true;
   }
 
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   {
     double m = shaman_heal_t::composite_da_multiplier();
     m *= p() -> spec.ancestral_awakening -> effectN( 1 ).percent();
@@ -2255,7 +2269,7 @@ struct windfury_weapon_melee_attack_t : public shaman_melee_attack_t
     background       = true;
   }
 
-  virtual double composite_attack_power()
+  virtual double composite_attack_power() const
   {
     double ap = shaman_melee_attack_t::composite_attack_power();
 
@@ -2752,7 +2766,7 @@ struct lava_lash_t : public shaman_melee_attack_t
   // Lava Lash multiplier calculation from
   // http://elitistjerks.com/f79/t110302-enhsim_cataclysm/p11/#post1935780
   // MoP: Vastly simplified, most bonuses are gone
-  virtual double action_da_multiplier()
+  virtual double action_da_multiplier() const
   {
     double m = shaman_melee_attack_t::action_da_multiplier();
 
@@ -3046,7 +3060,7 @@ struct chain_lightning_t : public shaman_spell_t
     add_child( overload_spell );
   }
 
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   {
     double m = shaman_spell_t::composite_da_multiplier();
 
@@ -3055,14 +3069,17 @@ struct chain_lightning_t : public shaman_spell_t
     return m;
   }
 
-  double composite_target_crit( player_t* target )
+  double composite_target_crit( player_t* target ) const
   {
     double c = shaman_spell_t::composite_target_crit( target );
 
-    if ( td( target ) -> debuff.stormstrike -> up() )
+    if ( shaman_td_t* td = find_td( target ) )
     {
-      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
-      c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+      if ( td -> debuff.stormstrike -> check() )
+      {
+        c += td -> debuff.stormstrike -> data().effectN( 1 ).percent();
+        c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+      }
     }
 
     return c;
@@ -3110,11 +3127,11 @@ struct lava_beam_t : public shaman_spell_t
     add_child( overload_spell );
   }
 
-  virtual double composite_da_multiplier()
+  virtual double composite_da_multiplier() const
   {
     double m = shaman_spell_t::composite_da_multiplier();
 
-    if ( p() -> buff.unleash_flame -> up() )
+    if ( p() -> buff.unleash_flame -> check() )
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
@@ -3223,11 +3240,11 @@ struct fire_nova_explosion_t : public shaman_spell_t
       stats -> add_execute( time_to_execute, target );
   }
 
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   {
     double m = shaman_spell_t::composite_da_multiplier();
 
-    if ( p() -> buff.unleash_flame -> up() )
+    if ( p() -> buff.unleash_flame -> check() )
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
@@ -3323,7 +3340,7 @@ struct earthquake_rumble_t : public shaman_spell_t
     eoe_stats = player -> get_stats( "earthquake_eoe" );
   }
 
-  virtual double composite_spell_power()
+  virtual double composite_spell_power() const
   {
     double sp = shaman_spell_t::composite_spell_power();
 
@@ -3375,11 +3392,11 @@ struct lava_burst_t : public shaman_spell_t
     add_child( overload_spell );
   }
 
-  virtual double composite_da_multiplier()
+  virtual double composite_da_multiplier() const
   {
     double m = shaman_spell_t::composite_da_multiplier();
 
-    if ( p() -> buff.unleash_flame -> up() )
+    if ( p() -> buff.unleash_flame -> check() )
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
@@ -3395,20 +3412,23 @@ struct lava_burst_t : public shaman_spell_t
     return m;
   }
 
-  virtual double composite_target_multiplier( player_t* target )
+  virtual double composite_target_multiplier( player_t* target ) const
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
 
-    if ( td( target ) -> debuff.unleashed_fury -> up() )
-      m *= 1.0 + td( target ) -> debuff.unleashed_fury -> data().effectN( 2 ).percent();
+    if ( shaman_td_t* td = find_td( target ) )
+    {
+      if ( td -> debuff.unleashed_fury -> check() )
+        m *= 1.0 + td -> debuff.unleashed_fury -> data().effectN( 2 ).percent();
 
-    if ( td( target ) -> dot.flame_shock -> ticking )
-      m *= 1.0 + p() -> spell.flame_shock -> effectN( 3 ).percent();
+      if ( td -> dot.flame_shock -> ticking )
+        m *= 1.0 + p() -> spell.flame_shock -> effectN( 3 ).percent();
+    }
 
     return m;
   }
 
-  virtual double composite_target_crit( player_t* )
+  virtual double composite_target_crit( player_t* ) const
   { return 1.0; }
 
   virtual void execute()
@@ -3457,7 +3477,7 @@ struct lightning_bolt_t : public shaman_spell_t
     add_child( overload_spell );
   }
 
-  virtual double composite_da_multiplier()
+  virtual double composite_da_multiplier() const
   {
     double m = shaman_spell_t::composite_da_multiplier();
 
@@ -3476,25 +3496,31 @@ struct lightning_bolt_t : public shaman_spell_t
     return m;
   }
 
-  virtual double composite_target_crit( player_t* target )
+  virtual double composite_target_crit( player_t* target ) const
   {
     double c = shaman_spell_t::composite_target_crit( target );
 
-    if ( td( target ) -> debuff.stormstrike -> up() )
+    if ( shaman_td_t* td = find_td( target ) )
     {
-      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
-      c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+      if ( td -> debuff.stormstrike -> check() )
+      {
+        c += td -> debuff.stormstrike -> data().effectN( 1 ).percent();
+        c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+      }
     }
 
     return c;
   }
 
-  virtual double composite_target_multiplier( player_t* target )
+  virtual double composite_target_multiplier( player_t* target ) const
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
 
-    if ( td( target ) -> debuff.unleashed_fury -> up() )
-      m *= 1.0 + td( target ) -> debuff.unleashed_fury -> data().effectN( 1 ).percent();
+    if ( shaman_td_t* td = find_td( target ) )
+    {
+      if ( td -> debuff.unleashed_fury -> check() )
+        m *= 1.0 + td -> debuff.unleashed_fury -> data().effectN( 1 ).percent();
+    }
 
     return m;
   }
@@ -3606,11 +3632,11 @@ struct elemental_blast_t : public shaman_spell_t
     return result;
   }
 
-  virtual double composite_da_multiplier()
+  virtual double composite_da_multiplier() const
   {
     double m = shaman_spell_t::composite_da_multiplier();
 
-    if ( p() -> buff.unleash_flame -> up() )
+    if ( p() -> buff.unleash_flame -> check() )
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
@@ -3626,14 +3652,17 @@ struct elemental_blast_t : public shaman_spell_t
     return m;
   }
 
-  virtual double composite_target_crit( player_t* target )
+  virtual double composite_target_crit( player_t* target ) const
   {
     double c = shaman_spell_t::composite_target_crit( target );
 
-    if ( td( target ) -> debuff.stormstrike -> up() )
+    if ( shaman_td_t* td = find_td( target ) )
     {
-      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
-      c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+      if ( td -> debuff.stormstrike -> check() )
+      {
+        c += td -> debuff.stormstrike -> data().effectN( 1 ).percent();
+        c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+      }
     }
 
     return c;
@@ -3809,14 +3838,17 @@ struct earth_shock_t : public shaman_spell_t
     stats -> add_child ( player -> get_stats( "fulmination" ) );
   }
 
-  double composite_target_crit( player_t* target )
+  double composite_target_crit( player_t* target ) const
   {
     double c = shaman_spell_t::composite_target_crit( target );
 
-    if ( td( target ) -> debuff.stormstrike -> up() )
+    if ( shaman_td_t* td = find_td( target ) )
     {
-      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
-      c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+      if ( td -> debuff.stormstrike -> check() )
+      {
+        c += td -> debuff.stormstrike -> data().effectN( 1 ).percent();
+        c += player -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
+      }
     }
 
     return c;
@@ -3876,21 +3908,21 @@ struct flame_shock_t : public shaman_spell_t
   void assess_damage( dmg_e type, action_state_t* s )
   { if ( s -> result_amount > 0 ) shaman_spell_t::assess_damage( type, s ); }
 
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   {
     double m = shaman_spell_t::composite_da_multiplier();
 
-    if ( p() -> buff.unleash_flame -> up() )
+    if ( p() -> buff.unleash_flame -> check() )
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
   }
 
-  double composite_ta_multiplier()
+  double composite_ta_multiplier() const
   {
     double m = shaman_spell_t::composite_ta_multiplier();
 
-    if ( p() -> buff.unleash_flame -> up() )
+    if ( p() -> buff.unleash_flame -> check() )
       m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 3 ).percent();
 
     return m;
@@ -4103,12 +4135,15 @@ struct chain_heal_t : public shaman_heal_t
     resurgence_gain = 0.333 * p() -> spell.resurgence -> effectN( 1 ).average( player ) * p() -> spec.resurgence -> effectN( 1 ).percent();
   }
 
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   {
     double m = shaman_heal_t::composite_da_multiplier();
 
-    if ( td( target ) -> heal.riptide -> ticking )
-      m *= 1.0 + p() -> spec.riptide -> effectN( 3 ).percent();
+    if ( shaman_td_t* td = find_td( target ) )
+    {
+      if ( td -> heal.riptide -> ticking )
+        m *= 1.0 + p() -> spec.riptide -> effectN( 3 ).percent();
+    }
 
     return m;
   }
@@ -4275,7 +4310,7 @@ struct totem_pulse_action_t : public spell_t
     crit_multiplier *= util::crit_multiplier( totem -> o() -> meta_gem );
   }
 
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   {
     double m = spell_t::composite_da_multiplier();
 

@@ -416,7 +416,7 @@ struct water_elemental_pet_t : public pet_t
       }
     }
 
-    virtual double action_multiplier()
+    virtual double action_multiplier() const
     {
       double am = spell_t::action_multiplier();
 
@@ -439,7 +439,9 @@ struct water_elemental_pet_t : public pet_t
     owner_coeff.sp_from_sp = 1.0;
   }
 
-  mage_t* o() const
+  mage_t* o()
+  { return static_cast<mage_t*>( owner ); }
+  const mage_t* o() const
   { return static_cast<mage_t*>( owner ); }
 
   virtual action_t* create_action( const std::string& name,
@@ -522,7 +524,7 @@ struct mirror_image_pet_t : public pet_t
       p() -> arcane_charge -> trigger();
     }
 
-    virtual double action_multiplier()
+    virtual double action_multiplier() const
     {
       double am = mirror_image_spell_t::action_multiplier();
 
@@ -983,13 +985,16 @@ public:
     tick_may_crit = true;
   }
 
-  mage_t* p() const { return static_cast<mage_t*>( player ); }
+  mage_t* p()
+  { return static_cast<mage_t*>( player ); }
+  const mage_t* p() const
+  { return static_cast<mage_t*>( player ); }
 
   mage_td_t* td( player_t* t = nullptr )
   { return p() -> get_target_data( t ? t : target ); }
 
   mage_td_t* find_td( player_t* t ) const
-  { return p() -> get_target_data( t ); }
+  { return p() -> find_target_data( t ); }
 
   virtual void parse_options( option_t*          options,
                               const std::string& options_str )
@@ -1370,12 +1375,12 @@ struct arcane_barrage_t : public mage_spell_t
     p() -> buffs.arcane_charge -> expire();
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-          ( 1.0 + ( p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
+          ( 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() );
 
     return am;
   }
@@ -1401,7 +1406,7 @@ struct arcane_blast_t : public mage_spell_t
     if ( p() -> buffs.arcane_charge -> check() )
     {
       c *= 1.0 +  p() -> buffs.arcane_charge -> check() * p() -> spells.arcane_charge_arcane_blast -> effectN( 2 ).percent() *
-           ( 1.0 + ( p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
+           ( 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() );
     }
 
     if ( p() -> buffs.profound_magic -> check() )
@@ -1431,12 +1436,12 @@ struct arcane_blast_t : public mage_spell_t
     }
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-          ( 1.0 + ( p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
+          ( 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() );
 
     return am;
   }
@@ -1523,14 +1528,14 @@ struct arcane_missiles_t : public mage_spell_t
     tick_action = new arcane_missiles_tick_t( p );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = mage_spell_t::action_multiplier();
 
     am *= 1.0 + p() -> buffs.arcane_charge -> stack() * p() -> spells.arcane_charge_arcane_blast -> effectN( 1 ).percent() *
-          ( 1.0 + ( p() -> set_bonus.tier15_4pc_caster() ? p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() : 0 ) );
+          ( 1.0 + p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent() );
 
-    if ( p() -> set_bonus.tier14_2pc_caster() )
+    if ( p() -> sets -> set( SET_T14_2PC_CASTER ) -> ok() )
     {
       am *= 1.07;
     }
@@ -1796,7 +1801,7 @@ struct cone_of_cold_t : public mage_spell_t
     p() -> buffs.frozen_thoughts -> expire();
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = mage_spell_t::action_multiplier();
 
@@ -2034,13 +2039,16 @@ struct fireball_t : public mage_spell_t
     return m;
   }
 
-  virtual double composite_target_multiplier( player_t* target )
+  virtual double composite_target_multiplier( player_t* target ) const
   {
     double tm = mage_spell_t::composite_target_multiplier( target );
 
-    if ( td( target ) -> debuffs.pyromaniac -> up() )
+    if ( mage_td_t* td = find_td( target ) )
     {
-      tm *= 1.1;
+      if ( td -> debuffs.pyromaniac -> up() )
+      {
+        tm *= 1.1;
+      }
     }
 
     return tm;
@@ -2271,7 +2279,7 @@ struct frostbolt_t : public mage_spell_t
     }
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = mage_spell_t::action_multiplier();
 
@@ -2286,13 +2294,6 @@ struct frostbolt_t : public mage_spell_t
     }
 
     return am;
-  }
-
-  virtual double composite_target_multiplier( player_t* target )
-  {
-    double tm = mage_spell_t::composite_target_multiplier( target );
-
-    return tm;
   }
 };
 
@@ -2491,7 +2492,7 @@ struct frostfire_bolt_t : public mage_spell_t
     return m;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = mage_spell_t::action_multiplier();
 
@@ -2509,13 +2510,16 @@ struct frostfire_bolt_t : public mage_spell_t
     return am;
   }
 
-  virtual double composite_target_multiplier( player_t* target )
+  virtual double composite_target_multiplier( player_t* target ) const
   {
     double tm = mage_spell_t::composite_target_multiplier( target );
 
-    if ( td( target ) -> debuffs.pyromaniac -> up() )
+    if ( mage_td_t* td = find_td( target ) )
     {
-      tm *= 1.1;
+      if ( td -> debuffs.pyromaniac -> up() )
+      {
+        tm *= 1.1;
+      }
     }
 
     return tm;
@@ -2717,7 +2721,7 @@ struct ice_lance_t : public mage_spell_t
     mage_spell_t::snapshot_state( s, type );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = mage_spell_t::action_multiplier();
 
@@ -2732,7 +2736,7 @@ struct ice_lance_t : public mage_spell_t
       am *= 0.4;
     }
 
-    if ( p() -> set_bonus.tier14_2pc_caster() )
+    if ( p() -> sets -> set( SET_T14_2PC_CASTER ) -> ok() )
     {
       am *= 1.12;
     }
@@ -2845,19 +2849,22 @@ struct inferno_blast_t : public mage_spell_t
     }
   }
 
-  virtual double crit_chance( double /* crit */, int /* delta_level */ )
+  virtual double crit_chance( double /* crit */, int /* delta_level */ ) const
   {
     // Inferno Blast always crits
     return 1.0;
   }
 
-  virtual double composite_target_multiplier( player_t* target )
+  virtual double composite_target_multiplier( player_t* target ) const
   {
     double tm = mage_spell_t::composite_target_multiplier( target );
 
-    if ( td( target ) -> debuffs.pyromaniac -> up() )
+    if ( mage_td_t* td = find_td( target ) )
     {
-      tm *= 1.1;
+      if ( td -> debuffs.pyromaniac -> up() )
+      {
+        tm *= 1.1;
+      }
     }
 
     return tm;
@@ -3331,8 +3338,7 @@ struct pyroblast_t : public mage_spell_t
   {
     double c = mage_spell_t::composite_crit();
 
-    if ( p() -> set_bonus.tier15_4pc_caster() )
-      c += p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent();
+    c += p() -> sets -> set( SET_T15_4PC_CASTER ) -> effectN( 2 ).percent();
 
     if ( p() -> buffs.fiery_adept -> check() )
       c += 100.0;
@@ -3340,7 +3346,7 @@ struct pyroblast_t : public mage_spell_t
     return c;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = mage_spell_t::action_multiplier();
 
@@ -3349,7 +3355,7 @@ struct pyroblast_t : public mage_spell_t
       am *= 1.25;
     }
 
-    if ( p() -> set_bonus.tier14_2pc_caster() )
+    if ( p() -> sets -> set( SET_T14_2PC_CASTER ) -> ok() )
     {
       am *= 1.08;
     }
@@ -3357,13 +3363,16 @@ struct pyroblast_t : public mage_spell_t
     return am;
   }
 
-  virtual double composite_target_multiplier( player_t* target )
+  virtual double composite_target_multiplier( player_t* target ) const
   {
     double tm = mage_spell_t::composite_target_multiplier( target );
 
-    if ( td( target ) -> debuffs.pyromaniac -> up() )
+    if ( mage_td_t* td = find_td( target ) )
     {
-      tm *= 1.1;
+      if ( td -> debuffs.pyromaniac -> check() )
+      {
+        tm *= 1.1;
+      }
     }
 
     return tm;

@@ -364,7 +364,7 @@ struct statue_t : public pet_t
     pet_t( sim, owner, n, pt, guardian )
   { }
 
-  monk_t* o() const
+  monk_t* o()
   { return static_cast<monk_t*>( owner ); }
 };
 
@@ -509,7 +509,8 @@ public:
     owner_coeff.ap_from_ap = 0.505;
   }
 
-  monk_t* o() const { return static_cast<monk_t*>( owner ); }
+  monk_t* o()
+  { return static_cast<monk_t*>( owner ); }
 
   virtual void init_action_list()
   {
@@ -562,7 +563,10 @@ public:
   }
   virtual ~monk_action_t() {}
 
-  monk_t* p() const { return debug_cast<monk_t*>( ab::player ); }
+  monk_t* p()
+  { return debug_cast<monk_t*>( ab::player ); }
+  const monk_t* p() const
+  { return debug_cast<monk_t*>( ab::player ); }
 
   monk_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
 
@@ -807,19 +811,22 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     return total_dmg;
   }
 
-  virtual double composite_target_multiplier( player_t* t )
+  virtual double composite_target_multiplier( player_t* t ) const
   {
     double m = base_t::composite_target_multiplier( t );
 
-    if ( special && td( t ) -> buff.rising_sun_kick -> up() )
+    if ( monk_td_t* td = find_td( t ) )
     {
-      m *=  1.0 + td( t ) -> buff.rising_sun_kick -> data().effectN( 1 ).percent();
+      if ( special && td -> buff.rising_sun_kick -> check() )
+      {
+        m *=  1.0 + td -> buff.rising_sun_kick -> data().effectN( 1 ).percent();
+      }
     }
 
     return m;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = base_t::action_multiplier();
 
@@ -938,7 +945,7 @@ struct tiger_palm_t : public monk_melee_attack_t
       weapon_power_mod = 1 / 11.0;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = monk_melee_attack_t::action_multiplier();
 
@@ -949,7 +956,7 @@ struct tiger_palm_t : public monk_melee_attack_t
 
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
-    if ( p() -> set_bonus.tier16_2pc_melee() && p() -> buff.combo_breaker_tp -> check() ) {
+    if ( p() -> sets -> set( SET_T16_2PC_MELEE ) -> ok() && p() -> buff.combo_breaker_tp -> check() ) {
       // damage increased by 40% for WW 2pc upon CB
       m *= 1.4;
     }
@@ -1077,7 +1084,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     consume_muscle_memory();
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double m = monk_melee_attack_t::action_multiplier();
 
@@ -1085,7 +1092,7 @@ struct blackout_kick_t : public monk_melee_attack_t
       m *= 1.0 + p() -> find_spell( 139597 ) -> effectN( 1 ).percent();
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
-    if ( p() -> set_bonus.tier16_2pc_melee() && p() -> buff.combo_breaker_bok -> check() ) {
+    if ( p() -> sets -> set( SET_T16_2PC_MELEE ) -> ok() && p() -> buff.combo_breaker_bok -> check() ) {
       // damage increased by 40% for WW 2pc upon CB
       m *= 1.4;
     }
@@ -1683,13 +1690,16 @@ struct monk_spell_t : public monk_action_t<spell_t>
   {
   }
 
-  virtual double composite_target_multiplier( player_t* t )
+  virtual double composite_target_multiplier( player_t* t ) const
   {
     double m = base_t::composite_target_multiplier( t );
 
-    if ( td( t ) -> buff.rising_sun_kick -> check() )
+    if ( monk_td_t* td = find_td( t ) )
     {
-      m *= 1.0 + td( t ) -> buff.rising_sun_kick -> data().effectN( 1 ).percent();
+      if ( td -> buff.rising_sun_kick -> check() )
+      {
+        m *= 1.0 + td -> buff.rising_sun_kick -> data().effectN( 1 ).percent();
+      }
     }
 
     return m;
@@ -1924,7 +1934,7 @@ struct spinning_fire_blossom_t : public monk_spell_t
     base_spell_power_multiplier = 0.0;
   }
 
-  virtual double composite_target_da_multiplier( player_t* t )
+  virtual double composite_target_da_multiplier( player_t* t ) const
   {
     double m = monk_spell_t::composite_target_da_multiplier( t );
 
@@ -2617,13 +2627,14 @@ struct soothing_mist_t : public monk_heal_t
     costs_per_second[ RESOURCE_MANA ] = 0;
   }
 
-  virtual double action_ta_multiplier()
+  virtual double action_ta_multiplier() const
   {
     double tm = monk_heal_t::action_ta_multiplier();
 
     player_t* t = ( execute_state ) ? execute_state -> target : target;
 
-    if ( td( t ) -> dots.enveloping_mist -> ticking )
+    if ( monk_td_t* td = find_td( t ) )
+      if ( td -> dots.enveloping_mist -> ticking )
       tm *= 1.0 + p() -> find_spell( 132120 ) -> effectN( 2 ).percent();
 
     return tm;
@@ -2848,7 +2859,7 @@ struct guard_t : public monk_absorb_t
     p() -> buff.power_guard -> expire();
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = monk_absorb_t::action_multiplier();
 

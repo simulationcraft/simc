@@ -694,7 +694,7 @@ timespan_t action_t::travel_time()
 
 // action_t::crit_chance ====================================================
 
-double action_t::crit_chance( double crit, int /* delta_level */ )
+double action_t::crit_chance( double crit, int /* delta_level */ ) const
 {
   double chance = crit;
 
@@ -706,7 +706,7 @@ double action_t::crit_chance( double crit, int /* delta_level */ )
 
 // action_t::total_crit_bonus ===============================================
 
-double action_t::total_crit_bonus()
+double action_t::total_crit_bonus() const
 {
   double crit_multiplier_buffed = crit_multiplier * composite_player_critical_multiplier();
   double base_crit_bonus = crit_bonus;
@@ -2091,7 +2091,7 @@ expr_t* action_t::create_expression( const std::string& name_str )
 
 // action_t::ppm_proc_chance ================================================
 
-double action_t::ppm_proc_chance( double PPM )
+double action_t::ppm_proc_chance( double PPM ) const
 {
   if ( weapon )
   {
@@ -2110,7 +2110,7 @@ double action_t::ppm_proc_chance( double PPM )
 
 // action_t::real_ppm_proc_chance ===========================================
 
-double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, timespan_t last_successful_proc, rppm_scale_e scales_with )
+double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, timespan_t last_successful_proc, rppm_scale_e scales_with ) const
 {
   // Old RPPM formula
   double coeff = 1.0;
@@ -2247,7 +2247,7 @@ void action_t::consolidate_snapshot_flags()
   if ( impact_action  ) snapshot_flags |= impact_action  -> snapshot_flags;
 }
 
-double action_t::composite_target_crit( player_t* target )
+double action_t::composite_target_crit( player_t* target ) const
 {
   double c = 0.0;
 

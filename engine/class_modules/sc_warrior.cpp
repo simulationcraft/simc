@@ -314,6 +314,10 @@ public:
     }
     return td;
   }
+  warrior_td_t* find_target_data( player_t* target )
+  {
+    return target_data[ target ];
+  }
 };
 
 namespace { // UNNAMED NAMESPACE
@@ -342,6 +346,8 @@ public:
   warrior_t* cast() const { return debug_cast<warrior_t*>( ab::player ); }
 
   warrior_td_t* cast_td( player_t* t = 0 ) { return cast() -> get_target_data( t ? t : ab::target ); }
+
+  warrior_td_t* find_td( player_t* t ) const { return cast() -> find_target_data( t ); }
 
   virtual bool ready()
   {
@@ -414,7 +420,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
   }
 
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = base_t::action_multiplier();
 
@@ -853,7 +859,7 @@ struct melee_t : public warrior_attack_t
     }
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -1171,7 +1177,7 @@ struct cleave_t : public warrior_attack_t
     return c;
   }
 
-  virtual double crit_chance( double crit, int delta_level )
+  virtual double crit_chance( double crit, int delta_level ) const
   {
     double cc = warrior_attack_t::crit_chance( crit, delta_level );
 
@@ -1383,7 +1389,7 @@ struct dragon_roar_t : public warrior_attack_t
     return 0;
   }
 
-  virtual double crit_chance( double, int )
+  virtual double crit_chance( double, int ) const
   {
     // Dragon Roar always crits
     return 1.0;
@@ -1481,7 +1487,7 @@ struct heroic_strike_t : public warrior_attack_t
     return c;
   }
 
-  virtual double crit_chance( double crit, int delta_level )
+  virtual double crit_chance( double crit, int delta_level ) const
   {
     double cc = warrior_attack_t::crit_chance( crit, delta_level );
 
@@ -1715,7 +1721,7 @@ struct overpower_t : public warrior_attack_t
     p -> buff.taste_for_blood -> decrement();
   }
 
-  virtual double crit_chance( double crit, int delta_level )
+  virtual double crit_chance( double crit, int delta_level ) const
   {
     return warrior_attack_t::crit_chance( crit, delta_level ) + data().effectN( 3 ).percent();
   }
@@ -1911,7 +1917,7 @@ struct revenge_t : public warrior_attack_t
     }
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -2024,7 +2030,7 @@ struct shield_slam_t : public warrior_attack_t
     direct_power_mod /= 100.0; // assumption, not clear from tooltip
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -2144,7 +2150,7 @@ struct slam_sweeping_strikes_attack_t : public warrior_attack_t
     return 0;
   }
 
-  double composite_da_multiplier()
+  double composite_da_multiplier() const
   {
     return data().effectN( 3 ).percent(); //does not double dip on anything
   }
@@ -2181,14 +2187,14 @@ struct slam_t : public warrior_attack_t
     add_child( extra_sweep );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = warrior_attack_t::action_multiplier();
 
     warrior_t* p = cast();
-    warrior_td_t* td = cast_td( p );
+    warrior_td_t* td = find_td( p );
 
-    if ( td -> debuffs_colossus_smash )
+    if ( td && td -> debuffs_colossus_smash )
       am *= 1 + p -> spell.colossus_smash -> effectN( 5 ).percent();
 
     return am;
@@ -2319,7 +2325,7 @@ struct thunder_clap_t : public warrior_attack_t
       base_costs[ current_resource() ] += p -> spec.seasoned_soldier -> effectN( 2 ).resource( current_resource() );
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     double am = warrior_attack_t::action_multiplier();
 
@@ -2420,7 +2426,7 @@ struct whirlwind_attack_t : public warrior_attack_t
     aoe        = -1;
   }
 
-  virtual double action_multiplier()
+  virtual double action_multiplier() const
   {
     warrior_t* p = cast();
 

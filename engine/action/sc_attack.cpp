@@ -60,7 +60,7 @@ timespan_t attack_t::execute_time() const
 
 // attack_t::miss_chance ====================================================
 
-double attack_t::miss_chance( double hit, player_t* t )
+double attack_t::miss_chance( double hit, player_t* t ) const
 {
   // cache.miss() contains the target's miss chance (3.0 base in almost all cases)
   double miss = t -> cache.miss();
@@ -74,7 +74,7 @@ double attack_t::miss_chance( double hit, player_t* t )
   return miss;
 }
 
-double attack_t::block_chance( player_t* t )
+double attack_t::block_chance( player_t* t ) const
 {
   // cache.block() contains the target's block chance (3.0 base for bosses, more for shield tanks)
   double block = t -> cache.block();
@@ -322,7 +322,7 @@ void melee_attack_t::init()
 
 // melee_attack_t::dodge_chance =============================================
 
-double melee_attack_t::dodge_chance( double expertise, player_t* t )
+double melee_attack_t::dodge_chance( double expertise, player_t* t ) const
 {
   // cache.dodge() contains the target's dodge chance (3.0 base, plus spec bonuses and rating)
   double dodge = t -> cache.dodge();
@@ -338,7 +338,7 @@ double melee_attack_t::dodge_chance( double expertise, player_t* t )
 
 // melee_attack_t::parry_chance =============================================
 
-double melee_attack_t::parry_chance( double expertise, player_t* t )
+double melee_attack_t::parry_chance( double expertise, player_t* t ) const
 {
   // cache.parry() contains the target's parry chance (3.0 base, plus spec bonuses and rating)
   double parry = t -> cache.parry();
@@ -354,7 +354,7 @@ double melee_attack_t::parry_chance( double expertise, player_t* t )
 
 // melee_attack_t::glance_chance ============================================
 
-double melee_attack_t::glance_chance( int delta_level )
+double melee_attack_t::glance_chance( int delta_level ) const
 {
   return ( delta_level + 1 ) * 0.06;
 }
@@ -379,7 +379,7 @@ ranged_attack_t::ranged_attack_t( const std::string& token,
 
 // ranged_attack_t::dodge_chance ============================================
 
-double ranged_attack_t::dodge_chance( double expertise, player_t* t )
+double ranged_attack_t::dodge_chance( double expertise, player_t* t ) const
 {
   // cache.dodge() contains the target's dodge chance (3.0 base, plus spec bonuses and rating)
   double dodge = t -> cache.dodge();
@@ -395,7 +395,7 @@ double ranged_attack_t::dodge_chance( double expertise, player_t* t )
 
 // ranged_attack_t::parry_chance ============================================
 
-double ranged_attack_t::parry_chance( double /* expertise */, player_t* /* target */ )
+double ranged_attack_t::parry_chance( double /* expertise */, player_t* /* target */ ) const
 {
   // Assumed impossible to parry ranged. Needs checking.
   // TODO: Ranged parries used to exist as "Deflects" - may need re-testing post-MoP
@@ -404,12 +404,12 @@ double ranged_attack_t::parry_chance( double /* expertise */, player_t* /* targe
 
 // ranged_attack_t::glance_chance ===========================================
 
-double ranged_attack_t::glance_chance( int delta_level )
+double ranged_attack_t::glance_chance( int delta_level ) const
 {
   return (  delta_level  + 1 ) * 0.06;
 }
 
-double ranged_attack_t::composite_target_multiplier( player_t* target )
+double ranged_attack_t::composite_target_multiplier( player_t* target ) const
 {
   double v = attack_t::composite_target_multiplier( target );
   v *= target -> composite_ranged_attack_player_vulnerability();
