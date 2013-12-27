@@ -135,12 +135,13 @@ struct action_execute_event_t : public event_t
 
 };
 
-struct aoe_target_list_callback_t : public callback_t
+struct aoe_target_list_callback_t
 {
   action_t* action;
-  aoe_target_list_callback_t( action_t* a ) : callback_t(), action( a ) {}
+  aoe_target_list_callback_t( action_t* a ) :
+    action( a ) {}
 
-  virtual void execute()
+  void operator()()
   {
     // Invalidate target cache
     action -> target_cache.is_valid = false;
@@ -1620,8 +1621,7 @@ void action_t::init()
 
 void action_t::init_target_cache()
 {
-  target_cache.callback = new aoe_target_list_callback_t( this );
-  sim -> target_non_sleeping_list.register_callback( target_cache.callback );
+  sim -> target_non_sleeping_list.register_callback( aoe_target_list_callback_t( this ) );
 }
 
 // action_t::reset ==========================================================

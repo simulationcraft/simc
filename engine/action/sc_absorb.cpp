@@ -11,12 +11,12 @@
 
 namespace { // anonymous namespace
 
-struct aoe_player_list_callback_t : public callback_t
+struct aoe_player_list_callback_t
 {
   action_t* action;
-  aoe_player_list_callback_t( action_t* a ) : callback_t(), action( a ) {}
+  aoe_player_list_callback_t( action_t* a ) : action( a ) {}
 
-  virtual void execute()
+  void operator()()
   {
     // Invalidate target cache
     action -> target_cache.is_valid = false;
@@ -44,8 +44,7 @@ absorb_t::absorb_t( const std::string&  token,
 
 void absorb_t::init_target_cache()
 {
-  target_cache.callback = new aoe_player_list_callback_t( this );
-  sim -> player_non_sleeping_list.register_callback( target_cache.callback );
+  sim -> player_non_sleeping_list.register_callback( aoe_player_list_callback_t( this ) );
 }
 
 // absorb_t::execute ========================================================

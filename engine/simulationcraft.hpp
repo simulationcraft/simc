@@ -2376,23 +2376,6 @@ struct progress_bar_t
   bool update( bool finished = false );
 };
 
-/* The simplest form of a callback
- * pure virtual class which requires one to override execute function
- * static trigger for a vector of callbacks to trigger them.
- *
- * NO AUTMATED MEMORY MANAGMENT!
- */
-struct callback_t
-{
-  virtual void execute() = 0;
-  static void trigger( const std::vector<callback_t*>& v )
-  {
-    for( size_t i = 0, size = v.size(); i < size; ++i )
-      v[ i ] -> execute();
-  }
-  virtual ~callback_t() {}
-};
-
 /* Encapsulated Vector
  * const read access
  * Modifying the vector triggers registered callbacks
@@ -2402,15 +2385,21 @@ struct vector_with_callback
 {
 private:
   std::vector<T> _data;
-  std::vector<callback_t*> _callbacks ;
+  std::vector<std::function<void(void)> > _callbacks ;
 public:
   /* Register your custom callback, which will be called when the vector is modified
    */
-  void register_callback( callback_t* c )
-  { _callbacks.push_back( c ); }
+  void register_callback( std::function<void(void)> c )
+  {
+    if ( c )
+      _callbacks.push_back( c );
+  }
 
   void trigger_callbacks() const
-  { callback_t::trigger( _callbacks ); }
+  {
+    for ( size_t i = 0; i < _callbacks.size(); ++i )
+      _callbacks[i]();
+  }
 
   void push_back( T x )
   { _data.push_back( x ); trigger_callbacks(); }
@@ -5125,10 +5114,8 @@ struct action_t : public noncopyable
    */
   struct target_cache_t {
     std::vector< player_t* > list;
-    callback_t* callback;
     bool is_valid;
-    target_cache_t() : callback( nullptr ), is_valid( false ) {}
-    ~target_cache_t() { delete callback; }
+    target_cache_t() : is_valid( false ) {}
   } mutable target_cache;
 
   school_e school;
