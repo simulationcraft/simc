@@ -420,7 +420,7 @@ public:
   virtual void      arise();
   virtual void      reset();
 
-  mutable target_specific_t<shaman_td_t*> target_data;
+  target_specific_t<shaman_td_t*> target_data;
 
   virtual shaman_td_t* get_target_data( player_t* target )
   {

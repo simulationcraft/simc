@@ -314,7 +314,7 @@ public:
   double emberstorm_e3_from_e1() const
   { return mastery_spells.emberstorm -> effectN( 3 ).coeff() / mastery_spells.emberstorm -> effectN( 1 ).coeff(); }
 
-  mutable target_specific_t<warlock_td_t*> target_data;
+  target_specific_t<warlock_td_t*> target_data;
 
   virtual warlock_td_t* get_target_data( player_t* target )
   {

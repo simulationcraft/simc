@@ -312,7 +312,7 @@ struct rogue_t : public player_t
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    energy_regen_per_second() const;
 
-  mutable target_specific_t<rogue_td_t*> target_data;
+  target_specific_t<rogue_td_t*> target_data;
 
   virtual rogue_td_t* get_target_data( player_t* target )
   {

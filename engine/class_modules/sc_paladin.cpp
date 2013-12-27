@@ -347,7 +347,7 @@ public:
   void    generate_action_prio_list_holy();
   void    validate_action_priority_list();
 
-  mutable target_specific_t<paladin_td_t*> target_data;
+  target_specific_t<paladin_td_t*> target_data;
 
   virtual paladin_td_t* get_target_data( player_t* target )
   {

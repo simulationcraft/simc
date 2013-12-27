@@ -327,6 +327,11 @@ public:
     return td;
   }
 
+  hunter_td_t* find_target_data( player_t* target ) const
+  {
+    return target_data[ target ];
+  }
+
   // Event Tracking
   virtual void regen( timespan_t periodicity );
 
@@ -370,7 +375,11 @@ public:
   const hunter_t* p() const
   { return static_cast<hunter_t*>( ab::player ); }
 
-  hunter_td_t* cast_td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
+  hunter_td_t* cast_td( player_t* t = 0 )
+  { return p() -> get_target_data( t ? t : ab::target ); }
+
+  hunter_td_t* find_td( player_t* t ) const
+  { return p() -> find_target_data( t ); }
 
   virtual double cost() const
   {
@@ -852,7 +861,7 @@ public:
     return m;
   }
 
-  mutable target_specific_t<hunter_main_pet_td_t*> target_data;
+  target_specific_t<hunter_main_pet_td_t*> target_data;
 
   virtual hunter_main_pet_td_t* get_target_data( player_t* target )
   {

@@ -331,7 +331,7 @@ private:
   void apl_holy_heal();
   void apl_holy_dmg();
 
-  mutable target_specific_t<priest_td_t*> target_data;
+  target_specific_t<priest_td_t*> target_data;
 };
 
 namespace pets {

@@ -442,7 +442,7 @@ public:
 
   void      default_apl_blood();
 
-  mutable target_specific_t<death_knight_td_t*> target_data;
+  target_specific_t<death_knight_td_t*> target_data;
 
   virtual death_knight_td_t* get_target_data( player_t* target )
   {
@@ -1231,7 +1231,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     }
   };
 
-  mutable target_specific_t<dancing_rune_weapon_td_t*> target_data;
+  target_specific_t<dancing_rune_weapon_td_t*> target_data;
 
   spell_t*        drw_blood_plague;
   spell_t*        drw_frost_fever;

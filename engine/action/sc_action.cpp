@@ -731,7 +731,7 @@ double action_t::calculate_weapon_damage( double attack_power )
 
   double dmg = sim -> averaged_range( weapon -> min_dmg, weapon -> max_dmg ) + weapon -> bonus_dmg;
 
-  timespan_t weapon_speed  = normalize_weapon_speed  ? weapon -> normalized_weapon_speed() : weapon -> swing_time;
+  timespan_t weapon_speed  = normalize_weapon_speed  ? weapon -> get_normalized_speed() : weapon -> swing_time;
 
   double power_damage = weapon_speed.total_seconds() * weapon_power_mod * attack_power;
 

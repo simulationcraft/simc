@@ -255,7 +255,7 @@ public:
   } user_options;
 
 private:
-  mutable target_specific_t<monk_td_t*> target_data;
+  target_specific_t<monk_td_t*> target_data;
 public:
 
   monk_t( sim_t* sim, const std::string& name, race_e r ) :

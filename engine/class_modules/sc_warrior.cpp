@@ -314,7 +314,7 @@ public:
     }
     return td;
   }
-  warrior_td_t* find_target_data( player_t* target )
+  warrior_td_t* find_target_data( const player_t* target ) const
   {
     return target_data[ target ];
   }
@@ -343,11 +343,14 @@ public:
 
   virtual ~warrior_action_t() {}
 
-  warrior_t* cast() const { return debug_cast<warrior_t*>( ab::player ); }
+  warrior_t* cast()
+  { return debug_cast<warrior_t*>( ab::player ); }
+  const warrior_t* cast() const
+  { return debug_cast<warrior_t*>( ab::player ); }
 
   warrior_td_t* cast_td( player_t* t = 0 ) { return cast() -> get_target_data( t ? t : ab::target ); }
 
-  warrior_td_t* find_td( player_t* t ) const { return cast() -> find_target_data( t ); }
+  warrior_td_t* find_td(  const player_t* t ) const { return cast() -> find_target_data( t ); }
 
   virtual bool ready()
   {
@@ -403,7 +406,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     if ( dmg == 0.0 )
       return 0;
 
-    warrior_t* p = cast();
+    const warrior_t* p = cast();
 
     if ( weapon -> slot == SLOT_OFF_HAND )
     {
@@ -425,7 +428,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
   {
     double am = base_t::action_multiplier();
 
-    warrior_t* p = cast();
+    const warrior_t* p = cast();
 
     if ( ( weapon &&  weapon -> group() == WEAPON_2H && this -> id != 115767 ) || this -> id == 137597 ) //hack to let Deep wounds *not* and the Meta GEM benefit from seasoned soldier
       am *= 1.0 + p -> spec.seasoned_soldier -> effectN( 1 ).percent();
@@ -463,7 +466,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
   {
     double cc = base_t::composite_crit();
 
-    warrior_t* p = cast();
+    const warrior_t* p = cast();
 
     if ( special && this -> id != 115767 ) // Recklessness crit bonus does not count towards deep wounds.
       cc += p -> buff.recklessness -> value();
@@ -864,7 +867,7 @@ struct melee_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    warrior_t* p = cast();
+    const warrior_t* p = cast();
 
     if ( p -> specialization() == WARRIOR_FURY )
       am *= 1.0 + p -> spec.crazed_berserker -> effectN( 3 ).percent();
@@ -1167,7 +1170,7 @@ struct cleave_t : public warrior_attack_t
   virtual double cost() const
   {
     double c = warrior_attack_t::cost();
-    warrior_t* p = cast();
+    const warrior_t* p = cast();
 
     if ( p -> buff.glyph_incite -> check() )
       c *= 1 + p -> buff.glyph_incite -> data().effectN( 1 ).percent();
@@ -1182,7 +1185,7 @@ struct cleave_t : public warrior_attack_t
   {
     double cc = warrior_attack_t::crit_chance( crit, delta_level );
 
-    warrior_t* p = cast();
+    const warrior_t* p = cast();
 
     if ( p -> buff.ultimatum -> check() )
       cc += p -> buff.ultimatum -> data().effectN( 2 ).percent();
@@ -1415,7 +1418,7 @@ struct execute_t : public warrior_attack_t
   virtual double cost() const
   {
     double c = warrior_attack_t::cost();
-    warrior_t* p = cast();
+    const warrior_t* p = cast();
 
     if ( p -> buff.death_sentence -> check() && target -> health_percentage() < 20) //Tier 16 4 piece bonus
       c = 0;
@@ -1477,7 +1480,7 @@ struct heroic_strike_t : public warrior_attack_t
   virtual double cost() const
   {
     double c = warrior_attack_t::cost();
-    warrior_t* p = cast();
+    const warrior_t* p = cast();
 
     if ( p -> buff.glyph_incite -> check() )
       c *= 1 + p -> buff.glyph_incite -> data().effectN( 1 ).percent();
@@ -1492,7 +1495,7 @@ struct heroic_strike_t : public warrior_attack_t
   {
     double cc = warrior_attack_t::crit_chance( crit, delta_level );
 
-    warrior_t* p = cast();
+    const warrior_t* p = cast();
 
     if ( p -> buff.ultimatum -> check() )
       cc += p -> buff.ultimatum -> data().effectN( 2 ).percent();
@@ -1588,7 +1591,7 @@ struct impending_victory_heal_t : public heal_t
     target     = p;
   }
 
-  virtual double calculate_direct_amount( action_state_t* state)
+  virtual double calculate_direct_amount( action_state_t* state )
   {
     warrior_t* p = static_cast<warrior_t*>( player );
     double pct_heal = 0.15;
@@ -1729,7 +1732,7 @@ struct overpower_t : public warrior_attack_t
 
   virtual double cost() const
   {
-    warrior_t* p = cast();
+    const warrior_t* p = cast();
 
     if ( p -> buff.sudden_execute -> check() )
       return 0;
@@ -1922,7 +1925,7 @@ struct revenge_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    warrior_t* p = cast();
+    const warrior_t* p = cast();
 
     if ( p -> glyphs.hold_the_line -> ok() && p -> buff.glyph_hold_the_line -> up() )
       am *= 1.0 + p -> buff.glyph_hold_the_line -> data().effectN( 1 ).percent();
@@ -2035,7 +2038,7 @@ struct shield_slam_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    warrior_t* p = cast();
+    const warrior_t* p = cast();
 
     if ( p -> buff.shield_block -> up() )
       am *= 1.0 + p -> glyphs.heavy_repercussions -> effectN( 1 ).percent();
@@ -2192,7 +2195,7 @@ struct slam_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    warrior_t* p = cast();
+    const warrior_t* p = cast();
     warrior_td_t* td = find_td( p );
 
     if ( td && td -> debuffs_colossus_smash )
@@ -2330,7 +2333,7 @@ struct thunder_clap_t : public warrior_attack_t
   {
     double am = warrior_attack_t::action_multiplier();
 
-    warrior_t* p = cast();
+    const warrior_t* p = cast();
 
     if ( p -> glyphs.resonating_power -> ok() )
       am *= 1.0 + p -> glyphs.resonating_power -> effectN( 1 ).percent();
@@ -2429,7 +2432,7 @@ struct whirlwind_attack_t : public warrior_attack_t
 
   virtual double action_multiplier() const
   {
-    warrior_t* p = cast();
+    const warrior_t* p = cast();
 
     double am = warrior_attack_t::action_multiplier();
 
@@ -2525,7 +2528,7 @@ struct wild_strike_t : public warrior_attack_t
   virtual double cost() const
   {
     double c = warrior_attack_t::cost();
-    warrior_t* p = cast();
+    const warrior_t* p = cast();
 
     if ( p -> buff.bloodsurge -> check() )
       c += p -> buff.bloodsurge -> data().effectN( 2 ).resource( RESOURCE_RAGE );
@@ -2787,7 +2790,7 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
 
     if ( round_base_dmg ) amount = floor( amount + 0.5 );
 
-    warrior_t& p = *cast();
+    const warrior_t& p = *cast();
 
     double   ap_scale = data().effectN( 2 ).percent();
     double stam_scale = data().effectN( 3 ).percent();
@@ -2846,7 +2849,7 @@ struct shield_block_t : public warrior_spell_t
   virtual double cost() const
   {
     double c = warrior_spell_t::cost();
-    warrior_t* p = cast();
+    const warrior_t* p = cast();
 
     c += p -> sets -> set( SET_T14_4PC_TANK ) -> effectN( 1 ).resource( RESOURCE_RAGE );
 

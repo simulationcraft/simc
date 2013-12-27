@@ -188,7 +188,6 @@ struct sc_timeline_t : public timeline_t
 #include "util/rng.hpp"
 
 // Hookup rng containers for easy use in SimulationCraft
-
 typedef rng::sc_distribution_t rng_t;
 
 // Forward Declarations =====================================================
@@ -1750,10 +1749,10 @@ private:
   {
     stat_e stat;
     double amount;
-    bool ( *check_func )( void* p );
+    std::function<bool(void*)> check_func;
     void *data;
 
-    buff_stat_t( stat_e s, double a, bool ( *c )( void* ) = 0, void *d = 0 ) :
+    buff_stat_t( stat_e s, double a, std::function<bool(void*)> c = std::function<bool(void*)>(), void *d = 0 ) :
       stat( s ), amount( a ), check_func( c ), data( d ) {}
   };
 
@@ -1766,7 +1765,7 @@ public:
   stat_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = 0 ) :
     base_t( sim, name, s, item ) {}
 
-  bufftype& add_stat( stat_e s, double a, bool ( *c )( void* ) = 0, void *d = 0 )
+  bufftype& add_stat( stat_e s, double a, std::function<bool(void*)> c = std::function<bool(void*)>(), void *d = 0 )
   { stats.push_back( buff_stat_t( s, a, c, d ) ); return *this; }
 
   operator stat_buff_t* () const;
@@ -1987,10 +1986,10 @@ struct stat_buff_t : public buff_t
     stat_e stat;
     double amount;
     double current_value;
-    bool ( *check_func )( void* a );
+    std::function<bool(void*)> check_func;
     void* data;
 
-    buff_stat_t( stat_e s, double a, bool ( *c )( void* a ) = 0, void *d = 0 ) :
+    buff_stat_t( stat_e s, double a, std::function<bool(void*)> c = std::function<bool(void*)>(), void *d = 0 ) :
       stat( s ), amount( a ), current_value( 0 ), check_func( c ), data( d ) {}
   };
   std::vector<buff_stat_t> stats;
@@ -3204,7 +3203,7 @@ struct weapon_t
     return WEAPON_NONE;
   }
 
-  timespan_t normalized_weapon_speed()
+  timespan_t get_normalized_speed()
   {
     weapon_e g = group();
 
@@ -4859,14 +4858,18 @@ public:
 template < class T >
 struct target_specific_t
 {
-  std::vector<T> data;
-
-  T& operator[]( player_t* target )
+public:
+  T& operator[](  const player_t* target ) const
   {
     assert( target );
-    if ( data.empty() ) data.resize( target -> sim -> actor_list.size() );
+    if ( data.empty() )
+    {
+      data.resize( target -> sim -> actor_list.size() );
+    }
     return data[ target -> actor_index ];
   }
+private:
+  mutable std::vector<T> data;
 };
 
 struct event_t : public core_event_t
@@ -5297,6 +5300,12 @@ struct action_t : public noncopyable
     dot_t*& dot = target_specific_dot[ t ];
     if ( ! dot ) dot = t -> get_dot( name_str, player );
     return dot;
+  }
+
+  dot_t* find_dot( player_t* t ) const
+  {
+    if ( ! t ) return nullptr;
+    return target_specific_dot[ t ];
   }
 
   void add_child( action_t* child ) { stats -> add_child( child -> stats ); }
@@ -6616,7 +6625,11 @@ struct residual_dot_action : public Action
   virtual void update_state( action_state_t*, dmg_e ) { }
 
   virtual double calculate_tick_amount( action_state_t* s )
-  { return s -> result_amount = Action::get_dot( s -> target ) -> tick_amount; }
+  {
+    dot_t* d = Action::find_dot( s -> target );
+    s -> result_amount =  d ? d -> tick_amount : 0.0;
+    return s -> result_amount;
+  }
 
   virtual void impact( action_state_t* s )
   {

@@ -295,7 +295,7 @@ public:
   virtual void      stun();
   virtual void      moving();
 
-  mutable target_specific_t<mage_td_t*> target_data;
+  target_specific_t<mage_td_t*> target_data;
 
   virtual mage_td_t* get_target_data( player_t* target )
   {
@@ -1737,7 +1737,11 @@ struct combustion_t : public mage_spell_t
 
   virtual double calculate_tick_amount( action_state_t* s )
   {
-    double a = get_dot( s -> target ) -> tick_amount;
+    double a = 0.0;
+
+    if ( dot_t* d = find_dot( s -> target ) )
+      a += d -> tick_amount;
+
     if ( s -> result == RESULT_CRIT )
       a *= 1.0 + total_crit_bonus();
     return a;
