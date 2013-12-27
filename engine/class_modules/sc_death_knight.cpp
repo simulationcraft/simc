@@ -5233,6 +5233,18 @@ void death_knight_t::init_spells()
   active_spells.blood_plague = new blood_plague_t( this );
   active_spells.frost_fever = new frost_fever_t( this );
 
+  // Tier Bonuses
+  static const set_bonus_description_t set_bonuses =
+  {
+    //  C2P    C4P     M2P     M4P     T2P     T4P    H2P    H4P
+    {     0,     0, 105609, 105646, 105552, 105587,     0,     0 }, // Tier13
+    {     0,     0, 123077, 123078, 123079, 123080,     0,     0 }, // Tier14
+    {     0,     0, 138343, 138347, 138195, 138197,     0,     0 }, // Tier15
+    {     0,     0, 144899, 144907, 144934, 144950,     0,     0 }, // Tier16
+  };
+
+  sets = new set_bonus_array_t( this, set_bonuses );
+
   if ( sets -> has_set_bonus( SET_T16_4PC_MELEE ) && specialization() == DEATH_KNIGHT_FROST )
   {
     struct frozen_power_t : public melee_attack_t
@@ -5250,17 +5262,6 @@ void death_knight_t::init_spells()
     active_spells.frozen_power = new frozen_power_t( this );
   }
 
-  // Tier Bonuses
-  static const set_bonus_description_t set_bonuses =
-  {
-    //  C2P    C4P     M2P     M4P     T2P     T4P    H2P    H4P
-    {     0,     0, 105609, 105646, 105552, 105587,     0,     0 }, // Tier13
-    {     0,     0, 123077, 123078, 123079, 123080,     0,     0 }, // Tier14
-    {     0,     0, 138343, 138347, 138195, 138197,     0,     0 }, // Tier15
-    {     0,     0, 144899, 144907, 144934, 144950,     0,     0 }, // Tier16
-  };
-
-  sets = new set_bonus_array_t( this, set_bonuses );
 }
 
 // death_knight_t::default_apl_blood ========================================

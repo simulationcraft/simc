@@ -3153,7 +3153,7 @@ struct debuff_demo_shout_t : public buff_t
   {
     warrior_t* p = (warrior_t*) player;
 
-    if ( p -> sets -> has_set_bonus( SET_T16_4PC_TANK ) )
+    if ( set_bonus_array_t::has_set_bonus( p, SET_T16_4PC_TANK ) )
     {
         p -> buff.tier16_reckless_defense -> trigger();
     }
