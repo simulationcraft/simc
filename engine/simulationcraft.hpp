@@ -3691,81 +3691,82 @@ private:
  */
 struct player_stat_cache_t
 {
-  player_t* player;
+  const player_t* player;
+  mutable std::array<bool, CACHE_MAX> valid;
+  mutable std::array < bool, SCHOOL_MAX + 1 > spell_power_valid, player_mult_valid, player_heal_mult_valid;
   // 'valid'-states
-  std::array<bool, CACHE_MAX> valid;
-  std::array < bool, SCHOOL_MAX + 1 > spell_power_valid, player_mult_valid, player_heal_mult_valid;
 private:
   // cached values
-  double _strength, _agility, _stamina, _intellect, _spirit;
-  double _spell_power[SCHOOL_MAX + 1], _attack_power;
-  double _attack_expertise;
-  double _attack_hit, _spell_hit;
-  double _attack_crit, _spell_crit;
-  double _attack_haste, _spell_haste;
-  double _attack_speed, _spell_speed;
-  double _dodge, _parry, _block, _crit_block, _armor;
-  double _mastery_value, _crit_avoidance, _miss;
-  double _player_mult[SCHOOL_MAX + 1], _player_heal_mult[SCHOOL_MAX + 1];
+  mutable double _strength, _agility, _stamina, _intellect, _spirit;
+  mutable double _spell_power[SCHOOL_MAX + 1], _attack_power;
+  mutable double _attack_expertise;
+  mutable double _attack_hit, _spell_hit;
+  mutable double _attack_crit, _spell_crit;
+  mutable double _attack_haste, _spell_haste;
+  mutable double _attack_speed, _spell_speed;
+  mutable double _dodge, _parry, _block, _crit_block, _armor;
+  mutable double _mastery_value, _crit_avoidance, _miss;
+  mutable double _player_mult[SCHOOL_MAX + 1], _player_heal_mult[SCHOOL_MAX + 1];
 public:
   bool active; // runtime active-flag
-  void invalidate();
-  double get_attribute( attribute_e );
-  player_stat_cache_t( player_t* p ) : player( p ), active( false ) { invalidate(); }
+  void invalidate_all();
+  void invalidate( cache_e );
+  double get_attribute( attribute_e ) const;
+  player_stat_cache_t( const player_t* p ) : player( p ), active( false ) { invalidate_all(); }
 #ifdef SC_STAT_CACHE
   // Cache stat functions
-  double strength();
-  double agility();
-  double stamina();
-  double intellect();
-  double spirit();
-  double spell_power( school_e );
-  double attack_power();
-  double attack_expertise();
-  double attack_hit();
-  double attack_crit();
-  double attack_haste();
-  double attack_speed();
-  double spell_hit();
-  double spell_crit();
-  double spell_haste();
-  double spell_speed();
-  double dodge();
-  double parry();
-  double block();
-  double crit_block();
-  double crit_avoidance();
-  double miss();
-  double armor();
-  double mastery_value();
-  double player_multiplier( school_e );
-  double player_heal_multiplier( school_e );
+  double strength() const;
+  double agility() const;
+  double stamina() const;
+  double intellect() const;
+  double spirit() const;
+  double spell_power( school_e ) const;
+  double attack_power() const;
+  double attack_expertise() const;
+  double attack_hit() const;
+  double attack_crit() const;
+  double attack_haste() const;
+  double attack_speed() const;
+  double spell_hit() const;
+  double spell_crit() const;
+  double spell_haste() const;
+  double spell_speed() const;
+  double dodge() const;
+  double parry() const;
+  double block() const;
+  double crit_block() const;
+  double crit_avoidance() const;
+  double miss() const;
+  double armor() const;
+  double mastery_value() const;
+  double player_multiplier( school_e ) const;
+  double player_heal_multiplier( school_e ) const;
 #else
   // Passthrough cache stat functions for inactive cache
-  double strength()  { return player -> strength();  }
-  double agility()   { return player -> agility();   }
-  double stamina()   { return player -> stamina();   }
-  double intellect() { return player -> intellect(); }
-  double spirit()    { return player -> spirit();    }
-  double spell_power( school_e s ) { return player -> composite_spell_power( s ); }
-  double attack_power()            { return player -> composite_melee_attack_power();   }
-  double attack_expertise() { return player -> composite_melee_expertise(); }
-  double attack_hit()       { return player -> composite_melee_hit();       }
-  double attack_crit()      { return player -> composite_melee_crit();      }
-  double attack_haste()     { return player -> composite_melee_haste();     }
-  double attack_speed()     { return player -> composite_melee_speed();     }
-  double spell_hit()        { return player -> composite_spell_hit();       }
-  double spell_crit()       { return player -> composite_spell_crit();      }
-  double spell_haste()      { return player -> composite_spell_haste();     }
-  double spell_speed()      { return player -> composite_spell_speed();     }
-  double dodge()            { return player -> composite_dodge();      }
-  double parry()            { return player -> composite_parry();      }
-  double block()            { return player -> composite_block();      }
-  double crit_block()       { return player -> composite_crit_block(); }
-  double crit_avoidance()   { return player -> composite_crit_avoidance();       }
-  double miss()             { return player -> composite_miss();       }
-  double armor()            { return player -> composite_armor();           }
-  double mastery_value()    { return player -> composite_mastery_value();   }
+  double strength() const  { return player -> strength();  }
+  double agility() const   { return player -> agility();   }
+  double stamina() const   { return player -> stamina();   }
+  double intellect() const { return player -> intellect(); }
+  double spirit() const    { return player -> spirit();    }
+  double spell_power( school_e s ) const { return player -> composite_spell_power( s ); }
+  double attack_power() const            { return player -> composite_melee_attack_power();   }
+  double attack_expertise() const { return player -> composite_melee_expertise(); }
+  double attack_hit() const       { return player -> composite_melee_hit();       }
+  double attack_crit() const      { return player -> composite_melee_crit();      }
+  double attack_haste() const     { return player -> composite_melee_haste();     }
+  double attack_speed() const     { return player -> composite_melee_speed();     }
+  double spell_hit() const        { return player -> composite_spell_hit();       }
+  double spell_crit() const       { return player -> composite_spell_crit();      }
+  double spell_haste() const      { return player -> composite_spell_haste();     }
+  double spell_speed() const      { return player -> composite_spell_speed();     }
+  double dodge() const            { return player -> composite_dodge();      }
+  double parry() const            { return player -> composite_parry();      }
+  double block() const            { return player -> composite_block();      }
+  double crit_block() const       { return player -> composite_crit_block(); }
+  double crit_avoidance() const   { return player -> composite_crit_avoidance();       }
+  double miss() const             { return player -> composite_miss();       }
+  double armor() const            { return player -> composite_armor();           }
+  double mastery_value() const    { return player -> composite_mastery_value();   }
 #endif
 };
 
@@ -4658,7 +4659,7 @@ public:
   double mastery_coefficient() const { return _mastery -> mastery_value(); }
 
   // Stat Caching
-  mutable player_stat_cache_t cache;
+  player_stat_cache_t cache;
 #ifdef SC_STAT_CACHE
   virtual void invalidate_cache( cache_e c );
 #else

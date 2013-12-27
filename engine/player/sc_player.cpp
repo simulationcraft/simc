@@ -3516,9 +3516,6 @@ void player_t::invalidate_cache( cache_e c )
   // Normal invalidation of the corresponding Cache
   switch ( c )
   {
-    case CACHE_SPELL_POWER:
-      range::fill( cache.spell_power_valid, false );
-      break;
     case CACHE_EXP:
       invalidate_cache( CACHE_ATTACK_EXP );
       invalidate_cache( CACHE_SPELL_HIT  );
@@ -3539,14 +3536,8 @@ void player_t::invalidate_cache( cache_e c )
       invalidate_cache( CACHE_ATTACK_SPEED );
       invalidate_cache( CACHE_SPELL_SPEED  );
       break;
-    case CACHE_PLAYER_DAMAGE_MULTIPLIER:
-      range::fill( cache.player_mult_valid, false );
-      break;
-    case CACHE_PLAYER_HEAL_MULTIPLIER:
-      range::fill( cache.player_heal_mult_valid, false );
-      break;
     default:
-      cache.valid[ c ] = false; // Invalidates only its own cache.
+      cache.invalidate( c );
       break;
   }
 }
@@ -3961,7 +3952,7 @@ void player_t::reset()
   last_cast = timespan_t::zero();
   gcd_ready = timespan_t::zero();
 
-  cache.invalidate();
+  cache.invalidate_all();
 
   // Reset current stats to initial stats
   current = initial;
@@ -4180,7 +4171,7 @@ void player_t::arise()
 
   init_resources( true );
 
-  cache.invalidate();
+  cache.invalidate_all();
 
   readying = 0;
   off_gcd = 0;
@@ -9280,7 +9271,7 @@ void player_callbacks_t::reset()
 
 /* Invalidate ALL stats
  */
-void player_stat_cache_t::invalidate()
+void player_stat_cache_t::invalidate_all()
 {
   if ( ! active ) return;
 
@@ -9290,9 +9281,29 @@ void player_stat_cache_t::invalidate()
   range::fill( player_heal_mult_valid, false );
 }
 
+/* Invalidate ALL stats
+ */
+void player_stat_cache_t::invalidate( cache_e c )
+{
+  switch ( c )
+  {
+    case CACHE_SPELL_POWER:
+      range::fill( spell_power_valid, false );
+      break;
+    case CACHE_PLAYER_DAMAGE_MULTIPLIER:
+      range::fill( player_mult_valid, false );
+      break;
+    case CACHE_PLAYER_HEAL_MULTIPLIER:
+      range::fill( player_heal_mult_valid, false );
+      break;
+    default:
+      valid[ c ] = false;
+      break;
+  }
+}
 /* Helper function to access attribute cache functions by attribute-enumeration
  */
-double player_stat_cache_t::get_attribute( attribute_e a )
+double player_stat_cache_t::get_attribute( attribute_e a ) const
 {
   switch ( a )
   {
@@ -9310,7 +9321,7 @@ double player_stat_cache_t::get_attribute( attribute_e a )
 
 // player_stat_cache_t::strength ============================================
 
-double player_stat_cache_t::strength()
+double player_stat_cache_t::strength() const
 {
   if ( ! active || ! valid[ CACHE_STRENGTH ] )
   {
@@ -9323,7 +9334,7 @@ double player_stat_cache_t::strength()
 
 // player_stat_cache_t::agiity ==============================================
 
-double player_stat_cache_t::agility()
+double player_stat_cache_t::agility() const
 {
   if ( ! active || ! valid[ CACHE_AGILITY ] )
   {
@@ -9336,7 +9347,7 @@ double player_stat_cache_t::agility()
 
 // player_stat_cache_t::stamina =============================================
 
-double player_stat_cache_t::stamina()
+double player_stat_cache_t::stamina() const
 {
   if ( ! active || ! valid[ CACHE_STAMINA ] )
   {
@@ -9349,7 +9360,7 @@ double player_stat_cache_t::stamina()
 
 // player_stat_cache_t::intellect ===========================================
 
-double player_stat_cache_t::intellect()
+double player_stat_cache_t::intellect() const
 {
   if ( ! active || ! valid[ CACHE_INTELLECT ] )
   {
@@ -9362,7 +9373,7 @@ double player_stat_cache_t::intellect()
 
 // player_stat_cache_t::spirit ==============================================
 
-double player_stat_cache_t::spirit()
+double player_stat_cache_t::spirit() const
 {
   if ( ! active || ! valid[ CACHE_SPIRIT ] )
   {
@@ -9375,7 +9386,7 @@ double player_stat_cache_t::spirit()
 
 // player_stat_cache_t::spell_power =========================================
 
-double player_stat_cache_t::spell_power( school_e s )
+double player_stat_cache_t::spell_power( school_e s ) const
 {
   if ( ! active || ! spell_power_valid[ s ] )
   {
@@ -9388,7 +9399,7 @@ double player_stat_cache_t::spell_power( school_e s )
 
 // player_stat_cache_t::attack_power ========================================
 
-double player_stat_cache_t::attack_power()
+double player_stat_cache_t::attack_power() const
 {
   if ( ! active || ! valid[ CACHE_ATTACK_POWER ] )
   {
@@ -9401,7 +9412,7 @@ double player_stat_cache_t::attack_power()
 
 // player_stat_cache_t::attack_expertise ====================================
 
-double player_stat_cache_t::attack_expertise()
+double player_stat_cache_t::attack_expertise() const
 {
   if ( ! active || ! valid[ CACHE_ATTACK_EXP ] )
   {
@@ -9414,7 +9425,7 @@ double player_stat_cache_t::attack_expertise()
 
 // player_stat_cache_t::attack_hit ==========================================
 
-double player_stat_cache_t::attack_hit()
+double player_stat_cache_t::attack_hit() const
 {
   if ( ! active || ! valid[ CACHE_ATTACK_HIT ] )
   {
@@ -9434,7 +9445,7 @@ double player_stat_cache_t::attack_hit()
 
 // player_stat_cache_t::attack_crit =========================================
 
-double player_stat_cache_t::attack_crit()
+double player_stat_cache_t::attack_crit() const
 {
   if ( ! active || ! valid[ CACHE_ATTACK_CRIT ] )
   {
@@ -9447,7 +9458,7 @@ double player_stat_cache_t::attack_crit()
 
 // player_stat_cache_t::attack_haste ========================================
 
-double player_stat_cache_t::attack_haste()
+double player_stat_cache_t::attack_haste() const
 {
   if ( ! active || ! valid[ CACHE_ATTACK_HASTE ] )
   {
@@ -9460,7 +9471,7 @@ double player_stat_cache_t::attack_haste()
 
 // player_stat_cache_t::attack_speed ========================================
 
-double player_stat_cache_t::attack_speed()
+double player_stat_cache_t::attack_speed() const
 {
   if ( ! active || ! valid[ CACHE_ATTACK_SPEED ] )
   {
@@ -9473,7 +9484,7 @@ double player_stat_cache_t::attack_speed()
 
 // player_stat_cache_t::spell_hit ===========================================
 
-double player_stat_cache_t::spell_hit()
+double player_stat_cache_t::spell_hit() const
 {
   if ( ! active || ! valid[ CACHE_SPELL_HIT ] )
   {
@@ -9486,7 +9497,7 @@ double player_stat_cache_t::spell_hit()
 
 // player_stat_cache_t::spell_crit ==========================================
 
-double player_stat_cache_t::spell_crit()
+double player_stat_cache_t::spell_crit() const
 {
   if ( ! active || ! valid[ CACHE_SPELL_CRIT ] )
   {
@@ -9499,7 +9510,7 @@ double player_stat_cache_t::spell_crit()
 
 // player_stat_cache_t::spell_haste =========================================
 
-double player_stat_cache_t::spell_haste()
+double player_stat_cache_t::spell_haste() const
 {
   if ( ! active || ! valid[ CACHE_SPELL_HASTE ] )
   {
@@ -9512,7 +9523,7 @@ double player_stat_cache_t::spell_haste()
 
 // player_stat_cache_t::spell_speed =========================================
 
-double player_stat_cache_t::spell_speed()
+double player_stat_cache_t::spell_speed() const
 {
   if ( ! active || ! valid[ CACHE_SPELL_SPEED ] )
   {
@@ -9523,7 +9534,7 @@ double player_stat_cache_t::spell_speed()
   return _spell_speed;
 }
 
-double player_stat_cache_t::dodge()
+double player_stat_cache_t::dodge() const
 {
   if ( ! active || ! valid[ CACHE_DODGE ] )
   {
@@ -9534,7 +9545,7 @@ double player_stat_cache_t::dodge()
   return _dodge;
 }
 
-double player_stat_cache_t::parry()
+double player_stat_cache_t::parry() const
 {
   if ( ! active || ! valid[ CACHE_PARRY ] )
   {
@@ -9545,7 +9556,7 @@ double player_stat_cache_t::parry()
   return _parry;
 }
 
-double player_stat_cache_t::block()
+double player_stat_cache_t::block() const
 {
   if ( ! active || ! valid[ CACHE_BLOCK ] )
   {
@@ -9556,7 +9567,7 @@ double player_stat_cache_t::block()
   return _block;
 }
 
-double player_stat_cache_t::crit_block()
+double player_stat_cache_t::crit_block() const
 {
   if ( ! active || ! valid[ CACHE_CRIT_BLOCK ] )
   {
@@ -9567,7 +9578,7 @@ double player_stat_cache_t::crit_block()
   return _crit_block;
 }
 
-double player_stat_cache_t::crit_avoidance()
+double player_stat_cache_t::crit_avoidance() const
 {
   if ( ! active || ! valid[ CACHE_CRIT_AVOIDANCE ] )
   {
@@ -9578,7 +9589,7 @@ double player_stat_cache_t::crit_avoidance()
   return _crit_avoidance;
 }
 
-double player_stat_cache_t::miss()
+double player_stat_cache_t::miss() const
 {
   if ( ! active || ! valid[ CACHE_MISS ] )
   {
@@ -9589,7 +9600,7 @@ double player_stat_cache_t::miss()
   return _miss;
 }
 
-double player_stat_cache_t::armor()
+double player_stat_cache_t::armor() const
 {
   if ( ! active || ! valid[ CACHE_ARMOR ] )
   {
@@ -9604,7 +9615,7 @@ double player_stat_cache_t::armor()
  *
  * If you need the pure mastery value, use player_t::composite_mastery
  */
-double player_stat_cache_t::mastery_value()
+double player_stat_cache_t::mastery_value() const
 {
   if ( ! active || ! valid[ CACHE_MASTERY ] )
   {
@@ -9617,7 +9628,7 @@ double player_stat_cache_t::mastery_value()
 
 // player_stat_cache_t::mastery =============================================
 
-double player_stat_cache_t::player_multiplier( school_e s )
+double player_stat_cache_t::player_multiplier( school_e s ) const
 {
   if ( ! active || ! player_mult_valid[ s ] )
   {
@@ -9630,7 +9641,7 @@ double player_stat_cache_t::player_multiplier( school_e s )
 
 // player_stat_cache_t::mastery =============================================
 
-double player_stat_cache_t::player_heal_multiplier( school_e s )
+double player_stat_cache_t::player_heal_multiplier( school_e s ) const
 {
   if ( ! active || ! player_heal_mult_valid[ s ] )
   {
