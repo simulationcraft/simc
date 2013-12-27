@@ -986,7 +986,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
       direct_power_mod = 0.0;
     }
 
-    virtual void impact( action_state_t* s ) override // override
+    virtual void impact( action_state_t* s ) override
     {
       absorb_buff_t& buff = *get_td( s -> target ).buffs.divine_aegis;
       // Divine Aegis caps absorbs at 40% of target's health
