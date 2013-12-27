@@ -352,7 +352,7 @@ timespan_t buff_t::remains() const
 
 // buff_t::remains_gt =======================================================
 
-bool buff_t::remains_gt( timespan_t time )
+bool buff_t::remains_gt( timespan_t time ) const
 {
   timespan_t time_remaining = remains();
 
@@ -365,7 +365,7 @@ bool buff_t::remains_gt( timespan_t time )
 
 // buff_t::remains_lt =======================================================
 
-bool buff_t::remains_lt( timespan_t time )
+bool buff_t::remains_lt( timespan_t time ) const
 {
   timespan_t time_remaining = remains();
 

@@ -2327,7 +2327,7 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       double d = multiplier;
 
-      if ( priest.sets -> set( SET_T13_2PC_CASTER ) -> ok() )
+      if ( priest.sets -> has_set_bonus( SET_T13_2PC_CASTER ) )
         d *= 0.663587;
 
       return d;
@@ -2893,7 +2893,7 @@ struct vampiric_touch_mastery_t final : public priest_procced_mastery_spell_t
       priest.procs.surge_of_darkness -> occur();
     }
 
-    if ( priest.sets -> set( SET_T15_4PC_CASTER ) -> ok() )
+    if ( priest.sets -> has_set_bonus( SET_T15_4PC_CASTER ) )
     {
       if ( proc_shadowy_apparition && ( s -> result_amount > 0 ) )
       {
@@ -2952,7 +2952,7 @@ struct vampiric_touch_t final : public priest_spell_t
       proc_spell -> schedule_execute();
     }
 
-    if ( priest.sets -> set( SET_T15_4PC_CASTER ) -> ok() )
+    if ( priest.sets -> has_set_bonus( SET_T15_4PC_CASTER ) )
     {
       if ( proc_shadowy_apparition && ( d -> state -> result_amount > 0 )  )
       {
@@ -3977,7 +3977,7 @@ struct holy_word_sanctuary_t final : public priest_heal_t
     tick_action = new holy_word_sanctuary_tick_t( p );
 
     // Needs testing
-    cooldown -> duration *= 1.0 + p.sets -> set( SET_T13_4PC_HEAL ) -> ok() * -0.2;
+    cooldown -> duration *= 1.0 + p.sets -> has_set_bonus( SET_T13_4PC_HEAL ) * -0.2;
   }
 
   virtual void execute() override
@@ -4031,7 +4031,7 @@ struct holy_word_chastise_t final : public priest_spell_t
     base_costs[ current_resource() ]  = floor( base_costs[ current_resource() ] );
 
     // Needs testing
-    cooldown -> duration *= 1.0 + p.sets -> set( SET_T13_4PC_HEAL ) -> ok() * -0.2;
+    cooldown -> duration *= 1.0 + p.sets -> has_set_bonus( SET_T13_4PC_HEAL ) * -0.2;
 
     castable_in_shadowform = false;
   }
@@ -4077,7 +4077,7 @@ struct holy_word_serenity_t final : public priest_heal_t
     base_costs[ current_resource() ]  = floor( base_costs[ current_resource() ] );
 
     // Needs testing
-    cooldown -> duration = data().cooldown() * ( 1.0 + p.sets -> set( SET_T13_4PC_HEAL ) -> ok() * -0.2 );
+    cooldown -> duration = data().cooldown() * ( 1.0 + p.sets -> has_set_bonus( SET_T13_4PC_HEAL ) * -0.2 );
   }
 
   virtual void execute() override

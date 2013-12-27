@@ -1192,7 +1192,7 @@ struct barkskin_t : public druid_buff_t < buff_t >
       proc       = true;
       background = true;
 
-      if ( p -> sets -> set( SET_T16_2PC_TANK ) -> ok() )
+      if ( p -> sets -> has_set_bonus( SET_T16_2PC_TANK ) )
         p -> active.ursocs_vigor = new ursocs_vigor_t( p );
 
       maximum_rage_cost = data().effectN( 1 ).base_value();
@@ -1230,7 +1230,7 @@ struct barkskin_t : public druid_buff_t < buff_t >
     {
       heal_t::execute();
 
-      if ( p() -> sets -> set( SET_T16_4PC_TANK ) -> ok() )
+      if ( p() -> sets -> has_set_bonus( SET_T16_4PC_TANK ) )
         p() -> active.ursocs_vigor -> trigger_hot( 20.0 );
     }
 
@@ -1248,7 +1248,7 @@ struct barkskin_t : public druid_buff_t < buff_t >
   {
     cooldown -> duration = timespan_t::zero(); // CD is managed by the spell
 
-    if ( player -> sets -> set( SET_T16_2PC_TANK ) -> ok() )
+    if ( player -> sets -> has_set_bonus( SET_T16_2PC_TANK ) )
       frenzied_regeneration = new frenzied_regeneration_2pc_t( static_cast<druid_t*>( player ) );
   }
 
@@ -1256,7 +1256,7 @@ struct barkskin_t : public druid_buff_t < buff_t >
   {
     buff_t::expire_override();
 
-    if ( p() -> sets -> set( SET_T16_2PC_TANK ) -> ok() )
+    if ( p() -> sets -> has_set_bonus( SET_T16_2PC_TANK ) )
     {
       // Trigger 3 seconds of Savage Defense
       if ( p() -> buff.savage_defense -> check() )
@@ -1265,7 +1265,7 @@ struct barkskin_t : public druid_buff_t < buff_t >
         p() -> buff.savage_defense -> trigger( 1, buff_t::DEFAULT_VALUE(), 1, timespan_t::from_seconds( 3.0 ) );
 
       // Trigger 4pc equal to the consumption of 30 rage.
-      if ( p() -> sets -> set( SET_T16_4PC_TANK ) -> ok() )
+      if ( p() -> sets -> has_set_bonus( SET_T16_4PC_TANK ) )
         p() -> active.ursocs_vigor -> trigger_hot( 30.0 );
 
       // Trigger a 20 rage Frenzied Regeneration
@@ -2014,7 +2014,7 @@ public:
 
       if ( ( cat_state( execute_state ) -> cp > 0 || this -> name_str == "savage_roar" ) && requires_combo_points )
       {
-        if ( player -> sets -> set( SET_T15_2PC_MELEE ) -> ok() &&
+        if ( player -> sets -> has_set_bonus( SET_T15_2PC_MELEE ) &&
             rng().roll( cat_state( execute_state ) -> cp * 0.15 ) )
         {
           p() -> proc.tier15_2pc_melee -> occur();
@@ -2164,7 +2164,7 @@ struct cat_melee_t : public cat_attack_t
   {
     cat_attack_t::impact( state );
 
-    if ( result_is_hit( state -> result ) && trigger_omen_of_clarity() && p() -> sets -> set( SET_T16_2PC_MELEE ) -> ok() )
+    if ( result_is_hit( state -> result ) && trigger_omen_of_clarity() && p() -> sets -> has_set_bonus( SET_T16_2PC_MELEE ) )
       p() -> buff.feral_fury -> trigger();
   }
 };
@@ -2279,7 +2279,7 @@ struct ferocious_bite_t : public cat_attack_t
       }
 
       double health_percentage = 25.0;
-      if ( p() -> sets -> set( SET_T13_2PC_MELEE ) -> ok() )
+      if ( p() -> sets -> has_set_bonus( SET_T13_2PC_MELEE ) )
         health_percentage = p() -> sets -> set( SET_T13_2PC_MELEE ) -> effectN( 2 ).base_value();
 
       if ( state -> target -> health_percentage() <= health_percentage )
@@ -2499,7 +2499,7 @@ struct ravage_t : public cat_attack_t
     if ( p() -> buff.king_of_the_jungle -> check() )
       return POSITION_NONE;
 
-    if ( p() -> sets -> set( SET_PVP_4PC_MELEE ) -> ok() )
+    if ( p() -> sets -> has_set_bonus( SET_PVP_4PC_MELEE ) )
       if ( p() -> cooldown.pvp_4pc_melee -> up() )
         return POSITION_NONE;
 
@@ -2508,7 +2508,7 @@ struct ravage_t : public cat_attack_t
 
   virtual bool   requires_stealth() const
   {
-    if ( p() -> sets -> set( SET_PVP_4PC_MELEE ) -> ok() )
+    if ( p() -> sets -> has_set_bonus( SET_PVP_4PC_MELEE ) )
       if ( p() -> cooldown.pvp_4pc_melee -> up() )
         return false;
 
@@ -2517,7 +2517,7 @@ struct ravage_t : public cat_attack_t
 
   virtual double cost() const
   {
-    if ( p() -> sets->set( SET_PVP_4PC_MELEE ) -> ok() )
+    if ( p() -> sets->has_set_bonus( SET_PVP_4PC_MELEE ) )
       if ( p() -> cooldown.pvp_4pc_melee -> up() )
         return 0;
 
@@ -2551,7 +2551,7 @@ struct ravage_t : public cat_attack_t
   {
     cat_attack_t::impact( state );
 
-    if ( p() -> sets -> set( SET_PVP_4PC_MELEE ) -> ok() )
+    if ( p() -> sets -> has_set_bonus( SET_PVP_4PC_MELEE ) )
       if ( p() -> cooldown.pvp_4pc_melee -> up() )
         p() -> cooldown.pvp_4pc_melee -> start();
 
@@ -2920,13 +2920,13 @@ struct tigers_fury_t : public cat_attack_t
                           data().effectN( 2 ).resource( RESOURCE_ENERGY ),
                           p() -> gain.tigers_fury );
 
-    if ( p() -> sets -> set( SET_T13_4PC_MELEE ) -> ok() )
+    if ( p() -> sets -> has_set_bonus( SET_T13_4PC_MELEE ) )
       p() -> buff.omen_of_clarity -> trigger( 1, buff_t::DEFAULT_VALUE(), 1 );
 
-    if ( p() -> sets -> set( SET_T15_4PC_MELEE ) -> ok() )
+    if ( p() -> sets -> has_set_bonus( SET_T15_4PC_MELEE ) )
       p() -> buff.tier15_4pc_melee -> trigger( 3 );
 
-    if ( p() -> sets -> set( SET_T16_4PC_MELEE ) -> ok() )
+    if ( p() -> sets -> has_set_bonus( SET_T16_4PC_MELEE ) )
       p() -> buff.feral_rage -> trigger();
   }
 
@@ -3372,7 +3372,7 @@ struct savage_defense_t : public bear_attack_t
     cooldown -> charges = 3;
     use_off_gcd = true;
 
-    if ( player -> sets -> set( SET_T16_2PC_TANK ) -> ok() )
+    if ( player -> sets -> has_set_bonus( SET_T16_2PC_TANK ) )
       player -> active.ursocs_vigor = new ursocs_vigor_t( player );
   }
 
@@ -3385,7 +3385,7 @@ struct savage_defense_t : public bear_attack_t
     else
       p() -> buff.savage_defense -> trigger();
 
-    if ( p() -> sets -> set( SET_T16_4PC_TANK ) -> ok() )
+    if ( p() -> sets -> has_set_bonus( SET_T16_4PC_TANK ) )
       p() -> active.ursocs_vigor -> trigger_hot();
   }
 };
@@ -3691,7 +3691,7 @@ struct frenzied_regeneration_t : public druid_heal_t
     else
       base_costs[ RESOURCE_RAGE ] = 0;
 
-    if ( p -> sets -> set( SET_T16_2PC_TANK ) -> ok() )
+    if ( p -> sets -> has_set_bonus( SET_T16_2PC_TANK ) )
       p -> active.ursocs_vigor = new ursocs_vigor_t( p );
 
     maximum_rage_cost = data().effectN( 1 ).base_value();
@@ -3743,7 +3743,7 @@ struct frenzied_regeneration_t : public druid_heal_t
 
     druid_heal_t::execute();
 
-    if ( p() -> sets -> set( SET_T16_4PC_TANK ) -> ok() )
+    if ( p() -> sets -> has_set_bonus( SET_T16_4PC_TANK ) )
       p() -> active.ursocs_vigor -> trigger_hot( resource_consumed );
   }
 
@@ -4383,7 +4383,7 @@ struct druid_spell_t : public druid_spell_base_t<spell_t>
 
   void trigger_t16_2pc_balance( bool nature = false )
   {
-    if ( ! p() -> sets -> set( SET_T16_2PC_CASTER ) -> ok() )
+    if ( ! p() -> sets -> has_set_bonus( SET_T16_2PC_CASTER ) )
       return;
     if ( nature )
     {
@@ -6120,7 +6120,7 @@ void druid_t::init_spells()
 
   sets = new set_bonus_array_t( this, set_bonuses );
 
-  if ( sets -> set( SET_T16_2PC_CASTER ) -> ok() )
+  if ( sets -> has_set_bonus( SET_T16_2PC_CASTER ) )
   {
     t16_2pc_starfall_bolt = new spells::t16_2pc_starfall_bolt_t( this );
     t16_2pc_sun_bolt = new spells::t16_2pc_sun_bolt_t( this );
@@ -6258,7 +6258,7 @@ void druid_t::create_buffs()
 
   stat_buff_creator_t ng = stat_buff_creator_t( this, "natures_grace" )
                            .spell( find_specialization_spell( "Eclipse" ) -> ok() ? find_spell( 16886 ) : spell_data_t::not_found() );
-  if ( sets -> set( SET_T15_4PC_CASTER ) -> ok() )
+  if ( sets -> has_set_bonus( SET_T15_4PC_CASTER ) )
   {
     ng.add_stat( STAT_CRIT_RATING, sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).base_value() )
       .add_stat( STAT_MASTERY_RATING, sets -> set( SET_T15_4PC_CASTER ) -> effectN( 1 ).base_value() );
@@ -6501,7 +6501,7 @@ void druid_t::apl_feral()
                        "Rake if it's about to fall off or we can apply a stronger Rake." );
   basic -> add_action( "pool_resource,for_next=1" );
   basic -> add_action( "thrash_cat,if=dot.thrash_cat.remains<3&(dot.rip.remains>=8&buff.savage_roar.remains>=12|buff.berserk.up|combo_points>=5)" );
-  if ( sets -> set( SET_T16_4PC_MELEE ) -> ok() )
+  if ( sets -> has_set_bonus( SET_T16_4PC_MELEE ) )
     basic -> add_action( "pool_resource,if=combo_points>=5&!(energy.time_to_max<=1|(buff.berserk.up&energy>=25)|(buff.feral_rage.up&buff.feral_rage.remains<=1))&dot.rip.ticking",
                             "Pool to near-full energy before casting Ferocious Bite." );
   else
@@ -6511,7 +6511,7 @@ void druid_t::apl_feral()
                           "Ferocious Bite if we reached near-full energy without spending our CP on something else." );
   basic -> add_action( "run_action_list,name=filler,if=buff.omen_of_clarity.react",
                           "Conditions under which we should execute a CP generator." );
-  if ( sets -> set( SET_T16_2PC_MELEE ) -> ok() )
+  if ( sets -> has_set_bonus( SET_T16_2PC_MELEE ) )
     basic -> add_action( "run_action_list,name=filler,if=buff.feral_fury.react" );
   basic -> add_action( "run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)" );
   basic -> add_action( "run_action_list,name=filler,if=target.time_to_die<=8.5" );
@@ -6638,7 +6638,7 @@ void druid_t::apl_feral()
                             "Pool energy for and clip Thrash if Rune of Re-Origination is expiring." );
     advanced -> add_action( "thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<9&buff.rune_of_reorigination.up&buff.rune_of_reorigination.remains<=1.5&dot.rip.ticking" );
   }
-  if ( sets -> set( SET_T16_4PC_MELEE ) -> ok() )
+  if ( sets -> has_set_bonus( SET_T16_4PC_MELEE ) )
     advanced -> add_action( "pool_resource,if=combo_points>=5&!(energy.time_to_max<=1|(buff.berserk.up&energy>=25)|(buff.feral_rage.up&buff.feral_rage.remains<=1))&dot.rip.ticking",
                             "Pool to near-full energy before casting Ferocious Bite." );
   else
@@ -6648,7 +6648,7 @@ void druid_t::apl_feral()
                           "Ferocious Bite if we reached near-full energy without spending our CP on something else." );
   advanced -> add_action( "run_action_list,name=filler,if=buff.omen_of_clarity.react",
                           "Conditions under which we should execute a CP generator." );
-  if ( sets -> set( SET_T16_2PC_MELEE ) -> ok() )
+  if ( sets -> has_set_bonus( SET_T16_2PC_MELEE ) )
     advanced -> add_action( "run_action_list,name=filler,if=buff.feral_fury.react" );
   advanced -> add_action( "run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)" );
   advanced -> add_action( "run_action_list,name=filler,if=target.time_to_die<=8.5" );
@@ -7632,7 +7632,7 @@ void druid_t::assess_damage( school_e school,
                              dmg_e    dtype,
                              action_state_t* s )
 {
-  if ( sets -> set( SET_T15_2PC_TANK ) -> ok() && s -> result == RESULT_DODGE && buff.savage_defense -> check() )
+  if ( sets -> has_set_bonus( SET_T15_2PC_TANK ) && s -> result == RESULT_DODGE && buff.savage_defense -> check() )
     buff.tier15_2pc_tank -> trigger();
 
   if ( buff.barkskin -> up() )

@@ -1742,7 +1742,7 @@ public:
     if ( ! p -> rng().roll( chance ) ) return;
 
 
-    if ( p -> sets -> set( SET_T16_4PC_CASTER ) -> ok() && //check whether we fill one up.
+    if ( p -> sets -> has_set_bonus( SET_T16_4PC_CASTER ) && //check whether we fill one up.
         (( p -> resources.current[ RESOURCE_BURNING_EMBER ] < 1.0 && p -> resources.current[ RESOURCE_BURNING_EMBER ] + amount >= 1.0) ||
          ( p -> resources.current[ RESOURCE_BURNING_EMBER ] < 2.0 && p -> resources.current[ RESOURCE_BURNING_EMBER ] + amount >= 2.0) ||
          ( p -> resources.current[ RESOURCE_BURNING_EMBER ] < 3.0 && p -> resources.current[ RESOURCE_BURNING_EMBER ] + amount >= 3.0) ||
@@ -2108,7 +2108,7 @@ struct shadow_bolt_t : public warlock_spell_t
     background = false;
 
     //cast HoG
-    if ( p() -> sets -> set( SET_T16_4PC_CASTER ) -> ok() && rng().roll( 0.08 ) )//FIX after dbc update
+    if ( p() -> sets -> has_set_bonus( SET_T16_4PC_CASTER ) && rng().roll( 0.08 ) )//FIX after dbc update
     {
       hand_of_guldan -> target = target;
       int current_charge  = hand_of_guldan -> cooldown -> current_charge;
@@ -2517,7 +2517,7 @@ struct unstable_affliction_t : public warlock_spell_t
   {
     warlock_spell_t::tick( d );
 
-    if ( p() -> sets -> set( SET_T16_2PC_CASTER ) -> ok() && d -> state -> result == RESULT_CRIT )
+    if ( p() -> sets -> has_set_bonus( SET_T16_2PC_CASTER ) && d -> state -> result == RESULT_CRIT )
     {
       p() ->  buffs.tier16_2pc_empowered_grasp -> trigger();
     }
@@ -2557,7 +2557,7 @@ struct haunt_t : public warlock_spell_t
   {
     timespan_t duration = data().duration();
 
-    if ( p() -> sets -> set( SET_T15_2PC_CASTER ) -> ok() && p() -> buffs.dark_soul -> check() )
+    if ( p() -> sets -> has_set_bonus( SET_T15_2PC_CASTER ) && p() -> buffs.dark_soul -> check() )
       duration += p() -> spells.tier15_2pc -> effectN( 1 ).time_value();
 
     num_ticks = ( int ) ( duration / base_tick_time );
@@ -2637,7 +2637,7 @@ struct immolate_t : public warlock_spell_t
   {
     double cc = warlock_spell_t::crit_chance(crit, delta_level);
 
-    if ( p() -> sets -> set( SET_T16_2PC_CASTER ) -> ok() && p() -> buffs.tier16_2pc_destructive_influence -> check() )
+    if ( p() -> sets -> has_set_bonus( SET_T16_2PC_CASTER ) && p() -> buffs.tier16_2pc_destructive_influence -> check() )
       cc += p() -> buffs.tier16_2pc_destructive_influence -> value();
 
     return cc;
@@ -2782,7 +2782,7 @@ struct conflagrate_t : public warlock_spell_t
 
     //hotfixed extra gain with 15% chance from 13.09.13
     trigger_ember_gain( p(), 0.1, gain, 0.15 );
-    if ( s -> result == RESULT_CRIT &&  p() -> sets -> set( SET_T16_2PC_CASTER ) -> ok() )
+    if ( s -> result == RESULT_CRIT &&  p() -> sets -> has_set_bonus( SET_T16_2PC_CASTER ) )
       p() -> buffs.tier16_2pc_destructive_influence -> trigger();
   }
 
@@ -2846,7 +2846,7 @@ struct incinerate_t : public warlock_spell_t
   {
     double cc = warlock_spell_t::crit_chance( crit, delta_level );
 
-    if ( p() -> sets -> set( SET_T16_2PC_CASTER ) -> ok() && p() -> buffs.tier16_2pc_destructive_influence -> check() )
+    if ( p() -> sets -> has_set_bonus( SET_T16_2PC_CASTER ) && p() -> buffs.tier16_2pc_destructive_influence -> check() )
       cc += p() -> buffs.tier16_2pc_destructive_influence -> value();
 
     return cc;
@@ -2962,7 +2962,7 @@ struct soul_fire_t : public warlock_spell_t
 
     if ( result_is_hit( s -> result ) )
       trigger_soul_leech( p(), s -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() );
-    if ( p() -> sets -> set( SET_T16_2PC_CASTER ) -> ok() )
+    if ( p() -> sets -> has_set_bonus( SET_T16_2PC_CASTER ) )
     {
       p() -> buffs.tier16_2pc_fiery_wrath -> trigger();
     }
@@ -3313,7 +3313,7 @@ struct touch_of_chaos_t : public warlock_spell_t
     }
 
     //cast CW
-    if ( p() -> sets -> set( SET_T16_4PC_CASTER ) -> ok() && rng().roll( 0.08 ) )//FIX after dbc update
+    if ( p() -> sets -> has_set_bonus( SET_T16_4PC_CASTER ) && rng().roll( 0.08 ) )//FIX after dbc update
     {
       chaos_wave -> target = target;
       int current_charge  = chaos_wave -> cooldown -> current_charge;

@@ -955,7 +955,7 @@ struct tiger_palm_t : public monk_melee_attack_t
 
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
-    if ( p() -> sets -> set( SET_T16_2PC_MELEE ) -> ok() && p() -> buff.combo_breaker_tp -> check() ) {
+    if ( p() -> sets -> has_set_bonus( SET_T16_2PC_MELEE ) && p() -> buff.combo_breaker_tp -> check() ) {
       // damage increased by 40% for WW 2pc upon CB
       m *= 1.4;
     }
@@ -1091,7 +1091,7 @@ struct blackout_kick_t : public monk_melee_attack_t
       m *= 1.0 + p() -> find_spell( 139597 ) -> effectN( 1 ).percent();
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
-    if ( p() -> sets -> set( SET_T16_2PC_MELEE ) -> ok() && p() -> buff.combo_breaker_bok -> check() ) {
+    if ( p() -> sets -> has_set_bonus( SET_T16_2PC_MELEE ) && p() -> buff.combo_breaker_bok -> check() ) {
       // damage increased by 40% for WW 2pc upon CB
       m *= 1.4;
     }
@@ -1806,12 +1806,12 @@ struct tigereye_brew_t : public monk_spell_t
     if ( p() -> track_focus_of_xuen > 20.0 )
       p() -> track_focus_of_xuen = 20.0;
 
-    if ( p() -> sets -> set( SET_T15_4PC_MELEE ) -> ok() )
+    if ( p() -> sets -> has_set_bonus( SET_T15_4PC_MELEE ) )
     {
       use_value *= 1.05; // t154pc
     }
 
-    if ( p() -> sets -> set( SET_T16_4PC_MELEE ) -> ok() )
+    if ( p() -> sets -> has_set_bonus( SET_T16_4PC_MELEE ) )
     {
       // so, there's actually an error with our 4set in that it doesn't count a full .75 if we don't use a full 4, but
       // can't find post that contains info.

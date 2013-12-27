@@ -1909,13 +1909,13 @@ public:
 
   // Use check() inside of ready() and cost() methods to prevent skewing of "benefit" calculations.
   // Use up() where the presence of the buff affects the action mechanics.
-  int             check() { return current_stack; }
+  int             check() const { return current_stack; }
   inline bool     up()    { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
   inline int      stack() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
   inline double   value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
   timespan_t remains() const;
-  bool   remains_gt( timespan_t time );
-  bool   remains_lt( timespan_t time );
+  bool   remains_gt( timespan_t time ) const;
+  bool   remains_lt( timespan_t time ) const;
   bool   trigger  ( action_t*, int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
   virtual bool   trigger  ( int stacks = 1, double value = DEFAULT_VALUE(), double chance = -1.0, timespan_t duration = timespan_t::min() );
   virtual void   execute ( int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
@@ -3511,18 +3511,23 @@ public:
 
 struct set_bonus_t
 {
-  std::array<int, SET_MAX> count;
+  set_bonus_t();
 
   int decode( player_t*, item_t& item );
   bool init( player_t* );
-
-  set_bonus_t();
-
   expr_t* create_expression( player_t*, const std::string& type );
+
+  std::array<int, SET_MAX> count;
 };
 
 struct set_bonus_array_t
 {
+public:
+  set_bonus_array_t( player_t* p, const uint32_t a_bonus[ N_TIER ][ N_TIER_BONUS ] );
+
+  bool has_set_bonus( set_e s );
+  static bool has_set_bonus( player_t* p, set_e s );
+  const spell_data_t* set( set_e s );
 private:
   const spell_data_t* default_value;
   const spell_data_t* set_bonuses[ SET_MAX ];
@@ -3530,12 +3535,6 @@ private:
 
   const spell_data_t* create_set_bonus( uint32_t spell_id );
 
-public:
-  set_bonus_array_t( player_t* p, const uint32_t a_bonus[ N_TIER ][ N_TIER_BONUS ] );
-
-  bool has_set_bonus( set_e s );
-  static bool has_set_bonus( player_t* p, set_e s );
-  const spell_data_t* set( set_e s );
 };
 
 struct action_sequence_data_t
