@@ -70,7 +70,7 @@ pet_t::pet_t( sim_t*             s,
 
 // base_t::pet_attribute ====================================================
 
-double pet_t::composite_attribute( attribute_e attr )
+double pet_t::composite_attribute( attribute_e attr ) const
 {
   double a = current.stats.attribute[ attr ];
 
@@ -247,7 +247,7 @@ void pet_t::init_resources( bool force )
   resources.current = resources.max = resources.initial;
 }
 
-double pet_t::hit_exp()
+double pet_t::hit_exp() const
 {
   double h_e = owner -> cache.attack_hit();
 
@@ -260,13 +260,13 @@ double pet_t::hit_exp()
   return h_e * 0.50; // attack and spell hit are equal in MoP
 }
 
-double pet_t::pet_crit()
+double pet_t::pet_crit() const
 {
   return std::max( owner -> cache.attack_crit(),
                    owner -> cache.spell_crit() );
 }
 
-double pet_t::composite_melee_attack_power()
+double pet_t::composite_melee_attack_power() const
 {
   double ap = 0;
   if ( owner_coeff.ap_from_ap > 0.0 )
@@ -276,7 +276,7 @@ double pet_t::composite_melee_attack_power()
   return ap;
 }
 
-double pet_t::composite_spell_power( school_e school )
+double pet_t::composite_spell_power( school_e school ) const
 {
   double sp = 0;
   if ( owner_coeff.sp_from_ap > 0.0 )

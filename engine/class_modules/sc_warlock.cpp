@@ -297,15 +297,15 @@ public:
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
   virtual role_e primary_role() const     { return ROLE_SPELL; }
-  virtual double    matching_gear_multiplier( attribute_e attr );
-  virtual double composite_player_multiplier( school_e school );
+  virtual double    matching_gear_multiplier( attribute_e attr ) const;
+  virtual double composite_player_multiplier( school_e school ) const;
   virtual void invalidate_cache( cache_e );
-  virtual double composite_spell_crit();
-  virtual double composite_spell_haste();
-  virtual double composite_mastery();
+  virtual double composite_spell_crit() const;
+  virtual double composite_spell_haste() const;
+  virtual double composite_mastery() const;
   virtual double resource_gain( resource_e, double, gain_t* = 0, action_t* = 0 );
-  virtual double mana_regen_per_second();
-  virtual double composite_armor();
+  virtual double mana_regen_per_second() const;
+  virtual double composite_armor() const;
 
   virtual void halt();
   virtual void combat_begin();
@@ -362,7 +362,7 @@ struct warlock_pet_t : public pet_t
   virtual timespan_t available();
   virtual void schedule_ready( timespan_t delta_time = timespan_t::zero(),
                                bool   waiting = false );
-  virtual double composite_player_multiplier( school_e school );
+  virtual double composite_player_multiplier( school_e school ) const;
   virtual resource_e primary_resource() { return RESOURCE_ENERGY; }
   warlock_t* o() const
   { return static_cast<warlock_t*>( owner ); }
@@ -966,7 +966,7 @@ void warlock_pet_t::schedule_ready( timespan_t delta_time, bool waiting )
   pet_t::schedule_ready( delta_time, waiting );
 }
 
-double warlock_pet_t::composite_player_multiplier( school_e school )
+double warlock_pet_t::composite_player_multiplier( school_e school ) const
 {
   double m = pet_t::composite_player_multiplier( school );
 
@@ -4564,7 +4564,7 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   cooldowns.hand_of_guldan = get_cooldown ( "hand_of_guldan" );
 }
 
-double warlock_t::composite_player_multiplier( school_e school )
+double warlock_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
@@ -4603,7 +4603,7 @@ void warlock_t::invalidate_cache( cache_e c )
   }
 }
 
-double warlock_t::composite_spell_crit()
+double warlock_t::composite_spell_crit() const
 {
   double sc = player_t::composite_spell_crit();
 
@@ -4623,7 +4623,7 @@ double warlock_t::composite_spell_crit()
 }
 
 
-double warlock_t::composite_spell_haste()
+double warlock_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
@@ -4640,7 +4640,7 @@ double warlock_t::composite_spell_haste()
 }
 
 
-double warlock_t::composite_mastery()
+double warlock_t::composite_mastery() const
 {
   double m = player_t::composite_mastery();
 
@@ -4664,7 +4664,7 @@ double warlock_t::resource_gain( resource_e resource_type, double amount, gain_t
   return player_t::resource_gain( resource_type, amount, source, action );
 }
 
-double warlock_t::mana_regen_per_second()
+double warlock_t::mana_regen_per_second() const
 {
   double mp5 = player_t::mana_regen_per_second();
 
@@ -4674,7 +4674,7 @@ double warlock_t::mana_regen_per_second()
 }
 
 
-double warlock_t::composite_armor()
+double warlock_t::composite_armor() const
 {
   return player_t::composite_armor() + spec.fel_armor -> effectN( 2 ).base_value();
 }
@@ -4688,7 +4688,7 @@ void warlock_t::halt()
 }
 
 
-double warlock_t::matching_gear_multiplier( attribute_e attr )
+double warlock_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( attr == ATTR_INTELLECT )
     return spec.nethermancy -> effectN( 1 ).percent();

@@ -4513,7 +4513,7 @@ public:
   virtual void init();
   virtual void override_talent( std::string override_str );
   virtual void init_meta_gem( gear_stats_t& );
-  virtual bool weapon_racial( weapon_t* );
+  virtual bool weapon_racial( const weapon_t* ) const;
   virtual void init_resources( bool force = false );
   virtual std::string init_use_item_actions( const std::string& append = std::string() );
   virtual std::string init_use_profession_actions( const std::string& append = std::string() );
@@ -4564,107 +4564,107 @@ public:
   virtual void datacollection_begin();
   virtual void datacollection_end();
 
-  virtual double energy_regen_per_second();
-  virtual double focus_regen_per_second();
-  virtual double mana_regen_per_second();
+  virtual double energy_regen_per_second() const;
+  virtual double focus_regen_per_second() const;
+  virtual double mana_regen_per_second() const;
 
-  virtual double composite_melee_haste();
-  virtual double composite_melee_speed();
-  virtual double composite_melee_attack_power();
-  virtual double composite_melee_hit();
-  virtual double composite_melee_crit();
-  virtual double composite_melee_crit_multiplier() { return 1.0; }
-  virtual double composite_melee_expertise( weapon_t* w = 0 );
+  virtual double composite_melee_haste() const;
+  virtual double composite_melee_speed() const;
+  virtual double composite_melee_attack_power() const;
+  virtual double composite_melee_hit() const;
+  virtual double composite_melee_crit() const;
+  virtual double composite_melee_crit_multiplier() const { return 1.0; }
+  virtual double composite_melee_expertise( weapon_t* w = 0 ) const;
 
-  virtual double composite_spell_haste();//This is the subset of the old_spell_haste that applies to RPPM
-  virtual double composite_spell_speed();//This is the old spell_haste and incorporates everything that buffs cast speed
-  virtual double composite_spell_power( school_e school );
-  virtual double composite_spell_crit();
-  virtual double composite_spell_crit_multiplier() { return 1.0; }
-  virtual double composite_spell_hit();
-  virtual double composite_mastery();
-  virtual double composite_mastery_value();
+  virtual double composite_spell_haste() const; //This is the subset of the old_spell_haste that applies to RPPM
+  virtual double composite_spell_speed() const; //This is the old spell_haste and incorporates everything that buffs cast speed
+  virtual double composite_spell_power( school_e school ) const;
+  virtual double composite_spell_crit() const;
+  virtual double composite_spell_crit_multiplier() const { return 1.0; }
+  virtual double composite_spell_hit() const;
+  virtual double composite_mastery() const;
+  virtual double composite_mastery_value() const;
 
-  virtual double composite_armor();
-  virtual double composite_armor_multiplier();
-  virtual double composite_miss();
-  virtual double composite_dodge();
-  virtual double composite_parry();
-  virtual double composite_block();
-  virtual double composite_block_reduction();
-  virtual double composite_crit_block();
-  virtual double composite_crit_avoidance();
+  virtual double composite_armor() const;
+  virtual double composite_armor_multiplier() const;
+  virtual double composite_miss() const;
+  virtual double composite_dodge() const;
+  virtual double composite_parry() const;
+  virtual double composite_block() const;
+  virtual double composite_block_reduction() const;
+  virtual double composite_crit_block() const;
+  virtual double composite_crit_avoidance() const;
 
-  virtual double composite_attack_power_multiplier();
-  virtual double composite_spell_power_multiplier();
+  virtual double composite_attack_power_multiplier() const;
+  virtual double composite_spell_power_multiplier() const;
 
-  virtual double matching_gear_multiplier( attribute_e /* attr */ ) { return 0; }
+  virtual double matching_gear_multiplier( attribute_e /* attr */ ) const { return 0; }
 
-  virtual double composite_player_multiplier   ( school_e );
-  virtual double composite_player_dd_multiplier( school_e, action_t* /* a */ = NULL ) { return 1; }
-  virtual double composite_player_td_multiplier( school_e, action_t* a = NULL );
+  virtual double composite_player_multiplier   ( school_e ) const;
+  virtual double composite_player_dd_multiplier( school_e, action_t* /* a */ = NULL ) const { return 1; }
+  virtual double composite_player_td_multiplier( school_e, action_t* a = NULL ) const;
 
-  virtual double composite_player_heal_multiplier( school_e school );
-  virtual double composite_player_dh_multiplier( school_e /* school */ ) { return 1; }
-  virtual double composite_player_th_multiplier( school_e school );
+  virtual double composite_player_heal_multiplier( school_e school ) const;
+  virtual double composite_player_dh_multiplier( school_e /* school */ ) const { return 1; }
+  virtual double composite_player_th_multiplier( school_e school ) const;
 
-  virtual double composite_player_absorb_multiplier( school_e school );
+  virtual double composite_player_absorb_multiplier( school_e school ) const;
 
-  virtual double composite_player_critical_damage_multiplier();
-  virtual double composite_player_critical_healing_multiplier();
+  virtual double composite_player_critical_damage_multiplier() const;
+  virtual double composite_player_critical_healing_multiplier() const;
 
-  virtual double composite_mitigation_multiplier( school_e );
+  virtual double composite_mitigation_multiplier( school_e ) const;
 
-  virtual double composite_movement_speed();
+  virtual double composite_movement_speed() const;
 
-  virtual double composite_attribute( attribute_e attr );
-  virtual double composite_attribute_multiplier( attribute_e attr );
+  virtual double composite_attribute( attribute_e attr ) const;
+  virtual double composite_attribute_multiplier( attribute_e attr ) const;
 
   virtual double composite_rating_multiplier( rating_e /* rating */ ) const;
   virtual double composite_rating( rating_e rating ) const;
 
-  double composite_spell_hit_rating()
+  double composite_spell_hit_rating() const
   { return composite_rating( RATING_SPELL_HIT ); }
-  double composite_spell_crit_rating()
+  double composite_spell_crit_rating() const
   { return composite_rating( RATING_SPELL_CRIT ); }
-  double composite_spell_haste_rating()
+  double composite_spell_haste_rating() const
   { return composite_rating( RATING_SPELL_HASTE ); }
 
-  double composite_melee_hit_rating()
+  double composite_melee_hit_rating() const
   { return composite_rating( RATING_MELEE_HIT ); }
-  double composite_melee_crit_rating()
+  double composite_melee_crit_rating() const
   { return composite_rating( RATING_MELEE_CRIT ); }
-  double composite_melee_haste_rating()
+  double composite_melee_haste_rating() const
   { return composite_rating( RATING_MELEE_HASTE ); }
 
-  double composite_ranged_hit_rating()
+  double composite_ranged_hit_rating() const
   { return composite_rating( RATING_RANGED_HIT ); }
-  double composite_ranged_crit_rating()
+  double composite_ranged_crit_rating() const
   { return composite_rating( RATING_RANGED_CRIT ); }
-  double composite_ranged_haste_rating()
+  double composite_ranged_haste_rating() const
   { return composite_rating( RATING_RANGED_HASTE ); }
 
-  double composite_mastery_rating()
+  double composite_mastery_rating() const
   { return composite_rating( RATING_MASTERY ); }
-  double composite_expertise_rating()
+  double composite_expertise_rating() const
   { return composite_rating( RATING_EXPERTISE ); }
 
-  double composite_dodge_rating()
+  double composite_dodge_rating() const
   { return composite_rating( RATING_DODGE ); }
-  double composite_parry_rating()
+  double composite_parry_rating() const
   { return composite_rating( RATING_PARRY ); }
-  double composite_block_rating()
+  double composite_block_rating() const
   { return composite_rating( RATING_BLOCK ); }
 
-  double get_attribute( attribute_e a )
+  double get_attribute( attribute_e a ) const
   { return util::round( composite_attribute( a ) * composite_attribute_multiplier( a ) ); }
 
-  double strength()  { return get_attribute( ATTR_STRENGTH ); }
-  double agility()   { return get_attribute( ATTR_AGILITY ); }
-  double stamina()   { return get_attribute( ATTR_STAMINA ); }
-  double intellect() { return get_attribute( ATTR_INTELLECT ); }
-  double spirit()    { return get_attribute( ATTR_SPIRIT ); }
-  double mastery_coefficient() { return _mastery -> mastery_value(); }
+  double strength() const  { return get_attribute( ATTR_STRENGTH ); }
+  double agility() const   { return get_attribute( ATTR_AGILITY ); }
+  double stamina() const   { return get_attribute( ATTR_STAMINA ); }
+  double intellect() const { return get_attribute( ATTR_INTELLECT ); }
+  double spirit() const    { return get_attribute( ATTR_SPIRIT ); }
+  double mastery_coefficient() const { return _mastery -> mastery_value(); }
 
   // Stat Caching
   mutable player_stat_cache_t cache;
@@ -4774,7 +4774,7 @@ public:
   bool is_pet() const { return type == PLAYER_PET || type == PLAYER_GUARDIAN || type == ENEMY_ADD; }
   bool is_enemy() const { return _is_enemy( type ); }
   static bool _is_enemy( player_e t ) { return t == ENEMY || t == ENEMY_ADD; }
-  bool is_add() { return type == ENEMY_ADD; }
+  bool is_add() const { return type == ENEMY_ADD; }
   static bool _is_sleeping( const player_t* t ) { return t -> current.sleeping; }
   bool is_sleeping() const { return _is_sleeping( this ); }
 
@@ -4785,7 +4785,7 @@ public:
   bool      recent_cast();
   item_t*   find_item( const std::string& );
   action_t* find_action( const std::string& );
-  bool      dual_wield() { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
+  bool      dual_wield() const { return main_hand_weapon.type != WEAPON_NONE && off_hand_weapon.type != WEAPON_NONE; }
   bool      has_shield_equipped() const
   { return  items[ SLOT_OFF_HAND ].parsed.data.item_subclass == ITEM_SUBCLASS_ARMOR_SHIELD; }
 
@@ -4921,52 +4921,52 @@ public:
 
   const spell_data_t* find_pet_spell( const std::string& name, const std::string& token = std::string() );
 
-  virtual double composite_attribute( attribute_e attr );
+  virtual double composite_attribute( attribute_e attr ) const;
 
   // new pet scaling by Ghostcrawler, see http://us.battle.net/wow/en/forum/topic/5889309137?page=49#977
   // http://us.battle.net/wow/en/forum/topic/5889309137?page=58#1143
 
-  double hit_exp();
+  double hit_exp() const;
 
-  virtual double composite_melee_expertise( weapon_t* )
+  virtual double composite_melee_expertise( weapon_t* ) const
   { return hit_exp(); }
-  virtual double composite_melee_hit()
+  virtual double composite_melee_hit() const
   { return hit_exp(); }
-  virtual double composite_spell_hit()
+  virtual double composite_spell_hit() const
   { return hit_exp() * 2.0; }
 
-  double pet_crit();
+  double pet_crit() const;
 
-  virtual double composite_melee_crit()
+  virtual double composite_melee_crit() const
   { return pet_crit(); }
-  virtual double composite_spell_crit()
+  virtual double composite_spell_crit() const
   { return pet_crit(); }
 
-  virtual double composite_melee_speed()
+  virtual double composite_melee_speed() const
   { return owner -> cache.attack_speed(); }
 
-  virtual double composite_melee_haste()
+  virtual double composite_melee_haste() const
   { return owner -> cache.attack_haste(); }
 
-  virtual double composite_spell_haste()
+  virtual double composite_spell_haste() const
   { return owner -> cache.spell_haste(); }
 
-  virtual double composite_spell_speed()
+  virtual double composite_spell_speed() const
   { return owner -> cache.spell_speed(); }
 
-  virtual double composite_melee_attack_power();
+  virtual double composite_melee_attack_power() const;
 
-  virtual double composite_spell_power( school_e school );
+  virtual double composite_spell_power( school_e school ) const;
 
   // Assuming diminishing returns are transfered to the pet as well
-  virtual double composite_dodge()
+  virtual double composite_dodge() const
   { return owner -> cache.dodge(); }
 
-  virtual double composite_parry()
+  virtual double composite_parry() const
   { return owner -> cache.parry(); }
 
   // Influenced by coefficients [ 0, 1 ]
-  virtual double composite_armor()
+  virtual double composite_armor() const
   { return owner -> cache.armor() * owner_coeff.armor; }
 
   virtual void init_resources( bool force );

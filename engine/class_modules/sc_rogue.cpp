@@ -305,12 +305,12 @@ struct rogue_t : public player_t
   virtual bool      create_profile( std::string& profile_str, save_e = SAVE_ALL, bool save_html = false );
   virtual void      copy_from( player_t* source );
 
-  virtual double    composite_attribute_multiplier( attribute_e attr );
-  virtual double    composite_melee_speed();
-  virtual double    matching_gear_multiplier( attribute_e attr );
-  virtual double    composite_attack_power_multiplier();
-  virtual double    composite_player_multiplier( school_e school );
-  virtual double    energy_regen_per_second();
+  virtual double    composite_attribute_multiplier( attribute_e attr ) const;
+  virtual double    composite_melee_speed() const;
+  virtual double    matching_gear_multiplier( attribute_e attr ) const;
+  virtual double    composite_attack_power_multiplier() const;
+  virtual double    composite_player_multiplier( school_e school ) const;
+  virtual double    energy_regen_per_second() const;
 
   mutable target_specific_t<rogue_td_t*> target_data;
 
@@ -2967,7 +2967,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
 
 // rogue_t::composite_attribute_multiplier ==================================
 
-double rogue_t::composite_attribute_multiplier( attribute_e attr )
+double rogue_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
@@ -2979,7 +2979,7 @@ double rogue_t::composite_attribute_multiplier( attribute_e attr )
 
 // rogue_t::composite_attack_speed ==========================================
 
-double rogue_t::composite_melee_speed()
+double rogue_t::composite_melee_speed() const
 {
   double h = player_t::composite_melee_speed();
 
@@ -2994,7 +2994,7 @@ double rogue_t::composite_melee_speed()
 
 // rogue_t::matching_gear_multiplier ========================================
 
-double rogue_t::matching_gear_multiplier( attribute_e attr )
+double rogue_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( attr == ATTR_AGILITY )
     return 0.05;
@@ -3004,7 +3004,7 @@ double rogue_t::matching_gear_multiplier( attribute_e attr )
 
 // rogue_t::composite_attack_power_multiplier ===============================
 
-double rogue_t::composite_attack_power_multiplier()
+double rogue_t::composite_attack_power_multiplier() const
 {
   double m = player_t::composite_attack_power_multiplier();
 
@@ -3015,7 +3015,7 @@ double rogue_t::composite_attack_power_multiplier()
 
 // rogue_t::composite_player_multiplier =====================================
 
-double rogue_t::composite_player_multiplier( school_e school )
+double rogue_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
@@ -3780,7 +3780,7 @@ void rogue_t::arise()
 
 // rogue_t::energy_regen_per_second =========================================
 
-double rogue_t::energy_regen_per_second()
+double rogue_t::energy_regen_per_second() const
 {
   double r = player_t::energy_regen_per_second();
 

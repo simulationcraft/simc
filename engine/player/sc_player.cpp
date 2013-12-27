@@ -1591,7 +1591,7 @@ void player_t::init_race()
 
 // player_t::weapon_racial ==================================================
 
-bool player_t::weapon_racial( weapon_t* weapon )
+bool player_t::weapon_racial( const weapon_t* weapon ) const
 {
   if ( ! weapon )
     return false;
@@ -2818,7 +2818,7 @@ item_t* player_t::find_item( const std::string& str )
 
 // player_t::energy_regen_per_second ========================================
 
-double player_t::energy_regen_per_second()
+double player_t::energy_regen_per_second() const
 {
   double r = 0;
   if ( base_energy_regen_per_second )
@@ -2828,7 +2828,7 @@ double player_t::energy_regen_per_second()
 
 // player_t::focus_regen_per_second =========================================
 
-double player_t::focus_regen_per_second()
+double player_t::focus_regen_per_second() const
 {
   double r = 0;
   if ( base_focus_regen_per_second )
@@ -2838,14 +2838,14 @@ double player_t::focus_regen_per_second()
 
 // player_t::mana_regen_per_second ==========================================
 
-double player_t::mana_regen_per_second()
+double player_t::mana_regen_per_second() const
 {
   return current.mana_regen_per_second + cache.spirit() * current.mana_regen_per_spirit * current.mana_regen_from_spirit_multiplier;
 }
 
 // player_t::composite_attack_haste =========================================
 
-double player_t::composite_melee_haste()
+double player_t::composite_melee_haste() const
 {
   double h = 1.0 / ( 1.0 + std::max( 0.0, composite_melee_haste_rating() ) / current.rating.attack_haste );
 
@@ -2875,7 +2875,7 @@ double player_t::composite_melee_haste()
 
 // player_t::composite_attack_speed =========================================
 
-double player_t::composite_melee_speed()
+double player_t::composite_melee_speed() const
 {
   double h = composite_melee_haste();
 
@@ -2892,7 +2892,7 @@ double player_t::composite_melee_speed()
 
 // player_t::composite_attack_power =========================================
 
-double player_t::composite_melee_attack_power()
+double player_t::composite_melee_attack_power() const
 {
   double ap = current.stats.attack_power;
 
@@ -2907,7 +2907,7 @@ double player_t::composite_melee_attack_power()
 
 // player_t::composite_attack_power_multiplier ==============================
 
-double player_t::composite_attack_power_multiplier()
+double player_t::composite_attack_power_multiplier() const
 {
   double m = current.attack_power_multiplier;
 
@@ -2919,7 +2919,7 @@ double player_t::composite_attack_power_multiplier()
 
 // player_t::composite_attack_crit ==========================================
 
-double player_t::composite_melee_crit()
+double player_t::composite_melee_crit() const
 {
   double ac = current.attack_crit + composite_melee_crit_rating() / current.rating.attack_crit;
 
@@ -2937,7 +2937,7 @@ double player_t::composite_melee_crit()
 
 // player_t::composite_attack_expertise =====================================
 
-double player_t::composite_melee_expertise( weapon_t* weapon )
+double player_t::composite_melee_expertise( weapon_t* weapon ) const
 {
   double e = composite_expertise_rating() / current.rating.expertise;
 
@@ -2949,7 +2949,7 @@ double player_t::composite_melee_expertise( weapon_t* weapon )
 
 // player_t::composite_attack_hit ===========================================
 
-double player_t::composite_melee_hit()
+double player_t::composite_melee_hit() const
 {
   double ah = composite_melee_hit_rating() / current.rating.attack_hit;
 
@@ -2961,7 +2961,7 @@ double player_t::composite_melee_hit()
 
 // player_t::composite_armor ================================================
 
-double player_t::composite_armor()
+double player_t::composite_armor() const
 {
   double a = current.stats.armor;
 
@@ -2978,7 +2978,7 @@ double player_t::composite_armor()
 
 // player_t::composite_armor_multiplier =====================================
 
-double player_t::composite_armor_multiplier()
+double player_t::composite_armor_multiplier() const
 {
   double a = current.armor_multiplier;
 
@@ -2992,7 +2992,7 @@ double player_t::composite_armor_multiplier()
 
 // player_t::composite_miss ============================================
 
-double player_t::composite_miss()
+double player_t::composite_miss() const
 {
   double m = current.miss;
 
@@ -3003,7 +3003,7 @@ double player_t::composite_miss()
 
 // player_t::composite_block ===========================================
 
-double player_t::composite_block()
+double player_t::composite_block() const
 {
   double block_by_rating = composite_block_rating() / current.rating.block;
 
@@ -3020,7 +3020,7 @@ double player_t::composite_block()
 
 // player_t::composite_dodge ===========================================
 
-double player_t::composite_dodge()
+double player_t::composite_dodge() const
 {
   double dodge_by_dodge_rating = composite_dodge_rating() / current.rating.dodge;
   double dodge_by_agility = ( cache.agility() - base.stats.attribute[ ATTR_AGILITY ] ) * current.dodge_per_agility;
@@ -3041,7 +3041,7 @@ double player_t::composite_dodge()
 
 // player_t::composite_parry ===========================================
 
-double player_t::composite_parry()
+double player_t::composite_parry() const
 {
 
   //changed it to match the typical formulation
@@ -3068,7 +3068,7 @@ double player_t::composite_parry()
 
 // player_t::composite_block_reduction =================================
 
-double player_t::composite_block_reduction()
+double player_t::composite_block_reduction() const
 {
   double b = current.block_reduction;
 
@@ -3083,21 +3083,21 @@ double player_t::composite_block_reduction()
 
 // player_t::composite_crit_block ======================================
 
-double player_t::composite_crit_block()
+double player_t::composite_crit_block() const
 {
   return 0;
 }
 
 // player_t::composite_crit_avoidance========================================
 
-double player_t::composite_crit_avoidance()
+double player_t::composite_crit_avoidance() const
 {
   return 0;
 }
 
 // player_t::composite_spell_haste ==========================================
 
-double player_t::composite_spell_haste()
+double player_t::composite_spell_haste() const
 {
   double h = 1.0 / ( 1.0 + std::max( 0.0, composite_spell_haste_rating() ) / current.rating.spell_haste );
 
@@ -3128,7 +3128,7 @@ double player_t::composite_spell_haste()
 
 // player_t::composite_spell_speed ==========================================
 
-double player_t::composite_spell_speed()
+double player_t::composite_spell_speed() const
 {
   double h = cache.spell_haste();
 
@@ -3137,7 +3137,7 @@ double player_t::composite_spell_speed()
 
 // player_t::composite_spell_power ==========================================
 
-double player_t::composite_spell_power( school_e /* school */ )
+double player_t::composite_spell_power( school_e /* school */ ) const
 {
   double sp = current.stats.spell_power;
 
@@ -3148,7 +3148,7 @@ double player_t::composite_spell_power( school_e /* school */ )
 
 // player_t::composite_spell_power_multiplier ===============================
 
-double player_t::composite_spell_power_multiplier()
+double player_t::composite_spell_power_multiplier() const
 {
   double m = current.spell_power_multiplier;
 
@@ -3160,7 +3160,7 @@ double player_t::composite_spell_power_multiplier()
 
 // player_t::composite_spell_crit ===========================================
 
-double player_t::composite_spell_crit()
+double player_t::composite_spell_crit() const
 {
   double sc = current.spell_crit + composite_spell_crit_rating() / current.rating.spell_crit;
 
@@ -3183,7 +3183,7 @@ double player_t::composite_spell_crit()
 
 // player_t::composite_spell_hit ============================================
 
-double player_t::composite_spell_hit()
+double player_t::composite_spell_hit() const
 {
   double sh = composite_spell_hit_rating() / current.rating.spell_hit;
 
@@ -3202,14 +3202,14 @@ double player_t::composite_spell_hit()
 
 // player_t::composite_mastery ==============================================
 
-double player_t::composite_mastery()
+double player_t::composite_mastery() const
 {
   return util::round( current.mastery + composite_mastery_rating() / current.rating.mastery, 2 );
 }
 
 // player_t::composite_player_multiplier ====================================
 
-double player_t::composite_player_multiplier( school_e school )
+double player_t::composite_player_multiplier( school_e school ) const
 {
   double m = 1.0;
 
@@ -3235,33 +3235,33 @@ double player_t::composite_player_multiplier( school_e school )
 
 // player_t::composite_player_td_multiplier =================================
 
-double player_t::composite_player_td_multiplier( school_e /* school */, action_t* /* a */ )
+double player_t::composite_player_td_multiplier( school_e /* school */, action_t* /* a */ ) const
 {
   return 1.0;
 }
 
 // player_t::composite_player_heal_multiplier ===============================
 
-double player_t::composite_player_heal_multiplier( school_e /* school */ )
+double player_t::composite_player_heal_multiplier( school_e /* school */ ) const
 {
   return 1.0;
 }
 
 // player_t::composite_player_th_multiplier =================================
 
-double player_t::composite_player_th_multiplier( school_e /* school */ )
+double player_t::composite_player_th_multiplier( school_e /* school */ ) const
 {
   return 1.0;
 }
 
 // player_t::composite_player_absorb_multiplier =============================
 
-double player_t::composite_player_absorb_multiplier( school_e /* school */ )
+double player_t::composite_player_absorb_multiplier( school_e /* school */ ) const
 {
   return 1.0;
 }
 
-double player_t::composite_player_critical_damage_multiplier()
+double player_t::composite_player_critical_damage_multiplier() const
 {
   double m = 1.0;
 
@@ -3270,7 +3270,7 @@ double player_t::composite_player_critical_damage_multiplier()
   return m;
 }
 
-double player_t::composite_player_critical_healing_multiplier()
+double player_t::composite_player_critical_healing_multiplier() const
 {
   double m = 1.0;
 
@@ -3279,11 +3279,11 @@ double player_t::composite_player_critical_healing_multiplier()
 
 // player_t::composite_movement_speed =======================================
 
-double player_t::composite_movement_speed()
+double player_t::composite_movement_speed() const
 {
   double speed = base_movement_speed;
 
-  speed *= 1.0 + buffs.body_and_soul -> value();
+  speed *= 1.0 + buffs.body_and_soul -> current_value;
 
   // From http://www.wowpedia.org/Movement_speed_effects
   // Additional items looked up
@@ -3315,7 +3315,7 @@ double player_t::composite_movement_speed()
 
 // player_t::composite_attribute ============================================
 
-double player_t::composite_attribute( attribute_e attr )
+double player_t::composite_attribute( attribute_e attr ) const
 {
   double a = current.stats.attribute[ attr ];
   double m = ( ( level >= 50 ) && matching_gear ) ? ( 1.0 + matching_gear_multiplier( attr ) ) : 1.0;
@@ -3337,7 +3337,7 @@ double player_t::composite_attribute( attribute_e attr )
 
 // player_t::composite_attribute_multiplier =================================
 
-double player_t::composite_attribute_multiplier( attribute_e attr )
+double player_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = current.attribute_multiplier[ attr ];
 
@@ -3461,12 +3461,12 @@ double player_t::composite_ranged_attack_player_vulnerability()
   return 1.0;
 }
 
-double player_t::composite_mitigation_multiplier( school_e /* school */ )
+double player_t::composite_mitigation_multiplier( school_e /* school */ ) const
 {
   return 1.0;
 }
 
-double player_t::composite_mastery_value()
+double player_t::composite_mastery_value() const
 {
   return composite_mastery() * mastery_coefficient();
 }

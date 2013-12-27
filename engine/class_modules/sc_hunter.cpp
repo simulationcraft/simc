@@ -298,13 +298,13 @@ public:
   virtual void      combat_begin();
   virtual void      arise();
   virtual void      reset();
-  virtual double    composite_attack_power_multiplier();
-  virtual double    composite_melee_haste();
-  virtual double    composite_melee_speed();
-  virtual double    ranged_haste_multiplier();
-  virtual double    ranged_speed_multiplier();
-  virtual double    composite_player_multiplier( school_e school );
-  virtual double    matching_gear_multiplier( attribute_e attr );
+  virtual double    composite_attack_power_multiplier() const;
+  virtual double    composite_melee_haste() const;
+  virtual double    composite_melee_speed() const;
+  virtual double    ranged_haste_multiplier() const;
+  virtual double    ranged_speed_multiplier() const;
+  virtual double    composite_player_multiplier( school_e school ) const;
+  virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual void      invalidate_cache( cache_e );
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -470,14 +470,14 @@ public:
   hunter_t* o() const
   { return static_cast< hunter_t* >( owner ); }
 
-  virtual double composite_player_multiplier( school_e school )
+  virtual double composite_player_multiplier( school_e school ) const
   {
     double m = base_t::composite_player_multiplier( school );
     m *= o() -> beast_multiplier();
     return m;
   }
 
-  virtual double composite_melee_haste()
+  virtual double composite_melee_haste() const
   {
     double ah = base_t::composite_melee_haste();
     // remove the portions of speed that were ranged only.
@@ -485,7 +485,7 @@ public:
     return ah;
   }
 
-  virtual double composite_melee_speed()
+  virtual double composite_melee_speed() const
   {
     double ah = base_t::composite_melee_speed();
     // remove the portions of speed that were ranged only.
@@ -761,7 +761,7 @@ public:
     base_t::init_action_list();
   }
 
-  virtual double composite_attack_power_multiplier()
+  virtual double composite_attack_power_multiplier() const
   {
     double mult = base_t::composite_attack_power_multiplier();
 
@@ -770,19 +770,19 @@ public:
     return mult;
   }
 
-  virtual double composite_melee_crit()
+  virtual double composite_melee_crit() const
   {
     double ac = base_t::composite_melee_crit();
     ac += specs.spiked_collar -> effectN( 3 ).percent();
     return ac;
   }
 
-  double focus_regen_per_second()
+  double focus_regen_per_second() const
   {
     return o() -> focus_regen_per_second() * 1.25;
   }
 
-  virtual double composite_melee_speed()
+  virtual double composite_melee_speed() const
   {
     double ah = base_t::composite_melee_speed();
 
@@ -829,7 +829,7 @@ public:
       o() -> active.pet = nullptr;
   }
 
-  virtual double composite_player_multiplier( school_e school )
+  virtual double composite_player_multiplier( school_e school ) const
   {
     double m = base_t::composite_player_multiplier( school );
 
@@ -4142,7 +4142,7 @@ void hunter_t::arise()
 
 // hunter_t::composite_attack_power_multiplier ==============================
 
-double hunter_t::composite_attack_power_multiplier()
+double hunter_t::composite_attack_power_multiplier() const
 {
   double mult = player_t::composite_attack_power_multiplier();
 
@@ -4156,7 +4156,7 @@ double hunter_t::composite_attack_power_multiplier()
 
 // Haste and speed buff computations ========================================
 
-double hunter_t::composite_melee_haste()
+double hunter_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
   h *= 1.0 / ( 1.0 + buffs.tier13_4pc -> up() * buffs.tier13_4pc -> data().effectN( 1 ).percent() );
@@ -4164,7 +4164,7 @@ double hunter_t::composite_melee_haste()
   return h;
 }
 
-double hunter_t::composite_melee_speed()
+double hunter_t::composite_melee_speed() const
 {
   double h = player_t::composite_melee_speed();
   h *= ranged_speed_multiplier();
@@ -4173,7 +4173,7 @@ double hunter_t::composite_melee_speed()
 
 // Buffs that increase hunter ranged attack haste (and thus regen) but not
 // melee attack haste (and so not pet attacks nor RPPM)
-double hunter_t::ranged_haste_multiplier()
+double hunter_t::ranged_haste_multiplier() const
 {
   double h = 1.0;
   h *= 1.0 / ( 1.0 + buffs.focus_fire -> value() );
@@ -4183,7 +4183,7 @@ double hunter_t::ranged_haste_multiplier()
 
 // Buffs that increase hunter ranged attack speed but not
 // melee attack speed (and so not pet attacks)
-double hunter_t::ranged_speed_multiplier()
+double hunter_t::ranged_speed_multiplier() const
 {
   double h = 1.0;
   h *= 1.0 / ( 1.0 + buffs.steady_focus -> value() );
@@ -4192,7 +4192,7 @@ double hunter_t::ranged_speed_multiplier()
 
 // hunter_t::composite_player_multiplier ====================================
 
-double hunter_t::composite_player_multiplier( school_e school )
+double hunter_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
@@ -4208,7 +4208,7 @@ double hunter_t::composite_player_multiplier( school_e school )
   if ( buffs.beast_within -> up() )
     m *= 1.0 + buffs.beast_within -> data().effectN( 2 ).percent();
   
-  if ( set_bonus.tier16_4pc_melee() )
+  if ( sets -> set( SET_T16_4PC_MELEE) -> ok() )
     m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> stack() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
 
   return m;
@@ -4232,7 +4232,7 @@ void hunter_t::invalidate_cache( cache_e c )
 
 // hunter_t::matching_gear_multiplier =======================================
 
-double hunter_t::matching_gear_multiplier( attribute_e attr )
+double hunter_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( attr == ATTR_AGILITY )
     return 0.05;

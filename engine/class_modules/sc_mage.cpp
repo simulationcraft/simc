@@ -286,12 +286,12 @@ public:
   virtual int       decode_set( item_t& item );
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
   virtual role_e primary_role() const { return ROLE_SPELL; }
-  virtual double    mana_regen_per_second();
-  virtual double    composite_player_multiplier( school_e school );
+  virtual double    mana_regen_per_second() const;
+  virtual double    composite_player_multiplier( school_e school ) const;
   virtual void invalidate_cache( cache_e );
-  virtual double    composite_spell_crit();
-  virtual double    composite_spell_haste();
-  virtual double    matching_gear_multiplier( attribute_e attr );
+  virtual double    composite_spell_crit() const;
+  virtual double    composite_spell_haste() const;
+  virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual void      stun();
   virtual void      moving();
 
@@ -439,7 +439,7 @@ struct water_elemental_pet_t : public pet_t
     owner_coeff.sp_from_sp = 1.0;
   }
 
-  mage_t* o()
+  mage_t* o() const
   { return static_cast<mage_t*>( owner ); }
 
   virtual action_t* create_action( const std::string& name,
@@ -451,7 +451,7 @@ struct water_elemental_pet_t : public pet_t
     return pet_t::create_action( name, options_str );
   }
 
-  virtual double composite_player_multiplier( school_e school )
+  virtual double composite_player_multiplier( school_e school ) const
   {
     double m = pet_t::composite_player_multiplier( school );
 
@@ -613,7 +613,7 @@ struct mirror_image_pet_t : public pet_t
   }
 
 
-  virtual double composite_player_multiplier( school_e school )
+  virtual double composite_player_multiplier( school_e school ) const
   {
     double m = pet_t::composite_player_multiplier( school );
 
@@ -4550,7 +4550,7 @@ void mage_t::init_action_list()
 
 // mage_t::mana_regen_per_second ============================================
 
-double mage_t::mana_regen_per_second()
+double mage_t::mana_regen_per_second() const
 {
   double mp5 = player_t::mana_regen_per_second();
 
@@ -4566,14 +4566,14 @@ double mage_t::mana_regen_per_second()
 
 // mage_t::composite_player_multipler =======================================
 
-double mage_t::composite_player_multiplier( school_e school )
+double mage_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
   if ( buffs.arcane_power -> check() )
   {
     double v = buffs.arcane_power -> value();
-    if ( set_bonus.tier14_4pc_caster() )
+    if ( sets->set( SET_T14_4PC_CASTER ) -> ok() )
     {
       v += 0.1;
     }
@@ -4627,7 +4627,7 @@ void mage_t::invalidate_cache( cache_e c )
 
 // mage_t::composite_spell_crit =============================================
 
-double mage_t::composite_spell_crit()
+double mage_t::composite_spell_crit() const
 {
   double c = player_t::composite_spell_crit();
 
@@ -4643,7 +4643,7 @@ double mage_t::composite_spell_crit()
 
 // mage_t::composite_spell_haste ============================================
 
-double mage_t::composite_spell_haste()
+double mage_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
@@ -4661,7 +4661,7 @@ double mage_t::composite_spell_haste()
 
 // mage_t::matching_gear_multiplier =========================================
 
-double mage_t::matching_gear_multiplier( attribute_e attr )
+double mage_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( attr == ATTR_INTELLECT )
     return 0.05;

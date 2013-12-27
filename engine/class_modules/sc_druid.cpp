@@ -419,21 +419,21 @@ public:
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
   virtual timespan_t available();
-  virtual double    composite_armor_multiplier();
-  virtual double    composite_melee_hit();
-  virtual double    composite_melee_expertise( weapon_t* );
-  virtual double    composite_player_multiplier( school_e school );
-  virtual double    composite_player_td_multiplier( school_e, action_t* );
-  virtual double    composite_player_heal_multiplier( school_e school );
-  virtual double    composite_spell_hit();
-  virtual double    composite_spell_power( school_e school );
-  virtual double    composite_attribute( attribute_e attr );
-  virtual double    composite_attribute_multiplier( attribute_e attr );
-  virtual double    matching_gear_multiplier( attribute_e attr );
-  virtual double    composite_parry() { return 0; }
-  virtual double    composite_block() { return 0; }
-  virtual double    composite_crit_avoidance();
-  virtual double    composite_dodge();
+  virtual double    composite_armor_multiplier() const;
+  virtual double    composite_melee_hit() const;
+  virtual double    composite_melee_expertise( weapon_t* ) const;
+  virtual double    composite_player_multiplier( school_e school ) const;
+  virtual double    composite_player_td_multiplier( school_e, action_t* ) const;
+  virtual double    composite_player_heal_multiplier( school_e school ) const;
+  virtual double    composite_spell_hit() const;
+  virtual double    composite_spell_power( school_e school ) const;
+  virtual double    composite_attribute( attribute_e attr ) const;
+  virtual double    composite_attribute_multiplier( attribute_e attr ) const;
+  virtual double    matching_gear_multiplier( attribute_e attr ) const;
+  virtual double    composite_parry() const { return 0; }
+  virtual double    composite_block() const { return 0; }
+  virtual double    composite_crit_avoidance() const;
+  virtual double    composite_dodge() const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual expr_t*   create_expression( action_t*, const std::string& name );
   virtual action_t* create_action( const std::string& name, const std::string& options );
@@ -7064,7 +7064,7 @@ void druid_t::invalidate_cache( cache_e c )
 
 // druid_t::composite_armor_multiplier ======================================
 
-double druid_t::composite_armor_multiplier()
+double druid_t::composite_armor_multiplier() const
 {
   double a = player_t::composite_armor_multiplier();
 
@@ -7087,7 +7087,7 @@ double druid_t::composite_armor_multiplier()
 
 // druid_t::composite_player_multiplier =====================================
 
-double druid_t::composite_player_multiplier( school_e school )
+double druid_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
@@ -7149,7 +7149,7 @@ double druid_t::composite_player_multiplier( school_e school )
   return m;
 }
 
-double druid_t::composite_player_td_multiplier( school_e school, action_t* a )
+double druid_t::composite_player_td_multiplier( school_e school, action_t* a ) const
 {
   double m = player_t::composite_player_td_multiplier( school, a );
 
@@ -7162,7 +7162,7 @@ double druid_t::composite_player_td_multiplier( school_e school, action_t* a )
 
 // druid_t::composite_player_heal_multiplier ================================
 
-double druid_t::composite_player_heal_multiplier( school_e school )
+double druid_t::composite_player_heal_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_heal_multiplier( school );
 
@@ -7178,7 +7178,7 @@ double druid_t::composite_player_heal_multiplier( school_e school )
 
 // druid_t::composite_attack_hit ============================================
 
-double druid_t::composite_melee_hit()
+double druid_t::composite_melee_hit() const
 {
   double hit = player_t::composite_melee_hit();
 
@@ -7192,7 +7192,7 @@ double druid_t::composite_melee_hit()
 
 // druid_t::composite_attack_expertise ======================================
 
-double druid_t::composite_melee_expertise( weapon_t* w )
+double druid_t::composite_melee_expertise( weapon_t* w ) const
 {
   double exp = player_t::composite_melee_expertise( w );
 
@@ -7203,7 +7203,7 @@ double druid_t::composite_melee_expertise( weapon_t* w )
 
 // druid_t::composite_spell_hit =============================================
 
-double druid_t::composite_spell_hit()
+double druid_t::composite_spell_hit() const
 {
   double hit = player_t::composite_spell_hit();
 
@@ -7217,7 +7217,7 @@ double druid_t::composite_spell_hit()
 
 // druid_t::composite_spell_power ===========================================
 
-double druid_t::composite_spell_power( school_e school )
+double druid_t::composite_spell_power( school_e school ) const
 {
   double p = player_t::composite_spell_power( school );
 
@@ -7236,7 +7236,7 @@ double druid_t::composite_spell_power( school_e school )
 
 // druid_t::composite_attribute =============================================
 
-double druid_t::composite_attribute( attribute_e attr )
+double druid_t::composite_attribute( attribute_e attr ) const
 {
   double a = player_t::composite_attribute( attr );
 
@@ -7255,7 +7255,7 @@ double druid_t::composite_attribute( attribute_e attr )
 
 // druid_t::composite_attribute_multiplier ==================================
 
-double druid_t::composite_attribute_multiplier( attribute_e attr )
+double druid_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
@@ -7290,7 +7290,7 @@ double druid_t::composite_attribute_multiplier( attribute_e attr )
 
 // druid_t::matching_gear_multiplier ========================================
 
-double druid_t::matching_gear_multiplier( attribute_e attr )
+double druid_t::matching_gear_multiplier( attribute_e attr ) const
 {
   unsigned idx;
 
@@ -7314,7 +7314,7 @@ double druid_t::matching_gear_multiplier( attribute_e attr )
 
 // druid_t::composite_tank_crit =============================================
 
-double druid_t::composite_crit_avoidance()
+double druid_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
@@ -7325,7 +7325,7 @@ double druid_t::composite_crit_avoidance()
 
 // druid_t::composite_tank_dodge ============================================
 
-double druid_t::composite_dodge()
+double druid_t::composite_dodge() const
 {
   double d = player_t::composite_dodge();
 

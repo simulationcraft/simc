@@ -280,17 +280,17 @@ public:
 
   // player_t overrides
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual double    composite_melee_speed();
-  virtual double    energy_regen_per_second();
-  virtual double    composite_player_multiplier( school_e school );
-  virtual double    composite_player_heal_multiplier( school_e school );
-  virtual double    composite_spell_hit();
-  virtual double    composite_melee_hit();
-  virtual double    composite_melee_expertise( weapon_t* weapon );
-  virtual double    composite_melee_attack_power();
-  virtual double    composite_parry();
-  virtual double    composite_dodge();
-  virtual double    composite_crit_avoidance();
+  virtual double    composite_melee_speed() const;
+  virtual double    energy_regen_per_second() const;
+  virtual double    composite_player_multiplier( school_e school ) const;
+  virtual double    composite_player_heal_multiplier( school_e school ) const;
+  virtual double    composite_spell_hit() const;
+  virtual double    composite_melee_hit() const;
+  virtual double    composite_melee_expertise( weapon_t* weapon ) const;
+  virtual double    composite_melee_attack_power() const;
+  virtual double    composite_parry() const;
+  virtual double    composite_dodge() const;
+  virtual double    composite_crit_avoidance() const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual pet_t*    create_pet   ( const std::string& name, const std::string& type = std::string() );
   virtual void      create_pets();
@@ -304,7 +304,7 @@ public:
   virtual void      regen( timespan_t periodicity );
   virtual void      reset();
   virtual void      interrupt();
-  virtual double    matching_gear_multiplier( attribute_e attr );
+  virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual int       decode_set( item_t& );
   virtual void      create_options();
   virtual void      copy_from( player_t* );
@@ -3272,7 +3272,7 @@ void monk_t::interrupt()
 
 // monk_t::matching_gear_multiplier =========================================
 
-double monk_t::matching_gear_multiplier( attribute_e attr )
+double monk_t::matching_gear_multiplier( attribute_e attr ) const
 {
   switch ( specialization() )
   {
@@ -3407,7 +3407,7 @@ int monk_t::decode_set( item_t& item )
 
 // monk_t::composite_attack_speed
 
-double monk_t::composite_melee_speed()
+double monk_t::composite_melee_speed() const
 {
   double cas = base_t::composite_melee_speed();
 
@@ -3422,7 +3422,7 @@ double monk_t::composite_melee_speed()
 
 // monk_t::composite_player_multiplier
 
-double monk_t::composite_player_multiplier( school_e school )
+double monk_t::composite_player_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_multiplier( school );
 
@@ -3435,7 +3435,7 @@ double monk_t::composite_player_multiplier( school_e school )
 
 // monk_t::composite_player_heal_multiplier
 
-double monk_t::composite_player_heal_multiplier( school_e school )
+double monk_t::composite_player_heal_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_heal_multiplier( school );
 
@@ -3446,7 +3446,7 @@ double monk_t::composite_player_heal_multiplier( school_e school )
 
 // monk_t::composite_attack_hit
 
-double monk_t::composite_melee_hit()
+double monk_t::composite_melee_hit() const
 {
   double ah = base_t::composite_melee_hit();
 
@@ -3458,7 +3458,7 @@ double monk_t::composite_melee_hit()
 
 // monk_t::composite_spell_hit
 
-double monk_t::composite_spell_hit()
+double monk_t::composite_spell_hit() const
 {
   double sh = base_t::composite_spell_hit();
 
@@ -3470,7 +3470,7 @@ double monk_t::composite_spell_hit()
 
 // monk_t::composite_attack_expertise
 
-double monk_t::composite_melee_expertise( weapon_t* weapon )
+double monk_t::composite_melee_expertise( weapon_t* weapon ) const
 {
   double e = base_t::composite_melee_expertise( weapon );
 
@@ -3482,7 +3482,7 @@ double monk_t::composite_melee_expertise( weapon_t* weapon )
 
 // monk_t::composite_attack_power
 
-double monk_t::composite_melee_attack_power()
+double monk_t::composite_melee_attack_power() const
 {
   if ( current_stance() == WISE_SERPENT )
     return composite_spell_power( SCHOOL_MAX ) * static_stance_data( WISE_SERPENT ).effectN( 2 ).percent();
@@ -3492,7 +3492,7 @@ double monk_t::composite_melee_attack_power()
 
 // monk_t::composite_tank_parry
 
-double monk_t::composite_parry()
+double monk_t::composite_parry() const
 {
   double p = base_t::composite_parry();
 
@@ -3506,7 +3506,7 @@ double monk_t::composite_parry()
 
 // monk_t::composite_tank_dodge
 
-double monk_t::composite_dodge()
+double monk_t::composite_dodge() const
 {
   double d = base_t::composite_dodge();
 
@@ -3516,7 +3516,7 @@ double monk_t::composite_dodge()
   return d;
 }
 
-double monk_t::composite_crit_avoidance()
+double monk_t::composite_crit_avoidance() const
 {
   double c = base_t::composite_crit_avoidance();
 
@@ -3641,7 +3641,7 @@ void monk_t::pre_analyze_hook()
 
 // monk_t::energy_regen_per_second ==========================================
 
-double monk_t::energy_regen_per_second()
+double monk_t::energy_regen_per_second() const
 {
   double r = base_t::energy_regen_per_second();
 

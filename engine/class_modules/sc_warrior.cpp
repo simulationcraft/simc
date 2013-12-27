@@ -270,13 +270,13 @@ public:
   virtual void      init_procs();
   virtual void      init_rng();
   virtual void      combat_begin();
-  virtual double    composite_player_multiplier( school_e school );
-  virtual double    matching_gear_multiplier( attribute_e attr );
-  virtual double    composite_block();
-  virtual double    composite_crit_block();
-  virtual double    composite_crit_avoidance();
-  virtual double    composite_dodge();
-  virtual double    composite_melee_speed();
+  virtual double    composite_player_multiplier( school_e school ) const;
+  virtual double    matching_gear_multiplier( attribute_e attr ) const;
+  virtual double    composite_block() const;
+  virtual double    composite_crit_block() const;
+  virtual double    composite_crit_avoidance() const;
+  virtual double    composite_dodge() const;
+  virtual double    composite_melee_speed() const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
@@ -4096,7 +4096,7 @@ void warrior_t::reset()
 
 // warrior_t::composite_player_multiplier ===================================
 
-double warrior_t::composite_player_multiplier( school_e school )
+double warrior_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
@@ -4108,7 +4108,7 @@ double warrior_t::composite_player_multiplier( school_e school )
 
 // warrior_t::matching_gear_multiplier ======================================
 
-double warrior_t::matching_gear_multiplier( attribute_e attr )
+double warrior_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( ( attr == ATTR_STRENGTH ) && ( specialization() == WARRIOR_ARMS || specialization() == WARRIOR_FURY ) )
     return 0.05;
@@ -4121,7 +4121,7 @@ double warrior_t::matching_gear_multiplier( attribute_e attr )
 
 // warrior_t::composite_block ==========================================
 
-double warrior_t::composite_block()
+double warrior_t::composite_block() const
 {
   double block_by_rating = current.stats.block_rating / current_rating().block;
 
@@ -4148,7 +4148,7 @@ double warrior_t::composite_block()
 
 // warrior_t::composite_crit_block =====================================
 
-double warrior_t::composite_crit_block()
+double warrior_t::composite_crit_block() const
 {
   double b = player_t::composite_crit_block();
 
@@ -4160,7 +4160,7 @@ double warrior_t::composite_crit_block()
 
 // warrior_t::composite_crit_avoidance ===========================================
 
-double warrior_t::composite_crit_avoidance()
+double warrior_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
@@ -4171,7 +4171,7 @@ double warrior_t::composite_crit_avoidance()
 
 // warrior_t::composite_dodge ==========================================
 
-double warrior_t::composite_dodge()
+double warrior_t::composite_dodge() const
 {
   double d = player_t::composite_dodge();
 
@@ -4182,7 +4182,7 @@ double warrior_t::composite_dodge()
 
 // warrior_t::composite_attack_speed ========================================
 
-double warrior_t::composite_melee_speed()
+double warrior_t::composite_melee_speed() const
 {
   double s = player_t::composite_melee_speed();
 

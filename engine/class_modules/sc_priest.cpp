@@ -294,19 +294,19 @@ public:
   virtual resource_e primary_resource() override { return RESOURCE_MANA; }
   virtual role_e primary_role() const override;
   virtual void      combat_begin() override;
-  virtual double    composite_armor() override;
-  virtual double    composite_spell_haste() override;
-  virtual double    composite_spell_speed() override;
-  virtual double    composite_spell_power_multiplier() override;
-  virtual double    composite_spell_hit() override;
-  virtual double    composite_spell_crit() override;
-  virtual double    composite_melee_crit() override;
-  virtual double    composite_melee_hit() override;
-  virtual double    composite_player_multiplier( school_e school ) override;
-  virtual double    composite_player_heal_multiplier( school_e school ) override;
-  virtual double    composite_movement_speed() override;
-  virtual double    composite_attribute_multiplier( attribute_e attr ) override;
-  virtual double    matching_gear_multiplier( attribute_e attr ) override;
+  virtual double    composite_armor() const override;
+  virtual double    composite_spell_haste() const override;
+  virtual double    composite_spell_speed() const override;
+  virtual double    composite_spell_power_multiplier() const override;
+  virtual double    composite_spell_hit() const override;
+  virtual double    composite_spell_crit() const override;
+  virtual double    composite_melee_crit() const override;
+  virtual double    composite_melee_hit() const override;
+  virtual double    composite_player_multiplier( school_e school ) const override;
+  virtual double    composite_player_heal_multiplier( school_e school ) const override;
+  virtual double    composite_movement_speed() const override;
+  virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
+  virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
   virtual void pre_analyze_hook() override;
   virtual void invalidate_cache( cache_e ) override;
@@ -395,7 +395,7 @@ struct priest_pet_t : public pet_t
     pet_t::schedule_ready( delta_time, waiting );
   }
 
-  virtual double composite_player_multiplier( school_e school ) override
+  virtual double composite_player_multiplier( school_e school ) const override
   {
     double m = pet_t::composite_player_multiplier( school );
 
@@ -4829,7 +4829,7 @@ void priest_t::combat_begin()
 
 // priest_t::composite_armor ================================================
 
-double priest_t::composite_armor()
+double priest_t::composite_armor() const
 {
   double a = base_t::composite_armor();
 
@@ -4847,7 +4847,7 @@ double priest_t::composite_armor()
 
 // priest_t::composite_spell_haste ==========================================
 
-double priest_t::composite_spell_haste()
+double priest_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
@@ -4862,7 +4862,7 @@ double priest_t::composite_spell_haste()
 
 // priest_t::composite_spell_speed ==========================================
 
-double priest_t::composite_spell_speed()
+double priest_t::composite_spell_speed() const
 {
   double h = player_t::composite_spell_speed();
 
@@ -4874,7 +4874,7 @@ double priest_t::composite_spell_speed()
 
 // priest_t::composite_spell_power_multiplier ===============================
 
-double priest_t::composite_spell_power_multiplier()
+double priest_t::composite_spell_power_multiplier() const
 {
   double m = 1.0;
 
@@ -4891,7 +4891,7 @@ double priest_t::composite_spell_power_multiplier()
 
 // priest_t::composite_spell_hit ============================================
 
-double priest_t::composite_spell_hit()
+double priest_t::composite_spell_hit() const
 {
   double hit = base_t::composite_spell_hit();
 
@@ -4903,7 +4903,7 @@ double priest_t::composite_spell_hit()
   return hit;
 }
 
-double priest_t::composite_spell_crit()
+double priest_t::composite_spell_crit() const
 {
   double csc = base_t::composite_spell_crit();
 
@@ -4913,7 +4913,7 @@ double priest_t::composite_spell_crit()
   return csc;
 }
 
-double priest_t::composite_melee_crit()
+double priest_t::composite_melee_crit() const
 {
   double cmc = base_t::composite_melee_crit();
 
@@ -4925,7 +4925,7 @@ double priest_t::composite_melee_crit()
 
 // priest_t::composite_attack_hit ===========================================
 
-double priest_t::composite_melee_hit()
+double priest_t::composite_melee_hit() const
 {
   double hit = base_t::composite_melee_hit();
 
@@ -4937,7 +4937,7 @@ double priest_t::composite_melee_hit()
 
 // priest_t::composite_player_multiplier ====================================
 
-double priest_t::composite_player_multiplier( school_e school )
+double priest_t::composite_player_multiplier( school_e school ) const
 {
   double m = base_t::composite_player_multiplier( school );
 
@@ -4969,7 +4969,7 @@ double priest_t::composite_player_multiplier( school_e school )
 
 // priest_t::composite_player_heal_multiplier ===============================
 
-double priest_t::composite_player_heal_multiplier( school_e s )
+double priest_t::composite_player_heal_multiplier( school_e s ) const
 {
   double m = player_t::composite_player_heal_multiplier( s );
 
@@ -4983,7 +4983,7 @@ double priest_t::composite_player_heal_multiplier( school_e s )
 
 // priest_t::composite_movement_speed =======================================
 
-double priest_t::composite_movement_speed()
+double priest_t::composite_movement_speed() const
 {
   double speed = base_t::composite_movement_speed();
 
@@ -5004,7 +5004,7 @@ void priest_t::invalidate_cache( cache_e c )
 
 // priest_t::composite_attribute_multiplier =================================
 
-double priest_t::composite_attribute_multiplier( attribute_e attr )
+double priest_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = base_t::composite_attribute_multiplier( attr );
 
@@ -5016,7 +5016,7 @@ double priest_t::composite_attribute_multiplier( attribute_e attr )
 
 // priest_t::matching_gear_multiplier =======================================
 
-double priest_t::matching_gear_multiplier( attribute_e attr )
+double priest_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( attr == ATTR_INTELLECT )
     return 0.05;

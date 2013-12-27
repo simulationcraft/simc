@@ -397,17 +397,17 @@ public:
   virtual void      init_action_list();
   virtual void      moving();
   virtual void      invalidate_cache( cache_e c );
-  virtual double    composite_melee_hit();
-  virtual double    composite_melee_haste();
-  virtual double    composite_melee_speed();
-  virtual double    composite_spell_haste();
-  virtual double    composite_spell_hit();
-  virtual double    composite_spell_power( school_e school );
-  virtual double    composite_spell_power_multiplier();
-  virtual double    composite_player_multiplier( school_e school );
+  virtual double    composite_melee_hit() const;
+  virtual double    composite_melee_haste() const;
+  virtual double    composite_melee_speed() const;
+  virtual double    composite_spell_haste() const;
+  virtual double    composite_spell_hit() const;
+  virtual double    composite_spell_power( school_e school ) const;
+  virtual double    composite_spell_power_multiplier() const;
+  virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
-  virtual double    matching_gear_multiplier( attribute_e attr );
+  virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual void      create_options();
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual action_t* create_proc_action( const std::string& name );
@@ -1069,7 +1069,7 @@ struct feral_spirit_pet_t : public pet_t
     pet_t::schedule_ready( delta_time, waiting );
   }
 
-  double composite_player_multiplier( school_e school )
+  double composite_player_multiplier( school_e school ) const
   {
     double m = pet_t::composite_player_multiplier( school );
 
@@ -1150,7 +1150,7 @@ struct earth_elemental_pet_t : public pet_t
     command = owner -> find_spell( 65222 );
   }
 
-  double composite_player_multiplier( school_e school )
+  double composite_player_multiplier( school_e school ) const
   {
     double m = pet_t::composite_player_multiplier( school );
 
@@ -1422,7 +1422,7 @@ struct fire_elemental_t : public pet_t
 
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
 
-  double composite_player_multiplier( school_e school )
+  double composite_player_multiplier( school_e school ) const
   {
     double m = pet_t::composite_player_multiplier( school );
 
@@ -4190,22 +4190,22 @@ struct shaman_totem_pet_t : public pet_t
   shaman_t* o()
   { return debug_cast< shaman_t* >( owner ); }
 
-  virtual double composite_player_multiplier( school_e school )
+  virtual double composite_player_multiplier( school_e school ) const
   { return owner -> cache.player_multiplier( school ); }
 
-  virtual double composite_spell_hit()
+  virtual double composite_spell_hit() const
   { return owner -> cache.spell_hit(); }
 
-  virtual double composite_spell_crit()
+  virtual double composite_spell_crit() const
   { return owner -> cache.spell_crit(); }
 
-  virtual double composite_spell_power( school_e school )
+  virtual double composite_spell_power( school_e school ) const
   { return owner -> cache.spell_power( school ); }
 
-  virtual double composite_spell_power_multiplier()
+  virtual double composite_spell_power_multiplier() const
   { return owner -> composite_spell_power_multiplier(); }
 
-  virtual double composite_spell_speed()
+  virtual double composite_spell_speed() const
   { return 1.0; }
 
   virtual expr_t* create_expression( action_t* a, const std::string& name )
@@ -5947,7 +5947,7 @@ void shaman_t::moving()
 
 // shaman_t::matching_gear_multiplier =======================================
 
-double shaman_t::matching_gear_multiplier( attribute_e attr )
+double shaman_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( attr == ATTR_AGILITY || attr == ATTR_INTELLECT )
     return constant.matching_gear_multiplier;
@@ -5957,7 +5957,7 @@ double shaman_t::matching_gear_multiplier( attribute_e attr )
 
 // shaman_t::composite_spell_haste ==========================================
 
-double shaman_t::composite_spell_haste()
+double shaman_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
 
@@ -5974,7 +5974,7 @@ double shaman_t::composite_spell_haste()
 
 // shaman_t::composite_spell_hit ============================================
 
-double shaman_t::composite_spell_hit()
+double shaman_t::composite_spell_hit() const
 {
   double hit = player_t::composite_spell_hit();
 
@@ -5986,7 +5986,7 @@ double shaman_t::composite_spell_hit()
 
 // shaman_t::composite_attack_hit ===========================================
 
-double shaman_t::composite_melee_hit()
+double shaman_t::composite_melee_hit() const
 {
   double hit = player_t::composite_melee_hit();
 
@@ -5998,7 +5998,7 @@ double shaman_t::composite_melee_hit()
 
 // shaman_t::composite_attack_haste =========================================
 
-double shaman_t::composite_melee_haste()
+double shaman_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
 
@@ -6016,7 +6016,7 @@ double shaman_t::composite_melee_haste()
 
 // shaman_t::composite_attack_speed =========================================
 
-double shaman_t::composite_melee_speed()
+double shaman_t::composite_melee_speed() const
 {
   double speed = player_t::composite_melee_speed();
 
@@ -6031,7 +6031,7 @@ double shaman_t::composite_melee_speed()
 
 // shaman_t::composite_spell_power ==========================================
 
-double shaman_t::composite_spell_power( school_e school )
+double shaman_t::composite_spell_power( school_e school ) const
 {
   double sp = 0;
 
@@ -6045,7 +6045,7 @@ double shaman_t::composite_spell_power( school_e school )
 
 // shaman_t::composite_spell_power_multiplier ===============================
 
-double shaman_t::composite_spell_power_multiplier()
+double shaman_t::composite_spell_power_multiplier() const
 {
   if ( specialization() == SHAMAN_ENHANCEMENT )
     return 1.0;
@@ -6055,7 +6055,7 @@ double shaman_t::composite_spell_power_multiplier()
 
 // shaman_t::composite_player_multiplier ====================================
 
-double shaman_t::composite_player_multiplier( school_e school )
+double shaman_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 

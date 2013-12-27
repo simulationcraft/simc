@@ -312,22 +312,22 @@ public:
   virtual void      init_action_list();
   virtual void      reset();
   virtual expr_t*   create_expression( action_t*, const std::string& name );
-  virtual double    composite_attribute_multiplier( attribute_e attr );
-  virtual double    composite_melee_crit();
-  virtual double    composite_spell_crit();
-  virtual double    composite_player_multiplier( school_e school );
-  virtual double    composite_spell_power( school_e school );
-  virtual double    composite_spell_power_multiplier();
-  virtual double    composite_spell_speed();
-  virtual double    composite_block();
-  virtual double    composite_crit_avoidance();
-  virtual double    composite_dodge();
+  virtual double    composite_attribute_multiplier( attribute_e attr ) const;
+  virtual double    composite_melee_crit() const;
+  virtual double    composite_spell_crit() const;
+  virtual double    composite_player_multiplier( school_e school ) const;
+  virtual double    composite_spell_power( school_e school ) const;
+  virtual double    composite_spell_power_multiplier() const;
+  virtual double    composite_spell_speed() const;
+  virtual double    composite_block() const;
+  virtual double    composite_crit_avoidance() const;
+  virtual double    composite_dodge() const;
   virtual void      assess_damage( school_e, dmg_e, action_state_t* );
   virtual void      assess_heal( school_e, dmg_e, heal_state_t* );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   virtual void      invalidate_cache( cache_e );
   virtual void      create_options();
-  virtual double    matching_gear_multiplier( attribute_e attr );
+  virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual action_t* create_action( const std::string& name, const std::string& options_str );
   virtual int       decode_set( item_t& );
   virtual resource_e primary_resource() { return RESOURCE_MANA; }
@@ -338,7 +338,7 @@ public:
   virtual void      combat_begin();
 
   int     holy_power_stacks();
-  double  get_divine_bulwark();
+  double  get_divine_bulwark() const;
   double  get_hand_of_light();
   double  jotp_haste();
   void    trigger_grand_crusader();
@@ -4921,7 +4921,7 @@ role_e paladin_t::primary_role() const
 
 // paladin_t::composite_attribute_multiplier ================================
 
-double paladin_t::composite_attribute_multiplier( attribute_e attr )
+double paladin_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
@@ -4941,7 +4941,7 @@ double paladin_t::composite_attribute_multiplier( attribute_e attr )
 
 // paladin_t::composite_attack_crit =========================================
 
-double paladin_t::composite_melee_crit()
+double paladin_t::composite_melee_crit() const
 {
   double m = player_t::composite_melee_crit();
 
@@ -4955,7 +4955,7 @@ double paladin_t::composite_melee_crit()
 
 // paladin_t::composite_spell_crit ==========================================
 
-double paladin_t::composite_spell_crit()
+double paladin_t::composite_spell_crit() const
 {
   double m = player_t::composite_spell_crit();
 
@@ -4969,7 +4969,7 @@ double paladin_t::composite_spell_crit()
 
 // paladin_t::composite_player_multiplier ===================================
 
-double paladin_t::composite_player_multiplier( school_e school )
+double paladin_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
@@ -4997,7 +4997,7 @@ double paladin_t::composite_player_multiplier( school_e school )
     m *= 1.0 + buffs.glyph_of_word_of_glory -> value();
 
   // T16_2pc_melee buffs everything
-  if ( set_bonus.tier16_2pc_melee() && buffs.warrior_of_the_light -> up() )
+  if ( sets -> set( SET_T16_2PC_MELEE ) -> ok() && buffs.warrior_of_the_light -> up() )
     m *= 1.0 + buffs.warrior_of_the_light -> data().effectN( 1 ).percent();
 
   return m;
@@ -5005,7 +5005,7 @@ double paladin_t::composite_player_multiplier( school_e school )
 
 // paladin_t::composite_spell_power =========================================
 
-double paladin_t::composite_spell_power( school_e school )
+double paladin_t::composite_spell_power( school_e school ) const
 {
   double sp = player_t::composite_spell_power( school );
 
@@ -5026,7 +5026,7 @@ double paladin_t::composite_spell_power( school_e school )
 
 // paladin_t::composite_spell_power_multiplier ==============================
 
-double paladin_t::composite_spell_power_multiplier()
+double paladin_t::composite_spell_power_multiplier() const
 {
   if ( passives.sword_of_light -> ok() || passives.guarded_by_the_light -> ok() )
     return 1.0;
@@ -5036,7 +5036,7 @@ double paladin_t::composite_spell_power_multiplier()
 
 // paladin_t::composite_spell_speed =========================================
 
-double paladin_t::composite_spell_speed()
+double paladin_t::composite_spell_speed() const
 {
   double m = player_t::composite_spell_speed();
 
@@ -5050,7 +5050,7 @@ double paladin_t::composite_spell_speed()
 
 // paladin_t::composite_tank_block ==========================================
 
-double paladin_t::composite_block()
+double paladin_t::composite_block() const
 {
   // need to reproduce most of player_t::composite_block() because mastery -> block conversion is affected by DR
   // could modify player_t::composite_block() to take one argument if willing to change references in all other files
@@ -5074,7 +5074,7 @@ double paladin_t::composite_block()
   return b;
 }
 
-double paladin_t::composite_crit_avoidance()
+double paladin_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
@@ -5084,7 +5084,7 @@ double paladin_t::composite_crit_avoidance()
   return c;
 }
 
-double paladin_t::composite_dodge()
+double paladin_t::composite_dodge() const
 {
   double d = player_t::composite_dodge();
 
@@ -5221,7 +5221,7 @@ void paladin_t::invalidate_cache( cache_e c )
 
 // paladin_t::matching_gear_multiplier ======================================
 
-double paladin_t::matching_gear_multiplier( attribute_e attr )
+double paladin_t::matching_gear_multiplier( attribute_e attr ) const
 {
   double mult = 0.01 * passives.plate_specialization -> effectN( 1 ).base_value();
 
@@ -5404,7 +5404,7 @@ int paladin_t::holy_power_stacks()
 }
 
 // paladin_t::get_divine_bulwark ============================================
-double paladin_t::get_divine_bulwark()
+double paladin_t::get_divine_bulwark() const
 {
   if ( ! passives.divine_bulwark -> ok() )
     return 0.0;

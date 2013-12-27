@@ -406,15 +406,15 @@ public:
   virtual void      init_gains();
   virtual void      init_procs();
   virtual void      init_resources( bool force );
-  virtual double    composite_armor_multiplier();
-  virtual double    composite_melee_speed();
-  virtual double    composite_melee_haste();
-  virtual double    composite_spell_haste();
-  virtual double    composite_attribute_multiplier( attribute_e attr );
-  virtual double    matching_gear_multiplier( attribute_e attr );
-  virtual double    composite_parry();
-  virtual double    composite_player_multiplier( school_e school );
-  virtual double    composite_crit_avoidance();
+  virtual double    composite_armor_multiplier() const;
+  virtual double    composite_melee_speed() const;
+  virtual double    composite_melee_haste() const;
+  virtual double    composite_spell_haste() const;
+  virtual double    composite_attribute_multiplier( attribute_e attr ) const;
+  virtual double    matching_gear_multiplier( attribute_e attr ) const;
+  virtual double    composite_parry() const;
+  virtual double    composite_player_multiplier( school_e school ) const;
+  virtual double    composite_crit_avoidance() const;
   virtual void      regen( timespan_t periodicity );
   virtual void      reset();
   virtual void      arise();
@@ -1294,7 +1294,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_melee -> schedule_execute();
   }
 
-  double composite_player_multiplier( school_e school )
+  double composite_player_multiplier( school_e school ) const
   {
     double m = pet_t::composite_player_multiplier( school );
 
@@ -1326,7 +1326,7 @@ struct death_knight_pet_t : public pet_t
   death_knight_t* o()
   { return debug_cast<death_knight_t*>( owner ); }
 
-  double composite_player_multiplier( school_e school )
+  double composite_player_multiplier( school_e school ) const
   {
     double m = pet_t::composite_player_multiplier( school );
 
@@ -5037,7 +5037,7 @@ pet_t* death_knight_t::create_pet( const std::string& pet_name,
 
 // death_knight_t::composite_attack_haste() =================================
 
-double death_knight_t::composite_melee_haste()
+double death_knight_t::composite_melee_haste() const
 {
   double haste = player_t::composite_melee_haste();
 
@@ -5048,7 +5048,7 @@ double death_knight_t::composite_melee_haste()
 
 // death_knight_t::composite_spell_haste() ==================================
 
-double death_knight_t::composite_spell_haste()
+double death_knight_t::composite_spell_haste() const
 {
   double haste = player_t::composite_spell_haste();
 
@@ -6191,7 +6191,7 @@ void death_knight_t::target_mitigation( school_e school, dmg_e type, action_stat
 
 // death_knight_t::composite_armor_multiplier ===============================
 
-double death_knight_t::composite_armor_multiplier()
+double death_knight_t::composite_armor_multiplier() const
 {
   double a = player_t::composite_armor_multiplier();
 
@@ -6212,7 +6212,7 @@ double death_knight_t::composite_armor_multiplier()
 
 // death_knight_t::composite_attribute_multiplier ===========================
 
-double death_knight_t::composite_attribute_multiplier( attribute_e attr )
+double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
@@ -6241,7 +6241,7 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr )
 
 // death_knight_t::matching_gear_multiplier =================================
 
-double death_knight_t::matching_gear_multiplier( attribute_e attr )
+double death_knight_t::matching_gear_multiplier( attribute_e attr ) const
 {
   int tree = specialization();
 
@@ -6258,7 +6258,7 @@ double death_knight_t::matching_gear_multiplier( attribute_e attr )
 
 // death_knight_t::composite_tank_parry =====================================
 
-double death_knight_t::composite_parry()
+double death_knight_t::composite_parry() const
 {
   double parry = player_t::composite_parry();
 
@@ -6279,7 +6279,7 @@ double death_knight_t::composite_parry()
 
 // death_knight_t::composite_player_multiplier ==============================
 
-double death_knight_t::composite_player_multiplier( school_e school )
+double death_knight_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
@@ -6294,7 +6294,7 @@ double death_knight_t::composite_player_multiplier( school_e school )
 
 // death_knight_t::composite_attack_speed() =================================
 
-double death_knight_t::composite_melee_speed()
+double death_knight_t::composite_melee_speed() const
 {
   double haste = player_t::composite_melee_speed();
 
@@ -6305,7 +6305,7 @@ double death_knight_t::composite_melee_speed()
 
 // death_knight_t::composite_tank_crit ======================================
 
-double death_knight_t::composite_crit_avoidance()
+double death_knight_t::composite_crit_avoidance() const
 {
   double c = player_t::composite_crit_avoidance();
 
