@@ -87,7 +87,7 @@ double attack_t::block_chance( player_t* t ) const
 
 // attack_t::crit_block_chance ==============================================
 
-double attack_t::crit_block_chance( player_t* t )
+double attack_t::crit_block_chance( player_t* t ) const
 {
   // This function is probably unnecessary, as we could just query cache.crit_block() directly.
   // I'm leaving it for consistency with *_chance() and in case future changes modify crit block mechanics
@@ -359,6 +359,25 @@ double melee_attack_t::glance_chance( int delta_level ) const
   return ( delta_level + 1 ) * 0.06;
 }
 
+proc_types melee_attack_t::proc_type() const
+{
+  if ( ! is_aoe() )
+  {
+    if ( special )
+      return PROC1_MELEE_ABILITY;
+    else
+      return PROC1_MELEE;
+  }
+  else
+  {
+    // "Fake" AOE based attacks as spells
+    if ( special )
+      return PROC1_AOE_SPELL;
+    // AOE white attacks shouldn't really happen ..
+    else
+      return PROC1_MELEE;
+  }
+}
 // ==========================================================================
 // Ranged Attack
 // ==========================================================================
@@ -438,5 +457,25 @@ void ranged_attack_t::schedule_execute( action_state_t* execute_state )
     {
       player -> gcd_ready -= sim -> queue_gcd_reduction;
     }
+  }
+}
+
+proc_types ranged_attack_t::proc_type() const
+{
+  if ( ! is_aoe() )
+  {
+    if ( special )
+      return PROC1_RANGED_ABILITY;
+    else
+      return PROC1_RANGED;
+  }
+  else
+  {
+    // "Fake" AOE based attacks as spells
+    if ( special )
+      return PROC1_AOE_SPELL;
+    // AOE white attacks shouldn't really happen ..
+    else
+      return PROC1_RANGED;
   }
 }

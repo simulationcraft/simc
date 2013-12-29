@@ -1635,7 +1635,7 @@ void action_t::reset()
   cooldown -> reset( false );
   line_cooldown.reset( false );
   // FIXME! Is this really necessary? All DOTs get reset during player_t::reset()
-  dot_t* dot = find_dot();
+  dot_t* dot = find_dot( target );
   if ( dot ) dot -> reset();
   execute_event = 0;
   travel_events.clear();

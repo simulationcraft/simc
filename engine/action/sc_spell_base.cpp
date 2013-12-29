@@ -140,3 +140,24 @@ void spell_base_t::schedule_execute( action_state_t* execute_state )
   if ( ! background && time_to_execute > timespan_t::zero() )
     player -> debuffs.casting -> trigger();
 }
+
+proc_types spell_base_t::proc_type() const
+{
+  if ( ! is_aoe() )
+  {
+    if ( harmful )
+      return PROC1_SPELL;
+    // Only allow non-harmful abilities with "an amount" to count as heals
+    else if ( base_dd_min > 0 )
+      return PROC1_HEAL;
+  }
+  else
+  {
+    if ( harmful )
+      return PROC1_AOE_SPELL;
+    else if ( base_dd_min > 0 )
+      return PROC1_AOE_HEAL;
+  }
+
+  return PROC1_INVALID;
+}

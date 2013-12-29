@@ -805,7 +805,7 @@ struct immolation_t : public warlock_pet_spell_t
 
   virtual void cancel()
   {
-    dot_t* dot = find_dot();
+    dot_t* dot = find_dot( target );
     if ( dot ) dot -> reset();
     action_t::cancel();
   }
@@ -3806,7 +3806,7 @@ struct rain_of_fire_tick_t : public warlock_spell_t
     return m;
   }
 
-  proc_types proc_type()
+  virtual proc_types proc_type() const override
   { return PROC1_PERIODIC; }
 };
 

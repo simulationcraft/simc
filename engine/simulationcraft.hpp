@@ -2865,7 +2865,7 @@ struct module_t
       case WARLOCK:      return warlock();
       case WARRIOR:      return warrior();
       case ENEMY:        return enemy();
-      default:;
+      default: break;
     }
     return NULL;
   }
@@ -5268,14 +5268,6 @@ struct action_t : public noncopyable
   virtual double ppm_proc_chance( double PPM ) const;
   virtual double real_ppm_proc_chance( double PPM, timespan_t last_proc_attempt, timespan_t last_successful_proc, rppm_scale_e scales_with ) const;
 
-  dot_t* find_dot( player_t* t = nullptr )
-  {
-    if ( ! t ) t = target;
-    if ( ! t ) return nullptr;
-
-    return target_specific_dot[ t ];
-  }
-
   dot_t* get_dot( player_t* t = nullptr )
   {
     if ( ! t ) t = target;
@@ -5381,7 +5373,7 @@ public:
 
   // Overridable base proc type for direct results, needed for dynamic aoe 
   // stuff and such.
-  virtual proc_types proc_type()
+  virtual proc_types proc_type() const
   { return PROC1_INVALID; }
 
 private:
@@ -5555,7 +5547,7 @@ struct attack_t : public action_t
 
   virtual double  miss_chance( double hit, player_t* t ) const;
   virtual double  block_chance( player_t* t ) const;
-  virtual double  crit_block_chance( player_t* t );
+  virtual double  crit_block_chance( player_t* t ) const;
 
   virtual double composite_hit() const
   { return action_t::composite_hit() + player -> cache.attack_hit(); }
@@ -5600,25 +5592,7 @@ struct melee_attack_t : public attack_t
   virtual double  parry_chance( double /* expertise */, player_t* t ) const;
   virtual double glance_chance( int delta_level ) const;
 
-  virtual proc_types proc_type()
-  {
-    if ( ! is_aoe() )
-    {
-      if ( special )
-        return PROC1_MELEE_ABILITY;
-      else
-        return PROC1_MELEE;
-    }
-    else
-    {
-      // "Fake" AOE based attacks as spells
-      if ( special )
-        return PROC1_AOE_SPELL;
-      // AOE white attacks shouldn't really happen ..
-      else
-        return PROC1_MELEE;
-    }
-  }
+  virtual proc_types proc_type() const;
 };
 
 // Ranged Attack ===================================================================
@@ -5634,25 +5608,7 @@ struct ranged_attack_t : public attack_t
   virtual double composite_target_multiplier( player_t* ) const;
   virtual void schedule_execute( action_state_t* execute_state = 0 );
 
-  virtual proc_types proc_type()
-  {
-    if ( ! is_aoe() )
-    {
-      if ( special )
-        return PROC1_RANGED_ABILITY;
-      else
-        return PROC1_RANGED;
-    }
-    else
-    {
-      // "Fake" AOE based attacks as spells
-      if ( special )
-        return PROC1_AOE_SPELL;
-      // AOE white attacks shouldn't really happen ..
-      else
-        return PROC1_RANGED;
-    }
-  }
+  virtual proc_types proc_type() const;
 };
 
 // Spell Base ====================================================================
@@ -5682,26 +5638,7 @@ struct spell_base_t : public action_t
   virtual double composite_crit_multiplier() const
   { return action_t::composite_crit_multiplier() * player -> composite_spell_crit_multiplier(); }
 
-  proc_types proc_type()
-  {
-    if ( ! is_aoe() )
-    {
-      if ( harmful )
-        return PROC1_SPELL;
-      // Only allow non-harmful abilities with "an amount" to count as heals
-      else if ( base_dd_min > 0 )
-        return PROC1_HEAL;
-    }
-    else
-    {
-      if ( harmful )
-        return PROC1_AOE_SPELL;
-      else if ( base_dd_min > 0 )
-        return PROC1_AOE_HEAL;
-    }
-
-    return PROC1_INVALID;
-  }
+  virtual proc_types proc_type() const;
 };
 
 // Harmful Spell ====================================================================
@@ -5732,7 +5669,6 @@ public:
 
   heal_t( const std::string& name, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
-
   virtual void assess_damage( dmg_e, action_state_t* );
   virtual size_t available_targets( std::vector< player_t* >& ) const;
   virtual void init_target_cache();
@@ -5743,7 +5679,6 @@ public:
   std::vector < player_t* > find_lowest_players( int num_players ) const;
   virtual int num_targets();
   virtual void   parse_effect_data( const spelleffect_data_t& );
-
 
   virtual double composite_da_multiplier() const
   {
