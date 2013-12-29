@@ -385,7 +385,7 @@ std::string item_t::to_string()
 
 // item_t::has_item_stat ====================================================
 
-bool item_t::has_item_stat( stat_e stat )
+bool item_t::has_item_stat( stat_e stat ) const
 {
   for ( size_t i = 0; i < sizeof_array( parsed.data.stat_val ); i++ )
   {
@@ -440,7 +440,7 @@ bool item_t::active() const
 
 // item_t::name =============================================================
 
-const char* item_t::name()
+const char* item_t::name() const
 {
   if ( ! option_name_str.empty() ) return option_name_str.c_str();
   if ( ! name_str.empty() ) return name_str.c_str();

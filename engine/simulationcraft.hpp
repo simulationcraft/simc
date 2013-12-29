@@ -3359,7 +3359,7 @@ struct item_t
   item_t( player_t*, const std::string& options_str );
 
   bool active() const;
-  const char* name();
+  const char* name() const;
   const char* slot_name();
   weapon_t* weapon();
   bool init();
@@ -3372,7 +3372,7 @@ struct item_t
   unsigned upgrade_level() const;
   stat_e stat( size_t idx );
   int stat_value( size_t idx );
-  bool has_item_stat( stat_e stat );
+  bool has_item_stat( stat_e stat ) const;
 
   std::string encoded_item();
   std::string encoded_comment();
@@ -3508,33 +3508,31 @@ public:
 
 // Set Bonus ================================================================
 
-struct set_bonus_t
-{
-  set_bonus_t();
-
-  int decode( player_t*, item_t& item );
-  bool init( player_t* );
-  expr_t* create_expression( player_t*, const std::string& type );
-
-  std::array<int, SET_MAX> count;
-};
 
 typedef uint32_t set_bonus_description_t[N_TIER][N_TIER_BONUS];
-// typedef std::array<std::array<uint32_t,N_TIER_BONUS>,N_TIER> set_bonus_description_t; // Use when we support initializer lists to enforce matching array dimensions
-struct set_bonus_array_t
+// using set_bonus_description_t = std::array<std::array<uint32_t,N_TIER_BONUS>,N_TIER>; // Use when we support initializer lists to enforce matching array dimensions
+struct set_bonus_t
 {
 public:
-  set_bonus_array_t( player_t* p, const set_bonus_description_t a_bonus );
+  set_bonus_t( const player_t* p );
 
-  bool has_set_bonus( set_e s );
-  static bool has_set_bonus( player_t* p, set_e s );
-  const spell_data_t* set( set_e s );
+  bool has_set_bonus( set_e s ) const;
+  const spell_data_t* set( set_e s ) const;
+
+  void register_spelldata( const set_bonus_description_t  );
+  void init( const player_t& );
+  static bool has_set_bonus( const player_t* p, set_e s );
+  static expr_t* create_expression( const player_t*, const std::string& type );
+  std::array<int, SET_MAX> count;
+  void copy_from( const set_bonus_t& );
 private:
   const spell_data_t* default_value;
-  const spell_data_t* set_bonuses[ SET_MAX ];
-  player_t* p;
+  std::array<const spell_data_t*,SET_MAX> set_bonuses;
+  const player_t* p;
 
   const spell_data_t* create_set_bonus( uint32_t spell_id );
+  set_e decode( const player_t&, const item_t& item ) const;
+  bool initialized, spelldata_registered; // help avoid initialization order problems
 
 };
 
@@ -4348,8 +4346,7 @@ public:
   std::vector<item_t> items;
   gear_stats_t gear, enchant, temporary;
   gear_stats_t total_gear; // composite of gear, enchant and for non-pets sim -> enchant
-  set_bonus_t set_bonus;
-  set_bonus_array_t* sets;
+  set_bonus_t sets;
   meta_gem_e meta_gem;
   bool matching_gear;
   cooldown_t item_cooldown;
@@ -4751,7 +4748,7 @@ public:
   virtual void      create_pets() { }
   virtual pet_t*    create_pet( const std::string& /* name*/,  const std::string& /* type */ = std::string() ) { return 0; }
 
-  virtual int decode_set( item_t& item ) { ( void )item; assert( item.name() ); return SET_NONE; }
+  virtual set_e decode_set( const item_t& item ) const { ( void )item; assert( item.name() ); return SET_NONE; }
 
   virtual void armory_extensions( const std::string& /* region */, const std::string& /* server */, const std::string& /* character */,
                                   cache::behavior_e /* behavior */ = cache::players() )

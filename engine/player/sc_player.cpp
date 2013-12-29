@@ -665,7 +665,7 @@ player_t::player_t( sim_t*             s,
 
   report_information( player_processed_report_information_t() ),
   // Gear
-  sets( nullptr ),
+  sets( this ),
   meta_gem( META_GEM_NONE ), matching_gear( false ),
   item_cooldown( cooldown_t( "item_cd", *this ) ),
   legendary_tank_cloak_cd( nullptr ),
@@ -823,7 +823,7 @@ std::string player_t::base_initial_current_t::to_string()
 
 player_t::~player_t()
 {
-  delete sets;
+
 }
 
 static bool check_actors( sim_t* sim )
@@ -1398,7 +1398,7 @@ void player_t::init_items()
     sim -> out_debug.printf( "%s gear: %s", name(), gear.to_string().c_str() );
   }
 
-  set_bonus.init( this );
+  sets.init( *this );
 
   init_weapon ( main_hand_weapon );
   init_weapon( off_hand_weapon );
@@ -7912,7 +7912,7 @@ expr_t* player_t::create_expression( action_t* a,
   else if ( splits.size() == 2 )
   {
     if ( splits[ 0 ] == "set_bonus" )
-      return set_bonus.create_expression( this, splits[ 1 ] );
+      return sets.create_expression( this, splits[ 1 ] );
   }
 
   if ( splits.size() >= 2 && splits[ 0 ] == "target" )
@@ -8406,7 +8406,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
     // Set Bonus
     for ( set_e s = SET_NONE; s < SET_MAX; ++s )
     {
-      if ( set_bonus_array_t::has_set_bonus( this, s ) )
+      if ( set_bonus_t::has_set_bonus( this, s ) )
       {
         profile_str += std::string("# ") + util::set_bonus_string( s ) + "=1" + term;
       }
@@ -8484,7 +8484,7 @@ void player_t::copy_from( player_t* source )
     items[ i ].player = this;
   }
 
-  set_bonus.count = source -> set_bonus.count;
+  sets.copy_from( source -> sets );
   gear = source -> gear;
   enchant = source -> enchant;
 }
@@ -8568,46 +8568,46 @@ void player_t::create_options()
     opt_string( "tabard",    items[ SLOT_TABARD    ].options_str ),
 
     // Set Bonus
-    opt_bool( "tier13_2pc_caster", set_bonus.count[ SET_T13_2PC_CASTER ] ),
-    opt_bool( "tier13_4pc_caster", set_bonus.count[ SET_T13_4PC_CASTER ] ),
-    opt_bool( "tier13_2pc_melee",  set_bonus.count[ SET_T13_2PC_MELEE ] ),
-    opt_bool( "tier13_4pc_melee",  set_bonus.count[ SET_T13_4PC_MELEE ] ),
-    opt_bool( "tier13_2pc_tank",   set_bonus.count[ SET_T13_2PC_TANK ] ),
-    opt_bool( "tier13_4pc_tank",   set_bonus.count[ SET_T13_4PC_TANK ] ),
-    opt_bool( "tier13_2pc_heal",   set_bonus.count[ SET_T13_2PC_HEAL ] ),
-    opt_bool( "tier13_4pc_heal",   set_bonus.count[ SET_T13_4PC_HEAL ] ),
-    opt_bool( "tier14_2pc_caster", set_bonus.count[ SET_T14_2PC_CASTER ] ),
-    opt_bool( "tier14_4pc_caster", set_bonus.count[ SET_T14_4PC_CASTER ] ),
-    opt_bool( "tier14_2pc_melee",  set_bonus.count[ SET_T14_2PC_MELEE ] ),
-    opt_bool( "tier14_4pc_melee",  set_bonus.count[ SET_T14_4PC_MELEE ] ),
-    opt_bool( "tier14_2pc_tank",   set_bonus.count[ SET_T14_2PC_TANK ] ),
-    opt_bool( "tier14_4pc_tank",   set_bonus.count[ SET_T14_4PC_TANK ] ),
-    opt_bool( "tier14_2pc_heal",   set_bonus.count[ SET_T14_2PC_HEAL ] ),
-    opt_bool( "tier14_4pc_heal",   set_bonus.count[ SET_T14_4PC_HEAL ] ),
-    opt_bool( "tier15_2pc_caster", set_bonus.count[ SET_T15_2PC_CASTER ] ),
-    opt_bool( "tier15_4pc_caster", set_bonus.count[ SET_T15_4PC_CASTER ] ),
-    opt_bool( "tier15_2pc_melee",  set_bonus.count[ SET_T15_2PC_MELEE ] ),
-    opt_bool( "tier15_4pc_melee",  set_bonus.count[ SET_T15_4PC_MELEE ] ),
-    opt_bool( "tier15_2pc_tank",   set_bonus.count[ SET_T15_2PC_TANK ] ),
-    opt_bool( "tier15_4pc_tank",   set_bonus.count[ SET_T15_4PC_TANK ] ),
-    opt_bool( "tier15_2pc_heal",   set_bonus.count[ SET_T15_2PC_HEAL ] ),
-    opt_bool( "tier15_4pc_heal",   set_bonus.count[ SET_T15_4PC_HEAL ] ),
-    opt_bool( "tier16_2pc_caster", set_bonus.count[ SET_T16_2PC_CASTER ] ),
-    opt_bool( "tier16_4pc_caster", set_bonus.count[ SET_T16_4PC_CASTER ] ),
-    opt_bool( "tier16_2pc_melee",  set_bonus.count[ SET_T16_2PC_MELEE ] ),
-    opt_bool( "tier16_4pc_melee",  set_bonus.count[ SET_T16_4PC_MELEE ] ),
-    opt_bool( "tier16_2pc_tank",   set_bonus.count[ SET_T16_2PC_TANK ] ),
-    opt_bool( "tier16_4pc_tank",   set_bonus.count[ SET_T16_4PC_TANK ] ),
-    opt_bool( "tier16_2pc_heal",   set_bonus.count[ SET_T16_2PC_HEAL ] ),
-    opt_bool( "tier16_4pc_heal",   set_bonus.count[ SET_T16_4PC_HEAL ] ),
-    opt_bool( "pvp_2pc_caster",    set_bonus.count[ SET_PVP_2PC_CASTER ] ),
-    opt_bool( "pvp_4pc_caster",    set_bonus.count[ SET_PVP_4PC_CASTER ] ),
-    opt_bool( "pvp_2pc_melee",     set_bonus.count[ SET_PVP_2PC_MELEE ] ),
-    opt_bool( "pvp_4pc_melee",     set_bonus.count[ SET_PVP_4PC_MELEE ] ),
-    opt_bool( "pvp_2pc_tank",      set_bonus.count[ SET_PVP_2PC_TANK ] ),
-    opt_bool( "pvp_4pc_tank",      set_bonus.count[ SET_PVP_4PC_TANK ] ),
-    opt_bool( "pvp_2pc_heal",      set_bonus.count[ SET_PVP_2PC_HEAL ] ),
-    opt_bool( "pvp_4pc_heal",      set_bonus.count[ SET_PVP_4PC_HEAL ] ),
+    opt_bool( "tier13_2pc_caster", sets.count[ SET_T13_2PC_CASTER ] ),
+    opt_bool( "tier13_4pc_caster", sets.count[ SET_T13_4PC_CASTER ] ),
+    opt_bool( "tier13_2pc_melee",  sets.count[ SET_T13_2PC_MELEE ] ),
+    opt_bool( "tier13_4pc_melee",  sets.count[ SET_T13_4PC_MELEE ] ),
+    opt_bool( "tier13_2pc_tank",   sets.count[ SET_T13_2PC_TANK ] ),
+    opt_bool( "tier13_4pc_tank",   sets.count[ SET_T13_4PC_TANK ] ),
+    opt_bool( "tier13_2pc_heal",   sets.count[ SET_T13_2PC_HEAL ] ),
+    opt_bool( "tier13_4pc_heal",   sets.count[ SET_T13_4PC_HEAL ] ),
+    opt_bool( "tier14_2pc_caster", sets.count[ SET_T14_2PC_CASTER ] ),
+    opt_bool( "tier14_4pc_caster", sets.count[ SET_T14_4PC_CASTER ] ),
+    opt_bool( "tier14_2pc_melee",  sets.count[ SET_T14_2PC_MELEE ] ),
+    opt_bool( "tier14_4pc_melee",  sets.count[ SET_T14_4PC_MELEE ] ),
+    opt_bool( "tier14_2pc_tank",   sets.count[ SET_T14_2PC_TANK ] ),
+    opt_bool( "tier14_4pc_tank",   sets.count[ SET_T14_4PC_TANK ] ),
+    opt_bool( "tier14_2pc_heal",   sets.count[ SET_T14_2PC_HEAL ] ),
+    opt_bool( "tier14_4pc_heal",   sets.count[ SET_T14_4PC_HEAL ] ),
+    opt_bool( "tier15_2pc_caster", sets.count[ SET_T15_2PC_CASTER ] ),
+    opt_bool( "tier15_4pc_caster", sets.count[ SET_T15_4PC_CASTER ] ),
+    opt_bool( "tier15_2pc_melee",  sets.count[ SET_T15_2PC_MELEE ] ),
+    opt_bool( "tier15_4pc_melee",  sets.count[ SET_T15_4PC_MELEE ] ),
+    opt_bool( "tier15_2pc_tank",   sets.count[ SET_T15_2PC_TANK ] ),
+    opt_bool( "tier15_4pc_tank",   sets.count[ SET_T15_4PC_TANK ] ),
+    opt_bool( "tier15_2pc_heal",   sets.count[ SET_T15_2PC_HEAL ] ),
+    opt_bool( "tier15_4pc_heal",   sets.count[ SET_T15_4PC_HEAL ] ),
+    opt_bool( "tier16_2pc_caster", sets.count[ SET_T16_2PC_CASTER ] ),
+    opt_bool( "tier16_4pc_caster", sets.count[ SET_T16_4PC_CASTER ] ),
+    opt_bool( "tier16_2pc_melee",  sets.count[ SET_T16_2PC_MELEE ] ),
+    opt_bool( "tier16_4pc_melee",  sets.count[ SET_T16_4PC_MELEE ] ),
+    opt_bool( "tier16_2pc_tank",   sets.count[ SET_T16_2PC_TANK ] ),
+    opt_bool( "tier16_4pc_tank",   sets.count[ SET_T16_4PC_TANK ] ),
+    opt_bool( "tier16_2pc_heal",   sets.count[ SET_T16_2PC_HEAL ] ),
+    opt_bool( "tier16_4pc_heal",   sets.count[ SET_T16_4PC_HEAL ] ),
+    opt_bool( "pvp_2pc_caster",    sets.count[ SET_PVP_2PC_CASTER ] ),
+    opt_bool( "pvp_4pc_caster",    sets.count[ SET_PVP_4PC_CASTER ] ),
+    opt_bool( "pvp_2pc_melee",     sets.count[ SET_PVP_2PC_MELEE ] ),
+    opt_bool( "pvp_4pc_melee",     sets.count[ SET_PVP_4PC_MELEE ] ),
+    opt_bool( "pvp_2pc_tank",      sets.count[ SET_PVP_2PC_TANK ] ),
+    opt_bool( "pvp_4pc_tank",      sets.count[ SET_PVP_4PC_TANK ] ),
+    opt_bool( "pvp_2pc_heal",      sets.count[ SET_PVP_2PC_HEAL ] ),
+    opt_bool( "pvp_4pc_heal",      sets.count[ SET_PVP_4PC_HEAL ] ),
 
     // Gear Stats
     opt_float( "gear_strength",         gear.attribute[ ATTR_STRENGTH  ] ),

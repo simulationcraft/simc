@@ -293,7 +293,7 @@ public:
   virtual void      init_action_list();
 
   virtual action_t* create_action( const std::string& name, const std::string& options );
-  virtual int       decode_set( item_t& );
+  virtual set_e       decode_set( const item_t& ) const;
   virtual resource_e primary_resource() const { return RESOURCE_RAGE; }
   virtual role_e    primary_role() const;
   virtual void      assess_damage( school_e, dmg_e, action_state_t* s );
@@ -471,9 +471,9 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     if ( special && this -> id != 115767 ) // Recklessness crit bonus does not count towards deep wounds.
       cc += p -> buff.recklessness -> value();
 
-    if ( p -> sets -> has_set_bonus( SET_T15_4PC_MELEE ) && p -> buffs.skull_banner -> check() && p -> buffs.skull_banner -> source == p )
+    if ( p -> sets.has_set_bonus( SET_T15_4PC_MELEE ) && p -> buffs.skull_banner -> check() && p -> buffs.skull_banner -> source == p )
     {
-      cc += p -> sets -> set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent();
+      cc += p -> sets.set( SET_T15_4PC_MELEE ) -> effectN( 1 ).percent();
     }
 
     return cc;
@@ -705,7 +705,7 @@ static  void trigger_sweeping_strikes( action_state_t* s )
 
 static bool trigger_t15_2pc_melee( warrior_attack_t* a )
 {
-  if ( ! a -> player -> sets -> has_set_bonus( SET_T15_2PC_MELEE ) )
+  if ( ! a -> player -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
     return false;
 
   warrior_t* p = a -> cast();
@@ -787,11 +787,11 @@ void warrior_attack_t::impact( action_state_t* s )
     {
       if( p -> buff.bloodbath -> up() )
         trigger_bloodbath_dot( s -> target, s -> result_amount );
-      if ( p -> sets -> has_set_bonus( SET_T16_2PC_MELEE ) && td ->  debuffs_colossus_smash -> up() && // Melee tier 16 2 piece.
+      if ( p -> sets.has_set_bonus( SET_T16_2PC_MELEE ) && td ->  debuffs_colossus_smash -> up() && // Melee tier 16 2 piece.
          ( this ->  weapon == &( p -> main_hand_weapon ) || this -> id == 100130 ) &&    // Only procs once per ability used.
            this -> id != 12328 && this -> id != 76858 )                                  // Doesn't proc from opportunity strikes or sweeping strikes.
         p -> resource_gain( RESOURCE_RAGE,
-                            p -> sets -> set( SET_T16_2PC_MELEE ) -> effectN( 1 ).base_value(), 
+                            p -> sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).base_value(), 
                             p -> gain.tier16_2pc_melee );
     }
 
@@ -1052,7 +1052,7 @@ struct bloodthirst_t : public warrior_attack_t
     weapon           = &( p -> main_hand_weapon );
     bloodthirst_heal = new bloodthirst_heal_t( p );
 
-    base_multiplier += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
+    base_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
   }
 
   double composite_crit_multiplier() const
@@ -1079,7 +1079,7 @@ struct bloodthirst_t : public warrior_attack_t
       p -> active_deep_wounds -> execute();
       p -> buff.bloodsurge -> trigger( 3 );
 
-      if ( p -> sets -> has_set_bonus( SET_T16_4PC_MELEE ) )
+      if ( p -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
         p -> buff.death_sentence -> trigger();
 
       p -> resource_gain( RESOURCE_RAGE,
@@ -1660,7 +1660,7 @@ struct mortal_strike_t : public warrior_attack_t
     warrior_attack_t( "mortal_strike", p, p -> find_class_spell( "Mortal Strike" ) )
   {
     parse_options( NULL, options_str );
-    base_multiplier += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    base_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
     base_multiplier *= 1.228; //Hotfix buff for 5.4
   }
 
@@ -1688,7 +1688,7 @@ struct mortal_strike_t : public warrior_attack_t
       if ( sim -> overrides.mortal_wounds )
         s -> target -> debuffs.mortal_wounds -> trigger();
 
-      if ( p -> sets -> has_set_bonus( SET_T16_4PC_MELEE ) )
+      if ( p -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
         p -> buff.death_sentence -> trigger();
 
       p -> resource_gain( RESOURCE_RAGE,
@@ -1913,9 +1913,9 @@ struct revenge_t : public warrior_attack_t
 
         p -> resource_gain( RESOURCE_RAGE, rage_gain, p -> gain.revenge );
 
-        if ( td -> debuffs_demoralizing_shout -> up() && p -> sets -> has_set_bonus( SET_T15_4PC_TANK ) )
+        if ( td -> debuffs_demoralizing_shout -> up() && p -> sets.has_set_bonus( SET_T15_4PC_TANK ) )
            p -> resource_gain( RESOURCE_RAGE,
-                               rage_gain * p -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(),
+                               rage_gain * p -> sets.set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(),
                                p -> gain.tier15_4pc_tank );
       }
     }
@@ -1941,7 +1941,7 @@ struct revenge_t : public warrior_attack_t
     {
       warrior_t* p = cast();
 
-      if ( rng().roll( p -> sets -> set( SET_T15_2PC_TANK ) -> proc_chance() ) )
+      if ( rng().roll( p -> sets.set( SET_T15_2PC_TANK ) -> proc_chance() ) )
         p -> buff.tier15_2pc_tank -> trigger();
 
     }
@@ -2074,9 +2074,9 @@ struct shield_slam_t : public warrior_attack_t
       }
     }
 
-    if ( td -> debuffs_demoralizing_shout -> up() && p -> sets -> has_set_bonus( SET_T15_4PC_TANK ) )
+    if ( td -> debuffs_demoralizing_shout -> up() && p -> sets.has_set_bonus( SET_T15_4PC_TANK ) )
       p -> resource_gain( RESOURCE_RAGE,
-                        ( rage_gain + rage_from_snb ) * p -> sets -> set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(),
+                        ( rage_gain + rage_from_snb ) * p -> sets.set( SET_T15_4PC_TANK ) -> effectN( 1 ).percent(),
                           p -> gain.tier15_4pc_tank );
   }
 
@@ -2086,7 +2086,7 @@ struct shield_slam_t : public warrior_attack_t
 
     warrior_t* p = cast();
 
-    if ( rng().roll( p -> sets -> set( SET_T15_2PC_TANK ) -> proc_chance() ) )
+    if ( rng().roll( p -> sets.set( SET_T15_2PC_TANK ) -> proc_chance() ) )
       p -> buff.tier15_2pc_tank -> trigger();
 
     if ( s -> result == RESULT_CRIT )
@@ -2728,7 +2728,7 @@ struct recklessness_t : public warrior_spell_t
       bonus_crit += p -> glyphs.recklessness -> effectN( 1 ).percent();
 
     cooldown -> duration = data().cooldown();
-    cooldown -> duration += p -> sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
+    cooldown -> duration += p -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value();
   }
 
   virtual void execute()
@@ -2799,7 +2799,7 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
                      p.current.stats.attribute[ ATTR_STAMINA ] * stam_scale )
            * rage_cost / 60;
 
-    amount *= 1.0 + p.sets -> set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent();
+    amount *= 1.0 + p.sets.set( SET_T14_4PC_TANK ) -> effectN( 2 ).percent();
 
     if ( ! sim -> average_range ) amount = floor( amount + rng().real() );
 
@@ -2851,7 +2851,7 @@ struct shield_block_t : public warrior_spell_t
     double c = warrior_spell_t::cost();
     const warrior_t* p = cast();
 
-    c += p -> sets -> set( SET_T14_4PC_TANK ) -> effectN( 1 ).resource( RESOURCE_RAGE );
+    c += p -> sets.set( SET_T14_4PC_TANK ) -> effectN( 1 ).resource( RESOURCE_RAGE );
 
     return c;
   }
@@ -3098,7 +3098,7 @@ struct last_stand_t : public warrior_spell_t
 
     parse_options( NULL, options_str );
     cooldown -> duration = data().cooldown();
-    cooldown -> duration += p -> sets -> set( SET_T14_2PC_TANK ) -> effectN( 1 ).time_value();
+    cooldown -> duration += p -> sets.set( SET_T14_2PC_TANK ) -> effectN( 1 ).time_value();
     use_off_gcd = true;
   }
 
@@ -3153,7 +3153,7 @@ struct debuff_demo_shout_t : public buff_t
   {
     warrior_t* p = (warrior_t*) player;
 
-    if ( set_bonus_array_t::has_set_bonus( p, SET_T16_4PC_TANK ) )
+    if ( set_bonus_t::has_set_bonus( p, SET_T16_4PC_TANK ) )
     {
         p -> buff.tier16_reckless_defense -> trigger();
     }
@@ -3324,7 +3324,7 @@ void warrior_t::init_spells()
     {     0,     0, 144436, 144441, 144503, 144502,     0,     0 }, // Tier16
   };
 
-  sets = new set_bonus_array_t( this, set_bonuses );
+  sets.register_spelldata( set_bonuses );
 }
 
 // warrior_t::init_defense ==================================================
@@ -4332,18 +4332,18 @@ void warrior_t::assess_damage( school_e school,
   }
 
   
-  if ( sets -> has_set_bonus( SET_T16_2PC_TANK ) )
+  if ( sets.has_set_bonus( SET_T16_2PC_TANK ) )
   {
     if (s -> block_result != BLOCK_RESULT_UNBLOCKED) //heal if blocked
     {
-      double heal_amount = floor( s -> blocked_amount * sets -> set( SET_T16_2PC_TANK ) -> effectN( 1 ).percent() );
+      double heal_amount = floor( s -> blocked_amount * sets.set( SET_T16_2PC_TANK ) -> effectN( 1 ).percent() );
       active_t16_2pc -> base_dd_min = active_t16_2pc -> base_dd_max = heal_amount;
       active_t16_2pc -> execute();
     }
 
     if (s -> self_absorb_amount > 0 )//always heal if shield_barrier absorbed it. This assumes that shield_barrier is our only own absorb spell.
     {
-      double heal_amount = floor( s -> self_absorb_amount * sets -> set( SET_T16_2PC_TANK ) -> effectN( 2 ).percent() );//FIX: check effectN after dbc update.. Currently the tooltip points to 1 in both cases, but I don't know whether that is intended.
+      double heal_amount = floor( s -> self_absorb_amount * sets.set( SET_T16_2PC_TANK ) -> effectN( 2 ).percent() );//FIX: check effectN after dbc update.. Currently the tooltip points to 1 in both cases, but I don't know whether that is intended.
       active_t16_2pc -> base_dd_min = active_t16_2pc -> base_dd_max = heal_amount;
       active_t16_2pc -> execute();
     }
@@ -4389,7 +4389,7 @@ void warrior_t::copy_from( player_t* source )
 
 // warrior_t::decode_set ====================================================
 
-int warrior_t::decode_set( item_t& item )
+set_e warrior_t::decode_set( const item_t& item ) const
 {
   if ( item.slot != SLOT_HEAD      &&
        item.slot != SLOT_SHOULDERS &&

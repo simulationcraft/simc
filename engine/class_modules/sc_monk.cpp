@@ -305,7 +305,7 @@ public:
   virtual void      reset();
   virtual void      interrupt();
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
-  virtual int       decode_set( item_t& );
+  virtual set_e     decode_set( const item_t& ) const;
   virtual void      create_options();
   virtual void      copy_from( player_t* );
   virtual resource_e primary_resource() const;
@@ -913,7 +913,7 @@ struct jab_t : public monk_melee_attack_t
     }
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.jab, this );
 
-    if ( rng().roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
+    if ( rng().roll( p() -> sets.set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc_melee -> occur();
@@ -955,7 +955,7 @@ struct tiger_palm_t : public monk_melee_attack_t
 
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
-    if ( p() -> sets -> has_set_bonus( SET_T16_2PC_MELEE ) && p() -> buff.combo_breaker_tp -> check() ) {
+    if ( p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) && p() -> buff.combo_breaker_tp -> check() ) {
       // damage increased by 40% for WW 2pc upon CB
       m *= 1.4;
     }
@@ -1091,7 +1091,7 @@ struct blackout_kick_t : public monk_melee_attack_t
       m *= 1.0 + p() -> find_spell( 139597 ) -> effectN( 1 ).percent();
 
     // check for melee 2p and CB: TP, for the 50% dmg bonus
-    if ( p() -> sets -> has_set_bonus( SET_T16_2PC_MELEE ) && p() -> buff.combo_breaker_bok -> check() ) {
+    if ( p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) && p() -> buff.combo_breaker_bok -> check() ) {
       // damage increased by 40% for WW 2pc upon CB
       m *= 1.4;
     }
@@ -1304,7 +1304,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     if ( p() -> talent.rushing_jade_wind -> ok() )
       p() -> buff.rushing_jade_wind -> trigger( 1, 0, 1.0, cooldown -> duration * p() -> cache.attack_haste() );
 
-    if ( rng().roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
+    if ( rng().roll( p() -> sets.set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc_melee -> occur();
@@ -1366,7 +1366,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     // T14 WW 2PC
     cooldown -> duration = data().cooldown();
-    cooldown -> duration += p -> sets -> set( SET_T14_2PC_MELEE ) -> effectN( 1 ).time_value();
+    cooldown -> duration += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).time_value();
 
     tick_action = new fists_of_fury_tick_t( p );
     dynamic_tick_action = true;
@@ -1806,12 +1806,12 @@ struct tigereye_brew_t : public monk_spell_t
     if ( p() -> track_focus_of_xuen > 20.0 )
       p() -> track_focus_of_xuen = 20.0;
 
-    if ( p() -> sets -> has_set_bonus( SET_T15_4PC_MELEE ) )
+    if ( p() -> sets.has_set_bonus( SET_T15_4PC_MELEE ) )
     {
       use_value *= 1.05; // t154pc
     }
 
-    if ( p() -> sets -> has_set_bonus( SET_T16_4PC_MELEE ) )
+    if ( p() -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
     {
       // so, there's actually an error with our 4set in that it doesn't count a full .75 if we don't use a full 4, but
       // can't find post that contains info.
@@ -2529,7 +2529,7 @@ struct expel_harm_heal_t : public monk_heal_t
 
     player -> resource_gain( RESOURCE_CHI, chi_gain, p() -> gain.expel_harm, this );
 
-    if ( rng().roll( p() -> sets -> set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
+    if ( rng().roll( p() -> sets.set( SET_T15_2PC_MELEE ) -> proc_chance() ) )
     {
       p() -> resource_gain( RESOURCE_ENERGY, p() -> passives.tier15_2pc -> effectN( 1 ).base_value(), p() -> gain.tier15_2pc );
       p() -> proc.tier15_2pc_melee -> occur();
@@ -3063,7 +3063,7 @@ void monk_t::init_spells()
     {       0,       0, 145022, 145004, 145049, 145055, 145439, 145449 }, // Tier16
   };
 
-  sets = new set_bonus_array_t( this, set_bonuses );
+  sets.register_spelldata( set_bonuses );
 }
 
 // monk_t::init_base ========================================================
@@ -3171,7 +3171,7 @@ void monk_t::create_buffs()
   buff.combo_breaker_bok = buff_creator_t( this, "combo_breaker_bok"   ).spell( find_spell( 116768 ) );
   buff.combo_breaker_tp  = buff_creator_t( this, "combo_breaker_tp"    ).spell( find_spell( 118864 ) );
   buff.energizing_brew   = buff_creator_t( this, "energizing_brew" ).spell( find_class_spell( "Energizing Brew" ) );
-  buff.energizing_brew -> buff_duration += sets -> set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //verify working
+  buff.energizing_brew -> buff_duration += sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value(); //verify working
   buff.tigereye_brew     = buff_creator_t( this, "tigereye_brew"       ).spell( find_spell( 125195 ) );
   buff.tigereye_brew_use = buff_creator_t( this, "tigereye_brew_use"   ).spell( find_spell( 116740 ) ).add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.focus_of_xuen  = buff_creator_t( this, "focus_of_xuen"       ).spell( find_spell( 145024 ) );
@@ -3305,7 +3305,7 @@ double monk_t::matching_gear_multiplier( attribute_e attr ) const
 
 // monk_t::decode_set =======================================================
 
-int monk_t::decode_set( item_t& item )
+set_e monk_t::decode_set( const item_t& item ) const
 {
   if ( item.slot != SLOT_HEAD      &&
        item.slot != SLOT_SHOULDERS &&
