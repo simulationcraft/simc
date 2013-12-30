@@ -1031,19 +1031,22 @@ public:
     return mouseHoverTimeout;
   }
 protected:
-  void dragEnterEvent( QDragEnterEvent* e )
+  virtual void dragEnterEvent( QDragEnterEvent* e )
   {
     if ( enableDraggedTextHoverSignal )
       e -> acceptProposedAction();
+
+    QTabBar::dragEnterEvent( e );
   }
-  void dragLeaveEvent( QDragLeaveEvent* e )
+  virtual void dragLeaveEvent( QDragLeaveEvent* e )
   {
-    Q_UNUSED( e );
     draggedTextOnSingleTabTimer.stop();
     mouseHoverTimeoutTimer.stop();
     hoveringOverTab = -1;
+
+    QTabBar::dragLeaveEvent( e );
   }
-  void dragMoveEvent( QDragMoveEvent* e )
+  virtual void dragMoveEvent( QDragMoveEvent* e )
   {
     if ( enableDraggedTextHoverSignal )
     {
@@ -1056,13 +1059,16 @@ protected:
       }
       e -> acceptProposedAction();
     }
+
+    QTabBar::dragMoveEvent( e );
   }
-  void dropEvent( QDropEvent* e )
+  virtual void dropEvent( QDropEvent* e )
   {
-    e -> acceptProposedAction();
-    qDebug( "Drop event on tab %d", tabAt( e -> pos() ) );
+    // dropEvent is protected so we cannot forward this to the widget.. just dont accept it
+
+    QTabBar::dropEvent( e );
   }
-  void mouseMoveEvent( QMouseEvent* e )
+  virtual void mouseMoveEvent( QMouseEvent* e )
   {
     if ( enableMouseHoverTimeoutSignal )
     {
@@ -1074,20 +1080,24 @@ protected:
         startHoverTimer( tabUnderMouse );
       }
     }
+
+    QTabBar::mouseMoveEvent( e );
   }
-  void leaveEvent( QEvent* e )
+  virtual void leaveEvent( QEvent* e )
   {
-    Q_UNUSED( e );
     draggedTextOnSingleTabTimer.stop();
     mouseHoverTimeoutTimer.stop();
     hoveringOverTab = -1;
+
+    QTabBar::leaveEvent( e );
   }
-  void enterEvent( QEvent* e )
+  virtual void enterEvent( QEvent* e )
   {
-    Q_UNUSED( e );
     startHoverTimer( tabAt( QCursor::pos() ) );
+
+    QTabBar::enterEvent( e );
   }
-  void startDraggedTextTimer( int tab )
+  virtual void startDraggedTextTimer( int tab )
   {
     if ( enableDraggedTextHoverSignal && tab >= 0 )
     {
@@ -1095,13 +1105,24 @@ protected:
       draggedTextOnSingleTabTimer.start( draggedTextTimeout );
     }
   }
-  void startHoverTimer( int tab )
+  virtual void startHoverTimer( int tab )
   {
     if ( enableMouseHoverTimeoutSignal && tab >= 0 )
     {
       hoveringOverTab = tab;
       mouseHoverTimeoutTimer.start( mouseHoverTimeout );
     }
+  }
+  virtual bool event( QEvent* e )
+  {
+    if ( e -> type() == QEvent::LayoutRequest )
+    {
+      // Issued when drag is completed
+      // Best way I can find to enforce the SC_SimulateTab addTabWidget's location
+      emit( layoutRequestEvent() );
+    }
+
+    return QTabBar::event( e );
   }
 public slots:
   void mouseHoverTimedout()
@@ -1117,6 +1138,7 @@ public slots:
 signals:
   void mouseHoveredOverTab( int tab );
   void mouseDragHoveredOverTab( int tab );
+  void layoutRequestEvent();
 };
 
 // ============================================================================
@@ -1164,6 +1186,7 @@ public:
     setTabBar( scTabBar );
     setTabsClosable( true );
     setCornerWidget( createCloseAllTabsWidget(), corner );
+    connect( scTabBar, SIGNAL( layoutRequestEvent() ), this, SIGNAL( tabBarLayoutRequestEvent() ) );
     connect( scTabBar, SIGNAL( mouseHoveredOverTab( int ) ), this, SIGNAL( mouseHoveredOverTab( int ) ) );
     connect( scTabBar, SIGNAL( mouseDragHoveredOverTab( int ) ), this, SIGNAL( mouseDragHoveredOverTab( int ) ) );
   }
@@ -1242,6 +1265,7 @@ signals:
   void tabAboutToBeRemoved( QWidget*, const QString& tabTitle, const QString& tabToolTip, const QIcon& );
   void mouseHoveredOverTab( int tab );
   void mouseDragHoveredOverTab( int tab );
+  void tabBarLayoutRequestEvent();
 };
 
 // ============================================================================
@@ -1898,7 +1922,6 @@ public:
   {
     setTabsClosable( true );
 
-   // setMovable( true ); # Would need to disallow moving the + tab, or to the right of it. That would require subclassing tabbar
     setCloseAllTabsTitleText( tr( "Close ALL Simulate Tabs?" ) );
     setCloseAllTabsBodyText( tr( "Do you really want to close ALL simulation profiles?" ) );
     QIcon addTabIcon(":/icon/addtab.png");
@@ -1911,6 +1934,11 @@ public:
     connect( this, SIGNAL( mouseDragHoveredOverTab( int ) ), this, SLOT( mouseDragSwitchTab( int ) ) );
     connect( this, SIGNAL( currentChanged( int ) ), this, SLOT( addNewTab( int ) ) );
     connect( this, SIGNAL( tabCloseRequested( int ) ), this, SLOT( TabCloseRequest( int ) ) );
+    // Using QTabBar::tabMoved(int,int) signal turns out to be very wonky
+    // It is emitted WHILE tabs are still being dragged and looks very funny
+    // This is the best way I could find to enable this
+    setMovable( true ); // Would need to disallow moving the + tab, or to the right of it. That would require subclassing tabbar
+    connect( this, SIGNAL( tabBarLayoutRequestEvent() ), this, SLOT( enforceAddTabWidgetLocationInvariant() ) );
   }
 
   static void format_document( SC_TextEdit* /*s*/ )
@@ -2144,6 +2172,17 @@ public slots:
     if ( tab != indexOf( addTabWidget ) )
     {
       setCurrentIndex( tab );
+    }
+  }
+  void enforceAddTabWidgetLocationInvariant()
+  {
+    int addTabWidgetIndex = indexOf( addTabWidget );
+    if ( addTabWidgetIndex >= 1 )
+    {
+      if ( addTabWidgetIndex != count() - 1 )
+      {
+        tabBar() -> moveTab( addTabWidgetIndex, count() - 1 );
+      }
     }
   }
 };
