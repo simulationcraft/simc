@@ -1804,6 +1804,9 @@ SC_ResultTab::SC_ResultTab( SC_MainWindow* mw ) :
   SC_RecentlyClosedTab( mw ),
   mainWindow( mw )
 {
+  setMovable( true );
+  enableDragHoveredOverTabSignal( true );
+  connect( this, SIGNAL( mouseDragHoveredOverTab( int ) ), this, SLOT( setCurrentIndex( int ) ) );
 }
 
 #ifdef SC_PAPERDOLL

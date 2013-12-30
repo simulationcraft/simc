@@ -2177,7 +2177,7 @@ public slots:
   void enforceAddTabWidgetLocationInvariant()
   {
     int addTabWidgetIndex = indexOf( addTabWidget );
-    if ( addTabWidgetIndex >= 1 )
+    if ( count() >= 1 )
     {
       if ( addTabWidgetIndex != count() - 1 )
       {
