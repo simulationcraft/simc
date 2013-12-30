@@ -666,46 +666,41 @@ Q_PROPERTY( int timeout READ timeout WRITE setTimeout )
   int timeout_;
   QTimer timeSinceMouseEntered;
 public:
-  SC_HoverArea(QWidget* parent = 0, int timeout = 1000) :
-      QWidget(parent), timeout_(timeout)
+  SC_HoverArea( QWidget* parent = 0, int timeout = 1000 ) :
+      QWidget( parent ), timeout_( timeout )
   {
     setMouseTracking(true);
-    connect(&timeSinceMouseEntered, SIGNAL( timeout() ), this,
-        SLOT( TimerTimeout() ));
-    timeSinceMouseEntered.setSingleShot(true);
+    connect( &timeSinceMouseEntered, SIGNAL( timeout() ), this,
+        SLOT( TimerTimeout() ) );
+    timeSinceMouseEntered.setSingleShot( true );
   }
 
-  int
-  timeout() const
+  int timeout() const
   {
     return timeout_;
   }
 
-  void
-  setTimeout(int timeout)
+  void setTimeout( int timeout )
   {
     timeout_ = timeout;
   }
 
 protected:
-  virtual void
-  enterEvent(QEvent* /* event */ )
+  virtual void enterEvent( QEvent* /* event */ )
   {
-    if (underMouse() && timeSinceMouseEntered.isActive() == false)
-      timeSinceMouseEntered.start(timeout_);
+    if ( underMouse() && timeSinceMouseEntered.isActive() == false )
+      timeSinceMouseEntered.start( timeout_ );
   }
 
-  virtual void
-  leaveEvent(QEvent* /* event */)
+  virtual void leaveEvent( QEvent* /* event */ )
   {
     timeSinceMouseEntered.stop();
   }
 
 public slots:
-  virtual void
-  TimerTimeout()
+  virtual void TimerTimeout()
   {
-    emit(mouseHoverTimeout());
+    emit( mouseHoverTimeout() );
   }
 
 signals:
@@ -976,6 +971,155 @@ protected:
 };
 
 // ============================================================================
+// SC_TabBar
+// ============================================================================
+
+class SC_TabBar : public QTabBar
+{
+Q_OBJECT
+  int hoveringOverTab;
+Q_PROPERTY( int draggedTextHoverTimeout READ getDraggedTextHoverTimeout WRITE setDraggedTextHoverTimeout )
+  QTimer draggedTextOnSingleTabTimer;
+  bool enableDraggedTextHoverSignal;
+  int draggedTextTimeout;
+Q_PROPERTY( int nonDraggedHoverTimeout READ getMouseHoverTimeout WRITE setMouseHoverTimeout )
+  QTimer mouseHoverTimeoutTimer;
+  bool enableMouseHoverTimeoutSignal;
+  int mouseHoverTimeout;
+public:
+  SC_TabBar( QWidget* parent = nullptr,
+      bool enableDraggedHover = false,
+      bool enableMouseHover = false ) :
+    QTabBar( parent ),
+    hoveringOverTab( -1 ),
+    enableDraggedTextHoverSignal( enableDraggedHover ),
+    draggedTextTimeout( 0 ),
+    enableMouseHoverTimeoutSignal( enableMouseHover ),
+    mouseHoverTimeout( 1500 )
+  {
+    enableDraggedTextHover( enableDraggedTextHoverSignal );
+    enableMouseHoverTimeout( enableMouseHoverTimeoutSignal );
+
+    connect( &draggedTextOnSingleTabTimer, SIGNAL( timeout() ), this, SLOT( draggedTextTimedout() ) );
+    connect( &mouseHoverTimeoutTimer, SIGNAL( timeout() ), this, SLOT( mouseHoverTimedout() ) );
+  }
+  void enableDraggedTextHover( bool enable )
+  {
+    enableDraggedTextHoverSignal = enable;
+    setMouseTracking( enableMouseHoverTimeoutSignal || enable );
+    setAcceptDrops( enable );
+  }
+  void setDraggedTextHoverTimeout( int milisec )
+  {
+    draggedTextTimeout = milisec;
+  }
+  int getDraggedTextHoverTimeout() const
+  {
+    return draggedTextTimeout;
+  }
+  void enableMouseHoverTimeout( bool enable )
+  {
+    enableMouseHoverTimeoutSignal = enable;
+    setMouseTracking( enableDraggedTextHoverSignal || enable );
+  }
+  void setMouseHoverTimeout( int milisec )
+  {
+    mouseHoverTimeout = milisec;
+  }
+  int getMouseHoverTimeout() const
+  {
+    return mouseHoverTimeout;
+  }
+protected:
+  void dragEnterEvent( QDragEnterEvent* e )
+  {
+    if ( enableDraggedTextHoverSignal )
+      e -> acceptProposedAction();
+  }
+  void dragLeaveEvent( QDragLeaveEvent* e )
+  {
+    Q_UNUSED( e );
+    draggedTextOnSingleTabTimer.stop();
+    mouseHoverTimeoutTimer.stop();
+    hoveringOverTab = -1;
+  }
+  void dragMoveEvent( QDragMoveEvent* e )
+  {
+    if ( enableDraggedTextHoverSignal )
+    {
+      // Mouse has moved, check if the mouse has moved to a different tab and if so restart timer
+      int tabUnderMouse = tabAt( e -> pos() );
+      // Check if the tab has been changed
+      if ( hoveringOverTab != tabUnderMouse )
+      {
+        startDraggedTextTimer( tabUnderMouse );
+      }
+      e -> acceptProposedAction();
+    }
+  }
+  void dropEvent( QDropEvent* e )
+  {
+    e -> acceptProposedAction();
+    qDebug( "Drop event on tab %d", tabAt( e -> pos() ) );
+  }
+  void mouseMoveEvent( QMouseEvent* e )
+  {
+    if ( enableMouseHoverTimeoutSignal )
+    {
+      // Mouse has moved, check if the mouse has moved to a different tab and if so restart timer
+      int tabUnderMouse = tabAt( e -> pos() );
+      // Check if the tab has been changed
+      if ( hoveringOverTab != tabUnderMouse )
+      {
+        startHoverTimer( tabUnderMouse );
+      }
+    }
+  }
+  void leaveEvent( QEvent* e )
+  {
+    Q_UNUSED( e );
+    draggedTextOnSingleTabTimer.stop();
+    mouseHoverTimeoutTimer.stop();
+    hoveringOverTab = -1;
+  }
+  void enterEvent( QEvent* e )
+  {
+    Q_UNUSED( e );
+    startHoverTimer( tabAt( QCursor::pos() ) );
+  }
+  void startDraggedTextTimer( int tab )
+  {
+    if ( enableDraggedTextHoverSignal && tab >= 0 )
+    {
+      hoveringOverTab = tab;
+      draggedTextOnSingleTabTimer.start( draggedTextTimeout );
+    }
+  }
+  void startHoverTimer( int tab )
+  {
+    if ( enableMouseHoverTimeoutSignal && tab >= 0 )
+    {
+      hoveringOverTab = tab;
+      mouseHoverTimeoutTimer.start( mouseHoverTimeout );
+    }
+  }
+public slots:
+  void mouseHoverTimedout()
+  {
+    mouseHoverTimeoutTimer.stop();
+    emit( mouseHoveredOverTab( hoveringOverTab ) );
+  }
+  void draggedTextTimedout()
+  {
+    draggedTextOnSingleTabTimer.stop();
+    emit( mouseDragHoveredOverTab( hoveringOverTab ) );
+  }
+signals:
+  void mouseHoveredOverTab( int tab );
+  void mouseDragHoveredOverTab( int tab );
+};
+
+// ============================================================================
 // SC_TabWidgetCloseAll
 // ============================================================================
 
@@ -1006,6 +1150,7 @@ Q_OBJECT
   }
   QString closeAllTabsTitleText;
   QString closeAllTabsBodyText;
+  SC_TabBar* scTabBar;
 public:
   SC_TabWidgetCloseAll(QWidget* parent = nullptr,
       Qt::Corner corner = Qt::TopRightCorner,
@@ -1013,10 +1158,14 @@ public:
       QString warningText = "Close all tabs?" ) :
   QTabWidget( parent ),
   closeAllTabsTitleText( warningTitle ),
-  closeAllTabsBodyText( warningText )
+  closeAllTabsBodyText( warningText ),
+  scTabBar( new SC_TabBar( this ) )
   {
+    setTabBar( scTabBar );
     setTabsClosable( true );
     setCornerWidget( createCloseAllTabsWidget(), corner );
+    connect( scTabBar, SIGNAL( mouseHoveredOverTab( int ) ), this, SIGNAL( mouseHoveredOverTab( int ) ) );
+    connect( scTabBar, SIGNAL( mouseDragHoveredOverTab( int ) ), this, SIGNAL( mouseDragHoveredOverTab( int ) ) );
   }
   void setCloseAllTabsTitleText( QString text )
   {
@@ -1074,6 +1223,14 @@ public:
   {
     emit( tabAboutToBeRemoved( widget( index ), tabText( index ), tabToolTip( index ), tabIcon( index ) ) );
   }
+  void enableMouseHoveredOverTabSignal( bool enable )
+  {
+    scTabBar -> enableMouseHoverTimeout( enable );
+  }
+  void enableDragHoveredOverTabSignal( bool enable )
+  {
+    scTabBar -> enableDraggedTextHover( enable );
+  }
 public slots:
   void closeAllTabsRequest( bool /* clicked */)
   {
@@ -1083,6 +1240,8 @@ public slots:
   }
 signals:
   void tabAboutToBeRemoved( QWidget*, const QString& tabTitle, const QString& tabToolTip, const QIcon& );
+  void mouseHoveredOverTab( int tab );
+  void mouseDragHoveredOverTab( int tab );
 };
 
 // ============================================================================
@@ -1092,24 +1251,13 @@ signals:
 class SC_RecentlyClosedTabItemModel : public QStandardItemModel
 {
 Q_OBJECT
-  bool owned;
 public:
   SC_RecentlyClosedTabItemModel( QObject* parent = nullptr ) :
-    QStandardItemModel( parent ),
-    owned( false )
+    QStandardItemModel( parent )
   {
     connect( this, SIGNAL( rowsAboutToBeRemoved( const QModelIndex&, int, int ) ), this, SLOT( rowsAboutToBeRemovedSlot( const QModelIndex&, int, int ) ) );
     connect( this, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( rowsInsertedSlot( const QModelIndex&, int, int ) ) );
     connect( this, SIGNAL( modelAboutToBeReset() ), this, SLOT( modelAboutToBeResetSlot() ) );
-  }
-  bool tryToOwn()
-  {
-    if ( ! owned )
-    {
-      owned = true;
-      return true;
-    }
-    return false;
   }
 signals:
   void removePreview( QWidget* );
@@ -1749,6 +1897,7 @@ public:
     lastSimulateTabIndexOffset( -2 )
   {
     setTabsClosable( true );
+
    // setMovable( true ); # Would need to disallow moving the + tab, or to the right of it. That would require subclassing tabbar
     setCloseAllTabsTitleText( tr( "Close ALL Simulate Tabs?" ) );
     setCloseAllTabsBodyText( tr( "Do you really want to close ALL simulation profiles?" ) );
@@ -1758,6 +1907,8 @@ public:
     tabBar() -> setTabButton( i, QTabBar::RightSide, nullptr );
     addCloseAllExclude( addTabWidget );
 
+    enableDragHoveredOverTabSignal( true );
+    connect( this, SIGNAL( mouseDragHoveredOverTab( int ) ), this, SLOT( mouseDragSwitchTab( int ) ) );
     connect( this, SIGNAL( currentChanged( int ) ), this, SLOT( addNewTab( int ) ) );
     connect( this, SIGNAL( tabCloseRequested( int ) ), this, SLOT( TabCloseRequest( int ) ) );
   }
@@ -1986,6 +2137,13 @@ public slots:
     if ( index == indexOf( addTabWidget ) )
     {
       insertNewTabAt( index );
+    }
+  }
+  void mouseDragSwitchTab( int tab )
+  {
+    if ( tab != indexOf( addTabWidget ) )
+    {
+      setCurrentIndex( tab );
     }
   }
 };
