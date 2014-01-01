@@ -986,19 +986,27 @@ Q_PROPERTY( int nonDraggedHoverTimeout READ getMouseHoverTimeout WRITE setMouseH
   QTimer mouseHoverTimeoutTimer;
   bool enableMouseHoverTimeoutSignal;
   int mouseHoverTimeout;
+
+  bool enableContextMenu;
+  QMenu* contextMenu;
 public:
   SC_TabBar( QWidget* parent = nullptr,
       bool enableDraggedHover = false,
-      bool enableMouseHover = false ) :
+      bool enableMouseHover = false,
+      bool enableContextMenu = true ) :
     QTabBar( parent ),
     hoveringOverTab( -1 ),
     enableDraggedTextHoverSignal( enableDraggedHover ),
     draggedTextTimeout( 0 ),
     enableMouseHoverTimeoutSignal( enableMouseHover ),
-    mouseHoverTimeout( 1500 )
+    mouseHoverTimeout( 1500 ),
+    enableContextMenu( enableContextMenu ),
+    contextMenu( nullptr )
   {
     enableDraggedTextHover( enableDraggedTextHoverSignal );
     enableMouseHoverTimeout( enableMouseHoverTimeoutSignal );
+
+    initContextMenu();
 
     connect( &draggedTextOnSingleTabTimer, SIGNAL( timeout() ), this, SLOT( draggedTextTimedout() ) );
     connect( &mouseHoverTimeoutTimer, SIGNAL( timeout() ), this, SLOT( mouseHoverTimedout() ) );
@@ -1029,6 +1037,35 @@ public:
   int getMouseHoverTimeout() const
   {
     return mouseHoverTimeout;
+  }
+private:
+  virtual void initContextMenu()
+  {
+    if ( contextMenu != nullptr )
+    {
+      delete contextMenu;
+      contextMenu = nullptr;
+    }
+    if ( enableContextMenu )
+    {
+      QAction* renameTab =    new QAction( tr( "Rename Tab" ),   this );
+      QAction* closeTab =     new QAction( tr( "Close Tab" ),      this );
+
+      connect( renameTab,    SIGNAL( triggered( bool ) ), this, SLOT( renameTab( bool ) ) );
+      connect( closeTab,     SIGNAL( triggered( bool ) ), this, SLOT( closeTab( bool ) ) );
+
+      setContextMenuPolicy( Qt::CustomContextMenu );
+      connect( this, SIGNAL( customContextMenuRequested( const QPoint& ) ),
+               this, SLOT(   showContextMenu( const QPoint& ) ) );
+
+      contextMenu = new QMenu( this );
+      contextMenu -> addAction( renameTab );
+      contextMenu -> addAction( closeTab );
+    }
+    else
+    {
+      setContextMenuPolicy( Qt::NoContextMenu );
+    }
   }
 protected:
   virtual void dragEnterEvent( QDragEnterEvent* e )
@@ -1134,6 +1171,33 @@ public slots:
   {
     draggedTextOnSingleTabTimer.stop();
     emit( mouseDragHoveredOverTab( hoveringOverTab ) );
+  }
+  void renameTab( bool checked )
+  {
+    Q_UNUSED( checked );
+    bool ok;
+    QString text = QInputDialog::getText( this, tr( "Modify Tab Title" ),
+                                          tr("New Tab Title:"), QLineEdit::Normal,
+                                          tabText( currentIndex() ), &ok );
+    if ( ok && !text.isEmpty() )
+       setTabText( currentIndex(), text );
+  }
+  void closeTab( bool checked )
+  {
+    Q_UNUSED( checked );
+    emit( tabCloseRequested( currentIndex() ) );
+  }
+  void showContextMenu( const QPoint& pos )
+  {
+    int tabUnderMouse = tabAt( pos );
+    if ( tabUnderMouse >= 0 )
+    {
+      setCurrentIndex( tabUnderMouse );
+      if ( contextMenu != nullptr )
+      {
+        contextMenu -> exec( mapToGlobal( pos ) );
+      }
+    }
   }
 signals:
   void mouseHoveredOverTab( int tab );
