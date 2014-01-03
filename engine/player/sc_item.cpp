@@ -1517,8 +1517,10 @@ bool item_t::decode_special( special_effect_t& effect,
       // Support scaling procs in a hacky way.
       if ( parsed.data.id && ( upgrade_level() > 0 || sim -> scale_to_itemlevel != -1 ) )
       {
+        // If the itemlevel is at base itemlevel, we do no special scaling, but 
+        // continue with the rest of the special encode parsing
         if ( static_cast< int >( item_level() ) == parsed.data.level )
-          return true;
+          continue;
 
         const random_prop_data_t& orig_data = player -> dbc.random_property( parsed.data.level );
         const random_prop_data_t& new_data = player -> dbc.random_property( item_level() );
