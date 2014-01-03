@@ -5,7 +5,7 @@
 
 #include "simulationcraft.hpp"
 
-namespace { // UNNAMED NAMESPACE ============================================
+namespace {
 
 // hymn_of_hope_buff ========================================================
 
@@ -52,8 +52,7 @@ struct player_ready_event_t : public event_t
   virtual void execute()
   {
     // Player that's checking for off gcd actions to use, cancels that checking when there's a ready event firing.
-    if ( p() -> off_gcd )
-      core_event_t::cancel( p() -> off_gcd );
+    core_event_t::cancel( p() -> off_gcd );
 
     if ( ! p() -> execute_action() )
     {
@@ -96,14 +95,11 @@ struct demise_event_t : public event_t
   }
 };
 
-
-
 // has_foreground_actions ===================================================
 
-bool has_foreground_actions( player_t* p )
+bool has_foreground_actions( const player_t& p )
 {
-  if ( ! p -> active_action_list ) return false;
-  return ( p -> active_action_list -> foreground_action_list.size() > 0 );
+  return ( p.active_action_list && !p.active_action_list -> foreground_action_list.empty() );
 }
 
 // parse_talent_url =========================================================
@@ -274,7 +270,7 @@ bool parse_specialization( sim_t* sim,
   sim -> active_player -> _spec = dbc::translate_spec_str( sim -> active_player -> type, value );
 
   if ( sim -> active_player -> _spec == SPEC_NONE )
-    sim->errorf( "\n%s specialization string \"%s\" not valid.\n", sim -> active_player-> name(), value.c_str() );
+    sim -> errorf( "\n%s specialization string \"%s\" not valid.\n", sim -> active_player-> name(), value.c_str() );
 
   return true;
 }
@@ -4198,7 +4194,7 @@ void player_t::arise()
     buffs.cooldown_reduction -> trigger();
   }
 
-  if ( has_foreground_actions( this ) )
+  if ( has_foreground_actions( *this ) )
     schedule_ready();
 
   active_during_iteration = true;

@@ -236,6 +236,9 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
     }
   #endif
 #endif
+#if defined( SC_LINUX_PACKAGING )
+    AppDataDir = ResultsDestDir = "~/.cache/SimulationCraft";
+#endif
 
   logFileText =  AppDataDir + "/" + "log.txt";
   resultsFileText =  AppDataDir + "/" + "results.html";
@@ -392,6 +395,8 @@ SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ) :
     CFRelease( fileRef );
     CFRelease( macPath );
   }
+#elif defined( SC_LINUX_PACKAGING )
+  welcomeFile = "/usr/share/SimulationCraft/Welcome.html";
 #endif
   setUrl( "file:///" + welcomeFile );
 }
@@ -482,7 +487,11 @@ void SC_MainWindow::createBestInSlotTab()
 
 // Scan all subfolders in /profiles/ and create a list
 #if ! defined( Q_WS_MAC ) && ! defined( Q_OS_MAC )
-  QDir tdir = QString( "profiles" );
+  #if defined( SC_LINUX_PACKAGING )
+    QDir tdir("/usr/share/SimulationCraft/profiles");
+  #else
+    QDir tdir( "profiles" );
+  #endif
 #else
   CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "profiles" ), 0, 0 );
   QDir tdir;

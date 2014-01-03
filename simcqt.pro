@@ -114,6 +114,10 @@ CONFIG(to_install) {
   DEFINES += SC_TO_INSTALL
 }
 
+CONFIG(linux_packaging) {
+  DEFINES += SC_LINUX_PACKAGING
+}
+
 # deployment for linux
 unix:!mac {
   CONFIG(console)
