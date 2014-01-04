@@ -911,8 +911,10 @@ gem_e bcp_api::parse_gem( item_t& item, unsigned gem_id, cache::behavior_e cachi
   return type;
 }
 
+#if USE_WOWREFORGE
 player_t* wowreforge::download_player( sim_t*             sim,
                                        const std::string& profile_id,
+                                       const std::string& talents,
                                        cache::behavior_e  caching )
 {
   sim -> current_name = profile_id;
@@ -923,5 +925,9 @@ player_t* wowreforge::download_player( sim_t*             sim,
   player.url = player.origin + "?json";
   player.name = "wowreforge_" + profile_id;
 
+  player.talent_spec = talents;
+
   return parse_player( sim, player, caching );
 }
+
+#endif // USE_WOWREFORGE

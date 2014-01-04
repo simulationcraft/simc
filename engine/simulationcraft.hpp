@@ -6334,10 +6334,14 @@ gem_e parse_gem( item_t& item, unsigned gem_id, cache::behavior_e b = cache::ite
 
 // Wowreforge ===============================================================
 
+#define USE_WOWREFORGE 0
+#if USE_WOWREFORGE
 namespace wowreforge
 {
-player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b = cache::players() );
+player_t* download_player( sim_t* sim, const std::string& id,
+                           const std::string& talents, cache::behavior_e b = cache::players() );
 }
+#endif // USE_WOWREFORGE
 
 // HTTP Download  ===========================================================
 

@@ -388,7 +388,14 @@ bool parse_armory( sim_t*             sim,
 #endif // USE_CHARDEV
       }
       else if ( name == "wowreforge" )
-        p = wowreforge::download_player( sim, player_name, stuff.cache );
+      {
+#if USE_WOWREFORGE
+        p = wowreforge::download_player( sim, player_name, description, stuff.cache );
+#else
+        sim -> errorf( "WowReforge import is no longer supported." );
+        return false;
+#endif // USE_WOWREFORGE
+      }
       else if ( name == "local_json" )
         p = bcp_api::from_local_json( sim, player_name, stuff.server, description );
       else
