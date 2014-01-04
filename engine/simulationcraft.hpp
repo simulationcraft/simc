@@ -2343,7 +2343,6 @@ struct player_description_t
   // ideally they remain static, but if not then move to sim_control_t
   static void load_bcp    ( player_description_t& /*etc*/ );
   static void load_wowhead( player_description_t& /*etc*/ );
-  static void load_chardev( player_description_t& /*etc*/ );
   static void load_rawr   ( player_description_t& /*etc*/ );
 };
 
@@ -6280,12 +6279,15 @@ bool download_item_data( item_t&            item,
                          wowhead_e          source );
 }
 
+#define USE_CHARDEV 0
+#if USE_CHARDEV
 // CharDev  =================================================================
 
 namespace chardev
 {
 player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b = cache::players() );
 }
+#endif
 
 // Rawr =====================================================================
 

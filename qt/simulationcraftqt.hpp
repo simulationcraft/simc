@@ -43,7 +43,9 @@ enum main_tabs_e
 enum import_tabs_e
 {
   TAB_BATTLE_NET = 0,
+#if USE_CHARDEV
   TAB_CHAR_DEV,
+#endif
   TAB_RAWR,
   TAB_BIS,
   TAB_HISTORY,
@@ -2282,7 +2284,9 @@ public:
   SC_WebView* siteView;
   SC_WebView* helpView;
   SC_WebView* visibleWebView;
+#if USE_CHARDEV
   PersistentCookieJar* charDevCookies;
+#endif // USE_CHARDEV
   QPushButton* rawrButton;
   QByteArray rawrDialogState;
   SC_TextEdit* rawrText;
@@ -2701,7 +2705,9 @@ public:
   player_t* player;
 
   void importBattleNet();
+#if USE_CHARDEV
   void importCharDev();
+#endif
   void importRawr();
 
   void start( sim_t* s, int t, const QString& u, const QString& sources, const QString& spec, const QString& role )

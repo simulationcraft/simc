@@ -5,6 +5,8 @@
 
 #include "simulationcraft.hpp"
 
+#if USE_CHARDEV
+
 namespace { // unnamed namespace
 
 // download_profile =========================================================
@@ -269,3 +271,4 @@ player_t* chardev::download_player( sim_t* sim,
 
   return p;
 }
+#endif // USE_CHARDEV

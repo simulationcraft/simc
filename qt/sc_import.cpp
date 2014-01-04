@@ -73,6 +73,7 @@ void ImportThread::importBattleNet()
   }
 }
 
+#if USE_CHARDEV
 void ImportThread::importCharDev()
 {
   int last_slash = url.lastIndexOf( '/' );
@@ -86,6 +87,7 @@ void ImportThread::importCharDev()
     player = chardev::download_player( sim, c, cache::players() );
   }
 }
+#endif // USE_CHARDEV
 
 void ImportThread::importRawr()
 {
@@ -102,7 +104,9 @@ void ImportThread::run()
   switch ( tab )
   {
     case TAB_BATTLE_NET: importBattleNet(); break;
+#if USE_CHARDEV
     case TAB_CHAR_DEV:   importCharDev();   break;
+#endif // USE_CHARDEV
     case TAB_RAWR:       importRawr();      break;
     default: assert( 0 ); break;
   }

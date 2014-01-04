@@ -131,8 +131,10 @@ void SC_MainWindow::saveHistory()
   settings.setValue( "maximized", bool( windowState() & Qt::WindowMaximized ) );
   settings.endGroup();
 
-
+#if USE_CHARDEV
   charDevCookies -> save();
+#endif // USE_CHARDEV
+
   http::cache_save( ( TmpDir.toStdString() + "/" + "simc_cache.dat" ).c_str() );
 
 
@@ -412,6 +414,7 @@ void SC_MainWindow::createImportTab()
   battleNetView -> enableKeyboardNavigation();
   importTab -> addTab( battleNetView, tr( "Battle.Net" ) );
 
+#if USE_CHARDEV
   charDevCookies = new PersistentCookieJar( ( AppDataDir + QDir::separator() + "chardev.cookies" ).toStdString().c_str() );
   charDevCookies -> load();
   charDevView = new SC_WebView( this );
@@ -420,6 +423,7 @@ void SC_MainWindow::createImportTab()
   charDevView -> enableMouseNavigation();
   charDevView -> enableKeyboardNavigation();
   importTab -> addTab( charDevView, tr( "CharDev" ) );
+#endif // USE_CHARDEV
 
   createRawrTab();
   createBestInSlotTab();
@@ -1284,11 +1288,13 @@ void SC_MainWindow::cmdLineReturnPressed()
       battleNetView -> setUrl( QUrl::fromUserInput( cmdLine -> text() ) );
       importTab -> setCurrentTab( TAB_BATTLE_NET );
     }
+#if USE_CHARDEV
     else if ( cmdLine->text().count( "chardev.org" ) )
     {
       charDevView -> setUrl( QUrl::fromUserInput( cmdLine -> text() ) );
       importTab -> setCurrentTab( TAB_CHAR_DEV );
     }
+#endif // USE_CHARDEV
     else
     {
       if ( ! sim ) mainButtonClicked( true );
@@ -1314,7 +1320,9 @@ void SC_MainWindow::mainButtonClicked( bool /* checked */ )
       switch ( importTab -> currentTab() )
       {
         case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine->text() ); break;
+#if USE_CHARDEV
         case TAB_CHAR_DEV:   startImport( TAB_CHAR_DEV,   cmdLine->text() ); break;
+#endif // USE_CHARDEV
         case TAB_RAWR:       startImport( TAB_RAWR,       "Rawr XML"      ); break;
         case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
         default: break;
@@ -1513,11 +1521,13 @@ void SC_MainWindow::historyDoubleClicked( QListWidgetItem* item )
     battleNetView -> setUrl( url );
     importTab -> setCurrentIndex( TAB_BATTLE_NET );
   }
+#if USE_CHARDEV
   else if ( url.count( "chardev.org" ) )
   {
     charDevView -> setUrl( url );
     importTab -> setCurrentIndex( TAB_CHAR_DEV );
   }
+#endif // USE_CHARDEV
   else
   {
     //importTab->setCurrentIndex( TAB_RAWR );

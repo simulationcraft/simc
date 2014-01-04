@@ -379,7 +379,14 @@ bool parse_armory( sim_t*             sim,
         //p = wowhead::download_player( sim, stuff.region, stuff.server, player_name, description, wowhead::LIVE, stuff.cache );
       }
       else if ( name == "chardev" || name == "mopdev" )
-        p = chardev::download_player( sim, player_name, stuff.cache );
+      {
+#if USE_CHARDEV
+          p = chardev::download_player( sim, player_name, stuff.cache );
+#else
+          sim -> errorf( "Chardev Profiler is no longer supported." );
+          return false;
+#endif // USE_CHARDEV
+      }
       else if ( name == "wowreforge" )
         p = wowreforge::download_player( sim, player_name, stuff.cache );
       else if ( name == "local_json" )
