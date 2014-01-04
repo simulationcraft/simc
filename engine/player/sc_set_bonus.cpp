@@ -26,7 +26,11 @@ void set_bonus_t::init( const player_t& p )
 {
   for ( size_t i = 0; i < p.items.size(); i++ )
   {
-    count[ decode( p, p.items[ i ] ) ] += 1;
+    set_e s = decode( p, p.items[ i ] );
+    if ( s != SET_NONE )
+    {
+      count[ s ] += 1;
+    }
   }
   initialized = true;
 }

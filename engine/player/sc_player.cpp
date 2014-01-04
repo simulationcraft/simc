@@ -8405,7 +8405,7 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
     // Set Bonus
     for ( set_e s = SET_NONE; s < SET_MAX; ++s )
     {
-      if ( set_bonus_t::has_set_bonus( this, s ) )
+      if ( set_bonus_t::has_set_bonus( this, s ) && ( s % 3 != 1 ) /* Only report 2pc/4pc, not base set bonus enum */ )
       {
         profile_str += std::string("# ") + util::set_bonus_string( s ) + "=1" + term;
       }
