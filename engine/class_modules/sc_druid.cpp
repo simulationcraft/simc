@@ -6549,7 +6549,12 @@ void druid_t::apl_feral()
       else if ( items[ i ].name_str == "bad_juju" )
         trinketbuffs.push_back( "juju_madness" );
       else if ( items[ i].name_str != "" )
-        trinketbuffs.push_back( items[ i ].name_str );
+      {
+        if ( buff_t::find( this, items[ i ].name_str ) )
+        {
+          trinketbuffs.push_back( items[ i ].name_str );
+        }
+      }
     }
 
     for ( size_t i = 0; i < trinketbuffs.size(); i++ )
