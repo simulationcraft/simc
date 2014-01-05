@@ -6384,9 +6384,9 @@ struct xml_node_t
   xml_node_t* get_child( const std::string& name );
   xml_node_t* get_node ( const std::string& path );
   xml_node_t* get_node ( const std::string& path, const std::string& parm_name, const std::string& parm_value );
-  int  get_children( std::vector<xml_node_t*>&, const std::string& name = std::string() );
-  int  get_nodes   ( std::vector<xml_node_t*>&, const std::string& path );
-  int  get_nodes   ( std::vector<xml_node_t*>&, const std::string& path, const std::string& parm_name, const std::string& parm_value );
+  std::vector<xml_node_t*>  get_children( const std::string& name = std::string() );
+  std::vector<xml_node_t*>  get_nodes   ( const std::string& path );
+  std::vector<xml_node_t*>  get_nodes   ( const std::string& path, const std::string& parm_name, const std::string& parm_value );
   bool get_value( std::string& value, const std::string& path = std::string() );
   bool get_value( int&         value, const std::string& path = std::string() );
   bool get_value( double&      value, const std::string& path = std::string() );
@@ -6405,7 +6405,6 @@ struct xml_node_t
   static std::shared_ptr<xml_node_t> get( sim_t* sim, const std::string& url, cache::behavior_e b,
                           const std::string& confirmation = std::string() );
   static std::shared_ptr<xml_node_t> create( sim_t* sim, const std::string& input );
-  static std::shared_ptr<xml_node_t> create( sim_t* sim, FILE* input );
 
   xml_node_t* add_child( const std::string& name );
   template <typename T>

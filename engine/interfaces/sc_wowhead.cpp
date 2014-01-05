@@ -262,8 +262,7 @@ bool wowhead::download_item_data( item_t&            item,
 
     std::shared_ptr<xml_node_t> htmltooltip_xml = xml_node_t::create( item.sim, htmltooltip );
     //htmltooltip_xml -> print( item.sim -> output_file, 2 );
-    std::vector<xml_node_t*> spell_links;
-    htmltooltip_xml -> get_nodes( spell_links, "span" );
+    std::vector<xml_node_t*> spell_links = htmltooltip_xml -> get_nodes( "span" );
     for ( size_t i = 0; i < spell_links.size(); i++ )
     {
       int trigger_type = -1;

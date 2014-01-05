@@ -632,9 +632,8 @@ player_t* load_player_xml( sim_t* sim,
     }
   }
 
-  std::vector<xml_node_t*> glyph_nodes;
-  int num_glyphs = root_node -> get_nodes( glyph_nodes, "Glyph" );
-  for ( int i = 0; i < num_glyphs; i++ )
+  std::vector<xml_node_t*> glyph_nodes = root_node -> get_nodes( "Glyph" );
+  for ( size_t i = 0; i < glyph_nodes.size(); ++i )
   {
     int spell_id;
     if ( glyph_nodes[ i ] && glyph_nodes[ i ] -> get_value( spell_id, "." ) )
