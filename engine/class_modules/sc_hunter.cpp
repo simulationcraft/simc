@@ -4393,7 +4393,7 @@ void hunter_t::armory_extensions( const std::string& /* region */,
     pos = cdata_str.rfind( '}' );
     if ( pos != std::string::npos ) cdata_str.erase( pos );
 
-    js_node_t* pet_js = js_t::create( sim, cdata_str );
+    js::js_node* pet_js = js_t::create( sim, cdata_str );
     pet_js = js_t::get_node( pet_js, "Pet.data" );
     if ( sim -> debug ) js_t::print( pet_js, sim -> output_file );
 
@@ -4404,7 +4404,7 @@ void hunter_t::armory_extensions( const std::string& /* region */,
       return;
     }
 
-    std::vector<js_node_t*> pet_records;
+    std::vector<js::js_node*> pet_records;
     int num_pets = js_t::get_children( pet_records, pet_js );
     for ( int i = 0; i < num_pets; i++ )
     {

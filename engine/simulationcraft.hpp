@@ -226,7 +226,6 @@ struct stat_pair_t;
 struct stormlash_callback_t;
 struct tick_buff_t;
 struct travel_event_t;
-struct js_node_t;
 struct xml_node_t;
 
 // Enumerations =============================================================
@@ -6314,19 +6313,21 @@ struct xml_node_t
 
 namespace js
 {
-js_node_t* get_child( js_node_t* root, const std::string& name );
-js_node_t* get_node ( js_node_t* root, const std::string& path );
-std::vector<js_node_t*> get_children( js_node_t* root );
-int  get_value( std::vector<std::string>& value, js_node_t* root, const std::string& path = std::string() );
-bool get_value( std::string& value, js_node_t* root, const std::string& path = std::string() );
-bool get_value( int&         value, js_node_t* root, const std::string& path = std::string() );
-bool get_value( unsigned&    value, js_node_t* root, const std::string& path = std::string() );
-bool get_value( double&      value, js_node_t* root, const std::string& path = std::string() );
-std::shared_ptr<js_node_t> create( sim_t* sim, const std::string& input );
-std::shared_ptr<js_node_t> create( sim_t* sim, FILE* input );
-std::ostream& print( std::ostream&, js_node_t*, int spacing = 0 );
-std::ostream& operator<<( std::ostream& s, js_node_t* n );
-const char* get_name( js_node_t* root );
+struct internal_js_node_t;
+typedef std::shared_ptr<js::internal_js_node_t> js_node_t;
+js_node_t get_child( const js_node_t& root, const std::string& name );
+js_node_t get_node ( const js_node_t& root, const std::string& path );
+std::vector<js_node_t> get_children( const js_node_t& root );
+int  get_value( std::vector<std::string>& value, const js_node_t& root, const std::string& path = std::string() );
+bool get_value( std::string& value, const js_node_t& root, const std::string& path = std::string() );
+bool get_value( int&         value, const js_node_t& root, const std::string& path = std::string() );
+bool get_value( unsigned&    value, const js_node_t& root, const std::string& path = std::string() );
+bool get_value( double&      value, const js_node_t& root, const std::string& path = std::string() );
+js_node_t create( sim_t* sim, const std::string& input );
+js_node_t create( sim_t* sim, FILE* input );
+std::ostream& print( std::ostream&, const js_node_t&, int spacing = 0 );
+std::ostream& operator<<( std::ostream& s, const js_node_t& n );
+const char* get_name( const js_node_t& root );
 };
 
 // Handy Actions ============================================================

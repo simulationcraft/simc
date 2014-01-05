@@ -11,7 +11,7 @@ namespace { // unnamed namespace
 
 // download_profile =========================================================
 
-std::shared_ptr<js_node_t> download_profile( sim_t* sim,
+std::shared_ptr<js::js_node> download_profile( sim_t* sim,
                              const std::string& id,
                              cache::behavior_e caching )
 {
@@ -19,7 +19,7 @@ std::shared_ptr<js_node_t> download_profile( sim_t* sim,
   std::string url = "http://chardev.org/php/interface/profiles/get_profile.php?id=" + id;
 
   if ( ! http::get( profile_str, url, caching ) )
-    return std::shared_ptr<js_node_t>();
+    return std::shared_ptr<js::js_node>();
 
   return js::create( sim, profile_str );
 }
@@ -64,8 +64,8 @@ player_t* chardev::download_player( sim_t* sim,
   sim -> current_slot = 0;
   sim -> current_name = id;
 
-  std::shared_ptr<js_node_t> profile_js_ = download_profile( sim, id, caching );
-  js_node_t* profile_js = profile_js_.get();
+  std::shared_ptr<js::js_node> profile_js_ = download_profile( sim, id, caching );
+  js::js_node* profile_js = profile_js_.get();
   if ( ! profile_js || ! ( profile_js = js::get_node( profile_js, "character" ) ) )
   {
     sim -> errorf( "Unable to download character profile %s from chardev.\n", id.c_str() );
@@ -124,15 +124,15 @@ player_t* chardev::download_player( sim_t* sim,
 
   p -> origin_str = "http://chardev.org/profile/" + id + '-' + name_str + ".html";
 
-  js_node_t*        gear_root = js::get_child( profile_js, "1" );
+  js::js_node*        gear_root = js::get_child( profile_js, "1" );
 
-  js_node_t*     talents_root = js::get_child( profile_js, "2" );
+  js::js_node*     talents_root = js::get_child( profile_js, "2" );
 
-  js_node_t*      glyphs_root = js::get_child( profile_js, "3" );
+  js::js_node*      glyphs_root = js::get_child( profile_js, "3" );
 
-  js_node_t*        spec_root = js::get_child( profile_js, "4" );
+  js::js_node*        spec_root = js::get_child( profile_js, "4" );
 
-  js_node_t* professions_root = js::get_child( profile_js, "5" );
+  js::js_node* professions_root = js::get_child( profile_js, "5" );
 
   for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
   {
@@ -140,7 +140,7 @@ player_t* chardev::download_player( sim_t* sim,
     sim -> current_slot = i;
     item_t& item = p -> items[ i ];
 
-    js_node_t* slot_node = js::get_child( gear_root, translate_slot( i ) );
+    js::js_node* slot_node = js::get_child( gear_root, translate_slot( i ) );
     if ( ! slot_node ) continue;
 
     js::get_value( item.parsed.data.id, slot_node, "0/0" );
@@ -237,7 +237,7 @@ player_t* chardev::download_player( sim_t* sim,
   p -> create_talents_armory();
 
   p -> glyphs_str = "";
-  std::vector<js_node_t*> glyph_nodes = js::get_children( glyphs_root );
+  std::vector<js::js_node*> glyph_nodes = js::get_children( glyphs_root );
   for ( size_t i = 0; i < glyph_nodes.size(); i++ )
   {
     std::string glyph_name;
@@ -253,7 +253,7 @@ player_t* chardev::download_player( sim_t* sim,
   p -> professions_str = "";
   if ( professions_root )
   {
-    std::vector<js_node_t*> skill_nodes = js::get_children( professions_root );
+    std::vector<js::js_node*> skill_nodes = js::get_children( professions_root );
     for ( size_t i = 0; i < skill_nodes.size(); i++ )
     {
       int skill_id;

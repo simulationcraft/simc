@@ -18,18 +18,18 @@ struct player_spec_t
 
 // download_id ==============================================================
 
-std::shared_ptr<js_node_t> download_id( sim_t* sim,
+js::js_node_t download_id( sim_t* sim,
                         const std::string& region,
                         unsigned item_id,
                         cache::behavior_e caching )
 {
-  if ( item_id == 0 ) return std::shared_ptr<js_node_t>();
+  if ( item_id == 0 ) return js::js_node_t();
 
   std::string url = "http://" + region + ".battle.net/api/wow/item/" + util::to_string( item_id ) + "?locale=en_US";
 
   std::string result;
   if ( ! http::get( result, url, caching ) )
-    return std::shared_ptr<js_node_t>();
+    return js::js_node_t();
 
   return js::create( sim, result );
 }
@@ -37,11 +37,11 @@ std::shared_ptr<js_node_t> download_id( sim_t* sim,
 // parse_profession =========================================================
 
 void parse_profession( std::string& professions_str,
-                       js_node_t* profile,
+                       const js::js_node_t& profile,
                        int index )
 {
   std::string key = "professions/primary/" + util::to_string( index );
-  if ( js_node_t* profession = js::get_node( profile, key ) )
+  if ( js::js_node_t profession = js::get_node( profile, key ) )
   {
     int id;
     std::string rank;
@@ -57,11 +57,11 @@ void parse_profession( std::string& professions_str,
 
 // pick_talents =============================================================
 
-js_node_t* pick_talents( js_node_t* talents,
+js::js_node_t pick_talents( const js::js_node_t& talents,
                          const std::string& specifier )
 {
-  js_node_t* spec1 = js::get_child( talents, "0" );
-  js_node_t* spec2 = js::get_child( talents, "1" );
+  js::js_node_t spec1 = js::get_child( talents, "0" );
+  js::js_node_t spec2 = js::get_child( talents, "1" );
 
   assert( spec1 );
 
@@ -81,7 +81,7 @@ js_node_t* pick_talents( js_node_t* talents,
 
   std::string spec_name;
   if ( ! js::get_value( spec_name, spec1, "name" ) )
-    return 0;
+    return js::js_node_t();
   if ( util::str_prefix_ci( spec_name, specifier ) )
     return spec1;
 
@@ -91,13 +91,13 @@ js_node_t* pick_talents( js_node_t* talents,
       return spec2;
   }
 
-  return 0;
+  return js::js_node_t();
 }
 
 // parse_talents ============================================================
 
 bool parse_talents( player_t*  p,
-                    js_node_t* talents )
+                    const js::js_node_t& talents )
 {
   std::string buffer;
   if ( js::get_value( buffer, talents, "calcSpec" ) )
@@ -149,7 +149,7 @@ bool parse_talents( player_t*  p,
 
 // parse_glyphs =============================================================
 
-bool parse_glyphs( player_t* p, js_node_t* build )
+bool parse_glyphs( player_t* p, const js::js_node_t& build )
 {
   static const char* const glyph_e_names[] =
   {
@@ -158,9 +158,9 @@ bool parse_glyphs( player_t* p, js_node_t* build )
 
   for ( std::size_t i = 0; i < sizeof_array( glyph_e_names ); ++i )
   {
-    if ( js_node_t* glyphs = js::get_node( build, glyph_e_names[ i ] ) )
+    if ( js::js_node_t glyphs = js::get_node( build, glyph_e_names[ i ] ) )
     {
-      std::vector<js_node_t*> children = js::get_children( glyphs );
+      std::vector<js::js_node_t> children = js::get_children( glyphs );
       if ( !children.empty() )
       {
         for ( std::size_t j = 0; j < children.size(); ++j )
@@ -191,7 +191,7 @@ bool parse_glyphs( player_t* p, js_node_t* build )
 // parse_items ==============================================================
 
 bool parse_items( player_t*  p,
-                  js_node_t* items )
+                  const js::js_node_t& items )
 {
   if ( !items ) return true;
 
@@ -224,7 +224,7 @@ bool parse_items( player_t*  p,
   {
     item_t& item = p -> items[ i ];
 
-    js_node_t* js = js::get_child( items, slot_map[ i ] );
+    js::js_node_t js = js::get_child( items, slot_map[ i ] );
     if ( ! js ) continue;
 
     if ( ! js::get_value( item.parsed.data.id, js, "id" ) )
@@ -270,8 +270,7 @@ player_t* parse_player( sim_t*             sim,
   }
 
   // if ( sim -> debug ) util::fprintf( sim -> output_file, "%s\n%s\n", url.c_str(), result.c_str() );
-  std::shared_ptr<js_node_t> profile_node = js::create( sim, result );
-  js_node_t* profile = profile_node.get();
+  js::js_node_t profile = js::create( sim, result );
   if ( ! profile )
   {
     sim -> errorf( "BCP API: Unable to download player from '%s'\n", player.url.c_str() );
@@ -361,7 +360,7 @@ player_t* parse_player( sim_t*             sim,
   parse_profession( p -> professions_str, profile, 0 );
   parse_profession( p -> professions_str, profile, 1 );
 
-  js_node_t* build = js::get_node( profile, "talents" );
+  js::js_node_t build = js::get_node( profile, "talents" );
   if ( ! build )
   {
     sim -> errorf( "BCP API: Player '%s' from URL '%s' has no talents.\n",
@@ -394,10 +393,9 @@ player_t* parse_player( sim_t*             sim,
 
 // download_item_data =======================================================
 
-std::shared_ptr<js_node_t> download_item_data( item_t& item, cache::behavior_e caching )
+js::js_node_t download_item_data( item_t& item, cache::behavior_e caching )
 {
-  std::shared_ptr<js_node_t> js_ = download_id( item.sim, item.sim -> default_region_str, item.parsed.data.id, caching );
-  js_node_t* js = js_.get();
+  js::js_node_t js = download_id( item.sim, item.sim -> default_region_str, item.parsed.data.id, caching );
   if ( ! js )
   {
     if ( caching != cache::ONLY )
@@ -405,7 +403,7 @@ std::shared_ptr<js_node_t> download_item_data( item_t& item, cache::behavior_e c
       item.sim -> errorf( "BCP API: Player '%s' unable to download item id '%u' at slot %s.\n",
                           item.player -> name(), item.parsed.data.id, item.slot_name() );
     }
-    return js_;
+    return js;
   }
   if ( item.sim -> debug )
     item.sim -> out_debug.raw() << js;
@@ -437,7 +435,7 @@ std::shared_ptr<js_node_t> download_item_data( item_t& item, cache::behavior_e c
     if ( ! js::get_value( item.parsed.data.item_subclass, js, "itemSubClass" ) ) throw( "item subclass" );
     js::get_value( item.parsed.data.bind_type, js, "itemBind" );
 
-    if ( js_node_t* w = js::get_child( js, "weaponInfo" ) )
+    if ( js::js_node_t w = js::get_child( js, "weaponInfo" ) )
     {
       double minDmg, maxDmg;
       double speed, dps;
@@ -450,9 +448,9 @@ std::shared_ptr<js_node_t> download_item_data( item_t& item, cache::behavior_e c
       item.parsed.data.dmg_range = 2 - 2 * minDmg / ( dps * speed );
     }
 
-    if ( js_node_t* classes = js::get_child( js, "allowableClasses" ) )
+    if ( js::js_node_t classes = js::get_child( js, "allowableClasses" ) )
     {
-      std::vector<js_node_t*> nodes = js::get_children( classes );
+      std::vector<js::js_node_t> nodes = js::get_children( classes );
       for ( size_t i = 0, n = nodes.size(); i < n; ++i )
       {
         int cid;
@@ -463,9 +461,9 @@ std::shared_ptr<js_node_t> download_item_data( item_t& item, cache::behavior_e c
     else
       item.parsed.data.class_mask = -1;
 
-    if ( js_node_t* races = js::get_child( js, "allowableRaces" ) )
+    if ( js::js_node_t races = js::get_child( js, "allowableRaces" ) )
     {
-      std::vector<js_node_t*> nodes = js::get_children( races );
+      std::vector<js::js_node_t> nodes = js::get_children( races );
       for ( size_t i = 0, n = nodes.size(); i < n; ++i )
       {
         int rid;
@@ -476,9 +474,9 @@ std::shared_ptr<js_node_t> download_item_data( item_t& item, cache::behavior_e c
     else
       item.parsed.data.race_mask = -1;
 
-    if ( js_node_t* stats = js::get_child( js, "bonusStats" ) )
+    if ( js::js_node_t stats = js::get_child( js, "bonusStats" ) )
     {
-      std::vector<js_node_t*> nodes = js::get_children( stats );
+      std::vector<js::js_node_t> nodes = js::get_children( stats );
       for ( size_t i = 0, n = std::min( nodes.size(), sizeof_array( item.parsed.data.stat_type_e ) ); i < n; ++i )
       {
         if ( ! js::get_value( item.parsed.data.stat_type_e[ i ], nodes[ i ], "stat"   ) ) throw( "bonus stat" );
@@ -490,9 +488,9 @@ std::shared_ptr<js_node_t> download_item_data( item_t& item, cache::behavior_e c
       }
     }
 
-    if ( js_node_t* sockets = js::get_node( js, "socketInfo/sockets" ) )
+    if ( js::js_node_t sockets = js::get_node( js, "socketInfo/sockets" ) )
     {
-      std::vector<js_node_t*> nodes = js::get_children( sockets );
+      std::vector<js::js_node_t> nodes = js::get_children( sockets );
       for ( size_t i = 0, n = std::min( nodes.size(), sizeof_array( item.parsed.data.socket_color ) ); i < n; ++i )
       {
         std::string color;
@@ -538,8 +536,8 @@ std::shared_ptr<js_node_t> download_item_data( item_t& item, cache::behavior_e c
         item.parsed.data.type_flags |= RAID_TYPE_ELITE;
     }
 
-    js_node_t* item_spell = js::get_node( js, "itemSpells" );
-    std::vector<js_node_t*> nodes = js::get_children( item_spell );
+    js::js_node_t item_spell = js::get_node( js, "itemSpells" );
+    std::vector<js::js_node_t> nodes = js::get_children( item_spell );
     size_t spell_idx = 0;
     for ( size_t i = 0; i < nodes.size() && spell_idx < sizeof_array( item.parsed.data.id_spell ); i++ )
     {
@@ -572,15 +570,15 @@ std::shared_ptr<js_node_t> download_item_data( item_t& item, cache::behavior_e c
     if ( caching != cache::ONLY )
       item.sim -> errorf( "BCP API: Player '%s' unable to parse item '%u' %s at slot '%s': %s\n",
                           item.player -> name(), item.parsed.data.id, fieldname, item.slot_name(), error_str.c_str() );
-    return std::shared_ptr<js_node_t>();
+    return js::js_node_t();
   }
 
-  return js_;
+  return js;
 }
 
 // download_roster ==========================================================
 
-js_node_t* download_roster( sim_t* sim,
+js::js_node_t download_roster( sim_t* sim,
                             const std::string& region,
                             const std::string& server,
                             const std::string& name,
@@ -593,14 +591,13 @@ js_node_t* download_roster( sim_t* sim,
   if ( ! http::get( result, url, caching, "\"members\"" ) )
   {
     sim -> errorf( "BCP API: Unable to download guild %s|%s|%s.\n", region.c_str(), server.c_str(), name.c_str() );
-    return 0;
+    return js::js_node_t();
   }
-  std::shared_ptr<js_node_t> js_ = js::create( sim, result );
-  js_node_t* js = js_.get();
+  js::js_node_t js = js::create( sim, result );
   if ( ! js || ! ( js = js::get_child( js, "members" ) ) )
   {
     sim -> errorf( "BCP API: Unable to get members of guild %s|%s|%s.\n", region.c_str(), server.c_str(), name.c_str() );
-    return 0;
+    return js::js_node_t();
   }
 
   return js;
@@ -647,7 +644,7 @@ std::vector<stat_pair_t> parse_gem_stats( const std::string& bonus )
   return stats;
 }
 
-bool parse_gems( item_t& item, js_node_t* js )
+bool parse_gems( item_t& item, const js::js_node_t& js )
 {
   bool match = true;
 
@@ -765,11 +762,11 @@ bool bcp_api::download_item( item_t& item, cache::behavior_e caching )
 
 bool bcp_api::download_slot( item_t& item, cache::behavior_e caching )
 {
-  std::shared_ptr<js_node_t> js = download_item_data( item, caching );
+  js::js_node_t js = download_item_data( item, caching );
   if ( ! js )
     return false;
 
-  parse_gems( item, js.get() );
+  parse_gems( item, js );
 
   item.source_str = "Blizzard";
 
@@ -787,11 +784,13 @@ bool bcp_api::download_guild( sim_t* sim,
                               int max_rank,
                               cache::behavior_e caching )
 {
-  js_node_t* js = download_roster( sim, region, server, name, caching );
+  std::cout << "foo\n";
+  js::js_node_t js = download_roster( sim, region, server, name, caching );
   if ( !js ) return false;
 
   std::vector<std::string> names;
-  std::vector<js_node_t*> characters = js::get_children( js );
+  std::vector<js::js_node_t> characters = js::get_children( js );
+  std::cout << "foo\n";
 
   for ( std::size_t i = 0, n = characters.size(); i < n; ++i )
   {
@@ -816,6 +815,7 @@ bool bcp_api::download_guild( sim_t* sim,
   }
 
   if ( names.empty() ) return true;
+  std::cout << "foo\n";
 
   range::sort( names );
 
@@ -833,6 +833,7 @@ bool bcp_api::download_guild( sim_t* sim,
       // Just ignore invalid players
     }
   }
+  std::cout << "foo\n";
 
   return true;
 }
@@ -848,8 +849,7 @@ bool bcp_api::download_glyph( player_t*          player,
     ( player -> region_str.empty() ? player -> sim -> default_region_str : player -> region_str );
 
   unsigned glyphid = strtoul( glyph_id.c_str(), 0, 10 );
-  std::shared_ptr<js_node_t> item_ = download_id( player -> sim, region, glyphid, caching );
-  js_node_t* item = item_.get();
+  js::js_node_t item = download_id( player -> sim, region, glyphid, caching );
   if ( ! item || ! js::get_value( glyph_name, item, "name" ) )
   {
     if ( caching != cache::ONLY )
@@ -869,8 +869,7 @@ gem_e bcp_api::parse_gem( item_t& item, unsigned gem_id, cache::behavior_e cachi
     ? item.sim -> default_region_str
     : item.player -> region_str;
 
-  std::shared_ptr<js_node_t> js_ = download_id( item.sim, region, gem_id, caching );
-  js_node_t* js = js_.get();
+  js::js_node_t js = download_id( item.sim, region, gem_id, caching );
   if ( ! js )
     return GEM_NONE;
 
