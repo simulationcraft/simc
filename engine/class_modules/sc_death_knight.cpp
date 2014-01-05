@@ -418,7 +418,7 @@ public:
   virtual void      regen( timespan_t periodicity );
   virtual void      reset();
   virtual void      arise();
-  virtual void      assess_heal( school_e, dmg_e, heal_state_t* );
+  virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      assess_damage( school_e, dmg_e, action_state_t* );
   virtual void      assess_damage_imminent( school_e, dmg_e, action_state_t* );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
@@ -6142,7 +6142,7 @@ void death_knight_t::combat_begin()
 
 // death_knight_t::assess_heal ==============================================
 
-void death_knight_t::assess_heal( school_e school, dmg_e t, heal_state_t* s )
+void death_knight_t::assess_heal( school_e school, dmg_e t, action_state_t* s )
 {
   if ( buffs.vampiric_blood -> up() )
     s -> result_amount *= 1.0 + buffs.vampiric_blood -> data().effectN( 1 ).percent() +

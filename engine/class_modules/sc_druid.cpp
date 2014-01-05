@@ -443,7 +443,7 @@ public:
   virtual resource_e primary_resource() const;
   virtual role_e    primary_role() const;
   virtual void      assess_damage( school_e school, dmg_e, action_state_t* );
-  virtual void      assess_heal( school_e, dmg_e, heal_state_t* );
+  virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_e type = SAVE_ALL, bool save_html = false );
 
@@ -7660,7 +7660,7 @@ void druid_t::assess_damage( school_e school,
 
 void druid_t::assess_heal( school_e school,
                            dmg_e    dmg_type,
-                           heal_state_t* s )
+                           action_state_t* s )
 {
   s -> result_amount *= 1.0 + buff.frenzied_regeneration -> check() * glyph.frenzied_regeneration -> effectN( 1 ).percent();
   s -> result_amount *= 1.0 + buff.cat_form -> check() * glyph.cat_form -> effectN( 1 ).percent();

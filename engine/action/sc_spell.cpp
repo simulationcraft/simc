@@ -336,10 +336,8 @@ void heal_t::execute()
 // heal_t::assess_damage ====================================================
 
 void heal_t::assess_damage( dmg_e heal_type,
-                            action_state_t* state )
+                            action_state_t* s )
 {
-  heal_state_t* s = debug_cast<heal_state_t*>( state );
-
   s -> target -> assess_heal( school, heal_type, s );
 
   if ( heal_type == HEAL_DIRECT )
@@ -348,7 +346,7 @@ void heal_t::assess_damage( dmg_e heal_type,
     {
       sim -> out_log.printf( "%s %s heals %s for %.0f (%.0f) (%s)",
                      player -> name(), name(),
-                     s -> target -> name(), s -> total_result_amount, s -> result_amount,
+                     s -> target -> name(), s -> result_total, s -> result_amount,
                      util::result_type_string( s -> result ) );
     }
 
@@ -363,19 +361,20 @@ void heal_t::assess_damage( dmg_e heal_type,
       sim -> out_log.printf( "%s %s ticks (%d of %d) %s for %.0f (%.0f) heal (%s)",
                      player -> name(), name(),
                      dot -> current_tick, dot -> num_ticks,
-                     s -> target -> name(), s -> total_result_amount, s -> result_amount,
+                     s -> target -> name(), s -> result_total, s -> result_amount,
                      util::result_type_string( s -> result ) );
     }
 
     if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this, s );
   }
 
-  stats -> add_result( s -> result_amount, s -> total_result_amount, ( direct_tick ? HEAL_OVER_TIME : heal_type ), s -> result, s -> block_result, s -> target );
+  stats -> add_result( s -> result_amount, s -> result_total, ( direct_tick ? HEAL_OVER_TIME : heal_type ), s -> result, s -> block_result, s -> target );
+
   // Record external healing too
-  if ( player != state -> target )
-    state -> target -> gains.health -> add( RESOURCE_HEALTH, s -> result_amount, s -> total_result_amount - s -> result_amount );
+  if ( player != s -> target )
+    s -> target -> gains.health -> add( RESOURCE_HEALTH, s -> result_amount, s -> result_total - s -> result_amount );
   else
-    heal_gain -> add( RESOURCE_HEALTH, s -> result_amount, s -> total_result_amount - s -> result_amount );
+    heal_gain -> add( RESOURCE_HEALTH, s -> result_amount, s -> result_total - s -> result_amount );
 }
 
 // heal_t::find_greatest_difference_player ==================================
@@ -583,20 +582,17 @@ void absorb_t::impact( action_state_t* s )
 // absorb_t::assess_damage ==================================================
 
 void absorb_t::assess_damage( dmg_e    heal_type,
-                              action_state_t* state )
+                              action_state_t* s )
 {
-  heal_state_t* s = debug_cast<heal_state_t*>( state );
-
-  s -> total_result_amount = s -> result_amount;
   s -> result_amount = s -> target -> resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, this );
 
   if ( sim -> log )
     sim -> out_log.printf( "%s %s heals %s for %.0f (%.0f) (%s)",
                    player -> name(), name(),
-                   s -> target -> name(), s -> result_amount, s -> total_result_amount,
-                   util::result_type_string( state -> result ) );
+                   s -> target -> name(), s -> result_amount, s -> result_total,
+                   util::result_type_string( s -> result ) );
 
-  stats -> add_result( s -> result_amount, s -> total_result_amount, heal_type, s -> result, s -> block_result, s -> target );
+  stats -> add_result( s -> result_amount, s -> result_total, heal_type, s -> result, s -> block_result, s -> target );
 }
 
 // absorb_t::available_targets ==============================================

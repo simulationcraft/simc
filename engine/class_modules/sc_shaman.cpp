@@ -452,24 +452,24 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
                           .chance( static_cast< double >( p -> sets.has_set_bonus( SET_T16_2PC_CASTER ) ) );
 }
 
-struct shaman_action_state_t : public heal_state_t
+struct shaman_action_state_t : public action_state_t
 {
   bool eoe_proc;
 
   shaman_action_state_t( action_t* spell, player_t* target ) :
-    heal_state_t( spell, target ),
+    action_state_t( spell, target ),
     eoe_proc( false )
   { }
 
   std::ostringstream& debug_str( std::ostringstream& s )
-  { heal_state_t::debug_str( s ) << " eoe=" << eoe_proc; return s; }
+  { action_state_t::debug_str( s ) << " eoe=" << eoe_proc; return s; }
 
   void initialize()
-  { heal_state_t::initialize(); eoe_proc = false; }
+  { action_state_t::initialize(); eoe_proc = false; }
 
   void copy_state( const action_state_t* o )
   {
-    heal_state_t::copy_state( o );
+    action_state_t::copy_state( o );
     const shaman_action_state_t* ss = debug_cast< const shaman_action_state_t* >( o );
     eoe_proc = ss -> eoe_proc;
   }
@@ -2540,9 +2540,8 @@ void shaman_heal_t::impact( action_state_t* s )
         p() -> action_ancestral_awakening -> init();
       }
 
-      const heal_state_t* hs = debug_cast< const heal_state_t* >( s );
-      p() -> action_ancestral_awakening -> base_dd_min = hs -> total_result_amount;
-      p() -> action_ancestral_awakening -> base_dd_max = hs -> total_result_amount;
+      p() -> action_ancestral_awakening -> base_dd_min = s -> result_total;
+      p() -> action_ancestral_awakening -> base_dd_max = s -> result_total;
     }
   }
 

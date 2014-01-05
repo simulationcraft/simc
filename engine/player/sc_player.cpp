@@ -5282,23 +5282,22 @@ void player_t::target_mitigation( school_e school,
 
 // player_t::assess_heal ====================================================
 
-void player_t::assess_heal( school_e, dmg_e, heal_state_t* s )
+void player_t::assess_heal( school_e, dmg_e, action_state_t* s )
 {
   if ( buffs.guardian_spirit -> up() )
     s -> result_amount *= 1.0 + buffs.guardian_spirit -> data().effectN( 1 ).percent();
 
-  s -> total_result_amount = s -> result_amount;
   s -> result_amount = resource_gain( RESOURCE_HEALTH, s -> result_amount, 0, s -> action );
 
   // if the target is a tank record this event on damage timeline
   if ( ! is_pet() && role == ROLE_TANK )
   {
-    // tmi_self_only flag disables recording of external healing - use total_result_amount to ignore overhealing
+    // tmi_self_only flag disables recording of external healing - use result_total to ignore overhealing
     if ( ( tmi_self_only || sim -> tmi_actor_only ) && ( s -> action -> player == this || is_my_pet( s -> action -> player ) ) )
     {
-      collected_data.timeline_healing_taken.add( sim -> current_time, - ( s -> total_result_amount ) );
-      collected_data.health_changes.timeline.add( sim -> current_time, - ( s -> total_result_amount ) );
-      collected_data.health_changes.timeline_normalized.add( sim -> current_time, - ( s -> total_result_amount ) / resources.max[ RESOURCE_HEALTH ] );
+      collected_data.timeline_healing_taken.add( sim -> current_time, - ( s -> result_total ) );
+      collected_data.health_changes.timeline.add( sim -> current_time, - ( s -> result_total ) );
+      collected_data.health_changes.timeline_normalized.add( sim -> current_time, - ( s -> result_total ) / resources.max[ RESOURCE_HEALTH ] );
     }
     // otherwise just record everything, accounting for overheal
     else if ( ! tmi_self_only && ! sim -> tmi_actor_only )

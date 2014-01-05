@@ -323,7 +323,7 @@ public:
   virtual double    composite_crit_avoidance() const;
   virtual double    composite_dodge() const;
   virtual void      assess_damage( school_e, dmg_e, action_state_t* );
-  virtual void      assess_heal( school_e, dmg_e, heal_state_t* );
+  virtual void      assess_heal( school_e, dmg_e, action_state_t* );
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   virtual void      invalidate_cache( cache_e );
   virtual void      create_options();
@@ -5344,7 +5344,7 @@ void paladin_t::assess_damage( school_e school,
 
 // paladin_t::assess_heal ===================================================
 
-void paladin_t::assess_heal( school_e school, dmg_e dmg_type, heal_state_t* s )
+void paladin_t::assess_heal( school_e school, dmg_e dmg_type, action_state_t* s )
 {
   // 20% healing increase due to Sanctified Wrath during Avenging Wrath
   if ( specialization() == PALADIN_PROTECTION && talents.sanctified_wrath -> ok() && buffs.avenging_wrath -> check() )

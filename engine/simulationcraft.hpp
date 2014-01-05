@@ -207,7 +207,6 @@ struct core_sim_t;
 class  expr_t;
 struct gain_t;
 struct haste_buff_t;
-struct heal_state_t;
 struct item_t;
 struct module_t;
 class option_t;
@@ -1373,7 +1372,6 @@ void        talent_to_xml( const dbc_t& dbc, const talent_data_t* talent, xml_no
 std::ostringstream& effect_to_str( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* effect, std::ostringstream& s, int level = MAX_LEVEL );
 void                effect_to_xml( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* effect, xml_node_t*    parent, int level = MAX_LEVEL );
 }
-
 
 // Raid Event
 
@@ -3584,6 +3582,9 @@ struct player_callbacks_t
 private:
   void add_proc_callback( proc_types type, unsigned flags, action_callback_t* cb );
 };
+
+// Stat Cache
+
 /* The Cache system increases simulation performance by moving the calculation point
  * from call-time to modification-time of a stat. Because a stat is called much more
  * often than it is changed, this reduces costly and unnecessary repetition of floating-point
@@ -4627,7 +4628,7 @@ public:
   double       compute_incoming_damage( timespan_t = timespan_t::from_seconds( 5 ) );
   double       calculate_time_to_bloodlust();
 
-  virtual void assess_heal( school_e, dmg_e, heal_state_t* );
+  virtual void assess_heal( school_e, dmg_e, action_state_t* );
 
   virtual void  summon_pet( const std::string& name, timespan_t duration = timespan_t::zero() );
   virtual void dismiss_pet( const std::string& name );
@@ -5427,28 +5428,6 @@ struct action_state_t : public noncopyable
   }
 };
 
-struct heal_state_t : public action_state_t
-{
-  double total_result_amount;
-
-  heal_state_t( action_t* a, player_t* t ) :
-    action_state_t( a, t ), total_result_amount( 0.0 )
-  { }
-
-  virtual std::ostringstream& debug_str( std::ostringstream& s )
-  { action_state_t::debug_str( s ) << "total_result_amount=" << total_result_amount; return s; }
-
-  virtual void initialize()
-  { action_state_t::initialize(); total_result_amount = 0; }
-
-  virtual void copy_state( const action_state_t* o )
-  {
-    action_state_t::copy_state( o );
-    const heal_state_t* h = debug_cast<const heal_state_t*>( o );
-    total_result_amount = h -> total_result_amount;
-  }
-};
-
 // Attack ===================================================================
 
 struct attack_t : public action_t
@@ -5615,9 +5594,6 @@ public:
   virtual double composite_player_critical_multiplier() const
   { return player -> composite_player_critical_healing_multiplier(); }
 
-  virtual action_state_t* new_state()
-  { return new heal_state_t( this, target ); }
-
   virtual expr_t* create_expression( const std::string& name );
 };
 
@@ -5644,9 +5620,6 @@ struct absorb_t : public spell_base_t
     return action_multiplier() * action_ta_multiplier() *
            player -> composite_player_absorb_multiplier( school );
   }
-
-  virtual action_state_t* new_state()
-  { return new heal_state_t( this, target ); }
 };
 
 // Sequence =================================================================

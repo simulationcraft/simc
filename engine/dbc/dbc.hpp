@@ -22,8 +22,11 @@ static_assert( 0 , "dbc.hpp included into a file where SIMULATIONCRAFT_H is not 
 
 static const unsigned NUM_SPELL_FLAGS = 12;
 
-namespace dbc {
+// ==========================================================================
+// General Database
+// ==========================================================================
 
+namespace dbc {
 // Initialization
 void apply_hotfixes();
 void init();
@@ -35,6 +38,20 @@ school_e get_school_type( uint32_t school_id );
 bool is_school( school_e s, school_e s2 );
 unsigned specialization_max_per_class();
 specialization_e spec_by_idx( const player_e c, unsigned idx );
+
+// Data Access
+int build_level( bool ptr );
+const char* wow_version( bool ptr );
+const char* wow_ptr_status( bool ptr );
+const item_data_t* items( bool ptr );
+std::size_t        n_items( bool ptr );
+specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
+std::string specialization_string     ( specialization_e spec );
+double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );
+const std::string& get_token( unsigned int id_spell );
+bool add_token( unsigned int id_spell, const std::string& token_name, bool ptr );
+unsigned int get_token_id( const std::string& token );
+
 }
 
 // ==========================================================================
@@ -781,25 +798,8 @@ inline bool maybe_ptr( bool ) { return false; }
 #endif
 
 // ==========================================================================
-// General Database
+// General Database with state
 // ==========================================================================
-
-namespace dbc {
-
-// Data Access
-int build_level( bool ptr );
-const char* wow_version( bool ptr );
-const char* wow_ptr_status( bool ptr );
-const item_data_t* items( bool ptr );
-std::size_t        n_items( bool ptr );
-specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
-std::string specialization_string     ( specialization_e spec );
-double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );
-const std::string& get_token( unsigned int id_spell );
-bool add_token( unsigned int id_spell, const std::string& token_name, bool ptr );
-unsigned int get_token_id( const std::string& token );
-
-}
 
 /* Database access with a state ( bool ptr )
  */
