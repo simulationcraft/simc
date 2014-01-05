@@ -26,7 +26,7 @@ struct html_named_character_t
   const char* decoded;
 };
 
-static const html_named_character_t html_named_character_map[] =
+const html_named_character_t html_named_character_map[] =
 {
   { "amp", "&" },
   { "gt", ">" },
@@ -65,6 +65,9 @@ int vfprintf_helper( FILE *stream, const char *format, va_list args )
 
   return retcode;
 }
+
+stopwatch_t wall_sw( STOPWATCH_WALL );
+stopwatch_t  cpu_sw( STOPWATCH_CPU  );
 
 } // anonymous namespace ============================================
 
@@ -152,8 +155,6 @@ double stopwatch_t::elapsed()
           double( now_usec - start_usec ) / 1e6 );
 }
 
-static stopwatch_t wall_sw( STOPWATCH_WALL );
-static stopwatch_t  cpu_sw( STOPWATCH_CPU  );
 
 double util::wall_time() { return wall_sw.elapsed(); }
 double util::cpu_time() { return cpu_sw.elapsed(); }

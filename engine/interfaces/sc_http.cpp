@@ -19,11 +19,11 @@ cache::cache_control_t cache::cache_control_t::singleton;
 
 namespace { // UNNAMED NAMESPACE ==========================================
 
-static const bool HTTP_CACHE_DEBUG = false;
+const bool HTTP_CACHE_DEBUG = false;
 
-static mutex_t cache_mutex;
+mutex_t cache_mutex;
 
-static const unsigned int NETBUFSIZE = 1 << 15;
+const unsigned int NETBUFSIZE = 1 << 15;
 
 struct url_cache_entry_t
 {
@@ -38,18 +38,18 @@ struct url_cache_entry_t
 };
 
 typedef std::unordered_map<std::string, url_cache_entry_t> url_db_t;
-static url_db_t url_db;
+url_db_t url_db;
 
 // cache_clear ==============================================================
 
-static void cache_clear()
+void cache_clear()
 {
   // writer lock
   auto_lock_t lock( cache_mutex );
   url_db.clear();
 }
 
-static const char* const cookies =
+const char* const cookies =
   "Cookie: loginChecked=1\r\n"
   "Cookie: cookieLangId=en_US\r\n"
   // Skip arenapass 2011 advertisement .. can we please have a sensible
@@ -69,7 +69,7 @@ static const char* const cookies =
 
 // download =================================================================
 
-static bool download( url_cache_entry_t&,
+bool download( url_cache_entry_t&,
                       const std::string& )
 {
   return false;
@@ -85,7 +85,7 @@ static bool download( url_cache_entry_t&,
 
 // download =================================================================
 
-static bool download( url_cache_entry_t& entry,
+bool download( url_cache_entry_t& entry,
                       const std::string& url )
 {
   // Requires cache_mutex to be held.
@@ -319,7 +319,7 @@ bool url_t::split( url_t&             split,
 
 // build_request ============================================================
 
-static std::string build_request( const url_t&       url,
+std::string build_request( const url_t&       url,
                                   const std::string& last_modified )
 {
   // reference : http://tools.ietf.org/html/rfc2616#page-36
@@ -357,7 +357,7 @@ static std::string build_request( const url_t&       url,
 
 // download =================================================================
 
-static bool download( url_cache_entry_t& entry,
+bool download( url_cache_entry_t& entry,
                       const std::string& url )
 {
 #if defined( SC_MINGW )
