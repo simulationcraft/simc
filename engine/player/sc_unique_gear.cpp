@@ -1115,10 +1115,15 @@ void meta_gems( player_t* p, weapon_t* mhw, weapon_t* ohw )
   // Special Meta Gem "Enchants"
   thundering_skyfire( p, mhw, ohw );
   thundering_skyflare( p, mhw, ohw );
-  sinister_primal( p );
-  capacitive_primal( p );
-  indomitable_primal( p );
-  courageous_primal_diamond( p );
+
+  // Disable legendary meta gem procs in challenge mode
+  if ( ! p -> sim -> challenge_mode )
+  {
+    sinister_primal( p );
+    capacitive_primal( p );
+    indomitable_primal( p );
+    courageous_primal_diamond( p );
+  }
 }
 
 } // end meta_gems namespace
@@ -3346,16 +3351,20 @@ void unique_gear::init( player_t* p )
          util::str_compare_ci( item.name(), "prismatic_prison_of_pride"      ) )
       amplify_trinket( &item );
 
-    if ( util::str_compare_ci( item.name(), "fenyu_fury_of_xuen"      ) || 
-         util::str_compare_ci( item.name(), "gonglu_strength_of_xuen" ) )
-      flurry_of_xuen( &item );
+    // Disable legendary cloaks in challenge mode
+    if ( ! item.sim -> challenge_mode )
+    {
+      if ( util::str_compare_ci( item.name(), "fenyu_fury_of_xuen"      ) || 
+          util::str_compare_ci( item.name(), "gonglu_strength_of_xuen" ) )
+        flurry_of_xuen( &item );
 
-    if ( util::str_compare_ci( item.name(), "xingho_breath_of_yulon" ) )
-      essence_of_yulon( &item );
+      if ( util::str_compare_ci( item.name(), "xingho_breath_of_yulon" ) )
+        essence_of_yulon( &item );
 
-    if ( util::str_compare_ci( item.name(), "qianle_courage_of_niuzao" ) || 
-         util::str_compare_ci( item.name(), "qianying_fortitude_of_niuzao" ) )
-      endurance_of_niuzao( &item );
+      if ( util::str_compare_ci( item.name(), "qianle_courage_of_niuzao" ) || 
+          util::str_compare_ci( item.name(), "qianying_fortitude_of_niuzao" ) )
+        endurance_of_niuzao( &item );
+    }
   }
 }
 

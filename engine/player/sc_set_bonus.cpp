@@ -110,6 +110,10 @@ void set_bonus_t::register_spelldata( const set_bonus_description_t a_bonus )
  */
 bool set_bonus_t::has_set_bonus( set_e s ) const
 {
+  // Disable set bonuses in challenge mode
+  if ( p -> sim -> challenge_mode == 1 )
+    return false;
+
   return set_bonus_t::has_set_bonus( p, s );
 }
 
