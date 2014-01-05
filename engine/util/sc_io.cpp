@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "sc_io.hpp"
 
 #ifdef SC_WINDOWS
 #include <windows.h>

@@ -7,6 +7,7 @@
 #define RNG_HPP
 
 #include <memory>
+#include "sc_timespan.hpp"
 
 namespace rng {
 

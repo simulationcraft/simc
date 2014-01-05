@@ -4,6 +4,8 @@
 // ==========================================================================
 
 #include "simulationcraft.hpp"
+#include "rng.hpp"
+#include <ctime>
 
 // Pseudo-Random Number Generation ==========================================
 
