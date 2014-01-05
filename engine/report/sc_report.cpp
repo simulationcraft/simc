@@ -361,11 +361,10 @@ void report::print_profiles( sim_t* sim )
     if ( p -> is_pet() ) continue;
 
     k++;
-    FILE* file = NULL;
 
     if ( !p -> report_information.save_gear_str.empty() ) // Save gear
     {
-      file = io::fopen( p -> report_information.save_gear_str, "w" );
+      io::cfile file( p -> report_information.save_gear_str, "w" );
       if ( ! file )
       {
         sim -> errorf( "Unable to save gear profile %s for player %s\n", p -> report_information.save_gear_str.c_str(), p -> name() );
@@ -375,13 +374,12 @@ void report::print_profiles( sim_t* sim )
         std::string profile_str = "";
         p -> create_profile( profile_str, SAVE_GEAR );
         fprintf( file, "%s", profile_str.c_str() );
-        fclose( file );
       }
     }
 
     if ( !p -> report_information.save_talents_str.empty() ) // Save talents
     {
-      file = io::fopen( p -> report_information.save_talents_str, "w" );
+      io::cfile file( p -> report_information.save_talents_str, "w" );
       if ( ! file )
       {
         sim -> errorf( "Unable to save talents profile %s for player %s\n", p -> report_information.save_talents_str.c_str(), p -> name() );
@@ -391,13 +389,12 @@ void report::print_profiles( sim_t* sim )
         std::string profile_str = "";
         p -> create_profile( profile_str, SAVE_TALENTS );
         fprintf( file, "%s", profile_str.c_str() );
-        fclose( file );
       }
     }
 
     if ( !p -> report_information.save_actions_str.empty() ) // Save actions
     {
-      file = io::fopen( p -> report_information.save_actions_str, "w" );
+      io::cfile file( p -> report_information.save_actions_str, "w" );
       if ( ! file )
       {
         sim -> errorf( "Unable to save actions profile %s for player %s\n", p -> report_information.save_actions_str.c_str(), p -> name() );
@@ -407,7 +404,6 @@ void report::print_profiles( sim_t* sim )
         std::string profile_str = "";
         p -> create_profile( profile_str, SAVE_ACTIONS );
         fprintf( file, "%s", profile_str.c_str() );
-        fclose( file );
       }
     }
 
@@ -428,7 +424,7 @@ void report::print_profiles( sim_t* sim )
 
     if ( file_name.empty() ) continue;
 
-    file = io::fopen( file_name, "w" );
+    io::cfile file( file_name, "w" );
     if ( ! file )
     {
       sim -> errorf( "Unable to save profile %s for player %s\n", file_name.c_str(), p -> name() );
@@ -438,7 +434,6 @@ void report::print_profiles( sim_t* sim )
     std::string profile_str = "";
     p -> create_profile( profile_str );
     fprintf( file, "%s", profile_str.c_str() );
-    fclose( file );
   }
 
   // Save overview file for Guild downloads
@@ -446,7 +441,7 @@ void report::print_profiles( sim_t* sim )
   if ( sim -> save_raid_summary )
   {
     static const char* const filename = "Raid_Summary.simc";
-    FILE* file = io::fopen( filename, "w" );
+    io::cfile file( filename, "w" );
     if ( ! file )
     {
       sim -> errorf( "Unable to save overview profile %s\n", filename );
@@ -478,8 +473,6 @@ void report::print_profiles( sim_t* sim )
           fprintf( file, "%s.simc\n\n", sim -> save_suffix_str.c_str() );
         }
       }
-
-      fclose( file );
     }
   }
 }
@@ -491,7 +484,7 @@ void report::print_spell_query( sim_t* sim, unsigned level )
   spell_data_expr_t* sq = sim -> spell_query;
   assert( sq );
 
-  FILE * file = NULL;
+  io::cfile file;
   xml_node_t* root = NULL;
   if ( ! sim -> spell_query_xml_output_file_str.empty() )
   {
@@ -499,7 +492,7 @@ void report::print_spell_query( sim_t* sim, unsigned level )
     if ( ! file )
     {
       sim -> errorf( "Unable to open spell query xml output file '%s', using stdout instead\n", sim -> spell_query_xml_output_file_str.c_str() );
-      file = stdout;
+      file = io::cfile( stdout, io::cfile::no_close() );
     }
     root = new xml_node_t( "spell_query" );
   }

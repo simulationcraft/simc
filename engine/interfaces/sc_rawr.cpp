@@ -743,12 +743,10 @@ player_t* rawr::load_player( sim_t* sim,
   if ( ! f )
   {
     sim -> errorf( "Unable to open Rawr Character Save file '%s'\n", character_file.c_str() );
-    return NULL;
+    return nullptr;
   }
 
-  std::string buffer;
-  char c;
-  while ( ( c = fgetc( f ) ) != EOF ) buffer += c;
+  std::string buffer = io::read_file_content( f );
   fclose( f );
 
   player_t* p = load_player( sim, character_file, buffer );

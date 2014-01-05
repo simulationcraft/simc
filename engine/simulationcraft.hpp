@@ -73,6 +73,10 @@ public:
 #define final
 #endif
 
+#if ( ! defined(_MSC_VER) || _MSC_VER < 1600 ) && __cplusplus < 201103L && ! defined(__GXX_EXPERIMENTAL_CXX0X__)
+#define static_assert( condition, message )
+#endif
+
 #if defined(SC_GCC) && SC_GCC < 40500
 #undef __STRICT_ANSI__ // problem with gcc4.4 + -std=c++0x and including <cstdio>. Not sure if it affects 4.4.1 as well. http://stackoverflow.com/questions/3445312/swprintf-and-vswprintf-not-declared
 #endif
@@ -123,17 +127,6 @@ namespace std {using namespace tr1; }
 #include "dbc/data_enums.hh"
 #include "dbc/data_definitions.hh"
 #include "utf8.h"
-
-#if __BSD_VISIBLE
-#  include <netinet/in.h>
-#  if !defined(CLOCKS_PER_SEC)
-#    define CLOCKS_PER_SEC 1000000
-#  endif
-#endif
-
-#if ( ! defined(_MSC_VER) || _MSC_VER < 1600 ) && __cplusplus < 201103L && ! defined(__GXX_EXPERIMENTAL_CXX0X__)
-#define static_assert( condition, message )
-#endif
 
 #if defined(__GNUC__)
 #  define likely(x)         __builtin_expect((x),1)
@@ -2251,7 +2244,6 @@ struct option_db_t : public std::vector<option_tuple_t>
   {
     push_back( option_tuple_t( scope, name, value ) );
   }
-  FILE* open_file( const std::string& name );
   bool parse_file( FILE* file );
   bool parse_token( const std::string& token );
   bool parse_line( const std::string& line );

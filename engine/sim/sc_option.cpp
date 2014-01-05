@@ -21,6 +21,22 @@ char* skip_white_space( char* s )
   return s;
 }
 
+// option_db_t::open_file ===================================================
+
+io::cfile open_file( const std::string& auto_path, const std::string& name )
+{
+  std::vector<std::string> splits = util::string_split( auto_path, ",;|" );
+
+  for ( size_t i = 0; i < splits.size(); i++ )
+  {
+    FILE* f = io::fopen( splits[ i ] + "/" + name, "r" );
+    if ( f )
+      return io::cfile(f);
+  }
+
+  return io::cfile( name, "r" );
+}
+
 } // UNNAMED NAMESPACE ======================================================
 
 // option_t::print ==========================================================
@@ -274,22 +290,6 @@ option_t* option_t::merge( std::vector<option_t>& merged_options,
   return &merged_options[ 0 ];
 }
 
-// option_db_t::open_file ===================================================
-
-FILE* option_db_t::open_file( const std::string& name )
-{
-  std::vector<std::string> splits = util::string_split( auto_path, ",;|" );
-
-  for ( size_t i = 0; i < splits.size(); i++ )
-  {
-    FILE* f = io::fopen( splits[ i ] + "/" + name, "r" );
-    if ( f )
-      return f;
-  }
-
-  return io::fopen( name, "r" );
-}
-
 // option_db_t::parse_file ==================================================
 
 bool option_db_t::parse_file( FILE* file )
@@ -383,7 +383,7 @@ bool option_db_t::parse_token( const std::string& token )
 
   if ( cut_pt == token.npos )
   {
-    io::cfile file = io::cfile( open_file( token ) );
+    io::cfile file = io::cfile( open_file( auto_path, token ) );
     if ( ! file )
     {
       // FIXME no way for the GUI to get this failure through sim_t -> errorf()
@@ -423,14 +423,13 @@ bool option_db_t::parse_token( const std::string& token )
   }
   else if ( name == "input" )
   {
-    FILE* file = open_file( value );
+    io::cfile file = open_file( auto_path, value );
     if ( ! file )
     {
       printf( "Unable to open input parameter file '%s'\n", value.c_str() );
       return false;
     }
     parse_file( file );
-    fclose( file );
   }
   else
   {

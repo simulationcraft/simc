@@ -12,7 +12,7 @@ namespace { // UNNAMED NAMESPACE ==========================================
 class xml_writer_t
 {
 private:
-  FILE* file;
+  io::cfile file;
   enum state
   {
     NONE, TAG, TEXT
@@ -29,18 +29,10 @@ private:
   };
 
 public:
-  xml_writer_t( const std::string & filename )
-    : tabulation( "  " ), current_state( NONE )
+  xml_writer_t( const std::string & filename ) :
+    file( filename, "w" ),
+    tabulation( "  " ), current_state( NONE )
   {
-    file = io::fopen( filename, "w" );
-  }
-
-  ~xml_writer_t()
-  {
-    if ( file )
-    {
-      fclose( file );
-    }
   }
 
   bool ready() { return file != NULL; }

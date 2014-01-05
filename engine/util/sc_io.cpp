@@ -228,4 +228,20 @@ utf8_args::utf8_args( int argc, char** argv ) :
   std::vector<std::string>( argv + 1, argv + argc ) {}
 #endif
 
+/* Collects each character in the file until EOF
+ * and returns it as a string
+ */
+std::string read_file_content( cfile& file )
+{
+  std::string buffer;
+  char c;
+
+  while ( ( c = fgetc( file ) ) != EOF )
+  {
+    buffer += c;
+  }
+
+  return buffer;
+}
+
 } // namespace io ===========================================================
