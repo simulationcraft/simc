@@ -231,9 +231,10 @@ utf8_args::utf8_args( int argc, char** argv ) :
 /* Collects each character in the file until EOF
  * and returns it as a string
  */
-std::string read_file_content( cfile& file )
+std::string read_file_content( FILE* file )
 {
   std::string buffer;
+  assert( file );
   char c;
 
   while ( ( c = fgetc( file ) ) != EOF )

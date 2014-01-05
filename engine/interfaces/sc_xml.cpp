@@ -529,7 +529,7 @@ bool xml_node_t::get_value( double&            value,
 void xml_node_t::print( FILE*       file,
                         int         spacing )
 {
-  if ( ! file ) file = stdout;
+  assert( file );
 
   util::fprintf( file, "%*s%s", spacing, "", name() );
 
@@ -554,7 +554,7 @@ void xml_node_t::print( FILE*       file,
 void xml_node_t::print_xml( FILE*       file,
                             int         spacing )
 {
-  if ( ! file ) file = stdout;
+  assert( file );
 
   util::fprintf( file, "%*s<%s", spacing, "", name() );
 

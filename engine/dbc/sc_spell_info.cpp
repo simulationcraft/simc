@@ -5,13 +5,14 @@
 
 #include "simulationcraft.hpp"
 
+namespace {
 struct proc_map_t
 {
   int         flag;
   const char* proc;
 };
 
-static const struct proc_map_t _proc_flag_map[] =
+const struct proc_map_t _proc_flag_map[] =
 {
   { PF_KILLED,               "Killed"                  },
   { PF_KILLING_BLOW,         "Killing Blow"            },
@@ -41,7 +42,7 @@ static const struct proc_map_t _proc_flag_map[] =
   { 0,                       0                         }
 };
 
-static const struct { const char* name; player_e pt; } _class_map[] =
+const struct { const char* name; player_e pt; } _class_map[] =
 {
   { 0, PLAYER_NONE },
   { "Warrior", WARRIOR },
@@ -58,7 +59,7 @@ static const struct { const char* name; player_e pt; } _class_map[] =
   { 0, PLAYER_NONE },
 };
 
-static const char * _race_strings[] =
+const char * _race_strings[] =
 {
   0,
   "Human",
@@ -80,7 +81,7 @@ static const char * _race_strings[] =
   0
 };
 
-static const char * _resource_strings[] =
+const char * _resource_strings[] =
 {
   "Health", // -2
   0,
@@ -103,7 +104,7 @@ static const char * _resource_strings[] =
   0
 };
 
-static const char * _property_type_strings[] =
+const char * _property_type_strings[] =
 {
   "Generic Modifier",      "Spell Duration",        "Spell Generated Threat", "Spell Effect 1",      "Stack Amount",          // 0
   "Spell Range",           "Spell Radius",          "Spell Critical Chance",  "Spell Tick Time",     "Spell Pushback",        // 5
@@ -113,7 +114,7 @@ static const char * _property_type_strings[] =
   0,                       "Spell Proc Frequency",  "Spell Damage Taken",     "Spell Dispel Chance", 0                        // 25
 };
 
-static const char * _effect_type_strings[] =
+const char * _effect_type_strings[] =
 {
   "None",               "Instant Kill",             "School Damage",        "Dummy",                    "Portal Teleport",       // 0
   "Teleport Units",     "Apply Aura",               "Environmental Damage", "Power Drain",              "Health Leech",          // 5
@@ -151,7 +152,7 @@ static const char * _effect_type_strings[] =
   0,                    0,                          0,                                                                           // 165
 };
 
-static const char * _effect_subtype_strings[] =
+const char * _effect_subtype_strings[] =
 {
   "None",                       0,                          "Possess",              "Periodic Damage",          "Dummy",                              // 0
   "Confuse",                    "Charm",                    "Fear",                 "Periodic Heal",            "Attack Speed",                       // 5
@@ -227,7 +228,7 @@ static const char * _effect_subtype_strings[] =
   0,                            0,                          0,                      0,                          0,                       // 355
 };
 
-static std::string spell_flags( sim_t* /* sim */, const spell_data_t* spell )
+std::string spell_flags( const spell_data_t* spell )
 {
   std::ostringstream s;
 
@@ -250,12 +251,24 @@ static std::string spell_flags( sim_t* /* sim */, const spell_data_t* spell )
   return s.str();
 }
 
-std::ostringstream& spell_info::effect_to_str( sim_t*                    sim,
+void spell_flags_xml( const spell_data_t* spell, xml_node_t* parent )
+{
+  if ( spell -> scaling_class() != 0 )
+    parent -> add_parm( "scaling_spell", spell -> scaling_class() );
+
+  if ( spell -> gcd() == timespan_t::zero() && spell -> _cast_min == 0 && spell -> _cast_max == 0 )
+    parent -> add_parm( "off_gcd", "true" );
+}
+
+} // unnamed namespace
+
+std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
                                                const spell_data_t*       spell,
                                                const spelleffect_data_t* e,
                                                std::ostringstream&       s,
                                                int level )
 {
+
   char tmp_buffer[512],
        tmp_buffer2[64];
 
@@ -277,8 +290,8 @@ std::ostringstream& spell_info::effect_to_str( sim_t*                    sim,
       case E_TRIGGER_SPELL_WITH_VALUE:
         if ( e -> trigger_spell_id() )
         {
-          if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
-            s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+          if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+            s << ": " << dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
           else
             s << ": (" << e -> trigger_spell_id() << ")";
         }
@@ -313,9 +326,9 @@ std::ostringstream& spell_info::effect_to_str( sim_t*                    sim,
         case A_PROC_TRIGGER_SPELL:
           if ( e -> trigger_spell_id() )
           {
-            if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+            if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
             {
-              s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+              s << ": " << dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
             }
             else
             {
@@ -326,9 +339,9 @@ std::ostringstream& spell_info::effect_to_str( sim_t*                    sim,
         case A_PERIODIC_TRIGGER_SPELL:
           if ( e -> trigger_spell_id() )
           {
-            if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+            if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
             {
-              s << ": " << sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
+              s << ": " << dbc.spell( e -> trigger_spell_id() ) -> name_cstr();
               if ( e -> period() != timespan_t::zero() )
                 s << " every " << e -> period().total_seconds() << " seconds";
             }
@@ -357,8 +370,8 @@ std::ostringstream& spell_info::effect_to_str( sim_t*                    sim,
   s << "                   Base Value: " << e -> base_value();
   s << " | Scaled Value: ";
 
-  double v_min = sim -> dbc.effect_min( e -> id(), level );
-  double v_max = sim -> dbc.effect_max( e -> id(), level );
+  double v_min = dbc.effect_min( e -> id(), level );
+  double v_max = dbc.effect_max( e -> id(), level );
 
   s << v_min;
   if ( v_min != v_max )
@@ -374,7 +387,7 @@ std::ostringstream& spell_info::effect_to_str( sim_t*                    sim,
 
   if ( e -> m_unk() )
   {
-    s << " | Bonus Value: " << sim -> dbc.effect_bonus( e -> id(), level );
+    s << " | Bonus Value: " << dbc.effect_bonus( e -> id(), level );
     s << " (" << e -> m_unk() << ")";
   }
 
@@ -428,8 +441,9 @@ std::ostringstream& spell_info::effect_to_str( sim_t*                    sim,
   return s;
 }
 
-std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level )
+std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int level )
 {
+
   std::ostringstream s;
   player_e pt = PLAYER_NONE;
 
@@ -442,11 +456,11 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
   std::string name_str = spell -> name_cstr();
   if ( spell -> rank_str() )
     name_str += " (" + std::string( spell -> rank_str() ) + ")";
-  s <<   "Name             : " << name_str << " (id=" << spell -> id() << ") " << spell_flags( sim, spell ) << std::endl;
+  s <<   "Name             : " << name_str << " (id=" << spell -> id() << ") " << spell_flags( spell ) << std::endl;
 
   if ( spell -> replace_spell_id() > 0 )
   {
-    s << "Replaces         : " << sim -> dbc.spell( spell -> replace_spell_id() ) -> name_cstr();
+    s << "Replaces         : " <<  dbc.spell( spell -> replace_spell_id() ) -> name_cstr();
     s << " (id=" << spell -> replace_spell_id() << ")" << std::endl;
   }
 
@@ -455,11 +469,11 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
     bool pet_ability = false;
     s << "Class            : ";
 
-    if ( sim -> dbc.is_specialization_ability( spell -> id() ) )
+    if ( dbc.is_specialization_ability( spell -> id() ) )
     {
       std::vector<specialization_e> spec_list;
       std::vector<specialization_e>::iterator iter;
-      sim -> dbc.ability_specialization( spell -> id(), spec_list );
+      dbc.ability_specialization( spell -> id(), spec_list );
 
       for ( iter = spec_list.begin(); iter != spec_list.end(); ++iter )
       {
@@ -526,7 +540,7 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
 
         if ( pd -> type() == POWER_MANA )
         {
-          s << " (" << floor( sim -> dbc.resource_base( pt, level ) * pd -> cost() ) << " @Level " << level << ")";
+          s << " (" << floor( dbc.resource_base( pt, level ) * pd -> cost() ) << " @Level " << level << ")";
         }
       }
       
@@ -550,14 +564,14 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
 
         if ( pd -> type() == POWER_MANA )
         {
-          s << " (" << floor( sim -> dbc.resource_base( pt, level ) * pd -> cost_per_second() ) << " @Level " << level << ")";
+          s << " (" << floor( dbc.resource_base( pt, level ) * pd -> cost_per_second() ) << " @Level " << level << ")";
         }
 
         s << " per second";
       }
 
-      if ( pd -> aura_id() > 0 && sim -> dbc.spell( pd -> aura_id() ) -> id() == pd -> aura_id() )
-        s << " w/ " << sim -> dbc.spell( pd -> aura_id() ) -> name_cstr() << " (id=" << pd -> aura_id() << ")";
+      if ( pd -> aura_id() > 0 && dbc.spell( pd -> aura_id() ) -> id() == pd -> aura_id() )
+        s << " w/ " << dbc.spell( pd -> aura_id() ) -> name_cstr() << " (id=" << pd -> aura_id() << ")";
 
       s << std::endl;
     }
@@ -666,7 +680,7 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
     bool has_modifiers = false;
     for ( unsigned i = 0; i < specdata::spec_count(); i++ )
     {
-      const rppm_modifier_t& rppmm = sim -> dbc.real_ppm_modifier( specdata::spec_id( i ), spell -> id() );
+      const rppm_modifier_t& rppmm = dbc.real_ppm_modifier( specdata::spec_id( i ), spell -> id() );
       if ( rppmm.coefficient != 0 )
       {
         if ( ! has_modifiers )
@@ -755,9 +769,9 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
     if ( ! ( effect_id = spell -> effectN( i + 1 ).id() ) )
       continue;
     else
-      e = sim -> dbc.effect( effect_id );
+      e = dbc.effect( effect_id );
 
-    spell_info::effect_to_str( sim, spell, e, s, level );
+    spell_info::effect_to_str( dbc, spell, e, s, level );
   }
 
   if ( spell -> desc() )
@@ -774,11 +788,9 @@ std::string spell_info::to_str( sim_t* sim, const spell_data_t* spell, int level
   return s.str();
 }
 
-std::string spell_info::talent_to_str( sim_t* sim, const talent_data_t* talent, int /* level */ )
+std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const talent_data_t* talent, int /* level */ )
 {
   std::ostringstream s;
-
-  ( void )sim;
 
   s <<   "Name         : " << talent -> name_cstr() << " (id=" << talent -> id() << ") " << std::endl;
 
@@ -806,16 +818,7 @@ std::string spell_info::talent_to_str( sim_t* sim, const talent_data_t* talent, 
   return s.str();
 }
 
-static void spell_flags_xml( sim_t* /* sim */, const spell_data_t* spell, xml_node_t* parent )
-{
-  if ( spell -> scaling_class() != 0 )
-    parent -> add_parm( "scaling_spell", spell -> scaling_class() );
-
-  if ( spell -> gcd() == timespan_t::zero() && spell -> _cast_min == 0 && spell -> _cast_max == 0 )
-    parent -> add_parm( "off_gcd", "true" );
-}
-
-void spell_info::effect_to_xml( sim_t*                    sim,
+void spell_info::effect_to_xml( const dbc_t& dbc,
                                 const spell_data_t*       spell,
                                 const spelleffect_data_t* e,
                                 xml_node_t* parent,
@@ -842,8 +845,8 @@ void spell_info::effect_to_xml( sim_t*                    sim,
       case E_TRIGGER_SPELL_WITH_VALUE:
         if ( e -> trigger_spell_id() )
         {
-          if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
-            node -> add_parm( "trigger_spell_name", sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
+          if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+            node -> add_parm( "trigger_spell_name", dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
         }
         break;
       default:
@@ -877,16 +880,16 @@ void spell_info::effect_to_xml( sim_t*                    sim,
         case A_PROC_TRIGGER_SPELL:
           if ( e -> trigger_spell_id() )
           {
-            if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
-              node -> add_parm( "trigger_spell_name", sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
+            if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+              node -> add_parm( "trigger_spell_name", dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
           }
           break;
         case A_PERIODIC_TRIGGER_SPELL:
           if ( e -> trigger_spell_id() )
           {
-            if ( sim -> dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
+            if ( dbc.spell( e -> trigger_spell_id() ) != spell_data_t::nil() )
             {
-              node -> add_parm( "trigger_spell_name", sim -> dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
+              node -> add_parm( "trigger_spell_name", dbc.spell( e -> trigger_spell_id() ) -> name_cstr() );
               if ( e -> period() != timespan_t::zero() )
                 node -> add_parm( "period", e -> period().total_seconds() );
             }
@@ -910,8 +913,8 @@ void spell_info::effect_to_xml( sim_t*                    sim,
   }
   node -> add_parm( "base_value", e -> base_value() );
 
-  double v_min = sim -> dbc.effect_min( e -> id(), level );
-  double v_max = sim -> dbc.effect_max( e -> id(), level );
+  double v_min = dbc.effect_min( e -> id(), level );
+  double v_max = dbc.effect_max( e -> id(), level );
   node -> add_parm( "scaled_value", v_min  );
   if ( v_min != v_max )
   {
@@ -927,7 +930,7 @@ void spell_info::effect_to_xml( sim_t*                    sim,
 
   if ( e -> m_unk() )
   {
-    node -> add_parm( "bonus_value", sim -> dbc.effect_bonus( e -> id(), level ) );
+    node -> add_parm( "bonus_value", dbc.effect_bonus( e -> id(), level ) );
     node -> add_parm( "bonus_value_multiplier", e -> m_unk() );
   }
 
@@ -974,7 +977,7 @@ void spell_info::effect_to_xml( sim_t*                    sim,
     node -> add_parm( "trigger_spell_id", e -> trigger_spell_id() );
 }
 
-void spell_info::to_xml( sim_t* sim, const spell_data_t* spell, xml_node_t* parent, int level )
+void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t* parent, int level )
 {
   player_e pt = PLAYER_NONE;
 
@@ -987,11 +990,11 @@ void spell_info::to_xml( sim_t* sim, const spell_data_t* spell, xml_node_t* pare
 
   node -> add_parm( "id", spell -> id() );
   node -> add_parm( "name", spell -> name_cstr() );
-  spell_flags_xml( sim, spell, node );
+  spell_flags_xml( spell, node );
 
   if ( spell -> replace_spell_id() > 0 )
   {
-    node -> add_parm( "replaces_name", sim -> dbc.spell( spell -> replace_spell_id() ) -> name_cstr() );
+    node -> add_parm( "replaces_name", dbc.spell( spell -> replace_spell_id() ) -> name_cstr() );
     node -> add_parm( "replaces_id", spell -> replace_spell_id() );
   }
 
@@ -999,11 +1002,11 @@ void spell_info::to_xml( sim_t* sim, const spell_data_t* spell, xml_node_t* pare
   {
     bool pet_ability = false;
 
-    if ( sim -> dbc.is_specialization_ability( spell -> id() ) )
+    if ( dbc.is_specialization_ability( spell -> id() ) )
     {
       std::vector<specialization_e> spec_list;
       std::vector<specialization_e>::iterator iter;
-      sim -> dbc.ability_specialization( spell -> id(), spec_list );
+      dbc.ability_specialization( spell -> id(), spec_list );
 
       for ( iter = spec_list.begin(); iter != spec_list.end(); ++iter )
       {
@@ -1070,14 +1073,14 @@ void spell_info::to_xml( sim_t* sim, const spell_data_t* spell, xml_node_t* pare
 
       if ( pd -> type() == POWER_MANA )
       {
-        resource_node -> add_parm( "cost_mana_flat", floor( sim -> dbc.resource_base( pt, level ) * pd -> cost() ) );
+        resource_node -> add_parm( "cost_mana_flat", floor( dbc.resource_base( pt, level ) * pd -> cost() ) );
         resource_node -> add_parm( "cost_mana_flat_level", level );
       }
 
-      if ( pd -> aura_id() > 0 && sim -> dbc.spell( pd -> aura_id() ) -> id() == pd -> aura_id() )
+      if ( pd -> aura_id() > 0 && dbc.spell( pd -> aura_id() ) -> id() == pd -> aura_id() )
       {
         resource_node -> add_parm( "cost_aura_id", pd -> aura_id() );
-        resource_node -> add_parm( "cost_aura_name", sim -> dbc.spell( pd -> aura_id() ) -> name_cstr() );
+        resource_node -> add_parm( "cost_aura_name", dbc.spell( pd -> aura_id() ) -> name_cstr() );
       }
     }
   }
@@ -1185,9 +1188,9 @@ void spell_info::to_xml( sim_t* sim, const spell_data_t* spell, xml_node_t* pare
     if ( ! ( effect_id = spell -> _effects -> at( i ) -> id() ) )
       continue;
     else
-      e = sim -> dbc.effect( effect_id );
+      e = dbc.effect( effect_id );
 
-    spell_info::effect_to_xml( sim, spell, e, effect_node, level );
+    spell_info::effect_to_xml( dbc, spell, e, effect_node, level );
   }
 
   if ( spell -> desc() )
@@ -1200,7 +1203,7 @@ void spell_info::to_xml( sim_t* sim, const spell_data_t* spell, xml_node_t* pare
     node -> add_child( "variables" ) -> add_parm( ".", spell -> _desc_vars );
 }
 
-void spell_info::talent_to_xml( sim_t* /* sim */, const talent_data_t* talent, xml_node_t* parent, int /* level */ )
+void spell_info::talent_to_xml( const dbc_t& /* dbc */, const talent_data_t* talent, xml_node_t* parent, int /* level */ )
 {
   xml_node_t* node = parent -> add_child( "talent" );
 

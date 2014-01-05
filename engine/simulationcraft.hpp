@@ -1365,13 +1365,13 @@ std::ostream& stream_printf( std::ostream&, const char* format, ... );
 
 namespace spell_info
 {
-std::string to_str( sim_t* sim, const spell_data_t* spell, int level = MAX_LEVEL );
-void        to_xml( sim_t* sim, const spell_data_t* spell, xml_node_t* parent, int level = MAX_LEVEL );
+std::string to_str( const dbc_t& dbc, const spell_data_t* spell, int level = MAX_LEVEL );
+void        to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t* parent, int level = MAX_LEVEL );
 //static std::string to_str( sim_t* sim, uint32_t spell_id, int level = MAX_LEVEL );
-std::string talent_to_str( sim_t* sim, const talent_data_t* talent, int level = MAX_LEVEL );
-void        talent_to_xml( sim_t* sim, const talent_data_t* talent, xml_node_t* parent, int level = MAX_LEVEL );
-std::ostringstream& effect_to_str( sim_t* sim, const spell_data_t* spell, const spelleffect_data_t* effect, std::ostringstream& s, int level = MAX_LEVEL );
-void                effect_to_xml( sim_t* sim, const spell_data_t* spell, const spelleffect_data_t* effect, xml_node_t*    parent, int level = MAX_LEVEL );
+std::string talent_to_str( const dbc_t& dbc, const talent_data_t* talent, int level = MAX_LEVEL );
+void        talent_to_xml( const dbc_t& dbc, const talent_data_t* talent, xml_node_t* parent, int level = MAX_LEVEL );
+std::ostringstream& effect_to_str( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* effect, std::ostringstream& s, int level = MAX_LEVEL );
+void                effect_to_xml( const dbc_t& dbc, const spell_data_t* spell, const spelleffect_data_t* effect, xml_node_t*    parent, int level = MAX_LEVEL );
 }
 
 
@@ -6320,8 +6320,8 @@ struct xml_node_t
   xml_node_t* search_tree( const std::string& node_name, const std::string& parm_name, const std::string& parm_value );
   xml_node_t* split_path ( std::string& key, const std::string& path );
 
-  void print( FILE* f = 0, int spacing = 0 );
-  void print_xml( FILE* f = 0, int spacing = 0 );
+  void print( FILE* f = stdout, int spacing = 0 );
+  void print_xml( FILE* f = stdout, int spacing = 0 );
   static std::shared_ptr<xml_node_t> get( sim_t* sim, const std::string& url, cache::behavior_e b,
                           const std::string& confirmation = std::string() );
   static std::shared_ptr<xml_node_t> create( sim_t* sim, const std::string& input );

@@ -502,9 +502,9 @@ void report::print_spell_query( sim_t* sim, unsigned level )
     if ( sq -> data_type == DATA_TALENT )
     {
       if ( root )
-        spell_info::talent_to_xml( sim, sim -> dbc.talent( *i ), root );
+        spell_info::talent_to_xml( sim -> dbc, sim -> dbc.talent( *i ), root );
       else
-        sim -> out_std.raw() << spell_info::talent_to_str( sim, sim -> dbc.talent( *i ) );
+        sim -> out_std.raw() << spell_info::talent_to_str( sim -> dbc, sim -> dbc.talent( *i ) );
     }
     else if ( sq -> data_type == DATA_EFFECT )
     {
@@ -513,9 +513,9 @@ void report::print_spell_query( sim_t* sim, unsigned level )
       if ( spell )
       {
         if ( root )
-          spell_info::effect_to_xml( sim, spell, sim -> dbc.effect( *i ), root );
+          spell_info::effect_to_xml( sim -> dbc, spell, sim -> dbc.effect( *i ), root );
         else
-          spell_info::effect_to_str( sim, spell, sim -> dbc.effect( *i ), sqs );
+          spell_info::effect_to_str( sim -> dbc, spell, sim -> dbc.effect( *i ), sqs );
       }
       sim -> out_std.raw() << sqs.str();
     }
@@ -523,9 +523,9 @@ void report::print_spell_query( sim_t* sim, unsigned level )
     {
       const spell_data_t* spell = sim -> dbc.spell( *i );
       if ( root )
-        spell_info::to_xml( sim, spell, root, level );
+        spell_info::to_xml( sim -> dbc, spell, root, level );
       else
-        sim -> out_std.raw() << spell_info::to_str( sim, spell, level );
+        sim -> out_std.raw() << spell_info::to_str( sim -> dbc, spell, level );
     }
   }
 

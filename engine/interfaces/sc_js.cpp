@@ -278,9 +278,7 @@ std::shared_ptr<js_node_t> js::create( sim_t* sim, const std::string& input )
 std::shared_ptr<js_node_t> js::create( sim_t* sim, FILE* input )
 {
   if ( ! input ) return std::shared_ptr<js_node_t>();
-  std::string buffer;
-  char c;
-  while ( ( c = fgetc( input ) ) != EOF ) buffer += c;
+  std::string buffer = io::read_file_content( input );
   return create( sim, buffer );
 }
 

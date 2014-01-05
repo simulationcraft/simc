@@ -765,7 +765,7 @@ player_t* rawr::load_player( sim_t* sim,
   if ( ! root_node )
   {
     sim -> errorf( "Unable to parse Rawr Character Save XML.\n" );
-    return 0;
+    return nullptr;
   }
 
   if ( sim -> debug ) root_node -> print();

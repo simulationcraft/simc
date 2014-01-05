@@ -82,7 +82,7 @@ inline FILE* fopen( const std::string& filename, const char* mode )
 
 inline int fclose( cfile& file ) { file.close(); return 0; }
 
-std::string read_file_content( cfile& file );
+std::string read_file_content( FILE* file );
 } // namespace io
 
 #endif // SC_IO_HPP
