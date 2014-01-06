@@ -21,7 +21,7 @@ struct sdata_field_t
   std::string        name;
 };
 
-static const sdata_field_t _talent_data_fields[] =
+const sdata_field_t _talent_data_fields[] =
 {
   { SD_TYPE_STR,      "name"          },
   { SD_TYPE_UNSIGNED, "id",           },
@@ -38,7 +38,7 @@ static const sdata_field_t _talent_data_fields[] =
   { SD_TYPE_UNSIGNED, ""              },
 };
 
-static const sdata_field_t _effect_data_fields[] =
+const sdata_field_t _effect_data_fields[] =
 {
   { SD_TYPE_UNSIGNED, "id"             },
   { SD_TYPE_UNSIGNED, "flags"          },
@@ -63,7 +63,7 @@ static const sdata_field_t _effect_data_fields[] =
   { SD_TYPE_INT,      "damage_range"   },
 };
 
-static const sdata_field_t _spell_data_fields[] =
+const sdata_field_t _spell_data_fields[] =
 {
   { SD_TYPE_STR,      "name"          },
   { SD_TYPE_UNSIGNED, "id",           },
@@ -120,7 +120,7 @@ static const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_STR,      "rank"          },
 };
 
-static const std::string _class_strings[] =
+const std::string _class_strings[] =
 {
   "",
   "warrior",
@@ -136,7 +136,7 @@ static const std::string _class_strings[] =
   "druid"
 };
 
-static const std::string _race_strings[] =
+const std::string _race_strings[] =
 {
   "",
   "human",
@@ -157,7 +157,7 @@ static const std::string _race_strings[] =
   "pandaren_horde"
 };
 
-static const std::string _pet_class_strings[] =
+const std::string _pet_class_strings[] =
 {
   "",
   "cunning",
@@ -165,7 +165,7 @@ static const std::string _pet_class_strings[] =
   "tenacity",
 };
 
-static const struct expr_data_map_t
+const struct expr_data_map_t
 {
   std::string name;
   expr_data_e type;

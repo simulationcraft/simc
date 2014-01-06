@@ -9,7 +9,7 @@ namespace { // UNNAMED NAMESPACE ==========================================
 
 // is_plot_stat =============================================================
 
-static bool is_plot_stat( sim_t* sim,
+bool is_plot_stat( sim_t* sim,
                           stat_e stat )
 {
   if ( ! sim -> plot -> dps_plot_stat_str.empty() )

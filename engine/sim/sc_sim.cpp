@@ -9,7 +9,7 @@ namespace { // UNNAMED NAMESPACE ==========================================
 
 // parse_ptr ================================================================
 
-static bool parse_ptr( sim_t*             sim,
+bool parse_ptr( sim_t*             sim,
                        const std::string& name,
                        const std::string& value )
 {
@@ -25,7 +25,7 @@ static bool parse_ptr( sim_t*             sim,
 
 // parse_active =============================================================
 
-static bool parse_active( sim_t*             sim,
+bool parse_active( sim_t*             sim,
                           const std::string& name,
                           const std::string& value )
 {
@@ -69,7 +69,7 @@ static bool parse_active( sim_t*             sim,
 
 // parse_optimal_raid =======================================================
 
-static bool parse_optimal_raid( sim_t*             sim,
+bool parse_optimal_raid( sim_t*             sim,
                                 const std::string& name,
                                 const std::string& value )
 {
@@ -82,7 +82,7 @@ static bool parse_optimal_raid( sim_t*             sim,
 
 // parse_player =============================================================
 
-static bool parse_player( sim_t*             sim,
+bool parse_player( sim_t*             sim,
                           const std::string& name,
                           const std::string& value )
 {
@@ -162,7 +162,7 @@ static bool parse_player( sim_t*             sim,
 
 // parse_proxy ==============================================================
 
-static bool parse_proxy( sim_t*             sim,
+bool parse_proxy( sim_t*             sim,
                          const std::string& /* name */,
                          const std::string& value )
 {
@@ -187,7 +187,7 @@ static bool parse_proxy( sim_t*             sim,
 
 // parse_cache ==============================================================
 
-static bool parse_cache( sim_t*             /* sim */,
+bool parse_cache( sim_t*             /* sim */,
                          const std::string& name,
                          const std::string& value )
 {
@@ -471,7 +471,7 @@ bool parse_guild( sim_t*             sim,
 
 // parse_rawr ===============================================================
 
-static bool parse_rawr( sim_t*             sim,
+bool parse_rawr( sim_t*             sim,
                         const std::string& name,
                         const std::string& value )
 {
@@ -489,7 +489,7 @@ static bool parse_rawr( sim_t*             sim,
 
 // parse_fight_style ========================================================
 
-static bool parse_fight_style( sim_t*             sim,
+bool parse_fight_style( sim_t*             sim,
                                const std::string& name,
                                const std::string& value )
 {
@@ -571,7 +571,7 @@ static bool parse_fight_style( sim_t*             sim,
 }
 // parse_override_spell_data ================================================
 
-static bool parse_override_spell_data( sim_t*             sim,
+bool parse_override_spell_data( sim_t*             sim,
                                        const std::string& /* name */,
                                        const std::string& value )
 {
@@ -615,7 +615,7 @@ static bool parse_override_spell_data( sim_t*             sim,
 
 // parse_spell_query ========================================================
 
-static bool parse_spell_query( sim_t*             sim,
+bool parse_spell_query( sim_t*             sim,
                                const std::string& /* name */,
                                const std::string& value )
 {
@@ -642,12 +642,12 @@ static bool parse_spell_query( sim_t*             sim,
 
 // Specifies both the default search order for the various data sources
 // and the complete set of valid data source names.
-static const char* const default_item_db_sources[] =
+const char* const default_item_db_sources[] =
 {
   "local", "bcpapi", "wowhead", "ptrhead"
 };
 
-static bool parse_item_sources( sim_t*             sim,
+bool parse_item_sources( sim_t*             sim,
                                 const std::string& /* name */,
                                 const std::string& value )
 {
@@ -685,7 +685,7 @@ static bool parse_item_sources( sim_t*             sim,
   return true;
 }
 
-static bool parse_thread_priority( sim_t*             sim,
+bool parse_thread_priority( sim_t*             sim,
                                    const std::string& /* name */,
                                    const std::string& value )
 {

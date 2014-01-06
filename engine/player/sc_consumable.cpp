@@ -22,7 +22,7 @@ struct elixir_data_t
   int mixology_stat_amount;
 };
 
-static const elixir_data_t elixir_data[] =
+const elixir_data_t elixir_data[] =
 {
   // mop
   { "mantid", ELIXIR_GUARDIAN, STAT_ARMOR, 2250, 2250 },
@@ -37,7 +37,7 @@ struct flask_data_t
   int mixology_stat_amount;
 };
 
-static const flask_data_t flask_data[] =
+const flask_data_t flask_data[] =
 {
   // cataclysm
   { FLASK_DRACONIC_MIND,       STAT_INTELLECT,  300,  380 },
@@ -61,7 +61,7 @@ struct food_data_t
   int stat_amount;
 };
 
-static const food_data_t food_data[] =
+const food_data_t food_data[] =
 {
   // cataclysm
   { FOOD_BAKED_ROCKFISH,               STAT_CRIT_RATING,       90 },

@@ -7,7 +7,7 @@
 
 namespace { // UNNAMED NAMESPACE ==========================================
 
-static const stat_e reforge_stats[] =
+const stat_e reforge_stats[] =
 {
   STAT_SPIRIT,
   STAT_DODGE_RATING,

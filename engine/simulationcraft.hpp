@@ -4413,8 +4413,6 @@ public:
 
   player_t( sim_t* sim, player_e type, const std::string& name, race_e race_e );
 
-  virtual ~player_t();
-
   virtual const char* name() const { return name_str.c_str(); }
 
   virtual void init();

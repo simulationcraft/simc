@@ -815,12 +815,6 @@ std::string player_t::base_initial_current_t::to_string()
   s << " position=" << util::position_type_string( position );
   return s.str();
 }
-// player_t::~player_t ======================================================
-
-player_t::~player_t()
-{
-
-}
 
 static bool check_actors( sim_t* sim )
 {
