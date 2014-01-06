@@ -7,7 +7,7 @@
 
 namespace { // UNNAMED NAMESPACE
 
-static std::string RTV( unsigned tf, unsigned lfr, unsigned flex, unsigned normal,
+std::string RTV( unsigned tf, unsigned lfr, unsigned flex, unsigned normal,
                         unsigned elite = 0, unsigned heroic = 0, unsigned heroic_elite = 0 )
 {
   assert( ( lfr && flex && lfr <= flex ) || ( ! lfr && flex ) || ( lfr && ! flex  ) || ( ! lfr && ! flex ) );
@@ -550,14 +550,17 @@ void power_torrent( player_t* p, const std::string& enchant, const std::string& 
   }
 }
 
-static bool jade_spirit_check_func( void* d )
+struct jade_spirit_check_func
 {
-  player_t* p = static_cast<player_t*>( d );
+  jade_spirit_check_func( player_t* p ) : p(p) {}
+  bool operator()(const stat_buff_t&)
+  {
+    if ( p -> resources.max[ RESOURCE_MANA ] <= 0.0 ) return false;
 
-  if ( p -> resources.max[ RESOURCE_MANA ] <= 0.0 ) return false;
-
-  return ( p -> resources.current[ RESOURCE_MANA ] / p -> resources.max[ RESOURCE_MANA ] < 0.25 );
-}
+    return ( p -> resources.current[ RESOURCE_MANA ] / p -> resources.max[ RESOURCE_MANA ] < 0.25 );
+  }
+  player_t* p;
+};
 
 void jade_spirit( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant )
 {
@@ -572,7 +575,7 @@ void jade_spirit( player_t* p, const std::string& mh_enchant, const std::string&
                          .chance( p -> find_spell( 120033 ) -> proc_chance() )
                          .activated( false )
                          .add_stat( STAT_INTELLECT, spell -> effectN( 1 ).base_value() )
-                         .add_stat( STAT_SPIRIT,    spell -> effectN( 2 ).base_value(), jade_spirit_check_func );
+                         .add_stat( STAT_SPIRIT,    spell -> effectN( 2 ).base_value(), jade_spirit_check_func( p ) );
 
     special_effect_t effect;
     effect.name_str = "jade_spirit";
@@ -586,20 +589,25 @@ void jade_spirit( player_t* p, const std::string& mh_enchant, const std::string&
   }
 }
 
-
-static bool dancing_steel_agi_check_func( void* d )
+struct dancing_steel_agi_check_func
 {
-  player_t* p = static_cast<player_t*>( d );
+  dancing_steel_agi_check_func( player_t* p ) : p(p) {}
+  bool operator()(const stat_buff_t&)
+  {
+    return ( p -> agility() >= p -> strength() );
+  }
+  player_t* p;
+};
 
-  return ( p -> agility() >= p -> strength() );
-}
-
-static bool dancing_steel_str_check_func( void* d )
+struct dancing_steel_str_check_func
 {
-  player_t* p = static_cast<player_t*>( d );
-
-  return ( p -> agility() < p -> strength() );
-}
+  dancing_steel_str_check_func( player_t* p ) : p(p) {}
+  bool operator()(const stat_buff_t&) const
+  {
+    return ( p -> agility() < p -> strength() );
+  }
+  player_t* p;
+};
 
 void dancing_steel( player_t* p, const std::string& enchant, weapon_t* /* w */, const std::string& weapon_appendix )
 {
@@ -612,8 +620,8 @@ void dancing_steel( player_t* p, const std::string& enchant, weapon_t* /* w */, 
   stat_buff_t* buff  = stat_buff_creator_t( p, "dancing_steel" + weapon_appendix )
                        .duration( spell -> duration() )
                        .activated( false )
-                       .add_stat( STAT_STRENGTH, spell -> effectN( 1 ).base_value(), dancing_steel_str_check_func )
-                       .add_stat( STAT_AGILITY,  spell -> effectN( 1 ).base_value(), dancing_steel_agi_check_func );
+                       .add_stat( STAT_STRENGTH, spell -> effectN( 1 ).base_value(), dancing_steel_str_check_func( p ) )
+                       .add_stat( STAT_AGILITY,  spell -> effectN( 1 ).base_value(), dancing_steel_agi_check_func( p ) );
 
   special_effect_t effect;
   effect.name_str = "dancing_steel" + weapon_appendix;
@@ -627,19 +635,25 @@ void dancing_steel( player_t* p, const std::string& enchant, weapon_t* /* w */, 
   p -> callbacks.register_heal_callback  ( SCHOOL_ALL_MASK, cb );
 }
 
-static bool bloody_dancing_steel_agi_check_func( void* d )
+struct bloody_dancing_steel_agi_check_func
 {
-  player_t* p = static_cast<player_t*>( d );
+  bloody_dancing_steel_agi_check_func( player_t* p ) : p(p) {}
+  bool operator()(const stat_buff_t&)
+  {
+    return ( p -> agility() >= p -> strength() );
+  }
+  player_t* p;
+};
 
-  return ( p -> agility() >= p -> strength() );
-}
-
-static bool bloody_dancing_steel_str_check_func( void* d )
+struct bloody_dancing_steel_str_check_func
 {
-  player_t* p = static_cast<player_t*>( d );
-
-  return ( p -> agility() < p -> strength() );
-}
+  bloody_dancing_steel_str_check_func( player_t* p ) : p(p) {}
+  bool operator()(const stat_buff_t&) const
+  {
+    return ( p -> agility() < p -> strength() );
+  }
+  player_t* p;
+};
 
 void bloody_dancing_steel( player_t* p, const std::string& enchant, weapon_t* /* w */, const std::string& weapon_appendix )
 {
@@ -652,8 +666,8 @@ void bloody_dancing_steel( player_t* p, const std::string& enchant, weapon_t* /*
   stat_buff_t* buff  = stat_buff_creator_t( p, "bloody_dancing_steel" + weapon_appendix )
                        .duration( spell -> duration() )
                        .activated( false )
-                       .add_stat( STAT_STRENGTH, spell -> effectN( 1 ).base_value(), bloody_dancing_steel_str_check_func )
-                       .add_stat( STAT_AGILITY,  spell -> effectN( 1 ).base_value(), bloody_dancing_steel_agi_check_func );
+                       .add_stat( STAT_STRENGTH, spell -> effectN( 1 ).base_value(), bloody_dancing_steel_str_check_func( p ) )
+                       .add_stat( STAT_AGILITY,  spell -> effectN( 1 ).base_value(), bloody_dancing_steel_agi_check_func( p ) );
 
   special_effect_t effect;
   effect.name_str = "bloody_dancing_steel" + weapon_appendix;

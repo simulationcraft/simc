@@ -5925,40 +5925,47 @@ void death_knight_t::init_scaling()
 }
 
 // death_knight_t::init_buffs ===============================================
-
-static bool death_shroud_mastery( void* data )
+struct death_shroud_mastery
 {
-  player_t* player = static_cast< player_t* >( data );
+  death_shroud_mastery( player_t* p ) : player(p) {}
+  bool operator()(const stat_buff_t&) const
+  {
 
-  double haste = player -> composite_melee_haste_rating();
-  if ( player -> sim -> scaling -> scale_stat == STAT_HASTE_RATING )
-    haste -= player -> sim -> scaling -> scale_value * player -> composite_rating_multiplier( RATING_MELEE_HASTE );
+    double haste = player -> composite_melee_haste_rating();
+    if ( player -> sim -> scaling -> scale_stat == STAT_HASTE_RATING )
+      haste -= player -> sim -> scaling -> scale_value * player -> composite_rating_multiplier( RATING_MELEE_HASTE );
 
-  double mastery = player -> composite_mastery_rating();
-  if ( player -> sim -> scaling -> scale_stat == STAT_MASTERY_RATING )
-    mastery -= player -> sim -> scaling -> scale_value * player -> composite_rating_multiplier( RATING_MASTERY );
+    double mastery = player -> composite_mastery_rating();
+    if ( player -> sim -> scaling -> scale_stat == STAT_MASTERY_RATING )
+      mastery -= player -> sim -> scaling -> scale_value * player -> composite_rating_multiplier( RATING_MASTERY );
 
-  if ( mastery >= haste )
-    return true;
-  return false;
-}
+    if ( mastery >= haste )
+      return true;
+    return false;
+  }
+  player_t* player;
+};
 
-static bool death_shroud_haste( void* data )
+struct death_shroud_haste
 {
-  player_t* player = static_cast< player_t* >( data );
+  death_shroud_haste( player_t* p ) : player(p) {}
+  bool operator()(const stat_buff_t&) const
+  {
 
-  double haste = player -> composite_melee_haste_rating();
-  if ( player -> sim -> scaling -> scale_stat == STAT_HASTE_RATING )
-    haste -= player -> sim -> scaling -> scale_value * player -> composite_rating_multiplier( RATING_MELEE_HASTE );
+    double haste = player -> composite_melee_haste_rating();
+    if ( player -> sim -> scaling -> scale_stat == STAT_HASTE_RATING )
+      haste -= player -> sim -> scaling -> scale_value * player -> composite_rating_multiplier( RATING_MELEE_HASTE );
 
-  double mastery = player -> composite_mastery_rating();
-  if ( player -> sim -> scaling -> scale_stat == STAT_MASTERY_RATING )
-    mastery -= player -> sim -> scaling -> scale_value * player -> composite_rating_multiplier( RATING_MASTERY );
+    double mastery = player -> composite_mastery_rating();
+    if ( player -> sim -> scaling -> scale_stat == STAT_MASTERY_RATING )
+      mastery -= player -> sim -> scaling -> scale_value * player -> composite_rating_multiplier( RATING_MASTERY );
 
-  if ( haste > mastery )
-    return true;
-  return false;
-}
+    if ( haste > mastery )
+      return true;
+    return false;
+  }
+   player_t* player;
+};
 
 void death_knight_t::create_buffs()
 {
@@ -5997,8 +6004,8 @@ void death_knight_t::create_buffs()
                               .chance( sets.has_set_bonus( SET_T16_4PC_TANK ) );
   buffs.death_shroud        = stat_buff_creator_t( this, "death_shroud", sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() )
                               .chance( sets.set( SET_T16_2PC_MELEE ) -> proc_chance() )
-                              .add_stat( STAT_MASTERY_RATING, sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() -> effectN( 2 ).base_value(), death_shroud_mastery )
-                              .add_stat( STAT_HASTE_RATING, sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(), death_shroud_haste );
+                              .add_stat( STAT_MASTERY_RATING, sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() -> effectN( 2 ).base_value(), death_shroud_mastery( this ) )
+                              .add_stat( STAT_HASTE_RATING, sets.set( SET_T16_2PC_MELEE ) -> effectN( 1 ).trigger() -> effectN( 1 ).base_value(), death_shroud_haste( this ) );
   buffs.frost_presence      = buff_creator_t( this, "frost_presence", find_class_spell( "Frost Presence" ) )
                               .default_value( find_class_spell( "Frost Presence" ) -> effectN( 1 ).percent() );
   buffs.icebound_fortitude  = buff_creator_t( this, "icebound_fortitude", find_class_spell( "Icebound Fortitude" ) )

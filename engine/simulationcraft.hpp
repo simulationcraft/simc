@@ -1667,11 +1667,10 @@ private:
   {
     stat_e stat;
     double amount;
-    std::function<bool(void*)> check_func;
-    void *data;
+    std::function<bool(const stat_buff_t&)> check_func;
 
-    buff_stat_t( stat_e s, double a, std::function<bool(void*)> c = std::function<bool(void*)>(), void *d = 0 ) :
-      stat( s ), amount( a ), check_func( c ), data( d ) {}
+    buff_stat_t( stat_e s, double a, std::function<bool(const stat_buff_t&)> c = std::function<bool(const stat_buff_t&)>() ) :
+      stat( s ), amount( a ), check_func( c ) {}
   };
 
   std::vector<buff_stat_t> stats;
@@ -1683,8 +1682,8 @@ public:
   stat_buff_creator_t( sim_t* sim, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* item = 0 ) :
     base_t( sim, name, s, item ) {}
 
-  bufftype& add_stat( stat_e s, double a, std::function<bool(void*)> c = std::function<bool(void*)>(), void *d = 0 )
-  { stats.push_back( buff_stat_t( s, a, c, d ) ); return *this; }
+  bufftype& add_stat( stat_e s, double a, std::function<bool(const stat_buff_t&)> c = std::function<bool(const stat_buff_t&)>() )
+  { stats.push_back( buff_stat_t( s, a, c ) ); return *this; }
 
   operator stat_buff_t* () const;
 };
@@ -1904,11 +1903,10 @@ struct stat_buff_t : public buff_t
     stat_e stat;
     double amount;
     double current_value;
-    std::function<bool(void*)> check_func;
-    void* data;
+    std::function<bool(const stat_buff_t&)> check_func;
 
-    buff_stat_t( stat_e s, double a, std::function<bool(void*)> c = std::function<bool(void*)>(), void *d = 0 ) :
-      stat( s ), amount( a ), current_value( 0 ), check_func( c ), data( d ) {}
+    buff_stat_t( stat_e s, double a, std::function<bool(const stat_buff_t&)> c = std::function<bool(const stat_buff_t&)>() ) :
+      stat( s ), amount( a ), current_value( 0 ), check_func( c ) {}
   };
   std::vector<buff_stat_t> stats;
 

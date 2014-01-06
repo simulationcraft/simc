@@ -68,7 +68,7 @@ struct sim_signal_handler_t
 
 // need_to_save_profiles ====================================================
 
-static bool need_to_save_profiles( sim_t* sim )
+bool need_to_save_profiles( sim_t* sim )
 {
   if ( sim -> save_profiles ) return true;
 
