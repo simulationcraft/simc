@@ -6476,6 +6476,8 @@ struct pool_resource_t : public action_t
     for_next( 0 ),
     next_action( 0 ), amount( 0 )
   {
+    quiet = true;
+
     option_t options[] =
     {
       opt_timespan( "wait", wait ),
