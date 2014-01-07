@@ -1297,6 +1297,7 @@ class SpellDataGenerator(DataGenerator):
             ( 108685, 0 ),
             ( 109468, 0 ),
             ( 104225, 0 ),
+            ( 89653, 0 ),         # Drain Life heal
         ),
         
         # Monk:
