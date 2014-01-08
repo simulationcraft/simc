@@ -52,3 +52,4 @@ build.conf
 CMakeCache.txt
 *.pdb
 *.cmake
+*.un~
