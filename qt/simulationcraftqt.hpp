@@ -2204,6 +2204,19 @@ protected:
     }
     SC_RecentlyClosedTab::keyReleaseEvent( e );
   }
+  virtual void showEvent( QShowEvent* e )
+  {
+    QWidget* currentWidget = widget( currentIndex() );
+    if ( currentWidget != nullptr )
+    {
+      if ( ! currentWidget -> hasFocus() )
+      {
+        currentWidget -> setFocus();
+      }
+    }
+
+    SC_RecentlyClosedTab::showEvent( e );
+  }
 public slots:
   void TabCloseRequest( int index )
   {
