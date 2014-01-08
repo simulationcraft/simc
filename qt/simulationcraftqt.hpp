@@ -614,7 +614,10 @@ protected:
           setTextCursor( found );
         }
       }
-
+    }
+    if ( searchBox -> isVisible() )
+    {
+      searchBox -> updateGeometry();
     }
   }
 private slots:
