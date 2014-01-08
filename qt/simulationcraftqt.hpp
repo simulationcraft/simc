@@ -1375,6 +1375,14 @@ public slots:
       removeRow( index.row(), index.parent() );
     }
   }
+  void restoreAllTabs()
+  {
+    int totalRowsToRestore = rowCount();
+    for( int i = 0; i < totalRowsToRestore; i++ )
+    {
+      restoreTab( index( 0, 0 ) );
+    }
+  }
   void addTab( QWidget* widget, const QString& title, const QString& tooltip, const QIcon& icon)
   {
     QStandardItem* closedTab = new QStandardItem;
@@ -1446,6 +1454,7 @@ Q_OBJECT
   bool enableContextMenu;
   bool enableClearHistoryButton;
   bool enableClearHistoryContextMenu;
+  bool enableRestoreAllContextMenu;
 public:
   SC_RecentlyClosedTabWidget( QWidget* parent = nullptr,
       QBoxLayout::Direction grow = QBoxLayout::LeftToRight,
@@ -1463,7 +1472,8 @@ public:
     previewAnItemOnShow( true ),
     enableContextMenu( true ),
     enableClearHistoryButton( true ),
-    enableClearHistoryContextMenu( false )
+    enableClearHistoryContextMenu( true ),
+    enableRestoreAllContextMenu( true )
   {
     if ( model == nullptr )
     {
@@ -1521,18 +1531,24 @@ protected:
     {
       listView -> setContextMenuPolicy( Qt::ActionsContextMenu );
 
+      if ( enableRestoreAllContextMenu )
+      {
+        QAction* restoreAllAction = new QAction( tr( "&Restore All" ), listView );
+        connect( restoreAllAction, SIGNAL( triggered( bool ) ), this, SLOT( restoreAllTabs() ) );
+        listView -> addAction( restoreAllAction );
+      }
       QAction* removeFromHistoryAction = new QAction( tr( "&Delete" ), listView );
-      connect( removeFromHistoryAction, SIGNAL( triggered( bool ) ), this,  SLOT( removeCurrentItem( bool ) ) );
+      connect( removeFromHistoryAction, SIGNAL( triggered( bool ) ), this, SLOT( removeCurrentItem() ) );
       listView -> addAction( removeFromHistoryAction );
       if ( enableClearHistoryContextMenu )
       {
         QAction* clearHistoryAction = new QAction( tr( "&Clear History" ), listView );
-        connect( clearHistoryAction,      SIGNAL( triggered( bool ) ), this,  SLOT( clearHistoryPrompt() ) );
+        connect( clearHistoryAction, SIGNAL( triggered( bool ) ), this, SLOT( clearHistoryPrompt() ) );
         listView -> addAction( clearHistoryAction );
       }
     }
 
-    connect( listView,             SIGNAL( activated( const QModelIndex& ) ),             model, SLOT( restoreTab( const QModelIndex& ) ) );
+    connect( listView, SIGNAL( activated( const QModelIndex& ) ), model, SLOT( restoreTab( const QModelIndex& ) ) );
     connect( listView -> selectionModel(), SIGNAL( currentChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( currentChanged( const QModelIndex&, const QModelIndex& ) ) );
 
     return listViewParent;
@@ -1659,14 +1675,44 @@ public slots:
     model -> clear();
     emit( hideRequest() );
   }
-  void removeCurrentItem( bool /* checked */ )
+  void removeCurrentItem()
   {
     QItemSelectionModel* selection = listView -> selectionModel();
     QModelIndex index = selection -> currentIndex();
+    if ( ! index.isValid() && selection -> hasSelection() )
+    {
+      QModelIndexList selectedIndicies = selection -> selectedIndexes();
+      if ( ! selectedIndicies.isEmpty() )
+      {
+        index = selectedIndicies.first();
+      }
+    }
+    removePreviousTabFromPreview();
     int selectedRow = index.row();
     model -> removeRow( index.row(), selection -> currentIndex().parent() );
     index = model -> index( selectedRow, 0 );
     previewNextOrHide();
+  }
+  void clearHistoryPrompt()
+  {
+    if ( model -> rowCount() > 0 )
+    {
+      int confirm = QMessageBox::warning( nullptr, tr( "Clear history" ), tr( "Clear entire history?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+      if ( confirm == QMessageBox::Yes )
+        clearHistory();
+    }
+    else
+    {
+      emit( hideRequest() );
+    }
+  }
+  void restoreAllTabs()
+  {
+    if ( model -> rowCount() > 0 )
+    {
+      model -> restoreAllTabs();
+    }
+    emit( hideRequest() );
   }
   void currentChanged( const QModelIndex& current, const QModelIndex& previous )
   {
