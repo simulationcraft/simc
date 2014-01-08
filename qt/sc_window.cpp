@@ -475,7 +475,7 @@ void SC_MainWindow::createBestInSlotTab()
   bisTree -> setColumnCount( 1 );
   bisTree -> setHeaderLabels( headerLabels );
 
-  const int TIER_MAX = 3;
+  const int TIER_MAX = 2;
 #if SC_BETA == 1
   const char* tierNames[] = { "" }; // For the beta include ALL profiles
 #else
