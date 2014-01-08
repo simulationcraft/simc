@@ -1195,6 +1195,9 @@ public slots:
   void showContextMenu( const QPoint& pos )
   {
     int tabUnderMouse = tabAt( pos );
+    // Right clicking the tab bar while moving a tab causes this request to not be sent
+    // Which can cause a segfault if user does ctrl+tab in SC_SimulateTab
+    emit( layoutRequestEvent() );
     if ( tabUnderMouse >= 0 )
     {
       setCurrentIndex( tabUnderMouse );
