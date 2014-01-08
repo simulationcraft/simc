@@ -3148,7 +3148,7 @@ struct aspect_of_the_hawk_t : public hunter_spell_t
     if ( !p() -> active.aspect )
     {
       p() -> active.aspect = ASPECT_HAWK;
-      double value = p() -> dbc.effect_average( data().effect_id( 1 ), p() -> level );
+      double value = p() -> dbc.effect_average( data().effect_id( 1 ), p() -> level ) / 100.0;
       p() -> buffs.aspect_of_the_hawk -> trigger( 1, value );
     }
     else if ( p() -> active.aspect == ASPECT_HAWK )
@@ -4172,9 +4172,9 @@ double hunter_t::composite_attack_power_multiplier() const
 {
   double mult = player_t::composite_attack_power_multiplier();
 
-  if ( buffs.aspect_of_the_hawk -> up() )
+  if ( buffs.aspect_of_the_hawk -> check() )
   {
-    mult *= 1.0 + buffs.aspect_of_the_hawk -> data().effectN( 1 ).percent();
+    mult *= 1.0 + buffs.aspect_of_the_hawk -> value();
   }
 
   return mult;
