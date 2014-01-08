@@ -5343,6 +5343,7 @@ void death_knight_t::default_apl_blood()
     def -> add_action( this, "Blood Boil", "if=buff.crimson_scourge.react|(blood>=1&(dot.frost_fever.remains<=10|dot.blood_plague.remains<=10))" );
     def -> add_action( this, "Heart Strike", "if=blood>=1" );
     def -> add_action( this, "Rune Strike" );
+    def -> add_talent( this, "Blood Tap" );
     def -> add_action( this, "Horn of Winter" );
     def -> add_action( this, "Death Strike", "if=(unholy=2|frost=2)&incoming_damage_5s>=health.max*0.4" );
     def -> add_action( this, "Empower Rune Weapon", "if=!blood&!unholy&!frost" );
@@ -5372,6 +5373,7 @@ void death_knight_t::default_apl_blood()
     def -> add_action( this, "Blood Boil", "if=buff.crimson_scourge.react|(blood>=1&(dot.frost_fever.remains<=2|dot.blood_plague.remains<=2))" );
     def -> add_action( this, "Heart Strike", "if=(blood>1&target.health.pct<" + srpct + ")|blood>=1" );
     def -> add_action( this, "Rune Strike" );
+    def -> add_talent( this, "Blood Tap" );
     def -> add_action( this, "Horn of Winter" );
     def -> add_action( this, "Empower Rune Weapon", "if=!blood&!unholy&!frost" );
   }
