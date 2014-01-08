@@ -1606,8 +1606,14 @@ bool player_t::weapon_racial( const weapon_t* weapon ) const
     }
     case RACE_TROLL:
     {
-      if ( WEAPON_2H < weapon -> type && weapon -> type <= WEAPON_RANGED )
-        return true;
+      switch ( weapon -> type )
+      {
+        case WEAPON_GUN:
+        case WEAPON_BOW:
+        case WEAPON_CROSSBOW:
+          return true;
+        default:;
+      }
       break;
     }
     case RACE_HUMAN:
