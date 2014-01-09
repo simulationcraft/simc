@@ -3427,7 +3427,7 @@ void warrior_t::apl_precombat()
 // EXTREMELY IMPORTANT NOTE ABOUT PRIORITY LISTS
 // As of 11/11/2013, it is entirely intentional that some of the action lines do not use the  add_action( this, "Avatar", "if=enabled" ) method of action lists. 
 // Using that type of syntax does a talent check, and will remove the line from the action list automatically. However, this is annoying when attempting
-// To compare talents As the user would need to either reload the character or add the line manually, hopefully without messing it up. 
+// To compare talents, as the user would need to either reload the character or add the line manually, hopefully without messing it up. 
 // So, I'm bypassing the talent check to leave every line intact, no matter what talents are selected when importing a character.
 
 // Single Minded Fury Warrior Action Priority List ========================================
