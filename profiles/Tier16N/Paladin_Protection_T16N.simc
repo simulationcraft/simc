@@ -50,7 +50,7 @@ actions+=/execution_sentence,if=talent.execution_sentence.enabled
 actions+=/lights_hammer,if=talent.lights_hammer.enabled
 actions+=/holy_prism,if=talent.holy_prism.enabled
 actions+=/holy_wrath
-actions+=/consecration,if=target.debuff.flying.down&!ticking
+actions+=/consecration,if=target.debuff.flying.down
 actions+=/sacred_shield,if=talent.sacred_shield.enabled
 
 head=faceguard_of_winged_triumph,id=99128,gems=indomitable_primal_160exp_160haste_270sta,reforge=parry_hit
