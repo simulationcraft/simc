@@ -37,6 +37,7 @@ actions+=/avenging_wrath
 actions+=/holy_avenger,if=talent.holy_avenger.enabled
 actions+=/divine_protection
 actions+=/guardian_of_ancient_kings
+actions+=/eternal_flame,if=talent.eternal_flame.enabled&set_bonus.tier16_4pc_tank&buff.bastion_of_glory.react>5
 actions+=/eternal_flame,if=talent.eternal_flame.enabled&(buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react))
 actions+=/shield_of_the_righteous,if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3
 actions+=/judgment,if=talent.sanctified_wrath.enabled&buff.avenging_wrath.react
