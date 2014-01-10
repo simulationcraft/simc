@@ -47,7 +47,7 @@ public:
   action_t* active_opportunity_strike;
   action_t* active_second_wind;
   attack_t* active_sweeping_strikes;
-  
+
   heal_t* active_t16_2pc;
   warrior_stance active_stance;
 
