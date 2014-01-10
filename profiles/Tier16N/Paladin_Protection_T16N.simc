@@ -36,6 +36,7 @@ actions+=/avenging_wrath
 actions+=/holy_avenger,if=talent.holy_avenger.enabled
 actions+=/divine_protection
 actions+=/guardian_of_ancient_kings
+actions+=/eternal_flame,if=talent.eternal_flame.enabled&set_bonus.tier16_4pc_tank&buff.bastion_of_glory.react>5
 actions+=/eternal_flame,if=talent.eternal_flame.enabled&(buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react))
 actions+=/shield_of_the_righteous,if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3
 actions+=/judgment,if=talent.sanctified_wrath.enabled&buff.avenging_wrath.react
@@ -49,7 +50,7 @@ actions+=/execution_sentence,if=talent.execution_sentence.enabled
 actions+=/lights_hammer,if=talent.lights_hammer.enabled
 actions+=/holy_prism,if=talent.holy_prism.enabled
 actions+=/holy_wrath
-actions+=/consecration,if=target.debuff.flying.down&!ticking
+actions+=/consecration,if=target.debuff.flying.down
 actions+=/sacred_shield,if=talent.sacred_shield.enabled
 
 head=faceguard_of_winged_triumph,id=99128,gems=indomitable_primal_160exp_160haste_270sta,reforge=parry_hit
