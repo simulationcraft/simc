@@ -6091,6 +6091,15 @@ inline bool heroic( unsigned f ) { return f & RAID_TYPE_HEROIC; }
 inline bool lfr( unsigned f ) { return f & RAID_TYPE_LFR; }
 inline bool flex( unsigned f ) { return f & RAID_TYPE_FLEXIBLE; }
 inline bool elite( unsigned f ) { return f & RAID_TYPE_ELITE; }
+
+struct token_t
+{
+  std::string full;
+  std::string name;
+  double value;
+  std::string value_str;
+};
+size_t parse_tokens( std::vector<token_t>& tokens, const std::string& encoded_str );
 }
 
 // Unique Gear ==============================================================

@@ -20,46 +20,6 @@ const stat_e reforge_stats[] =
   STAT_NONE
 };
 
-struct token_t
-{
-  std::string full;
-  std::string name;
-  double value;
-  std::string value_str;
-};
-
-// parse_tokens =============================================================
-
-size_t parse_tokens( std::vector<token_t>& tokens,
-                     const std::string&    encoded_str )
-{
-  std::vector<std::string> splits = util::string_split( encoded_str, "_" );
-
-  tokens.resize( splits.size() );
-  for ( size_t i = 0; i < splits.size(); i++ )
-  {
-    token_t& t = tokens[ i ];
-    t.full = splits[ i ];
-    int index = 0;
-    while ( t.full[ index ] != '\0' &&
-            t.full[ index ] != '%'  &&
-            ! isalpha( static_cast<unsigned char>( t.full[ index ] ) ) ) index++;
-    if ( index == 0 )
-    {
-      t.name = t.full;
-      t.value = 0;
-    }
-    else
-    {
-      t.name = t.full.substr( index );
-      t.value_str = t.full.substr( 0, index );
-      t.value = atof( t.value_str.c_str() );
-    }
-  }
-
-  return splits.size();
-}
-
 // is_meta_prefix ===========================================================
 
 bool is_meta_prefix( const std::string& option_name )
@@ -1013,8 +973,8 @@ bool item_t::decode_stats()
     range::fill( parsed.data.stat_val, 0 );
     range::fill( parsed.data.stat_alloc, 0 );
 
-    std::vector<token_t> tokens;
-    size_t num_tokens = parse_tokens( tokens, option_stats_str );
+    std::vector<item_database::token_t> tokens;
+    size_t num_tokens = item_database::parse_tokens( tokens, option_stats_str );
     size_t stat = 0;
 
     for ( size_t i = 0; i < num_tokens && stat < sizeof_array( parsed.data.stat_val ); i++ )
@@ -1072,8 +1032,8 @@ bool item_t::decode_reforge()
   {
     parsed.reforged_from = parsed.reforged_to = STAT_NONE;
 
-    std::vector<token_t> tokens;
-    size_t num_tokens = parse_tokens( tokens, option_reforge_str );
+    std::vector<item_database::token_t> tokens;
+    size_t num_tokens = item_database::parse_tokens( tokens, option_reforge_str );
 
     if ( num_tokens == 0 )
       return true;
@@ -1245,14 +1205,14 @@ bool item_t::decode_gems()
   {
     parsed.gem_stats.clear();
 
-    std::vector<token_t> tokens;
-    size_t num_tokens = parse_tokens( tokens, option_gems_str );
+    std::vector<item_database::token_t> tokens;
+    size_t num_tokens = item_database::parse_tokens( tokens, option_gems_str );
 
     std::string meta_prefix, meta_suffix;
 
     for ( size_t i = 0; i < num_tokens; i++ )
     {
-      token_t& t = tokens[ i ];
+      item_database::token_t& t = tokens[ i ];
       stat_e s;
 
       if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
@@ -1497,15 +1457,15 @@ bool item_t::decode_special( special_effect_t& effect,
 {
   if ( encoding.empty() || encoding == "custom" || encoding == "none" ) return true;
 
-  std::vector<token_t> tokens;
+  std::vector<item_database::token_t> tokens;
 
-  size_t num_tokens = parse_tokens( tokens, encoding );
+  size_t num_tokens = item_database::parse_tokens( tokens, encoding );
 
   effect.encoding_str = encoding;
 
   for ( size_t i = 0; i < num_tokens; i++ )
   {
-    token_t& t = tokens[ i ];
+    item_database::token_t& t = tokens[ i ];
     stat_e s;
     school_e sc;
 
@@ -2016,14 +1976,14 @@ bool item_t::decode_weapon()
   }
   else
   {
-    std::vector<token_t> tokens;
-    size_t num_tokens = parse_tokens( tokens, option_weapon_str );
+    std::vector<item_database::token_t> tokens;
+    size_t num_tokens = item_database::parse_tokens( tokens, option_weapon_str );
 
     bool dps_set = false, dmg_set = false, min_set = false, max_set = false;
 
     for ( size_t i = 0; i < num_tokens; i++ )
     {
-      token_t& t = tokens[ i ];
+      item_database::token_t& t = tokens[ i ];
       weapon_e type;
       school_e school;
 
@@ -2136,10 +2096,10 @@ bool item_t::decode_data_source()
 
 std::vector<stat_pair_t> item_t::str_to_stat_pair( const std::string& stat_str )
 {
-  std::vector<token_t> tokens;
+  std::vector<item_database::token_t> tokens;
   std::vector<stat_pair_t> stats;
 
-  parse_tokens( tokens, stat_str );
+  item_database::parse_tokens( tokens, stat_str );
   for ( size_t i = 0; i < tokens.size(); i++ )
   {
     stat_e s = STAT_NONE;

@@ -625,3 +625,36 @@ double item_database::item_budget( const item_t* item, unsigned max_ilevel )
 
   return m_scale;
 }
+
+// item_database::parse_tokens ==============================================
+
+size_t item_database::parse_tokens( std::vector<token_t>& tokens,
+                                    const std::string&    encoded_str )
+{
+  std::vector<std::string> splits = util::string_split( encoded_str, "_" );
+
+  tokens.resize( splits.size() );
+  for ( size_t i = 0; i < splits.size(); i++ )
+  {
+    token_t& t = tokens[ i ];
+    t.full = splits[ i ];
+    int index = 0;
+    while ( t.full[ index ] != '\0' &&
+            t.full[ index ] != '%'  &&
+            ! isalpha( static_cast<unsigned char>( t.full[ index ] ) ) ) index++;
+    if ( index == 0 )
+    {
+      t.name = t.full;
+      t.value = 0;
+    }
+    else
+    {
+      t.name = t.full.substr( index );
+      t.value_str = t.full.substr( 0, index );
+      t.value = atof( t.value_str.c_str() );
+    }
+  }
+
+  return splits.size();
+}
+
