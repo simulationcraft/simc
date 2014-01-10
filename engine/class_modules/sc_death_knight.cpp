@@ -24,41 +24,31 @@ enum rune_type
 
 const char * const rune_symbols = "!bfu!!";
 
-#define RUNE_TYPE_MASK     3
-#define RUNE_SLOT_MAX      6
-
-#define RUNIC_POWER_REFUND  0.9
-
-// These macros simplify using the result of count_runes(), which
-// returns a number of the form 0x000AABBCC where AA is the number of
-// Unholy runes, BB is the number of Frost runes, and CC is the number
-// of Blood runes.
-#define GET_BLOOD_RUNE_COUNT(x)  ((x >>  0) & 0xff)
-#define GET_FROST_RUNE_COUNT(x)  ((x >>  8) & 0xff)
-#define GET_UNHOLY_RUNE_COUNT(x) ((x >> 16) & 0xff)
-#define GET_DEATH_RUNE_COUNT(x)  ((x >> 24) & 0xff)
+const int RUNE_TYPE_MASK = 3;
+const int RUNE_SLOT_MAX = 6;
+const double RUNIC_POWER_REFUND = 0.9;
 
 enum rune_state { STATE_DEPLETED, STATE_REGENERATING, STATE_FULL };
 
-struct dk_rune_t
+struct rune_t
 {
   death_knight_t* dk;
   int        type;
   rune_state state;
   double     value;   // 0.0 to 1.0, with 1.0 being full
   bool       permanent_death_rune;
-  dk_rune_t* paired_rune;
+  rune_t* paired_rune;
   int        slot_number;
 
-  dk_rune_t() : dk( nullptr ), type( RUNE_TYPE_NONE ), state( STATE_FULL ), value( 0.0 ), permanent_death_rune( false ), paired_rune( NULL ), slot_number( 0 ) {}
+  rune_t() : dk( nullptr ), type( RUNE_TYPE_NONE ), state( STATE_FULL ), value( 0.0 ), permanent_death_rune( false ), paired_rune( NULL ), slot_number( 0 ) {}
 
-  bool is_death()        { return ( type & RUNE_TYPE_DEATH ) != 0                ; }
-  bool is_blood()        { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_BLOOD  ; }
-  bool is_unholy()       { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_UNHOLY ; }
-  bool is_frost()        { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_FROST  ; }
-  bool is_ready()        { return state == STATE_FULL                            ; }
-  bool is_depleted()     { return state == STATE_DEPLETED                        ; }
-  int  get_type()        { return type & RUNE_TYPE_MASK                          ; }
+  bool is_death() const        { return ( type & RUNE_TYPE_DEATH ) != 0                ; }
+  bool is_blood() const        { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_BLOOD  ; }
+  bool is_unholy() const       { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_UNHOLY ; }
+  bool is_frost() const        { return ( type & RUNE_TYPE_MASK  ) == RUNE_TYPE_FROST  ; }
+  bool is_ready() const        { return state == STATE_FULL                            ; }
+  bool is_depleted() const     { return state == STATE_DEPLETED                        ; }
+  int  get_type() const        { return type & RUNE_TYPE_MASK                          ; }
 
   void regen_rune( death_knight_t* p, timespan_t periodicity, bool rc = false );
 
@@ -92,6 +82,36 @@ struct dk_rune_t
     if ( permanent_death_rune )
     {
       type |= RUNE_TYPE_DEATH;
+    }
+  }
+};
+
+struct runes_t
+{
+  std::array<rune_t, RUNE_SLOT_MAX> slot;
+  runes_t( death_knight_t* p ) :
+    slot()
+  {
+    // 6 runes, paired blood, frost and unholy
+    slot[0].type = slot[1].type = RUNE_TYPE_BLOOD;
+    slot[2].type = slot[3].type = RUNE_TYPE_FROST;
+    slot[4].type = slot[5].type = RUNE_TYPE_UNHOLY;
+    // each rune pair is paired with each other
+    slot[0].paired_rune = &slot[ 1 ]; slot[ 1 ].paired_rune = &slot[ 0 ];
+    slot[2].paired_rune = &slot[ 3 ]; slot[ 3 ].paired_rune = &slot[ 2 ];
+    slot[4].paired_rune = &slot[ 5 ]; slot[ 5 ].paired_rune = &slot[ 4 ];
+    // give each rune a slot number
+    for ( size_t i = 0; i < slot.size(); ++i )
+    {
+      slot[ i ].slot_number = i;
+      slot[ i ].dk = p;
+    }
+  }
+  void reset()
+  {
+    for ( size_t i = 0; i < slot.size(); ++i )
+    {
+      slot[ i ].reset();
     }
   }
 };
@@ -347,25 +367,7 @@ public:
   real_ppm_t t15_2pc_melee;
 
   // Runes
-  struct runes_t
-  {
-    std::array<dk_rune_t, RUNE_SLOT_MAX> slot;
-
-    runes_t()
-    {
-      // 6 runes, paired blood, frost and unholy
-      slot[0].type = slot[1].type = RUNE_TYPE_BLOOD;
-      slot[2].type = slot[3].type = RUNE_TYPE_FROST;
-      slot[4].type = slot[5].type = RUNE_TYPE_UNHOLY;
-      // each rune pair is paired with each other
-      slot[0].paired_rune = &slot[ 1 ]; slot[ 1 ].paired_rune = &slot[ 0 ];
-      slot[2].paired_rune = &slot[ 3 ]; slot[ 3 ].paired_rune = &slot[ 2 ];
-      slot[4].paired_rune = &slot[ 5 ]; slot[ 5 ].paired_rune = &slot[ 4 ];
-      // give each rune a slot number
-      for ( size_t i = 0; i < slot.size(); ++i ) { slot[ i ].slot_number = static_cast<int>( i ); }
-    }
-    void reset() { for ( size_t i = 0; i < slot.size(); ++i ) slot[ i ].reset(); }
-  } _runes;
+  runes_t _runes;
 
   death_knight_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, DEATH_KNIGHT, name, r ),
@@ -384,15 +386,13 @@ public:
     pets( pets_t() ),
     procs( procs_t() ),
     t15_2pc_melee( *this ),
-    _runes( runes_t() )
+    _runes( this )
   {
     range::fill( pets.army_ghoul, nullptr );
     base.distance = 0;
 
     cooldown.bone_shield_icd = get_cooldown( "bone_shield_icd" );
     cooldown.bone_shield_icd -> duration = timespan_t::from_seconds( 2.0 );
-    for ( size_t i = 0; i < _runes.slot.size(); i++ )
-      _runes.slot[ i ].dk = this;
   }
 
   // Character Definition
@@ -437,9 +437,9 @@ public:
   int       runes_count( rune_type rt, bool include_death, int position );
   double    runes_cooldown_any( rune_type rt, bool include_death, int position );
   double    runes_cooldown_all( rune_type rt, bool include_death, int position );
-  double    runes_cooldown_time( dk_rune_t* r );
+  double    runes_cooldown_time( rune_t* r );
   bool      runes_depleted( rune_type rt, int position );
-
+  void      trigger_runic_corruption();
   void      default_apl_blood();
 
   target_specific_t<death_knight_td_t*> target_data;
@@ -472,7 +472,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* d
   debuffs_frost_vulnerability = buff_creator_t( *this, "frost_vulnerability", death_knight -> find_spell( 51714 ) );
 }
 
-inline void dk_rune_t::fill_rune()
+inline void rune_t::fill_rune()
 {
   if ( state != STATE_FULL )
   {
@@ -491,25 +491,10 @@ inline void dk_rune_t::fill_rune()
 // Local Utility Functions
 // ==========================================================================
 
-static void extract_rune_cost( const spell_data_t* spell, int* cost_blood, int* cost_frost, int* cost_unholy, int* cost_death )
-{
-  // Rune costs appear to be in binary: 0a0b0c0d where 'd' is whether the ability
-  // costs a blood rune, 'c' is whether it costs an unholy rune, 'b'
-  // is whether it costs a frost rune, and 'a' is whether it costs a  death
-  // rune
-
-  if ( ! spell -> ok() ) return;
-
-  uint32_t rune_cost = spell -> rune_cost();
-  *cost_blood  =          rune_cost & 0x1;
-  *cost_unholy = ( rune_cost >> 2 ) & 0x1;
-  *cost_frost  = ( rune_cost >> 4 ) & 0x1;
-  *cost_death  = ( rune_cost >> 6 ) & 0x1;
-}
 
 // Log rune status ==========================================================
 
-static void log_rune_status( death_knight_t* p )
+static void log_rune_status( const death_knight_t* p )
 {
   std::string rune_str;
   std::string runeval_str;
@@ -532,14 +517,14 @@ static void log_rune_status( death_knight_t* p )
 
 // Count Death Runes ========================================================
 
-static int count_death_runes( death_knight_t* p, bool inactive )
+static int count_death_runes( const death_knight_t* p, bool inactive )
 {
   // Getting death rune count is a bit more complicated as it depends
   // on talents which runetype can be converted to death runes
   int count = 0;
   for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
   {
-    dk_rune_t& r = p -> _runes.slot[ i ];
+    const rune_t& r = p -> _runes.slot[ i ];
     if ( ( inactive || r.is_ready() ) && r.is_death() )
       ++count;
   }
@@ -548,7 +533,7 @@ static int count_death_runes( death_knight_t* p, bool inactive )
 
 // Consume Runes ============================================================
 
-static void consume_runes( death_knight_t* player, const bool use[RUNE_SLOT_MAX], bool convert_runes = false )
+static void consume_runes( death_knight_t* player, const std::array<bool,RUNE_SLOT_MAX>& use, bool convert_runes = false )
 {
   if ( player -> sim -> log )
   {
@@ -577,9 +562,9 @@ static void consume_runes( death_knight_t* player, const bool use[RUNE_SLOT_MAX]
 
 // Group Runes ==============================================================
 
-static int use_rune( death_knight_t* p, rune_type rt, bool use[ RUNE_SLOT_MAX ] )
+static int use_rune( const death_knight_t* p, rune_type rt, const std::array<bool,RUNE_SLOT_MAX>& use )
 {
-  dk_rune_t* r = 0;
+  const rune_t* r = 0;
   if ( rt == RUNE_TYPE_BLOOD )
     r = &( p -> _runes.slot[ 0 ] );
   else if ( rt == RUNE_TYPE_FROST )
@@ -637,11 +622,11 @@ static int use_rune( death_knight_t* p, rune_type rt, bool use[ RUNE_SLOT_MAX ] 
   return -1;
 }
 
-static bool group_runes ( death_knight_t* player, int blood, int frost, int unholy, int death, bool group[ RUNE_SLOT_MAX ] )
+static bool group_runes ( const death_knight_t* player, int blood, int frost, int unholy, int death, std::array<bool,RUNE_SLOT_MAX>& group )
 {
   assert( blood < 2 && frost < 2 && unholy < 2 && death < 2 );
 
-  bool use[ RUNE_SLOT_MAX ] = { false };
+  std::array<bool,RUNE_SLOT_MAX> use = { false };
   int use_slot = -1;
 
   if ( blood )
@@ -769,7 +754,7 @@ static int random_depleted_rune( death_knight_t* p )
   return -1;
 }
 
-void dk_rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
+void rune_t::regen_rune( death_knight_t* p, timespan_t periodicity, bool rc )
 {
   // If the other rune is already regening, we don't
   // but if both are full we still continue on to record resource gain overflow
@@ -2008,7 +1993,7 @@ struct death_knight_action_t : public Base
   int    cost_unholy;
   int    cost_death;
   double convert_runes;
-  bool   use[RUNE_SLOT_MAX];
+  std::array<bool,RUNE_SLOT_MAX> use;
   gain_t* rp_gains;
 
   typedef Base action_base_t;
@@ -2020,13 +2005,13 @@ struct death_knight_action_t : public Base
     cost_blood( 0 ), cost_frost( 0 ), cost_unholy( 0 ), cost_death( 0 ),
     convert_runes( 0 )
   {
-    for ( int i = 0; i < RUNE_SLOT_MAX; ++i ) use[i] = false;
+    range::fill( use, false );
 
     action_base_t::may_crit   = true;
     action_base_t::may_glance = false;
 
     rp_gains = action_base_t::player -> get_gain( "rp_" + action_base_t::name_str );
-    extract_rune_cost( s, &cost_blood, &cost_frost, &cost_unholy, &cost_death );
+    extract_rune_cost( s );
   }
 
   death_knight_t* p() const { return static_cast< death_knight_t* >( action_base_t::player ); }
@@ -2036,6 +2021,45 @@ struct death_knight_action_t : public Base
 
   death_knight_td_t* find_td( player_t* t ) const
   { return p() -> find_target_data( t ); }
+
+  void trigger_t16_2pc_tank()
+  {
+    death_knight_t* p = this -> p();
+    if ( ! p -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
+      return;
+
+    p -> t16_tank_2pc_driver++;
+
+    if ( p -> t16_tank_2pc_driver == p -> sets.set( SET_T16_2PC_TANK ) -> effectN( 1 ).base_value() )
+    {
+      p -> buffs.bone_wall -> trigger();
+      p -> t16_tank_2pc_driver = 0;
+    }
+  }
+
+  void trigger_t16_4pc_melee( action_state_t* s )
+  {
+    death_knight_t* p = this -> p();
+    if ( ! p -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
+      return;
+
+    if ( ! this -> special || ! this -> harmful || this -> proc )
+      return;
+
+    if ( ! this -> result_is_hit( s -> result ) )
+      return;
+
+    if ( s -> result_amount <= 0 )
+      return;
+
+    if ( ! p -> buffs.pillar_of_frost -> check() )
+      return;
+
+    p -> active_spells.frozen_power -> target = s -> target;
+    p -> active_spells.frozen_power -> schedule_execute();
+  }
+
+// Virtual Overrides
 
   virtual void reset()
   {
@@ -2079,6 +2103,22 @@ struct death_knight_action_t : public Base
 
     return m;
   }
+private:
+  void extract_rune_cost( const spell_data_t* spell )
+  {
+    // Rune costs appear to be in binary: 0a0b0c0d where 'd' is whether the ability
+    // costs a blood rune, 'c' is whether it costs an unholy rune, 'b'
+    // is whether it costs a frost rune, and 'a' is whether it costs a  death
+    // rune
+
+    if ( ! spell -> ok() ) return;
+
+    uint32_t rune_cost = spell -> rune_cost();
+    cost_blood  =          rune_cost & 0x1;
+    cost_unholy = ( rune_cost >> 2 ) & 0x1;
+    cost_frost  = ( rune_cost >> 4 ) & 0x1;
+    cost_death  = ( rune_cost >> 6 ) & 0x1;
+  }
 };
 
 // ==========================================================================
@@ -2097,6 +2137,55 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
   {
     may_crit   = true;
     may_glance = false;
+  }
+
+  void trigger_t15_2pc_melee()
+  {
+    death_knight_t* p = this -> p();
+
+    if ( ! p -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
+      return;
+
+    if ( ( p -> t15_2pc_melee.trigger( *this ) ) )
+    {
+      p -> procs.t15_2pc_melee -> occur();
+      size_t i;
+
+      for ( i = 0; i < p -> pets.fallen_zandalari.size(); i++ )
+      {
+        if ( ! p -> pets.fallen_zandalari[ i ] -> is_sleeping() )
+          continue;
+
+        p -> pets.fallen_zandalari[ i ] -> summon( timespan_t::from_seconds( 15 ) );
+        break;
+      }
+
+      assert( i < p -> pets.fallen_zandalari.size() );
+    }
+  }
+
+  void trigger_bloodworms()
+  {
+    death_knight_t* p = this -> p();
+
+    if ( p -> specialization() != DEATH_KNIGHT_BLOOD )
+      return;
+
+    if ( p -> rng().roll( p -> spec.blood_parasite -> proc_chance() ) )
+    {
+      p -> procs.blood_parasite -> occur();
+
+      size_t i;
+      for ( i = 0; i < p -> pets.bloodworms.size(); i++ )
+      {
+        if ( ! p -> pets.bloodworms[ i ] -> is_sleeping() )
+          continue;
+
+        p -> pets.bloodworms[ i ] -> summon( p -> spell.blood_parasite -> duration() );
+        break;
+      }
+      assert( i < p -> pets.bloodworms.size() && "Could not find any non-sleeping bloodworm." );
+    }
   }
 
   virtual void   consume_resource();
@@ -2193,109 +2282,6 @@ struct death_knight_heal_t : public death_knight_action_t<heal_t>
 // Triggers
 // ==========================================================================
 
-static void trigger_t16_2pc_tank( action_state_t* s )
-{
-  if ( ! s -> action -> player -> sets.has_set_bonus( SET_T16_2PC_TANK ) )
-    return;
-
-  death_knight_t* p = debug_cast< death_knight_t* >( s -> action -> player );
-
-  p -> t16_tank_2pc_driver++;
-
-  if ( p -> t16_tank_2pc_driver == p -> sets.set( SET_T16_2PC_TANK ) -> effectN( 1 ).base_value() )
-  {
-    p -> buffs.bone_wall -> trigger();
-    p -> t16_tank_2pc_driver = 0;
-  }
-}
-
-static void trigger_t16_4pc_melee( action_state_t* s )
-{
-  if ( ! s -> action -> player -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
-    return;
-
-  if ( ! s -> action -> special || ! s -> action -> harmful || s -> action -> proc )
-    return;
-
-  if ( ! s -> action -> result_is_hit( s -> result ) )
-    return;
-
-  if ( s -> result_amount <= 0 )
-    return;
-
-  death_knight_t* p = debug_cast< death_knight_t* >( s -> action -> player );
-
-  if ( ! p -> buffs.pillar_of_frost -> up() )
-    return;
-
-  p -> active_spells.frozen_power -> target = s -> target;
-  p -> active_spells.frozen_power -> schedule_execute();
-}
-
-static void trigger_t15_2pc_melee( death_knight_melee_attack_t* attack )
-{
-  if ( ! attack -> player -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
-    return;
-
-  death_knight_t* p = debug_cast< death_knight_t* >( attack -> player );
-
-  if ( ( p -> t15_2pc_melee.trigger( *attack ) ) )
-  {
-    p -> procs.t15_2pc_melee -> occur();
-    size_t i;
-
-    for ( i = 0; i < p -> pets.fallen_zandalari.size(); i++ )
-    {
-      if ( ! p -> pets.fallen_zandalari[ i ] -> is_sleeping() )
-        continue;
-
-      p -> pets.fallen_zandalari[ i ] -> summon( timespan_t::from_seconds( 15 ) );
-      break;
-    }
-
-    assert( i < p -> pets.fallen_zandalari.size() );
-  }
-}
-
-static void trigger_bloodworms( death_knight_melee_attack_t* attack )
-{
-  if ( attack -> player -> specialization() != DEATH_KNIGHT_BLOOD )
-    return;
-
-  death_knight_t* p = debug_cast< death_knight_t* >( attack -> player );
-
-  if ( p -> rng().roll( p -> spec.blood_parasite -> proc_chance() ) )
-  {
-    p -> procs.blood_parasite -> occur();
-    size_t i;
-
-    for ( i = 0; i < p -> pets.bloodworms.size(); i++ )
-    {
-      if ( ! p -> pets.bloodworms[ i ] -> is_sleeping() )
-        continue;
-
-      p -> pets.bloodworms[ i ] -> summon( p -> spell.blood_parasite -> duration() );
-      break;
-    }
-
-    assert( i < p -> pets.bloodworms.size() );
-  }
-}
-
-static void trigger_runic_corruption( death_knight_t* p )
-{
-  if ( ! p -> rng().roll( p -> talent.runic_corruption -> proc_chance() ) )
-    return;
-
-  timespan_t duration = timespan_t::from_seconds( 3.0 * p -> cache.attack_haste() );
-  if ( p -> buffs.runic_corruption -> check() == 0 )
-    p -> buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
-  else
-    p -> buffs.runic_corruption -> extend_duration( p, duration );
-
-  p -> buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), p -> sets.set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
-}
-
 // ==========================================================================
 // Death Knight Attack Methods
 // ==========================================================================
@@ -2318,7 +2304,7 @@ void death_knight_melee_attack_t::execute()
 
   if ( ! proc && result_is_hit( execute_state -> result ) )
   {
-    trigger_bloodworms( this );
+    trigger_bloodworms();
     if ( dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) )
     {
       p() -> runeforge.rune_of_cinderglacier -> decrement();
@@ -2331,7 +2317,7 @@ void death_knight_melee_attack_t::execute()
   if ( result_is_hit( execute_state -> result ) && cast_td( execute_state -> target ) -> dots_blood_plague -> ticking )
     p() -> buffs.crimson_scourge -> trigger();
 
-  trigger_t15_2pc_melee( this );
+  trigger_t15_2pc_melee();
 }
 
 // death_knight_melee_attack_t::impact() ====================================
@@ -2709,7 +2695,7 @@ struct blood_boil_t : public death_knight_spell_t
     }
 
     if ( result_is_hit( s -> result ) )
-      trigger_t16_2pc_tank( s );
+      trigger_t16_2pc_tank();
   }
 
   virtual bool ready()
@@ -2906,7 +2892,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
       p() -> pets.dancing_rune_weapon -> drw_soul_reaper -> execute();
 
     if ( result_is_hit( execute_state -> result ) )
-      trigger_t16_2pc_tank( execute_state );
+      trigger_t16_2pc_tank();
   }
 
   void tick( dot_t* dot )
@@ -2990,7 +2976,7 @@ struct blood_tap_t : public death_knight_spell_t
 
     if ( sim -> debug ) log_rune_status( p() );
 
-    dk_rune_t* regen_rune = &( p() -> _runes.slot[ selected_rune ] );
+    rune_t* regen_rune = &( p() -> _runes.slot[ selected_rune ] );
 
     regen_rune -> fill_rune();
     regen_rune -> type |= RUNE_TYPE_DEATH;
@@ -3018,15 +3004,15 @@ struct blood_tap_t : public death_knight_spell_t
 
     bool rd = death_knight_spell_t::ready();
 
-    dk_rune_t& b = p() -> _runes.slot[ 0 ];
+    rune_t& b = p() -> _runes.slot[ 0 ];
     if ( b.is_depleted() || b.paired_rune -> is_depleted() )
       return rd;
 
-    dk_rune_t& f = p() -> _runes.slot[ 2 ];
+    rune_t& f = p() -> _runes.slot[ 2 ];
     if ( f.is_depleted() || f.paired_rune -> is_depleted() )
       return rd;
 
-    dk_rune_t& u = p() -> _runes.slot[ 4 ];
+    rune_t& u = p() -> _runes.slot[ 4 ];
     if ( u.is_depleted() || u.paired_rune -> is_depleted() )
       return rd;
 
@@ -3247,12 +3233,12 @@ struct death_coil_t : public death_knight_spell_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      trigger_runic_corruption( p() );
+      p() -> trigger_runic_corruption();
 
       if ( p() -> sets.has_set_bonus( SET_T16_4PC_MELEE ) && p() -> buffs.dark_transformation -> check() )
         p() -> buffs.dark_transformation -> extend_duration( p(), timespan_t::from_millis( p() -> sets.set( SET_T16_4PC_MELEE ) -> effectN( 1 ).base_value() ) );
 
-      trigger_t16_2pc_tank( s );
+      trigger_t16_2pc_tank();
     }
   }
 };
@@ -3380,7 +3366,7 @@ struct death_strike_t : public death_knight_melee_attack_t
     trigger_blood_shield();
 
     if ( result_is_hit( execute_state -> result ) )
-      trigger_t16_2pc_tank( execute_state );
+      trigger_t16_2pc_tank();
 
     p() -> buffs.scent_of_blood -> expire();
     p() -> buffs.deathbringer -> decrement();
@@ -3418,7 +3404,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     double erw_over = 0.0;
     for ( int i = 0; i < RUNE_SLOT_MAX; ++i )
     {
-      dk_rune_t& r = p() -> _runes.slot[ i ];
+      rune_t& r = p() -> _runes.slot[ i ];
       erw_gain += 1 - r.value;
       erw_over += r.value;
       r.fill_rune();
@@ -3570,7 +3556,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      trigger_runic_corruption( p() );
+      p() -> trigger_runic_corruption();
     }
   }
 
@@ -3608,7 +3594,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
       if ( p() -> buffs.dancing_rune_weapon -> check() )
         p() -> pets.dancing_rune_weapon -> drw_heart_strike -> execute();
 
-      trigger_t16_2pc_tank( execute_state );
+      trigger_t16_2pc_tank();
     }
   }
 
@@ -4328,7 +4314,7 @@ struct rune_strike_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::execute();
 
     if ( result_is_hit( execute_state -> result ) )
-      trigger_t16_2pc_tank( execute_state );
+      trigger_t16_2pc_tank();
   }
 
   virtual void impact( action_state_t* s )
@@ -4339,7 +4325,7 @@ struct rune_strike_t : public death_knight_melee_attack_t
     {
       p() -> trigger_runic_empowerment();
       p() -> buffs.blood_charge -> trigger( 2 );
-      trigger_runic_corruption( p() );
+      p() -> trigger_runic_corruption();
     }
   }
 };
@@ -4520,7 +4506,7 @@ struct plague_leech_t : public death_knight_spell_t
       if ( selected_rune == -1 )
         return;
 
-      dk_rune_t* regen_rune = &( p() -> _runes.slot[ selected_rune ] );
+      rune_t* regen_rune = &( p() -> _runes.slot[ selected_rune ] );
 
       regen_rune -> fill_rune();
       regen_rune -> type |= RUNE_TYPE_DEATH;
@@ -4542,15 +4528,15 @@ struct plague_leech_t : public death_knight_spell_t
 
     bool rd = death_knight_spell_t::ready();
 
-    dk_rune_t& b = p() -> _runes.slot[ 0 ];
+    rune_t& b = p() -> _runes.slot[ 0 ];
     if ( b.is_depleted() || b.paired_rune -> is_depleted() )
       return rd;
 
-    dk_rune_t& f = p() -> _runes.slot[ 2 ];
+    rune_t& f = p() -> _runes.slot[ 2 ];
     if ( f.is_depleted() || f.paired_rune -> is_depleted() )
       return rd;
 
-    dk_rune_t& u = p() -> _runes.slot[ 4 ];
+    rune_t& u = p() -> _runes.slot[ 4 ];
     if ( u.is_depleted() || u.paired_rune -> is_depleted() )
       return rd;
 
@@ -4917,7 +4903,7 @@ action_t* death_knight_t::create_action( const std::string& name, const std::str
 
 // death_knight_t::create_expression ========================================
 
-static void parse_rune_type( const std::string& rune_str, bool& include_death, rune_type& type )
+void parse_rune_type( const std::string& rune_str, bool& include_death, rune_type& type )
 {
   if ( util::str_compare_ci( rune_str, "blood" ) )
     type = RUNE_TYPE_BLOOD;
@@ -4930,6 +4916,20 @@ static void parse_rune_type( const std::string& rune_str, bool& include_death, r
 
   if ( rune_str[ 0 ] == 'B' || rune_str[ 0 ] == 'F' || rune_str[ 0 ] == 'U' )
     include_death = true;
+}
+
+void death_knight_t::trigger_runic_corruption()
+{
+  if ( ! rng().roll( talent.runic_corruption -> proc_chance() ) )
+    return;
+
+  timespan_t duration = timespan_t::from_seconds( 3.0 * cache.attack_haste() );
+  if ( buffs.runic_corruption -> check() == 0 )
+    buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+  else
+    buffs.runic_corruption -> extend_duration( this, duration );
+
+  buffs.tier13_4pc_melee -> trigger( 1, buff_t::DEFAULT_VALUE(), sets.set( SET_T13_4PC_MELEE ) -> effectN( 2 ).percent() );
 }
 
 expr_t* death_knight_t::create_expression( action_t* a, const std::string& name_str )
@@ -6549,7 +6549,7 @@ void death_knight_t::trigger_runic_empowerment()
   if ( num_depleted > 0 )
   {
     int rune_to_regen = depleted_runes[ ( int ) ( player_t::rng().real() * num_depleted * 0.9999 ) ];
-    dk_rune_t* regen_rune = &_runes.slot[rune_to_regen];
+    rune_t* regen_rune = &_runes.slot[rune_to_regen];
     regen_rune -> fill_rune();
     if      ( regen_rune -> is_blood()  ) gains.runic_empowerment_blood  -> add ( RESOURCE_RUNE_BLOOD, 1, 0 );
     else if ( regen_rune -> is_unholy() ) gains.runic_empowerment_unholy -> add ( RESOURCE_RUNE_UNHOLY, 1, 0 );
@@ -6579,7 +6579,7 @@ int death_knight_t::runes_count( rune_type rt, bool include_death, int position 
   // positional checks first
   if ( position > 0 && ( rt == RUNE_TYPE_BLOOD || rt == RUNE_TYPE_FROST || rt == RUNE_TYPE_UNHOLY ) )
   {
-    dk_rune_t* r = &_runes.slot[( ( rt - 1 ) * 2 ) + ( position - 1 ) ];
+    rune_t* r = &_runes.slot[( ( rt - 1 ) * 2 ) + ( position - 1 ) ];
     if ( r -> is_ready() )
       result = 1;
   }
@@ -6588,7 +6588,7 @@ int death_knight_t::runes_count( rune_type rt, bool include_death, int position 
     int rpc = 0;
     for ( int i = 0; i < RUNE_SLOT_MAX; i++ )
     {
-      dk_rune_t* r = &_runes.slot[ i ];
+      rune_t* r = &_runes.slot[ i ];
       // query a specific position death rune.
       if ( position != 0 && rt == RUNE_TYPE_DEATH && r -> is_death() )
       {
@@ -6614,11 +6614,11 @@ int death_knight_t::runes_count( rune_type rt, bool include_death, int position 
 
 double death_knight_t::runes_cooldown_any( rune_type rt, bool include_death, int position )
 {
-  dk_rune_t* rune = 0;
+  rune_t* rune = 0;
   int rpc = 0;
   for ( int i = 0; i < RUNE_SLOT_MAX; i++ )
   {
-    dk_rune_t* r = &_runes.slot[i];
+    rune_t* r = &_runes.slot[i];
     if ( position == 0 && include_death && r -> is_death() && r -> is_ready() )
       return 0;
     if ( position == 0 && r -> get_type() == rt && r -> is_ready() )
@@ -6659,7 +6659,7 @@ double death_knight_t::runes_cooldown_all( rune_type rt, bool include_death, int
   for ( int i = 0; i < RUNE_SLOT_MAX; i += 2 )
   {
     double total = 0;
-    dk_rune_t* r = &_runes.slot[i];
+    rune_t* r = &_runes.slot[i];
     if ( ( ( rt == RUNE_TYPE_DEATH && r -> is_death() ) || r -> get_type() == rt ) && !r -> is_ready() )
     {
       total += this->runes_cooldown_time( r );
@@ -6677,7 +6677,7 @@ double death_knight_t::runes_cooldown_all( rune_type rt, bool include_death, int
 
 // death_knight_t::runes_cooldown_time ======================================
 
-double death_knight_t::runes_cooldown_time( dk_rune_t* rune )
+double death_knight_t::runes_cooldown_time( rune_t* rune )
 {
   double result_num;
 
@@ -6692,12 +6692,12 @@ double death_knight_t::runes_cooldown_time( dk_rune_t* rune )
 
 bool death_knight_t::runes_depleted( rune_type rt, int position )
 {
-  dk_rune_t* rune = 0;
+  rune_t* rune = 0;
   int rpc = 0;
   // iterate, to allow finding death rune slots as well
   for ( int i = 0; i < RUNE_SLOT_MAX; i++ )
   {
-    dk_rune_t* r = &_runes.slot[i];
+    rune_t* r = &_runes.slot[i];
     if ( r -> get_type() == rt && ++rpc == position )
     {
       rune = r;

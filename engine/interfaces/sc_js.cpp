@@ -246,14 +246,13 @@ js::js_node_t split_path( js::js_node_t         node,
 {
   std::vector<std::string> splits = util::string_split( path, "/" );
 
-
   for ( size_t i = 0; i < splits.size(); i++ )
   {
     node = js::get_child( node, splits[ i ] );
     if ( ! node ) return js::js_node_t();
   }
 
-  return js::js_node_t( node );
+  return node;
 }
 
 } // unnamed
