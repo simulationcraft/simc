@@ -1185,6 +1185,7 @@ class SpellDataGenerator(DataGenerator):
             ( 114871, 0, False ),
             ( 65148, 0, False ),    # Sacred Shield absorb tick
             ( 136494, 0, False ),   # World of Glory false positive for activated
+            ( 113075, 0, False ),   # Barkskin (from Symbiosis)
         ),  
         
         # Hunter:

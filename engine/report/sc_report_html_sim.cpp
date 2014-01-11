@@ -4055,7 +4055,7 @@ void print_html_errors( report::sc_html_stream& os, sim_t* sim )
   }
 }
 
-void print_html_beta_warning( report::sc_html_stream& /* os */ )
+void print_html_beta_warning( report::sc_html_stream& os )
 {
 #if SC_BETA
   os << "\t\t<div id=\"notice\" class=\"section section-open\">\n"
@@ -4067,6 +4067,8 @@ void print_html_beta_warning( report::sc_html_stream& /* os */ )
 
   os << "\t\t\t</ul>\n"
      << "\t\t</div>\n\n";
+#else
+  (void)os;
 #endif
 }
 
