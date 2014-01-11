@@ -365,6 +365,9 @@ void SC_MainWindow::createCmdLine()
   connect( mainButton,    SIGNAL( clicked( bool ) ),   this, SLOT(    mainButtonClicked() ) );
   connect( cmdLine,       SIGNAL( returnPressed() ),            this, SLOT( cmdLineReturnPressed() ) );
   connect( cmdLine,       SIGNAL( textEdited( const QString& ) ), this, SLOT( cmdLineTextEdited( const QString& ) ) );
+  connect( cmdLine,       SIGNAL( switchToLeftSubTab() ), this, SLOT( switchToLeftSubTab() ) );
+  connect( cmdLine,       SIGNAL( switchToRightSubTab() ), this, SLOT( switchToRightSubTab() ) );
+  connect( cmdLine,       SIGNAL( currentlyViewedTabCloseRequest() ), this, SLOT( currentlyViewedTabCloseRequest() ) );
   cmdLineGroupBox = new QGroupBox();
   cmdLineGroupBox -> setLayout( cmdLineLayout );
 }
@@ -1563,6 +1566,66 @@ void SC_MainWindow::simulateTabRestored( QWidget*, const QString&, const QString
   mainTab -> setCurrentTab( TAB_SIMULATE );
 }
 
+void SC_MainWindow::switchToASubTab( int direction )
+{
+  QTabWidget* tabWidget = nullptr;
+  switch ( mainTab -> currentTab() )
+  {
+  case TAB_SIMULATE:
+    tabWidget = simulateTab;
+    break;
+  case TAB_RESULTS:
+    tabWidget = resultsTab;
+    break;
+  case TAB_IMPORT:
+    tabWidget = importTab;
+    break;
+  default:
+    return;
+  }
+
+  int new_index = tabWidget -> currentIndex();
+
+  if ( direction > 0 )
+  {
+  if ( tabWidget -> count() - new_index > 1 )
+    tabWidget -> setCurrentIndex( new_index + 1 );
+  }
+  else if ( direction < 0 )
+  {
+    if ( new_index > 0 )
+      tabWidget -> setCurrentIndex( new_index - 1);
+  }
+}
+
+void SC_MainWindow::switchToLeftSubTab()
+{
+  switchToASubTab( -1 );
+}
+
+void SC_MainWindow::switchToRightSubTab()
+{
+  switchToASubTab( 1 );
+}
+
+void SC_MainWindow::currentlyViewedTabCloseRequest()
+{
+  switch ( mainTab -> currentTab() )
+  {
+  case TAB_SIMULATE:
+  {
+    simulateTab -> TabCloseRequest( simulateTab -> currentIndex() );
+  }
+    break;
+  case TAB_RESULTS:
+  {
+    resultsTab -> TabCloseRequest( resultsTab -> currentIndex() );
+  }
+    break;
+  default: break;
+  }
+}
+
 // ==========================================================================
 // SimulateThread
 // ==========================================================================
@@ -1615,57 +1678,22 @@ void SimulateThread::run()
 // SC_CommandLine
 // ============================================================================
 
-void change_tab( QTabWidget* tabwidget, int key )
-{
-  int new_index = tabwidget -> currentIndex();
-
-  if ( key == Qt::Key_Up || key == Qt::Key_Right )
-  {
-  if ( tabwidget -> count() - new_index > 1 )
-    tabwidget -> setCurrentIndex( new_index + 1 );
-  }
-  else if ( key == Qt::Key_Down || key == Qt::Key_Left )
-  {
-    if ( new_index > 0 )
-      tabwidget -> setCurrentIndex( new_index - 1 );
-  }
-}
-
 void SC_CommandLine::keyPressEvent( QKeyEvent* e )
 {
   int k = e -> key();
-  if ( k == Qt::Key_Up || k == Qt::Key_Down || k == Qt::Key_Left || k == Qt::Key_Right )
+  if ( k == Qt::Key_Up ||
+       k == Qt::Key_Left )
   {
-    switch ( mainWindow -> mainTab -> currentTab() )
-    {
-    case TAB_SIMULATE:
-      change_tab( mainWindow -> simulateTab, k );
-      break;
-    case TAB_RESULTS:
-      change_tab( mainWindow -> resultsTab, k );
-      break;
-    case TAB_IMPORT:
-      change_tab( mainWindow -> importTab, k );
-      break;
-    default: break;
-    }
+    emit( switchToLeftSubTab() );
   }
-  if ( k == Qt::Key_Delete )
+  else if ( k == Qt::Key_Down ||
+            k == Qt::Key_Right )
   {
-    switch ( mainWindow -> mainTab -> currentTab() )
-    {
-    case TAB_SIMULATE:
-    {
-      mainWindow -> simulateTab -> TabCloseRequest( mainWindow -> simulateTab -> currentIndex() );
-    }
-      break;
-    case TAB_RESULTS:
-    {
-      mainWindow -> resultsTab -> TabCloseRequest( mainWindow -> resultsTab -> currentIndex() );
-    }
-      break;
-    default: break;
-    }
+    emit( switchToRightSubTab() );
+  }
+  else if ( k == Qt::Key_Delete )
+  {
+    emit( currentlyViewedTabCloseRequest() );
   }
   QLineEdit::keyPressEvent( e );
 }

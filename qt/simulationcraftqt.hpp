@@ -2452,6 +2452,10 @@ private slots:
   void bisDoubleClicked( QTreeWidgetItem* item, int col );
   void armoryRegionChanged( const QString& region );
   void simulateTabRestored( QWidget* tab, const QString& title, const QString& tooltip, const QIcon& icon );
+  void switchToASubTab( int direction );
+  void switchToLeftSubTab();
+  void switchToRightSubTab();
+  void currentlyViewedTabCloseRequest();
 
 public:
   SC_MainWindow( QWidget *parent = 0 );
@@ -2463,12 +2467,15 @@ public:
 
 class SC_CommandLine : public QLineEdit
 {
-private:
-  SC_MainWindow* mainWindow;
-
+  Q_OBJECT
+protected:
   virtual void keyPressEvent( QKeyEvent* e );
 public:
-  SC_CommandLine( SC_MainWindow* mw ) : mainWindow( mw ) {}
+  SC_CommandLine( QWidget* parent = nullptr ) : QLineEdit( parent ) { };
+signals:
+  void switchToLeftSubTab();
+  void switchToRightSubTab();
+  void currentlyViewedTabCloseRequest();
 };
 
 // ============================================================================
