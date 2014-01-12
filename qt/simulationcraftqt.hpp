@@ -1553,6 +1553,26 @@ protected:
 
     return listViewParent;
   }
+  QModelIndex getSelectionAndMakeSureIsValidIfElementsAvailable()
+  {
+    QModelIndex index;
+
+    if ( model -> rowCount() > 0 )
+    {
+      QItemSelectionModel* selection = listView -> selectionModel();
+      index = selection -> currentIndex();
+      if ( ! index.isValid() && selection -> hasSelection() )
+      {
+        QModelIndexList selectedIndicies = selection -> selectedIndexes();
+        if ( ! selectedIndicies.isEmpty() )
+        {
+          index = selectedIndicies.first();
+        }
+      }
+    }
+
+    return index;
+  }
 protected:
   void showEvent( QShowEvent* e )
   {
@@ -1594,7 +1614,7 @@ public slots:
   }
   void restoreCurrentlySelected()
   {
-    model -> restoreTab( listView -> selectionModel() -> currentIndex() );
+    model -> restoreTab( getSelectionAndMakeSureIsValidIfElementsAvailable() );
   }
   bool addIndexToPreview( const QModelIndex& index )
   {
@@ -1677,19 +1697,10 @@ public slots:
   }
   void removeCurrentItem()
   {
-    QItemSelectionModel* selection = listView -> selectionModel();
-    QModelIndex index = selection -> currentIndex();
-    if ( ! index.isValid() && selection -> hasSelection() )
-    {
-      QModelIndexList selectedIndicies = selection -> selectedIndexes();
-      if ( ! selectedIndicies.isEmpty() )
-      {
-        index = selectedIndicies.first();
-      }
-    }
+    QModelIndex index = getSelectionAndMakeSureIsValidIfElementsAvailable();
     removePreviousTabFromPreview();
     int selectedRow = index.row();
-    model -> removeRow( index.row(), selection -> currentIndex().parent() );
+    model -> removeRow( index.row() );
     index = model -> index( selectedRow, 0 );
     previewNextOrHide();
   }
