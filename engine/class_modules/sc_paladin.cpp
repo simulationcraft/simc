@@ -89,6 +89,7 @@ public:
     buff_t* ancient_power;
     buff_t* ardent_defender;
     buff_t* avenging_wrath;
+    buff_t* barkskin;
     buff_t* bastion_of_glory;
     buff_t* blessed_life;
     buff_t* daybreak;
@@ -349,18 +350,14 @@ public:
 
   target_specific_t<paladin_td_t*> target_data;
 
-  virtual paladin_td_t* get_target_data( player_t* target )
+  virtual paladin_td_t* get_target_data( player_t* target ) const
   {
     paladin_td_t*& td = target_data[ target ];
     if ( ! td )
     {
-      td = new paladin_td_t( target, this );
+      td = new paladin_td_t( target, const_cast<paladin_t*>(this) );
     }
     return td;
-  }
-  paladin_td_t* find_target_data( player_t* target ) const
-  {
-    return target_data[ target ];
   }
 };
 
@@ -470,10 +467,8 @@ public:
   const paladin_t* p() const
   { return static_cast<paladin_t*>( ab::player ); }
 
-  paladin_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
-
-  paladin_td_t* find_td( player_t* t ) const
-  { return p() -> find_target_data( t ); }
+  paladin_td_t* td( player_t* t ) const
+  { return p() -> get_target_data( t ); }
 
   virtual double cost() const
   {
@@ -882,6 +877,31 @@ struct avenging_wrath_t : public paladin_spell_t
   }
 };
 
+// Barkskin =================================================================
+
+struct barkskin_t : public paladin_spell_t
+{
+  barkskin_t( paladin_t* p, const std::string& options_str )
+    : paladin_spell_t( "barkskin", p, p -> find_spell( 113075 ) )
+  {
+    use_off_gcd = true;
+  }
+
+  virtual double cost() const
+  {    
+    // this should be 1 HP
+    return base_costs[ RESOURCE_HOLY_POWER ];
+  }
+
+  virtual void execute()
+  {
+    paladin_spell_t::execute();
+
+    // apply barkskin buff
+    p() -> buffs.barkskin -> trigger();
+  }
+};
+
 // Beacon of Light ==========================================================
 
 struct beacon_of_light_t : public paladin_heal_t
@@ -1101,10 +1121,7 @@ struct censure_t : public paladin_spell_t
     // and apply the stack size as an action multiplier
     double am = paladin_spell_t::composite_target_multiplier( t );
 
-    if ( paladin_td_t* td = find_td( t ) )
-    {
-      am *= td -> buffs.debuffs_censure -> check();
-    }
+    am *= td( t ) -> buffs.debuffs_censure -> check();
 
     return am;
   }
@@ -1512,10 +1529,7 @@ struct stay_of_execution_t : public paladin_heal_t
   {
     double m = paladin_heal_t::composite_target_multiplier( target );
 
-    if ( paladin_td_t* td = find_td( target ) )
-    {
-      m *= soe_tick_multiplier[ td -> dots.stay_of_execution -> current_tick ];
-    }
+    m *= soe_tick_multiplier[ td( target ) -> dots.stay_of_execution -> current_tick ];
 
     return m;
   }
@@ -1567,10 +1581,7 @@ struct execution_sentence_t : public paladin_spell_t
   {
     double m = paladin_spell_t::composite_target_multiplier( target );
 
-    if ( paladin_td_t* td = find_td( target ) )
-    {
-      m *= tick_multiplier[ td -> dots.execution_sentence -> current_tick ];
-    }
+    m *= tick_multiplier[ td( target ) -> dots.execution_sentence -> current_tick ];
 
     return m;
   }
@@ -2842,7 +2853,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
             break;
           case SEAL_OF_TRUTH:
             p() -> active_censure                    -> execute();
-            if ( td() -> buffs.debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
+            if ( td( target ) -> buffs.debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
             break;
           default: break;
         }
@@ -3957,6 +3968,7 @@ action_t* paladin_t::create_action( const std::string& name, const std::string& 
   if ( name == "ardent_defender"           ) return new ardent_defender_t          ( this, options_str );
   if ( name == "avengers_shield"           ) return new avengers_shield_t          ( this, options_str );
   if ( name == "avenging_wrath"            ) return new avenging_wrath_t           ( this, options_str );
+  if ( name == "barkskin"                  ) return new barkskin_t                 ( this, options_str );
   if ( name == "beacon_of_light"           ) return new beacon_of_light_t          ( this, options_str );
   if ( name == "blessing_of_kings"         ) return new blessing_of_kings_t        ( this, options_str );
   if ( name == "blessing_of_might"         ) return new blessing_of_might_t        ( this, options_str );
@@ -4328,6 +4340,7 @@ void paladin_t::create_buffs()
     buffs.avenging_wrath -> buff_duration *= 1.0 + find_talent_spell( "Sanctified Wrath" ) -> effectN( 2 ).percent();
   }
 
+  buffs.barkskin               = buff_creator_t( this, "barkskin", find_spell( 113075 ) );
   buffs.divine_protection      = new buffs::divine_protection_t( this );
   buffs.divine_shield          = buff_creator_t( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                                  .cd( timespan_t::zero() ) // Let the ability handle the CD
@@ -5150,6 +5163,14 @@ void paladin_t::target_mitigation( school_e school,
     }
     if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
       sim -> out_debug.printf( "Damage to %s after Hand of Purity is %f", s -> target -> name(), s -> result_amount );
+  }
+
+  // Barkskin
+  if ( buffs.barkskin -> up() )
+  {
+    s -> result_amount *= 1.0 + buffs.barkskin -> data().effectN( 2 ).percent();
+    if ( sim -> debug && s -> action && ! s -> target -> is_enemy() && ! s -> target -> is_add() )
+      sim -> out_debug.printf( "Damage to %s after Barkskin is %f", s -> target -> name(), s -> result_amount );
   }
 
   // Divine Protection

@@ -318,18 +318,14 @@ public:
   virtual void invalidate_cache( cache_e );
   virtual void      init_action_list();
   virtual expr_t*   create_expression( action_t* a, const std::string& name_str );
-  virtual monk_td_t* get_target_data( player_t* target )
+  virtual monk_td_t* get_target_data( player_t* target ) const
   {
     monk_td_t*& td = target_data[ target ];
     if ( ! td )
     {
-      td = new monk_td_t( target, this );
+      td = new monk_td_t( target, const_cast<monk_t*>(this) );
     }
     return td;
-  }
-  monk_td_t* find_target_data( player_t* target ) const
-  {
-    return target_data[ target ];
   }
 
   // Monk specific
@@ -568,12 +564,8 @@ public:
   const monk_t* p() const
   { return debug_cast<monk_t*>( ab::player ); }
 
-  monk_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
-
-  monk_td_t* find_td( player_t* t ) const
-  {
-    return p() -> find_target_data( t );
-  }
+  monk_td_t* td( player_t* t ) const
+  { return p() -> get_target_data( t ); }
 
   virtual bool ready()
   {
@@ -815,12 +807,10 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   {
     double m = base_t::composite_target_multiplier( t );
 
-    if ( monk_td_t* td = find_td( t ) )
+
+    if ( special && td( t ) -> buff.rising_sun_kick -> check() )
     {
-      if ( special && td -> buff.rising_sun_kick -> check() )
-      {
-        m *=  1.0 + td -> buff.rising_sun_kick -> data().effectN( 1 ).percent();
-      }
+      m *=  1.0 + td( t ) -> buff.rising_sun_kick -> data().effectN( 1 ).percent();
     }
 
     return m;
@@ -1692,12 +1682,9 @@ struct monk_spell_t : public monk_action_t<spell_t>
   {
     double m = base_t::composite_target_multiplier( t );
 
-    if ( monk_td_t* td = find_td( t ) )
+    if ( td( t ) -> buff.rising_sun_kick -> check() )
     {
-      if ( td -> buff.rising_sun_kick -> check() )
-      {
-        m *= 1.0 + td -> buff.rising_sun_kick -> data().effectN( 1 ).percent();
-      }
+      m *= 1.0 + td( t ) -> buff.rising_sun_kick -> data().effectN( 1 ).percent();
     }
 
     return m;
@@ -2630,9 +2617,10 @@ struct soothing_mist_t : public monk_heal_t
 
     player_t* t = ( execute_state ) ? execute_state -> target : target;
 
-    if ( monk_td_t* td = find_td( t ) )
-      if ( td -> dots.enveloping_mist -> ticking )
+    if ( td( t ) -> dots.enveloping_mist -> ticking )
+    {
       tm *= 1.0 + p() -> find_spell( 132120 ) -> effectN( 2 ).percent();
+    }
 
     return tm;
   }
