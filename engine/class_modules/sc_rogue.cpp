@@ -419,7 +419,7 @@ struct rogue_attack_t : public melee_attack_t
     // In the meantime, snapshot combo points always off the primary target
     // and pray that nobody makes a rogue ability that has to juggle primary
     // targets around during it's execution. Gulp.
-    cast_state( state ) -> cp = cast_td( target ) -> combo_points.count;
+    cast_state( state ) -> cp = td( target ) -> combo_points.count;
   }
 
   bool stealthed()
@@ -446,8 +446,8 @@ struct rogue_attack_t : public melee_attack_t
   const rogue_t* p() const
   { return debug_cast< rogue_t* >( player ); }
 
-  rogue_td_t* cast_td( player_t* t = 0 ) const
-  { return p() -> get_target_data( t ? t : target ); }
+  rogue_td_t* td( player_t* t ) const
+  { return p() -> get_target_data( t ); }
 
 
   virtual double cost() const;
@@ -523,7 +523,7 @@ struct rogue_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::composite_target_multiplier( target );
 
-    rogue_td_t* td = cast_td( target );
+    rogue_td_t* td = this -> td( target );
     if ( requires_combo_points )
     {
       if ( td -> dots.revealing_strike -> ticking )
@@ -647,7 +647,7 @@ static void trigger_relentless_strikes( rogue_attack_t* a )
   if ( ! a -> requires_combo_points )
     return;
 
-  rogue_td_t* td = a -> cast_td();
+  rogue_td_t* td = a -> td( a -> target );
   double chance = p -> spell.relentless_strikes -> effectN( 1 ).pp_combo_points() / 100.0;
   if ( p -> rng().roll( chance * td -> combo_points.count ) )
   {
@@ -672,7 +672,7 @@ void trigger_seal_fate( rogue_attack_t* a )
   if ( p -> cooldowns.seal_fate -> down() )
     return;
 
-  rogue_td_t* td = a -> cast_td();
+  rogue_td_t* td = a -> td( a -> target );
   td -> combo_points.add( 1, p -> spec.seal_fate -> name_cstr() );
 
   p -> cooldowns.seal_fate -> start( timespan_t::from_millis( 1 ) );
@@ -893,7 +893,7 @@ void rogue_attack_t::impact( action_state_t* state )
         if ( rng().roll( 1.0 / ( 51.0 - p() -> buffs.fof_p3 -> check() ) ) )
         {
           p() -> buffs.fof_fod -> trigger();
-          rogue_td_t* td = cast_td( state -> target );
+          rogue_td_t* td = this -> td( state -> target );
           td -> combo_points.add( 5, "legendary_daggers" );
         }
       }
@@ -903,7 +903,7 @@ void rogue_attack_t::impact( action_state_t* state )
       trigger_blade_flurry( state );
 
     // Prevent poisons from proccing it
-    if ( ! proc && cast_td( state -> target ) -> debuffs.vendetta -> up() )
+    if ( ! proc && td( state -> target ) -> debuffs.vendetta -> up() )
       p() -> buffs.toxicologist -> trigger();
   }
 }
@@ -914,7 +914,7 @@ double rogue_attack_t::target_armor( player_t* t ) const
 {
   double a = melee_attack_t::target_armor( t );
 
-  a *= 1.0 - cast_td( t ) -> debuffs.find_weakness -> current_value;
+  a *= 1.0 - td( t ) -> debuffs.find_weakness -> current_value;
 
   return a;
 }
@@ -959,7 +959,7 @@ void rogue_attack_t::consume_resource()
 
     if ( requires_combo_points )
     {
-      rogue_td_t* td = cast_td();
+      rogue_td_t* td = this -> td( target );
       combo_points_spent = td -> combo_points.count;
 
       td -> combo_points.clear( name() );
@@ -975,7 +975,7 @@ void rogue_attack_t::consume_resource()
   {
     double chance = p -> spec.ruthlessness -> effectN( 1 ).pp_combo_points() * combo_points_spent / 100.0;
     if ( p -> rng().roll( chance ) )
-      cast_td( execute_state -> target ) -> combo_points.add( p -> spell.ruthlessness_cp -> effectN( 1 ).base_value(), "ruthlessness" );
+      td( execute_state -> target ) -> combo_points.add( p -> spell.ruthlessness_cp -> effectN( 1 ).base_value(), "ruthlessness" );
   }
 }
 
@@ -983,7 +983,7 @@ void rogue_attack_t::consume_resource()
 
 void rogue_attack_t::execute()
 {
-  rogue_td_t* td = cast_td();
+  rogue_td_t* td = this -> td( target );
 
   melee_attack_t::execute();
 
@@ -1038,7 +1038,7 @@ bool rogue_attack_t::ready()
 
   if ( requires_combo_points )
   {
-    rogue_td_t* td = cast_td();
+    rogue_td_t* td = this -> td( target );
     if ( ! td -> combo_points.count )
       return false;
   }
@@ -1234,7 +1234,7 @@ struct ambush_t : public rogue_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      rogue_td_t* td = cast_td( state -> target );
+      rogue_td_t* td = this -> td( state -> target );
 
       td -> debuffs.find_weakness -> trigger();
     }
@@ -1385,7 +1385,7 @@ struct envenom_t : public rogue_attack_t
 
   virtual void execute()
   {
-    rogue_td_t* td = cast_td();
+    rogue_td_t* td = this -> td( target );
 
     timespan_t envenom_duration = p() -> buffs.envenom -> period * ( 1 + td -> combo_points.count );
 
@@ -1483,7 +1483,7 @@ struct expose_armor_t : public rogue_attack_t
       if ( ! sim -> overrides.weakened_armor )
         target -> debuffs.weakened_armor -> trigger( p() -> glyph.expose_armor -> ok() ? 3 : 1 );
 
-      rogue_td_t* td = cast_td();
+      rogue_td_t* td = this -> td( target );
       td -> combo_points.add( 1 );
     }
   };
@@ -1575,7 +1575,7 @@ struct garrote_t : public rogue_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      rogue_td_t* td = cast_td( state -> target );
+      rogue_td_t* td = this -> td( state -> target );
       td -> debuffs.find_weakness -> trigger();
     }
   }
@@ -1584,7 +1584,7 @@ struct garrote_t : public rogue_attack_t
   {
     rogue_attack_t::tick( d );
 
-    rogue_td_t* td = cast_td( d -> state -> target );
+    rogue_td_t* td = this -> td( d -> state -> target );
     if ( ! td -> dots.rupture -> ticking )
       trigger_venomous_wounds( this );
   }
@@ -1685,7 +1685,7 @@ struct killing_spree_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_target_da_multiplier( target );
 
-    rogue_td_t* td = cast_td( target );
+    rogue_td_t* td = this -> td( target );
     if ( td -> dots.killing_spree -> current_tick >= 0 )
         m *= std::pow( 1.0 + p() -> sets.set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent(),
                        td -> dots.killing_spree -> current_tick + 1 );
@@ -1857,7 +1857,7 @@ struct premeditation_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    rogue_td_t* td = cast_td( state -> target );
+    rogue_td_t* td = this -> td( state -> target );
     int add_points = data().effectN( 1 ).base_value();
 
     // In game, premeditation does not grant anticipation charges. Flagging
@@ -1886,7 +1886,7 @@ struct recuperate_t : public rogue_attack_t
 
   virtual void execute()
   {
-    rogue_td_t* td = cast_td();
+    rogue_td_t* td = this -> td( target );
     num_ticks = 2 * td -> combo_points.count;
     rogue_attack_t::execute();
     p() -> buffs.recuperate -> trigger();
@@ -1970,7 +1970,7 @@ struct rupture_t : public rogue_attack_t
 
   virtual void execute()
   {
-    num_ticks = 2 + 2 * cast_td() -> combo_points.count;
+    num_ticks = 2 + 2 * td( target ) -> combo_points.count;
     if ( p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
       num_ticks += 2;
 
@@ -2086,7 +2086,7 @@ struct sinister_strike_t : public rogue_attack_t
     {
       p() -> buffs.bandits_guile -> trigger();
 
-      rogue_td_t* td = cast_td( state -> target );
+      rogue_td_t* td = this -> td( state -> target );
       if ( td -> dots.revealing_strike -> ticking &&
           rng().roll( td -> dots.revealing_strike -> current_action -> data().proc_chance() ) )
       {
@@ -2122,7 +2122,7 @@ struct slice_and_dice_t : public rogue_attack_t
 
   virtual void execute()
   {
-    rogue_td_t* td = cast_td();
+    rogue_td_t* td = this -> td( target );
     int action_cp = td -> combo_points.count;
 
     rogue_attack_t::execute();
@@ -2281,7 +2281,7 @@ struct vendetta_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    rogue_td_t* td = cast_td( execute_state -> target );
+    rogue_td_t* td = this -> td( execute_state -> target );
 
     td -> debuffs.vendetta -> trigger();
   }
@@ -2486,7 +2486,7 @@ struct deadly_poison_t : public rogue_poison_t
 
   virtual void impact( action_state_t* state )
   {
-    bool is_up = ( cast_td( state -> target ) -> dots.deadly_poison -> ticking != 0 );
+    bool is_up = ( td( state -> target ) -> dots.deadly_poison -> ticking != 0 );
 
     rogue_poison_t::impact( state );
 
@@ -2532,7 +2532,7 @@ struct wound_poison_t : public rogue_poison_t
 
       if ( result_is_hit( state -> result ) )
       {
-        cast_td( state -> target ) -> debuffs.wound_poison -> trigger();
+        td( state -> target ) -> debuffs.wound_poison -> trigger();
 
         if ( ! sim -> overrides.mortal_wounds )
           state -> target -> debuffs.mortal_wounds -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );

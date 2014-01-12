@@ -496,8 +496,8 @@ public:
   const shaman_t* p() const
   { return debug_cast< shaman_t* >( ab::player ); }
 
-  shaman_td_t* td( player_t* t = 0 ) const
-  { return p() -> get_target_data( t ? t : ab::target ); }
+  shaman_td_t* td( player_t* t ) const
+  { return p() -> get_target_data( t ); }
 
   action_state_t* new_state()
   { return new shaman_action_state_t( this, ab::target ); }

@@ -1476,7 +1476,7 @@ public:
   { return static_cast<warlock_t*>( player ); }
 
   warlock_td_t* td( player_t* t ) const
-  { return p() -> get_target_data( t ? t : target ); }
+  { return p() -> get_target_data( t ); }
 
   bool use_havoc() const
   {

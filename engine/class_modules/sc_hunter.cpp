@@ -370,8 +370,8 @@ public:
   const hunter_t* p() const
   { return static_cast<hunter_t*>( ab::player ); }
 
-  hunter_td_t* cast_td( player_t* t = 0 )
-  { return p() -> get_target_data( t ? t : ab::target ); }
+  hunter_td_t* td( player_t* t ) const
+  { return p() -> get_target_data( t ); }
 
   virtual double cost() const
   {
@@ -900,7 +900,7 @@ public:
   hunter_t* o() const
   { return static_cast<hunter_t*>( p() -> o() ); }
 
-  hunter_main_pet_td_t* cast_td( player_t* t = 0 ) const
+  hunter_main_pet_td_t* td( player_t* t = 0 ) const
   { return p() -> get_target_data( t ? t : ab::target ); }
 };
 
@@ -1181,7 +1181,7 @@ struct lynx_rush_t : public hunter_main_pet_attack_t
   {
     if ( result_is_hit( s -> result ) )
     {
-      cast_td( s -> target ) -> debuffs_lynx_bleed -> trigger();
+      td( s -> target ) -> debuffs_lynx_bleed -> trigger();
       snapshot_state( s, DMG_OVER_TIME );
       dot_t* dot = get_dot( s -> target );
       core_event_t* ticker = dot -> tick_event;
@@ -1200,14 +1200,14 @@ struct lynx_rush_t : public hunter_main_pet_attack_t
   {
     double am = hunter_main_pet_attack_t::composite_target_ta_multiplier( t );
 
-    am *= cast_td( t -> target ) -> debuffs_lynx_bleed -> check();
+    am *= td( t -> target ) -> debuffs_lynx_bleed -> check();
 
     return am;
   }
 
   virtual void last_tick( dot_t* d )
   {
-    cast_td( d -> state -> target ) -> debuffs_lynx_bleed -> expire();
+    td( d -> state -> target ) -> debuffs_lynx_bleed -> expire();
     hunter_main_pet_attack_t::last_tick( d );
   }
 };
@@ -2332,7 +2332,7 @@ struct chimera_shot_t : public hunter_ranged_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      cast_td( s -> target ) -> dots.serpent_sting -> refresh_duration();
+      td( s -> target ) -> dots.serpent_sting -> refresh_duration();
 
       if ( s -> result == RESULT_CRIT )
         trigger_piercing_shots( s -> target, s -> result_amount );
@@ -2380,7 +2380,7 @@ struct cobra_shot_t : public hunter_ranged_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      cast_td( s -> target ) -> dots.serpent_sting -> extend_duration_seconds( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) );
+      td( s -> target ) -> dots.serpent_sting -> extend_duration_seconds( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) );
 
       double focus = focus_gain;
       p() -> resource_gain( RESOURCE_FOCUS, focus, p() -> gains.cobra_shot );

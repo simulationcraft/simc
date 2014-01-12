@@ -344,8 +344,8 @@ public:
   const warrior_t* cast() const
   { return debug_cast<warrior_t*>( ab::player ); }
 
-  warrior_td_t* cast_td( player_t* t = 0 ) const
-  { return cast() -> get_target_data( t ? t : ab::target ); }
+  warrior_td_t* cast_td( player_t* t ) const
+  { return cast() -> get_target_data( t ); }
 
   virtual bool ready()
   {
@@ -1901,7 +1901,7 @@ struct revenge_t : public warrior_attack_t
 
       if ( p -> active_stance == STANCE_DEFENSE )
       {
-        warrior_td_t* td = cast_td();
+        warrior_td_t* td = cast_td( target );
 
         p -> resource_gain( RESOURCE_RAGE, rage_gain, p -> gain.revenge );
 
@@ -2043,7 +2043,7 @@ struct shield_slam_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     warrior_t* p = cast();
-    warrior_td_t* td = cast_td();
+    warrior_td_t* td = cast_td( target );
 
     double rage_from_snb = 0;
 

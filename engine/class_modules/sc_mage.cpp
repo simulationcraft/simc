@@ -985,8 +985,8 @@ public:
   const mage_t* p() const
   { return static_cast<mage_t*>( player ); }
 
-  mage_td_t* td( player_t* t = nullptr ) const
-  { return p() -> get_target_data( t ? t : target ); }
+  mage_td_t* td( player_t* t ) const
+  { return p() -> get_target_data( t ); }
 
   virtual void parse_options( option_t*          options,
                               const std::string& options_str )

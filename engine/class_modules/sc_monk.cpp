@@ -564,7 +564,8 @@ public:
   const monk_t* p() const
   { return debug_cast<monk_t*>( ab::player ); }
 
-  monk_td_t* td( player_t* t = 0 ) const { return p() -> get_target_data( t ? t : ab::target ); }
+  monk_td_t* td( player_t* t ) const
+  { return p() -> get_target_data( t ); }
 
   virtual bool ready()
   {

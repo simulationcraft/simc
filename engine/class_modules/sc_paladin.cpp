@@ -467,8 +467,8 @@ public:
   const paladin_t* p() const
   { return static_cast<paladin_t*>( ab::player ); }
 
-  paladin_td_t* td( player_t* t = 0 ) const
-  { return p() -> get_target_data( t ? t : ab::target ); }
+  paladin_td_t* td( player_t* t ) const
+  { return p() -> get_target_data( t ); }
 
   virtual double cost() const
   {
@@ -2853,7 +2853,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
             break;
           case SEAL_OF_TRUTH:
             p() -> active_censure                    -> execute();
-            if ( td() -> buffs.debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
+            if ( td( target ) -> buffs.debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
             break;
           default: break;
         }

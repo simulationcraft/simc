@@ -1754,8 +1754,8 @@ public:
   const druid_t* p() const
   { return static_cast<druid_t*>( ab::player ); }
 
-  druid_td_t* td( player_t* t = 0 ) const
-  { return p() -> get_target_data( t ? t : ab::target ); }
+  druid_td_t* td( player_t* t ) const
+  { return p() -> get_target_data( t ); }
 
   bool trigger_omen_of_clarity()
   {
