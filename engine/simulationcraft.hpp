@@ -4716,7 +4716,7 @@ public:
   double      get_player_distance( player_t& );
   double      get_position_distance( double m = 0, double v = 0 );
   action_priority_list_t* get_action_priority_list( const std::string& name, const std::string& comment = std::string() );
-  virtual actor_pair_t* get_target_data( player_t* /* target */ )
+  virtual actor_pair_t* get_target_data( player_t* /* target */ ) const
   { return nullptr; }
 
   // Opportunity to perform any stat fixups before analysis
