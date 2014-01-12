@@ -304,19 +304,15 @@ public:
 
   target_specific_t<warrior_td_t*> target_data;
 
-  virtual warrior_td_t* get_target_data( player_t* target )
+  virtual warrior_td_t* get_target_data( player_t* target ) const
   {
     warrior_td_t*& td = target_data[ target ];
 
     if ( ! td )
     {
-      td = new warrior_td_t( target, this );
+      td = new warrior_td_t( target, const_cast<warrior_t*>(this) );
     }
     return td;
-  }
-  warrior_td_t* find_target_data( const player_t* target ) const
-  {
-    return target_data[ target ];
   }
 };
 
@@ -348,9 +344,8 @@ public:
   const warrior_t* cast() const
   { return debug_cast<warrior_t*>( ab::player ); }
 
-  warrior_td_t* cast_td( player_t* t = 0 ) { return cast() -> get_target_data( t ? t : ab::target ); }
-
-  warrior_td_t* find_td(  const player_t* t ) const { return cast() -> find_target_data( t ); }
+  warrior_td_t* cast_td( player_t* t = 0 ) const
+  { return cast() -> get_target_data( t ? t : ab::target ); }
 
   virtual bool ready()
   {
@@ -384,10 +379,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
   {
     double a = base_t::target_armor( t );
 
-    if ( warrior_td_t* td = find_td( t ) )
-    {
-      a *= 1.0 - td -> debuffs_colossus_smash -> current_value;
-    }
+    a *= 1.0 - cast_td( t ) -> debuffs_colossus_smash -> current_value;
 
     return a;
   }
@@ -2191,15 +2183,14 @@ struct slam_t : public warrior_attack_t
     add_child( extra_sweep );
   }
 
-  virtual double action_multiplier() const
+  virtual double composite_target_multiplier( player_t* t ) const
   {
-    double am = warrior_attack_t::action_multiplier();
+    double am = warrior_attack_t::composite_target_multiplier( t );
 
-    const warrior_t* p = cast();
-    warrior_td_t* td = find_td( p );
+    warrior_td_t* td = cast_td( t );
 
     if ( td && td -> debuffs_colossus_smash )
-      am *= 1 + p -> spell.colossus_smash -> effectN( 5 ).percent();
+      am *= 1 + cast() -> spell.colossus_smash -> effectN( 5 ).percent();
 
     return am;
   }

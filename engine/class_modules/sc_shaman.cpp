@@ -422,19 +422,14 @@ public:
 
   target_specific_t<shaman_td_t*> target_data;
 
-  virtual shaman_td_t* get_target_data( player_t* target )
+  virtual shaman_td_t* get_target_data( player_t* target ) const
   {
     shaman_td_t*& td = target_data[ target ];
     if ( ! td )
     {
-      td = new shaman_td_t( target, this );
+      td = new shaman_td_t( target, const_cast<shaman_t*>(this) );
     }
     return td;
-  }
-
-  shaman_td_t* find_target_data( player_t* target ) const
-  {
-    return target_data[ target ];
   }
 
   // Event Tracking
@@ -501,12 +496,8 @@ public:
   const shaman_t* p() const
   { return debug_cast< shaman_t* >( ab::player ); }
 
-  shaman_td_t* td( player_t* t = 0 )
+  shaman_td_t* td( player_t* t = 0 ) const
   { return p() -> get_target_data( t ? t : ab::target ); }
-
-
-  shaman_td_t* find_td( player_t* t ) const
-  { return p() -> find_target_data( t ); }
 
   action_state_t* new_state()
   { return new shaman_action_state_t( this, ab::target ); }
@@ -831,12 +822,11 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   {
     double m = base_t::composite_target_multiplier( target );
 
-    if ( shaman_td_t* td = find_td( target ) )
-    {
-      if ( td -> debuff.t16_2pc_caster -> check() && ( dbc::is_school( school, SCHOOL_FIRE )
-      || dbc::is_school( school, SCHOOL_NATURE ) ) )
-        m *= 1.0 + td -> debuff.t16_2pc_caster -> data().effectN( 1 ).percent();
-    }
+
+    if ( td( target ) -> debuff.t16_2pc_caster -> check() && ( dbc::is_school( school, SCHOOL_FIRE )
+    || dbc::is_school( school, SCHOOL_NATURE ) ) )
+      m *= 1.0 + td( target ) -> debuff.t16_2pc_caster -> data().effectN( 1 ).percent();
+
 
     return m;
   }
@@ -1696,17 +1686,13 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
         if ( sim -> actor_list[ i ] == target )
           continue;
 
-        if ( shaman_td_t* main_target_td = find_td( target ) )
-        {
-          if ( shaman_td_t* td = find_td( sim -> actor_list[ i ] ) )
-          {
-            dot_t* target_dot = main_target_td -> dot.flame_shock;
-            dot_t* spread_dot = td -> dot.flame_shock;
+        shaman_td_t* main_target_td = this -> td( target );
+        shaman_td_t* td = this -> td( sim -> actor_list[ i ] );
+        dot_t* target_dot = main_target_td -> dot.flame_shock;
+        dot_t* spread_dot = td -> dot.flame_shock;
 
-            if ( spread_dot -> remains() > target_dot -> remains() )
-              continue;
-          }
-        }
+        if ( spread_dot -> remains() > target_dot -> remains() )
+          continue;
 
         tl.push_back( sim -> actor_list[ i ] );
       }
@@ -1729,14 +1715,12 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
         // this will have to do for now
         for ( size_t i = 0; i < target_cache.list.size(); i++ )
         {
-          if ( shaman_td_t* td = find_td( target_cache.list[ i ] ) )
+          shaman_td_t* td = this -> td( target_cache.list[ i ] );
+          if ( td -> dot.flame_shock -> ticking )
           {
-            if ( td -> dot.flame_shock -> ticking )
-            {
-              target_cache.list.erase( target_cache.list.begin() + i );
-              removed = true;
-              break;
-            }
+            target_cache.list.erase( target_cache.list.begin() + i );
+            removed = true;
+            break;
           }
         }
 
@@ -1950,14 +1934,12 @@ struct lava_burst_overload_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
 
-    if ( shaman_td_t* td = find_td( target ) )
-    {
-      if ( td -> debuff.unleashed_fury -> check() )
-        m *= 1.0 + td -> debuff.unleashed_fury -> data().effectN( 2 ).percent();
+    shaman_td_t* td = this -> td( target );
+    if ( td -> debuff.unleashed_fury -> check() )
+      m *= 1.0 + td -> debuff.unleashed_fury -> data().effectN( 2 ).percent();
 
-      if ( td -> dot.flame_shock -> ticking )
-        m *= 1.0 + p() -> spell.flame_shock -> effectN( 3 ).percent();
-    }
+    if ( td -> dot.flame_shock -> ticking )
+      m *= 1.0 + p() -> spell.flame_shock -> effectN( 3 ).percent();
 
     return m;
   }
@@ -1989,11 +1971,8 @@ struct lightning_bolt_overload_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
 
-    if ( shaman_td_t* td = find_td( target ) )
-    {
-      if ( td -> debuff.unleashed_fury -> up() )
-        m *= 1.0 + td -> debuff.unleashed_fury -> data().effectN( 1 ).percent();
-    }
+    if ( td( target ) -> debuff.unleashed_fury -> up() )
+      m *= 1.0 + td( target ) -> debuff.unleashed_fury -> data().effectN( 1 ).percent();
 
     return m;
   }
@@ -2127,13 +2106,11 @@ struct lightning_charge_t : public shaman_spell_t
   {
     double c = shaman_spell_t::composite_target_crit( target );
 
-    if ( shaman_td_t* td = find_td( target ) )
+
+    if ( td( target ) -> debuff.stormstrike -> check() )
     {
-      if ( td -> debuff.stormstrike -> check() )
-      {
-        c += td -> debuff.stormstrike -> data().effectN( 1 ).percent();
-        c += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
-      }
+      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
+      c += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
     }
 
     return c;
@@ -3070,13 +3047,11 @@ struct chain_lightning_t : public shaman_spell_t
   {
     double c = shaman_spell_t::composite_target_crit( target );
 
-    if ( shaman_td_t* td = find_td( target ) )
+
+    if ( td( target ) -> debuff.stormstrike -> check() )
     {
-      if ( td -> debuff.stormstrike -> check() )
-      {
-        c += td -> debuff.stormstrike -> data().effectN( 1 ).percent();
-        c += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
-      }
+      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
+      c += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
     }
 
     return c;
@@ -3307,9 +3282,8 @@ struct fire_nova_t : public shaman_spell_t
       if ( ! e -> is_enemy() )
         continue;
 
-      if ( shaman_td_t* td = find_td( e ) )
-        if ( td -> dot.flame_shock -> ticking )
-          target_cache.list.push_back( e );
+      if ( td( e ) -> dot.flame_shock -> ticking )
+        target_cache.list.push_back( e );
     }
 
     return target_cache.list;
@@ -3413,14 +3387,12 @@ struct lava_burst_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
 
-    if ( shaman_td_t* td = find_td( target ) )
-    {
-      if ( td -> debuff.unleashed_fury -> check() )
-        m *= 1.0 + td -> debuff.unleashed_fury -> data().effectN( 2 ).percent();
+    shaman_td_t* td = this -> td( target );
+    if ( td -> debuff.unleashed_fury -> check() )
+      m *= 1.0 + td -> debuff.unleashed_fury -> data().effectN( 2 ).percent();
 
-      if ( td -> dot.flame_shock -> ticking )
-        m *= 1.0 + p() -> spell.flame_shock -> effectN( 3 ).percent();
-    }
+    if ( td -> dot.flame_shock -> ticking )
+      m *= 1.0 + p() -> spell.flame_shock -> effectN( 3 ).percent();
 
     return m;
   }
@@ -3496,13 +3468,11 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     double c = shaman_spell_t::composite_target_crit( target );
 
-    if ( shaman_td_t* td = find_td( target ) )
+
+    if ( td( target ) -> debuff.stormstrike -> check() )
     {
-      if ( td -> debuff.stormstrike -> check() )
-      {
-        c += td -> debuff.stormstrike -> data().effectN( 1 ).percent();
-        c += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
-      }
+      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
+      c += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
     }
 
     return c;
@@ -3512,11 +3482,9 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_target_multiplier( target );
 
-    if ( shaman_td_t* td = find_td( target ) )
-    {
-      if ( td -> debuff.unleashed_fury -> check() )
-        m *= 1.0 + td -> debuff.unleashed_fury -> data().effectN( 1 ).percent();
-    }
+
+    if ( td( target ) -> debuff.unleashed_fury -> check() )
+      m *= 1.0 + td( target ) -> debuff.unleashed_fury -> data().effectN( 1 ).percent();
 
     return m;
   }
@@ -3652,13 +3620,10 @@ struct elemental_blast_t : public shaman_spell_t
   {
     double c = shaman_spell_t::composite_target_crit( target );
 
-    if ( shaman_td_t* td = find_td( target ) )
+    if ( td( target ) -> debuff.stormstrike -> check() )
     {
-      if ( td -> debuff.stormstrike -> check() )
-      {
-        c += td -> debuff.stormstrike -> data().effectN( 1 ).percent();
-        c += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
-      }
+      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
+      c += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
     }
 
     return c;
@@ -3839,13 +3804,10 @@ struct earth_shock_t : public shaman_spell_t
   {
     double c = shaman_spell_t::composite_target_crit( target );
 
-    if ( shaman_td_t* td = find_td( target ) )
+    if ( td( target ) -> debuff.stormstrike -> check() )
     {
-      if ( td -> debuff.stormstrike -> check() )
-      {
-        c += td -> debuff.stormstrike -> data().effectN( 1 ).percent();
-        c += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
-      }
+      c += td( target ) -> debuff.stormstrike -> data().effectN( 1 ).percent();
+      c += player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).percent();
     }
 
     return c;
@@ -4132,15 +4094,12 @@ struct chain_heal_t : public shaman_heal_t
     resurgence_gain = 0.333 * p() -> spell.resurgence -> effectN( 1 ).average( player ) * p() -> spec.resurgence -> effectN( 1 ).percent();
   }
 
-  double composite_da_multiplier() const
+  double composite_target_da_multiplier( player_t* t) const
   {
-    double m = shaman_heal_t::composite_da_multiplier();
+    double m = shaman_heal_t::composite_target_da_multiplier( t );
 
-    if ( shaman_td_t* td = find_td( target ) )
-    {
-      if ( td -> heal.riptide -> ticking )
-        m *= 1.0 + p() -> spec.riptide -> effectN( 3 ).percent();
-    }
+    if ( td( t ) -> heal.riptide -> ticking )
+      m *= 1.0 + p() -> spec.riptide -> effectN( 3 ).percent();
 
     return m;
   }

@@ -457,19 +457,15 @@ public:
 
   target_specific_t<druid_td_t*> target_data;
 
-  virtual druid_td_t* get_target_data( player_t* target )
+  virtual druid_td_t* get_target_data( player_t* target ) const
   {
     assert( target );
     druid_td_t*& td = target_data[ target ];
     if ( ! td )
     {
-      td = new druid_td_t( *target, *this );
+      td = new druid_td_t( *target, const_cast<druid_t&>(*this) );
     }
     return td;
-  }
-  druid_td_t* find_target_data( player_t* target ) const
-  {
-    return target_data[ target ];
   }
 
   void trigger_shooting_stars( result_e );
@@ -1758,12 +1754,8 @@ public:
   const druid_t* p() const
   { return static_cast<druid_t*>( ab::player ); }
 
-  druid_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
-
-  druid_td_t* find_td( player_t* t ) const
-  {
-    return p() -> find_target_data( t );
-  }
+  druid_td_t* td( player_t* t = 0 ) const
+  { return p() -> get_target_data( t ? t : ab::target ); }
 
   bool trigger_omen_of_clarity()
   {
@@ -3093,12 +3085,11 @@ struct lacerate_t : public bear_attack_t
     bear_attack_t::impact( state );
   }
 
-  virtual double action_ta_multiplier() const
+  virtual double composite_target_ta_multiplier( player_t* t ) const
   {
-    double tm = bear_attack_t::action_ta_multiplier();
+    double tm = bear_attack_t::composite_target_ta_multiplier( t );
 
-    if ( druid_td_t* td = find_td( target ) )
-      tm *= td -> lacerate_stack;
+    tm *= td( t ) -> lacerate_stack;
 
     return tm;
   }
@@ -3877,10 +3868,7 @@ struct lifebloom_bloom_t : public druid_heal_t
   {
     double ctm = druid_heal_t::composite_target_multiplier( target );
 
-    if ( druid_td_t* td = find_td( target ) )
-    {
-      ctm *= 1.0 + td -> buffs.lifebloom -> check();
-    }
+    ctm *= 1.0 + td( target ) -> buffs.lifebloom -> check();
 
     return ctm;
   }
@@ -3912,10 +3900,7 @@ struct lifebloom_t : public druid_heal_t
   {
     double ctm = druid_heal_t::composite_target_multiplier( target );
 
-    if ( druid_td_t* td = find_td( target ) )
-    {
-      ctm *= 1.0 + td -> buffs.lifebloom -> check();
-    }
+    ctm *= 1.0 + td( target ) -> buffs.lifebloom -> check();
 
     return ctm;
   }
@@ -3979,12 +3964,9 @@ struct nourish_t : public druid_heal_t
   {
     double ctm = druid_heal_t::composite_target_multiplier( t );
 
-    if ( druid_td_t* td = find_td( t ) )
+    if ( td( t ) -> hot_ticking() )
     {
-      if ( td -> hot_ticking() )
-      {
-        ctm *= 1.20;
-      }
+      ctm *= 1.20;
     }
 
     return ctm;

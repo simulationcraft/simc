@@ -320,16 +320,11 @@ public:
 
   target_specific_t<hunter_td_t*> target_data;
 
-  virtual hunter_td_t* get_target_data( player_t* target )
+  virtual hunter_td_t* get_target_data( player_t* target ) const
   {
     hunter_td_t*& td = target_data[ target ];
-    if ( ! td ) td = new hunter_td_t( target, this );
+    if ( ! td ) td = new hunter_td_t( target, const_cast<hunter_t*>(this) );
     return td;
-  }
-
-  hunter_td_t* find_target_data( player_t* target ) const
-  {
-    return target_data[ target ];
   }
 
   // Event Tracking
@@ -377,9 +372,6 @@ public:
 
   hunter_td_t* cast_td( player_t* t = 0 )
   { return p() -> get_target_data( t ? t : ab::target ); }
-
-  hunter_td_t* find_td( player_t* t ) const
-  { return p() -> find_target_data( t ); }
 
   virtual double cost() const
   {
@@ -863,19 +855,14 @@ public:
 
   target_specific_t<hunter_main_pet_td_t*> target_data;
 
-  virtual hunter_main_pet_td_t* get_target_data( player_t* target )
+  virtual hunter_main_pet_td_t* get_target_data( player_t* target ) const
   {
     hunter_main_pet_td_t*& td = target_data[ target ];
     if ( ! td )
     {
-      td = new hunter_main_pet_td_t( target, this );
+      td = new hunter_main_pet_td_t( target, const_cast<hunter_main_pet_t*>(this) );
     }
     return td;
-  }
-
-  hunter_main_pet_td_t* find_target_data( player_t* target ) const
-  {
-    return target_data[ target ];
   }
 
   virtual resource_e primary_resource() const { return RESOURCE_FOCUS; }
@@ -913,11 +900,8 @@ public:
   hunter_t* o() const
   { return static_cast<hunter_t*>( p() -> o() ); }
 
-  hunter_main_pet_td_t* cast_td( player_t* t = 0 )
+  hunter_main_pet_td_t* cast_td( player_t* t = 0 ) const
   { return p() -> get_target_data( t ? t : ab::target ); }
-
-  hunter_main_pet_td_t* find_td( player_t* t ) const
-  { return p() -> find_target_data( t ); }
 };
 
 // ==========================================================================
@@ -1216,10 +1200,8 @@ struct lynx_rush_t : public hunter_main_pet_attack_t
   {
     double am = hunter_main_pet_attack_t::composite_target_ta_multiplier( t );
 
-    if ( hunter_main_pet_td_t* td = find_td( t -> target ) )
-    {
-      am *= td -> debuffs_lynx_bleed -> check();
-    }
+    am *= cast_td( t -> target ) -> debuffs_lynx_bleed -> check();
+
     return am;
   }
 

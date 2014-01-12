@@ -316,18 +316,14 @@ public:
 
   target_specific_t<warlock_td_t*> target_data;
 
-  virtual warlock_td_t* get_target_data( player_t* target )
+  virtual warlock_td_t* get_target_data( player_t* target ) const
   {
     warlock_td_t*& td = target_data[ target ];
     if ( ! td )
     {
-      td = new warlock_td_t( target, this );
+      td = new warlock_td_t( target, const_cast<warlock_t*>(this) );
     }
     return td;
-  }
-  warlock_td_t* find_target_data( player_t* target ) const
-  {
-    return target_data[ target ];
   }
 private:
   void apl_precombat();
@@ -1479,11 +1475,8 @@ public:
   const warlock_t* p() const
   { return static_cast<warlock_t*>( player ); }
 
-  warlock_td_t* td( player_t* t ) { return p() -> get_target_data( t ? t : target ); }
-
-
-  warlock_td_t* find_td( player_t* t ) const
-  { return p() -> find_target_data( t ); }
+  warlock_td_t* td( player_t* t ) const
+  { return p() -> get_target_data( t ? t : target ); }
 
   bool use_havoc() const
   {
@@ -1628,12 +1621,10 @@ public:
   {
     double m = 1.0;
 
-    if ( warlock_td_t* td = find_td( t ) )
+    warlock_td_t* td = this -> td( t );
+    if ( td -> debuffs_haunt -> check() && ( channeled || tick_power_mod ) ) // Only applies to channeled or dots
     {
-      if ( td -> debuffs_haunt -> check() && ( channeled || tick_power_mod ) ) // Only applies to channeled or dots
-      {
-        m *= 1.0 + td -> debuffs_haunt -> data().effectN( 3 ).percent();
-      }
+      m *= 1.0 + td -> debuffs_haunt -> data().effectN( 3 ).percent();
     }
 
     return spell_t::composite_target_multiplier( t ) * m;
@@ -1871,10 +1862,7 @@ struct agony_t : public warlock_spell_t
   {
     double m = warlock_spell_t::composite_target_multiplier( target );
 
-    if ( warlock_td_t* td = find_td( target ) )
-    {
-      m *= td -> agony_stack;
-    }
+    m *= td( target ) -> agony_stack;
 
     return m;
   }
@@ -1960,10 +1948,7 @@ struct shadowflame_t : public warlock_spell_t
   {
     double m = warlock_spell_t::composite_target_multiplier( target );
 
-    if ( warlock_td_t* td = find_td( target ) )
-    {
-      m *= td -> shadowflame_stack;
-    }
+    m *= td( target ) -> shadowflame_stack;
 
     return m;
   }
@@ -3841,11 +3826,8 @@ struct rain_of_fire_t : public warlock_spell_t
   {
     double m = warlock_spell_t::composite_target_ta_multiplier( t );
 
-    if ( warlock_td_t* td = find_td( t ) )
-    {
-      if ( td -> dots_immolate -> ticking )
-        m *= 1.5;
-    }
+    if ( td( t ) -> dots_immolate -> ticking )
+      m *= 1.5;
 
     return m;
   }

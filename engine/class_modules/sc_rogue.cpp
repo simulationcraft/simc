@@ -314,19 +314,14 @@ struct rogue_t : public player_t
 
   target_specific_t<rogue_td_t*> target_data;
 
-  virtual rogue_td_t* get_target_data( player_t* target )
+  virtual rogue_td_t* get_target_data( player_t* target ) const
   {
     rogue_td_t*& td = target_data[ target ];
     if ( ! td )
     {
-      td = new rogue_td_t( target, this );
+      td = new rogue_td_t( target, const_cast<rogue_t*>(this) );
     }
     return td;
-  }
-
-  rogue_td_t* find_target_data( player_t* target ) const
-  {
-    return target_data[ target ];
   }
 };
 
@@ -451,11 +446,9 @@ struct rogue_attack_t : public melee_attack_t
   const rogue_t* p() const
   { return debug_cast< rogue_t* >( player ); }
 
-  rogue_td_t* cast_td( player_t* t = 0 )
+  rogue_td_t* cast_td( player_t* t = 0 ) const
   { return p() -> get_target_data( t ? t : target ); }
 
-  rogue_td_t* find_td( player_t* t ) const
-  { return p() -> find_target_data( t ); }
 
   virtual double cost() const;
   virtual void   execute();
@@ -530,21 +523,19 @@ struct rogue_attack_t : public melee_attack_t
   {
     double m = melee_attack_t::composite_target_multiplier( target );
 
-    if ( rogue_td_t* td = find_td( target ) )
+    rogue_td_t* td = cast_td( target );
+    if ( requires_combo_points )
     {
-      if ( requires_combo_points )
-      {
-        if ( td -> dots.revealing_strike -> ticking )
-          m *= 1.0 + td -> dots.revealing_strike -> current_action -> data().effectN( 3 ).percent();
-        else if ( p() -> specialization() == ROGUE_COMBAT )
-          p() -> procs.no_revealing_strike -> occur();
-      }
-
-      m *= 1.0 + td -> debuffs.vendetta -> value();
-
-      if ( p() -> spec.sanguinary_vein -> ok() && td -> sanguinary_veins() )
-        m *= 1.0 + p() -> spec.sanguinary_vein -> effectN( 2 ).percent();
+      if ( td -> dots.revealing_strike -> ticking )
+        m *= 1.0 + td -> dots.revealing_strike -> current_action -> data().effectN( 3 ).percent();
+      else if ( p() -> specialization() == ROGUE_COMBAT )
+        p() -> procs.no_revealing_strike -> occur();
     }
+
+    m *= 1.0 + td -> debuffs.vendetta -> value();
+
+    if ( p() -> spec.sanguinary_vein -> ok() && td -> sanguinary_veins() )
+      m *= 1.0 + p() -> spec.sanguinary_vein -> effectN( 2 ).percent();
 
     return m;
   }
@@ -923,10 +914,7 @@ double rogue_attack_t::target_armor( player_t* t ) const
 {
   double a = melee_attack_t::target_armor( t );
 
-  if ( rogue_td_t* td = find_td( t ) )
-  {
-    a *= 1.0 - td -> debuffs.find_weakness -> current_value;
-  }
+  a *= 1.0 - cast_td( t ) -> debuffs.find_weakness -> current_value;
 
   return a;
 }
@@ -1697,12 +1685,10 @@ struct killing_spree_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_target_da_multiplier( target );
 
-    if ( rogue_td_t* td = find_td( target ) )
-    {
-      if ( td -> dots.killing_spree -> current_tick >= 0 )
+    rogue_td_t* td = cast_td( target );
+    if ( td -> dots.killing_spree -> current_tick >= 0 )
         m *= std::pow( 1.0 + p() -> sets.set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent(),
                        td -> dots.killing_spree -> current_tick + 1 );
-    }
 
     return m;
   }

@@ -297,19 +297,14 @@ public:
 
   target_specific_t<mage_td_t*> target_data;
 
-  virtual mage_td_t* get_target_data( player_t* target )
+  virtual mage_td_t* get_target_data( player_t* target ) const
   {
     mage_td_t*& td = target_data[ target ];
     if ( ! td )
     {
-      td = new mage_td_t( target, this );
+      td = new mage_td_t( target, const_cast<mage_t*>(this) );
     }
     return td;
-  }
-
-  mage_td_t* find_target_data( player_t* target ) const
-  {
-    return target_data[ target ];
   }
 
   // Event Tracking
@@ -990,11 +985,8 @@ public:
   const mage_t* p() const
   { return static_cast<mage_t*>( player ); }
 
-  mage_td_t* td( player_t* t = nullptr )
+  mage_td_t* td( player_t* t = nullptr ) const
   { return p() -> get_target_data( t ? t : target ); }
-
-  mage_td_t* find_td( player_t* t ) const
-  { return p() -> find_target_data( t ); }
 
   virtual void parse_options( option_t*          options,
                               const std::string& options_str )
@@ -2041,16 +2033,13 @@ struct fireball_t : public mage_spell_t
     return m;
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const
+  virtual double composite_target_multiplier( player_t* t ) const
   {
-    double tm = mage_spell_t::composite_target_multiplier( target );
+    double tm = mage_spell_t::composite_target_multiplier( t );
 
-    if ( mage_td_t* td = find_td( target ) )
+    if ( td( t ) -> debuffs.pyromaniac -> up() )
     {
-      if ( td -> debuffs.pyromaniac -> up() )
-      {
-        tm *= 1.1;
-      }
+      tm *= 1.1;
     }
 
     return tm;
@@ -2509,16 +2498,13 @@ struct frostfire_bolt_t : public mage_spell_t
     return am;
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const
+  virtual double composite_target_multiplier( player_t* t ) const
   {
-    double tm = mage_spell_t::composite_target_multiplier( target );
+    double tm = mage_spell_t::composite_target_multiplier( t );
 
-    if ( mage_td_t* td = find_td( target ) )
+    if ( td( t ) -> debuffs.pyromaniac -> check() )
     {
-      if ( td -> debuffs.pyromaniac -> up() )
-      {
-        tm *= 1.1;
-      }
+      tm *= 1.1;
     }
 
     return tm;
@@ -2854,16 +2840,13 @@ struct inferno_blast_t : public mage_spell_t
     return 1.0;
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const
+  virtual double composite_target_multiplier( player_t* t ) const
   {
-    double tm = mage_spell_t::composite_target_multiplier( target );
+    double tm = mage_spell_t::composite_target_multiplier( t );
 
-    if ( mage_td_t* td = find_td( target ) )
+    if ( td( t ) -> debuffs.pyromaniac -> check() )
     {
-      if ( td -> debuffs.pyromaniac -> up() )
-      {
-        tm *= 1.1;
-      }
+      tm *= 1.1;
     }
 
     return tm;
@@ -3361,16 +3344,13 @@ struct pyroblast_t : public mage_spell_t
     return am;
   }
 
-  virtual double composite_target_multiplier( player_t* target ) const
+  virtual double composite_target_multiplier( player_t* t ) const
   {
-    double tm = mage_spell_t::composite_target_multiplier( target );
+    double tm = mage_spell_t::composite_target_multiplier( t );
 
-    if ( mage_td_t* td = find_td( target ) )
+    if ( td( t ) -> debuffs.pyromaniac -> check() )
     {
-      if ( td -> debuffs.pyromaniac -> check() )
-      {
-        tm *= 1.1;
-      }
+      tm *= 1.1;
     }
 
     return tm;
