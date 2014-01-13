@@ -444,19 +444,14 @@ public:
 
   target_specific_t<death_knight_td_t*> target_data;
 
-  virtual death_knight_td_t* get_target_data( player_t* target )
+  virtual death_knight_td_t* get_target_data( player_t* target ) const
   {
     death_knight_td_t*& td = target_data[ target ];
     if ( ! td )
     {
-      td = new death_knight_td_t( target, this );
+      td = new death_knight_td_t( target, const_cast<death_knight_t*>(this) );
     }
     return td;
-  }
-
-  death_knight_td_t* find_target_data( player_t* target ) const
-  {
-    return target_data[ target ];
   }
 };
 
@@ -929,11 +924,8 @@ struct dancing_rune_weapon_pet_t : public pet_t
       may_crit   = true;
     }
 
-    dancing_rune_weapon_td_t* td( player_t* t = 0 )
-    { return p() -> get_target_data( t ? t : target ); }
-
-    dancing_rune_weapon_td_t* find_td( player_t* t ) const
-    { return p() -> find_target_data( t ); }
+    dancing_rune_weapon_td_t* td( player_t* t ) const
+    { return p() -> get_target_data( t ); }
 
     dancing_rune_weapon_pet_t* p()
     { return static_cast<dancing_rune_weapon_pet_t*>( player ); }
@@ -992,11 +984,8 @@ struct dancing_rune_weapon_pet_t : public pet_t
       double m = drw_spell_t::composite_target_multiplier( t );
 
       // Apparently inherits damage bonus from owner's diseases ...
-      if ( death_knight_td_t* td = o() -> find_target_data( t ) )
-      {
-        if ( td -> diseases() > 0 )
+      if ( o() -> get_target_data( t ) -> diseases() > 0 )
           m *= 1.50; // hardcoded into tooltip, 18/12/2012
-      }
 
       return m;
     }
@@ -1043,10 +1032,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     {
       double ctm = drw_melee_attack_t::composite_target_multiplier( t );
 
-      if ( dancing_rune_weapon_td_t* td = find_td( t ) )
-      {
-        ctm *= 1.0 + td -> diseases() * data().effectN( 3 ).percent();
-      }
+      ctm *= 1.0 + td( t ) -> diseases() * data().effectN( 3 ).percent();
 
       return ctm;
     }
@@ -1256,20 +1242,15 @@ struct dancing_rune_weapon_pet_t : public pet_t
   death_knight_t* o() const
   { return static_cast< death_knight_t* >( owner ); }
 
-  dancing_rune_weapon_td_t* td( player_t* t = 0 )
-  { return get_target_data( t ? t : target ); }
+  dancing_rune_weapon_td_t* td( player_t* t ) const
+  { return get_target_data( t ); }
 
-  virtual dancing_rune_weapon_td_t* get_target_data( player_t* target )
+  virtual dancing_rune_weapon_td_t* get_target_data( player_t* target ) const
   {
     dancing_rune_weapon_td_t*& td = target_data[ target ];
     if ( ! td )
-      td = new dancing_rune_weapon_td_t( target, this );
+      td = new dancing_rune_weapon_td_t( target, const_cast<dancing_rune_weapon_pet_t*>(this) );
     return td;
-  }
-
-  dancing_rune_weapon_td_t* find_target_data( player_t* target ) const
-  {
-    return target_data[ target ];
   }
 
   virtual void init_spells()
@@ -2016,11 +1997,9 @@ struct death_knight_action_t : public Base
 
   death_knight_t* p() const { return static_cast< death_knight_t* >( action_base_t::player ); }
 
-  death_knight_td_t* cast_td( player_t* t = 0 )
-  { return p() -> get_target_data( t ? t : action_base_t::target ); }
+  death_knight_td_t* td( player_t* t ) const
+  { return p() -> get_target_data( t ); }
 
-  death_knight_td_t* find_td( player_t* t ) const
-  { return p() -> find_target_data( t ); }
 
   void trigger_t16_2pc_tank()
   {
@@ -2094,11 +2073,8 @@ struct death_knight_action_t : public Base
 
     if ( dbc::is_school( action_base_t::school, SCHOOL_FROST ) )
     {
-      if ( death_knight_td_t* td = find_td( t ) )
-      {
-        m *= 1.0 + td -> debuffs_frost_vulnerability -> check() *
-           td -> debuffs_frost_vulnerability -> data().effectN( 1 ).percent();
-      }
+      m *= 1.0 + td( t ) -> debuffs_frost_vulnerability -> check() *
+          td( t ) -> debuffs_frost_vulnerability -> data().effectN( 1 ).percent();
     }
 
     return m;
@@ -2314,7 +2290,7 @@ void death_knight_melee_attack_t::execute()
   if ( ! result_is_hit( execute_state -> result ) && ! always_consume && resource_consumed > 0 )
     p() -> resource_gain( RESOURCE_RUNIC_POWER, resource_consumed * RUNIC_POWER_REFUND, p() -> gains.power_refund );
 
-  if ( result_is_hit( execute_state -> result ) && cast_td( execute_state -> target ) -> dots_blood_plague -> ticking )
+  if ( result_is_hit( execute_state -> result ) && td( execute_state -> target ) -> dots_blood_plague -> ticking )
     p() -> buffs.crimson_scourge -> trigger();
 
   trigger_t15_2pc_melee();
@@ -2672,11 +2648,8 @@ struct blood_boil_t : public death_knight_spell_t
   {
     double m = death_knight_spell_t::composite_target_multiplier( t );
 
-    if ( death_knight_td_t* td = find_td( t ) )
-    {
-      if ( td -> diseases() > 0 || p() -> glyph.festering_blood -> ok() )
+    if ( td( t ) -> diseases() > 0 || p() -> glyph.festering_blood -> ok() )
         m *= 1.50; // hardcoded into tooltip, 18/12/2012
-    }
 
     return m;
   }
@@ -2687,11 +2660,11 @@ struct blood_boil_t : public death_knight_spell_t
 
     if ( p() -> spec.scarlet_fever -> ok() )
     {
-      if ( cast_td( s -> target ) -> dots_blood_plague -> ticking )
-        cast_td( s -> target ) -> dots_blood_plague -> refresh_duration();
+      if ( td( s -> target ) -> dots_blood_plague -> ticking )
+        td( s -> target ) -> dots_blood_plague -> refresh_duration();
 
-      if ( cast_td( s -> target ) -> dots_frost_fever -> ticking )
-        cast_td( s -> target ) -> dots_frost_fever -> refresh_duration();
+      if ( td( s -> target ) -> dots_frost_fever -> ticking )
+        td( s -> target ) -> dots_frost_fever -> refresh_duration();
     }
 
     if ( result_is_hit( s -> result ) )
@@ -2771,10 +2744,7 @@ struct blood_strike_offhand_t : public death_knight_melee_attack_t
   {
     double ctm = death_knight_melee_attack_t::composite_target_multiplier( t );
 
-    if ( death_knight_td_t* td = find_td( t ) )
-    {
-      ctm *= 1 + td -> diseases() * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
-    }
+    ctm *= 1 + td( t ) -> diseases() * 0.1875; // Currently giving a 18.75% increase per disease instead of expected 12.5
 
     return ctm;
   }
@@ -2807,10 +2777,7 @@ struct blood_strike_t : public death_knight_melee_attack_t
   {
     double ctm = death_knight_melee_attack_t::composite_target_multiplier( t );
 
-    if ( death_knight_td_t* td = find_td( t ) )
-    {
-      ctm *= 1 + td -> diseases() * data().effectN( 3 ).base_value() / 1000.0;
-    }
+    ctm *= 1 + td( t ) -> diseases() * data().effectN( 3 ).base_value() / 1000.0;
 
     return ctm;
   }
@@ -3432,8 +3399,8 @@ struct festering_strike_t : public death_knight_melee_attack_t
 
     if ( result_is_hit( s -> result ) )
     {
-      cast_td( s -> target ) -> dots_blood_plague -> extend_duration_seconds( timespan_t::from_seconds( data().effectN( 3 ).base_value() ), 0 );
-      cast_td( s -> target ) -> dots_frost_fever  -> extend_duration_seconds( timespan_t::from_seconds( data().effectN( 3 ).base_value() ), 0 );
+      td( s -> target ) -> dots_blood_plague -> extend_duration_seconds( timespan_t::from_seconds( data().effectN( 3 ).base_value() ), 0 );
+      td( s -> target ) -> dots_frost_fever  -> extend_duration_seconds( timespan_t::from_seconds( data().effectN( 3 ).base_value() ), 0 );
     }
   }
 };
@@ -3602,10 +3569,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
   {
     double ctm = death_knight_melee_attack_t::composite_target_multiplier( t );
 
-    if ( death_knight_td_t* td = find_td( t ) )
-    {
-      ctm *= 1.0 + td -> diseases() * data().effectN( 3 ).percent();
-    }
+    ctm *= 1.0 + td( t ) -> diseases() * data().effectN( 3 ).percent();
 
     return ctm;
   }
@@ -3851,10 +3815,7 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
   {
     double ctm = death_knight_melee_attack_t::composite_target_multiplier( t );
 
-    if ( death_knight_td_t* td = find_td( t ) )
-    {
-      ctm *= 1.0 + td -> diseases() * data().effectN( 3 ).percent() / 2.0;
-    }
+    ctm *= 1.0 + td( t ) -> diseases() * data().effectN( 3 ).percent() / 2.0;
 
     return ctm;
   }
@@ -3944,10 +3905,7 @@ struct obliterate_t : public death_knight_melee_attack_t
   {
     double ctm = death_knight_melee_attack_t::composite_target_multiplier( t );
 
-    if ( death_knight_td_t* td = find_td( t ) )
-    {
-      ctm *= 1.0 + td -> diseases() * data().effectN( 3 ).percent() / 2.0;
-    }
+    ctm *= 1.0 + td( t ) -> diseases() * data().effectN( 3 ).percent() / 2.0;
 
     return ctm;
   }
@@ -4022,12 +3980,12 @@ struct pestilence_t : public death_knight_spell_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( cast_td() -> dots_blood_plague -> ticking )
+      if ( td( s -> target ) -> dots_blood_plague -> ticking )
       {
         p() -> active_spells.blood_plague -> target = s -> target;
         p() -> active_spells.blood_plague -> execute();
       }
-      if ( cast_td() -> dots_frost_fever -> ticking )
+      if ( td( s -> target ) -> dots_frost_fever -> ticking )
       {
         p() -> active_spells.frost_fever -> target = s -> target;
         p() -> active_spells.frost_fever -> execute();
@@ -4041,7 +3999,7 @@ struct pestilence_t : public death_knight_spell_t
       return false;
 
     // BP or FF must be ticking to use
-    return cast_td() -> diseases() > 0;
+    return td( target ) -> diseases() > 0;
   }
 };
 
@@ -4358,14 +4316,11 @@ struct scourge_strike_t : public death_knight_melee_attack_t
       stats = p() -> get_stats( name(), this );
     }
 
-    double composite_target_multiplier( player_t* target ) const
+    double composite_target_multiplier( player_t* t ) const
     {
-      double m = death_knight_spell_t::composite_target_multiplier( target );
+      double m = death_knight_spell_t::composite_target_multiplier( t );
 
-      if ( death_knight_td_t* td = find_td( target ) )
-      {
-        m *= disease_coeff * td -> diseases();
-      }
+      m *= disease_coeff * td( t ) -> diseases();
 
       return m;
     }
@@ -4388,7 +4343,7 @@ struct scourge_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && cast_td( s -> target ) -> diseases() > 0 )
+    if ( result_is_hit( s -> result ) && td( s -> target ) -> diseases() > 0 )
     {
       scourge_strike_shadow -> base_dd_max = scourge_strike_shadow -> base_dd_min = s -> result_amount;
       scourge_strike_shadow -> execute();
@@ -4516,14 +4471,14 @@ struct plague_leech_t : public death_knight_spell_t
       if ( sim -> log ) sim -> out_log.printf( "%s regened rune %d", name(), selected_rune );
     }
 
-    cast_td( state -> target ) -> dots_frost_fever -> cancel();
-    cast_td( state -> target ) -> dots_blood_plague -> cancel();
+    td( state -> target ) -> dots_frost_fever -> cancel();
+    td( state -> target ) -> dots_blood_plague -> cancel();
   }
 
   bool ready()
   {
-    if ( ! cast_td() -> dots_frost_fever -> ticking ||
-         ! cast_td() -> dots_blood_plague -> ticking )
+    if ( ! td( target ) -> dots_frost_fever -> ticking ||
+         ! td( target ) -> dots_blood_plague -> ticking )
       return false;
 
     bool rd = death_knight_spell_t::ready();
@@ -5776,11 +5731,8 @@ void death_knight_t::init_enchant()
     {
       double m = death_knight_melee_attack_t::composite_target_multiplier( t );
 
-      if ( death_knight_td_t* td = find_td( t ) )
-      {
-        m /= 1.0 + td -> debuffs_frost_vulnerability -> check() *
-                 td -> debuffs_frost_vulnerability -> data().effectN( 1 ).percent();
-      }
+      m /= 1.0 + td( t ) -> debuffs_frost_vulnerability -> check() *
+            td( t ) -> debuffs_frost_vulnerability -> data().effectN( 1 ).percent();
 
       return m;
     }
