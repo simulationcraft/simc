@@ -39,21 +39,16 @@ void SC_MainWindow::updateSimProgress()
 #endif
     sim = SC_MainWindow::sim;
 
-  if ( sim )
+  if ( simRunning() )
   {
     simProgress = static_cast<int>( 100.0 * sim -> progress( simPhase ) );
   }
-  else
+  if ( importRunning() )
   {
-    simPhase = "%p%";
-    simProgress = 100;
+    importSimProgress = static_cast<int>( 100.0 * import_sim -> progress( importSimPhase ) );
   }
-  if ( mainTab -> currentTab() != TAB_IMPORT &&
-       mainTab -> currentTab() != TAB_RESULTS )
-  {
-    progressBar -> setFormat( QString::fromUtf8( simPhase.c_str() ) );
-    progressBar -> setValue( simProgress );
-  }
+  cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str() );
+  cmdLine -> setImportingProgress( importSimProgress, importSimPhase.c_str() );
 }
 
 void SC_MainWindow::loadHistory()
@@ -170,8 +165,21 @@ void SC_MainWindow::saveHistory()
 
 SC_MainWindow::SC_MainWindow( QWidget *parent )
   : QWidget( parent ),
-    visibleWebView( 0 ), recentlyClosedTabModel( nullptr ), sim( 0 ), paperdoll_sim( 0 ), simPhase( "%p%" ), simProgress( 100 ), simResults( 0 ),
-    AppDataDir( "." ), ResultsDestDir( "." ), TmpDir( "." )
+    visibleWebView( 0 ),
+    cmdLine( nullptr ), // segfault in updateWebView() if not null
+    recentlyClosedTabModel( nullptr ),
+    sim( 0 ),
+    import_sim( 0 ),
+    paperdoll_sim( 0 ),
+    simPhase( "%p%" ),
+    importSimPhase( "%p%" ),
+    simProgress( 100 ),
+    importSimProgress( 100 ),
+    simResults( 0 ),
+    AppDataDir( "." ),
+    ResultsDestDir( "." ),
+    TmpDir( "." ),
+    consecutiveSimulationsRun( 0 )
 {
   setWindowTitle( QCoreApplication::applicationName() + " " + QCoreApplication::applicationVersion() );
   setAttribute( Qt::WA_AlwaysShowToolTips );
@@ -265,8 +273,8 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   connect( mainTab, SIGNAL( currentChanged( int ) ), this, SLOT( mainTabChanged( int ) ) );
 
   QVBoxLayout* vLayout = new QVBoxLayout();
-  vLayout -> addWidget( mainTab );
-  vLayout -> addWidget( cmdLineGroupBox );
+  vLayout -> addWidget( mainTab, 1 );
+  vLayout -> addWidget( cmdLine, 0 );
   setLayout( vLayout );
   vLayout -> activate();
 
@@ -291,7 +299,8 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 
   loadHistory();
 
-  cmdLine -> setFocus();
+//  cmdLine -> setFocus();
+  //TODO
 
   // Resize window if needed
   QDesktopWidget desktopWidget;
@@ -346,30 +355,28 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
 
 void SC_MainWindow::createCmdLine()
 {
-  QHBoxLayout* cmdLineLayout = new QHBoxLayout();
-  cmdLineLayout -> addWidget( backButton = new QPushButton( "<" ) );
-  cmdLineLayout -> addWidget( forwardButton = new QPushButton( ">" ) );
-  cmdLineLayout -> addWidget( cmdLine = new SC_CommandLine( this ) );
-  cmdLineLayout -> addWidget( progressBar = new QProgressBar() );
-  cmdLineLayout -> addWidget( mainButton = new QPushButton( "Simulate!" ) );
-  backButton -> setMaximumWidth( 30 );
-  forwardButton -> setMaximumWidth( 30 );
-  progressBar -> setMaximum( 100 );
-  progressBar -> setMaximumWidth( 200 );
-  progressBar -> setMinimumWidth( 150 );
-  QFont progfont( progressBar -> font() );
-  progfont.setPointSize( 11 );
-  progressBar -> setFont( progfont );
-  connect( backButton,    SIGNAL( clicked( bool ) ),   this, SLOT(    backButtonClicked() ) );
-  connect( forwardButton, SIGNAL( clicked( bool ) ),   this, SLOT( forwardButtonClicked() ) );
-  connect( mainButton,    SIGNAL( clicked( bool ) ),   this, SLOT(    mainButtonClicked() ) );
-  connect( cmdLine,       SIGNAL( returnPressed() ),            this, SLOT( cmdLineReturnPressed() ) );
-  connect( cmdLine,       SIGNAL( textEdited( const QString& ) ), this, SLOT( cmdLineTextEdited( const QString& ) ) );
-  connect( cmdLine,       SIGNAL( switchToLeftSubTab() ), this, SLOT( switchToLeftSubTab() ) );
-  connect( cmdLine,       SIGNAL( switchToRightSubTab() ), this, SLOT( switchToRightSubTab() ) );
-  connect( cmdLine,       SIGNAL( currentlyViewedTabCloseRequest() ), this, SLOT( currentlyViewedTabCloseRequest() ) );
-  cmdLineGroupBox = new QGroupBox();
-  cmdLineGroupBox -> setLayout( cmdLineLayout );
+  cmdLine = new SC_MainWindowCommandLine( this );
+  cmdLine -> setCommandLineText( TAB_RESULTS, resultsFileText );
+
+  connect( &simulationQueue, SIGNAL( firstItemWasAdded() ), this, SLOT( itemWasEnqueuedTryToSim() ) );
+  connect( cmdLine, SIGNAL( backButtonClicked() ), this, SLOT( backButtonClicked() ) );
+  connect( cmdLine, SIGNAL( forwardButtonClicked() ), this, SLOT( forwardButtonClicked() ) );
+  connect( cmdLine, SIGNAL( simulateClicked() ), this, SLOT( enqueueSim() ) );
+  connect( cmdLine, SIGNAL( queueClicked() ), this, SLOT( enqueueSim() ) );
+  connect( cmdLine, SIGNAL( importClicked() ), this, SLOT( importButtonClicked() ) );
+  connect( cmdLine, SIGNAL( saveLogClicked() ), this, SLOT( saveLog() ) );
+  connect( cmdLine, SIGNAL( saveResultsClicked() ), this, SLOT( saveResults() ) );
+  connect( cmdLine, SIGNAL( cancelSimulationClicked() ), this, SLOT( stopSim() ) );
+  connect( cmdLine, SIGNAL( cancelAllSimulationClicked() ), this, SLOT( stopAllSim() ) );
+  connect( cmdLine, SIGNAL( cancelImportClicked() ), this, SLOT( stopImport() ) );
+#ifdef SC_PAPERDOLL
+  connect( cmdLine, SIGNAL( simulatePaperdollClicked() ), this, SLOT( start_paperdoll_sim() ) );
+#endif
+  connect( cmdLine, SIGNAL( commandLineReturnPressed() ), this, SLOT( cmdLineReturnPressed() ) );
+  connect( cmdLine, SIGNAL( commandLineTextEdited( const QString& ) ), this, SLOT( cmdLineTextEdited( const QString& ) ) );
+  connect( cmdLine, SIGNAL( switchToLeftSubTab() ), this, SLOT( switchToLeftSubTab() ) );
+  connect( cmdLine, SIGNAL( switchToRightSubTab() ), this, SLOT( switchToRightSubTab() ) );
+  connect( cmdLine, SIGNAL( currentlyViewedTabCloseRequest() ), this, SLOT( currentlyViewedTabCloseRequest() ) );
 }
 
 void SC_MainWindow::createWelcomeTab()
@@ -736,10 +743,6 @@ void SC_MainWindow::createSiteTab()
 
 void SC_MainWindow::createToolTips()
 {
-
-  backButton -> setToolTip( tr( "Backwards" ) );
-  forwardButton -> setToolTip( tr( "Forwards" ) );
-
   optionsTab -> createToolTips();
 }
 
@@ -776,13 +779,35 @@ void SC_MainWindow::createPaperdoll()
 }
 #endif
 
-void SC_MainWindow::updateVisibleWebView( SC_WebView* wv )
+void SC_MainWindow::updateWebView( SC_WebView* wv )
 {
   assert( wv );
   visibleWebView = wv;
-  progressBar -> setFormat( "%p%" );
-  progressBar -> setValue( visibleWebView -> progress );
-  cmdLine -> setText( visibleWebView -> url().toString() );
+  if ( cmdLine != nullptr ) // can be called before widget is setup
+  {
+    if ( visibleWebView == battleNetView )
+    {
+      cmdLine -> setBattleNetLoadProgress( visibleWebView -> progress, "%p%" );
+      cmdLine -> setCommandLineText( TAB_BATTLE_NET, visibleWebView -> url_to_show );
+    }
+#if USE_CHARDEV
+    else if ( visibleWebView == charDevView )
+    {
+      cmdLine -> setCharDevProgress( visibleWebView -> progress, "%p%" );
+      cmdLine -> setCommandLineText( TAB_CHAR_DEV, visibleWebView -> url_to_show );
+    }
+#endif
+    else if ( visibleWebView == helpView )
+    {
+      cmdLine -> setHelpViewProgress( visibleWebView -> progress, "%p%" );
+      cmdLine -> setCommandLineText( TAB_HELP, visibleWebView -> url_to_show );
+    }
+    else if ( visibleWebView == siteView )
+    {
+      cmdLine -> setSiteLoadProgress( visibleWebView -> progress, "%p%" );
+      cmdLine -> setCommandLineText( TAB_SITE, visibleWebView -> url_to_show );
+    }
+  }
 }
 
 // ==========================================================================
@@ -923,29 +948,58 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
   }
 }
 
+void SC_MainWindow::enqueueSim()
+{
+  QString title = simulateTab -> tabText( simulateTab -> currentIndex() );
+  QString options = simulateTab -> current_Text() -> toPlainText();
+  QString fullOptions = optionsTab -> mergeOptions();
+  simulationQueue.enqueue( title, options, fullOptions );
+}
+
 void SC_MainWindow::startImport( int tab, const QString& url )
 {
-  if ( sim )
+  if ( importRunning() )
   {
-    sim  ->  cancel();
+    stopImport();
     return;
   }
   simProgress = 0;
-  mainButton -> setText( "Cancel!" );
-  sim = initSim();
-  importThread -> start( sim, tab, url, optionsTab -> get_db_order(), optionsTab -> get_active_spec(), optionsTab -> get_player_role() );
+  import_sim = initSim();
+  importThread -> start( import_sim, tab, url, optionsTab -> get_db_order(), optionsTab -> get_active_spec(), optionsTab -> get_player_role() );
   simulateTab -> add_Text( defaultSimulateText, tr( "Importing" ) );
-  mainTab -> setCurrentTab( TAB_SIMULATE );
   timer -> start( 500 );
+}
+
+void SC_MainWindow::stopImport()
+{
+  if ( importRunning() )
+  {
+    import_sim -> cancel();
+  }
+}
+
+bool SC_MainWindow::importRunning()
+{
+  return ( import_sim != nullptr );
+}
+
+void SC_MainWindow::itemWasEnqueuedTryToSim()
+{
+  if ( ! simRunning() )
+  {
+    startSim();
+  }
+  else
+  {
+    cmdLine -> setState( SC_MainWindowCommandLine::SIMULATING_MULTIPLE );
+  }
 }
 
 void SC_MainWindow::importFinished()
 {
-  timer -> stop();
-  simPhase = "%p%";
+  importSimPhase = "%p%";
   simProgress = 100;
-  progressBar -> setFormat( simPhase.c_str() );
-  progressBar -> setValue( simProgress );
+  cmdLine -> setImportingProgress( importSimProgress, importSimPhase.c_str() );
   if ( importThread -> player )
   {
     simulateTab -> set_Text( importThread -> profile );
@@ -969,7 +1023,7 @@ void SC_MainWindow::importFinished()
       historyList -> sortItems();
     }
 
-    deleteSim( sim ); sim = 0;
+    deleteSim( import_sim ); import_sim = 0;
   }
   else
   {
@@ -978,20 +1032,31 @@ void SC_MainWindow::importFinished()
 
     simulateTab -> append_Text( "# Unable to generate profile from: " + importThread -> url + "\n" );
 
-    deleteSim( sim, simulateTab -> current_Text() ); sim = 0;
+    deleteSim( import_sim, simulateTab -> current_Text() ); import_sim = 0;
 
     simulateTab -> current_Text() -> resetformat(); // Reset font
   }
 
-  mainButton -> setText( "Simulate!" );
+  if ( ! simRunning() )
+  {
+    timer -> stop();
+  }
+
   mainTab -> setCurrentTab( TAB_SIMULATE );
 }
 
 void SC_MainWindow::startSim()
 {
-  if ( sim )
+  if ( simRunning() )
   {
-    sim -> cancel();
+    stopSim();
+    return;
+  }
+  if ( simulationQueue.isEmpty() )
+  {
+    // enqueue will call itemWasEnqueuedTryToSim() since it is empty
+    // which starts the sim
+    enqueueSim();
     return;
   }
   optionsTab -> encodeOptions();
@@ -1001,15 +1066,40 @@ void SC_MainWindow::startSim()
   }
   // Clear log text on success so users don't get confused if there is
   // an error from previous attempts
-  logText -> clear();
+  if ( consecutiveSimulationsRun == 0 ) // Only clear on first queued sim
+  {
+    logText -> clear();
+  }
   simProgress = 0;
-  mainButton -> setText( "Cancel!" );
   sim = initSim();
-  simulateThread -> start( sim, optionsTab -> mergeOptions() );
+  if ( cmdLine -> currentState() != SC_MainWindowCommandLine::SIMULATING_MULTIPLE )
+  {
+    cmdLine -> setState( SC_MainWindowCommandLine::SIMULATING );
+  }
+  simulateThread -> start( sim, simulationQueue.dequeue() );
   // simulateText -> setPlainText( defaultSimulateText() );
   cmdLineText = "";
-  cmdLine -> setText( cmdLineText );
   timer -> start( 100 );
+}
+
+void SC_MainWindow::stopSim()
+{
+  if ( simRunning() )
+  {
+    sim -> cancel();
+  }
+}
+
+void SC_MainWindow::stopAllSim()
+{
+  simulationQueue.clear();
+  stopSim();
+  stopImport();
+}
+
+bool SC_MainWindow::simRunning()
+{
+  return ( sim != nullptr );
 }
 
 #ifdef SC_PAPERDOLL
@@ -1104,7 +1194,6 @@ void SC_MainWindow::start_paperdoll_sim()
     overridesTextHistory.add( overridesText -> toPlainText() );
     simulateCmdLineHistory.add( cmdLine -> text() );
     simProgress = 0;
-    mainButton -> setText( "Cancel!" );
     simulateThread -> start( sim, optionsTab -> get_globalSettings() );
     // simulateText -> setPlainText( defaultSimulateText() );
     cmdLineText = "";
@@ -1117,11 +1206,9 @@ void SC_MainWindow::start_paperdoll_sim()
 
 void SC_MainWindow::simulateFinished( sim_t* sim )
 {
-  timer -> stop();
   simPhase = "%p%";
   simProgress = 100;
-  progressBar -> setFormat( simPhase.c_str() );
-  progressBar -> setValue( simProgress );
+  cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str() );
   bool sim_was_debug = sim -> debug;
   if ( ! simulateThread -> success )
   {
@@ -1150,7 +1237,11 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
       resultsEntry -> addIgnoreKeyPressEvent( Qt::Key_Backtab, emptyList );
     }
     resultsTab -> addTab( resultsEntry, resultsName );
-    resultsTab -> setCurrentWidget( resultsEntry );
+    if ( ++consecutiveSimulationsRun == 1 )
+    {
+      // only switch to the new tab if we are the first simulation in queue
+      resultsTab -> setCurrentWidget( resultsEntry );
+    }
 
     // HTML
     SC_WebView* resultsHtmlView = new SC_WebView( this, resultsEntry );
@@ -1203,13 +1294,27 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
       csv_file.close();
     }
 
-
-    mainTab -> setCurrentTab( sim_was_debug ? TAB_LOG : TAB_RESULTS );
+    if ( simulationQueue.isEmpty() )
+    {
+      mainTab -> setCurrentTab( sim_was_debug ? TAB_LOG : TAB_RESULTS );
+    }
 
   }
   deleteSim( sim, simulateThread -> success == true ? 0:logText ); SC_MainWindow::sim = 0;
 
-  cmdLine -> setFocus();
+  if ( ! simulationQueue.isEmpty() )
+  {
+    startSim(); // Continue simming what is left in the queue
+  }
+  else
+  {
+    if ( ! importRunning() )
+    {
+      timer -> stop();
+    }
+    consecutiveSimulationsRun = 0;
+    cmdLine -> setState( SC_MainWindowCommandLine::IDLE );
+  }
 }
 
 #ifdef SC_PAPERDOLL
@@ -1233,7 +1338,7 @@ void SC_MainWindow::paperdollFinished()
 
 void SC_MainWindow::saveLog()
 {
-  QFile file( cmdLine->text() );
+  QFile file( cmdLine -> commandLineText( TAB_LOG ) );
 
   if ( file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
@@ -1241,7 +1346,7 @@ void SC_MainWindow::saveLog()
     file.close();
   }
 
-  logText->append( QString( "Log saved to: %1\n" ).arg( cmdLine->text() ) );
+  logText->append( QString( "Log saved to: %1\n" ).arg( cmdLine -> commandLineText( TAB_LOG ) ) );
 }
 
 void SC_MainWindow::saveResults()
@@ -1285,10 +1390,11 @@ void SC_MainWindow::cmdLineReturnPressed()
 {
   if ( mainTab -> currentTab() == TAB_IMPORT )
   {
-    if ( cmdLine->text().count( "battle.net" ) ||
-         cmdLine->text().count( "battlenet.com" ) )
+    if ( cmdLine -> commandLineText().count( "battle.net" ) ||
+         cmdLine -> commandLineText().count( "battlenet.com" ) )
     {
-      battleNetView -> setUrl( QUrl::fromUserInput( cmdLine -> text() ) );
+      battleNetView -> setUrl( QUrl::fromUserInput( cmdLine -> commandLineText() ) );
+      cmdLine -> setCommandLineText( TAB_BATTLE_NET, cmdLine -> commandLineText() );
       importTab -> setCurrentTab( TAB_BATTLE_NET );
     }
 #if USE_CHARDEV
@@ -1300,12 +1406,12 @@ void SC_MainWindow::cmdLineReturnPressed()
 #endif // USE_CHARDEV
     else
     {
-      if ( ! sim ) mainButtonClicked( true );
+      if ( ! sim ) cmdLine -> mainButtonClicked();
     }
   }
   else
   {
-    if ( ! sim ) mainButtonClicked( true );
+    if ( ! sim ) cmdLine -> mainButtonClicked();
   }
 }
 
@@ -1313,16 +1419,16 @@ void SC_MainWindow::mainButtonClicked( bool /* checked */ )
 {
   switch ( mainTab -> currentTab() )
   {
-    case TAB_WELCOME:   startSim(); break;
-    case TAB_OPTIONS:   startSim(); break;
-    case TAB_SIMULATE:  startSim(); break;
-    case TAB_OVERRIDES: startSim(); break;
-    case TAB_HELP:      startSim(); break;
-    case TAB_SITE:      startSim(); break;
+    case TAB_WELCOME:   enqueueSim(); break;
+    case TAB_OPTIONS:   enqueueSim(); break;
+    case TAB_SIMULATE:  enqueueSim(); break;
+    case TAB_OVERRIDES: enqueueSim(); break;
+    case TAB_HELP:      enqueueSim(); break;
+    case TAB_SITE:      enqueueSim(); break;
     case TAB_IMPORT:
       switch ( importTab -> currentTab() )
       {
-        case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine->text() ); break;
+        case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine -> commandLineText() ); break;
 #if USE_CHARDEV
         case TAB_CHAR_DEV:   startImport( TAB_CHAR_DEV,   cmdLine->text() ); break;
 #endif // USE_CHARDEV
@@ -1336,6 +1442,42 @@ void SC_MainWindow::mainButtonClicked( bool /* checked */ )
 #ifdef SC_PAPERDOLL
     case TAB_PAPERDOLL: start_paperdoll_sim(); break;
 #endif
+    case TAB_COUNT:
+      break;
+  }
+}
+
+void SC_MainWindow::cancelButtonClicked()
+{
+  switch ( mainTab -> currentTab() )
+  {
+    case TAB_IMPORT:
+      if ( simRunning() )
+      {
+        stopSim();
+      }
+      break;
+    default:
+      break;
+  }
+}
+
+void SC_MainWindow::queueButtonClicked()
+{
+  enqueueSim();
+}
+
+void SC_MainWindow::importButtonClicked()
+{
+  switch ( importTab -> currentTab() )
+  {
+    case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine -> commandLineText() ); break;
+#if USE_CHARDEV
+    case TAB_CHAR_DEV:   startImport( TAB_CHAR_DEV,   cmdLine->text() ); break;
+#endif // USE_CHARDEV
+    case TAB_RAWR:       startImport( TAB_RAWR,       "Rawr XML"      ); break;
+    case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
+    default: break;
   }
 }
 
@@ -1345,7 +1487,6 @@ void SC_MainWindow::backButtonClicked( bool /* checked */ )
   {
     if ( mainTab -> currentTab() == TAB_RESULTS && ! visibleWebView->history()->canGoBack() )
     {
-//        visibleWebView->setHtml( resultsHtml[ resultsTab->indexOf( visibleWebView ) ] );
       visibleWebView -> loadHtml();
 
       QWebHistory* h = visibleWebView->history();
@@ -1423,6 +1564,15 @@ void SC_MainWindow::rawrButtonClicked( bool /* checked */ )
 void SC_MainWindow::mainTabChanged( int index )
 {
   visibleWebView = 0;
+  if ( index == TAB_IMPORT )
+  {
+    cmdLine -> setTab( static_cast< import_tabs_e >( importTab -> currentIndex() ) );
+  }
+  else
+  {
+    cmdLine -> setTab( static_cast< main_tabs_e >( index ) );
+  }
+
   switch ( index )
   {
     case TAB_WELCOME:
@@ -1432,33 +1582,20 @@ void SC_MainWindow::mainTabChanged( int index )
 #ifdef SC_PAPERDOLL
     case TAB_PAPERDOLL:
 #endif
-    case TAB_HELP:      cmdLine->setText( cmdLineText ); mainButton->setText( sim ? "Cancel!" : "Simulate!" ); break;
-    case TAB_LOG:       cmdLine->setText( logFileText ); mainButton->setText( "Save!" ); break;
+    case TAB_HELP:      break;
+    case TAB_LOG:       cmdLine -> setCommandLineText( TAB_LOG, logFileText ); break;
     case TAB_IMPORT:
-      mainButton->setText( sim ? "Cancel!" : "Import!" );
       importTabChanged( importTab->currentIndex() );
       break;
     case TAB_RESULTS:
-      cmdLine->setText( cmdLineText );
-      mainButton -> setText( "Save!" );
       resultsTabChanged( resultsTab -> currentIndex() );
       break;
     case TAB_SITE:
-      cmdLine->setText( cmdLineText );
-      mainButton->setText( sim ? "Cancel!" : "Simulate!" );
-      updateVisibleWebView( siteView );
+      updateWebView( siteView );
       break;
     default: assert( 0 );
   }
-  if ( visibleWebView )
-  {
-    progressBar->setFormat( "%p%" );
-  }
-  else
-  {
-    progressBar->setFormat( simPhase.c_str() );
-    progressBar->setValue( simProgress );
-  }
+  cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str() );
 }
 
 void SC_MainWindow::importTabChanged( int index )
@@ -1469,14 +1606,13 @@ void SC_MainWindow::importTabChanged( int index )
        index == TAB_HISTORY ||
        index == TAB_RECENT )
   {
+    cmdLine -> setTab( static_cast< import_tabs_e >( index ) );
     visibleWebView = 0;
-    progressBar->setFormat( simPhase.c_str() );
-    progressBar->setValue( simProgress );
-    cmdLine->setText( "" );
+    cmdLine -> setSimulatingProgress( importSimProgress, importSimPhase.c_str() );
   }
   else
   {
-    updateVisibleWebView( debug_cast<SC_WebView*>( importTab -> widget( index ) ) );
+    updateWebView( debug_cast<SC_WebView*>( importTab -> widget( index ) ) );
   }
 }
 
@@ -1794,16 +1930,16 @@ void SC_SingleResultTab::save_result()
   }
 
   QString savePath = mainWindow -> ResultsDestDir;
-  int fname_offset = mainWindow -> cmdLine -> text().lastIndexOf( QDir::separator() );
+  int fname_offset = mainWindow -> cmdLine -> commandLineText( TAB_RESULTS ).lastIndexOf( QDir::separator() );
 
-  if ( mainWindow -> cmdLine -> text().size() > 0 )
+  if ( mainWindow -> cmdLine -> commandLineText( TAB_RESULTS ).size() > 0 )
   {
     if ( fname_offset == -1 )
-      destination = mainWindow -> cmdLine -> text();
+      destination = mainWindow -> cmdLine -> commandLineText( TAB_RESULTS );
     else
     {
-      savePath = mainWindow -> cmdLine -> text().left( fname_offset );
-      destination = mainWindow -> cmdLine -> text().right( fname_offset - 1 );
+      savePath = mainWindow -> cmdLine -> commandLineText( TAB_RESULTS ).left( fname_offset );
+      destination = mainWindow -> cmdLine -> commandLineText( TAB_RESULTS ).right( fname_offset - 1 );
     }
   }
 
