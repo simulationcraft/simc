@@ -2595,52 +2595,42 @@ protected:
     // creates the commandline
     QLayout* parentLayout = parent -> layout();
     // Navigation buttons + Command Line
-    switch ( state )
-    {
-    default:
-      QPushButton* buttonPrev = new QPushButton( tr( "<" ), parent );
-      QPushButton* buttonNext = new QPushButton( tr( ">" ), parent );
-      SC_CommandLine* commandLineEdit = new SC_CommandLine( parent );
+    QPushButton* buttonPrev = new QPushButton( tr( "<" ), parent );
+    QPushButton* buttonNext = new QPushButton( tr( ">" ), parent );
+    SC_CommandLine* commandLineEdit = new SC_CommandLine( parent );
 
-      setWidget( state, BUTTON_PREV,      QVariant::fromValue< QPushButton* >( buttonPrev ) );
-      setWidget( state, BUTTON_NEXT,      QVariant::fromValue< QPushButton* >( buttonNext ) );
-      setWidget( state, TEXTEDIT_CMDLINE, QVariant::fromValue< SC_CommandLine* >( commandLineEdit ) );
+    setWidget( state, BUTTON_PREV,      QVariant::fromValue< QPushButton* >( buttonPrev ) );
+    setWidget( state, BUTTON_NEXT,      QVariant::fromValue< QPushButton* >( buttonNext ) );
+    setWidget( state, TEXTEDIT_CMDLINE, QVariant::fromValue< SC_CommandLine* >( commandLineEdit ) );
 
-      buttonPrev -> setMaximumWidth( 30 );
-      buttonNext -> setMaximumWidth( 30 );
+    buttonPrev -> setMaximumWidth( 30 );
+    buttonNext -> setMaximumWidth( 30 );
 
-      parentLayout -> addWidget( buttonPrev );
-      parentLayout -> addWidget( buttonNext );
-      parentLayout -> addWidget( commandLineEdit );
+    parentLayout -> addWidget( buttonPrev );
+    parentLayout -> addWidget( buttonNext );
+    parentLayout -> addWidget( commandLineEdit );
 
-      connect( buttonPrev,      SIGNAL( clicked( bool ) ), this, SIGNAL(    backButtonClicked() ) );
-      connect( buttonNext,      SIGNAL( clicked( bool ) ), this, SIGNAL( forwardButtonClicked() ) );
-      connect( commandLineEdit, SIGNAL( switchToLeftSubTab() ), this, SIGNAL( switchToLeftSubTab() ) );
-      connect( commandLineEdit, SIGNAL( switchToRightSubTab() ), this, SIGNAL( switchToRightSubTab() ) );
-      connect( commandLineEdit, SIGNAL( currentlyViewedTabCloseRequest() ), this, SIGNAL( currentlyViewedTabCloseRequest() ) );
-      connect( commandLineEdit, SIGNAL( returnPressed() ), this, SIGNAL( commandLineReturnPressed() ) );
-      connect( commandLineEdit, SIGNAL( textEdited( const QString& ) ), this, SLOT( commandLineTextEditedSlot( const QString& ) ) );
-      break;
-    }
+    connect( buttonPrev,      SIGNAL( clicked( bool ) ), this, SIGNAL(    backButtonClicked() ) );
+    connect( buttonNext,      SIGNAL( clicked( bool ) ), this, SIGNAL( forwardButtonClicked() ) );
+    connect( commandLineEdit, SIGNAL( switchToLeftSubTab() ), this, SIGNAL( switchToLeftSubTab() ) );
+    connect( commandLineEdit, SIGNAL( switchToRightSubTab() ), this, SIGNAL( switchToRightSubTab() ) );
+    connect( commandLineEdit, SIGNAL( currentlyViewedTabCloseRequest() ), this, SIGNAL( currentlyViewedTabCloseRequest() ) );
+    connect( commandLineEdit, SIGNAL( returnPressed() ), this, SIGNAL( commandLineReturnPressed() ) );
+    connect( commandLineEdit, SIGNAL( textEdited( const QString& ) ), this, SLOT( commandLineTextEditedSlot( const QString& ) ) );
     // Progress bar
-    switch ( state )
-    {
-    default:
-      QProgressBar* progressBar = new QProgressBar( parent );
+    QProgressBar* progressBar = new QProgressBar( parent );
 
-      setWidget( state, PROGRESSBAR_WIDGET, QVariant::fromValue< QProgressBar* >( progressBar ) );
+    setWidget( state, PROGRESSBAR_WIDGET, QVariant::fromValue< QProgressBar* >( progressBar ) );
 
-      progressBar -> setMaximum( 100 );
-      progressBar -> setMaximumWidth( 200 );
-      progressBar -> setMinimumWidth( 150 );
+    progressBar -> setMaximum( 100 );
+    progressBar -> setMaximumWidth( 200 );
+    progressBar -> setMinimumWidth( 150 );
 
-      QFont progressBarFont( progressBar -> font() );
-      progressBarFont.setPointSize( 11 );
-      progressBar -> setFont( progressBarFont );
+    QFont progressBarFont( progressBar -> font() );
+    progressBarFont.setPointSize( 11 );
+    progressBar -> setFont( progressBarFont );
 
-      parentLayout -> addWidget( progressBar );
-      break;
-    }
+    parentLayout -> addWidget( progressBar );
   }
   bool tryToHideWidget( QString* text, QWidget* widget )
   {
@@ -2691,13 +2681,8 @@ protected:
       }
       else if ( text == text_cancel_all )
       {
-        switch ( current_tab )
-        {
-        default:
-          emit( cancelImportClicked() );
-          emit( cancelAllSimulationClicked() );
-          break;
-        }
+        emit( cancelImportClicked() );
+        emit( cancelAllSimulationClicked() );
       }
       else if ( text == text_import )
       {
@@ -2754,13 +2739,8 @@ protected:
   void setText( state_e state, tabs_e tab, widgets_e widget, QString* text, QString* tooltip = nullptr )
   {
     // change the text and tooltip's pointer values
-    switch ( widget )
-    {
-    default:
-      states[state][tab][widget].text = text;
-      states[state][tab][widget].tool_tip = tooltip;
-      break;
-    }
+    states[state][tab][widget].text = text;
+    states[state][tab][widget].tool_tip = tooltip;
   }
   void setProgressBarState( state_e state, tabs_e tab, progressbar_states_e progressbar_state )
   {

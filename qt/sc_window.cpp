@@ -837,12 +837,16 @@ void SC_MainWindow::deleteSim( sim_t* sim, SC_TextEdit* append_error_message )
     files.push_back( sim -> reforge_plot_output_file_str );
     files.push_back( sim -> csv_output_file_str );
 
+    std::string output_file_str = sim -> output_file_str;
+    bool sim_control_was_not_zero = sim -> control != 0;
+
     delete sim;
+    sim = nullptr;
 
     QString contents;
     bool logFileOpenedSuccessfully = false;
-    QFile logFile( QString::fromStdString( sim -> output_file_str ) );
-    if ( sim -> control != 0 && // sim -> setup() was not called, output file was not opened
+    QFile logFile( QString::fromStdString( output_file_str ) );
+    if ( sim_control_was_not_zero && // sim -> setup() was not called, output file was not opened
          logFile.open( QIODevice::ReadWrite| QIODevice::Text ) ) // ReadWrite failure indicates permission issues
     {
       contents = QString::fromUtf8( logFile.readAll() );
@@ -1471,9 +1475,9 @@ void SC_MainWindow::importButtonClicked()
 {
   switch ( importTab -> currentTab() )
   {
-    case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine -> commandLineText() ); break;
+    case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine -> commandLineText( TAB_BATTLE_NET ) ); break;
 #if USE_CHARDEV
-    case TAB_CHAR_DEV:   startImport( TAB_CHAR_DEV,   cmdLine->text() ); break;
+    case TAB_CHAR_DEV:   startImport( TAB_CHAR_DEV,   cmdLine -> commandLineText( TAB_CHAR_DEV ) ); break;
 #endif // USE_CHARDEV
     case TAB_RAWR:       startImport( TAB_RAWR,       "Rawr XML"      ); break;
     case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
