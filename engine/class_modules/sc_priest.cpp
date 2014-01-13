@@ -311,9 +311,8 @@ public:
   virtual void pre_analyze_hook() override;
   virtual void invalidate_cache( cache_e ) override;
   virtual void      init_action_list() override;
-  virtual priest_td_t* get_target_data( player_t* target ) override;
+  virtual priest_td_t* get_target_data( player_t* target ) const override;
 
-  priest_td_t* find_target_data( player_t* target ) const;
   void fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name );
   double shadowy_recall_chance() const;
 
@@ -845,11 +844,8 @@ public:
     }
   }
 
-  priest_td_t& get_td( player_t* t )
+  priest_td_t& get_td( player_t* t ) const
   { return *( priest.get_target_data( t ) ); }
-
-  priest_td_t* find_td( player_t* t ) const
-  { return priest.find_target_data( t ); }
 
   virtual void schedule_execute( action_state_t* state = 0 ) override
   {
@@ -1097,9 +1093,8 @@ struct priest_heal_t : public priest_action_t<heal_t>
   {
     double ctc = base_t::composite_target_crit( t );
 
-    if ( priest_td_t* td = find_td( t ) )
-      if ( td -> buffs.holy_word_serenity -> up() )
-        ctc += td -> buffs.holy_word_serenity -> data().effectN( 2 ).percent();
+    if ( get_td( t ).buffs.holy_word_serenity -> check() )
+      ctc += get_td( t ).buffs.holy_word_serenity -> data().effectN( 2 ).percent();
 
     return ctc;
   }
@@ -1146,9 +1141,10 @@ struct priest_heal_t : public priest_action_t<heal_t>
         trigger_divine_aegis( s );
         trigger_echo_of_light( this, s );
 
-        if ( priest_td_t* td = find_td( s -> target ) )
-          if ( priest.buffs.chakra_serenity -> up() && td -> dots.renew -> ticking )
-            td -> dots.renew -> refresh_duration();
+        if ( priest.buffs.chakra_serenity -> up() && get_td( target ).dots.renew -> ticking )
+        {
+          get_td( target ).dots.renew -> refresh_duration();
+        }
 
         if ( priest.talents.twist_of_fate -> ok() && ( save_health_percentage < priest.talents.twist_of_fate -> effectN( 1 ).base_value() ) )
         {
@@ -1910,18 +1906,18 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 
     if ( rng().roll( priest.sets.set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent() ) )
     {
-      priest_td_t* td = find_td( s -> target);
+      priest_td_t& td = get_td( s -> target);
       priest.procs.t15_2pc_caster -> occur();
 
-      if ( td && td -> dots.shadow_word_pain -> ticking )
+      if ( td.dots.shadow_word_pain -> ticking )
       {
-        td -> dots.shadow_word_pain -> extend_duration( 1 );
+        td.dots.shadow_word_pain -> extend_duration( 1 );
         priest.procs.t15_2pc_caster_shadow_word_pain -> occur();
       }
 
-      if ( td && td -> dots.vampiric_touch -> ticking )
+      if ( td.dots.vampiric_touch -> ticking )
       {
-        td -> dots.vampiric_touch -> extend_duration( 1 );
+        td.dots.vampiric_touch -> extend_duration( 1 );
         priest.procs.t15_2pc_caster_vampiric_touch -> occur();
       }
     }
@@ -2137,12 +2133,10 @@ struct mind_spike_t final : public priest_spell_t
       const mind_spike_state_t* ms_s = static_cast<const mind_spike_state_t*>( s );
       if ( ! ms_s -> surge_of_darkness )
       {
-        if ( priest_td_t* td = find_td( s -> target ) )
-        {
-          cancel_dot( *td -> dots.shadow_word_pain );
-          cancel_dot( *td -> dots.vampiric_touch );
-          cancel_dot( *td -> dots.devouring_plague_tick );
-        }
+        priest_td_t& td = get_td( s -> target );
+        cancel_dot( *td.dots.shadow_word_pain );
+        cancel_dot( *td.dots.vampiric_touch );
+        cancel_dot( *td.dots.devouring_plague_tick );
         priest.procs.mind_spike_dot_removal -> occur();
 
         priest.buffs.glyph_mind_spike -> trigger();
@@ -2663,10 +2657,10 @@ struct mind_flay_mastery_t final : public priest_procced_mastery_spell_t
 
     if ( insanity )
     {
-      priest_td_t* td = find_td( t );
-      if ( priest.talents.solace_and_insanity -> ok() && td && td -> dots.devouring_plague_tick -> ticking )
+      priest_td_t& td = get_td( t );
+      if ( priest.talents.solace_and_insanity -> ok() && td.dots.devouring_plague_tick -> ticking )
       {
-        const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td -> dots.devouring_plague_tick -> state );
+        const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td.dots.devouring_plague_tick -> state );
         m *= 1.0 + dp_state -> orbs_used / 3.0;
       }
     }
@@ -2732,11 +2726,11 @@ struct mind_flay_insanity_t final : public mind_flay_base_t<true>
 
   virtual bool ready() override
   {
-    priest_td_t* td = find_td( target );
-    if (!( priest.talents.solace_and_insanity -> ok() && td && td -> dots.devouring_plague_tick -> ticking ))
+    priest_td_t& td = get_td( target );
+    if (!( priest.talents.solace_and_insanity -> ok() && td.dots.devouring_plague_tick -> ticking ))
       return false;
 
-    const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td -> dots.devouring_plague_tick -> state );
+    const devouring_plague_state_t* dp_state = debug_cast<const devouring_plague_state_t*>( td.dots.devouring_plague_tick -> state );
     orbs_used = dp_state -> orbs_used;
 
     return base_t::ready();
@@ -3199,13 +3193,11 @@ struct smite_t final : public priest_spell_t
   {
     bool glyph_benefit = false;
 
-    if ( priest_td_t* td = find_td( t ) )
-    {
-      if ( priest.talents.solace_and_insanity -> ok() )
-        glyph_benefit = priest.glyphs.smite -> ok() && td -> dots.power_word_solace -> ticking;
-      else
-        glyph_benefit = priest.glyphs.smite -> ok() && td -> dots.holy_fire -> ticking;
-    }
+    priest_td_t& td = get_td( t );
+    if ( priest.talents.solace_and_insanity -> ok() )
+      glyph_benefit = priest.glyphs.smite -> ok() && td. dots.power_word_solace -> ticking;
+    else
+      glyph_benefit = priest.glyphs.smite -> ok() && td.dots.holy_fire -> ticking;
 
     return glyph_benefit;
   }
@@ -4582,11 +4574,9 @@ public:
     Base( params ), priest( p )
   { }
 
-  priest_td_t& get_td( player_t* t )
+  priest_td_t& get_td( player_t* t ) const
   { return *( priest.get_target_data( t ) ); }
 
-  priest_td_t* find_td( player_t* t ) const
-  { return priest.find_target_data( t ); }
 protected:
   priest_t& priest;
 };
@@ -5767,19 +5757,14 @@ void priest_t::apl_holy_dmg()
   def -> add_action( this, "Smite" );
 }
 
-priest_td_t* priest_t::find_target_data( player_t* target ) const
-{
-  return target_data[ target ];
-}
-
 /* Always returns non-null targetdata pointer
  */
-priest_td_t* priest_t::get_target_data( player_t* target )
+priest_td_t* priest_t::get_target_data( player_t* target ) const
 {
   priest_td_t*& td = target_data[ target ];
   if ( ! td )
   {
-    td = new priest_td_t( target, *this );
+    td = new priest_td_t( target, const_cast<priest_t&>(*this) );
   }
   return td;
 }

@@ -350,18 +350,14 @@ public:
 
   target_specific_t<paladin_td_t*> target_data;
 
-  virtual paladin_td_t* get_target_data( player_t* target )
+  virtual paladin_td_t* get_target_data( player_t* target ) const
   {
     paladin_td_t*& td = target_data[ target ];
     if ( ! td )
     {
-      td = new paladin_td_t( target, this );
+      td = new paladin_td_t( target, const_cast<paladin_t*>(this) );
     }
     return td;
-  }
-  paladin_td_t* find_target_data( player_t* target ) const
-  {
-    return target_data[ target ];
   }
 };
 
@@ -471,10 +467,8 @@ public:
   const paladin_t* p() const
   { return static_cast<paladin_t*>( ab::player ); }
 
-  paladin_td_t* td( player_t* t = 0 ) { return p() -> get_target_data( t ? t : ab::target ); }
-
-  paladin_td_t* find_td( player_t* t ) const
-  { return p() -> find_target_data( t ); }
+  paladin_td_t* td( player_t* t ) const
+  { return p() -> get_target_data( t ); }
 
   virtual double cost() const
   {
@@ -1127,10 +1121,7 @@ struct censure_t : public paladin_spell_t
     // and apply the stack size as an action multiplier
     double am = paladin_spell_t::composite_target_multiplier( t );
 
-    if ( paladin_td_t* td = find_td( t ) )
-    {
-      am *= td -> buffs.debuffs_censure -> check();
-    }
+    am *= td( t ) -> buffs.debuffs_censure -> check();
 
     return am;
   }
@@ -1538,10 +1529,7 @@ struct stay_of_execution_t : public paladin_heal_t
   {
     double m = paladin_heal_t::composite_target_multiplier( target );
 
-    if ( paladin_td_t* td = find_td( target ) )
-    {
-      m *= soe_tick_multiplier[ td -> dots.stay_of_execution -> current_tick ];
-    }
+    m *= soe_tick_multiplier[ td( target ) -> dots.stay_of_execution -> current_tick ];
 
     return m;
   }
@@ -1593,10 +1581,7 @@ struct execution_sentence_t : public paladin_spell_t
   {
     double m = paladin_spell_t::composite_target_multiplier( target );
 
-    if ( paladin_td_t* td = find_td( target ) )
-    {
-      m *= tick_multiplier[ td -> dots.execution_sentence -> current_tick ];
-    }
+    m *= tick_multiplier[ td( target ) -> dots.execution_sentence -> current_tick ];
 
     return m;
   }
@@ -2868,7 +2853,7 @@ struct paladin_melee_attack_t : public paladin_action_t< melee_attack_t >
             break;
           case SEAL_OF_TRUTH:
             p() -> active_censure                    -> execute();
-            if ( td() -> buffs.debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
+            if ( td( target ) -> buffs.debuffs_censure -> stack() >= 1 ) p() -> active_seal_of_truth_proc -> execute();
             break;
           default: break;
         }
