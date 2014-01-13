@@ -958,7 +958,7 @@ QString SC_OptionsTab::mergeOptions()
   options += "### End overrides ###\n"
 
       "### Begin command line ###\n";
-  options += mainWindow -> cmdLine -> text();
+  options += mainWindow -> cmdLine -> commandLineText();
   options += "\n"
       "### End command line ###\n"
 
