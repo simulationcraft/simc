@@ -1439,7 +1439,7 @@ struct eternal_flame_t : public paladin_heal_t
     if ( target == player )
     {
       // HoT is twice as effective when used on self
-      am *= 1.0 + p() -> talents.eternal_flame -> effectN( 3 ).percent() / 2;  // 9/23/2013 hotfix
+      am *= 1.0 + p() -> talents.eternal_flame -> effectN( 3 ).percent(); 
     }
 
     return am;

@@ -53,3 +53,7 @@ CMakeCache.txt
 *.pdb
 *.cmake
 *.un~
+*.swp
+*.pyc
+*.ld_*
+
