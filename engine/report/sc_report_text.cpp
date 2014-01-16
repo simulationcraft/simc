@@ -471,9 +471,15 @@ void print_text_uptime( FILE* file, player_t* p )
   }
 }
 
-// print_text_waiting =======================================================
+// print_text_waiting ==========================================================
+void print_text_waiting( FILE* file, player_t* p )
+{
+  util::fprintf( file, "  Waiting: %4.2f%%", 100.0* p -> collected_data.waiting_time.mean() / p -> collected_data.fight_length.mean() );
+}
 
-void print_text_waiting( FILE* file, sim_t* sim )
+// print_text_waiting_all =======================================================
+
+void print_text_waiting_all( FILE* file, sim_t* sim )
 {
   util::fprintf( file, "\nWaiting:\n" );
 
@@ -845,6 +851,7 @@ void print_text_player( FILE* file, player_t* p )
   print_text_pet_gains    ( file, p );
   print_text_scale_factors( file, p, p -> report_information );
   print_text_dps_plots    ( file, p );
+  print_text_waiting      ( file, p );
 
 }
 
@@ -946,7 +953,7 @@ void print_text( FILE* file, sim_t* sim, bool detail )
   if ( detail )
   {
     print_text_hat_donors   ( file, sim );
-    print_text_waiting      ( file, sim );
+    print_text_waiting_all  ( file, sim );
     print_text_performance  ( file, sim );
     print_text_scale_factors( file, sim );
     print_text_reference_dps( file, sim );
