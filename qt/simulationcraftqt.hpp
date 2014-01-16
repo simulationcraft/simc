@@ -38,6 +38,7 @@ enum main_tabs_e
 #ifdef SC_PAPERDOLL
   , TAB_PAPERDOLL
 #endif
+  , TAB_COUNT
 };
 
 enum import_tabs_e
@@ -1553,6 +1554,26 @@ protected:
 
     return listViewParent;
   }
+  QModelIndex getSelectionAndMakeSureIsValidIfElementsAvailable()
+  {
+    QModelIndex index;
+
+    if ( model -> rowCount() > 0 )
+    {
+      QItemSelectionModel* selection = listView -> selectionModel();
+      index = selection -> currentIndex();
+      if ( ! index.isValid() && selection -> hasSelection() )
+      {
+        QModelIndexList selectedIndicies = selection -> selectedIndexes();
+        if ( ! selectedIndicies.isEmpty() )
+        {
+          index = selectedIndicies.first();
+        }
+      }
+    }
+
+    return index;
+  }
 protected:
   void showEvent( QShowEvent* e )
   {
@@ -1594,7 +1615,7 @@ public slots:
   }
   void restoreCurrentlySelected()
   {
-    model -> restoreTab( listView -> selectionModel() -> currentIndex() );
+    model -> restoreTab( getSelectionAndMakeSureIsValidIfElementsAvailable() );
   }
   bool addIndexToPreview( const QModelIndex& index )
   {
@@ -1677,19 +1698,10 @@ public slots:
   }
   void removeCurrentItem()
   {
-    QItemSelectionModel* selection = listView -> selectionModel();
-    QModelIndex index = selection -> currentIndex();
-    if ( ! index.isValid() && selection -> hasSelection() )
-    {
-      QModelIndexList selectedIndicies = selection -> selectedIndexes();
-      if ( ! selectedIndicies.isEmpty() )
-      {
-        index = selectedIndicies.first();
-      }
-    }
+    QModelIndex index = getSelectionAndMakeSureIsValidIfElementsAvailable();
     removePreviousTabFromPreview();
     int selectedRow = index.row();
-    model -> removeRow( index.row(), selection -> currentIndex().parent() );
+    model -> removeRow( index.row() );
     index = model -> index( selectedRow, 0 );
     previewNextOrHide();
   }
@@ -1916,6 +1928,984 @@ protected:
     // no key match
     QTabWidget::keyPressEvent( e );
   }
+};
+
+// ============================================================================
+// SC_QueueItemModel
+// ============================================================================
+
+class SC_QueueItemModel : public QStandardItemModel
+{
+  Q_OBJECT
+public:
+  SC_QueueItemModel( QObject* parent = nullptr ) :
+    QStandardItemModel( parent )
+  {
+    connect( this, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),  this, SLOT( rowsRemovedSlot( const QModelIndex&, int, int ) ) );
+    connect( this, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( rowsInsertedSlot( const QModelIndex&, int, int ) ) );
+  }
+  void enqueue( const QString& title, const QString& options, const QString& fullOptions )
+  {
+    QStandardItem* item = new QStandardItem;
+    item -> setData( QVariant::fromValue< QString >( title ), Qt::DisplayRole );
+    item -> setData( QVariant::fromValue< QString >( options ), Qt::UserRole );
+    item -> setData( QVariant::fromValue< QString >( fullOptions ), Qt::UserRole + 1 );
+
+    appendRow( item );
+  }
+  QString dequeue()
+  {
+    QModelIndex indx = index( 0, 0 );
+    QString retval;
+    if ( indx.isValid() )
+    {
+      retval = indx.data( Qt::UserRole + 1 ).toString();
+      removeRow( 0 );
+    }
+    return retval;
+  }
+  bool isEmpty() const
+  {
+    return rowCount() <= 0;
+  }
+private slots:
+  void rowsRemovedSlot( const QModelIndex& parent, int start, int end )
+  {
+    Q_UNUSED( parent );
+    Q_UNUSED( start );
+    Q_UNUSED( end );
+  }
+  void rowsInsertedSlot( const QModelIndex& parent, int start, int end )
+  {
+    Q_UNUSED( parent );
+    int rowsAdded = ( end - start ) + 1; // if only one is added, end - start = 0
+    if ( rowsAdded == rowCount() )
+    {
+      emit( firstItemWasAdded() );
+    }
+  }
+signals:
+  void firstItemWasAdded();
+};
+
+// ============================================================================
+// SC_QueueListView
+// ============================================================================
+
+class SC_QueueListView : public QWidget
+{
+  Q_OBJECT
+  QListView* listView;
+  SC_QueueItemModel* model;
+  int minimumItemsToShow;
+public:
+  SC_QueueListView( SC_QueueItemModel* model,
+      int minimumItemsToShowWidget = 1,
+      QWidget* parent = nullptr ) :
+    QWidget( parent ),
+    listView( nullptr ),
+    model( model ),
+    minimumItemsToShow( minimumItemsToShowWidget )
+  {
+    init();
+  }
+  SC_QueueItemModel* getModel()
+  {
+    return model;
+  }
+  void setMinimumNumberOfItemsToShowWidget( int number )
+  {
+    minimumItemsToShow = number;
+    tryShow();
+    tryHide();
+  }
+protected:
+  void init()
+  {
+    QVBoxLayout* widgetLayout = new QVBoxLayout;
+    widgetLayout -> addWidget( initListView() );
+
+    QWidget* buttons = new QWidget( this );
+    QPushButton* buttonOne = new QPushButton( tr( "test" ) );
+
+    QHBoxLayout* buttonsLayout = new QHBoxLayout;
+    buttonsLayout -> addWidget( buttonOne );
+
+    buttons -> setLayout( buttonsLayout );
+
+    widgetLayout -> addWidget( buttons );
+    setLayout( widgetLayout );
+
+    tryHide();
+  }
+  QListView* initListView()
+  {
+    if ( listView != nullptr )
+    {
+      delete listView;
+    }
+    listView = new QListView( this );
+
+    listView -> setEditTriggers( QAbstractItemView::NoEditTriggers );
+    listView -> setSelectionMode( QListView::SingleSelection );
+    listView -> setModel( model );
+
+    if ( model != nullptr )
+    {
+      connect( model, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( rowsInserted() ) );
+      connect( model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),  this, SLOT( rowsRemoved() ) );
+    }
+
+    QAction* remove = new QAction( tr( "Remove" ), listView );
+    listView -> addAction( remove );
+    listView -> setContextMenuPolicy( Qt::ActionsContextMenu );
+
+    connect( remove, SIGNAL( triggered( bool ) ), this, SLOT( removeCurrentItem() ) );
+
+    return listView;
+  }
+  void tryHide()
+  {
+    if ( model != nullptr ) // gcc gave a weird error when making this one if
+    {
+      if ( model -> rowCount() < minimumItemsToShow &&
+           minimumItemsToShow >= 0 )
+      {
+        if ( isVisible() )
+        {
+          hide();
+        }
+      }
+    }
+  }
+  void tryShow()
+  {
+    if ( model != nullptr )
+    {
+      if ( model -> rowCount() >= minimumItemsToShow )
+      {
+        if ( ! isVisible() )
+        {
+          show();
+        }
+      }
+    }
+  }
+private slots:
+  void removeCurrentItem()
+  {
+    QItemSelectionModel* selection = listView -> selectionModel();
+    QModelIndex index = selection -> currentIndex();
+    model -> removeRow( index.row(), selection -> currentIndex().parent() );
+  }
+  void rowsInserted()
+  {
+    tryShow();
+  }
+  void rowsRemoved()
+  {
+    tryHide();
+  }
+};
+
+// ============================================================================
+// SC_CommandLine
+// ============================================================================
+
+class SC_CommandLine : public QLineEdit
+{
+  Q_OBJECT
+protected:
+  virtual void keyPressEvent( QKeyEvent* e );
+public:
+  SC_CommandLine( QWidget* parent = nullptr ) : QLineEdit( parent ) { };
+signals:
+  void switchToLeftSubTab();
+  void switchToRightSubTab();
+  void currentlyViewedTabCloseRequest();
+};
+
+// ============================================================================
+// SC_MainNavigationWidget
+// ============================================================================
+
+class SC_MainWindowCommandLine : public QWidget
+{
+  Q_OBJECT
+  Q_PROPERTY( state_e state READ currentState WRITE setState ) // Which page of the stacked layout are we on
+public:
+  enum state_e
+  {
+    IDLE = 0,
+    SIMULATING,          // Simulating only one, nothing queued
+    SIMULATING_MULTIPLE, // Simulating but others are queued
+    STATE_COUNT
+  };
+  enum tabs_e // contains main_tabs_e then import_tabs_e
+  {
+    CMDLINE_TAB_WELCOME = 0,
+    CMDLINE_TAB_OPTIONS,
+    CMDLINE_TAB_IMPORT,
+    CMDLINE_TAB_SIMULATE,
+    CMDLINE_TAB_OVERRIDES,
+    CMDLINE_TAB_HELP,
+    CMDLINE_TAB_LOG,
+    CMDLINE_TAB_RESULTS,
+    CMDLINE_TAB_SITE,
+#ifdef SC_PAPERDOLL
+    CMDLINE_TAB_PAPERDOLL,
+#endif
+    CMDLINE_TAB_BATTLE_NET,
+#if USE_CHARDEV
+    CMDLINE_TAB_CHAR_DEV,
+#endif
+    CMDLINE_TAB_RAWR,
+    CMDLINE_TAB_BIS,
+    CMDLINE_TAB_HISTORY,
+    CMDLINE_TAB_RECENT,
+    CMDLINE_TAB_CUSTOM,
+    CMDLINE_TAB_COUNT
+  };
+protected:
+  QString text_simulate;
+  QString text_queue;
+  QString text_cancel;
+  QString text_cancel_all;
+  QString text_save;
+  QString text_import;
+  QString text_prev;
+  QString text_next;
+  QString text_prev_tooltip;
+  QString text_next_tooltip;
+  QString text_custom;
+  QString text_hide_widget; // call hide() on the button, else call show()
+  enum widgets_e
+  {
+    BUTTON_MAIN = 0,
+    BUTTON_QUEUE,
+    BUTTON_PREV,
+    BUTTON_NEXT,
+    TEXTEDIT_CMDLINE,
+    PROGRESSBAR_WIDGET,
+    WIDGET_COUNT
+  };
+  enum progressbar_states_e // Different states for progressbars
+  {
+    PROGRESSBAR_IGNORE = 0,
+    PROGRESSBAR_IDLE,
+    PROGRESSBAR_SIMULATING,
+    PROGRESSBAR_IMPORTING,
+    PROGRESSBAR_BATTLE_NET,
+#if USE_CHARDEV
+    PROGRESSBAR_CHAR_DEV,
+#endif
+    PROGRESSBAR_HELP,
+    PROGRESSBAR_SITE,
+    PROGRESSBAR_STATE_COUNT
+  };
+  struct _widget_state
+  {
+    QString* text;
+    QString* tool_tip;
+    progressbar_states_e progressbar_state;
+  };
+  _widget_state states[STATE_COUNT][CMDLINE_TAB_COUNT][WIDGET_COUNT]; // all the states
+  // ProgressBar state progress/format
+  std::pair< QString, int > progressBarFormat[PROGRESSBAR_STATE_COUNT];
+  // CommandLine buffers
+  QString commandLineBuffer_DEFAULT; // different buffers for different tabs
+  QString commandLineBuffer_TAB_BATTLE_NET;
+  QString commandLineBuffer_TAB_RESULTS;
+  QString commandLineBuffer_TAB_SITE;
+  QString commandLineBuffer_TAB_HELP;
+  QString commandLineBuffer_TAB_LOG;
+
+  QVariant widgets[STATE_COUNT][WIDGET_COUNT]; // holds all widgets in all states
+
+  QStackedLayout* statesStackedLayout; // Contains all states
+  tabs_e current_tab;
+  state_e current_state;
+public:
+  SC_MainWindowCommandLine( QWidget* parent = nullptr ) :
+    QWidget( parent ),
+    statesStackedLayout( nullptr ),
+    current_tab( CMDLINE_TAB_WELCOME ),
+    current_state( IDLE )
+  {
+    init();
+  }
+  state_e currentState() const
+  {
+    return current_state;
+  }
+  void setSimulatingProgress( int value, QString format )
+  {
+    updateProgress( PROGRESSBAR_SIMULATING, value, format );
+  }
+  int getSimulatingProgress()
+  {
+    return getProgressBarProgressForState( PROGRESSBAR_SIMULATING );
+  }
+  void setImportingProgress( int value, QString format )
+  {
+    updateProgress( PROGRESSBAR_IMPORTING, value, format );
+  }
+  int getImportingProgress()
+  {
+    return getProgressBarProgressForState( PROGRESSBAR_IMPORTING );
+  }
+  void setBattleNetLoadProgress( int value, QString format )
+  {
+    updateProgress( PROGRESSBAR_BATTLE_NET, value, format );
+  }
+  int getBattleNetProgress()
+  {
+    return getProgressBarProgressForState( PROGRESSBAR_BATTLE_NET );
+  }
+#if USE_CHARDEV
+  void setCharDevProgress( int value, QString format )
+  {
+    updateProgress( PROGRESSBAR_CHAR_DEV, value );
+  }
+  int getCharDevProgress()
+  {
+    return getProgressBarProgressForState( PROGRESSBAR_CHAR_DEV );
+  }
+#endif
+  void setHelpViewProgress( int value, QString format )
+  {
+    updateProgress( PROGRESSBAR_HELP, value, format );
+  }
+  int getHelpViewProgress()
+  {
+    return getProgressBarProgressForState( PROGRESSBAR_HELP );
+  }
+  void setSiteLoadProgress( int value, QString format )
+  {
+    updateProgress( PROGRESSBAR_SITE, value, format );
+  }
+  int getSiteProgress()
+  {
+    return getProgressBarProgressForState( PROGRESSBAR_SITE );
+  }
+  QString commandLineText()
+  {
+    // gets commandline text for the current tab
+    return commandLineText( current_tab );
+  }
+  QString commandLineText( main_tabs_e tab )
+  {
+    return commandLineText( convertTabsEnum( tab ) );
+  }
+  QString commandLineText( import_tabs_e tab )
+  {
+    return commandLineText( convertTabsEnum( tab ) );
+  }
+  QString commandLineText( tabs_e tab )
+  {
+    // returns current commandline text for the specified tab in the current state
+    QString* text = getText( current_state, tab, TEXTEDIT_CMDLINE );
+    QString retval;
+
+    if ( text != nullptr )
+    {
+      retval = *text;
+    }
+
+    return retval;
+  }
+  void setCommandLineText( QString text )
+  {
+    // sets commandline text for the current tab
+    setCommandLineText( current_tab, text );
+  }
+  void setCommandLineText( main_tabs_e tab, QString text )
+  {
+    setCommandLineText( convertTabsEnum( tab ), text );
+  }
+  void setCommandLineText( import_tabs_e tab, QString text )
+  {
+    setCommandLineText( convertTabsEnum( tab ), text );
+  }
+  void setCommandLineText( tabs_e tab, QString text )
+  {
+    adjustText( current_state, tab, TEXTEDIT_CMDLINE, text );
+    updateWidget( current_state, tab, TEXTEDIT_CMDLINE );
+  }
+protected:
+  void init()
+  {
+    initStateInfo();
+    initStackedLayout();
+
+    setState( current_state );
+  }
+  void initStateInfo()
+  {
+    // Initializes all state info
+    // use setText() to set text for widgets in states/tabs
+    // use setProgressBarState() to set progressbar's state in states/tabs
+    // using text_hide_widget as the text, will hide that widget ONLY in that state/tab, and show it in others
+
+    initTextStrings();
+    initStatesStructToNull();
+    initDefaultStates();
+
+    // states are defaulted: special cases
+
+    initImportStates();
+    initLogResultsStates();
+    initProgressBarStates();
+    initCommandLineBuffers();
+
+  }
+  void initTextStrings()
+  {
+    // strings shared by widgets
+    text_simulate     = tr( "Simulate!"   );
+    text_queue        = tr( "Queue!"      );
+    text_cancel       = tr( "Cancel! "    );
+    text_cancel_all   = tr( "Cancel All!" );
+    text_save         = tr( "Save!"       );
+    text_import       = tr( "Import!"     );
+    text_prev         = tr( "<"           );
+    text_next         = tr( ">"           );
+    text_prev_tooltip = tr( "Backwards"   );
+    text_next_tooltip = tr( "Forwards"    );
+    text_hide_widget  = "hide_widget";
+  }
+  void initStatesStructToNull()
+  {
+    for ( state_e state = IDLE; state < STATE_COUNT; state++ )
+    {
+      for ( tabs_e tab = CMDLINE_TAB_WELCOME; tab < CMDLINE_TAB_COUNT; tab++ )
+      {
+        for ( widgets_e widget = BUTTON_MAIN; widget < WIDGET_COUNT; widget++ )
+        {
+          states[state][tab][widget].text = nullptr;
+          states[state][tab][widget].tool_tip = nullptr;
+          states[state][tab][widget].progressbar_state = PROGRESSBAR_IGNORE;
+        }
+      }
+    }
+  }
+  void initDefaultStates()
+  {
+    // default states for widgets
+    for ( tabs_e tab = CMDLINE_TAB_WELCOME; tab < CMDLINE_TAB_COUNT; tab++ )
+    {
+      // set the same defaults for every state
+      for ( state_e state = IDLE; state < STATE_COUNT; state++ )
+      {
+        // buttons
+        setText( state, tab, BUTTON_MAIN , &text_simulate );
+        setText( state, tab, BUTTON_QUEUE, &text_queue    );
+        setText( state, tab, BUTTON_PREV , &text_prev, &text_prev_tooltip );
+        setText( state, tab, BUTTON_NEXT , &text_next, &text_next_tooltip );
+        // progressbar
+        setText( state, tab, PROGRESSBAR_WIDGET, &progressBarFormat[PROGRESSBAR_SIMULATING].first );
+        setProgressBarState( state, tab, PROGRESSBAR_SIMULATING );
+        // commandline buffer
+        setText( state, tab, TEXTEDIT_CMDLINE, &commandLineBuffer_DEFAULT );
+      }
+
+      // simulating defaults:
+      // mainbutton: simulate => cancel
+      setText( SIMULATING, tab, BUTTON_MAIN , &text_cancel ); // instead of text_simulate
+      setText( SIMULATING_MULTIPLE, tab, BUTTON_MAIN , &text_cancel ); // instead of text_simulate
+
+      // simulating_multiple defaults:
+      // cancel => text_cancel_all
+      for ( widgets_e widget = BUTTON_MAIN; widget < WIDGET_COUNT; widget++ )
+      {
+        if ( getText( SIMULATING_MULTIPLE, tab, widget ) == text_cancel )
+        {
+          setText( SIMULATING_MULTIPLE, tab, widget, &text_cancel_all );
+        }
+      }
+    }
+  }
+  void initImportStates()
+  {
+    // TAB_IMPORT + Subtabs
+    setText( IDLE, CMDLINE_TAB_IMPORT, BUTTON_MAIN , &text_import );
+    // special cases for all TAB_IMPORT subtabs
+    // button_main: text_import
+    // button_queue: text_import
+    for ( import_tabs_e tab = TAB_BATTLE_NET; tab <= TAB_CUSTOM; tab++ )
+    {
+      tabs_e subtab = convertTabsEnum( tab );
+      setText( IDLE      , subtab, BUTTON_MAIN , &text_import );
+      setText( SIMULATING, subtab, BUTTON_QUEUE, &text_import );
+      setText( SIMULATING_MULTIPLE, subtab, BUTTON_QUEUE, &text_import );
+    }
+  }
+  void initStackedLayout()
+  {
+    // initializes the stackedlayout with all states
+    statesStackedLayout = new QStackedLayout;
+
+    for ( state_e state = IDLE; state < STATE_COUNT; state++ )
+    {
+      statesStackedLayout -> addWidget( createState( state ) );
+    }
+
+    setLayout( statesStackedLayout );
+  }
+  void initLogResultsStates()
+  {
+    // log/results: change button text so save is somewhere
+    // IDLE: main button => save
+    setText( IDLE      , CMDLINE_TAB_LOG    , BUTTON_MAIN , &text_save   );
+    setText( IDLE      , CMDLINE_TAB_RESULTS, BUTTON_MAIN , &text_save   );
+    // SIMULATING + SIMULATING_MULTIPLE: queue button => save
+    for ( state_e state = SIMULATING; state <= SIMULATING_MULTIPLE; state++ )
+    {
+      setText( state, CMDLINE_TAB_LOG    , BUTTON_QUEUE, &text_save   );
+      setText( state, CMDLINE_TAB_RESULTS, BUTTON_QUEUE, &text_save   );
+    }
+  }
+  void initProgressBarStates()
+  {
+    // progressbar: site/chardev/help
+    // certain tabs have their own progress bar states
+    for ( state_e state = IDLE; state < STATE_COUNT; state++ )
+    {
+      // import: TAB_IMPORT and all subtabs have the importing state
+      setProgressBarState( state, CMDLINE_TAB_IMPORT, PROGRESSBAR_IMPORTING );
+      for ( import_tabs_e tab = TAB_BATTLE_NET; tab <= TAB_CUSTOM; tab++ )
+      {
+        tabs_e importSubtabs = convertTabsEnum( tab );
+        setProgressBarState( state, importSubtabs, PROGRESSBAR_IMPORTING );
+      }
+      // battlenet: battlenet has its own state
+      setProgressBarState( state, CMDLINE_TAB_BATTLE_NET, PROGRESSBAR_BATTLE_NET );
+      // site: has its own state
+      setProgressBarState( state, CMDLINE_TAB_SITE, PROGRESSBAR_SITE );
+#if USE_CHARDEV
+      // chardev: has its own state
+      setProgressBarState( state, CMDLINE_TAB_CHAR_DEV, PROGRESSBAR_CHAR_DEV );
+#endif
+      // help: has its own state
+      setProgressBarState( state, CMDLINE_TAB_HELP, PROGRESSBAR_HELP );
+    }
+
+    // set default format for every progressbar state to %p%
+    QString defaultProgressBarFormat = "%p%";
+    for ( progressbar_states_e state = PROGRESSBAR_IDLE; state < PROGRESSBAR_STATE_COUNT; state++ )
+    {
+      // QProgressBar -> setFormat()
+      setProgressBarFormat( state, defaultProgressBarFormat, false );
+      // set all progress to 100
+      setProgressBarProgress( state, 100 );
+    }
+  }
+  void initCommandLineBuffers()
+  {
+    // commandline: different tabs have different buffers
+    for ( state_e state = IDLE; state < STATE_COUNT; state++ )
+    {
+      // log has its own buffer (for save file name)
+      setText( state, CMDLINE_TAB_LOG,        TEXTEDIT_CMDLINE, &commandLineBuffer_TAB_LOG );
+      // battlenet has its own buffer (for url)
+      setText( state, CMDLINE_TAB_BATTLE_NET, TEXTEDIT_CMDLINE, &commandLineBuffer_TAB_BATTLE_NET );
+      // site has its own buffer (for url)
+      setText( state, CMDLINE_TAB_SITE,       TEXTEDIT_CMDLINE, &commandLineBuffer_TAB_SITE );
+      // help has its own buffer (for url)
+      setText( state, CMDLINE_TAB_HELP,       TEXTEDIT_CMDLINE, &commandLineBuffer_TAB_HELP );
+      // results has its own buffer (for save file name)
+      setText( state, CMDLINE_TAB_RESULTS,    TEXTEDIT_CMDLINE, &commandLineBuffer_TAB_RESULTS );
+      // everything else shares the default buffer
+    }
+  }
+  virtual QWidget* createState( state_e state )
+  {
+    // Create the widget for the state
+    QWidget* stateWidget = new QGroupBox;
+    QLayout* stateWidgetLayout = new QHBoxLayout;
+
+    stateWidget -> setLayout( stateWidgetLayout );
+
+    switch ( state )
+    {
+    case STATE_COUNT:
+      break;
+    default:
+      createCommandLine( state, stateWidget );
+      break;
+    }
+
+    switch ( state )
+    {
+    case IDLE:
+      createState_IDLE( stateWidget );
+      break;
+    case SIMULATING:
+      createState_SIMULATING( stateWidget );
+      break;
+    case SIMULATING_MULTIPLE:
+      createState_SIMULATING_MULTIPLE( stateWidget );
+      break;
+    default:
+      break;
+    }
+
+    stateWidget -> setLayout( stateWidgetLayout );
+
+    return stateWidget;
+  }
+  virtual void createState_IDLE( QWidget* parent )
+  {
+    // creates the IDLE state
+    QLayout* parentLayout = parent -> layout();
+
+    QPushButton* buttonMain = new QPushButton( *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_MAIN ), parent );
+    setWidget( IDLE, BUTTON_MAIN, QVariant::fromValue< QPushButton* >( buttonMain ) );
+    parentLayout -> addWidget( buttonMain );
+
+    connect( buttonMain, SIGNAL( clicked() ), this, SLOT( mainButtonClicked() ) );
+  }
+  virtual void createState_SIMULATING( QWidget* parent )
+  {
+    // creates the SIMULATING state
+    _createState_SIMULATING( SIMULATING, parent );
+  }
+  virtual void createState_SIMULATING_MULTIPLE( QWidget* parent )
+  {
+    // creates the SIMULATING_MULTIPLE state
+    _createState_SIMULATING( SIMULATING_MULTIPLE, parent );
+  }
+  virtual void _createState_SIMULATING( state_e state, QWidget* parent )
+  {
+    // creates either the SIMULATING or SIMULATING_MULTIPLE states
+    QLayout* parentLayout = parent -> layout();
+
+    QPushButton* buttonQueue = new QPushButton( *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_QUEUE ), parent );
+    QPushButton* buttonMain  = new QPushButton( *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_MAIN  ), parent );
+    setWidget( state, BUTTON_QUEUE, QVariant::fromValue< QPushButton* >( buttonQueue ) );
+    setWidget( state, BUTTON_MAIN , QVariant::fromValue< QPushButton* >( buttonMain ) );
+    parentLayout -> addWidget( buttonQueue );
+    parentLayout -> addWidget( buttonMain );
+
+    connect( buttonMain,  SIGNAL( clicked() ), this, SLOT( mainButtonClicked()  ) );
+    connect( buttonQueue, SIGNAL( clicked() ), this, SLOT( queueButtonClicked() ) );
+  }
+  virtual void createCommandLine( state_e state, QWidget* parent )
+  {
+    // creates the commandline
+    QLayout* parentLayout = parent -> layout();
+    // Navigation buttons + Command Line
+    QPushButton* buttonPrev = new QPushButton( tr( "<" ), parent );
+    QPushButton* buttonNext = new QPushButton( tr( ">" ), parent );
+    SC_CommandLine* commandLineEdit = new SC_CommandLine( parent );
+
+    setWidget( state, BUTTON_PREV,      QVariant::fromValue< QPushButton* >( buttonPrev ) );
+    setWidget( state, BUTTON_NEXT,      QVariant::fromValue< QPushButton* >( buttonNext ) );
+    setWidget( state, TEXTEDIT_CMDLINE, QVariant::fromValue< SC_CommandLine* >( commandLineEdit ) );
+
+    buttonPrev -> setMaximumWidth( 30 );
+    buttonNext -> setMaximumWidth( 30 );
+
+    parentLayout -> addWidget( buttonPrev );
+    parentLayout -> addWidget( buttonNext );
+    parentLayout -> addWidget( commandLineEdit );
+
+    connect( buttonPrev,      SIGNAL( clicked( bool ) ), this, SIGNAL(    backButtonClicked() ) );
+    connect( buttonNext,      SIGNAL( clicked( bool ) ), this, SIGNAL( forwardButtonClicked() ) );
+    connect( commandLineEdit, SIGNAL( switchToLeftSubTab() ), this, SIGNAL( switchToLeftSubTab() ) );
+    connect( commandLineEdit, SIGNAL( switchToRightSubTab() ), this, SIGNAL( switchToRightSubTab() ) );
+    connect( commandLineEdit, SIGNAL( currentlyViewedTabCloseRequest() ), this, SIGNAL( currentlyViewedTabCloseRequest() ) );
+    connect( commandLineEdit, SIGNAL( returnPressed() ), this, SIGNAL( commandLineReturnPressed() ) );
+    connect( commandLineEdit, SIGNAL( textEdited( const QString& ) ), this, SLOT( commandLineTextEditedSlot( const QString& ) ) );
+    // Progress bar
+    QProgressBar* progressBar = new QProgressBar( parent );
+
+    setWidget( state, PROGRESSBAR_WIDGET, QVariant::fromValue< QProgressBar* >( progressBar ) );
+
+    progressBar -> setMaximum( 100 );
+    progressBar -> setMaximumWidth( 200 );
+    progressBar -> setMinimumWidth( 150 );
+
+    QFont progressBarFont( progressBar -> font() );
+    progressBarFont.setPointSize( 11 );
+    progressBar -> setFont( progressBarFont );
+
+    parentLayout -> addWidget( progressBar );
+  }
+  bool tryToHideWidget( QString* text, QWidget* widget )
+  {
+    // if the widget has the special text to hide it, then hide it; else show
+    if ( text != nullptr )
+    {
+      if ( text == text_hide_widget )
+      {
+        widget -> hide();
+        return true;
+      }
+      else
+      {
+        widget -> show();
+      }
+    }
+    return false;
+  }
+  void emitSignal( QString* text )
+  {
+    // emit the proper signal for the given button text
+    if ( text != nullptr )
+    {
+      if ( text == text_simulate )
+      {
+  #ifdef SC_PAPERDOLL
+        if ( current_tab == TAB_PAPERDOLL )
+        {
+          emit( simulatePaperdollClicked() );
+        }
+        else
+  #endif
+        {
+          emit( simulateClicked() );
+        }
+      }
+      else if ( text == text_cancel )
+      {
+        switch ( current_tab )
+        {
+        case CMDLINE_TAB_IMPORT:
+          emit( cancelImportClicked() );
+          break;
+        default:
+          emit( cancelSimulationClicked() );
+          break;
+        }
+      }
+      else if ( text == text_cancel_all )
+      {
+        emit( cancelImportClicked() );
+        emit( cancelAllSimulationClicked() );
+      }
+      else if ( text == text_import )
+      {
+        emit( importClicked() );
+      }
+      else if ( text == text_queue )
+      {
+        emit( queueClicked() );
+      }
+      else if ( text == text_save )
+      {
+        switch ( current_tab )
+        {
+        case CMDLINE_TAB_LOG:
+          emit( saveLogClicked() );
+          break;
+        case CMDLINE_TAB_RESULTS:
+          emit( saveResultsClicked() );
+          break;
+        default:
+          assert( 0 );
+        }
+      }
+    }
+  }
+  // Accessors for widgets/displayable text; hide underlying implementation of states even from init()
+  void setProgressBarProgress( progressbar_states_e state, int value )
+  {
+    // update progress for the given progressbar state
+    progressBarFormat[state].second = value;
+    updateWidget( current_state, current_tab, PROGRESSBAR_WIDGET );
+  }
+  int getProgressBarProgressForState( progressbar_states_e state )
+  {
+    return progressBarFormat[state].second;
+  }
+  void updateProgressBars()
+  {
+    // actually updates currently visible progressbar's progress
+    QProgressBar* progressBar = getWidget( current_state, PROGRESSBAR_WIDGET ).value< QProgressBar* >();
+    if ( progressBar != nullptr )
+    {
+      progressBar -> setValue( getProgressBarProgressForState( getProgressBarStateForState( current_state, current_tab ) ) );
+    }
+  }
+  void adjustText( state_e state, tabs_e tab, widgets_e widget, QString text )
+  {
+    // only change the text's value, not where it points to, only if its not null
+    if ( states[state][tab][widget].text != nullptr )
+    {
+      (*states[state][tab][widget].text) = text;
+    }
+  }
+  void setText( state_e state, tabs_e tab, widgets_e widget, QString* text, QString* tooltip = nullptr )
+  {
+    // change the text and tooltip's pointer values
+    states[state][tab][widget].text = text;
+    states[state][tab][widget].tool_tip = tooltip;
+  }
+  void setProgressBarState( state_e state, tabs_e tab, progressbar_states_e progressbar_state )
+  {
+    // set the given state->tab->progressbar's state
+    states[state][tab][PROGRESSBAR_WIDGET].text = &( progressBarFormat[progressbar_state].first );
+    states[state][tab][PROGRESSBAR_WIDGET].progressbar_state  = progressbar_state;
+  }
+  progressbar_states_e getProgressBarStateForState( state_e state, tabs_e tab )
+  {
+    // returns state->tab->progressbar's state
+    return states[state][tab][PROGRESSBAR_WIDGET].progressbar_state;
+  }
+  void updateWidget( state_e state, tabs_e tab, widgets_e widget )
+  {
+    // update a given widget
+    QString* text = getText( state, tab, widget );
+    if ( text != nullptr )
+    {
+      if ( tab == current_tab )
+      {
+        switch ( widget )
+        {
+        case TEXTEDIT_CMDLINE:
+        {
+          SC_CommandLine* commandLine = getWidget( state, TEXTEDIT_CMDLINE ).value< SC_CommandLine* >();
+          if ( commandLine != nullptr )
+          {
+            commandLine -> setText( *text );
+          }
+          break;
+        }
+        case PROGRESSBAR_WIDGET:
+        {
+          QProgressBar* progressBar = getWidget( state, PROGRESSBAR_WIDGET ).value< QProgressBar* >();
+          if ( progressBar != nullptr )
+          {
+            progressBar -> setFormat( *text );
+            progressBar -> setValue( getProgressBarProgressForState( getProgressBarStateForState( current_state, current_tab ) ) );
+          }
+          break;
+        }
+        default:
+          getWidget( state, widget ).value< QPushButton* >() -> setText( *text );
+          break;
+        }
+      }
+    }
+  }
+  QString* getText( state_e state, tabs_e tab, widgets_e widget )
+  {
+    // returns text to set the specified widget to
+    return states[state][tab][widget].text;
+  }
+  QVariant getWidget( state_e state, widgets_e widget )
+  {
+    // returns the widget for the specified state
+    return widgets[state][widget];
+  }
+  void setWidget( state_e state, widgets_e widget, QVariant variant )
+  {
+    // sets the widget for the specified state
+    widgets[state][widget] = variant;
+  }
+  void setProgressBarFormat( progressbar_states_e state, QString format, bool update = false )
+  {
+    // sets the QProgressBar->setFormat(format) text value for the specified state's progress bar
+    progressBarFormat[state].first = format;
+    if ( update &&
+         getProgressBarStateForState( current_state, current_tab ) == state )
+    {
+      updateWidget( current_state, current_tab, PROGRESSBAR_WIDGET );
+    }
+  }
+  void updateProgress( progressbar_states_e state, int value, QString format )
+  {
+    setProgressBarFormat( state, format );
+    setProgressBarProgress( state, value );
+  }
+  tabs_e convertTabsEnum( main_tabs_e tab )
+  {
+    return static_cast< tabs_e >( tab );
+  }
+  tabs_e convertTabsEnum( import_tabs_e tab )
+  {
+    return static_cast< tabs_e >( tab + TAB_COUNT );
+  }
+  // End accessors
+public slots:
+  void mainButtonClicked()
+  {
+    emitSignal( getText( current_state, current_tab, BUTTON_MAIN  ) );
+  }
+  void queueButtonClicked()
+  {
+    emitSignal( getText( current_state, current_tab, BUTTON_QUEUE ) );
+  }
+  void setTab( main_tabs_e tab )
+  {
+    setTab( convertTabsEnum( tab ) );
+  }
+  void setTab( import_tabs_e tab )
+  {
+    setTab( convertTabsEnum( tab ) );
+  }
+  void setTab( tabs_e tab )
+  {
+    assert( static_cast< int >( tab ) >= 0 &&
+            static_cast< int >( tab ) < CMDLINE_TAB_COUNT &&
+            "setTab argument out of bounds" );
+    current_tab = tab;
+    // sets correct text for the current_state for the given tab on all widgets
+    for ( widgets_e widget = BUTTON_MAIN; widget < WIDGET_COUNT; widget++ )
+    {
+      QWidget* wdgt = getWidget( current_state, widget ).value< QWidget* >();
+      if ( wdgt != nullptr )
+      {
+        if ( ! tryToHideWidget( getText( current_state, current_tab, widget ), wdgt ) )
+        {
+          // only change text if it will not be hidden
+          updateWidget( current_state, current_tab, widget );
+        }
+      }
+    }
+  }
+  void setState( state_e state )
+  {
+    // change to the specified state
+    current_state = state;
+    statesStackedLayout -> setCurrentIndex( static_cast< int >( state ) );
+    setTab( current_tab );
+  }
+  void commandLineTextEditedSlot( const QString& text )
+  {
+    QString* current_text = getText( current_state, current_tab, TEXTEDIT_CMDLINE );
+    if ( current_text != nullptr )
+    {
+      (*current_text) = text;
+    }
+    else
+    {
+      //TODO: something if current_text is null
+    }
+
+    emit( commandLineTextEdited( text ) );
+  }
+signals:
+  void simulateClicked();
+  void queueClicked();
+  void importClicked();
+  void saveLogClicked();
+  void saveResultsClicked();
+  void cancelSimulationClicked();
+  void cancelImportClicked();
+  void cancelAllSimulationClicked();
+  void backButtonClicked();
+  void forwardButtonClicked();
+// SC_CommandLine signals
+  void switchToLeftSubTab();
+  void switchToRightSubTab();
+  void currentlyViewedTabCloseRequest();
+  void commandLineReturnPressed();
+  void commandLineTextEdited( const QString& );
+#ifdef SC_PAPERDOLL
+  void simulatePaperdollClicked();
+#endif
 };
 
 // ============================================================================
@@ -2360,9 +3350,7 @@ public:
   SC_TextEdit* logText;
   QPushButton* backButton;
   QPushButton* forwardButton;
-  SC_CommandLine* cmdLine;
-  QProgressBar* progressBar;
-  QPushButton* mainButton;
+  SC_MainWindowCommandLine* cmdLine;
   QGroupBox* cmdLineGroupBox;
   QGroupBox* createCustomCharData;
   SC_RecentlyClosedTabItemModel* recentlyClosedTabModel;
@@ -2379,9 +3367,12 @@ public:
 #endif
 
   sim_t* sim;
+  sim_t* import_sim;
   sim_t* paperdoll_sim;
   std::string simPhase;
+  std::string importSimPhase;
   int simProgress;
+  int importSimProgress;
   int simResults;
 //  QStringList resultsHtml;
 
@@ -2393,13 +3384,16 @@ public:
   QString logFileText;
   QString resultsFileText;
 
+  SC_QueueItemModel simulationQueue;
+  int consecutiveSimulationsRun;
+
   void    startImport( int tab, const QString& url );
+  bool    importRunning();
   void    startSim();
+  bool    simRunning();
+
   sim_t*  initSim();
   void    deleteSim( sim_t* sim, SC_TextEdit* append_error_message = 0 );
-
-  void saveLog();
-  void saveResults();
 
   void loadHistory();
   void saveHistory();
@@ -2422,12 +3416,13 @@ public:
 #ifdef SC_PAPERDOLL
   void createPaperdoll();
 #endif
-  void updateVisibleWebView( SC_WebView* );
+  void updateWebView( SC_WebView* );
 
 protected:
   virtual void closeEvent( QCloseEvent* );
 
 private slots:
+  void itemWasEnqueuedTryToSim();
   void importFinished();
   void simulateFinished( sim_t* );
 #ifdef SC_PAPERDOLL
@@ -2443,6 +3438,9 @@ private slots:
   void forwardButtonClicked( bool checked = false );
   void reloadButtonClicked( bool checked = false );
   void mainButtonClicked( bool checked = false );
+  void cancelButtonClicked();
+  void queueButtonClicked();
+  void importButtonClicked();
   void mainTabChanged( int index );
   void importTabChanged( int index );
   void resultsTabChanged( int index );
@@ -2452,23 +3450,22 @@ private slots:
   void bisDoubleClicked( QTreeWidgetItem* item, int col );
   void armoryRegionChanged( const QString& region );
   void simulateTabRestored( QWidget* tab, const QString& title, const QString& tooltip, const QIcon& icon );
+  void switchToASubTab( int direction );
+  void switchToLeftSubTab();
+  void switchToRightSubTab();
+  void currentlyViewedTabCloseRequest();
+
+public slots:
+  void enqueueSim();
+  void saveLog();
+  void saveResults();
+
+  void stopImport();
+  void stopSim();
+  void stopAllSim();
 
 public:
   SC_MainWindow( QWidget *parent = 0 );
-};
-
-// ============================================================================
-// SC_CommandLine
-// ============================================================================
-
-class SC_CommandLine : public QLineEdit
-{
-private:
-  SC_MainWindow* mainWindow;
-
-  virtual void keyPressEvent( QKeyEvent* e );
-public:
-  SC_CommandLine( SC_MainWindow* mw ) : mainWindow( mw ) {}
 };
 
 // ============================================================================
@@ -2503,6 +3500,7 @@ public:
   SC_MainWindow* mainWindow;
   int progress;
   QString html_str;
+  QString url_to_show;
 
   SC_WebView( SC_MainWindow* mw, QWidget* parent = 0, const QString& h = QString() ) :
     QWebView( parent ),
@@ -2551,7 +3549,6 @@ public:
       qDebug() << "Can't write webcache! sucks";
     }
 
-
   }
   void store_html( const QString& s )
   {
@@ -2582,10 +3579,7 @@ private:
   void update_progress( int p )
   {
     progress = p;
-    if ( mainWindow -> visibleWebView == this )
-    {
-      mainWindow -> progressBar -> setValue( progress );
-    }
+    mainWindow -> updateWebView( this );
   }
 
 protected:
@@ -2660,12 +3654,12 @@ private slots:
   { update_progress( 100 ); }
   void urlChangedSlot( const QUrl& url )
   {
-    if ( mainWindow->visibleWebView == this )
+    url_to_show = url.toString();
+    if ( url_to_show == "about:blank" )
     {
-      QString s = url.toString();
-      if ( s == "about:blank" ) s = "results.html";
-      mainWindow->cmdLine->setText( s );
+      url_to_show = "results.html";
     }
+    mainWindow -> updateWebView( this );
   }
   void linkClickedSlot( const QUrl& url )
   { load( url ); }
@@ -2684,7 +3678,9 @@ public slots:
     previousSearch = text;
 
     if ( searchBox -> wrapSearch() )
+    {
       options |= QWebPage::FindWrapsAroundDocument;
+    }
     findText( text, options );
 
     // If the QWebView scrolls due to searching with the SC_SearchBox visible
@@ -2713,7 +3709,9 @@ public slots:
   {
     QWebPage::FindFlags flags = 0;
     if ( searchBox -> reverseSearch() )
+    {
       flags |= QWebPage::FindBackward;
+    }
     findSomeText( text, flags );
   }
   void findPrev()

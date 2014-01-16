@@ -361,10 +361,7 @@ void dot_t::schedule_tick()
         current_action -> player -> channeling = current_action;
       }
       else
-      {
         cancel();
-        current_action -> player -> schedule_ready();
-      }
     }
     else
     {

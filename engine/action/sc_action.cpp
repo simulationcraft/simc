@@ -1054,6 +1054,18 @@ void action_t::execute()
     schedule_travel( s );
   }
 
+  /* Miss reaction handling for dot executes */
+  if ( num_ticks > 0 && result_is_miss( execute_state -> result ) )
+  {
+    dot_t* dot = get_dot( execute_state -> target );
+    last_reaction_time = player -> total_reaction_time();
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s pushes out re-cast (%.2f) on miss for %s (%s)",
+                      player -> name(), last_reaction_time.total_seconds(), name(), dot -> name() );
+
+    dot -> miss_time = sim -> current_time + time_to_travel;
+  }
+
   consume_resource();
 
   update_ready();
@@ -1408,20 +1420,6 @@ void action_t::update_ready( timespan_t cd_duration /* = timespan_t::min() */ )
 
     if ( sim -> debug )
       sim -> out_debug.printf( "%s starts cooldown for %s (%s). Will be ready at %.4f", player -> name(), name(), cooldown -> name(), cooldown -> ready.total_seconds() );
-  }
-  if ( num_ticks )
-  {
-    assert( execute_state );
-    if ( result_is_miss( execute_state -> result ) )
-    {
-      dot_t* dot = get_dot( target );
-      last_reaction_time = player -> total_reaction_time();
-      if ( sim -> debug )
-        sim -> out_debug.printf( "%s pushes out re-cast (%.2f) on miss for %s (%s)",
-                       player -> name(), last_reaction_time.total_seconds(), name(), dot -> name() );
-
-      dot -> miss_time = sim -> current_time + time_to_travel;
-    }
   }
 }
 
