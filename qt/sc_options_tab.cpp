@@ -268,7 +268,10 @@ void SC_OptionsTab::createGlobalsTab()
   QGroupBox* globalsGroupBox = new QGroupBox();
   globalsGroupBox -> setLayout( globalsLayout );
 
-  addTab( globalsGroupBox, tr( "Globals" ) );
+  QScrollArea* globalsGroupBoxScrollArea = new QScrollArea;
+  globalsGroupBoxScrollArea -> setWidget( globalsGroupBox );
+  globalsGroupBoxScrollArea -> setWidgetResizable( true );
+  addTab( globalsGroupBoxScrollArea, tr( "Globals" ) );
 
 }
 
@@ -317,7 +320,10 @@ void SC_OptionsTab::createBuffsDebuffsTab()
   buff_debuffGroupBox -> setLayout( buff_debuffLayout );
 
   // Add Widget as Buffs/Debuffs tab
-  addTab( buff_debuffGroupBox, tr( "Buffs / Debuffs" ) );
+  QScrollArea* buff_debuffGroupBoxScrollArea = new QScrollArea;
+  buff_debuffGroupBoxScrollArea -> setWidget( buff_debuffGroupBox );
+  buff_debuffGroupBoxScrollArea -> setWidgetResizable( true );
+  addTab( buff_debuffGroupBoxScrollArea, tr( "Buffs / Debuffs" ) );
 }
 
 void SC_OptionsTab::createScalingTab()
@@ -344,7 +350,10 @@ void SC_OptionsTab::createScalingTab()
 
   scalingLayout -> addLayout( scalingLayout2 );
 
-  addTab( scalingGroupBox, tr ( "Scaling" ) );
+  QScrollArea* scalingGroupBoxScrollArea = new QScrollArea;
+  scalingGroupBoxScrollArea -> setWidget( scalingGroupBox );
+  scalingGroupBoxScrollArea -> setWidgetResizable( true );
+  addTab( scalingGroupBoxScrollArea, tr ( "Scaling" ) );
 }
 
 void SC_OptionsTab::createPlotsTab()
@@ -371,7 +380,10 @@ void SC_OptionsTab::createPlotsTab()
   QGroupBox* plotsGroupBox = new QGroupBox();
   plotsGroupBox -> setLayout( plotsLayout );
 
-  addTab( plotsGroupBox, "Plots" );
+  QScrollArea* plotsGroupBoxScrollArea = new QScrollArea;
+  plotsGroupBoxScrollArea -> setWidget( plotsGroupBox );
+  plotsGroupBoxScrollArea -> setWidgetResizable( true );
+  addTab( plotsGroupBoxScrollArea, "Plots" );
 }
 
 void SC_OptionsTab::createReforgePlotsTab()
@@ -420,7 +432,10 @@ void SC_OptionsTab::createReforgePlotsTab()
   QGroupBox* reforgeplotsGroupBox = new QGroupBox();
   reforgeplotsGroupBox -> setLayout( reforgePlotsLayout );
 
-  addTab( reforgeplotsGroupBox, tr( "Reforge Plots" ) );
+  QScrollArea* reforgeplotsGroupBoxScrollArea = new QScrollArea;
+  reforgeplotsGroupBoxScrollArea -> setWidget( reforgeplotsGroupBox );
+  reforgeplotsGroupBoxScrollArea -> setWidgetResizable( true );
+  addTab( reforgeplotsGroupBoxScrollArea, tr( "Reforge Plots" ) );
 }
 
 /* Decode all options/setting from a string ( loaded from the history ).
