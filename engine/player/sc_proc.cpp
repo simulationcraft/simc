@@ -74,6 +74,12 @@ std::string special_effect_t::to_string()
   else
     s << name_str;
 
+  if ( spell_id > 0 )
+    s << " driver=" << spell_id;
+
+  if ( trigger_spell_id > 0 )
+    s << " trigger=" << trigger_spell_id;
+
   if ( stat != STAT_NONE )
   {
     s << " stat=" << util::stat_type_abbrev( stat );
@@ -735,4 +741,23 @@ int proc::usable_effects( player_t* player, unsigned spell_id )
   }
   
   return n_usable;
+}
+
+/**
+ * Ensure that the proc has enough information to actually proc in simc. This
+ * essentially requires a non-zero proc_chance or PPM field in effect, or the
+ * driver spell to contain a non-zero RPPM or proc chance.
+ */
+bool proc::usable_proc( player_t* player,
+                        const special_effect_t& effect,
+                        unsigned driver_id )
+{
+  if ( effect.ppm != 0 || effect.proc_chance != 0 )
+    return true;
+
+  const spell_data_t* driver = player -> find_spell( driver_id );
+  if ( driver -> real_ppm() != 0 || driver -> proc_chance() != 0 )
+    return true;
+
+  return false;
 }

@@ -1307,6 +1307,9 @@ bool item_t::decode_use_effect()
       effect.reset();
       effect.type = SPECIAL_EFFECT_USE;
       effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
+      // First phase initialization of the special effect. Sets up the relevant
+      // fields in special_effect_t to create the use effect. In the future,
+      // most of the manual field setup can also be removed ...
       if ( ( ret = unique_gear::initialize_special_effect( effect, *this, parsed.data.id_spell[ i ] ) ) && 
            effect.type != SPECIAL_EFFECT_NONE )
       {
@@ -1325,34 +1328,37 @@ bool item_t::decode_use_effect()
 
 bool item_t::decode_enchant()
 {
-  special_effect_t effect;
-
   // If the user gives an enchant, override everything fetched from the
   // data sources
   if ( ! option_enchant_str.empty() && option_enchant_str != "none" )
   {
     enchant::find_item_enchant( player -> dbc, option_enchant_str );
     parsed.enchant_stats = str_to_stat_pair( option_enchant_str );
+
     // No stats, this is a special enchant that we need to parse out
     if ( parsed.enchant_stats.size() == 0 )
-      effect.name_str = option_enchant_str;
+    {
+      const item_enchantment_data_t& enchant_data = enchant::find_item_enchant( player -> dbc, option_enchant_str );
+      if ( ! enchant::initialize_item_enchant( *this, SPECIAL_EFFECT_SOURCE_ENCHANT, enchant_data ) )
+        return false;
+    }
   }
   // .. Otherwise, parse enchant based on DBC information and enchant_id
   else if ( parsed.enchant_id > 0 )
   {
+    special_effect_t effect;
     if ( ! item_database::parse_item_spell_enchant( *this, parsed.enchant_stats, effect, parsed.enchant_id ) )
       sim -> errorf( "Player %s unable to parse enchant id %u for item \"%s\" at slot %s.\n",
           player -> name(), parsed.enchant_id, name(), slot_name() );
+
+    if ( parsed.enchant_stats.size() == 0 )
+    {
+      const item_enchantment_data_t& enchant_data = player -> dbc.item_enchantment( parsed.enchant_id );
+      if ( ! enchant::initialize_item_enchant( *this, SPECIAL_EFFECT_SOURCE_ENCHANT, enchant_data ) )
+        return false;
+    }
   }
-/*
-  std::string equip_str;
-  if ( unique_gear::get_equip_encoding( equip_str, effect.name_str, parsed.data.type_flags, player -> dbc.ptr ) )
-  {
-    effect.unique = true;
-    if ( ! decode_special( SPECIAL_EFFECT_EQUIP, SPECIAL_EFFECT_SOURCE_ENCHANT, equip_str ) )
-      return false;
-  }
-*/
+
   for ( size_t i = 0; i < parsed.enchant_stats.size(); i++ )
     stats.add_stat( parsed.enchant_stats[ i ].stat, parsed.enchant_stats[ i ].value );
 

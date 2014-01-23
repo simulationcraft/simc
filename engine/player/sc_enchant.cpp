@@ -72,8 +72,13 @@ std::string enchant::find_enchant_name( unsigned enchant_id )
  * lightweave_embroidery_rank_2). If this is not a match, the function
  * additionally checks against the full name, where "rank_" is removed. Returns
  * an invalid item enchantment (with id of 0) if nothing is found.
+ *
+ * TODO: We could additionally check against the spell name (and rank) that the
+ * enchant procs for even more detection. This would remove the need for
+ * Tailoring enchant mappings in the array above.
  */
-const item_enchantment_data_t& enchant::find_item_enchant( const dbc_t& dbc, const std::string& name )
+const item_enchantment_data_t& enchant::find_item_enchant( const dbc_t& dbc,
+                                                           const std::string& name )
 {
   // Check additional mapping table first
   if ( find_enchant_id( name ) > 0 )
@@ -120,7 +125,7 @@ const item_enchantment_data_t& enchant::find_item_enchant( const dbc_t& dbc, con
         // Erase "rank_", and try again
         rank_str.erase( offset, 5 );
 
-        // Match <enchant name>_<enchant rank>
+        // Match <enchant name>_<enchant rank number>
         if ( util::str_compare_ci( name, enchant_name + "_" + rank_str ) )
           return *item_enchant;
       }
@@ -130,3 +135,41 @@ const item_enchantment_data_t& enchant::find_item_enchant( const dbc_t& dbc, con
   return dbc.item_enchantment( 0 );
 }
 
+bool enchant::initialize_item_enchant( item_t& item,
+                                       special_effect_source_e source,
+                                       const item_enchantment_data_t& enchant )
+{
+  for ( size_t i = 0; i < sizeof_array( enchant.ench_prop ); i++ )
+  {
+    if ( enchant.ench_prop[ i ] == 0 )
+      continue;
+
+    special_effect_t effect;
+    effect.source = source;
+    switch ( enchant.ench_type[ i ] )
+    {
+      // "Chance on Hit", we need to help simc a bit with proc flags
+      case ITEM_ENCHANTMENT_COMBAT_SPELL:
+        effect.type = SPECIAL_EFFECT_EQUIP;
+        effect.trigger_type = PROC_ATTACK;
+        effect.trigger_mask = RESULT_HIT_MASK;
+        break;
+      case ITEM_ENCHANTMENT_EQUIP_SPELL:
+        effect.type = SPECIAL_EFFECT_EQUIP;
+        break;
+      case ITEM_ENCHANTMENT_USE_SPELL:
+        effect.type = SPECIAL_EFFECT_USE;
+        break;
+      default:
+        break;
+    }
+
+    // First phase initialize the spell effect
+    if ( unique_gear::initialize_special_effect( effect, item, enchant.ench_prop[ i ] ) )
+    {
+      if ( effect.type != SPECIAL_EFFECT_NONE )
+        item.parsed.special_effects.push_back( effect );
+    }
+  }
+  return true;
+}

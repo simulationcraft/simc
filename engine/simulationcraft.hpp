@@ -6147,6 +6147,7 @@ namespace proc
 {
   bool parse_special_effect_encoding( special_effect_t& effect, const item_t& item, const std::string& str );
   int usable_effects( player_t* player, unsigned spell_id );
+  bool usable_proc( player_t* player, const special_effect_t& effect, unsigned driver_id );
 }
 
 // Enchants =================================================================
@@ -6163,6 +6164,7 @@ namespace enchant
   std::string find_enchant_name( unsigned enchant_id );
 
   const item_enchantment_data_t& find_item_enchant( const dbc_t& dbc, const std::string& name );
+  bool initialize_item_enchant( item_t& item, special_effect_source_e source, const item_enchantment_data_t& enchant );
 }
 
 // Unique Gear ==============================================================

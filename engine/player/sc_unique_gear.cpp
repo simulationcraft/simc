@@ -600,6 +600,9 @@ void enchant::dancing_steel( special_effect_t& effect,
   const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
   const spell_data_t* spell = item.player -> find_spell( 120032 );
 
+  effect.name_str = tokenized_name( spell ) + suffix( item );
+  effect.ppm = -1.0 * driver -> real_ppm();
+
   double value = spell -> effectN( 1 ).average( item.player );
   
   stat_buff_t* buff  = stat_buff_creator_t( item.player, effect.name_str, spell )
@@ -607,7 +610,6 @@ void enchant::dancing_steel( special_effect_t& effect,
                        .add_stat( STAT_STRENGTH, value, select_attr<std::greater>() )
                        .add_stat( STAT_AGILITY,  value, select_attr<std::greater>() );
 
-  effect.ppm = -1.0 * driver -> real_ppm();
 
   buff_proc_callback_t<stat_buff_t>* cb = new buff_proc_callback_t<stat_buff_t>( item.player, effect, buff );
 
@@ -645,7 +647,7 @@ void enchant::jade_spirit( special_effect_t& effect,
            .add_stat( STAT_INTELLECT, int_value )
            .add_stat( STAT_SPIRIT, spi_value, jade_spirit_check_func() );
 
-  effect.name_str = "jade_spirit";
+  effect.name_str = tokenized_name( spell ) + suffix( item );
   effect.ppm = -1.0 * driver -> real_ppm();
   effect.cooldown = driver -> internal_cooldown();
 
@@ -704,6 +706,7 @@ void enchant::windsong( special_effect_t& effect,
   stat_buff_t* crit_buff    = stat_buff_creator_t( item.player, "windsong_crit" + suffix( item ), crit )
                               .activated( false );
 
+  effect.name_str = tokenized_name( mastery ) + suffix( item );
   effect.ppm = -1.0 * driver -> real_ppm();
 
   action_callback_t* cb  = new windsong_callback_t( effect, haste_buff, crit_buff, mastery_buff, driver );
@@ -766,8 +769,8 @@ void enchant::hurricane_spell( special_effect_t& effect,
   buff_t* oh_buff = buff_t::find( item.player, "hurricane_oh" );
 
   // If we have 2 hurricane enchants, and we're creating the first one
-  // (opposite hand weapon buff has not been created), bail out early.
-  // Note that this presumes that the spell item enchant has the procs in 
+  // (opposite hand weapon buff has not been created), bail out early.  Note
+  // that this presumes that the spell item enchant has the procs spell ids in
   // correct order (which they are, at the moment).
   if ( n_hurricane_enchants == 2 && ( ! mh_buff || ! oh_buff ) )
     return;
@@ -1951,8 +1954,6 @@ void item::essence_of_yulon( special_effect_t& effect,
   p -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
 }
 
-// Qiang-Ying, Fortitude of Niuzao and Qian-Le, Courage of Niuzao
-
 void item::endurance_of_niuzao( special_effect_t& /* effect */,
                                 const item_t& item, 
                                 const special_effect_db_item_t& dbitem )
@@ -1967,15 +1968,6 @@ void item::endurance_of_niuzao( special_effect_t& /* effect */,
   p -> legendary_tank_cloak_cd = p -> get_cooldown( "endurance_of_niuzao" );
   p -> legendary_tank_cloak_cd -> duration = p -> find_spell( dbitem.spell_id ) -> duration();
 }
-
-/*
-
-
-  // DK Runeforges
-  else if ( name == "rune_of_cinderglacier"               ) e = "custom";
-  else if ( name == "rune_of_razorice"                    ) e = "custom";
-  else if ( name == "rune_of_the_fallen_crusader"         ) e = "custom";
-*/
 
 } // UNNAMED NAMESPACE
 
@@ -2019,16 +2011,24 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
     }
   }
 
+  // For generic procs, make sure we have a PPM, RPPM or Proc Chance available,
+  // otherwise there's no point in trying to proc anything
+  if ( effect.type == SPECIAL_EFFECT_EQUIP && 
+       ! proc::usable_proc( item.player, effect, spell_id ) )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+  }
   // Generic procs will go through game client data based parsing, or be 
   // discarded, if there's nothing that simc can use to generate the proc
   // automatically
-  if ( effect.type != SPECIAL_EFFECT_CUSTOM )
+  else if ( effect.type != SPECIAL_EFFECT_CUSTOM )
   {
-    // A "parseable" special effect in either the spell_id given, or the user 
-    // defined trigger_spell_id.
+    // A "parseable" special effect in either the spell_id given
     if ( proc::usable_effects( item.player, spell_id ) > 0 )
       ret = effect.parse_spell_data( item, spell_id );
-    else if ( effect.trigger_spell_id > 0 && proc::usable_effects( item.player, effect.trigger_spell_id ) )
+    // .. or the user given trigger_spell_id
+    else if ( effect.trigger_spell_id > 0 && 
+              proc::usable_effects( item.player, effect.trigger_spell_id ) )
       ret = effect.parse_spell_data( item, spell_id );
     // No special effects, so no real point in making a special_effect_t. The
     // item_t decode_x functions will not push the effect to the item's
@@ -2037,9 +2037,8 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
     else
       effect.type = SPECIAL_EFFECT_NONE;
   }
-  // Custom procs will put the spell id in the special_effect_t, so second 
-  // phase initialization can find the custom callback that needs to be 
-  // called.
+  // Custom procs put the spell id in the special_effect_t, so second phase
+  // initialization can find the custom callback that needs to be called.
   else
     effect.spell_id = spell_id;
 
