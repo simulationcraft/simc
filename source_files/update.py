@@ -1,8 +1,9 @@
 # This is a little script to synchronize our various build files.
 #
-# Currently supported: 
-# - parsing Qt files
-# - output: Qt, Visual Studio, POSIX Makefile 
+# How it works:
+# 1) Edit Qt .pri files
+# 2) Run this script with python3
+# 3) output: reformatted, Qt, Visual Studio ( cli only ), POSIX Makefile
 
 import re
 import datetime

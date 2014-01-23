@@ -3482,6 +3482,61 @@ public:
 
   QString userAgentForUrl( const QUrl& /* url */ ) const
   { return QString( "simulationcraft_gui" ); }
+protected:
+  virtual bool supportsExtension( Extension extension ) const
+  {
+    return extension == QWebPage::ErrorPageExtension;
+  }
+  virtual bool extension( Extension extension, const ExtensionOption* option = nullptr, ExtensionReturn* output = nullptr )
+  {
+    if ( extension != QWebPage::ErrorPageExtension )
+    {
+      return false;
+    }
+
+    const ErrorPageExtensionOption* errorOption = static_cast< const ErrorPageExtensionOption* >( option );
+
+    QString domain;
+    switch( errorOption -> domain )
+    {
+    case QWebPage::QtNetwork:
+      domain = tr( "Network Error" );
+      break;
+    case QWebPage::WebKit:
+      domain = tr( "WebKit Error" );
+      break;
+    case QWebPage::Http:
+      domain = tr( "HTTP Error" );
+      break;
+    default:
+      domain = tr( "Unknown Error" );
+      break;
+    }
+
+    QString html;
+    QFile errorHtml("Error.html");
+    if ( errorHtml.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+      html = QString::fromUtf8( errorHtml.readAll() );
+      errorHtml.close();
+    }
+    else
+    {
+      // VERY simple error page if we fail to load detailed error page
+      html = "<html><head><title>Error</title></head><body><p>Failed to load <a href=\"SITE_URL\">SITE_URL</a></p><p>ERROR_DOMAIN ERROR_NUMBER: ERROR_STRING</p></body></html>";
+    }
+
+    html = html.replace( "ERROR_NUMBER", QString::number( errorOption -> error ) );
+    html = html.replace( "ERROR_DOMAIN", domain );
+    html = html.replace( "ERROR_STRING", errorOption -> errorString );
+    html = html.replace( "SITE_URL", errorOption -> url.toString() );
+
+    ErrorPageExtensionReturn* errorReturn = static_cast< ErrorPageExtensionReturn* >( output );
+    errorReturn -> content = html.toUtf8();
+    errorReturn -> contentType = "text/html";
+    errorReturn -> baseUrl = errorOption -> url;
+    return true;
+  }
 };
 
 // ============================================================================
