@@ -13,27 +13,12 @@ using namespace enchant;
 
 namespace /* ANONYMOUS NAMESPACE */
 {
-/*
-  else if ( name == "darkglow_1"                          ) e = "OnSpellCast_250Spi_35%_15Dur_60Cd";
-  else if ( name == "darkglow_embroidery_1"               ) e = "OnSpellCast_250Spi_35%_15Dur_60Cd";
-  else if ( name == "darkglow_2"                          ) e = "OnSpellCast_580Spi_30%_15Dur_45Cd";
-  else if ( name == "darkglow_embroidery_2"               ) e = "OnSpellCast_580Spi_30%_15Dur_45Cd";
-  else if ( name == "darkglow_3"                          ) e = "OnSpellCast_3000Spi_25%_15Dur_57Cd";
-  else if ( name == "darkglow_embroidery_3"               ) e = "OnSpellCast_3000Spi_25%_15Dur_57Cd";
-  else if ( name == "swordguard_1"                        ) e = "OnAttackHit_400AP_20%_15Dur_60Cd";
-  else if ( name == "swordguard_embroidery_1"             ) e = "OnAttackHit_400AP_20%_15Dur_60Cd";
-  else if ( name == "swordguard_2"                        ) e = "OnAttackHit_1000AP_15%_15Dur_55Cd";
-  else if ( name == "swordguard_embroidery_2"             ) e = "OnAttackHit_1000AP_15%_15Dur_55Cd";
-  else if ( name == "swordguard_3"                        ) e = "OnAttackHit_4000AP_15%_15Dur_57Cd";
-  else if ( name == "swordguard_embroidery_3"             ) e = "OnAttackHit_4000AP_15%_15Dur_57Cd";
-  else if ( name == "flintlockes_woodchucker"             ) e = "OnAttackHit_1100Physical_300Agi_10%_10Dur_40Cd_nocrit"; // TO-DO: Confirm ICD.
-*/
-
 /**
  * Additional translation mappings for enchant names. We use shorthands for
  * certain enchants (listed here), that cannot be deduced from the item
  * enchantment name in DBC. We can add additional shortcuts here, where
- * applicable.
+ * applicable. The enchant ID (number) maps to the array of
+ * item_enchantment_data_t structs in sc_item_data.inc.
  */
 static const enchant_db_item_t __enchant_db[] = {
   /* Engineering tinkers */
@@ -43,6 +28,12 @@ static const enchant_db_item_t __enchant_db[] = {
   { "lightweave_1",            3722 },
   { "lightweave_2",            4115 },
   { "lightweave_3",            4892 },
+  { "darkglow_1",              3728 },
+  { "darkglow_2",              4116 },
+  { "darkglow_3",              4893 },
+  { "swordguard_1",            3730 },
+  { "swordguard_2",            4118 },
+  { "swordguard_3",            4894 },
   { 0,                         0    }
 };
 
@@ -71,7 +62,7 @@ std::string enchant::find_enchant_name( unsigned enchant_id )
 }
 
 /**
- * Deduce enchant name from DBC enchant data.
+ * Deduce DBC enchant data from user given enchant option value.
  *
  * The function loops through all item enchantments in the exported game client
  * data and checks if the item enchant name (and possibly rank) match the user

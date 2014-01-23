@@ -300,6 +300,12 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 125484, "OnSpellDamageHeal",                                0 }, /* Lightweave Embroidery Rank 3 */
   {  75171, "OnSpellDamageHeal",                                0 }, /* Lightweave Embroidery Rank 2 */
   {  55640, "OnSpellDamageHeal",                                0 }, /* Lightweave Embroidery Rank 1 */
+  { 125488, "OnSpellDamageHeal",                                0 }, /* Darkglow Embroidery Rank 3 */
+  {  75174, "OnSpellDamageHeal",                                0 }, /* Darkglow Embroidery Rank 2 */
+  {  55768, "OnSpellDamageHeal",                                0 }, /* Darkglow Embroidery Rank 1 */
+  { 125486, "OnAttackHit",                                      0 }, /* Swordguard Embroidery Rank 3 */
+  {  75177, "OnAttackHit",                                      0 }, /* Swordguard Embroidery Rank 2 */
+  {  55776, "OnAttackHit",                                      0 }, /* Swordguard Embroidery Rank 1 */
   { 105574, 0,                    profession::zen_alchemist_stone }, /* Zen Alchemist Stone (stat proc) */
   { 141331, 0,                        profession::synapse_springs },
   { 126734, 0,                        profession::synapse_springs },
