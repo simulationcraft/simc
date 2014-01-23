@@ -1375,6 +1375,33 @@ const char* util::proc_type2_string( proc_types2 type )
   }
 }
 
+// special_effect_string ====================================================
+
+const char* util::special_effect_string( special_effect_e type )
+{
+  switch ( type )
+  {
+    case SPECIAL_EFFECT_EQUIP: return "equip";
+    case SPECIAL_EFFECT_USE:   return "use";
+    case SPECIAL_EFFECT_CUSTOM: return "custom";
+    default:                   return "unknown";
+  }
+}
+
+// special_effect_source_string =============================================
+
+const char* util::special_effect_source_string( special_effect_source_e type )
+{
+  switch ( type )
+  {
+    case SPECIAL_EFFECT_SOURCE_ITEM:    return "item";
+    case SPECIAL_EFFECT_SOURCE_ENCHANT: return "enchant";
+    case SPECIAL_EFFECT_SOURCE_ADDON:   return "addon";
+    case SPECIAL_EFFECT_SOURCE_GEM:     return "gem";
+    default:                            return "unknown";
+  }
+}
+
 // stat_type_string =========================================================
 
 const char* util::stat_type_string( stat_e stat )

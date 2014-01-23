@@ -452,6 +452,23 @@ enum proc_e
   PROC_MAX
 };
 
+enum special_effect_e
+{
+  SPECIAL_EFFECT_NONE = -1,
+  SPECIAL_EFFECT_EQUIP,
+  SPECIAL_EFFECT_USE,
+  SPECIAL_EFFECT_CUSTOM
+};
+
+enum special_effect_source_e
+{
+  SPECIAL_EFFECT_SOURCE_NONE = -1,
+  SPECIAL_EFFECT_SOURCE_ITEM,
+  SPECIAL_EFFECT_SOURCE_ENCHANT,
+  SPECIAL_EFFECT_SOURCE_ADDON,
+  SPECIAL_EFFECT_SOURCE_GEM
+};
+
 enum action_e { ACTION_USE = 0, ACTION_SPELL, ACTION_ATTACK, ACTION_HEAL, ACTION_ABSORB, ACTION_SEQUENCE, ACTION_OTHER, ACTION_MAX };
 
 enum school_e
@@ -1210,6 +1227,8 @@ const char* set_bonus_string          ( set_e type );
 const char* cache_type_string         ( cache_e type );
 const char* proc_type_string          ( proc_types type );
 const char* proc_type2_string         ( proc_types2 type );
+const char* special_effect_string     ( special_effect_e type );
+const char* special_effect_source_string( special_effect_source_e type );
 
 bool is_match_slot( slot_e slot );
 item_subclass_armor matching_armor_type ( player_e ptype );
@@ -3134,6 +3153,8 @@ struct weapon_t
 
 struct special_effect_t
 {
+  special_effect_e type;
+  special_effect_source_e source;
   std::string name_str, trigger_str, encoding_str;
   proc_e trigger_type;
   int64_t trigger_mask;
@@ -3154,32 +3175,17 @@ struct special_effect_t
   int aoe;
   bool proc_delay;
   bool unique;
-  unsigned spell_id, aura_spell_id;
+  unsigned spell_id, trigger_spell_id;
   action_t* execute_action; // Allows custom action to be executed on use
+  buff_t* custom_buff; // Allows custom action
 
-  special_effect_t() :
-    trigger_type( PROC_NONE ), trigger_mask( 0 ), stat( STAT_NONE ), school( SCHOOL_NONE ),
-    max_stacks( 0 ), stat_amount( 0 ), discharge_amount( 0 ), discharge_scaling( 0 ),
-    proc_chance( 0 ), ppm( 0 ), rppm_scale( RPPM_NONE ), duration( timespan_t::zero() ), cooldown( timespan_t::zero() ),
-    tick( timespan_t::zero() ), cost_reduction( false ),
-    no_refresh( false ), chance_to_discharge( false ), override_result_es_mask( 0 ),
-    result_es_mask( 0 ), reverse( false ), aoe( 0 ), proc_delay( false ), unique( false ),
-    spell_id( 0 ), aura_spell_id( 0 ), execute_action( nullptr )
-  { }
+  special_effect_t()
+  { reset(); }
 
+  void reset();
+  bool parse_spell_data( const item_t& item, unsigned driver_id );
   std::string to_string();
   bool active() { return stat != STAT_NONE || school != SCHOOL_NONE || execute_action; }
-  void clear()
-  {
-    name_str.clear(); trigger_type = PROC_NONE; trigger_mask = 0; stat = STAT_NONE;
-    school = SCHOOL_NONE; max_stacks = 0; stat_amount = 0; discharge_amount = 0;
-    discharge_scaling = 0; proc_chance = 0; ppm = 0; rppm_scale = RPPM_NONE;
-    duration = timespan_t::zero(); cooldown = timespan_t::zero();
-    tick = timespan_t::zero(); cost_reduction = false; no_refresh = false;
-    chance_to_discharge = false; override_result_es_mask = 0;
-    result_es_mask = 0; reverse = false; aoe = 0; proc_delay = false;
-    unique = false; spell_id = 0; aura_spell_id = 0;
-  }
 };
 
 // Item =====================================================================
@@ -3201,7 +3207,7 @@ struct item_t
   sim_t* sim;
   player_t* player;
   slot_e slot;
-  bool unique, unique_addon, is_ptr, fetched;
+  bool unique, unique_addon, is_ptr;
 
   // Structure contains the "parsed form" of this specific item, be the data
   // from user options, or a data source such as the Blizzard API, or Wowhead
@@ -3216,18 +3222,18 @@ struct item_t
     unsigned                 reforge_id;
     int                      armor;
     std::array<int, 3>       gem_id;
-    std::vector<stat_pair_t> gem_stats;
+    std::vector<stat_pair_t> gem_stats, gem_bonus_stats;
     std::vector<stat_pair_t> enchant_stats;
     std::vector<stat_pair_t> addon_stats;
     std::vector<stat_pair_t> suffix_stats;
     item_data_t              data;
-    special_effect_t         use, equip, enchant, addon;
+    std::vector<special_effect_t> special_effects;
     std::vector<std::string> source_list;
 
     parsed_input_t() :
       reforged_from( STAT_NONE ), reforged_to( STAT_NONE ), upgrade_level( 0 ),
       suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ), reforge_id( 0 ), armor( 0 ),
-      data(), use(), equip(), enchant(), addon()
+      data()
     {
       range::fill( data.stat_type_e, -1 );
       range::fill( data.stat_val, 0 );
@@ -3268,14 +3274,14 @@ struct item_t
   gear_stats_t base_stats, stats;
 
   item_t() : sim( 0 ), player( 0 ), slot( SLOT_INVALID ), unique( false ),
-    unique_addon( false ), is_ptr( false ), fetched( false ),
+    unique_addon( false ), is_ptr( false ),
     parsed(), xml() { }
   item_t( player_t*, const std::string& options_str );
 
   bool active() const;
   const char* name() const;
-  const char* slot_name();
-  weapon_t* weapon();
+  const char* slot_name() const;
+  weapon_t* weapon() const;
   bool init();
   bool parse_options();
 
@@ -3304,7 +3310,6 @@ struct item_t
   bool decode_gems();
   bool decode_enchant();
   bool decode_addon();
-  bool decode_special( special_effect_t&, const std::string& encoding );
   bool decode_weapon();
   bool decode_heroic();
   bool decode_lfr();
@@ -3317,12 +3322,13 @@ struct item_t
   bool decode_ilevel();
   bool decode_quality();
   bool decode_data_source();
+  bool decode_equip_effect();
+  bool decode_use_effect();
 
   bool decode_proc_spell( special_effect_t& effect );
 
   bool parse_reforge_id();
 
-  static bool download_slot( item_t& item );
   static bool download_item( item_t& );
   static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id );
   static unsigned parse_gem( item_t& item, unsigned gem_id );
@@ -3332,6 +3338,11 @@ struct item_t
 
   std::string to_string();
   bool has_stats();
+  bool has_special_effect( special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE );
+  bool has_use_special_effect()
+  { return has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ); }
+
+  const special_effect_t& special_effect( special_effect_source_e source = SPECIAL_EFFECT_SOURCE_NONE, special_effect_e type = SPECIAL_EFFECT_NONE );
 };
 
 
@@ -4447,8 +4458,7 @@ public:
 
   virtual void init_defense();
   virtual void create_buffs();
-  virtual void init_unique_gear();
-  virtual void init_enchant();
+  virtual void init_special_effects();
   virtual void init_scaling();
   virtual void init_action_list() {}
   virtual void init_gains();
@@ -5839,7 +5849,7 @@ struct proc_callback_t : public action_callback_t
   {
     if ( proc_data.cooldown != timespan_t::zero() )
     {
-      cooldown = listener -> get_cooldown( proc_data.name_str );
+      cooldown = listener -> get_cooldown( name() );
       cooldown -> duration = proc_data.cooldown;
     }
   }
@@ -5848,6 +5858,9 @@ private:
   // Execute should be doing all the proc mechanisms, trigger is for triggering
   virtual void execute( action_t* a, T_CALLDATA* call_data ) = 0;
 public:
+  virtual std::string name() const
+  { return proc_data.name_str; }
+
   virtual void trigger( action_t* action, void* call_data )
   {
     if ( cooldown && cooldown -> down() ) return;
@@ -5867,7 +5880,7 @@ public:
     if ( listener -> sim -> debug )
       listener -> sim -> out_debug.printf( "%s attempts to proc %s on %s: %d",
                                  listener -> name(),
-                                 proc_data.name_str.c_str(),
+                                 name().c_str(),
                                  action -> name(), triggered );
 
     if ( triggered )
@@ -6001,6 +6014,33 @@ struct discharge_proc_t : public proc_callback_t<T_CALLDATA>
   }
 };
 
+struct weapon_buff_proc_callback_t : public buff_proc_callback_t<buff_t, action_state_t>
+{
+public:
+  typedef buff_proc_callback_t<buff_t, action_state_t> base_t;
+  weapon_t* weapon;
+  bool all_damage;
+
+  weapon_buff_proc_callback_t( player_t* p,
+                               special_effect_t& e,
+                               weapon_t* w,
+                               buff_t* b,
+                               bool all = false,
+                               const spell_data_t* driver = spell_data_t::nil() ) :
+    base_t( p, e, b, driver ),
+    weapon( w ),
+    all_damage( all )
+  {  }
+
+  virtual void trigger( action_t* a, void* call_data )
+  {
+    if ( ! all_damage && a -> proc ) return;
+    if ( a -> weapon && weapon && a -> weapon != weapon ) return;
+
+    base_t::trigger( a, call_data );
+  }
+};
+
 // Action Priority List =====================================================
 
 struct action_priority_t
@@ -6053,7 +6093,6 @@ struct travel_event_t : public event_t
 
 namespace item_database
 {
-bool     download_slot(      item_t& item );
 bool     download_item(      item_t& item );
 bool     download_glyph(     player_t* player, std::string& glyph_name, const std::string& glyph_id );
 unsigned parse_gem(          item_t& item, unsigned gem_id );
@@ -6102,38 +6141,52 @@ struct token_t
 size_t parse_tokens( std::vector<token_t>& tokens, const std::string& encoded_str );
 }
 
+// Procs ====================================================================
+
+namespace proc
+{
+  bool parse_special_effect_encoding( special_effect_t& effect, const item_t& item, const std::string& str );
+  int usable_effects( player_t* player, unsigned spell_id );
+}
+
+// Enchants =================================================================
+
+namespace enchant
+{
+  struct enchant_db_item_t
+  {
+    const char* enchant_name;
+    unsigned    enchant_id;
+  };
+
+  unsigned find_enchant_id( const std::string& name );
+  std::string find_enchant_name( unsigned enchant_id );
+}
+
 // Unique Gear ==============================================================
 
 namespace unique_gear
 {
+  struct special_effect_db_item_t
+  {
+    unsigned    spell_id;
+    const char* encoded_options;
+    const std::function<void(special_effect_t&, const item_t&, const special_effect_db_item_t&)> custom_cb;
+  };
+
 void init( player_t* );
 
-action_callback_t* register_stat_proc( player_t*, special_effect_t& );
-action_callback_t* register_cost_reduction_proc( player_t*, special_effect_t& );
+action_callback_t* register_stat_proc( player_t*, const special_effect_t& );
+action_callback_t* register_cost_reduction_proc( player_t*, const special_effect_t& );
 
-action_callback_t* register_discharge_proc( player_t*, special_effect_t& );
+action_callback_t* register_discharge_proc( player_t*, const special_effect_t& );
 
-action_callback_t* register_chance_discharge_proc( player_t*, special_effect_t& );
+action_callback_t* register_chance_discharge_proc( player_t*, const special_effect_t& );
 
-action_callback_t* register_stat_discharge_proc( player_t*, special_effect_t& );
+action_callback_t* register_stat_discharge_proc( player_t*, const special_effect_t& );
 
-action_callback_t* register_discharge_proc( item_t&, special_effect_t& );
-action_callback_t* register_chance_discharge_proc( item_t&, special_effect_t& );
-action_callback_t* register_stat_discharge_proc( item_t&, special_effect_t& );
-
-bool get_equip_encoding( std::string& encoding,
-                         const std::string& item_name,
-                         unsigned type_flags,
-                         bool ptr,
-                         unsigned item_id = 0 );
-
-bool get_use_encoding( std::string& encoding,
-                       const std::string& item_name,
-                       unsigned type_flags,
-                       bool ptr,
-                       unsigned item_id = 0 );
-
-void initialize_special_effects( player_t* player );
+const special_effect_db_item_t& find_special_effect_db_item( unsigned spell_id );
+bool initialize_special_effect( special_effect_t& effect, const item_t& item, unsigned spell_id );
 };
 
 // Consumable ===============================================================
@@ -6164,8 +6217,6 @@ enum wowhead_e
   PTR
 };
 
-bool download_slot( item_t&, wowhead_e source = LIVE,
-                    cache::behavior_e b = cache::items() );
 bool download_item( item_t&, wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
 bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
                      wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
@@ -6225,7 +6276,6 @@ bool download_item( item_t&, cache::behavior_e b = cache::items() );
 bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
                      cache::behavior_e b = cache::items() );
 
-bool download_slot( item_t& item, cache::behavior_e b = cache::items() );
 gem_e parse_gem( item_t& item, unsigned gem_id, cache::behavior_e b = cache::items() );
 }
 

@@ -988,9 +988,8 @@ bool player_t::init( sim_t* sim )
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_initial_stats ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_defense ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::create_buffs ) ); // keep here for now
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_enchant ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_scaling ) );
-  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_unique_gear ) );
+  range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_special_effects ) ); // Must be before _init_actions
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::_init_actions ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_gains ) );
   range::for_each( sim -> actor_list, std::mem_fn( &player_t::init_procs ) );
@@ -1723,22 +1722,56 @@ void player_t::init_weapon( weapon_t& w )
   if ( w.slot == SLOT_OFF_HAND  ) assert( w.type >= WEAPON_NONE && w.type < WEAPON_2H );
 }
 
-// player_t::init_unique_gear ===============================================
+// player_t::init_special_effects ===============================================
 
-void player_t::init_unique_gear()
+void player_t::init_special_effects()
 {
-  if ( sim -> debug ) sim -> out_debug.printf( "Initializing unique gear for player (%s)", name() );
+  if ( sim -> debug ) sim -> out_debug.printf( "Initializing special effects for player (%s)", name() );
+
+  const spell_data_t* totg = find_racial_spell( "Touch of the Grave" );
+  if ( totg -> ok() )
+  {
+    struct touch_of_the_grave_discharge_spell_t : public spell_t
+    {
+      touch_of_the_grave_discharge_spell_t( player_t* p, const spell_data_t* s ) :
+        spell_t( "touch_of_the_grave", p, s )
+      {
+        school           = ( s -> effectN( 1 ).trigger() -> get_school_type() == SCHOOL_DRAIN ) ? SCHOOL_SHADOW : s -> effectN( 1 ).trigger() -> get_school_type();
+        discharge_proc   = true;
+        trigger_gcd      = timespan_t::zero();
+        base_dd_min      = s -> effectN( 1 ).trigger() -> effectN( 1 ).average( p );
+        base_dd_max      = s -> effectN( 1 ).trigger() -> effectN( 1 ).average( p );
+        direct_power_mod = s -> effectN( 1 ).trigger() -> effectN( 1 )._coeff;
+        may_crit         = false;
+        may_miss         = false;
+        background       = true;
+        aoe              = 0;
+      }
+
+      virtual void impact( action_state_t* s )
+      {
+        spell_t::impact( s );
+
+        if ( result_is_hit( s -> result ) )
+        {
+          player -> resource_gain( RESOURCE_HEALTH, s -> result_amount, player -> gains.touch_of_the_grave );
+        }
+      }
+    };
+
+    special_effect_t se_data;
+    se_data.name_str = "touch_of_the_grave";
+    se_data.proc_chance = totg -> proc_chance();
+    se_data.cooldown = totg -> internal_cooldown();
+
+    action_t* a = new touch_of_the_grave_discharge_spell_t( this, totg -> effectN( 1 ).trigger() );
+    action_callback_t* cb = new discharge_proc_t<action_t>( this, se_data, a );
+
+    callbacks.register_attack_callback       ( RESULT_HIT_MASK, cb );
+    callbacks.register_harmful_spell_callback( RESULT_HIT_MASK, cb );
+  }
 
   unique_gear::init( this );
-}
-
-// player_t::init_enchant ===================================================
-
-void player_t::init_enchant()
-{
-  if ( sim -> debug ) sim -> out_debug.printf( "Initializing enchants for player (%s)", name() );
-
-  unique_gear::initialize_special_effects( this );
 }
 
 // player_t::init_resources =================================================
@@ -1900,7 +1933,8 @@ std::string player_t::init_use_item_actions( const std::string& append )
   for ( size_t i = 0; i < items.size(); ++i )
   {
     if ( items[ i ].slot == SLOT_HANDS ) continue;
-    if ( items[ i ].parsed.use.active() )
+
+    if ( items[ i ].has_use_special_effect() )
     {
       buffer += "/use_item,slot=";
       buffer += items[ i ].slot_name();
@@ -1910,7 +1944,7 @@ std::string player_t::init_use_item_actions( const std::string& append )
       }
     }
   }
-  if ( items[ SLOT_HANDS ].parsed.use.active() )
+  if ( items[ SLOT_HANDS ].has_use_special_effect() )
   {
     buffer += "/use_item,slot=";
     buffer += items[ SLOT_HANDS ].slot_name();
@@ -1931,11 +1965,11 @@ std::vector<std::string> player_t::get_item_actions()
   {
     // Make sure hands slot comes last
     if ( items[ i ].slot == SLOT_HANDS ) continue;
-    if ( items[ i ].parsed.use.active() )
+    if ( items[ i ].has_use_special_effect() )
       actions.push_back( std::string( "use_item,slot=" ) + items[ i ].slot_name() );
   }
 
-  if ( items[ SLOT_HANDS ].parsed.use.active() )
+  if ( items[ SLOT_HANDS ].has_use_special_effect() )
     actions.push_back( std::string( "use_item,slot=" ) + items[ SLOT_HANDS ].slot_name() );
 
   return actions;
@@ -2052,9 +2086,10 @@ std::string player_t::include_default_on_use_items( player_t& p, const std::stri
   for ( size_t i = 0; i < p.items.size(); i++ )
   {
     item_t& item = p.items[ i ];
-    if ( item.parsed.use.active() )
+    if ( item.has_use_special_effect() )
     {
-      if ( ! item.parsed.use.name_str.empty() && exclude_effects.find( item.parsed.use.name_str ) != std::string::npos )
+      const special_effect_t& effect = item.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+      if ( ! effect.name_str.empty() && exclude_effects.find( effect.name_str ) != std::string::npos )
         continue;
       s += "/use_item,name=";
       s += item.name();
@@ -2078,11 +2113,12 @@ std::string player_t::include_specific_on_use_item( player_t& p, const std::stri
   for ( size_t i = 0; i < p.items.size(); i++ )
   {
     item_t& item = p.items[ i ];
-    if ( item.parsed.use.active() )
+    const special_effect_t& effect = item.special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+    if ( effect.type == SPECIAL_EFFECT_USE )
     {
       for ( size_t j = 0; j < splits.size(); ++j )
       {
-        if ( splits[ j ] == item.parsed.use.name_str )
+        if ( splits[ j ] == effect.name_str )
         {
           s += "/use_item,name=";
           s += item.name();
@@ -5670,6 +5706,8 @@ struct racial_spell_t : public spell_t
   }
 };
 
+// Touch of the Grave =======================================================
+
 // Shadowmeld ===============================================================
 
 struct shadowmeld_t : public racial_spell_t
@@ -6140,10 +6178,11 @@ struct use_item_t : public action_t
   action_callback_t* trigger;
   stat_buff_t* buff;
   std::string use_name;
+  const special_effect_t* effect;
 
   use_item_t( player_t* player, const std::string& options_str ) :
     action_t( ACTION_OTHER, "use_item", player ),
-    item( 0 ), discharge( 0 ), trigger( 0 ), buff( 0 )
+    item( 0 ), discharge( 0 ), trigger( 0 ), buff( 0 ), effect( 0 )
   {
     std::string item_name, item_slot;
 
@@ -6192,16 +6231,16 @@ struct use_item_t : public action_t
       return;
     }
 
-    if ( ! item -> parsed.use.active() )
+    const special_effect_t& e = item -> special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE );
+    if ( e.type != SPECIAL_EFFECT_USE )
     {
       sim -> errorf( "Player %s attempting 'use_item' action with item '%s' which has no 'use=' encoding.\n", player -> name(), item -> name() );
       item = nullptr;
       return;
     }
 
+    effect = &e;
     stats = player ->  get_stats( name_str, this );
-
-    special_effect_t& e = item -> parsed.use;
 
     use_name = e.name_str.empty() ? item -> name() : e.name_str;
 
@@ -6242,12 +6281,10 @@ struct use_item_t : public action_t
     }
     else if ( e.stat )
     {
-      if ( e.max_stacks  == 0 ) e.max_stacks  = 1;
-      if ( e.proc_chance == 0 ) e.proc_chance = 1;
-
       buff = dynamic_cast<stat_buff_t*>( buff_t::find( player, use_name, player ) );
       if ( ! buff )
-        buff = stat_buff_creator_t( player, use_name ).max_stack( e.max_stacks )
+        buff = stat_buff_creator_t( player, use_name )
+               .max_stack( e.max_stacks )
                .duration( e.duration )
                .cd( e.cooldown )
                .chance( e.proc_chance )
@@ -6265,7 +6302,7 @@ struct use_item_t : public action_t
     cooldown_name += item -> slot_name();
 
     cooldown = player -> get_cooldown( cooldown_name );
-    cooldown -> duration = item -> parsed.use.cooldown;
+    cooldown -> duration = e.cooldown;
     trigger_gcd = timespan_t::zero();
 
     if ( buff != 0 ) buff -> cooldown = cooldown;
@@ -6290,17 +6327,18 @@ struct use_item_t : public action_t
 
       trigger -> activate();
 
-      if ( item -> parsed.use.duration != timespan_t::zero() )
+      if ( effect -> duration != timespan_t::zero() )
       {
         struct trigger_expiration_t : public event_t
         {
           item_t* item;
           action_callback_t* trigger;
+          const special_effect_t* effect;
 
-          trigger_expiration_t( player_t& player, item_t* i, action_callback_t* t ) :
-            event_t( player, i -> name() ), item( i ), trigger( t )
+          trigger_expiration_t( player_t& player, item_t* i, const special_effect_t* e, action_callback_t* t ) :
+            event_t( player, i -> name() ), item( i ), trigger( t ), effect( e )
           {
-            sim().add_event( this, item -> parsed.use.duration );
+            sim().add_event( this, effect -> duration );
           }
           virtual void execute()
           {
@@ -6308,9 +6346,9 @@ struct use_item_t : public action_t
           }
         };
 
-        new ( *sim ) trigger_expiration_t( *player, item, trigger );
+        new ( *sim ) trigger_expiration_t( *player, item, effect, trigger );
 
-        lockout( item -> parsed.use.duration );
+        lockout( effect -> duration );
       }
     }
     else if ( buff )
@@ -6319,7 +6357,7 @@ struct use_item_t : public action_t
       buff -> trigger();
       lockout( buff -> buff_duration );
     }
-    else if ( action_t* a = item -> parsed.use.execute_action )
+    else if ( action_t* a = effect -> execute_action )
     {
       a -> execute();
     }
@@ -7572,7 +7610,7 @@ expr_t* player_t::create_expression( action_t* a,
         {
           if ( t1 )
           {
-            const special_effect_t& e = a -> player -> items[ SLOT_TRINKET_1 ].parsed.equip;
+            const special_effect_t& e = a -> player -> items[ SLOT_TRINKET_1 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
             if ( e.stat == s && ( ( ! stacking && e.max_stacks <= 1 ) || ( stacking && e.max_stacks > 1 ) ) )
             {
               buff_t* b1 = buff_t::find( a -> player, e.name_str );
@@ -7582,7 +7620,7 @@ expr_t* player_t::create_expression( action_t* a,
 
           if ( t2 )
           {
-            const special_effect_t& e = a -> player -> items[ SLOT_TRINKET_2 ].parsed.equip;
+            const special_effect_t& e = a -> player -> items[ SLOT_TRINKET_2 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
             if ( e.stat == s && ( ( ! stacking && e.max_stacks <= 1 ) || ( stacking && e.max_stacks > 1 ) ) )
             {
               buff_t* b2 = buff_t::find( a -> player, e.name_str );
@@ -7623,13 +7661,13 @@ expr_t* player_t::create_expression( action_t* a,
         {
           if ( t1 )
           {
-            const special_effect_t& e = p -> items[ SLOT_TRINKET_1 ].parsed.equip;
+            const special_effect_t& e = p -> items[ SLOT_TRINKET_1 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
             if ( e.stat == s ) has_t1 = true;
           }
 
           if ( t2 )
           {
-            const special_effect_t& e = p -> items[ SLOT_TRINKET_2 ].parsed.equip;
+            const special_effect_t& e = p -> items[ SLOT_TRINKET_2 ].special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_EQUIP );
             if ( e.stat == s ) has_t2 = true;
           }
         }
@@ -8409,27 +8447,6 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
       if ( set_bonus_t::has_set_bonus( this, s ) && ( s % 3 != 1 ) /* Only report 2pc/4pc, not base set bonus enum */ )
       {
         profile_str += std::string("# ") + util::set_bonus_string( s ) + "=1" + term;
-      }
-    }
-
-    for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
-    {
-      item_t& item = items[ SLOT_OUT_ORDER[ i ] ];
-      if ( ! item.active() ) continue;
-      if ( item.unique || item.parsed.enchant.unique || item.parsed.addon.unique || ! item.encoded_weapon().empty() )
-      {
-        profile_str += "# ";
-        profile_str += item.slot_name();
-        profile_str += "=";
-        profile_str += item.name();
-        if ( item.parsed.data.heroic()                ) profile_str += ",heroic=1";
-        if ( item.parsed.data.lfr()                   ) profile_str += ",lfr=1";
-        if ( item.parsed.data.flex()                   ) profile_str += ",flex=1";
-        if ( item.parsed.data.elite()         ) profile_str += ",elite=1";
-        if ( ! item.encoded_weapon().empty()        ) profile_str += ",weapon=" + item.encoded_weapon();
-        if ( ! item.parsed.enchant.name_str.empty() ) profile_str += ",enchant=" + item.parsed.enchant.name_str;
-        if ( ! item.parsed.addon.name_str.empty()   ) profile_str += ",addon="   + item.parsed.addon.name_str;
-        profile_str += term;
       }
     }
 

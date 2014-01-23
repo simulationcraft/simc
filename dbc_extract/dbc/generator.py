@@ -1163,6 +1163,8 @@ class SpellDataGenerator(DataGenerator):
          120032, 142530,            # Dancing Steel
          104993,                    # Jade Spirit
          116631,                    # Colossus
+         104510, 104423,            # Windsong Mastery, Haste buffs
+         137596,                    # Capacitance (Melee Legendary meta gem buff)
         ),
         
         # Warrior:

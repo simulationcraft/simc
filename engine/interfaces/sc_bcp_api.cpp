@@ -238,9 +238,6 @@ bool parse_items( player_t*  p,
     js::get_value( item.parsed.addon_id, js, "tooltipParams/tinker" );
     js::get_value( item.parsed.suffix_id, js, "tooltipParams/suffix" );
     js::get_value( item.parsed.upgrade_level, js, "tooltipParams/upgrade/current" );
-
-    if ( ! item_t::download_slot( item ) )
-      return false;
   }
 
   return true;
@@ -512,6 +509,15 @@ js::js_node_t download_item_data( item_t& item, cache::behavior_e caching )
             item.parsed.data.socket_color[ i ] = SOCKET_COLOR_HYDRAULIC;
         }
       }
+
+      std::string socketBonus;
+      if ( js::get_value( socketBonus, js, "socketInfo/socketBonus" ) )
+      {
+        std::string stat;
+        util::fuzzy_stats( stat, socketBonus );
+        std::vector<stat_pair_t> bonus = item_t::str_to_stat_pair( stat );
+        item.parsed.gem_bonus_stats = bonus;
+      }
     }
 
     js::get_value( item.parsed.data.id_set, js, "itemSet" );
@@ -644,59 +650,6 @@ std::vector<stat_pair_t> parse_gem_stats( const std::string& bonus )
   return stats;
 }
 
-bool parse_gems( item_t& item, const js::js_node_t& js )
-{
-  bool match = true;
-
-  item.parsed.gem_stats.clear();
-
-  for ( size_t i = 0; i < sizeof_array( item.parsed.gem_id ); i++ )
-  {
-    if ( item.parsed.gem_id[ i ] == 0 )
-    {
-      // Check if there's a gem slot, if so, this is ungemmed item.
-      if ( item.parsed.data.socket_color[ i ] )
-        match = false;
-      continue;
-    }
-
-    if ( item.parsed.data.socket_color[ i ] )
-    {
-      if ( ! ( item_t::parse_gem( item, item.parsed.gem_id[ i ] ) & item.parsed.data.socket_color[ i ] ) )
-        match = false;
-    }
-    else
-    {
-      // Naively accept gems to wrist/hands/waist past the "official" sockets, but only a
-      // single extra one. Wrist/hands should be checked against player professions at
-      // least ..
-      // Also accept it on main/offhands for the new 5.1 legendary questline stuff
-      if ( item.slot == SLOT_WRISTS || item.slot == SLOT_HANDS ||
-           item.slot == SLOT_WAIST || item.slot == SLOT_MAIN_HAND ||
-           item.slot == SLOT_OFF_HAND )
-      {
-        item_t::parse_gem( item, item.parsed.gem_id[ i ] );
-        break;
-      }
-    }
-  }
-
-  // Socket bonus
-  if ( match )
-  {
-    std::string socketBonus;
-    if ( js::get_value( socketBonus, js, "socketInfo/socketBonus" ) )
-    {
-      std::string stat;
-      util::fuzzy_stats( stat, socketBonus );
-      std::vector<stat_pair_t> bonus = item_t::str_to_stat_pair( stat );
-      item.parsed.gem_stats.insert( item.parsed.gem_stats.end(), bonus.begin(), bonus.end() );
-    }
-  }
-
-  return true;
-}
-
 } // close anonymous namespace ==============================================
 
 // bcp_api::download_player =================================================
@@ -756,21 +709,6 @@ bool bcp_api::download_item( item_t& item, cache::behavior_e caching )
   if ( ret )
     item.source_str = "Blizzard";
   return ret;
-}
-
-// bcp_api::download_slot() =================================================
-
-bool bcp_api::download_slot( item_t& item, cache::behavior_e caching )
-{
-  js::js_node_t js = download_item_data( item, caching );
-  if ( ! js )
-    return false;
-
-  parse_gems( item, js );
-
-  item.source_str = "Blizzard";
-
-  return true;
 }
 
 // bcp_api::download_guild ==================================================

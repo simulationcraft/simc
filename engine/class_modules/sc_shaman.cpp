@@ -5599,7 +5599,7 @@ void shaman_t::init_action_list()
 
   for ( int i = 0; i < ( int ) items.size(); i++ )
   {
-    if ( items[ i ].parsed.use.active() && items[ i ].slot == SLOT_HANDS )
+    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) && items[ i ].slot == SLOT_HANDS )
     {
       hand_addon = i;
       break;
@@ -5611,7 +5611,8 @@ void shaman_t::init_action_list()
   std::vector<std::string> use_items;
   for ( size_t i = 0; i < items.size(); i++ )
   {
-    if ( items[ i ].parsed.use.active() && ( specialization() != SHAMAN_ELEMENTAL || items[ i ].slot != SLOT_HANDS ) )
+    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) && 
+         ( specialization() != SHAMAN_ELEMENTAL || items[ i ].slot != SLOT_HANDS ) )
       use_items.push_back( "use_item,name=" + items[ i ].name_str );
   }
 

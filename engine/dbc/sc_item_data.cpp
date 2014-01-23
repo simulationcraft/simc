@@ -381,13 +381,20 @@ bool item_database::parse_gems( item_t& item )
     }
   }
 
-  // Socket bonus
-  const item_enchantment_data_t& socket_bonus = item.player -> dbc.item_enchantment( item.parsed.data.id_socket_bonus );
-  if ( match && socket_bonus.id )
+  // Socket bonus. We do a bit of special parsing here. For local/wowhead
+  // items, we can use the socket bonus ID to determine the socket stats.
+  // However, Blizzard's own API fails to return the item enchantment ID for
+  // the socket bonus, so we have to inject the stats from a separate
+  // (preparsed) location as a workaround
+  if ( match )
   {
-    std::vector<stat_pair_t> s;
-    if ( encode_item_enchant_stats( socket_bonus, s ) )
-      item.parsed.gem_stats.insert( item.parsed.gem_stats.end(), s.begin(), s.end() );
+    const item_enchantment_data_t& socket_bonus = item.player -> dbc.item_enchantment( item.parsed.data.id_socket_bonus );
+    if ( socket_bonus.id )
+      encode_item_enchant_stats( socket_bonus, item.parsed.gem_bonus_stats );
+
+    item.parsed.gem_stats.insert( item.parsed.gem_stats.end(), 
+                                  item.parsed.gem_bonus_stats.begin(),
+                                  item.parsed.gem_bonus_stats.end() );
   }
 
   return true;
@@ -407,7 +414,7 @@ bool item_database::parse_item_spell_enchant( item_t& item,
     return true;
   }
 
-  effect.clear();
+  effect.reset();
   stats.clear();
 
   for ( unsigned i = 0, k = 0; i < 3; ++i ) // loop through the 3 enchant effects and append them to result string
@@ -489,23 +496,7 @@ bool item_database::parse_item_spell_enchant( item_t& item,
   return true;
 }
 
-// item_database_t::download_slot ===========================================
-
-bool item_database::download_slot( item_t& item )
-{
-  bool ret = load_item_from_data( item );
-
-  if ( ret )
-  {
-    parse_gems( item );
-
-    item.source_str = "Local";
-  }
-
-  return ret;
-}
-
-// item_database_t::load_item_from_data =====================================
+// item_database_t::// item_database_t::load_item_from_data =====================================
 
 bool item_database::load_item_from_data( item_t& item )
 {

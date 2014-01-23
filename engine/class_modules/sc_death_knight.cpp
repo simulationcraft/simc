@@ -398,7 +398,7 @@ public:
   // Character Definition
   virtual void      init_spells();
   virtual void      init_action_list();
-  virtual void      init_enchant();
+  virtual void      init_special_effects();
   virtual void      init_rng();
   virtual void      init_base_stats();
   virtual void      init_scaling();
@@ -5663,14 +5663,14 @@ void death_knight_t::init_action_list()
   player_t::init_action_list();
 }
 
-// death_knight_t::init_enchant =============================================
+// death_knight_t::init_special_effects =====================================
 
-void death_knight_t::init_enchant()
+void death_knight_t::init_special_effects()
 {
-  player_t::init_enchant();
+  player_t::init_special_effects();
 
-  std::string& mh_enchant = items[ SLOT_MAIN_HAND ].parsed.enchant.name_str;
-  std::string& oh_enchant = items[ SLOT_OFF_HAND  ].parsed.enchant.name_str;
+  const special_effect_t& mh_effect = items[ SLOT_MAIN_HAND ].special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT );
+  const special_effect_t& oh_effect = items[ SLOT_OFF_HAND ].special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT );
 
   // Rune of Cinderglacier ==================================================
   struct cinderglacier_callback_t : public action_callback_t
@@ -5802,57 +5802,57 @@ void death_knight_t::init_enchant()
                                        .quiet( true )
                                        .chance( 0 );
 
-  if ( mh_enchant == "rune_of_the_fallen_crusader" )
+  if ( mh_effect.name_str == "rune_of_the_fallen_crusader" )
   {
     callbacks.register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_MAIN_HAND, runeforge.rune_of_the_fallen_crusader ) );
   }
-  else if ( mh_enchant == "rune_of_razorice" )
+  else if ( mh_effect.name_str == "rune_of_razorice" )
   {
     callbacks.register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_MAIN_HAND ) );
   }
-  else if ( mh_enchant == "rune_of_cinderglacier" )
+  else if ( mh_effect.name_str == "rune_of_cinderglacier" )
   {
     callbacks.register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_MAIN_HAND, runeforge.rune_of_cinderglacier ) );
   }
 
-  if ( oh_enchant == "rune_of_the_fallen_crusader" )
+  if ( oh_effect.name_str == "rune_of_the_fallen_crusader" )
   {
     callbacks.register_attack_callback( RESULT_HIT_MASK, new fallen_crusader_callback_t( this, SLOT_OFF_HAND, runeforge.rune_of_the_fallen_crusader ) );
   }
-  else if ( oh_enchant == "rune_of_razorice" )
+  else if ( oh_effect.name_str == "rune_of_razorice" )
   {
     callbacks.register_attack_callback( RESULT_HIT_MASK, new razorice_callback_t( this, SLOT_OFF_HAND ) );
   }
-  else if ( oh_enchant == "rune_of_cinderglacier" )
+  else if ( oh_effect.name_str == "rune_of_cinderglacier" )
   {
     callbacks.register_attack_callback( RESULT_HIT_MASK, new cinderglacier_callback_t( this, SLOT_OFF_HAND, runeforge.rune_of_cinderglacier ) );
   }
 
-  if ( mh_enchant == "rune_of_the_stoneskin_gargoyle" )
+  if ( mh_effect.name_str == "rune_of_the_stoneskin_gargoyle" )
     runeforge.rune_of_the_stoneskin_gargoyle -> default_chance = 1.0;
 
-  if ( mh_enchant == "rune_of_the_nerubian_carapace" )
+  if ( mh_effect.name_str == "rune_of_the_nerubian_carapace" )
     runeforge.rune_of_the_nerubian_carapace -> default_chance = 1.0;
 
-  if ( oh_enchant == "rune_of_the_nerubian_carapace" )
+  if ( oh_effect.name_str == "rune_of_the_nerubian_carapace" )
     runeforge.rune_of_the_nerubian_carapace_oh -> default_chance = 1.0;
 
-  if ( mh_enchant == "rune_of_spellshattering" )
+  if ( mh_effect.name_str == "rune_of_spellshattering" )
     runeforge.rune_of_spellshattering -> default_chance = 1.0;
 
-  if ( mh_enchant == "rune_of_swordshattering" )
+  if ( mh_effect.name_str == "rune_of_swordshattering" )
     runeforge.rune_of_swordshattering -> default_chance = 1.0;
 
-  if ( mh_enchant == "rune_of_spellbreaking" )
+  if ( mh_effect.name_str == "rune_of_spellbreaking" )
     runeforge.rune_of_spellbreaking -> default_chance = 1.0;
 
-  if ( oh_enchant == "rune_of_spellbreaking" )
+  if ( oh_effect.name_str == "rune_of_spellbreaking" )
     runeforge.rune_of_spellbreaking_oh -> default_chance = 1.0;
 
-  if ( mh_enchant == "rune_of_swordbreaking" )
+  if ( mh_effect.name_str == "rune_of_swordbreaking" )
     runeforge.rune_of_swordbreaking -> default_chance = 1.0;
 
-  if ( oh_enchant == "rune_of_swordbreaking" )
+  if ( oh_effect.name_str == "rune_of_swordbreaking" )
     runeforge.rune_of_swordbreaking_oh -> default_chance = 1.0;
 }
 

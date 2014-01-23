@@ -5119,7 +5119,7 @@ void warlock_t::apl_precombat()
   // Usable Item
   for ( int i = as<int>( items.size() ) - 1; i >= 0; i-- )
   {
-    if ( items[i].parsed.use.active() )
+    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
       action_list_str += "/use_item,name=";
       action_list_str += items[i].name();

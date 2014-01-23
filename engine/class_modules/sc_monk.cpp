@@ -3884,7 +3884,7 @@ void monk_t::apl_combat_windwalker()
   // USE ITEM (engineering etc)
   for ( size_t i = 0, end = items.size(); i < end; ++i )
   {
-    if ( items[ i ].parsed.use.active() )
+    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
       action_list_str += "/use_item,name=";
       action_list_str += items[ i ].name();
@@ -3946,7 +3946,7 @@ void monk_t::apl_combat_mistweaver()
   // USE ITEM (engineering etc)
   for ( size_t i = 0, end = items.size(); i < end; ++i )
   {
-    if ( items[ i ].parsed.use.active() )
+    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
       def -> add_action( std::string("/use_item,name=") + items[ i ].name() );
     }

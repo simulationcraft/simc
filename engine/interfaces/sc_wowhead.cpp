@@ -324,19 +324,3 @@ bool wowhead::download_item( item_t&            item,
   return ret;
 }
 
-// wowhead::download_slot ===================================================
-
-bool wowhead::download_slot( item_t&           item,
-                             wowhead_e         source,
-                             cache::behavior_e caching )
-{
-  if ( ! download_item_data( item, caching, source ) )
-    return false;
-
-  item_database::parse_gems( item );
-
-  item.source_str = "Wowhead";
-
-  return true;
-}
-

@@ -41,6 +41,7 @@ To change the list of source files, update the QT_ files and run update.py
     <ClCompile Include="..\engine\player\sc_pet.cpp" />
     <ClCompile Include="..\engine\player\sc_player.cpp" />
     <ClCompile Include="..\engine\player\sc_set_bonus.cpp" />
+    <ClCompile Include="..\engine\player\sc_proc.cpp" />
     <ClCompile Include="..\engine\player\sc_unique_gear.cpp" />
     <ClCompile Include="..\engine\sim\sc_cooldown.cpp" />
     <ClCompile Include="..\engine\sim\sc_event.cpp" />

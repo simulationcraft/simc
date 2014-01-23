@@ -274,6 +274,11 @@ public:
   double min( const item_t* item ) const;
   double max( const item_t* item ) const;
 
+  double average( const item_t& item ) const { return average( &item ); }
+  double delta( const item_t& item ) const { return delta( &item ); }
+  double min( const item_t& item ) const { return min( &item ); }
+  double max( const item_t& item ) const { return max( &item ); }
+
   bool override_field( const std::string& field, double value );
 
   spell_data_t* spell() const;

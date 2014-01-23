@@ -697,20 +697,6 @@ player_t* load_player_xml( sim_t* sim,
         sim -> errorf( "Player %s unable to parse slot encoding '%s'.\n", p -> name(), slot_encoding.c_str() );
         return 0;
       }
-
-      // FIXME: Proper upgrade level once rawr supports it
-      if ( ! item_t::download_slot( item ) )
-        return 0;
-      // RAWR exports upgrades as ilevel. After we have "downloaded the slot", 
-      // we need to back-convert the item.parsed.upgrade_level back to 
-      // real upgrade level, instead of ilevels. Sigh.
-      else
-      {
-        if ( item.parsed.data.quality == 3 )
-          item.parsed.upgrade_level /= 8;
-        else if ( item.parsed.data.quality == 4 || item.parsed.data.quality == 5 )
-          item.parsed.upgrade_level /= 4;
-      }
     }
   }
 

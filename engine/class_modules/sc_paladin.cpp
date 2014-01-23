@@ -4431,7 +4431,7 @@ void paladin_t::generate_action_prio_list_prot()
   int num_items = ( int ) items.size();
   for ( int i = 0; i < num_items; i++ )
   {
-    if ( items[ i ].parsed.use.active() )
+    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
       def -> add_action ( "/use_item,name=" + items[ i ].name_str );
     }
@@ -4548,7 +4548,7 @@ void paladin_t::generate_action_prio_list_ret()
   int num_items = ( int ) items.size();
   for ( int i = 0; i < num_items; i++ )
   {
-    if ( items[ i ].parsed.use.active() )
+    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
       std::string item_str;
       item_str += "use_item,name=";
@@ -4667,7 +4667,7 @@ void paladin_t::generate_action_prio_list_holy()
   int num_items = ( int ) items.size();
   for ( int i = 0; i < num_items; i++ )
   {
-    if ( items[ i ].parsed.use.active() )
+    if ( items[ i ].has_special_effect( SPECIAL_EFFECT_SOURCE_NONE, SPECIAL_EFFECT_USE ) )
     {
       def -> add_action ( "/use_item,name=" + items[ i ].name_str );
     }

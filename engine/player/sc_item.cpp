@@ -67,61 +67,18 @@ meta_gem_e parse_meta_gem( const std::string& prefix,
 
 } // UNNAMED NAMESPACE ====================================================
 
-std::string special_effect_t::to_string()
-{
-  std::ostringstream s;
-
-  if ( ! trigger_str.empty() )
-    s << "proc=" << trigger_str;
-  else
-    s << name_str;
-
-  if ( stat != STAT_NONE )
-  {
-    s << " stat=" << util::stat_type_abbrev( stat );
-    s << " amount=" << stat_amount;
-    s << " duration=" << duration.total_seconds();
-    if ( tick != timespan_t::zero() )
-      s << " tick=" << tick.total_seconds();
-  }
-
-  if ( school != SCHOOL_NONE )
-  {
-    s << " school=" << util::school_type_string( school );
-    s << " amount=" << discharge_amount;
-    if ( discharge_scaling > 0 )
-      s << " coeff=" << discharge_scaling;
-  }
-
-  if ( max_stacks > 0 )
-    s << " max_stack=" << max_stacks;
-
-  if ( proc_chance > 0 )
-    s << " proc_chance=" << proc_chance * 100.0 << "%";
-
-  if ( ppm > 0 )
-    s << " ppm=" << ppm;
-  else if ( ppm < 0 )
-    s << " rppm=" << std::fabs( ppm );
-
-  if ( cooldown != timespan_t::zero() )
-    s << " icd=" << cooldown.total_seconds();
-
-  return s.str();
-}
-
 // item_t::item_t ===========================================================
 
 item_t::item_t( player_t* p, const std::string& o ) :
   sim( p -> sim ), player( p ), slot( SLOT_INVALID ), unique( false ),
   unique_addon( false ), is_ptr( p -> dbc.ptr ),
-  fetched( false ), parsed(), xml(), options_str( o )
+  parsed(), xml(), options_str( o )
 {
   parsed.data.name = name_str.c_str();
   parsed.data.icon = icon_str.c_str();
 }
 
-// item_t::to_string ========================================================
+// item_t::has_stats =======================================================
 
 bool item_t::has_stats()
 {
@@ -132,6 +89,34 @@ bool item_t::has_stats()
   }
 
   return false;
+}
+
+// item_t::has_special_effect ==============================================
+
+bool item_t::has_special_effect( special_effect_source_e source, special_effect_e type )
+{
+  return special_effect( source, type ).source != SPECIAL_EFFECT_SOURCE_NONE;
+}
+
+
+// item_t::special_effect ===================================================
+
+const special_effect_t& item_t::special_effect( special_effect_source_e source, special_effect_e type )
+{
+  static special_effect_t nonevalue;
+
+  // Note note returns first available, but odds that there are several on-
+  // equip enchants in an item is slim to none
+  for ( size_t i = 0; i < parsed.special_effects.size(); i++ )
+  {
+    if ( ( source == SPECIAL_EFFECT_SOURCE_NONE || parsed.special_effects[ i ].source == source ) && 
+         ( type == SPECIAL_EFFECT_NONE || type == parsed.special_effects[ i ].type == type ) )
+    {
+      return parsed.special_effects[ i ];
+    }
+  }
+
+  return nonevalue;
 }
 
 // item_t::to_string ========================================================
@@ -261,6 +246,20 @@ std::string item_t::to_string()
     s << " }";
   }
 
+  if ( parsed.gem_bonus_stats.size() > 0 )
+  {
+    s << " socket_bonus={ ";
+
+    for ( size_t i = 0; i < parsed.gem_bonus_stats.size(); i++ )
+    {
+      s << "+" << parsed.gem_bonus_stats[ i ].value
+        << " " << util::stat_type_abbrev( parsed.gem_bonus_stats[ i ].stat ) << ", ";
+    }
+
+    std::streampos x = s.tellp(); s.seekp( x - std::streamoff( 2 ) );
+    s << " }";
+  }
+
   if ( is_weapon )
   {
     s << " damage={ ";
@@ -287,17 +286,13 @@ std::string item_t::to_string()
     std::streampos x = s.tellp(); s.seekp( x - std::streamoff( 2 ) );
     s << " }";
   }
-  else if ( ! parsed.enchant.name_str.empty() )
-    s << " enchant={ " << parsed.enchant.to_string() << " }";
 
-  if ( ! parsed.addon.name_str.empty() )
-    s << " addon={ " << parsed.addon.to_string() << " }";
-
-  if ( ! parsed.equip.name_str.empty() )
-    s << " equip={ " << parsed.equip.to_string() << " }";
-
-  if ( ! parsed.use.name_str.empty() )
-    s << " use={ " << parsed.use.to_string() << " }";
+  for ( size_t i = 0; i < parsed.special_effects.size(); i++ )
+  {
+    s << " effect={ ";
+    s << parsed.special_effects[ i ].to_string();
+    s << " }";
+  }
 
   if ( ! source_str.empty() )
     s << " source=" << source_str;
@@ -409,7 +404,7 @@ const char* item_t::name() const
 
 // item_t::slot_name ========================================================
 
-const char* item_t::slot_name()
+const char* item_t::slot_name() const
 {
   return util::slot_type_string( slot );
 }
@@ -418,7 +413,7 @@ const char* item_t::slot_name()
 
 // item_t::weapon ===========================================================
 
-weapon_t* item_t::weapon()
+weapon_t* item_t::weapon() const
 {
   if ( slot == SLOT_MAIN_HAND ) return &( player -> main_hand_weapon );
   if ( slot == SLOT_OFF_HAND  ) return &( player ->  off_hand_weapon );
@@ -539,11 +534,11 @@ std::string item_t::encoded_item()
     s << ",gems=" << encoded_gems();
 
   if ( ! option_enchant_str.empty() || parsed.enchant_stats.size() > 0 ||
-       ! parsed.enchant.name_str.empty() )
+       has_special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT ) )
     s << ",enchant=" << encoded_enchant();
 
   if ( ! option_addon_str.empty() || parsed.addon_stats.size() > 0 ||
-       ! parsed.addon.name_str.empty() )
+       has_special_effect( SPECIAL_EFFECT_SOURCE_ADDON ) )
     s << ",addon=" << encoded_addon();
 
   if ( ! option_equip_str.empty() )
@@ -597,11 +592,25 @@ std::string item_t::encoded_comment()
   if ( option_weapon_str.empty() && ! encoded_weapon().empty() )
     s << "weapon=" << encoded_weapon() << ",";
 
-  if ( option_equip_str.empty() && ! parsed.equip.encoding_str.empty() )
-    s << "equip=" << parsed.equip.encoding_str << ",";
+  if ( option_equip_str.empty() )
+  {
+    for ( size_t i = 0; i < parsed.special_effects.size(); i++ )
+    {
+      const special_effect_t& se = parsed.special_effects[ i ];
+      if ( se.type == SPECIAL_EFFECT_EQUIP && se.source == SPECIAL_EFFECT_SOURCE_ITEM )
+        s << "equip=" << se.encoding_str << ",";
+    }
+  }
 
-  if ( option_use_str.empty() && ! parsed.use.encoding_str.empty() )
-    s << "use=" << parsed.use.encoding_str << ",";
+  if ( option_use_str.empty() )
+  {
+    for ( size_t i = 0; i < parsed.special_effects.size(); i++ )
+    {
+      const special_effect_t& se = parsed.special_effects[ i ];
+      if ( se.type == SPECIAL_EFFECT_USE && se.source == SPECIAL_EFFECT_SOURCE_ITEM )
+        s << "use=" << se.encoding_str << ",";
+    }
+  }
 
   std::string str = s.str();
   if ( ! str.empty() )
@@ -639,7 +648,7 @@ std::string item_t::encoded_enchant()
 
   std::string stats_str = stat_pairs_to_str( parsed.enchant_stats );
   if ( stats_str.empty() )
-    stats_str = parsed.enchant.name_str;
+    stats_str = special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT ).name_str;
 
   return stats_str;
 }
@@ -653,7 +662,7 @@ std::string item_t::encoded_addon()
 
   std::string stats_str = stat_pairs_to_str( parsed.addon_stats );
   if ( stats_str.empty() )
-    stats_str = parsed.addon.name_str;
+    stats_str = special_effect( SPECIAL_EFFECT_SOURCE_ADDON ).name_str;
 
   return stats_str;
 }
@@ -781,7 +790,7 @@ bool item_t::init()
 
   if ( parsed.data.id > 0 )
   {
-    if ( ! fetched && ! item_t::download_item( *this ) &&
+    if ( ! item_t::download_item( *this ) &&
          option_stats_str.empty() && option_weapon_str.empty() )
       return false;
   }
@@ -812,35 +821,13 @@ bool item_t::init()
   // Process complex input, and initialize item in earnest
   if ( ! decode_stats()                            ) return false;
   if ( ! decode_gems()                             ) return false;
-  if ( ! decode_enchant()                          ) return false;
-  if ( ! decode_addon()                            ) return false;
   if ( ! decode_weapon()                           ) return false;
   if ( ! decode_random_suffix()                    ) return false;
   if ( ! decode_reforge()                          ) return false;
-
-  std::string use_str = option_use_str;
-  if ( use_str.empty() )
-  {
-    if ( unique_gear::get_use_encoding( use_str, name_str, parsed.data.type_flags, player -> dbc.ptr, parsed.data.id ) )
-      parsed.use.name_str = name_str;
-  }
-  else
-    parsed.use.name_str = name_str;
-
-  std::string equip_str = option_equip_str;
-  if ( equip_str.empty() )
-  {
-    if ( unique_gear::get_equip_encoding( equip_str, name_str, parsed.data.type_flags, player -> dbc.ptr, parsed.data.id ) )
-      parsed.equip.name_str = name_str;
-  }
-  else
-    parsed.equip.name_str = name_str;
-
-  if ( ! decode_special( parsed.use, use_str     ) ) return false;
-
-  if ( ! decode_special( parsed.equip, equip_str ) ) return false;
-//  if ( ! decode_proc_spell( parsed.equip ) ) return false;
-
+  if ( ! decode_equip_effect()                     ) return false;
+  if ( ! decode_use_effect()                       ) return false;
+  if ( ! decode_enchant()                          ) return false;
+  if ( ! decode_addon()                            ) return false;
 
   if ( ! option_name_str.empty() && ( option_name_str != name_str ) )
   {
@@ -1230,6 +1217,8 @@ bool item_t::decode_gems()
     if ( meta_gem != META_GEM_NONE )
       player -> meta_gem = meta_gem;
   }
+  else
+    item_database::parse_gems( *this );
 
   for ( size_t i = 0; i < parsed.gem_stats.size(); i++ )
     stats.add_stat( parsed.gem_stats[ i ].stat, parsed.gem_stats[ i ].value );
@@ -1237,27 +1226,132 @@ bool item_t::decode_gems()
   return true;
 }
 
+// item_t::decode_equip_effect ==============================================
+
+bool item_t::decode_equip_effect()
+{
+  special_effect_t effect;
+  bool ret = false;
+  int effects = 0;
+
+  // If the user has defined an equip= string, use it
+  if ( ! option_equip_str.empty() )
+  {
+    if ( ( ret = proc::parse_special_effect_encoding( effect, *this, option_equip_str ) ) )
+    {
+      effect.type = SPECIAL_EFFECT_EQUIP;
+      effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
+      parsed.special_effects.push_back( effect );
+    }
+  }
+  // Otherwise, use fancy schmancy database
+  else
+  {
+    for ( size_t i = 0, end = sizeof_array( parsed.data.id_spell ); i < end; i++ )
+    {
+      if ( parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_EQUIP )
+        continue;
+
+      if ( parsed.data.id_spell[ i ] == 0 )
+        continue;
+
+      effect.reset();
+      effect.type = SPECIAL_EFFECT_EQUIP;
+      effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
+      // First phase initialization of the special effect. Sets up the relevant
+      // fields in special_effect_t to create the proc. In the future, most of 
+      // the manual field setup can also be removed ...
+      if ( ( ret = unique_gear::initialize_special_effect( effect, *this, parsed.data.id_spell[ i ] ) ) && 
+           effect.type != SPECIAL_EFFECT_NONE )
+      {
+        parsed.special_effects.push_back( effect );
+        effects++;
+      }
+      else
+        break;
+    }
+  }
+
+  return ret || effects == 0;
+}
+
+// item_t::decode_use_effect ================================================
+
+bool item_t::decode_use_effect()
+{
+  special_effect_t effect;
+  bool ret = false;
+  int effects = 0;
+
+  // If the user has defined an use= string, use it
+  if ( ! option_use_str.empty() )
+  {
+    if ( ( ret = proc::parse_special_effect_encoding( effect, *this, option_use_str ) ) )
+    {
+      effect.type = SPECIAL_EFFECT_USE;
+      effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
+      parsed.special_effects.push_back( effect );
+    }
+  }
+  // Otherwise, use fancy schmancy database
+  else
+  {
+    for ( size_t i = 0, end = sizeof_array( parsed.data.id_spell ); i < end; i++ )
+    {
+      if ( parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_USE )
+        continue;
+
+      if ( parsed.data.id_spell[ i ] == 0 )
+        continue;
+
+      effect.reset();
+      effect.type = SPECIAL_EFFECT_USE;
+      effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
+      if ( ( ret = unique_gear::initialize_special_effect( effect, *this, parsed.data.id_spell[ i ] ) ) && 
+           effect.type != SPECIAL_EFFECT_NONE )
+      {
+        parsed.special_effects.push_back( effect );
+        effects++;
+      }
+      else
+        break;
+    }
+  }
+
+  return ret || effects == 0;
+}
+
 // item_t::decode_enchant ===================================================
 
 bool item_t::decode_enchant()
 {
+  special_effect_t effect;
+
   // If the user gives an enchant, override everything fetched from the
   // data sources
   if ( ! option_enchant_str.empty() && option_enchant_str != "none" )
   {
-    parsed.enchant.clear();
     parsed.enchant_stats = str_to_stat_pair( option_enchant_str );
+    // No stats, this is a special enchant that we need to parse out
     if ( parsed.enchant_stats.size() == 0 )
-      parsed.enchant.name_str = option_enchant_str;
+      effect.name_str = option_enchant_str;
   }
-
-  std::string equip_str;
-  if ( unique_gear::get_equip_encoding( equip_str, parsed.enchant.name_str, parsed.data.type_flags, player -> dbc.ptr ) )
+  // .. Otherwise, parse enchant based on DBC information and enchant_id
+  else if ( parsed.enchant_id > 0 )
   {
-    parsed.enchant.unique = true;
-    return decode_special( parsed.enchant, equip_str );
+    if ( ! item_database::parse_item_spell_enchant( *this, parsed.enchant_stats, effect, parsed.enchant_id ) )
+      sim -> errorf( "Player %s unable to parse enchant id %u for item \"%s\" at slot %s.\n",
+          player -> name(), parsed.enchant_id, name(), slot_name() );
   }
-
+/*
+  std::string equip_str;
+  if ( unique_gear::get_equip_encoding( equip_str, effect.name_str, parsed.data.type_flags, player -> dbc.ptr ) )
+  {
+    effect.unique = true;
+    if ( ! decode_special( SPECIAL_EFFECT_EQUIP, SPECIAL_EFFECT_SOURCE_ENCHANT, equip_str ) )
+      return false;
+  }
+*/
   for ( size_t i = 0; i < parsed.enchant_stats.size(); i++ )
     stats.add_stat( parsed.enchant_stats[ i ].stat, parsed.enchant_stats[ i ].value );
 
@@ -1268,685 +1362,36 @@ bool item_t::decode_enchant()
 
 bool item_t::decode_addon()
 {
+  special_effect_t effect;
+
   if ( ! option_addon_str.empty() && option_addon_str != "none" )
   {
-    parsed.addon.clear();
     parsed.addon_stats = str_to_stat_pair( option_addon_str );
     if ( parsed.addon_stats.size() == 0 )
-      parsed.addon.name_str = option_addon_str;
+      effect.name_str = option_addon_str;
   }
-
+  else if ( parsed.addon_id > 0 )
+  {
+    if ( ! item_database::parse_item_spell_enchant( *this, parsed.addon_stats, effect, parsed.addon_id ) )
+      sim -> errorf( "Player %s unable to parse addon id %u for item \"%s\" at slot %s.\n",
+          player -> name(), parsed.addon_id, name(), slot_name() );
+  }
+/*
   std::string use_str;
-  if ( unique_gear::get_use_encoding( use_str, parsed.addon.name_str, parsed.data.type_flags, player -> dbc.ptr ) )
+  if ( unique_gear::get_use_encoding( use_str, effect.name_str, parsed.data.type_flags, player -> dbc.ptr ) )
   {
-    parsed.use.unique = true;
-    return decode_special( parsed.use, use_str );
+    effect.unique = true;
+    if ( ! decode_special( SPECIAL_EFFECT_USE, SPECIAL_EFFECT_SOURCE_ADDON, use_str ) )
+      return false;
   }
-
-  std::string equip_str;
-  if ( unique_gear::get_equip_encoding( equip_str, parsed.addon.name_str, parsed.data.type_flags, player -> dbc.ptr ) )
-  {
-    parsed.addon.unique = true;
-    return decode_special( parsed.addon, equip_str );
-  }
-
+*/
   for ( size_t i = 0; i < parsed.addon_stats.size(); i++ )
     stats.add_stat( parsed.addon_stats[ i ].stat, parsed.addon_stats[ i ].value );
 
   return true;
 }
 
-// item_t::decode_proc_spell ================================================
 
-// TODO: Discharge/resource procs, option verification, plumbing to item system
-// NOTE: This isn't enabled in the sim currently
-
-bool item_t::decode_proc_spell( special_effect_t& effect )
-{
-  if ( effect.stat != STAT_NONE || effect.school != SCHOOL_NONE )
-    return true;
-
-  // Proc driver spell, from 123456Spell or one of the spell ids
-  unsigned driver_id = 0;
-  if ( effect.spell_id > 0 )
-    driver_id = effect.spell_id;
-  else
-  {
-    for ( size_t i = 0; i < sizeof_array( parsed.data.trigger_spell ); i++ )
-    {
-      if ( parsed.data.trigger_spell[ i ] == -1 )
-        continue;
-
-      if ( parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_EQUIP &&
-           parsed.data.trigger_spell[ i ] != ITEM_SPELLTRIGGER_ON_USE )
-        continue;
-
-      driver_id = parsed.data.id_spell[ i ];
-      break;
-    }
-  }
-
-  // No proc in the item, so its all good
-  if ( driver_id == 0 )
-    return true;
-
-  const spell_data_t* driver_spell = player -> find_spell( driver_id );
-
-  if ( driver_spell == spell_data_t::nil() )
-  {
-    sim -> errorf( "Player %s unable to find the proc driver spell %u for item '%s' in slot %s",
-                   player -> name(), driver_id, name(), slot_name() );
-    return false;
-  }
-
-  // Driver has the proc chance defined, typically. Use the id-based proc chance
-  // only if there's no proc chance or rppm defined for the special effect
-  // already
-  if ( effect.proc_chance == 0 && effect.ppm == 0 )
-    effect.proc_chance = driver_spell -> proc_chance();
-
-  const spell_data_t* proc_spell = spell_data_t::nil();
-
-  for ( size_t i = 1; i <= driver_spell -> effect_count(); i++ )
-  {
-    if ( ( proc_spell = driver_spell -> effectN( i ).trigger() ) != spell_data_t::nil() )
-      break;
-  }
-
-  // There is no proc that the driver spell casts, so bail out early here
-  // as we don't know what to do with the spell anyhow.
-  //
-  // TODO: This actually needs a differentiation between not found, and no
-  // trigger spell defined. One case _MUST_ fail, the other should bail out
-  // early
-  if ( proc_spell == spell_data_t::nil() )
-    return true;
-
-  if ( item_level() == 0 )
-  {
-    sim -> errorf( "Player %s unable to compute proc attributes, no ilevel defined for item '%s' in slot %s",
-                   player -> name(), name(), slot_name() );
-    return false;
-  }
-
-  if ( effect.duration == timespan_t::zero() )
-    effect.duration = proc_spell -> duration();
-
-  // Figure out the amplitude of the ticking effect from the proc spell, if
-  // there's no user specified tick time
-  if ( effect.tick == timespan_t::zero() )
-  {
-    for ( size_t i = 1; i <= proc_spell -> effect_count(); i++ )
-    {
-      if ( proc_spell -> effectN( i ).type() != E_APPLY_AURA )
-        continue;
-
-      if ( proc_spell -> effectN( i ).period() != timespan_t::zero() )
-      {
-        effect.tick = proc_spell -> effectN( i ).period();
-        break;
-      }
-    }
-  }
-
-  // SPECIAL CASE: An user defined custom "AuraSpell" option for an equip= or
-  // use= string will _REPLACE_ the proc_spell at this point, and will be used
-  // to determine the stats of the aura.
-  //
-  // This override is (currently) used in MoP trinkets that "tick" for certain
-  // amount of stat per Y seconds, since the DBC data lacks a direct reference
-  // of the actual aura that the actor gains from the ticks.
-  if ( effect.aura_spell_id > 0 )
-  {
-    proc_spell = player -> find_spell( effect.aura_spell_id );
-    if ( proc_spell == spell_data_t::nil() )
-    {
-      sim -> errorf( "Player %s unable to find aura spell %u for item '%s' in slot %s",
-                     player -> name(), effect.aura_spell_id, name(), slot_name() );
-      return false;
-    }
-  }
-
-  // Max stacks will be found from the AuraSpell, if anywhere
-  if ( effect.max_stacks == 0 )
-    effect.max_stacks = proc_spell -> max_stacks();
-
-  // Finally, compute the stats of the proc based on the spell data we have,
-  // since the user has not defined the stats of the item in the equip=
-  // or use= string
-
-  const random_prop_data_t& ilevel_points = player -> dbc.random_property( item_level() );
-  double budget;
-  if ( parsed.data.quality == 4 )
-    budget = static_cast< double >( ilevel_points.p_epic[ 0 ] );
-  else if ( parsed.data.quality == 3 )
-    budget = static_cast< double >( ilevel_points.p_rare[ 0 ] );
-  else
-    budget = static_cast< double >( ilevel_points.p_uncommon[ 0 ] );
-
-  for ( size_t i = 1; i <= proc_spell -> effect_count(); i++ )
-  {
-    stat_e s = STAT_NONE;
-
-    if ( proc_spell -> effectN( i ).type() != E_APPLY_AURA )
-      continue;
-
-    if ( proc_spell -> effectN( i ).subtype() == A_MOD_STAT )
-      s = static_cast< stat_e >( proc_spell -> effectN( i ).misc_value1() + 1 );
-    else if ( proc_spell -> effectN( i ).subtype() == A_MOD_RATING )
-      s = util::translate_rating_mod( proc_spell -> effectN( i ).misc_value1() );
-
-    double value = util::round( budget * proc_spell -> effectN( i ).m_average() );
-
-    // Bail out on first valid non-zero stat value
-    if ( s != STAT_NONE && value != 0 )
-    {
-      effect.stat = s;
-      effect.stat_amount = value;
-      break;
-    }
-  }
-
-  return true;
-}
-
-// item_t::decode_special ===================================================
-
-bool item_t::decode_special( special_effect_t& effect,
-                             const std::string& encoding )
-{
-  if ( encoding.empty() || encoding == "custom" || encoding == "none" ) return true;
-
-  std::vector<item_database::token_t> tokens;
-
-  size_t num_tokens = item_database::parse_tokens( tokens, encoding );
-
-  effect.encoding_str = encoding;
-
-  for ( size_t i = 0; i < num_tokens; i++ )
-  {
-    item_database::token_t& t = tokens[ i ];
-    stat_e s;
-    school_e sc;
-
-    if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
-    {
-      effect.stat = s;
-      effect.stat_amount = t.value;
-
-      // Support scaling procs in a hacky way.
-      if ( parsed.data.id && ( upgrade_level() > 0 || sim -> scale_to_itemlevel != -1 ) )
-      {
-        // If the itemlevel is at base itemlevel, we do no special scaling, but 
-        // continue with the rest of the special encode parsing
-        if ( static_cast< int >( item_level() ) == parsed.data.level )
-          continue;
-
-        const random_prop_data_t& orig_data = player -> dbc.random_property( parsed.data.level );
-        const random_prop_data_t& new_data = player -> dbc.random_property( item_level() );
-        int old_budget = 0;
-        int new_budget = 0;
-
-        if ( parsed.data.quality == 4 )
-        {
-          old_budget = ( int ) orig_data.p_epic[ 0 ];
-          new_budget = ( int ) new_data.p_epic[ 0 ];
-        }
-        else if ( parsed.data.quality == 3 )
-        {
-          old_budget = ( int ) orig_data.p_rare[ 0 ];
-          new_budget = ( int ) new_data.p_rare[ 0 ];
-        }
-        else
-        {
-          old_budget = ( int ) orig_data.p_uncommon[ 0 ];
-          new_budget = ( int ) new_data.p_uncommon[ 0 ];
-        }
-
-        bool found_from_data = false;
-
-        if ( parsed.data.id_spell[ 0 ] != 0 )
-        {
-          const spell_data_t& proc_spell = *player -> find_spell( parsed.data.id_spell[ 0 ] );
-          if ( proc_spell.ok() )
-          {
-            const spell_data_t& buff_spell = *proc_spell.effectN( 1 ).trigger();
-            if ( buff_spell.ok() )
-            {
-              for ( size_t j = 1; j <= buff_spell.effect_count(); j++ )
-              {
-                if ( buff_spell.effectN( j ).type() == E_APPLY_AURA &&
-                     ( buff_spell.effectN( j ).subtype() == A_MOD_STAT || buff_spell.effectN( j ).subtype() == A_MOD_RATING ) )
-                {
-                  effect.stat_amount = util::round( new_budget * buff_spell.effectN( j ).m_average() );
-                  found_from_data = true;
-                  break;
-                }
-              }
-            }
-          }
-        }
-
-        // t.value / old_budget gives us the average scaling coefficient for the proc spell
-        if ( ! found_from_data )
-          effect.stat_amount = util::round( new_budget * t.value / old_budget );
-
-        if ( sim -> debug )
-        {
-          sim -> out_debug.printf( "decode_special: %s (%d) ilevel=%d quality=%d orig_ilevel=%d old_budget=%d new_budget=%d old_value=%.0f avg_coeff=%f new_value=%.0f",
-                         name(), parsed.data.id, item_level(), parsed.data.quality, parsed.data.level, old_budget, new_budget, t.value, t.value / old_budget, effect.stat_amount );
-        }
-      }
-    }
-    else if ( ( sc = util::parse_school_type( t.name ) ) != SCHOOL_NONE )
-    {
-      effect.school = sc;
-      effect.discharge_amount = t.value;
-
-      std::vector<std::string> splits = util::string_split( t.value_str, "+" );
-      if ( splits.size() == 2 )
-      {
-        effect.discharge_amount  = atof( splits[ 0 ].c_str() );
-        effect.discharge_scaling = atof( splits[ 1 ].c_str() ) / 100.0;
-      }
-    }
-    else if ( t.name == "stacks" || t.name == "stack" )
-    {
-      effect.max_stacks = ( int ) t.value;
-    }
-    else if ( t.name == "%" )
-    {
-      effect.proc_chance = t.value / 100.0;
-    }
-    else if ( t.name == "ppm" )
-    {
-      effect.ppm = t.value;
-    }
-    else if ( util::str_prefix_ci( t.name, "rppm" ) )
-    {
-      effect.ppm = -t.value;
-
-      if ( util::str_in_str_ci( t.name, "spellcrit" ) )
-        effect.rppm_scale = RPPM_SPELL_CRIT;
-      else if ( util::str_in_str_ci( t.name, "attackcrit" ) )
-        effect.rppm_scale = RPPM_ATTACK_CRIT;
-      else if ( util::str_in_str_ci( t.name, "haste" ) )
-        effect.rppm_scale = RPPM_HASTE;
-      else
-        effect.rppm_scale = RPPM_NONE;
-    }
-    else if ( t.name == "duration" || t.name == "dur" )
-    {
-      effect.duration = timespan_t::from_seconds( t.value );
-    }
-    else if ( t.name == "cooldown" || t.name == "cd" )
-    {
-      effect.cooldown = timespan_t::from_seconds( t.value );
-    }
-    else if ( t.name == "tick" )
-    {
-      effect.tick = timespan_t::from_seconds( t.value );
-    }
-    else if ( t.full == "reverse" )
-    {
-      effect.reverse = true;
-    }
-    else if ( t.full == "chance" )
-    {
-      effect.chance_to_discharge = true;
-    }
-    else if ( t.name == "costrd" )
-    {
-      effect.cost_reduction = true;
-      effect.no_refresh = true;
-    }
-    else if ( t.name == "nocrit" )
-    {
-      effect.override_result_es_mask |= RESULT_CRIT_MASK;
-      effect.result_es_mask &= ~RESULT_CRIT_MASK;
-    }
-    else if ( t.name == "maycrit" )
-    {
-      effect.override_result_es_mask |= RESULT_CRIT_MASK;
-      effect.result_es_mask |= RESULT_CRIT_MASK;
-    }
-    else if ( t.name == "nomiss" )
-    {
-      effect.override_result_es_mask |= RESULT_MISS_MASK;
-      effect.result_es_mask &= ~RESULT_MISS_MASK;
-    }
-    else if ( t.name == "maymiss" )
-    {
-      effect.override_result_es_mask |= RESULT_MISS_MASK;
-      effect.result_es_mask |= RESULT_MISS_MASK;
-    }
-    else if ( t.name == "nododge" )
-    {
-      effect.override_result_es_mask |= RESULT_DODGE_MASK;
-      effect.result_es_mask &= ~RESULT_DODGE_MASK;
-    }
-    else if ( t.name == "maydodge" )
-    {
-      effect.override_result_es_mask |= RESULT_DODGE_MASK;
-      effect.result_es_mask |= RESULT_DODGE_MASK;
-    }
-    else if ( t.name == "noparry" )
-    {
-      effect.override_result_es_mask |= RESULT_PARRY_MASK;
-      effect.result_es_mask &= ~RESULT_PARRY_MASK;
-    }
-    else if ( t.name == "mayparry" )
-    {
-      effect.override_result_es_mask |= RESULT_PARRY_MASK;
-      effect.result_es_mask |= RESULT_PARRY_MASK;
-    }
-    else if ( t.name == "norefresh" )
-    {
-      effect.no_refresh = true;
-    }
-    else if ( t.full == "aoe" )
-    {
-      effect.aoe = -1;
-    }
-    else if ( t.name == "aoe" )
-    {
-      effect.aoe = ( int ) t.value;
-      if ( effect.aoe < -1 )
-        effect.aoe = -1;
-    }
-    else if ( t.name == "spell" )
-    {
-      effect.spell_id = static_cast<int>( t.value );
-    }
-    else if ( t.name == "auraspell" )
-    {
-      effect.aura_spell_id = static_cast<int>( t.value );
-    }
-    else if ( t.full == "ondamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = SCHOOL_ALL_MASK;
-    }
-    else if ( t.full == "onheal" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_HEAL;
-      effect.trigger_mask = SCHOOL_ALL_MASK;
-    }
-    else if ( t.full == "ontickdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_TICK_DAMAGE;
-      effect.trigger_mask = SCHOOL_ALL_MASK;
-    }
-    else if ( t.full == "onspelltickdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_SPELL_TICK_DAMAGE;
-      effect.trigger_mask = SCHOOL_ALL_MASK;
-    }
-    else if ( t.full == "ondirectdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DIRECT_DAMAGE;
-      effect.trigger_mask = SCHOOL_ALL_MASK;
-    }
-    else if ( t.full == "ondirectcrit" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DIRECT_CRIT;
-      effect.trigger_mask = SCHOOL_ALL_MASK;
-    }
-    else if ( t.full == "onspelldirectdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_SPELL_DIRECT_DAMAGE;
-      effect.trigger_mask = SCHOOL_ALL_MASK;
-    }
-    else if ( t.full == "ondirectharmfulspellhit" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DIRECT_HARMFUL_SPELL;
-      effect.trigger_mask = RESULT_HIT_MASK;
-    }
-    else if ( t.full == "onspelldamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = SCHOOL_SPELL_MASK;
-    }
-    else if ( t.full == "onattackdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = SCHOOL_ATTACK_MASK;
-    }
-    else if ( t.full == "onattacktickdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_TICK_DAMAGE;
-      effect.trigger_mask = SCHOOL_ATTACK_MASK;
-    }
-    else if ( t.full == "onattackdirectdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DIRECT_DAMAGE;
-      effect.trigger_mask = SCHOOL_ATTACK_MASK;
-    }
-    else if ( t.full == "onarcanedamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_ARCANE );
-    }
-    else if ( t.full == "onbleeddamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_TICK_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_PHYSICAL );
-    }
-    else if ( t.full == "onchaosdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_CHAOS );
-    }
-    else if ( t.full == "onfiredamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_FIRE );
-    }
-    else if ( t.full == "onfrostdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_FROST );
-    }
-    else if ( t.full == "onfrostfiredamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_FROSTFIRE );
-    }
-    else if ( t.full == "onholydamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_HOLY );
-    }
-    else if ( t.full == "onnaturedamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_NATURE );
-    }
-    else if ( t.full == "onphysicaldamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_PHYSICAL );
-    }
-    else if ( t.full == "onshadowdamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_SHADOW );
-    }
-    else if ( t.full == "ondraindamage" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE;
-      effect.trigger_mask = ( int64_t( 1 ) << SCHOOL_DRAIN );
-    }
-    else if ( t.full == "ontick" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_TICK;
-      effect.trigger_mask = RESULT_ALL_MASK;
-    }
-    else if ( t.full == "ontickhit" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_TICK;
-      effect.trigger_mask = RESULT_HIT_MASK;
-    }
-    else if ( t.full == "ontickcrit" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_TICK;
-      effect.trigger_mask = RESULT_CRIT_MASK;
-    }
-    else if ( t.full == "onspellcast" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_SPELL;
-      effect.trigger_mask = RESULT_NONE_MASK;
-    }
-    else if ( t.full == "onspellhit" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_SPELL;
-      effect.trigger_mask = RESULT_HIT_MASK;
-    }
-    else if ( t.full == "onspellcrit" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_SPELL_AND_TICK;
-      effect.trigger_mask = RESULT_CRIT_MASK;
-    }
-    else if ( t.full == "onspelltickcrit" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_TICK;
-      effect.trigger_mask = RESULT_CRIT_MASK;
-    }
-    else if ( t.full == "onspelldirectcrit" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_SPELL;
-      effect.trigger_mask = RESULT_CRIT_MASK;
-    }
-    else if ( t.full == "onspellmiss" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_SPELL;
-      effect.trigger_mask = RESULT_MISS_MASK;
-    }
-    else if ( t.full == "onharmfulspellcast" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HARMFUL_SPELL;
-      effect.trigger_mask = RESULT_NONE_MASK;
-    }
-    else if ( t.full == "onharmfulspellhit" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HARMFUL_SPELL_LANDING;
-      effect.trigger_mask = RESULT_HIT_MASK;
-    }
-    else if ( t.full == "onharmfulspellcrit" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HARMFUL_SPELL;
-      effect.trigger_mask = RESULT_CRIT_MASK;
-    }
-    else if ( t.full == "onharmfulspellmiss" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HARMFUL_SPELL_LANDING;
-      effect.trigger_mask = RESULT_MISS_MASK;
-    }
-    else if ( t.full == "onhealcast" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HEAL_SPELL;
-      effect.trigger_mask = RESULT_NONE_MASK;
-    }
-    else if ( t.full == "onhealhit" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HEAL_SPELL;
-      effect.trigger_mask = RESULT_HIT_MASK;
-    }
-    else if ( t.full == "onhealdirectcrit" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HEAL_SPELL;
-      effect.trigger_mask = RESULT_CRIT_MASK;
-    }
-    else if ( t.full == "onhealmiss" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_HEAL_SPELL;
-      effect.trigger_mask = RESULT_MISS_MASK;
-    }
-    else if ( t.full == "onattack" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_ATTACK;
-      effect.trigger_mask = RESULT_ALL_MASK;
-    }
-    else if ( t.full == "onattackhit" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_ATTACK;
-      effect.trigger_mask = RESULT_HIT_MASK;
-    }
-    else if ( t.full == "onattackcrit" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_ATTACK;
-      effect.trigger_mask = RESULT_CRIT_MASK;
-    }
-    else if ( t.full == "onattackmiss" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_ATTACK;
-      effect.trigger_mask = RESULT_MISS_MASK;
-    }
-    else if ( t.full == "onspelldamageheal" )
-    {
-      effect.trigger_str  = t.full;
-      effect.trigger_type = PROC_DAMAGE_HEAL;
-      effect.trigger_mask = SCHOOL_SPELL_MASK;
-    }
-    else if ( t.full == "ondamagehealspellcast" )
-    {
-      effect.trigger_str = t.full;
-      effect.trigger_type = PROC_DAMAGE_HEAL_SPELL;
-      effect.trigger_mask = RESULT_NONE_MASK;
-    }
-    else
-    {
-      sim -> errorf( "Player %s has unknown 'use/equip=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
-      return false;
-    }
-  }
-
-  return true;
-}
 
 // item_t::decode_weapon ====================================================
 
@@ -2133,61 +1578,6 @@ std::string item_t::stat_pairs_to_str( const std::vector<stat_pair_t>& stat_pair
   return str;
 }
 
-// item_t::download_slot ====================================================
-
-bool item_t::download_slot( item_t& item )
-{
-  const cache::behavior_e cb = cache::items();
-  bool success = false;
-
-  if ( cb != cache::CURRENT )
-  {
-    for ( unsigned i = 0; ! success && i < item.sim -> item_db_sources.size(); i++ )
-    {
-      const std::string& src = item.sim -> item_db_sources[ i ];
-      if ( src == "local" )
-        success = item_database::download_slot( item );
-      else if ( src == "wowhead" )
-        success = wowhead::download_slot( item, wowhead::LIVE, cache::ONLY );
-      else if ( src == "ptrhead" )
-        success = wowhead::download_slot( item, wowhead::PTR, cache::ONLY );
-      else if ( src == "bcpapi" )
-        success = bcp_api::download_slot( item, cache::ONLY );
-    }
-  }
-
-  if ( cb != cache::ONLY )
-  {
-    // Download in earnest from a data source
-    for ( unsigned i = 0; ! success && i < item.sim -> item_db_sources.size(); i++ )
-    {
-      const std::string& src = item.sim -> item_db_sources[ i ];
-      if ( src == "wowhead" )
-        success = wowhead::download_slot( item, wowhead::LIVE, cb );
-      else if ( src == "ptrhead" )
-        success = wowhead::download_slot( item, wowhead::PTR, cb );
-      else if ( src == "bcpapi" )
-        success = bcp_api::download_slot( item, cb );
-    }
-  }
-
-  if ( ! item_database::parse_item_spell_enchant( item, item.parsed.enchant_stats, item.parsed.enchant, item.parsed.enchant_id ) )
-  {
-    item.sim -> errorf( "Player %s unable to parse enchant id %u for item \"%s\" at slot %s.\n",
-                        item.player -> name(), item.parsed.enchant_id, item.name(), item.slot_name() );
-  }
-
-  if ( ! item_database::parse_item_spell_enchant( item, item.parsed.addon_stats, item.parsed.addon, item.parsed.addon_id ) )
-  {
-    item.sim -> errorf( "Player %s unable to parse addon id %u for item \"%s\" at slot %s.\n",
-                        item.player -> name(), item.parsed.addon_id, item.name(), item.slot_name() );
-  }
-
-  item.fetched = success;
-
-  return success;
-}
-
 // item_t::download_item ====================================================
 
 bool item_t::download_item( item_t& item )
@@ -2223,8 +1613,6 @@ bool item_t::download_item( item_t& item )
         success = bcp_api::download_item( item );
     }
   }
-
-  item.fetched = success;
 
   return success;
 }
