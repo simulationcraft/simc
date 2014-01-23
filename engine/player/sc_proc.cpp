@@ -220,58 +220,59 @@ bool special_effect_t::parse_spell_data( const item_t& item, unsigned driver_id 
   // have, since the user has not defined the stats of the item in the equip=
   // or use= string
 
-  const random_prop_data_t& ilevel_points = player -> dbc.random_property( item.item_level() );
-  double budget;
-  if ( item.parsed.data.quality >= 4 )
-    budget = static_cast< double >( ilevel_points.p_epic[ 0 ] );
-  else if ( item.parsed.data.quality == 3 )
-    budget = static_cast< double >( ilevel_points.p_rare[ 0 ] );
-  else
-    budget = static_cast< double >( ilevel_points.p_uncommon[ 0 ] );
-
   bool has_ap = false;
 
   for ( size_t i = 1; i <= proc_spell -> effect_count(); i++ )
   {
     const spelleffect_data_t& effect = proc_spell -> effectN( i );
-    stat_e s = STAT_NONE;
-
-    if ( effect.type() != E_APPLY_AURA )
-      continue;
-
-    if ( effect.subtype() == A_MOD_STAT )
-      s = static_cast< stat_e >( effect.misc_value1() + 1 );
-    else if ( effect.subtype() == A_MOD_RATING )
-      s = util::translate_rating_mod( effect.misc_value1() );
-    else if ( effect.subtype() == A_MOD_DAMAGE_DONE && effect.misc_value1() == 126 )
-      s = STAT_SPELL_POWER;
-    else if ( effect.subtype() == A_MOD_RESISTANCE )
-      s = STAT_ARMOR;
-    else if ( ! has_ap && ( effect.subtype() == A_MOD_ATTACK_POWER || effect.subtype() == A_MOD_RANGED_ATTACK_POWER ) )
+    if ( effect.type() == E_APPLY_AURA )
     {
-      s = STAT_ATTACK_POWER;
-      has_ap = true;
+      stat_e s = STAT_NONE;
+
+      if ( effect.subtype() == A_MOD_STAT )
+        s = static_cast< stat_e >( effect.misc_value1() + 1 );
+      else if ( effect.subtype() == A_MOD_RATING )
+        s = util::translate_rating_mod( effect.misc_value1() );
+      else if ( effect.subtype() == A_MOD_DAMAGE_DONE && effect.misc_value1() == 126 )
+        s = STAT_SPELL_POWER;
+      else if ( effect.subtype() == A_MOD_RESISTANCE )
+        s = STAT_ARMOR;
+      else if ( ! has_ap && ( effect.subtype() == A_MOD_ATTACK_POWER || effect.subtype() == A_MOD_RANGED_ATTACK_POWER ) )
+      {
+        s = STAT_ATTACK_POWER;
+        has_ap = true;
+      }
+      else if ( effect.subtype() == A_MOD_INCREASE_HEALTH_2 )
+        s = STAT_MAX_HEALTH;
+
+      double value = 0;
+      if ( source == SPECIAL_EFFECT_SOURCE_ITEM )
+        value = util::round( effect.average( item ) );
+      else
+        value = util::round( effect.average( item.player ) );
+
+      // Bail out on first valid non-zero stat value
+      if ( s != STAT_NONE && value != 0 )
+      {
+        stat = s;
+        stat_amount = value;
+        // On-Use stat buffs need an increase in stack count, since it may not 
+        // be explicitly defined in the spell data. Set it to 1 to suppress a 
+        // warning from the buff initialization code.
+        if ( max_stacks == -1 )
+          max_stacks = 1;
+        break;
+      }
     }
-    else if ( effect.subtype() == A_MOD_INCREASE_HEALTH_2 )
-      s = STAT_MAX_HEALTH;
-
-    double value = 0;
-    if ( source == SPECIAL_EFFECT_SOURCE_ITEM )
-      value = util::round( budget * effect.m_average() );
-    else
-      value = util::round( effect.average( item.player ) );
-
-    // Bail out on first valid non-zero stat value
-    if ( s != STAT_NONE && value != 0 )
+    else if ( effect.type() == E_SCHOOL_DAMAGE )
     {
-      stat = s;
-      stat_amount = value;
-      // On-Use stat buffs need an increase in stack count, since it may not 
-      // be explicitly defined in the spell data. Set it to 1 to suppress a 
-      // warning from the buff initialization code.
-      if ( max_stacks == -1 )
-        max_stacks = 1;
-      break;
+      school = proc_spell -> get_school_type();
+      if ( source == SPECIAL_EFFECT_SOURCE_ITEM )
+        discharge_amount = util::round( effect.average( item ) );
+      else
+        discharge_amount = util::round( effect.average( item.player ) );
+
+      discharge_scaling = effect.coeff();
     }
   }
 

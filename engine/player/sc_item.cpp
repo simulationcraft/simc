@@ -1404,8 +1404,6 @@ bool item_t::decode_addon()
   return true;
 }
 
-
-
 // item_t::decode_weapon ====================================================
 
 bool item_t::decode_weapon()
