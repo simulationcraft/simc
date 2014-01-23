@@ -598,7 +598,7 @@ void enchant::dancing_steel( special_effect_t& effect,
                              const special_effect_db_item_t& dbitem )
 {
   const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
-  const spell_data_t* spell = item.player -> find_spell( 120032 );
+  const spell_data_t* spell = item.player -> find_spell( dbitem.spell_id == 142531 ? 142530 : 120032 );
 
   effect.name_str = tokenized_name( spell ) + suffix( item );
   effect.ppm = -1.0 * driver -> real_ppm();
