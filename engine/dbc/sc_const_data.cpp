@@ -280,6 +280,31 @@ size_t dbc::n_items( bool ptr )
   return n;
 }
 
+const item_enchantment_data_t* dbc::item_enchantments( bool ptr )
+{
+  ( void )ptr;
+
+  const item_enchantment_data_t* p = __spell_item_ench_data;
+#if SC_USE_PTR
+  if ( ptr )
+    p = __ptr_spell_item_ench_data;
+#endif
+  return p;
+}
+
+size_t dbc::n_item_enchantments( bool ptr )
+{
+  ( void )ptr;
+
+  size_t n = SPELL_ITEM_ENCH_SIZE;
+#if SC_USE_PTR
+  if ( ptr )
+    n = PTR_SPELL_ITEM_ENCH_SIZE;
+#endif
+
+  return n;
+}
+
 /* Here we modify the spell data to match in-game values if the data differs thanks to bugs or hotfixes.
  *
  */

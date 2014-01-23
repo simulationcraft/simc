@@ -45,6 +45,8 @@ const char* wow_version( bool ptr );
 const char* wow_ptr_status( bool ptr );
 const item_data_t* items( bool ptr );
 std::size_t        n_items( bool ptr );
+const item_enchantment_data_t* item_enchantments( bool ptr );
+std::size_t        n_item_enchantments( bool ptr );
 specialization_e translate_spec_str   ( player_e ptype, const std::string& spec_str );
 std::string specialization_string     ( specialization_e spec );
 double fmt_value( double v, effect_type_t type, effect_subtype_t sub_type );
@@ -837,6 +839,12 @@ public:
 
   std::size_t n_items() const
   { return dbc::n_items( ptr ); }
+
+  const item_enchantment_data_t* item_enchantments() const
+  { return dbc::item_enchantments( ptr ); }
+
+  std::size_t n_item_enchantments() const
+  { return dbc::n_item_enchantments( ptr ); }
 
   bool add_token( unsigned int id_spell, const std::string& token_name ) const
   { return dbc::add_token( id_spell, token_name, ptr ); }

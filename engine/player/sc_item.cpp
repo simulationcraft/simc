@@ -1331,6 +1331,7 @@ bool item_t::decode_enchant()
   // data sources
   if ( ! option_enchant_str.empty() && option_enchant_str != "none" )
   {
+    enchant::find_item_enchant( player -> dbc, option_enchant_str );
     parsed.enchant_stats = str_to_stat_pair( option_enchant_str );
     // No stats, this is a special enchant that we need to parse out
     if ( parsed.enchant_stats.size() == 0 )
@@ -1366,6 +1367,7 @@ bool item_t::decode_addon()
 
   if ( ! option_addon_str.empty() && option_addon_str != "none" )
   {
+    enchant::find_item_enchant( player -> dbc, option_addon_str );
     parsed.addon_stats = str_to_stat_pair( option_addon_str );
     if ( parsed.addon_stats.size() == 0 )
       effect.name_str = option_addon_str;

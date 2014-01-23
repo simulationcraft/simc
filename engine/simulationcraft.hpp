@@ -6161,6 +6161,8 @@ namespace enchant
 
   unsigned find_enchant_id( const std::string& name );
   std::string find_enchant_name( unsigned enchant_id );
+
+  const item_enchantment_data_t& find_item_enchant( const dbc_t& dbc, const std::string& name );
 }
 
 // Unique Gear ==============================================================

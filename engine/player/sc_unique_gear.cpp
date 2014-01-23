@@ -183,7 +183,7 @@ std::string tokenized_name( const spell_data_t* data )
  * (enchant=dancing_steel), to in game data, so we can properly initialize the
  * correct spells here.
  */
-const unique_gear::special_effect_db_item_t __special_effect_db[] = {
+static const special_effect_db_item_t __special_effect_db[] = {
   /**
    * Items
    */
