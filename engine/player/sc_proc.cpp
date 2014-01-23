@@ -229,19 +229,37 @@ bool special_effect_t::parse_spell_data( const item_t& item, unsigned driver_id 
   else
     budget = static_cast< double >( ilevel_points.p_uncommon[ 0 ] );
 
+  bool has_ap = false;
+
   for ( size_t i = 1; i <= proc_spell -> effect_count(); i++ )
   {
+    const spelleffect_data_t& effect = proc_spell -> effectN( i );
     stat_e s = STAT_NONE;
 
-    if ( proc_spell -> effectN( i ).type() != E_APPLY_AURA )
+    if ( effect.type() != E_APPLY_AURA )
       continue;
 
-    if ( proc_spell -> effectN( i ).subtype() == A_MOD_STAT )
-      s = static_cast< stat_e >( proc_spell -> effectN( i ).misc_value1() + 1 );
-    else if ( proc_spell -> effectN( i ).subtype() == A_MOD_RATING )
-      s = util::translate_rating_mod( proc_spell -> effectN( i ).misc_value1() );
+    if ( effect.subtype() == A_MOD_STAT )
+      s = static_cast< stat_e >( effect.misc_value1() + 1 );
+    else if ( effect.subtype() == A_MOD_RATING )
+      s = util::translate_rating_mod( effect.misc_value1() );
+    else if ( effect.subtype() == A_MOD_DAMAGE_DONE && effect.misc_value1() == 126 )
+      s = STAT_SPELL_POWER;
+    else if ( effect.subtype() == A_MOD_RESISTANCE )
+      s = STAT_ARMOR;
+    else if ( ! has_ap && ( effect.subtype() == A_MOD_ATTACK_POWER || effect.subtype() == A_MOD_RANGED_ATTACK_POWER ) )
+    {
+      s = STAT_ATTACK_POWER;
+      has_ap = true;
+    }
+    else if ( effect.subtype() == A_MOD_INCREASE_HEALTH_2 )
+      s = STAT_MAX_HEALTH;
 
-    double value = util::round( budget * proc_spell -> effectN( i ).m_average() );
+    double value = 0;
+    if ( source == SPECIAL_EFFECT_SOURCE_ITEM )
+      value = util::round( budget * effect.m_average() );
+    else
+      value = util::round( effect.average( item.player ) );
 
     // Bail out on first valid non-zero stat value
     if ( s != STAT_NONE && value != 0 )

@@ -1332,7 +1332,6 @@ bool item_t::decode_enchant()
   // data sources
   if ( ! option_enchant_str.empty() && option_enchant_str != "none" )
   {
-    enchant::find_item_enchant( player -> dbc, option_enchant_str );
     parsed.enchant_stats = str_to_stat_pair( option_enchant_str );
 
     // No stats, this is a special enchant that we need to parse out
@@ -1369,30 +1368,36 @@ bool item_t::decode_enchant()
 
 bool item_t::decode_addon()
 {
-  special_effect_t effect;
-
-  if ( ! option_addon_str.empty() && option_addon_str != "none" )
+  // If the user gives an addon, override everything fetched from the
+  // data sources
+  if ( ! option_addon_str.empty() )
   {
-    enchant::find_item_enchant( player -> dbc, option_addon_str );
     parsed.addon_stats = str_to_stat_pair( option_addon_str );
+
+    // No stats, this is a special enchant that we need to parse out
     if ( parsed.addon_stats.size() == 0 )
-      effect.name_str = option_addon_str;
+    {
+      const item_enchantment_data_t& enchant_data = enchant::find_item_enchant( player -> dbc, option_addon_str );
+      if ( ! enchant::initialize_item_enchant( *this, SPECIAL_EFFECT_SOURCE_ADDON, enchant_data ) )
+        return false;
+    }
   }
+  // .. Otherwise, parse addon based on DBC information and enchant_id
   else if ( parsed.addon_id > 0 )
   {
+    special_effect_t effect;
     if ( ! item_database::parse_item_spell_enchant( *this, parsed.addon_stats, effect, parsed.addon_id ) )
       sim -> errorf( "Player %s unable to parse addon id %u for item \"%s\" at slot %s.\n",
           player -> name(), parsed.addon_id, name(), slot_name() );
+
+    if ( parsed.addon_stats.size() == 0 )
+    {
+      const item_enchantment_data_t& enchant_data = player -> dbc.item_enchantment( parsed.addon_id );
+      if ( ! enchant::initialize_item_enchant( *this, SPECIAL_EFFECT_SOURCE_ADDON, enchant_data ) )
+        return false;
+    }
   }
-/*
-  std::string use_str;
-  if ( unique_gear::get_use_encoding( use_str, effect.name_str, parsed.data.type_flags, player -> dbc.ptr ) )
-  {
-    effect.unique = true;
-    if ( ! decode_special( SPECIAL_EFFECT_USE, SPECIAL_EFFECT_SOURCE_ADDON, use_str ) )
-      return false;
-  }
-*/
+
   for ( size_t i = 0; i < parsed.addon_stats.size(); i++ )
     stats.add_stat( parsed.addon_stats[ i ].stat, parsed.addon_stats[ i ].value );
 
