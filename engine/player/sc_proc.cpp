@@ -30,7 +30,7 @@ void special_effect_t::reset()
   // Must match buff creator defaults for now
   max_stacks = -1;
   
-  proc_chance = 0;
+  proc_chance = -1;
   ppm = 0;
   rppm_scale = RPPM_NONE;
 
@@ -213,7 +213,7 @@ bool special_effect_t::parse_spell_data( const item_t& item, unsigned driver_id 
     return false;
   }
 
-  if ( max_stacks == -1 )
+  if ( max_stacks == -1 && proc_spell -> max_stacks() > 0 )
     max_stacks = proc_spell -> max_stacks();
 
   // Finally, compute the stats/damage of the proc based on the spell data we
