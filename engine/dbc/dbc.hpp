@@ -585,8 +585,8 @@ public:
 
   bool flags( spell_attribute_e f ) const
   {
-    unsigned bit = as<unsigned>( f ) & 0x1Fu;
-    unsigned index = ( as<unsigned>( f ) >> 8 ) & 0xFFu;
+    unsigned bit = static_cast<unsigned>( f ) & 0x1Fu;
+    unsigned index = ( static_cast<unsigned>( f ) >> 8 ) & 0xFFu;
     uint32_t mask = 1u << bit;
 
     assert( index < sizeof_array( _attributes ) );

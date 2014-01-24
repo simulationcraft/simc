@@ -237,8 +237,8 @@ std::string spell_flags( const spell_data_t* spell )
   if ( spell -> scaling_class() != 0 )
     s << "Scaling Spell (" << spell -> scaling_class() << "), ";
 
-  if ( spell -> gcd() == timespan_t::zero() && spell -> _cast_min == 0 && spell -> _cast_max == 0 )
-    s << "Off GCD, ";
+  if ( spell -> flags( SPELL_ATTR_PASSIVE ) )
+    s << "Passive, ";
 
   if ( s.tellp() > 1 )
   {
@@ -256,8 +256,8 @@ void spell_flags_xml( const spell_data_t* spell, xml_node_t* parent )
   if ( spell -> scaling_class() != 0 )
     parent -> add_parm( "scaling_spell", spell -> scaling_class() );
 
-  if ( spell -> gcd() == timespan_t::zero() && spell -> _cast_min == 0 && spell -> _cast_max == 0 )
-    parent -> add_parm( "off_gcd", "true" );
+  if ( spell -> flags( SPELL_ATTR_PASSIVE ) )
+    parent -> add_parm( "passive", "true" );
 }
 
 } // unnamed namespace
