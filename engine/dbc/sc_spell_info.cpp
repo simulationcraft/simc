@@ -200,7 +200,7 @@ const char * _effect_subtype_strings[] =
   0,                            0,                          0,                      0,                          0,                       // 215
   0,                            0,                          0,                      0,                          0,                       // 220
   0,            "Periodic Dummy",                           0,                      0,                          0,                       // 225
-  0,                            0,                          0,                      0,                          0,                       // 230
+  0,                            "Trigger Spell with Value", 0,                      0,                          0,                       // 230
   0,                            0,                          0,                      0,                          0,                       // 235
   "Modify Expertise%",          0,                          0,                      0,                          0,                       // 240
   0,                            0,                          0,                      0,                          0,                       // 245
@@ -226,6 +226,9 @@ const char * _effect_subtype_strings[] =
   0,                            0,                          0,                      0,                          0,                       // 345
   0,                            0,                          0,                      0,                          0,                       // 350
   0,                            0,                          0,                      0,                          0,                       // 355
+  0,                            0,                          0,                      0,                          0,                       // 360
+  0,                            "Override Spell Power per Attack Power%",                          0,                      0,                          0,                       // 365
+  0,                            0,                          0,                      0,                          0,                       // 370
 };
 
 std::string spell_flags( const spell_data_t* spell )
