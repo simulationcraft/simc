@@ -547,13 +547,14 @@ void enchant::rivers_song( special_effect_t& effect,
   const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
   const spell_data_t* spell = item.player -> find_spell( 116660 );
 
-  stat_buff_t* buff = static_cast<stat_buff_t*>( buff_t::find( item.player, "rivers_song" ) );
+  stat_buff_t* buff = static_cast<stat_buff_t*>( buff_t::find( item.player, tokenized_name( spell ) ) );
     
   if ( ! buff )
-    buff = stat_buff_creator_t( item.player, "rivers_song", spell )
+    buff = stat_buff_creator_t( item.player, tokenized_name( spell ), spell )
            .activated( false );
 
-  effect.name_str = "rivers_song";
+  // Have 2 RPPM instances proccing a single buff for now.
+  effect.name_str = tokenized_name( spell ) + suffix( item );
   effect.ppm = -1.0 * driver -> real_ppm();
   effect.cooldown = driver -> internal_cooldown();
   effect.rppm_scale = RPPM_HASTE;
@@ -573,14 +574,14 @@ void enchant::colossus( special_effect_t& effect,
   const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
   const spell_data_t* spell = item.player -> find_spell( 116631 );
 
-  absorb_buff_t* buff = static_cast<absorb_buff_t*>( buff_t::find( item.player, "colossus" ) );
+  absorb_buff_t* buff = static_cast<absorb_buff_t*>( buff_t::find( item.player, tokenized_name( spell ) ) );
     
   if ( ! buff )
-    buff = absorb_buff_creator_t( item.player, "colossus", spell )
-           .source( item.player -> get_stats( "colossus" ) )
+    buff = absorb_buff_creator_t( item.player, tokenized_name( spell ), spell )
+           .source( item.player -> get_stats( tokenized_name( spell ) ) )
            .activated( false );
 
-  effect.name_str = "colossus";
+  effect.name_str = tokenized_name( spell );
   effect.ppm = -1.0 * driver -> real_ppm();
   effect.cooldown = driver -> internal_cooldown();
   effect.rppm_scale = RPPM_HASTE;
@@ -598,6 +599,7 @@ void enchant::dancing_steel( special_effect_t& effect,
                              const special_effect_db_item_t& dbitem )
 {
   const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
+  // Account for Bloody Dancing Steel and Dancing Steel buffs
   const spell_data_t* spell = item.player -> find_spell( dbitem.spell_id == 142531 ? 142530 : 120032 );
 
   effect.name_str = tokenized_name( spell ) + suffix( item );
@@ -780,7 +782,7 @@ void enchant::hurricane_spell( special_effect_t& effect,
   stat_buff_t* spell_buff = stat_buff_creator_t( item.player, "hurricane_s", spell )
                             .activated( false );
 
-  effect.name_str = tokenized_name( spell );
+  effect.name_str = tokenized_name( spell ) + "_spell";
   effect.proc_chance = driver -> proc_chance();
   effect.cooldown = driver -> internal_cooldown();
 
