@@ -52,6 +52,7 @@ namespace item
   DECLARE_CB( cooldown_reduction_trinket );
   DECLARE_CB( multistrike_trinket );
   DECLARE_CB( cleave_trinket );
+  DECLARE_CB( black_blood_of_yshaarj );
   DECLARE_CB( rune_of_reorigination );
   DECLARE_CB( spark_of_zandalar );
   DECLARE_CB( unerring_vision_of_leishen );
@@ -193,10 +194,10 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 146197, 0,                             item::essence_of_yulon }, /* Caster legendary cloak */
   { 146193, 0,                          item::endurance_of_niuzao }, /* Tank legendary cloak */
 
+  { 146183, 0,                       item::black_blood_of_yshaarj }, /* Black Blood of Y'Shaarj */
+
   { 146311, "OnDirectDamage",                                   0 }, /* Ticking Ebon Detonator */           
-  { 146183, "OnHarmfulSpellHit_10Stack",                        0 }, /* Black Blood of Y'Shaarj */
   { 146286, "OnAttackHit",                                      0 }, /* Skeer's Bloodsoaked Talisman */
-  
   { 146313, "OnAttackHit",                                      0 }, /* Discipline of Xuen */
   { 146219, "OnSpellDamage",                                    0 }, /* Yu'lon's Bite */
   { 146295, "OnAttackHit",                                      0 }, /* Alacrity of Xuen */
@@ -217,6 +218,10 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 146136, 0,                               item::cleave_trinket }, /* Cleave effect */
 
   /* Mists of Pandaria: 5.2 */
+  { 139116, 0,                        item::rune_of_reorigination }, /* Rune of Reorigination */
+  { 138957, 0,                            item::spark_of_zandalar }, /* Spark of Zandalar */
+  { 138964, 0,                   item::unerring_vision_of_leishen }, /* Unerring Vision of Lei Shen */
+
   { 138728, "10Stack_Reverse_NoRefresh",                        0 }, /* Steadfast Talisman of the Shado-Pan Assault */
   { 138894, "OnDirectDamage",                                   0 }, /* Talisman of Bloodlust */
   { 138871, "OnDirectDamage",                                   0 }, /* Primordius' Talisman of Rage */
@@ -227,9 +232,6 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 138896, "OnSpellTickDamage",                                0 }, /* Breath of the Hydra */
   { 139134, "OnHarmfulSpellCrit_RPPMSpellCrit",                 0 }, /* Cha-Ye's Essence of Brilliance */
   { 138939, "OnDirectDamage",                                   0 }, /* Bad Juju */
-  { 139116, 0,                        item::rune_of_reorigination }, /* Rune of Reorigination */
-  { 138957, 0,                            item::spark_of_zandalar }, /* Spark of Zandalar */
-  { 138964, 0,                   item::unerring_vision_of_leishen }, /* Unerring Vision of Lei Shen */
 
   /* Mists of Pandaria: 5.0 */
   { 126660, "OnHarmfulSpellHit",                                0 }, /* Essence of Terror */
@@ -1784,6 +1786,31 @@ void item::amplify_trinket( special_effect_t& /* effect */,
 
   p -> buffs.amplified -> default_value = amplify_spell -> effectN( 2 ).average( item ) / 100.0;
   p -> buffs.amplified -> default_chance = 1.0;
+}
+
+void item::black_blood_of_yshaarj( special_effect_t& effect,
+                                   const item_t& item,
+                                   const special_effect_db_item_t& dbitem )
+{
+  maintenance_check( 528 );
+  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
+  const spell_data_t* ticker = driver -> effectN( 1 ).trigger();
+  const spell_data_t* spell = item.player -> find_spell( 146202 );
+
+  double value = util::round( ticker -> effectN( 1 ).average( item ) );
+
+  effect.name_str = tokenized_name( spell );
+  effect.ppm = -1.0 * driver -> real_ppm();
+  effect.cooldown = driver -> internal_cooldown();
+  effect.tick = ticker -> effectN( 1 ).period();
+  effect.stat = static_cast<stat_e>( spell -> effectN( 1 ).misc_value1() + 1 );
+  effect.stat_amount = value;
+  effect.duration = ticker -> duration();
+  effect.max_stacks = spell -> max_stacks();
+  effect.no_refresh = true;
+
+  stat_buff_proc_t* cb = new stat_buff_proc_t( item.player, effect );
+  item.player -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
 }
 
 struct flurry_of_xuen_melee_t : public attack_t
