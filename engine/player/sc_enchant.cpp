@@ -139,6 +139,22 @@ bool enchant::initialize_item_enchant( item_t& item,
                                        special_effect_source_e source,
                                        const item_enchantment_data_t& enchant )
 {
+  // Profession check
+  profession_e profession = util::translate_profession_id( enchant.req_skill );
+  if ( profession != PROFESSION_NONE )
+  {
+    if ( item.player -> profession[ profession ] < static_cast<int>( enchant.req_skill_value ) )
+    {
+      item.sim -> errorf( "Player %s attempting to use %s '%s' without %s skill level of %d (has %d), disabling enchant.",
+          item.player -> name(), util::special_effect_source_string( source ), enchant.name, 
+          util::profession_type_string( profession ),
+          enchant.req_skill_value, item.player -> profession[ profession ] );
+      // Don't initialize the special effects, but do "succeed" the
+      // initialization process.
+      return true;
+    }
+  }
+
   for ( size_t i = 0; i < sizeof_array( enchant.ench_prop ); i++ )
   {
     if ( enchant.ench_prop[ i ] == 0 )
