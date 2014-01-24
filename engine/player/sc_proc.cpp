@@ -110,7 +110,23 @@ std::string special_effect_t::to_string()
   if ( ppm > 0 )
     s << " ppm=" << ppm;
   else if ( ppm < 0 )
+  {
     s << " rppm=" << std::fabs( ppm );
+    switch ( rppm_scale )
+    {
+      case RPPM_HASTE:
+        s << " (Haste)";
+        break;
+      case RPPM_ATTACK_CRIT:
+        s << " (AttackCrit)";
+        break;
+      case RPPM_SPELL_CRIT:
+        s << " (SpellCrit)";
+        break;
+      default:
+        break;
+    }
+  }
 
   if ( cooldown > timespan_t::zero() )
   {
@@ -153,7 +169,7 @@ bool special_effect_t::parse_spell_data( const item_t& item, unsigned driver_id 
   // Driver has the proc chance defined, typically. Use the id-based proc chance
   // only if there's no proc chance or rppm defined for the special effect
   // already
-  if ( proc_chance == 0 && ppm == 0 )
+  if ( proc_chance == -1 && ppm == 0 )
   {
     // RPPM Trumps proc chance, however in theory we could use both, as most
     // RPPM effects give a (special?) proc chance value of 101%.
@@ -332,7 +348,8 @@ bool proc::parse_special_effect_encoding( special_effect_t& effect,
     }
     else if ( util::str_prefix_ci( t.name, "rppm" ) )
     {
-      effect.ppm = -t.value;
+      if ( t.value != 0 )
+        effect.ppm = -t.value;
 
       if ( util::str_in_str_ci( t.name, "spellcrit" ) )
         effect.rppm_scale = RPPM_SPELL_CRIT;

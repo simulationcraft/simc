@@ -220,12 +220,12 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 138728, "10Stack_Reverse_NoRefresh",                        0 }, /* Steadfast Talisman of the Shado-Pan Assault */
   { 138894, "OnDirectDamage",                                   0 }, /* Talisman of Bloodlust */
   { 138871, "OnDirectDamage",                                   0 }, /* Primordius' Talisman of Rage */
-  { 139171, "OnAttackCrit",                                     0 }, /* Gaze of the Twins */
+  { 139171, "OnAttackCrit_RPPMAttackCrit",                      0 }, /* Gaze of the Twins */
   { 138757, "OnDirectDamage_1Tick_138737Trigger",               0 }, /* Renataki's Soul Charm */
   { 138790, "OnSpellDamage_1Tick_138788Trigger",                0 }, /* Wushoolay's Final Choice */
   { 138758, "OnDirectDamage",                                   0 }, /* Fabled Feather of Ji-Kun */
   { 138896, "OnSpellTickDamage",                                0 }, /* Breath of the Hydra */
-  { 139134, "OnHarmfulSpellCrit",                               0 }, /* Cha-Ye's Essence of Brilliance */
+  { 139134, "OnHarmfulSpellCrit_RPPMSpellCrit",                 0 }, /* Cha-Ye's Essence of Brilliance */
   { 138939, "OnDirectDamage",                                   0 }, /* Bad Juju */
   { 139116, 0,                        item::rune_of_reorigination }, /* Rune of Reorigination */
   { 138957, 0,                            item::spark_of_zandalar }, /* Spark of Zandalar */
