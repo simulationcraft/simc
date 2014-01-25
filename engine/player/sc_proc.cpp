@@ -279,6 +279,8 @@ std::string special_effect_t::to_string() const
       s << " icd=";
     else if ( type == SPECIAL_EFFECT_USE )
       s << " cd=";
+    else
+      s << " (i)cd=";
     s << cooldown().total_seconds();
   }
 

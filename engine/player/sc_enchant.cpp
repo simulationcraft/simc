@@ -155,6 +155,7 @@ bool enchant::initialize_item_enchant( item_t& item,
 
   for ( size_t i = 0; i < sizeof_array( enchant.ench_prop ); i++ )
   {
+    // No stat ID, or spell ID given, continue
     if ( enchant.ench_prop[ i ] == 0 )
       continue;
 
@@ -172,14 +173,22 @@ bool enchant::initialize_item_enchant( item_t& item,
         effect.trigger_mask = RESULT_HIT_MASK;
         break;
       case ITEM_ENCHANTMENT_EQUIP_SPELL:
+        // Passive (stat) giving enchants get a special treatment
+        if ( passive_enchant( item, enchant.ench_prop[ i ] ) )
+          continue;
+
         effect.type = SPECIAL_EFFECT_EQUIP;
         break;
       case ITEM_ENCHANTMENT_USE_SPELL:
         effect.type = SPECIAL_EFFECT_USE;
         break;
       case ITEM_ENCHANTMENT_STAT:
-        // TODO: Implement stat parsing here
+      {
+        stat_pair_t stat = item_database::item_enchantment_effect_stats( item.player, enchant, i );
+        if ( stat.stat != STAT_NONE && stat.value != 0 )
+          item.parsed.enchant_stats.push_back( stat );
         break;
+      }
       default:
         break;
     }
@@ -193,4 +202,56 @@ bool enchant::initialize_item_enchant( item_t& item,
     }
   }
   return true;
+}
+
+/**
+ * Figure out if the ITEM_ENCHANT_EQUIP_SPELL is in fact a passive enchant.
+ * Such enchants include any passive spells that apply a stat aura, for
+ * example.
+ *
+ * TODO: Add socket enchant can be done here
+ */
+bool enchant::passive_enchant( item_t& item, unsigned spell_id )
+{
+  bool ret = false;
+  const spell_data_t* spell = item.player -> find_spell( spell_id );
+  if ( ! spell -> ok() )
+    return ret;
+
+  if ( ! spell -> flags( SPELL_ATTR_PASSIVE ) &&
+       spell -> duration() >= timespan_t::zero() )
+    return ret;
+
+  for ( size_t i = 1, end = spell -> effect_count(); i <= end; i++ )
+  {
+    const spelleffect_data_t& effect = spell -> effectN( i );
+
+    if ( effect.type() != E_APPLY_AURA )
+      continue;
+
+    double value = util::round( effect.average( item.player ) );
+    stat_e stat = STAT_NONE;
+
+    switch ( effect.subtype() )
+    {
+      case A_MOD_STAT:
+        if ( effect.misc_value1() == -1 )
+          stat = STAT_ALL;
+        else
+          stat = static_cast< stat_e >( effect.misc_value1() + 1 );
+        break;
+      case A_MOD_RATING:
+        stat = util::translate_rating_mod( effect.misc_value1() );
+        break;
+      default:
+        break;
+    }
+
+    if ( stat != STAT_NONE && value != 0 )
+    {
+      item.parsed.enchant_stats.push_back( stat_pair_t( stat, value ) );
+      ret = true;
+    }
+  }
+  return ret;
 }

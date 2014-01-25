@@ -35,6 +35,36 @@ stat_pair_t item_database::item_enchantment_effect_stats( const item_enchantment
   return stat_pair_t();
 }
 
+stat_pair_t item_database::item_enchantment_effect_stats( player_t* player,
+                                                          const item_enchantment_data_t& enchantment,
+                                                          int index )
+{
+  assert( enchantment.id );
+  assert( index >= 0 && index < 3 );
+
+  if ( enchantment.ench_type[ index ] != ITEM_ENCHANTMENT_STAT )
+    return stat_pair_t();
+  stat_e stat = util::translate_item_mod( enchantment.ench_prop[ index ] );
+  double value = 0;
+
+  if ( enchantment.id_scaling == 0 )
+    value = enchantment.ench_amount[ index ];
+  else
+  {
+    unsigned level = player -> level;
+
+    if ( static_cast< unsigned >( player -> level ) > enchantment.max_scaling_level )
+      level = enchantment.max_scaling_level;
+
+    double budget = player -> dbc.spell_scaling( static_cast< player_e >( enchantment.id_scaling ), level );
+    value = util::round( budget * enchantment.ench_coeff[ index ] );
+  }
+
+  if ( stat != STAT_NONE && value != 0 )
+    return stat_pair_t( stat, value );
+
+  return stat_pair_t();
+}
 
 std::string item_database::stat_to_str( int stat, int stat_amount )
 {

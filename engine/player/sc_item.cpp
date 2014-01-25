@@ -84,7 +84,7 @@ bool item_t::has_stats()
 {
   for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
   {
-    if ( parsed.data.stat_type_e[ i ] != ITEM_MOD_NONE )
+    if ( parsed.data.stat_type_e[ i ] > 0 )
       return true;
   }
 
@@ -204,15 +204,17 @@ std::string item_t::to_string()
 
     for ( size_t i = 0; i < sizeof_array( parsed.data.stat_val ); i++ )
     {
-      if ( parsed.data.stat_type_e[ i ] == ITEM_MOD_NONE )
+      if ( parsed.data.stat_type_e[ i ] <= 0 )
         continue;
 
-      if ( parsed.data.stat_val[ i ] > 0 )
+      int v = stat_value( i );
+      if ( v == 0 )
+        continue;
+
+      if ( v > 0 )
         s << "+";
 
-      s << stat_value( i ) << " "
-        << util::stat_type_abbrev( util::translate_item_mod( parsed.data.stat_type_e[ i ] ) )
-        << ", ";
+      s << v << " " << util::stat_type_abbrev( util::translate_item_mod( parsed.data.stat_type_e[ i ] ) ) << ", ";
     }
     std::streampos x = s.tellp(); s.seekp( x - std::streamoff( 2 ) );
     s << " }";
@@ -1345,17 +1347,9 @@ bool item_t::decode_enchant()
   // .. Otherwise, parse enchant based on DBC information and enchant_id
   else if ( parsed.enchant_id > 0 )
   {
-    special_effect_t effect;
-    if ( ! item_database::parse_item_spell_enchant( *this, parsed.enchant_stats, effect, parsed.enchant_id ) )
-      sim -> errorf( "Player %s unable to parse enchant id %u for item \"%s\" at slot %s.\n",
-          player -> name(), parsed.enchant_id, name(), slot_name() );
-
-    if ( parsed.enchant_stats.size() == 0 )
-    {
-      const item_enchantment_data_t& enchant_data = player -> dbc.item_enchantment( parsed.enchant_id );
-      if ( ! enchant::initialize_item_enchant( *this, SPECIAL_EFFECT_SOURCE_ENCHANT, enchant_data ) )
-        return false;
-    }
+    const item_enchantment_data_t& enchant_data = player -> dbc.item_enchantment( parsed.enchant_id );
+    if ( ! enchant::initialize_item_enchant( *this, SPECIAL_EFFECT_SOURCE_ENCHANT, enchant_data ) )
+      return false;
   }
 
   for ( size_t i = 0; i < parsed.enchant_stats.size(); i++ )

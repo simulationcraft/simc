@@ -256,6 +256,7 @@ inline bool is_pandaren( race_e r ) { return RACE_PANDAREN <= r && r <= RACE_PAN
 
 enum player_e
 {
+  PLAYER_SPECIAL_SCALE5 = -5,
   PLAYER_SPECIAL_SCALE4 = -4,
   PLAYER_SPECIAL_SCALE3 = -3,
   PLAYER_SPECIAL_SCALE2 = -2,
@@ -6307,6 +6308,7 @@ int scaled_stat( const item_data_t& item, const dbc_t& dbc, size_t idx, unsigned
 
 unsigned upgrade_ilevel( const item_data_t& item, unsigned upgrade_level );
 stat_pair_t item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index );
+stat_pair_t item_enchantment_effect_stats( player_t* player, const item_enchantment_data_t& enchantment, int index );
 double item_budget( const item_t* item, unsigned max_ilevel );
 
 inline bool heroic( unsigned f ) { return f & RAID_TYPE_HEROIC; }
@@ -6348,6 +6350,7 @@ namespace enchant
 
   const item_enchantment_data_t& find_item_enchant( const dbc_t& dbc, const std::string& name );
   bool initialize_item_enchant( item_t& item, special_effect_source_e source, const item_enchantment_data_t& enchant );
+  bool passive_enchant( item_t& item, unsigned spell_id );
 }
 
 // Unique Gear ==============================================================
