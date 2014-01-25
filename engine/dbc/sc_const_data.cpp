@@ -532,35 +532,6 @@ void dbc::apply_hotfixes()
 
 
   // Misc
-
-
-  // Legendary gems are buffs in game, hack them to become +500 / +550 stat gems
-  item_enchantment_data_t* e = item_enchantment_data_index.get( false, 4996 );
-  assert( e );
-  e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_AGILITY;
-
-  e = item_enchantment_data_index.get( false, 4997 );
-  assert( e );
-  e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_STRENGTH;
-
-  e = item_enchantment_data_index.get( false, 4998 );
-  assert( e );
-  e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_INTELLECT;
-
-  if ( SC_USE_PTR )
-  {
-    e = item_enchantment_data_index.get( true, 4996 );
-    assert( e );
-    e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_AGILITY;
-
-    e = item_enchantment_data_index.get( true, 4997 );
-    assert( e );
-    e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_STRENGTH;
-
-    e = item_enchantment_data_index.get( true, 4998 );
-    assert( e );
-    e -> ench_type[ 0 ] = ITEM_ENCHANTMENT_STAT; e -> ench_prop[ 0 ] = ITEM_MOD_INTELLECT;
-  }
 }
 
 /* Initialize database
