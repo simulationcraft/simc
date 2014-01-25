@@ -1230,7 +1230,7 @@ bool item_t::decode_gems()
 
 bool item_t::decode_equip_effect()
 {
-  special_effect_t effect;
+  special_effect_t effect( this );
   bool ret = false;
   int effects = 0;
 
@@ -1279,7 +1279,7 @@ bool item_t::decode_equip_effect()
 
 bool item_t::decode_use_effect()
 {
-  special_effect_t effect;
+  special_effect_t effect( this );
   bool ret = false;
   int effects = 0;
 

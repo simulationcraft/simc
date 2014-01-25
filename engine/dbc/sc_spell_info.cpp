@@ -243,6 +243,9 @@ std::string spell_flags( const spell_data_t* spell )
   if ( spell -> flags( SPELL_ATTR_PASSIVE ) )
     s << "Passive, ";
 
+  if ( spell -> flags( SPELL_ATTR_HIDDEN ) )
+    s << "Hidden, ";
+
   if ( s.tellp() > 1 )
   {
     s.seekp( -2, std::ios_base::cur );

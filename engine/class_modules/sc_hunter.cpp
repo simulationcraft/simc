@@ -1818,7 +1818,7 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     if ( ! p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
       return;
 
-    if ( ( p() -> ppm_tier15_2pc_melee.trigger( *this ) ) )
+    if ( ( p() -> ppm_tier15_2pc_melee.trigger() ) )
     {
       p() -> procs.tier15_2pc_melee -> occur();
       size_t i;
@@ -2887,7 +2887,7 @@ void hunter_ranged_attack_t::trigger_tier15_4pc_melee( proc_t* proc, attack_t* a
   if ( ! p() -> sets.has_set_bonus( SET_T15_4PC_MELEE ) )
     return;
 
-  if ( p() -> ppm_tier15_4pc_melee.trigger( *this ) )
+  if ( p() -> ppm_tier15_4pc_melee.trigger() )
   {
     proc -> occur();
     attack -> execute();

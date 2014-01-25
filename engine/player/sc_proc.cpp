@@ -18,6 +18,9 @@ void special_effect_t::reset()
   
   trigger_type = PROC_NONE;
   trigger_mask = 0;
+
+  proc_flags_ = 0;
+  proc_flags2_ = 0;
   
   stat = STAT_NONE;
   stat_amount = 0;
@@ -29,17 +32,19 @@ void special_effect_t::reset()
   
   // Must match buff creator defaults for now
   max_stacks = -1;
-  
-  proc_chance = -1;
-  ppm = 0;
+  proc_chance_ = -1;
+
+  // ppm < 0 = real ppm, ppm > 0 = normal "ppm"
+  ppm_ = 0;
   rppm_scale = RPPM_NONE;
 
   // Must match buff creator defaults for now
   duration = timespan_t::min();
 
-  // Currntly covers both cooldown and internal cooldown, as typically cooldown
-  // is only used for on-use effects.
-  cooldown = timespan_t::zero();
+  // Currently covers both cooldown and internal cooldown, as typically
+  // cooldown is only used for on-use effects. Must match buff creator default
+  // for now.
+  cooldown_ = timespan_t::min();
 
   tick = timespan_t::zero();
   
@@ -49,6 +54,7 @@ void special_effect_t::reset()
   reverse = false;
   proc_delay = false;
   unique = false;
+  weapon_proc = false;
   
   override_result_es_mask = 0;
   result_es_mask = 0;
@@ -60,25 +66,163 @@ void special_effect_t::reset()
   custom_buff = 0;
 }
 
+// special_effect_t::driver =================================================
+
+const spell_data_t* special_effect_t::driver() const
+{
+  if ( ! item )
+    return spell_data_t::nil();
+
+  return item -> player -> find_spell( spell_id );
+}
+
+// special_effect_t::trigger ================================================
+
+const spell_data_t* special_effect_t::trigger() const
+{
+  if ( ! item )
+    return spell_data_t::nil();
+
+  if ( trigger_spell_id > 0 )
+    return item -> player -> find_spell( trigger_spell_id );
+
+  for ( size_t i = 1, end = driver() -> effect_count(); i <= end; i++ )
+  {
+    if ( driver() -> effectN( i ).trigger() -> ok() )
+      return driver() -> effectN( i ).trigger();
+  }
+
+  return spell_data_t::nil();
+}
+
+// special_effect_t::create_buff ============================================
+
+buff_t* special_effect_t::create_buff() const
+{
+  if ( custom_buff != 0 )
+    return custom_buff;
+
+  return 0;
+}
+
+// special_effect_t::proc_flags =============================================
+
+unsigned special_effect_t::proc_flags() const
+{
+  if ( proc_flags_ != 0 )
+    return proc_flags_;
+
+  if ( driver() -> proc_flags() != 0 )
+    return driver() -> proc_flags();
+
+  return 0;
+}
+
+// special_effect_t::proc_flags2 ============================================
+
+unsigned special_effect_t::proc_flags2() const
+{
+  // These do not have a spell-data equivalent, so they are going to always 
+  // be set manually, or (most commonly) default to 0. The new proc callback
+  // system will automatically use "default values" appropriate for the proc,
+  // if it is passed a zero proc_flags2.
+  return proc_flags2_;
+}
+
+// special_effect_t::ppm ====================================================
+
+double special_effect_t::ppm() const
+{
+  return ppm_;
+}
+
+// special_effect_t::rppm ===================================================
+
+double special_effect_t::rppm() const
+{
+  if ( ppm_ < 0 )
+    return std::fabs( ppm_ );
+
+  return driver() -> real_ppm();
+}
+
+// special_effect_t::cooldown ===============================================
+
+timespan_t special_effect_t::cooldown() const
+{
+  if ( cooldown_ > timespan_t::zero() )
+    return cooldown_;
+
+  if ( driver() -> cooldown() > timespan_t::zero() )
+    return driver() -> cooldown();
+  else if ( driver() -> internal_cooldown() > timespan_t::zero() )
+    return driver() -> internal_cooldown();
+
+  return timespan_t::zero();
+}
+
+// special_effect_t::proc_chance ============================================
+
+double special_effect_t::proc_chance() const
+{
+  if ( proc_chance_ > 0 )
+    return proc_chance_;
+
+  // Push out the "101%" proc chances automatically, seemingly used as a 
+  // special value
+  if ( driver() -> proc_chance() > 0 && driver() -> proc_chance() <= 1.0 )
+    return driver() -> proc_chance();
+
+  return 0;
+}
+
+// special_effect_t::name ===================================================
+
+std::string special_effect_t::name() const
+{
+  if ( ! name_str.empty() )
+    return name_str;
+
+  // Guess proc name based on spells.
+  std::string n;
+  // Use driver name, if it's not hidden, or there's no trigger spell to use
+  if ( ! driver() -> flags( SPELL_ATTR_HIDDEN ) || ! trigger() -> ok() )
+    n = driver() -> name_cstr();
+  // Driver is hidden, try to use the spell that the driver procs
+  else if ( trigger() -> ok() )
+    n = trigger() -> name_cstr();
+
+  util::tokenize( n );
+
+  // Assert on empty names; we do need a reasonable name for the proc.
+  assert( ! n.empty() );
+
+  // Append weapon suffix automatically to the name.
+  // TODO: We need a "shared" mechanism here
+  if ( item -> slot == SLOT_OFF_HAND )
+    n += "_oh";
+
+  return n;
+}
+
 // special_effect_t::to_string ==============================================
 
-std::string special_effect_t::to_string()
+std::string special_effect_t::to_string() const
 {
   std::ostringstream s;
 
-  s << "type=" << util::special_effect_string( type );
+  s << name();
+  s << " type=" << util::special_effect_string( type );
   s << " source=" << util::special_effect_source_string( source );
 
   if ( ! trigger_str.empty() )
     s << " proc=" << trigger_str;
-  else
-    s << name_str;
 
   if ( spell_id > 0 )
     s << " driver=" << spell_id;
 
-  if ( trigger_spell_id > 0 )
-    s << " trigger=" << trigger_spell_id;
+  if ( trigger() -> ok() )
+    s << " trigger=" << trigger() -> id();
 
   if ( stat != STAT_NONE )
   {
@@ -104,14 +248,15 @@ std::string special_effect_t::to_string()
   if ( max_stacks > 0 )
     s << " max_stack=" << max_stacks;
 
-  if ( proc_chance > 0 )
-    s << " proc_chance=" << proc_chance * 100.0 << "%";
+  if ( proc_chance() > 0 )
+    s << " proc_chance=" << proc_chance() * 100.0 << "%";
 
-  if ( ppm > 0 )
-    s << " ppm=" << ppm;
-  else if ( ppm < 0 )
+  if ( ppm() > 0 )
+    s << " ppm=" << ppm();
+
+  if ( rppm() > 0 )
   {
-    s << " rppm=" << std::fabs( ppm );
+    s << " rppm=" << rppm();
     switch ( rppm_scale )
     {
       case RPPM_HASTE:
@@ -128,13 +273,13 @@ std::string special_effect_t::to_string()
     }
   }
 
-  if ( cooldown > timespan_t::zero() )
+  if ( cooldown() > timespan_t::zero() )
   {
     if ( type == SPECIAL_EFFECT_EQUIP )
       s << " icd=";
     else if ( type == SPECIAL_EFFECT_USE )
       s << " cd=";
-    s << cooldown.total_seconds();
+    s << cooldown().total_seconds();
   }
 
   return s.str();
@@ -169,22 +314,22 @@ bool special_effect_t::parse_spell_data( const item_t& item, unsigned driver_id 
   // Driver has the proc chance defined, typically. Use the id-based proc chance
   // only if there's no proc chance or rppm defined for the special effect
   // already
-  if ( proc_chance == -1 && ppm == 0 )
+  if ( proc_chance_ == -1 && ppm_ == 0 )
   {
     // RPPM Trumps proc chance, however in theory we could use both, as most
     // RPPM effects give a (special?) proc chance value of 101%.
     if ( driver_spell -> real_ppm() == 0 )
-      proc_chance = driver_spell -> proc_chance();
+      proc_chance_ = driver_spell -> proc_chance();
     else
-      ppm = -1.0 * driver_spell -> real_ppm();
+      ppm_ = -1.0 * driver_spell -> real_ppm();
   }
 
   // Cooldown / Internal cooldown is defined in the driver as well
-  if ( cooldown == timespan_t::zero() )
-    cooldown = driver_spell -> cooldown();
+  if ( cooldown_ == timespan_t::min() )
+    cooldown_ = driver_spell -> cooldown();
 
-  if ( cooldown == timespan_t::zero() )
-    cooldown = driver_spell -> internal_cooldown();
+  if ( cooldown_ == timespan_t::min() )
+    cooldown_ = driver_spell -> internal_cooldown();
 
   const spell_data_t* proc_spell = spell_data_t::nil();
 
@@ -340,16 +485,16 @@ bool proc::parse_special_effect_encoding( special_effect_t& effect,
     }
     else if ( t.name == "%" )
     {
-      effect.proc_chance = t.value / 100.0;
+      effect.proc_chance_ = t.value / 100.0;
     }
     else if ( t.name == "ppm" )
     {
-      effect.ppm = t.value;
+      effect.ppm_ = t.value;
     }
     else if ( util::str_prefix_ci( t.name, "rppm" ) )
     {
       if ( t.value != 0 )
-        effect.ppm = -t.value;
+        effect.ppm_ = -t.value;
 
       if ( util::str_in_str_ci( t.name, "spellcrit" ) )
         effect.rppm_scale = RPPM_SPELL_CRIT;
@@ -366,7 +511,7 @@ bool proc::parse_special_effect_encoding( special_effect_t& effect,
     }
     else if ( t.name == "cooldown" || t.name == "cd" )
     {
-      effect.cooldown = timespan_t::from_seconds( t.value );
+      effect.cooldown_ = timespan_t::from_seconds( t.value );
     }
     else if ( t.name == "tick" )
     {
@@ -782,18 +927,74 @@ int proc::usable_effects( player_t* player, unsigned spell_id )
 /**
  * Ensure that the proc has enough information to actually proc in simc. This
  * essentially requires a non-zero proc_chance or PPM field in effect, or the
- * driver spell to contain a non-zero RPPM or proc chance.
+ * driver spell to contain a non-zero RPPM or proc chance. Additionally, we
+ * need to have some sort of flags indicating what events trigger the proc.
  */
-bool proc::usable_proc( player_t* player,
-                        const special_effect_t& effect,
-                        unsigned driver_id )
+bool proc::usable_proc( const special_effect_t& effect )
 {
-  if ( effect.ppm != 0 || effect.proc_chance != 0 )
+  // Valid proc flags (either old- or new style), we can proc this effect.
+  if ( ( effect.trigger_type != PROC_NONE && effect.trigger_mask != 0 ) ||
+       effect.proc_flags() > 0 )
     return true;
-
-  const spell_data_t* driver = player -> find_spell( driver_id );
-  if ( driver -> real_ppm() != 0 || driver -> proc_chance() != 0 )
+    
+  // A non-zero chance to proc it through one of the proc chance triggers
+  if ( effect.ppm() > 0 || effect.rppm() > 0 || effect.proc_chance() > 0 )
     return true;
 
   return false;
 }
+
+/**
+ * Initialize the proc callback. This method is called by each actor through
+ * player_t::register_callbacks(), which is invoked as the last thing in the
+ * actor initialization process.
+ */
+void dbc_proc_callback_t::initialize()
+{
+  if ( listener -> sim -> debug )
+    listener -> sim -> out_debug.printf( "Initializing %s: %s", effect.name().c_str(), effect.to_string().c_str() );
+  
+  // Initialize proc chance triggers. Note that this code only chooses one, and
+  // prioritizes RPPM > PPM > proc chance.
+  if ( effect.rppm() > 0 )
+    rppm = real_ppm_t( *listener, effect.rppm(), effect.rppm_scale, effect.driver() -> id() );
+  else if ( effect.ppm() > 0 )
+    ppm = effect.ppm();
+  else if ( effect.proc_chance() != 0 )
+    proc_chance = effect.proc_chance();
+
+  // Initialize cooldown, if applicable
+  if ( effect.cooldown() > timespan_t::zero() )
+  {
+    cooldown = listener -> get_cooldown( cooldown_name() );
+    cooldown -> duration = effect.cooldown();
+  }
+
+  // Initialize the potential proc buff through special_effect_t. Can return 0,
+  // in which case the proc does not trigger a buff.
+  proc_buff = effect.create_buff();
+  
+  // TODO: Create action (through special_effect_t)
+  
+  // Register callback to new proc system
+  listener -> callbacks.register_callback( effect.proc_flags(), effect.proc_flags2(), this );
+}
+
+/**
+ * Cooldown name needs some special handling. Cooldowns in WoW are global,
+ * regardless of the number of procs (i.e., weapon enchants). Thus, we straight
+ * up use the driver's name, or override it with the special_effect_t name_str
+ * if it's defined.
+ */
+std::string dbc_proc_callback_t::cooldown_name() const
+{
+  if ( ! effect.name_str.empty() )
+    return effect.name_str;
+
+  std::string n = effect.driver() -> name_cstr();
+  assert( ! n.empty() );
+  util::tokenize( n );
+
+  return n;
+}
+

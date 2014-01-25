@@ -621,7 +621,7 @@ static bool group_runes ( const death_knight_t* player, int blood, int frost, in
 {
   assert( blood < 2 && frost < 2 && unholy < 2 && death < 2 );
 
-  std::array<bool,RUNE_SLOT_MAX> use = { false };
+  std::array<bool,RUNE_SLOT_MAX> use = { { false } };
   int use_slot = -1;
 
   if ( blood )
@@ -2122,7 +2122,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
     if ( ! p -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
       return;
 
-    if ( ( p -> t15_2pc_melee.trigger( *this ) ) )
+    if ( ( p -> t15_2pc_melee.trigger() ) )
     {
       p -> procs.t15_2pc_melee -> occur();
       size_t i;
@@ -5665,6 +5665,7 @@ void death_knight_t::init_action_list()
 
 // death_knight_t::init_special_effects =====================================
 
+// TODO: Broken, fix fix fix
 void death_knight_t::init_special_effects()
 {
   player_t::init_special_effects();

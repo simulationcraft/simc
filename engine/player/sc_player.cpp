@@ -1017,6 +1017,12 @@ bool player_t::init( sim_t* sim )
   return true;
 }
 
+void player_t::register_callbacks()
+{
+  for ( size_t i = 0, end = callbacks.all_callbacks.size(); i < end; i++ )
+    callbacks.all_callbacks[ i ] -> initialize();
+}
+
 // player_t::init ===========================================================
 
 void player_t::init()
@@ -1496,9 +1502,9 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
     data.trigger_mask = RESULT_HIT_MASK;
     data.stat         = STAT_HASTE_RATING;
     data.stat_amount  = 320;
-    data.proc_chance  = 0.15;
+    data.proc_chance_ = 0.15;
     data.duration     = timespan_t::from_seconds( 4 );
-    data.cooldown     = timespan_t::from_seconds( 45 );
+    data.cooldown_    = timespan_t::from_seconds( 45 );
 
     unique_gear::register_stat_proc( this, data );
   }
@@ -1510,8 +1516,8 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
     data.trigger_mask = RESULT_HIT_MASK;
     data.stat         = STAT_MANA;
     data.stat_amount  = 300;
-    data.proc_chance  = 0.05;
-    data.cooldown     = timespan_t::from_seconds( 15 );
+    data.proc_chance_ = 0.05;
+    data.cooldown_    = timespan_t::from_seconds( 15 );
 
     unique_gear::register_stat_proc( this, data );
   }
@@ -1523,8 +1529,8 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
     data.trigger_mask = RESULT_HIT_MASK;
     data.stat         = STAT_MANA;
     data.stat_amount  = 600;
-    data.proc_chance  = 0.05;
-    data.cooldown     = timespan_t::from_seconds( 15 );
+    data.proc_chance_ = 0.05;
+    data.cooldown_    = timespan_t::from_seconds( 15 );
 
     unique_gear::register_stat_proc( this, data );
   }
@@ -1761,8 +1767,8 @@ void player_t::init_special_effects()
 
     special_effect_t se_data;
     se_data.name_str = "touch_of_the_grave";
-    se_data.proc_chance = totg -> proc_chance();
-    se_data.cooldown = totg -> internal_cooldown();
+    se_data.proc_chance_ = totg -> proc_chance();
+    se_data.cooldown_ = totg -> internal_cooldown();
 
     action_t* a = new touch_of_the_grave_discharge_spell_t( this, totg -> effectN( 1 ).trigger() );
     action_callback_t* cb = new discharge_proc_t<action_t>( this, se_data, a );
@@ -5210,7 +5216,8 @@ void player_t::assess_damage( school_e school,
 
   // New callback system; proc abilities on incoming events. 
   // TODO: Not used for now.
-  if ( 0 )
+  // TODO: How to express action causing/not causing incoming callbacks?
+  if ( s -> action -> callbacks )
   {
     proc_types pt = s -> proc_type();
     proc_types2 pt2 = s -> execute_proc_type2();
@@ -6286,8 +6293,8 @@ struct use_item_t : public action_t
         buff = stat_buff_creator_t( player, use_name )
                .max_stack( e.max_stacks )
                .duration( e.duration )
-               .cd( e.cooldown )
-               .chance( e.proc_chance )
+               .cd( e.cooldown_ )
+               .chance( e.proc_chance_ )
                .reverse( e.reverse )
                .add_stat( e.stat, e.stat_amount );
     }
@@ -6302,7 +6309,7 @@ struct use_item_t : public action_t
     cooldown_name += item -> slot_name();
 
     cooldown = player -> get_cooldown( cooldown_name );
-    cooldown -> duration = e.cooldown;
+    cooldown -> duration = e.cooldown_;
     trigger_gcd = timespan_t::zero();
 
     if ( buff != 0 ) buff -> cooldown = cooldown;

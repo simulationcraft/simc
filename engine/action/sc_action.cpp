@@ -1087,7 +1087,7 @@ void action_t::execute()
   // TODO: Not used for now.
   // Note: direct_tick_callbacks should not be used with the new system, 
   // override action_t::proc_type() instead
-  if ( 0 /* callbacks */ )
+  if ( callbacks )
   {
     proc_types pt = execute_state -> proc_type();
     proc_types2 pt2 = execute_state -> execute_proc_type2();
@@ -1310,7 +1310,7 @@ void action_t::assess_damage( dmg_e    type,
   // TODO: Not used for now.
   // Note: direct_tick_callbacks should not be used with the new system, 
   // override action_t::proc_type() instead
-  if ( 0 /* callbacks */ )
+  if ( callbacks )
   {
     proc_types pt = s -> proc_type();
     proc_types2 pt2 = s -> impact_proc_type2();
@@ -2104,44 +2104,6 @@ double action_t::ppm_proc_chance( double PPM ) const
 
     return ( PPM * t.total_minutes() );
   }
-}
-
-// action_t::real_ppm_proc_chance ===========================================
-
-double action_t::real_ppm_proc_chance( double PPM, timespan_t last_trigger, timespan_t last_successful_proc, rppm_scale_e scales_with ) const
-{
-  // Old RPPM formula
-  double coeff = 1.0;
-  double seconds = std::min( ( sim -> current_time - last_trigger ).total_seconds(), 10.0 );
-
-  switch ( scales_with )
-  {
-    case RPPM_HASTE:
-      coeff *= 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
-      break;
-    case RPPM_ATTACK_CRIT:
-      coeff *= 1.0 + player -> cache.attack_crit();
-      break;
-    case RPPM_SPELL_CRIT:
-      coeff *= 1.0 + player -> cache.spell_crit();
-      break;
-    default: break;
-  }
-
-  double old_rppm_chance = ( PPM * ( seconds / 60.0 ) ) * coeff;
-
-
-  // RPPM Extension added on 12. March 2013: http://us.battle.net/wow/en/blog/8953693?page=44
-  // Formula see http://us.battle.net/wow/en/forum/topic/8197741003#1
-  double last_success = std::min( ( sim -> current_time - last_successful_proc ).total_seconds(), 1000.0 );
-
-  double expected_average_proc_interval = 60.0 / ( PPM * coeff );
-  double rppm_chance = std::max( 1.0, 1 + ( ( last_success / expected_average_proc_interval - 1.5 ) * 3.0 ) )  * old_rppm_chance;
-  if ( sim -> debug )
-    sim -> out_debug.printf( "base=%.3f coeff=%.3f last_trig=%.3f last_proc=%.3f scales=%d chance=%.5f%%",
-        PPM, coeff, last_trigger.total_seconds(), last_successful_proc.total_seconds(), scales_with,
-        rppm_chance * 100.0 );
-  return rppm_chance;
 }
 
 // action_t::tick_time ======================================================

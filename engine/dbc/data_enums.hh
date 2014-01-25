@@ -1028,7 +1028,7 @@ enum spell_attribute_e
   SPELL_ATTR_UNK4, // 4 isAbility
   SPELL_ATTR_TRADESPELL, // 5 trade spells, will be added by client to a sublist of profession spell
   SPELL_ATTR_PASSIVE, // 6 Passive spell
-  SPELL_ATTR_UNK7, // 7 can't be linked in chat?
+  SPELL_ATTR_HIDDEN, // 7 can't be linked in chat?
   SPELL_ATTR_UNK8, // 8 hide created item in tooltip (for effect=24)
   SPELL_ATTR_UNK9, // 9
   SPELL_ATTR_ON_NEXT_SWING_2, // 10 on next swing 2

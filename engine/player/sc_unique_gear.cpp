@@ -331,11 +331,11 @@ struct stat_buff_proc_t : public buff_proc_callback_t<stat_buff_t>
   stat_buff_proc_t( player_t* p, const special_effect_t& data, const spell_data_t* driver = spell_data_t::nil() ) :
     buff_proc_callback_t<stat_buff_t>( p, data, 0, driver )
   {
-    buff = stat_buff_creator_t( listener, proc_data.name_str )
+    buff = stat_buff_creator_t( listener, proc_data.name() )
            .activated( data.reverse || data.tick != timespan_t::zero() )
            .max_stack( proc_data.max_stacks )
            .duration( proc_data.duration )
-           .cd( proc_data.cooldown )
+           .cd( proc_data.cooldown_ )
            .reverse( proc_data.reverse )
            .refreshes( ! proc_data.no_refresh )
            .add_stat( proc_data.stat, proc_data.stat_amount );
@@ -351,7 +351,7 @@ struct cost_reduction_buff_proc_t : public buff_proc_callback_t<cost_reduction_b
            .activated( false )
            .max_stack( proc_data.max_stacks )
            .duration( proc_data.duration )
-           .cd( proc_data.cooldown )
+           .cd( proc_data.cooldown_ )
            .reverse( proc_data.reverse )
            .amount( proc_data.discharge_amount )
            .refreshes( ! proc_data.no_refresh );
@@ -456,13 +456,13 @@ struct stat_discharge_proc_callback_t : public discharge_proc_t<action_t>
     discharge_proc_t<action_t>( p, data, nullptr, driver )
   {
     if ( proc_data.max_stacks == 0 ) proc_data.max_stacks = 1;
-    if ( proc_data.proc_chance == 0 ) proc_data.proc_chance = 1;
+    if ( proc_data.proc_chance_ == 0 ) proc_data.proc_chance_ = 1;
 
     buff = stat_buff_creator_t( p, proc_data.name_str )
            .max_stack( proc_data.max_stacks )
            .duration( proc_data.duration )
-           .cd( proc_data.cooldown )
-           .chance( proc_data.proc_chance )
+           .cd( proc_data.cooldown_ )
+           .chance( proc_data.proc_chance_ )
            .activated( false /* proc_data.activated */ )
            .add_stat( proc_data.stat, proc_data.stat_amount );
 
@@ -531,7 +531,7 @@ void enchant::elemental_force( special_effect_t& effect,
 
   double amount = ( elemental_force_spell -> effectN( 1 ).min( item.player ) + elemental_force_spell -> effectN( 1 ).max( item.player ) ) / 2;
 
-  effect.ppm = -1.0 * driver -> real_ppm();
+  effect.ppm_ = -1.0 * driver -> real_ppm();
   effect.school = SCHOOL_ELEMENTAL;
   effect.discharge_amount = amount;
   effect.rppm_scale = RPPM_HASTE;
@@ -557,8 +557,8 @@ void enchant::rivers_song( special_effect_t& effect,
 
   // Have 2 RPPM instances proccing a single buff for now.
   effect.name_str = tokenized_name( spell ) + suffix( item );
-  effect.ppm = -1.0 * driver -> real_ppm();
-  effect.cooldown = driver -> internal_cooldown();
+  effect.ppm_ = -1.0 * driver -> real_ppm();
+  effect.cooldown_ = driver -> internal_cooldown();
   effect.rppm_scale = RPPM_HASTE;
 
   action_callback_t* cb = new buff_proc_callback_t<stat_buff_t>( item.player, effect, buff );
@@ -584,8 +584,8 @@ void enchant::colossus( special_effect_t& effect,
            .activated( false );
 
   effect.name_str = tokenized_name( spell );
-  effect.ppm = -1.0 * driver -> real_ppm();
-  effect.cooldown = driver -> internal_cooldown();
+  effect.ppm_ = -1.0 * driver -> real_ppm();
+  effect.cooldown_ = driver -> internal_cooldown();
   effect.rppm_scale = RPPM_HASTE;
 
   action_callback_t* cb = new buff_proc_callback_t<absorb_buff_t>( item.player, effect, buff );
@@ -600,27 +600,19 @@ void enchant::dancing_steel( special_effect_t& effect,
                              const item_t& item,
                              const special_effect_db_item_t& dbitem )
 {
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
   // Account for Bloody Dancing Steel and Dancing Steel buffs
   const spell_data_t* spell = item.player -> find_spell( dbitem.spell_id == 142531 ? 142530 : 120032 );
 
-  effect.name_str = tokenized_name( spell ) + suffix( item );
-  effect.ppm = -1.0 * driver -> real_ppm();
-
   double value = spell -> effectN( 1 ).average( item.player );
   
-  stat_buff_t* buff  = stat_buff_creator_t( item.player, effect.name_str, spell )
+  stat_buff_t* buff  = stat_buff_creator_t( item.player, tokenized_name( spell ) + suffix( item ), spell )
                        .activated( false )
                        .add_stat( STAT_STRENGTH, value, select_attr<std::greater>() )
                        .add_stat( STAT_AGILITY,  value, select_attr<std::greater>() );
 
-
-  buff_proc_callback_t<stat_buff_t>* cb = new buff_proc_callback_t<stat_buff_t>( item.player, effect, buff );
-
-  item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
-  item.player -> callbacks.register_spell_callback ( RESULT_HIT_MASK, cb );
-  item.player -> callbacks.register_tick_callback  ( RESULT_HIT_MASK, cb );
-  item.player -> callbacks.register_heal_callback  ( SCHOOL_ALL_MASK, cb );
+  effect.custom_buff = buff;
+  
+  new dbc_proc_callback_t( item, effect );
 }
 
 struct jade_spirit_check_func
@@ -652,8 +644,8 @@ void enchant::jade_spirit( special_effect_t& effect,
            .add_stat( STAT_SPIRIT, spi_value, jade_spirit_check_func() );
 
   effect.name_str = tokenized_name( spell ) + suffix( item );
-  effect.ppm = -1.0 * driver -> real_ppm();
-  effect.cooldown = driver -> internal_cooldown();
+  effect.ppm_ = -1.0 * driver -> real_ppm();
+  effect.cooldown_ = driver -> internal_cooldown();
 
   action_callback_t* cb = new buff_proc_callback_t<stat_buff_t>( item.player, effect, buff );
 
@@ -711,7 +703,7 @@ void enchant::windsong( special_effect_t& effect,
                               .activated( false );
 
   effect.name_str = tokenized_name( mastery ) + suffix( item );
-  effect.ppm = -1.0 * driver -> real_ppm();
+  effect.ppm_ = -1.0 * driver -> real_ppm();
 
   action_callback_t* cb  = new windsong_callback_t( effect, haste_buff, crit_buff, mastery_buff, driver );
   item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
@@ -729,7 +721,7 @@ void enchant::hurricane_weapon( special_effect_t& effect,
                       .activated( false );
 
   effect.name_str = tokenized_name( spell ) + suffix( item );
-  effect.ppm = 1.0;
+  effect.ppm_ = 1.0;
 
   action_callback_t* cb = new weapon_buff_proc_callback_t( item.player, effect, item.weapon(), buff );
   item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
@@ -785,8 +777,8 @@ void enchant::hurricane_spell( special_effect_t& effect,
                             .activated( false );
 
   effect.name_str = tokenized_name( spell ) + "_spell";
-  effect.proc_chance = driver -> proc_chance();
-  effect.cooldown = driver -> internal_cooldown();
+  effect.proc_chance_ = driver -> proc_chance();
+  effect.cooldown_ = driver -> internal_cooldown();
 
   action_callback_t* cb = new hurricane_spell_proc_t( item.player, effect, mh_buff, oh_buff, spell_buff );
 
@@ -805,7 +797,7 @@ void enchant::landslide( special_effect_t& effect,
                       .activated( false );
 
   effect.name_str = tokenized_name( spell ) + suffix( item );
-  effect.ppm = 1.0;
+  effect.ppm_ = 1.0;
 
   action_callback_t* cb = new weapon_buff_proc_callback_t( item.player, effect, item.weapon(), buff );
   item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
@@ -822,8 +814,8 @@ void enchant::power_torrent( special_effect_t& effect,
                       .activated( false );
 
   effect.name_str = tokenized_name( spell ) + suffix( item );
-  effect.proc_chance = driver -> proc_chance();
-  effect.cooldown = driver -> internal_cooldown();
+  effect.proc_chance_ = driver -> proc_chance();
+  effect.cooldown_ = driver -> internal_cooldown();
 
   action_callback_t* cb = new buff_proc_callback_t<stat_buff_t>( item.player, effect, buff );
   
@@ -845,7 +837,7 @@ void enchant::executioner( special_effect_t& effect,
            .activated( false );
 
   effect.name_str = tokenized_name( spell );
-  effect.ppm = 1.0;
+  effect.ppm_ = 1.0;
 
   action_callback_t* cb = new weapon_buff_proc_callback_t( item.player, effect, item.weapon(), buff );
   item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
@@ -860,7 +852,7 @@ void enchant::berserking( special_effect_t& effect,
                       .activated( false );
 
   effect.name_str = tokenized_name( spell ) + suffix( item );
-  effect.ppm = 1.0;
+  effect.ppm_ = 1.0;
 
   action_callback_t* cb = new weapon_buff_proc_callback_t( item.player, effect, item.weapon(), buff );
   item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
@@ -875,7 +867,7 @@ void enchant::mongoose( special_effect_t& effect,
                       .activated( false );
 
   effect.name_str = tokenized_name( spell ) + suffix( item );
-  effect.ppm = 1.0;
+  effect.ppm_ = 1.0;
 
   action_callback_t* cb = new weapon_buff_proc_callback_t( item.player, effect, item.weapon(), buff );
   item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
@@ -891,7 +883,7 @@ void enchant::lord_blastingtons_scope_of_doom( special_effect_t& effect,
                       .activated( false );
 
   effect.name_str = tokenized_name( spell );
-  effect.ppm = 1.0; // PPM
+  effect.ppm_ = 1.0; // PPM
 
   action_callback_t* cb = new weapon_buff_proc_callback_t( item.player, effect, item.weapon(), buff );
   item.player -> callbacks.register_attack_callback( RESULT_HIT_MASK, cb );
@@ -904,7 +896,7 @@ void enchant::mirror_scope( special_effect_t& effect,
   const spell_data_t* spell = item.player -> find_spell( dbitem.spell_id );
 
   effect.name_str = tokenized_name( spell );
-  effect.ppm = 1.0;
+  effect.ppm_ = 1.0;
 
   stat_buff_t* buff = stat_buff_creator_t( item.player, tokenized_name( spell ), spell );
 
@@ -920,8 +912,8 @@ void enchant::gnomish_xray( special_effect_t& effect,
   const spell_data_t* spell = driver -> effectN( 1 ).trigger();
 
   effect.name_str = tokenized_name( spell );
-  effect.ppm = 1.0;
-  effect.cooldown = driver -> internal_cooldown();
+  effect.ppm_ = 1.0;
+  effect.cooldown_ = driver -> internal_cooldown();
 
   stat_buff_t* buff = stat_buff_creator_t( item.player, tokenized_name( spell ), spell );
 
@@ -945,7 +937,7 @@ void profession::synapse_springs( special_effect_t& effect,
                        .add_stat( STAT_INTELLECT, value, select_attr<std::greater>() )
                        .add_stat( STAT_AGILITY,  value, select_attr<std::greater>() );
 
-  effect.cooldown = use_spell -> cooldown();
+  effect.cooldown_ = use_spell -> cooldown();
 
   effect.custom_buff = buff;
 }
@@ -1009,8 +1001,8 @@ void profession::zen_alchemist_stone( special_effect_t& effect,
   const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
 
   effect.name_str    = "zen_alchemist_stone";
-  effect.proc_chance = driver -> proc_chance();
-  effect.cooldown    = driver -> internal_cooldown();
+  effect.proc_chance_ = driver -> proc_chance();
+  effect.cooldown_    = driver -> internal_cooldown();
 
   zen_alchemist_stone_callback* cb = new zen_alchemist_stone_callback( item, effect );
   item.player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
@@ -1027,12 +1019,12 @@ void gem::thundering_skyfire( special_effect_t& effect,
   const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
   const spell_data_t* spell = driver -> effectN( 1 ).trigger();
 
-  //FIXME: 0.2 ppm seems to roughly match in-game behavior, but we need to verify the exact mechanics
+  //FIXME: 0.2 ppm_ seems to roughly match in-game behavior, but we need to verify the exact mechanics
   stat_buff_t* buff = stat_buff_creator_t( item.player, tokenized_name( spell ), spell )
                       .activated( false );
 
   effect.name_str = tokenized_name( spell );
-  effect.ppm = 0.2; // PPM
+  effect.ppm_ = 0.2; // PPM
 
   // TODO: Procs only on auto attacks it seems. Make it proc on attacks for
   // now, regardless of handedness.
@@ -1057,8 +1049,8 @@ void gem::sinister_primal( special_effect_t& effect,
   const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
 
   effect.name_str = "tempus_repit";
-  effect.ppm      = -1.0 * driver -> real_ppm();
-  effect.cooldown = driver -> internal_cooldown(); 
+  effect.ppm_      = -1.0 * driver -> real_ppm();
+  effect.cooldown_ = driver -> internal_cooldown(); 
 
   sinister_primal_proc_t* cb = new sinister_primal_proc_t( item.player, effect, driver );
   item.player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
@@ -1075,8 +1067,8 @@ void gem::indomitable_primal( special_effect_t& effect,
   const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
     
   effect.name_str = "fortitude";
-  effect.ppm      = -1.0 * driver -> real_ppm();
-  effect.cooldown = driver -> internal_cooldown();
+  effect.ppm_      = -1.0 * driver -> real_ppm();
+  effect.cooldown_ = driver -> internal_cooldown();
 
   action_callback_t *cb = new buff_proc_callback_t<buff_t>( item.player, effect, item.player -> buffs.fortitude );
   item.player -> callbacks.register_incoming_attack_callback( RESULT_ALL_MASK, cb );
@@ -1132,9 +1124,9 @@ void gem::capacitive_primal( special_effect_t& effect,
 
   effect.name_str   = "lightning_strike";
   effect.max_stacks = spell -> max_stacks();
-  effect.ppm        = -1.0 * driver -> real_ppm();
+  effect.ppm_        = -1.0 * driver -> real_ppm();
   effect.rppm_scale = RPPM_HASTE;
-  effect.cooldown   = driver -> internal_cooldown();
+  effect.cooldown_   = driver -> internal_cooldown();
 
   action_t* ls = item.player -> create_proc_action( "lightning_strike" );
   if ( ! ls )
@@ -1177,8 +1169,8 @@ void gem::courageous_primal( special_effect_t& effect,
 
     const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
     effect.name_str = "courageous_primal_diamond_lucidity";
-    effect.ppm      = -1.0 * driver -> real_ppm();
-    effect.cooldown = driver -> internal_cooldown();
+    effect.ppm_      = -1.0 * driver -> real_ppm();
+    effect.cooldown_ = driver -> internal_cooldown();
 
     action_callback_t* cb = new courageous_primal_proc_t( item.player, effect );
     item.player -> callbacks.register_spell_callback( RESULT_ALL_MASK, cb );
@@ -1262,7 +1254,7 @@ void delicate_vial_of_the_sanguinaire( item_t* item )
   data.name_str    = "delicate_vial_of_the_sanguinaire";
   data.duration    = spell -> duration();
   data.max_stacks  = spell -> max_stacks();
-  data.proc_chance = spell -> proc_chance();
+  data.proc_chance_ = spell -> proc_chance();
 
   struct delicate_vial_of_the_sanguinaire_callback_t : public proc_callback_t<action_state_t>
   {
@@ -1388,9 +1380,9 @@ void item::rune_of_reorigination( special_effect_t& effect,
   const spell_data_t* spell = item.player -> find_spell( 139120 );
 
   effect.name_str    = "rune_of_reorigination";
-  effect.ppm         = -1.0 * driver -> real_ppm();
-  effect.ppm        *= item_database::approx_scale_coefficient( 528, item.item_level() );
-  effect.cooldown    = driver -> internal_cooldown(); 
+  effect.ppm_         = -1.0 * driver -> real_ppm();
+  effect.ppm_        *= item_database::approx_scale_coefficient( 528, item.item_level() );
+  effect.cooldown_    = driver -> internal_cooldown(); 
   effect.duration    = spell -> duration();
 
   item.player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new rune_of_reorigination_callback_t( item, effect ) );
@@ -1406,7 +1398,7 @@ void item::spark_of_zandalar( special_effect_t& effect,
   const spell_data_t* spell = item.player -> find_spell( 138958 );
 
   effect.name_str    = "spark_of_zandalar";
-  effect.ppm         = -1.0 * driver -> real_ppm();
+  effect.ppm_         = -1.0 * driver -> real_ppm();
   effect.duration    = spell -> duration();
   effect.max_stacks  = spell -> max_stacks();
 
@@ -1498,9 +1490,9 @@ void item::unerring_vision_of_leishen( special_effect_t& effect,
   const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
 
   effect.name_str  = "perfect_aim";
-  effect.ppm       = -1.0 * driver -> real_ppm();
-  effect.ppm      *= item_database::approx_scale_coefficient( 528, item.item_level() );
-  effect.cooldown  = driver -> internal_cooldown();
+  effect.ppm_       = -1.0 * driver -> real_ppm();
+  effect.ppm_      *= item_database::approx_scale_coefficient( 528, item.item_level() );
+  effect.cooldown_  = driver -> internal_cooldown();
 
   unerring_vision_of_leishen_callback_t* cb = new unerring_vision_of_leishen_callback_t( item, effect, driver );
   item.player -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
@@ -1600,7 +1592,7 @@ void item::cleave_trinket( special_effect_t& effect,
   util::tokenize( name );
 
   effect.name_str = name;
-  effect.proc_chance = cleave_driver_spell -> effectN( 1 ).average( item ) / 10000.0;
+  effect.proc_chance_ = cleave_driver_spell -> effectN( 1 ).average( item ) / 10000.0;
 
   cleave_callback_t* cb = new cleave_callback_t( item, effect );
   p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
@@ -1703,7 +1695,7 @@ void item::multistrike_trinket( special_effect_t& effect,
   std::string name = ms_driver_spell -> name_cstr();
   util::tokenize( name );
   effect.name_str = name;
-  effect.proc_chance = ms_driver_spell -> effectN( 1 ).average( item ) / 1000.0;
+  effect.proc_chance_ = ms_driver_spell -> effectN( 1 ).average( item ) / 1000.0;
 
   multistrike_callback_t* cb = new multistrike_callback_t( item, effect );
   p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
@@ -1727,7 +1719,7 @@ void item::cooldown_reduction_trinket( special_effect_t& /* effect */,
 
   static const cooldowns_t __cd[] =
   {
-    // NOTE: Spells that trigger buffs must have the cooldown of their buffs removed if they have one, or this trinket may cause undesirable results.
+    // NOTE: Spells that trigger buffs must have the cooldown_ of their buffs removed if they have one, or this trinket may cause undesirable results.
     { ROGUE_ASSASSINATION, { "evasion", "vanish", "cloak_of_shadows", "vendetta", "shadow_blades", 0, 0 } },
     { ROGUE_COMBAT,        { "evasion", "adrenaline_rush", "cloak_of_shadows", "killing_spree", "shadow_blades", 0, 0 } },
     { ROGUE_SUBTLETY,      { "evasion", "vanish", "cloak_of_shadows", "shadow_dance", "shadow_blades", 0, 0 } },
@@ -1800,8 +1792,8 @@ void item::black_blood_of_yshaarj( special_effect_t& effect,
   double value = util::round( ticker -> effectN( 1 ).average( item ) );
 
   effect.name_str = tokenized_name( spell );
-  effect.ppm = -1.0 * driver -> real_ppm();
-  effect.cooldown = driver -> internal_cooldown();
+  effect.ppm_ = -1.0 * driver -> real_ppm();
+  effect.cooldown_ = driver -> internal_cooldown();
   effect.tick = ticker -> effectN( 1 ).period();
   effect.stat = static_cast<stat_e>( spell -> effectN( 1 ).misc_value1() + 1 );
   effect.stat_amount = value;
@@ -1900,10 +1892,10 @@ void item::flurry_of_xuen( special_effect_t& effect,
   util::tokenize( name );
 
   effect.name_str   = name;
-  effect.ppm        = -1.0 * driver -> real_ppm();
-  effect.ppm       *= item_database::approx_scale_coefficient( item.parsed.data.level, item.item_level() );
+  effect.ppm_        = -1.0 * driver -> real_ppm();
+  effect.ppm_       *= item_database::approx_scale_coefficient( item.parsed.data.level, item.item_level() );
   effect.rppm_scale = RPPM_HASTE;
-  effect.cooldown   = driver -> internal_cooldown();
+  effect.cooldown_   = driver -> internal_cooldown();
 
   flurry_of_xuen_cb_t* cb = new flurry_of_xuen_cb_t( item, effect, driver );
 
@@ -1975,8 +1967,8 @@ void item::essence_of_yulon( special_effect_t& effect,
   util::tokenize( name );
 
   effect.name_str    = name;
-  effect.ppm         = -1.0 * driver -> real_ppm();
-  effect.ppm        *= item_database::approx_scale_coefficient( item.parsed.data.level, item.item_level() );
+  effect.ppm_         = -1.0 * driver -> real_ppm();
+  effect.ppm_        *= item_database::approx_scale_coefficient( item.parsed.data.level, item.item_level() );
   effect.rppm_scale  = RPPM_HASTE;
 
   essence_of_yulon_cb_t* cb = new essence_of_yulon_cb_t( item, effect, driver );
@@ -2040,13 +2032,15 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
     }
   }
 
+  // Setup the driver always, though honoring any parsing performed in the 
+  // first phase options.
+  if ( effect.spell_id == 0 )
+    effect.spell_id = spell_id;
+
   // For generic procs, make sure we have a PPM, RPPM or Proc Chance available,
   // otherwise there's no point in trying to proc anything
-  if ( effect.type == SPECIAL_EFFECT_EQUIP && 
-       ! proc::usable_proc( item.player, effect, spell_id ) )
-  {
+  if ( effect.type == SPECIAL_EFFECT_EQUIP && ! proc::usable_proc( effect ) )
     effect.type = SPECIAL_EFFECT_NONE;
-  }
   // Generic procs will go through game client data based parsing, or be 
   // discarded, if there's nothing that simc can use to generate the proc
   // automatically
@@ -2066,10 +2060,6 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
     else
       effect.type = SPECIAL_EFFECT_NONE;
   }
-  // Custom procs put the spell id in the special_effect_t, so second phase
-  // initialization can find the custom callback that needs to be called.
-  else
-    effect.spell_id = spell_id;
 
   return ret;
 }
@@ -2101,6 +2091,8 @@ void unique_gear::init( player_t* p )
     for ( size_t j = 0; j < item.parsed.special_effects.size(); j++ )
     {
       special_effect_t& effect = item.parsed.special_effects[ j ];
+      if ( p -> sim -> debug )
+        p -> sim -> out_debug.printf( "Initializing special effect %s", effect.to_string().c_str() );
 
       if ( effect.type == SPECIAL_EFFECT_EQUIP )
       {
@@ -2116,7 +2108,7 @@ void unique_gear::init( player_t* p )
         {
           register_cost_reduction_proc( p, effect );
         }
-        else if ( effect.school && effect.proc_chance && effect.chance_to_discharge )
+        else if ( effect.school && effect.proc_chance_ && effect.chance_to_discharge )
         {
           register_chance_discharge_proc( p, effect );
         }

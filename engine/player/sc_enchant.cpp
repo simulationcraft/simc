@@ -3,8 +3,6 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-// TODO: Phase Fingers, Frag Belt autodetection needs to work
-// TODO: Automatic suffixing of main- and off-hand weapon enchants
 // TODO: Check if Power Torrent, Jade Spirit share buffs, or allow separate
 
 #include "simulationcraft.hpp"
@@ -22,7 +20,7 @@ namespace /* ANONYMOUS NAMESPACE */
  */
 static const enchant_db_item_t __enchant_db[] = {
   /* Engineering tinkers */
-  { "synapse_springs_2",       4898 },
+  { "synapse_springs_2",       4898 }, /* Default is "synapse_springs_mark_ii" */
 
   /* Tailoring cloak enchants */
   { "lightweave_1",            3722 },
@@ -112,11 +110,11 @@ const item_enchantment_data_t& enchant::find_item_enchant( const dbc_t& dbc,
       util::tokenize( rank_str );
 
       // Compare to exact enchant name match, if rank string is missing
-      if ( util::str_compare_ci( name, enchant_name ) )
+      if ( rank_str.empty() && util::str_compare_ci( name, enchant_name ) )
         return *item_enchant;
 
       // Compare directly to enchant name + rank
-      if ( util::str_compare_ci( name, enchant_name + "_" + rank_str ) )
+      if ( ! rank_str.empty() && util::str_compare_ci( name, enchant_name + "_" + rank_str ) )
         return *item_enchant;
 
       std::string::size_type offset = rank_str.find( "rank_" );
@@ -160,12 +158,15 @@ bool enchant::initialize_item_enchant( item_t& item,
     if ( enchant.ench_prop[ i ] == 0 )
       continue;
 
-    special_effect_t effect;
+    special_effect_t effect( &item );
     effect.source = source;
     switch ( enchant.ench_type[ i ] )
     {
       // "Chance on Hit", we need to help simc a bit with proc flags
       case ITEM_ENCHANTMENT_COMBAT_SPELL:
+        // Require that "chance on hit" enchant effects are hit with the 
+        // correct weapon
+        effect.weapon_proc = true;
         effect.type = SPECIAL_EFFECT_EQUIP;
         effect.trigger_type = PROC_ATTACK;
         effect.trigger_mask = RESULT_HIT_MASK;
@@ -176,12 +177,16 @@ bool enchant::initialize_item_enchant( item_t& item,
       case ITEM_ENCHANTMENT_USE_SPELL:
         effect.type = SPECIAL_EFFECT_USE;
         break;
+      case ITEM_ENCHANTMENT_STAT:
+        // TODO: Implement stat parsing here
+        break;
       default:
         break;
     }
 
     // First phase initialize the spell effect
-    if ( unique_gear::initialize_special_effect( effect, item, enchant.ench_prop[ i ] ) )
+    if ( effect.type != SPECIAL_EFFECT_NONE && 
+         unique_gear::initialize_special_effect( effect, item, enchant.ench_prop[ i ] ) )
     {
       if ( effect.type != SPECIAL_EFFECT_NONE )
         item.parsed.special_effects.push_back( effect );

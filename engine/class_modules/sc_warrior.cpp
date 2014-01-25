@@ -704,7 +704,7 @@ static bool trigger_t15_2pc_melee( warrior_attack_t* a )
 
   bool procced;
 
-  if ( ( procced = p -> t15_2pc_melee.trigger( *a ) ) != false )
+  if ( ( procced = p -> t15_2pc_melee.trigger() ) != false )
   {
     p -> proc.t15_2pc_melee -> occur();
     p -> enrage();

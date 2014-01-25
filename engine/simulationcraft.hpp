@@ -3153,19 +3153,23 @@ struct weapon_t
 
 struct special_effect_t
 {
+  const item_t* item;
+
   special_effect_e type;
   special_effect_source_e source;
   std::string name_str, trigger_str, encoding_str;
   proc_e trigger_type;
   int64_t trigger_mask;
+  unsigned proc_flags_; /* Proc-by */
+  unsigned proc_flags2_; /* Proc-on (hit/damage/...) */
   stat_e stat;
   school_e school;
   int max_stacks;
   double stat_amount, discharge_amount, discharge_scaling;
-  double proc_chance;
-  double ppm;
+  double proc_chance_;
+  double ppm_;
   rppm_scale_e rppm_scale;
-  timespan_t duration, cooldown, tick;
+  timespan_t duration, cooldown_, tick;
   bool cost_reduction;
   bool no_refresh;
   bool chance_to_discharge;
@@ -3175,17 +3179,34 @@ struct special_effect_t
   int aoe;
   bool proc_delay;
   bool unique;
+  bool weapon_proc;
   unsigned spell_id, trigger_spell_id;
   action_t* execute_action; // Allows custom action to be executed on use
   buff_t* custom_buff; // Allows custom action
 
-  special_effect_t()
+  special_effect_t() : item( 0 )
+  { reset(); }
+
+  special_effect_t( const item_t* item ) : item( item )
   { reset(); }
 
   void reset();
   bool parse_spell_data( const item_t& item, unsigned driver_id );
-  std::string to_string();
+  std::string to_string() const;
   bool active() { return stat != STAT_NONE || school != SCHOOL_NONE || execute_action; }
+
+  const spell_data_t* driver() const;
+  const spell_data_t* trigger() const;
+  std::string name() const;
+  buff_t* create_buff() const;
+
+  /* Accessors for driver specific features of the proc; some are also used for on-use effects */
+  unsigned proc_flags() const;
+  unsigned proc_flags2() const;
+  double ppm() const;
+  double rppm() const;
+  double proc_chance() const;
+  timespan_t cooldown() const;
 };
 
 // Item =====================================================================
@@ -4467,7 +4488,7 @@ public:
   virtual void init_benefits();
   virtual void init_rng();
   virtual void init_stats();
-  virtual void register_callbacks() {}
+  virtual void register_callbacks();
 private:
   void _init_actions();
 public:
@@ -5191,7 +5212,6 @@ struct action_t : public noncopyable
   virtual expr_t* create_expression( const std::string& name );
 
   virtual double ppm_proc_chance( double PPM ) const;
-  virtual double real_ppm_proc_chance( double PPM, timespan_t last_proc_attempt, timespan_t last_successful_proc, rppm_scale_e scales_with ) const;
 
   dot_t* get_dot( player_t* t = nullptr )
   {
@@ -5700,7 +5720,7 @@ public:
 struct real_ppm_t
 {
 private:
-  rng_t&       rng;
+  player_t*    player;
   double       freq;
   double       modifier;
   double       rppm;
@@ -5708,9 +5728,52 @@ private:
   timespan_t   last_successful_trigger;
   timespan_t   initial_precombat_time;
   rppm_scale_e scales_with;
+
+  static double max_interval() { return 10.0; }
+  static double max_bad_luck_prot() { return 1000.0; }
 public:
+  static double proc_chance( player_t*         player,
+                             double            PPM,
+                             const timespan_t& last_trigger, 
+                             const timespan_t& last_successful_proc, 
+                             rppm_scale_e      scales_with )
+  {
+    double coeff = 1.0;
+    double seconds = std::min( ( player -> sim -> current_time - last_trigger ).total_seconds(), max_interval() );
+
+    if ( unlikely( scales_with == RPPM_HASTE ) )
+      coeff *= 1.0 / std::min( player -> cache.spell_haste(), player -> cache.attack_haste() );
+    else if ( unlikely( scales_with == RPPM_ATTACK_CRIT ) )
+      coeff *= 1.0 + player -> cache.attack_crit();
+    else if ( unlikely( scales_with == RPPM_SPELL_CRIT ) )
+      coeff *= 1.0 + player -> cache.spell_crit();
+
+    double real_ppm = PPM * coeff;
+    double old_rppm_chance = real_ppm * ( seconds / 60.0 );
+
+    // RPPM Extension added on 12. March 2013: http://us.battle.net/wow/en/blog/8953693?page=44
+    // Formula see http://us.battle.net/wow/en/forum/topic/8197741003#1
+    double last_success = std::min( ( player -> sim -> current_time - last_successful_proc ).total_seconds(), max_bad_luck_prot() );
+    double expected_average_proc_interval = 60.0 / real_ppm;
+
+    double rppm_chance = std::max( 1.0, 1 + ( ( last_success / expected_average_proc_interval - 1.5 ) * 3.0 ) )  * old_rppm_chance;
+    if ( unlikely( player -> sim -> debug ) )
+      player -> sim -> out_debug.printf( "base=%.3f coeff=%.3f last_trig=%.3f last_proc=%.3f scales=%d chance=%.5f%%",
+          PPM, coeff, last_trigger.total_seconds(), last_successful_proc.total_seconds(), scales_with,
+          rppm_chance * 100.0 );
+    return rppm_chance;
+  }
+
+  real_ppm_t() :
+    player( 0 ), freq( std::numeric_limits<double>::min() ), modifier( 0 ), rppm( 0 ),
+    last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
+    last_successful_trigger( timespan_t::from_seconds( -120.0 ) ),
+    initial_precombat_time( timespan_t::from_seconds( -120.0 ) ), // Assume 5min out of combat before pull
+    scales_with( RPPM_NONE )
+  { }
+
   real_ppm_t( player_t& p, double frequency = std::numeric_limits<double>::min(), rppm_scale_e s = RPPM_NONE, unsigned spell_id = 0 ) :
-    rng( p.rng() ),
+    player( &p ),
     freq( frequency ),
     modifier( p.dbc.rppm_coefficient( p.specialization(), spell_id ) ),
     rppm( freq * modifier ),
@@ -5723,16 +5786,16 @@ public:
   void set_frequency( double frequency )
   { freq = frequency; rppm = freq * modifier; }
 
-  double get_frequency()
+  double get_frequency() const
   { return freq; }
 
   void set_modifier( double mod )
   { modifier = mod; rppm = freq * modifier; }
 
-  double get_modifier()
+  double get_modifier() const
   { return modifier; }
 
-  double get_rppm()
+  double get_rppm() const
   { return rppm; }
 
   void reset()
@@ -5741,21 +5804,19 @@ public:
     last_successful_trigger = initial_precombat_time;
   }
 
-  bool trigger( action_t& a )
+  bool trigger()
   {
     assert( freq != std::numeric_limits<double>::min() && "Real PPM Frequency not set!" );
 
-    if ( last_trigger_attempt == a.sim -> current_time )
+    if ( last_trigger_attempt == player -> sim -> current_time )
       return false;
 
-    double chance = a.real_ppm_proc_chance( rppm, last_trigger_attempt, last_successful_trigger, scales_with );
-    last_trigger_attempt = a.sim -> current_time;
+    bool success = player -> rng().roll( proc_chance( player, rppm, last_trigger_attempt, last_successful_trigger, scales_with ) );
 
-    bool success = rng.roll( chance );
+    last_trigger_attempt = player -> sim -> current_time;
+
     if ( success )
-    {
-      last_successful_trigger = a.sim -> current_time;
-    }
+      last_successful_trigger = player -> sim -> current_time;
     return success;
   }
 };
@@ -5781,6 +5842,7 @@ struct action_callback_t
   virtual ~action_callback_t() {}
   virtual void trigger( action_t*, void* call_data ) = 0;
   virtual void reset() {}
+  virtual void initialize() { }
   virtual void activate() { active = true; }
   virtual void deactivate() { active = false; }
 
@@ -5813,6 +5875,130 @@ struct action_callback_t
 
 // Generic proc callback ======================================================
 
+/**
+ * DBC-driven proc callback. Extensively leans on the concept of "driver"
+ * spells that blizzard uses to trigger actual proc spells in most cases. Uses
+ * spell data as much as possible (through interaction with special_effect_t).
+ * Intentionally vastly simplified compared to our other (older) callback
+ * systems. The "complex" logic is offloaded either into special_effect_t
+ * (creation of buffs/actions), special effect_t initialization (what kind of
+ * special effect to create from DBC data or user given options, or when and
+ * why to proc things (new DBC based proc system).
+ *
+ * The actual triggering logic is also vastly simplified (see execute()), as
+ * the majority of procs in WoW are very simple. Custom procs can always be
+ * derived off of this struct.
+ */
+struct dbc_proc_callback_t : public action_callback_t
+{
+  const item_t& item;
+  const special_effect_t& effect;
+  cooldown_t* cooldown;
+
+  // Proc trigger types, cached/initialized here from special_effect_t to avoid
+  // needless spell data lookups in vast majority of cases
+  real_ppm_t  rppm;
+  double      proc_chance;
+  double      ppm;
+
+  buff_t* proc_buff;
+  action_t* proc_action;
+
+  dbc_proc_callback_t( const item_t& i, const special_effect_t& e ) :
+    action_callback_t( i.player ), item( i ), effect( e ), cooldown( 0 ),
+    proc_chance( 0 ), ppm( 0 ),
+    proc_buff( 0 ), proc_action( 0 )
+  { }
+
+  dbc_proc_callback_t( player_t* p, const special_effect_t& e ) :
+    action_callback_t( p ), item( item_t() ), effect( e ), cooldown( 0 ),
+    proc_chance( 0 ), ppm( 0 ),
+    proc_buff( 0 ), proc_action( 0 )
+  { }
+
+  void initialize();
+
+  std::string cooldown_name() const;
+
+  void reset()
+  {
+    action_callback_t::reset();
+    if ( rppm.get_frequency() > 0 )
+      rppm.reset();
+  }
+
+  void trigger( action_t* a, void* call_data )
+  {
+    if ( cooldown && cooldown -> down() ) return;
+
+    // Weapon-based proc triggering differs from "old" callbacks. When used
+    // (weapon_proc == true), dbc_proc_callback_t _REQUIRES_ that the action
+    // has the correct weapon specified. Old style procs allowed actions
+    // without any weapon to pass through.
+    if ( effect.weapon_proc && item.weapon() != a -> weapon )
+      return;
+
+    bool triggered = roll( a );
+    if ( unlikely( listener -> sim -> debug ) )
+      listener -> sim -> out_debug.printf( "%s attempts to proc %s on %s: %d",
+                                 listener -> name(),
+                                 effect.to_string().c_str(),
+                                 a -> name(), triggered );
+    if ( triggered )
+    {
+      execute( a, static_cast<action_state_t*>( call_data ) );
+
+      if ( cooldown )
+        cooldown -> start();
+    }
+  }
+private:
+  rng_t& rng() const
+  { return listener -> rng(); }
+
+  bool roll( action_t* action )
+  {
+    if ( rppm.get_frequency() > 0 )
+      return rppm.trigger();
+    else if ( ppm > 0 )
+      return rng().roll( action -> ppm_proc_chance( ppm ) );
+    else if ( proc_chance > 0 )
+      return rng().roll( proc_chance );
+
+    assert( false );
+  }
+
+  /**
+   * Base rules for proc execution.
+   * 1) If we proc a buff, trigger it
+   * 2a) If the buff triggered and is at max stack, and we have an action,
+   *     execute the action on the target of the action that triggered this 
+   *     proc.
+   * 2b) If we have no buff, trigger the action on the target of the action 
+   *     that triggered this proc.
+   *
+   * TODO: Ticking buffs, though that'd be better served by fusing tick_buff_t
+   * into buff_t.
+   * TODO: Proc delay
+   * TODO: Buff cooldown hackery for expressions. Is this really needed or can
+   * we do it in a smarter way (better expression support?)
+   */
+  virtual void execute( action_t* /* a */, action_state_t* state )
+  {
+    bool triggered = proc_buff == 0;
+    if ( proc_buff )
+      triggered = proc_buff -> trigger();
+
+    if ( triggered && proc_action && 
+         ( ! proc_buff || proc_buff -> check() == proc_buff -> max_stack() ) )
+    {
+      action_state_t* proc_state = proc_action -> get_state();
+      proc_state -> target = state -> target;
+      proc_action -> schedule_execute( proc_state );
+    }
+  }
+};
+
 template<typename T_CALLDATA>
 struct proc_callback_t : public action_callback_t
 {
@@ -5844,13 +6030,13 @@ struct proc_callback_t : public action_callback_t
   proc_callback_t( player_t* p, const special_effect_t& data, const spell_data_t* driver = spell_data_t::nil() ) :
     action_callback_t( p ),
     proc_data( data ),
-    rppm( *listener, is_rppm() ? std::fabs( data.ppm ) : std::numeric_limits<double>::min(), data.rppm_scale, driver -> id() ),
+    rppm( *listener, is_rppm() ? std::fabs( data.ppm() ) : std::numeric_limits<double>::min(), data.rppm_scale, driver -> id() ),
     cooldown( nullptr ), proc_rng( listener -> rng() )
   {
-    if ( proc_data.cooldown != timespan_t::zero() )
+    if ( proc_data.cooldown_ != timespan_t::zero() )
     {
-      cooldown = listener -> get_cooldown( name() );
-      cooldown -> duration = proc_data.cooldown;
+      cooldown = listener -> get_cooldown( proc_data.name() );
+      cooldown -> duration = proc_data.cooldown_;
     }
   }
 
@@ -5858,9 +6044,6 @@ private:
   // Execute should be doing all the proc mechanisms, trigger is for triggering
   virtual void execute( action_t* a, T_CALLDATA* call_data ) = 0;
 public:
-  virtual std::string name() const
-  { return proc_data.name_str; }
-
   virtual void trigger( action_t* action, void* call_data )
   {
     if ( cooldown && cooldown -> down() ) return;
@@ -5871,7 +6054,7 @@ public:
     if ( chance == 0 ) return;
 
     if ( is_rppm() )
-      triggered = rppm.trigger( *action );
+      triggered = rppm.trigger();
     else if ( is_ppm() )
       triggered = proc_rng.roll( action -> ppm_proc_chance( chance ) );
     else if ( chance > 0 )
@@ -5880,7 +6063,7 @@ public:
     if ( listener -> sim -> debug )
       listener -> sim -> out_debug.printf( "%s attempts to proc %s on %s: %d",
                                  listener -> name(),
-                                 name().c_str(),
+                                 proc_data.name().c_str(),
                                  action -> name(), triggered );
 
     if ( triggered )
@@ -5896,17 +6079,17 @@ public:
     }
   }
 
-  bool is_rppm() { return proc_data.ppm < 0; }
-  bool is_ppm() { return proc_data.ppm > 0; }
+  bool is_rppm() { return proc_data.ppm() < 0; }
+  bool is_ppm() { return proc_data.ppm() > 0; }
 
   virtual double proc_chance()
   {
     if ( is_rppm() )
       return rppm.get_rppm();
     else if ( is_ppm() )
-      return proc_data.ppm;
-    else if ( proc_data.proc_chance > 0 )
-      return proc_data.proc_chance;
+      return proc_data.ppm();
+    else if ( proc_data.proc_chance() > 0 )
+      return proc_data.proc_chance();
 
     return 0;
   }
@@ -5948,7 +6131,7 @@ struct buff_proc_callback_t : public proc_callback_t<T_CALLDATA>
     proc_callback_t<T_CALLDATA>( p, data, driver ), buff( b )
   {
     if ( this -> proc_data.max_stacks == 0 ) this -> proc_data.max_stacks = 1;
-    if ( this -> proc_data.proc_chance == 0 ) this -> proc_data.proc_chance = 1;
+    if ( this -> proc_data.proc_chance_ == 0 ) this -> proc_data.proc_chance_ = 1;
   }
 
   void execute( action_t* action, T_CALLDATA* /* call_data */ )
@@ -6147,7 +6330,7 @@ namespace proc
 {
   bool parse_special_effect_encoding( special_effect_t& effect, const item_t& item, const std::string& str );
   int usable_effects( player_t* player, unsigned spell_id );
-  bool usable_proc( player_t* player, const special_effect_t& effect, unsigned driver_id );
+  bool usable_proc( const special_effect_t& effect );
 }
 
 // Enchants =================================================================
