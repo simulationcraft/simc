@@ -259,7 +259,7 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   }
   else
     path_prefix = QString( env );
-  AppDataDir = ResultsDestDir = path_prefix + "/SimulationCraft";
+  AppDataDir = ResultsDestDir = TmpDir = path_prefix + "/SimulationCraft";
   QDir::root().mkpath( AppDataDir );
 #endif
 
