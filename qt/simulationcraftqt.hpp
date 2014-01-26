@@ -3514,7 +3514,19 @@ protected:
     }
 
     QString html;
-    QFile errorHtml("Error.html");
+    QString errorHtmlFile = QDir::currentPath() + "/Error.html";
+#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
+    CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "Error" ), CFSTR( "html" ), 0 );
+    if ( fileRef )
+    {
+      CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
+      errorHtmlFile       = CFStringGetCStringPtr( macPath, CFStringGetSystemEncoding() );
+
+      CFRelease( fileRef );
+      CFRelease( macPath );
+    }
+#endif
+    QFile errorHtml( errorHtmlFile );
     if ( errorHtml.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
       html = QString::fromUtf8( errorHtml.readAll() );
