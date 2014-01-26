@@ -247,7 +247,20 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   #endif
 #endif
 #if defined( SC_LINUX_PACKAGING )
-    AppDataDir = ResultsDestDir = "~/.cache/SimulationCraft";
+  QString path_prefix;
+  const char* env = getenv( "XDG_CACHE_HOME" );
+  if ( ! env )
+  {
+    env = getenv( "HOME" );
+    if ( env )
+      path_prefix = QString::fromLocal8Bit( env ) + "/.cache";
+    else
+      path_prefix = "/tmp"; // back out
+  }
+  else
+    path_prefix = QString( env );
+  AppDataDir = ResultsDestDir = path_prefix + "/SimulationCraft";
+  QDir::root().mkpath( AppDataDir );
 #endif
 
   logFileText =  AppDataDir + "/" + "log.txt";
