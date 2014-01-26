@@ -8252,11 +8252,6 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
   else
     term = "\n";
 
-  if ( stype == SAVE_ALL )
-  {
-    profile_str += "#!./simc " + term + term;
-  }
-
   if ( ! report_information.comment_str.empty() )
   {
     profile_str += "# " + report_information.comment_str + term;
