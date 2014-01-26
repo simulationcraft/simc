@@ -13,6 +13,7 @@
 
 # Detect operating system
 FLAVOR     =
+DESTDIR ?= ..
 ifeq (${OS},Windows_NT)
   OS         = WINDOWS
 endif
@@ -131,7 +132,7 @@ optimized:OPTS += -march=native -ffast-math -fomit-frame-pointer
 optimized: $(MODULE)
 
 install: all
-	$(COPY) $(MODULE) ..
+	$(COPY) $(MODULE) $(DESTDIR)
 
 $(MODULE): $(SRC_OBJ)
 	-@echo [$(MODULE)] Linking $@
