@@ -576,16 +576,12 @@ void enchant::colossus( special_effect_t& effect,
   const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
   const spell_data_t* spell = item.player -> find_spell( 116631 );
 
-  absorb_buff_t* buff = static_cast<absorb_buff_t*>( buff_t::find( item.player, tokenized_name( spell ) ) );
-    
-  if ( ! buff )
-    buff = absorb_buff_creator_t( item.player, tokenized_name( spell ), spell )
-           .source( item.player -> get_stats( tokenized_name( spell ) ) )
-           .activated( false );
+  absorb_buff_t* buff = absorb_buff_creator_t( item.player, tokenized_name( spell ) + suffix( item ), spell )
+                        .source( item.player -> get_stats( tokenized_name( spell ) + suffix( item ) ) )
+                        .activated( false );
 
-  effect.name_str = tokenized_name( spell );
+  effect.name_str = tokenized_name( driver );
   effect.ppm_ = -1.0 * driver -> real_ppm();
-  effect.cooldown_ = driver -> internal_cooldown();
   effect.rppm_scale = RPPM_HASTE;
 
   action_callback_t* cb = new buff_proc_callback_t<absorb_buff_t>( item.player, effect, buff );
