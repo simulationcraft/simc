@@ -33,18 +33,6 @@ int main( int argc, char *argv[] )
 #ifndef SIMC_NO_AUTOUPDATE
   AutoUpdater* updater = 0;
 
-  // Localization
-  QTranslator qtTranslator;
-  qtTranslator.load( "qt_" + QLocale::system().name(),
-                     QLibraryInfo::location( QLibraryInfo::TranslationsPath ) );
-  a.installTranslator( &qtTranslator );
-
-  QString path_to_locale = QString( "locale" );
-
-  QTranslator myappTranslator;
-  myappTranslator.load( QString( "sc_" ) + QLocale::system().name(), path_to_locale );
-  a.installTranslator( &myappTranslator );
-
 #if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
 
   CocoaInitializer cocoaInitializer;
@@ -57,6 +45,18 @@ int main( int argc, char *argv[] )
     updater -> checkForUpdates();
   }
 #endif /* SIMC_NO_AUTOUPDATE */
+
+  // Localization
+  QTranslator qtTranslator;
+  qtTranslator.load( "qt_" + QLocale::system().name(),
+                     QLibraryInfo::location( QLibraryInfo::TranslationsPath ) );
+  a.installTranslator( &qtTranslator );
+
+  QString path_to_locale = QString( "locale" );
+
+  QTranslator myappTranslator;
+  myappTranslator.load( QString( "sc_" ) + QLocale::system().name(), path_to_locale );
+  a.installTranslator( &myappTranslator );
 
   // Setup search paths for resources
   {
