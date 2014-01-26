@@ -1347,6 +1347,7 @@ class SpellDataGenerator(DataGenerator):
     ]
   
     _profession_enchant_categories = [
+        164,  # Blacksmithing
         165,  # Leatherworking
         171,  # Alchemy
         197,  # Tailoring
@@ -1822,22 +1823,22 @@ class SpellDataGenerator(DataGenerator):
 
             enchant_spell_id = 0
             for effect in spell._effects:
-                # Grab Enchant Items and Create Items (create item will be filtered further)
-                if not effect or (effect.type != 53 and effect.type != 24):
+                # Grab Enchant Items and Create Items, and Add Sockets (create item will be filtered further)
+                if not effect or effect.type not in [ 53, 24, 156 ]:
                     continue
 
                 # Create Item, see if the created item has a spell that enchants an item, if so
                 # add the enchant spell. Also grab all gem spells
                 if effect.type == 24:
                     item = self._item_sparse_db[effect.item_type]
-                    if not item.id or item.gem_props == 0:
+                    if not item.id:
                         continue
 
                     for i in xrange(1, 6):
                         id_spell = getattr(item, 'id_spell_%d' % i)
                         enchant_spell = self._spell_db[id_spell]
                         for enchant_effect in enchant_spell._effects:
-                            if not enchant_effect or (enchant_effect.type != 53 and enchant_effect.type != 6):
+                            if not enchant_effect or enchant_effect.type not in [ 53, 6, 156 ]:
                                 continue
 
                             enchant_spell_id = id_spell
