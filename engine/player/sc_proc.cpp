@@ -5,6 +5,70 @@
 
 #include "simulationcraft.hpp"
 
+namespace { // UNNAMED NAMESPACE
+
+struct proc_parse_opt_t
+{
+  const char* opt;
+  unsigned    flags;
+};
+  
+static const proc_parse_opt_t __proc_opts[] =
+{
+  { "aoespell",    PF_AOE_SPELL                                                },
+  { "spell",       PF_SPELL | PF_PERIODIC                                      },
+  { "directspell", PF_SPELL                                                    },
+  { "tickspell",   PF_PERIODIC                                                 },
+  { "aoeheal",     PF_AOE_HEAL                                                 },
+  { "heal",        PF_HEAL | PF_PERIODIC                                       },
+  { "directheal",  PF_HEAL                                                     },
+  { "attack",      PF_MELEE | PF_MELEE_ABILITY | PF_RANGED | PF_RANGED_ABILITY },
+  { "wattack",     PF_MELEE | PF_RANGED                                        },
+  { "sattack",     PF_MELEE_ABILITY | PF_RANGED_ABILITY                        },
+  { "melee",       PF_MELEE | PF_MELEE_ABILITY                                 },
+  { "wmelee",      PF_MELEE                                                    },
+  { "smelee",      PF_MELEE_ABILITY                                            },
+  { "wranged",     PF_RANGED                                                   },
+  { "sranged",     PF_RANGED_ABILITY                                           },
+  { 0,             0                                                           },
+};
+
+static const proc_parse_opt_t __proc2_opts[] =
+{
+  { "hit",        PF2_ALL_HIT         },
+  { "crit",       PF2_CRIT            },
+  { "glance",     PF2_GLANCE          },
+  { "dodge",      PF2_DODGE           },
+  { "parry",      PF2_PARRY           },
+  { "miss",       PF2_MISS            },
+  { "cast",       PF2_CAST            },
+  { "impact",     PF2_LANDED          },
+  { "tickheal",   PF2_PERIODIC_HEAL   },
+  { "tickdamage", PF2_PERIODIC_DAMAGE },
+  { 0,            0                   },
+};
+
+bool has_proc( const std::vector<std::string>& opts, const std::string& proc )
+{ return std::find( opts.begin(), opts.end(), proc ) != opts.end(); }
+
+static void parse_proc_flags( const std::string&      flags,
+                              const proc_parse_opt_t* opts,
+                              unsigned&               proc_flags )
+{
+  std::vector<std::string> splits = util::string_split( flags, "/" );
+
+  const proc_parse_opt_t* proc_opt = opts;
+  do
+  {
+    if ( has_proc( splits, proc_opt -> opt ) )
+      proc_flags |= proc_opt -> flags;
+
+    proc_opt++;
+  } while ( proc_opt -> opt );
+}
+
+} // UNNAMED NAMESPACE
+
 // special_effect_t::reset ======================================
 
 void special_effect_t::reset()
@@ -870,6 +934,10 @@ bool proc::parse_special_effect_encoding( special_effect_t& effect,
       effect.trigger_type = PROC_DAMAGE_HEAL_SPELL;
       effect.trigger_mask = RESULT_NONE_MASK;
     }
+    else if ( util::str_in_str_ci( t.full, "procby" ) )
+      parse_proc_flags( t.full, __proc_opts, effect.proc_flags_ );
+    else if ( util::str_in_str_ci( t.full, "procon" ) )
+      parse_proc_flags( t.full, __proc2_opts, effect.proc_flags2_ );
     else
     {
       item.sim -> errorf( "Player %s has unknown 'use/equip=' token '%s' at slot %s\n", item.player -> name(), t.full.c_str(), item.slot_name() );
