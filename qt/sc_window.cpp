@@ -408,7 +408,7 @@ SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ) :
     CFRelease( macPath );
   }
 #elif defined( SC_LINUX_PACKAGING )
-  welcomeFile = SC_LINUX_PACKAGING + "/Welcome.html";
+  welcomeFile = SC_LINUX_PACKAGING "/Welcome.html";
 #endif
   setUrl( "file:///" + welcomeFile );
 }
@@ -502,7 +502,7 @@ void SC_MainWindow::createBestInSlotTab()
 // Scan all subfolders in /profiles/ and create a list
 #if ! defined( Q_WS_MAC ) && ! defined( Q_OS_MAC )
   #if defined( SC_LINUX_PACKAGING )
-    QDir tdir( SC_LINUX_PACKAGING + "/profiles");
+    QDir tdir( SC_LINUX_PACKAGING "/profiles" );
   #else
     QDir tdir( "profiles" );
   #endif

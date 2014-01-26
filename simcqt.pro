@@ -137,7 +137,7 @@ unix:!mac {
   SHAREPATH = $$DESTDIR$$PREFIX/share/SimulationCraft
 
   CONFIG(linux_packaging) {
-    DEFINES += SC_LINUX_PACKAGING="\"$$PREFIX/share/SimulationCraft\""
+    DEFINES += SC_LINUX_PACKAGING=\\\"$$PREFIX/share/SimulationCraft\\\"
   }
 
   target.path = $$DESTDIR$$PREFIX/bin/
