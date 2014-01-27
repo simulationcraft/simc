@@ -2697,7 +2697,7 @@ public:
 
   int       main( const std::vector<std::string>& args );
   void      cancel();
-  double    progress( int* current = 0, int* final = 0 );
+  double    progress( int* current = 0, int* final = 0, std::string* phase = 0 );
   double    progress( std::string& phase );
   virtual void combat( int iteration );
   virtual void combat_begin();

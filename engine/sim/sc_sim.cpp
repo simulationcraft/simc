@@ -2267,7 +2267,8 @@ void sim_t::cancel()
 // sim_t::progress ==========================================================
 
 double sim_t::progress( int* current,
-                        int* _final )
+                        int* _final,
+                        std::string* phase )
 {
   int total_iterations = iterations;
   for ( size_t i = 0; i < children.size(); i++ )
@@ -2279,6 +2280,13 @@ double sim_t::progress( int* current,
 
   if ( current ) *current = total_current_iterations;
   if ( _final   ) *_final   = total_iterations;
+  if ( phase &&
+       total_iterations >= 100000 )
+  {
+    char buf[512];
+    sprintf( buf, "Simulating: %d/%d", total_current_iterations, total_iterations );
+    (*phase) = buf;
+  }
 
   return total_current_iterations / ( double ) total_iterations;
 }
@@ -2309,7 +2317,7 @@ double sim_t::progress( std::string& phase )
   else if ( current_iteration >= 0 )
   {
     phase = "Simulating";
-    return progress();
+    return progress( 0, 0, &phase);
   }
   else if ( current_slot >= 0 )
   {
