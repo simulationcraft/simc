@@ -80,6 +80,7 @@ protected:
   void createPlotsTab();
   void createReforgePlotsTab();
   void createItemDataSourceSelector( QFormLayout* );
+  QComboBox* addValidatorToComboBox( int lowerBound, int upperBound, QComboBox* );
 
 private slots:
   void allBuffsChanged( bool checked );

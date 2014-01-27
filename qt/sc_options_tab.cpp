@@ -221,7 +221,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow(        tr( "Version" ),        choice.version = createChoice( 1, "Live" ) );
 #endif
 #endif
-  globalsLayout_left -> addRow( tr(    "Iterations" ),     choice.iterations = createChoice( 5, "100", "1000", "10000", "25000", "50000" ) );
+  globalsLayout_left -> addRow( tr(    "Iterations" ),     choice.iterations = addValidatorToComboBox( 1, INT_MAX, createChoice( 7, "100", "1000", "10000", "25000", "50000", "100000", "250000" ) ) );
   globalsLayout_left -> addRow( tr(     "World Lag" ),      choice.world_lag = createChoice( 3, "Low", "Medium", "High" ) );
   globalsLayout_left -> addRow( tr(  "Length (sec)" ),   choice.fight_length = createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) );
   globalsLayout_left -> addRow( tr(   "Vary Length" ), choice.fight_variance = createChoice( 3, "0%", "10%", "20%" ) );
@@ -231,7 +231,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow( tr(   "Num Enemies" ),     choice.num_target = createChoice( 8, "1", "2", "3", "4", "5", "6", "7", "8" ) );
   globalsLayout_left -> addRow( tr( "Challenge Mode" ),   choice.challenge_mode = createChoice( 2, "Disabled", "Enabled" ) );
   globalsLayout_left -> addRow( tr(  "Player Skill" ),   choice.player_skill = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
-  globalsLayout_left -> addRow( tr(       "Threads" ),        choice.threads = createChoice( 4, "1", "2", "4", "8" ) );
+  globalsLayout_left -> addRow( tr(       "Threads" ),        choice.threads = addValidatorToComboBox( 1, QThread::idealThreadCount(), createChoice( 4, "1", "2", "4", "8" ) ) );
   globalsLayout_left -> addRow( tr( "Armory Region" ),  choice.armory_region = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
   globalsLayout_left -> addRow( tr(   "Armory Spec" ),    choice.armory_spec = createChoice( 2, "active", "inactive" ) );
   globalsLayout_left -> addRow( tr(  "Default Role" ),   choice.default_role = createChoice( 4, "auto", "dps", "heal", "tank" ) );
@@ -362,10 +362,10 @@ void SC_OptionsTab::createPlotsTab()
   plotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
   // Create Combo Boxes
-  choice.plots_points = createChoice( 4, "20", "30", "40", "50" );
+  choice.plots_points = addValidatorToComboBox( 1, INT_MAX, createChoice( 4, "20", "30", "40", "50" ) );
   plotsLayout -> addRow( tr( "Number of Plot Points" ), choice.plots_points );
 
-  choice.plots_step = createChoice( 6, "25", "50", "100", "200", "250", "500" );
+  choice.plots_step = addValidatorToComboBox( 1, INT_MAX, createChoice( 6, "25", "50", "100", "200", "250", "500" ) );
   plotsLayout -> addRow( tr( "Plot Step Amount" ), choice.plots_step );
 
   plotsButtonGroup = new QButtonGroup();
@@ -392,10 +392,10 @@ void SC_OptionsTab::createReforgePlotsTab()
   reforgePlotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
   // Create Combo Boxes
-  choice.reforgeplot_amount = createChoice( 10, "100", "200", "250", "500", "750", "1000", "1500", "2000", "3000", "5000" );
+  choice.reforgeplot_amount = addValidatorToComboBox( 1, INT_MAX, createChoice( 10, "100", "200", "250", "500", "750", "1000", "1500", "2000", "3000", "5000" ) );
   reforgePlotsLayout -> addRow( tr( "Reforge Amount" ), choice.reforgeplot_amount );
 
-  choice.reforgeplot_step = createChoice( 6, "25", "50", "100", "200", "250", "500" );
+  choice.reforgeplot_step = addValidatorToComboBox( 1, INT_MAX, createChoice( 6, "25", "50", "100", "200", "250", "500" ) );
   reforgePlotsLayout -> addRow( tr( "Step Amount" ), choice.reforgeplot_step );
 
   QLabel* messageText = new QLabel( tr( "A maximum of three stats may be ran at once.\n" ) );
@@ -1030,6 +1030,11 @@ void SC_OptionsTab::createItemDataSourceSelector( QFormLayout* layout )
   itemDbOrder -> setFixedHeight( ( itemDbOrder -> model() -> rowCount() + 1 ) * itemDbOrder -> sizeHintForRow( 0 ) );
 
   layout->addRow( "Item Source Order", itemDbOrder );
+}
+
+QComboBox* SC_OptionsTab::addValidatorToComboBox( int lowerBound, int upperBound, QComboBox* comboBox )
+{
+  return SC_ComboBoxIntegerValidator::ApplyValidatorToComboBox( new SC_ComboBoxIntegerValidator( lowerBound, upperBound, comboBox ), comboBox );
 }
 
 QString SC_OptionsTab::get_db_order() const
