@@ -305,6 +305,18 @@ size_t dbc::n_item_enchantments( bool ptr )
   return n;
 }
 
+const gem_property_data_t* dbc::gem_properties( bool ptr )
+{
+  ( void )ptr;
+
+  const gem_property_data_t* p = __gem_property_data;
+#if SC_USE_PTR
+  if ( ptr )
+    p = __ptr_gem_property_data;
+#endif
+  return p;
+}
+
 /* Here we modify the spell data to match in-game values if the data differs thanks to bugs or hotfixes.
  *
  */

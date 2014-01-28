@@ -255,3 +255,52 @@ bool enchant::passive_enchant( item_t& item, unsigned spell_id )
   }
   return ret;
 }
+
+/**
+ * Find the spell item enchantment data entry for an user given gem encoding
+ * string, that may, or may not contain a meta gem name. The encoding is
+ * checked against all full meta gem names in a tokenized form
+ * (capacitive_primal_diamond), and the "short" form of the tokenized name
+ * (capacitive_primal).
+ */
+const item_enchantment_data_t& enchant::find_meta_gem( const dbc_t&       dbc, 
+                                                       const std::string& encoding )
+{
+  for ( const gem_property_data_t* gem_property = dbc.gem_properties();
+        gem_property -> id != 0;
+        gem_property++ )
+  {
+    if ( gem_property -> color != SOCKET_COLOR_META )
+      continue;
+
+    const item_enchantment_data_t& data = dbc.item_enchantment( gem_property -> enchant_id );
+    if ( data.id == 0 )
+      continue;
+
+    if ( data.id_gem == 0 )
+      continue;
+
+    const item_data_t* gem = dbc.item( data.id_gem );
+    // A lot of the old meta gems no longer exist in game
+    if ( ! gem )
+      continue;
+
+    if ( gem -> id != data.id_gem )
+      continue;
+
+    std::string tokenized_name = gem -> name;
+    util::tokenize( tokenized_name );
+    std::string shortname;
+    std::string::size_type offset = tokenized_name.find( "_diamond" );
+    if ( offset != std::string::npos )
+      shortname = tokenized_name.substr( 0, offset );
+    
+    if ( util::str_in_str_ci( encoding, tokenized_name ) ||
+         ( ! shortname.empty() && util::str_in_str_ci( encoding, shortname ) ) )
+    {
+      return data;
+    }
+  }
+
+  return dbc.item_enchantment( 0 );
+}

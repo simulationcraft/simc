@@ -6349,6 +6349,7 @@ namespace enchant
   std::string find_enchant_name( unsigned enchant_id );
 
   const item_enchantment_data_t& find_item_enchant( const dbc_t& dbc, const std::string& name );
+  const item_enchantment_data_t& find_meta_gem( const dbc_t& dbc, const std::string& encoding );
   bool initialize_item_enchant( item_t& item, special_effect_source_e source, const item_enchantment_data_t& enchant );
   bool passive_enchant( item_t& item, unsigned spell_id );
 }
