@@ -1973,17 +1973,17 @@ void item::essence_of_yulon( special_effect_t& effect,
 
 void item::endurance_of_niuzao( special_effect_t& /* effect */,
                                 const item_t& item, 
-                                const special_effect_db_item_t& dbitem )
+                                const special_effect_db_item_t& /* dbitem */ )
 {
   maintenance_check( 600 );
 
   if ( item.sim -> challenge_mode )
     return;
 
-  player_t* p = item.player;
+  const spell_data_t* cd = item.player -> find_spell( 148010 );
 
-  p -> legendary_tank_cloak_cd = p -> get_cooldown( "endurance_of_niuzao" );
-  p -> legendary_tank_cloak_cd -> duration = p -> find_spell( dbitem.spell_id ) -> duration();
+  item.player -> legendary_tank_cloak_cd = item.player -> get_cooldown( "endurance_of_niuzao" );
+  item.player -> legendary_tank_cloak_cd -> duration = cd -> duration();
 }
 
 } // UNNAMED NAMESPACE
