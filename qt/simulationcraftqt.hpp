@@ -994,7 +994,16 @@ Q_PROPERTY( int nonDraggedHoverTimeout READ getMouseHoverTimeout WRITE setMouseH
   int mouseHoverTimeout;
 
   bool enableContextMenu;
+  bool enableContextMenuRenameTab;
+  bool enableContextMenuCloseTab;
+  bool enableContextMenuCloseAll;
+  bool enableContextMenuCloseOthers;
   QMenu* contextMenu;
+
+  QAction* renameTabAction;
+  QAction* closeTabAction;
+  QAction* closeOthersAction;
+  QAction* closeAllAction;
 public:
   SC_TabBar( QWidget* parent = nullptr,
       bool enableDraggedHover = false,
@@ -1007,7 +1016,15 @@ public:
     enableMouseHoverTimeoutSignal( enableMouseHover ),
     mouseHoverTimeout( 1500 ),
     enableContextMenu( enableContextMenu ),
-    contextMenu( nullptr )
+    enableContextMenuRenameTab( true ),
+    enableContextMenuCloseTab( true ),
+    enableContextMenuCloseAll( false ),
+    enableContextMenuCloseOthers( false ),
+    contextMenu( nullptr ),
+    renameTabAction( nullptr ),
+    closeTabAction( nullptr ),
+    closeOthersAction( nullptr ),
+    closeAllAction( nullptr )
   {
     enableDraggedTextHover( enableDraggedTextHoverSignal );
     enableMouseHoverTimeout( enableMouseHoverTimeoutSignal );
@@ -1044,6 +1061,26 @@ public:
   {
     return mouseHoverTimeout;
   }
+  void showContextMenuItemRenameTab( bool show )
+  {
+    enableContextMenuRenameTab = show;
+    updateContextMenu();
+  }
+  void showContextMenuItemCloseTab( bool show )
+  {
+    enableContextMenuCloseTab = show;
+    updateContextMenu();
+  }
+  void showContextMenuItemCloseOthers( bool show )
+  {
+    enableContextMenuCloseOthers = show;
+    updateContextMenu();
+  }
+  void showContextMenuItemCloseAll( bool show )
+  {
+    enableContextMenuCloseAll = show;
+    updateContextMenu();
+  }
 private:
   virtual void initContextMenu()
   {
@@ -1054,23 +1091,41 @@ private:
     }
     if ( enableContextMenu )
     {
-      QAction* renameTab =    new QAction( tr( "Rename Tab" ),   this );
-      QAction* closeTab =     new QAction( tr( "Close Tab" ),      this );
+      renameTabAction =    new QAction( tr( "Rename Tab" ),   this );
+      closeTabAction =     new QAction( tr( "Close Tab" ),    this );
+      closeOthersAction =  new QAction( tr( "Close Others" ), this );
+      closeAllAction =     new QAction( tr( "Close All" ),    this );
 
-      connect( renameTab,    SIGNAL( triggered( bool ) ), this, SLOT( renameTab( bool ) ) );
-      connect( closeTab,     SIGNAL( triggered( bool ) ), this, SLOT( closeTab( bool ) ) );
+      connect( renameTabAction,    SIGNAL( triggered( bool ) ), this, SLOT( renameTab() ) );
+      connect( closeTabAction,     SIGNAL( triggered( bool ) ), this, SLOT( closeTab() ) );
+      connect( closeOthersAction,  SIGNAL( triggered( bool ) ), this, SLOT( closeOthersSlot() ) );
+      connect( closeAllAction,     SIGNAL( triggered( bool ) ), this, SLOT( closeAllSlot() ) );
 
       setContextMenuPolicy( Qt::CustomContextMenu );
       connect( this, SIGNAL( customContextMenuRequested( const QPoint& ) ),
                this, SLOT(   showContextMenu( const QPoint& ) ) );
 
       contextMenu = new QMenu( this );
-      contextMenu -> addAction( renameTab );
-      contextMenu -> addAction( closeTab );
+      contextMenu -> addAction( renameTabAction );
+      contextMenu -> addAction( closeTabAction );
+      contextMenu -> addAction( closeOthersAction );
+      contextMenu -> addAction( closeAllAction );
+
+      updateContextMenu();
     }
     else
     {
       setContextMenuPolicy( Qt::NoContextMenu );
+    }
+  }
+  void updateContextMenu()
+  {
+    if ( enableContextMenu )
+    {
+      renameTabAction   -> setVisible( enableContextMenuRenameTab );
+      closeTabAction    -> setVisible( enableContextMenuCloseTab );
+      closeOthersAction -> setVisible( enableContextMenuCloseOthers );
+      closeAllAction    -> setVisible( enableContextMenuCloseAll );
     }
   }
 protected:
@@ -1178,9 +1233,8 @@ public slots:
     draggedTextOnSingleTabTimer.stop();
     emit( mouseDragHoveredOverTab( hoveringOverTab ) );
   }
-  void renameTab( bool checked )
+  void renameTab()
   {
-    Q_UNUSED( checked );
     bool ok;
     QString text = QInputDialog::getText( this, tr( "Modify Tab Title" ),
                                           tr("New Tab Title:"), QLineEdit::Normal,
@@ -1188,10 +1242,17 @@ public slots:
     if ( ok && !text.isEmpty() )
        setTabText( currentIndex(), text );
   }
-  void closeTab( bool checked )
+  void closeTab()
   {
-    Q_UNUSED( checked );
     emit( tabCloseRequested( currentIndex() ) );
+  }
+  void closeOthersSlot()
+  {
+    emit( closeOthers() );
+  }
+  void closeAllSlot()
+  {
+    emit( closeAll() );
   }
   void showContextMenu( const QPoint& pos )
   {
@@ -1211,6 +1272,8 @@ public slots:
 signals:
   void mouseHoveredOverTab( int tab );
   void mouseDragHoveredOverTab( int tab );
+  void closeOthers();
+  void closeAll();
   void layoutRequestEvent();
 };
 
@@ -1222,46 +1285,27 @@ class SC_TabWidgetCloseAll : public QTabWidget
 {
 Q_OBJECT
   QSet<QWidget*> specialTabsListToNotDelete;
-
-  virtual QWidget* createCloseAllTabsWidget()
-  {
-    // default will be a close all tabs button
-    QToolButton* closeAllTabs = new QToolButton(this);
-
-    QIcon closeAllTabsIcon(":/icon/closealltabs.png");
-    if (closeAllTabsIcon.pixmap(QSize(64, 64)).isNull()) // icon failed to load
-    {
-      closeAllTabs->setText(tr("Close All Tabs"));
-    }
-    else
-    {
-      closeAllTabs->setIcon(closeAllTabsIcon);
-    }
-    closeAllTabs->setAutoRaise(true);
-
-    connect( closeAllTabs, SIGNAL( clicked( bool ) ), this, SLOT( closeAllTabsRequest( bool ) ));
-
-    return closeAllTabs;
-  }
   QString closeAllTabsTitleText;
   QString closeAllTabsBodyText;
+  QString closeOtherTabsTitleText;
+  QString closeOtherTabsBodyText;
   SC_TabBar* scTabBar;
 public:
   SC_TabWidgetCloseAll(QWidget* parent = nullptr,
       Qt::Corner corner = Qt::TopRightCorner,
-      QString warningTitle = "Close all tabs?",
-      QString warningText = "Close all tabs?" ) :
+      QString closeAllWarningTitle = "Close all tabs?",
+      QString closeAllWarningText = "Close all tabs?",
+      QString closeOthersWarningTitle = "Close other tabs?",
+      QString closeOthersWarningText = "Close other tabs?" ) :
   QTabWidget( parent ),
-  closeAllTabsTitleText( warningTitle ),
-  closeAllTabsBodyText( warningText ),
+  closeAllTabsTitleText( closeAllWarningTitle ),
+  closeAllTabsBodyText( closeAllWarningText ),
+  closeOtherTabsTitleText( closeOthersWarningTitle ),
+  closeOtherTabsBodyText( closeOthersWarningText ),
   scTabBar( new SC_TabBar( this ) )
   {
-    setTabBar( scTabBar );
-    setTabsClosable( true );
+    initTabBar();
     setCornerWidget( createCloseAllTabsWidget(), corner );
-    connect( scTabBar, SIGNAL( layoutRequestEvent() ), this, SIGNAL( tabBarLayoutRequestEvent() ) );
-    connect( scTabBar, SIGNAL( mouseHoveredOverTab( int ) ), this, SIGNAL( mouseHoveredOverTab( int ) ) );
-    connect( scTabBar, SIGNAL( mouseDragHoveredOverTab( int ) ), this, SIGNAL( mouseDragHoveredOverTab( int ) ) );
   }
   void setCloseAllTabsTitleText( QString text )
   {
@@ -1315,9 +1359,34 @@ public:
       }
     }
   }
+  void closeOtherTabs()
+  {
+    QWidget* currentVisibleTab = widget( currentIndex() );
+    bool insertedTabSuccessfully = false;
+    if ( currentVisibleTab != nullptr )
+    {
+      if ( ! specialTabsListToNotDelete.contains( currentVisibleTab ) )
+      {
+        // if the current tab is one that we should not delete
+        // make sure that we do not remove that functionality by removing it from the set
+        insertedTabSuccessfully = true;
+        specialTabsListToNotDelete.insert( currentVisibleTab );
+      }
+    }
+    closeAllTabs();
+    if ( insertedTabSuccessfully )
+    {
+      specialTabsListToNotDelete.remove( currentVisibleTab );
+    }
+  }
   void removeTab( int index )
   {
-    emit( tabAboutToBeRemoved( widget( index ), tabText( index ), tabToolTip( index ), tabIcon( index ) ) );
+    QWidget* widgetAtIndex = widget( index );
+    if ( widgetAtIndex != nullptr )
+    {
+      // index could be out of bounds, only emit signal if there is a legit widget at the index
+      emit( tabAboutToBeRemoved( widgetAtIndex, tabText( index ), tabToolTip( index ), tabIcon( index ) ) );
+    }
   }
   void enableMouseHoveredOverTabSignal( bool enable )
   {
@@ -1327,12 +1396,55 @@ public:
   {
     scTabBar -> enableDraggedTextHover( enable );
   }
+private:
+  virtual QWidget* createCloseAllTabsWidget()
+  {
+    // default will be a close all tabs button
+    QToolButton* closeAllTabs = new QToolButton(this);
+
+    QIcon closeAllTabsIcon( ":/icon/closealltabs.png" );
+    if ( closeAllTabsIcon.pixmap( QSize( 64, 64 ) ).isNull() ) // icon failed to load
+    {
+      closeAllTabs -> setText( tr( "Close All Tabs" ) );
+    }
+    else
+    {
+      closeAllTabs -> setIcon( closeAllTabsIcon );
+    }
+    closeAllTabs -> setAutoRaise( true );
+
+    connect( closeAllTabs, SIGNAL( clicked( bool ) ), this, SLOT( closeAllTabsRequest() ));
+
+    return closeAllTabs;
+  }
+  void initTabBar()
+  {
+    setTabBar( scTabBar );
+    setTabsClosable( true );
+
+    scTabBar -> showContextMenuItemRenameTab( true );
+    scTabBar -> showContextMenuItemCloseTab( true );
+    scTabBar -> showContextMenuItemCloseOthers( true );
+    scTabBar -> showContextMenuItemCloseAll( true );
+
+    connect( scTabBar, SIGNAL( layoutRequestEvent() ),           this, SIGNAL( tabBarLayoutRequestEvent() ) );
+    connect( scTabBar, SIGNAL( mouseHoveredOverTab( int ) ),     this, SIGNAL( mouseHoveredOverTab( int ) ) );
+    connect( scTabBar, SIGNAL( mouseDragHoveredOverTab( int ) ), this, SIGNAL( mouseDragHoveredOverTab( int ) ) );
+    connect( scTabBar, SIGNAL( closeOthers() ),                  this,   SLOT( closeOtherTabsRequest() ) );
+    connect( scTabBar, SIGNAL( closeAll() ),                     this,   SLOT( closeAllTabsRequest() ) );
+  }
 public slots:
-  void closeAllTabsRequest( bool /* clicked */)
+  void closeAllTabsRequest()
   {
     int confirm = QMessageBox::warning( this, closeAllTabsTitleText, closeAllTabsBodyText, QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
     if ( confirm == QMessageBox::Yes )
       closeAllTabs();
+  }
+  void closeOtherTabsRequest()
+  {
+    int confirm = QMessageBox::warning( this, closeOtherTabsTitleText, closeOtherTabsBodyText, QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+    if ( confirm == QMessageBox::Yes )
+      closeOtherTabs();
   }
 signals:
   void tabAboutToBeRemoved( QWidget*, const QString& tabTitle, const QString& tabToolTip, const QIcon& );
