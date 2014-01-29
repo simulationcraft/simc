@@ -58,6 +58,7 @@ public:
   void open( const char* filename, openmode mode = out | trunc );
   void open( const std::string& filename, openmode mode = out | trunc )
   { return open( filename.c_str(), mode ); }
+  bool open( const std::string& filename, const std::vector<std::string>& prefix, openmode mode = out | trunc );
 };
 
 class ifstream : public std::ifstream
@@ -67,6 +68,7 @@ public:
   void open( const char* filename, openmode mode = in );
   void open( const std::string& filename, openmode mode = in )
   { return open( filename.c_str(), mode ); }
+  bool open( const std::string& filename, const std::vector<std::string>& prefix, openmode mode = in );
 };
 
 class utf8_args : public std::vector<std::string>
