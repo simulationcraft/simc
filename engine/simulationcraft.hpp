@@ -2698,7 +2698,8 @@ public:
   int       main( const std::vector<std::string>& args );
   void      cancel();
   double    progress( int* current = 0, int* final = 0, std::string* phase = 0 );
-  double    progress( std::string& phase );
+  double    progress( std::string& phase, std::string* detailed = 0 );
+  void      detailed_progress( std::string*, int current_iterations, int total_iterations );
   virtual void combat( int iteration );
   virtual void combat_begin();
   virtual void combat_end();
@@ -2832,7 +2833,7 @@ struct scaling_t
   void analyze_lag();
   void normalize();
   void derive();
-  double progress( std::string& phase );
+  double progress( std::string& phase, std::string* detailed = 0 );
   void create_options();
   bool has_scale_factors();
 };
@@ -2855,7 +2856,7 @@ struct plot_t
 
   void analyze();
   void analyze_stats();
-  double progress( std::string& phase );
+  double progress( std::string& phase, std::string* detailed = 0 );
   void create_options();
 };
 
@@ -2882,7 +2883,7 @@ struct reforge_plot_t
                            std::vector<int> cur_stat_mods );
   void analyze();
   void analyze_stats();
-  double progress( std::string& phase );
+  double progress( std::string& phase, std::string* detailed = 0 );
   void create_options();
 };
 

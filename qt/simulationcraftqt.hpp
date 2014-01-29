@@ -2281,8 +2281,10 @@ public:
 protected:
   QString text_simulate;
   QString text_queue;
+  QString text_queue_tooltip;
   QString text_cancel;
   QString text_cancel_all;
+  QString text_cancel_all_tooltip;
   QString text_save;
   QString text_import;
   QString text_prev;
@@ -2323,7 +2325,13 @@ protected:
   };
   _widget_state states[STATE_COUNT][CMDLINE_TAB_COUNT][WIDGET_COUNT]; // all the states
   // ProgressBar state progress/format
-  std::pair< QString, int > progressBarFormat[PROGRESSBAR_STATE_COUNT];
+  struct _progressbar_state
+  {
+    QString text;
+    QString tool_tip;
+    int progress;
+  };
+  _progressbar_state progressBarFormat[PROGRESSBAR_STATE_COUNT];
   // CommandLine buffers
   QString commandLineBuffer_DEFAULT; // different buffers for different tabs
   QString commandLineBuffer_TAB_BATTLE_NET;
@@ -2350,51 +2358,51 @@ public:
   {
     return current_state;
   }
-  void setSimulatingProgress( int value, QString format )
+  void setSimulatingProgress( int value, QString format, QString toolTip )
   {
-    updateProgress( PROGRESSBAR_SIMULATING, value, format );
+    updateProgress( PROGRESSBAR_SIMULATING, value, format, toolTip );
   }
   int getSimulatingProgress()
   {
     return getProgressBarProgressForState( PROGRESSBAR_SIMULATING );
   }
-  void setImportingProgress( int value, QString format )
+  void setImportingProgress( int value, QString format, QString toolTip )
   {
-    updateProgress( PROGRESSBAR_IMPORTING, value, format );
+    updateProgress( PROGRESSBAR_IMPORTING, value, format, toolTip );
   }
   int getImportingProgress()
   {
     return getProgressBarProgressForState( PROGRESSBAR_IMPORTING );
   }
-  void setBattleNetLoadProgress( int value, QString format )
+  void setBattleNetLoadProgress( int value, QString format, QString toolTip )
   {
-    updateProgress( PROGRESSBAR_BATTLE_NET, value, format );
+    updateProgress( PROGRESSBAR_BATTLE_NET, value, format, toolTip );
   }
   int getBattleNetProgress()
   {
     return getProgressBarProgressForState( PROGRESSBAR_BATTLE_NET );
   }
 #if USE_CHARDEV
-  void setCharDevProgress( int value, QString format )
+  void setCharDevProgress( int value, QString format, QString tool_tip )
   {
-    updateProgress( PROGRESSBAR_CHAR_DEV, value );
+    updateProgress( PROGRESSBAR_CHAR_DEV, value, tool_tip );
   }
   int getCharDevProgress()
   {
     return getProgressBarProgressForState( PROGRESSBAR_CHAR_DEV );
   }
 #endif
-  void setHelpViewProgress( int value, QString format )
+  void setHelpViewProgress( int value, QString format, QString toolTip )
   {
-    updateProgress( PROGRESSBAR_HELP, value, format );
+    updateProgress( PROGRESSBAR_HELP, value, format, toolTip );
   }
   int getHelpViewProgress()
   {
     return getProgressBarProgressForState( PROGRESSBAR_HELP );
   }
-  void setSiteLoadProgress( int value, QString format )
+  void setSiteLoadProgress( int value, QString format, QString toolTip )
   {
-    updateProgress( PROGRESSBAR_SITE, value, format );
+    updateProgress( PROGRESSBAR_SITE, value, format, toolTip );
   }
   int getSiteProgress()
   {
@@ -2474,17 +2482,19 @@ protected:
   void initTextStrings()
   {
     // strings shared by widgets
-    text_simulate     = tr( "Simulate!"   );
-    text_queue        = tr( "Queue!"      );
-    text_cancel       = tr( "Cancel! "    );
-    text_cancel_all   = tr( "Cancel All!" );
-    text_save         = tr( "Save!"       );
-    text_import       = tr( "Import!"     );
-    text_prev         = tr( "<"           );
-    text_next         = tr( ">"           );
-    text_prev_tooltip = tr( "Backwards"   );
-    text_next_tooltip = tr( "Forwards"    );
-    text_hide_widget  = "hide_widget";
+    text_simulate           = tr( "Simulate!"   );
+    text_queue              = tr( "Queue!"      );
+    text_queue_tooltip      = tr( "Click to queue a simulation to run after the current one" );
+    text_cancel             = tr( "Cancel! "    );
+    text_cancel_all         = tr( "Cancel All!" );
+    text_cancel_all_tooltip = tr( "Cancel ALL simulations, including what is queued" );
+    text_save               = tr( "Save!"       );
+    text_import             = tr( "Import!"     );
+    text_prev               = tr( "<"           );
+    text_next               = tr( ">"           );
+    text_prev_tooltip       = tr( "Backwards"   );
+    text_next_tooltip       = tr( "Forwards"    );
+    text_hide_widget        = "hide_widget";
   }
   void initStatesStructToNull()
   {
@@ -2511,11 +2521,11 @@ protected:
       {
         // buttons
         setText( state, tab, BUTTON_MAIN , &text_simulate );
-        setText( state, tab, BUTTON_QUEUE, &text_queue    );
+        setText( state, tab, BUTTON_QUEUE, &text_queue, &text_queue_tooltip );
         setText( state, tab, BUTTON_PREV , &text_prev, &text_prev_tooltip );
         setText( state, tab, BUTTON_NEXT , &text_next, &text_next_tooltip );
         // progressbar
-        setText( state, tab, PROGRESSBAR_WIDGET, &progressBarFormat[PROGRESSBAR_SIMULATING].first );
+        setText( state, tab, PROGRESSBAR_WIDGET, &progressBarFormat[PROGRESSBAR_SIMULATING].text, &progressBarFormat[PROGRESSBAR_SIMULATING].tool_tip );
         setProgressBarState( state, tab, PROGRESSBAR_SIMULATING );
         // commandline buffer
         setText( state, tab, TEXTEDIT_CMDLINE, &commandLineBuffer_DEFAULT );
@@ -2532,7 +2542,7 @@ protected:
       {
         if ( getText( SIMULATING_MULTIPLE, tab, widget ) == text_cancel )
         {
-          setText( SIMULATING_MULTIPLE, tab, widget, &text_cancel_all );
+          setText( SIMULATING_MULTIPLE, tab, widget, &text_cancel_all, &text_cancel_all_tooltip );
         }
       }
     }
@@ -2568,13 +2578,13 @@ protected:
   {
     // log/results: change button text so save is somewhere
     // IDLE: main button => save
-    setText( IDLE      , CMDLINE_TAB_LOG    , BUTTON_MAIN , &text_save   );
-    setText( IDLE      , CMDLINE_TAB_RESULTS, BUTTON_MAIN , &text_save   );
+    setText( IDLE      , CMDLINE_TAB_LOG    , BUTTON_MAIN , &text_save );
+    setText( IDLE      , CMDLINE_TAB_RESULTS, BUTTON_MAIN , &text_save );
     // SIMULATING + SIMULATING_MULTIPLE: queue button => save
     for ( state_e state = SIMULATING; state <= SIMULATING_MULTIPLE; state++ )
     {
-      setText( state, CMDLINE_TAB_LOG    , BUTTON_QUEUE, &text_save   );
-      setText( state, CMDLINE_TAB_RESULTS, BUTTON_QUEUE, &text_save   );
+      setText( state, CMDLINE_TAB_LOG    , BUTTON_QUEUE, &text_save );
+      setText( state, CMDLINE_TAB_RESULTS, BUTTON_QUEUE, &text_save );
     }
   }
   void initProgressBarStates()
@@ -2824,12 +2834,12 @@ protected:
   void setProgressBarProgress( progressbar_states_e state, int value )
   {
     // update progress for the given progressbar state
-    progressBarFormat[state].second = value;
+    progressBarFormat[state].progress = value;
     updateWidget( current_state, current_tab, PROGRESSBAR_WIDGET );
   }
   int getProgressBarProgressForState( progressbar_states_e state )
   {
-    return progressBarFormat[state].second;
+    return progressBarFormat[state].progress;
   }
   void updateProgressBars()
   {
@@ -2857,7 +2867,8 @@ protected:
   void setProgressBarState( state_e state, tabs_e tab, progressbar_states_e progressbar_state )
   {
     // set the given state->tab->progressbar's state
-    states[state][tab][PROGRESSBAR_WIDGET].text = &( progressBarFormat[progressbar_state].first );
+    states[state][tab][PROGRESSBAR_WIDGET].text = &( progressBarFormat[progressbar_state].text );
+    states[state][tab][PROGRESSBAR_WIDGET].tool_tip = &( progressBarFormat[progressbar_state].tool_tip );
     states[state][tab][PROGRESSBAR_WIDGET].progressbar_state  = progressbar_state;
   }
   progressbar_states_e getProgressBarStateForState( state_e state, tabs_e tab )
@@ -2869,6 +2880,7 @@ protected:
   {
     // update a given widget
     QString* text = getText( state, tab, widget );
+    QString* toolTip = getToolTip( state, tab, widget );
     if ( text != nullptr )
     {
       if ( tab == current_tab )
@@ -2881,6 +2893,10 @@ protected:
           if ( commandLine != nullptr )
           {
             commandLine -> setText( *text );
+            if ( toolTip != nullptr )
+            {
+              commandLine -> setToolTip( *toolTip );
+            }
           }
           break;
         }
@@ -2891,11 +2907,20 @@ protected:
           {
             progressBar -> setFormat( *text );
             progressBar -> setValue( getProgressBarProgressForState( getProgressBarStateForState( current_state, current_tab ) ) );
+            if ( toolTip != nullptr )
+            {
+              progressBar -> setToolTip( *toolTip );
+            }
           }
           break;
         }
         default:
-          getWidget( state, widget ).value< QPushButton* >() -> setText( *text );
+          QPushButton* button = getWidget( state, widget ).value< QPushButton* >();
+          button -> setText( *text );
+          if ( toolTip != nullptr )
+          {
+            button -> setToolTip( *toolTip );
+          }
           break;
         }
       }
@@ -2905,6 +2930,10 @@ protected:
   {
     // returns text to set the specified widget to
     return states[state][tab][widget].text;
+  }
+  QString* getToolTip( state_e state, tabs_e tab, widgets_e widget )
+  {
+    return states[state][tab][widget].tool_tip;
   }
   QVariant getWidget( state_e state, widgets_e widget )
   {
@@ -2919,16 +2948,26 @@ protected:
   void setProgressBarFormat( progressbar_states_e state, QString format, bool update = false )
   {
     // sets the QProgressBar->setFormat(format) text value for the specified state's progress bar
-    progressBarFormat[state].first = format;
+    progressBarFormat[state].text = format;
     if ( update &&
          getProgressBarStateForState( current_state, current_tab ) == state )
     {
       updateWidget( current_state, current_tab, PROGRESSBAR_WIDGET );
     }
   }
-  void updateProgress( progressbar_states_e state, int value, QString format )
+  void setProgressBarToolTip( progressbar_states_e state, QString toolTip, bool update = false )
+  {
+    progressBarFormat[state].tool_tip = toolTip;
+    if ( update &&
+         getProgressBarStateForState( current_state, current_tab ) == state )
+    {
+      updateWidget( current_state, current_tab, PROGRESSBAR_WIDGET );
+    }
+  }
+  void updateProgress( progressbar_states_e state, int value, QString format, QString toolTip )
   {
     setProgressBarFormat( state, format );
+    setProgressBarToolTip( state, toolTip );
     setProgressBarProgress( state, value );
   }
   tabs_e convertTabsEnum( main_tabs_e tab )
@@ -3429,7 +3468,6 @@ class SC_OptionsTab;
 class SC_ComboBoxIntegerValidator : public QValidator
 {
   Q_OBJECT
-  int base;
   int lowerBoundInclusive;
   int upperBoundInclusive;
   int lowerBoundDigitCount;
@@ -3441,7 +3479,6 @@ public:
       int upperBoundIntegerInclusive,
       QComboBox* parent ) :
     QValidator( parent ),
-    base( 10 ),
     lowerBoundInclusive( lowerBoundIntegerInclusive ),
     upperBoundInclusive( upperBoundIntegerInclusive ),
     lowerBoundDigitCount( 0 ),
@@ -3451,8 +3488,8 @@ public:
   {
     Q_ASSERT( lowerBoundInclusive <= upperBoundInclusive && "Invalid Arguments" );
 
-    lowerBoundDigitCount = countDigits( lowerBoundInclusive );
-    upperBoundDigitCount = countDigits( upperBoundInclusive );
+    lowerBoundDigitCount = util::numDigits( lowerBoundInclusive );
+    upperBoundDigitCount = util::numDigits( upperBoundInclusive );
   }
   static SC_ComboBoxIntegerValidator* CreateBoundlessValidator( QComboBox* parent = nullptr )
   {
@@ -3478,16 +3515,6 @@ public:
     }
     return comboBox;
   }
-  int countDigits( int number ) const
-  {
-    int digits = 0;
-    while ( number )
-    {
-      number /= base;
-      digits++;
-    }
-    return digits;
-  }
   State isNumberValid( int number ) const
   {
     if ( isNumberInRange( number ) )
@@ -3497,7 +3524,7 @@ public:
     else
     {
       // number is not in range... maybe it COULD be in range if the user types more
-      if ( countDigits( number ) < lowerBoundDigitCount )
+      if ( util::numDigits( number ) < lowerBoundDigitCount )
       {
         return QValidator::Intermediate;
       }
@@ -3544,7 +3571,7 @@ public:
       stripNonNumbersAndAdjustCursorPos( input, cursorPos );
 
       bool conversionToIntWentOk;
-      int number = input.toInt( &conversionToIntWentOk, base );
+      int number = input.toInt( &conversionToIntWentOk );
 
       if ( conversionToIntWentOk )
       {

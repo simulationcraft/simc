@@ -39,16 +39,24 @@ void SC_MainWindow::updateSimProgress()
 #endif
     sim = SC_MainWindow::sim;
 
+  std::string progressBarToolTip;
+
   if ( simRunning() )
   {
-    simProgress = static_cast<int>( 100.0 * sim -> progress( simPhase ) );
+    simProgress = static_cast<int>( 100.0 * sim -> progress( simPhase, &progressBarToolTip ) );
   }
   if ( importRunning() )
   {
-    importSimProgress = static_cast<int>( 100.0 * import_sim -> progress( importSimPhase ) );
+    importSimProgress = static_cast<int>( 100.0 * import_sim -> progress( importSimPhase, &progressBarToolTip ) );
   }
-  cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str() );
-  cmdLine -> setImportingProgress( importSimProgress, importSimPhase.c_str() );
+#if !defined( SC_WINDOWS ) && !defined( SC_OSX )
+  // Progress bar text in Linux is displayed inside the progress bar as opposed next to it in Windows
+  // so it does not look as bad to include iteration details in it
+  simPhase += ": ";
+  simPhase += progressBarToolTip;
+#endif
+  cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str(), progressBarToolTip.c_str() );
+  cmdLine -> setImportingProgress( importSimProgress, importSimPhase.c_str(), progressBarToolTip.c_str() );
 }
 
 void SC_MainWindow::loadHistory()
@@ -800,24 +808,24 @@ void SC_MainWindow::updateWebView( SC_WebView* wv )
   {
     if ( visibleWebView == battleNetView )
     {
-      cmdLine -> setBattleNetLoadProgress( visibleWebView -> progress, "%p%" );
+      cmdLine -> setBattleNetLoadProgress( visibleWebView -> progress, "%p%", "" );
       cmdLine -> setCommandLineText( TAB_BATTLE_NET, visibleWebView -> url_to_show );
     }
 #if USE_CHARDEV
     else if ( visibleWebView == charDevView )
     {
-      cmdLine -> setCharDevProgress( visibleWebView -> progress, "%p%" );
+      cmdLine -> setCharDevProgress( visibleWebView -> progress, "%p%", "" );
       cmdLine -> setCommandLineText( TAB_CHAR_DEV, visibleWebView -> url_to_show );
     }
 #endif
     else if ( visibleWebView == helpView )
     {
-      cmdLine -> setHelpViewProgress( visibleWebView -> progress, "%p%" );
+      cmdLine -> setHelpViewProgress( visibleWebView -> progress, "%p%", "" );
       cmdLine -> setCommandLineText( TAB_HELP, visibleWebView -> url_to_show );
     }
     else if ( visibleWebView == siteView )
     {
-      cmdLine -> setSiteLoadProgress( visibleWebView -> progress, "%p%" );
+      cmdLine -> setSiteLoadProgress( visibleWebView -> progress, "%p%", "" );
       cmdLine -> setCommandLineText( TAB_SITE, visibleWebView -> url_to_show );
     }
   }
@@ -1016,7 +1024,7 @@ void SC_MainWindow::importFinished()
 {
   importSimPhase = "%p%";
   simProgress = 100;
-  cmdLine -> setImportingProgress( importSimProgress, importSimPhase.c_str() );
+  cmdLine -> setImportingProgress( importSimProgress, importSimPhase.c_str(), "" );
   if ( importThread -> player )
   {
     simulateTab -> set_Text( importThread -> profile );
@@ -1225,7 +1233,7 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
 {
   simPhase = "%p%";
   simProgress = 100;
-  cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str() );
+  cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str(), tr( "Finished!" ) );
   bool sim_was_debug = sim -> debug;
   if ( ! simulateThread -> success )
   {
@@ -1612,7 +1620,6 @@ void SC_MainWindow::mainTabChanged( int index )
       break;
     default: assert( 0 );
   }
-  cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str() );
 }
 
 void SC_MainWindow::importTabChanged( int index )
@@ -1625,7 +1632,6 @@ void SC_MainWindow::importTabChanged( int index )
   {
     cmdLine -> setTab( static_cast< import_tabs_e >( index ) );
     visibleWebView = 0;
-    cmdLine -> setSimulatingProgress( importSimProgress, importSimPhase.c_str() );
   }
   else
   {

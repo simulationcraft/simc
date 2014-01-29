@@ -2268,7 +2268,7 @@ void sim_t::cancel()
 
 double sim_t::progress( int* current,
                         int* _final,
-                        std::string* phase )
+                        std::string* detailed )
 {
   int total_iterations = iterations;
   for ( size_t i = 0; i < children.size(); i++ )
@@ -2280,18 +2280,12 @@ double sim_t::progress( int* current,
 
   if ( current ) *current = total_current_iterations;
   if ( _final   ) *_final   = total_iterations;
-  if ( phase &&
-       total_iterations >= 100000 )
-  {
-    char buf[512];
-    sprintf( buf, "Simulating: %d/%d", total_current_iterations, total_iterations );
-    (*phase) = buf;
-  }
+  detailed_progress( detailed, total_current_iterations, total_iterations );
 
   return total_current_iterations / ( double ) total_iterations;
 }
 
-double sim_t::progress( std::string& phase )
+double sim_t::progress( std::string& phase, std::string* detailed )
 {
   if ( canceled )
   {
@@ -2302,22 +2296,22 @@ double sim_t::progress( std::string& phase )
   if ( plot -> num_plot_stats > 0 &&
        plot -> remaining_plot_stats > 0 )
   {
-    return plot -> progress( phase );
+    return plot -> progress( phase, detailed );
   }
   else if ( scaling -> calculate_scale_factors &&
             scaling -> num_scaling_stats > 0 &&
             scaling -> remaining_scaling_stats > 0 )
   {
-    return scaling -> progress( phase );
+    return scaling -> progress( phase, detailed );
   }
   else if ( reforge_plot -> num_stat_combos > 0 )
   {
-    return reforge_plot -> progress( phase );
+    return reforge_plot -> progress( phase, detailed );
   }
   else if ( current_iteration >= 0 )
   {
     phase = "Simulating";
-    return progress( 0, 0, &phase);
+    return progress( 0, 0, detailed );
   }
   else if ( current_slot >= 0 )
   {
@@ -2326,6 +2320,16 @@ double sim_t::progress( std::string& phase )
   }
 
   return 0.0;
+}
+
+void sim_t::detailed_progress( std::string* detail, int current_iterations, int total_iterations )
+{
+  if ( detail )
+  {
+    char buf[512];
+    util::snprintf( buf, 512, "%d/%d", current_iterations, total_iterations );
+    (*detail) = buf;
+  }
 }
 
 // sim_t::errorf ============================================================

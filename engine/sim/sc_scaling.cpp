@@ -118,7 +118,7 @@ scaling_t::scaling_t( sim_t* s ) :
 
 // scaling_t::progress ======================================================
 
-double scaling_t::progress( std::string& phase )
+double scaling_t::progress( std::string& phase, std::string* detailed )
 {
   if ( ! calculate_scale_factors ) return 1.0;
 
@@ -128,13 +128,18 @@ double scaling_t::progress( std::string& phase )
   {
     phase = "Baseline";
     if ( ! baseline_sim ) return 0;
+    sim -> detailed_progress( detailed, baseline_sim -> current_iteration , baseline_sim -> iterations );
     return baseline_sim -> current_iteration / static_cast<double>( baseline_sim -> iterations );
   }
 
   phase  = "Scaling - ";
   phase += util::stat_type_abbrev( current_scaling_stat );
 
-  double stat_progress = ( num_scaling_stats - remaining_scaling_stats ) / static_cast<double>( num_scaling_stats );
+  int completed_scaling_stats = ( num_scaling_stats - remaining_scaling_stats );
+
+  double stat_progress = completed_scaling_stats / static_cast<double>( num_scaling_stats );
+
+  sim -> detailed_progress( detailed, completed_scaling_stats, num_scaling_stats );
 
   double divisor = num_scaling_stats * 2.0;
 
