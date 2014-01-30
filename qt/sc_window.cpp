@@ -52,7 +52,7 @@ void SC_MainWindow::updateSimProgress()
 #if !defined( SC_WINDOWS ) && !defined( SC_OSX )
   // Progress bar text in Linux is displayed inside the progress bar as opposed next to it in Windows
   // so it does not look as bad to include iteration details in it
-  if ( simPhase.find( ": " ) != std::string::npos ) // can end up with Simulating: : : : : : : in rare circumstances
+  if ( simPhase.find( ": " ) == std::string::npos ) // can end up with Simulating: : : : : : : in rare circumstances
   {
     simPhase += ": ";
     simPhase += progressBarToolTip;
