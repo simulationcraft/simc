@@ -2227,10 +2227,8 @@ private slots:
 class SC_CommandLine : public QLineEdit
 {
   Q_OBJECT
-protected:
-  virtual void keyPressEvent( QKeyEvent* e );
 public:
-  SC_CommandLine( QWidget* parent = nullptr ) : QLineEdit( parent ) { };
+  SC_CommandLine( QWidget* parent = nullptr );
 signals:
   void switchToLeftSubTab();
   void switchToRightSubTab();

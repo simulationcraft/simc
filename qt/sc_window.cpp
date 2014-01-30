@@ -52,8 +52,11 @@ void SC_MainWindow::updateSimProgress()
 #if !defined( SC_WINDOWS ) && !defined( SC_OSX )
   // Progress bar text in Linux is displayed inside the progress bar as opposed next to it in Windows
   // so it does not look as bad to include iteration details in it
-  simPhase += ": ";
-  simPhase += progressBarToolTip;
+  if ( simPhase.find( ": " ) != std::string::npos ) // can end up with Simulating: : : : : : : in rare circumstances
+  {
+    simPhase += ": ";
+    simPhase += progressBarToolTip;
+  }
 #endif
   cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str(), progressBarToolTip.c_str() );
   cmdLine -> setImportingProgress( importSimProgress, importSimPhase.c_str(), progressBarToolTip.c_str() );
@@ -1837,24 +1840,20 @@ void SimulateThread::run()
 // SC_CommandLine
 // ============================================================================
 
-void SC_CommandLine::keyPressEvent( QKeyEvent* e )
+SC_CommandLine::SC_CommandLine( QWidget* parent ) :
+    QLineEdit( parent )
 {
-  int k = e -> key();
-  if ( k == Qt::Key_Up ||
-       k == Qt::Key_Left )
-  {
-    emit( switchToLeftSubTab() );
-  }
-  else if ( k == Qt::Key_Down ||
-            k == Qt::Key_Right )
-  {
-    emit( switchToRightSubTab() );
-  }
-  else if ( k == Qt::Key_Delete )
-  {
-    emit( currentlyViewedTabCloseRequest() );
-  }
-  QLineEdit::keyPressEvent( e );
+  QShortcut* altUp    = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Up ), this );
+  QShortcut* altLeft  = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Left ), this );
+  QShortcut* altDown  = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Down ), this );
+  QShortcut* altRight = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Right ), this );
+  QShortcut* ctrlDel  = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_Delete ), this );
+
+  connect( altUp,    SIGNAL( activated() ), this, SIGNAL( switchToLeftSubTab() ) );
+  connect( altLeft,  SIGNAL( activated() ), this, SIGNAL( switchToLeftSubTab() ) );
+  connect( altDown,  SIGNAL( activated() ), this, SIGNAL( switchToRightSubTab() ) );
+  connect( altRight, SIGNAL( activated() ), this, SIGNAL( switchToRightSubTab() ) );
+  connect( ctrlDel,  SIGNAL( activated() ), this, SIGNAL( currentlyViewedTabCloseRequest() ) );
 }
 
 // ==========================================================================
