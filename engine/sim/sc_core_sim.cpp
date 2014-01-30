@@ -208,8 +208,8 @@ core_sim_t::core_sim_t() :
   event_stopwatch( STOPWATCH_THREAD ),
   monitor_cpu( false ),
   canceled( 0 ),
-  iteration_canceled( 0 ),
-  vary_combat_length( 0.0 )
+  vary_combat_length( 0.0 ),
+  iteration_canceled( false )
 {
 
 }
@@ -272,6 +272,16 @@ double core_sim_t::expected_max_time() const
 bool core_sim_t::is_canceled() const
 {
   return canceled;
+}
+
+void core_sim_t::cancel_iteration( bool cancel )
+{
+  if ( cancel && debug )
+  {
+    out_debug << "Iteration canceled.";
+  }
+
+  iteration_canceled = cancel;
 }
 
 void core_sim_t::combat( int iteration )

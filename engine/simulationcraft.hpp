@@ -2453,7 +2453,7 @@ public:
   stopwatch_t event_stopwatch;
   bool monitor_cpu;
 
-  int canceled, iteration_canceled;
+  bool canceled;
   double      vary_combat_length;
 
 // Public functions
@@ -2461,6 +2461,7 @@ public:
   double iteration_time_adjust() const;
   double expected_max_time() const;
   bool is_canceled() const;
+  void cancel_iteration( bool cancel = true );
 
 protected:
   virtual void combat( int iteration );
@@ -2470,6 +2471,7 @@ protected:
   virtual void reset();
 
 private:
+  bool iteration_canceled;
   void begin_combat();
   void end_combat();
   void reschedule_event( core_event_t* );

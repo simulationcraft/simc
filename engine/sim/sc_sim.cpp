@@ -789,7 +789,7 @@ struct sim_end_event_t : event_t
   }
   virtual void execute()
   {
-    sim().iteration_canceled = 1;
+    sim().cancel_iteration();
   }
 };
 
@@ -1193,7 +1193,7 @@ void sim_t::combat_begin()
     new ( *this ) skull_banner_proxy_t( *this, 0, timespan_t::zero(), timespan_t::from_seconds( 0.25 ) );
   }
 
-  iteration_canceled = 0;
+  cancel_iteration( false );
 
   if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
   {

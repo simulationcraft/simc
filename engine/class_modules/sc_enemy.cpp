@@ -464,7 +464,7 @@ struct summon_add_t : public spell_t
   }
 };
 
-static action_t* enemy_create_action( player_t* p, const std::string& name, const std::string& options_str )
+action_t* enemy_create_action( player_t* p, const std::string& name, const std::string& options_str )
 {
   if ( name == "auto_attack" ) return new auto_attack_t( p, options_str );
   if ( name == "melee_nuke"  ) return new  melee_nuke_t( p, options_str );
@@ -978,9 +978,9 @@ void enemy_t::demise()
 {
   if ( this == sim -> target )
   {
-    if ( sim -> current_iteration != 0 || sim -> overrides.target_health > 0 )
+    if ( sim -> current_iteration != 0 || sim -> overrides.target_health > 0 || fixed_health > 0 )
       // For the main target, end simulation on death.
-      sim -> iteration_canceled = 1;
+      sim -> cancel_iteration();
   }
 
   player_t::demise();
