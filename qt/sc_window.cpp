@@ -1273,14 +1273,13 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
 
     // HTML
     SC_WebView* resultsHtmlView = new SC_WebView( this, resultsEntry );
+    resultsHtmlView -> enableKeyboardNavigation();
+    resultsHtmlView -> enableMouseNavigation();
     resultsEntry -> addTab( resultsHtmlView, "html" );
     QFile html_file( sim -> html_file_str.c_str() );
-    if ( html_file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-    {
-      resultsHtmlView -> store_html( QString::fromUtf8( html_file.readAll() ) );
-      resultsHtmlView -> loadHtml();
-      html_file.close();
-    }
+    QString html_file_absolute_path = QFileInfo( html_file ).absoluteFilePath();
+    // just load it, let the error page extension handle failure to open
+    resultsHtmlView -> load( QUrl::fromLocalFile( html_file_absolute_path ) );
 
     // Text
     SC_TextEdit* resultsTextView = new SC_TextEdit( resultsEntry );
