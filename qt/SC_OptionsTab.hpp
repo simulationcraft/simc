@@ -49,6 +49,7 @@ public:
     QComboBox* armory_spec;
     QComboBox* default_role;
     QComboBox* tmi_boss;
+    QComboBox* tmi_window;
     QComboBox* tmi_actor_only;
     QComboBox* debug;
     QComboBox* report_pets;

@@ -2521,6 +2521,7 @@ struct sim_t : public core_sim_t, private sc_thread_t
   int         stat_cache;
   int         max_aoe_enemies;
   bool        tmi_actor_only;
+  double      tmi_window_global;
 
   // Target options
   double      target_death_pct;
@@ -4215,6 +4216,7 @@ struct player_t : public actor_t
   std::array< double, RESOURCE_MAX > iteration_resource_lost, iteration_resource_gained;
   double    rps_gain, rps_loss;
   std::string tmi_debug_file_str;
+  double tmi_window;
 
   auto_dispose< std::vector<buff_t*> > buff_list;
   auto_dispose< std::vector<proc_t*> > proc_list;

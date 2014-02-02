@@ -600,6 +600,7 @@ player_t::player_t( sim_t*             s,
   bugs( true ),
   scale_player( true ),
   tmi_self_only( false ),
+  tmi_window( 6.0 ),
   death_pct( 0.0 ),
 
   // dynamic stuff
@@ -1048,6 +1049,9 @@ void player_t::init_character_properties()
   replace_spells();
   init_position();
   init_professions();
+
+  if ( sim -> tmi_window_global > 0 )
+    tmi_window = sim -> tmi_window_global;
 }
 
 void scale_challenge_mode( player_t& p, const rating_t& rating )
@@ -8528,6 +8532,7 @@ void player_t::create_options()
     opt_bool( "scale_player", scale_player ),
     opt_bool( "tmi_self_only", tmi_self_only ),
     opt_string( "tmi_output", tmi_debug_file_str ),
+    opt_float( "tmi_window", tmi_window ),
     opt_func( "spec", parse_specialization ),
     opt_func( "specialization", parse_specialization ),
     opt_func( "stat_timelines", parse_stat_timelines ),
@@ -9933,7 +9938,7 @@ void player_collected_data_t::collect_data( const player_t& p )
       if ( f_length )
       {
         // define constants and variables
-        int window = 6; // window size, this may become user-definable later
+        int window = std::floor( ( p.tmi_window ) / 1 + 0.5 ); // window size, bin time replaces 1 eventually
         double w0  = 6; // normalized window size
         double hdf = 3; // default health decade factor
 
