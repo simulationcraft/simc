@@ -6376,6 +6376,12 @@ struct cancel_buff_t : public action_t
 
     buff = buff_t::find( player, buff_name );
 
+    // if the buff isn't in the player_t -> buff_list, try again in the player_td_t -> target -> buff_list
+    if ( ! buff )
+    {
+      buff = buff_t::find( player -> get_target_data( player ) -> target, buff_name );
+    }
+
     if ( ! buff )
     {
       sim -> errorf( "Player %s uses cancel_buff with unknown buff %s\n", player -> name(), buff_name.c_str() );
