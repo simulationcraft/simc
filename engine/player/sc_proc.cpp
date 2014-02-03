@@ -391,10 +391,10 @@ bool special_effect_t::parse_spell_data( const item_t& item, unsigned driver_id 
   }
 
   // Cooldown / Internal cooldown is defined in the driver as well
-  if ( cooldown_ == timespan_t::min() )
+  if ( cooldown_ == timespan_t::min() && driver_spell -> cooldown() > timespan_t::zero() )
     cooldown_ = driver_spell -> cooldown();
 
-  if ( cooldown_ == timespan_t::min() )
+  if ( cooldown_ == timespan_t::min() && driver_spell -> internal_cooldown() > timespan_t::zero() )
     cooldown_ = driver_spell -> internal_cooldown();
 
   const spell_data_t* proc_spell = spell_data_t::nil();
