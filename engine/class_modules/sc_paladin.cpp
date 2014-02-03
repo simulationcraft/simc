@@ -4481,23 +4481,26 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_talent( this, "Holy Avenger" );
   def -> add_action( this, "Divine Protection" ); // use on cooldown
   def -> add_action( this, "Guardian of Ancient Kings" ); // use on cooldown
-  def -> add_talent( this, "Eternal Flame", "if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react)" );
+  def -> add_talent( this, "Eternal Flame", "if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react)" );
+  def -> add_talent( this, "Eternal Flame", "if=buff.bastion_of_power.react&buff.bastion_of_glory.react>=5" );
   // these two lines are emergency WoG, but seem to do more harm than good
   //def -> add_action( this, "Word of Glory", "if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8" );
   //def -> add_talent( this, "Eternal Flame", "if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8" );
   def -> add_action( this, "Shield of the Righteous", "if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3" );
   def -> add_action( this, "Judgment", "if=talent.sanctified_wrath.enabled&buff.avenging_wrath.react" );
+  def -> add_action( "wait,sec=cooldown.judgment.remains,if=talent.sanctified_wrath.enabled&cooldown.judgment.remains>0&cooldown.judgment.remains<=0.5" );
   def -> add_action( this, "Crusader Strike" );
-  def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35" );
+  def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.5" );
   def -> add_action( this, "Judgment" );
+  def -> add_action( "wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.5&(cooldown.crusader_strike.remains-cooldown.judgment.remains)>=0.5" );
   def -> add_action( this, "Avenger's Shield" );
   def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<5" );
-  def -> add_action( this, "Hammer of Wrath" );
+  def -> add_action( this, "Holy Wrath" );
   def -> add_talent( this, "Execution Sentence" );
   def -> add_talent( this, "Light's Hammer" );
-  def -> add_talent( this, "Holy Prism" );
-  def -> add_action( this, "Holy Wrath" );
+  def -> add_action( this, "Hammer of Wrath" );
   def -> add_action( this, "Consecration", "if=target.debuff.flying.down&!ticking" );
+  def -> add_talent( this, "Holy Prism" );
   def -> add_talent( this, "Sacred Shield" );
 }
 
