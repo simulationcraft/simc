@@ -452,11 +452,15 @@ bool option_db_t::parse_args( const std::vector<std::string>& args )
 
 // option_db_t::option_db_t =================================================
 
+#ifndef SC_SHARED_DATA
+#define SC_SHARED_DATA ".."
+#endif
+
 option_db_t::option_db_t()
 {
-  const char* paths[] = { "./profiles", "../profiles", SHARED_DATA };
+  const char* paths[] = { "./profiles", "../profiles", SC_SHARED_DATA };
   int n_paths = 2;
-  if ( ! util::str_compare_ci( SHARED_DATA, ".." ) )
+  if ( ! util::str_compare_ci( SC_SHARED_DATA, ".." ) )
     n_paths++;
 
   // This makes baby pandas cry a bit less, but still makes them weep.
@@ -467,7 +471,7 @@ option_db_t::option_db_t()
   // Automatically add "./profiles" and "../profiles", because the command line
   // client is ran both from the engine/ subdirectory, as well as the source
   // root directory, depending on whether the user issues make install or not.
-  // In addition, if SHARED_DATA is given, search our profile directory
+  // In addition, if SC_SHARED_DATA is given, search our profile directory
   // structure directly from there as well.
   for ( int j = 0; j < n_paths; j++ )
   {
@@ -494,3 +498,6 @@ option_db_t::option_db_t()
   if ( *( auto_path.end() - 1 ) == '|' )
     *( auto_path.end() - 1 ) = 0;
 }
+
+#undef SC_SHARED_DATA
+

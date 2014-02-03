@@ -55,7 +55,7 @@ OPENSSL_PATH =
 
 MKDIR      = mkdir
 CXX        = g++
-CPP_FLAGS  = -Wall -Woverloaded-virtual -W -I. -DSHARED_DATA=\"$(SHARED_DATA)\"
+CPP_FLAGS  = -Wall -Woverloaded-virtual -W -I. -DSC_SHARED_DATA=\"$(SHARED_DATA)\"
 OPTS       = -O3
 
 # Include build setting from user configuration file

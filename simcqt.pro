@@ -97,6 +97,9 @@ include(source_files/QT_engine.pri)
 # engine Main file
 CONFIG(console) {
 include(source_files/QT_engine_main.pri)
+  !isEmpty(PREFIX)|!isEmpty(DESTDIR) {
+    DEFINES += SC_SHARED_DATA=\\\"$$PREFIX/share/SimulationCraft\\\"
+  }
 }
 
 # GUI files
