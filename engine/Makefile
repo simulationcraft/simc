@@ -11,9 +11,32 @@
 # Override OBJ_DIR if you want your object files built somewhere other than the local directory
 
 
-# Detect operating system
 FLAVOR     =
-DESTDIR ?= ..
+DESTDIR    =
+PREFIX    ?= ..
+
+# Build base directory
+BASE_DIR = $(DESTDIR)$(PREFIX)
+
+# Base "shared data" search path. For the command line client, profiles are
+# searched from $PREFIX, or $PREFIX/share/SimulationCraft if $PREFIX is not the
+# default ("..")
+SHARED_DATA = $(PREFIX)
+# Base installation path for the command line client binary, by default "..",
+# if $DESTDIR or $PREFIX is given, set to $DESTDIR$PREFIX.
+BIN_INSTALL_PATH = $(PREFIX)
+# Installation path for the shared files. By default it's not used; if $PREFIX
+# is set to something else than "..", set to
+# $DESTDIR$PREFIX/share/SimulationCraft
+SHARE_INSTALL_PATH = 
+
+ifneq (${PREFIX},..)
+  SHARED_DATA = $(PREFIX)/share/SimulationCraft
+
+  BIN_INSTALL_PATH = $(BASE_DIR)/bin
+  SHARE_INSTALL_PATH = $(BASE_DIR)/share/SimulationCraft
+endif
+
 ifeq (${OS},Windows_NT)
   OS         = WINDOWS
 endif
@@ -30,8 +53,9 @@ endif
 
 OPENSSL_PATH =
 
+MKDIR      = mkdir
 CXX        = g++
-CPP_FLAGS  = -Wall -Woverloaded-virtual -W -I.
+CPP_FLAGS  = -Wall -Woverloaded-virtual -W -I. -DSHARED_DATA=\"$(SHARED_DATA)\"
 OPTS       = -O3
 
 # Include build setting from user configuration file
@@ -132,7 +156,14 @@ optimized:OPTS += -march=native -ffast-math -fomit-frame-pointer
 optimized: $(MODULE)
 
 install: all
-	$(COPY) $(MODULE) $(DESTDIR)
+ifneq (${PREFIX},..)
+	$(MKDIR) -p $(BIN_INSTALL_PATH)
+endif
+	$(COPY) $(MODULE) $(BIN_INSTALL_PATH)
+ifneq (${PREFIX},..)
+	$(MKDIR) -p $(SHARE_INSTALL_PATH)
+	$(COPY) -r $(wildcard ../profiles/*) $(SHARE_INSTALL_PATH)
+endif
 
 $(MODULE): $(SRC_OBJ)
 	-@echo [$(MODULE)] Linking $@
