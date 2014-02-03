@@ -91,6 +91,7 @@ public:
     buff_t* avenging_wrath;
     buff_t* barkskin;
     buff_t* bastion_of_glory;
+    buff_t* bastion_of_power; // t16_4pc_tank
     buff_t* blessed_life;
     buff_t* daybreak;
     buff_t* divine_crusader; // t16_4pc_melee
@@ -1394,7 +1395,7 @@ struct eternal_flame_t : public paladin_heal_t
   virtual double cost() const
   {
     // check for T16 4-pc tank effect
-    if ( p() -> sets.set(SET_T16_4PC_TANK ) -> ok() && p() -> buffs.bastion_of_glory -> current_stack >= 3 && target == player )
+    if ( p() -> buffs.bastion_of_power -> check() && target == player )
       return 0.0;
 
     return paladin_heal_t::cost();
@@ -1405,9 +1406,9 @@ struct eternal_flame_t : public paladin_heal_t
     // order of operations: T16 4-pc tank, then Divine Purpose (assumed!)
 
     // check for T16 4pc tank bonus
-    if ( p() -> sets.has_set_bonus( SET_T16_4PC_TANK ) && p() -> buffs.bastion_of_glory -> current_stack >= 3 && target == player  )
+    if ( p() -> buffs.bastion_of_power -> check() && target == player )
     {
-      // nothing necessary here, BoG will be consumed automatically upon cast
+      // nothing necessary here, BoG & BoPower will be consumed automatically upon cast
       return;
     }
 
@@ -1461,10 +1462,11 @@ struct eternal_flame_t : public paladin_heal_t
     if ( p() -> sets.has_set_bonus( SET_T15_2PC_TANK ) )
       p() -> buffs.shield_of_glory -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> buffs.shield_of_glory -> buff_duration * hopo );
     
-    // consume BoG stacks if used on self
+    // consume BoG stacks and Bastion of Power if used on self
     if ( target == player )
     {
       p() -> buffs.bastion_of_glory -> expire();
+      p() -> buffs.bastion_of_power -> expire();
     }
   }
 
@@ -2647,7 +2649,7 @@ struct word_of_glory_t : public paladin_heal_t
   virtual double cost() const
   {
     // check for T16 4-pc tank effect
-    if ( p() -> sets.set(SET_T16_4PC_TANK ) -> ok() && p() -> buffs.bastion_of_glory -> current_stack >= 3  && target == player  )
+    if ( p() -> buffs.bastion_of_power -> check() && target == player )
       return 0.0;
 
     return paladin_heal_t::cost();
@@ -2658,9 +2660,9 @@ struct word_of_glory_t : public paladin_heal_t
     // order of operations: T16 4-pc tank, then Divine Purpose (assumed!)
 
     // check for T16 4pc tank bonus
-    if ( p() -> sets.has_set_bonus( SET_T16_4PC_TANK ) && p() -> buffs.bastion_of_glory -> current_stack >= 3 && target == player  )
+    if ( p() -> buffs.bastion_of_power -> check() && target == player )
     {
-      // nothing necessary here, BoG will be consumed automatically upon cast
+      // nothing necessary here, BoG & BoPower will be consumed automatically upon cast
       return;
     }
 
@@ -2703,10 +2705,11 @@ struct word_of_glory_t : public paladin_heal_t
     if ( p() -> sets.has_set_bonus( SET_T15_2PC_TANK ) )
       p() -> buffs.shield_of_glory -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> buffs.shield_of_glory -> buff_duration * hopo );
         
-    // consume BoG stacks if used on self
+    // consume BoG stacks and Bastion of Power if used on self
     if ( target == player )
     {
       p() -> buffs.bastion_of_glory -> expire();
+      p() -> buffs.bastion_of_power -> expire();
     }
   }
 };
@@ -3750,6 +3753,10 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     // Add stack of Bastion of Glory
     p() -> buffs.bastion_of_glory -> trigger();
 
+    // if we're using T16_4PC_TANK, apply the bastion_of_power buff if BoG stacks > 3
+    if ( p() -> sets.has_set_bonus( SET_T16_4PC_TANK ) && p() -> buffs.bastion_of_glory -> stack() >= 3 )
+      p() -> buffs.bastion_of_power -> trigger();
+
     // clear any Alabaster Shield stacks we may have
     p() -> buffs.alabaster_shield -> expire();
   }
@@ -4312,6 +4319,7 @@ void paladin_t::create_buffs()
   buffs.alabaster_shield       = buff_creator_t( this, "glyph_alabaster_shield", find_spell( 121467 ) ) // alabaster shield glyph spell contains no useful data
                                  .cd( timespan_t::zero() );
   buffs.bastion_of_glory       = buff_creator_t( this, "bastion_of_glory", find_spell( 114637 ) );
+  buffs.bastion_of_power       = buff_creator_t( this, "bastion_of_power", find_spell( 144569 ) );
   buffs.blessed_life           = buff_creator_t( this, "glyph_blessed_life", glyphs.blessed_life )
                                  .cd( timespan_t::from_seconds( glyphs.blessed_life -> effectN( 2 ).base_value() ) );
   buffs.double_jeopardy        = buff_creator_t( this, "glyph_double_jeopardy", glyphs.double_jeopardy )
