@@ -23,7 +23,7 @@ BASE_DIR = $(DESTDIR)$(PREFIX)
 # default ("..")
 SHARED_DATA = $(PREFIX)
 # Base installation path for the command line client binary, by default "..",
-# if $DESTDIR or $PREFIX is given, set to $DESTDIR$PREFIX.
+# if $DESTDIR or $PREFIX is given, set to $DESTDIR$PREFIX/bin.
 BIN_INSTALL_PATH = $(PREFIX)
 # Installation path for the shared files. By default it's not used; if $PREFIX
 # is set to something else than "..", set to
