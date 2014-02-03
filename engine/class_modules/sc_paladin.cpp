@@ -1472,9 +1472,9 @@ struct eternal_flame_t : public paladin_heal_t
 
   virtual void impact( action_state_t* s )
   {
-    td( s -> target ) -> buffs.eternal_flame -> trigger();
-
     paladin_heal_t::impact( s );
+
+    td( s -> target ) -> buffs.eternal_flame -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, s -> action -> hasted_num_ticks( s -> haste ) * s -> action -> tick_time( s -> haste ) + timespan_t::from_millis( 1 ) );
   }
 
   virtual void last_tick( dot_t* d )
@@ -3933,6 +3933,28 @@ struct divine_protection_t : public buff_t
 
 };
 
+// Eternal Flame buff
+struct eternal_flame_t : public buff_t
+{
+  paladin_td_t* pair;
+  eternal_flame_t( paladin_td_t* q ) :
+    buff_t( buff_creator_t( *q, "eternal_flame", q -> source -> find_spell( 114163 ) ) ),
+    pair( q )
+  {
+    cooldown -> duration = timespan_t::zero();
+
+  }
+
+  virtual void expire_override()
+  {
+    buff_t::expire_override();
+
+    // cancel existing Eternal Flame HoT
+    pair -> dots.eternal_flame -> cancel();    
+  }
+  
+};
+
 } // end namespace buffs
 
 // Hand of Sacrifice execute function
@@ -3960,7 +3982,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   dots.stay_of_execution  = target -> get_dot( "stay_of_execution",  paladin );
 
   buffs.debuffs_censure    = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
-  buffs.eternal_flame      = buff_creator_t( *this, "eternal_flame", paladin -> find_spell( 114163 ) );
+  buffs.eternal_flame      = new buffs::eternal_flame_t( this );
   buffs.sacred_shield_tick = absorb_buff_creator_t( *this, "sacred_shield_tick", paladin -> find_spell( 65148 ) )
                              .source( paladin -> get_stats( "sacred_shield" ) )
                              .cd( timespan_t::zero() )
