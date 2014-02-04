@@ -3631,6 +3631,7 @@ public:
   QGroupBox* createCustomCharData;
   SC_RecentlyClosedTabItemModel* recentlyClosedTabModel;
   SC_RecentlyClosedTabWidget* recentlyClosedTabImport;
+  QDesktopWidget desktopWidget;
 
   QTimer* timer;
   ImportThread* importThread;
@@ -3694,8 +3695,17 @@ public:
 #endif
   void updateWebView( SC_WebView* );
 
+private:
+  QRect getSmallestScreenGeometry();
+  QRect adjustGeometryToIncludeFrame( QRect );
+  QPoint getMiddleOfScreen( int );
+  int getScreenThatGeometryBelongsTo( QRect );
+  void applyAdequateApplicationGeometry( QRect );
+  void applyAdequateApplicationGeometry();
+
 protected:
   virtual void closeEvent( QCloseEvent* );
+  virtual void showEvent( QShowEvent* );
 
 private slots:
   void itemWasEnqueuedTryToSim();
@@ -3730,6 +3740,7 @@ private slots:
   void switchToLeftSubTab();
   void switchToRightSubTab();
   void currentlyViewedTabCloseRequest();
+  void screenResized( int );
 
 public slots:
   void enqueueSim();
