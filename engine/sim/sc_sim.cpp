@@ -1762,8 +1762,12 @@ bool sim_t::execute()
   double start_time = util::wall_time();
 
   partition();
-  if ( ! iterate() ) return false;
-  merge();
+
+  bool iterate_successfull = iterate();
+  merge(); // Always merge, even in cases of unsuccessful simulation!
+  if ( !iterate_successfull )
+    return false;
+
   analyze();
 
   elapsed_cpu = timespan_t::from_seconds( ( util::cpu_time() - start_cpu_time ) );
