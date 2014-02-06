@@ -12,6 +12,9 @@
 #include <QtCore/QTranslator>
 #include <QtNetwork/QtNetwork>
 
+#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
+#include <CoreFoundation/CoreFoundation.h>
+#endif
 #ifdef QT_VERSION_5
 #include <QtWidgets/QtWidgets>
 #include <QtWebKitWidgets/QtWebKitWidgets>
