@@ -4330,6 +4330,7 @@ public:
 
     // 5.4 trinkets
     buff_t* amplified; // caster 146046
+    buff_t* amplified_2;
     buff_t* cooldown_reduction;
   } buffs;
 

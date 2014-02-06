@@ -3067,10 +3067,29 @@ void amplify_trinket( item_t* item )
   if ( stat_driver_spell -> id() == 0 || amplify_spell -> id() == 0 )
     return;
 
-  const random_prop_data_t& budget = p -> dbc.random_property( item -> item_level() );
-  p -> buffs.amplified -> default_value = budget.p_epic[ 0 ] * amplify_spell -> effectN( 2 ).m_average() / 100.0;
-  p -> buffs.amplified -> default_chance = 1.0;
+  buff_t* first_amp = buff_t::find( p, "amplified" );
+  buff_t* second_amp = buff_t::find( p, "amplified_2" );
+  buff_t* amp_buff = 0;
+  if ( first_amp -> default_chance == 0 )
+    amp_buff = first_amp;
+  else
+    amp_buff = second_amp;
 
+  const random_prop_data_t& budget = p -> dbc.random_property( item -> item_level() );
+  amp_buff -> default_value = budget.p_epic[ 0 ] * amplify_spell -> effectN( 2 ).m_average() / 100.0;
+  amp_buff -> default_chance = 1.0;
+
+  // Naively restrict proccing based on item name & actor role. Healers can
+  // only get procs form Prismatic Prison of Pride, DPS/Tanks can get from
+  // Thok's Tail Tip and Purified Bindings of Immerseus
+  if ( util::str_compare_ci( item -> name(), "prismatic_prison_of_pride" ) && 
+       p -> role != ROLE_HEAL )
+    return;
+  else if ( ( util::str_compare_ci( item -> name(), "thoks_tail_tip" ) || 
+            util::str_compare_ci( item -> name(), "purified_bindings_of_immerseus" ) ) &&
+            p -> role == ROLE_HEAL )
+    return;
+  
   const spell_data_t* stat_spell = stat_driver_spell -> effectN( 1 ).trigger();
 
   std::string name = stat_spell -> name_cstr();

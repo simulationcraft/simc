@@ -712,7 +712,11 @@ double action_t::total_crit_bonus() const
   double crit_multiplier_buffed = crit_multiplier * composite_player_critical_multiplier();
   double base_crit_bonus = crit_bonus;
   if ( ! player -> is_pet() && ! player -> is_enemy() )
+  {
     base_crit_bonus += player -> buffs.amplified -> value();
+    base_crit_bonus += player -> buffs.amplified_2 -> value();
+  }
+
   double bonus = ( ( 1.0 + base_crit_bonus ) * crit_multiplier_buffed - 1.0 ) * crit_bonus_multiplier;
 
   if ( sim -> debug )
