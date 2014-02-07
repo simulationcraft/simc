@@ -47,7 +47,7 @@ macx {
     LIBS += -framework CoreFoundation -framework AppKit
     DEFINES += SIMC_NO_AUTOUPDATE
 
-    Resources.files = Welcome.html Welcome.png
+    Resources.files = Welcome.html Welcome.png Error.html
     Resources.path = Contents/Resources
     Profiles.files = profiles/PreRaid profiles/Tier15N profiles/Tier15H profiles/Tier16N profiles/Tier16H
     Profiles.path = Contents/Resources/profiles
@@ -153,6 +153,7 @@ unix:!mac {
   data.files += Welcome.html
   data.files += Welcome.png
   data.files += READ_ME_FIRST.txt
+  data.files += Error.html
   data.commands = @echo Installing global files to $$SHAREPATH
 
   icon.path = $$SHAREPATH
