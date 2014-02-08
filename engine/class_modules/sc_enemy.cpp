@@ -480,6 +480,7 @@ struct enemy_t : public player_t
 {
   double fixed_health, initial_health;
   double fixed_health_percentage, initial_health_percentage;
+  double health_recalculation_dampening_exponent;
   timespan_t waiting_time;
   std::string tmi_boss_str;
   tmi_boss_e tmi_boss_enum;
@@ -490,6 +491,7 @@ struct enemy_t : public player_t
     player_t( s, type, n, r ),
     fixed_health( 0 ), initial_health( 0 ),
     fixed_health_percentage( 0 ), initial_health_percentage( 100.0 ),
+    health_recalculation_dampening_exponent( 1.0 ),
     waiting_time( timespan_t::from_seconds( 1.0 ) ),
     tmi_boss_str( "none" ),
     tmi_boss_enum( TMI_NONE )
@@ -869,6 +871,7 @@ void enemy_t::create_options()
     opt_float( "target_health", fixed_health ),
     opt_float( "target_initial_health_percentage", initial_health_percentage ),
     opt_float( "target_fixed_health_percentage", fixed_health_percentage ),
+    opt_float( "health_recalculation_dampening_exponent", health_recalculation_dampening_exponent ),
     opt_string( "target_tank", target_str ),
     opt_string( "tmi_boss", tmi_boss_str ),
     opt_null()
@@ -928,7 +931,7 @@ void enemy_t::recalculate_health()
   else
   {
     timespan_t delta_time = sim -> current_time - sim -> expected_iteration_time;
-    delta_time /= ( sim -> current_iteration + 1 ); // dampening factor
+    delta_time /= std::pow( ( sim -> current_iteration + 1 ), health_recalculation_dampening_exponent ); // dampening factor, by default 1/n
     double factor = 1.0 - ( delta_time / sim -> expected_iteration_time );
 
     if ( factor > 1.5 ) factor = 1.5;
