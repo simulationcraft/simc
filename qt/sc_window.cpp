@@ -1869,6 +1869,7 @@ void SC_MainWindow::currentlyViewedTabCloseRequest()
 
 void SC_MainWindow::screenResized( int screen )
 {
+  Q_UNUSED( screen );
   applyAdequateApplicationGeometry();
 }
 
@@ -2019,41 +2020,46 @@ void PersistentCookieJar::load()
 void SC_SingleResultTab::save_result()
 {
   QString destination;
+  QString defaultDestination;
   QString extension;
   switch ( currentTab() )
   {
   case TAB_HTML:
-    destination = "results_html.html"; extension = "html"; break;
+    defaultDestination = "results_html.html"; extension = "html"; break;
   case TAB_TEXT:
-    destination = "results_text.txt"; extension = "txt"; break;
+    defaultDestination = "results_text.txt"; extension = "txt"; break;
   case TAB_XML:
-    destination = "results_xml.xml"; extension = "xml"; break;
+    defaultDestination = "results_xml.xml"; extension = "xml"; break;
   case TAB_PLOTDATA:
-    destination = "results_plotdata.csv"; extension = "csv"; break;
+    defaultDestination = "results_plotdata.csv"; extension = "csv"; break;
   case TAB_CSV:
-    destination = "results_csv.csv"; extension = "csv"; break;
+    defaultDestination = "results_csv.csv"; extension = "csv"; break;
   default: break;
   }
-
+  destination = defaultDestination;
   QString savePath = mainWindow -> ResultsDestDir;
-  int fname_offset = mainWindow -> cmdLine -> commandLineText( TAB_RESULTS ).lastIndexOf( QDir::separator() );
+  QString commandLinePath = mainWindow -> cmdLine -> commandLineText( TAB_RESULTS );
+  int fname_offset = commandLinePath.lastIndexOf( QDir::separator() );
 
-  if ( mainWindow -> cmdLine -> commandLineText( TAB_RESULTS ).size() > 0 )
+  if ( commandLinePath.size() > 0 )
   {
     if ( fname_offset == -1 )
-      destination = mainWindow -> cmdLine -> commandLineText( TAB_RESULTS );
+      destination = commandLinePath;
     else
     {
-      savePath = mainWindow -> cmdLine -> commandLineText( TAB_RESULTS ).left( fname_offset );
-      destination = mainWindow -> cmdLine -> commandLineText( TAB_RESULTS ).right( fname_offset - 1 );
+      savePath = commandLinePath.left( fname_offset + 1 );
+      destination = commandLinePath.right( commandLinePath.size() - ( fname_offset + 1 ) );
     }
   }
-
+  if ( destination.size() == 0 )
+  {
+    destination = defaultDestination;
+  }
   if ( destination.indexOf( "." + extension ) == -1 )
     destination += "." + extension;
-
+  QFileInfo savePathInfo( savePath );
   QFileDialog f( this );
-  f.setDirectory( savePath );
+  f.setDirectory( savePathInfo.absoluteDir() );
   f.setAcceptMode( QFileDialog::AcceptSave );
   f.setDefaultSuffix( extension );
   f.selectFile( destination );
@@ -2067,7 +2073,7 @@ void SC_SingleResultTab::save_result()
       switch ( currentTab() )
       {
       case TAB_HTML:
-        file.write( static_cast<SC_WebView*>( currentWidget() ) -> html_str.toUtf8() );
+        file.write( static_cast<SC_WebView*>( currentWidget() ) -> toHtml().toUtf8() );
         break;
       case TAB_TEXT:
       case TAB_XML:

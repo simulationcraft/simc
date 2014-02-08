@@ -3916,6 +3916,10 @@ public:
   {
     setHtml( html_str );
   }
+  QString toHtml()
+  {
+    return page() -> currentFrame() -> toHtml();
+  }
   void enableMouseNavigation()
   {
     allow_mouse_navigation = true;
