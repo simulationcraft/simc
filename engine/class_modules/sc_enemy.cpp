@@ -661,7 +661,7 @@ void enemy_t::init_base_stats()
       level = sim -> max_player_level + sim -> rel_target_level;
 
     // waiting_time override
-    waiting_time = sim -> max_time;
+    waiting_time = timespan_t::from_seconds( 5.0 );
     if ( waiting_time < timespan_t::from_seconds( 1.0 ) )
       waiting_time = timespan_t::from_seconds( 1.0 );
 
@@ -908,7 +908,7 @@ double enemy_t::health_percentage() const
 {
   if ( fixed_health_percentage > 0 ) return fixed_health_percentage;
 
-  if ( resources.base[ RESOURCE_HEALTH ] == 0 ) // first iteration
+  if ( resources.base[ RESOURCE_HEALTH ] == 0 || sim -> fixed_time ) // first iteration or fixed time sim.
   {
     timespan_t remainder = std::max( timespan_t::zero(), ( sim -> expected_iteration_time - sim -> current_time ) );
 

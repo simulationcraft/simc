@@ -504,7 +504,7 @@ bool parse_fight_style( sim_t*             sim,
   {
     sim -> fight_style = "Ultraxion";
     sim -> max_time    = timespan_t::from_seconds( 366.0 );
-    sim -> fixed_time  = 1;
+    sim -> fixed_time  = true;
     sim -> vary_combat_length = 0.0;
     sim -> raid_events_str =  "flying,first=0,duration=500,cooldown=500";
     sim -> raid_events_str +=  "/position_switch,first=0,duration=500,cooldown=500";
@@ -878,7 +878,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   travel_variance( 0 ), default_skill( 1.0 ), reaction_time( timespan_t::from_seconds( 0.5 ) ),
   regen_periodicity( timespan_t::from_seconds( 0.25 ) ),
   ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) ),
-  fixed_time( 0 ),
+  fixed_time( false ),
   seed( 0 ), current_slot( -1 ),
   armor_update_interval( 20 ), weapon_speed_scale_factors( 0 ),
   optimal_raid( 0 ), log( 0 ), debug_each( 0 ), save_profiles( 0 ), default_actions( 0 ),

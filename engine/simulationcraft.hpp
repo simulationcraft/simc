@@ -2506,7 +2506,7 @@ struct sim_t : public core_sim_t, private sc_thread_t
   double     travel_variance, default_skill;
   timespan_t  reaction_time, regen_periodicity;
   timespan_t  ignite_sampling_delta;
-  int         fixed_time;
+  bool         fixed_time;
   int         seed, current_slot;
   int         armor_update_interval, weapon_speed_scale_factors;
   int         optimal_raid, log, debug_each;
