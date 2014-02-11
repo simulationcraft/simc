@@ -849,7 +849,12 @@ void SC_MainWindow::createTabShortcuts()
   Qt::Key keys[] = { Qt::Key_1, Qt::Key_2, Qt::Key_3, Qt::Key_4, Qt::Key_5, Qt::Key_6, Qt::Key_7, Qt::Key_8, Qt::Key_9, Qt::Key_unknown };
   for( int i = 0; keys[i] != Qt::Key_unknown; i++ )
   {
+// OS X needs to set the sequence to Cmd-<number>, since Alt is used for normal keys in certain cases
+#if ! defined( Q_WS_MAC ) && ! defined( Q_OS_MAC )
     QShortcut* shortcut = new QShortcut( QKeySequence( Qt::ALT + keys[i] ), this );
+#else
+    QShortcut* shortcut = new QShortcut( QKeySequence( Qt::CTRL + keys[i] ), this );
+#endif
     mainTabSignalMapper.setMapping( shortcut, i );
     connect( shortcut, SIGNAL( activated() ), &mainTabSignalMapper, SLOT( map() ) );
     shortcuts.push_back( shortcut );
