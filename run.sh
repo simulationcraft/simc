@@ -49,6 +49,4 @@ if ! which bats > /dev/null; then
 fi
 
 # Run tests
-for test_file in $@; do
-  bats --tap "${test_file}"
-done
+bats --tap "${test_file}" $@
