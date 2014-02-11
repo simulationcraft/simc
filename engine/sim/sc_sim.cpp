@@ -1319,7 +1319,14 @@ bool sim_t::init()
 
   // Seed RNG
   if ( seed == 0 )
-    seed = deterministic_rng ? 31459 : ( int ) time( nullptr );
+  {
+    int64_t sec, usec;
+    stopwatch_t sw( STOPWATCH_WALL );
+    sw.now( &sec, &usec );
+    int seed_ = static_cast< int >( sec * 1000 );
+    seed_ += static_cast< int >( usec / 1000.0 );
+    seed = deterministic_rng ? 31459 : seed_;
+  }
   _rng.seed( seed + thread_index );
 
   if ( ! core_sim_t::init() )
