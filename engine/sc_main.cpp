@@ -212,6 +212,8 @@ int sim_t::main( const std::vector<std::string>& args )
       util::fprintf( stdout, "\nGenerating reports...\n" ); fflush( stdout );
       report::print_suite( this );
     }
+    else
+      canceled = 1;
   }
 
   return canceled;
