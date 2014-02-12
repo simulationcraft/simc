@@ -436,6 +436,9 @@ action_t::~action_t()
 {
   delete execute_state;
   delete pre_execute_state;
+  delete if_expr;
+  delete interrupt_if_expr;
+  delete early_chain_if_expr;
 }
 
 // action_t::parse_data =====================================================
