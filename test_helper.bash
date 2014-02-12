@@ -11,7 +11,7 @@ function class_sim() {
   PROFILES=$(ls "${PROFILE_DIR}"/$1*.simc)
   for spec in $PROFILES; do
     SIMC_PROFILE=$spec
-    sim
+    sim default_actions=1
     [ "${status}" -eq 0 ]
   done
 }
