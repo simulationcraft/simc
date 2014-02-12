@@ -3,15 +3,15 @@
 ### Defaults:
 # Iterations
 if [ -z "${SIMC_ITERATIONS}" ]; then
-  SIMC_ITERATIONS=100
+  export SIMC_ITERATIONS=100
 fi
 # Simc executable
 if [ -z "${SIMC_CLI_PATH}" ]; then
-  SIMC_CLI_PATH="/var/lib/jenkins/jobs/simc-cli/workspace/engine/simc"
+  export SIMC_CLI_PATH="/var/lib/jenkins/jobs/simc-cli/workspace/engine/simc"
 fi
 # Profiles directory
 if [ -z "${SIMC_PROFILES_PATH}" ]; then
-  SIMC_PROFILES_PATH="/var/lib/jenkins/jobs/simc-cli/workspace/profiles"
+  export SIMC_PROFILES_PATH="/var/lib/jenkins/jobs/simc-cli/workspace/profiles"
 fi
 ###
 
@@ -35,7 +35,7 @@ fi
 
 # Look for a suitable profile, unless supplied
 if [ -z "${SIMC_PROFILE}" ]; then
-  SIMC_PROFILE=$(/bin/ls "${SIMC_PROFILES_PATH}"/Tier??H/Raid_T??H.simc|tail -1)
+  export SIMC_PROFILE=$(/bin/ls "${SIMC_PROFILES_PATH}"/Tier??H/Raid_T??H.simc|tail -1)
   if [ -z "${SIMC_PROFILE}" ]; then
     echo "Could not find a suitable profile and none was supplied."
     exit 1
