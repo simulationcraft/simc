@@ -27,6 +27,6 @@ load test_helper
 
 @test "Test multiple (4) enemies" {
   sim enemy=Enemy1 enemy=Enemy2 enemy=Enemy3 enemy=Enemy4
-  [ "${statis}" -eq 0 ]
+  [ "${status}" -eq 0 ]
 }
 
