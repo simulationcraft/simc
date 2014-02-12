@@ -2256,7 +2256,7 @@ struct storm_bolt_t : public warrior_attack_t
 
     warrior_attack_t::execute(); // for fury, this is the MH attack
 
-    if ( p -> specialization() == WARRIOR_FURY )
+    if ( p -> specialization() == WARRIOR_FURY && result_is_hit( execute_state -> result ) ) // If MH fails to land, OH does not execute.
       oh_attack -> execute();
   }
 };
