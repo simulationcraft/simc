@@ -1786,6 +1786,9 @@ expr_t* action_t::create_expression( const std::string& name_str )
         return state -> result_amount;
       }
     }
+
+    virtual ~amount_expr_t()
+    { delete state; }
   };
 
   if ( name_str == "n_ticks" )
