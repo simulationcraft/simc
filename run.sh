@@ -15,6 +15,20 @@ if [ -z "${SIMC_PROFILES_PATH}" ]; then
 fi
 ###
 
+# OS X does not include "timeout" command by default, it can be installed
+# through coreutils from macports/homebrew. Macports at least names it
+# "gtimeout" to differentiate between OS X version of coreutils, so perform
+# some detection on the correct command.
+SIMC_TIMEOUT=$(which timeout)
+if [ $? != 0 ]; then
+  SIMC_TIMEOUT=$(which gtimeout)
+  if [ $? != 0 ]; then
+    echo "Could not find 'timeout' command."
+    exit 1
+  fi
+fi
+export SIMC_TIMEOUT
+
 # Check for arguments
 if [ -z "$1" ]; then
   echo "Usage: $0 <bats file> ..."
