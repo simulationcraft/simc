@@ -416,7 +416,7 @@ expr_t* dot_t::create_expression( action_t* action,
     target_specific_t<dot_t*> specific_dot;
 
     dot_expr_t( const std::string& n, dot_t* d, action_t* a, bool dy ) :
-      expr_t( n ), static_dot( d ), action( a ), dynamic( dy ), specific_dot() {}
+      expr_t( n ), static_dot( d ), action( a ), dynamic( dy ), specific_dot( false ) {}
 
     dot_t* dot()
     {

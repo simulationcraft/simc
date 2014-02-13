@@ -309,6 +309,7 @@ action_t::action_t( action_e       ty,
   base_tick_time( timespan_t::zero() ),
   time_to_execute( timespan_t::zero() ),
   time_to_travel( timespan_t::zero() ),
+  target_specific_dot( false ),
   total_executions(),
   line_cooldown( cooldown_t( "line_cd", *p ) )
 {

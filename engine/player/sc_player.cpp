@@ -7629,6 +7629,12 @@ expr_t* player_t::create_expression( action_t* a,
 
           return result;
         }
+
+        virtual ~trinket_proc_expr_t()
+        {
+          delete bexpr1;
+          delete bexpr2;
+        }
       };
 
       return new trinket_proc_expr_t( a, stat, trinket1, trinket2, ptype == PROC_STACKING_STAT, splits[ expr_idx ] );

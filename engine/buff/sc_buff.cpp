@@ -915,7 +915,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     target_specific_t<buff_t*> specific_buff;
 
     buff_expr_t( const std::string& n, const std::string& bn, action_t* a, buff_t* b ) :
-      expr_t( n ), buff_name( bn ), action( a ), static_buff( b ), specific_buff() {}
+      expr_t( n ), buff_name( bn ), action( a ), static_buff( b ), specific_buff( false ) {}
 
     buff_t* buff()
     {

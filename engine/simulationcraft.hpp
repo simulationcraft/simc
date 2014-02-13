@@ -4765,7 +4765,11 @@ public:
 template < class T >
 struct target_specific_t
 {
+  bool owner_;
 public:
+  target_specific_t( bool owner = true ) : owner_( owner )
+  { }
+
   T& operator[](  const player_t* target ) const
   {
     assert( target );
@@ -4774,6 +4778,11 @@ public:
       data.resize( target -> sim -> actor_list.size() );
     }
     return data[ target -> actor_index ];
+  }
+  virtual ~target_specific_t()
+  {
+    if ( owner_ )
+      range::dispose( data );
   }
 private:
   mutable std::vector<T> data;
