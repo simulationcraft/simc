@@ -756,6 +756,9 @@ void warrior_attack_t::execute()
   base_t::execute();
 
   if ( proc ) return;
+  // Slam sweeping strikes may actually result in a situation, where there are 
+  // no targets to hit. In this case, there will be no execute state.
+  if ( ! execute_state ) return;
 
   if ( execute_state -> result == RESULT_DODGE )
   {
