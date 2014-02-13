@@ -2663,6 +2663,17 @@ struct ice_lance_t : public mage_spell_t
     add_child( mini_ice_lance );
   }
 
+  virtual int n_targets() const
+  {
+    // If we're shooting mini ice lances, the main ice lance action will always
+    // be single targeted, since the mini ice lances will handle the aoe damage
+    // due toe glyph of splitting ice
+    if ( p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> check() )
+      return 1;
+
+    return mage_spell_t::n_targets();
+  }
+
   virtual action_state_t* new_state()
   { return new state_t( this, target ); }
 
@@ -2673,10 +2684,9 @@ struct ice_lance_t : public mage_spell_t
 
     mage_spell_t::execute();
 
-    if ( p() -> glyphs.icy_veins -> ok() && p() -> buffs.icy_veins -> up() )
-    {
+    if ( static_cast<const state_t*>( execute_state ) -> mini_version )
       mini_ice_lance -> schedule_execute( mini_ice_lance -> get_state( execute_state ) );
-    }
+
     // Begin casting all Icicles at the target, beginning 0.25 seconds after the
     // Ice Lance cast with remaining Icicles launching at intervals of 0.75
     // seconds, both values adjusted by haste. Casting continues until all
@@ -2692,7 +2702,7 @@ struct ice_lance_t : public mage_spell_t
   virtual void impact( action_state_t* s )
   {
     if ( static_cast<const state_t&>( *s ).mini_version ) // Bail out if mini spells get casted
-    { return; }
+      return;
 
     mage_spell_t::impact( s );
   }

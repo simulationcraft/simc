@@ -76,8 +76,10 @@ struct action_execute_event_t : public event_t
   {
     if ( sim().debug )
       sim().out_debug.printf( "New Action Execute Event: %s %s %.1f (target=%s, marker=%c)",
-                  p()->name(), a->name(), time_to_execute.total_seconds(),
-                  a->target->name(), ( a->marker ) ? a->marker : '0' );
+                  p() -> name(), a -> name(), time_to_execute.total_seconds(),
+                  ( state ) ? state -> target -> name() : a -> target -> name(), 
+                  ( a -> marker ) ? a -> marker : '0' );
+
     sim().add_event( this, time_to_execute );
   }
 
@@ -94,6 +96,7 @@ struct action_execute_event_t : public event_t
   virtual void execute()
   {
     player_t* target = action -> target;
+
     // Pass the carried execute_state to the action. This saves us a few
     // cycles, as we don't need to make a copy of the state to pass to
     // action -> pre_execute_state.
@@ -106,11 +109,16 @@ struct action_execute_event_t : public event_t
 
     action -> execute_event = 0;
 
-    if ( target -> is_sleeping() && execute_state )
-      action_state_t::release( execute_state );
+    if ( target -> is_sleeping() && action -> pre_execute_state )
+    {
+      action_state_t::release( action -> pre_execute_state );
+      action -> pre_execute_state = 0;
+    }
 
     if ( ! target -> is_sleeping() )
       action -> execute();
+
+    assert( ! action -> pre_execute_state );
 
     if ( action -> background ) return;
 
