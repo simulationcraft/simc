@@ -17,6 +17,7 @@ function class_sim() {
 }
 
 teardown() {
+  BATS_TEST_DESCRIPTION="<strong>${BATS_TEST_DESCRIPTION}</strong>"
   BATS_TEST_DESCRIPTION+="<br/>Profiles: $(echo "${PROFILE_NAMES}" | sed -e 's/^ *//g' -e 's/ *$//g')"
   if [ ! -z "${OPTIONS}" ]; then
     BATS_TEST_DESCRIPTION+="<br/>Options: $(echo "${OPTIONS}" | sed -e 's/^ *//g' -e 's/ *$//g')"
