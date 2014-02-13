@@ -1856,10 +1856,9 @@ struct raging_blow_t : public warrior_attack_t
       mh_attack -> execute();
       oh_attack -> execute();
       p -> buff.raging_wind -> trigger();
+      p -> buff.meat_cleaver -> expire();
     }
-
     p -> buff.raging_blow -> decrement();
-    p -> buff.meat_cleaver -> expire();
   }
 
   virtual bool ready()
@@ -2216,9 +2215,7 @@ struct storm_bolt_off_hand_t : public warrior_attack_t
   storm_bolt_off_hand_t( warrior_t* p ) :
     warrior_attack_t( "storm_bolt_off_hand", p, p -> talents.storm_bolt )
   {
-    may_dodge  = false;
-    may_parry  = false;
-    may_block  = false;
+    may_dodge  = may_parry = may_block = false;
     background = true;
 
     weapon = &( p -> off_hand_weapon );
@@ -2410,15 +2407,37 @@ struct victory_rush_t : public warrior_attack_t
 
 // Whirlwind ================================================================
 
-struct whirlwind_attack_t : public warrior_attack_t
+struct whirlwind_off_hand_t : public warrior_attack_t
 {
-  whirlwind_attack_t( warrior_t* p, const char* name, const spell_data_t* s  ) :
-    warrior_attack_t( name, p, s )
+  whirlwind_off_hand_t( warrior_t* p ) :
+    warrior_attack_t( "whirlwind_oh", p, p -> find_spell( 44949 ) )
   {
-    may_miss = may_dodge = may_parry = false;
     background = true;
-    base_costs[ RESOURCE_RAGE ] = 0;
-    aoe        = -1;
+    aoe = -1;
+    weapon = &( p -> off_hand_weapon );
+  }
+};
+
+struct whirlwind_t : public warrior_attack_t
+{
+  whirlwind_off_hand_t* oh_attack;
+
+  whirlwind_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "whirlwind_mh" , p, p -> find_class_spell( "Whirlwind" ) )
+  {
+    parse_options( NULL, options_str );
+    aoe = -1;
+
+    if ( p -> specialization() == WARRIOR_FURY )
+    {
+      oh_attack = new whirlwind_off_hand_t( p );
+      add_child( oh_attack );
+    }
+
+    if ( p -> spec.seasoned_soldier -> ok() )
+      base_costs[ current_resource() ] += p -> spec.seasoned_soldier -> effectN( 2 ).resource( current_resource() );
+
+    weapon = &( p -> main_hand_weapon );
   }
 
   virtual double action_multiplier() const
@@ -2432,68 +2451,20 @@ struct whirlwind_attack_t : public warrior_attack_t
 
     return am;
   }
-};
-
-struct whirlwind_t : public warrior_attack_t
-{
-  whirlwind_attack_t *mh_attack;
-  whirlwind_attack_t *oh_attack;
-  off_hand_test_attack_t *oh_test;
-
-  whirlwind_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "whirlwind", p, p -> find_class_spell( "Whirlwind" ) ),
-    mh_attack( NULL ), oh_attack( NULL )
-  {
-    weapon = &( p -> main_hand_weapon ); // Include the weapon for racial expertise
-
-    parse_options( NULL, options_str );
-
-    if ( p -> specialization() == WARRIOR_FURY )
-    {
-      // Parent attack is only to determine miss/dodge/parry
-      base_dd_min = base_dd_max = 0;
-      weapon_multiplier = direct_power_mod = 0;
-      may_crit = proc = false;
-
-      mh_attack = new whirlwind_attack_t( p, "whirlwind_mh", p -> find_class_spell( "Whirlwind" ) );
-      mh_attack -> weapon = &( p -> main_hand_weapon );
-      add_child( mh_attack );
-
-      oh_attack = new whirlwind_attack_t( p, "whirlwind_oh", data().effectN( 3 ).trigger() );
-      oh_attack -> weapon = &( p -> off_hand_weapon );
-      add_child( oh_attack );
-
-      oh_test = new off_hand_test_attack_t( p, "whirlwind_oh_test" );
-      add_child( oh_test );
-    }
-
-    if ( p -> spec.seasoned_soldier -> ok() )
-      base_costs[ current_resource() ] += p -> spec.seasoned_soldier -> effectN( 2 ).resource( current_resource() );
-
-    aoe = -1;
-  }
 
   virtual void execute()
   {
     warrior_t* p = cast();
 
-    warrior_attack_t::execute(); //for fury, this is the hit test, for arms its the actual execute
+    warrior_attack_t::execute();
 
     if ( p -> specialization() == WARRIOR_FURY )
-    {
-      // check off-hand attack
-      oh_test -> execute(); // perform test OH attack
+      oh_attack -> execute();
 
-      // if both attacks hit, then execute the child attacks
-      if ( result_is_hit( execute_state -> result ) && result_is_hit( oh_test -> last_result ) )
-      {
-        p -> buff.meat_cleaver -> trigger();
-        mh_attack -> execute();
-        oh_attack -> execute();
-      }
-    }
+    if ( result_is_hit( execute_state -> result ) && p -> specialization() == WARRIOR_FURY )
+      p -> buff.meat_cleaver -> trigger();
 
-    p -> buff.raging_wind -> expire();
+      p -> buff.raging_wind -> expire();
 
     if ( p -> glyphs.raging_whirlwind -> ok() )
       p -> buff.raging_whirlwind -> trigger();
@@ -3486,7 +3457,7 @@ void warrior_t::apl_smf_fury()
                                 "# This is done to lower the amount of heroic strike usage, and to increase the amount of executes used." );
   single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1",
                                "The GCD reduction of the Bloodsurge buff allows 3 Wild Strikes in-between Bloodthirst." );
-  single_target -> add_action( "wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains" );
+  single_target -> add_action( "wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1" );
   single_target -> add_action( "dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))" );
   single_target -> add_action( this, "Colossus Smash", "" ,
                                "The debuff from Colossus Smash lasts 6.5 seconds and also has 0.25~ seconds of travel time. This allows 4 1.5 second globals to be used inside of it every time now." );
@@ -3497,32 +3468,32 @@ void warrior_t::apl_smf_fury()
   single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
   single_target -> add_action( this, "Raging Blow", "if=cooldown.colossus_smash.remains>=3", 
                                "If Colossus Smash is coming up soon, it's a good idea to save 1 charge of raging blow for it." );
+  single_target -> add_action( this, "Shattering Throw", "if=cooldown.colossus_smash.remains>5",
+                               "Shattering Throw is a very small personal dps increase, but a fairly significant raid dps increase. Only use to fill empty globals." );
   single_target -> add_action( "shockwave,if=enabled" );
   single_target -> add_action( this, "Heroic Throw", "if=debuff.colossus_smash.down&rage<60" );
   single_target -> add_action( this, "Battle Shout", "if=rage<70&!debuff.colossus_smash.up" );
   single_target -> add_action( this, "Wild Strike", "if=debuff.colossus_smash.up&target.health.pct>=20" );
   single_target -> add_action( this, "Battle Shout", "if=rage<70" );
-  single_target -> add_action( this, "Shattering Throw", "if=cooldown.colossus_smash.remains>5",
-                               "Shattering Throw is a very small personal dps increase, but a fairly significant raid dps increase. Only use to fill empty globals." );
   single_target -> add_action( this, "Wild Strike", "if=cooldown.colossus_smash.remains>=2&rage>=70&target.health.pct>=20" );
   single_target -> add_action( "impending_victory,if=enabled&target.health.pct>=20&cooldown.colossus_smash.remains>=2" );
 
-  two_targets -> add_action( "bloodbath,if=enabled&buff.enrage.up" );
-  two_targets -> add_action( this, "Cleave", "if=(rage>=60&debuff.colossus_smash.up)|rage>90" );
-  two_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
+  two_targets -> add_action( "bloodbath,if=enabled&buff.enrage.remains" );
+  two_targets -> add_action( this, "Cleave", "if=(rage>=60&debuff.colossus_smash.up)|rage>110" );
+  two_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up&(debuff.colossus_smash.up&buff.cooldown_reduction.up|!buff.cooldown_reduction.up)" );
   two_targets -> add_action( "dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))",
                              "Generally, if an encounter has any type of AoE, Bladestorm will be the better choice." );
-  two_targets -> add_action( "bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
-  two_targets -> add_action( "shockwave,if=enabled" );
+  two_targets -> add_action( "bladestorm,if=enabled&buff.enrage.remains>3&(buff.bloodbath.up|!talent.bloodbath.enabled)&(!debuff.colossus_smash.up|(debuff.colossus_smash.up&cooldown.storm_bolt.remains&talent.storm_bolt.enabled))" );
   two_targets -> add_action( this, "Colossus Smash" );
   two_targets -> add_action( this, "Bloodthirst", "cycle_targets=1,if=dot.deep_wounds.remains<5",
                              "Keep deep wounds on as many targets as possible." );
   two_targets -> add_action( this, "Bloodthirst", "if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)" );
   two_targets -> add_action( "storm_bolt,if=enabled&debuff.colossus_smash.up" );
-  two_targets -> add_action( "wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains" );
-  two_targets -> add_action( this, "Execute", "if=debuff.colossus_smash.up" );
-  two_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up|target.health.pct<20" );
+  two_targets -> add_action( "wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1" );
+  two_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up" );
   two_targets -> add_action( this, "Whirlwind", "if=!buff.meat_cleaver.up" );
+  two_targets -> add_action( "shockwave,if=enabled" );
+  two_targets -> add_action( this, "Execute" );
   two_targets -> add_action( this, "Battle Shout", "if=rage<70" );
   two_targets -> add_action( this, "Heroic Throw" );
 
@@ -3530,10 +3501,10 @@ void warrior_t::apl_smf_fury()
   three_targets -> add_action( this, "Cleave", "if=(rage>=60&debuff.colossus_smash.up)|rage>90" );
   three_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
   three_targets -> add_action( "dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))" );
-  three_targets -> add_action( "shockwave,if=enabled" );
   three_targets -> add_action( "bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
   three_targets -> add_action( this, "Colossus Smash" );
   three_targets -> add_action( "storm_bolt,if=enabled&debuff.colossus_smash.up" );
+  three_targets -> add_action( "shockwave,if=enabled" );
   three_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack=2" );
   three_targets -> add_action( this, "Bloodthirst", "cycle_targets=1,if=!dot.deep_wounds.ticking" );
   three_targets -> add_action( this, "Whirlwind" );
@@ -3549,8 +3520,7 @@ void warrior_t::apl_smf_fury()
                      "# 1/2/3/4/5+ targets ---> 0%/25%/35%/45%/50%" );
   aoe -> add_action( "bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
   aoe -> add_action( "storm_bolt,if=enabled&debuff.colossus_smash.up" );
-  aoe -> add_action( "shockwave,if=enabled",
-                     "Note: The 20 second reduction when hitting 3+ targets is not modeled." );
+  aoe -> add_action( "shockwave,if=enabled" );
   aoe -> add_action( this, "Bloodthirst", "cycle_targets=1,if=!dot.deep_wounds.ticking&buff.enrage.down", 
                      "Enrage overlaps 4 GCDs, which allows bloodthirst to be used mostly to keep enrage up, as rage income is typically not an issue with the aoe rotation." );
   aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack=3" );
@@ -3625,7 +3595,7 @@ void warrior_t::apl_tg_fury()
   single_target -> add_action( this, "Bloodthirst", "" );
   single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1",
                                "The GCD reduction of the Bloodsurge buff allows 3 Wild Strikes in-between Bloodthirst." );
-  single_target -> add_action( "wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains" );
+  single_target -> add_action( "wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1" );
   single_target -> add_action( "dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))" );
   single_target -> add_action( this, "Colossus Smash", "" ,
                                "The debuff from Colossus Smash lasts 6.5 seconds and also has 0.25~ seconds of travel time. This allows 4 1.5 second globals to be used inside of it every time now." );
@@ -3637,31 +3607,32 @@ void warrior_t::apl_tg_fury()
   single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
   single_target -> add_action( this, "Raging Blow", "if=cooldown.colossus_smash.remains>=3", 
                                "If Colossus Smash is coming up soon, it's a good idea to save 1 charge of raging blow for it." );
-  single_target -> add_action( "shockwave,if=enabled" );
-  single_target -> add_action( this, "Heroic Throw", "if=debuff.colossus_smash.down&rage<60" );
   single_target -> add_action( this, "Shattering Throw", "if=cooldown.colossus_smash.remains>5",
                                "Shattering Throw is a very small personal dps increase, but a fairly significant raid dps increase. Only use to fill empty globals." );
+  single_target -> add_action( "shockwave,if=enabled" );
+  single_target -> add_action( this, "Heroic Throw", "if=debuff.colossus_smash.down&rage<60" );
+  single_target -> add_action( this, "Battle Shout", "if=rage<70&!debuff.colossus_smash.up" );
   single_target -> add_action( this, "Wild Strike", "if=debuff.colossus_smash.up&target.health.pct>=20" );
   single_target -> add_action( this, "Battle Shout", "if=rage<70" );
   single_target -> add_action( this, "Wild Strike", "if=cooldown.colossus_smash.remains>=2&rage>=70&target.health.pct>=20" );
   single_target -> add_action( "impending_victory,if=enabled&target.health.pct>=20&cooldown.colossus_smash.remains>=2" );
 
-  two_targets -> add_action( "bloodbath,if=enabled&buff.enrage.up" );
-  two_targets -> add_action( this, "Cleave", "if=(rage>=60&debuff.colossus_smash.up)|rage>90" );
-  two_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
+  two_targets -> add_action( "bloodbath,if=enabled&buff.enrage.remains" );
+  two_targets -> add_action( this, "Cleave", "if=(rage>=60&debuff.colossus_smash.up)|rage>110" );
+  two_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up&(debuff.colossus_smash.up&buff.cooldown_reduction.up|!buff.cooldown_reduction.up)" );
   two_targets -> add_action( "dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))",
                              "Generally, if an encounter has any type of AoE, Bladestorm will be the better choice." );
-  two_targets -> add_action( "bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
-  two_targets -> add_action( "shockwave,if=enabled" );
+  two_targets -> add_action( "bladestorm,if=enabled&buff.enrage.remains>3&(buff.bloodbath.up|!talent.bloodbath.enabled)&(!debuff.colossus_smash.up|(debuff.colossus_smash.up&cooldown.storm_bolt.remains&talent.storm_bolt.enabled))" );
   two_targets -> add_action( this, "Colossus Smash" );
   two_targets -> add_action( this, "Bloodthirst", "cycle_targets=1,if=dot.deep_wounds.remains<5",
                              "Keep deep wounds on as many targets as possible." );
   two_targets -> add_action( this, "Bloodthirst", "if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)" );
   two_targets -> add_action( "storm_bolt,if=enabled&debuff.colossus_smash.up" );
-  two_targets -> add_action( "wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains" );
-  two_targets -> add_action( this, "Execute", "if=debuff.colossus_smash.up" );
-  two_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up|target.health.pct<20" );
+  two_targets -> add_action( "wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1" );
+  two_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.up" );
   two_targets -> add_action( this, "Whirlwind", "if=!buff.meat_cleaver.up" );
+  two_targets -> add_action( "shockwave,if=enabled" );
+  two_targets -> add_action( this, "Execute" );
   two_targets -> add_action( this, "Battle Shout", "if=rage<70" );
   two_targets -> add_action( this, "Heroic Throw" );
 
@@ -3669,10 +3640,10 @@ void warrior_t::apl_tg_fury()
   three_targets -> add_action( this, "Cleave", "if=(rage>=60&debuff.colossus_smash.up)|rage>90" );
   three_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
   three_targets -> add_action( "dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))" );
-  three_targets -> add_action( "shockwave,if=enabled" );
   three_targets -> add_action( "bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
   three_targets -> add_action( this, "Colossus Smash" );
   three_targets -> add_action( "storm_bolt,if=enabled&debuff.colossus_smash.up" );
+  three_targets -> add_action( "shockwave,if=enabled" );
   three_targets -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack=2" );
   three_targets -> add_action( this, "Bloodthirst", "cycle_targets=1,if=!dot.deep_wounds.ticking" );
   three_targets -> add_action( this, "Whirlwind" );
@@ -3688,8 +3659,7 @@ void warrior_t::apl_tg_fury()
                      "# 1/2/3/4/5+ targets ---> 0%/25%/35%/45%/50%" );
   aoe -> add_action( "bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
   aoe -> add_action( "storm_bolt,if=enabled&debuff.colossus_smash.up" );
-  aoe -> add_action( "shockwave,if=enabled",
-                     "Note: The 20 second reduction when hitting 3+ targets is not modeled." );
+  aoe -> add_action( "shockwave,if=enabled" );
   aoe -> add_action( this, "Bloodthirst", "cycle_targets=1,if=!dot.deep_wounds.ticking&buff.enrage.down", 
                      "Enrage overlaps 4 GCDs, which allows bloodthirst to be used mostly to keep enrage up, as rage income is typically not an issue with the aoe rotation." );
   aoe -> add_action( this, "Raging Blow", "if=buff.meat_cleaver.stack=3" );

@@ -1,4 +1,3 @@
-
 warrior="Warrior_Fury_1h_T16H"
 level=90
 race=orc
@@ -70,7 +69,7 @@ actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.down&debuf
 actions.single_target+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)
 # The GCD reduction of the Bloodsurge buff allows 3 Wild Strikes in-between Bloodthirst.
 actions.single_target+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1
-actions.single_target+=/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains
+actions.single_target+=/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1
 actions.single_target+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
 # The debuff from Colossus Smash lasts 6.5 seconds and also has 0.25~ seconds of travel time. This allows 4 1.5 second globals to be used inside of it every time now.
 actions.single_target+=/colossus_smash
@@ -81,32 +80,32 @@ actions.single_target+=/bladestorm,if=enabled
 actions.single_target+=/wild_strike,if=buff.bloodsurge.up
 # If Colossus Smash is coming up soon, it's a good idea to save 1 charge of raging blow for it.
 actions.single_target+=/raging_blow,if=cooldown.colossus_smash.remains>=3
+# Shattering Throw is a very small personal dps increase, but a fairly significant raid dps increase. Only use to fill empty globals.
+actions.single_target+=/shattering_throw,if=cooldown.colossus_smash.remains>5
 actions.single_target+=/shockwave,if=enabled
 actions.single_target+=/heroic_throw,if=debuff.colossus_smash.down&rage<60
 actions.single_target+=/battle_shout,if=rage<70&!debuff.colossus_smash.up
 actions.single_target+=/wild_strike,if=debuff.colossus_smash.up&target.health.pct>=20
 actions.single_target+=/battle_shout,if=rage<70
-# Shattering Throw is a very small personal dps increase, but a fairly significant raid dps increase. Only use to fill empty globals.
-actions.single_target+=/shattering_throw,if=cooldown.colossus_smash.remains>5
 actions.single_target+=/wild_strike,if=cooldown.colossus_smash.remains>=2&rage>=70&target.health.pct>=20
 actions.single_target+=/impending_victory,if=enabled&target.health.pct>=20&cooldown.colossus_smash.remains>=2
 
-actions.two_targets=bloodbath,if=enabled&buff.enrage.up
-actions.two_targets+=/cleave,if=(rage>=60&debuff.colossus_smash.up)|rage>90
-actions.two_targets+=/heroic_leap,if=buff.enrage.up
+actions.two_targets=bloodbath,if=enabled&buff.enrage.remains
+actions.two_targets+=/cleave,if=(rage>=60&debuff.colossus_smash.up)|rage>110
+actions.two_targets+=/heroic_leap,if=buff.enrage.up&(debuff.colossus_smash.up&buff.cooldown_reduction.up|!buff.cooldown_reduction.up)
 # Generally, if an encounter has any type of AoE, Bladestorm will be the better choice.
 actions.two_targets+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
-actions.two_targets+=/bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
-actions.two_targets+=/shockwave,if=enabled
+actions.two_targets+=/bladestorm,if=enabled&buff.enrage.remains>3&(buff.bloodbath.up|!talent.bloodbath.enabled)&(!debuff.colossus_smash.up|(debuff.colossus_smash.up&cooldown.storm_bolt.remains&talent.storm_bolt.enabled))
 actions.two_targets+=/colossus_smash
 # Keep deep wounds on as many targets as possible.
 actions.two_targets+=/bloodthirst,cycle_targets=1,if=dot.deep_wounds.remains<5
 actions.two_targets+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)
 actions.two_targets+=/storm_bolt,if=enabled&debuff.colossus_smash.up
-actions.two_targets+=/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1&cooldown.bloodthirst.remains
-actions.two_targets+=/execute,if=debuff.colossus_smash.up
-actions.two_targets+=/raging_blow,if=buff.meat_cleaver.up|target.health.pct<20
+actions.two_targets+=/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1
+actions.two_targets+=/raging_blow,if=buff.meat_cleaver.up
 actions.two_targets+=/whirlwind,if=!buff.meat_cleaver.up
+actions.two_targets+=/shockwave,if=enabled
+actions.two_targets+=/execute
 actions.two_targets+=/battle_shout,if=rage<70
 actions.two_targets+=/heroic_throw
 
@@ -114,10 +113,10 @@ actions.three_targets=bloodbath,if=enabled&buff.enrage.up
 actions.three_targets+=/cleave,if=(rage>=60&debuff.colossus_smash.up)|rage>90
 actions.three_targets+=/heroic_leap,if=buff.enrage.up
 actions.three_targets+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
-actions.three_targets+=/shockwave,if=enabled
 actions.three_targets+=/bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
 actions.three_targets+=/colossus_smash
 actions.three_targets+=/storm_bolt,if=enabled&debuff.colossus_smash.up
+actions.three_targets+=/shockwave,if=enabled
 actions.three_targets+=/raging_blow,if=buff.meat_cleaver.stack=2
 actions.three_targets+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking
 actions.three_targets+=/whirlwind
@@ -133,7 +132,6 @@ actions.aoe+=/heroic_leap,if=buff.enrage.up
 actions.aoe+=/dragon_roar,if=enabled&debuff.colossus_smash.down&(buff.bloodbath.up|!talent.bloodbath.enabled)
 actions.aoe+=/bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
 actions.aoe+=/storm_bolt,if=enabled&debuff.colossus_smash.up
-# Note: The 20 second reduction when hitting 3+ targets is not modeled.
 actions.aoe+=/shockwave,if=enabled
 # Enrage overlaps 4 GCDs, which allows bloodthirst to be used mostly to keep enrage up, as rage income is typically not an issue with the aoe rotation.
 actions.aoe+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking&buff.enrage.down

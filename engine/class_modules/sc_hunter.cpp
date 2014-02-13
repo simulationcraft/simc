@@ -3991,7 +3991,7 @@ void hunter_t::init_action_list()
         action_list_str += "/fervor,if=enabled&!ticking&focus<=65";
         action_list_str += "/bestial_wrath,if=focus>60&!buff.beast_within.up";
         action_list_str += "/multi_shot,if=active_enemies>5|(active_enemies>1&buff.beast_cleave.down)";
-		action_list_str += "/cobra_shot,if=active_enemies>5";
+        action_list_str += "/cobra_shot,if=active_enemies>5";
         action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
 
         if ( level >= 87 )
@@ -4052,7 +4052,7 @@ void hunter_t::init_action_list()
         action_list_str += "/chimera_shot";
         action_list_str += "/steady_shot,if=buff.steady_focus.remains<(action.steady_shot.cast_time+1)&!in_flight";
         action_list_str += "/kill_shot";
-		action_list_str += "/multi_shot,if=active_enemies>=4";
+        action_list_str += "/multi_shot,if=active_enemies>=4";
         action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
 
         action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
@@ -4088,7 +4088,7 @@ void hunter_t::init_action_list()
         action_list_str += "/explosive_shot,if=cooldown_react";
         action_list_str += "/kill_shot";
         action_list_str += "/black_arrow,if=!ticking&target.time_to_die>=8";
-		action_list_str += "/multi_shot,if=active_enemies>3";
+        action_list_str += "/multi_shot,if=active_enemies>3";
         action_list_str += "/multi_shot,if=buff.thrill_of_the_hunt.react&dot.serpent_sting.remains<2";
         action_list_str += "/arcane_shot,if=buff.thrill_of_the_hunt.react";
         action_list_str += "/rapid_fire,if=!buff.rapid_fire.up";
@@ -4099,7 +4099,7 @@ void hunter_t::init_action_list()
 
         action_list_str += "/cobra_shot,if=dot.serpent_sting.remains<6";
         action_list_str += "/arcane_shot,if=focus>=67&active_enemies<2";
-		action_list_str += "/multi_shot,if=focus>=67&active_enemies>1";
+        action_list_str += "/multi_shot,if=focus>=67&active_enemies>1";
 
         if ( find_class_spell( "Cobra Shot" ) )
           action_list_str += "/cobra_shot";
