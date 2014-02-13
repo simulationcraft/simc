@@ -8,7 +8,7 @@ function sim() {
 
 function class_sim() {
   PROFILE_DIR=$(dirname "${SIMC_PROFILE}")
-  PROFILES=$(ls "${PROFILE_DIR}"/$1*.simc)
+  PROFILES=$(ls "${PROFILE_DIR}"/$1_*_*.simc)
   for spec in $PROFILES; do
     SIMC_PROFILE=$spec
     sim default_actions=1
