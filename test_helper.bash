@@ -1,8 +1,9 @@
 function sim() {
+  PROFILE_NAMES+=" $(basename ${SIMC_PROFILE})"
+  OPTIONS="$@"
   cd "${SIMC_PROFILES_PATH}"
   run ${SIMC_TIMEOUT} 5m "${SIMC_CLI_PATH}" "${SIMC_PROFILE}" iterations="${SIMC_ITERATIONS}" $@
   cd -
-  BATS_TEST_DESCRIPTION+=" ($(basename ${SIMC_PROFILE}) iterations=${SIMC_ITERATIONS} $@)"
 }
 
 function class_sim() {
@@ -15,3 +16,9 @@ function class_sim() {
   done
 }
 
+teardown() {
+  BATS_TEST_DESCRIPTION+="\nProfiles: $(echo "${PROFILE_NAMES}" | sed -e 's/^ *//g' -e 's/ *$//g')"
+  if [ ! -z "${OPTIONS}" ]; then
+    BATS_TEST_DESCRIPTION+="\nOptions: $(echo "${OPTIONS}" | sed -e 's/^ *//g' -e 's/ *$//g')"
+  fi
+}
