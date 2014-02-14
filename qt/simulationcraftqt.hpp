@@ -2598,6 +2598,7 @@ protected:
       // simulating defaults:
       // mainbutton: simulate => cancel
       setText( SIMULATING, tab, BUTTON_MAIN , &text_cancel ); // instead of text_simulate
+      setText( SIMULATING_PAUSED, tab, BUTTON_MAIN, &text_cancel );
       setText( SIMULATING_MULTIPLE, tab, BUTTON_MAIN , &text_cancel ); // instead of text_simulate
       setText( SIMULATING_MULTIPLE_PAUSED, tab, BUTTON_MAIN , &text_cancel ); // instead of text_simulate
       setText( SIMULATING, tab, BUTTON_PAUSE, &text_pause );
