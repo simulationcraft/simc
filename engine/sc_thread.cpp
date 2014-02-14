@@ -64,7 +64,7 @@ public:
 class condition_variable_t::native_t : public nonmoveable
 {
   CONDITION_VARIABLE cv;
-  PCRITICAL_SECTION  cs
+  PCRITICAL_SECTION  cs;
 
 public:
   native_t( mutex_t* m ) : cs( m -> native_mutex() -> primitive() )
@@ -76,7 +76,7 @@ public:
   void wait()
   {
     EnterCriticalSection( cs );
-    SleepConditionVariable( &cv, cs, INFINITE );
+    SleepConditionVariableCS( &cv, cs, INFINITE );
     LeaveCriticalSection( cs );
   }
 
