@@ -458,6 +458,7 @@ void SC_MainWindow::createCmdLine()
 
   connect( &simulationQueue, SIGNAL( firstItemWasAdded() ), this, SLOT( itemWasEnqueuedTryToSim() ) );
   connect( cmdLine, SIGNAL( pauseClicked() ), this, SLOT( pauseButtonClicked() ) );
+  connect( cmdLine, SIGNAL( resumeClicked() ), this, SLOT( pauseButtonClicked() ) );
   connect( cmdLine, SIGNAL( backButtonClicked() ), this, SLOT( backButtonClicked() ) );
   connect( cmdLine, SIGNAL( forwardButtonClicked() ), this, SLOT( forwardButtonClicked() ) );
   connect( cmdLine, SIGNAL( simulateClicked() ), this, SLOT( enqueueSim() ) );
@@ -1599,6 +1600,7 @@ void SC_MainWindow::importButtonClicked()
 
 void SC_MainWindow::pauseButtonClicked( bool )
 {
+  cmdLine -> togglePaused();
   simulateThread -> toggle_pause();
 }
 

@@ -2252,6 +2252,8 @@ public:
     IDLE = 0,
     SIMULATING,          // Simulating only one, nothing queued
     SIMULATING_MULTIPLE, // Simulating but others are queued
+    SIMULATING_PAUSED,
+    SIMULATING_MULTIPLE_PAUSED,
     STATE_COUNT
   };
   enum tabs_e // contains main_tabs_e then import_tabs_e
@@ -2456,6 +2458,60 @@ public:
     adjustText( current_state, tab, TEXTEDIT_CMDLINE, text );
     updateWidget( current_state, tab, TEXTEDIT_CMDLINE );
   }
+  void togglePaused()
+  {
+    setPaused( !isPaused() );
+  }
+  void setPaused( bool pause )
+  {
+    switch( current_state )
+    {
+    case SIMULATING:
+      if ( pause )
+      {
+        setState( SIMULATING_PAUSED );
+      }
+      break;
+    case SIMULATING_MULTIPLE:
+      if ( pause )
+      {
+        setState( SIMULATING_MULTIPLE_PAUSED );
+      }
+      break;
+    case SIMULATING_PAUSED:
+      if ( ! pause )
+      {
+        setState( SIMULATING );
+      }
+      break;
+    case SIMULATING_MULTIPLE_PAUSED:
+      if ( ! pause )
+      {
+        setState( SIMULATING_MULTIPLE );
+      }
+      break;
+    default:
+      break;
+    }
+  }
+  bool isPaused()
+  {
+    bool retval = false;
+
+    switch( current_state )
+    {
+    case SIMULATING_PAUSED:
+      retval = true;
+      break;
+    case SIMULATING_MULTIPLE_PAUSED:
+      retval = true;
+      break;
+    default:
+      break;
+    }
+
+    return retval;
+  }
 protected:
   void init()
   {
@@ -2481,6 +2537,7 @@ protected:
     initLogResultsStates();
     initProgressBarStates();
     initCommandLineBuffers();
+    initPauseStates();
 
   }
   void initTextStrings()
@@ -2542,6 +2599,7 @@ protected:
       // mainbutton: simulate => cancel
       setText( SIMULATING, tab, BUTTON_MAIN , &text_cancel ); // instead of text_simulate
       setText( SIMULATING_MULTIPLE, tab, BUTTON_MAIN , &text_cancel ); // instead of text_simulate
+      setText( SIMULATING_MULTIPLE_PAUSED, tab, BUTTON_MAIN , &text_cancel ); // instead of text_simulate
       setText( SIMULATING, tab, BUTTON_PAUSE, &text_pause );
 
       // simulating_multiple defaults:
@@ -2551,6 +2609,7 @@ protected:
         if ( getText( SIMULATING_MULTIPLE, tab, widget ) == text_cancel )
         {
           setText( SIMULATING_MULTIPLE, tab, widget, &text_cancel_all, &text_cancel_all_tooltip );
+          setText( SIMULATING_MULTIPLE_PAUSED, tab, widget, &text_cancel_all, &text_cancel_all_tooltip );
         }
       }
     }
@@ -2589,7 +2648,7 @@ protected:
     setText( IDLE      , CMDLINE_TAB_LOG    , BUTTON_MAIN , &text_save );
     setText( IDLE      , CMDLINE_TAB_RESULTS, BUTTON_MAIN , &text_save );
     // SIMULATING + SIMULATING_MULTIPLE: queue button => save
-    for ( state_e state = SIMULATING; state <= SIMULATING_MULTIPLE; state++ )
+    for ( state_e state = SIMULATING; state <= SIMULATING_MULTIPLE_PAUSED; state++ )
     {
       setText( state, CMDLINE_TAB_LOG    , BUTTON_QUEUE, &text_save );
       setText( state, CMDLINE_TAB_RESULTS, BUTTON_QUEUE, &text_save );
@@ -2648,6 +2707,16 @@ protected:
       // everything else shares the default buffer
     }
   }
+  void initPauseStates()
+  {
+    for ( tabs_e tab = CMDLINE_TAB_WELCOME; tab < CMDLINE_TAB_COUNT; tab++ )
+    {
+      for ( state_e state = SIMULATING_PAUSED; state <= SIMULATING_MULTIPLE_PAUSED; state++ )
+      {
+        setText( state, tab, BUTTON_PAUSE, &text_resume );
+      }
+    }
+  }
   virtual QWidget* createState( state_e state )
   {
     // Create the widget for the state
@@ -2676,6 +2745,12 @@ protected:
     case SIMULATING_MULTIPLE:
       createState_SIMULATING_MULTIPLE( stateWidget );
       break;
+    case SIMULATING_PAUSED:
+      createState_SIMULATING_PAUSED( stateWidget );
+      break;
+    case SIMULATING_MULTIPLE_PAUSED:
+      createState_SIMULATING_MULTIPLE_PAUSED( stateWidget );
+      break;
     default:
       break;
     }
@@ -2700,10 +2775,18 @@ protected:
     // creates the SIMULATING state
     _createState_SIMULATING( SIMULATING, parent );
   }
+  virtual void createState_SIMULATING_PAUSED( QWidget* parent )
+  {
+    _createState_SIMULATING( SIMULATING_PAUSED, parent );
+  }
   virtual void createState_SIMULATING_MULTIPLE( QWidget* parent )
   {
     // creates the SIMULATING_MULTIPLE state
     _createState_SIMULATING( SIMULATING_MULTIPLE, parent );
+  }
+  virtual void createState_SIMULATING_MULTIPLE_PAUSED( QWidget* parent )
+  {
+    _createState_SIMULATING( SIMULATING_MULTIPLE_PAUSED, parent );
   }
   virtual void _createState_SIMULATING( state_e state, QWidget* parent )
   {
@@ -2791,7 +2874,7 @@ protected:
       if ( text == text_pause )
         emit( pauseClicked() );
       else if ( text == text_resume )
-        emit( pauseClicked() );
+        emit( resumeClicked() );
       else if ( text == text_simulate )
       {
   #ifdef SC_PAPERDOLL
@@ -3002,13 +3085,7 @@ public slots:
   }
   void pauseButtonClicked()
   {
-    QString* str = getText( current_state, current_tab, BUTTON_PAUSE ); 
-    if ( str == text_pause )
-      setText( current_state, current_tab, BUTTON_PAUSE, &text_resume );
-    else
-      setText( current_state, current_tab, BUTTON_PAUSE, &text_pause );
-    updateWidget( current_state, current_tab, BUTTON_PAUSE );
-    emitSignal( str );
+    emitSignal( getText( current_state, current_tab, BUTTON_PAUSE ) );
   }
   void queueButtonClicked()
   {
@@ -3065,6 +3142,7 @@ public slots:
   }
 signals:
   void pauseClicked();
+  void resumeClicked();
   void simulateClicked();
   void queueClicked();
   void importClicked();
