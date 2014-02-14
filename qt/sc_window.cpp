@@ -1195,6 +1195,9 @@ void SC_MainWindow::stopSim()
   if ( simRunning() )
   {
     sim -> cancel();
+
+    if ( sim -> is_paused() )
+      sim -> toggle_pause();
   }
 }
 
@@ -1596,10 +1599,7 @@ void SC_MainWindow::importButtonClicked()
 
 void SC_MainWindow::pauseButtonClicked( bool )
 {
-  if ( ! simulateThread -> is_paused() )
-    simulateThread -> pause();
-  else
-    simulateThread -> unpause();
+  simulateThread -> toggle_pause();
 }
 
 void SC_MainWindow::backButtonClicked( bool /* checked */ )

@@ -2283,7 +2283,7 @@ protected:
   QString text_simulate;
   QString text_queue;
   QString text_pause;
-  QString text_unpause;
+  QString text_resume;
   QString text_queue_tooltip;
   QString text_cancel;
   QString text_cancel_all;
@@ -2488,7 +2488,7 @@ protected:
     // strings shared by widgets
     text_simulate           = tr( "Simulate!"   );
     text_pause              = tr( "Pause"       );
-    text_unpause            = tr( "Unpause"     );
+    text_resume             = tr( "Resume"      );
     text_queue              = tr( "Queue!"      );
     text_queue_tooltip      = tr( "Click to queue a simulation to run after the current one" );
     text_cancel             = tr( "Cancel! "    );
@@ -2542,6 +2542,7 @@ protected:
       // mainbutton: simulate => cancel
       setText( SIMULATING, tab, BUTTON_MAIN , &text_cancel ); // instead of text_simulate
       setText( SIMULATING_MULTIPLE, tab, BUTTON_MAIN , &text_cancel ); // instead of text_simulate
+      setText( SIMULATING, tab, BUTTON_PAUSE, &text_pause );
 
       // simulating_multiple defaults:
       // cancel => text_cancel_all
@@ -2789,7 +2790,7 @@ protected:
     {
       if ( text == text_pause )
         emit( pauseClicked() );
-      else if ( text == text_unpause )
+      else if ( text == text_resume )
         emit( pauseClicked() );
       else if ( text == text_simulate )
       {
@@ -3003,7 +3004,7 @@ public slots:
   {
     QString* str = getText( current_state, current_tab, BUTTON_PAUSE ); 
     if ( str == text_pause )
-      setText( current_state, current_tab, BUTTON_PAUSE, &text_unpause );
+      setText( current_state, current_tab, BUTTON_PAUSE, &text_resume );
     else
       setText( current_state, current_tab, BUTTON_PAUSE, &text_pause );
     updateWidget( current_state, current_tab, BUTTON_PAUSE );
@@ -4125,14 +4126,8 @@ public:
   QString options;
   bool success;
 
-  bool is_paused()
-  { return sim -> is_paused(); }
-
-  void pause()
-  { sim -> pause(); }
-
-  void unpause()
-  { sim -> unpause(); }
+  void toggle_pause()
+  { sim -> toggle_pause(); }
 
   void start( sim_t* s, const QString& o ) { sim = s; options = o; success = false; QThread::start(); }
   virtual void run();

@@ -2382,25 +2382,19 @@ bool sim_t::use_load_balancing() const
   return true;
 }
 
-void sim_t::pause()
+void sim_t::toggle_pause()
 {
   if ( parent )
     return;
 
   pause_mutex.lock();
-  paused = true;
-  pause_mutex.unlock();
-}
-
-void sim_t::unpause()
-{
-  if ( parent )
-    return;
-
-  pause_mutex.lock();
-  paused = false;
-  // Wake up all threads
-  pause_cvar.broadcast();
+  if ( ! paused )
+    paused = true;
+  else
+  {
+    paused = false;
+    pause_cvar.broadcast();
+  }
   pause_mutex.unlock();
 }
 
