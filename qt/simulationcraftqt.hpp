@@ -2346,7 +2346,7 @@ protected:
   QString commandLineBuffer_TAB_HELP;
   QString commandLineBuffer_TAB_LOG;
 
-  QVariant widgets[STATE_COUNT][WIDGET_COUNT]; // holds all widgets in all states
+  QWidget* widgets[STATE_COUNT][WIDGET_COUNT]; // holds all widgets in all states
 
   QStackedLayout* statesStackedLayout; // Contains all states
   tabs_e current_tab;
@@ -2527,6 +2527,7 @@ protected:
     // use setProgressBarState() to set progressbar's state in states/tabs
     // using text_hide_widget as the text, will hide that widget ONLY in that state/tab, and show it in others
 
+    initWidgetsToNull();
     initTextStrings();
     initStatesStructToNull();
     initDefaultStates();
@@ -2539,6 +2540,16 @@ protected:
     initCommandLineBuffers();
     initPauseStates();
 
+  }
+  void initWidgetsToNull()
+  {
+    for ( state_e state = IDLE; state < STATE_COUNT; state++ )
+    {
+      for ( widgets_e widget = BUTTON_MAIN; widget < WIDGET_COUNT; widget++ )
+      {
+        widgets[state][widget] = nullptr;
+      }
+    }
   }
   void initTextStrings()
   {
@@ -2769,7 +2780,7 @@ protected:
     QLayout* parentLayout = parent -> layout();
 
     QPushButton* buttonMain = new QPushButton( *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_MAIN ), parent );
-    setWidget( IDLE, BUTTON_MAIN, QVariant::fromValue< QPushButton* >( buttonMain ) );
+    setWidget( IDLE, BUTTON_MAIN, buttonMain );
     parentLayout -> addWidget( buttonMain );
 
     connect( buttonMain, SIGNAL( clicked() ), this, SLOT( mainButtonClicked() ) );
@@ -2800,9 +2811,9 @@ protected:
     QPushButton* buttonQueue = new QPushButton( *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_QUEUE ), parent );
     QPushButton* buttonMain  = new QPushButton( *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_MAIN  ), parent );
     QPushButton* buttonPause = new QPushButton( *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_PAUSE ), parent );
-    setWidget( state, BUTTON_QUEUE, QVariant::fromValue< QPushButton* >( buttonQueue ) );
-    setWidget( state, BUTTON_MAIN , QVariant::fromValue< QPushButton* >( buttonMain ) );
-    setWidget( state, BUTTON_PAUSE, QVariant::fromValue< QPushButton* >( buttonPause ) );
+    setWidget( state, BUTTON_QUEUE, buttonQueue );
+    setWidget( state, BUTTON_MAIN , buttonMain );
+    setWidget( state, BUTTON_PAUSE, buttonPause );
     parentLayout -> addWidget( buttonQueue );
     parentLayout -> addWidget( buttonMain );
     parentLayout -> addWidget( buttonPause );
@@ -2820,9 +2831,9 @@ protected:
     QPushButton* buttonNext = new QPushButton( tr( ">" ), parent );
     SC_CommandLine* commandLineEdit = new SC_CommandLine( parent );
 
-    setWidget( state, BUTTON_PREV,      QVariant::fromValue< QPushButton* >( buttonPrev ) );
-    setWidget( state, BUTTON_NEXT,      QVariant::fromValue< QPushButton* >( buttonNext ) );
-    setWidget( state, TEXTEDIT_CMDLINE, QVariant::fromValue< SC_CommandLine* >( commandLineEdit ) );
+    setWidget( state, BUTTON_PREV,      buttonPrev );
+    setWidget( state, BUTTON_NEXT,      buttonNext );
+    setWidget( state, TEXTEDIT_CMDLINE, commandLineEdit );
 
     buttonPrev -> setMaximumWidth( 30 );
     buttonNext -> setMaximumWidth( 30 );
@@ -2841,7 +2852,7 @@ protected:
     // Progress bar
     QProgressBar* progressBar = new QProgressBar( parent );
 
-    setWidget( state, PROGRESSBAR_WIDGET, QVariant::fromValue< QProgressBar* >( progressBar ) );
+    setWidget( state, PROGRESSBAR_WIDGET, progressBar );
 
     progressBar -> setMaximum( 100 );
     progressBar -> setMaximumWidth( 200 );
@@ -2947,7 +2958,7 @@ protected:
   void updateProgressBars()
   {
     // actually updates currently visible progressbar's progress
-    QProgressBar* progressBar = getWidget( current_state, PROGRESSBAR_WIDGET ).value< QProgressBar* >();
+    QProgressBar* progressBar = qobject_cast< QProgressBar* >( getWidget( current_state, PROGRESSBAR_WIDGET ) );
     if ( progressBar != nullptr )
     {
       progressBar -> setValue( getProgressBarProgressForState( getProgressBarStateForState( current_state, current_tab ) ) );
@@ -2992,7 +3003,7 @@ protected:
         {
         case TEXTEDIT_CMDLINE:
         {
-          SC_CommandLine* commandLine = getWidget( state, TEXTEDIT_CMDLINE ).value< SC_CommandLine* >();
+          SC_CommandLine* commandLine = qobject_cast< SC_CommandLine* >( getWidget( state, TEXTEDIT_CMDLINE ) );
           if ( commandLine != nullptr )
           {
             commandLine -> setText( *text );
@@ -3005,7 +3016,7 @@ protected:
         }
         case PROGRESSBAR_WIDGET:
         {
-          QProgressBar* progressBar = getWidget( state, PROGRESSBAR_WIDGET ).value< QProgressBar* >();
+          QProgressBar* progressBar = qobject_cast< QProgressBar* >( getWidget( state, PROGRESSBAR_WIDGET ) );
           if ( progressBar != nullptr )
           {
             progressBar -> setFormat( *text );
@@ -3018,13 +3029,16 @@ protected:
           break;
         }
         default:
-          QPushButton* button = getWidget( state, widget ).value< QPushButton* >();
-          button -> setText( *text );
-          if ( toolTip != nullptr )
+          QPushButton* button = qobject_cast< QPushButton* >( getWidget( state, widget ) );
+          if ( button != nullptr )
           {
-            button -> setToolTip( *toolTip );
+            button -> setText( *text );
+            if ( toolTip != nullptr )
+            {
+              button -> setToolTip( *toolTip );
+            }
+            break;
           }
-          break;
         }
       }
     }
@@ -3038,15 +3052,15 @@ protected:
   {
     return states[state][tab][widget].tool_tip;
   }
-  QVariant getWidget( state_e state, widgets_e widget )
+  QWidget* getWidget( state_e state, widgets_e widget )
   {
     // returns the widget for the specified state
     return widgets[state][widget];
   }
-  void setWidget( state_e state, widgets_e widget, QVariant variant )
+  void setWidget( state_e state, widgets_e widget, QWidget* widgetPointer )
   {
     // sets the widget for the specified state
-    widgets[state][widget] = variant;
+    widgets[state][widget] = widgetPointer;
   }
   void setProgressBarFormat( progressbar_states_e state, QString format, bool update = false )
   {
@@ -3112,7 +3126,7 @@ public slots:
     // sets correct text for the current_state for the given tab on all widgets
     for ( widgets_e widget = BUTTON_MAIN; widget < WIDGET_COUNT; widget++ )
     {
-      QWidget* wdgt = getWidget( current_state, widget ).value< QWidget* >();
+      QWidget* wdgt = getWidget( current_state, widget );
       if ( wdgt != nullptr )
       {
         if ( ! tryToHideWidget( getText( current_state, current_tab, widget ), wdgt ) )
