@@ -1,10 +1,5 @@
 load test_helper
 
-@test "Simulation style LightMovement" {
-  sim fight_style=LightMovement
-  [ "${status}" -eq 0 ]
-}
-
 @test "Simulation style HeavyMovement" {
   sim fight_style=HeavyMovement
   [ "${status}" -eq 0 ]
