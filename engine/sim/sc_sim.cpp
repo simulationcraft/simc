@@ -858,6 +858,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   control( 0 ),
   parent( p ),
   initialized( false ),
+  paused( false ),
   target( NULL ),
   heal_target( NULL ),
   target_list(),
@@ -919,7 +920,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   report_information( report_information_t() ),
   // Multi-Threading
   threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::NORMAL ), work_queue(),
-  spell_query( 0 ), spell_query_level( MAX_LEVEL )
+  spell_query( 0 ), spell_query_level( MAX_LEVEL ),
+  pause_cvar( &pause_mutex )
 {
   item_db_sources.assign( range::begin( default_item_db_sources ),
                           range::end( default_item_db_sources ) );
@@ -1608,13 +1610,15 @@ bool sim_t::iterate()
 
   for( int i = 0; use_lb ? (true) : (i < iterations); ++i )
   {
-    if ( canceled )
+    do_pause();
+
+    if ( unlikely( canceled ) )
     {
       iterations = current_iteration + 1;
       break;
     }
 
-    if ( use_lb ) // Load Balancing
+    if ( likely( use_lb ) ) // Load Balancing
     {
       // Select the work queue on the main thread
       work_queue_t& work_queue = (thread_index != 0) ? parent -> work_queue : this -> work_queue;
@@ -2377,3 +2381,26 @@ bool sim_t::use_load_balancing() const
 
   return true;
 }
+
+void sim_t::pause()
+{
+  if ( parent )
+    return;
+
+  pause_mutex.lock();
+  paused = true;
+  pause_mutex.unlock();
+}
+
+void sim_t::unpause()
+{
+  if ( parent )
+    return;
+
+  pause_mutex.lock();
+  paused = false;
+  // Wake up all threads
+  pause_cvar.broadcast();
+  pause_mutex.unlock();
+}
+

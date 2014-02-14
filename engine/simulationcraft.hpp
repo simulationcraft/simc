@@ -2503,7 +2503,7 @@ struct sim_t : public core_sim_t, private sc_thread_t
 {
   sim_control_t* control;
   sim_t*      parent;
-  bool initialized;
+  bool initialized, paused;
   player_t*   target;
   player_t*   heal_target;
   vector_with_callback<player_t*> target_list;
@@ -2750,11 +2750,48 @@ public:
   expr_t* create_expression( action_t*, const std::string& name );
   void       errorf( const char* format, ... );
 
+  bool is_paused()
+  {
+    if ( parent )
+      return parent -> is_paused();
+    else
+    {
+      pause_mutex.lock();
+      bool p = paused;
+      pause_mutex.unlock();
+      return p;
+    }
+  }
+
+  void      pause();
+  void      unpause();
+
   static double distribution_mean_error( const sim_t& s, const extended_sample_data_t& sd )
   { return s.confidence_estimator * sd.mean_std_dev; }
 
 private:
+  mutex_t pause_mutex;
+  condition_variable_t pause_cvar;
+
   bool use_load_balancing() const;
+
+  void do_pause()
+  {
+    if ( ! parent )
+    {
+      pause_mutex.lock();
+      while ( unlikely( paused ) )
+        pause_cvar.wait();
+      pause_mutex.unlock();
+    }
+    else
+    {
+      parent -> pause_mutex.lock();
+      while ( unlikely( parent -> paused ) )
+        parent -> pause_cvar.wait();
+      parent -> pause_mutex.unlock();
+    }
+  }
 };
 
 // Module ===================================================================
