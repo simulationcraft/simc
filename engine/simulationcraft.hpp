@@ -2183,6 +2183,26 @@ public:
 
   void lock();
   void unlock();
+
+  native_t* native_mutex() const
+  { return native_handle; }
+};
+
+class condition_variable_t : public noncopyable
+{
+private:
+  class native_t;
+
+  native_t* native_handle;
+
+public:
+  condition_variable_t( mutex_t* m );
+  ~condition_variable_t();
+
+  void wait();
+
+  void signal();
+  void broadcast();
 };
 
 class sc_thread_t : public noncopyable

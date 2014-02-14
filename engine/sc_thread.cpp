@@ -55,6 +55,44 @@ public:
 
   void lock()   { EnterCriticalSection( &cs ); }
   void unlock() { LeaveCriticalSection( &cs ); }
+
+  PCRITICAL_SECTION primitive() { return &cs; }
+};
+
+// condition_variable_t::native_t ===========================================
+
+class condition_variable_t::native_t : public nonmoveable
+{
+  CONDITION_VARIABLE cv;
+  PCRITICAL_SECTION  cs
+
+public:
+  native_t( mutex_t* m ) : cs( m -> native_mutex() -> primitive() )
+  { InitializeConditionVariable( &cv ); }
+
+  ~native_t()
+  { }
+
+  void wait()
+  {
+    EnterCriticalSection( cs );
+    SleepConditionVariable( &cv, cs, INFINITE );
+    LeaveCriticalSection( cs );
+  }
+
+  void signal()
+  {
+    EnterCriticalSection( cs );
+    WakeConditionVariable( &cv );
+    LeaveCriticalSection( cs );
+  }
+
+  void broadcast()
+  {
+    EnterCriticalSection( cs );
+    WakeAllConditionVariable( &cv );
+    LeaveCriticalSection( cs );
+  }
 };
 
 namespace { // unnamed namespace
@@ -144,6 +182,43 @@ public:
 
   void lock()   { pthread_mutex_lock( &m ); }
   void unlock() { pthread_mutex_unlock( &m ); }
+  pthread_mutex_t* primitive() { return &m; }
+};
+
+// condition_variable_t::native_t ===========================================
+
+class condition_variable_t::native_t : public nonmoveable
+{
+  pthread_cond_t   cv;
+  pthread_mutex_t* m;
+
+public:
+  native_t( mutex_t* mutex ) : m( mutex -> native_mutex() -> primitive() )
+  { pthread_cond_init( &cv, 0 ); }
+
+  ~native_t()
+  { pthread_cond_destroy( &cv ); }
+
+  void wait()
+  {
+    pthread_mutex_lock( m );
+    pthread_cond_wait( &cv, m );
+    pthread_mutex_unlock( m );
+  }
+
+  void signal()
+  {
+    pthread_mutex_lock( m );
+    pthread_cond_signal( &cv );
+    pthread_mutex_unlock( m );
+  }
+
+  void broadcast()
+  {
+    pthread_mutex_lock( m );
+    pthread_cond_broadcast( &cv );
+    pthread_mutex_unlock( m );
+  }
 };
 
 
@@ -240,6 +315,32 @@ void mutex_t::lock()
 
 void mutex_t::unlock()
 { native_handle -> unlock(); }
+
+// condition_variable_t::condition_variable_t() =============================
+
+condition_variable_t::condition_variable_t( mutex_t* m ) : 
+  native_handle( new native_t( m ) )
+{ }
+
+// condition_variable_t::~condition_variable_t() ============================
+
+condition_variable_t::~condition_variable_t()
+{ delete native_handle; }
+
+// condition_variable_t::wait() =============================================
+
+void condition_variable_t::wait()
+{ native_handle -> wait(); }
+
+// condition_variable_t::signal() ===========================================
+
+void condition_variable_t::signal()
+{ native_handle -> signal(); }
+
+// condition_variable_t::broadcast() ========================================
+
+void condition_variable_t::broadcast()
+{ native_handle -> broadcast(); }
 
 // sc_thread_t::sc_thread_t() ===============================================
 
