@@ -2282,6 +2282,8 @@ public:
 protected:
   QString text_simulate;
   QString text_queue;
+  QString text_pause;
+  QString text_unpause;
   QString text_queue_tooltip;
   QString text_cancel;
   QString text_cancel_all;
@@ -2302,6 +2304,7 @@ protected:
     BUTTON_NEXT,
     TEXTEDIT_CMDLINE,
     PROGRESSBAR_WIDGET,
+    BUTTON_PAUSE,
     WIDGET_COUNT
   };
   enum progressbar_states_e // Different states for progressbars
@@ -2484,6 +2487,8 @@ protected:
   {
     // strings shared by widgets
     text_simulate           = tr( "Simulate!"   );
+    text_pause              = tr( "Pause"       );
+    text_unpause            = tr( "Unpause"     );
     text_queue              = tr( "Queue!"      );
     text_queue_tooltip      = tr( "Click to queue a simulation to run after the current one" );
     text_cancel             = tr( "Cancel! "    );
@@ -2523,6 +2528,7 @@ protected:
         // buttons
         setText( state, tab, BUTTON_MAIN , &text_simulate );
         setText( state, tab, BUTTON_QUEUE, &text_queue, &text_queue_tooltip );
+        setText( state, tab, BUTTON_PAUSE, &text_pause );
         setText( state, tab, BUTTON_PREV , &text_prev, &text_prev_tooltip );
         setText( state, tab, BUTTON_NEXT , &text_next, &text_next_tooltip );
         // progressbar
@@ -2705,13 +2711,17 @@ protected:
 
     QPushButton* buttonQueue = new QPushButton( *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_QUEUE ), parent );
     QPushButton* buttonMain  = new QPushButton( *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_MAIN  ), parent );
+    QPushButton* buttonPause = new QPushButton( *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_PAUSE ), parent );
     setWidget( state, BUTTON_QUEUE, QVariant::fromValue< QPushButton* >( buttonQueue ) );
     setWidget( state, BUTTON_MAIN , QVariant::fromValue< QPushButton* >( buttonMain ) );
+    setWidget( state, BUTTON_PAUSE, QVariant::fromValue< QPushButton* >( buttonPause ) );
     parentLayout -> addWidget( buttonQueue );
     parentLayout -> addWidget( buttonMain );
+    parentLayout -> addWidget( buttonPause );
 
     connect( buttonMain,  SIGNAL( clicked() ), this, SLOT( mainButtonClicked()  ) );
     connect( buttonQueue, SIGNAL( clicked() ), this, SLOT( queueButtonClicked() ) );
+    connect( buttonPause, SIGNAL( clicked() ), this, SLOT( pauseButtonClicked() ) );
   }
   virtual void createCommandLine( state_e state, QWidget* parent )
   {
@@ -2777,7 +2787,11 @@ protected:
     // emit the proper signal for the given button text
     if ( text != nullptr )
     {
-      if ( text == text_simulate )
+      if ( text == text_pause )
+        emit( pauseClicked() );
+      else if ( text == text_unpause )
+        emit( pauseClicked() );
+      else if ( text == text_simulate )
       {
   #ifdef SC_PAPERDOLL
         if ( current_tab == TAB_PAPERDOLL )
@@ -2985,6 +2999,16 @@ public slots:
   {
     emitSignal( getText( current_state, current_tab, BUTTON_MAIN  ) );
   }
+  void pauseButtonClicked()
+  {
+    QString* str = getText( current_state, current_tab, BUTTON_PAUSE ); 
+    if ( str == text_pause )
+      setText( current_state, current_tab, BUTTON_PAUSE, &text_unpause );
+    else
+      setText( current_state, current_tab, BUTTON_PAUSE, &text_pause );
+    updateWidget( current_state, current_tab, BUTTON_PAUSE );
+    emitSignal( str );
+  }
   void queueButtonClicked()
   {
     emitSignal( getText( current_state, current_tab, BUTTON_QUEUE ) );
@@ -3039,6 +3063,7 @@ public slots:
     emit( commandLineTextEdited( text ) );
   }
 signals:
+  void pauseClicked();
   void simulateClicked();
   void queueClicked();
   void importClicked();
@@ -3727,6 +3752,7 @@ private slots:
   void forwardButtonClicked( bool checked = false );
   void reloadButtonClicked( bool checked = false );
   void mainButtonClicked( bool checked = false );
+  void pauseButtonClicked( bool checked = false );
   void cancelButtonClicked();
   void queueButtonClicked();
   void importButtonClicked();
@@ -4098,6 +4124,15 @@ class SimulateThread : public QThread
 public:
   QString options;
   bool success;
+
+  bool is_paused()
+  { return sim -> is_paused(); }
+
+  void pause()
+  { sim -> pause(); }
+
+  void unpause()
+  { sim -> unpause(); }
 
   void start( sim_t* s, const QString& o ) { sim = s; options = o; success = false; QThread::start(); }
   virtual void run();

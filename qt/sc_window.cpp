@@ -457,6 +457,7 @@ void SC_MainWindow::createCmdLine()
   cmdLine -> setCommandLineText( TAB_RESULTS, resultsFileText );
 
   connect( &simulationQueue, SIGNAL( firstItemWasAdded() ), this, SLOT( itemWasEnqueuedTryToSim() ) );
+  connect( cmdLine, SIGNAL( pauseClicked() ), this, SLOT( pauseButtonClicked() ) );
   connect( cmdLine, SIGNAL( backButtonClicked() ), this, SLOT( backButtonClicked() ) );
   connect( cmdLine, SIGNAL( forwardButtonClicked() ), this, SLOT( forwardButtonClicked() ) );
   connect( cmdLine, SIGNAL( simulateClicked() ), this, SLOT( enqueueSim() ) );
@@ -1591,6 +1592,14 @@ void SC_MainWindow::importButtonClicked()
     case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
     default: break;
   }
+}
+
+void SC_MainWindow::pauseButtonClicked( bool )
+{
+  if ( ! simulateThread -> is_paused() )
+    simulateThread -> pause();
+  else
+    simulateThread -> unpause();
 }
 
 void SC_MainWindow::backButtonClicked( bool /* checked */ )
