@@ -74,25 +74,13 @@ public:
   { }
 
   void wait()
-  {
-    EnterCriticalSection( cs );
-    SleepConditionVariableCS( &cv, cs, INFINITE );
-    LeaveCriticalSection( cs );
-  }
+  { SleepConditionVariableCS( &cv, cs, INFINITE ); }
 
   void signal()
-  {
-    EnterCriticalSection( cs );
-    WakeConditionVariable( &cv );
-    LeaveCriticalSection( cs );
-  }
+  { WakeConditionVariable( &cv ); }
 
   void broadcast()
-  {
-    EnterCriticalSection( cs );
-    WakeAllConditionVariable( &cv );
-    LeaveCriticalSection( cs );
-  }
+  { WakeAllConditionVariable( &cv ); }
 };
 
 namespace { // unnamed namespace
@@ -200,25 +188,13 @@ public:
   { pthread_cond_destroy( &cv ); }
 
   void wait()
-  {
-    pthread_mutex_lock( m );
-    pthread_cond_wait( &cv, m );
-    pthread_mutex_unlock( m );
-  }
+  { pthread_cond_wait( &cv, m ); }
 
   void signal()
-  {
-    pthread_mutex_lock( m );
-    pthread_cond_signal( &cv );
-    pthread_mutex_unlock( m );
-  }
+  { pthread_cond_signal( &cv ); }
 
   void broadcast()
-  {
-    pthread_mutex_lock( m );
-    pthread_cond_broadcast( &cv );
-    pthread_mutex_unlock( m );
-  }
+  { pthread_cond_broadcast( &cv ); }
 };
 
 
