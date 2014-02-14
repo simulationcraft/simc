@@ -2544,8 +2544,8 @@ protected:
   {
     // strings shared by widgets
     text_simulate           = tr( "Simulate!"   );
-    text_pause              = tr( "Pause"       );
-    text_resume             = tr( "Resume"      );
+    text_pause              = tr( "Pause!"      );
+    text_resume             = tr( "Resume!"     );
     text_queue              = tr( "Queue!"      );
     text_queue_tooltip      = tr( "Click to queue a simulation to run after the current one" );
     text_cancel             = tr( "Cancel! "    );
@@ -2558,6 +2558,9 @@ protected:
     text_prev_tooltip       = tr( "Backwards"   );
     text_next_tooltip       = tr( "Forwards"    );
     text_hide_widget        = "hide_widget";
+    // actually manually typing in hide_widget into the command line will actually HIDE IT
+    // so append some garbage to it
+    text_hide_widget.append( QString::number( rand() ) );
   }
   void initStatesStructToNull()
   {
