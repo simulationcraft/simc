@@ -2960,7 +2960,7 @@ void cooldown_reduction_trinket( item_t* item )
     { DEATH_KNIGHT_UNHOLY, { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "unholy_frenzy", "outbreak", "summon_gargoyle", 0 } },
     { MONK_BREWMASTER,	   { "fortifying_brew", "guard", "zen_meditation", 0, 0, 0, 0 } }, 
     { MONK_WINDWALKER,     { "energizing_brew", "fists_of_fury", "fortifying_brew", "zen_meditation", 0, 0, 0 } },
-	{ PALADIN_PROTECTION,  { "ardent_defender", "avenging_wrath", "divine_protection", "divine_shield", "guardian_of_ancient_kings", 0 } },
+    { PALADIN_PROTECTION,  { "ardent_defender", "avenging_wrath", "divine_protection", "divine_shield", "guardian_of_ancient_kings", 0 } },
     { PALADIN_RETRIBUTION, { "avenging_wrath", "divine_protection", "divine_shield", "guardian_of_ancient_kings", 0, 0 } },
     { HUNTER_BEAST_MASTERY,{ "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", "bestial_wrath", 0 } },
     { HUNTER_MARKSMANSHIP, { "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", 0, 0 } },
@@ -3148,7 +3148,7 @@ struct flurry_of_xuen_driver_t : public attack_t
   flurry_of_xuen_driver_t( player_t* player, action_t* action = 0 ) :
     attack_t( "flurry_of_xuen", player, player -> find_spell( 146194 ) )
   {
-    hasted_ticks = may_crit = may_block = callbacks = false;
+    hasted_ticks = may_crit = callbacks = false;
     proc = background = dual = true;
 
     if ( ! action )
