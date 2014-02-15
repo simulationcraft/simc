@@ -61,21 +61,68 @@ def create_make_str( input ):
             prepare += "\n    " + entry[1] + " \\"
     return prepare
 
+def VS_header_str( filename, gui ):
+	if gui:
+		
+		moced_name = "moc_" + re.sub( r".*\\(.*?).hpp", r"\1.cpp", filename )
+		return "\n\t\t<ClCompile Include=\"$(IntDir)" + moced_name + "\">\n\t\t\t<PrecompiledHeader />\n\t\t</ClCompile>"
+	else:
+		return  "\n\t\t<ClInclude Include=\"" + filename + "\" />";
+		
 def create_vs_str( input, gui = False ):
     modified_input = replace( input, r"^", r"..\\" )
     modified_input = replace( modified_input , r"/" , r"\\" )
     prepare = header( "VS" )
     prepare += """<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-<ItemGroup>"""
+\t<ItemGroup>"""
     for entry in modified_input:
         if re.search( r"sc_io.cpp", entry[1] ):
-            prepare += "\n<ClCompile Include=\"" + entry[1] + "\">\n      <PrecompiledHeader>Create</PrecompiledHeader>\n    </ClCompile>"
-        elif not gui and entry[0] == "HEADERS":
-            prepare += "\n    <ClInclude Include=\"" + entry[1] + "\" />"
+            prepare += "\n\t\t<ClCompile Include=\"" + entry[1] + "\">\n\t\t\t<PrecompiledHeader>Create</PrecompiledHeader>\n\t\t</ClCompile>"
+        elif entry[0] == "HEADERS":
+            prepare += VS_header_str( entry[1], gui )
         elif entry[0] == "SOURCES":
-            prepare += "\n    <ClCompile Include=\"" + entry[1] + "\" />"
-    prepare += """\n  </ItemGroup>  
-</Project>"""
+            prepare += "\n\t\t<ClCompile Include=\"" + entry[1] + "\" />"
+    prepare += "\n\t</ItemGroup>"
+	
+    if gui:
+
+        # Gui Resources
+        prepare += "\n\n\t<!--Resources -->"
+        prepare += "\n\t<ItemGroup>"
+        prepare += "\n\t\t<ResourceCompile Include=\"..\simcqt.rc\" />"
+        prepare += "\n\t</ItemGroup>"
+        
+        prepare += "\n\n"
+        
+        # Moc Files
+        prepare += "\t<!-- Moc'ing Header files include Qt Classes -->"
+        
+        prepare += "\n\t<PropertyGroup Label=\"UserMacros\" Condition=\"'$(Configuration)'=='Debug'\">"
+        prepare += "\n\t\t<MOC_DEFINES>-DUNICODE -DWIN32 -DWIN64 -DQT_VERSION_5 -DQT_QML_DEBUG -DQT_DECLARATIVE_DEBUG -DQT_WEBKITWIDGETS_LIB -DQT_QUICK_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_OPENGL_LIB -DQT_PRINTSUPPORT_LIB -DQT_QML_LIB -DQT_MULTIMEDIA_LIB -DQT_WEBKIT_LIB -DQT_WIDGETS_LIB -DQT_SENSORS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1700 -D_WIN32 -D_WIN64</MOC_DEFINES>"
+        prepare += "\n\t</PropertyGroup>"
+        
+        prepare += "\n\t<PropertyGroup Label=\"UserMacros\" Condition=\"'$(Configuration)'=='Release'\">"
+        prepare += "\n\t\t<MOC_DEFINES>-DUNICODE -DWIN32 -DWIN64 -DQT_VERSION_5 -DQT_NO_DEBUG -DQT_WEBKITWIDGETS_LIB -DQT_QUICK_LIB -DQT_MULTIMEDIAWIDGETS_LIB -DQT_OPENGL_LIB -DQT_PRINTSUPPORT_LIB -DQT_QML_LIB -DQT_MULTIMEDIA_LIB -DQT_WEBKIT_LIB -DQT_WIDGETS_LIB -DQT_SENSORS_LIB -DQT_NETWORK_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_OPENGL_ES_2 -DQT_OPENGL_ES_2_ANGLE -D_MSC_VER=1700 -D_WIN32 -D_WIN64</MOC_DEFINES>"
+        prepare += "\n\t</PropertyGroup>"
+        
+        prepare += "\n\t<ItemGroup>"
+        
+        for entry in modified_input:
+            if entry[0] == "HEADERS":
+                prepare += """
+\t\t<CustomBuild Include=\"""" + entry[1] + """\">
+\t\t\t<AdditionalInputs>$(QTDIR)\\bin\moc.exe</AdditionalInputs>
+\t\t\t<Message>Moc%27ing %(Identity)... QTDIR:$(QTDIR)</Message>
+\t\t\t<Command>"$(QTDIR)\\bin\\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\\include" -I"(SolutionDir)engine" -I"$(QTDIR)\\mkspecs\\default" "..\\qt\\%(Filename).hpp" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+\t\t\t<AdditionalInputs>Rem;""" + entry[1] + """;%(AdditionalInputs)</AdditionalInputs>
+\t\t\t<Outputs>$(IntDir)\\moc_%(Filename).cpp</Outputs>
+\t\t</CustomBuild>"""
+        
+        
+        prepare += "\n\t</ItemGroup>"
+        
+		
+    prepare += "\n</Project>"
     return prepare
         
 def replace( input, separator, repl ):
@@ -103,7 +150,7 @@ def create_file( file_type, build_systems ):
 def main():
     create_file( "engine", ["make","VS", "QT"] )
     create_file( "engine_main", ["make","VS", "QT"] )
-    create_file( "gui", ["QT"] ) # TODO: finish mocing part of VS_GUI
+    create_file( "gui", ["QT","VS_GUI"] ) # TODO: finish mocing part of VS_GUI
     
 if __name__ == "__main__":
     main()
