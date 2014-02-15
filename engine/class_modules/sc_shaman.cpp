@@ -6332,7 +6332,7 @@ set_e shaman_t::decode_set( const item_t& item ) const
 role_e shaman_t::primary_role() const
 {
   if ( player_t::primary_role() == ROLE_HEAL )
-    return ROLE_HEAL;
+    return ROLE_HYBRID;//To prevent spawning healing_target, as there is no support for healing.
 
   if ( specialization() == SHAMAN_RESTORATION )
   {

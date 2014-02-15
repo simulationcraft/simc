@@ -4977,7 +4977,7 @@ role_e paladin_t::primary_role() const
     return ROLE_TANK;
 
   if ( player_t::primary_role() == ROLE_HEAL || specialization() == PALADIN_HOLY )
-    return ROLE_HEAL;
+    return ROLE_HYBRID; //To prevent spawning healing_target, as there is no support for healing.
 
   return ROLE_HYBRID;
 }

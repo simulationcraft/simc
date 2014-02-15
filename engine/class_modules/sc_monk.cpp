@@ -3606,13 +3606,13 @@ role_e monk_t::primary_role() const
     return ROLE_TANK;
 
   if ( base_t::primary_role() == ROLE_HEAL )
-    return ROLE_HEAL;
+    return ROLE_HYBRID;//To prevent spawning healing_target, as there is no support for healing.
 
   if ( specialization() == MONK_BREWMASTER )
     return ROLE_TANK;
 
   if ( specialization() == MONK_MISTWEAVER )
-    return ROLE_HEAL;
+    return ROLE_HYBRID;//To prevent spawning healing_target, as there is no support for healing.
 
   if ( specialization() == MONK_WINDWALKER )
     return ROLE_DPS;
