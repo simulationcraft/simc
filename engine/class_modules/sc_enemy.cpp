@@ -578,11 +578,11 @@ struct heal_enemy_t : public enemy_t
 
   virtual void init_resources( bool /* force */ )
   {
-    resources.base[ RESOURCE_HEALTH ] = 100000000.0;
+    resources.base[ RESOURCE_HEALTH ] = 200000000.0;
 
     player_t::init_resources( true );
 
-    resources.current[ RESOURCE_HEALTH ] = resources.base[ RESOURCE_HEALTH ] / 10;
+    resources.current[ RESOURCE_HEALTH ] = resources.base[ RESOURCE_HEALTH ] / 1.5;
   }
   virtual void init_base_stats()
   {
