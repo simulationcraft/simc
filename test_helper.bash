@@ -12,10 +12,8 @@ function class_sim() {
   PROFILE_TALENTS=$("${BATS_TEST_DIRNAME}"/talent_options $1)
   for spec in $PROFILES; do
     SIMC_PROFILE=$spec
-    for talent in $PROFILE_TALENTS; do
-      sim threads=4 talents=$talent default_actions=1
-      [ "${status}" -eq 0 ]
-    done
+    sim threads=4 default_actions=1
+    [ "${status}" -eq 0 ]
   done
 }
 
