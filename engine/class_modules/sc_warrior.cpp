@@ -1357,7 +1357,7 @@ struct dragon_roar_t : public warrior_attack_t
     parse_options( NULL, options_str );
     aoe = -1;
     direct_power_mod = data().extra_coeff();
-
+    may_miss = may_dodge = may_parry = may_block = false;
     // lets us benefit from seasoned_soldier, etc. but do not add weapon damage to it
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -1517,6 +1517,7 @@ struct heroic_throw_t : public warrior_attack_t
     warrior_attack_t( "heroic_throw", p, p -> find_class_spell( "Heroic Throw" ) )
   {
     parse_options( NULL, options_str );
+    may_dodge = may_parry = false;
   }
 };
 
@@ -1530,7 +1531,7 @@ struct heroic_leap_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     aoe       = -1;
-    may_dodge = may_parry = false;
+    may_dodge = may_parry = may_miss = false;
     harmful   = true; // This should be defaulted to true, but it's not
 
     // Damage is stored in a trigger spell
