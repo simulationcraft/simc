@@ -729,9 +729,9 @@ Q_PROPERTY( int timeTillHide READ timeTillHide WRITE setTimeTillHide )
 Q_PROPERTY( int timeTillFastHide READ timeTillFastHide WRITE setTimeTillFastHide )
 Q_PROPERTY( int timeFastHide READ timeFastHide WRITE setTimeFastHide )
 public:
-  SC_RelativePopup(QWidget* parent, Qt::Corner parentCornerToAnchor =
-      Qt::BottomRightCorner, Qt::Corner widgetCornerToAnchor =
-      Qt::TopRightCorner) :
+  SC_RelativePopup(QWidget* parent,
+      Qt::Corner parentCornerToAnchor = Qt::BottomRightCorner,
+      Qt::Corner widgetCornerToAnchor = Qt::TopRightCorner) :
       QWidget(parent), parentCornerToAnchor_(parentCornerToAnchor),
       widgetCornerToAnchor_( widgetCornerToAnchor), timeTillHide_(1000),
       timeTillFastHide_(800), timeFastHide_(200), hideChildren(true)
@@ -814,13 +814,22 @@ private:
   }
   bool isWidgetUnderCursorAChild()
   {
-    QWidget *widget = qApp->widgetAt(QCursor::pos());
+    QWidget* widget = qApp->widgetAt(QCursor::pos());
+    QObject* parentObject = parent();
+    QWidget* parentWidget = qobject_cast< QWidget* >( parentObject );
 
     while( widget != nullptr )
     {
       if ( widget == this )
       {
         return true;
+      }
+      else if ( parentWidget != nullptr ) // could be one if, but gcc complains about nullptr cast
+      {
+        if ( widget == parentWidget )
+        {
+          return true;
+        }
       }
       widget = widget -> parentWidget();
     }
