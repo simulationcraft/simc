@@ -1214,9 +1214,9 @@ void stat_buff_t::expire_override()
   for ( size_t i = 0; i < stats.size(); ++i )
   {
     if ( stats[ i ].current_value > 0 )
-      player -> stat_loss( stats[ i ].stat, stats[ i ].current_value, 0, 0, false );
+      player -> stat_loss( stats[ i ].stat, stats[ i ].current_value, 0, 0, buff_duration > timespan_t::zero() );
     else if ( stats[ i ].current_value < 0 )
-      player -> stat_gain( stats[ i ].stat, std::fabs( stats[ i ].current_value ), 0, 0, false );
+      player -> stat_gain( stats[ i ].stat, std::fabs( stats[ i ].current_value ), 0, 0, buff_duration > timespan_t::zero() );
     stats[ i ].current_value = 0;
   }
 
