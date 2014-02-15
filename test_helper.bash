@@ -1,25 +1,30 @@
 function sim() {
-  PROFILE_NAMES+=" $(basename ${SIMC_PROFILE})"
+  PROFILE_NAME="$(basename ${SIMC_PROFILE})"
   OPTIONS="$@"
   cd "${SIMC_PROFILES_PATH}"
-  run ${SIMC_TIMEOUT} 5m "${SIMC_CLI_PATH}" "${SIMC_PROFILE}" iterations="${SIMC_ITERATIONS}" $@
+  run ${SIMC_TIMEOUT} 5m "${SIMC_CLI_PATH}" "${SIMC_PROFILE}" iterations=${SIMC_ITERATIONS} $@
   cd -
 }
 
 function class_sim() {
   PROFILE_DIR=$(dirname "${SIMC_PROFILE}")
   PROFILES=$(ls "${PROFILE_DIR}"/$1_*_*.simc)
+  PROFILE_TALENTS=$("${BATS_TEST_DIRNAME}"/talent_options $1)
   for spec in $PROFILES; do
     SIMC_PROFILE=$spec
-    sim default_actions=1
-    [ "${status}" -eq 0 ]
+    for talent in $PROFILE_TALENTS; do
+      sim threads=4 talents=$talent default_actions=1
+      [ "${status}" -eq 0 ]
+    done
   done
 }
 
 teardown() {
-  BATS_TEST_DESCRIPTION="<strong>${BATS_TEST_DESCRIPTION}</strong>"
-  BATS_TEST_DESCRIPTION+="<br/>Profiles: $(echo "${PROFILE_NAMES}" | sed -e 's/^ *//g' -e 's/ *$//g')"
-  if [ ! -z "${OPTIONS}" ]; then
-    BATS_TEST_DESCRIPTION+="<br/>Options: $(echo "${OPTIONS}" | sed -e 's/^ *//g' -e 's/ *$//g')"
+  if [ ! "${status}" -eq 0 ]; then
+    BATS_TEST_DESCRIPTION="<strong>${BATS_TEST_DESCRIPTION}</strong>"
+    BATS_TEST_DESCRIPTION+="<br/>Profile: $(echo "${PROFILE_NAME}" | sed -e 's/^ *//g' -e 's/ *$//g')"
+    if [ ! -z "${OPTIONS}" ]; then
+      BATS_TEST_DESCRIPTION+="<br/>Options: $(echo "${OPTIONS}" | sed -e 's/^ *//g' -e 's/ *$//g')"
+    fi
   fi
 }
