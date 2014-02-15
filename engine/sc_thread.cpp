@@ -17,20 +17,32 @@ public:
   void unlock() {}
 };
 
+// condition_variable_t::native_t ===========================================
+
+class condition_variable_t::native_t
+{
+public:
+  native_t( mutex_t* )
+  { }
+  void wait() { }
+  void signal() { }
+  void broadcast() { }
+};
+
 // sc_thread_t::native_t ====================================================
 
 class sc_thread_t::native_t
 {
 public:
-  void launch( sc_thread_t* thr ) { thr -> run(); }
+  void launch( sc_thread_t* thr, priority_e ) { thr -> run(); }
   void join() {}
   void set_priority( priority_e  ) {}
   static void set_calling_thread_priority( priority_e ) {}
 
   static void sleep( timespan_t t )
   {
-    std::time_t finish = std::time() + t.total_seconds();
-    while ( std::time() < finish )
+    std::time_t finish = std::time( 0 ) + t.total_seconds();
+    while ( std::time( 0 ) < finish )
       ;
   }
 

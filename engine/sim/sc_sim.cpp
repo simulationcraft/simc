@@ -1730,7 +1730,7 @@ void sim_t::partition()
   if ( iterations < threads ) return;
 
 #if defined( NO_THREADS )
-  util::fprintf( output_file, "simulationcraft: This executable was built without thread support, please remove 'threads=N' from config file.\n" );
+  errorf( "simulationcraft: This executable was built without thread support, please remove 'threads=N' from config file.\n" );
   exit( 0 );
 #endif
 
