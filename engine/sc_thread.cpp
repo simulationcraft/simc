@@ -36,7 +36,7 @@ public:
 
 };
 
-#elif defined( SC_WINDOWS )
+#elif defined( SC_WINDOWS ) && ! defined( _POSIX_THREADS )
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
@@ -61,6 +61,7 @@ public:
 
 // condition_variable_t::native_t ===========================================
 
+#if ! defined( __MINGW32__ )
 class condition_variable_t::native_t : public nonmoveable
 {
   CONDITION_VARIABLE cv;
@@ -82,7 +83,101 @@ public:
   void broadcast()
   { WakeAllConditionVariable( &cv ); }
 };
+#else
+// Emulated condition variable for mingw using win32 thread model. Adapted from 
+// http://www.cs.wustl.edu/~schmidt/win32-cv-1.html
+class condition_variable_t::native_t : public nonmoveable
+{
+  PCRITICAL_SECTION  cs;
+  int waiters_count_;
+  CRITICAL_SECTION waiters_count_lock_;
+  HANDLE sema_;
+  HANDLE waiters_done_;
+  size_t was_broadcast_;
 
+public:
+  native_t( mutex_t* m ) : 
+    cs( m -> native_mutex() -> primitive() ),
+    waiters_count_( 0 ),
+    sema_( CreateSemaphore( NULL, 0, 0x7fffffff, NULL ) ),
+    waiters_done_( CreateEvent( NULL, FALSE, FALSE, NULL ) ),
+    was_broadcast_( 0 )
+  {
+    InitializeCriticalSection( &waiters_count_lock_ );
+  }
+
+  void wait()
+  {
+    // Increase waiters
+    EnterCriticalSection( &waiters_count_lock_ );
+    waiters_count_++;
+    LeaveCriticalSection( &waiters_count_lock_ );
+
+    // Block on semaphore
+    SignalObjectAndWait( cs, sema_, INFINITE, FALSE );
+
+    // Reduce waiters by one, since we are unblocked
+    EnterCriticalSection( &waiters_count_lock_ );
+    waiters_count_--;
+
+    int last_waiter = was_broadcast_ && waiters_count_ == 0;
+
+    LeaveCriticalSection( &waiters_count_lock_ );
+
+    // If we are the last object to wait on a broadcast() call, 
+    // lets all others proceed, before we do
+    if ( last_waiter )
+      // Wait on waiters_done_ and acquire external mutex
+      SignalObjectAndWait( waiters_done_, cs, INFINITE, FALSE );
+    else
+      // Ensure we re-acquire the external mutex
+      WaitForSingleObject( cs, INFINITE );
+  }
+
+  // External mutex for this conditional variable MUST BE acquired by the 
+  // thread that calls signal().
+  void signal()
+  {
+    EnterCriticalSection( &waiters_count_lock_ );
+    int have_waiters = waiters_count_ > 0;
+    LeaveCriticalSection( &waiters_count_lock_ );
+
+    // Release single thread if we have anyone blocking on the 
+    // semaphore
+    if ( have_waiters )
+      ReleaseSemaphore( sema_, 1, 0 );
+  }
+
+  // External mutex for this conditional variable MUST BE acquired by the 
+  // thread that calls broadcast().
+  void broadcast()
+  {
+    EnterCriticalSection( &waiters_count_lock_ );
+    int have_waiters = 0;
+
+    if ( waiters_count_ > 0 )
+    {
+      was_broadcast_ = 1;
+      have_waiters = 1;
+    }
+
+    if ( have_waiters )
+    {
+      // Release everyone waiting on sema_
+      ReleaseSemaphore( sema_, waiters_count_, 0 );
+
+      LeaveCriticalSection( &waiters_count_lock_ );
+
+      // Wait until the last thread has been unblocked 
+      // to ensure fairness.
+      WaitForSingleObject( waiters_done_, INFINITE );
+      was_broadcast_ = 0;
+    }
+    else
+      LeaveCriticalSection( &waiters_count_lock_ );
+  }
+};
+#endif /* __MINGW32__ */
 namespace { // unnamed namespace
 /* Convert our priority enumerations to WinAPI Thread Priority values
  * http://msdn.microsoft.com/en-us/library/windows/desktop/ms686277(v=vs.85).aspx
