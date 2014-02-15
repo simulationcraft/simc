@@ -48,7 +48,7 @@ public:
 
 };
 
-#elif defined( SC_WINDOWS )
+#elif defined( SC_WINDOWS ) && ! defined( _POSIX_THREADS )
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
