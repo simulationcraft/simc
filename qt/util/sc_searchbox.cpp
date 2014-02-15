@@ -4,8 +4,13 @@
 // ==========================================================================
 
 #include "sc_searchbox.hpp"
+
 #include <QtWidgets/QtWidgets>
 #include <QtGui/QtGui>
+
+// ============================================================================
+// SC_SearchBox
+// ============================================================================
 
 SC_SearchBox::SC_SearchBox( QWidget* parent,
                             Qt::Corner corner,
