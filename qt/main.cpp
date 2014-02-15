@@ -8,7 +8,7 @@
 #endif
 #include <locale>
 #ifndef SIMC_NO_AUTOUPDATE
-#include "sc_autoupdate.h"
+#include "sc_autoupdate.hpp"
 #endif /* SIMC_NO_AUTOUPDATE */
 
 int main( int argc, char *argv[] )
