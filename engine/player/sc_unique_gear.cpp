@@ -3126,7 +3126,7 @@ struct flurry_of_xuen_melee_t : public attack_t
     background = true;
     proc = false;
     aoe = 5;
-    special = may_miss = may_parry = may_block = may_dodge may_crit = true;
+    special = may_miss = may_parry = may_block = may_dodge = may_crit = true;
   }
 };
 
@@ -3139,7 +3139,7 @@ struct flurry_of_xuen_ranged_t : public ranged_attack_t
     background = true;
     proc = false;
     aoe = 5;
-    special = may_miss = may_parry = may_block = may_dodge may_crit = true;
+    special = may_miss = may_parry = may_block = may_dodge = may_crit = true;
   }
 };
 
