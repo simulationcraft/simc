@@ -5,7 +5,10 @@
 
 #pragma once
 
+#ifdef QT_VERSION_5
 #include <QtWidgets/QtWidgets>
+#endif
+
 #include <QtGui/QtGui>
 
 class SC_SearchBox;

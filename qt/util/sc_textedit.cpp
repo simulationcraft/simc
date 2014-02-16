@@ -6,8 +6,6 @@
 #include "sc_textedit.hpp"
 #include "sc_searchbox.hpp"
 
-#include <QtWidgets/QtWidgets>
-#include <QtGui/QtGui>
 
 // ============================================================================
 // SC_TextEdit
