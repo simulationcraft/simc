@@ -61,11 +61,25 @@ def create_make_str( input ):
             prepare += "\n    " + entry[1] + " \\"
     return prepare
 
+# Determine what precompiled header setting to use
+def VS_use_precompiled_header( filename ):
+    if re.search( r"sc_io.cpp", filename ):
+        return "<PrecompiledHeader>Create</PrecompiledHeader>"
+    with open( filename ) as f:
+          content = f.read()
+          if re.search( r"#include \"simulationcraft.hpp\"", content ):
+            return "<PrecompiledHeader />"
+          else:
+            return "<PrecompiledHeader>NotUsing</PrecompiledHeader>"
+            
+    print( "could not open file for precompiled header settings!")
+    return ""
+        
 def VS_header_str( filename, gui ):
 	if gui:
 		
 		moced_name = "moc_" + re.sub( r".*\\(.*?).hpp", r"\1.cpp", filename )
-		return "\n\t\t<ClCompile Include=\"$(IntDir)" + moced_name + "\">\n\t\t\t<PrecompiledHeader />\n\t\t</ClCompile>"
+		return "\n\t\t<ClCompile Include=\"$(IntDir)" + moced_name + "\">\n\t\t\t" + VS_use_precompiled_header( filename ) + "\n\t\t</ClCompile>"
 	else:
 		return  "\n\t\t<ClInclude Include=\"" + filename + "\" />";
 		
@@ -77,11 +91,11 @@ def create_vs_str( input, gui = False ):
 \t<ItemGroup>"""
     for entry in modified_input:
         if re.search( r"sc_io.cpp", entry[1] ):
-            prepare += "\n\t\t<ClCompile Include=\"" + entry[1] + "\">\n\t\t\t<PrecompiledHeader>Create</PrecompiledHeader>\n\t\t</ClCompile>"
+            prepare += "\n\t\t<ClCompile Include=\"" + entry[1] + "\">\n\t\t\t" + VS_use_precompiled_header( entry[1] ) + "\n\t\t</ClCompile>"
         elif entry[0] == "HEADERS":
             prepare += VS_header_str( entry[1], gui )
         elif entry[0] == "SOURCES":
-            prepare += "\n\t\t<ClCompile Include=\"" + entry[1] + "\" />"
+            prepare += "\n\t\t<ClCompile Include=\"" + entry[1] + "\">" + VS_use_precompiled_header( entry[1] ) + "\n\t\t</ClCompile>"
     prepare += "\n\t</ItemGroup>"
 	
     if gui:
@@ -113,7 +127,7 @@ def create_vs_str( input, gui = False ):
 \t\t<CustomBuild Include=\"""" + entry[1] + """\">
 \t\t\t<AdditionalInputs>$(QTDIR)\\bin\moc.exe</AdditionalInputs>
 \t\t\t<Message>Moc%27ing %(Identity)... QTDIR:$(QTDIR)</Message>
-\t\t\t<Command>"$(QTDIR)\\bin\\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\\include" -I"(SolutionDir)engine" -I"$(QTDIR)\\mkspecs\\default" "..\\qt\\%(Filename).hpp" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+\t\t\t<Command>"$(QTDIR)\\bin\\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\\include" -I"(SolutionDir)engine" -I"$(QTDIR)\\mkspecs\\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
 \t\t\t<AdditionalInputs>Rem;""" + entry[1] + """;%(AdditionalInputs)</AdditionalInputs>
 \t\t\t<Outputs>$(IntDir)\\moc_%(Filename).cpp</Outputs>
 \t\t</CustomBuild>"""
