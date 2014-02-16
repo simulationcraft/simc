@@ -8,7 +8,6 @@
 #endif
 #include <locale>
 #ifndef SIMC_NO_AUTOUPDATE
-#include "sc_autoupdate.hpp"
 #endif /* SIMC_NO_AUTOUPDATE */
 
 int main( int argc, char *argv[] )
@@ -29,22 +28,6 @@ int main( int argc, char *argv[] )
 
 
   QNetworkProxyFactory::setUseSystemConfiguration( true );
-
-#ifndef SIMC_NO_AUTOUPDATE
-  AutoUpdater* updater = 0;
-
-#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
-
-  CocoaInitializer cocoaInitializer;
-  updater = new SparkleAutoUpdater( "http://simc.rungie.com/simcqt/update.xml" );
-
-#endif
-
-  if ( updater )
-  {
-    updater -> checkForUpdates();
-  }
-#endif /* SIMC_NO_AUTOUPDATE */
 
   // Localization
   QTranslator qtTranslator;

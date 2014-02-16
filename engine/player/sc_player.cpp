@@ -600,7 +600,6 @@ player_t::player_t( sim_t*             s,
   bugs( true ),
   scale_player( true ),
   tmi_self_only( false ),
-  tmi_window( 6.0 ),
   death_pct( 0.0 ),
 
   // dynamic stuff
@@ -649,6 +648,8 @@ player_t::player_t( sim_t*             s,
   iteration_fight_length( timespan_t::zero() ), arise_time( timespan_t::min() ),
   iteration_waiting_time( timespan_t::zero() ), iteration_executed_foreground_actions( 0 ),
   rps_gain( 0 ), rps_loss( 0 ),
+
+  tmi_window( 6.0 ),
   collected_data( player_collected_data_t( name_str, *sim ) ),
   vengeance( collected_data.vengeance_timeline ),
   // Damage
