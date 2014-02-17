@@ -231,6 +231,19 @@ struct xml_node_t;
 // Enumerations =============================================================
 // annex _e to enumerations
 
+enum movement_direction_e
+{
+  MOVEMENT_UNKNOWN = -1,
+  MOVEMENT_NONE,
+  MOVEMENT_PARALLEL,
+  MOVEMENT_TOWARDS,
+  MOVEMENT_AWAY,
+  MOVEMENT_RANDOM, // Reserved for raid event
+  MOVEMENT_DIRECTION_MAX,
+  MOVEMENT_RANDOM_MIN = MOVEMENT_PARALLEL,
+  MOVEMENT_RANDOM_MAX = MOVEMENT_RANDOM
+};
+
 enum talent_format_e
 {
   TALENT_FORMAT_NUMBERS = 0,
@@ -1251,6 +1264,9 @@ slot_e parse_slot_type           ( const std::string& name );
 stat_e parse_stat_type           ( const std::string& name );
 stat_e parse_reforge_type        ( const std::string& name );
 stat_e parse_gem_stat            ( const std::string& name );
+
+const char* movement_direction_string( movement_direction_e );
+movement_direction_e parse_movement_direction( const std::string& name );
 
 item_subclass_armor parse_armor_type( const std::string& name );
 weapon_e parse_weapon_type       ( const std::string& name );
@@ -4847,8 +4863,9 @@ public:
     update_movement( yards );
 
     if ( sim -> debug )
-      sim -> out_debug.printf( "Player %s movement, speed=%f distance_covered=%f to_go=%f duration=%f",
+      sim -> out_debug.printf( "Player %s movement, direction=%s speed=%f distance_covered=%f to_go=%f duration=%f",
           name(), 
+          util::movement_direction_string( movement_direction() ),
           composite_movement_speed(),
           yards,
           current.distance_to_move,
@@ -4861,10 +4878,19 @@ public:
     update_movement( yards );
 
     if ( sim -> debug )
-      sim -> out_debug.printf( "Player %s warp, speed=LIGHTSPEED! distance_covered=%f to_go=%f",
+      sim -> out_debug.printf( "Player %s warp, direction=%s speed=LIGHTSPEED! distance_covered=%f to_go=%f",
           name(), 
+          util::movement_direction_string( movement_direction() ),
           yards,
           current.distance_to_move );
+  }
+
+  virtual movement_direction_e movement_direction() const
+  {
+    if ( buffs.raid_movement -> check() )
+      return static_cast<movement_direction_e>( buffs.raid_movement -> current_value );
+    else
+      return MOVEMENT_NONE;
   }
 };
 
@@ -5221,6 +5247,7 @@ struct action_t : public noncopyable
   int64_t total_executions;
   cooldown_t line_cooldown;
   const action_priority_t* signature;
+  movement_direction_e movement_directionality;
 
 
   action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
@@ -5424,6 +5451,23 @@ public:
 
   rng_t& rng() { return sim -> rng(); }
   rng_t& rng() const { return sim -> rng(); }
+
+  virtual bool has_movement_directionality() const
+  {
+    // If ability has no movement restrictions, it'll be usable
+    if ( likely( movement_directionality == MOVEMENT_NONE ) )
+      return true;
+    else
+    {
+      movement_direction_e m = player -> movement_direction();
+
+      // If player isnt moving, allow everything
+      if ( likely( m == MOVEMENT_NONE ) )
+        return true;
+      else
+        return m == movement_directionality;
+    }
+  }
 };
 
 struct action_state_t : public noncopyable

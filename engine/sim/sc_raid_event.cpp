@@ -282,30 +282,39 @@ struct movement_ticker_t : public event_t
 struct movement_event_t : public raid_event_t
 {
   double move_distance;
-  bool is_distance;
+  movement_direction_e direction;
+  std::string move_direction;
 
   movement_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "movement" ),
-    move_distance( 0 )
+    move_distance( 0 ),
+    direction( MOVEMENT_PARALLEL )
   {
     option_t options[] =
     {
       opt_float( "distance", move_distance ),
+      opt_string( "direction", move_direction ),
       opt_null()
     };
     parse_options( options, options_str );
     if ( move_distance > 0 ) name_str = "movement_distance";
+    if ( ! move_direction.empty() )
+      direction = util::parse_movement_direction( move_direction );
   }
 
   virtual void _start()
   {
+    movement_direction_e m = direction;
+    if ( direction == MOVEMENT_RANDOM )
+      m = static_cast<movement_direction_e>( sim -> rng().range( MOVEMENT_RANDOM_MIN, MOVEMENT_RANDOM_MAX ) );
+
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
       if ( move_distance > 0 )
       {
         p -> current.distance_to_move = move_distance;
-        p -> buffs.raid_movement -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( -1 ) );
+        p -> buffs.raid_movement -> trigger( 1, static_cast<double>( m ), -1.0, timespan_t::from_seconds( -1 ) );
       }
       else if ( duration > timespan_t::zero() )
       {
