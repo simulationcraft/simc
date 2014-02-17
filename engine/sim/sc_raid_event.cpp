@@ -218,6 +218,56 @@ struct flying_event_t : public raid_event_t
 
 // Movement =================================================================
 
+struct movement_ticker_t : public event_t
+{
+  const std::vector<player_t*>& players;
+  timespan_t duration;
+
+  movement_ticker_t( sim_t& s, const std::vector<player_t*>& p, timespan_t d = timespan_t::zero() ) :
+    event_t( s, "Player Movement Event" ), players( p )
+  {
+    if ( d > timespan_t::zero() )
+      duration = d;
+    else
+      duration = next_execute();
+    add_event( duration );
+    if ( sim().debug ) sim().out_debug.printf( "New movement event" );
+  }
+
+  timespan_t next_execute() const
+  {
+    timespan_t min_time = timespan_t::max();
+    bool any_movement = false;
+    for ( size_t i = 0, end = players.size(); i < end; i++ )
+    {
+      timespan_t time_to_finish = players[ i ] -> time_to_move();
+      if ( time_to_finish > timespan_t::zero() )
+        any_movement = true;
+
+      if ( time_to_finish < min_time )
+        min_time = time_to_finish;
+    }
+
+    if ( min_time > timespan_t::from_seconds( 0.1 ) )
+      min_time = timespan_t::from_seconds( 0.1 );
+
+    if ( ! any_movement )
+      return timespan_t::zero();
+    else
+      return min_time;
+  }
+
+  void execute()
+  {
+    for ( size_t i = 0, end = players.size(); i < end; i++ )
+      players[ i ] -> update_movement( duration );
+
+    timespan_t next = next_execute();
+    if ( next > timespan_t::zero() )
+      new ( sim() ) movement_ticker_t( sim(), players, next );
+  }
+};
+
 struct movement_event_t : public raid_event_t
 {
   double move_to;
@@ -243,13 +293,14 @@ struct movement_event_t : public raid_event_t
 
   virtual void _start()
   {
+    double my_move_distance = 0;
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
       double my_duration;
       if ( is_distance )
       {
-        double my_move_distance = move_distance;
+        my_move_distance = move_distance;
         if ( move_to >= -1 )
         {
           double new_distance = ( move_to < 0 ) ? p -> current.distance : move_to;
@@ -263,7 +314,12 @@ struct movement_event_t : public raid_event_t
       {
         my_duration = saved_duration.total_seconds();
       }
-      if ( my_duration > 0 )
+      if ( my_move_distance > 0 )
+      {
+        p -> current.distance_to_move = my_move_distance;
+        p -> buffs.raid_movement -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( -1 ) );
+      }
+      else if ( my_duration > 0 )
       {
         p -> buffs.raid_movement -> buff_duration = timespan_t::from_seconds( my_duration );
         p -> buffs.raid_movement -> trigger();
@@ -272,6 +328,9 @@ struct movement_event_t : public raid_event_t
       p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
       p -> moving();
     }
+
+    if ( my_move_distance > 0 )
+      new ( *sim ) movement_ticker_t( *sim, affected_players );
   }
 
   virtual void _finish()

@@ -768,6 +768,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   mastery(),
   skill( 1.0 ),
   distance( 0 ),
+  distance_to_move( 0 ),
   armor_coeff( 0 ),
   sleeping( false ),
   rating(),
@@ -4230,6 +4231,7 @@ void player_t::demise()
   assert( arise_time >= timespan_t::zero() );
   iteration_fight_length += sim -> current_time - arise_time;
   arise_time = timespan_t::min();
+  current.distance_to_move = 0;
 
   current.sleeping = true;
   if ( readying )

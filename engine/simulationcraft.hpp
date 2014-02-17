@@ -4160,6 +4160,7 @@ struct player_t : public actor_t
     double miss, dodge, parry, block;
     double spell_crit, attack_crit, block_reduction, mastery;
     double skill, distance;
+    double distance_to_move;
     double armor_coeff;
   private:
     friend struct player_t;
@@ -4814,6 +4815,40 @@ public:
 
   rng_t& rng() { return sim -> rng(); }
   rng_t& rng() const { return sim -> rng(); }
+
+  // Add 1ms of time to ensure that we finish this run. This is necessary due 
+  // to the millisecond accuracy in our timing system.
+  virtual timespan_t time_to_move() const
+  { 
+    if ( current.distance_to_move > 0 )
+      return timespan_t::from_seconds( current.distance_to_move / composite_movement_speed() + 0.001 );
+    else
+      return timespan_t::zero();
+  }
+
+  virtual void update_movement( timespan_t duration )
+  {
+    // Naively presume stunned players don't move
+    if ( buffs.stunned -> check() )
+      return;
+
+    double yards = duration.total_seconds() * composite_movement_speed();
+    if ( yards >= current.distance_to_move )
+    {
+      current.distance_to_move = 0;
+      buffs.raid_movement -> expire();
+    }
+    else
+      current.distance_to_move -= yards;
+
+    if ( sim -> debug )
+      sim -> out_debug.printf( "Player %s movement, speed=%f distance_covered=%f to_go=%f duration=%f",
+          name(), 
+          composite_movement_speed(),
+          yards,
+          current.distance_to_move,
+          duration.total_seconds() );
+  }
 };
 
 // Target Specific ==========================================================
