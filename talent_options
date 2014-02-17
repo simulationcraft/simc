@@ -10,7 +10,7 @@ __class_map = {
                     # 57: None
                     # 58: None
                     # 60: Death Pact, Death Siphon (tank only, and we dont teset tanks atm)
-        (0, -1),    # 75: All
+        (4, -1),    # 75: All
                     # 90: None
     ],
     'Druid': [

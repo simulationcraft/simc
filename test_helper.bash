@@ -12,8 +12,21 @@ function class_sim() {
   PROFILE_TALENTS=$("${BATS_TEST_DIRNAME}"/talent_options $1)
   for spec in $PROFILES; do
     SIMC_PROFILE=$spec
-    sim threads=4 default_actions=1
+    sim default_actions=1
     [ "${status}" -eq 0 ]
+  done
+}
+
+function class_sim2() {
+  PROFILE_DIR=$(dirname "${SIMC_PROFILE}")
+  PROFILES=( $(ls "${PROFILE_DIR}"/$1_*_*.simc) )
+  PROFILE_TALENTS=( $("${BATS_TEST_DIRNAME}"/talent_options $1) )
+  for spec in ${PROFILES[@]}; do
+    SIMC_PROFILE=${spec}
+    for talent in ${PROFILE_TALENTS[@]}; do
+      sim talents=${talent} threads=4 default_actions=1
+      [ "${status}" -eq 0 ]
+    done
   done
 }
 
