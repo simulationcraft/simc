@@ -275,58 +275,35 @@ struct movement_ticker_t : public event_t
 
 struct movement_event_t : public raid_event_t
 {
-  double move_to;
   double move_distance;
   bool is_distance;
 
   movement_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "movement" ),
-    move_to( -2 ),
-    move_distance( 0 ),
-    is_distance( 0 )
+    move_distance( 0 )
   {
     option_t options[] =
     {
-      opt_float( "to",       move_to ),
-      opt_float( "move_distance", move_distance ),
+      opt_float( "distance", move_distance ),
       opt_null()
     };
     parse_options( options, options_str );
-    is_distance = move_distance || ( move_to >= -1 && duration == timespan_t::zero() );
-    if ( is_distance ) name_str = "movement_distance";
+    if ( move_distance > 0 ) name_str = "movement_distance";
   }
 
   virtual void _start()
   {
-    double my_move_distance = 0;
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-      double my_duration;
-      if ( is_distance )
+      if ( move_distance > 0 )
       {
-        my_move_distance = move_distance;
-        if ( move_to >= -1 )
-        {
-          double new_distance = ( move_to < 0 ) ? p -> current.distance : move_to;
-          if ( ! my_move_distance )
-            my_move_distance = fabs( new_distance - p -> current.distance );
-          p -> current.distance = new_distance;
-        }
-        my_duration = my_move_distance / p -> composite_movement_speed();
-      }
-      else
-      {
-        my_duration = saved_duration.total_seconds();
-      }
-      if ( my_move_distance > 0 )
-      {
-        p -> current.distance_to_move = my_move_distance;
+        p -> current.distance_to_move = move_distance;
         p -> buffs.raid_movement -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, timespan_t::from_seconds( -1 ) );
       }
-      else if ( my_duration > 0 )
+      else if ( duration > timespan_t::zero() )
       {
-        p -> buffs.raid_movement -> buff_duration = timespan_t::from_seconds( my_duration );
+        p -> buffs.raid_movement -> buff_duration = timespan_t::from_seconds( duration.total_seconds() );
         p -> buffs.raid_movement -> trigger();
       }
       if ( p -> buffs.stunned -> check() ) continue;
@@ -334,7 +311,7 @@ struct movement_event_t : public raid_event_t
       p -> moving();
     }
 
-    if ( my_move_distance > 0 )
+    if ( move_distance > 0 )
       new ( *sim ) movement_ticker_t( *sim, affected_players );
   }
 
