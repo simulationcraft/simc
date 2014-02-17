@@ -4863,7 +4863,6 @@ public:
     if ( sim -> debug )
       sim -> out_debug.printf( "Player %s warp, speed=LIGHTSPEED! distance_covered=%f to_go=%f",
           name(), 
-          composite_movement_speed(),
           yards,
           current.distance_to_move );
   }
