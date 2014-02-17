@@ -3298,6 +3298,10 @@ double player_t::composite_movement_speed() const
   // From http://www.wowpedia.org/Movement_speed_effects
   // Additional items looked up
 
+  // Run Speed Enchants: 8% increase
+
+  // Engineering Nitro Boosts: 150% increase for 5 seconds
+
   // Pursuit of Justice, Quickening: 8%/15%
 
   // DK: Unholy Presence: 15%
@@ -3311,6 +3315,7 @@ double player_t::composite_movement_speed() const
   // Druid: Travel Form 40%
 
   // Druid: Dash: 50/60/70
+  //        Stampeding Shout: 60% boost to all players within 10 yards for 8 seconds
 
   // Mage: Blazing Speed: 5%/10% chance after being hit for 50% for 8 sec
   //       Improved Blink: 35%/70% for 3 sec after blink
@@ -3319,6 +3324,9 @@ double player_t::composite_movement_speed() const
   // Rogue: Sprint 70%
 
   // Swiftness Potion: 50%
+
+  // Warrior: Enraged Speed Glyph - 20% while enraged
+  //          Stampeding Shout (Druid Symbiosis): 60% boost to all players within 10 yards for 8 seconds
 
   return speed;
 }
