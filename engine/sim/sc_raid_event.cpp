@@ -263,8 +263,14 @@ struct movement_ticker_t : public event_t
   {
     for ( size_t i = 0, end = players.size(); i < end; i++ )
     {
-      if ( players[ i ] -> time_to_move() > timespan_t::zero() ) 
-        players[ i ] -> update_movement( duration );
+      player_t* p = players[ i ];
+      if ( p -> is_sleeping() )
+        continue;
+
+      if ( p -> time_to_move() == timespan_t::zero() )
+        continue;
+
+      p -> update_movement( duration );
     }
 
     timespan_t next = next_execute();
