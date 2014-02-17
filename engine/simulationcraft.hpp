@@ -4826,13 +4826,8 @@ public:
       return timespan_t::zero();
   }
 
-  virtual void update_movement( timespan_t duration )
+  virtual void update_movement( double yards )
   {
-    // Naively presume stunned players don't move
-    if ( buffs.stunned -> check() )
-      return;
-
-    double yards = duration.total_seconds() * composite_movement_speed();
     if ( yards >= current.distance_to_move )
     {
       current.distance_to_move = 0;
@@ -4840,6 +4835,16 @@ public:
     }
     else
       current.distance_to_move -= yards;
+  }
+
+  virtual void update_movement( timespan_t duration )
+  {
+    // Naively presume stunned players don't move
+    if ( buffs.stunned -> check() )
+      return;
+
+    double yards = duration.total_seconds() * composite_movement_speed();
+    update_movement( yards );
 
     if ( sim -> debug )
       sim -> out_debug.printf( "Player %s movement, speed=%f distance_covered=%f to_go=%f duration=%f",
@@ -4848,6 +4853,19 @@ public:
           yards,
           current.distance_to_move,
           duration.total_seconds() );
+  }
+
+  // Instant teleport. No overshooting support for now.
+  virtual void teleport( double yards )
+  {
+    update_movement( yards );
+
+    if ( sim -> debug )
+      sim -> out_debug.printf( "Player %s warp, speed=LIGHTSPEED! distance_covered=%f to_go=%f",
+          name(), 
+          composite_movement_speed(),
+          yards,
+          current.distance_to_move );
   }
 };
 
