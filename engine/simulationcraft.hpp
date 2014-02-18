@@ -1839,7 +1839,7 @@ public:
   int             check() const { return current_stack; }
   inline bool     up()    { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
   inline int      stack() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
-  inline double   value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
+  virtual double   value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
   timespan_t remains() const;
   bool   remains_gt( timespan_t time ) const;
   bool   remains_lt( timespan_t time ) const;
@@ -1913,6 +1913,7 @@ struct stat_buff_t : public buff_t
   virtual void bump     ( int stacks = 1, double value = -1.0 );
   virtual void decrement( int stacks = 1, double value = -1.0 );
   virtual void expire_override();
+  virtual double value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return stats[ 0 ].current_value; }
 
 protected:
   stat_buff_t( const stat_buff_creator_t& params );
