@@ -37,5 +37,9 @@ teardown() {
     if [ ! -z "${OPTIONS}" ]; then
       BATS_TEST_DESCRIPTION+="<br/>Options: $(echo "${OPTIONS}" | sed -e 's/^ *//g' -e 's/ *$//g')"
     fi
+    BATS_TEST_DESCRIPTION+="<br/>Test output:"
+    for line in ${lines[@]}; do
+      BATS_TEST_DESCRIPTION+="<br/>${line}"
+    done
   fi
 }
