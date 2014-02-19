@@ -6159,10 +6159,10 @@ unsigned upgrade_ilevel( const item_data_t& item, unsigned upgrade_level );
 stat_pair_t item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index );
 double item_budget( const item_t* item, unsigned max_ilevel );
 
-inline bool heroic( unsigned f ) { return f & RAID_TYPE_HEROIC; }
-inline bool lfr( unsigned f ) { return f & RAID_TYPE_LFR; }
-inline bool flex( unsigned f ) { return f & RAID_TYPE_FLEXIBLE; }
-inline bool elite( unsigned f ) { return f & RAID_TYPE_ELITE; }
+inline bool heroic( unsigned f ) { return ( f & RAID_TYPE_HEROIC ) == RAID_TYPE_HEROIC; }
+inline bool lfr( unsigned f ) { return ( f & RAID_TYPE_LFR ) == RAID_TYPE_LFR; }
+inline bool flex( unsigned f ) { return ( f & RAID_TYPE_FLEXIBLE ) == RAID_TYPE_FLEXIBLE; }
+inline bool elite( unsigned f ) { return ( f & RAID_TYPE_ELITE ) == RAID_TYPE_ELITE; }
 }
 
 // Unique Gear ==============================================================
