@@ -62,6 +62,7 @@ public:
     buff_t* bloodsurge;
     buff_t* defensive_stance;
     buff_t* enrage;
+    buff_t* enraged_speed;
     buff_t* glyph_hold_the_line;
     buff_t* glyph_incite;
     buff_t* last_stand;
@@ -141,6 +142,7 @@ public:
     const spell_data_t* bull_rush;
     const spell_data_t* colossus_smash;
     const spell_data_t* death_from_above;
+    const spell_data_t* enraged_speed;
     const spell_data_t* furious_sundering;
     const spell_data_t* heavy_repercussions;
     const spell_data_t* hold_the_line;
@@ -3254,6 +3256,7 @@ void warrior_t::init_spells()
   glyphs.bull_rush              = find_glyph_spell( "Glyph of Bull Rush"           );
   glyphs.colossus_smash         = find_glyph_spell( "Glyph of Colossus Smash"      );
   glyphs.death_from_above       = find_glyph_spell( "Glyph of Death From Above"    );
+  glyphs.enraged_speed          = find_glyph_spell( "Glyph of Enraged Speed"       );
   glyphs.furious_sundering      = find_glyph_spell( "Glyph of Forious Sundering"   );
   glyphs.heavy_repercussions    = find_glyph_spell( "Glyph of Heavy Repercussions" );
   glyphs.hold_the_line          = find_glyph_spell( "Glyph of Hold the Line"       );
@@ -3862,6 +3865,8 @@ void warrior_t::create_buffs()
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) )
                           .activated( false ) ; //Account for delay in buff application.
 
+  buff.enraged_speed    = buff_creator_t( this, "enraged_speed",    glyphs.enraged_speed -> effectN( 1 ).trigger() );
+
   buff.glyph_hold_the_line    = buff_creator_t( this, "hold_the_line",    glyphs.hold_the_line -> effectN( 1 ).trigger() );
   buff.glyph_incite           = buff_creator_t( this, "glyph_incite",           glyphs.incite -> effectN( 1 ).trigger() )
                                 .chance( glyphs.incite -> ok () ? glyphs.incite -> proc_chance() : 0 )
@@ -4447,6 +4452,9 @@ void warrior_t::enrage()
                  gain.enrage );
 
   buff.enrage -> trigger();
+
+  if ( glyphs.enraged_speed -> ok() )
+    buff.enraged_speed -> trigger();
 }
 
 // WARRIOR MODULE INTERFACE =================================================
