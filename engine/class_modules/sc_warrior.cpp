@@ -134,6 +134,7 @@ public:
   struct spells_t
   {
     const spell_data_t* colossus_smash;
+    const spell_data_t* charge;
   } spell;
 
   // Glyphs
@@ -1094,18 +1095,11 @@ struct bloodthirst_t : public warrior_attack_t
 
 struct charge_t : public warrior_attack_t
 {
-  int use_in_combat;
 
   charge_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "charge", p, p -> find_class_spell( "Charge" ) ),
-    use_in_combat( 0 ) // For now it's not usable in combat by default because we can't model the distance/movement.
+    warrior_attack_t( "charge", p, p -> spell.charge )
   {
-    option_t options[] =
-    {
-      opt_bool( "use_in_combat", use_in_combat ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    parse_options( NULL , options_str );
 
     cooldown -> duration += p -> talents.juggernaut -> effectN( 3 ).time_value();
   }
@@ -1129,16 +1123,13 @@ struct charge_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if ( p -> in_combat )
-    {
-      if ( ! use_in_combat )
-        return false;
+    double distance = p -> current.distance_to_move;
 
       if ( ( p -> position() == POSITION_BACK ) || ( p -> position() == POSITION_FRONT ) )
-      {
         return false;
-      }
-    }
+      if ( distance < p -> spell.charge -> min_range || distance > p -> spell.charge -> max_range )
+        return false;
+
 
     return warrior_attack_t::ready();
   }
@@ -3274,6 +3265,7 @@ void warrior_t::init_spells()
 
   // Generic spells
   spell.colossus_smash          = find_class_spell( "Colossus Smash"               );
+  spell.charge                  = find_class_spell( "Charge"                       );
 
 
   // Active spells
@@ -3611,7 +3603,7 @@ void warrior_t::apl_tg_fury()
   single_target -> add_action( this, "Execute", "if=debuff.colossus_smash.up|rage>70|target.time_to_die<12" );
   single_target -> add_action( this, "Berserker Rage", "if=buff.raging_blow.stack<=1" );
   single_target -> add_action( this, "Raging Blow", "if=target.health.pct<20|buff.raging_blow.stack=2|debuff.colossus_smash.up|buff.raging_blow.remains<=3" );
-  single_target -> add_action( "bladestorm,interrupt_if=enabled&cooldown.bloodthirst.remains<1" );
+  single_target -> add_action( "bladestorm,if=enabled&interrupt_if=cooldown.bloodthirst.remains<1" );
   single_target -> add_action( this, "Wild Strike", "if=buff.bloodsurge.up" );
   single_target -> add_action( this, "Raging Blow", "if=cooldown.colossus_smash.remains>=1" );
   single_target -> add_action( this, "Shattering Throw", "if=cooldown.colossus_smash.remains>5",
