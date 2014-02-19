@@ -3866,7 +3866,9 @@ void warrior_t::create_buffs()
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) )
                           .activated( false ) ; //Account for delay in buff application.
 
-  buff.enraged_speed    = buff_creator_t( this, "enraged_speed",    glyphs.enraged_speed );
+  buff.enraged_speed    = buff_creator_t( this, "enraged_speed",    glyphs.enraged_speed )
+                          .chance( 1 )
+                          .duration( timespan_t::from_seconds( 6 ) );
 
   buff.glyph_hold_the_line    = buff_creator_t( this, "hold_the_line",    glyphs.hold_the_line -> effectN( 1 ).trigger() );
   buff.glyph_incite           = buff_creator_t( this, "glyph_incite",           glyphs.incite -> effectN( 1 ).trigger() )
@@ -4198,9 +4200,10 @@ double warrior_t::composite_rating_multiplier( rating_e rating ) const
 double warrior_t::composite_movement_speed() const
 {
   double ms = player_t::composite_movement_speed();
+  double bs = player_t::base_movement_speed;
 
-  if ( buff.enraged_speed -> up() && ms < 1.2 )
-    ms = 1.0 + buff.enraged_speed -> data().effectN( 1 ).percent(); // Enraged speed doesn't stack with any movement speed increase, it only increases speed to 120%. Higher movement speeds will override it.
+  if ( buff.enraged_speed -> up() && ms < ( bs * ( 1 + buff.enraged_speed -> data().effectN( 1 ).percent() ) ) )
+    ms = bs * ( 1 + buff.enraged_speed -> data().effectN( 1 ).percent() ); // Enraged speed doesn't stack with any movement speed increase, it only increases speed to 120%. Higher movement speeds will override it.
 
   return ms;
 }
