@@ -70,7 +70,7 @@ spec=fury
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
-talents=233323
+talents=233123
 glyphs=unending_rage/death_from_above/bull_rush
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_160exp_160crit_180str
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2

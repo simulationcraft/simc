@@ -35,7 +35,6 @@ actions+=/skull_banner,if=buff.skull_banner.down&(((cooldown.colossus_smash.rema
 actions+=/blood_fury,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
 actions+=/berserking,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
 actions+=/arcane_torrent,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
-# There is a 0.25~ second delay in enrage application, this delay allows enrage to cover 4 GCDs of ability usage.
 actions+=/berserker_rage,if=buff.enrage.remains<1&cooldown.bloodthirst.remains>1
 actions+=/run_action_list,name=single_target,if=active_enemies=1
 actions+=/run_action_list,name=two_targets,if=active_enemies=2
@@ -55,6 +54,7 @@ actions+=/run_action_list,name=aoe,if=active_enemies>3
 # Cooldowns are stacked whenever possible, and only delayed for the very last use of them.
 
 actions.single_target=bloodbath,if=enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)
+actions.single_target+=/berserker_rage,if=buff.enrage.remains<1&cooldown.bloodthirst.remains>1
 actions.single_target+=/heroic_strike,if=(debuff.colossus_smash.up&rage>=40&target.health.pct>=20|rage>=100)&buff.enrage.up
 actions.single_target+=/heroic_leap,if=debuff.colossus_smash.up
 actions.single_target+=/bloodthirst,if=!buff.enrage.up
@@ -63,32 +63,31 @@ actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.up&debuff.
 # Delay Bloodthirst if 2 stacks of raging blow are available inside Colossus Smash.
 actions.single_target+=/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20
 actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.down&debuff.colossus_smash.up
+actions.single_target+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
 actions.single_target+=/bloodthirst
 # The GCD reduction of the Bloodsurge buff allows 3 Wild Strikes in-between Bloodthirst.
 actions.single_target+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1
 actions.single_target+=/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1
-actions.single_target+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
 # The debuff from Colossus Smash lasts 6.5 seconds and also has 0.25~ seconds of travel time. This allows 4 1.5 second globals to be used inside of it every time now.
 actions.single_target+=/colossus_smash
 actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.down
 actions.single_target+=/execute,if=debuff.colossus_smash.up|rage>70|target.time_to_die<12
+actions.single_target+=/berserker_rage,if=buff.raging_blow.stack<=1
 actions.single_target+=/raging_blow,if=target.health.pct<20|buff.raging_blow.stack=2|debuff.colossus_smash.up|buff.raging_blow.remains<=3
-# Titan's Grip Bladestorm is competitive with Dragon Roar (Not quite better) with a single target.
-actions.single_target+=/bladestorm,if=enabled
+actions.single_target+=/bladestorm,interrupt_if=enabled&cooldown.bloodthirst.remains<1
 actions.single_target+=/wild_strike,if=buff.bloodsurge.up
-# If Colossus Smash is coming up soon, it's a good idea to save 1 charge of raging blow for it.
-actions.single_target+=/raging_blow,if=cooldown.colossus_smash.remains>=3
+actions.single_target+=/raging_blow,if=cooldown.colossus_smash.remains>=1
 # Shattering Throw is a very small personal dps increase, but a fairly significant raid dps increase. Only use to fill empty globals.
 actions.single_target+=/shattering_throw,if=cooldown.colossus_smash.remains>5
 actions.single_target+=/shockwave,if=enabled
 actions.single_target+=/heroic_throw,if=debuff.colossus_smash.down&rage<60
-actions.single_target+=/battle_shout,if=rage<70&!debuff.colossus_smash.up
 actions.single_target+=/wild_strike,if=debuff.colossus_smash.up&target.health.pct>=20
 actions.single_target+=/battle_shout,if=rage<70
+actions.single_target+=/impending_victory,if=enabled&target.health.pct>=20&cooldown.colossus_smash.remains>=1.5
 actions.single_target+=/wild_strike,if=cooldown.colossus_smash.remains>=2&rage>=70&target.health.pct>=20
-actions.single_target+=/impending_victory,if=enabled&target.health.pct>=20&cooldown.colossus_smash.remains>=2
 
 actions.two_targets=bloodbath,if=enabled&buff.enrage.remains
+actions.two_targets+=/berserker_rage,if=buff.enrage.remains<1&cooldown.bloodthirst.remains>1
 actions.two_targets+=/cleave,if=(rage>=60&debuff.colossus_smash.up)|rage>110
 actions.two_targets+=/heroic_leap,if=buff.enrage.up&(debuff.colossus_smash.up&buff.cooldown_reduction.up|!buff.cooldown_reduction.up)
 # Generally, if an encounter has any type of AoE, Bladestorm will be the better choice.
@@ -108,6 +107,7 @@ actions.two_targets+=/battle_shout,if=rage<70
 actions.two_targets+=/heroic_throw
 
 actions.three_targets=bloodbath,if=enabled&buff.enrage.up
+actions.three_targets+=/berserker_rage,if=buff.enrage.remains<1&cooldown.bloodthirst.remains>1
 actions.three_targets+=/cleave,if=(rage>=60&debuff.colossus_smash.up)|rage>90
 actions.three_targets+=/heroic_leap,if=buff.enrage.up
 actions.three_targets+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
@@ -123,6 +123,7 @@ actions.three_targets+=/battle_shout,if=rage<70
 actions.three_targets+=/heroic_throw
 
 actions.aoe=bloodbath,if=enabled&buff.enrage.up
+actions.aoe+=/berserker_rage,if=buff.enrage.remains<1&cooldown.bloodthirst.remains>1
 actions.aoe+=/cleave,if=rage>110
 actions.aoe+=/heroic_leap,if=buff.enrage.up
 # Dragon roar is a poor choice on large-scale AoE as the damage it does is reduced with additional targets. The damage it does per target is reduced by the following amounts:
