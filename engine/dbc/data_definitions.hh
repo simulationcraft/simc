@@ -110,13 +110,13 @@ struct item_data_t {
   bool normal() const
   { return type_flags == 0; }
   bool heroic() const
-  { return type_flags & RAID_TYPE_HEROIC; }
+  { return ( type_flags & RAID_TYPE_HEROIC ) == RAID_TYPE_HEROIC; }
   bool lfr() const
-  { return type_flags & RAID_TYPE_LFR; }
+  { return ( type_flags & RAID_TYPE_LFR ) == RAID_TYPE_LFR; }
   bool flex() const
-  { return type_flags & RAID_TYPE_FLEXIBLE; }
+  { return ( type_flags & RAID_TYPE_FLEXIBLE ) == RAID_TYPE_FLEXIBLE; }
   bool elite() const
-  { return type_flags & RAID_TYPE_ELITE; }
+  { return ( type_flags & RAID_TYPE_ELITE ) == RAID_TYPE_ELITE; }
 };
 
 struct item_scale_data_t {

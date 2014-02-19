@@ -57,6 +57,7 @@ public:
 
 // mutex_t::native_t ========================================================
 
+#if ! defined( __MINGW32__ )
 class mutex_t::native_t : public nonmoveable
 {
   CRITICAL_SECTION cs;
@@ -70,6 +71,21 @@ public:
 
   PCRITICAL_SECTION primitive() { return &cs; }
 };
+#else
+class mutex_t::native_t : public nonmoveable
+{
+  HANDLE mutex_;
+
+public:
+  native_t() : mutex_( CreateMutex( 0, FALSE, NULL ) ) {  }
+  ~native_t() { CloseHandle( mutex_ ); }
+
+  void lock()   { WaitForSingleObject( mutex_, INFINITE ); }
+  void unlock() { ReleaseMutex( mutex_ ); }
+
+  HANDLE primitive() { return mutex_; }
+};
+#endif /* __MINGW32 __ */
 
 // condition_variable_t::native_t ===========================================
 
@@ -100,7 +116,7 @@ public:
 // http://www.cs.wustl.edu/~schmidt/win32-cv-1.html
 class condition_variable_t::native_t : public nonmoveable
 {
-  PCRITICAL_SECTION  cs;
+  HANDLE  external_mutex_;
   int waiters_count_;
   CRITICAL_SECTION waiters_count_lock_;
   HANDLE sema_;
@@ -109,7 +125,7 @@ class condition_variable_t::native_t : public nonmoveable
 
 public:
   native_t( mutex_t* m ) : 
-    cs( m -> native_mutex() -> primitive() ),
+    external_mutex_( m -> native_mutex() -> primitive() ),
     waiters_count_( 0 ),
     sema_( CreateSemaphore( NULL, 0, 0x7fffffff, NULL ) ),
     waiters_done_( CreateEvent( NULL, FALSE, FALSE, NULL ) ),
@@ -126,7 +142,7 @@ public:
     LeaveCriticalSection( &waiters_count_lock_ );
 
     // Block on semaphore
-    SignalObjectAndWait( cs, sema_, INFINITE, FALSE );
+    SignalObjectAndWait( external_mutex_, sema_, INFINITE, FALSE );
 
     // Reduce waiters by one, since we are unblocked
     EnterCriticalSection( &waiters_count_lock_ );
@@ -140,10 +156,10 @@ public:
     // lets all others proceed, before we do
     if ( last_waiter )
       // Wait on waiters_done_ and acquire external mutex
-      SignalObjectAndWait( waiters_done_, cs, INFINITE, FALSE );
+      SignalObjectAndWait( waiters_done_, external_mutex_, INFINITE, FALSE );
     else
       // Ensure we re-acquire the external mutex
-      WaitForSingleObject( cs, INFINITE );
+      WaitForSingleObject( external_mutex_, INFINITE );
   }
 
   // External mutex for this conditional variable MUST BE acquired by the 
@@ -190,6 +206,7 @@ public:
   }
 };
 #endif /* __MINGW32__ */
+
 namespace { // unnamed namespace
 /* Convert our priority enumerations to WinAPI Thread Priority values
  * http://msdn.microsoft.com/en-us/library/windows/desktop/ms686277(v=vs.85).aspx

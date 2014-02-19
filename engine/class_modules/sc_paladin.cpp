@@ -886,6 +886,7 @@ struct barkskin_t : public paladin_spell_t
     : paladin_spell_t( "barkskin", p, p -> find_spell( 113075 ) )
   {
     use_off_gcd = true;
+    parse_options( nullptr, options_str );
   }
 
   virtual double cost() const

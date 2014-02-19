@@ -240,10 +240,10 @@ tokenized_map_t<talent_data_t> tokenized_talent_map;
 } // ANONYMOUS namespace ====================================================
 
 int dbc::build_level( bool ptr )
-{ return maybe_ptr( ptr ) ? 17345 : 17688; }
+{ return maybe_ptr( ptr ) ? 17345 : 17898; }
 
 const char* dbc::wow_version( bool ptr )
-{ return maybe_ptr( ptr ) ? "5.4.0" : "5.4.1"; }
+{ return maybe_ptr( ptr ) ? "5.4.0" : "5.4.7"; }
 
 const char* dbc::wow_ptr_status( bool ptr )
 { return ( maybe_ptr( ptr ) ?
@@ -296,10 +296,11 @@ void dbc::apply_hotfixes()
   spell_data_t* s;
 
   s = spell_data_t::find( 137595, false );
+  
   assert( s -> internal_cooldown() != timespan_t::from_seconds( 0.25 ) && "Capacitive Primal Diamond" );
   if ( s && s -> ok() )
     s -> _internal_cooldown = 250;
-
+  
   // Hunter, hotfixes from 2013-09-23
   // Explosive Shot
   s = spell_data_t::find( 53301, false );
@@ -401,11 +402,6 @@ void dbc::apply_hotfixes()
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.855 * 1.1;
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.554 * 1.1;
 
-  // 6/1/2014: Elemental Focus now increases spell damage done by 20% (up from 15%).
-  s = spell_data_t::find( 16246, false );
-  assert( s -> effectN( 2 ).base_value() != 20 && "Out of date hotfix for Elemental Focus" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 20;
-
   // T15 4pc set bonus to 1.5 seconds
   s = spell_data_t::find( 138144, false );
   const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 1500;
@@ -482,16 +478,6 @@ void dbc::apply_hotfixes()
 
 
   // Death Knight
-
-  // 6/1/2014: Icy Talons now increases melee attack speed by 45% (up from 30%).
-  s = spell_data_t::find( 50887, false );
-  assert( s -> effectN( 1 ).base_value() != 45 && "Out of date hotfix for Icy Talons" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 45;
-
-  // 6/1/2014: Unholy Might now increases Strength by 35% (up from 25%).
-  s = spell_data_t::find( 91107, false );
-  assert( s -> effectN( 1 ).base_value() != 35 && "Out of date hotfix for Unholy Might" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 35; 
 
   // Monk
   // Zen Sphere -- Damage done buffed by 15%

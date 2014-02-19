@@ -285,6 +285,7 @@ public:
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_e type, bool save_html );
   virtual void      invalidate_cache( cache_e );
+  virtual double    composite_movement_speed() const;
 
   void              apl_precombat();
   void              apl_default();
@@ -3865,7 +3866,7 @@ void warrior_t::create_buffs()
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) )
                           .activated( false ) ; //Account for delay in buff application.
 
-  buff.enraged_speed    = buff_creator_t( this, "enraged_speed",    glyphs.enraged_speed -> effectN( 1 ).trigger() );
+  buff.enraged_speed    = buff_creator_t( this, "enraged_speed",    glyphs.enraged_speed );
 
   buff.glyph_hold_the_line    = buff_creator_t( this, "hold_the_line",    glyphs.hold_the_line -> effectN( 1 ).trigger() );
   buff.glyph_incite           = buff_creator_t( this, "glyph_incite",           glyphs.incite -> effectN( 1 ).trigger() )
@@ -4190,6 +4191,18 @@ double warrior_t::composite_rating_multiplier( rating_e rating ) const
   }
 
   return m;
+}
+
+// warrior_t::composite_movement_speed =====================================
+
+double warrior_t::composite_movement_speed() const
+{
+  double ms = player_t::composite_movement_speed();
+
+  if ( buff.enraged_speed -> up() && ms < 1.2 )
+    ms = 1.0 + buff.enraged_speed -> data().effectN( 1 ).percent(); // Enraged speed doesn't stack with any movement speed increase, it only increases speed to 120%. Higher movement speeds will override it.
+
+  return ms;
 }
 
 void warrior_t::invalidate_cache( cache_e c )

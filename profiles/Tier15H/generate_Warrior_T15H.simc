@@ -64,7 +64,7 @@ spec=fury
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
-talents=233323
+talents=233123
 glyphs=unending_rage/death_from_above/bull_rush
 head=crown_of_the_golden_golem,id=96894,gems=capacitive_primal_320crit_180str,reforge=haste_mastery
 neck=talisman_of_angry_spirits,id=96792

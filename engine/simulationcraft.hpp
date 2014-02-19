@@ -5,8 +5,8 @@
 #ifndef SIMULATIONCRAFT_H
 #define SIMULATIONCRAFT_H
 
-#define SC_MAJOR_VERSION "542"
-#define SC_MINOR_VERSION "2"
+#define SC_MAJOR_VERSION "547"
+#define SC_MINOR_VERSION "1"
 #define SC_USE_PTR ( 0 )
 #define SC_BETA ( 0 )
 
@@ -1855,7 +1855,7 @@ public:
   int             check() const { return current_stack; }
   inline bool     up()    { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
   inline int      stack() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
-  inline double   value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
+  virtual double   value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
   timespan_t remains() const;
   bool   remains_gt( timespan_t time ) const;
   bool   remains_lt( timespan_t time ) const;
@@ -1929,6 +1929,7 @@ struct stat_buff_t : public buff_t
   virtual void bump     ( int stacks = 1, double value = -1.0 );
   virtual void decrement( int stacks = 1, double value = -1.0 );
   virtual void expire_override();
+  virtual double value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return stats[ 0 ].current_value; }
 
 protected:
   stat_buff_t( const stat_buff_creator_t& params );
@@ -6254,10 +6255,10 @@ unsigned upgrade_ilevel( const item_data_t& item, unsigned upgrade_level );
 stat_pair_t item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index );
 double item_budget( const item_t* item, unsigned max_ilevel );
 
-inline bool heroic( unsigned f ) { return f & RAID_TYPE_HEROIC; }
-inline bool lfr( unsigned f ) { return f & RAID_TYPE_LFR; }
-inline bool flex( unsigned f ) { return f & RAID_TYPE_FLEXIBLE; }
-inline bool elite( unsigned f ) { return f & RAID_TYPE_ELITE; }
+inline bool heroic( unsigned f ) { return ( f & RAID_TYPE_HEROIC ) == RAID_TYPE_HEROIC; }
+inline bool lfr( unsigned f ) { return ( f & RAID_TYPE_LFR ) == RAID_TYPE_LFR; }
+inline bool flex( unsigned f ) { return ( f & RAID_TYPE_FLEXIBLE ) == RAID_TYPE_FLEXIBLE; }
+inline bool elite( unsigned f ) { return ( f & RAID_TYPE_ELITE ) == RAID_TYPE_ELITE; }
 }
 
 // Unique Gear ==============================================================
