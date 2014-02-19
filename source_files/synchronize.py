@@ -71,7 +71,7 @@ def VS_use_precompiled_header( filename ):
     with open( filename ) as f:
           content = f.read()
           if re.search( r"#include \"simulationcraft.hpp\"", content ):
-            return "<PrecompiledHeader />"
+            return "" #"<PrecompiledHeader />"
           else:
             return "<PrecompiledHeader>NotUsing</PrecompiledHeader>"
             

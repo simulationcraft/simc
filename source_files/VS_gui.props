@@ -6,7 +6,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<ItemGroup>
 		<ClCompile Include="$(IntDir)moc_simulationcraftqt.cpp">
-			<PrecompiledHeader />
+			
 		</ClCompile>
 		<ClCompile Include="$(IntDir)moc_SC_OptionsTab.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -18,16 +18,16 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\qt\main.cpp">
-			<PrecompiledHeader />
+			
 		</ClCompile>
 		<ClCompile Include="..\qt\sc_window.cpp">
-			<PrecompiledHeader />
+			
 		</ClCompile>
 		<ClCompile Include="..\qt\sc_import.cpp">
-			<PrecompiledHeader />
+			
 		</ClCompile>
 		<ClCompile Include="..\qt\sc_options_tab.cpp">
-			<PrecompiledHeader />
+			
 		</ClCompile>
 		<ClCompile Include="..\qt\util\sc_searchbox.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
