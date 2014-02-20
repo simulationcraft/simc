@@ -64,6 +64,8 @@ def create_make_str( input ):
             prepare += "\n    " + entry[1] + " \\"
     return prepare
 
+def VS_no_precompiled_header():
+    return "<PrecompiledHeader>NotUsing</PrecompiledHeader>"
 # Determine what precompiled header setting to use
 def VS_use_precompiled_header( filename ):
     if re.search( r"sc_io.cpp", filename ):
@@ -73,7 +75,7 @@ def VS_use_precompiled_header( filename ):
           if re.search( r"#include \"simulationcraft.hpp\"", content ):
             return "" #"<PrecompiledHeader />"
           else:
-            return "<PrecompiledHeader>NotUsing</PrecompiledHeader>"
+            return VS_no_precompiled_header()
             
     print "could not open file for precompiled header settings!"
     return ""
@@ -82,7 +84,7 @@ def VS_header_str( filename, gui ):
 	if gui:
 		
 		moced_name = "moc_" + re.sub( r".*\\(.*?).hpp", r"\1.cpp", filename )
-		return "\n\t\t<ClCompile Include=\"$(IntDir)" + moced_name + "\">\n\t\t\t" + VS_use_precompiled_header( filename ) + "\n\t\t</ClCompile>"
+		return "\n\t\t<ClCompile Include=\"$(IntDir)" + moced_name + "\">\n\t\t\t" + VS_no_precompiled_header() + "\n\t\t</ClCompile>"
 	else:
 		return  "\n\t\t<ClInclude Include=\"" + filename + "\" />";
 		
