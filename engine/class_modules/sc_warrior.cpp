@@ -1109,6 +1109,7 @@ struct charge_t : public warrior_attack_t
     warrior_attack_t::execute();
     warrior_t* p = cast();
 
+
     if ( p -> position() == POSITION_RANGED_FRONT )
       p -> change_position( POSITION_FRONT );
     else if ( ( p -> position() == POSITION_RANGED_BACK ) || ( p -> position() == POSITION_MAX ) )
@@ -1127,7 +1128,7 @@ struct charge_t : public warrior_attack_t
 
       if ( ( p -> position() == POSITION_BACK ) || ( p -> position() == POSITION_FRONT ) )
         return false;
-      if ( distance < p -> spell.charge -> min_range || distance > p -> spell.charge -> max_range )
+      if ( distance < p -> spell.charge -> min_range() || distance > p -> spell.charge -> max_range() )
         return false;
 
 
@@ -1550,6 +1551,32 @@ struct heroic_leap_t : public warrior_attack_t
     cooldown -> duration  *= p -> buffs.cooldown_reduction -> default_value;
     use_off_gcd = true;
   }
+    virtual void execute()
+  {
+    warrior_attack_t::execute();
+    warrior_t* p = cast();
+
+
+    p -> resource_gain( RESOURCE_RAGE,
+                        data().effectN( 2 ).resource( RESOURCE_RAGE ),
+                        p -> gain.charge );
+  }
+
+  virtual bool ready()
+  {
+    warrior_t* p = cast();
+
+    double distance = p -> current.distance_to_move;
+
+      if ( ( p -> position() == POSITION_BACK ) || ( p -> position() == POSITION_FRONT ) )
+        return false;
+      if ( distance < p -> spell.charge -> min_range() || distance > p -> spell.charge -> max_range() )
+        return false;
+
+
+    return warrior_attack_t::ready();
+  }
+
 };
 
 // 2 Piece Tier 16 Tank Set Bonus ===========================================
