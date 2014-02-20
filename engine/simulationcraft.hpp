@@ -2441,6 +2441,8 @@ public:
     timespan_t wheel_time;
     std::vector<core_event_t*> all_events_ever_created;
 
+  private:
+    friend struct core_sim_t;
     event_managment_t();
     ~event_managment_t();
     void add_event( core_event_t*, timespan_t delta_time, timespan_t current_time );
@@ -2448,7 +2450,6 @@ public:
     void init();
     core_event_t* next_event();
     void reset();
-  private:
     std::vector<core_event_t*> get_events_to_flush() const;
   };
 
