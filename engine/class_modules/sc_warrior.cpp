@@ -135,6 +135,7 @@ public:
   {
     const spell_data_t* colossus_smash;
     const spell_data_t* charge;
+    const spell_data_t* heroic_leap;
   } spell;
 
   // Glyphs
@@ -1555,11 +1556,6 @@ struct heroic_leap_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     warrior_t* p = cast();
-
-
-    p -> resource_gain( RESOURCE_RAGE,
-                        data().effectN( 2 ).resource( RESOURCE_RAGE ),
-                        p -> gain.charge );
   }
 
   virtual bool ready()
@@ -1568,9 +1564,7 @@ struct heroic_leap_t : public warrior_attack_t
 
     double distance = p -> current.distance_to_move;
 
-      if ( ( p -> position() == POSITION_BACK ) || ( p -> position() == POSITION_FRONT ) )
-        return false;
-      if ( distance < p -> spell.charge -> min_range() || distance > p -> spell.charge -> max_range() )
+      if ( distance < p -> spell.heroic_leap -> min_range() || distance > p -> spell.heroic_leap -> max_range() )
         return false;
 
 
@@ -3293,6 +3287,7 @@ void warrior_t::init_spells()
   // Generic spells
   spell.colossus_smash          = find_class_spell( "Colossus Smash"               );
   spell.charge                  = find_class_spell( "Charge"                       );
+  spell.heroic_leap             = find_class_spell( "Heroic Leap"                  );
 
 
   // Active spells
