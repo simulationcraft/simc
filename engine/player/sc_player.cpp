@@ -9680,14 +9680,14 @@ double player_stat_cache_t::player_heal_multiplier( school_e s ) const
  * otherwise in a action/buff ( like Druid Bear Form )
  */
 
-void player_vengeance_t::start( player_t& p )
+void player_vengeance_timeline_t::start( player_t& p )
 {
   assert( ! is_started() );
 
   struct collect_event_t : public event_t
   {
-    player_vengeance_t& vengeance;
-    collect_event_t( player_t& p, player_vengeance_t& v ) :
+    player_vengeance_timeline_t& vengeance;
+    collect_event_t( player_t& p, player_vengeance_timeline_t& v ) :
       event_t( p, "vengeance_timeline_collect_event_t" ),
       vengeance( v )
     {
@@ -9711,7 +9711,7 @@ void player_vengeance_t::start( player_t& p )
  * If you have dynamic vengeance activation ( like Druid Bear Form ), call it in the buff expiration/etc.
  */
 
-void player_vengeance_t::stop()
+void player_vengeance_timeline_t::stop()
 { core_event_t::cancel( event ); }
 
 player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p ) :

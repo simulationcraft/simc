@@ -3750,14 +3750,14 @@ public:
 
 // Player Vengeance
 
-struct player_vengeance_t
+struct player_vengeance_timeline_t
 {
 private:
   sc_timeline_t& timeline_; // reference to collected_data.vengeance_timeline
   core_event_t* event; // pointer to collection event so we can cancel it at the end of combat.
 
 public:
-  player_vengeance_t( sc_timeline_t& vengeance_tl ) :
+  player_vengeance_timeline_t( sc_timeline_t& vengeance_tl ) :
     timeline_( vengeance_tl ), event( nullptr ) {}
 
   void start( player_t& p );
@@ -3774,7 +3774,7 @@ public:
       timeline_.adjust( divisor_timeline );
   }
 
-  void merge( const player_vengeance_t& other )
+  void merge( const player_vengeance_timeline_t& other )
   { timeline_.merge( other.timeline_ ); }
 
   const sc_timeline_t& timeline() const { return timeline_; }
@@ -3990,7 +3990,60 @@ struct actor_t : public noncopyable
 
 struct vengeance_actor_list_t
 {
-  // structure that contains the relevant information for each actor entry inthe list
+  vengeance_actor_list_t( const player_t* p ) : myself( p )
+  { }
+
+  // called after each iteration in player_t::vengeance_stop()
+  void reset()
+  { actor_list.clear(); }
+
+  // this returns the integer corresponding to the applied diminishing returns
+  // i.e. it returns N for the Nth-strongest attacker
+  int get_actor_rank( const player_t* t )
+  {
+    // pre-condition: actor_list sorted by raw dps
+    for ( size_t i = 0, size = actor_list.size(); i < size; i++ )
+    {
+      if ( t == ( actor_list[ i ] ).player )
+        return (int)i+1;
+    }
+
+    assert( false && "Vengeance attacker not found in vengeance list!" );
+    return -1;
+  }
+
+  // this is the method that we use to interact with the structure
+  void add( const player_t* actor, double raw_dps, timespan_t current_time )
+  {
+    if ( actor == myself )
+      return;
+
+    std::vector<actor_entry_t>::iterator found = find_actor( actor );
+
+    if ( found != actor_list.end() )
+    {
+      // We already have the actor in the list, update:
+      update_actor_entry( *found, raw_dps, current_time );
+    }
+    else
+    {
+      // We do not have the actor in the list, create new entry:
+      actor_entry_t a;
+      a.player = actor;
+      a.raw_dps = raw_dps;
+      a.last_attack = current_time;
+
+      actor_list.push_back( a );
+    }
+
+    // purge any actors that haven't hit you in 5 seconds or more
+    purge_actor_list( current_time );
+
+    // sort the list
+    sort_list();
+  }
+private:
+  // structure that contains the relevant information for each actor entry in the list
   struct actor_entry_t {
     const player_t* player;
     double raw_dps;
@@ -3999,23 +4052,13 @@ struct vengeance_actor_list_t
   std::vector<actor_entry_t> actor_list; // vector of actor entries
   const player_t* myself; // not sure this is strictly necessary, intended to nullify self-veng, but an is_enemy(actor) call might be better
 
-  // TODO: sort these methods into public (constructor, reset, get_actor_rank, add(3arg) ) and private (everything else?)
-
-  // constructor
-  vengeance_actor_list_t( const player_t* p ) : myself( p )
-  { }
-
-  // method to clear list, called after each iteration in player_t::vengeance_stop()
-  void reset()
-  { actor_list.clear(); }
-
   // comparator function for sorting the list
   static bool compare_DPS( const actor_entry_t &a, const actor_entry_t &b )
   { return a.raw_dps > b.raw_dps; }
 
   // comparator functor for purging inactive players
-  struct purge_Inactive {
-    purge_Inactive( const timespan_t& current_time ) :
+  struct was_inactive {
+    was_inactive( const timespan_t& current_time ) :
       current_time( current_time )
     {}
     bool operator()( const actor_entry_t& a ) const
@@ -4030,65 +4073,25 @@ struct vengeance_actor_list_t
   void purge_actor_list( timespan_t current_time )
   {
     // Erase-remove idiom
-    actor_list.erase( std::remove_if( actor_list.begin(), actor_list.end(), purge_Inactive( current_time ) ), actor_list.end() );
+    actor_list.erase( std::remove_if( actor_list.begin(), actor_list.end(), was_inactive( current_time ) ), actor_list.end() );
   }
-  
-  // this returns the integer corresponding to the applied diminishing returns
-  // i.e. it returns N for the Nth-strongest attacker
-  int get_actor_rank( const player_t* t )
+
+  std::vector<actor_entry_t>::iterator find_actor( const player_t* p )
   {
-    for ( size_t i = 0, size = actor_list.size(); i < size; i++ )
+    std::vector<actor_entry_t>::iterator iter = actor_list.begin();
+    for ( ; iter != actor_list.end(); iter++ )
     {
-      if ( t == ( actor_list[ i ] ).player )
-        return (int)i+1;
+      if ( ( *iter ).player == p )
+        return iter;
     }
-    // if actor rank not found, it's not in the list.  this should never happen.
-    // but if it does, we'll return -1 so as no to divide by zero
-    // should probably add an error or some such here
-    return -1;
+    return iter;
   }
 
-  // this attempts to update the list with the current entry, returns false if that actor isn't found
-  bool update_actor_entry( const actor_entry_t& a )
-  {    
-    // cycle through the list and look for the actor - if it exists, just update that entry
-    for ( std::vector<actor_entry_t>::iterator iter = actor_list.begin(); iter != actor_list.end(); iter++ )
-    {
-      if ( ( *iter ).player == a.player )
-      {
-        ( *iter ).raw_dps = a.raw_dps;
-        ( *iter ).last_attack = a.last_attack;
-        return true;
-      }
-    }
-    return false;
-  }
-
-  // this is the method that we use to interact with the structure
-  void add( const player_t* actor, double boss_raw_dps, timespan_t current_time )
+  // update_actor_entry
+  void update_actor_entry( actor_entry_t& a, double raw_dps, timespan_t last_attack )
   {
-    // make an actor_entry_t with this information
-    actor_entry_t a;
-    a.player = actor;
-    a.raw_dps = boss_raw_dps;
-    a.last_attack = current_time;
-
-    // add to the list
-    add( a );
-  }
-
-  // this is the workhorse method that adds new actors and maintains the list
-  void add( const actor_entry_t& a )
-  {    
-    // try to update the actor's entry; if it doesn't exist and isn't myself, add them
-    if ( ! update_actor_entry( a ) && a.player != myself )
-      actor_list.push_back( a );
-
-    // purge any actors that haven't hit you in 5 seconds or more
-    purge_actor_list( a.last_attack );
-
-    // sort the list
-    sort_list();
+      a.raw_dps = raw_dps;
+      a.last_attack = last_attack;
   }
 };
 
@@ -4301,7 +4304,7 @@ struct player_t : public actor_t
   player_collected_data_t collected_data;
 
 private:
-  player_vengeance_t vengeance;
+  player_vengeance_timeline_t vengeance;
 public:
   void vengeance_start() 
   { 
