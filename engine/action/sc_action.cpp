@@ -404,7 +404,7 @@ action_t::action_t( action_e       ty,
   if ( sim -> debug )
     sim -> out_debug.printf( "Player %s creates action %s (%d)", player -> name(), name(), ( s_data -> ok() ? s_data -> id() : -1 ) );
 
-  if ( unlikely( ! player -> initialized ) )
+  if ( ! player -> initialized )
   {
     sim -> errorf( "Actions must not be created before player_t::init().  Culprit: %s %s\n", player -> name(), name() );
     sim -> cancel();
@@ -469,7 +469,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   school               = spell_data.get_school_type();
   rp_gain              = spell_data.runic_power_gain();
 
-  if ( likely( spell_data._power && spell_data._power -> size() == 1 ) )
+  if ( spell_data._power && spell_data._power -> size() == 1 )
     resource_current = spell_data._power -> at( 0 ) -> resource();
 
   for ( size_t i = 0; spell_data._power && i < spell_data._power -> size(); i++ )
@@ -998,7 +998,7 @@ player_t* action_t::find_target_by_number( int number ) const
 void action_t::execute()
 {
 #ifndef NDEBUG
-  if ( unlikely( ! initialized ) )
+  if ( ! initialized )
   {
     sim -> errorf( "action_t::execute: action %s from player %s is not initialized.\n", name(), player -> name() );
     assert( 0 );
@@ -1540,7 +1540,7 @@ bool action_t::ready()
   if ( target -> debuffs.invulnerable -> check() && harmful )
     return false;
 
-  if ( unlikely( target -> is_sleeping() ) )
+  if ( target -> is_sleeping() )
     return false;
 
   return true;

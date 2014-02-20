@@ -128,15 +128,6 @@ namespace std {using namespace tr1; }
 #include "dbc/data_definitions.hh"
 #include "utf8.h"
 
-#if defined(__GNUC__)
-#  define likely(x)         __builtin_expect((x),1)
-#  define unlikely(x)       __builtin_expect((x),0)
-#else
-#  define likely(x)        (x)
-#  define unlikely(x)      (x)
-#  define __attribute__(x)
-#endif
-
 #define SC_PACKED_STRUCT      __attribute__((packed))
 #define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
 
@@ -2782,14 +2773,14 @@ private:
     if ( ! parent )
     {
       pause_mutex.lock();
-      while ( unlikely( paused ) )
+      while ( paused )
         pause_cvar.wait();
       pause_mutex.unlock();
     }
     else
     {
       parent -> pause_mutex.lock();
-      while ( unlikely( parent -> paused ) )
+      while ( parent -> paused )
         parent -> pause_cvar.wait();
       parent -> pause_mutex.unlock();
     }
@@ -6129,7 +6120,7 @@ struct travel_event_t : public event_t
   action_t* action;
   action_state_t* state;
   travel_event_t( action_t* a, action_state_t* state, timespan_t time_to_travel );
-  virtual ~travel_event_t() { if ( unlikely( state && canceled ) ) action_state_t::release( state ); }
+  virtual ~travel_event_t() { if ( state && canceled ) action_state_t::release( state ); }
   virtual void execute();
 };
 

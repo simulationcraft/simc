@@ -42,7 +42,7 @@ void core_sim_t::event_managment_t::add_event( core_event_t* e,
   if ( delta_time < timespan_t::zero() )
     delta_time = timespan_t::zero();
 
-  if ( unlikely( delta_time > wheel_time ) )
+  if ( delta_time > wheel_time )
   {
     e -> time = current_time + wheel_time - timespan_t::from_seconds( 1 );
     e -> reschedule_time = current_time + delta_time;
@@ -308,12 +308,12 @@ void core_sim_t::combat( int iteration )
       }
     }
 
-    if ( unlikely( e -> canceled ) )
+    if ( e -> canceled )
     {
       if ( debug )
         out_debug.printf( "Canceled event: %s", e -> name );
     }
-    else if ( unlikely( e -> reschedule_time > e -> time ) )
+    else if ( e -> reschedule_time > e -> time )
     {
       reschedule_event( e );
       continue;
@@ -338,10 +338,10 @@ void core_sim_t::combat( int iteration )
 
     core_event_t::recycle( e );
 
-    if ( unlikely( iteration_canceled ) )
+    if ( iteration_canceled )
       break;
 
-    if ( unlikely( canceled ) )
+    if ( canceled )
       break;
   }
 

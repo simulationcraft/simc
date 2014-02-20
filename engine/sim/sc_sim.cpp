@@ -288,7 +288,7 @@ public:
     {
       if ( names[ i ].find( '=' ) != std::string::npos )
       {
-        if ( unlikely( ! option_t::parse( sim, context.c_str(), options, names[ i ] ) ) )
+        if ( ! option_t::parse( sim, context.c_str(), options, names[ i ] ) )
         {
           throw option_error();
         }
@@ -1629,13 +1629,13 @@ bool sim_t::iterate()
   {
     do_pause();
 
-    if ( unlikely( canceled ) )
+    if ( canceled )
     {
       iterations = current_iteration + 1;
       break;
     }
 
-    if ( likely( use_lb ) ) // Load Balancing
+    if ( use_lb ) // Load Balancing
     {
       // Select the work queue on the main thread
       work_queue_t& work_queue = (thread_index != 0) ? parent -> work_queue : this -> work_queue;

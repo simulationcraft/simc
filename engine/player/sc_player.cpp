@@ -523,7 +523,7 @@ struct stormlash_callback_t : public action_callback_t
     stormlash_spell -> base_dd_min = amount - ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
     stormlash_spell -> base_dd_max = amount + ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
 
-    if ( unlikely( stormlash_aggregate && stormlash_aggregate -> player -> cast_pet() -> owner == a -> player ) )
+    if ( stormlash_aggregate && stormlash_aggregate -> player -> cast_pet() -> owner == a -> player )
     {
       assert( stormlash_aggregate_stat -> player == stormlash_aggregate -> player );
       stats_t* tmp_stats = stormlash_spell -> stats;
@@ -534,7 +534,7 @@ struct stormlash_callback_t : public action_callback_t
     else
       stormlash_spell -> execute();
 
-    if ( unlikely( stormlash_aggregate && stormlash_aggregate -> player -> cast_pet() -> owner != a -> player ) )
+    if ( stormlash_aggregate && stormlash_aggregate -> player -> cast_pet() -> owner != a -> player )
     {
       assert( stormlash_aggregate_stat -> player == stormlash_aggregate -> player );
       stormlash_aggregate_stat -> add_execute( timespan_t::zero(), stormlash_spell -> target );
@@ -4095,7 +4095,7 @@ void player_t::schedule_ready( timespan_t delta_time,
   timespan_t gcd_adjust = gcd_ready - ( sim -> current_time + delta_time );
   if ( gcd_adjust > timespan_t::zero() ) delta_time += gcd_adjust;
 
-  if ( unlikely( waiting ) )
+  if ( waiting )
   {
     iteration_waiting_time += delta_time;
   }
@@ -4201,7 +4201,7 @@ void player_t::arise()
 
   arise_time = sim -> current_time;
 
-  if ( unlikely( is_enemy() ) )
+  if ( is_enemy() )
   {
     sim -> active_enemies++;
     sim -> target_non_sleeping_list.push_back( this );
@@ -4247,7 +4247,7 @@ void player_t::demise()
     readying = 0;
   }
 
-  if ( unlikely( is_enemy() ) )
+  if ( is_enemy() )
   {
     sim -> active_enemies--;
     sim -> target_non_sleeping_list.find_and_erase_unordered( this );
@@ -4371,7 +4371,7 @@ action_t* player_t::execute_action()
 
     if ( a -> background ) continue;
 
-    if ( unlikely( a -> wait_on_ready == 1 ) )
+    if ( a -> wait_on_ready == 1 )
       break;
 
     if ( a -> ready() )
