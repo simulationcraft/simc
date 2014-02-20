@@ -4002,14 +4002,9 @@ struct vengeance_actor_list_t
   int get_actor_rank( const player_t* t )
   {
     // pre-condition: actor_list sorted by raw dps
-    for ( size_t i = 0, size = actor_list.size(); i < size; i++ )
-    {
-      if ( t == ( actor_list[ i ] ).player )
-        return (int)i+1;
-    }
-
-    assert( false && "Vengeance attacker not found in vengeance list!" );
-    return -1;
+    std::vector<actor_entry_t>::iterator found = find_actor( t );
+    assert( found != actor_list.end() && "Vengeance attacker not found in vengeance list!" );
+    return std::distance( actor_list.begin(), found ) + 1;
   }
 
   // this is the method that we use to interact with the structure
