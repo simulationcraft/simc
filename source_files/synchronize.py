@@ -75,7 +75,7 @@ def VS_use_precompiled_header( filename ):
           else:
             return "<PrecompiledHeader>NotUsing</PrecompiledHeader>"
             
-    print( "could not open file for precompiled header settings!")
+    print "could not open file for precompiled header settings!"
     return ""
         
 def VS_header_str( filename, gui ):
@@ -157,7 +157,7 @@ def sort_by_name( input ):
 
 def create_file( file_type, build_systems ):
     result = parse_qt( "QT_" + file_type + ".pri" )
-    # print(result)
+    # print result
     sort_by_name( result )
     if "make" in build_systems:
         write_to_file( file_type + "_make", create_make_str( result ) )
