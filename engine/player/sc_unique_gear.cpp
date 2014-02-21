@@ -1952,7 +1952,7 @@ void cooldown_reduction_trinket( item_t* item )
     { DEATH_KNIGHT_UNHOLY, { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "unholy_frenzy", "outbreak", "summon_gargoyle", 0 } },
     { MONK_BREWMASTER,	   { "fortifying_brew", "guard", "zen_meditation", 0, 0, 0, 0 } }, 
     { MONK_WINDWALKER,     { "energizing_brew", "fists_of_fury", "fortifying_brew", "zen_meditation", 0, 0, 0 } },
-	{ PALADIN_PROTECTION,  { "ardent_defender", "avenging_wrath", "divine_protection", "divine_shield", "guardian_of_ancient_kings", 0 } },
+    { PALADIN_PROTECTION,  { "ardent_defender", "avenging_wrath", "divine_protection", "divine_shield", "guardian_of_ancient_kings", 0 } },
     { PALADIN_RETRIBUTION, { "avenging_wrath", "divine_protection", "divine_shield", "guardian_of_ancient_kings", 0, 0 } },
     { HUNTER_BEAST_MASTERY,{ "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", "bestial_wrath", 0 } },
     { HUNTER_MARKSMANSHIP, { "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", 0, 0 } },
@@ -2059,10 +2059,29 @@ void amplify_trinket( item_t* item )
   if ( stat_driver_spell -> id() == 0 || amplify_spell -> id() == 0 )
     return;
 
-  const random_prop_data_t& budget = p -> dbc.random_property( item -> item_level() );
-  p -> buffs.amplified -> default_value = budget.p_epic[ 0 ] * amplify_spell -> effectN( 2 ).m_average() / 100.0;
-  p -> buffs.amplified -> default_chance = 1.0;
+  buff_t* first_amp = buff_t::find( p, "amplified" );
+  buff_t* second_amp = buff_t::find( p, "amplified_2" );
+  buff_t* amp_buff = 0;
+  if ( first_amp -> default_chance == 0 )
+    amp_buff = first_amp;
+  else
+    amp_buff = second_amp;
 
+  const random_prop_data_t& budget = p -> dbc.random_property( item -> item_level() );
+  amp_buff -> default_value = budget.p_epic[ 0 ] * amplify_spell -> effectN( 2 ).m_average() / 100.0;
+  amp_buff -> default_chance = 1.0;
+
+  // Naively restrict proccing based on item name & actor role. Healers can
+  // only get procs form Prismatic Prison of Pride, DPS/Tanks can get from
+  // Thok's Tail Tip and Purified Bindings of Immerseus
+  if ( util::str_compare_ci( item -> name(), "prismatic_prison_of_pride" ) && 
+       p -> role != ROLE_HEAL )
+    return;
+  else if ( ( util::str_compare_ci( item -> name(), "thoks_tail_tip" ) || 
+            util::str_compare_ci( item -> name(), "purified_bindings_of_immerseus" ) ) &&
+            p -> role == ROLE_HEAL )
+    return;
+  
   const spell_data_t* stat_spell = stat_driver_spell -> effectN( 1 ).trigger();
 
   std::string name = stat_spell -> name_cstr();
@@ -2099,7 +2118,7 @@ struct flurry_of_xuen_melee_t : public attack_t
     background = true;
     proc = false;
     aoe = 5;
-    special = may_crit = true;
+    special = may_miss = may_parry = may_block = may_dodge = may_crit = true;
   }
 };
 
@@ -2112,7 +2131,7 @@ struct flurry_of_xuen_ranged_t : public ranged_attack_t
     background = true;
     proc = false;
     aoe = 5;
-    special = may_crit = true;
+    special = may_miss = may_parry = may_block = may_dodge = may_crit = true;
   }
 };
 
@@ -2121,7 +2140,7 @@ struct flurry_of_xuen_driver_t : public attack_t
   flurry_of_xuen_driver_t( player_t* player, action_t* action = 0 ) :
     attack_t( "flurry_of_xuen", player, player -> find_spell( 146194 ) )
   {
-    hasted_ticks = may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
+    hasted_ticks = may_crit = may_miss = may_dodge = may_parry = callbacks = false;
     proc = background = dual = true;
 
     if ( ! action )

@@ -288,7 +288,7 @@ public:
     {
       if ( names[ i ].find( '=' ) != std::string::npos )
       {
-        if ( unlikely( ! option_t::parse( sim, context.c_str(), options, names[ i ] ) ) )
+        if ( ! option_t::parse( sim, context.c_str(), options, names[ i ] ) )
         {
           throw option_error();
         }
@@ -504,7 +504,7 @@ bool parse_fight_style( sim_t*             sim,
   {
     sim -> fight_style = "Ultraxion";
     sim -> max_time    = timespan_t::from_seconds( 366.0 );
-    sim -> fixed_time  = 1;
+    sim -> fixed_time  = true;
     sim -> vary_combat_length = 0.0;
     sim -> raid_events_str =  "flying,first=0,duration=500,cooldown=500";
     sim -> raid_events_str +=  "/position_switch,first=0,duration=500,cooldown=500";
@@ -789,7 +789,24 @@ struct sim_end_event_t : event_t
   }
   virtual void execute()
   {
-    sim().iteration_canceled = 1;
+    sim().cancel_iteration();
+  }
+};
+
+/* Forcefully cancel the iteration if it has unexpectedly taken too long
+ * to end normally.
+ */
+struct sim_safeguard_end_event_t : public sim_end_event_t
+{
+  sim_safeguard_end_event_t( sim_t& s, const char* n, timespan_t end_time ) :
+    sim_end_event_t( s, n, end_time )
+  { }
+
+  virtual void execute()
+  {
+    sim().errorf( "Simulation has been forcefully cancelled at %.2f because twice the expected combat length has been exceeded.", sim().current_time.total_seconds() );
+
+    sim_end_event_t::execute();
   }
 };
 
@@ -858,6 +875,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   control( 0 ),
   parent( p ),
   initialized( false ),
+  paused( false ),
   target( NULL ),
   heal_target( NULL ),
   target_list(),
@@ -878,7 +896,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   travel_variance( 0 ), default_skill( 1.0 ), reaction_time( timespan_t::from_seconds( 0.5 ) ),
   regen_periodicity( timespan_t::from_seconds( 0.25 ) ),
   ignite_sampling_delta( timespan_t::from_seconds( 0.2 ) ),
-  fixed_time( 0 ),
+  fixed_time( false ),
   seed( 0 ), current_slot( -1 ),
   armor_update_interval( 20 ), weapon_speed_scale_factors( 0 ),
   optimal_raid( 0 ), log( 0 ), debug_each( 0 ), save_profiles( 0 ), default_actions( 0 ),
@@ -887,7 +905,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_prefix_str( "save_" ),
   save_talent_str( 0 ),
   talent_format( TALENT_FORMAT_UNCHANGED ),
-  auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), tmi_actor_only( 0 ),
+  auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), tmi_actor_only( 0 ), tmi_window_global( 0 ),
   target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ),
   challenge_mode( false ), scale_to_itemlevel ( -1 ),
   active_enemies( 0 ), active_allies( 0 ),
@@ -919,7 +937,8 @@ sim_t::sim_t( sim_t* p, int index ) :
   report_information( report_information_t() ),
   // Multi-Threading
   threads( 0 ), thread_index( index ), thread_priority( sc_thread_t::NORMAL ), work_queue(),
-  spell_query( 0 ), spell_query_level( MAX_LEVEL )
+  spell_query( 0 ), spell_query_level( MAX_LEVEL ),
+  pause_cvar( &pause_mutex )
 {
   item_db_sources.assign( range::begin( default_item_db_sources ),
                           range::end( default_item_db_sources ) );
@@ -1193,7 +1212,7 @@ void sim_t::combat_begin()
     new ( *this ) skull_banner_proxy_t( *this, 0, timespan_t::zero(), timespan_t::from_seconds( 0.25 ) );
   }
 
-  iteration_canceled = 0;
+  cancel_iteration( false );
 
   if ( fixed_time || ( target -> resources.base[ RESOURCE_HEALTH ] == 0 ) )
   {
@@ -1204,7 +1223,7 @@ void sim_t::combat_begin()
   {
     target -> death_pct = target_death_pct;
   }
-  new ( *this ) sim_end_event_t( *this, "sim_end_twice_expected_time", expected_iteration_time + expected_iteration_time );
+  new ( *this ) sim_safeguard_end_event_t( *this, "sim_end_twice_expected_time", expected_iteration_time + expected_iteration_time );
 }
 
 // sim_t::combat_end ========================================================
@@ -1319,7 +1338,14 @@ bool sim_t::init()
 
   // Seed RNG
   if ( seed == 0 )
-    seed = deterministic_rng ? 31459 : ( int ) time( nullptr );
+  {
+    int64_t sec, usec;
+    stopwatch_t sw( STOPWATCH_WALL );
+    sw.now( &sec, &usec );
+    int seed_ = static_cast< int >( sec * 1000 );
+    seed_ += static_cast< int >( usec / 1000.0 );
+    seed = deterministic_rng ? 31459 : seed_;
+  }
   _rng.seed( seed + thread_index );
 
   if ( ! core_sim_t::init() )
@@ -1601,6 +1627,8 @@ bool sim_t::iterate()
 
   for( int i = 0; use_lb ? (true) : (i < iterations); ++i )
   {
+    do_pause();
+
     if ( canceled )
     {
       iterations = current_iteration + 1;
@@ -1719,7 +1747,7 @@ void sim_t::partition()
   if ( iterations < threads ) return;
 
 #if defined( NO_THREADS )
-  util::fprintf( output_file, "simulationcraft: This executable was built without thread support, please remove 'threads=N' from config file.\n" );
+  errorf( "simulationcraft: This executable was built without thread support, please remove 'threads=N' from config file.\n" );
   exit( 0 );
 #endif
 
@@ -1762,8 +1790,12 @@ bool sim_t::execute()
   double start_time = util::wall_time();
 
   partition();
-  if ( ! iterate() ) return false;
-  merge();
+
+  bool iterate_successfull = iterate();
+  merge(); // Always merge, even in cases of unsuccessful simulation!
+  if ( !iterate_successfull )
+    return false;
+
   analyze();
 
   elapsed_cpu = timespan_t::from_seconds( ( util::cpu_time() - start_cpu_time ) );
@@ -2042,6 +2074,7 @@ void sim_t::create_options()
     opt_int( "scale_to_itemlevel", scale_to_itemlevel ),
     opt_int( "desired_targets", desired_targets ),
     opt_bool( "tmi_actor_only", tmi_actor_only ),
+    opt_float( "tmi_window_global", tmi_window_global ),
     // Character Creation
     opt_func( "death_knight", parse_player ),
     opt_func( "deathknight", parse_player ),
@@ -2267,7 +2300,8 @@ void sim_t::cancel()
 // sim_t::progress ==========================================================
 
 double sim_t::progress( int* current,
-                        int* _final )
+                        int* _final,
+                        std::string* detailed )
 {
   int total_iterations = iterations;
   for ( size_t i = 0; i < children.size(); i++ )
@@ -2279,11 +2313,12 @@ double sim_t::progress( int* current,
 
   if ( current ) *current = total_current_iterations;
   if ( _final   ) *_final   = total_iterations;
+  detailed_progress( detailed, total_current_iterations, total_iterations );
 
   return total_current_iterations / ( double ) total_iterations;
 }
 
-double sim_t::progress( std::string& phase )
+double sim_t::progress( std::string& phase, std::string* detailed )
 {
   if ( canceled )
   {
@@ -2294,22 +2329,22 @@ double sim_t::progress( std::string& phase )
   if ( plot -> num_plot_stats > 0 &&
        plot -> remaining_plot_stats > 0 )
   {
-    return plot -> progress( phase );
+    return plot -> progress( phase, detailed );
   }
   else if ( scaling -> calculate_scale_factors &&
             scaling -> num_scaling_stats > 0 &&
             scaling -> remaining_scaling_stats > 0 )
   {
-    return scaling -> progress( phase );
+    return scaling -> progress( phase, detailed );
   }
   else if ( reforge_plot -> num_stat_combos > 0 )
   {
-    return reforge_plot -> progress( phase );
+    return reforge_plot -> progress( phase, detailed );
   }
   else if ( current_iteration >= 0 )
   {
     phase = "Simulating";
-    return progress();
+    return progress( 0, 0, detailed );
   }
   else if ( current_slot >= 0 )
   {
@@ -2318,6 +2353,16 @@ double sim_t::progress( std::string& phase )
   }
 
   return 0.0;
+}
+
+void sim_t::detailed_progress( std::string* detail, int current_iterations, int total_iterations )
+{
+  if ( detail )
+  {
+    char buf[512];
+    util::snprintf( buf, 512, "%d/%d", current_iterations, total_iterations );
+    (*detail) = buf;
+  }
 }
 
 // sim_t::errorf ============================================================
@@ -2353,3 +2398,20 @@ bool sim_t::use_load_balancing() const
 
   return true;
 }
+
+void sim_t::toggle_pause()
+{
+  if ( parent )
+    return;
+
+  pause_mutex.lock();
+  if ( ! paused )
+    paused = true;
+  else
+  {
+    paused = false;
+    pause_cvar.broadcast();
+  }
+  pause_mutex.unlock();
+}
+

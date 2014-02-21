@@ -1,5 +1,11 @@
-simulationcraft (5.1.0.2) unstable; urgency=low
+simulationcraft (5.4.2+git20140127-1) saucy; urgency=low
 
-  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+  * Add desktop icon and launcher
 
- -- Serge Camille <philoptik@gmail.com>  Tue, 13 Nov 2012 22:55:28 +0100
+ -- Alessandro Grassi <alessandro.grassi@cloudesire.com>  Mon, 27 Jan 2014 13:41:45 +0100
+
+simulationcraft (5.4.2+git20140126-1) saucy; urgency=low
+
+  * Initial release
+
+ -- Alessandro Grassi <alessandro@aggro.it>  Sun, 26 Jan 2014 14:23:26 +0100

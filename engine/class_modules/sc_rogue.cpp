@@ -1468,11 +1468,7 @@ struct expose_armor_t : public rogue_attack_t
 {
   expose_armor_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "expose_armor", p, p -> find_class_spell( "Expose Armor" ), options_str )
-  {
-    // to trigger poisons
-    weapon = &( p -> main_hand_weapon );
-    weapon_multiplier = 0;
-  }
+  { }
 
   virtual void execute()
   {

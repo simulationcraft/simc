@@ -91,6 +91,7 @@ public:
     buff_t* avenging_wrath;
     buff_t* barkskin;
     buff_t* bastion_of_glory;
+    buff_t* bastion_of_power; // t16_4pc_tank
     buff_t* blessed_life;
     buff_t* daybreak;
     buff_t* divine_crusader; // t16_4pc_melee
@@ -885,6 +886,7 @@ struct barkskin_t : public paladin_spell_t
     : paladin_spell_t( "barkskin", p, p -> find_spell( 113075 ) )
   {
     use_off_gcd = true;
+    parse_options( nullptr, options_str );
   }
 
   virtual double cost() const
@@ -1394,7 +1396,7 @@ struct eternal_flame_t : public paladin_heal_t
   virtual double cost() const
   {
     // check for T16 4-pc tank effect
-    if ( p() -> sets.set(SET_T16_4PC_TANK ) -> ok() && p() -> buffs.bastion_of_glory -> current_stack >= 3 && target == player )
+    if ( p() -> buffs.bastion_of_power -> check() && target == player )
       return 0.0;
 
     return paladin_heal_t::cost();
@@ -1405,9 +1407,9 @@ struct eternal_flame_t : public paladin_heal_t
     // order of operations: T16 4-pc tank, then Divine Purpose (assumed!)
 
     // check for T16 4pc tank bonus
-    if ( p() -> sets.has_set_bonus( SET_T16_4PC_TANK ) && p() -> buffs.bastion_of_glory -> current_stack >= 3 && target == player  )
+    if ( p() -> buffs.bastion_of_power -> check() && target == player )
     {
-      // nothing necessary here, BoG will be consumed automatically upon cast
+      // nothing necessary here, BoG & BoPower will be consumed automatically upon cast
       return;
     }
 
@@ -1461,18 +1463,19 @@ struct eternal_flame_t : public paladin_heal_t
     if ( p() -> sets.has_set_bonus( SET_T15_2PC_TANK ) )
       p() -> buffs.shield_of_glory -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> buffs.shield_of_glory -> buff_duration * hopo );
     
-    // consume BoG stacks if used on self
+    // consume BoG stacks and Bastion of Power if used on self
     if ( target == player )
     {
       p() -> buffs.bastion_of_glory -> expire();
+      p() -> buffs.bastion_of_power -> expire();
     }
   }
 
   virtual void impact( action_state_t* s )
   {
-    td( s -> target ) -> buffs.eternal_flame -> trigger();
-
     paladin_heal_t::impact( s );
+
+    td( s -> target ) -> buffs.eternal_flame -> trigger( 1, buff_t::DEFAULT_VALUE(), -1, s -> action -> hasted_num_ticks( s -> haste ) * s -> action -> tick_time( s -> haste ) + timespan_t::from_millis( 1 ) );
   }
 
   virtual void last_tick( dot_t* d )
@@ -2647,7 +2650,7 @@ struct word_of_glory_t : public paladin_heal_t
   virtual double cost() const
   {
     // check for T16 4-pc tank effect
-    if ( p() -> sets.set(SET_T16_4PC_TANK ) -> ok() && p() -> buffs.bastion_of_glory -> current_stack >= 3  && target == player  )
+    if ( p() -> buffs.bastion_of_power -> check() && target == player )
       return 0.0;
 
     return paladin_heal_t::cost();
@@ -2658,9 +2661,9 @@ struct word_of_glory_t : public paladin_heal_t
     // order of operations: T16 4-pc tank, then Divine Purpose (assumed!)
 
     // check for T16 4pc tank bonus
-    if ( p() -> sets.has_set_bonus( SET_T16_4PC_TANK ) && p() -> buffs.bastion_of_glory -> current_stack >= 3 && target == player  )
+    if ( p() -> buffs.bastion_of_power -> check() && target == player )
     {
-      // nothing necessary here, BoG will be consumed automatically upon cast
+      // nothing necessary here, BoG & BoPower will be consumed automatically upon cast
       return;
     }
 
@@ -2703,10 +2706,11 @@ struct word_of_glory_t : public paladin_heal_t
     if ( p() -> sets.has_set_bonus( SET_T15_2PC_TANK ) )
       p() -> buffs.shield_of_glory -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, p() -> buffs.shield_of_glory -> buff_duration * hopo );
         
-    // consume BoG stacks if used on self
+    // consume BoG stacks and Bastion of Power if used on self
     if ( target == player )
     {
       p() -> buffs.bastion_of_glory -> expire();
+      p() -> buffs.bastion_of_power -> expire();
     }
   }
 };
@@ -3750,6 +3754,10 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     // Add stack of Bastion of Glory
     p() -> buffs.bastion_of_glory -> trigger();
 
+    // if we're using T16_4PC_TANK, apply the bastion_of_power buff if BoG stacks > 3
+    if ( p() -> sets.has_set_bonus( SET_T16_4PC_TANK ) && p() -> buffs.bastion_of_glory -> stack() >= 3 )
+      p() -> buffs.bastion_of_power -> trigger();
+
     // clear any Alabaster Shield stacks we may have
     p() -> buffs.alabaster_shield -> expire();
   }
@@ -3926,6 +3934,28 @@ struct divine_protection_t : public buff_t
 
 };
 
+// Eternal Flame buff
+struct eternal_flame_t : public buff_t
+{
+  paladin_td_t* pair;
+  eternal_flame_t( paladin_td_t* q ) :
+    buff_t( buff_creator_t( *q, "eternal_flame", q -> source -> find_spell( 114163 ) ) ),
+    pair( q )
+  {
+    cooldown -> duration = timespan_t::zero();
+
+  }
+
+  virtual void expire_override()
+  {
+    buff_t::expire_override();
+
+    // cancel existing Eternal Flame HoT
+    pair -> dots.eternal_flame -> cancel();    
+  }
+  
+};
+
 } // end namespace buffs
 
 // Hand of Sacrifice execute function
@@ -3953,7 +3983,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) :
   dots.stay_of_execution  = target -> get_dot( "stay_of_execution",  paladin );
 
   buffs.debuffs_censure    = buff_creator_t( *this, "censure", paladin -> find_spell( 31803 ) );
-  buffs.eternal_flame      = buff_creator_t( *this, "eternal_flame", paladin -> find_spell( 114163 ) );
+  buffs.eternal_flame      = new buffs::eternal_flame_t( this );
   buffs.sacred_shield_tick = absorb_buff_creator_t( *this, "sacred_shield_tick", paladin -> find_spell( 65148 ) )
                              .source( paladin -> get_stats( "sacred_shield" ) )
                              .cd( timespan_t::zero() )
@@ -4312,6 +4342,7 @@ void paladin_t::create_buffs()
   buffs.alabaster_shield       = buff_creator_t( this, "glyph_alabaster_shield", find_spell( 121467 ) ) // alabaster shield glyph spell contains no useful data
                                  .cd( timespan_t::zero() );
   buffs.bastion_of_glory       = buff_creator_t( this, "bastion_of_glory", find_spell( 114637 ) );
+  buffs.bastion_of_power       = buff_creator_t( this, "bastion_of_power", find_spell( 144569 ) );
   buffs.blessed_life           = buff_creator_t( this, "glyph_blessed_life", glyphs.blessed_life )
                                  .cd( timespan_t::from_seconds( glyphs.blessed_life -> effectN( 2 ).base_value() ) );
   buffs.double_jeopardy        = buff_creator_t( this, "glyph_double_jeopardy", glyphs.double_jeopardy )
@@ -4451,23 +4482,26 @@ void paladin_t::generate_action_prio_list_prot()
   def -> add_talent( this, "Holy Avenger" );
   def -> add_action( this, "Divine Protection" ); // use on cooldown
   def -> add_action( this, "Guardian of Ancient Kings" ); // use on cooldown
-  def -> add_talent( this, "Eternal Flame", "if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react)" );
+  def -> add_talent( this, "Eternal Flame", "if=buff.eternal_flame.remains<2&buff.bastion_of_glory.react>2&(holy_power>=3|buff.divine_purpose.react|buff.bastion_of_power.react)" );
+  def -> add_talent( this, "Eternal Flame", "if=buff.bastion_of_power.react&buff.bastion_of_glory.react>=5" );
   // these two lines are emergency WoG, but seem to do more harm than good
   //def -> add_action( this, "Word of Glory", "if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8" );
   //def -> add_talent( this, "Eternal Flame", "if=buff.bastion_of_glory.react>3&incoming_damage_5s>health.max*0.8" );
   def -> add_action( this, "Shield of the Righteous", "if=holy_power>=5|buff.divine_purpose.react|incoming_damage_1500ms>=health.max*0.3" );
   def -> add_action( this, "Judgment", "if=talent.sanctified_wrath.enabled&buff.avenging_wrath.react" );
+  def -> add_action( "wait,sec=cooldown.judgment.remains,if=talent.sanctified_wrath.enabled&cooldown.judgment.remains>0&cooldown.judgment.remains<=0.5" );
   def -> add_action( this, "Crusader Strike" );
-  def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.35" );
+  def -> add_action( "wait,sec=cooldown.crusader_strike.remains,if=cooldown.crusader_strike.remains>0&cooldown.crusader_strike.remains<=0.5" );
   def -> add_action( this, "Judgment" );
+  def -> add_action( "wait,sec=cooldown.judgment.remains,if=cooldown.judgment.remains>0&cooldown.judgment.remains<=0.5&(cooldown.crusader_strike.remains-cooldown.judgment.remains)>=0.5" );
   def -> add_action( this, "Avenger's Shield" );
   def -> add_talent( this, "Sacred Shield", "if=target.dot.sacred_shield.remains<5" );
-  def -> add_action( this, "Hammer of Wrath" );
+  def -> add_action( this, "Holy Wrath" );
   def -> add_talent( this, "Execution Sentence" );
   def -> add_talent( this, "Light's Hammer" );
-  def -> add_talent( this, "Holy Prism" );
-  def -> add_action( this, "Holy Wrath" );
+  def -> add_action( this, "Hammer of Wrath" );
   def -> add_action( this, "Consecration", "if=target.debuff.flying.down&!ticking" );
+  def -> add_talent( this, "Holy Prism" );
   def -> add_talent( this, "Sacred Shield" );
 }
 
@@ -4944,7 +4978,7 @@ role_e paladin_t::primary_role() const
     return ROLE_TANK;
 
   if ( player_t::primary_role() == ROLE_HEAL || specialization() == PALADIN_HOLY )
-    return ROLE_HEAL;
+    return ROLE_HYBRID; //To prevent spawning healing_target, as there is no support for healing.
 
   return ROLE_HYBRID;
 }

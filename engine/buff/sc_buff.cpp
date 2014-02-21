@@ -619,7 +619,7 @@ void buff_t::refresh( int        stacks,
     {
       assert( d > timespan_t::zero() );
       // Infinite duration -> duration of d
-      if ( unlikely( ! expiration ) )
+      if ( ! expiration )
         expiration = new ( *sim ) expiration_t( this, d );
       else
         expiration -> reschedule( d );
@@ -740,7 +740,7 @@ void buff_t::expire( timespan_t delay )
       double begin_uptime = ( 1000 - last_start.total_millis() % 1000 ) / 1000.0;
       double end_uptime = ( sim -> current_time.total_millis() % 1000 ) / 1000.0;
 
-      if ( unlikely( last_start.total_millis() % 1000 == 0 ) )
+      if ( last_start.total_millis() % 1000 == 0 )
         begin_uptime = 1.0;
 
       uptime_array.add( start_time, begin_uptime );
@@ -915,7 +915,7 @@ expr_t* buff_t::create_expression(  std::string buff_name,
     target_specific_t<buff_t*> specific_buff;
 
     buff_expr_t( const std::string& n, const std::string& bn, action_t* a, buff_t* b ) :
-      expr_t( n ), buff_name( bn ), action( a ), static_buff( b ), specific_buff() {}
+      expr_t( n ), buff_name( bn ), action( a ), static_buff( b ), specific_buff( false ) {}
 
     buff_t* buff()
     {
@@ -1214,9 +1214,9 @@ void stat_buff_t::expire_override()
   for ( size_t i = 0; i < stats.size(); ++i )
   {
     if ( stats[ i ].current_value > 0 )
-      player -> stat_loss( stats[ i ].stat, stats[ i ].current_value, 0, 0, false );
+      player -> stat_loss( stats[ i ].stat, stats[ i ].current_value, 0, 0, buff_duration > timespan_t::zero() );
     else if ( stats[ i ].current_value < 0 )
-      player -> stat_gain( stats[ i ].stat, std::fabs( stats[ i ].current_value ), 0, 0, false );
+      player -> stat_gain( stats[ i ].stat, std::fabs( stats[ i ].current_value ), 0, 0, buff_duration > timespan_t::zero() );
     stats[ i ].current_value = 0;
   }
 

@@ -523,7 +523,7 @@ struct stormlash_callback_t : public action_callback_t
     stormlash_spell -> base_dd_min = amount - ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
     stormlash_spell -> base_dd_max = amount + ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
 
-    if ( unlikely( stormlash_aggregate && stormlash_aggregate -> player -> cast_pet() -> owner == a -> player ) )
+    if ( stormlash_aggregate && stormlash_aggregate -> player -> cast_pet() -> owner == a -> player )
     {
       assert( stormlash_aggregate_stat -> player == stormlash_aggregate -> player );
       stats_t* tmp_stats = stormlash_spell -> stats;
@@ -534,7 +534,7 @@ struct stormlash_callback_t : public action_callback_t
     else
       stormlash_spell -> execute();
 
-    if ( unlikely( stormlash_aggregate && stormlash_aggregate -> player -> cast_pet() -> owner != a -> player ) )
+    if ( stormlash_aggregate && stormlash_aggregate -> player -> cast_pet() -> owner != a -> player )
     {
       assert( stormlash_aggregate_stat -> player == stormlash_aggregate -> player );
       stormlash_aggregate_stat -> add_execute( timespan_t::zero(), stormlash_spell -> target );
@@ -648,6 +648,8 @@ player_t::player_t( sim_t*             s,
   iteration_fight_length( timespan_t::zero() ), arise_time( timespan_t::min() ),
   iteration_waiting_time( timespan_t::zero() ), iteration_executed_foreground_actions( 0 ),
   rps_gain( 0 ), rps_loss( 0 ),
+
+  tmi_window( 6.0 ),
   collected_data( player_collected_data_t( name_str, *sim ) ),
   vengeance( collected_data.vengeance_timeline ),
   // Damage
@@ -827,7 +829,7 @@ static bool check_actors( sim_t* sim )
     if ( p -> is_pet() || p -> is_enemy() ) continue;
     if ( p -> type == HEALING_ENEMY ) continue;
     if ( ! p -> quiet ) too_quiet = false;
-    if ( p -> primary_role() != ROLE_HEAL && p -> primary_role() != ROLE_TANK && ! p -> is_pet() ) zero_dds = false;
+    if ( p -> primary_role() != ROLE_HEAL && ! p -> is_pet() ) zero_dds = false;
   }
   
   if ( too_quiet && ! sim -> debug )
@@ -1048,6 +1050,9 @@ void player_t::init_character_properties()
   replace_spells();
   init_position();
   init_professions();
+
+  if ( sim -> tmi_window_global > 0 )
+    tmi_window = sim -> tmi_window_global;
 }
 
 void scale_challenge_mode( player_t& p, const rating_t& rating )
@@ -2770,6 +2775,12 @@ void player_t::create_buffs()
                         /* .add_invalidate( CACHE_PLAYER_CRITICAL_DAMAGE ) */
                         /* .add_invalidate( CACHE_PLAYER_CRITICAL_HEALING ) */;
 
+      buffs.amplified_2 = buff_creator_t( this, "amplified_2", find_spell( 146051 ) )
+                          .add_invalidate( CACHE_MASTERY )
+                          .add_invalidate( CACHE_HASTE )
+                          .add_invalidate( CACHE_SPIRIT )
+                          .chance( 0 );
+
     buffs.cooldown_reduction = buff_creator_t( this, "cooldown_reduction" )
                                .chance( 0 )
                                .default_value( 1 );
@@ -3287,6 +3298,10 @@ double player_t::composite_movement_speed() const
   // From http://www.wowpedia.org/Movement_speed_effects
   // Additional items looked up
 
+  // Run Speed Enchants: 8% increase
+
+  // Engineering Nitro Boosts: 150% increase for 5 seconds
+
   // Pursuit of Justice, Quickening: 8%/15%
 
   // DK: Unholy Presence: 15%
@@ -3300,6 +3315,7 @@ double player_t::composite_movement_speed() const
   // Druid: Travel Form 40%
 
   // Druid: Dash: 50/60/70
+  //        Stampeding Shout: 60% boost to all players within 10 yards for 8 seconds
 
   // Mage: Blazing Speed: 5%/10% chance after being hit for 50% for 8 sec
   //       Improved Blink: 35%/70% for 3 sec after blink
@@ -3308,6 +3324,9 @@ double player_t::composite_movement_speed() const
   // Rogue: Sprint 70%
 
   // Swiftness Potion: 50%
+
+  // Warrior: Enraged Speed Glyph - 20% while enraged
+  //          Stampeding Shout (Druid Symbiosis): 60% boost to all players within 10 yards for 8 seconds
 
   return speed;
 }
@@ -3356,6 +3375,7 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       break;
     case ATTR_SPIRIT:
       m *= 1.0 + buffs.amplified -> value();
+      m *= 1.0 + buffs.amplified_2 -> value();
       break;
     default:
       break;
@@ -3380,9 +3400,13 @@ double player_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_SPELL_HASTE:
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
-      v *= 1.0 + buffs.amplified -> value(); break;
+      v *= 1.0 + buffs.amplified -> value();
+      v *= 1.0 + buffs.amplified_2 -> value();
+      break;
     case RATING_MASTERY:
-      v *= 1.0 + buffs.amplified -> value(); break;
+      v *= 1.0 + buffs.amplified -> value();
+      v *= 1.0 + buffs.amplified_2 -> value();
+      break;
     default: break;
   }
 
@@ -3551,7 +3575,7 @@ void player_t::sequence_add( const action_t* a, const player_t* target, const ti
     if ( ( a -> sim -> iterations <= 1 && a -> sim -> current_iteration == 0 ) ||
          ( a -> sim -> iterations > 1 && a -> sim -> current_iteration == 1 ) )
     {
-      if ( collected_data.action_sequence.size() <= sim -> expected_max_time() * 1.5 )
+      if ( collected_data.action_sequence.size() <= sim -> expected_max_time() * 2.0 )
       {
         collected_data.action_sequence.push_back( new player_collected_data_t::action_sequence_data_t( a, target, ts, this ) );
       }
@@ -4071,7 +4095,7 @@ void player_t::schedule_ready( timespan_t delta_time,
   timespan_t gcd_adjust = gcd_ready - ( sim -> current_time + delta_time );
   if ( gcd_adjust > timespan_t::zero() ) delta_time += gcd_adjust;
 
-  if ( unlikely( waiting ) )
+  if ( waiting )
   {
     iteration_waiting_time += delta_time;
   }
@@ -4177,7 +4201,7 @@ void player_t::arise()
 
   arise_time = sim -> current_time;
 
-  if ( unlikely( is_enemy() ) )
+  if ( is_enemy() )
   {
     sim -> active_enemies++;
     sim -> target_non_sleeping_list.push_back( this );
@@ -4191,6 +4215,7 @@ void player_t::arise()
   if ( ! is_enemy() && ! is_pet() )
   {
     buffs.amplified -> trigger();
+    buffs.amplified_2 -> trigger();
     buffs.cooldown_reduction -> trigger();
   }
 
@@ -4222,7 +4247,7 @@ void player_t::demise()
     readying = 0;
   }
 
-  if ( unlikely( is_enemy() ) )
+  if ( is_enemy() )
   {
     sim -> active_enemies--;
     sim -> target_non_sleeping_list.find_and_erase_unordered( this );
@@ -4346,7 +4371,7 @@ action_t* player_t::execute_action()
 
     if ( a -> background ) continue;
 
-    if ( unlikely( a -> wait_on_ready == 1 ) )
+    if ( a -> wait_on_ready == 1 )
       break;
 
     if ( a -> ready() )
@@ -6372,6 +6397,12 @@ struct cancel_buff_t : public action_t
 
     buff = buff_t::find( player, buff_name );
 
+    // if the buff isn't in the player_t -> buff_list, try again in the player_td_t -> target -> buff_list
+    if ( ! buff )
+    {
+      buff = buff_t::find( player -> get_target_data( player ) -> target, buff_name );
+    }
+
     if ( ! buff )
     {
       sim -> errorf( "Player %s uses cancel_buff with unknown buff %s\n", player -> name(), buff_name.c_str() );
@@ -7607,6 +7638,12 @@ expr_t* player_t::create_expression( action_t* a,
 
           return result;
         }
+
+        virtual ~trinket_proc_expr_t()
+        {
+          delete bexpr1;
+          delete bexpr2;
+        }
       };
 
       return new trinket_proc_expr_t( a, stat, trinket1, trinket2, ptype == PROC_STACKING_STAT, splits[ expr_idx ] );
@@ -8252,11 +8289,6 @@ bool player_t::create_profile( std::string& profile_str, save_e stype, bool save
   else
     term = "\n";
 
-  if ( stype == SAVE_ALL )
-  {
-    profile_str += "#!./simc " + term + term;
-  }
-
   if ( ! report_information.comment_str.empty() )
   {
     profile_str += "# " + report_information.comment_str + term;
@@ -8533,6 +8565,7 @@ void player_t::create_options()
     opt_bool( "scale_player", scale_player ),
     opt_bool( "tmi_self_only", tmi_self_only ),
     opt_string( "tmi_output", tmi_debug_file_str ),
+    opt_float( "tmi_window", tmi_window ),
     opt_func( "spec", parse_specialization ),
     opt_func( "specialization", parse_specialization ),
     opt_func( "stat_timelines", parse_stat_timelines ),
@@ -9647,14 +9680,14 @@ double player_stat_cache_t::player_heal_multiplier( school_e s ) const
  * otherwise in a action/buff ( like Druid Bear Form )
  */
 
-void player_vengeance_t::start( player_t& p )
+void player_vengeance_timeline_t::start( player_t& p )
 {
   assert( ! is_started() );
 
   struct collect_event_t : public event_t
   {
-    player_vengeance_t& vengeance;
-    collect_event_t( player_t& p, player_vengeance_t& v ) :
+    player_vengeance_timeline_t& vengeance;
+    collect_event_t( player_t& p, player_vengeance_timeline_t& v ) :
       event_t( p, "vengeance_timeline_collect_event_t" ),
       vengeance( v )
     {
@@ -9678,7 +9711,7 @@ void player_vengeance_t::start( player_t& p )
  * If you have dynamic vengeance activation ( like Druid Bear Form ), call it in the buff expiration/etc.
  */
 
-void player_vengeance_t::stop()
+void player_vengeance_timeline_t::stop()
 { core_event_t::cancel( event ); }
 
 player_collected_data_t::action_sequence_data_t::action_sequence_data_t( const action_t* a, const player_t* t, const timespan_t& ts, const player_t* p ) :
@@ -9938,7 +9971,7 @@ void player_collected_data_t::collect_data( const player_t& p )
       if ( f_length )
       {
         // define constants and variables
-        int window = 6; // window size, this may become user-definable later
+        int window = std::floor( ( p.tmi_window ) / 1 + 0.5 ); // window size, bin time replaces 1 eventually
         double w0  = 6; // normalized window size
         double hdf = 3; // default health decade factor
 

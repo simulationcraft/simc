@@ -6,7 +6,7 @@
 #define SIMULATIONCRAFT_H
 
 #define SC_MAJOR_VERSION "600"
-#define SC_MINOR_VERSION "0"
+#define SC_MINOR_VERSION "1"
 #define SC_USE_PTR ( 0 )
 #define SC_BETA ( 1 )
 
@@ -128,12 +128,7 @@ namespace std {using namespace tr1; }
 #include "dbc/data_definitions.hh"
 #include "utf8.h"
 
-#if defined(__GNUC__)
-#  define likely(x)         __builtin_expect((x),1)
-#  define unlikely(x)       __builtin_expect((x),0)
-#else
-#  define likely(x)        (x)
-#  define unlikely(x)      (x)
+#if !defined(__GNUC__)
 #  define __attribute__(x)
 #endif
 
@@ -227,6 +222,7 @@ struct stormlash_callback_t;
 struct tick_buff_t;
 struct travel_event_t;
 struct xml_node_t;
+class xml_writer_t;
 
 // Enumerations =============================================================
 // annex _e to enumerations
@@ -1839,7 +1835,7 @@ public:
   int             check() const { return current_stack; }
   inline bool     up()    { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack > 0; }
   inline int      stack() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
-  inline double   value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
+  virtual double   value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
   timespan_t remains() const;
   bool   remains_gt( timespan_t time ) const;
   bool   remains_lt( timespan_t time ) const;
@@ -1913,6 +1909,7 @@ struct stat_buff_t : public buff_t
   virtual void bump     ( int stacks = 1, double value = -1.0 );
   virtual void decrement( int stacks = 1, double value = -1.0 );
   virtual void expire_override();
+  virtual double value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return stats[ 0 ].current_value; }
 
 protected:
   stat_buff_t( const stat_buff_creator_t& params );
@@ -2183,6 +2180,26 @@ public:
 
   void lock();
   void unlock();
+
+  native_t* native_mutex() const
+  { return native_handle; }
+};
+
+class condition_variable_t : public noncopyable
+{
+private:
+  class native_t;
+
+  native_t* native_handle;
+
+public:
+  condition_variable_t( mutex_t* m );
+  ~condition_variable_t();
+
+  void wait();
+
+  void signal();
+  void broadcast();
 };
 
 class sc_thread_t : public noncopyable
@@ -2420,6 +2437,8 @@ public:
     timespan_t wheel_time;
     std::vector<core_event_t*> all_events_ever_created;
 
+  private:
+    friend struct core_sim_t;
     event_managment_t();
     ~event_managment_t();
     void add_event( core_event_t*, timespan_t delta_time, timespan_t current_time );
@@ -2427,7 +2446,6 @@ public:
     void init();
     core_event_t* next_event();
     void reset();
-  private:
     std::vector<core_event_t*> get_events_to_flush() const;
   };
 
@@ -2453,7 +2471,7 @@ public:
   stopwatch_t event_stopwatch;
   bool monitor_cpu;
 
-  int canceled, iteration_canceled;
+  bool canceled;
   double      vary_combat_length;
 
 // Public functions
@@ -2461,6 +2479,7 @@ public:
   double iteration_time_adjust() const;
   double expected_max_time() const;
   bool is_canceled() const;
+  void cancel_iteration( bool cancel = true );
 
 protected:
   virtual void combat( int iteration );
@@ -2470,6 +2489,7 @@ protected:
   virtual void reset();
 
 private:
+  bool iteration_canceled;
   void begin_combat();
   void end_combat();
   void reschedule_event( core_event_t* );
@@ -2481,7 +2501,7 @@ struct sim_t : public core_sim_t, private sc_thread_t
 {
   sim_control_t* control;
   sim_t*      parent;
-  bool initialized;
+  bool initialized, paused;
   player_t*   target;
   player_t*   heal_target;
   vector_with_callback<player_t*> target_list;
@@ -2504,7 +2524,7 @@ struct sim_t : public core_sim_t, private sc_thread_t
   double     travel_variance, default_skill;
   timespan_t  reaction_time, regen_periodicity;
   timespan_t  ignite_sampling_delta;
-  int         fixed_time;
+  bool         fixed_time;
   int         seed, current_slot;
   int         armor_update_interval, weapon_speed_scale_factors;
   int         optimal_raid, log, debug_each;
@@ -2519,6 +2539,7 @@ struct sim_t : public core_sim_t, private sc_thread_t
   int         stat_cache;
   int         max_aoe_enemies;
   bool        tmi_actor_only;
+  double      tmi_window_global;
 
   // Target options
   double      target_death_pct;
@@ -2697,8 +2718,9 @@ public:
 
   int       main( const std::vector<std::string>& args );
   void      cancel();
-  double    progress( int* current = 0, int* final = 0 );
-  double    progress( std::string& phase );
+  double    progress( int* current = 0, int* final = 0, std::string* phase = 0 );
+  double    progress( std::string& phase, std::string* detailed = 0 );
+  void      detailed_progress( std::string*, int current_iterations, int total_iterations );
   virtual void combat( int iteration );
   virtual void combat_begin();
   virtual void combat_end();
@@ -2726,11 +2748,47 @@ public:
   expr_t* create_expression( action_t*, const std::string& name );
   void       errorf( const char* format, ... );
 
+  bool is_paused()
+  {
+    if ( parent )
+      return parent -> is_paused();
+    else
+    {
+      pause_mutex.lock();
+      bool p = paused;
+      pause_mutex.unlock();
+      return p;
+    }
+  }
+
+  void toggle_pause();
+
   static double distribution_mean_error( const sim_t& s, const extended_sample_data_t& sd )
   { return s.confidence_estimator * sd.mean_std_dev; }
 
 private:
+  mutex_t pause_mutex;
+  condition_variable_t pause_cvar;
+
   bool use_load_balancing() const;
+
+  void do_pause()
+  {
+    if ( ! parent )
+    {
+      pause_mutex.lock();
+      while ( paused )
+        pause_cvar.wait();
+      pause_mutex.unlock();
+    }
+    else
+    {
+      parent -> pause_mutex.lock();
+      while ( parent -> paused )
+        parent -> pause_cvar.wait();
+      parent -> pause_mutex.unlock();
+    }
+  }
 };
 
 // Module ===================================================================
@@ -2832,7 +2890,7 @@ struct scaling_t
   void analyze_lag();
   void normalize();
   void derive();
-  double progress( std::string& phase );
+  double progress( std::string& phase, std::string* detailed = 0 );
   void create_options();
   bool has_scale_factors();
 };
@@ -2855,7 +2913,7 @@ struct plot_t
 
   void analyze();
   void analyze_stats();
-  double progress( std::string& phase );
+  double progress( std::string& phase, std::string* detailed = 0 );
   void create_options();
 };
 
@@ -2882,7 +2940,7 @@ struct reforge_plot_t
                            std::vector<int> cur_stat_mods );
   void analyze();
   void analyze_stats();
-  double progress( std::string& phase );
+  double progress( std::string& phase, std::string* detailed = 0 );
   void create_options();
 };
 
@@ -3289,6 +3347,7 @@ struct item_t
   bool has_item_stat( stat_e stat ) const;
 
   std::string encoded_item();
+  void encoded_item( xml_writer_t& writer );
   std::string encoded_comment();
 
   std::string encoded_stats();
@@ -3688,14 +3747,14 @@ public:
 
 // Player Vengeance
 
-struct player_vengeance_t
+struct player_vengeance_timeline_t
 {
 private:
   sc_timeline_t& timeline_; // reference to collected_data.vengeance_timeline
   core_event_t* event; // pointer to collection event so we can cancel it at the end of combat.
 
 public:
-  player_vengeance_t( sc_timeline_t& vengeance_tl ) :
+  player_vengeance_timeline_t( sc_timeline_t& vengeance_tl ) :
     timeline_( vengeance_tl ), event( nullptr ) {}
 
   void start( player_t& p );
@@ -3712,7 +3771,7 @@ public:
       timeline_.adjust( divisor_timeline );
   }
 
-  void merge( const player_vengeance_t& other )
+  void merge( const player_vengeance_timeline_t& other )
   { timeline_.merge( other.timeline_ ); }
 
   const sc_timeline_t& timeline() const { return timeline_; }
@@ -3928,22 +3987,76 @@ struct actor_t : public noncopyable
 
 struct vengeance_actor_list_t
 {
-  // structure that contains the relevant information for each actor entry inthe list
-  struct actor_entry_t { player_t* player; double raw_dps; timespan_t last_attack; };
-  std::vector< actor_entry_t > actor_list; // vector of actor entries
-  player_t* myself; // not sure this is strictly necessary, intended to nullify self-veng, but an is_enemy(actor) call might be better
+  vengeance_actor_list_t( const player_t* p ) : myself( p )
+  { }
 
-  // TODO: sort these methods into public (constructor, reset, get_actor_rank, add(3arg) ) and private (everything else?)
+  // called after each iteration in player_t::vengeance_stop()
+  void reset()
+  { actor_list.clear(); }
 
-  // constructor
-  vengeance_actor_list_t( player_t* p ) { myself = p; }
+  // this returns the integer corresponding to the applied diminishing returns
+  // i.e. it returns N for the Nth-strongest attacker
+  int get_actor_rank( const player_t* t )
+  {
+    // pre-condition: actor_list sorted by raw dps
+    std::vector<actor_entry_t>::iterator found = find_actor( t );
+    assert( found != actor_list.end() && "Vengeance attacker not found in vengeance list!" );
+    return std::distance( actor_list.begin(), found ) + 1;
+  }
 
-  // method to clear list, called after each iteration in player_t::vengeance_stop()
-  void reset()  { actor_list.clear(); }
+  // this is the method that we use to interact with the structure
+  void add( const player_t* actor, double raw_dps, timespan_t current_time )
+  {
+    if ( actor == myself )
+      return;
+
+    std::vector<actor_entry_t>::iterator found = find_actor( actor );
+
+    if ( found != actor_list.end() )
+    {
+      // We already have the actor in the list, update:
+      update_actor_entry( *found, raw_dps, current_time );
+    }
+    else
+    {
+      // We do not have the actor in the list, create new entry:
+      actor_entry_t a;
+      a.player = actor;
+      a.raw_dps = raw_dps;
+      a.last_attack = current_time;
+
+      actor_list.push_back( a );
+    }
+
+    // purge any actors that haven't hit you in 5 seconds or more
+    purge_actor_list( current_time );
+
+    // sort the list
+    sort_list();
+  }
+private:
+  // structure that contains the relevant information for each actor entry in the list
+  struct actor_entry_t {
+    const player_t* player;
+    double raw_dps;
+    timespan_t last_attack;
+  };
+  std::vector<actor_entry_t> actor_list; // vector of actor entries
+  const player_t* myself; // not sure this is strictly necessary, intended to nullify self-veng, but an is_enemy(actor) call might be better
 
   // comparator function for sorting the list
   static bool compare_DPS( const actor_entry_t &a, const actor_entry_t &b )
-  { return ( a ).raw_dps > ( b ).raw_dps; }
+  { return a.raw_dps > b.raw_dps; }
+
+  // comparator functor for purging inactive players
+  struct was_inactive {
+    was_inactive( const timespan_t& current_time ) :
+      current_time( current_time )
+    {}
+    bool operator()( const actor_entry_t& a ) const
+    { return a.last_attack + timespan_t::from_seconds( 5.0 ) < current_time; }
+    const timespan_t& current_time;
+  };
 
   // method to sort the list according to raw DPS
   void sort_list() { std::sort( actor_list.begin(), actor_list.end(), compare_DPS ); }
@@ -3951,71 +4064,26 @@ struct vengeance_actor_list_t
   // method to purge the actor list of any enemy that hasn't participated in the last 5 seconds
   void purge_actor_list( timespan_t current_time )
   {
-    for ( std::vector<actor_entry_t>::iterator iter = actor_list.begin(); iter != actor_list.end(); )
-    {
-      if ( ( *iter ).last_attack < current_time - timespan_t::from_seconds( 5.0 ) )
-        iter = actor_list.erase( iter );
-      else
-        ++iter;
-    }
+    // Erase-remove idiom
+    actor_list.erase( std::remove_if( actor_list.begin(), actor_list.end(), was_inactive( current_time ) ), actor_list.end() );
   }
-  
-  // this returns the integer corresponding to the applied diminishing returns
-  // i.e. it returns N for the Nth-strongest attacker
-  int get_actor_rank( player_t* t )
+
+  std::vector<actor_entry_t>::iterator find_actor( const player_t* p )
   {
-    for ( size_t i = 0, size = actor_list.size(); i < size; i++ )
+    std::vector<actor_entry_t>::iterator iter = actor_list.begin();
+    for ( ; iter != actor_list.end(); iter++ )
     {
-      if ( t == ( actor_list[ i ] ).player )
-        return (int)i+1;
+      if ( ( *iter ).player == p )
+        return iter;
     }
-    // if actor rank not found, it's not in the list.  this should never happen.
-    // but if it does, we'll return -1 so as no to divide by zero
-    // should probably add an error or some such here
-    return -1;
+    return iter;
   }
 
-  // this attempts to update the list with the current entry, returns false if that actor isn't found
-  bool update_actor_entry( actor_entry_t* a )
-  {    
-    // cycle through the list and look for the actor - if it exists, just update that entry
-    for ( std::vector<actor_entry_t>::iterator iter = actor_list.begin(); iter != actor_list.end(); iter++ )
-    {
-      if ( ( *iter  ).player == a -> player )
-      {
-        ( *iter ).raw_dps = a -> raw_dps;
-        ( *iter ).last_attack = a -> last_attack;
-        return true;
-      }
-    }
-    return false;
-  }
-
-  // this is the method that we use to interact with the structure
-  void add( player_t* actor, double boss_raw_dps, timespan_t current_time )
+  // update_actor_entry
+  void update_actor_entry( actor_entry_t& a, double raw_dps, timespan_t last_attack )
   {
-    // make an actor_entry_t with this information
-    actor_entry_t a;
-    a.player = actor;
-    a.raw_dps = boss_raw_dps;
-    a.last_attack = current_time;
-
-    // add to the list
-    add( &a );
-  }
-
-  // this is the workhorse method that adds new actors and maintains the list
-  void add( actor_entry_t* a )
-  {    
-    // try to update the actor's entry; if it doesn't exist and isn't myself, add them
-    if ( ! update_actor_entry( a ) && a -> player != myself )
-      actor_list.push_back( *a );
-
-    // purge any actors that haven't hit you in 5 seconds or more
-    purge_actor_list( a -> last_attack );
-
-    // sort the list
-    sort_list();
+      a.raw_dps = raw_dps;
+      a.last_attack = last_attack;
   }
 };
 
@@ -4212,6 +4280,7 @@ struct player_t : public actor_t
   std::array< double, RESOURCE_MAX > iteration_resource_lost, iteration_resource_gained;
   double    rps_gain, rps_loss;
   std::string tmi_debug_file_str;
+  double tmi_window;
 
   auto_dispose< std::vector<buff_t*> > buff_list;
   auto_dispose< std::vector<proc_t*> > proc_list;
@@ -4227,7 +4296,7 @@ struct player_t : public actor_t
   player_collected_data_t collected_data;
 
 private:
-  player_vengeance_t vengeance;
+  player_vengeance_timeline_t vengeance;
 public:
   void vengeance_start() 
   { 
@@ -4325,6 +4394,7 @@ public:
 
     // 5.4 trinkets
     buff_t* amplified; // caster 146046
+    buff_t* amplified_2;
     buff_t* cooldown_reduction;
   } buffs;
 
@@ -4759,7 +4829,11 @@ public:
 template < class T >
 struct target_specific_t
 {
+  bool owner_;
 public:
+  target_specific_t( bool owner = true ) : owner_( owner )
+  { }
+
   T& operator[](  const player_t* target ) const
   {
     assert( target );
@@ -4768,6 +4842,11 @@ public:
       data.resize( target -> sim -> actor_list.size() );
     }
     return data[ target -> actor_index ];
+  }
+  virtual ~target_specific_t()
+  {
+    if ( owner_ )
+      range::dispose( data );
   }
 private:
   mutable std::vector<T> data;
@@ -6045,7 +6124,7 @@ struct travel_event_t : public event_t
   action_t* action;
   action_state_t* state;
   travel_event_t( action_t* a, action_state_t* state, timespan_t time_to_travel );
-  virtual ~travel_event_t() { if ( unlikely( state && canceled ) ) action_state_t::release( state ); }
+  virtual ~travel_event_t() { if ( state && canceled ) action_state_t::release( state ); }
   virtual void execute();
 };
 
@@ -6087,10 +6166,10 @@ unsigned upgrade_ilevel( const item_data_t& item, unsigned upgrade_level );
 stat_pair_t item_enchantment_effect_stats( const item_enchantment_data_t& enchantment, int index );
 double item_budget( const item_t* item, unsigned max_ilevel );
 
-inline bool heroic( unsigned f ) { return f & RAID_TYPE_HEROIC; }
-inline bool lfr( unsigned f ) { return f & RAID_TYPE_LFR; }
-inline bool flex( unsigned f ) { return f & RAID_TYPE_FLEXIBLE; }
-inline bool elite( unsigned f ) { return f & RAID_TYPE_ELITE; }
+inline bool heroic( unsigned f ) { return ( f & RAID_TYPE_HEROIC ) == RAID_TYPE_HEROIC; }
+inline bool lfr( unsigned f ) { return ( f & RAID_TYPE_LFR ) == RAID_TYPE_LFR; }
+inline bool flex( unsigned f ) { return ( f & RAID_TYPE_FLEXIBLE ) == RAID_TYPE_FLEXIBLE; }
+inline bool elite( unsigned f ) { return ( f & RAID_TYPE_ELITE ) == RAID_TYPE_ELITE; }
 }
 
 // Unique Gear ==============================================================
@@ -6301,6 +6380,157 @@ struct xml_node_t
     std::ostringstream s;
     s << value;
     parameters.push_back( xml_parm_t( name, s.str() ) );
+  }
+};
+
+class xml_writer_t
+{
+private:
+  io::cfile file;
+  enum state
+  {
+    NONE, TAG, TEXT
+  };
+  std::stack<std::string> current_tags;
+  std::string tabulation;
+  state current_state;
+  std::string indentation;
+
+  struct replacement
+  {
+    const char* from;
+    const char* to;
+  };
+
+public:
+  xml_writer_t( const std::string & filename ) :
+    file( filename, "w" ),
+    tabulation( "  " ), current_state( NONE )
+  {
+  }
+
+  bool ready() { return file != NULL; }
+
+  int printf( const char *format, ... ) const PRINTF_ATTRIBUTE( 2, 3 )
+  {
+    va_list fmtargs;
+    va_start( fmtargs, format );
+
+    int retcode = vfprintf( file, format, fmtargs );
+
+    va_end( fmtargs );
+
+    return retcode;
+  }
+
+  void init_document( const std::string & stylesheet_file )
+  {
+    assert( current_state == NONE );
+
+    printf( "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" );
+    if ( !stylesheet_file.empty() )
+    {
+      printf( "<?xml-stylesheet type=\"text/xml\" href=\"%s\"?>", stylesheet_file.c_str() );
+    }
+
+    current_state = TEXT;
+  }
+
+  void begin_tag( const std::string & tag )
+  {
+    assert( current_state != NONE );
+
+    if ( current_state != TEXT )
+    {
+      printf( ">" );
+    }
+
+    printf( "\n%s<%s", indentation.c_str(), tag.c_str() );
+
+    current_tags.push( tag );
+    indentation += tabulation;
+
+    current_state = TAG;
+  }
+
+  void end_tag( const std::string & tag )
+  {
+    assert( current_state != NONE );
+    assert( ! current_tags.empty() );
+    assert( indentation.size() == tabulation.size() * current_tags.size() );
+
+    assert( tag == current_tags.top() );
+    current_tags.pop();
+
+    indentation.resize( indentation.size() - tabulation.size() );
+
+    if ( current_state == TAG )
+    {
+      printf( "/>" );
+    }
+    else if ( current_state == TEXT )
+    {
+      printf( "\n%s</%s>", indentation.c_str(), tag.c_str() );
+    }
+
+    current_state = TEXT;
+  }
+
+  void print_attribute( const std::string & name, const std::string & value )
+  { print_attribute_unescaped( name, sanitize( value ) ); }
+
+  void print_attribute_unescaped( const std::string & name, const std::string & value )
+  {
+    assert( current_state != NONE );
+
+    if ( current_state == TAG )
+    {
+      printf( " %s=\"%s\"", name.c_str(), value.c_str() );
+    }
+  }
+
+  void print_tag( const std::string & name, const std::string & inner_value )
+  {
+    assert( current_state != NONE );
+
+    if ( current_state != TEXT )
+    {
+      printf( ">" );
+    }
+
+    printf( "\n%s<%s>%s</%s>", indentation.c_str(), name.c_str(), sanitize( inner_value ).c_str(), name.c_str() );
+
+    current_state = TEXT;
+  }
+
+  void print_text( const std::string & input )
+  {
+    assert( current_state != NONE );
+
+    if ( current_state != TEXT )
+    {
+      printf( ">" );
+    }
+
+    printf( "\n%s", sanitize( input ).c_str() );
+
+    current_state = TEXT;
+  }
+
+  static std::string sanitize( std::string v )
+  {
+    static const replacement replacements[] =
+    {
+      { "&", "&amp;" },
+      { "\"", "&quot;" },
+      { "<", "&lt;" },
+      { ">", "&gt;" },
+    };
+
+    for ( unsigned int i = 0; i < sizeof_array( replacements ); ++i )
+      util::replace_all( v, replacements[ i ].from, replacements[ i ].to );
+
+    return v;
   }
 };
 

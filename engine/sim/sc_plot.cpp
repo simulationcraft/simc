@@ -59,7 +59,7 @@ plot_t::plot_t( sim_t* s ) :
 
 // plot_t::progress =========================================================
 
-double plot_t::progress( std::string& phase )
+double plot_t::progress( std::string& phase, std::string* detailed )
 {
   if ( dps_plot_stat_str.empty() ) return 1.0;
 
@@ -70,11 +70,18 @@ double plot_t::progress( std::string& phase )
   phase  = "Plot - ";
   phase += util::stat_type_abbrev( current_plot_stat );
 
-  double stat_progress = ( num_plot_stats - remaining_plot_stats ) / ( double ) num_plot_stats;
+  int completed_plot_stats = ( num_plot_stats - remaining_plot_stats );
 
-  double point_progress = ( dps_plot_points - remaining_plot_points ) / ( double ) dps_plot_points;
+  double stat_progress = completed_plot_stats / ( double ) num_plot_stats;
+
+  int completed_plot_points = ( dps_plot_points - remaining_plot_points );
+
+  double point_progress = completed_plot_points / ( double ) dps_plot_points;
 
   stat_progress += point_progress / num_plot_stats;
+
+  sim -> detailed_progress( detailed, completed_plot_stats + completed_plot_points,
+                                      num_plot_stats + dps_plot_points );
 
   return stat_progress;
 }

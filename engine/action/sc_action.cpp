@@ -76,8 +76,10 @@ struct action_execute_event_t : public event_t
   {
     if ( sim().debug )
       sim().out_debug.printf( "New Action Execute Event: %s %s %.1f (target=%s, marker=%c)",
-                  p()->name(), a->name(), time_to_execute.total_seconds(),
-                  a->target->name(), ( a->marker ) ? a->marker : '0' );
+                  p() -> name(), a -> name(), time_to_execute.total_seconds(),
+                  ( state ) ? state -> target -> name() : a -> target -> name(), 
+                  ( a -> marker ) ? a -> marker : '0' );
+
     sim().add_event( this, time_to_execute );
   }
 
@@ -94,6 +96,7 @@ struct action_execute_event_t : public event_t
   virtual void execute()
   {
     player_t* target = action -> target;
+
     // Pass the carried execute_state to the action. This saves us a few
     // cycles, as we don't need to make a copy of the state to pass to
     // action -> pre_execute_state.
@@ -106,11 +109,16 @@ struct action_execute_event_t : public event_t
 
     action -> execute_event = 0;
 
-    if ( target -> is_sleeping() && execute_state )
-      action_state_t::release( execute_state );
+    if ( target -> is_sleeping() && action -> pre_execute_state )
+    {
+      action_state_t::release( action -> pre_execute_state );
+      action -> pre_execute_state = 0;
+    }
 
     if ( ! target -> is_sleeping() )
       action -> execute();
+
+    assert( ! action -> pre_execute_state );
 
     if ( action -> background ) return;
 
@@ -301,6 +309,7 @@ action_t::action_t( action_e       ty,
   base_tick_time( timespan_t::zero() ),
   time_to_execute( timespan_t::zero() ),
   time_to_travel( timespan_t::zero() ),
+  target_specific_dot( false ),
   total_executions(),
   line_cooldown( cooldown_t( "line_cd", *p ) )
 {
@@ -395,7 +404,7 @@ action_t::action_t( action_e       ty,
   if ( sim -> debug )
     sim -> out_debug.printf( "Player %s creates action %s (%d)", player -> name(), name(), ( s_data -> ok() ? s_data -> id() : -1 ) );
 
-  if ( unlikely( ! player -> initialized ) )
+  if ( ! player -> initialized )
   {
     sim -> errorf( "Actions must not be created before player_t::init().  Culprit: %s %s\n", player -> name(), name() );
     sim -> cancel();
@@ -436,6 +445,9 @@ action_t::~action_t()
 {
   delete execute_state;
   delete pre_execute_state;
+  delete if_expr;
+  delete interrupt_if_expr;
+  delete early_chain_if_expr;
 }
 
 // action_t::parse_data =====================================================
@@ -457,7 +469,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   school               = spell_data.get_school_type();
   rp_gain              = spell_data.runic_power_gain();
 
-  if ( likely( spell_data._power && spell_data._power -> size() == 1 ) )
+  if ( spell_data._power && spell_data._power -> size() == 1 )
     resource_current = spell_data._power -> at( 0 ) -> resource();
 
   for ( size_t i = 0; spell_data._power && i < spell_data._power -> size(); i++ )
@@ -712,7 +724,11 @@ double action_t::total_crit_bonus() const
   double crit_multiplier_buffed = crit_multiplier * composite_player_critical_multiplier();
   double base_crit_bonus = crit_bonus;
   if ( ! player -> is_pet() && ! player -> is_enemy() )
+  {
     base_crit_bonus += player -> buffs.amplified -> value();
+    base_crit_bonus += player -> buffs.amplified_2 -> value();
+  }
+
   double bonus = ( ( 1.0 + base_crit_bonus ) * crit_multiplier_buffed - 1.0 ) * crit_bonus_multiplier;
 
   if ( sim -> debug )
@@ -982,7 +998,7 @@ player_t* action_t::find_target_by_number( int number ) const
 void action_t::execute()
 {
 #ifndef NDEBUG
-  if ( unlikely( ! initialized ) )
+  if ( ! initialized )
   {
     sim -> errorf( "action_t::execute: action %s from player %s is not initialized.\n", name(), player -> name() );
     assert( 0 );
@@ -1524,7 +1540,7 @@ bool action_t::ready()
   if ( target -> debuffs.invulnerable -> check() && harmful )
     return false;
 
-  if ( unlikely( target -> is_sleeping() ) )
+  if ( target -> is_sleeping() )
     return false;
 
   return true;
@@ -1770,6 +1786,9 @@ expr_t* action_t::create_expression( const std::string& name_str )
         return state -> result_amount;
       }
     }
+
+    virtual ~amount_expr_t()
+    { delete state; }
   };
 
   if ( name_str == "n_ticks" )

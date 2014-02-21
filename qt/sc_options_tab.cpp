@@ -175,6 +175,7 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) :
   connect( choice.debug,              SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.default_role,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.tmi_boss,           SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.tmi_window,         SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.tmi_actor_only,     SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.deterministic_rng,  SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.fight_length,       SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
@@ -221,7 +222,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow(        tr( "Version" ),        choice.version = createChoice( 1, "Live" ) );
 #endif
 #endif
-  globalsLayout_left -> addRow( tr(    "Iterations" ),     choice.iterations = createChoice( 5, "100", "1000", "10000", "25000", "50000" ) );
+  globalsLayout_left -> addRow( tr(    "Iterations" ),     choice.iterations = addValidatorToComboBox( 1, INT_MAX, createChoice( 7, "100", "1000", "10000", "25000", "50000", "100000", "250000" ) ) );
   globalsLayout_left -> addRow( tr(     "World Lag" ),      choice.world_lag = createChoice( 3, "Low", "Medium", "High" ) );
   globalsLayout_left -> addRow( tr(  "Length (sec)" ),   choice.fight_length = createChoice( 10, "100", "150", "200", "250", "300", "350", "400", "450", "500", "600" ) );
   globalsLayout_left -> addRow( tr(   "Vary Length" ), choice.fight_variance = createChoice( 3, "0%", "10%", "20%" ) );
@@ -231,11 +232,12 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left -> addRow( tr(   "Num Enemies" ),     choice.num_target = createChoice( 8, "1", "2", "3", "4", "5", "6", "7", "8" ) );
   globalsLayout_left -> addRow( tr( "Challenge Mode" ),   choice.challenge_mode = createChoice( 2, "Disabled", "Enabled" ) );
   globalsLayout_left -> addRow( tr(  "Player Skill" ),   choice.player_skill = createChoice( 4, "Elite", "Good", "Average", "Ouch! Fire is hot!" ) );
-  globalsLayout_left -> addRow( tr(       "Threads" ),        choice.threads = createChoice( 4, "1", "2", "4", "8" ) );
+  globalsLayout_left -> addRow( tr(       "Threads" ),        choice.threads = addValidatorToComboBox( 1, QThread::idealThreadCount(), createChoice( 4, "1", "2", "4", "8" ) ) );
   globalsLayout_left -> addRow( tr( "Armory Region" ),  choice.armory_region = createChoice( 5, "us", "eu", "tw", "cn", "kr" ) );
   globalsLayout_left -> addRow( tr(   "Armory Spec" ),    choice.armory_spec = createChoice( 2, "active", "inactive" ) );
   globalsLayout_left -> addRow( tr(  "Default Role" ),   choice.default_role = createChoice( 4, "auto", "dps", "heal", "tank" ) );
   globalsLayout_left -> addRow( tr( "TMI Standard Boss" ),   choice.tmi_boss = createChoice( 8, "custom", "T17Q", "T16H25", "T16H10", "T16N25", "T16N10", "T15H25", "T15N25", "T15LFR" ) );
+  globalsLayout_left -> addRow( tr( "TMI Window (sec)" ),  choice.tmi_window = createChoice( 10, "0", "2", "3", "4", "5", "6", "7", "8", "9", "10" ) );
   globalsLayout_left -> addRow( tr( "Actor-only TMI" ), choice.tmi_actor_only = createChoice( 2, "Disabled", "Enabled" ) );
 
   QGroupBox* globalsGroupBox_left = new QGroupBox( tr( "Basic Options" ) );
@@ -362,10 +364,10 @@ void SC_OptionsTab::createPlotsTab()
   plotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
   // Create Combo Boxes
-  choice.plots_points = createChoice( 4, "20", "30", "40", "50" );
+  choice.plots_points = addValidatorToComboBox( 1, INT_MAX, createChoice( 4, "20", "30", "40", "50" ) );
   plotsLayout -> addRow( tr( "Number of Plot Points" ), choice.plots_points );
 
-  choice.plots_step = createChoice( 6, "25", "50", "100", "200", "250", "500" );
+  choice.plots_step = addValidatorToComboBox( 1, INT_MAX, createChoice( 6, "25", "50", "100", "200", "250", "500" ) );
   plotsLayout -> addRow( tr( "Plot Step Amount" ), choice.plots_step );
 
   plotsButtonGroup = new QButtonGroup();
@@ -392,10 +394,10 @@ void SC_OptionsTab::createReforgePlotsTab()
   reforgePlotsLayout -> setFieldGrowthPolicy( QFormLayout::FieldsStayAtSizeHint );
 
   // Create Combo Boxes
-  choice.reforgeplot_amount = createChoice( 10, "100", "200", "250", "500", "750", "1000", "1500", "2000", "3000", "5000" );
+  choice.reforgeplot_amount = addValidatorToComboBox( 1, INT_MAX, createChoice( 10, "100", "200", "250", "500", "750", "1000", "1500", "2000", "3000", "5000" ) );
   reforgePlotsLayout -> addRow( tr( "Reforge Amount" ), choice.reforgeplot_amount );
 
-  choice.reforgeplot_step = createChoice( 6, "25", "50", "100", "200", "250", "500" );
+  choice.reforgeplot_step = addValidatorToComboBox( 1, INT_MAX, createChoice( 6, "25", "50", "100", "200", "250", "500" ) );
   reforgePlotsLayout -> addRow( tr( "Step Amount" ), choice.reforgeplot_step );
 
   QLabel* messageText = new QLabel( tr( "A maximum of three stats may be ran at once.\n" ) );
@@ -542,6 +544,7 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "armory_spec", choice.armory_spec );
   load_setting( settings, "default_role", choice.default_role );
   load_setting( settings, "tmi_boss", choice.tmi_boss );
+  load_setting( settings, "tmi_window_global", choice.tmi_window, "6" );
   load_setting( settings, "tmi_actor_only", choice.tmi_actor_only );
   load_setting( settings, "world_lag", choice.world_lag );
   load_setting( settings, "target_level", choice.target_level );
@@ -638,6 +641,7 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "armory_spec", choice.armory_spec -> currentText() );
   settings.setValue( "default_role", choice.default_role -> currentText() );
   settings.setValue( "tmi_boss", choice.tmi_boss -> currentText() );
+  settings.setValue( "tmi_window_global", choice.tmi_window -> currentText() );
   settings.setValue( "tmi_actor_only", choice.tmi_actor_only -> currentText() );
   settings.setValue( "world_lag", choice.world_lag -> currentText() );
   settings.setValue( "target_level", choice.target_level -> currentText() );
@@ -730,6 +734,10 @@ void SC_OptionsTab::createToolTips()
   choice.tmi_boss -> setToolTip( tr( "Specify boss damage output based on a TMI standard.\n"
                                      "Leaving at *custom* will use the SimC defaults unless overwritten by the user." ) );
 
+  choice.tmi_window -> setToolTip( tr( "Specify window duration for calculating TMI. Default is 6 sec.\n"
+                                       "Reducing this increases the metric's sensitivity to shorter damage spikes.\n"
+                                       "Set to 0 if you want to vary on a per-player basis in the Simulate tab using \"tmi_window=#\"." ) );
+
   choice.tmi_actor_only -> setToolTip( tr( "Ignore external healing for TMI calculations.\n"
                                            "Note that this will apply to all actors." ) );
 
@@ -816,6 +824,9 @@ QString SC_OptionsTab::get_globalSettings()
 
   if ( choice.tmi_actor_only -> currentIndex() != 0 )
     options += "tmi_actor_only=1\n";
+
+  if ( choice.tmi_window -> currentIndex() != 0 )
+    options += "tmi_window_global=" + choice.tmi_window-> currentText() + "\n";
 
   if ( choice.tmi_boss -> currentIndex() != 0 )
   {
@@ -1030,6 +1041,11 @@ void SC_OptionsTab::createItemDataSourceSelector( QFormLayout* layout )
   itemDbOrder -> setFixedHeight( ( itemDbOrder -> model() -> rowCount() + 1 ) * itemDbOrder -> sizeHintForRow( 0 ) );
 
   layout->addRow( "Item Source Order", itemDbOrder );
+}
+
+QComboBox* SC_OptionsTab::addValidatorToComboBox( int lowerBound, int upperBound, QComboBox* comboBox )
+{
+  return SC_ComboBoxIntegerValidator::ApplyValidatorToComboBox( new SC_ComboBoxIntegerValidator( lowerBound, upperBound, comboBox ), comboBox );
 }
 
 QString SC_OptionsTab::get_db_order() const

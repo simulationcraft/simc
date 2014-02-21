@@ -452,44 +452,52 @@ bool option_db_t::parse_args( const std::vector<std::string>& args )
 
 // option_db_t::option_db_t =================================================
 
+#ifndef SC_SHARED_DATA
+#define SC_SHARED_DATA ".."
+#endif
+
 option_db_t::option_db_t()
 {
-  // This makes baby pandas cry.
+  const char* paths[] = { "./profiles", "../profiles", SC_SHARED_DATA };
+  int n_paths = 2;
+  if ( ! util::str_compare_ci( SC_SHARED_DATA, ".." ) )
+    n_paths++;
 
-  auto_path = ".";
+  // This makes baby pandas cry a bit less, but still makes them weep.
 
-  // If the CLI is made in /engine we need to go up a directory
-  // but if it's in the root then we don't, so supply both possible paths
-  for ( int j = 0; j < 2; j++ )
+  // Add current directory automagically.
+  auto_path = ".|";
+
+  // Automatically add "./profiles" and "../profiles", because the command line
+  // client is ran both from the engine/ subdirectory, as well as the source
+  // root directory, depending on whether the user issues make install or not.
+  // In addition, if SC_SHARED_DATA is given, search our profile directory
+  // structure directly from there as well.
+  for ( int j = 0; j < n_paths; j++ )
   {
-    std::string starting_path;
-    if ( j == 1 )
-    {
-      starting_path = "|../";
-    }
-    else
-      starting_path = "|";
+    std::string prefix = paths[ j ];
+    // Skip empty SHARED_DATA define, as the default ("..") is already
+    // included.
+    if ( prefix.empty() )
+      continue;
 
-    auto_path += starting_path;
-    auto_path += "profiles";
+    if ( *( prefix.end() - 1 ) != '/' )
+      prefix += "/";
 
-    auto_path += starting_path;
-    auto_path += "profiles/PreRaid";
+    auto_path += prefix + "|";
+    auto_path += prefix + "PreRaid|";
 
     // Add profiles for each tier, except pvp
     for ( int i = 0; i < ( N_TIER - 1 ); i++ )
     {
-      // Add Heroic
-      auto_path += starting_path;
-      auto_path += "profiles/Tier";
-      auto_path += util::to_string( MIN_TIER + i );
-      auto_path += "H";
-
-      // Add Normal
-      auto_path += starting_path;
-      auto_path += "profiles/Tier";
-      auto_path += util::to_string( MIN_TIER + i );
-      auto_path += "N";
+      auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "H|";
+      auto_path += prefix + "Tier" + util::to_string( MIN_TIER + i ) + "N|";
     }
   }
+
+  if ( *( auto_path.end() - 1 ) == '|' )
+    *( auto_path.end() - 1 ) = 0;
 }
+
+#undef SC_SHARED_DATA
+

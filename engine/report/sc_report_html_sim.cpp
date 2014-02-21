@@ -200,9 +200,10 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
      << "\t\t\t\t\t\t\t</tr>\n";
 
   os.printf( "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-             "\t\t\t\t\t\t\t\t<th>Fight Length:</th>\n"
+             "\t\t\t\t\t\t\t\t<th>Fight Length%s:</th>\n"
              "\t\t\t\t\t\t\t\t<td>%.0f - %.0f ( %.1f )</td>\n"
              "\t\t\t\t\t\t\t</tr>\n",
+             (sim -> fixed_time ? " (fixed time)" : ""),
              sim -> simulation_length.min(),
              sim -> simulation_length.max(),
              sim -> simulation_length.mean() );

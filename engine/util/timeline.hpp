@@ -304,7 +304,7 @@ public:
     else
     {
       size_t count = num_entries();
-      for ( int i = data().size() - 1; i >= 0; --i )
+      for ( int i = static_cast< int >( data().size() ) - 1; i >= 0; --i )
       {
         count -= data()[ i ];
         if ( count <= target )

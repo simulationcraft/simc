@@ -47,7 +47,7 @@ macx {
     LIBS += -framework CoreFoundation -framework AppKit
     DEFINES += SIMC_NO_AUTOUPDATE
 
-    Resources.files = Welcome.html Welcome.png
+    Resources.files = Welcome.html Welcome.png Error.html
     Resources.path = Contents/Resources
     Profiles.files = profiles/PreRaid profiles/Tier15N profiles/Tier15H profiles/Tier16N profiles/Tier16H
     Profiles.path = Contents/Resources/profiles
@@ -97,6 +97,9 @@ include(source_files/QT_engine.pri)
 # engine Main file
 CONFIG(console) {
 include(source_files/QT_engine_main.pri)
+  !isEmpty(PREFIX)|!isEmpty(DESTDIR) {
+    DEFINES += SC_SHARED_DATA=\\\"$$PREFIX/share/SimulationCraft\\\"
+  }
 }
 
 # GUI files
@@ -114,10 +117,6 @@ CONFIG(to_install) {
   DEFINES += SC_TO_INSTALL
 }
 
-CONFIG(linux_packaging) {
-  DEFINES += SC_LINUX_PACKAGING
-}
-
 # deployment for linux
 unix:!mac {
   CONFIG(console)
@@ -130,34 +129,40 @@ unix:!mac {
   # Disable strip
   QMAKE_STRIP=echo
 
-  isEmpty(PREFIX):PREFIX = ~
-  isEmpty(INSTALLPATH):INSTALLPATH = $$PREFIX/SimulationCraft
-  SHAREDIR = ~/.local/share
+  isEmpty(PREFIX): PREFIX=~/SimulationCraft
+  isEmpty(DESTDIR): DESTDIR=
   INSTALLS += target \
               profiles \
               data \
               icon \
               locale
 
-  target.path = $$INSTALLPATH
+  SHAREPATH = $$DESTDIR$$PREFIX/share/SimulationCraft
 
-  profiles.path = $$INSTALLPATH/profiles
+  CONFIG(linux_packaging) {
+    DEFINES += SC_LINUX_PACKAGING=\\\"$$PREFIX/share/SimulationCraft\\\"
+  }
+
+  target.path = $$DESTDIR$$PREFIX/bin/
+
+  profiles.path = $$SHAREPATH/profiles
   profiles.files += profiles/*
-  profiles.commands = @echo Installing profiles to $$INSTALLPATH/profiles
+  profiles.commands = @echo Installing profiles to $$SHAREPATH/profiles
 
-  data.path = $$INSTALLPATH
+  data.path = $$SHAREPATH
   data.files += Welcome.html
   data.files += Welcome.png
   data.files += READ_ME_FIRST.txt
-  data.commands = @echo Installing global files to $$INSTALLPATH
+  data.files += Error.html
+  data.commands = @echo Installing global files to $$SHAREPATH
 
-  icon.path = $$INSTALLPATH
+  icon.path = $$SHAREPATH
   icon.files = debian/simulationcraft.xpm
-  icon.commands = @echo Installing icon to $$INSTALLPATH
+  icon.commands = @echo Installing icon to $$SHAREPATH
 
-  locale.path = $$INSTALLPATH/locale
+  locale.path = $$SHAREPATH/locale
   locale.files += locale/*
-  locale.commands = @echo Installing localizations to $$INSTALLPATH/locale
+  locale.commands = @echo Installing localizations to $$SHAREPATH/locale
 }
   
 CONFIG(paperdoll) {

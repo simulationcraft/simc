@@ -39,27 +39,44 @@ void SC_MainWindow::updateSimProgress()
 #endif
     sim = SC_MainWindow::sim;
 
+  std::string progressBarToolTip;
+
   if ( simRunning() )
   {
-    simProgress = static_cast<int>( 100.0 * sim -> progress( simPhase ) );
+    simProgress = static_cast<int>( 100.0 * sim -> progress( simPhase, &progressBarToolTip ) );
   }
   if ( importRunning() )
   {
-    importSimProgress = static_cast<int>( 100.0 * import_sim -> progress( importSimPhase ) );
+    importSimProgress = static_cast<int>( 100.0 * import_sim -> progress( importSimPhase, &progressBarToolTip ) );
   }
-  cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str() );
-  cmdLine -> setImportingProgress( importSimProgress, importSimPhase.c_str() );
+#if !defined( SC_WINDOWS ) && !defined( SC_OSX )
+  // Progress bar text in Linux is displayed inside the progress bar as opposed next to it in Windows
+  // so it does not look as bad to include iteration details in it
+  if ( simPhase.find( ": " ) == std::string::npos ) // can end up with Simulating: : : : : : : in rare circumstances
+  {
+    simPhase += ": ";
+    simPhase += progressBarToolTip;
+  }
+#endif
+  cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str(), progressBarToolTip.c_str() );
+  cmdLine -> setImportingProgress( importSimProgress, importSimPhase.c_str(), progressBarToolTip.c_str() );
 }
 
 void SC_MainWindow::loadHistory()
 {
   QSettings settings;
   QVariant size = settings.value( "gui/size");
+  QRect savedApplicationGeometry = geometry();
   if ( size.isValid() )
-      resize( size.toSize() );
+  {
+    savedApplicationGeometry.setSize( size.toSize() );
+  }
   QVariant pos = settings.value( "gui/position" );
   if ( pos.isValid() )
-      move( pos.toPoint() );
+  {
+    savedApplicationGeometry.moveTopLeft( pos.toPoint() );
+  }
+  applyAdequateApplicationGeometry( savedApplicationGeometry );
   QVariant maximized = settings.value( "gui/maximized" );
   if ( maximized.isValid() )
   {
@@ -115,6 +132,123 @@ void SC_MainWindow::loadHistory()
   { // If we haven't retrieved any simulate tabs from history, add a default one.
     simulateTab -> add_Text( defaultSimulateText, "Simulate!" );
   }
+}
+
+QPoint SC_MainWindow::getMiddleOfScreen( int screen )
+{
+  QRect currentScreenGeometry = desktopWidget.availableGeometry( screen );
+  int currentScreenGeometryMiddleX = currentScreenGeometry.x() + ( currentScreenGeometry.width()  / 2 );
+  int currentScreenGeometryMiddleY = currentScreenGeometry.y() + ( currentScreenGeometry.height() / 2 );
+
+  return QPoint( currentScreenGeometryMiddleX, currentScreenGeometryMiddleY );
+}
+
+QRect SC_MainWindow::adjustGeometryToIncludeFrame( QRect geo )
+{
+  QRect frameGeo = frameGeometry();
+  QRect normalGeo = normalGeometry();
+  int widthOffset = qAbs<int>( frameGeo.width() - normalGeo.width() );
+  int heightOffset = qAbs<int>( frameGeo.height() - normalGeo.height() );
+  int xOffset = normalGeo.x() - frameGeo.x();
+  int yOffset = normalGeo.y() - frameGeo.y();
+  geo.translate( xOffset, yOffset );
+  geo.setSize( QSize( geo.width() + widthOffset, geo.height() + heightOffset ) );
+
+  return geo;
+}
+
+int SC_MainWindow::getScreenThatGeometryBelongsTo( QRect geo )
+{
+  for ( int i = 0; i < desktopWidget.screenCount(); i++ )
+  {
+    if ( desktopWidget.screenGeometry( i ).contains( geo ) )
+    {
+      return i;
+    }
+  }
+  return desktopWidget.primaryScreen();
+}
+
+void SC_MainWindow::applyAdequateApplicationGeometry()
+{
+  applyAdequateApplicationGeometry( geometry() );
+}
+
+void SC_MainWindow::applyAdequateApplicationGeometry( QRect preferredGeometry )
+{
+  // Resize window if needed
+  int screen = getScreenThatGeometryBelongsTo( preferredGeometry );
+  QRect currentScreenGeometry = desktopWidget.availableGeometry( screen );
+  QPoint currentScreenGlobalTopLeftPoint = currentScreenGeometry.topLeft();
+  // get the smallest available geometry that would fit on any screen
+  QRect smallestScreenGeometry = getSmallestScreenGeometry();
+  // Does the preferred geometry fit on screen?
+  if ( smallestScreenGeometry.width()  < preferredGeometry.width() ||
+       smallestScreenGeometry.height() < preferredGeometry.height() )
+  {
+    // preferred geometry is too big to fit on screen
+    // start by making the minimum size of the application smaller to something that will work for sure
+    int absoluteMinimumApplicationWidth = 100;
+    int absoluteMinimumApplicationHeight = 100;
+    int widthOffset = 100;
+    int heightOffset = 100;
+    int newMinimumWidth  = qMax< int >( smallestScreenGeometry.width() - widthOffset,
+                                        absoluteMinimumApplicationWidth );
+    int newMinimumHeight = qMax< int >( smallestScreenGeometry.height() - heightOffset,
+                                        absoluteMinimumApplicationHeight );
+    setMinimumSize( newMinimumWidth, newMinimumHeight );
+    // make a rectangle at the top left of the screen with the new minimum size
+    QRect geometryThatWorks( currentScreenGlobalTopLeftPoint.x(), currentScreenGlobalTopLeftPoint.y(),
+                             minimumSize().width(), minimumSize().height() );
+    // make sure that the new geometry fits on the current screen, if not, move it
+    if ( ! currentScreenGeometry.contains( geometryThatWorks ) )
+    {
+      QPoint middleOfCurrentScreen = getMiddleOfScreen( screen );
+      // adjust the point so it points to new top left of the minimum size
+      middleOfCurrentScreen.rx() -= ( geometryThatWorks.width() / 2 );
+      middleOfCurrentScreen.ry() -= ( geometryThatWorks.height() / 2 );
+      geometryThatWorks.moveTopLeft( middleOfCurrentScreen );
+    }
+    setGeometry( adjustGeometryToIncludeFrame( geometryThatWorks ) );
+  }
+  else
+  {
+    // Screen size is big enough for the current dimensions
+    // make the minimumSize smaller anyway, the default is too large
+    int absoluteMinimumApplicationWidth = qMin< int >( minimumWidth(), 600 );
+    int absoluteMinimumApplicationHeight = qMin< int >( minimumHeight(), 550 );
+    int widthOffset = 100;
+    int heightOffset = 100;
+    int newMinimumWidth  = qMin< int >( smallestScreenGeometry.width() - widthOffset,
+                                        absoluteMinimumApplicationWidth );
+    int newMinimumHeight = qMin< int >( smallestScreenGeometry.height() - heightOffset,
+                                        absoluteMinimumApplicationHeight );
+    setMinimumSize( newMinimumWidth, newMinimumHeight );
+    if ( ! currentScreenGeometry.contains( preferredGeometry ) )
+    {
+      // the preferred geometry is not on the screen, fix that
+      QPoint middleOfCurrentScreen = getMiddleOfScreen( screen );
+      // adjust the point so it points to new top left of the minimum size
+      middleOfCurrentScreen.rx() -= ( preferredGeometry.width() / 2 );
+      middleOfCurrentScreen.ry() -= ( preferredGeometry.height() / 2 );
+      preferredGeometry.moveTopLeft( middleOfCurrentScreen );
+    }
+    setGeometry( adjustGeometryToIncludeFrame( preferredGeometry ) );
+  }
+}
+
+QRect SC_MainWindow::getSmallestScreenGeometry()
+{
+  QDesktopWidget desktopWidget;
+  QRect smallestScreenGeometry = desktopWidget.availableGeometry();
+  for ( int i = 0; i < desktopWidget.screenCount(); ++i )
+  {
+    QRect screenGeometry = desktopWidget.availableGeometry( i );
+    smallestScreenGeometry.setWidth( qMin< int >( screenGeometry.width(), smallestScreenGeometry.width() ) );
+    smallestScreenGeometry.setHeight( qMin< int >( screenGeometry.height(), smallestScreenGeometry.height() ) );
+  }
+
+  return smallestScreenGeometry;
 }
 
 void SC_MainWindow::saveHistory()
@@ -247,7 +381,20 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   #endif
 #endif
 #if defined( SC_LINUX_PACKAGING )
-    AppDataDir = ResultsDestDir = "~/.cache/SimulationCraft";
+  QString path_prefix;
+  const char* env = getenv( "XDG_CACHE_HOME" );
+  if ( ! env )
+  {
+    env = getenv( "HOME" );
+    if ( env )
+      path_prefix = QString::fromLocal8Bit( env ) + "/.cache";
+    else
+      path_prefix = "/tmp"; // back out
+  }
+  else
+    path_prefix = QString( env );
+  AppDataDir = ResultsDestDir = TmpDir = path_prefix + "/SimulationCraft";
+  QDir::root().mkpath( AppDataDir );
 #endif
 
   logFileText =  AppDataDir + "/" + "log.txt";
@@ -287,6 +434,10 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   simulateThread = new SimulateThread( this );
   connect( simulateThread, SIGNAL( simulationFinished( sim_t* ) ), this, SLOT( simulateFinished( sim_t* ) ) );
 
+  connect( &desktopWidget, SIGNAL( resized( int ) ), this, SLOT( screenResized( int ) ) );
+  connect( &desktopWidget, SIGNAL( workAreaResized( int ) ), this, SLOT( screenResized( int ) ) );
+  connect( &desktopWidget, SIGNAL( screenCountChanged( int ) ), this, SLOT( screenResized( int ) ) );
+
 #ifdef SC_PAPERDOLL
   paperdollThread = new PaperdollThread( this );
   connect( paperdollThread, SIGNAL( finished() ), this, SLOT( paperdollFinished() ) );
@@ -298,59 +449,6 @@ SC_MainWindow::SC_MainWindow( QWidget *parent )
   setAcceptDrops( true );
 
   loadHistory();
-
-//  cmdLine -> setFocus();
-  //TODO
-
-  // Resize window if needed
-  QDesktopWidget desktopWidget;
-  QRect smallestScreenGeometry = desktopWidget.availableGeometry();
-  for ( int i = 1; i < desktopWidget.screenCount(); ++i )
-  {
-    QRect screenGeometry = desktopWidget.availableGeometry( i );
-    smallestScreenGeometry.setWidth( qMin< int >( screenGeometry.width(), smallestScreenGeometry.width() ) );
-    smallestScreenGeometry.setHeight( qMin< int >( screenGeometry.height(), smallestScreenGeometry.height() ) );
-  }
-  QSize minSize = minimumSize();
-  QPoint topLeft = pos();
-  QPoint globalTopLeft = topLeft;
-  QRect currentScreen = desktopWidget.availableGeometry( this );
-  QRect newGeometry( globalTopLeft.x(), globalTopLeft.y(), minimumWidth(), minimumHeight() );
-  if ( smallestScreenGeometry.width() < minSize.width() ||
-       smallestScreenGeometry.height() < minSize.height() )
-  {
-    // Screen is too small for the current dimensions, resize
-    setMinimumSize( qMax< int >( smallestScreenGeometry.width() - 100, 100 ),
-                    qMax< int >( smallestScreenGeometry.height() - 100, 100 ) );
-    newGeometry.setSize( minimumSize() );
-    if ( ! currentScreen.contains( newGeometry ) )
-    {
-      // Make sure it will be visible
-      // Calculate middle of screen
-      QPoint middle( currentScreen.topLeft() );
-      middle.setX( middle.x() + ( ( currentScreen.width() - minimumWidth() ) / 2 ) );
-      middle.setY( middle.y() + ( ( currentScreen.height() - minimumHeight() ) / 2 ) );
-      move( middle );
-    }
-    resize( newGeometry.size() );
-  }
-  else
-  {
-    // Don't mess with resizing, just make the minimumSize smaller
-    setMinimumSize( qMin< int >( smallestScreenGeometry.width() - 100, 600 ),
-                    qMin< int >( smallestScreenGeometry.height() - 100 , 550 ) );
-    newGeometry.setSize( size() );
-    if ( ! currentScreen.contains( newGeometry ) )
-    {
-      // Part of the window is off-screen, move it to the middle
-      // Calculate middle of screen
-      QPoint middle( currentScreen.topLeft() );
-      middle.setX( middle.x() + ( ( currentScreen.width() - size().width() ) / 2 ) );
-      middle.setY( middle.y() + ( ( currentScreen.height() - size().height() ) / 2 ) );
-      move( middle );
-      resize( newGeometry.size() );
-    }
-  }
 }
 
 void SC_MainWindow::createCmdLine()
@@ -359,6 +457,8 @@ void SC_MainWindow::createCmdLine()
   cmdLine -> setCommandLineText( TAB_RESULTS, resultsFileText );
 
   connect( &simulationQueue, SIGNAL( firstItemWasAdded() ), this, SLOT( itemWasEnqueuedTryToSim() ) );
+  connect( cmdLine, SIGNAL( pauseClicked() ), this, SLOT( pauseButtonClicked() ) );
+  connect( cmdLine, SIGNAL( resumeClicked() ), this, SLOT( pauseButtonClicked() ) );
   connect( cmdLine, SIGNAL( backButtonClicked() ), this, SLOT( backButtonClicked() ) );
   connect( cmdLine, SIGNAL( forwardButtonClicked() ), this, SLOT( forwardButtonClicked() ) );
   connect( cmdLine, SIGNAL( simulateClicked() ), this, SLOT( enqueueSim() ) );
@@ -408,7 +508,7 @@ SC_WelcomeTabWidget::SC_WelcomeTabWidget( SC_MainWindow* parent ) :
     CFRelease( macPath );
   }
 #elif defined( SC_LINUX_PACKAGING )
-  welcomeFile = "/usr/share/SimulationCraft/Welcome.html";
+  welcomeFile = SC_LINUX_PACKAGING "/Welcome.html";
 #endif
   setUrl( "file:///" + welcomeFile );
 }
@@ -502,7 +602,7 @@ void SC_MainWindow::createBestInSlotTab()
 // Scan all subfolders in /profiles/ and create a list
 #if ! defined( Q_WS_MAC ) && ! defined( Q_OS_MAC )
   #if defined( SC_LINUX_PACKAGING )
-    QDir tdir("/usr/share/SimulationCraft/profiles");
+    QDir tdir( SC_LINUX_PACKAGING "/profiles" );
   #else
     QDir tdir( "profiles" );
   #endif
@@ -751,7 +851,12 @@ void SC_MainWindow::createTabShortcuts()
   Qt::Key keys[] = { Qt::Key_1, Qt::Key_2, Qt::Key_3, Qt::Key_4, Qt::Key_5, Qt::Key_6, Qt::Key_7, Qt::Key_8, Qt::Key_9, Qt::Key_unknown };
   for( int i = 0; keys[i] != Qt::Key_unknown; i++ )
   {
+// OS X needs to set the sequence to Cmd-<number>, since Alt is used for normal keys in certain cases
+#if ! defined( Q_WS_MAC ) && ! defined( Q_OS_MAC )
     QShortcut* shortcut = new QShortcut( QKeySequence( Qt::ALT + keys[i] ), this );
+#else
+    QShortcut* shortcut = new QShortcut( QKeySequence( Qt::CTRL + keys[i] ), this );
+#endif
     mainTabSignalMapper.setMapping( shortcut, i );
     connect( shortcut, SIGNAL( activated() ), &mainTabSignalMapper, SLOT( map() ) );
     shortcuts.push_back( shortcut );
@@ -787,24 +892,24 @@ void SC_MainWindow::updateWebView( SC_WebView* wv )
   {
     if ( visibleWebView == battleNetView )
     {
-      cmdLine -> setBattleNetLoadProgress( visibleWebView -> progress, "%p%" );
+      cmdLine -> setBattleNetLoadProgress( visibleWebView -> progress, "%p%", "" );
       cmdLine -> setCommandLineText( TAB_BATTLE_NET, visibleWebView -> url_to_show );
     }
 #if USE_CHARDEV
     else if ( visibleWebView == charDevView )
     {
-      cmdLine -> setCharDevProgress( visibleWebView -> progress, "%p%" );
+      cmdLine -> setCharDevProgress( visibleWebView -> progress, "%p%", "" );
       cmdLine -> setCommandLineText( TAB_CHAR_DEV, visibleWebView -> url_to_show );
     }
 #endif
     else if ( visibleWebView == helpView )
     {
-      cmdLine -> setHelpViewProgress( visibleWebView -> progress, "%p%" );
+      cmdLine -> setHelpViewProgress( visibleWebView -> progress, "%p%", "" );
       cmdLine -> setCommandLineText( TAB_HELP, visibleWebView -> url_to_show );
     }
     else if ( visibleWebView == siteView )
     {
-      cmdLine -> setSiteLoadProgress( visibleWebView -> progress, "%p%" );
+      cmdLine -> setSiteLoadProgress( visibleWebView -> progress, "%p%", "" );
       cmdLine -> setCommandLineText( TAB_SITE, visibleWebView -> url_to_show );
     }
   }
@@ -1003,7 +1108,7 @@ void SC_MainWindow::importFinished()
 {
   importSimPhase = "%p%";
   simProgress = 100;
-  cmdLine -> setImportingProgress( importSimProgress, importSimPhase.c_str() );
+  cmdLine -> setImportingProgress( importSimProgress, importSimPhase.c_str(), "" );
   if ( importThread -> player )
   {
     simulateTab -> set_Text( importThread -> profile );
@@ -1091,6 +1196,9 @@ void SC_MainWindow::stopSim()
   if ( simRunning() )
   {
     sim -> cancel();
+
+    if ( sim -> is_paused() )
+      sim -> toggle_pause();
   }
 }
 
@@ -1212,7 +1320,7 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
 {
   simPhase = "%p%";
   simProgress = 100;
-  cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str() );
+  cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str(), tr( "Finished!" ) );
   bool sim_was_debug = sim -> debug;
   if ( ! simulateThread -> success )
   {
@@ -1249,14 +1357,13 @@ void SC_MainWindow::simulateFinished( sim_t* sim )
 
     // HTML
     SC_WebView* resultsHtmlView = new SC_WebView( this, resultsEntry );
+    resultsHtmlView -> enableKeyboardNavigation();
+    resultsHtmlView -> enableMouseNavigation();
     resultsEntry -> addTab( resultsHtmlView, "html" );
     QFile html_file( sim -> html_file_str.c_str() );
-    if ( html_file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-    {
-      resultsHtmlView -> store_html( QString::fromUtf8( html_file.readAll() ) );
-      resultsHtmlView -> loadHtml();
-      html_file.close();
-    }
+    QString html_file_absolute_path = QFileInfo( html_file ).absoluteFilePath();
+    // just load it, let the error page extension handle failure to open
+    resultsHtmlView -> load( QUrl::fromLocalFile( html_file_absolute_path ) );
 
     // Text
     SC_TextEdit* resultsTextView = new SC_TextEdit( resultsEntry );
@@ -1374,6 +1481,12 @@ void SC_MainWindow::closeEvent( QCloseEvent* e )
   e -> accept();
 }
 
+void SC_MainWindow::showEvent( QShowEvent* e )
+{
+  applyAdequateApplicationGeometry();
+  QWidget::showEvent( e );
+}
+
 void SC_MainWindow::cmdLineTextEdited( const QString& s )
 {
   switch ( mainTab -> currentTab() )
@@ -1483,6 +1596,12 @@ void SC_MainWindow::importButtonClicked()
     case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
     default: break;
   }
+}
+
+void SC_MainWindow::pauseButtonClicked( bool )
+{
+  cmdLine -> togglePaused();
+  simulateThread -> toggle_pause();
 }
 
 void SC_MainWindow::backButtonClicked( bool /* checked */ )
@@ -1599,7 +1718,6 @@ void SC_MainWindow::mainTabChanged( int index )
       break;
     default: assert( 0 );
   }
-  cmdLine -> setSimulatingProgress( simProgress, simPhase.c_str() );
 }
 
 void SC_MainWindow::importTabChanged( int index )
@@ -1612,7 +1730,6 @@ void SC_MainWindow::importTabChanged( int index )
   {
     cmdLine -> setTab( static_cast< import_tabs_e >( index ) );
     visibleWebView = 0;
-    cmdLine -> setSimulatingProgress( importSimProgress, importSimPhase.c_str() );
   }
   else
   {
@@ -1766,6 +1883,12 @@ void SC_MainWindow::currentlyViewedTabCloseRequest()
   }
 }
 
+void SC_MainWindow::screenResized( int screen )
+{
+  Q_UNUSED( screen );
+  applyAdequateApplicationGeometry();
+}
+
 // ==========================================================================
 // SimulateThread
 // ==========================================================================
@@ -1818,24 +1941,20 @@ void SimulateThread::run()
 // SC_CommandLine
 // ============================================================================
 
-void SC_CommandLine::keyPressEvent( QKeyEvent* e )
+SC_CommandLine::SC_CommandLine( QWidget* parent ) :
+    QLineEdit( parent )
 {
-  int k = e -> key();
-  if ( k == Qt::Key_Up ||
-       k == Qt::Key_Left )
-  {
-    emit( switchToLeftSubTab() );
-  }
-  else if ( k == Qt::Key_Down ||
-            k == Qt::Key_Right )
-  {
-    emit( switchToRightSubTab() );
-  }
-  else if ( k == Qt::Key_Delete )
-  {
-    emit( currentlyViewedTabCloseRequest() );
-  }
-  QLineEdit::keyPressEvent( e );
+  QShortcut* altUp    = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Up ), this );
+  QShortcut* altLeft  = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Left ), this );
+  QShortcut* altDown  = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Down ), this );
+  QShortcut* altRight = new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Right ), this );
+  QShortcut* ctrlDel  = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_Delete ), this );
+
+  connect( altUp,    SIGNAL( activated() ), this, SIGNAL( switchToLeftSubTab() ) );
+  connect( altLeft,  SIGNAL( activated() ), this, SIGNAL( switchToLeftSubTab() ) );
+  connect( altDown,  SIGNAL( activated() ), this, SIGNAL( switchToRightSubTab() ) );
+  connect( altRight, SIGNAL( activated() ), this, SIGNAL( switchToRightSubTab() ) );
+  connect( ctrlDel,  SIGNAL( activated() ), this, SIGNAL( currentlyViewedTabCloseRequest() ) );
 }
 
 // ==========================================================================
@@ -1917,41 +2036,46 @@ void PersistentCookieJar::load()
 void SC_SingleResultTab::save_result()
 {
   QString destination;
+  QString defaultDestination;
   QString extension;
   switch ( currentTab() )
   {
   case TAB_HTML:
-    destination = "results_html.html"; extension = "html"; break;
+    defaultDestination = "results_html.html"; extension = "html"; break;
   case TAB_TEXT:
-    destination = "results_text.txt"; extension = "txt"; break;
+    defaultDestination = "results_text.txt"; extension = "txt"; break;
   case TAB_XML:
-    destination = "results_xml.xml"; extension = "xml"; break;
+    defaultDestination = "results_xml.xml"; extension = "xml"; break;
   case TAB_PLOTDATA:
-    destination = "results_plotdata.csv"; extension = "csv"; break;
+    defaultDestination = "results_plotdata.csv"; extension = "csv"; break;
   case TAB_CSV:
-    destination = "results_csv.csv"; extension = "csv"; break;
+    defaultDestination = "results_csv.csv"; extension = "csv"; break;
   default: break;
   }
-
+  destination = defaultDestination;
   QString savePath = mainWindow -> ResultsDestDir;
-  int fname_offset = mainWindow -> cmdLine -> commandLineText( TAB_RESULTS ).lastIndexOf( QDir::separator() );
+  QString commandLinePath = mainWindow -> cmdLine -> commandLineText( TAB_RESULTS );
+  int fname_offset = commandLinePath.lastIndexOf( QDir::separator() );
 
-  if ( mainWindow -> cmdLine -> commandLineText( TAB_RESULTS ).size() > 0 )
+  if ( commandLinePath.size() > 0 )
   {
     if ( fname_offset == -1 )
-      destination = mainWindow -> cmdLine -> commandLineText( TAB_RESULTS );
+      destination = commandLinePath;
     else
     {
-      savePath = mainWindow -> cmdLine -> commandLineText( TAB_RESULTS ).left( fname_offset );
-      destination = mainWindow -> cmdLine -> commandLineText( TAB_RESULTS ).right( fname_offset - 1 );
+      savePath = commandLinePath.left( fname_offset + 1 );
+      destination = commandLinePath.right( commandLinePath.size() - ( fname_offset + 1 ) );
     }
   }
-
+  if ( destination.size() == 0 )
+  {
+    destination = defaultDestination;
+  }
   if ( destination.indexOf( "." + extension ) == -1 )
     destination += "." + extension;
-
+  QFileInfo savePathInfo( savePath );
   QFileDialog f( this );
-  f.setDirectory( savePath );
+  f.setDirectory( savePathInfo.absoluteDir() );
   f.setAcceptMode( QFileDialog::AcceptSave );
   f.setDefaultSuffix( extension );
   f.selectFile( destination );
@@ -1965,7 +2089,7 @@ void SC_SingleResultTab::save_result()
       switch ( currentTab() )
       {
       case TAB_HTML:
-        file.write( static_cast<SC_WebView*>( currentWidget() ) -> html_str.toUtf8() );
+        file.write( static_cast<SC_WebView*>( currentWidget() ) -> toHtml().toUtf8() );
         break;
       case TAB_TEXT:
       case TAB_XML:

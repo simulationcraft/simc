@@ -49,6 +49,7 @@ public:
     QComboBox* armory_spec;
     QComboBox* default_role;
     QComboBox* tmi_boss;
+    QComboBox* tmi_window;
     QComboBox* tmi_actor_only;
     QComboBox* debug;
     QComboBox* report_pets;
@@ -80,6 +81,7 @@ protected:
   void createPlotsTab();
   void createReforgePlotsTab();
   void createItemDataSourceSelector( QFormLayout* );
+  QComboBox* addValidatorToComboBox( int lowerBound, int upperBound, QComboBox* );
 
 private slots:
   void allBuffsChanged( bool checked );

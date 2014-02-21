@@ -293,7 +293,7 @@ void reforge_plot_t::analyze()
 
 // reforge_plot_t::progress =================================================
 
-double reforge_plot_t::progress( std::string& phase )
+double reforge_plot_t::progress( std::string& phase, std::string* detailed )
 {
   if ( reforge_plot_stat_str.empty() ) return 1.0;
 
@@ -322,6 +322,8 @@ double reforge_plot_t::progress( std::string& phase )
     else
       reforge_iter += ( reforge_plot_iterations > 0 ? reforge_plot_iterations : sim -> iterations );
   }
+
+  sim -> detailed_progress( detailed, reforge_iter, total_iter );
 
   return reforge_iter / total_iter;
 }

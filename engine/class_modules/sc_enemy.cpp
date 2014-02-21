@@ -464,7 +464,7 @@ struct summon_add_t : public spell_t
   }
 };
 
-static action_t* enemy_create_action( player_t* p, const std::string& name, const std::string& options_str )
+action_t* enemy_create_action( player_t* p, const std::string& name, const std::string& options_str )
 {
   if ( name == "auto_attack" ) return new auto_attack_t( p, options_str );
   if ( name == "melee_nuke"  ) return new  melee_nuke_t( p, options_str );
@@ -480,6 +480,7 @@ struct enemy_t : public player_t
 {
   double fixed_health, initial_health;
   double fixed_health_percentage, initial_health_percentage;
+  double health_recalculation_dampening_exponent;
   timespan_t waiting_time;
   std::string tmi_boss_str;
   tmi_boss_e tmi_boss_enum;
@@ -490,6 +491,7 @@ struct enemy_t : public player_t
     player_t( s, type, n, r ),
     fixed_health( 0 ), initial_health( 0 ),
     fixed_health_percentage( 0 ), initial_health_percentage( 100.0 ),
+    health_recalculation_dampening_exponent( 1.0 ),
     waiting_time( timespan_t::from_seconds( 1.0 ) ),
     tmi_boss_str( "none" ),
     tmi_boss_enum( TMI_NONE )
@@ -576,11 +578,11 @@ struct heal_enemy_t : public enemy_t
 
   virtual void init_resources( bool /* force */ )
   {
-    resources.base[ RESOURCE_HEALTH ] = 100000000.0;
+    resources.base[ RESOURCE_HEALTH ] = 200000000.0;
 
     player_t::init_resources( true );
 
-    resources.current[ RESOURCE_HEALTH ] = resources.base[ RESOURCE_HEALTH ] / 10;
+    resources.current[ RESOURCE_HEALTH ] = resources.base[ RESOURCE_HEALTH ] / 1.5;
   }
   virtual void init_base_stats()
   {
@@ -659,7 +661,7 @@ void enemy_t::init_base_stats()
       level = sim -> max_player_level + sim -> rel_target_level;
 
     // waiting_time override
-    waiting_time = sim -> max_time;
+    waiting_time = timespan_t::from_seconds( 5.0 );
     if ( waiting_time < timespan_t::from_seconds( 1.0 ) )
       waiting_time = timespan_t::from_seconds( 1.0 );
 
@@ -674,6 +676,16 @@ void enemy_t::init_base_stats()
   base.attack_crit = 0.05;
 
   initial_health = ( sim -> overrides.target_health ) ? sim -> overrides.target_health : fixed_health;
+
+  if ( this == sim -> target )
+  {
+    if ( sim -> overrides.target_health > 0 || fixed_health > 0 ) {
+      if ( sim -> debug )
+        sim -> out_debug << "Setting vary_combat_length forcefully to 0.0 because main target fixed health simulation was detected.";
+
+      sim -> vary_combat_length = 0.0;
+    }
+  }
 
   if ( ( initial_health_percentage < 1   ) ||
        ( initial_health_percentage > 100 ) )
@@ -866,10 +878,11 @@ void enemy_t::create_options()
 {
   option_t target_options[] =
   {
-    opt_float( "target_health", fixed_health ),
-    opt_float( "target_initial_health_percentage", initial_health_percentage ),
-    opt_float( "target_fixed_health_percentage", fixed_health_percentage ),
-    opt_string( "target_tank", target_str ),
+    opt_float( "enemy_health", fixed_health ),
+    opt_float( "enemy_initial_health_percentage", initial_health_percentage ),
+    opt_float( "enemy_fixed_health_percentage", fixed_health_percentage ),
+    opt_float( "health_recalculation_dampening_exponent", health_recalculation_dampening_exponent ),
+    opt_string( "enemy_tank", target_str ),
     opt_string( "tmi_boss", tmi_boss_str ),
     opt_null()
   };
@@ -905,7 +918,7 @@ double enemy_t::health_percentage() const
 {
   if ( fixed_health_percentage > 0 ) return fixed_health_percentage;
 
-  if ( resources.base[ RESOURCE_HEALTH ] == 0 ) // first iteration
+  if ( resources.base[ RESOURCE_HEALTH ] == 0 || sim -> fixed_time ) // first iteration or fixed time sim.
   {
     timespan_t remainder = std::max( timespan_t::zero(), ( sim -> expected_iteration_time - sim -> current_time ) );
 
@@ -928,7 +941,7 @@ void enemy_t::recalculate_health()
   else
   {
     timespan_t delta_time = sim -> current_time - sim -> expected_iteration_time;
-    delta_time /= ( sim -> current_iteration + 1 ); // dampening factor
+    delta_time /= std::pow( ( sim -> current_iteration + 1 ), health_recalculation_dampening_exponent ); // dampening factor, by default 1/n
     double factor = 1.0 - ( delta_time / sim -> expected_iteration_time );
 
     if ( factor > 1.5 ) factor = 1.5;
@@ -978,9 +991,9 @@ void enemy_t::demise()
 {
   if ( this == sim -> target )
   {
-    if ( sim -> current_iteration != 0 || sim -> overrides.target_health > 0 )
+    if ( sim -> current_iteration != 0 || sim -> overrides.target_health > 0 || fixed_health > 0 )
       // For the main target, end simulation on death.
-      sim -> iteration_canceled = 1;
+      sim -> cancel_iteration();
   }
 
   player_t::demise();
