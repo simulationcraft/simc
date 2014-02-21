@@ -128,6 +128,10 @@ namespace std {using namespace tr1; }
 #include "dbc/data_definitions.hh"
 #include "utf8.h"
 
+#if !defined(__GNUC__)
+#  define __attribute__(x)
+#endif
+
 #define SC_PACKED_STRUCT      __attribute__((packed))
 #define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
 

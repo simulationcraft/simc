@@ -6,6 +6,7 @@
 #include "sc_textedit.hpp"
 #include "sc_searchbox.hpp"
 
+#include "simulationcraft.hpp"
 
 // ============================================================================
 // SC_TextEdit

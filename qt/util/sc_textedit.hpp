@@ -11,6 +11,8 @@
 
 #include <QtGui/QtGui>
 
+#include "simulationcraft.hpp"
+
 class SC_SearchBox;
 
 // ============================================================================
