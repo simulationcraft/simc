@@ -920,19 +920,20 @@ void enchant::gnomish_xray( special_effect_t& effect,
 // Profession perks =========================================================
 
 void profession::synapse_springs( special_effect_t& effect, 
-                              const item_t& item,
-                              const special_effect_db_item_t& dbitem )
+                                  const item_t& item,
+                                  const special_effect_db_item_t& dbitem )
 {
   const spell_data_t* use_spell = item.player -> find_spell( dbitem.spell_id );
   const spell_data_t* buff_spell = item.player -> find_spell( 96228 );
 
   double value = use_spell -> effectN( 1 ).average( item.player );
 
-  stat_buff_t* buff  = stat_buff_creator_t( item.player, effect.name_str, buff_spell )
+  stat_buff_t* buff  = stat_buff_creator_t( item.player, effect.name(), buff_spell )
                        .add_stat( STAT_STRENGTH, value, select_attr<std::greater>() )
                        .add_stat( STAT_INTELLECT, value, select_attr<std::greater>() )
                        .add_stat( STAT_AGILITY,  value, select_attr<std::greater>() );
 
+  effect.type = SPECIAL_EFFECT_USE;
   effect.cooldown_ = use_spell -> cooldown();
 
   effect.custom_buff = buff;

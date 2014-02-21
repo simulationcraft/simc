@@ -6208,7 +6208,7 @@ struct use_item_t : public action_t
   item_t* item;
   spell_t* discharge;
   action_callback_t* trigger;
-  stat_buff_t* buff;
+  buff_t* buff;
   std::string use_name;
   const special_effect_t* effect;
 
@@ -6313,20 +6313,24 @@ struct use_item_t : public action_t
     }
     else if ( e.stat )
     {
-      buff = dynamic_cast<stat_buff_t*>( buff_t::find( player, use_name, player ) );
-      if ( ! buff )
-        buff = stat_buff_creator_t( player, use_name )
-               .max_stack( e.max_stacks )
-               .duration( e.duration )
-               .cd( e.cooldown_ )
-               .chance( e.proc_chance_ )
-               .reverse( e.reverse )
-               .add_stat( e.stat, e.stat_amount );
+      stat_buff_t* b = dynamic_cast<stat_buff_t*>( buff_t::find( player, use_name, player ) );
+      if ( ! b )
+        b = stat_buff_creator_t( player, use_name )
+            .max_stack( e.max_stacks )
+            .duration( e.duration )
+            .cd( e.cooldown_ )
+            .chance( e.proc_chance_ )
+            .reverse( e.reverse )
+            .add_stat( e.stat, e.stat_amount );
+
+      buff = b;
     }
     else if ( e.execute_action )
     {
       assert( player == e.execute_action -> player ); // check if the action is from the same player. Might be overly strict
     }
+    else if ( e.custom_buff )
+      buff = e.custom_buff;
     else assert( false );
 
     std::string cooldown_name = use_name;
