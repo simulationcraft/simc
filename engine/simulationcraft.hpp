@@ -227,6 +227,7 @@ struct stormlash_callback_t;
 struct tick_buff_t;
 struct travel_event_t;
 struct xml_node_t;
+class xml_writer_t;
 
 // Enumerations =============================================================
 // annex _e to enumerations
@@ -3351,6 +3352,7 @@ struct item_t
   bool has_item_stat( stat_e stat ) const;
 
   std::string encoded_item();
+  void encoded_item( xml_writer_t& writer );
   std::string encoded_comment();
 
   std::string encoded_stats();
@@ -6383,6 +6385,157 @@ struct xml_node_t
     std::ostringstream s;
     s << value;
     parameters.push_back( xml_parm_t( name, s.str() ) );
+  }
+};
+
+class xml_writer_t
+{
+private:
+  io::cfile file;
+  enum state
+  {
+    NONE, TAG, TEXT
+  };
+  std::stack<std::string> current_tags;
+  std::string tabulation;
+  state current_state;
+  std::string indentation;
+
+  struct replacement
+  {
+    const char* from;
+    const char* to;
+  };
+
+public:
+  xml_writer_t( const std::string & filename ) :
+    file( filename, "w" ),
+    tabulation( "  " ), current_state( NONE )
+  {
+  }
+
+  bool ready() { return file != NULL; }
+
+  int printf( const char *format, ... ) const PRINTF_ATTRIBUTE( 2, 3 )
+  {
+    va_list fmtargs;
+    va_start( fmtargs, format );
+
+    int retcode = vfprintf( file, format, fmtargs );
+
+    va_end( fmtargs );
+
+    return retcode;
+  }
+
+  void init_document( const std::string & stylesheet_file )
+  {
+    assert( current_state == NONE );
+
+    printf( "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" );
+    if ( !stylesheet_file.empty() )
+    {
+      printf( "<?xml-stylesheet type=\"text/xml\" href=\"%s\"?>", stylesheet_file.c_str() );
+    }
+
+    current_state = TEXT;
+  }
+
+  void begin_tag( const std::string & tag )
+  {
+    assert( current_state != NONE );
+
+    if ( current_state != TEXT )
+    {
+      printf( ">" );
+    }
+
+    printf( "\n%s<%s", indentation.c_str(), tag.c_str() );
+
+    current_tags.push( tag );
+    indentation += tabulation;
+
+    current_state = TAG;
+  }
+
+  void end_tag( const std::string & tag )
+  {
+    assert( current_state != NONE );
+    assert( ! current_tags.empty() );
+    assert( indentation.size() == tabulation.size() * current_tags.size() );
+
+    assert( tag == current_tags.top() );
+    current_tags.pop();
+
+    indentation.resize( indentation.size() - tabulation.size() );
+
+    if ( current_state == TAG )
+    {
+      printf( "/>" );
+    }
+    else if ( current_state == TEXT )
+    {
+      printf( "\n%s</%s>", indentation.c_str(), tag.c_str() );
+    }
+
+    current_state = TEXT;
+  }
+
+  void print_attribute( const std::string & name, const std::string & value )
+  { print_attribute_unescaped( name, sanitize( value ) ); }
+
+  void print_attribute_unescaped( const std::string & name, const std::string & value )
+  {
+    assert( current_state != NONE );
+
+    if ( current_state == TAG )
+    {
+      printf( " %s=\"%s\"", name.c_str(), value.c_str() );
+    }
+  }
+
+  void print_tag( const std::string & name, const std::string & inner_value )
+  {
+    assert( current_state != NONE );
+
+    if ( current_state != TEXT )
+    {
+      printf( ">" );
+    }
+
+    printf( "\n%s<%s>%s</%s>", indentation.c_str(), name.c_str(), sanitize( inner_value ).c_str(), name.c_str() );
+
+    current_state = TEXT;
+  }
+
+  void print_text( const std::string & input )
+  {
+    assert( current_state != NONE );
+
+    if ( current_state != TEXT )
+    {
+      printf( ">" );
+    }
+
+    printf( "\n%s", sanitize( input ).c_str() );
+
+    current_state = TEXT;
+  }
+
+  static std::string sanitize( std::string v )
+  {
+    static const replacement replacements[] =
+    {
+      { "&", "&amp;" },
+      { "\"", "&quot;" },
+      { "<", "&lt;" },
+      { ">", "&gt;" },
+    };
+
+    for ( unsigned int i = 0; i < sizeof_array( replacements ); ++i )
+      util::replace_all( v, replacements[ i ].from, replacements[ i ].to );
+
+    return v;
   }
 };
 
