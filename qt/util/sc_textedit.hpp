@@ -5,13 +5,13 @@
 
 #pragma once
 
+#include "simulationcraft.hpp"
+
 #ifdef QT_VERSION_5
 #include <QtWidgets/QtWidgets>
 #endif
 
 #include <QtGui/QtGui>
-
-#include "simulationcraft.hpp"
 
 class SC_SearchBox;
 
