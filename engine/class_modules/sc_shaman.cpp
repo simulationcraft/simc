@@ -77,6 +77,7 @@ public:
   // Misc
   timespan_t ls_reset;
   int        active_flame_shocks;
+  bool       lava_surge_during_lvb;
 
   // Options
   timespan_t wf_delay;
@@ -211,6 +212,8 @@ public:
     proc_t* uf_lava_burst;
     proc_t* uf_elemental_blast;
     proc_t* uf_wasted;
+
+    proc_t* surge_during_lvb;
   } proc;
 
   // Class Specializations
@@ -321,7 +324,7 @@ public:
 
   shaman_t( sim_t* sim, const std::string& name, race_e r = RACE_TAUREN ) :
     player_t( sim, SHAMAN, name, r ),
-    ls_reset( timespan_t::zero() ), active_flame_shocks( 0 ),
+    ls_reset( timespan_t::zero() ), active_flame_shocks( 0 ), lava_surge_during_lvb( false ),
     wf_delay( timespan_t::from_seconds( 0.95 ) ), wf_delay_stddev( timespan_t::from_seconds( 0.25 ) ),
     uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
     eoe_proc_chance( 0 ), aggregate_stormlash( 0 ), scale_lava_surge( 0 ),
@@ -3400,6 +3403,18 @@ struct lava_burst_t : public shaman_spell_t
   virtual double composite_target_crit( player_t* ) const
   { return 1.0; }
 
+  virtual void update_ready( timespan_t /* cd_duration */ )
+  {
+    timespan_t d = cooldown -> duration;
+
+    // Lava Surge has procced during the cast of Lava Burst, the cooldown 
+    // reset is deferred to the finished cast, instead of "eating" it.
+    if ( p() -> lava_surge_during_lvb )
+      d = timespan_t::zero();
+
+    shaman_spell_t::update_ready( d );
+  }
+
   virtual void execute()
   {
     if ( p() -> buff.unleash_flame -> check() )
@@ -3413,13 +3428,12 @@ struct lava_burst_t : public shaman_spell_t
     if ( eoe_proc )
       return;
 
-    if ( p() -> buff.lava_surge -> check() )
-    {
-      if ( time_to_execute != timespan_t::zero() )
-        p() -> proc.wasted_lava_surge -> occur();
-
+    // Lava Surge buff does not get eaten, if the Lava Surge proc happened
+    // during the Lava Burst cast
+    if ( ! p() -> lava_surge_during_lvb && p() -> buff.lava_surge -> check() )
       p() -> buff.lava_surge -> expire();
-    }
+
+    p() -> lava_surge_during_lvb = false;
   }
 
   virtual timespan_t execute_time() const
@@ -3924,7 +3938,14 @@ struct flame_shock_t : public shaman_spell_t
         p() -> proc.wasted_lava_surge -> occur();
 
       p() -> proc.lava_surge -> occur();
-      p() -> cooldown.lava_burst -> reset( true );
+      if ( ! p() -> executing || p() -> executing -> id != 51505 )
+        p() -> cooldown.lava_burst -> reset( true );
+      else
+      {
+        p() -> proc.surge_during_lvb -> occur();
+        p() -> lava_surge_during_lvb = true;
+      }
+
       p() -> buff.lava_surge -> trigger();
     }
 
@@ -5545,6 +5566,7 @@ void shaman_t::init_procs()
   proc.wasted_ls_shock_cd = get_proc( "wasted_lightning_shield_shock_cd" );
   proc.wasted_mw          = get_proc( "wasted_maelstrom_weapon" );
   proc.windfury           = get_proc( "windfury"                );
+  proc.surge_during_lvb   = get_proc( "lava_surge_during_lvb"   );
 
   for ( int i = 0; i < 7; i++ )
   {
@@ -6179,6 +6201,7 @@ void shaman_t::reset()
 
   ls_reset = timespan_t::zero();
   active_flame_shocks = 0;
+  lava_surge_during_lvb = false;
 }
 
 // shaman_t::decode_set =====================================================
@@ -6310,7 +6333,7 @@ set_e shaman_t::decode_set( const item_t& item ) const
 role_e shaman_t::primary_role() const
 {
   if ( player_t::primary_role() == ROLE_HEAL )
-    return ROLE_HEAL;
+    return ROLE_HYBRID;//To prevent spawning healing_target, as there is no support for healing.
 
   if ( specialization() == SHAMAN_RESTORATION )
   {

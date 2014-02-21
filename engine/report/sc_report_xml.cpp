@@ -9,157 +9,6 @@
 
 namespace { // UNNAMED NAMESPACE ==========================================
 
-class xml_writer_t
-{
-private:
-  io::cfile file;
-  enum state
-  {
-    NONE, TAG, TEXT
-  };
-  std::stack<std::string> current_tags;
-  std::string tabulation;
-  state current_state;
-  std::string indentation;
-
-  struct replacement
-  {
-    const char* from;
-    const char* to;
-  };
-
-public:
-  xml_writer_t( const std::string & filename ) :
-    file( filename, "w" ),
-    tabulation( "  " ), current_state( NONE )
-  {
-  }
-
-  bool ready() { return file != NULL; }
-
-  int printf( const char *format, ... ) const PRINTF_ATTRIBUTE( 2, 3 )
-  {
-    va_list fmtargs;
-    va_start( fmtargs, format );
-
-    int retcode = vfprintf( file, format, fmtargs );
-
-    va_end( fmtargs );
-
-    return retcode;
-  }
-
-  void init_document( const std::string & stylesheet_file )
-  {
-    assert( current_state == NONE );
-
-    printf( "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" );
-    if ( !stylesheet_file.empty() )
-    {
-      printf( "<?xml-stylesheet type=\"text/xml\" href=\"%s\"?>", stylesheet_file.c_str() );
-    }
-
-    current_state = TEXT;
-  }
-
-  void begin_tag( const std::string & tag )
-  {
-    assert( current_state != NONE );
-
-    if ( current_state != TEXT )
-    {
-      printf( ">" );
-    }
-
-    printf( "\n%s<%s", indentation.c_str(), tag.c_str() );
-
-    current_tags.push( tag );
-    indentation += tabulation;
-
-    current_state = TAG;
-  }
-
-  void end_tag( const std::string & tag )
-  {
-    assert( current_state != NONE );
-    assert( ! current_tags.empty() );
-    assert( indentation.size() == tabulation.size() * current_tags.size() );
-
-    assert( tag == current_tags.top() );
-    current_tags.pop();
-
-    indentation.resize( indentation.size() - tabulation.size() );
-
-    if ( current_state == TAG )
-    {
-      printf( "/>" );
-    }
-    else if ( current_state == TEXT )
-    {
-      printf( "\n%s</%s>", indentation.c_str(), tag.c_str() );
-    }
-
-    current_state = TEXT;
-  }
-
-  void print_attribute( const std::string & name, const std::string & value )
-  { print_attribute_unescaped( name, sanitize( value ) ); }
-
-  void print_attribute_unescaped( const std::string & name, const std::string & value )
-  {
-    assert( current_state != NONE );
-
-    if ( current_state == TAG )
-    {
-      printf( " %s=\"%s\"", name.c_str(), value.c_str() );
-    }
-  }
-
-  void print_tag( const std::string & name, const std::string & inner_value )
-  {
-    assert( current_state != NONE );
-
-    if ( current_state != TEXT )
-    {
-      printf( ">" );
-    }
-
-    printf( "\n%s<%s>%s</%s>", indentation.c_str(), name.c_str(), sanitize( inner_value ).c_str(), name.c_str() );
-
-    current_state = TEXT;
-  }
-
-  void print_text( const std::string & input )
-  {
-    assert( current_state != NONE );
-
-    if ( current_state != TEXT )
-    {
-      printf( ">" );
-    }
-
-    printf( "\n%s", sanitize( input ).c_str() );
-
-    current_state = TEXT;
-  }
-
-  static std::string sanitize( std::string v )
-  {
-    static const replacement replacements[] =
-    {
-      { "&", "&amp;" },
-      { "\"", "&quot;" },
-      { "<", "&lt;" },
-      { ">", "&gt;" },
-    };
-
-    for ( unsigned int i = 0; i < sizeof_array( replacements ); ++i )
-      util::replace_all( v, replacements[ i ].from, replacements[ i ].to );
-
-    return v;
-  }
-};
-
 // report::print_xml ========================================================
 
 void print_xml_errors( sim_t* sim, xml_writer_t & writer );
@@ -183,6 +32,7 @@ void print_xml_player_gains( xml_writer_t & writer, player_t * p );
 void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player_processed_report_information_t& );
 void print_xml_player_dps_plots( xml_writer_t & writer, player_t * p );
 void print_xml_player_charts( xml_writer_t & writer, player_processed_report_information_t& );
+void print_xml_player_gear( xml_writer_t & writer, player_t* p );
 
 void print_xml_errors( sim_t* sim, xml_writer_t & writer )
 {
@@ -327,6 +177,7 @@ void print_xml_player( sim_t * sim, xml_writer_t & writer, player_t * p, player_
     writer.print_tag( "talents_url", p -> talents_str );
 
   print_xml_player_stats( writer, p );
+  print_xml_player_gear( writer, p );
   print_xml_player_actions( writer, p );
 
   print_xml_player_buffs( writer, p );
@@ -402,6 +253,42 @@ void print_xml_player_stats( xml_writer_t & writer, player_t * p )
   writer.print_attribute( "base", util::to_string( p -> resources.max[ RESOURCE_MANA ], 0 ) );
   writer.print_attribute( "buffed", util::to_string( buffed_stats.resource[ RESOURCE_MANA ], 0 ) );
   writer.end_tag( "resource" );
+}
+
+void print_xml_player_gear( xml_writer_t & writer, player_t* p )
+{
+  double n_items = 0;
+  unsigned ilevel = 0;
+  writer.begin_tag( "items" );
+  for ( int i = 0, end = p -> items.size(); i < end; i++ )
+  {
+    item_t* item = &( p -> items[ i ] );
+    if ( ! item -> active() )
+      continue;
+
+    if ( item -> slot == SLOT_TABARD )
+      continue;
+
+    if ( item -> slot == SLOT_SHIRT )
+      continue;
+
+    n_items++;
+    ilevel += item -> item_level();
+  }
+
+  if ( n_items > 0 )
+    writer.print_attribute( "average_ilevel", util::to_string( util::round( ilevel / n_items, 3 ) ) );
+
+  for ( int i = 0, end = p -> items.size(); i < end; i++ )
+  {
+    item_t* item = &( p -> items[ i ] );
+    if ( ! item -> active() )
+      continue;
+    
+    item -> encoded_item( writer );
+  }
+
+  writer.end_tag( "items" );
 }
 
 void print_xml_player_attribute( xml_writer_t & writer, const std::string & attribute, double initial, double gear, double buffed )

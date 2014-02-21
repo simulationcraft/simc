@@ -12,17 +12,25 @@
 #include <QtCore/QTranslator>
 #include <QtNetwork/QtNetwork>
 
+#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
+#include <CoreFoundation/CoreFoundation.h>
+#endif
 #ifdef QT_VERSION_5
 #include <QtWidgets/QtWidgets>
 #include <QtWebKitWidgets/QtWebKitWidgets>
 #endif
 
 class SC_MainWindow;
+class SC_SearchBox;
+class SC_TextEdit;
 #ifdef SC_PAPERDOLL
 #include "simcpaperdoll.hpp"
 class Paperdoll;
 class PaperdollProfile;
 #endif
+
+#include "util/sc_searchbox.hpp" // remove once implementations are moved to source files
+#include "util/sc_textedit.hpp" // remove once implementations are moved to source files
 
 enum main_tabs_e
 {
@@ -119,549 +127,6 @@ public:
 };
 
 // ============================================================================
-// SC_SearchBox
-// ============================================================================
-
-class SC_SearchBox : public QWidget
-{
-  Q_OBJECT
-  QLineEdit* searchBox;
-  QMenu* searchBoxContextMenu;
-  QToolButton* searchBoxPrev;
-  QToolButton* searchBoxNext;
-  Qt::Corner corner;
-  QAction* reverseAction;
-  QAction* wrapAction;
-  QAction* hideArrowsAction;
-  bool reverse;
-  bool wrap;
-  bool enableReverseContextMenuItem;
-  bool enableWrapAroundContextMenuItem;
-  bool enableFindPrevNextContextMenuItem;
-  bool enableHideArrowsContextMenuItem;
-  bool emitFindOnTextChange;
-  bool grabFocusOnShow;
-  bool highlightTextOnShow;
-public:
-  SC_SearchBox( QWidget* parent = nullptr,
-      Qt::Corner corner = Qt::BottomLeftCorner,
-      bool show_arrows = true,
-      QBoxLayout::Direction direction = QBoxLayout::LeftToRight ) :
-    QWidget( parent ),
-    searchBox( new QLineEdit ),
-    searchBoxContextMenu( nullptr ),
-    searchBoxPrev( new QToolButton( this ) ),
-    searchBoxNext( new QToolButton( this ) ),
-    corner( corner ),
-    reverseAction( nullptr ),
-    wrapAction( nullptr ),
-    hideArrowsAction( nullptr ),
-    reverse( false ),
-    wrap( true ),
-    enableReverseContextMenuItem( true ),
-    enableWrapAroundContextMenuItem( true ),
-    enableFindPrevNextContextMenuItem( true ),
-    enableHideArrowsContextMenuItem( true ),
-    emitFindOnTextChange( false ),
-    grabFocusOnShow( true ),
-    highlightTextOnShow( true )
-  {
-    QSettings settings;
-    bool hide_arrows_setting = settings.value( "gui/search_hide_arrows", ! show_arrows ).toBool();
-
-    QAction* altLeftAction =  new QAction( tr( "Find Previous" ), searchBox );
-    altLeftAction -> setShortcut( QKeySequence( Qt::ALT + Qt::Key_Left  ) );
-    QAction* altRightAction =  new QAction( tr( "Find Next" ), searchBox );
-    altRightAction -> setShortcut( QKeySequence( Qt::ALT + Qt::Key_Right ) );
-    QShortcut* altLeft =  new QShortcut( altLeftAction -> shortcut(), searchBox );
-    QShortcut* altUp =    new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Up    ), searchBox );
-    QShortcut* altRight = new QShortcut( altRightAction -> shortcut(), searchBox );
-    QShortcut* altDown =  new QShortcut( QKeySequence( Qt::ALT + Qt::Key_Down  ), searchBox );
-
-    if ( enableReverseContextMenuItem ||
-         enableWrapAroundContextMenuItem ||
-         enableFindPrevNextContextMenuItem )
-    {
-      searchBoxContextMenu = searchBox -> createStandardContextMenu();
-      searchBoxContextMenu -> addSeparator();
-      searchBox -> setContextMenuPolicy( Qt::CustomContextMenu );
-      connect( searchBox,     SIGNAL( customContextMenuRequested( const QPoint& ) ), this, SLOT( searchBoxContextMenuRequested( const QPoint& ) ) );
-    }
-    if ( enableFindPrevNextContextMenuItem )
-    {
-      searchBoxContextMenu -> addAction( altRightAction );
-      searchBoxContextMenu -> addAction( altLeftAction );
-    }
-    if ( enableReverseContextMenuItem )
-    {
-      reverseAction = searchBoxContextMenu -> addAction( tr( "Reverse" ) );
-      reverseAction -> setCheckable( true );
-      reverseAction -> setChecked( reverse );
-      connect( reverseAction, SIGNAL( triggered( bool ) ), this, SLOT( setReverseSearch( bool ) ) );
-    }
-    if ( enableWrapAroundContextMenuItem )
-    {
-      wrapAction = searchBoxContextMenu -> addAction( tr( "&Wrap search" ) );
-      wrapAction -> setCheckable( true );
-      wrapAction -> setChecked( wrap );
-      connect( wrapAction,    SIGNAL( triggered( bool ) ), this, SLOT( setWrapSearch( bool ) ) );
-    }
-    if ( enableHideArrowsContextMenuItem )
-    {
-      hideArrowsAction = searchBoxContextMenu -> addAction( tr( "Hide Arrows" ) );
-      hideArrowsAction -> setCheckable( true );
-      hideArrowsAction -> setChecked( hide_arrows_setting ); // TODO connect to QSettings && sync all other SC_SearchBoxes on change
-      connect( hideArrowsAction, SIGNAL( triggered( bool ) ), this, SLOT( setHideArrows( bool ) ) );
-    }
-
-    connect( searchBox,     SIGNAL( textChanged( const QString& ) ), this, SIGNAL( textChanged( const QString& ) ) );
-    connect( searchBox,     SIGNAL( textChanged( const QString& ) ), this,   SLOT( searchBoxTextChanged( const QString& ) ) );
-    connect( altLeftAction, SIGNAL( triggered( bool ) ),             this, SIGNAL( findPrev() ) );
-    connect( altLeft,       SIGNAL( activated() ),                   this, SIGNAL( findPrev() ) );
-    connect( altUp,         SIGNAL( activated() ),                   this, SIGNAL( findPrev() ) );
-    connect( altRightAction,SIGNAL( triggered( bool ) ),             this, SIGNAL( findNext() ) );
-    connect( altRight,      SIGNAL( activated() ),                   this, SIGNAL( findNext() ) );
-    connect( altDown,       SIGNAL( activated() ),                   this, SIGNAL( findNext() ) );
-    connect( searchBoxPrev, SIGNAL( pressed() ),                     this, SIGNAL( findPrev() ) );
-    connect( searchBoxNext, SIGNAL( pressed() ),                     this, SIGNAL( findNext() ) );
-
-    QIcon searchPrevIcon(":/icon/leftarrow.png");
-    QIcon searchNextIcon(":/icon/rightarrow.png");
-    if ( ! searchPrevIcon.pixmap( QSize( 64,64 ) ).isNull() )
-    {
-      searchBoxPrev -> setIcon( searchPrevIcon );
-    }
-    else
-    {
-      searchBoxPrev -> setText( tr( "<" ) );
-    }
-    if ( ! searchNextIcon.pixmap( QSize( 64,64 ) ).isNull() )
-    {
-      searchBoxNext -> setIcon( searchNextIcon );
-    }
-    else
-    {
-      searchBoxNext -> setText( tr( ">" ) );
-    }
-
-    QWidget* first = searchBoxPrev;
-    QWidget* second = searchBoxNext;
-    if ( direction == QBoxLayout::RightToLeft )
-    {
-      QWidget* tmp = first;
-      first = second;
-      second = tmp;
-    }
-    if ( direction != QBoxLayout::LeftToRight ||
-         direction != QBoxLayout::RightToLeft )
-      direction = QBoxLayout::LeftToRight;
-
-    QBoxLayout* searchBoxLayout = new QBoxLayout( direction );
-    searchBoxLayout -> addWidget( searchBox );
-    searchBoxLayout -> addWidget( first );
-    searchBoxLayout -> addWidget( second );
-    if ( hide_arrows_setting )
-    {
-      searchBoxPrev -> hide();
-      searchBoxNext -> hide();
-    }
-    setLayout( searchBoxLayout );
-
-    // If this is not set, focus will be sent to parent when user tries to click
-    // Which will usually be a SC_TextEdit which will call hide() upon grabbing focus
-    searchBoxPrev -> setFocusPolicy( Qt::ClickFocus );
-    searchBoxNext -> setFocusPolicy( Qt::ClickFocus );
-  }
-  void setFocus()
-  {
-    searchBox -> setFocus();
-  }
-  QString text() const
-  {
-    return searchBox -> text();
-  }
-  void setText( const QString& text )
-  {
-    searchBox -> setText( text );
-  }
-  void clear()
-  {
-    searchBox -> clear();
-  }
-  void setEmitFindOnTextChange( bool emitOnChange )
-  {
-    emitFindOnTextChange = emitOnChange;
-  }
-  void updateGeometry()
-  {
-    QLayout* widgetLayout = layout();
-    QSize widgetSizeHint = widgetLayout -> sizeHint();
-    QRect geo( QPoint( 0, 0 ), widgetSizeHint );
-
-    QWidget* parentWidget = qobject_cast< QWidget* >( parent() );
-    if ( parentWidget != nullptr )
-    {
-      QRect parentGeo = parentWidget -> geometry();
-
-      switch( corner )
-      {
-      case Qt::BottomLeftCorner:
-        geo.moveBottomLeft( parentGeo.bottomLeft() );
-        break;
-      case Qt::TopRightCorner:
-        geo.moveTopRight( parentGeo.topRight() );
-        break;
-      case Qt::BottomRightCorner:
-        geo.moveBottomRight( parentGeo.bottomRight() );
-        break;
-      case Qt::TopLeftCorner:
-      default:
-        break;
-      }
-
-      setGeometry( geo );
-    }
-  }
-  Qt::Corner getCorner()
-  {
-    return corner;
-  }
-  bool reverseSearch() const
-  {
-    return reverse;
-  }
-  bool wrapSearch() const
-  {
-    return wrap;
-  }
-protected:
-  virtual void keyPressEvent( QKeyEvent* e )
-  {
-    // Sending other keys to a QTextEdit (which is probably the parent)
-    // Such as return, causes the textedit to not only insert a newline
-    // while we are searching... but messes up the input of the textedit pretty badly
-
-    // Only propagate Ctrl+Tab & Backtab
-    bool propagate = false;
-    switch( e -> key() )
-    {
-    case Qt::Key_Tab:
-      if ( e -> modifiers().testFlag( Qt::ControlModifier ) )
-        propagate = true;
-      break;
-    case Qt::Key_Backtab:
-      propagate = true;
-      break;
-    case Qt::Key_Return:
-      // We can use searchBox's returnPressed() signal, but then Shift+Return won't work
-      if ( e -> modifiers().testFlag( Qt::ShiftModifier ) )
-      {
-        findPrev();
-      }
-      else
-      {
-        find();
-      }
-      break;
-    default:
-      break;
-    }
-    if ( propagate )
-      QWidget::keyPressEvent( e );
-  }
-  virtual void showEvent( QShowEvent* e )
-  {
-    Q_UNUSED( e );
-    updateGeometry();
-    if ( grabFocusOnShow )
-    {
-      setFocus();
-    }
-    if ( highlightTextOnShow )
-    {
-      searchBox -> selectAll();
-    }
-  }
-signals:
-  void textChanged( const QString& );
-  void findNext();
-  void findPrev();
-public slots:
-  void find()
-  {
-    if ( ! reverse )
-    {
-      emit( findNext() );
-    }
-    else
-    {
-      emit( findPrev() );
-    }
-  }
-  void setReverseSearch( bool reversed )
-  {
-    reverse = reversed;
-    if ( reverseAction && reverseAction -> isChecked() != reverse )
-    {
-      reverseAction -> setChecked( reverse );
-    }
-  }
-  void setWrapSearch( bool wrapped )
-  {
-    wrap = wrapped;
-    if ( wrapAction && wrapAction -> isChecked() != wrap )
-    {
-      wrapAction -> setChecked( wrap );
-    }
-  }
-  void setHideArrows( bool hideArrows )
-  {
-    searchBoxPrev -> setVisible( ! hideArrows );
-    searchBoxNext -> setVisible( ! hideArrows );
-    updateGeometry();
-    if ( hideArrowsAction && hideArrowsAction -> isChecked() != hideArrows )
-    {
-      hideArrowsAction -> setChecked( hideArrows );
-    }
-  }
-private slots:
-  void searchBoxTextChanged( const QString& text )
-  {
-    Q_UNUSED( text );
-    if ( emitFindOnTextChange )
-      find();
-  }
-  void searchBoxContextMenuRequested( const QPoint& p )
-  {
-    searchBoxContextMenu -> exec( searchBox -> mapToGlobal( p ) );
-  }
-};
-
-// ============================================================================
-// SC_PlainTextEdit
-// ============================================================================
-
-class SC_TextEdit : public QTextEdit
-{
-  Q_OBJECT
-private:
-  QTextCharFormat textformat_default;
-  QTextCharFormat textformat_error;
-  QList< QPair< Qt::Key, QList< Qt::KeyboardModifier > > > ignoreKeys;
-  SC_SearchBox* searchBox;
-  Qt::Corner searchBoxCorner;
-  bool enable_search;
-public:
-  bool edited_by_user;
-
-  SC_TextEdit( QWidget* parent = 0, bool accept_drops = true, bool enable_search = true ) :
-    QTextEdit( parent ),
-    searchBox( nullptr ),
-    searchBoxCorner( Qt::BottomLeftCorner ),
-    enable_search( enable_search ),
-    edited_by_user( false )
-  {
-    textformat_error.setFontPointSize( 20 );
-
-    setAcceptDrops( accept_drops );
-    setLineWrapMode( QTextEdit::NoWrap );
-
-    QList< Qt::KeyboardModifier > ctrl;
-    ctrl.push_back( Qt::ControlModifier );
-    addIgnoreKeyPressEvent( Qt::Key_Tab, ctrl );
-    addIgnoreKeyPressEvent( Qt::Key_W, ctrl ); // Close tab
-    addIgnoreKeyPressEvent( Qt::Key_T, ctrl ); // New tab
-    QList< Qt::KeyboardModifier > nothing;
-    addIgnoreKeyPressEvent( Qt::Key_Backtab, nothing );
-
-    connect( this, SIGNAL( textChanged() ), this, SLOT( text_edited() ) );
-
-    if ( enable_search )
-    {
-      initSearchBox();
-    }
-  }
-
-  void setformat_error()
-  { //setCurrentCharFormat( textformat_error );
-  }
-
-  void resetformat()
-  { //setCurrentCharFormat( textformat_default );
-  }
-
-  /*
-  protected:
-  virtual void dragEnterEvent( QDragEnterEvent* e )
-  {
-    e -> acceptProposedAction();
-  }
-  virtual void dropEvent( QDropEvent* e )
-  {
-    appendPlainText( e -> mimeData()-> text() );
-    e -> acceptProposedAction();
-  }
-  */
-
-  void addIgnoreKeyPressEvent( Qt::Key k, QList< Qt::KeyboardModifier > s)
-  {
-    QPair< Qt::Key, QList<Qt::KeyboardModifier > > p(k, s);
-    if ( ! ignoreKeys.contains( p ) )
-      ignoreKeys.push_back(p);
-  }
-
-  bool removeIgnoreKeyPressEvent( Qt::Key k, QList< Qt::KeyboardModifier > s)
-  {
-    QPair< Qt::Key, QList<Qt::KeyboardModifier > > p(k, s);
-    return ignoreKeys.removeAll( p );
-  }
-
-  void removeAllIgnoreKeyPressEvent ( )
-  {
-    QList < QPair< Qt::Key, QList< Qt::KeyboardModifier > > > emptyList;
-    ignoreKeys = emptyList;
-  }
-
-protected:
-  virtual void keyPressEvent( QKeyEvent* e )
-  {
-    int k = e -> key();
-    Qt::KeyboardModifiers m = e -> modifiers();
-
-    QList< QPair< Qt::Key, QList<Qt::KeyboardModifier > > >::iterator i = ignoreKeys.begin();
-    for (; i != ignoreKeys.end(); ++i)
-    {
-      if ( (*i).first == k )
-      {
-        bool passModifiers = true;
-        QList< Qt::KeyboardModifier >::iterator j = (*i).second.begin();
-
-        for (; j != (*i).second.end(); ++j)
-        {
-          if ( m.testFlag( (*j) ) == false )
-          {
-            passModifiers = false;
-            break;
-          }
-        }
-
-        if ( passModifiers )
-        {
-          // key combination matches, send key to base classe's base
-          QAbstractScrollArea::keyPressEvent( e );
-          return;
-        }
-      }
-    }
-    // no key match
-    QTextEdit::keyPressEvent( e );
-  }
-  void initSearchBox()
-  {
-    if ( ! searchBox )
-    {
-      searchBox = new SC_SearchBox( this -> viewport(), searchBoxCorner );
-
-      QShortcut* find = new QShortcut( QKeySequence( Qt::CTRL + Qt::Key_F), this );
-      connect( find, SIGNAL( activated() ), this, SLOT( find() ) );
-      QShortcut* escape = new QShortcut( QKeySequence( Qt::Key_Escape ), this );
-      connect( escape, SIGNAL( activated() ), this, SLOT( hideSearchBox() ) );
-      connect( searchBox, SIGNAL( textChanged( const QString&) ), this, SLOT( findText( const QString& ) ) );
-
-      connect( searchBox, SIGNAL( findPrev() ), this, SLOT( findPrev() ) );
-      connect( searchBox, SIGNAL( findNext() ), this, SLOT( findNext() ) );
-
-      searchBox -> hide();
-    }
-  }
-  virtual void focusInEvent( QFocusEvent* e )
-  {
-    if ( enable_search )
-    {
-      hideSearchBox();
-    }
-    QTextEdit::focusInEvent( e );
-  }
-  virtual void resizeEvent( QResizeEvent* e )
-  {
-    Q_UNUSED( e );
-    searchBox -> updateGeometry();
-  }
-  void findSomeText( const QString& text, QTextDocument::FindFlags options = 0, int position = -1 )
-  {
-    if ( ! text.isEmpty() )
-    {
-      QTextDocument* doc = document();
-      if ( position < 0 )
-        position = textCursor().selectionStart();
-      QTextCursor found = doc -> find( text, position, options );
-      if ( ! found.isNull() )
-      {
-        setTextCursor( found );
-      }
-      else if ( searchBox -> wrapSearch() )
-      {
-        if ( options & QTextDocument::FindBackward )
-        {
-          position = doc -> characterCount();
-        }
-        else
-        {
-          position = 0;
-        }
-        found = doc -> find( text, position, options );
-        if ( ! found.isNull() )
-        {
-          setTextCursor( found );
-        }
-      }
-    }
-    if ( searchBox -> isVisible() )
-    {
-      searchBox -> updateGeometry();
-    }
-  }
-private slots:
-  void text_edited()
-  {
-    edited_by_user = true;
-  }
-public slots:
-  void find()
-  {
-    if ( enable_search )
-    {
-      searchBox -> show();
-    }
-  }
-  void findText( const QString& text )
-  {
-    QTextDocument::FindFlags flags;
-    if ( searchBox -> reverseSearch() )
-      flags |= QTextDocument::FindBackward;
-    findSomeText( text, flags );
-  }
-  void findNext()
-  {
-    if ( enable_search )
-      findSomeText( searchBox -> text(), 0, textCursor().selectionStart() + 1 );
-  }
-  void findPrev()
-  {
-    if ( enable_search )
-      findSomeText( searchBox -> text(), QTextDocument::FindBackward );
-  }
-  void hideSearchBox()
-  {
-    if ( searchBox -> isVisible() )
-    {
-      searchBox -> hide();
-      setFocus();
-    }
-  }
-};
-
-// ============================================================================
 // SC_HoverAreaWidget
 // ============================================================================
 
@@ -726,9 +191,9 @@ Q_PROPERTY( int timeTillHide READ timeTillHide WRITE setTimeTillHide )
 Q_PROPERTY( int timeTillFastHide READ timeTillFastHide WRITE setTimeTillFastHide )
 Q_PROPERTY( int timeFastHide READ timeFastHide WRITE setTimeFastHide )
 public:
-  SC_RelativePopup(QWidget* parent, Qt::Corner parentCornerToAnchor =
-      Qt::BottomRightCorner, Qt::Corner widgetCornerToAnchor =
-      Qt::TopRightCorner) :
+  SC_RelativePopup(QWidget* parent,
+      Qt::Corner parentCornerToAnchor = Qt::BottomRightCorner,
+      Qt::Corner widgetCornerToAnchor = Qt::TopRightCorner) :
       QWidget(parent), parentCornerToAnchor_(parentCornerToAnchor),
       widgetCornerToAnchor_( widgetCornerToAnchor), timeTillHide_(1000),
       timeTillFastHide_(800), timeFastHide_(200), hideChildren(true)
@@ -811,13 +276,22 @@ private:
   }
   bool isWidgetUnderCursorAChild()
   {
-    QWidget *widget = qApp->widgetAt(QCursor::pos());
+    QWidget* widget = qApp->widgetAt(QCursor::pos());
+    QObject* parentObject = parent();
+    QWidget* parentWidget = qobject_cast< QWidget* >( parentObject );
 
     while( widget != nullptr )
     {
       if ( widget == this )
       {
         return true;
+      }
+      else if ( parentWidget != nullptr ) // could be one if, but gcc complains about nullptr cast
+      {
+        if ( widget == parentWidget )
+        {
+          return true;
+        }
       }
       widget = widget -> parentWidget();
     }
@@ -994,7 +468,16 @@ Q_PROPERTY( int nonDraggedHoverTimeout READ getMouseHoverTimeout WRITE setMouseH
   int mouseHoverTimeout;
 
   bool enableContextMenu;
+  bool enableContextMenuRenameTab;
+  bool enableContextMenuCloseTab;
+  bool enableContextMenuCloseAll;
+  bool enableContextMenuCloseOthers;
   QMenu* contextMenu;
+
+  QAction* renameTabAction;
+  QAction* closeTabAction;
+  QAction* closeOthersAction;
+  QAction* closeAllAction;
 public:
   SC_TabBar( QWidget* parent = nullptr,
       bool enableDraggedHover = false,
@@ -1007,7 +490,15 @@ public:
     enableMouseHoverTimeoutSignal( enableMouseHover ),
     mouseHoverTimeout( 1500 ),
     enableContextMenu( enableContextMenu ),
-    contextMenu( nullptr )
+    enableContextMenuRenameTab( true ),
+    enableContextMenuCloseTab( true ),
+    enableContextMenuCloseAll( false ),
+    enableContextMenuCloseOthers( false ),
+    contextMenu( nullptr ),
+    renameTabAction( nullptr ),
+    closeTabAction( nullptr ),
+    closeOthersAction( nullptr ),
+    closeAllAction( nullptr )
   {
     enableDraggedTextHover( enableDraggedTextHoverSignal );
     enableMouseHoverTimeout( enableMouseHoverTimeoutSignal );
@@ -1044,6 +535,26 @@ public:
   {
     return mouseHoverTimeout;
   }
+  void showContextMenuItemRenameTab( bool show )
+  {
+    enableContextMenuRenameTab = show;
+    updateContextMenu();
+  }
+  void showContextMenuItemCloseTab( bool show )
+  {
+    enableContextMenuCloseTab = show;
+    updateContextMenu();
+  }
+  void showContextMenuItemCloseOthers( bool show )
+  {
+    enableContextMenuCloseOthers = show;
+    updateContextMenu();
+  }
+  void showContextMenuItemCloseAll( bool show )
+  {
+    enableContextMenuCloseAll = show;
+    updateContextMenu();
+  }
 private:
   virtual void initContextMenu()
   {
@@ -1054,23 +565,41 @@ private:
     }
     if ( enableContextMenu )
     {
-      QAction* renameTab =    new QAction( tr( "Rename Tab" ),   this );
-      QAction* closeTab =     new QAction( tr( "Close Tab" ),      this );
+      renameTabAction =    new QAction( tr( "Rename Tab" ),   this );
+      closeTabAction =     new QAction( tr( "Close Tab" ),    this );
+      closeOthersAction =  new QAction( tr( "Close Others" ), this );
+      closeAllAction =     new QAction( tr( "Close All" ),    this );
 
-      connect( renameTab,    SIGNAL( triggered( bool ) ), this, SLOT( renameTab( bool ) ) );
-      connect( closeTab,     SIGNAL( triggered( bool ) ), this, SLOT( closeTab( bool ) ) );
+      connect( renameTabAction,    SIGNAL( triggered( bool ) ), this, SLOT( renameTab() ) );
+      connect( closeTabAction,     SIGNAL( triggered( bool ) ), this, SLOT( closeTab() ) );
+      connect( closeOthersAction,  SIGNAL( triggered( bool ) ), this, SLOT( closeOthersSlot() ) );
+      connect( closeAllAction,     SIGNAL( triggered( bool ) ), this, SLOT( closeAllSlot() ) );
 
       setContextMenuPolicy( Qt::CustomContextMenu );
       connect( this, SIGNAL( customContextMenuRequested( const QPoint& ) ),
                this, SLOT(   showContextMenu( const QPoint& ) ) );
 
       contextMenu = new QMenu( this );
-      contextMenu -> addAction( renameTab );
-      contextMenu -> addAction( closeTab );
+      contextMenu -> addAction( renameTabAction );
+      contextMenu -> addAction( closeTabAction );
+      contextMenu -> addAction( closeOthersAction );
+      contextMenu -> addAction( closeAllAction );
+
+      updateContextMenu();
     }
     else
     {
       setContextMenuPolicy( Qt::NoContextMenu );
+    }
+  }
+  void updateContextMenu()
+  {
+    if ( enableContextMenu )
+    {
+      renameTabAction   -> setVisible( enableContextMenuRenameTab );
+      closeTabAction    -> setVisible( enableContextMenuCloseTab );
+      closeOthersAction -> setVisible( enableContextMenuCloseOthers );
+      closeAllAction    -> setVisible( enableContextMenuCloseAll );
     }
   }
 protected:
@@ -1178,9 +707,8 @@ public slots:
     draggedTextOnSingleTabTimer.stop();
     emit( mouseDragHoveredOverTab( hoveringOverTab ) );
   }
-  void renameTab( bool checked )
+  void renameTab()
   {
-    Q_UNUSED( checked );
     bool ok;
     QString text = QInputDialog::getText( this, tr( "Modify Tab Title" ),
                                           tr("New Tab Title:"), QLineEdit::Normal,
@@ -1188,10 +716,17 @@ public slots:
     if ( ok && !text.isEmpty() )
        setTabText( currentIndex(), text );
   }
-  void closeTab( bool checked )
+  void closeTab()
   {
-    Q_UNUSED( checked );
     emit( tabCloseRequested( currentIndex() ) );
+  }
+  void closeOthersSlot()
+  {
+    emit( closeOthers() );
+  }
+  void closeAllSlot()
+  {
+    emit( closeAll() );
   }
   void showContextMenu( const QPoint& pos )
   {
@@ -1211,6 +746,8 @@ public slots:
 signals:
   void mouseHoveredOverTab( int tab );
   void mouseDragHoveredOverTab( int tab );
+  void closeOthers();
+  void closeAll();
   void layoutRequestEvent();
 };
 
@@ -1222,46 +759,27 @@ class SC_TabWidgetCloseAll : public QTabWidget
 {
 Q_OBJECT
   QSet<QWidget*> specialTabsListToNotDelete;
-
-  virtual QWidget* createCloseAllTabsWidget()
-  {
-    // default will be a close all tabs button
-    QToolButton* closeAllTabs = new QToolButton(this);
-
-    QIcon closeAllTabsIcon(":/icon/closealltabs.png");
-    if (closeAllTabsIcon.pixmap(QSize(64, 64)).isNull()) // icon failed to load
-    {
-      closeAllTabs->setText(tr("Close All Tabs"));
-    }
-    else
-    {
-      closeAllTabs->setIcon(closeAllTabsIcon);
-    }
-    closeAllTabs->setAutoRaise(true);
-
-    connect( closeAllTabs, SIGNAL( clicked( bool ) ), this, SLOT( closeAllTabsRequest( bool ) ));
-
-    return closeAllTabs;
-  }
   QString closeAllTabsTitleText;
   QString closeAllTabsBodyText;
+  QString closeOtherTabsTitleText;
+  QString closeOtherTabsBodyText;
   SC_TabBar* scTabBar;
 public:
   SC_TabWidgetCloseAll(QWidget* parent = nullptr,
       Qt::Corner corner = Qt::TopRightCorner,
-      QString warningTitle = "Close all tabs?",
-      QString warningText = "Close all tabs?" ) :
+      QString closeAllWarningTitle = "Close all tabs?",
+      QString closeAllWarningText = "Close all tabs?",
+      QString closeOthersWarningTitle = "Close other tabs?",
+      QString closeOthersWarningText = "Close other tabs?" ) :
   QTabWidget( parent ),
-  closeAllTabsTitleText( warningTitle ),
-  closeAllTabsBodyText( warningText ),
+  closeAllTabsTitleText( closeAllWarningTitle ),
+  closeAllTabsBodyText( closeAllWarningText ),
+  closeOtherTabsTitleText( closeOthersWarningTitle ),
+  closeOtherTabsBodyText( closeOthersWarningText ),
   scTabBar( new SC_TabBar( this ) )
   {
-    setTabBar( scTabBar );
-    setTabsClosable( true );
+    initTabBar();
     setCornerWidget( createCloseAllTabsWidget(), corner );
-    connect( scTabBar, SIGNAL( layoutRequestEvent() ), this, SIGNAL( tabBarLayoutRequestEvent() ) );
-    connect( scTabBar, SIGNAL( mouseHoveredOverTab( int ) ), this, SIGNAL( mouseHoveredOverTab( int ) ) );
-    connect( scTabBar, SIGNAL( mouseDragHoveredOverTab( int ) ), this, SIGNAL( mouseDragHoveredOverTab( int ) ) );
   }
   void setCloseAllTabsTitleText( QString text )
   {
@@ -1315,9 +833,34 @@ public:
       }
     }
   }
+  void closeOtherTabs()
+  {
+    QWidget* currentVisibleTab = widget( currentIndex() );
+    bool insertedTabSuccessfully = false;
+    if ( currentVisibleTab != nullptr )
+    {
+      if ( ! specialTabsListToNotDelete.contains( currentVisibleTab ) )
+      {
+        // if the current tab is one that we should not delete
+        // make sure that we do not remove that functionality by removing it from the set
+        insertedTabSuccessfully = true;
+        specialTabsListToNotDelete.insert( currentVisibleTab );
+      }
+    }
+    closeAllTabs();
+    if ( insertedTabSuccessfully )
+    {
+      specialTabsListToNotDelete.remove( currentVisibleTab );
+    }
+  }
   void removeTab( int index )
   {
-    emit( tabAboutToBeRemoved( widget( index ), tabText( index ), tabToolTip( index ), tabIcon( index ) ) );
+    QWidget* widgetAtIndex = widget( index );
+    if ( widgetAtIndex != nullptr )
+    {
+      // index could be out of bounds, only emit signal if there is a legit widget at the index
+      emit( tabAboutToBeRemoved( widgetAtIndex, tabText( index ), tabToolTip( index ), tabIcon( index ) ) );
+    }
   }
   void enableMouseHoveredOverTabSignal( bool enable )
   {
@@ -1327,12 +870,55 @@ public:
   {
     scTabBar -> enableDraggedTextHover( enable );
   }
+private:
+  virtual QWidget* createCloseAllTabsWidget()
+  {
+    // default will be a close all tabs button
+    QToolButton* closeAllTabs = new QToolButton(this);
+
+    QIcon closeAllTabsIcon( ":/icon/closealltabs.png" );
+    if ( closeAllTabsIcon.pixmap( QSize( 64, 64 ) ).isNull() ) // icon failed to load
+    {
+      closeAllTabs -> setText( tr( "Close All Tabs" ) );
+    }
+    else
+    {
+      closeAllTabs -> setIcon( closeAllTabsIcon );
+    }
+    closeAllTabs -> setAutoRaise( true );
+
+    connect( closeAllTabs, SIGNAL( clicked( bool ) ), this, SLOT( closeAllTabsRequest() ));
+
+    return closeAllTabs;
+  }
+  void initTabBar()
+  {
+    setTabBar( scTabBar );
+    setTabsClosable( true );
+
+    scTabBar -> showContextMenuItemRenameTab( true );
+    scTabBar -> showContextMenuItemCloseTab( true );
+    scTabBar -> showContextMenuItemCloseOthers( true );
+    scTabBar -> showContextMenuItemCloseAll( true );
+
+    connect( scTabBar, SIGNAL( layoutRequestEvent() ),           this, SIGNAL( tabBarLayoutRequestEvent() ) );
+    connect( scTabBar, SIGNAL( mouseHoveredOverTab( int ) ),     this, SIGNAL( mouseHoveredOverTab( int ) ) );
+    connect( scTabBar, SIGNAL( mouseDragHoveredOverTab( int ) ), this, SIGNAL( mouseDragHoveredOverTab( int ) ) );
+    connect( scTabBar, SIGNAL( closeOthers() ),                  this,   SLOT( closeOtherTabsRequest() ) );
+    connect( scTabBar, SIGNAL( closeAll() ),                     this,   SLOT( closeAllTabsRequest() ) );
+  }
 public slots:
-  void closeAllTabsRequest( bool /* clicked */)
+  void closeAllTabsRequest()
   {
     int confirm = QMessageBox::warning( this, closeAllTabsTitleText, closeAllTabsBodyText, QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
     if ( confirm == QMessageBox::Yes )
       closeAllTabs();
+  }
+  void closeOtherTabsRequest()
+  {
+    int confirm = QMessageBox::warning( this, closeOtherTabsTitleText, closeOtherTabsBodyText, QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+    if ( confirm == QMessageBox::Yes )
+      closeOtherTabs();
   }
 signals:
   void tabAboutToBeRemoved( QWidget*, const QString& tabTitle, const QString& tabToolTip, const QIcon& );
@@ -2115,10 +1701,8 @@ private slots:
 class SC_CommandLine : public QLineEdit
 {
   Q_OBJECT
-protected:
-  virtual void keyPressEvent( QKeyEvent* e );
 public:
-  SC_CommandLine( QWidget* parent = nullptr ) : QLineEdit( parent ) { };
+  SC_CommandLine( QWidget* parent = nullptr );
 signals:
   void switchToLeftSubTab();
   void switchToRightSubTab();
@@ -2139,6 +1723,8 @@ public:
     IDLE = 0,
     SIMULATING,          // Simulating only one, nothing queued
     SIMULATING_MULTIPLE, // Simulating but others are queued
+    SIMULATING_PAUSED,
+    SIMULATING_MULTIPLE_PAUSED,
     STATE_COUNT
   };
   enum tabs_e // contains main_tabs_e then import_tabs_e
@@ -2169,8 +1755,12 @@ public:
 protected:
   QString text_simulate;
   QString text_queue;
+  QString text_pause;
+  QString text_resume;
+  QString text_queue_tooltip;
   QString text_cancel;
   QString text_cancel_all;
+  QString text_cancel_all_tooltip;
   QString text_save;
   QString text_import;
   QString text_prev;
@@ -2187,6 +1777,7 @@ protected:
     BUTTON_NEXT,
     TEXTEDIT_CMDLINE,
     PROGRESSBAR_WIDGET,
+    BUTTON_PAUSE,
     WIDGET_COUNT
   };
   enum progressbar_states_e // Different states for progressbars
@@ -2211,7 +1802,13 @@ protected:
   };
   _widget_state states[STATE_COUNT][CMDLINE_TAB_COUNT][WIDGET_COUNT]; // all the states
   // ProgressBar state progress/format
-  std::pair< QString, int > progressBarFormat[PROGRESSBAR_STATE_COUNT];
+  struct _progressbar_state
+  {
+    QString text;
+    QString tool_tip;
+    int progress;
+  };
+  _progressbar_state progressBarFormat[PROGRESSBAR_STATE_COUNT];
   // CommandLine buffers
   QString commandLineBuffer_DEFAULT; // different buffers for different tabs
   QString commandLineBuffer_TAB_BATTLE_NET;
@@ -2220,7 +1817,7 @@ protected:
   QString commandLineBuffer_TAB_HELP;
   QString commandLineBuffer_TAB_LOG;
 
-  QVariant widgets[STATE_COUNT][WIDGET_COUNT]; // holds all widgets in all states
+  QWidget* widgets[STATE_COUNT][WIDGET_COUNT]; // holds all widgets in all states
 
   QStackedLayout* statesStackedLayout; // Contains all states
   tabs_e current_tab;
@@ -2238,51 +1835,51 @@ public:
   {
     return current_state;
   }
-  void setSimulatingProgress( int value, QString format )
+  void setSimulatingProgress( int value, QString format, QString toolTip )
   {
-    updateProgress( PROGRESSBAR_SIMULATING, value, format );
+    updateProgress( PROGRESSBAR_SIMULATING, value, format, toolTip );
   }
   int getSimulatingProgress()
   {
     return getProgressBarProgressForState( PROGRESSBAR_SIMULATING );
   }
-  void setImportingProgress( int value, QString format )
+  void setImportingProgress( int value, QString format, QString toolTip )
   {
-    updateProgress( PROGRESSBAR_IMPORTING, value, format );
+    updateProgress( PROGRESSBAR_IMPORTING, value, format, toolTip );
   }
   int getImportingProgress()
   {
     return getProgressBarProgressForState( PROGRESSBAR_IMPORTING );
   }
-  void setBattleNetLoadProgress( int value, QString format )
+  void setBattleNetLoadProgress( int value, QString format, QString toolTip )
   {
-    updateProgress( PROGRESSBAR_BATTLE_NET, value, format );
+    updateProgress( PROGRESSBAR_BATTLE_NET, value, format, toolTip );
   }
   int getBattleNetProgress()
   {
     return getProgressBarProgressForState( PROGRESSBAR_BATTLE_NET );
   }
 #if USE_CHARDEV
-  void setCharDevProgress( int value, QString format )
+  void setCharDevProgress( int value, QString format, QString tool_tip )
   {
-    updateProgress( PROGRESSBAR_CHAR_DEV, value );
+    updateProgress( PROGRESSBAR_CHAR_DEV, value, tool_tip );
   }
   int getCharDevProgress()
   {
     return getProgressBarProgressForState( PROGRESSBAR_CHAR_DEV );
   }
 #endif
-  void setHelpViewProgress( int value, QString format )
+  void setHelpViewProgress( int value, QString format, QString toolTip )
   {
-    updateProgress( PROGRESSBAR_HELP, value, format );
+    updateProgress( PROGRESSBAR_HELP, value, format, toolTip );
   }
   int getHelpViewProgress()
   {
     return getProgressBarProgressForState( PROGRESSBAR_HELP );
   }
-  void setSiteLoadProgress( int value, QString format )
+  void setSiteLoadProgress( int value, QString format, QString toolTip )
   {
-    updateProgress( PROGRESSBAR_SITE, value, format );
+    updateProgress( PROGRESSBAR_SITE, value, format, toolTip );
   }
   int getSiteProgress()
   {
@@ -2332,6 +1929,60 @@ public:
     adjustText( current_state, tab, TEXTEDIT_CMDLINE, text );
     updateWidget( current_state, tab, TEXTEDIT_CMDLINE );
   }
+  void togglePaused()
+  {
+    setPaused( !isPaused() );
+  }
+  void setPaused( bool pause )
+  {
+    switch( current_state )
+    {
+    case SIMULATING:
+      if ( pause )
+      {
+        setState( SIMULATING_PAUSED );
+      }
+      break;
+    case SIMULATING_MULTIPLE:
+      if ( pause )
+      {
+        setState( SIMULATING_MULTIPLE_PAUSED );
+      }
+      break;
+    case SIMULATING_PAUSED:
+      if ( ! pause )
+      {
+        setState( SIMULATING );
+      }
+      break;
+    case SIMULATING_MULTIPLE_PAUSED:
+      if ( ! pause )
+      {
+        setState( SIMULATING_MULTIPLE );
+      }
+      break;
+    default:
+      break;
+    }
+  }
+  bool isPaused()
+  {
+    bool retval = false;
+
+    switch( current_state )
+    {
+    case SIMULATING_PAUSED:
+      retval = true;
+      break;
+    case SIMULATING_MULTIPLE_PAUSED:
+      retval = true;
+      break;
+    default:
+      break;
+    }
+
+    return retval;
+  }
 protected:
   void init()
   {
@@ -2347,6 +1998,7 @@ protected:
     // use setProgressBarState() to set progressbar's state in states/tabs
     // using text_hide_widget as the text, will hide that widget ONLY in that state/tab, and show it in others
 
+    initWidgetsToNull();
     initTextStrings();
     initStatesStructToNull();
     initDefaultStates();
@@ -2357,22 +2009,40 @@ protected:
     initLogResultsStates();
     initProgressBarStates();
     initCommandLineBuffers();
+    initPauseStates();
 
+  }
+  void initWidgetsToNull()
+  {
+    for ( state_e state = IDLE; state < STATE_COUNT; state++ )
+    {
+      for ( widgets_e widget = BUTTON_MAIN; widget < WIDGET_COUNT; widget++ )
+      {
+        widgets[state][widget] = nullptr;
+      }
+    }
   }
   void initTextStrings()
   {
     // strings shared by widgets
-    text_simulate     = tr( "Simulate!"   );
-    text_queue        = tr( "Queue!"      );
-    text_cancel       = tr( "Cancel! "    );
-    text_cancel_all   = tr( "Cancel All!" );
-    text_save         = tr( "Save!"       );
-    text_import       = tr( "Import!"     );
-    text_prev         = tr( "<"           );
-    text_next         = tr( ">"           );
-    text_prev_tooltip = tr( "Backwards"   );
-    text_next_tooltip = tr( "Forwards"    );
-    text_hide_widget  = "hide_widget";
+    text_simulate           = tr( "Simulate!"   );
+    text_pause              = tr( "Pause!"      );
+    text_resume             = tr( "Resume!"     );
+    text_queue              = tr( "Queue!"      );
+    text_queue_tooltip      = tr( "Click to queue a simulation to run after the current one" );
+    text_cancel             = tr( "Cancel! "    );
+    text_cancel_all         = tr( "Cancel All!" );
+    text_cancel_all_tooltip = tr( "Cancel ALL simulations, including what is queued" );
+    text_save               = tr( "Save!"       );
+    text_import             = tr( "Import!"     );
+    text_prev               = tr( "<"           );
+    text_next               = tr( ">"           );
+    text_prev_tooltip       = tr( "Backwards"   );
+    text_next_tooltip       = tr( "Forwards"    );
+    text_hide_widget        = "hide_widget";
+    // actually manually typing in hide_widget into the command line will actually HIDE IT
+    // so append some garbage to it
+    text_hide_widget.append( QString::number( rand() ) );
   }
   void initStatesStructToNull()
   {
@@ -2399,11 +2069,12 @@ protected:
       {
         // buttons
         setText( state, tab, BUTTON_MAIN , &text_simulate );
-        setText( state, tab, BUTTON_QUEUE, &text_queue    );
+        setText( state, tab, BUTTON_QUEUE, &text_queue, &text_queue_tooltip );
+        setText( state, tab, BUTTON_PAUSE, &text_pause );
         setText( state, tab, BUTTON_PREV , &text_prev, &text_prev_tooltip );
         setText( state, tab, BUTTON_NEXT , &text_next, &text_next_tooltip );
         // progressbar
-        setText( state, tab, PROGRESSBAR_WIDGET, &progressBarFormat[PROGRESSBAR_SIMULATING].first );
+        setText( state, tab, PROGRESSBAR_WIDGET, &progressBarFormat[PROGRESSBAR_SIMULATING].text, &progressBarFormat[PROGRESSBAR_SIMULATING].tool_tip );
         setProgressBarState( state, tab, PROGRESSBAR_SIMULATING );
         // commandline buffer
         setText( state, tab, TEXTEDIT_CMDLINE, &commandLineBuffer_DEFAULT );
@@ -2412,7 +2083,10 @@ protected:
       // simulating defaults:
       // mainbutton: simulate => cancel
       setText( SIMULATING, tab, BUTTON_MAIN , &text_cancel ); // instead of text_simulate
+      setText( SIMULATING_PAUSED, tab, BUTTON_MAIN, &text_cancel );
       setText( SIMULATING_MULTIPLE, tab, BUTTON_MAIN , &text_cancel ); // instead of text_simulate
+      setText( SIMULATING_MULTIPLE_PAUSED, tab, BUTTON_MAIN , &text_cancel ); // instead of text_simulate
+      setText( SIMULATING, tab, BUTTON_PAUSE, &text_pause );
 
       // simulating_multiple defaults:
       // cancel => text_cancel_all
@@ -2420,7 +2094,8 @@ protected:
       {
         if ( getText( SIMULATING_MULTIPLE, tab, widget ) == text_cancel )
         {
-          setText( SIMULATING_MULTIPLE, tab, widget, &text_cancel_all );
+          setText( SIMULATING_MULTIPLE, tab, widget, &text_cancel_all, &text_cancel_all_tooltip );
+          setText( SIMULATING_MULTIPLE_PAUSED, tab, widget, &text_cancel_all, &text_cancel_all_tooltip );
         }
       }
     }
@@ -2456,13 +2131,13 @@ protected:
   {
     // log/results: change button text so save is somewhere
     // IDLE: main button => save
-    setText( IDLE      , CMDLINE_TAB_LOG    , BUTTON_MAIN , &text_save   );
-    setText( IDLE      , CMDLINE_TAB_RESULTS, BUTTON_MAIN , &text_save   );
+    setText( IDLE      , CMDLINE_TAB_LOG    , BUTTON_MAIN , &text_save );
+    setText( IDLE      , CMDLINE_TAB_RESULTS, BUTTON_MAIN , &text_save );
     // SIMULATING + SIMULATING_MULTIPLE: queue button => save
-    for ( state_e state = SIMULATING; state <= SIMULATING_MULTIPLE; state++ )
+    for ( state_e state = SIMULATING; state <= SIMULATING_MULTIPLE_PAUSED; state++ )
     {
-      setText( state, CMDLINE_TAB_LOG    , BUTTON_QUEUE, &text_save   );
-      setText( state, CMDLINE_TAB_RESULTS, BUTTON_QUEUE, &text_save   );
+      setText( state, CMDLINE_TAB_LOG    , BUTTON_QUEUE, &text_save );
+      setText( state, CMDLINE_TAB_RESULTS, BUTTON_QUEUE, &text_save );
     }
   }
   void initProgressBarStates()
@@ -2518,6 +2193,16 @@ protected:
       // everything else shares the default buffer
     }
   }
+  void initPauseStates()
+  {
+    for ( tabs_e tab = CMDLINE_TAB_WELCOME; tab < CMDLINE_TAB_COUNT; tab++ )
+    {
+      for ( state_e state = SIMULATING_PAUSED; state <= SIMULATING_MULTIPLE_PAUSED; state++ )
+      {
+        setText( state, tab, BUTTON_PAUSE, &text_resume );
+      }
+    }
+  }
   virtual QWidget* createState( state_e state )
   {
     // Create the widget for the state
@@ -2546,6 +2231,12 @@ protected:
     case SIMULATING_MULTIPLE:
       createState_SIMULATING_MULTIPLE( stateWidget );
       break;
+    case SIMULATING_PAUSED:
+      createState_SIMULATING_PAUSED( stateWidget );
+      break;
+    case SIMULATING_MULTIPLE_PAUSED:
+      createState_SIMULATING_MULTIPLE_PAUSED( stateWidget );
+      break;
     default:
       break;
     }
@@ -2560,7 +2251,7 @@ protected:
     QLayout* parentLayout = parent -> layout();
 
     QPushButton* buttonMain = new QPushButton( *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_MAIN ), parent );
-    setWidget( IDLE, BUTTON_MAIN, QVariant::fromValue< QPushButton* >( buttonMain ) );
+    setWidget( IDLE, BUTTON_MAIN, buttonMain );
     parentLayout -> addWidget( buttonMain );
 
     connect( buttonMain, SIGNAL( clicked() ), this, SLOT( mainButtonClicked() ) );
@@ -2570,10 +2261,18 @@ protected:
     // creates the SIMULATING state
     _createState_SIMULATING( SIMULATING, parent );
   }
+  virtual void createState_SIMULATING_PAUSED( QWidget* parent )
+  {
+    _createState_SIMULATING( SIMULATING_PAUSED, parent );
+  }
   virtual void createState_SIMULATING_MULTIPLE( QWidget* parent )
   {
     // creates the SIMULATING_MULTIPLE state
     _createState_SIMULATING( SIMULATING_MULTIPLE, parent );
+  }
+  virtual void createState_SIMULATING_MULTIPLE_PAUSED( QWidget* parent )
+  {
+    _createState_SIMULATING( SIMULATING_MULTIPLE_PAUSED, parent );
   }
   virtual void _createState_SIMULATING( state_e state, QWidget* parent )
   {
@@ -2582,13 +2281,17 @@ protected:
 
     QPushButton* buttonQueue = new QPushButton( *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_QUEUE ), parent );
     QPushButton* buttonMain  = new QPushButton( *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_MAIN  ), parent );
-    setWidget( state, BUTTON_QUEUE, QVariant::fromValue< QPushButton* >( buttonQueue ) );
-    setWidget( state, BUTTON_MAIN , QVariant::fromValue< QPushButton* >( buttonMain ) );
+    QPushButton* buttonPause = new QPushButton( *getText( IDLE, CMDLINE_TAB_WELCOME, BUTTON_PAUSE ), parent );
+    setWidget( state, BUTTON_QUEUE, buttonQueue );
+    setWidget( state, BUTTON_MAIN , buttonMain );
+    setWidget( state, BUTTON_PAUSE, buttonPause );
     parentLayout -> addWidget( buttonQueue );
     parentLayout -> addWidget( buttonMain );
+    parentLayout -> addWidget( buttonPause );
 
     connect( buttonMain,  SIGNAL( clicked() ), this, SLOT( mainButtonClicked()  ) );
     connect( buttonQueue, SIGNAL( clicked() ), this, SLOT( queueButtonClicked() ) );
+    connect( buttonPause, SIGNAL( clicked() ), this, SLOT( pauseButtonClicked() ) );
   }
   virtual void createCommandLine( state_e state, QWidget* parent )
   {
@@ -2599,9 +2302,9 @@ protected:
     QPushButton* buttonNext = new QPushButton( tr( ">" ), parent );
     SC_CommandLine* commandLineEdit = new SC_CommandLine( parent );
 
-    setWidget( state, BUTTON_PREV,      QVariant::fromValue< QPushButton* >( buttonPrev ) );
-    setWidget( state, BUTTON_NEXT,      QVariant::fromValue< QPushButton* >( buttonNext ) );
-    setWidget( state, TEXTEDIT_CMDLINE, QVariant::fromValue< SC_CommandLine* >( commandLineEdit ) );
+    setWidget( state, BUTTON_PREV,      buttonPrev );
+    setWidget( state, BUTTON_NEXT,      buttonNext );
+    setWidget( state, TEXTEDIT_CMDLINE, commandLineEdit );
 
     buttonPrev -> setMaximumWidth( 30 );
     buttonNext -> setMaximumWidth( 30 );
@@ -2620,7 +2323,7 @@ protected:
     // Progress bar
     QProgressBar* progressBar = new QProgressBar( parent );
 
-    setWidget( state, PROGRESSBAR_WIDGET, QVariant::fromValue< QProgressBar* >( progressBar ) );
+    setWidget( state, PROGRESSBAR_WIDGET, progressBar );
 
     progressBar -> setMaximum( 100 );
     progressBar -> setMaximumWidth( 200 );
@@ -2654,7 +2357,11 @@ protected:
     // emit the proper signal for the given button text
     if ( text != nullptr )
     {
-      if ( text == text_simulate )
+      if ( text == text_pause )
+        emit( pauseClicked() );
+      else if ( text == text_resume )
+        emit( resumeClicked() );
+      else if ( text == text_simulate )
       {
   #ifdef SC_PAPERDOLL
         if ( current_tab == TAB_PAPERDOLL )
@@ -2712,17 +2419,17 @@ protected:
   void setProgressBarProgress( progressbar_states_e state, int value )
   {
     // update progress for the given progressbar state
-    progressBarFormat[state].second = value;
+    progressBarFormat[state].progress = value;
     updateWidget( current_state, current_tab, PROGRESSBAR_WIDGET );
   }
   int getProgressBarProgressForState( progressbar_states_e state )
   {
-    return progressBarFormat[state].second;
+    return progressBarFormat[state].progress;
   }
   void updateProgressBars()
   {
     // actually updates currently visible progressbar's progress
-    QProgressBar* progressBar = getWidget( current_state, PROGRESSBAR_WIDGET ).value< QProgressBar* >();
+    QProgressBar* progressBar = qobject_cast< QProgressBar* >( getWidget( current_state, PROGRESSBAR_WIDGET ) );
     if ( progressBar != nullptr )
     {
       progressBar -> setValue( getProgressBarProgressForState( getProgressBarStateForState( current_state, current_tab ) ) );
@@ -2745,7 +2452,8 @@ protected:
   void setProgressBarState( state_e state, tabs_e tab, progressbar_states_e progressbar_state )
   {
     // set the given state->tab->progressbar's state
-    states[state][tab][PROGRESSBAR_WIDGET].text = &( progressBarFormat[progressbar_state].first );
+    states[state][tab][PROGRESSBAR_WIDGET].text = &( progressBarFormat[progressbar_state].text );
+    states[state][tab][PROGRESSBAR_WIDGET].tool_tip = &( progressBarFormat[progressbar_state].tool_tip );
     states[state][tab][PROGRESSBAR_WIDGET].progressbar_state  = progressbar_state;
   }
   progressbar_states_e getProgressBarStateForState( state_e state, tabs_e tab )
@@ -2757,6 +2465,7 @@ protected:
   {
     // update a given widget
     QString* text = getText( state, tab, widget );
+    QString* toolTip = getToolTip( state, tab, widget );
     if ( text != nullptr )
     {
       if ( tab == current_tab )
@@ -2765,26 +2474,42 @@ protected:
         {
         case TEXTEDIT_CMDLINE:
         {
-          SC_CommandLine* commandLine = getWidget( state, TEXTEDIT_CMDLINE ).value< SC_CommandLine* >();
+          SC_CommandLine* commandLine = qobject_cast< SC_CommandLine* >( getWidget( state, TEXTEDIT_CMDLINE ) );
           if ( commandLine != nullptr )
           {
             commandLine -> setText( *text );
+            if ( toolTip != nullptr )
+            {
+              commandLine -> setToolTip( *toolTip );
+            }
           }
           break;
         }
         case PROGRESSBAR_WIDGET:
         {
-          QProgressBar* progressBar = getWidget( state, PROGRESSBAR_WIDGET ).value< QProgressBar* >();
+          QProgressBar* progressBar = qobject_cast< QProgressBar* >( getWidget( state, PROGRESSBAR_WIDGET ) );
           if ( progressBar != nullptr )
           {
             progressBar -> setFormat( *text );
             progressBar -> setValue( getProgressBarProgressForState( getProgressBarStateForState( current_state, current_tab ) ) );
+            if ( toolTip != nullptr )
+            {
+              progressBar -> setToolTip( *toolTip );
+            }
           }
           break;
         }
         default:
-          getWidget( state, widget ).value< QPushButton* >() -> setText( *text );
-          break;
+          QPushButton* button = qobject_cast< QPushButton* >( getWidget( state, widget ) );
+          if ( button != nullptr )
+          {
+            button -> setText( *text );
+            if ( toolTip != nullptr )
+            {
+              button -> setToolTip( *toolTip );
+            }
+            break;
+          }
         }
       }
     }
@@ -2794,29 +2519,43 @@ protected:
     // returns text to set the specified widget to
     return states[state][tab][widget].text;
   }
-  QVariant getWidget( state_e state, widgets_e widget )
+  QString* getToolTip( state_e state, tabs_e tab, widgets_e widget )
+  {
+    return states[state][tab][widget].tool_tip;
+  }
+  QWidget* getWidget( state_e state, widgets_e widget )
   {
     // returns the widget for the specified state
     return widgets[state][widget];
   }
-  void setWidget( state_e state, widgets_e widget, QVariant variant )
+  void setWidget( state_e state, widgets_e widget, QWidget* widgetPointer )
   {
     // sets the widget for the specified state
-    widgets[state][widget] = variant;
+    widgets[state][widget] = widgetPointer;
   }
   void setProgressBarFormat( progressbar_states_e state, QString format, bool update = false )
   {
     // sets the QProgressBar->setFormat(format) text value for the specified state's progress bar
-    progressBarFormat[state].first = format;
+    progressBarFormat[state].text = format;
     if ( update &&
          getProgressBarStateForState( current_state, current_tab ) == state )
     {
       updateWidget( current_state, current_tab, PROGRESSBAR_WIDGET );
     }
   }
-  void updateProgress( progressbar_states_e state, int value, QString format )
+  void setProgressBarToolTip( progressbar_states_e state, QString toolTip, bool update = false )
+  {
+    progressBarFormat[state].tool_tip = toolTip;
+    if ( update &&
+         getProgressBarStateForState( current_state, current_tab ) == state )
+    {
+      updateWidget( current_state, current_tab, PROGRESSBAR_WIDGET );
+    }
+  }
+  void updateProgress( progressbar_states_e state, int value, QString format, QString toolTip )
   {
     setProgressBarFormat( state, format );
+    setProgressBarToolTip( state, toolTip );
     setProgressBarProgress( state, value );
   }
   tabs_e convertTabsEnum( main_tabs_e tab )
@@ -2832,6 +2571,10 @@ public slots:
   void mainButtonClicked()
   {
     emitSignal( getText( current_state, current_tab, BUTTON_MAIN  ) );
+  }
+  void pauseButtonClicked()
+  {
+    emitSignal( getText( current_state, current_tab, BUTTON_PAUSE ) );
   }
   void queueButtonClicked()
   {
@@ -2854,7 +2597,7 @@ public slots:
     // sets correct text for the current_state for the given tab on all widgets
     for ( widgets_e widget = BUTTON_MAIN; widget < WIDGET_COUNT; widget++ )
     {
-      QWidget* wdgt = getWidget( current_state, widget ).value< QWidget* >();
+      QWidget* wdgt = getWidget( current_state, widget );
       if ( wdgt != nullptr )
       {
         if ( ! tryToHideWidget( getText( current_state, current_tab, widget ), wdgt ) )
@@ -2887,6 +2630,8 @@ public slots:
     emit( commandLineTextEdited( text ) );
   }
 signals:
+  void pauseClicked();
+  void resumeClicked();
   void simulateClicked();
   void queueClicked();
   void importClicked();
@@ -3311,6 +3056,133 @@ public slots:
 class SC_OptionsTab;
 
 // ============================================================================
+// SC_ComboBoxIntegerValidator
+// ============================================================================
+
+class SC_ComboBoxIntegerValidator : public QValidator
+{
+  Q_OBJECT
+  int lowerBoundInclusive;
+  int upperBoundInclusive;
+  int lowerBoundDigitCount;
+  int upperBoundDigitCount;
+  QRegExp nonIntegerRegExp;
+  QComboBox* comboBox;
+public:
+  SC_ComboBoxIntegerValidator( int lowerBoundIntegerInclusive,
+      int upperBoundIntegerInclusive,
+      QComboBox* parent ) :
+    QValidator( parent ),
+    lowerBoundInclusive( lowerBoundIntegerInclusive ),
+    upperBoundInclusive( upperBoundIntegerInclusive ),
+    lowerBoundDigitCount( 0 ),
+    upperBoundDigitCount( 0 ),
+    nonIntegerRegExp( "\\D*" ),
+    comboBox( parent )
+  {
+    Q_ASSERT( lowerBoundInclusive <= upperBoundInclusive && "Invalid Arguments" );
+
+    lowerBoundDigitCount = util::numDigits( lowerBoundInclusive );
+    upperBoundDigitCount = util::numDigits( upperBoundInclusive );
+  }
+  static SC_ComboBoxIntegerValidator* CreateBoundlessValidator( QComboBox* parent = nullptr )
+  {
+    return new SC_ComboBoxIntegerValidator( std::numeric_limits<int>::min(), std::numeric_limits<int>::max(), parent );
+  }
+  static SC_ComboBoxIntegerValidator* CreateUpperBoundValidator( int upperBound, QComboBox* parent = nullptr )
+  {
+    return new SC_ComboBoxIntegerValidator( std::numeric_limits<int>::min(), upperBound, parent );
+  }
+  static SC_ComboBoxIntegerValidator* CreateLowerBoundValidator( int lowerBound, QComboBox* parent = nullptr )
+  {
+    return new SC_ComboBoxIntegerValidator( lowerBound, std::numeric_limits<int>::max(), parent );
+  }
+  static QComboBox* ApplyValidatorToComboBox( QValidator* validator, QComboBox* comboBox )
+  {
+    if ( comboBox != nullptr )
+    {
+      if ( validator != nullptr )
+      {
+        comboBox -> setEditable( true );
+        comboBox -> setValidator( validator );
+      }
+    }
+    return comboBox;
+  }
+  State isNumberValid( int number ) const
+  {
+    if ( isNumberInRange( number ) )
+    {
+      return QValidator::Acceptable;
+    }
+    else
+    {
+      // number is not in range... maybe it COULD be in range if the user types more
+      if ( util::numDigits( number ) < lowerBoundDigitCount )
+      {
+        return QValidator::Intermediate;
+      }
+      // has enough digits... not valid
+    }
+
+    return QValidator::Invalid;
+  }
+  bool isNumberInRange( int number ) const
+  {
+    return ( number >= lowerBoundInclusive &&
+             number <= upperBoundInclusive );
+  }
+  void stripNonNumbersAndAdjustCursorPos( QString& input, int& cursorPos ) const
+  {
+    // remove erroneous characters
+    QString modifiedInput = input.remove( nonIntegerRegExp );
+    if ( cursorPos > 0 )
+    {
+      // move the cursor to the left by how many characters to the left gets removed
+      QString charactersLeftOfCursor = input.leftRef( cursorPos ).toString();
+      int characterCountLeftOfCursor = charactersLeftOfCursor.length();
+      // count how many characters are removed left of cursor
+      charactersLeftOfCursor = charactersLeftOfCursor.remove( nonIntegerRegExp );
+      int removedCharacterCountLeftOfCursor = characterCountLeftOfCursor - charactersLeftOfCursor.length();
+      int newCursorPos = qAbs( cursorPos - removedCharacterCountLeftOfCursor );
+      // just double check for sanity that it is in bounds
+      Q_ASSERT( qBound( 0, newCursorPos, modifiedInput.length() ) == newCursorPos );
+      cursorPos = newCursorPos;
+    }
+    input = modifiedInput;
+  }
+  virtual void fixup( QString& input ) const
+  {
+    int cursorPos = 0;
+    stripNonNumbersAndAdjustCursorPos( input, cursorPos );
+  }
+  virtual State validate( QString& input, int& cursorPos ) const
+  {
+    State retval = QValidator::Invalid;
+
+    if ( input.length() != 0 )
+    {
+      stripNonNumbersAndAdjustCursorPos( input, cursorPos );
+
+      bool conversionToIntWentOk;
+      int number = input.toInt( &conversionToIntWentOk );
+
+      if ( conversionToIntWentOk )
+      {
+        retval = isNumberValid( number );
+      }
+    }
+    else
+    {
+      // zero length
+      retval = QValidator::Intermediate;
+    }
+
+    return retval;
+  }
+};
+
+// ============================================================================
 // SC_MainWindow
 // ============================================================================
 
@@ -3355,6 +3227,7 @@ public:
   QGroupBox* createCustomCharData;
   SC_RecentlyClosedTabItemModel* recentlyClosedTabModel;
   SC_RecentlyClosedTabWidget* recentlyClosedTabImport;
+  QDesktopWidget desktopWidget;
 
   QTimer* timer;
   ImportThread* importThread;
@@ -3418,8 +3291,17 @@ public:
 #endif
   void updateWebView( SC_WebView* );
 
+private:
+  QRect getSmallestScreenGeometry();
+  QRect adjustGeometryToIncludeFrame( QRect );
+  QPoint getMiddleOfScreen( int );
+  int getScreenThatGeometryBelongsTo( QRect );
+  void applyAdequateApplicationGeometry( QRect );
+  void applyAdequateApplicationGeometry();
+
 protected:
   virtual void closeEvent( QCloseEvent* );
+  virtual void showEvent( QShowEvent* );
 
 private slots:
   void itemWasEnqueuedTryToSim();
@@ -3438,6 +3320,7 @@ private slots:
   void forwardButtonClicked( bool checked = false );
   void reloadButtonClicked( bool checked = false );
   void mainButtonClicked( bool checked = false );
+  void pauseButtonClicked( bool checked = false );
   void cancelButtonClicked();
   void queueButtonClicked();
   void importButtonClicked();
@@ -3454,6 +3337,7 @@ private slots:
   void switchToLeftSubTab();
   void switchToRightSubTab();
   void currentlyViewedTabCloseRequest();
+  void screenResized( int );
 
 public slots:
   void enqueueSim();
@@ -3514,7 +3398,19 @@ protected:
     }
 
     QString html;
-    QFile errorHtml("Error.html");
+    QString errorHtmlFile = QDir::currentPath() + "/Error.html";
+#if defined( Q_WS_MAC ) || defined( Q_OS_MAC )
+    CFURLRef fileRef    = CFBundleCopyResourceURL( CFBundleGetMainBundle(), CFSTR( "Error" ), CFSTR( "html" ), 0 );
+    if ( fileRef )
+    {
+      CFStringRef macPath = CFURLCopyFileSystemPath( fileRef, kCFURLPOSIXPathStyle );
+      errorHtmlFile       = CFStringGetCStringPtr( macPath, CFStringGetSystemEncoding() );
+
+      CFRelease( fileRef );
+      CFRelease( macPath );
+    }
+#endif
+    QFile errorHtml( errorHtmlFile );
     if ( errorHtml.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
       html = QString::fromUtf8( errorHtml.readAll() );
@@ -3613,6 +3509,10 @@ public:
   void loadHtml()
   {
     setHtml( html_str );
+  }
+  QString toHtml()
+  {
+    return page() -> currentFrame() -> toHtml();
   }
   void enableMouseNavigation()
   {
@@ -3792,6 +3692,9 @@ class SimulateThread : public QThread
 public:
   QString options;
   bool success;
+
+  void toggle_pause()
+  { sim -> toggle_pause(); }
 
   void start( sim_t* s, const QString& o ) { sim = s; options = o; success = false; QThread::start(); }
   virtual void run();

@@ -276,6 +276,7 @@ public:
   timespan_t ember_react, shard_react;
 
   warlock_t( sim_t* sim, const std::string& name, race_e r = RACE_UNDEAD );
+  virtual ~warlock_t();
 
   // Character Definition
   virtual void      init_spells();
@@ -4568,6 +4569,14 @@ warlock_t::warlock_t( sim_t* sim, const std::string& name, race_e r ) :
   cooldowns.doomguard      = get_cooldown ( "summon_doomguard" );
   cooldowns.imp_swarm      = get_cooldown ( "imp_swarm" );
   cooldowns.hand_of_guldan = get_cooldown ( "hand_of_guldan" );
+}
+
+warlock_t::~warlock_t()
+{
+  delete soul_swap_buffer.agony;
+  delete soul_swap_buffer.corruption;
+  delete soul_swap_buffer.unstable_affliction;
+  delete soul_swap_buffer.seed_of_corruption;
 }
 
 double warlock_t::composite_player_multiplier( school_e school ) const

@@ -175,6 +175,20 @@ void ofstream::open( sim_t* sim, const std::string& filename, openmode mode )
   exceptions( failbit | badbit );
 }
 
+/* Attempts to open a file named 'filename' with the help of a given list of prefixes.
+ * If a file handle could be obtained, returns true, otherwise false
+ */
+bool ofstream::open( const std::string& filename, const std::vector<std::string>& prefix_list, openmode mode )
+{
+  for( size_t i = 0; i < prefix_list.size(); ++i )
+  {
+    open( prefix_list[ i ] + filename, mode );
+    if ( !fail() )
+      return true;
+  }
+  return false;
+}
+
 void ifstream::open( const char* name, openmode mode )
 {
 #ifdef _MSC_VER
@@ -210,6 +224,20 @@ void ifstream::open( sim_t* sim, const std::string& filename, openmode mode )
   }
 
   exceptions( failbit | badbit );
+}
+
+/* Attempts to open a file named 'filename' with the help of a given list of prefixes.
+ * If a file handle could be obtained, returns true, otherwise false
+ */
+bool ifstream::open( const std::string& filename, const std::vector<std::string>& prefix_list, openmode mode )
+{
+  for( size_t i = 0; i < prefix_list.size(); ++i )
+  {
+    open( prefix_list[ i ] + filename, mode );
+    if ( !fail() )
+      return true;
+  }
+  return false;
 }
 
 #ifdef SC_WINDOWS

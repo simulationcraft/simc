@@ -1772,8 +1772,16 @@ void item::amplify_trinket( special_effect_t& /* effect */,
   player_t* p = item.player;
   const spell_data_t* amplify_spell = p -> find_spell( dbitem.spell_id );
 
-  p -> buffs.amplified -> default_value = amplify_spell -> effectN( 2 ).average( item ) / 100.0;
-  p -> buffs.amplified -> default_chance = 1.0;
+  buff_t* first_amp = buff_t::find( p, "amplified" );
+  buff_t* second_amp = buff_t::find( p, "amplified_2" );
+  buff_t* amp_buff = 0;
+  if ( first_amp -> default_chance == 0 )
+    amp_buff = first_amp;
+  else
+    amp_buff = second_amp;
+
+  amp_buff -> default_value = amplify_spell -> effectN( 2 ).average( item ) / 100.0;
+  amp_buff -> default_chance = 1.0;
 }
 
 void item::black_blood_of_yshaarj( special_effect_t& effect,
@@ -1810,7 +1818,7 @@ struct flurry_of_xuen_melee_t : public attack_t
     background = true;
     proc = false;
     aoe = 5;
-    special = may_crit = true;
+    special = may_miss = may_parry = may_block = may_dodge = may_crit = true;
   }
 };
 
@@ -1823,7 +1831,7 @@ struct flurry_of_xuen_ranged_t : public ranged_attack_t
     background = true;
     proc = false;
     aoe = 5;
-    special = may_crit = true;
+    special = may_miss = may_parry = may_block = may_dodge = may_crit = true;
   }
 };
 
@@ -1832,7 +1840,7 @@ struct flurry_of_xuen_driver_t : public attack_t
   flurry_of_xuen_driver_t( player_t* player, action_t* action = 0 ) :
     attack_t( "flurry_of_xuen", player, player -> find_spell( 146194 ) )
   {
-    hasted_ticks = may_miss = may_dodge = may_parry = may_crit = may_block = callbacks = false;
+    hasted_ticks = may_crit = may_miss = may_dodge = may_parry = callbacks = false;
     proc = background = dual = true;
 
     if ( ! action )

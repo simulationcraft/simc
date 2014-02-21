@@ -1,5 +1,3 @@
-#!./simc 
-
 hunter="Hunter_MM_PreRaid"
 level=90
 race=orc
@@ -27,7 +25,7 @@ actions.precombat+=/virmens_bite_potion
 
 # Executed every time the actor is available.
 
-actions=virmens_bite_potion,if=buff.bloodlust.react|target.time_to_die<=60
+actions=virmens_bite_potion,if=target.time_to_die<=25|buff.stampede.up
 actions+=/use_item,slot=trinket1
 actions+=/auto_shot
 actions+=/explosive_trap,if=active_enemies>1
@@ -36,7 +34,7 @@ actions+=/powershot,if=enabled
 actions+=/lynx_rush,if=enabled&!dot.lynx_rush.ticking
 actions+=/fervor,if=enabled&focus<=50
 actions+=/rapid_fire,if=!buff.rapid_fire.up
-actions+=/stampede,if=buff.rapid_fire.up|buff.bloodlust.react|target.time_to_die<=25
+actions+=/stampede,if=trinket.stat.agility.up|target.time_to_die<=20|(trinket.stacking_stat.agility.stack>10&trinket.stat.agility.cooldown_remains<=3)
 actions+=/a_murder_of_crows,if=enabled&!ticking
 actions+=/dire_beast,if=enabled
 actions+=/run_action_list,name=careful_aim,if=target.health.pct>80

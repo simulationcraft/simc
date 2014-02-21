@@ -1,27 +1,59 @@
 Source: simulationcraft
-Section: unknown
-Priority: extra
-Maintainer: Serge Camille <philoptik@gmail.com>
-Build-Depends: cdbs, debhelper (>= 9), libqt4-dev, libqtwebkit-dev
-Standards-Version: 3.9.3
-Homepage: http://code.google.com/p/simulationcraft/
-Vcs-Svn: http://simulationcraft.googlecode.com/svn/trunk/
-Vcs-Browser: http://code.google.com/p/simulationcraft/source/browse/
+Section: utils
+Priority: optional
+Maintainer: Alessandro Grassi <alessandro@aggro.it>
+Build-Depends: debhelper (>= 9), autotools-dev, gcc (>= 4:4.4.3), g++ (>= 4:4.4.3), dpkg-dev (>= 1.13.5), qt5-qmake, libqt5webkit5-dev, libqt5quick5, qtquick1-5-dev, qtquick1-5-dev-tools, qtlocation5-dev, qtsensors5-dev, qtdeclarative5-dev, libsqlite3-dev, qt5-default
+Standards-Version: 3.9.4
+Homepage: http://www.simulationcraft.org/
 
-Package: simulationcraft
+Package: simulationcraft-gui
 Architecture: any
-Depends:  ${shlibs:Depends}, ${misc:Depends},
-Description: SimulationCraft is a tool to explore combat mechanics in the popular MMO RPG World of Warcraft (tm).
- SimulationCraft is a tool to explore combat mechanics in the popular MMO RPG World of Warcraft (tm).
- It is a multi-player event driven simulator written in C++ that models player character damage-per-second in various raiding scenarios.
+Depends: ${shlibs:Depends}, ${misc:Depends}, simulationcraft-common
+Description: Combat simulator for World of Warcraft (tm) (graphical interface).
+ SimulationCraft is a tool to explore combat mechanics in the popular 
+ MMO RPG World of Warcraft (tm).
+ It is a multi-player event driven simulator written in C++ that models
+ player character damage-per-second in various raiding scenarios.
  .
- Increasing class synergy and the prevalence of proc-based combat modifiers have eroded the accuracy of traditional calculators that rely upon closed-form
- approximations to model very complex mechanics. The goal of this simulator is to close the accuracy gap while maintaining a performance level high enough to
- calculate relative stat weights to aid gear
+ Increasing class synergy and the prevalence of proc-based combat modifiers
+ have eroded the accuracy of traditional calculators that rely upon closed-form
+ approximations to model very complex mechanics.
+ The goal of this simulator is to close the accuracy gap while maintaining a
+ performance level high enough to calculate relative stat weights to aid gear
  selection.
  .
- SimulationCraft allows raid/party creation of arbitrary size, generating detailed charts and reports for both individual and raid
- performance.
+ SimulationCraft allows raid/party creation of arbitrary size, generating
+ detailed charts and reports for both individual and raid performance.
  .
- A simple graphical interface is included with the tool, allowing players to download and analyze characters from the Armory. It can also be run from the 
- command-line in which case the player profiles are specified via parameter files. 
+ This package only contains the graphical user interface for SimulationCraft.
+ If you want the command line tool, please install `simulationcraft-cli`.
+
+Package: simulationcraft-cli
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, simulationcraft-common
+Description: Combat simulator for World of Warcraft (tm) (command-line tool).
+ SimulationCraft is a tool to explore combat mechanics in the popular 
+ MMO RPG World of Warcraft (tm).
+ It is a multi-player event driven simulator written in C++ that models
+ player character damage-per-second in various raiding scenarios.
+ .
+ Increasing class synergy and the prevalence of proc-based combat modifiers
+ have eroded the accuracy of traditional calculators that rely upon closed-form
+ approximations to model very complex mechanics.
+ The goal of this simulator is to close the accuracy gap while maintaining a
+ performance level high enough to calculate relative stat weights to aid gear
+ selection.
+ .
+ SimulationCraft allows raid/party creation of arbitrary size, generating
+ detailed charts and reports for both individual and raid performance.
+ .
+ This package only contains the command line tool for SimulationCraft.
+ If you want the graphical user interface, please install `simulationcraft-cli`.
+
+Package: simulationcraft-common
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Common files for SimulationCraft, a combat simulator for WoW (TM).
+ This package contains files that can be used from either the command line
+ or the graphical user interface of SimulationCraft, such as raid profiles.
+

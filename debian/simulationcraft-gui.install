@@ -1,0 +1,6 @@
+usr/share/SimulationCraft/locale
+usr/share/SimulationCraft/Welcome.html
+usr/share/SimulationCraft/Welcome.png
+usr/bin/SimulationCraft
+qt/icon/SimulationCraft.xpm usr/share/pixmaps
+qt/SimulationCraft.desktop usr/share/applications

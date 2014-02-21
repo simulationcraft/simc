@@ -489,6 +489,35 @@ bool item_t::parse_options()
 
 // item_t::encoded_item =====================================================
 
+void item_t::encoded_item( xml_writer_t& writer )
+{
+  writer.begin_tag( "item" );
+  writer.print_attribute( "name", name_str );
+
+  if ( parsed.data.id )
+    writer.print_attribute( "id", util::to_string( parsed.data.id ) );
+
+  if ( parsed.upgrade_level > 0 )
+    writer.print_attribute( "upgrade_level", encoded_upgrade_level() );
+
+  if ( parsed.suffix_id != 0 )
+    writer.print_attribute( "suffix", encoded_random_suffix_id() );
+
+  if ( parsed.gem_stats.size() > 0 || ( slot == SLOT_HEAD && player -> meta_gem != META_GEM_NONE ) )
+    writer.print_attribute( "gems", encoded_gems() );
+
+  if ( parsed.enchant_stats.size() > 0 || ! has_special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT ) )
+    writer.print_attribute( "enchant", encoded_enchant() );
+
+  if ( parsed.addon_stats.size() > 0 || ! has_special_effect( SPECIAL_EFFECT_SOURCE_ADDON ) )
+    writer.print_attribute( "addon", encoded_addon() );
+
+  if ( ( parsed.reforged_from != STAT_NONE && parsed.reforged_to != STAT_NONE ) )
+    writer.print_attribute( "reforge", encoded_reforge() );
+
+  writer.end_tag( "item" );
+}
+
 std::string item_t::encoded_item()
 {
   std::ostringstream s;
