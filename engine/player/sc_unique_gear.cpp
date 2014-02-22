@@ -320,7 +320,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
   {  55380, 0,                            gem::thundering_skyfire }, /* Can use same callback for both */
   { 137592, 0,                               gem::sinister_primal }, /* Caster Legendary Gem */
   { 137594, 0,                            gem::indomitable_primal }, /* Tank Legendary Gem */
-  { 137592, 0,                             gem::capacitive_primal }, /* Melee Legendary Gem */
+  { 137595, 0,                             gem::capacitive_primal }, /* Melee Legendary Gem */
   { 137248, 0,                             gem::courageous_primal }, /* Healer Legendary Gem */
 
   {      0, 0,                                                  0 }
@@ -1119,11 +1119,8 @@ void gem::capacitive_primal( special_effect_t& effect,
   const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
   const spell_data_t* spell = item.player -> find_spell( 137596 );
 
-  effect.name_str   = "lightning_strike";
   effect.max_stacks = spell -> max_stacks();
-  effect.ppm_        = -1.0 * driver -> real_ppm();
   effect.rppm_scale = RPPM_HASTE;
-  effect.cooldown_   = driver -> internal_cooldown();
 
   action_t* ls = item.player -> create_proc_action( "lightning_strike" );
   if ( ! ls )

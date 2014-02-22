@@ -20,51 +20,6 @@ const stat_e reforge_stats[] =
   STAT_NONE
 };
 
-// is_meta_prefix ===========================================================
-
-bool is_meta_prefix( const std::string& option_name )
-{
-  for ( meta_gem_e i = META_GEM_NONE; i < META_GEM_MAX; i++ )
-  {
-    const char* meta_gem_name = util::meta_gem_type_string( i );
-
-    for ( int j = 0; tolower( meta_gem_name[ j ] ) == tolower( option_name[ j ] ); j++ )
-      if ( option_name[ j + 1 ] == '\0' )
-        return true;
-  }
-
-  return false;
-}
-
-// is_meta_suffix ===========================================================
-
-bool is_meta_suffix( const std::string& option_name )
-{
-  for ( meta_gem_e i = META_GEM_NONE; i < META_GEM_MAX; i++ )
-  {
-    const char* meta_gem_name = util::meta_gem_type_string( i );
-
-    const char* s = strstr( meta_gem_name, "_" );
-    if ( ! s ) continue;
-    s++;
-
-    for ( int j = 0; tolower( s[ j ] ) == tolower( option_name[ j ] ); j++ )
-      if ( option_name[ j ] == '\0' )
-        return true;
-  }
-
-  return false;
-}
-
-// parse_meta_gem ===========================================================
-
-meta_gem_e parse_meta_gem( const std::string& prefix,
-                           const std::string& suffix )
-{
-  if ( prefix.empty() || suffix.empty() ) return META_GEM_NONE;
-  return util::parse_meta_gem_type( prefix + '_' + suffix );
-}
-
 } // UNNAMED NAMESPACE ====================================================
 
 // item_t::item_t ===========================================================
@@ -1223,10 +1178,20 @@ bool item_t::decode_gems()
   {
     parsed.gem_stats.clear();
 
+    // Detect meta gem through DBC data, instead of clunky prefix matching
+    const item_enchantment_data_t& meta_gem_enchant = enchant::find_meta_gem( player -> dbc, option_gems_str );
+    meta_gem_e meta_gem = enchant::meta_gem_type( player -> dbc, meta_gem_enchant );
+    std::cout << "meta gem " << meta_gem << std::endl;
+    if ( meta_gem != META_GEM_NONE )
+    {
+      player -> meta_gem = meta_gem;
+      // Init meta gem based on spell data
+      if ( ! enchant::initialize_item_enchant( *this, SPECIAL_EFFECT_SOURCE_GEM, meta_gem_enchant ) )
+        return false;
+    }
+
     std::vector<item_database::token_t> tokens;
     size_t num_tokens = item_database::parse_tokens( tokens, option_gems_str );
-
-    std::string meta_prefix, meta_suffix;
 
     for ( size_t i = 0; i < num_tokens; i++ )
     {
@@ -1235,18 +1200,7 @@ bool item_t::decode_gems()
 
       if ( ( s = util::parse_stat_type( t.name ) ) != STAT_NONE )
         parsed.gem_stats.push_back( stat_pair_t( s, static_cast<int>( t.value ) ) );
-      else if ( is_meta_prefix( t.name ) )
-        meta_prefix = t.name;
-      else if ( is_meta_suffix( t.name ) )
-        meta_suffix = t.name;
-      else
-        sim -> errorf( "Player %s has unknown 'gems=' token '%s' at slot %s\n", player -> name(), t.full.c_str(), slot_name() );
     }
-
-    meta_gem_e meta_gem = parse_meta_gem( meta_prefix, meta_suffix );
-
-    if ( meta_gem != META_GEM_NONE )
-      player -> meta_gem = meta_gem;
   }
   else
     item_database::parse_gems( *this );
@@ -1289,6 +1243,7 @@ bool item_t::decode_equip_effect()
       effect.reset();
       effect.type = SPECIAL_EFFECT_EQUIP;
       effect.source = SPECIAL_EFFECT_SOURCE_ITEM;
+
       // First phase initialization of the special effect. Sets up the relevant
       // fields in special_effect_t to create the proc. In the future, most of 
       // the manual field setup can also be removed ...

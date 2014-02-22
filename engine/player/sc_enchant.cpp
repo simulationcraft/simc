@@ -186,7 +186,14 @@ bool enchant::initialize_item_enchant( item_t& item,
       {
         stat_pair_t stat = item_database::item_enchantment_effect_stats( item.player, enchant, i );
         if ( stat.stat != STAT_NONE && stat.value != 0 )
-          item.parsed.enchant_stats.push_back( stat );
+        {
+          if ( source == SPECIAL_EFFECT_SOURCE_ENCHANT )
+            item.parsed.enchant_stats.push_back( stat );
+          else if ( source == SPECIAL_EFFECT_SOURCE_GEM )
+            item.parsed.gem_stats.push_back( stat );
+          else if ( source == SPECIAL_EFFECT_SOURCE_ADDON )
+            item.parsed.addon_stats.push_back( stat );
+        }
         break;
       }
       default:
@@ -303,4 +310,28 @@ const item_enchantment_data_t& enchant::find_meta_gem( const dbc_t&       dbc,
   }
 
   return dbc.item_enchantment( 0 );
+}
+
+/**
+ * Translate meta gem item enchantment data entry into a meta_gem_e type for
+ * simc.
+ */
+meta_gem_e enchant::meta_gem_type( const dbc_t&                   dbc,
+                                   const item_enchantment_data_t& data )
+{
+  if ( data.id == 0 )
+    return META_GEM_NONE;
+
+  const item_data_t* gem = dbc.item( data.id_gem );
+  if ( ! gem )
+    return META_GEM_NONE;
+
+  std::string tokenized_name = gem -> name;
+  util::tokenize( tokenized_name );
+  std::string shortname;
+  std::string::size_type offset = tokenized_name.find( "_diamond" );
+  if ( offset != std::string::npos )
+    shortname = tokenized_name.substr( 0, offset );
+
+  return util::parse_meta_gem_type( shortname );
 }
