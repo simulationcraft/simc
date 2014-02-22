@@ -325,7 +325,6 @@ public:
 
   int initial_eclipse;
   int default_initial_eclipse;
-  int preplant_mushrooms;
 
   // Talents
   struct talents_t
@@ -387,7 +386,6 @@ public:
 
     initial_eclipse = 65535;
     default_initial_eclipse = -75;
-    preplant_mushrooms = true;
 
     cooldown.natures_swiftness   = get_cooldown( "natures_swiftness"   );
     cooldown.mangle_bear         = get_cooldown( "mangle_bear"         );
@@ -5693,7 +5691,7 @@ struct wild_mushroom_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p() -> buff.wild_mushroom -> trigger();
+    p() -> buff.wild_mushroom -> trigger( !p() -> in_combat ? p() -> buff.wild_mushroom -> max_stack() : 1 );
   }
 };
 
@@ -6323,6 +6321,8 @@ void druid_t::apl_precombat()
 
   // Mark of the Wild
   precombat -> add_action( this, "Mark of the Wild", "if=!aura.str_agi_int.up" );
+
+  precombat -> add_action( this, "Wild Mushroom", "if=buff.wild_mushroom.stack<buff.wild_mushroom.max_stack" );
 
   // Dream of Cenarius Pre-Cast
   if ( level >= 90 && ( specialization() == DRUID_FERAL || specialization() == DRUID_BALANCE ) )
@@ -6984,10 +6984,6 @@ void druid_t::combat_begin()
   // Start the fight with 0 rage
   resources.current[ RESOURCE_RAGE ] = 0;
 
-  // Moonkins and Resto can precast wild mushrooms without aggroing the boss
-  if ( preplant_mushrooms )
-    buff.wild_mushroom -> trigger( buff.wild_mushroom -> max_stack() );
-
   if ( specialization() == DRUID_BALANCE )
   {
     int starting_eclipse = initial_eclipse;
@@ -7387,7 +7383,6 @@ void druid_t::create_options()
   option_t druid_options[] =
   {
     opt_int( "initial_eclipse", initial_eclipse ),
-    opt_bool( "preplant_mushrooms", preplant_mushrooms ),
     opt_null()
   };
 
@@ -7410,12 +7405,6 @@ bool druid_t::create_profile( std::string& profile_str, save_e type, bool save_h
         profile_str += util::to_string( initial_eclipse );
         profile_str += "\n";
       }
-    }
-    if ( preplant_mushrooms == 0 )
-    {
-      profile_str += "preplant_mushrooms=";
-      profile_str += util::to_string( preplant_mushrooms );
-      profile_str += "\n";
     }
   }
 
