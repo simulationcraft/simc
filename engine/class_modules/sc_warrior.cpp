@@ -134,6 +134,8 @@ public:
   struct spells_t
   {
     const spell_data_t* colossus_smash;
+    const spell_data_t* charge;
+    const spell_data_t* heroic_leap;
   } spell;
 
   // Glyphs
@@ -285,6 +287,7 @@ public:
   virtual void      create_options();
   virtual bool      create_profile( std::string& profile_str, save_e type, bool save_html );
   virtual void      invalidate_cache( cache_e );
+  virtual double    composite_movement_speed() const;
 
   void              apl_precombat();
   void              apl_default();
@@ -1093,18 +1096,11 @@ struct bloodthirst_t : public warrior_attack_t
 
 struct charge_t : public warrior_attack_t
 {
-  int use_in_combat;
 
   charge_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "charge", p, p -> find_class_spell( "Charge" ) ),
-    use_in_combat( 0 ) // For now it's not usable in combat by default because we can't model the distance/movement.
+    warrior_attack_t( "charge", p, p -> spell.charge )
   {
-    option_t options[] =
-    {
-      opt_bool( "use_in_combat", use_in_combat ),
-      opt_null()
-    };
-    parse_options( options, options_str );
+    parse_options( NULL , options_str );
 
     cooldown -> duration += p -> talents.juggernaut -> effectN( 3 ).time_value();
   }
@@ -1113,6 +1109,7 @@ struct charge_t : public warrior_attack_t
   {
     warrior_attack_t::execute();
     warrior_t* p = cast();
+
 
     if ( p -> position() == POSITION_RANGED_FRONT )
       p -> change_position( POSITION_FRONT );
@@ -1128,16 +1125,13 @@ struct charge_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if ( p -> in_combat )
-    {
-      if ( ! use_in_combat )
-        return false;
+    double distance = p -> current.distance_to_move;
 
       if ( ( p -> position() == POSITION_BACK ) || ( p -> position() == POSITION_FRONT ) )
-      {
         return false;
-      }
-    }
+      if ( distance < p -> spell.charge -> min_range() || distance > p -> spell.charge -> max_range() )
+        return false;
+
 
     return warrior_attack_t::ready();
   }
@@ -1558,6 +1552,25 @@ struct heroic_leap_t : public warrior_attack_t
     cooldown -> duration  *= p -> buffs.cooldown_reduction -> default_value;
     use_off_gcd = true;
   }
+    virtual void execute()
+  {
+    warrior_attack_t::execute();
+    warrior_t* p = cast();
+  }
+
+  virtual bool ready()
+  {
+    warrior_t* p = cast();
+
+    double distance = p -> current.distance_to_move;
+
+      if ( distance < p -> spell.heroic_leap -> min_range() || distance > p -> spell.heroic_leap -> max_range() )
+        return false;
+
+
+    return warrior_attack_t::ready();
+  }
+
 };
 
 // 2 Piece Tier 16 Tank Set Bonus ===========================================
@@ -3273,6 +3286,8 @@ void warrior_t::init_spells()
 
   // Generic spells
   spell.colossus_smash          = find_class_spell( "Colossus Smash"               );
+  spell.charge                  = find_class_spell( "Charge"                       );
+  spell.heroic_leap             = find_class_spell( "Heroic Leap"                  );
 
 
   // Active spells
@@ -3865,7 +3880,9 @@ void warrior_t::create_buffs()
   buff.enrage           = buff_creator_t( this, "enrage",           find_spell( 12880 ) )
                           .activated( false ) ; //Account for delay in buff application.
 
-  buff.enraged_speed    = buff_creator_t( this, "enraged_speed",    glyphs.enraged_speed -> effectN( 1 ).trigger() );
+  buff.enraged_speed    = buff_creator_t( this, "enraged_speed",    glyphs.enraged_speed )
+                          .chance( 1 )
+                          .duration( timespan_t::from_seconds( 6 ) );
 
   buff.glyph_hold_the_line    = buff_creator_t( this, "hold_the_line",    glyphs.hold_the_line -> effectN( 1 ).trigger() );
   buff.glyph_incite           = buff_creator_t( this, "glyph_incite",           glyphs.incite -> effectN( 1 ).trigger() )
@@ -4190,6 +4207,19 @@ double warrior_t::composite_rating_multiplier( rating_e rating ) const
   }
 
   return m;
+}
+
+// warrior_t::composite_movement_speed =====================================
+
+double warrior_t::composite_movement_speed() const
+{
+  double ms = player_t::composite_movement_speed();
+  double bs = player_t::base_movement_speed;
+
+  if ( buff.enraged_speed -> up() && ms < ( bs * ( 1 + buff.enraged_speed -> data().effectN( 1 ).percent() ) ) )
+    ms = bs * ( 1 + buff.enraged_speed -> data().effectN( 1 ).percent() ); // Enraged speed doesn't stack with any movement speed increase, it only increases speed to 120%. Higher movement speeds will override it.
+
+  return ms;
 }
 
 void warrior_t::invalidate_cache( cache_e c )
