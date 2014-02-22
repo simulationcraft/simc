@@ -619,7 +619,7 @@ void buff_t::refresh( int        stacks,
     {
       assert( d > timespan_t::zero() );
       // Infinite duration -> duration of d
-      if ( unlikely( ! expiration ) )
+      if ( ! expiration )
         expiration = new ( *sim ) expiration_t( this, d );
       else
         expiration -> reschedule( d );
@@ -740,7 +740,7 @@ void buff_t::expire( timespan_t delay )
       double begin_uptime = ( 1000 - last_start.total_millis() % 1000 ) / 1000.0;
       double end_uptime = ( sim -> current_time.total_millis() % 1000 ) / 1000.0;
 
-      if ( unlikely( last_start.total_millis() % 1000 == 0 ) )
+      if ( last_start.total_millis() % 1000 == 0 )
         begin_uptime = 1.0;
 
       uptime_array.add( start_time, begin_uptime );

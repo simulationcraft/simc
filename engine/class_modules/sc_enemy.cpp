@@ -677,6 +677,16 @@ void enemy_t::init_base_stats()
 
   initial_health = ( sim -> overrides.target_health ) ? sim -> overrides.target_health : fixed_health;
 
+  if ( this == sim -> target )
+  {
+    if ( sim -> overrides.target_health > 0 || fixed_health > 0 ) {
+      if ( sim -> debug )
+        sim -> out_debug << "Setting vary_combat_length forcefully to 0.0 because main target fixed health simulation was detected.";
+
+      sim -> vary_combat_length = 0.0;
+    }
+  }
+
   if ( ( initial_health_percentage < 1   ) ||
        ( initial_health_percentage > 100 ) )
   {

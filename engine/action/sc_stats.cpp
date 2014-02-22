@@ -158,8 +158,8 @@ void stats_t::add_execute( timespan_t time,
   iteration_num_executes++;
   iteration_total_execute_time += time;
 
-  if ( likely( last_execute > timespan_t::zero() &&
-               last_execute != sim.current_time ) )
+  if ( last_execute > timespan_t::zero() &&
+               last_execute != sim.current_time )
   {
     total_intervals.add( sim.current_time.total_seconds() - last_execute.total_seconds() );
   }

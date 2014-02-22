@@ -288,7 +288,7 @@ public:
     {
       if ( names[ i ].find( '=' ) != std::string::npos )
       {
-        if ( unlikely( ! option_t::parse( sim, context.c_str(), options, names[ i ] ) ) )
+        if ( ! option_t::parse( sim, context.c_str(), options, names[ i ] ) )
         {
           throw option_error();
         }
@@ -793,6 +793,23 @@ struct sim_end_event_t : event_t
   }
 };
 
+/* Forcefully cancel the iteration if it has unexpectedly taken too long
+ * to end normally.
+ */
+struct sim_safeguard_end_event_t : public sim_end_event_t
+{
+  sim_safeguard_end_event_t( sim_t& s, const char* n, timespan_t end_time ) :
+    sim_end_event_t( s, n, end_time )
+  { }
+
+  virtual void execute()
+  {
+    sim().errorf( "Simulation has been forcefully cancelled at %.2f because twice the expected combat length has been exceeded.", sim().current_time.total_seconds() );
+
+    sim_end_event_t::execute();
+  }
+};
+
 struct resource_timeline_collect_event_t : public event_t
 {
   resource_timeline_collect_event_t( sim_t& s ) :
@@ -1206,7 +1223,7 @@ void sim_t::combat_begin()
   {
     target -> death_pct = target_death_pct;
   }
-  new ( *this ) sim_end_event_t( *this, "sim_end_twice_expected_time", expected_iteration_time + expected_iteration_time );
+  new ( *this ) sim_safeguard_end_event_t( *this, "sim_end_twice_expected_time", expected_iteration_time + expected_iteration_time );
 }
 
 // sim_t::combat_end ========================================================
@@ -1612,13 +1629,13 @@ bool sim_t::iterate()
   {
     do_pause();
 
-    if ( unlikely( canceled ) )
+    if ( canceled )
     {
       iterations = current_iteration + 1;
       break;
     }
 
-    if ( likely( use_lb ) ) // Load Balancing
+    if ( use_lb ) // Load Balancing
     {
       // Select the work queue on the main thread
       work_queue_t& work_queue = (thread_index != 0) ? parent -> work_queue : this -> work_queue;
