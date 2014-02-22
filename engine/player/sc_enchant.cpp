@@ -193,6 +193,8 @@ bool enchant::initialize_item_enchant( item_t& item,
             item.parsed.gem_stats.push_back( stat );
           else if ( source == SPECIAL_EFFECT_SOURCE_ADDON )
             item.parsed.addon_stats.push_back( stat );
+          else if ( source == SPECIAL_EFFECT_SOURCE_SOCKET_BONUS )
+            item.parsed.gem_bonus_stats.push_back( stat );
         }
         break;
       }
@@ -335,3 +337,25 @@ meta_gem_e enchant::meta_gem_type( const dbc_t&                   dbc,
 
   return util::parse_meta_gem_type( shortname );
 }
+
+unsigned enchant::initialize_gem( item_t& item, unsigned gem_id )
+{
+  if ( gem_id == 0 )
+    return GEM_NONE;
+
+  const item_data_t* gem = item.player -> dbc.item( gem_id );
+  if ( ! gem )
+    return GEM_NONE;
+
+  const gem_property_data_t& gem_prop = item.player -> dbc.gem_property( gem -> gem_properties );
+  if ( ! gem_prop.id )
+    return GEM_NONE;
+
+  const item_enchantment_data_t& data = item.player -> dbc.item_enchantment( gem_prop.enchant_id );
+
+  if ( ! enchant::initialize_item_enchant( item, SPECIAL_EFFECT_SOURCE_GEM, data ) )
+    return GEM_NONE;
+
+  return gem_prop.color;
+}
+

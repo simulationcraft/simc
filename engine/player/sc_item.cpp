@@ -46,6 +46,27 @@ bool item_t::has_stats()
   return false;
 }
 
+// item_t::socket_color_match ==============================================
+
+bool item_t::socket_color_match() const
+{
+  for ( size_t i = 0, end = sizeof_array( parsed.data.socket_color ); i < end; i++ )
+  {
+    if ( parsed.data.socket_color[ i ] == SOCKET_COLOR_NONE )
+      continue;
+
+    // Empty gem slot, no bonus
+    if ( parsed.gem_color[ i ] == SOCKET_COLOR_NONE )
+      return false;
+
+    // Socket color of the gem does not match the socket color of the item
+    if ( ! ( parsed.gem_color[ i ] & parsed.data.socket_color[ i ] ) )
+      return false;
+  }
+
+  return true;
+}
+
 // item_t::has_special_effect ==============================================
 
 bool item_t::has_special_effect( special_effect_source_e source, special_effect_e type )
@@ -203,7 +224,7 @@ std::string item_t::to_string()
     s << " }";
   }
 
-  if ( parsed.gem_bonus_stats.size() > 0 )
+  if ( socket_color_match() )
   {
     s << " socket_bonus={ ";
 
@@ -1174,6 +1195,8 @@ bool item_t::decode_random_suffix()
 
 bool item_t::decode_gems()
 {
+  // Parse user given gems= string. Stats are parsed as is, meta gem through
+  // DBC data
   if ( ! option_gems_str.empty() && option_gems_str != "none" )
   {
     parsed.gem_stats.clear();
@@ -1181,7 +1204,7 @@ bool item_t::decode_gems()
     // Detect meta gem through DBC data, instead of clunky prefix matching
     const item_enchantment_data_t& meta_gem_enchant = enchant::find_meta_gem( player -> dbc, option_gems_str );
     meta_gem_e meta_gem = enchant::meta_gem_type( player -> dbc, meta_gem_enchant );
-    std::cout << "meta gem " << meta_gem << std::endl;
+
     if ( meta_gem != META_GEM_NONE )
     {
       player -> meta_gem = meta_gem;
@@ -1202,11 +1225,26 @@ bool item_t::decode_gems()
         parsed.gem_stats.push_back( stat_pair_t( s, static_cast<int>( t.value ) ) );
     }
   }
+  // Parse gem_ids through DBC data
   else
-    item_database::parse_gems( *this );
+  {
+    for ( size_t i = 0, end = sizeof_array( parsed.gem_id ); i < end; i++ )
+    {
+      if ( parsed.gem_id[ i ] == 0 )
+        continue;
+
+      parsed.gem_color[ i ] = enchant::initialize_gem( *this,  parsed.gem_id[ i ] );
+    }
+  }
 
   for ( size_t i = 0; i < parsed.gem_stats.size(); i++ )
     stats.add_stat( parsed.gem_stats[ i ].stat, parsed.gem_stats[ i ].value );
+
+  if ( socket_color_match() )
+  {
+    for ( size_t i = 0; i < parsed.gem_bonus_stats.size(); i++ )
+      stats.add_stat( parsed.gem_bonus_stats[ i ].stat, parsed.gem_bonus_stats[ i ].value );
+  }
 
   return true;
 }
@@ -1603,6 +1641,18 @@ bool item_t::download_item( item_t& item )
     }
   }
 
+  // Post process data by figuring out socket bonus of the item, if the
+  // identifier is set. BCP API does not provide us with the ID, so
+  // bcp_api::download_item has already filled parsed.gem_bonus_stats. Both
+  // local and wowhead provide a id, that needs to be parsed into
+  // parsed.gem_bonus_stats.
+  if ( success && item.parsed.gem_bonus_stats.size() == 0 &&
+       item.parsed.data.id_socket_bonus > 0 )
+  {
+    const item_enchantment_data_t& bonus = item.player -> dbc.item_enchantment( item.parsed.data.id_socket_bonus );
+    success = enchant::initialize_item_enchant( item, SPECIAL_EFFECT_SOURCE_SOCKET_BONUS, bonus );
+  }
+
   return success;
 }
 
@@ -1648,49 +1698,6 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
   return success;
 }
 
-// item_t::parse_gem ========================================================
-
-unsigned item_t::parse_gem( item_t& item, unsigned gem_id )
-{
-  if ( gem_id == 0 )
-    return GEM_NONE;
-
-  unsigned type = GEM_NONE;
-  const std::vector<std::string>& sources = item.parsed.source_list.size() > 0
-                                            ? item.parsed.source_list
-                                            : item.player -> sim -> item_db_sources;
-
-  if ( cache::items() != cache::CURRENT )
-  {
-    for ( unsigned i = 0; type == GEM_NONE && i < sources.size(); i++ )
-    {
-      if ( sources[ i ] == "local" )
-        type = item_database::parse_gem( item, gem_id );
-      else if ( sources[ i ] == "wowhead" )
-        type = wowhead::parse_gem( item, gem_id, wowhead::LIVE, cache::ONLY );
-      else if ( sources[ i ] == "ptrhead" )
-        type = wowhead::parse_gem( item, gem_id, wowhead::PTR, cache::ONLY );
-      else if ( sources[ i ] == "bcpapi" )
-        type = bcp_api::parse_gem( item, gem_id, cache::ONLY );
-    }
-  }
-
-  if ( cache::items() != cache::ONLY )
-  {
-    // Nothing found from a cache, nor local item db. Let's fetch, again honoring our source list
-    for ( unsigned i = 0; type == GEM_NONE && i < sources.size(); i++ )
-    {
-      if ( sources[ i ] == "wowhead" )
-        type = wowhead::parse_gem( item, gem_id, wowhead::LIVE );
-      else if ( sources[ i ] == "ptrhead" )
-        type = wowhead::parse_gem( item, gem_id, wowhead::PTR );
-      else if ( sources[ i ] == "bcpapi" )
-        type = bcp_api::parse_gem( item, gem_id );
-    }
-  }
-
-  return type;
-}
 
 // item_t::parse_reforge_id =================================================
 

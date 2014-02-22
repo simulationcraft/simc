@@ -463,7 +463,8 @@ enum special_effect_source_e
   SPECIAL_EFFECT_SOURCE_ITEM,
   SPECIAL_EFFECT_SOURCE_ENCHANT,
   SPECIAL_EFFECT_SOURCE_ADDON,
-  SPECIAL_EFFECT_SOURCE_GEM
+  SPECIAL_EFFECT_SOURCE_GEM,
+  SPECIAL_EFFECT_SOURCE_SOCKET_BONUS
 };
 
 enum action_e { ACTION_USE = 0, ACTION_SPELL, ACTION_ATTACK, ACTION_HEAL, ACTION_ABSORB, ACTION_SEQUENCE, ACTION_OTHER, ACTION_MAX };
@@ -3302,6 +3303,7 @@ struct item_t
     unsigned                 reforge_id;
     int                      armor;
     std::array<int, 3>       gem_id;
+    std::array<int, 3>       gem_color;
     std::vector<stat_pair_t> gem_stats, gem_bonus_stats;
     std::vector<stat_pair_t> enchant_stats;
     std::vector<stat_pair_t> addon_stats;
@@ -3320,6 +3322,7 @@ struct item_t
       range::fill( data.cooldown_spell, -1 );
       range::fill( data.cooldown_category, -1 );
       range::fill( gem_id, 0 );
+      range::fill( gem_color, GEM_NONE );
     }
   } parsed;
 
@@ -3367,6 +3370,7 @@ struct item_t
 
   bool is_matching_type();
   bool is_valid_type();
+  bool socket_color_match() const;
 
   unsigned item_level() const;
   unsigned upgrade_level() const;
@@ -3412,7 +3416,6 @@ struct item_t
 
   static bool download_item( item_t& );
   static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id );
-  static unsigned parse_gem( item_t& item, unsigned gem_id );
 
   static std::vector<stat_pair_t> str_to_stat_pair( const std::string& stat_str );
   static std::string stat_pairs_to_str( const std::vector<stat_pair_t>& stat_pairs );
@@ -6247,8 +6250,8 @@ struct discharge_proc_t : public proc_callback_t<T_CALLDATA>
   discharge_proc_t( player_t* p, const special_effect_t& data, T_ACTION* a, const spell_data_t* driver = spell_data_t::nil() ) :
     proc_callback_t<T_CALLDATA>( p, data, driver ),
     discharge_stacks( 0 ), discharge_action( a ),
-    discharge_proc( proc_callback_t<T_CALLDATA>::listener -> get_proc( data.name_str ) ),
-    discharge_proc_stack( this -> proc_data.max_stacks > 1 ? proc_callback_t<T_CALLDATA>::listener -> get_proc( data.name_str + "_stacks" ) : 0 )
+    discharge_proc( proc_callback_t<T_CALLDATA>::listener -> get_proc( data.name() ) ),
+    discharge_proc_stack( this -> proc_data.max_stacks > 1 ? proc_callback_t<T_CALLDATA>::listener -> get_proc( data.name() + "_stacks" ) : 0 )
   {
     // Discharge Procs have a delay by default
     this -> proc_data.proc_delay = true;
@@ -6358,7 +6361,6 @@ namespace item_database
 {
 bool     download_item(      item_t& item );
 bool     download_glyph(     player_t* player, std::string& glyph_name, const std::string& glyph_id );
-unsigned parse_gem(          item_t& item, unsigned gem_id );
 bool     initialize_item_sources( item_t& item, std::vector<std::string>& source_list );
 
 int      random_suffix_type( item_t& item );
@@ -6373,7 +6375,6 @@ uint32_t weapon_dmg_max(     item_t& item );
 uint32_t weapon_dmg_max(     const item_data_t*, const dbc_t&, unsigned item_level = 0 );
 
 bool     load_item_from_data( item_t& item );
-bool     parse_gems(          item_t&      item );
 
 // Parse anything relating to the use of ItemSpellEnchantment.dbc. This includes
 // enchants, and engineering addons.
@@ -6430,8 +6431,10 @@ namespace enchant
   const item_enchantment_data_t& find_item_enchant( const dbc_t& dbc, const std::string& name );
   const item_enchantment_data_t& find_meta_gem( const dbc_t& dbc, const std::string& encoding );
   meta_gem_e meta_gem_type( const dbc_t& dbc, const item_enchantment_data_t& );
-  bool initialize_item_enchant( item_t& item, special_effect_source_e source, const item_enchantment_data_t& enchant );
   bool passive_enchant( item_t& item, unsigned spell_id );
+
+  bool initialize_item_enchant( item_t& item, special_effect_source_e source, const item_enchantment_data_t& enchant );
+  unsigned initialize_gem( item_t& item, unsigned gem_id );
 }
 
 // Unique Gear ==============================================================
@@ -6491,8 +6494,6 @@ enum wowhead_e
 bool download_item( item_t&, wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
 bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
                      wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
-gem_e parse_gem( item_t& item, unsigned gem_id,
-                 wowhead_e source = LIVE, cache::behavior_e b = cache::items() );
 bool download_item_data( item_t&            item,
                          cache::behavior_e  caching,
                          wowhead_e          source );
@@ -6546,8 +6547,6 @@ bool download_item( item_t&, cache::behavior_e b = cache::items() );
 
 bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
                      cache::behavior_e b = cache::items() );
-
-gem_e parse_gem( item_t& item, unsigned gem_id, cache::behavior_e b = cache::items() );
 }
 
 // Wowreforge ===============================================================
