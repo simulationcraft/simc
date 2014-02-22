@@ -35,7 +35,7 @@ actions+=/blood_fury,if=buff.shadow_dance.up
 actions+=/berserking,if=buff.shadow_dance.up
 actions+=/arcane_torrent,if=energy<60
 actions+=/shadow_blades
-actions+=/premeditation,if=combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)
+actions+=/premeditation,if=combo_points<=4
 actions+=/pool_resource,for_next=1
 actions+=/ambush,if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<3)|(buff.sleight_of_hand.up&buff.sleight_of_hand.remains<=gcd)
 actions+=/pool_resource,for_next=1,extra_amount=75
