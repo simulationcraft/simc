@@ -4896,7 +4896,7 @@ public:
   virtual movement_direction_e movement_direction() const
   {
     if ( buffs.raid_movement -> check() )
-      return static_cast<movement_direction_e>( buffs.raid_movement -> current_value );
+      return static_cast<movement_direction_e>(int( buffs.raid_movement -> current_value ));
     else
       return MOVEMENT_NONE;
   }
@@ -5463,14 +5463,14 @@ public:
   virtual bool has_movement_directionality() const
   {
     // If ability has no movement restrictions, it'll be usable
-    if ( likely( movement_directionality == MOVEMENT_NONE ) )
+    if ( movement_directionality == MOVEMENT_NONE )
       return true;
     else
     {
       movement_direction_e m = player -> movement_direction();
 
       // If player isnt moving, allow everything
-      if ( likely( m == MOVEMENT_NONE ) )
+      if ( m == MOVEMENT_NONE )
         return true;
       else
         return m == movement_directionality;

@@ -306,7 +306,7 @@ struct movement_event_t : public raid_event_t
   {
     movement_direction_e m = direction;
     if ( direction == MOVEMENT_RANDOM )
-      m = static_cast<movement_direction_e>( sim -> rng().range( MOVEMENT_RANDOM_MIN, MOVEMENT_RANDOM_MAX ) );
+      m = static_cast<movement_direction_e>(int( sim -> rng().range( MOVEMENT_RANDOM_MIN, MOVEMENT_RANDOM_MAX ) ));
 
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {

@@ -63,6 +63,7 @@ public:
     buff_t* defensive_stance;
     buff_t* enrage;
     buff_t* enraged_speed;
+    buff_t* ignite;
     buff_t* glyph_hold_the_line;
     buff_t* glyph_incite;
     buff_t* last_stand;
@@ -97,6 +98,7 @@ public:
     cooldown_t* revenge;
     cooldown_t* shield_slam;
     cooldown_t* mortal_strike;
+    cooldown_t* storm_bolt;
     cooldown_t* strikes_of_opportunity;
     cooldown_t* rage_from_crit_block;
     cooldown_t* stance_swap;
@@ -251,6 +253,7 @@ public:
     // Cooldowns
     cooldown.colossus_smash           = get_cooldown( "colossus_smash"            );
     cooldown.mortal_strike            = get_cooldown( "mortal_strike"             );
+    cooldown.storm_bolt               = get_cooldown( "storm_bolt"                );
     cooldown.shield_slam              = get_cooldown( "shield_slam"               );
     cooldown.strikes_of_opportunity   = get_cooldown( "strikes_of_opportunity"    );
     cooldown.revenge                  = get_cooldown( "revenge"                   );
@@ -431,8 +434,6 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
       am *= 1.0 + p -> spec.seasoned_soldier -> effectN( 1 ).percent();
 
     // --- Enrages ---
-    if ( dbc::is_school( school, SCHOOL_PHYSICAL ) )
-    {
       if ( p -> buff.enrage -> up() )
       {
         am *= 1.0 + p -> buff.enrage -> data().effectN( 2 ).percent();
@@ -440,7 +441,6 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
         if ( p -> mastery.unshackled_fury -> ok() )
           am *= 1.0 + p -> cache.mastery_value();
       }
-    }
 
     // --- Passive Talents ---
     if ( ( p -> spec.single_minded_fury -> ok() && p -> dual_wield() && this -> id != 115767 )  || this -> id == 137597  ) //hack to let Deep wounds *not* and the Meta GEM benefit from SMF
@@ -744,6 +744,16 @@ void warrior_attack_t::consume_resource()
   if ( proc )
     return;
 
+  if ( p -> bugs )
+  {
+  double rage = resource_consumed;
+  if ( rage > 0 )
+  {
+    rage = -1*(rage / 15);
+    warrior_t* p = cast();
+    p -> cooldown.storm_bolt -> adjust( timespan_t::from_seconds( rage ) ); 
+  }
+  }
   // Warrior attacks (non-AoE) which are are avoided by the target consume only 20%
   if ( resource_consumed > 0 && ! aoe && result_is_miss( execute_state -> result ) )
   {
@@ -810,7 +820,7 @@ struct melee_t : public warrior_attack_t
     sync_weapons( sw )
   {
     school      = SCHOOL_PHYSICAL;
-    may_glance  = true;
+    may_glance  = false;
     special     = false;
     background  = true;
     repeating   = true;
@@ -841,6 +851,13 @@ struct melee_t : public warrior_attack_t
     // must be applied before the (repeating) event schedule, and the decrement
     // here must be done before it.
     trigger_flurry( this, -1 );
+
+    warrior_t*p = cast();
+
+    if ( p -> buff.ignite -> up() )
+      school = SCHOOL_FIRE;
+    else
+      school = SCHOOL_PHYSICAL;
 
     warrior_attack_t::execute();
   }
@@ -992,6 +1009,8 @@ struct bladestorm_t : public warrior_attack_t
 
     bladestorm_mh -> weapon = &( player -> main_hand_weapon );
     add_child( bladestorm_mh );
+
+    cooldown -> duration /= ( ( p -> cache.spirit() - 162)  / 10000 );
 
     if ( player -> off_hand_weapon.type != WEAPON_NONE )
     {
@@ -1445,6 +1464,66 @@ struct execute_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     p -> buff.death_sentence -> expire();
+  }
+};
+
+// Heroic Strike ============================================================
+
+struct ignite_t : public warrior_attack_t
+{
+  ignite_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "ignite", p, p -> find_class_spell( "Heroic Strike" ) )
+  {
+    parse_options( NULL, options_str );
+
+    weapon  = &( player -> main_hand_weapon );
+    harmful = true;
+    base_multiplier=1.00;
+    school=SCHOOL_FIRE;
+
+    // The 140% is hardcoded in the tooltip
+    if ( weapon -> group() == WEAPON_1H ||
+         weapon -> group() == WEAPON_SMALL )
+      base_multiplier *= 1.40;
+
+    use_off_gcd = true;
+  }
+
+  virtual double cost() const
+  {
+    double c = warrior_attack_t::cost();
+    const warrior_t* p = cast();
+
+    if ( p -> buff.glyph_incite -> check() )
+      c *= 1 + p -> buff.glyph_incite -> data().effectN( 1 ).percent();
+
+    if ( p -> buff.ultimatum -> check() )
+      c *= 1 + p -> buff.ultimatum -> data().effectN( 1 ).percent();
+
+    return c;
+  }
+
+  virtual double crit_chance( double crit, int delta_level ) const
+  {
+    double cc = warrior_attack_t::crit_chance( crit, delta_level );
+
+    const warrior_t* p = cast();
+
+    if ( p -> buff.ultimatum -> check() )
+      cc += p -> buff.ultimatum -> data().effectN( 2 ).percent();
+
+    return cc;
+  }
+
+  virtual void execute()
+  {
+    warrior_t* p = cast();
+
+    warrior_attack_t::execute();
+
+    p -> buff.ultimatum -> expire();
+    p -> buff.glyph_incite -> decrement();
+    p -> buff.ignite -> trigger();
   }
 };
 
@@ -2255,7 +2334,7 @@ struct storm_bolt_t : public warrior_attack_t
     may_dodge = false;
     may_parry = false;
     may_block = false;
-
+    cooldown -> duration /= ( ( p -> cache.spirit() - 162)  / 10000 );
     // Assuming that our target is stun immune, it gets an additional 300% dmg
     base_multiplier = 4.0;
 
@@ -3186,6 +3265,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "heroic_throw"       ) return new heroic_throw_t       ( this, options_str );
   if ( name == "impending_victory"  ) return new impending_victory_t  ( this, options_str );
   if ( name == "victory_rush"       ) return new victory_rush_t       ( this, options_str );
+  if ( name == "ignite"             ) return new ignite_t             ( this, options_str );
 
   if ( name == "last_stand"         ) return new last_stand_t         ( this, options_str );
   if ( name == "mortal_strike"      ) return new mortal_strike_t      ( this, options_str );
@@ -3842,6 +3922,7 @@ void warrior_t::init_scaling()
     scales_with[ STAT_WEAPON_OFFHAND_DPS   ] = true;
     scales_with[ STAT_WEAPON_OFFHAND_SPEED ] = sim -> weapon_speed_scale_factors != 0;
     scales_with[ STAT_HIT_RATING2          ] = true;
+    scales_with[ STAT_SPIRIT               ] = true;
   }
 
   if ( primary_role() == ROLE_TANK )
@@ -3883,6 +3964,10 @@ void warrior_t::create_buffs()
   buff.enraged_speed    = buff_creator_t( this, "enraged_speed",    glyphs.enraged_speed )
                           .chance( 1 )
                           .duration( timespan_t::from_seconds( 6 ) );
+
+  buff.ignite           = buff_creator_t( this, "ignite",   find_class_spell( "Heroic Strike" ) )
+                         .chance( 1 )
+                         .duration( timespan_t::from_seconds( 10 ) );
 
   buff.glyph_hold_the_line    = buff_creator_t( this, "hold_the_line",    glyphs.hold_the_line -> effectN( 1 ).trigger() );
   buff.glyph_incite           = buff_creator_t( this, "glyph_incite",           glyphs.incite -> effectN( 1 ).trigger() )
