@@ -1786,6 +1786,11 @@ void sim_t::partition()
 
 bool sim_t::execute()
 {
+  {
+    auto_lock_t( work_queue.mutex );
+    work_queue.iterations_to_process = iterations;
+  }
+
   double start_cpu_time = util::cpu_time();
   double start_time = util::wall_time();
 
@@ -2267,9 +2272,6 @@ bool sim_t::setup( sim_control_t* c )
 
     threads = 1;
   }
-
-  auto_lock_t( work_queue.mutex );
-  work_queue.iterations_to_process = iterations;
 
   return true;
 }
