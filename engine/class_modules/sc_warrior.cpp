@@ -283,6 +283,7 @@ public:
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
   virtual void      create_options();
+  virtual action_t* create_proc_action( const std::string& name );
   virtual bool      create_profile( std::string& profile_str, save_e type, bool save_html );
   virtual void      invalidate_cache( cache_e );
 
@@ -775,10 +776,10 @@ void warrior_attack_t::impact( action_state_t* s )
   warrior_t* p     = cast();
   warrior_td_t* td = cast_td( s -> target );
 
-  if ( result_is_hit( s -> result ) && !proc && s -> result_amount > 0 )
+  if ( result_is_hit( s -> result ) && !proc && s -> result_amount > 0 && this -> id != 147891 ) // Flurry of Xuen
   {
     trigger_strikes_of_opportunity( this );
-    if ( p -> buff.sweeping_strikes -> up() && !aoe)
+    if ( p -> buff.sweeping_strikes -> up() && !aoe )
       trigger_sweeping_strikes( execute_state );
     if ( special )
     {
@@ -4335,6 +4336,31 @@ void warrior_t::create_options()
   };
 
   option_t::copy( options, warrior_options );
+}
+
+struct warrior_flurry_of_xuen_t : public warrior_attack_t // Specialized flurry so that armor reduction from colossus smash will function.
+{
+  warrior_flurry_of_xuen_t( warrior_t* p ) :
+    warrior_attack_t( "flurry_of_xuen", p, p -> find_spell( 147891 ) )
+  {
+    direct_power_mod = data().extra_coeff();
+    background = true;
+    proc = false;
+    aoe = 5;
+    special = may_miss = may_parry = may_block = may_dodge = may_crit = true;
+  }
+
+  action_state_t* new_state()
+  {  return new action_state_t( this, target ); }
+};
+
+// warrior_t::create_proc_action =============================================
+
+action_t* warrior_t::create_proc_action( const std::string& name )
+{
+  if ( name == "flurry_of_xuen" ) return new warrior_flurry_of_xuen_t( this );
+
+  return 0;
 }
 
 // warrior_t::create_profile ================================================
