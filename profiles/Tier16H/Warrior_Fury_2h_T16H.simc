@@ -37,7 +37,6 @@ actions+=/use_item,slot=hands,if=!talent.bloodbath.enabled&debuff.colossus_smash
 actions+=/blood_fury,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
 actions+=/berserking,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
 actions+=/arcane_torrent,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
-actions+=/berserker_rage,if=buff.enrage.remains<1&cooldown.bloodthirst.remains>1
 actions+=/run_action_list,name=single_target,if=active_enemies=1
 actions+=/run_action_list,name=two_targets,if=active_enemies=2
 actions+=/run_action_list,name=three_targets,if=active_enemies=3
@@ -88,59 +87,59 @@ actions.single_target+=/battle_shout,if=rage<70
 actions.single_target+=/impending_victory,if=enabled&target.health.pct>=20&cooldown.colossus_smash.remains>=1.5
 actions.single_target+=/wild_strike,if=cooldown.colossus_smash.remains>=2&rage>=70&target.health.pct>=20
 
-actions.two_targets=bloodbath,if=enabled&buff.enrage.remains
-actions.two_targets+=/berserker_rage,if=buff.enrage.remains<1&cooldown.bloodthirst.remains>1
+actions.two_targets=bloodbath,if=enabled&((!talent.bladestorm.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20))|(talent.bladestorm.enabled))
+actions.two_targets+=/berserker_rage,if=(talent.bladestorm.enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)&!cooldown.bladestorm.remains&(!talent.storm_bolt.enabled|(talent.storm_bolt.enabled&!debuff.colossus_smash.up)))|(!talent.bladestorm.enabled&buff.enrage.remains<1&cooldown.bloodthirst.remains>1)
 actions.two_targets+=/cleave,if=(rage>=60&debuff.colossus_smash.up)|rage>110
 actions.two_targets+=/heroic_leap,if=buff.enrage.up&(debuff.colossus_smash.up&buff.cooldown_reduction.up|!buff.cooldown_reduction.up)
-# Generally, if an encounter has any type of AoE, Bladestorm will be the better choice.
-actions.two_targets+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
 actions.two_targets+=/bladestorm,if=enabled&buff.enrage.remains>3&(buff.bloodbath.up|!talent.bloodbath.enabled)&(!debuff.colossus_smash.up|(debuff.colossus_smash.up&cooldown.storm_bolt.remains&talent.storm_bolt.enabled))
+# Generally, if an encounter has any type of AoE, Bladestorm will be the better choice than Dragon Roar.
+actions.two_targets+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
 actions.two_targets+=/colossus_smash
 # Keep deep wounds on as many targets as possible.
 actions.two_targets+=/bloodthirst,cycle_targets=1,if=dot.deep_wounds.remains<5
-actions.two_targets+=/bloodthirst,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)
 actions.two_targets+=/storm_bolt,if=enabled&debuff.colossus_smash.up
+actions.two_targets+=/bloodthirst
 actions.two_targets+=/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1
 actions.two_targets+=/raging_blow,if=buff.meat_cleaver.up
 actions.two_targets+=/whirlwind,if=!buff.meat_cleaver.up
 actions.two_targets+=/shockwave,if=enabled
 actions.two_targets+=/execute
-actions.two_targets+=/battle_shout,if=rage<70
+actions.two_targets+=/battle_shout
 actions.two_targets+=/heroic_throw
 
-actions.three_targets=bloodbath,if=enabled&buff.enrage.up
-actions.three_targets+=/berserker_rage,if=buff.enrage.remains<1&cooldown.bloodthirst.remains>1
-actions.three_targets+=/cleave,if=(rage>=60&debuff.colossus_smash.up)|rage>90
-actions.three_targets+=/heroic_leap,if=buff.enrage.up
-actions.three_targets+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
-actions.three_targets+=/bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
+actions.three_targets=bloodbath,if=enabled
+actions.three_targets+=/berserker_rage,if=(talent.bladestorm.enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)&!cooldown.bladestorm.remains)|(!talent.bladestorm.enabled&buff.enrage.remains<1&cooldown.bloodthirst.remains>1)
+actions.three_targets+=/cleave,if=(rage>=70&debuff.colossus_smash.up)|rage>90
+actions.three_targets+=/heroic_leap,if=buff.enrage.up&(debuff.colossus_smash.up&buff.cooldown_reduction.up|!buff.cooldown_reduction.up)
+actions.three_targets+=/bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)
+actions.three_targets+=/dragon_roar,if=enabled&!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
+actions.three_targets+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking
 actions.three_targets+=/colossus_smash
 actions.three_targets+=/storm_bolt,if=enabled&debuff.colossus_smash.up
-actions.three_targets+=/shockwave,if=enabled
 actions.three_targets+=/raging_blow,if=buff.meat_cleaver.stack=2
-actions.three_targets+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking
 actions.three_targets+=/whirlwind
+actions.three_targets+=/shockwave,if=enabled
 actions.three_targets+=/raging_blow
-actions.three_targets+=/battle_shout,if=rage<70
+actions.three_targets+=/battle_shout
 actions.three_targets+=/heroic_throw
 
-actions.aoe=bloodbath,if=enabled&buff.enrage.up
-actions.aoe+=/berserker_rage,if=buff.enrage.remains<1&cooldown.bloodthirst.remains>1
-actions.aoe+=/cleave,if=rage>110
+actions.aoe=bloodbath,if=enabled
+actions.aoe+=/berserker_rage,if=(talent.bladestorm.enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)&!cooldown.bladestorm.remains)|(!talent.bladestorm.enabled&buff.enrage.remains<1&cooldown.bloodthirst.remains>1)
+actions.aoe+=/cleave,if=rage>90
 actions.aoe+=/heroic_leap,if=buff.enrage.up
-# Dragon roar is a poor choice on large-scale AoE as the damage it does is reduced with additional targets. The damage it does per target is reduced by the following amounts:
-# 1/2/3/4/5+ targets ---> 0%/25%/35%/45%/50%
-actions.aoe+=/dragon_roar,if=enabled&debuff.colossus_smash.down&(buff.bloodbath.up|!talent.bloodbath.enabled)
-actions.aoe+=/bladestorm,if=enabled&buff.enrage.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
-actions.aoe+=/storm_bolt,if=enabled&debuff.colossus_smash.up
-actions.aoe+=/shockwave,if=enabled
+actions.aoe+=/bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)
 # Enrage overlaps 4 GCDs, which allows bloodthirst to be used mostly to keep enrage up, as rage income is typically not an issue with the aoe rotation.
 actions.aoe+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking&buff.enrage.down
 actions.aoe+=/raging_blow,if=buff.meat_cleaver.stack=3
 actions.aoe+=/whirlwind
+# Dragon roar is a poor choice on large-scale AoE as the damage it does is reduced with additional targets. The damage it does per target is reduced by the following amounts:
+# 1/2/3/4/5+ targets ---> 0%/25%/35%/45%/50%
+actions.aoe+=/dragon_roar,if=enabled&debuff.colossus_smash.down&(buff.bloodbath.up|!talent.bloodbath.enabled)
 actions.aoe+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking
 actions.aoe+=/colossus_smash
-actions.aoe+=/battle_shout,if=rage<70
+actions.aoe+=/storm_bolt,if=enabled
+actions.aoe+=/shockwave,if=enabled
+actions.aoe+=/battle_shout
 
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_160exp_160crit_180str
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2

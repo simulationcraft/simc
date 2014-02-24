@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!122211
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Za!122011
 glyphs=unending_rage/death_from_above/sweeping_strikes/resonating_power
 spec=arms
 
@@ -37,7 +37,7 @@ actions+=/use_item,slot=hands,if=!talent.bloodbath.enabled&debuff.colossus_smash
 actions+=/blood_fury,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
 actions+=/berserking,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
 actions+=/arcane_torrent,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
-actions+=/bloodbath,if=enabled&(debuff.colossus_smash.up|cooldown.colossus_smash.remains<4|target.time_to_die<=20)
+actions+=/bloodbath,if=enabled&(debuff.colossus_smash.remains>0.1|cooldown.colossus_smash.remains<5|target.time_to_die<=20)
 actions+=/berserker_rage,if=buff.enrage.remains<0.5
 actions+=/heroic_leap,if=debuff.colossus_smash.up
 actions+=/run_action_list,name=aoe,if=active_enemies>=2
@@ -51,16 +51,19 @@ actions+=/run_action_list,name=single_target,if=active_enemies<2
 actions.single_target=heroic_strike,if=rage>115|(debuff.colossus_smash.up&rage>60&set_bonus.tier16_2pc_melee)
 actions.single_target+=/mortal_strike,if=dot.deep_wounds.remains<1.0|buff.enrage.down|rage<10
 actions.single_target+=/colossus_smash,if=debuff.colossus_smash.remains<1.0
+# Use cancelaura (in-game) to stop bladestorm if CS comes off cooldown during it for any reason.
+actions.single_target+=/bladestorm,if=enabled,interrupt_if=!cooldown.colossus_smash.remains
 actions.single_target+=/mortal_strike
 actions.single_target+=/storm_bolt,if=enabled&debuff.colossus_smash.up
 actions.single_target+=/dragon_roar,if=enabled&debuff.colossus_smash.down
 actions.single_target+=/execute,if=buff.sudden_execute.down|buff.taste_for_blood.down|rage>90|target.time_to_die<12
 # Slam is preferable to overpower with crit procs/recklessness.
-actions.single_target+=/slam,if=target.health.pct>=20&(stat.crit>25000|buff.recklessness.up)
+actions.single_target+=/slam,if=target.health.pct>=20&(trinket.stacking_stat.crit.stack>=10|buff.recklessness.up)
 actions.single_target+=/overpower,if=target.health.pct>=20&rage<100|buff.sudden_execute.up
+actions.single_target+=/execute
 actions.single_target+=/slam,if=target.health.pct>=20
-actions.single_target+=/battle_shout
 actions.single_target+=/heroic_throw
+actions.single_target+=/battle_shout
 
 actions.aoe=sweeping_strikes
 actions.aoe+=/cleave,if=rage>110&active_enemies<=4
@@ -87,12 +90,12 @@ legs=legplates_of_the_prehistoric_marauder,id=99413,upgrade=2,gems=320crit_320cr
 feet=wolfrider_spurs,id=105531,upgrade=2,gems=320crit_60crit,enchant=140mastery
 finger1=bloodclaw_band,id=105534,upgrade=2,gems=320crit_60haste,reforge=hit_crit
 finger2=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=320exp_60haste
-trinket1=skeers_bloodsoaked_talisman,id=105632,upgrade=2
+trinket1=evil_eye_of_galakras,id=105491,upgrade=2
 trinket2=thoks_tail_tip,id=105609,upgrade=2
 main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=160exp_160crit_60str,enchant=dancing_steel,reforge=mastery_hit
 
 # Gear Summary
-# gear_strength=28855
+# gear_strength=26336
 # gear_agility=80
 # gear_stamina=39087
 # gear_intellect=80
