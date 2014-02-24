@@ -17,6 +17,7 @@ spec=balance
 actions.precombat=flask,type=warm_sun
 actions.precombat+=/food,type=mogu_fish_stew
 actions.precombat+=/mark_of_the_wild,if=!aura.str_agi_int.up
+actions.precombat+=/wild_mushroom,if=buff.wild_mushroom.stack<buff.wild_mushroom.max_stack
 actions.precombat+=/healing_touch,if=!buff.dream_of_cenarius.up&talent.dream_of_cenarius.enabled
 actions.precombat+=/moonkin_form
 # Snapshot raid buffed stats before combat begins and pre-potting is done.

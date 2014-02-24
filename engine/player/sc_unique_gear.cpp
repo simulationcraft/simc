@@ -3145,8 +3145,11 @@ struct flurry_of_xuen_ranged_t : public ranged_attack_t
 
 struct flurry_of_xuen_driver_t : public attack_t
 {
+  action_t* ac;
+
   flurry_of_xuen_driver_t( player_t* player, action_t* action = 0 ) :
-    attack_t( "flurry_of_xuen", player, player -> find_spell( 146194 ) )
+    attack_t( "flurry_of_xuen", player, player -> find_spell( 146194 ) ),
+    ac( 0 )
   {
     hasted_ticks = may_crit = may_miss = may_dodge = may_parry = callbacks = false;
     proc = background = dual = true;
@@ -3154,12 +3157,25 @@ struct flurry_of_xuen_driver_t : public attack_t
     if ( ! action )
     {
       if ( player -> type == HUNTER )
-        action = new flurry_of_xuen_ranged_t( player );
+        ac = new flurry_of_xuen_ranged_t( player );
       else
-        action = new flurry_of_xuen_melee_t( player );
+        ac = new flurry_of_xuen_melee_t( player );
     }
-    tick_action = action;
-    dynamic_tick_action = true;
+    else
+      ac = action;
+  }
+
+  // Don't use tick action here, so we can get class specific snapshotting, if 
+  // there is a custom proc action crated. Hack and workaround and ugly.
+  void tick( dot_t* dot )
+  {
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s ticks (%d of %d)", name(), dot -> current_tick, dot -> num_ticks );
+
+    if ( ac )
+      ac -> schedule_execute();
+
+    player -> trigger_ready();
   }
 };
 

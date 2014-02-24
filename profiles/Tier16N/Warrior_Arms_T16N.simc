@@ -35,7 +35,7 @@ actions+=/skull_banner,if=buff.skull_banner.down&(((cooldown.colossus_smash.rema
 actions+=/blood_fury,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
 actions+=/berserking,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
 actions+=/arcane_torrent,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
-actions+=/bloodbath,if=enabled&(debuff.colossus_smash.up|cooldown.colossus_smash.remains<4|target.time_to_die<=20)
+actions+=/bloodbath,if=enabled&(debuff.colossus_smash.remains>0.1|cooldown.colossus_smash.remains<5|target.time_to_die<=20)
 actions+=/berserker_rage,if=buff.enrage.remains<0.5
 actions+=/heroic_leap,if=debuff.colossus_smash.up
 actions+=/run_action_list,name=aoe,if=active_enemies>=2
@@ -49,16 +49,19 @@ actions+=/run_action_list,name=single_target,if=active_enemies<2
 actions.single_target=heroic_strike,if=rage>115|(debuff.colossus_smash.up&rage>60&set_bonus.tier16_2pc_melee)
 actions.single_target+=/mortal_strike,if=dot.deep_wounds.remains<1.0|buff.enrage.down|rage<10
 actions.single_target+=/colossus_smash,if=debuff.colossus_smash.remains<1.0
+# Use cancelaura (in-game) to stop bladestorm if CS comes off cooldown during it for any reason.
+actions.single_target+=/bladestorm,if=enabled,interrupt_if=!cooldown.colossus_smash.remains
 actions.single_target+=/mortal_strike
 actions.single_target+=/storm_bolt,if=enabled&debuff.colossus_smash.up
 actions.single_target+=/dragon_roar,if=enabled&debuff.colossus_smash.down
 actions.single_target+=/execute,if=buff.sudden_execute.down|buff.taste_for_blood.down|rage>90|target.time_to_die<12
 # Slam is preferable to overpower with crit procs/recklessness.
-actions.single_target+=/slam,if=target.health.pct>=20&(stat.crit>25000|buff.recklessness.up)
+actions.single_target+=/slam,if=target.health.pct>=20&(trinket.stacking_stat.crit.stack>=10|buff.recklessness.up)
 actions.single_target+=/overpower,if=target.health.pct>=20&rage<100|buff.sudden_execute.up
+actions.single_target+=/execute
 actions.single_target+=/slam,if=target.health.pct>=20
-actions.single_target+=/battle_shout
 actions.single_target+=/heroic_throw
+actions.single_target+=/battle_shout
 
 actions.aoe=sweeping_strikes
 actions.aoe+=/cleave,if=rage>110&active_enemies<=4
