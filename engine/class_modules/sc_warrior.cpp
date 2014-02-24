@@ -4350,8 +4350,6 @@ struct warrior_flurry_of_xuen_t : public warrior_attack_t // Specialized flurry 
     special = may_miss = may_parry = may_block = may_dodge = may_crit = true;
   }
 
-  action_state_t* new_state()
-  {  return new action_state_t( this, target ); }
 };
 
 // warrior_t::create_proc_action =============================================
