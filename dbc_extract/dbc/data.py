@@ -6,135 +6,10 @@ _REMOVE_FIELD = 0x00
 _ADD_FIELD    = 0x01
 
 _DIFF_DATA = {
-    # MoP Beta build 1
-    15464: { 
-    },
-    15589: {
-        'Spell.dbc' : [
-            ( 'flags', _REMOVE_FIELD ),
-            ( 'flags_1', _REMOVE_FIELD ),
-            ( 'flags_2', _REMOVE_FIELD ),
-            ( 'flags_3', _REMOVE_FIELD ),
-            ( 'flags_4', _REMOVE_FIELD ),
-            ( 'flags_5', _REMOVE_FIELD ),
-            ( 'flags_6', _REMOVE_FIELD ),
-            ( 'flags_7', _REMOVE_FIELD ),
-            ( 'flags_12694', _REMOVE_FIELD ),
-            ( 'flags_8', _REMOVE_FIELD ),
-            ( 'unk_14002', _REMOVE_FIELD ),
-            ( 'id_cast_time', _REMOVE_FIELD ),
-            ( 'id_duration', _REMOVE_FIELD ),
-            ( 'id_range', _REMOVE_FIELD ),
-            ( 'prj_speed', _REMOVE_FIELD ),
-            ( 'unk_15', _REMOVE_FIELD ),
-            ( 'unk_16', _REMOVE_FIELD ),
-            ( 'id_icon', _REMOVE_FIELD ),
-            ( 'id_active_icon', _REMOVE_FIELD ),
-            ( 'mask_school', _REMOVE_FIELD ),
-            ( 'id_difficulty', _REMOVE_FIELD ),
-            ( 'id_misc', _ADD_FIELD, 'id_totems' ),
-        ],
-        'SpellEffect.dbc': [
-            ( 'unk_15589_1', _ADD_FIELD, 'id' ),
-            ( ( 'unk_15589_2', '%f' ), _ADD_FIELD, 'trigger_spell' ),
-        ],
-        'SpellCooldowns.dbc' : [
-            ( 'id_spell', _ADD_FIELD, 'id' ),
-            ( 'unk_15589_1', _ADD_FIELD, 'id_spell' ),
-        ],
-        'SpellPower.dbc' : [
-            ( 'id_spell', _REMOVE_FIELD ),
-            ( 'id_spell', _ADD_FIELD, 'id' ),
-            ( 'unk_15589_1', _ADD_FIELD, 'id_spell' ),
-            ( 'unk_15589_2', _ADD_FIELD, 'aura_id' ),
-        ],
-        'SpellLevels.dbc' : [
-            ( 'id_spell', _ADD_FIELD, 'id' ),
-            ( 'unk_15589_1', _ADD_FIELD, 'id_spell' ),
-        ],
-        'SpellCategories.dbc' : [
-            ( 'id_spell', _ADD_FIELD, 'id' ),
-            ( 'unk_15589_1', _ADD_FIELD, 'id_spell' ),
-        ],
-        'SpellAuraOptions.dbc' : [
-            ( 'id_spell', _ADD_FIELD, 'id' ),
-            ( 'unk_15589_1', _ADD_FIELD, 'id_spell' ),
-        ],
-        'SpellRadius.dbc' : [
-            ( ( 'unk_15589_1', '%f' ), _ADD_FIELD, 'radius_2' )
-        ],
-        'SpellEquippedItems.dbc' : [
-            ( 'id_spell', _ADD_FIELD, 'id' ),
-            ( 'unk_15589_1', _ADD_FIELD, 'id_spell' ),
-        ],
-        
-    },
-    15640 : {
-        'SpellClassOptions.dbc' : [
-            ( 'ofs_desc', _REMOVE_FIELD ),
-        ],
-        'SkillLineAbility.dbc' : [
-            ( 'id_filter', _ADD_FIELD, 'idx' ),
-        ],
-
-    },
-    15650 : {
-        'ChrSpecialization.dbc' : [
-            ( 'unk_15650', _ADD_FIELD, 'id_icon' ),
-        ],
-
-    },
-    15668: {
-        'SpellMisc.dbc' : [
-            ( 'flags_15668', _ADD_FIELD, 'unk_2' ),
-        ],
-    },
-    15699: {
-        'ChrSpecialization.dbc' : [
-            ( 'unk_15699', _ADD_FIELD, 'ofs_desc' ),
-        ],  
-    },
-    15961: {
-        'ChrSpecialization.dbc' : [
-            ( 'unk_15961', _ADD_FIELD, 'unk_15650' ),
-        ],  
-    },
-    16173: {
-        'Item-sparse.db2' : [
-            ( ( 'unk_16173', '%#.8x' ), _ADD_FIELD, 'unk_14890' ),
-            ( 'unk_15464', _REMOVE_FIELD ),
-        ]
-    },
-    16467: {
-        'SpellMisc.dbc' : [
-            ( ( 'flags_16467', '%d' ), _ADD_FIELD, 'flags_15668' ),
-        ]
-    },
-    17056: {
-        'WOW_VERSION': 50400,
-        'SpellItemEnchantment.dbc' : [
-            ( ( 'coeff_3', '%7.4f' ), _ADD_FIELD, 'coeff_2' ),
-        ]
-    },
-    17093: {
-        'WOW_VERSION': 50400,
-        'SpellAuraOptions.dbc' : [
-            ( ( 'internal_cooldown', '%7u' ), _ADD_FIELD, 'proc_flags' ),
-            ( ( 'id_ppm', '%u' ), _ADD_FIELD, 'internal_cooldown' )
-        ],
-    },
-    17124: {
-        'WOW_VERSION': 50400,
-        'SpellEffectScaling.dbc' : [
-            ( ( 'unk_17124', '%f' ), _ADD_FIELD, 'bonus' )
-        ],
-        'JournalEncounterItem.dbc' : [
-            ( 'unk_17124', _ADD_FIELD, 'flags_2' )
-        ],
-    },
+    17898: { }
 }
 
-# Base DBC/DB2 fields, works for 15464, as that's our first DBC/DB2 data version
+# Base DBC/DB2 fields, works for WoW build 17898 (Mists of Pandaria/5.4.7)
 _DBC_FIELDS = {
     'ArmorLocation.dbc': [
         ( 'id', '%3u' ), ( 'v_1', '%11.6f' ), ( 'v_2', '%11.6f' ), ( 'v_3', '%11.6f' ), ( 'v_4', '%11.6f' ), ( 'v_5', '%11.6f')
@@ -150,7 +25,7 @@ _DBC_FIELDS = {
           'unk_25'
     ],
     'ChrSpecialization.dbc' : [
-          'id', 'f1', 'class_id', 'id_mastery', 'f4', 'spec_id', 'f6', 'f7', 'id_icon', 'ofs_name', 'ofs_desc'
+          'id', 'f1', 'class_id', 'id_mastery', 'f4', 'spec_id', 'f6', 'f7', 'id_icon', 'unk_15650', 'unk_15961', 'ofs_name', 'ofs_desc', 'unk_15699'
     ],
     'CurrencyCategory.dbc' : [
         'id', 'f1', 'ofs_name'
@@ -241,7 +116,7 @@ _DBC_FIELDS = {
     ],
     'Item-sparse.db2': [
           ( 'id', '%5u' ),          ( 'quality', '%2u' ),     ( 'flags', '%#.8x' ),     ( 'flags_2', '%#.8x' ),       ( 'unk_14732', '%#.8x' ),
-          ( 'unk_14732_2', '%f' ),  ( 'unk_14890', '%#.8x' ),   'buy_price',
+          ( 'unk_14732_2', '%f' ),  ( 'unk_14890', '%#.8x' ), ( 'unk_16173', '%#.8x' ),   'buy_price',
             'sell_price',           ( 'inv_type', '%2u' ),    ( 'race_mask', '%#.8x' ), ( 'class_mask', '%#.8x' ),    ( 'ilevel', '%4u' ),
           ( 'req_level', '%3d' ),   ( 'req_skill', '%4u' ),   ( 'req_skill_rank', '%4u' ), 'req_spell',                  'req_honor_rank',
             'req_city_rank',          'req_rep_faction',        'req_rep_rank',           'max_count',                  'stackable',
@@ -270,7 +145,7 @@ _DBC_FIELDS = {
           ( 'socket_cont_1', '%3d' ),  ( 'socket_cont_2', '%3d' ),  ( 'socket_cont_3', '%3d' ),
           ( 'socket_bonus', '%5d' ),   ( 'gem_props', '%4u' ),
           ( 'item_damage_modifier', '%8.3f' ),  'duration',               'item_limit_category',    'id_holiday',               ( 'weapon_damage_range', '%7.6f' ),
-            'unk_130',                'unk_131',        'unk_15464'
+            'unk_130',                'unk_131',
     ],
     'ItemSet.dbc' : [
           'id', 'ofs_name', 
@@ -307,7 +182,7 @@ _DBC_FIELDS = {
         'id'
     ],
     'JournalEncounterItem.dbc' : [
-        'id', 'id_encounter', 'id_item', ( 'flags_1', '%#.8x' ), ( 'flags_2', '%#.8x' )
+        'id', 'id_encounter', 'id_item', ( 'flags_1', '%#.8x' ), ( 'flags_2', '%#.8x' ), 'unk_17124',
     ],
     'OverrideSpellData.dbc' : [
         'id', 'f1', 'f2', 'f3', 'f4', 'f6', 'f7', 'f8', 'f9', 'f10', 'f11', 'f12', ( 'f13', '%8d' )
@@ -331,7 +206,7 @@ _DBC_FIELDS = {
     ],
     'SkillLineAbility.dbc' : [
           'id',          ( 'id_skill', '%4u' ),   'id_spell',        ( 'mask_race', '%#.8x' ),        ( 'mask_class', '%#.8x' ),
-          'req_skill_level', 'replace_id', 'unk_3', 'max_learn_skill', 'unk_5', 'reward_skill_pts', 'idx'
+          'req_skill_level', 'replace_id', 'unk_3', 'max_learn_skill', 'unk_5', 'reward_skill_pts', 'idx', 'id_filter'
     ],
     'SkillLineAbilitySortedSpell.dbc' : [
           'id',          'field'
@@ -344,26 +219,23 @@ _DBC_FIELDS = {
         'id', 'spec_id', 'spell_id', 'replace_spell_id', 'f5'
     ],
     'Spell.dbc' : [
-        ( 'id', '%6u' ),           ( 'flags', '%#.8x' ),      ( 'flags_1', '%#.8x' ),      ( 'flags_2', '%#.8x' ),      ( 'flags_3', '%#.8x' ),
-        ( 'flags_4', '%#.8x' ),    ( 'flags_5', '%#.8x' ),    ( 'flags_6', '%#.8x' ),      ( 'flags_7', '%#.8x' ),      ( 'flags_12694', '%#.8x' ),
-        ( 'flags_8', '%#.8x' ),      'unk_14002',          ( 'id_cast_time', '%5u'),    ( 'id_duration', '%5u' ),    ( 'id_range', '%5u' ),
-        ( 'prj_speed', '%4.1f' ),    'unk_15',                  'unk_16',                  ( 'id_icon', '%5u' ),        ( 'id_active_icon', '%5u' ),
-        ( 'ofs_name', '%5u' ),     ( 'ofs_rank', '%5u' ),     ( 'ofs_desc', '%5u' ),       ( 'ofs_tool_tip', '%5u' ),   ( 'mask_school', '%#.2x' ),
-          'id_rune_cost',          ( 'id_missile', '%5u' ),   ( 'id_desc_var', '%5u' ),    ( 'id_difficulty', '%5u' ),  ( 'extra_coeff', '%5.7f' ),
+        ( 'id', '%6u' ),           ( 'ofs_name', '%5u' ),     ( 'ofs_rank', '%5u' ),       ( 'ofs_desc', '%5u' ),       ( 'ofs_tool_tip', '%5u' ),
+          'id_rune_cost',          ( 'id_missile', '%5u' ),   ( 'id_desc_var', '%5u' ),    ( 'extra_coeff', '%5.7f' ),
         ( 'id_scaling', '%5u' ),   ( 'id_aura_opt', '%5u' ),  ( 'id_aura_rest', '%5u' ),   ( 'id_cast_req', '%5u' ),    ( 'id_categories', '%5u' ),  
         ( 'id_class_opts', '%5u' ),( 'id_cooldowns', '%5u' ), ( 'id_equip_items', '%5u' ), ( 'id_interrupts', '%5u' ),  ( 'id_levels', '%5u' ),
-        ( 'id_power', '%5u' ),     ( 'id_reagents', '%5u' ),  ( 'id_shapeshift', '%5u' ),  ( 'id_tgt_rest', '%5u' ),    ( 'id_totems', '%5u' )
-          
+        ( 'id_power', '%5u' ),     ( 'id_reagents', '%5u' ),  ( 'id_shapeshift', '%5u' ),  ( 'id_tgt_rest', '%5u' ),    ( 'id_totems', '%5u' ),
+        ( 'id_misc', '%5u' ),
     ],
     'SpellMisc.dbc' : [
         'id', 'id_spell', 'unk_1', ( 'flags', '%#.8x' ),      ( 'flags_1', '%#.8x' ),      ( 'flags_2', '%#.8x' ),      ( 'flags_3', '%#.8x' ),
         ( 'flags_4', '%#.8x' ),    ( 'flags_5', '%#.8x' ),    ( 'flags_6', '%#.8x' ),      ( 'flags_7', '%#.8x' ),      ( 'flags_12694', '%#.8x' ),
-        ( 'flags_8', '%#.8x' ), ( 'unk_2', '%#.8x' ), 'id_cast_time', 'id_duration',
+        ( 'flags_8', '%#.8x' ), ( 'unk_2', '%#.8x' ), 'flags_15668', ( 'flags_16467', '%d' ), 'id_cast_time', 'id_duration',
         'id_range', ( 'prj_speed', '%f' ), 'id_spell_visual_1', 'id_spell_visual_2', 'id_icon',
         'id_active_icon', ( 'mask_school', '%#.2x' )
     ],
     'SpellAuraOptions.dbc' : [
-          'id', ( 'stack_amount', '%3u' ), ( 'proc_chance', '%3u' ), ( 'proc_charges', '%2d' ), ( 'proc_flags', '%#.8x' )
+          'id', 'id_spell', 'unk_15589_1', ( 'stack_amount', '%3u' ), ( 'proc_chance', '%3u' ), ( 'proc_charges', '%2d' ), ( 'proc_flags', '%#.8x' ),
+          ( 'internal_cooldown', '%7u' ), ( 'id_ppm', '%u' ),
     ],
     'SpellCastTimes.dbc' : [
           'id', ( 'cast_time', '%5d' ), ( 'cast_time_per_level', '%d' ), ( 'min_cast_time', '%5d' )
@@ -377,7 +249,7 @@ _DBC_FIELDS = {
         'f41', 'f42', 'f43', 'f44',
     ],
     'SpellClassOptions.dbc' : [
-          'id', 'modal_next_spell', ( 'spell_family_flags_1', '%#.8x' ), ( 'spell_family_flags_2', '%#.8x' ), ( 'spell_family_flags_3', '%#.8x' ), ( 'spell_family_flags_4', '%#.8x' ), 'spell_family_name', 'ofs_desc'
+          'id', 'modal_next_spell', ( 'spell_family_flags_1', '%#.8x' ), ( 'spell_family_flags_2', '%#.8x' ), ( 'spell_family_flags_3', '%#.8x' ), ( 'spell_family_flags_4', '%#.8x' ), 'spell_family_name'
     ],
     'SpellCastingRequirements.dbc' : [
           'id', 'f1', 'f2', 'f3', 'f4', 'f5', 'f6'
@@ -386,11 +258,11 @@ _DBC_FIELDS = {
           'id', 'field', 'f2', 'f3', 'f4', 'f5'
     ],
     'SpellCategories.dbc' : [
-          'id',            ( 'category', '%4u' ), 'dmg_class', 'dispel', 'mechanic', 
+          'id',              'id_spell', 'unk_15589_1', ( 'category', '%4u' ), 'dmg_class', 'dispel', 'mechanic', 
           'type_prevention', 'start_recovery_category', 'unk_15464'
     ],
     'SpellCooldowns.dbc' : [
-        'id', ( 'category_cooldown', '%7u' ), ( 'cooldown', '%7u' ), ( 'gcd_cooldown', '%4u' )
+        'id', 'id_spell', 'unk_15589_1', ( 'category_cooldown', '%7u' ), ( 'cooldown', '%7u' ), ( 'gcd_cooldown', '%4u' )
     ],
     'SpellDescriptionVariables.dbc' : [
         'id', 'ofs_var'
@@ -402,19 +274,19 @@ _DBC_FIELDS = {
         'id', ( 'duration_1', '%9d' ), 'duration_2', 'duration_3'
     ],
     'SpellEffect.dbc' : [
-        ( 'id', '%6u' ),             ( 'type', '%4u' ),                ( 'multiple_value', '%f' ), ( 'sub_type', '%4u' ),             ( 'amplitude', '%5u' ),
+        ( 'id', '%6u' ),               'unk_15589_1',                  ( 'type', '%4u' ),                ( 'multiple_value', '%f' ), ( 'sub_type', '%4u' ),             ( 'amplitude', '%5u' ),
         ( 'base_value', '%7d' ),     ( 'coefficient', '%13.10f' ),     ( 'dmg_multiplier', '%f' ),   'chain_target',                  ( 'die_sides', '%2d' ),
           'item_type',                   'mechanic',                     ( 'misc_value', '%7d' ),    ( 'misc_value_2', '%7d' ),         ( 'points_per_combo_points', '%5.1f' ), 
           'id_radius',                   'id_radius_max',                ( 'real_ppl', '%5.3f' ),    ( 'class_mask_1', '%#.8x' ),    ( 'class_mask_2', '%#.8x' ),
-        ( 'class_mask_3', '%#.8x' ),   ( 'class_mask_4', '%#.8x' ),  ( 'trigger_spell', '%5d' ),   'implicit_target_1',              'implicit_target_2',     
+        ( 'class_mask_3', '%#.8x' ),   ( 'class_mask_4', '%#.8x' ),  ( 'trigger_spell', '%5d' ),     ( 'unk_15589_2', '%f' ), 'implicit_target_1',              'implicit_target_2',     
     ( 'id_spell', '%6u' ),             ( 'index', '%2u' ),           'unk_14040'
     ],
     # New in MoP
     'SpellEffectScaling.dbc' : [
-        'id', ( 'average', '%13.10f' ), ( 'delta', '%13.10f' ), ( 'bonus', '%13.10f' ), ( 'id_effect', '%6u' )
+        'id', ( 'average', '%13.10f' ), ( 'delta', '%13.10f' ), ( 'bonus', '%13.10f' ), ( 'unk_17124', '%f' ), ( 'id_effect', '%6u' )
     ],
     'SpellEquippedItems.dbc' : [
-        'id', ( 'item_class', '%4d' ), ( 'mask_inv_type', '%#.8x' ), ( 'mask_sub_class', '%#.8x' )
+        'id', 'id_spell', 'unk_15589_1', ( 'item_class', '%4d' ), ( 'mask_inv_type', '%#.8x' ), ( 'mask_sub_class', '%#.8x' )
     ],
     'SpellIcon.dbc' : [
         'id', 'ofs_name'
@@ -426,17 +298,17 @@ _DBC_FIELDS = {
           ( 'id_property_1', '%6u' ), ( 'id_property_2', '%6u' ), ( 'id_property_3', '%6u' ), 
             'ofs_desc', 'id_aura', ( 'slot', '%2u' ), ( 'id_gem', '%6u' ), 'enchantment_condition', 
           ( 'req_skill', '%4u' ), ( 'req_skill_value', '%3u' ), 'req_player_level', ( 'max_scaling_level', '%3u' ), ( 'min_scaling_level', '%3u' ),
-          ( 'id_scaling', '%2d' ), ( 'unk_15464_3', '%2d' ), ( 'coeff_1', '%7.4f' ), ( 'coeff_2', '%7.4f' )
+          ( 'id_scaling', '%2d' ), ( 'unk_15464_3', '%2d' ), ( 'coeff_1', '%7.4f' ), ( 'coeff_2', '%7.4f' ), ( 'coeff_3', '%7.4f' ),
     ],
     'SpellLearnSpell.dbc' : [
           'id', 'unk_1', 'unk_2', 'unk_3'
     ],
     'SpellLevels.dbc' : [
-          'id', ( 'base_level', '%3u' ), ( 'max_level', '%2u' ), 'spell_level'
+          'id', 'id_spell', 'unk_15589_1', ( 'base_level', '%3u' ), ( 'max_level', '%2u' ), 'spell_level'
     ],
     'SpellPower.dbc' : [
-          ( 'id', '%6u' ), ( 'type_power', '%2d' ),( 'cost', '%6d' ),     'unk_1',     ( 'cost_per_second', '%3d' ), 'unk_2',
-          'id_display', ( 'cost_2', '%5.2f' ),     ( 'cost_per_second2', '%5.2f' ),   ( 'aura_id', '%6u' ), ( 'id_spell', '%6u' )
+          ( 'id', '%6u' ), 'id_spell', 'unk_15589_1', ( 'type_power', '%2d' ),( 'cost', '%6d' ),     'unk_1',     ( 'cost_per_second', '%3d' ), 'unk_2',
+          'id_display', ( 'cost_2', '%5.2f' ),     ( 'cost_per_second2', '%5.2f' ),   ( 'aura_id', '%6u' ), 'unk_15589_2'
     ],
     'SpellProcsPerMinute.dbc' : [
          'id', ( 'ppm', '%5.3f' ), 'unk_1'
@@ -445,7 +317,7 @@ _DBC_FIELDS = {
         'id', 'unk_1', 'id_chr_spec', ( 'coefficient', '%f' ), 'id_ppm'
     ],
     'SpellRadius.dbc' : [
-          'id', ( 'radius_1', '%7.1f' ), 'radius_2', ( 'radius_3', '%7.f' )
+          'id', ( 'radius_1', '%7.1f' ), 'radius_2', 'unk_15589_1', ( 'radius_3', '%7.f' )
     ],
     'SpellRange.dbc' : [
           'id',       ( 'min_range', '%7.1f' ), ( 'min_range_2', '%5.1f' ), ( 'max_range', '%7.1f' ), ( 'max_range_2', '%5.1f' ),
@@ -855,27 +727,6 @@ class SpellPower(DBCRecord):
                 f[args.index('power_cost')] = '%6.2f' % 0
 
         return f
-
-class SpellClassOptions(DBCRecord):
-    def __init__(self, dbc_parser, record):
-        DBCRecord.__init__(self, dbc_parser, record)
-
-        self.desc     = ''
-
-    def parse(self):
-        DBCRecord.parse(self)
-
-        # Find DBCStrings available for the spell
-        if self.ofs_desc != 0:
-            self.desc = self._dbc_parser.get_string_block(self.ofs_desc)
-
-    def __str__(self):
-        s = DBCRecord.__str__(self)
-
-        if self.desc:
-            s += 'desc=\"%s\" ' % self.desc
-
-        return s
 
 class ItemRandomSuffix(DBCRecord):
     def __init__(self, dbc_parser, record):
