@@ -93,7 +93,7 @@ actions.two_targets=bloodbath,if=enabled&((!talent.bladestorm.enabled&(cooldown.
 actions.two_targets+=/berserker_rage,if=(talent.bladestorm.enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)&!cooldown.bladestorm.remains&(!talent.storm_bolt.enabled|(talent.storm_bolt.enabled&!debuff.colossus_smash.up)))|(!talent.bladestorm.enabled&buff.enrage.remains<1&cooldown.bloodthirst.remains>1)
 actions.two_targets+=/cleave,if=(rage>=60&debuff.colossus_smash.up)|rage>110
 actions.two_targets+=/heroic_leap,if=buff.enrage.up&(debuff.colossus_smash.up&buff.cooldown_reduction.up|!buff.cooldown_reduction.up)
-actions.two_targets+=/bladestorm,if=enabled&buff.enrage.remains>3&(buff.bloodbath.up|!talent.bloodbath.enabled)&(!debuff.colossus_smash.up|(debuff.colossus_smash.up&cooldown.storm_bolt.remains&talent.storm_bolt.enabled))
+actions.two_targets+=//bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)&(!talent.storm_bolt.enabled|(talent.storm_bolt.enabled&!debuff.colossus_smash.up))
 # Generally, if an encounter has any type of AoE, Bladestorm will be the better choice than Dragon Roar.
 actions.two_targets+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
 actions.two_targets+=/colossus_smash
