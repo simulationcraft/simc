@@ -4237,20 +4237,12 @@ struct warrior_module_t : public module_t
   warrior_module_t() : module_t( WARRIOR ) {}
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
-  { return new warrior_t( sim, name, r ); }
-
-  virtual bool valid() const { return true; }
-
-  virtual void init( sim_t* sim ) const
   {
-    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
-    {
-
-    }
+    return new warrior_t( sim, name, r );
   }
-
+  virtual bool valid() const { return true; }
+  virtual void init        ( sim_t* ) const {}
   virtual void combat_begin( sim_t* ) const {}
-
   virtual void combat_end  ( sim_t* ) const {}
 };
 
