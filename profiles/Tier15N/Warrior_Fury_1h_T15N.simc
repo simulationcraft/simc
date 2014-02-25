@@ -31,7 +31,6 @@ actions+=/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|targe
 # This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'
 actions+=/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20)|target.time_to_die<=12
 actions+=/avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)
-actions+=/skull_banner,if=buff.skull_banner.down&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192&buff.cooldown_reduction.up)|buff.recklessness.up)
 actions+=/blood_fury,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
 actions+=/berserking,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
 actions+=/arcane_torrent,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
@@ -77,8 +76,6 @@ actions.single_target+=/bladestorm,if=enabled
 actions.single_target+=/wild_strike,if=buff.bloodsurge.up
 # If Colossus Smash is coming up soon, it's a good idea to save 1 charge of raging blow for it.
 actions.single_target+=/raging_blow,if=cooldown.colossus_smash.remains>=3
-# Shattering Throw is a very small personal dps increase, but a fairly significant raid dps increase. Only use to fill empty globals.
-actions.single_target+=/shattering_throw,if=cooldown.colossus_smash.remains>5
 actions.single_target+=/shockwave,if=enabled
 actions.single_target+=/heroic_throw,if=debuff.colossus_smash.down&rage<60
 actions.single_target+=/battle_shout,if=rage<70&!debuff.colossus_smash.up
@@ -89,7 +86,6 @@ actions.single_target+=/impending_victory,if=enabled&target.health.pct>=20&coold
 
 actions.two_targets=bloodbath,if=enabled&((!talent.bladestorm.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20))|(talent.bladestorm.enabled))
 actions.two_targets+=/berserker_rage,if=(talent.bladestorm.enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)&!cooldown.bladestorm.remains&(!talent.storm_bolt.enabled|(talent.storm_bolt.enabled&!debuff.colossus_smash.up)))|(!talent.bladestorm.enabled&buff.enrage.remains<1&cooldown.bloodthirst.remains>1)
-actions.two_targets+=/cleave,if=(rage>=60&debuff.colossus_smash.up)|rage>110
 actions.two_targets+=/heroic_leap,if=buff.enrage.up&(debuff.colossus_smash.up&buff.cooldown_reduction.up|!buff.cooldown_reduction.up)
 actions.two_targets+=/bladestorm,if=enabled&buff.enrage.remains>3&(buff.bloodbath.up|!talent.bloodbath.enabled)&(!debuff.colossus_smash.up|(debuff.colossus_smash.up&cooldown.storm_bolt.remains&talent.storm_bolt.enabled))
 # Generally, if an encounter has any type of AoE, Bladestorm will be the better choice than Dragon Roar.
@@ -109,7 +105,6 @@ actions.two_targets+=/heroic_throw
 
 actions.three_targets=bloodbath,if=enabled
 actions.three_targets+=/berserker_rage,if=(talent.bladestorm.enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)&!cooldown.bladestorm.remains)|(!talent.bladestorm.enabled&buff.enrage.remains<1&cooldown.bloodthirst.remains>1)
-actions.three_targets+=/cleave,if=(rage>=70&debuff.colossus_smash.up)|rage>90
 actions.three_targets+=/heroic_leap,if=buff.enrage.up&(debuff.colossus_smash.up&buff.cooldown_reduction.up|!buff.cooldown_reduction.up)
 actions.three_targets+=/bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)
 actions.three_targets+=/dragon_roar,if=enabled&!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
@@ -125,7 +120,6 @@ actions.three_targets+=/heroic_throw
 
 actions.aoe=bloodbath,if=enabled
 actions.aoe+=/berserker_rage,if=(talent.bladestorm.enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)&!cooldown.bladestorm.remains)|(!talent.bladestorm.enabled&buff.enrage.remains<1&cooldown.bloodthirst.remains>1)
-actions.aoe+=/cleave,if=rage>90
 actions.aoe+=/heroic_leap,if=buff.enrage.up
 actions.aoe+=/bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)
 # Enrage overlaps 4 GCDs, which allows bloodthirst to be used mostly to keep enrage up, as rage income is typically not an issue with the aoe rotation.

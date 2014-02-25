@@ -43,8 +43,6 @@ actions.dps_cds+=/blood_fury
 actions.dps_cds+=/berserking
 actions.dps_cds+=/arcane_torrent
 actions.dps_cds+=/dragon_roar,if=enabled
-actions.dps_cds+=/shattering_throw
-actions.dps_cds+=/skull_banner
 actions.dps_cds+=/recklessness
 actions.dps_cds+=/storm_bolt,if=enabled
 actions.dps_cds+=/shockwave,if=enabled

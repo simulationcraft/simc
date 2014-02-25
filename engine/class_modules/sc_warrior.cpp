@@ -727,7 +727,6 @@ void warrior_attack_t::consume_resource()
   if ( rage > 0 )
   {
     rage = -1*(rage / 15);
-    warrior_t* p = cast();
     // When talents are placed in the game, a check for anger management will be done here.
     p -> cooldown.storm_bolt -> adjust( timespan_t::from_seconds( rage ) ); 
     p -> cooldown.bladestorm -> adjust( timespan_t::from_seconds( rage ) );
@@ -1119,64 +1118,6 @@ struct charge_t : public warrior_attack_t
 
     return warrior_attack_t::ready();
   }
-};
-
-// Cleave ===================================================================
-
-struct cleave_t : public warrior_attack_t
-{
-  cleave_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "cleave", p, p -> find_class_spell( "Cleave" ) )
-  {
-    parse_options( NULL, options_str );
-
-    weapon = &( player -> main_hand_weapon );
-    // The 140% is hardcoded in the tooltip
-    if ( weapon -> group() == WEAPON_1H ||
-         weapon -> group() == WEAPON_SMALL )
-      base_multiplier *= 1.40;
-
-    aoe = 2;
-
-    use_off_gcd = true;
-  }
-
-  virtual double cost() const
-  {
-    double c = warrior_attack_t::cost();
-    const warrior_t* p = cast();
-
-    if ( p -> buff.glyph_incite -> check() )
-      c *= 1 + p -> buff.glyph_incite -> data().effectN( 1 ).percent();
-
-    if ( p -> buff.ultimatum -> check() )
-      c *= 1 + p->buff.ultimatum -> data().effectN( 1 ).percent();
-
-    return c;
-  }
-
-  virtual double crit_chance( double crit, int delta_level ) const
-  {
-    double cc = warrior_attack_t::crit_chance( crit, delta_level );
-
-    const warrior_t* p = cast();
-
-    if ( p -> buff.ultimatum -> check() )
-      cc += p -> buff.ultimatum -> data().effectN( 2 ).percent();
-
-    return cc;
-  }
-
-  virtual void execute()
-  {
-    warrior_t* p = cast();
-
-    warrior_attack_t::execute();
-
-    p -> buff.ultimatum -> expire();
-    p -> buff.glyph_incite -> decrement();
-  }
-
 };
 
 // Colossus Smash ===========================================================
@@ -3339,7 +3280,6 @@ void warrior_t::apl_smf_fury()
 
   two_targets -> add_action( "bloodbath,if=enabled&((!talent.bladestorm.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20))|(talent.bladestorm.enabled))" );
   two_targets -> add_action( this, "Berserker Rage", "if=(talent.bladestorm.enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)&!cooldown.bladestorm.remains&(!talent.storm_bolt.enabled|(talent.storm_bolt.enabled&!debuff.colossus_smash.up)))|(!talent.bladestorm.enabled&buff.enrage.remains<1&cooldown.bloodthirst.remains>1)" );
-  two_targets -> add_action( this, "Cleave", "if=(rage>=60&debuff.colossus_smash.up)|rage>110" );
   two_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up&(debuff.colossus_smash.up&buff.cooldown_reduction.up|!buff.cooldown_reduction.up)" );
   two_targets -> add_action( "bladestorm,if=enabled&buff.enrage.remains>3&(buff.bloodbath.up|!talent.bloodbath.enabled)&(!debuff.colossus_smash.up|(debuff.colossus_smash.up&cooldown.storm_bolt.remains&talent.storm_bolt.enabled))" );
   two_targets -> add_action( "dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))",
@@ -3359,7 +3299,6 @@ void warrior_t::apl_smf_fury()
 
   three_targets -> add_action( "bloodbath,if=enabled" );
   three_targets -> add_action( this, "Berserker Rage", "if=(talent.bladestorm.enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)&!cooldown.bladestorm.remains)|(!talent.bladestorm.enabled&buff.enrage.remains<1&cooldown.bloodthirst.remains>1)" );
-  three_targets -> add_action( this, "Cleave", "if=(rage>=70&debuff.colossus_smash.up)|rage>90" );
   three_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up&(debuff.colossus_smash.up&buff.cooldown_reduction.up|!buff.cooldown_reduction.up)" );
   three_targets -> add_action( "bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
   three_targets -> add_action( "dragon_roar,if=enabled&!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
@@ -3375,7 +3314,6 @@ void warrior_t::apl_smf_fury()
 
   aoe -> add_action( "bloodbath,if=enabled" );
   aoe -> add_action( this, "Berserker Rage", "if=(talent.bladestorm.enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)&!cooldown.bladestorm.remains)|(!talent.bladestorm.enabled&buff.enrage.remains<1&cooldown.bloodthirst.remains>1)" );
-  aoe -> add_action( this, "Cleave", "if=rage>90" );
   aoe -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
   aoe -> add_action( "bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
   aoe -> add_action( this, "Bloodthirst", "cycle_targets=1,if=!dot.deep_wounds.ticking&buff.enrage.down", 
@@ -3475,7 +3413,6 @@ void warrior_t::apl_tg_fury()
 
   two_targets -> add_action( "bloodbath,if=enabled&((!talent.bladestorm.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20))|(talent.bladestorm.enabled))" );
   two_targets -> add_action( this, "Berserker Rage", "if=(talent.bladestorm.enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)&!cooldown.bladestorm.remains&(!talent.storm_bolt.enabled|(talent.storm_bolt.enabled&!debuff.colossus_smash.up)))|(!talent.bladestorm.enabled&buff.enrage.remains<1&cooldown.bloodthirst.remains>1)" );
-  two_targets -> add_action( this, "Cleave", "if=(rage>=60&debuff.colossus_smash.up)|rage>110" );
   two_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up&(debuff.colossus_smash.up&buff.cooldown_reduction.up|!buff.cooldown_reduction.up)" );
   two_targets -> add_action( "bladestorm,if=enabled&buff.enrage.remains>3&(buff.bloodbath.up|!talent.bloodbath.enabled)&(!debuff.colossus_smash.up|(debuff.colossus_smash.up&cooldown.storm_bolt.remains&talent.storm_bolt.enabled))" );
   two_targets -> add_action( "dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))",
@@ -3495,7 +3432,6 @@ void warrior_t::apl_tg_fury()
 
   three_targets -> add_action( "bloodbath,if=enabled" );
   three_targets -> add_action( this, "Berserker Rage", "if=(talent.bladestorm.enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)&!cooldown.bladestorm.remains)|(!talent.bladestorm.enabled&buff.enrage.remains<1&cooldown.bloodthirst.remains>1)" );
-  three_targets -> add_action( this, "Cleave", "if=(rage>=70&debuff.colossus_smash.up)|rage>90" );
   three_targets -> add_action( this, "Heroic Leap", "if=buff.enrage.up&(debuff.colossus_smash.up&buff.cooldown_reduction.up|!buff.cooldown_reduction.up)" );
   three_targets -> add_action( "bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
   three_targets -> add_action( "dragon_roar,if=enabled&!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
@@ -3511,7 +3447,6 @@ void warrior_t::apl_tg_fury()
 
   aoe -> add_action( "bloodbath,if=enabled" );
   aoe -> add_action( this, "Berserker Rage", "if=(talent.bladestorm.enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)&!cooldown.bladestorm.remains)|(!talent.bladestorm.enabled&buff.enrage.remains<1&cooldown.bloodthirst.remains>1)" );
-  aoe -> add_action( this, "Cleave", "if=rage>90" );
   aoe -> add_action( this, "Heroic Leap", "if=buff.enrage.up" );
   aoe -> add_action( "bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
   aoe -> add_action( this, "Bloodthirst", "cycle_targets=1,if=!dot.deep_wounds.ticking&buff.enrage.down", 
@@ -3586,7 +3521,6 @@ void warrior_t::apl_arms()
   single_target -> add_action( this, "Battle Shout" );
 
   aoe -> add_action( this, "Sweeping Strikes" );
-  aoe -> add_action( this, "Cleave", "if=rage>110&active_enemies<=4" );
   aoe -> add_action( "bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)" );
   aoe -> add_action( "dragon_roar,if=enabled&debuff.colossus_smash.down" );
   aoe -> add_action( this, "Colossus Smash", "if=debuff.colossus_smash.remains<1" );
@@ -3639,7 +3573,6 @@ void warrior_t::apl_prot()
     dps_cds -> add_action( profession_actions[ i ] + "" );
 
   dps_cds -> add_action( "dragon_roar,if=enabled" );
-  dps_cds -> add_action( this, "Skull Banner" );
   dps_cds -> add_action( this, "Recklessness" );
   dps_cds -> add_action( "storm_bolt,if=enabled" );
   dps_cds -> add_action( "shockwave,if=enabled" );

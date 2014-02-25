@@ -2981,9 +2981,6 @@ double player_t::composite_armor() const
   if ( debuffs.weakened_armor -> check() )
     a *= 1.0 - debuffs.weakened_armor -> check() * debuffs.weakened_armor -> value();
 
-  if ( debuffs.shattering_throw -> check() )
-    a *= 1.0 - debuffs.shattering_throw -> value();
-
   return a;
 }
 
@@ -3275,8 +3272,6 @@ double player_t::composite_player_absorb_multiplier( school_e /* school */ ) con
 double player_t::composite_player_critical_damage_multiplier() const
 {
   double m = 1.0;
-
-  m *= 1.0 + buffs.skull_banner -> value();
 
   return m;
 }

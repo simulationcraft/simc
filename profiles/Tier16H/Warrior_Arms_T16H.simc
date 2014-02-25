@@ -32,7 +32,6 @@ actions+=/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|buff.
 # This incredibly long line (Due to differing talent choices) says 'Use recklessness on cooldown with colossus smash, unless the boss will die before the ability is usable again, and then use it with execute.'
 actions+=/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20)|target.time_to_die<=12
 actions+=/avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)
-actions+=/skull_banner,if=buff.skull_banner.down&(((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&target.time_to_die>192&buff.cooldown_reduction.up)|buff.recklessness.up)
 actions+=/use_item,slot=hands,if=!talent.bloodbath.enabled&debuff.colossus_smash.up|buff.bloodbath.up
 actions+=/blood_fury,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
 actions+=/berserking,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
@@ -66,7 +65,6 @@ actions.single_target+=/heroic_throw
 actions.single_target+=/battle_shout
 
 actions.aoe=sweeping_strikes
-actions.aoe+=/cleave,if=rage>110&active_enemies<=4
 actions.aoe+=/bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)
 actions.aoe+=/dragon_roar,if=enabled&debuff.colossus_smash.down
 actions.aoe+=/colossus_smash,if=debuff.colossus_smash.remains<1

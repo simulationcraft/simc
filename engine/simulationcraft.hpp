@@ -2627,7 +2627,6 @@ public:
     int    bloodlust;
     double target_health;
     int    stormlash;
-    int    skull_banner;
   } overrides;
 
   // Auras
@@ -4392,7 +4391,6 @@ public:
     buff_t* raid_movement;
     buff_t* self_movement;
     buff_t* shadowmeld;
-    buff_t* skull_banner;
     buff_t* stoneform;
     buff_t* stormlash;
     buff_t* stunned;
@@ -4451,7 +4449,7 @@ public:
     debuff_t* weakened_armor;
 
     // Class specific "general" debuffs
-    debuff_t* shattering_throw;
+
   } debuffs;
 
   struct gains_t
