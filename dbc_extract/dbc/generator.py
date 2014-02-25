@@ -1467,7 +1467,7 @@ class SpellDataGenerator(DataGenerator):
         17,     # SPELL_AURA_MOD_STEALTH_DETECT
         25,     # SPELL_AURA_MOD_PACIFY
         30,     # SPELL_AURA_MOD_SKILL (various skills?)
-        31,     # SPELL_AURA_MOD_INCREASE_SPEED
+        #31,     # SPELL_AURA_MOD_INCREASE_SPEED
         44,     # SPELL_AURA_TRACK_CREATURES
         45,     # SPELL_AURA_TRACK_RESOURCES
         56,     # SPELL_AURA_TRANSFORM
