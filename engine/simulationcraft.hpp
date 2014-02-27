@@ -2789,19 +2789,14 @@ private:
 
   void do_pause()
   {
-    if ( ! parent )
+    if ( parent )
+      parent -> do_pause();
+    else
     {
       pause_mutex.lock();
       while ( paused )
         pause_cvar.wait();
       pause_mutex.unlock();
-    }
-    else
-    {
-      parent -> pause_mutex.lock();
-      while ( parent -> paused )
-        parent -> pause_cvar.wait();
-      parent -> pause_mutex.unlock();
     }
   }
 };

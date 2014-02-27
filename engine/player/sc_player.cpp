@@ -9046,14 +9046,14 @@ void player_callbacks_t::register_callback( unsigned proc_flags,
   {
     // 1) Periodic damage only. This is the default behavior of our system when
     // only PROC1_PERIODIC is defined on a trinket.
-    if ( ! proc_flags & PF_HEAL && ! proc_flags2 & PF2_PERIODIC_HEAL )
+    if ( ! ( proc_flags & PF_HEAL ) && ! ( proc_flags2 & PF2_PERIODIC_HEAL ) )
       add_proc_callback( PROC1_PERIODIC, proc_flags2, cb );
 
     // 2) Periodic heals only. Either inferred by a "proc by direct heals" flag, 
     //    or by "proc on periodic heal ticks" flag, but require that there's 
     //    no direct / ticked spell damage in flags.
-    else if ( ( proc_flags & PF_HEAL || proc_flags2 & PF2_PERIODIC_HEAL ) && 
-              ! proc_flags & PF_SPELL && ! proc_flags2 & PF2_PERIODIC_DAMAGE )
+    else if ( ( ( proc_flags & PF_HEAL ) || ( proc_flags2 & PF2_PERIODIC_HEAL ) ) && 
+              ! ( proc_flags & PF_SPELL ) && ! ( proc_flags2 & PF2_PERIODIC_DAMAGE ) )
       add_proc_callback( PROC1_PERIODIC_HEAL, proc_flags2, cb );
 
     // Both
