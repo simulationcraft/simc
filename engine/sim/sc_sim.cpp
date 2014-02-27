@@ -543,7 +543,6 @@ bool parse_fight_style( sim_t*             sim,
     sim -> fight_style = "RaidDummy";
     sim -> overrides.bloodlust = 0;
     sim -> overrides.stormlash = 0;
-    sim -> overrides.skull_banner = 0;
     sim -> overrides.target_health = 50000000;
     sim -> target_death_pct = 0;
     sim -> allow_potions = false;
@@ -1175,42 +1174,6 @@ void sim_t::combat_begin()
     new ( *this ) stormlash_proxy_t( *this, 0, timespan_t::zero(), timespan_t::from_seconds( 0.25 ) );
   }
 
-  if ( overrides.skull_banner )
-  {
-    struct skull_banner_proxy_t : public proxy_cast_check_t
-    {
-      skull_banner_proxy_t( sim_t& s, int u, timespan_t st, timespan_t i ) :
-        proxy_cast_check_t( s, u, st, i, timespan_t::from_seconds( 180 ), timespan_t::from_seconds( 10 ), s.overrides.skull_banner )
-      { }
-
-      // Sync to (reasonably) early proxy-Bloodlust if available
-      bool proxy_check()
-      {
-        sim_t& sim = this -> sim();
-        return sim.bloodlust_time <= timespan_t::zero() ||
-               sim.bloodlust_time >= timespan_t::from_seconds( 30 ) ||
-               ( sim.bloodlust_time > timespan_t::zero() && sim.bloodlust_time < timespan_t::from_seconds( 30 ) &&
-                 sim.current_time > sim.bloodlust_time + timespan_t::from_seconds( 1 ) );
-      }
-
-      void proxy_execute()
-      {
-        for ( size_t i = 0; i < sim().player_list.size(); ++i )
-        {
-          player_t* p = sim().player_list[ i ];
-          if ( p -> type == PLAYER_GUARDIAN || p -> is_enemy() )
-            continue;
-
-          p -> buffs.skull_banner -> trigger();
-        }
-      }
-
-      proxy_cast_check_t* proxy_schedule( timespan_t interval )
-      { return new ( sim() ) skull_banner_proxy_t( sim(), uses, start_time, interval ); }
-    };
-
-    new ( *this ) skull_banner_proxy_t( *this, 0, timespan_t::zero(), timespan_t::from_seconds( 0.25 ) );
-  }
 
   cancel_iteration( false );
 
@@ -1786,6 +1749,11 @@ void sim_t::partition()
 
 bool sim_t::execute()
 {
+  {
+    auto_lock_t( work_queue.mutex );
+    work_queue.iterations_to_process = iterations;
+  }
+
   double start_cpu_time = util::cpu_time();
   double start_time = util::wall_time();
 
@@ -1876,7 +1844,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
 
   overrides.bloodlust               = optimal_raid;
   overrides.stormlash               = ( optimal_raid ) ? 2 : 0;
-  overrides.skull_banner            = ( optimal_raid ) ? 2 : 0;
 }
 
 // sim_t::time_to_think =====================================================
@@ -2003,7 +1970,6 @@ void sim_t::create_options()
     opt_func( "override.spell_data", parse_override_spell_data ),
     opt_float( "override.target_health", overrides.target_health ),
     opt_int( "override.stormlash", overrides.stormlash ),
-    opt_int( "override.skull_banner", overrides.skull_banner ),
     // Lag
     opt_timespan( "channel_lag", channel_lag ),
     opt_timespan( "channel_lag_stddev", channel_lag_stddev ),
@@ -2267,9 +2233,6 @@ bool sim_t::setup( sim_control_t* c )
 
     threads = 1;
   }
-
-  auto_lock_t( work_queue.mutex );
-  work_queue.iterations_to_process = iterations;
 
   return true;
 }

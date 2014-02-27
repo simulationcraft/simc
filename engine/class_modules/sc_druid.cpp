@@ -325,7 +325,6 @@ public:
 
   int initial_eclipse;
   int default_initial_eclipse;
-  int preplant_mushrooms;
 
   // Talents
   struct talents_t
@@ -387,7 +386,6 @@ public:
 
     initial_eclipse = 65535;
     default_initial_eclipse = -75;
-    preplant_mushrooms = true;
 
     cooldown.natures_swiftness   = get_cooldown( "natures_swiftness"   );
     cooldown.mangle_bear         = get_cooldown( "mangle_bear"         );
@@ -2652,38 +2650,6 @@ struct savage_roar_t : public cat_attack_t
     {
       return false;
     }
-  }
-};
-
-// Shattering Blow ==========================================================
-
-struct shattering_blow_t : public cat_attack_t
-{
-  shattering_blow_t( druid_t* player, const std::string& options_str ) :
-    cat_attack_t( "shattering_blow", player,
-                  ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 112997 ) : spell_data_t::not_found() )
-  {
-    parse_options( NULL, options_str );
-    special = true; // FIXME: don't know if this actually consumes DoC
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    cat_attack_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-      s -> target -> debuffs.shattering_throw -> trigger();
-  }
-
-  virtual bool ready()
-  {
-    if ( p() -> buff.symbiosis -> value() != WARRIOR )
-      return false;
-
-    if ( target -> debuffs.shattering_throw -> check() )
-      return false;
-
-    return cat_attack_t::ready();
   }
 };
 
@@ -5693,7 +5659,7 @@ struct wild_mushroom_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p() -> buff.wild_mushroom -> trigger();
+    p() -> buff.wild_mushroom -> trigger( !p() -> in_combat ? p() -> buff.wild_mushroom -> max_stack() : 1 );
   }
 };
 
@@ -5899,7 +5865,6 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "rip"                    ) return new                    rip_t( this, options_str );
   if ( name == "savage_roar"            ) return new            savage_roar_t( this, options_str );
   if ( name == "savage_defense"         ) return new         savage_defense_t( this, options_str );
-  if ( name == "shattering_blow"        ) return new        shattering_blow_t( this, options_str );
   if ( name == "shred"                  ) return new                  shred_t( this, options_str );
   if ( name == "skull_bash_bear"        ) return new        skull_bash_bear_t( this, options_str );
   if ( name == "skull_bash_cat"         ) return new         skull_bash_cat_t( this, options_str );
@@ -6323,6 +6288,8 @@ void druid_t::apl_precombat()
 
   // Mark of the Wild
   precombat -> add_action( this, "Mark of the Wild", "if=!aura.str_agi_int.up" );
+
+  precombat -> add_action( this, "Wild Mushroom", "if=buff.wild_mushroom.stack<buff.wild_mushroom.max_stack" );
 
   // Dream of Cenarius Pre-Cast
   if ( level >= 90 && ( specialization() == DRUID_FERAL || specialization() == DRUID_BALANCE ) )
@@ -6984,10 +6951,6 @@ void druid_t::combat_begin()
   // Start the fight with 0 rage
   resources.current[ RESOURCE_RAGE ] = 0;
 
-  // Moonkins and Resto can precast wild mushrooms without aggroing the boss
-  if ( preplant_mushrooms )
-    buff.wild_mushroom -> trigger( buff.wild_mushroom -> max_stack() );
-
   if ( specialization() == DRUID_BALANCE )
   {
     int starting_eclipse = initial_eclipse;
@@ -7387,7 +7350,6 @@ void druid_t::create_options()
   option_t druid_options[] =
   {
     opt_int( "initial_eclipse", initial_eclipse ),
-    opt_bool( "preplant_mushrooms", preplant_mushrooms ),
     opt_null()
   };
 
@@ -7410,12 +7372,6 @@ bool druid_t::create_profile( std::string& profile_str, save_e type, bool save_h
         profile_str += util::to_string( initial_eclipse );
         profile_str += "\n";
       }
-    }
-    if ( preplant_mushrooms == 0 )
-    {
-      profile_str += "preplant_mushrooms=";
-      profile_str += util::to_string( preplant_mushrooms );
-      profile_str += "\n";
     }
   }
 

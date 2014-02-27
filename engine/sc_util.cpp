@@ -1282,6 +1282,28 @@ slot_e util::parse_slot_type( const std::string& name )
   return parse_enum<slot_e, SLOT_INVALID, SLOT_MAX, slot_type_string>( name );
 }
 
+// movement_direction_string ================================================
+
+const char* util::movement_direction_string( movement_direction_e m )
+{
+  switch ( m )
+  {
+    case MOVEMENT_PARALLEL: return "parallel";
+    case MOVEMENT_TOWARDS: return "towards";
+    case MOVEMENT_AWAY: return "away"; 
+    case MOVEMENT_RANDOM: return "random";
+    case MOVEMENT_NONE: return "none";
+    default: return "";
+  }
+}
+
+// parse_movement_type ======================================================
+
+movement_direction_e util::parse_movement_direction( const std::string& name )
+{
+  return parse_enum<movement_direction_e, MOVEMENT_UNKNOWN, MOVEMENT_DIRECTION_MAX, movement_direction_string>( name );
+}
+
 
 // cache_type_string ========================================================
 

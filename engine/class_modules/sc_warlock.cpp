@@ -5452,7 +5452,7 @@ void warlock_t::apl_destruction()
   add_action( "Rain of Fire", "if=!ticking&!in_flight,moving=1" );
   add_action(
       "Chaos Bolt",
-      "if=ember_react&target.health.pct>20&(buff.backdraft.stack<3|level<86|(active_enemies>1&action.incinerate.cast_time<1))&(burning_ember>(4.5-active_enemies)|buff.skull_banner.remains>cast_time|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|(trinket.stacking_proc.intellect.remains<cast_time*2.5&trinket.stacking_proc.intellect.remains>cast_time))" );
+      "if=ember_react&target.health.pct>20&(buff.backdraft.stack<3|level<86|(active_enemies>1&action.incinerate.cast_time<1))&(burning_ember>(4.5-active_enemies)|(trinket.proc.intellect.react&trinket.proc.intellect.remains>cast_time)|(trinket.stacking_proc.intellect.remains<cast_time*2.5&trinket.stacking_proc.intellect.remains>cast_time))" );
   add_action(
       "Chaos Bolt",
       "if=ember_react&target.health.pct>20&(buff.havoc.stack=3&buff.havoc.remains>cast_time)" );

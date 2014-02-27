@@ -378,6 +378,7 @@ action_t::action_t( action_e       ty,
   execute_state = 0;
   pre_execute_state = 0;
   action_list = "";
+  movement_directionality = MOVEMENT_NONE;
 
   range::fill( base_costs, 0.0 );
   range::fill( costs_per_second, 0 );
@@ -1541,6 +1542,9 @@ bool action_t::ready()
     return false;
 
   if ( target -> is_sleeping() )
+    return false;
+
+  if ( ! has_movement_directionality() )
     return false;
 
   return true;

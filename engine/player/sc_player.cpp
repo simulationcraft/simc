@@ -769,6 +769,7 @@ player_t::base_initial_current_t::base_initial_current_t() :
   mastery(),
   skill( 1.0 ),
   distance( 0 ),
+  distance_to_move( 0 ),
   armor_coeff( 0 ),
   sleeping( false ),
   rating(),
@@ -3022,9 +3023,6 @@ double player_t::composite_armor() const
   if ( debuffs.weakened_armor -> check() )
     a *= 1.0 - debuffs.weakened_armor -> check() * debuffs.weakened_armor -> value();
 
-  if ( debuffs.shattering_throw -> check() )
-    a *= 1.0 - debuffs.shattering_throw -> value();
-
   return a;
 }
 
@@ -3316,8 +3314,6 @@ double player_t::composite_player_absorb_multiplier( school_e /* school */ ) con
 double player_t::composite_player_critical_damage_multiplier() const
 {
   double m = 1.0;
-
-  m *= 1.0 + buffs.skull_banner -> value();
 
   return m;
 }
@@ -4281,6 +4277,7 @@ void player_t::demise()
   assert( arise_time >= timespan_t::zero() );
   iteration_fight_length += sim -> current_time - arise_time;
   arise_time = timespan_t::min();
+  current.distance_to_move = 0;
 
   current.sleeping = true;
   if ( readying )
@@ -9077,14 +9074,14 @@ void player_callbacks_t::register_callback( unsigned proc_flags,
   {
     // 1) Periodic damage only. This is the default behavior of our system when
     // only PROC1_PERIODIC is defined on a trinket.
-    if ( ! proc_flags & PF_HEAL && ! proc_flags2 & PF2_PERIODIC_HEAL )
+    if ( ! ( proc_flags & PF_HEAL ) && ! ( proc_flags2 & PF2_PERIODIC_HEAL ) )
       add_proc_callback( PROC1_PERIODIC, proc_flags2, cb );
 
     // 2) Periodic heals only. Either inferred by a "proc by direct heals" flag, 
     //    or by "proc on periodic heal ticks" flag, but require that there's 
     //    no direct / ticked spell damage in flags.
-    else if ( ( proc_flags & PF_HEAL || proc_flags2 & PF2_PERIODIC_HEAL ) && 
-              ! proc_flags & PF_SPELL && ! proc_flags2 & PF2_PERIODIC_DAMAGE )
+    else if ( ( ( proc_flags & PF_HEAL ) || ( proc_flags2 & PF2_PERIODIC_HEAL ) ) && 
+              ! ( proc_flags & PF_SPELL ) && ! ( proc_flags2 & PF2_PERIODIC_DAMAGE ) )
       add_proc_callback( PROC1_PERIODIC_HEAL, proc_flags2, cb );
 
     // Both

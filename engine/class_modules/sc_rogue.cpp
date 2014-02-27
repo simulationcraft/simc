@@ -1856,10 +1856,7 @@ struct premeditation_t : public rogue_attack_t
     rogue_td_t* td = this -> td( state -> target );
     int add_points = data().effectN( 1 ).base_value();
 
-    // In game, premeditation does not grant anticipation charges. Flagging
-    // this as a bug for now.
-    if ( p() -> bugs )
-      add_points = std::min( add_points, combo_points_t::max_combo_points - td -> combo_points.count );
+    add_points = std::min( add_points, combo_points_t::max_combo_points - td -> combo_points.count );
 
     if ( add_points > 0 )
       td -> combo_points.add( add_points, "premeditation" );
@@ -3238,7 +3235,7 @@ void rogue_t::init_action_list()
       def -> add_action( this, "Shadow Blades", "if=buff.rune_of_reorigination.down" );
 
     // Shadow Dancing and Vanishing and Marking for the Deathing
-    def -> add_action( this, "Premeditation", "if=combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)" );
+    def -> add_action( this, "Premeditation", "if=combo_points<=4" );
     def -> add_action( this, find_class_spell( "Ambush" ), "pool_resource", "for_next=1" );
     def -> add_action( this, "Ambush", "if=combo_points<5|(talent.anticipation.enabled&anticipation_charges<3)|(buff.sleight_of_hand.up&buff.sleight_of_hand.remains<=gcd)" );
     def -> add_action( this, find_class_spell( "Shadow Dance" ), "pool_resource", "for_next=1,extra_amount=75" );

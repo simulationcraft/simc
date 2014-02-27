@@ -218,60 +218,116 @@ struct flying_event_t : public raid_event_t
 
 // Movement =================================================================
 
+struct movement_ticker_t : public event_t
+{
+  const std::vector<player_t*>& players;
+  timespan_t duration;
+
+  movement_ticker_t( sim_t& s, const std::vector<player_t*>& p, timespan_t d = timespan_t::zero() ) :
+    event_t( s, "Player Movement Event" ), players( p )
+  {
+    if ( d > timespan_t::zero() )
+      duration = d;
+    else
+      duration = next_execute();
+    add_event( duration );
+    if ( sim().debug ) sim().out_debug.printf( "New movement event" );
+  }
+
+  timespan_t next_execute() const
+  {
+    timespan_t min_time = timespan_t::max();
+    bool any_movement = false;
+    for ( size_t i = 0, end = players.size(); i < end; i++ )
+    {
+      timespan_t time_to_finish = players[ i ] -> time_to_move();
+      if ( time_to_finish == timespan_t::zero() )
+        continue;
+
+      any_movement = true;
+
+      if ( time_to_finish < min_time )
+        min_time = time_to_finish;
+    }
+
+    if ( min_time > timespan_t::from_seconds( 0.1 ) )
+      min_time = timespan_t::from_seconds( 0.1 );
+
+    if ( ! any_movement )
+      return timespan_t::zero();
+    else
+      return min_time;
+  }
+
+  void execute()
+  {
+    for ( size_t i = 0, end = players.size(); i < end; i++ )
+    {
+      player_t* p = players[ i ];
+      if ( p -> is_sleeping() )
+        continue;
+
+      if ( p -> time_to_move() == timespan_t::zero() )
+        continue;
+
+      p -> update_movement( duration );
+    }
+
+    timespan_t next = next_execute();
+    if ( next > timespan_t::zero() )
+      new ( sim() ) movement_ticker_t( sim(), players, next );
+  }
+};
+
 struct movement_event_t : public raid_event_t
 {
-  double move_to;
   double move_distance;
-  bool is_distance;
+  movement_direction_e direction;
+  std::string move_direction;
 
   movement_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "movement" ),
-    move_to( -2 ),
     move_distance( 0 ),
-    is_distance( 0 )
+    direction( MOVEMENT_PARALLEL )
   {
     option_t options[] =
     {
-      opt_float( "to",       move_to ),
-      opt_float( "move_distance", move_distance ),
+      opt_float( "distance", move_distance ),
+      opt_string( "direction", move_direction ),
       opt_null()
     };
     parse_options( options, options_str );
-    is_distance = move_distance || ( move_to >= -1 && duration == timespan_t::zero() );
-    if ( is_distance ) name_str = "movement_distance";
+    if ( move_distance > 0 ) name_str = "movement_distance";
+    if ( ! move_direction.empty() )
+      direction = util::parse_movement_direction( move_direction );
   }
 
   virtual void _start()
   {
+    movement_direction_e m = direction;
+    if ( direction == MOVEMENT_RANDOM )
+      m = static_cast<movement_direction_e>(int( sim -> rng().range( MOVEMENT_RANDOM_MIN, MOVEMENT_RANDOM_MAX ) ));
+
     for ( size_t i = 0, num_affected = affected_players.size(); i < num_affected; ++i )
     {
       player_t* p = affected_players[ i ];
-      double my_duration;
-      if ( is_distance )
+      if ( move_distance > 0 )
       {
-        double my_move_distance = move_distance;
-        if ( move_to >= -1 )
-        {
-          double new_distance = ( move_to < 0 ) ? p -> current.distance : move_to;
-          if ( ! my_move_distance )
-            my_move_distance = fabs( new_distance - p -> current.distance );
-          p -> current.distance = new_distance;
-        }
-        my_duration = my_move_distance / p -> composite_movement_speed();
+        p -> current.distance_to_move = move_distance;
+        p -> buffs.raid_movement -> trigger( 1, static_cast<double>( m ), -1.0, timespan_t::from_seconds( -1 ) );
       }
-      else
+      else if ( duration > timespan_t::zero() )
       {
-        my_duration = saved_duration.total_seconds();
-      }
-      if ( my_duration > 0 )
-      {
-        p -> buffs.raid_movement -> buff_duration = timespan_t::from_seconds( my_duration );
+        p -> buffs.raid_movement -> buff_duration = timespan_t::from_seconds( duration.total_seconds() );
         p -> buffs.raid_movement -> trigger();
       }
       if ( p -> buffs.stunned -> check() ) continue;
       p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
       p -> moving();
     }
+
+    if ( move_distance > 0 )
+      new ( *sim ) movement_ticker_t( *sim, affected_players );
   }
 
   virtual void _finish()

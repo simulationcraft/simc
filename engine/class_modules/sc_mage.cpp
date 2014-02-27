@@ -702,9 +702,6 @@ struct mage_state_t
       if ( b == static_cast<player_t&>( mage ).buffs.exhaustion )
         continue;
 
-      if ( b == static_cast<player_t&>( mage ).buffs.skull_banner )
-        continue;
-
       if ( b == static_cast<player_t&>( mage ).buffs.stormlash )
         continue;
 

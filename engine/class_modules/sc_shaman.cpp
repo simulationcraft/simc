@@ -130,6 +130,7 @@ public:
     buff_t* maelstrom_weapon;
     buff_t* searing_flames;
     buff_t* shamanistic_rage;
+    buff_t* spirit_walk;
     buff_t* spiritwalkers_grace;
     buff_t* tier16_2pc_melee;
     buff_t* tier16_2pc_caster;
@@ -241,6 +242,7 @@ public:
     const spell_data_t* primal_wisdom;
     const spell_data_t* searing_flames;
     const spell_data_t* shamanistic_rage;
+    const spell_data_t* spirit_walk;
     const spell_data_t* static_shock;
     const spell_data_t* maelstrom_weapon;
 
@@ -400,6 +402,7 @@ public:
   virtual void      init_action_list();
   virtual void      moving();
   virtual void      invalidate_cache( cache_e c );
+  virtual double    composite_movement_speed() const;
   virtual double    composite_melee_hit() const;
   virtual double    composite_melee_haste() const;
   virtual double    composite_melee_speed() const;
@@ -3773,6 +3776,22 @@ struct spiritwalkers_grace_t : public shaman_spell_t
   }
 };
 
+struct spirit_walk_t : public shaman_spell_t
+{
+  spirit_walk_t( shaman_t* player, const std::string& options_str ) :
+    shaman_spell_t( player, player -> find_specialization_spell( "Spirit Walk" ), options_str )
+  {
+    may_miss = may_crit = harmful = callbacks = false;
+  }
+
+  void execute()
+  {
+    shaman_spell_t::execute();
+
+    p() -> buff.spirit_walk -> trigger();
+  }
+};
+
 // ==========================================================================
 // Shaman Shock Spells
 // ==========================================================================
@@ -5142,6 +5161,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options_str );
   if ( name == "stormblast"              ) return new               stormblast_t( this, options_str );
   if ( name == "feral_spirit"            ) return new       feral_spirit_spell_t( this, options_str );
+  if ( name == "spirit_walk"             ) return new              spirit_walk_t( this, options_str );
   if ( name == "spiritwalkers_grace"     ) return new      spiritwalkers_grace_t( this, options_str );
   if ( name == "stormstrike"             ) return new              stormstrike_t( this, options_str );
   if ( name == "thunderstorm"            ) return new             thunderstorm_t( this, options_str );
@@ -5317,6 +5337,7 @@ void shaman_t::init_spells()
   spec.primal_wisdom       = find_specialization_spell( "Primal Wisdom" );
   spec.searing_flames      = find_specialization_spell( "Searing Flames" );
   spec.shamanistic_rage    = find_specialization_spell( "Shamanistic Rage" );
+  spec.spirit_walk         = find_specialization_spell( "Spirit Walk" );
   spec.static_shock        = find_specialization_spell( "Static Shock" );
 
   // Restoration
@@ -5474,6 +5495,7 @@ void shaman_t::create_buffs()
                                  .duration( find_spell( 77661 ) -> duration() )
                                  .max_stack( find_spell( 77661 ) -> max_stacks() );
   buff.shamanistic_rage        = buff_creator_t( this, "shamanistic_rage",  spec.shamanistic_rage );
+  buff.spirit_walk             = buff_creator_t( this, "spirit_walk", spec.spirit_walk );
   buff.spiritwalkers_grace     = buff_creator_t( this, "spiritwalkers_grace", find_class_spell( "Spiritwalker's Grace" ) )
                                  .chance( 1.0 )
                                  .duration( find_class_spell( "Spiritwalker's Grace" ) -> duration() +
@@ -5996,6 +6018,18 @@ double shaman_t::composite_spell_hit() const
            ( cache.spirit() - base.stats.get_stat( STAT_SPIRIT ) ) ) / current_rating().spell_hit;
 
   return hit;
+}
+
+// shaman_t::composite_movement_speed =======================================
+
+double shaman_t::composite_movement_speed() const
+{
+  double ms = player_t::composite_movement_speed();
+
+  if ( buff.spirit_walk -> up() )
+    ms *= 1.0 + buff.spirit_walk -> data().effectN( 1 ).percent();
+
+  return ms;
 }
 
 // shaman_t::composite_attack_hit ===========================================

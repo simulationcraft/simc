@@ -227,6 +227,19 @@ class xml_writer_t;
 // Enumerations =============================================================
 // annex _e to enumerations
 
+enum movement_direction_e
+{
+  MOVEMENT_UNKNOWN = -1,
+  MOVEMENT_NONE,
+  MOVEMENT_PARALLEL,
+  MOVEMENT_TOWARDS,
+  MOVEMENT_AWAY,
+  MOVEMENT_RANDOM, // Reserved for raid event
+  MOVEMENT_DIRECTION_MAX,
+  MOVEMENT_RANDOM_MIN = MOVEMENT_PARALLEL,
+  MOVEMENT_RANDOM_MAX = MOVEMENT_RANDOM
+};
+
 enum talent_format_e
 {
   TALENT_FORMAT_NUMBERS = 0,
@@ -1268,6 +1281,9 @@ slot_e parse_slot_type           ( const std::string& name );
 stat_e parse_stat_type           ( const std::string& name );
 stat_e parse_reforge_type        ( const std::string& name );
 stat_e parse_gem_stat            ( const std::string& name );
+
+const char* movement_direction_string( movement_direction_e );
+movement_direction_e parse_movement_direction( const std::string& name );
 
 item_subclass_armor parse_armor_type( const std::string& name );
 weapon_e parse_weapon_type       ( const std::string& name );
@@ -2632,7 +2648,6 @@ public:
     int    bloodlust;
     double target_health;
     int    stormlash;
-    int    skull_banner;
   } overrides;
 
   // Auras
@@ -2795,19 +2810,14 @@ private:
 
   void do_pause()
   {
-    if ( ! parent )
+    if ( parent )
+      parent -> do_pause();
+    else
     {
       pause_mutex.lock();
       while ( paused )
         pause_cvar.wait();
       pause_mutex.unlock();
-    }
-    else
-    {
-      parent -> pause_mutex.lock();
-      while ( parent -> paused )
-        parent -> pause_cvar.wait();
-      parent -> pause_mutex.unlock();
     }
   }
 };
@@ -4204,6 +4214,7 @@ struct player_t : public actor_t
     double miss, dodge, parry, block;
     double spell_crit, attack_crit, block_reduction, mastery;
     double skill, distance;
+    double distance_to_move;
     double armor_coeff;
   private:
     friend struct player_t;
@@ -4411,7 +4422,6 @@ public:
     buff_t* raid_movement;
     buff_t* self_movement;
     buff_t* shadowmeld;
-    buff_t* skull_banner;
     buff_t* stoneform;
     buff_t* stormlash;
     buff_t* stunned;
@@ -4470,7 +4480,7 @@ public:
     debuff_t* weakened_armor;
 
     // Class specific "general" debuffs
-    debuff_t* shattering_throw;
+
   } debuffs;
 
   struct gains_t
@@ -4857,6 +4867,67 @@ public:
 
   rng_t& rng() { return sim -> rng(); }
   rng_t& rng() const { return sim -> rng(); }
+
+  // Add 1ms of time to ensure that we finish this run. This is necessary due 
+  // to the millisecond accuracy in our timing system.
+  virtual timespan_t time_to_move() const
+  { 
+    if ( current.distance_to_move > 0 )
+      return timespan_t::from_seconds( current.distance_to_move / composite_movement_speed() + 0.001 );
+    else
+      return timespan_t::zero();
+  }
+
+  virtual void update_movement( double yards )
+  {
+    if ( yards >= current.distance_to_move )
+    {
+      current.distance_to_move = 0;
+      buffs.raid_movement -> expire();
+    }
+    else
+      current.distance_to_move -= yards;
+  }
+
+  virtual void update_movement( timespan_t duration )
+  {
+    // Naively presume stunned players don't move
+    if ( buffs.stunned -> check() )
+      return;
+
+    double yards = duration.total_seconds() * composite_movement_speed();
+    update_movement( yards );
+
+    if ( sim -> debug )
+      sim -> out_debug.printf( "Player %s movement, direction=%s speed=%f distance_covered=%f to_go=%f duration=%f",
+          name(), 
+          util::movement_direction_string( movement_direction() ),
+          composite_movement_speed(),
+          yards,
+          current.distance_to_move,
+          duration.total_seconds() );
+  }
+
+  // Instant teleport. No overshooting support for now.
+  virtual void teleport( double yards )
+  {
+    update_movement( yards );
+
+    if ( sim -> debug )
+      sim -> out_debug.printf( "Player %s warp, direction=%s speed=LIGHTSPEED! distance_covered=%f to_go=%f",
+          name(), 
+          util::movement_direction_string( movement_direction() ),
+          yards,
+          current.distance_to_move );
+  }
+
+  virtual movement_direction_e movement_direction() const
+  {
+    if ( buffs.raid_movement -> check() )
+      return static_cast<movement_direction_e>(int( buffs.raid_movement -> current_value ));
+    else
+      return MOVEMENT_NONE;
+  }
 };
 
 // Target Specific ==========================================================
@@ -5212,6 +5283,7 @@ struct action_t : public noncopyable
   int64_t total_executions;
   cooldown_t line_cooldown;
   const action_priority_t* signature;
+  movement_direction_e movement_directionality;
 
 
   action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
@@ -5414,6 +5486,23 @@ public:
 
   rng_t& rng() { return sim -> rng(); }
   rng_t& rng() const { return sim -> rng(); }
+
+  virtual bool has_movement_directionality() const
+  {
+    // If ability has no movement restrictions, it'll be usable
+    if ( movement_directionality == MOVEMENT_NONE )
+      return true;
+    else
+    {
+      movement_direction_e m = player -> movement_direction();
+
+      // If player isnt moving, allow everything
+      if ( m == MOVEMENT_NONE )
+        return true;
+      else
+        return m == movement_directionality;
+    }
+  }
 };
 
 struct action_state_t : public noncopyable

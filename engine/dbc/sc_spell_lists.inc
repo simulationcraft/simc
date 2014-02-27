@@ -310,7 +310,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
   },
   // Class active abilities for Rogue
   {
-    // General tree, 35 abilities
+    // General tree, 36 abilities
     {
         8676, // Ambush
         2094, // Blind
@@ -342,6 +342,7 @@ static unsigned __class_ability_data[][CLASS_ABILITY_TREE_SIZE][CLASS_ABILITY_SI
         1752, // Sinister Strike
         5171, // Slice and Dice
        76577, // Smoke Bomb
+        2983, // Sprint
         1784, // Stealth
       121733, // Throw
        57934, // Tricks of the Trade
