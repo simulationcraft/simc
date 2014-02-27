@@ -288,7 +288,7 @@ struct movement_event_t : public raid_event_t
   movement_event_t( sim_t* s, const std::string& options_str ) :
     raid_event_t( s, "movement" ),
     move_distance( 0 ),
-    direction( MOVEMENT_PARALLEL )
+    direction( MOVEMENT_OMNI )
   {
     option_t options[] =
     {
@@ -312,21 +312,16 @@ struct movement_event_t : public raid_event_t
     {
       player_t* p = affected_players[ i ];
       if ( move_distance > 0 )
-      {
-        p -> current.distance_to_move = move_distance;
-        p -> buffs.raid_movement -> trigger( 1, static_cast<double>( m ), -1.0, timespan_t::from_seconds( -1 ) );
-      }
+        p -> trigger_movement( move_distance, m );
       else if ( duration > timespan_t::zero() )
-      {
-        p -> buffs.raid_movement -> buff_duration = timespan_t::from_seconds( duration.total_seconds() );
-        p -> buffs.raid_movement -> trigger();
-      }
+        p -> trigger_movement( duration );
+
       if ( p -> buffs.stunned -> check() ) continue;
       p -> in_combat = true; // FIXME? this is done to ensure we don't end up in infinite loops of non-harmful actions with gcd=0
       p -> moving();
     }
 
-    if ( move_distance > 0 )
+    if ( move_distance > 0 && affected_players.size() > 0 )
       new ( *sim ) movement_ticker_t( *sim, affected_players );
   }
 

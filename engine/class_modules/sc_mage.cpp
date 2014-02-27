@@ -1606,6 +1606,8 @@ struct blink_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
+    base_teleport_distance = 20;
+    movement_directionality = MOVEMENT_OMNI;
   }
 
   virtual void execute()

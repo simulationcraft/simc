@@ -379,6 +379,7 @@ action_t::action_t( action_e       ty,
   pre_execute_state = 0;
   action_list = "";
   movement_directionality = MOVEMENT_NONE;
+  base_teleport_distance = 0;
 
   range::fill( base_costs, 0.0 );
   range::fill( costs_per_second, 0 );
@@ -1070,6 +1071,9 @@ void action_t::execute()
 
     schedule_travel( s );
   }
+
+  if ( composite_teleport_distance( execute_state ) > 0 )
+    do_teleport( execute_state );
 
   /* Miss reaction handling for dot executes */
   if ( num_ticks > 0 && result_is_miss( execute_state -> result ) )
@@ -2417,4 +2421,9 @@ void action_t::remove_travel_event( travel_event_t* e )
   std::vector<travel_event_t*>::iterator pos = range::find( travel_events, e );
   if ( pos != travel_events.end() )
     erase_unordered( travel_events, pos );
+}
+
+void action_t::do_teleport( action_state_t* state )
+{
+  player -> teleport( composite_teleport_distance( state ) );
 }

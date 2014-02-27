@@ -231,12 +231,12 @@ enum movement_direction_e
 {
   MOVEMENT_UNKNOWN = -1,
   MOVEMENT_NONE,
-  MOVEMENT_PARALLEL,
+  MOVEMENT_OMNI,
   MOVEMENT_TOWARDS,
   MOVEMENT_AWAY,
   MOVEMENT_RANDOM, // Reserved for raid event
   MOVEMENT_DIRECTION_MAX,
-  MOVEMENT_RANDOM_MIN = MOVEMENT_PARALLEL,
+  MOVEMENT_RANDOM_MIN = MOVEMENT_OMNI,
   MOVEMENT_RANDOM_MAX = MOVEMENT_RANDOM
 };
 
@@ -4179,6 +4179,7 @@ struct player_t : public actor_t
     double spell_crit, attack_crit, block_reduction, mastery;
     double skill, distance;
     double distance_to_move;
+    movement_direction_e movement_direction;
     double armor_coeff;
   private:
     friend struct player_t;
@@ -4843,25 +4844,33 @@ public:
       return timespan_t::zero();
   }
 
-  virtual void update_movement( double yards )
+  virtual void trigger_movement( timespan_t duration )
   {
-    if ( yards >= current.distance_to_move )
-    {
-      current.distance_to_move = 0;
-      buffs.raid_movement -> expire();
-    }
+    buffs.raid_movement -> buff_duration = timespan_t::from_seconds( duration.total_seconds() );
+    buffs.raid_movement -> trigger();
+  }
+
+  virtual void trigger_movement( double distance, movement_direction_e direction )
+  {
+    // Distance of 0 disables movement
+    if ( distance == 0 )
+      do_update_movement( 9999 );
     else
-      current.distance_to_move -= yards;
+    {
+      current.distance_to_move = distance;
+      current.movement_direction = direction;
+      buffs.raid_movement -> trigger();
+    }
   }
 
   virtual void update_movement( timespan_t duration )
   {
-    // Naively presume stunned players don't move
+    // Presume stunned players don't move
     if ( buffs.stunned -> check() )
       return;
 
     double yards = duration.total_seconds() * composite_movement_speed();
-    update_movement( yards );
+    do_update_movement( yards );
 
     if ( sim -> debug )
       sim -> out_debug.printf( "Player %s movement, direction=%s speed=%f distance_covered=%f to_go=%f duration=%f",
@@ -4874,9 +4883,9 @@ public:
   }
 
   // Instant teleport. No overshooting support for now.
-  virtual void teleport( double yards )
+  virtual void teleport( double yards, timespan_t duration = timespan_t::zero() )
   {
-    update_movement( yards );
+    do_update_movement( yards );
 
     if ( sim -> debug )
       sim -> out_debug.printf( "Player %s warp, direction=%s speed=LIGHTSPEED! distance_covered=%f to_go=%f",
@@ -4884,14 +4893,24 @@ public:
           util::movement_direction_string( movement_direction() ),
           yards,
           current.distance_to_move );
+    (void) duration;
   }
 
   virtual movement_direction_e movement_direction() const
+  { return current.movement_direction; }
+
+private:
+  // Update movement data, and also control the buff
+  void do_update_movement( double yards )
   {
-    if ( buffs.raid_movement -> check() )
-      return static_cast<movement_direction_e>(int( buffs.raid_movement -> current_value ));
+    if ( yards >= current.distance_to_move )
+    {
+      current.distance_to_move = 0;
+      current.movement_direction = MOVEMENT_NONE;
+      buffs.raid_movement -> expire();
+    }
     else
-      return MOVEMENT_NONE;
+      current.distance_to_move -= yards;
   }
 };
 
@@ -5248,8 +5267,10 @@ struct action_t : public noncopyable
   int64_t total_executions;
   cooldown_t line_cooldown;
   const action_priority_t* signature;
-  movement_direction_e movement_directionality;
 
+  // Movement stuff
+  movement_direction_e movement_directionality;
+  double base_teleport_distance;
 
   action_t( action_e type, const std::string& token, player_t* p, const spell_data_t* s = spell_data_t::nil() );
 
@@ -5456,7 +5477,7 @@ public:
   virtual bool has_movement_directionality() const
   {
     // If ability has no movement restrictions, it'll be usable
-    if ( movement_directionality == MOVEMENT_NONE )
+    if ( movement_directionality == MOVEMENT_OMNI )
       return true;
     else
     {
@@ -5469,6 +5490,11 @@ public:
         return m == movement_directionality;
     }
   }
+
+  virtual double composite_teleport_distance( const action_state_t* ) const
+  { return base_teleport_distance; }
+
+  virtual void do_teleport( action_state_t* );
 };
 
 struct action_state_t : public noncopyable
