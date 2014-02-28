@@ -1893,6 +1893,35 @@ struct second_wind_t : public heal_t
   }
 };
 
+// Shattering Throw =========================================================
+
+struct shattering_throw_t : public warrior_attack_t
+{
+  shattering_throw_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "shattering_throw", p, p -> find_class_spell( "Shattering Throw" ) )
+  {
+    parse_options( NULL, options_str );
+    direct_power_mod = data().extra_coeff();
+    weapon            = &( p -> main_hand_weapon );
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    warrior_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+      s -> target -> debuffs.shattering_throw -> trigger();
+  }
+
+  virtual bool ready()
+  {
+    if ( target -> debuffs.shattering_throw -> check() )
+      return false;
+
+    return warrior_attack_t::ready();
+  }
+};
+
 
 // Shield Slam ==============================================================
 
@@ -2980,6 +3009,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "raging_blow"        ) return new raging_blow_t        ( this, options_str );
   if ( name == "recklessness"       ) return new recklessness_t       ( this, options_str );
   if ( name == "revenge"            ) return new revenge_t            ( this, options_str );
+  if ( name == "shattering_throw"   ) return new shattering_throw_t   ( this, options_str );
   if ( name == "shield_barrier"     ) return new shield_barrier_t     ( this, options_str );
   if ( name == "shield_block"       ) return new shield_block_t       ( this, options_str );
   if ( name == "shield_wall"        ) return new shield_wall_t        ( this, options_str );
@@ -4241,7 +4271,17 @@ struct warrior_module_t : public module_t
     return new warrior_t( sim, name, r );
   }
   virtual bool valid() const { return true; }
-  virtual void init        ( sim_t* ) const {}
+  virtual void init        ( sim_t* ) const {
+    {
+    for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
+    {
+      player_t* p = sim -> actor_list[ i ];
+      p -> debuffs.shattering_throw = buff_creator_t( p, "shattering_throw", p -> find_spell( 64382 ) )
+                                      .default_value( std::fabs( p -> find_spell( 64382 ) -> effectN( 2 ).percent() ) )
+                                      .cd( timespan_t::zero() )
+                                      .add_invalidate( CACHE_ARMOR );
+    }
+}
   virtual void combat_begin( sim_t* ) const {}
   virtual void combat_end  ( sim_t* ) const {}
 };

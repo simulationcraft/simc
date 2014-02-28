@@ -395,6 +395,186 @@ void ignite::trigger_pct_based( action_t* ignite_action,
   new ( *ignite_action -> sim ) delay_event_t( t, ignite_action, dmg );
 }
 
+// Stormlash ================================================================
+
+struct stormlash_spell_t : public spell_t
+{
+  stormlash_spell_t( player_t* p ) :
+    spell_t( "stormlash", p, p -> find_spell( 120687 ) )
+  {
+    may_crit   = true;
+    special    = true;
+    background = true;
+    base_attack_power_multiplier = 0;
+    base_spell_power_multiplier  = 0;
+  }
+};
+
+struct stormlash_callback_t : public action_callback_t
+{
+  spell_t*  stormlash_spell;
+  cooldown_t* cd;
+  action_t* stormlash_aggregate;
+  stats_t* stormlash_aggregate_stat;
+  std::vector< stats_t* > stormlash_sources;
+
+  stormlash_callback_t( player_t* p ) :
+    action_callback_t( p ),
+    stormlash_spell( new stormlash_spell_t( p ) ),
+    cd( p -> get_cooldown( "stormlash" ) ),
+    stormlash_aggregate( 0 ),
+    stormlash_aggregate_stat()
+  {
+    cd -> duration = timespan_t::from_seconds( 0.1 );
+    stormlash_sources.resize( p -> sim -> num_players + 1 );
+  }
+
+  virtual void activate() override
+  {
+    action_callback_t::activate();
+
+    if ( ! stormlash_aggregate )
+      return;
+
+    player_t* o = stormlash_aggregate -> player -> cast_pet() -> owner;
+    if ( ! stormlash_sources[ o -> index ] )
+    {
+      std::string stat_name = "stormlash_";
+      if ( listener -> is_pet() )
+        stat_name += listener -> cast_pet() -> owner -> name_str + "_";
+      stat_name += listener -> name_str;
+
+      stormlash_sources[ o -> index ] = stormlash_aggregate -> player -> get_stats( stat_name, stormlash_aggregate );
+    }
+
+    stormlash_aggregate_stat = stormlash_sources[ o -> index ];
+  }
+
+  // http://us.battle.net/wow/en/forum/topic/5889309137?page=101#2017
+  virtual void trigger( action_t* a, void* call_data ) override
+  {
+    if ( cd -> down() )
+      return;
+
+    // 2013/10/4: Hotfixed to 20% chance, 500% damage increase
+    if ( ! listener -> rng().roll( 0.2 ) )
+      return;
+
+    action_state_t* s = reinterpret_cast< action_state_t* >( call_data );
+
+    if ( s -> result_amount == 0 )
+      return;
+
+    if ( a -> stormlash_da_multiplier == 0 && s -> result_type == DMG_DIRECT )
+      return;
+
+    if ( a -> stormlash_ta_multiplier == 0 && s -> result_type == DMG_OVER_TIME )
+      return;
+
+    cd -> start();
+
+    double amount = 0;
+    double base_power = std::max( a -> player -> cache.attack_power() * a -> player -> composite_attack_power_multiplier() * 0.2,
+                                  a -> player -> cache.spell_power( a -> school ) * a -> player -> composite_spell_power_multiplier() * 0.3 );
+    double base_multiplier = 1.0;
+    double cast_time_multiplier = 1.0;
+    bool auto_attack = false;
+
+    // Autoattacks
+    if ( a -> special == false )
+    {
+      auto_attack = true;
+
+      // Presume non-special attacks without weapon are main hand attacks
+      if ( ! a -> weapon || a -> weapon -> slot == SLOT_MAIN_HAND )
+        base_multiplier = 0.4;
+      else
+        base_multiplier = 0.2;
+
+      if ( a -> weapon )
+        cast_time_multiplier = a -> weapon -> swing_time.total_seconds() / 2.6;
+      // If no weapon is defined for autoattacks, we should break really .. but use base_execute_time of the spell then.
+      else
+        cast_time_multiplier = a -> base_execute_time.total_seconds() / 2.6;
+    }
+    else
+    {
+      if ( a -> data().cast_time( a -> player -> level ) > timespan_t::from_seconds( 1.5 ) )
+        cast_time_multiplier = a -> data().cast_time( a -> player -> level ).total_seconds() / 1.5;
+    }
+
+    if ( a -> player -> type == PLAYER_PET )
+      base_multiplier *= 0.2;
+
+    amount = base_power * base_multiplier * cast_time_multiplier;
+    amount *= ( s -> result_type == DMG_DIRECT ) ? a -> stormlash_da_multiplier : a -> stormlash_ta_multiplier;
+    // 2013/10/4: Hotfixed to 20% chance, 500% damage increase
+    amount *= 5.0;
+
+    if ( a -> sim -> debug )
+    {
+      a -> sim -> out_debug.printf( "%s stormlash proc by %s: power=%.3f base_mul=%.3f cast_time=%.3f cast_time_mul=%.3f spell_multiplier=%.3f amount=%.3f %s",
+                          a -> player -> name(), a -> name(), base_power, base_multiplier, a -> data().cast_time( a -> player -> level ).total_seconds(), cast_time_multiplier,
+                          ( a -> stormlash_da_multiplier ) ? a -> stormlash_da_multiplier : a -> stormlash_ta_multiplier,
+                          amount,
+                          ( auto_attack ) ? "(auto attack)" : "" );
+    }
+
+    stormlash_spell -> base_dd_min = amount - ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
+    stormlash_spell -> base_dd_max = amount + ( a -> sim -> average_range == 0 ? amount * .15 : 0 );
+
+    if ( stormlash_aggregate && stormlash_aggregate -> player -> cast_pet() -> owner == a -> player )
+    {
+      assert( stormlash_aggregate_stat -> player == stormlash_aggregate -> player );
+      stats_t* tmp_stats = stormlash_spell -> stats;
+      stormlash_spell -> stats = stormlash_aggregate_stat;
+      stormlash_spell -> execute();
+      stormlash_spell -> stats = tmp_stats;
+    }
+    else
+      stormlash_spell -> execute();
+
+    if ( stormlash_aggregate && stormlash_aggregate -> player -> cast_pet() -> owner != a -> player )
+    {
+      assert( stormlash_aggregate_stat -> player == stormlash_aggregate -> player );
+      stormlash_aggregate_stat -> add_execute( timespan_t::zero(), stormlash_spell -> target );
+      stormlash_aggregate_stat -> add_result( stormlash_spell -> execute_state -> result_amount,
+                                              stormlash_spell -> execute_state -> result_amount,
+                                              stormlash_spell -> execute_state -> result_type,
+                                              stormlash_spell -> execute_state -> result,
+                                              stormlash_spell -> execute_state -> block_result,
+                                              stormlash_spell -> target );
+    }
+  }
+};
+
+stormlash_buff_t::stormlash_buff_t( player_t* p, const spell_data_t* s ) :
+  buff_t( buff_creator_t( p, "stormlash", s ).cd( timespan_t::from_seconds( 0.1 ) ).duration( timespan_t::from_seconds( 10.0 ) ) ),
+  stormlash_aggregate( 0 ),
+  stormlash_cb( new stormlash_callback_t( p ) )
+{
+  p -> callbacks.register_direct_damage_callback( SCHOOL_SPELL_MASK | SCHOOL_ATTACK_MASK, stormlash_cb );
+  p -> callbacks.register_tick_damage_callback( SCHOOL_SPELL_MASK | SCHOOL_ATTACK_MASK, stormlash_cb );
+  stormlash_cb -> deactivate();
+}
+
+void stormlash_buff_t::execute( int stacks, double value, timespan_t duration )
+{
+  buff_t::execute( stacks, value, duration );
+  if ( stormlash_aggregate )
+    stormlash_cb -> stormlash_aggregate = stormlash_aggregate;
+  stormlash_cb -> activate();
+}
+
+void stormlash_buff_t::expire_override()
+{
+  buff_t::expire_override();
+
+  if ( stormlash_cb -> stormlash_aggregate == stormlash_aggregate )
+    stormlash_cb -> stormlash_aggregate = 0;
+  stormlash_cb -> deactivate();
+}
+
 // ==========================================================================
 // Player
 // ==========================================================================
@@ -2608,6 +2788,8 @@ void player_t::create_buffs()
     }
 
     buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );
+
+    buffs.stormlash                 = new stormlash_buff_t( this, find_spell( 120687 ) );
   }
 
   buffs.courageous_primal_diamond_lucidity = buff_creator_t( this, "lucidity" )
@@ -8864,14 +9046,14 @@ void player_callbacks_t::register_callback( unsigned proc_flags,
   {
     // 1) Periodic damage only. This is the default behavior of our system when
     // only PROC1_PERIODIC is defined on a trinket.
-    if ( ! ( proc_flags & PF_HEAL ) && ! ( proc_flags2 & PF2_PERIODIC_HEAL ) )
+    if ( ! proc_flags & PF_HEAL && ! proc_flags2 & PF2_PERIODIC_HEAL )
       add_proc_callback( PROC1_PERIODIC, proc_flags2, cb );
 
     // 2) Periodic heals only. Either inferred by a "proc by direct heals" flag, 
     //    or by "proc on periodic heal ticks" flag, but require that there's 
     //    no direct / ticked spell damage in flags.
-    else if ( ( ( proc_flags & PF_HEAL ) || ( proc_flags2 & PF2_PERIODIC_HEAL ) ) && 
-              ! ( proc_flags & PF_SPELL ) && ! ( proc_flags2 & PF2_PERIODIC_DAMAGE ) )
+    else if ( ( proc_flags & PF_HEAL || proc_flags2 & PF2_PERIODIC_HEAL ) && 
+              ! proc_flags & PF_SPELL && ! proc_flags2 & PF2_PERIODIC_DAMAGE )
       add_proc_callback( PROC1_PERIODIC_HEAL, proc_flags2, cb );
 
     // Both
