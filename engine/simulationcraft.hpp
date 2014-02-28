@@ -218,7 +218,6 @@ struct spelleffect_data_t;
 struct stats_t;
 struct stat_buff_t;
 struct stat_pair_t;
-struct stormlash_callback_t;
 struct tick_buff_t;
 struct travel_event_t;
 struct xml_node_t;
@@ -1997,17 +1996,6 @@ protected:
 
 typedef struct buff_t aura_t;
 
-struct stormlash_buff_t : public buff_t
-{
-  action_t*             stormlash_aggregate;
-  stormlash_callback_t* stormlash_cb;
-
-  stormlash_buff_t( player_t* p, const spell_data_t* s );
-
-  virtual void execute( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() );
-  virtual void expire_override();
-};
-
 // Expressions ==============================================================
 
 enum token_e
@@ -2626,7 +2614,6 @@ public:
     // Misc stuff needs resolving
     int    bloodlust;
     double target_health;
-    int    stormlash;
   } overrides;
 
   // Auras
@@ -4388,7 +4375,6 @@ public:
     buff_t* self_movement;
     buff_t* shadowmeld;
     buff_t* stoneform;
-    buff_t* stormlash;
     buff_t* stunned;
     buff_t* tricks_of_the_trade;
     buff_t* weakened_soul;
@@ -5229,7 +5215,6 @@ struct action_t : public noncopyable
   double crit_multiplier, crit_bonus_multiplier, crit_bonus;
   double base_dd_adder;
   double base_ta_adder;
-  double stormlash_da_multiplier, stormlash_ta_multiplier;
   int num_ticks;
   weapon_t* weapon;
   double weapon_multiplier;

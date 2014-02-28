@@ -336,8 +336,6 @@ action_t::action_t( action_e       ty,
   crit_bonus_multiplier          = 1.0;
   base_dd_adder                  = 0.0;
   base_ta_adder                  = 0.0;
-  stormlash_da_multiplier        = 1.0;
-  stormlash_ta_multiplier        = 0.0; // Stormlash is disabled for ticks by default
   num_ticks                      = 0;
   weapon                         = NULL;
   weapon_multiplier              = 1.0;

@@ -85,7 +85,6 @@ public:
   timespan_t uf_expiration_delay;
   timespan_t uf_expiration_delay_stddev;
   double     eoe_proc_chance;
-  int        aggregate_stormlash;
   int        scale_lava_surge;
 
   // Active
@@ -163,7 +162,6 @@ public:
     cooldown_t* lava_burst;
     cooldown_t* lava_lash;
     cooldown_t* shock;
-    cooldown_t* stormlash;
     cooldown_t* strike;
     cooldown_t* t16_4pc_caster;
     cooldown_t* t16_4pc_melee;
@@ -329,7 +327,7 @@ public:
     ls_reset( timespan_t::zero() ), active_flame_shocks( 0 ), lava_surge_during_lvb( false ),
     wf_delay( timespan_t::from_seconds( 0.95 ) ), wf_delay_stddev( timespan_t::from_seconds( 0.25 ) ),
     uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
-    eoe_proc_chance( 0 ), aggregate_stormlash( 0 ), scale_lava_surge( 0 ),
+    eoe_proc_chance( 0 ), scale_lava_surge( 0 ),
     active_lightning_charge( nullptr ),
     action_ancestral_awakening( nullptr ),
     action_improved_lava_lash( nullptr ),
@@ -370,7 +368,6 @@ public:
     cooldown.lava_burst           = get_cooldown( "lava_burst"            );
     cooldown.lava_lash            = get_cooldown( "lava_lash"             );
     cooldown.shock                = get_cooldown( "shock"                 );
-    cooldown.stormlash            = get_cooldown( "stormlash_totem"       );
     cooldown.strike               = get_cooldown( "strike"                );
     cooldown.t16_4pc_caster       = get_cooldown( "t16_4pc_caster"        );
     cooldown.t16_4pc_melee        = get_cooldown( "t16_4pc_melee"         );
@@ -663,13 +660,9 @@ struct eoe_execute_event_t : public event_t
     stats_t* tmp_stats = spell -> stats;
     timespan_t tmp_cast_time = spell -> base_execute_time;
     timespan_t tmp_gcd = spell -> trigger_gcd;
-    double tmp_sl_da_mul = spell -> stormlash_da_multiplier;
-    double tmp_sl_ta_mul = spell -> stormlash_ta_multiplier;
 
     spell -> time_to_execute = timespan_t::zero();
 
-    spell -> stormlash_da_multiplier = 0;
-    spell -> stormlash_ta_multiplier = 0;
     spell -> stats = spell -> eoe_stats;
     spell -> base_costs[ RESOURCE_MANA ] = 0;
     spell -> cooldown = spell -> eoe_cooldown;
@@ -685,8 +678,6 @@ struct eoe_execute_event_t : public event_t
     spell -> cooldown = tmp_cooldown;
     spell -> base_costs[ RESOURCE_MANA ] = base_cost;
     spell -> stats = tmp_stats;
-    spell -> stormlash_ta_multiplier = tmp_sl_ta_mul;
-    spell -> stormlash_da_multiplier = tmp_sl_da_mul;
   }
 };
 
@@ -3364,7 +3355,6 @@ struct lava_burst_t : public shaman_spell_t
   lava_burst_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( "Lava Burst" ), options_str )
   {
-    stormlash_da_multiplier = 2.0;
     overload_spell          = new lava_burst_overload_t( player );
     add_child( overload_spell );
   }
@@ -3455,7 +3445,6 @@ struct lightning_bolt_t : public shaman_spell_t
   lightning_bolt_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( "Lightning Bolt" ), options_str )
   {
-    stormlash_da_multiplier = 2.0;
     base_multiplier   += player -> spec.shamanism -> effectN( 1 ).percent();
     base_execute_time += player -> spec.shamanism -> effectN( 3 ).time_value();
     overload_spell     = new lightning_bolt_overload_t( player );
@@ -4526,84 +4515,6 @@ struct searing_totem_t : public shaman_totem_pet_t
   }
 };
 
-// Storm Lash Totem =========================================================
-
-struct stormlash_totem_t : public shaman_totem_pet_t
-{
-  struct stormlash_aggregate_t : public spell_t
-  {
-    stormlash_aggregate_t( player_t* p ) :
-      spell_t( "stormlash_aggregate", p, spell_data_t::nil() )
-    {
-      background = true;
-      callbacks = false;
-    }
-  };
-
-  stormlash_aggregate_t* aggregate;
-
-  stormlash_totem_t( shaman_t* p ) :
-    shaman_totem_pet_t( p, "stormlash_totem", TOTEM_AIR ),
-    aggregate( 0 )
-  { }
-
-  void init_action_list()
-  {
-    shaman_totem_pet_t::init_action_list();
-
-    aggregate = new stormlash_aggregate_t( this );
-  }
-
-  void arise()
-  {
-    shaman_totem_pet_t::arise();
-
-    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
-    {
-      player_t* p = sim -> player_list[ i ];
-      if ( p -> type == PLAYER_GUARDIAN )
-        continue;
-
-      stormlash_buff_t* sb = static_cast< stormlash_buff_t* >( p -> buffs.stormlash );
-      if ( ! sb -> stormlash_aggregate && o() -> aggregate_stormlash )
-        sb -> stormlash_aggregate = aggregate;
-      sb -> trigger();
-    }
-  }
-
-  void demise()
-  {
-    shaman_totem_pet_t::demise();
-
-    for ( size_t i = 0; i < sim -> player_list.size(); ++i )
-    {
-      player_t* p = sim -> player_list[ i ];
-      if ( p -> type == PLAYER_GUARDIAN )
-        continue;
-
-      stormlash_buff_t* sb = static_cast< stormlash_buff_t* >( p -> buffs.stormlash );
-      sb -> expire();
-      if ( sb -> stormlash_aggregate == aggregate )
-        sb -> stormlash_aggregate = 0;
-    }
-  }
-};
-
-struct stormlash_totem_spell_t : public shaman_totem_t
-{
-  stormlash_totem_spell_t( shaman_t* player, const std::string& options_str ) :
-    shaman_totem_t( "Stormlash Totem", player, options_str )
-  { }
-
-  bool ready()
-  {
-    if ( sim -> overrides.stormlash > 0 )
-      return false;
-
-    return shaman_totem_t::ready();
-  }
-};
-
 // ==========================================================================
 // Shaman Weapon Imbues
 // ==========================================================================
@@ -5066,7 +4977,6 @@ void shaman_t::create_options()
     opt_timespan( "uf_expiration_delay",        uf_expiration_delay        ),
     opt_timespan( "uf_expiration_delay_stddev", uf_expiration_delay_stddev ),
     opt_float( "eoe_proc_chance",               eoe_proc_chance ),
-    opt_bool( "aggregate_stormlash",            aggregate_stormlash ),
     opt_bool( "what_if_lava_surge_scaled_with_crit", scale_lava_surge ),
     opt_null()
   };
@@ -5181,7 +5091,6 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "fire_elemental_totem"    ) return new  fire_elemental_totem_spell_t( this, options_str );
   if ( name == "magma_totem"             ) return new                shaman_totem_t( "Magma Totem", this, options_str );
   if ( name == "searing_totem"           ) return new                shaman_totem_t( "Searing Totem", this, options_str );
-  if ( name == "stormlash_totem"         ) return new       stormlash_totem_spell_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -5204,7 +5113,6 @@ pet_t* shaman_t::create_pet( const std::string& pet_name,
   if ( pet_name == "fire_elemental_totem"    ) return new fire_elemental_totem_t( this );
   if ( pet_name == "magma_totem"             ) return new magma_totem_t( this );
   if ( pet_name == "searing_totem"           ) return new searing_totem_t( this );
-  if ( pet_name == "stormlash_totem"         ) return new stormlash_totem_t( this );
 
   return 0;
 }
@@ -5234,7 +5142,6 @@ void shaman_t::create_pets()
   create_pet( "fire_elemental_totem"  );
   create_pet( "magma_totem"           );
   create_pet( "searing_totem"         );
-  create_pet( "stormlash_totem"       );
 }
 
 // shaman_t::create_expression ==============================================
@@ -5745,10 +5652,6 @@ void shaman_t::init_action_list()
   // On use stuff and profession abilities
   for ( size_t i = 0; i < use_items.size(); i++ )
     def -> add_action( use_items[ i ] );
-
-  // Stormlash Totem
-  if ( action_priority_t* a = def -> add_action( this, "Stormlash Totem", "if=!active&!buff.stormlash.up&(buff.bloodlust.up|time>=60)" ) )
-    a -> comment( "Link Stormlash totem cast to early Bloodlust, and ensure that only one Stormlash is used at a time." );
 
   // In-combat potion
   if ( sim -> allow_potions && level >= 80  )
