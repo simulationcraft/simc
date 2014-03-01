@@ -7765,6 +7765,38 @@ expr_t* player_t::create_expression( action_t* a,
   {
     if ( splits[ 0 ] == "set_bonus" )
       return sets.create_expression( this, splits[ 1 ] );
+
+    if ( splits[ 0 ] == "movement" )
+    {
+      struct raid_movement_expr_t : public expr_t
+      {
+        player_t* player;
+
+        raid_movement_expr_t( const std::string& name, player_t* p ) :
+          expr_t( name ), player( p )
+        { }
+      };
+
+      if ( splits[ 1 ] == "remains" )
+      {
+        struct rm_remains_expr_t : public raid_movement_expr_t
+        {
+          rm_remains_expr_t( const std::string& n, player_t* p ) :
+            raid_movement_expr_t( n, p )
+          { }
+
+          double evaluate()
+          {
+            if ( player -> current.distance_to_move > 0 )
+              return player -> current.distance_to_move / player -> composite_movement_speed();
+            else
+              return player -> buffs.raid_movement -> remains().total_seconds();
+          }
+        };
+
+        return new rm_remains_expr_t( splits[ 1 ], this );
+      }
+    }
   }
 
   if ( splits.size() >= 2 && splits[ 0 ] == "target" )
