@@ -7796,6 +7796,20 @@ expr_t* player_t::create_expression( action_t* a,
 
         return new rm_remains_expr_t( splits[ 1 ], this );
       }
+      else if ( splits[ 1 ] == "distance" )
+      {
+        struct rm_distance_expr_t : public raid_movement_expr_t
+        {
+          rm_distance_expr_t( const std::string& n, player_t* p ) :
+            raid_movement_expr_t( n, p )
+          { }
+
+          double evaluate()
+          { return player -> current.distance_to_move; }
+        };
+
+        return new rm_distance_expr_t( splits[ 1 ], this );
+      }
     }
   }
 
