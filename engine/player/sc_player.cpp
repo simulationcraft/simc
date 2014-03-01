@@ -7261,8 +7261,6 @@ expr_t* player_t::create_expression( action_t* a,
     return make_mem_fn_expr( name_str, this-> cache, &player_stat_cache_t::spell_speed );
   if ( name_str == "time_to_die" )
     return make_mem_fn_expr( name_str, *this, &player_t::time_to_die );
-  if ( name_str == "movement_speed" )
-    return make_mem_fn_expr( name_str, *this, &player_t::composite_movement_speed );
 
   if ( name_str == "health_pct" )
     return deprecate_expression( this, a, name_str, "health.pct" );
@@ -7812,6 +7810,8 @@ expr_t* player_t::create_expression( action_t* a,
 
         return new rm_distance_expr_t( splits[ 1 ], this );
       }
+      else if ( splits[ 1 ] == "speed" )
+        return make_mem_fn_expr( splits[ 1 ], *this, &player_t::composite_movement_speed );
     }
   }
 
