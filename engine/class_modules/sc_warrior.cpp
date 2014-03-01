@@ -4267,12 +4267,12 @@ struct warrior_module_t : public module_t
   warrior_module_t() : module_t( WARRIOR ) {}
 
   virtual player_t* create_player( sim_t* sim, const std::string& name, race_e r = RACE_NONE ) const
-  {
-    return new warrior_t( sim, name, r );
-  }
+  { return new warrior_t( sim, name, r ); }
+
   virtual bool valid() const { return true; }
-  virtual void init        ( sim_t* ) const {
-    {
+
+  virtual void init( sim_t* sim ) const
+  {
     for ( size_t i = 0; i < sim -> actor_list.size(); i++ )
     {
       player_t* p = sim -> actor_list[ i ];
@@ -4281,8 +4281,10 @@ struct warrior_module_t : public module_t
                                       .cd( timespan_t::zero() )
                                       .add_invalidate( CACHE_ARMOR );
     }
-}
+  }
+
   virtual void combat_begin( sim_t* ) const {}
+
   virtual void combat_end  ( sim_t* ) const {}
 };
 
