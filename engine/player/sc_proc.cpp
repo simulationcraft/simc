@@ -67,6 +67,50 @@ static void parse_proc_flags( const std::string&      flags,
   } while ( proc_opt -> opt );
 }
 
+// Helper function to detect stat buff type from spell effect data, more
+// specifically by mapping Blizzard's effect sub types to actual stats in simc.
+static stat_e stat_buff_type( const spelleffect_data_t& effect )
+{
+  stat_e stat = STAT_NONE;
+
+  // All stat buffs in game client data are "auras"
+  if ( effect.type() != E_APPLY_AURA )
+    return stat;
+
+  switch ( effect.subtype() )
+  {
+    case A_MOD_STAT:
+      if ( effect.misc_value1() == -1 )
+        stat = STAT_ALL;
+      // Primary stats only, ratings are A_MOD_RATING
+      else
+        stat = static_cast< stat_e >( effect.misc_value1() + 1 );
+      break;
+    case A_MOD_RATING:
+      stat = util::translate_rating_mod( effect.misc_value1() );
+      break;
+    case A_MOD_INCREASE_HEALTH_2:
+    case A_MOD_INCREASE_HEALTH:
+      stat = STAT_MAX_HEALTH;
+      break;
+    case A_MOD_RESISTANCE:
+      stat = STAT_ARMOR;
+      break;
+    case A_MOD_ATTACK_POWER:
+    case A_MOD_RANGED_ATTACK_POWER:
+      stat = STAT_ATTACK_POWER;
+      break;
+    case A_MOD_DAMAGE_DONE:
+      if ( effect.misc_value1() == 0xFE )
+        stat = STAT_SPELL_POWER;
+      break;
+    default:
+      break;
+  }
+
+  return stat;
+}
+
 } // UNNAMED NAMESPACE
 
 // special_effect_t::reset ======================================
@@ -103,7 +147,7 @@ void special_effect_t::reset()
   rppm_scale = RPPM_NONE;
 
   // Must match buff creator defaults for now
-  duration = timespan_t::min();
+  duration_ = timespan_t::min();
 
   // Currently covers both cooldown and internal cooldown, as typically
   // cooldown is only used for on-use effects. Must match buff creator default
@@ -113,7 +157,7 @@ void special_effect_t::reset()
   tick = timespan_t::zero();
   
   cost_reduction = false;
-  no_refresh = false;
+  refresh = -1;
   chance_to_discharge = false;
   reverse = false;
   proc_delay = false;
@@ -159,14 +203,87 @@ const spell_data_t* special_effect_t::trigger() const
   return spell_data_t::nil();
 }
 
+// special_effect_t::is_stat_buff ===========================================
+
+bool special_effect_t::is_stat_buff() const
+{
+  if ( stat != STAT_NONE )
+    return true;
+
+  // Prioritize trigger scanning before driver scanning; in reality if both 
+  // the trigger and driver spells contain "stat buffs" (as per simc
+  // definition), the system will not support it.
+  for ( size_t i = 1, end = trigger() -> effect_count(); i <= end; i++ )
+  {
+    const spelleffect_data_t& effect = trigger() -> effectN( i );
+    if ( effect.id() == 0 )
+      continue;
+
+    if ( stat_buff_type( effect ) != STAT_NONE )
+      return true;
+  }
+
+  return false;
+}
+
+// special_effect_t::initialize_stat_buff ===================================
+
+stat_buff_t* special_effect_t::initialize_stat_buff() const
+{
+  stat_buff_creator_t creator( item -> player, name(), spell_data_t::nil(),
+                               source == SPECIAL_EFFECT_SOURCE_ITEM ? item : 0 );
+
+  if ( stat != STAT_NONE )
+    creator.add_stat( stat, stat_amount );
+
+  // Setup the spell for the stat buff
+  if ( trigger() -> id() > 0 )
+    creator.spell( trigger() );
+  else if ( driver() -> id() > 0 )
+    creator.spell( driver() );
+
+  // Setup user option overrides
+  if ( max_stacks > 0 )
+    creator.max_stack( max_stacks );
+
+  if ( duration_ > timespan_t::zero() )
+    creator.duration( duration_ );
+
+  if ( reverse )
+    creator.reverse( true );
+
+  // TODO: This should really be automagically decided by the buff_t
+  // construction
+  creator.refreshes( buff_refresh() );
+
+  return creator;
+}
+
+// special_effect_t::buff_type ==============================================
+
+special_effect_buff_e special_effect_t::buff_type() const
+{
+  if ( custom_buff != 0 )
+    return SPECIAL_EFFECT_BUFF_CUSTOM;
+  else if ( is_stat_buff() )
+    return SPECIAL_EFFECT_BUFF_STAT;
+
+  return SPECIAL_EFFECT_BUFF_NONE;
+}
+
 // special_effect_t::create_buff ============================================
 
 buff_t* special_effect_t::create_buff() const
 {
-  if ( custom_buff != 0 )
-    return custom_buff;
-
-  return 0;
+  switch ( buff_type() )
+  {
+    case SPECIAL_EFFECT_BUFF_CUSTOM:
+      return custom_buff;
+    case SPECIAL_EFFECT_BUFF_STAT:
+      return initialize_stat_buff();
+    default:
+      return 0;
+  }
 }
 
 // special_effect_t::proc_flags =============================================
@@ -221,6 +338,49 @@ timespan_t special_effect_t::cooldown() const
     return driver() -> cooldown();
   else if ( driver() -> internal_cooldown() > timespan_t::zero() )
     return driver() -> internal_cooldown();
+
+  return timespan_t::zero();
+}
+
+// special_effect_t::duration ===============================================
+
+timespan_t special_effect_t::duration() const
+{
+  if ( duration_ > timespan_t::zero() )
+    return duration_;
+  else if ( trigger() -> duration() > timespan_t::zero() )
+    return trigger() -> duration();
+  else if ( driver() -> duration() > timespan_t::zero() )
+    return driver() -> duration();
+
+  return timespan_t::zero();
+}
+
+
+// special_effect_t::buff_refresh ===========================================
+
+bool special_effect_t::buff_refresh() const
+{
+  if ( refresh != -1 )
+    return refresh == 1;
+
+  // Ticking special effects don't typically refresh duration
+  return tick_time() <= timespan_t::zero();
+}
+
+// special_effect_t::tick_time ==============================================
+
+timespan_t special_effect_t::tick_time() const
+{
+  if ( tick > timespan_t::zero() )
+    return tick;
+
+  // Search trigger for now, it's not likely that the driver is ticking
+  for ( int i = 1, end = trigger() -> effect_count(); i <= end; i++ )
+  {
+    if ( trigger() -> effectN( i ).period() > timespan_t::zero() )
+      return trigger() -> effectN( i ).period();
+  }
 
   return timespan_t::zero();
 }
@@ -288,16 +448,16 @@ std::string special_effect_t::to_string() const
   if ( trigger() -> ok() )
     s << " trigger=" << trigger() -> id();
 
-  if ( stat != STAT_NONE )
+  if ( is_stat_buff() )
   {
     s << " stat=" << util::stat_type_abbrev( stat );
     s << " amount=" << stat_amount;
-    s << " duration=" << duration.total_seconds();
-    if ( tick != timespan_t::zero() )
-      s << " tick=" << tick.total_seconds();
+    s << " duration=" << duration().total_seconds();
+    if ( tick_time() != timespan_t::zero() )
+      s << " tick=" << tick_time().total_seconds();
     if ( reverse )
       s << " Reverse";
-    if ( no_refresh )
+    if ( buff_refresh() == false )
       s << " NoRefresh";
   }
 
@@ -349,163 +509,6 @@ std::string special_effect_t::to_string() const
   }
 
   return s.str();
-}
-
-// special_effect_t::parse_spell_data =======================================
-
-// TODO: Discharge/resource procs, option verification, plumbing to item system
-// NOTE: This isn't enabled in the sim currently
-
-bool special_effect_t::parse_spell_data( const item_t& item, unsigned driver_id )
-{
-  player_t* player = item.player;
-  sim_t* sim = item.sim;
-
-  if ( stat != STAT_NONE || school != SCHOOL_NONE )
-    return true;
-
-  // No driver spell, exit early, and be content
-  if ( driver_id == 0 )
-    return true;
-
-  const spell_data_t* driver_spell = player -> find_spell( driver_id );
-
-  if ( driver_spell == spell_data_t::nil() )
-  {
-    sim -> errorf( "Player %s unable to find the proc driver spell %u for item '%s' in slot %s",
-                   player -> name(), spell_id, item.name(), item.slot_name() );
-    return false;
-  }
-
-  // Driver has the proc chance defined, typically. Use the id-based proc chance
-  // only if there's no proc chance or rppm defined for the special effect
-  // already
-  if ( proc_chance_ == -1 && ppm_ == 0 )
-  {
-    // RPPM Trumps proc chance, however in theory we could use both, as most
-    // RPPM effects give a (special?) proc chance value of 101%.
-    if ( driver_spell -> real_ppm() == 0 )
-      proc_chance_ = driver_spell -> proc_chance();
-    else
-      ppm_ = -1.0 * driver_spell -> real_ppm();
-  }
-
-  // Cooldown / Internal cooldown is defined in the driver as well
-  if ( cooldown_ == timespan_t::min() && driver_spell -> cooldown() > timespan_t::zero() )
-    cooldown_ = driver_spell -> cooldown();
-
-  if ( cooldown_ == timespan_t::min() && driver_spell -> internal_cooldown() > timespan_t::zero() )
-    cooldown_ = driver_spell -> internal_cooldown();
-
-  const spell_data_t* proc_spell = spell_data_t::nil();
-
-  if ( trigger_spell_id == 0 )
-  {
-    for ( size_t i = 1; i <= driver_spell -> effect_count(); i++ )
-    {
-      if ( ( proc_spell = driver_spell -> effectN( i ).trigger() ) != spell_data_t::nil() )
-        break;
-    }
-  }
-  else
-    proc_spell = player -> find_spell( trigger_spell_id );
-
-  if ( proc_spell == spell_data_t::nil() )
-    proc_spell = driver_spell;
-
-  if ( duration == timespan_t::min() && proc_spell -> duration() != timespan_t::zero() )
-    duration = proc_spell -> duration();
-
-  // Figure out the amplitude of the ticking effect from the proc spell, if
-  // there's no user specified tick time
-  if ( tick == timespan_t::zero() )
-  {
-    for ( size_t i = 1; i <= proc_spell -> effect_count(); i++ )
-    {
-      if ( proc_spell -> effectN( i ).type() != E_APPLY_AURA )
-        continue;
-
-      if ( proc_spell -> effectN( i ).period() != timespan_t::zero() )
-      {
-        tick = proc_spell -> effectN( i ).period();
-        break;
-      }
-    }
-  }
-
-  if ( item.item_level() == 0 )
-  {
-    sim -> errorf( "Player %s unable to compute proc attributes, no ilevel defined for item '%s' in slot %s",
-                   player -> name(), item.name(), item.slot_name() );
-    return false;
-  }
-
-  if ( max_stacks == -1 && proc_spell -> max_stacks() > 0 )
-    max_stacks = proc_spell -> max_stacks();
-
-  // Finally, compute the stats/damage of the proc based on the spell data we
-  // have, since the user has not defined the stats of the item in the equip=
-  // or use= string
-
-  bool has_ap = false;
-
-  for ( size_t i = 1; i <= proc_spell -> effect_count(); i++ )
-  {
-    const spelleffect_data_t& effect = proc_spell -> effectN( i );
-    if ( effect.type() == E_APPLY_AURA )
-    {
-      stat_e s = STAT_NONE;
-
-      if ( effect.subtype() == A_MOD_STAT )
-        s = static_cast< stat_e >( effect.misc_value1() + 1 );
-      else if ( effect.subtype() == A_MOD_RATING )
-        s = util::translate_rating_mod( effect.misc_value1() );
-      else if ( effect.subtype() == A_MOD_DAMAGE_DONE && effect.misc_value1() == 126 )
-        s = STAT_SPELL_POWER;
-      else if ( effect.subtype() == A_MOD_RESISTANCE )
-        s = STAT_ARMOR;
-      else if ( ! has_ap && ( effect.subtype() == A_MOD_ATTACK_POWER || effect.subtype() == A_MOD_RANGED_ATTACK_POWER ) )
-      {
-        s = STAT_ATTACK_POWER;
-        has_ap = true;
-      }
-      else if ( effect.subtype() == A_MOD_INCREASE_HEALTH_2 )
-        s = STAT_MAX_HEALTH;
-
-      double value = 0;
-      if ( source == SPECIAL_EFFECT_SOURCE_ITEM )
-        value = util::round( effect.average( item ) );
-      else
-        value = util::round( effect.average( item.player ) );
-
-      // Bail out on first valid non-zero stat value
-      if ( s != STAT_NONE && value != 0 )
-      {
-        stat = s;
-        stat_amount = value;
-        // On-Use stat buffs need an increase in stack count, since it may not 
-        // be explicitly defined in the spell data. Set it to 1 to suppress a 
-        // warning from the buff initialization code.
-        if ( max_stacks == -1 )
-          max_stacks = 1;
-        break;
-      }
-    }
-    else if ( effect.type() == E_SCHOOL_DAMAGE )
-    {
-      school = proc_spell -> get_school_type();
-      if ( source == SPECIAL_EFFECT_SOURCE_ITEM )
-        discharge_amount = util::round( effect.average( item ) );
-      else
-        discharge_amount = util::round( effect.average( item.player ) );
-
-      discharge_scaling = effect.coeff();
-    }
-  }
-
-  spell_id = driver_id;
-
-  return true;
 }
 
 // proc::parse_special_effect ===============================================
@@ -573,7 +576,7 @@ bool proc::parse_special_effect_encoding( special_effect_t& effect,
     }
     else if ( t.name == "duration" || t.name == "dur" )
     {
-      effect.duration = timespan_t::from_seconds( t.value );
+      effect.duration_ = timespan_t::from_seconds( t.value );
     }
     else if ( t.name == "cooldown" || t.name == "cd" )
     {
@@ -594,7 +597,7 @@ bool proc::parse_special_effect_encoding( special_effect_t& effect,
     else if ( t.name == "costrd" )
     {
       effect.cost_reduction = true;
-      effect.no_refresh = true;
+      effect.refresh = 0;
     }
     else if ( t.name == "nocrit" )
     {
@@ -638,7 +641,11 @@ bool proc::parse_special_effect_encoding( special_effect_t& effect,
     }
     else if ( t.name == "norefresh" )
     {
-      effect.no_refresh = true;
+      effect.refresh = 0;
+    }
+    else if ( t.name == "refresh" )
+    {
+      effect.refresh = 1;
     }
     else if ( t.full == "aoe" )
     {
@@ -948,68 +955,24 @@ bool proc::parse_special_effect_encoding( special_effect_t& effect,
   return true;
 }
 
-/*
- * Figure out the number of usable effects, given a spell id. It'll scan
- * through the effects in the spell, and any possible (chains) of triggred
- * spells, and see if there are any directly convertible effects to a proc (or
- * an on use effect) for simc. This function needs to be kept updated with the
- * generic support we have for procs.
- */
-int proc::usable_effects( player_t* player, unsigned spell_id )
-{
-  int n_usable = 0;
-  const spell_data_t* spell = player -> find_spell( spell_id );
-  if ( spell == spell_data_t::nil() )
-    return 0;
-
-  for ( size_t i = 1; i <= spell -> effect_count(); i++ )
-  {
-    if ( spell -> effectN( i ).trigger() != spell_data_t::nil() )
-      n_usable += usable_effects( player, spell -> effectN( i ).trigger() -> id() );
-
-    effect_type_t type = spell -> effectN( i ).type();
-    effect_subtype_t subtype = spell -> effectN( i ).subtype();
-
-    if ( type == E_SCHOOL_DAMAGE )
-      n_usable++;
-    else if ( type == E_APPLY_AURA )
-    {
-      if ( subtype == A_MOD_STAT )
-        n_usable++;
-      else if ( subtype == A_MOD_RATING )
-        n_usable++;
-      else if ( subtype == A_MOD_DAMAGE_DONE )
-        n_usable++;
-      else if ( subtype == A_MOD_RESISTANCE )
-        n_usable++;
-      else if ( subtype == A_MOD_ATTACK_POWER )
-        n_usable++;
-      else if ( subtype == A_MOD_RANGED_ATTACK_POWER )
-        n_usable++;
-      else if ( subtype == A_MOD_INCREASE_HEALTH_2 )
-        n_usable++;
-    }
-  }
-  
-  return n_usable;
-}
-
 /**
  * Ensure that the proc has enough information to actually proc in simc. This
  * essentially requires a non-zero proc_chance or PPM field in effect, or the
  * driver spell to contain a non-zero RPPM or proc chance. Additionally, we
  * need to have some sort of flags indicating what events trigger the proc.
+ *
+ * TODO: Discharge support
  */
 bool proc::usable_proc( const special_effect_t& effect )
 {
   // Valid proc flags (either old- or new style), we can proc this effect.
   if ( ( effect.trigger_type != PROC_NONE && effect.trigger_mask != 0 ) ||
        effect.proc_flags() > 0 )
-    return true;
+    return effect.buff_type() != SPECIAL_EFFECT_BUFF_NONE;
     
   // A non-zero chance to proc it through one of the proc chance triggers
   if ( effect.ppm() > 0 || effect.rppm() > 0 || effect.proc_chance() > 0 )
-    return true;
+    return effect.buff_type() != SPECIAL_EFFECT_BUFF_NONE;
 
   return false;
 }
@@ -1036,6 +999,7 @@ void dbc_proc_callback_t::initialize()
   // Initialize cooldown, if applicable
   if ( effect.cooldown() > timespan_t::zero() )
   {
+    std::cout << cooldown_name() << std::endl;
     cooldown = listener -> get_cooldown( cooldown_name() );
     cooldown -> duration = effect.cooldown();
   }
@@ -1064,6 +1028,7 @@ std::string dbc_proc_callback_t::cooldown_name() const
   std::string n = effect.driver() -> name_cstr();
   assert( ! n.empty() );
   util::tokenize( n );
+  n += "_" + util::to_string( effect.driver() -> id() );
 
   return n;
 }

@@ -1329,7 +1329,7 @@ void player_t::init_meta_gem( gear_stats_t& item_stats )
     data.stat         = STAT_HASTE_RATING;
     data.stat_amount  = 320;
     data.proc_chance_ = 0.15;
-    data.duration     = timespan_t::from_seconds( 4 );
+    data.duration_    = timespan_t::from_seconds( 4 );
     data.cooldown_    = timespan_t::from_seconds( 45 );
 
     unique_gear::register_stat_proc( this, data );
@@ -6126,17 +6126,11 @@ struct use_item_t : public action_t
 
       discharge = new discharge_spell_t( use_name.c_str(), player, e.discharge_amount, e.school, e.override_result_es_mask, e.result_es_mask );
     }
-    else if ( e.stat )
+    else if ( effect -> is_stat_buff() )
     {
       stat_buff_t* b = dynamic_cast<stat_buff_t*>( buff_t::find( player, use_name, player ) );
       if ( ! b )
-        b = stat_buff_creator_t( player, use_name )
-            .max_stack( e.max_stacks )
-            .duration( e.duration )
-            .cd( e.cooldown_ )
-            .chance( e.proc_chance_ )
-            .reverse( e.reverse )
-            .add_stat( e.stat, e.stat_amount );
+        b = effect -> initialize_stat_buff();
 
       buff = b;
     }
@@ -6178,7 +6172,7 @@ struct use_item_t : public action_t
 
       trigger -> activate();
 
-      if ( effect -> duration != timespan_t::zero() )
+      if ( effect -> duration_ != timespan_t::zero() )
       {
         struct trigger_expiration_t : public event_t
         {
@@ -6189,7 +6183,7 @@ struct use_item_t : public action_t
           trigger_expiration_t( player_t& player, item_t* i, const special_effect_t* e, action_callback_t* t ) :
             event_t( player, i -> name() ), item( i ), trigger( t ), effect( e )
           {
-            sim().add_event( this, effect -> duration );
+            sim().add_event( this, effect -> duration() );
           }
           virtual void execute()
           {
@@ -6199,7 +6193,7 @@ struct use_item_t : public action_t
 
         new ( *sim ) trigger_expiration_t( *player, item, effect, trigger );
 
-        lockout( effect -> duration );
+        lockout( effect -> duration() );
       }
     }
     else if ( buff )

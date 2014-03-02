@@ -479,6 +479,14 @@ enum special_effect_source_e
   SPECIAL_EFFECT_SOURCE_SOCKET_BONUS
 };
 
+enum special_effect_buff_e
+{
+  SPECIAL_EFFECT_BUFF_NONE = -1,
+  SPECIAL_EFFECT_BUFF_CUSTOM,
+  SPECIAL_EFFECT_BUFF_STAT,
+  SPECIAL_EFFECT_BUFF_ABSORB
+};
+
 enum action_e { ACTION_USE = 0, ACTION_SPELL, ACTION_ATTACK, ACTION_HEAL, ACTION_ABSORB, ACTION_SEQUENCE, ACTION_OTHER, ACTION_MAX };
 
 enum school_e
@@ -3226,9 +3234,9 @@ struct special_effect_t
   double proc_chance_;
   double ppm_;
   rppm_scale_e rppm_scale;
-  timespan_t duration, cooldown_, tick;
+  timespan_t duration_, cooldown_, tick;
   bool cost_reduction;
-  bool no_refresh;
+  int refresh;
   bool chance_to_discharge;
   unsigned int override_result_es_mask;
   unsigned result_es_mask;
@@ -3255,7 +3263,13 @@ struct special_effect_t
   const spell_data_t* driver() const;
   const spell_data_t* trigger() const;
   std::string name() const;
+
+  // Buff related functionality
   buff_t* create_buff() const;
+  special_effect_buff_e buff_type() const;
+
+  bool is_stat_buff() const;
+  stat_buff_t* initialize_stat_buff() const;
 
   /* Accessors for driver specific features of the proc; some are also used for on-use effects */
   unsigned proc_flags() const;
@@ -3264,6 +3278,12 @@ struct special_effect_t
   double rppm() const;
   double proc_chance() const;
   timespan_t cooldown() const;
+
+  /* Accessors for buff specific features of the proc. */
+  timespan_t duration() const;
+  timespan_t tick_time() const;
+  bool buff_refresh() const;
+
 };
 
 // Item =====================================================================
@@ -5948,14 +5968,14 @@ public:
   }
 
   real_ppm_t() :
-    player( 0 ), freq( std::numeric_limits<double>::min() ), modifier( 0 ), rppm( 0 ),
+    player( 0 ), freq( 0 ), modifier( 0 ), rppm( 0 ),
     last_trigger_attempt( timespan_t::from_seconds( -10.0 ) ),
     last_successful_trigger( timespan_t::from_seconds( -120.0 ) ),
     initial_precombat_time( timespan_t::from_seconds( -120.0 ) ), // Assume 5min out of combat before pull
     scales_with( RPPM_NONE )
   { }
 
-  real_ppm_t( player_t& p, double frequency = std::numeric_limits<double>::min(), rppm_scale_e s = RPPM_NONE, unsigned spell_id = 0 ) :
+  real_ppm_t( player_t& p, double frequency = 0, rppm_scale_e s = RPPM_NONE, unsigned spell_id = 0 ) :
     player( &p ),
     freq( frequency ),
     modifier( p.dbc.rppm_coefficient( p.specialization(), spell_id ) ),
@@ -5989,7 +6009,7 @@ public:
 
   bool trigger()
   {
-    assert( freq != std::numeric_limits<double>::min() && "Real PPM Frequency not set!" );
+    assert( freq != 0 && "Real PPM Frequency not set!" );
 
     if ( last_trigger_attempt == player -> sim -> current_time )
       return false;
@@ -6149,6 +6169,7 @@ private:
       return rng().roll( proc_chance );
 
     assert( false );
+    return false;
   }
 
   /**
@@ -6511,7 +6532,6 @@ size_t parse_tokens( std::vector<token_t>& tokens, const std::string& encoded_st
 namespace proc
 {
   bool parse_special_effect_encoding( special_effect_t& effect, const item_t& item, const std::string& str );
-  int usable_effects( player_t* player, unsigned spell_id );
   bool usable_proc( const special_effect_t& effect );
 }
 

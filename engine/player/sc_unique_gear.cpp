@@ -334,10 +334,10 @@ struct stat_buff_proc_t : public buff_proc_callback_t<stat_buff_t>
     buff = stat_buff_creator_t( listener, proc_data.name() )
            .activated( data.reverse || data.tick != timespan_t::zero() )
            .max_stack( proc_data.max_stacks )
-           .duration( proc_data.duration )
+           .duration( proc_data.duration_ )
            .cd( proc_data.cooldown_ )
            .reverse( proc_data.reverse )
-           .refreshes( ! proc_data.no_refresh )
+           .refreshes( proc_data.buff_refresh() )
            .add_stat( proc_data.stat, proc_data.stat_amount );
   }
 };
@@ -350,11 +350,11 @@ struct cost_reduction_buff_proc_t : public buff_proc_callback_t<cost_reduction_b
     buff = cost_reduction_buff_creator_t( listener, proc_data.name_str )
            .activated( false )
            .max_stack( proc_data.max_stacks )
-           .duration( proc_data.duration )
+           .duration( proc_data.duration_ )
            .cd( proc_data.cooldown_ )
            .reverse( proc_data.reverse )
            .amount( proc_data.discharge_amount )
-           .refreshes( ! proc_data.no_refresh );
+           .refreshes( proc_data.buff_refresh() );
   }
 };
 
@@ -460,7 +460,7 @@ struct stat_discharge_proc_callback_t : public discharge_proc_t<action_t>
 
     buff = stat_buff_creator_t( p, proc_data.name_str )
            .max_stack( proc_data.max_stacks )
-           .duration( proc_data.duration )
+           .duration( proc_data.duration_ )
            .cd( proc_data.cooldown_ )
            .chance( proc_data.proc_chance_ )
            .activated( false /* proc_data.activated */ )
@@ -1246,7 +1246,7 @@ void delicate_vial_of_the_sanguinaire( item_t* item )
 
   special_effect_t data;
   data.name_str    = "delicate_vial_of_the_sanguinaire";
-  data.duration    = spell -> duration();
+  data.duration_   = spell -> duration();
   data.max_stacks  = spell -> max_stacks();
   data.proc_chance_ = spell -> proc_chance();
 
@@ -1296,7 +1296,7 @@ void item::rune_of_reorigination( special_effect_t& effect,
     {
       buff = stat_buff_creator_t( listener, proc_data.name_str )
              .activated( false )
-             .duration( proc_data.duration )
+             .duration( proc_data.duration_ )
              .add_stat( STAT_CRIT_RATING, 0 )
              .add_stat( STAT_HASTE_RATING, 0 )
              .add_stat( STAT_MASTERY_RATING, 0 );
@@ -1377,7 +1377,7 @@ void item::rune_of_reorigination( special_effect_t& effect,
   effect.ppm_         = -1.0 * driver -> real_ppm();
   effect.ppm_        *= item_database::approx_scale_coefficient( 528, item.item_level() );
   effect.cooldown_    = driver -> internal_cooldown(); 
-  effect.duration    = spell -> duration();
+  effect.duration_   = spell -> duration();
 
   item.player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new rune_of_reorigination_callback_t( item, effect ) );
 }
@@ -1393,7 +1393,7 @@ void item::spark_of_zandalar( special_effect_t& effect,
 
   effect.name_str    = "spark_of_zandalar";
   effect.ppm_         = -1.0 * driver -> real_ppm();
-  effect.duration    = spell -> duration();
+  effect.duration_   = spell -> duration();
   effect.max_stacks  = spell -> max_stacks();
 
   struct spark_of_zandalar_callback_t : public proc_callback_t<action_state_t>
@@ -1406,7 +1406,7 @@ void item::spark_of_zandalar( special_effect_t& effect,
     {
       sparks = buff_creator_t( listener, proc_data.name_str )
                .activated( false )
-               .duration( proc_data.duration )
+               .duration( proc_data.duration_ )
                .max_stack( proc_data.max_stacks );
 
       const spell_data_t* spell = listener -> find_spell( 138960 );
@@ -1799,9 +1799,9 @@ void item::black_blood_of_yshaarj( special_effect_t& effect,
   effect.tick = ticker -> effectN( 1 ).period();
   effect.stat = static_cast<stat_e>( spell -> effectN( 1 ).misc_value1() + 1 );
   effect.stat_amount = value;
-  effect.duration = ticker -> duration();
+  effect.duration_ = ticker -> duration();
   effect.max_stacks = spell -> max_stacks();
-  effect.no_refresh = true;
+  effect.refresh = 0;
 
   stat_buff_proc_t* cb = new stat_buff_proc_t( item.player, effect );
   item.player -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
@@ -2059,25 +2059,6 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
   // otherwise there's no point in trying to proc anything
   if ( effect.type == SPECIAL_EFFECT_EQUIP && ! proc::usable_proc( effect ) )
     effect.type = SPECIAL_EFFECT_NONE;
-  // Generic procs will go through game client data based parsing, or be 
-  // discarded, if there's nothing that simc can use to generate the proc
-  // automatically
-  else if ( effect.type != SPECIAL_EFFECT_CUSTOM )
-  {
-    // A "parseable" special effect in either the spell_id given
-    if ( proc::usable_effects( item.player, spell_id ) > 0 )
-      ret = effect.parse_spell_data( item, spell_id );
-    // .. or the user given trigger_spell_id
-    else if ( effect.trigger_spell_id > 0 && 
-              proc::usable_effects( item.player, effect.trigger_spell_id ) )
-      ret = effect.parse_spell_data( item, spell_id );
-    // No special effects, so no real point in making a special_effect_t. The
-    // item_t decode_x functions will not push the effect to the item's
-    // parsed special effect vector, unless effect.type is of the correct
-    // type.
-    else
-      effect.type = SPECIAL_EFFECT_NONE;
-  }
 
   return ret;
 }
@@ -2112,6 +2093,7 @@ void unique_gear::init( player_t* p )
       if ( p -> sim -> debug )
         p -> sim -> out_debug.printf( "Initializing special effect %s", effect.to_string().c_str() );
 
+/*
       if ( effect.type == SPECIAL_EFFECT_EQUIP )
       {
         if ( effect.stat && effect.school )
@@ -2135,13 +2117,16 @@ void unique_gear::init( player_t* p )
           register_discharge_proc( p, effect );
         }
       }
-      else if ( effect.type == SPECIAL_EFFECT_CUSTOM )
+*/
+      if ( effect.type == SPECIAL_EFFECT_CUSTOM )
       {
         assert( effect.spell_id > 0 );
         const special_effect_db_item_t& dbitem = find_special_effect_db_item( effect.spell_id );
         assert( dbitem.custom_cb != 0 );
         dbitem.custom_cb( effect, item, dbitem );
       }
+      else
+        new dbc_proc_callback_t( item, effect );
     }
 
     if ( ! strcmp( item.name(), "delicate_vial_of_the_sanguinaire"    ) ) delicate_vial_of_the_sanguinaire  ( &item );

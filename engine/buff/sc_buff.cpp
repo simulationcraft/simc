@@ -1129,7 +1129,7 @@ stat_buff_t::stat_buff_t( const stat_buff_creator_t& params ) :
         s = STAT_ATTACK_POWER;
         has_ap = true;
       }
-      else if ( effect.subtype() == A_MOD_INCREASE_HEALTH_2 )
+      else if ( effect.subtype() == A_MOD_INCREASE_HEALTH_2 || effect.subtype() == A_MOD_INCREASE_HEALTH )
         s = STAT_MAX_HEALTH;
 
       if ( params.item )
