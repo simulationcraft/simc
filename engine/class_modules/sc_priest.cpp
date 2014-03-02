@@ -1857,7 +1857,6 @@ struct priest_procced_mastery_spell_t : public priest_spell_t
                                   const spell_data_t* s = spell_data_t::nil() ) :
     priest_spell_t( n, p, p.mastery_spells.shadowy_recall -> ok() ? s : spell_data_t::not_found() )
   {
-    stormlash_da_multiplier = 0.0;
     background              = true;
     proc                    = false;
     base_execute_time       = timespan_t::zero();
@@ -2684,8 +2683,6 @@ struct mind_flay_base_t : public priest_spell_t
     may_crit     = false;
     channeled    = true;
     hasted_ticks = false;
-    stormlash_da_multiplier = 0.0;
-    stormlash_ta_multiplier = 1.0;
 
     if ( p.mastery_spells.shadowy_recall -> ok() )
     {
@@ -3282,8 +3279,6 @@ public:
   cascade_base_t( const std::string& n, priest_t& p, const std::string& options_str, const spell_data_t* scaling_data ) :
     ab( n, p, p.find_talent_spell( "Cascade" ) )
   {
-    ab::stormlash_da_multiplier = 0.0;
-
     ab::parse_options( nullptr, options_str );
 
     ab::parse_effect_data( scaling_data -> effectN( 1 ) ); // Parse damage or healing numbers from the scaling spell
@@ -3513,7 +3508,6 @@ public:
     return_spell( ( is_return_spell ? nullptr : new divine_star_base_t( n, p, spell_data, true ) ) )
   {
     ab::aoe = -1;
-    ab::stormlash_da_multiplier = 0.0;
 
     if ( ab::data().ok() )
     {

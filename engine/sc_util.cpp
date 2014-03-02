@@ -1288,7 +1288,7 @@ const char* util::movement_direction_string( movement_direction_e m )
 {
   switch ( m )
   {
-    case MOVEMENT_PARALLEL: return "parallel";
+    case MOVEMENT_OMNI: return "omni";
     case MOVEMENT_TOWARDS: return "towards";
     case MOVEMENT_AWAY: return "away"; 
     case MOVEMENT_RANDOM: return "random";

@@ -542,7 +542,6 @@ bool parse_fight_style( sim_t*             sim,
   {
     sim -> fight_style = "RaidDummy";
     sim -> overrides.bloodlust = 0;
-    sim -> overrides.stormlash = 0;
     sim -> overrides.target_health = 50000000;
     sim -> target_death_pct = 0;
     sim -> allow_potions = false;
@@ -1136,44 +1135,6 @@ void sim_t::combat_begin()
 
     new ( *this ) bloodlust_check_t( *this );
   }
-
-  if ( overrides.stormlash )
-  {
-    struct stormlash_proxy_t : public proxy_cast_check_t
-    {
-      stormlash_proxy_t( sim_t& s, int u, timespan_t st, timespan_t i ) :
-        proxy_cast_check_t( s, u, st, i, timespan_t::from_seconds( 300 ), timespan_t::from_seconds( 10 ), s.overrides.stormlash )
-      { }
-
-      // Sync to (reasonably) early proxy-Bloodlust if available
-      bool proxy_check()
-      {
-        sim_t& sim = this -> sim();
-        return sim.bloodlust_time <= timespan_t::zero() ||
-               sim.bloodlust_time >= timespan_t::from_seconds( 30 ) ||
-               ( sim.bloodlust_time > timespan_t::zero() && sim.bloodlust_time < timespan_t::from_seconds( 30 ) &&
-                 sim.current_time > sim.bloodlust_time + timespan_t::from_seconds( 1 ) );
-      }
-
-      void proxy_execute()
-      {
-        for ( size_t i = 0; i < sim().player_list.size(); ++i )
-        {
-          player_t* p = sim().player_list[ i ];
-          if ( p -> type == PLAYER_GUARDIAN )
-            continue;
-
-          p -> buffs.stormlash -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
-        }
-      }
-
-      proxy_cast_check_t* proxy_schedule( timespan_t interval )
-      { return new ( sim() ) stormlash_proxy_t( sim(), uses, start_time, interval ); }
-    };
-
-    new ( *this ) stormlash_proxy_t( *this, 0, timespan_t::zero(), timespan_t::from_seconds( 0.25 ) );
-  }
-
 
   cancel_iteration( false );
 
@@ -1843,7 +1804,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.bleeding                = optimal_raid;
 
   overrides.bloodlust               = optimal_raid;
-  overrides.stormlash               = ( optimal_raid ) ? 2 : 0;
 }
 
 // sim_t::time_to_think =====================================================
@@ -1969,7 +1929,6 @@ void sim_t::create_options()
     opt_int( "override.bleeding", overrides.bleeding ),
     opt_func( "override.spell_data", parse_override_spell_data ),
     opt_float( "override.target_health", overrides.target_health ),
-    opt_int( "override.stormlash", overrides.stormlash ),
     // Lag
     opt_timespan( "channel_lag", channel_lag ),
     opt_timespan( "channel_lag_stddev", channel_lag_stddev ),

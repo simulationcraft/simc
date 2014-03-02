@@ -702,9 +702,6 @@ struct mage_state_t
       if ( b == static_cast<player_t&>( mage ).buffs.exhaustion )
         continue;
 
-      if ( b == static_cast<player_t&>( mage ).buffs.stormlash )
-        continue;
-
       buff_states.push_back( buff_state_t( b ) );
     }
 
@@ -1606,6 +1603,8 @@ struct blink_t : public mage_spell_t
     parse_options( NULL, options_str );
 
     harmful = false;
+    base_teleport_distance = 20;
+    movement_directionality = MOVEMENT_OMNI;
   }
 
   virtual void execute()

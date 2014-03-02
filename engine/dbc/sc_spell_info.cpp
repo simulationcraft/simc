@@ -443,6 +443,14 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   if ( e -> trigger_spell_id() != 0 )
     s << " | Trigger Spell: " << e -> trigger_spell_id();
 
+  if ( e -> radius() > 0 || e -> radius_max() > 0 )
+  {
+    s << " | Radius: " << e -> radius();
+    if ( e -> radius_max() > 0 && e -> radius_max() != e -> radius() )
+      s << " - " << e -> radius_max();
+    s << " yards";
+  }
+
   s << std::endl;
   return s;
 }

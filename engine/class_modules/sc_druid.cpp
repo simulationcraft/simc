@@ -2653,6 +2653,38 @@ struct savage_roar_t : public cat_attack_t
   }
 };
 
+// Shattering Blow ==========================================================
+
+struct shattering_blow_t : public cat_attack_t
+{
+  shattering_blow_t( druid_t* player, const std::string& options_str ) :
+    cat_attack_t( "shattering_blow", player,
+                  ( player -> specialization() == DRUID_FERAL ) ? player -> find_spell( 112997 ) : spell_data_t::not_found() )
+  {
+    parse_options( NULL, options_str );
+    special = true; // FIXME: don't know if this actually consumes DoC
+  }
+
+  virtual void impact( action_state_t* s )
+  {
+    cat_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+      s -> target -> debuffs.shattering_throw -> trigger();
+  }
+
+  virtual bool ready()
+  {
+    if ( p() -> buff.symbiosis -> value() != WARRIOR )
+      return false;
+
+    if ( target -> debuffs.shattering_throw -> check() )
+      return false;
+
+    return cat_attack_t::ready();
+  }
+};
+
 // Shred ====================================================================
 
 struct shred_t : public cat_attack_t
@@ -5865,6 +5897,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "rip"                    ) return new                    rip_t( this, options_str );
   if ( name == "savage_roar"            ) return new            savage_roar_t( this, options_str );
   if ( name == "savage_defense"         ) return new         savage_defense_t( this, options_str );
+  if ( name == "shattering_blow"        ) return new        shattering_blow_t( this, options_str );
   if ( name == "shred"                  ) return new                  shred_t( this, options_str );
   if ( name == "skull_bash_bear"        ) return new        skull_bash_bear_t( this, options_str );
   if ( name == "skull_bash_cat"         ) return new         skull_bash_cat_t( this, options_str );
