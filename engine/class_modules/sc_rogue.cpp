@@ -121,8 +121,8 @@ struct rogue_t : public player_t
     buff_t* vanish;
     buff_t* wound_poison;
 
-    tick_buff_t* envenom;
-    tick_buff_t* slice_and_dice;
+    buff_t* envenom;
+    buff_t* slice_and_dice;
 
     // Legendary buffs
     buff_t* fof_fod; // Fangs of the Destroyer
@@ -1387,10 +1387,10 @@ struct envenom_t : public rogue_attack_t
   {
     rogue_td_t* td = this -> td( target );
 
-    timespan_t envenom_duration = p() -> buffs.envenom -> period * ( 1 + td -> combo_points.count );
+    timespan_t envenom_duration = p() -> buffs.envenom -> buff_period * ( 1 + td -> combo_points.count );
 
     if ( p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
-      envenom_duration += p() -> buffs.envenom -> period;
+      envenom_duration += p() -> buffs.envenom -> buff_period;
     p() -> buffs.envenom -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, envenom_duration );
 
     rogue_attack_t::execute();
@@ -1415,7 +1415,7 @@ struct envenom_t : public rogue_attack_t
       double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
       if ( p() -> mastery.executioner -> ok() )
         snd *= 1.0 + p() -> cache.mastery_value();
-      timespan_t snd_duration = 3 * 6 * p() -> buffs.slice_and_dice -> period;
+      timespan_t snd_duration = 3 * 6 * p() -> buffs.slice_and_dice -> buff_period;
 
       p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
     }
@@ -1455,7 +1455,7 @@ struct eviscerate_t : public rogue_attack_t
       double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
       if ( p() -> mastery.executioner -> ok() )
         snd *= 1.0 + p() -> cache.mastery_value();
-      timespan_t snd_duration = 3 * 6 * p() -> buffs.slice_and_dice -> period;
+      timespan_t snd_duration = 3 * 6 * p() -> buffs.slice_and_dice -> buff_period;
 
       p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
     }
@@ -2123,10 +2123,10 @@ struct slice_and_dice_t : public rogue_attack_t
     double snd = p() -> buffs.slice_and_dice -> data().effectN( 1 ).percent();
     if ( p() -> mastery.executioner -> ok() )
       snd *= 1.0 + p() -> cache.mastery_value();
-    timespan_t snd_duration = 3 * ( action_cp + 1 ) * p() -> buffs.slice_and_dice -> period;
+    timespan_t snd_duration = 3 * ( action_cp + 1 ) * p() -> buffs.slice_and_dice -> buff_period;
 
     if ( p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
-      snd_duration += 3 * p() -> buffs.slice_and_dice -> period;
+      snd_duration += 3 * p() -> buffs.slice_and_dice -> buff_period;
 
     p() -> buffs.slice_and_dice -> trigger( 1, snd, -1.0, snd_duration );
   }
@@ -3525,6 +3525,16 @@ void rogue_t::init_scaling()
 
 // rogue_t::init_buffs ======================================================
 
+static void energetic_recovery( buff_t* buff, int, int )
+{
+  rogue_t* p = debug_cast<rogue_t*>( buff -> player );
+
+  if ( p -> spec.energetic_recovery -> ok() )
+    p -> resource_gain( RESOURCE_ENERGY,
+                        p -> spec.energetic_recovery -> effectN( 1 ).base_value(),
+                        p -> gains.energetic_recovery );
+}
+
 void rogue_t::create_buffs()
 {
   // Handle the Legendary here, as it's called after init_items()
@@ -3601,10 +3611,13 @@ void rogue_t::create_buffs()
                              .duration( find_spell( 11327 ) -> duration() + glyph.vanish -> effectN( 1 ).time_value() );
 
   // Envenom is controlled by the non-harmful dot applied to player when envenom is used
-  buffs.envenom            = tick_buff_creator_t( this, "envenom", find_specialization_spell( "Envenom" ) )
-                             .duration( timespan_t::min() );
-  buffs.slice_and_dice     = tick_buff_creator_t( this, "slice_and_dice", find_class_spell( "Slice and Dice" ) )
+  buffs.envenom            = buff_creator_t( this, "envenom", find_specialization_spell( "Envenom" ) )
                              .duration( timespan_t::min() )
+                             .tick_behavior( BUFF_TICK_REFRESH );
+  buffs.slice_and_dice     = buff_creator_t( this, "slice_and_dice", find_class_spell( "Slice and Dice" ) )
+                             .duration( timespan_t::min() )
+                             .tick_behavior( BUFF_TICK_REFRESH )
+                             .tick_callback( energetic_recovery )
                              .add_invalidate( CACHE_ATTACK_SPEED );
 
   // Legendary buffs
@@ -3793,14 +3806,6 @@ void rogue_t::regen( timespan_t periodicity )
 
       resource_gain( RESOURCE_ENERGY, energy_regen, gains.adrenaline_rush );
     }
-  }
-
-  if ( buffs.slice_and_dice -> up() && spec.energetic_recovery -> ok() )
-  {
-    double rps = spec.energetic_recovery -> effectN( 1 ).base_value() /
-                 buffs.slice_and_dice -> data().effectN( 2 ).period().total_seconds();
-
-    resource_gain( RESOURCE_ENERGY, rps * periodicity.total_seconds(), gains.energetic_recovery );
   }
 }
 

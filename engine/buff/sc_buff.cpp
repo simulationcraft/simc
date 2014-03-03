@@ -48,6 +48,51 @@ struct expiration_t : public buff_event_t
   }
 };
 
+struct tick_t : public buff_event_t
+{
+  double current_value;
+  int current_stacks;
+
+  tick_t( buff_t* b, timespan_t d, double value, int stacks ) :
+    buff_event_t( b, d ), current_value( value ), current_stacks( stacks )
+  { }
+
+  void execute()
+  {
+    // For tick number calculations, always include the +1ms so we get correct
+    // tick number labeling on the last tick, just before the buff expires.
+    timespan_t elapsed = buff -> elapsed( buff -> sim -> current_time ) + timespan_t::from_millis( 1 ),
+               total_duration = elapsed + buff -> remains();
+    int current_tick = static_cast<int>( elapsed / buff -> buff_period ),
+        total_ticks = static_cast<int>( total_duration / buff -> buff_period );
+
+    if ( buff -> sim -> debug )
+      buff -> sim -> out_debug.printf( "%s buff %s ticks (%d of %d).", buff -> player -> name(), buff -> name(), current_tick, total_ticks );
+
+    // Tick callback is called before the aura stack count is altered to ensure
+    // that the buff is always up during the "tick". Last tick detection can be
+    // made through the int arguments passed to the function call.
+    if ( buff -> tick_callback )
+      buff -> tick_callback( buff, current_tick, total_ticks );
+
+    if ( ! buff -> reverse )
+      buff -> bump( current_stacks, current_value );
+    else
+      buff -> decrement( current_stacks, current_value );
+
+    timespan_t period = buff -> buff_period;
+    if ( buff -> remains() >= period )
+    {
+      // Reorder the last tick to happen 1ms before expiration
+      if ( buff -> remains() == period )
+        period -= timespan_t::from_millis( 1 );
+      buff -> tick_event = new ( *buff -> sim ) tick_t( buff, period, current_value, current_stacks );
+    }
+    else
+      buff -> tick_event = 0;
+  }
+};
+
 struct buff_delay_t : public buff_event_t
 {
   double     value;
@@ -97,7 +142,6 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   default_value( DEFAULT_VALUE() ),
   activated( true ),
   reactable( false ),
-  refreshes( true ),
   reverse(),
   constant(),
   quiet(),
@@ -107,6 +151,9 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   current_stack(),
   buff_duration( timespan_t() ),
   default_chance( 1.0 ),
+  buff_period( timespan_t::min() ),
+  tick_behavior( BUFF_TICK_NONE ),
+  tick_event( 0 ),
   last_start( timespan_t() ),
   last_trigger( timespan_t() ),
   iteration_uptime_sum( timespan_t() ),
@@ -212,8 +259,39 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   if ( params._activated != -1 )
     activated = params._activated != 0;
 
-  if ( params._refreshes != -1 )
-    refreshes = params._refreshes != 0;
+  if ( params._behavior != BUFF_TICK_NONE )
+    tick_behavior = params._behavior;
+
+  if ( params._period > timespan_t::zero() )
+    buff_period = params._period;
+  else
+  {
+    for ( size_t i = 1; i <= s_data -> effect_count(); i++ )
+    {
+      const spelleffect_data_t& e = s_data -> effectN( i );
+      if ( ! e.ok() || e.type() != E_APPLY_AURA )
+        continue;
+
+      switch ( e.subtype() )
+      {
+        case A_PERIODIC_ENERGIZE:
+        case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
+        case A_PERIODIC_HEALTH_FUNNEL:
+        case A_PERIODIC_MANA_LEECH:
+        case A_PERIODIC_DAMAGE_PERCENT:
+        case A_PERIODIC_DUMMY:
+        case A_PERIODIC_TRIGGER_SPELL:
+        {
+          buff_period = e.period();
+          break;
+        }
+        default: break;
+      }
+    }
+  }
+
+  if ( params._tick_callback )
+    tick_callback = params._tick_callback;
 
   invalidate_list = params._invalidate_list;
   requires_invalidation = ! invalidate_list.empty();
@@ -593,6 +671,18 @@ void buff_t::start( int        stacks,
   if ( d > timespan_t::zero() )
   {
     expiration = new ( *sim ) expiration_t( this, d );
+
+    if ( tick_behavior != BUFF_TICK_NONE && 
+         buff_period > timespan_t::zero() &&
+         buff_period <= d )
+    {
+      timespan_t tick_time = buff_period;
+      // Reorder the last tick to happen 1ms before expiration
+      if ( tick_time == d )
+        tick_time -= timespan_t::from_millis( 1 );
+      assert( ! tick_event );
+      tick_event = new ( *sim ) tick_t( this, tick_time, current_value, stacks );
+    }
   }
 }
 
@@ -606,23 +696,49 @@ void buff_t::refresh( int        stacks,
 
   bump( stacks, value );
 
-  if ( refreshes )
-  {
-    refresh_count++;
+  refresh_count++;
 
-    timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
-    // Make sure we always cancel the expiration event if we get an
-    // infinite duration
-    if ( d <= timespan_t::zero() )
-      core_event_t::cancel( expiration );
+  timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
+
+  // Carryover on ticking buffs that refresh, instead of clip
+  if ( d > timespan_t::zero() && buff_period > timespan_t::zero() && tick_behavior == BUFF_TICK_REFRESH )
+  {
+    timespan_t carryover = remains() % buff_period;
+    assert( carryover < buff_period );
+
+    if ( sim -> debug )
+      sim -> out_debug.printf( "%s %s carryover duration from ongoing tick: %.3f", 
+          player -> name(), name(), carryover.total_seconds() );
+
+    d += carryover;
+  }
+
+  // Make sure we always cancel the expiration event if we get an
+  // infinite duration
+  if ( d <= timespan_t::zero() )
+  {
+    core_event_t::cancel( expiration );
+    // Infinite ticking buff refreshes shouldnt happen, but cancel ongoing 
+    // tick event just to be sure.
+    core_event_t::cancel( tick_event );
+  }
+  else
+  {
+    assert( d > timespan_t::zero() );
+    // Infinite duration -> duration of d
+    if ( ! expiration )
+      expiration = new ( *sim ) expiration_t( this, d );
     else
+      expiration -> reschedule( d );
+
+    if ( tick_event && tick_behavior == BUFF_TICK_CLIP )
     {
-      assert( d > timespan_t::zero() );
-      // Infinite duration -> duration of d
-      if ( ! expiration )
-        expiration = new ( *sim ) expiration_t( this, d );
-      else
-        expiration -> reschedule( d );
+      core_event_t::cancel( tick_event );
+      timespan_t tick_time = buff_period;
+      // Reorder the last tick to happen 1ms before expiration
+      if ( tick_time == d )
+        tick_time -= timespan_t::from_millis( 1 );
+      tick_event = new ( *sim ) tick_t( this, tick_time, current_value, stacks );
     }
   }
 }
@@ -633,8 +749,8 @@ void buff_t::bump( int stacks, double value )
 {
   if ( _max_stack == 0 ) return;
 
-
   current_value = value;
+
   if ( requires_invalidation ) invalidate_cache();
 
   if ( max_stack() < 0 )
@@ -720,8 +836,8 @@ void buff_t::expire( timespan_t delay )
     core_event_t::cancel( expiration_delay );
   }
 
-
   core_event_t::cancel( expiration );
+  core_event_t::cancel( tick_event );
 
   assert( as<std::size_t>( current_stack ) < stack_uptime.size() );
   stack_uptime[ current_stack ] -> update( false, sim -> current_time );
@@ -823,6 +939,7 @@ void buff_t::reset()
 {
   core_event_t::cancel( delay );
   core_event_t::cancel( expiration_delay );
+  core_event_t::cancel( tick_event );
   cooldown -> reset( false );
   expire();
   last_start = timespan_t::min();
@@ -1349,42 +1466,8 @@ void haste_buff_t::expire_override()
     player -> off_hand_attack -> reschedule_auto_attack( old_attack_speed );
 }
 
-// ==========================================================================
-// TICK_BUFF
-// ==========================================================================
-
-tick_buff_t::tick_buff_t( const tick_buff_creator_t& params ) :
-  buff_t( params ), period( params._period )
-{
-  if ( ! s_data || s_data == spell_data_t::nil() || s_data == spell_data_t::not_found() || period != timespan_t::min() )
-    return;
-
-  for ( size_t i = 1; i <= s_data -> effect_count(); i++ )
-  {
-    const spelleffect_data_t& e = s_data -> effectN( i );
-    if ( ! e.ok() || e.type() != E_APPLY_AURA )
-      continue;
-
-    switch ( e.subtype() )
-    {
-      case A_PERIODIC_ENERGIZE:
-      case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
-      case A_PERIODIC_HEALTH_FUNNEL:
-      case A_PERIODIC_MANA_LEECH:
-      case A_PERIODIC_DAMAGE_PERCENT:
-      case A_PERIODIC_DUMMY:
-      case A_PERIODIC_TRIGGER_SPELL:
-      {
-        period = e.period();
-        break;
-      }
-      default: break;
-    }
-  }
-}
-
 // tick_buff_t::trigger =====================================================
-
+/*
 bool tick_buff_t::trigger( int stacks, double value, double chance, timespan_t duration )
 {
   assert( period > timespan_t::zero() );
@@ -1408,7 +1491,7 @@ bool tick_buff_t::trigger( int stacks, double value, double chance, timespan_t d
 
   return buff_t::trigger( stacks, value, chance, duration );
 }
-
+*/
 // ==========================================================================
 // DEBUFF
 // ==========================================================================
@@ -1498,11 +1581,12 @@ void buff_creator_basics_t::init()
   _max_stack = -1;
   _duration = timespan_t::min();
   _cooldown = timespan_t::min();
+  _period = timespan_t::min();
   _quiet = -1;
   _reverse = -1;
   _activated = -1;
+  _behavior = BUFF_TICK_NONE;
   _default_value = buff_t::DEFAULT_VALUE();
-  _refreshes = -1;
 }
 
 buff_creator_basics_t::buff_creator_basics_t( actor_pair_t p, const std::string& n, const spell_data_t* sp, const item_t* item ) :
