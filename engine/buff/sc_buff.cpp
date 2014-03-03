@@ -68,7 +68,7 @@ struct tick_t : public buff_event_t
     // Tick callback is called before the aura stack count is altered to ensure
     // that the buff is always up during the "tick". Last tick detection can be
     // made through the int arguments passed to the function call.
-    if ( buff -> tick_callback.target<void(buff_t*, int, int)>() != 0 )
+    if ( buff -> tick_callback )
       buff -> tick_callback( buff, current_tick, total_ticks );
 
     if ( ! buff -> reverse )
@@ -286,7 +286,7 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
     }
   }
 
-  if ( params._tick_callback.target<void(buff_t*, int, int)>() != 0 )
+  if ( params._tick_callback )
     tick_callback = params._tick_callback;
 
   invalidate_list = params._invalidate_list;

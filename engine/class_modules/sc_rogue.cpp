@@ -3525,6 +3525,16 @@ void rogue_t::init_scaling()
 
 // rogue_t::init_buffs ======================================================
 
+static void energetic_recovery( buff_t* buff, int, int )
+{
+  rogue_t* p = debug_cast<rogue_t*>( buff -> player );
+
+  if ( p -> spec.energetic_recovery -> ok() )
+    p -> resource_gain( RESOURCE_ENERGY,
+                        p -> spec.energetic_recovery -> effectN( 1 ).base_value(),
+                        p -> gains.energetic_recovery );
+}
+
 void rogue_t::create_buffs()
 {
   // Handle the Legendary here, as it's called after init_items()
@@ -3607,6 +3617,7 @@ void rogue_t::create_buffs()
   buffs.slice_and_dice     = buff_creator_t( this, "slice_and_dice", find_class_spell( "Slice and Dice" ) )
                              .duration( timespan_t::min() )
                              .tick_behavior( BUFF_TICK_REFRESH )
+                             .tick_callback( std::function<void(buff_t*, int, int)>( energetic_recovery ) )
                              .add_invalidate( CACHE_ATTACK_SPEED );
 
   // Legendary buffs
@@ -3795,14 +3806,6 @@ void rogue_t::regen( timespan_t periodicity )
 
       resource_gain( RESOURCE_ENERGY, energy_regen, gains.adrenaline_rush );
     }
-  }
-
-  if ( buffs.slice_and_dice -> up() && spec.energetic_recovery -> ok() )
-  {
-    double rps = spec.energetic_recovery -> effectN( 1 ).base_value() /
-                 buffs.slice_and_dice -> data().effectN( 2 ).period().total_seconds();
-
-    resource_gain( RESOURCE_ENERGY, rps * periodicity.total_seconds(), gains.energetic_recovery );
   }
 }
 

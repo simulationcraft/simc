@@ -1665,7 +1665,7 @@ public:
   { _invalidate_list.push_back( c ); return *( static_cast<bufftype*>( this ) ); }
   bufftype& tick_behavior( buff_tick_behavior_e b )
   { _behavior = b; return *( static_cast<bufftype*>( this ) ); }
-  bufftype& tick_callback( std::function<void(buff_t*, int, int)>& cb )
+  bufftype& tick_callback( std::function<void(buff_t*, int, int)> cb )
   { _tick_callback = cb; return *( static_cast<bufftype*>( this ) ); }
 };
 
