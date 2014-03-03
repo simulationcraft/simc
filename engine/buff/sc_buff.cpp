@@ -700,7 +700,8 @@ void buff_t::refresh( int        stacks,
 
   timespan_t d = ( duration >= timespan_t::zero() ) ? duration : buff_duration;
 
-  if ( d > timespan_t::zero() && buff_period > timespan_t::zero() )
+  // Carryover on ticking buffs that refresh, instead of clip
+  if ( d > timespan_t::zero() && buff_period > timespan_t::zero() && tick_behavior == BUFF_TICK_REFRESH )
   {
     timespan_t carryover = remains() % buff_period;
     assert( carryover < buff_period );
