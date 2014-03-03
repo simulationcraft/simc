@@ -46,7 +46,6 @@ struct stat_buff_proc_t : public buff_proc_callback_t<stat_buff_t>
            .duration( proc_data.duration )
            .cd( proc_data.cooldown )
            .reverse( proc_data.reverse )
-           .refreshes( ! proc_data.no_refresh )
            .add_stat( proc_data.stat, proc_data.stat_amount );
   }
 };
@@ -62,8 +61,7 @@ struct cost_reduction_buff_proc_t : public buff_proc_callback_t<cost_reduction_b
            .duration( proc_data.duration )
            .cd( proc_data.cooldown )
            .reverse( proc_data.reverse )
-           .amount( proc_data.discharge_amount )
-           .refreshes( ! proc_data.no_refresh );
+           .amount( proc_data.discharge_amount );
   }
 };
 

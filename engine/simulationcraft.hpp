@@ -218,13 +218,20 @@ struct spelleffect_data_t;
 struct stats_t;
 struct stat_buff_t;
 struct stat_pair_t;
-struct tick_buff_t;
 struct travel_event_t;
 struct xml_node_t;
 class xml_writer_t;
 
 // Enumerations =============================================================
 // annex _e to enumerations
+
+
+enum buff_tick_behavior_e
+{
+  BUFF_TICK_NONE = -1,
+  BUFF_TICK_CLIP,
+  BUFF_TICK_REFRESH
+};
 
 enum movement_direction_e
 {
@@ -1599,8 +1606,10 @@ protected:
   double _chance;
   double _default_value;
   int _max_stack;
-  timespan_t _duration, _cooldown;
-  int _quiet, _reverse, _activated, _refreshes;
+  timespan_t _duration, _cooldown, _period;
+  int _quiet, _reverse, _activated;
+  buff_tick_behavior_e _behavior;
+  std::function<void(buff_t*, int, int)> _tick_callback;
   std::vector<cache_e> _invalidate_list;
   friend struct ::buff_t;
   friend struct ::debuff_t;
@@ -1634,6 +1643,8 @@ public:
 
   bufftype& duration( timespan_t d )
   { _duration = d; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& period( timespan_t d )
+  { _period = d; return *( static_cast<bufftype*>( this ) ); }
   bufftype& default_value( double v )
   { _default_value = v; return *( static_cast<bufftype*>( this ) ); }
   bufftype& chance( double c )
@@ -1652,8 +1663,10 @@ public:
   { s_data = s; return *( static_cast<bufftype*>( this ) ); }
   bufftype& add_invalidate( cache_e c )
   { _invalidate_list.push_back( c ); return *( static_cast<bufftype*>( this ) ); }
-  bufftype& refreshes( int r )
-  { _refreshes = r; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& tick_behavior( buff_tick_behavior_e b )
+  { _behavior = b; return *( static_cast<bufftype*>( this ) ); }
+  bufftype& tick_callback( std::function<void(buff_t*, int, int)>& cb )
+  { _tick_callback = cb; return *( static_cast<bufftype*>( this ) ); }
 };
 
 struct buff_creator_t : public buff_creator_helper_t<buff_creator_t>
@@ -1766,23 +1779,6 @@ public:
   operator haste_buff_t* () const;
 };
 
-struct tick_buff_creator_t : public buff_creator_helper_t<tick_buff_creator_t>
-{
-private:
-  timespan_t _period;
-
-  friend struct ::tick_buff_t;
-public:
-  tick_buff_creator_t( actor_pair_t q, const std::string& name, const spell_data_t* s = spell_data_t::nil(), const item_t* i = 0 ) :
-    base_t( q, name, s, i ), _period( timespan_t::min() )
-  { }
-
-  bufftype& period( timespan_t p )
-  { _period = p; return *this; }
-
-  operator tick_buff_t* () const;
-};
-
 } // END NAMESPACE buff_creation
 
 using namespace buff_creation;
@@ -1809,7 +1805,7 @@ private: // private because changing max_stacks requires resizing some stack-dep
   std::vector<cache_e> invalidate_list;
 public:
   double default_value;
-  bool activated, reactable, refreshes;
+  bool activated, reactable;
   bool reverse, constant, quiet, overridden;
   bool requires_invalidation;
 
@@ -1820,6 +1816,12 @@ public:
   double default_chance;
   std::vector<timespan_t> stack_occurrence, stack_react_time;
   std::vector<core_event_t*> stack_react_ready_triggers;
+
+  // Ticking buff values
+  timespan_t buff_period;
+  buff_tick_behavior_e tick_behavior;
+  core_event_t* tick_event;
+  std::function<void(buff_t*, int, int)> tick_callback;
 
   // tmp data collection
 protected:
@@ -1852,6 +1854,7 @@ public:
   inline int      stack() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_stack; }
   virtual double   value() { if ( current_stack > 0 ) { up_count++; } else { down_count++; } return current_value; }
   timespan_t remains() const;
+  timespan_t elapsed( const timespan_t& t ) const { return t - last_start; }
   bool   remains_gt( timespan_t time ) const;
   bool   remains_lt( timespan_t time ) const;
   bool   trigger  ( action_t*, int stacks = 1, double value = DEFAULT_VALUE(), timespan_t duration = timespan_t::min() );
@@ -1974,17 +1977,6 @@ protected:
 public:
   virtual void execute( int stacks = 1, double value = -1.0, timespan_t duration = timespan_t::min() );
   virtual void expire_override();
-};
-
-struct tick_buff_t : public buff_t
-{
-  timespan_t period;
-
-protected:
-  tick_buff_t( const tick_buff_creator_t& params );
-  friend struct buff_creation::tick_buff_creator_t;
-public:
-  virtual bool trigger( int stacks = 1, double value = -1.0, double chance = -1.0, timespan_t duration = timespan_t::min() );
 };
 
 struct debuff_t : public buff_t
@@ -6847,9 +6839,6 @@ inline cost_reduction_buff_creator_t::operator cost_reduction_buff_t* () const
 
 inline haste_buff_creator_t::operator haste_buff_t* () const
 { return new haste_buff_t( *this ); }
-
-inline tick_buff_creator_t::operator tick_buff_t* () const
-{ return new tick_buff_t( *this ); }
 
 inline buff_creator_t::operator debuff_t* () const
 { return new debuff_t( *this ); }
