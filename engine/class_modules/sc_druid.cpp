@@ -2980,6 +2980,7 @@ struct bear_melee_t : public bear_attack_t
   bear_melee_t( druid_t* player ) :
     bear_attack_t( "bear_melee", player )
   {
+    school      = SCHOOL_PHYSICAL;
     may_glance  = true;
     background  = true;
     repeating   = true;
