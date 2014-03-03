@@ -3617,7 +3617,7 @@ void rogue_t::create_buffs()
   buffs.slice_and_dice     = buff_creator_t( this, "slice_and_dice", find_class_spell( "Slice and Dice" ) )
                              .duration( timespan_t::min() )
                              .tick_behavior( BUFF_TICK_REFRESH )
-                             .tick_callback( std::function<void(buff_t*, int, int)>( energetic_recovery ) )
+                             .tick_callback( energetic_recovery )
                              .add_invalidate( CACHE_ATTACK_SPEED );
 
   // Legendary buffs
