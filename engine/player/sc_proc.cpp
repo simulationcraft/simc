@@ -252,10 +252,6 @@ stat_buff_t* special_effect_t::initialize_stat_buff() const
   if ( reverse )
     creator.reverse( true );
 
-  // TODO: This should really be automagically decided by the buff_t
-  // construction
-  creator.refreshes( buff_refresh() );
-
   return creator;
 }
 
@@ -357,17 +353,6 @@ timespan_t special_effect_t::duration() const
 }
 
 
-// special_effect_t::buff_refresh ===========================================
-
-bool special_effect_t::buff_refresh() const
-{
-  if ( refresh != -1 )
-    return refresh == 1;
-
-  // Ticking special effects don't typically refresh duration
-  return tick_time() <= timespan_t::zero();
-}
-
 // special_effect_t::tick_time ==============================================
 
 timespan_t special_effect_t::tick_time() const
@@ -457,8 +442,6 @@ std::string special_effect_t::to_string() const
       s << " tick=" << tick_time().total_seconds();
     if ( reverse )
       s << " Reverse";
-    if ( buff_refresh() == false )
-      s << " NoRefresh";
   }
 
   if ( school != SCHOOL_NONE )

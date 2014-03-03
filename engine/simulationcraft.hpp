@@ -3274,8 +3274,6 @@ struct special_effect_t
   /* Accessors for buff specific features of the proc. */
   timespan_t duration() const;
   timespan_t tick_time() const;
-  bool buff_refresh() const;
-
 };
 
 // Item =====================================================================
