@@ -2105,7 +2105,6 @@ template <typename F, typename T>
 inline expr_t* make_mem_fn_expr( const std::string& name, T& t, F f )
 { return make_fn_expr( name, std::bind( std::mem_fn( f ), &t ) ); }
 
-
 // Spell query expression types =============================================
 
 enum expr_data_e
@@ -4097,6 +4096,7 @@ struct player_t : public actor_t
   bool scale_player;
   bool tmi_self_only;
   double death_pct; // Player will die if he has equal or less than this value as health-pct
+  double size; // Actor size, only used for enemies. Affects the travel distance calculation for spells.
 
   // dynamic attributes - things which change during combat
   player_t*   target;

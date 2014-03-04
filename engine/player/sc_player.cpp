@@ -421,6 +421,7 @@ player_t::player_t( sim_t*             s,
   scale_player( true ),
   tmi_self_only( false ),
   death_pct( 0.0 ),
+  size( 0 ),
 
   // dynamic stuff
   target( 0 ),

@@ -691,9 +691,13 @@ timespan_t action_t::travel_time() const
 {
   if ( travel_speed == 0 ) return timespan_t::zero();
 
-  if ( player -> current.distance == 0 ) return timespan_t::zero();
+  double distance = player -> current.distance;
+  if ( execute_state && execute_state -> target )
+    distance += execute_state -> target -> size;
 
-  double t = player -> current.distance / travel_speed;
+  if ( distance == 0 ) return timespan_t::zero();
+
+  double t = distance / travel_speed;
 
   double v = sim -> travel_variance;
 
@@ -2291,12 +2295,12 @@ core_event_t* action_t::start_action_execute_event( timespan_t t, action_state_t
 
 void action_t::schedule_travel( action_state_t* s )
 {
-  time_to_travel = travel_time();
-
   if ( ! execute_state )
     execute_state = get_state();
 
   execute_state -> copy_state( s );
+
+  time_to_travel = travel_time();
 
   if ( time_to_travel == timespan_t::zero() )
   {
