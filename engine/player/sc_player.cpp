@@ -2841,8 +2841,8 @@ double player_t::composite_spell_haste() const
     if ( buffs.bloodlust -> up() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust -> data().effectN( 1 ).percent() );
 
-    if ( buffs.berserking -> up() )
-      h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
+    if ( buffs.berserking -> up() ) //       h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );   Use this when DBC data for WoD is back.
+      h *= 1.0 / ( 1.0 + 0.15 );
 
     if ( buffs.tempus_repit -> up() )
       h *= 1.0 / ( 1.0 + buffs.tempus_repit -> data().effectN( 1 ).percent() );
@@ -3048,19 +3048,19 @@ double player_t::composite_attribute( attribute_e attr ) const
   {
     case ATTR_INTELLECT:
      if ( race == RACE_DRAENEI )
-        a += 240; // Placeholder value, until we know more.
+        a += 300; // Placeholder value, until we know more.
       break;
     case ATTR_STRENGTH:
       if ( race == RACE_DRAENEI )
-        a += 240;
+        a += 300;
       break;
     case ATTR_AGILITY:
       if ( race == RACE_DRAENEI )
-        a += 240;
+        a += 300;
       break;
     case ATTR_STAMINA:
       if ( race == RACE_TAUREN )
-        a += 320;
+        a += 450;
       break;
     default:
       break;
