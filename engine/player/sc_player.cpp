@@ -2918,7 +2918,8 @@ double player_t::composite_spell_crit() const
 double player_t::composite_spell_hit() const  //Needs to be revamped for WoD.
 {
   double sh = composite_spell_hit_rating() / current.rating.spell_hit;
-
+  
+  sh += composite_melee_expertise();
   return sh;
 }
 
