@@ -2302,7 +2302,7 @@ void action_t::schedule_travel( action_state_t* s )
 
   time_to_travel = travel_time();
 
-  if ( time_to_travel == timespan_t::zero() )
+  if ( time_to_travel <= timespan_t::zero() )
   {
     impact( s );
     action_state_t::release( s );
