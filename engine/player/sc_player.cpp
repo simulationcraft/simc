@@ -508,6 +508,7 @@ player_t::player_t( sim_t*             s,
 
   base.skill = sim -> default_skill;
   base.mastery = 8.0;
+  base.movement_direction = MOVEMENT_NONE;
 
   if ( !is_enemy() && type != HEALING_ENEMY )
   {
