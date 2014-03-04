@@ -72,9 +72,6 @@ const OptionEntry scalingOptions[] =
   { "Analyze Spirit",                   "spi",      "Calculate scale factors for Spirit"                   },
   { "Analyze Spell Power",              "sp",       "Calculate scale factors for Spell Power"              },
   { "Analyze Attack Power",             "ap",       "Calculate scale factors for Attack Power"             },
-  { "Analyze Expertise Rating",         "exp",      "Calculate scale factors for Expertise Rating"         },
-  { "Analyze Hit Rating",               "hit",      "Calculate scale factors for Hit Rating"               },
-  { "Analyze positive Hit Rating",      "invhit",   "Calculate scale factors for positive Hit Rating"      },
   { "Analyze Crit Rating",              "crit",     "Calculate scale factors for Crit Rating"              },
   { "Analyze Haste Rating",             "haste",    "Calculate scale factors for Haste Rating"             },
   { "Analyze Mastery Rating",           "mastery",  "Calculate scale factors for Mastery Rating"           },
@@ -83,8 +80,6 @@ const OptionEntry scalingOptions[] =
   { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
   { "Analyze Off-hand Weapon Speed",    "wohspeed", "Calculate scale factors for Off-hand Weapon Speed"    },
   { "Analyze Armor",                    "armor",    "Calculate scale factors for Armor"                    },
-  { "Analyze Dodge Rating",             "dodge",    "Calculate scale factors for Dodge Rating"             },
-  { "Analyze Parry Rating",             "parry",    "Calculate scale factors for Parry Rating"             },
   { "Analyze Block Rating",             "blockr",   "Calculate scale factors for Block Rating"             },
   { "Analyze Latency",                  "",         "Calculate scale factors for Latency"                  },
   { NULL, NULL, NULL }
@@ -99,15 +94,11 @@ const OptionEntry plotOptions[] =
   { "Plot Scaling per Spirit",           "spi",     "Generate Scaling curve for Spirit"           },
   { "Plot Scaling per Spell Power",      "sp",      "Generate Scaling curve for Spell Power"      },
   { "Plot Scaling per Attack Power",     "ap",      "Generate Scaling curve for Attack Power"     },
-  { "Plot Scaling per Expertise Rating", "exp",     "Generate Scaling curve for Expertise Rating" },
-  { "Plot Scaling per Hit Rating",       "hit",     "Generate Scaling curve for Hit Rating"       },
   { "Plot Scaling per Crit Rating",      "crit",    "Generate Scaling curve for Crit Rating"      },
   { "Plot Scaling per Haste Rating",     "haste",   "Generate Scaling curve for Haste Rating"     },
   { "Plot Scaling per Mastery Rating",   "mastery", "Generate Scaling curve for Mastery Rating"   },
   { "Plot Scaling per Weapon DPS",       "wdps",    "Generate Scaling curve for Weapon DPS"       },
   { "Plot Scaling per Armor",            "armor",   "Generate Scaling curve for Armor"            },
-  { "Plot Scaling per Dodge Rating",     "dodge",   "Generate Scaling curve for Dodge Rating"     },
-  { "Plot Scaling per Parry Rating",     "parry",   "Generate Scaling curve for Parry Rating"     },
   { "Plot Scaling per Block Rating",     "blockr",  "Generate Scaling curve for Block Rating"     },
   { NULL, NULL, NULL }
 };
@@ -115,13 +106,9 @@ const OptionEntry plotOptions[] =
 const OptionEntry reforgePlotOptions[] =
 {
   { "Plot Reforge Options for Spirit",           "spi",     "Generate reforge plot data for Spirit"           },
-  { "Plot Reforge Options for Expertise Rating", "exp",     "Generate reforge plot data for Expertise Rating" },
-  { "Plot Reforge Options for Hit Rating",       "hit",     "Generate reforge plot data for Hit Rating"       },
   { "Plot Reforge Options for Crit Rating",      "crit",    "Generate reforge plot data for Crit Rating"      },
   { "Plot Reforge Options for Haste Rating",     "haste",   "Generate reforge plot data for Haste Rating"     },
   { "Plot Reforge Options for Mastery Rating",   "mastery", "Generate reforge plot data for Mastery Rating"   },
-  { "Plot Reforge Options for Dodge Rating",     "dodge",   "Generate reforge plot data for Dodge Rating"     },
-  { "Plot Reforge Options for Parry Rating",     "parry",   "Generate reforge plot data for Parry Rating"     },
   { "Plot Reforge Options for Block Rating",     "blockr",  "Generate reforge plot data for Block Rating"     },
 
   { "Plot Reforge Options for Strength",         "str",     "Generate reforge plot data for Intellect"        },

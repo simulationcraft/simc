@@ -164,7 +164,7 @@ bool parse_talent_override( sim_t* sim,
   player_t* p = sim -> active_player;
 
   if ( ! p -> talent_overrides_str.empty() ) p -> talent_overrides_str += "/";
-  p -> talent_overrides_str += override_str;
+    p -> talent_overrides_str += override_str;
 
   return true;
 }
@@ -995,7 +995,6 @@ void player_t::init_base_stats()
     base.stats.attribute[ STAT_STAMINA ]   = dbc.race_base( race ).stamina + dbc.attribute_base( type, level ).stamina;
     base.stats.attribute[ STAT_INTELLECT ] = dbc.race_base( race ).intellect + dbc.attribute_base( type, level ).intellect;
     base.stats.attribute[ STAT_SPIRIT ]    = dbc.race_base( race ).spirit + dbc.attribute_base( type, level ).spirit;
-    if ( race == RACE_HUMAN ) base.stats.attribute[ STAT_SPIRIT ] *= 1.03;
 
     base.spell_crit               = dbc.spell_crit_base( type, level );
     base.attack_crit              = dbc.melee_crit_base( type, level );
@@ -1004,8 +1003,6 @@ void player_t::init_base_stats()
     base.mastery = 8.0;
 
     resources.base[ RESOURCE_HEALTH ] = dbc.health_base( type, level );
-    if ( race == RACE_TAUREN )
-      resources.base[ RESOURCE_HEALTH ] *= 1.0 + find_spell( 20550 ) -> effectN( 1 ).percent();
     resources.base[ RESOURCE_MANA   ] = dbc.resource_base( type, level );
 
     base.mana_regen_per_second = dbc.regen_base( type, level ) / 5.0;
@@ -1025,6 +1022,9 @@ void player_t::init_base_stats()
   if ( race == RACE_GNOME )
   {
     resources.base_multiplier[ RESOURCE_MANA ] *= 1.05;
+    resources.base_multiplier[ RESOURCE_RAGE ] *= 1.05;
+    resources.base_multiplier[ RESOURCE_ENERGY ] *= 1.05;
+    resources.base_multiplier[ RESOURCE_RUNIC_POWER ] *= 1.05;
   }
 
   if ( level >= 50 && matching_gear )
@@ -1412,82 +1412,8 @@ void player_t::init_race()
 
 // player_t::weapon_racial ==================================================
 
-bool player_t::weapon_racial( const weapon_t* weapon ) const
+bool player_t::weapon_racial( const weapon_t* weapon ) const // Remove completely for WoD
 {
-  if ( ! weapon )
-    return false;
-
-  switch ( race )
-  {
-    case RACE_ORC:
-    {
-      switch ( weapon -> type )
-      {
-        case WEAPON_AXE:
-        case WEAPON_AXE_2H:
-        case WEAPON_FIST:
-        case WEAPON_NONE:
-          return true;
-        default:;
-      }
-      break;
-    }
-    case RACE_TROLL:
-    {
-      switch ( weapon -> type )
-      {
-        case WEAPON_GUN:
-        case WEAPON_BOW:
-        case WEAPON_CROSSBOW:
-          return true;
-        default:;
-      }
-      break;
-    }
-    case RACE_HUMAN:
-    {
-      switch ( weapon -> type )
-      {
-        case WEAPON_MACE:
-        case WEAPON_MACE_2H:
-        case WEAPON_SWORD:
-        case WEAPON_SWORD_2H:
-          return true;
-        default:;
-      }
-      break;
-    }
-    case RACE_DWARF:
-    {
-      switch ( weapon -> type )
-      {
-        case WEAPON_MACE:
-        case WEAPON_MACE_2H:
-        case WEAPON_BOW:
-        case WEAPON_CROSSBOW:
-        case WEAPON_GUN:
-        case WEAPON_WAND:
-        case WEAPON_THROWN:
-        case WEAPON_RANGED:
-          return true;
-        default:;
-      }
-      break;
-    }
-    case RACE_GNOME:
-    {
-      switch ( weapon -> type )
-      {
-        case WEAPON_DAGGER:
-        case WEAPON_SWORD:
-          return true;
-        default:;
-      }
-      break;
-    }
-    default:;
-  }
-
   return false;
 }
 
@@ -2180,10 +2106,7 @@ void player_t::init_scaling()
     scales_with[ STAT_SPELL_POWER       ] = spell;
 
     scales_with[ STAT_ATTACK_POWER             ] = attack;
-    scales_with[ STAT_EXPERTISE_RATING         ] = attack || tank;
-    scales_with[ STAT_EXPERTISE_RATING2        ] = tank || ( attack && ( position() == POSITION_FRONT ) );
 
-    scales_with[ STAT_HIT_RATING                ] = true;
     scales_with[ STAT_CRIT_RATING               ] = true;
     scales_with[ STAT_HASTE_RATING              ] = true;
     scales_with[ STAT_MASTERY_RATING            ] = true;
@@ -2195,8 +2118,6 @@ void player_t::init_scaling()
     scales_with[ STAT_WEAPON_OFFHAND_SPEED ] = false;
 
     scales_with[ STAT_ARMOR          ] = tank;
-    scales_with[ STAT_DODGE_RATING   ] = tank;
-    scales_with[ STAT_PARRY_RATING   ] = tank;
 
     scales_with[ STAT_BLOCK_RATING ] = tank;
 
@@ -2212,20 +2133,12 @@ void player_t::init_scaling()
         case STAT_INTELLECT: initial.stats.attribute[ ATTR_INTELLECT ] += v; break;
         case STAT_SPIRIT:    initial.stats.attribute[ ATTR_SPIRIT    ] += v; break;
 
-        case STAT_SPELL_POWER:       initial.stats.spell_power += v; break;
-
-        case STAT_ATTACK_POWER:      initial.stats.attack_power              += v; break;
-
-        case STAT_EXPERTISE_RATING:
-        case STAT_EXPERTISE_RATING2:
-          initial.stats.expertise_rating += v;
-          initial.stats.expertise_rating2 += v;
+        case STAT_SPELL_POWER:
+          initial.stats.spell_power += v;
           break;
 
-        case STAT_HIT_RATING:
-        case STAT_HIT_RATING2:
-          initial.stats.hit_rating += v;
-          initial.stats.hit_rating2 += v;
+        case STAT_ATTACK_POWER:
+          initial.stats.attack_power += v;
           break;
 
         case STAT_CRIT_RATING:
@@ -2287,8 +2200,6 @@ void player_t::init_scaling()
           break;
 
         case STAT_ARMOR:          initial.stats.armor       += v; break;
-        case STAT_DODGE_RATING:   initial.stats.dodge_rating       += v; break;
-        case STAT_PARRY_RATING:   initial.stats.parry_rating       += v; break;
 
         case STAT_BLOCK_RATING:   initial.stats.block_rating       += v; break;
 
@@ -2674,6 +2585,12 @@ double player_t::mana_regen_per_second() const
   return current.mana_regen_per_second + cache.spirit() * current.mana_regen_per_spirit * current.mana_regen_from_spirit_multiplier;
 }
 
+// Night elf passive will change from 1% crit during the day, to 1% haste during the night. 
+// Need a way to include human racial, which will increase two secondary stats of the players choice into any secondary. 
+// Hit/Expertise are being removed as a stat, but it will still be possible for non-tanks to be parried if standing in front of the boss.
+// 
+
+
 // player_t::composite_attack_haste =========================================
 
 double player_t::composite_melee_haste() const
@@ -2683,22 +2600,23 @@ double player_t::composite_melee_haste() const
   if ( ! is_pet() && ! is_enemy() )
   {
     if ( buffs.bloodlust -> up() )
-    {
       h *= 1.0 / ( 1.0 + buffs.bloodlust -> data().effectN( 1 ).percent() );
-    }
 
     if ( buffs.unholy_frenzy -> check() )
-    {
       h *= 1.0 / ( 1.0 + buffs.unholy_frenzy -> value() );
-    }
 
-    if ( buffs.mongoose_mh && buffs.mongoose_mh -> up() ) h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
-    if ( buffs.mongoose_oh && buffs.mongoose_oh -> up() ) h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
+    if ( buffs.mongoose_mh && buffs.mongoose_mh -> up() )  // Should we remove this? Burning Crusade/WOTLK were a long time ago.
+      h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
+
+    if ( buffs.mongoose_oh && buffs.mongoose_oh -> up() ) 
+      h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
 
     if ( buffs.berserking -> up() )
-    {
       h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
-    }
+
+    if ( race == RACE_GOBLIN || race == RACE_GNOME )
+      h *= 1.0 / ( 1.0 + 0.01 );
+
   }
 
   return h;
@@ -2709,11 +2627,6 @@ double player_t::composite_melee_haste() const
 double player_t::composite_melee_speed() const
 {
   double h = composite_melee_haste();
-
-  if ( race == RACE_GOBLIN )
-  {
-    h *= 1.0 / ( 1.0 + 0.01 );
-  }
 
   if ( ! is_enemy() && ! is_add() && sim -> auras.attack_speed -> check() )
     h *= 1.0 / ( 1.0 + sim -> auras.attack_speed -> value() );
@@ -2760,7 +2673,7 @@ double player_t::composite_melee_crit() const
   if ( ! is_pet() && ! is_enemy() && ! is_add() && sim -> auras.critical_strike -> check() )
     ac += sim -> auras.critical_strike -> value();
 
-  if ( race == RACE_WORGEN )
+  if ( race == RACE_WORGEN || race == RACE_BLOOD_ELF )
     ac += 0.01;
 
   return ac;
@@ -2768,24 +2681,18 @@ double player_t::composite_melee_crit() const
 
 // player_t::composite_attack_expertise =====================================
 
-double player_t::composite_melee_expertise( weapon_t* weapon ) const
+double player_t::composite_melee_expertise( weapon_t* weapon ) const // Parry will still be part of the game, however there will not be a way to reduce parry chance.
 {
   double e = composite_expertise_rating() / current.rating.expertise;
-
-  if ( weapon_racial( weapon ) )
-    e += 0.01;
 
   return e;
 }
 
 // player_t::composite_attack_hit ===========================================
 
-double player_t::composite_melee_hit() const
+double player_t::composite_melee_hit() const  // removed for WoD.
 {
   double ah = composite_melee_hit_rating() / current.rating.attack_hit;
-
-  if ( buffs.heroic_presence && buffs.heroic_presence -> up() )
-    ah += 0.01;
 
   return ah;
 }
@@ -2932,9 +2839,7 @@ double player_t::composite_spell_haste() const
   if ( ! is_pet() && ! is_enemy() )
   {
     if ( buffs.bloodlust -> up() )
-    {
       h *= 1.0 / ( 1.0 + buffs.bloodlust -> data().effectN( 1 ).percent() );
-    }
 
     if ( buffs.berserking -> up() )
       h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
@@ -2945,10 +2850,9 @@ double player_t::composite_spell_haste() const
     if ( sim -> auras.spell_haste -> check() )
       h *= 1.0 / ( 1.0 + sim -> auras.spell_haste -> value() );
 
-    if ( race == RACE_GOBLIN )
-    {
+    if ( race == RACE_GOBLIN || race == RACE_GNOME )
       h *= 1.0 / ( 1.0 + 0.01 );
-    }
+
   }
 
   return h;
@@ -3003,7 +2907,7 @@ double player_t::composite_spell_crit() const
       sc += sim -> auras.critical_strike -> value();
   }
 
-  if ( race == RACE_WORGEN )
+  if ( race == RACE_WORGEN || race == RACE_BLOOD_ELF )
     sc += 0.01;
 
   return sc;
@@ -3011,19 +2915,9 @@ double player_t::composite_spell_crit() const
 
 // player_t::composite_spell_hit ============================================
 
-double player_t::composite_spell_hit() const
+double player_t::composite_spell_hit() const  //Needs to be revamped for WoD.
 {
   double sh = composite_spell_hit_rating() / current.rating.spell_hit;
-
-  if ( weapon_racial( &main_hand_weapon ) )
-  {
-    sh += 0.01;
-  }
-
-  if ( buffs.heroic_presence && buffs.heroic_presence -> up() )
-    sh += 0.01;
-
-  sh += composite_melee_expertise();
 
   return sh;
 }
@@ -3045,17 +2939,6 @@ double player_t::composite_player_multiplier( school_e school ) const
   {
     if ( school == SCHOOL_PHYSICAL && debuffs.weakened_blows -> check() )
       m *= 1.0 - debuffs.weakened_blows -> value();
-
-    if ( buffs.tricks_of_the_trade -> check() )
-    {
-      // because of the glyph we now track the damage % increase in the buff value
-      m *= 1.0 + buffs.tricks_of_the_trade -> value();
-    }
-  }
-
-  if ( ( race == RACE_TROLL ) && ( sim -> target -> race == RACE_BEAST ) )
-  {
-    m *= 1.05;
   }
 
   return m;
@@ -3093,12 +2976,18 @@ double player_t::composite_player_critical_damage_multiplier() const
 {
   double m = 1.0;
 
+  if ( race == RACE_TAUREN || race == RACE_DWARF )
+    m += 0.02;
+
   return m;
 }
 
 double player_t::composite_player_critical_healing_multiplier() const
 {
   double m = 1.0;
+
+  if ( race == RACE_TAUREN || race == RACE_DWARF )
+    m += 0.02;
 
   return m;
 }
@@ -3156,9 +3045,21 @@ double player_t::composite_attribute( attribute_e attr ) const
 
   switch ( attr )
   {
-    case ATTR_SPIRIT:
-      if ( race == RACE_HUMAN )
-        a += ( a - base.stats.get_stat( STAT_SPIRIT ) ) * 0.03;
+    case ATTR_INTELLECT:
+     if ( race == RACE_DRAENEI )
+        a += 240; // Placeholder value, until we know more.
+      break;
+    case ATTR_STRENGTH:
+      if ( race == RACE_DRAENEI )
+        a += 240;
+      break;
+    case ATTR_AGILITY:
+      if ( race == RACE_DRAENEI )
+        a += 240;
+      break;
+    case ATTR_STAMINA:
+      if ( race == RACE_TAUREN )
+        a += 320;
       break;
     default:
       break;
@@ -3413,11 +3314,6 @@ void player_t::combat_begin()
   if ( ! is_pet() && ! is_add() )
   {
     arise();
-  }
-
-  if ( race == RACE_DRAENEI )
-  {
-    buffs.heroic_presence -> trigger();
   }
 
   init_resources( true );
