@@ -2238,7 +2238,6 @@ std::string chart::gear_weights_wowhead( player_t* p, bool hit_expertise )
   bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
   if ( !hit_expertise )
   {
-    bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
     double crit_value    = positive_normalizing_value ? p -> scaling.get_stat( STAT_CRIT_RATING ) : -p -> scaling.get_stat( STAT_CRIT_RATING );
     double haste_value   = positive_normalizing_value ? p -> scaling.get_stat( STAT_HASTE_RATING ) : -p -> scaling.get_stat( STAT_HASTE_RATING );
     double mastery_value = positive_normalizing_value ? p -> scaling.get_stat( STAT_MASTERY_RATING ) : -p -> scaling.get_stat( STAT_MASTERY_RATING );

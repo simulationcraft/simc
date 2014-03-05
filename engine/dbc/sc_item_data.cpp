@@ -430,14 +430,14 @@ bool item_database::parse_item_spell_enchant( item_t& item,
       // Handle All stats enchants
       if ( es )
       {
-        for ( size_t i = 0; i < es -> _effects -> size(); i++ )
+        for ( size_t j = 0; j < es -> _effects -> size(); j++ )
         {
           // All stats is indicated by a misc value of -1
-          if ( es -> effectN( i + 1 ).type() == E_APPLY_AURA &&
-               es -> effectN( i + 1 ).subtype() == A_MOD_STAT &&
-               es -> effectN( i + 1 ).misc_value1() == -1 )
+          if ( es -> effectN( j + 1 ).type() == E_APPLY_AURA &&
+               es -> effectN( j + 1 ).subtype() == A_MOD_STAT &&
+               es -> effectN( j + 1 ).misc_value1() == -1 )
           {
-            stats.push_back( stat_pair_t( STAT_ALL, es -> effectN( i + 1 ).base_value() ) );
+            stats.push_back( stat_pair_t( STAT_ALL, es -> effectN( j + 1 ).base_value() ) );
             break;
           }
         }
