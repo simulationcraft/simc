@@ -94,12 +94,12 @@ gem_e wowhead::parse_gem( item_t&           item,
         std::vector<js::js_node_t> children = js::get_children( js );
         for ( size_t i = 0; i < children.size(); i++ )
         {
-          stat_e type = util::parse_stat_type( js::get_name( children[ i ] ) );
-          if ( type == STAT_NONE || type == STAT_ARMOR || util::translate_stat( type ) == ITEM_MOD_NONE )
+          stat_e stat_type = util::parse_stat_type( js::get_name( children[ i ] ) );
+          if ( stat_type == STAT_NONE || stat_type == STAT_ARMOR || util::translate_stat( stat_type ) == ITEM_MOD_NONE )
             continue;
           int amount = 0;
           js::get_value( amount, children[ i ] );
-          item.parsed.gem_stats.push_back( stat_pair_t( type, amount ) );
+          item.parsed.gem_stats.push_back( stat_pair_t( stat_type, amount ) );
         }
       }
     }

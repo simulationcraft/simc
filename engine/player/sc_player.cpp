@@ -722,14 +722,14 @@ static bool init_parties( sim_t* sim )
     if ( party_str == "reset" )
     {
       party_index = 0;
-      for ( size_t i = 0; i < sim -> player_list.size(); ++i )
-        sim -> player_list[ i ] -> party = 0;
+      for ( size_t j = 0; j < sim -> player_list.size(); ++j )
+        sim -> player_list[ j ] -> party = 0;
     }
     else if ( party_str == "all" )
     {
-      for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+      for ( size_t j = 0; j < sim -> player_list.size(); ++j )
       {
-        player_t* p = sim -> player_list[ i ];
+        player_t* p = sim -> player_list[ j ];
         p -> party = 1;
       }
     }
@@ -748,9 +748,9 @@ static bool init_parties( sim_t* sim )
           return false;
         }
         p -> party = party_index;
-        for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+        for ( size_t k = 0; k < p -> pet_list.size(); ++k )
         {
-          pet_t* pet = p -> pet_list[ i ];
+          pet_t* pet = p -> pet_list[ k ];
           pet -> party = party_index;
         }
       }
@@ -6241,9 +6241,9 @@ struct pool_resource_t : public action_t
 
     if ( !resource_str.empty() )
     {
-      resource_e r = util::parse_resource_type( resource_str );
-      if ( r != RESOURCE_NONE )
-        resource = r;
+      resource_e res = util::parse_resource_type( resource_str );
+      if ( res != RESOURCE_NONE )
+        resource = res;
     }
   }
 
@@ -6951,13 +6951,13 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
   {
     if ( unsigned spell_id = dbc.specialization_ability_id( _spec, name.c_str() ) )
     {
-      const spell_data_t* s = dbc.spell( spell_id );
-      if ( ( ( int )s -> level() <= level ) )
+      const spell_data_t* spell = dbc.spell( spell_id );
+      if ( ( ( int )spell -> level() <= level ) )
       {
         if ( dbc::get_token( spell_id ).empty() )
           dbc.add_token( spell_id, token );
 
-        return s;
+        return spell;
       }
     }
   }
@@ -6973,13 +6973,13 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std:
   {
     if ( unsigned spell_id = dbc.mastery_ability_id( s, idx ) )
     {
-      const spell_data_t* s = dbc.spell( spell_id );
-      if ( ( int )s -> level() <= level )
+      const spell_data_t* spell = dbc.spell( spell_id );
+      if ( ( int )spell -> level() <= level )
       {
         if ( dbc::get_token( spell_id ).empty() )
           dbc.add_token( spell_id, token );
 
-        return dbc.spell( spell_id );
+        return spell;
       }
     }
   }
@@ -7056,13 +7056,13 @@ const spell_data_t* player_t::find_class_spell( const std::string& name, const s
   {
     if ( unsigned spell_id = dbc.class_ability_id( type, _spec, name.c_str() ) )
     {
-      const spell_data_t* s = dbc.spell( spell_id );
-      if ( s -> id() == spell_id && ( int )s -> level() <= level )
+      const spell_data_t* spell = dbc.spell( spell_id );
+      if ( spell -> id() == spell_id && ( int )spell -> level() <= level )
       {
         if ( dbc::get_token( spell_id ).empty() )
           dbc.add_token( spell_id, token );
 
-        return s;
+        return spell;
       }
     }
   }
@@ -8599,15 +8599,15 @@ void player_t::analyze( sim_t& s )
   {
     for ( size_t i = 0; i < num_stats; i++ )
     {
-      stats_t* s = tmp_stats_list[ i ];
-      s -> analyze();
+      stats_t* stats = tmp_stats_list[ i ];
+      stats -> analyze();
 
-      if ( s -> type == STATS_DMG )
-        s -> portion_amount =  collected_data.compound_dmg.mean() ? s -> actual_amount.mean() / collected_data.compound_dmg.mean() : 0.0 ;
-      else if ( s -> type == STATS_HEAL  )
-        s -> portion_amount =  collected_data.compound_heal.mean() ? s -> actual_amount.mean() / collected_data.compound_heal.mean() : 0.0;
-      else if ( s -> type == STATS_ABSORB )
-        s -> portion_amount =  collected_data.compound_absorb.mean() ? s -> actual_amount.mean() / collected_data.compound_absorb.mean() : 0.0;
+      if ( stats -> type == STATS_DMG )
+        stats -> portion_amount =  collected_data.compound_dmg.mean() ? stats -> actual_amount.mean() / collected_data.compound_dmg.mean() : 0.0 ;
+      else if ( stats -> type == STATS_HEAL  )
+        stats -> portion_amount =  collected_data.compound_heal.mean() ? stats -> actual_amount.mean() / collected_data.compound_heal.mean() : 0.0;
+      else if ( stats -> type == STATS_ABSORB )
+        stats -> portion_amount =  collected_data.compound_absorb.mean() ? stats -> actual_amount.mean() / collected_data.compound_absorb.mean() : 0.0;
 
     }
   }
@@ -8641,8 +8641,8 @@ void player_t::analyze( sim_t& s )
   for ( size_t i = 0; i < pet_list.size(); ++i )
   {
     pet_t* pet =  pet_list[ i ];
-    for ( size_t i = 0; i < pet -> gain_list.size(); ++i )
-      pet -> gain_list[ i ] -> analyze( s );
+    for ( size_t j = 0; j < pet -> gain_list.size(); ++j )
+      pet -> gain_list[ j ] -> analyze( s );
   }
 
   // Damage Timelines =======================================================
@@ -8650,12 +8650,12 @@ void player_t::analyze( sim_t& s )
   collected_data.timeline_dmg.init( max_buckets );
   for ( size_t i = 0, is_hps = ( primary_role() == ROLE_HEAL ); i < num_stats; i++ )
   {
-    stats_t* s = tmp_stats_list[ i ];
-    if ( ( s -> type != STATS_DMG ) == is_hps )
+    stats_t* stats = tmp_stats_list[ i ];
+    if ( ( stats -> type != STATS_DMG ) == is_hps )
     {
-      size_t j_max = std::min( max_buckets, s -> timeline_amount.data().size() );
+      size_t j_max = std::min( max_buckets, stats -> timeline_amount.data().size() );
       for ( size_t j = 0; j < j_max; j++ )
-        collected_data.timeline_dmg.add( j, s -> timeline_amount.data()[ j ] );
+        collected_data.timeline_dmg.add( j, stats -> timeline_amount.data()[ j ] );
     }
   }
 
