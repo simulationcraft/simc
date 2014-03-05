@@ -52,7 +52,8 @@ plot_t::plot_t( sim_t* s ) :
   num_plot_stats( 0 ),
   remaining_plot_stats( 0 ),
   remaining_plot_points( 0 ),
-  dps_plot_positive( 0 )
+  dps_plot_positive( 0 ),
+  dps_plot_negative( 0 )
 {
   create_options();
 }
@@ -123,6 +124,11 @@ void plot_t::analyze_stats()
     {
       start = 0;
       end = dps_plot_points;
+    }
+    else if ( dps_plot_negative )
+    {
+      start = -dps_plot_points;
+      end = 0;
     }
     else
     {
@@ -229,24 +235,24 @@ void plot_t::analyze()
 
     util::fprintf( file, "%s Plot Results:\n", p -> name_str.c_str() );
 
-    for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
+    for ( stat_e j = STAT_NONE; j < STAT_MAX; j++ )
     {
       if ( sim -> is_canceled() ) break;
 
-      if ( ! is_plot_stat( sim, i ) ) continue;
+      if ( ! is_plot_stat( sim, j ) ) continue;
 
-      current_plot_stat = i;
+      current_plot_stat = j;
 
-      util::fprintf( file, "%s, DPS, DPS-Error\n", util::stat_type_string( i ) );
+      util::fprintf( file, "%s, DPS, DPS-Error\n", util::stat_type_string( j ) );
 
-      for ( size_t j = 0; j < p -> dps_plot_data[ i ].size(); j++ )
+      for ( size_t k = 0; k < p -> dps_plot_data[ j ].size(); k++ )
       {
         util::fprintf( file, "%f, ",
-                       p -> dps_plot_data[ i ][ j ].plot_step );
+                       p -> dps_plot_data[ j ][ k ].plot_step );
         util::fprintf( file, "%f, ",
-                       p -> dps_plot_data[ i ][ j ].value );
+                       p -> dps_plot_data[ j ][ k ].value );
         util::fprintf( file, "%f\n",
-                       p -> dps_plot_data[ i ][ j ].error );
+                       p -> dps_plot_data[ j ][ k ].error );
       }
       util::fprintf( file, "\n" );
     }
@@ -266,6 +272,7 @@ void plot_t::create_options()
     opt_float( "dps_plot_step",     dps_plot_step ),
     opt_bool( "dps_plot_debug",     dps_plot_debug ),
     opt_bool( "dps_plot_positive", dps_plot_positive ),
+    opt_bool( "dps_plot_negative", dps_plot_negative ),
     opt_null()
   };
 

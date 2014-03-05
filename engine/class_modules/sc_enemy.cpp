@@ -882,6 +882,7 @@ void enemy_t::create_options()
     opt_float( "enemy_initial_health_percentage", initial_health_percentage ),
     opt_float( "enemy_fixed_health_percentage", fixed_health_percentage ),
     opt_float( "health_recalculation_dampening_exponent", health_recalculation_dampening_exponent ),
+    opt_float( "enemy_size", size ),
     opt_string( "enemy_tank", target_str ),
     opt_string( "tmi_boss", tmi_boss_str ),
     opt_null()

@@ -734,8 +734,8 @@ void warrior_attack_t::consume_resource()
     p -> cooldown.recklessness -> adjust( timespan_t::from_seconds( rage ) ); 
     p -> cooldown.bloodbath -> adjust( timespan_t::from_seconds( rage ) ); 
     p -> cooldown.heroic_leap -> adjust( timespan_t::from_seconds( rage ) ); 
-    p -> cooldown.berserker_rage -> adjust( timespan_t::from_seconds( rage ) ); 
-    p -> cooldown.colossus_smash -> adjust( timespan_t::from_seconds( rage ) ); 
+    //p -> cooldown.berserker_rage -> adjust( timespan_t::from_seconds( rage ) ); Guessing which abilities they put on cdr is fun.
+    //p -> cooldown.colossus_smash -> adjust( timespan_t::from_seconds( rage ) ); 
     p -> cooldown.dragon_roar -> adjust( timespan_t::from_seconds( rage ) ); 
   }
   }
@@ -1327,7 +1327,7 @@ struct execute_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    // Include the weapon so we benefit from racials
+    // Include the weapon so we benefit from seasoned soldier.
     weapon             = &( player -> main_hand_weapon );
     weapon_multiplier  = 0;
     direct_power_mod   = data().extra_coeff();

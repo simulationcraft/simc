@@ -1879,8 +1879,8 @@ void sim_t::print_options()
     player_t* p = player_list[ i ];
 
     out_log.raw().printf( "\nPlayer: %s (%s)\n", p -> name(), util::player_type_string( p -> type ) );
-    for ( size_t i = 0; i < p -> options.size(); ++i )
-      out_log.raw() << p -> options[ i ];
+    for ( size_t j = 0; j < p -> options.size(); ++j )
+      out_log.raw() << p -> options[ j ];
   }
 
   out_log.raw() << "\n";
