@@ -52,7 +52,8 @@ plot_t::plot_t( sim_t* s ) :
   num_plot_stats( 0 ),
   remaining_plot_stats( 0 ),
   remaining_plot_points( 0 ),
-  dps_plot_positive( 0 )
+  dps_plot_positive( 0 ),
+  dps_plot_negative( 0 )
 {
   create_options();
 }
@@ -123,6 +124,11 @@ void plot_t::analyze_stats()
     {
       start = 0;
       end = dps_plot_points;
+    }
+    else if ( dps_plot_negative )
+    {
+      start = -dps_plot_points;
+      end = 0;
     }
     else
     {
@@ -266,6 +272,7 @@ void plot_t::create_options()
     opt_float( "dps_plot_step",     dps_plot_step ),
     opt_bool( "dps_plot_debug",     dps_plot_debug ),
     opt_bool( "dps_plot_positive", dps_plot_positive ),
+    opt_bool( "dps_plot_negative", dps_plot_negative ),
     opt_null()
   };
 
