@@ -5039,6 +5039,9 @@ public:
   virtual double composite_spell_speed() const
   { return owner -> cache.spell_speed(); }
 
+  virtual double composite_multistrike() const
+  { return owner -> cache.multistrike(); }
+
   virtual double composite_melee_attack_power() const;
 
   virtual double composite_spell_power( school_e school ) const;
