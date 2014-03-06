@@ -276,13 +276,14 @@ void print_text_core_stats( FILE* file, player_t* p )
   player_collected_data_t::buffed_stats_t& buffed_stats = p -> collected_data.buffed_stats_snapshot;
 
   util::fprintf( file,
-                 "  Core Stats:    strength=%.0f|%.0f(%.0f)  agility=%.0f|%.0f(%.0f)  stamina=%.0f|%.0f(%.0f)  intellect=%.0f|%.0f(%.0f)  spirit=%.0f|%.0f(%.0f)  mastery=%.2f%%|%.2f%%(%.0f)  health=%.0f|%.0f  mana=%.0f|%.0f\n",
+                 "  Core Stats:    strength=%.0f|%.0f(%.0f)  agility=%.0f|%.0f(%.0f)  stamina=%.0f|%.0f(%.0f)  intellect=%.0f|%.0f(%.0f)  spirit=%.0f|%.0f(%.0f)  mastery=%.2f%%|%.2f%%(%.0f)  multistrike=%.2f%%|%.2f%%(%.0f)  health=%.0f|%.0f  mana=%.0f|%.0f\n",
                  buffed_stats.attribute[ ATTR_STRENGTH  ], p -> strength(),  p -> initial.stats.get_stat( STAT_STRENGTH  ),
                  buffed_stats.attribute[ ATTR_AGILITY   ], p -> agility(),   p -> initial.stats.get_stat( STAT_AGILITY   ),
                  buffed_stats.attribute[ ATTR_STAMINA   ], p -> stamina(),   p -> initial.stats.get_stat( STAT_STAMINA   ),
                  buffed_stats.attribute[ ATTR_INTELLECT ], p -> intellect(), p -> initial.stats.get_stat( STAT_INTELLECT ),
                  buffed_stats.attribute[ ATTR_SPIRIT    ], p -> spirit(),    p -> initial.stats.get_stat( STAT_SPIRIT    ),
                  100.0 * buffed_stats.mastery_value , 100.0 * p -> composite_mastery(), p -> initial.stats.get_stat( STAT_MASTERY_RATING ),
+                 100.0 * buffed_stats.multistrike , 100.0 * p -> composite_multistrike(), p -> initial.stats.get_stat( STAT_MULTISTRIKE_RATING ),
                  buffed_stats.resource[ RESOURCE_HEALTH ], p -> resources.max[ RESOURCE_HEALTH ],
                  buffed_stats.resource[ RESOURCE_MANA   ], p -> resources.max[ RESOURCE_MANA   ] );
 }

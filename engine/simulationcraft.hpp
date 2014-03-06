@@ -3101,7 +3101,7 @@ struct rating_t
     {
       // TODO: WOD-MULTISTRIKE
       if ( i == RATING_MULTISTRIKE )
-        get( i ) = dbc.combat_rating( RATING_SPELL_CRIT, i ) / 3.3333333333;
+        get( i ) = dbc.combat_rating( RATING_SPELL_CRIT, level ) / 3.3333333333;
       else
       {
         get( i ) = dbc.combat_rating( i,  level );
@@ -3904,7 +3904,7 @@ struct player_collected_data_t
     double attack_power,  attack_hit,  mh_attack_expertise,  oh_attack_expertise, attack_crit;
     double armor, miss, crit, dodge, parry, block;
     double spell_haste, spell_speed, attack_haste, attack_speed;
-    double mastery_value;
+    double mastery_value, multistrike;
   } buffed_stats_snapshot;
 
   player_collected_data_t( const std::string& player_name, sim_t& );
@@ -5439,7 +5439,7 @@ public:
   { return base_spell_power + player -> cache.spell_power( school ); }
   virtual double composite_target_crit( player_t* /* target */ ) const;
   virtual double composite_target_multiplier( player_t* target ) const { return target -> composite_player_vulnerability( school ); }
-  virtual double composite_multistrike() const { return 0.1; /* return player -> cache.multistrike(); */ }
+  virtual double composite_multistrike() const { return player -> cache.multistrike(); }
 
   // the direct amount multiplier due to debuffs on the target
   virtual double composite_target_da_multiplier( player_t* target ) const { return composite_target_multiplier( target ); }
