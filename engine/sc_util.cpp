@@ -687,6 +687,8 @@ const char* util::result_type_string( result_e type )
     case RESULT_GLANCE:     return "glance";
     case RESULT_CRIT:       return "crit";
     case RESULT_HIT:        return "hit";
+    case RESULT_MULTISTRIKE: return "multistrike";
+    case RESULT_MULTISTRIKE_CRIT: return "multistrike crit";
     default:                return "unknown";
   }
 }
@@ -723,6 +725,8 @@ const char* util::full_result_type_string( full_result_e fulltype )
     case FULLTYPE_HIT_CRITBLOCK:    return "hit (crit blocked)";
     case FULLTYPE_HIT_BLOCK:        return "hit (blocked)";
     case FULLTYPE_HIT:              return "hit";
+    case FULLTYPE_MULTISTRIKE:      return "multistrike";
+    case FULLTYPE_MULTISTRIKE_CRIT: return "multistrike crit";
     default:                        return "unknown";
   }
 
@@ -1341,6 +1345,7 @@ const char* util::cache_type_string( cache_e c )
     case CACHE_DODGE:        return "dodge";
     case CACHE_BLOCK:        return "block";
     case CACHE_ARMOR:        return "armor";
+    case CACHE_MULTISTRIKE:  return "multistrike";
 
     default: return "unknown";
   }
@@ -1449,6 +1454,7 @@ const char* util::stat_type_string( stat_e stat )
     case STAT_MASTERY_RATING: return "mastery_rating";
 
     case STAT_PVP_POWER: return "pvp_power";
+    case STAT_MULTISTRIKE_RATING: return "multistrike_rating";
 
     case STAT_ALL: return "all";
 
@@ -1508,6 +1514,8 @@ const char* util::stat_type_abbrev( stat_e stat )
     case STAT_MASTERY_RATING: return "Mastery";
 
     case STAT_PVP_POWER: return "PvPP";
+
+    case STAT_MULTISTRIKE_RATING: return "MS";
 
     case STAT_ALL: return "All";
 
@@ -1922,6 +1930,7 @@ stat_e util::translate_item_mod( int item_mod )
     case ITEM_MOD_EXTRA_ARMOR:         return STAT_ARMOR;
     case ITEM_MOD_RESILIENCE_RATING:   return STAT_RESILIENCE_RATING;
     case ITEM_MOD_PVP_POWER:           return STAT_PVP_POWER;
+    case ITEM_MOD_MULTISTRIKE_RATING:  return STAT_MULTISTRIKE_RATING;
     default:                           return STAT_NONE;
   }
 }
@@ -1948,6 +1957,7 @@ int util::translate_stat( stat_e stat )
     case STAT_ARMOR:       return ITEM_MOD_EXTRA_ARMOR;
     case STAT_RESILIENCE_RATING: return ITEM_MOD_RESILIENCE_RATING;
     case STAT_PVP_POWER:         return ITEM_MOD_PVP_POWER;
+    case STAT_MULTISTRIKE_RATING:return ITEM_MOD_MULTISTRIKE_RATING;
     default:                     return ITEM_MOD_NONE;
   }
 }
@@ -1973,6 +1983,7 @@ stat_e util::translate_rating_mod( unsigned ratings )
     return STAT_MASTERY_RATING;
   else if ( ratings & RATING_MOD_PVP_POWER )
     return STAT_PVP_POWER;
+  // TODO: WOW-MULTISTRIKE
 
   return STAT_NONE;
 }
@@ -2913,6 +2924,7 @@ void util::fuzzy_stats( std::string&       encoding_str,
   stat_search( encoding_str, splits, STAT_DODGE_RATING,     "dodge rating" );
   stat_search( encoding_str, splits, STAT_PARRY_RATING,     "parry rating" );
   stat_search( encoding_str, splits, STAT_BLOCK_RATING,     "block_rating" );
+  // TODO: WOW-MULTISTRIKE
 }
 
 
@@ -3030,6 +3042,7 @@ double stat_itemization_weight( stat_e s )
     case STAT_HASTE_RATING:
     case STAT_HIT_RATING:
     case STAT_MASTERY_RATING:
+    case STAT_MULTISTRIKE_RATING:
     case STAT_SPIRIT:
       return 2;
     default:

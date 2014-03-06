@@ -894,6 +894,7 @@ void scale_challenge_mode( player_t& p, const rating_t& rating )
     old_rating_sum += ( int ) p.gear.get_stat( STAT_PARRY_RATING );
     old_rating_sum += ( int ) p.gear.get_stat( STAT_BLOCK_RATING );
     old_rating_sum += ( int ) p.gear.get_stat( STAT_MASTERY_RATING );
+    old_rating_sum += ( int ) p.gear.get_stat( STAT_MULTISTRIKE_RATING );
 
     int old_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - p.gear.get_stat( STAT_EXPERTISE_RATING ) - p.gear.get_stat( STAT_HIT_RATING ) );
 
@@ -951,6 +952,7 @@ void scale_challenge_mode( player_t& p, const rating_t& rating )
       p.gear.set_stat( STAT_PARRY_RATING, floor( p.gear.get_stat( STAT_PARRY_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
       p.gear.set_stat( STAT_BLOCK_RATING, floor( p.gear.get_stat( STAT_BLOCK_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
       p.gear.set_stat( STAT_MASTERY_RATING, floor( p.gear.get_stat( STAT_MASTERY_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
+      p.gear.set_stat( STAT_MULTISTRIKE_RATING, floor( p.gear.get_stat( STAT_MULTISTRIKE_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
     }
   }
 
@@ -2110,6 +2112,7 @@ void player_t::init_scaling()
     scales_with[ STAT_CRIT_RATING               ] = true;
     scales_with[ STAT_HASTE_RATING              ] = true;
     scales_with[ STAT_MASTERY_RATING            ] = true;
+    scales_with[ STAT_MULTISTRIKE_RATING        ] = true;
 
     scales_with[ STAT_WEAPON_DPS   ] = attack;
     scales_with[ STAT_WEAPON_SPEED ] = sim -> weapon_speed_scale_factors ? attack : false;
@@ -2151,6 +2154,10 @@ void player_t::init_scaling()
 
         case STAT_MASTERY_RATING:
           initial.stats.mastery_rating += v;
+          break;
+
+        case STAT_MULTISTRIKE_RATING:
+          initial.stats.multistrike_rating += v;
           break;
 
         case STAT_WEAPON_DPS:
@@ -2930,6 +2937,15 @@ double player_t::composite_mastery() const
   return util::round( current.mastery + composite_mastery_rating() / current.rating.mastery, 2 );
 }
 
+// player_t::composite_multistrike ==========================================
+
+double player_t::composite_multistrike() const
+{
+  double ms = composite_multistrike_rating() / current.rating.multistrike;
+
+  return ms;
+}
+
 // player_t::composite_player_multiplier ====================================
 
 double player_t::composite_player_multiplier( school_e school ) const
@@ -3166,6 +3182,8 @@ double player_t::composite_rating( rating_e rating ) const
       v = current.stats.parry_rating; break;
     case RATING_BLOCK:
       v = current.stats.block_rating; break;
+    case RATING_MULTISTRIKE:
+      v = current.stats.multistrike_rating; break;
     default: break;
   }
 
@@ -4417,6 +4435,7 @@ void player_t::stat_gain( stat_e    stat,
     case STAT_PARRY_RATING:
     case STAT_BLOCK_RATING:
     case STAT_MASTERY_RATING:
+    case STAT_MULTISTRIKE_RATING:
       current.stats.add_stat( stat, amount );
       temporary.add_stat( stat, temp_value * amount );
       invalidate_cache( cache_from_stat( stat ) );
@@ -4521,6 +4540,7 @@ void player_t::stat_loss( stat_e    stat,
     case STAT_PARRY_RATING:
     case STAT_BLOCK_RATING:
     case STAT_MASTERY_RATING:
+    case STAT_MULTISTRIKE_RATING:
       current.stats.add_stat( stat, -amount );
       temporary.add_stat( stat, temp_value * -amount );
       invalidate_cache( cache_from_stat( stat ) );
@@ -8426,6 +8446,7 @@ void player_t::create_options()
     opt_float( "gear_runic",            gear.resource[ RESOURCE_RUNIC_POWER  ] ),
     opt_float( "gear_armor",            gear.armor ),
     opt_float( "gear_mastery_rating",   gear.mastery_rating ),
+    opt_float( "gear_multistrike_rating", gear.multistrike_rating ),
 
     // Stat Enchants
     opt_float( "enchant_strength",         enchant.attribute[ ATTR_STRENGTH  ] ),
@@ -8441,6 +8462,7 @@ void player_t::create_options()
     opt_float( "enchant_hit_rating",       enchant.hit_rating ),
     opt_float( "enchant_crit_rating",      enchant.crit_rating ),
     opt_float( "enchant_mastery_rating",   enchant.mastery_rating ),
+    opt_float( "enchant_multistrike_rating", enchant.multistrike_rating ),
     opt_float( "enchant_health",           enchant.resource[ RESOURCE_HEALTH ] ),
     opt_float( "enchant_mana",             enchant.resource[ RESOURCE_MANA   ] ),
     opt_float( "enchant_rage",             enchant.resource[ RESOURCE_RAGE   ] ),
@@ -9406,6 +9428,17 @@ double player_stat_cache_t::mastery_value() const
   }
   else assert( _mastery_value == player -> composite_mastery_value() );
   return _mastery_value;
+}
+
+double player_stat_cache_t::multistrike() const
+{
+  if ( ! active || ! valid[ CACHE_MULTISTRIKE ] )
+  {
+    valid[ CACHE_MULTISTRIKE ] = true;
+    _multistrike = player -> composite_multistrike();
+  }
+  else assert( _multistrike == player -> composite_multistrike() );
+  return _multistrike;
 }
 
 // player_stat_cache_t::mastery =============================================

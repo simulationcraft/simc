@@ -412,6 +412,7 @@ enum result_e
   RESULT_NONE = 0,
   RESULT_MISS,  RESULT_DODGE, RESULT_PARRY,
   RESULT_GLANCE, RESULT_CRIT, RESULT_HIT,
+  RESULT_MULTISTRIKE, RESULT_MULTISTRIKE_CRIT,
   RESULT_MAX
 };
 
@@ -431,6 +432,7 @@ enum full_result_e
   FULLTYPE_GLANCE_CRITBLOCK, FULLTYPE_GLANCE_BLOCK, FULLTYPE_GLANCE,
   FULLTYPE_CRIT_CRITBLOCK, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT,
   FULLTYPE_HIT_CRITBLOCK, FULLTYPE_HIT_BLOCK, FULLTYPE_HIT,
+  FULLTYPE_MULTISTRIKE, FULLTYPE_MULTISTRIKE_CRIT,
   FULLTYPE_MAX
 };
 
@@ -440,6 +442,7 @@ enum full_result_e
 #define RESULT_DODGE_MASK ( (1<<RESULT_DODGE) )
 #define RESULT_PARRY_MASK ( (1<<RESULT_PARRY) )
 #define RESULT_NONE_MASK  ( (1<<RESULT_NONE) )
+#define RESULT_MULTISTRIKE_MASK ( (1<<RESULT_MULTISTRIKE) | (1<<RESULT_MULTISTRIKE_CRIT) )
 #define RESULT_ALL_MASK  -1
 
 enum proc_e
@@ -719,6 +722,7 @@ enum stat_e
   STAT_WEAPON_OFFHAND_DPS, STAT_WEAPON_OFFHAND_SPEED,
   STAT_ARMOR, STAT_RESILIENCE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING,
   STAT_BLOCK_RATING, STAT_PVP_POWER,
+  STAT_MULTISTRIKE_RATING,
   STAT_ALL,
   STAT_MAX
 };
@@ -750,6 +754,7 @@ enum cache_e
   CACHE_MASTERY,
   CACHE_DODGE, CACHE_PARRY, CACHE_BLOCK, CACHE_CRIT_BLOCK, CACHE_ARMOR,
   CACHE_CRIT_AVOIDANCE, CACHE_MISS,
+  CACHE_MULTISTRIKE,
   CACHE_PLAYER_DAMAGE_MULTIPLIER,
   CACHE_PLAYER_HEAL_MULTIPLIER,
   CACHE_MAX
@@ -781,6 +786,7 @@ inline cache_e cache_from_stat( stat_e st )
     case STAT_PARRY_RATING: return CACHE_PARRY;
     case STAT_BLOCK_RATING: return CACHE_BLOCK;
     case STAT_ARMOR: return CACHE_ARMOR;
+    case STAT_MULTISTRIKE_RATING: return CACHE_MULTISTRIKE;
     default: break;
   }
   return CACHE_NONE;
@@ -1469,13 +1475,15 @@ struct gear_stats_t
   double mastery_rating;
   double resilience_rating;
   double pvp_power;
+  double multistrike_rating;
 
   gear_stats_t() :
     attribute(), resource(),
     spell_power( 0.0 ), attack_power( 0.0 ), expertise_rating( 0.0 ), expertise_rating2( 0.0 ),
     hit_rating( 0.0 ), hit_rating2( 0.0 ), crit_rating( 0.0 ), haste_rating( 0.0 ), weapon_dps( 0.0 ), weapon_speed( 0.0 ),
     weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), dodge_rating( 0.0 ),
-    parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 ), resilience_rating( 0.0 ), pvp_power( 0.0 )
+    parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 ), resilience_rating( 0.0 ), pvp_power( 0.0 ),
+    multistrike_rating( 0.0 )
   { }
 
   friend gear_stats_t operator+( const gear_stats_t& left, const gear_stats_t& right )
@@ -1506,6 +1514,7 @@ struct gear_stats_t
     mastery_rating += right.mastery_rating;
     resilience_rating += right.resilience_rating;
     pvp_power += right.pvp_power;
+    multistrike_rating += right.multistrike_rating;
     range::transform ( attribute, right.attribute, attribute.begin(), std::plus<int>() );
     range::transform ( resource, right.resource, resource.begin(), std::plus<int>() );
     return *this;
@@ -3008,6 +3017,7 @@ enum rating_e
   RATING_EXPERTISE,
   RATING_MASTERY,
   RATING_PVP_POWER,
+  RATING_MULTISTRIKE,
   RATING_MAX
 };
 
@@ -3031,6 +3041,7 @@ inline cache_e cache_from_rating( rating_e r )
     case RATING_MASTERY: return CACHE_MASTERY;
     case RATING_PVP_POWER: return CACHE_NONE;
     case RATING_PVP_RESILIENCE: return CACHE_NONE;
+    case RATING_MULTISTRIKE: return CACHE_MULTISTRIKE;
     default: break;
   }
   assert( false ); return CACHE_NONE;
@@ -3045,6 +3056,7 @@ struct rating_t
   double dodge, parry, block;
   double mastery;
   double pvp_resilience, pvp_power;
+  double multistrike;
 
   double& get( rating_e r )
   {
@@ -3066,6 +3078,7 @@ struct rating_t
       case RATING_MASTERY: return mastery;
       case RATING_PVP_POWER: return pvp_power;
       case RATING_PVP_RESILIENCE: return pvp_resilience;
+      case RATING_MULTISTRIKE: return multistrike;
       default: break;
     }
     assert( false ); return mastery;
@@ -3086,9 +3099,15 @@ struct rating_t
     // Read ratings from DBC
     for ( rating_e i = static_cast<rating_e>( 0 ); i < RATING_MAX; ++i )
     {
-      get( i ) = dbc.combat_rating( i,  level );
-      if ( i == RATING_MASTERY )
-        get( i ) /= 100.0;
+      // TODO: WOD-MULTISTRIKE
+      if ( i == RATING_MULTISTRIKE )
+        get( i ) = dbc.combat_rating( RATING_SPELL_CRIT, i ) / 3.3333333333;
+      else
+      {
+        get( i ) = dbc.combat_rating( i,  level );
+        if ( i == RATING_MASTERY )
+          get( i ) /= 100.0;
+      }
     }
   }
 
@@ -3668,7 +3687,7 @@ private:
   mutable double _attack_haste, _spell_haste;
   mutable double _attack_speed, _spell_speed;
   mutable double _dodge, _parry, _block, _crit_block, _armor;
-  mutable double _mastery_value, _crit_avoidance, _miss;
+  mutable double _mastery_value, _crit_avoidance, _miss, _multistrike;
   mutable double _player_mult[SCHOOL_MAX + 1], _player_heal_mult[SCHOOL_MAX + 1];
 public:
   bool active; // runtime active-flag
@@ -3702,6 +3721,7 @@ public:
   double miss() const;
   double armor() const;
   double mastery_value() const;
+  double multistrike() const;
   double player_multiplier( school_e ) const;
   double player_heal_multiplier( school_e ) const;
 #else
@@ -3730,6 +3750,7 @@ public:
   double miss() const             { return player -> composite_miss();       }
   double armor() const            { return player -> composite_armor();           }
   double mastery_value() const    { return player -> composite_mastery_value();   }
+  double multistrike() const      { return player -> composite_multistrike(); }
 #endif
 };
 
@@ -4548,6 +4569,7 @@ public:
   virtual double composite_spell_hit() const;
   virtual double composite_mastery() const;
   virtual double composite_mastery_value() const;
+  virtual double composite_multistrike() const;
 
   virtual double composite_armor() const;
   virtual double composite_armor_multiplier() const;
@@ -4619,6 +4641,9 @@ public:
   { return composite_rating( RATING_PARRY ); }
   double composite_block_rating() const
   { return composite_rating( RATING_BLOCK ); }
+
+  double composite_multistrike_rating() const
+  { return composite_rating( RATING_MULTISTRIKE ); }
 
   double get_attribute( attribute_e a ) const
   { return util::round( composite_attribute( a ) * composite_attribute_multiplier( a ) ); }
@@ -5187,7 +5212,7 @@ struct action_t : public noncopyable
   bool callbacks, special, channeled, background, sequence, use_off_gcd, quiet;
   bool direct_tick, direct_tick_callbacks, periodic_hit, repeating, harmful, proc, item_proc, proc_ignores_slot;
   bool discharge_proc, auto_cast, initialized;
-  bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
+  bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit, may_multistrike;
   bool tick_may_crit, tick_zero, hasted_ticks;
   dot_behavior_e dot_behavior;
   timespan_t ability_lag, ability_lag_stddev;
@@ -5266,6 +5291,7 @@ struct action_t : public noncopyable
   virtual int    hasted_num_ticks( double haste, timespan_t d = timespan_t::min() ) const;
   virtual timespan_t travel_time() const;
   virtual result_e calculate_result( action_state_t* /* state */ ) { assert( false ); return RESULT_UNKNOWN; }
+  virtual result_e calculate_multistrike_result( action_state_t* /* state */ ) { assert( false ); return RESULT_UNKNOWN; }
   virtual block_result_e calculate_block_result( action_state_t* /* state */ ) { assert ( false ); return BLOCK_RESULT_UNKNOWN; }
   virtual double calculate_direct_amount( action_state_t* state );
   virtual double calculate_tick_amount( action_state_t* state );
@@ -5278,6 +5304,7 @@ struct action_t : public noncopyable
   virtual int n_targets() const { return aoe; }
   bool is_aoe() const { return n_targets() == -1 || n_targets() > 0; }
   virtual void   execute();
+  virtual void   multistrike( action_state_t* state );
   virtual void   tick( dot_t* d );
   virtual void   last_tick( dot_t* d );
   virtual void   update_vengeance( dmg_e, action_state_t* assess_state );
@@ -5309,6 +5336,11 @@ struct action_t : public noncopyable
     return( r == RESULT_MISS   ||
             r == RESULT_DODGE  ||
             r == RESULT_PARRY );
+  }
+
+  static bool result_is_multistrike( result_e r )
+  {
+    return ( r == RESULT_MULTISTRIKE || r == RESULT_MULTISTRIKE_CRIT );
   }
 
   static bool result_is_block( block_result_e r )
@@ -5368,6 +5400,7 @@ private:
   virtual void release_state( action_state_t* );
 public:
   virtual void schedule_travel( action_state_t* );
+  virtual void schedule_multistrike_travel( action_state_t* );
   virtual void impact( action_state_t* );
   virtual void trigger_dot( action_state_t* );
 
@@ -5406,6 +5439,7 @@ public:
   { return base_spell_power + player -> cache.spell_power( school ); }
   virtual double composite_target_crit( player_t* /* target */ ) const;
   virtual double composite_target_multiplier( player_t* target ) const { return target -> composite_player_vulnerability( school ); }
+  virtual double composite_multistrike() const { return 0.1; /* return player -> cache.multistrike(); */ }
 
   // the direct amount multiplier due to debuffs on the target
   virtual double composite_target_da_multiplier( player_t* target ) const { return composite_target_multiplier( target ); }
@@ -5606,6 +5640,7 @@ struct attack_t : public action_t
   virtual timespan_t execute_time() const;
   virtual void execute();
   virtual result_e calculate_result( action_state_t* );
+  virtual result_e calculate_multistrike_result( action_state_t* );
   virtual block_result_e calculate_block_result( action_state_t* );
   virtual void   init();
 
@@ -5689,6 +5724,7 @@ struct spell_base_t : public action_t
   virtual timespan_t execute_time() const;
   virtual timespan_t tick_time( double haste ) const;
   virtual result_e   calculate_result( action_state_t* );
+  virtual result_e   calculate_multistrike_result( action_state_t* s );
   virtual block_result_e calculate_block_result( action_state_t* ) { return BLOCK_RESULT_UNBLOCKED; }
   virtual void   execute();
   virtual void   schedule_execute( action_state_t* execute_state = 0 );

@@ -2235,7 +2235,7 @@ struct essence_of_yulon_driver_t : public spell_t
   essence_of_yulon_driver_t( player_t* player ) :
     spell_t( "essence_of_yulon", player, player -> find_spell( 146198 ) )
   {
-    hasted_ticks = may_miss = may_dodge = may_parry = may_block = callbacks = false;
+    hasted_ticks = may_miss = may_dodge = may_parry = may_block = callbacks = may_crit = false;
     tick_zero = proc = background = dual = true;
     travel_speed = 0;
 

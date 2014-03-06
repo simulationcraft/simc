@@ -292,6 +292,7 @@ action_t::action_t( action_e       ty,
   may_block(),
   may_crush(),
   may_crit(),
+  may_multistrike(),
   tick_may_crit(),
   tick_zero(),
   hasted_ticks(),
@@ -792,6 +793,10 @@ double action_t::calculate_tick_amount( action_state_t* state )
 
   if ( state -> result == RESULT_CRIT )
     amount *= 1.0 + total_crit_bonus();
+  else if ( state -> result == RESULT_MULTISTRIKE )
+    amount *= 0.3;
+  else if ( state -> result == RESULT_MULTISTRIKE_CRIT )
+    amount *= 0.3 * ( 1.0 + total_crit_bonus() );
 
   // Record total amount to state
   state -> result_total = amount;
@@ -886,6 +891,14 @@ double action_t::calculate_direct_amount( action_state_t* state )
   else if ( state -> result == RESULT_CRIT )
   {
     amount *= 1.0 + total_crit_bonus();
+  }
+  else if ( state -> result == RESULT_MULTISTRIKE )
+  {
+    amount *= 0.3;
+  }
+  else if ( state -> result == RESULT_MULTISTRIKE_CRIT )
+  {
+    amount *= 0.3 * ( 1.0 + total_crit_bonus() );
   }
 
   if ( ! sim -> average_range ) amount = floor( amount + rng().real() );
@@ -1054,6 +1067,8 @@ void action_t::execute()
         s -> debug();
 
       schedule_travel( s );
+
+      multistrike( execute_state );
     }
   }
   else // single target
@@ -1072,6 +1087,8 @@ void action_t::execute()
       s -> debug();
 
     schedule_travel( s );
+
+    multistrike( execute_state );
   }
 
   if ( composite_teleport_distance( execute_state ) > 0 )
@@ -1127,6 +1144,62 @@ void action_t::execute()
   if ( repeating && ! proc ) schedule_execute();
 }
 
+// action_t::multistrike ====================================================
+
+void action_t::multistrike( action_state_t* state )
+{
+  if ( ! may_multistrike )
+    return;
+
+  if ( state -> result_amount <= 0 )
+    return;
+
+  if ( ! result_is_hit( state -> result ) )
+    return;
+
+  result_e r = calculate_multistrike_result( state );
+  if ( result_is_multistrike( r ) )
+  {
+    action_state_t* ms_state = get_state( state );
+    ms_state -> target = state -> target;
+    ms_state -> n_targets = 1;
+    ms_state -> chain_target = 0;
+    ms_state -> result = r;
+    if ( ms_state -> result_type == DMG_DIRECT || ms_state -> result_type == HEAL_DIRECT )
+    {
+      ms_state -> result_amount = calculate_direct_amount( ms_state );
+      schedule_multistrike_travel( ms_state );
+    }
+    else if ( ms_state -> result_type == DMG_OVER_TIME || ms_state -> result_type == HEAL_OVER_TIME )
+    {
+      ms_state -> result_amount = calculate_tick_amount( ms_state );
+      assess_damage( ms_state -> result_type, ms_state );
+      action_state_t::release( ms_state );
+    }
+  }
+
+  r = calculate_multistrike_result( state );
+  if ( result_is_multistrike( r ) )
+  {
+    action_state_t* ms_state = get_state( state );
+    ms_state -> target = state -> target;
+    ms_state -> n_targets = 1;
+    ms_state -> chain_target = 0;
+    ms_state -> result = r;
+    if ( ms_state -> result_type == DMG_DIRECT || ms_state -> result_type == HEAL_DIRECT )
+    {
+      ms_state -> result_amount = calculate_direct_amount( ms_state );
+      schedule_multistrike_travel( ms_state );
+    }
+    else if ( ms_state -> result_type == DMG_OVER_TIME || ms_state -> result_type == HEAL_OVER_TIME )
+    {
+      ms_state -> result_amount = calculate_tick_amount( ms_state );
+      assess_damage( ms_state -> result_type, ms_state );
+      action_state_t::release( ms_state );
+    }
+  }
+}
+
 // action_t::tick ===========================================================
 
 void action_t::tick( dot_t* d )
@@ -1160,13 +1233,15 @@ void action_t::tick( dot_t* d )
     d -> state -> result_amount = calculate_tick_amount( d -> state );
 
     assess_damage( type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME, d -> state );
+
+    if ( sim -> debug )
+      d -> state -> debug();
+
+    multistrike( d -> state );
   }
 
   if ( harmful && callbacks && type != ACTION_HEAL )
     action_callback_t::trigger( player -> callbacks.tick[ d -> state -> result ], this, d -> state );
-
-  if ( sim -> debug )
-    d -> state -> debug();
 
   if ( ! periodic_hit ) stats -> add_tick( d -> time_to_tick, d -> state -> target );
 
@@ -1294,7 +1369,7 @@ void action_t::assess_damage( dmg_e    type,
                      util::result_type_string( s -> result ) );
     }
 
-    if ( s -> result_amount > 0.0 )
+    if ( s -> result_amount > 0.0 && ! result_is_multistrike( s -> result ) )
     {
       if ( direct_tick_callbacks )
       {
@@ -1323,10 +1398,11 @@ void action_t::assess_damage( dmg_e    type,
                      dot -> current_tick, dot -> num_ticks,
                      s -> target -> name(), s -> result_amount,
                      util::school_type_string( school ),
-                     util::result_type_string( dot -> state -> result ) );
+                     util::result_type_string( s -> result ) );
     }
 
-    if ( callbacks && s -> result_amount > 0.0 ) action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
+    if ( ! result_is_multistrike( s -> result ) && callbacks && s -> result_amount > 0.0 )
+      action_callback_t::trigger( player -> callbacks.tick_damage[ school ], this, s );
   }
 
   // New callback system; proc spells on impact. 
@@ -2318,6 +2394,26 @@ void action_t::schedule_travel( action_state_t* s )
   }
 }
 
+void action_t::schedule_multistrike_travel( action_state_t* s )
+{
+  timespan_t ttt = travel_time() + timespan_t::from_seconds( 0.05 );
+
+  if ( ttt <= timespan_t::zero() )
+  {
+    impact( s );
+    action_state_t::release( s );
+  }
+  else
+  {
+    if ( sim -> log )
+    {
+      sim -> out_log.printf( "[NEW] %s schedules multistrike travel (%.3f) for %s", player -> name(), ttt.total_seconds(), name() );
+    }
+
+    add_travel_event( new ( *sim ) travel_event_t( this, s, ttt ) );
+  }
+}
+
 void action_t::impact( action_state_t* s )
 {
   assess_damage( type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT, s );
@@ -2339,6 +2435,8 @@ void action_t::impact( action_state_t* s )
       impact_action -> execute();
     }
   }
+  else if ( result_is_multistrike( s -> result ) )
+    ; // TODO: WOD-MULTISTRIKE
   else
   {
     if ( sim -> log )

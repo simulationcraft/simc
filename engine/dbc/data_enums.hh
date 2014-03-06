@@ -368,7 +368,8 @@ enum item_mod_type {
   ITEM_MOD_SHADOW_RESISTANCE        = 54,
   ITEM_MOD_NATURE_RESISTANCE        = 55,
   ITEM_MOD_ARCANE_RESISTANCE        = 56,
-  ITEM_MOD_PVP_POWER                = 57
+  ITEM_MOD_PVP_POWER                = 57,
+  ITEM_MOD_MULTISTRIKE_RATING       = 999 // TODO: WOD-MULTISTRIKE
 };
 
 enum rating_mod_type {
