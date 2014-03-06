@@ -6790,6 +6790,7 @@ struct residual_dot_action : public Action
     Action::hasted_ticks  = false;
     Action::may_crit = false;
     Action::tick_power_mod = 0;
+    Action::may_multistrike = false;
     Action::dot_behavior  = DOT_REFRESH;
   }
 
