@@ -81,26 +81,6 @@ timespan_t spell_base_t::tick_time( double haste ) const
   return action_t::tick_time( haste );
 }
 
-result_e spell_base_t::calculate_multistrike_result( action_state_t* s )
-{
-  if ( ! s -> target ) return RESULT_NONE;
-  if ( ! may_multistrike ) return RESULT_NONE;
-  if ( ! harmful ) return RESULT_NONE;
-
-  result_e r = RESULT_NONE;
-  if ( rng().roll( composite_multistrike() / 2.0 ) )
-  {
-    r = RESULT_MULTISTRIKE;
-
-    int delta_level = s -> target -> level - player -> level;
-    double crit = crit_chance( s -> composite_crit(), delta_level );
-    if ( rng().roll( crit ) )
-      r = RESULT_MULTISTRIKE_CRIT;
-  }
-
-  return r;
-}
-
 result_e spell_base_t::calculate_result( action_state_t* s )
 {
   result_e result = RESULT_NONE;

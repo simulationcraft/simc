@@ -5294,7 +5294,7 @@ struct action_t : public noncopyable
   virtual int    hasted_num_ticks( double haste, timespan_t d = timespan_t::min() ) const;
   virtual timespan_t travel_time() const;
   virtual result_e calculate_result( action_state_t* /* state */ ) { assert( false ); return RESULT_UNKNOWN; }
-  virtual result_e calculate_multistrike_result( action_state_t* /* state */ ) { assert( false ); return RESULT_UNKNOWN; }
+  virtual result_e calculate_multistrike_result( action_state_t* /* state */ );
   virtual block_result_e calculate_block_result( action_state_t* /* state */ ) { assert ( false ); return BLOCK_RESULT_UNKNOWN; }
   virtual double calculate_direct_amount( action_state_t* state );
   virtual double calculate_tick_amount( action_state_t* state );
@@ -5307,7 +5307,7 @@ struct action_t : public noncopyable
   virtual int n_targets() const { return aoe; }
   bool is_aoe() const { return n_targets() == -1 || n_targets() > 0; }
   virtual void   execute();
-  virtual void   multistrike( action_state_t* state );
+  virtual void   multistrike( action_state_t* state, dmg_e type );
   virtual void   tick( dot_t* d );
   virtual void   last_tick( dot_t* d );
   virtual void   update_vengeance( dmg_e, action_state_t* assess_state );
@@ -5402,6 +5402,7 @@ private:
   friend struct action_state_t;
   virtual void release_state( action_state_t* );
 public:
+  virtual void do_schedule_travel( action_state_t*, const timespan_t& );
   virtual void schedule_travel( action_state_t* );
   virtual void schedule_multistrike_travel( action_state_t* );
   virtual void impact( action_state_t* );
@@ -5643,7 +5644,6 @@ struct attack_t : public action_t
   virtual timespan_t execute_time() const;
   virtual void execute();
   virtual result_e calculate_result( action_state_t* );
-  virtual result_e calculate_multistrike_result( action_state_t* );
   virtual block_result_e calculate_block_result( action_state_t* );
   virtual void   init();
 
@@ -5727,7 +5727,6 @@ struct spell_base_t : public action_t
   virtual timespan_t execute_time() const;
   virtual timespan_t tick_time( double haste ) const;
   virtual result_e   calculate_result( action_state_t* );
-  virtual result_e   calculate_multistrike_result( action_state_t* s );
   virtual block_result_e calculate_block_result( action_state_t* ) { return BLOCK_RESULT_UNBLOCKED; }
   virtual void   execute();
   virtual void   schedule_execute( action_state_t* execute_state = 0 );

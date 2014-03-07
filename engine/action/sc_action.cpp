@@ -1068,7 +1068,7 @@ void action_t::execute()
 
       schedule_travel( s );
 
-      multistrike( execute_state );
+      multistrike( execute_state, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
     }
   }
   else // single target
@@ -1088,7 +1088,7 @@ void action_t::execute()
 
     schedule_travel( s );
 
-    multistrike( execute_state );
+    multistrike( execute_state, type == ACTION_HEAL ? HEAL_DIRECT : DMG_DIRECT );
   }
 
   if ( composite_teleport_distance( execute_state ) > 0 )
@@ -1144,9 +1144,31 @@ void action_t::execute()
   if ( repeating && ! proc ) schedule_execute();
 }
 
+// action_t::calculate_multistrike_result ===================================
+
+result_e action_t::calculate_multistrike_result( action_state_t* s )
+{
+  if ( ! s -> target ) return RESULT_NONE;
+  if ( ! may_multistrike ) return RESULT_NONE;
+  if ( ! harmful ) return RESULT_NONE;
+
+  result_e r = RESULT_NONE;
+  if ( rng().roll( composite_multistrike() / 2.0 ) )
+  {
+    r = RESULT_MULTISTRIKE;
+
+    int delta_level = s -> target -> level - player -> level;
+    double crit = crit_chance( s -> composite_crit(), delta_level );
+    if ( rng().roll( crit ) )
+      r = RESULT_MULTISTRIKE_CRIT;
+  }
+
+  return r;
+}
+
 // action_t::multistrike ====================================================
 
-void action_t::multistrike( action_state_t* state )
+void action_t::multistrike( action_state_t* state, dmg_e type )
 {
   if ( ! may_multistrike )
     return;
@@ -1165,12 +1187,12 @@ void action_t::multistrike( action_state_t* state )
     ms_state -> n_targets = 1;
     ms_state -> chain_target = 0;
     ms_state -> result = r;
-    if ( ms_state -> result_type == DMG_DIRECT || ms_state -> result_type == HEAL_DIRECT )
+    if ( type == DMG_DIRECT || type == HEAL_DIRECT )
     {
       ms_state -> result_amount = calculate_direct_amount( ms_state );
       schedule_multistrike_travel( ms_state );
     }
-    else if ( ms_state -> result_type == DMG_OVER_TIME || ms_state -> result_type == HEAL_OVER_TIME )
+    else if ( type == DMG_OVER_TIME || type == HEAL_OVER_TIME )
     {
       ms_state -> result_amount = calculate_tick_amount( ms_state );
       assess_damage( ms_state -> result_type, ms_state );
@@ -1186,12 +1208,12 @@ void action_t::multistrike( action_state_t* state )
     ms_state -> n_targets = 1;
     ms_state -> chain_target = 0;
     ms_state -> result = r;
-    if ( ms_state -> result_type == DMG_DIRECT || ms_state -> result_type == HEAL_DIRECT )
+    if ( type == DMG_DIRECT || type == HEAL_DIRECT )
     {
       ms_state -> result_amount = calculate_direct_amount( ms_state );
       schedule_multistrike_travel( ms_state );
     }
-    else if ( ms_state -> result_type == DMG_OVER_TIME || ms_state -> result_type == HEAL_OVER_TIME )
+    else if ( type == DMG_OVER_TIME || type == HEAL_OVER_TIME )
     {
       ms_state -> result_amount = calculate_tick_amount( ms_state );
       assess_damage( ms_state -> result_type, ms_state );
@@ -1237,7 +1259,7 @@ void action_t::tick( dot_t* d )
     if ( sim -> debug )
       d -> state -> debug();
 
-    multistrike( d -> state );
+    multistrike( d -> state, type == ACTION_HEAL ? HEAL_OVER_TIME : DMG_OVER_TIME );
   }
 
   if ( harmful && callbacks && type != ACTION_HEAL )
@@ -2369,6 +2391,23 @@ core_event_t* action_t::start_action_execute_event( timespan_t t, action_state_t
   return new ( *sim ) action_execute_event_t( this, t, execute_event );
 }
 
+void action_t::do_schedule_travel( action_state_t* state, const timespan_t& time_ )
+{
+  if ( time_ <= timespan_t::zero() )
+  {
+    impact( state );
+    action_state_t::release( state );
+  }
+  else
+  {
+    if ( sim -> log )
+      sim -> out_log.printf( "%s schedules travel (%.3f) for %s",
+          player -> name(), time_.total_seconds(), name() );
+
+    add_travel_event( new ( *sim ) travel_event_t( this, state, time_ ) );
+  }
+}
+
 void action_t::schedule_travel( action_state_t* s )
 {
   if ( ! execute_state )
@@ -2378,40 +2417,14 @@ void action_t::schedule_travel( action_state_t* s )
 
   time_to_travel = travel_time();
 
-  if ( time_to_travel <= timespan_t::zero() )
-  {
-    impact( s );
-    action_state_t::release( s );
-  }
-  else
-  {
-    if ( sim -> log )
-    {
-      sim -> out_log.printf( "[NEW] %s schedules travel (%.3f) for %s", player -> name(), time_to_travel.total_seconds(), name() );
-    }
-
-    add_travel_event( new ( *sim ) travel_event_t( this, s, time_to_travel ) );
-  }
+  do_schedule_travel( s, time_to_travel );
 }
 
 void action_t::schedule_multistrike_travel( action_state_t* s )
 {
   timespan_t ttt = travel_time() + timespan_t::from_seconds( 0.05 );
 
-  if ( ttt <= timespan_t::zero() )
-  {
-    impact( s );
-    action_state_t::release( s );
-  }
-  else
-  {
-    if ( sim -> log )
-    {
-      sim -> out_log.printf( "[NEW] %s schedules multistrike travel (%.3f) for %s", player -> name(), ttt.total_seconds(), name() );
-    }
-
-    add_travel_event( new ( *sim ) travel_event_t( this, s, ttt ) );
-  }
+  do_schedule_travel( s, ttt );
 }
 
 void action_t::impact( action_state_t* s )

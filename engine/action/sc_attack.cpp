@@ -264,28 +264,6 @@ void attack_t::init()
     base_attack_expertise += 0.01;
 }
 
-// attack_t::calculate_multistrike_result ===================================
-
-result_e attack_t::calculate_multistrike_result( action_state_t* s )
-{
-  if ( ! s -> target ) return RESULT_NONE;
-  if ( ! may_multistrike ) return RESULT_NONE;
-  if ( ! harmful ) return RESULT_NONE;
-
-  result_e r = RESULT_NONE;
-  if ( rng().roll( composite_multistrike() / 2.0 ) )
-  {
-    r = RESULT_MULTISTRIKE;
-
-    int delta_level = s -> target -> level - player -> level;
-    double crit = crit_chance( s -> composite_crit(), delta_level );
-    if ( rng().roll( crit ) )
-      r = RESULT_MULTISTRIKE_CRIT;
-  }
-
-  return r;
-}
-
 // attack_t::reschedule_auto_attack =========================================
 
 void attack_t::reschedule_auto_attack( double old_swing_haste )
