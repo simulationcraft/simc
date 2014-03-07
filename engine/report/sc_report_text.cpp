@@ -60,6 +60,26 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe
                    s -> direct_results[ RESULT_CRIT ].actual_amount.max(),
                    s -> direct_results[ RESULT_CRIT ].pct );
   }
+  if ( s -> direct_results[ RESULT_MULTISTRIKE ].actual_amount.sum() > 0 )
+  {
+    util::fprintf( file,
+                   "  MS=%.1f|%5.0f|%5.0f|%5.0f|%.1f%%",
+                   s -> direct_results[ RESULT_MULTISTRIKE ].count.mean(),
+                   s -> direct_results[ RESULT_MULTISTRIKE ].actual_amount.mean(),
+                   s -> direct_results[ RESULT_MULTISTRIKE ].actual_amount.min(),
+                   s -> direct_results[ RESULT_MULTISTRIKE ].actual_amount.max(),
+                   s -> direct_results[ RESULT_MULTISTRIKE ].pct );
+  }
+  if ( s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.sum() > 0 )
+  {
+    util::fprintf( file,
+                   "  MSCrit=%.1f|%5.0f|%5.0f|%5.0f|%.1f%%",
+                   s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].count.mean(),
+                   s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.mean(),
+                   s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.min(),
+                   s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.max(),
+                   s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].pct );
+  }
   if ( s -> direct_results[ RESULT_GLANCE ].actual_amount.sum() > 0 )
   {
     util::fprintf( file,
@@ -103,6 +123,24 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe
                    s -> tick_results[ RESULT_CRIT ].actual_amount.min(),
                    s -> tick_results[ RESULT_CRIT ].actual_amount.max(),
                    s -> tick_results[ RESULT_CRIT ].pct );
+  }
+  if ( s -> tick_results[ RESULT_MULTISTRIKE ].actual_amount.sum() > 0 )
+  {
+    util::fprintf( file,
+                   "  MSTick=%5.0f|%5.0f|%5.0f|%.1f%%",
+                   s -> tick_results[ RESULT_MULTISTRIKE ].actual_amount.mean(),
+                   s -> tick_results[ RESULT_MULTISTRIKE ].actual_amount.min(),
+                   s -> tick_results[ RESULT_MULTISTRIKE ].actual_amount.max(),
+                   s -> tick_results[ RESULT_MULTISTRIKE ].pct );
+  }
+  if ( s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.sum() > 0 )
+  {
+    util::fprintf( file,
+                   "  MSCritTick=%5.0f|%5.0f|%5.0f|%.1f%%",
+                   s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.mean(),
+                   s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.min(),
+                   s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.max(),
+                   s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].pct );
   }
 
   if ( s -> total_tick_time.sum() > 0.0 )
