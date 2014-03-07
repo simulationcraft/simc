@@ -688,7 +688,7 @@ const char* util::result_type_string( result_e type )
     case RESULT_CRIT:       return "crit";
     case RESULT_HIT:        return "hit";
     case RESULT_MULTISTRIKE: return "multistrike";
-    case RESULT_MULTISTRIKE_CRIT: return "multistrike crit";
+    case RESULT_MULTISTRIKE_CRIT: return "multistrike_crit";
     default:                return "unknown";
   }
 }
@@ -726,7 +726,7 @@ const char* util::full_result_type_string( full_result_e fulltype )
     case FULLTYPE_HIT_BLOCK:        return "hit (blocked)";
     case FULLTYPE_HIT:              return "hit";
     case FULLTYPE_MULTISTRIKE:      return "multistrike";
-    case FULLTYPE_MULTISTRIKE_CRIT: return "multistrike crit";
+    case FULLTYPE_MULTISTRIKE_CRIT: return "multistrike_crit";
     default:                        return "unknown";
   }
 
@@ -1515,7 +1515,7 @@ const char* util::stat_type_abbrev( stat_e stat )
 
     case STAT_PVP_POWER: return "PvPP";
 
-    case STAT_MULTISTRIKE_RATING: return "MS";
+    case STAT_MULTISTRIKE_RATING: return "Mult";
 
     case STAT_ALL: return "All";
 

@@ -63,7 +63,7 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe
   if ( s -> direct_results[ RESULT_MULTISTRIKE ].actual_amount.sum() > 0 )
   {
     util::fprintf( file,
-                   "  MS=%.1f|%5.0f|%5.0f|%5.0f|%.1f%%",
+                   "  Mult=%.1f|%5.0f|%5.0f|%5.0f|%.1f%%",
                    s -> direct_results[ RESULT_MULTISTRIKE ].count.mean(),
                    s -> direct_results[ RESULT_MULTISTRIKE ].actual_amount.mean(),
                    s -> direct_results[ RESULT_MULTISTRIKE ].actual_amount.min(),
@@ -73,7 +73,7 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe
   if ( s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.sum() > 0 )
   {
     util::fprintf( file,
-                   "  MSCrit=%.1f|%5.0f|%5.0f|%5.0f|%.1f%%",
+                   "  MultCrit=%.1f|%5.0f|%5.0f|%5.0f|%.1f%%",
                    s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].count.mean(),
                    s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.mean(),
                    s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.min(),
@@ -127,7 +127,7 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe
   if ( s -> tick_results[ RESULT_MULTISTRIKE ].actual_amount.sum() > 0 )
   {
     util::fprintf( file,
-                   "  MSTick=%5.0f|%5.0f|%5.0f|%.1f%%",
+                   "  MultTick=%5.0f|%5.0f|%5.0f|%.1f%%",
                    s -> tick_results[ RESULT_MULTISTRIKE ].actual_amount.mean(),
                    s -> tick_results[ RESULT_MULTISTRIKE ].actual_amount.min(),
                    s -> tick_results[ RESULT_MULTISTRIKE ].actual_amount.max(),
@@ -136,7 +136,7 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe
   if ( s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.sum() > 0 )
   {
     util::fprintf( file,
-                   "  MSCritTick=%5.0f|%5.0f|%5.0f|%.1f%%",
+                   "  MultCritTick=%5.0f|%5.0f|%5.0f|%.1f%%",
                    s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.mean(),
                    s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.min(),
                    s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.max(),
