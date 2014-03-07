@@ -52,6 +52,8 @@ enum proc_types2
 
   PROC2_LANDED,                 // Any "positive" execute result
   PROC2_CAST,                   // Cast finished
+  PROC2_MULTISTRIKE,            // Proc on multistrike flags
+  PROC2_MULTISTRIKE_CRIT,       //
   PROC2_TYPE_MAX,
 
   // Pseudo types 
@@ -116,11 +118,14 @@ enum proc_flag2
 
   PF2_LANDED                  = 1 << PROC2_LANDED,
   PF2_CAST                    = 1 << PROC2_CAST,
+  PF2_MULTISTRIKE             = 1 << PROC2_MULTISTRIKE,
+  PF2_MULTISTRIKE_CRIT        = 1 << PROC2_MULTISTRIKE_CRIT,
 
   // Pseudo types
   PF2_PERIODIC_HEAL           = 1 << PROC2_PERIODIC_HEAL,
   PF2_PERIODIC_DAMAGE         = 1 << PROC2_PERIODIC_DAMAGE,
   PF2_ALL_HIT                 = PF2_HIT | PF2_CRIT | PF2_GLANCE, // All damaging/healing "hit" results
+  PF2_ALL_MULTISTRIKE         = PF2_MULTISTRIKE | PF2_MULTISTRIKE_CRIT,
 };
 
 enum item_flag

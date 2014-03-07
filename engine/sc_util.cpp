@@ -1398,6 +1398,8 @@ const char* util::proc_type2_string( proc_types2 type )
     case PROC2_MISS:   return "Miss";
     case PROC2_LANDED: return "Impact";
     case PROC2_CAST:   return "Cast";
+    case PROC2_MULTISTRIKE: return "MultistrikeAmount";
+    case PROC2_MULTISTRIKE_CRIT: return "MultistrikeCritAmount";
     default:           return "Unknown";
   }
 }

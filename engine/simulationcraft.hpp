@@ -5627,6 +5627,12 @@ struct action_state_t : public noncopyable
       return PROC2_CRIT;
     else if ( result == RESULT_GLANCE )
       return PROC2_GLANCE;
+    // Multistrike can only generate procs on impact, though this could be 
+    // moved to execute_proc_type2() too.
+    else if ( result == RESULT_MULTISTRIKE )
+      return PROC2_MULTISTRIKE;
+    else if ( result == RESULT_MULTISTRIKE_CRIT )
+      return PROC2_MULTISTRIKE_CRIT;
 
     return PROC2_INVALID;
   }
