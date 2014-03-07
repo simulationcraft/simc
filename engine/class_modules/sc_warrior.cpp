@@ -136,6 +136,7 @@ public:
   {
     const spell_data_t* colossus_smash;
     const spell_data_t* charge;
+    const spell_data_t* intervene;
     const spell_data_t* heroic_leap;
   } spell;
 
@@ -1092,6 +1093,8 @@ struct charge_t : public warrior_attack_t
     warrior_attack_t( "charge", p, p -> spell.charge )
   {
     parse_options( NULL , options_str );
+    base_teleport_distance = 25;
+    movement_directionality = MOVEMENT_OMNI;
 
     cooldown -> duration += p -> talents.juggernaut -> effectN( 3 ).time_value();
   }
@@ -1110,11 +1113,8 @@ struct charge_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    double distance = p -> current.distance_to_move;
-
-      if ( distance < p -> spell.charge -> min_range() || distance > p -> spell.charge -> max_range() )
-        return false;
-
+    if ( p -> current.distance_to_move > 25 || p -> current.distance_to_move < 5 )
+      return false;
 
     return warrior_attack_t::ready();
   }
@@ -1343,6 +1343,16 @@ struct execute_t : public warrior_attack_t
       p -> buff.sudden_execute -> trigger();
 
   }
+
+  virtual bool ready()
+  {
+    warrior_t* p = cast();
+
+    if ( target -> health_percentage() > 20 )
+      return false;
+
+    return warrior_attack_t::ready();
+  }
 };
 
 // Ignite Weapon ============================================================
@@ -1486,6 +1496,8 @@ struct heroic_leap_t : public warrior_attack_t
     aoe       = -1;
     may_dodge = may_parry = may_miss = false;
     harmful   = true; // This should be defaulted to true, but it's not
+    movement_directionality = MOVEMENT_OMNI;
+    base_teleport_distance = 40;
 
     // Damage is stored in a trigger spell
     const spell_data_t* dmg_spell = p -> dbc.spell( 52174 );  //data().effectN( 3 ).trigger_spell_id() does not resolve to 52174 anymore
@@ -1500,6 +1512,7 @@ struct heroic_leap_t : public warrior_attack_t
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
 
+
     if ( p -> glyphs.death_from_above -> ok() ) //decreases cd
     {
       // Don't want to lower it multiple times if it's in the action list multiple times
@@ -1509,25 +1522,6 @@ struct heroic_leap_t : public warrior_attack_t
     cooldown -> duration  *= p -> buffs.cooldown_reduction -> default_value;
     use_off_gcd = true;
   }
-    virtual void execute()
-  {
-    warrior_attack_t::execute();
-    warrior_t* p = cast();
-  }
-
-  virtual bool ready()
-  {
-    warrior_t* p = cast();
-
-    double distance = p -> current.distance_to_move;
-
-      if ( distance < p -> spell.heroic_leap -> min_range() || distance > p -> spell.heroic_leap -> max_range() )
-        return false;
-
-
-    return warrior_attack_t::ready();
-  }
-
 };
 
 // Impending Victory ========================================================
@@ -1586,6 +1580,29 @@ struct impending_victory_t : public warrior_attack_t
 
   }
 
+};
+
+// Intervene     ============================================================
+
+struct intervene_t : public warrior_attack_t
+{
+
+  intervene_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "intervene", p, p -> spell.intervene )
+  {
+    parse_options( NULL , options_str );
+    base_teleport_distance = 25;
+    movement_directionality = MOVEMENT_OMNI;
+  }
+  virtual bool ready()
+  {
+    warrior_t* p = cast();
+
+    if ( p -> current.distance_to_move > 25 )
+      return false;
+
+    return warrior_attack_t::ready();
+  }
 };
 
 // Mortal Strike ============================================================
@@ -3001,6 +3018,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "impending_victory"  ) return new impending_victory_t  ( this, options_str );
   if ( name == "victory_rush"       ) return new victory_rush_t       ( this, options_str );
   if ( name == "ignite_weapon"      ) return new ignite_weapon_t      ( this, options_str );
+  if ( name == "intervene"          ) return new intervene_t          ( this, options_str );
 
   if ( name == "last_stand"         ) return new last_stand_t         ( this, options_str );
   if ( name == "mortal_strike"      ) return new mortal_strike_t      ( this, options_str );
