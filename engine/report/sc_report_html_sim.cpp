@@ -2003,7 +2003,7 @@ void print_html_errors( report::sc_html_stream& os, sim_t* sim )
 {
   if ( ! sim -> error_list.empty() )
   {
-    os << "\t\t<pre style=\"color: black; background-color: white; font-weight: bold;\">\n";
+    os << "\t\t<pre class=\"section section-open\" style=\"color: black; background-color: white; font-weight: bold;\">\n";
     size_t num_errors = sim -> error_list.size();
     for ( size_t i = 0; i < num_errors; i++ )
       os <<  sim -> error_list[ i ] << "\n";
