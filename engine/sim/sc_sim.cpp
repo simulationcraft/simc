@@ -905,7 +905,7 @@ sim_t::sim_t( sim_t* p, int index ) :
   save_prefix_str( "save_" ),
   save_talent_str( 0 ),
   talent_format( TALENT_FORMAT_UNCHANGED ),
-  auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), tmi_actor_only( 0 ), tmi_window_global( 0 ),
+  auto_ready_trigger( 0 ), stat_cache( 1 ), max_aoe_enemies( 20 ), tmi_actor_only( 0 ), tmi_window_global( 0 ), new_tmi( 0 ), tmi_filter( 1.0 ),
   target_death_pct( 0 ), rel_target_level( 3 ), target_level( -1 ), target_adds( 0 ), desired_targets( 0 ),
   challenge_mode( false ), scale_to_itemlevel ( -1 ),
   active_enemies( 0 ), active_allies( 0 ),
@@ -2080,6 +2080,8 @@ void sim_t::create_options()
     opt_int( "desired_targets", desired_targets ),
     opt_bool( "tmi_actor_only", tmi_actor_only ),
     opt_float( "tmi_window_global", tmi_window_global ),
+    opt_int( "new_tmi", new_tmi ),
+    opt_float( "tmi_filter", tmi_filter),
     // Character Creation
     opt_func( "death_knight", parse_player ),
     opt_func( "deathknight", parse_player ),
