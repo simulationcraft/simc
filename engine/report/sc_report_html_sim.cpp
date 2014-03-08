@@ -1892,7 +1892,7 @@ void print_html_styles( report::sc_html_stream& os, sim_t* sim )
        << "\t\t\t#masthead h2 {margin-left: 355px;color: 268f45; }\n"
        << "\t\t\t#masthead ul.params {margin: 20px 0 0 345px; }\n"
        << "\t\t\t#masthead p {color: #fff;margin: 20px 20px 0 20px; }\n"
-       << "\t\t\t#notice h2 {margin-bottom: 10px; }\n"
+       << "\t\t\t#notice {font-size: 12px;-moz-box-shadow: 0px 0px 8px #E41B17;-webkit-box-shadow: 0px 0px 8px #E41B17;box-shadow: 0px 0px 8px #E41B17; }\n"
        << "\t\t\t.alert {width: 800px;padding: 10px;margin: 10px 0 10px 0;background-color: #333;-moz-border-radius: 6px;-khtml-border-radius: 6px;-webkit-border-radius: 6px;border-radius: 6px;-moz-box-shadow: inset 0px 0px 6px #C11B17;-webkit-box-shadow: inset 0px 0px 6px #C11B17;box-shadow: inset 0px 0px 6px #C11B17; }\n"
        << "\t\t\t.alert p {margin-bottom: 0px; }\n"
        << "\t\t\t.section .toggle-content {padding-left: 18px; }\n"
