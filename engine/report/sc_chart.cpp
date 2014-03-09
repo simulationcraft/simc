@@ -1466,17 +1466,22 @@ std::string chart::scaling_dps( player_t* p )
   s += amp;
   s += "chxt=x,y";
   s += amp;
-  if ( ! p -> sim -> plot -> dps_plot_positive )
+  if ( p -> sim -> plot -> dps_plot_positive )
   {
-    snprintf( buffer, sizeof( buffer ), "chxl=0:|%.0f|%.0f|0|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( -range * step ), ( -range * step ) / 2, ( +range * step ) / 2, ( +range * step ), min_dps, p -> collected_data.dps.mean(), max_dps ); s += buffer;
+    const int start = 0;  // start and end only used for dps_plot_positive
+    snprintf( buffer, sizeof( buffer ), "chxl=0:|0|%%2b%.0f|%%2b%.0f|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f", ( start + ( 1.0 / 4 )*end )*step, ( start + ( 2.0 / 4 )*end )*step, ( start + ( 3.0 / 4 )*end )*step, ( start + end )*step, min_dps, max_dps ); s += buffer;
+  }
+  else if ( p -> sim -> plot -> dps_plot_negative )
+  {
+    const int start = - ( p -> sim -> plot -> dps_plot_points * p -> sim -> plot -> dps_plot_step );
+    snprintf( buffer, sizeof( buffer ), "chxl=0:|%d|%.0f|%.0f|%.0f|0|1:|%.0f|%.0f", start, start * 0.75, start * 0.5, start * 0.25, min_dps, max_dps ); s += buffer;
   }
   else
   {
-    const int start = 0;  // start and end only used for dps_plot_positive
-    snprintf( buffer, sizeof( buffer ), "chxl=0:|0|%%2b%.0f|%%2b%.0f|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( start + ( 1.0 / 4 )*end )*step, ( start + ( 2.0 / 4 )*end )*step, ( start + ( 3.0 / 4 )*end )*step, ( start + end )*step, min_dps, p -> collected_data.dps.mean(), max_dps ); s += buffer;
+    snprintf( buffer, sizeof( buffer ), "chxl=0:|%.0f|%.0f|0|%%2b%.0f|%%2b%.0f|1:|%.0f|%.0f|%.0f", ( -range * step ), ( -range * step ) / 2, ( +range * step ) / 2, ( +range * step ), min_dps, p -> collected_data.dps.mean(), max_dps ); s += buffer;
+    s += amp;
+    snprintf( buffer, sizeof( buffer ), "chxp=1,1,%.0f,100", 100.0 * ( p -> collected_data.dps.mean() - min_dps ) / ( max_dps - min_dps ) ); s += buffer;
   }
-  s += amp;
-  snprintf( buffer, sizeof( buffer ), "chxp=0,0,24.5,50,74.5,100|1,1,%.0f,100", 100.0 * ( p -> collected_data.dps.mean() - min_dps ) / ( max_dps - min_dps ) ); s += buffer;
   s += amp;
   s += "chdl=";
   first = true;
@@ -2233,7 +2238,6 @@ std::string chart::gear_weights_wowhead( player_t* p, bool hit_expertise )
   bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
   if ( !hit_expertise )
   {
-    bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
     double crit_value    = positive_normalizing_value ? p -> scaling.get_stat( STAT_CRIT_RATING ) : -p -> scaling.get_stat( STAT_CRIT_RATING );
     double haste_value   = positive_normalizing_value ? p -> scaling.get_stat( STAT_HASTE_RATING ) : -p -> scaling.get_stat( STAT_HASTE_RATING );
     double mastery_value = positive_normalizing_value ? p -> scaling.get_stat( STAT_MASTERY_RATING ) : -p -> scaling.get_stat( STAT_MASTERY_RATING );

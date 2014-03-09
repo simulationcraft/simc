@@ -318,11 +318,25 @@ void print_html_action_info( report::sc_html_stream& os, stats_t* s, player_t* p
         os << "\t\t\t\t\t\t\t<tr>\n"
            << "\t\t\t\t\t\t\t\t<th class=\"left\">Scale Deltas</th>\n";
         for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-          if ( p -> scales_with[ i ] )
-            os.printf(
-              "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
-              ( i == STAT_WEAPON_OFFHAND_SPEED || i == STAT_WEAPON_SPEED ) ? 2 : 0,
-              p -> sim -> scaling -> stats.get_stat( i ) );
+        {
+          if ( ! p -> scales_with[ i ] )
+            continue;
+
+          double value = p -> sim -> scaling -> stats.get_stat( i );
+          std::string prefix;
+          if ( p -> sim -> scaling -> center_scale_delta == 1 && 
+               i != STAT_SPIRIT && i != STAT_HIT_RATING && i != STAT_EXPERTISE_RATING )
+          {
+            prefix = "+/- ";
+            value /= 2;
+          }
+
+          os.printf(
+            "\t\t\t\t\t\t\t\t<td>%s%.*f</td>\n",
+            prefix.c_str(), 
+            ( i == STAT_WEAPON_OFFHAND_SPEED || i == STAT_WEAPON_SPEED ) ? 2 : 0,
+            value );
+        }
         os << "\t\t\t\t\t\t\t</tr>\n";
         os << "\t\t\t\t\t\t\t<tr>\n"
            << "\t\t\t\t\t\t\t\t<th class=\"left\">Error</th>\n";
@@ -1199,11 +1213,25 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
       os << "\t\t\t\t\t\t\t<tr>\n"
          << "\t\t\t\t\t\t\t\t<th class=\"left\">Scale Deltas</th>\n";
       for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-        if ( p -> scales_with[ i ] )
-          os.printf(
-            "\t\t\t\t\t\t\t\t<td>%.*f</td>\n",
-            ( i == STAT_WEAPON_OFFHAND_SPEED || i == STAT_WEAPON_SPEED ) ? 2 : 0,
-            p -> sim -> scaling -> stats.get_stat( i ) );
+      {
+        if ( ! p -> scales_with[ i ] )
+          continue;
+        
+        double value = p -> sim -> scaling -> stats.get_stat( i );
+        std::string prefix;
+        if ( p -> sim -> scaling -> center_scale_delta == 1 && 
+            i != STAT_SPIRIT && i != STAT_HIT_RATING && i != STAT_EXPERTISE_RATING )
+        {
+          value /= 2;
+          prefix = "+/- ";
+        }
+
+        os.printf(
+          "\t\t\t\t\t\t\t\t<td>%s%.*f</td>\n",
+          prefix.c_str(),
+          ( i == STAT_WEAPON_OFFHAND_SPEED || i == STAT_WEAPON_SPEED ) ? 2 : 0,
+          value );
+      }
       if ( p -> sim -> scaling -> scale_lag )
         os << "\t\t\t\t\t\t\t\t<td>100</td>\n";
       os << "\t\t\t\t\t\t\t</tr>\n";

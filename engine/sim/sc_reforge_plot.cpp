@@ -272,19 +272,19 @@ void reforge_plot_t::analyze()
 
     out <<  p -> name() << " Reforge Plot Results:\n";
 
-    for ( int i = 0; i < ( int ) reforge_plot_stat_indices.size(); i++ )
+    for ( int j = 0; j < ( int ) reforge_plot_stat_indices.size(); j++ )
     {
-      out << util::stat_type_string( reforge_plot_stat_indices[ i ] ) << ", ";
+      out << util::stat_type_string( reforge_plot_stat_indices[ j ] ) << ", ";
     }
     out << " DPS, DPS-Error\n";
 
-    for ( size_t i = 0; i < p -> reforge_plot_data.size(); i++ )
+    for ( size_t j = 0; j < p -> reforge_plot_data.size(); j++ )
     {
-      for ( size_t j = 0; j < p -> reforge_plot_data[ i ].size(); j++ )
+      for ( size_t k = 0; k < p -> reforge_plot_data[ j ].size(); k++ )
       {
-        out << p -> reforge_plot_data[ i ][ j ].value << ", ";
-        if ( j + 1 == p -> reforge_plot_data[ i ].size() )
-          out << p -> reforge_plot_data[ i ][ j ].error << ", ";
+        out << p -> reforge_plot_data[ j ][ k ].value << ", ";
+        if ( k + 1 == p -> reforge_plot_data[ j ].size() )
+          out << p -> reforge_plot_data[ j ][ k ].error << ", ";
       }
       out << "\n";
     }

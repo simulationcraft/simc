@@ -2540,6 +2540,8 @@ struct sim_t : public core_sim_t, private sc_thread_t
   int         max_aoe_enemies;
   bool        tmi_actor_only;
   double      tmi_window_global;
+  int         new_tmi;
+  double      tmi_filter;
 
   // Target options
   double      target_death_pct;
@@ -2902,7 +2904,7 @@ struct plot_t
   int    dps_plot_debug;
   stat_e current_plot_stat;
   int    num_plot_stats, remaining_plot_stats, remaining_plot_points;
-  bool   dps_plot_positive;
+  bool   dps_plot_positive, dps_plot_negative;
 
   plot_t( sim_t* s );
 
@@ -4276,6 +4278,8 @@ struct player_t : public actor_t
   double    rps_gain, rps_loss;
   std::string tmi_debug_file_str;
   double tmi_window;
+  int new_tmi;
+  double tmi_filter;
 
   auto_dispose< std::vector<buff_t*> > buff_list;
   auto_dispose< std::vector<proc_t*> > proc_list;

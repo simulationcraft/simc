@@ -1089,8 +1089,8 @@ void buff_t::invalidate_cache()
     for ( int i = as<int>( sim -> player_no_pet_list.size() ) - 1; i >= 0; i-- )
     {
       player_t* p = sim -> player_no_pet_list[ i ];
-      for ( int i = as<int>( invalidate_list.size() ) - 1; i >= 0; i-- )
-        p -> invalidate_cache( invalidate_list[ i ] );
+      for ( int j = as<int>( invalidate_list.size() ) - 1; j >= 0; j-- )
+        p -> invalidate_cache( invalidate_list[ j ] );
     }
   }
 }

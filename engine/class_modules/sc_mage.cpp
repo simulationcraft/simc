@@ -4857,7 +4857,7 @@ expr_t* mage_t::create_expression( action_t* a, const std::string& name_str )
         else
         {
           size_t icicles = 0;
-          for ( int i = as<int>( mage.icicles.size() - 1 ); i >= 0; i++ )
+          for ( int i = as<int>( mage.icicles.size() - 1 ); i >= 0; i-- )
           {
             if ( mage.sim -> current_time - mage.icicles[ i ].first >= mage.spells.icicles_driver -> duration() )
               break;

@@ -505,6 +505,10 @@ void print_text_waiting_all( FILE* file, sim_t* sim )
 
 void print_text_performance( FILE* file, sim_t* sim )
 {
+  std::time_t cur_time = std::time( NULL );
+  std::string date_str = std::asctime(std::localtime(&cur_time));
+  if ( date_str.size() > 0 && *(date_str.end() - 1) == '\n' )
+    date_str = date_str.substr( 0, date_str.size() - 1 );
   util::fprintf( file,
                  "\nBaseline Performance:\n"
                  "  TotalEvents   = %ld\n"
@@ -513,14 +517,17 @@ void print_text_performance( FILE* file, sim_t* sim )
                  "  SimSeconds    = %.0f\n"
                  "  CpuSeconds    = %.3f\n"
                  "  WallSeconds   = %.3f\n"
-                 "  SpeedUp       = %.0f\n\n",
+                 "  SpeedUp       = %.0f\n"
+                 "  EndTime       = %s (%ld)\n\n",
                  ( long ) sim -> total_events_processed,
                  ( long ) sim -> max_events_remaining,
                  sim -> target -> resources.base[ RESOURCE_HEALTH ],
                  sim -> iterations * sim -> simulation_length.mean(),
                  sim -> elapsed_cpu.total_seconds(),
                  sim -> elapsed_time.total_seconds(),
-                 sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu.total_seconds() );
+                 sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu.total_seconds(),
+                 date_str.c_str(),
+                 cur_time );
 }
 
 // print_text_scale_factors =================================================

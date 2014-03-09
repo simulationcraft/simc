@@ -649,7 +649,7 @@ player_t::player_t( sim_t*             s,
   iteration_waiting_time( timespan_t::zero() ), iteration_executed_foreground_actions( 0 ),
   rps_gain( 0 ), rps_loss( 0 ),
 
-  tmi_window( 6.0 ),
+  tmi_window( 6.0 ), new_tmi( 0 ), tmi_filter( 1.0 ),
   collected_data( player_collected_data_t( name_str, *sim ) ),
   vengeance( collected_data.vengeance_timeline ),
   // Damage
@@ -899,14 +899,14 @@ static bool init_parties( sim_t* sim )
     if ( party_str == "reset" )
     {
       party_index = 0;
-      for ( size_t i = 0; i < sim -> player_list.size(); ++i )
-        sim -> player_list[ i ] -> party = 0;
+      for ( size_t j = 0; j < sim -> player_list.size(); ++j )
+        sim -> player_list[ j ] -> party = 0;
     }
     else if ( party_str == "all" )
     {
-      for ( size_t i = 0; i < sim -> player_list.size(); ++i )
+      for ( size_t j = 0; j < sim -> player_list.size(); ++j )
       {
-        player_t* p = sim -> player_list[ i ];
+        player_t* p = sim -> player_list[ j ];
         p -> party = 1;
       }
     }
@@ -925,9 +925,9 @@ static bool init_parties( sim_t* sim )
           return false;
         }
         p -> party = party_index;
-        for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+        for ( size_t k = 0; k < p -> pet_list.size(); ++k )
         {
-          pet_t* pet = p -> pet_list[ i ];
+          pet_t* pet = p -> pet_list[ k ];
           pet -> party = party_index;
         }
       }
@@ -1053,6 +1053,9 @@ void player_t::init_character_properties()
 
   if ( sim -> tmi_window_global > 0 )
     tmi_window = sim -> tmi_window_global;
+
+   new_tmi = sim -> new_tmi;
+   tmi_filter = sim -> tmi_filter;
 }
 
 void scale_challenge_mode( player_t& p, const rating_t& rating )
@@ -6527,9 +6530,9 @@ struct pool_resource_t : public action_t
 
     if ( !resource_str.empty() )
     {
-      resource_e r = util::parse_resource_type( resource_str );
-      if ( r != RESOURCE_NONE )
-        resource = r;
+      resource_e res = util::parse_resource_type( resource_str );
+      if ( res != RESOURCE_NONE )
+        resource = res;
     }
   }
 
@@ -7237,13 +7240,13 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
   {
     if ( unsigned spell_id = dbc.specialization_ability_id( _spec, name.c_str() ) )
     {
-      const spell_data_t* s = dbc.spell( spell_id );
-      if ( ( ( int )s -> level() <= level ) )
+      const spell_data_t* spell = dbc.spell( spell_id );
+      if ( ( ( int )spell -> level() <= level ) )
       {
         if ( dbc::get_token( spell_id ).empty() )
           dbc.add_token( spell_id, token );
 
-        return s;
+        return spell;
       }
     }
   }
@@ -7259,13 +7262,13 @@ const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std:
   {
     if ( unsigned spell_id = dbc.mastery_ability_id( s, idx ) )
     {
-      const spell_data_t* s = dbc.spell( spell_id );
-      if ( ( int )s -> level() <= level )
+      const spell_data_t* spell = dbc.spell( spell_id );
+      if ( ( int )spell -> level() <= level )
       {
         if ( dbc::get_token( spell_id ).empty() )
           dbc.add_token( spell_id, token );
 
-        return dbc.spell( spell_id );
+        return spell;
       }
     }
   }
@@ -7342,13 +7345,13 @@ const spell_data_t* player_t::find_class_spell( const std::string& name, const s
   {
     if ( unsigned spell_id = dbc.class_ability_id( type, _spec, name.c_str() ) )
     {
-      const spell_data_t* s = dbc.spell( spell_id );
-      if ( s -> id() == spell_id && ( int )s -> level() <= level )
+      const spell_data_t* spell = dbc.spell( spell_id );
+      if ( spell -> id() == spell_id && ( int )spell -> level() <= level )
       {
         if ( dbc::get_token( spell_id ).empty() )
           dbc.add_token( spell_id, token );
 
-        return s;
+        return spell;
       }
     }
   }
@@ -8837,15 +8840,15 @@ void player_t::analyze( sim_t& s )
   {
     for ( size_t i = 0; i < num_stats; i++ )
     {
-      stats_t* s = tmp_stats_list[ i ];
-      s -> analyze();
+      stats_t* stats = tmp_stats_list[ i ];
+      stats -> analyze();
 
-      if ( s -> type == STATS_DMG )
-        s -> portion_amount =  collected_data.compound_dmg.mean() ? s -> actual_amount.mean() / collected_data.compound_dmg.mean() : 0.0 ;
-      else if ( s -> type == STATS_HEAL  )
-        s -> portion_amount =  collected_data.compound_heal.mean() ? s -> actual_amount.mean() / collected_data.compound_heal.mean() : 0.0;
-      else if ( s -> type == STATS_ABSORB )
-        s -> portion_amount =  collected_data.compound_absorb.mean() ? s -> actual_amount.mean() / collected_data.compound_absorb.mean() : 0.0;
+      if ( stats -> type == STATS_DMG )
+        stats -> portion_amount =  collected_data.compound_dmg.mean() ? stats -> actual_amount.mean() / collected_data.compound_dmg.mean() : 0.0 ;
+      else if ( stats -> type == STATS_HEAL  )
+        stats -> portion_amount =  collected_data.compound_heal.mean() ? stats -> actual_amount.mean() / collected_data.compound_heal.mean() : 0.0;
+      else if ( stats -> type == STATS_ABSORB )
+        stats -> portion_amount =  collected_data.compound_absorb.mean() ? stats -> actual_amount.mean() / collected_data.compound_absorb.mean() : 0.0;
 
     }
   }
@@ -8879,8 +8882,8 @@ void player_t::analyze( sim_t& s )
   for ( size_t i = 0; i < pet_list.size(); ++i )
   {
     pet_t* pet =  pet_list[ i ];
-    for ( size_t i = 0; i < pet -> gain_list.size(); ++i )
-      pet -> gain_list[ i ] -> analyze( s );
+    for ( size_t j = 0; j < pet -> gain_list.size(); ++j )
+      pet -> gain_list[ j ] -> analyze( s );
   }
 
   // Damage Timelines =======================================================
@@ -8888,12 +8891,12 @@ void player_t::analyze( sim_t& s )
   collected_data.timeline_dmg.init( max_buckets );
   for ( size_t i = 0, is_hps = ( primary_role() == ROLE_HEAL ); i < num_stats; i++ )
   {
-    stats_t* s = tmp_stats_list[ i ];
-    if ( ( s -> type != STATS_DMG ) == is_hps )
+    stats_t* stats = tmp_stats_list[ i ];
+    if ( ( stats -> type != STATS_DMG ) == is_hps )
     {
-      size_t j_max = std::min( max_buckets, s -> timeline_amount.data().size() );
+      size_t j_max = std::min( max_buckets, stats -> timeline_amount.data().size() );
       for ( size_t j = 0; j < j_max; j++ )
-        collected_data.timeline_dmg.add( j, s -> timeline_amount.data()[ j ] );
+        collected_data.timeline_dmg.add( j, stats -> timeline_amount.data()[ j ] );
     }
   }
 
@@ -9975,36 +9978,69 @@ void player_collected_data_t::collect_data( const player_t& p )
         double w0  = 6; // normalized window size
         double hdf = 3; // default health decade factor
 
-        // create sliding average timeline
+        // declare sliding average timeline
         sc_timeline_t sliding_average_tl;
         sc_timeline_t sliding_average_normalized_tl;
 
-        // Use half window size of 3, so it's a moving average over 6 seconds
+        // create sliding average timelines from data
         health_changes.timeline.build_sliding_average_timeline( sliding_average_tl, window );
         health_changes.timeline_normalized.build_sliding_average_timeline( sliding_average_normalized_tl, window );
 
         // pull the data out of the normalized sliding average timeline
         std::vector<double> weighted_value = sliding_average_normalized_tl.data();
 
-        for ( size_t j = 0, size = weighted_value.size(); j < size; j++ )
+        if ( p.new_tmi > 0 )  // new TMI implementation for testing
         {
-          // normalize to the default window size (6-second window)
-          weighted_value[ j ] *= w0;
-          
-          // calculate exponentially-weighted contribution of this data point
-          weighted_value[ j ] = std::exp( 10 * std::log( hdf ) * ( weighted_value[ j ] - 1 ) );
+          // define constants
+          double D = 10 * p.tmi_filter; // filtering strength
+          double c2 = std::exp( D ); 
+          double c1 = p.new_tmi * 5000 / D; // slope
 
-          // add to the TMI total
-          tmi += weighted_value [ j ];
+          for ( size_t j = 0, size = weighted_value.size(); j < size; j++ )
+          {
+            // normalize to the default window size (6-second window)
+            weighted_value[ j ] *= w0;
+
+            // calculate exponentially-weighted contribution of this data point
+            weighted_value[ j ] = std::exp( D * ( weighted_value[ j ] - 1 ) );
+
+            // add to the TMI total
+            tmi += weighted_value [ j ];
+          }
+
+          // normalize for fight length
+          tmi /= f_length;
+
+          // constant multiplicative normalization factors
+          tmi *= c2;
+          tmi += 1;
+          tmi = std::log( tmi );
+          tmi *= c1;
+
         }
+        else // old TMI
+        {
 
-        // normalize for fight length
-        tmi /= f_length;
+          for ( size_t j = 0, size = weighted_value.size(); j < size; j++ )
+          {
+            // normalize to the default window size (6-second window)
+            weighted_value[ j ] *= w0;
 
-        // constant multiplicative normalization factors
-        // these are estimates at the moment - will be fine-tuned later
-        tmi *= 10000;
-        tmi *= std::pow( static_cast<double>( window ) , 2 ); // normalizes for window size
+            // calculate exponentially-weighted contribution of this data point
+            weighted_value[ j ] = std::exp( 10 * std::log( hdf ) * ( weighted_value[ j ] - 1 ) );
+
+            // add to the TMI total
+            tmi += weighted_value [ j ];
+          }
+
+          // normalize for fight length
+          tmi /= f_length;
+
+          // constant multiplicative normalization factors
+          // these are estimates at the moment - will be fine-tuned later
+          tmi *= 10000;
+          tmi *= std::pow( static_cast<double>( window ) , 2 ); // normalizes for window size
+        }
 
         // if an output file has been defined, write to it
         print_tmi_debug_csv( &sliding_average_tl, &sliding_average_normalized_tl, weighted_value, p );

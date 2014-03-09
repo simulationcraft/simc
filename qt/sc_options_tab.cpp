@@ -688,7 +688,7 @@ void SC_OptionsTab::createToolTips()
                                    tr( "%1:  Sufficient for DPS Analysis" ).arg( 1000 ) + "\n" +
                                    tr( "%1: Recommended for Scale Factor Generation" ).arg( 10000 ) + "\n" +
                                    tr( "%1: Use if %2 isn't enough for Scale Factors" ).arg( 25000 ).arg( 10000 ) + "\n" +
-                                   tr( "%1: If you're patient" ).arg( 100 ) );
+                                   tr( "%1: If you're patient" ).arg( 50000 ) );
 
   choice.fight_length -> setToolTip( tr( "For custom fight lengths use max_time=seconds." ) );
 
