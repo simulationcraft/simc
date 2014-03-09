@@ -3625,16 +3625,16 @@ struct void_entropy_t : public priest_spell_t
  {
   void_entropy_mastery_t* proc_spell;
 
-  void_entropy_t( priest_t& p, priest_spell_t* pa ) :
+  void_entropy_t( priest_t& p, const std::string& options_str ) :
      priest_spell_t( "void_entropy", p, p.find_class_spell( "Void Entropy" ) ),
      proc_spell( nullptr )
    {
+     parse_options( nullptr, options_str );
 
      if ( p.mastery_spells.shadowy_recall -> ok() )
      {
        proc_spell = new void_entropy_mastery_t( p );
-       if ( pa )
-         pa -> add_child( proc_spell );
+       add_child( proc_spell );
      }
    }
 
@@ -5222,6 +5222,7 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "cascade_damage"         ) return new cascade_damage_t        ( *this, options_str );
   if ( name == "halo"                   ) return new halo_t                  ( *this, options_str );
   if ( name == "divine_star"            ) return new divine_star_t           ( *this, options_str );
+  if ( name == "void_entropy"           ) return new void_entropy_t          ( *this, options_str );
 
   // Heals
   if ( name == "binding_heal"           ) return new binding_heal_t          ( *this, options_str );
@@ -5238,6 +5239,9 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "prayer_of_mending"      ) return new prayer_of_mending_t     ( *this, options_str );
   if ( name == "renew"                  ) return new renew_t                 ( *this, options_str );
   if ( name == "cascade_heal"           ) return new cascade_heal_t          ( *this, options_str );
+  if ( name == "clarity_of_will"        ) return new clarity_of_will_t       ( *this, options_str );
+  if ( name == "clarity_of_purpose"     ) return new clarity_of_purpose_t    ( *this, options_str );
+  if ( name == "saving_grace"           ) return new saving_grace_t          ( *this, options_str );
 
   if ( find_class_spell( "Lightwell" ) -> ok() )
     if ( name == "lightwell"              ) return new lightwell_t             ( *this, options_str );
