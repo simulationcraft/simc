@@ -5501,7 +5501,8 @@ void priest_t::create_buffs()
 
   buffs.spirit_shell = new buffs::spirit_shell_t( *this );
 
-  buffs.saving_grace_penalty = buff_creator_t( this, "saving_grace_penalty" ); // TODO: spelldata
+  buffs.saving_grace_penalty = buff_creator_t( this, "saving_grace_penalty" )
+                            .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER ); // TODO: spelldata
 
   // Holy
   buffs.chakra_chastise = buff_creator_t( this, "chakra_chastise" )
