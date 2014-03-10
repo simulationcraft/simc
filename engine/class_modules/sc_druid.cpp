@@ -3065,7 +3065,7 @@ struct lacerate_t : public bear_attack_t
   {
     bear_attack_t::execute();
 
-    if ( p() -> buff.son_of_ursoc -> check() || p() -> buff.berserk -> check() )
+    if ( p() -> buff.son_of_ursoc -> check() )
       cooldown -> reset( false );
   }
 

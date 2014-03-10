@@ -25,8 +25,8 @@ struct elixir_data_t
 const elixir_data_t elixir_data[] =
 {
   // mop
-  { "mantid", ELIXIR_GUARDIAN, STAT_ARMOR, 2250, 2250 },
-  { "mad_hozen", ELIXIR_BATTLE, STAT_CRIT_RATING, 750, 750 },
+  { "mantid", ELIXIR_GUARDIAN, STAT_ARMOR, 2250, 2730 },
+  { "mad_hozen", ELIXIR_BATTLE, STAT_CRIT_RATING, 750, 990 },
 };
 
 struct flask_data_t
