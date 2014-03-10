@@ -282,6 +282,7 @@ public:
   virtual action_t* create_action( const std::string& name, const std::string& options );
   virtual double    composite_melee_speed() const;
   virtual double    energy_regen_per_second() const;
+  virtual double    composite_attribute_multiplier( attribute_e attr ) const override;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_player_heal_multiplier( school_e school ) const;
   virtual double    composite_spell_hit() const;
@@ -3429,6 +3430,17 @@ double monk_t::composite_player_multiplier( school_e school ) const
   return m;
 }
 
+double monk_t::composite_attribute_multiplier( attribute_e attr ) const
+{
+  double cam = base_t::composite_attribute_multiplier( attr );
+
+  if ( attr == ATTR_STAMINA )
+  {
+    cam *= 1.0 + active_stance_data( STURDY_OX ).effectN( 7 ).percent();
+  }
+  return cam;
+}
+
 // monk_t::composite_player_heal_multiplier
 
 double monk_t::composite_player_heal_multiplier( school_e school ) const
@@ -4146,6 +4158,9 @@ bool monk_t::switch_to_stance( stance_e to )
   stance_invalidates( current_stance() ); // Invalidate old stance
   _active_stance = to;
   stance_invalidates( current_stance() ); // Invalidate new stance
+
+
+  recalculate_resource_max( RESOURCE_HEALTH ); // Sturdy Ox Stamina multiplier
 
   return true;
 }
