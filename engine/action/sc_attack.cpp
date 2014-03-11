@@ -25,9 +25,6 @@ attack_t::attack_t( const std::string&  n,
   min_gcd = timespan_t::from_seconds( 1.0 );
   hasted_ticks = false;
 
-  // TODO: WOD-MULTISTRIKE
-  may_multistrike = true;
- 
   crit_multiplier *= util::crit_multiplier( p -> meta_gem );
 }
 

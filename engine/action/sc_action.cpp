@@ -265,6 +265,7 @@ action_t::action_t( action_e       ty,
   resource_current( RESOURCE_NONE ),
   aoe(),
   pre_combat( 0 ),
+  may_multistrike( -1 ),
   dual(),
   callbacks( true ),
   special(),
@@ -292,7 +293,6 @@ action_t::action_t( action_e       ty,
   may_block(),
   may_crush(),
   may_crit(),
-  may_multistrike(),
   tick_may_crit(),
   tick_zero(),
   hasted_ticks(),
@@ -1707,6 +1707,10 @@ void action_t::init()
   stats -> school      = school;
 
   if ( quiet ) stats -> quiet = true;
+
+  // TODO: WOD-MULTISTRIKE
+  if ( may_multistrike == -1 )
+    may_multistrike = may_crit;
 
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;

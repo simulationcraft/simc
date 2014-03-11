@@ -43,9 +43,6 @@ spell_base_t::spell_base_t( action_e at,
 
   crit_bonus = 1.0;
 
-  // TODO: WOD-MULTISTRIKE
-  may_multistrike = true;
-
   crit_multiplier *= util::crit_multiplier( player -> meta_gem );
 }
 
