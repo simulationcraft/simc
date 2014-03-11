@@ -15,6 +15,11 @@ static bool has_avoidance( const std::vector<stats_t::stats_results_t>& s )
            s[ RESULT_PARRY  ].count.mean() ) > 0;
 }
 
+static bool has_multistrike( const std::vector<stats_t::stats_results_t>& s)
+{
+  return ( s[ RESULT_MULTISTRIKE ].count.mean() + s[ RESULT_MULTISTRIKE_CRIT ].count.mean() ) > 0;
+}
+
 static bool has_block( const stats_t* s )
 {
   return ( s -> direct_results_detail[ FULLTYPE_HIT_BLOCK ].count.mean() +
@@ -53,6 +58,40 @@ static bool player_has_tick_avoidance( player_t* p )
   for ( size_t i = 0; i < p -> pet_list.size(); ++i )
   {
     if ( player_has_tick_avoidance( p -> pet_list[ i ] ) )
+      return true;
+  }
+
+  return false;
+}
+
+static bool player_has_direct_multistrike( player_t* p )
+{
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+  {
+    if ( has_multistrike( p -> stats_list[ i ] -> direct_results ) )
+      return true;
+  }
+
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+  {
+    if ( player_has_direct_multistrike( p -> pet_list[ i ] ) )
+      return true;
+  }
+
+  return false;
+}
+
+static bool player_has_tick_multistrike( player_t* p )
+{
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+  {
+    if ( has_multistrike( p -> stats_list[ i ] -> tick_results ) )
+      return true;
+  }
+
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+  {
+    if ( player_has_tick_multistrike( p -> pet_list[ i ] ) )
       return true;
   }
 
@@ -102,6 +141,10 @@ double mean_damage( std::vector<stats_t::stats_results_t> result )
 
   for ( size_t i = 0; i < result.size(); i++ )
   {
+    // Skip multistrike for mean damage
+    if ( i == RESULT_MULTISTRIKE || i == RESULT_MULTISTRIKE_CRIT )
+      continue;
+
     mean  += result[ i ].actual_amount.sum();
     count += result[ i ].actual_amount.count();
   }
@@ -151,6 +194,20 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
     mean_damage( s -> direct_results ),
     s -> direct_results[ RESULT_CRIT ].pct );
 
+  if ( player_has_direct_multistrike( p ) )
+  {
+    os.printf(
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"     // count
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"     // direct_results MULTISTRIKE_HIT
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"     // direct_results MULTISTRIKE_CRIT
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n",  // direct_results CRIT%
+      s -> direct_results[ RESULT_MULTISTRIKE ].count.pretty_mean() + 
+      s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].count.pretty_mean(),
+      s -> direct_results[ RESULT_MULTISTRIKE ].actual_amount.pretty_mean(),
+      s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.pretty_mean(),
+      s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].pct );
+  }
+
   if ( player_has_direct_avoidance( p ) )
     os.printf(
       "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n",   // direct_results Avoid%
@@ -185,6 +242,20 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
     mean_damage( s -> tick_results ),
     s -> tick_results[ RESULT_CRIT ].pct );
 
+  if ( player_has_tick_multistrike( p ) )
+  {
+    os.printf(
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"     // count
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"     // tick_results MULTISTRIKE_HIT
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"     // tick_results MULTISTRIKE_CRIT
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n",  // tick_results CRIT%
+      s -> tick_results[ RESULT_MULTISTRIKE ].count.pretty_mean() + 
+      s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].count.pretty_mean(),
+      s -> tick_results[ RESULT_MULTISTRIKE ].actual_amount.pretty_mean(),
+      s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.pretty_mean(),
+      s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].pct );
+  }
+
   if ( player_has_tick_avoidance( p ) )
     os.printf(
       "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n",   // tick_results Avoid%
@@ -216,23 +287,16 @@ std::string compound_dps_pct = "";
   if ( cDPSpct > s -> portion_amount ) compound_dps_pct = "&nbsp;(" + util::to_string( cDPSpct * 100, 1 ) + "%)";
 
   os.printf(
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f%s</td>\n"
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f%s</td>\n"   
     "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%%s</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.2fsec</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t\t\t</tr>\n",
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"     // count
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.2fsec</td>\n"  // interval
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"     // hpe
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"     // hpet
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"     // direct_result HIT
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"     // direct_result CRIT
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"     // direct_result mean
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n",   // direct_result CRIT%
     s -> portion_aps.pretty_mean(), compound_dps.c_str(),
     s -> portion_amount * 100, compound_dps_pct.c_str(),
     s -> num_executes.pretty_mean(),
@@ -242,12 +306,51 @@ std::string compound_dps_pct = "";
     s -> direct_results[ RESULT_HIT  ].actual_amount.pretty_mean(),
     s -> direct_results[ RESULT_CRIT ].actual_amount.pretty_mean(),
     mean_damage( s -> direct_results ),
-    s -> direct_results[ RESULT_CRIT ].pct,
+    s -> direct_results[ RESULT_CRIT ].pct );
+
+  if ( player_has_direct_multistrike( p ) )
+  {
+    os.printf(
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"     // count
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"     // direct_results MULTISTRIKE_HIT
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"     // direct_results MULTISTRIKE_CRIT
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n",  // direct_results CRIT%
+      s -> direct_results[ RESULT_MULTISTRIKE ].count.pretty_mean() + 
+      s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].count.pretty_mean(),
+      s -> direct_results[ RESULT_MULTISTRIKE ].actual_amount.pretty_mean(),
+      s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.pretty_mean(),
+      s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].pct );
+  }
+
+  os.printf(
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"     // tick count
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"     // tick_result HIT
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"     // tick_result CRIT
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"     // tick_result mean
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n",  // tick_result CRIT%
     s -> num_ticks.pretty_mean(),
     s -> tick_results[ RESULT_HIT  ].actual_amount.pretty_mean(),
     s -> tick_results[ RESULT_CRIT ].actual_amount.pretty_mean(),
     mean_damage( s -> tick_results ),
-    s -> tick_results[ RESULT_CRIT ].pct,
+    s -> tick_results[ RESULT_CRIT ].pct );
+
+  if ( player_has_tick_multistrike( p ) )
+  {
+    os.printf(
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"     // count
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"     // tick_results MULTISTRIKE_HIT
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"     // tick_results MULTISTRIKE_CRIT
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n",  // tick_results CRIT%
+      s -> tick_results[ RESULT_MULTISTRIKE ].count.pretty_mean() + 
+      s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].count.pretty_mean(),
+      s -> tick_results[ RESULT_MULTISTRIKE ].actual_amount.pretty_mean(),
+      s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.pretty_mean(),
+      s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].pct );
+  }
+
+  os.printf(
+    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"   // uptime
+    "\t\t\t\t\t\t\t</tr>\n",
     100 * s -> total_tick_time.mean() / p -> collected_data.fight_length.mean() );
 }
 
@@ -2834,18 +2937,36 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
        << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-avg\" class=\"help\">Avg</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%</a></th>\n";
 
+    if ( player_has_direct_multistrike( p ) )
+    {
+      os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">M-Count</a></th>\n"
+         << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">M-Hit</a></th>\n"
+         << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">M-Crit</a></th>\n"
+         << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">M-Crit%</a></th>\n";
+    }
+
     if ( player_has_direct_avoidance( p ) )
-       os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-miss-pct\" class=\"help\">Avoid%</a></th>\n";
+      os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-miss-pct\" class=\"help\">Avoid%</a></th>\n";
+
     if ( player_has_glance( p ) )
-       os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-glance-pct\" class=\"help\">G%</a></th>\n";
+      os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-glance-pct\" class=\"help\">G%</a></th>\n";
+
     if ( player_has_block( p ) )
-       os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-block-pct\" class=\"help\">B%</a></th>\n";
+      os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-block-pct\" class=\"help\">B%</a></th>\n";
 
     os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks\" class=\"help\">Ticks</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-hit\" class=\"help\">T-Hit</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit\" class=\"help\">T-Crit</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-avg\" class=\"help\">T-Avg</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit-pct\" class=\"help\">T-Crit%</a></th>\n";
+
+    if ( player_has_tick_multistrike( p ) )
+    {
+      os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">MT-Count</a></th>\n"
+         << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">MT-Hit</a></th>\n"
+         << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">MT-Crit</a></th>\n"
+         << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">MT-Crit%</a></th>\n";
+    }
 
     if ( player_has_tick_avoidance( p ) )
       os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-miss-pct\" class=\"help\">T-Avoid%</a></th>\n";
@@ -2911,22 +3032,40 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
     os << "\t\t\t\t\t\t<table class=\"sc\">\n"
        << "\t\t\t\t\t\t\t<tr>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"left small\">Healing Stats</th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hps\" class=\"help\">HPS</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hps-pct\" class=\"help\">HPS%</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps\" class=\"help\">HPS</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps-pct\" class=\"help\">HPS%</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hpe\" class=\"help\">HPE</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hpet\" class=\"help\">HPET</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpe\" class=\"help\">HPE</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpet\" class=\"help\">HPET</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-avg\" class=\"help\">Avg</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks\" class=\"help\">Ticks</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%</a></th>\n";
+
+    if ( player_has_direct_multistrike( p ) )
+    {
+      os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">M-Count</a></th>\n"
+         << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">M-Hit</a></th>\n"
+         << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">M-Crit</a></th>\n"
+         << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">M-Crit%</a></th>\n";
+    }
+
+    os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks\" class=\"help\">Ticks</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-hit\" class=\"help\">T-Hit</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit\" class=\"help\">T-Crit</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-avg\" class=\"help\">T-Avg</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit-pct\" class=\"help\">T-Crit%</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-uptime\" class=\"help\">Up%</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit-pct\" class=\"help\">T-Crit%</a></th>\n";
+
+    if ( player_has_tick_multistrike( p ) )
+    {
+      os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">MT-Count</a></th>\n"
+         << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">MT-Hit</a></th>\n"
+         << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">MT-Crit</a></th>\n"
+         << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">MT-Crit%</a></th>\n";
+    }
+
+    os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-uptime\" class=\"help\">Up%</a></th>\n"
        << "\t\t\t\t\t\t\t</tr>\n";
 
     os << "\t\t\t\t\t\t\t<tr>\n"
