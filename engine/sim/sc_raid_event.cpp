@@ -741,11 +741,11 @@ void raid_event_t::parse_options( option_t*          options,
   {
     if ( *( first_str.end() - 1 ) == '%' )
     {
-      double pct = util::to_int( first_str.substr( 0, first_str.size() - 1 ) ) / 100.0;
+      double pct = atof( first_str.substr( 0, first_str.size() - 1 ).c_str() ) / 100.0;
       first = sim -> max_time * pct;
     }
     else
-      first = timespan_t::from_seconds( util::to_int( first_str ) );
+      first = timespan_t::from_seconds( atof( first_str.c_str() ) );
 
     if ( first.total_seconds() < 0 )
       first = timespan_t::zero();
@@ -755,11 +755,11 @@ void raid_event_t::parse_options( option_t*          options,
   {
     if ( *( last_str.end() - 1 ) == '%' )
     {
-      double pct = util::to_int( last_str.substr( 0, last_str.size() - 1 ) ) / 100.0;
+      double pct = atof( last_str.substr( 0, last_str.size() - 1 ).c_str() ) / 100.0;
       last = sim -> max_time * pct;
     }
     else
-      last = timespan_t::from_seconds( util::to_int( last_str ) );
+      last = timespan_t::from_seconds( atof( last_str.c_str() ) );
 
     if ( last.total_seconds() < 0 )
       last = timespan_t::zero();
