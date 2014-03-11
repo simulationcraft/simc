@@ -689,12 +689,14 @@ void raid_event_t::reset()
 void raid_event_t::parse_options( option_t*          options,
                                   const std::string& options_str )
 {
+  std::string first_str, last_str;
+
   if ( options_str.empty() ) return;
 
   option_t base_options[] =
   {
-    opt_timespan( "first", first ),
-    opt_timespan( "last", last ),
+    opt_string( "first", first_str ),
+    opt_string( "last", last_str ),
     opt_timespan( "period", cooldown ),
     opt_timespan( "cooldown", cooldown ),
     opt_timespan( "cooldown_stddev", cooldown_stddev ),
@@ -732,6 +734,35 @@ void raid_event_t::parse_options( option_t*          options,
     affected_role = util::parse_role_type( affected_role_str );
     if ( affected_role == ROLE_NONE )
       sim -> errorf( "Unknown role '%s' specified for raid event.\n", affected_role_str.c_str() );
+  }
+
+  // Parse first/last
+  if ( first_str.size() > 1 )
+  {
+    if ( *( first_str.end() - 1 ) == '%' )
+    {
+      double pct = util::to_int( first_str.substr( 0, first_str.size() - 1 ) ) / 100.0;
+      first = sim -> max_time * pct;
+    }
+    else
+      first = timespan_t::from_seconds( util::to_int( first_str ) );
+
+    if ( first.total_seconds() < 0 )
+      first = timespan_t::zero();
+  }
+
+  if ( last_str.size() > 1 )
+  {
+    if ( *( last_str.end() - 1 ) == '%' )
+    {
+      double pct = util::to_int( last_str.substr( 0, last_str.size() - 1 ) ) / 100.0;
+      last = sim -> max_time * pct;
+    }
+    else
+      last = timespan_t::from_seconds( util::to_int( last_str ) );
+
+    if ( last.total_seconds() < 0 )
+      last = timespan_t::zero();
   }
 }
 
