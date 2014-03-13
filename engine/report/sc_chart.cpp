@@ -359,10 +359,9 @@ std::string get_color( player_t* p )
 
 unsigned char simple_encoding( int number )
 {
-  if ( number < 0  ) number = 0;
-  if ( number > 61 ) number = 61;
-
   static const char encoding[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  number = clamp( number, 0, (int)sizeof_array( encoding ) );
 
   return encoding[ number ];
 }
@@ -1522,14 +1521,14 @@ std::string chart::scaling_dps( player_t* p )
 
 std::string chart::reforge_dps( player_t* p )
 {
-  double dps_range = 0.0, min_dps = std::numeric_limits<double>::max(), max_dps = 0.0;
-
   if ( ! p )
     return std::string();
 
   std::vector< std::vector<plot_data_t> >& pd = p -> reforge_plot_data;
   if ( pd.empty() )
     return std::string();
+
+  double dps_range = 0.0, min_dps = std::numeric_limits<double>::max(), max_dps = 0.0;
 
   size_t num_stats = pd[ 0 ].size() - 1;
   if ( num_stats != 3 && num_stats != 2 )
@@ -1797,34 +1796,39 @@ std::string chart::timeline(  player_t* p,
 
   double encoding_adjust = encoding_range / ( timeline_max - timeline_min );
 
-  char buffer[ 2048 ];
 
   sc_chart chart( timeline_name + " Timeline", LINE, p -> sim -> print_styles );
   chart.set_height( 200 );
 
-  std::string s = chart.create();
+  std::ostringstream s;
+  s << chart.create();
   char * old_locale = setlocale( LC_ALL, "C" );
-  s += "chd=s:";
+  s << "chd=s:";
   for ( size_t i = 0; i < max_buckets; i += increment )
   {
-    s += simple_encoding( ( int ) ( ( timeline_data[ i ] - timeline_min ) * encoding_adjust ) );
+    s << simple_encoding( ( int ) ( ( timeline_data[ i ] - timeline_min ) * encoding_adjust ) );
   }
-  s += amp;
+  s << amp;
+
   if ( ! ( p -> sim -> print_styles == 1 ) )
   {
-    snprintf( buffer, sizeof( buffer ), "chco=%s", color.c_str() ); s += buffer;
-    s += amp;
+    s << "chco=" << color;
+    s << amp;
   }
-  snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", encoding_range ); s += buffer;
-  s += amp;
+
+  s << "chds=0," << util::to_string( encoding_range, 0 );
+  s << amp;
+
   if ( avg || timeline_min < 0.0 )
   {
-    snprintf( buffer, sizeof( buffer ), "chm=h,%s,0,%.4f,0.4", color::yellow.c_str(), ( avg - timeline_min ) / timeline_range ); s += buffer;
-    snprintf( buffer, sizeof( buffer ), "|h,%s,0,%.4f,0.4", color::red.c_str(), ( 0 - timeline_min ) / timeline_range ); s += buffer;
-    s += amp;
+    s << "chm=h," << color::yellow << ",0," << ( avg - timeline_min ) / timeline_range << ",0.4";
+    s << "|h," << color::red << ",0," << ( 0 - timeline_min ) / timeline_range << ",0.4";
+    s << amp;
   }
-  s += "chxt=x,y";
-  s += amp;
+
+  s << "chxt=x,y";
+  s << amp;
+
   std::ostringstream f; f.setf( std::ios::fixed ); f.precision( 0 );
   f << "chxl=0:|0|sec=" << util::to_string( max_buckets ) << "|1:|" << ( timeline_min < 0.0 ? "min=" : "" ) << timeline_min;
   if ( timeline_min < 0.0 )
@@ -1834,19 +1838,20 @@ std::string chart::timeline(  player_t* p,
   else f << "|";
   if ( timeline_max )
     f << "|max=" << util::to_string( timeline_max, 0 );
-  s += f.str();
-  s += amp;
-  s += "chxp=1,1,";
+  s << f.str();
+  s << amp;
+
+  s << "chxp=1,1,";
   if ( timeline_min < 0.0 )
   {
-    s += util::to_string( 100.0 * ( 0 - timeline_min ) / timeline_range, 0 );
-    s += ",";
+    s << util::to_string( 100.0 * ( 0 - timeline_min ) / timeline_range, 0 );
+    s << ",";
   }
-  s += util::to_string( 100.0 * ( avg - timeline_min ) / timeline_range, 0 );
-  s += ",100";
+  s << util::to_string( 100.0 * ( avg - timeline_min ) / timeline_range, 0 );
+  s << ",100";
 
   setlocale( LC_ALL, old_locale );
-  return s;
+  return s.str();
 }
 
 // chart::timeline_dps_error ================================================
