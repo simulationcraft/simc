@@ -2621,8 +2621,8 @@ double player_t::composite_melee_haste() const
     if ( buffs.mongoose_oh && buffs.mongoose_oh -> up() ) 
       h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
 
-    if ( buffs.berserking -> up() )
-      h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
+    if ( buffs.berserking -> up() ) //       h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );   Use this when DBC data for WoD is back.
+      h *= 1.0 / ( 1.0 + 0.15 );
 
     if ( race == RACE_GOBLIN || race == RACE_GNOME )
       h *= 1.0 / ( 1.0 + 0.01 );
