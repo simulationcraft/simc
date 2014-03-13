@@ -120,8 +120,6 @@ public:
 
   struct talent_passives_t {
     const spell_data_t* clarity_of_power; // MS/MB CD reduction implemented. TODO: Shadowy Recall and DD multiplier
-    const spell_data_t* shifting_perspectives_disc; // TODO: implement
-    const spell_data_t* shifting_perspectives_holy; // TODO: implement
     const spell_data_t* auspicious_spirits; // implemented 2014/3/19
   } talent_passives;
 
@@ -328,7 +326,6 @@ public:
   virtual void      init_action_list() override;
   virtual priest_td_t* get_target_data( player_t* target ) const override;
 
-  void fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name );
   double shadowy_recall_chance() const;
 
 private:
@@ -344,6 +341,7 @@ private:
   void apl_disc_dmg();
   void apl_holy_heal();
   void apl_holy_dmg();
+  void fixup_atonement_stats( const std::string& trigger_spell_name, const std::string& atonement_spell_name );
 
   target_specific_t<priest_td_t*> target_data;
 };
@@ -5372,8 +5370,6 @@ void priest_t::init_spells()
 
   // Passive Spells
   talent_passives.clarity_of_power           = talents.divine_clarity -> ok() ? spell_data_t::not_found() : spell_data_t::nil();
-  talent_passives.shifting_perspectives_disc = talents.divine_clarity -> ok() ? spell_data_t::not_found() : spell_data_t::nil();
-  talent_passives.shifting_perspectives_holy = talents.divine_clarity -> ok() ? spell_data_t::not_found() : spell_data_t::nil();
   talent_passives.auspicious_spirits         = talents.spiritual_guidance -> ok() ? spell_data_t::not_found() : spell_data_t::nil();
 
 
