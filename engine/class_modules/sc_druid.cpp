@@ -134,6 +134,7 @@ public:
     buff_t* natures_swiftness;
     buff_t* natures_vigil;
     buff_t* omen_of_clarity;
+    buff_t* stampeding_shout;
     buff_t* stealthed;
     buff_t* symbiosis;
 
@@ -5629,6 +5630,32 @@ struct t16_2pc_sun_bolt_t : public druid_spell_t
   }
 };
 
+// Stampeding Shout =========================================================
+
+struct stampeding_shout_t : public druid_spell_t
+{
+  stampeding_shout_t( druid_t* p, const std::string& options_str ) :
+    druid_spell_t( "stampeding_shout", p, p -> find_class_spell( "Stampeding Shout" ) )
+  {
+    parse_options( NULL, options_str );
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    druid_spell_t::execute();
+
+    for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
+    {
+      player_t* p = sim -> player_non_sleeping_list[ i ];
+      if ( p -> is_enemy() )
+        continue;
+
+      p -> buffs.stampeding_shout -> trigger();
+    }
+  }
+};
+
 // Force of Nature Spell ====================================================
 
 struct force_of_nature_spell_t : public druid_spell_t
@@ -5902,6 +5929,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "shred"                  ) return new                  shred_t( this, options_str );
   if ( name == "skull_bash_bear"        ) return new        skull_bash_bear_t( this, options_str );
   if ( name == "skull_bash_cat"         ) return new         skull_bash_cat_t( this, options_str );
+  if ( name == "stampeding_shout"       ) return new       stampeding_shout_t( this, options_str );
   if ( name == "starfire"               ) return new               starfire_t( this, options_str );
   if ( name == "starfall"               ) return new               starfall_t( this, options_str );
   if ( name == "starsurge"              ) return new              starsurge_t( this, options_str );
@@ -7752,6 +7780,10 @@ struct druid_module_t : public module_t
     {
       player_t* p = sim -> actor_list[ i ];
       p -> buffs.innervate               = new buffs::innervate_t( p );
+
+      p -> buffs.stampeding_shout        = buff_creator_t( p, "stampeding_shout", p -> find_spell( 77764 ) )
+                                          .max_stack( 1 )
+                                          .duration( timespan_t::from_seconds( 8.0 ) );
     }
   }
   virtual void combat_begin( sim_t* ) const {}

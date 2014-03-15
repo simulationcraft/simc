@@ -1586,7 +1586,6 @@ struct impending_victory_t : public warrior_attack_t
 
 struct intervene_t : public warrior_attack_t
 {
-
   intervene_t( warrior_t* p, const std::string& options_str ) :
     warrior_attack_t( "intervene", p, p -> spell.intervene )
   {
@@ -1594,6 +1593,7 @@ struct intervene_t : public warrior_attack_t
     base_teleport_distance = 25;
     movement_directionality = MOVEMENT_OMNI;
   }
+
   virtual bool ready()
   {
     warrior_t* p = cast();
@@ -2759,6 +2759,31 @@ struct shield_wall_t : public warrior_spell_t
   }
 };
 
+// Stampeding Roar =========================================================
+
+struct stampeding_roar_t : public warrior_spell_t
+{
+  stampeding_roar_t( warrior_t* p, const std::string& options_str ) :
+    warrior_spell_t( "stampeding_roar", p, p -> find_class_spell( "Stampeding Roar" ) )
+  {
+    parse_options( NULL, options_str );
+    harmful = false;
+  }
+
+  virtual void execute()
+  {
+    warrior_spell_t::execute();
+
+    for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
+    {
+      player_t* p = sim -> player_non_sleeping_list[ i ];
+      if ( p -> is_enemy() )
+        continue;
+
+      p -> buffs.stampeding_roar -> trigger();
+    }
+  }
+};
 
 // The swap/damage taken options are intended to make it easier for players to simulate possible gains/losses from
 // swapping stances while in combat, without having to create a bunch of messy actions for it, and then adding in raid_damage from
@@ -3034,6 +3059,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "shield_slam"        ) return new shield_slam_t        ( this, options_str );
   if ( name == "shockwave"          ) return new shockwave_t          ( this, options_str );
   if ( name == "slam"               ) return new slam_t               ( this, options_str );
+  if ( name == "stampeding_roar"    ) return new stampeding_roar_t    ( this, options_str );
   if ( name == "storm_bolt"         ) return new storm_bolt_t         ( this, options_str );
   if ( name == "stance"             ) return new stance_t             ( this, options_str );
   if ( name == "sunder_armor"       ) return new sunder_armor_t       ( this, options_str );
@@ -4298,6 +4324,10 @@ struct warrior_module_t : public module_t
                                       .default_value( std::fabs( p -> find_spell( 64382 ) -> effectN( 2 ).percent() ) )
                                       .cd( timespan_t::zero() )
                                       .add_invalidate( CACHE_ARMOR );
+
+      p -> buffs.stampeding_roar    = buff_creator_t( p, "stampeding_shout", p -> find_spell( 122294 ) )
+                                      .max_stack( 1 )
+                                      .duration( timespan_t::from_seconds( 8.0 ) );
     }
   }
 

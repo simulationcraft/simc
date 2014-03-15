@@ -2535,6 +2535,14 @@ void player_t::create_buffs()
                     .chance( 1 )
                     .duration( timespan_t::from_seconds( 5 ) );
 
+    buffs.blurred_speed     = buff_creator_t( this, "blurred_speed" )
+                   .spell( find_spell( 104409 ) )
+                   .chance( 0 );
+
+    buffs.pandarens_step     = buff_creator_t( this, "pandarens_step" )
+                   .spell( find_spell( 104414 ) )
+                   .chance( 0 );
+
     }
 
     buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );
@@ -3025,19 +3033,30 @@ double player_t::composite_movement_speed() const
 {
   double speed = base_movement_speed;
 
+  if ( buffs.blurred_speed -> up() ) // Check and see if it stacks with most things, I believe it does. 3/15/2014
+    speed *= 1.0 + buffs.blurred_speed -> data().effectN( 1 ).percent();
+
+  if ( buffs.pandarens_step -> up() )
+    speed *= 1.0 + buffs.pandarens_step -> data().effectN( 1 ).percent();
+
   if ( buffs.nitro_boosts -> up() )
-    speed *= 1.0 + 1.5; // Does not stack with a lot of random abilities, such as body and soul, stampeding shout, burning rush.
-                        // Other abilities exist that do not work as well, but I am not aware of them at this time.
+    speed *= 1.0 + buffs.nitro_boosts -> data().effectN( 1 ).percent(); // Does not stack with a lot of random abilities, such as body and soul, stampeding shout, burning rush.
+                                                                        // Other abilities exist that do not work as well, but I am not aware of them at this time.
+  if ( buffs.stampeding_roar -> up() )
+    speed *= 1.0 + buffs.stampeding_roar -> data().effectN( 1 ).percent();
+
+  if ( buffs.stampeding_shout -> up() )
+    speed *= 1.0 + buffs.stampeding_shout -> data().effectN( 1 ).percent();
+
+  // Commenting this out for now. How will we take the daze aspect into account?
+  //if ( buffs.aspect_of_the_pack -> up() )
+  //speed *= 1.0 + buffs.aspect_of_the_pack -> data().effectN( 1 ).percent();
 
   speed *= 1.0 + buffs.body_and_soul -> current_value;
 
 
   // From http://www.wowpedia.org/Movement_speed_effects
   // Additional items looked up
-
-  // Run Speed Enchants: 8% increase
-
-  // Engineering Nitro Boosts: 150% increase for 5 seconds
 
   // Pursuit of Justice, Quickening: 8%/15%
 
@@ -3052,7 +3071,6 @@ double player_t::composite_movement_speed() const
   // Druid: Travel Form 40%
 
   // Druid: Dash: 50/60/70
-  //        Stampeding Shout: 60% boost to all players within 10 yards for 8 seconds
 
   // Mage: Blazing Speed: 5%/10% chance after being hit for 50% for 8 sec
   //       Improved Blink: 35%/70% for 3 sec after blink
@@ -3061,9 +3079,6 @@ double player_t::composite_movement_speed() const
   // Rogue: Sprint 70%
 
   // Swiftness Potion: 50%
-
-  // Warrior: Enraged Speed Glyph - 20% while enraged
-  //          Stampeding Shout (Druid Symbiosis): 60% boost to all players within 10 yards for 8 seconds
 
   return speed;
 }
@@ -3963,6 +3978,8 @@ void player_t::arise()
     buffs.amplified -> trigger();
     buffs.amplified_2 -> trigger();
     buffs.cooldown_reduction -> trigger();
+    buffs.pandarens_step -> trigger();
+    buffs.blurred_speed -> trigger();
   }
 
   if ( has_foreground_actions( *this ) )

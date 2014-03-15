@@ -4370,6 +4370,7 @@ public:
 
   struct buffs_t
   {
+    buff_t* aspect_of_the_pack;
     buff_t* beacon_of_light;
     buff_t* blood_fury;
     buff_t* body_and_soul;
@@ -4390,6 +4391,8 @@ public:
     buff_t* pain_supression;
     buff_t* raid_movement;
     buff_t* self_movement;
+    buff_t* stampeding_shout;
+    buff_t* stampeding_roar;
     buff_t* shadowmeld;
     buff_t* stoneform;
     buff_t* stunned;
@@ -4410,6 +4413,10 @@ public:
     buff_t* amplified; // caster 146046
     buff_t* amplified_2;
     buff_t* cooldown_reduction;
+
+    //Runspeed Enchants
+    buff_t* pandarens_step;
+    buff_t* blurred_speed;
   } buffs;
 
   struct potion_buffs_t

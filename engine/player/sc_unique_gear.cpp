@@ -332,7 +332,14 @@ struct nitro_boosts_action_t : public action_t
 
     update_ready();
   }
+  virtual bool ready()
+  {
+  //To do: Add the various other spells that block nitro boost from being used.
+    if ( player -> buffs.stampeding_roar -> check() || player -> buffs.stampeding_shout -> check() ) // Cannot use nitro boosts when stampeding roar/shout buffs are up.
+      return false;
 
+    return ready();
+  }
 };
 
 void nitro_boosts( item_t* item )
@@ -955,6 +962,32 @@ void elemental_force( player_t* p, const std::string& mh_enchant, const std::str
     p -> callbacks.register_heal_callback  ( SCHOOL_ALL_MASK, cb );
   }
 }
+
+void blurred_speed( player_t* p, const std::string& enchant )
+{
+  if ( enchant == "blurred_speed" )
+  {
+    const spell_data_t* spell = p -> find_spell( 104409 );
+
+    buff_t* blurred_speed = buff_t::find( p, "blurred_speed" );
+
+    blurred_speed -> default_chance = 1;
+  }
+}
+
+void pandarens_step( player_t* p, const std::string& enchant )
+{
+  if ( enchant == "pandarens_step" )
+  {
+    const spell_data_t* spell = p -> find_spell( 104414 );
+
+    buff_t* pandarens_step = buff_t::find( p, "pandarens_step" );
+
+    pandarens_step -> default_chance = 1;
+  }
+}
+
+
 
 void colossus( player_t* p, const std::string& mh_enchant, const std::string& oh_enchant, weapon_t* mhw, weapon_t* ohw )
 {
@@ -3028,6 +3061,11 @@ bool unique_gear::get_use_encoding( std::string& encoding,
 void unique_gear::initialize_special_effects( player_t* p )
 {
   if ( p -> is_pet() ) return;
+
+  std::string& boot_enchant   = p -> items[ SLOT_FEET ].parsed.enchant.name_str;
+
+  pandarens_step( p, boot_enchant );
+  blurred_speed( p, boot_enchant );
 
   // Special Weapn Enchants
   std::string& mh_enchant     = p -> items[ SLOT_MAIN_HAND ].parsed.enchant.name_str;
