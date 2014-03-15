@@ -5018,6 +5018,9 @@ public:
 
   double hit_exp() const;
 
+  virtual double composite_movement_speed() const
+  { return owner -> composite_movement_speed(); }
+
   virtual double composite_melee_expertise( weapon_t* ) const
   { return hit_exp(); }
   virtual double composite_melee_hit() const
@@ -5497,7 +5500,7 @@ public:
   virtual bool has_movement_directionality() const
   {
     // If ability has no movement restrictions, it'll be usable
-    if ( movement_directionality == MOVEMENT_OMNI )
+    if ( movement_directionality == MOVEMENT_OMNI || movement_directionality == MOVEMENT_NONE )
       return true;
     else
     {
