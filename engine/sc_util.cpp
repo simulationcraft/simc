@@ -684,7 +684,6 @@ const char* util::result_type_string( result_e type )
     case RESULT_MISS:       return "miss";
     case RESULT_DODGE:      return "dodge";
     case RESULT_PARRY:      return "parry";
-    case RESULT_GLANCE:     return "glance";
     case RESULT_CRIT:       return "crit";
     case RESULT_HIT:        return "hit";
     case RESULT_MULTISTRIKE: return "multistrike";
@@ -716,9 +715,6 @@ const char* util::full_result_type_string( full_result_e fulltype )
     case FULLTYPE_MISS:             return "miss";
     case FULLTYPE_DODGE:            return "dodge";
     case FULLTYPE_PARRY:            return "parry";
-    case FULLTYPE_GLANCE_CRITBLOCK: return "glance (crit blocked)";
-    case FULLTYPE_GLANCE_BLOCK:     return "glance (blocked)";
-    case FULLTYPE_GLANCE:           return "glance";
     case FULLTYPE_CRIT_CRITBLOCK:   return "crit (crit blocked)";
     case FULLTYPE_CRIT_BLOCK:       return "crit (blocked)";
     case FULLTYPE_CRIT:             return "crit";
@@ -1392,7 +1388,6 @@ const char* util::proc_type2_string( proc_types2 type )
   {
     case PROC2_HIT:    return "HitAmount";
     case PROC2_CRIT:   return "CritAmount";
-    case PROC2_GLANCE: return "GlanceAmount";
     case PROC2_DODGE:  return "Dodge";
     case PROC2_PARRY:  return "Parry";
     case PROC2_MISS:   return "Miss";

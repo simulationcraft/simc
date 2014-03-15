@@ -73,28 +73,6 @@ void ImportThread::importBattleNet()
   }
 }
 
-#if USE_CHARDEV
-void ImportThread::importCharDev()
-{
-  int last_slash = url.lastIndexOf( '/' );
-  int first_dash = url.indexOf( '-', last_slash );
-
-  if ( last_slash > 0 && first_dash > 0 )
-  {
-    int len = first_dash - last_slash - 1;
-    // Win7/x86_64 workaround
-    std::string c = url.mid( last_slash + 1, len ).toUtf8().constData();
-    player = chardev::download_player( sim, c, cache::players() );
-  }
-}
-#endif // USE_CHARDEV
-
-void ImportThread::importRawr()
-{
-  // Win7/x86_64 workaround
-  std::string xml = mainWindow -> rawrText -> toPlainText().toUtf8().constData();
-  player = rawr::load_player( sim, "rawr.xml", xml );
-}
 
 void ImportThread::run()
 {
@@ -104,10 +82,6 @@ void ImportThread::run()
   switch ( tab )
   {
     case TAB_BATTLE_NET: importBattleNet(); break;
-#if USE_CHARDEV
-    case TAB_CHAR_DEV:   importCharDev();   break;
-#endif // USE_CHARDEV
-    case TAB_RAWR:       importRawr();      break;
     default: assert( 0 ); break;
   }
 

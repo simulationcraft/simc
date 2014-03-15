@@ -260,10 +260,6 @@ void SC_MainWindow::saveHistory()
   settings.setValue( "maximized", bool( windowState() & Qt::WindowMaximized ) );
   settings.endGroup();
 
-#if USE_CHARDEV
-  charDevCookies -> save();
-#endif // USE_CHARDEV
-
   http::cache_save( ( TmpDir.toStdString() + "/" + "simc_cache.dat" ).c_str() );
 
 
@@ -524,18 +520,6 @@ void SC_MainWindow::createImportTab()
   battleNetView -> enableKeyboardNavigation();
   importTab -> addTab( battleNetView, tr( "Battle.Net" ) );
 
-#if USE_CHARDEV
-  charDevCookies = new PersistentCookieJar( ( AppDataDir + QDir::separator() + "chardev.cookies" ).toStdString().c_str() );
-  charDevCookies -> load();
-  charDevView = new SC_WebView( this );
-  charDevView -> page() -> networkAccessManager() -> setCookieJar( charDevCookies );
-  charDevView -> setUrl( QUrl( "http://chardev.org/?planner" ) );
-  charDevView -> enableMouseNavigation();
-  charDevView -> enableKeyboardNavigation();
-  importTab -> addTab( charDevView, tr( "CharDev" ) );
-#endif // USE_CHARDEV
-
-  createRawrTab();
   createBestInSlotTab();
 
   historyList = new QListWidget();
@@ -546,7 +530,6 @@ void SC_MainWindow::createImportTab()
   recentlyClosedTabModel = recentlyClosedTabImport -> getModel();
   importTab -> addTab( recentlyClosedTabImport, tr( "Recently Closed" ) );
 
-  connect( rawrButton,  SIGNAL( clicked( bool ) ),                       this, SLOT( rawrButtonClicked() ) );
   connect( historyList, SIGNAL( itemDoubleClicked( QListWidgetItem* ) ), this, SLOT( historyDoubleClicked( QListWidgetItem* ) ) );
   connect( importTab,   SIGNAL( currentChanged( int ) ),                 this, SLOT( importTabChanged( int ) ) );
   connect( recentlyClosedTabImport, SIGNAL( restoreTab( QWidget*, const QString&, const QString&, const QIcon& ) ),
@@ -554,26 +537,6 @@ void SC_MainWindow::createImportTab()
 
   // Commenting out until it is more fleshed out.
   // createCustomTab();
-}
-
-void SC_MainWindow::createRawrTab()
-{
-  QVBoxLayout* rawrLayout = new QVBoxLayout();
-  QLabel* rawrLabel = new QLabel( QString( " http://rawr.codeplex.com\n\n" ) +
-                                  tr(  "Rawr is an exceptional theorycrafting tool that excels at gear optimization."
-                                       " The key architectural difference between Rawr and SimulationCraft is one of"
-                                       " formulation vs simulation.\nThere are strengths and weaknesses to each"
-                                       " approach.  Since they come from different directions, one can be confident"
-                                       " in the result when they arrive at the same destination.\n\n"
-                                       " To aid comparison, SimulationCraft can import the character xml file written by Rawr.\n\n"
-                                       " Alternatively, paste xml from the Rawr in-game addon into the space below." ) );
-  rawrLabel -> setWordWrap( true );
-  rawrLayout -> addWidget( rawrLabel );
-  rawrLayout -> addWidget( rawrButton = new QPushButton( tr( "Load Rawr XML" ) ) );
-  rawrLayout -> addWidget( rawrText = new SC_TextEdit( this ), 1 );
-  QGroupBox* rawrGroupBox = new QGroupBox();
-  rawrGroupBox -> setLayout( rawrLayout );
-  importTab -> addTab( rawrGroupBox, "Rawr" );
 }
 
 void SC_MainWindow::createBestInSlotTab()
@@ -895,13 +858,6 @@ void SC_MainWindow::updateWebView( SC_WebView* wv )
       cmdLine -> setBattleNetLoadProgress( visibleWebView -> progress, "%p%", "" );
       cmdLine -> setCommandLineText( TAB_BATTLE_NET, visibleWebView -> url_to_show );
     }
-#if USE_CHARDEV
-    else if ( visibleWebView == charDevView )
-    {
-      cmdLine -> setCharDevProgress( visibleWebView -> progress, "%p%", "" );
-      cmdLine -> setCommandLineText( TAB_CHAR_DEV, visibleWebView -> url_to_show );
-    }
-#endif
     else if ( visibleWebView == helpView )
     {
       cmdLine -> setHelpViewProgress( visibleWebView -> progress, "%p%", "" );
@@ -1514,13 +1470,6 @@ void SC_MainWindow::cmdLineReturnPressed()
       cmdLine -> setCommandLineText( TAB_BATTLE_NET, cmdLine -> commandLineText() );
       importTab -> setCurrentTab( TAB_BATTLE_NET );
     }
-#if USE_CHARDEV
-    else if ( cmdLine->text().count( "chardev.org" ) )
-    {
-      charDevView -> setUrl( QUrl::fromUserInput( cmdLine -> text() ) );
-      importTab -> setCurrentTab( TAB_CHAR_DEV );
-    }
-#endif // USE_CHARDEV
     else
     {
       if ( ! sim ) cmdLine -> mainButtonClicked();
@@ -1546,10 +1495,6 @@ void SC_MainWindow::mainButtonClicked( bool /* checked */ )
       switch ( importTab -> currentTab() )
       {
         case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine -> commandLineText() ); break;
-#if USE_CHARDEV
-        case TAB_CHAR_DEV:   startImport( TAB_CHAR_DEV,   cmdLine->text() ); break;
-#endif // USE_CHARDEV
-        case TAB_RAWR:       startImport( TAB_RAWR,       "Rawr XML"      ); break;
         case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
         default: break;
       }
@@ -1589,10 +1534,6 @@ void SC_MainWindow::importButtonClicked()
   switch ( importTab -> currentTab() )
   {
     case TAB_BATTLE_NET: startImport( TAB_BATTLE_NET, cmdLine -> commandLineText( TAB_BATTLE_NET ) ); break;
-#if USE_CHARDEV
-    case TAB_CHAR_DEV:   startImport( TAB_CHAR_DEV,   cmdLine -> commandLineText( TAB_CHAR_DEV ) ); break;
-#endif // USE_CHARDEV
-    case TAB_RAWR:       startImport( TAB_RAWR,       "Rawr XML"      ); break;
     case TAB_RECENT:     recentlyClosedTabImport -> restoreCurrentlySelected(); break;
     default: break;
   }
@@ -1659,31 +1600,6 @@ void SC_MainWindow::reloadButtonClicked( bool )
   }
 }
 
-void SC_MainWindow::rawrButtonClicked( bool /* checked */ )
-{
-  QFileDialog dialog( this );
-  dialog.setFileMode( QFileDialog::ExistingFile );
-  dialog.setNameFilter( "Rawr Profiles (*.xml)" );
-  dialog.restoreState( rawrDialogState );
-  if ( dialog.exec() )
-  {
-    rawrDialogState = dialog.saveState();
-    QStringList fileList = dialog.selectedFiles();
-    if ( ! fileList.empty() )
-    {
-      QFile rawrFile( fileList.at( 0 ) );
-      if ( rawrFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
-      {
-        QTextStream in( &rawrFile );
-        in.setCodec( "UTF-8" );
-        in.setAutoDetectUnicode( true );
-        rawrText->setPlainText( in.readAll() );
-        rawrText->moveCursor( QTextCursor::Start );
-      }
-    }
-  }
-}
-
 void SC_MainWindow::mainTabChanged( int index )
 {
   visibleWebView = 0;
@@ -1722,8 +1638,7 @@ void SC_MainWindow::mainTabChanged( int index )
 
 void SC_MainWindow::importTabChanged( int index )
 {
-  if ( index == TAB_RAWR    ||
-       index == TAB_BIS     ||
+  if ( index == TAB_BIS     ||
        index == TAB_CUSTOM  ||
        index == TAB_HISTORY ||
        index == TAB_RECENT )
@@ -1780,17 +1695,6 @@ void SC_MainWindow::historyDoubleClicked( QListWidgetItem* item )
   {
     battleNetView -> setUrl( url );
     importTab -> setCurrentIndex( TAB_BATTLE_NET );
-  }
-#if USE_CHARDEV
-  else if ( url.count( "chardev.org" ) )
-  {
-    charDevView -> setUrl( url );
-    importTab -> setCurrentIndex( TAB_CHAR_DEV );
-  }
-#endif // USE_CHARDEV
-  else
-  {
-    //importTab->setCurrentIndex( TAB_RAWR );
   }
 }
 

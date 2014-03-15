@@ -99,12 +99,11 @@ double attack_t::crit_block_chance( player_t* t ) const
 // attack_t::build_table ====================================================
 
 void attack_t::build_table( double miss_chance, double dodge_chance,
-                            double parry_chance, double glance_chance,
-                            double crit_chance )
+                            double parry_chance, double crit_chance )
 {
   if ( sim -> debug )
-    sim -> out_debug.printf( "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f glance=%.3f crit=%.3f",
-                   name(), miss_chance, dodge_chance, parry_chance, glance_chance, crit_chance );
+    sim -> out_debug.printf( "attack_t::build_table: %s miss=%.3f dodge=%.3f parry=%.3f crit=%.3f",
+                   name(), miss_chance, dodge_chance, parry_chance, crit_chance );
 
   assert( crit_chance >= 0 && crit_chance <= 1.0 );
 
@@ -143,14 +142,6 @@ void attack_t::build_table( double miss_chance, double dodge_chance,
     results[ num_results ] = RESULT_PARRY;
     num_results++;
   }
-  if ( glance_chance > 0 && total < limit )
-  {
-    total += glance_chance;
-    if ( total > limit ) total = limit;
-    chances[ num_results ] = total;
-    results[ num_results ] = RESULT_GLANCE;
-    num_results++;
-  }
   if ( crit_chance > 0 && total < limit )
   {
     total += crit_chance;
@@ -173,7 +164,7 @@ block_result_e attack_t::calculate_block_result( action_state_t* s )
 {
   block_result_e block_result = BLOCK_RESULT_UNBLOCKED;
 
-  // Blocks also get a their own roll, and glances/crits can be blocked.
+  // Blocks also get a their own roll, and crits can be blocked.
   if ( result_is_hit( s -> result ) && may_block && ( player -> position() == POSITION_FRONT ) && ! ( s -> result == RESULT_NONE ) )
   {
     double block_total = block_chance( s -> target );
@@ -215,7 +206,6 @@ result_e attack_t::calculate_result( action_state_t* s )
   // build_table for non-special attacks
 
   build_table( miss, dodge, parry,
-               may_glance ? glance_chance( delta_level ) : 0,
                ! special ? std::min( 1.0, crit ) : 0 );
 
   if ( num_results == 1 )
@@ -253,9 +243,6 @@ result_e attack_t::calculate_result( action_state_t* s )
 void attack_t::init()
 {
   action_t::init();
-
-  if ( special )
-    may_glance = false;
 
   if ( player -> weapon_racial( weapon ) )
     base_attack_expertise += 0.01;
@@ -304,7 +291,7 @@ melee_attack_t::melee_attack_t( const std::string&  n,
                                 const spell_data_t* s ) :
   attack_t( n, p, s )
 {
-  may_miss = may_dodge = may_parry = may_glance = may_block = true;
+  may_miss = may_dodge = may_parry = may_block = true;
 
   // Prevent melee from being scheduled when player is moving
   if ( range < 0 ) range = 5;
@@ -316,8 +303,6 @@ void melee_attack_t::init()
 {
   attack_t::init();
 
-  if ( special )
-    may_glance = false;
 }
 
 // melee_attack_t::dodge_chance =============================================
@@ -332,6 +317,8 @@ double melee_attack_t::dodge_chance( double expertise, player_t* t ) const
 
   // subtract the player's expertise chance
   dodge -= expertise;
+
+  dodge = 0; //Delete this section in the future.
 
   return dodge;
 }
@@ -350,13 +337,6 @@ double melee_attack_t::parry_chance( double expertise, player_t* t ) const
   parry += std::min( 0.0, dodge_chance( expertise, t ) );
 
   return parry;
-}
-
-// melee_attack_t::glance_chance ============================================
-
-double melee_attack_t::glance_chance( int delta_level ) const
-{
-  return ( delta_level + 1 ) * 0.06;
 }
 
 proc_types melee_attack_t::proc_type() const
@@ -393,7 +373,6 @@ ranged_attack_t::ranged_attack_t( const std::string& token,
 {
 
   may_miss  = true;
-  may_dodge = true;
 }
 
 // ranged_attack_t::dodge_chance ============================================
@@ -419,13 +398,6 @@ double ranged_attack_t::parry_chance( double /* expertise */, player_t* /* targe
   // Assumed impossible to parry ranged. Needs checking.
   // TODO: Ranged parries used to exist as "Deflects" - may need re-testing post-MoP
   return 0.0;
-}
-
-// ranged_attack_t::glance_chance ===========================================
-
-double ranged_attack_t::glance_chance( int delta_level ) const
-{
-  return (  delta_level  + 1 ) * 0.06;
 }
 
 double ranged_attack_t::composite_target_multiplier( player_t* target ) const

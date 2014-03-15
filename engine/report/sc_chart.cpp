@@ -2155,54 +2155,6 @@ std::string chart::gear_weights_lootrank( player_t* p )
 }
 #endif
 
-std::string chart::gear_weights_wowupgrade( player_t* p )
-{
-  char buffer[ 1024 ];
-
-  std::string formatted_name = p -> name_str;
-  std::string url = "http://wowupgrade.com/#import=fSimulationCraft;p" + util::urlencode( formatted_name );
-
-  uint32_t c, spec;
-  p -> dbc.spec_idx( p -> specialization(), c, spec );
-
-  url += ";c" + util::to_string( c );
-  url += ";s" + util::to_string( spec );
-
-  std::string s = "";
-
-  bool first = true;
-  for ( int i = 0; i < SLOT_MAX; i++ )
-  {
-    if ( i != 3 && p -> items[ i ].parsed.data.id )
-    {
-      if ( ! first ) s += ",";
-      s += util::to_string( i ) + ":" + util::to_string( p -> items[ i ].parsed.data.id );
-      if ( p -> items[ i ].upgrade_level() ) s += ":" + util::to_string( p -> items[ i ].upgrade_level() );
-      first = false;
-    }
-  }
-
-  if ( ! s.empty() ) url += ";i" + s;
-
-  s = "";
-
-  first = true;
-  bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-  {
-    double value = positive_normalizing_value ? p -> scaling.get_stat( i ) : -p -> scaling.get_stat( i );
-    if ( value == 0 ) continue;
-    if ( ! first ) s += ";";
-    snprintf( buffer, sizeof( buffer ), "%d:%.*f", i, p -> sim -> report_precision, value );
-    s += buffer;
-    first = false;
-  }
-
-  if ( ! s.empty() ) url += "&weights=" + s;
-
-  return url;
-}
-
 // chart::gear_weights_wowhead ==============================================
 
 std::string chart::gear_weights_wowhead( player_t* p, bool hit_expertise )
@@ -2302,47 +2254,6 @@ std::string chart::gear_weights_wowhead( player_t* p, bool hit_expertise )
   s += "wtv=" + value_string + ";";
 
   return s;
-}
-
-// chart::gear_weights_wowreforge ===========================================
-
-std::string chart::gear_weights_wowreforge( player_t* p )
-{
-  std::ostringstream ss;
-  ss << "http://wowreforge.com/";
-
-  // Use valid names if we are provided those
-  if ( ! p -> region_str.empty() && ! p -> server_str.empty() && ! p -> name_str.empty() )
-  {
-    ss << p -> region_str << '/' << p -> server_str << '/' << p -> name_str
-       << "?Spec=Main&";
-  }
-  else
-  {
-    std::string region_str, server_str, name_str;
-    if ( util::parse_origin( region_str, server_str, name_str, p -> origin_str ) )
-    {
-      ss << region_str << '/' << server_str << '/' << name_str << "?Spec=Main&";
-    }
-    else
-    {
-      ss << '?';
-    }
-  }
-
-  ss << "template=for:" << util::player_type_string( p -> type )
-     << '-' << dbc::specialization_string( p -> specialization() );
-
-  bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
-  ss.precision( p -> sim -> report_precision + 1 );
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; ++i )
-  {
-    double value = positive_normalizing_value ? p -> scaling.get_stat( i ) : -p -> scaling.get_stat( i );
-    if ( value == 0 ) continue;
-    ss << ',' << util::stat_type_abbrev( i ) << ':' << value;
-  }
-
-  return util::encode_html( ss.str() );
 }
 
 // chart::gear_weights_askmrrobot ===========================================

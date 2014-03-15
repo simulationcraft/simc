@@ -541,8 +541,6 @@ void scaling_t::create_options()
     opt_float( "scale_spirit",    stats.attribute[ ATTR_SPIRIT    ] ),
     opt_float( "scale_spell_power", stats.spell_power ),
     opt_float( "scale_attack_power", stats.attack_power ),
-    opt_float( "scale_expertise_rating", stats.expertise_rating ),
-    opt_float( "scale_hit_rating", stats.hit_rating ),
     opt_float( "scale_crit_rating", stats.crit_rating ),
     opt_float( "scale_haste_rating", stats.haste_rating ),
     opt_float( "scale_mastery_rating", stats.mastery_rating ),

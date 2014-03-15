@@ -383,7 +383,6 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
     base_t( n, p, s )
   {
     may_crit   = true;
-    may_glance = false;
     special    = true;
   }
 
@@ -800,7 +799,6 @@ struct melee_t : public warrior_attack_t
     sync_weapons( sw )
   {
     school      = SCHOOL_PHYSICAL;
-    may_glance  = false;
     special     = false;
     background  = true;
     repeating   = true;
@@ -1173,7 +1171,7 @@ struct deep_wounds_t : public warrior_attack_t
     background    = true;
     proc          = true;
     tick_may_crit = true;
-    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_block = may_dodge = may_parry = may_crit = false;
 
     tick_power_mod = data().extra_coeff();
     dot_behavior = DOT_REFRESH;
@@ -1719,7 +1717,7 @@ struct pummel_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_block = may_dodge = may_parry = may_crit = false;
   }
 
   virtual void execute()
@@ -4088,8 +4086,7 @@ void warrior_t::assess_damage( school_e school,
                                action_state_t* s )
 {
   if ( s -> result == RESULT_HIT    ||
-       s -> result == RESULT_CRIT   ||
-       s -> result == RESULT_GLANCE )
+       s -> result == RESULT_CRIT   )
   {
     if ( buff.defensive_stance -> check() )
       s -> result_amount *= 1.0 + buff.defensive_stance -> data().effectN( 1 ).percent();
@@ -4130,8 +4127,7 @@ void warrior_t::assess_damage( school_e school,
   player_t::assess_damage( school, dtype, s );
 
   if ( ( s -> result == RESULT_HIT    ||
-         s -> result == RESULT_CRIT   ||
-         s -> result == RESULT_GLANCE ) &&
+         s -> result == RESULT_CRIT   ) &&
          active_stance == STANCE_BERSERKER )
   {
     player_t::resource_gain( RESOURCE_RAGE,

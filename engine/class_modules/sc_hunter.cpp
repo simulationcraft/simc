@@ -1618,7 +1618,6 @@ struct dire_critter_t : public hunter_pet_t
       background = true;
       repeating  = true;
       special    = false;
-      may_glance = true;
       may_crit   = true;
 
       focus_gain = player -> find_spell( 120694 ) -> effectN( 1 ).base_value();
@@ -2778,7 +2777,7 @@ struct silencing_shot_t : public hunter_ranged_attack_t
   {
     weapon_multiplier = 0.0;
 
-    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_block = may_dodge = may_parry = may_crit = false;
   }
 };
 
@@ -3315,7 +3314,6 @@ struct lynx_rush_t : public hunter_spell_t
       school = SCHOOL_PHYSICAL;
 
       special    = true;
-      may_glance = false;
       may_crit   = true;
     }
 
@@ -3358,7 +3356,6 @@ struct lynx_rush_t : public hunter_spell_t
     parse_options( NULL, options_str );
 
     special = true;
-    may_glance = false;
     harmful = false;
     school = SCHOOL_PHYSICAL;
 

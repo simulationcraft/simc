@@ -88,7 +88,6 @@ full_result_e stats_t::translate_result( result_e result, block_result_e block_r
     case RESULT_MISS:   fulltype=FULLTYPE_MISS; break;
     case RESULT_DODGE:  fulltype=FULLTYPE_DODGE; break;
     case RESULT_PARRY:  fulltype=FULLTYPE_PARRY; break;
-    case RESULT_GLANCE: fulltype=FULLTYPE_GLANCE; break;
     case RESULT_CRIT:   fulltype=FULLTYPE_CRIT; break;
     case RESULT_HIT:    fulltype=FULLTYPE_HIT; break;
     case RESULT_MULTISTRIKE: fulltype=FULLTYPE_MULTISTRIKE; break;
@@ -99,7 +98,6 @@ full_result_e stats_t::translate_result( result_e result, block_result_e block_r
 
   switch ( result )
   {
-    case RESULT_GLANCE:
     case RESULT_CRIT:
     case RESULT_HIT:
     {

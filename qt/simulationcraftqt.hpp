@@ -52,10 +52,6 @@ enum main_tabs_e
 enum import_tabs_e
 {
   TAB_BATTLE_NET = 0,
-#if USE_CHARDEV
-  TAB_CHAR_DEV,
-#endif
-  TAB_RAWR,
   TAB_BIS,
   TAB_HISTORY,
   TAB_RECENT,
@@ -1742,10 +1738,6 @@ public:
     CMDLINE_TAB_PAPERDOLL,
 #endif
     CMDLINE_TAB_BATTLE_NET,
-#if USE_CHARDEV
-    CMDLINE_TAB_CHAR_DEV,
-#endif
-    CMDLINE_TAB_RAWR,
     CMDLINE_TAB_BIS,
     CMDLINE_TAB_HISTORY,
     CMDLINE_TAB_RECENT,
@@ -1787,9 +1779,6 @@ protected:
     PROGRESSBAR_SIMULATING,
     PROGRESSBAR_IMPORTING,
     PROGRESSBAR_BATTLE_NET,
-#if USE_CHARDEV
-    PROGRESSBAR_CHAR_DEV,
-#endif
     PROGRESSBAR_HELP,
     PROGRESSBAR_SITE,
     PROGRESSBAR_STATE_COUNT
@@ -1859,16 +1848,6 @@ public:
   {
     return getProgressBarProgressForState( PROGRESSBAR_BATTLE_NET );
   }
-#if USE_CHARDEV
-  void setCharDevProgress( int value, QString format, QString tool_tip )
-  {
-    updateProgress( PROGRESSBAR_CHAR_DEV, value, tool_tip );
-  }
-  int getCharDevProgress()
-  {
-    return getProgressBarProgressForState( PROGRESSBAR_CHAR_DEV );
-  }
-#endif
   void setHelpViewProgress( int value, QString format, QString toolTip )
   {
     updateProgress( PROGRESSBAR_HELP, value, format, toolTip );
@@ -2142,7 +2121,7 @@ protected:
   }
   void initProgressBarStates()
   {
-    // progressbar: site/chardev/help
+    // progressbar: site/help
     // certain tabs have their own progress bar states
     for ( state_e state = IDLE; state < STATE_COUNT; state++ )
     {
@@ -2157,10 +2136,6 @@ protected:
       setProgressBarState( state, CMDLINE_TAB_BATTLE_NET, PROGRESSBAR_BATTLE_NET );
       // site: has its own state
       setProgressBarState( state, CMDLINE_TAB_SITE, PROGRESSBAR_SITE );
-#if USE_CHARDEV
-      // chardev: has its own state
-      setProgressBarState( state, CMDLINE_TAB_CHAR_DEV, PROGRESSBAR_CHAR_DEV );
-#endif
       // help: has its own state
       setProgressBarState( state, CMDLINE_TAB_HELP, PROGRESSBAR_HELP );
     }
@@ -3207,16 +3182,9 @@ public:
 
 
   SC_WebView* battleNetView;
-  SC_WebView* charDevView;
   SC_WebView* siteView;
   SC_WebView* helpView;
   SC_WebView* visibleWebView;
-#if USE_CHARDEV
-  PersistentCookieJar* charDevCookies;
-#endif // USE_CHARDEV
-  QPushButton* rawrButton;
-  QByteArray rawrDialogState;
-  SC_TextEdit* rawrText;
   QListWidget* historyList;
   SC_TextEdit* overridesText;
   SC_TextEdit* logText;
@@ -3275,7 +3243,6 @@ public:
   void createWelcomeTab();
   void createOptionsTab();
   void createImportTab();
-  void createRawrTab();
   void createBestInSlotTab();
   void createCustomTab();
   void createSimulateTab();
@@ -3328,7 +3295,6 @@ private slots:
   void importTabChanged( int index );
   void resultsTabChanged( int index );
   void resultsTabCloseRequest( int index );
-  void rawrButtonClicked( bool checked = false );
   void historyDoubleClicked( QListWidgetItem* item );
   void bisDoubleClicked( QTreeWidgetItem* item, int col );
   void armoryRegionChanged( const QString& region );
@@ -3726,10 +3692,6 @@ public:
   player_t* player;
 
   void importBattleNet();
-#if USE_CHARDEV
-  void importCharDev();
-#endif
-  void importRawr();
 
   void start( sim_t* s, int t, const QString& u, const QString& sources, const QString& spec, const QString& role )
   { sim = s; tab = t; url = u; profile = ""; item_db_sources = sources; player = 0; active_spec = spec; m_role = role; QThread::start(); }

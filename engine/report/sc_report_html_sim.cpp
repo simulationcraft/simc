@@ -1662,9 +1662,7 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
       s -> num_direct_results.mean(),
       s -> direct_results[ RESULT_CRIT ].pct,
       s -> direct_results[ RESULT_MISS ].pct + s -> direct_results[ RESULT_DODGE  ].pct + s -> direct_results[ RESULT_PARRY  ].pct,
-      s -> direct_results[ RESULT_GLANCE ].pct,
       s -> direct_results_detail[ FULLTYPE_HIT_BLOCK ].pct + s -> direct_results_detail[ FULLTYPE_HIT_CRITBLOCK ].pct +
-      s -> direct_results_detail[ FULLTYPE_GLANCE_BLOCK ].pct + s -> direct_results_detail[ FULLTYPE_GLANCE_CRITBLOCK ].pct +
       s -> direct_results_detail[ FULLTYPE_CRIT_BLOCK ].pct + s -> direct_results_detail[ FULLTYPE_CRIT_CRITBLOCK ].pct,
       s -> total_intervals.mean(),
       s -> total_amount.mean(),
@@ -1686,9 +1684,7 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
       s -> num_ticks.mean(),
       s -> tick_results[ RESULT_CRIT ].pct,
       s -> tick_results[ RESULT_MISS ].pct + s -> tick_results[ RESULT_DODGE  ].pct + s -> tick_results[ RESULT_PARRY  ].pct,
-      s -> tick_results[ RESULT_GLANCE ].pct,
       s -> tick_results_detail[ FULLTYPE_HIT_BLOCK ].pct + s -> tick_results_detail[ FULLTYPE_HIT_CRITBLOCK ].pct +
-      s -> tick_results_detail[ FULLTYPE_GLANCE_BLOCK ].pct + s -> tick_results_detail[ FULLTYPE_GLANCE_CRITBLOCK ].pct +
       s -> tick_results_detail[ FULLTYPE_CRIT_BLOCK ].pct + s -> tick_results_detail[ FULLTYPE_CRIT_CRITBLOCK ].pct,
       s -> total_intervals.mean(),
       s -> total_amount.mean(),
@@ -1722,7 +1718,6 @@ void print_html_raw_ability_summary( report::sc_html_stream& os, sim_t* sim )
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-direct-results\" class=\"help\">Impacts</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-miss-pct\" class=\"help\">Avoid%</a></th>\n"
-     << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-glance-pct\" class=\"help\">G%</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-block-pct\" class=\"help\">B%</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
      << "\t\t\t\t\t<th class=\"small\"><a href=\"#help-combined\" class=\"help\">Combined</a></th>\n"
@@ -2186,13 +2181,6 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>Error</h3>\n"
      << "\t\t\t\t<p>Estimator for the " << sim -> confidence * 100.0 << "confidence intervall.</p>\n"
-     << "\t\t\t</div>\n"
-     << "\t\t</div>\n";
-
-  os << "\t\t<div id=\"help-glance-pct\">\n"
-     << "\t\t\t<div class=\"help-box\">\n"
-     << "\t\t\t\t<h3>G%</h3>\n"
-     << "\t\t\t\t<p>Percentage of executes that resulted in glancing blows.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 

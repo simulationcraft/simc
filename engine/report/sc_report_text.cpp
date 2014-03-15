@@ -80,13 +80,6 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe
                    s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.max(),
                    s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].pct );
   }
-  if ( s -> direct_results[ RESULT_GLANCE ].actual_amount.sum() > 0 )
-  {
-    util::fprintf( file,
-                   "  Glance=%4.0f|%.1f%%",
-                   s -> direct_results[ RESULT_GLANCE ].actual_amount.pretty_mean(),
-                   s -> direct_results[ RESULT_GLANCE ].pct );
-  }
   if ( s -> direct_results[ RESULT_DODGE ].count.sum() > 0 )
   {
     util::fprintf( file,
@@ -651,14 +644,12 @@ void print_text_scale_factors( FILE* file, player_t* p, player_processed_report_
   std::string lootrank       = ri.gear_weights_lootrank_link;
   std::string wowhead_std    = ri.gear_weights_wowhead_std_link;
   std::string wowhead_alt    = ri.gear_weights_wowhead_alt_link;
-  std::string wowreforge     = ri.gear_weights_wowreforge_link;
   std::string pawn_std       = ri.gear_weights_pawn_std_string;
   std::string pawn_alt       = ri.gear_weights_pawn_alt_string;
 
   simplify_html( lootrank    );
   simplify_html( wowhead_std );
   simplify_html( wowhead_alt );
-  simplify_html( wowreforge  );
   simplify_html( pawn_std    );
   simplify_html( pawn_alt    );
 

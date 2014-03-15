@@ -706,7 +706,6 @@ public:
     maelstrom_procs( 0 ), maelstrom_procs_wasted( 0 )
   {
     special = may_crit = true;
-    may_glance = false;
   }
 
   shaman_melee_attack_t( shaman_t* p, const spell_data_t* s ) :
@@ -716,7 +715,6 @@ public:
     maelstrom_procs( 0 ), maelstrom_procs_wasted( 0 )
   {
     special = may_crit = true;
-    may_glance = false;
   }
 
   void init()
@@ -2308,7 +2306,7 @@ struct windlash_t : public shaman_melee_attack_t
     shaman_melee_attack_t( n, player, s ), swing_timer_variance( stv )
   {
     may_proc_windfury = background = repeating = may_miss = may_dodge = may_parry = true;
-    may_glance = special = false;
+    special = false;
     weapon            = w;
     base_execute_time = w -> swing_time;
     trigger_gcd       = timespan_t::zero();
@@ -2578,7 +2576,7 @@ struct melee_t : public shaman_melee_attack_t
     shaman_melee_attack_t( name, player, s ), sync_weapons( sw ),
     first( true ), swing_timer_variance( stv )
   {
-    may_proc_windfury = background = repeating = may_glance = true;
+    may_proc_windfury = background = repeating = true;
     special           = false;
     trigger_gcd       = timespan_t::zero();
     weapon            = w;

@@ -24,8 +24,6 @@ static bool has_block( const stats_t* s )
 {
   return ( s -> direct_results_detail[ FULLTYPE_HIT_BLOCK ].count.mean() +
            s -> direct_results_detail[ FULLTYPE_HIT_CRITBLOCK ].count.mean() +
-           s -> direct_results_detail[ FULLTYPE_GLANCE_BLOCK ].count.mean() +
-           s -> direct_results_detail[ FULLTYPE_GLANCE_CRITBLOCK ].count.mean() +
            s -> direct_results_detail[ FULLTYPE_CRIT_BLOCK ].count.mean() +
            s -> direct_results_detail[ FULLTYPE_CRIT_CRITBLOCK ].count.mean() ) > 0;
 }
@@ -115,22 +113,6 @@ static bool player_has_block( player_t* p )
   return false;
 }
 
-static bool player_has_glance( player_t* p )
-{
-  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
-  {
-    if ( p -> stats_list[ i ] -> direct_results[ RESULT_GLANCE ].count.mean() > 0 )
-      return true;
-  }
-
-  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
-  {
-    if ( player_has_glance( p -> pet_list[ i ] ) )
-      return true;
-  }
-
-  return false;
-}
 
 // print_html_action_info =================================================
 
@@ -215,18 +197,11 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
       s -> direct_results[ RESULT_DODGE  ].pct +
       s -> direct_results[ RESULT_PARRY  ].pct );
 
-  if ( player_has_glance( p ) )
-    os.printf(
-      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n",  // direct_results Glance%
-      s -> direct_results[ RESULT_GLANCE ].pct );
-
   if ( player_has_block( p ) )
     os.printf(
       "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n", // direct_results Block%
       s -> direct_results_detail[ FULLTYPE_HIT_BLOCK ].pct +
       s -> direct_results_detail[ FULLTYPE_HIT_CRITBLOCK ].pct +
-      s -> direct_results_detail[ FULLTYPE_GLANCE_BLOCK ].pct +
-      s -> direct_results_detail[ FULLTYPE_GLANCE_CRITBLOCK ].pct +
       s -> direct_results_detail[ FULLTYPE_CRIT_BLOCK ].pct +
       s -> direct_results_detail[ FULLTYPE_CRIT_CRITBLOCK ].pct );
 
@@ -1480,10 +1455,6 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
         os.printf(
           "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">lootrank</a></li>\n",
           ri.gear_weights_lootrank_link.c_str() );
-      if ( !ri.gear_weights_wowupgrade_link.empty() )
-        os.printf(
-          "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">wowupgrade</a></li>\n",
-          ri.gear_weights_wowupgrade_link.c_str() );
       os << "\t\t\t\t\t\t\t\t\t</ul>\n";
       os << "\t\t\t\t\t\t\t\t</td>\n";
       os << "\t\t\t\t\t\t\t</tr>\n";
@@ -1495,11 +1466,6 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
         "\t\t\t\t\t\t\t\t<td colspan=\"%i\" class=\"filler\">\n"
         "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n",
         colspan );
-
-      // wowreforge
-      os.printf(
-        "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">wowreforge</a></li>\n",
-        ri.gear_weights_wowreforge_link.c_str() );
 
       // askmrrobot
       if ( ! ri.gear_weights_askmrrobot_link.empty() )
@@ -2947,9 +2913,6 @@ void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player
 
     if ( player_has_direct_avoidance( p ) )
       os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-miss-pct\" class=\"help\">Avoid%</a></th>\n";
-
-    if ( player_has_glance( p ) )
-      os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-glance-pct\" class=\"help\">G%</a></th>\n";
 
     if ( player_has_block( p ) )
       os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-block-pct\" class=\"help\">B%</a></th>\n";

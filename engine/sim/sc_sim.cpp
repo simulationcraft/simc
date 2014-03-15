@@ -378,24 +378,6 @@ bool parse_armory( sim_t*             sim,
 
         //p = wowhead::download_player( sim, stuff.region, stuff.server, player_name, description, wowhead::LIVE, stuff.cache );
       }
-      else if ( name == "chardev" || name == "mopdev" )
-      {
-#if USE_CHARDEV
-          p = chardev::download_player( sim, player_name, stuff.cache );
-#else
-          sim -> errorf( "Chardev Profiler is no longer supported." );
-          return false;
-#endif // USE_CHARDEV
-      }
-      else if ( name == "wowreforge" )
-      {
-#if USE_WOWREFORGE
-        p = wowreforge::download_player( sim, player_name, description, stuff.cache );
-#else
-        sim -> errorf( "WowReforge import is no longer supported." );
-        return false;
-#endif // USE_WOWREFORGE
-      }
       else if ( name == "local_json" )
         p = bcp_api::from_local_json( sim, player_name, stuff.server, description );
       else
@@ -469,23 +451,6 @@ bool parse_guild( sim_t*             sim,
   return true;
 }
 
-// parse_rawr ===============================================================
-
-bool parse_rawr( sim_t*             sim,
-                        const std::string& name,
-                        const std::string& value )
-{
-  if ( name == "rawr" )
-  {
-    sim -> active_player = rawr::load_player( sim, value );
-    if ( ! sim -> active_player )
-    {
-      sim -> errorf( "Unable to parse Rawr Character Save file '%s'\n", value.c_str() );
-    }
-  }
-
-  return sim -> active_player != 0;
-}
 
 // parse_fight_style ========================================================
 
@@ -2022,12 +1987,9 @@ void sim_t::create_options()
     opt_func( "armory", parse_armory ),
     opt_func( "guild", parse_guild ),
     opt_func( "wowhead", parse_armory ),
-    opt_func( "chardev", parse_armory ),
     opt_func( "mopdev", parse_armory ),
     opt_func( "mophead", parse_armory ),
     opt_func( "local_json", parse_armory ),
-    opt_func( "rawr", parse_rawr ),
-    opt_func( "wowreforge", parse_armory ),
     opt_func( "http_clear_cache", http::clear_cache ),
     opt_func( "cache_items", parse_cache ),
     opt_func( "cache_players", parse_cache ),
@@ -2045,13 +2007,8 @@ void sim_t::create_options()
     opt_float( "default_enchant_spirit", enchant.attribute[ ATTR_SPIRIT    ] ),
     opt_float( "default_enchant_spell_power", enchant.spell_power ),
     opt_float( "default_enchant_attack_power", enchant.attack_power ),
-    opt_float( "default_enchant_expertise_rating", enchant.expertise_rating ),
-    opt_float( "default_enchant_dodge_rating", enchant.dodge_rating ),
-    opt_float( "default_enchant_parry_rating", enchant.parry_rating ),
-    opt_float( "default_enchant_block_rating", enchant.block_rating ),
     opt_float( "default_enchant_haste_rating", enchant.haste_rating ),
     opt_float( "default_enchant_mastery_rating", enchant.mastery_rating ),
-    opt_float( "default_enchant_hit_rating", enchant.hit_rating ),
     opt_float( "default_enchant_crit_rating", enchant.crit_rating ),
     opt_float( "default_enchant_health", enchant.resource[ RESOURCE_HEALTH ] ),
     opt_float( "default_enchant_mana", enchant.resource[ RESOURCE_MANA   ] ),
