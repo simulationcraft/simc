@@ -321,17 +321,14 @@ struct nitro_boosts_action_t : public action_t
     _cd( cd ),
     buff( nullptr )
   {
-
-    buff = dynamic_cast<buff_t*>( buff_t::find( player, n, player ) );
-
     background = true;
   }
 
   virtual void execute()
   {
-    assert( buff );
     if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
-    buff -> trigger();
+
+    player -> buffs.nitro_boosts-> trigger();
 
     update_ready();
   }
