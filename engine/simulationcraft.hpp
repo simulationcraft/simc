@@ -411,7 +411,7 @@ enum result_e
   RESULT_UNKNOWN = -1,
   RESULT_NONE = 0,
   RESULT_MISS,  RESULT_DODGE, RESULT_PARRY,
-  RESULT_CRIT, RESULT_HIT,
+  RESULT_GLANCE, RESULT_CRIT, RESULT_HIT,
   RESULT_MULTISTRIKE, RESULT_MULTISTRIKE_CRIT,
   RESULT_MAX
 };
@@ -429,13 +429,14 @@ enum full_result_e
   FULLTYPE_UNKNOWN = -1,
   FULLTYPE_NONE = 0,
   FULLTYPE_MISS, FULLTYPE_DODGE, FULLTYPE_PARRY, 
+  FULLTYPE_GLANCE_CRITBLOCK, FULLTYPE_GLANCE_BLOCK, FULLTYPE_GLANCE,
   FULLTYPE_CRIT_CRITBLOCK, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT,
   FULLTYPE_HIT_CRITBLOCK, FULLTYPE_HIT_BLOCK, FULLTYPE_HIT,
   FULLTYPE_MULTISTRIKE, FULLTYPE_MULTISTRIKE_CRIT,
   FULLTYPE_MAX
 };
 
-#define RESULT_HIT_MASK   ( (1<<RESULT_CRIT) | (1<<RESULT_HIT) )
+#define RESULT_HIT_MASK   ( (1<<RESULT_GLANCE) | (1<<RESULT_CRIT) | (1<<RESULT_HIT) )
 #define RESULT_CRIT_MASK  ( (1<<RESULT_CRIT) )
 #define RESULT_MISS_MASK  ( (1<<RESULT_MISS) )
 #define RESULT_DODGE_MASK ( (1<<RESULT_DODGE) )
@@ -5221,7 +5222,7 @@ struct action_t : public noncopyable
   bool callbacks, special, channeled, background, sequence, use_off_gcd, quiet;
   bool direct_tick, direct_tick_callbacks, periodic_hit, repeating, harmful, proc, item_proc, proc_ignores_slot;
   bool discharge_proc, auto_cast, initialized;
-  bool may_hit, may_miss, may_dodge, may_parry, may_block, may_crush, may_crit;
+  bool may_hit, may_miss, may_dodge, may_parry, may_glance, may_block, may_crush, may_crit;
   bool tick_may_crit, tick_zero, hasted_ticks;
   dot_behavior_e dot_behavior;
   timespan_t ability_lag, ability_lag_stddev;
@@ -5336,6 +5337,7 @@ struct action_t : public noncopyable
   {
     return( r == RESULT_HIT        ||
             r == RESULT_CRIT       ||
+            r == RESULT_GLANCE     ||
             r == RESULT_NONE       );
   }
 
@@ -5359,6 +5361,7 @@ struct action_t : public noncopyable
   virtual double   miss_chance( double /* hit */, player_t* /* target */ ) const { return 0; }
   virtual double  dodge_chance( double /* expertise */, player_t* /* target */ ) const { return 0; }
   virtual double  parry_chance( double /* expertise */, player_t* /* target */ ) const { return 0; }
+  virtual double glance_chance( int /* delta_level */ ) const { return 0; }
   virtual double  block_chance( player_t* /* target */ ) const { return 0; }
   virtual double   crit_chance( double /* crit */, int /* delta_level */ ) const;
 
@@ -5528,8 +5531,8 @@ struct action_state_t : public noncopyable
   dmg_e           result_type;
   result_e        result;
   block_result_e  block_result;
-  double          result_raw;           // Base result value, without crit etc.
-  double          result_total;         // Total unmitigated result, including crit bonus, etc.
+  double          result_raw;           // Base result value, without crit/glance etc.
+  double          result_total;         // Total unmitigated result, including crit bonus, glance penalty, etc.
   double          result_mitigated;     // Result after mitigation / resist. *NOTENOTENOTE* Only filled after action_t::impact() call
   double          result_absorbed;      // Result after absorption. *NOTENOTENOTE* Only filled after action_t::impact() call
   double          result_amount;        // Final (actual) result
@@ -5629,6 +5632,8 @@ struct action_state_t : public noncopyable
       return PROC2_HIT;
     else if ( result == RESULT_CRIT )
       return PROC2_CRIT;
+    else if ( result == RESULT_GLANCE )
+      return PROC2_GLANCE;
     // Multistrike can only generate procs on impact, though this could be 
     // moved to execute_proc_type2() too.
     else if ( result == RESULT_MULTISTRIKE )
@@ -5686,7 +5691,8 @@ private:
   double attack_table_sum; // Used to check whether we can use cached values or not.
 
   void build_table( double miss_chance, double dodge_chance,
-                    double parry_chance, double crit_chance );
+                    double parry_chance, double glance_chance,
+                    double crit_chance );
 };
 
 // Melee Attack ===================================================================
@@ -5699,6 +5705,7 @@ struct melee_attack_t : public attack_t
   virtual void init();
   virtual double  dodge_chance( double /* expertise */, player_t* t ) const;
   virtual double  parry_chance( double /* expertise */, player_t* t ) const;
+  virtual double glance_chance( int delta_level ) const;
 
   virtual proc_types proc_type() const;
 };
@@ -5712,6 +5719,7 @@ struct ranged_attack_t : public attack_t
   // Ranged Attack Overrides
   virtual double  dodge_chance( double /* expertise */, player_t* t ) const;
   virtual double  parry_chance( double /* expertise */, player_t* t ) const;
+  virtual double glance_chance( int delta_level ) const;
   virtual double composite_target_multiplier( player_t* ) const;
   virtual void schedule_execute( action_state_t* execute_state = 0 );
 

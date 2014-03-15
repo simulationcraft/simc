@@ -80,6 +80,13 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe
                    s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.max(),
                    s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].pct );
   }
+  if ( s -> direct_results[ RESULT_GLANCE ].actual_amount.sum() > 0 )
+  {
+    util::fprintf( file,
+                   "  Glance=%4.0f|%.1f%%",
+                   s -> direct_results[ RESULT_GLANCE ].actual_amount.pretty_mean(),
+                   s -> direct_results[ RESULT_GLANCE ].pct );
+  }
   if ( s -> direct_results[ RESULT_DODGE ].count.sum() > 0 )
   {
     util::fprintf( file,

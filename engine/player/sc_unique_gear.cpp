@@ -103,6 +103,7 @@ struct discharge_attack_t : public attack_t
                 && ( p -> position() == POSITION_FRONT || p ->position() == POSITION_RANGED_FRONT );
     //may_block = ( data.school == SCHOOL_PHYSICAL ) && ( ( data.override_result_es_mask & RESULT_BLOCK_MASK ) ? ( data.result_es_mask & RESULT_BLOCK_MASK ) : may_block )
     //            && ( p -> position() == POSITION_FRONT || p -> position() == POSITION_RANGED_FRONT );
+    may_glance = false;
     background  = true;
     aoe = data.aoe;
   }
@@ -1703,6 +1704,7 @@ struct cleave_t : public T
   {
     this -> callbacks = false;
     this -> may_crit = false;
+    this -> may_glance = false;
     this -> may_miss = true;
     this -> special = true;
     this -> proc = true;
@@ -1835,7 +1837,7 @@ void multistrike_trinket( item_t* item )
     multistrike_attack_t( item_t* item ) :
       attack_t( "multistrike_attack", item -> player )
     {
-      callbacks = may_crit = false;
+      callbacks = may_crit = may_glance = false;
       proc = background = special = true;
       school = SCHOOL_PHYSICAL;
       snapshot_flags |= STATE_MUL_DA;
