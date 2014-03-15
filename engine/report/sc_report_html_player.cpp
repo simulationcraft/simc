@@ -215,11 +215,18 @@ void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t*
       s -> direct_results[ RESULT_DODGE  ].pct +
       s -> direct_results[ RESULT_PARRY  ].pct );
 
+  if ( player_has_glance( p ) )
+    os.printf(
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n",  // direct_results Glance%
+      s -> direct_results[ RESULT_GLANCE ].pct );
+
   if ( player_has_block( p ) )
     os.printf(
       "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n", // direct_results Block%
       s -> direct_results_detail[ FULLTYPE_HIT_BLOCK ].pct +
       s -> direct_results_detail[ FULLTYPE_HIT_CRITBLOCK ].pct +
+      s -> direct_results_detail[ FULLTYPE_GLANCE_BLOCK ].pct +
+      s -> direct_results_detail[ FULLTYPE_GLANCE_CRITBLOCK ].pct +
       s -> direct_results_detail[ FULLTYPE_CRIT_BLOCK ].pct +
       s -> direct_results_detail[ FULLTYPE_CRIT_CRITBLOCK ].pct );
 
