@@ -4387,6 +4387,7 @@ public:
     buff_t* lifeblood;
     buff_t* mongoose_mh;
     buff_t* mongoose_oh;
+    buff_t* nitro_boosts;
     buff_t* pain_supression;
     buff_t* raid_movement;
     buff_t* self_movement;

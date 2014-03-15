@@ -2528,6 +2528,13 @@ void player_t::create_buffs()
     buffs.cooldown_reduction = buff_creator_t( this, "cooldown_reduction" )
                                .chance( 0 )
                                .default_value( 1 );
+
+    buffs.nitro_boosts       = buff_creator_t( this, "nitro_boosts" )
+                    .spell( find_spell( 133022 ) )
+                    .cd( timespan_t::from_seconds( 180 ) )
+                    .chance( 1 )
+                    .duration( timespan_t::from_seconds( 5 ) );
+
     }
 
     buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );
@@ -3018,7 +3025,12 @@ double player_t::composite_movement_speed() const
 {
   double speed = base_movement_speed;
 
+  if ( buffs.nitro_boosts -> up() )
+    speed *= 1.0 + 1.5; // Does not stack with a lot of random abilities, such as body and soul, stampeding shout, burning rush.
+                        // Other abilities exist that do not work as well, but I am not aware of them at this time.
+
   speed *= 1.0 + buffs.body_and_soul -> current_value;
+
 
   // From http://www.wowpedia.org/Movement_speed_effects
   // Additional items looked up

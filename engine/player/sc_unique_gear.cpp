@@ -308,6 +308,52 @@ struct synapse_spring_action_t : public action_t
     update_ready();
   }
 };
+
+struct nitro_boosts_action_t : public action_t
+{
+  timespan_t _duration;
+  timespan_t _cd;
+  buff_t* buff;
+  
+  nitro_boosts_action_t( player_t* p, const std::string& n, timespan_t duration, timespan_t cd ) :
+    action_t( ACTION_USE, n, p ),
+    _duration( duration ),
+    _cd( cd ),
+    buff( nullptr )
+  {
+
+    buff = dynamic_cast<buff_t*>( buff_t::find( player, n, player ) );
+
+    background = true;
+  }
+
+  virtual void execute()
+  {
+    assert( buff );
+    if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
+    buff -> trigger();
+
+    update_ready();
+  }
+
+};
+
+void nitro_boosts( item_t* item )
+{
+  player_t* p = item -> player;
+
+  
+  if ( p -> profession[ PROF_ENGINEERING ] < 300 )
+    {
+      item -> sim -> errorf( "Player %s attempting to use nitro boosts without 300 in engineering.\n", p -> name() );
+      return;
+    }
+  item -> parsed.use.name_str = "nitro_boosts";
+  item -> parsed.use.cooldown = timespan_t::from_seconds( 180.0 );
+  item -> parsed.use.execute_action = new nitro_boosts_action_t( p, "nitro_boosts", timespan_t::from_seconds( 5.0 ), timespan_t::from_seconds( 180.0 ) );
+};
+
+
 // synapse_springs ==========================================================
 
 void synapse_springs( item_t* item )
@@ -3075,6 +3121,11 @@ void unique_gear::initialize_special_effects( player_t* p )
     else if ( item.parsed.addon.name_str == "frag_belt" )
     {
       frag_belt( &item );
+      item.parsed.addon.unique = true;
+    }
+    else if ( item.parsed.addon.name_str == "nitro_boosts" )
+    {
+      nitro_boosts( &item );
       item.parsed.addon.unique = true;
     }
   }
