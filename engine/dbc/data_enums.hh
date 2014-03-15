@@ -44,6 +44,7 @@ enum proc_types2
 {
   PROC2_HIT = 0,                // Any hit damage/heal result
   PROC2_CRIT,                   // Critical damage/heal result
+  PROC2_GLANCE,                 // Glance damage result
   PROC2_DODGE,
   PROC2_PARRY,
 
@@ -109,6 +110,7 @@ enum proc_flag2
 {
   PF2_HIT                     = 1 << PROC2_HIT,
   PF2_CRIT                    = 1 << PROC2_CRIT, // Automatically implies an amount
+  PF2_GLANCE                  = 1 << PROC2_GLANCE, // Automatically implies damage
   PF2_DODGE                   = 1 << PROC2_DODGE,
   PF2_PARRY                   = 1 << PROC2_PARRY,
 
@@ -122,7 +124,7 @@ enum proc_flag2
   // Pseudo types
   PF2_PERIODIC_HEAL           = 1 << PROC2_PERIODIC_HEAL,
   PF2_PERIODIC_DAMAGE         = 1 << PROC2_PERIODIC_DAMAGE,
-  PF2_ALL_HIT                 = PF2_HIT | PF2_CRIT, // All damaging/healing "hit" results
+  PF2_ALL_HIT                 = PF2_HIT | PF2_CRIT | PF2_GLANCE, // All damaging/healing "hit" results
   PF2_ALL_MULTISTRIKE         = PF2_MULTISTRIKE | PF2_MULTISTRIKE_CRIT,
 };
 

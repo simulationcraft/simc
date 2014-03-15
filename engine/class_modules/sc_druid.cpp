@@ -928,6 +928,7 @@ struct force_of_nature_feral_t : public pet_t
       background  = true;
       repeating   = true;
       may_crit    = true;
+      may_glance  = true;
       trigger_gcd = timespan_t::zero();
       owner       = p -> o();
     }
@@ -1085,6 +1086,7 @@ struct force_of_nature_guardian_t : public pet_t
       trigger_gcd = timespan_t::zero();
       owner = p -> o();
 
+      may_glance = true;
       special    = false;
     }
   };
@@ -1774,6 +1776,7 @@ public:
                   const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s )
   {
+    ab::may_glance    = false;
     ab::special       = true;
   }
 
@@ -2122,6 +2125,7 @@ struct cat_melee_t : public cat_attack_t
     cat_attack_t( "cat_melee", player, spell_data_t::nil(), "" )
   {
     school = SCHOOL_PHYSICAL;
+    may_glance  = true;
     background  = true;
     repeating   = true;
     trigger_gcd = timespan_t::zero();
@@ -2194,6 +2198,7 @@ struct feral_charge_cat_t : public cat_attack_t
     may_dodge  = false;
     may_parry  = false;
     may_block  = false;
+    may_glance = false;
     special = false;
   }
 
@@ -2768,7 +2773,7 @@ struct skull_bash_cat_t : public cat_attack_t
   skull_bash_cat_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( p, p -> find_specialization_spell( "Skull Bash" ), options_str )
   {
-    may_miss = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
     cooldown -> duration += p -> glyph.skull_bash -> effectN( 1 ).time_value();
     special = false;
@@ -2976,6 +2981,7 @@ struct bear_melee_t : public bear_attack_t
     bear_attack_t( "bear_melee", player )
   {
     school      = SCHOOL_PHYSICAL;
+    may_glance  = true;
     background  = true;
     repeating   = true;
     trigger_gcd = timespan_t::zero();
@@ -3026,6 +3032,7 @@ struct feral_charge_bear_t : public bear_attack_t
     may_dodge  = false;
     may_parry  = false;
     may_block  = false;
+    may_glance = false;
     special    = false;
   }
 
@@ -3235,7 +3242,7 @@ struct skull_bash_bear_t : public bear_attack_t
   skull_bash_bear_t( druid_t* player, const std::string& options_str ) :
     bear_attack_t( player, player -> find_class_spell( "Skull Bash" ), options_str )
   {
-    may_miss = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
     special = false;
     use_off_gcd = true;
 

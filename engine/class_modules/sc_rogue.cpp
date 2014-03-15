@@ -387,6 +387,7 @@ struct rogue_attack_t : public melee_attack_t
     parse_options( 0, options );
 
     may_crit                  = true;
+    may_glance                = false;
     special                   = true;
     tick_may_crit             = true;
     hasted_ticks              = false;
@@ -1080,6 +1081,7 @@ struct melee_t : public rogue_attack_t
     repeating       = true;
     trigger_gcd     = timespan_t::zero();
     special         = false;
+    may_glance      = true;
 
     if ( p -> dual_wield() )
       base_hit -= 0.19;
@@ -1616,7 +1618,7 @@ struct kick_t : public rogue_attack_t
   kick_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "kick", p, p -> find_class_spell( "Kick" ), options_str )
   {
-    may_miss = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
     if ( p -> glyph.kick -> ok() )
     {
@@ -2289,6 +2291,7 @@ struct shadow_blade_t : public rogue_attack_t
     special = false;
     repeating = true;
     background = true;
+    may_glance = false;
   }
 };
 

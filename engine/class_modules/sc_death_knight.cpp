@@ -1989,6 +1989,7 @@ struct death_knight_action_t : public Base
     range::fill( use, false );
 
     action_base_t::may_crit   = true;
+    action_base_t::may_glance = false;
 
     rp_gains = action_base_t::player -> get_gain( "rp_" + action_base_t::name_str );
     extract_rune_cost( s );
@@ -2111,6 +2112,7 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
     always_consume( false ), requires_weapon( true )
   {
     may_crit   = true;
+    may_glance = false;
   }
 
   void trigger_t15_2pc_melee()
@@ -2380,6 +2382,7 @@ struct melee_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t( name, p ), sync_weapons( sw )
   {
     school          = SCHOOL_PHYSICAL;
+    may_glance      = true;
     background      = true;
     repeating       = true;
     trigger_gcd     = timespan_t::zero();
@@ -3745,7 +3748,7 @@ struct mind_freeze_t : public death_knight_spell_t
   {
     parse_options( NULL, options_str );
 
-    may_miss = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
   }
 
   virtual bool ready()

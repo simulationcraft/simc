@@ -3372,6 +3372,7 @@ struct hand_of_light_proc_t : public paladin_melee_attack_t
     may_miss    = false;
     may_dodge   = false;
     may_parry   = false;
+    may_glance  = false;
     proc        = true;
     background  = true;
     trigger_gcd = timespan_t::zero();
@@ -3424,6 +3425,7 @@ struct judgment_t : public paladin_melee_attack_t
     weapon_multiplier = 0.0;
 
     // Special melee attack that can only miss
+    may_glance                   = false;
     may_block                    = false;
     may_parry                    = false;
     may_dodge                    = false;
@@ -3571,7 +3573,7 @@ struct rebuke_t : public paladin_melee_attack_t
   {
     parse_options( NULL, options_str );
 
-    may_miss = may_block = may_dodge = may_parry = may_crit = false;
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
@@ -3674,6 +3676,7 @@ struct seal_of_truth_proc_t : public paladin_melee_attack_t
     proc        = true;
     // automatically connects when triggered
     may_block   = false;
+    may_glance  = false;
     may_miss    = false;
     may_dodge   = false;
     may_parry   = false;

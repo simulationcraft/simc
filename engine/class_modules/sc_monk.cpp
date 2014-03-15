@@ -385,6 +385,7 @@ private:
       background = true;
       repeating = true;
       may_crit = true;
+      may_glance = true;
       school      = SCHOOL_NATURE;
 
       // Use damage numbers from the level-scaled weapon
@@ -721,6 +722,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     mh( NULL ), oh( NULL )
   {
     special = true;
+    may_glance = false;
   }
 
   virtual double target_armor( player_t* t ) const
@@ -1253,7 +1255,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT;
 
 	// Application of the spell cannot do these, but the ticks themselves can crit, miss, dodge, etc.
-    may_crit = may_miss = may_block = may_dodge = may_parry = false;
+    may_crit = may_miss = may_block = may_dodge = may_glance = may_parry = false;
     tick_zero = true;
     hasted_ticks = true;
 
@@ -1397,6 +1399,7 @@ struct tiger_strikes_melee_attack_t : public monk_melee_attack_t
     school           = SCHOOL_PHYSICAL;
     background       = true;
     special          = false;
+    may_glance       = false;
     if ( player -> dual_wield() )
       base_multiplier *= 1.0 + p -> spec.way_of_the_monk -> effectN( 1 ).percent();
   }
@@ -1439,6 +1442,7 @@ struct melee_t : public monk_melee_attack_t
     trigger_gcd = timespan_t::zero();
     special     = false;
     school      = SCHOOL_PHYSICAL;
+    may_glance  = true;
 
     if ( player -> dual_wield() )
     {
