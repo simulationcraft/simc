@@ -240,6 +240,9 @@ std::string spell_flags( const spell_data_t* spell )
   if ( spell -> scaling_class() != 0 )
     s << "Scaling Spell (" << spell -> scaling_class() << "), ";
 
+  if ( spell -> class_family() != 0 )
+    s << "Spell Family (" << spell -> class_family() << "), ";
+
   if ( spell -> flags( SPELL_ATTR_PASSIVE ) )
     s << "Passive, ";
 
@@ -449,6 +452,19 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   }
 
   s << std::endl;
+
+  /*
+  std::stringstream affect_str;
+  std::vector< const spell_data_t* > affected_spells = dbc.spells_affected_by( spell -> class_family(), e );
+  if ( affected_spells.size() > 0 )
+  {
+    s << "                   Affected Spells:";
+    s << std::endl;
+    for ( size_t i = 0, end = affected_spells.size(); i < end; i++ )
+      s << "                   " << affected_spells[ i ] -> name_cstr() << " (" << affected_spells[ i ] -> id() << ")" << std::endl;
+  }
+  */
+
   return s;
 }
 
@@ -524,7 +540,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
-  if ( spell -> rune_cost() == 0 )
+  if ( spell -> rune_cost() == 0 && spell -> class_mask() != 0 )
   {
     for ( size_t i = 0; spell -> _power && i < spell -> _power -> size(); i++ )
     {
@@ -588,7 +604,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     }
   }
 
-  if ( spell -> rune_cost() > 0 )
+  if ( spell -> rune_cost() > 0 && spell -> class_mask() != 0 )
   {
     s << "Rune Cost        : ";
 

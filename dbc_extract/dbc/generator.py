@@ -2015,20 +2015,6 @@ class SpellDataGenerator(DataGenerator):
                     else:
                         ids[sid]['cooldown'] = getattr(data, 'cd_spell_%d' % stat_id)
         
-        # Get all spells with spell class option, and a valid family
-        #for id, data in self._spell_db.iteritems():
-        #    if data.id_class_opts == 0:
-        #        continue
-        #
-        #    class_opts = self._spellclassoptions_db[data.id_class_opts]
-        #    if class_opts.id == 0:
-        #        continue
-        #
-        #    if class_opts.spell_family_name not in SpellDataGenerator._spell_families.values():
-        #        continue
-        #
-        #    self.process_spell(id, ids, 0, 0)
-
         # Last, get the explicitly defined spells in _spell_id_list on a class basis and the 
         # generic spells from SpellDataGenerator._spell_id_list[0]
         for generic_spell_id in SpellDataGenerator._spell_id_list[0]:
@@ -2092,7 +2078,7 @@ class SpellDataGenerator(DataGenerator):
                 continue
             
             if len(spell._misc) > 1:
-                sys.stderr.write('Spell id %u (%s) has more than one SpellMisc.dbc entry' % ( spell.id, spell.name ) )
+                sys.stderr.write('Spell id %u (%s) has more than one SpellMisc.dbc entry\n' % ( spell.id, spell.name ) )
                 continue
 
             for power in spell._powers:

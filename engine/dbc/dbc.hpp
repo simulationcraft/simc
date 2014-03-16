@@ -265,6 +265,15 @@ public:
   int die_sides() const
   { return _die_sides; }
 
+  bool class_flag( unsigned flag ) const
+  {
+    unsigned index = flag / 32;
+    unsigned bit = flag % 32;
+
+    assert( index < sizeof_array( _class_flags ) );
+    return ( _class_flags[ index ] & ( 1u << bit ) ) != 0;
+  }
+
   double average( const player_t* p, unsigned level = 0 ) const;
   double delta( const player_t* p, unsigned level = 0 ) const;
   double bonus( const player_t* p, unsigned level = 0 ) const;
@@ -598,8 +607,23 @@ public:
     return ( _attributes[ index ] & mask ) != 0;
   }
 
+  bool class_flag( unsigned flag ) const
+  {
+    unsigned index = flag / 32;
+    unsigned bit = flag % 32;
+
+    assert( index < sizeof_array( _class_flags ) );
+    return ( _class_flags[ index ] & ( 1u << bit ) ) != 0;
+  }
+
   unsigned attribute( unsigned idx ) const
   { assert( idx < sizeof_array( _attributes ) ); return _attributes[ idx ]; }
+
+  unsigned class_flags( unsigned idx ) const
+  { assert( idx < sizeof_array( _class_flags ) ); return _class_flags[ idx ]; }
+
+  unsigned class_family() const
+  { return _class_flags_family; }
 
   bool override_field( const std::string& field, double value );
 
@@ -982,6 +1006,8 @@ public:
   double rppm_coefficient( specialization_e spec, unsigned spell_id ) const;
 
   unsigned item_upgrade_ilevel( unsigned item_id, unsigned upgrade_level ) const;
+
+  std::vector< const spell_data_t* > spells_affected_by( unsigned, const spelleffect_data_t* ) const;
 };
 
 #endif // SC_DBC_HPP

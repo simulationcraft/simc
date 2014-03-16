@@ -178,6 +178,9 @@ dbc_index_t<talent_data_t> talent_data_index;
 dbc_index_t<item_data_t, id_member_policy> item_data_index;
 dbc_index_t<item_enchantment_data_t, id_member_policy> item_enchantment_data_index;
 
+std::vector< std::vector< const spell_data_t* > > class_family_index;
+std::vector< std::vector< const spell_data_t* > > ptr_class_family_index;
+
 /* Create a map linking the tokenized name with a pointer to data with that name
  */
 template <typename T, typename KeyPolicy = id_function_policy>
@@ -524,6 +527,35 @@ void dbc::apply_hotfixes()
   }
 }
 
+static void generate_class_flags_index( bool ptr = false )
+{
+  // Make a class family index to speed up some spell query parsing
+  const spell_data_t* spell = spell_data_t::list( ptr );
+  while ( spell -> id() != 0 )
+  {
+    if ( spell -> class_family() == 0 )
+    {
+      spell++;
+      continue;
+    }
+
+    if ( class_family_index.size() < spell -> class_family() )
+    {
+      if ( ptr )
+        class_family_index.resize( spell -> class_family() + 1 );
+      else
+        ptr_class_family_index.resize( spell -> class_family() + 1 );
+    }
+
+    if ( ptr )
+      ptr_class_family_index[ spell -> class_family() ].push_back( spell );
+    else
+      class_family_index[ spell -> class_family() ].push_back( spell );
+
+    spell++;
+  }
+}
+
 /* Initialize database
  */
 void dbc::init()
@@ -558,6 +590,10 @@ void dbc::init()
 
   // Apply "modifications" to dbc data
   dbc::apply_hotfixes();
+
+  generate_class_flags_index();
+  if ( SC_USE_PTR )
+    generate_class_flags_index( true );
 }
 
 /* De-Initialize database
@@ -570,6 +606,35 @@ void dbc::de_init()
   {
     spell_data_t::de_link( true );
   }
+}
+
+std::vector< const spell_data_t* > dbc_t::spells_affected_by( unsigned family, const spelleffect_data_t* effect ) const
+{
+  std::vector< const spell_data_t* > affected_spells;
+  if ( family == 0 )
+    return affected_spells;
+
+  if ( family > class_family_index.size() )
+    return affected_spells;
+
+  const std::vector< const spell_data_t* >* l = &( class_family_index[ family ] );
+  if ( ptr )
+    l = &( ptr_class_family_index[ family ] );
+
+  for ( size_t i = 0, end = l -> size(); i < end; i++ )
+  {
+    const spell_data_t* s = l -> at( i );
+    for ( size_t j = 0, vend = NUM_CLASS_FAMILY_FLAGS * 32; j < vend; j++ )
+    {
+      if ( effect -> class_flag( j ) && s -> class_flag( j ) )
+      {
+        if ( std::find( affected_spells.begin(), affected_spells.end(), s ) == affected_spells.end() )
+          affected_spells.push_back( s );
+      }
+    }
+  }
+
+  return affected_spells;
 }
 
 // translate_spec_str =======================================================
