@@ -529,6 +529,10 @@ void dbc::apply_hotfixes()
 
 static void generate_class_flags_index( bool ptr = false )
 {
+  std::vector< std::vector< const spell_data_t* > >* l = &( class_family_index );
+  if ( ptr )
+    l = &( ptr_class_family_index );
+
   // Make a class family index to speed up some spell query parsing
   const spell_data_t* spell = spell_data_t::list( ptr );
   while ( spell -> id() != 0 )
@@ -539,18 +543,10 @@ static void generate_class_flags_index( bool ptr = false )
       continue;
     }
 
-    if ( class_family_index.size() < spell -> class_family() )
-    {
-      if ( ptr )
-        class_family_index.resize( spell -> class_family() + 1 );
-      else
-        ptr_class_family_index.resize( spell -> class_family() + 1 );
-    }
+    if ( l -> size() <= spell -> class_family() )
+      l -> resize( spell -> class_family() + 1 );
 
-    if ( ptr )
-      ptr_class_family_index[ spell -> class_family() ].push_back( spell );
-    else
-      class_family_index[ spell -> class_family() ].push_back( spell );
+    l -> at( spell -> class_family() ).push_back( spell );
 
     spell++;
   }
