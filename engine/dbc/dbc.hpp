@@ -21,6 +21,7 @@ static_assert( 0 , "dbc.hpp included into a file where SIMULATIONCRAFT_H is not 
 #include "specialization.hpp"
 
 static const unsigned NUM_SPELL_FLAGS = 12;
+static const unsigned NUM_CLASS_FAMILY_FLAGS = 4;
 
 // ==========================================================================
 // General Database
@@ -161,7 +162,8 @@ public:
   int              _base_value;      // Effect value
   int              _misc_value;      // Effect miscellaneous value
   int              _misc_value_2;    // Effect miscellaneous value 2
-  unsigned              _trigger_spell_id;// Effect triggers this spell id
+  unsigned         _class_flags[NUM_CLASS_FAMILY_FLAGS]; // Class family flags
+  unsigned         _trigger_spell_id;// Effect triggers this spell id
   double           _m_chain;         // Effect chain multiplier
   double           _pp_combo_points; // Effect points per combo points
   double           _real_ppl;        // Effect real points per level
@@ -354,6 +356,8 @@ public:
   unsigned    _replace_spell_id;
   // Spell.dbc flags
   unsigned    _attributes[NUM_SPELL_FLAGS];// Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
+  unsigned    _class_flags[NUM_CLASS_FAMILY_FLAGS]; // SpellClassOptions.dbc flags
+  unsigned    _class_flags_family; // SpellClassOptions.dbc spell family
   const char* _desc;               // Spell.dbc description stringblock
   const char* _tooltip;            // Spell.dbc tooltip stringblock
   // SpellDescriptionVariables.dbc
