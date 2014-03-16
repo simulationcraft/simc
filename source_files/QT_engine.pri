@@ -61,10 +61,8 @@
  SOURCES += engine/dbc/sc_spell_info.cpp
  SOURCES += engine/dbc/sc_data.cpp
  SOURCES += engine/interfaces/sc_bcp_api.cpp
- SOURCES += engine/interfaces/sc_chardev.cpp
  SOURCES += engine/interfaces/sc_http.cpp
  SOURCES += engine/interfaces/sc_js.cpp
- SOURCES += engine/interfaces/sc_rawr.cpp
  SOURCES += engine/interfaces/sc_wowhead.cpp
  SOURCES += engine/interfaces/sc_xml.cpp
  SOURCES += engine/class_modules/sc_death_knight.cpp
