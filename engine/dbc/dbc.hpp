@@ -1007,7 +1007,8 @@ public:
 
   unsigned item_upgrade_ilevel( unsigned item_id, unsigned upgrade_level ) const;
 
-  std::vector< const spell_data_t* > spells_affected_by( unsigned, const spelleffect_data_t* ) const;
+  std::vector< const spell_data_t* > effect_affects_spells( unsigned, const spelleffect_data_t* ) const;
+  std::vector< const spelleffect_data_t* > effects_affecting_spell( const spell_data_t* ) const;
 };
 
 #endif // SC_DBC_HPP

@@ -604,13 +604,16 @@ void dbc::de_init()
   }
 }
 
-std::vector< const spell_data_t* > dbc_t::spells_affected_by( unsigned family, const spelleffect_data_t* effect ) const
+std::vector< const spell_data_t* > dbc_t::effect_affects_spells( unsigned family, const spelleffect_data_t* effect ) const
 {
   std::vector< const spell_data_t* > affected_spells;
+
   if ( family == 0 )
     return affected_spells;
 
-  if ( family > class_family_index.size() )
+  if ( ptr && family >= ptr_class_family_index.size() )
+    return affected_spells;
+  else if ( family >= class_family_index.size() )
     return affected_spells;
 
   const std::vector< const spell_data_t* >* l = &( class_family_index[ family ] );
@@ -631,6 +634,50 @@ std::vector< const spell_data_t* > dbc_t::spells_affected_by( unsigned family, c
   }
 
   return affected_spells;
+}
+
+std::vector< const spelleffect_data_t* > dbc_t::effects_affecting_spell( const spell_data_t* spell ) const
+{
+  std::vector< const spelleffect_data_t* > affecting_effects;
+
+  if ( spell -> class_family() == 0 )
+    return affecting_effects;
+
+  if ( ptr && spell -> class_family() >= ptr_class_family_index.size() )
+    return affecting_effects;
+  else if ( spell -> class_family() >= class_family_index.size() )
+    return affecting_effects;
+
+  const std::vector< const spell_data_t* >* l = &( class_family_index[ spell -> class_family() ] );
+  if ( ptr )
+    l = &( ptr_class_family_index[ spell -> class_family() ] );
+
+  for ( size_t i = 0, end = l -> size(); i < end; i++ )
+  {
+    const spell_data_t* s = l -> at( i );
+
+    // Skip itself
+    if ( s -> id() == spell -> id() )
+      continue;
+
+    // Loop through all effects in the spell
+    for ( size_t idx = 1, idx_end = s -> effect_count(); idx <= idx_end; idx++ )
+    {
+      const spelleffect_data_t& effect = s -> effectN( idx );
+
+      // Match spell family flags
+      for ( size_t j = 0, vend = NUM_CLASS_FAMILY_FLAGS * 32; j < vend; j++ )
+      {
+        if ( ! ( effect.class_flag( j ) && spell -> class_flag( j ) ) )
+          continue;
+
+        if ( std::find( affecting_effects.begin(), affecting_effects.end(), &effect ) == affecting_effects.end() )
+          affecting_effects.push_back( &effect );
+      }
+    }
+  }
+
+  return affecting_effects;
 }
 
 // translate_spec_str =======================================================

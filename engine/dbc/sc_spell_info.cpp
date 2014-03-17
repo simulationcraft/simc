@@ -455,7 +455,7 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   /*
   std::stringstream affect_str;
-  std::vector< const spell_data_t* > affected_spells = dbc.spells_affected_by( spell -> class_family(), e );
+  std::vector< const spell_data_t* > affected_spells = dbc.effect_affects_spells( spell -> class_family(), e );
   if ( affected_spells.size() > 0 )
   {
     s << "                   Affected Spells:";
@@ -764,6 +764,31 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell -> extra_coeff() > 0 )
     s << "Coefficient      : " << spell -> extra_coeff() << std::endl;
+
+  if ( spell -> class_family() > 0 )
+  {
+    std::vector< const spelleffect_data_t* > affecting_effects = dbc.effects_affecting_spell( spell );
+    std::vector< unsigned > spell_ids;
+    if ( affecting_effects.size() > 0 )
+    {
+      s << "Affecting spells : ";
+
+      for ( size_t i = 0, end = affecting_effects.size(); i < end; i++ )
+      {
+        const spelleffect_data_t* effect = affecting_effects[ i ];
+        if ( std::find( spell_ids.begin(), spell_ids.end(), effect -> spell() -> id() ) != spell_ids.end() )
+          continue;
+
+        s << effect -> spell() -> name_cstr() << " (" << effect -> spell() -> id() << ")";
+        if ( i < end - 1 )
+          s << ", ";
+
+        spell_ids.push_back( effect -> spell() -> id() );
+      }
+
+      s << std::endl;
+    }
+  }
 
   s << "Attributes       : ";
   for ( unsigned i = 0; i < NUM_SPELL_FLAGS; i++ )
