@@ -765,7 +765,7 @@ void warrior_attack_t::execute()
   // no targets to hit. In this case, there will be no execute state.
   if ( ! execute_state ) return;
 
-  if ( execute_state -> result == RESULT_DODGE )
+  if ( execute_state -> result == RESULT_DODGE && p -> specialization() == WARRIOR_ARMS )
   {
     trigger_taste_for_blood( p -> spec.taste_for_blood -> effectN( 1 ).base_value() );
   }
