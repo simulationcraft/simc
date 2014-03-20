@@ -225,6 +225,10 @@ public:
     const spell_data_t* bloodbath;
     const spell_data_t* bladestorm;
 
+    //const spell_data_t* anger_management;
+    //const spell_data_t* ravager;
+    //const spell_data_t* ignite_weapon;
+
   } talents;
 
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
@@ -3122,6 +3126,10 @@ void warrior_t::init_spells()
   talents.avatar                = find_talent_spell( "Avatar"                      );
   talents.bloodbath             = find_talent_spell( "Bloodbath"                   );
   talents.bladestorm            = find_talent_spell( "Bladestorm"                  );
+
+  //talents.anger_management    = find_talent_spell( "Anger Management"            );
+  //talents.ravager             = find_talent_spell( "Ravager"                     );
+  //talents.ignite_weapon       = find_talent_spell( "Ignite Weapon"               );
 
   // Glyphs
   glyphs.bull_rush              = find_glyph_spell( "Glyph of Bull Rush"           );
