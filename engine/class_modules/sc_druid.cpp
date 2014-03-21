@@ -7781,7 +7781,7 @@ struct druid_module_t : public module_t
       player_t* p = sim -> actor_list[ i ];
       p -> buffs.innervate               = new buffs::innervate_t( p );
 
-      p -> buffs.stampeding_shout        = buff_creator_t( p, "stampeding_shout", p -> find_spell( 77764 ) )
+      p -> buffs.stampeding_shout        = buff_creator_t( p, "stampeding_shout_druid", p -> find_spell( 77764 ) )
                                           .max_stack( 1 )
                                           .duration( timespan_t::from_seconds( 8.0 ) );
     }

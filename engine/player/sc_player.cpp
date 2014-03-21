@@ -3575,7 +3575,7 @@ void prepare( player_t& p )
 void report_unmatched( const buff_t& b )
 {
 #ifndef NDEBUG
-  /* Don't complain about targetdata buffs, since it is percetly viable that the buff
+  /* Don't complain about targetdata buffs, since it is perfectly viable that the buff
    * is not created in another thread, because of our on-demand targetdata creation
    */
   if ( ! b.source || b.source == b.player )

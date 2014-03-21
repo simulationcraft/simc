@@ -4333,7 +4333,7 @@ struct warrior_module_t : public module_t
                                       .cd( timespan_t::zero() )
                                       .add_invalidate( CACHE_ARMOR );
 
-      p -> buffs.stampeding_roar    = buff_creator_t( p, "stampeding_shout", p -> find_spell( 122294 ) )
+      p -> buffs.stampeding_roar    = buff_creator_t( p, "stampeding_shout_warrior", p -> find_spell( 122294 ) )
                                       .max_stack( 1 )
                                       .duration( timespan_t::from_seconds( 8.0 ) );
     }
