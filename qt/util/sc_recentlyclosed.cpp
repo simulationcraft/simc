@@ -39,6 +39,27 @@ void SC_TabWidgetCloseAll::enableDragHoveredOverTabSignal( bool enable )
   scTabBar -> enableDraggedTextHover( enable );
 }
 
+QWidget* SC_TabWidgetCloseAll::createCloseAllTabsWidget()
+{
+  // default will be a close all tabs button
+  QToolButton* closeAllTabs = new QToolButton(this);
+
+  QIcon closeAllTabsIcon( ":/icon/closealltabs.png" );
+  if ( closeAllTabsIcon.pixmap( QSize( 64, 64 ) ).isNull() ) // icon failed to load
+  {
+    closeAllTabs -> setText( tr( "Close All Tabs" ) );
+  }
+  else
+  {
+    closeAllTabs -> setIcon( closeAllTabsIcon );
+  }
+  closeAllTabs -> setAutoRaise( true );
+
+  connect( closeAllTabs, SIGNAL( clicked( bool ) ), this, SLOT( closeAllTabsRequest() ));
+
+  return closeAllTabs;
+}
+
 void SC_TabWidgetCloseAll::initTabBar()
 {
   setTabBar( scTabBar );
@@ -338,6 +359,83 @@ QModelIndex SC_RecentlyClosedTabWidget::getSelectionAndMakeSureIsValidIfElements
   return index;
 }
 
+void SC_RecentlyClosedTabWidget::removePreview( QWidget* widget )
+{
+  if ( widget == nullptr )
+    widget = currentlyPreviewedWidget;
+  if ( currentlyPreviewedWidget == nullptr )
+    return;
+  if ( currentlyPreviewedWidget == widget )
+  {
+    boxLayout -> setStretch( stretchIndex, 1 );
+    boxLayout -> removeWidget( currentlyPreviewedWidget );
+
+    if ( currentlyPreviewedWidgetsParent != nullptr )
+      currentlyPreviewedWidget -> setParent( currentlyPreviewedWidgetsParent );
+
+    currentlyPreviewedWidget = nullptr;
+    currentlyPreviewedWidgetsParent = nullptr;
+  }
+}
+
+bool SC_RecentlyClosedTabWidget::addIndexToPreview( const QModelIndex& index )
+{
+  if ( index.isValid() )
+  {
+    QWidget* widget = index.data( Qt::UserRole ).value< QWidget* >();
+    if ( widget != nullptr )
+    {
+      if ( currentlyPreviewedWidget != nullptr )
+        removePreview( currentlyPreviewedWidget );
+      widget -> show();
+      boxLayout -> addWidget( widget, 1 );
+      boxLayout -> setStretch( stretchIndex, 0 );
+      currentlyPreviewedWidget = widget;
+      currentlyPreviewedWidgetsParent = index.data( Qt::UserRole + 1 ).value< QWidget* >();
+      listView -> setFocus();
+      return true;
+    }
+  }
+  return false;
+}
+
+bool SC_RecentlyClosedTabWidget::previewNext( QWidget* exclude )
+{
+  bool retval = false;
+  QModelIndex index = listView -> currentIndex();
+  // If no selection, then go with first index
+  if ( ! index.isValid() )
+    index = model -> index( 0, 0 );
+
+  QWidget* widget = index.data( Qt::UserRole ).value< QWidget* >();
+  int triedRows = 1;
+
+  // Search up if we start at the last element;
+  int increment = index.row() == ( model -> rowCount() ) ? -1:1;
+  // Try each row looking for a widget that is not excluded
+  while ( triedRows <= model -> rowCount() &&
+          widget == exclude )
+  {
+    int newIndex = ( index.row() + increment ) % model -> rowCount();
+    index = model -> index( newIndex, 0 );
+    widget = index.data( Qt::UserRole ).value< QWidget* >();
+    triedRows++;
+  }
+  // index is ok and we didnt try all rows
+  if ( index.isValid() &&
+       triedRows <= model -> rowCount() )
+  {
+    QItemSelectionModel* selection = listView -> selectionModel();
+    addIndexToPreview( index );
+    selection -> clear();
+    selection -> select( index, QItemSelectionModel::Select );
+    widget = index.data( Qt::UserRole ).value< QWidget* >();
+    if ( currentlyPreviewedWidget != widget )
+      addIndexToPreview( index );
+    retval = true;
+  }
+  return retval;
+}
 
 
 // ============================================================================
@@ -345,14 +443,14 @@ QModelIndex SC_RecentlyClosedTabWidget::getSelectionAndMakeSureIsValidIfElements
 // ============================================================================
 
 SC_RecentlyClosedTab::SC_RecentlyClosedTab(QWidget* parent,
-    SC_RecentlyClosedTabItemModel* modelToUse,
-    bool enableRecentlyClosedTabs,
-    Qt::Corner corner ) :
-SC_TabWidgetCloseAll( parent, corner ),
-enabled( enableRecentlyClosedTabs ),
-hoverArea( nullptr ),
-recentlyClosedPopup( nullptr ),
-recentlyClosedTab( nullptr )
+                                           SC_RecentlyClosedTabItemModel* modelToUse,
+                                           bool enableRecentlyClosedTabs,
+                                           Qt::Corner corner ) :
+  SC_TabWidgetCloseAll( parent, corner ),
+  enabled( enableRecentlyClosedTabs ),
+  hoverArea( nullptr ),
+  recentlyClosedPopup( nullptr ),
+  recentlyClosedTab( nullptr )
 {
   if ( enabled )
   {

@@ -13,20 +13,19 @@
 #include <QtGui/QtGui>
 
 
-
 // ============================================================================
 // SC_TabBar
 // ============================================================================
 
 class SC_TabBar : public QTabBar
 {
-Q_OBJECT
+  Q_OBJECT
   int hoveringOverTab;
-Q_PROPERTY( int draggedTextHoverTimeout READ getDraggedTextHoverTimeout WRITE setDraggedTextHoverTimeout )
+  Q_PROPERTY( int draggedTextHoverTimeout READ getDraggedTextHoverTimeout WRITE setDraggedTextHoverTimeout )
   QTimer draggedTextOnSingleTabTimer;
   bool enableDraggedTextHoverSignal;
   int draggedTextTimeout;
-Q_PROPERTY( int nonDraggedHoverTimeout READ getMouseHoverTimeout WRITE setMouseHoverTimeout )
+  Q_PROPERTY( int nonDraggedHoverTimeout READ getMouseHoverTimeout WRITE setMouseHoverTimeout )
   QTimer mouseHoverTimeoutTimer;
   bool enableMouseHoverTimeoutSignal;
   int mouseHoverTimeout;
@@ -44,40 +43,10 @@ Q_PROPERTY( int nonDraggedHoverTimeout READ getMouseHoverTimeout WRITE setMouseH
   QAction* closeAllAction;
 public:
   SC_TabBar( QWidget* parent = nullptr,
-      bool enableDraggedHover = false,
-      bool enableMouseHover = false,
-      bool enableContextMenu = true ) :
-    QTabBar( parent ),
-    hoveringOverTab( -1 ),
-    enableDraggedTextHoverSignal( enableDraggedHover ),
-    draggedTextTimeout( 0 ),
-    enableMouseHoverTimeoutSignal( enableMouseHover ),
-    mouseHoverTimeout( 1500 ),
-    enableContextMenu( enableContextMenu ),
-    enableContextMenuRenameTab( true ),
-    enableContextMenuCloseTab( true ),
-    enableContextMenuCloseAll( false ),
-    enableContextMenuCloseOthers( false ),
-    contextMenu( nullptr ),
-    renameTabAction( nullptr ),
-    closeTabAction( nullptr ),
-    closeOthersAction( nullptr ),
-    closeAllAction( nullptr )
-  {
-    enableDraggedTextHover( enableDraggedTextHoverSignal );
-    enableMouseHoverTimeout( enableMouseHoverTimeoutSignal );
-
-    initContextMenu();
-
-    connect( &draggedTextOnSingleTabTimer, SIGNAL( timeout() ), this, SLOT( draggedTextTimedout() ) );
-    connect( &mouseHoverTimeoutTimer, SIGNAL( timeout() ), this, SLOT( mouseHoverTimedout() ) );
-  }
-  void enableDraggedTextHover( bool enable )
-  {
-    enableDraggedTextHoverSignal = enable;
-    setMouseTracking( enableMouseHoverTimeoutSignal || enable );
-    setAcceptDrops( enable );
-  }
+             bool enableDraggedHover = false,
+             bool enableMouseHover = false,
+             bool enableContextMenu = true );
+  void enableDraggedTextHover( bool enable );
   void setDraggedTextHoverTimeout( int milisec )
   {
     draggedTextTimeout = milisec;
@@ -120,166 +89,24 @@ public:
     updateContextMenu();
   }
 private:
-  virtual void initContextMenu()
-  {
-    if ( contextMenu != nullptr )
-    {
-      delete contextMenu;
-      contextMenu = nullptr;
-    }
-    if ( enableContextMenu )
-    {
-      renameTabAction =    new QAction( tr( "Rename Tab" ),   this );
-      closeTabAction =     new QAction( tr( "Close Tab" ),    this );
-      closeOthersAction =  new QAction( tr( "Close Others" ), this );
-      closeAllAction =     new QAction( tr( "Close All" ),    this );
-
-      connect( renameTabAction,    SIGNAL( triggered( bool ) ), this, SLOT( renameTab() ) );
-      connect( closeTabAction,     SIGNAL( triggered( bool ) ), this, SLOT( closeTab() ) );
-      connect( closeOthersAction,  SIGNAL( triggered( bool ) ), this, SLOT( closeOthersSlot() ) );
-      connect( closeAllAction,     SIGNAL( triggered( bool ) ), this, SLOT( closeAllSlot() ) );
-
-      setContextMenuPolicy( Qt::CustomContextMenu );
-      connect( this, SIGNAL( customContextMenuRequested( const QPoint& ) ),
-               this, SLOT(   showContextMenu( const QPoint& ) ) );
-
-      contextMenu = new QMenu( this );
-      contextMenu -> addAction( renameTabAction );
-      contextMenu -> addAction( closeTabAction );
-      contextMenu -> addAction( closeOthersAction );
-      contextMenu -> addAction( closeAllAction );
-
-      updateContextMenu();
-    }
-    else
-    {
-      setContextMenuPolicy( Qt::NoContextMenu );
-    }
-  }
-  void updateContextMenu()
-  {
-    if ( enableContextMenu )
-    {
-      renameTabAction   -> setVisible( enableContextMenuRenameTab );
-      closeTabAction    -> setVisible( enableContextMenuCloseTab );
-      closeOthersAction -> setVisible( enableContextMenuCloseOthers );
-      closeAllAction    -> setVisible( enableContextMenuCloseAll );
-    }
-  }
+  virtual void initContextMenu();
+  void updateContextMenu();
 protected:
-  virtual void dragEnterEvent( QDragEnterEvent* e )
-  {
-    if ( enableDraggedTextHoverSignal )
-      e -> acceptProposedAction();
-
-    QTabBar::dragEnterEvent( e );
-  }
-  virtual void dragLeaveEvent( QDragLeaveEvent* e )
-  {
-    draggedTextOnSingleTabTimer.stop();
-    mouseHoverTimeoutTimer.stop();
-    hoveringOverTab = -1;
-
-    QTabBar::dragLeaveEvent( e );
-  }
-  virtual void dragMoveEvent( QDragMoveEvent* e )
-  {
-    if ( enableDraggedTextHoverSignal )
-    {
-      // Mouse has moved, check if the mouse has moved to a different tab and if so restart timer
-      int tabUnderMouse = tabAt( e -> pos() );
-      // Check if the tab has been changed
-      if ( hoveringOverTab != tabUnderMouse )
-      {
-        startDraggedTextTimer( tabUnderMouse );
-      }
-      e -> acceptProposedAction();
-    }
-
-    QTabBar::dragMoveEvent( e );
-  }
-  virtual void dropEvent( QDropEvent* e )
-  {
-    // dropEvent is protected so we cannot forward this to the widget.. just dont accept it
-
-    QTabBar::dropEvent( e );
-  }
-  virtual void mouseMoveEvent( QMouseEvent* e )
-  {
-    if ( enableMouseHoverTimeoutSignal )
-    {
-      // Mouse has moved, check if the mouse has moved to a different tab and if so restart timer
-      int tabUnderMouse = tabAt( e -> pos() );
-      // Check if the tab has been changed
-      if ( hoveringOverTab != tabUnderMouse )
-      {
-        startHoverTimer( tabUnderMouse );
-      }
-    }
-
-    QTabBar::mouseMoveEvent( e );
-  }
-  virtual void leaveEvent( QEvent* e )
-  {
-    draggedTextOnSingleTabTimer.stop();
-    mouseHoverTimeoutTimer.stop();
-    hoveringOverTab = -1;
-
-    QTabBar::leaveEvent( e );
-  }
-  virtual void enterEvent( QEvent* e )
-  {
-    startHoverTimer( tabAt( QCursor::pos() ) );
-
-    QTabBar::enterEvent( e );
-  }
-  virtual void startDraggedTextTimer( int tab )
-  {
-    if ( enableDraggedTextHoverSignal && tab >= 0 )
-    {
-      hoveringOverTab = tab;
-      draggedTextOnSingleTabTimer.start( draggedTextTimeout );
-    }
-  }
-  virtual void startHoverTimer( int tab )
-  {
-    if ( enableMouseHoverTimeoutSignal && tab >= 0 )
-    {
-      hoveringOverTab = tab;
-      mouseHoverTimeoutTimer.start( mouseHoverTimeout );
-    }
-  }
-  virtual bool event( QEvent* e )
-  {
-    if ( e -> type() == QEvent::LayoutRequest )
-    {
-      // Issued when drag is completed
-      // Best way I can find to enforce the SC_SimulateTab addTabWidget's location
-      emit( layoutRequestEvent() );
-    }
-
-    return QTabBar::event( e );
-  }
+  virtual void dragEnterEvent( QDragEnterEvent* e ) override;
+  virtual void dragLeaveEvent( QDragLeaveEvent* e ) override;
+  virtual void dragMoveEvent( QDragMoveEvent* e ) override;
+  virtual void dropEvent( QDropEvent* e ) override;
+  virtual void mouseMoveEvent( QMouseEvent* e ) override;
+  virtual void leaveEvent( QEvent* e ) override;
+  virtual void enterEvent( QEvent* e ) override;
+  virtual void startDraggedTextTimer( int tab );
+  virtual void startHoverTimer( int tab );
+  virtual bool event( QEvent* e ) override;
 public slots:
-  void mouseHoverTimedout()
-  {
-    mouseHoverTimeoutTimer.stop();
-    emit( mouseHoveredOverTab( hoveringOverTab ) );
-  }
-  void draggedTextTimedout()
-  {
-    draggedTextOnSingleTabTimer.stop();
-    emit( mouseDragHoveredOverTab( hoveringOverTab ) );
-  }
-  void renameTab()
-  {
-    bool ok;
-    QString text = QInputDialog::getText( this, tr( "Modify Tab Title" ),
-                                          tr("New Tab Title:"), QLineEdit::Normal,
-                                          tabText( currentIndex() ), &ok );
-    if ( ok && !text.isEmpty() )
-       setTabText( currentIndex(), text );
-  }
+  void mouseHoverTimedout();
+  void draggedTextTimedout();
+  void renameTab();
+  void showContextMenu( const QPoint& pos );
   void closeTab()
   {
     emit( tabCloseRequested( currentIndex() ) );
@@ -292,21 +119,7 @@ public slots:
   {
     emit( closeAll() );
   }
-  void showContextMenu( const QPoint& pos )
-  {
-    int tabUnderMouse = tabAt( pos );
-    // Right clicking the tab bar while moving a tab causes this request to not be sent
-    // Which can cause a segfault if user does ctrl+tab in SC_SimulateTab
-    emit( layoutRequestEvent() );
-    if ( tabUnderMouse >= 0 )
-    {
-      setCurrentIndex( tabUnderMouse );
-      if ( contextMenu != nullptr )
-      {
-        contextMenu -> exec( mapToGlobal( pos ) );
-      }
-    }
-  }
+
 signals:
   void mouseHoveredOverTab( int tab );
   void mouseDragHoveredOverTab( int tab );

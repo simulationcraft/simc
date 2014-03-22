@@ -11,6 +11,7 @@
  HEADERS += qt/simulationcraftqt.hpp
  HEADERS += qt/SC_OptionsTab.hpp
  SOURCES += qt/util/sc_textedit.cpp
+ SOURCES += qt/util/sc_tabbar.cpp
  SOURCES += qt/util/sc_searchbox.cpp
  SOURCES += qt/util/sc_relativepopup.cpp
  SOURCES += qt/util/sc_recentlyclosed.cpp

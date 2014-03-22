@@ -114,7 +114,7 @@ const OptionEntry reforgePlotOptions[] =
   { "Plot Reforge Options for Intellect",        "int",     "Generate reforge plot data for Intellect"        },
   { NULL, NULL, NULL }
 };
-const int reforgePlotOption_cut = 9; // separate between secondary and primary stats
+const int reforgePlotOption_cut = 4; // separate between secondary and primary stats
 
 QComboBox* createChoice( int count, ... )
 {
