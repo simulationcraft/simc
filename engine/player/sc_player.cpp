@@ -5860,7 +5860,7 @@ struct snapshot_stats_t : public action_t
 
 struct wait_fixed_t : public wait_action_base_t
 {
-  std::auto_ptr<expr_t> time_expr;
+  std::shared_ptr<expr_t> time_expr;
 
   wait_fixed_t( player_t* player, const std::string& options_str ) :
     wait_action_base_t( player, "wait" ),
@@ -5875,7 +5875,7 @@ struct wait_fixed_t : public wait_action_base_t
     };
     parse_options( options, options_str );
 
-    time_expr = std::auto_ptr<expr_t>( expr_t::parse( this, sec_str ) );
+    time_expr = std::shared_ptr<expr_t>( expr_t::parse( this, sec_str ) );
   }
 
   virtual timespan_t execute_time() const
