@@ -3,9 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
 #include "rng.hpp"
 #include <ctime>
+#include <stdint.h>
 
 // Pseudo-Random Number Generation ==========================================
 

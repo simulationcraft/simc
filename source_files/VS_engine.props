@@ -26,7 +26,7 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			<PrecompiledHeader>Create</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\util\rng.cpp">
-			
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\sim\sc_sim.cpp">
 			
