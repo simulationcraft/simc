@@ -12,74 +12,8 @@
 
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 
-// Platform Initialization ==================================================
-
-// Simplified access to compiler version
-#if defined( __GNUC__ ) && !defined( __clang__ ) // Do NOT define SC_GCC for Clang
-#  define SC_GCC ( __GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__ )
-#endif
-#if defined( __clang__ )
-#  define SC_CLANG ( __clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__ )
-#endif
-#if defined( _MSC_VER )
-#  define SC_VS ( _MSC_VER / 100 - 6 )
-#  if SC_VS < 10
-#    error "Visual Studio 9 ( 2008 ) or lower not supported"
-#  endif
-#endif
-
-#if defined(__APPLE__) || defined(__MACH__)
-#  define SC_OSX
-#endif
-
-#if defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32 )
-#  define SC_WINDOWS
-#  define WIN32_LEAN_AND_MEAN
-#  define VC_EXTRALEAN
-#  ifndef _CRT_SECURE_NO_WARNINGS
-#    define _CRT_SECURE_NO_WARNINGS
-#  endif
-#  ifndef UNICODE
-#    define UNICODE
-#  endif
-#else
-#  define SC_SIGACTION
-#endif
-
-// Workaround for LLVM/Clang 3.2+ using glibc headers.
-#if defined( SC_CLANG ) && SC_CLANG >= 30200
-# define __extern_always_inline extern __always_inline __attribute__(( __gnu_inline__ ))
-#endif
-
-// C++11 workarounds for older compiler versions.
-#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || ! __GXX_EXPERIMENTAL_CXX0X__ || SC_GCC < 40600 ) && ( ! defined( SC_VS ) )
-namespace std {
-class nullptr_t
-{
-public:
-  template <typename T> operator T* () const { return 0; }
-  template <typename T, typename U> operator T U::* () const { return 0; }
-  operator bool () const { return false; }
-};
-}
-#define nullptr ( std::nullptr_t() )
-#endif
-
-#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || ! __GXX_EXPERIMENTAL_CXX0X__ || SC_GCC < 40700 ) && ( ! defined( SC_VS ) )
-#define override
-#endif
-
-#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || ! __GXX_EXPERIMENTAL_CXX0X__ || SC_GCC < 40700 ) && ( ! defined( SC_VS ) || SC_VS < 11 )
-#define final
-#endif
-
-#if ( ! defined(_MSC_VER) || _MSC_VER < 1600 ) && __cplusplus < 201103L && ! defined(__GXX_EXPERIMENTAL_CXX0X__)
-#define static_assert( condition, message )
-#endif
-
-#if defined(SC_GCC) && SC_GCC < 40500
-#undef __STRICT_ANSI__ // problem with gcc4.4 + -std=c++0x and including <cstdio>. Not sure if it affects 4.4.1 as well. http://stackoverflow.com/questions/3445312/swprintf-and-vswprintf-not-declared
-#endif
+// Platform, compiler and general configuration
+#include "config.hpp"
 
 #include <stdint.h>
 #include <algorithm>
@@ -109,12 +43,7 @@ public:
 #include <typeinfo>
 #include <vector>
 
-#if ! defined( SC_OSX ) && ( defined( SC_VS ) || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) )
-// Use C++11
-#include <array>
-#include <type_traits>
-#include <unordered_map>
-#else
+#if USE_TR1_NAMESPACE
 // Use TR1
 #include <tr1/array>
 #include <tr1/functional>
@@ -122,22 +51,18 @@ public:
 #include <tr1/type_traits>
 #include <tr1/unordered_map>
 namespace std {using namespace tr1; }
+#else
+// Use C++11
+#include <array>
+#include <functional>
+#include <memory>
+#include <type_traits>
+#include <unordered_map>
 #endif
 
 #include "dbc/data_enums.hh"
 #include "dbc/data_definitions.hh"
 #include "utf8.h"
-
-#if !defined(__GNUC__)
-#  define __attribute__(x)
-#endif
-
-#define SC_PACKED_STRUCT      __attribute__((packed))
-#define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
-
-#ifndef M_PI
-#define M_PI ( 3.14159265358979323846 )
-#endif
 
 #define SC_STAT_CACHE
 

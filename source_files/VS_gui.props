@@ -5,34 +5,34 @@ To change the list of source files, update the QT_ files and run synchronize.py
 
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<ItemGroup>
+		<ClCompile Include="$(IntDir)moc_sc_textedit.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="$(IntDir)moc_sc_searchbox.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
 		<ClCompile Include="$(IntDir)moc_simulationcraftqt.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="$(IntDir)moc_SC_OptionsTab.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_searchbox.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="$(IntDir)moc_sc_textedit.cpp">
-			<PrecompiledHeader>NotUsing</PrecompiledHeader>
-		</ClCompile>
-		<ClCompile Include="..\qt\main.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_window.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_import.cpp">
-			
-		</ClCompile>
-		<ClCompile Include="..\qt\sc_options_tab.cpp">
+		<ClCompile Include="..\qt\util\sc_textedit.cpp">
 			
 		</ClCompile>
 		<ClCompile Include="..\qt\util\sc_searchbox.cpp">
 			
 		</ClCompile>
-		<ClCompile Include="..\qt\util\sc_textedit.cpp">
+		<ClCompile Include="..\qt\sc_window.cpp">
+			
+		</ClCompile>
+		<ClCompile Include="..\qt\sc_options_tab.cpp">
+			
+		</ClCompile>
+		<ClCompile Include="..\qt\sc_import.cpp">
+			
+		</ClCompile>
+		<ClCompile Include="..\qt\main.cpp">
 			
 		</ClCompile>
 	</ItemGroup>
@@ -52,6 +52,20 @@ To change the list of source files, update the QT_ files and run synchronize.py
 
 	<!-- Moc'ing GUI Header files -->
 	<ItemGroup>
+		<CustomBuild Include="..\qt\util\sc_textedit.hpp">
+			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+			<Message>Moc%27ing %(Identity)... QTDIR:$(QTDIR)</Message>
+			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+			<AdditionalInputs>Rem;..\qt\util\sc_textedit.hpp;%(AdditionalInputs)</AdditionalInputs>
+			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+		</CustomBuild>
+		<CustomBuild Include="..\qt\util\sc_searchbox.hpp">
+			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
+			<Message>Moc%27ing %(Identity)... QTDIR:$(QTDIR)</Message>
+			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
+			<AdditionalInputs>Rem;..\qt\util\sc_searchbox.hpp;%(AdditionalInputs)</AdditionalInputs>
+			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
+		</CustomBuild>
 		<CustomBuild Include="..\qt\simulationcraftqt.hpp">
 			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
 			<Message>Moc%27ing %(Identity)... QTDIR:$(QTDIR)</Message>
@@ -64,20 +78,6 @@ To change the list of source files, update the QT_ files and run synchronize.py
 			<Message>Moc%27ing %(Identity)... QTDIR:$(QTDIR)</Message>
 			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
 			<AdditionalInputs>Rem;..\qt\SC_OptionsTab.hpp;%(AdditionalInputs)</AdditionalInputs>
-			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
-		</CustomBuild>
-		<CustomBuild Include="..\qt\util\sc_searchbox.hpp">
-			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
-			<Message>Moc%27ing %(Identity)... QTDIR:$(QTDIR)</Message>
-			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
-			<AdditionalInputs>Rem;..\qt\util\sc_searchbox.hpp;%(AdditionalInputs)</AdditionalInputs>
-			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
-		</CustomBuild>
-		<CustomBuild Include="..\qt\util\sc_textedit.hpp">
-			<AdditionalInputs>$(QTDIR)\bin\moc.exe</AdditionalInputs>
-			<Message>Moc%27ing %(Identity)... QTDIR:$(QTDIR)</Message>
-			<Command>"$(QTDIR)\bin\moc.exe" $(MOC_DEFINES) -I"$(QTDIR)\include" -I"(SolutionDir)engine" -I"$(QTDIR)\mkspecs\default" "%(Identity)" -o "$(IntDir)moc_%(Filename).cpp" </Command>
-			<AdditionalInputs>Rem;..\qt\util\sc_textedit.hpp;%(AdditionalInputs)</AdditionalInputs>
 			<Outputs>$(IntDir)\moc_%(Filename).cpp</Outputs>
 		</CustomBuild>
 	</ItemGroup>

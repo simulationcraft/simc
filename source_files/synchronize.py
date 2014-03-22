@@ -14,9 +14,9 @@ def parse_qt( filename ):
     out = []
     if f:
         for line in f:
-            match = re.search ( r"(\s*)(SOURCES|HEADERS|PRECOMPILED_HEADER)(\s*\+?\=\s*)([\w\/]*)(\.\w*)", line )
+            match = re.search ( r"(\s*)(SOURCES|HEADERS|PRECOMPILED_HEADER)(\s*\+?\=\s*)([\w\/]*?)([\w]*)(\.\w*)", line )
             if match:
-                out.append( ( match.group(2), match.group(4) + match.group(5), match.group(5) ) )
+                out.append( ( match.group(2), match.group(4) + match.group(5) + match.group(6), match.group(4), match.group(5), match.group(6) ) )
         f.close()
     return out
 
@@ -155,7 +155,9 @@ def replace( input, separator, repl ):
     return r
 
 def sort_by_name( input ):
+    input.sort( key=lambda entry : entry[3], reverse=True )
     input.sort( key=lambda entry : entry[2], reverse=True )
+    input.sort( key=lambda entry : entry[4], reverse=True )
 
 def create_file( file_type, build_systems ):
     result = parse_qt( "QT_" + file_type + ".pri" )
@@ -174,6 +176,7 @@ def main():
     create_file( "engine", ["make","VS", "QT"] )
     create_file( "engine_main", ["make","VS", "QT"] )
     create_file( "gui", ["QT","VS_GUI"] ) # TODO: finish mocing part of VS_GUI
+    print "done"
     
 if __name__ == "__main__":
     main()
