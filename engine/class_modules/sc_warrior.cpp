@@ -2781,7 +2781,7 @@ struct stampeding_roar_t : public warrior_spell_t
     for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
     {
       player_t* p = sim -> player_non_sleeping_list[ i ];
-      if( p -> is_enemy() || p -> type != PLAYER_GUARDIAN )
+      if( p -> is_enemy() || p -> type == PLAYER_GUARDIAN )
         break;
 
       p -> buffs.stampeding_roar -> trigger();
