@@ -967,7 +967,7 @@ void blurred_speed( player_t* p, const std::string& enchant )
 {
   if ( enchant == "blurred_speed" )
   {
-    const spell_data_t* spell = p -> find_spell( 104409 );
+    // const spell_data_t* spell = p -> find_spell( 104409 );
 
     buff_t* blurred_speed = buff_t::find( p, "blurred_speed" );
 
@@ -979,7 +979,7 @@ void pandarens_step( player_t* p, const std::string& enchant )
 {
   if ( enchant == "pandarens_step" )
   {
-    const spell_data_t* spell = p -> find_spell( 104414 );
+    // const spell_data_t* spell = p -> find_spell( 104414 );
 
     buff_t* pandarens_step = buff_t::find( p, "pandarens_step" );
 

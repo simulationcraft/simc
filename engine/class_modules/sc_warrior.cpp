@@ -776,7 +776,6 @@ void warrior_attack_t::impact( action_state_t* s )
 {
   base_t::impact( s );
   warrior_t* p     = cast();
-  warrior_td_t* td = cast_td( s -> target );
 
   if ( result_is_hit( s -> result ) && !proc && s -> result_amount > 0 )
   {
@@ -1350,8 +1349,6 @@ struct execute_t : public warrior_attack_t
 
   virtual bool ready()
   {
-    warrior_t* p = cast();
-
     if ( target -> health_percentage() > 20 )
       return false;
 
@@ -1543,7 +1540,6 @@ struct impending_victory_heal_t : public heal_t
 
   virtual double calculate_direct_amount( action_state_t* state )
   {
-    warrior_t* p = static_cast<warrior_t*>( player );
     double pct_heal = 0.20;
 
     double amount = state -> target -> resources.max[ RESOURCE_HEALTH ] * pct_heal;
@@ -1576,8 +1572,6 @@ struct impending_victory_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
-
-    warrior_t* p = cast();
 
     if ( result_is_hit( execute_state -> result ) )
       impending_victory_heal -> execute();
@@ -1860,8 +1854,6 @@ struct revenge_t : public warrior_attack_t
 
       if ( p -> active_stance == STANCE_DEFENSE )
       {
-        warrior_td_t* td = cast_td( target );
-
         p -> resource_gain( RESOURCE_RAGE, rage_gain, p -> gain.revenge );
       }
     }
@@ -1985,7 +1977,6 @@ struct shield_slam_t : public warrior_attack_t
     warrior_attack_t::execute();
 
     warrior_t* p = cast();
-    warrior_td_t* td = cast_td( target );
 
     double rage_from_snb = 0;
 
@@ -2046,7 +2037,7 @@ struct shockwave_t : public warrior_attack_t
    // If shockwave hits 3+ targets, the cooldown is reduced by 20 seconds.
    // When used with a cooldown reduction trinket, this 20 seconds is taken into account after the first reduction, which can lead to
    // a 6-8 second cooldown on Shockwave.
-    warrior_t* p = cast();
+
     cd_reduction = timespan_t::zero();
 
     if ( result_is_hit( execute_state -> result ) )
@@ -2319,7 +2310,6 @@ struct victory_rush_t : public warrior_attack_t
   virtual void execute()
   {
     warrior_attack_t::execute();
-    warrior_t* p = cast();
 
     if ( result_is_hit( execute_state -> result ) )
       victory_rush_heal -> execute();
@@ -2505,8 +2495,6 @@ struct battle_shout_t : public warrior_spell_t
   virtual void execute()
   {
     warrior_spell_t::execute();
-
-    warrior_t* p = cast();
 
     if ( ! sim -> overrides.attack_power_multiplier )
       sim -> auras.attack_power_multiplier -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
@@ -3833,6 +3821,7 @@ void warrior_t::init_rng()
 {
   player_t::init_rng();
 
+  /*
   double rppm;
   //Lookup rppm value according to spec
   switch ( specialization() )
@@ -3848,7 +3837,7 @@ void warrior_t::init_rng()
       break;
     default: rppm = 0.0;
       break;
-  }
+  }*/
 }
 
 // warrior_t::init_actions ==================================================

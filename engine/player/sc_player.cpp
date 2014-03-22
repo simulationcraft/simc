@@ -1417,7 +1417,7 @@ void player_t::init_race()
 
 // player_t::weapon_racial ==================================================
 
-bool player_t::weapon_racial( const weapon_t* weapon ) const // Remove completely for WoD
+bool player_t::weapon_racial( const weapon_t* ) const // Remove completely for WoD
 {
   return false;
 }
@@ -2706,7 +2706,7 @@ double player_t::composite_melee_crit() const
 
 // player_t::composite_attack_expertise =====================================
 
-double player_t::composite_melee_expertise( weapon_t* weapon ) const // Parry will still be part of the game, however there will not be a way to reduce parry chance.
+double player_t::composite_melee_expertise( weapon_t* ) const // Parry will still be part of the game, however there will not be a way to reduce parry chance.
 {
   double e = composite_expertise_rating() / current.rating.expertise;
 
