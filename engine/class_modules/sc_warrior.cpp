@@ -2781,8 +2781,8 @@ struct stampeding_roar_t : public warrior_spell_t
     for ( size_t i = 0; i < sim -> player_non_sleeping_list.size(); ++i )
     {
       player_t* p = sim -> player_non_sleeping_list[ i ];
-      if ( p -> is_enemy() )
-        continue;
+      if( p -> is_enemy() || p -> type != PLAYER_GUARDIAN )
+        break;
 
       p -> buffs.stampeding_roar -> trigger();
     }
@@ -4333,7 +4333,7 @@ struct warrior_module_t : public module_t
                                       .cd( timespan_t::zero() )
                                       .add_invalidate( CACHE_ARMOR );
 
-      p -> buffs.stampeding_roar    = buff_creator_t( p, "stampeding_shout_warrior", p -> find_spell( 122294 ) )
+      p -> buffs.stampeding_roar    = buff_creator_t( p, "stampeding_roar", p -> find_spell( 122294 ) )
                                       .max_stack( 1 )
                                       .duration( timespan_t::from_seconds( 8.0 ) );
     }
