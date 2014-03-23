@@ -302,7 +302,10 @@ void stats_t::analyze()
   for ( size_t i = 0; i < children.size(); i++ )
   {
     children[ i ] -> analyze();
-    compound_amount += children[ i ] -> compound_amount;
+    if ( type == children[i] -> type )
+    {
+      compound_amount += children[ i ] -> compound_amount;
+    }
   }
 
   if ( compound_amount > 0 )
