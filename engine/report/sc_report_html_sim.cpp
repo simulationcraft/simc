@@ -2479,8 +2479,8 @@ void print_html_styles( report::sc_html_stream& os, sim_t* sim )
        << "\t\t\ttable.sc th a {color: #fff;text-decoration: underline; }\n"
        << "\t\t\ttable.sc th a:hover, table.sc th a:active {color: #f1f1ff; }\n"
        << "\t\t\ttable.sc td {padding: 2px;text-align: center;font-size: 13px; }\n"
-       << "\t\t\ttable.sc th.left, table.sc td.left, table.sc tr.left th, table.sc tr.left td {text-align: left; }\n"
-       << "\t\t\ttable.sc th.right, table.sc td.right, table.sc tr.right th, table.sc tr.right td {text-align: right;padding-right: 4px; }\n"
+       << "\t\t\ttable.sc th.left, table.sc td.left, table.sc tr.left th, table.sc tr.left td {text-align: left; vertical-align: top; }\n"
+       << "\t\t\ttable.sc th.right, table.sc td.right, table.sc tr.right th, table.sc tr.right td {text-align: right;padding-right: 4px; vertical-align: top; }\n"
        << "\t\t\ttable.sc th.small {padding: 2px 2px 3px 2px;font-size: 11px; }\n"
        << "\t\t\ttable.sc td.small {padding: 2px 2px 3px 2px;font-size: 11px; }\n"
        << "\t\t\ttable.sc tr.details td {padding: 0 0 15px 15px; 0px;margin: 5px 0 10px 0;text-align: left;background-color: #eee;font-size: 11px; }\n"
@@ -3149,8 +3149,8 @@ void print_html_styles( report::sc_html_stream& os, sim_t* sim )
        << "\t\t\ttable.sc tr.odd {background-color: #222; }\n"
        << "\t\t\ttable.sc th {padding: 2px 4px 4px 4px;text-align: center;background-color: #333;color: #fff; }\n"
        << "\t\t\ttable.sc td {padding: 2px;text-align: center;font-size: 13px; }\n"
-       << "\t\t\ttable.sc th.left, table.sc td.left, table.sc tr.left th, table.sc tr.left td {text-align: left; }\n"
-       << "\t\t\ttable.sc th.right, table.sc td.right, table.sc tr.right th, table.sc tr.right td {text-align: right;padding-right: 4px; }\n"
+       << "\t\t\ttable.sc th.left, table.sc td.left, table.sc tr.left th, table.sc tr.left td {text-align: left; vertical-align: top; }\n"
+       << "\t\t\ttable.sc th.right, table.sc td.right, table.sc tr.right th, table.sc tr.right td {text-align: right;padding-right: 4px; vertical-align: top; }\n"
        << "\t\t\ttable.sc th.small {padding: 2px 2px 3px 2px;font-size: 11px; }\n"
        << "\t\t\ttable.sc td.small {padding: 2px 2px 3px 2px;font-size: 11px; }\n"
        << "\t\t\ttable.sc tr.details td {padding: 0 0 15px 15px;text-align: left;background-color: #333;font-size: 11px; }\n"
@@ -3267,8 +3267,7 @@ void print_html_image_load_scripts( report::sc_html_stream& os, sim_t* sim )
   if ( sim -> hosted_html )
   {
     os << "\t\t<script type=\"text/javascript\" src=\"http://www.simulationcraft.org/js/ga.js\"></script>\n"
-       << "\t\t<script type=\"text/javascript\" src=\"http://www.simulationcraft.org/js/rep.js\"></script>\n"
-       << "\t\t<script type=\"text/javascript\" src=\"http://static.wowhead.com/widgets/power.js\"></script>\n";
+       << "\t\t<script type=\"text/javascript\" src=\"http://www.simulationcraft.org/js/rep.js\"></script>\n";
   }
   else
   {
@@ -3359,7 +3358,7 @@ void print_html_image_load_scripts( report::sc_html_stream& os, sim_t* sim )
        << "\t\t\t\t$('.toggle-details').click(function(e) {\n"
        << "\t\t\t\t\te.preventDefault();\n"
        << "\t\t\t\t\t$(this).toggleClass('open');\n"
-       << "\t\t\t\t\t$(this).parents().next('.details').toggleClass('hide');\n"
+       << "\t\t\t\t\t$(this).parents('tr').nextAll('.details').first().toggleClass('hide');\n"
        << "\t\t\t\t});\n"
        << "\t\t\t\t$('.toggle-db-details').click(function(e) {\n"
        << "\t\t\t\t\te.preventDefault();\n"
@@ -3405,7 +3404,9 @@ void print_html_( report::sc_html_stream& os, sim_t* sim )
 
   os << "\t<head>\n";
   os << "\t\t<title>Simulationcraft Results</title>\n";
-  os << "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n";
+  os << "\t\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n"
+     << "\t\t<script type=\"text/javascript\" src=\"http://static.wowhead.com/widgets/power.js\"></script>\n"
+     << "\t\t<script>var wowhead_tooltips = { \"colorlinks\": true, \"iconizelinks\": true, \"renamelinks\": true }</script>\n";
 
   print_html_styles( os, sim );
 

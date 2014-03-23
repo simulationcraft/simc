@@ -85,7 +85,7 @@ std::string chart_title( const std::string& t )
 {
   std::string tmp = t;
   util::urlencode( tmp );
-  return "chtt=" + t + amp;
+  return "chtt=" + tmp + amp;
 }
 
 std::string chart_title_formatting ( const std::string& color, unsigned font_size )

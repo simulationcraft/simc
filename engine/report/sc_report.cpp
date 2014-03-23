@@ -572,7 +572,7 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
 
   os << "\t\t\t\t\t\t\t<tr class=\"details hide\">\n";
 
-  os << "\t\t\t\t\t\t\t\t<td colspan=\"21\" class=\"filler\">\n";
+  os << "\t\t\t\t\t\t\t\t<td class=\"filler\">\n";
   int i = 0;
 
   os << "\t\t\t\t\t\t\t<table class=\"details\">\n";
@@ -583,8 +583,8 @@ void report::print_html_sample_data( report::sc_html_stream& os, sim_t* sim, ext
     os << " class=\"odd\"";
   }
   os << ">\n";
-  os << "\t\t\t\t\t\t\t\t\t<th class=\"left\"><b>Sample Data</b></td>\n"
-     << "\t\t\t\t\t\t\t\t\t<th class=\"right\">" << data.name_str << "</td>\n"
+  os << "\t\t\t\t\t\t\t\t\t<th class=\"left\"><b>Sample Data</b></th>\n"
+     << "\t\t\t\t\t\t\t\t\t<th class=\"right\">" << data.name_str << "</th>\n"
      << "\t\t\t\t\t\t\t\t</tr>\n";
 
   ++i;

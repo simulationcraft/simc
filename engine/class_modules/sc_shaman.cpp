@@ -2095,6 +2095,9 @@ struct lightning_charge_t : public shaman_spell_t
     may_crit         = true;
     may_proc_eoe     = false;
 
+    if ( player -> spec.fulmination -> ok() )
+      id = player -> spec.fulmination -> id();
+
     if ( player -> spec.static_shock -> ok() )
       cooldown -> duration = timespan_t::zero();
   }
