@@ -6317,17 +6317,20 @@ void druid_t::apl_precombat()
 {
   action_priority_list_t* precombat = get_action_priority_list( "precombat" );
 
-  // Flask
+  // Flask or Elixir
   if ( sim -> allow_flasks && level >= 80 )
   {
-    std::string flask_action = "flask,type=";
-    if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
-      flask_action += ( level > 85 ) ? "spring_blossoms" : "winds";
-    else if ( ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK )
-      flask_action += ( level > 85 ) ? "earth" : "steelskin";
-    else
-      flask_action += ( level > 85 ) ? "warm_sun" : "draconic_mind";
-    precombat -> add_action( flask_action );
+    if ( ( specialization() == DRUID_GUARDIAN && primary_role() == ROLE_TANK ) || primary_role() == ROLE_TANK ) {
+      precombat -> add_action( "elixir,type=mad_hozen" );
+      precombat -> add_action( "elixir,type=mantid" );
+    } else {
+      std::string flask_action = "flask,type=";
+      if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
+        flask_action += ( level > 85 ) ? "spring_blossoms" : "winds";
+      else
+        flask_action += ( level > 85 ) ? "warm_sun" : "draconic_mind";
+      precombat -> add_action( flask_action );
+    }
   }
 
   // Food
