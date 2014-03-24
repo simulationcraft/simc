@@ -16,19 +16,19 @@ enum stats_mask_e
   MASK_NEUTRAL = 1 << STATS_NEUTRAL
 };
 
-static bool has_avoidance( const std::vector<stats_t::stats_results_t>& s )
+bool has_avoidance( const std::vector<stats_t::stats_results_t>& s )
 {
   return ( s[ RESULT_MISS   ].count.mean() +
            s[ RESULT_DODGE  ].count.mean() +
            s[ RESULT_PARRY  ].count.mean() ) > 0;
 }
 
-static bool has_multistrike( const std::vector<stats_t::stats_results_t>& s)
+bool has_multistrike( const std::vector<stats_t::stats_results_t>& s)
 {
   return ( s[ RESULT_MULTISTRIKE ].count.mean() + s[ RESULT_MULTISTRIKE_CRIT ].count.mean() ) > 0;
 }
 
-static bool has_amount_results( const std::vector<stats_t::stats_results_t>& res )
+bool has_amount_results( const std::vector<stats_t::stats_results_t>& res )
 {
   return (
       res[ RESULT_HIT ].actual_amount.mean() > 0 ||
@@ -38,7 +38,7 @@ static bool has_amount_results( const std::vector<stats_t::stats_results_t>& res
   );
 }
 
-static bool has_block( const stats_t* s )
+bool has_block( const stats_t* s )
 {
   return ( s -> direct_results_detail[ FULLTYPE_HIT_BLOCK ].count.mean() +
            s -> direct_results_detail[ FULLTYPE_HIT_CRITBLOCK ].count.mean() +
@@ -48,7 +48,7 @@ static bool has_block( const stats_t* s )
            s -> direct_results_detail[ FULLTYPE_CRIT_CRITBLOCK ].count.mean() ) > 0;
 }
 
-static bool player_has_tick_results( player_t* p, unsigned stats_mask )
+bool player_has_tick_results( player_t* p, unsigned stats_mask )
 {
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
@@ -68,7 +68,7 @@ static bool player_has_tick_results( player_t* p, unsigned stats_mask )
   return false;
 }
 
-static bool player_has_avoidance( player_t* p, unsigned stats_mask )
+bool player_has_avoidance( player_t* p, unsigned stats_mask )
 {
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
@@ -91,7 +91,7 @@ static bool player_has_avoidance( player_t* p, unsigned stats_mask )
   return false;
 }
 
-static bool player_has_multistrike( player_t* p, unsigned stats_mask )
+bool player_has_multistrike( player_t* p, unsigned stats_mask )
 {
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
@@ -114,7 +114,7 @@ static bool player_has_multistrike( player_t* p, unsigned stats_mask )
   return false;
 }
 
-static bool player_has_block( player_t* p, unsigned stats_mask )
+bool player_has_block( player_t* p, unsigned stats_mask )
 {
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
@@ -134,7 +134,7 @@ static bool player_has_block( player_t* p, unsigned stats_mask )
   return false;
 }
 
-static bool player_has_glance( player_t* p, unsigned stats_mask )
+bool player_has_glance( player_t* p, unsigned stats_mask )
 {
   for ( size_t i = 0; i < p -> stats_list.size(); ++i )
   {
@@ -154,7 +154,7 @@ static bool player_has_glance( player_t* p, unsigned stats_mask )
   return false;
 }
 
-static std::string output_action_name( stats_t* s, player_t* actor )
+std::string output_action_name( stats_t* s, player_t* actor )
 {
   std::string href = "#";
   std::string rel = " rel=\"lvl=" + util::to_string( s -> player -> level ) + "\"";
@@ -2968,7 +2968,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
 
 // print_html_player_abilities ==============================================
 
-static bool is_output_stat( unsigned mask, bool child, const stats_t* s )
+bool is_output_stat( unsigned mask, bool child, const stats_t* s )
 {
   if ( s -> quiet )
     return false;
@@ -2990,7 +2990,7 @@ static bool is_output_stat( unsigned mask, bool child, const stats_t* s )
   return true;
 }
 
-static void output_player_action( report::sc_html_stream& os,
+void output_player_action( report::sc_html_stream& os,
                                   unsigned& row,
                                   unsigned cols,
                                   unsigned mask,
@@ -3012,7 +3012,7 @@ static void output_player_action( report::sc_html_stream& os,
   }
 }
 
-static void output_player_damage_summary( report::sc_html_stream& os, player_t* actor )
+void output_player_damage_summary( report::sc_html_stream& os, player_t* actor )
 {
   if ( actor -> collected_data.dmg.max() == 0 && ! actor -> sim -> debug )
     return;
@@ -3121,7 +3121,7 @@ static void output_player_damage_summary( report::sc_html_stream& os, player_t* 
   os << "\t\t\t\t\t\t</table>\n";
 }
 
-static void output_player_heal_summary( report::sc_html_stream& os, player_t* actor )
+void output_player_heal_summary( report::sc_html_stream& os, player_t* actor )
 {
   if ( actor -> collected_data.heal.max() == 0 && ! actor -> sim -> debug )
     return;
