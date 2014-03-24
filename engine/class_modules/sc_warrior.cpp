@@ -22,7 +22,7 @@ namespace { // UNNAMED NAMESPACE
 
 struct warrior_t;
 
-enum warrior_stance { STANCE_BATTLE = 1, STANCE_BERSERKER, STANCE_DEFENSE = 4 };
+enum warrior_stance { STANCE_BATTLE = 1, STANCE_BERSERKER, STANCE_DEFENSE = 4, STANCE_GLADIATOR };
 
 struct warrior_td_t : public actor_pair_t
 {
@@ -63,6 +63,7 @@ public:
     buff_t* enrage;
     buff_t* enraged_speed;
     buff_t* ignite_weapon;
+    buff_t* gladiator_stance;
     buff_t* glyph_hold_the_line;
     buff_t* glyph_incite;
     buff_t* last_stand;
@@ -272,6 +273,7 @@ public:
     initial_rage = 0;
 
     base.distance = 3.0;
+    base.distance_to_move = 20.0; // Warriors almost always charge into combat.
   }
 
   // Character Definition
@@ -348,7 +350,7 @@ public:
   warrior_action_t( const std::string& n, warrior_t* player,
                     const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
-    stancemask( STANCE_BATTLE | STANCE_BERSERKER | STANCE_DEFENSE )
+    stancemask( STANCE_BATTLE | STANCE_BERSERKER | STANCE_DEFENSE | STANCE_GLADIATOR )
   {
     ab::may_crit   = true;
   }
@@ -473,8 +475,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     const warrior_t* p = cast();
 
-    if ( special && this -> id != 115767 ) // Recklessness crit bonus does not count towards deep wounds.
-      cc += p -> buff.recklessness -> value();
+    cc += p -> buff.recklessness -> value(); //Check if reck affects all abilities with WoD Beta.
 
     return cc;
   }
@@ -511,7 +512,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     double rage_gain = 1.75 * w -> swing_time.total_seconds();
 
-    if ( p.buff.raging_whirlwind -> check() )
+    if ( p.buff.raging_whirlwind -> check() )  // I bet they remove this glyph, check later.
       rage_gain *= 1.0 + p.buff.raging_whirlwind -> data().effectN( 2 ).percent();
     else if ( p.active_stance == STANCE_BATTLE )
       rage_gain *= 1.0 + p.buff.battle_stance -> data().effectN( 1 ).percent();
@@ -1099,7 +1100,10 @@ struct charge_t : public warrior_attack_t
     base_teleport_distance = 25;
     movement_directionality = MOVEMENT_OMNI;
 
-    cooldown -> duration += p -> talents.juggernaut -> effectN( 3 ).time_value();
+    if ( p -> talents.double_time -> ok() )
+      cooldown -> charges = 2;
+    else if ( p -> talents.juggernaut -> ok() )
+      cooldown -> duration += p -> talents.juggernaut -> effectN( 3 ).time_value();
   }
 
   virtual void execute()
@@ -1107,7 +1111,13 @@ struct charge_t : public warrior_attack_t
     warrior_attack_t::execute();
     warrior_t* p = cast();
 
-    p -> resource_gain( RESOURCE_RAGE,
+    if ( p -> glyphs.bull_rush -> ok() )
+      p -> resource_gain( RESOURCE_RAGE,
+                        p -> glyphs.bull_rush -> effectN( 2 ).resource( RESOURCE_RAGE ) + 
+                        data().effectN( 2 ).resource( RESOURCE_RAGE ),
+                        p -> gain.charge );
+    else
+      p -> resource_gain( RESOURCE_RAGE,
                         data().effectN( 2 ).resource( RESOURCE_RAGE ),
                         p -> gain.charge );
   }
@@ -1116,7 +1126,7 @@ struct charge_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if ( p -> current.distance_to_move > 25 || p -> current.distance_to_move < 5 )
+    if ( p -> current.distance_to_move > 25 || p -> current.distance_to_move < 5 ) // Cannot charge unless target is in range.
       return false;
 
     return warrior_attack_t::ready();
@@ -2813,6 +2823,8 @@ struct stance_t : public warrior_spell_t
         switch_to_stance = STANCE_BERSERKER;
       else if ( stance_str == "def" || stance_str == "defensive" )
         switch_to_stance = STANCE_DEFENSE;
+      else if (stance_str == "glad" || stance_str == "gladiator" )
+        switch_to_stance = STANCE_GLADIATOR;
     }
 
     if ( swap < 0 )
@@ -2864,6 +2876,7 @@ struct stance_t : public warrior_spell_t
         case STANCE_BATTLE:     p -> buff.battle_stance    -> expire(); break;
         case STANCE_BERSERKER:  p -> buff.berserker_stance -> expire(); break;
         case STANCE_DEFENSE:    p -> buff.defensive_stance -> expire(); break;
+        case STANCE_GLADIATOR:  p -> buff.gladiator_stance -> expire(); break;
       }
       p -> active_stance = switch_to_stance;
 
@@ -2872,6 +2885,7 @@ struct stance_t : public warrior_spell_t
         case STANCE_BATTLE:     p -> buff.battle_stance    -> trigger(); break;
         case STANCE_BERSERKER:  p -> buff.berserker_stance -> trigger(); break;
         case STANCE_DEFENSE:    p -> buff.defensive_stance -> trigger(); break;
+        case STANCE_GLADIATOR:  p -> buff.gladiator_stance -> trigger(); break;
       }
     p -> cooldown.stance_swap -> start();
     }
@@ -2892,6 +2906,8 @@ struct stance_t : public warrior_spell_t
           switch_to_stance = STANCE_BERSERKER;
         else if ( stance_str == "def" || stance_str == "defensive" )
           switch_to_stance = STANCE_DEFENSE;
+        else if ( stance_str == "glad" || stance_str == "gladiator" )
+          switch_to_stance = STANCE_GLADIATOR;
         cooldown -> start();
         cooldown -> adjust( -1 * p -> cooldown.stance_swap -> duration );
       }
@@ -3249,7 +3265,7 @@ void warrior_t::apl_precombat()
   else
     precombat -> add_action( "stance,choose=defensive" );
 
-  precombat -> add_action( "battle_shout", "Battle shout is used  before combat, character starts out with 40/55 rage depending on whether or not bull rush is glyphed." );
+  precombat -> add_action( this, "Battle Shout" );
   //Pre-pot
   if ( sim -> allow_potions && level >= 80 )
   {
@@ -3258,7 +3274,6 @@ void warrior_t::apl_precombat()
     else if ( primary_role() == ROLE_TANK )
       precombat -> add_action( "mountains_potion" );
   }
-
 }
 
 // EXTREMELY IMPORTANT NOTE ABOUT PRIORITY LISTS
@@ -3281,6 +3296,7 @@ void warrior_t::apl_smf_fury()
   action_priority_list_t* three_targets       = get_action_priority_list( "three_targets" );
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe"           );
 
+  default_list -> add_action( this, "charge" );
   default_list -> add_action( "auto_attack" );
 
   if ( sim -> allow_potions && level >= 80 )
@@ -3415,6 +3431,7 @@ void warrior_t::apl_tg_fury()
   action_priority_list_t* three_targets       = get_action_priority_list( "three_targets" );
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe"           );
 
+  default_list -> add_action( this, "charge" );
   default_list -> add_action( "auto_attack" );
 
   if ( sim -> allow_potions && level >= 80 )
@@ -3545,6 +3562,7 @@ void warrior_t::apl_arms()
   action_priority_list_t* single_target       = get_action_priority_list( "single_target" );
   action_priority_list_t* aoe                 = get_action_priority_list( "aoe"           );
 
+  default_list -> add_action( this, "charge" );
   default_list -> add_action( "auto_attack" );
   
   if ( sim -> allow_potions && level >= 80 )
@@ -3616,6 +3634,7 @@ void warrior_t::apl_prot()
   action_priority_list_t* dps_cds             = get_action_priority_list( "dps_cds" );
   action_priority_list_t* normal_rotation     = get_action_priority_list( "normal_rotation"   );
 
+  default_list -> add_action( this, "charge" );
   default_list -> add_action( "auto_attack" );
   
   if ( sim -> allow_potions && level >= 80 )
@@ -3723,9 +3742,11 @@ void warrior_t::create_buffs()
                           .chance( 1 )
                           .duration( timespan_t::from_seconds( 6 ) );
 
-  buff.ignite_weapon    = buff_creator_t( this, "ignite_wepaon",   find_class_spell( "Heroic Strike" ) )
+  buff.ignite_weapon    = buff_creator_t( this, "ignite_wepaon",   find_class_spell( "Heroic Strike" ) ) //Placeholder
                          .chance( 1 )
                          .duration( timespan_t::from_seconds( 10 ) );
+
+  buff.gladiator_stance = buff_creator_t( this, "gladiator_stance",    find_spell( 21156 ) ); //Placeholder, update with WoD spell data.
 
   buff.glyph_hold_the_line    = buff_creator_t( this, "hold_the_line",    glyphs.hold_the_line -> effectN( 1 ).trigger() );
   buff.glyph_incite           = buff_creator_t( this, "glyph_incite",           glyphs.incite -> effectN( 1 ).trigger() )
@@ -3820,24 +3841,6 @@ void warrior_t::init_procs()
 void warrior_t::init_rng()
 {
   player_t::init_rng();
-
-  /*
-  double rppm;
-  //Lookup rppm value according to spec
-  switch ( specialization() )
-  {
-    case WARRIOR_ARMS:
-      rppm = 1.6;
-      break;
-    case WARRIOR_FURY:
-      rppm = 0.6;
-      break;
-    case WARRIOR_PROTECTION:
-      rppm = 1;
-      break;
-    default: rppm = 0.0;
-      break;
-  }*/
 }
 
 // warrior_t::init_actions ==================================================
@@ -3864,7 +3867,7 @@ void warrior_t::init_action_list()
   switch ( specialization() )
   {
     case WARRIOR_FURY:
-      if( main_hand_weapon.swing_time < timespan_t::from_seconds( 3.0 ) )
+      if( main_hand_weapon.group() == WEAPON_1H )
         apl_smf_fury();
       else
         apl_tg_fury();
@@ -3894,15 +3897,11 @@ void warrior_t::combat_begin()
 
   if ( initial_rage > 0 )
     resources.current[ RESOURCE_RAGE ] = initial_rage; // User specified rage.
-  else
-    player_t::resource_gain( RESOURCE_RAGE, ( find_class_spell( "Charge" ) -> effectN( 2 ).resource( RESOURCE_RAGE ) ), gain.charge );
-    if ( glyphs.bull_rush -> ok() )
-      player_t::resource_gain( RESOURCE_RAGE, ( glyphs.bull_rush -> effectN( 2 ).resource( RESOURCE_RAGE ) ), gain.bull_rush );
 
   if ( active_stance == STANCE_BATTLE && ! buff.battle_stance -> check() )
     buff.battle_stance -> trigger();
 
-  if ( specialization() == WARRIOR_PROTECTION )
+  if ( specialization() == WARRIOR_PROTECTION ) //Add in check for gladiator stance talent, as vengeance will not work with it.
     vengeance_start();
 
   // if second wind is talented, apply it upon entering combat
@@ -4055,10 +4054,9 @@ double warrior_t::composite_rating_multiplier( rating_e rating ) const
 double warrior_t::composite_movement_speed() const
 {
   double ms = player_t::composite_movement_speed();
-  double bs = player_t::base_movement_speed;
 
-  if ( buff.enraged_speed -> up() && ms < ( bs * ( 1 + buff.enraged_speed -> data().effectN( 1 ).percent() ) ) )
-    ms = bs * ( 1 + buff.enraged_speed -> data().effectN( 1 ).percent() ); // Enraged speed doesn't stack with any movement speed increase, it only increases speed to 120%. Higher movement speeds will override it.
+  if ( buff.enraged_speed -> up() )
+    ms *= 1 + ( 1 + buff.enraged_speed -> data().effectN( 1 ).percent() );
 
   return ms;
 }
