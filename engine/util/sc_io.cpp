@@ -3,7 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "sc_io.hpp"
+#include "utf8.h"
+#include <cassert>
 
 #ifdef SC_WINDOWS
 #include <windows.h>
@@ -155,26 +157,6 @@ void ofstream::open( const char* name, openmode mode )
 #endif
 }
 
-void ofstream::open( sim_t* sim, const std::string& filename, openmode mode )
-{
-#if defined( SC_MINGW )
-  if ( util::contains_non_ascii( filename ) )
-  {
-    sim -> errorf( "Failed to open output file containing non-ascii characters.'%s'.", filename.c_str() );
-    return;
-  }
-#endif
-  open( filename, mode );
-
-  if ( fail() )
-  {
-    sim -> errorf( "Failed to open output file '%s'.", filename.c_str() );
-    return;
-  }
-
-  exceptions( failbit | badbit );
-}
-
 /* Attempts to open a file named 'filename' with the help of a given list of prefixes.
  * If a file handle could be obtained, returns true, otherwise false
  */
@@ -211,19 +193,6 @@ void ifstream::open( const char* name, openmode mode )
 #else
   std::ifstream::open( name, mode );
 #endif
-}
-
-void ifstream::open( sim_t* sim, const std::string& filename, openmode mode )
-{
-  open( filename, mode );
-
-  if ( fail() )
-  {
-    sim -> errorf( "Failed to open input file '%s'.", filename.c_str() );
-    return;
-  }
-
-  exceptions( failbit | badbit );
 }
 
 /* Attempts to open a file named 'filename' with the help of a given list of prefixes.

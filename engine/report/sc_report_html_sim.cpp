@@ -3542,9 +3542,13 @@ void print_html( sim_t* sim )
 
   // Setup file stream and open file
   report::sc_html_stream s;
-  s.open( sim, sim -> html_file_str );
+  s.open( sim -> html_file_str );
   if ( ! s )
+  {
+
+    sim -> errorf( "Failed to open output file '%s'.", sim -> html_file_str.c_str() );
     return;
+  }
 
   report::generate_sim_report_information( sim, sim -> report_information );
 

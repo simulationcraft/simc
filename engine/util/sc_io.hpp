@@ -6,7 +6,21 @@
 #ifndef SC_IO_HPP
 #define SC_IO_HPP
 
-#include "simulationcraft.hpp"
+#include "config.hpp"
+#include <string>
+#include <vector>
+#include <fstream>
+
+#if USE_TR1_NAMESPACE
+// Use TR1
+#include <tr1/memory>
+namespace std {using namespace tr1; }
+#else
+// Use C++11
+#include <memory>
+#endif
+
+struct sim_t;
 
 namespace io {
 // Converts a wide (UTF-16 or UTF-32) string to narrow (UTF-8)
@@ -54,7 +68,6 @@ class ofstream : public std::ofstream
 {
 public:
   ofstream& printf( const char* format, ... );
-  void open( sim_t* sim, const std::string& filename, openmode mode = out | trunc );
   void open( const char* filename, openmode mode = out | trunc );
   void open( const std::string& filename, openmode mode = out | trunc )
   { return open( filename.c_str(), mode ); }
@@ -64,7 +77,6 @@ public:
 class ifstream : public std::ifstream
 {
 public:
-  void open( sim_t* sim, const std::string& filename, openmode mode = in );
   void open( const char* filename, openmode mode = in );
   void open( const std::string& filename, openmode mode = in )
   { return open( filename.c_str(), mode ); }
