@@ -438,7 +438,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     const warrior_t* p = cast();
 
-    if ( weapon &&  weapon -> group() == WEAPON_2H && this -> id != 115767 ) //hack to let Deep wounds not benefit from seasoned soldier
+    if ( weapon &&  weapon -> group() == WEAPON_2H && p -> spec.seasoned_soldier && this -> id != 115767 ) //hack to let Deep wounds not benefit from seasoned soldier
       am *= 1.0 + p -> spec.seasoned_soldier -> effectN( 1 ).percent();
 
     // --- Enrages ---
