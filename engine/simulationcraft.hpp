@@ -70,7 +70,7 @@ namespace std {using namespace tr1; }
 #include "sc_timespan.hpp"
 
 // Generic programming tools
-#include "sc_generic.hpp"
+#include "util/generic.hpp"
 
 // Sample Data
 #include "util/sample_data.hpp"
@@ -3936,7 +3936,7 @@ struct vengeance_actor_list_t
     // pre-condition: actor_list sorted by raw dps
     std::vector<actor_entry_t>::iterator found = find_actor( t );
     assert( found != actor_list.end() && "Vengeance attacker not found in vengeance list!" );
-    return std::distance( actor_list.begin(), found ) + 1;
+    return as<int>(std::distance( actor_list.begin(), found ) + 1);
   }
 
   // this is the method that we use to interact with the structure

@@ -7,12 +7,12 @@
  HEADERS += engine/util/sc_io.hpp
  HEADERS += engine/util/sample_data.hpp
  HEADERS += engine/util/rng.hpp
+ HEADERS += engine/util/generic.hpp
  HEADERS += engine/dbc/specialization.hpp
  HEADERS += engine/dbc/dbc.hpp
  PRECOMPILED_HEADER += engine/simulationcraft.hpp
  HEADERS += engine/simulationcraft.hpp
  HEADERS += engine/sc_timespan.hpp
- HEADERS += engine/sc_generic.hpp
  HEADERS += engine/config.hpp
  HEADERS += engine/dbc/data_enums.hh
  HEADERS += engine/dbc/data_definitions.hh

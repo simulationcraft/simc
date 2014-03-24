@@ -10,7 +10,7 @@
 #include <numeric>
 #include <limits>
 #include <sstream>
-#include "../sc_generic.hpp"
+#include "util/generic.hpp"
 
 /* Collection of statistical formulas for sequences
  * Note: Returns 0 for empty sequences

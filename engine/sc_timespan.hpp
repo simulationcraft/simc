@@ -14,19 +14,17 @@
 #include <numeric>
 #include <limits>
 
-#if ! defined(__APPLE__) && ! defined(__MACH__) && ( _MSC_VER || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) )
-// Use C++11
-#include <type_traits>
-#if ( _MSC_VER && _MSC_VER < 1600 )
-namespace std {using namespace tr1; }
-#endif
-#else
+#include "config.hpp"
+#if USE_TR1_NAMESPACE
 // Use TR1
 #include <tr1/type_traits>
 namespace std {using namespace tr1; }
+#else
+// Use C++11
+#include <type_traits>
 #endif
 
-#include "sc_generic.hpp"
+#include "util/generic.hpp"
 
 // timespan_t ===============================================================
 

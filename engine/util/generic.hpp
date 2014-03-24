@@ -232,15 +232,9 @@ inline typename traits<const T>::iterator cend( const T& t )
 
 // Range-based generic algorithms ===========================================
 
-#if _MSC_VER && _MSC_VER < 1600
-#pragma warning( disable : 4996 )
-#endif
 template <typename Range, typename Out>
 inline Out copy( const Range& r, Out o )
 { return std::copy( range::begin( r ), range::end( r ), o ); }
-#if _MSC_VER && _MSC_VER < 1600
-#pragma warning( default : 4996 )
-#endif
 
 template <typename Range, typename D>
 inline Range& dispose( Range& r, D disposer )

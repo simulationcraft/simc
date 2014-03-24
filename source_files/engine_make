@@ -7,11 +7,11 @@ SRC += \
     util$(PATHSEP)sc_io.hpp \
     util$(PATHSEP)sample_data.hpp \
     util$(PATHSEP)rng.hpp \
+    util$(PATHSEP)generic.hpp \
     dbc$(PATHSEP)specialization.hpp \
     dbc$(PATHSEP)dbc.hpp \
     simulationcraft.hpp \
     sc_timespan.hpp \
-    sc_generic.hpp \
     config.hpp \
     dbc$(PATHSEP)data_enums.hh \
     dbc$(PATHSEP)data_definitions.hh \
