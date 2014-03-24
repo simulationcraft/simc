@@ -438,7 +438,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     const warrior_t* p = cast();
 
-    if ( ( weapon &&  weapon -> group() == WEAPON_2H && p -> spec.seasoned_soldier ) ) //hack to let Deep wounds *not* and the Meta GEM benefit from seasoned soldier
+    if ( weapon &&  weapon -> group() == WEAPON_2H && this -> id != 115767 ) //hack to let Deep wounds not benefit from seasoned soldier
       am *= 1.0 + p -> spec.seasoned_soldier -> effectN( 1 ).percent();
 
     // --- Enrages ---
@@ -451,7 +451,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
       }
 
     // --- Passive Talents ---
-    if ( ( p -> spec.single_minded_fury -> ok() && p -> dual_wield() ) )//hack to let Deep wounds *not* and the Meta GEM benefit from SMF
+    if ( p -> spec.single_minded_fury -> ok() && p -> dual_wield() && this -> id != 115767 )//hack to let Deep wounds not benefit from SMF
     {
       if (  p -> main_hand_weapon .group() == WEAPON_1H &&
             p -> off_hand_weapon .group() == WEAPON_1H )
