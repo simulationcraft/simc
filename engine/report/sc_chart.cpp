@@ -85,6 +85,7 @@ std::string chart_title( const std::string& t )
 {
   std::string tmp = t;
   util::urlencode( tmp );
+  util::replace_all( tmp, "%20", "+" );
   return "chtt=" + tmp + amp;
 }
 
@@ -692,7 +693,7 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, int p
 
     s << ( i ? "|" : "" )  << "t++" << std::setprecision( p -> sim -> report_precision / 2 ) << waiting_pct; // Insert waiting percent
 
-    s << "%++" << formatted_name.c_str(); // Insert player name
+    s << "%25++" << formatted_name.c_str(); // Insert player name
 
     s << "," << get_color( p ); // Insert player class text color
 
@@ -2503,7 +2504,7 @@ std::string chart::normal_distribution( double mean, double std_dev, double conf
   if ( tolerance_interval == 0.0 && confidence > 0 )
     tolerance_interval =  rng::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
 
-  sc_chart chart( util::to_string( confidence * 100.0, 2 ) + "%" + " Confidence Interval", LINE, print_styles, 4 );
+  sc_chart chart( util::to_string( confidence * 100.0, 2 ) + "%25" + " Confidence Interval", LINE, print_styles, 4 );
   chart.set_height( 185 );
 
   s <<  chart.create();

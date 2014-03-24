@@ -8,25 +8,6 @@
 
 namespace { // UNNAMED NAMESPACE ==========================================
 
-struct compare_action_name
-{
-  bool operator()( action_t* l, action_t* r ) const
-  {
-    if ( l -> id && r -> id )
-    {
-      std::string ln = l -> player -> dbc.spell( l -> id ) -> name_cstr();
-      std::string rn = r -> player -> dbc.spell( r -> id ) -> name_cstr();
-      return ln <= rn;
-    }
-    else if ( ! l -> id && r -> id )
-      return false;
-    else if ( l -> id && ! r -> id )
-      return true;
-    else
-      return l -> name_str <= r -> name_str;
-  }
-};
-
 enum stats_mask_e
 {
   MASK_DMG     = 1 << STATS_DMG,
@@ -1953,25 +1934,36 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
   --os;
   os.tabs() << "</table>\n";
 
-  // Resource Gains Section
-  os.tabs() << "<table class=\"sc\">\n";
-  ++os;
-  os.tabs() << "<tr>\n";
-  ++os;
-  os.tabs() << "<th>Resource Gains</th>\n";
-  os.tabs() << "<th>Type</th>\n";
-  os.tabs() << "<th>Count</th>\n";
-  os.tabs() << "<th>Total</th>\n";
-  os.tabs() << "<th>Average</th>\n";
-  os.tabs() << "<th colspan=\"2\">Overflow</th>\n";
-  --os;
-  os.tabs() << "</tr>\n";
-
+  std::array<double, RESOURCE_MAX> total_player_gains = std::array<double, RESOURCE_MAX>();
+  get_total_player_gains( *p, total_player_gains );
+  bool has_gains = false;
+  for ( size_t i = 0; i < RESOURCE_MAX; i++ )
   {
+    if ( total_player_gains[ i ] > 0 )
+    {
+      has_gains = true;
+      break;
+    }
+  }
+
+  if ( has_gains )
+  {
+    // Resource Gains Section
+    os.tabs() << "<table class=\"sc\">\n";
+    ++os;
+    os.tabs() << "<tr>\n";
+    ++os;
+    os.tabs() << "<th>Resource Gains</th>\n";
+    os.tabs() << "<th>Type</th>\n";
+    os.tabs() << "<th>Count</th>\n";
+    os.tabs() << "<th>Total</th>\n";
+    os.tabs() << "<th>Average</th>\n";
+    os.tabs() << "<th colspan=\"2\">Overflow</th>\n";
+    --os;
+    os.tabs() << "</tr>\n";
+
     int j = 0;
 
-    std::array<double, RESOURCE_MAX> total_player_gains = std::array<double, RESOURCE_MAX>();
-    get_total_player_gains( *p, total_player_gains );
     for ( size_t i = 0; i < p -> gain_list.size(); ++i )
     {
       gain_t* g = p -> gain_list[ i ];
@@ -2012,9 +2004,9 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
         print_html_gain( os, g, total_pet_gains, j );
       }
     }
+    --os;
+    os.tabs() << "</table>\n";
   }
-  --os;
-  os.tabs() << "</table>\n";
 
   // Resource Consumption Section
   os.tabs() << "<table class=\"sc\">\n";
@@ -2319,6 +2311,18 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
   {
     if ( b -> data().ok() )
     {
+      std::string href;
+      if ( b -> data().id() )
+      {
+        href = "http://";
+        if ( b -> sim -> dbc.ptr )
+          href += "ptr";
+        else
+          href += "www";
+        href += ".wowhead.com/spell=";
+        href += util::to_string( b -> data().id() );
+      }
+
       std::string affix;
       std::string buff_spell_name = b -> data().name_cstr();
       util::tokenize( buff_spell_name );
@@ -2326,8 +2330,8 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
         affix = " (" +  buff_name + ")";
 
       os.printf(
-        "\t\t\t\t\t\t\t\t<td class=\"left\"><a href=\"#\" rel=\"spell=%d\" class=\"toggle-details\">%s</a>%s</td>\n",
-          b -> data().id(), buff_name.c_str(), affix.c_str(), b -> player -> level );
+        "\t\t\t\t\t\t\t\t<td class=\"left\"><a href=\"%s\" class=\"toggle-details\">%s</a>%s</td>\n",
+          href.c_str(), buff_name.c_str(), affix.c_str(), b -> player -> level );
     }
     else
     {
@@ -2374,7 +2378,7 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
       "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
       "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_value:</span>%.2f</li>\n"
       "\t\t\t\t\t\t\t\t\t</ul>\n",
-      b -> constant ? 2 : 8,
+      b -> constant ? 1 : 7,
       b -> source ? util::encode_html( b -> source -> name() ).c_str() : "",
       b -> cooldown -> name_str.c_str(),
       b -> max_stack(),

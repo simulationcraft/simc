@@ -1412,7 +1412,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
   os << "\t\t\t\t<div id=\"sim-info\" class=\"section\">\n";
 
   os << "\t\t\t\t\t<h2 class=\"toggle\">Simulation & Raid Information</h2>\n"
-     << "\t\t\t\t\t\t<div class=\"toggle-content hide\">\n";
+     << "\t\t\t\t\t<div class=\"toggle-content hide\">\n";
 
   os << "\t\t\t\t\t\t<table class=\"sc mt\">\n";
 
@@ -1441,7 +1441,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
              sim -> simulation_length.mean() );
 
   os << "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-     << "\t\t\t\t\t\t\t\t<th><h2>Performance:</h2></th>\n"
+     << "\t\t\t\t\t\t\t\t<td><h2>Performance:</h2></td>\n"
      << "\t\t\t\t\t\t\t\t<td></td>\n"
      << "\t\t\t\t\t\t\t</tr>\n";
 
@@ -1485,7 +1485,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
     sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu.total_seconds() );
 
   os << "\t\t\t\t\t\t\t<tr class=\"left\">\n"
-     << "\t\t\t\t\t\t\t\t<th><h2>Settings:</h2></th>\n"
+     << "\t\t\t\t\t\t\t\t<td><h2>Settings:</h2></td>\n"
      << "\t\t\t\t\t\t\t\t<td></td>\n"
      << "\t\t\t\t\t\t\t</tr>\n";
 
@@ -1525,7 +1525,7 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
   }
 
   int sd_counter = 0;
-  report::print_html_sample_data( os, sim, sim -> simulation_length, "Simulation Length", sd_counter );
+  report::print_html_sample_data( os, sim, sim -> simulation_length, "Simulation Length", sd_counter, 2 );
 
   os << "\t\t\t\t\t\t</table>\n";
 
@@ -1616,11 +1616,6 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
   if ( s -> num_executes.mean() == 0 && s -> compound_amount == 0 && !sim -> debug )
     return;
 
-  os << "\t\t\t<tr";
-  if ( j & 1 )
-    os << " class=\"odd\"";
-  os << ">\n";
-
   int id = find_id( s );
 
   char format[] =
@@ -1647,6 +1642,12 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
   double direct_total = aggregate_damage( s -> direct_results );
   double tick_total = aggregate_damage( s -> tick_results );
   if ( direct_total > 0.0 || tick_total <= 0.0 )
+  {
+    os << "\t\t\t<tr";
+    if ( j & 1 )
+      os << " class=\"odd\"";
+    os << ">\n";
+
     os.printf(
       format,
       util::encode_html( p -> name() ).c_str(),
@@ -1669,8 +1670,15 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
       s -> total_intervals.mean(),
       s -> total_amount.mean(),
       s -> player -> collected_data.fight_length.mean() );
+  }
 
   if ( tick_total > 0.0 )
+  {
+    os << "\t\t\t<tr";
+    if ( j & 1 )
+      os << " class=\"odd\"";
+    os << ">\n";
+
     os.printf(
       format,
       util::encode_html( p -> name() ).c_str(),
@@ -1693,6 +1701,7 @@ void print_html_raw_action_damage( report::sc_html_stream& os, stats_t* s, playe
       s -> total_intervals.mean(),
       s -> total_amount.mean(),
       s -> player -> collected_data.fight_length.mean() );
+  }
 
   for ( size_t i = 0, num_children = s -> children.size(); i < num_children; i++ )
   {
