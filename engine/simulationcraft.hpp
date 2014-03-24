@@ -2097,75 +2097,8 @@ struct spell_data_expr_t
   static spell_data_expr_t* create_spell_expression( sim_t* sim, const std::string& name_str );
 };
 
-class mutex_t : public noncopyable
-{
-private:
-  class native_t;
-  native_t* native_handle;
-
-public:
-  mutex_t();
-  ~mutex_t();
-
-  void lock();
-  void unlock();
-
-  native_t* native_mutex() const
-  { return native_handle; }
-};
-
-class condition_variable_t : public noncopyable
-{
-private:
-  class native_t;
-
-  native_t* native_handle;
-
-public:
-  condition_variable_t( mutex_t* m );
-  ~condition_variable_t();
-
-  void wait();
-
-  void signal();
-  void broadcast();
-};
-
-class sc_thread_t : public noncopyable
-{
-private:
-  class native_t;
-  native_t* native_handle;
-
-protected:
-  sc_thread_t();
-  virtual ~sc_thread_t();
-public:
-  enum priority_e {
-    NORMAL = 3,
-    ABOVE_NORMAL = 4,
-    BELOW_NORMAL = 2,
-    HIGHEST = 5,
-    LOWEST = 1,
-  };
-  virtual void run() = 0;
-
-  void launch( priority_e = NORMAL );
-  void wait();
-  void set_priority( priority_e );
-
-  static void sleep( timespan_t );
-  static void set_calling_thread_priority( priority_e );
-};
-
-class auto_lock_t
-{
-private:
-  mutex_t& mutex;
-public:
-  auto_lock_t( mutex_t& mutex_ ) : mutex( mutex_ ) { mutex.lock(); }
-  ~auto_lock_t() { mutex.unlock(); }
-};
+// mutex, thread
+#include "util/concurrency.hpp"
 
 // Simulation Setup =========================================================
 

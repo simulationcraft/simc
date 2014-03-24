@@ -3,7 +3,8 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
+#include "concurrency.hpp"
+#include <iostream>
 
 // Cross-Platform Support for Multi-Threading ===============================
 
@@ -39,9 +40,9 @@ public:
   void set_priority( priority_e  ) {}
   static void set_calling_thread_priority( priority_e ) {}
 
-  static void sleep( timespan_t t )
+  static void sleep_seconds( double t )
   {
-    std::time_t finish = std::time( 0 ) + t.total_seconds();
+    std::time_t finish = std::time( 0 ) + t;
     while ( std::time( 0 ) < finish )
       ;
   }
@@ -264,8 +265,8 @@ public:
     CloseHandle( handle );
   }
 
-  static void sleep( timespan_t t )
-  { ::Sleep( ( DWORD ) t.total_millis() ); }
+  static void sleep_seconds( double t )
+  { ::Sleep( ( DWORD ) (t * 1000 ) ); }
 
 private:
   static void set_thread_priority( HANDLE handle, priority_e prio )
@@ -354,8 +355,8 @@ public:
   static void set_calling_thread_priority( priority_e prio )
   { set_thread_priority( pthread_self(), prio ); }
 
-  static void sleep( timespan_t t )
-  { ::sleep( ( unsigned int )t.total_seconds() ); }
+  static void sleep_seconds( double t )
+  { ::sleep( t ); }
 
 private:
   static void set_thread_priority( pthread_t t, priority_e prio )
@@ -471,5 +472,5 @@ void sc_thread_t::wait()
 
 // sc_thread_t::sleep() =====================================================
 
-void sc_thread_t::sleep( timespan_t t )
-{ native_t::sleep( t ); }
+void sc_thread_t::sleep_seconds( double t )
+{ native_t::sleep_seconds( t ); }

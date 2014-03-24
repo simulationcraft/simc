@@ -8,6 +8,7 @@ SRC += \
     util$(PATHSEP)sample_data.hpp \
     util$(PATHSEP)rng.hpp \
     util$(PATHSEP)generic.hpp \
+    util$(PATHSEP)concurrency.hpp \
     dbc$(PATHSEP)specialization.hpp \
     dbc$(PATHSEP)dbc.hpp \
     simulationcraft.hpp \
@@ -21,6 +22,7 @@ SRC += \
     utf8.h \
     util$(PATHSEP)sc_io.cpp \
     util$(PATHSEP)rng.cpp \
+    util$(PATHSEP)concurrency.cpp \
     sim$(PATHSEP)sc_sim.cpp \
     sim$(PATHSEP)sc_scaling.cpp \
     sim$(PATHSEP)sc_reforge_plot.cpp \
@@ -76,4 +78,3 @@ SRC += \
     action$(PATHSEP)sc_action_state.cpp \
     action$(PATHSEP)sc_action.cpp \
     sc_util.cpp \
-    sc_thread.cpp \

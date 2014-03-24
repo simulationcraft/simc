@@ -8,6 +8,7 @@
  HEADERS += engine/util/sample_data.hpp
  HEADERS += engine/util/rng.hpp
  HEADERS += engine/util/generic.hpp
+ HEADERS += engine/util/concurrency.hpp
  HEADERS += engine/dbc/specialization.hpp
  HEADERS += engine/dbc/dbc.hpp
  PRECOMPILED_HEADER += engine/simulationcraft.hpp
@@ -22,6 +23,7 @@
  HEADERS += engine/utf8.h
  SOURCES += engine/util/sc_io.cpp
  SOURCES += engine/util/rng.cpp
+ SOURCES += engine/util/concurrency.cpp
  SOURCES += engine/sim/sc_sim.cpp
  SOURCES += engine/sim/sc_scaling.cpp
  SOURCES += engine/sim/sc_reforge_plot.cpp
@@ -77,4 +79,3 @@
  SOURCES += engine/action/sc_action_state.cpp
  SOURCES += engine/action/sc_action.cpp
  SOURCES += engine/sc_util.cpp
- SOURCES += engine/sc_thread.cpp
