@@ -10,24 +10,23 @@
 #ifndef SC_GENERIC_HPP
 #define SC_GENERIC_HPP
 
+#include "config.hpp"
+
 #include <algorithm>
 #include "utf8.h"
 #include <cassert>
 
 #include <cmath>
 
-#if ! defined(__APPLE__) && ! defined(__MACH__) && ( _MSC_VER || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) )
-// Use C++11
-#include <array>
-#include <type_traits>
-#if ( _MSC_VER && _MSC_VER < 1600 )
-namespace std {using namespace tr1; }
-#endif
-#else
+#if USE_TR1_NAMESPACE
 // Use TR1
 #include <tr1/array>
 #include <tr1/type_traits>
 namespace std {using namespace tr1; }
+#else
+// Use C++11
+#include <array>
+#include <type_traits>
 #endif
 
 // Type traits and metaprogramming tools ====================================
