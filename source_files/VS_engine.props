@@ -7,9 +7,9 @@ To change the list of source files, update the QT_ files and run synchronize.py
 	<ItemGroup>
 		<ClInclude Include="..\engine\util\timeline.hpp" />
 		<ClInclude Include="..\engine\util\sc_resourcepaths.hpp" />
-		<ClInclude Include="..\engine\util\sc_io.hpp" />
 		<ClInclude Include="..\engine\util\sample_data.hpp" />
 		<ClInclude Include="..\engine\util\rng.hpp" />
+		<ClInclude Include="..\engine\util\io.hpp" />
 		<ClInclude Include="..\engine\util\generic.hpp" />
 		<ClInclude Include="..\engine\util\concurrency.hpp" />
 		<ClInclude Include="..\engine\dbc\specialization.hpp" />
@@ -23,10 +23,10 @@ To change the list of source files, update the QT_ files and run synchronize.py
 		<ClInclude Include="..\engine\utf8\core.h" />
 		<ClInclude Include="..\engine\utf8\checked.h" />
 		<ClInclude Include="..\engine\utf8.h" />
-		<ClCompile Include="..\engine\util\sc_io.cpp">
-			<PrecompiledHeader>Create</PrecompiledHeader>
-		</ClCompile>
 		<ClCompile Include="..\engine\util\rng.cpp">
+			<PrecompiledHeader>NotUsing</PrecompiledHeader>
+		</ClCompile>
+		<ClCompile Include="..\engine\util\io.cpp">
 			<PrecompiledHeader>NotUsing</PrecompiledHeader>
 		</ClCompile>
 		<ClCompile Include="..\engine\util\concurrency.cpp">

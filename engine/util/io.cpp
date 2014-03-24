@@ -3,7 +3,7 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_io.hpp"
+#include "io.hpp"
 #include "utf8.h"
 #include <cassert>
 

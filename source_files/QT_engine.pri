@@ -4,9 +4,9 @@
 
  HEADERS += engine/util/timeline.hpp
  HEADERS += engine/util/sc_resourcepaths.hpp
- HEADERS += engine/util/sc_io.hpp
  HEADERS += engine/util/sample_data.hpp
  HEADERS += engine/util/rng.hpp
+ HEADERS += engine/util/io.hpp
  HEADERS += engine/util/generic.hpp
  HEADERS += engine/util/concurrency.hpp
  HEADERS += engine/dbc/specialization.hpp
@@ -21,8 +21,8 @@
  HEADERS += engine/utf8/core.h
  HEADERS += engine/utf8/checked.h
  HEADERS += engine/utf8.h
- SOURCES += engine/util/sc_io.cpp
  SOURCES += engine/util/rng.cpp
+ SOURCES += engine/util/io.cpp
  SOURCES += engine/util/concurrency.cpp
  SOURCES += engine/sim/sc_sim.cpp
  SOURCES += engine/sim/sc_scaling.cpp

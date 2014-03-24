@@ -1306,7 +1306,7 @@ std::ostream& stream_printf( std::ostream&, const char* format, ... );
 #include "dbc/dbc.hpp"
 
 // Include IO Module
-#include "util/sc_io.hpp"
+#include "util/io.hpp"
 
 // Spell information struct, holding static functions to output spell data in a human readable form
 

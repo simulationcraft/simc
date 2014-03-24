@@ -4,9 +4,9 @@
 SRC += \
     util$(PATHSEP)timeline.hpp \
     util$(PATHSEP)sc_resourcepaths.hpp \
-    util$(PATHSEP)sc_io.hpp \
     util$(PATHSEP)sample_data.hpp \
     util$(PATHSEP)rng.hpp \
+    util$(PATHSEP)io.hpp \
     util$(PATHSEP)generic.hpp \
     util$(PATHSEP)concurrency.hpp \
     dbc$(PATHSEP)specialization.hpp \
@@ -20,8 +20,8 @@ SRC += \
     utf8$(PATHSEP)core.h \
     utf8$(PATHSEP)checked.h \
     utf8.h \
-    util$(PATHSEP)sc_io.cpp \
     util$(PATHSEP)rng.cpp \
+    util$(PATHSEP)io.cpp \
     util$(PATHSEP)concurrency.cpp \
     sim$(PATHSEP)sc_sim.cpp \
     sim$(PATHSEP)sc_scaling.cpp \
