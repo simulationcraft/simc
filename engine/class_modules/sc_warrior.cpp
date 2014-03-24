@@ -1126,7 +1126,7 @@ struct charge_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if ( p -> current.distance_to_move > 25 || p -> current.distance_to_move < 5 ) // Cannot charge unless target is in range.
+    if ( p -> current.distance_to_move > data().max_range() || p -> current.distance_to_move < data().min_range() ) // Cannot charge unless target is in range.
       return false;
 
     return warrior_attack_t::ready();
@@ -1606,7 +1606,7 @@ struct intervene_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if ( p -> current.distance_to_move > 25 )
+    if ( p -> current.distance_to_move > data().max_range() )
       return false;
 
     return warrior_attack_t::ready();
