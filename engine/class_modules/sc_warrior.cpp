@@ -1523,16 +1523,27 @@ struct heroic_leap_t : public warrior_attack_t
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
 
+    cooldown -> duration = p -> cooldown.heroic_leap -> duration;
 
     if ( p -> glyphs.death_from_above -> ok() ) //decreases cd
-    {
-      // Don't want to lower it multiple times if it's in the action list multiple times
-      cooldown -> duration = data().cooldown();
       cooldown -> duration += p -> glyphs.death_from_above -> effectN( 1 ).time_value();
-    }
+
     cooldown -> duration  *= p -> buffs.cooldown_reduction -> default_value;
     use_off_gcd = true;
   }
+  
+  virtual void impact( action_state_t* s )
+  {
+
+  warrior_t*p = cast();
+
+  if( p -> current.distance_to_move > 8 ) // Heroic leap doesn't deal any damage if the target is more than 8 yards away. 
+    s -> result_amount = 0;
+
+  warrior_attack_t::impact( s );
+
+  }
+
 };
 
 // Impending Victory ========================================================
