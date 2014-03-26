@@ -2,81 +2,81 @@
 # To change the list of source files, update the QT_ files and run synchronize.py
 
 SRC += \
-    simulationcraft.hpp \
-    sc_generic.hpp \
-    sc_timespan.hpp \
-    util$(PATHSEP)sample_data.hpp \
-    util$(PATHSEP)sc_resourcepaths.hpp \
     util$(PATHSEP)timeline.hpp \
+    util$(PATHSEP)sc_resourcepaths.hpp \
+    util$(PATHSEP)sample_data.hpp \
     util$(PATHSEP)rng.hpp \
-    util$(PATHSEP)sc_io.hpp \
+    util$(PATHSEP)io.hpp \
+    util$(PATHSEP)generic.hpp \
+    util$(PATHSEP)concurrency.hpp \
     dbc$(PATHSEP)specialization.hpp \
     dbc$(PATHSEP)dbc.hpp \
+    simulationcraft.hpp \
+    sc_timespan.hpp \
+    config.hpp \
     dbc$(PATHSEP)data_enums.hh \
     dbc$(PATHSEP)data_definitions.hh \
-    utf8.h \
+    utf8$(PATHSEP)unchecked.h \
     utf8$(PATHSEP)core.h \
     utf8$(PATHSEP)checked.h \
-    utf8$(PATHSEP)unchecked.h \
+    utf8.h \
     util$(PATHSEP)rng.cpp \
-    util$(PATHSEP)sc_io.cpp \
-    sc_thread.cpp \
-    sc_util.cpp \
-    action$(PATHSEP)sc_action_state.cpp \
-    action$(PATHSEP)sc_action.cpp \
-    action$(PATHSEP)sc_attack.cpp \
-    action$(PATHSEP)sc_dot.cpp \
-    action$(PATHSEP)sc_sequence.cpp \
-    action$(PATHSEP)sc_spell.cpp \
-    action$(PATHSEP)sc_stats.cpp \
-    buff$(PATHSEP)sc_buff.cpp \
-    player$(PATHSEP)sc_consumable.cpp \
-    player$(PATHSEP)sc_item.cpp \
-    player$(PATHSEP)sc_pet.cpp \
-    player$(PATHSEP)sc_player.cpp \
-    player$(PATHSEP)sc_set_bonus.cpp \
-    player$(PATHSEP)sc_proc.cpp \
-    player$(PATHSEP)sc_enchant.cpp \
-    player$(PATHSEP)sc_unique_gear.cpp \
-    sim$(PATHSEP)sc_cooldown.cpp \
-    sim$(PATHSEP)sc_event.cpp \
-    sim$(PATHSEP)sc_expressions.cpp \
-    sim$(PATHSEP)sc_gear_stats.cpp \
-    sim$(PATHSEP)sc_option.cpp \
-    sim$(PATHSEP)sc_plot.cpp \
-    sim$(PATHSEP)sc_raid_event.cpp \
-    sim$(PATHSEP)sc_reforge_plot.cpp \
-    sim$(PATHSEP)sc_scaling.cpp \
+    util$(PATHSEP)io.cpp \
+    util$(PATHSEP)concurrency.cpp \
     sim$(PATHSEP)sc_sim.cpp \
+    sim$(PATHSEP)sc_scaling.cpp \
+    sim$(PATHSEP)sc_reforge_plot.cpp \
+    sim$(PATHSEP)sc_raid_event.cpp \
+    sim$(PATHSEP)sc_plot.cpp \
+    sim$(PATHSEP)sc_option.cpp \
+    sim$(PATHSEP)sc_gear_stats.cpp \
+    sim$(PATHSEP)sc_expressions.cpp \
+    sim$(PATHSEP)sc_event.cpp \
     sim$(PATHSEP)sc_core_sim.cpp \
-    report$(PATHSEP)sc_report_html_player.cpp \
-    report$(PATHSEP)sc_report_html_sim.cpp \
-    report$(PATHSEP)sc_report_text.cpp \
+    sim$(PATHSEP)sc_cooldown.cpp \
     report$(PATHSEP)sc_report_xml.cpp \
+    report$(PATHSEP)sc_report_text.cpp \
+    report$(PATHSEP)sc_report_html_sim.cpp \
+    report$(PATHSEP)sc_report_html_player.cpp \
     report$(PATHSEP)sc_report_csv_data.cpp \
     report$(PATHSEP)sc_report.cpp \
     report$(PATHSEP)sc_chart.cpp \
-    dbc$(PATHSEP)sc_const_data.cpp \
-    dbc$(PATHSEP)sc_item_data.cpp \
-    dbc$(PATHSEP)sc_spell_data.cpp \
-    dbc$(PATHSEP)sc_spell_info.cpp \
-    dbc$(PATHSEP)sc_data.cpp \
-    interfaces$(PATHSEP)sc_bcp_api.cpp \
-    interfaces$(PATHSEP)sc_chardev.cpp \
-    interfaces$(PATHSEP)sc_http.cpp \
-    interfaces$(PATHSEP)sc_js.cpp \
-    interfaces$(PATHSEP)sc_rawr.cpp \
-    interfaces$(PATHSEP)sc_wowhead.cpp \
+    player$(PATHSEP)sc_unique_gear.cpp \
+    player$(PATHSEP)sc_proc.cpp \
+    player$(PATHSEP)sc_enchant.cpp \
+    player$(PATHSEP)sc_set_bonus.cpp \
+    player$(PATHSEP)sc_player.cpp \
+    player$(PATHSEP)sc_pet.cpp \
+    player$(PATHSEP)sc_item.cpp \
+    player$(PATHSEP)sc_consumable.cpp \
     interfaces$(PATHSEP)sc_xml.cpp \
-    class_modules$(PATHSEP)sc_death_knight.cpp \
-    class_modules$(PATHSEP)sc_druid.cpp \
-    class_modules$(PATHSEP)sc_enemy.cpp \
-    class_modules$(PATHSEP)sc_hunter.cpp \
-    class_modules$(PATHSEP)sc_mage.cpp \
-    class_modules$(PATHSEP)sc_monk.cpp \
-    class_modules$(PATHSEP)sc_paladin.cpp \
-    class_modules$(PATHSEP)sc_priest.cpp \
-    class_modules$(PATHSEP)sc_rogue.cpp \
-    class_modules$(PATHSEP)sc_shaman.cpp \
-    class_modules$(PATHSEP)sc_warlock.cpp \
+    interfaces$(PATHSEP)sc_wowhead.cpp \
+    interfaces$(PATHSEP)sc_js.cpp \
+    interfaces$(PATHSEP)sc_http.cpp \
+    interfaces$(PATHSEP)sc_bcp_api.cpp \
+    dbc$(PATHSEP)sc_spell_info.cpp \
+    dbc$(PATHSEP)sc_spell_data.cpp \
+    dbc$(PATHSEP)sc_item_data.cpp \
+    dbc$(PATHSEP)sc_data.cpp \
+    dbc$(PATHSEP)sc_const_data.cpp \
     class_modules$(PATHSEP)sc_warrior.cpp \
+    class_modules$(PATHSEP)sc_warlock.cpp \
+    class_modules$(PATHSEP)sc_shaman.cpp \
+    class_modules$(PATHSEP)sc_rogue.cpp \
+    class_modules$(PATHSEP)sc_priest.cpp \
+    class_modules$(PATHSEP)sc_paladin.cpp \
+    class_modules$(PATHSEP)sc_monk.cpp \
+    class_modules$(PATHSEP)sc_mage.cpp \
+    class_modules$(PATHSEP)sc_hunter.cpp \
+    class_modules$(PATHSEP)sc_enemy.cpp \
+    class_modules$(PATHSEP)sc_druid.cpp \
+    class_modules$(PATHSEP)sc_death_knight.cpp \
+    buff$(PATHSEP)sc_buff.cpp \
+    action$(PATHSEP)sc_stats.cpp \
+    action$(PATHSEP)sc_spell.cpp \
+    action$(PATHSEP)sc_sequence.cpp \
+    action$(PATHSEP)sc_dot.cpp \
+    action$(PATHSEP)sc_attack.cpp \
+    action$(PATHSEP)sc_action_state.cpp \
+    action$(PATHSEP)sc_action.cpp \
+    sc_util.cpp \

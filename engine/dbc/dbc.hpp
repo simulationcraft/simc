@@ -21,6 +21,7 @@ static_assert( 0 , "dbc.hpp included into a file where SIMULATIONCRAFT_H is not 
 #include "specialization.hpp"
 
 static const unsigned NUM_SPELL_FLAGS = 12;
+static const unsigned NUM_CLASS_FAMILY_FLAGS = 4;
 
 // ==========================================================================
 // General Database
@@ -164,7 +165,8 @@ public:
   int              _base_value;      // Effect value
   int              _misc_value;      // Effect miscellaneous value
   int              _misc_value_2;    // Effect miscellaneous value 2
-  unsigned              _trigger_spell_id;// Effect triggers this spell id
+  unsigned         _class_flags[NUM_CLASS_FAMILY_FLAGS]; // Class family flags
+  unsigned         _trigger_spell_id;// Effect triggers this spell id
   double           _m_chain;         // Effect chain multiplier
   double           _pp_combo_points; // Effect points per combo points
   double           _real_ppl;        // Effect real points per level
@@ -266,6 +268,15 @@ public:
   int die_sides() const
   { return _die_sides; }
 
+  bool class_flag( unsigned flag ) const
+  {
+    unsigned index = flag / 32;
+    unsigned bit = flag % 32;
+
+    assert( index < sizeof_array( _class_flags ) );
+    return ( _class_flags[ index ] & ( 1u << bit ) ) != 0;
+  }
+
   double average( const player_t* p, unsigned level = 0 ) const;
   double delta( const player_t* p, unsigned level = 0 ) const;
   double bonus( const player_t* p, unsigned level = 0 ) const;
@@ -362,6 +373,8 @@ public:
   unsigned    _replace_spell_id;
   // Spell.dbc flags
   unsigned    _attributes[NUM_SPELL_FLAGS];// Spell.dbc "flags", record field 1..10, note that 12694 added a field here after flags_7
+  unsigned    _class_flags[NUM_CLASS_FAMILY_FLAGS]; // SpellClassOptions.dbc flags
+  unsigned    _class_flags_family; // SpellClassOptions.dbc spell family
   const char* _desc;               // Spell.dbc description stringblock
   const char* _tooltip;            // Spell.dbc tooltip stringblock
   // SpellDescriptionVariables.dbc
@@ -602,8 +615,23 @@ public:
     return ( _attributes[ index ] & mask ) != 0;
   }
 
+  bool class_flag( unsigned flag ) const
+  {
+    unsigned index = flag / 32;
+    unsigned bit = flag % 32;
+
+    assert( index < sizeof_array( _class_flags ) );
+    return ( _class_flags[ index ] & ( 1u << bit ) ) != 0;
+  }
+
   unsigned attribute( unsigned idx ) const
   { assert( idx < sizeof_array( _attributes ) ); return _attributes[ idx ]; }
+
+  unsigned class_flags( unsigned idx ) const
+  { assert( idx < sizeof_array( _class_flags ) ); return _class_flags[ idx ]; }
+
+  unsigned class_family() const
+  { return _class_flags_family; }
 
   bool override_field( const std::string& field, double value );
 
@@ -995,6 +1023,9 @@ public:
   double rppm_coefficient( specialization_e spec, unsigned spell_id ) const;
 
   unsigned item_upgrade_ilevel( unsigned item_id, unsigned upgrade_level ) const;
+
+  std::vector< const spell_data_t* > effect_affects_spells( unsigned, const spelleffect_data_t* ) const;
+  std::vector< const spelleffect_data_t* > effects_affecting_spell( const spell_data_t* ) const;
 };
 
 #endif // SC_DBC_HPP

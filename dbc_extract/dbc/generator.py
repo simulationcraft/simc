@@ -1523,6 +1523,20 @@ class SpellDataGenerator(DataGenerator):
         "^Armor Skills",
         "^Tamed Pet Passive",
     ]
+
+    _spell_families = {
+        'mage': 3,
+        'warrior': 4,
+        'warlock': 5,
+        'priest': 6,
+        'druid': 7,
+        'rogue': 8,
+        'hunter': 9,
+        'paladin': 10,
+        'shaman': 11,
+        'deathknight': 15,
+        'monk': 53
+    }
     
     def __init__(self, options):
         DataGenerator.__init__(self, options)
@@ -2067,7 +2081,7 @@ class SpellDataGenerator(DataGenerator):
                 continue
             
             if len(spell._misc) > 1:
-                sys.stderr.write('SPell id %u (%s) has more than one SpellMisc.dbc entry' % ( spell.id, spell.name ) )
+                sys.stderr.write('Spell id %u (%s) has more than one SpellMisc.dbc entry\n' % ( spell.id, spell.name ) )
                 continue
 
             for power in spell._powers:
@@ -2077,7 +2091,7 @@ class SpellDataGenerator(DataGenerator):
                 powers.add( power )
 
             if index % 20 == 0:
-              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, Class,  Race,Sca,MSL,ExtraCoeff,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration,  RCost, RPG,Stac, PCh,PCr, ProcFlags,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10,     Attr11,     Attr12 }, Description, Tooltip, Description Variable, Icon, ActiveIcon, Effect1, Effect2, Effect3 },\n'
+              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, Class,  Race,Sca,MSL,ExtraCoeff,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration,  RCost, RPG,Stac, PCh,PCr, ProcFlags,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10,     Attr11,     Attr12 }, {     Flags1,     Flags2,     Flags3,     Flags4 }, Family, Description, Tooltip, Description Variable, Icon, ActiveIcon, Effect1, Effect2, Effect3 },\n'
             
             fields = spell.field('name', 'id') 
             fields += [ '%#.2x' % 0 ]
@@ -2143,6 +2157,8 @@ class SpellDataGenerator(DataGenerator):
 
             # Add spell flags
             fields += [ '{ %s }' % ', '.join(self._spellmisc_db[spell.id_misc].field('flags', 'flags_1', 'flags_2', 'flags_3', 'flags_4', 'flags_5', 'flags_6', 'flags_7', 'flags_12694', 'flags_8', 'unk_2', 'flags_15668')) ]
+            fields += [ '{ %s }' % ', '.join(self._spellclassoptions_db[spell.id_class_opts].field('spell_family_flags_1', 'spell_family_flags_2', 'spell_family_flags_3', 'spell_family_flags_4')) ]
+            fields += self._spellclassoptions_db[spell.id_class_opts].field('spell_family_name')
             fields += spell.field('desc', 'tt')
             if spell.id_desc_var and self._spelldescriptionvariables_db.get(spell.id_desc_var):
                 fields += self._spelldescriptionvariables_db[spell.id_desc_var].field('var')
@@ -2185,7 +2201,7 @@ class SpellDataGenerator(DataGenerator):
                 continue
 
             if index % 20 == 0:
-                s += '//{     Id,Flags,  SpId,Idx, EffectType                  , EffectSubType                              ,       Average,         Delta,       Unknown,   Coefficient,  Ampl,  Radius,  RadMax,   BaseV,   MiscV,  MiscV2, Trigg,   DmgMul,  CboP, RealP,Die, 0, 0 },\n'
+                s += '//{     Id,Flags,   SpId,Idx, EffectType                  , EffectSubType                              ,       Average,         Delta,       Unknown,   Coefficient,  Ampl,  Radius,  RadMax,   BaseV,   MiscV,  MiscV2, {     Flags1,     Flags2,     Flags3,     Flags4 }, Trigg,   DmgMul,  CboP, RealP,Die, 0, 0 },\n'
 
             fields = effect.field('id')
             fields += [ '%#.2x' % 0 ] 
@@ -2211,7 +2227,9 @@ class SpellDataGenerator(DataGenerator):
             fields += effect.field('coefficient', 'amplitude')
             fields += self._spellradius_db[effect.id_radius].field('radius_1')
             fields += self._spellradius_db[effect.id_radius_max].field('radius_1')
-            fields += effect.field('base_value', 'misc_value', 'misc_value_2', 'trigger_spell', 'dmg_multiplier', 'points_per_combo_points', 'real_ppl', 'die_sides')
+            fields += effect.field('base_value', 'misc_value', 'misc_value_2')
+            fields += [ '{ %s }' % ', '.join( effect.field('class_mask_1', 'class_mask_2', 'class_mask_3', 'class_mask_4' ) ) ]
+            fields += effect.field('trigger_spell', 'dmg_multiplier', 'points_per_combo_points', 'real_ppl', 'die_sides')
             # Pad struct with empty pointers for direct spell data access
             fields += [ '0', '0' ]
 

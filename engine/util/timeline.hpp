@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <cassert>
 #include <numeric>
-#include "../sc_generic.hpp"
+#include "generic.hpp"
 #include "sample_data.hpp"
 
 template <typename Fwd, typename Out>

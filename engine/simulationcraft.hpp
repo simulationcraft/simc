@@ -12,74 +12,8 @@
 
 #define SC_VERSION ( SC_MAJOR_VERSION "-" SC_MINOR_VERSION )
 
-// Platform Initialization ==================================================
-
-// Simplified access to compiler version
-#if defined( __GNUC__ ) && !defined( __clang__ ) // Do NOT define SC_GCC for Clang
-#  define SC_GCC ( __GNUC__ * 10000 + __GNUC_MINOR__ * 100 + __GNUC_PATCHLEVEL__ )
-#endif
-#if defined( __clang__ )
-#  define SC_CLANG ( __clang_major__ * 10000 + __clang_minor__ * 100 + __clang_patchlevel__ )
-#endif
-#if defined( _MSC_VER )
-#  define SC_VS ( _MSC_VER / 100 - 6 )
-#  if SC_VS < 10
-#    error "Visual Studio 9 ( 2008 ) or lower not supported"
-#  endif
-#endif
-
-#if defined(__APPLE__) || defined(__MACH__)
-#  define SC_OSX
-#endif
-
-#if defined( WIN32 ) || defined( _WIN32 ) || defined( __WIN32 )
-#  define SC_WINDOWS
-#  define WIN32_LEAN_AND_MEAN
-#  define VC_EXTRALEAN
-#  ifndef _CRT_SECURE_NO_WARNINGS
-#    define _CRT_SECURE_NO_WARNINGS
-#  endif
-#  ifndef UNICODE
-#    define UNICODE
-#  endif
-#else
-#  define SC_SIGACTION
-#endif
-
-// Workaround for LLVM/Clang 3.2+ using glibc headers.
-#if defined( SC_CLANG ) && SC_CLANG >= 30200
-# define __extern_always_inline extern __always_inline __attribute__(( __gnu_inline__ ))
-#endif
-
-// C++11 workarounds for older compiler versions.
-#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || ! __GXX_EXPERIMENTAL_CXX0X__ || SC_GCC < 40600 ) && ( ! defined( SC_VS ) )
-namespace std {
-class nullptr_t
-{
-public:
-  template <typename T> operator T* () const { return 0; }
-  template <typename T, typename U> operator T U::* () const { return 0; }
-  operator bool () const { return false; }
-};
-}
-#define nullptr ( std::nullptr_t() )
-#endif
-
-#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || ! __GXX_EXPERIMENTAL_CXX0X__ || SC_GCC < 40700 ) && ( ! defined( SC_VS ) )
-#define override
-#endif
-
-#if __cplusplus < 201103L && ( ! defined( SC_GCC ) || ! __GXX_EXPERIMENTAL_CXX0X__ || SC_GCC < 40700 ) && ( ! defined( SC_VS ) || SC_VS < 11 )
-#define final
-#endif
-
-#if ( ! defined(_MSC_VER) || _MSC_VER < 1600 ) && __cplusplus < 201103L && ! defined(__GXX_EXPERIMENTAL_CXX0X__)
-#define static_assert( condition, message )
-#endif
-
-#if defined(SC_GCC) && SC_GCC < 40500
-#undef __STRICT_ANSI__ // problem with gcc4.4 + -std=c++0x and including <cstdio>. Not sure if it affects 4.4.1 as well. http://stackoverflow.com/questions/3445312/swprintf-and-vswprintf-not-declared
-#endif
+// Platform, compiler and general configuration
+#include "config.hpp"
 
 #include <stdint.h>
 #include <algorithm>
@@ -109,12 +43,7 @@ public:
 #include <typeinfo>
 #include <vector>
 
-#if ! defined( SC_OSX ) && ( defined( SC_VS ) || __cplusplus >= 201103L || defined(__GXX_EXPERIMENTAL_CXX0X__) )
-// Use C++11
-#include <array>
-#include <type_traits>
-#include <unordered_map>
-#else
+#if USE_TR1_NAMESPACE
 // Use TR1
 #include <tr1/array>
 #include <tr1/functional>
@@ -122,22 +51,18 @@ public:
 #include <tr1/type_traits>
 #include <tr1/unordered_map>
 namespace std {using namespace tr1; }
+#else
+// Use C++11
+#include <array>
+#include <functional>
+#include <memory>
+#include <type_traits>
+#include <unordered_map>
 #endif
 
 #include "dbc/data_enums.hh"
 #include "dbc/data_definitions.hh"
 #include "utf8.h"
-
-#if !defined(__GNUC__)
-#  define __attribute__(x)
-#endif
-
-#define SC_PACKED_STRUCT      __attribute__((packed))
-#define PRINTF_ATTRIBUTE(a,b) __attribute__((format(printf,a,b)))
-
-#ifndef M_PI
-#define M_PI ( 3.14159265358979323846 )
-#endif
 
 #define SC_STAT_CACHE
 
@@ -145,7 +70,7 @@ namespace std {using namespace tr1; }
 #include "sc_timespan.hpp"
 
 // Generic programming tools
-#include "sc_generic.hpp"
+#include "util/generic.hpp"
 
 // Sample Data
 #include "util/sample_data.hpp"
@@ -413,6 +338,7 @@ enum result_e
   RESULT_NONE = 0,
   RESULT_MISS,  RESULT_DODGE, RESULT_PARRY,
   RESULT_GLANCE, RESULT_CRIT, RESULT_HIT,
+  RESULT_MULTISTRIKE, RESULT_MULTISTRIKE_CRIT,
   RESULT_MAX
 };
 
@@ -432,6 +358,7 @@ enum full_result_e
   FULLTYPE_GLANCE_CRITBLOCK, FULLTYPE_GLANCE_BLOCK, FULLTYPE_GLANCE,
   FULLTYPE_CRIT_CRITBLOCK, FULLTYPE_CRIT_BLOCK, FULLTYPE_CRIT,
   FULLTYPE_HIT_CRITBLOCK, FULLTYPE_HIT_BLOCK, FULLTYPE_HIT,
+  FULLTYPE_MULTISTRIKE, FULLTYPE_MULTISTRIKE_CRIT,
   FULLTYPE_MAX
 };
 
@@ -441,6 +368,7 @@ enum full_result_e
 #define RESULT_DODGE_MASK ( (1<<RESULT_DODGE) )
 #define RESULT_PARRY_MASK ( (1<<RESULT_PARRY) )
 #define RESULT_NONE_MASK  ( (1<<RESULT_NONE) )
+#define RESULT_MULTISTRIKE_MASK ( (1<<RESULT_MULTISTRIKE) | (1<<RESULT_MULTISTRIKE_CRIT) )
 #define RESULT_ALL_MASK  -1
 
 enum proc_e
@@ -746,6 +674,7 @@ enum stat_e
   STAT_WEAPON_OFFHAND_DPS, STAT_WEAPON_OFFHAND_SPEED,
   STAT_ARMOR, STAT_RESILIENCE_RATING, STAT_DODGE_RATING, STAT_PARRY_RATING,
   STAT_BLOCK_RATING, STAT_PVP_POWER,
+  STAT_MULTISTRIKE_RATING,
   STAT_ALL,
   STAT_MAX
 };
@@ -777,6 +706,7 @@ enum cache_e
   CACHE_MASTERY,
   CACHE_DODGE, CACHE_PARRY, CACHE_BLOCK, CACHE_CRIT_BLOCK, CACHE_ARMOR,
   CACHE_CRIT_AVOIDANCE, CACHE_MISS,
+  CACHE_MULTISTRIKE,
   CACHE_PLAYER_DAMAGE_MULTIPLIER,
   CACHE_PLAYER_HEAL_MULTIPLIER,
   CACHE_MAX
@@ -808,6 +738,7 @@ inline cache_e cache_from_stat( stat_e st )
     case STAT_PARRY_RATING: return CACHE_PARRY;
     case STAT_BLOCK_RATING: return CACHE_BLOCK;
     case STAT_ARMOR: return CACHE_ARMOR;
+    case STAT_MULTISTRIKE_RATING: return CACHE_MULTISTRIKE;
     default: break;
   }
   return CACHE_NONE;
@@ -1404,7 +1335,7 @@ std::ostream& stream_printf( std::ostream&, const char* format, ... );
 #include "dbc/dbc.hpp"
 
 // Include IO Module
-#include "util/sc_io.hpp"
+#include "util/io.hpp"
 
 // Spell information struct, holding static functions to output spell data in a human readable form
 
@@ -1498,13 +1429,15 @@ struct gear_stats_t
   double mastery_rating;
   double resilience_rating;
   double pvp_power;
+  double multistrike_rating;
 
   gear_stats_t() :
     attribute(), resource(),
     spell_power( 0.0 ), attack_power( 0.0 ), expertise_rating( 0.0 ), expertise_rating2( 0.0 ),
     hit_rating( 0.0 ), hit_rating2( 0.0 ), crit_rating( 0.0 ), haste_rating( 0.0 ), weapon_dps( 0.0 ), weapon_speed( 0.0 ),
     weapon_offhand_dps( 0.0 ), weapon_offhand_speed( 0.0 ), armor( 0.0 ), dodge_rating( 0.0 ),
-    parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 ), resilience_rating( 0.0 ), pvp_power( 0.0 )
+    parry_rating( 0.0 ), block_rating( 0.0 ), mastery_rating( 0.0 ), resilience_rating( 0.0 ), pvp_power( 0.0 ),
+    multistrike_rating( 0.0 )
   { }
 
   friend gear_stats_t operator+( const gear_stats_t& left, const gear_stats_t& right )
@@ -1535,6 +1468,7 @@ struct gear_stats_t
     mastery_rating += right.mastery_rating;
     resilience_rating += right.resilience_rating;
     pvp_power += right.pvp_power;
+    multistrike_rating += right.multistrike_rating;
     range::transform ( attribute, right.attribute, attribute.begin(), std::plus<int>() );
     range::transform ( resource, right.resource, resource.begin(), std::plus<int>() );
     return *this;
@@ -2192,75 +2126,8 @@ struct spell_data_expr_t
   static spell_data_expr_t* create_spell_expression( sim_t* sim, const std::string& name_str );
 };
 
-class mutex_t : public noncopyable
-{
-private:
-  class native_t;
-  native_t* native_handle;
-
-public:
-  mutex_t();
-  ~mutex_t();
-
-  void lock();
-  void unlock();
-
-  native_t* native_mutex() const
-  { return native_handle; }
-};
-
-class condition_variable_t : public noncopyable
-{
-private:
-  class native_t;
-
-  native_t* native_handle;
-
-public:
-  condition_variable_t( mutex_t* m );
-  ~condition_variable_t();
-
-  void wait();
-
-  void signal();
-  void broadcast();
-};
-
-class sc_thread_t : public noncopyable
-{
-private:
-  class native_t;
-  native_t* native_handle;
-
-protected:
-  sc_thread_t();
-  virtual ~sc_thread_t();
-public:
-  enum priority_e {
-    NORMAL = 3,
-    ABOVE_NORMAL = 4,
-    BELOW_NORMAL = 2,
-    HIGHEST = 5,
-    LOWEST = 1,
-  };
-  virtual void run() = 0;
-
-  void launch( priority_e = NORMAL );
-  void wait();
-  void set_priority( priority_e );
-
-  static void sleep( timespan_t );
-  static void set_calling_thread_priority( priority_e );
-};
-
-class auto_lock_t
-{
-private:
-  mutex_t& mutex;
-public:
-  auto_lock_t( mutex_t& mutex_ ) : mutex( mutex_ ) { mutex.lock(); }
-  ~auto_lock_t() { mutex.unlock(); }
-};
+// mutex, thread
+#include "util/concurrency.hpp"
 
 // Simulation Setup =========================================================
 
@@ -2299,7 +2166,6 @@ struct player_description_t
   // ideally they remain static, but if not then move to sim_control_t
   static void load_bcp    ( player_description_t& /*etc*/ );
   static void load_wowhead( player_description_t& /*etc*/ );
-  static void load_rawr   ( player_description_t& /*etc*/ );
 };
 
 struct combat_description_t
@@ -2564,6 +2430,8 @@ struct sim_t : public core_sim_t, private sc_thread_t
   int         max_aoe_enemies;
   bool        tmi_actor_only;
   double      tmi_window_global;
+  int         new_tmi;
+  double      tmi_filter;
 
   // Target options
   double      target_death_pct;
@@ -3037,6 +2905,7 @@ enum rating_e
   RATING_EXPERTISE,
   RATING_MASTERY,
   RATING_PVP_POWER,
+  RATING_MULTISTRIKE,
   RATING_MAX
 };
 
@@ -3060,6 +2929,7 @@ inline cache_e cache_from_rating( rating_e r )
     case RATING_MASTERY: return CACHE_MASTERY;
     case RATING_PVP_POWER: return CACHE_NONE;
     case RATING_PVP_RESILIENCE: return CACHE_NONE;
+    case RATING_MULTISTRIKE: return CACHE_MULTISTRIKE;
     default: break;
   }
   assert( false ); return CACHE_NONE;
@@ -3074,6 +2944,7 @@ struct rating_t
   double dodge, parry, block;
   double mastery;
   double pvp_resilience, pvp_power;
+  double multistrike;
 
   double& get( rating_e r )
   {
@@ -3095,6 +2966,7 @@ struct rating_t
       case RATING_MASTERY: return mastery;
       case RATING_PVP_POWER: return pvp_power;
       case RATING_PVP_RESILIENCE: return pvp_resilience;
+      case RATING_MULTISTRIKE: return multistrike;
       default: break;
     }
     assert( false ); return mastery;
@@ -3115,9 +2987,15 @@ struct rating_t
     // Read ratings from DBC
     for ( rating_e i = static_cast<rating_e>( 0 ); i < RATING_MAX; ++i )
     {
-      get( i ) = dbc.combat_rating( i,  level );
-      if ( i == RATING_MASTERY )
-        get( i ) /= 100.0;
+      // TODO: WOD-MULTISTRIKE
+      if ( i == RATING_MULTISTRIKE )
+        get( i ) = dbc.combat_rating( RATING_SPELL_CRIT, level ) / 3.3333333333;
+      else
+      {
+        get( i ) = dbc.combat_rating( i,  level );
+        if ( i == RATING_MASTERY )
+          get( i ) /= 100.0;
+      }
     }
   }
 
@@ -3722,7 +3600,7 @@ private:
   mutable double _attack_haste, _spell_haste;
   mutable double _attack_speed, _spell_speed;
   mutable double _dodge, _parry, _block, _crit_block, _armor;
-  mutable double _mastery_value, _crit_avoidance, _miss;
+  mutable double _mastery_value, _crit_avoidance, _miss, _multistrike;
   mutable double _player_mult[SCHOOL_MAX + 1], _player_heal_mult[SCHOOL_MAX + 1];
 public:
   bool active; // runtime active-flag
@@ -3756,6 +3634,7 @@ public:
   double miss() const;
   double armor() const;
   double mastery_value() const;
+  double multistrike() const;
   double player_multiplier( school_e ) const;
   double player_heal_multiplier( school_e ) const;
 #else
@@ -3784,6 +3663,7 @@ public:
   double miss() const             { return player -> composite_miss();       }
   double armor() const            { return player -> composite_armor();           }
   double mastery_value() const    { return player -> composite_mastery_value();   }
+  double multistrike() const      { return player -> composite_multistrike(); }
 #endif
 };
 
@@ -3829,7 +3709,7 @@ struct player_processed_report_information_t
   std::string distribution_dps_chart, scaling_dps_chart, scale_factors_chart;
   std::string reforge_dps_chart, dps_error_chart, distribution_deaths_chart;
   std::string health_change_chart, health_change_sliding_chart;
-  std::string gear_weights_lootrank_link, gear_weights_wowhead_std_link, gear_weights_wowhead_alt_link, gear_weights_wowreforge_link, gear_weights_wowupgrade_link, gear_weights_askmrrobot_link;
+  std::string gear_weights_lootrank_link, gear_weights_wowhead_std_link, gear_weights_wowhead_alt_link, gear_weights_askmrrobot_link;
   std::string gear_weights_pawn_std_string, gear_weights_pawn_alt_string;
   std::string save_str;
   std::string save_gear_str;
@@ -3937,7 +3817,7 @@ struct player_collected_data_t
     double attack_power,  attack_hit,  mh_attack_expertise,  oh_attack_expertise, attack_crit;
     double armor, miss, crit, dodge, parry, block;
     double spell_haste, spell_speed, attack_haste, attack_speed;
-    double mastery_value;
+    double mastery_value, multistrike;
   } buffed_stats_snapshot;
 
   player_collected_data_t( const std::string& player_name, sim_t& );
@@ -4043,7 +3923,7 @@ struct vengeance_actor_list_t
     // pre-condition: actor_list sorted by raw dps
     std::vector<actor_entry_t>::iterator found = find_actor( t );
     assert( found != actor_list.end() && "Vengeance attacker not found in vengeance list!" );
-    return std::distance( actor_list.begin(), found ) + 1;
+    return as<int>(std::distance( actor_list.begin(), found ) + 1);
   }
 
   // this is the method that we use to interact with the structure
@@ -4326,6 +4206,8 @@ struct player_t : public actor_t
   double    rps_gain, rps_loss;
   std::string tmi_debug_file_str;
   double tmi_window;
+  int new_tmi;
+  double tmi_filter;
 
   auto_dispose< std::vector<buff_t*> > buff_list;
   auto_dispose< std::vector<proc_t*> > proc_list;
@@ -4400,6 +4282,7 @@ public:
 
   struct buffs_t
   {
+    buff_t* aspect_of_the_pack;
     buff_t* beacon_of_light;
     buff_t* blood_fury;
     buff_t* body_and_soul;
@@ -4416,9 +4299,12 @@ public:
     buff_t* lifeblood;
     buff_t* mongoose_mh;
     buff_t* mongoose_oh;
+    buff_t* nitro_boosts;
     buff_t* pain_supression;
     buff_t* raid_movement;
     buff_t* self_movement;
+    buff_t* stampeding_shout;
+    buff_t* stampeding_roar;
     buff_t* shadowmeld;
     buff_t* stoneform;
     buff_t* stunned;
@@ -4439,6 +4325,10 @@ public:
     buff_t* amplified; // caster 146046
     buff_t* amplified_2;
     buff_t* cooldown_reduction;
+
+    //Runspeed Enchants
+    buff_t* pandarens_step;
+    buff_t* blurred_speed;
   } buffs;
 
   struct potion_buffs_t
@@ -4601,6 +4491,7 @@ public:
   virtual double composite_spell_hit() const;
   virtual double composite_mastery() const;
   virtual double composite_mastery_value() const;
+  virtual double composite_multistrike() const;
 
   virtual double composite_armor() const;
   virtual double composite_armor_multiplier() const;
@@ -4672,6 +4563,9 @@ public:
   { return composite_rating( RATING_PARRY ); }
   double composite_block_rating() const
   { return composite_rating( RATING_BLOCK ); }
+
+  double composite_multistrike_rating() const
+  { return composite_rating( RATING_MULTISTRIKE ); }
 
   double get_attribute( attribute_e a ) const
   { return util::round( composite_attribute( a ) * composite_attribute_multiplier( a ) ); }
@@ -5041,6 +4935,9 @@ public:
 
   double hit_exp() const;
 
+  virtual double composite_movement_speed() const
+  { return owner -> composite_movement_speed(); }
+
   virtual double composite_melee_expertise( weapon_t* ) const
   { return hit_exp(); }
   virtual double composite_melee_hit() const
@@ -5066,6 +4963,9 @@ public:
 
   virtual double composite_spell_speed() const
   { return owner -> cache.spell_speed(); }
+
+  virtual double composite_multistrike() const
+  { return owner -> cache.multistrike(); }
 
   virtual double composite_melee_attack_power() const;
 
@@ -5234,7 +5134,7 @@ struct action_t : public noncopyable
 
   uint32_t id;
   resource_e resource_current;
-  int aoe, pre_combat;
+  int aoe, pre_combat, may_multistrike;
   // true if this action should not be counted for executes
   bool dual;
   bool callbacks, special, channeled, background, sequence, use_off_gcd, quiet;
@@ -5319,6 +5219,7 @@ struct action_t : public noncopyable
   virtual int    hasted_num_ticks( double haste, timespan_t d = timespan_t::min() ) const;
   virtual timespan_t travel_time() const;
   virtual result_e calculate_result( action_state_t* /* state */ ) { assert( false ); return RESULT_UNKNOWN; }
+  virtual result_e calculate_multistrike_result( action_state_t* /* state */ );
   virtual block_result_e calculate_block_result( action_state_t* /* state */ ) { assert ( false ); return BLOCK_RESULT_UNKNOWN; }
   virtual double calculate_direct_amount( action_state_t* state );
   virtual double calculate_tick_amount( action_state_t* state );
@@ -5331,6 +5232,7 @@ struct action_t : public noncopyable
   virtual int n_targets() const { return aoe; }
   bool is_aoe() const { return n_targets() == -1 || n_targets() > 0; }
   virtual void   execute();
+  virtual void   multistrike( action_state_t* state, dmg_e type );
   virtual void   tick( dot_t* d );
   virtual void   last_tick( dot_t* d );
   virtual void   update_vengeance( dmg_e, action_state_t* assess_state );
@@ -5362,6 +5264,11 @@ struct action_t : public noncopyable
     return( r == RESULT_MISS   ||
             r == RESULT_DODGE  ||
             r == RESULT_PARRY );
+  }
+
+  static bool result_is_multistrike( result_e r )
+  {
+    return ( r == RESULT_MULTISTRIKE || r == RESULT_MULTISTRIKE_CRIT );
   }
 
   static bool result_is_block( block_result_e r )
@@ -5419,7 +5326,9 @@ private:
   friend struct action_state_t;
   virtual void release_state( action_state_t* );
 public:
+  virtual void do_schedule_travel( action_state_t*, const timespan_t& );
   virtual void schedule_travel( action_state_t* );
+  virtual void schedule_multistrike_travel( action_state_t* );
   virtual void impact( action_state_t* );
   virtual void trigger_dot( action_state_t* );
 
@@ -5458,6 +5367,7 @@ public:
   { return base_spell_power + player -> cache.spell_power( school ); }
   virtual double composite_target_crit( player_t* /* target */ ) const;
   virtual double composite_target_multiplier( player_t* target ) const { return target -> composite_player_vulnerability( school ); }
+  virtual double composite_multistrike() const { return player -> cache.multistrike(); }
 
   // the direct amount multiplier due to debuffs on the target
   virtual double composite_target_da_multiplier( player_t* target ) const { return composite_target_multiplier( target ); }
@@ -5506,7 +5416,7 @@ public:
   virtual bool has_movement_directionality() const
   {
     // If ability has no movement restrictions, it'll be usable
-    if ( movement_directionality == MOVEMENT_OMNI )
+    if ( movement_directionality == MOVEMENT_OMNI || movement_directionality == MOVEMENT_NONE )
       return true;
     else
     {
@@ -5641,6 +5551,12 @@ struct action_state_t : public noncopyable
       return PROC2_CRIT;
     else if ( result == RESULT_GLANCE )
       return PROC2_GLANCE;
+    // Multistrike can only generate procs on impact, though this could be 
+    // moved to execute_proc_type2() too.
+    else if ( result == RESULT_MULTISTRIKE )
+      return PROC2_MULTISTRIKE;
+    else if ( result == RESULT_MULTISTRIKE_CRIT )
+      return PROC2_MULTISTRIKE_CRIT;
 
     return PROC2_INVALID;
   }
@@ -6084,6 +6000,8 @@ struct action_callback_t
  */
 struct dbc_proc_callback_t : public action_callback_t
 {
+  static const item_t default_item_;
+  
   const item_t& item;
   const special_effect_t& effect;
   cooldown_t* cooldown;
@@ -6104,7 +6022,7 @@ struct dbc_proc_callback_t : public action_callback_t
   { }
 
   dbc_proc_callback_t( player_t* p, const special_effect_t& e ) :
-    action_callback_t( p ), item( item_t() ), effect( e ), cooldown( 0 ),
+    action_callback_t( p ), item( default_item_ ), effect( e ), cooldown( 0 ),
     proc_chance( 0 ), ppm( 0 ),
     proc_buff( 0 ), proc_action( 0 )
   { }
@@ -6608,25 +6526,6 @@ bool download_item_data( item_t&            item,
                          cache::behavior_e  caching,
                          wowhead_e          source );
 }
-
-#define USE_CHARDEV 0
-#if USE_CHARDEV
-// CharDev  =================================================================
-
-namespace chardev
-{
-player_t* download_player( sim_t* sim, const std::string& id, cache::behavior_e b = cache::players() );
-}
-#endif
-
-// Rawr =====================================================================
-
-namespace rawr
-{
-player_t* load_player( sim_t*, const std::string& character_filename );
-player_t* load_player( sim_t*, const std::string& character_filename, const std::string& character_xml );
-}
-
 // Blizzard Community Platform API ==========================================
 
 namespace bcp_api
@@ -6658,17 +6557,6 @@ bool download_item( item_t&, cache::behavior_e b = cache::items() );
 bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id,
                      cache::behavior_e b = cache::items() );
 }
-
-// Wowreforge ===============================================================
-
-#define USE_WOWREFORGE 0
-#if USE_WOWREFORGE
-namespace wowreforge
-{
-player_t* download_player( sim_t* sim, const std::string& id,
-                           const std::string& talents, cache::behavior_e b = cache::players() );
-}
-#endif // USE_WOWREFORGE
 
 // HTTP Download  ===========================================================
 
@@ -7019,6 +6907,7 @@ struct residual_dot_action : public Action
     Action::hasted_ticks  = false;
     Action::may_crit = false;
     Action::tick_power_mod = 0;
+    Action::may_multistrike = false;
     Action::dot_behavior  = DOT_REFRESH;
   }
 

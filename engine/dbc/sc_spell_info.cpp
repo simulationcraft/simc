@@ -240,6 +240,9 @@ std::string spell_flags( const spell_data_t* spell )
   if ( spell -> scaling_class() != 0 )
     s << "Scaling Spell (" << spell -> scaling_class() << "), ";
 
+  if ( spell -> class_family() != 0 )
+    s << "Spell Family (" << spell -> class_family() << "), ";
+
   if ( spell -> flags( SPELL_ATTR_PASSIVE ) )
     s << "Passive, ";
 
@@ -452,6 +455,19 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   }
 
   s << std::endl;
+
+  /*
+  std::stringstream affect_str;
+  std::vector< const spell_data_t* > affected_spells = dbc.effect_affects_spells( spell -> class_family(), e );
+  if ( affected_spells.size() > 0 )
+  {
+    s << "                   Affected Spells:";
+    s << std::endl;
+    for ( size_t i = 0, end = affected_spells.size(); i < end; i++ )
+      s << "                   " << affected_spells[ i ] -> name_cstr() << " (" << affected_spells[ i ] -> id() << ")" << std::endl;
+  }
+  */
+
   return s;
 }
 
@@ -527,7 +543,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
-  if ( spell -> rune_cost() == 0 )
+  if ( spell -> rune_cost() == 0 && spell -> class_mask() != 0 )
   {
     for ( size_t i = 0; spell -> _power && i < spell -> _power -> size(); i++ )
     {
@@ -591,7 +607,7 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     }
   }
 
-  if ( spell -> rune_cost() > 0 )
+  if ( spell -> rune_cost() > 0 && spell -> class_mask() != 0 )
   {
     s << "Rune Cost        : ";
 
@@ -751,6 +767,31 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
 
   if ( spell -> extra_coeff() > 0 )
     s << "Coefficient      : " << spell -> extra_coeff() << std::endl;
+
+  if ( spell -> class_family() > 0 )
+  {
+    std::vector< const spelleffect_data_t* > affecting_effects = dbc.effects_affecting_spell( spell );
+    std::vector< unsigned > spell_ids;
+    if ( affecting_effects.size() > 0 )
+    {
+      s << "Affecting spells : ";
+
+      for ( size_t i = 0, end = affecting_effects.size(); i < end; i++ )
+      {
+        const spelleffect_data_t* effect = affecting_effects[ i ];
+        if ( std::find( spell_ids.begin(), spell_ids.end(), effect -> spell() -> id() ) != spell_ids.end() )
+          continue;
+
+        s << effect -> spell() -> name_cstr() << " (" << effect -> spell() -> id() << ")";
+        if ( i < end - 1 )
+          s << ", ";
+
+        spell_ids.push_back( effect -> spell() -> id() );
+      }
+
+      s << std::endl;
+    }
+  }
 
   s << "Attributes       : ";
   for ( unsigned i = 0; i < NUM_SPELL_FLAGS; i++ )

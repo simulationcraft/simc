@@ -39,6 +39,7 @@ namespace enchant
 
 namespace profession
 {
+  DECLARE_CB( nitro_boosts );
   DECLARE_CB( synapse_springs );
   DECLARE_CB( zen_alchemist_stone );
 }
@@ -916,6 +917,51 @@ void enchant::gnomish_xray( special_effect_t& effect,
 }
 
 // Profession perks =========================================================
+
+struct nitro_boosts_action_t : public action_t
+{
+  timespan_t _duration;
+  timespan_t _cd;
+  buff_t* buff;
+  
+  nitro_boosts_action_t( player_t* p, const std::string& n, timespan_t duration, timespan_t cd ) :
+    action_t( ACTION_USE, n, p ),
+    _duration( duration ),
+    _cd( cd ),
+    buff( nullptr )
+  {
+    background = true;
+  }
+
+  virtual void execute()
+  {
+    if ( sim -> log ) sim -> out_log.printf( "%s performs %s", player -> name(), name() );
+
+    player -> buffs.nitro_boosts-> trigger();
+
+    update_ready();
+  }
+  virtual bool ready()
+  {
+  //To do: Add the various other spells that block nitro boost from being used.
+    if ( player -> buffs.stampeding_roar -> check() || player -> buffs.stampeding_shout -> check() ) // Cannot use nitro boosts when stampeding roar/shout buffs are up.
+      return false;
+
+    return ready();
+  }
+};
+
+void profession::nitro_boosts( special_effect_t& effect, 
+                                  const item_t& item,
+                                  const special_effect_db_item_t& dbitem )
+{
+  player_t* p = item.player;
+  /*
+  item -> parsed.use.name_str = "nitro_boosts";
+  item -> parsed.use.cooldown = timespan_t::from_seconds( 180.0 );
+  item -> parsed.use.execute_action = new nitro_boosts_action_t( p, "nitro_boosts", timespan_t::from_seconds( 5.0 ), timespan_t::from_seconds( 180.0 ) );
+  */
+};
 
 void profession::synapse_springs( special_effect_t& effect, 
                                   const item_t& item,
@@ -1935,7 +1981,7 @@ struct essence_of_yulon_driver_t : public spell_t
   essence_of_yulon_driver_t( player_t* player ) :
     spell_t( "essence_of_yulon", player, player -> find_spell( 146198 ) )
   {
-    hasted_ticks = may_miss = may_dodge = may_parry = may_block = callbacks = false;
+    hasted_ticks = may_miss = may_dodge = may_parry = may_block = callbacks = may_crit = false;
     tick_zero = proc = background = dual = true;
     travel_speed = 0;
 
@@ -2476,4 +2522,3 @@ action_callback_t* unique_gear::register_stat_discharge_proc( player_t* player,
 
   return cb;
 }
-

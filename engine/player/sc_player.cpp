@@ -470,7 +470,7 @@ player_t::player_t( sim_t*             s,
   iteration_waiting_time( timespan_t::zero() ), iteration_executed_foreground_actions( 0 ),
   rps_gain( 0 ), rps_loss( 0 ),
 
-  tmi_window( 6.0 ),
+  tmi_window( 6.0 ), new_tmi( 0 ), tmi_filter( 1.0 ),
   collected_data( player_collected_data_t( name_str, *sim ) ),
   vengeance( collected_data.vengeance_timeline ),
   // Damage
@@ -881,6 +881,9 @@ void player_t::init_character_properties()
 
   if ( sim -> tmi_window_global > 0 )
     tmi_window = sim -> tmi_window_global;
+
+   new_tmi = sim -> new_tmi;
+   tmi_filter = sim -> tmi_filter;
 }
 
 void scale_challenge_mode( player_t& p, const rating_t& rating )
@@ -899,6 +902,7 @@ void scale_challenge_mode( player_t& p, const rating_t& rating )
     old_rating_sum += ( int ) p.gear.get_stat( STAT_PARRY_RATING );
     old_rating_sum += ( int ) p.gear.get_stat( STAT_BLOCK_RATING );
     old_rating_sum += ( int ) p.gear.get_stat( STAT_MASTERY_RATING );
+    old_rating_sum += ( int ) p.gear.get_stat( STAT_MULTISTRIKE_RATING );
 
     int old_rating_sum_wo_hit_exp = ( int ) ( old_rating_sum - p.gear.get_stat( STAT_EXPERTISE_RATING ) - p.gear.get_stat( STAT_HIT_RATING ) );
 
@@ -956,6 +960,7 @@ void scale_challenge_mode( player_t& p, const rating_t& rating )
       p.gear.set_stat( STAT_PARRY_RATING, floor( p.gear.get_stat( STAT_PARRY_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
       p.gear.set_stat( STAT_BLOCK_RATING, floor( p.gear.get_stat( STAT_BLOCK_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
       p.gear.set_stat( STAT_MASTERY_RATING, floor( p.gear.get_stat( STAT_MASTERY_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
+      p.gear.set_stat( STAT_MULTISTRIKE_RATING, floor( p.gear.get_stat( STAT_MULTISTRIKE_RATING ) / old_rating_sum_wo_hit_exp * target_rating_sum_wo_hit_exp ) );
     }
   }
 
@@ -1417,7 +1422,7 @@ void player_t::init_race()
 
 // player_t::weapon_racial ==================================================
 
-bool player_t::weapon_racial( const weapon_t* weapon ) const // Remove completely for WoD
+bool player_t::weapon_racial( const weapon_t* ) const // Remove completely for WoD
 {
   return false;
 }
@@ -2152,6 +2157,7 @@ void player_t::init_scaling()
     scales_with[ STAT_CRIT_RATING               ] = true;
     scales_with[ STAT_HASTE_RATING              ] = true;
     scales_with[ STAT_MASTERY_RATING            ] = true;
+    scales_with[ STAT_MULTISTRIKE_RATING        ] = true;
 
     scales_with[ STAT_WEAPON_DPS   ] = attack;
     scales_with[ STAT_WEAPON_SPEED ] = sim -> weapon_speed_scale_factors ? attack : false;
@@ -2193,6 +2199,10 @@ void player_t::init_scaling()
 
         case STAT_MASTERY_RATING:
           initial.stats.mastery_rating += v;
+          break;
+
+        case STAT_MULTISTRIKE_RATING:
+          initial.stats.multistrike_rating += v;
           break;
 
         case STAT_WEAPON_DPS:
@@ -2560,6 +2570,21 @@ void player_t::create_buffs()
     buffs.cooldown_reduction = buff_creator_t( this, "cooldown_reduction" )
                                .chance( 0 )
                                .default_value( 1 );
+
+    buffs.nitro_boosts       = buff_creator_t( this, "nitro_boosts" )
+                    .spell( find_spell( 133022 ) )
+                    .cd( timespan_t::from_seconds( 180 ) )
+                    .chance( 1 )
+                    .duration( timespan_t::from_seconds( 5 ) );
+
+    buffs.blurred_speed     = buff_creator_t( this, "blurred_speed" )
+                   .spell( find_spell( 104409 ) )
+                   .chance( 0 );
+
+    buffs.pandarens_step     = buff_creator_t( this, "pandarens_step" )
+                   .spell( find_spell( 104414 ) )
+                   .chance( 0 );
+
     }
 
     buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );
@@ -2653,8 +2678,8 @@ double player_t::composite_melee_haste() const
     if ( buffs.mongoose_oh && buffs.mongoose_oh -> up() ) 
       h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
 
-    if ( buffs.berserking -> up() )
-      h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
+    if ( buffs.berserking -> up() ) //       h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );   Use this when DBC data for WoD is back.
+      h *= 1.0 / ( 1.0 + 0.15 );
 
     if ( race == RACE_GOBLIN || race == RACE_GNOME )
       h *= 1.0 / ( 1.0 + 0.01 );
@@ -2723,7 +2748,7 @@ double player_t::composite_melee_crit() const
 
 // player_t::composite_attack_expertise =====================================
 
-double player_t::composite_melee_expertise( weapon_t* weapon ) const // Parry will still be part of the game, however there will not be a way to reduce parry chance.
+double player_t::composite_melee_expertise( weapon_t* ) const // Parry will still be part of the game, however there will not be a way to reduce parry chance.
 {
   double e = composite_expertise_rating() / current.rating.expertise;
 
@@ -2972,6 +2997,15 @@ double player_t::composite_mastery() const
   return util::round( current.mastery + composite_mastery_rating() / current.rating.mastery, 2 );
 }
 
+// player_t::composite_multistrike ==========================================
+
+double player_t::composite_multistrike() const
+{
+  double ms = composite_multistrike_rating() / current.rating.multistrike;
+
+  return ms;
+}
+
 // player_t::composite_player_multiplier ====================================
 
 double player_t::composite_player_multiplier( school_e school ) const
@@ -3041,14 +3075,30 @@ double player_t::composite_movement_speed() const
 {
   double speed = base_movement_speed;
 
+  if ( buffs.blurred_speed -> up() ) // Check and see if it stacks with most things, I believe it does. 3/15/2014
+    speed *= 1.0 + buffs.blurred_speed -> data().effectN( 1 ).percent();
+
+  if ( buffs.pandarens_step -> up() )
+    speed *= 1.0 + buffs.pandarens_step -> data().effectN( 1 ).percent();
+
+  if ( buffs.nitro_boosts -> up() )
+    speed *= 1.0 + buffs.nitro_boosts -> data().effectN( 1 ).percent(); // Does not stack with a lot of random abilities, such as body and soul, stampeding shout, burning rush.
+                                                                        // Other abilities exist that do not work as well, but I am not aware of them at this time.
+  if ( buffs.stampeding_roar -> up() )
+    speed *= 1.0 + buffs.stampeding_roar -> data().effectN( 1 ).percent();
+
+  if ( buffs.stampeding_shout -> up() )
+    speed *= 1.0 + buffs.stampeding_shout -> data().effectN( 1 ).percent();
+
+  // Commenting this out for now. How will we take the daze aspect into account?
+  //if ( buffs.aspect_of_the_pack -> up() )
+  //speed *= 1.0 + buffs.aspect_of_the_pack -> data().effectN( 1 ).percent();
+
   speed *= 1.0 + buffs.body_and_soul -> current_value;
+
 
   // From http://www.wowpedia.org/Movement_speed_effects
   // Additional items looked up
-
-  // Run Speed Enchants: 8% increase
-
-  // Engineering Nitro Boosts: 150% increase for 5 seconds
 
   // Pursuit of Justice, Quickening: 8%/15%
 
@@ -3063,7 +3113,6 @@ double player_t::composite_movement_speed() const
   // Druid: Travel Form 40%
 
   // Druid: Dash: 50/60/70
-  //        Stampeding Shout: 60% boost to all players within 10 yards for 8 seconds
 
   // Mage: Blazing Speed: 5%/10% chance after being hit for 50% for 8 sec
   //       Improved Blink: 35%/70% for 3 sec after blink
@@ -3072,9 +3121,6 @@ double player_t::composite_movement_speed() const
   // Rogue: Sprint 70%
 
   // Swiftness Potion: 50%
-
-  // Warrior: Enraged Speed Glyph - 20% while enraged
-  //          Stampeding Shout (Druid Symbiosis): 60% boost to all players within 10 yards for 8 seconds
 
   return speed;
 }
@@ -3208,6 +3254,8 @@ double player_t::composite_rating( rating_e rating ) const
       v = current.stats.parry_rating; break;
     case RATING_BLOCK:
       v = current.stats.block_rating; break;
+    case RATING_MULTISTRIKE:
+      v = current.stats.multistrike_rating; break;
     default: break;
   }
 
@@ -3569,7 +3617,7 @@ void prepare( player_t& p )
 void report_unmatched( const buff_t& b )
 {
 #ifndef NDEBUG
-  /* Don't complain about targetdata buffs, since it is percetly viable that the buff
+  /* Don't complain about targetdata buffs, since it is perfectly viable that the buff
    * is not created in another thread, because of our on-demand targetdata creation
    */
   if ( ! b.source || b.source == b.player )
@@ -3972,6 +4020,8 @@ void player_t::arise()
     buffs.amplified -> trigger();
     buffs.amplified_2 -> trigger();
     buffs.cooldown_reduction -> trigger();
+    buffs.pandarens_step -> trigger();
+    buffs.blurred_speed -> trigger();
   }
 
   if ( has_foreground_actions( *this ) )
@@ -4459,6 +4509,7 @@ void player_t::stat_gain( stat_e    stat,
     case STAT_PARRY_RATING:
     case STAT_BLOCK_RATING:
     case STAT_MASTERY_RATING:
+    case STAT_MULTISTRIKE_RATING:
       current.stats.add_stat( stat, amount );
       temporary.add_stat( stat, temp_value * amount );
       invalidate_cache( cache_from_stat( stat ) );
@@ -4563,6 +4614,7 @@ void player_t::stat_loss( stat_e    stat,
     case STAT_PARRY_RATING:
     case STAT_BLOCK_RATING:
     case STAT_MASTERY_RATING:
+    case STAT_MULTISTRIKE_RATING:
       current.stats.add_stat( stat, -amount );
       temporary.add_stat( stat, temp_value * -amount );
       invalidate_cache( cache_from_stat( stat ) );
@@ -5757,6 +5809,7 @@ struct snapshot_stats_t : public action_t
     buffed_stats.attack_haste = p -> cache.attack_haste();
     buffed_stats.attack_speed = p -> cache.attack_speed();
     buffed_stats.mastery_value = p -> cache.mastery_value();
+    buffed_stats.multistrike = p -> cache.multistrike();
 
     buffed_stats.spell_power  = util::round( p -> cache.spell_power( SCHOOL_MAX ) * p -> composite_spell_power_multiplier() );
     buffed_stats.spell_hit    = p -> cache.spell_hit();
@@ -5852,7 +5905,7 @@ struct snapshot_stats_t : public action_t
 
 struct wait_fixed_t : public wait_action_base_t
 {
-  std::auto_ptr<expr_t> time_expr;
+  std::shared_ptr<expr_t> time_expr;
 
   wait_fixed_t( player_t* player, const std::string& options_str ) :
     wait_action_base_t( player, "wait" ),
@@ -5867,7 +5920,7 @@ struct wait_fixed_t : public wait_action_base_t
     };
     parse_options( options, options_str );
 
-    time_expr = std::auto_ptr<expr_t>( expr_t::parse( this, sec_str ) );
+    time_expr = std::shared_ptr<expr_t>( expr_t::parse( this, sec_str ) );
   }
 
   virtual timespan_t execute_time() const
@@ -8448,6 +8501,7 @@ void player_t::create_options()
     opt_float( "gear_runic",            gear.resource[ RESOURCE_RUNIC_POWER  ] ),
     opt_float( "gear_armor",            gear.armor ),
     opt_float( "gear_mastery_rating",   gear.mastery_rating ),
+    opt_float( "gear_multistrike_rating", gear.multistrike_rating ),
 
     // Stat Enchants
     opt_float( "enchant_strength",         enchant.attribute[ ATTR_STRENGTH  ] ),
@@ -8463,6 +8517,7 @@ void player_t::create_options()
     opt_float( "enchant_hit_rating",       enchant.hit_rating ),
     opt_float( "enchant_crit_rating",      enchant.crit_rating ),
     opt_float( "enchant_mastery_rating",   enchant.mastery_rating ),
+    opt_float( "enchant_multistrike_rating", enchant.multistrike_rating ),
     opt_float( "enchant_health",           enchant.resource[ RESOURCE_HEALTH ] ),
     opt_float( "enchant_mana",             enchant.resource[ RESOURCE_MANA   ] ),
     opt_float( "enchant_rage",             enchant.resource[ RESOURCE_RAGE   ] ),
@@ -9430,6 +9485,17 @@ double player_stat_cache_t::mastery_value() const
   return _mastery_value;
 }
 
+double player_stat_cache_t::multistrike() const
+{
+  if ( ! active || ! valid[ CACHE_MULTISTRIKE ] )
+  {
+    valid[ CACHE_MULTISTRIKE ] = true;
+    _multistrike = player -> composite_multistrike();
+  }
+  else assert( _multistrike == player -> composite_multistrike() );
+  return _multistrike;
+}
+
 // player_stat_cache_t::mastery =============================================
 
 double player_stat_cache_t::player_multiplier( school_e s ) const
@@ -9759,36 +9825,69 @@ void player_collected_data_t::collect_data( const player_t& p )
         double w0  = 6; // normalized window size
         double hdf = 3; // default health decade factor
 
-        // create sliding average timeline
+        // declare sliding average timeline
         sc_timeline_t sliding_average_tl;
         sc_timeline_t sliding_average_normalized_tl;
 
-        // Use half window size of 3, so it's a moving average over 6 seconds
+        // create sliding average timelines from data
         health_changes.timeline.build_sliding_average_timeline( sliding_average_tl, window );
         health_changes.timeline_normalized.build_sliding_average_timeline( sliding_average_normalized_tl, window );
 
         // pull the data out of the normalized sliding average timeline
         std::vector<double> weighted_value = sliding_average_normalized_tl.data();
 
-        for ( size_t j = 0, size = weighted_value.size(); j < size; j++ )
+        if ( p.new_tmi > 0 )  // new TMI implementation for testing
         {
-          // normalize to the default window size (6-second window)
-          weighted_value[ j ] *= w0;
-          
-          // calculate exponentially-weighted contribution of this data point
-          weighted_value[ j ] = std::exp( 10 * std::log( hdf ) * ( weighted_value[ j ] - 1 ) );
+          // define constants
+          double D = 10 * p.tmi_filter; // filtering strength
+          double c2 = std::exp( D ); 
+          double c1 = p.new_tmi * 5000 / D; // slope
 
-          // add to the TMI total
-          tmi += weighted_value [ j ];
+          for ( size_t j = 0, size = weighted_value.size(); j < size; j++ )
+          {
+            // normalize to the default window size (6-second window)
+            weighted_value[ j ] *= w0;
+
+            // calculate exponentially-weighted contribution of this data point
+            weighted_value[ j ] = std::exp( D * ( weighted_value[ j ] - 1 ) );
+
+            // add to the TMI total
+            tmi += weighted_value [ j ];
+          }
+
+          // normalize for fight length
+          tmi /= f_length;
+
+          // constant multiplicative normalization factors
+          tmi *= c2;
+          tmi += 1;
+          tmi = std::log( tmi );
+          tmi *= c1;
+
         }
+        else // old TMI
+        {
 
-        // normalize for fight length
-        tmi /= f_length;
+          for ( size_t j = 0, size = weighted_value.size(); j < size; j++ )
+          {
+            // normalize to the default window size (6-second window)
+            weighted_value[ j ] *= w0;
 
-        // constant multiplicative normalization factors
-        // these are estimates at the moment - will be fine-tuned later
-        tmi *= 10000;
-        tmi *= std::pow( static_cast<double>( window ) , 2 ); // normalizes for window size
+            // calculate exponentially-weighted contribution of this data point
+            weighted_value[ j ] = std::exp( 10 * std::log( hdf ) * ( weighted_value[ j ] - 1 ) );
+
+            // add to the TMI total
+            tmi += weighted_value [ j ];
+          }
+
+          // normalize for fight length
+          tmi /= f_length;
+
+          // constant multiplicative normalization factors
+          // these are estimates at the moment - will be fine-tuned later
+          tmi *= 10000;
+          tmi *= std::pow( static_cast<double>( window ) , 2 ); // normalizes for window size
+        }
 
         // if an output file has been defined, write to it
         print_tmi_debug_csv( &sliding_average_tl, &sliding_average_normalized_tl, weighted_value, p );

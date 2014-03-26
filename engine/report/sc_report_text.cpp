@@ -60,6 +60,26 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe
                    s -> direct_results[ RESULT_CRIT ].actual_amount.max(),
                    s -> direct_results[ RESULT_CRIT ].pct );
   }
+  if ( s -> direct_results[ RESULT_MULTISTRIKE ].actual_amount.sum() > 0 )
+  {
+    util::fprintf( file,
+                   "  Mult=%.1f|%5.0f|%5.0f|%5.0f|%.1f%%",
+                   s -> direct_results[ RESULT_MULTISTRIKE ].count.mean(),
+                   s -> direct_results[ RESULT_MULTISTRIKE ].actual_amount.mean(),
+                   s -> direct_results[ RESULT_MULTISTRIKE ].actual_amount.min(),
+                   s -> direct_results[ RESULT_MULTISTRIKE ].actual_amount.max(),
+                   s -> direct_results[ RESULT_MULTISTRIKE ].pct );
+  }
+  if ( s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.sum() > 0 )
+  {
+    util::fprintf( file,
+                   "  MultCrit=%.1f|%5.0f|%5.0f|%5.0f|%.1f%%",
+                   s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].count.mean(),
+                   s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.mean(),
+                   s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.min(),
+                   s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.max(),
+                   s -> direct_results[ RESULT_MULTISTRIKE_CRIT ].pct );
+  }
   if ( s -> direct_results[ RESULT_GLANCE ].actual_amount.sum() > 0 )
   {
     util::fprintf( file,
@@ -103,6 +123,24 @@ void print_text_action( FILE* file, stats_t* s, int max_name_length, int max_dpe
                    s -> tick_results[ RESULT_CRIT ].actual_amount.min(),
                    s -> tick_results[ RESULT_CRIT ].actual_amount.max(),
                    s -> tick_results[ RESULT_CRIT ].pct );
+  }
+  if ( s -> tick_results[ RESULT_MULTISTRIKE ].actual_amount.sum() > 0 )
+  {
+    util::fprintf( file,
+                   "  MultTick=%5.0f|%5.0f|%5.0f|%.1f%%",
+                   s -> tick_results[ RESULT_MULTISTRIKE ].actual_amount.mean(),
+                   s -> tick_results[ RESULT_MULTISTRIKE ].actual_amount.min(),
+                   s -> tick_results[ RESULT_MULTISTRIKE ].actual_amount.max(),
+                   s -> tick_results[ RESULT_MULTISTRIKE ].pct );
+  }
+  if ( s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.sum() > 0 )
+  {
+    util::fprintf( file,
+                   "  MultCritTick=%5.0f|%5.0f|%5.0f|%.1f%%",
+                   s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.mean(),
+                   s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.min(),
+                   s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.max(),
+                   s -> tick_results[ RESULT_MULTISTRIKE_CRIT ].pct );
   }
 
   if ( s -> total_tick_time.sum() > 0.0 )
@@ -276,13 +314,14 @@ void print_text_core_stats( FILE* file, player_t* p )
   player_collected_data_t::buffed_stats_t& buffed_stats = p -> collected_data.buffed_stats_snapshot;
 
   util::fprintf( file,
-                 "  Core Stats:    strength=%.0f|%.0f(%.0f)  agility=%.0f|%.0f(%.0f)  stamina=%.0f|%.0f(%.0f)  intellect=%.0f|%.0f(%.0f)  spirit=%.0f|%.0f(%.0f)  mastery=%.2f%%|%.2f%%(%.0f)  health=%.0f|%.0f  mana=%.0f|%.0f\n",
+                 "  Core Stats:    strength=%.0f|%.0f(%.0f)  agility=%.0f|%.0f(%.0f)  stamina=%.0f|%.0f(%.0f)  intellect=%.0f|%.0f(%.0f)  spirit=%.0f|%.0f(%.0f)  mastery=%.2f%%|%.2f%%(%.0f)  multistrike=%.2f%%|%.2f%%(%.0f)  health=%.0f|%.0f  mana=%.0f|%.0f\n",
                  buffed_stats.attribute[ ATTR_STRENGTH  ], p -> strength(),  p -> initial.stats.get_stat( STAT_STRENGTH  ),
                  buffed_stats.attribute[ ATTR_AGILITY   ], p -> agility(),   p -> initial.stats.get_stat( STAT_AGILITY   ),
                  buffed_stats.attribute[ ATTR_STAMINA   ], p -> stamina(),   p -> initial.stats.get_stat( STAT_STAMINA   ),
                  buffed_stats.attribute[ ATTR_INTELLECT ], p -> intellect(), p -> initial.stats.get_stat( STAT_INTELLECT ),
                  buffed_stats.attribute[ ATTR_SPIRIT    ], p -> spirit(),    p -> initial.stats.get_stat( STAT_SPIRIT    ),
                  100.0 * buffed_stats.mastery_value , 100.0 * p -> composite_mastery(), p -> initial.stats.get_stat( STAT_MASTERY_RATING ),
+                 100.0 * buffed_stats.multistrike , 100.0 * p -> composite_multistrike(), p -> initial.stats.get_stat( STAT_MULTISTRIKE_RATING ),
                  buffed_stats.resource[ RESOURCE_HEALTH ], p -> resources.max[ RESOURCE_HEALTH ],
                  buffed_stats.resource[ RESOURCE_MANA   ], p -> resources.max[ RESOURCE_MANA   ] );
 }
@@ -527,7 +566,7 @@ void print_text_performance( FILE* file, sim_t* sim )
                  sim -> elapsed_time.total_seconds(),
                  sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu.total_seconds(),
                  date_str.c_str(),
-                 cur_time );
+                 as<long int>(cur_time) );
 }
 
 // print_text_scale_factors =================================================
@@ -612,14 +651,12 @@ void print_text_scale_factors( FILE* file, player_t* p, player_processed_report_
   std::string lootrank       = ri.gear_weights_lootrank_link;
   std::string wowhead_std    = ri.gear_weights_wowhead_std_link;
   std::string wowhead_alt    = ri.gear_weights_wowhead_alt_link;
-  std::string wowreforge     = ri.gear_weights_wowreforge_link;
   std::string pawn_std       = ri.gear_weights_pawn_std_string;
   std::string pawn_alt       = ri.gear_weights_pawn_alt_string;
 
   simplify_html( lootrank    );
   simplify_html( wowhead_std );
   simplify_html( wowhead_alt );
-  simplify_html( wowreforge  );
   simplify_html( pawn_std    );
   simplify_html( pawn_alt    );
 

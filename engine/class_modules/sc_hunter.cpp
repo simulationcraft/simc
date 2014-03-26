@@ -826,8 +826,13 @@ public:
         o() -> stats_stampede -> add_child( stats_list[ i ] );
 
     base_t::summon( duration );
+    // pet appears at the target
+    current.distance = 0;
 
     buffs.stampede -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, duration );
+    
+    // pet swings immediately (without an execute time)
+    if ( ! main_hand_attack -> execute_event ) main_hand_attack -> execute();
   }
 
   virtual void demise()

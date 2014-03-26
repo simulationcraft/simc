@@ -8,15 +8,241 @@
 
 namespace { // UNNAMED NAMESPACE ==========================================
 
+enum stats_mask_e
+{
+  MASK_DMG     = 1 << STATS_DMG,
+  MASK_HEAL    = 1 << STATS_HEAL,
+  MASK_ABSORB  = 1 << STATS_ABSORB,
+  MASK_NEUTRAL = 1 << STATS_NEUTRAL
+};
+
+bool has_avoidance( const std::vector<stats_t::stats_results_t>& s )
+{
+  return ( s[ RESULT_MISS   ].count.mean() +
+           s[ RESULT_DODGE  ].count.mean() +
+           s[ RESULT_PARRY  ].count.mean() ) > 0;
+}
+
+bool has_multistrike( const std::vector<stats_t::stats_results_t>& s)
+{
+  return ( s[ RESULT_MULTISTRIKE ].count.mean() + s[ RESULT_MULTISTRIKE_CRIT ].count.mean() ) > 0;
+}
+
+bool has_amount_results( const std::vector<stats_t::stats_results_t>& res )
+{
+  return (
+      res[ RESULT_HIT ].actual_amount.mean() > 0 ||
+      res[ RESULT_CRIT ].actual_amount.mean() > 0 ||
+      res[ RESULT_MULTISTRIKE ].actual_amount.mean() > 0 ||
+      res[ RESULT_MULTISTRIKE_CRIT ].actual_amount.mean() > 0
+  );
+}
+
+bool has_block( const stats_t* s )
+{
+  return ( s -> direct_results_detail[ FULLTYPE_HIT_BLOCK ].count.mean() +
+           s -> direct_results_detail[ FULLTYPE_HIT_CRITBLOCK ].count.mean() +
+           s -> direct_results_detail[ FULLTYPE_GLANCE_BLOCK ].count.mean() +
+           s -> direct_results_detail[ FULLTYPE_GLANCE_CRITBLOCK ].count.mean() +
+           s -> direct_results_detail[ FULLTYPE_CRIT_BLOCK ].count.mean() +
+           s -> direct_results_detail[ FULLTYPE_CRIT_CRITBLOCK ].count.mean() ) > 0;
+}
+
+bool player_has_tick_results( player_t* p, unsigned stats_mask )
+{
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+  {
+    if ( ! ( stats_mask & ( 1 << p -> stats_list[ i ] -> type ) ) )
+      continue;
+
+    if ( p -> stats_list[ i ] -> num_tick_results.count() > 0 )
+      return true;
+  }
+
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+  {
+    if ( player_has_tick_results( p -> pet_list[ i ], stats_mask ) )
+      return true;
+  }
+
+  return false;
+}
+
+bool player_has_avoidance( player_t* p, unsigned stats_mask )
+{
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+  {
+    if ( ! ( stats_mask & ( 1 << p -> stats_list[ i ] -> type ) ) )
+      continue;
+
+    if ( has_avoidance( p -> stats_list[ i ] -> direct_results ) )
+      return true;
+
+    if ( has_avoidance( p -> stats_list[ i ] -> tick_results ) )
+      return true;
+  }
+
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+  {
+    if ( player_has_avoidance( p -> pet_list[ i ], stats_mask ) )
+      return true;
+  }
+
+  return false;
+}
+
+bool player_has_multistrike( player_t* p, unsigned stats_mask )
+{
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+  {
+    if ( ! ( stats_mask & ( 1 << p -> stats_list[ i ] -> type ) ) )
+      continue;
+
+    if ( has_multistrike( p -> stats_list[ i ] -> direct_results ) )
+      return true;
+
+    if ( has_multistrike( p -> stats_list[ i ] -> tick_results ) )
+      return true;
+  }
+
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+  {
+    if ( player_has_multistrike( p -> pet_list[ i ], stats_mask ) )
+      return true;
+  }
+
+  return false;
+}
+
+bool player_has_block( player_t* p, unsigned stats_mask )
+{
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+  {
+    if ( ! ( stats_mask & ( 1 << p -> stats_list[ i ] -> type ) ) )
+      continue;
+
+    if ( has_block( p -> stats_list[ i ] ) )
+      return true;
+  }
+
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+  {
+    if ( player_has_block( p -> pet_list[ i ], stats_mask ) )
+      return true;
+  }
+
+  return false;
+}
+
+bool player_has_glance( player_t* p, unsigned stats_mask )
+{
+  for ( size_t i = 0; i < p -> stats_list.size(); ++i )
+  {
+    if ( ! ( stats_mask & ( 1 << p -> stats_list[ i ] -> type ) ) )
+      continue;
+
+    if ( p -> stats_list[ i ] -> direct_results[ RESULT_GLANCE ].count.mean() > 0 )
+      return true;
+  }
+
+  for ( size_t i = 0; i < p -> pet_list.size(); ++i )
+  {
+    if ( player_has_glance( p -> pet_list[ i ], stats_mask ) )
+      return true;
+  }
+
+  return false;
+}
+
+std::string output_action_name( stats_t* s, player_t* actor )
+{
+  std::string href = "#";
+  std::string rel = " rel=\"lvl=" + util::to_string( s -> player -> level ) + "\"";
+  std::string prefix, suffix, class_attr;
+  unsigned id = 0;
+
+  if ( s -> player -> sim -> report_details )
+    class_attr = " class=\"toggle-details\"";
+
+  for ( size_t i = 0; i < s -> action_list.size(); i++ )
+  {
+    if ( ( id = s -> action_list[ i ] -> id ) > 1 )
+      break;
+  }
+
+  if ( id > 1 )
+  {
+    href = "http://";
+    href += ( s -> player -> dbc.ptr ? "ptr" : "www" );
+    href += ".wowhead.com/spell=";
+    href += util::to_string( id );
+
+    std::string name = s -> player -> dbc.spell( id ) -> name_cstr();
+    util::tokenize( name );
+    std::string::size_type offset = s -> name_str.find( name );
+    // Add an affix to the name, if the name does not match the 
+    // spell name. Affix is either the prefix- or suffix portion of the 
+    // non matching parts of the stats name.
+    if ( offset != std::string::npos && name != s -> name_str )
+    {
+      // Suffix
+      if ( offset == 0 )
+      {
+        std::string::size_type cut_pos = name.size();
+        //if ( s -> name_str[ cut_pos ] == '_' )
+        //  cut_pos++;
+
+        suffix += " (" + s -> name_str.substr( cut_pos ) + ")";
+      }
+      // Prefix
+      else if ( offset > 0 )
+      {
+        // if ( s -> name_str[ offset - 1 ] == '_' )
+        //   offset--;
+
+        prefix += " (" + s -> name_str.substr( 0, offset ) + ")";
+      }
+    }
+    else if ( offset == std::string::npos )
+      suffix += " (" + s -> name_str + ")";
+  }
+
+  // If we are printing a stats object that belongs to a pet, for an actual
+  // actor, print out the pet name too
+  if ( actor && ! actor -> is_pet() && s -> player -> is_pet() )
+    suffix += " (" + s -> player -> name_str + ")";
+
+  std::string name;
+  if ( s -> player -> sim -> report_details )
+  {
+    name += prefix + "&nbsp;";
+    name += "<a href=\"" + href + "\"" + class_attr;
+    //if ( id > 1 )
+    //  name += rel;
+    name += ">";
+    name += s -> name_str;
+    name += "</a>";
+    name += suffix;
+  }
+  else
+    name = s -> name_str;
+
+  return name;
+}
+
 // print_html_action_info =================================================
 
-double mean_damage( std::vector<stats_t::stats_results_t> result )
+double mean_damage( const std::vector<stats_t::stats_results_t>& result )
 {
   double mean = 0;
   size_t count = 0;
 
   for ( size_t i = 0; i < result.size(); i++ )
   {
+    // Skip multistrike for mean damage
+    if ( i == RESULT_MULTISTRIKE || i == RESULT_MULTISTRIKE_CRIT )
+      continue;
+
     mean  += result[ i ].actual_amount.sum();
     count += result[ i ].actual_amount.count();
   }
@@ -27,179 +253,175 @@ double mean_damage( std::vector<stats_t::stats_results_t> result )
   return mean;
 }
 
-void print_html_action_damage( report::sc_html_stream& os, stats_t* s, player_t* p )
+void print_html_action_summary( report::sc_html_stream& os, unsigned stats_mask, int result_type, const stats_t* s, player_t* p )
 {
+  std::string type_str;
+  if ( result_type == 1 )
+    type_str = "Periodic";
+  else
+    type_str = "Direct";
 
-  std::string compound_dps     = "";
-  std::string compound_dps_pct = "";
-  double cDPS    = s -> portion_aps.mean();
-  double cDPSpct = s -> portion_amount;
+  const std::vector<stats_t::stats_results_t>& results = result_type == 1 ? s -> tick_results : s -> direct_results;
+  const std::vector<stats_t::stats_results_t>& block_results = result_type == 1 ? s -> tick_results_detail : s -> direct_results_detail;
+
+  // Result type
+  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\">%s</td>\n", type_str.c_str() );
+
+  // Count
+  double count = ( result_type == 1 ) ? s -> num_tick_results.mean() : s -> num_direct_results.mean();
+  count -= results[ RESULT_MULTISTRIKE ].count.mean();
+  count -= results[ RESULT_MULTISTRIKE_CRIT ].count.mean();
+
+  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n", count );
+
+  // Hit results
+  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n",
+      results[ RESULT_HIT ].actual_amount.pretty_mean() );
+
+  // Crit results
+  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n",
+      results[ RESULT_CRIT ].actual_amount.pretty_mean() );
+
+  // Mean amount
+  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n",
+      mean_damage( results ) );
+
+  // Crit%
+  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n",
+    results[ RESULT_CRIT ].pct );
+
+  if ( player_has_avoidance( p, stats_mask ) )
+    os.printf(
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n",   // direct_results Avoid%
+      results[ RESULT_MISS ].pct +
+      results[ RESULT_DODGE  ].pct +
+      results[ RESULT_PARRY  ].pct );
+
+  if ( player_has_glance( p, stats_mask ) )
+    os.printf(
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n",  // direct_results Glance%
+      results[ RESULT_GLANCE ].pct );
+
+  if ( player_has_block( p, stats_mask ) )
+    os.printf(
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n", // direct_results Block%
+      block_results[ FULLTYPE_HIT_BLOCK ].pct +
+      block_results[ FULLTYPE_HIT_CRITBLOCK ].pct +
+      block_results[ FULLTYPE_GLANCE_BLOCK ].pct +
+      block_results[ FULLTYPE_GLANCE_CRITBLOCK ].pct +
+      block_results[ FULLTYPE_CRIT_BLOCK ].pct +
+      block_results[ FULLTYPE_CRIT_CRITBLOCK ].pct );
+
+  if ( player_has_multistrike( p, stats_mask ) )
+  {
+    os.printf(
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"     // count
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"     // direct_results MULTISTRIKE_HIT
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"     // direct_results MULTISTRIKE_CRIT
+      "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n",  // direct_results CRIT%
+      results[ RESULT_MULTISTRIKE ].count.pretty_mean() + 
+      results[ RESULT_MULTISTRIKE_CRIT ].count.pretty_mean(),
+      results[ RESULT_MULTISTRIKE ].actual_amount.pretty_mean(),
+      results[ RESULT_MULTISTRIKE_CRIT ].actual_amount.pretty_mean(),
+      results[ RESULT_MULTISTRIKE_CRIT ].pct );
+  }
+
+  if ( player_has_tick_results( p, stats_mask ) )
+  {
+    if ( util::str_in_str_ci( type_str, "Periodic" ) )
+      os.printf(
+        "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n",   // Uptime%
+        100 * s -> total_tick_time.mean() / p -> collected_data.fight_length.mean() );
+    else
+      os.printf("\t\t\t\t\t\t\t\t<td class=\"right small\">&nbsp;</td>\n");
+  }
+
+}
+
+void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, stats_t* s, int j, int n_columns, player_t* actor = 0 )
+{
+  player_t* p;
+  if ( s -> player -> is_pet() )
+    p = s -> player -> cast_pet() -> owner;
+  else
+    p = s -> player;
+
+  std::string row_class = ( j & 1 ) ? " class=\"odd\"" : "";
+
+  os << "\t\t\t\t\t\t\t<tr" << row_class << ">\n";
+  int result_rows = has_amount_results( s -> direct_results ) + has_amount_results( s -> tick_results );
+  if ( result_rows == 0 )
+    result_rows = 1;
+
+  // Ability name
+  os << "\t\t\t\t\t\t\t\t<td class=\"left small\" rowspan=\"" << result_rows << "\">";
+  if ( s -> parent && s -> parent -> player == actor )
+    os << "\t\t\t\t\t\t\t\t&nbsp;&nbsp;&nbsp;\n";
+
+  os << output_action_name( s, actor );
+  os << "</td>\n";
+
+  // DPS and DPS %
+  std::string compound_aps     = "";
+  std::string compound_aps_pct = "";
+  double cAPS    = s -> portion_aps.mean();
+  double cAPSpct = s -> portion_amount;
 
   for ( size_t i = 0, num_children = s -> children.size(); i < num_children; i++ )
   {
-    cDPS    += s -> children[ i ] -> portion_apse.mean();
-    cDPSpct += s -> children[ i ] -> portion_amount;
+    cAPS    += s -> children[ i ] -> portion_apse.mean();
+    cAPSpct += s -> children[ i ] -> portion_amount;
   }
 
-  if ( cDPS > s -> portion_aps.mean()  ) compound_dps     = "&nbsp;(" + util::to_string( cDPS, 0 ) + ")";
-  if ( cDPSpct > s -> portion_amount ) compound_dps_pct = "&nbsp;(" + util::to_string( cDPSpct * 100, 1 ) + "%)";
+  if ( cAPS > s -> portion_aps.mean()  ) compound_aps     = "&nbsp;(" + util::to_string( cAPS, 0 ) + ")";
+  if ( cAPSpct > s -> portion_amount ) compound_aps_pct = "&nbsp;(" + util::to_string( cAPSpct * 100, 1 ) + "%)";
 
-  os.printf(
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f%s</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%%s</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.2fsec</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t\t\t</tr>\n",
-    s -> portion_aps.pretty_mean(), compound_dps.c_str(),
-    s -> portion_amount * 100, compound_dps_pct.c_str(),
-    s -> num_executes.pretty_mean(),
-    s -> total_intervals.pretty_mean(),
-    s -> ape,
-    s -> apet,
-    s -> direct_results[ RESULT_HIT  ].actual_amount.pretty_mean(),
-    s -> direct_results[ RESULT_CRIT ].actual_amount.pretty_mean(),
-    mean_damage( s -> direct_results ),
-    s -> direct_results[ RESULT_CRIT ].pct,
-    s -> direct_results[ RESULT_MISS ].pct +
-    s -> direct_results[ RESULT_DODGE  ].pct +
-    s -> direct_results[ RESULT_PARRY  ].pct,
-    s -> direct_results[ RESULT_GLANCE ].pct,
-    s -> direct_results_detail[ FULLTYPE_HIT_BLOCK ].pct +
-    s -> direct_results_detail[ FULLTYPE_HIT_CRITBLOCK ].pct +
-    s -> direct_results_detail[ FULLTYPE_GLANCE_BLOCK ].pct +
-    s -> direct_results_detail[ FULLTYPE_GLANCE_CRITBLOCK ].pct +
-    s -> direct_results_detail[ FULLTYPE_CRIT_BLOCK ].pct +
-    s -> direct_results_detail[ FULLTYPE_CRIT_CRITBLOCK ].pct,
-    s -> num_ticks.pretty_mean(),
-    s -> tick_results[ RESULT_HIT  ].actual_amount.pretty_mean(),
-    s -> tick_results[ RESULT_CRIT ].actual_amount.pretty_mean(),
-    mean_damage( s -> tick_results ),
-    s -> tick_results[ RESULT_CRIT ].pct,
-    s -> tick_results[ RESULT_MISS ].pct +
-    s -> tick_results[ RESULT_DODGE ].pct +
-    s -> tick_results[ RESULT_PARRY ].pct,
-    100 * s -> total_tick_time.mean() / p -> collected_data.fight_length.mean() );
-}
+  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.0f%s</td>\n",
+    result_rows,
+    s -> portion_aps.pretty_mean(), compound_aps.c_str() );
+  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.1f%%%s</td>\n",
+    result_rows,
+    s -> portion_amount * 100, compound_aps_pct.c_str() );
 
-void print_html_action_healing( report::sc_html_stream& os, stats_t* s, player_t* p )
-{
+  // Number of executes
+  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.1f</td>\n",
+    result_rows,
+    s -> num_executes.pretty_mean() );
 
-  std::string compound_dps     = "";
-  std::string compound_dps_pct = "";
-  double cDPS    = s -> portion_aps.mean();
-  double cDPSpct = s -> portion_amount;
+  // Execute interval
+  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.2fsec</td>\n",
+    result_rows,
+    s -> total_intervals.pretty_mean() );
 
-  for ( size_t i = 0, num_children = s -> children.size(); i < num_children; i++ )
+  // Amount per execute
+  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.0f</td>\n",
+    result_rows,
+    s -> ape );
+
+  // Amount per execute time
+  os.printf( "\t\t\t\t\t\t\t\t<td class=\"right small\" rowspan=\"%d\">%.0f</td>\n",
+    result_rows,
+    s -> apet );
+
+  bool periodic_only = false;
+  if ( has_amount_results( s -> direct_results ) )
+    print_html_action_summary( os, stats_mask, 0, s, p );
+  else if ( has_amount_results( s -> tick_results ) )
   {
-    cDPS    += s -> children[ i ] -> portion_apse.mean();
-    cDPSpct += s -> children[ i ] -> portion_amount;
-  }
-
-  if ( cDPS > s -> portion_aps.mean()  ) compound_dps     = "&nbsp;(" + util::to_string( cDPS, 0 ) + ")";
-  if ( cDPSpct > s -> portion_amount ) compound_dps_pct = "&nbsp;(" + util::to_string( cDPSpct * 100, 1 ) + "%)";
-
-  os.printf(
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f%s</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%%s</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.2fsec</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.0f</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t\t\t\t<td class=\"right small\">%.1f%%</td>\n"
-    "\t\t\t\t\t\t\t</tr>\n",
-    s -> portion_aps.pretty_mean(), compound_dps.c_str(),
-    s -> portion_amount * 100, compound_dps_pct.c_str(),
-    s -> num_executes.pretty_mean(),
-    s -> total_intervals.pretty_mean(),
-    s -> ape,
-    s -> apet,
-    s -> direct_results[ RESULT_HIT  ].actual_amount.pretty_mean(),
-    s -> direct_results[ RESULT_CRIT ].actual_amount.pretty_mean(),
-    mean_damage( s -> direct_results ),
-    s -> direct_results[ RESULT_CRIT ].pct,
-    s -> num_ticks.pretty_mean(),
-    s -> tick_results[ RESULT_HIT  ].actual_amount.pretty_mean(),
-    s -> tick_results[ RESULT_CRIT ].actual_amount.pretty_mean(),
-    mean_damage( s -> tick_results ),
-    s -> tick_results[ RESULT_CRIT ].pct,
-    100 * s -> total_tick_time.mean() / p -> collected_data.fight_length.mean() );
-}
-
-void print_html_action_info( report::sc_html_stream& os, stats_t* s, player_t* p, int j )
-{
-  int id = 0;
-
-  os << "\t\t\t\t\t\t\t<tr";
-  if ( j & 1 )
-  {
-    os << " class=\"odd\"";
-  }
-  os << ">\n";
-
-  for ( size_t i = 0; i < s -> player -> action_list.size(); ++i )
-  {
-    action_t* a = s -> player -> action_list[ i ];
-    if ( a -> stats != s ) continue;
-    id = a -> id;
-    if ( ! a -> background ) break;
-  }
-
-  os << "\t\t\t\t\t\t\t\t<td class=\"left small\">";
-
-  if ( id > 0 || p -> sim -> report_details )
-  {
-    std::string href = "#";
-
-    if ( id > 0 )
-    {
-      href = "http://";
-      href += ( p -> dbc.ptr ? "ptr" : "www" );
-      href += ".wowhead.com/spell=";
-      href += util::to_string( id );
-      href += "?lvl=";
-      href += util::to_string( p -> level );
-    }
-
-    const char* class_attr = "";
-    if ( p -> sim -> report_details )
-      class_attr = " class=\"toggle-details\"";
-
-    os.printf( "<a href=\"%s\"%s>%s</a></td>\n",
-               href.c_str(), class_attr, s -> name_str.c_str() );
+    periodic_only = true;
+    print_html_action_summary( os, stats_mask, 1, s, p );
   }
   else
-    os.printf( "%s</td>\n", s -> name_str.c_str() );
+    os.printf("\t\t\t\t\t\t\t\t<td class=\"right small\" colspan=\"%d\"></td>\n", n_columns );
 
-  if ( s -> type == STATS_HEAL || s -> type == STATS_ABSORB )
-    print_html_action_healing( os, s, p );
-  else
-    print_html_action_damage( os, s, p );
+  os.printf( "\t\t\t\t\t\t\t</tr>\n" );
 
+  if ( ! periodic_only && has_amount_results( s -> tick_results ) )
+  {
+    os << "\t\t\t\t\t\t\t<tr" << row_class << ">\n";
+    print_html_action_summary( os, stats_mask, 1, s, p );
+    os << "\t\t\t\t\t\t\t</tr>\n";
+  }
 
   if ( p -> sim -> report_details )
   {
@@ -214,7 +436,7 @@ void print_html_action_info( report::sc_html_stream& os, stats_t* s, player_t* p
       aps_distribution_str = "<img src=\"" + s -> aps_distribution_chart + "\" alt=\"" + ( s -> type == STATS_DMG ? "DPS" : "HPS" ) + " Distribution Chart\" />\n";
     }
     os << "\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
-       << "\t\t\t\t\t\t\t\t<td colspan=\"21\" class=\"filler\">\n";
+       << "\t\t\t\t\t\t\t\t<td colspan=\"" << ( 7 + n_columns ) << "\" class=\"filler\">\n";
 
     // Stat Details
     os.printf(
@@ -487,7 +709,7 @@ void print_html_action_info( report::sc_html_stream& os, stats_t* s, player_t* p
     
     os << "\t\t\t\t\t\t\t\t\t</table>\n";
 
-    os << "\t\t\t\t\t\t\t\t\t<div class=\"clear\"></div>\n";
+    os << "\t\t\t\t\t\t\t\t\t<div class=\"clear\">&nbsp;</div>\n";
 
     os.printf(
       "\t\t\t\t\t\t\t\t\t%s\n",
@@ -496,7 +718,7 @@ void print_html_action_info( report::sc_html_stream& os, stats_t* s, player_t* p
       "\t\t\t\t\t\t\t\t\t%s\n",
       aps_distribution_str.c_str() );
 
-    os << "\t\t\t\t\t\t\t\t\t<div class=\"clear\"></div>\n";
+    os << "\t\t\t\t\t\t\t\t\t<div class=\"clear\">&nbsp;</div>\n";
     // Action Details
     std::vector<std::string> processed_actions;
 
@@ -563,8 +785,7 @@ void print_html_action_info( report::sc_html_stream& os, stats_t* s, player_t* p
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">tooltip:</span><span class=\"tooltip\">%s</span></li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">description:</span><span class=\"tooltip\">%s</span></li>\n"
           "\t\t\t\t\t\t\t\t\t\t</ul>\n"
-          "\t\t\t\t\t\t\t\t\t</div>\n"
-          "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n",
+          "\t\t\t\t\t\t\t\t\t</div>\n",
           a -> data().id(),
           a -> data().name_cstr(),
           util::school_type_string( a -> data().get_school_type() ),
@@ -575,13 +796,15 @@ void print_html_action_info( report::sc_html_stream& os, stats_t* s, player_t* p
       if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
       {
         os.printf(
+          "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n"
           "\t\t\t\t\t\t\t\t\t\t<h5>Direct Damage</h5>\n"
           "\t\t\t\t\t\t\t\t\t\t<ul>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">may_crit:</span>%s</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">direct_power_mod:</span>%.6f</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">base_dd_min:</span>%.2f</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">base_dd_max:</span>%.2f</li>\n"
-          "\t\t\t\t\t\t\t\t\t\t</ul>\n",
+          "\t\t\t\t\t\t\t\t\t\t</ul>\n"
+          "\t\t\t\t\t\t\t\t\t</div>\n",
           a -> may_crit ? "true" : "false",
           a -> direct_power_mod,
           a -> base_dd_min,
@@ -590,6 +813,7 @@ void print_html_action_info( report::sc_html_stream& os, stats_t* s, player_t* p
       if ( a -> num_ticks )
       {
         os.printf(
+          "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n"
           "\t\t\t\t\t\t\t\t\t\t<h5>Damage Over Time</h5>\n"
           "\t\t\t\t\t\t\t\t\t\t<ul>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">tick_may_crit:</span>%s</li>\n"
@@ -600,7 +824,8 @@ void print_html_action_info( report::sc_html_stream& os, stats_t* s, player_t* p
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">base_tick_time:</span>%.2f</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">hasted_ticks:</span>%s</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">dot_behavior:</span>%s</li>\n"
-          "\t\t\t\t\t\t\t\t\t\t</ul>\n",
+          "\t\t\t\t\t\t\t\t\t\t</ul>\n"
+          "\t\t\t\t\t\t\t\t\t</div>\n",
           a -> tick_may_crit ? "true" : "false",
           a -> tick_zero ? "true" : "false",
           a -> tick_power_mod,
@@ -614,13 +839,15 @@ void print_html_action_info( report::sc_html_stream& os, stats_t* s, player_t* p
       if ( a -> player -> type == DEATH_KNIGHT )
       {
         os.printf(
+          "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n"
           "\t\t\t\t\t\t\t\t\t\t<h5>Rune Information</h5>\n"
           "\t\t\t\t\t\t\t\t\t\t<ul>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">Blood Cost:</span>%d</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">Frost Cost:</span>%d</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">Unholy Cost:</span>%d</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">Runic Power Gain:</span>%.2f</li>\n"
-          "\t\t\t\t\t\t\t\t\t\t</ul>\n",
+          "\t\t\t\t\t\t\t\t\t\t</ul>\n"
+          "\t\t\t\t\t\t\t\t\t</div>\n",
           a -> data().rune_cost() & 0x1,
           ( a -> data().rune_cost() >> 4 ) & 0x1,
           ( a -> data().rune_cost() >> 2 ) & 0x1,
@@ -629,18 +856,19 @@ void print_html_action_info( report::sc_html_stream& os, stats_t* s, player_t* p
       if ( a -> weapon )
       {
         os.printf(
+          "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n"
           "\t\t\t\t\t\t\t\t\t\t<h5>Weapon</h5>\n"
           "\t\t\t\t\t\t\t\t\t\t<ul>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">normalized:</span>%s</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">weapon_power_mod:</span>%.6f</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">weapon_multiplier:</span>%.2f</li>\n"
-          "\t\t\t\t\t\t\t\t\t\t</ul>\n",
+          "\t\t\t\t\t\t\t\t\t\t</ul>\n"
+          "\t\t\t\t\t\t\t\t\t</div>\n",
           a -> normalize_weapon_speed ? "true" : "false",
           a -> weapon_power_mod,
           a -> weapon_multiplier );
       }
-      os << "\t\t\t\t\t\t\t\t\t</div>\n"
-         << "\t\t\t\t\t\t\t\t\t<div class=\"clear\"></div>\n";
+      os << "\t\t\t\t\t\t\t\t\t<div class=\"clear\">&nbsp;</div>\n";
     }
 
     os << "\t\t\t\t\t\t\t\t</td>\n"
@@ -1276,10 +1504,6 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
         os.printf(
           "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">lootrank</a></li>\n",
           ri.gear_weights_lootrank_link.c_str() );
-      if ( !ri.gear_weights_wowupgrade_link.empty() )
-        os.printf(
-          "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">wowupgrade</a></li>\n",
-          ri.gear_weights_wowupgrade_link.c_str() );
       os << "\t\t\t\t\t\t\t\t\t</ul>\n";
       os << "\t\t\t\t\t\t\t\t</td>\n";
       os << "\t\t\t\t\t\t\t</tr>\n";
@@ -1291,11 +1515,6 @@ void print_html_player_scale_factors( report::sc_html_stream& os, sim_t* sim, pl
         "\t\t\t\t\t\t\t\t<td colspan=\"%i\" class=\"filler\">\n"
         "\t\t\t\t\t\t\t\t\t<ul class=\"float\">\n",
         colspan );
-
-      // wowreforge
-      os.printf(
-        "\t\t\t\t\t\t\t\t\t\t<li><a href=\"%s\" class=\"ext\">wowreforge</a></li>\n",
-        ri.gear_weights_wowreforge_link.c_str() );
 
       // askmrrobot
       if ( ! ri.gear_weights_askmrrobot_link.empty() )
@@ -1430,7 +1649,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
 
       std::string als = util::encode_html( ( alist -> name_str == "default" ) ? "Default action list" : ( "actions." + alist -> name_str ).c_str() );
       if ( ! alist -> action_list_comment_str.empty() )
-        als += "&nbsp;<small><em>" + util::encode_html( alist -> action_list_comment_str.c_str() ) + "</small></em>";
+        als += "&nbsp;<small><em>" + util::encode_html( alist -> action_list_comment_str.c_str() ) + "</em></small>";
       os.printf(
         "\t\t\t\t\t\t\t\t<table class=\"sc\">\n"
         "\t\t\t\t\t\t\t\t\t<tr>\n"
@@ -1456,7 +1675,7 @@ void print_html_player_action_priority_list( report::sc_html_stream& os, sim_t* 
     os << ">\n";
     std::string as = util::encode_html( a -> signature -> action_.c_str() );
     if ( ! a -> signature -> comment_.empty() )
-      as += "<br/><em><small>" + util::encode_html( a -> signature -> comment_.c_str() ) + "</small></em>";
+      as += "<br/><small><em>" + util::encode_html( a -> signature -> comment_.c_str() ) + "</em></small>";
 
     os.printf(
       "\t\t\t\t\t\t\t\t\t\t<th class=\"right\" style=\"vertical-align:top\">%c</th>\n"
@@ -1673,7 +1892,7 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
   os.tabs() << "<tr>\n";
   ++os;
   os.tabs() << "<th class=\"left small\">" << util::encode_html( p -> name() ) << "</th>\n";
-  os.tabs() << "<td colspan=\"4\" class=\"filler\"></td>\n";
+  os.tabs() << "<td colspan=\"6\" class=\"filler\"></td>\n";
   --os;
   os.tabs() << "</tr>\n";
 
@@ -1703,7 +1922,7 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
           os.tabs() << "<tr>\n";
           ++os;
           os.tabs() << "<th class=\"left small\">pet - " << util::encode_html( pet -> name_str ) << "</th>\n";
-          os.tabs() << "<td colspan=\"4\" class=\"filler\"></td>\n";
+          os.tabs() << "<td colspan=\"6\" class=\"filler\"></td>\n";
           --os;
           os.tabs() << "</tr>\n";
         }
@@ -1715,25 +1934,36 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
   --os;
   os.tabs() << "</table>\n";
 
-  // Resource Gains Section
-  os.tabs() << "<table class=\"sc\">\n";
-  ++os;
-  os.tabs() << "<tr>\n";
-  ++os;
-  os.tabs() << "<th>Resource Gains</th>\n";
-  os.tabs() << "<th>Type</th>\n";
-  os.tabs() << "<th>Count</th>\n";
-  os.tabs() << "<th>Total</th>\n";
-  os.tabs() << "<th>Average</th>\n";
-  os.tabs() << "<th colspan=\"2\">Overflow</th>\n";
-  --os;
-  os.tabs() << "</tr>\n";
-
+  std::array<double, RESOURCE_MAX> total_player_gains = std::array<double, RESOURCE_MAX>();
+  get_total_player_gains( *p, total_player_gains );
+  bool has_gains = false;
+  for ( size_t i = 0; i < RESOURCE_MAX; i++ )
   {
+    if ( total_player_gains[ i ] > 0 )
+    {
+      has_gains = true;
+      break;
+    }
+  }
+
+  if ( has_gains )
+  {
+    // Resource Gains Section
+    os.tabs() << "<table class=\"sc\">\n";
+    ++os;
+    os.tabs() << "<tr>\n";
+    ++os;
+    os.tabs() << "<th>Resource Gains</th>\n";
+    os.tabs() << "<th>Type</th>\n";
+    os.tabs() << "<th>Count</th>\n";
+    os.tabs() << "<th>Total</th>\n";
+    os.tabs() << "<th>Average</th>\n";
+    os.tabs() << "<th colspan=\"2\">Overflow</th>\n";
+    --os;
+    os.tabs() << "</tr>\n";
+
     int j = 0;
 
-    std::array<double, RESOURCE_MAX> total_player_gains = std::array<double, RESOURCE_MAX>();
-    get_total_player_gains( *p, total_player_gains );
     for ( size_t i = 0; i < p -> gain_list.size(); ++i )
     {
       gain_t* g = p -> gain_list[ i ];
@@ -1774,9 +2004,9 @@ void print_html_player_resources( report::sc_html_stream& os, player_t* p, playe
         print_html_gain( os, g, total_pet_gains, j );
       }
     }
+    --os;
+    os.tabs() << "</table>\n";
   }
-  --os;
-  os.tabs() << "</table>\n";
 
   // Resource Consumption Section
   os.tabs() << "<table class=\"sc\">\n";
@@ -2078,10 +2308,37 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
   }
   os << ">\n";
   if ( report_details )
-    os.printf(
-      "\t\t\t\t\t\t\t\t<td class=\"left\"><a href=\"#\" class=\"toggle-details\"%s>%s</a></td>\n",
-      b -> data().ok() ? ( " rel=\"spell=" + util::to_string( b -> data().id() ) + "\"" ).c_str() : "",
-      buff_name.c_str() );
+  {
+    if ( b -> data().ok() )
+    {
+      std::string href;
+      if ( b -> data().id() )
+      {
+        href = "http://";
+        if ( b -> sim -> dbc.ptr )
+          href += "ptr";
+        else
+          href += "www";
+        href += ".wowhead.com/spell=";
+        href += util::to_string( b -> data().id() );
+      }
+
+      std::string affix;
+      std::string buff_spell_name = b -> data().name_cstr();
+      util::tokenize( buff_spell_name );
+      if ( buff_spell_name != buff_name )
+        affix = " (" +  buff_name + ")";
+
+      os.printf(
+        "\t\t\t\t\t\t\t\t<td class=\"left\"><a href=\"%s\" class=\"toggle-details\">%s</a>%s</td>\n",
+          href.c_str(), buff_name.c_str(), affix.c_str(), b -> player -> level );
+    }
+    else
+    {
+      os.printf(
+        "\t\t\t\t\t\t\t\t<td class=\"left\"><a href=\"#\" class=\"toggle-details\">%s</a></td>\n", buff_name.c_str() );
+    }
+  }
   else
     os.printf(
       "\t\t\t\t\t\t\t\t<td class=\"left\">%s</td>\n",
@@ -2108,9 +2365,9 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
   {
     os.printf(
       "\t\t\t\t\t\t\t<tr class=\"details hide\">\n"
-      "\t\t\t\t\t\t\t<td colspan=\"7\" class=\"filler\">\n"
+      "\t\t\t\t\t\t\t<td colspan=\"%d\" class=\"filler\">\n"
       "\t\t\t\t\t\t\t<table><tr>\n"
-      "\t\t\t\t\t\t\t\t<td colspan=\"3\" valign=\"top\" class=\"filler\">\n"
+      "\t\t\t\t\t\t\t\t<td style=\"vertical-align: top;\" class=\"filler\">\n"
       "\t\t\t\t\t\t\t\t\t<h4>Buff details</h4>\n"
       "\t\t\t\t\t\t\t\t\t<ul>\n"
       "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">buff initial source:</span>%s</li>\n"
@@ -2119,7 +2376,9 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
       "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">duration:</span>%.2f</li>\n"
       "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
       "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_chance:</span>%.2f%%</li>\n"
-      "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_value:</span>%.2f</li>\n",
+      "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">default_value:</span>%.2f</li>\n"
+      "\t\t\t\t\t\t\t\t\t</ul>\n",
+      b -> constant ? 1 : 7,
       b -> source ? util::encode_html( b -> source -> name() ).c_str() : "",
       b -> cooldown -> name_str.c_str(),
       b -> max_stack(),
@@ -2143,8 +2402,8 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
           util::stat_type_string( stat_buff -> stats[ j ].stat ),
           stat_buff -> stats[ j ].amount );
       }
+      os << "\t\t\t\t\t\t\t\t\t</ul>\n";
     }
-    os << "\t\t\t\t\t\t\t\t\t</ul>\n";
 
     os << "\t\t\t\t\t\t\t\t\t<h4>Stack Uptimes</h4>\n"
        << "\t\t\t\t\t\t\t\t\t<ul>\n";
@@ -2176,13 +2435,13 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
     if ( b -> data().ok() )
     {
       os.printf(
-        "\t\t\t\t\t\t\t\t<td colspan=\"3\" valign=\"top\" class=\"filler\">\n"
+        "\t\t\t\t\t\t\t\t<td style=\"vertical-align: top;\" class=\"filler\">\n"
         "\t\t\t\t\t\t\t\t\t<h4>Spelldata details</h4>\n"
         "\t\t\t\t\t\t\t\t\t<ul>\n"
-        "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">id:</span>%i</li>\n"
-        "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">name:</span>%s</li>\n"
-        "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">tooltip:</span><span class=\"tooltip\">%s</span></li>\n"
-        "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">description:</span><span class=\"tooltip\">%s</span></li>\n"
+        "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">id:</span>%i</li>\n"
+        "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">name:</span>%s</li>\n"
+        "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">tooltip:</span><span class=\"tooltip\">%s</span></li>\n"
+        "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">description:</span><span class=\"tooltip\">%s</span></li>\n"
         "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">max_stacks:</span>%.i</li>\n"
         "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">duration:</span>%.2f</li>\n"
         "\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">cooldown:</span>%.2f</li>\n"
@@ -2205,7 +2464,7 @@ void print_html_player_buff( report::sc_html_stream& os, buff_t* b, int report_d
       std::string uptime_chart = chart::timeline( b -> player, b -> uptime_array.data(), "Average Uptime", 0, "ff0000", static_cast<size_t>( b -> sim -> simulation_length.max() ) );
       if ( ! uptime_chart.empty() )
       {
-        os << "\t\t\t\t\t\t\t\t<tr><td colspan=\"7\" class=\"filler\"><img src=\"" << uptime_chart << "\" alt=\"Average Uptime Timeline Chart\" />\n</td></tr>\n";
+        os << "\t\t\t\t\t\t\t\t<tr><td colspan=\"2\" class=\"filler\"><img src=\"" << uptime_chart << "\" alt=\"Average Uptime Timeline Chart\" />\n</td></tr>\n";
       }
     }
     os << "\t\t\t\t\t\t\t</table></td>\n";
@@ -2417,7 +2676,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   }
   // spacer
   if ( cd.hps.mean() > 0 && cd.dps.mean() > 0 )
-    os << "\t\t\t\t\t\t\t\t<th>&nbsp</th>\n";
+    os << "\t\t\t\t\t\t\t\t<th>&nbsp;</th>\n";
   // Heal
   if ( cd.hps.mean() > 0 )
   {
@@ -2429,7 +2688,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   }
   // spacer
   if ( cd.hps.mean() > 0 && cd.aps.mean() > 0 )
-    os << "\t\t\t\t\t\t\t\t<th>&nbsp</th>\n";
+    os << "\t\t\t\t\t\t\t\t<th>&nbsp;</th>\n";
   // Absorb
   if ( cd.aps.mean() > 0 )
   {
@@ -2463,7 +2722,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   }
   // Spacer
   if ( cd.dps.mean() > 0 && cd.hps.mean() > 0 )
-    os << "\t\t\t\t\t\t\t\t<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n";
+    os << "\t\t\t\t\t\t\t\t<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
   // Heal
   if ( cd.hps.mean() > 0 )
   {
@@ -2486,7 +2745,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   }
   // Spacer
   if ( cd.aps.mean() > 0 && cd.hps.mean() > 0 )
-    os << "\t\t\t\t\t\t\t\t<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n";
+    os << "\t\t\t\t\t\t\t\t<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
   // Absorb
   if ( cd.aps.mean() > 0 )
   {
@@ -2517,7 +2776,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-dtps\" class=\"help\">DTPS</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">DTPS Error</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">DTPS Range</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th>&nbsp</th>\n"
+       << "\t\t\t\t\t\t\t\t<th>&nbsp;</th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmi\" class=\"help\">TMI</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">TMI Error</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">TMI Min</a></th>\n"
@@ -2537,7 +2796,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
       dtps_range, cd.dtps.mean() ? dtps_range / cd.dtps.mean() * 100.0 : 0 );
     
     // spacer
-    os << "\t\t\t\t\t\t\t\t<td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n";
+    os << "\t\t\t\t\t\t\t\t<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>\n";
     
     double tmi_error = sim_t::distribution_mean_error( *sim, p -> collected_data.theck_meloree_index );
     double tmi_range = ( cd.theck_meloree_index.percentile( 0.95 ) - cd.theck_meloree_index.percentile( 0.05 ) ) / 2;
@@ -2709,172 +2968,263 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
 
 // print_html_player_abilities ==============================================
 
-void print_html_player_abilities( report::sc_html_stream& os, sim_t* sim, player_t* p )
+bool is_output_stat( unsigned mask, bool child, const stats_t* s )
+{
+  if ( s -> quiet )
+    return false;
+
+  if ( ! ( ( 1 << s -> type ) & mask ) )
+    return false;
+
+  if ( s -> num_executes.mean() <= 1 && s -> compound_amount == 0 && ! s -> player -> sim -> debug )
+    return false;
+
+  // If we are checking output on a non-child stats object, only return false
+  // when parent is found, if the actor of the parent stats object, and this
+  // object are the same.  The parent and child object types also must be
+  // equal.
+  if ( ! child && s -> parent && s -> parent -> player == s -> player && s -> parent -> type == s -> type )
+    return false;
+
+
+  return true;
+}
+
+void output_player_action( report::sc_html_stream& os,
+                                  unsigned& row,
+                                  unsigned cols,
+                                  unsigned mask,
+                                  stats_t* s,
+                                  player_t* actor )
+{
+  if ( ! is_output_stat( mask, false, s ) )
+    return;
+
+  print_html_action_info( os, mask, s, row++, cols );
+
+  for ( size_t child_idx = 0, end = s -> children.size(); child_idx < end; child_idx++ )
+  {
+    stats_t* child_stats = s -> children[ child_idx ];
+    if ( ! is_output_stat( mask, true, child_stats ) )
+      continue;
+
+    print_html_action_info( os, mask, child_stats, row++, cols, actor );
+  }
+}
+
+void output_player_damage_summary( report::sc_html_stream& os, player_t* actor )
+{
+  if ( actor -> collected_data.dmg.max() == 0 && ! actor -> sim -> debug )
+    return;
+
+  // Number of static columns in table
+  const int static_columns = 5;
+  // Number of dynamically changing columns
+  int n_optional_columns = 6;
+
+  // Abilities Section - Damage
+  os << "\t\t\t\t\t\t<table class=\"sc\">\n"
+      << "\t\t\t\t\t\t\t<tr>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"left small\">Damage Stats</th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps-pct\" class=\"help\">DPS%</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">Execute</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpe\" class=\"help\">DPE</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpet\" class=\"help\">DPET</a></th>\n"
+      // Optional columns begin here
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpet\" class=\"help\">Type</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpet\" class=\"help\">Count</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-avg\" class=\"help\">Avg</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%</a></th>\n";
+
+  if ( player_has_avoidance( actor, MASK_DMG ) )
+  {
+    os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-miss-pct\" class=\"help\">Avoid%</a></th>\n";
+    n_optional_columns++;
+  }
+
+  if ( player_has_glance( actor, MASK_DMG ) )
+  {
+    os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-glance-pct\" class=\"help\">G%</a></th>\n";
+    n_optional_columns++;
+  }
+
+  if ( player_has_block( actor, MASK_DMG ) )
+  {
+    os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-block-pct\" class=\"help\">B%</a></th>\n";
+    n_optional_columns++;
+  }
+
+  if ( player_has_multistrike( actor, MASK_DMG ) )
+  {
+    os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">M-Count</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">M-Hit</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">M-Crit</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">M-Crit%</a></th>\n";
+    n_optional_columns += 4;
+  }
+
+  if ( player_has_tick_results( actor, MASK_DMG ) )
+  {
+    os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-uptime\" class=\"help\">Up%</a></th>\n"
+       << "\t\t\t\t\t\t\t</tr>\n";
+    n_optional_columns++;
+  }
+
+  os << "\t\t\t\t\t\t\t<tr>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"left small\">" << util::encode_html( actor -> name() ) << "</th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"right small\">" << util::to_string( actor -> collected_data.dps.mean(), 0 ) << "</th>\n"
+      << "\t\t\t\t\t\t\t\t<td colspan=\"" << ( static_columns + n_optional_columns ) << "\" class=\"filler\"></td>\n"
+      << "\t\t\t\t\t\t\t</tr>\n";
+
+  unsigned n_row = 0;
+  for ( size_t i = 0; i < actor -> stats_list.size(); ++i )
+    output_player_action( os, n_row, n_optional_columns, MASK_DMG, actor -> stats_list[ i ], actor );
+
+  // Print pet statistics
+  for ( size_t i = 0; i < actor -> pet_list.size(); ++i )
+  {
+    pet_t* pet = actor -> pet_list[ i ];
+
+    bool first = true;
+    for ( size_t m = 0; m < pet -> stats_list.size(); ++m )
+    {
+      stats_t* s = pet -> stats_list[ m ];
+
+      if ( ! is_output_stat( MASK_DMG, false, s ) )
+        continue;
+
+      if ( s -> parent && s -> parent -> player == pet )
+        continue;
+
+      if ( first )
+      {
+        first = false;
+        os.printf(
+          "\t\t\t\t\t\t\t<tr>\n"
+          "\t\t\t\t\t\t\t\t<th class=\"left small\">pet - %s</th>\n"
+          "\t\t\t\t\t\t\t\t<th class=\"right small\">%.0f / %.0f</th>\n"
+          "\t\t\t\t\t\t\t\t<td colspan=\"%d\" class=\"filler\"></td>\n"
+          "\t\t\t\t\t\t\t</tr>\n",
+          pet -> name_str.c_str(),
+          pet -> collected_data.dps.mean(),
+          pet -> collected_data.dpse.mean(), static_columns + n_optional_columns );
+      }
+
+      output_player_action( os, n_row, n_optional_columns, MASK_DMG, s, pet );
+    }
+  }
+
+  os << "\t\t\t\t\t\t</table>\n";
+}
+
+void output_player_heal_summary( report::sc_html_stream& os, player_t* actor )
+{
+  if ( actor -> collected_data.heal.max() == 0 && ! actor -> sim -> debug )
+    return;
+
+  // Number of static columns in table
+  const int static_columns = 5;
+  // Number of dynamically changing columns
+  int n_optional_columns = 6;
+
+  // Abilities Section - Heal
+  os << "\t\t\t\t\t\t<table class=\"sc\">\n"
+      << "\t\t\t\t\t\t\t<tr>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"left small\">Healing and Absorb Stats</th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps\" class=\"help\">HPS</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps-pct\" class=\"help\">HPS%</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">Execute</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpe\" class=\"help\">HPE</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpet\" class=\"help\">HPET</a></th>\n"
+      // Optional columns begin here
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-type\" class=\"help\">Type</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-avg\" class=\"help\">Avg</a></th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%</a></th>\n";
+
+  if ( player_has_multistrike( actor, MASK_HEAL | MASK_ABSORB ) )
+  {
+    os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">M-Count</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">M-Hit</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">M-Crit</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">M-Crit%</a></th>\n";
+    n_optional_columns += 4;
+  }
+
+  if ( player_has_tick_results( actor, MASK_HEAL | MASK_ABSORB ) )
+  {
+    os << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-uptime\" class=\"help\">Up%</a></th>\n"
+       << "\t\t\t\t\t\t\t</tr>\n";
+    n_optional_columns++;
+  }
+
+  os << "\t\t\t\t\t\t\t<tr>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"left small\">" << util::encode_html( actor -> name() ) << "</th>\n"
+      << "\t\t\t\t\t\t\t\t<th class=\"right small\">" << util::to_string( actor -> collected_data.hps.mean(), 0 ) << "</th>\n"
+      << "\t\t\t\t\t\t\t\t<td colspan=\"" << ( static_columns + n_optional_columns ) << "\" class=\"filler\"></td>\n"
+      << "\t\t\t\t\t\t\t</tr>\n";
+
+  unsigned n_row = 0;
+  for ( size_t i = 0; i < actor -> stats_list.size(); ++i )
+    output_player_action( os, n_row, n_optional_columns, MASK_HEAL | MASK_ABSORB, actor -> stats_list[ i ], actor );
+
+  // Print pet statistics
+  for ( size_t i = 0; i < actor -> pet_list.size(); ++i )
+  {
+    pet_t* pet = actor -> pet_list[ i ];
+
+    bool first = true;
+    for ( size_t m = 0; m < pet -> stats_list.size(); ++m )
+    {
+      stats_t* s = pet -> stats_list[ m ];
+
+      if ( ! is_output_stat( MASK_HEAL | MASK_ABSORB, false, s ) )
+        continue;
+
+      if ( s -> parent && s -> parent -> player == pet )
+        continue;
+
+      if ( first )
+      {
+        first = false;
+        os.printf(
+          "\t\t\t\t\t\t\t<tr>\n"
+          "\t\t\t\t\t\t\t\t<th class=\"left small\">pet - %s</th>\n"
+          "\t\t\t\t\t\t\t\t<th class=\"right small\">%.0f / %.0f</th>\n"
+          "\t\t\t\t\t\t\t\t<td colspan=\"%d\" class=\"filler\"></td>\n"
+          "\t\t\t\t\t\t\t</tr>\n",
+          pet -> name_str.c_str(),
+          pet -> collected_data.dps.mean(),
+          pet -> collected_data.dpse.mean(), static_columns + n_optional_columns );
+      }
+
+      output_player_action( os, n_row, n_optional_columns, MASK_HEAL | MASK_ABSORB, s, pet );
+    }
+  }
+
+  os << "\t\t\t\t\t\t</table>\n";
+}
+
+void print_html_player_abilities( report::sc_html_stream& os, player_t* p )
 {
   // open section
   os << "\t\t\t\t<div class=\"player-section\">\n"
      << "\t\t\t\t\t<h3 class=\"toggle open\">Abilities</h3>\n"
      << "\t\t\t\t\t<div class=\"toggle-content\">\n";
 
-  if ( p -> collected_data.dmg.max() > 0 || sim -> debug )
-  {
-    // Abilities Section - Damage
-    os << "\t\t\t\t\t\t<table class=\"sc\">\n"
-       << "\t\t\t\t\t\t\t<tr>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"left small\">Damage Stats</th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps\" class=\"help\">DPS</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dps-pct\" class=\"help\">DPS%</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpe\" class=\"help\">DPE</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-dpet\" class=\"help\">DPET</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-avg\" class=\"help\">Avg</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-miss-pct\" class=\"help\">Avoid%</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-glance-pct\" class=\"help\">G%</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-block-pct\" class=\"help\">B%</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks\" class=\"help\">Ticks</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-hit\" class=\"help\">T-Hit</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit\" class=\"help\">T-Crit</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-avg\" class=\"help\">T-Avg</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit-pct\" class=\"help\">T-Crit%</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-miss-pct\" class=\"help\">T-Avoid%</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-uptime\" class=\"help\">Up%</a></th>\n"
-       << "\t\t\t\t\t\t\t</tr>\n";
-
-    os << "\t\t\t\t\t\t\t<tr>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"left small\">" << util::encode_html( p -> name() ) << "</th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"right small\">" << util::to_string( p -> collected_data.dps.mean(), 0 ) << "</th>\n"
-       << "\t\t\t\t\t\t\t\t<td colspan=\"19\" class=\"filler\"></td>\n"
-       << "\t\t\t\t\t\t\t</tr>\n";
-
-    int j = 0;
-
-    for ( size_t i = 0; i < p -> stats_list.size(); ++i )
-    {
-      stats_t* s = p -> stats_list[ i ];
-      if ( ( s -> type != STATS_HEAL && s -> type != STATS_ABSORB ) &&
-           ( s -> num_executes.mean() > 1 || s -> compound_amount > 0 || sim -> debug ) )
-      {
-        print_html_action_info( os, s, p, j++ );
-      }
-    }
-
-    for ( size_t i = 0; i < p -> pet_list.size(); ++i )
-    {
-      pet_t* pet = p -> pet_list[ i ];
-      bool first = true;
-
-      for ( size_t m = 0; m < pet -> stats_list.size(); ++m )
-      {
-        stats_t* s = pet -> stats_list[ m ];
-
-        if ( ( s -> type != STATS_HEAL && s -> type != STATS_ABSORB ) &&
-             ( s -> num_executes.sum() || s -> compound_amount > 0 || sim -> debug ) )
-        {
-          if ( first )
-          {
-            first = false;
-            os.printf(
-              "\t\t\t\t\t\t\t<tr>\n"
-              "\t\t\t\t\t\t\t\t<th class=\"left small\">pet - %s</th>\n"
-              "\t\t\t\t\t\t\t\t<th class=\"right small\">%.0f / %.0f</th>\n"
-              "\t\t\t\t\t\t\t\t<td colspan=\"18\" class=\"filler\"></td>\n"
-              "\t\t\t\t\t\t\t</tr>\n",
-              pet -> name_str.c_str(),
-              pet -> collected_data.dps.mean(),
-              pet -> collected_data.dpse.mean() );
-          }
-          print_html_action_info( os, s, p, j );
-        }
-      }
-    }
-
-    os.printf(
-      "\t\t\t\t\t\t</table>\n" );
-  }
-
-  if ( p -> collected_data.heal.max() > 0 || p -> collected_data.absorb.max() > 0 || sim -> debug )
-  {
-    // Abilities Section - Heals
-    os << "\t\t\t\t\t\t<table class=\"sc\">\n"
-       << "\t\t\t\t\t\t\t<tr>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"left small\">Healing Stats</th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hps\" class=\"help\">HPS</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hps-pct\" class=\"help\">HPS%</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-count\" class=\"help\">Count</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-interval\" class=\"help\">Interval</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hpe\" class=\"help\">HPE</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hpet\" class=\"help\">HPET</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-hit\" class=\"help\">Hit</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit\" class=\"help\">Crit</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-avg\" class=\"help\">Avg</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-crit-pct\" class=\"help\">Crit%</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks\" class=\"help\">Ticks</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-hit\" class=\"help\">T-Hit</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit\" class=\"help\">T-Crit</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-avg\" class=\"help\">T-Avg</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-crit-pct\" class=\"help\">T-Crit%</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"small\"><a href=\"#help-ticks-uptime\" class=\"help\">Up%</a></th>\n"
-       << "\t\t\t\t\t\t\t</tr>\n";
-
-    os << "\t\t\t\t\t\t\t<tr>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"left small\">" << util::encode_html( p -> name() ) << "</th>\n"
-       << "\t\t\t\t\t\t\t\t<th class=\"right small\">" << util::to_string( p -> collected_data.hps.mean(), 0 ) << "</th>\n"
-       << "\t\t\t\t\t\t\t\t<td colspan=\"19\" class=\"filler\"></td>\n"
-       << "\t\t\t\t\t\t\t</tr>\n";
-
-    int k = 0;
-
-    for ( size_t i = 0; i < p -> stats_list.size(); ++i )
-    {
-      stats_t* s = p -> stats_list[ i ];
-      if ( ( s -> type == STATS_HEAL || s -> type == STATS_ABSORB ) &&
-           ( s -> num_executes.mean() > 1 || s -> compound_amount > 0 || sim -> debug ) )
-      {
-        print_html_action_info( os, s, p, k++ );
-      }
-    }
-
-    for ( size_t i = 0; i < p -> pet_list.size(); ++i )
-    {
-      pet_t* pet = p -> pet_list[ i ];
-      bool first = true;
-
-      for ( size_t m = 0; m < pet -> stats_list.size(); ++m )
-      {
-        stats_t* s = pet -> stats_list[ m ];
-
-        if ( ( s -> type == STATS_HEAL || s -> type == STATS_ABSORB ) &&
-             ( s -> num_executes.sum() || s -> compound_amount > 0 || sim -> debug ) )
-        {
-          if ( first )
-          {
-            first = false;
-            os.printf(
-              "\t\t\t\t\t\t\t<tr>\n"
-              "\t\t\t\t\t\t\t\t<th class=\"left small\">pet - %s</th>\n"
-              "\t\t\t\t\t\t\t\t<th class=\"right small\">%.0f / %.0f</th>\n"
-              "\t\t\t\t\t\t\t\t<td colspan=\"18\" class=\"filler\"></td>\n"
-              "\t\t\t\t\t\t\t</tr>\n",
-              pet -> name_str.c_str(),
-              pet -> collected_data.dps.mean(),
-              pet -> collected_data.dpse.mean() );
-          }
-          print_html_action_info( os, s, p, k );
-        }
-      }
-    }
-
-  }
+  output_player_damage_summary( os, p );
+  output_player_heal_summary( os, p );
 
   // close section
-  os.printf(
-    "\t\t\t\t\t\t</table>\n"
-    "\t\t\t\t\t</div>\n"
-    "\t\t\t\t</div>\n" );
+  os << "\t\t\t\t\t</div>\n"
+     << "\t\t\t\t</div>\n";
 }
 
 // print_html_player_benefits_uptimes =======================================
@@ -3133,7 +3483,7 @@ void print_html_player_( report::sc_html_stream& os, sim_t* sim, player_t* p, in
 
   print_html_player_charts( os, sim, p, p -> report_information );
 
-  print_html_player_abilities( os, sim, p );
+  print_html_player_abilities( os, p );
 
   print_html_player_buffs( os, p, p -> report_information );
 

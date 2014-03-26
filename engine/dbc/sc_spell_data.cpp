@@ -56,6 +56,10 @@ const sdata_field_t _effect_data_fields[] =
   { SD_TYPE_INT,      "base_value"     },
   { SD_TYPE_INT,      "misc_value"     },
   { SD_TYPE_INT,      "misc_value2"    },
+  { SD_TYPE_UNSIGNED, ""               }, // Family flags 1
+  { SD_TYPE_UNSIGNED, ""               }, // Family flags 2
+  { SD_TYPE_UNSIGNED, ""               }, // Family flags 3
+  { SD_TYPE_UNSIGNED, ""               }, // Family flags 4
   { SD_TYPE_INT,      "trigger_spell"  },
   { SD_TYPE_DOUBLE,   "m_chain"        },
   { SD_TYPE_DOUBLE,   "p_combo_points" },
@@ -112,6 +116,11 @@ const sdata_field_t _spell_data_fields[] =
   { SD_TYPE_UNSIGNED, ""              },
   { SD_TYPE_UNSIGNED, ""              },
   { SD_TYPE_UNSIGNED, ""              },
+  { SD_TYPE_UNSIGNED, ""              }, // Family flags 1
+  { SD_TYPE_UNSIGNED, ""              }, // Family flags 1
+  { SD_TYPE_UNSIGNED, ""              }, // Family flags 1
+  { SD_TYPE_UNSIGNED, ""              }, // Family flags 1
+  { SD_TYPE_UNSIGNED, "family"        }, // Family
   { SD_TYPE_STR,      "desc"          },
   { SD_TYPE_STR,      "tooltip"       },
   { SD_TYPE_STR,      "desc_vars"     },

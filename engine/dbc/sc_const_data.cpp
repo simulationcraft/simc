@@ -178,6 +178,9 @@ dbc_index_t<talent_data_t> talent_data_index;
 dbc_index_t<item_data_t, id_member_policy> item_data_index;
 dbc_index_t<item_enchantment_data_t, id_member_policy> item_enchantment_data_index;
 
+std::vector< std::vector< const spell_data_t* > > class_family_index;
+std::vector< std::vector< const spell_data_t* > > ptr_class_family_index;
+
 /* Create a map linking the tokenized name with a pointer to data with that name
  */
 template <typename T, typename KeyPolicy = id_function_policy>
@@ -532,6 +535,31 @@ void dbc::apply_hotfixes()
   // Misc
 }
 
+static void generate_class_flags_index( bool ptr = false )
+{
+  std::vector< std::vector< const spell_data_t* > >* l = &( class_family_index );
+  if ( ptr )
+    l = &( ptr_class_family_index );
+
+  // Make a class family index to speed up some spell query parsing
+  const spell_data_t* spell = spell_data_t::list( ptr );
+  while ( spell -> id() != 0 )
+  {
+    if ( spell -> class_family() == 0 )
+    {
+      spell++;
+      continue;
+    }
+
+    if ( l -> size() <= spell -> class_family() )
+      l -> resize( spell -> class_family() + 1 );
+
+    l -> at( spell -> class_family() ).push_back( spell );
+
+    spell++;
+  }
+}
+
 /* Initialize database
  */
 void dbc::init()
@@ -566,6 +594,10 @@ void dbc::init()
 
   // Apply "modifications" to dbc data
   dbc::apply_hotfixes();
+
+  generate_class_flags_index();
+  if ( SC_USE_PTR )
+    generate_class_flags_index( true );
 }
 
 /* De-Initialize database
@@ -578,6 +610,82 @@ void dbc::de_init()
   {
     spell_data_t::de_link( true );
   }
+}
+
+std::vector< const spell_data_t* > dbc_t::effect_affects_spells( unsigned family, const spelleffect_data_t* effect ) const
+{
+  std::vector< const spell_data_t* > affected_spells;
+
+  if ( family == 0 )
+    return affected_spells;
+
+  if ( ptr && family >= ptr_class_family_index.size() )
+    return affected_spells;
+  else if ( family >= class_family_index.size() )
+    return affected_spells;
+
+  const std::vector< const spell_data_t* >* l = &( class_family_index[ family ] );
+  if ( ptr )
+    l = &( ptr_class_family_index[ family ] );
+
+  for ( size_t i = 0, end = l -> size(); i < end; i++ )
+  {
+    const spell_data_t* s = l -> at( i );
+    for ( size_t j = 0, vend = NUM_CLASS_FAMILY_FLAGS * 32; j < vend; j++ )
+    {
+      if ( effect -> class_flag( j ) && s -> class_flag( j ) )
+      {
+        if ( std::find( affected_spells.begin(), affected_spells.end(), s ) == affected_spells.end() )
+          affected_spells.push_back( s );
+      }
+    }
+  }
+
+  return affected_spells;
+}
+
+std::vector< const spelleffect_data_t* > dbc_t::effects_affecting_spell( const spell_data_t* spell ) const
+{
+  std::vector< const spelleffect_data_t* > affecting_effects;
+
+  if ( spell -> class_family() == 0 )
+    return affecting_effects;
+
+  if ( ptr && spell -> class_family() >= ptr_class_family_index.size() )
+    return affecting_effects;
+  else if ( spell -> class_family() >= class_family_index.size() )
+    return affecting_effects;
+
+  const std::vector< const spell_data_t* >* l = &( class_family_index[ spell -> class_family() ] );
+  if ( ptr )
+    l = &( ptr_class_family_index[ spell -> class_family() ] );
+
+  for ( size_t i = 0, end = l -> size(); i < end; i++ )
+  {
+    const spell_data_t* s = l -> at( i );
+
+    // Skip itself
+    if ( s -> id() == spell -> id() )
+      continue;
+
+    // Loop through all effects in the spell
+    for ( size_t idx = 1, idx_end = s -> effect_count(); idx <= idx_end; idx++ )
+    {
+      const spelleffect_data_t& effect = s -> effectN( idx );
+
+      // Match spell family flags
+      for ( size_t j = 0, vend = NUM_CLASS_FAMILY_FLAGS * 32; j < vend; j++ )
+      {
+        if ( ! ( effect.class_flag( j ) && spell -> class_flag( j ) ) )
+          continue;
+
+        if ( std::find( affecting_effects.begin(), affecting_effects.end(), &effect ) == affecting_effects.end() )
+          affecting_effects.push_back( &effect );
+      }
+    }
+  }
+
+  return affecting_effects;
 }
 
 // translate_spec_str =======================================================

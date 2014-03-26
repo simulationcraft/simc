@@ -91,6 +91,8 @@ full_result_e stats_t::translate_result( result_e result, block_result_e block_r
     case RESULT_GLANCE: fulltype=FULLTYPE_GLANCE; break;
     case RESULT_CRIT:   fulltype=FULLTYPE_CRIT; break;
     case RESULT_HIT:    fulltype=FULLTYPE_HIT; break;
+    case RESULT_MULTISTRIKE: fulltype=FULLTYPE_MULTISTRIKE; break;
+    case RESULT_MULTISTRIKE_CRIT: fulltype=FULLTYPE_MULTISTRIKE_CRIT; break;
     case RESULT_MAX:    fulltype=FULLTYPE_MAX; break;
     default:            fulltype=FULLTYPE_NONE;
   }
@@ -302,7 +304,10 @@ void stats_t::analyze()
   for ( size_t i = 0; i < children.size(); i++ )
   {
     children[ i ] -> analyze();
-    compound_amount += children[ i ] -> compound_amount;
+    if ( type == children[i] -> type )
+    {
+      compound_amount += children[ i ] -> compound_amount;
+    }
   }
 
   if ( compound_amount > 0 )

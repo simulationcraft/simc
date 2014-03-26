@@ -195,6 +195,9 @@ void spell_t::assess_damage( dmg_e type,
 {
   spell_base_t::assess_damage( type, s );
 
+  if ( result_is_multistrike( s -> result ) )
+    return;
+
   if ( type == DMG_DIRECT )
   {
     if ( s -> result_amount > 0.0 )
@@ -240,7 +243,6 @@ void spell_t::init()
 
   if ( harmful )
     procs_courageous_primal_diamond = false;
-
 }
 
 // ==========================================================================
@@ -350,8 +352,11 @@ void heal_t::assess_damage( dmg_e heal_type,
                      util::result_type_string( s -> result ) );
     }
 
-    if ( callbacks && ! direct_tick_callbacks ) action_callback_t::trigger( player -> callbacks.direct_heal[ school ], this, s );
-    if ( direct_tick_callbacks ) action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this, s );
+    if ( ! result_is_multistrike( s -> result ) )
+    {
+      if ( callbacks && ! direct_tick_callbacks ) action_callback_t::trigger( player -> callbacks.direct_heal[ school ], this, s );
+      if ( direct_tick_callbacks ) action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this, s );
+    }
   }
   else // HEAL_OVER_TIME
   {
@@ -365,7 +370,8 @@ void heal_t::assess_damage( dmg_e heal_type,
                      util::result_type_string( s -> result ) );
     }
 
-    if ( callbacks ) action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this, s );
+    if ( ! result_is_multistrike( s -> result ) || callbacks )
+      action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this, s );
   }
 
   stats -> add_result( s -> result_amount, s -> result_total, ( direct_tick ? HEAL_OVER_TIME : heal_type ), s -> result, s -> block_result, s -> target );
@@ -540,6 +546,7 @@ absorb_t::absorb_t( const std::string&  token,
     target = p;
 
   may_crit = false;
+  may_multistrike = true;
 
   stats -> type = STATS_ABSORB;
 }

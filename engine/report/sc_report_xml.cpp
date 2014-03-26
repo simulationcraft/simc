@@ -655,7 +655,6 @@ void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player
   std::string lootrank    = ri.gear_weights_lootrank_link;
   std::string wowhead_std = ri.gear_weights_wowhead_std_link;
   std::string wowhead_alt = ri.gear_weights_wowhead_alt_link;
-  std::string wowreforge  = ri.gear_weights_wowreforge_link;
 
   writer.begin_tag( "link" );
   writer.print_attribute( "name", "wowhead" );
@@ -673,12 +672,6 @@ void print_xml_player_scale_factors( xml_writer_t & writer, player_t * p, player
   writer.print_attribute( "name", "lootrank" );
   writer.print_attribute( "type", "ranking" );
   writer.print_attribute( "href", lootrank );
-  writer.end_tag( "link" );
-
-  writer.begin_tag( "link" );
-  writer.print_attribute( "name", "wowreforge" );
-  writer.print_attribute( "type", "optimizer" );
-  writer.print_attribute( "href", wowreforge );
   writer.end_tag( "link" );
 
   writer.end_tag( "scale_factors" );

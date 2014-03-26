@@ -85,7 +85,8 @@ std::string chart_title( const std::string& t )
 {
   std::string tmp = t;
   util::urlencode( tmp );
-  return "chtt=" + t + amp;
+  util::replace_all( tmp, "%20", "+" );
+  return "chtt=" + tmp + amp;
 }
 
 std::string chart_title_formatting ( const std::string& color, unsigned font_size )
@@ -359,10 +360,9 @@ std::string get_color( player_t* p )
 
 unsigned char simple_encoding( int number )
 {
-  if ( number < 0  ) number = 0;
-  if ( number > 61 ) number = 61;
-
   static const char encoding[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+  number = clamp( number, 0, (int)sizeof_array( encoding ) );
 
   return encoding[ number ];
 }
@@ -693,7 +693,7 @@ std::string chart::raid_downtime( std::vector<player_t*>& players_by_name, int p
 
     s << ( i ? "|" : "" )  << "t++" << std::setprecision( p -> sim -> report_precision / 2 ) << waiting_pct; // Insert waiting percent
 
-    s << "%++" << formatted_name.c_str(); // Insert player name
+    s << "%25++" << formatted_name.c_str(); // Insert player name
 
     s << "," << get_color( p ); // Insert player class text color
 
@@ -1522,14 +1522,14 @@ std::string chart::scaling_dps( player_t* p )
 
 std::string chart::reforge_dps( player_t* p )
 {
-  double dps_range = 0.0, min_dps = std::numeric_limits<double>::max(), max_dps = 0.0;
-
   if ( ! p )
     return std::string();
 
   std::vector< std::vector<plot_data_t> >& pd = p -> reforge_plot_data;
   if ( pd.empty() )
     return std::string();
+
+  double dps_range = 0.0, min_dps = std::numeric_limits<double>::max(), max_dps = 0.0;
 
   size_t num_stats = pd[ 0 ].size() - 1;
   if ( num_stats != 3 && num_stats != 2 )
@@ -1797,34 +1797,39 @@ std::string chart::timeline(  player_t* p,
 
   double encoding_adjust = encoding_range / ( timeline_max - timeline_min );
 
-  char buffer[ 2048 ];
 
   sc_chart chart( timeline_name + " Timeline", LINE, p -> sim -> print_styles );
   chart.set_height( 200 );
 
-  std::string s = chart.create();
+  std::ostringstream s;
+  s << chart.create();
   char * old_locale = setlocale( LC_ALL, "C" );
-  s += "chd=s:";
+  s << "chd=s:";
   for ( size_t i = 0; i < max_buckets; i += increment )
   {
-    s += simple_encoding( ( int ) ( ( timeline_data[ i ] - timeline_min ) * encoding_adjust ) );
+    s << simple_encoding( ( int ) ( ( timeline_data[ i ] - timeline_min ) * encoding_adjust ) );
   }
-  s += amp;
+  s << amp;
+
   if ( ! ( p -> sim -> print_styles == 1 ) )
   {
-    snprintf( buffer, sizeof( buffer ), "chco=%s", color.c_str() ); s += buffer;
-    s += amp;
+    s << "chco=" << color;
+    s << amp;
   }
-  snprintf( buffer, sizeof( buffer ), "chds=0,%.0f", encoding_range ); s += buffer;
-  s += amp;
+
+  s << "chds=0," << util::to_string( encoding_range, 0 );
+  s << amp;
+
   if ( avg || timeline_min < 0.0 )
   {
-    snprintf( buffer, sizeof( buffer ), "chm=h,%s,0,%.4f,0.4", color::yellow.c_str(), ( avg - timeline_min ) / timeline_range ); s += buffer;
-    snprintf( buffer, sizeof( buffer ), "|h,%s,0,%.4f,0.4", color::red.c_str(), ( 0 - timeline_min ) / timeline_range ); s += buffer;
-    s += amp;
+    s << "chm=h," << color::yellow << ",0," << ( avg - timeline_min ) / timeline_range << ",0.4";
+    s << "|h," << color::red << ",0," << ( 0 - timeline_min ) / timeline_range << ",0.4";
+    s << amp;
   }
-  s += "chxt=x,y";
-  s += amp;
+
+  s << "chxt=x,y";
+  s << amp;
+
   std::ostringstream f; f.setf( std::ios::fixed ); f.precision( 0 );
   f << "chxl=0:|0|sec=" << util::to_string( max_buckets ) << "|1:|" << ( timeline_min < 0.0 ? "min=" : "" ) << timeline_min;
   if ( timeline_min < 0.0 )
@@ -1834,19 +1839,20 @@ std::string chart::timeline(  player_t* p,
   else f << "|";
   if ( timeline_max )
     f << "|max=" << util::to_string( timeline_max, 0 );
-  s += f.str();
-  s += amp;
-  s += "chxp=1,1,";
+  s << f.str();
+  s << amp;
+
+  s << "chxp=1,1,";
   if ( timeline_min < 0.0 )
   {
-    s += util::to_string( 100.0 * ( 0 - timeline_min ) / timeline_range, 0 );
-    s += ",";
+    s << util::to_string( 100.0 * ( 0 - timeline_min ) / timeline_range, 0 );
+    s << ",";
   }
-  s += util::to_string( 100.0 * ( avg - timeline_min ) / timeline_range, 0 );
-  s += ",100";
+  s << util::to_string( 100.0 * ( avg - timeline_min ) / timeline_range, 0 );
+  s << ",100";
 
   setlocale( LC_ALL, old_locale );
-  return s;
+  return s.str();
 }
 
 // chart::timeline_dps_error ================================================
@@ -2150,54 +2156,6 @@ std::string chart::gear_weights_lootrank( player_t* p )
 }
 #endif
 
-std::string chart::gear_weights_wowupgrade( player_t* p )
-{
-  char buffer[ 1024 ];
-
-  std::string formatted_name = p -> name_str;
-  std::string url = "http://wowupgrade.com/#import=fSimulationCraft;p" + util::urlencode( formatted_name );
-
-  uint32_t c, spec;
-  p -> dbc.spec_idx( p -> specialization(), c, spec );
-
-  url += ";c" + util::to_string( c );
-  url += ";s" + util::to_string( spec );
-
-  std::string s = "";
-
-  bool first = true;
-  for ( int i = 0; i < SLOT_MAX; i++ )
-  {
-    if ( i != 3 && p -> items[ i ].parsed.data.id )
-    {
-      if ( ! first ) s += ",";
-      s += util::to_string( i ) + ":" + util::to_string( p -> items[ i ].parsed.data.id );
-      if ( p -> items[ i ].upgrade_level() ) s += ":" + util::to_string( p -> items[ i ].upgrade_level() );
-      first = false;
-    }
-  }
-
-  if ( ! s.empty() ) url += ";i" + s;
-
-  s = "";
-
-  first = true;
-  bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; i++ )
-  {
-    double value = positive_normalizing_value ? p -> scaling.get_stat( i ) : -p -> scaling.get_stat( i );
-    if ( value == 0 ) continue;
-    if ( ! first ) s += ";";
-    snprintf( buffer, sizeof( buffer ), "%d:%.*f", i, p -> sim -> report_precision, value );
-    s += buffer;
-    first = false;
-  }
-
-  if ( ! s.empty() ) url += "&weights=" + s;
-
-  return url;
-}
-
 // chart::gear_weights_wowhead ==============================================
 
 std::string chart::gear_weights_wowhead( player_t* p, bool hit_expertise )
@@ -2297,47 +2255,6 @@ std::string chart::gear_weights_wowhead( player_t* p, bool hit_expertise )
   s += "wtv=" + value_string + ";";
 
   return s;
-}
-
-// chart::gear_weights_wowreforge ===========================================
-
-std::string chart::gear_weights_wowreforge( player_t* p )
-{
-  std::ostringstream ss;
-  ss << "http://wowreforge.com/";
-
-  // Use valid names if we are provided those
-  if ( ! p -> region_str.empty() && ! p -> server_str.empty() && ! p -> name_str.empty() )
-  {
-    ss << p -> region_str << '/' << p -> server_str << '/' << p -> name_str
-       << "?Spec=Main&";
-  }
-  else
-  {
-    std::string region_str, server_str, name_str;
-    if ( util::parse_origin( region_str, server_str, name_str, p -> origin_str ) )
-    {
-      ss << region_str << '/' << server_str << '/' << name_str << "?Spec=Main&";
-    }
-    else
-    {
-      ss << '?';
-    }
-  }
-
-  ss << "template=for:" << util::player_type_string( p -> type )
-     << '-' << dbc::specialization_string( p -> specialization() );
-
-  bool positive_normalizing_value = p -> scaling.get_stat( p -> normalize_by() ) >= 0;
-  ss.precision( p -> sim -> report_precision + 1 );
-  for ( stat_e i = STAT_NONE; i < STAT_MAX; ++i )
-  {
-    double value = positive_normalizing_value ? p -> scaling.get_stat( i ) : -p -> scaling.get_stat( i );
-    if ( value == 0 ) continue;
-    ss << ',' << util::stat_type_abbrev( i ) << ':' << value;
-  }
-
-  return util::encode_html( ss.str() );
 }
 
 // chart::gear_weights_askmrrobot ===========================================
@@ -2587,7 +2504,7 @@ std::string chart::normal_distribution( double mean, double std_dev, double conf
   if ( tolerance_interval == 0.0 && confidence > 0 )
     tolerance_interval =  rng::stdnormal_inv( 1.0 - ( 1.0 - confidence ) / 2.0 );
 
-  sc_chart chart( util::to_string( confidence * 100.0, 2 ) + "%" + " Confidence Interval", LINE, print_styles, 4 );
+  sc_chart chart( util::to_string( confidence * 100.0, 2 ) + "%25" + " Confidence Interval", LINE, print_styles, 4 );
   chart.set_height( 185 );
 
   s <<  chart.create();

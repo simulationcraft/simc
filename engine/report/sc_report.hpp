@@ -40,9 +40,7 @@ std::string dps_error( player_t& );
 std::string gear_weights_lootrank  ( player_t* );
 #endif
 std::string gear_weights_wowhead   ( player_t*, bool hit_expertise );
-std::string gear_weights_wowreforge( player_t* );
 std::string gear_weights_askmrrobot( player_t* );
-std::string gear_weights_wowupgrade( player_t* );
 std::string gear_weights_pawn      ( player_t*, bool hit_expertise );
 
 } // end namespace sc_chart
@@ -103,7 +101,7 @@ void generate_player_charts         ( player_t*, player_processed_report_informa
 void generate_player_buff_lists     ( player_t*, player_processed_report_information_t& );
 void generate_sim_report_information( sim_t*,       sim_t::report_information_t& );
 
-void print_html_sample_data ( report::sc_html_stream&, sim_t*, extended_sample_data_t&, const std::string& name, int& td_counter );
+void print_html_sample_data ( report::sc_html_stream&, sim_t*, extended_sample_data_t&, const std::string& name, int& td_counter, int columns = 1 );
 
 void print_spell_query ( sim_t*, unsigned level );
 void print_profiles    ( sim_t* );

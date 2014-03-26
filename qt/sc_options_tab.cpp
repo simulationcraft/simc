@@ -80,7 +80,6 @@ const OptionEntry scalingOptions[] =
   { "Analyze Off-hand Weapon DPS",      "wohdps",   "Calculate scale factors for Off-hand Weapon DPS"      },
   { "Analyze Off-hand Weapon Speed",    "wohspeed", "Calculate scale factors for Off-hand Weapon Speed"    },
   { "Analyze Armor",                    "armor",    "Calculate scale factors for Armor"                    },
-  { "Analyze Block Rating",             "blockr",   "Calculate scale factors for Block Rating"             },
   { "Analyze Latency",                  "",         "Calculate scale factors for Latency"                  },
   { NULL, NULL, NULL }
 };
@@ -99,7 +98,6 @@ const OptionEntry plotOptions[] =
   { "Plot Scaling per Mastery Rating",   "mastery", "Generate Scaling curve for Mastery Rating"   },
   { "Plot Scaling per Weapon DPS",       "wdps",    "Generate Scaling curve for Weapon DPS"       },
   { "Plot Scaling per Armor",            "armor",   "Generate Scaling curve for Armor"            },
-  { "Plot Scaling per Block Rating",     "blockr",  "Generate Scaling curve for Block Rating"     },
   { NULL, NULL, NULL }
 };
 
@@ -109,7 +107,6 @@ const OptionEntry reforgePlotOptions[] =
   { "Plot Reforge Options for Crit Rating",      "crit",    "Generate reforge plot data for Crit Rating"      },
   { "Plot Reforge Options for Haste Rating",     "haste",   "Generate reforge plot data for Haste Rating"     },
   { "Plot Reforge Options for Mastery Rating",   "mastery", "Generate reforge plot data for Mastery Rating"   },
-  { "Plot Reforge Options for Block Rating",     "blockr",  "Generate reforge plot data for Block Rating"     },
 
   { "Plot Reforge Options for Strength",         "str",     "Generate reforge plot data for Intellect"        },
   { "Plot Reforge Options for Agility",          "agi",     "Generate reforge plot data for Agility"          },
@@ -117,7 +114,7 @@ const OptionEntry reforgePlotOptions[] =
   { "Plot Reforge Options for Intellect",        "int",     "Generate reforge plot data for Intellect"        },
   { NULL, NULL, NULL }
 };
-const int reforgePlotOption_cut = 9; // separate between secondary and primary stats
+const int reforgePlotOption_cut = 4; // separate between secondary and primary stats
 
 QComboBox* createChoice( int count, ... )
 {
