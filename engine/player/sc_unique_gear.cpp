@@ -275,6 +275,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
   /* Mists of Pandaria */
   { 118333, 0,                             enchant::dancing_steel },
   { 142531, 0,                             enchant::dancing_steel }, /* Bloody Dancing Steel */
+  { 120033, 0,                               enchant::jade_spirit },
   { 141178, 0,                               enchant::jade_spirit },
   { 104561, 0,                                  enchant::windsong },
   { 104428, 0,                           enchant::elemental_force },
@@ -623,31 +624,27 @@ struct jade_spirit_check_func
 
 void enchant::jade_spirit( special_effect_t& effect, 
                            const item_t& item,
-                           const special_effect_db_item_t& dbitem )
+                           const special_effect_db_item_t& )
 {
-  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
   const spell_data_t* spell = item.player -> find_spell( 104993 );
 
   double int_value = spell -> effectN( 1 ).average( item.player );
   double spi_value = spell -> effectN( 2 ).average( item.player );
+
+  // Set trigger spell here, so special_effect_t::name() returns a pretty name
+  // for the custom buff.
+  effect.trigger_spell_id = 104993;
   
-  stat_buff_t* buff = static_cast<stat_buff_t*>( buff_t::find( item.player, effect.name_str ) );
+  stat_buff_t* buff = static_cast<stat_buff_t*>( buff_t::find( item.player, effect.name() ) );
   if ( ! buff ) 
-    buff = stat_buff_creator_t( item.player, effect.name_str, driver )
+    buff = stat_buff_creator_t( item.player, effect.name(), spell )
            .activated( false )
            .add_stat( STAT_INTELLECT, int_value )
            .add_stat( STAT_SPIRIT, spi_value, jade_spirit_check_func() );
 
-  effect.name_str = tokenized_name( spell ) + suffix( item );
-  effect.ppm_ = -1.0 * driver -> real_ppm();
-  effect.cooldown_ = driver -> internal_cooldown();
+  effect.custom_buff = buff;
 
-  action_callback_t* cb = new buff_proc_callback_t<stat_buff_t>( item.player, effect, buff );
-
-  item.player -> callbacks.register_tick_damage_callback  ( SCHOOL_ALL_MASK, cb );
-  item.player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
-  item.player -> callbacks.register_tick_heal_callback    ( SCHOOL_ALL_MASK, cb );
-  item.player -> callbacks.register_direct_heal_callback  ( SCHOOL_ALL_MASK, cb );
+  new dbc_proc_callback_t( item.player, effect );
 }
 
 struct windsong_callback_t : public proc_callback_t<action_state_t>
@@ -955,8 +952,8 @@ void profession::nitro_boosts( special_effect_t& effect,
                                   const item_t& item,
                                   const special_effect_db_item_t& dbitem )
 {
-  player_t* p = item.player;
   /*
+  player_t* p = item.player;
   item -> parsed.use.name_str = "nitro_boosts";
   item -> parsed.use.cooldown = timespan_t::from_seconds( 180.0 );
   item -> parsed.use.execute_action = new nitro_boosts_action_t( p, "nitro_boosts", timespan_t::from_seconds( 5.0 ), timespan_t::from_seconds( 180.0 ) );
@@ -2101,8 +2098,11 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
 
   // For generic procs, make sure we have a PPM, RPPM or Proc Chance available,
   // otherwise there's no point in trying to proc anything
-  if ( effect.type == SPECIAL_EFFECT_EQUIP && ! proc::usable_proc( effect ) )
+  if ( effect.type != SPECIAL_EFFECT_CUSTOM && ! proc::usable_proc( effect ) )
+  {
+    std::cout << effect.to_string() << std::endl;
     effect.type = SPECIAL_EFFECT_NONE;
+  }
 
   return ret;
 }

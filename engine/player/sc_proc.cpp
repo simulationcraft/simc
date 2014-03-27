@@ -212,7 +212,8 @@ bool special_effect_t::is_stat_buff() const
 
   // Prioritize trigger scanning before driver scanning; in reality if both 
   // the trigger and driver spells contain "stat buffs" (as per simc
-  // definition), the system will not support it.
+  // definition), the system will not support it. In this case, custom buffs
+  // and/or callbacks should be used.
   for ( size_t i = 1, end = trigger() -> effect_count(); i <= end; i++ )
   {
     const spelleffect_data_t& effect = trigger() -> effectN( i );
@@ -233,9 +234,6 @@ stat_buff_t* special_effect_t::initialize_stat_buff() const
   stat_buff_creator_t creator( item -> player, name(), spell_data_t::nil(),
                                source == SPECIAL_EFFECT_SOURCE_ITEM ? item : 0 );
 
-  if ( stat != STAT_NONE )
-    creator.add_stat( stat, stat_amount );
-
   // Setup the spell for the stat buff
   if ( trigger() -> id() > 0 )
     creator.spell( trigger() );
@@ -252,6 +250,10 @@ stat_buff_t* special_effect_t::initialize_stat_buff() const
   if ( reverse )
     creator.reverse( true );
 
+  // If user given stat is defined, override whatever the spell would contain
+  if ( stat != STAT_NONE )
+    creator.add_stat( stat, stat_amount );
+
   return creator;
 }
 
@@ -259,7 +261,9 @@ stat_buff_t* special_effect_t::initialize_stat_buff() const
 
 special_effect_buff_e special_effect_t::buff_type() const
 {
-  if ( custom_buff != 0 )
+  if ( type == SPECIAL_EFFECT_CUSTOM )
+    return SPECIAL_EFFECT_BUFF_CUSTOM;
+  else if ( custom_buff != 0 )
     return SPECIAL_EFFECT_BUFF_CUSTOM;
   else if ( is_stat_buff() )
     return SPECIAL_EFFECT_BUFF_STAT;
@@ -299,15 +303,20 @@ unsigned special_effect_t::proc_flags() const
 
 unsigned special_effect_t::proc_flags2() const
 {
-  // These do not have a spell-data equivalent, so they are going to always 
-  // be set manually, or (most commonly) default to 0. The new proc callback
+  // These do not have a spell-data equivalent, so they are going to always be
+  // set manually, or (most commonly) default to 0. The new proc callback
   // system will automatically use "default values" appropriate for the proc,
-  // if it is passed a zero proc_flags2.
+  // if it is passed a zero proc_flags2. The default value is "spell landing",
+  // as in a positive result of the spell type. For periodic effects and heals,
+  // the system will require "an amount value", i.e., a healing or damaging
+  // result.
   return proc_flags2_;
 }
 
 // special_effect_t::ppm ====================================================
 
+// DBC data has no concept of "old style" procs per minute, they will be
+// manually set by simc.
 double special_effect_t::ppm() const
 {
   return ppm_;
@@ -325,6 +334,9 @@ double special_effect_t::rppm() const
 
 // special_effect_t::cooldown ===============================================
 
+// Cooldowns are automatically extracted from the driver spell. However, the
+// "Cooldown" value is prioritized over "Internal Cooldown" in DBC data. In
+// reality, there should not be any (single) driver, that includes both.
 timespan_t special_effect_t::cooldown() const
 {
   if ( cooldown_ > timespan_t::zero() )
@@ -355,6 +367,9 @@ timespan_t special_effect_t::duration() const
 
 // special_effect_t::tick_time ==============================================
 
+// The tick time is selected from the first periodically executed effect of the
+// _triggered_ spell. Periodically executing drivers are currently not
+// supported.
 timespan_t special_effect_t::tick_time() const
 {
   if ( tick > timespan_t::zero() )
@@ -377,12 +392,7 @@ double special_effect_t::proc_chance() const
   if ( proc_chance_ > 0 )
     return proc_chance_;
 
-  // Push out the "101%" proc chances automatically, seemingly used as a 
-  // special value
-  if ( driver() -> proc_chance() > 0 && driver() -> proc_chance() <= 1.0 )
-    return driver() -> proc_chance();
-
-  return 0;
+  return driver() -> proc_chance();
 }
 
 // special_effect_t::name ===================================================
@@ -944,20 +954,38 @@ bool proc::parse_special_effect_encoding( special_effect_t& effect,
  * driver spell to contain a non-zero RPPM or proc chance. Additionally, we
  * need to have some sort of flags indicating what events trigger the proc.
  *
- * TODO: Discharge support
+ * TODO: Action support
  */
 bool proc::usable_proc( const special_effect_t& effect )
 {
   // Valid proc flags (either old- or new style), we can proc this effect.
-  if ( ( effect.trigger_type != PROC_NONE && effect.trigger_mask != 0 ) ||
-       effect.proc_flags() > 0 )
-    return effect.buff_type() != SPECIAL_EFFECT_BUFF_NONE;
+  if ( effect.trigger_type == PROC_NONE && effect.trigger_mask == 0 && effect.proc_flags() == 0 )
+  {
+    if ( effect.item && effect.item -> sim -> debug )
+      effect.item -> sim -> out_debug.printf( "%s unusable proc %s: No proc flags / trigger type",
+          effect.item -> player -> name(), effect.name().c_str() );
+    return false;
+  }
     
   // A non-zero chance to proc it through one of the proc chance triggers
-  if ( effect.ppm() > 0 || effect.rppm() > 0 || effect.proc_chance() > 0 )
-    return effect.buff_type() != SPECIAL_EFFECT_BUFF_NONE;
+  if ( effect.ppm() == 0 && effect.rppm() == 0 && effect.proc_chance() == 0 )
+  {
+    if ( effect.item && effect.item -> sim -> debug )
+      effect.item -> sim -> out_debug.printf( "%s unusable proc %s: No RPPM / PPM / Proc chance",
+          effect.item -> player -> name(), effect.name().c_str() );
+    return false;
+  }
 
-  return false;
+  // Require a valid buff or an action
+  if ( effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE && ! effect.execute_action )
+  {
+    if ( effect.item && effect.item -> sim -> debug )
+      effect.item -> sim -> out_debug.printf( "%s unusable proc %s: No constructible buff or action",
+          effect.item -> player -> name(), effect.name().c_str() );
+    return false;
+  }
+
+  return true;
 }
 
 /**
@@ -968,7 +996,8 @@ bool proc::usable_proc( const special_effect_t& effect )
 void dbc_proc_callback_t::initialize()
 {
   if ( listener -> sim -> debug )
-    listener -> sim -> out_debug.printf( "Initializing %s: %s", effect.name().c_str(), effect.to_string().c_str() );
+    listener -> sim -> out_debug.printf( "Initializing %s: %s",
+        effect.name().c_str(), effect.to_string().c_str() );
   
   // Initialize proc chance triggers. Note that this code only chooses one, and
   // prioritizes RPPM > PPM > proc chance.
@@ -982,7 +1011,6 @@ void dbc_proc_callback_t::initialize()
   // Initialize cooldown, if applicable
   if ( effect.cooldown() > timespan_t::zero() )
   {
-    std::cout << cooldown_name() << std::endl;
     cooldown = listener -> get_cooldown( cooldown_name() );
     cooldown -> duration = effect.cooldown();
   }
@@ -1011,8 +1039,13 @@ std::string dbc_proc_callback_t::cooldown_name() const
   std::string n = effect.driver() -> name_cstr();
   assert( ! n.empty() );
   util::tokenize( n );
+  // Append the spell ID of the driver to the cooldown name. In some cases, the
+  // drivers of different trinket procs are actually named identically, causing
+  // issues when the trinkets are worn.
   n += "_" + util::to_string( effect.driver() -> id() );
 
   return n;
 }
+
+const item_t dbc_proc_callback_t::default_item_ = item_t();
 
