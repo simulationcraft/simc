@@ -152,13 +152,6 @@ bool option_t::parse( sim_t*             sim,
         break;
       case FUNC:
         return ( *data.func )( sim, n, v );
-#if 0
-// TO-DO: Re-enable at some point
-      case TALENT_RANK:
-        return ( ( struct talent_t * ) data.address )->set_rank( atoi( v.c_str() ), true );
-      case SPELL_ENABLED:
-        return ( ( struct spell_id_t * ) data.address )->enable( atoi( v.c_str() ) != 0 );
-#endif
       case DEPRECATED:
         sim -> errorf( "Option '%s' has been deprecated.\n", name );
         if ( data.cstr ) sim -> errorf( "Please use option '%s' instead.\n", data.cstr );

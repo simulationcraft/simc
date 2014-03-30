@@ -502,7 +502,6 @@ enum slot_e   // these enum values match armory settings
 // Caster 2/4, Melee 2/4, Tank 2/4, Heal 2/4
 #define N_TIER_BONUS 8
 
-
 enum set_e
 {
   SET_NONE = 0,
@@ -991,10 +990,6 @@ public:
     LIST,          // std::vector<std::string>
     MAP,           // std::map<std::string,std::string>
     FUNC,          // function_t*
-#if 0
-    TALENT_RANK,   // talent rank
-    SPELL_ENABLED, // spell enabled
-#endif
     DEPRECATED
   };
 
