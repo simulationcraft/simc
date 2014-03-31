@@ -5,6 +5,10 @@
 
 #include "simulationcraft.hpp"
 
+#include "rapidjson/document.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/prettywriter.h"
+
 // ==========================================================================
 // Blizzard Community Platform API
 // ==========================================================================
@@ -36,87 +40,78 @@ js::js_node_t download_id( sim_t* sim,
 
 // parse_profession =========================================================
 
-void parse_profession( std::string& professions_str,
-                       const js::js_node_t& profile,
-                       int index )
+void parse_profession( std::string&               professions_str,
+                       const rapidjson::Document& profile,
+                       int                        index )
 {
-  std::string key = "professions/primary/" + util::to_string( index );
-  if ( js::js_node_t profession = js::get_node( profile, key ) )
+  if ( ! profile.HasMember( "primary" ) )
+    return;
+
+  const rapidjson::Value& professions = profile[ "primary" ];
+  if ( professions.Size() == rapidjson::SizeType( index + 1 ) )
   {
-    int id;
-    std::string rank;
-    if ( js::get_value( id, profession, "id" ) && js::get_value( rank, profession, "rank" ) )
-    {
-      if ( professions_str.length() > 0 )
-        professions_str += '/';
-      professions_str += util::profession_type_string( util::translate_profession_id( id ) );
-      professions_str += '=' + rank;
-    }
+    const rapidjson::Value& profession = professions[ index ];
+    if ( ! profession.HasMember( "id" ) || ! profession.HasMember( "rank" ) )
+      return;
+
+    if ( professions_str.length() > 0 )
+      professions_str += '/';
+
+    professions_str += util::profession_type_string( util::translate_profession_id( profession[ "id" ].GetUint() ) );
+    professions_str += util::to_string( profession[ "rank" ].GetUint() );
   }
-}
-
-// pick_talents =============================================================
-
-js::js_node_t pick_talents( const js::js_node_t& talents,
-                         const std::string& specifier )
-{
-  js::js_node_t spec1 = js::get_child( talents, "0" );
-  js::js_node_t spec2 = js::get_child( talents, "1" );
-
-  assert( spec1 );
-
-  bool spec1_is_active = js::get_child( spec1, "selected" ) != 0;
-
-  if ( util::str_compare_ci( specifier, "active" ) )
-    return spec1_is_active ? spec1 : spec2;
-
-  if ( util::str_compare_ci( specifier, "inactive" ) )
-    return spec1_is_active ? spec2 : spec1;
-
-  if ( util::str_compare_ci( specifier, "primary" ) )
-    return spec1;
-
-  if ( util::str_compare_ci( specifier, "secondary" ) )
-    return spec2;
-
-  std::string spec_name;
-  if ( ! js::get_value( spec_name, spec1, "name" ) )
-    return js::js_node_t();
-  if ( util::str_prefix_ci( spec_name, specifier ) )
-    return spec1;
-
-  if ( spec2 && js::get_value( spec_name, spec2, "name" ) )
-  {
-    if ( util::str_prefix_ci( spec_name, specifier ) )
-      return spec2;
-  }
-
-  return js::js_node_t();
 }
 
 // parse_talents ============================================================
 
-bool parse_talents( player_t*  p,
-                    const js::js_node_t& talents )
+static const rapidjson::Value* choose_talent_spec( const rapidjson::Value& talents,
+                                                   const std::string& specifier )
 {
-  std::string buffer;
-  if ( js::get_value( buffer, talents, "calcSpec" ) )
-  {
-    char stag = buffer[0];
-    unsigned sid;
-    switch ( stag )
-    {
-      case 'a': sid = 0; break;
-      case 'Z': sid = 1; break;
-      case 'b': sid = 2; break;
-      case 'Y': sid = 3; break;
-      default:  sid = 99; break;
-    }
-    p -> _spec = p -> dbc.spec_by_idx( p -> type, sid );
-  }
+  const rapidjson::Value& spec_1 = talents[ 0u ];
+  const rapidjson::Value& spec_2 = talents[ 1u ];
+  bool spec1_is_active = spec_1[ "selected" ].GetBool() ? true : false;
 
-  std::string talent_encoding;
-  js::get_value( talent_encoding, talents, "calcTalent" );
+  const rapidjson::Value* spec = 0;
+
+  if ( util::str_compare_ci( specifier, "active" ) )
+    spec = spec1_is_active ? &spec_1 : &spec_2;
+  else if ( util::str_compare_ci( specifier, "inactive" ) )
+    spec = spec1_is_active ? &spec_2 : &spec_1;
+  else if ( util::str_compare_ci( specifier, "primary" ) )
+    spec = &spec_1;
+  else if ( util::str_compare_ci( specifier, "secondary" ) )
+    spec = &spec_2;
+
+  return spec;
+}
+
+bool parse_talents( player_t*  p,
+                    const rapidjson::Value& talents,
+                    const std::string& specifier )
+{
+  if ( talents.Size() != 2 )
+    return false;
+
+  const rapidjson::Value* spec = choose_talent_spec( talents, specifier );
+  if ( ! spec )
+    return false;
+
+  if ( ! spec -> HasMember( "calcSpec" ) || ! spec -> HasMember( "calcTalent" ) )
+    return false;
+
+  const char* buffer = (*spec)[ "calcSpec" ].GetString();
+  unsigned sid;
+  switch ( buffer[ 0 ] )
+  {
+    case 'a': sid = 0; break;
+    case 'Z': sid = 1; break;
+    case 'b': sid = 2; break;
+    case 'Y': sid = 3; break;
+    default:  sid = 99; break;
+  }
+  p -> _spec = p -> dbc.spec_by_idx( p -> type, sid );
+
+  std::string talent_encoding = (*spec)[ "calcTalent" ].GetString();
 
   for ( size_t i = 0; i < talent_encoding.size(); ++i )
   {
@@ -149,38 +144,42 @@ bool parse_talents( player_t*  p,
 
 // parse_glyphs =============================================================
 
-bool parse_glyphs( player_t* p, const js::js_node_t& build )
+bool parse_glyphs( player_t* p,
+                   const rapidjson::Value& talents,
+                   const std::string& specifier )
 {
   static const char* const glyph_e_names[] =
   {
-    "glyphs/major", "glyphs/minor"
+    "major", "minor"
   };
+
+  const rapidjson::Value* spec = choose_talent_spec( talents, specifier );
+  if ( ! spec || ! spec -> HasMember( "glyphs" ) )
+    return false;
+
+  const rapidjson::Value& glyphs = (*spec)[ "glyphs" ];
 
   for ( std::size_t i = 0; i < sizeof_array( glyph_e_names ); ++i )
   {
-    if ( js::js_node_t glyphs = js::get_node( build, glyph_e_names[ i ] ) )
-    {
-      std::vector<js::js_node_t> children = js::get_children( glyphs );
-      if ( !children.empty() )
-      {
-        for ( std::size_t j = 0; j < children.size(); ++j )
-        {
-          std::string glyph_name;
-          if ( ! js::get_value( glyph_name, children[ j ], "name" ) )
-          {
-            std::string glyph_id;
-            if ( js::get_value( glyph_id, children[ j ], "item" ) )
-              item_t::download_glyph( p, glyph_name, glyph_id );
-          }
+    if ( ! glyphs.HasMember( glyph_e_names[ i ] ) )
+      continue;
 
-          util::glyph_name( glyph_name );
-          if ( ! glyph_name.empty() )
-          {
-            if ( ! p -> glyphs_str.empty() )
-              p -> glyphs_str += '/';
-            p -> glyphs_str += glyph_name;
-          }
-        }
+    const rapidjson::Value& glyphs_type = glyphs[ glyph_e_names[ i ] ];
+    for ( rapidjson::SizeType j = 0; j < glyphs_type.Size(); j++ )
+    {
+      std::string glyph_name;
+      if ( glyphs_type[ j ].HasMember( "name" ) )
+          glyph_name = glyphs_type[ j ][ "name" ].GetString();
+      else if ( glyphs_type[ j ].HasMember( "item" ) )
+        item_t::download_glyph( p, glyph_name,
+                                util::to_string( glyphs_type[ j ][ "item" ].GetString() ) );
+
+      util::glyph_name( glyph_name );
+      if ( ! glyph_name.empty() )
+      {
+        if ( ! p -> glyphs_str.empty() )
+          p -> glyphs_str += '/';
+        p -> glyphs_str += glyph_name;
       }
     }
   }
@@ -191,10 +190,8 @@ bool parse_glyphs( player_t* p, const js::js_node_t& build )
 // parse_items ==============================================================
 
 bool parse_items( player_t*  p,
-                  const js::js_node_t& items )
+                  const rapidjson::Value& items )
 {
-  if ( !items ) return true;
-
   static const char* const slot_map[] =
   {
     "head",
@@ -224,20 +221,33 @@ bool parse_items( player_t*  p,
   {
     item_t& item = p -> items[ i ];
 
-    js::js_node_t js = js::get_child( items, slot_map[ i ] );
-    if ( ! js ) continue;
-
-    if ( ! js::get_value( item.parsed.data.id, js, "id" ) )
+    if ( ! items.HasMember( slot_map[ i ] ) )
       continue;
 
-    js::get_value( item.parsed.gem_id[ 0 ], js, "tooltipParams/gem0" );
-    js::get_value( item.parsed.gem_id[ 1 ], js, "tooltipParams/gem1" );
-    js::get_value( item.parsed.gem_id[ 2 ], js, "tooltipParams/gem2" );
-    js::get_value( item.parsed.enchant_id, js, "tooltipParams/enchant" );
-    js::get_value( item.parsed.reforge_id, js, "tooltipParams/reforge" );
-    js::get_value( item.parsed.addon_id, js, "tooltipParams/tinker" );
-    js::get_value( item.parsed.suffix_id, js, "tooltipParams/suffix" );
-    js::get_value( item.parsed.upgrade_level, js, "tooltipParams/upgrade/current" );
+    const rapidjson::Value& data = items[ slot_map[ i ] ];
+    if ( ! data.HasMember( "id" ) )
+      continue;
+    else
+      item.parsed.data.id = data[ "id" ].GetUint();
+    
+    if ( ! data.HasMember( "tooltipParams" ) )
+      continue;
+
+    const rapidjson::Value& params = data[ "tooltipParams" ];
+
+    if ( params.HasMember( "gem0" ) ) item.parsed.gem_id[ 0 ] = params[ "gem0" ].GetUint();
+    if ( params.HasMember( "gem1" ) ) item.parsed.gem_id[ 1 ] = params[ "gem1" ].GetUint();
+    if ( params.HasMember( "gem2" ) ) item.parsed.gem_id[ 2 ] = params[ "gem2" ].GetUint();
+    if ( params.HasMember( "enchant" ) ) item.parsed.enchant_id = params[ "enchant" ].GetUint();
+    if ( params.HasMember( "reforge" ) ) item.parsed.reforge_id = params[ "reforge" ].GetUint();
+    if ( params.HasMember( "tinker" ) ) item.parsed.addon_id = params[ "tinker" ].GetUint();
+    if ( params.HasMember( "suffix" ) ) item.parsed.suffix_id = params[ "suffix" ].GetInt();
+
+    if ( params.HasMember( "upgrade" ) )
+    {
+      const rapidjson::Value& upgrade = params[ "upgrade" ];
+      if ( upgrade.HasMember( "current" ) ) item.parsed.upgrade_level = upgrade[ "current" ].GetUint();
+    }
 
     if ( ! item_t::download_slot( item ) )
       return false;
@@ -269,63 +279,61 @@ player_t* parse_player( sim_t*             sim,
                    ( std::istreambuf_iterator<char>()    ) );
   }
 
-  // if ( sim -> debug ) util::fprintf( sim -> output_file, "%s\n%s\n", url.c_str(), result.c_str() );
-  js::js_node_t profile = js::create( sim, result );
-  if ( ! profile )
+  rapidjson::Document profile;
+  profile.Parse< 0 >( result.c_str() );
+
+  if ( profile.HasParseError() )
   {
     sim -> errorf( "BCP API: Unable to download player from '%s'\n", player.url.c_str() );
     return 0;
   }
+
   if ( sim -> debug )
-    sim -> out_debug.raw() << profile;
-
-  std::string status, reason;
-  if ( js::get_value( status, profile, "status" ) && util::str_compare_ci( status, "nok" ) )
   {
-    js::get_value( reason, profile, "reason" );
+    rapidjson::StringBuffer b;
+    rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
 
+    profile.Accept( writer );
+    sim -> out_debug.raw() << b.GetString();
+  }
+
+  if ( profile.HasMember( "status" ) && util::str_compare_ci( profile[ "status" ].GetString(), "nok" ) )
+  {
     sim -> errorf( "BCP API: Unable to download player from '%s', reason: %s\n",
                    player.url.c_str(),
-                   reason.c_str() );
+                   profile[ "reason" ].GetString() );
     return 0;
   }
 
-  std::string name;
-  if ( js::get_value( name, profile, "name"  ) )
-    player.name = name;
-  else
-    name = player.name;
-  if ( player.talent_spec != "active" && ! player.talent_spec.empty() )
-  {
-    name += '_';
-    name += player.talent_spec;
-  }
-  if ( ! name.empty() )
-    sim -> current_name = name;
+  if ( profile.HasMember( "name" ) )
+    player.name = profile[ "name" ].GetString();
 
-  int level;
-  if ( ! js::get_value( level, profile, "level"  ) )
+  if ( ! profile.HasMember( "level" ) )
   {
     sim -> errorf( "BCP API: Unable to extract player level from '%s'.\n", player.url.c_str() );
     return 0;
   }
 
-  int cid;
-  if ( ! js::get_value( cid, profile, "class" ) )
+  if ( ! profile.HasMember( "class" ) )
   {
     sim -> errorf( "BCP API: Unable to extract player class from '%s'.\n", player.url.c_str() );
     return 0;
   }
-  std::string class_name = util::player_type_string( util::translate_class_id( cid ) );
 
-  int rid;
-  if ( ! js::get_value( rid, profile, "race" ) )
+  if ( ! profile.HasMember( "race" ) )
   {
     sim -> errorf( "BCP API: Unable to extract player race from '%s'.\n", player.url.c_str() );
     return 0;
   }
-  race_e race = util::translate_race_id( rid );
 
+  if ( ! profile.HasMember( "talents" ) )
+  {
+    sim -> errorf( "BCP API: Unable to extract player talents from '%s'.\n", player.url.c_str() );
+    return 0;
+  }
+
+  std::string class_name = util::player_type_string( util::translate_class_id( profile[ "class" ].GetUint() ) );
+  race_e race = util::translate_race_id( profile[ "race" ].GetUint() );
   const module_t* module = module_t::get( class_name );
 
   if ( ! module || ! module -> valid() )
@@ -333,6 +341,18 @@ player_t* parse_player( sim_t*             sim,
     sim -> errorf( "\nModule for class %s is currently not available.\n", class_name.c_str() );
     return 0;
   }
+
+  std::string name = player.name;
+
+  if ( player.talent_spec != "active" && ! player.talent_spec.empty() )
+  {
+    name += '_';
+    name += player.talent_spec;
+  }
+
+  if ( ! name.empty() )
+    sim -> current_name = name;
+
   player_t* p = sim -> active_player = module -> create_player( sim, name, race );
 
   if ( ! p )
@@ -342,52 +362,39 @@ player_t* parse_player( sim_t*             sim,
     return 0;
   }
 
-  p -> level = level;
+  p -> level = profile[ "level" ].GetUint();
   p -> region_str = player.region.empty() ? sim -> default_region_str : player.region;
-
-  if ( ! js::get_value( p -> server_str, profile, "realm" ) && ! player.server.empty() )
+  if ( ! profile.HasMember( "realm" ) && ! player.server.empty() )
     p -> server_str = player.server;
+  else
+    p -> server_str = profile[ "realm" ].GetString();
 
   if ( ! player.origin.empty() )
     p -> origin_str = player.origin;
 
-  if ( js::get_value( p -> report_information.thumbnail_url, profile, "thumbnail" ) )
-  {
+  if ( profile.HasMember( "thumbnail" ) )
     p -> report_information.thumbnail_url = "http://" + p -> region_str + ".battle.net/static-render/" +
-                                            p -> region_str + '/' + p -> report_information.thumbnail_url;
-  }
+                                            p -> region_str + '/' + profile[ "thumbnail" ].GetString();
 
   parse_profession( p -> professions_str, profile, 0 );
   parse_profession( p -> professions_str, profile, 1 );
 
-  js::js_node_t build = js::get_node( profile, "talents" );
-  if ( ! build )
-  {
-    sim -> errorf( "BCP API: Player '%s' from URL '%s' has no talents.\n",
-                   name.c_str(), player.url.c_str() );
-    return 0;
-  }
-
-  build = pick_talents( build, player.talent_spec );
-  if ( ! build )
-  {
-    sim -> errorf( "BCP API: Invalid talent spec '%s' for player '%s'.\n",
-                   player.talent_spec.c_str(), name.c_str() );
-    return 0;
-  }
-
-  if ( ! parse_talents( p, build ) )
+  if ( ! parse_talents( p, profile[ "talents" ], player.talent_spec ) )
     return 0;
 
-  if ( ! parse_glyphs( p, build ) )
+  if ( ! parse_glyphs( p, profile[ "talents" ], player.talent_spec ) )
     return 0;
 
-  if ( ! parse_items( p, js::get_child( profile, "items" ) ) )
+  if ( profile.HasMember( "items" ) && ! parse_items( p, profile[ "items" ] ) )
     return 0;
+
+/*
 
   if ( ! p -> server_str.empty() )
     p -> armory_extensions( p -> region_str, p -> server_str, player.name, caching );
 
+  return p;
+  */
   return p;
 }
 
