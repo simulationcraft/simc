@@ -649,7 +649,7 @@ player_t::player_t( sim_t*             s,
   iteration_waiting_time( timespan_t::zero() ), iteration_executed_foreground_actions( 0 ),
   rps_gain( 0 ), rps_loss( 0 ),
 
-  tmi_window( 6.0 ), new_tmi( 0 ), tmi_filter( 1.0 ),
+  tmi_window( 6.0 ),
   collected_data( player_collected_data_t( name_str, *sim ) ),
   vengeance( collected_data.vengeance_timeline ),
   // Damage
@@ -1053,9 +1053,6 @@ void player_t::init_character_properties()
 
   if ( sim -> tmi_window_global > 0 )
     tmi_window = sim -> tmi_window_global;
-
-   new_tmi = sim -> new_tmi;
-   tmi_filter = sim -> tmi_filter;
 }
 
 void scale_challenge_mode( player_t& p, const rating_t& rating )
@@ -9754,6 +9751,7 @@ player_collected_data_t::player_collected_data_t( const std::string& player_name
   absorb_taken( player_name + " Absorb Taken", s.statistics_level < 2 ),
   deaths( player_name + " Deaths", s.statistics_level < 2 ),
   theck_meloree_index( player_name + " Theck-Meloree Index", s.statistics_level < 1 ),
+  max_spike_amount( player_name + " Max Spike Value", s.statistics_level < 1 ),
   resource_timelines(),
   combat_end_resource( RESOURCE_MAX ),
   stat_timelines(),
@@ -9856,6 +9854,7 @@ void player_collected_data_t::analyze( const player_t& p )
   // Tank
   deaths.analyze_all();
   theck_meloree_index.analyze_all();
+  max_spike_amount.analyze_all();
 
   for ( size_t i = 0; i <  resource_timelines.size(); ++i )
   {
@@ -9971,12 +9970,11 @@ void player_collected_data_t::collect_data( const player_t& p )
     if ( ! p.is_enemy() ) // Boss TMI is irrelevant, causes problems in iteration #1 
     {
       double tmi = 0; // TMI result
+      double max_spike = 0; // Maximum spike size
       if ( f_length )
       {
         // define constants and variables
-        int window = std::floor( ( p.tmi_window ) / 1 + 0.5 ); // window size, bin time replaces 1 eventually
-        double w0  = 6; // normalized window size
-        double hdf = 3; // default health decade factor
+        int window = std::floor( ( p.tmi_window ) / 1.0 + 0.5 ); // window size, bin time replaces 1 eventually
 
         // declare sliding average timeline
         sc_timeline_t sliding_average_tl;
@@ -9988,65 +9986,43 @@ void player_collected_data_t::collect_data( const player_t& p )
 
         // pull the data out of the normalized sliding average timeline
         std::vector<double> weighted_value = sliding_average_normalized_tl.data();
+        max_spike = *std::max_element( weighted_value.begin(), weighted_value.end() );
+        max_spike *= window;
 
-        if ( p.new_tmi > 0 )  // new TMI implementation for testing
+        // define constants
+        double D = 10; // filtering strength
+        double c2 = 450; // N_0, default fight length for normalization
+        double c1 = 100000 / D; // health scale factor, determines slope of plot
+
+        for ( size_t j = 0, size = weighted_value.size(); j < size; j++ )
         {
-          // define constants
-          double D = 10 * p.tmi_filter; // filtering strength
-          double c2 = std::exp( D ); 
-          double c1 = p.new_tmi * 5000 / D; // slope
+          // weighted_value is the moving average (i.e. 1-second), so multiplly by window size to get damage in "window" seconds
+          weighted_value[ j ] *= window;
 
-          for ( size_t j = 0, size = weighted_value.size(); j < size; j++ )
-          {
-            // normalize to the default window size (6-second window)
-            weighted_value[ j ] *= w0;
+          // calculate exponentially-weighted contribution of this data point using filter strength D
+          weighted_value[ j ] = std::exp( D * weighted_value[ j ] );
 
-            // calculate exponentially-weighted contribution of this data point
-            weighted_value[ j ] = std::exp( D * ( weighted_value[ j ] - 1 ) );
-
-            // add to the TMI total
-            tmi += weighted_value [ j ];
-          }
-
-          // normalize for fight length
-          tmi /= f_length;
-
-          // constant multiplicative normalization factors
-          tmi *= c2;
-          tmi += 1;
-          tmi = std::log( tmi );
-          tmi *= c1;
-
+          // add to the TMI total; strictly speaking this should be moved outside the for loop and turned into a sort() followed by a sum for numerical accuracy
+          tmi += weighted_value [ j ];
         }
-        else // old TMI
-        {
 
-          for ( size_t j = 0, size = weighted_value.size(); j < size; j++ )
-          {
-            // normalize to the default window size (6-second window)
-            weighted_value[ j ] *= w0;
-
-            // calculate exponentially-weighted contribution of this data point
-            weighted_value[ j ] = std::exp( 10 * std::log( hdf ) * ( weighted_value[ j ] - 1 ) );
-
-            // add to the TMI total
-            tmi += weighted_value [ j ];
-          }
-
-          // normalize for fight length
-          tmi /= f_length;
-
-          // constant multiplicative normalization factors
-          // these are estimates at the moment - will be fine-tuned later
-          tmi *= 10000;
-          tmi *= std::pow( static_cast<double>( window ) , 2 ); // normalizes for window size
-        }
+        // multiply by vertical offset factor c2
+        tmi *= c2;
+        // normalize for fight length
+        tmi /= f_length;
+        // optional zero-bounding
+        // tmi += 1;
+        // take log of result
+        tmi = std::log( tmi );
+        // multiply by health decade scale factor
+        tmi *= c1;
 
         // if an output file has been defined, write to it
         print_tmi_debug_csv( &sliding_average_tl, &sliding_average_normalized_tl, weighted_value, p );
       }
       // normalize by fight length and add to TMI data array
       theck_meloree_index.add( tmi );
+      max_spike_amount.add( max_spike );
     }
     else
       theck_meloree_index.add( 0.0 );

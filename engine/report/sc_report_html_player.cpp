@@ -2332,7 +2332,7 @@ void print_html_player_description( report::sc_html_stream& os, sim_t* sim, play
         tmi_display /= 1e6;
         tmi_letter = "M ";
       }
-      else if ( tmi_display >= 100000.0 )
+      else if ( tmi_display >= 999.9 ) 
       {
         tmi_display /= 1e3;
         tmi_letter = "k ";
@@ -2433,7 +2433,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   // Absorb
   if ( cd.aps.mean() > 0 )
   {
-    os << "\t\t\t\t\t\t\t\t<th><a href=\"#help-hps\" class=\"help\">APS</a></th>\n"
+    os << "\t\t\t\t\t\t\t\t<th><a href=\"#help-aps\" class=\"help\">APS</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">APS Error</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">APS Range</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-hpr\" class=\"help\">APR</a></th>\n";
@@ -2520,9 +2520,13 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
        << "\t\t\t\t\t\t\t\t<th>&nbsp</th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmi\" class=\"help\">TMI</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">TMI Error</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">TMI Min</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">TMI Max</a></th>\n"
-       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">TMI Range</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmi\" class=\"help\">TMI Min</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmi\" class=\"help\">TMI Max</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmirange\" class=\"help\">TMI Range</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th>&nbsp</th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd\" class=\"help\">MSD Min</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd\" class=\"help\">MSD Mean</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd\" class=\"help\">MSD Max</a></th>\n"
        << "\t\t\t\t\t\t\t</tr>\n"
        << "\t\t\t\t\t\t\t<tr>\n";
 
@@ -2537,16 +2541,18 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
       dtps_range, cd.dtps.mean() ? dtps_range / cd.dtps.mean() * 100.0 : 0 );
     
     // spacer
-    os << "\t\t\t\t\t\t\t\t<td>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n";
+    os << "\t\t\t\t\t\t\t\t<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n";
     
     double tmi_error = sim_t::distribution_mean_error( *sim, p -> collected_data.theck_meloree_index );
     double tmi_range = ( cd.theck_meloree_index.percentile( 0.95 ) - cd.theck_meloree_index.percentile( 0.05 ) ) / 2;
 
     // print TMI
-    if ( cd.theck_meloree_index.mean() > 1.0e8 )
-      os.printf( "\t\t\t\t\t\t\t\t<td>%1.2e</td>\n", cd.theck_meloree_index.mean() );
+    if ( abs( cd.theck_meloree_index.mean() ) > 1.0e8 )
+      os.printf( "\t\t\t\t\t\t\t\t<td>%1.3e</td>\n", cd.theck_meloree_index.mean() );
+    else if ( abs( cd.theck_meloree_index.mean() ) < 99.9 )
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.3f</td>\n", cd.theck_meloree_index.mean() );
     else
-      os.printf( "\t\t\t\t\t\t\t\t<td>%.1f</td>\n", cd.theck_meloree_index.mean() );
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.0f</td>\n", cd.theck_meloree_index.mean() );
 
     // print TMI error/variance
     if ( tmi_error > 1.0e6 )
@@ -2561,30 +2567,47 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
     }
 
     // print  TMI min/max
-    if ( cd.theck_meloree_index.max() > 1.0e8 )
-    {
-      os.printf( "\t\t\t\t\t\t\t\t<td>%1.2e</td>\n"
-                 "\t\t\t\t\t\t\t\t<td>%1.2e</td>\n",
-                 cd.theck_meloree_index.min(), cd.theck_meloree_index.max() );
-    }
-    else      
-    {
-      os.printf( "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
-                 "\t\t\t\t\t\t\t\t<td>%.1f</td>\n",
-                 cd.theck_meloree_index.min(), cd.theck_meloree_index.max() );
-    }
+    if ( abs( cd.theck_meloree_index.min() ) > 1.0e8 )
+      os.printf( "\t\t\t\t\t\t\t\t<td>%1.2e</td>\n", cd.theck_meloree_index.min() );
+    else if ( abs( cd.theck_meloree_index.min() ) < 99.9 )
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.3f</td>\n", cd.theck_meloree_index.min() );
+    else
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.0f</td>\n", cd.theck_meloree_index.min() );
+    
+    if ( abs( cd.theck_meloree_index.max() ) > 1.0e8 )
+      os.printf( "\t\t\t\t\t\t\t\t<td>%1.2e</td>\n", cd.theck_meloree_index.max() );
+    else if ( abs( cd.theck_meloree_index.max() ) < 99.9 )
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.3f</td>\n", cd.theck_meloree_index.max() );
+    else
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.0f</td>\n", cd.theck_meloree_index.max() );
+
     // print TMI range
     if ( tmi_range > 1.0e8 )
     {
       os.printf( "\t\t\t\t\t\t\t\t<td>%1.2e / %.1f%%</td>\n",
                   tmi_range, cd.theck_meloree_index.mean() ? tmi_range * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
     }
-    else
+    else if ( abs( tmi_range ) < 99.9 )
     {
-      os.printf( "\t\t\t\t\t\t\t\t<td>%.1f / %.1f%%</td>\n",
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.3f / %.1f%%</td>\n",
                   tmi_range, cd.theck_meloree_index.mean() ? tmi_range * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
     }
+    else
+    {
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.0f / %.1f%%</td>\n",
+                  tmi_range, cd.theck_meloree_index.mean() ? tmi_range * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
+    }
+        
+    // spacer
+    os << "\t\t\t\t\t\t\t\t<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n";
 
+    // print Max Spike Size stats
+    os.printf( "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n", cd.max_spike_amount.min() * 100 );
+    os.printf( "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n", cd.max_spike_amount.mean() * 100 );
+    os.printf( "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n", cd.max_spike_amount.max() * 100 );
+
+
+    // End defensive table
     os << "\t\t\t\t\t\t\t</tr>\n"
        << "\t\t\t\t\t\t</table>\n";
   }
