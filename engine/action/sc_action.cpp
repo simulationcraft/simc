@@ -1710,7 +1710,7 @@ void action_t::init()
 
   // TODO: WOD-MULTISTRIKE
   if ( may_multistrike == -1 )
-    may_multistrike = may_crit;
+    may_multistrike = may_crit || tick_may_crit;
 
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;
