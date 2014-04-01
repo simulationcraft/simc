@@ -2445,7 +2445,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   // Now do the data row
   if ( cd.dps.mean() > 0 )
   {
-    double range = ( p -> collected_data.dps.percentile( 0.95 ) - p -> collected_data.dps.percentile( 0.05 ) ) / 2;
+    double range = ( p -> collected_data.dps.percentile( 0.5 + sim -> confidence / 2 ) - p -> collected_data.dps.percentile( 0.5 - sim -> confidence / 2 ) );
     double dps_error = sim_t::distribution_mean_error( *sim, p -> collected_data.dps );
     os.printf(
       "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
@@ -2467,7 +2467,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   // Heal
   if ( cd.hps.mean() > 0 )
   {
-    double range = ( cd.hps.percentile( 0.95 ) - cd.hps.percentile( 0.05 ) ) / 2;
+    double range = ( cd.hps.percentile( 0.5 + sim -> confidence / 2 ) - cd.hps.percentile( 0.5 - sim -> confidence / 2 ) );
     double hps_error = sim_t::distribution_mean_error( *sim, p -> collected_data.hps );
     os.printf(
       "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
@@ -2490,7 +2490,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   // Absorb
   if ( cd.aps.mean() > 0 )
   {
-    double range = ( cd.aps.percentile( 0.95 ) - cd.aps.percentile( 0.05 ) ) / 2;
+    double range = ( cd.aps.percentile( 0.5 + sim -> confidence / 2 ) - cd.aps.percentile( 0.5 - sim -> confidence / 2 ) );
     double aps_error = sim_t::distribution_mean_error( *sim, p -> collected_data.aps );
     os.printf(
       "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
@@ -2530,7 +2530,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
        << "\t\t\t\t\t\t\t</tr>\n"
        << "\t\t\t\t\t\t\t<tr>\n";
 
-    double dtps_range = ( cd.dtps.percentile( 0.95 ) - cd.dtps.percentile( 0.05 ) ) / 2;
+    double dtps_range = ( cd.dtps.percentile( 0.5 + sim -> confidence / 2 ) - cd.dtps.percentile( 0.5 - sim -> confidence / 2 ) );
     double dtps_error = sim_t::distribution_mean_error( *sim, p -> collected_data.dtps );
     os.printf(
       "\t\t\t\t\t\t\t\t<td>%.1f</td>\n"
@@ -2544,7 +2544,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
     os << "\t\t\t\t\t\t\t\t<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n";
     
     double tmi_error = sim_t::distribution_mean_error( *sim, p -> collected_data.theck_meloree_index );
-    double tmi_range = ( cd.theck_meloree_index.percentile( 0.95 ) - cd.theck_meloree_index.percentile( 0.05 ) ) / 2;
+    double tmi_range = ( cd.theck_meloree_index.percentile( 0.5 + sim -> confidence / 2 ) - cd.theck_meloree_index.percentile( 0.5 - sim -> confidence / 2 ) );
 
     // print TMI
     if ( abs( cd.theck_meloree_index.mean() ) > 1.0e8 )

@@ -953,7 +953,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
   os << "\t\t<div id=\"help-tmirange\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>TMI Range</h3>\n"
-     << "\t\t\t\t<p>Half of the difference between the 95th percentile and the 5th percentile.</p>\n"
+     << "\t\t\t\t<p>This is the range of TMI values containing " << sim -> confidence * 100 << "% of the data, roughly centered on the mean.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
@@ -975,7 +975,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
   os << "\t\t<div id=\"help-error\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>Error</h3>\n"
-     << "\t\t\t\t<p>Estimator for the " << sim -> confidence * 100.0 << "%% confidence intervall.</p>\n"
+     << "\t\t\t\t<p>Estimator for the " << sim -> confidence * 100.0 << "% confidence intervall.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
@@ -1059,7 +1059,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
   os << "\t\t<div id=\"help-range\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>Range</h3>\n"
-     << "\t\t\t\t<p>( dps.percentile( 0.95 ) - dps.percentile( 0.05 ) ) / 2</p>\n"
+     << "\t\t\t\t<p>This is the range of values containing " << sim -> confidence * 100 << "% of the data, roughly centered on the mean.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
