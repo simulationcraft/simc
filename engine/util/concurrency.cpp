@@ -58,7 +58,7 @@ public:
 
 // mutex_t::native_t ========================================================
 
-#if ! defined( __MINGW32__ )
+#if ! defined( __MINGW32__ ) && WINVER > 0x0502
 class mutex_t::native_t : public nonmoveable
 {
   CRITICAL_SECTION cs;
@@ -72,7 +72,7 @@ public:
 
   PCRITICAL_SECTION primitive() { return &cs; }
 };
-#else
+#else // mingw32 + win xp
 class mutex_t::native_t : public nonmoveable
 {
   HANDLE mutex_;
@@ -90,7 +90,7 @@ public:
 
 // condition_variable_t::native_t ===========================================
 
-#if ! defined( __MINGW32__ )
+#if ! defined( __MINGW32__ ) && WINVER > 0x0502
 class condition_variable_t::native_t : public nonmoveable
 {
   CONDITION_VARIABLE cv;
@@ -112,8 +112,8 @@ public:
   void broadcast()
   { WakeAllConditionVariable( &cv ); }
 };
-#else
-// Emulated condition variable for mingw using win32 thread model. Adapted from 
+#else // mingw32 + win xp
+// Emulated condition variable for mingw using win32 thread model. Adapted from
 // http://www.cs.wustl.edu/~schmidt/win32-cv-1.html
 class condition_variable_t::native_t : public nonmoveable
 {
