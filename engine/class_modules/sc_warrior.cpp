@@ -118,7 +118,6 @@ public:
     gain_t* colossus_smash;
     gain_t* critical_block;
     gain_t* defensive_stance;
-    gain_t* enrage;
     gain_t* melee_main_hand;
     gain_t* melee_off_hand;
     gain_t* mortal_strike;
