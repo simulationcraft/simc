@@ -317,7 +317,7 @@ action_t::action_t( action_e       ty,
   dot_behavior                   = DOT_CLIP;
   trigger_gcd                    = player -> base_gcd;
   range                          = -1.0;
-  weapon_power_mod               = 1.0 / 14.0;
+  weapon_power_mod               = 1.0 / 3.5;
 
 
   base_dd_min                    = 0.0;
