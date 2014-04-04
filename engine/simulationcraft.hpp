@@ -4306,9 +4306,6 @@ public:
     debuff_t* ranged_vulnerability;
     debuff_t* weakened_blows;
     debuff_t* weakened_armor;
-
-    // Class specific "general" debuffs
-    debuff_t* shattering_throw;
   } debuffs;
 
   struct gains_t

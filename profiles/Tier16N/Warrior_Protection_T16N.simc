@@ -20,17 +20,16 @@ actions.precombat+=/food,type=chun_tian_spring_rolls
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stance,choose=defensive
-# Battle shout is used  before combat, character starts out with 40/55 rage depending on whether or not bull rush is glyphed.
 actions.precombat+=/battle_shout
 actions.precombat+=/mountains_potion
 
 # Executed every time the actor is available.
 
-actions=auto_attack
+actions=charge
+actions+=/auto_attack
 actions+=/mountains_potion,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)
 actions+=/use_item,slot=trinket2
 actions+=/heroic_strike,if=buff.ultimatum.up|buff.glyph_incite.up
-actions+=/berserker_rage,if=buff.enrage.down&rage<=rage.max-10
 actions+=/shield_block
 actions+=/shield_barrier,if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20
 actions+=/shield_wall,if=incoming_damage_2500ms>health.max*0.6
@@ -52,7 +51,7 @@ actions.dps_cds+=/run_action_list,name=normal_rotation
 actions.normal_rotation=shield_slam
 actions.normal_rotation+=/revenge
 actions.normal_rotation+=/battle_shout,if=rage<=rage.max-20
-actions.normal_rotation+=/thunder_clap,if=glyph.resonating_power.enabled|target.debuff.weakened_blows.down
+actions.normal_rotation+=/thunder_clap,if=glyph.resonating_power.enabled
 actions.normal_rotation+=/demoralizing_shout
 actions.normal_rotation+=/impending_victory,if=enabled
 actions.normal_rotation+=/victory_rush,if=!talent.impending_victory.enabled
