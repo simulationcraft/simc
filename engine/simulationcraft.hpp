@@ -4234,7 +4234,6 @@ public:
     buff_t* guardian_spirit;
     buff_t* hand_of_sacrifice;
     buff_t* heroic_presence;
-    buff_t* hymn_of_hope;
     buff_t* illuminated_healing;
     buff_t* innervate;
     buff_t* lifeblood;
@@ -4319,7 +4318,6 @@ public:
     gain_t* focus_regen;
     gain_t* glyph_of_innervate;
     gain_t* health;
-    gain_t* hymn_of_hope;
     gain_t* innervate;
     gain_t* mana_potion;
     gain_t* mana_spring_totem;

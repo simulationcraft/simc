@@ -180,7 +180,6 @@ public:
   {
     gain_t* devouring_plague_health;
     gain_t* dispersion;
-    gain_t* hymn_of_hope;
     gain_t* mindbender;
     gain_t* power_word_solace;
     gain_t* rapture;
@@ -1575,54 +1574,6 @@ struct fortitude_t final : public priest_spell_t
 
     if ( ! sim -> overrides.stamina )
       sim -> auras.stamina -> trigger();
-  }
-};
-
-// Hymn of Hope Spell =======================================================
-
-struct hymn_of_hope_tick_t final : public priest_spell_t
-{
-  hymn_of_hope_tick_t( priest_t& player ) :
-    priest_spell_t( "hymn_of_hope_tick", player, player.find_spell( 64904 ) )
-  {
-    dual        = true;
-    background  = true;
-    may_crit    = true;
-    direct_tick = true;
-    harmful     = false;
-  }
-
-  virtual void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest.resource_gain( RESOURCE_MANA,
-                          data().effectN( 1 ).percent() * priest.resources.max[ RESOURCE_MANA ],
-                          priest.gains.hymn_of_hope );
-
-    // Hymn of Hope only adds +x% of the current_max mana, it doesn't change if afterwards max_mana changes.
-    player -> buffs.hymn_of_hope -> trigger();
-  }
-};
-
-struct hymn_of_hope_t final : public priest_spell_t
-{
-  hymn_of_hope_t( priest_t& p, const std::string& options_str ) :
-    priest_spell_t( "hymn_of_hope", p, p.find_class_spell( "Hymn of Hope" ) )
-  {
-    parse_options( nullptr, options_str );
-
-    harmful = false;
-    channeled = true;
-    dynamic_tick_action = true;
-    tick_action = new hymn_of_hope_tick_t( p );
-  }
-
-  virtual void init() override
-  {
-    priest_spell_t::init();
-
-    tick_action -> stats = stats;
   }
 };
 
@@ -4891,7 +4842,6 @@ void priest_t::create_gains()
   gains.dispersion                    = get_gain( "dispersion" );
   gains.shadowfiend                   = get_gain( "shadowfiend" );
   gains.mindbender                    = get_gain( "mindbender" );
-  gains.hymn_of_hope                  = get_gain( "hymn_of_hope" );
   gains.power_word_solace             = get_gain( "Power Word: Solace Mana" );
   gains.shadow_orb_mb                 = get_gain( "Shadow Orbs from Mind Blast" );
   gains.shadow_orb_swd                = get_gain( "Shadow Orbs from Shadow Word: Death" );
@@ -5141,7 +5091,6 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "chakra_serenity"        ) return new chakra_serenity_t       ( *this, options_str );
   if ( name == "dispersion"             ) return new dispersion_t            ( *this, options_str );
   if ( name == "power_word_fortitude"   ) return new fortitude_t             ( *this, options_str );
-  if ( name == "hymn_of_hope"           ) return new hymn_of_hope_t          ( *this, options_str );
   if ( name == "inner_fire"             ) return new inner_fire_t            ( *this, options_str );
   if ( name == "inner_focus"            ) return new inner_focus_t           ( *this, options_str );
   if ( name == "inner_will"             ) return new inner_will_t            ( *this, options_str );
@@ -5638,8 +5587,6 @@ void priest_t::apl_disc_heal()
   if ( sim -> allow_potions )
   {
     std::string a = "mana_potion,if=mana.pct<=75";
-    if ( find_class_spell( "Hymn of Hope" ) )
-      a += "&cooldown.hymn_of_hope.remains";
     def -> add_action( a );
   }
 
@@ -5651,10 +5598,7 @@ void priest_t::apl_disc_heal()
     def -> add_action( "mindbender,if=talent.mindbender.enabled" );
 
     std::string a = "shadowfiend,if=!talent.mindbender.enabled&";
-    if ( find_class_spell( "Hymn of Hope" ) )
-      a += "(mana.pct<45|(mana.pct<70&cooldown.hymn_of_hope.remains>60))";
-    else
-      a += "mana.pct<70";
+    a += "mana.pct<70";
     def -> add_action( a );
   }
 
@@ -5714,15 +5658,6 @@ void priest_t::apl_disc_dmg()
   {
     def -> add_action( "mindbender,if=talent.mindbender.enabled" );
     def -> add_action( "shadowfiend,if=!talent.mindbender.enabled" );
-  }
-
-  if ( find_class_spell( "Hymn of Hope" ) -> ok() )
-  {
-    std::string a = ",if=mana.pct<55";
-    if ( level >= 42 )
-      a += "&target.time_to_die>30&(pet.mindbender.active|pet.shadowfiend.active)";
-    def -> add_action( "hymn_of_hope" + a );
-
   }
 
   if ( race != RACE_BLOOD_ELF )
