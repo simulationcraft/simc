@@ -3945,33 +3945,6 @@ struct greater_heal_t final : public priest_heal_t
   }
 };
 
-// Heal Spell ===============================================================
-
-struct _heal_t final : public priest_heal_t
-{
-  _heal_t( priest_t& p, const std::string& options_str ) :
-    priest_heal_t( "heal", p, p.find_class_spell( "Heal" ) )
-  {
-    parse_options( nullptr, options_str );
-    can_trigger_spirit_shell = true;
-  }
-
-  virtual void execute() override
-  {
-    priest_heal_t::execute();
-    trigger_surge_of_light();
-  }
-
-  virtual void impact( action_state_t* s ) override
-  {
-    priest_heal_t::impact( s );
-
-    trigger_grace( s -> target );
-    if ( ! priest.buffs.spirit_shell -> check() )
-      trigger_strength_of_soul( s -> target );
-  }
-};
-
 // Holy Word Sanctuary ======================================================
 
 struct holy_word_sanctuary_t final : public priest_heal_t
@@ -5138,7 +5111,6 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "flash_heal"             ) return new flash_heal_t            ( *this, options_str );
   if ( name == "greater_heal"           ) return new greater_heal_t          ( *this, options_str );
   if ( name == "guardian_spirit"        ) return new guardian_spirit_t       ( *this, options_str );
-  if ( name == "heal"                   ) return new _heal_t                 ( *this, options_str );
   if ( name == "holy_word"              ) return new holy_word_t             ( *this, options_str );
   if ( name == "penance_heal"           ) return new penance_heal_t          ( *this, options_str );
   if ( name == "power_word_shield"      ) return new power_word_shield_t     ( *this, options_str );
@@ -5622,7 +5594,6 @@ void priest_t::apl_disc_heal()
   def -> add_action( this, "Flash Heal", "if=buff.surge_of_light.react" );
   def -> add_action( this, "Greater Heal", "if=buff.power_infusion.up|mana.pct>20" );
   def -> add_action( "power_word_solace,if=talent.power_word_solace.enabled" );
-  def -> add_action( "heal" );
   // DEFAULT END
 }
 
@@ -5733,7 +5704,6 @@ void priest_t::apl_holy_heal()
   def -> add_action( this, "Holy Word", ",if=buff.chakra_serenity.up" );
   def -> add_action( this, "Greater Heal", ",if=buff.serendipity.react>=2&mana.pct>40" );
   def -> add_action( this, "Flash Heal", ",if=buff.surge_of_light.up" );
-  def -> add_action( this, "Heal" );
 }
 
 // Holy Damage Combat Action Priority List
