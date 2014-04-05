@@ -2540,8 +2540,6 @@ struct commanding_shout_t : public warrior_spell_t
   {
     warrior_spell_t::execute();
 
-    warrior_t* p = cast();
-
     if ( ! sim -> overrides.stamina )
       sim -> auras.stamina -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, data().duration() );
   }
@@ -3771,7 +3769,6 @@ void warrior_t::init_gains()
   gain.critical_block         = get_gain( "critical_block"        );
   gain.colossus_smash         = get_gain( "colossus_smash"        );
   gain.defensive_stance       = get_gain( "defensive_stance"      );
-  gain.enrage                 = get_gain( "enrage"                );
   gain.melee_main_hand        = get_gain( "melee_main_hand"       );
   gain.melee_off_hand         = get_gain( "melee_off_hand"        );
   gain.mortal_strike          = get_gain( "mortal_strike"         );
