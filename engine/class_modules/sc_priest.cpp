@@ -3764,9 +3764,6 @@ struct flash_heal_t final : public priest_heal_t
 
     double c = priest_heal_t::cost();
 
-    if ( priest.buffs.inner_focus -> check() )
-      c *= 1.0 + priest.buffs.inner_focus -> data().effectN( 1 ).percent();
-
     c *= 1.0 + priest.sets.set( SET_T14_2PC_HEAL ) -> effectN( 1 ).percent();
 
     return c;
@@ -3850,9 +3847,6 @@ struct greater_heal_t final : public priest_heal_t
   virtual double cost() const override
   {
     double c = priest_heal_t::cost();
-
-    if ( priest.buffs.inner_focus -> check() )
-      c *= 1.0 + priest.buffs.inner_focus -> data().effectN( 1 ).percent();
 
     if ( priest.buffs.serendipity -> check() )
       c *= 1.0 + priest.buffs.serendipity -> check() * priest.buffs.serendipity -> data().effectN( 2 ).percent();
@@ -4306,9 +4300,6 @@ struct prayer_of_healing_t final : public priest_heal_t
   virtual double cost() const override
   {
     double c = priest_heal_t::cost();
-
-    if ( priest.buffs.inner_focus -> check() )
-      c *= 1.0 + priest.buffs.inner_focus -> data().effectN( 1 ).percent();
 
     if ( priest.buffs.serendipity -> check() )
       c *= 1.0 + priest.buffs.serendipity -> check() * priest.buffs.serendipity -> data().effectN( 2 ).percent();
