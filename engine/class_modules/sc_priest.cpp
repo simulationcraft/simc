@@ -5,6 +5,10 @@
 
 #include "simulationcraft.hpp"
 
+/* WOD TODO (when new dbc is up):
+ *
+ * Greater Heal has been renamed Heal.
+ */
 namespace { // UNNAMED NAMESPACE
 
 /* Forward declarations
