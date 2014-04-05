@@ -7,7 +7,9 @@
 
 /* WOD TODO (when new dbc is up):
  *
- * Greater Heal has been renamed Heal.
+ * - Greater Heal has been renamed Heal.
+ * - Cascade, Divine Star, and Halo no longer heal allies but are instant cast
+ *   for Shadow Priests, or damage enemies for Discipline or Holy Priests.
  */
 namespace { // UNNAMED NAMESPACE
 
@@ -5045,7 +5047,6 @@ void priest_t::apl_precombat()
   }
 
   precombat -> add_action( this, "Power Word: Fortitude", "if=!aura.stamina.up" );
-  precombat -> add_action( this, "Inner Fire" );
   precombat -> add_action( this, "Shadowform" );
   // Snapshot stats
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
