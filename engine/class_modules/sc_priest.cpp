@@ -137,7 +137,6 @@ public:
     const spell_data_t* grace;
     const spell_data_t* meditation_disc;
     const spell_data_t* mysticism;
-    const spell_data_t* rapture;
     const spell_data_t* spirit_shell;
     const spell_data_t* strength_of_soul;
     const spell_data_t* train_of_thought;
@@ -171,7 +170,6 @@ public:
     cooldown_t* mindbender;
     cooldown_t* mind_blast;
     cooldown_t* penance;
-    cooldown_t* rapture;
     cooldown_t* shadowfiend;
   } cooldowns;
 
@@ -182,7 +180,6 @@ public:
     gain_t* dispersion;
     gain_t* mindbender;
     gain_t* power_word_solace;
-    gain_t* rapture;
     gain_t* shadowfiend;
     gain_t* shadow_orb_mb;
     gain_t* shadow_orb_swd;
@@ -4319,9 +4316,6 @@ struct power_word_shield_t final : public priest_absorb_t
     };
     parse_options( options, options_str );
 
-    if ( p.specs.rapture -> ok() )
-      cooldown -> duration = timespan_t::zero();
-
     // Tooltip is wrong.
     // direct_power_mod = 0.87; // hardcoded into tooltip
     direct_power_mod = 1.8709; // matches in-game actual value
@@ -4346,20 +4340,6 @@ struct power_word_shield_t final : public priest_absorb_t
 
     get_td( s -> target ).buffs.power_word_shield -> trigger( 1, s -> result_amount );
     stats -> add_result( 0, s -> result_amount, ABSORB, s -> result, s -> block_result, s -> target );
-  }
-
-  virtual void consume_resource() override
-  {
-    priest_absorb_t::consume_resource();
-
-    // Rapture
-    if ( priest.specs.rapture -> ok() && priest.cooldowns.rapture -> up() )
-    {
-      player -> resource_gain( RESOURCE_MANA,
-                               player -> cache.spirit() * priest.specs.rapture -> effectN( 1 ).percent(),
-                               priest.gains.rapture );
-      priest.cooldowns.rapture -> start();
-    }
   }
 
   virtual bool ready() override
@@ -4804,7 +4784,6 @@ void priest_t::create_cooldowns()
   cooldowns.chakra       = get_cooldown( "chakra" );
   cooldowns.inner_focus  = get_cooldown( "inner_focus" );
   cooldowns.penance      = get_cooldown( "penance" );
-  cooldowns.rapture      = get_cooldown( "rapture" );
 }
 
 /* Construct priest gains
@@ -4821,7 +4800,6 @@ void priest_t::create_gains()
   gains.devouring_plague_health       = get_gain( "Devouring Plague Health" );
   gains.vampiric_touch_mana           = get_gain( "Vampiric Touch Mana" );
   gains.vampiric_touch_mastery_mana   = get_gain( "Vampiric Touch Mastery Mana" );
-  gains.rapture                       = get_gain( "Rapture" );
   gains.auspicious_spirits            = get_gain( "Auspicious Spirits" );
 }
 
@@ -5247,7 +5225,6 @@ void priest_t::init_spells()
   specs.grace                          = find_specialization_spell( "Grace" );
   specs.meditation_disc                = find_specialization_spell( "Meditation", "meditation_disc", PRIEST_DISCIPLINE );
   specs.mysticism                      = find_specialization_spell( "Mysticism" );
-  specs.rapture                        = find_specialization_spell( "Rapture" );
   specs.spirit_shell                   = find_specialization_spell( "Spirit Shell" );
   specs.strength_of_soul               = find_specialization_spell( "Strength of Soul" );
   specs.train_of_thought               = find_specialization_spell( "Train of Thought" );
@@ -5586,7 +5563,7 @@ void priest_t::apl_disc_heal()
 
   def -> add_action( this, "Inner Focus" );
   def -> add_action( "power_infusion,if=talent.power_infusion.enabled" );
-  def -> add_action( this, "Power Word: Shield", "if=!cooldown.rapture.remains" );
+  def -> add_action( this, "Power Word: Shield" );
   def -> add_action( this, "Renew", "if=buff.borrowed_time.up&(!ticking|remains<tick_time)" );
   def -> add_action( "penance_heal,if=buff.borrowed_time.up|target.buff.grace.stack<3" );
   def -> add_action( this, "Greater Heal", "if=buff.inner_focus.up" );
