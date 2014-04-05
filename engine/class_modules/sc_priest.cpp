@@ -60,7 +60,6 @@ public:
     buff_t* archangel;
     buff_t* borrowed_time;
     buff_t* holy_evangelism;
-    buff_t* inner_fire;
     buff_t* inner_focus;
     buff_t* inner_will;
     buff_t* spirit_shell;
@@ -244,7 +243,6 @@ public:
     const spell_data_t* borrowed_time;
     const spell_data_t* holy_fire;
     const spell_data_t* holy_nova;
-    const spell_data_t* inner_fire;
     const spell_data_t* inner_sanctum;
     const spell_data_t* lightwell;
     const spell_data_t* mind_blast;
@@ -1596,35 +1594,6 @@ struct inner_focus_t final : public priest_spell_t
   }
 };
 
-// Inner Fire Spell =========================================================
-
-struct inner_fire_t final : public priest_spell_t
-{
-  inner_fire_t( priest_t& player, const std::string& options_str ) :
-    priest_spell_t( "inner_fire", player, player.find_class_spell( "Inner Fire" ) )
-  {
-    parse_options( nullptr, options_str );
-
-    harmful = false;
-  }
-
-  virtual void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest.buffs.inner_will -> expire ();
-    priest.buffs.inner_fire -> trigger();
-  }
-
-  virtual bool ready() override
-  {
-    if ( priest.buffs.inner_fire -> check() )
-      return false;
-
-    return priest_spell_t::ready();
-  }
-};
-
 // Inner Will Spell =========================================================
 
 struct inner_will_t final : public priest_spell_t
@@ -1640,8 +1609,6 @@ struct inner_will_t final : public priest_spell_t
   virtual void execute() override
   {
     priest_spell_t::execute();
-
-    priest.buffs.inner_fire -> expire();
 
     priest.buffs.inner_will -> trigger();
   }
@@ -4866,12 +4833,6 @@ double priest_t::composite_armor() const
 {
   double a = base_t::composite_armor();
 
-  if ( buffs.inner_fire -> check() )
-  {
-    a *= 1.0 + buffs.inner_fire -> data().effectN( 1 ).percent();
-    a *= 1.0 + glyphs.inner_fire -> effectN( 1 ).percent();
-  }
-
   if ( buffs.shadowform -> check() )
     a *= 1.0 + buffs.shadowform -> data().effectN( 7 ).percent();
 
@@ -4910,9 +4871,6 @@ double priest_t::composite_spell_speed() const
 double priest_t::composite_spell_power_multiplier() const
 {
   double m = 1.0;
-
-  if ( buffs.inner_fire -> check() )
-    m += buffs.inner_fire -> data().effectN( 2 ).percent();
 
   if ( sim -> auras.spell_power_multiplier -> check() )
     m += sim -> auras.spell_power_multiplier -> current_value;
@@ -5042,7 +5000,6 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "chakra_serenity"        ) return new chakra_serenity_t       ( *this, options_str );
   if ( name == "dispersion"             ) return new dispersion_t            ( *this, options_str );
   if ( name == "power_word_fortitude"   ) return new fortitude_t             ( *this, options_str );
-  if ( name == "inner_fire"             ) return new inner_fire_t            ( *this, options_str );
   if ( name == "inner_focus"            ) return new inner_focus_t           ( *this, options_str );
   if ( name == "inner_will"             ) return new inner_will_t            ( *this, options_str );
   if ( name == "pain_suppression"       ) return new pain_suppression_t      ( *this, options_str );
@@ -5249,7 +5206,6 @@ void priest_t::init_spells()
   glyphs.circle_of_healing            = find_glyph_spell( "Glyph of Circle of Healing" );
   glyphs.dispersion                   = find_glyph_spell( "Glyph of Dispersion" );
   glyphs.holy_nova                    = find_glyph_spell( "Glyph of Holy Nova" );
-  glyphs.inner_fire                   = find_glyph_spell( "Glyph of Inner Fire" );
   glyphs.lightwell                    = find_glyph_spell( "Glyph of Lightwell" );
   glyphs.penance                      = find_glyph_spell( "Glyph of Penance" );
   glyphs.power_word_shield            = find_glyph_spell( "Glyph of Power Word: Shield" );
@@ -5320,11 +5276,6 @@ void priest_t::create_buffs()
                           .spell( find_spell( 81661 ) )
                           .chance( specs.evangelism -> ok() )
                           .activated( false );
-
-  buffs.inner_fire = buff_creator_t( this, "inner_fire" )
-                     .spell( find_class_spell( "Inner Fire" ) )
-                     .add_invalidate( CACHE_SPELL_POWER )
-                     /* .add_invalidate( CACHE_ARMOR ) */;
 
   buffs.inner_focus = buff_creator_t( this, "inner_focus" )
                       .spell( find_class_spell( "Inner Focus" ) )
@@ -5844,8 +5795,11 @@ void priest_t::target_mitigation( school_e school,
 {
   base_t::target_mitigation( school, dt, s );
 
-  if ( buffs.inner_fire -> check() && glyphs.inner_sanctum -> ok() && ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK ) )
-  { s -> result_amount *= 1.0 - glyphs.inner_sanctum -> effectN( 1 ).percent(); }
+ /* TODO: check glyph of inner sanctum
+  *
+  * if ( buffs.inner_fire -> check() && glyphs.inner_sanctum -> ok() && ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK ) )
+  * { s -> result_amount *= 1.0 - glyphs.inner_sanctum -> effectN( 1 ).percent(); }
+  */
 }
 
 /* Helper function to get the shadowy recall proc chance
