@@ -133,7 +133,6 @@ public:
     const spell_data_t* atonement;
     const spell_data_t* borrowed_time;
     const spell_data_t* divine_aegis;
-    const spell_data_t* divine_fury;
     const spell_data_t* evangelism;
     const spell_data_t* grace;
     const spell_data_t* meditation_disc;
@@ -5032,8 +5031,6 @@ double priest_t::composite_spell_hit() const
 {
   double hit = base_t::composite_spell_hit();
 
-  hit += specs.divine_fury -> effectN( 1 ).percent();
-
   if ( specs.spiritual_precision -> ok() )
     hit += ( ( cache.spirit() - base.stats.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / current_rating().spell_hit;
 
@@ -5313,10 +5310,6 @@ void priest_t::init_scaling()
   if ( specs.atonement -> ok() && primary_role() == ROLE_HEAL )
     scales_with[ STAT_STAMINA ] = true;
 
-  // Disc/Holy are hitcapped vs. raid bosses by Divine Fury
-  if ( specs.divine_fury -> ok() && ( target -> level - level ) <= 3 )
-    scales_with[ STAT_HIT_RATING ] = false;
-
   // For a Shadow Priest Spirit is the same as Hit Rating so invert it.
   // if ( ( specs.spiritual_precision -> ok() ) && ( sim -> scaling -> scale_stat == STAT_SPIRIT ) )
   // {
@@ -5380,7 +5373,6 @@ void priest_t::init_spells()
   specs.archangel                      = find_specialization_spell( "Archangel" );
   specs.borrowed_time                  = find_specialization_spell( "Borrowed Time" );
   specs.divine_aegis                   = find_specialization_spell( "Divine Aegis" );
-  specs.divine_fury                    = find_specialization_spell( "Divine Fury" );
   specs.evangelism                     = find_specialization_spell( "Evangelism" );
   specs.grace                          = find_specialization_spell( "Grace" );
   specs.meditation_disc                = find_specialization_spell( "Meditation", "meditation_disc", PRIEST_DISCIPLINE );
