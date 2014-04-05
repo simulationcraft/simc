@@ -61,7 +61,6 @@ public:
     buff_t* borrowed_time;
     buff_t* holy_evangelism;
     buff_t* inner_focus;
-    buff_t* inner_will;
     buff_t* spirit_shell;
     buff_t* saving_grace_penalty;
 
@@ -871,13 +870,6 @@ public:
   {
     double c = ab::cost();
 
-    if ( ( this -> base_execute_time <= timespan_t::zero() ) && ! this -> channeled && priest.buffs.inner_will -> check() )
-    {
-      c *= 1.0 + priest.buffs.inner_will -> check() * priest.buffs.inner_will -> data().effectN( 1 ).percent();
-      c  = std::floor( c );
-    }
-
-
     if ( priest.buffs.power_infusion -> check() )
     {
       c *= 1.0 + priest.buffs.power_infusion -> data().effectN( 2 ).percent();
@@ -891,9 +883,7 @@ public:
   {
     ab::consume_resource();
 
-    if ( ab::base_execute_time <= timespan_t::zero() )
-      priest.buffs.inner_will -> up();
-    else if ( ab::base_execute_time > timespan_t::zero() && ! this -> channeled )
+    if ( ab::base_execute_time > timespan_t::zero() && ! this -> channeled )
       priest.buffs.borrowed_time -> expire();
   }
 
@@ -1591,34 +1581,6 @@ struct inner_focus_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest.buffs.inner_focus -> trigger();
-  }
-};
-
-// Inner Will Spell =========================================================
-
-struct inner_will_t final : public priest_spell_t
-{
-  inner_will_t( priest_t& player, const std::string& options_str ) :
-    priest_spell_t( "inner_will", player, player.find_class_spell( "Inner Will" ) )
-  {
-    parse_options( nullptr, options_str );
-
-    harmful = false;
-  }
-
-  virtual void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest.buffs.inner_will -> trigger();
-  }
-
-  virtual bool ready() override
-  {
-    if ( priest.buffs.inner_will -> check() )
-      return false;
-
-    return priest_spell_t::ready();
   }
 };
 
@@ -3971,26 +3933,6 @@ struct holy_word_sanctuary_t final : public priest_heal_t
 
   // HW: Sanctuary is treated as a instant cast spell, both affected by Inner Will and Mental Agility
 
-  virtual double cost() const override
-  {
-    double c = priest_heal_t::cost();
-
-    // HW: Sanctuary is treated as a instant cast spell, both affected by Inner Will and Mental Agility
-    // Implemented 06/12/2011 ( Patch 4.3 ),
-    // see Issue1023 and http://elitistjerks.com/f77/t110245-cataclysm_holy_priest_compendium/p25/#post2054467
-
-    c *= 1.0 + priest.buffs.inner_will -> check() * priest.buffs.inner_will -> data().effectN( 1 ).percent();
-    c  = floor( c );
-
-    return c;
-  }
-
-  virtual void consume_resource() override
-  {
-    priest_heal_t::consume_resource();
-
-    priest.buffs.inner_will -> up();
-  }
 };
 
 // Holy Word Chastise =======================================================
@@ -4957,9 +4899,6 @@ double priest_t::composite_movement_speed() const
 {
   double speed = base_t::composite_movement_speed();
 
-  if ( buffs.inner_will -> check() )
-    speed *= 1.0 + buffs.inner_will -> data().effectN( 2 ).percent() + glyphs.inner_sanctum -> effectN( 2 ).percent();
-
   return speed;
 }
 
@@ -5001,7 +4940,6 @@ action_t* priest_t::create_action( const std::string& name,
   if ( name == "dispersion"             ) return new dispersion_t            ( *this, options_str );
   if ( name == "power_word_fortitude"   ) return new fortitude_t             ( *this, options_str );
   if ( name == "inner_focus"            ) return new inner_focus_t           ( *this, options_str );
-  if ( name == "inner_will"             ) return new inner_will_t            ( *this, options_str );
   if ( name == "pain_suppression"       ) return new pain_suppression_t      ( *this, options_str );
   if ( name == "power_infusion"         ) return new power_infusion_t        ( *this, options_str );
   if ( name == "shadowform"             ) return new shadowform_t            ( *this, options_str );
@@ -5280,9 +5218,6 @@ void priest_t::create_buffs()
   buffs.inner_focus = buff_creator_t( this, "inner_focus" )
                       .spell( find_class_spell( "Inner Focus" ) )
                       .cd( timespan_t::zero() );
-
-  buffs.inner_will = buff_creator_t( this, "inner_will" )
-                     .spell( find_class_spell( "Inner Will" ) );
 
   buffs.spirit_shell = new buffs::spirit_shell_t( *this );
 
