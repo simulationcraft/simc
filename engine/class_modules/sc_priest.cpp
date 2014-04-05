@@ -4414,7 +4414,6 @@ struct renew_t final : public priest_heal_t
     {
       rr = new rapid_renewal_t( p );
       add_child( rr );
-      trigger_gcd += p.specs.rapid_renewal -> effectN( 1 ).time_value();
       base_multiplier *= 1.0 + p.specs.rapid_renewal -> effectN( 2 ).percent();
     }
 
