@@ -153,7 +153,6 @@ public:
     const spell_data_t* shadowform;
     const spell_data_t* shadowy_apparitions;
     const spell_data_t* shadow_orbs;
-    const spell_data_t* spiritual_precision;
   } specs;
 
   // Mastery Spells
@@ -310,10 +309,8 @@ public:
   virtual double    composite_spell_haste() const override;
   virtual double    composite_spell_speed() const override;
   virtual double    composite_spell_power_multiplier() const override;
-  virtual double    composite_spell_hit() const override;
   virtual double    composite_spell_crit() const override;
   virtual double    composite_melee_crit() const override;
-  virtual double    composite_melee_hit() const override;
   virtual double    composite_player_multiplier( school_e school ) const override;
   virtual double    composite_player_heal_multiplier( school_e school ) const override;
   virtual double    composite_movement_speed() const override;
@@ -321,7 +318,6 @@ public:
   virtual double    matching_gear_multiplier( attribute_e attr ) const override;
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* ) override;
   virtual void pre_analyze_hook() override;
-  virtual void invalidate_cache( cache_e ) override;
   virtual void      init_action_list() override;
   virtual priest_td_t* get_target_data( player_t* target ) const override;
 
@@ -5025,18 +5021,6 @@ double priest_t::composite_spell_power_multiplier() const
   return m;
 }
 
-// priest_t::composite_spell_hit ============================================
-
-double priest_t::composite_spell_hit() const
-{
-  double hit = base_t::composite_spell_hit();
-
-  if ( specs.spiritual_precision -> ok() )
-    hit += ( ( cache.spirit() - base.stats.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / current_rating().spell_hit;
-
-  return hit;
-}
-
 double priest_t::composite_spell_crit() const
 {
   double csc = base_t::composite_spell_crit();
@@ -5055,18 +5039,6 @@ double priest_t::composite_melee_crit() const
     cmc *= 1.0 + sets.set( SET_T16_2PC_HEAL ) -> effectN( 2 ).percent();
 
   return cmc;
-}
-
-// priest_t::composite_attack_hit ===========================================
-
-double priest_t::composite_melee_hit() const
-{
-  double hit = base_t::composite_melee_hit();
-
-  if ( specs.spiritual_precision -> ok() )
-    hit += ( ( cache.spirit() - base.stats.attribute[ ATTR_SPIRIT ] ) * specs.spiritual_precision -> effectN( 1 ).percent() ) / current_rating().spell_hit;
-
-  return hit;
 }
 
 // priest_t::composite_player_multiplier ====================================
@@ -5130,15 +5102,6 @@ double priest_t::composite_movement_speed() const
     speed *= 1.0 + buffs.inner_will -> data().effectN( 2 ).percent() + glyphs.inner_sanctum -> effectN( 2 ).percent();
 
   return speed;
-}
-
-
-void priest_t::invalidate_cache( cache_e c )
-{
-  base_t::invalidate_cache( c );
-
-  if ( c == CACHE_SPIRIT && specs.spiritual_precision -> ok() )
-    player_t::invalidate_cache( CACHE_HIT );
 }
 
 // priest_t::composite_attribute_multiplier =================================
@@ -5310,20 +5273,6 @@ void priest_t::init_scaling()
   if ( specs.atonement -> ok() && primary_role() == ROLE_HEAL )
     scales_with[ STAT_STAMINA ] = true;
 
-  // For a Shadow Priest Spirit is the same as Hit Rating so invert it.
-  // if ( ( specs.spiritual_precision -> ok() ) && ( sim -> scaling -> scale_stat == STAT_SPIRIT ) )
-  // {
-  //   double v = sim -> scaling -> scale_value;
-
-  //   if ( ! sim -> scaling -> positive_scale_delta )
-  //   {
-  //     invert_scaling = 1;
-  //     initial.attribute[ ATTR_SPIRIT ] -= v * 2;
-  //   }
-  // }
-
-  if ( specs.spiritual_precision -> ok() )
-    scales_with[ STAT_SPIRIT ] = false;
 }
 
 // priest_t::init_spells ====================================================
@@ -5389,7 +5338,6 @@ void priest_t::init_spells()
 
   // Shadow
   specs.mind_surge                     = find_specialization_spell( "Mind Surge" );
-  specs.spiritual_precision            = find_specialization_spell( "Spiritual Precision" );
   specs.shadowform                     = find_class_spell( "Shadowform" );
   specs.shadowy_apparitions            = find_specialization_spell( "Shadowy Apparitions" );
   specs.shadow_orbs                    = find_specialization_spell( "Shadow Orbs" );
