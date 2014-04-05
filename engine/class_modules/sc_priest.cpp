@@ -1913,6 +1913,11 @@ struct mind_blast_t final : public priest_spell_t
     if ( priest.buffs.empowered_shadows -> check() )
       d *= 1.0 + priest.buffs.empowered_shadows->current_value *  priest.buffs.empowered_shadows -> check();
 
+    if ( priest.mastery_spells.mental_anguish -> ok() )
+    {
+      d *= 1.0 + priest.cache.mastery_value();
+    }
+
     return d;
   }
 };
@@ -2054,6 +2059,11 @@ struct mind_spike_t final : public priest_spell_t
       d *= 1.0 + priest.active_spells.surge_of_darkness -> effectN( 4 ).percent();
     }
 
+    if ( priest.mastery_spells.mental_anguish -> ok() )
+    {
+      d *= 1.0 + priest.cache.mastery_value();
+    }
+
     if ( priest.buffs.empowered_shadows -> check() )
       d *= 1.0 + priest.buffs.empowered_shadows->current_value *  priest.buffs.empowered_shadows -> check();
 
@@ -2115,6 +2125,18 @@ struct mind_sear_t final : public priest_spell_t
     dynamic_tick_action = true;
 
     tick_action = new mind_sear_tick_t( p );
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = priest_spell_t::action_multiplier();
+
+    if ( priest.mastery_spells.mental_anguish -> ok() )
+    {
+      am *= 1.0 + priest.cache.mastery_value();
+    }
+
+    return am;
   }
 };
 
@@ -2279,7 +2301,7 @@ struct devouring_plague_t final : public priest_spell_t
 {
   struct devouring_plague_dot_t : public priest_spell_t
   {
-    devouring_plague_dot_t( priest_t& p, priest_spell_t* pa ) :
+    devouring_plague_dot_t( priest_t& p, priest_spell_t* ) :
       priest_spell_t( "devouring_plague_tick", p, p.find_class_spell( "Devouring Plague" ) )
     {
       parse_effect_data( data().effectN( 5 ) );
@@ -2452,6 +2474,18 @@ struct mind_flay_base_t : public priest_spell_t
     may_crit     = false;
     channeled    = true;
     hasted_ticks = false;
+  }
+
+  virtual double action_multiplier() const override
+  {
+    double am = priest_spell_t::action_multiplier();
+
+    if ( priest.mastery_spells.mental_anguish -> ok() )
+    {
+      am *= 1.0 + priest.cache.mastery_value();
+    }
+
+    return am;
   }
 };
 
