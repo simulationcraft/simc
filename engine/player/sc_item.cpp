@@ -158,7 +158,6 @@ item_t::item_t( player_t* p, const std::string& o ) :
   fetched( false ), parsed(), xml(), options_str( o )
 {
   parsed.data.name = name_str.c_str();
-  parsed.data.icon = icon_str.c_str();
 }
 
 // item_t::to_string ========================================================

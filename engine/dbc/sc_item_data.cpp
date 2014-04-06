@@ -515,9 +515,7 @@ bool item_database::load_item_from_data( item_t& item )
 
   item.parsed.data = *data;
   item.name_str = data -> name;
-  item.icon_str = data -> icon;
   item.parsed.data.name = item.name_str.c_str();
-  item.parsed.data.icon = item.icon_str.c_str();
 
   util::tokenize( item.name_str );
 

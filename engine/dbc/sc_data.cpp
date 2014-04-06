@@ -23,8 +23,6 @@ bool spell_data_t::override_field( const std::string& field, double value )
     _school = ( unsigned ) value;
   else if ( util::str_compare_ci( field, "scaling_class" ) )
     _scaling_type = ( int ) value;
-  else if ( util::str_compare_ci( field, "coefficient" ) )
-    _extra_coeff = value;
   else if ( util::str_compare_ci( field, "spell_level" ) )
     _spell_level = ( unsigned ) value;
   else if ( util::str_compare_ci( field, "max_level" ) )

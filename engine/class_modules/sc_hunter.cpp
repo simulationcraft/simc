@@ -629,10 +629,10 @@ public:
 
   specialization_e default_spec()
   {
-    if ( pet_type > PET_NONE          && pet_type < PET_FEROCITY_TYPE ) return PET_FEROCITY;
-    if ( pet_type > PET_FEROCITY_TYPE && pet_type < PET_TENACITY_TYPE ) return PET_TENACITY;
-    if ( pet_type > PET_TENACITY_TYPE && pet_type < PET_CUNNING_TYPE  ) return PET_CUNNING;
-    return PET_FEROCITY;
+    if ( pet_type > PET_NONE          && pet_type < PET_FEROCITY_TYPE ) return PET_FEROCIOUS_VERSATILITY;
+    if ( pet_type > PET_FEROCITY_TYPE && pet_type < PET_TENACITY_TYPE ) return PET_TENACIOUS_VERSATILITY;
+    if ( pet_type > PET_TENACITY_TYPE && pet_type < PET_CUNNING_TYPE  ) return PET_CUNNING_VERSATILITY;
+    return PET_FEROCIOUS_VERSATILITY;
   }
 
   std::string unique_special()
