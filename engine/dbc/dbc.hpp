@@ -763,8 +763,11 @@ public:
   unsigned mask_class() const
   { return _m_class; }
 
-  unsigned specialization() const
+  unsigned spec() const
   { return _spec; }
+
+  specialization_e specialization() const
+  { return static_cast<specialization_e>( _spec ); }
 
   // composite access functions
 

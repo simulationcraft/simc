@@ -858,10 +858,10 @@ std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const talent_data
 
   s << "Column       : " << talent -> col() + 1    << std::endl;
   s << "Row          : " << talent -> row() + 1    << std::endl;
-  s << "Spell : "        << talent -> spell_id()   << std::endl;
+  s << "Spell        : "        << talent -> spell_id()   << std::endl;
   if ( talent -> replace_id() > 0 )
-    s << "Replaces : "   << talent -> replace_id() << std::endl;
-
+    s << "Replaces     : "   << talent -> replace_id() << std::endl;
+  s << "Spec         : " << util::specialization_string( talent -> specialization() ) << std::endl;
   s << std::endl;
 
   return s.str();
