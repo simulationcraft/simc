@@ -28,8 +28,8 @@ parser.add_option("-t", "--type", dest = "type",
                               'glyph_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix',
                               'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties', 'random_suffix_groups', 'spec_enum', 'spec_list', 'item_upgrade', 'rppm_coeff' ]), 
 parser.add_option("-l", "--level", dest = "level", 
-                  help    = "Scaling values up to level [90]", 
-                  default = 90, action = "store", type = "int")
+                  help    = "Scaling values up to level [100]", 
+                  default = 100, action = "store", type = "int")
 parser.add_option("-p", "--path", dest = "path", 
                   help    = "DBC input directory [cwd]", 
                   default = r'.', action = "store", type = "string")

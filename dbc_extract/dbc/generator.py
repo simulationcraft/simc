@@ -1543,13 +1543,8 @@ class SpellDataGenerator(DataGenerator):
             'SpellDuration', 'SpellPower', 'SpellLevels', 'SpellCategories', 'Talent', 
             'SkillLineAbility', 'SpellAuraOptions', 'SpellRuneCost', 'SpellRadius', 'GlyphProperties',
             'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables', 'SpellItemEnchantment', 'Item-sparse',
-            'Item', 'SpellEquippedItems', 'SpellIcon', 'SpecializationSpells', 'ChrSpecialization', 'SpellEffectScaling' ]
-        
-        if options.build >= 15589:
-            self._dbc.append( 'SpellMisc' )
-
-        if options.build >= 17227:
-            self._dbc.append( 'SpellProcsPerMinute' )
+            'Item', 'SpellEquippedItems', 'SpellIcon', 'SpecializationSpells', 'ChrSpecialization', 'SpellEffectScaling',
+            'SpellMisc', 'SpellProcsPerMinute', 'ItemSetSpell', 'ItemSpell' ]
 
     def initialize(self):
         DataGenerator.initialize(self)
@@ -1597,6 +1592,23 @@ class SpellDataGenerator(DataGenerator):
                 continue
             
             spell.add_misc(spell_misc_data)
+
+        # For WoD, map ItemSetSpell.dbc to ItemSet.dbc
+        for isb_id, data in self._itemsetspell_db.iteritems():
+            item_set = self._itemset_db[data.id_item_set]
+            if not item_set.id:
+                continue
+            
+            item_set.bonus.append(data)
+
+        # For WoD, map ItemSpell to Item-sparse
+        for is_id,data in self._itemspell_db.iteritems():
+            item = self._item_sparse_db[data.id_item]
+            if not item.id:
+                continue
+            
+            item.spells.append(data)
+
         
         return True
     
@@ -1846,8 +1858,8 @@ class SpellDataGenerator(DataGenerator):
                     if not item.id or item.gem_props == 0:
                         continue
 
-                    for i in xrange(1, 6):
-                        id_spell = getattr(item, 'id_spell_%d' % i)
+                    for spell in item.spells:
+                        id_spell = spell.id_spell
                         enchant_spell = self._spell_db[id_spell]
                         for enchant_effect in enchant_spell._effects:
                             if not enchant_effect or (enchant_effect.type != 53 and enchant_effect.type != 6):
@@ -1894,8 +1906,8 @@ class SpellDataGenerator(DataGenerator):
             # Grab relevant spells from quest items, this in essence only 
             # includes certain permanent enchants
             if classdata.classs == 12:
-                for i in xrange(1, 6):
-                    spell_id = getattr(data, 'id_spell_%d' % i)
+                for spell in data.spells:
+                    spell_id = spell.id_spell
                     if spell_id == 0:
                         continue
 
@@ -1907,8 +1919,8 @@ class SpellDataGenerator(DataGenerator):
                         self.process_spell(enchant_spell_id, ids, 0, 0)
             # Grab relevant spells from consumables as well
             elif classdata.classs == 0:
-                for i in xrange(1, 6):
-                    spell_id = getattr(data, 'id_spell_%d' % i)
+                for spell in data.spells:
+                    spell_id = spell.id_spell
                     if spell_id == 0:
                         continue
                     
@@ -1952,11 +1964,15 @@ class SpellDataGenerator(DataGenerator):
             if not mask_class_category:
                 continue
 
+            if not itemset_data.bonus:
+                continue
+
             # Item set is a tier set, we want informations.
-            for id_spell_field in xrange(1, 9):
-                spell_id = getattr(itemset_data, 'id_spell_%d' % id_spell_field)
-                if spell_id:
-                    self.process_spell(spell_id, ids, mask_class_category, 0)
+            for item_set_bonus in itemset_data.bonus:
+                if not item_set_bonus.id_spell:
+                    continue
+
+                self.process_spell(item_set_bonus.id_spell, ids, mask_class_category, 0)
 
         # Glyph effects, need to do trickery here to get actual effect from spellbook data
         for ability_id, ability_data in self._skilllineability_db.iteritems():
@@ -1996,8 +2012,8 @@ class SpellDataGenerator(DataGenerator):
                 continue
             
             filter_list = { }
-            for stat_id in xrange(1, 6):
-                sid = getattr(data, 'id_spell_%d' % stat_id)
+            for spell in data.spells:
+                sid = spell.id_spell
                 if sid > 0:
                     self.process_spell(sid, ids, 0, 0)
                 
@@ -2006,14 +2022,14 @@ class SpellDataGenerator(DataGenerator):
                 # should work as long as there are no two on-use effects (unlikely)
                 # or Blizzard does not decide to reduce the on-use cooldown 
                 # based on item type (lfr, normal, heroic, etc.)
-                stype = getattr(data, 'trg_spell_%d' % stat_id)
-                if ids.get(sid) and stype == 0 and getattr(data, 'cd_spell_%d' % stat_id) > 0:
+                stype = spell.trigger_type
+                if ids.get(sid) and stype == 0 and spell.cooldown > 0:
                     # Put in the new cooldown to the spell id data that is 
                     # passed to generate()
                     if ids[sid].get('cooldown'):
                         self.debug('Spell id %d already has a cooldown set' % sid)
                     else:
-                        ids[sid]['cooldown'] = getattr(data, 'cd_spell_%d' % stat_id)
+                        ids[sid]['cooldown'] = spell.cooldown
         
         # Last, get the explicitly defined spells in _spell_id_list on a class basis and the 
         # generic spells from SpellDataGenerator._spell_id_list[0]
@@ -2088,7 +2104,7 @@ class SpellDataGenerator(DataGenerator):
                 powers.add( power )
 
             if index % 20 == 0:
-              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, Class,  Race,Sca,MSL,ExtraCoeff,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration,  RCost, RPG,Stac, PCh,PCr, ProcFlags,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10,     Attr11,     Attr12 }, {     Flags1,     Flags2,     Flags3,     Flags4 }, Family, Description, Tooltip, Description Variable, Icon, ActiveIcon, Effect1, Effect2, Effect3 },\n'
+              s += '//{ Name                                ,     Id,Flags,PrjSp,  Sch, Class,  Race,Sca,MSL,SpLv,MxL,MinRange,MaxRange,Cooldown,  GCD,  Cat,  Duration,  RCost, RPG,Stac, PCh,PCr, ProcFlags,EqpCl, EqpInvType,EqpSubclass,CastMn,CastMx,Div,       Scaling,SLv, RplcId, {      Attr1,      Attr2,      Attr3,      Attr4,      Attr5,      Attr6,      Attr7,      Attr8,      Attr9,     Attr10,     Attr11,     Attr12 }, {     Flags1,     Flags2,     Flags3,     Flags4 }, Family, Description, Tooltip, Description Variable, Icon, ActiveIcon, Effect1, Effect2, Effect3 },\n'
             
             fields = spell.field('name', 'id') 
             fields += [ '%#.2x' % 0 ]
@@ -2101,7 +2117,7 @@ class SpellDataGenerator(DataGenerator):
             # Set the scaling index for the spell
             fields += self._spellscaling_db[spell.id_scaling].field('id_class', 'max_scaling_level')
 
-            fields += spell.field('extra_coeff')
+            #fields += spell.field('extra_coeff')
 
             fields += self._spelllevels_db[spell.id_levels].field('base_level', 'max_level')
             fields += self._spellrange_db[self._spellmisc_db[spell.id_misc].id_range].field('min_range')

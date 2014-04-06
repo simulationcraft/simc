@@ -73,9 +73,10 @@ class DBCParser(object):
             hdr_size = 48
 
         if hdr != DBC_HDR and hdr != DB2_HDR and hdr != WC2_HDR:
-            sys.stderr.write('%s: Not a World of Warcraft DBC/DB2/WCH2 File\n' % os.path.abspath(self._fname))
+            #sys.stderr.write('%s: Not a World of Warcraft DBC/DB2/WCH2 File\n' % os.path.abspath(self._fname))
             f.close()
-            sys.exit(1)
+            #sys.exit(1)
+            return
 
         first_id = 0
         last_id = 0

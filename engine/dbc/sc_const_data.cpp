@@ -305,48 +305,8 @@ void dbc::apply_hotfixes()
     s -> _internal_cooldown = 250;
   
   // Hunter, hotfixes from 2013-09-23
-  // Explosive Shot
-  s = spell_data_t::find( 53301, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 391 * 1.1;
-
-  // Chimera Shot (untested)
-  s = spell_data_t::find( 53209, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 3 ) )._base_value = 265 * 1.5;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg = 1.25 * 1.5;
-
-  // 6/1/2014: Aspect of the Hawk now increases ranged attack power by 35% (up from 25%). 
-  s = spell_data_t::find( 13165, false );
-  assert( s -> effectN( 1 ).base_value() != 35 && "Out of date hotfix for Aspect of the Hawk" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 35;
-
-  // 6/1/2014: Aspect of the Iron Hawk now increases ranged attack power by 35% (up from 25%). 
-  s = spell_data_t::find( 109260, false );
-  assert( s -> effectN( 1 ).base_value() != 35 && "Out of date hotfix for Aspect of the Iron Hawk" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 35;
 
   // Mage
-
-  // Ice Lance damage has been increased by 20%
-  s = spell_data_t::find( 30455, false );
-  assert( s -> effectN( 1 ).m_average() != 0.335 * 1.2 && "Out of date hotfix for Ice Lance" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.335 * 1.2;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.335 * 1.2;
-
-  s = spell_data_t::find( 131080, false );
-  assert( s -> effectN( 1 ).m_average() != 0.335 * 1.2 && "Out of date hotfix for Ice Lance" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.335 * 1.2;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.335 * 1.2;
-
-  // Waterbolt's damage has been increased by 10%
-  s = spell_data_t::find( 31707, false );
-  assert( s -> effectN( 1 ).m_average() != 0.5 * 1.1 && "Out of date hotfix for Waterbolt" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.5 * 1.1;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.5 * 1.1;
-
-  s = spell_data_t::find( 131581, false );
-  assert( s -> effectN( 1 ).m_average() != 0.5 * 1.1 && "Out of date hotfix for Waterbolt" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.5 * 1.1;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.5 * 1.1;
 
   // Paladin
   // Build Last Checked: 16309
@@ -369,17 +329,6 @@ void dbc::apply_hotfixes()
 
   // Priest
 
-  // Shadow Word: Pain damage reduced by 15%
-  // TODO: Changed both mastery/normal version, is this correct?
-  s = spell_data_t::find( 589, false );
-  assert( s -> effectN( 1 ).m_average() != 0.743 * 0.85 && "Out of date hotfix for Shadow Word: Pain" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.743 * 0.85;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.366 * 0.85;
-
-  s = spell_data_t::find( 124464, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.743 * 0.85;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.366 * 0.85;
-
   // Hack to get proper tooltip text in reports
   s = spell_data_t::find( 64904, false ); // Hymn of Hope (buff)
   s -> _desc = "$@spelldesc64901";
@@ -394,109 +343,15 @@ void dbc::apply_hotfixes()
 
   // Shaman
 
-  // Lightning bolt damage increased by 10%
-  s = spell_data_t::find( 403, false );
-  assert( s -> effectN( 1 ).m_average() != 1.14 * 1.1 && "Out of date hotfix for Lightning Bolt" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.14 * 1.1;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.739 * 1.1;
-
-  s = spell_data_t::find( 45284, false );
-  assert( s -> effectN( 1 ).m_average() != 0.855 * 1.1 && "Out of date hotfix for Lightning Bolt Overload" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.855 * 1.1;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.554 * 1.1;
-
-  // T15 4pc set bonus to 1.5 seconds
-  s = spell_data_t::find( 138144, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 1500;
-  if ( SC_USE_PTR )
-  {
-    s = spell_data_t::find( 138144, true );
-    const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._base_value = 1500;
-  }
-
   // Warlock
 
-
-  // Fel Firebolt damage decreased by 30%
-  s = spell_data_t::find( 104318, false );
-  assert( s -> effectN( 1 ).m_average() != 0.345 * 0.7 && "Out of date hotfix for Fel Firebolt" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.345 * 0.7;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.345 * 0.7;
-
-  // Immolate damage increased by 10% (apparently, in reality it's 30%)
-  s = spell_data_t::find( 348, false );
-  assert( s -> effectN( 1 ).m_average() != 0.47 * 1.3 && "Out of date hotfix for Immolate" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.47 * 1.3;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.47 * 1.3;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg = 0.47 * 1.3;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff = 0.47 * 1.3;
-
-  s = spell_data_t::find( 108686, false );
-  assert( s -> effectN( 1 ).m_average() != 0.47 * 1.3 && "Out of date hotfix for Immolate" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.47 * 1.3;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.47 * 1.3;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._m_avg = 0.47 * 1.3;
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._coeff = 0.47 * 1.3;
-
-  // Incinerate damage increased by 5% (apparently, in reality it's 15%)
-  s = spell_data_t::find( 29722, false );
-  assert( s -> effectN( 1 ).m_average() != 1.54 * 1.15 && "Out of date hotfix for Incinerate" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.54 * 1.15;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 1.54 * 1.15;
-
-  s = spell_data_t::find( 114654, false );
-  assert( s -> effectN( 1 ).m_average() != 1.568 * 1.15 && "Out of date hotfix for Incinerate" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 1.568 * 1.15;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 1.568 * 1.15;
-
-  // Agony was nerfed by 15%. Hotfix from 2013-10-02
-  s = spell_data_t::find( 980, false );
-  assert( s -> effectN( 1 ).m_average() != 0.03 * 0.85 && "Out of date hotfix for Agony" );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.03 * 0.85;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._coeff = 0.03 * 0.85;
-
-  
-  
   // Warrior
-  // Hotfixes from 2013-09-23
-  // Raging blow -- Buffed from 190% weapon damage to 228% weapon damage.
-  s = spell_data_t::find( 96103, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 228;
-  // Raging blow off-hand.
-  s = spell_data_t::find( 85384, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 228;
-
-  //Bloodthirst -- Buffed from 90% weapon damage to 108% weapon damage.
-  s = spell_data_t::find( 23881, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 2 ) )._base_value = 108;
-
 
   // Druid
 
-  // Hotfixes from 2013-09-23
-  // Rip -- Damage has been increased by 20%.
-  s = spell_data_t::find( 1079, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.103 * 1.2;
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_unk = 0.292 * 1.2;
-
-
   // Death Knight
 
-  // Monk
-  // Zen Sphere -- Damage done buffed by 15%
-  s = spell_data_t::find( 124098, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.104 * 1.15;
-  s = spell_data_t::find( 125033, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.423 * 1.15;
-  // Zen Sphere -- Healing done buffed by 15%
-  s = spell_data_t::find( 124081, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.104 * 1.15;
-  s = spell_data_t::find( 124101, false );
-  const_cast<spelleffect_data_t&>( s -> effectN( 1 ) )._m_avg = 0.269 * 1.15;
-
-
   // Misc
-
 
   // Legendary gems are buffs in game, hack them to become +500 / +550 stat gems
   item_enchantment_data_t* e = item_enchantment_data_index.get( false, 4996 );
