@@ -290,7 +290,6 @@ public:
   virtual double    composite_crit_avoidance() const;
   virtual double    composite_dodge() const;
   virtual double    composite_melee_speed() const;
-  virtual double    composite_rating_multiplier( rating_e rating ) const;
   virtual void      reset();
   virtual void      regen( timespan_t periodicity );
   virtual void      create_options();
