@@ -645,7 +645,6 @@ static  void trigger_sweeping_strikes( action_state_t* s )
       range                      = 5;
       aoe                        = 1;
       base_costs[ RESOURCE_RAGE] = 0;     //Resource consumption already accounted for in the buff application.
-      base_multiplier            = 0.50;  //Hotfixed 9/10, reduction from 75% damage to 50% damage.
     }
 
   virtual timespan_t travel_time() const
@@ -1057,8 +1056,6 @@ struct bloodthirst_t : public warrior_attack_t
 
     weapon           = &( p -> main_hand_weapon );
     bloodthirst_heal = new bloodthirst_heal_t( p );
-    base_multiplier *= 1.2;
-
   }
 
   double composite_crit_multiplier() const
@@ -1158,7 +1155,6 @@ struct colossus_smash_t : public warrior_attack_t
     parse_options( NULL, options_str );
 
     weapon = &( player -> main_hand_weapon );
-    base_multiplier=1.4; // WoD change
   }
 
   virtual timespan_t travel_time() const
@@ -1363,7 +1359,6 @@ struct execute_t : public warrior_attack_t
     weapon             = &( player -> main_hand_weapon );
     weapon_multiplier  = 0;
     direct_power_mod   = data().extra_coeff();
-    base_multiplier   *= 1.5;
   }
 
   virtual void impact( action_state_t* s )
@@ -1391,14 +1386,12 @@ struct execute_t : public warrior_attack_t
 struct ignite_weapon_t : public warrior_attack_t
 {
   ignite_weapon_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "ignite_weapon", p, p -> find_class_spell( "Heroic Strike" ) ) // Replacement for heroic strike.
+    warrior_attack_t( "ignite_weapon", p, p -> find_class_spell( "Ignite Weapon" ) ) // Replacement for heroic strike.
   {
     parse_options( NULL, options_str );
 
     weapon  = &( player -> main_hand_weapon );
     harmful = true;
-    base_multiplier=1.00;
-    school=SCHOOL_FIRE;
 
     // The 140% is hardcoded in the tooltip
     if ( weapon -> group() == WEAPON_1H ||
@@ -1652,7 +1645,6 @@ struct mortal_strike_t : public warrior_attack_t
     warrior_attack_t( "mortal_strike", p, p -> find_class_spell( "Mortal Strike" ) )
   {
     parse_options( NULL, options_str );
-    base_multiplier *= 1.228; //Hotfix buff for 5.4
   }
 
   virtual void execute()
@@ -1797,7 +1789,6 @@ struct raging_blow_attack_t : public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = false;
     background = true;
-    base_multiplier *= 1.2;
   }
 
   virtual void execute()
@@ -2166,7 +2157,7 @@ struct storm_bolt_off_hand_t : public warrior_attack_t
     weapon = &( p -> off_hand_weapon );
 
     // assume the target is stun-immune
-    base_multiplier = 2.88; // Storm bolt hits for 360% weapon damage in WoD, will update later.
+    base_multiplier = 4.00;
   }
 };
 
@@ -2182,7 +2173,7 @@ struct storm_bolt_t : public warrior_attack_t
     may_parry = false;
     may_block = false;
     // Assuming that our target is stun immune
-    base_multiplier = 2.88;
+    base_multiplier = 4.00;
 
     if ( p -> specialization() == WARRIOR_FURY )
     {
@@ -2391,7 +2382,6 @@ struct wild_strike_t : public warrior_attack_t
 
     weapon  = &( player -> off_hand_weapon );
     harmful = true;
-    base_multiplier *= 1.4;
     if ( player -> off_hand_weapon.type == WEAPON_NONE )
       background = true;
   }
@@ -3983,25 +3973,6 @@ double warrior_t::composite_melee_speed() const
     s *= 1.0 / ( 1.0 + buff.flurry -> data().effectN( 1 ).percent() );
 
   return s;
-}
-
-// warrior_t::composite_rating_multiplier ===================================
-
-double warrior_t::composite_rating_multiplier( rating_e rating ) const
-{
-  double m = player_t::composite_rating_multiplier( rating );
-
-  switch ( rating )
-  {
-    case RATING_SPELL_HASTE:
-    case RATING_MELEE_HASTE:
-    case RATING_RANGED_HASTE:
-      m *= 1.0; // Buff is removed in WoD
-      break;
-    default: break;
-  }
-
-  return m;
 }
 
 // warrior_t::composite_movement_speed =====================================
