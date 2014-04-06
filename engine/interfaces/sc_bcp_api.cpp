@@ -234,7 +234,6 @@ bool parse_items( player_t*  p,
     js::get_value( item.parsed.gem_id[ 1 ], js, "tooltipParams/gem1" );
     js::get_value( item.parsed.gem_id[ 2 ], js, "tooltipParams/gem2" );
     js::get_value( item.parsed.enchant_id, js, "tooltipParams/enchant" );
-    js::get_value( item.parsed.reforge_id, js, "tooltipParams/reforge" );
     js::get_value( item.parsed.addon_id, js, "tooltipParams/tinker" );
     js::get_value( item.parsed.suffix_id, js, "tooltipParams/suffix" );
     js::get_value( item.parsed.upgrade_level, js, "tooltipParams/upgrade/current" );

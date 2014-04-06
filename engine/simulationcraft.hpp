@@ -1190,7 +1190,6 @@ school_e parse_school_type       ( const std::string& name );
 set_e parse_set_bonus            ( const std::string& name );
 slot_e parse_slot_type           ( const std::string& name );
 stat_e parse_stat_type           ( const std::string& name );
-stat_e parse_reforge_type        ( const std::string& name );
 stat_e parse_gem_stat            ( const std::string& name );
 
 const char* movement_direction_string( movement_direction_e );
@@ -3119,13 +3118,10 @@ struct item_t
   // from user options, or a data source such as the Blizzard API, or Wowhead
   struct parsed_input_t
   {
-    stat_e                   reforged_from;
-    stat_e                   reforged_to;
     int                      upgrade_level;
     int                      suffix_id;
     unsigned                 enchant_id;
     unsigned                 addon_id;
-    unsigned                 reforge_id;
     int                      armor;
     std::array<int, 3>       gem_id;
     std::vector<stat_pair_t> gem_stats;
@@ -3137,8 +3133,8 @@ struct item_t
     std::vector<std::string> source_list;
 
     parsed_input_t() :
-      reforged_from( STAT_NONE ), reforged_to( STAT_NONE ), upgrade_level( 0 ),
-      suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ), reforge_id( 0 ), armor( 0 ),
+      upgrade_level( 0 ),
+      suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ), armor( 0 ),
       data(), use(), equip(), enchant(), addon()
     {
       range::fill( data.stat_type_e, -1 );
@@ -3169,7 +3165,6 @@ struct item_t
   std::string option_flex_str;
   std::string option_elite_str;
   std::string option_armor_type_str;
-  std::string option_reforge_str;
   std::string option_ilevel_str;
   std::string option_quality_str;
   std::string option_data_source_str;
@@ -3209,7 +3204,6 @@ struct item_t
   std::string encoded_addon();
   std::string encoded_upgrade_level();
   std::string encoded_random_suffix_id();
-  std::string encoded_reforge();
 
   bool decode_stats();
   bool decode_gems();
@@ -3222,7 +3216,6 @@ struct item_t
   bool decode_elite();
   bool decode_flexible();
   bool decode_armor_type();
-  bool decode_reforge();
   bool decode_random_suffix();
   bool decode_upgrade_level();
   bool decode_ilevel();
@@ -3230,8 +3223,6 @@ struct item_t
   bool decode_data_source();
 
   bool decode_proc_spell( special_effect_t& effect );
-
-  bool parse_reforge_id();
 
   static bool download_slot( item_t& item );
   static bool download_item( item_t& );

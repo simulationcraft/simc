@@ -1660,28 +1660,6 @@ stat_e util::parse_stat_type( const std::string& name )
   return STAT_NONE;
 }
 
-// parse_reforge_type =======================================================
-
-stat_e util::parse_reforge_type( const std::string& name )
-{
-  stat_e s = parse_stat_type( name );
-
-  switch ( s )
-  {
-    case STAT_EXPERTISE_RATING:
-    case STAT_HIT_RATING:
-    case STAT_CRIT_RATING:
-    case STAT_HASTE_RATING:
-    case STAT_MASTERY_RATING:
-    case STAT_SPIRIT:
-    case STAT_DODGE_RATING:
-    case STAT_PARRY_RATING:
-      return s;
-    default:
-      return STAT_NONE;
-  }
-}
-
 // parse_origin =============================================================
 
 bool util::parse_origin( std::string& region_str,
