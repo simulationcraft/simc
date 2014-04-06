@@ -651,17 +651,15 @@ static bool init_debuffs( sim_t* sim )
   {
     player_t* p = sim -> actor_list[i];
     // MOP Debuffs
-    p -> debuffs.slowed_casting           = buff_creator_t( p, "slowed_casting", p -> find_spell( 73975 ) )
-                                            .default_value( std::fabs( p -> find_spell( 73975 ) -> effectN( 3 ).percent() ) );
-
     p -> debuffs.magic_vulnerability     = buff_creator_t( p, "magic_vulnerability", p -> find_spell( 104225 ) )
                                            .default_value( p -> find_spell( 104225 ) -> effectN( 1 ).percent() );
 
     p -> debuffs.physical_vulnerability  = buff_creator_t( p, "physical_vulnerability", p -> find_spell( 81326 ) )
                                            .default_value( p -> find_spell( 81326 ) -> effectN( 1 ).percent() );
 
+    // TODO-WOD: Is ranged vulnerability gone now?
     p -> debuffs.ranged_vulnerability    = buff_creator_t( p, "ranged_vulnerability", p -> find_spell( 1130 ) )
-                                           .default_value( p -> find_spell( 1130 ) -> effectN( 2 ).percent() );
+                                           .default_value( /* p -> find_spell( 1130 ) -> effectN( 2 ).percent() */ 0 );
 
     p -> debuffs.mortal_wounds           = buff_creator_t( p, "mortal_wounds", p -> find_spell( 115804 ) )
                                            .default_value( std::fabs( p -> find_spell( 115804 ) -> effectN( 1 ).percent() ) );

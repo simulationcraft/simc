@@ -3779,9 +3779,6 @@ struct necrotic_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( s );
 
-    if ( ! sim -> overrides.slowed_casting && result_is_hit( s -> result ) )
-      s -> target -> debuffs.slowed_casting -> trigger();
-
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_necrotic_strike -> execute();
   }

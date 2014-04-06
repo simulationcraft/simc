@@ -2456,7 +2456,6 @@ public:
     int str_agi_int;
 
     // Debuff overrides
-    int slowed_casting;
     int magic_vulnerability;
     int mortal_wounds;
     int physical_vulnerability;
@@ -3150,8 +3149,6 @@ struct item_t
     {
       range::fill( data.stat_type_e, -1 );
       range::fill( data.stat_val, 0 );
-      range::fill( data.cooldown_spell, -1 );
-      range::fill( data.cooldown_category, -1 );
       range::fill( gem_id, 0 );
     }
   } parsed;
@@ -4297,7 +4294,6 @@ public:
     debuff_t* vulnerable;
 
     // MoP debuffs
-    debuff_t* slowed_casting;
     debuff_t* magic_vulnerability;
     debuff_t* mortal_wounds;
     debuff_t* physical_damage;

@@ -1037,7 +1037,6 @@ void sim_t::combat_begin()
   for ( size_t i = 0; i < target_list.size(); ++i )
   {
     player_t* t = target_list[ i ];
-    if ( overrides.slowed_casting         ) t -> debuffs.slowed_casting         -> override_buff();
     if ( overrides.magic_vulnerability    ) t -> debuffs.magic_vulnerability    -> override_buff();
     if ( overrides.ranged_vulnerability   ) t -> debuffs.ranged_vulnerability   -> override_buff();
     if ( overrides.mortal_wounds          ) t -> debuffs.mortal_wounds          -> override_buff();
@@ -1759,7 +1758,6 @@ void sim_t::use_optimal_buffs_and_debuffs( int value )
   overrides.stamina                 = optimal_raid;
   overrides.str_agi_int             = optimal_raid;
 
-  overrides.slowed_casting          = optimal_raid;
   overrides.magic_vulnerability     = optimal_raid;
   overrides.ranged_vulnerability    = optimal_raid;
   overrides.mortal_wounds           = optimal_raid;
@@ -1884,7 +1882,6 @@ void sim_t::create_options()
     opt_int( "override.spell_power_multiplier", overrides.spell_power_multiplier ),
     opt_int( "override.stamina", overrides.stamina ),
     opt_int( "override.str_agi_int", overrides.str_agi_int ),
-    opt_int( "override.slowed_casting", overrides.slowed_casting ),
     opt_int( "override.magic_vulnerability", overrides.magic_vulnerability ),
     opt_int( "override.ranged_vulnerability", overrides.ranged_vulnerability ),
     opt_int( "override.mortal_wounds", overrides.mortal_wounds ),
