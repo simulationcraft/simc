@@ -83,6 +83,7 @@ public:
     buff_t* shadowform;
     buff_t* vampiric_embrace;
     buff_t* surge_of_darkness;
+    buff_t* dispersion;
 
     // Set Bonus
     buff_t* empowered_shadows; // t16 4pc caster
@@ -260,6 +261,9 @@ public:
     const spell_data_t* shadow_word_death;
     const spell_data_t* smite;
     const spell_data_t* vampiric_embrace;
+
+    // WoD
+    const spell_data_t* free_action;
   } glyphs;
 
   priest_t( sim_t* sim, const std::string& name, race_e r ) :
@@ -4643,6 +4647,10 @@ double priest_t::composite_movement_speed() const
 {
   double speed = base_t::composite_movement_speed();
 
+  if ( glyphs.free_action -> ok() && buffs.dispersion -> check() ) {
+    speed *= 1.0 + glyphs.free_action -> effectN( 1 ).percent();
+  }
+
   return speed;
 }
 
@@ -4904,6 +4912,8 @@ void priest_t::init_spells()
   glyphs.vampiric_embrace             = find_glyph_spell( "Glyph of Vampiric Embrace" );
   glyphs.borrowed_time                = find_glyph_spell( "Glyph of Borrowed Time" );
   glyphs.shadow_word_death            = find_glyph_spell( "Glyph of Shadow Word: Death" );
+  // WoD
+  glyphs.free_action                  = find_glyph_spell( "Glyph of Free Action" );
 
   if ( mastery_spells.echo_of_light -> ok() )
     active_spells.echo_of_light = new actions::heals::echo_of_light_t( *this );
@@ -5022,6 +5032,8 @@ void priest_t::create_buffs()
 
   buffs.clarity_of_power_mind_blast = buff_creator_t( this, "clarity_of_power_mind_blast")
                                       .chance( talent_passives.clarity_of_power -> ok() );
+
+  buffs.dispersion = buff_creator_t( this, "dispersion" ).spell( find_class_spell( "Dispersion" ) );
 }
 
 // ALL Spec Pre-Combat Action Priority List
@@ -5472,6 +5484,11 @@ void priest_t::target_mitigation( school_e school,
                                   action_state_t* s )
 {
   base_t::target_mitigation( school, dt, s );
+
+  if ( buffs.dispersion -> check() )
+  {
+    s -> result_amount *= 1.0 + buffs.dispersion -> data().effectN( 1 ).percent();
+  }
 
  /* TODO: check glyph of inner sanctum
   *
