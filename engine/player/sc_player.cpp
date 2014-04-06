@@ -7,34 +7,6 @@
 
 namespace {
 
-// hymn_of_hope_buff ========================================================
-
-struct hymn_of_hope_buff_t : public buff_t
-{
-  double mana_gain;
-
-  hymn_of_hope_buff_t( player_t* p, const std::string& n, const spell_data_t* sp ) :
-    buff_t ( buff_creator_t( p, n, sp ) ), mana_gain( 0 )
-  { }
-
-  virtual void start( int stacks, double value, timespan_t duration )
-  {
-    buff_t::start( stacks, value, duration );
-
-    // Extra Mana is only added at the start, not on refresh. Tested 20/01/2011.
-    // Extra Mana is set by current max_mana, doesn't change when max_mana changes.
-    mana_gain = player -> resources.max[ RESOURCE_MANA ] * data().effectN( 2 ).percent();
-    player -> stat_gain( STAT_MAX_MANA, mana_gain, player -> gains.hymn_of_hope );
-  }
-
-  virtual void expire_override()
-  {
-    buff_t::expire_override();
-
-    player -> stat_loss( STAT_MAX_MANA, mana_gain );
-  }
-};
-
 // Player Ready Event =======================================================
 
 struct player_ready_event_t : public event_t
@@ -679,17 +651,15 @@ static bool init_debuffs( sim_t* sim )
   {
     player_t* p = sim -> actor_list[i];
     // MOP Debuffs
-    p -> debuffs.slowed_casting           = buff_creator_t( p, "slowed_casting", p -> find_spell( 73975 ) )
-                                            .default_value( std::fabs( p -> find_spell( 73975 ) -> effectN( 3 ).percent() ) );
-
     p -> debuffs.magic_vulnerability     = buff_creator_t( p, "magic_vulnerability", p -> find_spell( 104225 ) )
                                            .default_value( p -> find_spell( 104225 ) -> effectN( 1 ).percent() );
 
     p -> debuffs.physical_vulnerability  = buff_creator_t( p, "physical_vulnerability", p -> find_spell( 81326 ) )
                                            .default_value( p -> find_spell( 81326 ) -> effectN( 1 ).percent() );
 
+    // TODO-WOD: Is ranged vulnerability gone now?
     p -> debuffs.ranged_vulnerability    = buff_creator_t( p, "ranged_vulnerability", p -> find_spell( 1130 ) )
-                                           .default_value( p -> find_spell( 1130 ) -> effectN( 2 ).percent() );
+                                           .default_value( /* p -> find_spell( 1130 ) -> effectN( 2 ).percent() */ 0 );
 
     p -> debuffs.mortal_wounds           = buff_creator_t( p, "mortal_wounds", p -> find_spell( 115804 ) )
                                            .default_value( std::fabs( p -> find_spell( 115804 ) -> effectN( 1 ).percent() ) );
@@ -2045,7 +2015,6 @@ void player_t::init_gains()
   gains.essence_of_the_red     = get_gain( "essence_of_the_red" );
   gains.focus_regen            = get_gain( "focus_regen" );
   gains.health                 = get_gain( "external_healing" );
-  gains.hymn_of_hope           = get_gain( "hymn_of_hope_max_mana" );
   gains.innervate              = get_gain( "innervate" );
   gains.mana_potion            = get_gain( "mana_potion" );
   gains.mana_spring_totem      = get_gain( "mana_spring_totem" );
@@ -2587,7 +2556,6 @@ void player_t::create_buffs()
 
     }
 
-    buffs.hymn_of_hope              = new hymn_of_hope_buff_t( this, "hymn_of_hope", find_spell( 64904 ) );
   }
 
   buffs.courageous_primal_diamond_lucidity = buff_creator_t( this, "lucidity" )

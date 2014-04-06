@@ -335,7 +335,6 @@ public:
   unsigned    _race_mask;          // Racial mask for the spell
   int         _scaling_type;       // Array index for gtSpellScaling.dbc. -1 means the first non-class-specific sub array, and so on, 0 disabled
   unsigned    _max_scaling_level;  // Max scaling level(?), 0 == no restrictions, otherwise min( player_level, max_scaling_level )
-  double      _extra_coeff;        // An "extra" coefficient (used for some spells to indicate AP based coefficient)
   // SpellLevels.dbc
   unsigned    _spell_level;        // Spell learned on level. NOTE: Only accurate for "class abilities"
   unsigned    _max_level;          // Maximum level for scaling
@@ -408,7 +407,7 @@ public:
   { return timespan_t::from_millis( _duration ); }
 
   double extra_coeff() const
-  { return _extra_coeff; }
+  { return 0; }
 
   timespan_t gcd() const
   { return timespan_t::from_millis( _gcd ); }
@@ -741,8 +740,7 @@ public:
   unsigned     _id;          // Talent id
   unsigned     _flags;       // Unused for now, 0x00 for all
   unsigned     _m_class;     // Class mask
-  unsigned     _m_pet;       // Pet mask
-  unsigned     _is_pet;      // Is Pet?
+  unsigned     _spec;        // Specialization
   unsigned     _col;         // Talent column
   unsigned     _row;         // Talent row
   unsigned     _spell_id;    // Talent spell
@@ -773,8 +771,11 @@ public:
   unsigned mask_class() const
   { return _m_class; }
 
-  unsigned mask_pet() const
-  { return _m_pet; }
+  unsigned spec() const
+  { return _spec; }
+
+  specialization_e specialization() const
+  { return static_cast<specialization_e>( _spec ); }
 
   // composite access functions
 
@@ -789,16 +790,6 @@ public:
       return false;
 
     return ( ( _m_class & mask ) == mask );
-  }
-
-  bool is_pet( pet_e p ) const
-  {
-    unsigned mask = util::pet_mask( p );
-
-    if ( mask == 0 )
-      return false;
-
-    return ( ( _m_pet & mask ) == mask );
   }
 
   // static functions

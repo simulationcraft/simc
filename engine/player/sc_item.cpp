@@ -7,20 +7,13 @@
 
 namespace { // UNNAMED NAMESPACE ==========================================
 
-const stat_e reforge_stats[] =
+struct token_t
 {
-  STAT_SPIRIT,
-  STAT_DODGE_RATING,
-  STAT_PARRY_RATING,
-  STAT_HIT_RATING,
-  STAT_CRIT_RATING,
-  STAT_HASTE_RATING,
-  STAT_EXPERTISE_RATING,
-  STAT_MASTERY_RATING,
-  STAT_NONE
+  std::string full;
+  std::string name;
+  double value;
+  std::string value_str;
 };
-
-} // UNNAMED NAMESPACE ====================================================
 
 // item_t::item_t ===========================================================
 
@@ -137,36 +130,6 @@ std::string item_t::to_string()
     util::tokenize( class_str );
     s << " type=" << class_str << "/" << str;
     is_weapon = true;
-  }
-
-  if ( parsed.reforged_from != STAT_NONE && parsed.reforged_to != STAT_NONE )
-  {
-    double v = 0;
-    for ( size_t i = 0; i < sizeof_array( parsed.data.stat_type_e ); i++ )
-    {
-      if ( parsed.data.stat_type_e[ i ] == util::translate_stat( parsed.reforged_from ) )
-      {
-        v = stat_value( i );
-        break;
-      }
-    }
-
-    if ( v == 0 )
-    {
-      for ( size_t i = 0; i < parsed.suffix_stats.size(); i++ )
-      {
-        if ( parsed.reforged_from == parsed.suffix_stats[ i ].stat )
-        {
-          v = parsed.suffix_stats[ i ].value;
-          break;
-        }
-      }
-    }
-
-    s << " reforge={ " << "-" << floor( 0.4 * v )
-      << " " << util::stat_type_abbrev( parsed.reforged_from )
-      << " -> " << "+" << floor( 0.4 * v )
-      << " " << util::stat_type_abbrev( parsed.reforged_to ) << " }";
   }
 
   if ( has_stats() )
@@ -406,6 +369,7 @@ bool item_t::parse_options()
 
   option_name_str = options_str;
   std::string remainder = "";
+  std::string DUMMY_REFORGE; // TODO-WOD: Remove once profiles update
 
   std::string::size_type cut_pt = options_str.find_first_of( "," );
 
@@ -431,7 +395,7 @@ bool item_t::parse_options()
     opt_string( "flex", option_flex_str ),
     opt_string( "elite", option_elite_str ),
     opt_string( "type", option_armor_type_str ),
-    opt_string( "reforge", option_reforge_str ),
+    opt_string( "reforge", DUMMY_REFORGE ),
     opt_int( "suffix", parsed.suffix_id ),
     opt_string( "ilevel", option_ilevel_str ),
     opt_string( "quality", option_quality_str ),
@@ -456,7 +420,6 @@ bool item_t::parse_options()
   util::tolower( option_flex_str             );
   util::tolower( option_elite_str            );
   util::tolower( option_armor_type_str       );
-  util::tolower( option_reforge_str          );
   util::tolower( option_ilevel_str           );
   util::tolower( option_quality_str          );
 
@@ -487,9 +450,6 @@ void item_t::encoded_item( xml_writer_t& writer )
 
   if ( parsed.addon_stats.size() > 0 || ! has_special_effect( SPECIAL_EFFECT_SOURCE_ADDON ) )
     writer.print_attribute( "addon", encoded_addon() );
-
-  if ( ( parsed.reforged_from != STAT_NONE && parsed.reforged_to != STAT_NONE ) )
-    writer.print_attribute( "reforge", encoded_reforge() );
 
   writer.end_tag( "item" );
 }
@@ -553,10 +513,6 @@ std::string item_t::encoded_item()
 
   if ( ! option_use_str.empty() )
     s << ",use=" << option_use_str;
-
-  if ( ! option_reforge_str.empty() ||
-       ( parsed.reforged_from != STAT_NONE && parsed.reforged_to != STAT_NONE ) )
-    s << ",reforge=" << encoded_reforge();
 
   if ( ! option_data_source_str.empty() )
     s << ",source=" << option_data_source_str;
@@ -697,26 +653,6 @@ std::string item_t::encoded_random_suffix_id()
   return str;
 }
 
-// item_t::encoded_reforge ==================================================
-
-std::string item_t::encoded_reforge()
-{
-  if ( ! option_reforge_str.empty() )
-    return option_reforge_str;
-
-  std::string str;
-  if ( parsed.reforged_from != STAT_NONE && parsed.reforged_to != STAT_NONE )
-  {
-    str =  util::stat_type_abbrev( parsed.reforged_from );
-    str += "_";
-    str += util::stat_type_abbrev( parsed.reforged_to );
-  }
-
-  util::tokenize( str );
-
-  return str;
-}
-
 // item_t::encoded_stats ====================================================
 
 std::string item_t::encoded_stats()
@@ -830,7 +766,6 @@ bool item_t::init()
   if ( ! decode_gems()                             ) return false;
   if ( ! decode_weapon()                           ) return false;
   if ( ! decode_random_suffix()                    ) return false;
-  if ( ! decode_reforge()                          ) return false;
   if ( ! decode_equip_effect()                     ) return false;
   if ( ! decode_use_effect()                       ) return false;
   if ( ! decode_enchant()                          ) return false;
@@ -1013,64 +948,6 @@ bool item_t::decode_stats()
   {
     base_stats.add_stat( STAT_ARMOR, item_database::armor_value( *this ) );
     stats.add_stat( STAT_ARMOR, item_database::armor_value( *this ) );
-  }
-
-  return true;
-}
-
-// item_t::decode_reforge ===================================================
-
-bool item_t::decode_reforge()
-{
-  if ( option_reforge_str == "none" || ! option_reforge_str.empty() )
-  {
-    parsed.reforged_from = parsed.reforged_to = STAT_NONE;
-
-    std::vector<item_database::token_t> tokens;
-    size_t num_tokens = item_database::parse_tokens( tokens, option_reforge_str );
-
-    if ( num_tokens == 0 )
-      return true;
-
-    if ( num_tokens != 2 )
-    {
-      sim -> errorf( "Player %s has unknown 'reforge=' '%s' at slot %s\n", player -> name(), option_reforge_str.c_str(), slot_name() );
-      return false;
-    }
-
-    stat_e s1 = util::parse_reforge_type( tokens[ 0 ].name );
-    stat_e s2 = util::parse_reforge_type( tokens[ 1 ].name );
-    if ( ( s1 == STAT_NONE ) || ( s2 == STAT_NONE ) )
-    {
-      sim -> errorf( "Player %s has unknown 'reforge=' '%s' at slot %s\n",
-                     player -> name(), option_reforge_str.c_str(), slot_name() );
-      return false;
-    }
-    if ( base_stats.get_stat( s1 ) <= 0.0 )
-    {
-      sim -> errorf( "Player %s with 'reforge=' '%s' at slot %s does not have source stat on item.\n",
-                     player -> name(), option_reforge_str.c_str(), slot_name() );
-      return false;
-    }
-    if ( base_stats.get_stat( s2 ) > 0.0 )
-    {
-      sim -> errorf( "Player %s with 'reforge=' '%s' at slot %s already has target stat on item.\n",
-                     player -> name(), option_reforge_str.c_str(), slot_name() );
-      return false;
-    }
-
-    parsed.reforged_from = s1;
-    parsed.reforged_to   = s2;
-  }
-
-  if ( parsed.reforge_id > 0 && ! parse_reforge_id() )
-    return false;
-
-  if ( parsed.reforged_from != STAT_NONE && parsed.reforged_to != STAT_NONE )
-  {
-    double amount = floor( base_stats.get_stat( parsed.reforged_from ) * 0.4 );
-    stats.add_stat( parsed.reforged_from, -amount );
-    stats.add_stat( parsed.reforged_to,    amount );
   }
 
   return true;
@@ -1699,35 +1576,3 @@ bool item_t::download_glyph( player_t* player, std::string& glyph_name, const st
 }
 
 
-// item_t::parse_reforge_id =================================================
-
-bool item_t::parse_reforge_id()
-{
-  if ( parsed.reforge_id == 0 )
-    return true;
-
-  int start = 0;
-  int target = parsed.reforge_id;
-  target %= 56;
-  if ( target == 0 ) target = 56;
-  else if ( target <= start ) return false;
-
-  for ( int i = 0; reforge_stats[ i ] != STAT_NONE; i++ )
-  {
-    for ( int j = 0; reforge_stats[ j ] != STAT_NONE; j++ )
-    {
-      if ( i == j ) continue;
-      if ( ++start == target )
-      {
-        parsed.reforged_from = reforge_stats[ i ];
-        parsed.reforged_to = reforge_stats[ j ];
-
-        return true;
-      }
-    }
-  }
-
-  return false;
-}
-
-// NEW ITEM STUFF REMOVED IN r<xxxxx>

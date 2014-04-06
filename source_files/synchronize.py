@@ -69,7 +69,7 @@ def VS_no_precompiled_header():
     
 # Determine what precompiled header setting to use
 def VS_use_precompiled_header( filename ):
-    if re.search( r"sc_io.cpp", filename ):
+    if re.search( r"sc_player.cpp", filename ):
         return "<PrecompiledHeader>Create</PrecompiledHeader>"
     with open( filename ) as f:
           content = f.read()

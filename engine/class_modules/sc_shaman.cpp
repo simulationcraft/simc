@@ -127,7 +127,6 @@ public:
     buff_t* lava_surge;
     buff_t* lightning_shield;
     buff_t* maelstrom_weapon;
-    buff_t* searing_flames;
     buff_t* shamanistic_rage;
     buff_t* spirit_walk;
     buff_t* spiritwalkers_grace;
@@ -238,7 +237,6 @@ public:
     const spell_data_t* flurry;
     const spell_data_t* mental_quickness;
     const spell_data_t* primal_wisdom;
-    const spell_data_t* searing_flames;
     const spell_data_t* shamanistic_rage;
     const spell_data_t* spirit_walk;
     const spell_data_t* static_shock;
@@ -300,7 +298,6 @@ public:
   {
     const spell_data_t* primal_wisdom;
     const spell_data_t* resurgence;
-    const spell_data_t* searing_flames;
     const spell_data_t* ancestral_swiftness;
     const spell_data_t* flame_shock;
   } spell;
@@ -980,38 +977,6 @@ struct feral_spirit_pet_t : public pet_t
     }
   };
 
-  struct spirit_bite_t : public melee_attack_t
-  {
-    spirit_bite_t( feral_spirit_pet_t* player ) :
-      melee_attack_t( "spirit_bite", player, player -> find_spell( 58859 ) )
-    {
-      may_crit  = true;
-      special   = true;
-      direct_power_mod = data().extra_coeff();
-      cooldown -> duration = timespan_t::from_seconds( 7.0 );
-    }
-
-    feral_spirit_pet_t* p() const
-    { return static_cast<feral_spirit_pet_t*>( player ); }
-
-    void init()
-    {
-      melee_attack_t::init();
-      if ( ! player -> sim -> report_pets_separately && player != p() -> o() -> pet_feral_spirit[ 0 ] )
-        stats = p() -> o() -> pet_feral_spirit[ 0 ] -> get_stats( name(), this );
-    }
-
-    virtual double composite_da_multiplier() const
-    {
-      double m = melee_attack_t::composite_da_multiplier();
-
-      if ( p() -> o() -> mastery.enhanced_elements -> ok() )
-        m *= 1.0 + p() -> o() -> cache.mastery_value();
-
-      return m;
-    }
-  };
-
   melee_t* melee;
   const spell_data_t* command;
 
@@ -1036,21 +1001,6 @@ struct feral_spirit_pet_t : public pet_t
     pet_t::init_base_stats();
 
     melee = new melee_t( this );
-  }
-
-  virtual void init_action_list()
-  {
-    action_list_str = "spirit_bite";
-
-    pet_t::init_action_list();
-  }
-
-  action_t* create_action( const std::string& name,
-                           const std::string& options_str )
-  {
-    if ( name == "spirit_bite" ) return new spirit_bite_t( this );
-
-    return pet_t::create_action( name, options_str );
   }
 
   void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
@@ -1322,15 +1272,6 @@ struct fire_elemental_t : public pet_t
         schedule_execute();
       else
         melee_attack_t::execute();
-    }
-
-    virtual void impact( action_state_t* state )
-    {
-      melee_attack_t::impact( state );
-
-      fire_elemental_t* p = static_cast< fire_elemental_t* >( player );
-      if ( result_is_hit( state -> result ) && p -> o() -> specialization() == SHAMAN_ENHANCEMENT )
-        p -> o() -> buff.searing_flames -> trigger();
     }
 
     virtual double composite_da_multiplier() const
@@ -1869,7 +1810,6 @@ static bool trigger_tier16_4pc_melee( const action_state_t* s )
   p -> cooldown.t16_4pc_melee -> start( p -> sets.set( SET_T16_4PC_MELEE ) -> internal_cooldown() );
 
   p -> proc.t16_4pc_melee -> occur();
-  p -> buff.searing_flames -> trigger( 5 );
   p -> cooldown.lava_lash -> reset( true );
 
   return true;
@@ -2173,11 +2113,9 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
   // static constant floats aren't allowed by the spec and some compilers
   static double normalize_speed()   { return 2.649845; }
   static double power_coefficient() { return 0.059114 * 1.5; /* 2013/09/24 hotfix */ }
-  const spell_data_t* searing_flames_buff;
 
   flametongue_weapon_spell_t( const std::string& n, shaman_t* player, weapon_t* w ) :
-    shaman_spell_t( n, player, player -> find_spell( 8024 ) ),
-    searing_flames_buff( player -> find_spell( 77661 ) )
+    shaman_spell_t( n, player, player -> find_spell( 8024 ) )
   {
     may_proc_eoe       = false;
     may_crit           = true;
@@ -2199,15 +2137,6 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
       base_attack_power_multiplier = 0;
       base_spell_power_multiplier  = w -> swing_time.total_seconds() / normalize_speed() * power_coefficient();
     }
-  }
-
-  virtual double action_da_multiplier() const
-  {
-    double m = shaman_spell_t::action_da_multiplier();
-
-    m *= 1.0 + p() -> buff.searing_flames -> stack() * searing_flames_buff -> effectN( 1 ).percent();
-
-    return m;
   }
 };
 
@@ -2716,12 +2645,10 @@ struct auto_attack_t : public shaman_melee_attack_t
 struct lava_lash_t : public shaman_melee_attack_t
 {
   double ft_bonus;
-  double sf_bonus;
 
   lava_lash_t( shaman_t* player, const std::string& options_str ) :
     shaman_melee_attack_t( player, player -> find_class_spell( "Lava Lash" ) ),
-    ft_bonus( data().effectN( 2 ).percent() ),
-    sf_bonus( player -> spell.searing_flames -> effectN( 1 ).percent() )
+    ft_bonus( data().effectN( 2 ).percent() )
   {
     check_spec( SHAMAN_ENHANCEMENT );
     may_proc_windfury = true;
@@ -2744,8 +2671,7 @@ struct lava_lash_t : public shaman_melee_attack_t
   {
     double m = shaman_melee_attack_t::action_da_multiplier();
 
-    m *= 1.0 + p() -> buff.searing_flames -> check() * sf_bonus +
-         ( weapon -> buff_type == FLAMETONGUE_IMBUE ) * ft_bonus;
+    m *= 1.0 + ( weapon -> buff_type == FLAMETONGUE_IMBUE ) * ft_bonus;
 
     return m;
   }
@@ -2756,8 +2682,6 @@ struct lava_lash_t : public shaman_melee_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      p() -> buff.searing_flames -> expire();
-
       trigger_static_shock( this );
       if ( td( state -> target ) -> dot.flame_shock -> ticking )
         trigger_improved_lava_lash( this );
@@ -3907,7 +3831,7 @@ struct flame_shock_t : public shaman_spell_t
     double m = shaman_spell_t::composite_ta_multiplier();
 
     if ( p() -> buff.unleash_flame -> check() )
-      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 3 ).percent();
+      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
   }
@@ -4487,17 +4411,6 @@ struct searing_totem_pulse_t : public totem_pulse_action_t
     // to in-game damage ranges
     base_dd_min += 10;
     base_dd_max += 10;
-  }
-
-  void impact( action_state_t* state )
-  {
-    totem_pulse_action_t::impact( state );
-
-    if ( result_is_hit( state -> result ) )
-    {
-      if ( totem -> o() -> spec.searing_flames -> ok() )
-        totem -> o() -> buff.searing_flames -> trigger();
-    }
   }
 };
 
@@ -5245,7 +5158,6 @@ void shaman_t::init_spells()
   spec.maelstrom_weapon    = find_specialization_spell( "Maelstrom Weapon" );
   spec.mental_quickness    = find_specialization_spell( "Mental Quickness" );
   spec.primal_wisdom       = find_specialization_spell( "Primal Wisdom" );
-  spec.searing_flames      = find_specialization_spell( "Searing Flames" );
   spec.shamanistic_rage    = find_specialization_spell( "Shamanistic Rage" );
   spec.spirit_walk         = find_specialization_spell( "Spirit Walk" );
   spec.static_shock        = find_specialization_spell( "Static Shock" );
@@ -5295,7 +5207,6 @@ void shaman_t::init_spells()
   spell.ancestral_swiftness          = find_spell( 121617 );
   spell.primal_wisdom                = find_spell( 63375 );
   spell.resurgence                   = find_spell( 101033 );
-  spell.searing_flames               = find_spell( 77657 );
   spell.flame_shock                  = find_class_spell( "Flame Shock" );
 
   // Constants
@@ -5400,10 +5311,6 @@ void shaman_t::create_buffs()
   buff.maelstrom_weapon        = buff_creator_t( this, "maelstrom_weapon",  spec.maelstrom_weapon -> effectN( 1 ).trigger() )
                                  .chance( spec.maelstrom_weapon -> proc_chance() )
                                  .activated( false );
-  buff.searing_flames          = buff_creator_t( this, "searing_flames", find_specialization_spell( "Searing Flames" ) )
-                                 .chance( find_spell( 77661 ) -> proc_chance() )
-                                 .duration( find_spell( 77661 ) -> duration() )
-                                 .max_stack( find_spell( 77661 ) -> max_stacks() );
   buff.shamanistic_rage        = buff_creator_t( this, "shamanistic_rage",  spec.shamanistic_rage );
   buff.spirit_walk             = buff_creator_t( this, "spirit_walk", spec.spirit_walk );
   buff.spiritwalkers_grace     = buff_creator_t( this, "spiritwalkers_grace", find_class_spell( "Spiritwalker's Grace" ) )
@@ -5430,7 +5337,7 @@ void shaman_t::create_buffs()
   constant.attack_speed_flurry = 1.0 / ( 1.0 + spec.flurry -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   buff.unleash_wind            = haste_buff_creator_t( this, "unleash_wind", find_spell( 73681 ) ).add_invalidate( CACHE_ATTACK_SPEED );
-  constant.attack_speed_unleash_wind = 1.0 / ( 1.0 + buff.unleash_wind -> data().effectN( 2 ).percent() );
+  constant.attack_speed_unleash_wind = 1.0 / ( 1.0 + buff.unleash_wind -> data().effectN( 1 ).percent() );
 
   buff.tier13_4pc_healer       = haste_buff_creator_t( this, "tier13_4pc_healer", find_spell( 105877 ) ).add_invalidate( CACHE_HASTE );
 

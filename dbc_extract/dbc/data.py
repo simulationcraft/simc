@@ -6,11 +6,103 @@ _REMOVE_FIELD = 0x00
 _ADD_FIELD    = 0x01
 
 _DIFF_DATA = {
-    17898: { }
+    17898: { },
+    18125: {
+        'Spell.dbc' : [
+            ( 'extra_coeff', _REMOVE_FIELD ),
+        ],
+        'SpellMisc.dbc' : [
+            ( 'unk_wod_1', _ADD_FIELD, 'flags_16467' ),
+        ],
+        'SpellEffect.dbc': [
+            ( 'unk_wod_1', _ADD_FIELD, 'unk_14040' ),
+        ],
+        'Item.db2' : [
+            ( 'unk_wod_1', _ADD_FIELD, 'sheath' ),
+            ( 'unk_wod_2', _ADD_FIELD, 'unk_wod_1' ),
+        ],
+        'SpellPower.dbc': [
+            ( 'unk_wod_1', _ADD_FIELD, 'cost' )
+        ],
+        'GlyphProperties.dbc': [
+            ( 'unk_wod_1', _ADD_FIELD, 'unk_3' )
+        ],
+        'ChrSpecialization.dbc': [
+            ( 'unk_wod_1', _ADD_FIELD, 'unk_15699' ),
+            ( 'unk_wod_2', _ADD_FIELD, 'unk_wod_1' ),
+            ( 'unk_wod_3', _ADD_FIELD, 'unk_wod_2' ),
+        ],
+        'SpellEffectScaling.dbc': [
+            ( 'unk_17124', _REMOVE_FIELD )
+        ],
+        'ItemDisplayInfo.dbc' : [
+            ( 'unk_15464', _REMOVE_FIELD ),
+            ( 'f24', _REMOVE_FIELD ),
+            ( 'f23', _REMOVE_FIELD ),
+        ],
+        'ItemSet.dbc': [
+            ( 'id_spell_1', _REMOVE_FIELD ),
+            ( 'id_spell_2', _REMOVE_FIELD ),
+            ( 'id_spell_3', _REMOVE_FIELD ),
+            ( 'id_spell_4', _REMOVE_FIELD ),
+            ( 'id_spell_5', _REMOVE_FIELD ),
+            ( 'id_spell_6', _REMOVE_FIELD ),
+            ( 'id_spell_7', _REMOVE_FIELD ),
+            ( 'id_spell_8', _REMOVE_FIELD ),
+            ( 'n_items_1', _REMOVE_FIELD ),
+            ( 'n_items_2', _REMOVE_FIELD ),
+            ( 'n_items_3', _REMOVE_FIELD ),
+            ( 'n_items_4', _REMOVE_FIELD ),
+            ( 'n_items_5', _REMOVE_FIELD ),
+            ( 'n_items_6', _REMOVE_FIELD ),
+            ( 'n_items_7', _REMOVE_FIELD ),
+            ( 'n_items_8', _REMOVE_FIELD )
+        ],
+        'Item-sparse.db2': [
+            ( 'id_name_desc', _ADD_FIELD, 'unk_131' ),
+            ( 'id_spell_1', _REMOVE_FIELD ),
+            ( 'id_spell_2', _REMOVE_FIELD ),
+            ( 'id_spell_3', _REMOVE_FIELD ),
+            ( 'id_spell_4', _REMOVE_FIELD ),
+            ( 'id_spell_5', _REMOVE_FIELD ),
+            ( 'trg_spell_1', _REMOVE_FIELD ),
+            ( 'trg_spell_2', _REMOVE_FIELD ),
+            ( 'trg_spell_3', _REMOVE_FIELD ),
+            ( 'trg_spell_4', _REMOVE_FIELD ),
+            ( 'trg_spell_5', _REMOVE_FIELD ),
+            ( 'chg_spell_1', _REMOVE_FIELD ),
+            ( 'chg_spell_2', _REMOVE_FIELD ),
+            ( 'chg_spell_3', _REMOVE_FIELD ),
+            ( 'chg_spell_4', _REMOVE_FIELD ),
+            ( 'chg_spell_5', _REMOVE_FIELD ),
+            ( 'cd_spell_1', _REMOVE_FIELD ),
+            ( 'cd_spell_2', _REMOVE_FIELD ),
+            ( 'cd_spell_3', _REMOVE_FIELD ),
+            ( 'cd_spell_4', _REMOVE_FIELD ),
+            ( 'cd_spell_5', _REMOVE_FIELD ),
+            ( 'cat_spell_1', _REMOVE_FIELD ),
+            ( 'cat_spell_2', _REMOVE_FIELD ),
+            ( 'cat_spell_3', _REMOVE_FIELD ),
+            ( 'cat_spell_4', _REMOVE_FIELD ),
+            ( 'cat_spell_5', _REMOVE_FIELD ),
+            ( 'cdc_spell_1', _REMOVE_FIELD ),
+            ( 'cdc_spell_2', _REMOVE_FIELD ),
+            ( 'cdc_spell_3', _REMOVE_FIELD ),
+            ( 'cdc_spell_4', _REMOVE_FIELD ),
+            ( 'cdc_spell_5', _REMOVE_FIELD )
+        ],
+    }
 }
 
 # Base DBC/DB2 fields, works for WoW build 17898 (Mists of Pandaria/5.4.7)
 _DBC_FIELDS = {
+    # New in WOD, splits spell related functionality out of ItemSet.dbc
+    'ItemSetSpell.dbc': [
+        'id', 'id_item_set', 'id_spell', 'n_req_items', 'unk_wod_1'
+    ],
+    'ItemSpell.db2': [
+        'id', 'id_item', 'index', 'id_spell', 'trigger_type', ( 'cooldown_category', '%d' ), ( 'category_cooldown', '%d' ), ( 'cooldown_group', '%d' ), ( 'cooldown', '%d' )
+    ],
     'ArmorLocation.dbc': [
         ( 'id', '%3u' ), ( 'v_1', '%11.6f' ), ( 'v_2', '%11.6f' ), ( 'v_3', '%11.6f' ), ( 'v_4', '%11.6f' ), ( 'v_5', '%11.6f')
     ],
@@ -335,7 +427,7 @@ _DBC_FIELDS = {
           'id', 'max_affected_targets', 'max_target_level', 'target_type', 'targets'
     ],
     'Talent.dbc' : [
-        ( 'id', '%5u' ),        'spec_id',    ( 'row', '%3u' ),         ( 'col', '%3u' ),       ( 'id_spell', '%7u' ),
+        ( 'id', '%5u' ),      ( 'spec_id', '%3u' ),    ( 'row', '%3u' ),         ( 'col', '%3u' ),       ( 'id_spell', '%7u' ),
         ( 'pet', '%5u' ),     ( 'unk_15464_1', '%#.8x' ),       ( 'unk_15464_2', '%#.8x' ),     'class_id',           ( 'id_replace', '%9u' ),
         ( 'unk_15464_3', '%2u' ),  
     ],
@@ -469,6 +561,7 @@ class Item_sparse(DBCRecord):
         DBCRecord.__init__(self, dbc_parser, record)
 
         self.name     = 0
+        self.spells   = []
 
     def field(self, *args):
         f = DBCRecord.field(self, *args)
@@ -996,6 +1089,8 @@ class SpellDescriptionVariables(DBCRecord):
 class ItemSet(DBCRecord):
     def parse(self):
         DBCRecord.parse(self)
+
+        self.bonus = []
 
         if self.ofs_name != 0:
             self.name = self._dbc_parser.get_string_block(self.ofs_name)

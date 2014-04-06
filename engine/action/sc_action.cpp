@@ -317,7 +317,7 @@ action_t::action_t( action_e       ty,
   dot_behavior                   = DOT_CLIP;
   trigger_gcd                    = player -> base_gcd;
   range                          = -1.0;
-  weapon_power_mod               = 1.0 / 14.0;
+  weapon_power_mod               = 1.0 / 3.5;
 
 
   base_dd_min                    = 0.0;
@@ -1710,7 +1710,7 @@ void action_t::init()
 
   // TODO: WOD-MULTISTRIKE
   if ( may_multistrike == -1 )
-    may_multistrike = may_crit;
+    may_multistrike = may_crit || tick_may_crit;
 
   if ( may_crit || tick_may_crit )
     snapshot_flags |= STATE_CRIT | STATE_TGT_CRIT;

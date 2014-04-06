@@ -320,8 +320,8 @@ void print_text_core_stats( FILE* file, player_t* p )
                  buffed_stats.attribute[ ATTR_STAMINA   ], p -> stamina(),   p -> initial.stats.get_stat( STAT_STAMINA   ),
                  buffed_stats.attribute[ ATTR_INTELLECT ], p -> intellect(), p -> initial.stats.get_stat( STAT_INTELLECT ),
                  buffed_stats.attribute[ ATTR_SPIRIT    ], p -> spirit(),    p -> initial.stats.get_stat( STAT_SPIRIT    ),
-                 100.0 * buffed_stats.mastery_value , 100.0 * p -> composite_mastery(), p -> initial.stats.get_stat( STAT_MASTERY_RATING ),
-                 100.0 * buffed_stats.multistrike , 100.0 * p -> composite_multistrike(), p -> initial.stats.get_stat( STAT_MULTISTRIKE_RATING ),
+                 100.0 * buffed_stats.mastery_value , 100.0 * p -> cache.mastery_value(), p -> initial.stats.get_stat( STAT_MASTERY_RATING ),
+                 100.0 * buffed_stats.multistrike , 100.0 * p -> cache.multistrike(), p -> initial.stats.get_stat( STAT_MULTISTRIKE_RATING ),
                  buffed_stats.resource[ RESOURCE_HEALTH ], p -> resources.max[ RESOURCE_HEALTH ],
                  buffed_stats.resource[ RESOURCE_MANA   ], p -> resources.max[ RESOURCE_MANA   ] );
 }

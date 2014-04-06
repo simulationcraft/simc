@@ -8,9 +8,9 @@
 enum specialization_e {
   SPEC_NONE            = 0,
   SPEC_PET             = 1,
-  PET_FEROCITY         = 74,
-  PET_TENACITY         = 81,
-  PET_CUNNING          = 79,
+  PET_FEROCIOUS_VERSATILITY= 535,
+  PET_TENACIOUS_VERSATILITY= 537,
+  PET_CUNNING_VERSATILITY= 536,
   WARRIOR_ARMS         = 71,
   WARRIOR_FURY         = 72,
   WARRIOR_PROTECTION   = 73,
@@ -50,9 +50,9 @@ enum specialization_e {
 namespace specdata {
 static const unsigned n_specs = 37;
 static const specialization_e __specs[37] = {
-  PET_FEROCITY, 
-  PET_TENACITY, 
-  PET_CUNNING, 
+  PET_FEROCIOUS_VERSATILITY, 
+  PET_TENACIOUS_VERSATILITY, 
+  PET_CUNNING_VERSATILITY, 
   WARRIOR_ARMS, 
   WARRIOR_FURY, 
   WARRIOR_PROTECTION, 

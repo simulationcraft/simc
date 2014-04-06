@@ -3780,9 +3780,6 @@ struct necrotic_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( s );
 
-    if ( ! sim -> overrides.slowed_casting && result_is_hit( s -> result ) )
-      s -> target -> debuffs.slowed_casting -> trigger();
-
     if ( p() -> buffs.dancing_rune_weapon -> check() )
       p() -> pets.dancing_rune_weapon -> drw_necrotic_strike -> execute();
   }
@@ -3811,15 +3808,6 @@ struct obliterate_offhand_t : public death_knight_melee_attack_t
     cc += p() -> buffs.killing_machine -> value();
 
     return cc;
-  }
-
-  virtual double composite_target_multiplier( player_t* t ) const
-  {
-    double ctm = death_knight_melee_attack_t::composite_target_multiplier( t );
-
-    ctm *= 1.0 + td( t ) -> diseases() * data().effectN( 3 ).percent() / 2.0;
-
-    return ctm;
   }
 };
 
@@ -3901,15 +3889,6 @@ struct obliterate_t : public death_knight_melee_attack_t
     cc += p() -> buffs.killing_machine -> value();
 
     return cc;
-  }
-
-  virtual double composite_target_multiplier( player_t* t ) const
-  {
-    double ctm = death_knight_melee_attack_t::composite_target_multiplier( t );
-
-    ctm *= 1.0 + td( t ) -> diseases() * data().effectN( 3 ).percent() / 2.0;
-
-    return ctm;
   }
 };
 
@@ -5409,7 +5388,8 @@ void death_knight_t::init_action_list()
 
   precombat -> add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  precombat -> add_action( this, "Army of the Dead" );
+  if ( specialization() == DEATH_KNIGHT_BLOOD )
+    precombat -> add_action( this, "Army of the Dead" );
   
   if ( sim -> allow_potions && level >= 80 )
     precombat -> add_action( potion_str );
@@ -5444,8 +5424,6 @@ void death_knight_t::init_action_list()
 
       for ( size_t i = 0; i < get_item_actions().size(); i++ )
         def -> add_action( get_item_actions()[ i ] );
-
-      def -> add_action( this, "Raise Dead" );
 
       //decide between single_target and aoe rotation
       def -> add_action( "run_action_list,name=aoe,if=active_enemies>=3" );

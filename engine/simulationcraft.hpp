@@ -529,7 +529,6 @@ enum slot_e   // these enum values match armory settings
 // Caster 2/4, Melee 2/4, Tank 2/4, Heal 2/4
 #define N_TIER_BONUS 8
 
-
 enum set_e
 {
   SET_NONE = 0,
@@ -1018,10 +1017,6 @@ public:
     LIST,          // std::vector<std::string>
     MAP,           // std::map<std::string,std::string>
     FUNC,          // function_t*
-#if 0
-    TALENT_RANK,   // talent rank
-    SPELL_ENABLED, // spell enabled
-#endif
     DEPRECATED
   };
 
@@ -1224,7 +1219,6 @@ school_e parse_school_type       ( const std::string& name );
 set_e parse_set_bonus            ( const std::string& name );
 slot_e parse_slot_type           ( const std::string& name );
 stat_e parse_stat_type           ( const std::string& name );
-stat_e parse_reforge_type        ( const std::string& name );
 stat_e parse_gem_stat            ( const std::string& name );
 
 const char* movement_direction_string( movement_direction_e );
@@ -2490,7 +2484,6 @@ public:
     int str_agi_int;
 
     // Debuff overrides
-    int slowed_casting;
     int magic_vulnerability;
     int mortal_wounds;
     int physical_vulnerability;
@@ -2987,15 +2980,9 @@ struct rating_t
     // Read ratings from DBC
     for ( rating_e i = static_cast<rating_e>( 0 ); i < RATING_MAX; ++i )
     {
-      // TODO: WOD-MULTISTRIKE
-      if ( i == RATING_MULTISTRIKE )
-        get( i ) = dbc.combat_rating( RATING_SPELL_CRIT, level ) / 3.3333333333;
-      else
-      {
-        get( i ) = dbc.combat_rating( i,  level );
-        if ( i == RATING_MASTERY )
-          get( i ) /= 100.0;
-      }
+      get( i ) = dbc.combat_rating( i,  level );
+      if ( i == RATING_MASTERY )
+        get( i ) /= 100.0;
     }
   }
 
@@ -3178,13 +3165,10 @@ struct item_t
   // from user options, or a data source such as the Blizzard API, or Wowhead
   struct parsed_input_t
   {
-    stat_e                   reforged_from;
-    stat_e                   reforged_to;
     int                      upgrade_level;
     int                      suffix_id;
     unsigned                 enchant_id;
     unsigned                 addon_id;
-    unsigned                 reforge_id;
     int                      armor;
     std::array<int, 3>       gem_id;
     std::array<int, 3>       gem_color;
@@ -3197,14 +3181,11 @@ struct item_t
     std::vector<std::string> source_list;
 
     parsed_input_t() :
-      reforged_from( STAT_NONE ), reforged_to( STAT_NONE ), upgrade_level( 0 ),
-      suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ), reforge_id( 0 ), armor( 0 ),
-      data()
+      upgrade_level( 0 ), suffix_id( 0 ), enchant_id( 0 ), addon_id( 0 ), 
+      armor( 0 ), data()
     {
       range::fill( data.stat_type_e, -1 );
       range::fill( data.stat_val, 0 );
-      range::fill( data.cooldown_spell, -1 );
-      range::fill( data.cooldown_category, -1 );
       range::fill( gem_id, 0 );
       range::fill( gem_color, GEM_NONE );
     }
@@ -3232,7 +3213,6 @@ struct item_t
   std::string option_flex_str;
   std::string option_elite_str;
   std::string option_armor_type_str;
-  std::string option_reforge_str;
   std::string option_ilevel_str;
   std::string option_quality_str;
   std::string option_data_source_str;
@@ -3273,7 +3253,6 @@ struct item_t
   std::string encoded_addon();
   std::string encoded_upgrade_level();
   std::string encoded_random_suffix_id();
-  std::string encoded_reforge();
 
   bool decode_stats();
   bool decode_gems();
@@ -3285,7 +3264,6 @@ struct item_t
   bool decode_elite();
   bool decode_flexible();
   bool decode_armor_type();
-  bool decode_reforge();
   bool decode_random_suffix();
   bool decode_upgrade_level();
   bool decode_ilevel();
@@ -3296,8 +3274,7 @@ struct item_t
 
   bool decode_proc_spell( special_effect_t& effect );
 
-  bool parse_reforge_id();
-
+  static bool download_slot( item_t& item );
   static bool download_item( item_t& );
   static bool download_glyph( player_t* player, std::string& glyph_name, const std::string& glyph_id );
 
@@ -4293,7 +4270,6 @@ public:
     buff_t* guardian_spirit;
     buff_t* hand_of_sacrifice;
     buff_t* heroic_presence;
-    buff_t* hymn_of_hope;
     buff_t* illuminated_healing;
     buff_t* innervate;
     buff_t* lifeblood;
@@ -4357,7 +4333,6 @@ public:
     debuff_t* vulnerable;
 
     // MoP debuffs
-    debuff_t* slowed_casting;
     debuff_t* magic_vulnerability;
     debuff_t* mortal_wounds;
     debuff_t* physical_damage;
@@ -4365,9 +4340,6 @@ public:
     debuff_t* ranged_vulnerability;
     debuff_t* weakened_blows;
     debuff_t* weakened_armor;
-
-    // Class specific "general" debuffs
-    debuff_t* shattering_throw;
   } debuffs;
 
   struct gains_t
@@ -4381,7 +4353,6 @@ public:
     gain_t* focus_regen;
     gain_t* glyph_of_innervate;
     gain_t* health;
-    gain_t* hymn_of_hope;
     gain_t* innervate;
     gain_t* mana_potion;
     gain_t* mana_spring_totem;
