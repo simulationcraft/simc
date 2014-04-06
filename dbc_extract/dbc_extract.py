@@ -57,6 +57,9 @@ parser.add_option("--cache", dest = "cache_dir",
 parser.add_option("-v", 
                   help    = "World of Warcraft version, in the format <major>.<minor>.<patch>, i.e., 5.3.0",
                   action = "callback", dest = "wowversion", type = "string", default = 0, callback = parse_wow_version )
+parser.add_option("--as", dest = "as_dbc", 
+                  help    = "Treat given DBC file as this option",
+                  action = "store", type = "string", default = '' )
 parser.add_option("--debug", dest = "debug", default = False, action = "store_true")
 (options, args) = parser.parse_args()
 
@@ -286,6 +289,7 @@ elif options.type == 'scale':
 #        sys.exit(1)
 #    print g.generate()
 
+    # Unsure, maybe 6e42c8a5c3ffed88a0a8791a937362c0.dbc?
     g = dbc.generator.LevelScalingDataGenerator(options, [ 'gtOCTHpPerStamina' ] )
     if not g.initialize():
         sys.exit(1)
@@ -296,8 +300,8 @@ elif options.type == 'scale':
         sys.exit(1)
     print g.generate()
     
-    tables = [ 'gtChanceToMeleeCritBase', 'gtChanceToSpellCritBase', 'gtChanceToMeleeCrit', 'gtChanceToSpellCrit', 'gtRegenMPPerSpt', 'gtOCTBaseHPByClass', 'gtOCTBaseMPByClass' ]
-    g = dbc.generator.ClassScalingDataGenerator(options, tables )
+    tables = [ 'gtRegenMPPerSpt', 'gtOCTBaseMPByClass' ]
+    g = dbc.generator.ClassScalingDataGenerator(options, tables)
     if not g.initialize():
         sys.exit(1)
     print g.generate()

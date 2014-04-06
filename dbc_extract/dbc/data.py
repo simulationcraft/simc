@@ -7,7 +7,7 @@ _ADD_FIELD    = 0x01
 
 _DIFF_DATA = {
     17898: { },
-    17899: {
+    18125: {
         'Spell.dbc' : [
             ( 'extra_coeff', _REMOVE_FIELD ),
         ],
@@ -34,6 +34,11 @@ _DIFF_DATA = {
         ],
         'SpellEffectScaling.dbc': [
             ( 'unk_17124', _REMOVE_FIELD )
+        ],
+        'ItemDisplayInfo.dbc' : [
+            ( 'unk_15464', _REMOVE_FIELD ),
+            ( 'f24', _REMOVE_FIELD ),
+            ( 'f23', _REMOVE_FIELD ),
         ],
         'ItemSet.dbc': [
             ( 'id_spell_1', _REMOVE_FIELD ),
@@ -422,7 +427,7 @@ _DBC_FIELDS = {
           'id', 'max_affected_targets', 'max_target_level', 'target_type', 'targets'
     ],
     'Talent.dbc' : [
-        ( 'id', '%5u' ),        'spec_id',    ( 'row', '%3u' ),         ( 'col', '%3u' ),       ( 'id_spell', '%7u' ),
+        ( 'id', '%5u' ),      ( 'spec_id', '%3u' ),    ( 'row', '%3u' ),         ( 'col', '%3u' ),       ( 'id_spell', '%7u' ),
         ( 'pet', '%5u' ),     ( 'unk_15464_1', '%#.8x' ),       ( 'unk_15464_2', '%#.8x' ),     'class_id',           ( 'id_replace', '%9u' ),
         ( 'unk_15464_3', '%2u' ),  
     ],

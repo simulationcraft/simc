@@ -117,9 +117,14 @@ class DBCParser(object):
         statinfo                = os.fstat(f.fileno())
         
         # Figure out a valid class for us from data, now that we know the DBC is sane
-        if '%s%d' % ( os.path.basename(self._fname).split('.')[0].replace('-', '_'), self._options.build ) in dir(data):
-            self._class = getattr(data, '%s%d' % ( 
-                os.path.basename(self._fname.replace('-', '_')).split('.')[0], self._options.build ) )
+        table_name = None
+        if len(self._options.as_dbc) > 0:
+            table_name = self._options.as_dbc
+        else:
+            table_name = os.path.basename(self._fname).split('.')[0].replace('-', '_')
+
+        if '%s%d' % ( table_name, self._options.build ) in dir(data):
+            self._class = getattr(data, '%s%d' % ( table_name, self._options.build ) )
         
         # Sanity check file size
         if statinfo[stat.ST_SIZE] != size:
