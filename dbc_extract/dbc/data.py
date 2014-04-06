@@ -59,7 +59,7 @@ _DIFF_DATA = {
             ( 'n_items_8', _REMOVE_FIELD )
         ],
         'Item-sparse.db2': [
-            ( 'unk_wod_1', _ADD_FIELD, 'unk_131' ),
+            ( 'id_name_desc', _ADD_FIELD, 'unk_131' ),
             ( 'id_spell_1', _REMOVE_FIELD ),
             ( 'id_spell_2', _REMOVE_FIELD ),
             ( 'id_spell_3', _REMOVE_FIELD ),

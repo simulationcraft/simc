@@ -893,7 +893,7 @@ class ItemDataGenerator(DataGenerator):
                 elif item.journal.flags_1 == 0xC:
                     flag_types |= self._type_flags['Heroic']
 
-            desc = self._itemnamedescription_db[item.id]
+            desc = self._itemnamedescription_db[item.id_name_desc]
             flag_types |= self._type_flags.get(desc.desc, 0)
 
             fields += [ '%#.2x' % flag_types ]
