@@ -884,7 +884,7 @@ bool item_t::init()
   if ( ! decode_addon()                            ) return false;
   if ( ! decode_weapon()                           ) return false;
   if ( ! decode_random_suffix()                    ) return false;
-  if ( ! decode_reforge()                          ) return false;
+  // if ( ! decode_reforge()                          ) return false;
 
   std::string use_str = option_use_str;
   if ( use_str.empty() )
