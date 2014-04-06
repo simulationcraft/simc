@@ -2952,15 +2952,9 @@ struct rating_t
     // Read ratings from DBC
     for ( rating_e i = static_cast<rating_e>( 0 ); i < RATING_MAX; ++i )
     {
-      // TODO: WOD-MULTISTRIKE
-      if ( i == RATING_MULTISTRIKE )
-        get( i ) = dbc.combat_rating( RATING_SPELL_CRIT, level ) / 3.3333333333;
-      else
-      {
-        get( i ) = dbc.combat_rating( i,  level );
-        if ( i == RATING_MASTERY )
-          get( i ) /= 100.0;
-      }
+      get( i ) = dbc.combat_rating( i,  level );
+      if ( i == RATING_MASTERY )
+        get( i ) /= 100.0;
     }
   }
 
