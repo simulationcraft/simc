@@ -980,38 +980,6 @@ struct feral_spirit_pet_t : public pet_t
     }
   };
 
-  struct spirit_bite_t : public melee_attack_t
-  {
-    spirit_bite_t( feral_spirit_pet_t* player ) :
-      melee_attack_t( "spirit_bite", player, player -> find_spell( 58859 ) )
-    {
-      may_crit  = true;
-      special   = true;
-      direct_power_mod = data().extra_coeff();
-      cooldown -> duration = timespan_t::from_seconds( 7.0 );
-    }
-
-    feral_spirit_pet_t* p() const
-    { return static_cast<feral_spirit_pet_t*>( player ); }
-
-    void init()
-    {
-      melee_attack_t::init();
-      if ( ! player -> sim -> report_pets_separately && player != p() -> o() -> pet_feral_spirit[ 0 ] )
-        stats = p() -> o() -> pet_feral_spirit[ 0 ] -> get_stats( name(), this );
-    }
-
-    virtual double composite_da_multiplier() const
-    {
-      double m = melee_attack_t::composite_da_multiplier();
-
-      if ( p() -> o() -> mastery.enhanced_elements -> ok() )
-        m *= 1.0 + p() -> o() -> cache.mastery_value();
-
-      return m;
-    }
-  };
-
   melee_t* melee;
   const spell_data_t* command;
 
@@ -1036,21 +1004,6 @@ struct feral_spirit_pet_t : public pet_t
     pet_t::init_base_stats();
 
     melee = new melee_t( this );
-  }
-
-  virtual void init_action_list()
-  {
-    action_list_str = "spirit_bite";
-
-    pet_t::init_action_list();
-  }
-
-  action_t* create_action( const std::string& name,
-                           const std::string& options_str )
-  {
-    if ( name == "spirit_bite" ) return new spirit_bite_t( this );
-
-    return pet_t::create_action( name, options_str );
   }
 
   void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
@@ -3907,7 +3860,7 @@ struct flame_shock_t : public shaman_spell_t
     double m = shaman_spell_t::composite_ta_multiplier();
 
     if ( p() -> buff.unleash_flame -> check() )
-      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 3 ).percent();
+      m *= 1.0 + p() -> buff.unleash_flame -> data().effectN( 2 ).percent();
 
     return m;
   }
@@ -5430,7 +5383,7 @@ void shaman_t::create_buffs()
   constant.attack_speed_flurry = 1.0 / ( 1.0 + spec.flurry -> effectN( 1 ).trigger() -> effectN( 1 ).percent() );
 
   buff.unleash_wind            = haste_buff_creator_t( this, "unleash_wind", find_spell( 73681 ) ).add_invalidate( CACHE_ATTACK_SPEED );
-  constant.attack_speed_unleash_wind = 1.0 / ( 1.0 + buff.unleash_wind -> data().effectN( 2 ).percent() );
+  constant.attack_speed_unleash_wind = 1.0 / ( 1.0 + buff.unleash_wind -> data().effectN( 1 ).percent() );
 
   buff.tier13_4pc_healer       = haste_buff_creator_t( this, "tier13_4pc_healer", find_spell( 105877 ) ).add_invalidate( CACHE_HASTE );
 
