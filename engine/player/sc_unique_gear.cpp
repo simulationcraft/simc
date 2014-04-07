@@ -2188,7 +2188,6 @@ struct flurry_of_xuen_melee_t : public attack_t
   flurry_of_xuen_melee_t( player_t* player ) : 
     attack_t( "flurry_of_xuen", player, player -> find_spell( 147891 ) )
   {
-    direct_power_mod = data().extra_coeff();
     background = true;
     proc = false;
     aoe = 5;

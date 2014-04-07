@@ -154,6 +154,7 @@ public:
   double           _m_unk;           // Unused effect scaling multiplier
   //
   double           _coeff;           // Effect coefficient
+  double           _ap_coeff;        // Effect attack power coefficient
   double           _amplitude;       // Effect amplitude (e.g., tick time)
   // SpellRadius.dbc
   double           _radius;          // Minimum spell radius
@@ -246,6 +247,9 @@ public:
 
   double coeff() const
   { return _coeff; }
+
+  double ap_coeff() const
+  { return _ap_coeff; }
 
   timespan_t period() const
   { return timespan_t::from_millis( _amplitude ); }

@@ -15,7 +15,7 @@ _DIFF_DATA = {
             ( 'unk_wod_1', _ADD_FIELD, 'flags_16467' ),
         ],
         'SpellEffect.dbc': [
-            ( 'unk_wod_1', _ADD_FIELD, 'unk_14040' ),
+            ( ( 'ap_coefficient', '%13.10f' ),  _ADD_FIELD, 'unk_14040' ),
         ],
         'Item.db2' : [
             ( 'unk_wod_1', _ADD_FIELD, 'sheath' ),
