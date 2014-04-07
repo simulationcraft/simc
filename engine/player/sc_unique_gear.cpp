@@ -1965,31 +1965,6 @@ void unique_gear::init( player_t* p )
       if ( p -> sim -> debug )
         p -> sim -> out_debug.printf( "Initializing special effect %s", effect.to_string().c_str() );
 
-/*
-      if ( effect.type == SPECIAL_EFFECT_EQUIP )
-      {
-        if ( effect.stat && effect.school )
-        {
-          register_stat_discharge_proc( p, effect );
-        }
-        else if ( effect.stat )
-        {
-          register_stat_proc( p, effect );
-        }
-        else if ( effect.cost_reduction && effect.school )
-        {
-          register_cost_reduction_proc( p, effect );
-        }
-        else if ( effect.school && effect.proc_chance_ && effect.chance_to_discharge )
-        {
-          register_chance_discharge_proc( p, effect );
-        }
-        else if ( effect.school )
-        {
-          register_discharge_proc( p, effect );
-        }
-      }
-*/
       if ( effect.type == SPECIAL_EFFECT_CUSTOM )
       {
         assert( effect.spell_id > 0 );

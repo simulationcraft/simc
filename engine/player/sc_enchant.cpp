@@ -59,6 +59,35 @@ std::string enchant::find_enchant_name( unsigned enchant_id )
   return std::string();
 }
 
+std::string enchant::encoded_enchant_name( const dbc_t& dbc, const item_enchantment_data_t& enchant )
+{
+  std::string enchant_name = enchant.name;
+  util::tokenize( enchant_name );
+
+  // Partial match found, see if the spell has a rank string, and massage
+  // name to account for it.
+  for ( size_t i = 0; i < sizeof_array( enchant.ench_prop ); i++ )
+  {
+    if ( enchant.ench_prop[ i ] == 0 || enchant.ench_type[ i ] == 0 )
+      continue;
+
+    std::string rank_str;
+    if ( dbc.spell( enchant.ench_prop[ i ] ) -> rank_str() )
+      rank_str = dbc.spell( enchant.ench_prop[ i ] ) -> rank_str();
+    util::tokenize( rank_str );
+
+    std::string::size_type offset = rank_str.find( "rank_" );
+    // Erase "rank_"
+    if ( offset != std::string::npos )
+      rank_str.erase( offset, 5 );
+
+    if ( ! rank_str.empty() )
+      enchant_name += "_" + rank_str;
+  }
+
+  return enchant_name;
+}
+
 /**
  * Deduce DBC enchant data from user given enchant option value.
  *
@@ -171,6 +200,7 @@ bool enchant::initialize_item_enchant( item_t& item,
         effect.type = SPECIAL_EFFECT_EQUIP;
         effect.trigger_type = PROC_ATTACK;
         effect.trigger_mask = RESULT_HIT_MASK;
+        effect.encoding_str = encoded_enchant_name( item.player -> dbc, enchant );
         break;
       case ITEM_ENCHANTMENT_EQUIP_SPELL:
         // Passive (stat) giving enchants get a special treatment
@@ -178,9 +208,11 @@ bool enchant::initialize_item_enchant( item_t& item,
           continue;
 
         effect.type = SPECIAL_EFFECT_EQUIP;
+        effect.encoding_str = encoded_enchant_name( item.player -> dbc, enchant );
         break;
       case ITEM_ENCHANTMENT_USE_SPELL:
         effect.type = SPECIAL_EFFECT_USE;
+        effect.encoding_str = encoded_enchant_name( item.player -> dbc, enchant );
         break;
       case ITEM_ENCHANTMENT_STAT:
       {
@@ -194,7 +226,7 @@ bool enchant::initialize_item_enchant( item_t& item,
           else if ( source == SPECIAL_EFFECT_SOURCE_ADDON )
             item.parsed.addon_stats.push_back( stat );
           else if ( source == SPECIAL_EFFECT_SOURCE_SOCKET_BONUS )
-            item.parsed.gem_bonus_stats.push_back( stat );
+            item.parsed.socket_bonus_stats.push_back( stat );
         }
         break;
       }

@@ -515,7 +515,7 @@ js::js_node_t download_item_data( item_t& item, cache::behavior_e caching )
         std::string stat;
         util::fuzzy_stats( stat, socketBonus );
         std::vector<stat_pair_t> bonus = item_t::str_to_stat_pair( stat );
-        item.parsed.gem_bonus_stats = bonus;
+        item.parsed.socket_bonus_stats = bonus;
       }
     }
 

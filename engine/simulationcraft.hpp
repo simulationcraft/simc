@@ -3172,7 +3172,7 @@ struct item_t
     int                      armor;
     std::array<int, 3>       gem_id;
     std::array<int, 3>       gem_color;
-    std::vector<stat_pair_t> gem_stats, gem_bonus_stats;
+    std::vector<stat_pair_t> gem_stats, socket_bonus_stats;
     std::vector<stat_pair_t> enchant_stats;
     std::vector<stat_pair_t> addon_stats;
     std::vector<stat_pair_t> suffix_stats;
@@ -6426,6 +6426,7 @@ namespace enchant
 
   unsigned find_enchant_id( const std::string& name );
   std::string find_enchant_name( unsigned enchant_id );
+  std::string encoded_enchant_name( const dbc_t&, const item_enchantment_data_t& );
 
   const item_enchantment_data_t& find_item_enchant( const dbc_t& dbc, const std::string& name );
   const item_enchantment_data_t& find_meta_gem( const dbc_t& dbc, const std::string& encoding );

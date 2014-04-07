@@ -192,10 +192,10 @@ std::string item_t::to_string()
   {
     s << " socket_bonus={ ";
 
-    for ( size_t i = 0; i < parsed.gem_bonus_stats.size(); i++ )
+    for ( size_t i = 0; i < parsed.socket_bonus_stats.size(); i++ )
     {
-      s << "+" << parsed.gem_bonus_stats[ i ].value
-        << " " << util::stat_type_abbrev( parsed.gem_bonus_stats[ i ].stat ) << ", ";
+      s << "+" << parsed.socket_bonus_stats[ i ].value
+        << " " << util::stat_type_abbrev( parsed.socket_bonus_stats[ i ].stat ) << ", ";
     }
 
     std::streampos x = s.tellp(); s.seekp( x - std::streamoff( 2 ) );
@@ -612,7 +612,7 @@ std::string item_t::encoded_enchant()
 
   std::string stats_str = stat_pairs_to_str( parsed.enchant_stats );
   if ( stats_str.empty() )
-    stats_str = special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT ).name_str;
+    stats_str = special_effect( SPECIAL_EFFECT_SOURCE_ENCHANT ).encoding_str;
 
   return stats_str;
 }
@@ -626,7 +626,7 @@ std::string item_t::encoded_addon()
 
   std::string stats_str = stat_pairs_to_str( parsed.addon_stats );
   if ( stats_str.empty() )
-    stats_str = special_effect( SPECIAL_EFFECT_SOURCE_ADDON ).name_str;
+    stats_str = special_effect( SPECIAL_EFFECT_SOURCE_ADDON ).encoding_str;
 
   return stats_str;
 }
@@ -1120,8 +1120,8 @@ bool item_t::decode_gems()
 
   if ( socket_color_match() )
   {
-    for ( size_t i = 0; i < parsed.gem_bonus_stats.size(); i++ )
-      stats.add_stat( parsed.gem_bonus_stats[ i ].stat, parsed.gem_bonus_stats[ i ].value );
+    for ( size_t i = 0; i < parsed.socket_bonus_stats.size(); i++ )
+      stats.add_stat( parsed.socket_bonus_stats[ i ].stat, parsed.socket_bonus_stats[ i ].value );
   }
 
   return true;
@@ -1521,10 +1521,10 @@ bool item_t::download_item( item_t& item )
 
   // Post process data by figuring out socket bonus of the item, if the
   // identifier is set. BCP API does not provide us with the ID, so
-  // bcp_api::download_item has already filled parsed.gem_bonus_stats. Both
+  // bcp_api::download_item has already filled parsed.socket_bonus_stats. Both
   // local and wowhead provide a id, that needs to be parsed into
-  // parsed.gem_bonus_stats.
-  if ( success && item.parsed.gem_bonus_stats.size() == 0 &&
+  // parsed.socket_bonus_stats.
+  if ( success && item.parsed.socket_bonus_stats.size() == 0 &&
        item.parsed.data.id_socket_bonus > 0 )
   {
     const item_enchantment_data_t& bonus = item.player -> dbc.item_enchantment( item.parsed.data.id_socket_bonus );
