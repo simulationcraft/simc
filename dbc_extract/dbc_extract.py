@@ -50,7 +50,7 @@ parser.add_option("--max-ilvl", dest = "max_ilevel",
                   default = 800, action = "store", type = "int" )
 parser.add_option("--scale-ilvl", dest = "scale_ilevel",
                   help    = "Maximum inclusive ilevel for game table related extraction",
-                  default = 999, action = "store", type = "int" )
+                  default = 1000, action = "store", type = "int" )
 parser.add_option("--cache", dest = "cache_dir",
                   help    = "World of Warcraft Cache directory.", 
                   default = r'', action = "store", type = "string" )
@@ -310,6 +310,13 @@ elif options.type == 'scale':
         sys.exit(1)
 
     print g.generate()
+
+    g = dbc.generator.MonsterLevelScalingDataGenerator(options, 'gtArmorMitigationByLvl')
+    if not g.initialize():
+        sys.exit(1)
+
+    print g.generate()
+
 elif options.type == 'patch':
     patch = dbc.patch.PatchBuildDBC(args[0], args[1], args[2:])
     patch.initialize()

@@ -480,6 +480,9 @@ _DBC_FIELDS = {
     ],
     'gtItemSocketCostPerLevel.dbc' : [
         'id', ( 'gt_value', '%.10f' )
+    ],
+    'gtArmorMitigationByLvl.dbc' : [
+        'id', ( 'gt_value', '%.10f' )
     ]
 }
 

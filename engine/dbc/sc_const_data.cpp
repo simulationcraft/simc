@@ -1545,6 +1545,16 @@ const item_armor_type_data_t& dbc_t::item_armor_total( unsigned ilevel ) const
 #endif
 }
 
+double dbc_t::enemy_armor_mitigation( unsigned level ) const
+{
+  assert( level > 0 && level <= ( MAX_LEVEL + 3 ) );
+#if SC_USE_PTR
+  return ptr ? __ptr___gt_armor_mitigation_by_lvl[ level - 1 ] : __gt_armor_mitigation_by_lvl[ level - 1 ];
+#else
+  return ____gt_armor_mitigation_by_lvl[ level - 1 ];
+#endif
+}
+
 const item_armor_type_data_t& dbc_t::item_armor_inv_type( unsigned inv_type ) const
 {
   assert( inv_type > 0 && inv_type <= 23 );
