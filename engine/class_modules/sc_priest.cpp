@@ -249,7 +249,6 @@ public:
     const spell_data_t* borrowed_time;
     const spell_data_t* holy_fire;
     const spell_data_t* holy_nova;
-    const spell_data_t* inner_sanctum;
     const spell_data_t* lightwell;
     const spell_data_t* mind_blast;
     const spell_data_t* mind_flay;
@@ -2310,7 +2309,7 @@ struct devouring_plague_t final : public priest_spell_t
     devouring_plague_dot_t( priest_t& p, priest_spell_t* ) :
       priest_spell_t( "devouring_plague_tick", p, p.find_class_spell( "Devouring Plague" ) )
     {
-      parse_effect_data( data().effectN( 5 ) );
+      parse_effect_data( data().effectN( 2 ) );
 
       tick_power_mod = direct_power_mod;
 
@@ -2377,7 +2376,7 @@ struct devouring_plague_t final : public priest_spell_t
 
       const shadow_orb_state_t& dp_state = static_cast<const shadow_orb_state_t&>( *d -> state );
 
-      double a = data().effectN( 3 ).percent() / 100.0 * dp_state.orbs_used * priest.resources.max[ RESOURCE_HEALTH ];
+      double a = data().effectN( 2 ).percent() / 100.0 * dp_state.orbs_used * priest.resources.max[ RESOURCE_HEALTH ];
       priest.resource_gain( RESOURCE_HEALTH, a, priest.gains.devouring_plague_health );
     }
   };
@@ -2389,8 +2388,6 @@ struct devouring_plague_t final : public priest_spell_t
     dot_spell( new devouring_plague_dot_t( p, this ) )
   {
     parse_options( nullptr, options_str );
-
-    parse_effect_data( data().effectN( 4 ) );
 
     base_td = num_ticks = 0;
     base_tick_time = timespan_t::zero();
@@ -3105,7 +3102,7 @@ struct cascade_heal_t final : public cascade_base_t<priest_heal_t>
 
 // This is the background halo spell which does the actual damage
 // Templated so we can base it on priest_spell_t or priest_heal_t
-template <class Base, int scaling_effect_index>
+template <class Base, int spell_nr>
 struct halo_base_t final : public Base
 {
 private:
@@ -3114,7 +3111,7 @@ public:
   typedef halo_base_t base_t; // typedef for halo_base_t<ab>
 
   halo_base_t( const std::string& n, priest_t& p ) :
-    ab( n, p, p.find_spell( p.specialization() == PRIEST_SHADOW ? 120696 : 120692 ) )
+    ab( n, p, p.find_spell( spell_nr ) )
   {
     ab::aoe = -1;
     ab::background = true;
@@ -3122,7 +3119,7 @@ public:
     if ( ab::data().ok() )
     {
       // Reparse the correct effect number, because we have two competing ones ( were 2 > 1 always wins out )
-      ab::parse_effect_data( ab::data().effectN( scaling_effect_index ) );
+      ab::parse_effect_data( ab::data().effectN( 1 ) );
     }
   }
   virtual ~halo_base_t() {}
@@ -3145,31 +3142,43 @@ public:
 
 struct halo_t final : public priest_spell_t
 {
-  typedef halo_base_t<priest_spell_t, 2> halo_damage_t;
-  typedef halo_base_t<priest_heal_t, 1> halo_heal_t;
+  /* Go through some hoops to dynamically choose the correct halo sub-spell
+   * dynamically depending on the talent spell, without having to create
+   * two separate halo_t versions
+   */
+  typedef halo_base_t<priest_spell_t, 120696> halo_damage_t;
+  typedef halo_base_t<priest_heal_t, 120692> halo_heal_t;
 
   halo_damage_t* damage_spell;
   halo_heal_t* heal_spell;
 
-  static const spell_data_t* get_spell( priest_t& p )
+  halo_damage_t* get_damage_spell( const spell_data_t* talent_spell, priest_t& p ) const
   {
-    if ( p.talents.halo -> ok() )
-      return p.find_spell( p.specialization() == PRIEST_SHADOW ? 120644 : 120517 );
-    return spell_data_t::not_found();
+    if ( talent_spell->id() == 120644 ) { // shadow version
+      return new halo_damage_t( "halo_dmg", p );
+    }
+    else
+      return nullptr;
   }
-
+  halo_heal_t* get_heal_spell( const spell_data_t* talent_spell, priest_t& p ) const
+  {
+    if ( talent_spell -> id() == 120517 ) { // holy/disc
+      return new halo_heal_t( "halo_heal", p );
+    }
+    else
+      return nullptr;
+  }
   halo_t( priest_t& p, const std::string& options_str ) :
-    priest_spell_t( "halo", p, get_spell( p ) ),
-    damage_spell( new halo_damage_t( "halo_damage", p ) ),
-    heal_spell( new halo_heal_t( "halo_heal", p ) )
+    priest_spell_t( "halo", p, p.talents.halo ),
+    damage_spell( get_damage_spell( p.talents.halo, p ) ),
+    heal_spell( get_heal_spell( p.talents.halo, p ) )
   {
     parse_options( nullptr, options_str );
 
-    // Have the primary halo spell take on the stats that are most appropriate to the player's role
-    // so it shows up nicely in the DPET chart.
-    if ( p.primary_role() == ROLE_HEAL )
+    if ( heal_spell )
       add_child( heal_spell );
-    else
+
+    if ( damage_spell )
       add_child( damage_spell );
   }
 
@@ -3177,8 +3186,11 @@ struct halo_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    damage_spell -> execute();
-    heal_spell -> execute();
+    if ( damage_spell )
+      damage_spell -> execute();
+
+    if ( heal_spell )
+      heal_spell -> execute();
   }
 };
 
@@ -4524,7 +4536,7 @@ double priest_t::composite_armor() const
   double a = base_t::composite_armor();
 
   if ( buffs.shadowform -> check() )
-    a *= 1.0 + buffs.shadowform -> data().effectN( 7 ).percent();
+    a *= 1.0 + buffs.shadowform -> data().effectN( 3 ).percent();
 
   return std::floor( a );
 }
@@ -4905,7 +4917,6 @@ void priest_t::init_spells()
   glyphs.holy_fire                    = find_glyph_spell( "Glyph of Holy Fire" );
   glyphs.dark_binding                 = find_glyph_spell( "Glyph of Dark Binding" );
   glyphs.mind_spike                   = find_glyph_spell( "Glyph of Mind Spike" );
-  glyphs.inner_sanctum                = find_glyph_spell( "Glyph of Inner Sanctum" );
   glyphs.mind_flay                    = find_glyph_spell( "Glyph of Mind Flay" );
   glyphs.mind_blast                   = find_glyph_spell( "Glyph of Mind Blast" );
   glyphs.devouring_plague             = find_glyph_spell( "Glyph of Devouring Plague" );
@@ -5489,12 +5500,6 @@ void priest_t::target_mitigation( school_e school,
   {
     s -> result_amount *= 1.0 + buffs.dispersion -> data().effectN( 1 ).percent();
   }
-
- /* TODO: check glyph of inner sanctum
-  *
-  * if ( buffs.inner_fire -> check() && glyphs.inner_sanctum -> ok() && ( dbc::get_school_mask( school ) & SCHOOL_MAGIC_MASK ) )
-  * { s -> result_amount *= 1.0 - glyphs.inner_sanctum -> effectN( 1 ).percent(); }
-  */
 }
 
 // priest_t::create_options =================================================
