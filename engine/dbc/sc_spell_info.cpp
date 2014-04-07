@@ -417,6 +417,12 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     s << " | Coefficient: " << tmp_buffer;
   }
 
+  if ( e -> ap_coeff() != 0 )
+  {
+    snprintf( tmp_buffer, sizeof( tmp_buffer ), "%.3f", e -> ap_coeff() );
+    s << " | AP Coefficient: " << tmp_buffer;
+  }
+
   if ( e -> chain_multiplier() != 0 && e -> chain_multiplier() != 1.0 )
     s << " | Chain Multiplier: " << e -> chain_multiplier();
 

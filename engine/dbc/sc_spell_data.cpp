@@ -48,6 +48,7 @@ const sdata_field_t _effect_data_fields[] =
   { SD_TYPE_DOUBLE,   "m_delta"        },
   { SD_TYPE_DOUBLE,   "m_bonus"        },
   { SD_TYPE_DOUBLE,   "coefficient"    },
+  { SD_TYPE_DOUBLE,   "ap_coefficient" },
   { SD_TYPE_DOUBLE,   "amplitude"      },
   { SD_TYPE_DOUBLE,   "radius"         },
   { SD_TYPE_DOUBLE,   "max_radius"     },

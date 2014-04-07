@@ -1347,19 +1347,29 @@ void print_html_talents( report::sc_html_stream& os, player_t* p )
         ( row + 1 ) * 15 );
       for ( uint32_t col = 0; col < MAX_TALENT_COLS; col++ )
       {
-        talent_data_t* t = talent_data_t::find( p -> type, row, col, p -> dbc.ptr );
-        const char* name = ( t && t -> name_cstr() ) ? t -> name_cstr() : "none";
+        talent_data_t* t = talent_data_t::find( p -> type, row, col, p -> specialization(), p -> dbc.ptr );
+        std::string name = "none";
+        if ( t && t -> name_cstr() )
+        {
+          name = t -> name_cstr();
+          if ( t -> specialization() != SPEC_NONE )
+          {
+            name += " (";
+            name += util::specialization_string( t -> specialization() );
+            name += ")";
+          }
+        }
         if ( p -> talent_points.has_row_col( row, col ) )
         {
           os.printf(
             "\t\t\t\t\t\t\t\t\t\t<td class=\"filler\">%s</td>\n",
-            name );
+            name.c_str() );
         }
         else
         {
           os.printf(
             "\t\t\t\t\t\t\t\t\t\t<td>%s</td>\n",
-            name );
+            name.c_str() );
         }
       }
       os << "\t\t\t\t\t\t\t\t\t</tr>\n";
@@ -2909,10 +2919,20 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
       {
         for ( uint32_t col = 0; col < MAX_TALENT_COLS; col++ )
         {
-          talent_data_t* t = talent_data_t::find( p -> type, row, col, p -> dbc.ptr );
-          const char* name = ( t && t -> name_cstr() ) ? t -> name_cstr() : "none";
+          talent_data_t* t = talent_data_t::find( p -> type, row, col, p -> specialization(), p -> dbc.ptr );
+          std::string name = "none";
+          if ( t && t -> name_cstr() )
+          {
+            name = t -> name_cstr();
+            if ( t -> specialization() != SPEC_NONE )
+            {
+              name += " (";
+              name += util::specialization_string( t -> specialization() );
+              name += ")";
+            }
+          }
           if ( p -> talent_points.has_row_col( row, col ) )
-            os.printf( "\t\t\t\t\t\t\t\t\t<li><strong>%d</strong>:&nbsp;%s</li>\n", ( row + 1 ) * 15, name );
+            os.printf( "\t\t\t\t\t\t\t\t\t<li><strong>%d</strong>:&nbsp;%s</li>\n", ( row + 1 ) * 15, name.c_str() );
         }
       }
 

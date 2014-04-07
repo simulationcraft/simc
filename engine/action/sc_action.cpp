@@ -214,7 +214,7 @@ action_priority_t* action_priority_list_t::add_talent( const player_t* p,
                                                        const std::string& action_options,
                                                        const std::string& comment )
 {
-  const spell_data_t* s = p -> find_talent_spell( name, "", false, false );
+  const spell_data_t* s = p -> find_talent_spell( name, "", SPEC_NONE, false, false );
   std::string talent_check_str = "talent." + dbc::get_token( s -> id() ) + ".enabled";
   bool found_if = false;
   bool found_talent_check = false;
@@ -509,6 +509,8 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     case E_SCHOOL_DAMAGE:
     case E_HEALTH_LEECH:
       direct_power_mod = spelleffect_data.coeff();
+      if ( direct_power_mod == 0 )
+        direct_power_mod = spelleffect_data.ap_coeff();
       base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
       base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
       break;
@@ -535,6 +537,8 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
         case A_PERIODIC_LEECH:
         case A_PERIODIC_HEAL:
           tick_power_mod   = spelleffect_data.coeff();
+          if ( tick_power_mod == 0 )
+            tick_power_mod = spelleffect_data.ap_coeff();
           base_td          = player -> dbc.effect_average( spelleffect_data.id(), player -> level );
         case A_PERIODIC_ENERGIZE:
         case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
@@ -551,6 +555,8 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           break;
         case A_SCHOOL_ABSORB:
           direct_power_mod = spelleffect_data.coeff();
+          if ( direct_power_mod == 0 )
+            direct_power_mod = spelleffect_data.ap_coeff();
           base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
           base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
           break;

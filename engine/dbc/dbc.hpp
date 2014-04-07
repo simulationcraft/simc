@@ -157,6 +157,7 @@ public:
   double           _m_unk;           // Unused effect scaling multiplier
   //
   double           _coeff;           // Effect coefficient
+  double           _ap_coeff;        // Effect attack power coefficient
   double           _amplitude;       // Effect amplitude (e.g., tick time)
   // SpellRadius.dbc
   double           _radius;          // Minimum spell radius
@@ -249,6 +250,9 @@ public:
 
   double coeff() const
   { return _coeff; }
+
+  double ap_coeff() const
+  { return _ap_coeff; }
 
   timespan_t period() const
   { return timespan_t::from_millis( _amplitude ); }
@@ -796,9 +800,9 @@ public:
   static talent_data_t* nil();
   static talent_data_t* find( unsigned, bool ptr = false );
   static talent_data_t* find( unsigned, const char* confirmation, bool ptr = false );
-  static talent_data_t* find( const char* name, bool ptr = false );
+  static talent_data_t* find( const char* name, specialization_e spec, bool ptr = false );
   static talent_data_t* find_tokenized( const char* name, bool ptr = false );
-  static talent_data_t* find( player_e c, unsigned int row, unsigned int col, bool ptr = false );
+  static talent_data_t* find( player_e c, unsigned int row, unsigned int col, specialization_e spec, bool ptr = false );
   static talent_data_t* list( bool ptr = false );
   static void           link( bool ptr = false );
 };
@@ -989,7 +993,7 @@ public:
   double   effect_max( unsigned effect_id, unsigned level ) const;
   double   effect_bonus( unsigned effect_id, unsigned level ) const;
 
-  unsigned talent_ability_id( player_e c, const char* spell_name, bool name_tokenized = false ) const;
+  unsigned talent_ability_id( player_e c, specialization_e spec_id, const char* spell_name, bool name_tokenized = false ) const;
   unsigned class_ability_id( player_e c, specialization_e spec_id, const char* spell_name ) const;
   unsigned pet_ability_id( player_e c, const char* spell_name ) const;
   unsigned race_ability_id( player_e c, race_e r, const char* spell_name ) const;

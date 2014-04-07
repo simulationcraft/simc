@@ -2248,7 +2248,7 @@ class SpellDataGenerator(DataGenerator):
                 continue
 
             if index % 20 == 0:
-                s += '//{     Id,Flags,   SpId,Idx, EffectType                  , EffectSubType                              ,       Average,         Delta,       Unknown,   Coefficient,  Ampl,  Radius,  RadMax,   BaseV,   MiscV,  MiscV2, {     Flags1,     Flags2,     Flags3,     Flags4 }, Trigg,   DmgMul,  CboP, RealP,Die, 0, 0 },\n'
+                s += '//{     Id,Flags,   SpId,Idx, EffectType                  , EffectSubType                              ,       Average,         Delta,       Unknown,   Coefficient, APCoefficient,  Ampl,  Radius,  RadMax,   BaseV,   MiscV,  MiscV2, {     Flags1,     Flags2,     Flags3,     Flags4 }, Trigg,   DmgMul,  CboP, RealP,Die, 0, 0 },\n'
 
             fields = effect.field('id')
             fields += [ '%#.2x' % 0 ] 
@@ -2271,7 +2271,7 @@ class SpellDataGenerator(DataGenerator):
                 fields += self._spelleffectscaling_db[0].field('average', 'delta', 'bonus')
             else:
                 fields += effect.scaling.field('average', 'delta', 'bonus')
-            fields += effect.field('coefficient', 'amplitude')
+            fields += effect.field('coefficient', 'ap_coefficient', 'amplitude')
             fields += self._spellradius_db[effect.id_radius].field('radius_1')
             fields += self._spellradius_db[effect.id_radius_max].field('radius_1')
             fields += effect.field('base_value', 'misc_value', 'misc_value_2')

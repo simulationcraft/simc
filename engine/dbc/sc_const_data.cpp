@@ -1914,10 +1914,20 @@ spelleffect_data_t* spelleffect_data_t::find( unsigned id, bool ptr )
 }
 
 
-talent_data_t* talent_data_t::find( player_e c, unsigned int row, unsigned int col, bool ptr )
+talent_data_t* talent_data_t::find( player_e c, unsigned int row, unsigned int col, specialization_e spec, bool ptr )
 {
   talent_data_t* talent_data = talent_data_t::list( ptr );
 
+  for ( unsigned k = 0; talent_data[ k ].name_cstr(); k++ )
+  {
+    talent_data_t& td = talent_data[ k ];
+    if ( td.is_class( c ) && ( row == td.row() ) && ( col == td.col() ) && spec == td.specialization() )
+    {
+      return &td;
+    }
+  }
+
+  // Second round without spec check
   for ( unsigned k = 0; talent_data[ k ].name_cstr(); k++ )
   {
     talent_data_t& td = talent_data[ k ];
@@ -1947,11 +1957,11 @@ talent_data_t* talent_data_t::find( unsigned id, const char* confirmation, bool 
   return p;
 }
 
-talent_data_t* talent_data_t::find( const char* name_cstr, bool ptr )
+talent_data_t* talent_data_t::find( const char* name_cstr, specialization_e spec, bool ptr )
 {
   for ( talent_data_t* p = talent_data_t::list( ptr ); p -> name_cstr(); ++p )
   {
-    if ( ! strcmp( name_cstr, p -> name_cstr() ) )
+    if ( ! strcmp( name_cstr, p -> name_cstr() ) && p -> specialization() == spec )
     {
       return p;
     }
@@ -2202,7 +2212,7 @@ double dbc_t::effect_max( unsigned effect_id, unsigned level ) const
   return result;
 }
 
-unsigned dbc_t::talent_ability_id( player_e c, const char* spell_name, bool name_tokenized ) const
+unsigned dbc_t::talent_ability_id( player_e c, specialization_e spec, const char* spell_name, bool name_tokenized ) const
 {
   uint32_t cid = util::class_id( c );
 
@@ -2215,7 +2225,11 @@ unsigned dbc_t::talent_ability_id( player_e c, const char* spell_name, bool name
   if ( name_tokenized )
     t = talent_data_t::find_tokenized( spell_name, ptr );
   else
-    t = talent_data_t::find( spell_name, ptr );
+  {
+    t = talent_data_t::find( spell_name, spec, ptr ); // first try finding with the given spec
+    if ( !t )
+      t = talent_data_t::find( spell_name, SPEC_NONE, ptr ); // now with SPEC_NONE
+  }
 
   if ( t && t -> is_class( c ) && ! replaced_id( t -> spell_id() ) )
   {
