@@ -3892,3 +3892,483 @@ static unsigned __tier_bonuses_data[][TIER_BONUSES_MAX_TIER][TIER_BONUSES_SIZE] 
   },
 };
 
+#define PERK_SIZE (9)
+
+// Perk specialization abilities, wow build 18125
+static unsigned __perk_data[][MAX_SPECS_PER_CLASS][PERK_SIZE] = {
+  {
+    {
+           0,
+    },
+    {
+           0,
+    },
+    {
+           0,
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Arms
+    {
+      157446, // 0: Improved Charge
+      157449, // 1: Improved Heroic Leap
+      157452, // 2: Improved Die by the Sword
+      157454, // 3: Empowered Execute
+      157457, // 4: Improved Colossus Smash
+      157461, // 5: Enhanced Sweeping Strikes
+      157464, // 6: Improved Mortal Strike
+      157466, // 7: Enhanced Slam
+      157472, // 8: Improved Overpower
+    },
+    // Fury
+    {
+      157452, // 0: Improved Die by the Sword
+      157454, // 1: Empowered Execute
+      157457, // 2: Improved Colossus Smash
+      157473, // 3: Improved Meat Cleaver
+      157474, // 4: Improved Wild Strike
+      157475, // 5: Improved Bloodthirst
+      157477, // 6: Improved Raging Blow
+      157446, // 7: Improved Charge
+      157449, // 8: Improved Heroic Leap
+    },
+    // Protection
+    {
+      157446, // 0: Improved Charge
+      157449, // 1: Improved Heroic Leap
+      157497, // 2: Improved Bastion of Defense
+      157487, // 3: Improved Revenge
+      157479, // 4: Improved Heroic Throw
+      157492, // 5: Improved Shield Barrier
+      157481, // 6: Improved Shield Slam
+      157498, // 7: Improved Thunder Clap
+      157494, // 8: Improved Unwavering Sentinel
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Holy
+    {
+      157453, // 0: Empowered Beacon of Light
+      157476, // 1: Empowered Holy Shock
+      157478, // 2: Enhanced Holy Shock
+      157455, // 3: Improved Daybreak
+      157462, // 4: Improved Denounce
+      157458, // 5: Improved Holy Light
+      157482, // 6: Improved Forbearance
+      157480, // 7: Improved Divine Protection
+      157460, // 8: Improved Flash of Light
+    },
+    // Protection
+    {
+      157482, // 0: Improved Forbearance
+      157480, // 1: Improved Divine Protection
+      157485, // 2: Empowered Avenger's Shield
+      157488, // 3: Improved Block
+      157486, // 4: Improved Consecration
+      157483, // 5: Improved Hammer of the Righteous
+      157484, // 6: Improved Word of Glory
+      157489, // 7: Improved Crusader Strike
+      157490, // 8: Improved Judgment
+    },
+    // Retribution
+    {
+      157482, // 0: Improved Forbearance
+      157480, // 1: Improved Divine Protection
+      157460, // 2: Improved Flash of Light
+      157489, // 3: Improved Crusader Strike
+      157490, // 4: Improved Judgment
+      157491, // 5: Empowered Seal of Truth
+      157493, // 6: Enhanced Hand of Sacrifice
+      157495, // 7: Improved Exorcism
+      157496, // 8: Empowered Hammer of Wrath
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Beast Mastery
+    {
+      157713, // 0: Empowered Pets
+      157715, // 1: Enhanced Basic Attacks
+      157714, // 2: Improved Beast Cleave
+      157705, // 3: Improved Focus Fire
+      157709, // 4: Improved Kill Command
+      157707, // 5: Enhanced Kill Shot
+      157718, // 6: Enhanced Camouflage
+      157711, // 7: Improved Arcane Shot
+      157712, // 8: Improved Cobra Shot
+    },
+    // Marksmanship
+    {
+      157707, // 0: Enhanced Kill Shot
+      157718, // 1: Enhanced Camouflage
+      157724, // 2: Enhanced Aimed Shot
+      157719, // 3: Enhanced Chimera Shot
+      157733, // 4: Enhanced Piercing Shots
+      157732, // 5: Enhanced Shots
+      157728, // 6: Improved Aimed Shot
+      157726, // 7: Improved Focus
+      157729, // 8: Improved Steady Shot
+    },
+    // Survival
+    {
+      157718, // 0: Enhanced Camouflage
+      157711, // 1: Improved Arcane Shot
+      157712, // 2: Improved Cobra Shot
+      157748, // 3: Empowered Explosive Shot
+      157752, // 4: Enhanced Entrapment
+      157751, // 5: Enhanced Traps
+      157749, // 6: Improved Black Arrow
+      157753, // 7: Improved Camouflage
+      157768, // 8: Improved Viper Venom
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Assassination
+    {
+      157513, // 0: Improved Slice and Dice
+      157514, // 1: Enhanced Vendetta
+      157515, // 2: Improved Venomous Wounds
+      157560, // 3: Enhanced Poisons
+      157561, // 4: Enhanced Crimson Tempest
+      157569, // 5: Empowered Envenom
+      157570, // 6: Improved Rupture
+      157572, // 7: Enhanced Envenom
+      157576, // 8: Improved Recuperate
+    },
+    // Combat
+    {
+      157576, // 0: Improved Recuperate
+      157581, // 1: Empowered Bandit's Guile
+      157605, // 2: Instant Poison
+      157613, // 3: Enhanced Adrenaline Rush
+      157615, // 4: Enhanced Fan of Knives
+      157645, // 5: Empowered Crimson Tempest
+      157660, // 6: Improved Ambidexterity
+      157661, // 7: Improved Sinister Strike
+      157662, // 8: Improved Eviscerate
+    },
+    // Subtlety
+    {
+      157576, // 0: Improved Recuperate
+      157663, // 1: Improved Backstab
+      157664, // 2: Improved Ambush
+      157665, // 3: Improved Hemorrhage
+      157666, // 4: Enhanced Vanish
+      157667, // 5: Enhanced Eviscerate
+      157669, // 6: Enhanced Shadow Dance
+      157671, // 7: Empowered Fan of Knives
+      157704, // 8: Enhanced Premeditation
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Discipline
+    {
+      157181, // 0: Improved Heal
+      157197, // 1: Enhanced Strength of Soul
+      157182, // 2: Improved Penance
+      157193, // 3: Enhanced Focused Will
+      157180, // 4: Enhanced Holy Fire
+      157145, // 5: Enhanced Leap of Faith
+      157156, // 6: Improved Smite
+      157129, // 7: Enhanced Power Word: Shield
+      157144, // 8: Improved Flash Heal
+    },
+    // Holy
+    {
+      157129, // 0: Enhanced Power Word: Shield
+      157144, // 1: Improved Flash Heal
+      157193, // 2: Enhanced Focused Will
+      157180, // 3: Enhanced Holy Fire
+      157145, // 4: Enhanced Leap of Faith
+      157156, // 5: Improved Smite
+      157206, // 6: Enhanced Chakras
+      157181, // 7: Improved Heal
+      157207, // 8: Enhanced Renew
+    },
+    // Shadow
+    {
+      157129, // 0: Enhanced Power Word: Shield
+      157144, // 1: Improved Flash Heal
+      157221, // 2: Empowered Psychic Horror
+      157223, // 3: Enhanced Mind Flay
+      157217, // 4: Enhanced Shadow Orbs
+      157218, // 5: Enhanced Shadow Word: Death
+      157222, // 6: Improved Shadow Word: Pain
+      157219, // 7: Improved Vampiric Touch
+      157220, // 8: Improved Mind Spike
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Blood
+    {
+      157338, // 0: Enhanced Bone Shield
+      157337, // 1: Enhanced Death Grip
+      157343, // 2: Enhanced Rune Strike
+      157336, // 3: Enhanced Rune Tap
+      157334, // 4: Enhanced Will of the Necropolis
+      157341, // 5: Improved Death Strike
+      157339, // 6: Improved Heart Strike
+      157340, // 7: Improved Diseases
+      157342, // 8: Improved Soul Reaper
+    },
+    // Frost
+    {
+      157340, // 0: Improved Diseases
+      157342, // 1: Improved Soul Reaper
+      157403, // 2: Empowered Icebound Fortitude
+      157389, // 3: Empowered Pillar of Frost
+      157409, // 4: Empowered Rime
+      157380, // 5: Improved Soul Reaper
+      157376, // 6: Improved Cinderglacier
+      157367, // 7: Improved Razorice
+      157408, // 8: Enhanced Death Strike
+    },
+    // Unholy
+    {
+      157340, // 0: Improved Diseases
+      157342, // 1: Improved Soul Reaper
+      157408, // 2: Enhanced Death Strike
+      157441, // 3: Empowered Gargoyle
+      157412, // 4: Enhanced Dark Transformation
+      157439, // 5: Enhanced Death Coil
+      157437, // 6: Enhanced Fallen Crusader
+      157414, // 7: Improved Festering Strike
+      157413, // 8: Improved Scourge Strike
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Elemental
+    {
+      157765, // 0: Improved Chain Lightning
+      157774, // 1: Improved Lightning Shield
+      157764, // 2: Improved Reincarnation
+      157775, // 3: Improved Searing Totem
+      157776, // 4: Improved Elemental Fury
+      157777, // 5: Improved Lightning Bolt
+      157778, // 6: Improved Lava Burst
+      157779, // 7: Improved Shocks
+      157784, // 8: Improved Frost Shock
+    },
+    // Enhancement
+    {
+      157764, // 0: Improved Reincarnation
+      157775, // 1: Improved Searing Totem
+      157784, // 2: Improved Frost Shock
+      157803, // 3: Improved Lava Lash
+      157804, // 4: Improved Flame Shock
+      157807, // 5: Improved Maelstrom Weapon
+      157808, // 6: Improved Stormstrike
+      157809, // 7: Improved Lava Lash
+      157810, // 8: Improved Feral Spirits
+    },
+    // Restoration
+    {
+      157764, // 0: Improved Reincarnation
+      157777, // 1: Improved Lightning Bolt
+      157812, // 2: Improved Riptide
+      157813, // 3: Improved Chain Heal
+      157814, // 4: Improved Healing Wave
+      157816, // 5: Improved Healing Surge
+      157818, // 6: Improved Tidal Waves
+      157828, // 7: Improved Earthliving Weapon
+      157830, // 8: Improved Healing Rain
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Arcane
+    {
+      157532, // 0: Improved Arcane Barrage
+      157616, // 1: Improved Arcane Blast
+      157619, // 2: Improved Arcane Explosion
+      157599, // 3: Enhanced Arcane Missiles (NYI)
+      157617, // 4: Improved Arcane Missiles
+      157604, // 5: Improved Arcane Power
+      157606, // 6: Improved Blink
+      157595, // 7: Enhanced Arcane Blast
+      157614, // 8: Improved Evocation
+    },
+    // Fire
+    {
+      157630, // 0: Improved Combustion
+      157640, // 1: Improved Dragon's Breath
+      157642, // 2: Enhanced Fireball
+      157622, // 3: Enhanced Inferno Blast
+      157637, // 4: Improved Fireball and Frostfire Bolt
+      157621, // 5: Improved Flamestrike
+      157629, // 6: Improved Inferno Blast
+      157624, // 7: Improved Pyroblast
+      157632, // 8: Improved Scorch
+    },
+    // Frost
+    {
+      157727, // 0: Improved Blizzard
+      157646, // 1: Enhanced Frostbolt
+      157668, // 2: Enhanced Ice Lance (NYI)
+      157670, // 3: Improved Frost Nova
+      157723, // 4: Improved Frostbolt
+      157770, // 5: Improved Frostfire Bolt
+      157725, // 6: Improved Ice Lance
+      157721, // 7: Improved Icy Veins
+      157738, // 8: Improved Water Elemental
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Affliction
+    {
+      157070, // 0: Improved Life Tap
+      157071, // 1: Empowered Agony (NYI)
+      157072, // 2: Enhanced Haunt
+      157073, // 3: Improved Corruption
+      157076, // 4: Improved Unstable Affliction
+      157077, // 5: Improved Malefic Grasp
+      157078, // 6: Enhanced Nightfall
+      157068, // 7: Improved Demons
+      157069, // 8: Empowered Drain Life
+    },
+    // Demonology
+    {
+      157068, // 0: Improved Demons
+      157069, // 1: Empowered Drain Life
+      157095, // 2: Improved Molten Core
+      157096, // 3: Empowered Demons
+      157097, // 4: Improved Shadow Bolt
+      157098, // 5: Enhanced Corruption
+      157100, // 6: Empowered Doom
+      157101, // 7: Enhanced Hand of Gul'dan
+      157102, // 8: Improved Touch of Chaos
+    },
+    // Destruction
+    {
+      157103, // 0: Enhanced Chaos Bolt
+      157114, // 1: Empowered Immolate
+      157118, // 2: Improved Conflagrate
+      157120, // 3: Empowered Incinerate
+      157121, // 4: Improved Ember Tap
+      157125, // 5: Improved Shadowburn
+      157126, // 6: Enhanced Backlash
+      157068, // 7: Improved Demons
+      158362, // 8: Enhanced Drain Life
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Brewmaster
+    {
+      157365, // 0: Improved Dizzying Haze
+      157378, // 1: Improved Elusive Brew
+      157362, // 2: Improved Breath of Fire
+      157363, // 3: Improved Guard
+      157377, // 4: Empowered Keg Smash
+      157381, // 5: Improved Stance of the Sturdy Ox
+      157374, // 6: Empowered Blackout Kick
+      157361, // 7: Enhanced Roll
+      157366, // 8: Enhanced Transcendence
+    },
+    // Mistweaver
+    {
+      157400, // 0: Empowered Surging Mist
+      157392, // 1: Improved Expel Harm
+      157401, // 2: Improved Life Cocoon
+      157398, // 3: Improved Renewing Mist
+      157399, // 4: Empowered Tiger Palm
+      157374, // 5: Empowered Blackout Kick
+      157361, // 6: Enhanced Roll
+      157366, // 7: Enhanced Transcendence
+      157771, // 8: Improved Soothing Mist
+    },
+    // Windwalker
+    {
+      157399, // 0: Empowered Tiger Palm
+      157411, // 1: Empowered Chi (UI NOT DONE)
+      157415, // 2: Empowered Spinning Crane Kick
+      157404, // 3: Improved Energizing Brew
+      157427, // 4: Empowered Fists of Fury
+      157426, // 5: Empowered Rising Sun Kick
+      157374, // 6: Empowered Blackout Kick
+      157361, // 7: Enhanced Roll
+      157366, // 8: Enhanced Transcendence
+    },
+    {
+           0,
+    },
+  },
+  {
+    // Balance
+    {
+      157233, // 0: Empowered Starfall
+      157229, // 1: Enhanced Frenzy
+      157227, // 2: Enhanced Moonkin Form
+      157225, // 3: Enhanced Mushrooms
+      157232, // 4: Enhanced Starsurge
+      157226, // 5: Enhanced Storms
+      157230, // 6: Improved Starfire
+      157235, // 7: Improved Moonfire
+      157231, // 8: Improved Wrath
+    },
+    // Feral
+    {
+      157269, // 0: Enhanced Berserk
+      157272, // 1: Enhanced Cat Form
+      157274, // 2: Enhanced Prowl
+      157280, // 3: Enhanced Rejuvenation
+      157273, // 4: Enhanced Tiger's Fury
+      157277, // 5: Improved Ferocious Bite
+      157276, // 6: Improved Pounce
+      157275, // 7: Improved Shred
+      157279, // 8: Improved Healing Touch
+    },
+    // Guardian
+    {
+      157292, // 0: Empowered Bear Form
+      157284, // 1: Empowered Berserk
+      157290, // 2: Empowered Thrash
+      157286, // 3: Enhanced Bear Hug
+      157283, // 4: Enhanced Tooth and Claw (NYI)
+      157296, // 5: Improved Barkskin
+      157298, // 6: Improved Frenzied Regeneration
+      157287, // 7: Improved Mangle
+      157288, // 8: Improved Maul
+    },
+    // Restoration
+    {
+      157235, // 0: Improved Moonfire
+      157231, // 1: Improved Wrath
+      157279, // 2: Improved Healing Touch
+      157305, // 3: Empowered Ironbark
+      157302, // 4: Empowered Regrowth
+      157300, // 5: Empowered Rejuvenation
+      157312, // 6: Enhanced Lifebloom
+      157301, // 7: Enhanced Rebirth
+      157309, // 8: Improved Living Seed
+    },
+  },
+};
+

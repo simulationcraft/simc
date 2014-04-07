@@ -357,7 +357,6 @@ class SpecializationListGenerator(DataGenerator):
         
         return s
 
-
 class BaseScalingDataGenerator(DataGenerator):
     def __init__(self, options, scaling_data):
         if isinstance(scaling_data, str):
@@ -414,6 +413,40 @@ class LevelScalingDataGenerator(DataGenerator):
                 val = getattr(self, '_%s_db' % i.lower())[k]
 
                 s += '%20.15f, ' % val.gt_value
+
+                if k > 0 and (k + 1) % 5 == 0:
+                    s += '\n'
+
+            s += '\n};\n\n'
+
+        return s
+
+class MonsterLevelScalingDataGenerator(DataGenerator):
+    def __init__(self, options, scaling_data):
+        if isinstance(scaling_data, str):
+            self._dbc = [ scaling_data ]
+        else:
+            self._dbc = scaling_data
+
+        DataGenerator.__init__(self, options)
+
+    def generate(self, ids = None):
+        s = ''
+
+        for i in self._dbc:
+            s += '// Monster(?) Level scaling data, wow build %d\n' % self._options.build
+            s += 'static double __%s%s%s[%u] = {\n' % ( 
+                self._options.prefix and ('%s_' % self._options.prefix) or '',
+                re.sub(r'([A-Z]+)', r'_\1', i).lower(),
+                self._options.suffix and ('_%s' % self._options.suffix) or '',
+                self._options.level + 3)
+
+            for k in xrange(0, self._options.level + 3):
+                val = getattr(self, '_%s_db' % i.lower())[k]
+
+                s += '%20.10f' % val.gt_value
+                if k < self._options.level + 3 - 1:
+                    s += ', '
 
                 if k > 0 and (k + 1) % 5 == 0:
                     s += '\n'
@@ -740,7 +773,7 @@ class ItemDataGenerator(DataGenerator):
     }
 
     def __init__(self, options):
-        self._dbc = [ 'Item-sparse', 'Item', 'ItemSpell', 'SpellEffect', 'Spell', 'JournalEncounterItem', 'ItemNameDescription' ]
+        self._dbc = [ 'Item-sparse', 'Item', 'ItemEffect', 'SpellEffect', 'Spell', 'JournalEncounterItem', 'ItemNameDescription' ]
 
         DataGenerator.__init__(self, options)
 
@@ -763,8 +796,8 @@ class ItemDataGenerator(DataGenerator):
             if self._item_sparse_db[journal_item_data.id_item]:
                 self._item_sparse_db[journal_item_data.id_item].journal = journal_item_data
 
-        # For WoD, map ItemSpell to Item-sparse
-        for is_id,data in self._itemspell_db.iteritems():
+        # For WoD, map ItemEffect to Item-sparse
+        for is_id,data in self._itemeffect_db.iteritems():
             item = self._item_sparse_db[data.id_item]
             if not item.id:
                 continue
@@ -1545,7 +1578,7 @@ class SpellDataGenerator(DataGenerator):
             'SkillLineAbility', 'SpellAuraOptions', 'SpellRuneCost', 'SpellRadius', 'GlyphProperties',
             'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables', 'SpellItemEnchantment', 'Item-sparse',
             'Item', 'SpellEquippedItems', 'SpellIcon', 'SpecializationSpells', 'ChrSpecialization', 'SpellEffectScaling',
-            'SpellMisc', 'SpellProcsPerMinute', 'ItemSetSpell', 'ItemSpell' ]
+            'SpellMisc', 'SpellProcsPerMinute', 'ItemSetSpell', 'ItemEffect' ]
 
     def initialize(self):
         DataGenerator.initialize(self)
@@ -1602,8 +1635,8 @@ class SpellDataGenerator(DataGenerator):
             
             item_set.bonus.append(data)
 
-        # For WoD, map ItemSpell to Item-sparse
-        for is_id,data in self._itemspell_db.iteritems():
+        # For WoD, map ItemEffect to Item-sparse
+        for is_id,data in self._itemeffect_db.iteritems():
             item = self._item_sparse_db[data.id_item]
             if not item.id:
                 continue
@@ -2553,6 +2586,83 @@ class SpecializationSpellGenerator(DataGenerator):
                 s += '    {\n'
                 for ability in sorted(keys[cls][tree], key = lambda i: i[0]):
                     s += '      %6u, // %s\n' % ( ability[1], ability[0] )
+
+                if len(keys[cls][tree]) < max_ids:
+                    s += '      %6u,\n' % 0
+
+                s += '    },\n'
+            s += '  },\n'
+        s += '};\n'
+
+        return s
+
+class PerkSpellGenerator(DataGenerator):
+    def __init__(self, options):
+        self._dbc = [ 'ChrSpecialization', 'MinorTalent', 'Spell' ]
+        
+        DataGenerator.__init__(self, options)
+    
+    def generate(self, ids = None):
+        max_ids = 0
+        keys = [ 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ] 
+        ]
+
+        spec_map = { }
+        
+        for ssid, data in self._chrspecialization_db.iteritems():
+            spec_map[ssid] = (data.class_id, data.spec_id, data.name)
+
+        for mtid, data in self._minortalent_db.iteritems():
+            spec = data.id_spec
+
+            pos_data = spec_map[spec]
+            spell = self._spell_db[data.id_spell]
+
+            keys[pos_data[0]][pos_data[1]].append((data.index, data.id_spell, pos_data[2], spell.name))
+
+        # Figure out tree with most abilities
+        for cls in xrange(0, len(keys)):
+            for tree in xrange(0, len(keys[cls])):
+                if len(keys[cls][tree]) > max_ids:
+                    max_ids = len(keys[cls][tree])
+
+        data_str = "%sperk%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        s = '#define %s_SIZE (%d)\n\n' % (
+            data_str.upper(),
+            max_ids
+        )
+
+        s += '// Perk specialization abilities, wow build %d\n' % self._options.build 
+        s += 'static unsigned __%s_data[][MAX_SPECS_PER_CLASS][%s_SIZE] = {\n' % (
+            data_str,
+            data_str.upper(),
+        )
+
+        for cls in xrange(0, len(keys)):
+            s += '  {\n'
+
+            for tree in xrange(0, len(keys[cls])):
+                if len(keys[cls][tree]) > 0:
+                    s += '    // %s\n' % keys[cls][tree][0][2]
+                s += '    {\n'
+                for ability in sorted(keys[cls][tree], key = lambda i: i[0]):
+                    s += '      %6u, // %d: %s\n' % ( ability[1], ability[0], ability[3] )
 
                 if len(keys[cls][tree]) < max_ids:
                     s += '      %6u,\n' % 0

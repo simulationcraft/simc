@@ -2646,8 +2646,8 @@ double player_t::composite_melee_haste() const
     if ( buffs.mongoose_oh && buffs.mongoose_oh -> up() ) 
       h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
 
-    if ( buffs.berserking -> up() ) //       h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );   Use this when DBC data for WoD is back.
-      h *= 1.0 / ( 1.0 + 0.15 );
+    if ( buffs.berserking -> up() )
+      h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );
 
     if ( race == RACE_GOBLIN || race == RACE_GNOME )
       h *= 1.0 / ( 1.0 + 0.01 );
@@ -2739,9 +2739,6 @@ double player_t::composite_armor() const
   double a = current.stats.armor;
 
   a *= composite_armor_multiplier();
-
-  if ( debuffs.weakened_armor -> check() )
-    a *= 1.0 - debuffs.weakened_armor -> check() * debuffs.weakened_armor -> value();
 
   return a;
 }
@@ -2876,8 +2873,8 @@ double player_t::composite_spell_haste() const
     if ( buffs.bloodlust -> up() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust -> data().effectN( 1 ).percent() );
 
-    if ( buffs.berserking -> up() ) //       h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() );   Use this when DBC data for WoD is back.
-      h *= 1.0 / ( 1.0 + 0.15 );
+    if ( buffs.berserking -> up() )
+      h *= 1.0 / ( 1.0 + buffs.berserking -> data().effectN( 1 ).percent() ); 
 
     if ( buffs.tempus_repit -> up() )
       h *= 1.0 / ( 1.0 + buffs.tempus_repit -> data().effectN( 1 ).percent() );
@@ -3038,31 +3035,36 @@ double player_t::composite_player_critical_healing_multiplier() const
 }
 
 // player_t::composite_movement_speed =======================================
+// There are 2 categories of movement speed buffs in WoD
+// Permanent and Temporary, both which stack additively. Permanent buffs include movement speed enchant, unholy presence, cat form
+// and generally anything that has the ability to be kept active all fight. These permanent buffs do stack with each other. 
+// Temporary includes all other speed bonuses, however, only the highest temporary bonus will be added on top.
+// We'll have to add in a system to deal with this in the future.
 
 double player_t::composite_movement_speed() const
 {
   double speed = base_movement_speed;
 
-  if ( buffs.blurred_speed -> up() ) // Check and see if it stacks with most things, I believe it does. 3/15/2014
-    speed *= 1.0 + buffs.blurred_speed -> data().effectN( 1 ).percent();
+  if ( buffs.blurred_speed -> up() )
+    speed += buffs.blurred_speed -> data().effectN( 1 ).percent();
 
   if ( buffs.pandarens_step -> up() )
-    speed *= 1.0 + buffs.pandarens_step -> data().effectN( 1 ).percent();
+    speed += buffs.pandarens_step -> data().effectN( 1 ).percent();
 
   if ( buffs.nitro_boosts -> up() )
-    speed *= 1.0 + buffs.nitro_boosts -> data().effectN( 1 ).percent(); // Does not stack with a lot of random abilities, such as body and soul, stampeding shout, burning rush.
-                                                                        // Other abilities exist that do not work as well, but I am not aware of them at this time.
+    speed += buffs.nitro_boosts -> data().effectN( 1 ).percent();
+
   if ( buffs.stampeding_roar -> up() )
-    speed *= 1.0 + buffs.stampeding_roar -> data().effectN( 1 ).percent();
+    speed += buffs.stampeding_roar -> data().effectN( 1 ).percent();
 
   if ( buffs.stampeding_shout -> up() )
-    speed *= 1.0 + buffs.stampeding_shout -> data().effectN( 1 ).percent();
+    speed += buffs.stampeding_shout -> data().effectN( 1 ).percent();
 
   // Commenting this out for now. How will we take the daze aspect into account?
   //if ( buffs.aspect_of_the_pack -> up() )
   //speed *= 1.0 + buffs.aspect_of_the_pack -> data().effectN( 1 ).percent();
 
-  speed *= 1.0 + buffs.body_and_soul -> current_value;
+  speed += buffs.body_and_soul -> current_value;
 
 
   // From http://www.wowpedia.org/Movement_speed_effects

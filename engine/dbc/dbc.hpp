@@ -898,6 +898,7 @@ public:
   double health_per_stamina( unsigned level ) const;
   double item_socket_cost( unsigned ilevel ) const;
   double real_ppm_coefficient( specialization_e, unsigned ) const;
+  double enemy_armor_mitigation( unsigned level ) const;
 
   double combat_rating( unsigned combat_rating_id, unsigned level ) const;
   double oct_combat_rating( unsigned combat_rating_id, player_e t ) const;

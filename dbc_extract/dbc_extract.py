@@ -24,7 +24,7 @@ parser.add_option("-t", "--type", dest = "type",
                   help    = "Processing type [spell]", metavar = "TYPE", 
                   default = "spell", action = "store", type = "choice",
                   choices = [ 'spell', 'class_list', 'talent', 'scale', 'view', 
-                              'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 
+                              'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 'perk_list',
                               'glyph_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix',
                               'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties', 'random_suffix_groups', 'spec_enum', 'spec_list', 'item_upgrade', 'rppm_coeff' ]), 
 parser.add_option("-l", "--level", dest = "level", 
@@ -50,7 +50,7 @@ parser.add_option("--max-ilvl", dest = "max_ilevel",
                   default = 800, action = "store", type = "int" )
 parser.add_option("--scale-ilvl", dest = "scale_ilevel",
                   help    = "Maximum inclusive ilevel for game table related extraction",
-                  default = 999, action = "store", type = "int" )
+                  default = 1000, action = "store", type = "int" )
 parser.add_option("--cache", dest = "cache_dir",
                   help    = "World of Warcraft Cache directory.", 
                   default = r'', action = "store", type = "string" )
@@ -230,7 +230,6 @@ elif options.type == 'spec_list':
     if not g.initialize():
         sys.exit(1)
     ids = g.filter()
-
     
     print g.generate(ids)
 elif options.type == 'set_list':
@@ -239,6 +238,13 @@ elif options.type == 'set_list':
         sys.exit(1)
     ids = g.filter()
     
+    print g.generate(ids)
+elif options.type == 'perk_list':
+    g = dbc.generator.PerkSpellGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+    ids = g.filter()
+
     print g.generate(ids)
 elif options.type == 'header':
     dbcs = [ ]
@@ -284,12 +290,6 @@ elif options.type == 'view':
         record.parse()
         print record
 elif options.type == 'scale':
-#    g = dbc.generator.BaseScalingDataGenerator(options, [ 'gtChanceToMeleeCritBase', 'gtChanceToSpellCritBase' ] )
-#    if not g.initialize():
-#        sys.exit(1)
-#    print g.generate()
-
-    # Unsure, maybe 6e42c8a5c3ffed88a0a8791a937362c0.dbc?
     g = dbc.generator.LevelScalingDataGenerator(options, [ 'gtOCTHpPerStamina' ] )
     if not g.initialize():
         sys.exit(1)
@@ -300,7 +300,7 @@ elif options.type == 'scale':
         sys.exit(1)
     print g.generate()
     
-    tables = [ 'gtRegenMPPerSpt', 'gtOCTBaseMPByClass' ]
+    tables = [ 'gtChanceToMeleeCritBase', 'gtChanceToSpellCritBase', 'gtChanceToMeleeCrit', 'gtChanceToSpellCrit', 'gtRegenMPPerSpt', 'gtOCTBaseHPByClass', 'gtOCTBaseMPByClass' ]
     g = dbc.generator.ClassScalingDataGenerator(options, tables)
     if not g.initialize():
         sys.exit(1)
@@ -316,6 +316,13 @@ elif options.type == 'scale':
         sys.exit(1)
 
     print g.generate()
+
+    g = dbc.generator.MonsterLevelScalingDataGenerator(options, 'gtArmorMitigationByLvl')
+    if not g.initialize():
+        sys.exit(1)
+
+    print g.generate()
+
 elif options.type == 'patch':
     patch = dbc.patch.PatchBuildDBC(args[0], args[1], args[2:])
     patch.initialize()
