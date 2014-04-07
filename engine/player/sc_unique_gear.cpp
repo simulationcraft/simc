@@ -50,8 +50,6 @@ namespace item
   DECLARE_CB( essence_of_yulon );
   DECLARE_CB( endurance_of_niuzao );
   DECLARE_CB( amplify_trinket );
-  DECLARE_CB( cooldown_reduction_trinket );
-  DECLARE_CB( multistrike_trinket );
   DECLARE_CB( cleave_trinket );
   DECLARE_CB( black_blood_of_yshaarj );
   DECLARE_CB( rune_of_reorigination );
@@ -214,8 +212,6 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 148901, "OnDirectDamage",                                   0 }, /* Fusion-Fire Core (Str proc) */
 
   { 146051, 0,                              item::amplify_trinket }, /* Amplification effect */
-  { 146019, 0,                   item::cooldown_reduction_trinket }, /* Readiness effect */
-  { 146059, 0,                          item::multistrike_trinket }, /* Multistrike effect */
   { 146136, 0,                               item::cleave_trinket }, /* Cleave effect */
 
   /* Mists of Pandaria: 5.2 */
@@ -1632,174 +1628,6 @@ void item::cleave_trinket( special_effect_t& effect,
   cleave_callback_t* cb = new cleave_callback_t( item, effect );
   p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
   p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
-}
-
-void item::multistrike_trinket( special_effect_t& effect,
-                                const item_t& item,
-                                const special_effect_db_item_t& dbitem )
-{
-  maintenance_check( 528 );
-
-  // TODO: Healing multistrike
-
-  struct multistrike_attack_t : public attack_t
-  {
-    multistrike_attack_t( const item_t& item ) :
-      attack_t( "multistrike_attack", item.player )
-    {
-      callbacks = may_crit = may_glance = false;
-      proc = background = special = true;
-      school = SCHOOL_PHYSICAL;
-      snapshot_flags |= STATE_MUL_DA;
-    }
-
-    double composite_target_multiplier( player_t* ) const
-    { return 1.0; }
-
-    double composite_da_multiplier() const
-    { return 1.0 / 3.0; }
-
-    double target_armor( player_t* ) const
-    { return 0.0; }
-  };
-
-  struct multistrike_spell_t : public spell_t
-  {
-    multistrike_spell_t( const item_t& item ) :
-      spell_t( "multistrike_spell", item.player )
-    {
-      callbacks = may_crit = false;
-      proc = background = true;
-      school = SCHOOL_NATURE; // Multiple schools in reality, but any school would work
-      snapshot_flags |= STATE_MUL_DA;
-    }
-
-    double composite_target_multiplier( player_t* ) const
-    { return 1.0; }
-
-    double composite_da_multiplier() const
-    { return 1.0 / 3.0; }
-
-    double target_armor( player_t* ) const
-    { return 0.0; }
-  };
-
-  struct multistrike_callback_t : public proc_callback_t<action_state_t>
-  {
-    action_t* strike_attack;
-    action_t* strike_spell;
-
-    multistrike_callback_t( const item_t& i, const special_effect_t& data ) :
-      proc_callback_t<action_state_t>( i.player, data )
-    {
-      if ( ! ( strike_attack = listener -> create_proc_action( "multistrike_attack" ) ) )
-      {
-        strike_attack = new multistrike_attack_t( i );
-        strike_attack -> init();
-      }
-
-      if ( ! ( strike_spell = listener -> create_proc_action( "multistrike_spell" ) ) )
-      {
-        strike_spell = new multistrike_spell_t( i );
-        strike_spell -> init();
-      }
-    }
-
-    void execute( action_t* action, action_state_t* state )
-    {
-      action_t* a = 0;
-
-      if ( action -> type == ACTION_ATTACK )
-        a = strike_attack;
-      else if ( action -> type == ACTION_SPELL )
-        a = strike_spell;
-      // TODO: Heal
-
-      if ( a )
-      {
-        a -> base_dd_min = a -> base_dd_max = state -> result_amount;
-        a -> target = state -> target;
-        a -> schedule_execute();
-      }
-    }
-  };
-
-  player_t* p = item.player;
-  const spell_data_t* ms_driver_spell = p -> find_spell( dbitem.spell_id );
-
-  std::string name = ms_driver_spell -> name_cstr();
-  util::tokenize( name );
-  effect.name_str = name;
-  effect.proc_chance_ = ms_driver_spell -> effectN( 1 ).average( item ) / 1000.0;
-
-  multistrike_callback_t* cb = new multistrike_callback_t( item, effect );
-  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
-  p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
-}
-
-void item::cooldown_reduction_trinket( special_effect_t& /* effect */,
-                                       const item_t& item,
-                                       const special_effect_db_item_t& dbitem )
-{
-  maintenance_check( 528 );
-
-  const size_t MAX_COOLDOWNS = 8;
-  const size_t MAX_SPECIALIZATIONS = 19;
-
-  struct cooldowns_t
-  {
-    specialization_e spec;
-    const char*      cooldowns[ MAX_COOLDOWNS ];
-  };
-
-  static const cooldowns_t __cd[] =
-  {
-    // NOTE: Spells that trigger buffs must have the cooldown_ of their buffs removed if they have one, or this trinket may cause undesirable results.
-    { ROGUE_ASSASSINATION, { "evasion", "vanish", "cloak_of_shadows", "vendetta", "shadow_blades", 0, 0 } },
-    { ROGUE_COMBAT,        { "evasion", "adrenaline_rush", "cloak_of_shadows", "killing_spree", "shadow_blades", 0, 0 } },
-    { ROGUE_SUBTLETY,      { "evasion", "vanish", "cloak_of_shadows", "shadow_dance", "shadow_blades", 0, 0 } },
-    { SHAMAN_ENHANCEMENT,  { "spiritwalkers_grace", "earth_elemental_totem", "fire_elemental_totem", "shamanistic_rage", "ascendance", "feral_spirit", 0 } },
-    { DRUID_FERAL,         { "tigers_fury", "berserk", "barkskin", "survival_instincts", 0, 0, 0 } },
-    { DRUID_GUARDIAN,      { "might_of_ursoc", "berserk", "barkskin", "survival_instincts", 0, 0, 0 } },
-    { WARRIOR_FURY,        { "dragon_roar", "bladestorm", "shockwave", "avatar", "bloodbath", "recklessness", "storm_bolt", "heroic_leap" } },
-    { WARRIOR_ARMS,        { "dragon_roar", "bladestorm", "shockwave", "avatar", "bloodbath", "recklessness", "storm_bolt", "heroic_leap" } },
-    { WARRIOR_PROTECTION,  { "shield_wall", "demoralizing_shout", "last_stand", "recklessness", "heroic_leap", 0, 0 } },
-    { DEATH_KNIGHT_BLOOD,  { "antimagic_shell", "dancing_rune_weapon", "icebound_fortitude", "outbreak", "vampiric_blood", "bone_shield", 0 } },
-    { DEATH_KNIGHT_FROST,  { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "empower_rune_weapon", "outbreak", "pillar_of_frost", 0  } },
-    { DEATH_KNIGHT_UNHOLY, { "antimagic_shell", "army_of_the_dead", "icebound_fortitude", "unholy_frenzy", "outbreak", "summon_gargoyle", 0 } },
-    { MONK_BREWMASTER,	   { "fortifying_brew", "guard", "zen_meditation", 0, 0, 0, 0 } }, 
-    { MONK_WINDWALKER,     { "energizing_brew", "fists_of_fury", "fortifying_brew", "zen_meditation", 0, 0, 0 } },
-    { PALADIN_PROTECTION,  { "ardent_defender", "avenging_wrath", "divine_protection", "divine_shield", "guardian_of_ancient_kings", 0 } },
-    { PALADIN_RETRIBUTION, { "avenging_wrath", "divine_protection", "divine_shield", "guardian_of_ancient_kings", 0, 0 } },
-    { HUNTER_BEAST_MASTERY,{ "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", "bestial_wrath", 0 } },
-    { HUNTER_MARKSMANSHIP, { "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", 0, 0 } },
-    { HUNTER_SURVIVAL,     { "black_arrow", "camouflage", "feign_death", "disengage", "stampede", "rapid_fire", 0 } },
-    { SPEC_NONE,           { 0 } }
-  };
-
-  player_t* p = item.player;
-  const spell_data_t* cdr_spell = p -> find_spell( dbitem.spell_id );
-  double cdr = cdr_spell -> effectN( 1 ).average( item ) / 100.0;
-
-  p -> buffs.cooldown_reduction -> s_data = cdr_spell;
-  p -> buffs.cooldown_reduction -> default_value = cdr;
-  p -> buffs.cooldown_reduction -> default_chance = 1;
-
-  for ( size_t spec = 0; spec < MAX_SPECIALIZATIONS; spec++ )
-  {
-    const cooldowns_t& cd = __cd[ spec ];
-    if ( p -> specialization() != cd.spec )
-      continue;
-
-    for ( size_t ability = 0; ability < MAX_COOLDOWNS; ability++ )
-    {
-      if ( cd.cooldowns[ ability ] == 0 )
-        break;
-
-      cooldown_t* ability_cd = p -> get_cooldown( cd.cooldowns[ ability ] );
-      ability_cd -> set_recharge_multiplier( cdr );
-    }
-  }
 }
 
 void item::amplify_trinket( special_effect_t& /* effect */,
