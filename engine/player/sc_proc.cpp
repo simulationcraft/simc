@@ -996,7 +996,7 @@ bool proc::usable_proc( const special_effect_t& effect )
 void dbc_proc_callback_t::initialize()
 {
   if ( listener -> sim -> debug )
-    listener -> sim -> out_debug.printf( "Initializing %s: %s",
+    listener -> sim -> out_debug.printf( "Initializing proc %s: %s",
         effect.name().c_str(), effect.to_string().c_str() );
   
   // Initialize proc chance triggers. Note that this code only chooses one, and

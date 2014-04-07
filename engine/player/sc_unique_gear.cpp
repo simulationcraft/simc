@@ -49,6 +49,7 @@ namespace item
   DECLARE_CB( flurry_of_xuen );
   DECLARE_CB( essence_of_yulon );
   DECLARE_CB( endurance_of_niuzao );
+  DECLARE_CB( skeers_bloodsoaked_talisman );
   DECLARE_CB( amplify_trinket );
   DECLARE_CB( cleave_trinket );
   DECLARE_CB( black_blood_of_yshaarj );
@@ -195,9 +196,6 @@ static const special_effect_db_item_t __special_effect_db[] = {
 
   { 146183, 0,                       item::black_blood_of_yshaarj }, /* Black Blood of Y'Shaarj */
 
-  { 146311, "OnDirectDamage",                                   0 }, /* Ticking Ebon Detonator */           
-  { 146286, "OnAttackHit",                                      0 }, /* Skeer's Bloodsoaked Talisman */
-  { 146313, "OnAttackHit",                                      0 }, /* Discipline of Xuen */
   { 146219, "OnSpellDamage",                                    0 }, /* Yu'lon's Bite */
   { 146295, "OnAttackHit",                                      0 }, /* Alacrity of Xuen */
   { 146047, "OnDirectDamage",                                   0 }, /* Purified Bindings of Immerseus (Int proc) */
@@ -205,12 +203,12 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 146315, "OnHeal",                                           0 }, /* Prismatic Prison of Pride (Int proc) */
   { 146309, "OnDirectDamage",                                   0 }, /* Assurance of Consequence (Agi proc) */
   { 146247, "OnDirectDamage",                                   0 }, /* Evil Eye of Galakras (Str proc) */
-  { 148904, "OnDirectDamage",                                   0 }, /* Haromm's Talisman (Agi proc) */
   { 148907, "OnDirectDamage",                                   0 }, /* Kardris' Toxic Talisman (Int proc) */
   { 148895, "OnDirectDamage",                                   0 }, /* Sigil of Rampage (Agi proc) */
   { 148898, "OnDirectDamage",                                   0 }, /* Frenzied Crystal of Rage (Int proc) */
   { 148901, "OnDirectDamage",                                   0 }, /* Fusion-Fire Core (Str proc) */
 
+  { 146286, 0,                  item::skeers_bloodsoaked_talisman }, /* Skeer's Bloodsoaked Talisman */
   { 146051, 0,                              item::amplify_trinket }, /* Amplification effect */
   { 146136, 0,                               item::cleave_trinket }, /* Cleave effect */
 
@@ -222,7 +220,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 138728, "10Stack_Reverse_NoRefresh",                        0 }, /* Steadfast Talisman of the Shado-Pan Assault */
   { 138894, "OnDirectDamage",                                   0 }, /* Talisman of Bloodlust */
   { 138871, "OnDirectDamage",                                   0 }, /* Primordius' Talisman of Rage */
-  { 139171, "OnAttackCrit_RPPMAttackCrit",                      0 }, /* Gaze of the Twins */
+  { 139171, "ProcOn/Crit_RPPMAttackCrit",                       0 }, /* Gaze of the Twins */
   { 138757, "OnDirectDamage_1Tick_138737Trigger",               0 }, /* Renataki's Soul Charm */
   { 138790, "OnSpellDamage_1Tick_138788Trigger",                0 }, /* Wushoolay's Final Choice */
   { 138758, "OnDirectDamage",                                   0 }, /* Fabled Feather of Ji-Kun */
@@ -1630,6 +1628,30 @@ void item::cleave_trinket( special_effect_t& effect,
   p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
 }
 
+void item::skeers_bloodsoaked_talisman( special_effect_t& effect,
+                                        const item_t& item,
+                                        const special_effect_db_item_t& dbitem )
+{
+  maintenance_check( 528 );
+
+  const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
+  const spell_data_t* spell = driver -> effectN( 1 ).trigger();
+  // Aura is hidden, thre's no linkage in spell data actual
+  const spell_data_t* buff = item.player -> find_spell( 146293 );
+
+  effect.trigger_spell_id = spell -> id();
+
+  stat_buff_t* b = stat_buff_creator_t( item.player, effect.name(), buff )
+                   .add_stat( STAT_CRIT_RATING, spell -> effectN( 1 ).average( item ) )
+                   .tick_behavior( BUFF_TICK_CLIP )
+                   .period( spell -> effectN( 1 ).period() )
+                   .duration( spell -> duration() );
+
+  effect.custom_buff = b;
+
+  new dbc_proc_callback_t( item.player, effect );
+}
+
 void item::amplify_trinket( special_effect_t& /* effect */,
                             const item_t& item,
                             const special_effect_db_item_t& dbitem )
@@ -1910,7 +1932,8 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
     if ( dbitem.encoded_options != 0 )
     {
       std::string encoded_options = dbitem.encoded_options;
-      util::tokenize( encoded_options );
+      for ( size_t i = 0; i < encoded_options.length(); i++ )
+        encoded_options[ i ] = std::tolower( encoded_options[ i ] );
       // Note, if the encoding parse fails (this should never ever happen), 
       // we don't parse game client data either.
       if ( ! proc::parse_special_effect_encoding( effect, item, encoded_options ) )

@@ -283,6 +283,9 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
         case A_PERIODIC_TRIGGER_SPELL:
         {
           buff_period = e.period();
+          if ( params._behavior == BUFF_TICK_NONE )
+            tick_behavior = BUFF_TICK_CLIP;
+
           break;
         }
         default: break;
