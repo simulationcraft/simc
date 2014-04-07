@@ -118,6 +118,7 @@ public:
     gain_t* colossus_smash;
     gain_t* critical_block;
     gain_t* defensive_stance;
+    gain_t* enrage;
     gain_t* melee_main_hand;
     gain_t* melee_off_hand;
     gain_t* mortal_strike;
@@ -222,9 +223,9 @@ public:
     const spell_data_t* bloodbath;
     const spell_data_t* bladestorm;
 
-    //const spell_data_t* anger_management;
-    //const spell_data_t* ravager;
-    //const spell_data_t* ignite_weapon;
+    const spell_data_t* anger_management;
+    const spell_data_t* ravager;
+    const spell_data_t* ignite_weapon;
 
   } talents;
 
@@ -249,7 +250,6 @@ public:
 
     // Cooldowns
     cooldown.avatar                   = get_cooldown( "avatar"                    );
-    cooldown.berserker_rage           = get_cooldown( "berserker_rage"            );
     cooldown.bladestorm               = get_cooldown( "bladestorm"                );
     cooldown.bloodbath                = get_cooldown( "bloodbath"                 );
     cooldown.colossus_smash           = get_cooldown( "colossus_smash"            );
@@ -507,7 +507,7 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     double rage_gain = 1.75 * w -> swing_time.total_seconds();
 
-    if ( p.buff.raging_whirlwind -> check() )  // I bet they remove this glyph, check later.
+    if ( p.buff.raging_whirlwind -> check() )
       rage_gain *= 1.0 + p.buff.raging_whirlwind -> data().effectN( 2 ).percent();
     else if ( p.active_stance == STANCE_BATTLE )
       rage_gain *= 1.0 + p.buff.battle_stance -> data().effectN( 1 ).percent();
@@ -739,13 +739,13 @@ void warrior_attack_t::consume_resource()
   {
     rage = -1*(rage / 30);
     // When talents are placed in the game, a check for anger management will be done here.
+    p -> cooldown.heroic_leap -> adjust( timespan_t::from_seconds( rage ) );
     p -> cooldown.storm_bolt -> adjust( timespan_t::from_seconds( rage ) ); 
     p -> cooldown.bladestorm -> adjust( timespan_t::from_seconds( rage ) );
     p -> cooldown.avatar -> adjust( timespan_t::from_seconds( rage ) ); 
     p -> cooldown.recklessness -> adjust( timespan_t::from_seconds( rage ) ); 
     p -> cooldown.bloodbath -> adjust( timespan_t::from_seconds( rage ) ); 
     p -> cooldown.heroic_leap -> adjust( timespan_t::from_seconds( rage ) ); 
-    //p -> cooldown.colossus_smash -> adjust( timespan_t::from_seconds( rage ) ); 
     p -> cooldown.dragon_roar -> adjust( timespan_t::from_seconds( rage ) ); 
   }
   }
@@ -1385,7 +1385,7 @@ struct execute_t : public warrior_attack_t
 struct ignite_weapon_t : public warrior_attack_t
 {
   ignite_weapon_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "ignite_weapon", p, p -> find_class_spell( "Ignite Weapon" ) ) // Replacement for heroic strike.
+    warrior_attack_t( "ignite_weapon", p, p -> find_class_spell( "Ignite Weapon" ) )
   {
     parse_options( NULL, options_str );
 
@@ -3687,11 +3687,11 @@ void warrior_t::create_buffs()
                           .chance( 1 )
                           .duration( timespan_t::from_seconds( 6 ) );
 
-  buff.ignite_weapon    = buff_creator_t( this, "ignite_weapon",   find_class_spell( "Heroic Strike" ) ) //Placeholder
+  buff.ignite_weapon    = buff_creator_t( this, "ignite_weapon",   find_class_spell( "Ignite Weapon" ) )
                          .chance( 1 )
                          .duration( timespan_t::from_seconds( 10 ) );
 
-  buff.gladiator_stance = buff_creator_t( this, "gladiator_stance",    find_spell( 21156 ) ); //Placeholder, update with WoD spell data.
+  buff.gladiator_stance = buff_creator_t( this, "gladiator_stance",    find_class_spell( "Gladiator Stance"  ) );
 
   buff.glyph_hold_the_line    = buff_creator_t( this, "hold_the_line",    glyphs.hold_the_line -> effectN( 1 ).trigger() );
   buff.glyph_incite           = buff_creator_t( this, "glyph_incite",           glyphs.incite -> effectN( 1 ).trigger() )
@@ -3758,6 +3758,7 @@ void warrior_t::init_gains()
   gain.critical_block         = get_gain( "critical_block"        );
   gain.colossus_smash         = get_gain( "colossus_smash"        );
   gain.defensive_stance       = get_gain( "defensive_stance"      );
+  gain.enrage                 = get_gain( "enrage"                );
   gain.melee_main_hand        = get_gain( "melee_main_hand"       );
   gain.melee_off_hand         = get_gain( "melee_off_hand"        );
   gain.mortal_strike          = get_gain( "mortal_strike"         );
@@ -4202,7 +4203,9 @@ void warrior_t::enrage()
 
     buff.raging_blow -> trigger();
   }
-
+  resource_gain( RESOURCE_RAGE, 
+                 buff.enrage -> data().effectN( 1 ).resource( RESOURCE_RAGE ),
+                 gain.enrage );
   buff.enrage -> trigger();
 
   if ( glyphs.enraged_speed -> ok() )
