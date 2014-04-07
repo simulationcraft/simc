@@ -3378,7 +3378,6 @@ class RandomPropertyPointsGenerator(DataGenerator):
 class WeaponDamageDataGenerator(DataGenerator):
     def __init__(self, options):
         self._dbc = [ 'ItemDamageOneHand', 'ItemDamageOneHandCaster',
-                      'ItemDamageRanged',  'ItemDamageThrown',        'ItemDamageWand',
                       'ItemDamageTwoHand', 'ItemDamageTwoHandCaster',  ]
 
         DataGenerator.__init__(self, options)
