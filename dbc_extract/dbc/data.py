@@ -103,6 +103,9 @@ _DBC_FIELDS = {
     'ItemEffect.db2': [
         'id', 'id_item', 'index', 'id_spell', 'trigger_type', ( 'cooldown_category', '%d' ), ( 'category_cooldown', '%d' ), ( 'cooldown_group', '%d' ), ( 'cooldown', '%d' )
     ],
+    'MinorTalent.dbc': [
+        'id', 'id_spec', 'id_spell', 'index'
+    ],
     'ArmorLocation.dbc': [
         ( 'id', '%3u' ), ( 'v_1', '%11.6f' ), ( 'v_2', '%11.6f' ), ( 'v_3', '%11.6f' ), ( 'v_4', '%11.6f' ), ( 'v_5', '%11.6f')
     ],

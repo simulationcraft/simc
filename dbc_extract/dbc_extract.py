@@ -24,7 +24,7 @@ parser.add_option("-t", "--type", dest = "type",
                   help    = "Processing type [spell]", metavar = "TYPE", 
                   default = "spell", action = "store", type = "choice",
                   choices = [ 'spell', 'class_list', 'talent', 'scale', 'view', 
-                              'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 
+                              'header', 'patch', 'spec_spell_list', 'mastery_list', 'racial_list', 'perk_list',
                               'glyph_list', 'class_flags', 'set_list', 'random_property_points', 'random_suffix',
                               'item_ench', 'weapon_damage', 'item', 'item_armor', 'gem_properties', 'random_suffix_groups', 'spec_enum', 'spec_list', 'item_upgrade', 'rppm_coeff' ]), 
 parser.add_option("-l", "--level", dest = "level", 
@@ -230,7 +230,6 @@ elif options.type == 'spec_list':
     if not g.initialize():
         sys.exit(1)
     ids = g.filter()
-
     
     print g.generate(ids)
 elif options.type == 'set_list':
@@ -239,6 +238,13 @@ elif options.type == 'set_list':
         sys.exit(1)
     ids = g.filter()
     
+    print g.generate(ids)
+elif options.type == 'perk_list':
+    g = dbc.generator.PerkSpellGenerator(options)
+    if not g.initialize():
+        sys.exit(1)
+    ids = g.filter()
+
     print g.generate(ids)
 elif options.type == 'header':
     dbcs = [ ]

@@ -357,7 +357,6 @@ class SpecializationListGenerator(DataGenerator):
         
         return s
 
-
 class BaseScalingDataGenerator(DataGenerator):
     def __init__(self, options, scaling_data):
         if isinstance(scaling_data, str):
@@ -2584,6 +2583,83 @@ class SpecializationSpellGenerator(DataGenerator):
                 s += '    {\n'
                 for ability in sorted(keys[cls][tree], key = lambda i: i[0]):
                     s += '      %6u, // %s\n' % ( ability[1], ability[0] )
+
+                if len(keys[cls][tree]) < max_ids:
+                    s += '      %6u,\n' % 0
+
+                s += '    },\n'
+            s += '  },\n'
+        s += '};\n'
+
+        return s
+
+class PerkSpellGenerator(DataGenerator):
+    def __init__(self, options):
+        self._dbc = [ 'ChrSpecialization', 'MinorTalent', 'Spell' ]
+        
+        DataGenerator.__init__(self, options)
+    
+    def generate(self, ids = None):
+        max_ids = 0
+        keys = [ 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ], 
+            [ [], [], [], [] ] 
+        ]
+
+        spec_map = { }
+        
+        for ssid, data in self._chrspecialization_db.iteritems():
+            spec_map[ssid] = (data.class_id, data.spec_id, data.name)
+
+        for mtid, data in self._minortalent_db.iteritems():
+            spec = data.id_spec
+
+            pos_data = spec_map[spec]
+            spell = self._spell_db[data.id_spell]
+
+            keys[pos_data[0]][pos_data[1]].append((data.index, data.id_spell, pos_data[2], spell.name))
+
+        # Figure out tree with most abilities
+        for cls in xrange(0, len(keys)):
+            for tree in xrange(0, len(keys[cls])):
+                if len(keys[cls][tree]) > max_ids:
+                    max_ids = len(keys[cls][tree])
+
+        data_str = "%sperk%s" % (
+            self._options.prefix and ('%s_' % self._options.prefix) or '',
+            self._options.suffix and ('_%s' % self._options.suffix) or '',
+        )
+
+        s = '#define %s_SIZE (%d)\n\n' % (
+            data_str.upper(),
+            max_ids
+        )
+
+        s += '// Perk specialization abilities, wow build %d\n' % self._options.build 
+        s += 'static unsigned __%s_data[][MAX_SPECS_PER_CLASS][%s_SIZE] = {\n' % (
+            data_str,
+            data_str.upper(),
+        )
+
+        for cls in xrange(0, len(keys)):
+            s += '  {\n'
+
+            for tree in xrange(0, len(keys[cls])):
+                if len(keys[cls][tree]) > 0:
+                    s += '    // %s\n' % keys[cls][tree][0][2]
+                s += '    {\n'
+                for ability in sorted(keys[cls][tree], key = lambda i: i[0]):
+                    s += '      %6u, // %d: %s\n' % ( ability[1], ability[0], ability[3] )
 
                 if len(keys[cls][tree]) < max_ids:
                     s += '      %6u,\n' % 0
