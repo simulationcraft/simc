@@ -1861,7 +1861,7 @@ void player_t::override_talent( std::string override_str )
 
   util::tokenize( override_str );
 
-  unsigned spell_id = dbc.talent_ability_id( type, override_str.c_str(), true );
+  unsigned spell_id = dbc.talent_ability_id( type, specialization(), override_str.c_str(), true );
 
   if ( ! spell_id || dbc.spell( spell_id ) ->id() != spell_id )
   {
@@ -1873,7 +1873,7 @@ void player_t::override_talent( std::string override_str )
   {
     for ( int i = 0; i < MAX_TALENT_COLS; i++ )
     {
-      talent_data_t* td = talent_data_t::find( type, j, i, dbc.ptr );
+      talent_data_t* td = talent_data_t::find( type, j, i, SPEC_NONE, dbc.ptr );
       if ( td && ( td -> spell_id() == spell_id ) )
       {
         if ( level < ( j + 1 ) * 15 )
@@ -6833,7 +6833,7 @@ void player_t::replace_spells()
     {
       if ( talent_points.has_row_col( j, i ) && ( level >= ( ( j + 1 ) * 15 ) ) )
       {
-        talent_data_t* td = talent_data_t::find( type, j, i, dbc.ptr );
+        talent_data_t* td = talent_data_t::find( type, j, i, SPEC_NONE, dbc.ptr );
         if ( td && td -> replace_id() )
         {
           dbc.replace_id( td -> replace_id(), td -> spell_id() );
@@ -6894,11 +6894,16 @@ void player_t::replace_spells()
 
 const spell_data_t* player_t::find_talent_spell( const std::string& n,
                                                  const std::string& token,
+                                                 specialization_e s,
                                                  bool name_tokenized,
                                                  bool check_validity ) const
 {
+  if ( s == SPEC_NONE ) {
+    s = specialization();
+  }
+
   // Get a talent's spell id for a given talent name
-  unsigned spell_id = dbc.talent_ability_id( type, n.c_str(), name_tokenized );
+  unsigned spell_id = dbc.talent_ability_id( type, s, n.c_str(), name_tokenized );
 
   if ( ! spell_id && token.empty() )
     spell_id = dbc::get_token_id( n );
@@ -6914,7 +6919,7 @@ const spell_data_t* player_t::find_talent_spell( const std::string& n,
   {
     for ( int i = 0; i < MAX_TALENT_COLS; i++ )
     {
-      talent_data_t* td = talent_data_t::find( type, j, i, dbc.ptr );
+      talent_data_t* td = talent_data_t::find( type, j, i, s, dbc.ptr );
       // Loop through all our classes talents, and check if their spell's id match the one we maped to the given talent name
       if ( td && ( td -> spell_id() == spell_id ) )
       {
@@ -7770,7 +7775,7 @@ expr_t* player_t::create_expression( action_t* a,
     }
     else
     {
-      s = const_cast< spell_data_t* >( find_talent_spell( splits[ 1 ], std::string(), true ) );
+      s = const_cast< spell_data_t* >( find_talent_spell( splits[ 1 ], std::string(), SPEC_NONE, true ) );
     }
 
     return new s_expr_t( name_str, *this, s );

@@ -214,7 +214,7 @@ action_priority_t* action_priority_list_t::add_talent( const player_t* p,
                                                        const std::string& action_options,
                                                        const std::string& comment )
 {
-  const spell_data_t* s = p -> find_talent_spell( name, "", false, false );
+  const spell_data_t* s = p -> find_talent_spell( name, "", SPEC_NONE, false, false );
   std::string talent_check_str = "talent." + dbc::get_token( s -> id() ) + ".enabled";
   bool found_if = false;
   bool found_talent_check = false;
