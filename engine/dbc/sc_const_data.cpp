@@ -1551,7 +1551,7 @@ double dbc_t::enemy_armor_mitigation( unsigned level ) const
 #if SC_USE_PTR
   return ptr ? __ptr___gt_armor_mitigation_by_lvl[ level - 1 ] : __gt_armor_mitigation_by_lvl[ level - 1 ];
 #else
-  return ____gt_armor_mitigation_by_lvl[ level - 1 ];
+  return __gt_armor_mitigation_by_lvl[ level - 1 ];
 #endif
 }
 
