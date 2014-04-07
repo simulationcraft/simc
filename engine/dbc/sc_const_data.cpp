@@ -994,24 +994,40 @@ bool dbc_t::replace_id( uint32_t id_spell, uint32_t replaced_by_id )
   return false;
 }
 
-double dbc_t::melee_crit_base( player_e, unsigned ) const
+double dbc_t::melee_crit_base( player_e t, unsigned level ) const
 {
-  return 0.05;
+  uint32_t class_id = util::class_id( t );
+
+  assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_LEVEL );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_chance_to_melee_crit_base[ class_id ][ level - 1 ]
+    : __gt_chance_to_melee_crit_base[ class_id ][ level - 1 ];
+#else
+  return __gt_chance_to_melee_crit_base[ class_id ][ level - 1 ];
+#endif
 }
 
-double dbc_t::melee_crit_base( pet_e, unsigned ) const
+double dbc_t::melee_crit_base( pet_e t, unsigned level ) const
 {
-  return 0.05;
+  return melee_crit_base( util::pet_class_type( t ), level );
 }
 
-double dbc_t::spell_crit_base( player_e, unsigned ) const
+double dbc_t::spell_crit_base( player_e t, unsigned level ) const
 {
-  return 0.05;
-}
+  uint32_t class_id = util::class_id( t );
 
-double dbc_t::spell_crit_base( pet_e, unsigned ) const
+  assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_LEVEL );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_chance_to_spell_crit_base[ class_id ][ level - 1 ]
+             : __gt_chance_to_spell_crit_base[ class_id ][ level - 1 ];
+#else
+  return __gt_chance_to_spell_crit_base[ class_id ][ level - 1 ];
+#endif
+}
+ 
+double dbc_t::spell_crit_base( pet_e t, unsigned level ) const
 {
-  return 0.05;
+  return spell_crit_base( util::pet_class_type( t ), level );
 }
 
 double dbc_t::dodge_base( player_e ) const
@@ -1056,24 +1072,40 @@ double dbc_t::spell_scaling( player_e t, unsigned level ) const
 #endif
 }
 
-double dbc_t::melee_crit_scaling( player_e, unsigned ) const
+double dbc_t::melee_crit_scaling( player_e t, unsigned level ) const
 {
-  return 0.0;
-}
+  uint32_t class_id = util::class_id( t );
 
-double dbc_t::melee_crit_scaling( pet_e, unsigned ) const
-{
-  return 0.0;
+  assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_LEVEL );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_chance_to_melee_crit[ class_id ][ level - 1 ]
+             : __gt_chance_to_melee_crit[ class_id ][ level - 1 ];
+#else
+  return __gt_chance_to_melee_crit[ class_id ][ level - 1 ];
+#endif
 }
-
-double dbc_t::spell_crit_scaling( player_e, unsigned ) const
+ 
+double dbc_t::melee_crit_scaling( pet_e t, unsigned level ) const
 {
-  return 0.0;
+  return melee_crit_scaling( util::pet_class_type( t ), level );
 }
-
-double dbc_t::spell_crit_scaling( pet_e, unsigned ) const
+ 
+double dbc_t::spell_crit_scaling( player_e t, unsigned level ) const
 {
-  return 0.0;
+  uint32_t class_id = util::class_id( t );
+
+  assert( class_id < dbc_t::class_max_size() && level > 0 && level <= MAX_LEVEL );
+#if SC_USE_PTR
+  return ptr ? __ptr_gt_chance_to_spell_crit[ class_id ][ level - 1 ]
+             : __gt_chance_to_spell_crit[ class_id ][ level - 1 ];
+#else
+  return __gt_chance_to_spell_crit[ class_id ][ level - 1 ];
+#endif
+}
+ 
+double dbc_t::spell_crit_scaling( pet_e t, unsigned level ) const
+{
+  return spell_crit_scaling( util::pet_class_type( t ), level );
 }
 
 double dbc_t::regen_base( player_e t, unsigned level ) const
@@ -1094,10 +1126,8 @@ double dbc_t::regen_base( pet_e t, unsigned level ) const
   return regen_base( util::pet_class_type( t ), level );
 }
 
-// Base health is gone in WoD?
-double dbc_t::health_base( player_e, unsigned ) const
+double dbc_t::health_base( player_e t, unsigned level ) const
 {
-  /*
   uint32_t class_id = util::class_id( t );
 
   assert( class_id < MAX_CLASS && level > 0 && level <= MAX_LEVEL );
@@ -1107,8 +1137,6 @@ double dbc_t::health_base( player_e, unsigned ) const
 #else
   return __gt_octbase_hpby_class[ class_id ][ level - 1 ];
 #endif
-  */
-  return 0.0;
 }
 
 double dbc_t::resource_base( player_e t, unsigned level ) const
@@ -1456,10 +1484,9 @@ const item_scale_data_t& dbc_t::item_damage_ranged( unsigned ilevel ) const
 {
 #if SC_USE_PTR
   assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
-  // TODO-WOD: ItemDamageRanged == ItemDamageTwoHand in MoP, WOD seems to have lost one or the other DBC
-  return ptr ? __ptr_itemdamagetwohand_data[ ilevel - 1 ] : __itemdamagetwohand_data[ ilevel - 1 ];
+  return ptr ? __ptr_itemdamageranged_data[ ilevel - 1 ] : __itemdamageranged_data[ ilevel - 1 ];
 #else
-  return __itemdamagetwohand_data[ ilevel - 1 ];
+  return __itemdamageranged_data[ ilevel - 1 ];
 #endif
 }
 
@@ -1467,11 +1494,10 @@ const item_scale_data_t& dbc_t::item_damage_thrown( unsigned ilevel ) const
 {
 #if SC_USE_PTR
   assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
-  // TODO-WOD: ItemDamageThrown == ItemDamageTwoHand in MoP, WOD seems to have lost one or the other DBC
-  return ptr ? __ptr_itemdamagetwohand_data[ ilevel - 1 ] : __itemdamagetwohand_data[ ilevel - 1 ];
+  return ptr ? __ptr_itemdamagethrown_data[ ilevel - 1 ] : __itemdamagethrown_data[ ilevel - 1 ];
 #else
   assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
-  return __itemdamagetwohand_data[ ilevel - 1 ];
+  return __itemdamagethrown_data[ ilevel - 1 ];
 #endif
 }
 
@@ -1479,11 +1505,10 @@ const item_scale_data_t& dbc_t::item_damage_wand( unsigned ilevel ) const
 {
 #if SC_USE_PTR
   assert( ilevel > 0 && ( ( ptr && ilevel <= PTR_RAND_PROP_POINTS_SIZE ) || ( ilevel <= RAND_PROP_POINTS_SIZE ) ) );
-  // TODO-WOD: ItemDamageWand == ItemDamageOneHandCaster in MoP, WOD seems to have lost one or the other DBC
-  return ptr ? __ptr_itemdamageonehandcaster_data[ ilevel - 1 ] : __itemdamageonehandcaster_data[ ilevel - 1 ];
+  return ptr ? __ptr_itemdamagewand_data[ ilevel - 1 ] : __itemdamagewand_data[ ilevel - 1 ];
 #else
   assert( ilevel > 0 && ( ilevel <= RAND_PROP_POINTS_SIZE ) );
-  return __itemdamageonehandcaster_data[ ilevel - 1 ];
+  return __itemdamagewand_data[ ilevel - 1 ];
 #endif
 }
 

@@ -100,7 +100,7 @@ _DBC_FIELDS = {
     'ItemSetSpell.dbc': [
         'id', 'id_item_set', 'id_spell', 'n_req_items', 'unk_wod_1'
     ],
-    'ItemSpell.db2': [
+    'ItemEffect.db2': [
         'id', 'id_item', 'index', 'id_spell', 'trigger_type', ( 'cooldown_category', '%d' ), ( 'category_cooldown', '%d' ), ( 'cooldown_group', '%d' ), ( 'cooldown', '%d' )
     ],
     'ArmorLocation.dbc': [

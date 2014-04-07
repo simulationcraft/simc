@@ -740,7 +740,7 @@ class ItemDataGenerator(DataGenerator):
     }
 
     def __init__(self, options):
-        self._dbc = [ 'Item-sparse', 'Item', 'ItemSpell', 'SpellEffect', 'Spell', 'JournalEncounterItem', 'ItemNameDescription' ]
+        self._dbc = [ 'Item-sparse', 'Item', 'ItemEffect', 'SpellEffect', 'Spell', 'JournalEncounterItem', 'ItemNameDescription' ]
 
         DataGenerator.__init__(self, options)
 
@@ -763,8 +763,8 @@ class ItemDataGenerator(DataGenerator):
             if self._item_sparse_db[journal_item_data.id_item]:
                 self._item_sparse_db[journal_item_data.id_item].journal = journal_item_data
 
-        # For WoD, map ItemSpell to Item-sparse
-        for is_id,data in self._itemspell_db.iteritems():
+        # For WoD, map ItemEffect to Item-sparse
+        for is_id,data in self._itemeffect_db.iteritems():
             item = self._item_sparse_db[data.id_item]
             if not item.id:
                 continue
@@ -1542,7 +1542,7 @@ class SpellDataGenerator(DataGenerator):
             'SkillLineAbility', 'SpellAuraOptions', 'SpellRuneCost', 'SpellRadius', 'GlyphProperties',
             'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables', 'SpellItemEnchantment', 'Item-sparse',
             'Item', 'SpellEquippedItems', 'SpellIcon', 'SpecializationSpells', 'ChrSpecialization', 'SpellEffectScaling',
-            'SpellMisc', 'SpellProcsPerMinute', 'ItemSetSpell', 'ItemSpell' ]
+            'SpellMisc', 'SpellProcsPerMinute', 'ItemSetSpell', 'ItemEffect' ]
 
     def initialize(self):
         DataGenerator.initialize(self)
@@ -1599,8 +1599,8 @@ class SpellDataGenerator(DataGenerator):
             
             item_set.bonus.append(data)
 
-        # For WoD, map ItemSpell to Item-sparse
-        for is_id,data in self._itemspell_db.iteritems():
+        # For WoD, map ItemEffect to Item-sparse
+        for is_id,data in self._itemeffect_db.iteritems():
             item = self._item_sparse_db[data.id_item]
             if not item.id:
                 continue
@@ -3378,6 +3378,7 @@ class RandomPropertyPointsGenerator(DataGenerator):
 class WeaponDamageDataGenerator(DataGenerator):
     def __init__(self, options):
         self._dbc = [ 'ItemDamageOneHand', 'ItemDamageOneHandCaster',
+                      'ItemDamageRanged',  'ItemDamageThrown',        'ItemDamageWand',
                       'ItemDamageTwoHand', 'ItemDamageTwoHandCaster',  ]
 
         DataGenerator.__init__(self, options)
