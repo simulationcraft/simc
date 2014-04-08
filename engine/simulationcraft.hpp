@@ -1293,7 +1293,7 @@ std::ostream& stream_printf( std::ostream&, const char* format, ... );
 
 // Data Access ==============================================================
 #ifndef MAX_LEVEL
-#define MAX_LEVEL (90)
+#define MAX_LEVEL (100)
 #endif
 
 // Include DBC Module
