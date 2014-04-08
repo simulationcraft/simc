@@ -134,8 +134,8 @@ public:
     buff_t* natures_swiftness;
     buff_t* natures_vigil;
     buff_t* omen_of_clarity;
+    buff_t* prowl;
     buff_t* stampeding_shout;
-    buff_t* stealthed;
 
     // Balance
     buff_t* astral_insight;
@@ -357,8 +357,6 @@ public:
     t16_2pc_starfall_bolt( nullptr ),
     t16_2pc_sun_bolt( nullptr ),
     active( active_actions_t() ),
-    pet_feral_spirit(),
-    pet_mirror_images(),
     pet_force_of_nature(),
     caster_form_weapon(),
     buff( buffs_t() ),
@@ -1772,7 +1770,7 @@ public:
       trigger_energy_refund();
     }
 
-    if ( harmful ) p() -> buff.stealthed -> expire();
+    if ( harmful ) p() -> buff.prowl -> expire();
   }
 
   virtual void impact( action_state_t* s )
@@ -1825,7 +1823,7 @@ public:
       return false;
 
     if ( requires_stealth() )
-      if ( ! p() -> buff.stealthed -> check() )
+      if ( ! p() -> buff.prowl -> check() )
         return false;
 
     if ( requires_combo_points && ! td( target ) -> combo_points.get() )
@@ -4796,12 +4794,12 @@ struct starsurge_t : public druid_spell_t
 
 };
 
-// Stealth ==================================================================
+// Prowl ==================================================================
 
-struct stealth_t : public druid_spell_t
+struct prowl_t : public druid_spell_t
 {
-  stealth_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "stealth", player, player -> find_class_spell( "Prowl" )  )
+  prowl_t( druid_t* player, const std::string& options_str ) :
+    druid_spell_t( player, player -> find_class_spell( "Prowl" )  )
   {
     parse_options( NULL, options_str );
 
@@ -4814,12 +4812,12 @@ struct stealth_t : public druid_spell_t
     if ( sim -> log )
       sim -> out_log.printf( "%s performs %s", player -> name(), name() );
 
-    p() -> buff.stealthed -> trigger();
+    p() -> buff.prowl -> trigger();
   }
 
   virtual bool ready()
   {
-    if ( p() -> buff.stealthed -> check() )
+    if ( p() -> buff.prowl -> check() )
       return false;
 
     return druid_spell_t::ready();
@@ -5275,7 +5273,7 @@ action_t* druid_t::create_action( const std::string& name,
   if ( name == "starfire"               ) return new               starfire_t( this, options_str );
   if ( name == "starfall"               ) return new               starfall_t( this, options_str );
   if ( name == "starsurge"              ) return new              starsurge_t( this, options_str );
-  if ( name == "stealth"                ) return new                stealth_t( this, options_str );
+  if ( name == "prowl"                  ) return new                  prowl_t( this, options_str );
   if ( name == "sunfire"                ) return new                sunfire_t( this, options_str );
   if ( name == "survival_instincts"     ) return new     survival_instincts_t( this, options_str );
   if ( name == "swipe"                  ) return new                  swipe_t( this, options_str );
@@ -5527,7 +5525,7 @@ void druid_t::create_buffs()
                                .chance( spec.omen_of_clarity -> ok() ? find_spell( 113043 ) -> proc_chance() : 0.0 );
   buff.soul_of_the_forest    = buff_creator_t( this, "soul_of_the_forest", talent.soul_of_the_forest -> ok() ? find_spell( 114108 ) : spell_data_t::not_found() )
                                .default_value( find_spell( 114108 ) -> effectN( 1 ).percent() );
-  buff.stealthed             = buff_creator_t( this, "stealthed", find_class_spell( "Prowl" ) );
+  buff.prowl             = buff_creator_t( this, "prowl", find_class_spell( "Prowl" ) );
   buff.wild_mushroom         = buff_creator_t( this, "wild_mushroom", find_class_spell( "Wild Mushroom" ) )
                                .max_stack( ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
                                            ? find_class_spell( "Wild Mushroom" ) -> effectN( 2 ).base_value()
@@ -5689,7 +5687,7 @@ void druid_t::apl_precombat()
     precombat -> add_action( this, "Cat Form" );
     if ( glyph.savagery -> ok() )
       precombat -> add_action( this, "Savage Roar" );
-    precombat -> add_action( "stealth" );
+    precombat -> add_action( "prowl" );
   }
   else if ( primary_role() == ROLE_TANK )
   {
@@ -5893,7 +5891,7 @@ void druid_t::apl_feral()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     advanced -> add_action( racial_actions[ i ] );
 
-  advanced -> add_action( this, "Ravage", "if=buff.stealthed.up" );
+  advanced -> add_action( this, "Ravage", "if=buff.prowl.up" );
   advanced -> add_action( this, "Ferocious Bite", "if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25",
                           "Keep Rip from falling off during execute range." );
   advanced -> add_action( this, "Faerie Fire", "if=debuff.weakened_armor.stack<3" );
