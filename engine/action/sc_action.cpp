@@ -304,8 +304,8 @@ action_t::action_t( action_e       ty,
   trigger_gcd( player -> base_gcd ),
   range(),
   weapon_power_mod(),
-  direct_power_mod(),
-  tick_power_mod(),
+  attack_power_mod(),
+  spell_power_mod(),
   base_execute_time( timespan_t::zero() ),
   base_tick_time( timespan_t::zero() ),
   time_to_execute( timespan_t::zero() ),
@@ -331,8 +331,6 @@ action_t::action_t( action_e       ty,
   rp_gain                        = 0.0;
   base_spell_power               = 0.0;
   base_attack_power              = 0.0;
-  base_spell_power_multiplier    = 0.0;
-  base_attack_power_multiplier   = 0.0;
   crit_multiplier                = 1.0;
   crit_bonus_multiplier          = 1.0;
   base_dd_adder                  = 0.0;
@@ -508,9 +506,8 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
     case E_HEAL:
     case E_SCHOOL_DAMAGE:
     case E_HEALTH_LEECH:
-      direct_power_mod = spelleffect_data.coeff();
-      if ( direct_power_mod == 0 )
-        direct_power_mod = spelleffect_data.ap_coeff();
+      spell_power_mod.direct = spelleffect_data.coeff();
+      attack_power_mod.direct = spelleffect_data.ap_coeff(); // change to ap_coeff
       base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
       base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
       break;
@@ -536,9 +533,8 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
         case A_PERIODIC_DAMAGE:
         case A_PERIODIC_LEECH:
         case A_PERIODIC_HEAL:
-          tick_power_mod   = spelleffect_data.coeff();
-          if ( tick_power_mod == 0 )
-            tick_power_mod = spelleffect_data.ap_coeff();
+          spell_power_mod.tick = spelleffect_data.coeff();
+          attack_power_mod.tick = spelleffect_data.ap_coeff(); // change to ap_coeff
           base_td          = player -> dbc.effect_average( spelleffect_data.id(), player -> level );
         case A_PERIODIC_ENERGIZE:
         case A_PERIODIC_TRIGGER_SPELL_WITH_VALUE:
@@ -554,9 +550,8 @@ void action_t::parse_effect_data( const spelleffect_data_t& spelleffect_data )
           }
           break;
         case A_SCHOOL_ABSORB:
-          direct_power_mod = spelleffect_data.coeff();
-          if ( direct_power_mod == 0 )
-            direct_power_mod = spelleffect_data.ap_coeff();
+          spell_power_mod.direct = spelleffect_data.coeff();
+          attack_power_mod.direct = spelleffect_data.ap_coeff(); // change to ap_coeff
           base_dd_min      = player -> dbc.effect_min( spelleffect_data.id(), player -> level );
           base_dd_max      = player -> dbc.effect_max( spelleffect_data.id(), player -> level );
           break;
@@ -784,9 +779,12 @@ double action_t::calculate_tick_amount( action_state_t* state )
 {
   double amount = 0;
 
-  if ( base_ta( state ) == 0 && tick_power_coefficient( state ) == 0 ) return 0;
+  if ( base_ta( state ) == 0 && spell_tick_power_coefficient( state ) == 0 && attack_tick_power_coefficient( state ) == 0) return 0;
 
-  amount  = floor( base_ta( state ) + 0.5 ) + bonus_ta( state ) + state -> composite_power() * tick_power_coefficient( state );
+  amount  = floor( base_ta( state ) + 0.5 );
+  amount += bonus_ta( state );
+  amount += state -> composite_spell_power() * spell_tick_power_coefficient( state );
+  amount += state -> composite_attack_power() * attack_tick_power_coefficient( state );
   amount *= state -> composite_ta_multiplier();
 
   double init_tick_amount = amount;
@@ -809,10 +807,11 @@ double action_t::calculate_tick_amount( action_state_t* state )
 
   if ( sim -> debug )
   {
-    sim -> out_debug.printf( "%s amount for %s on %s: ta=%.0f i_ta=%.0f b_ta=%.0f bonus_ta=%.0f mod=%.2f power=%.0f mult=%.2f",
+    sim -> out_debug.printf( "%s amount for %s on %s: ta=%.0f i_ta=%.0f b_ta=%.0f bonus_ta=%.0f s_mod=%.2f s_power=%.0f a_mod=%.2f a_power=%.0f mult=%.2f",
                    player -> name(), name(), target -> name(), amount,
                    init_tick_amount, base_ta( state ), bonus_ta( state ),
-                   tick_power_coefficient( state ), state -> composite_power(),
+                   spell_tick_power_coefficient( state ), state -> composite_spell_power(),
+                   attack_tick_power_coefficient( state ), state -> composite_attack_power(),
                    state -> composite_ta_multiplier() );
   }
 
@@ -827,7 +826,7 @@ double action_t::calculate_direct_amount( action_state_t* state )
 
   if ( round_base_dmg ) amount = floor( amount + 0.5 );
 
-  if ( amount == 0 && weapon_multiplier == 0 && direct_power_coefficient( state ) == 0 ) return 0;
+  if ( amount == 0 && weapon_multiplier == 0 && attack_direct_power_coefficient( state ) == 0 && spell_direct_power_coefficient( state ) == 0 ) return 0;
 
   double base_direct_amount = amount;
   double weapon_amount = 0;
@@ -842,7 +841,8 @@ double action_t::calculate_direct_amount( action_state_t* state )
     amount *= weapon_multiplier;
     weapon_amount = amount;
   }
-  amount += direct_power_coefficient( state ) * ( state -> composite_power() );
+  amount += spell_direct_power_coefficient( state ) * ( state -> composite_spell_power() );
+  amount += attack_direct_power_coefficient( state ) * ( state -> composite_attack_power() );
   amount *= state -> composite_da_multiplier();
 
   // AoE with decay per target
@@ -911,9 +911,11 @@ double action_t::calculate_direct_amount( action_state_t* state )
 
   if ( sim -> debug )
   {
-    sim -> out_debug.printf( "%s amount for %s: dd=%.0f i_dd=%.0f w_dd=%.0f b_dd=%.0f mod=%.2f power=%.0f mult=%.2f w_mult=%.2f",
-                   player -> name(), name(), amount, state -> result_raw, weapon_amount, base_direct_amount, direct_power_coefficient( state ),
-                   state -> composite_power(), state -> composite_da_multiplier(), weapon_multiplier );
+    sim -> out_debug.printf( "%s amount for %s: dd=%.0f i_dd=%.0f w_dd=%.0f b_dd=%.0f s_mod=%.2f s_power=%.0f a_mod=%.2f a_power=%.0f mult=%.2f w_mult=%.2f",
+                   player -> name(), name(), amount, state -> result_raw, weapon_amount, base_direct_amount,
+                   spell_direct_power_coefficient( state ), state -> composite_spell_power(),
+                   attack_direct_power_coefficient( state ), state -> composite_attack_power(),
+                   state -> composite_da_multiplier(), weapon_multiplier );
   }
 
   // Record total amount to state
@@ -1727,10 +1729,10 @@ void action_t::init()
   if ( ( base_dd_min > 0 && base_dd_max > 0 ) || weapon_multiplier > 0 )
     snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
 
-  if ( base_spell_power_multiplier > 0 && ( direct_power_mod > 0 || tick_power_mod > 0 ) )
+  if ( ( spell_power_mod.direct > 0 || spell_power_mod.tick > 0 ) )
     snapshot_flags |= STATE_SP;
 
-  if ( base_attack_power_multiplier > 0 && ( weapon_power_mod > 0 || direct_power_mod > 0 || tick_power_mod > 0 ) )
+  if ( ( weapon_power_mod > 0 || attack_power_mod.direct > 0 || attack_power_mod.tick > 0 ) )
     snapshot_flags |= STATE_AP;
 
   if ( num_ticks > 0 && ( hasted_ticks || channeled ) )

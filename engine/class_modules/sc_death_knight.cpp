@@ -897,8 +897,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       spell_t( n, p, s )
     {
       background                   = true;
-      base_spell_power_multiplier  = 0;
-      base_attack_power_multiplier = 1;
     }
 
     dancing_rune_weapon_td_t* td( player_t* t = 0 )
@@ -945,7 +943,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       drw_spell_t( "blood_plague", p, p -> owner -> find_spell( 55078 ) )  // Also check spell id 55078
     {
       tick_may_crit    = true;
-      tick_power_mod   = data().extra_coeff();
       dot_behavior     = DOT_REFRESH;
       may_miss         = false;
       may_crit         = false;
@@ -966,7 +963,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       may_crit         = false;
       tick_may_crit    = true;
       dot_behavior     = DOT_REFRESH;
-      tick_power_mod   = data().extra_coeff();
     }
   };
 
@@ -977,7 +973,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
     {
       aoe              = -1;
       may_crit         = true;
-      direct_power_mod = data().extra_coeff();
     }
 
     double composite_target_multiplier( player_t* t ) const
@@ -997,7 +992,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_death_coil_t( dancing_rune_weapon_pet_t* p ) :
       drw_spell_t( "death_coil", p, p -> owner -> find_class_spell( "Death Coil" ) )
     {
-      direct_power_mod = 0.514;
+      attack_power_mod.direct = 0.514;
     }
   };
 
@@ -1006,7 +1001,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_death_siphon_t( dancing_rune_weapon_pet_t* p ) :
       drw_spell_t( "death_siphon", p, p -> owner -> find_spell( 108196 ) )
     {
-      direct_power_mod = data().extra_coeff();
     }
   };
 
@@ -1044,7 +1038,7 @@ struct dancing_rune_weapon_pet_t : public pet_t
     drw_icy_touch_t( dancing_rune_weapon_pet_t* p ) :
       drw_spell_t( "icy_touch", p, p -> owner -> find_class_spell( "Icy Touch" ) )
     {
-      direct_power_mod = 0.319;
+      attack_power_mod.direct = 0.319;
     }
 
     virtual void impact( action_state_t* s )
@@ -1144,7 +1138,6 @@ struct dancing_rune_weapon_pet_t : public pet_t
       {
         may_miss = false;
         weapon_multiplier = 0;
-        direct_power_mod = data().extra_coeff();
       }
 
       virtual void init()
@@ -2204,9 +2197,6 @@ struct death_knight_spell_t : public death_knight_action_t<spell_t>
   void _init_dk_spell()
   {
     may_crit = true;
-
-    base_spell_power_multiplier = 0;
-    base_attack_power_multiplier = 1;
   }
 
   virtual void   consume_resource();
@@ -2235,8 +2225,6 @@ struct death_knight_heal_t : public death_knight_action_t<heal_t>
                        const spell_data_t* s = spell_data_t::nil() ) :
     base_t( n, p, s )
   {
-    base_attack_power_multiplier = 1;
-    base_spell_power_multiplier = 0;
   }
 };
 
@@ -2595,7 +2583,6 @@ struct blood_boil_t : public death_knight_spell_t
       convert_runes = 1.0;
 
     aoe                = -1;
-    direct_power_mod   = data().extra_coeff();
 
     if ( p -> talent.roiling_blood -> ok() )
     {
@@ -2693,7 +2680,6 @@ struct blood_plague_t : public death_knight_spell_t
   {
     tick_may_crit    = true;
     background       = true;
-    tick_power_mod   = data().extra_coeff();
     dot_behavior     = DOT_REFRESH;
     may_miss         = false;
     may_crit         = false;
@@ -2794,7 +2780,6 @@ struct soul_reaper_dot_t : public death_knight_melee_attack_t
     special = background = may_crit = proc = true;
     may_miss = may_dodge = may_parry = may_block = false;
     weapon_multiplier = 0;
-    direct_power_mod = data().extra_coeff();
   }
 
   virtual void init()
@@ -2895,7 +2880,6 @@ struct death_siphon_t : public death_knight_spell_t
   {
     parse_options( NULL, options_str );
 
-    direct_power_mod = data().extra_coeff();
   }
 
   void impact( action_state_t* s )
@@ -3100,7 +3084,7 @@ struct death_and_decay_t : public death_knight_spell_t
     parse_options( NULL, options_str );
 
     aoe              = -1;
-    tick_power_mod   = 0.064;
+    attack_power_mod.tick   = 0.064;
     base_td          = data().effectN( 2 ).average( p );
     base_tick_time   = timespan_t::from_seconds( 1.0 );
     num_ticks        = ( int ) ( data().duration().total_seconds() / base_tick_time.total_seconds() ); // 11 with tick_zero
@@ -3165,7 +3149,7 @@ struct death_coil_t : public death_knight_spell_t
   {
     parse_options( NULL, options_str );
 
-    direct_power_mod = 0.514;
+    attack_power_mod.direct = 0.514;
     base_dd_min      = data().effectN( 1 ).min( p ); // "average" value of base damage scaling from spell data is inaccurate
     base_dd_max      = data().effectN( 1 ).max( p ); // it is overridden to 0.745 in sc_const_data.cpp apply_hotfixes()
 
@@ -3420,7 +3404,6 @@ struct frost_fever_t : public death_knight_spell_t
     background       = true;
     tick_may_crit    = true;
     dot_behavior     = DOT_REFRESH;
-    tick_power_mod   = data().extra_coeff();
     base_multiplier += p -> spec.ebon_plaguebringer -> effectN( 2 ).percent();
     if ( p -> glyph.enduring_infection -> ok() )
       base_multiplier += p -> find_spell( 58671 ) -> effectN( 1 ).percent();
@@ -3618,7 +3601,7 @@ struct howling_blast_t : public death_knight_spell_t
 
     aoe                 = -1;
     base_aoe_multiplier = data().effectN( 3 ).percent();
-    direct_power_mod    = 0.8480; // tested on PTR, was a 14.9% buff, not a 15% buff
+    attack_power_mod.direct    = 0.8480; // tested on PTR, was a 14.9% buff, not a 15% buff
 
     assert( p -> active_spells.frost_fever );
   }
@@ -3680,7 +3663,7 @@ struct icy_touch_t : public death_knight_spell_t
   {
     parse_options( NULL, options_str );
 
-    direct_power_mod = 0.319;
+    attack_power_mod.direct = 0.319;
 
     if ( p -> spec.reaping -> ok() )
       convert_runes = 1.0;
@@ -5187,7 +5170,6 @@ void death_knight_t::init_spells()
       frozen_power_t( death_knight_t* p ) :
         melee_attack_t( "frozen_power", p, p -> spell.t16_4pc_melee -> effectN( 1 ).trigger() )
       {
-        direct_power_mod = data().extra_coeff();
         special = background = callbacks = proc = may_crit = true;
         if ( p -> main_hand_weapon.group() != WEAPON_2H )
           base_multiplier = 0.5;

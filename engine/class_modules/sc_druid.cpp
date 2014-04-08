@@ -761,7 +761,6 @@ struct symbiosis_feral_spirit_t : public pet_t
     {
       may_crit  = true;
       special   = true;
-      direct_power_mod = data().extra_coeff();
       cooldown -> duration = timespan_t::from_seconds( 7.0 );
 
     }
@@ -955,9 +954,7 @@ struct force_of_nature_feral_t : public pet_t
       dot_behavior     = DOT_REFRESH;
       special          = true;
       may_crit         = true;
-      direct_power_mod = data().extra_coeff();
       tick_may_crit    = true;
-      tick_power_mod   = data().extra_coeff();
       owner            = p -> o();
     }
 
@@ -1180,7 +1177,7 @@ struct barkskin_t : public druid_buff_t < buff_t >
     frenzied_regeneration_2pc_t( druid_t* p ) :
       heal_t( "frenzied_regeneration", p, p -> find_class_spell( "Frenzied Regeneration" ) )
     {
-      base_dd_min = base_dd_max = direct_power_mod = 0.0;
+      base_dd_min = base_dd_max = attack_power_mod.direct = spell_power_mod.direct = 0.0;
 
       harmful    = false;
       special    = false;
@@ -2413,7 +2410,6 @@ struct pounce_bleed_t : public cat_attack_t
     cat_attack_t( player, player -> find_spell( 9007 ) )
   {
     background     = true;
-    tick_power_mod = data().extra_coeff();
     special        = true;
   }
 };
@@ -2435,8 +2431,6 @@ struct rake_t : public cat_attack_t
     cat_attack_t( p, p -> find_class_spell( "Rake" ), options_str )
   {
     dot_behavior        = DOT_REFRESH;
-    direct_power_mod    = data().extra_coeff();
-    tick_power_mod      = data().extra_coeff();
     special             = true;
   }
 
@@ -2817,8 +2811,8 @@ struct thrash_cat_t : public cat_attack_t
     cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
   {
     aoe               = -1;
-    direct_power_mod  = data().effectN( 3 ).base_value() / 1000.0;
-    tick_power_mod    = data().effectN( 4 ).base_value() / 1000.0;
+    attack_power_mod.direct  = data().effectN( 3 ).base_value() / 1000.0;
+    attack_power_mod.tick    = data().effectN( 4 ).base_value() / 1000.0;
 
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -3024,8 +3018,8 @@ struct lacerate_t : public bear_attack_t
   lacerate_t( druid_t* p, const std::string& options_str ) :
     bear_attack_t( p, p -> find_class_spell( "Lacerate" ), options_str )
   {
-    direct_power_mod     = 0.616;
-    tick_power_mod       = 0.0512;
+    attack_power_mod.direct     = 0.616;
+    attack_power_mod.tick       = 0.0512;
     dot_behavior         = DOT_REFRESH;
     special              = true;
   }
@@ -3235,7 +3229,6 @@ struct swipe_bear_t : public bear_attack_t
     bear_attack_t( player, player -> find_class_spell( "Swipe" ) -> ok() ? player -> find_spell( 779 ) : spell_data_t::not_found(), options_str )
   {
     aoe               = -1;
-    direct_power_mod  = data().extra_coeff();
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
     special           = true;
@@ -3276,8 +3269,8 @@ struct thrash_bear_t : public bear_attack_t
     bear_attack_t( "thrash_bear", player, player -> find_spell( 77758 ), options_str )
   {
     aoe               = -1;
-    direct_power_mod  = data().effectN( 3 ).base_value() / 1000.0;
-    tick_power_mod    = data().effectN( 4 ).base_value() / 1000.0;
+    attack_power_mod.direct  = data().effectN( 3 ).base_value() / 1000.0;
+    attack_power_mod.tick    = data().effectN( 4 ).base_value() / 1000.0;
 
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -3639,7 +3632,7 @@ struct frenzied_regeneration_t : public druid_heal_t
     druid_heal_t( p, p -> find_class_spell( "Frenzied Regeneration" ), options_str ),
     maximum_rage_cost( 0.0 )
   {
-    base_dd_min = base_dd_max = direct_power_mod = 0.0;
+    base_dd_min = base_dd_max = attack_power_mod.direct = spell_power_mod.direct = 0.0;
 
     harmful = false;
     special = false;
@@ -3826,10 +3819,10 @@ struct lifebloom_bloom_t : public druid_heal_t
     dual             = true;
     num_ticks        = 0;
     base_td          = 0;
-    tick_power_mod   = 0;
+    attack_power_mod.tick   = 0;
     base_dd_min      = data().effectN( 2 ).min( p );
     base_dd_max      = data().effectN( 2 ).max( p );
-    direct_power_mod = data().effectN( 2 ).coeff();
+    attack_power_mod.direct = data().effectN( 2 ).coeff();
   }
 
   virtual double composite_target_multiplier( player_t* target ) const
@@ -4673,9 +4666,6 @@ struct faerie_fire_t : public druid_spell_t
     druid_spell_t( player, player -> find_class_spell( "Faerie Fire" ) )
   {
     parse_options( NULL, options_str );
-    base_attack_power_multiplier = 1.0;
-    base_spell_power_multiplier = 0.0;
-    direct_power_mod = data().extra_coeff();
     cooldown -> duration = timespan_t::from_seconds( 6.0 );
   }
 
@@ -5015,7 +5005,7 @@ struct moonfire_t : public druid_spell_t
       num_ticks += ( int ) (  player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value() / base_tick_time );
 
       // Does no direct damage, costs no mana
-      direct_power_mod = 0;
+      attack_power_mod.direct = 0;
       base_dd_min = base_dd_max = 0;
       range::fill( base_costs, 0 );
     }
@@ -5422,7 +5412,7 @@ struct sunfire_t : public druid_spell_t
       num_ticks += ( int ) (  player -> sets.set( SET_T14_4PC_CASTER ) -> effectN( 1 ).time_value() / base_tick_time );
 
       // Does no direct damage, costs no mana
-      direct_power_mod = 0;
+      attack_power_mod.direct = 0;
       base_dd_min = base_dd_max = 0;
       range::fill( base_costs, 0 );
     }

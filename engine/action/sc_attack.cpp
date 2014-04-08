@@ -19,7 +19,6 @@ attack_t::attack_t( const std::string&  n,
   base_attack_expertise( 0 ),
   num_results( 0 ), attack_table_sum( std::numeric_limits<double>::min() )
 {
-  base_attack_power_multiplier = 1.0;
   crit_bonus = 1.0;
 
   min_gcd = timespan_t::from_seconds( 1.0 );

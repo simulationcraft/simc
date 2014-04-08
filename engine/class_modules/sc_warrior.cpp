@@ -893,7 +893,7 @@ struct off_hand_test_attack_t : public warrior_attack_t
     weapon            = &( p -> off_hand_weapon );
     trigger_gcd       = timespan_t::zero();
     weapon_multiplier = 0.0;
-    direct_power_mod  = 0.0;
+    // direct_power_mod  = 0.0;
     proc              = false; // disable all procs for this attack
   }
 
@@ -1197,7 +1197,6 @@ struct deep_wounds_t : public warrior_attack_t
     tick_may_crit = true;
     may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = false;
 
-    tick_power_mod = data().extra_coeff();
     dot_behavior = DOT_REFRESH;
 
     // tested 7/23/2013, https://code.google.com/p/simulationcraft/issues/detail?id=1811
@@ -1205,13 +1204,13 @@ struct deep_wounds_t : public warrior_attack_t
     // protection DW ticks are 109 + 12% AP, exactly half of spell data values
     if ( p -> specialization() == WARRIOR_PROTECTION )
     {
-      tick_power_mod /= 2;
+      attack_power_mod.tick /= 2;
       base_td /= 2;
     }
     // and arms gets exactly 436 + 48% AP, exactly double
     else if ( p -> specialization() == WARRIOR_ARMS )
     {
-      tick_power_mod *= 2;
+      attack_power_mod.tick *= 2;
       base_td *= 2;
     }
   }
@@ -1306,7 +1305,6 @@ struct dragon_roar_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
     aoe = -1;
-    direct_power_mod = data().extra_coeff();
     may_miss = may_dodge = may_parry = may_block = false;
     // lets us benefit from seasoned_soldier, etc. but do not add weapon damage to it
     weapon            = &( p -> main_hand_weapon );
@@ -1357,7 +1355,6 @@ struct execute_t : public warrior_attack_t
     // Include the weapon so we benefit from seasoned soldier.
     weapon             = &( player -> main_hand_weapon );
     weapon_multiplier  = 0;
-    direct_power_mod   = data().extra_coeff();
   }
 
   virtual void impact( action_state_t* s )
@@ -1526,7 +1523,6 @@ struct heroic_leap_t : public warrior_attack_t
     const spell_data_t* dmg_spell = p -> dbc.spell( 52174 );  //data().effectN( 3 ).trigger_spell_id() does not resolve to 52174 anymore
     base_dd_min = p -> dbc.effect_min( dmg_spell -> effectN( 1 ).id(), p -> level );
     base_dd_max = p -> dbc.effect_max( dmg_spell -> effectN( 1 ).id(), p -> level );
-    direct_power_mod = dmg_spell -> extra_coeff();
 
     // Heroic Leap can trigger procs from either weapon
     proc_ignores_slot = true;
@@ -1599,7 +1595,6 @@ struct impending_victory_t : public warrior_attack_t
 
     weapon            = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
-    direct_power_mod  = data().extra_coeff();
   }
 
   virtual void execute()
@@ -1813,7 +1808,7 @@ struct raging_blow_t : public warrior_attack_t
   {
     // Parent attack is only to determine miss/dodge/parry
     base_dd_min = base_dd_max = 0;
-    weapon_multiplier = direct_power_mod = 0;
+    weapon_multiplier = attack_power_mod.direct = 0;
     may_crit = proc = false;
     weapon = &( p -> main_hand_weapon ); // Include the weapon for racial expertise
 
@@ -1879,7 +1874,7 @@ struct revenge_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    direct_power_mod = data().extra_coeff();
+    attack_power_mod.direct = data().extra_coeff();
 
     rage_gain = data().effectN( 2 ).resource( RESOURCE_RAGE );
   }
@@ -1966,8 +1961,8 @@ struct shield_slam_t : public warrior_attack_t
 
     // Assumption: player level stays constant
     // Values taken from tooltip: 2013/05/22
-    direct_power_mod = ( std::max( p -> level, 85 ) * 0.75 ) + ( std::max( p -> level, 80 ) * 0.4 ) + 0.35;
-    direct_power_mod /= 100.0; // assumption, not clear from tooltip
+    attack_power_mod.direct = ( std::max( p -> level, 85 ) * 0.75 ) + ( std::max( p -> level, 80 ) * 0.4 ) + 0.35;
+    attack_power_mod.direct /= 100.0; // assumption, not clear from tooltip
   }
 
   virtual double action_multiplier() const
@@ -2034,7 +2029,7 @@ struct shockwave_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    direct_power_mod  = data().effectN( 3 ).percent();
+    attack_power_mod.direct  = data().effectN( 3 ).percent();
     may_dodge         = false;
     may_parry         = false;
     may_block         = false;
@@ -2205,7 +2200,6 @@ struct thunder_clap_t : public warrior_attack_t
     may_dodge         = false;
     may_parry         = false;
     may_block         = false;
-    direct_power_mod  = data().extra_coeff();
     // Pass in weapon so it can be benefited by seasoned solider
     weapon            = &( p -> main_hand_weapon );
     weapon_multiplier = 0;
@@ -2292,7 +2286,6 @@ struct victory_rush_t : public warrior_attack_t
   {
     parse_options( NULL, options_str );
 
-    direct_power_mod     = data().extra_coeff();
     weapon               = &( player -> main_hand_weapon );
     cooldown -> duration = timespan_t::from_seconds( 1000.0 );
   }

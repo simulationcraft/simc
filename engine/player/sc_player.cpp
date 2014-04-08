@@ -5528,10 +5528,6 @@ struct rocket_barrage_t : public racial_spell_t
     racial_spell_t( p, "rocket_barrage", p -> find_racial_spell( "Rocket Barrage" ), options_str )
   {
     parse_options( NULL, options_str );
-
-    base_spell_power_multiplier  = direct_power_mod;
-    base_attack_power_multiplier = data().extra_coeff();
-    direct_power_mod             = 1.0;
   }
 };
 
@@ -5996,7 +5992,6 @@ struct use_item_t : public action_t
           may_crit    = ( s != SCHOOL_DRAIN ) && ( ( override_result_es_mask & RESULT_CRIT_MASK ) ? ( result_es_mask & RESULT_CRIT_MASK ) : true ); // Default true
           may_miss    = ( override_result_es_mask & RESULT_MISS_MASK ) ? ( result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
           background  = true;
-          base_spell_power_multiplier = 0;
         }
       };
 

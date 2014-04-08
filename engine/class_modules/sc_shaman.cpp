@@ -1250,9 +1250,7 @@ struct fire_elemental_t : public pet_t
       may_crit                     = true;
       background                   = true;
       repeating                    = true;
-      direct_power_mod             = 1.0;
-      base_spell_power_multiplier  = 1.0;
-      base_attack_power_multiplier = 0.0;
+      spell_power_mod.direct       = 1.0;
       school                       = SCHOOL_FIRE;
       crit_bonus_multiplier       *= 1.0 + player -> o() -> spec.elemental_fury -> effectN( 1 ).percent();
       weapon_power_mod             = 0;
@@ -2120,7 +2118,7 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     may_proc_eoe       = false;
     may_crit           = true;
     background         = true;
-    direct_power_mod   = 1.0;
+    spell_power_mod.direct   = 1.0;
     base_costs[ RESOURCE_MANA ] = 0.0;
 
     base_dd_min = w -> swing_time.total_seconds() / normalize_speed() * ( data().effectN( 2 ).average( player ) / 77.0 + data().effectN( 2 ).average( player ) / 25.0 ) / 2;
@@ -2129,13 +2127,11 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
     if ( player -> specialization() == SHAMAN_ENHANCEMENT )
     {
       snapshot_flags               = STATE_AP;
-      base_attack_power_multiplier = w -> swing_time.total_seconds() / normalize_speed() * power_coefficient();
-      base_spell_power_multiplier  = 0;
+      attack_power_mod.direct = w -> swing_time.total_seconds() / normalize_speed() * power_coefficient();
     }
     else
     {
-      base_attack_power_multiplier = 0;
-      base_spell_power_multiplier  = w -> swing_time.total_seconds() / normalize_speed() * power_coefficient();
+      spell_power_mod.direct  = w -> swing_time.total_seconds() / normalize_speed() * power_coefficient();
     }
   }
 };
@@ -3265,7 +3261,7 @@ struct earthquake_t : public shaman_spell_t
   {
     hasted_ticks = may_miss = may_crit = may_proc_eoe = false;
 
-    base_td = base_dd_min = base_dd_max = direct_power_mod = 0;
+    base_td = base_dd_min = base_dd_max = attack_power_mod.direct = spell_power_mod.direct = 0;
     harmful = true;
     num_ticks = ( int ) data().duration().total_seconds();
     base_tick_time = data().effectN( 2 ).period();
@@ -4915,7 +4911,6 @@ struct shaman_lightning_strike_t : public shaman_melee_attack_t
     may_proc_flametongue = false;
     background = true;
     may_dodge = may_parry = false;
-    direct_power_mod = data().extra_coeff();
   }
 
   // We need to override shaman_action_state_t returning here, as tick_action
@@ -4936,7 +4931,6 @@ struct shaman_flurry_of_xuen_t : public shaman_melee_attack_t
     may_proc_primal_wisdom = false;
     may_proc_flametongue = false;
     background = true;
-    direct_power_mod = data().extra_coeff();
     aoe = 5;
   }
 

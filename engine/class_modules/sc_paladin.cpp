@@ -789,11 +789,6 @@ struct avengers_shield_t : public paladin_spell_t
     // link needed for trigger_grand_crusader
     cooldown = p -> cooldowns.avengers_shield;
     cooldown -> duration = data().cooldown();
-
-    //AS spell data is weird - direct_power_mod holds the SP scaling, extra_coeff() the AP scaling
-    base_spell_power_multiplier  = direct_power_mod;
-    base_attack_power_multiplier = data().extra_coeff();
-    direct_power_mod = 1.0; // reset direct power coefficient to 1 (see action_t::calculate_direct_amount in sc_action.cpp)
   }
 
   // Multiplicative damage effects
@@ -1087,7 +1082,7 @@ struct censure_t : public paladin_spell_t
     //Undocumented: 80% weaker for protection
     if ( p -> specialization() == PALADIN_PROTECTION )
     {
-      tick_power_mod /= 5;
+      spell_power_mod.tick /= 5;
     }
 
     // Glyph of Immediate Truth reduces DoT damage
@@ -1150,11 +1145,6 @@ struct consecration_tick_t : public paladin_spell_t
     direct_tick = true;
     background  = true;
     may_crit    = true;
-
-    // Spell data jumbled, re-arrange modifiers appropriately
-    base_spell_power_multiplier  = 0;
-    base_attack_power_multiplier = 1.0;
-    direct_power_mod             = data().extra_coeff();
   }
 };
 
@@ -1517,7 +1507,7 @@ struct stay_of_execution_t : public paladin_heal_t
     if ( data().ok() )
     {
       parse_effect_data( ( p -> find_spell( 114916 ) -> effectN( 1 ) ) );
-      tick_power_mod = p -> find_spell( 114916 ) -> effectN( 2 ).base_value() / 1000.0 * 0.0374151195;
+      spell_power_mod.tick = p -> find_spell( 114916 ) -> effectN( 2 ).base_value() / 1000.0 * 0.0374151195;
     }
 
     assert( as<unsigned>( num_ticks ) < sizeof_array( soe_tick_multiplier ) );
@@ -1563,7 +1553,7 @@ struct execution_sentence_t : public paladin_spell_t
     if ( data().ok() )
     {
       parse_effect_data( ( p -> find_spell( 114916 ) -> effectN( 1 ) ) );
-      tick_power_mod = p -> find_spell( 114916 ) -> effectN( 2 ).base_value() / 1000.0 * 0.0374151195;
+      spell_power_mod.tick = p -> find_spell( 114916 ) -> effectN( 2 ).base_value() / 1000.0 * 0.0374151195;
     }
 
     assert( as<unsigned>( num_ticks ) < sizeof_array( tick_multiplier ) );
@@ -1611,9 +1601,6 @@ struct exorcism_t : public paladin_spell_t
   {
     parse_options( NULL, options_str );
 
-    base_attack_power_multiplier = 1.0;
-    base_spell_power_multiplier  = 0.0;
-    direct_power_mod             = data().extra_coeff();
     may_crit                     = true;
 
     if ( p -> glyphs.mass_exorcism -> ok() )
@@ -2233,9 +2220,7 @@ struct holy_wrath_t : public paladin_spell_t
     //see http://maintankadin.failsafedesign.com/forum/viewtopic.php?p=743800#p743800
     base_dd_min = 4300; // fixed base damage (no range)
     base_dd_max = 4300;
-    base_attack_power_multiplier = 1;
-    base_spell_power_multiplier = 0;  // no SP scaling
-    direct_power_mod =  0.91;         // 0.91 AP scaling
+    attack_power_mod.direct =  0.91;         // 0.91 AP scaling
 
   }
 
@@ -2471,7 +2456,7 @@ struct sacred_shield_t : public paladin_heal_t
     // treat this as a HoT that spawns an absorb bubble on each tick() call rather than healing
     // unfortunately, this spell info is split between effects and tooltip 
     base_td = data().effectN( 1 ).average( p ); 
-    tick_power_mod = 0.819; // in tooltip, hardcoding
+    spell_power_mod.tick = 0.819; // in tooltip, hardcoding
 
     // redirect HoT to self if not specified
     if ( target -> is_enemy() || target -> type == HEALING_ENEMY )
@@ -2485,7 +2470,7 @@ struct sacred_shield_t : public paladin_heal_t
     if ( ( p -> specialization() == PALADIN_RETRIBUTION || p -> specialization() == PALADIN_HOLY ) )
     {
       base_td /= 0.7;
-      tick_power_mod /= 0.7;
+      spell_power_mod.tick /= 0.7;
     }
 
     // Holy gets other special stuff - no cooldown, no target limit, 3 charges, 10-second recharge time, extra (zero) tick
@@ -2569,15 +2554,16 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     trigger_gcd = timespan_t::zero();
     may_crit = false; //cannot crit
 
-    // Battle Healer glyph
-    if ( p -> glyphs.battle_healer -> ok() )
-      direct_power_mod = p -> glyphs.battle_healer -> effectN( 1 ).percent();
-    else
-      direct_power_mod = 1.0;
 
     // spell database info is in tooltip
-    base_attack_power_multiplier = 0.15; 
-    base_spell_power_multiplier  = 0.15;
+    attack_power_mod.direct = 0.15;
+    spell_power_mod.direct  = 0.15;
+
+    // Battle Healer glyph
+    if ( p -> glyphs.battle_healer -> ok() ) {
+      attack_power_mod.direct *= p -> glyphs.battle_healer -> effectN( 1 ).percent();
+      spell_power_mod.direct *= p -> glyphs.battle_healer -> effectN( 1 ).percent();
+    }
 
     // needed for weapon speed, I assume
     weapon = &( p -> main_hand_weapon );
@@ -3150,8 +3136,6 @@ struct hammer_of_the_righteous_aoe_t : public paladin_melee_attack_t
     aoe       = -1;
     trigger_gcd = timespan_t::zero(); // doesn't incur GCD (HotR does that already)
 
-    // Non-weapon-based AP/SP scaling, zero now, but has been non-zero in past iterations
-    direct_power_mod = data().extra_coeff();
   }
   virtual double action_multiplier() const
   {
@@ -3281,8 +3265,8 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     weapon_multiplier = 0.0;
 
     // HoW scales with SP, not AP; flip base multipliers (direct_power_mod is correct @ 1.61)
-    base_spell_power_multiplier  = 1.0;
-    base_attack_power_multiplier = data().extra_coeff();
+    //base_spell_power_multiplier  = 1.0;
+    //base_attack_power_multiplier = data().extra_coeff();
 
     // define cooldown multiplier for use with Sanctified Wrath talent for retribution only
     if ( ( p -> specialization() == PALADIN_RETRIBUTION ) && p -> find_talent_spell( "Sanctified Wrath" ) -> ok()  )
@@ -3416,10 +3400,6 @@ struct judgment_t : public paladin_melee_attack_t
     // Sanctity of Battle reduces melee GCD
     sanctity_of_battle = p -> passives.sanctity_of_battle -> ok();
 
-    // Spell database info jumbled, re-arrange to make correct
-    base_spell_power_multiplier  = direct_power_mod;
-    base_attack_power_multiplier = data().extra_coeff();
-    direct_power_mod             = 1.0;
 
     // no weapon multiplier
     weapon_multiplier = 0.0;
@@ -3731,8 +3711,6 @@ struct shield_of_the_righteous_t : public paladin_melee_attack_t
     trigger_gcd = timespan_t::zero();
     use_off_gcd = true;
     
-    //set AP scaling coefficient
-    direct_power_mod = data().extra_coeff();
 
     // no weapon multiplier
     weapon_multiplier = 0.0;

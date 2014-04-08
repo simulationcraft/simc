@@ -793,20 +793,22 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
           util::encode_html( pretty_spell_text( a -> data(), a -> data().desc(), *p ) ).c_str() );
       }
 
-      if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
+      if ( a -> spell_power_mod.direct || a -> base_dd_min || a -> base_dd_max )
       {
         os.printf(
           "\t\t\t\t\t\t\t\t\t<div class=\"float\">\n"
           "\t\t\t\t\t\t\t\t\t\t<h5>Direct Damage</h5>\n"
           "\t\t\t\t\t\t\t\t\t\t<ul>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">may_crit:</span>%s</li>\n"
-          "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">direct_power_mod:</span>%.6f</li>\n"
+          "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">attack_power_mod.direct:</span>%.6f</li>\n"
+          "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">spell_power_mod.direct:</span>%.6f</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">base_dd_min:</span>%.2f</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">base_dd_max:</span>%.2f</li>\n"
           "\t\t\t\t\t\t\t\t\t\t</ul>\n"
           "\t\t\t\t\t\t\t\t\t</div>\n",
           a -> may_crit ? "true" : "false",
-          a -> direct_power_mod,
+          a -> attack_power_mod.direct,
+          a -> spell_power_mod.direct,
           a -> base_dd_min,
           a -> base_dd_max );
       }
@@ -818,7 +820,8 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
           "\t\t\t\t\t\t\t\t\t\t<ul>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">tick_may_crit:</span>%s</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">tick_zero:</span>%s</li>\n"
-          "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">tick_power_mod:</span>%.6f</li>\n"
+          "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">attack_power_mod.tick:</span>%.6f</li>\n"
+          "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">spell_power_mod.tick:</span>%.6f</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">base_td:</span>%.2f</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">num_ticks:</span>%i</li>\n"
           "\t\t\t\t\t\t\t\t\t\t\t<li><span class=\"label\">base_tick_time:</span>%.2f</li>\n"
@@ -828,7 +831,8 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, st
           "\t\t\t\t\t\t\t\t\t</div>\n",
           a -> tick_may_crit ? "true" : "false",
           a -> tick_zero ? "true" : "false",
-          a -> tick_power_mod,
+          a -> attack_power_mod.tick,
+          a -> spell_power_mod.tick,
           a -> base_td,
           a -> num_ticks,
           a -> base_tick_time.total_seconds(),

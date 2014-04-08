@@ -32,7 +32,6 @@ spell_base_t::spell_base_t( action_e at,
   action_t( at, token, p, s ),
   procs_courageous_primal_diamond( true )
 {
-  base_spell_power_multiplier = 1.0;
 
   dot_behavior      = DOT_REFRESH;
 

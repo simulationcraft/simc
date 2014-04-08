@@ -5065,7 +5065,10 @@ struct action_t : public noncopyable
   double rp_gain;
   timespan_t min_gcd, trigger_gcd;
   double range;
-  double weapon_power_mod, direct_power_mod, tick_power_mod;
+  double weapon_power_mod;
+  struct {
+  double direct, tick;
+  } attack_power_mod, spell_power_mod;
   timespan_t base_execute_time;
   timespan_t base_tick_time;
   std::array< double, RESOURCE_MAX > base_costs;
@@ -5074,7 +5077,6 @@ struct action_t : public noncopyable
   double base_dd_multiplier, base_td_multiplier;
   double base_multiplier, base_hit, base_crit;
   double base_spell_power, base_attack_power;
-  double base_spell_power_multiplier, base_attack_power_multiplier;
   double crit_multiplier, crit_bonus_multiplier, crit_bonus;
   double base_dd_adder;
   double base_ta_adder;
@@ -5258,10 +5260,14 @@ public:
   { snapshot_internal( s, update_flags, rt ); }
   virtual void consolidate_snapshot_flags();
 
-  virtual double direct_power_coefficient( const action_state_t* ) const
-  { return direct_power_mod; }
-  virtual double tick_power_coefficient( const action_state_t* ) const
-  { return tick_power_mod; }
+  virtual double attack_direct_power_coefficient( const action_state_t* ) const
+  { return attack_power_mod.direct; }
+  virtual double attack_tick_power_coefficient( const action_state_t* ) const
+  { return attack_power_mod.tick; }
+  virtual double spell_direct_power_coefficient( const action_state_t* ) const
+  { return spell_power_mod.direct; }
+  virtual double spell_tick_power_coefficient( const action_state_t* ) const
+  { return spell_power_mod.tick; }
   virtual double base_da_min( const action_state_t* ) const
   { return base_dd_min; }
   virtual double base_da_max( const action_state_t* ) const
@@ -5404,13 +5410,10 @@ struct action_state_t : public noncopyable
   { return crit + target_crit; }
 
   virtual double composite_attack_power() const
-  { return attack_power * action -> base_attack_power_multiplier; }
+  { return attack_power; }
 
   virtual double composite_spell_power() const
-  { return spell_power * action -> base_spell_power_multiplier; }
-
-  virtual double composite_power() const
-  { return composite_attack_power() + composite_spell_power(); }
+  { return spell_power; }
 
   virtual double composite_da_multiplier() const
   { return da_multiplier * target_da_multiplier; }
@@ -6552,7 +6555,8 @@ public:
     ab::tick_may_crit = false;
     ab::hasted_ticks  = false;
     ab::may_crit = false;
-    ab::tick_power_mod = 0;
+    ab::attack_power_mod.tick = 0;
+    ab::spell_power_mod.tick = 0;
     ab::dot_behavior  = DOT_REFRESH;
   }
 
@@ -6607,7 +6611,8 @@ struct residual_dot_action : public Action
     Action::tick_may_crit = false;
     Action::hasted_ticks  = false;
     Action::may_crit = false;
-    Action::tick_power_mod = 0;
+    Action::attack_power_mod.tick = 0;
+    Action::spell_power_mod.tick = 0;
     Action::may_multistrike = false;
     Action::dot_behavior  = DOT_REFRESH;
   }
