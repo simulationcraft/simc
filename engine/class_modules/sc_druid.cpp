@@ -1943,18 +1943,20 @@ struct ferocious_bite_t : public cat_attack_t
 {
   double excess_energy;
   double max_excess_energy;
+  double ap_per_point;
 
   ferocious_bite_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( p, p -> find_class_spell( "Ferocious Bite" ), options_str ),
-    excess_energy( 0 ), max_excess_energy( 0 )
+    excess_energy( 0 ), max_excess_energy( 0 ), ap_per_point( 0.0 )
   {
+    ap_per_point          = 0.196; // FIXME: Figure out where the hell this is in the spell data...
     max_excess_energy     = 25.0;
     requires_combo_points = true;
     special = true;
   }
 
-  double direct_power_coefficient( const action_state_t* state ) const
-  { return 0.196 * cat_state( state ) -> cp; }
+  double attack_direct_power_coefficient( const action_state_t* state ) const
+  { return cat_state( state ) -> cp * ap_per_point; }
 
   virtual void execute()
   {
@@ -2236,7 +2238,7 @@ struct rip_t : public cat_attack_t
     cat_attack_t( p, p -> find_class_spell( "Rip" ), options_str ),
     ap_per_point( 0.0 )
   {
-    ap_per_point          = data().effectN( 1 ).ap_coeff(); // TOCHECK: Get exact value when tooltip is updated.
+    ap_per_point          = data().effectN( 1 ).ap_coeff();
     requires_combo_points = true;
     may_crit              = false;
     dot_behavior          = DOT_REFRESH;
@@ -2245,7 +2247,7 @@ struct rip_t : public cat_attack_t
     num_ticks += ( int ) (  player -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 1 ).time_value() / base_tick_time );
   }
 
-  double tick_power_coefficient( const action_state_t* state ) const
+  double attack_tick_power_coefficient( const action_state_t* state ) const
   { return cat_state( state ) -> cp * ap_per_point; }
 };
 
