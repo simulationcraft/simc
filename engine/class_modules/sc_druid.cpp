@@ -1697,7 +1697,6 @@ struct cat_attack_state_t : public action_state_t
 struct cat_attack_t : public druid_attack_t<melee_attack_t>
 {
   bool             requires_stealth_;
-  position_e  requires_position_;
   bool             requires_combo_points;
   int              adds_combo_points;
   double           base_dd_bonus;
@@ -1707,7 +1706,7 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
                 const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
     base_t( token, p, s ),
-    requires_stealth_( false ), requires_position_( POSITION_NONE ),
+    requires_stealth_( false ),
     requires_combo_points( false ), adds_combo_points( 0 ),
     base_dd_bonus( 0.0 ), base_td_bonus( 0.0 )
   {
@@ -1719,7 +1718,7 @@ struct cat_attack_t : public druid_attack_t<melee_attack_t>
   cat_attack_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                 const std::string& options = std::string() ) :
     base_t( "", p, s ),
-    requires_stealth_( false ), requires_position_( POSITION_NONE ),
+    requires_stealth_( false ),
     requires_combo_points( false ), adds_combo_points( 0 ),
     base_dd_bonus( 0 ), base_td_bonus( 0 )
   {
@@ -1885,10 +1884,6 @@ public:
     if ( ! p() -> buff.cat_form -> check() )
       return false;
 
-    if ( requires_position() != POSITION_NONE )
-      if ( p() -> position() != requires_position() )
-        return false;
-
     if ( requires_stealth() )
       if ( ! p() -> buff.stealthed -> check() )
         return false;
@@ -1906,9 +1901,6 @@ public:
 
     return requires_stealth_;
   }
-
-  virtual position_e requires_position()
-  { return requires_position_; }
 
   void trigger_energy_refund()
   {
@@ -2189,7 +2181,6 @@ struct ravage_t : public cat_attack_t
       opt_null()
     };
     parse_options( options, options_str );
-    requires_position_ = POSITION_BACK;
     requires_stealth_  = true;
     special            = true;
 
@@ -2197,18 +2188,6 @@ struct ravage_t : public cat_attack_t
 
     extra_crit_amount    = extra_crit -> effectN( 1 ).percent();
     extra_crit_threshold = extra_crit -> effectN( 2 ).base_value();
-  }
-
-  virtual position_e requires_position()
-  {
-    if ( p() -> buff.king_of_the_jungle -> check() )
-      return POSITION_NONE;
-
-    if ( p() -> sets.has_set_bonus( SET_PVP_4PC_MELEE ) )
-      if ( p() -> cooldown.pvp_4pc_melee -> up() )
-        return POSITION_NONE;
-
-    return cat_attack_t::requires_position();
   }
 
   virtual bool   requires_stealth() const
@@ -2387,7 +2366,6 @@ struct shred_t : public cat_attack_t
 
     base_multiplier += player -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
 
-    requires_position_ = POSITION_BACK;
     special            = true;
   }
 
