@@ -2522,20 +2522,6 @@ void player_t::create_buffs()
       potion_buffs.virmens_bite = potion_buff_creator( this, "virmens_bite_potion" )
                                   .spell( find_spell( 105697 ) );
 
-      buffs.amplified = buff_creator_t( this, "amplified", find_spell( 146051 ) )
-                        .add_invalidate( CACHE_MASTERY )
-                        .add_invalidate( CACHE_HASTE )
-                        .add_invalidate( CACHE_SPIRIT )
-                        .chance( 0 )
-                        /* .add_invalidate( CACHE_PLAYER_CRITICAL_DAMAGE ) */
-                        /* .add_invalidate( CACHE_PLAYER_CRITICAL_HEALING ) */;
-
-      buffs.amplified_2 = buff_creator_t( this, "amplified_2", find_spell( 146051 ) )
-                          .add_invalidate( CACHE_MASTERY )
-                          .add_invalidate( CACHE_HASTE )
-                          .add_invalidate( CACHE_SPIRIT )
-                          .chance( 0 );
-
     buffs.cooldown_reduction = buff_creator_t( this, "cooldown_reduction" )
                                .chance( 0 )
                                .default_value( 1 );
@@ -3149,10 +3135,6 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       if ( sim -> auras.stamina -> check() )
         m *= 1.0 + sim -> auras.stamina -> value();
       break;
-    case ATTR_SPIRIT:
-      m *= 1.0 + buffs.amplified -> value();
-      m *= 1.0 + buffs.amplified_2 -> value();
-      break;
     default:
       break;
   }
@@ -3162,31 +3144,9 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
 
 // player_t::composite_rating_multiplier ====================================
 
-double player_t::composite_rating_multiplier( rating_e rating ) const
+double player_t::composite_rating_multiplier( rating_e ) const
 {
-  double v = 1.0;
-
-  if ( is_pet() || is_enemy() )
-    return v;
-
-  // Internally, we treat all the primary rating types as a single entity; 
-  // in game, they are actually split into spell/ranged/melee
-  switch ( rating )
-  {
-    case RATING_SPELL_HASTE:
-    case RATING_MELEE_HASTE:
-    case RATING_RANGED_HASTE:
-      v *= 1.0 + buffs.amplified -> value();
-      v *= 1.0 + buffs.amplified_2 -> value();
-      break;
-    case RATING_MASTERY:
-      v *= 1.0 + buffs.amplified -> value();
-      v *= 1.0 + buffs.amplified_2 -> value();
-      break;
-    default: break;
-  }
-
-  return v;
+  return 1.0;
 }
 
 // player_t::composite_rating ===============================================
@@ -3987,8 +3947,6 @@ void player_t::arise()
 
   if ( ! is_enemy() && ! is_pet() )
   {
-    buffs.amplified -> trigger();
-    buffs.amplified_2 -> trigger();
     buffs.cooldown_reduction -> trigger();
     buffs.pandarens_step -> trigger();
     buffs.blurred_speed -> trigger();

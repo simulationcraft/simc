@@ -50,7 +50,6 @@ namespace item
   DECLARE_CB( essence_of_yulon );
   DECLARE_CB( endurance_of_niuzao );
   DECLARE_CB( skeers_bloodsoaked_talisman );
-  DECLARE_CB( amplify_trinket );
   DECLARE_CB( cleave_trinket );
   DECLARE_CB( black_blood_of_yshaarj );
   DECLARE_CB( rune_of_reorigination );
@@ -126,6 +125,10 @@ std::string tokenized_name( const spell_data_t* data )
 /**
  * Master list of special effects in Simulationcraft.
  *
+ * This list currently contains custom procs and procs where game client data
+ * is either incorrect (so we can override values), or incomplete (so we can
+ * help the automatic creation process on the simc side).
+ *
  * Each line in the array corresponds to a specific spell (a proc driver spell,
  * or an "on use" spell) in World of Warcraft. There are several sources for
  * special effects:
@@ -133,22 +136,17 @@ std::string tokenized_name( const spell_data_t* data )
  * 2) Enchants, and profession specific enchants
  * 3) Engineering special effects (tinkers, ranged enchants)
  * 4) Gems
- *
+ * 
  * Blizzard does not discriminate between the different types, nor do we
  * anymore. Each spell can be mapped to a special effect in the simc client.
- *
- * This list currently contains many entries, in the future we will also
- * determine most proc flags directly from the game client spells, thus
- * removing the need to specify lines here how an on-equip effect (or enchant
- * if it's a generic one) procs. This will remove most lines from this array,
- * what's left over are custom procs and procs where game client data is either
- * incorrect (so we can override values), or incomplete (so we can help the
- * automatic creation process on the simc side).
+ * Each special effect is fed to a new proc callback object
+ * (dbc_proc_callback_t) that handles the initialization of the proc, and in
+ * generic proc cases, the initialization of the buffs/actions.
  *
  * Each entry contains three fields:
  * 1) The spell ID of the effect. You can find these from third party websites
  *    by clicking on the generated link in item tooltip.
- * 2) Currently a string of "additional options" given for a special effect.
+ * 2) Currently a c-string of "additional options" given for a special effect.
  *    This includes the forementioned fixes of incorrect values, and "help" to
  *    drive the automatic special effect generation process. Case insensitive.
  * 3) A callback to a custom initialization function. The function is of the
@@ -160,10 +158,11 @@ std::string tokenized_name( const spell_data_t* data )
  *
  * Now, special effect creation in this new system is currently a two phase
  * process. First, the special_effect_t struct for the special effect is filled
- * with information from the game client data, and any options given in this
- * list (through the additional options). For custom special effects, the first
- * phase simply creates a stub special_effect_t object, and no game client data
- * is processed at this time.
+ * with enough information to initialize the proc (for generic procs, a driver
+ * spell id is sufficient), and any options given in this list (through the
+ * additional options). For custom special effects, the first phase simply
+ * creates a stub special_effect_t object, and no game client data is processed
+ * at this time.
  *
  * The second phase of the creation process is responsible for instantiating
  * the necessary action_callback_t object (simc procs), and whatever buffs, or
@@ -174,17 +173,19 @@ std::string tokenized_name( const spell_data_t* data )
  * of special effects, we no longer discriminate between item, enchant, tinker,
  * or gem based special effects.
  *
- * Note2: Once we transition to the new "proc flags" system, all "simple"
- * on-equip procs will cease to exist in this list, and in addition, all future
- * "simple" trinkets will be readily usable by actors in simc, as long as we
- * have the necessary item and spell data from the game client.
- *
- * Note3: Enchants, addons, and possibly gems will have a separate translation
+ * Note2: Enchants, addons, and possibly gems will have a separate translation
  * table in sc_enchant.cpp that maps "user given" names of enchants
  * (enchant=dancing_steel), to in game data, so we can properly initialize the
- * correct spells here.
+ * correct spells here. Most of the enchants etc., are automatically
+ * identified.  The table will only have the "non standard" user strings we
+ * currently use, and whatever else we will use in the future.
  */
 static const special_effect_db_item_t __special_effect_db[] = {
+  /**
+   * TRINKET-PROC-TYPE-TODO:
+   * - Alacrity of Xuen (procs on damage or landing an ability?)
+   */
+
   /**
    * Items
    */
@@ -194,12 +195,9 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 146197, 0,                             item::essence_of_yulon }, /* Caster legendary cloak */
   { 146193, 0,                          item::endurance_of_niuzao }, /* Tank legendary cloak */
 
-  { 146183, 0,                       item::black_blood_of_yshaarj }, /* Black Blood of Y'Shaarj */
+  { 146219, "ProcOn/Hit",                                       0 }, /* Yu'lon's Bite */
+  { 146251, "ProcOn/Hit",                                       0 }, /* Thok's Tail Tip (Str proc) */
 
-  { 146219, "OnSpellDamage",                                    0 }, /* Yu'lon's Bite */
-  { 146295, "OnAttackHit",                                      0 }, /* Alacrity of Xuen */
-  { 146047, "OnDirectDamage",                                   0 }, /* Purified Bindings of Immerseus (Int proc) */
-  { 146251, "OnDirectDamage",                                   0 }, /* Thok's Tail Tip (Str proc) */
   { 146315, "OnHeal",                                           0 }, /* Prismatic Prison of Pride (Int proc) */
   { 146309, "OnDirectDamage",                                   0 }, /* Assurance of Consequence (Agi proc) */
   { 146247, "OnDirectDamage",                                   0 }, /* Evil Eye of Galakras (Str proc) */
@@ -208,8 +206,8 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 148898, "OnDirectDamage",                                   0 }, /* Frenzied Crystal of Rage (Int proc) */
   { 148901, "OnDirectDamage",                                   0 }, /* Fusion-Fire Core (Str proc) */
 
+  { 146183, 0,                       item::black_blood_of_yshaarj }, /* Black Blood of Y'Shaarj */
   { 146286, 0,                  item::skeers_bloodsoaked_talisman }, /* Skeer's Bloodsoaked Talisman */
-  { 146051, 0,                              item::amplify_trinket }, /* Amplification effect */
   { 146136, 0,                               item::cleave_trinket }, /* Cleave effect */
 
   /* Mists of Pandaria: 5.2 */
@@ -1640,7 +1638,6 @@ void item::skeers_bloodsoaked_talisman( special_effect_t& effect,
   const spell_data_t* buff = item.player -> find_spell( 146293 );
 
   effect.proc_flags2_ = PF2_ALL_HIT;
-  effect.trigger_spell_id = spell -> id();
 
   stat_buff_t* b = stat_buff_creator_t( item.player, effect.name(), buff )
                    .add_stat( STAT_CRIT_RATING, spell -> effectN( 1 ).average( item ) )
@@ -1651,27 +1648,6 @@ void item::skeers_bloodsoaked_talisman( special_effect_t& effect,
   effect.custom_buff = b;
 
   new dbc_proc_callback_t( item.player, effect );
-}
-
-void item::amplify_trinket( special_effect_t& /* effect */,
-                            const item_t& item,
-                            const special_effect_db_item_t& dbitem )
-{
-  maintenance_check( 528 );
-
-  player_t* p = item.player;
-  const spell_data_t* amplify_spell = p -> find_spell( dbitem.spell_id );
-
-  buff_t* first_amp = buff_t::find( p, "amplified" );
-  buff_t* second_amp = buff_t::find( p, "amplified_2" );
-  buff_t* amp_buff = 0;
-  if ( first_amp -> default_chance == 0 )
-    amp_buff = first_amp;
-  else
-    amp_buff = second_amp;
-
-  amp_buff -> default_value = amplify_spell -> effectN( 2 ).average( item ) / 100.0;
-  amp_buff -> default_chance = 1.0;
 }
 
 void item::black_blood_of_yshaarj( special_effect_t& effect,
