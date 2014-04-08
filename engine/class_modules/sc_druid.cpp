@@ -5524,7 +5524,8 @@ void druid_t::init_base_stats()
 
   base.stats.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
 
-  base.attack_power_per_strength = 1.0;
+  // TODO: Confirm that all druid specs get both of these things.
+  base.attack_power_per_agility  = 1.0;
   base.spell_power_per_intellect = 1.0;
 
   // Avoidance diminishing Returns constants/conversions
