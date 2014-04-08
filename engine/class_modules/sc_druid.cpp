@@ -2085,8 +2085,8 @@ struct pounce_bleed_t : public cat_attack_t
   pounce_bleed_t( druid_t* player ) :
     cat_attack_t( player, player -> find_spell( 9007 ) )
   {
-    background     = true;
-    special        = true;
+    background = true;
+    attack_power_mod.tick = data().effectN( 1 ).ap_coeff();
   }
 };
 
@@ -2095,7 +2095,10 @@ struct pounce_t : public cat_attack_t
   pounce_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( p, p -> find_class_spell( "Pounce" ), options_str )
   {
+    special = true;
     execute_action = new pounce_bleed_t( p );
+    requires_stealth_ = true;
+    may_dodge = may_block = may_parry = false;
   }
 };
 
