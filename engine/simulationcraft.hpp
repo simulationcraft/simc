@@ -5510,8 +5510,10 @@ struct action_state_t : public noncopyable
   virtual proc_types2 impact_proc_type2() const
   {
     // Don't allow impact procs that do not do damage or heal anyone; they 
-    // should all be handled by execute_proc_type2().
-    if ( result_amount <= 0 )
+    // should all be handled by execute_proc_type2(). Note that this is based
+    // on the _total_ amount done. This is so that fully overhealed heals are
+    // still alowed to proc things.
+    if ( result_total <= 0 )
       return PROC2_INVALID;
 
     if ( result == RESULT_HIT )

@@ -198,7 +198,6 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 146219, "ProcOn/Hit",                                       0 }, /* Yu'lon's Bite */
   { 146251, "ProcOn/Hit",                                       0 }, /* Thok's Tail Tip (Str proc) */
 
-  { 146315, "OnHeal",                                           0 }, /* Prismatic Prison of Pride (Int proc) */
   { 146309, "OnDirectDamage",                                   0 }, /* Assurance of Consequence (Agi proc) */
   { 146247, "OnDirectDamage",                                   0 }, /* Evil Eye of Galakras (Str proc) */
   { 148907, "OnDirectDamage",                                   0 }, /* Kardris' Toxic Talisman (Int proc) */

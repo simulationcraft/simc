@@ -147,17 +147,17 @@ proc_types spell_base_t::proc_type() const
 {
   if ( ! is_aoe() )
   {
-    if ( harmful )
+    if ( type == ACTION_SPELL )
       return PROC1_SPELL;
     // Only allow non-harmful abilities with "an amount" to count as heals
-    else if ( base_dd_min > 0 )
+    else if ( ( type == ACTION_HEAL || type == ACTION_ABSORB ) && ( direct_power_mod > 0 || tick_power_mod > 0 ) )
       return PROC1_HEAL;
   }
   else
   {
-    if ( harmful )
+    if ( type == ACTION_SPELL )
       return PROC1_AOE_SPELL;
-    else if ( base_dd_min > 0 )
+    else if ( ( type == ACTION_HEAL || type == ACTION_ABSORB ) && ( direct_power_mod > 0 || tick_power_mod > 0 ) )
       return PROC1_AOE_HEAL;
   }
 
@@ -372,6 +372,17 @@ void heal_t::assess_damage( dmg_e heal_type,
 
     if ( ! result_is_multistrike( s -> result ) || callbacks )
       action_callback_t::trigger( player -> callbacks.tick_heal[ school ], this, s );
+  }
+
+  // New callback system; proc spells on impact. 
+  // Note: direct_tick_callbacks should not be used with the new system, 
+  // override action_t::proc_type() instead
+  if ( callbacks )
+  {
+    proc_types pt = s -> proc_type();
+    proc_types2 pt2 = s -> impact_proc_type2();
+    if ( pt != PROC1_INVALID && pt2 != PROC2_INVALID )
+      action_callback_t::trigger( player -> callbacks.procs[ pt ][ pt2 ], this, s );
   }
 
   stats -> add_result( s -> result_amount, s -> result_total, ( direct_tick ? HEAL_OVER_TIME : heal_type ), s -> result, s -> block_result, s -> target );
