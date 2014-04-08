@@ -1639,6 +1639,7 @@ void item::skeers_bloodsoaked_talisman( special_effect_t& effect,
   // Aura is hidden, thre's no linkage in spell data actual
   const spell_data_t* buff = item.player -> find_spell( 146293 );
 
+  effect.proc_flags2_ = PF2_ALL_HIT;
   effect.trigger_spell_id = spell -> id();
 
   stat_buff_t* b = stat_buff_creator_t( item.player, effect.name(), buff )
