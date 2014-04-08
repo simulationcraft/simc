@@ -5156,8 +5156,8 @@ void priest_t::apl_shadow()
   def -> add_action( "halo,if=talent.halo.enabled" );
   def -> add_action( "cascade_damage,if=talent.cascade.enabled" );
   def -> add_action( "divine_star,if=talent.divine_star.enabled" );
-  def -> add_action( "wait,sec=cooldown.shadow_word_death.remains,if=target.health.pct<20&cooldown.shadow_word_death.remains<0.5&active_enemies<=1" );
-  def -> add_action( "wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&active_enemies<=1" );
+  def -> add_action( "wait,sec=cooldown.shadow_word_death.remains,if=target.health.pct<20&cooldown.shadow_word_death.remains&cooldown.shadow_word_death.remains<0.5&active_enemies<=1" );
+  def -> add_action( "wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&cooldown.mind_blast.remains&active_enemies<=1" );
   def -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5" );
   def -> add_action( this, "Mind Sear", "chain=1,interrupt=1,if=active_enemies>=3" );
   def -> add_action( this, "Mind Flay", "chain=1,interrupt=1" );

@@ -6468,14 +6468,14 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
     return true;
   }
 
-  if ( t_str.size() < MAX_TALENT_ROWS )
-  {
-    sim -> errorf( "Player %s has malformed talent string '%s': talent list too short.\n",
-                   name(), talent_string.c_str() );
-    return false;
-  }
+//  if ( t_str.size() < MAX_TALENT_ROWS )
+//  {
+//    sim -> errorf( "Player %s has malformed talent string '%s': talent list too short.\n",
+//                   name(), talent_string.c_str() );
+//    return false;
+//  }
 
-  for ( size_t i = 0; i < MAX_TALENT_ROWS; ++i )
+  for ( size_t i = 0; i < std::min( t_str.size(), (size_t)MAX_TALENT_ROWS ); ++i )
   {
     switch ( t_str[ i ] )
     {

@@ -1069,7 +1069,7 @@ inline option_t opt_null()
 // Talent Translation =======================================================
 
 #ifndef MAX_TALENT_ROWS
-#define MAX_TALENT_ROWS ( 6 )
+#define MAX_TALENT_ROWS ( 7 )
 #endif
 
 #ifndef MAX_TALENT_COLS
