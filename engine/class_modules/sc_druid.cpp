@@ -1725,8 +1725,31 @@ public:
     cat_state( state ) -> cp = td( state -> target ) -> combo_points.get();
   }
 
+  void trigger_savagery()
+  {
+    timespan_t base_tick_time = p() -> find_specialization_spell( "Savage Roar" ) -> effectN( 3 ).time_value();
+    timespan_t seconds_per_combo = timespan_t::from_seconds( 6.0 );
+    timespan_t duration = p() -> find_specialization_spell( "Savage Roar" ) -> duration();
+
+    if ( p() -> buff.savage_roar -> check() )
+    {
+      // Savage Roar behaves like a dot with DOT_REFRESH.
+      // You will not lose your current 'tick' when refreshing.
+      int result = static_cast<int>( p() -> buff.savage_roar -> remains() / base_tick_time );
+      timespan_t carryover = p() -> buff.savage_roar -> remains();
+      carryover -= base_tick_time * result;
+      duration += carryover;
+    }
+    duration += seconds_per_combo * 5;
+
+    p() -> buff.savage_roar -> trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, duration );
+  }
+
   virtual void execute()
   {
+    if ( p() -> buff.prowl -> check() && p() -> glyph.savagery -> ok() )
+      trigger_savagery();
+
     base_t::execute();
 
     if ( ( cat_state( execute_state ) -> cp > 0 || this -> name_str == "savage_roar" ) && requires_combo_points )
@@ -1770,7 +1793,8 @@ public:
       trigger_energy_refund();
     }
 
-    if ( harmful ) p() -> buff.prowl -> expire();
+    if ( harmful )
+      p() -> buff.prowl -> expire();
   }
 
   virtual void impact( action_state_t* s )
@@ -2259,7 +2283,7 @@ struct savage_roar_t : public cat_attack_t
   savage_roar_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( p, p -> find_class_spell( "Savage Roar" ), options_str ),
     base_buff_duration( data().duration() ), // Base duration is 12
-    seconds_per_combo( timespan_t::from_seconds( 6.0 ) ) // plus 6s per cp used.
+    seconds_per_combo( timespan_t::from_seconds( 6.0 ) ) // plus 6s per cp used. Must change this value in cat_attack_t::trigger_savagery() as well.
   {
     may_miss              = false;
     harmful               = false;
@@ -2272,7 +2296,7 @@ struct savage_roar_t : public cat_attack_t
   {
     cat_attack_t::impact( state );
 
-    timespan_t duration = ( player -> in_combat ? base_buff_duration : ( base_buff_duration - timespan_t::from_seconds( 3 ) ) );
+    timespan_t duration = base_buff_duration;
 
     if ( p() -> buff.savage_roar -> check() )
     {
@@ -2292,21 +2316,9 @@ struct savage_roar_t : public cat_attack_t
   virtual bool ready()
   {
     if ( base_buff_duration + seconds_per_combo * td( target ) -> combo_points.get() > p() -> buff.savage_roar -> remains() )
-      if ( ! p() -> glyph.savagery -> ok() )
-      {
-        return cat_attack_t::ready();
-      }
-      else
-      {
-        requires_combo_points = false;
-        bool glyphed_ready = cat_attack_t::ready();
-        requires_combo_points = true;
-        return glyphed_ready;
-      }
+      return cat_attack_t::ready();
     else
-    {
       return false;
-    }
   }
 };
 
@@ -5525,7 +5537,7 @@ void druid_t::create_buffs()
                                .chance( spec.omen_of_clarity -> ok() ? find_spell( 113043 ) -> proc_chance() : 0.0 );
   buff.soul_of_the_forest    = buff_creator_t( this, "soul_of_the_forest", talent.soul_of_the_forest -> ok() ? find_spell( 114108 ) : spell_data_t::not_found() )
                                .default_value( find_spell( 114108 ) -> effectN( 1 ).percent() );
-  buff.prowl             = buff_creator_t( this, "prowl", find_class_spell( "Prowl" ) );
+  buff.prowl                 = buff_creator_t( this, "prowl", find_class_spell( "Prowl" ) );
   buff.wild_mushroom         = buff_creator_t( this, "wild_mushroom", find_class_spell( "Wild Mushroom" ) )
                                .max_stack( ( specialization() == DRUID_BALANCE || specialization() == DRUID_RESTORATION )
                                            ? find_class_spell( "Wild Mushroom" ) -> effectN( 2 ).base_value()
