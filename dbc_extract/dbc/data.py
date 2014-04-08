@@ -106,6 +106,9 @@ _DBC_FIELDS = {
     'MinorTalent.dbc': [
         'id', 'id_spec', 'id_spell', 'index'
     ],
+    'ItemBonus.db2': [
+        'id', 'f1', 'f2', ( 'f3', '%d' ), 'f4', 'f5'
+    ],
     'ArmorLocation.dbc': [
         ( 'id', '%3u' ), ( 'v_1', '%11.6f' ), ( 'v_2', '%11.6f' ), ( 'v_3', '%11.6f' ), ( 'v_4', '%11.6f' ), ( 'v_5', '%11.6f')
     ],

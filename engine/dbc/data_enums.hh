@@ -375,7 +375,13 @@ enum item_mod_type {
   ITEM_MOD_ARCANE_RESISTANCE        = 56,
   ITEM_MOD_PVP_POWER                = 57,
   ITEM_MOD_MULTISTRIKE_RATING       = 59,
-  ITEM_MOD_READINESS_RATING         = 60
+  ITEM_MOD_READINESS_RATING         = 60,
+  ITEM_MOD_WOD_1                    = 61,
+  ITEM_MOD_WOD_2                    = 62,
+  ITEM_MOD_WOD_3                    = 63,
+  ITEM_MOD_WOD_4                    = 64,
+  ITEM_MOD_WOD_5                    = 65,
+  ITEM_MOD_WOD_6                    = 66,
 };
 
 enum rating_mod_type {
@@ -387,6 +393,7 @@ enum rating_mod_type {
   RATING_MOD_CRIT_MELEE   = 0x00000100,
   RATING_MOD_CRIT_RANGED  = 0x00000200,
   RATING_MOD_CRIT_SPELL   = 0x00000400,
+  RATING_MOD_MULTISTRIKE  = 0x00000800,
   RATING_MOD_RESILIENCE   = 0x00008000,
   RATING_MOD_HASTE_MELEE  = 0x00020000,
   RATING_MOD_HASTE_RANGED = 0x00040000,
