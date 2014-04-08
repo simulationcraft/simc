@@ -410,13 +410,13 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   if ( e -> coeff() != 0 )
   {
-    snprintf( tmp_buffer, sizeof( tmp_buffer ), "%.3f", e -> coeff() );
+    snprintf( tmp_buffer, sizeof( tmp_buffer ), "%.5f", e -> coeff() );
     s << " | Coefficient: " << tmp_buffer;
   }
 
   if ( e -> ap_coeff() != 0 )
   {
-    snprintf( tmp_buffer, sizeof( tmp_buffer ), "%.3f", e -> ap_coeff() );
+    snprintf( tmp_buffer, sizeof( tmp_buffer ), "%.5f", e -> ap_coeff() );
     s << " | AP Coefficient: " << tmp_buffer;
   }
 
