@@ -141,7 +141,6 @@ public:
     buff_t* astral_insight;
     buff_t* celestial_alignment;
     buff_t* chosen_of_elune;
-    buff_t* dream_of_cenarius_eclipse;
     buff_t* eclipse_lunar;
     buff_t* eclipse_solar;
     buff_t* lunar_shower;
@@ -1298,20 +1297,10 @@ struct eclipse_lunar_t : public druid_buff_t < buff_t >
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
-    if ( p() -> buff.dream_of_cenarius -> up() )
-    {
-      p() -> buff.dream_of_cenarius_eclipse -> trigger();
-      p() -> buff.dream_of_cenarius -> expire();
-    }
+    if ( p() -> talent.dream_of_cenarius -> ok() )
+      p() -> buff.dream_of_cenarius -> trigger();
 
     return druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
-  }
-
-  virtual void expire_override()
-  {
-    druid_buff_t<buff_t>::expire_override();
-
-    p() -> buff.dream_of_cenarius_eclipse -> expire();
   }
 };
 
@@ -1329,20 +1318,10 @@ struct eclipse_solar_t : public druid_buff_t < buff_t >
 
   virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
   {
-    if ( p() -> buff.dream_of_cenarius -> up() )
-    {
-      p() -> buff.dream_of_cenarius_eclipse -> trigger();
-      p() -> buff.dream_of_cenarius -> expire();
-    }
+    if ( p() -> talent.dream_of_cenarius -> ok() )
+      p() -> buff.dream_of_cenarius -> trigger();
 
     return druid_buff_t<buff_t>::trigger( stacks, value, chance, duration );
-  }
-
-  virtual void expire_override()
-  {
-    druid_buff_t<buff_t>::expire_override();
-
-    p() -> buff.dream_of_cenarius_eclipse -> expire();
   }
 };
 
@@ -1596,48 +1575,9 @@ public:
     ab::special       = true;
   }
 
-
-  virtual double action_da_multiplier() const
-  {
-    double m = ab::action_da_multiplier();
-
-    if ( this -> special && this -> harmful )
-    {
-      if ( this -> p() -> buff.dream_of_cenarius -> check() )
-      {
-        m *= 1.0 + this -> p() -> buff.dream_of_cenarius -> data().effectN( 2 ).percent();
-      }
-    }
-
-    return m;
-  }
-
-  virtual double action_ta_multiplier() const
-  {
-    double m = ab::action_ta_multiplier();
-
-    if ( this -> special && this -> harmful )
-    {
-      if ( this -> p() -> buff.dream_of_cenarius -> check() )
-      {
-        m *= 1.0 + this -> p() -> buff.dream_of_cenarius -> data().effectN( 1 ).percent();
-      }
-    }
-
-    return m;
-  }
-
   virtual void execute()
   {
     ab::execute();
-
-    if ( this -> special && this -> harmful )
-    {
-      if ( this -> p() -> buff.dream_of_cenarius -> up() )
-      {
-        this -> p() -> buff.dream_of_cenarius -> decrement();
-      }
-    }
 
     if ( this -> result_is_hit( this -> execute_state -> result ) )
     {
@@ -2273,7 +2213,7 @@ struct rip_t : public cat_attack_t
     cat_attack_t( p, p -> find_class_spell( "Rip" ), options_str ),
     ap_per_point( 0.0 )
   {
-    ap_per_point          = 0.05808; // TOCHECK: Get exact value when tooltip is updated.
+    ap_per_point          = data().effectN( 1 ).ap_coeff(); // TOCHECK: Get exact value when tooltip is updated.
     requires_combo_points = true;
     may_crit              = false;
     dot_behavior          = DOT_REFRESH;
@@ -2809,9 +2749,6 @@ struct mangle_t : public bear_attack_t
 
       p() -> resource_gain( RESOURCE_RAGE, rage, p() -> gain.primal_fury );
       p() -> proc.primal_fury -> occur();
-
-      if ( p() -> talent.dream_of_cenarius -> ok() )
-        p() -> buff.dream_of_cenarius -> trigger();
     }
   }
 
@@ -3362,6 +3299,7 @@ struct frenzied_regeneration_t : public druid_heal_t
 };
 
 // Healing Touch ============================================================
+// TODO: Scale with AP instead of SP Guardian Dream of Cenarius is up.
 
 struct healing_touch_t : public druid_heal_t
 {
@@ -3382,9 +3320,6 @@ struct healing_touch_t : public druid_heal_t
     if ( p() -> buff.natures_swiftness -> check() )
       return 0;
 
-    if ( p() -> buff.dream_of_cenarius -> check() && p() -> specialization() == DRUID_GUARDIAN )
-      return 0;
-
     return druid_heal_t::cost();
   }
 
@@ -3392,17 +3327,19 @@ struct healing_touch_t : public druid_heal_t
   {
     double adm = base_t::action_da_multiplier();
 
-    if ( p() -> talent.dream_of_cenarius -> ok() && p() -> specialization() != DRUID_RESTORATION )
-      adm *= 1.0 + p() -> talent.dream_of_cenarius -> effectN( 2 ).percent();
+    if ( p() -> talent.dream_of_cenarius -> ok() ) {
+      if ( p() -> specialization() == DRUID_FERAL || p() -> specialization() == DRUID_BALANCE )
+        adm *= 1.0 + p() -> talent.dream_of_cenarius -> effectN( 1 ).percent();
+      else if ( p() -> specialization() == DRUID_GUARDIAN )
+        adm *= 1.0 + p() -> talent.dream_of_cenarius -> effectN( 2 ).percent();
+    }
 
     return adm;
   }
 
   virtual timespan_t execute_time() const
   {
-    if ( p() -> buff.predatory_swiftness -> check() )
-      return timespan_t::zero();
-    if ( p() -> buff.dream_of_cenarius -> check() && p() -> specialization() == DRUID_GUARDIAN )
+    if ( p() -> buff.predatory_swiftness -> check() || p() -> buff.dream_of_cenarius -> up() )
       return timespan_t::zero();
 
     return druid_heal_t::execute_time();
@@ -3425,13 +3362,14 @@ struct healing_touch_t : public druid_heal_t
   {
     druid_heal_t::execute();
 
+    /* FIXME: Dream of Cenarius buff states that the cooldown is reset,
+       talent states that the next cast does not trigger cooldown.
+       Sticking to what the buff states for now. */
+    if ( p() -> buff.dream_of_cenarius -> check() )
+      p() -> cooldown.starsurge -> reset( false );
+
     p() -> buff.predatory_swiftness -> expire();
-    if ( p() -> specialization() == DRUID_GUARDIAN )
-      p() -> buff.dream_of_cenarius -> expire();
-    else if ( p() -> specialization() == DRUID_FERAL )
-      p() -> buff.dream_of_cenarius -> trigger( 2 );
-    else if ( p() -> specialization() == DRUID_BALANCE )
-      p() -> buff.dream_of_cenarius -> trigger();
+    p() -> buff.dream_of_cenarius -> expire();
   }
 
   virtual void schedule_execute( action_state_t* state = 0 )
@@ -3624,6 +3562,17 @@ struct rejuvenation_t : public druid_heal_t
     if ( ! p() -> buff.heart_of_the_wild -> check() )
       p() -> buff.bear_form -> expire();
   }
+
+  virtual double action_da_multiplier() const
+  {
+    double adm = base_t::action_da_multiplier();
+
+    if ( p() -> talent.dream_of_cenarius -> ok() && p() -> specialization() == DRUID_FERAL )
+        adm *= 1.0 + p() -> talent.dream_of_cenarius -> effectN( 2 ).percent();
+
+    return adm;
+  }
+
 };
 
 // Renewal ============================================================
@@ -5172,7 +5121,7 @@ struct wrath_t : public druid_spell_t
     m *= 1.0 + p() -> buff.heart_of_the_wild -> damage_spell_multiplier();
 
     if ( p() -> talent.dream_of_cenarius && p() -> specialization() == DRUID_RESTORATION )
-      m *= 1.0 + p() -> talent.dream_of_cenarius -> effectN( 3 ).percent();
+      m *= 1.0 + p() -> talent.dream_of_cenarius -> effectN( 1 ).percent();
 
     return m;
   }
@@ -5588,10 +5537,7 @@ void druid_t::create_buffs()
   if ( talent.dream_of_cenarius -> ok() )
   {
     if ( specialization() == DRUID_BALANCE )
-      buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145151 ) );
-    else if ( specialization() == DRUID_FERAL )
-      buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145152 ) )
-                               .max_stack( 2 );
+      buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 154271 ) );
     else if ( specialization() == DRUID_GUARDIAN )
       buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", find_spell( 145162 ) )
                                .chance( talent.dream_of_cenarius -> effectN( 1 ).percent() );
@@ -5612,7 +5558,6 @@ void druid_t::create_buffs()
   buff.astral_insight            = buff_creator_t( this, "astral_insight", talent.soul_of_the_forest -> ok() ? find_spell( 145138 ) : spell_data_t::not_found() )
                                    .chance( 0.08 );
   buff.celestial_alignment       = new celestial_alignment_t( *this );
-  buff.dream_of_cenarius_eclipse = buff_creator_t( this, "dream_of_cenarius_eclipse", spell_data_t::nil() );
   buff.eclipse_lunar             = new eclipse_lunar_t( *this );
                                    //.add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.eclipse_solar             = new eclipse_solar_t( *this );
@@ -5710,12 +5655,6 @@ void druid_t::apl_precombat()
   precombat -> add_action( this, "Mark of the Wild", "if=!aura.str_agi_int.up" );
 
   precombat -> add_action( this, "Wild Mushroom", "if=buff.wild_mushroom.stack<buff.wild_mushroom.max_stack" );
-
-  // Dream of Cenarius Pre-Cast
-  if ( level >= 90 && ( specialization() == DRUID_FERAL || specialization() == DRUID_BALANCE ) )
-  {
-    precombat -> add_action( this, "Healing Touch", "if=!buff.dream_of_cenarius.up&talent.dream_of_cenarius.enabled" );
-  }
 
   // Forms
   if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
@@ -5825,9 +5764,6 @@ void druid_t::apl_feral()
   basic -> add_action( this, "Ferocious Bite", "if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25",
                        "Keep Rip from falling off during execute range." );
   basic -> add_action( this, "Faerie Fire", "if=debuff.weakened_armor.stack<3" );
-  if ( talent.dream_of_cenarius -> ok() )
-    basic -> add_action( this, "Healing Touch", "if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down&(buff.predatory_swiftness.remains<1.5|combo_points>=4)",
-                         "Proc Dream of Cenarius at 4+ CP or when PS is about to expire." );
   basic -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
 
   // Potion
@@ -5881,21 +5817,13 @@ void druid_t::apl_feral()
     basic -> add_action( "run_action_list,name=filler,if=buff.feral_fury.react" );
   basic -> add_action( "run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)" );
   basic -> add_action( "run_action_list,name=filler,if=target.time_to_die<=8.5" );
-  if ( talent.dream_of_cenarius -> ok() )
-    basic -> add_action( "run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up" );
-  else
-    basic -> add_action( "run_action_list,name=filler,if=buff.berserk.up" );
+  basic -> add_action( "run_action_list,name=filler,if=buff.berserk.up" );
   basic -> add_action( "run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3" );
   basic -> add_action( "run_action_list,name=filler,if=energy.time_to_max<=1.0" );
 
   // APL: ADVANCED
 
   advanced -> add_action( "swap_action_list,name=aoe,if=active_enemies>=5" );
-  if ( talent.dream_of_cenarius -> ok() && find_item( "rune_of_reorigination" ) && find_item( "ticking_ebon_detonator" ) )
-  {
-    advanced -> add_action( this, "Tiger's Fury", "if=time=0&set_bonus.tier16_4pc_melee" );
-    advanced -> add_action( this, "Savage Roar", "if=time=0&set_bonus.tier16_4pc_melee" );
-  }
   advanced -> add_action( "auto_attack" );
   advanced -> add_action( "skull_bash_cat" );
   if ( talent.force_of_nature -> ok() )
@@ -5942,9 +5870,6 @@ void druid_t::apl_feral()
   advanced -> add_action( this, "Ferocious Bite", "if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25",
                           "Keep Rip from falling off during execute range." );
   advanced -> add_action( this, "Faerie Fire", "if=debuff.weakened_armor.stack<3" );
-  if ( talent.dream_of_cenarius -> ok() )
-    advanced -> add_action( this, "Healing Touch", "if=talent.dream_of_cenarius.enabled&buff.predatory_swiftness.up&buff.dream_of_cenarius.down&(buff.predatory_swiftness.remains<1.5|combo_points>=4)",
-                            "Proc Dream of Cenarius at 4+ CP or when PS is about to expire." );
   advanced -> add_action( this, "Savage Roar", "if=buff.savage_roar.down" );
 
   // Potion
@@ -6023,10 +5948,7 @@ void druid_t::apl_feral()
     advanced -> add_action( "run_action_list,name=filler,if=buff.feral_fury.react" );
   advanced -> add_action( "run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)" );
   advanced -> add_action( "run_action_list,name=filler,if=target.time_to_die<=8.5" );
-  if ( talent.dream_of_cenarius -> ok() )
-    advanced -> add_action( "run_action_list,name=filler,if=buff.tigers_fury.up|buff.berserk.up" );
-  else
-    advanced -> add_action( "run_action_list,name=filler,if=buff.berserk.up" );
+  advanced -> add_action( "run_action_list,name=filler,if=buff.berserk.up" );
   advanced -> add_action( "run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3" );
   advanced -> add_action( "run_action_list,name=filler,if=energy.time_to_max<=1.0" );
 
@@ -6096,8 +6018,7 @@ void druid_t::apl_balance()
   action_list_str += init_use_item_actions( ",if=buff.celestial_alignment.up|cooldown.celestial_alignment.remains>30" );
   action_list_str += init_use_profession_actions( ",if=buff.celestial_alignment.up|cooldown.celestial_alignment.remains>30" );
   action_list_str += "/wild_mushroom_detonate,moving=0,if=buff.wild_mushroom.stack>0&buff.solar_eclipse.up";
-  action_list_str += "/natures_swiftness,if=talent.dream_of_cenarius.enabled";
-  action_list_str += "/healing_touch,if=talent.dream_of_cenarius.enabled&!buff.dream_of_cenarius.up&mana.pct>25";
+  action_list_str += "/healing_touch,if=talent.dream_of_cenarius.enabled&buff.dream_of_cenarius.up&mana.pct>25&cooldown.starsurge.remains>10"; // FIXME: DPS gain or not?
   action_list_str += "/incarnation,if=talent.incarnation.enabled&(buff.lunar_eclipse.up|buff.solar_eclipse.up)";
   action_list_str += "/celestial_alignment,if=(!buff.lunar_eclipse.up&!buff.solar_eclipse.up)&(buff.chosen_of_elune.up|!talent.incarnation.enabled|cooldown.incarnation.remains>10)";
   action_list_str += "/natures_vigil,if=talent.natures_vigil.enabled";
@@ -6462,8 +6383,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
       if ( buff.eclipse_lunar -> up() || buff.eclipse_solar -> up() )
       {
         m *= 1.0 + buff.eclipse_lunar -> data().effectN( 1 ).percent()
-                 + mastery.total_eclipse -> ok() * cache.mastery_value()
-                 + buff.dream_of_cenarius_eclipse -> check() * buff.dream_of_cenarius -> data().effectN( 1 ).percent();
+                 + mastery.total_eclipse -> ok() * cache.mastery_value();
       }
     }
     else if ( dbc::is_school( school, SCHOOL_ARCANE ) )
@@ -6471,8 +6391,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
       if ( buff.eclipse_lunar -> up() )
       {
         m *= 1.0 + buff.eclipse_lunar -> data().effectN( 1 ).percent()
-                 + mastery.total_eclipse -> ok() * cache.mastery_value()
-                 + buff.dream_of_cenarius_eclipse -> check() * buff.dream_of_cenarius -> data().effectN( 1 ).percent();
+                 + mastery.total_eclipse -> ok() * cache.mastery_value();
       }
     }
     else if ( dbc::is_school( school, SCHOOL_NATURE ) )
@@ -6480,8 +6399,7 @@ double druid_t::composite_player_multiplier( school_e school ) const
       if ( buff.eclipse_solar -> up() )
       {
         m *= 1.0 + buff.eclipse_solar -> data().effectN( 1 ).percent()
-                 + mastery.total_eclipse -> ok() * cache.mastery_value()
-                 + buff.dream_of_cenarius_eclipse -> check() * buff.dream_of_cenarius -> data().effectN( 1 ).percent();
+                 + mastery.total_eclipse -> ok() * cache.mastery_value();
       }
     }
 
