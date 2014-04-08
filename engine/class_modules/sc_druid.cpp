@@ -2079,11 +2079,26 @@ struct pounce_t : public cat_attack_t
 
 struct rake_t : public cat_attack_t
 {
+  struct rake_dot_t : public cat_attack_t {
+    rake_dot_t( druid_t* p ) :
+      cat_attack_t( "rake", p, p -> find_spell( 155722 ) )
+    {
+      dot_behavior          = DOT_REFRESH;
+      attack_power_mod.tick = data().effectN( 1 ).ap_coeff();
+      may_miss = may_dodge = may_parry = false;
+      dual = true;
+    }
+  };
+
+  action_t* rake_dot;
+
   rake_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( p, p -> find_class_spell( "Rake" ), options_str )
   {
-    dot_behavior        = DOT_REFRESH;
-    special             = true;
+    special                 = true;
+    attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
+
+    rake_dot = new rake_dot_t( p );
   }
 
   // Treat direct damage as "bleed"
@@ -2097,6 +2112,14 @@ struct rake_t : public cat_attack_t
       m *= 1.0 + p() -> cache.mastery_value();
 
     return m;
+  }
+
+  virtual void impact( action_state_t* state )
+  {
+    cat_attack_t::impact( state );
+
+    if ( result_is_hit( state -> result ) )
+      rake_dot -> execute();
   }
 
   virtual double target_armor( player_t* ) const
@@ -2306,7 +2329,7 @@ struct shred_t : public cat_attack_t
 
     base_multiplier += player -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
 
-    special            = true;
+    special          = true;
   }
 
   virtual void execute()
@@ -2495,7 +2518,7 @@ struct thrash_cat_t : public cat_attack_t
 struct tigers_fury_t : public cat_attack_t
 {
   tigers_fury_t( druid_t* p, const std::string& options_str ) :
-    cat_attack_t( p, p -> find_class_spell( "Tiger's Fury" ), options_str )
+    cat_attack_t( p, p -> find_specialization_spell( "Tiger's Fury" ), options_str )
   {
     harmful = false;
     special = false;
@@ -5493,7 +5516,8 @@ void druid_t::create_buffs()
 
   // Generic / Multi-spec druid buffs
   buff.bear_form             = new bear_form_t( *this );
-  buff.berserk               = buff_creator_t( this, "berserk", spell_data_t::nil() );
+  buff.berserk               = buff_creator_t( this, "berserk", find_specialization_spell( "Berserk" ) )
+                               .cd( timespan_t::zero() );
   buff.cat_form              = new cat_form_t( *this );
   buff.frenzied_regeneration = buff_creator_t( this, "frenzied_regeneration", find_class_spell( "Frenzied Regeneration" ) );
   buff.moonkin_form          = new moonkin_form_t( *this );
@@ -5581,7 +5605,8 @@ void druid_t::create_buffs()
   buff.tigers_fury           = buff_creator_t( this, "tigers_fury", find_specialization_spell( "Tiger's Fury" ) )
                                .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                               .cd( timespan_t::zero() );
+                               .cd( timespan_t::zero() )
+                               .chance( 1.0 );
   buff.savage_roar           = buff_creator_t( this, "savage_roar", find_specialization_spell( "Savage Roar" ) )
                                .default_value( find_spell( 62071 ) -> effectN( 1 ).percent() )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
