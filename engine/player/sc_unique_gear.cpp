@@ -50,7 +50,6 @@ namespace item
   DECLARE_CB( essence_of_yulon );
   DECLARE_CB( endurance_of_niuzao );
   DECLARE_CB( skeers_bloodsoaked_talisman );
-  DECLARE_CB( cleave_trinket );
   DECLARE_CB( black_blood_of_yshaarj );
   DECLARE_CB( rune_of_reorigination );
   DECLARE_CB( spark_of_zandalar );
@@ -184,6 +183,10 @@ static const special_effect_db_item_t __special_effect_db[] = {
   /**
    * TRINKET-PROC-TYPE-TODO:
    * - Alacrity of Xuen (procs on damage or landing an ability?)
+   * - Evil Eye of Galakras (damage/landing?)
+   * - Kadris Toxic Totem (damage/landing?)
+   * - Frenzied Crystal of Rage (damage/landing?)
+   * - Fusion-Fire Core (damage/landing?)
    */
 
   /**
@@ -198,16 +201,9 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 146219, "ProcOn/Hit",                                       0 }, /* Yu'lon's Bite */
   { 146251, "ProcOn/Hit",                                       0 }, /* Thok's Tail Tip (Str proc) */
 
-  { 146309, "OnDirectDamage",                                   0 }, /* Assurance of Consequence (Agi proc) */
-  { 146247, "OnDirectDamage",                                   0 }, /* Evil Eye of Galakras (Str proc) */
-  { 148907, "OnDirectDamage",                                   0 }, /* Kardris' Toxic Talisman (Int proc) */
-  { 148895, "OnDirectDamage",                                   0 }, /* Sigil of Rampage (Agi proc) */
-  { 148898, "OnDirectDamage",                                   0 }, /* Frenzied Crystal of Rage (Int proc) */
-  { 148901, "OnDirectDamage",                                   0 }, /* Fusion-Fire Core (Str proc) */
 
   { 146183, 0,                       item::black_blood_of_yshaarj }, /* Black Blood of Y'Shaarj */
   { 146286, 0,                  item::skeers_bloodsoaked_talisman }, /* Skeer's Bloodsoaked Talisman */
-  { 146136, 0,                               item::cleave_trinket }, /* Cleave effect */
 
   /* Mists of Pandaria: 5.2 */
   { 139116, 0,                        item::rune_of_reorigination }, /* Rune of Reorigination */
@@ -1311,7 +1307,7 @@ void item::rune_of_reorigination( special_effect_t& effect,
                                   const item_t& item,
                                   const special_effect_db_item_t& dbitem )
 {
-  struct rune_of_reorigination_callback_t : public proc_callback_t<action_state_t>
+  struct rune_of_reorigination_callback_t : public dbc_proc_callback_t
   {
     enum
     {
@@ -1322,15 +1318,10 @@ void item::rune_of_reorigination( special_effect_t& effect,
 
     stat_buff_t* buff;
 
-    rune_of_reorigination_callback_t( const item_t& i, const special_effect_t& data ) :
-      proc_callback_t<action_state_t>( i.player, data )
+    rune_of_reorigination_callback_t( player_t* player, const special_effect_t& data ) :
+      dbc_proc_callback_t( player, data )
     {
-      buff = stat_buff_creator_t( listener, proc_data.name_str )
-             .activated( false )
-             .duration( proc_data.duration_ )
-             .add_stat( STAT_CRIT_RATING, 0 )
-             .add_stat( STAT_HASTE_RATING, 0 )
-             .add_stat( STAT_MASTERY_RATING, 0 );
+      buff = static_cast< stat_buff_t* >( effect.custom_buff );
     }
 
     virtual void execute( action_t* action, action_state_t* /* state */ )
@@ -1404,13 +1395,20 @@ void item::rune_of_reorigination( special_effect_t& effect,
   const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
   const spell_data_t* spell = item.player -> find_spell( 139120 );
 
-  effect.name_str    = "rune_of_reorigination";
+  std::string buff_name = spell -> name_cstr();
+  util::tokenize( buff_name );
+
+  stat_buff_t* buff = stat_buff_creator_t( item.player, buff_name, spell )
+                      .activated( false )
+                      .add_stat( STAT_CRIT_RATING, 0 )
+                      .add_stat( STAT_HASTE_RATING, 0 )
+                      .add_stat( STAT_MASTERY_RATING, 0 );
+
+  effect.custom_buff  = buff;
   effect.ppm_         = -1.0 * driver -> real_ppm();
   effect.ppm_        *= item_database::approx_scale_coefficient( 528, item.item_level() );
-  effect.cooldown_    = driver -> internal_cooldown(); 
-  effect.duration_   = spell -> duration();
 
-  item.player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new rune_of_reorigination_callback_t( item, effect ) );
+  new rune_of_reorigination_callback_t( item.player, effect );
 }
 
 void item::spark_of_zandalar( special_effect_t& effect,
@@ -1420,31 +1418,26 @@ void item::spark_of_zandalar( special_effect_t& effect,
   maintenance_check( 502 );
 
   const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
-  const spell_data_t* spell = item.player -> find_spell( 138958 );
+  const spell_data_t* buff = item.player -> find_spell( 138960 );
 
-  effect.name_str    = "spark_of_zandalar";
-  effect.ppm_         = -1.0 * driver -> real_ppm();
-  effect.duration_   = spell -> duration();
-  effect.max_stacks  = spell -> max_stacks();
+  std::string buff_name = buff -> name_cstr();
+  util::tokenize( buff_name );
 
-  struct spark_of_zandalar_callback_t : public proc_callback_t<action_state_t>
+  stat_buff_t* b = stat_buff_creator_t( item.player, buff_name, buff, &item );
+
+  effect.custom_buff = b;
+
+  struct spark_of_zandalar_callback_t : public dbc_proc_callback_t
   {
     buff_t*      sparks;
     stat_buff_t* buff;
 
     spark_of_zandalar_callback_t( const item_t& i, const special_effect_t& data ) :
-      proc_callback_t<action_state_t>( i.player, data )
+      dbc_proc_callback_t( i.player, data )
     {
-      sparks = buff_creator_t( listener, proc_data.name_str )
-               .activated( false )
-               .duration( proc_data.duration_ )
-               .max_stack( proc_data.max_stacks );
-
-      const spell_data_t* spell = listener -> find_spell( 138960 );
-
-      buff = stat_buff_creator_t( listener, "zandalari_warrior" )
-             .duration( spell -> duration() )
-             .add_stat( STAT_STRENGTH, spell -> effectN( 2 ).average( i ) );
+      const spell_data_t* spell = listener -> find_spell( 138958 );
+      sparks = buff_creator_t( listener, "zandalari_spark_driver", spell )
+               .quiet( true );
     }
 
     void execute( action_t* /* action */, action_state_t* /* state */ )
@@ -1454,12 +1447,12 @@ void item::spark_of_zandalar( special_effect_t& effect,
       if ( sparks -> stack() == sparks -> max_stack() )
       {
         sparks -> expire();
-        buff   -> trigger();
+        proc_buff -> trigger();
       }
     }
   };
 
-  item.player -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, new spark_of_zandalar_callback_t( item, effect ) );
+  new spark_of_zandalar_callback_t( item, effect );
 };
 
 void item::unerring_vision_of_leishen( special_effect_t& effect,
@@ -1468,8 +1461,8 @@ void item::unerring_vision_of_leishen( special_effect_t& effect,
 {
   struct perfect_aim_buff_t : public buff_t
   {
-    perfect_aim_buff_t( player_t* p, const spell_data_t* s ) :
-      buff_t( buff_creator_t( p, "perfect_aim", s ).activated( false ) )
+    perfect_aim_buff_t( player_t* p ) :
+      buff_t( buff_creator_t( p, "perfect_aim", p -> find_spell( 138963 ) ).activated( false ) )
     { }
 
     void execute( int stacks, double value, timespan_t duration )
@@ -1494,134 +1487,32 @@ void item::unerring_vision_of_leishen( special_effect_t& effect,
     }
   };
 
-  struct unerring_vision_of_leishen_callback_t : public proc_callback_t<action_state_t>
+  struct unerring_vision_of_leishen_callback_t : public dbc_proc_callback_t
   {
-    perfect_aim_buff_t* buff;
+    unerring_vision_of_leishen_callback_t( const item_t& i, const special_effect_t& data ) :
+      dbc_proc_callback_t( i.player, data )
+    { }
 
-    unerring_vision_of_leishen_callback_t( const item_t& i, const special_effect_t& data, const spell_data_t* driver ) :
-      proc_callback_t<action_state_t>( i.player, data, driver )
+    void initialize()
     {
-      buff = new perfect_aim_buff_t( listener, listener -> find_spell( 138963 ) );
-      if ( i.player -> type == WARLOCK )
+      dbc_proc_callback_t::initialize();
+
+      // Warlocks have a (hidden?) 0.6 modifier, not showing in DBCs.
+      if ( listener -> type == WARLOCK )
         rppm.set_modifier( 0.6 );
     }
-
-    void execute( action_t* /* action */, action_state_t* /* state */ )
-    { buff -> trigger(); }
   };
 
   maintenance_check( 502 );
 
   const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
 
-  effect.name_str  = "perfect_aim";
-  effect.ppm_       = -1.0 * driver -> real_ppm();
-  effect.ppm_      *= item_database::approx_scale_coefficient( 528, item.item_level() );
-  effect.cooldown_  = driver -> internal_cooldown();
+  effect.ppm_         = -1.0 * driver -> real_ppm();
+  effect.ppm_        *= item_database::approx_scale_coefficient( 528, item.item_level() );
+  effect.proc_flags2_ = PF2_ALL_HIT;
+  effect.custom_buff  = new perfect_aim_buff_t( item.player );
 
-  unerring_vision_of_leishen_callback_t* cb = new unerring_vision_of_leishen_callback_t( item, effect, driver );
-  item.player -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
-  item.player -> callbacks.register_spell_tick_damage_callback( SCHOOL_ALL_MASK, cb );
-}
-
-template <typename T>
-struct cleave_t : public T
-{
-  cleave_t( const item_t& item, const char* name, school_e s ) :
-    T( name, item.player )
-  {
-    this -> callbacks = false;
-    this -> may_crit = false;
-    this -> may_glance = false;
-    this -> may_miss = true;
-    this -> special = true;
-    this -> proc = true;
-    this -> background = true;
-    this -> school = s;
-    this -> aoe = 5;
-    this -> snapshot_flags |= STATE_MUL_DA | STATE_TGT_MUL_DA;
-    if ( this -> type == ACTION_ATTACK )
-    {
-      this -> may_dodge = true;
-      this -> may_parry = true;
-      this -> may_block = true;
-    }
-  }
-
-  size_t available_targets( std::vector< player_t* >& tl ) const
-  {
-    tl.clear();
-
-    for ( size_t i = 0, actors = this -> sim -> target_non_sleeping_list.size(); i < actors; i++ )
-    {
-      player_t* t = this -> sim -> target_non_sleeping_list[ i ];
-
-      if ( t -> is_enemy() && ( t != this -> target ) )
-        tl.push_back( t );
-    }
-
-    return tl.size();
-  }
-
-  double composite_target_multiplier( player_t* ) const
-  { return 1.0; }
-
-  double composite_da_multiplier() const
-  { return 1.0; }
-
-  double target_armor( player_t* ) const
-  { return 0.0; }
-};
-
-void item::cleave_trinket( special_effect_t& effect,
-                           const item_t& item,
-                           const special_effect_db_item_t& dbitem )
-{
-  maintenance_check( 528 );
-
-  struct cleave_callback_t : public proc_callback_t<action_state_t>
-  {
-    cleave_t<spell_t>* cleave_spell;
-    cleave_t<attack_t>* cleave_attack;
-
-    cleave_callback_t( const item_t& i, const special_effect_t& data ) :
-      proc_callback_t<action_state_t>( i.player, data )
-    {
-      cleave_spell = new cleave_t<spell_t>( i, "cleave_spell", SCHOOL_NATURE );
-      cleave_attack = new cleave_t<attack_t>( i, "cleave_attack", SCHOOL_PHYSICAL );
-    }
-
-    void execute( action_t* action, action_state_t* state )
-    {
-      action_t* a = 0;
-
-      if ( action -> type == ACTION_ATTACK )
-        a = cleave_attack;
-      else if ( action -> type == ACTION_SPELL )
-        a = cleave_spell;
-      // TODO: Heal
-
-      if ( a )
-      {
-        a -> base_dd_min = a -> base_dd_max = state -> result_amount;
-        a -> target = state -> target;
-        a -> schedule_execute();
-      }
-    }
-  };
-
-  player_t* p = item.player;
-  const spell_data_t* cleave_driver_spell = p -> find_spell( dbitem.spell_id );
-
-  std::string name = cleave_driver_spell -> name_cstr();
-  util::tokenize( name );
-
-  effect.name_str = name;
-  effect.proc_chance_ = cleave_driver_spell -> effectN( 1 ).average( item ) / 10000.0;
-
-  cleave_callback_t* cb = new cleave_callback_t( item, effect );
-  p -> callbacks.register_direct_damage_callback( SCHOOL_ALL_MASK, cb );
-  p -> callbacks.register_tick_damage_callback( SCHOOL_ALL_MASK, cb );
+  new unerring_vision_of_leishen_callback_t( item, effect );
 }
 
 void item::skeers_bloodsoaked_talisman( special_effect_t& effect,
@@ -1635,9 +1526,13 @@ void item::skeers_bloodsoaked_talisman( special_effect_t& effect,
   // Aura is hidden, thre's no linkage in spell data actual
   const spell_data_t* buff = item.player -> find_spell( 146293 );
 
+  std::string buff_name = buff -> name_cstr();
+  util::tokenize( buff_name );
+
+  // Require a damaging result, instead of any harmful spell hit
   effect.proc_flags2_ = PF2_ALL_HIT;
 
-  stat_buff_t* b = stat_buff_creator_t( item.player, effect.name(), buff )
+  stat_buff_t* b = stat_buff_creator_t( item.player, buff_name, buff )
                    .add_stat( STAT_CRIT_RATING, spell -> effectN( 1 ).average( item ) )
                    .tick_behavior( BUFF_TICK_CLIP )
                    .period( spell -> effectN( 1 ).period() )
@@ -1653,24 +1548,23 @@ void item::black_blood_of_yshaarj( special_effect_t& effect,
                                    const special_effect_db_item_t& dbitem )
 {
   maintenance_check( 528 );
+
   const spell_data_t* driver = item.player -> find_spell( dbitem.spell_id );
   const spell_data_t* ticker = driver -> effectN( 1 ).trigger();
-  const spell_data_t* spell = item.player -> find_spell( 146202 );
+  const spell_data_t* buff = item.player -> find_spell( 146202 );
 
-  double value = util::round( ticker -> effectN( 1 ).average( item ) );
+  std::string buff_name = buff -> name_cstr();
+  util::tokenize( buff_name );
 
-  effect.name_str = tokenized_name( spell );
-  effect.ppm_ = -1.0 * driver -> real_ppm();
-  effect.cooldown_ = driver -> internal_cooldown();
-  effect.tick = ticker -> effectN( 1 ).period();
-  effect.stat = static_cast<stat_e>( spell -> effectN( 1 ).misc_value1() + 1 );
-  effect.stat_amount = value;
-  effect.duration_ = ticker -> duration();
-  effect.max_stacks = spell -> max_stacks();
-  effect.refresh = 0;
+  stat_buff_t* b = stat_buff_creator_t( item.player, buff_name, buff )
+                   .add_stat( STAT_INTELLECT, ticker -> effectN( 1 ).average( item ) )
+                   .tick_behavior( BUFF_TICK_CLIP )
+                   .period( ticker -> effectN( 1 ).period() )
+                   .duration( ticker -> duration () );
 
-  stat_buff_proc_t* cb = new stat_buff_proc_t( item.player, effect );
-  item.player -> callbacks.register_spell_direct_damage_callback( SCHOOL_ALL_MASK, cb );
+  effect.custom_buff = b;
+
+  new dbc_proc_callback_t( item.player, effect );
 }
 
 struct flurry_of_xuen_melee_t : public attack_t
