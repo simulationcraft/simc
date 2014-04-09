@@ -6988,6 +6988,38 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
   return spell_data_t::not_found();
 }
 
+// player_t::find_perk_spell ======================================
+
+const spell_data_t* player_t::find_perk_spell( const std::string& name, specialization_e s ) const
+{
+  if ( s == SPEC_NONE || s == _spec )
+  {
+    if ( unsigned spell_id = dbc.perk_ability_id( _spec, name.c_str() ) )
+    {
+      const spell_data_t* spell = dbc.spell( spell_id );
+      if ( ( ( int )spell -> level() <= level ) )
+        return spell;
+    }
+  }
+
+  return spell_data_t::not_found();
+}
+
+const spell_data_t* player_t::find_perk_spell( size_t idx, specialization_e s ) const
+{
+  if ( s == SPEC_NONE || s == _spec )
+  {
+    if ( unsigned spell_id = dbc.perk_ability_id( _spec, idx ) )
+    {
+      const spell_data_t* spell = dbc.spell( spell_id );
+      if ( ( ( int )spell -> level() <= level ) )
+        return spell;
+    }
+  }
+
+  return spell_data_t::not_found();
+}
+
 // player_t::find_mastery_spell =============================================
 
 const spell_data_t* player_t::find_mastery_spell( specialization_e s, const std::string& token, uint32_t idx ) const
