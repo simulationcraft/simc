@@ -280,6 +280,22 @@ public:
     const spell_data_t* spew_lava;
   } talent;
 
+  // Perks
+  struct
+  {
+    // Elemental
+
+    // Enhancement
+    const spell_data_t* improved_searing_totem;
+    const spell_data_t* improved_frost_shock;
+    const spell_data_t* improved_lava_lash;
+    const spell_data_t* improved_flame_shock;
+    const spell_data_t* improved_maelstrom_weapon;
+    const spell_data_t* improved_stormstrike;
+    const spell_data_t* improved_lava_lash_2;
+    const spell_data_t* improved_feral_spirits;
+  } perk;
+
   // Glyphs
   struct
   {
@@ -595,6 +611,17 @@ public:
     }
 
     return t;
+  }
+
+  double action_multiplier() const
+  {
+    double m = ab::action_multiplier();
+
+    const shaman_t* p = ab::p();
+    if ( p -> buff.maelstrom_weapon -> up() && ab::instant_eligibility() )
+      m *= 1.0 + p -> buff.maelstrom_weapon -> check() * p -> perk.improved_maelstrom_weapon -> effectN( 1 ).percent();
+
+    return m;
   }
 
   bool use_ancestral_swiftness()
@@ -921,7 +948,7 @@ struct feral_spirit_pet_t : public pet_t
     command = owner -> find_spell( 65222 );
   }
 
-  shaman_t* o() { return static_cast<shaman_t*>( owner ); }
+  shaman_t* o() const { return static_cast<shaman_t*>( owner ); }
 
   virtual void init_base_stats()
   {
@@ -944,6 +971,8 @@ struct feral_spirit_pet_t : public pet_t
 
     if ( owner -> race == RACE_ORC )
       m *= 1.0 + command -> effectN( 1 ).percent();
+
+    m *= 1.0 + o() -> perk.improved_feral_spirits -> effectN( 1 ).percent();
 
     return m;
   }
@@ -1506,13 +1535,16 @@ static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
     improved_lava_lash_t( shaman_t* p ) :
       shaman_spell_t( "improved_lava_lash", p )
     {
-      aoe = 4;
+      const spell_data_t* lava_lash = p -> find_specialization_spell( "Lava Lash" );
+
       may_miss = may_crit = false;
       proc = true;
       callbacks = false;
       background = true;
       dual = true;
 
+      aoe = lava_lash -> effectN( 4 ).base_value() +
+            p -> perk.improved_lava_lash -> effectN( 1 ).base_value();
     }
 
     // Exclude targets with your flame shock on
@@ -2114,6 +2146,7 @@ struct stormstrike_attack_t : public shaman_melee_attack_t
     may_proc_windfury = background = true;
     may_miss = may_dodge = may_parry = false;
     weapon = w;
+    base_multiplier *= 1.0 + p() -> perk.improved_stormstrike -> effectN( 1 ).percent();
   }
 };
 
@@ -2500,6 +2533,7 @@ struct lava_lash_t : public shaman_melee_attack_t
     school = SCHOOL_FIRE;
 
     base_multiplier += player -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + player -> perk.improved_lava_lash_2 -> effectN( 1 ).percent();
 
     parse_options( NULL, options_str );
 
@@ -3689,6 +3723,9 @@ struct flame_shock_t : public shaman_spell_t
       p() -> buff.lava_surge -> trigger();
     }
 
+    if ( rng().roll( p() -> perk.improved_flame_shock -> proc_chance() ) )
+      p() -> cooldown.lava_lash -> reset( true );
+
     trigger_tier16_4pc_melee( d -> state );
   }
 
@@ -3708,7 +3745,9 @@ struct frost_shock_t : public shaman_spell_t
     shaman_spell_t( player, player -> find_class_spell( "Frost Shock" ), options_str )
   {
     uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL || player -> specialization() == SHAMAN_ENHANCEMENT;
-    cooldown = player -> cooldown.shock;
+    if ( ! player -> perk.improved_frost_shock -> ok() )
+      cooldown = player -> cooldown.shock;
+
     shock    = true;
   }
 
@@ -4217,6 +4256,8 @@ struct searing_totem_pulse_t : public totem_pulse_action_t
     // to in-game damage ranges
     base_dd_min += 10;
     base_dd_max += 10;
+
+    base_multiplier *= 1.0 + totem -> o() -> perk.improved_searing_totem -> effectN( 1 ).percent();
   }
 };
 
@@ -4986,6 +5027,16 @@ void shaman_t::init_spells()
   talent.shocking_lava               = find_talent_spell( "Shocking Lava" );
   talent.storm_elemental_totem       = find_talent_spell( "Storm Elemental Totem" );
   talent.spew_lava                   = find_talent_spell( "Spew Lava" );
+
+  // Perks
+  perk.improved_searing_totem        = find_perk_spell( 1, SHAMAN_ENHANCEMENT );
+  perk.improved_frost_shock          = find_perk_spell( 2, SHAMAN_ENHANCEMENT );
+  perk.improved_lava_lash            = find_perk_spell( 3, SHAMAN_ENHANCEMENT );
+  perk.improved_flame_shock          = find_perk_spell( 4, SHAMAN_ENHANCEMENT );
+  perk.improved_maelstrom_weapon     = find_perk_spell( 5, SHAMAN_ENHANCEMENT );
+  perk.improved_stormstrike          = find_perk_spell( 6, SHAMAN_ENHANCEMENT );
+  perk.improved_lava_lash_2          = find_perk_spell( 7, SHAMAN_ENHANCEMENT );
+  perk.improved_feral_spirits        = find_perk_spell( 8, SHAMAN_ENHANCEMENT );
 
   // Glyphs
   glyph.chain_lightning              = find_glyph_spell( "Glyph of Chain Lightning" );
