@@ -1147,6 +1147,7 @@ void gem::capacitive_primal( special_effect_t& effect,
   const spell_data_t* spell = item.player -> find_spell( 137596 );
 
   effect.max_stacks = spell -> max_stacks();
+  effect.ppm_ = -1.0 * driver -> real_ppm();
   effect.rppm_scale = RPPM_HASTE;
 
   action_t* ls = item.player -> create_proc_action( "lightning_strike" );
