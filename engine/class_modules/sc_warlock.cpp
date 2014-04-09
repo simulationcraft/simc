@@ -340,9 +340,9 @@ void parse_spell_coefficient( action_t& a )
   for ( size_t i = 1; i <= a.data()._effects -> size(); i++ )
   {
     if ( a.data().effectN( i ).type() == E_SCHOOL_DAMAGE )
-      a.direct_power_mod = a.data().effectN( i ).m_average();
+      a.spell_power_mod.direct = a.data().effectN( i ).m_average();
     else if ( a.data().effectN( i ).type() == E_APPLY_AURA && a.data().effectN( i ).subtype() == A_PERIODIC_DAMAGE )
-      a.tick_power_mod = a.data().effectN( i ).m_average();
+      a.spell_power_mod.tick = a.data().effectN( i ).m_average();
   }
 }
 
@@ -1623,7 +1623,7 @@ public:
     double m = 1.0;
 
     warlock_td_t* td = this -> td( t );
-    if ( td -> debuffs_haunt -> check() && ( channeled || tick_power_mod ) ) // Only applies to channeled or dots
+    if ( td -> debuffs_haunt -> check() && ( channeled || spell_power_mod.direct ) ) // Only applies to channeled or dots
     {
       m *= 1.0 + td -> debuffs_haunt -> data().effectN( 3 ).percent();
     }
@@ -2019,7 +2019,7 @@ struct shadow_bolt_copy_t : public warlock_spell_t
   {
     background = true;
     callbacks  = false;
-    direct_power_mod = sb.direct_power_mod;
+    spell_power_mod.direct = sb.spell_power_mod.direct;
     base_dd_min      = sb.base_dd_min;
     base_dd_max      = sb.base_dd_max;
     base_multiplier  = sb.base_multiplier;
@@ -3391,7 +3391,7 @@ struct void_ray_t : public warlock_spell_t
   {
     aoe = -1;
     travel_speed = 0;
-    direct_power_mod = data().effectN( 1 ).coeff();
+    spell_power_mod.direct = data().effectN( 1 ).coeff();
   }
 
   virtual double action_multiplier() const
@@ -3712,7 +3712,7 @@ struct soulburn_seed_of_corruption_t : public warlock_spell_t
     warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
-      td( s -> target ) -> soulburn_soc_trigger = data().effectN( 3 ).average( p() ) + s -> composite_power() * coefficient;
+      td( s -> target ) -> soulburn_soc_trigger = data().effectN( 3 ).average( p() ) + s -> composite_spell_power() * coefficient;
   }
 };
 
@@ -3737,7 +3737,7 @@ struct seed_of_corruption_t : public warlock_spell_t
     warlock_spell_t::impact( s );
 
     if ( result_is_hit( s -> result ) )
-      td( s -> target ) -> soc_trigger = data().effectN( 3 ).average( p() ) + s -> composite_power() * data().effectN( 3 ).coeff();
+      td( s -> target ) -> soc_trigger = data().effectN( 3 ).average( p() ) + s -> composite_spell_power() * data().effectN( 3 ).coeff();
   }
 
   virtual void execute()
@@ -3862,7 +3862,7 @@ struct hellfire_t : public warlock_spell_t
     channeled = true;
     may_crit = false;
 
-    tick_power_mod = base_td = 0;
+    spell_power_mod.tick = base_td = 0;
 
     dynamic_tick_action = true;
     tick_action = new hellfire_tick_t( p, data() );

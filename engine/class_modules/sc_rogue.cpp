@@ -459,18 +459,32 @@ struct rogue_attack_t : public melee_attack_t
   virtual double calculate_weapon_damage( double attack_power );
   virtual double target_armor( player_t* ) const;
 
-  virtual double direct_power_coefficient( const action_state_t* s ) const
+  virtual double attack_direct_power_coefficient( const action_state_t* s ) const
   {
     if ( requires_combo_points )
-      return direct_power_mod * cast_state( s ) -> cp;
-    return melee_attack_t::direct_power_coefficient( s );
+      return attack_power_mod.direct * cast_state( s ) -> cp;
+    return melee_attack_t::attack_direct_power_coefficient( s );
   }
 
-  virtual double tick_power_coefficient( const action_state_t* s ) const
+  virtual double attack_tick_power_coefficient( const action_state_t* s ) const
   {
     if ( requires_combo_points )
-      return tick_power_mod * cast_state( s ) -> cp;
-    return melee_attack_t::tick_power_coefficient( s );
+      return attack_power_mod.tick * cast_state( s ) -> cp;
+    return melee_attack_t::attack_tick_power_coefficient( s );
+  }
+
+  virtual double spell_direct_power_coefficient( const action_state_t* s ) const
+  {
+    if ( requires_combo_points )
+      return spell_power_mod.direct * cast_state( s ) -> cp;
+    return melee_attack_t::spell_direct_power_coefficient( s );
+  }
+
+  virtual double spell_tick_power_coefficient( const action_state_t* s ) const
+  {
+    if ( requires_combo_points )
+      return spell_power_mod.tick * cast_state( s ) -> cp;
+    return melee_attack_t::spell_tick_power_coefficient( s );
   }
 
   virtual double bonus_da( const action_state_t* s ) const
@@ -1371,7 +1385,7 @@ struct envenom_t : public rogue_attack_t
   {
     weapon = &( p -> main_hand_weapon );
     requires_combo_points  = true;
-    direct_power_mod       = 0.134;
+    attack_power_mod.direct       = 0.134;
     num_ticks              = 0;
     base_dd_min            = base_dd_max = 0.213 * p -> dbc.spell_scaling( p -> type, p -> level );
     weapon_multiplier = weapon_power_mod = 0.0;
@@ -1433,7 +1447,7 @@ struct eviscerate_t : public rogue_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = weapon_power_mod = 0;
 
-    direct_power_mod = 0.18;
+    attack_power_mod.direct = 0.18;
   }
 
   timespan_t gcd() const
@@ -1494,7 +1508,6 @@ struct fan_of_knives_t : public rogue_attack_t
   {
     weapon = &( p -> main_hand_weapon );
     weapon_multiplier = weapon_power_mod = 0;
-    direct_power_mod = data().extra_coeff();
     aoe              = -1;
   }
 
@@ -1532,7 +1545,7 @@ struct crimson_tempest_t : public rogue_attack_t
   {
     aoe = -1;
     requires_combo_points = true;
-    direct_power_mod = 0.0275;
+    attack_power_mod.direct = 0.0275;
     weapon = &( p -> main_hand_weapon );
     weapon_power_mod = weapon_multiplier = 0;
     ct_dot = new crimson_tempest_dot_t( p );
@@ -1562,7 +1575,7 @@ struct garrote_t : public rogue_attack_t
   {
     may_crit          = false;
     requires_stealth  = true;
-    tick_power_mod    = 0.078;
+    attack_power_mod.tick    = 0.078;
   }
 
   void impact( action_state_t* state )
@@ -2020,7 +2033,6 @@ struct shuriken_toss_t : public rogue_attack_t
   shuriken_toss_t( rogue_t* p, const std::string& options_str ) :
     rogue_attack_t( "shuriken_toss", p, p -> find_talent_spell( "Shuriken Toss" ), options_str )
   {
-    direct_power_mod    = data().extra_coeff();
     adds_combo_points = 1; // it has an effect but with no base value :rollseyes:
   }
 };
@@ -2423,7 +2435,6 @@ struct venomous_wound_t : public rogue_poison_t
   {
     background       = true;
     proc             = true;
-    direct_power_mod = data().extra_coeff();
   }
 
   double composite_da_multiplier() const
@@ -2445,7 +2456,6 @@ struct deadly_poison_t : public rogue_poison_t
     deadly_poison_dd_t( rogue_t* p ) :
       rogue_poison_t( "deadly_poison_instant", p, p -> find_spell( 113780 ) )
     {
-      direct_power_mod = data().extra_coeff();
       harmful          = true;
     }
   };
@@ -2458,7 +2468,6 @@ struct deadly_poison_t : public rogue_poison_t
       may_crit       = false;
       harmful        = true;
       tick_may_crit  = true;
-      tick_power_mod = data().extra_coeff();
       dot_behavior   = DOT_REFRESH;
     }
   };
@@ -2515,7 +2524,6 @@ struct wound_poison_t : public rogue_poison_t
     wound_poison_dd_t( rogue_t* p ) :
       rogue_poison_t( "wound_poison", p, p -> find_class_spell( "Wound Poison" ) -> effectN( 1 ).trigger() )
     {
-      direct_power_mod = data().extra_coeff();
       harmful          = true;
     }
 

@@ -1063,7 +1063,8 @@ struct basic_attack_t : public hunter_main_pet_attack_t
     school = SCHOOL_PHYSICAL;
 
     // hardcoded into tooltip
-    direct_power_mod = 0.168;
+
+    attack_power_mod.direct = 0.168;
     base_multiplier *= 1.0 + p -> specs.spiked_collar -> effectN( 1 ).percent();
     chance_invigoration = p -> find_spell( 53397 ) -> proc_chance();
     gain_invigoration = p -> find_spell( 53398 ) -> effectN( 1 ).resource( RESOURCE_FOCUS );
@@ -1170,7 +1171,6 @@ struct lynx_rush_t : public hunter_main_pet_attack_t
 
     // school = SCHOOL_BLEED;
     tick_may_crit = true;
-    tick_power_mod = data().extra_coeff();
     dot_behavior = DOT_REFRESH;
 
     repeating         = false;
@@ -1230,7 +1230,7 @@ struct kill_command_t : public hunter_main_pet_attack_t
     school = SCHOOL_PHYSICAL;
 
     // hardcoded into hunter kill command tooltip
-    direct_power_mod = 0.938;
+    attack_power_mod.direct = 0.938;
   }
 
   virtual double action_multiplier() const
@@ -1485,7 +1485,7 @@ struct froststorm_breath_t : public hunter_main_pet_spell_t
     froststorm_breath_tick_t( hunter_main_pet_t* player ) :
       hunter_main_pet_spell_t( "froststorm_breath_tick", player, player -> find_spell( 95725 ) )
     {
-      direct_power_mod = 0.144; // hardcoded into tooltip, 29/08/2012
+      attack_power_mod.direct = 0.144; // hardcoded into tooltip, 29/08/2012
       background  = true;
       direct_tick = true;
     }
@@ -1615,7 +1615,7 @@ struct dire_critter_t : public hunter_pet_t
       weapon_multiplier = 0;
       base_execute_time = weapon -> swing_time;
       base_dd_min = base_dd_max = player -> dbc.spell_scaling( p.o() -> type, p.o() -> level );
-      direct_power_mod = 0.2875;
+      attack_power_mod.direct = 0.2875;
       school = SCHOOL_PHYSICAL;
 
       trigger_gcd = timespan_t::zero();
@@ -2146,7 +2146,6 @@ struct glaive_toss_strike_t : public ranged_attack_t
     weapon = &( player -> main_hand_weapon );
     weapon_multiplier = 0;
 
-    direct_power_mod = data().extra_coeff();
 
     aoe = -1;
   }
@@ -2234,8 +2233,6 @@ struct black_arrow_t : public hunter_ranged_attack_t
 
     cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
-
-    tick_power_mod = data().extra_coeff();
   }
 
   virtual bool ready()
@@ -2270,7 +2267,6 @@ struct explosive_trap_effect_t : public hunter_ranged_attack_t
   {
     aoe = -1;
     background = true;
-    tick_power_mod = data().extra_coeff();
 
     cooldown -> duration += p() -> specs.trap_mastery -> effectN( 4 ).time_value();
     base_multiplier *= 1.0 + p() -> specs.trap_mastery -> effectN( 2 ).percent();
@@ -2364,7 +2360,7 @@ struct cobra_shot_t : public hunter_ranged_attack_t
     if ( p() -> sets.has_set_bonus( SET_T13_2PC_MELEE ) )
       focus_gain *= 2.0;
 
-    direct_power_mod = 0.017;
+    attack_power_mod.direct = 0.017;
   }
 
   virtual bool usable_moving() const
@@ -2432,8 +2428,8 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     parse_options( NULL, options_str );
     may_block = false;
 
-    tick_power_mod = player -> specs.explosive_shot -> effectN( 3 ).base_value() / 1000.0;
-    direct_power_mod = tick_power_mod;
+    attack_power_mod.tick = player -> specs.explosive_shot -> effectN( 3 ).base_value() / 1000.0;
+    attack_power_mod.direct = attack_power_mod.tick;
 
     // the inital impact is not part of the rolling dot
     num_ticks = 0;
@@ -2599,7 +2595,6 @@ struct serpent_sting_t : public hunter_ranged_attack_t
 
     const spell_data_t* scaling_data = data().effectN( 1 ).trigger(); // id 118253
     parse_effect_data( scaling_data -> effectN( 1 ) );
-    tick_power_mod = scaling_data -> extra_coeff();
 
     base_td_multiplier *= 1.0 + player -> specs.improved_serpent_sting -> effectN( 2 ).percent();
 
@@ -3009,9 +3004,9 @@ struct moc_t : public ranged_attack_t
       may_block = false;
       school = SCHOOL_PHYSICAL;
       travel_speed = 0.0;
-
-      direct_power_mod = data().extra_coeff();
-      tick_power_mod = data().extra_coeff();
+//
+//      direct_power_mod = data().extra_coeff();
+//      tick_power_mod = data().extra_coeff();
     }
   };
 
@@ -3025,8 +3020,6 @@ struct moc_t : public ranged_attack_t
     may_miss = false;
     school = SCHOOL_PHYSICAL;
 
-    base_spell_power_multiplier    = 0.0;
-    base_attack_power_multiplier   = 1.0;
 
     dynamic_tick_action = true;
     tick_action = new peck_t( player );
@@ -3367,9 +3360,6 @@ struct lynx_rush_t : public hunter_spell_t
     harmful = false;
     school = SCHOOL_PHYSICAL;
 
-    base_spell_power_multiplier    = 0.0;
-    base_attack_power_multiplier   = 1.0;
-
     for ( size_t i = 0, pets = p() -> pet_list.size(); i < pets; ++i )
     {
       pet_t* pet = p() -> pet_list[ i ];
@@ -3410,9 +3400,6 @@ struct kill_command_t : public hunter_spell_t
     hunter_spell_t( "kill_command", player, player -> find_class_spell( "Kill Command" ) )
   {
     parse_options( NULL, options_str );
-
-    base_spell_power_multiplier    = 0.0;
-    base_attack_power_multiplier   = 1.0;
 
     harmful = false;
 

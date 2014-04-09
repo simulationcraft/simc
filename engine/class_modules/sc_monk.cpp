@@ -421,10 +421,6 @@ private:
       background = true;
       may_crit = true;
       may_miss = true;
-
-      base_spell_power_multiplier  = 0;
-      base_attack_power_multiplier = 1;
-      direct_power_mod = data().extra_coeff();
     }
   };
 
@@ -457,8 +453,6 @@ private:
       aoe = 3;
       special = true;
       tick_may_crit  = true;
-      base_spell_power_multiplier  = 0;
-      tick_power_mod = data().extra_coeff();
       cooldown -> duration = timespan_t::from_seconds( 6.0 );
     }
   };
@@ -844,7 +838,7 @@ struct jab_t : public monk_melee_attack_t
     parse_options( nullptr, options_str );
     stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT;
 
-    base_dd_min = base_dd_max = direct_power_mod = 0.0; // deactivate parsed spelleffect1
+    base_dd_min = base_dd_max = attack_power_mod.direct = spell_power_mod.direct = 0.0; // deactivate parsed spelleffect1
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
@@ -923,7 +917,7 @@ struct tiger_palm_t : public monk_melee_attack_t
   {
     parse_options( nullptr, options_str );
     stancemask = STURDY_OX | FIERCE_TIGER | WISE_SERPENT;
-    base_dd_min = base_dd_max = direct_power_mod = 0.0;//  deactivate parsed spelleffect1
+    base_dd_min = base_dd_max = attack_power_mod.direct = spell_power_mod.direct = 0.0;//  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
     base_multiplier = 3.0; // hardcoded into tooltip
@@ -1029,7 +1023,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     monk_melee_attack_t( "blackout_kick", p, p -> find_class_spell( "Blackout Kick" ) )
   {
     parse_options( nullptr, options_str );
-    base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0; //  deactivate parsed spelleffect1
+    base_dd_min = base_dd_max = 0.0; attack_power_mod.direct = spell_power_mod.direct = 0.0; //  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
     base_multiplier = 8.0 * 0.89; // hardcoded into tooltip
@@ -1163,7 +1157,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     parse_options( nullptr, options_str );
     stancemask = FIERCE_TIGER;
-    base_dd_min = base_dd_max = direct_power_mod = 0.0;//  deactivate parsed spelleffect1
+    base_dd_min = base_dd_max = attack_power_mod.direct = spell_power_mod.direct = 0.0;//  deactivate parsed spelleffect1
     mh = &( player -> main_hand_weapon ) ;
     oh = &( player -> off_hand_weapon ) ;
     base_multiplier = 14.4 * 0.89; // hardcoded into tooltip
@@ -1215,7 +1209,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       direct_tick = true;
 	  may_crit = may_miss = may_block = may_dodge = may_parry = true;
       aoe = -1;
-      base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
+      base_dd_min = base_dd_max = 0.0; attack_power_mod.direct = spell_power_mod.direct = 0.0;//  deactivate parsed spelleffect1
       mh = &( player -> main_hand_weapon ) ;
       oh = &( player -> off_hand_weapon ) ;
       school = SCHOOL_PHYSICAL;
@@ -1235,7 +1229,7 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
       direct_tick = true;
 	  may_crit = may_miss = may_block = may_dodge = may_parry = true;
       aoe = -1;
-      base_dd_min = base_dd_max = 0.0; direct_power_mod = 0.0;//  deactivate parsed spelleffect1
+      base_dd_min = base_dd_max = 0.0; attack_power_mod.direct = spell_power_mod.direct = 0.0;//  deactivate parsed spelleffect1
       mh = &( player -> main_hand_weapon ) ;
       oh = &( player -> off_hand_weapon ) ;
       school = SCHOOL_PHYSICAL;
@@ -1330,7 +1324,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
       dual        = true;
       aoe = -1;
       direct_tick = true;
-      base_dd_min = base_dd_max = direct_power_mod = 0.0;//  deactivate parsed spelleffect1
+      base_dd_min = base_dd_max = attack_power_mod.direct = spell_power_mod.direct = 0.0;//  deactivate parsed spelleffect1
       mh = &( player -> main_hand_weapon ) ;
       oh = &( player -> off_hand_weapon ) ;
 
@@ -1641,7 +1635,7 @@ struct expel_harm_t : public monk_melee_attack_t
     stancemask = STURDY_OX | FIERCE_TIGER;
     background = true;
 
-    base_dd_min = base_dd_max = direct_power_mod = 0.0; // deactivate parsed spelleffect1
+    base_dd_min = base_dd_max = attack_power_mod.direct = spell_power_mod.direct = 0.0; // deactivate parsed spelleffect1
 
     mh = &( player -> main_hand_weapon );
     oh = &( player -> off_hand_weapon );
@@ -1882,9 +1876,7 @@ struct zen_sphere_damage_t : public monk_spell_t
   {
     background = true;
 
-    base_attack_power_multiplier = 1.0;
-    base_spell_power_multiplier = 0.0;
-    direct_power_mod = 0.09 * 1.15; // hardcoded into tooltip
+    attack_power_mod.direct = 0.09 * 1.15; // hardcoded into tooltip
     school = SCHOOL_NATURE;
   }
 };
@@ -1897,9 +1889,7 @@ struct zen_sphere_detonate_damage_t : public monk_spell_t
     background = true;
     aoe = -1;
 
-    base_attack_power_multiplier = 1.0;
-    base_spell_power_multiplier = 0.0;
-    direct_power_mod = 0.368 * 1.15; // hardcoded into tooltip
+    attack_power_mod.direct = 0.368 * 1.15; // hardcoded into tooltip
     school = SCHOOL_NATURE;
   }
 };
@@ -1915,9 +1905,6 @@ struct spinning_fire_blossom_t : public monk_spell_t
   {
     parse_options( nullptr, options_str );
 
-    direct_power_mod = data().extra_coeff();
-    base_attack_power_multiplier = 1.0;
-    base_spell_power_multiplier = 0.0;
   }
 
   virtual double composite_target_da_multiplier( player_t* t ) const
@@ -1947,10 +1934,8 @@ struct chi_wave_t : public monk_spell_t
     direct_damage_t( monk_t* p ) :
       monk_spell_t( "chi_wave_dd", p, p -> find_spell( 115098 ) )
     {
-      direct_power_mod = 0.45; // hardcoded into tooltip of 115098
+      attack_power_mod.direct = 0.45; // hardcoded into tooltip of 115098
 
-      base_attack_power_multiplier = 1.0;
-      base_spell_power_multiplier = 0.0;
       background = true;
     }
   };
@@ -1963,7 +1948,7 @@ struct chi_wave_t : public monk_spell_t
     hasted_ticks   = false;
     base_tick_time = timespan_t::from_seconds( 1.0 );
 
-    direct_power_mod = base_dd_min = base_dd_max = 0;
+    attack_power_mod.direct = spell_power_mod.direct = base_dd_min = base_dd_max = 0;
 
     special = false;
 
@@ -1983,9 +1968,7 @@ struct chi_burst_t : public monk_spell_t
     parse_options( nullptr, options_str );
     aoe = -1;
     special = false; // Disable pausing of auto attack while casting this spell
-    base_attack_power_multiplier = 1.0;
-    base_spell_power_multiplier = 0.0;
-    direct_power_mod = 1.21; // hardcoded into tooltip 2013/04/10
+    attack_power_mod.direct = 1.21; // hardcoded into tooltip 2013/04/10
     base_dd_min = player -> find_spell( 130651 ) -> effectN( 1 ).min( player );
     base_dd_max = player -> find_spell( 130651 ) -> effectN( 1 ).max( player );
   }
@@ -2002,9 +1985,6 @@ struct chi_torpedo_t : public monk_spell_t
   {
     parse_options( nullptr, options_str );
     aoe = -1;
-    direct_power_mod = data().extra_coeff();
-    base_attack_power_multiplier = 1.0;
-    base_spell_power_multiplier = 0.0;
   }
 };
 
@@ -2088,9 +2068,6 @@ struct breath_of_fire_t : public monk_spell_t
       monk_spell_t( "breath_of_fire_dot", &p, p.find_spell( 123725 ) )
     {
       background = true;
-      base_attack_power_multiplier = 1.0;
-      base_spell_power_multiplier = 0.0;
-      direct_power_mod = data().extra_coeff();
     }
   };
   periodic_t* dot_action;
@@ -2103,9 +2080,6 @@ struct breath_of_fire_t : public monk_spell_t
 
     aoe = -1;
     stancemask = STURDY_OX;
-    base_attack_power_multiplier = 1.0;
-    base_spell_power_multiplier = 0.0;
-    direct_power_mod = data().extra_coeff();
   }
 
   virtual void impact( action_state_t* s )
@@ -2368,9 +2342,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
     channeled = tick_may_crit = true;
     hasted_ticks = false; // Channeled spells always have hasted ticks. Use hasted_ticks = false to disable the increase in the number of ticks.
     procs_courageous_primal_diamond = false;
-    tick_power_mod = 0.386;
-    base_spell_power_multiplier = 0;
-    base_attack_power_multiplier = 1;
+    attack_power_mod.tick = 0.386;
 
     base_multiplier += p.spec.teachings_of_the_monastery -> effectN( 6 ).percent();
   }
@@ -2551,7 +2523,7 @@ struct renewing_mist_t : public monk_heal_t
     stancemask = WISE_SERPENT;
     may_crit = may_miss = false;
 
-    tick_power_mod = p.find_spell( 115151 ) -> effectN( 3 ).coeff();
+    spell_power_mod.tick = p.find_spell( 115151 ) -> effectN( 3 ).coeff();
 
     trigger_gcd = p.find_spell( 115151 ) -> gcd();
     base_execute_time = p.find_spell( 115151 ) -> cast_time( p.level );
@@ -2757,9 +2729,7 @@ struct zen_sphere_t : public monk_heal_t
       background = dual = true;
       aoe = -1;
 
-      base_attack_power_multiplier = 1.0;
-      base_spell_power_multiplier = 0.0;
-      direct_power_mod = 0.281 * 1.15; // hardcoded into tooltip
+      attack_power_mod.direct = 0.281 * 1.15; // hardcoded into tooltip
       school = SCHOOL_NATURE;
     }
   };
@@ -2774,13 +2744,11 @@ struct zen_sphere_t : public monk_heal_t
   {
     parse_options( nullptr, options_str );
 
-    base_attack_power_multiplier = 1.0;
-    base_spell_power_multiplier = 0.0;
     school = SCHOOL_NATURE;
     if ( player -> specialization() == MONK_MISTWEAVER )
-      tick_power_mod = 0.108 * 1.15; // hardcoded into tooltip
+      attack_power_mod.tick = 0.108 * 1.15; // hardcoded into tooltip
     else
-      tick_power_mod = 0.09 * 1.15;  // hardcoded into tooltip
+      attack_power_mod.tick = 0.09 * 1.15;  // hardcoded into tooltip
 
     cooldown -> duration = timespan_t::from_seconds( 10.0 );
   }
@@ -2827,9 +2795,7 @@ struct guard_t : public monk_absorb_t
     trigger_gcd = timespan_t::zero();
     target = &p;
 
-    base_attack_power_multiplier = 1.0;
-    base_spell_power_multiplier = 0.0;
-    direct_power_mod = 1.971; // hardcoded into tooltip 2013/04/10
+    attack_power_mod.direct = 1.971; // hardcoded into tooltip 2013/04/10
   }
 
   virtual void impact( action_state_t* s )

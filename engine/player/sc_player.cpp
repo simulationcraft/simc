@@ -5531,10 +5531,6 @@ struct rocket_barrage_t : public racial_spell_t
     racial_spell_t( p, "rocket_barrage", p -> find_racial_spell( "Rocket Barrage" ), options_str )
   {
     parse_options( NULL, options_str );
-
-    base_spell_power_multiplier  = direct_power_mod;
-    base_attack_power_multiplier = data().extra_coeff();
-    direct_power_mod             = 1.0;
   }
 };
 
@@ -6000,7 +5996,6 @@ struct use_item_t : public action_t
           may_crit    = ( s != SCHOOL_DRAIN ) && ( ( override_result_es_mask & RESULT_CRIT_MASK ) ? ( result_es_mask & RESULT_CRIT_MASK ) : true ); // Default true
           may_miss    = ( override_result_es_mask & RESULT_MISS_MASK ) ? ( result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
           background  = true;
-          base_spell_power_multiplier = 0;
         }
       };
 
@@ -6474,14 +6469,14 @@ bool player_t::parse_talents_armory( const std::string& talent_string )
     return true;
   }
 
-  if ( t_str.size() < MAX_TALENT_ROWS )
-  {
-    sim -> errorf( "Player %s has malformed talent string '%s': talent list too short.\n",
-                   name(), talent_string.c_str() );
-    return false;
-  }
+//  if ( t_str.size() < MAX_TALENT_ROWS )
+//  {
+//    sim -> errorf( "Player %s has malformed talent string '%s': talent list too short.\n",
+//                   name(), talent_string.c_str() );
+//    return false;
+//  }
 
-  for ( size_t i = 0; i < MAX_TALENT_ROWS; ++i )
+  for ( size_t i = 0; i < std::min( t_str.size(), (size_t)MAX_TALENT_ROWS ); ++i )
   {
     switch ( t_str[ i ] )
     {
@@ -6988,6 +6983,38 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
 
         return spell;
       }
+    }
+  }
+
+  return spell_data_t::not_found();
+}
+
+// player_t::find_perk_spell ======================================
+
+const spell_data_t* player_t::find_perk_spell( const std::string& name, specialization_e s ) const
+{
+  if ( s == SPEC_NONE || s == _spec )
+  {
+    if ( unsigned spell_id = dbc.perk_ability_id( _spec, name.c_str() ) )
+    {
+      const spell_data_t* spell = dbc.spell( spell_id );
+      if ( ( ( int )spell -> level() <= level ) )
+        return spell;
+    }
+  }
+
+  return spell_data_t::not_found();
+}
+
+const spell_data_t* player_t::find_perk_spell( size_t idx, specialization_e s ) const
+{
+  if ( s == SPEC_NONE || s == _spec )
+  {
+    if ( unsigned spell_id = dbc.perk_ability_id( _spec, idx ) )
+    {
+      const spell_data_t* spell = dbc.spell( spell_id );
+      if ( ( ( int )spell -> level() <= level ) )
+        return spell;
     }
   }
 

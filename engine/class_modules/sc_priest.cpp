@@ -693,7 +693,7 @@ struct fiend_melee_t final : public priest_pet_melee_t
     weapon_multiplier = 0.0;
     base_dd_min       = weapon -> min_dmg;
     base_dd_max       = weapon -> max_dmg;
-    direct_power_mod  = p.direct_power_mod;
+    attack_power_mod.direct  = p.direct_power_mod;
   }
 
   base_fiend_pet_t& p()
@@ -731,7 +731,7 @@ struct lightwell_renew_t final : public heal_t
     may_crit = false;
     tick_may_crit = true;
 
-    tick_power_mod = 0.308;
+    spell_power_mod.direct = 0.308;
   }
 
   lightwell_pet_t& p()
@@ -978,7 +978,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
       check_spell( p.specs.divine_aegis );
       proc             = true;
       background       = true;
-      direct_power_mod = 0.0;
+      spell_power_mod.direct = 0.0;
     }
 
     virtual void impact( action_state_t* s ) override
@@ -1759,7 +1759,7 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 
     trigger_gcd       = timespan_t::zero();
     travel_speed      = 6.0;
-    direct_power_mod  = 0.375;
+    spell_power_mod.direct  = 0.375;
     base_dd_min = base_dd_max = 393;
     school            = SCHOOL_SHADOW;
   }
@@ -2166,7 +2166,7 @@ struct shadow_word_death_t final : public priest_spell_t
 
       // Hard-coded values as nothing in DBC
       base_dd_min = base_dd_max = 0.533 * priest.dbc.spell_scaling( data().scaling_class(), priest.level );
-      direct_power_mod = 0.599;
+      spell_power_mod.direct = 0.599;
 
       target = &priest;
 
@@ -2311,9 +2311,9 @@ struct devouring_plague_t final : public priest_spell_t
     {
       parse_effect_data( data().effectN( 2 ) );
 
-      tick_power_mod = direct_power_mod;
+      spell_power_mod.tick = spell_power_mod.direct;
 
-      base_dd_min = base_dd_max = direct_power_mod = 0.0;
+      base_dd_min = base_dd_max = spell_power_mod.direct = 0.0;
 
       background = true;
     }
@@ -3991,7 +3991,7 @@ struct power_word_shield_t final : public priest_absorb_t
 
     // Tooltip is wrong.
     // direct_power_mod = 0.87; // hardcoded into tooltip
-    direct_power_mod = 1.8709; // matches in-game actual value
+    spell_power_mod.direct = 1.8709; // matches in-game actual value
 
     if ( p.glyphs.power_word_shield -> ok() )
     {
@@ -4105,7 +4105,7 @@ struct prayer_of_mending_t final : public priest_heal_t
     };
     parse_options( options, options_str );
 
-    direct_power_mod = data().effectN( 1 ).coeff();
+    spell_power_mod.direct = data().effectN( 1 ).coeff();
     base_dd_min = base_dd_max = data().effectN( 1 ).min( &p );
 
     divine_aegis_trigger_mask = 0;
@@ -5156,8 +5156,8 @@ void priest_t::apl_shadow()
   def -> add_action( "halo,if=talent.halo.enabled" );
   def -> add_action( "cascade_damage,if=talent.cascade.enabled" );
   def -> add_action( "divine_star,if=talent.divine_star.enabled" );
-  def -> add_action( "wait,sec=cooldown.shadow_word_death.remains,if=target.health.pct<20&cooldown.shadow_word_death.remains<0.5&active_enemies<=1" );
-  def -> add_action( "wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&active_enemies<=1" );
+  def -> add_action( "wait,sec=cooldown.shadow_word_death.remains,if=target.health.pct<20&cooldown.shadow_word_death.remains&cooldown.shadow_word_death.remains<0.5&active_enemies<=1" );
+  def -> add_action( "wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&cooldown.mind_blast.remains&active_enemies<=1" );
   def -> add_action( "mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5" );
   def -> add_action( this, "Mind Sear", "chain=1,interrupt=1,if=active_enemies>=3" );
   def -> add_action( this, "Mind Flay", "chain=1,interrupt=1" );

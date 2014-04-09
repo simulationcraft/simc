@@ -1578,7 +1578,7 @@ class SpellDataGenerator(DataGenerator):
             'SkillLineAbility', 'SpellAuraOptions', 'SpellRuneCost', 'SpellRadius', 'GlyphProperties',
             'SpellCastTimes', 'ItemSet', 'SpellDescriptionVariables', 'SpellItemEnchantment', 'Item-sparse',
             'Item', 'SpellEquippedItems', 'SpellIcon', 'SpecializationSpells', 'ChrSpecialization', 'SpellEffectScaling',
-            'SpellMisc', 'SpellProcsPerMinute', 'ItemSetSpell', 'ItemEffect' ]
+            'SpellMisc', 'SpellProcsPerMinute', 'ItemSetSpell', 'ItemEffect', 'MinorTalent' ]
 
     def initialize(self):
         DataGenerator.initialize(self)
@@ -1809,6 +1809,13 @@ class SpellDataGenerator(DataGenerator):
             if talent_data.class_id > 0:
                 mask_class = DataGenerator._class_masks[talent_data.class_id]
                 self.process_spell(getattr(talent_data, 'id_spell'), ids, mask_class, 0)
+
+        # Get all perks
+        for perk_id, perk_data in self._minortalent_db.iteritems():
+            if perk_data.id_spell == 0:
+                continue
+
+            self.process_spell(perk_data.id_spell, ids, 0, 0)
 
         # Get base skills from SkillLineAbility
         for ability_id, ability_data in self._skilllineability_db.iteritems():

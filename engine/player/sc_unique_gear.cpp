@@ -360,7 +360,7 @@ struct discharge_spell_t : public spell_t
     trigger_gcd = timespan_t::zero();
     base_dd_min = data.discharge_amount;
     base_dd_max = data.discharge_amount;
-    direct_power_mod = data.discharge_scaling;
+    // TODO: direct_power_mod = data.discharge_scaling;
     may_crit = ( data.school != SCHOOL_DRAIN ) && ( ( data.override_result_es_mask & RESULT_CRIT_MASK ) ? ( data.result_es_mask & RESULT_CRIT_MASK ) : true ); // Default true
     may_miss = ( data.override_result_es_mask & RESULT_MISS_MASK ) ? ( data.result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
     background  = true;
@@ -379,7 +379,7 @@ struct discharge_attack_t : public attack_t
     trigger_gcd = timespan_t::zero();
     base_dd_min = data.discharge_amount;
     base_dd_max = data.discharge_amount;
-    direct_power_mod = data.discharge_scaling;
+    // TODO: direct_power_mod = data.discharge_scaling;
     may_crit = ( data.school != SCHOOL_DRAIN ) && ( ( data.override_result_es_mask & RESULT_CRIT_MASK ) ? ( data.result_es_mask & RESULT_CRIT_MASK ) : true ); // Default true
     may_miss = ( data.override_result_es_mask & RESULT_MISS_MASK ) ? ( data.result_es_mask & RESULT_MISS_MASK ) != 0 : may_miss;
     may_dodge = ( data.school == SCHOOL_PHYSICAL ) && ( ( data.override_result_es_mask & RESULT_DODGE_MASK ) ? ( data.result_es_mask & RESULT_DODGE_MASK ) : may_dodge );
@@ -1118,6 +1118,7 @@ void gem::capacitive_primal( special_effect_t& effect,
       may_crit = special = background = true;
       may_parry = may_dodge = false;
       proc = false;
+      attack_power_mod.direct = s -> effectN( 1 ).trigger() -> effectN( 1 ).ap_coeff();
       direct_power_mod = data().extra_coeff();
     }
   };
@@ -1691,7 +1692,7 @@ struct flurry_of_xuen_ranged_t : public ranged_attack_t
   flurry_of_xuen_ranged_t( player_t* player ) : 
     ranged_attack_t( "flurry_of_xuen", player, player -> find_spell( 147891 ) )
   {
-    direct_power_mod = data().extra_coeff();
+    // TODO: check attack_power_mod.direct = data().extra_coeff();
     background = true;
     proc = false;
     aoe = 5;
@@ -1794,7 +1795,7 @@ struct essence_of_yulon_t : public spell_t
     background = may_crit = true;
     proc = false;
     aoe = 5;
-    direct_power_mod /= driver.duration().total_seconds() + 1;
+    spell_power_mod.direct /= driver.duration().total_seconds() + 1;
   }
 };
 

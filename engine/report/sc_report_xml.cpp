@@ -1081,11 +1081,12 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
         {
           writer.print_tag( "description", util::encode_html( a -> data().desc() ).c_str() );
         }
-        if ( a -> direct_power_mod || a -> base_dd_min || a -> base_dd_max )
+        if ( a -> attack_power_mod.direct || a -> spell_power_mod.direct || a -> base_dd_min || a -> base_dd_max )
         {
           writer.begin_tag( "direct_damage" );
           writer.print_tag( "may_crit", a -> may_crit ? "true" : "false" );
-          writer.print_tag( "direct_power_mod", util::to_string( a -> direct_power_mod ) );
+          writer.print_tag( "attack_power_mod.direct", util::to_string( a -> attack_power_mod.direct ) );
+          writer.print_tag( "spell_power_mod.direct", util::to_string( a -> spell_power_mod.direct ) );
           writer.begin_tag( "base" );
           writer.print_attribute( "min", util::to_string( a -> base_dd_min ) );
           writer.print_attribute( "max", util::to_string( a -> base_dd_max ) );
@@ -1098,7 +1099,8 @@ void print_xml_player_action_definitions( xml_writer_t & writer, player_t * p )
           writer.begin_tag( "damage_over_time" );
           writer.print_tag( "tick_may_crit", a -> tick_may_crit ? "true" : "false" );
           writer.print_tag( "tick_zero", a -> tick_zero ? "true" : "false" );
-          writer.print_tag( "tick_power_mod", util::to_string( a -> tick_power_mod ) );
+          writer.print_tag( "attack_power_mod.tick", util::to_string( a -> attack_power_mod.tick ) );
+          writer.print_tag( "spell_power_mod.tick", util::to_string( a -> spell_power_mod.tick ) );
           writer.print_tag( "base", util::to_string( a -> base_td ) );
           writer.print_tag( "num_ticks", util::to_string( a -> num_ticks ) );
           writer.print_tag( "base_tick_time", util::to_string( a -> base_tick_time.total_seconds() ) );
