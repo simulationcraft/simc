@@ -265,14 +265,13 @@ public:
     // Generic
     const spell_data_t* leather_specialization;
     const spell_data_t* omen_of_clarity; // Feral and Resto have this
+    const spell_data_t* primal_fury;
+    const spell_data_t* killer_instinct;
+    const spell_data_t* nurturing_instinct;
 
     // Feral / Guardian
     const spell_data_t* leader_of_the_pack;
     const spell_data_t* predatory_swiftness;
-
-    // NYI / Needs checking
-    const spell_data_t* killer_instinct;
-    const spell_data_t* nurturing_instinct;
 
     // Balance
     const spell_data_t* balance_of_power;
@@ -306,7 +305,7 @@ public:
     const spell_data_t* leader_of_the_pack; // LotP aura
     const spell_data_t* mangle; // Mangle cooldown reset
     const spell_data_t* moonkin_form; // Moonkin form bonuses
-    const spell_data_t* primal_fury; // Primal fury rage gain
+    const spell_data_t* primal_fury; // Primal fury gain
     const spell_data_t* regrowth; // Old GoRegrowth
     const spell_data_t* survival_instincts; // Survival instincts aura
     const spell_data_t* swiftmend; // Swiftmend AOE heal trigger
@@ -1767,11 +1766,10 @@ public:
       {
         td( target ) -> combo_points.add( adds_combo_points, &name_str );
 
-        if ( aoe == 0 && ( p() -> specialization() == DRUID_FERAL || p() -> specialization() == DRUID_GUARDIAN ) &&
-             execute_state -> result == RESULT_CRIT )
+        if ( p() -> spell.primal_fury -> ok() && execute_state -> result == RESULT_CRIT )
         {
           p() -> proc.primal_fury -> occur();
-          td( target ) -> combo_points.add( adds_combo_points, &name_str );
+          td( target ) -> combo_points.add( p() -> spell.primal_fury -> effectN( 1 ).base_value(), &name_str );
         }
       }
 
@@ -2102,21 +2100,25 @@ struct pounce_t : public cat_attack_t
   }
 };
 
+// Rake DoT =================================================================
+
+struct rake_dot_t : public cat_attack_t {
+  rake_dot_t( druid_t* p ) :
+    cat_attack_t( "rake", p, p -> find_spell( 155722 ) )
+  {
+    dual = background     = true;
+    dot_behavior          = DOT_REFRESH;
+    attack_power_mod.tick = data().effectN( 1 ).ap_coeff();
+    may_miss = may_dodge = may_parry = false;
+  }
+};
+
 // Rake =====================================================================
+/* TODO: Find out whether the direct damage can proc effects BEFORE the periodic damage is applied.
+   This is how it is handled in the sim currently. */
 
 struct rake_t : public cat_attack_t
 {
-  struct rake_dot_t : public cat_attack_t {
-    rake_dot_t( druid_t* p ) :
-      cat_attack_t( "rake", p, p -> find_spell( 155722 ) )
-    {
-      dot_behavior          = DOT_REFRESH;
-      attack_power_mod.tick = data().effectN( 1 ).ap_coeff();
-      may_miss = may_dodge = may_parry = false;
-      dual = true;
-    }
-  };
-
   action_t* rake_dot;
 
   rake_t( druid_t* p, const std::string& options_str ) :
@@ -2146,7 +2148,10 @@ struct rake_t : public cat_attack_t
     cat_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
+    {
+      rake_dot -> target = state -> target;
       rake_dot -> execute();
+    }
   }
 
   virtual double target_armor( player_t* ) const
@@ -2432,7 +2437,7 @@ struct skull_bash_cat_t : public cat_attack_t
 struct swipe_t : public cat_attack_t
 {
   swipe_t( druid_t* player, const std::string& options_str ) :
-    cat_attack_t( "swipe", player, player -> find_class_spell( "Swipe" ) -> ok() ? player -> find_spell( 62078 ) : spell_data_t::not_found(), options_str )
+    cat_attack_t( player, player -> find_class_spell( "Swipe" ), options_str )
   {
     aoe     = -1;
     special = true;
@@ -2645,7 +2650,7 @@ struct bear_melee_t : public bear_attack_t
         p() -> proc.tooth_and_claw -> occur();
       }
     }
-
+    
     if ( p() -> spell.primal_fury -> ok() && state -> result == RESULT_CRIT )
     {
       p() -> resource_gain( RESOURCE_RAGE,
@@ -2783,9 +2788,7 @@ struct mangle_t : public bear_attack_t
 
     if ( state -> result == RESULT_CRIT )
     {
-      double rage = p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE );
-
-      p() -> resource_gain( RESOURCE_RAGE, rage, p() -> gain.primal_fury );
+      p() -> resource_gain( RESOURCE_RAGE, p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ), p() -> gain.primal_fury );
       p() -> proc.primal_fury -> occur();
     }
   }
@@ -4244,8 +4247,8 @@ struct faerie_fire_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( result_is_hit( execute_state -> result ) && ! sim -> overrides.weakened_armor )
-      target -> debuffs.weakened_armor -> trigger( 3 );
+    if ( result_is_hit( execute_state -> result ) && ! sim -> overrides.physical_vulnerability )
+      target -> debuffs.physical_vulnerability -> trigger();
   }
 
   virtual void update_ready( timespan_t )
@@ -5434,12 +5437,16 @@ void druid_t::init_spells()
   spell.mangle                          = find_class_spell( "Lacerate"                    ) -> ok() ||
                                           find_specialization_spell( "Thrash"             ) -> ok() ? find_spell( 93622  ) : spell_data_t::not_found(); // Lacerate mangle cooldown reset
   spell.moonkin_form                    = find_class_spell( "Moonkin Form"                ) -> ok() ? find_spell( 24905  ) : spell_data_t::not_found(); // This is the passive applied on shapeshift!
-  spell.primal_fury                     = ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN ) ? find_spell( 16959  ) : spell_data_t::not_found(); // Primal fury rage gain trigger
   spell.regrowth                        = find_class_spell( "Regrowth"                    ) -> ok() ? find_spell( 93036  ) : spell_data_t::not_found(); // Regrowth refresh
   spell.survival_instincts              = find_class_spell( "Survival Instincts"          ) -> ok() ? find_spell( 50322  ) : spell_data_t::not_found(); // Survival Instincts aura
   spell.swiftmend                       = find_spell( 81262 );
   spell.swipe                           = find_class_spell( "Maul"                        ) -> ok() ||
                                           find_class_spell( "Shred"                       ) -> ok() ? find_spell( 62078  ) : spell_data_t::not_found(); // Bleed damage multiplier for Shred etc.
+
+  if ( specialization() == DRUID_FERAL )
+    spell.primal_fury = find_spell( 16953 );
+  else if ( specialization() == DRUID_GUARDIAN )
+    spell.primal_fury = find_spell( 16959 );
 
   // Masteries
   mastery.total_eclipse    = find_mastery_spell( DRUID_BALANCE );
