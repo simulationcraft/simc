@@ -2175,6 +2175,9 @@ struct windlash_t : public shaman_melee_attack_t
     trigger_gcd       = timespan_t::zero();
   }
 
+  double target_armor( player_t* ) const
+  { return 0.0; }
+
   timespan_t execute_time() const
   {
     timespan_t t = shaman_melee_attack_t::execute_time();
@@ -2484,7 +2487,6 @@ struct auto_attack_t : public shaman_melee_attack_t
     p() -> melee_mh      = new melee_t( "melee_main_hand", spell_data_t::nil(), player, &( p() -> main_hand_weapon ), sync_weapons, swing_timer_variance );
     p() -> melee_mh      -> school = SCHOOL_PHYSICAL;
     p() -> ascendance_mh = new windlash_t( "windlash_main_hand", player -> find_spell( 114089 ), player, &( p() -> main_hand_weapon ), swing_timer_variance );
-    p() -> ascendance_mh -> school = SCHOOL_NATURE;
 
     p() -> main_hand_attack = p() -> melee_mh;
 
@@ -2495,7 +2497,6 @@ struct auto_attack_t : public shaman_melee_attack_t
       p() -> melee_oh = new melee_t( "melee_off_hand", spell_data_t::nil(), player, &( p() -> off_hand_weapon ), sync_weapons, swing_timer_variance );
       p() -> melee_oh -> school = SCHOOL_PHYSICAL;
       p() -> ascendance_oh = new windlash_t( "windlash_off_hand", player -> find_spell( 114093 ), player, &( p() -> off_hand_weapon ), swing_timer_variance );
-      p() -> ascendance_oh -> school = SCHOOL_NATURE;
 
       p() -> off_hand_attack = p() -> melee_oh;
 
