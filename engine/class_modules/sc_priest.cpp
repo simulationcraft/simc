@@ -121,6 +121,7 @@ public:
     const spell_data_t* divine_clarity;
     const spell_data_t* power_of_the_void;
     const spell_data_t* spiritual_guidance;
+    const spell_data_t* void_entropy;
   } talents;
 
   struct talent_passives_t {
@@ -3285,7 +3286,7 @@ struct divine_star_t final : public priest_spell_t
 struct void_entropy_t : public priest_spell_t
  {
   void_entropy_t( priest_t& p, const std::string& options_str ) :
-     priest_spell_t( "void_entropy", p, p.find_class_spell( "Void Entropy" ) )
+     priest_spell_t( "void_entropy", p, p.talents.void_entropy )
    {
      parse_options( nullptr, options_str );
 
@@ -3314,6 +3315,25 @@ struct void_entropy_t : public priest_spell_t
     dp_state.orbs_used = as<int>( priest.resources.current[ current_resource() ] );
 
     priest_spell_t::snapshot_state( state, type );
+  }
+
+  virtual void consume_resource() override
+  {
+    resource_consumed = cost();
+
+    if ( execute_state -> result != RESULT_MISS )
+    {
+      resource_consumed = priest.resources.current[ current_resource() ];
+    }
+
+    player -> resource_loss( current_resource(), resource_consumed, nullptr, this );
+
+    if ( sim -> log )
+      sim -> out_log.printf( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
+                     resource_consumed, util::resource_type_string( current_resource() ),
+                     name(), player -> resources.current[ current_resource() ] );
+
+    stats -> consume_resource( current_resource(), resource_consumed );
   }
 
    virtual double action_ta_multiplier() const override
@@ -4867,6 +4887,7 @@ void priest_t::init_spells()
   talents.divine_clarity              = find_talent_spell( "Divine Clarity" );
   talents.power_of_the_void           = find_talent_spell( "Power of the Void" );
   talents.spiritual_guidance          = find_talent_spell( "Spiritual Guidance" );
+  talents.void_entropy                = find_talent_spell( "Void Entropy" );
 
   // Passive Spells
   talent_passives.clarity_of_power           = talents.divine_clarity -> ok() ? spell_data_t::not_found() : spell_data_t::nil();
@@ -5136,6 +5157,7 @@ void priest_t::apl_shadow()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] );
 
+  def -> add_talent( this, "Void Entropy", "if=shadow_orb=3&miss_react&!ticking" );
   def -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1&active_enemies<=5" );
   def -> add_action( this, "Devouring Plague", "if=shadow_orb=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)" );
   if ( find_item( "unerring_vision_of_lei_shen" ) )
