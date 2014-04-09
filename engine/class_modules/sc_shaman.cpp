@@ -406,6 +406,7 @@ public:
   virtual double    composite_spell_power_multiplier() const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_rating_multiplier( rating_e rating ) const;
+  virtual double    composite_multistrike() const;
   virtual void      target_mitigation( school_e, dmg_e, action_state_t* );
   virtual double    matching_gear_multiplier( attribute_e attr ) const;
   virtual void      create_options();
@@ -5094,7 +5095,8 @@ void shaman_t::create_buffs()
                                             sets.set( SET_T13_4PC_HEAL ) -> effectN( 1 ).time_value() );
   buff.tidal_waves             = buff_creator_t( this, "tidal_waves", spec.tidal_waves -> ok() ? find_spell( 53390 ) : spell_data_t::not_found() );
   buff.unleash_flame           = new unleash_flame_buff_t( this );
-  buff.unleashed_fury_wf       = buff_creator_t( this, "unleashed_fury_wf", find_spell( 118472 ) );
+  buff.unleashed_fury_wf       = buff_creator_t( this, "unleashed_fury_wf", find_spell( 118472 ) )
+                                 .add_invalidate( CACHE_MULTISTRIKE );
   buff.water_shield            = buff_creator_t( this, "water_shield", find_class_spell( "Water Shield" ) );
 
   // Haste buffs
@@ -5727,6 +5729,19 @@ double shaman_t::composite_rating_multiplier( rating_e rating ) const
       break;
     default: break;
   }
+
+  return m;
+}
+
+// shaman_t::composite_multistrike ==========================================
+
+double shaman_t::composite_multistrike() const
+{
+  double m = player_t::composite_multistrike();
+
+  // TODO-WOD: Flat or multiplicative bonus?
+  if ( buff.unleashed_fury_wf -> up() )
+    m *= 1.0 + buff.unleashed_fury_wf -> data().effectN( 1 ).percent();
 
   return m;
 }
