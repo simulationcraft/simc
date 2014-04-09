@@ -13,16 +13,13 @@ namespace { // UNNAMED NAMESPACE
 
  /* WoD -- TODO:
     = General =
-      Heart of the Wild
+    Heart of the Wild
 	  Dream of Cenarius
 	    Scale HT with AP for Guardian
 	  Nature's Vigil
 	  Glyphs
 	    Ursol's Defense
 	    Travel
-	  Passives
-	    Critical Strikes
-	  Remove Weakened Blows
 	  Survival Instincts
 	  Tranquility
 
@@ -30,7 +27,6 @@ namespace { // UNNAMED NAMESPACE
     Perks
 	  Level 100 Talents
 	    Lunar Inspiration
-	    Bloody Thrash
 	    Savagery
 	  Glyphs
 	    Ninth Life
@@ -39,9 +35,11 @@ namespace { // UNNAMED NAMESPACE
 
     = Balance =
     Perks
+    Incarnation
 
     = Guardian =
     Perks
+    Soul of the Forest
 
     = Restoration =
     Perks
@@ -372,6 +370,24 @@ public:
     const spell_data_t* heart_of_the_wild;
     const spell_data_t* dream_of_cenarius;
     const spell_data_t* natures_vigil;
+
+    // Touch of Elune (Level 100 Slot 1)
+    const spell_data_t* sunfall;
+    const spell_data_t* lunar_inspiration;
+    const spell_data_t* guardian_of_elune;
+    const spell_data_t* moment_of_clarity;
+
+    // Will of Malfurion (Level 100 Slot 2)
+    const spell_data_t* insect_swarm;
+    const spell_data_t* bloody_thrash;
+    const spell_data_t* pulverize;
+    const spell_data_t* germination;
+
+    // Might of Malorne (Level 100 Slot 3)
+    const spell_data_t* equinox;
+    const spell_data_t* savagery;
+    const spell_data_t* bristling_fur;
+    const spell_data_t* rampant_growth;
 
     // MoP TODO: Fix/Implement
     const spell_data_t* feline_swiftness;
@@ -2528,6 +2544,8 @@ struct swipe_t : public cat_attack_t
 
 struct thrash_cat_t : public cat_attack_t
 {
+  action_t* rake_dot;
+
   thrash_cat_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
   {
@@ -2539,14 +2557,24 @@ struct thrash_cat_t : public cat_attack_t
     weapon_multiplier = 0;
     dot_behavior      = DOT_REFRESH;
     special           = true;
+    adds_combo_points = 0;
+
+    if ( p -> talent.bloody_thrash -> ok() )
+    {
+      rake_dot = new rake_dot_t( p );
+      adds_combo_points = 1;
+    }
   }
 
   virtual void impact( action_state_t* state )
   {
     cat_attack_t::impact( state );
 
-    if ( result_is_hit( state -> result ) && ! sim -> overrides.weakened_blows )
-      state -> target -> debuffs.weakened_blows -> trigger();
+    if ( p() -> talent.bloody_thrash -> ok() && result_is_hit( state -> result ) )
+    {
+      rake_dot -> target = state -> target;
+      rake_dot -> execute();
+    }
   }
 
   // Treat direct damage as "bleed"
@@ -2957,9 +2985,6 @@ struct thrash_bear_t : public bear_attack_t
   virtual void impact( action_state_t* state )
   {
     bear_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) && ! sim -> overrides.weakened_blows )
-      state -> target -> debuffs.weakened_blows -> trigger();
 
     if ( rng().roll( 0.25 ) )
       p() -> cooldown.mangle -> reset( true );
@@ -5454,6 +5479,24 @@ void druid_t::init_spells()
   talent.dream_of_cenarius  = find_talent_spell( "Dream of Cenarius" );
   talent.natures_vigil      = find_talent_spell( "Nature's Vigil" );
 
+    // Touch of Elune (Level 100 Slot 1)
+  talent.sunfall            = find_talent_spell( "Sunfall" );
+  talent.lunar_inspiration  = find_talent_spell( "Lunar Inspiration" );
+  talent.guardian_of_elune  = find_talent_spell( "Guardian of Elune" );
+  talent.moment_of_clarity  = find_talent_spell( "Moment of Clarity" );
+
+  // Will of Malfurion (Level 100 Slot 2)
+  talent.insect_swarm       = find_talent_spell( "Insect Swarm" );
+  talent.bloody_thrash      = find_talent_spell( "Bloody Thrash" );
+  talent.pulverize          = find_talent_spell( "Pulverize" );
+  talent.germination        = find_talent_spell( "Germination" );
+
+  // Might of Malorne (Level 100 Slot 3)
+  talent.equinox            = find_talent_spell( "Equinox" );
+  talent.savagery           = find_talent_spell( "Savagery" );
+  talent.bristling_fur      = find_talent_spell( "Bristling Fur" );
+  talent.rampant_growth     = find_talent_spell( "Rampant Growth" );
+
   // Active actions
   if ( talent.natures_vigil -> ok() )
   {
@@ -6148,7 +6191,6 @@ void druid_t::apl_guardian()
   add_action( "Barkskin" );
   action_list_str += "/renewal,if=talent.renewal.enabled&incoming_damage_5>0.8*health.max";
   action_list_str += "/natures_vigil,if=talent.natures_vigil.enabled&(!talent.incarnation.enabled|buff.son_of_ursoc.up|cooldown.incarnation.remains)";
-  action_list_str += "/thrash_bear,if=debuff.weakened_blows.remains<3";
   action_list_str += "/maul,if=buff.tooth_and_claw.react&buff.tooth_and_claw_absorb.down";
   action_list_str += "/lacerate,if=((dot.lacerate.remains<3)|(buff.lacerate.stack<3&dot.thrash_bear.remains>3))&(buff.son_of_ursoc.up|buff.berserk.up)";
   action_list_str += "/faerie_fire,if=debuff.weakened_armor.stack<3";
