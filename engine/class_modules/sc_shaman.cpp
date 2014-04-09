@@ -84,7 +84,6 @@ public:
   timespan_t wf_delay_stddev;
   timespan_t uf_expiration_delay;
   timespan_t uf_expiration_delay_stddev;
-  double     eoe_proc_chance;
   int        scale_lava_surge;
 
   // Active
@@ -124,6 +123,7 @@ public:
     buff_t* ancestral_swiftness;
     buff_t* ascendance;
     buff_t* elemental_focus;
+    buff_t* echo_of_the_elements;
     buff_t* lava_surge;
     buff_t* lightning_shield;
     buff_t* maelstrom_weapon;
@@ -156,7 +156,6 @@ public:
     cooldown_t* ancestral_swiftness;
     cooldown_t* ascendance;
     cooldown_t* elemental_totem;
-    cooldown_t* echo_of_the_elements;
     cooldown_t* feral_spirits;
     cooldown_t* lava_burst;
     cooldown_t* lava_lash;
@@ -302,6 +301,9 @@ public:
     const spell_data_t* flame_shock;
   } spell;
 
+  // RNGs
+  real_ppm_t rppm_echo_of_the_elements;
+
   // Cached pointer for ascendance / normal white melee
   shaman_melee_attack_t* melee_mh;
   shaman_melee_attack_t* melee_oh;
@@ -324,7 +326,7 @@ public:
     ls_reset( timespan_t::zero() ), active_flame_shocks( 0 ), lava_surge_during_lvb( false ),
     wf_delay( timespan_t::from_seconds( 0.95 ) ), wf_delay_stddev( timespan_t::from_seconds( 0.25 ) ),
     uf_expiration_delay( timespan_t::from_seconds( 0.3 ) ), uf_expiration_delay_stddev( timespan_t::from_seconds( 0.05 ) ),
-    eoe_proc_chance( 0 ), scale_lava_surge( 0 ),
+    scale_lava_surge( 0 ),
     active_lightning_charge( nullptr ),
     action_ancestral_awakening( nullptr ),
     action_improved_lava_lash( nullptr ),
@@ -342,7 +344,8 @@ public:
     mastery(),
     talent(),
     glyph(),
-    spell()
+    spell(),
+    rppm_echo_of_the_elements( *this )
   {
     // Active
     active_lightning_charge   = 0;
@@ -360,7 +363,6 @@ public:
     cooldown.ancestral_swiftness  = get_cooldown( "ancestral_swiftness"   );
     cooldown.ascendance           = get_cooldown( "ascendance"            );
     cooldown.elemental_totem      = get_cooldown( "elemental_totem"       );
-    cooldown.echo_of_the_elements = get_cooldown( "echo_of_the_elements"  );
     cooldown.feral_spirits        = get_cooldown( "feral_spirit"          );
     cooldown.lava_burst           = get_cooldown( "lava_burst"            );
     cooldown.lava_lash            = get_cooldown( "lava_lash"             );
@@ -447,29 +449,6 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) :
                           .chance( static_cast< double >( p -> sets.has_set_bonus( SET_T16_2PC_CASTER ) ) );
 }
 
-struct shaman_action_state_t : public action_state_t
-{
-  bool eoe_proc;
-
-  shaman_action_state_t( action_t* spell, player_t* target ) :
-    action_state_t( spell, target ),
-    eoe_proc( false )
-  { }
-
-  std::ostringstream& debug_str( std::ostringstream& s )
-  { action_state_t::debug_str( s ) << " eoe=" << eoe_proc; return s; }
-
-  void initialize()
-  { action_state_t::initialize(); eoe_proc = false; }
-
-  void copy_state( const action_state_t* o )
-  {
-    action_state_t::copy_state( o );
-    const shaman_action_state_t* ss = debug_cast< const shaman_action_state_t* >( o );
-    eoe_proc = ss -> eoe_proc;
-  }
-};
-
 // Template for common shaman action code. See priest_action_t.
 template <class Base>
 struct shaman_action_t : public Base
@@ -482,13 +461,25 @@ public:
   // Misc stuff
   bool        totem;
   bool        shock;
+  // Echo of Elements functionality
+  bool        may_proc_eoe;
+  bool        uses_eoe;
 
   shaman_action_t( const std::string& n, shaman_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, player, s ),
-    totem( false ), shock( false )
+    totem( false ), shock( false ),
+    may_proc_eoe( false ), uses_eoe( false )
   {
     ab::may_crit = true;
+  }
+
+  void init()
+  {
+    ab::init();
+
+    if ( ! ab::background && ab::has_amount_result() )
+      may_proc_eoe = true;
   }
 
   shaman_t* p()
@@ -498,9 +489,6 @@ public:
 
   shaman_td_t* td( player_t* t ) const
   { return p() -> get_target_data( t ); }
-
-  action_state_t* new_state()
-  { return new shaman_action_state_t( this, ab::target ); }
 
   double cost() const
   {
@@ -533,6 +521,28 @@ public:
   // Both Ancestral Swiftness and Maelstrom Weapon share this conditional for use
   bool instant_eligibility() const
   { return ab::data().school_mask() & SCHOOL_MASK_NATURE && ab::base_execute_time != timespan_t::zero(); }
+
+  void impact( action_state_t* state )
+  {
+    ab::impact( state );
+
+    if ( may_proc_eoe && 
+         ab::result_is_hit( state -> result ) && 
+         ! ab::is_aoe() && 
+         p() -> rppm_echo_of_the_elements.trigger( *this ) )
+      p() -> buff.echo_of_the_elements -> trigger();
+  }
+
+  void update_ready( timespan_t cd )
+  {
+    if ( uses_eoe && p() -> buff.echo_of_the_elements -> up() )
+    {
+      cd = timespan_t::zero();
+      p() -> buff.echo_of_the_elements -> expire();
+    }
+
+    ab::update_ready( cd );
+  }
 };
 
 template <class Base>
@@ -543,60 +553,13 @@ private:
 public:
   typedef shaman_spell_base_t<Base> base_t;
 
-  // Echo of Elements functionality
-  bool        may_proc_eoe;
-  bool        eoe_proc;
-  double      eoe_proc_chance;
-  stats_t*    eoe_stats;
-  cooldown_t* eoe_cooldown;
-
   shaman_spell_base_t( const std::string& n, shaman_t* player,
                        const spell_data_t* s = spell_data_t::nil() ) :
-    ab( n, player, s ),
-    may_proc_eoe( true ), eoe_proc( false ),
-    eoe_proc_chance( player -> eoe_proc_chance ),
-    eoe_stats( 0 ), eoe_cooldown( 0 )
+    ab( n, player, s )
   { }
 
   void execute();
   void schedule_execute( action_state_t* state = 0 );
-  void impact( action_state_t* state );
-
-  void init()
-  {
-    ab::init();
-
-    if ( may_proc_eoe )
-    {
-      shaman_t* p = ab::p();
-
-      eoe_proc_chance = p -> eoe_proc_chance;
-
-      std::string eoe_stat_name = ab::name_str;
-      eoe_stat_name += "_eoe";
-
-      eoe_stats = p -> get_stats( eoe_stat_name, this );
-      eoe_stats -> school = ab::school;
-
-      if ( ab::stats -> parent )
-        ab::stats -> parent -> add_child( eoe_stats );
-      else
-        ab::stats -> add_child( eoe_stats );
-
-      eoe_cooldown = p -> get_cooldown( ab::name_str + "_eoe" );
-    }
-  }
-
-  void snapshot_state( action_state_t* s, dmg_e type )
-  {
-    ab::snapshot_state( s, type );
-
-    if ( may_proc_eoe )
-    {
-      shaman_action_state_t* ss = debug_cast< shaman_action_state_t* >( s );
-      ss -> eoe_proc = eoe_proc;
-    }
-  }
 
   double cost_reduction() const
   {
@@ -631,50 +594,6 @@ public:
     shaman_t* p = ab::p();
     return ab::instant_eligibility() && p -> buff.ancestral_swiftness -> check() &&
            p -> buff.maelstrom_weapon -> check() * p -> buff.maelstrom_weapon -> data().effectN( 1 ).percent() < 1.0;
-  }
-};
-
-template <class Base>
-struct eoe_execute_event_t : public event_t
-{
-  shaman_spell_base_t<Base>* spell;
-
-  eoe_execute_event_t( shaman_spell_base_t<Base>* s ) :
-    event_t( *s -> player, "eoe_execute" ),
-    spell( s )
-  {
-    timespan_t delay_duration = sim().rng().gauss( sim().default_aura_delay / 2, sim().default_aura_delay_stddev / 2 );
-    add_event( delay_duration );
-  }
-
-  void execute()
-  {
-    assert( spell );
-
-    double base_cost = spell -> base_costs[ RESOURCE_MANA ];
-    cooldown_t* tmp_cooldown = spell -> cooldown;
-    assert( spell -> stats != spell -> eoe_stats );
-    stats_t* tmp_stats = spell -> stats;
-    timespan_t tmp_cast_time = spell -> base_execute_time;
-    timespan_t tmp_gcd = spell -> trigger_gcd;
-
-    spell -> time_to_execute = timespan_t::zero();
-
-    spell -> stats = spell -> eoe_stats;
-    spell -> base_costs[ RESOURCE_MANA ] = 0;
-    spell -> cooldown = spell -> eoe_cooldown;
-    spell -> base_execute_time = timespan_t::zero();
-    spell -> trigger_gcd = timespan_t::zero();
-    spell -> eoe_proc = true;
-
-    spell -> execute();
-
-    spell -> eoe_proc = false;
-    spell -> trigger_gcd = tmp_gcd;
-    spell -> base_execute_time = tmp_cast_time;
-    spell -> cooldown = tmp_cooldown;
-    spell -> base_costs[ RESOURCE_MANA ] = base_cost;
-    spell -> stats = tmp_stats;
   }
 };
 
@@ -2031,7 +1950,6 @@ struct lightning_charge_t : public shaman_spell_t
     // Use the same name "lightning_shield" to make sure the cost of refreshing the shield is included with the procs.
     background       = true;
     may_crit         = true;
-    may_proc_eoe     = false;
 
     if ( player -> spec.fulmination -> ok() )
       id = player -> spec.fulmination -> id();
@@ -2115,7 +2033,6 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
   flametongue_weapon_spell_t( const std::string& n, shaman_t* player, weapon_t* w ) :
     shaman_spell_t( n, player, player -> find_spell( 8024 ) )
   {
-    may_proc_eoe       = false;
     may_crit           = true;
     background         = true;
     spell_power_mod.direct   = 1.0;
@@ -2366,49 +2283,6 @@ void shaman_spell_base_t<Base>::execute()
   p -> buff.spiritwalkers_grace -> up();
 }
 
-// shaman_spell_base_t::impact ==============================================
-
-template <class Base>
-void shaman_spell_base_t<Base>::impact( action_state_t* state )
-{
-  shaman_action_state_t* ss = debug_cast< shaman_action_state_t* >( state );
-
-  if ( ss -> eoe_proc )
-  {
-    stats_t* tmp_stats = 0;
-
-    if ( ab::stats != eoe_stats )
-    {
-      tmp_stats = ab::stats;
-      ab::stats = eoe_stats;
-    }
-
-    ab::impact( state );
-
-    if ( tmp_stats != 0 )
-      ab::stats = tmp_stats;
-  }
-  else
-    ab::impact( state );
-
-  // Triggers wont happen for (EoE) procs or totems
-  if ( ab::proc || ! ab::callbacks  || ss -> eoe_proc )
-    return;
-
-  shaman_t* p = ab::p();
-
-  if ( may_proc_eoe && ab::result_is_hit( state -> result ) &&
-       ab::harmful && ab::base_dd_min > 0 &&
-       p -> talent.echo_of_the_elements -> ok() &&
-       ab::rng().roll( eoe_proc_chance ) &&
-       p -> cooldown.echo_of_the_elements -> up() )
-  {
-    if ( ab::sim -> debug ) ab::sim -> out_debug.printf( "Echo of the Elements procs for %s", ab::name() );
-    new ( *ab::sim ) eoe_execute_event_t< Base >( this );
-    p -> cooldown.echo_of_the_elements -> start( p -> talent.echo_of_the_elements -> internal_cooldown() );
-  }
-}
-
 // shaman_heal_t::impact ====================================================
 
 void shaman_heal_t::impact( action_state_t* s )
@@ -2647,7 +2521,7 @@ struct lava_lash_t : public shaman_melee_attack_t
     ft_bonus( data().effectN( 2 ).percent() )
   {
     check_spec( SHAMAN_ENHANCEMENT );
-    may_proc_windfury = true;
+    uses_eoe = may_proc_windfury = true;
     school = SCHOOL_FIRE;
 
     base_multiplier += player -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
@@ -2725,6 +2599,7 @@ struct stormstrike_t : public shaman_melee_attack_t
     weapon               = &( p() -> main_hand_weapon );
     weapon_multiplier    = 0.0;
     may_crit             = false;
+    uses_eoe             = true;
     cooldown             = p() -> cooldown.strike;
     cooldown -> duration = p() -> dbc.spell( id ) -> cooldown();
 
@@ -2884,10 +2759,6 @@ void shaman_spell_t::execute()
 {
   base_t::execute();
 
-  // Eoe procs will not go further than this.
-  if ( eoe_proc )
-    return;
-
   if ( ! totem && ! background && ! proc && ( data().school_mask() & SCHOOL_MASK_FIRE ) )
     p() -> buff.unleash_flame -> expire();
 
@@ -2981,12 +2852,11 @@ struct chain_lightning_t : public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
-    const shaman_action_state_t* ss = static_cast< const shaman_action_state_t* >( state );
-    if ( ! ss -> eoe_proc && result_is_hit( state -> result ) )
-      trigger_rolling_thunder( this );
-
     if ( result_is_hit( state -> result ) )
+    {
+      trigger_rolling_thunder( this );
       trigger_lightning_strike( state );
+    }
 
     trigger_tier16_4pc_caster( state );
   }
@@ -3033,8 +2903,7 @@ struct lava_beam_t : public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
-    const shaman_action_state_t* ss = static_cast< const shaman_action_state_t* >( state );
-    if ( ! ss -> eoe_proc && result_is_hit( state -> result ) )
+    if ( result_is_hit( state -> result ) )
     {
       trigger_rolling_thunder( this );
       trigger_lightning_strike( state );
@@ -3121,15 +2990,6 @@ struct fire_nova_explosion_t : public shaman_spell_t
     shaman_spell_t::init();
 
     stats = player -> get_stats( "fire_nova" );
-    eoe_stats = player -> get_stats( "fire_nova_eoe" );
-  }
-
-  void execute()
-  {
-    shaman_spell_t::execute();
-
-    if ( eoe_proc )
-      stats -> add_execute( time_to_execute, target );
   }
 
   double composite_da_multiplier() const
@@ -3164,7 +3024,8 @@ struct fire_nova_t : public shaman_spell_t
   fire_nova_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_specialization_spell( "Fire Nova" ), options_str )
   {
-    may_proc_eoe = may_crit = may_miss = callbacks = false;
+    may_crit = may_miss = callbacks = false;
+    uses_eoe  = true;
     aoe       = -1;
 
     impact_action = new fire_nova_explosion_t( player );
@@ -3217,7 +3078,6 @@ struct earthquake_rumble_t : public shaman_spell_t
   earthquake_rumble_t( shaman_t* player ) :
     shaman_spell_t( "earthquake_rumble", player, player -> find_spell( 77478 ) )
   {
-    may_proc_eoe = false;
     harmful = background = true;
     aoe = -1;
     school = SCHOOL_PHYSICAL;
@@ -3228,7 +3088,6 @@ struct earthquake_rumble_t : public shaman_spell_t
     shaman_spell_t::init();
 
     stats = player -> get_stats( "earthquake" );
-    eoe_stats = player -> get_stats( "earthquake_eoe" );
   }
 
   virtual double composite_spell_power() const
@@ -3244,14 +3103,6 @@ struct earthquake_rumble_t : public shaman_spell_t
   {
     return 0;
   }
-
-  void execute()
-  {
-    shaman_spell_t::execute();
-
-    if ( eoe_proc )
-      stats -> add_tick( timespan_t::from_seconds( 1.0 ), target );
-  }
 };
 
 struct earthquake_t : public shaman_spell_t
@@ -3259,7 +3110,8 @@ struct earthquake_t : public shaman_spell_t
   earthquake_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( "Earthquake" ), options_str )
   {
-    hasted_ticks = may_miss = may_crit = may_proc_eoe = false;
+    uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL;
+    hasted_ticks = may_miss = may_crit = false;
 
     base_td = base_dd_min = base_dd_max = attack_power_mod.direct = spell_power_mod.direct = 0;
     harmful = true;
@@ -3278,6 +3130,7 @@ struct lava_burst_t : public shaman_spell_t
   lava_burst_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( "Lava Burst" ), options_str )
   {
+    uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL;
     overload_spell          = new lava_burst_overload_t( player );
     add_child( overload_spell );
   }
@@ -3340,9 +3193,6 @@ struct lava_burst_t : public shaman_spell_t
 
     // FIXME: DBC Value modified in dbc_t::apply_hotfixes()
     p() -> cooldown.ascendance -> ready -= p() -> sets.set( SET_T15_4PC_CASTER ) -> effectN( 1 ).time_value();
-
-    if ( eoe_proc )
-      return;
 
     // Lava Surge buff does not get eaten, if the Lava Surge proc happened
     // during the Lava Burst cast
@@ -3422,8 +3272,7 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
-    const shaman_action_state_t* ss = debug_cast< const shaman_action_state_t* >( state );
-    if ( ! ss -> eoe_proc && result_is_hit( state -> result ) )
+    if ( result_is_hit( state -> result ) )
     {
       trigger_rolling_thunder( this );
 
@@ -3453,18 +3302,9 @@ struct elemental_blast_t : public shaman_spell_t
   elemental_blast_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( "elemental_blast", player, player -> talent.elemental_blast, options_str )
   {
-    may_proc_eoe = true;
     overload_spell = new elemental_blast_overload_t( player );
     add_child( overload_spell );
 
-  }
-
-  void init()
-  {
-    shaman_spell_t::init();
-
-    if ( p() -> specialization() == SHAMAN_ENHANCEMENT )
-      eoe_proc_chance = 0.06;
   }
 
   virtual void execute()
@@ -3738,6 +3578,7 @@ struct earth_shock_t : public shaman_spell_t
     shaman_spell_t( player, player -> find_class_spell( "Earth Shock" ), options_str ),
     consume_threshold( ( int ) player -> spec.fulmination -> effectN( 1 ).base_value() )
   {
+    uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL || player -> specialization() == SHAMAN_ENHANCEMENT;
     cooldown             = player -> cooldown.shock;
     cooldown -> duration = data().cooldown() + player -> spec.spiritual_insight -> effectN( 3 ).time_value();
     shock                = true;
@@ -3762,7 +3603,7 @@ struct earth_shock_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( consume_threshold == 0 || eoe_proc )
+    if ( consume_threshold == 0 )
       return;
 
     if ( result_is_hit( execute_state -> result ) )
@@ -3800,6 +3641,7 @@ struct flame_shock_t : public shaman_spell_t
   flame_shock_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( "Flame Shock" ), options_str )
   {
+    uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL || player -> specialization() == SHAMAN_ENHANCEMENT;
     tick_may_crit         = true;
     dot_behavior          = DOT_REFRESH;
     cooldown              = player -> cooldown.shock;
@@ -3898,6 +3740,7 @@ struct frost_shock_t : public shaman_spell_t
   frost_shock_t( shaman_t* player, const std::string& options_str ) :
     shaman_spell_t( player, player -> find_class_spell( "Frost Shock" ), options_str )
   {
+    uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL || player -> specialization() == SHAMAN_ENHANCEMENT;
     cooldown = player -> cooldown.shock;
     shock    = true;
   }
@@ -4527,6 +4370,7 @@ struct windfury_weapon_t : public shaman_spell_t
     bonus_power( 0 ), main( 0 ), off( 0 )
   {
     check_spec( SHAMAN_ENHANCEMENT );
+
     std::string weapon_str;
 
     option_t options[] =
@@ -4888,7 +4732,6 @@ void shaman_t::create_options()
     opt_timespan( "wf_delay_stddev",            wf_delay_stddev            ),
     opt_timespan( "uf_expiration_delay",        uf_expiration_delay        ),
     opt_timespan( "uf_expiration_delay_stddev", uf_expiration_delay_stddev ),
-    opt_float( "eoe_proc_chance",               eoe_proc_chance ),
     opt_bool( "what_if_lava_surge_scaled_with_crit", scale_lava_surge ),
     opt_null()
   };
@@ -4912,13 +4755,6 @@ struct shaman_lightning_strike_t : public shaman_melee_attack_t
     background = true;
     may_dodge = may_parry = false;
   }
-
-  // We need to override shaman_action_state_t returning here, as tick_action
-  // and custom state objects do not mesh at all really. They technically
-  // work, but in reality we are doing naughty things in the code that are
-  // not safe.
-  action_state_t* new_state()
-  { return new action_state_t( this, target ); }
 };
  
 struct shaman_flurry_of_xuen_t : public shaman_melee_attack_t
@@ -4933,13 +4769,6 @@ struct shaman_flurry_of_xuen_t : public shaman_melee_attack_t
     background = true;
     aoe = 5;
   }
-
-  // We need to override shaman_action_state_t returning here, as tick_action
-  // and custom state objects do not mesh at all really. They technically
-  // work, but in reality we are doing naughty things in the code that are
-  // not safe.
-  action_state_t* new_state()
-  { return new action_state_t( this, target ); }
 };
 
 // shaman_t::create_proc_action =============================================
@@ -5177,7 +5006,9 @@ void shaman_t::init_spells()
 
   talent.elemental_mastery           = find_talent_spell( "Elemental Mastery"    );
   talent.ancestral_swiftness         = find_talent_spell( "Ancestral Swiftness"  );
+
   talent.echo_of_the_elements        = find_talent_spell( "Echo of the Elements" );
+  rppm_echo_of_the_elements.set_frequency( talent.echo_of_the_elements -> real_ppm() );
 
   talent.unleashed_fury              = find_talent_spell( "Unleashed Fury"       );
   talent.primal_elementalist         = find_talent_spell( "Primal Elementalist"  );
@@ -5243,14 +5074,6 @@ void shaman_t::init_base_stats()
   //if ( specialization() == SHAMAN_ENHANCEMENT )
   //  ready_type = READY_TRIGGER;
 
-  if ( eoe_proc_chance == 0 )
-  {
-    if ( specialization() == SHAMAN_ENHANCEMENT )
-      eoe_proc_chance = 0.30; /// Tested, ~30% (1k LB casts)
-    else
-      eoe_proc_chance = 0.06; // Tested, ~6% (1k LB casts)
-  }
-
   if ( specialization() == SHAMAN_ENHANCEMENT )
     resources.infinite_resource[ RESOURCE_MANA ] = 1;
 }
@@ -5294,6 +5117,8 @@ void shaman_t::create_buffs()
   buff.elemental_focus         = buff_creator_t( this, "elemental_focus",   spec.elemental_focus -> effectN( 1 ).trigger() )
                                  .activated( false )
                                  .cd( spec.elemental_focus -> internal_cooldown() );
+  buff.echo_of_the_elements    = buff_creator_t( this, "echo_of_the_elements", talent.echo_of_the_elements )
+                                 .chance( talent.echo_of_the_elements -> ok() );
   buff.lava_surge              = buff_creator_t( this, "lava_surge",        spec.lava_surge )
                                  .activated( false )
                                  .chance( 1.0 ); // Proc chance is handled externally
