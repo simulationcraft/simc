@@ -5327,6 +5327,11 @@ public:
   virtual proc_types proc_type() const
   { return PROC1_INVALID; }
 
+  bool has_amount_result() const
+  {
+    return attack_power_mod.direct > 0 || attack_power_mod.tick > 0 || spell_power_mod.direct > 0 || spell_power_mod.tick > 0;
+  }
+
 private:
   std::vector<travel_event_t*> travel_events;
 public:
