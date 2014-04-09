@@ -185,7 +185,6 @@ public:
     proc_t* ls_fast;
     proc_t* maelstrom_weapon;
     proc_t* rolling_thunder;
-    proc_t* static_shock;
     proc_t* swings_clipped_mh;
     proc_t* swings_clipped_oh;
     proc_t* swings_reset_mh;
@@ -238,7 +237,6 @@ public:
     const spell_data_t* primal_wisdom;
     const spell_data_t* shamanistic_rage;
     const spell_data_t* spirit_walk;
-    const spell_data_t* static_shock;
     const spell_data_t* maelstrom_weapon;
 
     // Restoration
@@ -1489,24 +1487,6 @@ static bool trigger_rolling_thunder( shaman_spell_t* s )
   return false;
 }
 
-// trigger_static_shock =====================================================
-
-static bool trigger_static_shock ( shaman_melee_attack_t* a )
-{
-  shaman_t* p = a -> p();
-
-  if ( ! p -> buff.lightning_shield -> stack() )
-    return false;
-
-  if ( p -> rng().roll( p -> spec.static_shock -> proc_chance() ) )
-  {
-    p -> active_lightning_charge -> execute();
-    p -> proc.static_shock -> occur();
-    return true;
-  }
-  return false;
-}
-
 // trigger_improved_lava_lash ===============================================
 
 static bool trigger_improved_lava_lash( shaman_melee_attack_t* a )
@@ -1953,9 +1933,6 @@ struct lightning_charge_t : public shaman_spell_t
 
     if ( player -> spec.fulmination -> ok() )
       id = player -> spec.fulmination -> id();
-
-    if ( player -> spec.static_shock -> ok() )
-      cooldown -> duration = timespan_t::zero();
   }
 
   double composite_target_crit( player_t* target ) const
@@ -2092,14 +2069,6 @@ struct windfury_weapon_melee_attack_t : public shaman_melee_attack_t
 
     return ap + weapon -> buff_value;
   }
-
-  void impact( action_state_t* state )
-  {
-    shaman_melee_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) && p() -> buff.unleashed_fury_wf -> up() )
-      trigger_static_shock( this );
-  }
 };
 
 struct unleash_wind_t : public shaman_melee_attack_t
@@ -2135,13 +2104,6 @@ struct stormstrike_attack_t : public shaman_melee_attack_t
     may_proc_windfury = background = true;
     may_miss = may_dodge = may_parry = false;
     weapon = w;
-  }
-
-  void impact( action_state_t* s )
-  {
-    shaman_melee_attack_t::impact( s );
-
-    trigger_static_shock( this );
   }
 };
 
@@ -2451,14 +2413,6 @@ struct melee_t : public shaman_melee_attack_t
       shaman_melee_attack_t::execute();
     }
   }
-
-  void impact( action_state_t* state )
-  {
-    shaman_melee_attack_t::impact( state );
-
-    if ( result_is_hit( state -> result ) && p() -> buff.unleashed_fury_wf -> up() )
-      trigger_static_shock( this );
-  }
 };
 
 // Auto Attack ==============================================================
@@ -2562,7 +2516,6 @@ struct lava_lash_t : public shaman_melee_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      trigger_static_shock( this );
       if ( td( state -> target ) -> dot.flame_shock -> ticking )
         trigger_improved_lava_lash( this );
     }
@@ -2581,13 +2534,6 @@ struct primal_strike_t : public shaman_melee_attack_t
     weapon               = &( p() -> main_hand_weapon );
     cooldown             = p() -> cooldown.strike;
     cooldown -> duration = p() -> dbc.spell( id ) -> cooldown();
-  }
-
-  void impact( action_state_t* state )
-  {
-    shaman_melee_attack_t::impact( state );
-    if ( result_is_hit( state -> result ) )
-      trigger_static_shock( this );
   }
 };
 
@@ -4993,7 +4939,6 @@ void shaman_t::init_spells()
   spec.primal_wisdom       = find_specialization_spell( "Primal Wisdom" );
   spec.shamanistic_rage    = find_specialization_spell( "Shamanistic Rage" );
   spec.spirit_walk         = find_specialization_spell( "Spirit Walk" );
-  spec.static_shock        = find_specialization_spell( "Static Shock" );
 
   // Restoration
   spec.ancestral_awakening = find_specialization_spell( "Ancestral Awakening" );
@@ -5213,7 +5158,6 @@ void shaman_t::init_procs()
   proc.lava_surge         = get_proc( "lava_surge"              );
   proc.ls_fast            = get_proc( "lightning_shield_too_fast_fill" );
   proc.maelstrom_weapon   = get_proc( "maelstrom_weapon"        );
-  proc.static_shock       = get_proc( "static_shock"            );
   proc.swings_clipped_mh  = get_proc( "swings_clipped_mh"       );
   proc.swings_clipped_oh  = get_proc( "swings_clipped_oh"       );
   proc.swings_reset_mh    = get_proc( "swings_reset_mh"         );
