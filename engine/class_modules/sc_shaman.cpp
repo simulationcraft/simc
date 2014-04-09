@@ -227,14 +227,17 @@ public:
     const spell_data_t* elemental_fury;
     const spell_data_t* fulmination;
     const spell_data_t* lava_surge;
+    const spell_data_t* readiness_elemental;
     const spell_data_t* rolling_thunder;
     const spell_data_t* shamanism;
 
     // Enhancement
+    const spell_data_t* critical_strikes;
     const spell_data_t* dual_wield;
     const spell_data_t* flurry;
     const spell_data_t* mental_quickness;
     const spell_data_t* primal_wisdom;
+    const spell_data_t* readiness_enhancement;
     const spell_data_t* shamanistic_rage;
     const spell_data_t* spirit_walk;
     const spell_data_t* maelstrom_weapon;
@@ -400,7 +403,9 @@ public:
   virtual double    composite_melee_hit() const;
   virtual double    composite_melee_haste() const;
   virtual double    composite_melee_speed() const;
+  virtual double    composite_melee_crit() const;
   virtual double    composite_spell_haste() const;
+  virtual double    composite_spell_crit() const;
   virtual double    composite_spell_hit() const;
   virtual double    composite_spell_power( school_e school ) const;
   virtual double    composite_spell_power_multiplier() const;
@@ -2359,7 +2364,8 @@ struct melee_t : public shaman_melee_attack_t
     weapon            = w;
     base_execute_time = w -> swing_time;
 
-    if ( p() -> specialization() == SHAMAN_ENHANCEMENT && p() -> dual_wield() ) base_hit -= 0.19;
+    if ( p() -> specialization() == SHAMAN_ENHANCEMENT && p() -> dual_wield() )
+      base_hit -= 0.17;
   }
 
   void reset()
@@ -3065,7 +3071,7 @@ struct earthquake_rumble_t : public shaman_spell_t
 struct earthquake_t : public shaman_spell_t
 {
   earthquake_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( player, player -> find_class_spell( "Earthquake" ), options_str )
+    shaman_spell_t( player, player -> find_specialization_spell( "Earthquake" ), options_str )
   {
     uses_eoe = player -> specialization() == SHAMAN_ELEMENTAL;
     hasted_ticks = may_miss = may_crit = false;
@@ -4239,7 +4245,7 @@ struct flametongue_weapon_t : public shaman_spell_t
   int    main, off;
 
   flametongue_weapon_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( player, player -> find_class_spell( "Flametongue Weapon" ) ),
+    shaman_spell_t( player, player -> find_specialization_spell( "Flametongue Weapon" ) ),
     bonus_power( 0 ), main( 0 ), off( 0 )
   {
     std::string weapon_str;
@@ -4323,7 +4329,7 @@ struct windfury_weapon_t : public shaman_spell_t
   int    main, off;
 
   windfury_weapon_t( shaman_t* player, const std::string& options_str ) :
-    shaman_spell_t( player, player -> find_class_spell( "Windfury Weapon" ) ),
+    shaman_spell_t( player, player -> find_specialization_spell( "Windfury Weapon" ) ),
     bonus_power( 0 ), main( 0 ), off( 0 )
   {
     check_spec( SHAMAN_ENHANCEMENT );
@@ -4917,39 +4923,42 @@ void shaman_t::init_spells()
   sets.register_spelldata( set_bonuses );
 
   // Generic
-  spec.mail_specialization = find_specialization_spell( "Mail Specialization" );
+  spec.mail_specialization   = find_specialization_spell( "Mail Specialization" );
   constant.matching_gear_multiplier = spec.mail_specialization -> effectN( 1 ).percent();
 
   // Elemental / Restoration
-  spec.spiritual_insight   = find_specialization_spell( "Spiritual Insight" );
+  spec.spiritual_insight     = find_specialization_spell( "Spiritual Insight" );
 
   // Elemental
-  spec.elemental_focus     = find_specialization_spell( "Elemental Focus" );
-  spec.elemental_fury      = find_specialization_spell( "Elemental Fury" );
-  spec.elemental_precision = find_specialization_spell( "Elemental Precision" );
-  spec.fulmination         = find_specialization_spell( "Fulmination" );
-  spec.lava_surge          = find_specialization_spell( "Lava Surge" );
-  spec.rolling_thunder     = find_specialization_spell( "Rolling Thunder" );
-  spec.shamanism           = find_specialization_spell( "Shamanism" );
+  spec.elemental_focus       = find_specialization_spell( "Elemental Focus" );
+  spec.elemental_fury        = find_specialization_spell( "Elemental Fury" );
+  spec.elemental_precision   = find_specialization_spell( "Elemental Precision" );
+  spec.fulmination           = find_specialization_spell( "Fulmination" );
+  spec.lava_surge            = find_specialization_spell( "Lava Surge" );
+  spec.readiness_elemental   = find_specialization_spell( "Readiness: Elemental" );
+  spec.rolling_thunder       = find_specialization_spell( "Rolling Thunder" );
+  spec.shamanism             = find_specialization_spell( "Shamanism" );
 
   // Enhancement
-  spec.dual_wield          = find_specialization_spell( "Dual Wield" );
-  spec.flurry              = find_specialization_spell( "Flurry" );
-  spec.maelstrom_weapon    = find_specialization_spell( "Maelstrom Weapon" );
-  spec.mental_quickness    = find_specialization_spell( "Mental Quickness" );
-  spec.primal_wisdom       = find_specialization_spell( "Primal Wisdom" );
-  spec.shamanistic_rage    = find_specialization_spell( "Shamanistic Rage" );
-  spec.spirit_walk         = find_specialization_spell( "Spirit Walk" );
+  spec.critical_strikes      = find_specialization_spell( "Critical Strikes" );
+  spec.dual_wield            = find_specialization_spell( "Dual Wield" );
+  spec.flurry                = find_specialization_spell( "Flurry" );
+  spec.maelstrom_weapon      = find_specialization_spell( "Maelstrom Weapon" );
+  spec.mental_quickness      = find_specialization_spell( "Mental Quickness" );
+  spec.primal_wisdom         = find_specialization_spell( "Primal Wisdom" );
+  spec.readiness_enhancement = find_specialization_spell( "Readiness: Enhancement" );
+  spec.shamanistic_rage      = find_specialization_spell( "Shamanistic Rage" );
+  spec.spirit_walk           = find_specialization_spell( "Spirit Walk" );
 
   // Restoration
-  spec.ancestral_awakening = find_specialization_spell( "Ancestral Awakening" );
-  spec.ancestral_focus     = find_specialization_spell( "Ancestral Focus" );
-  spec.earth_shield        = find_specialization_spell( "Earth Shield" );
-  spec.meditation          = find_specialization_spell( "Meditation" );
-  spec.purification        = find_specialization_spell( "Purification" );
-  spec.resurgence          = find_specialization_spell( "Resurgence" );
-  spec.riptide             = find_specialization_spell( "Riptide" );
-  spec.tidal_waves         = find_specialization_spell( "Tidal Waves" );
+  spec.ancestral_awakening   = find_specialization_spell( "Ancestral Awakening" );
+  spec.ancestral_focus       = find_specialization_spell( "Ancestral Focus" );
+  spec.earth_shield          = find_specialization_spell( "Earth Shield" );
+  spec.meditation            = find_specialization_spell( "Meditation" );
+  spec.purification          = find_specialization_spell( "Purification" );
+  spec.resurgence            = find_specialization_spell( "Resurgence" );
+  spec.riptide               = find_specialization_spell( "Riptide" );
+  spec.tidal_waves           = find_specialization_spell( "Tidal Waves" );
 
   // Masteries
   mastery.elemental_overload         = find_mastery_spell( SHAMAN_ELEMENTAL   );
@@ -5607,6 +5616,17 @@ double shaman_t::composite_spell_hit() const
   return hit;
 }
 
+// shaman_t::composite_spell_crit =========================================
+
+double shaman_t::composite_spell_crit() const
+{
+  double crit = player_t::composite_spell_crit();
+
+  crit *= 1.0 + spec.critical_strikes -> effectN( 1 ).percent();
+
+  return crit;
+}
+
 // shaman_t::composite_movement_speed =======================================
 
 double shaman_t::composite_movement_speed() const
@@ -5662,6 +5682,17 @@ double shaman_t::composite_melee_speed() const
     speed *= constant.attack_speed_unleash_wind;
 
   return speed;
+}
+
+// shaman_t::composite_melee_crit =========================================
+
+double shaman_t::composite_melee_crit() const
+{
+  double crit = player_t::composite_melee_crit();
+
+  crit *= 1.0 + spec.critical_strikes -> effectN( 1 ).percent();
+
+  return crit;
 }
 
 // shaman_t::composite_spell_power ==========================================
