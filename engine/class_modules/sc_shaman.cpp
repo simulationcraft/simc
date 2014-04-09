@@ -320,6 +320,7 @@ public:
     const spell_data_t* resurgence;
     const spell_data_t* ancestral_swiftness;
     const spell_data_t* flame_shock;
+    const spell_data_t* windfury_driver;
   } spell;
 
   // RNGs
@@ -550,7 +551,8 @@ public:
   {
     ab::impact( state );
 
-    if ( may_proc_eoe && 
+    if ( p() -> talent.echo_of_the_elements -> ok() &&
+         may_proc_eoe && 
          ab::result_is_hit( state -> result ) && 
          ! ab::is_aoe() && 
          p() -> rppm_echo_of_the_elements.trigger( *this ) )
@@ -950,16 +952,22 @@ struct feral_spirit_pet_t : public pet_t
 
   shaman_t* o() const { return static_cast<shaman_t*>( owner ); }
 
-  virtual void init_base_stats()
+  void arise()
   {
-    pet_t::init_base_stats();
+    pet_t::arise();
+    schedule_ready();
+  }
+
+  void init_action_list()
+  {
+    pet_t::init_action_list();
 
     melee = new melee_t( this );
   }
 
   void schedule_ready( timespan_t delta_time = timespan_t::zero(), bool waiting = false )
   {
-    if ( melee && ! melee -> execute_event )
+    if ( ! melee -> execute_event )
       melee -> schedule_execute();
 
     pet_t::schedule_ready( delta_time, waiting );
@@ -1035,6 +1043,7 @@ struct earth_elemental_pet_t : public pet_t
       may_crit          = true;
       special           = true;
       weapon            = &( player -> main_hand_weapon );
+      weapon_multiplier = 0;
     }
   };
 
@@ -1054,6 +1063,8 @@ struct earth_elemental_pet_t : public pet_t
 
     if ( owner -> race == RACE_ORC )
       m *= 1.0 + command -> effectN( 1 ).percent();
+
+    m *= 0.1;
 
     return m;
   }
@@ -1466,12 +1477,8 @@ static bool trigger_windfury_weapon( shaman_melee_attack_t* a )
   else
     wf = p -> windfury_oh;
 
-  if ( p -> cooldown.windfury_weapon -> down() ) return false;
-
-  if ( p -> rng().roll( wf -> data().proc_chance() ) )
+  if ( p -> rng().roll( p -> spell.windfury_driver -> proc_chance() ) )
   {
-    p -> cooldown.windfury_weapon -> start( timespan_t::from_seconds( 3.0 ) );
-
     p -> cooldown.feral_spirits -> ready -= timespan_t::from_seconds( p -> sets.set( SET_T15_4PC_MELEE ) -> effectN( 1 ).base_value() );
 
     // Delay windfury by some time, up to about a second
@@ -2054,7 +2061,7 @@ struct flametongue_weapon_spell_t : public shaman_spell_t
   {
     may_crit           = true;
     background         = true;
-    spell_power_mod.direct   = 1.0;
+    spell_power_mod.direct   = 0.0;
     base_costs[ RESOURCE_MANA ] = 0.0;
 
     base_dd_min = w -> swing_time.total_seconds() / normalize_speed() * ( data().effectN( 2 ).average( player ) / 77.0 + data().effectN( 2 ).average( player ) / 25.0 ) / 2;
@@ -2097,19 +2104,12 @@ struct ancestral_awakening_t : public shaman_heal_t
 struct windfury_weapon_melee_attack_t : public shaman_melee_attack_t
 {
   windfury_weapon_melee_attack_t( const std::string& n, shaman_t* player, weapon_t* w ) :
-    shaman_melee_attack_t( n, player, player -> dbc.spell( 33757 ) )
+    shaman_melee_attack_t( n, player, player -> dbc.spell( 25504 ) )
   {
     weapon           = w;
-    weapon_multiplier = 1.5; // Hotfix 2013/09/24
     school           = SCHOOL_PHYSICAL;
     background       = true;
-  }
-
-  virtual double composite_attack_power() const
-  {
-    double ap = shaman_melee_attack_t::composite_attack_power();
-
-    return ap + weapon -> buff_value;
+    may_proc_windfury = false;
   }
 };
 
@@ -2125,6 +2125,7 @@ struct unleash_wind_t : public shaman_melee_attack_t
     // Unleash wind implicitly uses main hand weapon of the player to perform
     // the damaging attack
     weapon = &( player -> main_hand_weapon );
+    weapon_multiplier = 0;
     // Don't cooldown here, unleash elements will handle it
     cooldown -> duration = timespan_t::zero();
   }
@@ -4411,7 +4412,7 @@ struct windfury_weapon_t : public shaman_spell_t
       sim -> cancel();
     }
 
-    bonus_power  = data().effectN( 2 ).average( player );
+    bonus_power  = 0;
     harmful      = false;
     may_miss     = false;
 
@@ -5057,6 +5058,7 @@ void shaman_t::init_spells()
   spell.primal_wisdom                = find_spell( 63375 );
   spell.resurgence                   = find_spell( 101033 );
   spell.flame_shock                  = find_class_spell( "Flame Shock" );
+  spell.windfury_driver              = find_spell( 33757 );
 
   // Constants
   constant.haste_attack_ancestral_swiftness = 1.0 / ( 1.0 + spell.ancestral_swiftness -> effectN( 2 ).percent() );
@@ -5081,8 +5083,8 @@ void shaman_t::init_base_stats()
   player_t::init_base_stats();
 
   base.stats.attack_power = ( level * 2 ) - 30;
-  base.attack_power_per_strength = 1.0;
-  base.attack_power_per_agility  = 2.0;
+  base.attack_power_per_strength = 0.0;
+  base.attack_power_per_agility  = 1.0;
   base.spell_power_per_intellect = 1.0;
 
   resources.initial_multiplier[ RESOURCE_MANA ] = 1.0 + spec.spiritual_insight -> effectN( 1 ).percent();
