@@ -149,14 +149,14 @@ proc_types spell_base_t::proc_type() const
     if ( type == ACTION_SPELL )
       return PROC1_SPELL;
     // Only allow non-harmful abilities with "an amount" to count as heals
-    else if ( ( type == ACTION_HEAL || type == ACTION_ABSORB ) && ( direct_power_mod > 0 || tick_power_mod > 0 ) )
+    else if ( ( type == ACTION_HEAL || type == ACTION_ABSORB ) && has_amount_result() )
       return PROC1_HEAL;
   }
   else
   {
     if ( type == ACTION_SPELL )
       return PROC1_AOE_SPELL;
-    else if ( ( type == ACTION_HEAL || type == ACTION_ABSORB ) && ( direct_power_mod > 0 || tick_power_mod > 0 ) )
+    else if ( ( type == ACTION_HEAL || type == ACTION_ABSORB ) && has_amount_result() )
       return PROC1_AOE_HEAL;
   }
 

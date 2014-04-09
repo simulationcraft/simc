@@ -553,7 +553,7 @@ public:
     if ( may_proc_eoe && 
          ab::result_is_hit( state -> result ) && 
          ! ab::is_aoe() && 
-         p() -> rppm_echo_of_the_elements.trigger( *this ) )
+         p() -> rppm_echo_of_the_elements.trigger() )
       p() -> buff.echo_of_the_elements -> trigger();
   }
 

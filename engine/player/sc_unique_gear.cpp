@@ -1118,8 +1118,6 @@ void gem::capacitive_primal( special_effect_t& effect,
       may_crit = special = background = true;
       may_parry = may_dodge = false;
       proc = false;
-      attack_power_mod.direct = s -> effectN( 1 ).trigger() -> effectN( 1 ).ap_coeff();
-      direct_power_mod = data().extra_coeff();
     }
   };
 

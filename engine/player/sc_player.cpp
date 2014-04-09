@@ -1476,7 +1476,6 @@ void player_t::init_special_effects()
         trigger_gcd      = timespan_t::zero();
         base_dd_min      = s -> effectN( 1 ).trigger() -> effectN( 1 ).average( p );
         base_dd_max      = s -> effectN( 1 ).trigger() -> effectN( 1 ).average( p );
-        direct_power_mod = s -> effectN( 1 ).trigger() -> effectN( 1 )._coeff;
         may_crit         = false;
         may_miss         = false;
         background       = true;
