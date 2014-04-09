@@ -2127,9 +2127,9 @@ struct unleash_wind_t : public shaman_melee_attack_t
   }
 };
 
-struct stormstrike_melee_attack_t : public shaman_melee_attack_t
+struct stormstrike_attack_t : public shaman_melee_attack_t
 {
-  stormstrike_melee_attack_t( const std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w ) :
+  stormstrike_attack_t( const std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w ) :
     shaman_melee_attack_t( n, player, s )
   {
     may_proc_windfury = background = true;
@@ -2143,6 +2143,16 @@ struct stormstrike_melee_attack_t : public shaman_melee_attack_t
 
     trigger_static_shock( this );
   }
+};
+
+struct windstrike_attack_t : public stormstrike_attack_t
+{
+  windstrike_attack_t( const std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w ) :
+    stormstrike_attack_t( n, player, s, w )
+  { }
+
+  double target_armor( player_t* ) const
+  { return 0.0; }
 };
 
 struct windlash_t : public shaman_melee_attack_t
@@ -2585,8 +2595,8 @@ struct primal_strike_t : public shaman_melee_attack_t
 
 struct stormstrike_t : public shaman_melee_attack_t
 {
-  stormstrike_melee_attack_t * stormstrike_mh;
-  stormstrike_melee_attack_t * stormstrike_oh;
+  stormstrike_attack_t * stormstrike_mh;
+  stormstrike_attack_t * stormstrike_oh;
 
   stormstrike_t( shaman_t* player, const std::string& options_str ) :
     shaman_melee_attack_t( "stormstrike", player, player -> find_class_spell( "Stormstrike" ) ),
@@ -2603,14 +2613,14 @@ struct stormstrike_t : public shaman_melee_attack_t
     cooldown             = p() -> cooldown.strike;
     cooldown -> duration = p() -> dbc.spell( id ) -> cooldown();
 
-    // Actual damaging attacks are done by stormstrike_melee_attack_t
-    // stormstrike_melee_attack_t( std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w ) :
-    stormstrike_mh = new stormstrike_melee_attack_t( "stormstrike_mh", player, data().effectN( 2 ).trigger(), &( player -> main_hand_weapon ) );
+    // Actual damaging attacks are done by stormstrike_attack_t
+    // stormstrike_attack_t( std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w ) :
+    stormstrike_mh = new stormstrike_attack_t( "stormstrike_mh", player, data().effectN( 2 ).trigger(), &( player -> main_hand_weapon ) );
     add_child( stormstrike_mh );
 
     if ( p() -> off_hand_weapon.type != WEAPON_NONE )
     {
-      stormstrike_oh = new stormstrike_melee_attack_t( "stormstrike_oh", player, data().effectN( 3 ).trigger(), &( player -> off_hand_weapon ) );
+      stormstrike_oh = new stormstrike_attack_t( "stormstrike_oh", player, data().effectN( 3 ).trigger(), &( player -> off_hand_weapon ) );
       add_child( stormstrike_oh );
     }
   }
@@ -2643,7 +2653,7 @@ struct stormstrike_t : public shaman_melee_attack_t
   void impact( action_state_t* state )
   {
     // Bypass shaman-specific attack based procs and co for this spell, the relevant ones
-    // are handled by stormstrike_melee_attack_t
+    // are handled by stormstrike_attack_t
     melee_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
@@ -2664,40 +2674,40 @@ struct stormstrike_t : public shaman_melee_attack_t
   }
 };
 
-// Stormblast Attack ========================================================
+// Windstrike Attack ========================================================
 
-struct stormblast_t : public shaman_melee_attack_t
+struct windstrike_t : public shaman_melee_attack_t
 {
-  stormstrike_melee_attack_t * stormblast_mh;
-  stormstrike_melee_attack_t * stormblast_oh;
+  windstrike_attack_t * windstrike_mh;
+  windstrike_attack_t * windstrike_oh;
 
-  stormblast_t( shaman_t* player, const std::string& options_str ) :
-    shaman_melee_attack_t( "stormblast", player, player -> find_spell( 115356 ) ),
-    stormblast_mh( 0 ), stormblast_oh( 0 )
+  windstrike_t( shaman_t* player, const std::string& options_str ) :
+    shaman_melee_attack_t( "windstrike", player, player -> find_spell( 115356 ) ),
+    windstrike_mh( 0 ), windstrike_oh( 0 )
   {
     check_spec( SHAMAN_ENHANCEMENT );
 
     parse_options( NULL, options_str );
 
-    school               = SCHOOL_NATURE;
+    school               = SCHOOL_PHYSICAL;
     weapon               = &( p() -> main_hand_weapon );
     weapon_multiplier    = 0.0;
     may_crit             = false;
     cooldown             = p() -> cooldown.strike;
     cooldown -> duration = p() -> dbc.spell( id ) -> cooldown();
 
-    // Actual damaging attacks are done by stormstrike_melee_attack_t
-    stormblast_mh = new stormstrike_melee_attack_t( "stormblast_mh", player, data().effectN( 2 ).trigger(), &( player -> main_hand_weapon ) );
-    stormblast_mh -> normalize_weapon_speed = true;
-    stormblast_mh -> school = SCHOOL_NATURE;
-    add_child( stormblast_mh );
+    // Actual damaging attacks are done by stormstrike_attack_t
+    windstrike_mh = new windstrike_attack_t( "windstrike_mh", player, data().effectN( 2 ).trigger(), &( player -> main_hand_weapon ) );
+    windstrike_mh -> normalize_weapon_speed = true;
+    windstrike_mh -> school = SCHOOL_PHYSICAL;
+    add_child( windstrike_mh );
 
     if ( p() -> off_hand_weapon.type != WEAPON_NONE )
     {
-      stormblast_oh = new stormstrike_melee_attack_t( "stormblast_oh", player, data().effectN( 3 ).trigger(), &( player -> off_hand_weapon ) );
-      stormblast_oh -> normalize_weapon_speed = true;
-      stormblast_oh -> school = SCHOOL_NATURE;
-      add_child( stormblast_oh );
+      windstrike_oh = new windstrike_attack_t( "windstrike_oh", player, data().effectN( 3 ).trigger(), &( player -> off_hand_weapon ) );
+      windstrike_oh -> normalize_weapon_speed = true;
+      windstrike_oh -> school = SCHOOL_PHYSICAL;
+      add_child( windstrike_oh );
     }
   }
 
@@ -2728,15 +2738,15 @@ struct stormblast_t : public shaman_melee_attack_t
   void impact( action_state_t* state )
   {
     // Bypass shaman-specific attack based procs and co for this spell, the relevant ones
-    // are handled by stormstrike_melee_attack_t
+    // are handled by stormstrike_attack_t
     melee_attack_t::impact( state );
 
     if ( result_is_hit( state -> result ) )
     {
       td( state -> target ) -> debuff.stormstrike -> trigger();
 
-      stormblast_mh -> execute();
-      if ( stormblast_oh ) stormblast_oh -> execute();
+      windstrike_mh -> execute();
+      if ( windstrike_oh ) windstrike_oh -> execute();
     }
   }
 
@@ -4808,7 +4818,7 @@ action_t* shaman_t::create_action( const std::string& name,
   if ( name == "lightning_shield"        ) return new         lightning_shield_t( this, options_str );
   if ( name == "primal_strike"           ) return new            primal_strike_t( this, options_str );
   if ( name == "shamanistic_rage"        ) return new         shamanistic_rage_t( this, options_str );
-  if ( name == "stormblast"              ) return new               stormblast_t( this, options_str );
+  if ( name == "windstrike"              ) return new               windstrike_t( this, options_str );
   if ( name == "feral_spirit"            ) return new       feral_spirit_spell_t( this, options_str );
   if ( name == "spirit_walk"             ) return new              spirit_walk_t( this, options_str );
   if ( name == "spiritwalkers_grace"     ) return new      spiritwalkers_grace_t( this, options_str );
@@ -5419,7 +5429,7 @@ void shaman_t::init_action_list()
     single -> add_talent( this, "Elemental Blast", "if=buff.maelstrom_weapon.react>=1" );
     single -> add_action( this, spec.maelstrom_weapon, "lightning_bolt", "if=buff.maelstrom_weapon.react=5" );
     single -> add_action( this, "Feral Spirit", "if=set_bonus.tier15_4pc_melee=1" );
-    single -> add_action( this, find_class_spell( "Ascendance" ), "stormblast" );
+    single -> add_action( this, find_class_spell( "Ascendance" ), "windstrike" );
     single -> add_action( this, "Stormstrike" );
     single -> add_action( this, "Primal Strike" );
     single -> add_action( this, "Flame Shock", "if=buff.unleash_flame.up&!ticking" );
@@ -5447,7 +5457,7 @@ void shaman_t::init_action_list()
     aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=active_enemies>=2&buff.maelstrom_weapon.react>=3" );
     aoe -> add_action( this, "Unleash Elements" );
     aoe -> add_action( this, "Flame Shock", "cycle_targets=1,if=!ticking" );
-    aoe -> add_action( this, find_class_spell( "Ascendance" ), "stormblast" );
+    aoe -> add_action( this, find_class_spell( "Ascendance" ), "windstrike" );
     aoe -> add_action( this, "Fire Nova", "if=active_flame_shock>=3" );
     aoe -> add_action( this, spec.maelstrom_weapon, "chain_lightning", "if=active_enemies>=2&buff.maelstrom_weapon.react>=1" );
     aoe -> add_action( this, "Stormstrike" );
