@@ -274,6 +274,10 @@ public:
     const spell_data_t* unleashed_fury;
     const spell_data_t* primal_elementalist;
     const spell_data_t* elemental_blast;
+
+    const spell_data_t* shocking_lava;
+    const spell_data_t* storm_elemental_totem;
+    const spell_data_t* spew_lava;
   } talent;
 
   // Glyphs
@@ -4978,6 +4982,10 @@ void shaman_t::init_spells()
   talent.unleashed_fury              = find_talent_spell( "Unleashed Fury"       );
   talent.primal_elementalist         = find_talent_spell( "Primal Elementalist"  );
   talent.elemental_blast             = find_talent_spell( "Elemental Blast"      );
+
+  talent.shocking_lava               = find_talent_spell( "Shocking Lava" );
+  talent.storm_elemental_totem       = find_talent_spell( "Storm Elemental Totem" );
+  talent.spew_lava                   = find_talent_spell( "Spew Lava" );
 
   // Glyphs
   glyph.chain_lightning              = find_glyph_spell( "Glyph of Chain Lightning" );
