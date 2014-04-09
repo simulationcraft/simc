@@ -11,6 +11,43 @@ namespace { // UNNAMED NAMESPACE
 // Druid
 // ==========================================================================
 
+ /* WoD -- TODO:
+    = General =
+      Heart of the Wild
+	  Dream of Cenarius
+	    Scale HT with AP for Guardian
+	  Nature's Vigil
+	  Glyphs
+	    Ursol's Defense
+	    Travel
+	  Passives
+	    Critical Strikes
+	  Remove Weakened Blows
+	  Survival Instincts
+	  Tranquility
+
+    = Feral =
+    Perks
+	  Level 100 Talents
+	    Lunar Inspiration
+	    Bloody Thrash
+	    Savagery
+	  Glyphs
+	    Ninth Life
+	    Maim
+	  Combo Points as a resource
+
+    = Balance =
+    Perks
+
+    = Guardian =
+    Perks
+
+    = Restoration =
+    Perks
+
+*/
+
 // Forward declarations
 struct druid_t;
 struct natures_vigil_damage_proc_t;
@@ -272,6 +309,7 @@ public:
     // Feral / Guardian
     const spell_data_t* leader_of_the_pack;
     const spell_data_t* predatory_swiftness;
+    const spell_data_t* critical_strikes;
 
     // Balance
     const spell_data_t* balance_of_power;
@@ -409,11 +447,13 @@ public:
   virtual void      regen( timespan_t periodicity );
   virtual timespan_t available() const;
   virtual double    composite_armor_multiplier() const;
+  virtual double    composite_melee_crit() const;
   virtual double    composite_melee_hit() const;
   virtual double    composite_melee_expertise( weapon_t* ) const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_player_td_multiplier( school_e,  const action_t* ) const;
   virtual double    composite_player_heal_multiplier( school_e school ) const;
+  virtual double    composite_spell_crit() const;
   virtual double    composite_spell_hit() const;
   virtual double    composite_spell_power( school_e school ) const;
   virtual double    composite_attribute( attribute_e attr ) const;
@@ -1175,7 +1215,7 @@ public:
     if ( druid.specialization() == DRUID_GUARDIAN )
       druid.vengeance_stop();
 
-    druid.current.attack_power_per_agility -= 2.0;
+    druid.current.attack_power_per_agility -= 1.0;
   }
 
   virtual void start( int stacks, double value, timespan_t duration )
@@ -1200,7 +1240,7 @@ public:
 
     druid.player_t::recalculate_resource_max( RESOURCE_HEALTH );
 
-    druid.current.attack_power_per_agility += 2.0;
+    druid.current.attack_power_per_agility += 1.0;
   }
 private:
   const spell_data_t* rage_spell;
@@ -1233,7 +1273,7 @@ struct cat_form_t : public druid_buff_t< buff_t >
 
     sim -> auras.critical_strike -> decrement();
 
-    druid.current.attack_power_per_agility -= 2.0;
+    druid.current.attack_power_per_agility -= 1.0;
   }
 
   virtual void start( int stacks, double value, timespan_t duration )
@@ -1248,7 +1288,7 @@ struct cat_form_t : public druid_buff_t< buff_t >
     if ( ! sim -> overrides.critical_strike )
       sim -> auras.critical_strike -> trigger();
 
-    druid.current.attack_power_per_agility += 2.0;
+    druid.current.attack_power_per_agility += 1.0;
   }
 };
 
@@ -1769,7 +1809,7 @@ public:
         if ( p() -> spell.primal_fury -> ok() && execute_state -> result == RESULT_CRIT )
         {
           p() -> proc.primal_fury -> occur();
-          td( target ) -> combo_points.add( p() -> spell.primal_fury -> effectN( 1 ).base_value(), &name_str );
+          td( target ) -> combo_points.add( p() -> find_spell( 16953 ) -> effectN( 1 ).base_value(), &name_str );
         }
       }
 
@@ -2654,7 +2694,7 @@ struct bear_melee_t : public bear_attack_t
     if ( p() -> spell.primal_fury -> ok() && state -> result == RESULT_CRIT )
     {
       p() -> resource_gain( RESOURCE_RAGE,
-                            p() -> spell.primal_fury -> effectN( 1 ).resource( RESOURCE_RAGE ),
+                            p() -> find_spell( 16959 ) -> effectN( 1 ).resource( RESOURCE_RAGE ),
                             p() -> gain.primal_fury );
       p() -> proc.primal_fury -> occur();
     }
@@ -5357,6 +5397,7 @@ void druid_t::init_spells()
   spec.omen_of_clarity        = find_specialization_spell( "Omen of Clarity" );
   spec.killer_instinct        = find_specialization_spell( "Killer Instinct" );
   spec.nurturing_instinct     = find_specialization_spell( "Nurturing Instinct" );
+  spec.critical_strikes       = find_specialization_spell( "Critical Strikes" );
 
   // Balance
   // Eclipse are 2 spells, the mana energize is not in the main spell!
@@ -5497,7 +5538,7 @@ void druid_t::init_base_stats()
   base.stats.attack_power = level * ( level > 80 ? 3.0 : 2.0 );
 
   // TODO: Confirm that all druid specs get both of these things.
-  base.attack_power_per_agility  = 1.0;
+  base.attack_power_per_agility  = 0.0; // This is adjusted in cat_form_t and bear_form_t
   base.spell_power_per_intellect = 1.0;
 
   // Avoidance diminishing Returns constants/conversions
@@ -6494,6 +6535,17 @@ double druid_t::composite_player_heal_multiplier( school_e school ) const
   return m;
 }
 
+// druid_t::composite_melee_crit ============================================
+
+double druid_t::composite_melee_crit() const
+{
+  double crit = player_t::composite_melee_crit();
+
+  crit *= 1.0 + spec.critical_strikes -> effectN( 1 ).percent();
+
+  return crit;
+}
+
 // druid_t::composite_attack_hit ============================================
 
 double druid_t::composite_melee_hit() const
@@ -6517,6 +6569,17 @@ double druid_t::composite_melee_expertise( weapon_t* w ) const
   exp += buff.heart_of_the_wild -> attack_hit_expertise();
 
   return exp;
+}
+
+// druid_t::composite_spell_crit ============================================
+
+double druid_t::composite_spell_crit() const
+{
+  double crit = player_t::composite_spell_crit();
+
+  crit *= 1.0 + spec.critical_strikes -> effectN( 1 ).percent();
+
+  return crit;
 }
 
 // druid_t::composite_spell_hit =============================================
