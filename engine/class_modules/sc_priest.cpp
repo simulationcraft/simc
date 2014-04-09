@@ -60,7 +60,6 @@ public:
     buff_t* power_infusion;
     buff_t* twist_of_fate;
     buff_t* surge_of_light;
-    buff_t* clarity_of_power_mind_blast;
 
     // Discipline
     buff_t* archangel;
@@ -190,6 +189,7 @@ public:
     gain_t* vampiric_touch_mana;
     gain_t* vampiric_touch_mastery_mana;
     gain_t* auspicious_spirits;
+    gain_t* clarity_of_power_mind_spike;
   } gains;
 
   // Benefits
@@ -1746,7 +1746,7 @@ struct summon_mindbender_t final : public summon_pet_t
 struct shadowy_apparition_spell_t final : public priest_spell_t
 {
   shadowy_apparition_spell_t( priest_t& p ) :
-    priest_spell_t( "shadowy_apparition",
+    priest_spell_t( "shadowy_apparitions",
                     p,
                     p.find_spell( 78203 ) )
   {
@@ -1817,6 +1817,7 @@ struct mind_blast_t final : public priest_spell_t
     casted_with_divine_insight( false )
   {
     parse_options( nullptr, options_str );
+
   }
 
   virtual void execute() override
@@ -1877,16 +1878,16 @@ struct mind_blast_t final : public priest_spell_t
 
   virtual void update_ready( timespan_t cd_duration ) override
   {
+    if ( cd_duration < timespan_t::zero() )
+      cd_duration = cooldown -> duration;
+
     if ( priest.specs.mind_surge -> ok() && ! priest.buffs.divine_insight_shadow -> check() )
     {
       cd_duration = cooldown -> duration * composite_haste();
     }
 
-    if ( priest.buffs.clarity_of_power_mind_blast -> up() )
-    {
-      // TODO: spelldata
-      cd_duration -= timespan_t::from_seconds( 1.0 );
-    }
+
+    cd_duration -= timespan_t::from_seconds( priest.talents.clarity_of_power -> effectN( 2 ).base_value() );
 
     priest_spell_t::update_ready( cd_duration );
 
@@ -2024,7 +2025,10 @@ struct mind_spike_t final : public priest_spell_t
         priest.buffs.glyph_mind_spike -> trigger();
       }
 
-      priest.buffs.clarity_of_power_mind_blast -> trigger();
+      if ( priest.talents.clarity_of_power -> ok() )
+      {
+        priest.resource_gain( RESOURCE_MANA, priest.resources.base[ RESOURCE_MANA ] * priest.talents.clarity_of_power -> effectN( 3 ).percent(), priest.gains.clarity_of_power_mind_spike );
+      }
     }
   }
 
@@ -4491,6 +4495,7 @@ void priest_t::create_gains()
   gains.devouring_plague_health       = get_gain( "Devouring Plague Health" );
   gains.vampiric_touch_mana           = get_gain( "Vampiric Touch Mana" );
   gains.vampiric_touch_mastery_mana   = get_gain( "Vampiric Touch Mastery Mana" );
+  gains.clarity_of_power_mind_spike   = get_gain( "Clarity of Power Mind Spike" );
 }
 
 /* Construct priest procs
@@ -5062,9 +5067,6 @@ void priest_t::create_buffs()
 
   buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", active_spells.surge_of_darkness )
                                             .chance( active_spells.surge_of_darkness -> ok() ? 0.20 : 0.0 ); // Updated 5.4 PTR value, 6/20/2013
-
-  buffs.clarity_of_power_mind_blast = buff_creator_t( this, "clarity_of_power_mind_blast")
-                                      .chance( talents.clarity_of_power -> ok() );
 
   buffs.dispersion = buff_creator_t( this, "dispersion" ).spell( find_class_spell( "Dispersion" ) );
 }
