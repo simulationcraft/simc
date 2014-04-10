@@ -8,7 +8,6 @@
 using namespace unique_gear;
 
 #define maintenance_check( ilvl ) static_assert( ilvl >= 372, "unique item below min level, should be deprecated." )
-#define DECLARE_CB(name) void name( special_effect_t& effect, const item_t& item, const special_effect_db_item_t& dbitem )
 
 namespace { // UNNAMED NAMESPACE
 
@@ -18,51 +17,51 @@ namespace { // UNNAMED NAMESPACE
 
 namespace enchant
 {
-  DECLARE_CB( dancing_steel );
-  DECLARE_CB( jade_spirit );
-  DECLARE_CB( windsong );
-  DECLARE_CB( elemental_force );
-  DECLARE_CB( rivers_song );
-  DECLARE_CB( colossus );
-  DECLARE_CB( executioner );
-  DECLARE_CB( hurricane_spell );
-  DECLARE_CB( hurricane_weapon );
-  DECLARE_CB( landslide );
-  DECLARE_CB( mongoose );
-  DECLARE_CB( power_torrent );
-  DECLARE_CB( berserking );
+  void dancing_steel( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void jade_spirit( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void windsong( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void elemental_force( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void rivers_song( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void colossus( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void executioner( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void hurricane_spell( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void hurricane_weapon( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void landslide( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void mongoose( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void power_torrent( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void berserking( special_effect_t&, const item_t&, const special_effect_db_item_t& );
 
-  DECLARE_CB( gnomish_xray );
-  DECLARE_CB( lord_blastingtons_scope_of_doom );
-  DECLARE_CB( mirror_scope );
+  void gnomish_xray( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void lord_blastingtons_scope_of_doom( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void mirror_scope( special_effect_t&, const item_t&, const special_effect_db_item_t& );
 }
 
 namespace profession
 {
-  DECLARE_CB( nitro_boosts );
-  DECLARE_CB( synapse_springs );
-  DECLARE_CB( zen_alchemist_stone );
+  void nitro_boosts( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void synapse_springs( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void zen_alchemist_stone( special_effect_t&, const item_t&, const special_effect_db_item_t& );
 }
 
 namespace item
 {
-  DECLARE_CB( flurry_of_xuen );
-  DECLARE_CB( essence_of_yulon );
-  DECLARE_CB( endurance_of_niuzao );
-  DECLARE_CB( skeers_bloodsoaked_talisman );
-  DECLARE_CB( black_blood_of_yshaarj );
-  DECLARE_CB( rune_of_reorigination );
-  DECLARE_CB( spark_of_zandalar );
-  DECLARE_CB( unerring_vision_of_leishen );
+  void flurry_of_xuen( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void essence_of_yulon( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void endurance_of_niuzao( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void skeers_bloodsoaked_talisman( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void black_blood_of_yshaarj( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void rune_of_reorigination( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void spark_of_zandalar( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void unerring_vision_of_leishen( special_effect_t&, const item_t&, const special_effect_db_item_t& );
 }
 
 namespace gem
 {
-  DECLARE_CB( thundering_skyfire );
-  DECLARE_CB( sinister_primal );
-  DECLARE_CB( indomitable_primal );
-  DECLARE_CB( capacitive_primal );
-  DECLARE_CB( courageous_primal );
+  void thundering_skyfire( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void sinister_primal( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void indomitable_primal( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void capacitive_primal( special_effect_t&, const item_t&, const special_effect_db_item_t& );
+  void courageous_primal( special_effect_t&, const item_t&, const special_effect_db_item_t& );
 }
 
 /**
