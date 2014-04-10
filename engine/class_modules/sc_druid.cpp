@@ -5960,9 +5960,9 @@ void druid_t::apl_feral()
   if ( talent.force_of_nature -> ok() )
   {
     std::string fon_str = "force_of_nature,if=charges=3";
-
+    /*Cannot generate profiles with this for WoD, as of 4/9/2014
     std::vector<std::string> trinketbuffs;
-    
+
     for ( int i = 12; i <= 13; i++ )
     {
       if ( items[ i ].name_str == "haromms_talisman" )
@@ -5981,7 +5981,7 @@ void druid_t::apl_feral()
         }
       }
     }
-
+    
     for ( size_t i = 0; i < trinketbuffs.size(); i++ )
       fon_str.append( "|(buff." + trinketbuffs[ i ] + ".react&buff." + trinketbuffs[ i ] + ".remains<1)" );
 
@@ -5989,7 +5989,7 @@ void druid_t::apl_feral()
       fon_str.append( "|(buff." + trinketbuffs[ 0 ] + ".react&buff." + trinketbuffs [ 1 ] + ".react)" );
 
     fon_str.append( "|target.time_to_die<20" );
-
+    */
     advanced -> add_action( fon_str );
   }
 
