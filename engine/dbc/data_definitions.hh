@@ -96,6 +96,7 @@ struct item_data_t {
   double   stat_socket_mul[10];
   int      id_spell[5];
   int      trigger_spell[5];      // item_spell_trigger_type
+  int      cooldown[5];
   int      socket_color[3];       // item_socket_color
   int      gem_properties;
   int      id_socket_bonus;

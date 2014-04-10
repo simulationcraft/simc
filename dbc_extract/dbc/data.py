@@ -226,7 +226,7 @@ _DBC_FIELDS = {
           ( 'stat_alloc_1', '%5u' ), ( 'stat_alloc_2', '%5u' ), ( 'stat_alloc_3', '%5u' ), ( 'stat_alloc_4', '%5u' ),     ( 'stat_alloc_5', '%5u' ),
           ( 'stat_alloc_6', '%5u' ), ( 'stat_alloc_7', '%5u' ), ( 'stat_alloc_8', '%5u' ), ( 'stat_alloc_9', '%5u' ),     ( 'stat_alloc_10', '%5u' ),
           ( 'stat_socket_mul_1', '%.3f'  ), ( 'stat_socket_mul_2', '%.3f'  ), ( 'stat_socket_mul_3', '%.3f'  ), ( 'stat_socket_mul_4', '%.3f'  ),     ( 'stat_socket_mul_5', '%.3f'  ),
-          ( 'stat_socket_mul_6', '%f'  ), ( 'stat_socket_mul_7', '%.3f'  ), ( 'stat_socket_mul_8', '%.3f'  ), ( 'stat_socket_mul_9', '%.3f'  ),     ( 'stat_socket_mul_10', '%.3f' ),
+          ( 'stat_socket_mul_6', '%.3f'  ), ( 'stat_socket_mul_7', '%.3f'  ), ( 'stat_socket_mul_8', '%.3f'  ), ( 'stat_socket_mul_9', '%.3f'  ),     ( 'stat_socket_mul_10', '%.3f' ),
             'scale_stat_dist',        'damage_type',          ( 'delay', '%5d' ),     ( 'ranged_mod_range', '%f' ), 
           ( 'id_spell_1', '%5d' ),  ( 'id_spell_2', '%5d' ),  ( 'id_spell_3', '%5d' ),  ( 'id_spell_4', '%5d' ),      ( 'id_spell_5', '%5d' ),
           ( 'trg_spell_1', '%3d' ), ( 'trg_spell_2', '%3d' ), ( 'trg_spell_3', '%3d' ), ( 'trg_spell_4', '%3d' ),     ( 'trg_spell_5', '%3d' ),
