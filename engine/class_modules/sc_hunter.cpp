@@ -1737,24 +1737,6 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
 
   void trigger_tier15_4pc_melee( proc_t* proc, attack_t* attack );
 
-  // Arcane Shot and Multi-shot reduce the cooldown of Rapid Fire by 12 seconds per cast.
-  void trigger_tier16_2pc_melee()
-  {
-    if ( ! p() -> sets.has_set_bonus( SET_T16_2PC_MELEE ) )
-      return;
-
-    if ( p() -> cooldowns.rapid_fire -> down() )
-    {
-      p() -> procs.tier16_2pc_melee -> occur();
-      int reduction;
-      if ( p() -> specialization() == HUNTER_BEAST_MASTERY || p() -> specialization() == HUNTER_MARKSMANSHIP )
-        reduction = 4;
-      else
-        reduction = 8;
-
-      p() -> cooldowns.rapid_fire -> adjust( -timespan_t::from_seconds( reduction ) );
-    }
-  }
 };
 
 struct piercing_shots_t : public ignite::pct_based_action_t< attack_t >
@@ -1884,7 +1866,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       if ( p() -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
         p() -> buffs.tier16_4pc_mm_keen_eye -> trigger();
 
-      trigger_tier16_2pc_melee();
+
       if ( result_is_hit( execute_state -> result ) )
         trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_aimed_shot, p() -> action_lightning_arrow_aimed_shot );
     }
@@ -1965,7 +1947,7 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     else
     {
       hunter_ranged_attack_t::execute();
-      trigger_tier16_2pc_melee();
+
       if ( p() -> buffs.tier16_4pc_mm_keen_eye -> up() )
         p() -> buffs.tier16_4pc_mm_keen_eye -> expire();
     }
@@ -2000,7 +1982,6 @@ struct arcane_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
     consume_thrill_of_the_hunt();
 
-    trigger_tier16_2pc_melee();
     if ( result_is_hit( execute_state -> result ) ) {
       trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_arcane_shot, p() -> action_lightning_arrow_arcane_shot );
     }
@@ -2626,7 +2607,7 @@ struct multi_shot_t : public hunter_ranged_attack_t
       p() -> buffs.beast_cleave -> trigger(); //Added so action lists can be based on beast cleave. The pet buff actions do not seem to be working. 8/29/13
       pet -> buffs.beast_cleave -> trigger();
     }
-    trigger_tier16_2pc_melee();
+
     if ( result_is_hit( execute_state -> result ) ) {
       trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_multi_shot, p() -> action_lightning_arrow_multi_shot );
     }
