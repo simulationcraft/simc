@@ -652,6 +652,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
     s << std::endl;
   }
 
+  if ( spell -> max_scaling_level() > 0 )
+  {
+    s << "Max Scaling Level: " << ( int ) spell -> max_scaling_level();
+    s << std::endl;
+  }
+
   if ( spell -> min_range() || spell -> max_range() )
   {
     s << "Range            : ";
