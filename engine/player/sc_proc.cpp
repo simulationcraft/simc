@@ -350,6 +350,13 @@ timespan_t special_effect_t::cooldown() const
   else if ( driver() -> internal_cooldown() > timespan_t::zero() )
     return driver() -> internal_cooldown();
 
+  // Finally, check the item data for a cooldown for the spell.
+  for ( size_t i = 0, end = sizeof_array( item -> parsed.data.cooldown ); i < end; i++ ) 
+  {
+    if ( item -> parsed.data.cooldown[ i ] > 0 )
+      return timespan_t::from_millis( item -> parsed.data.cooldown[ i ] );
+  }
+
   return timespan_t::zero();
 }
 

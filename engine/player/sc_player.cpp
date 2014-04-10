@@ -6021,7 +6021,7 @@ struct use_item_t : public action_t
     cooldown_name += item -> slot_name();
 
     cooldown = player -> get_cooldown( cooldown_name );
-    cooldown -> duration = e.cooldown_;
+    cooldown -> duration = e.cooldown();
     trigger_gcd = timespan_t::zero();
 
     if ( buff != 0 ) buff -> cooldown = cooldown;

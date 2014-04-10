@@ -943,7 +943,7 @@ class ItemDataGenerator(DataGenerator):
             for spell in item.spells:
                 spells[ spell.index ] = str(spell.id_spell)
                 trigger_types[ spell.index ] = str(spell.trigger_type)
-                cooldown[ spell.index ] = str(spell.cooldown)
+                cooldown[ spell.index ] = str(spell.category_cooldown)
 
             fields += [ '{ %s }' % ', '.join(spells) ]
             fields += [ '{ %s }' % ', '.join(trigger_types) ]
