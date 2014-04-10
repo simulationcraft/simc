@@ -939,12 +939,15 @@ class ItemDataGenerator(DataGenerator):
             fields += [ '{ %s }' % ', '.join(item.field('stat_socket_mul_1', 'stat_socket_mul_2', 'stat_socket_mul_3', 'stat_socket_mul_4', 'stat_socket_mul_5', 'stat_socket_mul_6', 'stat_socket_mul_7', 'stat_socket_mul_8', 'stat_socket_mul_9', 'stat_socket_mul_10')) ]
             spells = [ '0', '0', '0', '0', '0' ]
             trigger_types = [ '0', '0', '0', '0', '0' ]
+            cooldown = [ '-1', '-1', '-1', '-1', '-1' ]
             for spell in item.spells:
                 spells[ spell.index ] = str(spell.id_spell)
                 trigger_types[ spell.index ] = str(spell.trigger_type)
+                cooldown[ spell.index ] = str(spell.cooldown)
 
             fields += [ '{ %s }' % ', '.join(spells) ]
             fields += [ '{ %s }' % ', '.join(trigger_types) ]
+            fields += [ '{ %s }' % ', '.join(cooldown) ]
 
             fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
             fields += item.field('gem_props', 'socket_bonus', 'item_set', 'rand_suffix' )
