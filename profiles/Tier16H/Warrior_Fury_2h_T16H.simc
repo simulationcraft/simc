@@ -4,7 +4,7 @@ race=orc
 role=attack
 position=back
 professions=engineering=600/blacksmithing=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!122012
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ZZ!122012.
 glyphs=unending_rage/death_from_above/bull_rush
 spec=fury
 
@@ -21,7 +21,6 @@ actions.precombat+=/food,type=black_pepper_ribs_and_shrimp
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/stance,choose=battle
-actions.precombat+=/battle_shout
 actions.precombat+=/mogu_power_potion
 
 # Executed every time the actor is available.
@@ -30,22 +29,18 @@ actions=charge
 actions+=/auto_attack
 actions+=/mogu_power_potion,if=(target.health.pct<20&buff.recklessness.up)|target.time_to_die<=25
 # This incredibly long line can be translated to 'Use recklessness on cooldown with colossus smash; unless the boss will die before the ability is usable again, and then combine with execute instead.'
-actions+=/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>(192*buff.cooldown_reduction.value)|target.health.pct<20)|target.time_to_die<=12
+actions+=/recklessness,if=!talent.bloodbath.enabled&((cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5)&(target.time_to_die>192|target.health.pct<20))|buff.bloodbath.up&(target.time_to_die>192|target.health.pct<20)|target.time_to_die<=12
 actions+=/avatar,if=enabled&(buff.recklessness.up|target.time_to_die<=25)
-actions+=/use_item,slot=hands,if=!talent.bloodbath.enabled&debuff.colossus_smash.up|buff.bloodbath.up
-actions+=/blood_fury,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
-actions+=/berserking,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
-actions+=/arcane_torrent,if=buff.cooldown_reduction.down&(buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up))|buff.cooldown_reduction.up&buff.recklessness.up
+actions+=/use_item,slot=hands,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
+actions+=/blood_fury,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
+actions+=/berserking,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
+actions+=/arcane_torrent,if=buff.bloodbath.up|(!talent.bloodbath.enabled&debuff.colossus_smash.up)|buff.recklessness.up
 actions+=/run_action_list,name=single_target,if=active_enemies=1
 actions+=/run_action_list,name=two_targets,if=active_enemies=2
 actions+=/run_action_list,name=three_targets,if=active_enemies=3
 actions+=/run_action_list,name=aoe,if=active_enemies>3
 
-# /actions+=/stance,choose=berserker,damage_taken=150000,swap=20
-# If you wish to simulate raid damage with stance swapping, please try something similar to the line above.
-# The above line, when the # is removed, will tell the character to swap to berserker stance, give rage based on 150k of damage taken,
-# and then swap back to the original stance. This will repeat every 20 seconds.
-
+# 
 # A very brief overview of the fury single target rotation, keep in mind that this does not include various subtle aspects in the action list, and is only intended for newer players.
 # Fury is a priority-based rotation with moderate amounts of rage management. It is  played in a 20-21 second cycle, based around usage of Colossus Smash.
 # Bloodthirst is used on cooldown, raging blow is a higher priority than bloodsurge-buffed wild strikes, and the player should attempt to save up rage by foregoing usage of 'rage dumps' such as
@@ -57,34 +52,28 @@ actions.single_target=bloodbath,if=enabled&(cooldown.colossus_smash.remains<2|de
 actions.single_target+=/heroic_strike,if=(debuff.colossus_smash.up&rage>=40&target.health.pct>=20|rage>=100)&buff.enrage.up
 actions.single_target+=/heroic_leap,if=debuff.colossus_smash.up
 actions.single_target+=/bloodthirst,if=!buff.enrage.up
-# Galakras cooldown reduction trinket allows Storm Bolt to be synced with Colossus Smash. 'buff.cooldown_reduction.up' is a hackish way of seeing if the trinket is equipped.
-actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.up&debuff.colossus_smash.up
+actions.single_target+=/storm_bolt,if=enabled&debuff.colossus_smash.up
 # Delay Bloodthirst if 2 stacks of raging blow are available inside Colossus Smash.
 actions.single_target+=/raging_blow,if=buff.raging_blow.stack=2&debuff.colossus_smash.up&target.health.pct>=20
-actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.down&debuff.colossus_smash.up
 actions.single_target+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
 actions.single_target+=/bloodthirst
 # The GCD reduction of the Bloodsurge buff allows 3 Wild Strikes in-between Bloodthirst.
 actions.single_target+=/wild_strike,if=buff.bloodsurge.react&target.health.pct>=20&cooldown.bloodthirst.remains<=1
-actions.single_target+=/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1
 # The debuff from Colossus Smash lasts 6.5 seconds and also has 0.25~ seconds of travel time. This allows 4 1.5 second globals to be used inside of it every time now.
 actions.single_target+=/colossus_smash
-actions.single_target+=/storm_bolt,if=enabled&buff.cooldown_reduction.down
+actions.single_target+=/storm_bolt,if=enabled&cooldown.colossus_smash.remains>3
 actions.single_target+=/execute,if=debuff.colossus_smash.up|rage>70|target.time_to_die<12
 actions.single_target+=/raging_blow,if=target.health.pct<20|buff.raging_blow.stack=2|debuff.colossus_smash.up|buff.raging_blow.remains<=3
 actions.single_target+=/bladestorm,if=enabled,interrupt_if=cooldown.bloodthirst.remains<1
 actions.single_target+=/wild_strike,if=buff.bloodsurge.up
 actions.single_target+=/raging_blow,if=cooldown.colossus_smash.remains>=1
 actions.single_target+=/shockwave,if=enabled
-actions.single_target+=/heroic_throw,if=debuff.colossus_smash.down&rage<60
-actions.single_target+=/wild_strike,if=debuff.colossus_smash.up&target.health.pct>=20
-actions.single_target+=/battle_shout,if=rage<70
+actions.single_target+=/wild_strike,if=(debuff.colossus_smash.up|(cooldown.colossus_smash.remains>=2&rage>=70))&target.health.pct>=20
 actions.single_target+=/impending_victory,if=enabled&target.health.pct>=20&cooldown.colossus_smash.remains>=1.5
-actions.single_target+=/wild_strike,if=cooldown.colossus_smash.remains>=2&rage>=70&target.health.pct>=20
 
-actions.two_targets=bloodbath,if=enabled&((!talent.bladestorm.enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20))|(talent.bladestorm.enabled))
-actions.two_targets+=/heroic_leap,if=buff.enrage.up&(debuff.colossus_smash.up&buff.cooldown_reduction.up|!buff.cooldown_reduction.up)
-actions.two_targets+=/bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)&(!talent.storm_bolt.enabled|(talent.storm_bolt.enabled&!debuff.colossus_smash.up))
+actions.two_targets=bloodbath,if=enabled
+actions.two_targets+=/heroic_leap,if=buff.enrage.up
+actions.two_targets+=/bladestorm,if=enabled&buff.enrage.remains>4
 # Generally, if an encounter has any type of AoE, Bladestorm will be the better choice than Dragon Roar.
 actions.two_targets+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
 actions.two_targets+=/colossus_smash
@@ -92,17 +81,14 @@ actions.two_targets+=/colossus_smash
 actions.two_targets+=/bloodthirst,cycle_targets=1,if=dot.deep_wounds.remains<5
 actions.two_targets+=/storm_bolt,if=enabled&debuff.colossus_smash.up
 actions.two_targets+=/bloodthirst
-actions.two_targets+=/wait,sec=cooldown.bloodthirst.remains,if=!(target.health.pct<20&debuff.colossus_smash.up&rage>=30&buff.enrage.up)&cooldown.bloodthirst.remains<=1
 actions.two_targets+=/raging_blow,if=buff.meat_cleaver.up
 actions.two_targets+=/whirlwind,if=!buff.meat_cleaver.up
 actions.two_targets+=/shockwave,if=enabled
 actions.two_targets+=/execute
-actions.two_targets+=/battle_shout
-actions.two_targets+=/heroic_throw
 
 actions.three_targets=bloodbath,if=enabled
-actions.three_targets+=/heroic_leap,if=buff.enrage.up&(debuff.colossus_smash.up&buff.cooldown_reduction.up|!buff.cooldown_reduction.up)
-actions.three_targets+=/bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)
+actions.three_targets+=/heroic_leap,if=buff.enrage.up
+actions.three_targets+=/bladestorm,if=enabled&buff.enrage.remains>4
 actions.three_targets+=/dragon_roar,if=enabled&!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
 actions.three_targets+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking
 actions.three_targets+=/colossus_smash
@@ -111,12 +97,10 @@ actions.three_targets+=/raging_blow,if=buff.meat_cleaver.stack=2
 actions.three_targets+=/whirlwind
 actions.three_targets+=/shockwave,if=enabled
 actions.three_targets+=/raging_blow
-actions.three_targets+=/battle_shout
-actions.three_targets+=/heroic_throw
 
 actions.aoe=bloodbath,if=enabled
 actions.aoe+=/heroic_leap,if=buff.enrage.up
-actions.aoe+=/bladestorm,if=enabled&(buff.bloodbath.up|!talent.bloodbath.enabled)
+actions.aoe+=/bladestorm,if=enabled&buff.enrage.remains>4
 # Enrage overlaps 4 GCDs, which allows bloodthirst to be used mostly to keep enrage up, as rage income is typically not an issue with the aoe rotation.
 actions.aoe+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking&buff.enrage.down
 actions.aoe+=/raging_blow,if=buff.meat_cleaver.stack=3
@@ -128,39 +112,38 @@ actions.aoe+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking
 actions.aoe+=/colossus_smash
 actions.aoe+=/storm_bolt,if=enabled
 actions.aoe+=/shockwave,if=enabled
-actions.aoe+=/battle_shout
 
 head=helmet_of_the_prehistoric_marauder,id=99418,upgrade=2,gems=capacitive_primal_160exp_160crit_180str
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
 shoulders=tusks_of_mannoroth,id=105642,upgrade=2,gems=160exp_160crit_160exp_160crit_160exp_160crit_180str,enchant=200str_100crit
-back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=160exp_160crit_60str,enchant=180crit,reforge=haste_hit
+back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=160exp_160crit_60str,enchant=180crit
 chest=breastplate_of_shamanic_mirrors,id=105532,upgrade=2,gems=160exp_160crit_160exp_160crit_320crit_180str,enchant=80all
 wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=320crit,enchant=170mastery
-hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=2,gems=320crit_320crit_320crit,enchant=170mastery,addon=synapse_springs_2,reforge=hit_mastery
-waist=ashen_wall_girdle,id=105533,upgrade=2,gems=160exp_160crit_160crit_160hit_320crit_120str,reforge=hit_crit
+hands=gauntlets_of_the_prehistoric_marauder,id=99412,upgrade=2,gems=320crit_320crit_320crit,enchant=170mastery,addon=synapse_springs_2
+waist=ashen_wall_girdle,id=105533,upgrade=2,gems=160exp_160crit_160crit_160hit_320crit_120str
 legs=legplates_of_willful_doom,id=105565,upgrade=2,gems=320crit_320crit_320crit,enchant=285str_165crit
-feet=greaves_of_sublime_superiority,id=105478,upgrade=2,gems=160exp_160crit_60crit,enchant=140mastery,reforge=hit_mastery
-finger1=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=320crit,reforge=haste_mastery
-finger2=devilfang_band,id=105611,upgrade=2,gems=320crit,reforge=exp_crit
+feet=greaves_of_sublime_superiority,id=105478,upgrade=2,gems=160exp_160crit_60crit,enchant=140mastery
+finger1=seal_of_the_forgotten_kings,id=105589,upgrade=2,gems=320crit
+finger2=devilfang_band,id=105611,upgrade=2,gems=320crit
 trinket1=evil_eye_of_galakras,id=105491,upgrade=2
 trinket2=thoks_tail_tip,id=105609,upgrade=2
 main_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=160exp_160crit_60str,enchant=dancing_steel
 off_hand=xalatoh_desecrated_image_of_gorehowl,id=105644,upgrade=2,gems=320crit,enchant=dancing_steel
 
 # Gear Summary
-# gear_strength=28551
+# gear_strength=2386
 # gear_agility=80
-# gear_stamina=43536
+# gear_stamina=1788
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2202
-# gear_hit_rating=2636
-# gear_crit_rating=23362
-# gear_haste_rating=1123
-# gear_mastery_rating=15958
-# gear_armor=41770
+# gear_expertise_rating=1600
+# gear_hit_rating=160
+# gear_crit_rating=7137
+# gear_haste_rating=154
+# gear_mastery_rating=1029
+# gear_armor=1210
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # hands=gauntlets_of_the_prehistoric_marauder,heroic=1,addon=synapse_springs_2
-# main_hand=xalatoh_desecrated_image_of_gorehowl,heroic=1,elite=1,weapon=axe2h_3.60speed_26125min_39189max,enchant=dancing_steel
-# off_hand=xalatoh_desecrated_image_of_gorehowl,heroic=1,elite=1,weapon=axe2h_3.60speed_26125min_39189max,enchant=dancing_steel
+# main_hand=xalatoh_desecrated_image_of_gorehowl,heroic=1,elite=1,weapon=axe2h_3.60speed_755min_1134max,enchant=dancing_steel
+# off_hand=xalatoh_desecrated_image_of_gorehowl,heroic=1,elite=1,weapon=axe2h_3.60speed_755min_1134max,enchant=dancing_steel

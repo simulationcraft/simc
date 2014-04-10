@@ -4,7 +4,7 @@ race=troll
 role=attack
 position=back
 professions=blacksmithing=600/engineering=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#ca!200002
+talents=http://us.battle.net/wow/en/tool/talent-calculator#ca!200002.
 glyphs=vendetta
 spec=assassination
 
@@ -38,7 +38,6 @@ actions+=/berserking
 actions+=/arcane_torrent,if=energy<60
 actions+=/vanish,if=time>10&!buff.stealth.up&!buff.shadow_blades.up
 actions+=/mutilate,if=buff.stealth.up
-actions+=/shadow_blades,if=buff.bloodlust.react|time>60
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2
 actions+=/dispatch,if=dot.rupture.ticks_remain<2&energy>90
 actions+=/mutilate,if=dot.rupture.ticks_remain<2&energy>90
@@ -52,38 +51,38 @@ actions+=/dispatch,if=combo_points<5
 actions+=/mutilate
 actions+=/tricks_of_the_trade
 
-head=helmet_of_the_barbed_assassin,id=99348,upgrade=2,gems=capacitive_primal_160agi_180agi,reforge=mastery_hit
-neck=immerseus_crystalline_eye,id=105407,upgrade=2,reforge=mastery_exp
-shoulders=spaulders_of_the_barbed_assassin,id=99350,upgrade=2,gems=160agi_160agi_120agi,enchant=200agi_100crit,reforge=exp_hit
-back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180hit,reforge=mastery_exp
-chest=tunic_of_the_barbed_assassin,id=99356,upgrade=2,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_crit
-wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,gems=160agi,enchant=180agi,reforge=mastery_hit
-hands=gloves_of_the_barbed_assassin,id=99355,upgrade=2,gems=160agi_160agi_160agi_120agi,enchant=170haste,addon=synapse_springs_mark_ii,reforge=mastery_crit
+head=helmet_of_the_barbed_assassin,id=99348,upgrade=2,gems=capacitive_primal_160agi_180agi
+neck=immerseus_crystalline_eye,id=105407,upgrade=2
+shoulders=spaulders_of_the_barbed_assassin,id=99350,upgrade=2,gems=160agi_160agi_120agi,enchant=200agi_100crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180hit
+chest=tunic_of_the_barbed_assassin,id=99356,upgrade=2,gems=160agi_160agi_160agi_180agi,enchant=80all
+wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,gems=160agi,enchant=180agi
+hands=gloves_of_the_barbed_assassin,id=99355,upgrade=2,gems=160agi_160agi_160agi_120agi,enchant=170haste,addon=synapse_springs_mark_ii
 waist=cord_of_black_dreams,id=105635,upgrade=2,gems=160agi_80agi_160haste_160agi_120agi
-legs=rious_vigilant_leggings,id=105529,upgrade=2,gems=80agi_160hit_80agi_160hit_120agi,enchant=285agi_165crit,reforge=crit_haste
-feet=pandaren_roofsprinters,id=105582,upgrade=2,gems=80agi_160hit_60mastery,enchant=140agi,reforge=mastery_hit
-finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=160agi_60crit,reforge=mastery_crit
-finger2=swift_serpent_signet,id=105483,upgrade=2,gems=80agi_160haste_60crit,reforge=mastery_haste
+legs=rious_vigilant_leggings,id=105529,upgrade=2,gems=80agi_160hit_80agi_160hit_120agi,enchant=285agi_165crit
+feet=pandaren_roofsprinters,id=105582,upgrade=2,gems=80agi_160hit_60mastery,enchant=140agi
+finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=160agi_60crit
+finger2=swift_serpent_signet,id=105483,upgrade=2,gems=80agi_160haste_60crit
 trinket1=assurance_of_consequence,id=105472,upgrade=2
 trinket2=haromms_talisman,id=105527,upgrade=2
-main_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,enchant=dancing_steel,reforge=mastery_crit
-off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,enchant=dancing_steel,reforge=mastery_exp
+main_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,enchant=dancing_steel
+off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,enchant=dancing_steel
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=28921
-# gear_stamina=38571
+# gear_agility=5782
+# gear_stamina=1590
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2551
-# gear_hit_rating=2551
-# gear_crit_rating=5799
-# gear_haste_rating=14924
-# gear_mastery_rating=8881
-# gear_armor=22619
+# gear_hit_rating=660
+# gear_crit_rating=933
+# gear_haste_rating=1004
+# gear_mastery_rating=580
+# gear_armor=414
+# gear_multistrike_rating=99
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
 # hands=gloves_of_the_barbed_assassin,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=hvitserks_formidable_shanker,heroic=1,elite=1,weapon=dagger_1.80speed_8476min_15744max,enchant=dancing_steel
-# off_hand=hvitserks_formidable_shanker,heroic=1,elite=1,weapon=dagger_1.80speed_8476min_15744max,enchant=dancing_steel
+# main_hand=hvitserks_formidable_shanker,heroic=1,elite=1,weapon=dagger_1.80speed_256min_478max,enchant=dancing_steel
+# off_hand=hvitserks_formidable_shanker,heroic=1,elite=1,weapon=dagger_1.80speed_256min_478max,enchant=dancing_steel

@@ -11,7 +11,7 @@ spec=shadow
 role=spell
 position=back
 professions=blacksmithing=600/engineering=600
-glyphs=inner_sanctum/mind_flay/dark_archangel/shadowy_friends/shadow_ravens
+glyphs=mind_flay/dark_archangel/shadowy_friends/shadow_ravens
 head=hood_of_the_ternion_glory,id=99360,upgrade=2,gems=sinister_primal_80int_160mastery_180int
 neck=necklace_of_fading_light,id=105473,upgrade=2
 shoulders=shoulderguards_of_the_ternion_glory,id=99363,upgrade=2,gems=80int_160mastery_80int_160mastery_120int,enchant=200int_100crit

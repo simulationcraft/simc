@@ -4,8 +4,8 @@ race=goblin
 role=spell
 position=back
 professions=blacksmithing=600/engineering=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!002202
-glyphs=inner_sanctum/mind_flay/dark_archangel/shadowy_friends/shadow_ravens
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!002202.
+glyphs=mind_flay/dark_archangel/shadowy_friends/shadow_ravens
 spec=shadow
 
 # This default action priority list is automatically created based on your character.
@@ -35,6 +35,7 @@ actions+=/power_infusion,if=talent.power_infusion.enabled
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
+actions+=/void_entropy,if=talent.void_entropy.enabled&(shadow_orb=3&miss_react&!ticking)
 actions+=/shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1&active_enemies<=5
 actions+=/devouring_plague,if=shadow_orb=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)
 actions+=/mind_blast,if=active_enemies<=5&cooldown_react
@@ -51,8 +52,8 @@ actions+=/mind_spike,if=active_enemies<=5&buff.surge_of_darkness.react=2
 actions+=/halo,if=talent.halo.enabled
 actions+=/cascade_damage,if=talent.cascade.enabled
 actions+=/divine_star,if=talent.divine_star.enabled
-actions+=/wait,sec=cooldown.shadow_word_death.remains,if=target.health.pct<20&cooldown.shadow_word_death.remains<0.5&active_enemies<=1
-actions+=/wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&active_enemies<=1
+actions+=/wait,sec=cooldown.shadow_word_death.remains,if=target.health.pct<20&cooldown.shadow_word_death.remains&cooldown.shadow_word_death.remains<0.5&active_enemies<=1
+actions+=/wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&cooldown.mind_blast.remains&active_enemies<=1
 actions+=/mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5
 actions+=/mind_sear,chain=1,interrupt=1,if=active_enemies>=3
 actions+=/mind_flay,chain=1,interrupt=1
@@ -65,10 +66,10 @@ head=hood_of_the_ternion_glory,id=99360,upgrade=2,gems=sinister_primal_80int_160
 neck=necklace_of_fading_light,id=105473,upgrade=2
 shoulders=shoulderguards_of_the_ternion_glory,id=99363,upgrade=2,gems=80int_160mastery_80int_160mastery_120int,enchant=200int_100crit
 back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=80int_160haste_60int,enchant=180int
-chest=raiment_of_the_ternion_glory,id=99362,upgrade=2,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all,reforge=crit_haste
+chest=raiment_of_the_ternion_glory,id=99362,upgrade=2,gems=80int_160haste_80int_160haste_80int_160haste_180int,enchant=80all
 wrists=bracers_of_sonic_projection,id=105626,upgrade=2,gems=320mastery,enchant=180int
 hands=gloves_of_the_ternion_glory,id=99359,upgrade=2,gems=80int_160mastery_80int_160mastery_320mastery_120int,enchant=170haste,addon=synapse_springs_mark_ii
-waist=belt_of_the_broken_pact,id=105646,upgrade=2,gems=80int_160mastery_320mastery_320haste_120int,reforge=mastery_haste
+waist=belt_of_the_broken_pact,id=105646,upgrade=2,gems=80int_160mastery_320mastery_320haste_120int
 legs=leggings_of_furious_flame,id=105516,upgrade=2,gems=320spi_320spi_120int,enchant=285int_165crit
 feet=boneinlaid_sandals,id=105493,upgrade=2,gems=320haste_60int,enchant=175haste
 finger1=signet_of_the_dinomancers,id=105606,upgrade=2,gems=80int_160mastery_60hit
@@ -81,17 +82,18 @@ off_hand=revelations_of_yshaarj,id=105650,upgrade=2,gems=80int_160mastery_60int,
 # Gear Summary
 # gear_strength=80
 # gear_agility=80
-# gear_stamina=39087
-# gear_intellect=27610
-# gear_spirit=4678
-# gear_spell_power=15321
+# gear_stamina=1612
+# gear_intellect=4142
+# gear_spirit=858
+# gear_spell_power=590
 # gear_hit_rating=60
-# gear_crit_rating=5552
-# gear_haste_rating=16479
-# gear_mastery_rating=12091
-# gear_armor=18104
+# gear_crit_rating=799
+# gear_haste_rating=2202
+# gear_mastery_rating=3128
+# gear_armor=284
+# gear_multistrike_rating=99
 # meta_gem=sinister_primal
 # tier16_2pc_caster=1
 # tier16_4pc_caster=1
 # hands=gloves_of_the_ternion_glory,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=horned_mace_of_the_old_ones,heroic=1,elite=1,weapon=mace_2.40speed_5651min_10496max,enchant=jade_spirit
+# main_hand=horned_mace_of_the_old_ones,heroic=1,elite=1,weapon=mace_2.40speed_171min_319max,enchant=jade_spirit

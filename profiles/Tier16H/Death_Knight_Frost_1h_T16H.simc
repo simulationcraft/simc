@@ -4,8 +4,7 @@ race=orc
 role=attack
 position=back
 professions=blacksmithing=600/engineering=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1...0.
-glyphs=loud_horn
+talents=http://us.battle.net/wow/en/tool/talent-calculator#dZ!1...0..
 spec=frost
 
 # This default action priority list is automatically created based on your character.
@@ -22,10 +21,8 @@ actions.precombat+=/horn_of_winter
 actions.precombat+=/frost_presence
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/army_of_the_dead
 actions.precombat+=/mogu_power_potion
 actions.precombat+=/pillar_of_frost
-actions.precombat+=/raise_dead
 
 # Executed every time the actor is available.
 
@@ -38,7 +35,6 @@ actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
 actions+=/use_item,slot=hands
-actions+=/raise_dead
 actions+=/run_action_list,name=aoe,if=active_enemies>=3
 actions+=/run_action_list,name=single_target,if=active_enemies<3
 
@@ -77,38 +73,38 @@ actions.single_target+=/blood_tap,if=talent.blood_tap.enabled
 actions.single_target+=/plague_leech,if=talent.plague_leech.enabled
 actions.single_target+=/empower_rune_weapon
 
-head=helmet_of_cyclopean_dread,id=99337,upgrade=2,gems=capacitive_primal_80str_160mastery_180str,reforge=haste_crit
+head=helmet_of_cyclopean_dread,id=99337,upgrade=2,gems=capacitive_primal_80str_160mastery_180str
 neck=malkoroks_tainted_dog_tags,id=105566,upgrade=2
 shoulders=pauldrons_of_cyclopean_dread,id=99339,upgrade=2,gems=80str_160mastery_80str_160mastery_120str,enchant=200str_100crit
 back=gonglu_strength_of_xuen,id=102249,upgrade=2,gems=80str_160mastery_60str,enchant=180crit
-chest=breastplate_of_cyclopean_dread,id=99335,upgrade=2,gems=80str_160mastery_80str_160mastery_80str_160mastery_180str,enchant=80all,reforge=haste_crit
+chest=breastplate_of_cyclopean_dread,id=99335,upgrade=2,gems=80str_160mastery_80str_160mastery_80str_160mastery_180str,enchant=80all
 wrists=bracers_of_blind_hatred,id=105456,upgrade=2,gems=320mastery,enchant=180str
 hands=gauntlets_of_cyclopean_dread,id=99336,upgrade=2,gems=320mastery_80str_160mastery_80str_160mastery_120str,enchant=170str,addon=synapse_springs_mark_ii
-waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=80str_160mastery_320mastery_320mastery_120str,reforge=haste_crit
+waist=demolishers_reinforced_belt,id=105509,upgrade=2,gems=80str_160mastery_320mastery_320mastery_120str
 legs=legplates_of_willful_doom,id=105565,upgrade=2,gems=160mastery_160hit_160mastery_160hit_80str_160mastery_120str,enchant=285str_165crit
-feet=malkoroks_giant_stompers,id=105563,upgrade=2,gems=320mastery,enchant=140mastery,reforge=exp_crit
-finger1=devilfang_band,id=105611,upgrade=2,gems=80str_160mastery_60exp,reforge=exp_crit
-finger2=bloodclaw_band,id=105534,upgrade=2,gems=320mastery_60haste,reforge=hit_crit
+feet=malkoroks_giant_stompers,id=105563,upgrade=2,gems=320mastery,enchant=140mastery
+finger1=devilfang_band,id=105611,upgrade=2,gems=80str_160mastery_60exp
+finger2=bloodclaw_band,id=105534,upgrade=2,gems=320mastery_60haste
 trinket1=evil_eye_of_galakras,id=105491,upgrade=2
 trinket2=thoks_tail_tip,id=105609,upgrade=2
-main_hand=xifeng_longblade_of_the_titanic_guardian,id=105460,upgrade=2,gems=80str_160mastery_60str,enchant=rune_of_the_fallen_crusader,reforge=hit_crit
-off_hand=xifeng_longblade_of_the_titanic_guardian,id=105460,upgrade=2,gems=80str_160mastery_60str,enchant=rune_of_razorice,reforge=hit_crit
+main_hand=xifeng_longblade_of_the_titanic_guardian,id=105460,upgrade=2,gems=80str_160mastery_60str,enchant=rune_of_the_fallen_crusader
+off_hand=xifeng_longblade_of_the_titanic_guardian,id=105460,upgrade=2,gems=80str_160mastery_60str,enchant=rune_of_razorice
 
 # Gear Summary
-# gear_strength=27031
+# gear_strength=3968
 # gear_agility=80
-# gear_stamina=38571
+# gear_stamina=1590
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2711
-# gear_hit_rating=2767
-# gear_crit_rating=9273
-# gear_haste_rating=3739
-# gear_mastery_rating=19775
-# gear_armor=41582
+# gear_expertise_rating=60
+# gear_hit_rating=320
+# gear_crit_rating=1225
+# gear_haste_rating=267
+# gear_mastery_rating=5204
+# gear_armor=1191
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
 # hands=gauntlets_of_cyclopean_dread,heroic=1,addon=synapse_springs_mark_ii
-# main_hand=xifeng_longblade_of_the_titanic_guardian,heroic=1,elite=1,weapon=sword_2.60speed_12244min_22741max,enchant=rune_of_the_fallen_crusader
-# off_hand=xifeng_longblade_of_the_titanic_guardian,heroic=1,elite=1,weapon=sword_2.60speed_12244min_22741max,enchant=rune_of_razorice
+# main_hand=xifeng_longblade_of_the_titanic_guardian,heroic=1,elite=1,weapon=sword_2.60speed_370min_690max,enchant=rune_of_the_fallen_crusader
+# off_hand=xifeng_longblade_of_the_titanic_guardian,heroic=1,elite=1,weapon=sword_2.60speed_370min_690max,enchant=rune_of_razorice

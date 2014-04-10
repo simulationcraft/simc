@@ -7,7 +7,7 @@ race=troll
 spec=frost
 professions=tailoring=600/engineering=600
 talents=100022
-glyphs=evocation/icy_veins/splitting_ice
+glyphs=icy_veins/splitting_ice
 head=chronomancer_hood,id=99398,upgrade=2,gems=sinister_primal_160exp_160mastery_180int,reforge=crit_mastery
 neck=untainted_guardians_chain,id=105465,upgrade=2,reforge=hit_haste
 shoulders=chronomancer_mantle,id=99401,upgrade=2,gems=160exp_160mastery_160exp_160mastery_120int,enchant=200int_100crit,reforge=haste_mastery
@@ -32,7 +32,7 @@ race=troll
 spec=arcane
 professions=tailoring=600/engineering=600
 talents=100022
-glyphs=mana_gem/mirror_image/arcane_power
+glyphs=arcane_power
 head=ebon_ritual_hood,id=105647,upgrade=2,gems=sinister_primal_160exp_160mastery_180int,reforge=haste_hit
 neck=untainted_guardians_chain,id=105465,upgrade=2,reforge=hit_haste
 shoulders=chronomancer_mantle,id=99401,upgrade=2,gems=160exp_160mastery_160exp_160mastery_120int,enchant=200int_100crit,reforge=crit_mastery

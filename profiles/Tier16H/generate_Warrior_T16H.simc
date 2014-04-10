@@ -99,7 +99,7 @@ race=night_elf
 role=tank
 position=front
 talents=011221
-glyphs=unending_rage/hold_the_line/heavy_repercussions
+glyphs=unending_rage
 professions=enchanting=600/inscription=600
 spec=prot
 waist=untarnishable_greatbelt,id=105587,stats=3949armor_1827str_2981sta_1019parry_1378mastery,gems=320parry_320dodge_320parry_120str,reforge=mastery_dodge
