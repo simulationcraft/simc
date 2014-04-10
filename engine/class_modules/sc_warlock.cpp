@@ -6,8 +6,7 @@
 
 
 /*TODO for 5.4:
- 
- Implement harvest_life talent: Increases Drain Life damage
+
  Implement demonic breath talent 
  */
 namespace { // unnamed namespace
@@ -2375,6 +2374,16 @@ struct drain_life_t : public warlock_spell_t
 
     consume_tick_resource( d );
   }
+  virtual double action_multiplier() const
+  {
+    double am = warlock_spell_t::action_multiplier();
+
+    if ( p() -> talents.harvest_life -> ok() )
+      am *= 1.0 + p() -> talents.harvest_life -> effectN( 1 ).percent();
+
+    return am;
+  }
+
 };
 
 
