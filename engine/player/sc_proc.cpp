@@ -200,7 +200,10 @@ const spell_data_t* special_effect_t::trigger() const
       return driver() -> effectN( i ).trigger();
   }
 
-  return spell_data_t::nil();
+  // As a fallback, return the driver spell as the "trigger" as well. This
+  // allows on-use side of special effects use the same code paths, and
+  // shouldnt break procs.
+  return driver();
 }
 
 // special_effect_t::is_stat_buff ===========================================

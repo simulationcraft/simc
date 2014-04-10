@@ -684,7 +684,7 @@ void buff_t::start( int        stacks,
       if ( tick_time == d )
         tick_time -= timespan_t::from_millis( 1 );
       assert( ! tick_event );
-      tick_event = new ( *sim ) tick_t( this, tick_time, current_value, stacks );
+      tick_event = new ( *sim ) tick_t( this, tick_time, current_value, reverse ? 1 : stacks );
     }
   }
 }

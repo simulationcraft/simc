@@ -209,7 +209,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 138957, 0,                            item::spark_of_zandalar }, /* Spark of Zandalar */
   { 138964, 0,                   item::unerring_vision_of_leishen }, /* Unerring Vision of Lei Shen */
 
-  { 138728, "10Stack_Reverse_NoRefresh",                        0 }, /* Steadfast Talisman of the Shado-Pan Assault */
+  { 138728, "Reverse_NoRefresh",                                0 }, /* Steadfast Talisman of the Shado-Pan Assault */
   { 138894, "OnDirectDamage",                                   0 }, /* Talisman of Bloodlust */
   { 138871, "OnDirectDamage",                                   0 }, /* Primordius' Talisman of Rage */
   { 139171, "ProcOn/Crit_RPPMAttackCrit",                       0 }, /* Gaze of the Twins */
@@ -1817,11 +1817,8 @@ bool unique_gear::initialize_special_effect( special_effect_t& effect,
 
   // For generic procs, make sure we have a PPM, RPPM or Proc Chance available,
   // otherwise there's no point in trying to proc anything
-  if ( effect.type != SPECIAL_EFFECT_CUSTOM && ! proc::usable_proc( effect ) )
-  {
-    std::cout << effect.to_string() << std::endl;
+  if ( effect.type == SPECIAL_EFFECT_EQUIP && ! proc::usable_proc( effect ) )
     effect.type = SPECIAL_EFFECT_NONE;
-  }
 
   return ret;
 }
@@ -1863,7 +1860,7 @@ void unique_gear::init( player_t* p )
         assert( dbitem.custom_cb != 0 );
         dbitem.custom_cb( effect, item, dbitem );
       }
-      else
+      else if ( effect.type == SPECIAL_EFFECT_EQUIP )
         new dbc_proc_callback_t( item, effect );
     }
 
