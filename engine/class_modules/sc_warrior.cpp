@@ -2595,23 +2595,12 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
     base_t::execute();
   }
 
-  /* stripped down version to calculate s-> result_amount,
-   * i.e., how big our shield is, Formula: max(ap_scale*(AP-Str*2), Sta*stam_scale)*RAGE/60
-   */
   virtual double calculate_direct_amount( action_state_t* state)
   {
-    double amount = sim -> averaged_range( base_dd_min, base_dd_max );
-
-    if ( round_base_dmg ) amount = floor( amount + 0.5 );
-
+    double amount;
     const warrior_t& p = *cast();
 
-    double   ap_scale = data().effectN( 2 ).percent();
-    double stam_scale = data().effectN( 3 ).percent();
-
-    amount += std::max( ap_scale * ( p.cache.attack_power() - p.current.stats.attribute[ ATTR_STRENGTH ] * 2 ),
-                     p.current.stats.attribute[ ATTR_STAMINA ] * stam_scale )
-           * rage_cost / 60;
+    amount = p.cache.attack_power() * data().effectN(1).ap_coeff() * rage_cost / 60; // I think this is right? 
 
     if ( ! sim -> average_range ) amount = floor( amount + rng().real() );
 
