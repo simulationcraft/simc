@@ -463,8 +463,8 @@ struct warrior_attack_t : public warrior_action_t< melee_attack_t >
 
     const warrior_t* p = cast();
 
-    if( special )
-      cc += p -> buff.recklessness -> value();
+    if( special && p -> buff.recklessness -> up() )
+      cc += p -> buff.recklessness -> data().effectN( 1 ).percent();
 
     return cc;
   }
@@ -3565,8 +3565,7 @@ void warrior_t::create_buffs()
                           .duration( timespan_t::from_seconds( 6 ) );
 
   buff.ignite_weapon    = buff_creator_t( this, "ignite_weapon",   find_class_spell( "Ignite Weapon" ) )
-                         .chance( 1 )
-                         .duration( timespan_t::from_seconds( 10 ) );
+                         .chance( 1 );
 
   buff.gladiator_stance = buff_creator_t( this, "gladiator_stance",    find_class_spell( "Gladiator Stance"  ) );
 
@@ -3578,9 +3577,10 @@ void warrior_t::create_buffs()
 
   buff.raging_wind      = buff_creator_t( this, "raging_wind",      glyphs.raging_wind -> effectN( 1 ).trigger() )
                           .chance( ( glyphs.raging_wind -> ok() ? 1 : 0 ) );
+
   buff.recklessness     = buff_creator_t( this, "recklessness",     find_class_spell( "Recklessness" ) )
-                          .duration( timespan_t::from_seconds(10) )
                           .cd( timespan_t::zero() );
+
   buff.taste_for_blood = buff_creator_t( this, "taste_for_blood" )
                          .spell( find_spell( 60503 ) );
 
@@ -3809,7 +3809,7 @@ double warrior_t::composite_player_critical_damage_multiplier() const
   double b = player_t::composite_player_critical_damage_multiplier();
 
   if ( buff.recklessness -> up() )
-    b += 0.1;
+    b += buff.recklessness -> data().effectN( 2 ).percent();
 
   return b;
 }
