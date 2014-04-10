@@ -2127,13 +2127,26 @@ struct unleash_wind_t : public shaman_melee_attack_t
 
 struct stormstrike_attack_t : public shaman_melee_attack_t
 {
+  const spell_data_t* lightning_shield;
+
   stormstrike_attack_t( const std::string& n, shaman_t* player, const spell_data_t* s, weapon_t* w ) :
-    shaman_melee_attack_t( n, player, s )
+    shaman_melee_attack_t( n, player, s ),
+    lightning_shield( player -> find_spell( 324 ) )
   {
     may_proc_windfury = background = true;
     may_miss = may_dodge = may_parry = false;
     weapon = w;
     base_multiplier *= 1.0 + p() -> perk.improved_stormstrike -> effectN( 1 ).percent();
+  }
+
+  double action_multiplier() const
+  {
+    double m = shaman_melee_attack_t::action_multiplier();
+
+    if ( p() -> buff.lightning_shield -> up() )
+      m *= 1.0 + lightning_shield -> effectN( 3 ).percent();
+
+    return m;
   }
 };
 
