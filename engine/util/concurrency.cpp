@@ -284,6 +284,7 @@ private:
 // POSIX
 #include <pthread.h>
 #include <unistd.h>
+#include <cstdio>
 
 // mutex_t::native_t ========================================================
 

@@ -1,11 +1,11 @@
-# Profile generated with AskMrRobot using 'Default PvE' weights. May not be optimal.
-priest="Priest_Shadow_T16N"
-level=90
-race=night_elf
+priest="Priest_Shadow_T17N_AS"
+level=100
+race=goblin
 role=spell
 position=back
-talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!002202
-glyphs=inner_sanctum/mind_flay/dark_archangel/shadowy_friends/shadow_ravens
+professions=blacksmithing=600/engineering=600
+talents=http://us.battle.net/wow/en/tool/talent-calculator#Xb!0022022
+glyphs=mind_flay/dark_archangel/shadowy_friends/shadow_ravens
 spec=shadow
 
 # This default action priority list is automatically created based on your character.
@@ -34,6 +34,7 @@ actions+=/power_infusion,if=talent.power_infusion.enabled
 actions+=/blood_fury
 actions+=/berserking
 actions+=/arcane_torrent
+actions+=/void_entropy,if=talent.void_entropy.enabled&(shadow_orb=3&miss_react&!ticking)
 actions+=/shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1&active_enemies<=5
 actions+=/devouring_plague,if=shadow_orb=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)
 actions+=/mind_blast,if=active_enemies<=5&cooldown_react
@@ -50,8 +51,8 @@ actions+=/mind_spike,if=active_enemies<=5&buff.surge_of_darkness.react=2
 actions+=/halo,if=talent.halo.enabled
 actions+=/cascade_damage,if=talent.cascade.enabled
 actions+=/divine_star,if=talent.divine_star.enabled
-actions+=/wait,sec=cooldown.shadow_word_death.remains,if=target.health.pct<20&cooldown.shadow_word_death.remains<0.5&active_enemies<=1
-actions+=/wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&active_enemies<=1
+actions+=/wait,sec=cooldown.shadow_word_death.remains,if=target.health.pct<20&cooldown.shadow_word_death.remains&cooldown.shadow_word_death.remains<0.5&active_enemies<=1
+actions+=/wait,sec=cooldown.mind_blast.remains,if=cooldown.mind_blast.remains<0.5&cooldown.mind_blast.remains&active_enemies<=1
 actions+=/mind_spike,if=buff.surge_of_darkness.react&active_enemies<=5
 actions+=/mind_sear,chain=1,interrupt=1,if=active_enemies>=3
 actions+=/mind_flay,chain=1,interrupt=1
@@ -60,37 +61,33 @@ actions+=/mind_blast,moving=1,if=buff.divine_insight_shadow.react&cooldown_react
 actions+=/shadow_word_pain,moving=1
 actions+=/dispersion
 
-head=hood_of_the_ternion_glory,id=99122,gems=sinister_primal_160exp_160haste_180int,reforge=crit_spi
-neck=necklace_of_fading_light,id=103881,reforge=spi_mastery
-shoulders=shoulderguards_of_the_ternion_glory,id=99111,gems=160exp_160haste_160exp_160haste_120int,enchant=200int_100crit,reforge=crit_mastery
-back=xingho_breath_of_yulon,id=102246,upgrade=2,gems=80int_160mastery_60int,enchant=180int,reforge=crit_spi
-chest=akoliks_acidsoaked_robes,id=104308,gems=160exp_160haste_160exp_160haste_320haste_180int,enchant=80all,reforge=crit_haste
-wrists=avools_ancestral_bracers,id=103851,enchant=180int
-hands=gloves_of_the_ternion_glory,id=99121,gems=160exp_160haste_160exp_160haste_120int,enchant=170haste,reforge=mastery_spi
-waist=belt_of_the_broken_pact,id=103856,gems=80int_160haste_320mastery_320mastery_120int,reforge=spi_haste
-legs=leggings_of_the_ternion_glory,id=99123,gems=320mastery_320haste_120int,enchant=285int_165spi,reforge=crit_haste
-feet=boneinlaid_sandals,id=103805,gems=320haste_60hit,enchant=140mastery
-finger1=signet_of_the_dinomancers,id=103774,gems=320haste
-finger2=laserslice_signet,id=103773,gems=320haste_60spi,reforge=spi_mastery
-trinket1=kardris_toxic_totem,id=102300
-trinket2=purified_bindings_of_immerseus,id=102293
-main_hand=hellscreams_warmace,id=104402,weapon=mace_2.4speed_5100min_9473max,gems=160exp_160haste_160exp_160haste_120int,enchant=jade_spirit
-off_hand=revelations_of_yshaarj,id=103920,gems=80int_160mastery_60int,enchant=165int
+head=hood_of_the_ternion_glory,id=99360,upgrade=2
+neck=necklace_of_fading_light,id=105473,upgrade=2
+shoulders=shoulderguards_of_the_ternion_glory,id=99363,upgrade=2
+back=xingho_breath_of_yulon,id=102246,upgrade=2
+chest=raiment_of_the_ternion_glory,id=99362,upgrade=2
+wrists=bracers_of_sonic_projection,id=105626,upgrade=2
+hands=gloves_of_the_ternion_glory,id=99359,upgrade=2
+waist=belt_of_the_broken_pact,id=105646,upgrade=2
+legs=leggings_of_furious_flame,id=105516,upgrade=2
+feet=boneinlaid_sandals,id=105493,upgrade=2
+finger1=signet_of_the_dinomancers,id=105606,upgrade=2
+finger2=laserslice_signet,id=105520,upgrade=2
+trinket1=purified_bindings_of_immerseus,id=105422,upgrade=2
+trinket2=kardris_toxic_totem,id=105540,upgrade=2
+main_hand=horned_mace_of_the_old_ones,id=105649,upgrade=2
+off_hand=revelations_of_yshaarj,id=105650,upgrade=2
 
 # Gear Summary
-# gear_strength=80
-# gear_agility=80
-# gear_stamina=31757
-# gear_intellect=21845
-# gear_spirit=3345
-# gear_spell_power=12841
-# gear_expertise_rating=1440
-# gear_hit_rating=60
-# gear_crit_rating=3634
-# gear_haste_rating=13933
-# gear_mastery_rating=11118
-# gear_armor=17096
-# meta_gem=sinister_primal
+# gear_stamina=1532
+# gear_intellect=932
+# gear_spirit=78
+# gear_spell_power=590
+# gear_crit_rating=210
+# gear_haste_rating=577
+# gear_mastery_rating=408
+# gear_armor=284
+# gear_multistrike_rating=99
 # tier16_2pc_caster=1
 # tier16_4pc_caster=1
-# main_hand=hellscreams_warmace,weapon=mace_2.4speed_5100min_9473max,enchant=jade_spirit
+# main_hand=horned_mace_of_the_old_ones,heroic=1,elite=1,weapon=mace_2.40speed_171min_319max

@@ -27,7 +27,6 @@ struct warlock_td_t : public actor_pair_t
   dot_t*  dots_agony;
   dot_t*  dots_doom;
   dot_t*  dots_immolate;
-  dot_t*  dots_drain_soul;
   dot_t*  dots_shadowflame;
   dot_t*  dots_malefic_grasp;
   dot_t*  dots_seed_of_corruption;
@@ -149,7 +148,6 @@ public:
     const spell_data_t* burning_embers;
     const spell_data_t* chaotic_energy;
     const spell_data_t* fire_and_brimstone;
-    const spell_data_t* pyroclasm;
 
   } spec;
 
@@ -167,7 +165,6 @@ public:
     gain_t* soul_leech;
     gain_t* tier13_4pc;
     gain_t* nightfall;
-    gain_t* drain_soul;
     gain_t* incinerate;
     gain_t* incinerate_fnb;
     gain_t* incinerate_t15_4pc;
@@ -176,7 +173,6 @@ public:
     gain_t* rain_of_fire;
     gain_t* immolate;
     gain_t* immolate_fnb;
-    gain_t* fel_flame;
     gain_t* shadowburn;
     gain_t* miss_refund;
     gain_t* siphon_life;
@@ -2359,14 +2355,6 @@ struct drain_life_t : public warlock_spell_t
     heal = new drain_life_heal_t( p );
   }
 
-  virtual void last_tick( dot_t* d )
-  {
-    warlock_spell_t::last_tick( d );
-
-    if ( p() -> buffs.soulburn -> check() )
-      p() -> buffs.soulburn -> expire();
-  }
-
   virtual void tick( dot_t* d )
   {
     warlock_spell_t::tick( d );
@@ -2376,104 +2364,6 @@ struct drain_life_t : public warlock_spell_t
     consume_tick_resource( d );
   }
 };
-
-
-struct drain_soul_t : public warlock_spell_t
-{
-  bool generate_shard;
-
-  drain_soul_t( warlock_t* p ) :
-    warlock_spell_t( p, "Drain Soul" ), generate_shard( false )
-  {
-    channeled    = true;
-    hasted_ticks = false;
-    may_crit     = false;
-    base_dd_min = base_dd_max = 0; // prevent it from picking up direct damage from that strange absorb effect
-
-    stats -> add_child( p -> get_stats( "agony_ds" ) );
-    stats -> add_child( p -> get_stats( "corruption_ds" ) );
-    stats -> add_child( p -> get_stats( "unstable_affliction_ds" ) );
-  }
-
-  virtual double composite_target_multiplier( player_t* t ) const
-  {
-    double m = warlock_spell_t::composite_target_multiplier( t );
-
-    if ( t -> health_percentage() <= data().effectN( 3 ).base_value() )
-      m *= 1.0 + data().effectN( 6 ).percent();
-
-    return m;
-  }
-
-  virtual double action_multiplier() const
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
-    m *= 1.0 + p() -> sets.set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
-
-
-    if ( p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
-    {
-      m *= 1.0 + p() ->  buffs.tier16_2pc_empowered_grasp -> value();
-    }
-    return m;
-
-  }
-
-  virtual void tick( dot_t* d )
-  {
-    warlock_spell_t::tick( d );
-
-    if ( generate_shard )
-    {
-      p() -> resource_gain( RESOURCE_SOUL_SHARD, 1, p() -> gains.drain_soul );
-      p() -> shard_react = p() -> sim -> current_time;
-    }
-    generate_shard = ! generate_shard;
-
-    trigger_soul_leech( p(), d -> state -> result_amount * p() -> talents.soul_leech -> effectN( 1 ).percent() * 2 );
-
-    if ( d -> state -> target -> health_percentage() <= data().effectN( 3 ).base_value() )
-    {
-      double multiplier = data().effectN( 5 ).percent();
-
-      // DO NOT CHANGE THE ORDER IF YOU ARE NOT 100% SURE
-      if ( p() ->  buffs.tier16_2pc_empowered_grasp -> up() )
-      {
-        multiplier += p() ->  buffs.tier16_2pc_empowered_grasp -> value();
-      }
-
-      multiplier *=  ( 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack() );
-
-
-      multiplier *= 1.0 + p() -> sets.set( SET_T15_4PC_CASTER ) -> effectN( 1 ).percent();
-
-      trigger_extra_tick( td( d -> state -> target ) -> dots_agony,               multiplier , false);
-      trigger_extra_tick( td( d -> state -> target ) -> dots_corruption,          multiplier , false);
-      trigger_extra_tick( td( d -> state -> target ) -> dots_unstable_affliction, multiplier , false);
-    }
-
-    consume_tick_resource( d );
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    warlock_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      generate_shard = false;
-
-      if ( s -> target -> health_percentage() <= data().effectN( 3 ).base_value() )
-        td( s -> target ) -> ds_started_below_20 = true;
-      else
-        td( s -> target ) -> ds_started_below_20 = false;
-    }
-  }
-};
-
 
 struct unstable_affliction_t : public warlock_spell_t
 {
@@ -3003,8 +2893,7 @@ struct chaos_bolt_t : public warlock_spell_t
     warlock_spell_t( p, "Chaos Bolt" )
   {
     havoc_consume = 3;
-    if ( p -> spec.pyroclasm -> ok() )
-      backdraft_consume = 3;
+    backdraft_consume = 3;
 
     hasted_ticks = false;
     
@@ -3322,107 +3211,6 @@ struct touch_of_chaos_t : public warlock_spell_t
     return r;
   }
 };
-
-
-struct fel_flame_t : public warlock_spell_t
-{
-  fel_flame_t( warlock_t* p ) :
-    warlock_spell_t( p, "Fel Flame" )
-  {
-    havoc_consume = 1;
-    if ( p -> specialization() == WARLOCK_DESTRUCTION )
-      base_costs[ RESOURCE_MANA ] *= 1.0 + p -> spec.chaotic_energy -> effectN( 2 ).percent();
-    base_costs[ RESOURCE_MANA ] *= 2.0; //12.09.13 hotfix. check after dbc update
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    warlock_spell_t::impact( s );
-
-    if ( p() -> specialization() == WARLOCK_DESTRUCTION )
-    {
-      if ( s -> result == RESULT_HIT )
-      {
-        trigger_ember_gain( p(), 0.1, p() -> gains.fel_flame );
-      }
-      else if ( s -> result == RESULT_CRIT )
-      {
-        trigger_ember_gain( p(), 0.2, p() -> gains.fel_flame );
-      }
-    }
-
-    if ( p() -> specialization() == WARLOCK_DEMONOLOGY ) p() -> resource_gain( RESOURCE_DEMONIC_FURY, data().effectN( 2 ).base_value(), p() -> gains.fel_flame );
-  }
-
-  virtual double action_multiplier() const
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-    if ( p() -> specialization() == WARLOCK_AFFLICTION )
-      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 3 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
-    if ( p() -> specialization() == WARLOCK_DEMONOLOGY )
-      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
-    if ( p() -> specialization() == WARLOCK_DESTRUCTION )
-      m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 5 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
-    if ( p() -> mastery_spells.emberstorm -> ok() )
-      m *= 1.0 + p() -> mastery_spells.emberstorm -> effectN( 3 ).percent() + p() -> cache.mastery_value() * p() -> emberstorm_e3_from_e1();
-
-    return m;
-  }
-
-  virtual bool ready()
-  {
-    bool r = warlock_spell_t::ready();
-
-    if ( p() -> buffs.metamorphosis -> check() ) r = false;
-
-    return r;
-  }
-};
-
-
-struct void_ray_t : public warlock_spell_t
-{
-  void_ray_t( warlock_t* p ) :
-    warlock_spell_t( p, "Void Ray" )
-  {
-    aoe = -1;
-    travel_speed = 0;
-    spell_power_mod.direct = data().effectN( 1 ).coeff();
-  }
-
-  virtual double action_multiplier() const
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-    m *= 1.0 + p() -> talents.grimoire_of_sacrifice -> effectN( 4 ).percent() * p() -> buffs.grimoire_of_sacrifice -> stack();
-
-    return m;
-  }
-
-  virtual void impact( action_state_t* s )
-  {
-    warlock_spell_t::impact( s );
-
-    if ( result_is_hit( s -> result ) )
-    {
-      extend_dot( td( s -> target ) -> dots_corruption, 3 );
-    }
-  }
-
-  virtual bool ready()
-  {
-    bool r = warlock_spell_t::ready();
-
-    if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
-
-    return r;
-  }
-};
-
 
 struct malefic_grasp_t : public warlock_spell_t
 {
@@ -3993,27 +3781,6 @@ struct immolation_aura_t : public warlock_spell_t
     return r;
   }
 };
-
-
-struct carrion_swarm_t : public warlock_spell_t
-{
-  carrion_swarm_t( warlock_t* p ) :
-    warlock_spell_t( p, "Carrion Swarm" )
-  {
-    aoe = -1;
-  }
-
-  virtual bool ready()
-  {
-    bool r = warlock_spell_t::ready();
-
-    if ( ! p() -> buffs.metamorphosis -> check() ) r = false;
-
-    return r;
-  }
-};
-
-
 // SOUL SWAP
 
 struct soul_swap_t : public warlock_spell_t
@@ -4527,7 +4294,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t* p ) :
   dots_agony               = target -> get_dot( "agony", p );
   dots_doom                = target -> get_dot( "doom", p );
   dots_immolate            = target -> get_dot( "immolate", p );
-  dots_drain_soul          = target -> get_dot( "drain_soul", p );
   dots_shadowflame         = target -> get_dot( "shadowflame", p );
   dots_malefic_grasp       = target -> get_dot( "malefic_grasp", p );
   dots_seed_of_corruption  = target -> get_dot( "seed_of_corruption", p );
@@ -4740,7 +4506,6 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "curse_of_the_elements" ) a = new curse_of_the_elements_t( this );
   else if ( action_name == "touch_of_chaos"        ) a = new        touch_of_chaos_t( this );
   else if ( action_name == "drain_life"            ) a = new            drain_life_t( this );
-  else if ( action_name == "drain_soul"            ) a = new            drain_soul_t( this );
   else if ( action_name == "grimoire_of_sacrifice" ) a = new grimoire_of_sacrifice_t( this );
   else if ( action_name == "haunt"                 ) a = new                 haunt_t( this );
   else if ( action_name == "immolate"              ) a = new              immolate_t( this );
@@ -4756,8 +4521,6 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "soul_fire"             ) a = new             soul_fire_t( this );
   else if ( action_name == "unstable_affliction"   ) a = new   unstable_affliction_t( this );
   else if ( action_name == "hand_of_guldan"        ) a = new        hand_of_guldan_t( this );
-  else if ( action_name == "fel_flame"             ) a = new             fel_flame_t( this );
-  else if ( action_name == "void_ray"              ) a = new              void_ray_t( this );
   else if ( action_name == "dark_intent"           ) a = new           dark_intent_t( this );
   else if ( action_name == "dark_soul"             ) a = new             dark_soul_t( this );
   else if ( action_name == "soulburn"              ) a = new              soulburn_t( this );
@@ -4766,7 +4529,6 @@ action_t* warlock_t::create_action( const std::string& action_name,
   else if ( action_name == "rain_of_fire"          ) a = new          rain_of_fire_t( this );
   else if ( action_name == "hellfire"              ) a = new              hellfire_t( this );
   else if ( action_name == "immolation_aura"       ) a = new       immolation_aura_t( this );
-  else if ( action_name == "carrion_swarm"         ) a = new         carrion_swarm_t( this );
   else if ( action_name == "imp_swarm"             ) a = new             imp_swarm_t( this );
   else if ( action_name == "fire_and_brimstone"    ) a = new    fire_and_brimstone_t( this );
   else if ( action_name == "soul_swap"             ) a = new             soul_swap_t( this );
@@ -4913,7 +4675,6 @@ void warlock_t::init_spells()
   spec.burning_embers = find_specialization_spell( "Burning Embers" );
   spec.chaotic_energy = find_specialization_spell( "Chaotic Energy" );
   spec.fire_and_brimstone = find_specialization_spell( "Fire and Brimstone" );
-  spec.pyroclasm      = find_specialization_spell( "Pyroclasm" );
 
   mastery_spells.emberstorm          = find_mastery_spell( WARLOCK_DESTRUCTION );
   mastery_spells.potent_afflictions  = find_mastery_spell( WARLOCK_AFFLICTION );
@@ -5042,7 +4803,6 @@ void warlock_t::init_gains()
   gains.soul_leech         = get_gain( "soul_leech"   );
   gains.tier13_4pc         = get_gain( "tier13_4pc"   );
   gains.nightfall          = get_gain( "nightfall"    );
-  gains.drain_soul         = get_gain( "drain_soul"   );
   gains.incinerate         = get_gain( "incinerate"   );
   gains.incinerate_fnb     = get_gain( "incinerate_fnb" );
   gains.incinerate_t15_4pc = get_gain( "incinerate_t15_4pc" );
@@ -5051,7 +4811,6 @@ void warlock_t::init_gains()
   gains.rain_of_fire       = get_gain( "rain_of_fire" );
   gains.immolate           = get_gain( "immolate"     );
   gains.immolate_fnb       = get_gain( "immolate_fnb" );
-  gains.fel_flame          = get_gain( "fel_flame"    );
   gains.shadowburn         = get_gain( "shadowburn"   );
   gains.miss_refund        = get_gain( "miss_refund"  );
   gains.siphon_life        = get_gain( "siphon_life"  );
@@ -5246,7 +5005,6 @@ void warlock_t::apl_affliction()
   add_action(
       "Haunt",
       "if=!in_flight_to_target&remains<cast_time+travel_time+tick_time&shard_react&target.health.pct<=20" );
-  add_action( "Drain Soul", "interrupt=1,chain=1,if=target.health.pct<=20" );
   if ( spec.pandemic->ok() )
   {
     add_action(
@@ -5281,7 +5039,7 @@ void warlock_t::apl_affliction()
     add_action( "Soulburn", "line_cd=15,if=buff.dark_soul.up&shard_react" );
     add_action(
         "Agony",
-        "cycle_targets=1,if=(!ticking|remains<=action.drain_soul.new_tick_time*2)&target.time_to_die>=8&miss_react" );
+        "cycle_targets=1,if=!ticking") ;
     add_action(
         "Corruption",
         "cycle_targets=1,if=(!ticking|remains<tick_time)&target.time_to_die>=6&miss_react" );
@@ -5295,7 +5053,6 @@ void warlock_t::apl_affliction()
   add_action( "Malefic Grasp", "chain=1,interrupt_if=target.health.pct<=20" );
   add_action( "Life Tap",
               "moving=1,if=mana.pct<80&mana.pct<target.health.pct" );
-  add_action( "Fel Flame", "moving=1" );
 
   // AoE action list
   add_action(
@@ -5318,7 +5075,6 @@ void warlock_t::apl_affliction()
       "cycle_targets=1,if=!in_flight_to_target&debuff.haunt.remains<cast_time+travel_time&shard_react",
       "aoe" );
   add_action( "Life Tap", "if=mana.pct<70", "aoe" );
-  add_action( "Fel Flame", "cycle_targets=1,if=!in_flight_to_target", "aoe" );
 }
 
 void warlock_t::apl_demonology()
@@ -5388,7 +5144,6 @@ void warlock_t::apl_demonology()
       "if=buff.molten_core.react&(buff.dark_soul.remains<action.shadow_bolt.cast_time|buff.dark_soul.remains>cast_time)&(buff.molten_core.react>9|target.health.pct<=28)" );
   add_action( "Life Tap", "if=mana.pct<60" );
   add_action( "Shadow Bolt" );
-  add_action( "Fel Flame", "moving=1" );
 
   // AoE action list
   if ( find_class_spell( "Metamorphosis" )->ok() )
@@ -5396,13 +5151,10 @@ void warlock_t::apl_demonology()
         "/cancel_metamorphosis,if=buff.metamorphosis.up&dot.corruption.remains>10&demonic_fury<=650&buff.dark_soul.down&!dot.immolation_aura.ticking";
 
   add_action( "Immolation Aura", "if=buff.metamorphosis.up", "aoe" );
-  add_action( "Void Ray", "if=buff.metamorphosis.up&dot.corruption.remains<10",
-              "aoe" );
   add_action(
       spec.doom,
       "cycle_targets=1,if=buff.metamorphosis.up&(!ticking|remains<tick_time|(ticks_remain+1<n_ticks&buff.dark_soul.up))&target.time_to_die>=30&miss_react",
       "aoe" );
-  add_action( "Void Ray", "if=buff.metamorphosis.up", "aoe" );
   add_action( "Corruption",
               "cycle_targets=1,if=!ticking&target.time_to_die>30&miss_react",
               "aoe" );
@@ -5454,7 +5206,6 @@ void warlock_t::apl_destruction()
       "if=ember_react&target.health.pct>20&(buff.havoc.stack=3&buff.havoc.remains>cast_time)" );
   add_action( "Conflagrate" );
   add_action( "Incinerate" );
-  add_action( "Fel Flame", "moving=1" );
 
   // AoE action list
   add_action( "Rain of Fire", "if=!ticking&!in_flight", "aoe" );

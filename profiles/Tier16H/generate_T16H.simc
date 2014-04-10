@@ -12,7 +12,7 @@ generate_Druid_T16H.simc
 generate_Hunter_T16H.simc
 
 # Mage
-generate_Mage_T16H.simc
+#generate_Mage_T16H.simc
 
 # Monk
 generate_Monk_T16H.simc

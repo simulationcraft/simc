@@ -60,7 +60,6 @@ public:
     buff_t* power_infusion;
     buff_t* twist_of_fate;
     buff_t* surge_of_light;
-    buff_t* clarity_of_power_mind_blast;
 
     // Discipline
     buff_t* archangel;
@@ -95,7 +94,7 @@ public:
   struct talents_t
   {
     const spell_data_t* void_tendrils;
-    const spell_data_t* psyfiend;
+    const spell_data_t* psychic_scream;
     const spell_data_t* dominate_mind;
 
     const spell_data_t* body_and_soul;
@@ -118,15 +117,14 @@ public:
     const spell_data_t* divine_star;
     const spell_data_t* halo;
 
-    const spell_data_t* divine_clarity;
-    const spell_data_t* power_of_the_void;
-    const spell_data_t* spiritual_guidance;
+    const spell_data_t* void_entropy;
+    const spell_data_t* clarity_of_power;
+    const spell_data_t* clarity_of_will;
+    const spell_data_t* clarity_of_purpose;
+    const spell_data_t* auspicious_spirits;
+    const spell_data_t* saving_grace;
+    const spell_data_t* words_of_mending;
   } talents;
-
-  struct talent_passives_t {
-    const spell_data_t* clarity_of_power; // MS/MB CD reduction implemented. TODO: Shadowy Recall and DD multiplier
-    const spell_data_t* auspicious_spirits; // implemented 2014/3/19
-  } talent_passives;
 
   // Specialization Spells
   struct specs_t
@@ -191,6 +189,7 @@ public:
     gain_t* vampiric_touch_mana;
     gain_t* vampiric_touch_mastery_mana;
     gain_t* auspicious_spirits;
+    gain_t* clarity_of_power_mind_spike;
   } gains;
 
   // Benefits
@@ -271,7 +270,6 @@ public:
     // use eg. buffs( buffs_t() ) instead of buffs() to help certain old compilers circumvent their bugs
     buffs(),
     talents(),
-    talent_passives(),
     specs(),
     mastery_spells(),
     cooldowns(),
@@ -1748,7 +1746,7 @@ struct summon_mindbender_t final : public summon_pet_t
 struct shadowy_apparition_spell_t final : public priest_spell_t
 {
   shadowy_apparition_spell_t( priest_t& p ) :
-    priest_spell_t( "shadowy_apparition",
+    priest_spell_t( "shadowy_apparitions",
                     p,
                     p.find_spell( 78203 ) )
   {
@@ -1759,14 +1757,22 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
 
     trigger_gcd       = timespan_t::zero();
     travel_speed      = 6.0;
-    spell_power_mod.direct  = 0.375;
-    base_dd_min = base_dd_max = 393;
+    if ( ! priest.talents.auspicious_spirits -> ok() )
+    {
+      spell_power_mod.direct  = 0.375;
+      base_dd_min = base_dd_max = 393;
+    }
     school            = SCHOOL_SHADOW;
   }
 
   virtual void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
+
+    if ( priest.talents.auspicious_spirits -> ok() )
+    {
+      generate_shadow_orb( 1, priest.gains.auspicious_spirits );
+    }
 
     if ( rng().roll( priest.sets.set( SET_T15_2PC_CASTER ) -> effectN( 1 ).percent() ) )
     {
@@ -1785,10 +1791,6 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
         priest.procs.t15_2pc_caster_vampiric_touch -> occur();
       }
 
-      if ( priest.talent_passives.auspicious_spirits -> ok() )
-      {
-        generate_shadow_orb( 1, priest.gains.auspicious_spirits );
-      }
     }
   }
 
@@ -1815,6 +1817,7 @@ struct mind_blast_t final : public priest_spell_t
     casted_with_divine_insight( false )
   {
     parse_options( nullptr, options_str );
+
   }
 
   virtual void execute() override
@@ -1875,16 +1878,16 @@ struct mind_blast_t final : public priest_spell_t
 
   virtual void update_ready( timespan_t cd_duration ) override
   {
+    if ( cd_duration < timespan_t::zero() )
+      cd_duration = cooldown -> duration;
+
     if ( priest.specs.mind_surge -> ok() && ! priest.buffs.divine_insight_shadow -> check() )
     {
       cd_duration = cooldown -> duration * composite_haste();
     }
 
-    if ( priest.buffs.clarity_of_power_mind_blast -> up() )
-    {
-      // TODO: spelldata
-      cd_duration -= timespan_t::from_seconds( 1.0 );
-    }
+
+    cd_duration -= timespan_t::from_seconds( priest.talents.clarity_of_power -> effectN( 2 ).base_value() );
 
     priest_spell_t::update_ready( cd_duration );
 
@@ -2022,7 +2025,10 @@ struct mind_spike_t final : public priest_spell_t
         priest.buffs.glyph_mind_spike -> trigger();
       }
 
-      priest.buffs.clarity_of_power_mind_blast -> trigger();
+      if ( priest.talents.clarity_of_power -> ok() )
+      {
+        priest.resource_gain( RESOURCE_MANA, priest.resources.base[ RESOURCE_MANA ] * priest.talents.clarity_of_power -> effectN( 3 ).percent(), priest.gains.clarity_of_power_mind_spike );
+      }
     }
   }
 
@@ -3285,7 +3291,7 @@ struct divine_star_t final : public priest_spell_t
 struct void_entropy_t : public priest_spell_t
  {
   void_entropy_t( priest_t& p, const std::string& options_str ) :
-     priest_spell_t( "void_entropy", p, p.find_class_spell( "Void Entropy" ) )
+     priest_spell_t( "void_entropy", p, p.talents.void_entropy )
    {
      parse_options( nullptr, options_str );
 
@@ -3314,6 +3320,25 @@ struct void_entropy_t : public priest_spell_t
     dp_state.orbs_used = as<int>( priest.resources.current[ current_resource() ] );
 
     priest_spell_t::snapshot_state( state, type );
+  }
+
+  virtual void consume_resource() override
+  {
+    resource_consumed = cost();
+
+    if ( execute_state -> result != RESULT_MISS )
+    {
+      resource_consumed = priest.resources.current[ current_resource() ];
+    }
+
+    player -> resource_loss( current_resource(), resource_consumed, nullptr, this );
+
+    if ( sim -> log )
+      sim -> out_log.printf( "%s consumes %.1f %s for %s (%.0f)", player -> name(),
+                     resource_consumed, util::resource_type_string( current_resource() ),
+                     name(), player -> resources.current[ current_resource() ] );
+
+    stats -> consume_resource( current_resource(), resource_consumed );
   }
 
    virtual double action_ta_multiplier() const override
@@ -4466,10 +4491,11 @@ void priest_t::create_gains()
   gains.power_word_solace             = get_gain( "Power Word: Solace Mana" );
   gains.shadow_orb_mb                 = get_gain( "Shadow Orbs from Mind Blast" );
   gains.shadow_orb_swd                = get_gain( "Shadow Orbs from Shadow Word: Death" );
+  gains.auspicious_spirits            = get_gain( "Shadow Orbs from Auspicious Spirits" );
   gains.devouring_plague_health       = get_gain( "Devouring Plague Health" );
   gains.vampiric_touch_mana           = get_gain( "Vampiric Touch Mana" );
   gains.vampiric_touch_mastery_mana   = get_gain( "Vampiric Touch Mastery Mana" );
-  gains.auspicious_spirits            = get_gain( "Auspicious Spirits" );
+  gains.clarity_of_power_mind_spike   = get_gain( "Clarity of Power Mind Spike" );
 }
 
 /* Construct priest procs
@@ -4841,7 +4867,7 @@ void priest_t::init_spells()
 
   // Talents
   talents.void_tendrils               = find_talent_spell( "Void Tendrils" );
-  talents.psyfiend                    = find_talent_spell( "Psyfiend" );
+  talents.psychic_scream               = find_talent_spell( "Psychic Scream" );
   talents.dominate_mind               = find_talent_spell( "Dominate Mind" );
 
   talents.body_and_soul               = find_talent_spell( "Body and Soul" );
@@ -4864,13 +4890,14 @@ void priest_t::init_spells()
   talents.divine_star                 = find_talent_spell( "Divine Star" );
   talents.halo                        = find_talent_spell( "Halo" );
 
-  talents.divine_clarity              = find_talent_spell( "Divine Clarity" );
-  talents.power_of_the_void           = find_talent_spell( "Power of the Void" );
-  talents.spiritual_guidance          = find_talent_spell( "Spiritual Guidance" );
-
-  // Passive Spells
-  talent_passives.clarity_of_power           = talents.divine_clarity -> ok() ? spell_data_t::not_found() : spell_data_t::nil();
-  talent_passives.auspicious_spirits         = talents.spiritual_guidance -> ok() ? spell_data_t::not_found() : spell_data_t::nil();
+  talents.clarity_of_power            = find_talent_spell( "Clarity of Power" );
+  talents.clarity_of_purpose          = find_talent_spell( "Clarity of Purpose" );
+  talents.clarity_of_will             = find_talent_spell( "Clarity of Will" );
+  talents.void_entropy                = find_talent_spell( "Void Entropy" );
+  talents.auspicious_spirits          = find_talent_spell( "Auspicious Spirits" );
+  talents.saving_grace                = find_talent_spell( "Saving Grace" );
+  talents.words_of_mending            = find_talent_spell( "Words of Mending" );
+  //std::cerr << talents.auspicious_spirits -> id() << "\n\n";
 
 
   // General Spells
@@ -5041,9 +5068,6 @@ void priest_t::create_buffs()
   buffs.surge_of_darkness                = buff_creator_t( this, "surge_of_darkness", active_spells.surge_of_darkness )
                                             .chance( active_spells.surge_of_darkness -> ok() ? 0.20 : 0.0 ); // Updated 5.4 PTR value, 6/20/2013
 
-  buffs.clarity_of_power_mind_blast = buff_creator_t( this, "clarity_of_power_mind_blast")
-                                      .chance( talent_passives.clarity_of_power -> ok() );
-
   buffs.dispersion = buff_creator_t( this, "dispersion" ).spell( find_class_spell( "Dispersion" ) );
 }
 
@@ -5136,6 +5160,7 @@ void priest_t::apl_shadow()
   for ( size_t i = 0; i < racial_actions.size(); i++ )
     def -> add_action( racial_actions[ i ] );
 
+  def -> add_talent( this, "Void Entropy", "if=shadow_orb=3&miss_react&!ticking" );
   def -> add_action( "shadow_word_death,if=buff.shadow_word_death_reset_cooldown.stack=1&active_enemies<=5" );
   def -> add_action( this, "Devouring Plague", "if=shadow_orb=3&(cooldown.mind_blast.remains<1.5|target.health.pct<20&cooldown.shadow_word_death.remains<1.5)" );
   if ( find_item( "unerring_vision_of_lei_shen" ) )

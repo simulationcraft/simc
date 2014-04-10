@@ -64,8 +64,10 @@ double attack_t::miss_chance( double hit, player_t* t ) const
   // cache.miss() contains the target's miss chance (3.0 base in almost all cases)
   double miss = t -> cache.miss();
 
-  // add or subtract 1.5% per level difference
-  miss += ( t -> level - player -> level ) * 0.015;
+  // TODO-WOD: Miss chance increase per 4+ level delta?
+  if ( t -> level - player -> level > 3 )
+  {
+  }
 
   // subtract the player's hit chance
   miss -= hit;
@@ -326,8 +328,10 @@ double melee_attack_t::dodge_chance( double expertise, player_t* t ) const
   // cache.dodge() contains the target's dodge chance (3.0 base, plus spec bonuses and rating)
   double dodge = t -> cache.dodge();
 
-  // add or subtract 1.5% per level difference
-  dodge += ( t -> level - player -> level ) * 0.015;
+  // TODO-WOD: Dodge chance increase per 4+ level delta?
+  if ( t -> level - player -> level > 3 )
+  {
+  }
 
   // subtract the player's expertise chance
   dodge -= expertise;
@@ -342,8 +346,14 @@ double melee_attack_t::parry_chance( double expertise, player_t* t ) const
   // cache.parry() contains the target's parry chance (3.0 base, plus spec bonuses and rating)
   double parry = t -> cache.parry();
 
-  // add or subtract 1.5% per level difference
-  parry += ( t -> level - player -> level ) * 0.015;
+  // TODO-WOD: Parry chance increase per 4+ level delta?
+  if ( t -> level - player -> level > 3 )
+  {
+  }
+
+  // 3% additional parry change from front
+  if ( player -> position() == POSITION_FRONT )
+    parry += 0.03;
 
   // subtract the player's expertise chance
   parry += std::min( 0.0, dodge_chance( expertise, t ) );
@@ -355,7 +365,14 @@ double melee_attack_t::parry_chance( double expertise, player_t* t ) const
 
 double melee_attack_t::glance_chance( int delta_level ) const
 {
-  return ( delta_level + 1 ) * 0.06;
+  double glance = 0;
+
+  // TODO-WOD: Glance chance increase per 4+ level delta?
+  if ( delta_level > 3 )
+  {
+  }
+
+  return glance;
 }
 
 proc_types melee_attack_t::proc_type() const

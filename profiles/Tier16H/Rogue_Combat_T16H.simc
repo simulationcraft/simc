@@ -4,7 +4,7 @@ race=troll
 role=attack
 position=back
 professions=blacksmithing=600/engineering=600
-talents=http://us.battle.net/wow/en/tool/talent-calculator#cZ!200002
+talents=http://us.battle.net/wow/en/tool/talent-calculator#cZ!200002.
 spec=combat
 
 # This default action priority list is automatically created based on your character.
@@ -38,7 +38,6 @@ actions+=/arcane_torrent,if=energy<60
 actions+=/blade_flurry,if=(active_enemies>=2&!buff.blade_flurry.up)|(active_enemies<2&buff.blade_flurry.up)
 actions+=/ambush
 actions+=/vanish,if=time>10&(combo_points<3|(talent.anticipation.enabled&anticipation_charges<3)|(buff.shadow_blades.down&(combo_points<4|(talent.anticipation.enabled&anticipation_charges<4))))&((talent.shadow_focus.enabled&buff.adrenaline_rush.down&energy<20)|(talent.subterfuge.enabled&energy>=90)|(!talent.shadow_focus.enabled&!talent.subterfuge.enabled&energy>=60))
-actions+=/shadow_blades,if=time>5
 actions+=/killing_spree,if=energy<45
 actions+=/adrenaline_rush,if=energy<35|buff.shadow_blades.up
 actions+=/slice_and_dice,if=buff.slice_and_dice.remains<2|(buff.slice_and_dice.remains<15&buff.bandits_guile.stack=11&combo_points>=4)
@@ -55,22 +54,21 @@ actions.generator+=/sinister_strike
 
 # Combo point finishers
 
-actions.finisher=rupture,if=ticks_remain<2&target.time_to_die>=26&(active_enemies<2|!buff.blade_flurry.up)
-actions.finisher+=/crimson_tempest,if=active_enemies>=7&dot.crimson_tempest_dot.ticks_remain<=2
+actions.finisher=crimson_tempest,if=active_enemies>=7&dot.crimson_tempest_dot.ticks_remain<=2
 actions.finisher+=/eviscerate
 
-head=helmet_of_the_barbed_assassin,id=99348,upgrade=2,gems=capacitive_primal_160agi_180agi,reforge=mastery_crit
-neck=immerseus_crystalline_eye,id=105407,upgrade=2,reforge=mastery_crit
-shoulders=shoulderguards_of_the_righteous_stand,id=105551,upgrade=2,gems=80agi_160haste_80agi_160haste_120agi,enchant=200agi_100crit,reforge=mastery_crit
-back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180crit,reforge=mastery_exp
-chest=tunic_of_the_barbed_assassin,id=99356,upgrade=2,gems=160agi_160agi_160agi_180agi,enchant=80all,reforge=mastery_exp
-wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,gems=160agi,enchant=180agi,reforge=mastery_exp
-hands=gloves_of_the_barbed_assassin,id=99355,upgrade=2,gems=160agi_160agi_160agi_120agi,enchant=170haste,addon=synapse_springs_2,reforge=mastery_crit
+head=helmet_of_the_barbed_assassin,id=99348,upgrade=2,gems=capacitive_primal_160agi_180agi
+neck=immerseus_crystalline_eye,id=105407,upgrade=2
+shoulders=shoulderguards_of_the_righteous_stand,id=105551,upgrade=2,gems=80agi_160haste_80agi_160haste_120agi,enchant=200agi_100crit
+back=fenyu_fury_of_xuen,id=102248,upgrade=2,gems=160agi_60agi,enchant=180crit
+chest=tunic_of_the_barbed_assassin,id=99356,upgrade=2,gems=160agi_160agi_160agi_180agi,enchant=80all
+wrists=bombers_blackened_wristwatch,id=105616,upgrade=2,gems=160agi,enchant=180agi
+hands=gloves_of_the_barbed_assassin,id=99355,upgrade=2,gems=160agi_160agi_160agi_120agi,enchant=170haste,addon=synapse_springs_2
 waist=damrons_belt_of_darkness,id=105528,upgrade=2,gems=160agi_80agi_160hit_160agi_120agi
 legs=legguards_of_the_barbed_assassin,id=99349,upgrade=2,gems=80agi_160haste_80agi_160haste_120agi,enchant=285agi_165crit
-feet=stonetoes_tormented_treads,id=105431,upgrade=2,gems=160agi_60mastery,enchant=140agi,reforge=hit_exp
-finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=160agi_60crit,reforge=mastery_hit
-finger2=ring_of_restless_energy,id=105558,upgrade=2,gems=160agi_60crit,reforge=mastery_haste
+feet=stonetoes_tormented_treads,id=105431,upgrade=2,gems=160agi_60mastery,enchant=140agi
+finger1=kilruks_band_of_ascendancy,id=105624,upgrade=2,gems=160agi_60crit
+finger2=ring_of_restless_energy,id=105558,upgrade=2,gems=160agi_60crit
 trinket1=assurance_of_consequence,id=105472,upgrade=2
 trinket2=haromms_talisman,id=105527,upgrade=2
 main_hand=enchanted_shaotien_saber,id=105581,upgrade=2,gems=160agi_60agi,enchant=dancing_steel
@@ -78,19 +76,19 @@ off_hand=hvitserks_formidable_shanker,id=105601,upgrade=2,gems=160agi_60agi,ench
 
 # Gear Summary
 # gear_strength=80
-# gear_agility=28883
-# gear_stamina=38514
+# gear_agility=5780
+# gear_stamina=1588
 # gear_intellect=80
 # gear_spirit=80
-# gear_expertise_rating=2536
-# gear_hit_rating=2554
-# gear_crit_rating=6581
-# gear_haste_rating=15959
-# gear_mastery_rating=6998
-# gear_armor=22611
+# gear_hit_rating=160
+# gear_crit_rating=1099
+# gear_haste_rating=1380
+# gear_mastery_rating=535
+# gear_armor=413
+# gear_multistrike_rating=99
 # meta_gem=capacitive_primal
 # tier16_2pc_melee=1
 # tier16_4pc_melee=1
 # hands=gloves_of_the_barbed_assassin,heroic=1,addon=synapse_springs_2
-# main_hand=enchanted_shaotien_saber,heroic=1,elite=1,weapon=sword_2.60speed_12244min_22741max,enchant=dancing_steel
-# off_hand=hvitserks_formidable_shanker,heroic=1,elite=1,weapon=dagger_1.80speed_8476min_15744max,enchant=dancing_steel
+# main_hand=enchanted_shaotien_saber,heroic=1,elite=1,weapon=sword_2.60speed_370min_690max,enchant=dancing_steel
+# off_hand=hvitserks_formidable_shanker,heroic=1,elite=1,weapon=dagger_1.80speed_256min_478max,enchant=dancing_steel

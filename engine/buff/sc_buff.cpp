@@ -59,6 +59,8 @@ struct tick_t : public buff_event_t
 
   void execute()
   {
+    buff -> tick_event = 0;
+
     // For tick number calculations, always include the +1ms so we get correct
     // tick number labeling on the last tick, just before the buff expires.
     timespan_t elapsed = buff -> elapsed( buff -> sim -> current_time ) + timespan_t::from_millis( 1 ),
@@ -88,8 +90,6 @@ struct tick_t : public buff_event_t
         period -= timespan_t::from_millis( 1 );
       buff -> tick_event = new ( *buff -> sim ) tick_t( buff, period, current_value, current_stacks );
     }
-    else
-      buff -> tick_event = 0;
   }
 };
 

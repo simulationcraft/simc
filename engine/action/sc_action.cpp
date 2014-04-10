@@ -1731,6 +1731,9 @@ void action_t::init()
   if ( num_ticks > 0 && ( hasted_ticks || channeled ) )
     snapshot_flags |= STATE_HASTE;
 
+  // WOD: Dot Snapshoting is gone
+  update_flags |= snapshot_flags;
+
   if ( pre_combat || action_list == "precombat" )
   {
     if ( harmful )
