@@ -6455,7 +6455,8 @@ namespace unique_gear
   {
     unsigned    spell_id;
     const char* encoded_options;
-    const std::function<void(special_effect_t&, const item_t&, const special_effect_db_item_t&)> custom_cb;
+    //const std::function<void(special_effect_t&, const item_t&, const special_effect_db_item_t&)> custom_cb;
+    void (*custom_cb)(special_effect_t&, const item_t&, const special_effect_db_item_t&);
   };
 
 void init( player_t* );
