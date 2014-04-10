@@ -2571,7 +2571,7 @@ struct seal_of_insight_proc_t : public paladin_heal_t
     
     // proc chance is now 20 PPM, spell database info still says 15.
     // Best guess is that the 4th effect describes the additional 5 PPM.
-    proc_chance = ppm_proc_chance( data().effectN( 1 ).base_value() + data().effectN( 4 ).base_value() );
+    proc_chance = ppm_proc_chance( data().effectN( 1 ).base_value() + data().effectN( 2 ).base_value() );
 
     target = player;
   }
