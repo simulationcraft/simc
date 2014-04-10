@@ -2052,29 +2052,15 @@ struct unleash_frost_t : public shaman_spell_t
 
 struct flametongue_weapon_spell_t : public shaman_spell_t
 {
-  // static constant floats aren't allowed by the spec and some compilers
-  static double normalize_speed()   { return 2.649845; }
-  static double power_coefficient() { return 0.059114 * 1.5; /* 2013/09/24 hotfix */ }
-
   flametongue_weapon_spell_t( const std::string& n, shaman_t* player, weapon_t* w ) :
-    shaman_spell_t( n, player, player -> find_spell( 8024 ) )
+    shaman_spell_t( n, player, player -> find_spell( 10444 ) )
   {
-    may_crit           = true;
-    background         = true;
-    spell_power_mod.direct   = 0.0;
-    base_costs[ RESOURCE_MANA ] = 0.0;
-
-    base_dd_min = w -> swing_time.total_seconds() / normalize_speed() * ( data().effectN( 2 ).average( player ) / 77.0 + data().effectN( 2 ).average( player ) / 25.0 ) / 2;
-    base_dd_max = base_dd_min;
+    may_crit = background = true;
 
     if ( player -> specialization() == SHAMAN_ENHANCEMENT )
     {
-      snapshot_flags               = STATE_AP;
-      attack_power_mod.direct = w -> swing_time.total_seconds() / normalize_speed() * power_coefficient();
-    }
-    else
-    {
-      spell_power_mod.direct  = w -> swing_time.total_seconds() / normalize_speed() * power_coefficient();
+      snapshot_flags          = STATE_AP;
+      attack_power_mod.direct = w -> swing_time.total_seconds() / 2.6 * 0.15;
     }
   }
 };
