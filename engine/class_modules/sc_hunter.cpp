@@ -2372,7 +2372,7 @@ struct explosive_shot_t : public hunter_ranged_attack_t
   virtual void execute()
   {
     hunter_ranged_attack_t::execute();
-
+    p() -> buffs.lock_and_load -> decrement();
     // Does saving the proc require round trip latency before we know?
     // TODO add reaction time for the continuation of the proc?
     if ( p() -> buffs.lock_and_load -> up()
@@ -3732,7 +3732,9 @@ void hunter_t::init_action_list()
         action_list_str += "/multi_shot,if=active_enemies>=4";
         action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
 
-
+        action_list_str += "/aimed_shot";
+        if ( race == RACE_TROLL )
+          action_list_str += "&!buff.berserking.up)";
         if ( sets.has_set_bonus( SET_T13_4PC_MELEE ) )
         {
           action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=4)&(!buff.rapid_fire.up&!buff.bloodlust.react&!buff.berserking.up&!buff.tier13_4pc.react&cooldown.buff_tier13_4pc.remains<=0)";
