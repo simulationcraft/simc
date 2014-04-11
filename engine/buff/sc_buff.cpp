@@ -259,9 +259,6 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
   if ( params._activated != -1 )
     activated = params._activated != 0;
 
-  if ( params._behavior != BUFF_TICK_NONE )
-    tick_behavior = params._behavior;
-
   if ( params._period > timespan_t::zero() )
     buff_period = params._period;
   else
@@ -283,15 +280,19 @@ buff_t::buff_t( const buff_creation::buff_creator_basics_t& params ) :
         case A_PERIODIC_TRIGGER_SPELL:
         {
           buff_period = e.period();
-          if ( params._behavior == BUFF_TICK_NONE )
-            tick_behavior = BUFF_TICK_CLIP;
-
           break;
         }
         default: break;
       }
     }
   }
+
+  if ( params._behavior != BUFF_TICK_NONE )
+    tick_behavior = params._behavior;
+  // If period is set, buf no buff tick behavior, set the behavior
+  // automatically to clipped ticks
+  else if ( buff_period > timespan_t::zero() && params._behavior == BUFF_TICK_NONE )
+    tick_behavior = BUFF_TICK_CLIP;
 
   if ( params._tick_callback )
     tick_callback = params._tick_callback;

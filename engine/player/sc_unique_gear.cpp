@@ -186,6 +186,8 @@ static const special_effect_db_item_t __special_effect_db[] = {
    * - Kadris Toxic Totem (damage/landing?)
    * - Frenzied Crystal of Rage (damage/landing?)
    * - Fusion-Fire Core (damage/landing?)
+   * - Talisman of Bloodlust (damage/landing?)
+   * - Primordius' Talisman of Rage (damage/landing?)
    */
 
   /**
@@ -210,10 +212,8 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 138964, 0,                   item::unerring_vision_of_leishen }, /* Unerring Vision of Lei Shen */
 
   { 138728, "Reverse",                                          0 }, /* Steadfast Talisman of the Shado-Pan Assault */
-  { 138894, "OnDirectDamage",                                   0 }, /* Talisman of Bloodlust */
-  { 138871, "OnDirectDamage",                                   0 }, /* Primordius' Talisman of Rage */
   { 139171, "ProcOn/Crit_RPPMAttackCrit",                       0 }, /* Gaze of the Twins */
-  { 138757, "OnDirectDamage_1Tick_138737Trigger",               0 }, /* Renataki's Soul Charm */
+  { 138757, "1Tick_138737Trigger",                              0 }, /* Renataki's Soul Charm */
   { 138790, "OnSpellDamage_1Tick_138788Trigger",                0 }, /* Wushoolay's Final Choice */
   { 138758, "OnDirectDamage",                                   0 }, /* Fabled Feather of Ji-Kun */
   { 138896, "OnSpellTickDamage",                                0 }, /* Breath of the Hydra */

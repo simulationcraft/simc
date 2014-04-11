@@ -243,7 +243,10 @@ stat_buff_t* special_effect_t::initialize_stat_buff() const
   else if ( driver() -> id() > 0 )
     creator.spell( driver() );
 
-  // Setup user option overrides
+  // Setup user option overrides. Note that if there are no user set overrides,
+  // the buff will automagically deduce correct options from the spell data,
+  // the special_effect_t object should not issue overrides to the creator
+  // object.
   if ( max_stacks > 0 )
     creator.max_stack( max_stacks );
 
@@ -252,6 +255,9 @@ stat_buff_t* special_effect_t::initialize_stat_buff() const
 
   if ( reverse )
     creator.reverse( true );
+
+  if ( tick > timespan_t::zero() )
+    creator.period( tick );
 
   // If user given stat is defined, override whatever the spell would contain
   if ( stat != STAT_NONE )
@@ -379,7 +385,9 @@ timespan_t special_effect_t::duration() const
 
 // The tick time is selected from the first periodically executed effect of the
 // _triggered_ spell. Periodically executing drivers are currently not
-// supported.
+// supported. Note that ticking behavior has now moved to buff_t, instead of
+// being kludged in the callback itself (as it was done in the
+// "proc_callback_t" days).
 timespan_t special_effect_t::tick_time() const
 {
   if ( tick > timespan_t::zero() )
