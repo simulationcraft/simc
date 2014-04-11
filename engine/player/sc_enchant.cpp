@@ -59,13 +59,29 @@ std::string enchant::find_enchant_name( unsigned enchant_id )
   return std::string();
 }
 
+/**
+ * Return a "simc-encoded" enchant name for a given DBC item enchantment.
+ *
+ * This function simply encodes the item enchantment name (given in
+ * SpellItemEnchantment.dbc) that is exported to simc. Normal simc tokenization
+ * rules are applied on the enchant name, and any possible rank string (without
+ * the "rank) is applied as a suffix. Rank information is found in the spell
+ * that the enchant uses.
+ *
+ * Simc needs this information to save actor profiles with meaningful enchant
+ * names (if the enchant is not a stat enchant), instead of enchant ids. When a
+ * profile is loaded, the enchant name translates to a item enchantment entry
+ * in the DBC data through the enchant::find_item_enchant() function.
+ *
+ * TODO: In the off chance blizzard makes item enchants with 2 spell ids, that
+ * both have ranks, and there also is a "lower rank" item enchant of the same
+ * name, we need to somehow cover that case. Highly unlikely in practice.
+ */
 std::string enchant::encoded_enchant_name( const dbc_t& dbc, const item_enchantment_data_t& enchant )
 {
   std::string enchant_name = enchant.name;
   util::tokenize( enchant_name );
 
-  // Partial match found, see if the spell has a rank string, and massage
-  // name to account for it.
   for ( size_t i = 0; i < sizeof_array( enchant.ench_prop ); i++ )
   {
     if ( enchant.ench_prop[ i ] == 0 || enchant.ench_type[ i ] == 0 )
@@ -178,6 +194,7 @@ bool enchant::initialize_item_enchant( item_t& item,
           enchant.req_skill_value, item.player -> profession[ profession ] );
       // Don't initialize the special effects, but do "succeed" the
       // initialization process.
+      effect.type = SPECIAL_EFFECT_NONE;
       return true;
     }
   }
