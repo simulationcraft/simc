@@ -194,7 +194,6 @@ bool enchant::initialize_item_enchant( item_t& item,
           enchant.req_skill_value, item.player -> profession[ profession ] );
       // Don't initialize the special effects, but do "succeed" the
       // initialization process.
-      effect.type = SPECIAL_EFFECT_NONE;
       return true;
     }
   }

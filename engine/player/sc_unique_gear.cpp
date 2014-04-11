@@ -188,6 +188,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
    * - Fusion-Fire Core (damage/landing?)
    * - Talisman of Bloodlust (damage/landing?)
    * - Primordius' Talisman of Rage (damage/landing?)
+   * - Fabled Feather of Ji-Kun (damage/landing?)
    */
 
   /**
@@ -214,11 +215,9 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 138728, "Reverse",                                          0 }, /* Steadfast Talisman of the Shado-Pan Assault */
   { 139171, "ProcOn/Crit_RPPMAttackCrit",                       0 }, /* Gaze of the Twins */
   { 138757, "1Tick_138737Trigger",                              0 }, /* Renataki's Soul Charm */
-  { 138790, "OnSpellDamage_1Tick_138788Trigger",                0 }, /* Wushoolay's Final Choice */
-  { 138758, "OnDirectDamage",                                   0 }, /* Fabled Feather of Ji-Kun */
-  { 138896, "OnSpellTickDamage",                                0 }, /* Breath of the Hydra */
-  { 139134, "OnHarmfulSpellCrit_RPPMSpellCrit",                 0 }, /* Cha-Ye's Essence of Brilliance */
-  { 138939, "OnDirectDamage",                                   0 }, /* Bad Juju */
+  { 138790, "ProcOn/Hit_1Tick_138788Trigger",                   0 }, /* Wushoolay's Final Choice */
+  { 138758, "1Tick_138760Trigger",                              0 }, /* Fabled Feather of Ji-Kun */
+  { 139134, "ProcOn/Crit_RPPMSpellCrit",                        0 }, /* Cha-Ye's Essence of Brilliance */
 
   /* Mists of Pandaria: 5.0 */
   { 126660, "OnHarmfulSpellHit",                                0 }, /* Essence of Terror */
