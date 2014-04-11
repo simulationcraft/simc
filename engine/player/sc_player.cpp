@@ -8832,7 +8832,7 @@ void player_callbacks_t::register_callback( unsigned proc_flags,
 
   for ( proc_types t = PROC1_TYPE_MIN; t < PROC1_TYPE_BLIZZARD_MAX; t++ )
   {
-    // If there's no proc-on-X, we don't need to add anything
+    // If there's no proc-by-X, we don't need to add anything
     if ( ! ( proc_flags & ( 1 << t ) ) )
       continue;
 
@@ -8843,26 +8843,58 @@ void player_callbacks_t::register_callback( unsigned proc_flags,
     add_proc_callback( t, proc_flags2, cb );
   }
 
-  // Separately handle periodic procs, since they need some special massaging
+  // Periodic X done
   if ( proc_flags & PF_PERIODIC )
   {
     // 1) Periodic damage only. This is the default behavior of our system when
     // only PROC1_PERIODIC is defined on a trinket.
-    if ( ! ( proc_flags & PF_HEAL ) && ! ( proc_flags2 & PF2_PERIODIC_HEAL ) )
+    if ( ! ( proc_flags & PF_ALL_HEAL ) &&                                               // No healing ability type flags
+         ! ( proc_flags2 & PF2_PERIODIC_HEAL ) )                                         // .. nor periodic healing result type flag
+    {
       add_proc_callback( PROC1_PERIODIC, proc_flags2, cb );
-
+    }
     // 2) Periodic heals only. Either inferred by a "proc by direct heals" flag, 
     //    or by "proc on periodic heal ticks" flag, but require that there's 
     //    no direct / ticked spell damage in flags.
-    else if ( ( ( proc_flags & PF_HEAL ) || ( proc_flags2 & PF2_PERIODIC_HEAL ) ) && 
-              ! ( proc_flags & PF_SPELL ) && ! ( proc_flags2 & PF2_PERIODIC_DAMAGE ) )
+    else if ( ( ( proc_flags & PF_ALL_HEAL ) || ( proc_flags2 & PF2_PERIODIC_HEAL ) ) && // Healing ability
+              ! ( proc_flags & PF_ALL_DAMAGE ) &&                                        // .. with no damaging ability type flags
+              ! ( proc_flags2 & PF2_PERIODIC_DAMAGE ) )                                  // .. nor periodic damage result type flag
+    {
       add_proc_callback( PROC1_PERIODIC_HEAL, proc_flags2, cb );
-
+    }
     // Both
     else
     {
       add_proc_callback( PROC1_PERIODIC, proc_flags2, cb );
       add_proc_callback( PROC1_PERIODIC_HEAL, proc_flags2, cb );
+    }
+  }
+
+  // Periodic X taken
+  if ( proc_flags & PF_PERIODIC_TAKEN )
+  {
+    // 1) Periodic damage only. This is the default behavior of our system when
+    // only PROC1_PERIODIC is defined on a trinket.
+    if ( ! ( proc_flags & PF_ALL_HEAL_TAKEN ) &&                                         // No healing ability type flags
+         ! ( proc_flags2 & PF2_PERIODIC_HEAL ) )                                         // .. nor periodic healing result type flag
+    {
+      add_proc_callback( PROC1_PERIODIC_TAKEN, proc_flags2, cb );
+    }
+    // 2) Periodic heals only. Either inferred by a "proc by direct heals" flag, 
+    //    or by "proc on periodic heal ticks" flag, but require that there's 
+    //    no direct / ticked spell damage in flags.
+    else if ( ( ( proc_flags & PF_ALL_HEAL_TAKEN ) || ( proc_flags2 & PF2_PERIODIC_HEAL ) ) && // Healing ability
+              ! ( proc_flags & PF_DAMAGE_TAKEN ) &&                                        // .. with no damaging ability type flags
+              ! ( proc_flags & PF_ANY_DAMAGE_TAKEN ) &&                                    // .. nor Blizzard's own "any damage taken" flag
+              ! ( proc_flags2 & PF2_PERIODIC_DAMAGE ) )                                    // .. nor periodic damage result type flag
+    {
+      add_proc_callback( PROC1_PERIODIC_HEAL_TAKEN, proc_flags2, cb );
+    }
+    // Both
+    else
+    {
+      add_proc_callback( PROC1_PERIODIC_TAKEN, proc_flags2, cb );
+      add_proc_callback( PROC1_PERIODIC_HEAL_TAKEN, proc_flags2, cb );
     }
   }
 }

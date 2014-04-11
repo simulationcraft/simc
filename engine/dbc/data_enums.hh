@@ -96,6 +96,7 @@ enum proc_flag
   PF_SPELL_TAKEN          = 1 << PROC1_SPELL_TAKEN,
   PF_PERIODIC             = 1 << PROC1_PERIODIC, // Any periodic ability landed
   PF_PERIODIC_TAKEN       = 1 << PROC1_PERIODIC_TAKEN,
+
   PF_ANY_DAMAGE_TAKEN     = 1 << PROC1_ANY_DAMAGE_TAKEN,
 
   // Irrelevant ones for us
@@ -103,6 +104,17 @@ enum proc_flag
   PF_OFFHAND                  = 0x00800000,
   PF_DEATH                    = 0x01000000,
   PF_JUMP                     = 0x02000000,
+
+  // Helper types
+  PF_ALL_DAMAGE               = PF_MELEE | PF_MELEE_ABILITY |
+                                PF_RANGED | PF_RANGED_ABILITY |
+                                PF_AOE_SPELL | PF_SPELL,
+  PF_ALL_HEAL                 = PF_AOE_HEAL | PF_HEAL,
+
+  PF_DAMAGE_TAKEN         = PF_MELEE_TAKEN | PF_MELEE_ABILITY_TAKEN |
+                            PF_RANGED_TAKEN | PF_RANGED_ABILITY_TAKEN |
+                            PF_AOE_SPELL_TAKEN | PF_SPELL_TAKEN,
+  PF_ALL_HEAL_TAKEN       = PF_AOE_HEAL_TAKEN | PF_HEAL_TAKEN,
 };
 
 // Qualifier on what result / advanced type allows a proc trigger

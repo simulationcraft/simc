@@ -219,11 +219,15 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 138758, "1Tick_138760Trigger",                              0 }, /* Fabled Feather of Ji-Kun */
   { 139134, "ProcOn/Crit_RPPMSpellCrit",                        0 }, /* Cha-Ye's Essence of Brilliance */
 
+  { 138865, "ProcOn/Dodge",                                     0 }, /* Delicate Vial of the Sanguinaire */
+  // TODO: Ji-Kun's rising winds (heal action support)
+  // TODO: Soul barrier (absorb with individual absorb event cap)
+  // TODO: Rook's unlucky Talisman (aoe damage reduction)
+
   /* Mists of Pandaria: 5.0 */
   { 126660, "OnHarmfulSpellHit",                                0 }, /* Essence of Terror */
   { 126650, "OnDirectDamage",                                   0 }, /* Terror in the Mists */
   { 126658, "OnDirectDamage",                                   0 }, /* Darkmist Vortex */
-  { 126641, "OnHeal",                                           0 }, /* Spirits of the Sun */
   { 126647, "OnAttackHit",                                      0 }, /* Stuff of Nightmares */
   { 126579, "OnSpellTickDamage",                                0 }, /* Light of the Cosmos */
   { 126552, "OnAttackHit",                                      0 }, /* Bottle of Infinite Stars */
@@ -1198,110 +1202,6 @@ void gem::courageous_primal( special_effect_t& effect,
 
 // Items ====================================================================
 
-void jikuns_rising_winds( item_t* item )
-{
-  maintenance_check( 502 );
-
-  player_t* p = item -> player;
-
-  item -> unique = true;
-
-  const spell_data_t* spell = item -> player -> find_spell( 138973 );
-
-
-  struct jikuns_rising_winds_heal_t : public heal_t
-  {
-    jikuns_rising_winds_heal_t( item_t& i, const spell_data_t  *spell ) :
-      heal_t( "jikuns_rising_winds", i.player, spell )
-    {
-      trigger_gcd = timespan_t::zero();
-      background  = true;
-      may_miss    = false;
-      may_crit    = true;
-      callbacks   = false;
-      const random_prop_data_t& budget = i.player -> dbc.random_property( i.item_level() );
-
-      base_dd_min = budget.p_epic[ 0 ]  * spell  -> effectN( 1 ).m_average();
-      base_dd_max = base_dd_min;
-      init();
-    }
-  };
-
-  struct jikuns_rising_winds_callback_t : public action_callback_t
-  {
-    heal_t* heal;
-    cooldown_t* cd;
-    proc_t* proc;
-
-    jikuns_rising_winds_callback_t( player_t* p, heal_t* s ) :
-      action_callback_t( p ), heal( s ), proc( 0 )
-    {
-      proc = p -> get_proc( "jikuns_rising_winds" );
-      cd = p -> get_cooldown( "jikuns_rising_winds_callback" );
-      cd -> duration = timespan_t::from_seconds( 30.0 );
-    }
-
-    virtual void trigger( action_t*, void* )
-    {
-      if ( cd -> remains() <= timespan_t::zero() && listener -> health_percentage() < 35 )
-      {
-        heal -> target = listener;
-        heal -> execute();
-        proc -> occur();
-        cd -> start();
-      }
-
-    }
-  };
-
-  p -> callbacks.register_incoming_attack_callback( RESULT_HIT_MASK,  new jikuns_rising_winds_callback_t( p, new jikuns_rising_winds_heal_t( *item, spell ) )  );
-}
-
-// delicate_vial_of_the_sanguinaire =========================================
-
-void delicate_vial_of_the_sanguinaire( item_t* item )
-{
-  maintenance_check( 502 );
-
-  player_t* p = item -> player;
-
-  item -> unique = true;
-
-
-  const spell_data_t* spell = item -> player -> find_spell( 138865 );
-
-  special_effect_t data;
-  data.name_str    = "delicate_vial_of_the_sanguinaire";
-  data.duration_   = spell -> duration();
-  data.max_stacks  = spell -> max_stacks();
-  data.proc_chance_ = spell -> proc_chance();
-
-  struct delicate_vial_of_the_sanguinaire_callback_t : public proc_callback_t<action_state_t>
-  {
-    stat_buff_t* buff;
-
-    delicate_vial_of_the_sanguinaire_callback_t( item_t& i, const special_effect_t& data ) :
-      proc_callback_t<action_state_t>( i.player, data ),
-      buff( nullptr )
-    {
-      const spell_data_t* spell = listener -> find_spell( 138864 );
-
-      const random_prop_data_t& budget = listener -> dbc.random_property( i.item_level() );
-
-      buff   = stat_buff_creator_t( listener, "blood_of_power" )
-               .duration( spell -> duration() )
-               .add_stat( STAT_MASTERY_RATING, budget.p_epic[ 0 ]  * spell  -> effectN( 1 ).m_average() );
-    }
-
-    void execute( action_t* /* action */, action_state_t* /* state */ )
-    {
-      buff -> trigger();
-    }
-  };
-
-  p -> callbacks.register_incoming_attack_callback( RESULT_DODGE_MASK, new delicate_vial_of_the_sanguinaire_callback_t( *item, data ) );
-}
-
 void item::rune_of_reorigination( special_effect_t& effect,
                                   const item_t& item,
                                   const special_effect_db_item_t& dbitem )
@@ -1862,9 +1762,6 @@ void unique_gear::init( player_t* p )
       else if ( effect.type == SPECIAL_EFFECT_EQUIP )
         new dbc_proc_callback_t( item, effect );
     }
-
-    if ( ! strcmp( item.name(), "delicate_vial_of_the_sanguinaire"    ) ) delicate_vial_of_the_sanguinaire  ( &item );
-    if ( ! strcmp( item.name(), "jikuns_rising_winds"                 ) ) jikuns_rising_winds               ( &item );
   }
 }
 

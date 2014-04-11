@@ -18,7 +18,7 @@ static const proc_parse_opt_t __proc_opts[] =
   { "aoespell",    PF_AOE_SPELL                                                },
   { "spell",       PF_SPELL | PF_PERIODIC                                      },
   { "directspell", PF_SPELL                                                    },
-  { "tickspell",   PF_PERIODIC                                                 },
+  { "periodic",    PF_PERIODIC                                                 },
   { "aoeheal",     PF_AOE_HEAL                                                 },
   { "heal",        PF_HEAL | PF_PERIODIC                                       },
   { "directheal",  PF_HEAL                                                     },
@@ -351,17 +351,18 @@ timespan_t special_effect_t::cooldown() const
   if ( cooldown_ > timespan_t::zero() )
     return cooldown_;
 
-  if ( driver() -> cooldown() > timespan_t::zero() )
-    return driver() -> cooldown();
-  else if ( driver() -> internal_cooldown() > timespan_t::zero() )
-    return driver() -> internal_cooldown();
-
-  // Finally, check the item data for a cooldown for the spell.
+  // First, check item cooldowns, since they override (in simc) whatever the
+  // spell cooldown may be
   for ( size_t i = 0, end = sizeof_array( item -> parsed.data.cooldown ); i < end; i++ ) 
   {
     if ( item -> parsed.data.cooldown[ i ] > 0 )
       return timespan_t::from_millis( item -> parsed.data.cooldown[ i ] );
   }
+
+  if ( driver() -> cooldown() > timespan_t::zero() )
+    return driver() -> cooldown();
+  else if ( driver() -> internal_cooldown() > timespan_t::zero() )
+    return driver() -> internal_cooldown();
 
   return timespan_t::zero();
 }
