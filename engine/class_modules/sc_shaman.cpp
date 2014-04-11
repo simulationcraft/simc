@@ -3292,9 +3292,6 @@ struct lightning_bolt_t : public shaman_spell_t
 
     trigger_tier16_4pc_caster( state );
   }
-
-  virtual bool usable_moving() const
-  { return true; }
 };
 
 // Elemental Blast Spell ====================================================
