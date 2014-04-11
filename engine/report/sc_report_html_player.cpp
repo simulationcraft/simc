@@ -2513,7 +2513,15 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
   if ( p -> primary_role() == ROLE_TANK && p -> type != ENEMY )
   {
     os << "\t\t\t\t\t\t<table class=\"sc mt\">\n"
-       << "\t\t\t\t\t\t\t<tr>\n"
+       // experimental first row for stacking the tables - wasn't happy with how it looked, may return to it later
+       //<< "\t\t\t\t\t\t\t<tr>\n" // first row
+       //<< "\t\t\t\t\t\t\t\t<th colspan=\"3\"><a href=\"#help-dtps\" class=\"help\">DTPS</a></th>\n"
+       //<< "\t\t\t\t\t\t\t\t<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n"
+       //<< "\t\t\t\t\t\t\t\t<th colspan=\"5\"><a href=\"#help-tmi\" class=\"help\">TMI</a></th>\n"
+       //<< "\t\t\t\t\t\t\t\t<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n"
+       //<< "\t\t\t\t\t\t\t\t<th colspan=\"4\"><a href=\"#help-msd\" class=\"help\">MSD</a></th>\n"
+       //<< "\t\t\t\t\t\t\t</tr>\n" // end first row
+       << "\t\t\t\t\t\t\t<tr>\n"  // start second row 
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-dtps\" class=\"help\">DTPS</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-error\" class=\"help\">DTPS Error</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-range\" class=\"help\">DTPS Range</a></th>\n"
@@ -2524,11 +2532,12 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmi\" class=\"help\">TMI Max</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-tmirange\" class=\"help\">TMI Range</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th>&nbsp</th>\n"
-       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd\" class=\"help\">MSD Min</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd\" class=\"help\">MSD Mean</a></th>\n"
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd\" class=\"help\">MSD Min</a></th>\n"
        << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd\" class=\"help\">MSD Max</a></th>\n"
-       << "\t\t\t\t\t\t\t</tr>\n"
-       << "\t\t\t\t\t\t\t<tr>\n";
+       << "\t\t\t\t\t\t\t\t<th><a href=\"#help-msd-freq\" class=\"help\">MSD Freq.</a></th>\n"
+       << "\t\t\t\t\t\t\t</tr>\n" // end second row
+       << "\t\t\t\t\t\t\t<tr>\n"; // start third row
 
     double dtps_range = ( cd.dtps.percentile( 0.5 + sim -> confidence / 2 ) - cd.dtps.percentile( 0.5 - sim -> confidence / 2 ) );
     double dtps_error = sim_t::distribution_mean_error( *sim, p -> collected_data.dtps );
@@ -2549,10 +2558,8 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
     // print TMI
     if ( abs( cd.theck_meloree_index.mean() ) > 1.0e8 )
       os.printf( "\t\t\t\t\t\t\t\t<td>%1.3e</td>\n", cd.theck_meloree_index.mean() );
-    else if ( abs( cd.theck_meloree_index.mean() ) < 99.9 )
-      os.printf( "\t\t\t\t\t\t\t\t<td>%.3f</td>\n", cd.theck_meloree_index.mean() );
     else
-      os.printf( "\t\t\t\t\t\t\t\t<td>%.0f</td>\n", cd.theck_meloree_index.mean() );
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.1fk</td>\n", cd.theck_meloree_index.mean() / 1e3 );
 
     // print TMI error/variance
     if ( tmi_error > 1.0e6 )
@@ -2562,24 +2569,20 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
     }
     else
     {
-      os.printf( "\t\t\t\t\t\t\t\t<td>%.1f / %.2f%%</td>\n",
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.0f / %.2f%%</td>\n",
                  tmi_error, cd.theck_meloree_index.mean() ? tmi_error * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
     }
 
     // print  TMI min/max
     if ( abs( cd.theck_meloree_index.min() ) > 1.0e8 )
       os.printf( "\t\t\t\t\t\t\t\t<td>%1.2e</td>\n", cd.theck_meloree_index.min() );
-    else if ( abs( cd.theck_meloree_index.min() ) < 99.9 )
-      os.printf( "\t\t\t\t\t\t\t\t<td>%.3f</td>\n", cd.theck_meloree_index.min() );
     else
-      os.printf( "\t\t\t\t\t\t\t\t<td>%.0f</td>\n", cd.theck_meloree_index.min() );
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.1fk</td>\n", cd.theck_meloree_index.min() / 1e3 );
     
     if ( abs( cd.theck_meloree_index.max() ) > 1.0e8 )
       os.printf( "\t\t\t\t\t\t\t\t<td>%1.2e</td>\n", cd.theck_meloree_index.max() );
-    else if ( abs( cd.theck_meloree_index.max() ) < 99.9 )
-      os.printf( "\t\t\t\t\t\t\t\t<td>%.3f</td>\n", cd.theck_meloree_index.max() );
     else
-      os.printf( "\t\t\t\t\t\t\t\t<td>%.0f</td>\n", cd.theck_meloree_index.max() );
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.1fk</td>\n", cd.theck_meloree_index.max() / 1e3 );
 
     // print TMI range
     if ( tmi_range > 1.0e8 )
@@ -2587,25 +2590,22 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, sim_t* sim
       os.printf( "\t\t\t\t\t\t\t\t<td>%1.2e / %.1f%%</td>\n",
                   tmi_range, cd.theck_meloree_index.mean() ? tmi_range * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
     }
-    else if ( abs( tmi_range ) < 99.9 )
-    {
-      os.printf( "\t\t\t\t\t\t\t\t<td>%.3f / %.1f%%</td>\n",
-                  tmi_range, cd.theck_meloree_index.mean() ? tmi_range * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
-    }
     else
     {
-      os.printf( "\t\t\t\t\t\t\t\t<td>%.0f / %.1f%%</td>\n",
-                  tmi_range, cd.theck_meloree_index.mean() ? tmi_range * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
+      os.printf( "\t\t\t\t\t\t\t\t<td>%.1fk / %.1f%%</td>\n",
+                  tmi_range / 1e3, cd.theck_meloree_index.mean() ? tmi_range * 100.0 / cd.theck_meloree_index.mean() : 0.0 );
     }
         
     // spacer
     os << "\t\t\t\t\t\t\t\t<td>&nbsp&nbsp&nbsp&nbsp&nbsp</td>\n";
 
     // print Max Spike Size stats
-    os.printf( "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n", cd.max_spike_amount.min() * 100 );
     os.printf( "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n", cd.max_spike_amount.mean() * 100 );
+    os.printf( "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n", cd.max_spike_amount.min() * 100 );
     os.printf( "\t\t\t\t\t\t\t\t<td>%.1f%%</td>\n", cd.max_spike_amount.max() * 100 );
-
+    
+    // print rough estimate of spike frequency
+    os.printf( "\t\t\t\t\t\t\t\t<td>%.1f</td>\n", cd.theck_meloree_index.mean() ? std::exp( cd.theck_meloree_index.mean() / 1e3 / cd.max_spike_amount.mean() / 100 ) : 0.0 );
 
     // End defensive table
     os << "\t\t\t\t\t\t\t</tr>\n"

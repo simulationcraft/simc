@@ -946,7 +946,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
   os << "\t\t<div id=\"help-tmi\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>Theck-Meloree Index</h3>\n"
-     << "\t\t\t\t<p>Measure of damage smoothness, calculated over entire fight length.  Lower is better.</p>\n"
+     << "\t\t\t\t<p>Measure of damage smoothness, calculated over entire fight length. Related to max spike damage, 1k TMI is roughly equivalent to 1% of your health.  Lower is better.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
@@ -965,6 +965,13 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
+  os << "\t\t<div id=\"help-msd-freq\">\n"
+     << "\t\t\t<div class=\"help-box\">\n"
+     << "\t\t\t\t<h3>Max Spike Damage</h3>\n"
+     << "\t\t\t\t<p>This is roughly how many spikes as large as MSD Mean you take per iteration. Calculated from TMI and MSD values.</p>\n"
+     << "\t\t\t</div>\n"
+     << "\t\t</div>\n";
+
   os << "\t\t<div id=\"help-dynamic-buffs\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>Dynamic Buffs</h3>\n"
@@ -975,7 +982,7 @@ void print_html_help_boxes( report::sc_html_stream& os, sim_t* sim )
   os << "\t\t<div id=\"help-error\">\n"
      << "\t\t\t<div class=\"help-box\">\n"
      << "\t\t\t\t<h3>Error</h3>\n"
-     << "\t\t\t\t<p>Estimator for the " << sim -> confidence * 100.0 << "% confidence intervall.</p>\n"
+     << "\t\t\t\t<p>Estimator for the " << sim -> confidence * 100.0 << "% confidence interval.</p>\n"
      << "\t\t\t</div>\n"
      << "\t\t</div>\n";
 
