@@ -209,7 +209,7 @@ static const special_effect_db_item_t __special_effect_db[] = {
   { 138957, 0,                            item::spark_of_zandalar }, /* Spark of Zandalar */
   { 138964, 0,                   item::unerring_vision_of_leishen }, /* Unerring Vision of Lei Shen */
 
-  { 138728, "Reverse_NoRefresh",                                0 }, /* Steadfast Talisman of the Shado-Pan Assault */
+  { 138728, "Reverse",                                          0 }, /* Steadfast Talisman of the Shado-Pan Assault */
   { 138894, "OnDirectDamage",                                   0 }, /* Talisman of Bloodlust */
   { 138871, "OnDirectDamage",                                   0 }, /* Primordius' Talisman of Rage */
   { 139171, "ProcOn/Crit_RPPMAttackCrit",                       0 }, /* Gaze of the Twins */

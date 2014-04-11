@@ -388,6 +388,10 @@ unsigned enchant::initialize_gem( item_t& item, unsigned gem_id )
   if ( ! enchant::initialize_item_enchant( item, SPECIAL_EFFECT_SOURCE_GEM, data ) )
     return GEM_NONE;
 
+  // TODO: This should really be removed, as should player -> meta_gem
+  if ( gem_prop.color == SOCKET_COLOR_META )
+    item.player -> meta_gem = enchant::meta_gem_type( item.player -> dbc, data );
+
   return gem_prop.color;
 }
 
