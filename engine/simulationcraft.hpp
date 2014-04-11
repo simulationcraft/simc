@@ -2443,6 +2443,7 @@ public:
     ~event_managment_t();
     void add_event( core_event_t*, timespan_t delta_time, timespan_t current_time );
     void flush_events();
+    void preallocate_events( unsigned num );
     void init();
     core_event_t* next_event();
     void reset();
@@ -2980,11 +2981,11 @@ struct core_event_t
 
   static void cancel( core_event_t*& e );
 
-  static void* allocate( std::size_t size, core_sim_t& );
+  static void* allocate( std::size_t size, core_sim_t::event_managment_t& );
   static void  recycle( core_event_t* );
   static void  release( core_event_t*& );
 
-  static void* operator new( std::size_t size, core_sim_t& sim ) { return allocate( size, sim ); }
+  static void* operator new( std::size_t size, core_sim_t& sim ) { return allocate( size, sim.em ); }
 
 #if defined(__GXX_EXPERIMENTAL_CXX0X__) && ( defined(SC_GCC) && SC_GCC >= 40400 || defined(SC_CLANG) && SC_CLANG >= 30000 ) // Improved compile-time diagnostics.
   static void* operator new( std::size_t ) throw() = delete; // DO NOT USE
