@@ -474,17 +474,19 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   s << std::endl;
 
-  /*
   std::stringstream affect_str;
   std::vector< const spell_data_t* > affected_spells = dbc.effect_affects_spells( spell -> class_family(), e );
   if ( affected_spells.size() > 0 )
   {
-    s << "                   Affected Spells:";
-    s << std::endl;
+    s << "                   Affected Spells: ";
     for ( size_t i = 0, end = affected_spells.size(); i < end; i++ )
-      s << "                   " << affected_spells[ i ] -> name_cstr() << " (" << affected_spells[ i ] -> id() << ")" << std::endl;
+    {
+      s << affected_spells[ i ] -> name_cstr() << " (" << affected_spells[ i ] -> id() << ")";
+      if ( i < end - 1 )
+        s << ", ";
+    }
+    s << std::endl;
   }
-  */
 
   return s;
 }
