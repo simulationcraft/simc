@@ -16,7 +16,6 @@ namespace { // UNNAMED NAMESPACE
     Heart of the Wild
 	  Dream of Cenarius
 	    Verify Guardian DoC works
-	  Nature's Vigil
 	  Glyphs
 	    Travel
 	  Survival Instincts
@@ -44,16 +43,13 @@ namespace { // UNNAMED NAMESPACE
 
 // Forward declarations
 struct druid_t;
-struct natures_vigil_damage_proc_t;
+struct natures_vigil_proc_t;
 struct ursocs_vigor_t;
 struct cenarion_ward_hot_t;
 struct leader_of_the_pack_t;
 struct yseras_gift_t;
 namespace buffs {
 struct heart_of_the_wild_buff_t;
-}
-namespace heals {
-struct natures_vigil_heal_proc_t;
 }
 
 struct combo_points_t
@@ -130,12 +126,11 @@ public:
   
   struct active_actions_t
   {
-    natures_vigil_damage_proc_t* natures_vigil_damage_proc;
-    heals::natures_vigil_heal_proc_t*   natures_vigil_heal_proc;
-    ursocs_vigor_t*              ursocs_vigor;
-    cenarion_ward_hot_t*         cenarion_ward_hot;
-    leader_of_the_pack_t*        leader_of_the_pack;
-    yseras_gift_t*               yseras_gift;
+    natures_vigil_proc_t* natures_vigil;
+    ursocs_vigor_t*       ursocs_vigor;
+    cenarion_ward_hot_t*  cenarion_ward_hot;
+    leader_of_the_pack_t* leader_of_the_pack;
+    yseras_gift_t*        yseras_gift;
   } active;
 
   // Pets
@@ -380,7 +375,8 @@ public:
   // Talents
   struct talents_t
   {
-    // MoP: Done
+    const spell_data_t* feline_swiftness;
+
     const spell_data_t* yseras_gift;
     const spell_data_t* renewal;
     const spell_data_t* cenarion_ward;
@@ -412,7 +408,6 @@ public:
     const spell_data_t* rampant_growth;
 
     // MoP TODO: Fix/Implement
-    const spell_data_t* feline_swiftness;
     const spell_data_t* displacer_beast;
     const spell_data_t* wild_charge;
 
@@ -552,41 +547,122 @@ public:
   }
 };
 
-// Damage Proc ================================================================
-struct natures_vigil_damage_proc_t : public spell_t
+// Nature's Vigil Proc ======================================================
+
+struct natures_vigil_proc_t : public spell_t
 {
-  natures_vigil_damage_proc_t( druid_t* p ) :
-    spell_t( "natures_vigil_proc", p, spell_data_t::nil() ) //p -> find_spell( 124991 
+  struct natures_vigil_heal_t : public heal_t
   {
-    background      = true;
-    proc            = true;
-    trigger_gcd     = timespan_t::zero();
-    may_crit        = false;
-    may_miss        = false;
-    base_multiplier = p -> find_spell( 124974 ) -> effectN( 3 ).percent();
+    double heal_coeff;
+    double dmg_coeff;
+
+    natures_vigil_heal_t( druid_t* p ) :
+      heal_t( "natures_vigil_heal", p, p -> find_spell( 124988 ) ),
+      dmg_coeff( 0.0 ), heal_coeff( 0.0 ) 
+    {
+      background = proc = dual = true;
+      may_crit = may_miss      = false;
+      trigger_gcd              = timespan_t::zero();
+      heal_coeff               = p -> talent.natures_vigil -> effectN( 3 ).percent();
+      dmg_coeff                = p -> talent.natures_vigil -> effectN( 4 ).percent();
+    }
+
+    void trigger( double amount, bool harmful )
+    {
+      double coeff = harmful ? dmg_coeff : heal_coeff;
+
+      // set the heal size to be fixed based on the result of the action
+      base_dd_min = base_dd_max = amount * coeff;
+
+      target = find_lowest_target();
+
+      if ( target )
+        execute();
+    }
+
+  private:
+    player_t* find_lowest_target()
+    {
+      // Ignoring range for the time being
+      double lowest_health_pct_found = 100.1;
+      player_t* lowest_player_found = nullptr;
+
+      for ( size_t i = 0, size = sim -> player_no_pet_list.size(); i < size; i++ )
+      {
+        player_t* p = sim -> player_no_pet_list[ i ];
+
+        // check their health against the current lowest
+        if ( p -> health_percentage() < lowest_health_pct_found )
+        {
+          // if this player is lower, make them the current lowest
+          lowest_health_pct_found = p -> health_percentage();
+          lowest_player_found = p;
+        }
+      }
+      return lowest_player_found;
+    }
+  };
+
+  struct natures_vigil_damage_t : public spell_t
+  {
+    natures_vigil_damage_t( druid_t* p ) :
+      spell_t( "natures_vigil_damage", p, p -> find_spell( 124991 ) )
+    {
+      background = proc = dual = true;
+      may_crit = may_miss      = false;
+      trigger_gcd              = timespan_t::zero();
+      base_multiplier          = p -> talent.natures_vigil -> effectN( 3 ).percent();
+    }
+
+    void trigger( double amount )
+    {
+      // set the heal size to be fixed based on the result of the action
+      base_dd_min = base_dd_max = amount;
+
+      target = pick_random_target();
+
+      if ( target )
+        execute();
+    }
+
+  private:
+    player_t* pick_random_target()
+    {
+      // Targeting is probably done by range, but since the sim doesn't really have
+      // have a concept of that we'll just pick a target at random.
+
+      unsigned t = static_cast<unsigned>( rng().range( 0, as<double>( sim -> target_list.size() ) ) );
+      if ( t >= sim-> target_list.size() ) --t; // dsfmt range should not give a value actually equal to max, but be paranoid
+      return sim-> target_list[ t ];
+    }
+  };
+
+  natures_vigil_damage_t* damage;
+  natures_vigil_heal_t*   healing;
+
+  natures_vigil_proc_t( druid_t* p ) :
+    spell_t( "natures_vigil", p, spell_data_t::nil() )
+  {
+    background = proc = true;
+    trigger_gcd       = timespan_t::zero();
+    may_crit = may_miss = false;
+
+    damage  = new natures_vigil_damage_t( p );
+    healing = new natures_vigil_heal_t( p );
   }
 
-  void trigger( const action_state_t& s )
+  void trigger( const action_t& action )
   {
-    // set the heal size to be fixed based on the result of the action
-    base_dd_min = s.result_amount * base_multiplier;
-    base_dd_max = s.result_amount * base_multiplier;
+    if ( action.execute_state -> result_amount <= 0 )
+      return;
+    if ( action.aoe != 0 )
+      return;
+    if ( ! action.special )
+      return;
 
-    target = pick_random_target();
-
-    if ( target )
-      execute();
-  }
-
-private:
-  player_t* pick_random_target()
-  {
-    // Targeting is probably done by range, but since the sim doesn't really have
-    // have a concept of that we'll just pick a target at random.
-
-    unsigned t = static_cast<unsigned>( rng().range( 0, as<double>( sim -> target_list.size() ) ) );
-    if ( t >= sim-> target_list.size() ) --t; // dsfmt range should not give a value actually equal to max, but be paranoid
-    return sim-> target_list[ t ];
+    if ( ! action.harmful )
+      damage -> trigger( action.execute_state -> result_amount );
+    healing -> trigger( action.execute_state -> result_amount, action.harmful );
   }
 };
 
@@ -1684,24 +1760,16 @@ public:
   {
     ab::execute();
 
-    if ( this -> result_is_hit( this -> execute_state -> result ) )
-    {
-      // Nature's Vigil Proc
-      if ( this -> p() -> buff.natures_vigil -> check() && this -> execute_state -> result_amount > 0 && this -> aoe == 0 && this -> special && ! this -> proc )
-        this -> p() -> active.natures_vigil_heal_proc -> trigger( *this -> execute_state );
-    }
+    if ( this -> p() -> buff.natures_vigil -> check() && this -> result_is_hit( this -> execute_state -> result ) )
+      this -> p() -> active.natures_vigil -> trigger( *this );
   }
 
   virtual void tick( dot_t* d )
   {
     ab::tick( d );
 
-    if ( this -> result_is_hit( d -> state -> result ) )
-    {
-      // Nature's Vigil Proc
-      if ( this -> p() -> buff.natures_vigil -> check() && d -> state -> result_amount > 0 && this -> aoe == 0 && this -> special && ! this -> proc )
-        this -> p() -> active.natures_vigil_heal_proc -> trigger( *d -> state );
-    }
+    if ( this -> p() -> buff.natures_vigil -> up() )
+      this -> p() -> active.natures_vigil -> trigger( *this );
   }
 
   void trigger_lotp( const action_state_t* s )
@@ -3180,16 +3248,9 @@ public:
   {
     ab::tick( d );
 
-    if ( ab::result_is_hit( d -> state -> result ) )
+    if ( this -> p() -> buff.natures_vigil -> check() )
     {
-      // Nature's Vigil Proc
-      if ( this -> p() -> buff.natures_vigil -> check() && d -> state -> result_amount > 0 && this -> aoe == 0 && this -> special && ! this -> proc )
-      {
-        if ( this -> harmful )
-          this -> p() -> active.natures_vigil_heal_proc -> trigger( *d -> state );
-        else
-          this -> p() -> active.natures_vigil_damage_proc -> trigger( *d -> state );
-      }
+      this -> p() -> active.natures_vigil -> trigger( *this );
     }
   }
 
@@ -3197,16 +3258,8 @@ public:
   {
     ab::execute();
 
-    if ( ab::result_is_hit( ab::execute_state -> result ) )
-    {
-      // Nature's Vigil Proc
-      if ( this -> p() -> buff.natures_vigil -> check() && ab::execute_state -> result_amount > 0 && this -> aoe == 0 && this -> special && ! this -> proc )
-      {
-        if ( ! this -> harmful )
-          this -> p() -> active.natures_vigil_damage_proc -> trigger( *ab::execute_state );
-        this -> p() -> active.natures_vigil_heal_proc -> trigger( *ab::execute_state );
-      }
-    }
+    if ( this -> p() -> buff.natures_vigil -> check() && ab::result_is_hit( ab::execute_state -> result ) )
+      this -> p() -> active.natures_vigil -> trigger( *this );
   }
 };
 
@@ -3870,57 +3923,6 @@ struct wild_growth_t : public druid_heal_t
 
     // Reset AoE
     aoe = save;
-  }
-};
-
-// ==========================================================================
-// Nature's Vigil Procs
-// ==========================================================================
-
-// Heal Proc ================================================================
-struct natures_vigil_heal_proc_t : public heal_t
-{
-  natures_vigil_heal_proc_t( druid_t* p ) :
-    heal_t( "natures_vigil_proc", p, spell_data_t::nil() ) //p -> find_spell( 124988 )
-  {
-    background = proc = true;
-    may_crit = may_miss = false;
-    trigger_gcd         = timespan_t::zero();
-    base_multiplier  = p -> find_spell( 124974 ) -> effectN( 3 ).percent();
-  }
-
-  void trigger( const action_state_t& s )
-  {
-    // set the heal size to be fixed based on the result of the action
-    base_dd_min = s.result_amount * base_multiplier;
-    base_dd_max = s.result_amount * base_multiplier;
-
-    target = find_lowest_target();
-
-    if ( target )
-      execute();
-  }
-
-private:
-  player_t* find_lowest_target()
-  {
-    // Ignoring range for the time being
-    double lowest_health_pct_found = 100.1;
-    player_t* lowest_player_found = nullptr;
-
-    for ( size_t i = 0, size = sim -> player_no_pet_list.size(); i < size; i++ )
-    {
-      player_t* p = sim -> player_no_pet_list[ i ];
-
-      // check their health against the current lowest
-      if ( p -> health_percentage() < lowest_health_pct_found )
-      {
-        // if this player is lower, make them the current lowest
-        lowest_health_pct_found = p -> health_percentage();
-        lowest_player_found = p;
-      }
-    }
-    return lowest_player_found;
   }
 };
 
@@ -4761,7 +4763,7 @@ struct druids_swiftness_t : public druid_spell_t
 struct natures_vigil_t : public druid_spell_t
 {
   natures_vigil_t( druid_t* player, const std::string& options_str ) :
-    druid_spell_t( "natures_vigil", player, player -> talent.natures_vigil )
+    druid_spell_t( "natures_vigil", player, player -> find_spell( 124974 ) )
   {
     parse_options( NULL, options_str );
     harmful = false;
@@ -5591,14 +5593,11 @@ void druid_t::init_spells()
 
   // Active actions
   if ( talent.natures_vigil -> ok() )
-  {
-    active.natures_vigil_damage_proc = new natures_vigil_damage_proc_t( this );
-    active.natures_vigil_heal_proc   = new heals::natures_vigil_heal_proc_t( this );
-  }
+    active.natures_vigil     = new natures_vigil_proc_t( this );
   if ( talent.cenarion_ward -> ok() )
     active.cenarion_ward_hot = new cenarion_ward_hot_t( this );
   if ( talent.yseras_gift -> ok() )
-    active.yseras_gift = new yseras_gift_t( this );
+    active.yseras_gift       = new yseras_gift_t( this );
 
   // TODO: Check if this is really the passive applied, the actual shapeshift
   // only has data of shift, polymorph immunity and the general armor bonus
@@ -5782,10 +5781,7 @@ void druid_t::create_buffs()
   else
     buff.dream_of_cenarius = buff_creator_t( this, "dream_of_cenarius", spell_data_t::not_found() );
 
-  buff.natures_vigil      = buff_creator_t( this, "natures_vigil", talent.natures_vigil -> ok() ? find_spell( 124974 ) : spell_data_t::not_found() )
-                            .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                            .add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-
+  buff.natures_vigil      = buff_creator_t( this, "natures_vigil", talent.natures_vigil -> ok() ? find_spell( 124974 ) : spell_data_t::not_found() );
   buff.heart_of_the_wild  = new heart_of_the_wild_buff_t( *this );
 
   // Balance
@@ -6606,11 +6602,6 @@ double druid_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( buff.natures_vigil -> up() )
-  {
-    m *= 1.0 + buff.natures_vigil -> data().effectN( 1 ).percent();
-  }
-
   if ( dbc::is_school( school, SCHOOL_PHYSICAL ) && buff.cat_form -> up() )
   {
     m *= 1.0 + buff.tigers_fury -> value();
@@ -6677,11 +6668,6 @@ double druid_t::composite_player_td_multiplier( school_e school,  const action_t
 double druid_t::composite_player_heal_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_heal_multiplier( school );
-
-  if ( buff.natures_vigil -> up() )
-  {
-    m *= 1.0 + buff.natures_vigil -> data().effectN( 2 ).percent();
-  }
 
   m *= 1.0 + buff.heart_of_the_wild -> heal_multiplier();
 
