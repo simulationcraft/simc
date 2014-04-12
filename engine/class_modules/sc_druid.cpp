@@ -17,7 +17,6 @@ namespace { // UNNAMED NAMESPACE
 	    Verify Guardian DoC works
 	  Glyphs
 	    Travel
-	  Survival Instincts
 	  Tranquility
     Dash
     Stampeding Roar
@@ -5113,6 +5112,10 @@ struct survival_instincts_t : public druid_spell_t
   {
     harmful = false;
     use_off_gcd = true;
+    cooldown -> duration = timespan_t::from_seconds( 120.0 ); // Spell data has wrong cooldown, as of 4/12/14
+
+    if ( player -> specialization() == DRUID_FERAL || player -> specialization() == DRUID_GUARDIAN )
+      cooldown -> charges = 2;
   }
 
   virtual void execute()
@@ -5120,15 +5123,6 @@ struct survival_instincts_t : public druid_spell_t
     druid_spell_t::execute();
 
     p() -> buff.survival_instincts -> trigger(); // DBC value is 60 for some reason
-  }
-
-  virtual bool ready()
-  {
-
-    if ( ! p() -> buff.bear_form -> check() )
-      return false;
-
-    return druid_spell_t::ready();
   }
 };
 
@@ -5891,9 +5885,7 @@ void druid_t::apl_precombat()
   if ( ( specialization() == DRUID_FERAL && primary_role() == ROLE_ATTACK ) || primary_role() == ROLE_ATTACK )
   {
     precombat -> add_action( this, "Cat Form" );
-    if ( glyph.savagery -> ok() )
-      precombat -> add_action( this, "Savage Roar" );
-    precombat -> add_action( "prowl" );
+    precombat -> add_action( this, "Prowl" );
   }
   else if ( primary_role() == ROLE_TANK )
   {
@@ -5966,269 +5958,60 @@ void druid_t::apl_default()
 
 void druid_t::apl_feral()
 {
-  action_priority_list_t* default_list = get_action_priority_list( "default" );
+  action_priority_list_t* def    = get_action_priority_list( "default" );
+  action_priority_list_t* filler = get_action_priority_list( "filler"  );
 
   std::vector<std::string> item_actions       = get_item_actions();
-  std::vector<std::string> profession_actions = get_profession_actions();
   std::vector<std::string> racial_actions     = get_racial_actions();
 
-  action_priority_list_t* basic    = get_action_priority_list( "basic" );
-  action_priority_list_t* advanced = get_action_priority_list( "advanced" );
-
-  // APL: DEFAULT -- Switch the appropriate action list here
-
-  default_list -> add_action( "swap_action_list,name=basic",
-                              "By default the simulation will use the \"Basic\" action list, if you would like to instead use the \"Advanced\" action list do so here." );
-
-  // APL: BASIC
-
-  basic -> add_action( "swap_action_list,name=aoe,if=active_enemies>=5" );
-  basic -> add_action( "auto_attack" );
-  basic -> add_action( "skull_bash_cat" );
-  if ( talent.force_of_nature -> ok() )
-  {
-    if ( find_item( "rune_of_reorigination" ) )
-      basic -> add_action( "force_of_nature,if=charges=3|trinket.proc.agility.react|(buff.rune_of_reorigination.react&buff.rune_of_reorigination.remains<1)|target.time_to_die<20" );
-    else
-      basic -> add_action( "force_of_nature,if=charges=3|trinket.proc.agility.react|target.time_to_die<20" );
-  }
-  basic -> add_action( this, "Ferocious Bite", "if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25",
-                       "Keep Rip from falling off during execute range." );
-  basic -> add_action( this, "Faerie Fire", "if=debuff.weakened_armor.stack<3" );
-  basic -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
-
-  // Potion
-  if ( sim -> allow_potions && level >= 80 )
-  {
-    if ( level > 85 )
-      basic -> add_action( "virmens_bite_potion,if=(target.health.pct<30&buff.berserk.up)|target.time_to_die<=40" );
-    else
-      basic -> add_action( "tolvir_potion,if=(target.health.pct<30&buff.berserk.up)|target.time_to_die<=40" );
-  }
-
-  if ( talent.incarnation -> ok() )
-    basic -> add_action( "incarnation,if=energy<=35&cooldown.tigers_fury.remains<=1" );
-  basic -> add_action( this, "Tiger's Fury", "if=energy<=35&!buff.omen_of_clarity.react" );
-  if ( talent.natures_vigil -> ok() )
-    basic -> add_action( "natures_vigil,if=buff.tigers_fury.up" );
-  basic -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
-
+  if ( perk.improved_pounce -> ok() )
+    def -> add_action( this, "Pounce", "if=buff.prowl.up" );
+  else
+    def -> add_action( this, "Ravage", "if=buff.prowl.up" );
+  def -> add_action( "auto_attack" );
+  def -> add_action( this, "Ferocious Bite", "cycle_targets=1,if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25",
+                     "Keep Rip from falling off during execute range." );
+  def -> add_action( this, "Faerie Fire", "cycle_targets=1,if=debuff.physical_vulnerability.down" );
+  def -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<3" );
+  std::string potion_name = level > 85 ? "virmens_bite_potion" : "tolvir_potion";
+  def -> add_action( potion_name + ",if=target.time_to_die<=40" );
   // On-Use Items
   for ( size_t i = 0; i < item_actions.size(); i++ )
-    basic -> add_action( item_actions[ i ] + ",if=buff.tigers_fury.up" );
-
-  // Professions
-  for ( size_t i = 0; i < profession_actions.size(); i++ )
-    basic -> add_action( profession_actions[ i ] + ",if=buff.tigers_fury.up" );
-
+    def -> add_action( item_actions[ i ] + ",sync=tigers_fury" );
   // Racials
   for ( size_t i = 0; i < racial_actions.size(); i++ )
-    basic -> add_action( racial_actions[ i ] + ",if=buff.tigers_fury.up" );
+    def -> add_action( racial_actions[ i ] + ",sync=tigers_fury" );
+  def -> add_action( this, "Tiger's Fury", "if=energy<=35&!buff.omen_of_clarity.react" );
+  def -> add_action( potion_name + ",sync=berserk,if=target.health.pct<25" );
+  def -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
+  def -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3" );
+  def -> add_action( this, "Rip", "cycle_targets=1,if=dot.rip.remains<2&combo_points>=5" );
+  def -> add_action( this, "Rip", "cycle_targets=1,if=target.health.pct<25&combo_points>=5&action.rip.tick_multiplier>dot.rip.multiplier",
+                     "Apply the strongest possible Rip during execute." );
+  def -> add_action( this, "Rake", "cycle_targets=1,if=!talent.bloody_thrash.enabled&dot.rake.remains<3" );
+  def -> add_action( this, "Rake", "cycle_targets=1,if=!talent.bloody_thrash.enabled&action.rake.tick_multiplier>dot.rake.multiplier" );
+  def -> add_action( this, "Moonfire", "cycle_targets=1,if=talent.lunar_inspiration.enabled&dot.moonfire.remains<3" );
+  def -> add_action( "pool_resource,for_next=1",
+                     "Pool energy for Thrash." );
+  def -> add_action( "thrash_cat,cycle_targets=1,if=talent.bloody_thrash.enabled&(dot.rake.remains<3|action.rake.tick_multiplier>dot.rake.multiplier)" );
+  def -> add_action( this, "Ferocious Bite", "if=combo_points>=5&(energy.time_to_max<=1|buff.berserk.up)&dot.rip.remains>=4" );
+  def -> add_action( "run_action_list,name=filler,if=combo_points<5",
+                     "Cast a CP generator." );
+  def -> add_talent( this, "Nature's Vigil" );
+  def -> add_action( this, "Healing Touch", "if=buff.natures_vigil.up&buff.predatory_swiftness.up" );
+  if ( perk.enhanced_rejuvenation -> ok() )
+    def -> add_action( this, "Rejuvenation", "if=buff.natures_vigil.up&!ticking" );
+  def -> add_action( this, "Faerie Fire", "cycle_targets=1,if=debuff.physical_vulnerability.remains>0" );
 
-  basic -> add_action( this, "Rip", "if=combo_points>=5&target.health.pct<=25&action.rip.tick_damage%dot.rip.tick_dmg>=1.15",
-                       "Overwrite Rip during execute range if it's at least 15% stronger than the current." );
-  basic -> add_action( this, "Ferocious Bite", "if=combo_points>=5&target.health.pct<=25&dot.rip.ticking" );
-  basic -> add_action( this, "Rip", "if=combo_points>=5&dot.rip.remains<2" );
-  basic -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3" );
-  basic -> add_action( this, "Rake", "cycle_targets=1,if=dot.rake.remains<3|action.rake.tick_damage>dot.rake.tick_dmg",
-                       "Rake if it's about to fall off or we can apply a stronger Rake." );
-  basic -> add_action( "pool_resource,for_next=1" );
-  basic -> add_action( "thrash_cat,if=dot.thrash_cat.remains<3&(dot.rip.remains>=8&buff.savage_roar.remains>=12|buff.berserk.up|combo_points>=5)" );
-  if ( sets.has_set_bonus( SET_T16_4PC_MELEE ) )
-    basic -> add_action( "pool_resource,if=combo_points>=5&!(energy.time_to_max<=1|(buff.berserk.up&energy>=25)|(buff.feral_rage.up&buff.feral_rage.remains<=1))&dot.rip.ticking",
-                            "Pool to near-full energy before casting Ferocious Bite." );
-  else
-    basic -> add_action( "pool_resource,if=combo_points>=5&!(energy.time_to_max<=1|(buff.berserk.up&energy>=25))&dot.rip.ticking",
-                            "Pool to near-full energy before casting Ferocious Bite." );
-  basic -> add_action( this, "Ferocious Bite", "if=combo_points>=5&dot.rip.ticking",
-                          "Ferocious Bite if we reached near-full energy without spending our CP on something else." );
-  basic -> add_action( "run_action_list,name=filler,if=buff.omen_of_clarity.react",
-                          "Conditions under which we should execute a CP generator." );
-  if ( sets.has_set_bonus( SET_T16_2PC_MELEE ) )
-    basic -> add_action( "run_action_list,name=filler,if=buff.feral_fury.react" );
-  basic -> add_action( "run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)" );
-  basic -> add_action( "run_action_list,name=filler,if=target.time_to_die<=8.5" );
-  basic -> add_action( "run_action_list,name=filler,if=buff.berserk.up" );
-  basic -> add_action( "run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3" );
-  basic -> add_action( "run_action_list,name=filler,if=energy.time_to_max<=1.0" );
-
-  // APL: ADVANCED
-
-  advanced -> add_action( "swap_action_list,name=aoe,if=active_enemies>=5" );
-  advanced -> add_action( "auto_attack" );
-  advanced -> add_action( "skull_bash_cat" );
-  if ( talent.force_of_nature -> ok() )
-  {
-    std::string fon_str = "force_of_nature,if=charges=3";
-    /*Cannot generate profiles with this for WoD, as of 4/9/2014
-    std::vector<std::string> trinketbuffs;
-
-    for ( int i = 12; i <= 13; i++ )
-    {
-      if ( items[ i ].name_str == "haromms_talisman" )
-        trinketbuffs.push_back( "vicious" );
-      else if ( items[ i ].name_str == "assurance_of_consequence" )
-        trinketbuffs.push_back( "dextrous" );
-      else if ( items[ i ].name_str == "sigil_of_rampage" )
-        trinketbuffs.push_back( "ferocity" );
-      else if ( items[ i ].name_str == "bad_juju" )
-        trinketbuffs.push_back( "juju_madness" );
-      else if ( items[ i].name_str != "" )
-      {
-        if ( buff_t::find( this, items[ i ].name_str ) )
-        {
-          trinketbuffs.push_back( items[ i ].name_str );
-        }
-      }
-    }
-    
-    for ( size_t i = 0; i < trinketbuffs.size(); i++ )
-      fon_str.append( "|(buff." + trinketbuffs[ i ] + ".react&buff." + trinketbuffs[ i ] + ".remains<1)" );
-
-    if ( ! find_item( "rune_of_reorigination" ) && ! find_item ( "renatakis_soul_charm" ) && trinketbuffs.size() == 2 )
-      fon_str.append( "|(buff." + trinketbuffs[ 0 ] + ".react&buff." + trinketbuffs [ 1 ] + ".react)" );
-
-    fon_str.append( "|target.time_to_die<20" );
-    */
-    advanced -> add_action( fon_str );
-  }
-
-  // Racials
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
-    advanced -> add_action( racial_actions[ i ] );
-
-  advanced -> add_action( this, "Ravage", "if=buff.prowl.up" );
-  advanced -> add_action( this, "Ferocious Bite", "if=dot.rip.ticking&dot.rip.remains<=3&target.health.pct<=25",
-                          "Keep Rip from falling off during execute range." );
-  advanced -> add_action( this, "Faerie Fire", "if=debuff.weakened_armor.stack<3" );
-  advanced -> add_action( this, "Savage Roar", "if=buff.savage_roar.down" );
-
-  // Potion
-  if ( sim -> allow_potions && level >= 80 && ! find_item( "rune_of_reorigination" ) )
-  {
-    if ( level > 85 )
-      advanced -> add_action( "virmens_bite_potion,if=(target.health.pct<30&buff.berserk.up)|target.time_to_die<=40" );
-    else
-      advanced -> add_action( "tolvir_potion,if=(target.health.pct<30&buff.berserk.up)|target.time_to_die<=40" );
-  }
-
-  if ( talent.incarnation -> ok() )
-    advanced -> add_action( "incarnation,if=energy<=35&cooldown.tigers_fury.remains<=1" );
-  advanced -> add_action( this, "Tiger's Fury", "if=energy<=35&!buff.omen_of_clarity.react" );
-  if ( talent.natures_vigil -> ok() )
-    advanced -> add_action( "natures_vigil,if=buff.tigers_fury.up" );
-  advanced -> add_action( this, "Berserk", "if=buff.tigers_fury.up|(target.time_to_die<18&cooldown.tigers_fury.remains>6)" );
-
-  // On-Use Items
-  for ( size_t i = 0; i < item_actions.size(); i++ )
-    advanced -> add_action( item_actions[ i ] + ",if=buff.tigers_fury.up" );
-
-  // Professions
-  for ( size_t i = 0; i < profession_actions.size(); i++ )
-    advanced -> add_action( profession_actions[ i ] + ",if=buff.tigers_fury.up" );
-
-  advanced -> add_action( "thrash_cat,if=buff.omen_of_clarity.react&dot.thrash_cat.remains<3&target.time_to_die>=6" );
-  advanced -> add_action( this, "Ferocious Bite", "if=target.time_to_die<=1&combo_points>=3" );
-  advanced -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<=3&combo_points>0&target.health.pct<25" );
-
-  // Potion
-  if ( sim -> allow_potions && level >= 90 && find_item( "rune_of_reorigination" ) )
-  {
-    advanced -> add_action( "virmens_bite_potion,if=(combo_points>=5&(target.time_to_die*(target.health.pct-25)%target.health.pct)<15&buff.rune_of_reorigination.up)|target.time_to_die<=40",
-                            "Potion near or during execute range when Rune is up and we have 5 CP." );
-  }
-
-  advanced -> add_action( this, "Rip", "if=combo_points>=5&action.rip.tick_damage%dot.rip.tick_dmg>=1.15&target.time_to_die>30",
-                          "Overwrite Rip if it's at least 15% stronger than the current." );
-  if ( find_item( "rune_of_reorigination" ) )
-    advanced -> add_action( this, "Rip", "if=combo_points>=4&action.rip.tick_damage%dot.rip.tick_dmg>=0.95&target.time_to_die>30&buff.rune_of_reorigination.up&buff.rune_of_reorigination.remains<=1.5",
-                            "Use 4 or more CP to apply Rip if Rune of Reorigination is about to expire and it's at least close to the current rip in damage.");
-  advanced -> add_action( "pool_resource,if=combo_points>=5&target.health.pct<=25&dot.rip.ticking&!(energy>=50|(buff.berserk.up&energy>=25))",
-                          "Pool 50 energy for Ferocious Bite." );
-  advanced -> add_action( this, "Ferocious Bite", "if=combo_points>=5&dot.rip.ticking&target.health.pct<=25" );
-  advanced -> add_action( this, "Rip", "if=combo_points>=5&target.time_to_die>=6&dot.rip.remains<2&(buff.berserk.up|dot.rip.remains+1.9<=cooldown.tigers_fury.remains)" );
-  advanced -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<=3&combo_points>0&buff.savage_roar.remains+2>dot.rip.remains" );
-  advanced -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<=6&combo_points>=5&buff.savage_roar.remains+2<=dot.rip.remains&dot.rip.ticking" );
-  advanced -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<=12&combo_points>=5&energy.time_to_max<=1&buff.savage_roar.remains<=dot.rip.remains+6&dot.rip.ticking",
-                          "Savage Roar if we're about to energy cap and it will keep our Rip from expiring around the same time as Savage Roar." );
-  if ( find_item( "rune_of_reorigination" ) )
-    advanced -> add_action( this, "Rake", "if=buff.rune_of_reorigination.up&dot.rake.remains<9&buff.rune_of_reorigination.remains<=1.5",
-                            "Refresh Rake as Re-Origination is about to end if Rake has <9 seconds left." );
-  advanced -> add_action( this, "Rake", "cycle_targets=1,if=target.time_to_die-dot.rake.remains>3&(action.rake.tick_damage>dot.rake.tick_dmg|(dot.rake.remains<3&action.rake.tick_damage%dot.rake.tick_dmg>=0.75))",
-                          "Rake if we can apply a stronger Rake or if it's about to fall off and clipping the last tick won't waste too much damage." );
-  advanced -> add_action( "pool_resource,for_next=1",
-                          "Pool energy for and maintain Thrash." );
-  advanced -> add_action( "thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<3&(dot.rip.remains>=8&buff.savage_roar.remains>=12|buff.berserk.up|combo_points>=5)&dot.rip.ticking" );
-  if ( find_item( "rune_of_reorigination" ) )
-  {
-    advanced -> add_action( "pool_resource,for_next=1",
-                            "Pool energy for and clip Thrash if Rune of Re-Origination is expiring." );
-    advanced -> add_action( "thrash_cat,if=target.time_to_die>=6&dot.thrash_cat.remains<9&buff.rune_of_reorigination.up&buff.rune_of_reorigination.remains<=1.5&dot.rip.ticking" );
-  }
-  if ( sets.has_set_bonus( SET_T16_4PC_MELEE ) )
-    advanced -> add_action( "pool_resource,if=combo_points>=5&!(energy.time_to_max<=1|(buff.berserk.up&energy>=25)|(buff.feral_rage.up&buff.feral_rage.remains<=1))&dot.rip.ticking",
-                            "Pool to near-full energy before casting Ferocious Bite." );
-  else
-    advanced -> add_action( "pool_resource,if=combo_points>=5&!(energy.time_to_max<=1|(buff.berserk.up&energy>=25))&dot.rip.ticking",
-                            "Pool to near-full energy before casting Ferocious Bite." );
-  advanced -> add_action( this, "Ferocious Bite", "if=combo_points>=5&dot.rip.ticking",
-                          "Ferocious Bite if we reached near-full energy without spending our CP on something else." );
-  advanced -> add_action( "run_action_list,name=filler,if=buff.omen_of_clarity.react",
-                          "Conditions under which we should execute a CP generator." );
-  if ( sets.has_set_bonus( SET_T16_2PC_MELEE ) )
-    advanced -> add_action( "run_action_list,name=filler,if=buff.feral_fury.react" );
-  advanced -> add_action( "run_action_list,name=filler,if=(combo_points<5&dot.rip.remains<3.0)|(combo_points=0&buff.savage_roar.remains<2)" );
-  advanced -> add_action( "run_action_list,name=filler,if=target.time_to_die<=8.5" );
-  advanced -> add_action( "run_action_list,name=filler,if=buff.berserk.up" );
-  advanced -> add_action( "run_action_list,name=filler,if=cooldown.tigers_fury.remains<=3" );
-  advanced -> add_action( "run_action_list,name=filler,if=energy.time_to_max<=1.0" );
-
-  // APL: FILLER
-  action_priority_list_t* filler = get_action_priority_list( "filler" );
+  filler -> add_action( "pool_resource,for_next=1",
+                        "Pool energy for Ravage." );
   filler -> add_action( this, "Ravage" );
-  filler -> add_action( this, "Rake", "if=target.time_to_die-dot.rake.remains>3&action.rake.tick_damage*(dot.rake.ticks_remain+1)-dot.rake.tick_dmg*dot.rake.ticks_remain>action.shred.hit_damage",
-                        "Rake if it hits harder than Shred and we won't apply a weaker bleed to the target." );
+  filler -> add_action( "pool_resource,for_next=1",
+                        "Pool energy for Swipe." );
+  filler -> add_action( this, "Swipe", "if=active_enemies>1" );
+  filler -> add_action( this, "Rake", "if=action.rake.hit_damage>=action.shred.hit_damage",
+                        "Rake for CP if it hits harder than Shred." );
   filler -> add_action( this, "Shred" );
-
-  // APL: AOE
-  action_priority_list_t* aoe = get_action_priority_list( "aoe" );
-  aoe -> add_action( "swap_action_list,name=default,if=active_enemies<5" );
-  aoe -> add_action( "auto_attack" );
-  aoe -> add_action( this, "Faerie Fire", "cycle_targets=1,if=debuff.weakened_armor.stack<3" );
-  aoe -> add_action( this, "Savage Roar", "if=buff.savage_roar.down|(buff.savage_roar.remains<3&combo_points>0)" );
-
-  // On-Use Items
-  for ( size_t i = 0; i < item_actions.size(); i++ )
-    aoe -> add_action( item_actions[ i ] + ",if=buff.tigers_fury.up" );
-
-  // Professions
-  for ( size_t i = 0; i < profession_actions.size(); i++ )
-    aoe -> add_action( profession_actions[ i ] + ",if=buff.tigers_fury.up" );
-
-  // Racials
-  for ( size_t i = 0; i < racial_actions.size(); i++ )
-    aoe -> add_action( racial_actions[ i ] + ",if=buff.tigers_fury.up" );
-
-  aoe -> add_action( this, "Tiger's Fury", "if=energy<=35&!buff.omen_of_clarity.react" );
-  aoe -> add_action( this, "Berserk", "if=buff.tigers_fury.up" );
-  if ( find_item( "rune_of_reorigination" ) )
-  {
-    aoe -> add_action( "pool_resource,for_next=1" );
-    aoe -> add_action( "thrash_cat,if=buff.rune_of_reorigination.up" );
-  }
-  aoe -> add_action( "pool_resource,wait=0.1,for_next=1" );
-  aoe -> add_action( "thrash_cat,if=dot.thrash_cat.remains<3|(buff.tigers_fury.up&dot.thrash_cat.remains<9)" );
-  aoe -> add_action( this, "Savage Roar", "if=buff.savage_roar.remains<9&combo_points>=5" );
-  aoe -> add_action( this, "Rip", "if=combo_points>=5" );
-  if ( find_item( "rune_of_reorigination" ) )
-    aoe -> add_action( this, "Rake", "cycle_targets=1,if=(active_enemies<8|buff.rune_of_reorigination.up)&dot.rake.remains<3&target.time_to_die>=15" );
-  else
-    aoe -> add_action( this, "Rake", "cycle_targets=1,if=active_enemies<8&dot.rake.remains<3&target.time_to_die>=15" );
-  aoe -> add_action( "swipe,if=buff.savage_roar.remains<=5" );
-  aoe -> add_action( "swipe,if=buff.tigers_fury.up|buff.berserk.up" );
-  aoe -> add_action( "swipe,if=cooldown.tigers_fury.remains<3" );
-  aoe -> add_action( "swipe,if=buff.omen_of_clarity.react" );
-  aoe -> add_action( "swipe,if=energy.time_to_max<=1" );
 }
 
 // Balance Combat Action Priority List ==============================
