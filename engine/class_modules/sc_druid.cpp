@@ -27,8 +27,6 @@ namespace { // UNNAMED NAMESPACE
     = Feral =
 	  Level 100 Talents
 	    Lunar Inspiration -- Mostly implemented, cannot work until the sim recognizes the talent correctly.
-	  Glyphs
-	    Maim
 	  Combo Points as a resource
 
     = Balance =
@@ -276,6 +274,7 @@ public:
     const spell_data_t* ferocious_bite;
     const spell_data_t* frenzied_regeneration;
     const spell_data_t* healing_touch;
+    const spell_data_t* maim;
     const spell_data_t* maul;
     const spell_data_t* ninth_life;
     const spell_data_t* savagery;
@@ -2186,7 +2185,8 @@ struct maim_t : public cat_attack_t
     cat_attack_t( player, player -> find_class_spell( "Maim" ), options_str )
   {
     requires_combo_points = true;
-    special = true;
+    special               = true;
+    base_multiplier      *= 1.0 + player -> glyph.maim -> effectN( 1 ).percent();
   }
 };
 
@@ -5648,6 +5648,7 @@ void druid_t::init_spells()
   glyph.frenzied_regeneration = find_glyph_spell( "Glyph of Frenzied Regeneration" );
   glyph.healing_touch         = find_glyph_spell( "Glyph of Healing Touch" );
   glyph.lifebloom             = find_glyph_spell( "Glyph of Lifebloom" );
+  glyph.maim                  = find_glyph_spell( "Glyph of Maim" );
   glyph.maul                  = find_glyph_spell( "Glyph of Maul" );
   glyph.might_of_ursoc        = find_glyph_spell( "Glyph of Might of Ursoc" );
   glyph.ninth_life            = find_glyph_spell( "Glyph of the Ninth Life" );
