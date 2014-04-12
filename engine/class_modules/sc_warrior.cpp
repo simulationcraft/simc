@@ -1465,7 +1465,7 @@ struct execute_t : public warrior_attack_t
 struct ignite_weapon_t : public warrior_attack_t
 {
   ignite_weapon_t( warrior_t* p, const std::string& options_str ) :
-    warrior_attack_t( "ignite_weapon", p, p -> talents.ignite_weapon )
+    warrior_attack_t( "ignite_weapon", p, p -> find_spell( 156288 ) )
   {
     parse_options( NULL, options_str );
 
