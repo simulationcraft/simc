@@ -649,7 +649,7 @@ struct natures_vigil_proc_t : public spell_t
     healing = new natures_vigil_heal_t( p );
   }
 
-  void trigger( const action_t& action )
+  void trigger( const action_t& action, bool harmful = true )
   {
     if ( action.execute_state -> result_amount <= 0 )
       return;
@@ -658,7 +658,7 @@ struct natures_vigil_proc_t : public spell_t
     if ( ! action.special )
       return;
 
-    if ( ! action.harmful )
+    if ( ! action.harmful || harmful )
       damage -> trigger( action.execute_state -> result_amount );
     healing -> trigger( action.execute_state -> result_amount, action.harmful );
   }
@@ -3247,7 +3247,7 @@ public:
     ab::tick( d );
 
     if ( this -> p() -> buff.natures_vigil -> check() )
-      this -> p() -> active.natures_vigil -> trigger( *this );
+      this -> p() -> active.natures_vigil -> trigger( *this, d -> current_action -> harmful );
   }
 
   virtual void execute()
@@ -3280,6 +3280,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
     dot_behavior      = DOT_REFRESH;
     may_miss          = false;
     weapon_multiplier = 0;
+    harmful           = false;
   }
 
   druid_heal_t( druid_t* p, const spell_data_t* s = spell_data_t::nil(),
@@ -3292,6 +3293,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
     dot_behavior      = DOT_REFRESH;
     may_miss          = false;
     weapon_multiplier = 0;
+    harmful           = false;
   }
 
 protected:
@@ -3435,7 +3437,6 @@ struct frenzied_regeneration_t : public druid_heal_t
   {
     base_dd_min = base_dd_max = attack_power_mod.direct = spell_power_mod.direct = 0.0;
 
-    harmful = false;
     special = false;
     use_off_gcd = true;
 
@@ -3520,7 +3521,6 @@ struct healing_touch_t : public druid_heal_t
     druid_heal_t( p, p -> find_class_spell( "Healing Touch" ), options_str )
   {
     consume_ooc      = true;
-    harmful          = false;
     base_multiplier *= 1.0 + p -> perk.improved_healing_touch -> effectN( 1 ).percent();
 
     init_living_seed();
@@ -3810,9 +3810,7 @@ struct renewal_t : public druid_heal_t
 {
   renewal_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( "renewal", p, p -> find_spell( 108238 ), options_str )
-  {
-    harmful = false;
-  }
+  {}
 
   virtual void execute()
   {
