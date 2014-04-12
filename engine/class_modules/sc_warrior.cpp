@@ -3810,7 +3810,7 @@ void warrior_t::create_buffs()
   buff.avatar           = buff_creator_t( this, "avatar",           talents.avatar )
                           .cd( timespan_t::zero() )
                           .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  buff.battle_stance    = buff_creator_t( this, "battle_stance",    find_spell( 21156 ) );
+  buff.battle_stance    = buff_creator_t( this, "battle_stance",    find_class_spell( "Battle Stance" ) );
   buff.berserker_rage   = buff_creator_t( this, "berserker_rage",   find_class_spell( "Berserker Rage" ) )
                           .cd( timespan_t::zero() );
 
