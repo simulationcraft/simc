@@ -13,7 +13,6 @@ namespace { // UNNAMED NAMESPACE
 
  /* WoD -- TODO:
     = General =
-    Heart of the Wild
 	  Dream of Cenarius
 	    Verify Guardian DoC works
 	  Glyphs
@@ -3249,9 +3248,7 @@ public:
     ab::tick( d );
 
     if ( this -> p() -> buff.natures_vigil -> check() )
-    {
       this -> p() -> active.natures_vigil -> trigger( *this );
-    }
   }
 
   virtual void execute()
@@ -3796,14 +3793,14 @@ struct rejuvenation_t : public druid_heal_t
       p() -> buff.bear_form -> expire();
   }
 
-  virtual double action_da_multiplier() const
+  virtual double action_ta_multiplier() const
   {
-    double adm = base_t::action_da_multiplier();
+    double atm = base_t::action_ta_multiplier();
 
     if ( p() -> talent.dream_of_cenarius -> ok() && p() -> specialization() == DRUID_FERAL )
-        adm *= 1.0 + p() -> talent.dream_of_cenarius -> effectN( 2 ).percent();
+        atm *= 1.0 + p() -> talent.dream_of_cenarius -> effectN( 2 ).percent();
 
-    return adm;
+    return atm;
   }
 
 };
@@ -6812,27 +6809,14 @@ double druid_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
 
-  // The matching_gear_multiplier is done statically for performance reasons,
-  // unfortunately that's before we're in cat form or bear form, so let's compensate here  // Heart of the Wild: +6% INT/AGI
-  // http://mop.wowhead.com/spell=17005 Did they just use this?
-
-
   switch ( attr )
   {
     case ATTR_STAMINA:
       if ( buff.bear_form -> check() )
         m *= 1.0 + spell.bear_form -> effectN( 2 ).percent();
-      if ( talent.heart_of_the_wild -> ok() )
-        m *= 1.0 + spell.heart_of_the_wild -> effectN( 1 ).percent();
       break;
     case ATTR_AGILITY:
-      if ( talent.heart_of_the_wild -> ok() )
-        m *= 1.0 + spell.heart_of_the_wild -> effectN( 1 ).percent();
       m *= 1.0 + buff.heart_of_the_wild -> agility_multiplier();
-      break;
-    case ATTR_INTELLECT:
-      if ( talent.heart_of_the_wild -> ok() )
-        m *= 1.0 + spell.heart_of_the_wild -> effectN( 1 ).percent();
       break;
     default:
       break;
