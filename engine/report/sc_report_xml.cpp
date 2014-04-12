@@ -875,8 +875,8 @@ void print_xml_performance( sim_t* sim, xml_writer_t & writer )
   writer.print_tag( "max_event_queue", util::to_string( sim -> max_events_remaining ) );
   writer.print_tag( "target_health", util::to_string( sim -> target -> resources.base[ RESOURCE_HEALTH ], 0 ) );
   writer.print_tag( "sim_seconds", util::to_string( sim -> iterations * sim -> simulation_length.mean(), 0 ) );
-  writer.print_tag( "cpu_seconds", util::to_string( sim -> elapsed_cpu.total_seconds(), 3 ) );
-  writer.print_tag( "speed_up", util::to_string( sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu.total_seconds(), 0 ) );
+  writer.print_tag( "cpu_seconds", util::to_string( sim -> elapsed_cpu ) );
+  writer.print_tag( "speed_up", util::to_string( sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu, 0 ) );
 
   writer.end_tag( "performance" );
 }
@@ -927,7 +927,7 @@ void print_xml_summary( sim_t* sim, xml_writer_t & writer, sim_t::report_informa
 
   writer.print_tag( "fight_style", sim -> fight_style );
 
-  writer.print_tag( "elapsed_cpu_sec", util::to_string( sim -> elapsed_cpu.total_seconds() ) );
+  writer.print_tag( "elapsed_cpu_sec", util::to_string( sim -> elapsed_cpu ) );
 
   writer.begin_tag( "lag" );
   writer.print_attribute( "type", "world" );

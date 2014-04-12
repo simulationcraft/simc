@@ -238,19 +238,19 @@ void print_html_sim_summary( report::sc_html_stream& os, sim_t* sim, sim_t::repo
     "\t\t\t\t\t\t\t\t<th>CPU Seconds:</th>\n"
     "\t\t\t\t\t\t\t\t<td>%.4f</td>\n"
     "\t\t\t\t\t\t\t</tr>\n",
-    sim -> elapsed_cpu.total_seconds() );
+    sim -> elapsed_cpu );
   os.printf(
     "\t\t\t\t\t\t\t<tr class=\"left\">\n"
     "\t\t\t\t\t\t\t\t<th>Physical Seconds:</th>\n"
     "\t\t\t\t\t\t\t\t<td>%.4f</td>\n"
     "\t\t\t\t\t\t\t</tr>\n",
-    sim -> elapsed_time.total_seconds() );
+    sim -> elapsed_time );
   os.printf(
     "\t\t\t\t\t\t\t<tr class=\"left\">\n"
     "\t\t\t\t\t\t\t\t<th>Speed Up:</th>\n"
     "\t\t\t\t\t\t\t\t<td>%.0f</td>\n"
     "\t\t\t\t\t\t\t</tr>\n",
-    sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu.total_seconds() );
+    sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu );
 
   os << "\t\t\t\t\t\t\t<tr class=\"left\">\n"
      << "\t\t\t\t\t\t\t\t<th><h2>Settings:</h2></th>\n"

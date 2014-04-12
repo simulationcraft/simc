@@ -523,9 +523,9 @@ void print_text_performance( FILE* file, sim_t* sim )
                  ( long ) sim -> max_events_remaining,
                  sim -> target -> resources.base[ RESOURCE_HEALTH ],
                  sim -> iterations * sim -> simulation_length.mean(),
-                 sim -> elapsed_cpu.total_seconds(),
-                 sim -> elapsed_time.total_seconds(),
-                 sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu.total_seconds(),
+                 sim -> elapsed_cpu,
+                 sim -> elapsed_time,
+                 sim -> iterations * sim -> simulation_length.mean() / sim -> elapsed_cpu,
                  date_str.c_str(),
                  cur_time );
 }

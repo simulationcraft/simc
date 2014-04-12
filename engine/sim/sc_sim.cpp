@@ -919,7 +919,9 @@ sim_t::sim_t( sim_t* p, int index ) :
   scaling( new scaling_t( this ) ),
   plot( new plot_t( this ) ),
   reforge_plot( new reforge_plot_t( this ) ),
-  elapsed_cpu( timespan_t::zero() ), elapsed_time( timespan_t::zero() ), iteration_dmg( 0 ), iteration_heal( 0 ), iteration_absorb( 0 ),
+  elapsed_cpu( 0.0 ),
+  elapsed_time( 0.0 ),
+  iteration_dmg( 0 ), iteration_heal( 0 ), iteration_absorb( 0 ),
   raid_dps(), total_dmg(), raid_hps(), total_heal(), total_absorb(), raid_aps(),
   simulation_length( "Simulation Length", false ),
   report_progress( 1 ),
@@ -1803,8 +1805,8 @@ bool sim_t::execute()
 
   analyze();
 
-  elapsed_cpu = timespan_t::from_seconds( ( util::cpu_time() - start_cpu_time ) );
-  elapsed_time = timespan_t::from_seconds( util::wall_time() - start_time );
+  elapsed_cpu =  util::cpu_time() - start_cpu_time;
+  elapsed_time =  util::wall_time() - start_time;
 
   return true;
 }
