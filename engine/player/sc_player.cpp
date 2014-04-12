@@ -6993,6 +6993,9 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
 
 const spell_data_t* player_t::find_perk_spell( const std::string& name, specialization_e s ) const
 {
+  if ( level < 91 ) // No perks for level 90 characterss
+    return spell_data_t::not_found();
+
   if ( s == SPEC_NONE || s == _spec )
   {
     if ( unsigned spell_id = dbc.perk_ability_id( _spec, name.c_str() ) )
@@ -7008,6 +7011,9 @@ const spell_data_t* player_t::find_perk_spell( const std::string& name, speciali
 
 const spell_data_t* player_t::find_perk_spell( size_t idx, specialization_e s ) const
 {
+  if ( level < 91 ) // No perks for level 90 characterss
+    return spell_data_t::not_found();
+
   if ( s == SPEC_NONE || s == _spec )
   {
     if ( unsigned spell_id = dbc.perk_ability_id( _spec, idx ) )
