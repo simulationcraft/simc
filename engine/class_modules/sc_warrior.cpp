@@ -64,6 +64,7 @@ public:
     buff_t* enraged_speed;
     buff_t* ignite_weapon;
     buff_t* gladiator_stance;
+    buff_t* heroic_leap_glyph;
     buff_t* last_stand;
     buff_t* meat_cleaver;
     buff_t* riposte;
@@ -1113,6 +1114,7 @@ struct bloodthirst_heal_t : public heal_t
     target     = p;
     may_crit   = false;
     pct_heal   = p -> find_spell( 117313 ) -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> perk.improved_bloodthirst -> effectN( 1 ).percent();
   }
 
   virtual resource_e current_resource() const { return RESOURCE_NONE; }
@@ -1134,6 +1136,7 @@ struct bloodthirst_t : public warrior_attack_t
     weapon           = &( p -> main_hand_weapon );
     bloodthirst_heal = new bloodthirst_heal_t( p );
 
+    base_multiplier *= 1.0 + p -> perk.improved_bloodthirst -> effectN( 1 ).percent();
     base_multiplier += p -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 2 ).percent();
   }
 
@@ -1191,13 +1194,14 @@ struct charge_t : public warrior_attack_t
     warrior_attack_t( "charge", p, p -> spell.charge )
   {
     parse_options( NULL , options_str );
-    base_teleport_distance = 25;
+    base_teleport_distance = data().max_range();
+    base_teleport_distance += p -> perk.improved_charge -> effectN( 1 ).base_value();
     movement_directionality = MOVEMENT_OMNI;
 
     if ( p -> talents.double_time -> ok() )
       cooldown -> charges = 2;
     else if ( p -> talents.juggernaut -> ok() )
-      cooldown -> duration += p -> talents.juggernaut -> effectN( 3 ).time_value();
+      cooldown -> duration += p -> talents.juggernaut -> effectN( 1 ).time_value();
   }
 
   virtual void execute()
@@ -1220,7 +1224,7 @@ struct charge_t : public warrior_attack_t
   {
     warrior_t* p = cast();
 
-    if ( p -> current.distance_to_move > data().max_range() || p -> current.distance_to_move < data().min_range() ) // Cannot charge unless target is in range.
+    if ( p -> current.distance_to_move > base_teleport_distance || p -> current.distance_to_move < data().min_range() ) // Cannot charge unless target is in range.
       return false;
 
     return warrior_attack_t::ready();
@@ -1262,7 +1266,7 @@ struct colossus_smash_t : public warrior_attack_t
         p -> enrage();
 
       p -> resource_gain( RESOURCE_RAGE,
-                          10,
+                          p -> perk.improved_colossus_smash -> effectN( 1 ).resource( RESOURCE_RAGE ),
                           p -> gain.colossus_smash );
     }
   }
@@ -1423,6 +1427,7 @@ struct execute_t : public warrior_attack_t
     // Include the weapon so we benefit from seasoned soldier.
     weapon             = &( player -> main_hand_weapon );
     weapon_multiplier  = 0;
+    base_multiplier *= 1.0 + p -> perk.empowered_execute -> effectN( 1 ).percent();
   }
 
   virtual double cost() const
@@ -1537,6 +1542,9 @@ struct heroic_strike_t : public warrior_attack_t
          weapon -> group() == WEAPON_SMALL )
       base_multiplier *= 1.40;
 
+    if ( p -> glyphs.cleave -> ok() )
+      aoe = 1;
+
     use_off_gcd = true;
   }
 
@@ -1591,6 +1599,9 @@ struct heroic_throw_t : public warrior_attack_t
     if ( p -> current.distance_to_move > data().max_range() || p -> current.distance_to_move < data().min_range() ) // Cannot heroic throw unless target is in range.
       return false;
 
+    if ( p -> perk.improved_heroic_throw -> ok() )
+      return true;
+
     return warrior_attack_t::ready();
   }
 };
@@ -1635,8 +1646,12 @@ struct heroic_leap_t : public warrior_attack_t
 
   warrior_t*p = cast();
 
-  if( p -> current.distance_to_move > 8 ) // Heroic leap doesn't deal any damage if the target is more than 8 yards away. 
+  if( p -> current.distance_to_move > 
+    ( p -> dbc.spell( 52174 ) -> effectN( 1 ).radius() + p -> perk.improved_heroic_leap -> effectN( 1 ).base_value() ) )
     s -> result_amount = 0;
+
+  if( p -> glyphs.heroic_leap -> ok() )
+    p -> buff.heroic_leap_glyph -> trigger();
 
   warrior_attack_t::impact( s );
 
@@ -1817,7 +1832,7 @@ struct overpower_t : public warrior_attack_t
     warrior_attack_t( "overpower", p, p -> find_class_spell( "Overpower" ) )
   {
     parse_options( NULL, options_str );
-
+    base_multiplier *= 1.0 + p -> perk.improved_overpower -> effectN( 1 ).percent();
     may_dodge = may_parry = may_block = false;
   }
 
@@ -1909,6 +1924,7 @@ struct raging_blow_attack_t : public warrior_attack_t
   {
     may_miss = may_dodge = may_parry = false;
     background = true;
+    base_multiplier *= 1.0 + p -> perk.improved_raging_blow -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -2003,6 +2019,7 @@ struct revenge_t : public warrior_attack_t
     attack_power_mod.direct = data().extra_coeff();
 
     rage_gain = data().effectN( 2 ).resource( RESOURCE_RAGE );
+    base_multiplier *= 1.0 + p -> perk.improved_revenge -> effectN( 1 ).percent();
   }
 
   virtual void execute()
@@ -2097,6 +2114,8 @@ struct shield_slam_t : public warrior_attack_t
     // Values taken from tooltip: 2013/05/22
     attack_power_mod.direct = ( std::max( p -> level, 85 ) * 0.75 ) + ( std::max( p -> level, 80 ) * 0.4 ) + 0.35;
     attack_power_mod.direct /= 100.0; // assumption, not clear from tooltip
+
+    base_multiplier *= 1.0 + p -> perk.improved_shield_slam -> effectN( 1 ).percent();
   }
 
   virtual double action_multiplier() const
@@ -2367,6 +2386,8 @@ struct thunder_clap_t : public warrior_attack_t
 
     if ( p -> spec.seasoned_soldier -> ok() )
       base_costs[ current_resource() ] += p -> spec.seasoned_soldier -> effectN( 2 ).resource( current_resource() );
+
+    base_multiplier *= 1.0 + p -> perk.improved_thunder_clap -> effectN( 1 ).percent();
   }
 
   virtual double action_multiplier() const
@@ -2513,7 +2534,8 @@ struct whirlwind_t : public warrior_attack_t
     if ( result_is_hit( execute_state -> result ) )
     {
       p -> buff.meat_cleaver -> trigger();
-      p -> buff.meat_cleaver -> trigger();
+      if ( p -> perk.improved_meat_cleaver -> ok() )
+        p -> buff.meat_cleaver -> trigger();
     }
 
     p -> buff.raging_wind -> expire();
@@ -2532,6 +2554,7 @@ struct wild_strike_t : public warrior_attack_t
 
     weapon  = &( player -> off_hand_weapon );
     harmful = true;
+    base_multiplier *= 1.0 + p -> perk.improved_wild_strike -> effectN( 1 ).percent();
     if ( player -> off_hand_weapon.type == WEAPON_NONE )
       background = true;
   }
@@ -2755,6 +2778,7 @@ struct shield_barrier_t : public warrior_action_t<absorb_t>
     may_crit      = false;
     tick_may_crit = false;
     target        = player;
+    base_multiplier *= 1.0 + p -> perk.improved_shield_barrier -> effectN( 1 ).percent();
   }
 
   virtual void consume_resource()
@@ -3047,8 +3071,9 @@ struct sweeping_strikes_t : public warrior_spell_t
   sweeping_strikes_t( warrior_t* p, const std::string& options_str ) :
     warrior_spell_t( "sweeping_strikes", p, p -> find_spell( 12328 ) )
   {
-    parse_options( NULL, options_str );
-
+    parse_options( NULL, options_str );    
+    cooldown -> duration = data().cooldown();
+    cooldown -> duration += timespan_t::from_seconds( p -> perk.enhanced_sweeping_strikes -> effectN( 2 ).base_value() );
     harmful = false;
   }
 
@@ -3056,7 +3081,6 @@ struct sweeping_strikes_t : public warrior_spell_t
   {
     warrior_spell_t::execute();
     warrior_t* p = cast();
-
     p -> buff.sweeping_strikes -> trigger();
   }
 };
@@ -3280,6 +3304,7 @@ void warrior_t::init_spells()
   perk.improved_meat_cleaver         = find_perk_spell( "Improved Meat Cleaver"         );
   perk.improved_wild_strike          = find_perk_spell( "Improved Wild Strike"          );
   perk.improved_raging_blow          = find_perk_spell( "Improved Raging Blow"          );
+  perk.improved_bloodthirst          = find_perk_spell( "Improved Bloodthirst"          );
 
   perk.improved_heroic_throw         = find_perk_spell( "Improved Heroic Throw"         );
   perk.improved_shield_slam          = find_perk_spell( "Improved Shield Slam"          );
@@ -3375,7 +3400,7 @@ void warrior_t::init_base_stats()
   if ( spec.unwavering_sentinel -> ok() )
   {
     base.attribute_multiplier[ ATTR_STAMINA ] *= 1.0 + spec.unwavering_sentinel -> effectN( 1 ).percent();
-    base.armor_multiplier *= 1.0 + spec.unwavering_sentinel -> effectN( 3 ).percent();
+    base.armor_multiplier *= 1.0 + spec.unwavering_sentinel -> effectN( 3 ).percent() + perk.improved_unwavering_sentinel -> effectN( 1 ).percent();
   }
 
   base_gcd = timespan_t::from_seconds( 1.5 );
@@ -3807,6 +3832,8 @@ void warrior_t::create_buffs()
 
   buff.gladiator_stance = buff_creator_t( this, "gladiator_stance",    find_class_spell( "Gladiator Stance"  ) );
 
+  buff.heroic_leap_glyph = buff_creator_t( this, "heroic_leap_glyph", glyphs.heroic_leap );
+
   buff.meat_cleaver     = buff_creator_t( this, "meat_cleaver",     spec.meat_cleaver -> effectN( 1 ).trigger() )
                           .max_stack( 3 );
 
@@ -3834,7 +3861,9 @@ void warrior_t::create_buffs()
                           .cd( timespan_t::zero() );
   buff.sudden_execute   = buff_creator_t( this, "sudden_execute", find_spell( 139958 ) );
 
-  buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes",  find_class_spell( "Sweeping Strikes" ) );
+  buff.sweeping_strikes = buff_creator_t( this, "sweeping_strikes",  find_class_spell( "Sweeping Strikes" )  )
+                          .duration( find_class_spell( "Sweeping Strikes" ) -> duration() + 
+                          timespan_t::from_seconds( perk.enhanced_sweeping_strikes -> ok() ? perk.enhanced_sweeping_strikes -> effectN( 1 ).base_value() : 0 ) );
 
   buff.sword_and_board  = buff_creator_t( this, "sword_and_board",   find_spell( 50227 ) )
                           .chance( spec.sword_and_board -> effectN( 1 ).percent() );
@@ -4043,6 +4072,7 @@ double warrior_t::composite_block() const
 
 
   b += spec.bastion_of_defense -> effectN( 1 ).percent();
+  b += perk.improved_bastion_of_defense -> effectN( 1 ).percent();
 
   if ( buff.shield_block -> up() )
     b += buff.shield_block -> data().effectN( 1 ).percent();
@@ -4127,8 +4157,11 @@ double warrior_t::composite_movement_speed() const
 {
   double ms = player_t::composite_movement_speed();
 
-  if ( buff.enraged_speed -> up() )
-    ms *= 1 + ( 1 + buff.enraged_speed -> data().effectN( 1 ).percent() );
+  if ( buff.enraged_speed -> up() ) // Need to check if enraged speed is considered a temporary speed boost or not.
+    ms += buff.enraged_speed -> data().effectN( 1 ).percent();
+
+  if ( buff.heroic_leap_glyph -> up() )
+    ms += buff.heroic_leap_glyph -> data().effectN( 1 ).percent();
 
   return ms;
 }
