@@ -15,21 +15,19 @@ namespace { // UNNAMED NAMESPACE
     = General =
     Heart of the Wild
 	  Dream of Cenarius
-	    Scale HT with AP for Guardian
+	    Verify Guardian DoC works
 	  Nature's Vigil
 	  Glyphs
-	    Ursol's Defense
 	    Travel
 	  Survival Instincts
 	  Tranquility
+    Dash
+    Stampeding Roar
 
     = Feral =
-    Perks
 	  Level 100 Talents
-	    Lunar Inspiration
-	    Savagery
+	    Lunar Inspiration -- Mostly implemented, cannot work until the sim recognizes the talent correctly.
 	  Glyphs
-	    Ninth Life
 	    Maim
 	  Combo Points as a resource
 
@@ -246,16 +244,43 @@ public:
     gain_t* mangle;
   } gain;
 
+  // Perks
+  struct
+  {
+    // Multiple Specs
+    const spell_data_t* improved_healing_touch;
+    
+    // Feral
+    const spell_data_t* enhanced_berserk;
+    const spell_data_t* enhanced_cat_form;
+    const spell_data_t* enhanced_prowl;
+    const spell_data_t* enhanced_rejuvenation;
+    const spell_data_t* enhanced_tigers_fury;
+    const spell_data_t* improved_ferocious_bite;
+    const spell_data_t* improved_pounce;
+    const spell_data_t* improved_shred;
+
+    // Balance
+    
+    // Guardian
+
+    // Restoration
+  } perk;
+
   // Glyphs
   struct glyphs_t
   {
     // DONE
     const spell_data_t* blooming;
+    const spell_data_t* cat_form;
     const spell_data_t* ferocious_bite;
     const spell_data_t* frenzied_regeneration;
     const spell_data_t* healing_touch;
     const spell_data_t* maul;
+    const spell_data_t* ninth_life;
+    const spell_data_t* savagery;
     const spell_data_t* skull_bash;
+    const spell_data_t* ursols_defense;
     const spell_data_t* wild_growth;
 
     // NYI / Needs checking
@@ -263,8 +288,6 @@ public:
     const spell_data_t* might_of_ursoc;
     const spell_data_t* regrowth;
     const spell_data_t* rejuvenation;
-    const spell_data_t* savagery;
-    const spell_data_t* cat_form;
   } glyph;
 
   // Masteries
@@ -466,6 +489,7 @@ public:
   virtual double    composite_melee_crit() const;
   virtual double    composite_melee_hit() const;
   virtual double    composite_melee_expertise( weapon_t* ) const;
+  virtual double    composite_movement_speed() const;
   virtual double    composite_player_multiplier( school_e school ) const;
   virtual double    composite_player_td_multiplier( school_e,  const action_t* ) const;
   virtual double    composite_player_heal_multiplier( school_e school ) const;
@@ -1262,6 +1286,35 @@ private:
   const spell_data_t* rage_spell;
 };
 
+// Berserk Buff ======================================================
+
+struct berserk_buff_t : public druid_buff_t< buff_t >
+{
+  berserk_buff_t( druid_t& p ) :
+    druid_buff_t( p, buff_creator_t( &p, "berserk", p.find_specialization_spell( "Berserk" ) ) )
+  {}
+
+  virtual bool trigger( int stacks, double value, double chance, timespan_t duration )
+  {
+    if ( druid.perk.enhanced_berserk -> ok() )
+      player -> resources.max[ RESOURCE_ENERGY ] += druid.perk.enhanced_berserk -> effectN( 1 ).base_value();
+
+    return buff_t::trigger( stacks, value, chance, duration );
+  }
+
+  virtual void expire_override()
+  {
+    if ( druid.perk.enhanced_berserk -> ok() )
+    {
+      player -> resources.max[ RESOURCE_ENERGY ] -= druid.perk.enhanced_berserk -> effectN( 1 ).base_value();
+      // Force energy down to cap if it's higher.
+      player -> resources.current[ RESOURCE_ENERGY ] = std::min( player -> resources.current[ RESOURCE_ENERGY ], player -> resources.max[ RESOURCE_ENERGY ]);
+    }
+
+    buff_t::expire_override();
+  }
+};
+
 // Cat Form
 
 struct cat_form_t : public druid_buff_t< buff_t >
@@ -2032,7 +2085,8 @@ struct ferocious_bite_t : public cat_attack_t
     ap_per_point          = 0.196; // FIXME: Figure out where the hell this is in the spell data...
     max_excess_energy     = 25.0;
     requires_combo_points = true;
-    special = true;
+    special               = true;
+    base_multiplier      *= 1.0 + p -> perk.improved_ferocious_bite -> effectN( 1 ).percent();
   }
 
   double attack_direct_power_coefficient( const action_state_t* state ) const
@@ -2141,10 +2195,12 @@ struct maim_t : public cat_attack_t
 struct pounce_bleed_t : public cat_attack_t
 {
   pounce_bleed_t( druid_t* player ) :
-    cat_attack_t( player, player -> find_spell( 9007 ) )
+    cat_attack_t( "pounce", player, player -> find_spell( 9007 ) )
   {
-    background = true;
+    background = dual = true;
     attack_power_mod.tick = data().effectN( 1 ).ap_coeff();
+
+    base_multiplier *= 1.0 + player -> perk.improved_pounce -> effectN( 1 ).percent();
   }
 };
 
@@ -2162,8 +2218,8 @@ struct pounce_t : public cat_attack_t
 
 // Rake DoT =================================================================
 
-struct rake_dot_t : public cat_attack_t {
-  rake_dot_t( druid_t* p ) :
+struct rake_bleed_t : public cat_attack_t {
+  rake_bleed_t( druid_t* p ) :
     cat_attack_t( "rake", p, p -> find_spell( 155722 ) )
   {
     dual = background     = true;
@@ -2179,7 +2235,7 @@ struct rake_dot_t : public cat_attack_t {
 
 struct rake_t : public cat_attack_t
 {
-  action_t* rake_dot;
+  action_t* rake_bleed;
 
   rake_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( p, p -> find_class_spell( "Rake" ), options_str )
@@ -2187,7 +2243,7 @@ struct rake_t : public cat_attack_t
     special                 = true;
     attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
 
-    rake_dot = new rake_dot_t( p );
+    rake_bleed = new rake_bleed_t( p );
   }
 
   // Treat direct damage as "bleed"
@@ -2209,8 +2265,8 @@ struct rake_t : public cat_attack_t
 
     if ( result_is_hit( state -> result ) )
     {
-      rake_dot -> target = state -> target;
-      rake_dot -> execute();
+      rake_bleed -> target = state -> target;
+      rake_bleed -> execute();
     }
   }
 
@@ -2407,8 +2463,7 @@ struct shred_t : public cat_attack_t
     };
     parse_options( options, options_str );
 
-    base_multiplier += player -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
-
+    base_multiplier *= 1.0 + p -> perk.improved_shred -> effectN( 1 ).percent() + player -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 1 ).percent();
     special          = true;
   }
 
@@ -2548,7 +2603,7 @@ struct swipe_t : public cat_attack_t
 
 struct thrash_cat_t : public cat_attack_t
 {
-  action_t* rake_dot;
+  action_t* rake_bleed;
 
   thrash_cat_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( "thrash_cat", p, p -> find_spell( 106830 ), options_str )
@@ -2565,7 +2620,7 @@ struct thrash_cat_t : public cat_attack_t
 
     if ( p -> talent.bloody_thrash -> ok() )
     {
-      rake_dot = new rake_dot_t( p );
+      rake_bleed = new rake_bleed_t( p );
       adds_combo_points = 1;
     }
   }
@@ -2576,8 +2631,8 @@ struct thrash_cat_t : public cat_attack_t
 
     if ( p() -> talent.bloody_thrash -> ok() && result_is_hit( state -> result ) )
     {
-      rake_dot -> target = state -> target;
-      rake_dot -> execute();
+      rake_bleed -> target = state -> target;
+      rake_bleed -> execute();
     }
   }
 
@@ -3409,17 +3464,31 @@ struct frenzied_regeneration_t : public druid_heal_t
 };
 
 // Healing Touch ============================================================
-// TODO: Scale with AP instead of SP Guardian Dream of Cenarius is up.
 
 struct healing_touch_t : public druid_heal_t
 {
   healing_touch_t( druid_t* p, const std::string& options_str ) :
     druid_heal_t( p, p -> find_class_spell( "Healing Touch" ), options_str )
   {
-    consume_ooc = true;
-    harmful = false;
+    consume_ooc      = true;
+    harmful          = false;
+    base_multiplier *= 1.0 + p -> perk.improved_healing_touch -> effectN( 1 ).percent();
 
     init_living_seed();
+  }
+
+  double spell_direct_power_coefficient( const action_state_t* state ) const
+  {
+    if ( p() -> specialization() == DRUID_GUARDIAN && p() -> buff.dream_of_cenarius -> check() )
+      return 0.0;
+    return data().effectN( 1 ).coeff();
+  }
+
+  double attack_direct_power_coefficient( const action_state_t* state ) const
+  {
+    if ( p() -> specialization() == DRUID_GUARDIAN && p() -> buff.dream_of_cenarius -> check() )
+      return data().effectN( 1 ).coeff();
+    return 0.0;
   }
 
   virtual double cost() const
@@ -3475,7 +3544,7 @@ struct healing_touch_t : public druid_heal_t
     /* FIXME: Dream of Cenarius buff states that the cooldown is reset,
        talent states that the next cast does not trigger cooldown.
        Sticking to what the buff states for now. */
-    if ( p() -> buff.dream_of_cenarius -> check() )
+    if ( p() -> buff.dream_of_cenarius -> up() )
       p() -> cooldown.starsurge -> reset( false );
 
     p() -> buff.predatory_swiftness -> expire();
@@ -3668,7 +3737,8 @@ struct rejuvenation_t : public druid_heal_t
   {
     druid_heal_t::schedule_execute( state );
 
-    p() -> buff.cat_form  -> expire();
+    if ( ! p() -> perk.enhanced_rejuvenation -> ok() )
+      p() -> buff.cat_form  -> expire();
     if ( ! p() -> buff.heart_of_the_wild -> check() )
       p() -> buff.bear_form -> expire();
   }
@@ -5560,20 +5630,33 @@ void druid_t::init_spells()
   mastery.harmony          = find_mastery_spell( DRUID_RESTORATION );
   mastery.natures_guardian = find_mastery_spell( DRUID_GUARDIAN );
 
+  // Perks
+  perk.enhanced_berserk        = find_perk_spell( 0, DRUID_FERAL );
+  perk.enhanced_cat_form       = find_perk_spell( 1, DRUID_FERAL );
+  perk.enhanced_prowl          = find_perk_spell( 2, DRUID_FERAL );
+  perk.enhanced_rejuvenation   = find_perk_spell( 3, DRUID_FERAL );
+  perk.enhanced_tigers_fury    = find_perk_spell( 4, DRUID_FERAL );
+  perk.improved_ferocious_bite = find_perk_spell( 5, DRUID_FERAL );
+  perk.improved_pounce         = find_perk_spell( 6, DRUID_FERAL );
+  perk.improved_shred          = find_perk_spell( 7, DRUID_FERAL );
+  perk.improved_healing_touch  = find_perk_spell( 8, DRUID_FERAL );
+
   // Glyphs
   glyph.blooming              = find_glyph_spell( "Glyph of Blooming" );
+  glyph.cat_form              = find_glyph_spell( "Glyph of Cat Form" );
   glyph.ferocious_bite        = find_glyph_spell( "Glyph of Ferocious Bite" );
   glyph.frenzied_regeneration = find_glyph_spell( "Glyph of Frenzied Regeneration" );
   glyph.healing_touch         = find_glyph_spell( "Glyph of Healing Touch" );
   glyph.lifebloom             = find_glyph_spell( "Glyph of Lifebloom" );
   glyph.maul                  = find_glyph_spell( "Glyph of Maul" );
   glyph.might_of_ursoc        = find_glyph_spell( "Glyph of Might of Ursoc" );
+  glyph.ninth_life            = find_glyph_spell( "Glyph of the Ninth Life" );
   glyph.regrowth              = find_glyph_spell( "Glyph of Regrowth" );
   glyph.rejuvenation          = find_glyph_spell( "Glyph of Rejuvenation" );
-  glyph.skull_bash            = find_glyph_spell( "Glyph of Skull Bash" );
-  glyph.wild_growth           = find_glyph_spell( "Glyph of Wild Growth" );
   glyph.savagery              = find_glyph_spell( "Glyph of Savagery" );
-  glyph.cat_form              = find_glyph_spell( "Glyph of Cat Form" );
+  glyph.skull_bash            = find_glyph_spell( "Glyph of Skull Bash" );
+  glyph.ursols_defense        = find_glyph_spell( "Glyph of Ursol's Defense" );
+  glyph.wild_growth           = find_glyph_spell( "Glyph of Wild Growth" );
 
   // Tier Bonuses
   static const set_bonus_description_t set_bonuses =
@@ -5644,8 +5727,7 @@ void druid_t::create_buffs()
 
   // Generic / Multi-spec druid buffs
   buff.bear_form             = new bear_form_t( *this );
-  buff.berserk               = buff_creator_t( this, "berserk", find_specialization_spell( "Berserk" ) )
-                               .cd( timespan_t::zero() );
+  buff.berserk               = new berserk_buff_t( *this );
   buff.cat_form              = new cat_form_t( *this );
   buff.frenzied_regeneration = buff_creator_t( this, "frenzied_regeneration", find_class_spell( "Frenzied Regeneration" ) );
   buff.moonkin_form          = new moonkin_form_t( *this );
@@ -5734,7 +5816,8 @@ void druid_t::create_buffs()
                                .default_value( find_specialization_spell( "Tiger's Fury" ) -> effectN( 1 ).percent() )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                .cd( timespan_t::zero() )
-                               .chance( 1.0 );
+                               .chance( 1.0 )
+                               .duration( find_specialization_spell( "Tiger's Fury" ) -> duration() + perk.enhanced_tigers_fury -> effectN( 1 ).time_value() );
   buff.savage_roar           = buff_creator_t( this, "savage_roar", find_specialization_spell( "Savage Roar" ) )
                                .default_value( find_spell( 62071 ) -> effectN( 1 ).percent() )
                                .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
@@ -6501,13 +6584,13 @@ double druid_t::composite_armor_multiplier() const
 
   if ( buff.bear_form -> check() )
   {
-    // Increases the armor bonus of Bear Form to 330%
-    // TODO: http://mop.wowhead.com/spell=5487 spell tooltip => +120% armor
-    // But the actual spell data suggests +65% armor
+    // Bear Form
+    double bearMod = buff.bear_form -> data().effectN( 3 ).percent();
     if ( spec.thick_hide -> ok() )
-      a *= 1.0 + spec.thick_hide -> effectN( 2 ).percent();
-    else
-      a *= 1.0 + buff.bear_form -> data().effectN( 3 ).percent();
+      bearMod = spec.thick_hide -> effectN( 2 ).percent(); // Thick Hide changes the bear form multiplier TO x%.
+    else if ( specialization() != DRUID_GUARDIAN )
+      bearMod += glyph.ursols_defense -> effectN( 1 ).percent(); // Non-guardian glyph that adds to bear form multiplier.
+    a *= 1.0 + bearMod;
 
     // Mastery: Nature's Guardian
     if ( mastery.natures_guardian -> ok() )
@@ -6638,6 +6721,39 @@ double druid_t::composite_melee_expertise( weapon_t* w ) const
   exp += buff.heart_of_the_wild -> attack_hit_expertise();
 
   return exp;
+}
+
+// druid_t::composite_movement_speed ========================================
+
+double druid_t::composite_movement_speed() const
+{
+  double ms = player_t::composite_movement_speed();
+
+  // Only the highest temporary effect applies.
+  double temp_ms = 0.0;
+
+  if ( buff.cat_form -> up() )
+  {
+    ms += find_spell( 113636 ) -> effectN( 1 ).percent();
+    if ( perk.enhanced_cat_form -> ok() )
+      ms += perk.enhanced_cat_form -> effectN( 1 ).percent();
+    /* TODO: Implement
+    if ( buff.dash -> ok() )
+      temp_ms = std::max( temp_ms, buff.dash -> data().effectN( 1 ).percent() ); */
+    if ( buff.prowl -> up() && ! perk.enhanced_prowl -> ok() )
+      ms += buff.prowl -> data().effectN( 2 ).percent();
+  }
+
+  if ( talent.feline_swiftness -> ok() )
+    ms += talent.feline_swiftness -> effectN( 1 ).percent();
+
+  /* TODO: Implement
+  if ( buff.stampeding_roar -> up() )
+    temp_ms = std::max( temp_ms, buff.stampeding_roar -> data().effectN( 1 ).percent() ); */
+
+  ms += temp_ms;
+
+  return ms;
 }
 
 // druid_t::composite_spell_crit ============================================
@@ -7080,6 +7196,9 @@ void druid_t::assess_damage( school_e school,
 
   if ( buff.survival_instincts -> up() )
     s -> result_amount *= 1.0 + buff.survival_instincts -> value();
+
+  if ( glyph.ninth_life -> ok() )
+    s -> result_amount *= 1.0 + glyph.ninth_life -> effectN( 1 ).base_value();
 
   if ( spec.thick_hide -> ok() )
   {
