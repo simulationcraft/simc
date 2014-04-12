@@ -46,6 +46,15 @@ public:
   // Secondary pets
   // need an extra beast for readiness
   std::array<pet_t*, 2>  pet_dire_beasts;
+  // Tier 15 2-piece bonus: need 10 slots (just to be safe) because each
+  // Steady Shot or Cobra Shot can trigger a Thunderhawk, which stays
+  // for 10 seconds.
+  std::array< pet_t*, 10 > thunderhawk;
+
+  // Tier 15 4-piece bonus
+  attack_t* action_lightning_arrow_aimed_shot;
+  attack_t* action_lightning_arrow_arcane_shot;
+  attack_t* action_lightning_arrow_multi_shot;
 
   // Buffs
   struct buffs_t
@@ -62,6 +71,9 @@ public:
     buff_t* master_marksman_fire;
     buff_t* pre_steady_focus;
     buff_t* stampede;
+    buff_t* tier13_4pc;
+    buff_t* tier16_4pc_mm_keen_eye;
+    buff_t* tier16_4pc_bm_brutal_kinship;
   } buffs;
 
   // Cooldowns
@@ -97,7 +109,16 @@ public:
     proc_t* lock_and_load;
     proc_t* explosive_shot_focus_starved;
     proc_t* black_arrow_focus_starved;
+    proc_t* tier15_2pc_melee;
+    proc_t* tier15_4pc_melee_aimed_shot;
+    proc_t* tier15_4pc_melee_arcane_shot;
+    proc_t* tier15_4pc_melee_multi_shot;
+    proc_t* tier16_2pc_melee;
+    proc_t* tier16_4pc_melee;
   } procs;
+
+  real_ppm_t ppm_tier15_2pc_melee;
+  real_ppm_t ppm_tier15_4pc_melee;
 
   // Talents
   struct talents_t
@@ -230,10 +251,16 @@ public:
     player_t( sim, HUNTER, name, r == RACE_NONE ? RACE_NIGHT_ELF : r ),
     active( actives_t() ),
     pet_dire_beasts(),
+    thunderhawk(),
+    action_lightning_arrow_aimed_shot(),
+    action_lightning_arrow_arcane_shot(),
+    action_lightning_arrow_multi_shot(),
     buffs( buffs_t() ),
     cooldowns( cooldowns_t() ),
     gains( gains_t() ),
     procs( procs_t() ),
+    ppm_tier15_2pc_melee( *this, std::numeric_limits<double>::min(), RPPM_HASTE ),
+    ppm_tier15_4pc_melee( *this, std::numeric_limits<double>::min(), RPPM_HASTE ),
     talents( talents_t() ),
     specs( specs_t() ),
     glyphs( glyphs_t() ),
@@ -395,6 +422,14 @@ public:
       p.specs.piercing_shots -> effectN( 1 ).percent() * dmg ); // dw damage
   }
 
+
+  void trigger_tier16_bm_4pc_melee()
+  {
+    if ( ab::background )
+      return;
+
+    trigger_tier16_bm_4pc_brutal_kinship( p() );
+  }
 };
 
 // SV Explosive Shot casts have a 40% chance to not consume a charge of Lock and Load.
@@ -403,6 +438,15 @@ public:
 // damage dealt by your pet by 2%, stacking up to 15 times.
 // 1 stack for MoC, Lynx Rush, Glaive Toss, Barrage, Powershot, Focus Fire
 // no stack for Fervor or Dire Beast
+void trigger_tier16_bm_4pc_brutal_kinship( hunter_t* p )
+{
+  if ( p -> specialization() != HUNTER_BEAST_MASTERY )
+    return;
+  if ( ! p -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
+    return;
+  if ( p -> buffs.beast_within -> check() )
+    p -> buffs.tier16_4pc_bm_brutal_kinship -> trigger( 1, 0, 1, p -> buffs.beast_within -> remains() );
+}
 
 namespace pets {
 
@@ -528,6 +572,7 @@ public:
     buff_t* frenzy;
     buff_t* stampede;
     buff_t* beast_cleave;
+    buff_t* tier16_4pc_bm_brutal_kinship;
   } buffs;
 
   // Gains
@@ -666,6 +711,8 @@ public:
 
     buffs.beast_cleave      = buff_creator_t( this, 118455, "beast_cleave" ).activated( true ).default_value( cleave_value );
 
+    buffs.tier16_4pc_bm_brutal_kinship = buff_creator_t( this, 145737, "tier16_4pc_brutal_kinship" )
+                                         .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 
   virtual void init_gains()
@@ -784,6 +831,9 @@ public:
     if ( ! buffs.stampede -> check() && buffs.bestial_wrath -> up() )
       m *= 1.0 + buffs.bestial_wrath -> data().effectN( 2 ).percent();
 
+    if ( o() -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
+      m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> stack() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
+
     // Pet combat experience
     m *= 1.0 + specs.combat_experience -> effectN( 2 ).percent();
 
@@ -864,7 +914,15 @@ struct hunter_main_pet_attack_t : public hunter_main_pet_action_t<melee_attack_t
     return base_t::ready();
   }
 
-
+  void trigger_tier16_bm_4pc_melee()
+  {
+    if ( o() -> specialization() != HUNTER_BEAST_MASTERY )
+      return;
+    if ( ! o() -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
+      return;
+    if ( p() -> buffs.bestial_wrath -> check() )
+      p() -> buffs.tier16_4pc_bm_brutal_kinship -> trigger( 1, 0, 1, p() -> buffs.bestial_wrath -> remains() );
+  }
 };
 
 // Beast Cleave
@@ -996,6 +1054,7 @@ struct basic_attack_t : public hunter_main_pet_attack_t
   virtual void execute()
   {
     hunter_main_pet_attack_t::execute();
+    trigger_tier16_bm_4pc_melee();
     if ( p() == o() -> active.pet )
       o() -> buffs.cobra_strikes -> decrement();
 
@@ -1505,6 +1564,45 @@ struct dire_critter_t : public hunter_pet_t
   }
 };
 
+// ==========================================================================
+// Tier 15 2-piece bonus temporary pet
+// ==========================================================================
+
+struct tier15_thunderhawk_t : public hunter_pet_t
+{
+  tier15_thunderhawk_t( hunter_t& owner ) :
+    hunter_pet_t( *owner.sim, owner, "tier15_thunderhawk", PET_HUNTER, true /*GUARDIAN*/ )
+  {
+  }
+
+  virtual void init_base_stats()
+  {
+    hunter_pet_t::init_base_stats();
+
+    action_list_str = "lightning_blast";
+  }
+
+  struct lightning_blast_t : public hunter_pet_action_t<tier15_thunderhawk_t, spell_t>
+  {
+    lightning_blast_t( tier15_thunderhawk_t& p ):
+      base_t( "lightning_blast", p, p.find_spell( 138374 ) )
+    {
+      may_crit = true;
+      base_costs[ RESOURCE_MANA ] = 0;
+    }
+
+    virtual double composite_haste() const { return 1.0; }
+  };
+
+  virtual action_t* create_action( const std::string& name,
+                                   const std::string& options_str )
+  {
+    if ( name == "lightning_blast" ) return new lightning_blast_t( *this );
+
+    return hunter_pet_t::create_action( name, options_str );
+  }
+};
+
 } // end namespace pets
 
 namespace attacks {
@@ -1578,12 +1676,15 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     if ( p() -> buffs.pre_steady_focus -> stack() == 2 )
     {
       double haste_buff = p() -> buffs.steady_focus -> data().effectN( 1 ).percent();
+      haste_buff += p() -> sets.set( SET_T14_4PC_MELEE ) -> effectN( 3 ).percent();
 
       p() -> buffs.steady_focus -> trigger( 1, haste_buff );
       p() -> buffs.pre_steady_focus -> expire();
     }
 
     trigger_thrill_of_the_hunt();
+
+    trigger_tier16_bm_4pc_melee();
 
     if ( result_is_hit( execute_state -> result ) )
       trigger_wild_quiver();
@@ -1610,6 +1711,31 @@ struct hunter_ranged_attack_t : public hunter_action_t<ranged_attack_t>
     int gain = p() -> specs.go_for_the_throat -> effectN( 1 ).trigger() -> effectN( 1 ).base_value();
     p() -> active.pet -> resource_gain( RESOURCE_FOCUS, gain, p() -> active.pet -> gains.go_for_the_throat );
   }
+
+  void trigger_tier15_2pc_melee()
+  {
+    if ( ! p() -> sets.has_set_bonus( SET_T15_2PC_MELEE ) )
+      return;
+
+    if ( ( p() -> ppm_tier15_2pc_melee.trigger( *this ) ) )
+    {
+      p() -> procs.tier15_2pc_melee -> occur();
+      size_t i;
+
+      for ( i = 0; i < p() -> thunderhawk.size(); i++ )
+      {
+        if ( ! p() -> thunderhawk[ i ] -> is_sleeping() )
+          continue;
+
+        p() -> thunderhawk[ i ] -> summon( timespan_t::from_seconds( 10 ) );
+        break;
+      }
+
+      assert( i < p() -> thunderhawk.size() );
+    }
+  }
+
+  void trigger_tier15_4pc_melee( proc_t* proc, attack_t* attack );
 
 };
 
@@ -1737,6 +1863,12 @@ struct aimed_shot_t : public hunter_ranged_attack_t
 
       p() -> buffs.master_marksman_fire -> expire();
 
+      if ( p() -> sets.has_set_bonus( SET_T16_4PC_MELEE ) )
+        p() -> buffs.tier16_4pc_mm_keen_eye -> trigger();
+
+
+      if ( result_is_hit( execute_state -> result ) )
+        trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_aimed_shot, p() -> action_lightning_arrow_aimed_shot );
     }
 
     virtual void impact( action_state_t* s )
@@ -1790,6 +1922,10 @@ struct aimed_shot_t : public hunter_ranged_attack_t
       return timespan_t::zero();
 
     timespan_t cast_time = hunter_ranged_attack_t::execute_time();
+    if ( p() -> buffs.tier16_4pc_mm_keen_eye -> check() )
+    {
+      cast_time *= 1.0 + p() -> buffs.tier16_4pc_mm_keen_eye -> data().effectN( 1 ).percent();
+    }
 
     return cast_time;
   }
@@ -1811,6 +1947,9 @@ struct aimed_shot_t : public hunter_ranged_attack_t
     else
     {
       hunter_ranged_attack_t::execute();
+
+      if ( p() -> buffs.tier16_4pc_mm_keen_eye -> up() )
+        p() -> buffs.tier16_4pc_mm_keen_eye -> expire();
     }
   }
 
@@ -1843,6 +1982,9 @@ struct arcane_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
     consume_thrill_of_the_hunt();
 
+    if ( result_is_hit( execute_state -> result ) ) {
+      trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_arcane_shot, p() -> action_lightning_arrow_arcane_shot );
+    }
   }
 
   virtual void impact( action_state_t* state )
@@ -1852,6 +1994,8 @@ struct arcane_shot_t : public hunter_ranged_attack_t
     {
       p() -> buffs.cobra_strikes -> trigger( 2 );
 
+      // Needs testing
+      p() -> buffs.tier13_4pc -> trigger();
     }
   }
 };
@@ -2084,12 +2228,24 @@ struct cobra_shot_t : public hunter_ranged_attack_t
 
     focus_gain = p() -> dbc.spell( 91954 ) -> effectN( 1 ).base_value();
 
+    // Needs testing
+    if ( p() -> sets.has_set_bonus( SET_T13_2PC_MELEE ) )
+      focus_gain *= 2.0;
+
     attack_power_mod.direct = 0.017;
   }
 
   virtual bool usable_moving() const
   {
     return true;
+  }
+
+  virtual void execute()
+  {
+    hunter_ranged_attack_t::execute();
+
+    if ( result_is_hit( execute_state -> result ) )
+      trigger_tier15_2pc_melee();
   }
 
   virtual void impact( action_state_t* s )
@@ -2187,10 +2343,28 @@ struct explosive_shot_t : public hunter_ranged_attack_t
     hunter_ranged_attack_t::update_ready( cd_override );
   }
 
+  virtual double action_multiplier() const
+  {
+    double am = hunter_ranged_attack_t::action_multiplier();
+    am *= 1.0 + p() -> sets.set( SET_T14_2PC_MELEE ) -> effectN( 3 ).percent();
+    return am;
+  }
+
   virtual void execute()
   {
     hunter_ranged_attack_t::execute();
     p() -> buffs.lock_and_load -> decrement();
+    // Does saving the proc require round trip latency before we know?
+    // TODO add reaction time for the continuation of the proc?
+    if ( p() -> buffs.lock_and_load -> up()
+         && rng().roll( p() -> sets.set( SET_T16_4PC_MELEE ) -> effectN( 1 ).percent() ) )
+    {
+      p() -> procs.tier16_4pc_melee -> occur();
+    }
+    else
+    {
+      p() -> buffs.lock_and_load -> decrement();
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -2433,6 +2607,10 @@ struct multi_shot_t : public hunter_ranged_attack_t
       p() -> buffs.beast_cleave -> trigger(); //Added so action lists can be based on beast cleave. The pet buff actions do not seem to be working. 8/29/13
       pet -> buffs.beast_cleave -> trigger();
     }
+
+    if ( result_is_hit( execute_state -> result ) ) {
+      trigger_tier15_4pc_melee( p() -> procs.tier15_4pc_melee_multi_shot, p() -> action_lightning_arrow_multi_shot );
+    }
   }
 
   virtual void impact( action_state_t* s )
@@ -2505,6 +2683,8 @@ struct steady_shot_t : public hunter_ranged_attack_t
 
     if ( result_is_hit( execute_state -> result ) )
     {
+      trigger_tier15_2pc_melee();
+
       p() -> resource_gain( RESOURCE_FOCUS, focus_gain, p() -> gains.steady_shot );
       if ( p() -> buffs.steady_focus -> up() )
         p() -> resource_gain( RESOURCE_FOCUS, steady_focus_gain, p() -> gains.steady_focus );
@@ -2558,6 +2738,32 @@ struct wild_quiver_shot_t : public ranged_t
   }
 };
 
+// Lightning Arrow (Tier 15 4-piece bonus) ==================================
+
+struct lightning_arrow_t : public hunter_ranged_attack_t
+{
+  lightning_arrow_t( hunter_t* p, const std::string& attack_suffix ) :
+    hunter_ranged_attack_t( "lightning_arrow" + attack_suffix, p, p -> find_spell( 138366 ) )
+  {
+    school = SCHOOL_NATURE;
+    proc = true;
+    background = true;
+    can_trigger_wild_quiver = false;
+  }
+};
+
+void hunter_ranged_attack_t::trigger_tier15_4pc_melee( proc_t* proc, attack_t* attack )
+{
+
+  if ( ! p() -> sets.has_set_bonus( SET_T15_4PC_MELEE ) )
+    return;
+
+  if ( p() -> ppm_tier15_4pc_melee.trigger( *this ) )
+  {
+    proc -> occur();
+    attack -> execute();
+  }
+}
 
 } // end attacks
 
@@ -2639,6 +2845,7 @@ struct barrage_t : public hunter_spell_t
       time_to_next_hit += num_ticks * tick_time( p() -> cache.attack_speed() );
       p() -> main_hand_attack -> execute_event -> reschedule( time_to_next_hit );
     }
+    trigger_tier16_bm_4pc_melee();
   }
 
   virtual double composite_crit() const
@@ -2707,6 +2914,7 @@ struct moc_t : public ranged_attack_t
 
   virtual void execute()
   {
+    trigger_tier16_bm_4pc_brutal_kinship( p() );
 
     cooldown -> duration = data().cooldown();
 
@@ -2785,6 +2993,11 @@ struct bestial_wrath_t : public hunter_spell_t
 
   virtual void execute()
   {
+    /*if ( p() -> set_bonus.tier16_4pc_melee() )
+    {
+      p() -> buffs.tier16_4pc_bm_brutal_kinship -> expire();
+      p() -> active.pet -> buffs.tier16_4pc_bm_brutal_kinship -> expire();
+    }*/
 
     p() -> buffs.beast_within  -> trigger();
     p() -> active.pet -> buffs.bestial_wrath -> trigger();
@@ -2876,6 +3089,7 @@ struct focus_fire_t : public hunter_spell_t
 
     p() -> active.pet -> buffs.frenzy -> expire();
 
+    trigger_tier16_bm_4pc_melee();
   }
 
   virtual bool ready()
@@ -2914,6 +3128,7 @@ struct kill_command_t : public hunter_spell_t
   virtual void execute()
   {
     hunter_spell_t::execute();
+    trigger_tier16_bm_4pc_melee();
 
     if ( p() -> active.pet )
     {
@@ -2982,6 +3197,7 @@ struct stampede_t : public hunter_spell_t
   virtual void execute()
   {
     hunter_spell_t::execute();
+    trigger_tier16_bm_4pc_melee();
     p() -> buffs.stampede -> trigger();
 
     for ( unsigned int i = 0; i < p() -> hunter_main_pets.size() && i < 5; ++i )
@@ -3083,6 +3299,10 @@ void hunter_t::create_pets()
   for ( size_t i = 0; i < pet_dire_beasts.size(); ++i )
   {
     pet_dire_beasts[ i ] = new pets::dire_critter_t( *this, i + 1 );
+  }
+  for ( int i = 0; i < 10; i++ )
+  {
+    thunderhawk[ i ] = new pets::tier15_thunderhawk_t( *this );
   }
 }
 
@@ -3195,6 +3415,10 @@ void hunter_t::init_spells()
     active.wild_quiver_shot = new attacks::wild_quiver_shot_t( this );
   }
 
+  action_lightning_arrow_aimed_shot = new attacks::lightning_arrow_t( this, "_aimed_shot" );
+  action_lightning_arrow_arcane_shot = new attacks::lightning_arrow_t( this, "_arcane_shot" );
+  action_lightning_arrow_multi_shot = new attacks::lightning_arrow_t( this, "_multi_shot" );
+
   static const set_bonus_description_t set_bonuses =
   {
     //  C2P    C4P     M2P     M4P    T2P    T4P     H2P    H4P
@@ -3276,7 +3500,14 @@ void hunter_t::create_buffs()
                            /*.quiet( true )*/;
   buffs.pre_steady_focus            = buff_creator_t( this, "pre_steady_focus" ).max_stack( 2 ).quiet( true );
 
+  buffs.tier13_4pc                  = buff_creator_t( this, 105919, "tier13_4pc" )
+                                      .chance( sets.set( SET_T13_4PC_MELEE ) -> proc_chance() )
+                                      .cd( timespan_t::from_seconds( 105.0 ) )
+                                      .add_invalidate( CACHE_ATTACK_HASTE );
 
+  buffs.tier16_4pc_mm_keen_eye      = buff_creator_t( this, 144659, "tier16_4pc_keen_eye" );
+  buffs.tier16_4pc_bm_brutal_kinship = buff_creator_t( this, 144670, "tier16_4pc_brutal_kinship" )
+                                       .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
 // hunter_t::init_gains =====================================================
@@ -3329,12 +3560,32 @@ void hunter_t::init_procs()
   procs.lock_and_load                = get_proc( "lock_and_load"                );
   procs.explosive_shot_focus_starved = get_proc( "explosive_shot_focus_starved" );
   procs.black_arrow_focus_starved    = get_proc( "black_arrow_focus_starved"    );
+  procs.tier15_2pc_melee             = get_proc( "tier15_2pc_melee"             );
+  procs.tier15_4pc_melee_aimed_shot  = get_proc( "tier15_4pc_melee_aimed_shot"  );
+  procs.tier15_4pc_melee_arcane_shot = get_proc( "tier15_4pc_melee_arcane_shot" );
+  procs.tier15_4pc_melee_multi_shot  = get_proc( "tier15_4pc_melee_multi_shot"  );
+  procs.tier16_2pc_melee             = get_proc( "tier16_2pc_melee"             );
+  procs.tier16_4pc_melee             = get_proc( "tier16_4pc_melee"             );
 }
 
 // hunter_t::init_rng =======================================================
 
 void hunter_t::init_rng()
 {
+
+  // RPPMS
+  double tier15_2pc_melee_rppm;
+
+  if ( specialization() == HUNTER_BEAST_MASTERY )
+    tier15_2pc_melee_rppm = 0.7;
+  else if ( specialization() == HUNTER_MARKSMANSHIP )
+    tier15_2pc_melee_rppm = 1.0;
+  else // HUNTER_SURVIVAL
+    tier15_2pc_melee_rppm = 1.2;
+
+  ppm_tier15_2pc_melee.set_frequency( tier15_2pc_melee_rppm );
+  ppm_tier15_4pc_melee.set_frequency( 3.0 );
+
   player_t::init_rng();
 }
 
@@ -3462,10 +3713,14 @@ void hunter_t::init_action_list()
         action_list_str += "/multi_shot,if=active_enemies>=4";
         action_list_str += "/aimed_shot,if=buff.master_marksman_fire.react";
 
-
         action_list_str += "/aimed_shot";
         if ( race == RACE_TROLL )
           action_list_str += "&!buff.berserking.up)";
+        if ( sets.has_set_bonus( SET_T13_4PC_MELEE ) )
+        {
+          action_list_str += "/arcane_shot,if=(focus>=66|cooldown.chimera_shot.remains>=4)&(!buff.rapid_fire.up&!buff.bloodlust.react&!buff.berserking.up&!buff.tier13_4pc.react&cooldown.buff_tier13_4pc.remains<=0)";
+          action_list_str += "/aimed_shot,if=(cooldown.chimera_shot.remains>5|focus>=80)&(buff.bloodlust.react|buff.tier13_4pc.react|cooldown.buff_tier13_4pc.remains>0)|buff.rapid_fire.up";
+        }
         else
           action_list_str += ")";
 
@@ -3554,6 +3809,7 @@ double hunter_t::composite_attack_power_multiplier() const
 double hunter_t::composite_melee_haste() const
 {
   double h = player_t::composite_melee_haste();
+  h *= 1.0 / ( 1.0 + buffs.tier13_4pc -> up() * buffs.tier13_4pc -> data().effectN( 1 ).percent() );
   h *= ranged_haste_multiplier();
   return h;
 }
@@ -3600,6 +3856,9 @@ double hunter_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.beast_within -> up() )
     m *= 1.0 + buffs.beast_within -> data().effectN( 2 ).percent();
+  
+  if ( sets.set( SET_T16_4PC_MELEE) -> ok() )
+    m *= 1.0 + buffs.tier16_4pc_bm_brutal_kinship -> stack() * buffs.tier16_4pc_bm_brutal_kinship -> data().effectN( 1 ).percent();
 
   return m;
 }

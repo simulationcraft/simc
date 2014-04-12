@@ -1733,6 +1733,8 @@ void action_t::init()
 
   // WOD: Dot Snapshoting is gone
   update_flags |= snapshot_flags;
+  update_flags &= ~STATE_MUL_DA;
+  update_flags &= ~STATE_MUL_TA;
 
   if ( pre_combat || action_list == "precombat" )
   {

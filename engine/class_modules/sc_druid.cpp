@@ -1782,6 +1782,10 @@ public:
 
   void trigger_savagery()
   {
+    // Bail out if we have savagery talent, buff should already be up so lets not mess with it.
+    if ( p() -> talent.savagery -> ok() )
+      return;
+
     timespan_t base_tick_time = p() -> find_specialization_spell( "Savage Roar" ) -> effectN( 3 ).time_value();
     timespan_t seconds_per_combo = timespan_t::from_seconds( 6.0 );
     timespan_t duration = p() -> find_specialization_spell( "Savage Roar" ) -> duration();
@@ -2341,12 +2345,10 @@ struct rip_t : public cat_attack_t
 
 struct savage_roar_t : public cat_attack_t
 {
-  timespan_t base_buff_duration;
   timespan_t seconds_per_combo;
 
   savage_roar_t( druid_t* p, const std::string& options_str ) :
     cat_attack_t( p, p -> find_class_spell( "Savage Roar" ), options_str ),
-    base_buff_duration( data().duration() ), // Base duration is 12
     seconds_per_combo( timespan_t::from_seconds( 6.0 ) ) // plus 6s per cp used. Must change this value in cat_attack_t::trigger_savagery() as well.
   {
     may_miss              = false;
@@ -2360,7 +2362,7 @@ struct savage_roar_t : public cat_attack_t
   {
     cat_attack_t::impact( state );
 
-    timespan_t duration = base_buff_duration;
+    timespan_t duration = data().duration();
 
     if ( p() -> buff.savage_roar -> check() )
     {
@@ -2379,7 +2381,9 @@ struct savage_roar_t : public cat_attack_t
 
   virtual bool ready()
   {
-    if ( base_buff_duration + seconds_per_combo * td( target ) -> combo_points.get() > p() -> buff.savage_roar -> remains() )
+    if ( p() -> talent.savagery -> ok() )
+      return false;
+    else if ( data().duration() + seconds_per_combo * td( target ) -> combo_points.get() > p() -> buff.savage_roar -> remains() )
       return cat_attack_t::ready();
     else
       return false;
@@ -4538,6 +4542,7 @@ struct moonfire_t : public druid_spell_t
 
   moonfire_t( druid_t* player, const std::string& options_str ) :
     druid_spell_t( "moonfire", player, player -> find_class_spell( "Moonfire" ) ),
+    // player -> talent.lunar_inspiration -> ok() ? player -> find_spell( 155625 ) : player -> find_class_spell( "Moonfire" )
     sunfire( nullptr )
   {
     parse_options( NULL, options_str );
@@ -4582,6 +4587,15 @@ struct moonfire_t : public druid_spell_t
     trigger_t16_2pc_balance( false );
   }
 
+  virtual void schedule_execute( action_state_t* state = 0 )
+  {
+    druid_spell_t::schedule_execute( state );
+    
+    p() -> buff.bear_form -> expire();
+    if ( ! p() -> talent.lunar_inspiration -> ok() )
+      p() -> buff.cat_form -> expire();
+  }
+
   virtual void impact( action_state_t* s )
   {
     // The Sunfire hits BEFORE the moonfire!
@@ -4594,6 +4608,14 @@ struct moonfire_t : public druid_spell_t
       }
     }
     druid_spell_t::impact( s );
+
+    if ( p() -> talent.lunar_inspiration -> ok() && result_is_hit( s -> result ) )
+      {
+        int cp = data().effectN( 3 ).base_value(); // Since this isn't in cat_attack_t, we need to account for the base combo points.
+        if ( p() -> spell.primal_fury -> ok() && s -> result == RESULT_CRIT )
+          cp += p() -> find_spell( 16953 ) -> effectN( 1 ).base_value();
+        td( s -> target ) -> combo_points.add( cp, &name_str );
+      }
   }
 
   virtual double cost_reduction() const
@@ -5715,7 +5737,8 @@ void druid_t::create_buffs()
                                .chance( 1.0 );
   buff.savage_roar           = buff_creator_t( this, "savage_roar", find_specialization_spell( "Savage Roar" ) )
                                .default_value( find_spell( 62071 ) -> effectN( 1 ).percent() )
-                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+                               .add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                               .duration( timespan_t::max() ); // Set base duration to infinite for Savagery talent. All other uses trigger with a set duration.
   buff.predatory_swiftness   = buff_creator_t( this, "predatory_swiftness", spec.predatory_swiftness -> ok() ? find_spell( 69369 ) : spell_data_t::not_found() );
   buff.tier15_4pc_melee      = buff_creator_t( this, "tier15_4pc_melee", find_spell( 138358 ) );
   buff.feral_fury            = buff_creator_t( this, "feral_fury", find_spell( 144865 ) ); // tier16_2pc_melee
@@ -6437,6 +6460,10 @@ void druid_t::combat_begin()
   // If Ysera's Gift is talented, apply it upon entering combat
   if ( talent.yseras_gift -> ok() )
     active.yseras_gift -> execute();
+
+  // If Savagery is talented, apply Savage Roar entering combat
+  if ( talent.savagery -> ok() )
+    buff.savage_roar -> trigger();
 }
 
 // druid_t::invalidate_cache ================================================
