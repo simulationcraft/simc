@@ -146,8 +146,10 @@ public:
   struct glyphs_t
   {
     const spell_data_t* bull_rush;
+    const spell_data_t* cleave;
     const spell_data_t* death_from_above;
     const spell_data_t* enraged_speed;
+    const spell_data_t* heroic_leap;
     const spell_data_t* raging_wind;
     const spell_data_t* recklessness;
     const spell_data_t* resonating_power;
@@ -187,6 +189,9 @@ public:
     const spell_data_t* crazed_berserker;
     const spell_data_t* flurry;
     const spell_data_t* meat_cleaver;
+    const spell_data_t* readiness_arms;
+    const spell_data_t* readiness_fury;
+    const spell_data_t* readiness_protection;
     const spell_data_t* riposte;
     const spell_data_t* seasoned_soldier;
     const spell_data_t* single_minded_fury;
@@ -230,6 +235,38 @@ public:
     const spell_data_t* gladiator_stance;
 
   } talents;
+
+  struct
+  {
+    //All Specs
+    const spell_data_t* improved_charge;
+    const spell_data_t* improved_heroic_leap;
+    //Arms and Fury
+    const spell_data_t* improved_die_by_the_sword;
+    const spell_data_t* empowered_execute;
+    const spell_data_t* improved_colossus_smash;
+    //Arms only
+    const spell_data_t* enhanced_sweeping_strikes;
+    const spell_data_t* improved_mortal_strike;
+    const spell_data_t* enhanced_slam;
+    const spell_data_t* improved_overpower;
+    //Fury only
+    const spell_data_t* improved_meat_cleaver;
+    const spell_data_t* improved_wild_strike;
+    const spell_data_t* improved_bloodthirst;
+    const spell_data_t* improved_raging_blow;
+    //Protection only
+    const spell_data_t* improved_heroic_throw;
+    const spell_data_t* improved_shield_slam;
+    const spell_data_t* improved_revenge;
+    const spell_data_t* improved_shield_barrier;
+    const spell_data_t* improved_unwavering_sentinel;
+    const spell_data_t* improved_bastion_of_defense;
+    const spell_data_t* improved_thunder_clap;
+  } perk;
+
+
+
 
   warrior_t( sim_t* sim, const std::string& name, race_e r = RACE_NIGHT_ELF ) :
     player_t( sim, WARRIOR, name, r ),
@@ -768,7 +805,6 @@ void warrior_attack_t::consume_resource()
     p -> cooldown.avatar -> adjust( timespan_t::from_seconds( rage ) ); 
     p -> cooldown.recklessness -> adjust( timespan_t::from_seconds( rage ) ); 
     p -> cooldown.bloodbath -> adjust( timespan_t::from_seconds( rage ) ); 
-    p -> cooldown.heroic_leap -> adjust( timespan_t::from_seconds( rage ) ); 
     p -> cooldown.dragon_roar -> adjust( timespan_t::from_seconds( rage ) );
     p -> cooldown.shockwave -> adjust( timespan_t::from_seconds( rage ) ); 
   }
@@ -3181,20 +3217,23 @@ void warrior_t::init_spells()
   mastery.unshackled_fury        = find_mastery_spell( WARRIOR_FURY                );
 
   // Spec Passives
-  spec.bastion_of_defense       = find_specialization_spell( "Bastion of Defense"  );
-  spec.blood_and_thunder        = find_specialization_spell( "Blood and Thunder"   );
-  spec.bloodsurge               = find_specialization_spell( "Bloodsurge"          );
-  spec.crazed_berserker         = find_specialization_spell( "Crazed Berserker"    );
-  spec.flurry                   = find_specialization_spell( "Flurry"              );
-  spec.meat_cleaver             = find_specialization_spell( "Meat Cleaver"        );
-  spec.riposte                  = find_specialization_spell( "Riposte"             );
-  spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier"    );
-  spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel" );
-  spec.single_minded_fury       = find_specialization_spell( "Single-Minded Fury"  );
-  spec.sword_and_board          = find_specialization_spell( "Sword and Board"     );
-  spec.sudden_death             = find_specialization_spell( "Sudden Death"        );
-  spec.taste_for_blood          = find_specialization_spell( "Taste for Blood"     );
-  spec.ultimatum                = find_specialization_spell( "Ultimatum"           );
+  spec.bastion_of_defense       = find_specialization_spell( "Bastion of Defense"    );
+  spec.blood_and_thunder        = find_specialization_spell( "Blood and Thunder"     );
+  spec.bloodsurge               = find_specialization_spell( "Bloodsurge"            );
+  spec.crazed_berserker         = find_specialization_spell( "Crazed Berserker"      );
+  spec.flurry                   = find_specialization_spell( "Flurry"                );
+  spec.meat_cleaver             = find_specialization_spell( "Meat Cleaver"          );
+  spec.readiness_arms           = find_specialization_spell( "Readiness: Arms"       );
+  spec.readiness_fury           = find_specialization_spell( "Readiness: Fury"       );
+  spec.readiness_protection     = find_specialization_spell( "Readiness: Protection" );
+  spec.riposte                  = find_specialization_spell( "Riposte"               );
+  spec.seasoned_soldier         = find_specialization_spell( "Seasoned Soldier"      );
+  spec.single_minded_fury       = find_specialization_spell( "Single-Minded Fury"    );
+  spec.sword_and_board          = find_specialization_spell( "Sword and Board"       );
+  spec.sudden_death             = find_specialization_spell( "Sudden Death"          );
+  spec.taste_for_blood          = find_specialization_spell( "Taste for Blood"       );
+  spec.ultimatum                = find_specialization_spell( "Ultimatum"             );
+  spec.unwavering_sentinel      = find_specialization_spell( "Unwavering Sentinel"   );
 
   // Talents
   talents.juggernaut            = find_talent_spell( "Juggernaut"                  );
@@ -3226,10 +3265,36 @@ void warrior_t::init_spells()
   talents.ignite_weapon         = find_talent_spell( "Ignite Weapon"               );
   talents.gladiator_stance      = find_talent_spell( "Gladiator Stance"            );
 
+  //Perks
+  perk.improved_charge               = find_perk_spell( "Improved Charge"               );
+  perk.improved_heroic_leap          = find_perk_spell( "Improved Heroic Leap"          );
+
+  perk.enhanced_sweeping_strikes     = find_perk_spell( "Enhanced Sweeping Strikes"     );
+  perk.improved_mortal_strike        = find_perk_spell( "Improved Mortal Strike"        );
+  perk.enhanced_slam                 = find_perk_spell( "Enhanced Slam"                 );
+  perk.improved_overpower            = find_perk_spell( "Improved Overpower"            );
+  perk.improved_die_by_the_sword     = find_perk_spell( "Improved Die by The Sword"     );
+  perk.empowered_execute             = find_perk_spell( "Empowered Execute"             );
+  perk.improved_colossus_smash       = find_perk_spell( "Improved Colossus Smash"       );
+
+  perk.improved_meat_cleaver         = find_perk_spell( "Improved Meat Cleaver"         );
+  perk.improved_wild_strike          = find_perk_spell( "Improved Wild Strike"          );
+  perk.improved_raging_blow          = find_perk_spell( "Improved Raging Blow"          );
+
+  perk.improved_heroic_throw         = find_perk_spell( "Improved Heroic Throw"         );
+  perk.improved_shield_slam          = find_perk_spell( "Improved Shield Slam"          );
+  perk.improved_revenge              = find_perk_spell( "Improved Revenge"              );
+  perk.improved_shield_barrier       = find_perk_spell( "Improved Shield Barrier"       );
+  perk.improved_unwavering_sentinel  = find_perk_spell( "Improved Unwavering Sentinel"  );
+  perk.improved_bastion_of_defense   = find_perk_spell( "Improved Bastion of Defense"   );
+  perk.improved_thunder_clap         = find_perk_spell( "Improved Thunder Clap"         );
+
   // Glyphs
   glyphs.bull_rush              = find_glyph_spell( "Glyph of Bull Rush"           );
+  glyphs.cleave                 = find_glyph_spell( "Glyph of Cleave"              );
   glyphs.death_from_above       = find_glyph_spell( "Glyph of Death From Above"    );
   glyphs.enraged_speed          = find_glyph_spell( "Glyph of Enraged Speed"       );
+  glyphs.heroic_leap            = find_glyph_spell( "Glyph of Heroic Leap"         );
   glyphs.raging_wind            = find_glyph_spell( "Glyph of Raging Wind"         );
   glyphs.recklessness           = find_glyph_spell( "Glyph of Recklessness"        );
   glyphs.resonating_power       = find_glyph_spell( "Glyph of Resonating Power"    );
