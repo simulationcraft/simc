@@ -37,6 +37,7 @@ void core_sim_t::event_managment_t::preallocate_events( unsigned num )
     }
     else
     {
+      all_events_ever_created.push_back( e );
       core_event_t* l = recycled_event_list;
       recycled_event_list = e;
       e -> next = l;
