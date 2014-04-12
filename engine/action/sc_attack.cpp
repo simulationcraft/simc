@@ -419,8 +419,10 @@ double ranged_attack_t::dodge_chance( double expertise, player_t* t ) const
   // cache.dodge() contains the target's dodge chance (3.0 base, plus spec bonuses and rating)
   double dodge = t -> cache.dodge();
 
-  // add or subtract 1.5% per level difference
-  dodge += ( t -> level - player -> level ) * 0.015;
+  // TODO-WOD: Dodge chance increase per 4+ level delta?
+  if ( t -> level - player -> level > 3 )
+  {
+  }
 
   // subtract the player's expertise chance
   dodge -= expertise;
@@ -441,7 +443,14 @@ double ranged_attack_t::parry_chance( double /* expertise */, player_t* /* targe
 
 double ranged_attack_t::glance_chance( int delta_level ) const
 {
-  return (  delta_level  + 1 ) * 0.06;
+  double glance = 0;
+
+  // TODO-WOD: Glance chance increase per 4+ level delta?
+  if ( delta_level > 3 )
+  {
+  }
+
+  return glance;
 }
 
 double ranged_attack_t::composite_target_multiplier( player_t* target ) const
