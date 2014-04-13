@@ -2691,6 +2691,7 @@ struct windstrike_t : public shaman_melee_attack_t
     weapon               = &( p() -> main_hand_weapon );
     weapon_multiplier    = 0.0;
     may_crit             = false;
+    uses_eoe             = true;
     cooldown             = p() -> cooldown.strike;
     cooldown -> duration = p() -> dbc.spell( id ) -> cooldown();
 
