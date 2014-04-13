@@ -28,6 +28,7 @@ struct warrior_td_t : public actor_pair_t
 {
   dot_t* dots_bloodbath;
   dot_t* dots_deep_wounds;
+  dot_t* dots_ravager;
 
   buff_t* debuffs_colossus_smash;
   buff_t* debuffs_demoralizing_shout;
@@ -1982,6 +1983,29 @@ struct raging_blow_t : public warrior_attack_t
   }
 };
 
+// Ravager ==============================================================
+
+struct ravager_t : public warrior_attack_t
+{
+  ravager_t( warrior_t* p, const std::string& options_str ) :
+    warrior_attack_t( "ravager", p, p -> find_spell( 152277 ) )
+  {
+    parse_options( NULL, options_str );
+
+    aoe           = -1;
+    proc          = false;
+    tick_may_crit = true;
+    tick_zero     = true;
+    base_tick_time = timespan_t::from_seconds( 1.0 ); //Cannot select the periodic dummy damage from dbc data at the moment.
+    num_ticks     = ( int ) ( data().duration().total_seconds() / base_tick_time.total_seconds() ); 
+    hasted_ticks  = false;
+
+
+    const spell_data_t* dmg_spell = p -> dbc.spell( 156287 ); // Like all wonderful spells, the damage is in another castle.
+    attack_power_mod.tick = dmg_spell -> effectN( 1 ).ap_coeff();
+  }
+};
+
 // Revenge ==================================================================
 
 struct revenge_t : public warrior_attack_t
@@ -3119,6 +3143,7 @@ warrior_td_t::warrior_td_t( player_t* target, warrior_t* p  ) :
 {
   dots_bloodbath   = target -> get_dot( "bloodbath",   p );
   dots_deep_wounds = target -> get_dot( "deep_wounds", p );
+  dots_ravager     = target -> get_dot( "ravager",     p );
 
   debuffs_colossus_smash     = buff_creator_t( *this, "colossus_smash" ).duration( p -> find_class_spell( "Colossus Smash" ) -> duration() );
 
@@ -3158,7 +3183,7 @@ action_t* warrior_t::create_action( const std::string& name,
   if ( name == "overpower"          ) return new overpower_t          ( this, options_str );
   if ( name == "pummel"             ) return new pummel_t             ( this, options_str );
   if ( name == "raging_blow"        ) return new raging_blow_t        ( this, options_str );
-  //if ( name == "ravager"            ) return new ravager_t            ( this, options_str );
+  if ( name == "ravager"            ) return new ravager_t            ( this, options_str );
   if ( name == "recklessness"       ) return new recklessness_t       ( this, options_str );
   if ( name == "revenge"            ) return new revenge_t            ( this, options_str );
   if ( name == "shield_barrier"     ) return new shield_barrier_t     ( this, options_str );
