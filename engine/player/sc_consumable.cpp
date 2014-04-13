@@ -29,31 +29,6 @@ const elixir_data_t elixir_data[] =
   { "mad_hozen", ELIXIR_BATTLE, STAT_CRIT_RATING, 750, 990 },
 };
 
-struct flask_data_t
-{
-  flask_e ft;
-  stat_e st;
-  int stat_amount;
-  int mixology_stat_amount;
-};
-
-const flask_data_t flask_data[] =
-{
-  // cataclysm
-  { FLASK_DRACONIC_MIND,       STAT_INTELLECT,  300,  380 },
-  { FLASK_FLOWING_WATER,       STAT_SPIRIT,     300,  380 },
-  { FLASK_STEELSKIN,           STAT_STAMINA,    300,  380 },
-  { FLASK_TITANIC_STRENGTH,    STAT_STRENGTH,   300,  380 },
-  { FLASK_WINDS,               STAT_AGILITY,    300,  380 },
-  // mop
-  { FLASK_WARM_SUN,            STAT_INTELLECT, 1000, 1320 },
-  { FLASK_FALLING_LEAVES,      STAT_SPIRIT,    1000, 1480 },
-  { FLASK_EARTH,               STAT_STAMINA,   1500, 1980 },
-  { FLASK_WINTERS_BITE,        STAT_STRENGTH,  1000, 1320 },
-  { FLASK_SPRING_BLOSSOMS,     STAT_AGILITY,   1000, 1320 },
-  { FLASK_CRYSTAL_OF_INSANITY, STAT_ALL,       500,  500  },
-};
-
 struct food_data_t
 {
   food_e ft;
@@ -170,12 +145,14 @@ const food_data_t food_data[] =
 
 struct flask_t : public action_t
 {
+  buff_t* buff;
   gain_t* gain;
-  flask_e type;
+  std::string flask_name;
+  bool alchemist;
 
   flask_t( player_t* p, const std::string& options_str ) :
     action_t( ACTION_USE, "flask", p ),
-    gain( p -> get_gain( "flask" ) ), type( FLASK_NONE )
+    buff( 0 ), gain( p -> get_gain( "flask" ) ), alchemist( false )
   {
     std::string type_str;
 
@@ -189,77 +166,113 @@ struct flask_t : public action_t
     trigger_gcd = timespan_t::zero();
     harmful = false;
 
-    type = util::parse_flask_type( type_str );
-    if ( type == FLASK_NONE )
+    const item_data_t* item;
+    for ( item = dbc::items( maybe_ptr( p -> dbc.ptr ) ); item -> id != 0; item++ )
     {
-      sim -> errorf( "Player %s attempting to use unsupported flask '%s'.\n",
-                     player -> name(), type_str.c_str() );
-      sim -> cancel();
+      if ( item -> item_class != 0 )
+        continue;
+
+      if ( item -> item_subclass != ITEM_SUBCLASS_FLASK )
+        continue;
+
+      flask_name = item -> name;
+
+      util::tokenize( flask_name );
+
+      if ( util::str_compare_ci( flask_name, type_str ) )
+        break;
+
+      std::string::size_type offset = flask_name.find( "flask_of_" );
+      if ( offset != std::string::npos )
+      {
+        offset += 9;
+        if ( util::str_compare_ci( flask_name.substr( offset ), type_str ) )
+          break;
+      }
     }
-    else if ( type == FLASK_ALCHEMISTS && player -> profession[ PROF_ALCHEMY ] < 300 )
+
+    const spell_data_t* spell = 0;
+    for ( size_t i = 0, end = sizeof_array( item -> id_spell ); i < end; i++ )
     {
-      sim -> errorf( "Player %s attempting to use Alchemist's Flask without appropriate alchemy skill.\n",
-                     player -> name() );
-      sim -> cancel();
+      if ( item -> trigger_spell[ i ] == ITEM_SPELLTRIGGER_ON_USE )
+      {
+        spell = p -> find_spell( item -> id_spell[ i ] );
+        break;
+      }
+    }
+
+    if ( ! util::str_in_str_ci( type_str, "alchemist" ) )
+    {
+      if ( ! item || item -> id == 0 || ! spell || spell -> id() == 0 )
+      {
+        sim -> errorf( "Player %s attempting to use unsupported flask '%s'.\n",
+                      player -> name(), type_str.c_str() );
+      }
+      else
+        p -> buffs.flask = stat_buff_creator_t( p, type_str, spell );
+    }
+    // Alch flask, special handle
+    else
+    {
+      if ( p -> profession[ PROF_ALCHEMY ] < 300 )
+      {
+        sim -> errorf( "Player %s attempting to use 'alchemist flask' with %d Alchemy.\n",
+                      player -> name(), p -> profession[ PROF_ALCHEMY ] );
+      }
+      else
+      {
+        alchemist = true;
+        p -> buffs.flask = stat_buff_creator_t( p, "alchemists_flask", p -> find_spell( 105617 ) )
+                          .add_stat( STAT_AGILITY, 0 )
+                          .add_stat( STAT_STRENGTH, 0 )
+                          .add_stat( STAT_INTELLECT, 0 );
+      }
     }
   }
 
   virtual void execute()
   {
-    player_t& p = *player;
+    if ( sim -> log )
+      sim -> out_log.printf( "%s performs %s", player -> name(), player -> buffs.flask -> name() );
 
-    if ( type == FLASK_ALCHEMISTS )
+    if ( alchemist )
     {
-      stat_e boost_stat = STAT_STRENGTH;
-      double stat_value = p.strength();
-
-      if ( p.agility() > stat_value )
+      double v = player -> buffs.flask -> data().effectN( 1 ).average( player );
+      stat_e stat = STAT_NONE;
+      if ( player -> cache.agility() >= player -> cache.strength() )
       {
-        stat_value = p.agility();
-        boost_stat = STAT_AGILITY;
+        if ( player -> cache.agility() >= player -> cache.intellect() )
+          stat = STAT_AGILITY;
+        else
+          stat = STAT_INTELLECT;
       }
-      if ( p.intellect() > stat_value )
+      else
       {
-        boost_stat = STAT_INTELLECT;
+        if ( player -> cache.strength() >= player -> cache.intellect() )
+          stat = STAT_STRENGTH;
+        else
+          stat = STAT_INTELLECT;
       }
 
-      double amount = util::ability_rank( p.level, 320, 86, 80, 81, 40, 71,  24, 61,  0, 0 );
-
-      p.stat_gain( boost_stat, amount, gain, this );
+      if ( stat == STAT_AGILITY )
+        player -> buffs.flask -> stats[ 0 ].amount = v;
+      else if ( stat == STAT_STRENGTH )
+        player -> buffs.flask -> stats[ 1 ].amount = v;
+      else if ( stat == STAT_INTELLECT )
+        player -> buffs.flask -> stats[ 2 ].amount = v;
     }
-    else
-    {
-      for ( size_t i = 0; i < sizeof_array( flask_data ); ++i )
-      {
-        const flask_data_t& d = flask_data[ i ];
-        if ( type == d.ft )
-        {
-          double amount = ( p.profession[ PROF_ALCHEMY ] > 50 ) ? d.mixology_stat_amount : d.stat_amount;
-          p.stat_gain( d.st, amount, gain, this );
 
-          if ( d.st == STAT_STAMINA )
-          {
-            // Cap Health for stamina flasks if they are used outside of combat
-            if ( ! p.in_combat )
-            {
-              if ( amount > 0 )
-                p.resource_gain( RESOURCE_HEALTH,
-                                 p.resources.max[ RESOURCE_HEALTH ] - p.resources.current[ RESOURCE_HEALTH ] );
-            }
-          }
-        }
-      }
-    }
-    if ( sim -> log ) sim -> out_log.printf( "%s uses Flask %s", p.name(), util::flask_type_string( type ) );
-    p.flask = type;
+    player -> buffs.flask -> trigger();
   }
 
   virtual bool ready()
   {
-    return ( player -> sim -> allow_flasks            &&
-             player -> flask           ==  FLASK_NONE &&
-             !player -> active_elixir.guardian &&
-             !player -> active_elixir.battle );
+    if ( ! player -> buffs.flask )
+      return false;
+
+    return ( player -> sim -> allow_flasks      &&
+             ! player -> active_elixir.guardian &&
+             ! player -> active_elixir.battle );
   }
 };
 

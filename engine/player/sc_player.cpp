@@ -4502,6 +4502,10 @@ void player_t::stat_gain( stat_e    stat,
     }
     break;
 
+    // Unused but known stats to prevent asserting
+    case STAT_RESILIENCE_RATING:
+      break;
+
     default: assert( false ); break;
   }
 
@@ -4607,6 +4611,11 @@ void player_t::stat_loss( stat_e    stat,
         off_hand_attack -> reschedule_auto_attack( old_attack_speed );
       break;
     }
+
+    // Unused but known stats to prevent asserting
+    case STAT_RESILIENCE_RATING:
+      break;
+
     default: assert( false ); break;
   }
 

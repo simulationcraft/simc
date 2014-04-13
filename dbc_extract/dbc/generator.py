@@ -824,19 +824,48 @@ class ItemDataGenerator(DataGenerator):
 
             filter_ilevel = True
 
+            # Item no longer in game
+            if data.flags & 0x10:
+                continue
+
             # Gems
             if classdata.classs == 3:
                 if data.gem_props == 0:
                     continue
                 else:
                     filter_ilevel = False
-            # Permanent Item Enchants (not strictly needed for simc, but 
-            # paperdoll will like them)
+            # Consumables
             elif classdata.classs == 0:
-                if classdata.subclass != 6:
-                    continue
-                else:
+                # Potions, Elixirs, Flasks. Simple spells only.
+                if classdata.has_value('subclass', [1, 2, 3]):
+                    for item_effect in data.spells:
+                        spell = self._spell_db[item_effect.id_spell]
+                        if not spell.has_effect('type', 6):
+                            continue
+
+                        # Grants armor, stats, or rating
+                        if not spell.has_effect('sub_type', [13, 22, 29, 99, 189]):
+                            continue
+
+                        filter_ilevel = False
+                # Food
+                elif classdata.has_value('subclass', 5):
+                    for item_effect in data.spells:
+                        spell = self._spell_db[item_effect.id_spell]
+                        for effect in spell._effects:
+                            if not effect:
+                                continue
+
+                            if effect.sub_type == 23:
+                                filter_ilevel = False
+                elif classdata.subclass == 3:
                     filter_ilevel = False
+                # Permanent Item Enchants (not strictly needed for simc, but 
+                # paperdoll will like them)
+                elif classdata.subclass == 6:
+                   filter_ilevel = False 
+                else:
+                    continue
             # Only very select quest-item permanent item enchantments
             elif classdata.classs == 12:
                 valid = False
@@ -857,9 +886,6 @@ class ItemDataGenerator(DataGenerator):
                     filter_ilevel = False
                 else:
                     continue
-            # Items no longer in game
-            elif data.flags & 0x10:
-                continue
             # All glyphs
             elif classdata.classs == 16:
                 filter_ilevel = False
@@ -1197,6 +1223,7 @@ class SpellDataGenerator(DataGenerator):
          120032, 142530,            # Dancing Steel
          104993,                    # Jade Spirit
          116631,                    # Colossus
+         105617,                    # Alchemist's Flask
         ),
         
         # Warrior:
@@ -1963,34 +1990,22 @@ class SpellDataGenerator(DataGenerator):
                         self.process_spell(enchant_spell_id, ids, 0, 0)
             # Grab relevant spells from consumables as well
             elif classdata.classs == 0:
-                for spell in data.spells:
-                    spell_id = spell.id_spell
-                    if spell_id == 0:
+                for item_effect in data.spells:
+                    spell = self._spell_db[item_effect.id_spell]
+                    if not spell.id:
                         continue
-                    
-                    include_spell = False
-                    spell = self._spell_db[spell_id]
-                    for effect in spell._effects:
-                        if not effect:
-                            continue
 
-                        # Potions and Elixirs need to apply attributes, rating 
-                        # or armor
-                        if classdata.subclass == 1 or classdata.subclass == 2:
-                            if effect.type == 6 and (effect.sub_type == 22 or effect.sub_type == 29 or effect.sub_type == 189):
-                                include_spell = True
-                        # Food needs to have a periodically triggering effect
-                        # (presumed to be always a stat giving effect)
-                        elif classdata.subclass == 5:
-                            if effect.sub_type == 23:
-                                include_spell = True
-                        # Permanent enchants need to have "enchant item" effect
-                        elif classdata.subclass == 6:
-                            if effect.sub_type == 53:
-                                include_spell = True
-
-                    if include_spell:
-                        self.process_spell(spell_id, ids, 0, 0)
+                    # Potions and Elixirs need to apply attributes, rating or
+                    # armor
+                    if classdata.has_value('subclass', [1, 2, 3]) and spell.has_effect('sub_type', [13, 22, 29, 99, 189]):
+                        self.process_spell(spell.id, ids, 0, 0)
+                    # Food needs to have a periodically triggering effect
+                    # (presumed to be always a stat giving effect)
+                    elif classdata.has_value('subclass', 5) and spell.has_effect('sub_type', 23):
+                        self.process_spell(spell.id, ids, 0, 0)
+                    # Permanent enchants
+                    elif classdata.has_value('subclass', 6):
+                        self.process_spell(spell.id, ids, 0, 0)
         
         # Item sets, loop through ItemSet.dbc getting class-specific tier sets and add 
         # their bonuses to the spell list

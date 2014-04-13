@@ -513,6 +513,17 @@ class DBCRecord(object):
     def __init__(self, parser, record):
         self._record     = record
         self._dbc_parser = parser
+
+    def has_value(self, field, value):
+        if not hasattr(self, field):
+            return False
+        
+        if type(value) in [list, tuple] and getattr(self, field) in value:
+            return True
+        elif type(value) in [str, int, float] and getattr(self, field) == value:
+            return True
+
+        return False
         
     def parse(self):
         if not self._record: return None
@@ -685,6 +696,16 @@ class Spell(DBCRecord):
         self.max_effect_index = 0
         self._powers  = []
         self._misc    = []
+
+    def has_effect(self, field, value):
+        for effect in self._effects:
+            if not effect:
+                continue
+
+            if effect.has_value(field, value):
+                return True
+
+        return False
 
     def add_effect(self, spell_effect):
         if spell_effect.index > self.max_effect_index:

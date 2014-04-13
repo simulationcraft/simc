@@ -4251,6 +4251,8 @@ public:
     //Runspeed Enchants
     buff_t* pandarens_step;
     buff_t* blurred_speed;
+
+    stat_buff_t* flask;
   } buffs;
 
   struct potion_buffs_t
