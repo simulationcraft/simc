@@ -4511,7 +4511,17 @@ void player_t::stat_gain( stat_e    stat,
 
   switch ( stat )
   {
-    case STAT_STAMINA: recalculate_resource_max( RESOURCE_HEALTH ); break;
+    case STAT_STAMINA: 
+    {
+      recalculate_resource_max( RESOURCE_HEALTH );
+      // Adjust current health to new max on stamina gains, if the actor is not in combat
+      if ( ! in_combat )
+      {
+        double delta = resources.max[ RESOURCE_HEALTH ] - resources.current[ RESOURCE_HEALTH ];
+        resource_gain( RESOURCE_HEALTH, delta );
+      }
+      break;
+    }
     default: break;
   }
 }
@@ -4621,7 +4631,15 @@ void player_t::stat_loss( stat_e    stat,
 
   switch ( stat )
   {
-    case STAT_STAMINA: recalculate_resource_max( RESOURCE_HEALTH ); break;
+    case STAT_STAMINA:
+    {
+      recalculate_resource_max( RESOURCE_HEALTH );
+      // Adjust current health to new max on stamina gains
+      double delta = resources.current[ RESOURCE_HEALTH ] - resources.max[ RESOURCE_MAX ];
+      if ( delta > 0 )
+        resource_loss( RESOURCE_HEALTH, delta, gain, action );
+      break;
+    }
     default: break;
   }
 }
