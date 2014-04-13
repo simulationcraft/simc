@@ -3840,7 +3840,7 @@ void warrior_t::create_buffs()
                           .chance( glyphs.enraged_speed -> ok() ? 1 : 0 )
                           .duration( timespan_t::from_seconds( 6 ) );
 
-  buff.ignite_weapon    = buff_creator_t( this, "ignite_weapon",   talents.ignite_weapon );
+  buff.ignite_weapon    = buff_creator_t( this, "ignite_weapon", find_spell( 156288 ) );
 
   buff.gladiator_stance = buff_creator_t( this, "gladiator_stance",    talents.gladiator_stance );
 
