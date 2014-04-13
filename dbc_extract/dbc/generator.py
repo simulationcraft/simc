@@ -1231,7 +1231,7 @@ class SpellDataGenerator(DataGenerator):
             ( 118340, 0 ),          # Impending Victory Heal
             ( 118779, 0, False ),   # Victory Rush heal is not directly activatable
             ( 144500, 0 ),          # T16 tank 4pc proc
-            ( 156321, 0 )           # Shield Charge for Guardian Stance
+            ( 156321, 0 )           # Shield Charge for Gladiator Stance
         ),
         
         # Paladin:
