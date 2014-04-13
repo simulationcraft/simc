@@ -490,7 +490,8 @@ public:
   // Echo of Elements functionality
   bool        may_proc_eoe;
   bool        uses_eoe;
-  proc_t*     used_echo;
+  proc_t*     used_eoe;
+  proc_t*     generated_eoe;
 
   shaman_action_t( const std::string& n, shaman_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
@@ -509,7 +510,10 @@ public:
       may_proc_eoe = true;
 
     if ( uses_eoe && ab::s_data )
-      used_echo = p() -> get_proc( "Echo of the Elements: " + std::string( ab::s_data -> name_cstr() ) );
+      used_eoe = p() -> get_proc( "Echo of the Elements: " + std::string( ab::s_data -> name_cstr() ) + " (consume)" );
+
+    if ( may_proc_eoe && ab::s_data )
+      generated_eoe = p() -> get_proc( "Echo of the Elements: " + std::string( ab::s_data -> name_cstr() ) + " (generate)" );
   }
 
   shaman_t* p()
@@ -561,7 +565,10 @@ public:
          ab::result_is_hit( state -> result ) && 
          ! ab::is_aoe() && 
          p() -> rppm_echo_of_the_elements.trigger() )
+    {
       p() -> buff.echo_of_the_elements -> trigger();
+      generated_eoe -> occur();
+    }
   }
 
   void update_ready( timespan_t cd )
@@ -570,7 +577,7 @@ public:
     {
       cd = timespan_t::zero();
       p() -> buff.echo_of_the_elements -> expire();
-      used_echo -> occur();
+      used_eoe -> occur();
     }
 
     ab::update_ready( cd );
