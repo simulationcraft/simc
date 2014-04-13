@@ -182,12 +182,22 @@ struct flask_t : public action_t
       if ( util::str_compare_ci( flask_name, type_str ) )
         break;
 
-      std::string::size_type offset = flask_name.find( "flask_of_" );
+      std::string::size_type offset = flask_name.find( "flask_of_the_" );
       if ( offset != std::string::npos )
       {
-        offset += 9;
+        offset += 13;
         if ( util::str_compare_ci( flask_name.substr( offset ), type_str ) )
           break;
+      }
+      else
+      {
+        offset = flask_name.find( "flask_of_" );
+        if ( offset != std::string::npos )
+        {
+          offset += 9;
+          if ( util::str_compare_ci( flask_name.substr( offset ), type_str ) )
+            break;
+        }
       }
     }
 
