@@ -486,9 +486,11 @@ public:
   // Misc stuff
   bool        totem;
   bool        shock;
+
   // Echo of Elements functionality
   bool        may_proc_eoe;
   bool        uses_eoe;
+  proc_t*     used_echo;
 
   shaman_action_t( const std::string& n, shaman_t* player,
                    const spell_data_t* s = spell_data_t::nil() ) :
@@ -505,6 +507,9 @@ public:
 
     if ( ! ab::background && ab::has_amount_result() )
       may_proc_eoe = true;
+
+    if ( uses_eoe && ab::s_data )
+      used_echo = p() -> get_proc( "Echo of the Elements: " + std::string( ab::s_data -> name_cstr() ) );
   }
 
   shaman_t* p()
@@ -565,6 +570,7 @@ public:
     {
       cd = timespan_t::zero();
       p() -> buff.echo_of_the_elements -> expire();
+      used_echo -> occur();
     }
 
     ab::update_ready( cd );
