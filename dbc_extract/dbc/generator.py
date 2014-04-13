@@ -1224,6 +1224,7 @@ class SpellDataGenerator(DataGenerator):
          104993,                    # Jade Spirit
          116631,                    # Colossus
          105617,                    # Alchemist's Flask
+         137596,                    # Capacitance
         ),
         
         # Warrior:
