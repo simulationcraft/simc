@@ -20,14 +20,15 @@ core_sim_t::event_managment_t::event_managment_t() :
   wheel_time( timespan_t::zero() ),
   all_events_ever_created()
 {
-  preallocate_events( 100 );
+  //preallocate_events( 100 ); // Turns it this isn't a performance gain afterall
+  all_events_ever_created.reserve( 100 ); // But this is
 }
 
 /* Preallocate a certain amount of events and put them into the recycled list
- * Decreases incombat memory allocations and Increases data locality
  */
 void core_sim_t::event_managment_t::preallocate_events( unsigned num )
 {
+  all_events_ever_created.reserve( num );
   for ( size_t i = 0; i < num; ++i )
   {
     core_event_t* e = static_cast<core_event_t*>( malloc( 2 * sizeof( core_event_t ) ) );
