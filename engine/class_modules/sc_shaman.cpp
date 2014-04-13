@@ -5026,15 +5026,15 @@ void shaman_t::init_spells()
   talent.storm_elemental_totem       = find_talent_spell( "Storm Elemental Totem" );
   talent.spew_lava                   = find_talent_spell( "Spew Lava" );
 
-  // Perks
-  perk.improved_searing_totem        = find_perk_spell( 1, SHAMAN_ENHANCEMENT );
-  perk.improved_frost_shock          = find_perk_spell( 2, SHAMAN_ENHANCEMENT );
-  perk.improved_lava_lash            = find_perk_spell( 3, SHAMAN_ENHANCEMENT );
-  perk.improved_flame_shock          = find_perk_spell( 4, SHAMAN_ENHANCEMENT );
-  perk.improved_maelstrom_weapon     = find_perk_spell( 5, SHAMAN_ENHANCEMENT );
-  perk.improved_stormstrike          = find_perk_spell( 6, SHAMAN_ENHANCEMENT );
-  perk.improved_lava_lash_2          = find_perk_spell( 7, SHAMAN_ENHANCEMENT );
-  perk.improved_feral_spirits        = find_perk_spell( 8, SHAMAN_ENHANCEMENT );
+  // Perks - Enhancement
+  perk.improved_searing_totem        = find_perk_spell( 1 );
+  perk.improved_frost_shock          = find_perk_spell( 2 );
+  perk.improved_lava_lash            = find_perk_spell( 3 );
+  perk.improved_flame_shock          = find_perk_spell( 4 );
+  perk.improved_maelstrom_weapon     = find_perk_spell( 5 );
+  perk.improved_stormstrike          = find_perk_spell( 6 );
+  perk.improved_lava_lash_2          = find_perk_spell( 7 );
+  perk.improved_feral_spirits        = find_perk_spell( 8 );
 
   // Glyphs
   glyph.chain_lightning              = find_glyph_spell( "Glyph of Chain Lightning" );

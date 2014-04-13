@@ -25,24 +25,7 @@ actions.precombat+=/mountains_potion
 
 # Executed every time the actor is available.
 
-actions=charge
-actions+=/auto_attack
-actions+=/mountains_potion,if=incoming_damage_2500ms>health.max*0.6&(buff.shield_wall.down&buff.last_stand.down)
-actions+=/use_item,slot=trinket2
-actions+=/heroic_strike,if=buff.ultimatum.up
-actions+=/shield_block
-actions+=/shield_barrier,if=incoming_damage_1500ms>health.max*0.3|rage>rage.max-20
-actions+=/shield_wall,if=incoming_damage_2500ms>health.max*0.6
-actions+=/last_stand,if=incoming_damage_2500ms>health.max*0.6&buff.shield_wall.down
-actions+=/run_action_list,name=normal_rotation
-
-actions.normal_rotation=shield_slam
-actions.normal_rotation+=/revenge
-actions.normal_rotation+=/thunder_clap
-actions.normal_rotation+=/demoralizing_shout
-actions.normal_rotation+=/impending_victory,if=enabled
-actions.normal_rotation+=/victory_rush,if=!talent.impending_victory.enabled
-actions.normal_rotation+=/devastate
+actions=heroic_strike
 
 head=faceguard_of_the_prehistoric_marauder,id=99409,stats=5617armor_2290str_3795sta_1567parry_1567mastery,gems=indomitable_primal_320parry_270sta
 neck=blackfuses_blasting_cord,id=105622,stats=1490str_2236sta_994parry_994exp

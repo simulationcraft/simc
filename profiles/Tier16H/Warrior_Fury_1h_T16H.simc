@@ -50,6 +50,7 @@ actions+=/run_action_list,name=aoe,if=active_enemies>3
 
 actions.single_target=bloodbath,if=enabled&(cooldown.colossus_smash.remains<2|debuff.colossus_smash.remains>=5|target.time_to_die<=20)
 actions.single_target+=/heroic_strike,if=((debuff.colossus_smash.up&rage>=40)&target.health.pct>=20)|rage>=100&buff.enrage.up
+actions.single_target+=/ignite_weapon,if=(target.health.pct>=20&(rage>90|(buff.enrage.up&rage>40)))|buff.ignite_weapon.remains<2
 actions.single_target+=/heroic_leap,if=debuff.colossus_smash.up
 actions.single_target+=/storm_bolt,if=enabled&debuff.colossus_smash.up
 # Delay Bloodthirst if 2 stacks of raging blow are available inside Colossus Smash.
@@ -65,6 +66,7 @@ actions.single_target+=/colossus_smash
 actions.single_target+=/storm_bolt,if=enabled&cooldown.colossus_smash.remains>3
 actions.single_target+=/execute,if=debuff.colossus_smash.up|rage>70|target.time_to_die<12
 actions.single_target+=/raging_blow,if=target.health.pct<20|buff.raging_blow.stack=2|(debuff.colossus_smash.up|(cooldown.bloodthirst.remains>=1&buff.raging_blow.remains<=3))
+actions.single_target+=/ravager
 actions.single_target+=/bladestorm,if=enabled,interrupt_if=cooldown.bloodthirst.remains<1
 actions.single_target+=/wild_strike,if=buff.bloodsurge.up
 # If Colossus Smash is coming up soon, it's a good idea to save 1 charge of raging blow for it.
@@ -75,6 +77,9 @@ actions.single_target+=/impending_victory,if=enabled&target.health.pct>=20&coold
 
 actions.two_targets=bloodbath,if=enabled
 actions.two_targets+=/heroic_leap,if=buff.enrage.up
+actions.two_targets+=/heroic_strike,if=rage>100
+actions.two_targets+=/ignite_weapon,if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down
+actions.two_targets+=/ravager
 actions.two_targets+=/bladestorm,if=enabled&buff.enrage.remains>4
 # Generally, if an encounter has any type of AoE, Bladestorm will be the better choice than Dragon Roar.
 actions.two_targets+=/dragon_roar,if=enabled&(!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled))
@@ -90,6 +95,9 @@ actions.two_targets+=/execute
 
 actions.three_targets=bloodbath,if=enabled
 actions.three_targets+=/heroic_leap,if=buff.enrage.up
+actions.three_targets+=/ravager
+actions.three_targets+=/heroic_strike,if=rage>100
+actions.three_targets+=/ignite_weapon,if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down
 actions.three_targets+=/bladestorm,if=enabled&buff.enrage.remains>4
 actions.three_targets+=/dragon_roar,if=enabled&!debuff.colossus_smash.up&(buff.bloodbath.up|!talent.bloodbath.enabled)
 actions.three_targets+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking
@@ -102,6 +110,9 @@ actions.three_targets+=/raging_blow
 
 actions.aoe=bloodbath,if=enabled
 actions.aoe+=/heroic_leap,if=buff.enrage.up
+actions.aoe+=/heroic_strike,if=rage>100
+actions.aoe+=/ignite_weapon,if=(target.health.pct>=20&rage>100)|buff.ignite_weapon.down
+actions.aoe+=/ravager
 actions.aoe+=/bladestorm,if=enabled&buff.enrage.remains>4
 # Enrage overlaps 4 GCDs, which allows bloodthirst to be used mostly to keep enrage up, as rage income is typically not an issue with the aoe rotation.
 actions.aoe+=/bloodthirst,cycle_targets=1,if=!dot.deep_wounds.ticking&buff.enrage.down

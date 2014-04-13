@@ -4501,12 +4501,26 @@ void player_t::stat_gain( stat_e    stat,
     }
     break;
 
+    // Unused but known stats to prevent asserting
+    case STAT_RESILIENCE_RATING:
+      break;
+
     default: assert( false ); break;
   }
 
   switch ( stat )
   {
-    case STAT_STAMINA: recalculate_resource_max( RESOURCE_HEALTH ); break;
+    case STAT_STAMINA: 
+    {
+      recalculate_resource_max( RESOURCE_HEALTH );
+      // Adjust current health to new max on stamina gains, if the actor is not in combat
+      if ( ! in_combat )
+      {
+        double delta = resources.max[ RESOURCE_HEALTH ] - resources.current[ RESOURCE_HEALTH ];
+        resource_gain( RESOURCE_HEALTH, delta );
+      }
+      break;
+    }
     default: break;
   }
 }
@@ -4606,12 +4620,25 @@ void player_t::stat_loss( stat_e    stat,
         off_hand_attack -> reschedule_auto_attack( old_attack_speed );
       break;
     }
+
+    // Unused but known stats to prevent asserting
+    case STAT_RESILIENCE_RATING:
+      break;
+
     default: assert( false ); break;
   }
 
   switch ( stat )
   {
-    case STAT_STAMINA: recalculate_resource_max( RESOURCE_HEALTH ); break;
+    case STAT_STAMINA:
+    {
+      recalculate_resource_max( RESOURCE_HEALTH );
+      // Adjust current health to new max on stamina gains
+      double delta = resources.current[ RESOURCE_HEALTH ] - resources.max[ RESOURCE_MAX ];
+      if ( delta > 0 )
+        resource_loss( RESOURCE_HEALTH, delta, gain, action );
+      break;
+    }
     default: break;
   }
 }
@@ -6993,6 +7020,9 @@ const spell_data_t* player_t::find_specialization_spell( const std::string& name
 
 const spell_data_t* player_t::find_perk_spell( const std::string& name, specialization_e s ) const
 {
+  if ( level < 91 ) // No perks for level 90 characterss
+    return spell_data_t::not_found();
+
   if ( s == SPEC_NONE || s == _spec )
   {
     if ( unsigned spell_id = dbc.perk_ability_id( _spec, name.c_str() ) )
@@ -7008,6 +7038,9 @@ const spell_data_t* player_t::find_perk_spell( const std::string& name, speciali
 
 const spell_data_t* player_t::find_perk_spell( size_t idx, specialization_e s ) const
 {
+  if ( level < 91 ) // No perks for level 90 characterss
+    return spell_data_t::not_found();
+
   if ( s == SPEC_NONE || s == _spec )
   {
     if ( unsigned spell_id = dbc.perk_ability_id( _spec, idx ) )

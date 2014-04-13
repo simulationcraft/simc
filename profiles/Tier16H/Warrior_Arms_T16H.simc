@@ -41,27 +41,32 @@ actions+=/run_action_list,name=aoe,if=active_enemies>=2
 actions+=/run_action_list,name=single_target,if=active_enemies<2
 
 actions.single_target=heroic_strike,if=rage>115
+actions.single_target+=/ignite_weapon,if=(rage>100&target.health.pct>20)|buff.ignite_weapon.down
 actions.single_target+=/mortal_strike,if=dot.deep_wounds.remains<1.0|buff.enrage.down|rage<10
 actions.single_target+=/colossus_smash,if=debuff.colossus_smash.remains<1.0
+actions.single_target+=/ravager
 # Use cancelaura (in-game) to stop bladestorm if CS comes off cooldown during it for any reason.
 actions.single_target+=/bladestorm,if=enabled,interrupt_if=!cooldown.colossus_smash.remains
 actions.single_target+=/mortal_strike
 actions.single_target+=/storm_bolt,if=enabled&debuff.colossus_smash.up
 actions.single_target+=/dragon_roar,if=enabled&debuff.colossus_smash.down
-actions.single_target+=/execute,if=buff.sudden_execute.down|buff.taste_for_blood.down|rage>90|target.time_to_die<12
+actions.single_target+=/execute,if=buff.taste_for_blood.down|rage>90|target.time_to_die<12
 # Slam is preferable to overpower with crit procs/recklessness.
 actions.single_target+=/slam,if=target.health.pct>=20&(trinket.stacking_stat.crit.stack>=10|buff.recklessness.up)
-actions.single_target+=/overpower,if=target.health.pct>=20&rage<100|buff.sudden_execute.up
+actions.single_target+=/overpower,if=target.health.pct>=20&rage<100
 actions.single_target+=/execute
 actions.single_target+=/slam,if=target.health.pct>=20
 
 actions.aoe=sweeping_strikes
+actions.aoe+=/heroic_strike,if=rage>100
+actions.aoe+=/ignite_weapon,if=buff.ignite_weapon.down|rage>100
+actions.aoe+=/ravager
 actions.aoe+=/bladestorm,if=enabled&buff.enrage.remains>4
 actions.aoe+=/dragon_roar,if=enabled&debuff.colossus_smash.down
 actions.aoe+=/colossus_smash,if=debuff.colossus_smash.remains<1
 actions.aoe+=/thunder_clap
 actions.aoe+=/mortal_strike,if=active_enemies=2|rage<50
-actions.aoe+=/execute,if=buff.sudden_execute.down&active_enemies=2
+actions.aoe+=/execute,if=active_enemies=2
 actions.aoe+=/slam,if=buff.sweeping_strikes.up&debuff.colossus_smash.up
 actions.aoe+=/overpower,if=active_enemies=2
 actions.aoe+=/slam,if=buff.sweeping_strikes.up

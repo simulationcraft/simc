@@ -111,7 +111,9 @@ const char * _property_type_strings[] =
   "Spell Cast Time",       "Spell Cooldown",        "Spell Effect 2",         0,                     "Spell Resource Cost",   // 10
   "Spell Critical Damage", "Spell Penetration",     "Spell Targets",          "Spell Proc Chance",   "Unknown 2",             // 15
   "Spell Target Bonus",    "Spell Global Cooldown", "Spell Periodic Damage",  "Spell Effect 3",      "Spell Power",           // 20
-  0,                       "Spell Proc Frequency",  "Spell Damage Taken",     "Spell Dispel Chance", 0                        // 25
+  0,                       "Spell Proc Frequency",  "Spell Damage Taken",     "Spell Dispel Chance", 0,                       // 25
+  0,                       0,                       "Spell Effect 4",         0,                     0,                       // 30
+  0,                       0,                       0,                        0,                     0                        // 35
 };
 
 const char * _effect_type_strings[] =
@@ -477,17 +479,19 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
 
   s << std::endl;
 
-  /*
   std::stringstream affect_str;
   std::vector< const spell_data_t* > affected_spells = dbc.effect_affects_spells( spell -> class_family(), e );
   if ( affected_spells.size() > 0 )
   {
-    s << "                   Affected Spells:";
-    s << std::endl;
+    s << "                   Affected Spells: ";
     for ( size_t i = 0, end = affected_spells.size(); i < end; i++ )
-      s << "                   " << affected_spells[ i ] -> name_cstr() << " (" << affected_spells[ i ] -> id() << ")" << std::endl;
+    {
+      s << affected_spells[ i ] -> name_cstr() << " (" << affected_spells[ i ] -> id() << ")";
+      if ( i < end - 1 )
+        s << ", ";
+    }
+    s << std::endl;
   }
-  */
 
   return s;
 }
